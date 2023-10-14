@@ -2926,11 +2926,11 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#get_earliest_value-udf" class="md-nav__link">
-    get_earliest_value (UDF)
+  <a href="#diff_months-udf" class="md-nav__link">
+    diff_months (UDF)
   </a>
   
-    <nav class="md-nav" aria-label="get_earliest_value (UDF)">
+    <nav class="md-nav" aria-label="diff_months (UDF)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -2946,75 +2946,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#truncate_version-udf" class="md-nav__link">
-    truncate_version (UDF)
+  <a href="#vpn_attribution-udf" class="md-nav__link">
+    vpn_attribution (UDF)
   </a>
   
-    <nav class="md-nav" aria-label="truncate_version (UDF)">
+    <nav class="md-nav" aria-label="vpn_attribution (UDF)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#parameters_1" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#glean_baseline_client_info-udf" class="md-nav__link">
-    glean_baseline_client_info (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="glean_baseline_client_info (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters_2" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#browser_version_info-udf" class="md-nav__link">
-    browser_version_info (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="browser_version_info (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters_3" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#glean_ping_info-udf" class="md-nav__link">
-    glean_ping_info (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="glean_ping_info (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters_4" class="md-nav__link">
     Parameters
   </a>
   
@@ -3405,11 +3345,11 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#get_earliest_value-udf" class="md-nav__link">
-    get_earliest_value (UDF)
+  <a href="#diff_months-udf" class="md-nav__link">
+    diff_months (UDF)
   </a>
   
-    <nav class="md-nav" aria-label="get_earliest_value (UDF)">
+    <nav class="md-nav" aria-label="diff_months (UDF)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3425,75 +3365,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#truncate_version-udf" class="md-nav__link">
-    truncate_version (UDF)
+  <a href="#vpn_attribution-udf" class="md-nav__link">
+    vpn_attribution (UDF)
   </a>
   
-    <nav class="md-nav" aria-label="truncate_version (UDF)">
+    <nav class="md-nav" aria-label="vpn_attribution (UDF)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#parameters_1" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#glean_baseline_client_info-udf" class="md-nav__link">
-    glean_baseline_client_info (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="glean_baseline_client_info (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters_2" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#browser_version_info-udf" class="md-nav__link">
-    browser_version_info (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="browser_version_info (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters_3" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#glean_ping_info-udf" class="md-nav__link">
-    glean_ping_info (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="glean_ping_info (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters_4" class="md-nav__link">
     Parameters
   </a>
   
@@ -3528,78 +3408,24 @@
 
 <h1 id="norm">norm</h1>
 <p>Functions for normalizing data.</p>
-<h2 id="get_earliest_value-udf">get_earliest_value (UDF)</h2>
-<p>This UDF returns the earliest not-null value pair and datetime
-from a list of values and their corresponding timestamp.</p>
-<p>The function will return the first value pair in the input array,
-that is not null and has the earliest timestamp.</p>
-<p>Because there may be more than one value on the same date e.g. more
-than one value reported by different pings on the same date, the dates
-must be given as TIMESTAMPS and the values as STRING.</p>
-<p>Usage:</p>
-<div class="highlight"><pre><span></span><code><span class="k">SELECT</span>
-<span class="w">   </span><span class="n">mozfun</span><span class="p">.</span><span class="n">norm</span><span class="p">.</span><span class="n">get_earliest_value</span><span class="p">(</span><span class="nb">ARRAY</span><span class="o">&lt;</span><span class="n">STRUCT</span><span class="o">&lt;</span><span class="n">value</span><span class="w"> </span><span class="n">STRING</span><span class="p">,</span><span class="w"> </span><span class="n">value_source</span><span class="w"> </span><span class="n">STRING</span><span class="p">,</span><span class="w"> </span><span class="n">value_date</span><span class="w"> </span><span class="n">DATETIME</span><span class="o">&gt;&gt;</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="o">&lt;</span><span class="k">alias</span><span class="o">&gt;</span>
-</code></pre></div>
+<h2 id="diff_months-udf">diff_months (UDF)</h2>
+<p>Determine the number of whole months after grace period between start and end. Month is dependent on timezone, so start and end must both be datetimes, or both be dates, in the correct timezone. Grace period can be used to account for billing delay, usually 1 day, and is counted after months. When inclusive is FALSE, start and end are not included in whole months.
+For example, diff_months(start =&gt; '2021-01-01', end =&gt; '2021-03-01', grace_period =&gt; INTERVAL 0 day, inclusive =&gt; FALSE) returns 1, because start plus two months plus grace period is not less than end. Changing inclusive to TRUE returns 2, because start plus two months plus grace period is less than or equal to end. diff_months(start =&gt; '2021-01-01', end =&gt; '2021-03-02 00:00:00.000001', grace_period =&gt; INTERVAL 1 DAY, inclusive =&gt; FALSE) returns 2, because start plus two months plus grace period is less than end.</p>
 <h3 id="parameters">Parameters</h3>
 <p><strong>INPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>value_set ARRAY&lt;STRUCT&lt;value STRING, value_source STRING, value_date DATETIME&gt;&gt;
+<div class="highlight"><pre><span></span><code>start DATETIME, `end` DATETIME, grace_period INTERVAL, inclusive BOOLEAN
 </code></pre></div>
-<p><strong>OUTPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>STRUCT&lt;earliest_value STRING, earliest_value_source STRING, earliest_date DATETIME&gt;
-</code></pre></div>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/norm/get_earliest_value">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/norm/get_earliest_value/metadata.yaml">Edit</a></p>
-<h2 id="truncate_version-udf">truncate_version (UDF)</h2>
-<p>Truncates a version string like <code>&lt;major&gt;.&lt;minor&gt;.&lt;patch&gt;</code> to
-either the major or minor version. The return value is <code>NUMERIC</code>,
-which means that you can sort the results without fear (e.g. 100
-will be categorized as greater than 80, which isn't the case when
-sorting lexigraphically).</p>
-<p>For example, "5.1.0" would be translated to <code>5.1</code> if the parameter is
-"minor" or <code>5</code> if the parameter is major.</p>
-<p>If the version is only a major and/or minor version, then it will be left
-unchanged (for example "10" would stay as <code>10</code> when run through this
-function, no matter what the arguments).</p>
-<p>This is useful for grouping Linux and Mac operating system versions inside
-aggregate datasets or queries where there may be many different patch
-releases in the field.</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/norm/diff_months">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/norm/diff_months/metadata.yaml">Edit</a></p>
+<h2 id="vpn_attribution-udf">vpn_attribution (UDF)</h2>
+<p>Accepts vpn attribution fields as input and returns a struct of normalized fields.</p>
 <h3 id="parameters_1">Parameters</h3>
 <p><strong>INPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>os_version STRING, truncation_level STRING
+<div class="highlight"><pre><span></span><code>utm_campaign STRING, utm_content STRING, utm_medium STRING, utm_source STRING
 </code></pre></div>
 <p><strong>OUTPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>NUMERIC
+<div class="highlight"><pre><span></span><code>STRUCT&lt;normalized_acquisition_channel STRING, normalized_campaign STRING, normalized_content STRING, normalized_medium STRING, normalized_source STRING, website_channel_group STRING&gt;
 </code></pre></div>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/norm/truncate_version">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/norm/truncate_version/metadata.yaml">Edit</a></p>
-<h2 id="glean_baseline_client_info-udf">glean_baseline_client_info (UDF)</h2>
-<p>Accepts a glean client_info struct as input and returns a modified struct that includes a few parsed or normalized variants of the input fields.</p>
-<h3 id="parameters_2">Parameters</h3>
-<p><strong>INPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>client_info ANY TYPE, metrics ANY TYPE
-</code></pre></div>
-<p><strong>OUTPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>string
-</code></pre></div>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/norm/glean_baseline_client_info">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/norm/glean_baseline_client_info/metadata.yaml">Edit</a></p>
-<h2 id="browser_version_info-udf">browser_version_info (UDF)</h2>
-<p>Adds metadata related to the browser version in a struct.</p>
-<p>This is a temporary solution that allows browser version analysis.
-It should eventually be replaced with one or more browser version tables
-that serves as a source of truth for version releases.</p>
-<h3 id="parameters_3">Parameters</h3>
-<p><strong>INPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>version_string STRING
-</code></pre></div>
-<p><strong>OUTPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>STRUCT&lt;version STRING, major_version NUMERIC, minor_version NUMERIC, patch_revision NUMERIC, is_major_release BOOLEAN&gt;
-</code></pre></div>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/norm/browser_version_info">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/norm/browser_version_info/metadata.yaml">Edit</a></p>
-<h2 id="glean_ping_info-udf">glean_ping_info (UDF)</h2>
-<p>Accepts a glean ping_info struct as input and returns a modified struct that includes a few parsed or normalized variants of the input fields.</p>
-<h3 id="parameters_4">Parameters</h3>
-<p><strong>INPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>ping_info ANY TYPE
-</code></pre></div>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/norm/glean_ping_info">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/norm/glean_ping_info/metadata.yaml">Edit</a></p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/norm/vpn_attribution">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/norm/vpn_attribution/metadata.yaml">Edit</a></p>
 <h2 id="get_windows_info-udf">get_windows_info (UDF)</h2>
 <p>Exract the name, the version name, the version number, and the build number
 corresponding to a Microsoft Windows operating system version string in the
@@ -3797,7 +3623,7 @@ for most release versions of Windows after 2007.</p>
 </tr>
 </tbody>
 </table>
-<h3 id="parameters_5">Parameters</h3>
+<h3 id="parameters_2">Parameters</h3>
 <p><strong>INPUTS</strong></p>
 <div class="highlight"><pre><span></span><code>os_version STRING
 </code></pre></div>
@@ -3805,122 +3631,19 @@ for most release versions of Windows after 2007.</p>
 <div class="highlight"><pre><span></span><code>STRUCT&lt;name STRING, version_name STRING, version_number DECIMAL, build_number INT64&gt;
 </code></pre></div>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/norm/get_windows_info">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/norm/get_windows_info/metadata.yaml">Edit</a></p>
-<h2 id="windows_version_info-udf">windows_version_info (UDF)</h2>
-<p>Given an unnormalized set off Windows identifiers, return a friendly version
-of the operating system name.</p>
-<p>Requires os, os_version and windows_build_number.</p>
-<p>E.G. from windows_build_number &gt;= 22000 return Windows 11</p>
-<h3 id="parameters_6">Parameters</h3>
+<h2 id="browser_version_info-udf">browser_version_info (UDF)</h2>
+<p>Adds metadata related to the browser version in a struct.</p>
+<p>This is a temporary solution that allows browser version analysis.
+It should eventually be replaced with one or more browser version tables
+that serves as a source of truth for version releases.</p>
+<h3 id="parameters_3">Parameters</h3>
 <p><strong>INPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>os STRING, os_version STRING, windows_build_number INT64
+<div class="highlight"><pre><span></span><code>version_string STRING
 </code></pre></div>
 <p><strong>OUTPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>STRING
+<div class="highlight"><pre><span></span><code>STRUCT&lt;version STRING, major_version NUMERIC, minor_version NUMERIC, patch_revision NUMERIC, is_major_release BOOLEAN&gt;
 </code></pre></div>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/norm/windows_version_info">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/norm/windows_version_info/metadata.yaml">Edit</a></p>
-<h2 id="result_type_to_product_name-udf">result_type_to_product_name (UDF)</h2>
-<p>Convert urlbar result types into product-friendly names</p>
-<p>This UDF converts result types from urlbar events (<a href="https://dictionary.telemetry.mozilla.org/apps/firefox_desktop/metrics/urlbar_engagement">engagement</a>, <a href="https://dictionary.telemetry.mozilla.org/apps/firefox_desktop/metrics/urlbar_impression">impression</a>, <a href="https://dictionary.telemetry.mozilla.org/apps/firefox_desktop/metrics/urlbar_abandonment">abandonment</a>) into <a href="https://docs.google.com/document/d/1kmlAykJR7r7VcWe-mfk5R4MvhMvfUao7VrZP_M2t6nY/edit#heading=h.ksu5pbt3aa6k">product-friendly names</a>.</p>
-<h3 id="parameters_7">Parameters</h3>
-<p><strong>INPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>res STRING
-</code></pre></div>
-<p><strong>OUTPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>STRING
-</code></pre></div>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/norm/result_type_to_product_name">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/norm/result_type_to_product_name/metadata.yaml">Edit</a></p>
-<h2 id="os-udf">os (UDF)</h2>
-<p>Normalize an operating system string to one of the three major desktop
-platforms, one of the two major mobile platforms, or "Other".</p>
-<p>This is a reimplementation of
-<a href="&lt;https://github.com/mozilla/gcp-ingestion/blob/a6928fb089f1652856147c4605df715f327edfcd/ingestion-beam/src/main/java/com/mozilla/telemetry/transforms/NormalizeAttributes.java#L52-L74">logic used in the data pipeline</a>&gt;
-  to populate <code>normalized_os</code>.</p>
-<h3 id="parameters_8">Parameters</h3>
-<p><strong>INPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>os STRING
-</code></pre></div>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/norm/os">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/norm/os/metadata.yaml">Edit</a></p>
-<h2 id="metadata-udf">metadata (UDF)</h2>
-<p>Accepts a pipeline metadata struct as input and returns a modified struct that includes a few parsed or normalized variants of the input metadata fields.</p>
-<h3 id="parameters_9">Parameters</h3>
-<p><strong>INPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>metadata ANY TYPE
-</code></pre></div>
-<p><strong>OUTPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>`date`, CAST(NULL
-</code></pre></div>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/norm/metadata">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/norm/metadata/metadata.yaml">Edit</a></p>
-<h2 id="diff_months-udf">diff_months (UDF)</h2>
-<p>Determine the number of whole months after grace period between start and end. Month is dependent on timezone, so start and end must both be datetimes, or both be dates, in the correct timezone. Grace period can be used to account for billing delay, usually 1 day, and is counted after months. When inclusive is FALSE, start and end are not included in whole months.
-For example, diff_months(start =&gt; '2021-01-01', end =&gt; '2021-03-01', grace_period =&gt; INTERVAL 0 day, inclusive =&gt; FALSE) returns 1, because start plus two months plus grace period is not less than end. Changing inclusive to TRUE returns 2, because start plus two months plus grace period is less than or equal to end. diff_months(start =&gt; '2021-01-01', end =&gt; '2021-03-02 00:00:00.000001', grace_period =&gt; INTERVAL 1 DAY, inclusive =&gt; FALSE) returns 2, because start plus two months plus grace period is less than end.</p>
-<h3 id="parameters_10">Parameters</h3>
-<p><strong>INPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>start DATETIME, `end` DATETIME, grace_period INTERVAL, inclusive BOOLEAN
-</code></pre></div>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/norm/diff_months">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/norm/diff_months/metadata.yaml">Edit</a></p>
-<h2 id="vpn_attribution-udf">vpn_attribution (UDF)</h2>
-<p>Accepts vpn attribution fields as input and returns a struct of normalized fields.</p>
-<h3 id="parameters_11">Parameters</h3>
-<p><strong>INPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>utm_campaign STRING, utm_content STRING, utm_medium STRING, utm_source STRING
-</code></pre></div>
-<p><strong>OUTPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>STRUCT&lt;normalized_acquisition_channel STRING, normalized_campaign STRING, normalized_content STRING, normalized_medium STRING, normalized_source STRING, website_channel_group STRING&gt;
-</code></pre></div>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/norm/vpn_attribution">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/norm/vpn_attribution/metadata.yaml">Edit</a></p>
-<h2 id="fenix_build_to_datetime-udf">fenix_build_to_datetime (UDF)</h2>
-<p>Convert the Fenix client_info.app_build-format string to
-a DATETIME. May return NULL on failure.</p>
-<p>Fenix originally used an
-<a href="&lt;https://github.com/mozilla-mobile/fenix/blob/c7283447/automation/gradle/versionCode.gradle#L12-L16">8-digit app_build format</a>&gt;</p>
-<p>In short it is <code>yDDDHHmm</code>:</p>
-<ul>
-<li>y is years since 2018</li>
-<li>DDD is day of year, 0-padded, 001-366</li>
-<li>HH is hour of day, 00-23</li>
-<li>mm is minute of hour, 00-59</li>
-</ul>
-<p>The last date seen with an 8-digit build ID is 2020-08-10.</p>
-<p>Newer builds use a
-<a href="&lt;https://github.com/mozilla-mobile/fenix/blob/e6ee13dc/buildSrc/src/main/java/Config.kt#L55-L112">10-digit format</a>&gt;
-where the integer represents a pattern consisting of 32 bits.
-The 17 bits starting 13 bits from the left represent a number of hours since
-UTC midnight beginning 2014-12-28.</p>
-<p>This function tolerates both formats.</p>
-<p>After using this you may wish to <code>DATETIME_TRUNC(result, DAY)</code> for
-grouping by build date.</p>
-<h3 id="parameters_12">Parameters</h3>
-<p><strong>INPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>app_build STRING
-</code></pre></div>
-<p><strong>OUTPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>INT64
-</code></pre></div>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/norm/fenix_build_to_datetime">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/norm/fenix_build_to_datetime/metadata.yaml">Edit</a></p>
-<h2 id="extract_version-udf">extract_version (UDF)</h2>
-<p>Extracts numeric version data from a version string like
-<code>&lt;major&gt;.&lt;minor&gt;.&lt;patch&gt;</code>.</p>
-<p>Note: Non-zero minor and patch versions will be floating point <code>Numeric</code>.</p>
-<p>Usage:</p>
-<div class="highlight"><pre><span></span><code><span class="k">SELECT</span>
-<span class="w">    </span><span class="n">mozfun</span><span class="p">.</span><span class="n">norm</span><span class="p">.</span><span class="n">extract_version</span><span class="p">(</span><span class="n">version_string</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;major&#39;</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">major_version</span><span class="p">,</span>
-<span class="w">    </span><span class="n">mozfun</span><span class="p">.</span><span class="n">norm</span><span class="p">.</span><span class="n">extract_version</span><span class="p">(</span><span class="n">version_string</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;minor&#39;</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">minor_version</span><span class="p">,</span>
-<span class="w">    </span><span class="n">mozfun</span><span class="p">.</span><span class="n">norm</span><span class="p">.</span><span class="n">extract_version</span><span class="p">(</span><span class="n">version_string</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;patch&#39;</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">patch_version</span>
-</code></pre></div>
-<p>Example using <code>"96.05.01"</code>:</p>
-<div class="highlight"><pre><span></span><code><span class="k">SELECT</span>
-<span class="w">    </span><span class="n">mozfun</span><span class="p">.</span><span class="n">norm</span><span class="p">.</span><span class="n">extract_version</span><span class="p">(</span><span class="s1">&#39;96.05.01&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;major&#39;</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">major_version</span><span class="p">,</span><span class="w"> </span><span class="c1">-- 96</span>
-<span class="w">    </span><span class="n">mozfun</span><span class="p">.</span><span class="n">norm</span><span class="p">.</span><span class="n">extract_version</span><span class="p">(</span><span class="s1">&#39;96.05.01&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;minor&#39;</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">minor_version</span><span class="p">,</span><span class="w"> </span><span class="c1">-- 5</span>
-<span class="w">    </span><span class="n">mozfun</span><span class="p">.</span><span class="n">norm</span><span class="p">.</span><span class="n">extract_version</span><span class="p">(</span><span class="s1">&#39;96.05.01&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;patch&#39;</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">patch_version</span><span class="w">  </span><span class="c1">-- 1</span>
-</code></pre></div>
-<h3 id="parameters_13">Parameters</h3>
-<p><strong>INPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>version_string STRING, extraction_level STRING
-</code></pre></div>
-<p><strong>OUTPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>NUMERIC
-</code></pre></div>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/norm/extract_version">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/norm/extract_version/metadata.yaml">Edit</a></p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/norm/browser_version_info">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/norm/browser_version_info/metadata.yaml">Edit</a></p>
 <h2 id="product_info-udf">product_info (UDF)</h2>
 <p>Returns a normalized <code>app_name</code> and <code>canonical_app_name</code>
 for a product based on <code>legacy_app_name</code> and <code>normalized_os</code> values.
@@ -4136,7 +3859,7 @@ which have thrown away the raw <code>app_name</code> value from legacy pings.</p
 </tr>
 </tbody>
 </table>
-<h3 id="parameters_14">Parameters</h3>
+<h3 id="parameters_4">Parameters</h3>
 <p><strong>INPUTS</strong></p>
 <div class="highlight"><pre><span></span><code>legacy_app_name STRING, normalized_os STRING
 </code></pre></div>
@@ -4144,6 +3867,77 @@ which have thrown away the raw <code>app_name</code> value from legacy pings.</p
 <div class="highlight"><pre><span></span><code>STRUCT&lt;app_name STRING, product STRING, canonical_app_name STRING, canonical_name STRING, contributes_to_2019_kpi BOOLEAN, contributes_to_2020_kpi BOOLEAN, contributes_to_2021_kpi BOOLEAN&gt;
 </code></pre></div>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/norm/product_info">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/norm/product_info/metadata.yaml">Edit</a></p>
+<h2 id="result_type_to_product_name-udf">result_type_to_product_name (UDF)</h2>
+<p>Convert urlbar result types into product-friendly names</p>
+<p>This UDF converts result types from urlbar events (<a href="https://dictionary.telemetry.mozilla.org/apps/firefox_desktop/metrics/urlbar_engagement">engagement</a>, <a href="https://dictionary.telemetry.mozilla.org/apps/firefox_desktop/metrics/urlbar_impression">impression</a>, <a href="https://dictionary.telemetry.mozilla.org/apps/firefox_desktop/metrics/urlbar_abandonment">abandonment</a>) into <a href="https://docs.google.com/document/d/1kmlAykJR7r7VcWe-mfk5R4MvhMvfUao7VrZP_M2t6nY/edit#heading=h.ksu5pbt3aa6k">product-friendly names</a>.</p>
+<h3 id="parameters_5">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>res STRING
+</code></pre></div>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>STRING
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/norm/result_type_to_product_name">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/norm/result_type_to_product_name/metadata.yaml">Edit</a></p>
+<h2 id="get_earliest_value-udf">get_earliest_value (UDF)</h2>
+<p>This UDF returns the earliest not-null value pair and datetime
+from a list of values and their corresponding timestamp.</p>
+<p>The function will return the first value pair in the input array,
+that is not null and has the earliest timestamp.</p>
+<p>Because there may be more than one value on the same date e.g. more
+than one value reported by different pings on the same date, the dates
+must be given as TIMESTAMPS and the values as STRING.</p>
+<p>Usage:</p>
+<div class="highlight"><pre><span></span><code><span class="k">SELECT</span>
+<span class="w">   </span><span class="n">mozfun</span><span class="p">.</span><span class="n">norm</span><span class="p">.</span><span class="n">get_earliest_value</span><span class="p">(</span><span class="nb">ARRAY</span><span class="o">&lt;</span><span class="n">STRUCT</span><span class="o">&lt;</span><span class="n">value</span><span class="w"> </span><span class="n">STRING</span><span class="p">,</span><span class="w"> </span><span class="n">value_source</span><span class="w"> </span><span class="n">STRING</span><span class="p">,</span><span class="w"> </span><span class="n">value_date</span><span class="w"> </span><span class="n">DATETIME</span><span class="o">&gt;&gt;</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="o">&lt;</span><span class="k">alias</span><span class="o">&gt;</span>
+</code></pre></div>
+<h3 id="parameters_6">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>value_set ARRAY&lt;STRUCT&lt;value STRING, value_source STRING, value_date DATETIME&gt;&gt;
+</code></pre></div>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>STRUCT&lt;earliest_value STRING, earliest_value_source STRING, earliest_date DATETIME&gt;
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/norm/get_earliest_value">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/norm/get_earliest_value/metadata.yaml">Edit</a></p>
+<h2 id="glean_ping_info-udf">glean_ping_info (UDF)</h2>
+<p>Accepts a glean ping_info struct as input and returns a modified struct that includes a few parsed or normalized variants of the input fields.</p>
+<h3 id="parameters_7">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>ping_info ANY TYPE
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/norm/glean_ping_info">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/norm/glean_ping_info/metadata.yaml">Edit</a></p>
+<h2 id="metadata-udf">metadata (UDF)</h2>
+<p>Accepts a pipeline metadata struct as input and returns a modified struct that includes a few parsed or normalized variants of the input metadata fields.</p>
+<h3 id="parameters_8">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>metadata ANY TYPE
+</code></pre></div>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>`date`, CAST(NULL
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/norm/metadata">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/norm/metadata/metadata.yaml">Edit</a></p>
+<h2 id="windows_version_info-udf">windows_version_info (UDF)</h2>
+<p>Given an unnormalized set off Windows identifiers, return a friendly version
+of the operating system name.</p>
+<p>Requires os, os_version and windows_build_number.</p>
+<p>E.G. from windows_build_number &gt;= 22000 return Windows 11</p>
+<h3 id="parameters_9">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>os STRING, os_version STRING, windows_build_number INT64
+</code></pre></div>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>STRING
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/norm/windows_version_info">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/norm/windows_version_info/metadata.yaml">Edit</a></p>
+<h2 id="glean_baseline_client_info-udf">glean_baseline_client_info (UDF)</h2>
+<p>Accepts a glean client_info struct as input and returns a modified struct that includes a few parsed or normalized variants of the input fields.</p>
+<h3 id="parameters_10">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>client_info ANY TYPE, metrics ANY TYPE
+</code></pre></div>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>string
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/norm/glean_baseline_client_info">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/norm/glean_baseline_client_info/metadata.yaml">Edit</a></p>
 <h2 id="fenix_app_info-udf">fenix_app_info (UDF)</h2>
 <p>Returns canonical, human-understandable identification info for Fenix sources.</p>
 <p>The Glean telemetry library for Android by design routes pings based
@@ -4220,7 +4014,7 @@ and <code>org_mozilla_fenix_nightly</code></li>
 <span class="w">  </span><span class="n">submission_date</span><span class="p">,</span>
 <span class="w">  </span><span class="n">geckoview_version</span>
 </code></pre></div>
-<h3 id="parameters_15">Parameters</h3>
+<h3 id="parameters_11">Parameters</h3>
 <p><strong>INPUTS</strong></p>
 <div class="highlight"><pre><span></span><code>app_id STRING, app_build_id STRING
 </code></pre></div>
@@ -4228,6 +4022,92 @@ and <code>org_mozilla_fenix_nightly</code></li>
 <div class="highlight"><pre><span></span><code>STRUCT&lt;app_name STRING, channel STRING, app_id STRING&gt;
 </code></pre></div>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/norm/fenix_app_info">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/norm/fenix_app_info/metadata.yaml">Edit</a></p>
+<h2 id="fenix_build_to_datetime-udf">fenix_build_to_datetime (UDF)</h2>
+<p>Convert the Fenix client_info.app_build-format string to
+a DATETIME. May return NULL on failure.</p>
+<p>Fenix originally used an
+<a href="&lt;https://github.com/mozilla-mobile/fenix/blob/c7283447/automation/gradle/versionCode.gradle#L12-L16">8-digit app_build format</a>&gt;</p>
+<p>In short it is <code>yDDDHHmm</code>:</p>
+<ul>
+<li>y is years since 2018</li>
+<li>DDD is day of year, 0-padded, 001-366</li>
+<li>HH is hour of day, 00-23</li>
+<li>mm is minute of hour, 00-59</li>
+</ul>
+<p>The last date seen with an 8-digit build ID is 2020-08-10.</p>
+<p>Newer builds use a
+<a href="&lt;https://github.com/mozilla-mobile/fenix/blob/e6ee13dc/buildSrc/src/main/java/Config.kt#L55-L112">10-digit format</a>&gt;
+where the integer represents a pattern consisting of 32 bits.
+The 17 bits starting 13 bits from the left represent a number of hours since
+UTC midnight beginning 2014-12-28.</p>
+<p>This function tolerates both formats.</p>
+<p>After using this you may wish to <code>DATETIME_TRUNC(result, DAY)</code> for
+grouping by build date.</p>
+<h3 id="parameters_12">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>app_build STRING
+</code></pre></div>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>INT64
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/norm/fenix_build_to_datetime">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/norm/fenix_build_to_datetime/metadata.yaml">Edit</a></p>
+<h2 id="os-udf">os (UDF)</h2>
+<p>Normalize an operating system string to one of the three major desktop
+platforms, one of the two major mobile platforms, or "Other".</p>
+<p>This is a reimplementation of
+<a href="&lt;https://github.com/mozilla/gcp-ingestion/blob/a6928fb089f1652856147c4605df715f327edfcd/ingestion-beam/src/main/java/com/mozilla/telemetry/transforms/NormalizeAttributes.java#L52-L74">logic used in the data pipeline</a>&gt;
+  to populate <code>normalized_os</code>.</p>
+<h3 id="parameters_13">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>os STRING
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/norm/os">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/norm/os/metadata.yaml">Edit</a></p>
+<h2 id="truncate_version-udf">truncate_version (UDF)</h2>
+<p>Truncates a version string like <code>&lt;major&gt;.&lt;minor&gt;.&lt;patch&gt;</code> to
+either the major or minor version. The return value is <code>NUMERIC</code>,
+which means that you can sort the results without fear (e.g. 100
+will be categorized as greater than 80, which isn't the case when
+sorting lexigraphically).</p>
+<p>For example, "5.1.0" would be translated to <code>5.1</code> if the parameter is
+"minor" or <code>5</code> if the parameter is major.</p>
+<p>If the version is only a major and/or minor version, then it will be left
+unchanged (for example "10" would stay as <code>10</code> when run through this
+function, no matter what the arguments).</p>
+<p>This is useful for grouping Linux and Mac operating system versions inside
+aggregate datasets or queries where there may be many different patch
+releases in the field.</p>
+<h3 id="parameters_14">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>os_version STRING, truncation_level STRING
+</code></pre></div>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>NUMERIC
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/norm/truncate_version">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/norm/truncate_version/metadata.yaml">Edit</a></p>
+<h2 id="extract_version-udf">extract_version (UDF)</h2>
+<p>Extracts numeric version data from a version string like
+<code>&lt;major&gt;.&lt;minor&gt;.&lt;patch&gt;</code>.</p>
+<p>Note: Non-zero minor and patch versions will be floating point <code>Numeric</code>.</p>
+<p>Usage:</p>
+<div class="highlight"><pre><span></span><code><span class="k">SELECT</span>
+<span class="w">    </span><span class="n">mozfun</span><span class="p">.</span><span class="n">norm</span><span class="p">.</span><span class="n">extract_version</span><span class="p">(</span><span class="n">version_string</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;major&#39;</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">major_version</span><span class="p">,</span>
+<span class="w">    </span><span class="n">mozfun</span><span class="p">.</span><span class="n">norm</span><span class="p">.</span><span class="n">extract_version</span><span class="p">(</span><span class="n">version_string</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;minor&#39;</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">minor_version</span><span class="p">,</span>
+<span class="w">    </span><span class="n">mozfun</span><span class="p">.</span><span class="n">norm</span><span class="p">.</span><span class="n">extract_version</span><span class="p">(</span><span class="n">version_string</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;patch&#39;</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">patch_version</span>
+</code></pre></div>
+<p>Example using <code>"96.05.01"</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="k">SELECT</span>
+<span class="w">    </span><span class="n">mozfun</span><span class="p">.</span><span class="n">norm</span><span class="p">.</span><span class="n">extract_version</span><span class="p">(</span><span class="s1">&#39;96.05.01&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;major&#39;</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">major_version</span><span class="p">,</span><span class="w"> </span><span class="c1">-- 96</span>
+<span class="w">    </span><span class="n">mozfun</span><span class="p">.</span><span class="n">norm</span><span class="p">.</span><span class="n">extract_version</span><span class="p">(</span><span class="s1">&#39;96.05.01&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;minor&#39;</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">minor_version</span><span class="p">,</span><span class="w"> </span><span class="c1">-- 5</span>
+<span class="w">    </span><span class="n">mozfun</span><span class="p">.</span><span class="n">norm</span><span class="p">.</span><span class="n">extract_version</span><span class="p">(</span><span class="s1">&#39;96.05.01&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;patch&#39;</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">patch_version</span><span class="w">  </span><span class="c1">-- 1</span>
+</code></pre></div>
+<h3 id="parameters_15">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>version_string STRING, extraction_level STRING
+</code></pre></div>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>NUMERIC
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/norm/extract_version">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/norm/extract_version/metadata.yaml">Edit</a></p>
 
 
 

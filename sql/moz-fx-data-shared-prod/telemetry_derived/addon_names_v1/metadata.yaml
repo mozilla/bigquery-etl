@@ -14,10 +14,6 @@ scheduling:
   date_partition_parameter: null
   parameters:
   - submission_date:DATE:{{ds}}
-  referenced_tables:
-  - - moz-fx-data-shared-prod
-    - telemetry_stable
-    - main_v4
 bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer

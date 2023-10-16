@@ -12,10 +12,6 @@ labels:
   owner1: kik
 scheduling:
   dag_name: bqetl_addons
-  referenced_tables:
-  - - moz-fx-data-shared-prod
-    - telemetry_stable
-    - main_v4
 bigquery:
   time_partitioning:
     type: day

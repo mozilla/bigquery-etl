@@ -1,0 +1,22 @@
+friendly_name: Credit Card Usage
+description: |-
+  Part of the mobile feature usage project - for android credit card usage (Metrics)
+owners:
+- rzhao@mozilla.com
+labels:
+  incremental: true
+  owner1: rzhao
+  dag: bqetl_default
+scheduling:
+  dag_name: bqetl_fenix_credit_card_usage
+  task_name: credit_card_usage__v1
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields: []
+references: {}
+deprecated: false

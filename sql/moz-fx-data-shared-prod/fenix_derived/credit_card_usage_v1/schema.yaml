@@ -1,0 +1,22 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+- name: credit_cards_deleted_avg
+  type: FLOAT
+  mode: NULLABLE
+- name: credit_cards_deleted_users
+  type: INTEGER
+  mode: NULLABLE
+- name: credit_cards_deleted_frac
+  type: FLOAT
+  mode: NULLABLE
+- name: currently_stored_credit_cards_avg
+  type: FLOAT
+  mode: NULLABLE
+- name: currently_stored_credit_cards_users
+  type: INTEGER
+  mode: NULLABLE
+- name: currently_stored_credit_cards_frac
+  type: FLOAT
+  mode: NULLABLE

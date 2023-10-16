@@ -2786,26 +2786,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#create_funnel_regex-udf" class="md-nav__link">
-    create_funnel_regex (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="create_funnel_regex (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#create_funnel_steps_query-stored-procedure" class="md-nav__link">
     create_funnel_steps_query (Stored Procedure)
   </a>
@@ -2814,7 +2794,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#parameters_1" class="md-nav__link">
+  <a href="#parameters" class="md-nav__link">
     Parameters
   </a>
   
@@ -2831,6 +2811,26 @@
   </a>
   
     <nav class="md-nav" aria-label="get_count_sql (Stored Procedure)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_1" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#create_funnel_regex-udf" class="md-nav__link">
+    create_funnel_regex (UDF)
+  </a>
+  
+    <nav class="md-nav" aria-label="create_funnel_regex (UDF)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3607,26 +3607,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#create_funnel_regex-udf" class="md-nav__link">
-    create_funnel_regex (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="create_funnel_regex (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#create_funnel_steps_query-stored-procedure" class="md-nav__link">
     create_funnel_steps_query (Stored Procedure)
   </a>
@@ -3635,7 +3615,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#parameters_1" class="md-nav__link">
+  <a href="#parameters" class="md-nav__link">
     Parameters
   </a>
   
@@ -3652,6 +3632,26 @@
   </a>
   
     <nav class="md-nav" aria-label="get_count_sql (Stored Procedure)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_1" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#create_funnel_regex-udf" class="md-nav__link">
+    create_funnel_regex (UDF)
+  </a>
+  
+    <nav class="md-nav" aria-label="create_funnel_regex (UDF)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3946,19 +3946,9 @@ knows what that action's representation is (using the compressed mapping from 1.
 create a regex string that checks for the presence of that event. The view makes this
 transparent, and allows users to simply query a boolean field representing the presence
 of that event on that day.</p>
-<h2 id="create_funnel_regex-udf">create_funnel_regex (UDF)</h2>
-<p>Given an array of match strings, each representing a single funnel step, aggregate them into a regex string that will match only against the entire funnel. If intermediate_steps is TRUE, this allows for there to be events that occur between the funnel steps.</p>
-<h3 id="parameters">Parameters</h3>
-<p><strong>INPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>step_regexes ARRAY&lt;STRING&gt;, intermediate_steps BOOLEAN
-</code></pre></div>
-<p><strong>OUTPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>STRING
-</code></pre></div>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/event_analysis/create_funnel_regex">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/event_analysis/create_funnel_regex/metadata.yaml">Edit</a></p>
 <h2 id="create_funnel_steps_query-stored-procedure">create_funnel_steps_query (Stored Procedure)</h2>
 <p>Generate the SQL statement that can be used to create an easily queryable view on events data.</p>
-<h3 id="parameters_1">Parameters</h3>
+<h3 id="parameters">Parameters</h3>
 <p><strong>INPUTS</strong></p>
 <div class="highlight"><pre><span></span><code>project STRING, dataset STRING, funnel ARRAY&lt;STRUCT&lt;list ARRAY&lt;STRUCT&lt;category STRING, event_name STRING&gt;&gt;&gt;&gt;
 </code></pre></div>
@@ -3968,7 +3958,7 @@ of that event on that day.</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/event_analysis/create_funnel_steps_query">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/event_analysis/create_funnel_steps_query/metadata.yaml">Edit</a></p>
 <h2 id="get_count_sql-stored-procedure">get_count_sql (Stored Procedure)</h2>
 <p>For a given funnel, get a SQL statement that can be used to determine if an events string contains that funnel.</p>
-<h3 id="parameters_2">Parameters</h3>
+<h3 id="parameters_1">Parameters</h3>
 <p><strong>INPUTS</strong></p>
 <div class="highlight"><pre><span></span><code>project STRING, dataset STRING, count_name STRING, events ARRAY&lt;STRUCT&lt;category STRING, event_name STRING&gt;&gt;
 </code></pre></div>
@@ -3976,6 +3966,16 @@ of that event on that day.</p>
 <div class="highlight"><pre><span></span><code>count_sql STRING
 </code></pre></div>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/event_analysis/get_count_sql">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/event_analysis/get_count_sql/metadata.yaml">Edit</a></p>
+<h2 id="create_funnel_regex-udf">create_funnel_regex (UDF)</h2>
+<p>Given an array of match strings, each representing a single funnel step, aggregate them into a regex string that will match only against the entire funnel. If intermediate_steps is TRUE, this allows for there to be events that occur between the funnel steps.</p>
+<h3 id="parameters_2">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>step_regexes ARRAY&lt;STRING&gt;, intermediate_steps BOOLEAN
+</code></pre></div>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>STRING
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/event_analysis/create_funnel_regex">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/event_analysis/create_funnel_regex/metadata.yaml">Edit</a></p>
 <h2 id="extract_event_counts_with_properties-udf">extract_event_counts_with_properties (UDF)</h2>
 <p>Extract events with event properties and their associated counts.
 Also extracts raw events and their counts. This allows for querying with and without properties in the same dashboard.</p>

@@ -18,7 +18,6 @@ cohorts_in_range AS (
   SELECT
     client_id,
     first_seen_date,
-    second_seen_date,
     -- DATE(@activity_date) AS activity_date,
     DATE("2023-10-01") AS activity_date,
     -- activity_segment, -- for desktop: from clients_last_seen, for mobile: calculated field from mobile_with_searches in unified_metrics
@@ -83,7 +82,6 @@ activity_cohort_match AS (
 )
 SELECT
   first_seen_date,
-  second_seen_date,
   activity_date,
   -- activity_segment,
   app_version,
@@ -126,7 +124,6 @@ FROM
   activity_cohort_match
 GROUP BY
   first_seen_date,
-  second_seen_date,
   activity_date,
   -- activity_segment,
   app_version,

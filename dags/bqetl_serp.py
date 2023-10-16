@@ -57,6 +57,9 @@ with DAG(
         ],
         date_partition_parameter=None,
         depends_on_past=False,
+        parameters=[
+            'submission_date:DATE:{{ (execution_date - macros.timedelta(hours=24)).strftime("%Y%m%d") }}'
+        ],
         sql_file_path="sql/moz-fx-data-shared-prod/firefox_desktop_derived/serp_events_v1/query.sql",
     )
 

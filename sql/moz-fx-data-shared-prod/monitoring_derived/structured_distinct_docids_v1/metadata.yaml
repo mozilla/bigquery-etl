@@ -24,4 +24,4 @@ scheduling:
        'monitoring',
        'payload_bytes_decoded_stub_installer']
     - ['moz-fx-data-shared-prod', '*_stable', '*']
-    - ['moz-fx-data-shared-prod', 'telemetry_stable', 'main_v4']
+    - ['moz-fx-data-shared-prod', 'telemetry_stable', 'main_v5']

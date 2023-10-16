@@ -18,14 +18,14 @@ main_pings AS (
   SELECT
     *
   FROM
-    telemetry_live.main_v4
+    telemetry_live.main_v5
   WHERE
     DATE(submission_timestamp) >= DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY)
   UNION ALL
   SELECT
     *
   FROM
-    telemetry_stable.main_v4
+    telemetry_stable.main_v5
   WHERE
     DATE(submission_timestamp) < DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY)
 ),

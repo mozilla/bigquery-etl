@@ -1,6 +1,6 @@
-from inputs import CLI, YAML
-from models.prophet_forecast import ProphetForecast
-from metric_hub import MetricHub
+from kpi_forecasting.inputs import CLI, YAML
+from kpi_forecasting.models.prophet_forecast import ProphetForecast
+from kpi_forecasting.metric_hub import MetricHub
 
 
 # A dictionary of available models in the `models` directory.

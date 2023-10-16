@@ -34,7 +34,7 @@ A metric can be forecasted by using a command line argument that passes the rele
 For example, the following command forecasts Desktop DAU numbers:
 
 ```sh
-python ~/kpi_forecasting/kpi_forecasting.py -c ~/kpi_forecasting/configs/dau_desktop.yaml
+python ~/kpi_forecasting.py -c ~/kpi_forecasting/configs/dau_desktop.yaml
 ```
 
 ### Local Python

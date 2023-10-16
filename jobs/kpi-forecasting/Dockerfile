@@ -18,9 +18,9 @@ RUN apt-get -y update && apt-get -y install \
 RUN pip install --upgrade pip --no-cache-dir
 
 COPY requirements.txt requirements.txt
-RUN pip install -r requirements.txt --no-cache-dir
 
 COPY . .
+RUN pip install -e . -r requirements.txt --no-cache-dir
 
 # Drop root and change ownership of the application folder to the user
 RUN chown -R ${USER_ID}:${GROUP_ID} ${HOME}

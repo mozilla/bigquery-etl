@@ -69,9 +69,9 @@ class MetricHub:
         """Fetch the relevant metric values from Big Query."""
         print(
             f"\nQuerying for '{self.app_name}.{self.slug}' aliased as '{self.alias}':"
-            f"\n{self.query}"
+            f"\n{self.query()}"
         )
-        df = bigquery.Client(project=self.project).query(self.query).to_dataframe()
+        df = bigquery.Client(project=self.project).query(self.query()).to_dataframe()
 
         # ensure submission_date has type 'date'
         df[self.submission_date_column] = pd.to_datetime(

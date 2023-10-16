@@ -10,5 +10,5 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - moz-fx-data-shared-prod.telemetry_stable.main_v4
+  - moz-fx-data-shared-prod.telemetry_stable.main_v5
 deprecated: false

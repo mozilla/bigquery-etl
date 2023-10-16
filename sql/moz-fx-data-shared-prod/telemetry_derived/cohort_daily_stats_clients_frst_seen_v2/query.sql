@@ -1,5 +1,5 @@
 -- Get all clients who had activity in the last 28 days and their bit patterns.
-WITH submission_date_activity AS (
+WITH client_activity AS (
   SELECT
     client_id,
     days_seen_bits,
@@ -69,14 +69,14 @@ cohorts_in_range AS (
 activity_cohort_match AS (
   SELECT
     cohorts_in_range.client_id AS client_id,
-    submission_date_activity.client_id AS active_client_id,
-    submission_date_activity.days_seen_bits as active_client_days_seen_bits,
-    mozfun.bits28.days_since_seen(submission_date_activity.days_seen_bits) as active_clients_days_since_seen,
+    client_activity.client_id AS active_client_id,
+    client_activity.days_seen_bits as active_client_days_seen_bits,
+    mozfun.bits28.days_since_seen(client_activity.days_seen_bits) as active_clients_days_since_seen,
     cohorts_in_range.* EXCEPT (client_id)
   FROM
     cohorts_in_range
   LEFT JOIN
-    submission_date_activity
+    client_activity
   USING
     (client_id, submission_date)
 )

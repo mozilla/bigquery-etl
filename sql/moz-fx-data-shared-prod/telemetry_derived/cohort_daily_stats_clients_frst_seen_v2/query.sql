@@ -11,7 +11,7 @@ WITH submission_date_activity AS (
   GROUP BY
     client_id,
     submission_date,
-    days_interacted_bits
+    days_seen_bits
 ),
 -- Get all the cohorts that are still in range of the current day of activity (180 days)
 cohorts_in_range AS (

@@ -16,7 +16,12 @@ scheduling:
     >-
     {% raw %}serp_events_v1${{
     (execution_date - macros.timedelta(hours=24)).strftime("%Y%m%d")
-    }}{% endraw%}
+    }}{% endraw %}
+  parameters:
+    - >-
+      {% raw %}submission_date:DATE:{{
+      (execution_date).strftime("%Y%m%d")
+      }}{% endraw %}
   query_file_path:
     # explicit query file path is necessary because the destination table
     # includes a partition identifier that is not in the path

@@ -185,7 +185,7 @@ telemetry AS (
       )
     ) AS search_count
   FROM
-    `moz-fx-data-shared-prod.telemetry_stable.main_v4`
+    `moz-fx-data-shared-prod.telemetry_stable.main_v5`
   LEFT JOIN
     UNNEST(
       ARRAY(SELECT AS STRUCT key, value.branch AS value FROM UNNEST(environment.experiments))

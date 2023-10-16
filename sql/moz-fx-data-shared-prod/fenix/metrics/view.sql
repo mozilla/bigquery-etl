@@ -347,7 +347,10 @@ SELECT
       metrics.custom_distribution.cookie_banners_click_query_selector_run_count_per_window_frame,
       metrics.custom_distribution.cookie_banners_click_query_selector_run_count_per_window_top_level,
       metrics.custom_distribution.cookie_banners_click_query_selector_run_duration_per_window_frame,
-      metrics.custom_distribution.cookie_banners_click_query_selector_run_duration_per_window_top_level
+      metrics.custom_distribution.cookie_banners_click_query_selector_run_duration_per_window_top_level,
+      metrics.custom_distribution.networking_http_1_upload_throughput,
+      metrics.custom_distribution.networking_http_2_upload_throughput,
+      metrics.custom_distribution.networking_http_3_upload_throughput
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -845,7 +848,10 @@ SELECT
       metrics.custom_distribution.cookie_banners_click_query_selector_run_count_per_window_frame,
       metrics.custom_distribution.cookie_banners_click_query_selector_run_count_per_window_top_level,
       metrics.custom_distribution.cookie_banners_click_query_selector_run_duration_per_window_frame,
-      metrics.custom_distribution.cookie_banners_click_query_selector_run_duration_per_window_top_level
+      metrics.custom_distribution.cookie_banners_click_query_selector_run_duration_per_window_top_level,
+      metrics.custom_distribution.networking_http_1_upload_throughput,
+      metrics.custom_distribution.networking_http_2_upload_throughput,
+      metrics.custom_distribution.networking_http_3_upload_throughput
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,

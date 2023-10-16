@@ -15,10 +15,6 @@ labels:
   owner1: chutten
 scheduling:
   dag_name: bqetl_ssl_ratios
-  referenced_tables:
-  - - moz-fx-data-shared-prod
-    - telemetry_stable
-    - main_v4
 bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer

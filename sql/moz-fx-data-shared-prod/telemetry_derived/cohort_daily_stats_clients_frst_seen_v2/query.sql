@@ -3,7 +3,7 @@ WITH submission_date_activity AS (
   SELECT
     client_id,
     days_seen_bits,
-    submission_date AS activity_date
+    submission_date
   FROM
     telemetry.clients_last_seen_v1 -- this might cause an issue because definition of first_seen_date in this table is different from clients_first_seen_v2
   WHERE
@@ -19,7 +19,7 @@ cohorts_in_range AS (
     client_id,
     first_seen_date,
     -- DATE(@activity_date) AS activity_date,
-    DATE("2023-10-01") AS activity_date,
+    DATE("2023-10-01") AS submission_date,
     -- activity_segment, -- for desktop: from clients_last_seen, for mobile: calculated field from mobile_with_searches in unified_metrics
     app_version,
     attribution_campaign,
@@ -78,11 +78,11 @@ activity_cohort_match AS (
   LEFT JOIN
     submission_date_activity
   USING
-    (client_id, activity_date)
+    (client_id, submission_date)
 )
 SELECT
   first_seen_date,
-  activity_date,
+  submission_date,
   -- activity_segment,
   app_version,
   attribution_campaign,
@@ -124,7 +124,7 @@ FROM
   activity_cohort_match
 GROUP BY
   first_seen_date,
-  activity_date,
+  submission_date,
   -- activity_segment,
   app_version,
   attribution_campaign,

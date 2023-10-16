@@ -3,8 +3,6 @@ WITH submission_date_activity AS (
   SELECT
     client_id,
     days_seen_bits,
-    days_visited_1_uri_bits,
-    days_interacted_bits,
     submission_date AS activity_date
   FROM
     telemetry.clients_last_seen_v1 -- this might cause an issue because definition of first_seen_date in this table is different from clients_first_seen_v2
@@ -13,16 +11,13 @@ WITH submission_date_activity AS (
   GROUP BY
     client_id,
     submission_date,
-    days_seen_bits,
-    days_visited_1_uri_bits,
     days_interacted_bits
 ),
 -- Get all the cohorts that are still in range of the current day of activity (180 days)
 cohorts_in_range AS (
   SELECT
     client_id,
-    sample_id,
-    first_seen_date AS cohort_date,
+    first_seen_date,
     second_seen_date,
     -- DATE(@activity_date) AS activity_date,
     DATE("2023-10-01") AS activity_date,
@@ -74,11 +69,9 @@ cohorts_in_range AS (
 ),
 activity_cohort_match AS (
   SELECT
-    cohorts_in_range.client_id AS cohort_client_id,
+    cohorts_in_range.client_id AS client_id,
     submission_date_activity.client_id AS active_client_id,
     submission_date_activity.days_seen_bits as active_client_days_seen_bits,
-    submission_date_activity.days_visited_1_uri_bits,
-    submission_date_activity.days_interacted_bits,
     mozfun.bits28.days_since_seen(submission_date_activity.days_seen_bits) as active_clients_days_since_seen,
     cohorts_in_range.* EXCEPT (client_id)
   FROM
@@ -89,9 +82,7 @@ activity_cohort_match AS (
     (client_id, activity_date)
 )
 SELECT
-  cohort_client_id,
-  sample_id,
-  cohort_date,
+  first_seen_date,
   second_seen_date,
   activity_date,
   -- activity_segment,
@@ -120,23 +111,21 @@ SELECT
   normalized_os_version,
   os_version_major,
   os_version_minor,
-  COUNT(cohort_client_id) AS num_clients_in_cohort,
+  COUNT(client_id) AS num_clients_in_cohort,
   COUNTIF((active_client_id IS NOT NULL) AND (active_clients_days_since_seen = 0)) AS num_clients_active_on_day,
   COUNTIF((active_client_id IS NOT NULL) AND
     (COALESCE(
     BIT_COUNT(mozfun.bits28.from_string('0000000000000000000001111111') & active_client_days_seen_bits) > 0,
     FALSE
-    )) ) AS num_clients_active_once_in_last_7_days,
+    )) ) AS num_clients_active_atleastonce_in_last_7_days,
   COUNTIF((active_client_id IS NOT NULL) AND
     ( COALESCE(
     BIT_COUNT(mozfun.bits28.from_string('0111111111111111111111111111') & active_client_days_seen_bits) > 0,
-    FALSE) )) AS num_clients_active_once_in_last_28_days,
+    FALSE) )) AS num_clients_active_atleastonce_in_last_28_days,
 FROM
   activity_cohort_match
 GROUP BY
-  cohort_client_id,
-  sample_id,
-  cohort_date,
+  first_seen_date,
   second_seen_date,
   activity_date,
   -- activity_segment,

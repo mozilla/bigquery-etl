@@ -20,7 +20,7 @@ scheduling:
   parameters:
     - >-
       {% raw %}submission_date:DATE:{{
-      (execution_date - macros.timedelta(hours=24)).strftime("%Y%m%d")
+      (execution_date).strftime("%Y%m%d")
       }}{% endraw %}
   query_file_path:
     # explicit query file path is necessary because the destination table

@@ -1,6 +1,6 @@
 /*
 
-Add fields from additional_attributes to active_addons in main_v4.
+Add fields from additional_attributes to active_addons in main pings.
 
 Return an array instead of a "map" for backwards compatibility.
 

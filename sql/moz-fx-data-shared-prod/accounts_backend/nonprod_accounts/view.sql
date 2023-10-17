@@ -12,6 +12,6 @@ SELECT
   keysChangedAt,
   ecosystemAnonId,
   disabledAt,
-  metricsOptOutAt
+  metricsOptOutAt,
 FROM
   `moz-fx-data-shared-prod.accounts_backend_external.nonprod_accounts_v1`

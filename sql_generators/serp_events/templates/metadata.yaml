@@ -1,0 +1,35 @@
+friendly_name: Serp Events
+description: |-
+  TODO
+owners:
+- akommasani@mozilla.com
+- pissac@mozilla.com
+- dzeber@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_serp
+  task_name: {{ app_name }}_serp_events__v1
+  date_partition_parameter: null
+  destination_table:
+    >-
+    {% raw %}serp_events_v1${{
+    (execution_date - macros.timedelta(hours=24)).strftime("%Y%m%d")
+    }}{% endraw %}
+  parameters:
+    - >-
+      {% raw %}submission_date:DATE:{{ds}}{% endraw %}
+  query_file_path:
+    # explicit query file path is necessary because the destination table
+    # includes a partition identifier that is not in the path
+    sql/moz-fx-data-shared-prod/{{ app_name }}_derived/serp_events_v1/query.sql
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+  clustering:
+    fields:
+      - normalized_channel
+      - sample_id

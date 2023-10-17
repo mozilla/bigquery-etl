@@ -23,8 +23,8 @@ CREATE OR REPLACE FUNCTION udf.map_revenue_country(engine STRING, country STRING
 
 -- Tests
 SELECT
-  assert.equals('US', udf.map_revenue_country('Google', 'US')),
-  assert.equals('US', udf.map_revenue_country('Bing', 'US')),
-  assert.equals('Other', udf.map_revenue_country('Bing', 'AU')),
-  assert.equals('ROW', udf.map_revenue_country('Google', 'AU')),
-  assert.equals(CAST(NULL AS STRING), udf.map_revenue_country('Amazon', 'US'))
+  mozfun.assert.equals('US', udf.map_revenue_country('Google', 'US')),
+  mozfun.assert.equals('US', udf.map_revenue_country('Bing', 'US')),
+  mozfun.assert.equals('Other', udf.map_revenue_country('Bing', 'AU')),
+  mozfun.assert.equals('ROW', udf.map_revenue_country('Google', 'AU')),
+  mozfun.assert.equals(CAST(NULL AS STRING), udf.map_revenue_country('Amazon', 'US'))

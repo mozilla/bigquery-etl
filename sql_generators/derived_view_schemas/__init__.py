@@ -23,6 +23,7 @@ def _generate_view_schema(sql_dir, view_directory):
     from bigquery_etl.dependency import extract_table_references
     from bigquery_etl.metadata.parse_metadata import Metadata
     from bigquery_etl.schema import Schema
+    from bigquery_etl.util.common import render
 
     logging.basicConfig(format="%(levelname)s (%(filename)s:%(lineno)d) - %(message)s")
 
@@ -40,7 +41,7 @@ def _generate_view_schema(sql_dir, view_directory):
         if not view_file.exists():
             return
 
-        view_references = extract_table_references(view_file.read_text())
+        view_references = extract_table_references(render(view_file.name, view_dir))
         if len(view_references) != 1:
             return
 

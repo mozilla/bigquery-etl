@@ -25,6 +25,7 @@ from google.cloud import bigquery
 from google.cloud.exceptions import NotFound
 
 from ..backfill.utils import QUALIFIED_TABLE_NAME_RE, qualified_table_name_matching
+from ..cli import check
 from ..cli.format import format
 from ..cli.utils import (
     is_authenticated,
@@ -567,6 +568,21 @@ def _backfill_query(
             query_arguments=arguments,
         )
 
+        # Run checks on the query
+        checks_file = query_file_path.parent / "checks.sql"
+        if checks_file.exists():
+            table_name = checks_file.parent.name
+            # query_args have things like format, which we don't want to push
+            # to the check; so we just take the query parameters
+            check_args = [qa for qa in arguments if qa.startswith("--parameter")]
+            check._run_check(
+                checks_file=checks_file,
+                project_id=project_id,
+                dataset_id=dataset,
+                table=table_name,
+                query_arguments=check_args,
+                dry_run=dry_run,
+            )
     else:
         click.echo(
             f"Skip {query_file_path} with @{date_partition_parameter}={backfill_date}"
@@ -1719,6 +1735,7 @@ def _update_query_schema(
             content=sql_content,
             use_cloud_function=use_cloud_function,
             respect_skip=respect_dryrun_skip,
+            sql_dir=sql_dir,
         )
     except Exception:
         if not existing_schema_path.exists():
@@ -1930,6 +1947,7 @@ def deploy(
                     query_file_path,
                     use_cloud_function=use_cloud_function,
                     respect_skip=respect_dryrun_skip,
+                    sql_dir=sql_dir,
                 )
                 if not existing_schema.equal(query_schema):
                     click.echo(

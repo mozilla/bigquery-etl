@@ -9,10 +9,11 @@ from pathlib import Path
 from time import sleep
 
 from google.cloud import bigquery
+
+from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.util import probe_filters
 
 sys.path.append(str(Path(__file__).parent.parent.parent.resolve()))
-from bigquery_etl.format_sql.formatter import reformat
 
 PROBE_INFO_SERVICE = (
     "https://probeinfo.telemetry.mozilla.org/firefox/all/main/all_probes"
@@ -20,11 +21,14 @@ PROBE_INFO_SERVICE = (
 
 p = argparse.ArgumentParser()
 p.add_argument(
-    "--agg-type", type=str, help="One of histograms/keyed_histograms", required=True,
+    "--agg-type",
+    type=str,
+    help="One of histograms/keyed_histograms",
+    required=True,
 )
 p.add_argument(
     "--json-output",
-    action='store_true',
+    action="store_true",
     help="Output the result wrapped in json parseable as an XCOM",
 )
 p.add_argument(
@@ -76,7 +80,7 @@ def generate_sql(opts, additional_queries, windowed_clause, select_clause, json_
                 normalized_os as os,
                 application.build_id AS app_build_id,
                 normalized_channel AS channel
-            FROM `moz-fx-data-shared-prod.telemetry_stable.main_v4`
+            FROM `moz-fx-data-shared-prod.telemetry_stable.main_v5`
             INNER JOIN valid_build_ids
             ON (application.build_id = build_id)
             WHERE DATE(submission_timestamp) = @submission_date
@@ -317,7 +321,7 @@ def get_histogram_probes_sql_strings(probes_and_buckets, histogram_type):
 
     sql_strings[
         "select_clause"
-    ] = f"""
+    ] = """
         SELECT
           sample_id,
           client_id,
@@ -385,7 +389,7 @@ def get_histogram_probes_sql_strings(probes_and_buckets, histogram_type):
 
     sql_strings[
         "windowed_clause"
-    ] = f"""
+    ] = """
       SELECT
         sample_id,
         client_id,
@@ -413,7 +417,7 @@ def get_histogram_probes_and_buckets(histogram_type, processes_to_output):
     main_summary_histograms = {}
 
     client = bigquery.Client(project)
-    table = client.get_table("telemetry_stable.main_v4")
+    table = client.get_table("telemetry_stable.main_v5")
     main_summary_schema = [field.to_api_repr() for field in table.schema]
 
     # Fetch the histograms field
@@ -449,7 +453,10 @@ def get_histogram_probes_and_buckets(histogram_type, processes_to_output):
                 continue
 
             processes = main_summary_histograms.setdefault(histogram["name"], set())
-            if processes_to_output is None or histograms_and_process["process"] in processes_to_output:
+            if (
+                processes_to_output is None
+                or histograms_and_process["process"] in processes_to_output
+            ):
                 processes.add(histograms_and_process["process"])
             main_summary_histograms[histogram["name"]] = processes
 
@@ -513,14 +520,16 @@ def main(argv, out=print):
     sql_string = ""
 
     if opts["agg_type"] in ("histograms", "keyed_histograms"):
-        probes_and_buckets = get_histogram_probes_and_buckets(opts["agg_type"], opts["processes"])
+        probes_and_buckets = get_histogram_probes_and_buckets(
+            opts["agg_type"], opts["processes"]
+        )
         sql_string = get_histogram_probes_sql_strings(
             probes_and_buckets, opts["agg_type"]
         )
     else:
         raise ValueError("agg-type must be one of histograms, keyed_histograms")
 
-    sleep(opts['wait_seconds'])
+    sleep(opts["wait_seconds"])
     out(
         reformat(
             generate_sql(

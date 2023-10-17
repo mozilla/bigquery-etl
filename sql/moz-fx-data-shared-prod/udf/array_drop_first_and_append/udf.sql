@@ -12,5 +12,5 @@ CREATE OR REPLACE FUNCTION udf.array_drop_first_and_append(arr ANY TYPE, append 
 
 -- Tests
 SELECT
-  assert.array_equals([2, 3, 4], udf.array_drop_first_and_append([1, 2, 3], 4)),
-  assert.array_equals([4], udf.array_drop_first_and_append([], 4));
+  mozfun.assert.array_equals([2, 3, 4], udf.array_drop_first_and_append([1, 2, 3], 4)),
+  mozfun.assert.array_equals([4], udf.array_drop_first_and_append([], 4));

@@ -31,5 +31,5 @@ references:
   query.sql:
   - moz-fx-data-shared-prod.firefox_desktop.baseline
   - moz-fx-data-shared-prod.firefox_desktop.metrics
-  - moz-fx-data-shared-prod.telemetry_stable.main_v4
+  - moz-fx-data-shared-prod.telemetry_stable.main_v5
 deprecated: false

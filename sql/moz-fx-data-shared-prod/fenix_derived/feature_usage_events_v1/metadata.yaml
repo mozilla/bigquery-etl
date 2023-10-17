@@ -1,0 +1,22 @@
+friendly_name: Feature Usage Events
+description: |-
+  Metrics coming from events pings for Fenix feature usage dashboards
+owners:
+- rzhao@mozilla.com
+labels:
+  incremental: true
+  owner1: rzhao
+  dag: bqetl_feature_usage
+scheduling:
+  dag_name: bqetl_feature_usage
+  task_name: feature_usage_events__v1
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields: []
+references: {}
+deprecated: false

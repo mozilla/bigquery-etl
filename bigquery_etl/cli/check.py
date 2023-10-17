@@ -20,6 +20,8 @@ from ..cli.utils import (
 )
 from ..util.common import render as render_template
 
+CHECK_TYPES = ["#fail", "#warn"]
+
 
 def _build_jinja_parameters(query_args):
     """Convert the bqetl parameters to a dictionary for use by the Jinja template."""
@@ -105,7 +107,7 @@ def check(ctx):
     ),
 )
 @click.argument("dataset")
-@project_id_option()
+@project_id_option("moz-fx-data-shared-prod")
 @sql_dir_option
 @click.pass_context
 def render(
@@ -192,7 +194,7 @@ def _render(
     ),
 )
 @click.argument("dataset")
-@project_id_option()
+@project_id_option("moz-fx-data-shared-prod")
 @sql_dir_option
 @click.option("--marker", default="fail", help="Marker to filter checks.")
 @click.option(
@@ -294,4 +296,95 @@ def _run_check(
         sys.exit(1)
 
 
-# todo: add validate method -- there must always be #fail checks
+@check.command(
+    help="""
+    Validates that each check in the checks.sql file has either a #fail or #warn marker
+
+    Example:
+
+    \t./bqetl check validate ga_derived.downloads_with_attribution_v2
+    """,
+    context_settings=dict(
+        ignore_unknown_options=True,
+        allow_extra_args=True,
+    ),
+)
+@click.argument("dataset")
+@project_id_option("moz-fx-data-shared-prod")
+@sql_dir_option
+@click.pass_context
+def validate(ctx, dataset, project_id, sql_dir):
+    """Validate that each check has a marker assigned."""
+    checks_file, project_id, dataset_id, table = paths_matching_checks_pattern(
+        dataset, sql_dir, project_id=project_id
+    )
+
+    _validate_check(
+        checks_file,
+        project_id,
+        dataset_id,
+        table,
+        ctx.args,
+    )
+
+
+def _validate_check(
+    checks_file,
+    project_id,
+    dataset_id,
+    table,
+    query_arguments,
+):
+    """Run the check."""
+    if checks_file is None:
+        return
+
+    checks_file = Path(checks_file)
+
+    query_arguments.append("--use_legacy_sql=false")
+    if project_id is not None:
+        query_arguments.append(f"--project_id={project_id}")
+
+    # Convert all the Airflow params to jinja usable dict.
+    parameters = _build_jinja_parameters(query_arguments)
+
+    jinja_params = {
+        **{"dataset_id": dataset_id, "table_name": table},
+        **parameters,
+    }
+
+    rendered_result = render_template(
+        checks_file.name,
+        template_folder=str(checks_file.parent),
+        templates_dir="",
+        format=False,
+        **jinja_params,
+    )
+
+    # Create a flag to keep track of whether all checks have markers
+    all_checks_have_markers = True
+
+    # Open the file and read its content
+    with open(checks_file, "r") as checks_file:
+        lines = sqlparse.split(rendered_result)
+
+    # Loop through each line in the file
+    for line in lines:
+        # Check if the line contains any expected check type marker
+        contains_marker = any(check_type in line for check_type in CHECK_TYPES)
+
+        # If no marker is found in the line, set the flag to False
+        if not contains_marker:
+            all_checks_have_markers = False
+            break
+
+    # Check and print the result
+    if all_checks_have_markers:
+        print(
+            f'"All checks have either #fail or #warn markers in the {checks_file.name} file"'
+        )
+    else:
+        print(
+            f'"Not all checks have #fail or #warn markers in the {checks_file.name} file"'
+        )
+        sys.exit(1)

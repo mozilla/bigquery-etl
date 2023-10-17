@@ -16,8 +16,7 @@ THIS_PATH = Path(os.path.dirname(__file__))
 class Browsers(Enum):
     """Enumeration with browser names and equivalent dataset names."""
 
-    firefox_desktop = "Firefox Desktop",
-    fenix  = "Fenix"
+    firefox_desktop = "Firefox Desktop"
 
 
 @click.command()

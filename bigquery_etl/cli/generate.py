@@ -19,6 +19,9 @@ def generate_group():
     generator_path = ROOT / SQL_GENERATORS_DIR
 
     for path in generator_path.iterdir():
+        if "__pycache__" in path.parts:
+            # Ignore pycache subdirectories
+            continue
         if path.is_dir():
             # get Python modules for generators
             spec = importlib.util.spec_from_file_location(

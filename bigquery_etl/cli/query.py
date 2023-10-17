@@ -25,6 +25,7 @@ from google.cloud import bigquery
 from google.cloud.exceptions import NotFound
 
 from ..backfill.utils import QUALIFIED_TABLE_NAME_RE, qualified_table_name_matching
+from ..cli import check
 from ..cli.format import format
 from ..cli.utils import (
     is_authenticated,
@@ -978,6 +979,21 @@ def _run_query(
 
             # run the query as shell command so that passed parameters can be used as is
             subprocess.check_call(["bq"] + query_arguments, stdin=query_stream)
+
+        # Run checks on the query
+        checks_file = query_file.parent / "checks.sql"
+        if checks_file.exists():
+            table_name = checks_file.parent.name
+            # query_args have things like destination_table, which we don't want to push
+            # to the check: so we just take the query parameters
+            check_args = [qa for qa in query_arguments if qa.startswith("--parameter")]
+            check._run_check(
+                checks_file,
+                project_id,
+                dataset_id,
+                table_name,
+                check_args,
+            )
 
 
 @query.command(

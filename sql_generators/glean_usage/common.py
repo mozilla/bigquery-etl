@@ -186,6 +186,7 @@ class GleanTable:
 
         init_filename = f"{self.target_table_id}.init.sql"
         query_filename = f"{self.target_table_id}.query.sql"
+        checks_filename = f"{self.target_table_id}.checks.sql"
         view_filename = f"{self.target_table_id[:-3]}.view.sql"
         view_metadata_filename = f"{self.target_table_id[:-3]}.metadata.yaml"
         table_metadata_filename = f"{self.target_table_id}.metadata.yaml"
@@ -208,6 +209,7 @@ class GleanTable:
         view_sql = render(
             view_filename, template_folder=PATH / "templates", **render_kwargs
         )
+
         view_metadata = render(
             view_metadata_filename,
             template_folder=PATH / "templates",
@@ -220,6 +222,14 @@ class GleanTable:
             format=False,
             **render_kwargs,
         )
+
+        # Checks are optional, for now!
+        try:
+            checks_sql = render(
+                checks_filename, template_folder=PATH / "templates", **render_kwargs
+            )
+        except TemplateNotFound:
+            checks_sql = None
 
         if not self.no_init:
             try:
@@ -252,6 +262,9 @@ class GleanTable:
 
             if not self.no_init:
                 artifacts.append(Artifact(table, "init.sql", init_sql))
+
+            if checks_sql:
+                artifacts.append(Artifact(table, "checks.sql", checks_sql))
 
             for artifact in artifacts:
                 destination = (

@@ -1,0 +1,14 @@
+friendly_name: firefox-desktop-background-defaultagent Derived
+description: |-
+  Derived tables related to document namespace firefox-desktop-background-defaultagent, usually populated via queries defined in https://github.com/mozilla/bigquery-etl and managed by Airflow
+dataset_base_acl: derived
+user_facing: false
+labels: {}
+default_table_workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

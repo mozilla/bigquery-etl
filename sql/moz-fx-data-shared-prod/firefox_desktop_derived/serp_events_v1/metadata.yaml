@@ -19,7 +19,7 @@ scheduling:
   destination_table: serp_events_v1${{ (execution_date - macros.timedelta(hours=24)).strftime("%Y%m%d")
     }}
   parameters:
-  - submission_date:DATE:{{ (execution_date).strftime("%Y%m%d") }}
+  - submission_date:DATE:{{ds}}
   query_file_path: sql/moz-fx-data-shared-prod/firefox_desktop_derived/serp_events_v1/query.sql
 bigquery:
   time_partitioning:

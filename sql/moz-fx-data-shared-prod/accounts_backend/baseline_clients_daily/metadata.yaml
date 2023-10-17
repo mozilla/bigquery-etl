@@ -1,0 +1,18 @@
+friendly_name: Baseline Clients Daily
+description: |-
+  A daily aggregate of baseline pings per `client_id`.
+
+  Clustering fields: `normalized_channel`, `sample_id`
+
+  See also: `baseline_clients_last_seen`
+owners:
+- jklukas@mozilla.com
+labels:
+  owner1: jklukas
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

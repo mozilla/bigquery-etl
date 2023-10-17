@@ -1,0 +1,33 @@
+friendly_name: Baseline Clients Daily
+description: |-
+  A daily aggregate of baseline pings per `client_id`.
+
+  Clustering fields: `normalized_channel`, `sample_id`
+
+  See also: `baseline_clients_last_seen`
+owners:
+- jklukas@mozilla.com
+labels:
+  owner1: jklukas
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+    - normalized_channel
+    - sample_id
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  init.sql:
+  - org_mozilla_ios_firefoxvpn_network_extension_derived.baseline_clients_first_seen_v1
+  - org_mozilla_ios_firefoxvpn_network_extension_stable.baseline_v1
+  query.sql:
+  - org_mozilla_ios_firefoxvpn_network_extension_derived.baseline_clients_first_seen_v1
+  - org_mozilla_ios_firefoxvpn_network_extension_stable.baseline_v1
+deprecated: false

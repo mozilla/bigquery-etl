@@ -24,6 +24,8 @@ workgroup_access:
   members:
   - workgroup:mozilla-confidential
 references:
+  checks.sql:
+  - moz-fx-data-shared-prod.mozilla_lockbox_derived.baseline_clients_daily_v1
   init.sql:
   - mozilla_lockbox_derived.baseline_clients_first_seen_v1
   - mozilla_lockbox_stable.baseline_v1

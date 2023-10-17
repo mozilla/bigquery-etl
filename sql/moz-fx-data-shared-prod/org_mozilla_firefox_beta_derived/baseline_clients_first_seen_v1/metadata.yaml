@@ -28,6 +28,8 @@ workgroup_access:
   members:
   - workgroup:mozilla-confidential
 references:
+  checks.sql:
+  - moz-fx-data-shared-prod.org_mozilla_firefox_beta_derived.baseline_clients_first_seen_v1
   init.sql:
   - org_mozilla_firefox_beta_stable.baseline_v1
   - org_mozilla_firefox_beta_stable.migration_v1

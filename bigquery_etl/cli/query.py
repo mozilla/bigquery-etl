@@ -568,6 +568,21 @@ def _backfill_query(
             query_arguments=arguments,
         )
 
+        # Run checks on the query
+        checks_file = query_file_path.parent / "checks.sql"
+        if checks_file.exists():
+            table_name = checks_file.parent.name
+            # query_args have things like format, which we don't want to push
+            # to the check; so we just take the query parameters
+            check_args = [qa for qa in arguments if qa.startswith("--parameter")]
+            check._run_check(
+                checks_file=checks_file,
+                project_id=project_id,
+                dataset_id=dataset,
+                table=table_name,
+                query_arguments=check_args,
+                dry_run=dry_run,
+            )
     else:
         click.echo(
             f"Skip {query_file_path} with @{date_partition_parameter}={backfill_date}"
@@ -979,21 +994,6 @@ def _run_query(
 
             # run the query as shell command so that passed parameters can be used as is
             subprocess.check_call(["bq"] + query_arguments, stdin=query_stream)
-
-        # Run checks on the query
-        checks_file = query_file.parent / "checks.sql"
-        if checks_file.exists():
-            table_name = checks_file.parent.name
-            # query_args have things like destination_table, which we don't want to push
-            # to the check: so we just take the query parameters
-            check_args = [qa for qa in query_arguments if qa.startswith("--parameter")]
-            check._run_check(
-                checks_file,
-                project_id,
-                dataset_id,
-                table_name,
-                check_args,
-            )
 
 
 @query.command(

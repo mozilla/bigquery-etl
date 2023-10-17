@@ -1,0 +1,22 @@
+friendly_name: Feature Usage Metrics
+description: |-
+  Metrics coming from metric pings for Fenix feature usage dashboards
+owners:
+- rzhao@mozilla.com
+labels:
+  incremental: true
+  owner1: rzhao
+  dag: bqetl_default
+scheduling:
+  dag_name: bqetl_feature_usage
+  task_name: feature_usage_metrics__v1
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields: []
+references: {}
+deprecated: false

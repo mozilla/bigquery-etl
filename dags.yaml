@@ -1261,7 +1261,8 @@ bqetl_serp:
     - impact/tier_1
     - repo/bigquery-etl
 
-bqetl_fenix_credit_card_usage:
+
+bqetl_feature_usage:
   default_args:
     depends_on_past: false
     email:
@@ -1273,9 +1274,8 @@ bqetl_fenix_credit_card_usage:
     owner: rzhao@mozilla.com
     retries: 2
     retry_delay: 30m
-    start_date: '2023-10-16'
-  description: This DAG schedules queries for populating queries related to fenix
-    credit card usage
+    start_date: '2023-10-17'
+  description: schedule run for mobile feature usage tables
   repo: bigquery-etl
   schedule_interval: 0 4 * * *
   tags:

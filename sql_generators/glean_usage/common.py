@@ -98,9 +98,11 @@ def table_names_from_baseline(baseline_table, include_project_id=True):
         daily_table=f"{prefix}_derived.baseline_clients_daily_v1",
         last_seen_table=f"{prefix}_derived.baseline_clients_last_seen_v1",
         first_seen_table=f"{prefix}_derived.baseline_clients_first_seen_v1",
+        clients_yearly_table=f"{prefix}_derived.baseline_clients_yearly_v1",
         daily_view=f"{prefix}.baseline_clients_daily",
         last_seen_view=f"{prefix}.baseline_clients_last_seen",
         first_seen_view=f"{prefix}.baseline_clients_first_seen",
+        clients_yearly_view=f"{prefix}.baseline_clients_yearly",
     )
 
 

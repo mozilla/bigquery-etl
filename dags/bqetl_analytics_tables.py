@@ -117,7 +117,6 @@ with DAG(
         parameters=["submission_date:DATE:{{ds}}"],
     )
 
-
     with TaskGroup("clients_first_seen_v2_external") as clients_first_seen_v2_external:
         ExternalTaskMarker(
             task_id="bqetl_review_checker__wait_for_clients_first_seen_v2",
@@ -127,7 +126,7 @@ with DAG(
         )
 
         clients_first_seen_v2_external.set_upstream(clients_first_seen_v2)
- 
+
     fenix_derived__funnel_retention_clients_week_2__v1 = bigquery_etl_query(
         task_id="fenix_derived__funnel_retention_clients_week_2__v1",
         destination_table="funnel_retention_clients_week_2_v1",
@@ -175,7 +174,7 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
- 
+
     firefox_android_clients = bigquery_etl_query(
         task_id="firefox_android_clients",
         destination_table="firefox_android_clients_v1",

@@ -117,6 +117,16 @@ with DAG(
         parameters=["submission_date:DATE:{{ds}}"],
     )
 
+    with TaskGroup("clients_first_seen_v2_external") as clients_first_seen_v2_external:
+        ExternalTaskMarker(
+            task_id="bqetl_review_checker__wait_for_clients_first_seen_v2",
+            external_dag_id="bqetl_review_checker",
+            external_task_id="wait_for_clients_first_seen_v2",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=7200)).isoformat() }}",
+        )
+
+        clients_first_seen_v2_external.set_upstream(clients_first_seen_v2)
+
     fenix_derived__funnel_retention_clients_week_2__v1 = bigquery_etl_query(
         task_id="fenix_derived__funnel_retention_clients_week_2__v1",
         destination_table="funnel_retention_clients_week_2_v1",

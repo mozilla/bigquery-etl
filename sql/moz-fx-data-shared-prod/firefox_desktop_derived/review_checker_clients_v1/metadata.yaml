@@ -1,0 +1,34 @@
+friendly_name: Review checker clients data
+description: ""
+owners:
+- akommasani@mozilla.com
+- betling@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  dag: bqetl_review_checker
+  owner1: akommasani
+  owner2: betling
+scheduling:
+  dag_name: bqetl_review_checker
+  task_name: firefox_desktop_review_checker_clients__v1
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+    - normalized_channel
+    - sample_id
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.firefox_desktop_stable.metrics_v1
+  - moz-fx-data-shared-prod.search.search_clients_engines_sources_daily
+  - moz-fx-data-shared-prod.telemetry.clients_daily
+deprecated: false

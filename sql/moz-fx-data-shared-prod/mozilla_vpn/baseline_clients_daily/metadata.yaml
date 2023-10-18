@@ -1,0 +1,17 @@
+friendly_name: null
+description: |-
+  None
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.mozillavpn.baseline_clients_daily
+  - moz-fx-data-shared-prod.org_mozilla_firefox_vpn.baseline_clients_daily
+  - moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn.baseline_clients_daily
+  - moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_network_extension.baseline_clients_daily
+deprecated: false

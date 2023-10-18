@@ -625,6 +625,15 @@ fields:
     - name: shopping_product_page_visits
       type: INTEGER
       mode: NULLABLE
+    - name: logins_deleted
+      type: INTEGER
+      mode: NULLABLE
+    - name: logins_modified
+      type: INTEGER
+      mode: NULLABLE
+    - name: logins_saved
+      type: INTEGER
+      mode: NULLABLE
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -1642,6 +1651,9 @@ fields:
       type: INTEGER
       mode: NULLABLE
     - name: bookmarks_mobile_bookmarks_count
+      type: INTEGER
+      mode: NULLABLE
+    - name: logins_saved_all
       type: INTEGER
       mode: NULLABLE
   - name: rate

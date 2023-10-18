@@ -1361,6 +1361,27 @@ fields:
       description: 'A count of the number of eligible product pages the user has visited.
 
         '
+    - name: logins_deleted
+      type: INTEGER
+      mode: NULLABLE
+      description: 'A counter of the number of passwords that have been deleted by
+        the user.
+
+        '
+    - name: logins_modified
+      type: INTEGER
+      mode: NULLABLE
+      description: 'A counter of the number of passwords that have been modified by
+        the user.
+
+        '
+    - name: logins_saved
+      type: INTEGER
+      mode: NULLABLE
+      description: 'A counter of the number of passwords that have been saved by the
+        user.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -2891,6 +2912,13 @@ fields:
       description: 'A quantity that indicates how many bookmarks a user
 
         has in the mobile folder.
+
+        '
+    - name: logins_saved_all
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Record the number of ALL the passwords that have been currently
+        stored by the user.
 
         '
   - name: rate

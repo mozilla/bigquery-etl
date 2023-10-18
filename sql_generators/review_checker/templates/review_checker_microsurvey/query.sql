@@ -70,7 +70,7 @@ filter_ms_microsurvey AS (
   FROM
     `{{ project_id }}.{{ app_name }}.messaging_system` msg
   LEFT JOIN
-    `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen` cfs
+    `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v2` cfs
   ON
     cfs.client_id = msg.metrics.uuid.messaging_system_client_id
   WHERE

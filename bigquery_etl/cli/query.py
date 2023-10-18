@@ -1338,6 +1338,7 @@ def initialize(name, sql_dir, project_id, dry_run):
                     job_config = bigquery.QueryJobConfig(
                         dry_run=dry_run,
                         default_dataset=f"{project}.{dataset}",
+                        project=project,
                     )
 
                     if "CREATE MATERIALIZED VIEW" in init_sql:

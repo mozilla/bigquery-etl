@@ -1,16 +1,5 @@
-WITH new_and_existing_users AS (
-  SELECT
-    submission_date,
-    client_id,
-    IF(DATE_DIFF(submission_date, first_seen_date, DAY) <= 27, 1, 0) AS new_user,
-    IF(DATE_DIFF(submission_date, first_seen_date, DAY) > 27, 1, 0) AS existing_user
-  FROM
-    `moz-fx-data-shared-prod.telemetry.clients_last_seen`
-  WHERE
-    submission_date = @submission_date
-),
 #microsurvey response rates
-microsurvey_responses AS (
+WITH microsurvey_responses AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
     COUNT(DISTINCT CASE WHEN event = 'IMPRESSION' THEN client_id END) AS n_impression,
@@ -31,9 +20,9 @@ microsurvey_responses AS (
 filter_ms_microsurvey AS (
   SELECT
     metrics.uuid.messaging_system_client_id AS client_id,
-    sample_id,
-    normalized_channel AS normalized_channel,
-    normalized_country_code AS country_code,
+    msg.sample_id,
+    msg.normalized_channel AS normalized_channel,
+    msg.normalized_country_code AS country_code,
     mozfun.norm.truncate_version(client_info.app_display_version, "major") AS os_version,
     DATE(submission_timestamp) AS submission_date,
     metrics.text.messaging_system_message_id AS message_id,
@@ -41,6 +30,8 @@ filter_ms_microsurvey AS (
     metrics.string.messaging_system_event_page AS event_page,
     metrics.string.messaging_system_event_reason AS event_reason,
     metrics.string.messaging_system_event_source AS event_source,
+    IF(DATE_DIFF(DATE(submission_timestamp), first_seen_date, DAY) <= 27, 1, 0) AS new_user,
+    IF(DATE_DIFF(DATE(submission_timestamp), first_seen_date, DAY) > 27, 1, 0) AS existing_user,
     CASE
       WHEN metrics.text.messaging_system_message_id = 'SHOPPING_MICROSURVEY_0_SHOPPING_MICROSURVEY_SCREEN_1'
         THEN 'how satisfied'
@@ -77,27 +68,18 @@ filter_ms_microsurvey AS (
     END AS coded_answers,
     ping_info.experiments
   FROM
-    `{{ project_id }}.{{ app_name }}.messaging_system`
+    `{{ project_id }}.{{ app_name }}.messaging_system` msg
+  LEFT JOIN
+    `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen` cfs
+  ON
+    cfs.client_id = msg.metrics.uuid.messaging_system_client_id
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND metrics.string.messaging_system_ping_type IS NULL
     AND metrics.text.messaging_system_message_id LIKE '%SHOPPING%'
     AND metrics.string.messaging_system_event = 'SELECT_CHECKBOX'
-),
-new_and_existing_microsurvey AS (
-  SELECT
-    filter_ms_microsurvey.*,
-    new_and_existing_users.new_user,
-    new_and_existing_users.existing_user
-  FROM
-    filter_ms_microsurvey
-  INNER JOIN
-    new_and_existing_users
-  ON
-    filter_ms_microsurvey.client_id = new_and_existing_users.client_id
-    AND filter_ms_microsurvey.submission_date = new_and_existing_users.submission_date
 )
 SELECT
   *
 FROM
-  new_and_existing_microsurvey
+  filter_ms_microsurvey

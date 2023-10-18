@@ -10,7 +10,7 @@ WITH windowed AS (
     udf.mode_last(ARRAY_AGG(metadata.geo.country) OVER w1) AS country,
     udf.mode_last(ARRAY_AGG(version) OVER w1) AS version
   FROM
-    messaging_system.onboarding
+    firefox_desktop.onboarding
   WHERE
     -- Reprocess all dates by running this query with --parameter=submission_date:DATE:NULL
     (@submission_date IS NULL OR @submission_date = DATE(submission_timestamp))

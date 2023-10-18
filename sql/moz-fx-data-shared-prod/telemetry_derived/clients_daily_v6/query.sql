@@ -154,7 +154,7 @@ WITH base AS (
         ) AS value
     ) AS keyed_hist_sums,
   FROM
-    `moz-fx-data-shared-prod`.telemetry_stable.main_v4
+    `moz-fx-data-shared-prod`.telemetry_stable.main_v5
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND normalized_app_name = 'Firefox'

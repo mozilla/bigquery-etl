@@ -1,0 +1,14 @@
+friendly_name: null
+description: |-
+  None
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.fenix_derived.funnel_retention_week_4_v1
+deprecated: false

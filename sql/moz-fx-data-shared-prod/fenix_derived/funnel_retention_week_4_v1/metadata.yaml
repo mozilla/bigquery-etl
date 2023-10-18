@@ -1,0 +1,34 @@
+friendly_name: User Retention Aggregations - Firefox Android (Week 4)
+description: |
+  Aggregated dataset for Firefox Android retention analysis.
+owners:
+- kik@mozilla.com
+labels:
+  schedule: daily
+  incremental: true
+  dag: bqetl_analytics_tables
+  owner1: kik
+scheduling:
+  dag_name: bqetl_analytics_tables
+  depends_on_past: false
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: null
+  clustering:
+    fields:
+    - first_reported_country
+    - adjust_network
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  checks.sql:
+  - moz-fx-data-shared-prod.fenix_derived.funnel_retention_clients_week_4_v1
+  - moz-fx-data-shared-prod.fenix_derived.funnel_retention_week_4_v1
+  query.sql:
+  - fenix_derived.funnel_retention_clients_week_4_v1
+deprecated: false

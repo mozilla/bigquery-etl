@@ -138,13 +138,10 @@ with DAG(
         wait_for_copy_deduplicate_all
     )
 
-    firefox_desktop_review_checker_microsurvey__v1.set_upstream(
-        wait_for_copy_deduplicate_all
-    )
-    wait_for_telemetry_derived__clients_last_seen__v1 = ExternalTaskSensor(
-        task_id="wait_for_telemetry_derived__clients_last_seen__v1",
-        external_dag_id="bqetl_main_summary",
-        external_task_id="telemetry_derived__clients_last_seen__v1",
+    wait_for_clients_first_seen_v2 = ExternalTaskSensor(
+        task_id="wait_for_clients_first_seen_v2",
+        external_dag_id="bqetl_analytics_tables",
+        external_task_id="clients_first_seen_v2",
         execution_delta=datetime.timedelta(days=-1, seconds=79200),
         check_existence=True,
         mode="reschedule",
@@ -154,5 +151,8 @@ with DAG(
     )
 
     firefox_desktop_review_checker_microsurvey__v1.set_upstream(
-        wait_for_telemetry_derived__clients_last_seen__v1
+        wait_for_clients_first_seen_v2
+    )
+    firefox_desktop_review_checker_microsurvey__v1.set_upstream(
+        wait_for_copy_deduplicate_all
     )

@@ -63,6 +63,16 @@ with DAG(
         parameters=["submission_date:DATE:{{ds}}"],
     )
 
+    with TaskGroup("clients_first_seen_v2_external") as clients_first_seen_v2_external:
+        ExternalTaskMarker(
+            task_id="bqetl_review_checker__wait_for_clients_first_seen_v2",
+            external_dag_id="bqetl_review_checker",
+            external_task_id="wait_for_clients_first_seen_v2",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=7200)).isoformat() }}",
+        )
+
+        clients_first_seen_v2_external.set_upstream(clients_first_seen_v2)
+
     firefox_android_clients = bigquery_etl_query(
         task_id="firefox_android_clients",
         destination_table="firefox_android_clients_v1",

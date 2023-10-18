@@ -40,7 +40,7 @@ def generate(target_project, output_dir, use_cloud_function):
     The parent folders will be created if not existing and existing files will be overwritten.
     """
     with open(THIS_PATH / "templates/templating.yaml", "r") as f:
-        template_config = yaml.safe_load(f) or {}
+        template_config = yaml.safe_load(f)
     
     output_dir = Path(output_dir) / target_project
     for query, args in template_config["queries"].items():

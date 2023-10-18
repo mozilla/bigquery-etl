@@ -303,13 +303,6 @@ with DAG(
         )
 
         ExternalTaskMarker(
-            task_id="bqetl_review_checker__wait_for_telemetry_derived__clients_last_seen__v1",
-            external_dag_id="bqetl_review_checker",
-            external_task_id="wait_for_telemetry_derived__clients_last_seen__v1",
-            execution_date="{{ (execution_date - macros.timedelta(seconds=7200)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
             task_id="bqetl_search_dashboard__wait_for_telemetry_derived__clients_last_seen__v1",
             external_dag_id="bqetl_search_dashboard",
             external_task_id="wait_for_telemetry_derived__clients_last_seen__v1",

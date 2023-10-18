@@ -13,4 +13,4 @@ SELECT
   EXTRACT(DAYOFWEEK FROM submission_date) AS day_of_week,
   *
 FROM
-  `{{ project_id }}.{{ last_seen_table }}`
+  `{{ project_id }}.{{ clients_yearly_table }}`

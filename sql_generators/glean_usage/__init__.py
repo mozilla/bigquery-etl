@@ -82,11 +82,18 @@ SKIP_APPS = ["mlhackweek_search", "regrets_reporter", "regrets_reporter_ucs"]
 )
 @click.option(
     "--table-prefix",
-    help="Choose a single prefix to generate (e.g. last_seen, or clients_yearly)."
+    help="Choose a single prefix to generate (e.g. last_seen, or clients_yearly).",
 )
 @use_cloud_function_option
 def generate(
-    target_project, output_dir, parallelism, exclude, only, app_name, use_cloud_function, table_prefix
+    target_project,
+    output_dir,
+    parallelism,
+    exclude,
+    only,
+    app_name,
+    use_cloud_function,
+    table_prefix,
 ):
     """Generate per-app_id queries and views, and per-app dataset metadata and union views.
 
@@ -107,7 +114,6 @@ def generate(
         table_filter=table_filter,
     )
 
-
     # filter out skipped apps
     baseline_tables = [
         baseline_table
@@ -116,7 +122,6 @@ def generate(
         not in [f"{skipped_app}_stable" for skipped_app in SKIP_APPS]
     ]
 
-    print(f"{baseline_tables=}")
     output_dir = Path(output_dir) / target_project
 
     # per app specific datasets
@@ -144,7 +149,6 @@ def generate(
         for table in GLEAN_TABLES
         if not table_prefix or table.prefix == table_prefix
     ]
-    print(f"{generate_per_app_id=}")
 
     # Parameters to generate per-app datasets consist of the function to be called
     # and app_info
@@ -163,6 +167,5 @@ def generate(
         if not table_prefix or table.prefix == table_prefix
     ]
 
-    print(f"{generate_per_app=}")
     with ProcessingPool(parallelism) as pool:
         pool.map(lambda f: f[0](f[1]), generate_per_app_id + generate_per_app)

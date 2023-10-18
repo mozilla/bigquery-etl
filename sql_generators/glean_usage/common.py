@@ -257,8 +257,7 @@ class GleanTable:
         if not (referenced_table_exists(view_sql)):
             logging.info("Skipping view for table which doesn't exist:" f" {table}")
         else:
-            artifacts.append(
-                Artifact(view, "view.sql", view_sql))
+            artifacts.append(Artifact(view, "view.sql", view_sql))
 
         skip_existing_artifact = self.skip_existing(output_dir, project_id)
 

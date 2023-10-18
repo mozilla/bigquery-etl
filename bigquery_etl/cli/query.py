@@ -1327,10 +1327,10 @@ def initialize(name, sql_dir, project_id, dry_run):
             )
         else:
             init_files = Path(query_file.parent).rglob("init.sql")
-            client = bigquery.Client()
 
             for init_file in init_files:
                 project = init_file.parent.parent.parent.name
+                client = bigquery.Client(project=project)
 
                 with open(init_file) as init_file_stream:
                     init_sql = init_file_stream.read()

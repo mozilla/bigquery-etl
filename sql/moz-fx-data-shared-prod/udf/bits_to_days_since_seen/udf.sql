@@ -23,13 +23,16 @@ CREATE OR REPLACE FUNCTION udf.bits_to_days_since_seen(b BYTES) AS (
 
 -- Tests
 SELECT
-  assert.equals(0, udf.bits_to_days_since_seen(b'\x00\x01')),
-  assert.equals(0, udf.bits_to_days_since_seen(b'\x00\x00\x00\x01')),
-  assert.equals(8, udf.bits_to_days_since_seen(b'\x01\x00')),
-  assert.equals(NULL, udf.bits_to_days_since_seen(b'\x00\x00')),
-  assert.equals(0, udf.bits_to_days_since_seen(b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x03')),
-  assert.equals(76, udf.bits_to_days_since_seen(b'\xF0\x00\x00\x00\x00\x00\x00\x00\x00\x00')),
-  assert.equals(
+  mozfun.assert.equals(0, udf.bits_to_days_since_seen(b'\x00\x01')),
+  mozfun.assert.equals(0, udf.bits_to_days_since_seen(b'\x00\x00\x00\x01')),
+  mozfun.assert.equals(8, udf.bits_to_days_since_seen(b'\x01\x00')),
+  mozfun.assert.equals(NULL, udf.bits_to_days_since_seen(b'\x00\x00')),
+  mozfun.assert.equals(0, udf.bits_to_days_since_seen(b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x03')),
+  mozfun.assert.equals(
+    76,
+    udf.bits_to_days_since_seen(b'\xF0\x00\x00\x00\x00\x00\x00\x00\x00\x00')
+  ),
+  mozfun.assert.equals(
     1,
     udf.bits_to_days_since_seen(
       FROM_HEX(
@@ -37,7 +40,7 @@ SELECT
       )
     )
   ),
-  assert.equals(
+  mozfun.assert.equals(
     9,
     udf.bits_to_days_since_seen(
       FROM_HEX(
@@ -45,7 +48,7 @@ SELECT
       )
     )
   ),
-  assert.equals(
+  mozfun.assert.equals(
     17,
     udf.bits_to_days_since_seen(
       FROM_HEX(
@@ -53,7 +56,7 @@ SELECT
       )
     )
   ),
-  assert.equals(
+  mozfun.assert.equals(
     233,
     udf.bits_to_days_since_seen(
       FROM_HEX(

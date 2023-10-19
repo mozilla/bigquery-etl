@@ -13,11 +13,19 @@ RETURNS STRING AS (
 
 -- Tests
 SELECT
-  assert.null(udf.pseudonymize_ad_id("q7RZx9leE4AHjn9DRQR8kLtjO0FNwmj/61ECGxFinno=", b"\x14")),
-  assert.null(udf.pseudonymize_ad_id("ksEEnM6/esBxl2myqrVLo31ePBoQZZnkCm81vefaF90=", b"\x14")),
-  assert.not_null(udf.pseudonymize_ad_id("7RZx9leE4AHjn9DRQR8kLtjO0FNwmj/61ECGxFinno=", b"\x14")),
-  assert.not_null(udf.pseudonymize_ad_id("sEEnM6/esBxl2myqrVLo31ePBoQZZnkCm81vefaF90=", b"\x14")),
-  assert.equals(
+  mozfun.assert.null(
+    udf.pseudonymize_ad_id("q7RZx9leE4AHjn9DRQR8kLtjO0FNwmj/61ECGxFinno=", b"\x14")
+  ),
+  mozfun.assert.null(
+    udf.pseudonymize_ad_id("ksEEnM6/esBxl2myqrVLo31ePBoQZZnkCm81vefaF90=", b"\x14")
+  ),
+  mozfun.assert.not_null(
+    udf.pseudonymize_ad_id("7RZx9leE4AHjn9DRQR8kLtjO0FNwmj/61ECGxFinno=", b"\x14")
+  ),
+  mozfun.assert.not_null(
+    udf.pseudonymize_ad_id("sEEnM6/esBxl2myqrVLo31ePBoQZZnkCm81vefaF90=", b"\x14")
+  ),
+  mozfun.assert.equals(
     udf.pseudonymize_ad_id("abc", b"\x14"),
     TO_HEX(udf.hmac_sha256(b"\x14", CAST("abc" AS BYTES)))
   )

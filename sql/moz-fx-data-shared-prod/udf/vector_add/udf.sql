@@ -35,13 +35,13 @@ CREATE OR REPLACE FUNCTION udf.vector_add(a ARRAY<INT64>, b ARRAY<INT64>) AS (
 
 -- Tests
 SELECT
-  assert.array_equals(ARRAY[2, 3, 4], udf.vector_add(ARRAY[1, 2, 3], ARRAY[1, 1, 1])),
-  assert.array_equals(ARRAY[2, 3, 4, 1], udf.vector_add(ARRAY[1, 2, 3], ARRAY[1, 1, 1, 1])),
-  assert.array_equals(ARRAY[2, 3, 4, 4], udf.vector_add(ARRAY[1, 2, 3, 4], ARRAY[1, 1, 1])),
-  assert.array_equals(ARRAY[2, 3, 1], udf.vector_add(ARRAY[1, 2, NULL], ARRAY[1, 1, 1])),
-  assert.array_equals(ARRAY[1, 1, 1], udf.vector_add(NULL, ARRAY[1, 1, 1])),
-  assert.array_equals(ARRAY[1, 1, NULL], udf.vector_add(NULL, ARRAY[1, 1, NULL])),
-  assert.array_equals(
+  mozfun.assert.array_equals(ARRAY[2, 3, 4], udf.vector_add(ARRAY[1, 2, 3], ARRAY[1, 1, 1])),
+  mozfun.assert.array_equals(ARRAY[2, 3, 4, 1], udf.vector_add(ARRAY[1, 2, 3], ARRAY[1, 1, 1, 1])),
+  mozfun.assert.array_equals(ARRAY[2, 3, 4, 4], udf.vector_add(ARRAY[1, 2, 3, 4], ARRAY[1, 1, 1])),
+  mozfun.assert.array_equals(ARRAY[2, 3, 1], udf.vector_add(ARRAY[1, 2, NULL], ARRAY[1, 1, 1])),
+  mozfun.assert.array_equals(ARRAY[1, 1, 1], udf.vector_add(NULL, ARRAY[1, 1, 1])),
+  mozfun.assert.array_equals(ARRAY[1, 1, NULL], udf.vector_add(NULL, ARRAY[1, 1, NULL])),
+  mozfun.assert.array_equals(
     ARRAY[2, 3, NULL, 4],
     udf.vector_add(ARRAY[1, 2, NULL, 3], ARRAY[1, 1, NULL, 1])
   );

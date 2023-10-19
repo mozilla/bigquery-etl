@@ -35,19 +35,19 @@ CREATE OR REPLACE FUNCTION udf.mod_uint128(dividend BYTES, divisor INT64) AS (
 
 -- Tests
 SELECT
-  assert.equals(
+  mozfun.assert.equals(
     0,
     udf.mod_uint128(b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00', 2)
   ),
-  assert.equals(
+  mozfun.assert.equals(
     1,
     udf.mod_uint128(b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01', 2)
   ),
-  assert.equals(
+  mozfun.assert.equals(
     464,
     udf.mod_uint128(b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x2c\x58\x1c\x36', 2342)
   ),
-  assert.equals(
+  mozfun.assert.equals(
     4065,
     udf.mod_uint128(b'\x00\x00\x00\x00\x00\x00\x2c\x2c\x2c\x2c\x2c\x2c\x2c\x58\x1c\x36', 10009)
   )

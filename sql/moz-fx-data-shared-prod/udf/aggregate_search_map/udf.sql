@@ -45,11 +45,11 @@ WITH output AS (
     ) AS res
 )
 SELECT
-  assert.equals("google", res[OFFSET(0)].key),
-  assert.array_equals(udf.array_11_zeroes_then(10), res[OFFSET(0)].value.total_searches),
-  assert.array_equals(udf.array_11_zeroes_then(5), res[OFFSET(0)].value.tagged_searches),
-  assert.array_equals(udf.array_11_zeroes_then(0), res[OFFSET(0)].value.search_with_ads),
-  assert.array_equals(udf.array_11_zeroes_then(0), res[OFFSET(0)].value.ad_click),
-  assert.equals(ARRAY_LENGTH(res), 1)
+  mozfun.assert.equals("google", res[OFFSET(0)].key),
+  mozfun.assert.array_equals(udf.array_11_zeroes_then(10), res[OFFSET(0)].value.total_searches),
+  mozfun.assert.array_equals(udf.array_11_zeroes_then(5), res[OFFSET(0)].value.tagged_searches),
+  mozfun.assert.array_equals(udf.array_11_zeroes_then(0), res[OFFSET(0)].value.search_with_ads),
+  mozfun.assert.array_equals(udf.array_11_zeroes_then(0), res[OFFSET(0)].value.ad_click),
+  mozfun.assert.equals(ARRAY_LENGTH(res), 1)
 FROM
   output;

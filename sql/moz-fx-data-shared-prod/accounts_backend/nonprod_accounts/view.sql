@@ -3,6 +3,7 @@ CREATE OR REPLACE VIEW
 AS
 SELECT
   uid,
+  emailVerified,
   verifierVersion,
   verifierSetAt,
   createdAt,

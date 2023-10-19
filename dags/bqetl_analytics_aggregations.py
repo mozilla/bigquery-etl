@@ -221,6 +221,24 @@ with DAG(
         parameters=["activity_date:DATE:{{macros.ds_add(ds, -1)}}"],
     )
 
+    telemetry_derived__cohort_daily_statistics__v2 = bigquery_etl_query(
+        task_id="telemetry_derived__cohort_daily_statistics__v2",
+        destination_table='cohort_daily_statistics_v2${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="mhirose@mozilla.com",
+        email=[
+            "anicholson@mozilla.com",
+            "gkaberere@mozilla.com",
+            "lvargas@mozilla.com",
+            "mhirose@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        parameters=["activity_date:DATE:{{macros.ds_add(ds, -1)}}"],
+    )
+
     wait_for_firefox_android_clients = ExternalTaskSensor(
         task_id="wait_for_firefox_android_clients",
         external_dag_id="bqetl_analytics_tables",

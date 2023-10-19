@@ -79,7 +79,7 @@ activity_cohort_match AS (
 )
 SELECT
   cohort_date,
-  submission_date,
+  activity_date,
   -- activity_segment,
   app_version,
   attribution_campaign,

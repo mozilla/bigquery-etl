@@ -1,0 +1,20 @@
+friendly_name: Events Stream
+description: |-
+  Intial Events Stream table. This will be somewhat temporary as we work towards a generated solution.
+owners:
+- wstuckey@mozilla.com
+labels:
+  incremental: true
+  owner1: example
+scheduling:
+  dag_name: bqetl_default
+bigquery:
+  time_partitioning:
+    type: day
+    field: 'submission_timestamp'
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields: [client_id, event_category]
+references: {}
+deprecated: false

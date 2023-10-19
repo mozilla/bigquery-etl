@@ -1,0 +1,142 @@
+fields:
+- name: normalized_app_id
+  type: STRING
+- name: additional_properties
+  type: STRING
+- name: client_info
+  type: RECORD
+  fields:
+  - name: app_build
+    type: STRING
+  - name: app_channel
+    type: STRING
+  - name: app_display_version
+    type: STRING
+  - name: architecture
+    type: STRING
+  - name: device_manufacturer
+    type: STRING
+  - name: device_model
+    type: STRING
+  - name: first_run_date
+    type: STRING
+  - name: locale
+    type: STRING
+  - name: os
+    type: STRING
+  - name: os_version
+    type: STRING
+  - name: telemetry_sdk_build
+    type: STRING
+  - name: build_date
+    type: STRING
+- name: document_id
+  type: STRING
+- name: metadata
+  type: RECORD
+  fields:
+  - name: geo
+    type: RECORD
+    fields:
+    - name: city
+      type: STRING
+    - name: country
+      type: STRING
+    - name: db_version
+      type: STRING
+    - name: subdivision1
+      type: STRING
+    - name: subdivision2
+      type: STRING
+  - name: header
+    type: RECORD
+    fields:
+    - name: date
+      type: STRING
+    - name: dnt
+      type: STRING
+    - name: x_debug_id
+      type: STRING
+    - name: x_pingsender_version
+      type: STRING
+    - name: x_source_tags
+      type: STRING
+    - name: x_telemetry_agent
+      type: STRING
+    - name: x_foxsec_ip_reputation
+      type: STRING
+    - name: x_lb_tags
+      type: STRING
+    - name: parsed_date
+      type: TIMESTAMP
+    - name: parsed_x_source_tags
+      type: STRING
+      mode: REPEATED
+    - name: parsed_x_lb_tags
+      type: RECORD
+      fields:
+      - name: tls_version
+        type: STRING
+      - name: tls_cipher_hex
+        type: STRING
+  - name: user_agent
+    type: RECORD
+    fields:
+    - name: browser
+      type: STRING
+    - name: os
+      type: STRING
+    - name: version
+      type: STRING
+  - name: isp
+    type: RECORD
+    fields:
+    - name: db_version
+      type: STRING
+    - name: name
+      type: STRING
+    - name: organization
+      type: STRING
+- name: normalized_app_name
+  type: STRING
+- name: normalized_channel
+  type: STRING
+- name: normalized_country_code
+  type: STRING
+- name: normalized_os
+  type: STRING
+- name: normalized_os_version
+  type: STRING
+- name: ping_info
+  type: RECORD
+  fields:
+  - name: end_time
+    type: STRING
+  - name: ping_type
+    type: STRING
+  - name: seq
+    type: INTEGER
+  - name: start_time
+    type: STRING
+  - name: parsed_start_time
+    type: TIMESTAMP
+  - name: parsed_end_time
+    type: TIMESTAMP
+- name: sample_id
+  type: INTEGER
+- name: submission_timestamp
+  type: TIMESTAMP
+- name: client_id
+  type: STRING
+- name: reason
+  type: STRING
+- name: experiments
+  type: JSON
+- name: event_timestamp
+  type: TIMESTAMP
+- name: event_category
+  type: STRING
+- name: event_name
+  type: STRING
+- name: event_extra
+  type: JSON

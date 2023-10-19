@@ -5,16 +5,19 @@ owners:
 - wstuckey@mozilla.com
 labels:
   incremental: true
-  owner1: example
+  owner1: wstuckey
+  dag: bqetl_default
 scheduling:
-  dag_name: bqetl_default
+  dag_name: bqetl_events_stream
 bigquery:
   time_partitioning:
     type: day
-    field: 'submission_timestamp'
+    field: submission_timestamp
     require_partition_filter: true
     expiration_days: null
   clustering:
-    fields: [client_id, event_category]
+    fields:
+    - client_id
+    - event_category
 references: {}
 deprecated: false

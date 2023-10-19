@@ -7,7 +7,7 @@ WITH client_activity AS (
   FROM
     telemetry.clients_last_seen_v1 -- this might cause an issue because definition of first_seen_date in this table is different from clients_first_seen_v2
   WHERE
-    submission_date = DATE("2023-10-01")
+    submission_date = @submission_date
   GROUP BY
     client_id,
     submission_date,
@@ -19,7 +19,7 @@ cohorts_in_range AS (
     client_id,
     first_seen_date,
     -- DATE(@activity_date) AS activity_date,
-    DATE("2023-10-01") AS submission_date,
+    @submission_date AS submission_date,
     -- activity_segment, -- for desktop: from clients_last_seen, for mobile: calculated field from mobile_with_searches in unified_metrics
     app_version,
     attribution_campaign,
@@ -61,8 +61,8 @@ cohorts_in_range AS (
   WHERE
     -- cohort_date
     first_seen_date
-    BETWEEN DATE_SUB(DATE("2023-10-01"), INTERVAL 180 DAY)
-    AND DATE_SUB(DATE("2023-10-01"), INTERVAL 1 DAY)
+    BETWEEN DATE_SUB(@submission_date, INTERVAL 180 DAY)
+    AND DATE_SUB(@submission_date, INTERVAL 1 DAY)
     -- (1) No need to get activity for the cohort created on activity_date - everyone will be retained
     -- (2) Note this is a pretty big scan... Look here for problems
 ),

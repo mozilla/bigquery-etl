@@ -1285,8 +1285,8 @@ bqetl_events_stream:
   default_args:
     depends_on_past: false
     email:
-    - telemetry-alerts@mozilla.com
-    - wstuckey@mozilla.com
+      - telemetry-alerts@mozilla.com
+      - wstuckey@mozilla.com
     email_on_failure: true
     email_on_retry: true
     end_date: null
@@ -1298,6 +1298,5 @@ bqetl_events_stream:
   repo: bigquery-etl
   schedule_interval: daily
   tags:
-  - impact/tier_2
-  - repo/bigquery-etl
-
+    - impact/tier_2
+    - repo/bigquery-etl

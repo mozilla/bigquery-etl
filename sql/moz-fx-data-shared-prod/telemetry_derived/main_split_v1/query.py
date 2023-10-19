@@ -15,15 +15,15 @@ from bigquery_etl.util.common import TempDatasetReference
 from bigquery_etl.format_sql.formatter import reformat
 
 STATIC_PATHS = [
-#   ("submission_timestamp",),
-#   ("document_id",),
-#   ("client_id",),
-#   ("normalized_app_name",),
-#   ("normalized_channel",),
-#   ("normalized_os",),
-#   ("normalized_os_version",),
-#   ("normalized_country_code",),
-#   ("sample_id",),
+    ("submission_timestamp",),
+    ("document_id",),
+    ("client_id",),
+    ("normalized_app_name",),
+    ("normalized_channel",),
+    ("normalized_os",),
+    ("normalized_os_version",),
+    ("normalized_country_code",),
+    ("sample_id",),
 ]
 
 
@@ -158,7 +158,6 @@ def _run_query(client, sql, job_config, num_retries=0):
 utc_today = datetime.utcnow().date() - timedelta(days=2)
 
 
-# TODO accept command line parameters
 def main(
     parallelism=2,
     partition_date=utc_today,

@@ -1,0 +1,29 @@
+friendly_name: Clients First Seen 28 Days Later
+description: |-
+  Client cohorts 28 days after their first seen date with relevant retention indicators.
+owners:
+- loines@mozilla.com
+labels:
+  incremental: true
+  dag: bqetl_analytics_tables
+  owner1: loines
+scheduling:
+  dag_name: bqetl_analytics_tables
+bigquery:
+  time_partitioning:
+    type: day
+    field: first_seen_date
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+    - sample_id
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  query.sql:
+  - telemetry.clients_last_seen
+  - telemetry_derived.clients_first_seen_v2
+deprecated: false

@@ -1,13 +1,13 @@
 -- Get all clients who had activity in the last 28 days and their bit patterns.
-WITH client_activity AS (
+WITH submission_date_activity AS (
   SELECT
     client_id,
     days_seen_bits,
-    submission_date
+    submission_date AS activity_date
   FROM
     telemetry.clients_last_seen_v1 -- this might cause an issue because definition of first_seen_date in this table is different from clients_first_seen_v2
   WHERE
-    submission_date = @submission_date
+    submission_date = @activity_date
   GROUP BY
     client_id,
     submission_date,
@@ -17,9 +17,8 @@ WITH client_activity AS (
 cohorts_in_range AS (
   SELECT
     client_id,
-    first_seen_date,
-    -- DATE(@activity_date) AS activity_date,
-    @submission_date AS submission_date,
+    first_seen_date AS cohort_date,
+    DATE(@activity_date) AS activity_date,
     -- activity_segment, -- for desktop: from clients_last_seen, for mobile: calculated field from mobile_with_searches in unified_metrics
     app_version,
     attribution_campaign,
@@ -56,13 +55,11 @@ cohorts_in_range AS (
       0
     ) AS os_version_minor,
   FROM
-    -- telemetry_derived.rolling_cohorts_v1
     telemetry_derived.clients_first_seen_v2
   WHERE
-    -- cohort_date
     first_seen_date
-    BETWEEN DATE_SUB(@submission_date, INTERVAL 180 DAY)
-    AND DATE_SUB(@submission_date, INTERVAL 1 DAY)
+    BETWEEN DATE_SUB(@activity_date, INTERVAL 180 DAY)
+    AND DATE_SUB(@activity_date, INTERVAL 1 DAY)
     -- (1) No need to get activity for the cohort created on activity_date - everyone will be retained
     -- (2) Note this is a pretty big scan... Look here for problems
 ),
@@ -81,7 +78,7 @@ activity_cohort_match AS (
     (client_id, submission_date)
 )
 SELECT
-  first_seen_date,
+  cohort_date,
   submission_date,
   -- activity_segment,
   app_version,
@@ -123,8 +120,8 @@ SELECT
 FROM
   activity_cohort_match
 GROUP BY
-  first_seen_date,
-  submission_date,
+  cohort_date,
+  activity_date,
   -- activity_segment,
   app_version,
   attribution_campaign,

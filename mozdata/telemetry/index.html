@@ -12377,6 +12377,147 @@ directly only when you're investigating client activation questions.</p>
 <p><code>telemetry.clients_first_seen_28_days_later</code></p>
 <p>None</p>
 <table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>client_id</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>sample_id</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>first_seen_date</td>
+        <td></td>
+        <td>Date</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>submission_date</td>
+        <td></td>
+        <td>Date</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>country_code</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>channel</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>build_id</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>os</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>os_version</td>
+        <td></td>
+        <td>Numeric</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>distribution_id</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>attribution_source</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>attribution_ua</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>attribution_medium</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>attribution_campaign</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>attribution_content</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>attribution_experiment</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>attribution_dltoken</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>attribution_dlsource</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>activated</td>
+        <td>Whether the profile sent a main ping in at least 5 of their first 7 days.</td>
+        <td>Boolean</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>returned_second_day</td>
+        <td>Whether the profile sent a main ping on any day after their first day during their first 28 days.</td>
+        <td>Boolean</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>qualified_second_day</td>
+        <td>Whether the profile qualified as DAU on any day after their first day during their first 28 days.</td>
+        <td>Boolean</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>retained_week4</td>
+        <td>Whether the profile sent a main ping on any day in their 4th week.</td>
+        <td>Boolean</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>qualified_week4</td>
+        <td>Whether the profile qualified as DAU on any day in their 4th week.</td>
+        <td>Boolean</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>days_seen_bits</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>days_visited_1_uri_bits</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>days_interacted_bits</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
+<table>
 <caption>Referenced Tables</caption>
     <tr>
         <th>Project</th>

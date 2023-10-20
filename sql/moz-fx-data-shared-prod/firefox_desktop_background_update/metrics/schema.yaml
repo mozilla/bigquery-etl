@@ -1552,7 +1552,7 @@ fields:
       mode: NULLABLE
       description: 'An experimentation identifier derived and provided by the application
 
-        for the purpose of experimenation enrollment.
+        for the purpose of experimentation enrollment.
 
         '
   - name: uuid
@@ -2008,6 +2008,17 @@ fields:
         type: BOOLEAN
         mode: NULLABLE
       description: Indicates whether or not migration was successful for each nsIDataStorage.
+    - name: oskeystore_self_test
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: BOOLEAN
+        mode: NULLABLE
+      description: Whether or not each step of the OSKeyStore self test succeeded.
   - name: rate
     type: RECORD
     mode: NULLABLE

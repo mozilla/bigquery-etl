@@ -2808,6 +2808,16 @@ fields:
       - name: value
         type: BOOLEAN
         mode: NULLABLE
+    - name: oskeystore_self_test
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: BOOLEAN
+        mode: NULLABLE
   - name: rate
     type: RECORD
     mode: NULLABLE

@@ -1,11 +1,11 @@
 fields:
-- description: |-
+- name: uid
+  type: STRING
+  mode: NULLABLE
+  description: |-
     Account ID in hexadecimal format.
     FxA stores this as bytes, for purposes of logging or integration
     with other systems we convert it to a hex string.
-  name: uid
-  type: STRING
-  mode: NULLABLE
 - name: normalizedEmail
   type: STRING
   mode: NULLABLE

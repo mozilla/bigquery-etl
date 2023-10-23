@@ -1,3 +1,4 @@
+-- Generated via ./bqetl generate stable_views
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.telemetry.main`
 AS
@@ -7,4 +8,4 @@ SELECT
     `moz-fx-data-shared-prod`.udf.normalize_main_payload(payload) AS payload
   )
 FROM
-  `moz-fx-data-shared-prod.telemetry_stable.main_v4`
+  `moz-fx-data-shared-prod.telemetry_stable.main_v5`

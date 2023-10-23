@@ -1,6 +1,14 @@
-friendly_name: null
+friendly_name: Historical Pings for `telemetry/first-shutdown`
 description: |-
-  None
+  A historical view of pings sent for the
+  `telemetry/first-shutdown`
+  document type.
+
+  This view is guaranteed to contain only complete days
+  (per `submission_timestamp`)
+  and to contain only one row per distinct `document_id` within a given date.
+
+  Clustering fields: `normalized_channel`, `sample_id`
 owners: []
 labels: {}
 bigquery: null
@@ -11,5 +19,5 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   view.sql:
-  - moz-fx-data-shared-prod.telemetry_stable.first_shutdown_v4
+  - moz-fx-data-shared-prod.telemetry_stable.first_shutdown_v5
 deprecated: false

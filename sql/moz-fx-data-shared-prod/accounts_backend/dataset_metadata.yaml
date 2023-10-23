@@ -1,6 +1,6 @@
-friendly_name: accounts-backend
+friendly_name: Accounts backend
 description: |-
-  User-facing views related to document namespace accounts-backend; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/accounts-backend
+  Views for accessing Mozilla Accounts backend derived data
 dataset_base_acl: view
 user_facing: true
 labels: {}

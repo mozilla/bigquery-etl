@@ -2,14 +2,17 @@ friendly_name: Firefox Accounts Backend External
 description: |-
   Data extracted from the FxA backend services databases.
   See https://mozilla.github.io/ecosystem-platform/reference/database-structure#database-fxa for more information.
+
+  Access to this dataset is restricted to accounts-confidential workgroup because some tables here contain sensitive data.
+  `mozilla-confidential` user-facing views are available in the `accounts_backend` dataset.
 dataset_base_acl: restricted
 user_facing: false
 labels: {}
 default_table_workgroup_access:
-- role: roles/bigquery.dataEditor
+- role: roles/bigquery.dataViewer
   members:
-  - workgroup:platform-infra/internal
+  - workgroup:accounts-confidential
 workgroup_access:
-- role: roles/bigquery.dataEditor
+- role: roles/bigquery.dataViewer
   members:
-  - workgroup:platform-infra/internal
+  - workgroup:accounts-confidential

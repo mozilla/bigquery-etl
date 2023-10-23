@@ -151,7 +151,7 @@ with DAG(
 
     telemetry_derived__clients_first_seen_28_days_later__v1 = bigquery_etl_query(
         task_id="telemetry_derived__clients_first_seen_28_days_later__v1",
-        destination_table="clients_first_seen_28_days_later_v1",
+        destination_table='clients_first_seen_28_days_later_v1${{ macros.ds_format(macros.ds_add(ds, -27), "%Y-%m-%d", "%Y%m%d") }}',
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         owner="loines@mozilla.com",
@@ -161,8 +161,10 @@ with DAG(
             "lvargas@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
-        date_partition_parameter="submission_date",
+        date_partition_parameter=None,
         depends_on_past=False,
+        task_concurrency=1,
+        parameters=["submission_date:DATE:{{ds}}"],
     )
 
     wait_for_copy_deduplicate_all = ExternalTaskSensor(

@@ -1262,7 +1262,7 @@ bqetl_serp:
     - repo/bigquery-etl
 
 
-bqetl_feature_usage:
+bqetl_mobile_feature_usage:
   default_args:
     depends_on_past: false
     email:

@@ -1266,8 +1266,8 @@ bqetl_mobile_feature_usage:
   default_args:
     depends_on_past: false
     email:
-    - telemetry-alerts@mozilla.com
-    - rzhao@mozilla.com
+      - telemetry-alerts@mozilla.com
+      - rzhao@mozilla.com
     email_on_failure: true
     email_on_retry: true
     end_date: null
@@ -1279,6 +1279,6 @@ bqetl_mobile_feature_usage:
   repo: bigquery-etl
   schedule_interval: 0 4 * * *
   tags:
-  - impact/tier_3
-  - repo/bigquery-etl
+    - impact/tier_3
+    - repo/bigquery-etl
 

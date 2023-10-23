@@ -47,60 +47,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-    checks__fail_fenix_derived__funnel_retention_clients_week_2__v1 = bigquery_dq_check(
-        task_id="checks__fail_fenix_derived__funnel_retention_clients_week_2__v1",
-        source_table="funnel_retention_clients_week_2_v1",
-        dataset_id="fenix_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=True,
-        owner="kik@mozilla.com",
-        email=[
-            "gkaberere@mozilla.com",
-            "kik@mozilla.com",
-            "lvargas@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        depends_on_past=False,
-        parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
-    )
-
-    checks__fail_fenix_derived__funnel_retention_clients_week_4__v1 = bigquery_dq_check(
-        task_id="checks__fail_fenix_derived__funnel_retention_clients_week_4__v1",
-        source_table="funnel_retention_clients_week_4_v1",
-        dataset_id="fenix_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=True,
-        owner="kik@mozilla.com",
-        email=[
-            "gkaberere@mozilla.com",
-            "kik@mozilla.com",
-            "lvargas@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        depends_on_past=False,
-        parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
-    )
-
-    checks__fail_fenix_derived__funnel_retention_week_4__v1 = bigquery_dq_check(
-        task_id="checks__fail_fenix_derived__funnel_retention_week_4__v1",
-        source_table="funnel_retention_week_4_v1",
-        dataset_id="fenix_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=True,
-        owner="kik@mozilla.com",
-        email=[
-            "gkaberere@mozilla.com",
-            "kik@mozilla.com",
-            "lvargas@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        depends_on_past=False,
-        parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
-    )
-
     clients_first_seen_v2 = bigquery_etl_query(
         task_id="clients_first_seen_v2",
         destination_table="clients_first_seen_v2",
@@ -116,6 +62,16 @@ with DAG(
         depends_on_past=True,
         parameters=["submission_date:DATE:{{ds}}"],
     )
+
+    with TaskGroup("clients_first_seen_v2_external") as clients_first_seen_v2_external:
+        ExternalTaskMarker(
+            task_id="bqetl_review_checker__wait_for_clients_first_seen_v2",
+            external_dag_id="bqetl_review_checker",
+            external_task_id="wait_for_clients_first_seen_v2",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=7200)).isoformat() }}",
+        )
+
+        clients_first_seen_v2_external.set_upstream(clients_first_seen_v2)
 
     fenix_derived__funnel_retention_clients_week_2__v1 = bigquery_etl_query(
         task_id="fenix_derived__funnel_retention_clients_week_2__v1",
@@ -193,16 +149,22 @@ with DAG(
 
         firefox_android_clients_external.set_upstream(firefox_android_clients)
 
-    checks__fail_fenix_derived__funnel_retention_clients_week_2__v1.set_upstream(
-        fenix_derived__funnel_retention_clients_week_2__v1
-    )
-
-    checks__fail_fenix_derived__funnel_retention_clients_week_4__v1.set_upstream(
-        fenix_derived__funnel_retention_clients_week_4__v1
-    )
-
-    checks__fail_fenix_derived__funnel_retention_week_4__v1.set_upstream(
-        fenix_derived__funnel_retention_week_4__v1
+    telemetry_derived__clients_first_seen_28_days_later__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__clients_first_seen_28_days_later__v1",
+        destination_table='clients_first_seen_28_days_later_v1${{ macros.ds_format(macros.ds_add(ds, -27), "%Y-%m-%d", "%Y%m%d") }}',
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="loines@mozilla.com",
+        email=[
+            "gkaberere@mozilla.com",
+            "loines@mozilla.com",
+            "lvargas@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+        parameters=["submission_date:DATE:{{ds}}"],
     )
 
     wait_for_copy_deduplicate_all = ExternalTaskSensor(
@@ -265,7 +227,7 @@ with DAG(
     )
 
     fenix_derived__funnel_retention_week_4__v1.set_upstream(
-        checks__fail_fenix_derived__funnel_retention_clients_week_4__v1
+        fenix_derived__funnel_retention_clients_week_4__v1
     )
 
     wait_for_baseline_clients_daily = ExternalTaskSensor(
@@ -281,3 +243,21 @@ with DAG(
     )
 
     firefox_android_clients.set_upstream(wait_for_baseline_clients_daily)
+
+    telemetry_derived__clients_first_seen_28_days_later__v1.set_upstream(
+        clients_first_seen_v2
+    )
+    wait_for_telemetry_derived__clients_last_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_telemetry_derived__clients_last_seen__v1",
+        external_dag_id="bqetl_main_summary",
+        external_task_id="telemetry_derived__clients_last_seen__v1",
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    telemetry_derived__clients_first_seen_28_days_later__v1.set_upstream(
+        wait_for_telemetry_derived__clients_last_seen__v1
+    )

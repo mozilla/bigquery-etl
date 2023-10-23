@@ -514,6 +514,7 @@ def _backfill_query(
     partitioning_type,
     backfill_date,
     destination_table,
+    run_checks,
 ):
     """Run a query backfill for a specific date."""
     project, dataset, table = extract_from_query_path(query_file_path)
@@ -570,7 +571,7 @@ def _backfill_query(
 
         # Run checks on the query
         checks_file = query_file_path.parent / "checks.sql"
-        if checks_file.exists():
+        if run_checks and checks_file.exists():
             table_name = checks_file.parent.name
             # query_args have things like format, which we don't want to push
             # to the check; so we just take the query parameters
@@ -675,6 +676,9 @@ def _backfill_query(
         + "If not set, determines destination table based on query."
     ),
 )
+@click.option(
+    "--checks/--no-checks", help="Whether to run checks during backfill", default=False
+)
 @click.pass_context
 def backfill(
     ctx,
@@ -689,6 +693,7 @@ def backfill(
     parallelism,
     no_partition,
     destination_table,
+    checks,
 ):
     """Run a backfill."""
     if not is_authenticated():
@@ -787,6 +792,7 @@ def backfill(
             ctx.args,
             partitioning_type,
             destination_table=destination_table,
+            run_checks=checks,
         )
 
         if not depends_on_past:

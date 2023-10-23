@@ -9,6 +9,10 @@ labels:
   owner1: loines
 scheduling:
   dag_name: bqetl_analytics_tables
+  date_partition_offset: -27
+  date_partition_parameter: null
+  parameters:
+  - submission_date:DATE:{{ds}}
 bigquery:
   time_partitioning:
     type: day

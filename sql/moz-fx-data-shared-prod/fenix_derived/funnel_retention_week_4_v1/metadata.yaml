@@ -26,9 +26,6 @@ workgroup_access:
   members:
   - workgroup:mozilla-confidential
 references:
-  checks.sql:
-  - moz-fx-data-shared-prod.fenix_derived.funnel_retention_clients_week_4_v1
-  - moz-fx-data-shared-prod.fenix_derived.funnel_retention_week_4_v1
   query.sql:
   - fenix_derived.funnel_retention_clients_week_4_v1
 deprecated: false

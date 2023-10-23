@@ -6,10 +6,9 @@ DECLARE end_date DATE DEFAULT current_date;
 
 
 WITH dau_segments AS
-    (SELECT DATE(submission_timestamp) as submission_date, 100*count(distinct client_info.client_id) as dau
+    (SELECT DATE(submission_timestamp) as submission_date, count(distinct client_info.client_id) as dau
     FROM `mozdata.fenix.metrics`
     WHERE DATE(submission_timestamp) >= start_date
-    AND sample_id = 0
     GROUP BY 1),
     
 product_features AS

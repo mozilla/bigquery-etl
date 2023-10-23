@@ -6,9 +6,9 @@ owners:
 labels:
   incremental: true
   owner1: rzhao
-  dag: bqetl_default
+  dag: bqetl_mobile_feature_usage
 scheduling:
-  dag_name: bqetl_feature_usage
+  dag_name: bqetl_mobile_feature_usage
   task_name: feature_usage_metrics__v1
 bigquery:
   time_partitioning:

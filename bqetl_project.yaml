@@ -26,7 +26,6 @@ dry_run:
   - sql/moz-fx-data-shared-prod/account_ecosystem_derived/fxa_logging_users_daily_v1/query.sql
   - sql/moz-fx-data-shared-prod/activity_stream/impression_stats_flat/view.sql
   - sql/moz-fx-data-shared-prod/activity_stream/tile_id_types/view.sql
-  - sql/moz-fx-data-shared-prod/ads/nt_visits_to_sessions_conversion_factors_daily/view.sql
   - sql/moz-fx-data-shared-prod/app_store_external/**/*.sql
   - sql/moz-fx-data-shared-prod/app_store/**/*.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/deletion_request_volume_v1/query.sql

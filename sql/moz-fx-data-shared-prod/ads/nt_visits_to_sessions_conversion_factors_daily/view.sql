@@ -4,4 +4,4 @@ AS
 SELECT
   *
 FROM
-  `moz-fx-data-shared-prod.ads.nt_visits_to_sessions_conversion_factors_daily_v1`
+  `moz-fx-data-shared-prod.ads_derived.nt_visits_to_sessions_conversion_factors_daily_v1`

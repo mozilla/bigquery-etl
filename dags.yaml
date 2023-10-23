@@ -1325,3 +1325,22 @@ bqetl_glean_usage:
     start_date: "2023-11-20"
   tags:
     - impact/tier_1
+
+bqetl_mobile_feature_usage:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - rzhao@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    owner: rzhao@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2023-10-24'
+  description: schedule run for mobile feature usage tables
+  repo: bigquery-etl
+  schedule_interval: 0 4 * * *
+  tags:
+    - impact/tier_3

@@ -264,6 +264,7 @@ format:
   - sql_generators/search/templates/*.sql
   - sql_generators/experiment_monitoring/templates/**/*.sql
   - sql_generators/feature_usage/templates/*.sql
+  - sql_generators/funnels/templates/*.sql
   - sql/moz-fx-data-shared-prod/telemetry/fenix_events_v1/view.sql
   - sql/moz-fx-data-shared-prod/telemetry/fennec_ios_events_v1/view.sql
   - sql/moz-fx-data-shared-prod/telemetry/fire_tv_events_v1/view.sql
@@ -349,7 +350,6 @@ routine:
     gcs_path: ""
     skip:
     - sql/moz-fx-data-shared-prod/udf/main_summary_scalars/udf.sql
-  assert_udf_dir: tests/assert
   example_dir: examples
   project: mozfun
 

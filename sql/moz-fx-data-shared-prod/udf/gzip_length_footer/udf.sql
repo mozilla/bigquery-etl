@@ -43,18 +43,18 @@ CREATE OR REPLACE FUNCTION udf.gzip_length_footer(compressed BYTES) AS (
 
 -- Tests
 SELECT
-  assert.equals(
+  mozfun.assert.equals(
     4,
     udf.gzip_length_footer(
       -- printf test | gzip -c | python3 -c 'import sys; print(sys.stdin.buffer.read())'
       b'\x1f\x8b\x08\x00\xc4\x15\x8e^\x00\x03+I-.\x01\x00\x0c~\x7f\xd8\x04\x00\x00\x00'
     )
   ),
-  assert.equals(
+  mozfun.assert.equals(
     0,
     udf.gzip_length_footer(
       -- gzip -c < /dev/null | python3 -c 'import sys; print(sys.stdin.buffer.read())'
       b'\x1f\x8b\x08\x00\xe7\x15\x8e^\x00\x03\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00'
     )
   ),
-  assert.equals(16, udf.gzip_length_footer(b"\x10\x00\x00\x00"));
+  mozfun.assert.equals(16, udf.gzip_length_footer(b"\x10\x00\x00\x00"));

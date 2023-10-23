@@ -48,4 +48,4 @@ AS
 
 -- Tests
 SELECT
-  assert.equals(308953907, udf_js.crc32("51baf8b4-75d1-3648-b96d-809569b89a12"));
+  mozfun.assert.equals(308953907, udf_js.crc32("51baf8b4-75d1-3648-b96d-809569b89a12"));

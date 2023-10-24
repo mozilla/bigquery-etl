@@ -13,10 +13,10 @@
       
       
       
-        <link rel="prev" href="../monitor_cirrus/">
+        <link rel="prev" href="../adjust/">
       
       
-        <link rel="next" href="../monitoring/">
+        <link rel="next" href="../amo_dev/">
       
       
       <link rel="icon" href="../../favicon.png">
@@ -24,7 +24,7 @@
     
     
       
-        <title>monitor-frontend - BigQuery ETL</title>
+        <title>Ads - BigQuery ETL</title>
       
     
     
@@ -75,7 +75,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#deletion_request" class="md-skip">
+        <a href="#nt_visits_to_sessions_conversion_factors_daily" class="md-skip">
           Skip to content
         </a>
       
@@ -109,7 +109,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              monitor-frontend
+              Ads
             
           </span>
         </div>
@@ -535,9 +535,27 @@
                 
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../ads/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Ads
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -546,6 +564,31 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#nt_visits_to_sessions_conversion_factors_daily" class="md-nav__link">
+    nt_visits_to_sessions_conversion_factors_daily
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1475,27 +1518,9 @@
                 
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    monitor-frontend
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../monitor_frontend/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1504,45 +1529,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#deletion_request" class="md-nav__link">
-    deletion_request
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#events" class="md-nav__link">
-    events
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#events_unnested" class="md-nav__link">
-    events_unnested
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -3353,22 +3339,8 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#deletion_request" class="md-nav__link">
-    deletion_request
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#events" class="md-nav__link">
-    events
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#events_unnested" class="md-nav__link">
-    events_unnested
+  <a href="#nt_visits_to_sessions_conversion_factors_daily" class="md-nav__link">
+    nt_visits_to_sessions_conversion_factors_daily
   </a>
   
 </li>
@@ -3388,101 +3360,20 @@
                   
 
 
-  <h1>monitor-frontend</h1>
+  <h1>Ads</h1>
 
-<p>User-facing views related to document namespace monitor-frontend; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/monitor-frontend</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitor_frontend">Source Directory</a></p>
-<h2 id="deletion_request"><a href="#deletion_request">deletion_request</a></h2>
-<p><strong>Historical Pings for <code>monitor-frontend/deletion-request</code></strong></p>
-<p><code>monitor_frontend.deletion_request</code></p>
-<p>A historical view of pings sent for the
-<code>monitor-frontend/deletion-request</code>
-document type.</p>
-<p>This view is guaranteed to contain only complete days
-(per <code>submission_timestamp</code>)
-and to contain only one row per distinct <code>document_id</code> within a given date.</p>
-<p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
-<table>
-<caption>Schema</caption>
-    <tr>
-        <th>Column</th>
-        <th>Description</th>
-        <th>Type</th>
-        <th>Nullable</th>
-    </tr>
-<tr>
-        <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>client_info</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>events</td>
-        <td></td>
-        <td>Record</td>
-        <td>No</td>
-    </tr><tr>
-        <td>metadata</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>metrics</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_os_version</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>ping_info</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
-        <td>Timestamp</td>
-        <td>Yes</td>
-    </tr>
-</table>
-
+<p>Data related to the work of Mozilla Ads</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/ads">Source Directory</a></p>
+<h2 id="nt_visits_to_sessions_conversion_factors_daily"><a href="#nt_visits_to_sessions_conversion_factors_daily">nt_visits_to_sessions_conversion_factors_daily</a></h2>
+<p><strong>Newtab Visits to Sessions Conversion Factors Daily</strong></p>
+<p><code>ads.nt_visits_to_sessions_conversion_factors_daily</code></p>
+<p>Daily conversion factors allowing the translation of (Glean) Newtab visits to (PingCentre) Activity Stream sessions.
+This calculation only considers Desktop--Mobile's not in PingCentre.</p>
+<ul>
+<li>Owners:<p>- <a href="mailto:sbetancourt@mozilla.com">sbetancourt@mozilla.com</a></p>
+<p>- <a href="mailto:cmorales@mozilla.com">cmorales@mozilla.com</a></p>
+</li>
+</ul>
 <table>
 <caption>Referenced Tables</caption>
     <tr>
@@ -3492,138 +3383,12 @@ and to contain only one row per distinct <code>document_id</code> within a given
     </tr>
 <tr>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitor_frontend_stable>monitor_frontend_stable</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitor_frontend_stable/deletion_request_v1>deletion_request_v1</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/ads_derived>ads_derived</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/ads_derived/nt_visits_to_sessions_conversion_factors_daily_v1>nt_visits_to_sessions_conversion_factors_daily_v1</a></td>
         </tr>
 </table>
 
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitor_frontend/deletion_request">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitor_frontend/deletion_request/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitor_frontend/deletion_request/metadata.yaml">Metadata File</a> </p>
-<hr />
-<h2 id="events"><a href="#events">events</a></h2>
-<p><strong>Historical Pings for <code>monitor-frontend/events</code></strong></p>
-<p><code>monitor_frontend.events</code></p>
-<p>A historical view of pings sent for the
-<code>monitor-frontend/events</code>
-document type.</p>
-<p>This view is guaranteed to contain only complete days
-(per <code>submission_timestamp</code>)
-and to contain only one row per distinct <code>document_id</code> within a given date.</p>
-<p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
-<table>
-<caption>Schema</caption>
-    <tr>
-        <th>Column</th>
-        <th>Description</th>
-        <th>Type</th>
-        <th>Nullable</th>
-    </tr>
-<tr>
-        <td>additional_properties</td>
-        <td>A JSON string containing any payload properties not present in the schema</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>client_info</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>document_id</td>
-        <td>The document ID specified in the URI when the client sent this message</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>events</td>
-        <td></td>
-        <td>Record</td>
-        <td>No</td>
-    </tr><tr>
-        <td>metadata</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>metrics</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_app_name</td>
-        <td>Set to "Other" if this message contained an unrecognized app name</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_channel</td>
-        <td>Set to "Other" if this message contained an unrecognized channel name</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_country_code</td>
-        <td>An ISO 3166-1 alpha-2 country code</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_os</td>
-        <td>Set to "Other" if this message contained an unrecognized OS name</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>normalized_os_version</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>ping_info</td>
-        <td></td>
-        <td>Record</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>sample_id</td>
-        <td>Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>submission_timestamp</td>
-        <td>Time when the ingestion edge server accepted this message</td>
-        <td>Timestamp</td>
-        <td>Yes</td>
-    </tr>
-</table>
-
-<table>
-<caption>Referenced Tables</caption>
-    <tr>
-        <th>Project</th>
-        <th>Dataset</th>
-        <th>Table</th>
-    </tr>
-<tr>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitor_frontend_stable>monitor_frontend_stable</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitor_frontend_stable/events_v1>events_v1</a></td>
-        </tr>
-</table>
-
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitor_frontend/events">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitor_frontend/events/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitor_frontend/events/metadata.yaml">Metadata File</a> </p>
-<hr />
-<h2 id="events_unnested"><a href="#events_unnested">events_unnested</a></h2>
-<p><code>monitor_frontend.events_unnested</code></p>
-<p>None</p>
-<table>
-<caption>Referenced Tables</caption>
-    <tr>
-        <th>Project</th>
-        <th>Dataset</th>
-        <th>Table</th>
-    </tr>
-<tr>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitor_frontend>monitor_frontend</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitor_frontend/events>events</a></td>
-        </tr>
-</table>
-
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitor_frontend/events_unnested">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitor_frontend/events_unnested/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitor_frontend/events_unnested/metadata.yaml">Metadata File</a> </p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/ads/nt_visits_to_sessions_conversion_factors_daily">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/ads/nt_visits_to_sessions_conversion_factors_daily/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/ads/nt_visits_to_sessions_conversion_factors_daily/metadata.yaml">Metadata File</a> </p>
 <hr />
 
 

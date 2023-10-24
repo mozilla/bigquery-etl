@@ -7,15 +7,12 @@ import re
 from collections import namedtuple
 from pathlib import Path
 
-import requests
 from jinja2 import Environment, FileSystemLoader, TemplateNotFound
 
 from bigquery_etl.config import ConfigLoader
 from bigquery_etl.dryrun import DryRun
-from bigquery_etl.schema.stable_table_schema import get_stable_table_schemas
 from bigquery_etl.util.common import get_table_dir, render, write_sql
 
-APP_LISTINGS_URL = "https://probeinfo.telemetry.mozilla.org/v2/glean/app-listings"
 PATH = Path(os.path.dirname(__file__))
 
 
@@ -49,39 +46,6 @@ def write_dataset_metadata(output_dir, full_table_id, derived_dataset_metadata=F
 
         logging.info(f"Writing {target}")
         target.write_text(rendered)
-
-
-def list_baseline_tables(project_id, only_tables, table_filter):
-    """Return names of all matching baseline tables in shared-prod."""
-    prod_baseline_tables = [
-        s.stable_table
-        for s in get_stable_table_schemas()
-        if s.schema_id == "moz://mozilla.org/schemas/glean/ping/1"
-        and s.bq_table == "baseline_v1"
-    ]
-    prod_datasets_with_baseline = [t.split(".")[0] for t in prod_baseline_tables]
-    stable_datasets = prod_datasets_with_baseline
-    if only_tables and not _contains_glob(only_tables):
-        # skip list calls when only_tables exists and contains no globs
-        return [
-            f"{project_id}.{t}"
-            for t in only_tables
-            if table_filter(t) and t in prod_baseline_tables
-        ]
-    if only_tables and not _contains_glob(
-        _extract_dataset_from_glob(t) for t in only_tables
-    ):
-        stable_datasets = {_extract_dataset_from_glob(t) for t in only_tables}
-        stable_datasets = {
-            d
-            for d in stable_datasets
-            if d.endswith("_stable") and d in prod_datasets_with_baseline
-        }
-    return [
-        f"{project_id}.{d}.baseline_v1"
-        for d in stable_datasets
-        if table_filter(f"{d}.baseline_v1")
-    ]
 
 
 def table_names_from_baseline(baseline_table, include_project_id=True):
@@ -120,33 +84,6 @@ def referenced_table_exists(view_sql):
             for e in dryrun.errors()
         ]
     )
-
-
-def _contains_glob(patterns):
-    return any({"*", "?", "["}.intersection(pattern) for pattern in patterns)
-
-
-def _extract_dataset_from_glob(pattern):
-    # Assumes globs are in <dataset>.<table> form without a project specified.
-    return pattern.split(".", 1)[0]
-
-
-def get_app_info():
-    """Return a list of applications from the probeinfo API."""
-    resp = requests.get(APP_LISTINGS_URL)
-    resp.raise_for_status()
-    apps_json = resp.json()
-    app_info = {}
-
-    for app in apps_json:
-        if app["app_id"].startswith("rally"):
-            pass
-        elif app["app_name"] not in app_info:
-            app_info[app["app_name"]] = [app]
-        else:
-            app_info[app["app_name"]].append(app)
-
-    return app_info
 
 
 class GleanTable:
@@ -255,8 +192,7 @@ class GleanTable:
         if not (referenced_table_exists(view_sql)):
             logging.info("Skipping view for table which doesn't exist:" f" {table}")
         else:
-            artifacts.append(
-                Artifact(view, "view.sql", view_sql))
+            artifacts.append(Artifact(view, "view.sql", view_sql))
 
         skip_existing_artifact = self.skip_existing(output_dir, project_id)
 

@@ -1,18 +1,21 @@
 friendly_name: Funnel iOS
 description: |
   Derived dataset for supporting (Apple) app store funnel analysis (iOS).
+
+  Runs with a 7 day lag due to the data being available only a around few days later to us.
 owners:
 - kik@mozilla.com
 labels:
   schedule: daily
-  incremental: false
+  incremental: true
 scheduling:
   dag_name: bqetl_firefox_ios
   depends_on_past: false
-  date_partition_parameter: null
-  parameters: ['submission_date:DATE:{{ds}}']
 bigquery:
   time_partitioning:
     type: day
-    field: date
+    field: submission_date
     require_partition_filter: false
+  clustering:
+    fields:
+    - country

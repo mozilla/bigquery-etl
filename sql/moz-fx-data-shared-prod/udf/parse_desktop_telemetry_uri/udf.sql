@@ -47,17 +47,17 @@ RETURNS STRUCT<
 
 -- Tests
 SELECT
-  assert.equals("telemetry", udf.parse_desktop_telemetry_uri(uri1).namespace),
-  assert.equals(
+  mozfun.assert.equals("telemetry", udf.parse_desktop_telemetry_uri(uri1).namespace),
+  mozfun.assert.equals(
     "ce39b608-f595-4c69-b6a6-f7a436604648",
     udf.parse_desktop_telemetry_uri(uri1).document_id
   ),
-  assert.equals("main", udf.parse_desktop_telemetry_uri(uri1).document_type),
-  assert.equals("Firefox", udf.parse_desktop_telemetry_uri(uri1).app_name),
-  assert.equals("61.0a1", udf.parse_desktop_telemetry_uri(uri1).app_version),
-  assert.equals("nightly", udf.parse_desktop_telemetry_uri(uri1).app_update_channel),
-  assert.equals("20180328030202", udf.parse_desktop_telemetry_uri(uri1).app_build_id),
-  assert.null(udf.parse_desktop_telemetry_uri(uri2))
+  mozfun.assert.equals("main", udf.parse_desktop_telemetry_uri(uri1).document_type),
+  mozfun.assert.equals("Firefox", udf.parse_desktop_telemetry_uri(uri1).app_name),
+  mozfun.assert.equals("61.0a1", udf.parse_desktop_telemetry_uri(uri1).app_version),
+  mozfun.assert.equals("nightly", udf.parse_desktop_telemetry_uri(uri1).app_update_channel),
+  mozfun.assert.equals("20180328030202", udf.parse_desktop_telemetry_uri(uri1).app_build_id),
+  mozfun.assert.null(udf.parse_desktop_telemetry_uri(uri2))
 FROM
   (
     SELECT

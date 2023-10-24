@@ -12,7 +12,7 @@ CREATE OR REPLACE FUNCTION udf.combine_adjacent_days_28_bits(prev INT64, curr IN
 
 -- Tests
 SELECT
-  assert.equals(3, udf.combine_adjacent_days_28_bits(1, 1)),
-  assert.equals(4, udf.combine_adjacent_days_28_bits(2, 4)),
-  assert.equals(6, udf.combine_adjacent_days_28_bits(3, 4)),
-  assert.equals(4, udf.combine_adjacent_days_28_bits(2, NULL));
+  mozfun.assert.equals(3, udf.combine_adjacent_days_28_bits(1, 1)),
+  mozfun.assert.equals(4, udf.combine_adjacent_days_28_bits(2, 4)),
+  mozfun.assert.equals(6, udf.combine_adjacent_days_28_bits(3, 4)),
+  mozfun.assert.equals(4, udf.combine_adjacent_days_28_bits(2, NULL));

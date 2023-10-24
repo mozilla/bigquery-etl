@@ -7,7 +7,7 @@ CREATE OR REPLACE FUNCTION udf.safe_sample_id(client_id STRING) AS (
 
 -- Tests
 SELECT
-  assert.equals(sample_id, udf.safe_sample_id(client_id))
+  mozfun.assert.equals(sample_id, udf.safe_sample_id(client_id))
 FROM
   UNNEST(
     [

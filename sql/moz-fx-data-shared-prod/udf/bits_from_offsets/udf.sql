@@ -40,11 +40,11 @@ CREATE OR REPLACE FUNCTION udf.bits_from_offsets(offsets ARRAY<INT64>) AS (
 
 -- Tests
 SELECT
-  assert.equals(b'\x01', udf.bits_from_offsets([0])),
-  assert.equals(b'\x02', udf.bits_from_offsets([1])),
-  assert.equals(b'\x03', udf.bits_from_offsets([0, 1])),
-  assert.equals(b'\xff', udf.bits_from_offsets([0, 1, 2, 3, 4, 5, 6, 7])),
-  assert.equals(b'\x01\xff', udf.bits_from_offsets([0, 1, 2, 3, 4, 5, 6, 7, 8])),
-  assert.equals(b'\x01\xff', udf.bits_from_offsets([8, 0, 1, 2, 3, 4, 5, 6, 7])),
-  assert.equals(b'\x01', udf.bits_from_offsets([0, 2048])),
-  assert.equals(CONCAT(b'\x80', REPEAT(b'\x00', 255)), udf.bits_from_offsets([2047]));
+  mozfun.assert.equals(b'\x01', udf.bits_from_offsets([0])),
+  mozfun.assert.equals(b'\x02', udf.bits_from_offsets([1])),
+  mozfun.assert.equals(b'\x03', udf.bits_from_offsets([0, 1])),
+  mozfun.assert.equals(b'\xff', udf.bits_from_offsets([0, 1, 2, 3, 4, 5, 6, 7])),
+  mozfun.assert.equals(b'\x01\xff', udf.bits_from_offsets([0, 1, 2, 3, 4, 5, 6, 7, 8])),
+  mozfun.assert.equals(b'\x01\xff', udf.bits_from_offsets([8, 0, 1, 2, 3, 4, 5, 6, 7])),
+  mozfun.assert.equals(b'\x01', udf.bits_from_offsets([0, 2048])),
+  mozfun.assert.equals(CONCAT(b'\x80', REPEAT(b'\x00', 255)), udf.bits_from_offsets([2047]));

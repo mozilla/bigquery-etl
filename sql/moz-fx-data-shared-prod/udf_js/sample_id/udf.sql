@@ -15,7 +15,7 @@ RETURNS INT64 AS (
 
 -- Tests
 SELECT
-  assert.equals(15, udf_js.sample_id("b50f76bc-fce4-4345-8d7c-4983f0967488")),
-  assert.equals(99, udf_js.sample_id("738b7ccd-60b1-47f0-98eb-3d2314559283")),
-  assert.equals(0, udf_js.sample_id("ed4ed818-63a3-4347-89d7-eae53df14392")),
-  assert.null(udf_js.sample_id(NULL))
+  mozfun.assert.equals(15, udf_js.sample_id("b50f76bc-fce4-4345-8d7c-4983f0967488")),
+  mozfun.assert.equals(99, udf_js.sample_id("738b7ccd-60b1-47f0-98eb-3d2314559283")),
+  mozfun.assert.equals(0, udf_js.sample_id("ed4ed818-63a3-4347-89d7-eae53df14392")),
+  mozfun.assert.null(udf_js.sample_id(NULL))

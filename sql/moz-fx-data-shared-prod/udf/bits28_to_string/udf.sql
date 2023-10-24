@@ -5,4 +5,4 @@ CREATE OR REPLACE FUNCTION udf.bits28_to_string(bits INT64) AS (
 
 -- Tests
 SELECT
-  assert.equals('0100000000000000000000000010', udf.bits28_to_string((1 << 1) | (1 << 26)))
+  mozfun.assert.equals('0100000000000000000000000010', udf.bits28_to_string((1 << 1) | (1 << 26)))

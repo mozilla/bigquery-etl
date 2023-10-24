@@ -1,0 +1,29 @@
+friendly_name: Newtab Visits to Sessions Conversion Factors Daily
+description: |-
+  Daily conversion factors allowing the translation of (Glean) Newtab visits to (PingCentre) Activity Stream sessions.
+  This calculation only considers Desktop--Mobile's not in PingCentre.
+owners:
+- sbetancourt@mozilla.com
+- cmorales@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  change_controlled: true
+  dag: bqetl_ads
+  owner1: sbetancourt
+  owner2: cmorales
+scheduling:
+  dag_name: bqetl_ads
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

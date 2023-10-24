@@ -11,3 +11,4 @@
   release_channel: release
   position: 1
   reporting_url: "http://foo.com"
+  version: "116.0.0"

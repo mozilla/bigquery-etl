@@ -1,5 +1,21 @@
 WITH combined AS (
   SELECT
+    metrics.uuid.top_sites_context_id AS context_id,
+    DATE(submission_timestamp) AS submission_date,
+    'desktop' AS form_factor,
+    normalized_country_code AS country,
+    REPLACE(LOWER(metrics.string.top_sites_advertiser), "o=45:a", "yandex") AS advertiser,
+    SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
+    client_info.app_channel AS release_channel,
+    metrics.quantity.top_sites_position AS position,
+    IF(metrics.url.top_sites_reporting_url IS NULL, 'remote settings', 'contile') AS provider,
+    IF(metrics.string.top_sites_ping_type = "topsites-click", "click", "impression") AS event_type,
+  FROM
+    `moz-fx-data-shared-prod.firefox_desktop.top_sites`
+  WHERE
+    metrics.string.top_sites_ping_type IN ("topsites-click", "topsites-impression")
+  UNION ALL
+  SELECT
     context_id,
     DATE(submission_timestamp) AS submission_date,
     'desktop' AS form_factor,
@@ -12,6 +28,10 @@ WITH combined AS (
     'impression' AS event_type,
   FROM
     `moz-fx-data-shared-prod.contextual_services.topsites_impression`
+  WHERE
+    -- For firefox 116+ use firefox_desktop.top_sites instead
+    -- https://bugzilla.mozilla.org/show_bug.cgi?id=1836283
+    SAFE_CAST(SPLIT(version, ".")[OFFSET(0)] AS INT64) < 116
   UNION ALL
   SELECT
     context_id,
@@ -26,6 +46,10 @@ WITH combined AS (
     'click' AS event_type,
   FROM
     `moz-fx-data-shared-prod.contextual_services.topsites_click`
+  WHERE
+    -- For firefox 116+ use firefox_desktop.top_sites instead
+    -- https://bugzilla.mozilla.org/show_bug.cgi?id=1836283
+    SAFE_CAST(SPLIT(version, ".")[OFFSET(0)] AS INT64) < 116
   UNION ALL
   SELECT
     metrics.uuid.top_sites_context_id AS context_id,

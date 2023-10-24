@@ -14,3 +14,4 @@
   match_type: "firefox-suggest"
   scenario: online
   improve_suggest_experience_checked: true
+  version: "116.0.0"

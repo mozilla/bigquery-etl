@@ -77,7 +77,6 @@ filter_ms_microsurvey AS (
     DATE(submission_timestamp) = @submission_date
     AND metrics.string.messaging_system_ping_type IS NULL
     AND metrics.text.messaging_system_message_id LIKE '%SHOPPING%'
-    AND metrics.string.messaging_system_event = 'SELECT_CHECKBOX'
 )
 SELECT
   *

@@ -1,6 +1,6 @@
-friendly_name: glean-dictionary
+friendly_name: Glean Dictionary
 description: |-
-  User-facing views related to document namespace glean-dictionary; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/glean-dictionary
+  Views on data from glean_dictionary
 dataset_base_acl: view
 user_facing: true
 labels: {}

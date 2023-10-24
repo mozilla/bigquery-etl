@@ -1,11 +1,6 @@
-friendly_name: Accounts table from FxA database in stage environment
+friendly_name: FxA Accounts nonprod
 description: |
-  A mirror of the `accounts` table from the staging FxA CloudSQL database, updated daily to match the current state of the table. Some fields in this table are converted to a more user-friendly, BigQuery-native format:
-    - `uid` is converted from bytes to a hex string
-    - boolean integer columns are converted to BOOL
-    - timestamp columns are converted to TIMESTAMP
-
-  See https://mozilla.github.io/ecosystem-platform/reference/database-structure#database-fxa
+  A mirror of the `accounts` table from the staging FxA CloudSQL database, updated daily to match the current state of the table.
 owners:
 - akomar@mozilla.com
 labels:
@@ -16,13 +11,14 @@ labels:
 scheduling:
   dag_name: bqetl_accounts_backend_external
   date_partition_parameter: null
+  depends_on_past: true
   referenced_tables: []
 bigquery: null
 workgroup_access:
-- role: roles/bigquery.dataViewer
+- role: roles/bigquery.dataEditor
   members:
-  - workgroup:accounts-confidential
+  - workgroup:platform-infra/internal
 references:
   query.sql:
-  - EXTERNAL_QUERY('moz-fx-fxa-nonprod.us.fxa-rds-nonprod-stage-fxa', 'SELECT\n         uid,\n         normalizedEmail,\n         email,\n         emailVerified,\n         verifierVersion,\n         verifierSetAt,\n         createdAt,\n         locale,\n         lockedAt,\n         profileChangedAt,\n         keysChangedAt,\n         ecosystemAnonId,\n         disabledAt,\n         metricsOptOutAt\n       FROM\n         accounts\n    ')
+  - EXTERNAL_QUERY('moz-fx-fxa-nonprod.us.fxa-rds-nonprod-stage-fxa', 'SELECT\n         uid,\n         normalizedEmail,\n         emailVerified,\n         verifierVersion,\n         verifierSetAt,\n         createdAt,\n         locale,\n         lockedAt,\n         profileChangedAt,\n         ecosystemAnonId,\n         disabledAt,\n         metricsOptOutAt\n       FROM\n         accounts\n    ')
 deprecated: false

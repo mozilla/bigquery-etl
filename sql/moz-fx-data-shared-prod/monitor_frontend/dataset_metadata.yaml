@@ -1,6 +1,6 @@
-friendly_name: monitor-frontend
+friendly_name: Monitor Frontend
 description: |-
-  User-facing views related to document namespace monitor-frontend; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/monitor-frontend
+  Views on data from monitor_frontend
 dataset_base_acl: view
 user_facing: true
 labels: {}

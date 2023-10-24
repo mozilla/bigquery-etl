@@ -1,6 +1,6 @@
-friendly_name: org-mozilla-ios-focus
+friendly_name: Org Mozilla Ios Focus
 description: |-
-  User-facing views related to document namespace org-mozilla-ios-focus; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/org-mozilla-ios-focus
+  Views on data from org_mozilla_ios_focus
 dataset_base_acl: view
 user_facing: true
 labels: {}

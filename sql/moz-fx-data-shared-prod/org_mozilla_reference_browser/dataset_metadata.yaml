@@ -1,6 +1,6 @@
-friendly_name: org-mozilla-reference-browser
+friendly_name: Org Mozilla Reference Browser
 description: |-
-  User-facing views related to document namespace org-mozilla-reference-browser; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/org-mozilla-reference-browser
+  Views on data from org_mozilla_reference_browser
 dataset_base_acl: view
 user_facing: true
 labels: {}

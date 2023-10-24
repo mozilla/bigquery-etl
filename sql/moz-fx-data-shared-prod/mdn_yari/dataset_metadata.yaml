@@ -1,6 +1,6 @@
-friendly_name: mdn-yari
+friendly_name: Mdn Yari
 description: |-
-  User-facing views related to document namespace mdn-yari; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/mdn-yari
+  Views on data from mdn_yari
 dataset_base_acl: view
 user_facing: true
 labels: {}

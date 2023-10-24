@@ -1,6 +1,6 @@
-friendly_name: firefox-desktop-background-tasks
+friendly_name: Firefox Desktop Background Tasks
 description: |-
-  User-facing views related to document namespace firefox-desktop-background-tasks; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/firefox-desktop-background-tasks
+  Views on data from firefox_desktop_background_tasks
 dataset_base_acl: view
 user_facing: true
 labels: {}

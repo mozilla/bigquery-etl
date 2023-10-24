@@ -1,6 +1,6 @@
-friendly_name: org-mozilla-focus-nightly
+friendly_name: Org Mozilla Focus Nightly
 description: |-
-  User-facing views related to document namespace org-mozilla-focus-nightly; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/org-mozilla-focus-nightly
+  Views on data from org_mozilla_focus_nightly
 dataset_base_acl: view
 user_facing: true
 labels: {}

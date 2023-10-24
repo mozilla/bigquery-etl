@@ -11,8 +11,6 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.org_mozilla_fenix.events
-  - moz-fx-data-shared-prod.org_mozilla_fenix_nightly.events
-  - moz-fx-data-shared-prod.org_mozilla_fennec_aurora.events
   - moz-fx-data-shared-prod.org_mozilla_firefox.events
   - moz-fx-data-shared-prod.org_mozilla_firefox_beta.events
 deprecated: false

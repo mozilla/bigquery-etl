@@ -1,6 +1,6 @@
-friendly_name: mozphab Derived
+friendly_name: Mozphab Derived
 description: |-
-  Derived tables related to document namespace mozphab, usually populated via queries defined in https://github.com/mozilla/bigquery-etl and managed by Airflow
+  Derived data for mozphab_derived
 dataset_base_acl: derived
 user_facing: false
 labels: {}

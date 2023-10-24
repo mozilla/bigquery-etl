@@ -1,6 +1,6 @@
-friendly_name: firefox-desktop-background-tasks Derived
+friendly_name: Firefox Desktop Background Tasks Derived
 description: |-
-  Derived tables related to document namespace firefox-desktop-background-tasks, usually populated via queries defined in https://github.com/mozilla/bigquery-etl and managed by Airflow
+  Derived data for firefox_desktop_background_tasks_derived
 dataset_base_acl: derived
 user_facing: false
 labels: {}

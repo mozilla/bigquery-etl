@@ -1,6 +1,6 @@
-friendly_name: org-mozilla-ios-fennec
+friendly_name: Org Mozilla Ios Fennec
 description: |-
-  User-facing views related to document namespace org-mozilla-ios-fennec; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/org-mozilla-ios-fennec
+  Views on data from org_mozilla_ios_fennec
 dataset_base_acl: view
 user_facing: true
 labels: {}

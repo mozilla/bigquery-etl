@@ -1,6 +1,6 @@
-friendly_name: firefox-desktop-background-defaultagent
+friendly_name: Firefox Desktop Background Defaultagent
 description: |-
-  User-facing views related to document namespace firefox-desktop-background-defaultagent; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/firefox-desktop-background-defaultagent
+  Views on data from firefox_desktop_background_defaultagent
 dataset_base_acl: view
 user_facing: true
 labels: {}

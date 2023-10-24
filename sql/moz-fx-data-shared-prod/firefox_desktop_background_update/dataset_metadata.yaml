@@ -1,6 +1,6 @@
-friendly_name: firefox-desktop-background-update
+friendly_name: Firefox Desktop Background Update
 description: |-
-  User-facing views related to document namespace firefox-desktop-background-update; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/firefox-desktop-background-update
+  Views on data from firefox_desktop_background_update
 dataset_base_acl: view
 user_facing: true
 labels: {}

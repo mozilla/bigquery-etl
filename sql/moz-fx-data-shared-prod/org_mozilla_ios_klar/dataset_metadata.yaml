@@ -1,6 +1,6 @@
-friendly_name: org-mozilla-ios-klar
+friendly_name: Org Mozilla Ios Klar
 description: |-
-  User-facing views related to document namespace org-mozilla-ios-klar; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/org-mozilla-ios-klar
+  Views on data from org_mozilla_ios_klar
 dataset_base_acl: view
 user_facing: true
 labels: {}

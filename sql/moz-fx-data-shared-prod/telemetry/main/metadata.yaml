@@ -1,14 +1,6 @@
-friendly_name: Historical Pings for `telemetry/main`
+friendly_name: null
 description: |-
-  A historical view of pings sent for the
-  `telemetry/main`
-  document type.
-
-  This view is guaranteed to contain only complete days
-  (per `submission_timestamp`)
-  and to contain only one row per distinct `document_id` within a given date.
-
-  Clustering fields: `normalized_channel`, `sample_id`
+  None
 owners: []
 labels: {}
 bigquery: null
@@ -19,5 +11,5 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   view.sql:
-  - moz-fx-data-shared-prod.telemetry_stable.main_v5
+  - moz-fx-data-shared-prod.telemetry_stable.main_v4
 deprecated: false

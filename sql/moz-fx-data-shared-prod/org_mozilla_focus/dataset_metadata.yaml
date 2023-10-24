@@ -1,6 +1,6 @@
-friendly_name: org-mozilla-focus
+friendly_name: Org Mozilla Focus
 description: |-
-  User-facing views related to document namespace org-mozilla-focus; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/org-mozilla-focus
+  Views on data from org_mozilla_focus
 dataset_base_acl: view
 user_facing: true
 labels: {}

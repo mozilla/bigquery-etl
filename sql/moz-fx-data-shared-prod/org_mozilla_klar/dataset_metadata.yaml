@@ -1,6 +1,6 @@
-friendly_name: org-mozilla-klar
+friendly_name: Org Mozilla Klar
 description: |-
-  User-facing views related to document namespace org-mozilla-klar; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/org-mozilla-klar
+  Views on data from org_mozilla_klar
 dataset_base_acl: view
 user_facing: true
 labels: {}

@@ -1,6 +1,6 @@
-friendly_name: monitor-cirrus
+friendly_name: Monitor Cirrus
 description: |-
-  User-facing views related to document namespace monitor-cirrus; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/monitor-cirrus
+  Views on data from monitor_cirrus
 dataset_base_acl: view
 user_facing: true
 labels: {}

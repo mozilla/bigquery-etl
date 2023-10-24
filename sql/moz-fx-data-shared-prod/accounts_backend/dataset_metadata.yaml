@@ -1,6 +1,6 @@
-friendly_name: Accounts backend
+friendly_name: Accounts Backend
 description: |-
-  Views for accessing Mozilla Accounts backend derived data
+  Views on data from accounts_backend
 dataset_base_acl: view
 user_facing: true
 labels: {}

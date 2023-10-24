@@ -1,6 +1,6 @@
-friendly_name: org-mozilla-ios-firefoxvpn-network-extension
+friendly_name: Org Mozilla Ios Firefoxvpn Network Extension
 description: |-
-  User-facing views related to document namespace org-mozilla-ios-firefoxvpn-network-extension; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/org-mozilla-ios-firefoxvpn-network-extension
+  Views on data from org_mozilla_ios_firefoxvpn_network_extension
 dataset_base_acl: view
 user_facing: true
 labels: {}

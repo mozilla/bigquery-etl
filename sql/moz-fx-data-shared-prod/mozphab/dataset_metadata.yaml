@@ -1,6 +1,6 @@
-friendly_name: mozphab
+friendly_name: Mozphab
 description: |-
-  User-facing views related to document namespace mozphab; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/mozphab
+  Views on data from mozphab
 dataset_base_acl: view
 user_facing: true
 labels: {}

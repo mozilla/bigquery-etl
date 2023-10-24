@@ -1,6 +1,6 @@
-friendly_name: org-mozilla-focus-beta
+friendly_name: Org Mozilla Focus Beta
 description: |-
-  User-facing views related to document namespace org-mozilla-focus-beta; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/org-mozilla-focus-beta
+  Views on data from org_mozilla_focus_beta
 dataset_base_acl: view
 user_facing: true
 labels: {}

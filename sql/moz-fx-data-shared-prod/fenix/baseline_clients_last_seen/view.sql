@@ -25,19 +25,3 @@ SELECT
   ),
 FROM
   `moz-fx-data-shared-prod.org_mozilla_fenix.baseline_clients_last_seen`
-UNION ALL
-SELECT
-  "org_mozilla_fenix_nightly" AS normalized_app_id,
-  * REPLACE (
-    mozfun.norm.fenix_app_info("org_mozilla_fenix_nightly", app_build).channel AS normalized_channel
-  ),
-FROM
-  `moz-fx-data-shared-prod.org_mozilla_fenix_nightly.baseline_clients_last_seen`
-UNION ALL
-SELECT
-  "org_mozilla_fennec_aurora" AS normalized_app_id,
-  * REPLACE (
-    mozfun.norm.fenix_app_info("org_mozilla_fennec_aurora", app_build).channel AS normalized_channel
-  ),
-FROM
-  `moz-fx-data-shared-prod.org_mozilla_fennec_aurora.baseline_clients_last_seen`

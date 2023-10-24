@@ -1,6 +1,6 @@
-friendly_name: org-mozilla-mozregression
+friendly_name: Org Mozilla Mozregression
 description: |-
-  User-facing views related to document namespace org-mozilla-mozregression; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/org-mozilla-mozregression
+  Views on data from org_mozilla_mozregression
 dataset_base_acl: view
 user_facing: true
 labels: {}

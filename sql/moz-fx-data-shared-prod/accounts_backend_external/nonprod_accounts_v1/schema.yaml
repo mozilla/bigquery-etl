@@ -1,47 +1,37 @@
 fields:
 - name: uid
-  type: STRING
+  type: BYTES
   mode: NULLABLE
-  description: |-
-    Account ID in hexadecimal format.
-    FxA stores this as bytes, for purposes of logging or integration
-    with other systems we convert it to a hex string.
 - name: normalizedEmail
   type: STRING
   mode: NULLABLE
-- name: email
-  type: STRING
-  mode: NULLABLE
 - name: emailVerified
-  type: BOOLEAN
+  type: INTEGER
   mode: NULLABLE
 - name: verifierVersion
   type: INTEGER
   mode: NULLABLE
 - name: verifierSetAt
-  type: TIMESTAMP
+  type: NUMERIC
   mode: NULLABLE
 - name: createdAt
-  type: TIMESTAMP
+  type: NUMERIC
   mode: NULLABLE
 - name: locale
   type: STRING
   mode: NULLABLE
 - name: lockedAt
-  type: TIMESTAMP
+  type: NUMERIC
   mode: NULLABLE
 - name: profileChangedAt
-  type: TIMESTAMP
-  mode: NULLABLE
-- name: keysChangedAt
-  type: TIMESTAMP
+  type: NUMERIC
   mode: NULLABLE
 - name: ecosystemAnonId
   type: STRING
   mode: NULLABLE
 - name: disabledAt
-  type: TIMESTAMP
+  type: NUMERIC
   mode: NULLABLE
 - name: metricsOptOutAt
-  type: TIMESTAMP
+  type: NUMERIC
   mode: NULLABLE

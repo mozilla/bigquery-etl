@@ -1,6 +1,6 @@
-friendly_name: bedrock
+friendly_name: Bedrock
 description: |-
-  User-facing views related to document namespace bedrock; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/bedrock
+  Views on data from bedrock
 dataset_base_acl: view
 user_facing: true
 labels: {}

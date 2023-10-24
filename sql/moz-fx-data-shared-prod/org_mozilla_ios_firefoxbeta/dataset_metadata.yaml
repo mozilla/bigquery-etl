@@ -1,6 +1,6 @@
-friendly_name: org-mozilla-ios-firefoxbeta
+friendly_name: Org Mozilla Ios Firefoxbeta
 description: |-
-  User-facing views related to document namespace org-mozilla-ios-firefoxbeta; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/org-mozilla-ios-firefoxbeta
+  Views on data from org_mozilla_ios_firefoxbeta
 dataset_base_acl: view
 user_facing: true
 labels: {}

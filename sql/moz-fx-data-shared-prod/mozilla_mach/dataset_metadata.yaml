@@ -1,6 +1,6 @@
-friendly_name: mozilla-mach
+friendly_name: Mozilla Mach
 description: |-
-  User-facing views related to document namespace mozilla-mach; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/mozilla-mach
+  Views on data from mozilla_mach
 dataset_base_acl: view
 user_facing: true
 labels: {}

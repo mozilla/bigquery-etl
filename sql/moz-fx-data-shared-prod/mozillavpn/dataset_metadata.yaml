@@ -1,6 +1,6 @@
-friendly_name: mozillavpn
+friendly_name: Mozillavpn
 description: |-
-  User-facing views related to document namespace mozillavpn; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/mozillavpn
+  Views on data from mozillavpn
 dataset_base_acl: view
 user_facing: true
 labels: {}

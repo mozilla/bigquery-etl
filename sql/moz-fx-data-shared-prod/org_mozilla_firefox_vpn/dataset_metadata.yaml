@@ -1,6 +1,6 @@
-friendly_name: org-mozilla-firefox-vpn
+friendly_name: Org Mozilla Firefox Vpn
 description: |-
-  User-facing views related to document namespace org-mozilla-firefox-vpn; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/org-mozilla-firefox-vpn
+  Views on data from org_mozilla_firefox_vpn
 dataset_base_acl: view
 user_facing: true
 labels: {}

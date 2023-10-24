@@ -1,6 +1,6 @@
-friendly_name: accounts-backend Derived
+friendly_name: Accounts Backend Derived
 description: |-
-  Derived tables related to document namespace accounts-backend, usually populated via queries defined in https://github.com/mozilla/bigquery-etl and managed by Airflow
+  Derived data for accounts_backend_derived
 dataset_base_acl: derived
 user_facing: false
 labels: {}

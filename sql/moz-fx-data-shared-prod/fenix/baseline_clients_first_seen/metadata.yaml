@@ -11,8 +11,6 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.org_mozilla_fenix.baseline_clients_first_seen
-  - moz-fx-data-shared-prod.org_mozilla_fenix_nightly.baseline_clients_first_seen
-  - moz-fx-data-shared-prod.org_mozilla_fennec_aurora.baseline_clients_first_seen
   - moz-fx-data-shared-prod.org_mozilla_firefox.baseline_clients_first_seen
   - moz-fx-data-shared-prod.org_mozilla_firefox_beta.baseline_clients_first_seen
 deprecated: false

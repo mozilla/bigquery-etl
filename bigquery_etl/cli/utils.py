@@ -96,7 +96,6 @@ def paths_matching_checks_pattern(
         yield checks_file, project, dataset, table
     else:
         print(f"No checks.sql file found in {sql_path}/{project_id}/{pattern}")
-        return None, None, None, None
 
 
 def paths_matching_name_pattern(

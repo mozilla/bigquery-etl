@@ -5,7 +5,36 @@ IF
   OPTIONS
     (enable_refresh = TRUE, refresh_interval_minutes = 5)
   AS
-  {% if dataset != "telemetry" %}
+  {% if "_cirrus" in dataset %}
+  -- Cirrus apps uses specialized Glean structure per events
+  WITH all_events AS (
+    SELECT
+      submission_timestamp,
+      events
+    FROM
+       `moz-fx-data-shared-prod.{{ dataset }}_live.enrollment_v1`
+  ),
+  experiment_events AS (
+    SELECT
+      submission_timestamp AS `timestamp`,
+      event.category AS `type`,
+      CAST(event.extra[safe_offset(i)].value AS STRING) AS branch,
+      CAST(event.extra[safe_offset(j)].value AS STRING) AS experiment,
+      event.name AS event_method
+    FROM
+      all_events,
+      UNNEST(events) AS event,
+      -- Workaround for https://issuetracker.google.com/issues/182829918
+      -- To prevent having the branch name set to the experiment slug,
+      -- the number of generated array indices needs to be different.
+      UNNEST(GENERATE_ARRAY(0, 50)) AS i,
+      UNNEST(GENERATE_ARRAY(0, 51)) AS j
+    WHERE
+      event.category = 'cirrus_events'
+      AND CAST(event.extra[safe_offset(i)].key AS STRING) = 'branch'
+      AND CAST(event.extra[safe_offset(j)].key AS STRING) = 'experiment'
+  )
+  {% elif dataset != "telemetry" %}
   -- Glean apps use Nimbus for experimentation
   WITH all_events AS (
     SELECT
@@ -34,6 +63,7 @@ IF
       AND CAST(event.extra[safe_offset(i)].key AS STRING) = 'branch'
       AND CAST(event.extra[safe_offset(j)].key AS STRING) = 'experiment'
   )
+
   {% else %}
   -- Non-Glean apps might use Normandy and Nimbus for experimentation
   WITH experiment_events AS (

@@ -186,6 +186,7 @@ class GleanTable:
 
         init_filename = f"{self.target_table_id}.init.sql"
         query_filename = f"{self.target_table_id}.query.sql"
+        checks_filename = f"{self.target_table_id}.checks.sql"
         view_filename = f"{self.target_table_id[:-3]}.view.sql"
         view_metadata_filename = f"{self.target_table_id[:-3]}.metadata.yaml"
         table_metadata_filename = f"{self.target_table_id}.metadata.yaml"
@@ -208,6 +209,7 @@ class GleanTable:
         view_sql = render(
             view_filename, template_folder=PATH / "templates", **render_kwargs
         )
+
         view_metadata = render(
             view_metadata_filename,
             template_folder=PATH / "templates",
@@ -220,6 +222,14 @@ class GleanTable:
             format=False,
             **render_kwargs,
         )
+
+        # Checks are optional, for now!
+        try:
+            checks_sql = render(
+                checks_filename, template_folder=PATH / "templates", **render_kwargs
+            )
+        except TemplateNotFound:
+            checks_sql = None
 
         if not self.no_init:
             try:
@@ -234,24 +244,28 @@ class GleanTable:
                     **render_kwargs,
                 )
 
+        # generated files to update
+        Artifact = namedtuple("Artifact", "table_id basename sql")
+        artifacts = [
+            Artifact(view, "metadata.yaml", view_metadata),
+            Artifact(table, "metadata.yaml", table_metadata),
+            Artifact(table, "query.sql", query_sql),
+        ]
+
         if not (referenced_table_exists(view_sql)):
             logging.info("Skipping view for table which doesn't exist:" f" {table}")
-            return
+        else:
+            artifacts.append(
+                Artifact(view, "view.sql", view_sql))
 
         skip_existing_artifact = self.skip_existing(output_dir, project_id)
 
         if output_dir:
-            # generated files to update
-            Artifact = namedtuple("Artifact", "table_id basename sql")
-            artifacts = [
-                Artifact(view, "metadata.yaml", view_metadata),
-                Artifact(view, "view.sql", view_sql),
-                Artifact(table, "metadata.yaml", table_metadata),
-                Artifact(table, "query.sql", query_sql),
-            ]
-
             if not self.no_init:
                 artifacts.append(Artifact(table, "init.sql", init_sql))
+
+            if checks_sql:
+                artifacts.append(Artifact(table, "checks.sql", checks_sql))
 
             for artifact in artifacts:
                 destination = (

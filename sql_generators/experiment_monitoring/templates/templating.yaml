@@ -9,10 +9,10 @@ queries:
     per_app: false
   experiment_events_live_v1:
     per_app: true
-    start_date: '2023-03-13'
+    start_date: "2023-10-10"
   experiment_search_events_live_v1:
     per_app: true
-    start_date: '2023-03-13'
+    start_date: "2023-10-10"
 search_metrics:
   telemetry:
     ad_clicks_count: payload.processes.parent.keyed_scalars.browser_search_ad_clicks
@@ -66,6 +66,10 @@ search_metrics:
     ad_clicks_count: null
     search_with_ads_count: null
     search_count: null
+  monitor_cirrus:
+    ad_clicks_count: null
+    search_with_ads_count: null
+    search_count: null
 applications:
   - org_mozilla_firefox_beta
   - org_mozilla_fenix
@@ -80,3 +84,4 @@ applications:
   - org_mozilla_focus_beta
   - org_mozilla_ios_klar
   - org_mozilla_ios_focus
+  - monitor_cirrus

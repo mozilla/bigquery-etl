@@ -26,7 +26,7 @@ def parsed_routines():
     if _parsed_routines is None:
         _parsed_routines = {
             routine.filepath: routine
-            for project in (project_dirs() + ["tests/assert"])
+            for project in project_dirs()
             for routine in parse_routines(project)
         }
 

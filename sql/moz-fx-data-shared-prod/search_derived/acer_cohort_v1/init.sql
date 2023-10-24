@@ -1,3 +1,6 @@
+CREATE TABLE IF NOT EXISTS
+  `moz-fx-data-shared-prod`.search_derived.acer_cohort_v1
+AS
 -- Query for search_derived.acer_cohort_v1
 -- Pulls all client_ids that were using an Acer distribution in 2017-2022
 SELECT DISTINCT

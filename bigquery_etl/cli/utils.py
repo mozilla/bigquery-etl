@@ -5,6 +5,7 @@ import os
 import re
 from fnmatch import fnmatchcase
 from pathlib import Path
+from typing import Iterator, List, Optional, Tuple
 
 import click
 from google.auth.exceptions import DefaultCredentialsError
@@ -78,19 +79,21 @@ def table_matches_patterns(pattern, invert, table):
     return matching != invert
 
 
-def paths_matching_checks_pattern(pattern, sql_path, project_id):
+def paths_matching_checks_pattern(
+    pattern: str, sql_path: Optional[str], project_id: Optional[str]
+) -> Iterator[Tuple[Path, str, str, str]]:
     """Return single path to checks.sql matching the name pattern."""
     checks_files = paths_matching_name_pattern(
         pattern, sql_path, project_id, ["checks.sql"], CHECKS_FILE_RE
     )
 
-    if len(checks_files) == 1:
-        match = CHECKS_FILE_RE.match(str(checks_files[0]))
+    for checks_file in checks_files:
+        match = CHECKS_FILE_RE.match(str(checks_file))
         if match:
             project = match.group(1)
             dataset = match.group(2)
             table = match.group(3)
-        return checks_files[0], project, dataset, table
+        yield checks_file, project, dataset, table
     else:
         print(f"No checks.sql file found in {sql_path}/{project_id}/{pattern}")
         return None, None, None, None
@@ -98,9 +101,9 @@ def paths_matching_checks_pattern(pattern, sql_path, project_id):
 
 def paths_matching_name_pattern(
     pattern, sql_path, project_id, files=["*.sql"], file_regex=QUERY_FILE_RE
-):
+) -> List[Path]:
     """Return paths to queries matching the name pattern."""
-    matching_files = []
+    matching_files: List[Path] = []
 
     if pattern is None:
         pattern = "*.*"
@@ -116,7 +119,7 @@ def paths_matching_name_pattern(
         if project_id is not None:
             sql_path = sql_path / project_id
 
-        all_matching_files = []
+        all_matching_files: List[Path] = []
 
         for file in files:
             all_matching_files.extend(Path(sql_path).rglob(file))

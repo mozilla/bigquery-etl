@@ -74,7 +74,7 @@ Falkland Islands (Malvinas),FK,Americas,Latin America and the Caribbean,South Am
 Faroe Islands,FO,Europe,Northern Europe,Unspecified,FALSE,FALSE
 Fiji,FJ,Oceania,Melanesia,Unspecified,FALSE,FALSE
 Finland,FI,Europe,Northern Europe,Unspecified,FALSE,TRUE
-France,FR,Europe,Western Europe,Unspecified,FALSE,TRUE
+France,FR,Europe,Western Europe,Unspecified,TRUE,TRUE
 French Guiana,GF,Americas,Latin America and the Caribbean,South America,FALSE,FALSE
 French Polynesia,PF,Oceania,Polynesia,Unspecified,FALSE,FALSE
 French Southern Territories,TF,Africa,Sub-Saharan Africa,Eastern Africa,FALSE,FALSE
@@ -108,7 +108,7 @@ Iraq,IQ,Asia,Western Asia,Unspecified,FALSE,FALSE
 Ireland,IE,Europe,Northern Europe,Unspecified,TRUE,TRUE
 Isle of Man,IM,Europe,Northern Europe,Unspecified,FALSE,FALSE
 Israel,IL,Asia,Western Asia,Unspecified,FALSE,FALSE
-Italy,IT,Europe,Southern Europe,Unspecified,FALSE,TRUE
+Italy,IT,Europe,Southern Europe,Unspecified,TRUE,TRUE
 Jamaica,JM,Americas,Latin America and the Caribbean,Caribbean,FALSE,FALSE
 Japan,JP,Asia,Eastern Asia,Unspecified,FALSE,FALSE
 Jersey,JE,Europe,Northern Europe,Channel Islands,FALSE,FALSE
@@ -207,7 +207,7 @@ Somalia,SO,Africa,Sub-Saharan Africa,Eastern Africa,FALSE,FALSE
 South Africa,ZA,Africa,Sub-Saharan Africa,Southern Africa,FALSE,FALSE
 South Georgia and the South Sandwich Islands,GS,Americas,Latin America and the Caribbean,South America,FALSE,FALSE
 South Sudan,SS,Africa,Sub-Saharan Africa,Eastern Africa,FALSE,FALSE
-Spain,ES,Europe,Southern Europe,Unspecified,FALSE,TRUE
+Spain,ES,Europe,Southern Europe,Unspecified,TRUE,TRUE
 Sri Lanka,LK,Asia,Southern Asia,Unspecified,FALSE,FALSE
 Sudan,SD,Africa,Northern Africa,Unspecified,FALSE,FALSE
 Suriname,SR,Americas,Latin America and the Caribbean,South America,FALSE,FALSE

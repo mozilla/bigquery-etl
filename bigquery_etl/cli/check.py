@@ -114,19 +114,18 @@ def render(
     ctx: click.Context, dataset: str, project_id: Optional[str], sql_dir: Optional[str]
 ) -> None:
     """Render a check's Jinja template."""
-    checks_file, project_id, dataset_id, table = paths_matching_checks_pattern(
+    for checks_file, project_id, dataset_id, table in paths_matching_checks_pattern(
         dataset, sql_dir, project_id=project_id
-    )
-
-    click.echo(
-        _render(
-            checks_file,
-            dataset_id,
-            table,
-            project_id=project_id,
-            query_arguments=ctx.args[:],
+    ):
+        click.echo(
+            _render(
+                checks_file,
+                dataset_id,
+                table,
+                project_id=project_id,
+                query_arguments=ctx.args[:],
+            )
         )
-    )
 
     return None
 
@@ -214,19 +213,18 @@ def run(ctx, dataset, project_id, sql_dir, marker, dry_run):
         )
         sys.exit(1)
 
-    checks_file, project_id, dataset_id, table = paths_matching_checks_pattern(
+    for checks_file, project_id, dataset_id, table in paths_matching_checks_pattern(
         dataset, sql_dir, project_id=project_id
-    )
-
-    _run_check(
-        checks_file,
-        project_id,
-        dataset_id,
-        table,
-        ctx.args,
-        dry_run=dry_run,
-        marker=marker,
-    )
+    ):
+        _run_check(
+            checks_file,
+            project_id,
+            dataset_id,
+            table,
+            ctx.args,
+            dry_run=dry_run,
+            marker=marker,
+        )
 
 
 def _run_check(

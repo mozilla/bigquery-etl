@@ -119,12 +119,11 @@ bqetl_accounts_backend_external:
   default_args:
     owner: akomar@mozilla.com
     start_date: "2023-09-19"
-    email: ["akomar@mozilla.com"]
+    email: ["akomar@mozilla.com", "telemetry-alerts@mozilla.com"]
     retries: 1
     retry_delay: 10m
   tags:
     - impact/tier_3
-    - triage/no_triage
     - repo/bigquery-etl
 
 bqetl_subplat:

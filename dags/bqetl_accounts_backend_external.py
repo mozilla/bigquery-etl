@@ -29,7 +29,7 @@ default_args = {
     "owner": "akomar@mozilla.com",
     "start_date": datetime.datetime(2023, 9, 19, 0, 0),
     "end_date": None,
-    "email": ["akomar@mozilla.com"],
+    "email": ["akomar@mozilla.com", "telemetry-alerts@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=600),
     "email_on_failure": True,
@@ -37,7 +37,7 @@ default_args = {
     "retries": 1,
 }
 
-tags = ["impact/tier_3", "repo/bigquery-etl", "triage/no_triage"]
+tags = ["impact/tier_3", "repo/bigquery-etl"]
 
 with DAG(
     "bqetl_accounts_backend_external",
@@ -46,13 +46,25 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
+    accounts_backend_external__accounts__v1 = bigquery_etl_query(
+        task_id="accounts_backend_external__accounts__v1",
+        destination_table="accounts_v1",
+        dataset_id="accounts_backend_external",
+        project_id="moz-fx-data-shared-prod",
+        owner="akomar@mozilla.com",
+        email=["akomar@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
     accounts_backend_external__nonprod_accounts__v1 = bigquery_etl_query(
         task_id="accounts_backend_external__nonprod_accounts__v1",
         destination_table="nonprod_accounts_v1",
         dataset_id="accounts_backend_external",
         project_id="moz-fx-data-shared-prod",
         owner="akomar@mozilla.com",
-        email=["akomar@mozilla.com"],
+        email=["akomar@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,

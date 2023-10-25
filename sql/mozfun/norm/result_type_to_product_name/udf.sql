@@ -1,6 +1,12 @@
 CREATE OR REPLACE FUNCTION norm.result_type_to_product_name(res STRING)
 RETURNS STRING AS (
   CASE
+    WHEN res IN ('autofill_origin', 'autofill_url')
+      THEN 'autofill'
+    WHEN res IN ('addon')
+      THEN 'xchannels_add_on'
+    WHEN res IN ('rs_amo')
+      THEN 'suggest_add_on'
     WHEN res IN ('search_suggest', 'search_history', 'search_suggest_rich')
       THEN 'default_partner_search_suggestion'
     WHEN res IN ('search_engine')
@@ -17,8 +23,6 @@ RETURNS STRING AS (
       THEN 'admarketplace_sponsored'
     WHEN res IN ('merino_top_picks')
       THEN 'navigational'
-    WHEN res IN ('addon', 'rs_amo')
-      THEN 'add_on'
     WHEN res IN ('rs_adm_nonsponsored', 'merino_adm_nonsponsored', 'suggest_non_sponsor')
       THEN 'wikipedia_enhanced'
     WHEN res IN ('dynamic_wikipedia', 'merino_wikipedia')
@@ -35,7 +39,7 @@ RETURNS STRING AS (
       THEN 'quick_action'
     WHEN res IN ('rs_pocket')
       THEN 'pocket_collection'
-    ELSE NULL
+    ELSE 'other'
   END
 );
 

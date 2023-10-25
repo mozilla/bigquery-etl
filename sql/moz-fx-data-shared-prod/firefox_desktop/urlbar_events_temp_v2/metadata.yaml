@@ -1,0 +1,14 @@
+friendly_name: null
+description: |-
+  None
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.firefox_desktop_derived.urlbar_events_v2
+deprecated: false

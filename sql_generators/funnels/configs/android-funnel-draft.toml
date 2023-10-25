@@ -1,0 +1,126 @@
+destination_dataset = "android_onboarding"
+platform = "firefox_android"
+owners = ["loines@mozilla.org"]  # optional; users getting notification if funnel run fails
+version = "1"  # optional; default is set to 1
+
+[funnels]
+
+[funnels.onboarding_funnel]
+
+friendly_name = "Start Subscription Funnel"
+description = "Funnel from Signup to starting a subscription"
+steps = ["first_card_impression", "first_card_primary_click", "second_card_impression", "second_card_primary_click", "third_card_impression", "third_card_primary_click"]
+dimensions = ["funnel_id"]
+
+
+[steps]
+
+[steps.first_card_impression]
+friendly_name = "First Card Impression"
+description = "Impression on First Onboarding Card"
+data_source = "onboarding_events"
+filter_expression = """
+    mozfun.map.get_key(extra, 'sequence_position') = 1 AND
+    mozfun.map.get_key(extra, 'action') = 'impression'
+"""
+join_previous_step_on = "client_info.client_id"
+select_expression = "client_info.client_id"
+aggregation = "count distinct"
+
+[steps.first_card_primary_click]
+friendly_name = "First Card Click on Primary Button"
+description = "Primary Click on First Onboarding Card"
+data_source = "onboarding_events"
+filter_expression = """
+    mozfun.map.get_key(extra, 'sequence_position') = 1 AND
+    mozfun.map.get_key(extra, 'action') = 'click' AND
+    mozfun.map.get_key(extra, 'element_type') = 'primary_button'
+"""
+join_previous_step_on = "client_info.client_id"
+select_expression = "client_info.client_id"
+aggregation = "count distinct"
+
+[steps.second_card_impression]
+friendly_name = "First Card Impression"
+description = "Impression on Second Onboarding Card"
+data_source = "onboarding_events"
+filter_expression = """
+    mozfun.map.get_key(extra, 'sequence_position') = 2 AND
+    mozfun.map.get_key(extra, 'action') = 'impression'
+"""
+join_previous_step_on = "client_info.client_id"
+select_expression = "client_info.client_id"
+aggregation = "count distinct"
+
+[steps.second_card_primary_click]
+friendly_name = "First Card Click on Primary Button"
+description = "Primary Click on Second Onboarding Card"
+data_source = "onboarding_events"
+filter_expression = """
+    mozfun.map.get_key(extra, 'sequence_position') = 2 AND
+    mozfun.map.get_key(extra, 'action') = 'click' AND
+    mozfun.map.get_key(extra, 'element_type') = 'primary_button'
+"""
+join_previous_step_on = "client_info.client_id"
+select_expression = "client_info.client_id"
+aggregation = "count distinct"
+
+[steps.third_card_impression]
+friendly_name = "Third Card Impression"
+description = "Impression on Second Onboarding Card"
+data_source = "onboarding_events"
+filter_expression = """
+    mozfun.map.get_key(extra, 'sequence_position') = 3 AND
+    mozfun.map.get_key(extra, 'action') = 'impression'
+"""
+join_previous_step_on = "client_info.client_id"
+select_expression = "client_info.client_id"
+aggregation = "count distinct"
+
+[steps.third_card_primary_click]
+friendly_name = "Third Card Click on Primary Button"
+description = "Primary Click on Second Onboarding Card"
+data_source = "onboarding_events"
+filter_expression = """
+    mozfun.map.get_key(extra, 'sequence_position') = 3 AND
+    mozfun.map.get_key(extra, 'action') = 'click' AND
+    mozfun.map.get_key(extra, 'element_type') = 'primary_button'
+"""
+join_previous_step_on = "client_info.client_id"
+select_expression = "client_info.client_id"
+aggregation = "count distinct"
+
+[data_sources]
+
+[data_sources.onboarding_events]
+from_expression = """
+    (SELECT * FROM mozdata.fenix.events ev
+      CROSS JOIN UNNEST(events) e
+    WHERE e.category = 'onboarding')
+"""
+submission_date_column = "DATE(submission_timestamp)"
+client_id_column = "client_info.client_id"
+
+
+[dimensions]
+
+[dimensions.action]
+data_source = "onboarding_events"
+select_expression = "mozfun.map.get_key(extra, 'action')"
+friendly_name = "Card Action"
+description = "Action Taken on Card"
+client_id_column = "client_info.client_id"
+
+[dimensions.funnel_id]
+data_source = "onboarding_events"
+select_expression = "mozfun.map.get_key(extra, 'sequence_id')"
+friendly_name = "Funnel ID"
+description = "ID of the Onboarding Funnel"
+client_id_column = "client_info.client_id"
+
+[dimensions.element_type]
+data_source = "onboarding_events"
+select_expression = "mozfun.map.get_key(extra, 'element_type')"
+friendly_name = "Element Type"
+description = "Type of Card Element Interacted With"
+client_id_column = "client_info.client_id"

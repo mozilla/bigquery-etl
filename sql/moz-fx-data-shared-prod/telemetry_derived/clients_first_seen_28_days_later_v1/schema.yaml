@@ -85,3 +85,7 @@ fields:
 - name: days_interacted_bits
   type: INTEGER
   mode: NULLABLE
+- name: startup_profile_selection_reason
+  type: STRING
+  mode: NULLABLE
+  description: Client's first startup_profile_selection reason.

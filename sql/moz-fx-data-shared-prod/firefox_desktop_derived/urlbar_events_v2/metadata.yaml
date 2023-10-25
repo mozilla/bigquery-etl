@@ -1,7 +1,7 @@
 friendly_name: Urlbar Events
 description: |-
-  Each row in this table represents one [urlbar.engagement](https://dictionary.telemetry.mozilla.org/apps/firefox_desktop/metrics/urlbar_engagement)
-  or [urlbar.abandonment](https://dictionary.telemetry.mozilla.org/apps/firefox_desktop/metrics/urlbar_abandonment) event. A urlbar session ends
+  Each row in this table represents one engagement (https://dictionary.telemetry.mozilla.org/apps/firefox_desktop/metrics/urlbar_engagement)
+  or abandonment(https://dictionary.telemetry.mozilla.org/apps/firefox_desktop/metrics/urlbar_abandonment) event. A urlbar session ends
   when the urlbar dropdown menu closes, however, not all events mark the end of a urlbar session. To identify the events marking the end of a
   urlbar session, filter on the field is_terminal = true.
 owners:

@@ -426,3 +426,8 @@ generate:
     - sql/moz-fx-data-shared-prod/mozilla_vpn/events/**
     - sql/moz-fx-data-shared-prod/mozilla_vpn/main/**
     - sql/moz-fx-data-shared-prod/fenix/client_deduplication/**
+  event_monitoring:
+    skip_apps:
+    - mlhackweek_search
+    - regrets_reporter
+    - regrets_reporter_ucs

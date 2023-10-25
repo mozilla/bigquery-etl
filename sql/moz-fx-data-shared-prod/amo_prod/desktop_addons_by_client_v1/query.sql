@@ -15,26 +15,12 @@ try {
 }
 """;
 
-WITH per_client AS (
+WITH cleaned_main AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
     client_id,
     sample_id,
-    ARRAY_CONCAT_AGG(
-      -- As of 2020-07-17, we parse addon info from the payload.info.addons string
-      -- because it provides more complete information compared to environment.addons.active_addons
-      -- See https://bugzilla.mozilla.org/show_bug.cgi?id=1653499
-      -- Previous logic in https://github.com/mozilla/bigquery-etl/blob/55a429924beee3c31aca4fee0063d655f1d527f2/sql/amo_prod/desktop_addons_by_client_v1/query.sql
-      ARRAY(
-        SELECT AS STRUCT
-          decode_uri_component(REGEXP_EXTRACT(TRIM(addon), "(.+):")) AS id,
-          REGEXP_EXTRACT(TRIM(addon), ":(.+)") AS version
-        FROM
-          UNNEST(SPLIT(payload.info.addons, ",")) AS addon
-      )
-      ORDER BY
-        submission_timestamp
-    ) AS addons,
+    payload.info.addons,
     -- We always want to take the most recent seen version per
     -- https://bugzilla.mozilla.org/show_bug.cgi?id=1693308
     ARRAY_AGG(
@@ -57,7 +43,41 @@ WITH per_client AS (
   GROUP BY
     submission_date,
     sample_id,
-    client_id
+    client_id,
+    addons
+),
+per_client AS (
+  SELECT
+    submission_date,
+    client_id,
+    sample_id,
+    ARRAY_CONCAT_AGG(
+      -- As of 2020-07-17, we parse addon info from the payload.info.addons string
+      -- because it provides more complete information compared to environment.addons.active_addons
+      -- See https://bugzilla.mozilla.org/show_bug.cgi?id=1653499
+      -- Previous logic in https://github.com/mozilla/bigquery-etl/blob/55a429924beee3c31aca4fee0063d655f1d527f2/sql/amo_prod/desktop_addons_by_client_v1/query.sql
+      ARRAY(
+        SELECT AS STRUCT
+          decode_uri_component(REGEXP_EXTRACT(TRIM(addon), "(.+):")) AS id,
+          REGEXP_EXTRACT(TRIM(addon), ":(.+)") AS version
+        FROM
+          UNNEST(SPLIT(addons, ",")) AS addon
+      )
+    ) AS addons,
+    app_version,
+    country,
+    locale,
+    app_os,
+  FROM
+    cleaned_main
+  GROUP BY
+    submission_date,
+    sample_id,
+    client_id,
+    app_version,
+    country,
+    locale,
+    app_os
 )
 SELECT
   * EXCEPT (addons),

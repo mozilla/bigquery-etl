@@ -9,7 +9,7 @@ version = "1"  # optional; default is set to 1
 
 friendly_name = "Start Subscription Funnel"
 description = "Funnel from Signup to starting a subscription"
-steps = ["first_card", "second_card", "third_card"]
+steps = ["first_card", "second_card", "third_card", "onboarding_completed"]
 dimensions = ["funnel_id" , "action", "element_type"]
 
 
@@ -21,6 +21,7 @@ description = "First Onboarding Card"
 data_source = "onboarding_events"
 where_expression = """
     mozfun.map.get_key(extra, 'sequence_position') = '1'
+    AND e.name != 'completed'
 """
 join_previous_step_on = "client_info.client_id"
 select_expression = "client_info.client_id"
@@ -32,6 +33,7 @@ description = "Impression on Second Onboarding Card"
 data_source = "onboarding_events"
 where_expression = """
     mozfun.map.get_key(extra, 'sequence_position') = '2'
+    AND e.name != 'completed'
 """
 join_previous_step_on = "client_info.client_id"
 select_expression = "client_info.client_id"
@@ -43,6 +45,18 @@ description = "Third Onboarding Card"
 data_source = "onboarding_events"
 where_expression = """
     mozfun.map.get_key(extra, 'sequence_position') = '3'
+    AND e.name != 'completed'
+"""
+join_previous_step_on = "client_info.client_id"
+select_expression = "client_info.client_id"
+aggregation = "count distinct"
+
+[steps.onboarding_completed]
+friendly_name = "Third Card"
+description = "Third Onboarding Card"
+data_source = "onboarding_events"
+where_expression = """
+    e.name = 'completed'
 """
 join_previous_step_on = "client_info.client_id"
 select_expression = "client_info.client_id"

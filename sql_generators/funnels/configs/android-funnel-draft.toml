@@ -9,82 +9,40 @@ version = "1"  # optional; default is set to 1
 
 friendly_name = "Start Subscription Funnel"
 description = "Funnel from Signup to starting a subscription"
-steps = ["first_card_impression", "first_card_primary_click", "second_card_impression", "second_card_primary_click", "third_card_impression", "third_card_primary_click"]
-dimensions = ["funnel_id"]
+steps = ["first_card", "second_card", "third_card"]
+dimensions = ["funnel_id" , "action", "element_type"]
 
 
 [steps]
 
-[steps.first_card_impression]
-friendly_name = "First Card Impression"
-description = "Impression on First Onboarding Card"
+[steps.first_card]
+friendly_name = "First Card"
+description = "First Onboarding Card"
 data_source = "onboarding_events"
 where_expression = """
-    mozfun.map.get_key(extra, 'sequence_position') = '1' AND
-    mozfun.map.get_key(extra, 'action') = 'impression'
+    mozfun.map.get_key(extra, 'sequence_position') = '1'
 """
 join_previous_step_on = "client_info.client_id"
 select_expression = "client_info.client_id"
 aggregation = "count distinct"
 
-[steps.first_card_primary_click]
-friendly_name = "First Card Click on Primary Button"
-description = "Primary Click on First Onboarding Card"
-data_source = "onboarding_events"
-where_expression = """
-    mozfun.map.get_key(extra, 'sequence_position') = '1' AND
-    mozfun.map.get_key(extra, 'action') = 'click' AND
-    mozfun.map.get_key(extra, 'element_type') = 'primary_button'
-"""
-join_previous_step_on = "client_info.client_id"
-select_expression = "client_info.client_id"
-aggregation = "count distinct"
-
-[steps.second_card_impression]
-friendly_name = "First Card Impression"
+[steps.second_card]
+friendly_name = "Second Card"
 description = "Impression on Second Onboarding Card"
 data_source = "onboarding_events"
 where_expression = """
-    mozfun.map.get_key(extra, 'sequence_position') = '2' AND
-    mozfun.map.get_key(extra, 'action') = 'impression'
+    mozfun.map.get_key(extra, 'sequence_position') = '2'
 """
 join_previous_step_on = "client_info.client_id"
 select_expression = "client_info.client_id"
 aggregation = "count distinct"
 
-[steps.second_card_primary_click]
-friendly_name = "First Card Click on Primary Button"
-description = "Primary Click on Second Onboarding Card"
+[steps.third_card]
+friendly_name = "Third Card"
+description = "Third Onboarding Card"
 data_source = "onboarding_events"
 where_expression = """
-    mozfun.map.get_key(extra, 'sequence_position') = '2' AND
-    mozfun.map.get_key(extra, 'action') = 'click' AND
-    mozfun.map.get_key(extra, 'element_type') = 'primary_button'
-"""
-join_previous_step_on = "client_info.client_id"
-select_expression = "client_info.client_id"
-aggregation = "count distinct"
-
-[steps.third_card_impression]
-friendly_name = "Third Card Impression"
-description = "Impression on Second Onboarding Card"
-data_source = "onboarding_events"
-where_expression = """
-    mozfun.map.get_key(extra, 'sequence_position') = '3' AND
-    mozfun.map.get_key(extra, 'action') = 'impression'
-"""
-join_previous_step_on = "client_info.client_id"
-select_expression = "client_info.client_id"
-aggregation = "count distinct"
-
-[steps.third_card_primary_click]
-friendly_name = "Third Card Click on Primary Button"
-description = "Primary Click on Second Onboarding Card"
-data_source = "onboarding_events"
-where_expression = """
-    mozfun.map.get_key(extra, 'sequence_position') = '3' AND
-    mozfun.map.get_key(extra, 'action') = 'click' AND
-    mozfun.map.get_key(extra, 'element_type') = 'primary_button'
+    mozfun.map.get_key(extra, 'sequence_position') = '3'
 """
 join_previous_step_on = "client_info.client_id"
 select_expression = "client_info.client_id"

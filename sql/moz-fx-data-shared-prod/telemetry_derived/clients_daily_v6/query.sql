@@ -636,6 +636,7 @@ clients_summary AS (
     payload.processes.parent.keyed_scalars.library_opened AS scalar_parent_library_opened,
     payload.processes.parent.keyed_scalars.library_search AS scalar_parent_library_search,
     payload.processes.parent.scalars.places_previousday_visits AS places_previousday_visits,
+    payload.processes.parent.scalars.startup_profile_selection_reason AS startup_profile_selection_reason,
     -- CAUTION: the order of fields here must match the order defined in
     -- count_histograms above and offsets must increment on each line.
     count_histograms[OFFSET(0)].histogram AS histogram_parent_devtools_aboutdebugging_opened_count,
@@ -1732,6 +1733,9 @@ aggregates AS (
     ARRAY_AGG(user_pref_browser_urlbar_suggest_bestmatch ORDER BY submission_timestamp DESC)[
       OFFSET(0)
     ] AS user_pref_browser_urlbar_suggest_bestmatch,
+    ARRAY_AGG(startup_profile_selection_reason ORDER BY submission_timestamp ASC)[
+      OFFSET(0)
+    ] AS startup_profile_selection_reason_first,
     SUM(
       scalar_parent_browser_ui_interaction_textrecognition_error
     ) AS scalar_parent_browser_ui_interaction_textrecognition_error_sum,

@@ -19,7 +19,7 @@ WITH onboarding_funnel_first_card_impression AS (
     )
   WHERE
     DATE(submission_timestamp) = @submission_date
-    AND mozfun.map.get_key(extra, 'sequence_position') = 1
+    AND mozfun.map.get_key(extra, 'sequence_position') = '1'
     AND mozfun.map.get_key(extra, 'action') = 'impression'
 ),
 onboarding_funnel_first_card_primary_click AS (
@@ -47,7 +47,7 @@ onboarding_funnel_first_card_primary_click AS (
     AND prev.join_key = client_info.client_id
   WHERE
     DATE(submission_timestamp) = @submission_date
-    AND mozfun.map.get_key(extra, 'sequence_position') = 1
+    AND mozfun.map.get_key(extra, 'sequence_position') = '1'
     AND mozfun.map.get_key(extra, 'action') = 'click'
     AND mozfun.map.get_key(extra, 'element_type') = 'primary_button'
 ),
@@ -76,7 +76,7 @@ onboarding_funnel_second_card_impression AS (
     AND prev.join_key = client_info.client_id
   WHERE
     DATE(submission_timestamp) = @submission_date
-    AND mozfun.map.get_key(extra, 'sequence_position') = 2
+    AND mozfun.map.get_key(extra, 'sequence_position') = '2'
     AND mozfun.map.get_key(extra, 'action') = 'impression'
 ),
 onboarding_funnel_second_card_primary_click AS (
@@ -104,7 +104,7 @@ onboarding_funnel_second_card_primary_click AS (
     AND prev.join_key = client_info.client_id
   WHERE
     DATE(submission_timestamp) = @submission_date
-    AND mozfun.map.get_key(extra, 'sequence_position') = 2
+    AND mozfun.map.get_key(extra, 'sequence_position') = '2'
     AND mozfun.map.get_key(extra, 'action') = 'click'
     AND mozfun.map.get_key(extra, 'element_type') = 'primary_button'
 ),
@@ -133,7 +133,7 @@ onboarding_funnel_third_card_impression AS (
     AND prev.join_key = client_info.client_id
   WHERE
     DATE(submission_timestamp) = @submission_date
-    AND mozfun.map.get_key(extra, 'sequence_position') = 3
+    AND mozfun.map.get_key(extra, 'sequence_position') = '3'
     AND mozfun.map.get_key(extra, 'action') = 'impression'
 ),
 onboarding_funnel_third_card_primary_click AS (
@@ -161,7 +161,7 @@ onboarding_funnel_third_card_primary_click AS (
     AND prev.join_key = client_info.client_id
   WHERE
     DATE(submission_timestamp) = @submission_date
-    AND mozfun.map.get_key(extra, 'sequence_position') = 3
+    AND mozfun.map.get_key(extra, 'sequence_position') = '3'
     AND mozfun.map.get_key(extra, 'action') = 'click'
     AND mozfun.map.get_key(extra, 'element_type') = 'primary_button'
 ),

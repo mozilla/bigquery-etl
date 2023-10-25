@@ -20,7 +20,7 @@ friendly_name = "First Card Impression"
 description = "Impression on First Onboarding Card"
 data_source = "onboarding_events"
 where_expression = """
-    mozfun.map.get_key(extra, 'sequence_position') = 1 AND
+    mozfun.map.get_key(extra, 'sequence_position') = '1' AND
     mozfun.map.get_key(extra, 'action') = 'impression'
 """
 join_previous_step_on = "client_info.client_id"
@@ -32,7 +32,7 @@ friendly_name = "First Card Click on Primary Button"
 description = "Primary Click on First Onboarding Card"
 data_source = "onboarding_events"
 where_expression = """
-    mozfun.map.get_key(extra, 'sequence_position') = 1 AND
+    mozfun.map.get_key(extra, 'sequence_position') = '1' AND
     mozfun.map.get_key(extra, 'action') = 'click' AND
     mozfun.map.get_key(extra, 'element_type') = 'primary_button'
 """
@@ -45,7 +45,7 @@ friendly_name = "First Card Impression"
 description = "Impression on Second Onboarding Card"
 data_source = "onboarding_events"
 where_expression = """
-    mozfun.map.get_key(extra, 'sequence_position') = 2 AND
+    mozfun.map.get_key(extra, 'sequence_position') = '2' AND
     mozfun.map.get_key(extra, 'action') = 'impression'
 """
 join_previous_step_on = "client_info.client_id"
@@ -57,7 +57,7 @@ friendly_name = "First Card Click on Primary Button"
 description = "Primary Click on Second Onboarding Card"
 data_source = "onboarding_events"
 where_expression = """
-    mozfun.map.get_key(extra, 'sequence_position') = 2 AND
+    mozfun.map.get_key(extra, 'sequence_position') = '2' AND
     mozfun.map.get_key(extra, 'action') = 'click' AND
     mozfun.map.get_key(extra, 'element_type') = 'primary_button'
 """
@@ -70,7 +70,7 @@ friendly_name = "Third Card Impression"
 description = "Impression on Second Onboarding Card"
 data_source = "onboarding_events"
 where_expression = """
-    mozfun.map.get_key(extra, 'sequence_position') = 3 AND
+    mozfun.map.get_key(extra, 'sequence_position') = '3' AND
     mozfun.map.get_key(extra, 'action') = 'impression'
 """
 join_previous_step_on = "client_info.client_id"
@@ -82,7 +82,7 @@ friendly_name = "Third Card Click on Primary Button"
 description = "Primary Click on Second Onboarding Card"
 data_source = "onboarding_events"
 where_expression = """
-    mozfun.map.get_key(extra, 'sequence_position') = 3 AND
+    mozfun.map.get_key(extra, 'sequence_position') = '3' AND
     mozfun.map.get_key(extra, 'action') = 'click' AND
     mozfun.map.get_key(extra, 'element_type') = 'primary_button'
 """

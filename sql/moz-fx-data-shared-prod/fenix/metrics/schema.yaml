@@ -568,6 +568,9 @@ fields:
     - name: addons_extensions_process_ui_retry
       type: INTEGER
       mode: NULLABLE
+    - name: shopping_product_page_visits
+      type: INTEGER
+      mode: NULLABLE
   - name: custom_distribution
     type: RECORD
     mode: NULLABLE

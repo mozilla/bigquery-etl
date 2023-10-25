@@ -318,7 +318,8 @@ SELECT
       metrics.counter.fog_inits_during_shutdown,
       metrics.counter.bloburl_resolve_stopped,
       metrics.counter.addons_extensions_process_ui_disable,
-      metrics.counter.addons_extensions_process_ui_retry
+      metrics.counter.addons_extensions_process_ui_retry,
+      metrics.counter.shopping_product_page_visits
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -819,7 +820,8 @@ SELECT
       metrics.counter.fog_inits_during_shutdown,
       metrics.counter.bloburl_resolve_stopped,
       metrics.counter.addons_extensions_process_ui_disable,
-      metrics.counter.addons_extensions_process_ui_retry
+      metrics.counter.addons_extensions_process_ui_retry,
+      metrics.counter.shopping_product_page_visits
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,

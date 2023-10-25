@@ -232,112 +232,23 @@ fields:
     type: RECORD
     mode: NULLABLE
     fields:
-    - name: glean_error_preinit_tasks_timeout
+    - name: crash_startup
       type: BOOLEAN
       mode: NULLABLE
-      description: Set to true if the tasks that are queued prior to Glean initialization
-        time out.
-  - name: counter
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: glean_error_io
-      type: INTEGER
-      mode: NULLABLE
-      description: 'The number of times we encountered an IO error
-
-        when writing a pending ping to disk.
-
-        '
-    - name: glean_error_preinit_tasks_overflow
-      type: INTEGER
-      mode: NULLABLE
-      description: 'The number of tasks that overflowed the pre-initialization buffer.
-
-        Only sent if the buffer ever overflows.
-
-
-        In Version 0 this reported the total number of tasks enqueued.
-
-        '
-    - name: glean_time_invalid_timezone_offset
-      type: INTEGER
-      mode: NULLABLE
-      description: 'Counts the number of times we encountered an invalid timezone
-        offset
-
-        when trying to get the current time.
-
-        A timezone offset is invalid if it is outside [-24h, +24h].
-
-        If invalid a UTC offset is used (+0h).
-
-        '
-    - name: glean_upload_deleted_pings_after_quota_hit
-      type: INTEGER
-      mode: NULLABLE
-      description: 'The number of pings deleted after the quota
-
-        for the size of the pending pings directory or number of files is hit.
-
-        Since quota is only calculated for the pending pings directory,
-
-        and deletion request ping live in a different directory,
-
-        deletion request pings are never deleted.
-
-        '
-    - name: glean_upload_pending_pings
-      type: INTEGER
-      mode: NULLABLE
-      description: 'The total number of pending pings at startup.
-
-        This does not include deletion-request pings.
-
-        '
-    - name: glean_validation_foreground_count
-      type: INTEGER
-      mode: NULLABLE
-      description: 'On mobile, the number of times the application went to foreground.
-
-        '
-    - name: glean_upload_in_flight_pings_dropped
-      type: INTEGER
-      mode: NULLABLE
-      description: 'How many pings were dropped because we found them already in-flight.
-
-        '
-    - name: glean_upload_missing_send_ids
-      type: INTEGER
-      mode: NULLABLE
-      description: 'How many ping upload responses did we not record as a success
-        or failure
-
-        (in `glean.upload.send_success` or `glean.upload.send_failue`,
-
-        respectively) due to an inconsistency in our internal bookkeeping?
+      description: 'If true, the crash occurred during process startup.
 
         '
   - name: datetime
     type: RECORD
     mode: NULLABLE
     fields:
-    - name: background_update_time_last_update_scheduled
+    - name: crash_time
       type: TIMESTAMP
       mode: NULLABLE
-      description: 'Last time the background update was triggered.
+      description: 'The time at which the crash occurred.
 
         '
-    - name: raw_background_update_time_last_update_scheduled
-      type: STRING
-      mode: NULLABLE
-    - name: glean_validation_first_run_hour
-      type: TIMESTAMP
-      mode: NULLABLE
-      description: 'The hour of the first run of the application.
-
-        '
-    - name: raw_glean_validation_first_run_hour
+    - name: raw_crash_time
       type: STRING
       mode: NULLABLE
   - name: labeled_counter
@@ -404,134 +315,15 @@ fields:
         The labels are the `category.name` identifier of the metric.
 
         '
-    - name: glean_upload_ping_upload_failure
-      type: RECORD
-      mode: REPEATED
-      fields:
-      - name: key
-        type: STRING
-        mode: NULLABLE
-      - name: value
-        type: INTEGER
-        mode: NULLABLE
-      description: 'Counts the number of ping upload failures, by type of failure.
-
-        This includes failures for all ping types,
-
-        though the counts appear in the next successfully sent `metrics` ping.
-
-        '
-    - name: glean_validation_pings_submitted
-      type: RECORD
-      mode: REPEATED
-      fields:
-      - name: key
-        type: STRING
-        mode: NULLABLE
-      - name: value
-        type: INTEGER
-        mode: NULLABLE
-      description: "A count of the pings submitted, by ping type.\n\nThis metric appears\
-        \ in both the metrics and baseline pings.\n\n- On the metrics ping, the counts\
-        \ include the number of pings sent since\n  the last metrics ping (including\
-        \ the last metrics ping)\n- On the baseline ping, the counts include the number\
-        \ of pings send since\n  the last baseline ping (including the last baseline\
-        \ ping)\n"
-  - name: memory_distribution
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: glean_database_size
-      type: RECORD
-      mode: NULLABLE
-      fields:
-      - name: count
-        type: INTEGER
-        mode: NULLABLE
-        description: This was accidentally sent in the past and is now deprecated.
-          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
-      - name: sum
-        type: INTEGER
-        mode: NULLABLE
-      - name: values
-        type: RECORD
-        mode: REPEATED
-        fields:
-        - name: key
-          type: STRING
-          mode: NULLABLE
-        - name: value
-          type: INTEGER
-          mode: NULLABLE
-      description: 'The size of the database file at startup.
-
-        '
-    - name: glean_upload_discarded_exceeding_pings_size
-      type: RECORD
-      mode: NULLABLE
-      fields:
-      - name: count
-        type: INTEGER
-        mode: NULLABLE
-        description: This was accidentally sent in the past and is now deprecated.
-          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
-      - name: sum
-        type: INTEGER
-        mode: NULLABLE
-      - name: values
-        type: RECORD
-        mode: REPEATED
-        fields:
-        - name: key
-          type: STRING
-          mode: NULLABLE
-        - name: value
-          type: INTEGER
-          mode: NULLABLE
-      description: 'The size of pings that exceeded the maximum ping size allowed
-        for upload.
-
-        '
-    - name: glean_upload_pending_pings_directory_size
-      type: RECORD
-      mode: NULLABLE
-      fields:
-      - name: count
-        type: INTEGER
-        mode: NULLABLE
-        description: This was accidentally sent in the past and is now deprecated.
-          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
-      - name: sum
-        type: INTEGER
-        mode: NULLABLE
-      - name: values
-        type: RECORD
-        mode: REPEATED
-        fields:
-        - name: key
-          type: STRING
-          mode: NULLABLE
-        - name: value
-          type: INTEGER
-          mode: NULLABLE
-      description: 'The size of the pending pings directory upon initialization of
-        Glean.
-
-        This does not include the size of the deletion request pings directory.
-
-        '
   - name: string
     type: RECORD
     mode: NULLABLE
     fields:
-    - name: ping_reason
+    - name: crash_process_type
       type: STRING
       mode: NULLABLE
-      description: 'The optional reason the ping was submitted.
-
-        The specific values for reason are specific to each ping, and are
-
-        documented in the ping''s pings.yaml file.
+      description: 'The type of process that experienced a crash. See the full list
+        of options [here](https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/data/crash-ping.html#process-types).
 
         '
     - name: glean_client_annotation_experimentation_id
@@ -542,193 +334,24 @@ fields:
         for the purpose of experimentation enrollment.
 
         '
-  - name: timing_distribution
+  - name: timespan
     type: RECORD
     mode: NULLABLE
     fields:
-    - name: glean_upload_send_failure
+    - name: crash_uptime
       type: RECORD
       mode: NULLABLE
       fields:
-      - name: bucket_count
-        type: INTEGER
-        mode: NULLABLE
-      - name: count
-        type: INTEGER
-        mode: NULLABLE
-        description: This was accidentally sent in the past and is now deprecated.
-          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
-      - name: histogram_type
-        type: STRING
-        mode: NULLABLE
-      - name: overflow
-        type: INTEGER
-        mode: NULLABLE
-      - name: range
-        type: FLOAT
-        mode: REPEATED
-      - name: sum
-        type: INTEGER
-        mode: NULLABLE
       - name: time_unit
         type: STRING
         mode: NULLABLE
-      - name: underflow
+      - name: value
         type: INTEGER
         mode: NULLABLE
-      - name: values
-        type: RECORD
-        mode: REPEATED
-        fields:
-        - name: key
-          type: STRING
-          mode: NULLABLE
-        - name: value
-          type: INTEGER
-          mode: NULLABLE
-      description: 'Time needed for a failed send of a ping to the servers and getting
-        a reply back.
+      description: 'The application uptime. This is equivalent to the legacy crash
+        ping''s `UptimeTS` field.
 
         '
-    - name: glean_upload_send_success
-      type: RECORD
-      mode: NULLABLE
-      fields:
-      - name: bucket_count
-        type: INTEGER
-        mode: NULLABLE
-      - name: count
-        type: INTEGER
-        mode: NULLABLE
-        description: This was accidentally sent in the past and is now deprecated.
-          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
-      - name: histogram_type
-        type: STRING
-        mode: NULLABLE
-      - name: overflow
-        type: INTEGER
-        mode: NULLABLE
-      - name: range
-        type: FLOAT
-        mode: REPEATED
-      - name: sum
-        type: INTEGER
-        mode: NULLABLE
-      - name: time_unit
-        type: STRING
-        mode: NULLABLE
-      - name: underflow
-        type: INTEGER
-        mode: NULLABLE
-      - name: values
-        type: RECORD
-        mode: REPEATED
-        fields:
-        - name: key
-          type: STRING
-          mode: NULLABLE
-        - name: value
-          type: INTEGER
-          mode: NULLABLE
-      description: 'Time needed for a successful send of a ping to the servers and
-        getting a reply back
-
-        '
-    - name: glean_validation_shutdown_wait
-      type: RECORD
-      mode: NULLABLE
-      fields:
-      - name: bucket_count
-        type: INTEGER
-        mode: NULLABLE
-      - name: count
-        type: INTEGER
-        mode: NULLABLE
-        description: This was accidentally sent in the past and is now deprecated.
-          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
-      - name: histogram_type
-        type: STRING
-        mode: NULLABLE
-      - name: overflow
-        type: INTEGER
-        mode: NULLABLE
-      - name: range
-        type: FLOAT
-        mode: REPEATED
-      - name: sum
-        type: INTEGER
-        mode: NULLABLE
-      - name: time_unit
-        type: STRING
-        mode: NULLABLE
-      - name: underflow
-        type: INTEGER
-        mode: NULLABLE
-      - name: values
-        type: RECORD
-        mode: REPEATED
-        fields:
-        - name: key
-          type: STRING
-          mode: NULLABLE
-        - name: value
-          type: INTEGER
-          mode: NULLABLE
-      description: 'Time waited for the uploader at shutdown.
-
-        '
-    - name: glean_validation_shutdown_dispatcher_wait
-      type: RECORD
-      mode: NULLABLE
-      fields:
-      - name: bucket_count
-        type: INTEGER
-        mode: NULLABLE
-      - name: count
-        type: INTEGER
-        mode: NULLABLE
-        description: This was accidentally sent in the past and is now deprecated.
-          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
-      - name: histogram_type
-        type: STRING
-        mode: NULLABLE
-      - name: overflow
-        type: INTEGER
-        mode: NULLABLE
-      - name: range
-        type: FLOAT
-        mode: REPEATED
-      - name: sum
-        type: INTEGER
-        mode: NULLABLE
-      - name: time_unit
-        type: STRING
-        mode: NULLABLE
-      - name: underflow
-        type: INTEGER
-        mode: NULLABLE
-      - name: values
-        type: RECORD
-        mode: REPEATED
-        fields:
-        - name: key
-          type: STRING
-          mode: NULLABLE
-        - name: value
-          type: INTEGER
-          mode: NULLABLE
-      description: 'Time waited for the dispatcher to unblock during shutdown.
-
-        Most samples are expected to be below the 10s timeout used.
-
-        '
-  - name: string_list
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: background_update_reasons_to_not_update
-      type: STRING
-      mode: REPEATED
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE
@@ -773,10 +396,10 @@ fields:
         type: RECORD
         mode: NULLABLE
         fields:
-        - name: type
+        - name: enrollment_id
           type: STRING
           mode: NULLABLE
-        - name: enrollment_id
+        - name: type
           type: STRING
           mode: NULLABLE
   - name: ping_type

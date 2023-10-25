@@ -302,6 +302,13 @@ fields:
       description: 'A unique identifier for the suggestion (a.k.a. a keywords block).
 
         '
+    - name: fx_suggest_position
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The position (1-based) of this suggestion in the full list of
+        suggestions, relative to the top of the awesomebar.
+
+        '
   - name: string
     type: RECORD
     mode: NULLABLE
@@ -321,7 +328,7 @@ fields:
     - name: fx_suggest_ping_type
       type: STRING
       mode: NULLABLE
-      description: 'The ping''s type. Currently always "fxsuggest-click".
+      description: 'The ping''s type. Either "fxsuggest-click" or "fxsuggest-impression".
 
         '
     - name: glean_client_annotation_experimentation_id
@@ -351,6 +358,18 @@ fields:
       mode: NULLABLE
       description: 'An identifier to identify users for Contextual Services user interaction
         pings.
+
+        '
+  - name: boolean
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: fx_suggest_is_clicked
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'If `ping_type` is "fxsuggest-impression", indicates whether this
+        impression is for a clicked suggestion. If `ping_type` is "fxsuggest-click",
+        always `true`.
 
         '
   - name: url

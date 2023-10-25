@@ -228,6 +228,17 @@ fields:
   type: RECORD
   mode: NULLABLE
   fields:
+  - name: boolean
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: notification_show_success
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether a notification was shown or not. Possible value include
+        "shown" and "error".
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -292,45 +303,10 @@ fields:
         The labels are the `category.name` identifier of the metric.
 
         '
-  - name: quantity
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: fx_suggest_block_id
-      type: INTEGER
-      mode: NULLABLE
-      description: 'A unique identifier for the suggestion (a.k.a. a keywords block).
-
-        '
-    - name: fx_suggest_position
-      type: INTEGER
-      mode: NULLABLE
-      description: 'The position (1-based) of this suggestion in the full list of
-        suggestions, relative to the top of the awesomebar.
-
-        '
   - name: string
     type: RECORD
     mode: NULLABLE
     fields:
-    - name: fx_suggest_advertiser
-      type: STRING
-      mode: NULLABLE
-      description: 'The name of the advertiser providing the sponsored suggestion
-
-        '
-    - name: fx_suggest_iab_category
-      type: STRING
-      mode: NULLABLE
-      description: 'The suggestion''s category. Either "22 - Shopping" or "5 - Educational".
-
-        '
-    - name: fx_suggest_ping_type
-      type: STRING
-      mode: NULLABLE
-      description: 'The ping''s type. Either "fxsuggest-click" or "fxsuggest-impression".
-
-        '
     - name: glean_client_annotation_experimentation_id
       type: STRING
       mode: NULLABLE
@@ -339,46 +315,52 @@ fields:
         for the purpose of experimentation enrollment.
 
         '
-  - name: url2
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: fx_suggest_reporting_url
+    - name: notification_action
       type: STRING
       mode: NULLABLE
-      description: 'The url to report this interaction to.
-
-        '
-  - name: uuid
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: fx_suggest_context_id
+      description: "The action that the user took in response to the notification.\
+        \ Possible values currently include the following: * \u201Cdismissed-by-timeout\u201D\
+        \ * \u201Cdismissed-to-action-center\u201D * \u201Cdismissed-by-button\u201D\
+        \ * \u201Cdismissed-by-application-hidden\u201D * \u201Cmake-firefox-default-button\u201D\
+        \ * \u201Ctoast-clicked\u201D\nMany of the values correspond to buttons on\
+        \ the notification and should be pretty self explanatory, but a few are less\
+        \ so. * \u201Cdismissed-to-action-center\u201D will be used if the user clicks\
+        \ the arrow in\n  the top right corner of the notification to dismiss it to\
+        \ the\n  action center.\n* \u201Cdismissed-by-application-hidden\u201D is\
+        \ provided because that is a method of\n  dismissal that the notification\
+        \ API could give but, in practice, should\n  never be seen.\n* \u201Cdismissed-by-timeout\u201D\
+        \ indicates that the user did not interact with the\n  notification and it\
+        \ timed out.\n"
+    - name: system_default_browser
       type: STRING
       mode: NULLABLE
-      description: 'An identifier to identify users for Contextual Services user interaction
-        pings.
+      description: 'Which browser is currently set as the system default web browser.
+        This is simply a string with the name of the browser binned to a fixed set
+        of known browsers.
+
+        Possible values currently include the following (from [DefaultBrowser.cpp](https://searchfox.org/mozilla-central/source/toolkit/mozapps/defaultagent/DefaultBrowser.cpp)):
+        * "error" * "" (unknown) * "firefox" * "chrome" * "edge" * "edge-chrome" *
+        "ie" * "opera" * "brave" * "yandex" * "qq-browser" * "360-browser" * "sogou"
+        * "duckduckgo"
 
         '
-  - name: boolean
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: fx_suggest_is_clicked
-      type: BOOLEAN
-      mode: NULLABLE
-      description: 'If `ping_type` is "fxsuggest-impression", indicates whether this
-        impression is for a clicked suggestion. If `ping_type` is "fxsuggest-click",
-        always `true`.
-
-        '
-  - name: url
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: fx_suggest_reporting_url
+    - name: system_default_previous_browser
       type: STRING
       mode: NULLABLE
+      description: 'Which browser was set as the system default before it was changed
+        to the current setting. The possible values are the same as for `system_default.browser`.
+
+        The OS does not keep track of previous default settings, so the agent records
+        this information itself. That means that it will be inaccurate until the first
+        time the default is changed after the agent task begins running. Before then,
+        the value of `previous_browser` will be the same as `browser`.
+
+        This value is updated every time the Default Agent runs, so when the default
+        browser is first changed the values for `browser` and `previous_browser` will
+        be different. But on subsequent executions of the Default Agent, the two values
+        will be the same.
+
+        '
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

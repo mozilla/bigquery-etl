@@ -1286,6 +1286,16 @@ fields:
         on the dialog for when the extensions process crashed.
 
         '
+    - name: shopping_product_page_visits
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counts number of visits to a supported retailer product page
+
+        while enrolled in either the control or treatment branches
+
+        of the shopping experiment.
+
+        '
   - name: custom_distribution
     type: RECORD
     mode: NULLABLE

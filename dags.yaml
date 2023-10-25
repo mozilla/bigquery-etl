@@ -124,7 +124,6 @@ bqetl_accounts_backend_external:
     retry_delay: 10m
   tags:
     - impact/tier_3
-    - triage/no_triage
     - repo/bigquery-etl
 
 bqetl_subplat:

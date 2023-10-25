@@ -37,7 +37,7 @@ default_args = {
     "retries": 1,
 }
 
-tags = ["impact/tier_3", "repo/bigquery-etl", "triage/no_triage"]
+tags = ["impact/tier_3", "repo/bigquery-etl"]
 
 with DAG(
     "bqetl_accounts_backend_external",

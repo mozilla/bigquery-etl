@@ -15,7 +15,7 @@ SELECT
   SAFE.TIMESTAMP_MILLIS(SAFE_CAST(metricsOptOutAt AS INT)) AS metricsOptOutAt,
 FROM
   EXTERNAL_QUERY(
-    "moz-fx-fxa-nonprod.us.fxa-rds-nonprod-stage-fxa",
+    "moz-fx-fxa-prod.us.fxa-rds-prod-prod-fxa",
     """SELECT
          uid,
          normalizedEmail,

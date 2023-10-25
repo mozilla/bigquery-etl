@@ -1,7 +1,7 @@
 ---
-friendly_name: Accounts table from FxA database in stage environment
+friendly_name: Accounts table from production FxA database
 description: >
-  A mirror of the `accounts` table from the staging FxA CloudSQL database,
+  A mirror of the `accounts` table from the production FxA CloudSQL database,
   updated daily to match the current state of the table.
   Some fields in this table are converted to a more user-friendly, BigQuery-native format:
     - `uid` is converted from bytes to a hex string

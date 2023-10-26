@@ -14,5 +14,5 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   init.sql:
-  - moz-fx-data-shared-prod.telemetry_live.main_v4
+  - moz-fx-data-shared-prod.telemetry_live.main_v5
 deprecated: false

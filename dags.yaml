@@ -711,7 +711,6 @@ bqetl_urlbar:
       - "telemetry-alerts@mozilla.com"
       - "anicholson@mozilla.com"
       - "akomar@mozilla.com"
-      - "tbrooks@mozilla.com"
     retries: 2
     retry_delay: 30m
   tags:

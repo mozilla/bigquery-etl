@@ -27,4 +27,4 @@ RETURNS STRING AS (
 
                 -- Tests
 SELECT
-  assert.null(norm.result_type_to_product_name("not a valid type"))
+  assert.equals("other", norm.result_type_to_product_name("not a valid type"))

@@ -1,0 +1,7 @@
+friendly_name: Event Monitoring Live
+description: |-
+  View that combines live evnt monitoring data across all available apps.
+owners:
+- ascholtz@mozilla.com
+- akomar@mozilla.com
+

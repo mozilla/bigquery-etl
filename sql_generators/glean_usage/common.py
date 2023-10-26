@@ -101,7 +101,7 @@ def table_names_from_baseline(baseline_table, include_project_id=True):
         daily_view=f"{prefix}.baseline_clients_daily",
         last_seen_view=f"{prefix}.baseline_clients_last_seen",
         first_seen_view=f"{prefix}.baseline_clients_first_seen",
-        event_monitoring_view=f"{prefix}_derived.event_monitoring_live_v1",
+        event_monitoring=f"{prefix}_derived.event_monitoring_live_v1",
     )
 
 

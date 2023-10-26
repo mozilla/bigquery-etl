@@ -4,6 +4,6 @@ AS
 SELECT
   * 
 FROM 
-  `{{ project_id }}.{{ app["bq_dataset_family"] }}.event_monitoring_live`
+  `{{ project_id }}.{{ app[0]["bq_dataset_family"] }}.event_monitoring_live`
 {% if not loop.last %}UNION ALL{% endif %}
 {% endfor %}

@@ -1,22 +1,22 @@
 """Generate Materialized Views for event monitoring."""
 
+import os
+from collections import namedtuple
+from pathlib import Path
+from datetime import datetime
+
 from sql_generators.glean_usage.common import (
     GleanTable,
-    table_names_from_baseline,
-    render,
     get_table_dir,
-    write_sql,
+    render,
+    table_names_from_baseline,
     write_dataset_metadata,
+    write_sql,
 )
-from pathlib import Path
-import os
-from jinja2 import TemplateNotFound
-from collections import namedtuple
-
 
 TARGET_TABLE_ID = "event_monitoring_live_v1"
 TARGET_DATASET_CROSS_APP = "monitoring_derived"
-PREFIX = "event_monitoring_live"
+PREFIX = "event_monitoring"
 PATH = Path(os.path.dirname(__file__))
 
 
@@ -28,8 +28,10 @@ class EventMonitoringMaterializedView(GleanTable):
         self.no_init = False
         self.per_app_id_enabled = True
         self.per_app_enabled = True
+        self.across_apps_enabled = True
         self.prefix = PREFIX
         self.target_table_id = TARGET_TABLE_ID
+        self.custom_render_kwargs = {}
 
     def generate_per_app_id(
         self, project_id, baseline_table, output_dir=None, use_cloud_function=True
@@ -39,13 +41,15 @@ class EventMonitoringMaterializedView(GleanTable):
         init_filename = f"{self.target_table_id}.init.sql"
         metadata_filename = f"{self.target_table_id}.metadata.yaml"
 
-        table = tables[f"{self.prefix}_table"]
+        table = tables[f"{self.prefix}"]
 
         render_kwargs = dict(
             header="-- Generated via bigquery_etl.glean_usage\n",
             header_yaml="---\n# Generated via bigquery_etl.glean_usage\n",
             project_id=project_id,
-            derived_dataset=tables["event_monitoring_live"].split(".")[-2],
+            derived_dataset=tables[self.prefix].split(".")[-2],
+            dataset=tables[self.prefix].split(".")[-2].replace("_derived", ""),
+            current_date=datetime.today().strftime('%Y-%m-%d')
         )
 
         render_kwargs.update(self.custom_render_kwargs)
@@ -56,31 +60,25 @@ class EventMonitoringMaterializedView(GleanTable):
         artifacts = []
 
         if not self.no_init:
-            try:
-                init_sql = render(
-                    init_filename, template_folder=PATH / "templates", **render_kwargs
-                )
-            except TemplateNotFound:
-                init_sql = render(
-                    init_filename,
-                    template_folder=PATH / "templates",
-                    init=True,
-                    **render_kwargs,
-                )
-                artifacts.append(Artifact(table, "init.sql", init_sql))
-
-                metadata = render(
-                    metadata_filename,
-                    template_folder=PATH / "templates",
-                    format=False,
-                    **render_kwargs,
-                )
-                artifacts.append(Artifact(table, "metadata.yaml", metadata))
+            init_sql = render(
+                init_filename, template_folder=PATH / "templates", **render_kwargs
+            )
+            metadata = render(
+                metadata_filename,
+                template_folder=PATH / "templates",
+                format=False,
+                **render_kwargs,
+            )
+            artifacts.append(Artifact(table, "metadata.yaml", metadata))
 
         skip_existing_artifact = self.skip_existing(output_dir, project_id)
 
         if output_dir:
+            if not self.no_init:
+                artifacts.append(Artifact(table, "init.sql", init_sql))
+
             for artifact in artifacts:
+                print(artifact)
                 destination = (
                     get_table_dir(output_dir, artifact.table_id) / artifact.basename
                 )
@@ -124,7 +122,7 @@ class EventMonitoringMaterializedView(GleanTable):
 
         Artifact = namedtuple("Artifact", "table_id basename sql")
 
-        query_filename = f"event_monitoring_aggregates_v1.query.sql"
+        query_filename = "event_monitoring_aggregates_v1.query.sql"
         query_sql = render(
             query_filename, template_folder=PATH / "templates", **render_kwargs
         )
@@ -141,11 +139,18 @@ class EventMonitoringMaterializedView(GleanTable):
         )
         table = f"{project_id}.{target_dataset}_derived.event_monitoring_aggregates_v1"
         view = f"{project_id}.{target_dataset}.event_monitoring_live"
+        view_metadata = render(
+            "event_monitoring_live.metadata.yaml",
+            template_folder=PATH / "templates",
+            format=False,
+            **render_kwargs,
+        )
         if output_dir:
             artifacts = [
                 Artifact(table, "query.sql", query_sql),
                 Artifact(table, "metadata.yaml", metadata),
                 Artifact(view, "view.sql", view_sql),
+                Artifact(view, "metadata.yaml", view_metadata),
             ]
 
             for artifact in artifacts:
@@ -190,12 +195,12 @@ class EventMonitoringMaterializedView(GleanTable):
         Artifact = namedtuple("Artifact", "table_id basename sql")
 
         view_sql = render(
-            f"event_monitoring_live_cross_app.view.sql",
+            "event_monitoring_live_cross_apps.view.sql",
             template_folder=PATH / "templates",
             **render_kwargs,
         )
         metadata = render(
-            f"event_monitoring_live_cross_app.metadata.yaml",
+            "event_monitoring_live_cross_apps.metadata.yaml",
             template_folder=PATH / "templates",
             format=False,
             **render_kwargs,

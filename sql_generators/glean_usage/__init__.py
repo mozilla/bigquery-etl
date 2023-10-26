@@ -15,8 +15,8 @@ from sql_generators.glean_usage import (
     baseline_clients_first_seen,
     baseline_clients_last_seen,
     clients_last_seen_joined,
-    events_unnested,
     event_monitoring_live,
+    events_unnested,
     glean_app_ping_views,
     metrics_clients_daily,
     metrics_clients_last_seen,
@@ -169,4 +169,7 @@ def generate(
     ]
 
     with ProcessingPool(parallelism) as pool:
-        pool.map(lambda f: f[0](f[1]), generate_per_app_id + generate_per_app)
+        pool.map(
+            lambda f: f[0](f[1]),
+            generate_per_app_id + generate_per_app + generate_across_apps,
+        )

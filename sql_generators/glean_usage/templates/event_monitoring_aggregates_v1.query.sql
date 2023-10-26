@@ -3,6 +3,7 @@
 {% if not loop.first -%}
 UNION ALL
 {% endif -%}
+{% if dataset not in ["telemetry", "accounts_frontend", "accounts_backend"] %}
 SELECT
     DATE(submission_timestamp) AS submission_date,
     event.category AS event_category,
@@ -22,7 +23,7 @@ SELECT
   CROSS JOIN
     UNNEST(events) AS event,
     UNNEST(event.extra) AS event_extra
-{% elif dataset_id in ["accounts_frontend", "accounts_backend"] %}
+{% elif dataset in ["accounts_frontend", "accounts_backend"] %}
 -- FxA uses custom pings to send events without a category and extras.
       SELECT
         TIMESTAMP_ADD(
@@ -57,7 +58,6 @@ SELECT
       FROM
         `{{ project_id }}.{{ dataset }}_stable.accounts_events_v1`
     {% endif %}
-  WHERE
     WHERE DATE(submission_timestamp) = @submission_date
   GROUP BY
     window_start,
@@ -69,3 +69,4 @@ SELECT
     normalized_app_name,
     normalized_channel,
     version
+{% endfor %}

@@ -1,6 +1,6 @@
 CREATE MATERIALIZED VIEW
 IF
-  NOT EXISTS {{ project_id }}.{{ dataset_id }}_derived.event_monitoring_live_v1
+  NOT EXISTS `{{ project_id }}.{{ derived_dataset }}.event_monitoring_live_v1`
   OPTIONS
     (enable_refresh = TRUE, refresh_interval_minutes = 60) AS
     {% if dataset_id not in ["telemetry", "accounts_frontend", "accounts_backend"] %}
@@ -92,7 +92,7 @@ IF
         NULL AS event_category,
         metrics.string.event_name,
         NULL AS event_extra_key,
-        country,
+        normalized_country_code AS country,
         normalized_app_name,
         normalized_channel,
         client_info.app_display_version AS VERSION,
@@ -101,7 +101,7 @@ IF
         `{{ project_id }}.{{ dataset }}_live.accounts_events_v1`
     {% endif %}
   WHERE
-    DATE(submission_timestamp) > DATE_SUB(DATE(CURRENT_TIMESTAMP()), INTERVAL 2 DAY)
+    DATE(submission_timestamp) > "{{ current_date }}"
   GROUP BY
     window_start,
     window_end,

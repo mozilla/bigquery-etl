@@ -4,6 +4,7 @@ description: |-
   coming from {{ dataset_id }}.
 owners:
 - ascholtz@mozilla.com
+- akomar@mozilla.com
 labels:
   incremental: true 
 scheduling:

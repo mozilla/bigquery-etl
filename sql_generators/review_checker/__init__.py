@@ -2,8 +2,9 @@
 import os
 from enum import Enum
 from pathlib import Path
-import yaml
+
 import click
+import yaml
 from jinja2 import Environment, FileSystemLoader
 
 from bigquery_etl.cli.utils import use_cloud_function_option

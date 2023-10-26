@@ -154,5 +154,19 @@ def generate(
         for table in GLEAN_TABLES
     ]
 
+    # Parameters to generate datasets that union all app datasets
+    generate_across_apps = [
+        (
+            partial(
+                table.generate_across_apps,
+                target_project,
+                output_dir=output_dir,
+                use_cloud_function=use_cloud_function,
+            ),
+            app_info,
+        )
+        for table in GLEAN_TABLES
+    ]
+
     with ProcessingPool(parallelism) as pool:
         pool.map(lambda f: f[0](f[1]), generate_per_app_id + generate_per_app)

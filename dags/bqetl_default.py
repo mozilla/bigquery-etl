@@ -54,3 +54,15 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
+
+    monitoring_derived__event_monitoring_live__v1 = bigquery_etl_query(
+        #### WARNING: This task has been scheduled in the default DAG. It can be moved to a more suitable DAG using `bqetl query schedule`.
+        task_id="monitoring_derived__event_monitoring_live__v1",
+        destination_table="event_monitoring_live_v1",
+        dataset_id="monitoring_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="example@mozilla.com",
+        email=["example@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )

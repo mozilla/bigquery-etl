@@ -1,0 +1,18 @@
+friendly_name: Event Monitoring Aggregates
+description: |-
+  Materialized view of experimentation related events
+  coming from {{ dataset_id }}.
+owners:
+- ascholtz@mozilla.com
+labels:
+  incremental: true 
+scheduling:
+  dag_name: bqetl_event_monitoring
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partitions_filter: false
+  clustering:
+    fields:
+      - event_name

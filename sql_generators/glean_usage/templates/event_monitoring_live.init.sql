@@ -1,6 +1,6 @@
 CREATE MATERIALIZED VIEW
 IF
-  NOT EXISTS {{ project_id }}.{{ dataset_id }} _derived.event_monitoring_live
+  NOT EXISTS {{ project_id }}.{{ dataset_id }}_derived.event_monitoring_live_v1
   OPTIONS
     (enable_refresh = TRUE, refresh_interval_minutes = 60) AS
     {% if dataset_id not in ["telemetry", "accounts_frontend", "accounts_backend"] %}
@@ -99,56 +99,6 @@ IF
         COUNT(*) AS total_events
       FROM
         `{{ project_id }}.{{ dataset }}_live.accounts_events_v1`
-    {% else %}
-      TIMESTAMP_ADD(
-        TIMESTAMP_TRUNC(TIMESTAMP_ADD(submission_timestamp, INTERVAL event.f0_ MILLISECOND), HOUR),
-    -- Aggregates event counts over 30-minute intervals
-        INTERVAL(
-          DIV(
-            EXTRACT(
-              MINUTE
-              FROM
-                TIMESTAMP_ADD(submission_timestamp, INTERVAL event.f0_ MILLISECOND)
-            ),
-            30
-          ) * 30
-        ) MINUTE
-      ) AS window_start,
-      TIMESTAMP_ADD(
-        TIMESTAMP_TRUNC(TIMESTAMP_ADD(submission_timestamp, INTERVAL event.f0_ MILLISECOND), HOUR),
-        INTERVAL(
-          (
-            DIV(
-              EXTRACT(
-                MINUTE
-                FROM
-                  TIMESTAMP_ADD(submission_timestamp, INTERVAL event.f0_ MILLISECOND)
-              ),
-              30
-            ) + 1
-          ) * 30
-        ) MINUTE
-      ) AS window_end,
-      event.f2_ AS event_name,
-      event.f1_ AS event_category,
-      event_map_value.key = 'branch' AS event_extra_key,
-      normalized_channel,
-      application.version AS version,
-      COUNT(*) AS total_events
-      FROM
-        `moz-fx-data-shared-prod.telemetry_live.event_v4`
-      CROSS JOIN
-        UNNEST(
-          ARRAY_CONCAT(
-            payload.events.parent,
-            payload.events.content,
-            payload.events.dynamic,
-            payload.events.extension,
-            payload.events.gpu
-          )
-        ) AS event
-      CROSS JOIN
-        UNNEST(event.f5_) AS event_map_value
     {% endif %}
   WHERE
     DATE(submission_timestamp) > DATE_SUB(DATE(CURRENT_TIMESTAMP()), INTERVAL 2 DAY)

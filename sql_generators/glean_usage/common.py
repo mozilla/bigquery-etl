@@ -161,6 +161,7 @@ class GleanTable:
         self.no_init = True
         self.per_app_id_enabled = True
         self.per_app_enabled = True
+        self.across_apps_enabled = True
         self.cross_channel_template = "cross_channel.view.sql"
 
     def skip_existing(self, output_dir="sql/", project_id="moz-fx-data-shared-prod"):
@@ -394,3 +395,11 @@ class GleanTable:
 
                 write_dataset_metadata(output_dir, view)
                 write_dataset_metadata(output_dir, table, derived_dataset_metadata=True)
+
+    def generate_across_apps(
+        self, project_id, apps, output_dir=None, use_cloud_function=True
+    ):
+        """Generate a query across all apps."""
+        # logic for implementing cross-app queries needs to be implemented in the
+        # individual classes
+        return

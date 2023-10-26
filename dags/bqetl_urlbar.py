@@ -50,7 +50,7 @@ with DAG(
 ) as dag:
     firefox_desktop_urlbar_events__v2 = bigquery_etl_query(
         task_id="firefox_desktop_urlbar_events__v2",
-        destination_table="urlbar_events_v1",
+        destination_table="urlbar_events_v2",
         dataset_id="firefox_desktop_derived",
         project_id="moz-fx-data-shared-prod",
         owner="akommasani@mozilla.com",

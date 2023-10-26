@@ -54,7 +54,7 @@ WITH events_unnested AS (
     client_info.client_id AS glean_client_id,
     metrics.uuid.legacy_telemetry_client_id AS legacy_telemetry_client_id,
     sample_id,
-    name AS event_name,
+    event.name AS event_name,
     timestamp AS event_timestamp,
     GENERATE_UUID() AS event_id,
     ping_info.experiments,
@@ -79,7 +79,7 @@ WITH events_unnested AS (
       SPLIT(mozfun.map.get_key(extra, "groups"), ',')
     ) AS results,
   FROM
-     `{{ project_id }}.{{ app_name }}_stable.events_v2`,
+    `{{ project_id }}.{{ app_name }}_stable.events_v1`,
     UNNEST(events) AS event
   WHERE
     DATE(submission_timestamp) = @submission_date

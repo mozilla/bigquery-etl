@@ -19,7 +19,7 @@ scheduling:
     - '*'
   - - moz-fx-data-shared-prod
     - telemetry_stable
-    - main_v4
+    - main_v5
   - - moz-fx-data-shared-prod
     - '*_derived'
     - '*'

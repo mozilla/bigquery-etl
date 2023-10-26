@@ -25,7 +25,7 @@ scheduling:
     - '*'
   - - moz-fx-data-shared-prod
     - telemetry_stable
-    - main_v4
+    - main_v5
 bigquery:
   time_partitioning:
     type: day

@@ -16,7 +16,7 @@ scheduling:
     - '*'
   - - moz-fx-data-shared-prod
     - telemetry_stable
-    - main_v4
+    - main_v5
   date_partition_parameter: null
   parameters:
   - submission_date:DATE:{{ds}}

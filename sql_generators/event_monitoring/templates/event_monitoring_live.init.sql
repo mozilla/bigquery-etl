@@ -4,7 +4,7 @@
     OPTIONS
       (enable_refresh = TRUE, refresh_interval_minutes = 60)
     AS
-{% if dataset_id in ["telemetry", "accounts_frontend_live", "accounts_backend_live"] %}
+{% if dataset_id not in ["telemetry", "accounts_frontend_live", "accounts_backend_live"] %}
 SELECT
   TIMESTAMP_ADD( TIMESTAMP_TRUNC(TIMESTAMP_ADD(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), INTERVAL event.timestamp MILLISECOND), HOUR),
     -- Aggregates event counts over 30-minute intervals

@@ -87,7 +87,7 @@ IF
     {% endfor %}
   FROM
   {% if dataset == "telemetry" %}
-    `moz-fx-data-shared-prod.{{ dataset }}_live.main_v4`
+    `moz-fx-data-shared-prod.{{ dataset }}_live.main_v5`
     LEFT JOIN
       UNNEST(environment.experiments) AS experiment
   {% elif "_cirrus" in dataset %}

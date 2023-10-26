@@ -8,7 +8,7 @@ SELECT
     `moz-fx-data-shared-prod.udf.normalize_main_payload`(payload) AS payload
   )
 FROM
-  telemetry_stable.main_v4
+  telemetry_stable.main_v5
 WHERE
   normalized_channel = 'nightly'
   AND DATE(submission_timestamp) = @submission_date

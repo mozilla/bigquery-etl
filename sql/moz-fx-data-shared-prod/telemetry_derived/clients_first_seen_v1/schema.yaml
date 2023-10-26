@@ -152,6 +152,9 @@ fields:
   - mode: NULLABLE
     name: dltoken
     type: STRING
+  - name: dlsource
+    type: STRING
+    mode: NULLABLE
   mode: NULLABLE
   name: attribution
   type: RECORD
@@ -2299,3 +2302,6 @@ fields:
   - name: value
     type: INTEGER
     mode: NULLABLE
+- name: startup_profile_selection_reason_first
+  type: STRING
+  mode: NULLABLE

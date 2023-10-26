@@ -4,7 +4,7 @@
     OPTIONS
       (enable_refresh = TRUE, refresh_interval_minutes = 60)
     AS
-{% if dataset_id != "telemetry" %}
+{% if dataset_id != "telemetry" and dataset_id != "accounts_frontend_live" and dataset_id != "accounts_backend_live" %}
 SELECT
   TIMESTAMP_ADD( TIMESTAMP_TRUNC(TIMESTAMP_ADD(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), INTERVAL event.timestamp MILLISECOND), HOUR),
     -- Aggregates event counts over 30-minute intervals
@@ -25,6 +25,24 @@ FROM
 CROSS JOIN
   UNNEST(events) AS event,
   UNNEST(event.extra) AS event_extra
+{% elif dataset_id == "accounts_frontend_live" or dataset_id == "accounts_backend_live" %}
+-- FxA uses custom pings to send events without a category and extras.
+SELECT
+  TIMESTAMP_ADD(TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
+    -- Aggregates event counts over 30-minute intervals
+    INTERVAL(DIV(EXTRACT(MINUTE
+        FROM
+          SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) * 60) MINUTE) AS window_start,
+  TIMESTAMP_ADD(TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR), INTERVAL((DIV(EXTRACT(MINUTE
+          FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) + 1) * 60) MINUTE) AS window_end,
+  NULL AS event_category,
+  metrics.string.event_name,
+  NULL AS event_extra_key,
+  normalized_channel,
+  client_info.app_display_version AS VERSION,
+  COUNT(*) AS total_events
+FROM
+  `{{ project_id }}.{{ dataset_id }}_live.accounts_events_v1`
 {% else %}
   TIMESTAMP_ADD( TIMESTAMP_TRUNC(TIMESTAMP_ADD(submission_timestamp, INTERVAL event.f0_ MILLISECOND), HOUR),
     -- Aggregates event counts over 30-minute intervals

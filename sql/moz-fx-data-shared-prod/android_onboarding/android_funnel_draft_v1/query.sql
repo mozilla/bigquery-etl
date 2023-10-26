@@ -2,40 +2,22 @@
 WITH onboarding_funnel_first_card AS (
   SELECT
     client_info.client_id AS join_key,
-    mozfun.map.get_key(extra, 'sequence_id') AS funnel_id,
+    `mozfun.map.get_key`(event_extra, 'sequence_id') AS funnel_id,
     onboarding_funnel_funnel_id.action AS action,
     onboarding_funnel_action.element_type AS element_type,
     DATE(submission_timestamp) AS submission_date,
     client_info.client_id AS client_id,
     client_info.client_id AS column
   FROM
-    (
-      SELECT
-        *
-      FROM
-        mozdata.fenix.events ev
-      CROSS JOIN
-        UNNEST(events) e
-      WHERE
-        e.category = 'onboarding'
-    )
+    fenix.events_unnested
   LEFT JOIN
     (
       SELECT
         DATE(submission_timestamp) AS submission_date,
         client_info.client_id AS client_id,
-        mozfun.map.get_key(extra, 'action') AS action
+        `mozfun.map.get_key`(event_extra, 'action') AS action
       FROM
-        (
-          SELECT
-            *
-          FROM
-            mozdata.fenix.events ev
-          CROSS JOIN
-            UNNEST(events) e
-          WHERE
-            e.category = 'onboarding'
-        )
+        fenix.events_unnested
       WHERE
         DATE(submission_timestamp) = @submission_date
     ) AS dimension_source_action
@@ -46,18 +28,9 @@ WITH onboarding_funnel_first_card AS (
       SELECT
         DATE(submission_timestamp) AS submission_date,
         client_info.client_id AS client_id,
-        mozfun.map.get_key(extra, 'element_type') AS element_type
+        `mozfun.map.get_key`(event_extra, 'element_type') AS element_type
       FROM
-        (
-          SELECT
-            *
-          FROM
-            mozdata.fenix.events ev
-          CROSS JOIN
-            UNNEST(events) e
-          WHERE
-            e.category = 'onboarding'
-        )
+        fenix.events_unnested
       WHERE
         DATE(submission_timestamp) = @submission_date
     ) AS dimension_source_element_type
@@ -65,29 +38,21 @@ WITH onboarding_funnel_first_card AS (
     dimension_source_element_type.client_id = client_id
   WHERE
     DATE(submission_timestamp) = @submission_date
-    AND mozfun.map.get_key(extra, 'sequence_position') = '1'
-    AND e.name != 'completed'
+    AND `mozfun.map.get_key`(event_extra, 'sequence_position') = '1'
+    AND event_name != 'completed'
+    AND event_category = 'onboarding'
 ),
 onboarding_funnel_second_card AS (
   SELECT
     client_info.client_id AS join_key,
-    mozfun.map.get_key(extra, 'sequence_id') AS funnel_id,
+    `mozfun.map.get_key`(event_extra, 'sequence_id') AS funnel_id,
     onboarding_funnel_funnel_id.action AS action,
     onboarding_funnel_action.element_type AS element_type,
     DATE(submission_timestamp) AS submission_date,
     client_info.client_id AS client_id,
     client_info.client_id AS column
   FROM
-    (
-      SELECT
-        *
-      FROM
-        mozdata.fenix.events ev
-      CROSS JOIN
-        UNNEST(events) e
-      WHERE
-        e.category = 'onboarding'
-    )
+    fenix.events_unnested
   INNER JOIN
     onboarding_funnel_first_card AS prev
   ON
@@ -98,18 +63,9 @@ onboarding_funnel_second_card AS (
       SELECT
         DATE(submission_timestamp) AS submission_date,
         client_info.client_id AS client_id,
-        mozfun.map.get_key(extra, 'action') AS action
+        `mozfun.map.get_key`(event_extra, 'action') AS action
       FROM
-        (
-          SELECT
-            *
-          FROM
-            mozdata.fenix.events ev
-          CROSS JOIN
-            UNNEST(events) e
-          WHERE
-            e.category = 'onboarding'
-        )
+        fenix.events_unnested
       WHERE
         DATE(submission_timestamp) = @submission_date
     ) AS dimension_source_action
@@ -120,18 +76,9 @@ onboarding_funnel_second_card AS (
       SELECT
         DATE(submission_timestamp) AS submission_date,
         client_info.client_id AS client_id,
-        mozfun.map.get_key(extra, 'element_type') AS element_type
+        `mozfun.map.get_key`(event_extra, 'element_type') AS element_type
       FROM
-        (
-          SELECT
-            *
-          FROM
-            mozdata.fenix.events ev
-          CROSS JOIN
-            UNNEST(events) e
-          WHERE
-            e.category = 'onboarding'
-        )
+        fenix.events_unnested
       WHERE
         DATE(submission_timestamp) = @submission_date
     ) AS dimension_source_element_type
@@ -139,29 +86,21 @@ onboarding_funnel_second_card AS (
     dimension_source_element_type.client_id = client_id
   WHERE
     DATE(submission_timestamp) = @submission_date
-    AND mozfun.map.get_key(extra, 'sequence_position') = '2'
-    AND e.name != 'completed'
+    AND `mozfun.map.get_key`(event_extra, 'sequence_position') = '2'
+    AND event_name != 'completed'
+    AND event_category = 'onboarding'
 ),
 onboarding_funnel_third_card AS (
   SELECT
     client_info.client_id AS join_key,
-    mozfun.map.get_key(extra, 'sequence_id') AS funnel_id,
+    `mozfun.map.get_key`(event_extra, 'sequence_id') AS funnel_id,
     onboarding_funnel_funnel_id.action AS action,
     onboarding_funnel_action.element_type AS element_type,
     DATE(submission_timestamp) AS submission_date,
     client_info.client_id AS client_id,
     client_info.client_id AS column
   FROM
-    (
-      SELECT
-        *
-      FROM
-        mozdata.fenix.events ev
-      CROSS JOIN
-        UNNEST(events) e
-      WHERE
-        e.category = 'onboarding'
-    )
+    fenix.events_unnested
   INNER JOIN
     onboarding_funnel_second_card AS prev
   ON
@@ -172,18 +111,9 @@ onboarding_funnel_third_card AS (
       SELECT
         DATE(submission_timestamp) AS submission_date,
         client_info.client_id AS client_id,
-        mozfun.map.get_key(extra, 'action') AS action
+        `mozfun.map.get_key`(event_extra, 'action') AS action
       FROM
-        (
-          SELECT
-            *
-          FROM
-            mozdata.fenix.events ev
-          CROSS JOIN
-            UNNEST(events) e
-          WHERE
-            e.category = 'onboarding'
-        )
+        fenix.events_unnested
       WHERE
         DATE(submission_timestamp) = @submission_date
     ) AS dimension_source_action
@@ -194,18 +124,9 @@ onboarding_funnel_third_card AS (
       SELECT
         DATE(submission_timestamp) AS submission_date,
         client_info.client_id AS client_id,
-        mozfun.map.get_key(extra, 'element_type') AS element_type
+        `mozfun.map.get_key`(event_extra, 'element_type') AS element_type
       FROM
-        (
-          SELECT
-            *
-          FROM
-            mozdata.fenix.events ev
-          CROSS JOIN
-            UNNEST(events) e
-          WHERE
-            e.category = 'onboarding'
-        )
+        fenix.events_unnested
       WHERE
         DATE(submission_timestamp) = @submission_date
     ) AS dimension_source_element_type
@@ -213,29 +134,21 @@ onboarding_funnel_third_card AS (
     dimension_source_element_type.client_id = client_id
   WHERE
     DATE(submission_timestamp) = @submission_date
-    AND mozfun.map.get_key(extra, 'sequence_position') = '3'
-    AND e.name != 'completed'
+    AND `mozfun.map.get_key`(event_extra, 'sequence_position') = '3'
+    AND event_name != 'completed'
+    AND event_category = 'onboarding'
 ),
 onboarding_funnel_onboarding_completed AS (
   SELECT
     client_info.client_id AS join_key,
-    mozfun.map.get_key(extra, 'sequence_id') AS funnel_id,
+    `mozfun.map.get_key`(event_extra, 'sequence_id') AS funnel_id,
     onboarding_funnel_funnel_id.action AS action,
     onboarding_funnel_action.element_type AS element_type,
     DATE(submission_timestamp) AS submission_date,
     client_info.client_id AS client_id,
     client_info.client_id AS column
   FROM
-    (
-      SELECT
-        *
-      FROM
-        mozdata.fenix.events ev
-      CROSS JOIN
-        UNNEST(events) e
-      WHERE
-        e.category = 'onboarding'
-    )
+    fenix.events_unnested
   INNER JOIN
     onboarding_funnel_third_card AS prev
   ON
@@ -246,18 +159,9 @@ onboarding_funnel_onboarding_completed AS (
       SELECT
         DATE(submission_timestamp) AS submission_date,
         client_info.client_id AS client_id,
-        mozfun.map.get_key(extra, 'action') AS action
+        `mozfun.map.get_key`(event_extra, 'action') AS action
       FROM
-        (
-          SELECT
-            *
-          FROM
-            mozdata.fenix.events ev
-          CROSS JOIN
-            UNNEST(events) e
-          WHERE
-            e.category = 'onboarding'
-        )
+        fenix.events_unnested
       WHERE
         DATE(submission_timestamp) = @submission_date
     ) AS dimension_source_action
@@ -268,18 +172,9 @@ onboarding_funnel_onboarding_completed AS (
       SELECT
         DATE(submission_timestamp) AS submission_date,
         client_info.client_id AS client_id,
-        mozfun.map.get_key(extra, 'element_type') AS element_type
+        `mozfun.map.get_key`(event_extra, 'element_type') AS element_type
       FROM
-        (
-          SELECT
-            *
-          FROM
-            mozdata.fenix.events ev
-          CROSS JOIN
-            UNNEST(events) e
-          WHERE
-            e.category = 'onboarding'
-        )
+        fenix.events_unnested
       WHERE
         DATE(submission_timestamp) = @submission_date
     ) AS dimension_source_element_type
@@ -287,7 +182,8 @@ onboarding_funnel_onboarding_completed AS (
     dimension_source_element_type.client_id = client_id
   WHERE
     DATE(submission_timestamp) = @submission_date
-    AND e.name = 'completed'
+    AND event_name = 'completed'
+    AND event_category = 'onboarding'
 ),
 -- aggregate each funnel step value
 onboarding_funnel_first_card_aggregated AS (

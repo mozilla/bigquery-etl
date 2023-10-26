@@ -13,7 +13,7 @@ SELECT
   CAST(NULL AS INT64) AS subsample_id,
   *
 FROM
-  telemetry_stable.main_v4
+  telemetry_stable.main_v5
 WHERE
   FALSE
   AND sample_id = 0

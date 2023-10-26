@@ -25,7 +25,7 @@ FROM
 CROSS JOIN
   UNNEST(events) AS event,
   UNNEST(event.extra) AS event_extra
-{% elif dataset_id == "accounts_frontend_live" or dataset_id == "accounts_backend_live" %}
+{% elif dataset_id in ["accounts_frontend", "accounts_backend"] %}
 -- FxA uses custom pings to send events without a category and extras.
 SELECT
   TIMESTAMP_ADD(TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),

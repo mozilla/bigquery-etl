@@ -15,12 +15,11 @@ try {
 }
 """;
 
-WITH cleaned_main AS (
+WITH per_clients_without_addons AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
     client_id,
     sample_id,
-    payload.info.addons,
     -- We always want to take the most recent seen version per
     -- https://bugzilla.mozilla.org/show_bug.cgi?id=1693308
     ARRAY_AGG(
@@ -43,10 +42,26 @@ WITH cleaned_main AS (
   GROUP BY
     submission_date,
     sample_id,
+    client_id
+),
+per_clients_just_addons_base AS (
+  SELECT
+    DATE(submission_timestamp) AS submission_date,
     client_id,
+    sample_id,
+    payload.info.addons
+  FROM
+    telemetry.main
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+    AND client_id IS NOT NULL
+  GROUP BY
+    submission_date,
+    client_id,
+    sample_id,
     addons
 ),
-per_client AS (
+per_clients_just_addons AS (
   SELECT
     submission_date,
     client_id,
@@ -63,21 +78,30 @@ per_client AS (
         FROM
           UNNEST(SPLIT(addons, ",")) AS addon
       )
-    ) AS addons,
+    ) AS addons
+  FROM
+    per_clients_just_addons_base
+  GROUP BY
+    submission_date,
+    sample_id,
+    client_id
+),
+per_client AS (
+  SELECT
+    submission_date,
+    client_id,
+    sample_id,
+    addons,
     app_version,
     country,
     locale,
     app_os,
   FROM
-    cleaned_main
-  GROUP BY
-    submission_date,
-    sample_id,
-    client_id,
-    app_version,
-    country,
-    locale,
-    app_os
+    per_clients_without_addons
+  INNER JOIN
+    per_clients_just_addons
+  USING
+    (submission_date, client_id, sample_id)
 )
 SELECT
   * EXCEPT (addons),

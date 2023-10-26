@@ -362,6 +362,7 @@ view:
     # tests
     - sql/moz-fx-data-test-project/test/simple_view/view.sql
     # Access Denied
+    - sql/moz-fx-data-shared-prod/ads/nt_visits_to_sessions_conversion_factors_daily/view.sql
     - sql/moz-fx-data-shared-prod/telemetry/experiment_enrollment_cumulative_population_estimate/view.sql
     - sql/moz-fx-data-shared-prod/mlhackweek_search/events/view.sql
     - sql/moz-fx-data-shared-prod/regrets_reporter_ucs/deletion_request/view.sql

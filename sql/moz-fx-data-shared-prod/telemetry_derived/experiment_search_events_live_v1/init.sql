@@ -83,7 +83,7 @@ IF
       )
     ) AS search_count,
   FROM
-    `moz-fx-data-shared-prod.telemetry_live.main_v4`
+    `moz-fx-data-shared-prod.telemetry_live.main_v5`
   LEFT JOIN
     UNNEST(environment.experiments) AS experiment
   CROSS JOIN

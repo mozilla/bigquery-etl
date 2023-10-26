@@ -16,6 +16,7 @@ from sql_generators.glean_usage import (
     baseline_clients_last_seen,
     clients_last_seen_joined,
     events_unnested,
+    event_monitoring_live,
     glean_app_ping_views,
     metrics_clients_daily,
     metrics_clients_last_seen,
@@ -32,6 +33,7 @@ GLEAN_TABLES = [
     metrics_clients_daily.MetricsClientsDaily(),
     metrics_clients_last_seen.MetricsClientsLastSeen(),
     clients_last_seen_joined.ClientsLastSeenJoined(),
+    event_monitoring_live.EventMonitoringMaterializedView(),
 ]
 
 # * mlhackweek_search was an experiment that we don't want to generate tables

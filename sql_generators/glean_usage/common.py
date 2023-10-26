@@ -101,6 +101,7 @@ def table_names_from_baseline(baseline_table, include_project_id=True):
         daily_view=f"{prefix}.baseline_clients_daily",
         last_seen_view=f"{prefix}.baseline_clients_last_seen",
         first_seen_view=f"{prefix}.baseline_clients_first_seen",
+        event_monitoring_view=f"{prefix}_derived.event_monitoring_live_v1",
     )
 
 
@@ -255,8 +256,7 @@ class GleanTable:
         if not (referenced_table_exists(view_sql)):
             logging.info("Skipping view for table which doesn't exist:" f" {table}")
         else:
-            artifacts.append(
-                Artifact(view, "view.sql", view_sql))
+            artifacts.append(Artifact(view, "view.sql", view_sql))
 
         skip_existing_artifact = self.skip_existing(output_dir, project_id)
 

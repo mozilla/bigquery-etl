@@ -5,6 +5,7 @@ from pathlib import Path
 import requests
 import click
 import yaml
+import re
 from jinja2 import Environment, FileSystemLoader
 
 from bigquery_etl.cli.utils import use_cloud_function_option
@@ -15,6 +16,11 @@ from bigquery_etl.config import ConfigLoader
 FILE_PATH = Path(os.path.dirname(__file__))
 BASE_DIR = Path(FILE_PATH).parent.parent
 APP_LISTINGS_URL = "https://probeinfo.telemetry.mozilla.org/v2/glean/app-listings"
+
+
+def bq_normalize_name(name: str) -> str:
+    return re.sub(r"[^a-zA-Z0-9_]", "_", name)
+
 
 def get_app_info():
     """Return a list of applications from the probeinfo API."""
@@ -36,9 +42,14 @@ def generate_queries(project, path, write_dir):
     """Generate event monitoring views."""
     app_info = get_app_info()
 
-    app_info = [info for name, info in app_info.items() if name not in ConfigLoader.get(
-        "generate", "event_monitoring", "skip_apps", fallback=[]
-    )]
+    app_info = [
+        info
+        for name, info in app_info.items()
+        if name
+        not in ConfigLoader.get(
+            "generate", "event_monitoring", "skip_apps", fallback=[]
+        )
+    ]
 
     template_query_dir = FILE_PATH / "templates"
     env = Environment(
@@ -49,8 +60,6 @@ def generate_queries(project, path, write_dir):
     metadata_template = env.get_template("metadata.yaml")
 
     for info in app_info:
-        
-
         write_sql(
             write_dir / project,
             f"{project}.{info['']}.{query}",
@@ -60,7 +69,6 @@ def generate_queries(project, path, write_dir):
 
         write_path = Path(write_dir) / project / "telemetry_derived" / query
         (write_path / "metadata.yaml").write_text(metadata_template.render(**args))
-
 
     for query, args in template_config["queries"].items():
         template_query_dir = FILE_PATH / "templates" / query
@@ -134,4 +142,3 @@ def generate(target_project, path, output_dir, use_cloud_function):
     """Generate the event monitoring views."""
     output_dir = Path(output_dir)
     generate_queries(target_project, path, output_dir)
-

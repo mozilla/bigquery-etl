@@ -52,3 +52,7 @@ cp .vscode/launch.json.default .vscode/launch.json
 ```
 
 And you should now be set up to start working in the repo! The easiest way to do this is for many tasks is to use [`bqetl`](https://mozilla.github.io/bigquery-etl/bqetl/). You may also want to read up on [common workflows](https://mozilla.github.io/bigquery-etl/cookbooks/common_workflows/).
+
+### License
+
+The bigquery-etl is available as open source under the terms of the [MPL-2.0 license](https://github.com/mozilla/bigquery-etl/blob/main/LICENSE).

@@ -31,7 +31,6 @@ default_args = {
         "telemetry-alerts@mozilla.com",
         "anicholson@mozilla.com",
         "akomar@mozilla.com",
-        "tbrooks@mozilla.com",
     ],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),
@@ -61,7 +60,24 @@ with DAG(
             "anicholson@mozilla.com",
             "dzeber@mozilla.com",
             "rburwei@mozilla.com",
-            "tbrooks@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    firefox_desktop_urlbar_events__v2 = bigquery_etl_query(
+        task_id="firefox_desktop_urlbar_events__v2",
+        destination_table="urlbar_events_v2",
+        dataset_id="firefox_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="akommasani@mozilla.com",
+        email=[
+            "akomar@mozilla.com",
+            "akommasani@mozilla.com",
+            "anicholson@mozilla.com",
+            "dzeber@mozilla.com",
+            "rburwei@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
         date_partition_parameter="submission_date",
@@ -97,6 +113,8 @@ with DAG(
     )
 
     firefox_desktop_urlbar_events__v1.set_upstream(wait_for_copy_deduplicate_all)
+
+    firefox_desktop_urlbar_events__v2.set_upstream(wait_for_copy_deduplicate_all)
 
     wait_for_telemetry_derived__clients_daily_joined__v1 = ExternalTaskSensor(
         task_id="wait_for_telemetry_derived__clients_daily_joined__v1",

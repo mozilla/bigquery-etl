@@ -63,16 +63,6 @@ labels:
   owner1: aplacitelli
 scheduling:
   dag_name: bqetl_internet_outages
-  referenced_tables:
-  - - moz-fx-data-shared-prod
-    - telemetry_stable
-    - main_v4
-  - - moz-fx-data-shared-prod
-    - telemetry_derived
-    - clients_daily_v6
-  - - moz-fx-data-shared-prod
-    - telemetry_stable
-    - health_v4
 bigquery:
   time_partitioning:
     type: day
@@ -93,5 +83,5 @@ references:
   - C
   - telemetry.clients_daily
   - telemetry.health
-  - telemetry_stable.main_v4
+  - telemetry_stable.main_v5
 deprecated: false

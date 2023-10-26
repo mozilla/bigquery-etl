@@ -5,10 +5,10 @@ WITH shredder AS (
   SELECT
     task_id,
     CASE
-      WHEN target = "moz-fx-data-shared-prod.telemetry_stable.main_v4"
-        THEN "telemetry_main"
-      WHEN target = "moz-fx-data-shared-prod.telemetry_derived.main_summary_v4"
-        THEN "telemetry_main_summary"
+      WHEN target = "moz-fx-data-shared-prod.telemetry_stable.main_v5"
+        THEN "telemetry_main_v5"
+      WHEN target = "moz-fx-data-shared-prod.telemetry_stable.main_use_counter_v4"
+        THEN "telemetry_main_use_counter"
       ELSE "all"
     END AS airflow_task_id,
     target,

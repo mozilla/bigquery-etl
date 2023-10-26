@@ -19,9 +19,7 @@ scheduling:
     }}{% endraw %}
   parameters:
     - >-
-      {% raw %}submission_date:DATE:{{
-      (execution_date).strftime("%Y%m%d")
-      }}{% endraw %}
+      {% raw %}submission_date:DATE:{{ds}}{% endraw %}
   query_file_path:
     # explicit query file path is necessary because the destination table
     # includes a partition identifier that is not in the path

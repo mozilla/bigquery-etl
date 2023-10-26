@@ -1,0 +1,7 @@
+friendly_name: Ads Derived
+description: |-
+  Data related to the work of Mozilla Ads
+dataset_base_acl: derived_restricted
+user_facing: false
+labels: {}
+workgroup_access: []

@@ -6980,6 +6980,9 @@ fields:
     - name: http_upload_throughput_mbps_http_3
       type: STRING
       mode: NULLABLE
+    - name: gvsv_audio_stream_inits
+      type: STRING
+      mode: NULLABLE
   - name: info
     type: RECORD
     mode: NULLABLE
@@ -15138,6 +15141,9 @@ fields:
         - name: fingerprinting_protection_canvas_noise_calculate_time_ms
           type: STRING
           mode: NULLABLE
+        - name: gvsv_audio_stream_inits
+          type: STRING
+          mode: NULLABLE
       - name: keyed_histograms
         type: RECORD
         mode: NULLABLE
@@ -18097,6 +18103,9 @@ fields:
           type: STRING
           mode: NULLABLE
         - name: wr_time_to_render_start_ms
+          type: STRING
+          mode: NULLABLE
+        - name: gvsv_audio_stream_inits
           type: STRING
           mode: NULLABLE
       - name: keyed_histograms

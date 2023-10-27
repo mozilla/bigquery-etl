@@ -1175,6 +1175,26 @@ fields:
         - name: value
           type: INTEGER
           mode: NULLABLE
+    - name: fog_validation_gvsv_number_of_unique_site_origins_all_tabs
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -2159,6 +2179,26 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
+    - name: fog_validation_gvsv_audio_stream_init
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: fog_validation_gvsv_audio_stream_init_gecko
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
   - name: quantity
     type: RECORD
     mode: NULLABLE
@@ -2209,6 +2249,12 @@ fields:
       type: INTEGER
       mode: NULLABLE
     - name: metrics_device_total_ram
+      type: INTEGER
+      mode: NULLABLE
+    - name: fog_validation_gvsv_primary_height
+      type: INTEGER
+      mode: NULLABLE
+    - name: fog_validation_gvsv_primary_width
       type: INTEGER
       mode: NULLABLE
   - name: string
@@ -7508,6 +7554,44 @@ fields:
           type: INTEGER
           mode: NULLABLE
     - name: metrics_search_page_load_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+    - name: fog_validation_gvsv_composite_time
       type: RECORD
       mode: NULLABLE
       fields:

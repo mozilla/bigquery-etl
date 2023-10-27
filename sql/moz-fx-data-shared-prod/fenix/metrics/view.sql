@@ -137,7 +137,9 @@ SELECT
       metrics.labeled_counter.pwmgr_form_autofill_result,
       metrics.labeled_counter.extensions_process_event,
       metrics.labeled_counter.data_storage_entries,
-      metrics.labeled_counter.pdfjs_stamp
+      metrics.labeled_counter.pdfjs_stamp,
+      metrics.labeled_counter.fog_validation_gvsv_audio_stream_init,
+      metrics.labeled_counter.fog_validation_gvsv_audio_stream_init_gecko
     ) AS `labeled_counter`,
     metrics.quantity,
     metrics.string,
@@ -351,7 +353,8 @@ SELECT
       metrics.custom_distribution.cookie_banners_click_query_selector_run_duration_per_window_top_level,
       metrics.custom_distribution.networking_http_1_upload_throughput,
       metrics.custom_distribution.networking_http_2_upload_throughput,
-      metrics.custom_distribution.networking_http_3_upload_throughput
+      metrics.custom_distribution.networking_http_3_upload_throughput,
+      metrics.custom_distribution.fog_validation_gvsv_number_of_unique_site_origins_all_tabs
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -451,7 +454,9 @@ SELECT
       metrics.labeled_counter.pwmgr_form_autofill_result,
       metrics.labeled_counter.extensions_process_event,
       metrics.labeled_counter.data_storage_entries,
-      metrics.labeled_counter.pdfjs_stamp
+      metrics.labeled_counter.pdfjs_stamp,
+      metrics.labeled_counter.fog_validation_gvsv_audio_stream_init,
+      metrics.labeled_counter.fog_validation_gvsv_audio_stream_init_gecko
     ) AS `labeled_counter`,
     metrics.quantity,
     STRUCT(
@@ -634,7 +639,8 @@ SELECT
       metrics.timing_distribution.fingerprinting_protection_canvas_noise_calculate_time,
       metrics.timing_distribution.networking_http_content_onstart_delay,
       metrics.timing_distribution.networking_http_content_onstop_delay,
-      metrics.timing_distribution.metrics_search_page_load_time
+      metrics.timing_distribution.metrics_search_page_load_time,
+      metrics.timing_distribution.fog_validation_gvsv_composite_time
     ) AS `timing_distribution`,
     metrics.memory_distribution,
     metrics.datetime,
@@ -853,7 +859,8 @@ SELECT
       metrics.custom_distribution.cookie_banners_click_query_selector_run_duration_per_window_top_level,
       metrics.custom_distribution.networking_http_1_upload_throughput,
       metrics.custom_distribution.networking_http_2_upload_throughput,
-      metrics.custom_distribution.networking_http_3_upload_throughput
+      metrics.custom_distribution.networking_http_3_upload_throughput,
+      metrics.custom_distribution.fog_validation_gvsv_number_of_unique_site_origins_all_tabs
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -953,7 +960,9 @@ SELECT
       metrics.labeled_counter.pwmgr_form_autofill_result,
       metrics.labeled_counter.extensions_process_event,
       metrics.labeled_counter.data_storage_entries,
-      metrics.labeled_counter.pdfjs_stamp
+      metrics.labeled_counter.pdfjs_stamp,
+      metrics.labeled_counter.fog_validation_gvsv_audio_stream_init,
+      metrics.labeled_counter.fog_validation_gvsv_audio_stream_init_gecko
     ) AS `labeled_counter`,
     metrics.quantity,
     STRUCT(
@@ -1136,7 +1145,8 @@ SELECT
       metrics.timing_distribution.fingerprinting_protection_canvas_noise_calculate_time,
       metrics.timing_distribution.networking_http_content_onstart_delay,
       metrics.timing_distribution.networking_http_content_onstop_delay,
-      metrics.timing_distribution.metrics_search_page_load_time
+      metrics.timing_distribution.metrics_search_page_load_time,
+      metrics.timing_distribution.fog_validation_gvsv_composite_time
     ) AS `timing_distribution`,
     metrics.memory_distribution,
     metrics.datetime,
@@ -1279,7 +1289,9 @@ SELECT
       metrics.labeled_counter.pwmgr_form_autofill_result,
       metrics.labeled_counter.extensions_process_event,
       metrics.labeled_counter.data_storage_entries,
-      metrics.labeled_counter.pdfjs_stamp
+      metrics.labeled_counter.pdfjs_stamp,
+      metrics.labeled_counter.fog_validation_gvsv_audio_stream_init,
+      metrics.labeled_counter.fog_validation_gvsv_audio_stream_init_gecko
     ) AS `labeled_counter`,
     metrics.quantity,
     metrics.string,

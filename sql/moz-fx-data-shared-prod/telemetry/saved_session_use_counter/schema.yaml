@@ -10791,6 +10791,14 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Whether a page called WorkerNavigator.permissions
+    - name: use_counter2_deprecated_svg_deselect_all_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document used SVGDeselectAll
+    - name: use_counter2_deprecated_svg_deselect_all_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page used SVGDeselectAll
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -21428,6 +21436,14 @@ fields:
           type: STRING
           mode: NULLABLE
           description: Whether a page called WorkerNavigator.permissions
+        - name: use_counter2_deprecated_svg_deselect_all_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document used SVGDeselectAll
+        - name: use_counter2_deprecated_svg_deselect_all_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page used SVGDeselectAll
 - name: sample_id
   type: INTEGER
   mode: NULLABLE

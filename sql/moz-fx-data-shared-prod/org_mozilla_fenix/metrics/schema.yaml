@@ -2783,6 +2783,42 @@ fields:
       description: 'Counts the number of times some PDF editing features are used.
 
         '
+    - name: fog_validation_gvsv_audio_stream_init
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Incremented when an audio stream is initialized, recorded alongside
+        the
+
+        GeckoView Streaming API for the purposes of Validation (hence GVSV).
+
+        Uses a single label due to only labeled counters being supported
+
+        '
+    - name: fog_validation_gvsv_audio_stream_init_gecko
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Incremented when an audio stream is initialized, recorded alongside
+        the
+
+        Glean API for the purposes of Validation (hence GVSV).
+
+        Uses a single label due to only labeled counters being supported
+
+        '
   - name: string
     type: RECORD
     mode: NULLABLE
@@ -4028,6 +4064,33 @@ fields:
         in megabits per second, Mbps.
 
         '
+    - name: fog_validation_gvsv_number_of_unique_site_origins_all_tabs
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time between tab selection and first composite of the tab content
+        onto the screen. Implemented alongside the Geckoview Streaming version to
+        measure potential differences between the two.
+
+        '
   - name: quantity
     type: RECORD
     mode: NULLABLE
@@ -4142,6 +4205,16 @@ fields:
         This doesn''t represent memory available to the application however.
 
         '
+    - name: fog_validation_gvsv_primary_height
+      type: INTEGER
+      mode: NULLABLE
+      description: "Primary display pixel height, recorded alongside the GeckoView\
+        \ Streaming \nAPI for the purposes of Validation (hence GVSV).\n"
+    - name: fog_validation_gvsv_primary_width
+      type: INTEGER
+      mode: NULLABLE
+      description: "Primary display pixel width, recorded alongside the GeckoView\
+        \ Streaming \nAPI for the purposes of Validation (hence GVSV).\n"
   - name: timing_distribution
     type: RECORD
     mode: NULLABLE
@@ -10186,6 +10259,51 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: The time that it takes to load the Search content.
+    - name: fog_validation_gvsv_composite_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Glean equivalent to the Geckoview Stream gfx Composite Time metric.  Represents
+        The time taken to composite a frame. Differs between  non-webrender and webrender,
+        see the non-validation version for more details.
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE

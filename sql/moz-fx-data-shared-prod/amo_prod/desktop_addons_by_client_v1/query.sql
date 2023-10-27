@@ -38,17 +38,13 @@ per_clients_without_addons AS (
     sample_id,
     -- We always want to take the most recent seen version per
     -- https://bugzilla.mozilla.org/show_bug.cgi?id=1693308
-    ARRAY_AGG(
-      application.version
-      ORDER BY
-        mozfun.norm.truncate_version(application.version, "minor") DESC
-    )[SAFE_OFFSET(0)] AS app_version,
+    ARRAY_AGG(version ORDER BY mozfun.norm.truncate_version(version, "minor") DESC)[
+      SAFE_OFFSET(0)
+    ] AS app_version,
     mozfun.stats.mode_last(
       ARRAY_AGG(normalized_country_code ORDER BY submission_timestamp)
     ) AS country,
-    mozfun.stats.mode_last(
-      ARRAY_AGG(environment.settings.locale ORDER BY submission_timestamp)
-    ) AS locale,
+    mozfun.stats.mode_last(ARRAY_AGG(locale ORDER BY submission_timestamp)) AS locale,
     mozfun.stats.mode_last(ARRAY_AGG(normalized_os ORDER BY submission_timestamp)) AS app_os,
   FROM
     filtered_main
@@ -62,7 +58,7 @@ per_clients_just_addons_base AS (
     DATE(submission_timestamp) AS submission_date,
     client_id,
     sample_id,
-    payload.info.addons
+    addons
   FROM
     filtered_main
   GROUP BY

@@ -54,7 +54,7 @@ WITH events_unnested AS (
     client_info.client_id AS glean_client_id,
     metrics.uuid.legacy_telemetry_client_id AS legacy_telemetry_client_id,
     sample_id,
-    name AS event_name,
+    event.name AS event_name,
     timestamp AS event_timestamp,
     GENERATE_UUID() AS event_id,
     ping_info.experiments,

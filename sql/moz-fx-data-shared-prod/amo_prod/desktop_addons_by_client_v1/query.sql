@@ -15,7 +15,23 @@ try {
 }
 """;
 
-WITH per_clients_without_addons AS (
+WITH filtered_main AS (
+  SELECT
+    submission_timestamp,
+    client_id,
+    sample_id,
+    payload.info.addons,
+    application.version,
+    normalized_country_code,
+    environment.settings.locale,
+    normalized_os
+  FROM
+    telemetry.main
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+    AND client_id IS NOT NULL
+),
+per_clients_without_addons AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
     client_id,
@@ -35,10 +51,7 @@ WITH per_clients_without_addons AS (
     ) AS locale,
     mozfun.stats.mode_last(ARRAY_AGG(normalized_os ORDER BY submission_timestamp)) AS app_os,
   FROM
-    telemetry.main
-  WHERE
-    DATE(submission_timestamp) = @submission_date
-    AND client_id IS NOT NULL
+    filtered_main
   GROUP BY
     submission_date,
     sample_id,
@@ -51,10 +64,7 @@ per_clients_just_addons_base AS (
     sample_id,
     payload.info.addons
   FROM
-    telemetry.main
-  WHERE
-    DATE(submission_timestamp) = @submission_date
-    AND client_id IS NOT NULL
+    filtered_main
   GROUP BY
     submission_date,
     client_id,

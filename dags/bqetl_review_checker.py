@@ -156,3 +156,18 @@ with DAG(
     firefox_desktop_review_checker_microsurvey__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
+    wait_for_firefox_desktop_derived__onboarding__v2 = ExternalTaskSensor(
+        task_id="wait_for_firefox_desktop_derived__onboarding__v2",
+        external_dag_id="bqetl_messaging_system",
+        external_task_id="firefox_desktop_derived__onboarding__v2",
+        execution_delta=datetime.timedelta(days=-1, seconds=79200),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    firefox_desktop_review_checker_microsurvey__v1.set_upstream(
+        wait_for_firefox_desktop_derived__onboarding__v2
+    )

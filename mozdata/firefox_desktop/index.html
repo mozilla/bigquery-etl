@@ -6728,7 +6728,27 @@ and to contain only one row per distinct <code>document_id</code> within a given
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
+        <td>event_name</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
         <td>event_timestamp</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>event_id</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>experiments</td>
+        <td></td>
+        <td>Record</td>
+        <td>No</td>
+    </tr><tr>
+        <td>seq</td>
         <td></td>
         <td>Integer</td>
         <td>Yes</td>
@@ -6743,14 +6763,74 @@ and to contain only one row per distinct <code>document_id</code> within a given
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
-        <td>event_name</td>
+        <td>normalized_engine</td>
         <td></td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
-        <td>session_action_type</td>
+        <td>pref_data_collection</td>
+        <td></td>
+        <td>Boolean</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>pref_sponsored_suggestions</td>
+        <td></td>
+        <td>Boolean</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>pref_fx_suggestions</td>
+        <td></td>
+        <td>Boolean</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>engagement_type</td>
         <td></td>
         <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>interaction</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>num_chars_typed</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>num_total_results</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>selected_position</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>selected_result</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>results</td>
+        <td></td>
+        <td>Record</td>
+        <td>No</td>
+    </tr><tr>
+        <td>product_selected_result</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>event_action</td>
+        <td></td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>is_terminal</td>
+        <td></td>
+        <td>Boolean</td>
         <td>Yes</td>
     </tr><tr>
         <td>engaged_result_type</td>
@@ -6767,106 +6847,6 @@ and to contain only one row per distinct <code>document_id</code> within a given
         <td></td>
         <td>String</td>
         <td>Yes</td>
-    </tr><tr>
-        <td>first_result_type</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>product_first_result_type</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>num_chars_typed</td>
-        <td></td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>num_total_results</td>
-        <td></td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>is_terminal</td>
-        <td></td>
-        <td>Boolean</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>num_default_partner_search_suggestion_impressions</td>
-        <td></td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>num_search_engine_impressions</td>
-        <td></td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>num_trending_suggestion_impressions</td>
-        <td></td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>num_history_impressions</td>
-        <td></td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>num_open_tab_impressions</td>
-        <td></td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>num_bookmark_impressions</td>
-        <td></td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>num_admarketplace_sponsored_impressions</td>
-        <td></td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>num_navigational_impressions</td>
-        <td></td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>num_add_on_impressions</td>
-        <td></td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>num_wikipedia_enhanced_impressions</td>
-        <td></td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>num_wikipedia_dynamic_impressions</td>
-        <td></td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>num_weather_impressions</td>
-        <td></td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>num_quick_action_impressions</td>
-        <td></td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>num_pocket_collection_impressions</td>
-        <td></td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>experiments</td>
-        <td></td>
-        <td>Record</td>
-        <td>No</td>
     </tr>
 </table>
 

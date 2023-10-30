@@ -46,6 +46,7 @@ dry_run:
   - sql/moz-fx-data-shared-prod/pocket/pocket_reach_mau/view.sql
   - sql/moz-fx-data-shared-prod/telemetry/buildhub2/view.sql
   - sql/moz-fx-data-shared-prod/accounts_backend_external/nonprod_accounts_v1/query.sql
+  - sql/moz-fx-data-shared-prod/accounts_backend_external/nonprod_emails_v1/query.sql
   - sql/moz-fx-data-shared-prod/accounts_backend/nonprod_accounts/view.sql
   - sql/moz-fx-data-shared-prod/accounts_backend_external/accounts_v1/query.sql
   - sql/moz-fx-data-shared-prod/accounts_backend/accounts/view.sql

@@ -16,6 +16,7 @@ from ..cli.routine import publish as publish_routine
 from ..cli.utils import paths_matching_name_pattern, sql_dir_option
 from ..cli.view import publish as publish_view
 from ..dryrun import DryRun
+from ..metadata.parse_metadata import METADATA_FILE, Metadata
 from ..routine.parse_routine import (
     UDF_FILE,
     RawRoutine,
@@ -120,6 +121,35 @@ def deploy(
                 and len(p.suffixes) == 1
             ]
         )
+
+    for query_file in artifact_files.copy():
+        # check if this table depends on a schema of a parent table
+        try:
+            metadata = Metadata.of_query_file(query_file)
+            if metadata.schema and metadata.schema.derived_from:
+                for derived_from in metadata.schema.derived_from:
+                    artifact_files = set(
+                        [
+                            p
+                            for p in paths_matching_name_pattern(
+                                f"{derived_from.table[0]}.{derived_from.table[1]}.{derived_from.table[2]}",
+                                sql_dir,
+                                None,
+                                files=["*.sql", "*.py"],
+                            )
+                            if p.suffix in [".sql", ".py"]
+                            and p.name != "checks.sql"
+                            and len(p.suffixes) == 1
+                        ]
+                    ).union(artifact_files)
+                    derived_from.table[0] = project_id
+
+                    if dataset_suffix:
+                        derived_from.table[1] = f"{derived_from.table[1]}_{dataset_suffix}"
+                metadata.write(query_file.parent / METADATA_FILE)
+        except Exception as e:
+            print(e)
+            pass
 
     # any dependencies need to be determined an deployed as well since the stage
     # environment doesn't have access to the prod environment

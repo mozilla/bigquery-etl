@@ -1,6 +1,3 @@
-CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.monitoring_derived.glean_server_knob_experiments`
-AS
 SELECT
   normandy_slug AS slug,
   app_name,

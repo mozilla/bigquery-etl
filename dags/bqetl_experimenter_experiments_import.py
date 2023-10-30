@@ -58,3 +58,16 @@ with DAG(
         owner="ascholtz@mozilla.com",
         email=["ascholtz@mozilla.com"],
     )
+
+    with TaskGroup(
+        "monitoring__experimenter_experiments__v1_external"
+    ) as monitoring__experimenter_experiments__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_monitoring__wait_for_monitoring__experimenter_experiments__v1",
+            external_dag_id="bqetl_monitoring",
+            external_task_id="wait_for_monitoring__experimenter_experiments__v1",
+        )
+
+        monitoring__experimenter_experiments__v1_external.set_upstream(
+            monitoring__experimenter_experiments__v1
+        )

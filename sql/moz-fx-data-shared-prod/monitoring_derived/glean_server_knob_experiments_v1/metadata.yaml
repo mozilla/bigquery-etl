@@ -1,0 +1,20 @@
+friendly_name: Glean Server Knobs
+description: |-
+  A view on the experiment monitoring dataset of all glean server knob configs
+owners:
+- wstuckey@mozilla.com
+labels:
+  dag: bqetl_monitoring
+  owner1: wstuckey
+scheduling:
+  dag_name: bqetl_monitoring
+  task_name: glean_server_knob_experiments__v1
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  query.sql:
+  - moz-fx-data-experiments.monitoring.experimenter_experiments_v1
+deprecated: false

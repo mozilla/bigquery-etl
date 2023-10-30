@@ -1,0 +1,6 @@
+fields:
+{% for usage_type, _ in usage_types %}
+- mode: NULLABLE
+  name: days_{{ usage_type }}_bytes
+  type: BYTES
+{% endfor %}

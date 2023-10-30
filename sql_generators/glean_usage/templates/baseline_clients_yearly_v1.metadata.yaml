@@ -20,3 +20,6 @@ bigquery:
       - sample_id
 scheduling:
   depends_on_past: true
+schema:
+  derived_from:
+    - table: ['moz-fx-data-shared-prod', '{{ derived_dataset }}', 'baseline_clients_daily_v1']

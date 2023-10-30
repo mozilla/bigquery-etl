@@ -26,7 +26,7 @@ setup(
             "stripe/*.json",
             "stripe/*.yaml",
         ],
-        "sql_generators": ["*/templates/*"],
+        "sql_generators": ["**/*"],
     },
     include_package_data=True,
     install_requires=[

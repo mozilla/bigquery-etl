@@ -45,6 +45,17 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
+    glean_server_knob_experiments__v1 = bigquery_etl_query(
+        task_id="glean_server_knob_experiments__v1",
+        destination_table="glean_server_knob_experiments_v1",
+        dataset_id="monitoring_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="wstuckey@mozilla.com",
+        email=["ascholtz@mozilla.com", "wstuckey@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     monitoring_derived__average_ping_sizes__v1 = gke_command(
         task_id="monitoring_derived__average_ping_sizes__v1",
         command=[
@@ -262,6 +273,21 @@ with DAG(
         email=["amiyaguchi@mozilla.com", "ascholtz@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+    )
+
+    wait_for_monitoring__experimenter_experiments__v1 = ExternalTaskSensor(
+        task_id="wait_for_monitoring__experimenter_experiments__v1",
+        external_dag_id="bqetl_experimenter_experiments_import",
+        external_task_id="monitoring__experimenter_experiments__v1",
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    glean_server_knob_experiments__v1.set_upstream(
+        wait_for_monitoring__experimenter_experiments__v1
     )
 
     wait_for_copy_deduplicate_all = ExternalTaskSensor(

@@ -1531,18 +1531,14 @@ types-pyyaml==6.0.12.11 \
     --hash=sha256:7d340b19ca28cddfdba438ee638cd4084bde213e501a3978738543e27094775b \
     --hash=sha256:a461508f3096d1d5810ec5ab95d7eeecb651f3a15b71959999988942063bf01d
     # via -r requirements.in
-types-requests==2.31.0.2 \
-    --hash=sha256:56d181c85b5925cbc59f4489a57e72a8b2166f18273fd8ba7b6fe0c0b986f12a \
-    --hash=sha256:6aa3f7faf0ea52d728bb18c0a0d1522d9bfd8c72d26ff6f61bfc3d06a411cf40
+types-requests==2.31.0.10 \
+    --hash=sha256:b32b9a86beffa876c0c3ac99a4cd3b8b51e973fb8e3bd4e0a6bb32c7efad80fc \
+    --hash=sha256:dc5852a76f1eaf60eafa81a2e50aefa3d1f015c34cf0cba130930866b1b22a92
     # via -r requirements.in
 types-ujson==5.8.0.1 \
     --hash=sha256:1923f373ba5df0eaa4e3fe5c85dbf4c0b475e2cce3f77f5f4b773347ea1a62c9 \
     --hash=sha256:2b14388248ab4cd1f5efa8c464761112597ccd57c0d84238f73631abe0e20cfd
     # via -r requirements.in
-types-urllib3==1.26.25.4 \
-    --hash=sha256:ed6b9e8a8be488796f72306889a06a3fc3cb1aa99af02ab8afb50144d7317e49 \
-    --hash=sha256:eec5556428eec862b1ac578fb69aab3877995a99ffec9e5a12cf7fbd0cc9daee
-    # via types-requests
 typing==3.7.4.3 \
     --hash=sha256:1187fb9c82fd670d10aa07bbb6cfcfe4bdda42d6fab8d5134f04e8c4d0b71cc9 \
     --hash=sha256:283d868f5071ab9ad873e5e52268d611e851c870a2ba354193026f2dfb29d8b5
@@ -1624,10 +1620,12 @@ ujson==5.8.0 \
     --hash=sha256:f504117a39cb98abba4153bf0b46b4954cc5d62f6351a14660201500ba31fe7f \
     --hash=sha256:fb87decf38cc82bcdea1d7511e73629e651bdec3a43ab40985167ab8449b769c
     # via -r requirements.in
-urllib3==1.26.18 \
-    --hash=sha256:34b97092d7e0a3a8cf7cd10e386f401b3737364026c45e622aa02903dffe0f07 \
-    --hash=sha256:f8ecc1bba5667413457c529ab955bf8c67b45db799d159066261719e328580a0
-    # via requests
+urllib3==2.0.7 \
+    --hash=sha256:c97dfde1f7bd43a71c8d2a58e369e9b2bf692d1334ea9f9cae55add7d0dd0f84 \
+    --hash=sha256:fdb6d215c776278489906c2f8916e6e7d4f5a9b602ccbcfdf7f016fc8da0596e
+    # via
+    #   requests
+    #   types-requests
 virtualenv==20.17.1 \
     --hash=sha256:ce3b1684d6e1a20a3e5ed36795a97dfc6af29bc3970ca8dab93e11ac6094b3c4 \
     --hash=sha256:f8b927684efc6f1cc206c9db297a570ab9ad0e51c16fa9e45487d36d1905c058

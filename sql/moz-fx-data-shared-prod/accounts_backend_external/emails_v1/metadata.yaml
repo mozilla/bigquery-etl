@@ -1,0 +1,30 @@
+friendly_name: Emails table from production FxA database
+description: |-
+  A mirror of the `emails` table from the production FxA CloudSQL database,
+  updated daily to match the current state of the table.
+  Some fields in this table are converted to a more user-friendly, BigQuery-native format:
+    - `uid` is converted from bytes to a hex string
+    - boolean integer columns are converted to BOOL
+    - timestamp columns are converted to TIMESTAMP
+
+  See https://mozilla.github.io/ecosystem-platform/reference/database-structure#database-fxa
+owners:
+- akomar@mozilla.com
+labels:
+  application: accounts_backend
+  schedule: daily
+  dag: bqetl_accounts_backend_external
+  owner1: akomar
+scheduling:
+  dag_name: bqetl_accounts_backend_external
+  date_partition_parameter: null
+  referenced_tables: []
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:accounts-confidential
+references:
+  query.sql:
+  - EXTERNAL_QUERY('moz-fx-fxa-prod.us.fxa-rds-prod-prod-fxa', 'SELECT\n         id,\n         normalizedEmail,\n         email,\n         uid,\n         isVerified,\n         isPrimary,\n         verifiedAt,\n         createdAt\n       FROM\n         emails\n    ')
+deprecated: false

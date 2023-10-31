@@ -58,6 +58,18 @@ with DAG(
         task_concurrency=1,
     )
 
+    accounts_backend_external__emails__v1 = bigquery_etl_query(
+        task_id="accounts_backend_external__emails__v1",
+        destination_table="emails_v1",
+        dataset_id="accounts_backend_external",
+        project_id="moz-fx-data-shared-prod",
+        owner="akomar@mozilla.com",
+        email=["akomar@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
     accounts_backend_external__nonprod_accounts__v1 = bigquery_etl_query(
         task_id="accounts_backend_external__nonprod_accounts__v1",
         destination_table="nonprod_accounts_v1",

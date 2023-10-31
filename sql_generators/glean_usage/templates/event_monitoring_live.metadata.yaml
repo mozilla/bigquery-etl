@@ -4,5 +4,3 @@ description: |-
 owners:
 - ascholtz@mozilla.com
 - akomar@mozilla.com
-labels:
-  materialized_view: true

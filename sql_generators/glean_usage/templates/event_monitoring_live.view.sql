@@ -1,4 +1,8 @@
-{% for (dataset, channel) in datasets -%}
+CREATE OR REPLACE VIEW `{{ project_id }}.{{ target_view }}` AS
+{% for app in apps %}
+{% set outer_loop = loop -%}
+{% for dataset in app -%}
+{% if dataset['bq_dataset_family'] in prod_datasets %}
 SELECT
   window_start,
   window_end,
@@ -10,12 +14,17 @@ SELECT
   normalized_channel,
   version,
   total_events
-FROM `{{ project_id }}.{{ dataset }}_derived.event_monitoring_live_v1`
+FROM 
+  `{{ project_id }}.{{ dataset['bq_dataset_family'] }}_derived.event_monitoring_live_v1`
+WHERE 
+  submission_date > DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY)
 UNION ALL
+{% endif %}
+{% endfor %}
 {% endfor %}
 SELECT 
-  TIMESTAMP(submission_date) AS window_start,
-  TIMESTAMP(DATE_ADD(submission_date, INTERVAL 1 DAY)) AS window_end,
+  window_start,
+  window_end,
   event_category,
   event_name,
   event_extra_key,
@@ -24,5 +33,7 @@ SELECT
   normalized_channel,
   version,
   total_events
-FROM `{{ project_id }}.{{ app_name }}.event_monitoring_aggregates_v1`
-
+FROM 
+  `{{ project_id }}.{{ target_table }}`
+WHERE
+  submission_date <= DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY)

@@ -1,14 +1,14 @@
 friendly_name: Event Monitoring Aggregates
 description: |-
   Materialized view of experimentation related events
-  coming from {{ dataset_id }}.
+  coming from all Glean apps.
 owners:
 - ascholtz@mozilla.com
 - akomar@mozilla.com
 labels:
   incremental: true 
 scheduling:
-  dag_name: bqetl_event_monitoring
+  dag_name: bqetl_monitoring
 bigquery:
   time_partitioning:
     type: day
@@ -17,3 +17,5 @@ bigquery:
   clustering:
     fields:
       - event_name
+      - normalized_channel
+      - normalized_app_name

@@ -33,7 +33,7 @@ GLEAN_TABLES = [
     metrics_clients_daily.MetricsClientsDaily(),
     metrics_clients_last_seen.MetricsClientsLastSeen(),
     clients_last_seen_joined.ClientsLastSeenJoined(),
-    event_monitoring_live.EventMonitoringMaterializedView(),
+    event_monitoring_live.EventMonitoringLive(),
 ]
 
 # * mlhackweek_search was an experiment that we don't want to generate tables

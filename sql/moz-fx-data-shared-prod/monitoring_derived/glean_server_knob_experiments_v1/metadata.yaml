@@ -9,6 +9,7 @@ labels:
 scheduling:
   dag_name: bqetl_monitoring
   task_name: glean_server_knob_experiments__v1
+  date_partition_parameter: null
 bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer

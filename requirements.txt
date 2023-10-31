@@ -633,9 +633,9 @@ jinja2==3.1.2 \
     #   mkdocs
     #   mkdocs-material
     #   mozilla-metric-config-parser
-jsonschema==4.19.0 \
-    --hash=sha256:043dc26a3845ff09d20e4420d6012a9c91c9aa8999fa184e7efcfeccb41e32cb \
-    --hash=sha256:6e1e7569ac13be8139b2dd2c21a55d350066ee3f80df06c608b398cdc6f30e8f
+jsonschema==4.19.2 \
+    --hash=sha256:c9ff4d7447eed9592c23a12ccee508baf0dd0d59650615e847feb6cdca74f392 \
+    --hash=sha256:eee9e502c788e89cb166d4d37f43084e3b64ab405c795c03d343a4dbc2c810fc
     # via
     #   -r requirements.in
     #   mozilla-schema-generator

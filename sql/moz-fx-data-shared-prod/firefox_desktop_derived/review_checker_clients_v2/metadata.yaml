@@ -1,0 +1,20 @@
+friendly_name: Review checker clients data
+description: |-
+owners:
+- akommasani@mozilla.com
+- betling@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_review_checker
+  task_name: firefox_desktop_review_checker_clients__v2
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+  clustering:
+    fields:
+      - normalized_channel
+      - sample_id

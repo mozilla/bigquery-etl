@@ -43,9 +43,9 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-    firefox_desktop_review_checker_clients__v1 = bigquery_etl_query(
-        task_id="firefox_desktop_review_checker_clients__v1",
-        destination_table="review_checker_clients_v1",
+    firefox_desktop_review_checker_clients__v2 = bigquery_etl_query(
+        task_id="firefox_desktop_review_checker_clients__v2",
+        destination_table="review_checker_clients_v2",
         dataset_id="firefox_desktop_derived",
         project_id="moz-fx-data-shared-prod",
         owner="akommasani@mozilla.com",
@@ -58,10 +58,40 @@ with DAG(
         depends_on_past=False,
     )
 
-    firefox_desktop_review_checker_events__v1 = bigquery_etl_query(
-        task_id="firefox_desktop_review_checker_events__v1",
+    firefox_desktop_review_checker_events__v2 = bigquery_etl_query(
+        task_id="firefox_desktop_review_checker_events__v2",
+        destination_table="review_checker_events_v2",
+        dataset_id="firefox_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="akommasani@mozilla.com",
+        email=[
+            "akommasani@mozilla.com",
+            "betling@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    firefox_desktop_review_checker_microsurvey__v2 = bigquery_etl_query(
+        task_id="firefox_desktop_review_checker_microsurvey__v2",
+        destination_table="review_checker_microsurvey_v2",
+        dataset_id="firefox_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="akommasani@mozilla.com",
+        email=[
+            "akommasani@mozilla.com",
+            "betling@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    org_mozilla_fenix_review_checker_events__v1 = bigquery_etl_query(
+        task_id="org_mozilla_fenix_review_checker_events__v1",
         destination_table="review_checker_events_v1",
-        dataset_id="firefox_desktop_derived",
+        dataset_id="org_mozilla_fenix_derived",
         project_id="moz-fx-data-shared-prod",
         owner="akommasani@mozilla.com",
         email=[
@@ -73,10 +103,10 @@ with DAG(
         depends_on_past=False,
     )
 
-    firefox_desktop_review_checker_microsurvey__v1 = bigquery_etl_query(
-        task_id="firefox_desktop_review_checker_microsurvey__v1",
-        destination_table="review_checker_microsurvey_v1",
-        dataset_id="firefox_desktop_derived",
+    org_mozilla_ios_firefox_review_checker_events__v1 = bigquery_etl_query(
+        task_id="org_mozilla_ios_firefox_review_checker_events__v1",
+        destination_table="review_checker_events_v1",
+        dataset_id="org_mozilla_ios_firefox_derived",
         project_id="moz-fx-data-shared-prod",
         owner="akommasani@mozilla.com",
         email=[
@@ -100,7 +130,7 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    firefox_desktop_review_checker_clients__v1.set_upstream(
+    firefox_desktop_review_checker_clients__v2.set_upstream(
         wait_for_copy_deduplicate_all
     )
     wait_for_search_derived__search_clients_daily__v8 = ExternalTaskSensor(
@@ -115,7 +145,7 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    firefox_desktop_review_checker_clients__v1.set_upstream(
+    firefox_desktop_review_checker_clients__v2.set_upstream(
         wait_for_search_derived__search_clients_daily__v8
     )
     wait_for_telemetry_derived__clients_daily_joined__v1 = ExternalTaskSensor(
@@ -130,11 +160,11 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    firefox_desktop_review_checker_clients__v1.set_upstream(
+    firefox_desktop_review_checker_clients__v2.set_upstream(
         wait_for_telemetry_derived__clients_daily_joined__v1
     )
 
-    firefox_desktop_review_checker_events__v1.set_upstream(
+    firefox_desktop_review_checker_events__v2.set_upstream(
         wait_for_copy_deduplicate_all
     )
 
@@ -150,9 +180,17 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    firefox_desktop_review_checker_microsurvey__v1.set_upstream(
+    firefox_desktop_review_checker_microsurvey__v2.set_upstream(
         wait_for_clients_first_seen_v2
     )
-    firefox_desktop_review_checker_microsurvey__v1.set_upstream(
+    firefox_desktop_review_checker_microsurvey__v2.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    org_mozilla_fenix_review_checker_events__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    org_mozilla_ios_firefox_review_checker_events__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )

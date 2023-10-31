@@ -1,0 +1,12 @@
+friendly_name: Glean Server Knobs
+description: |-
+  A view on the experiment monitoring dataset of all glean server knob configs
+labels:
+  incremental: false
+  public_bigquery: false
+  public_json: false
+owners:
+  - wstuckey@mozilla.com
+scheduling:
+  dag_name: bqetl_monitoring
+  task_name: glean_server_knob_experiments__v1

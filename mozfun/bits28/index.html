@@ -2766,11 +2766,11 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#to_dates-udf" class="md-nav__link">
-    to_dates (UDF)
+  <a href="#active_in_range-udf" class="md-nav__link">
+    active_in_range (UDF)
   </a>
   
-    <nav class="md-nav" aria-label="to_dates (UDF)">
+    <nav class="md-nav" aria-label="active_in_range (UDF)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -2806,6 +2806,26 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#to_dates-udf" class="md-nav__link">
+    to_dates (UDF)
+  </a>
+  
+    <nav class="md-nav" aria-label="to_dates (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_2" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#days_since_seen-udf" class="md-nav__link">
     days_since_seen (UDF)
   </a>
@@ -2814,7 +2834,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#parameters_2" class="md-nav__link">
+  <a href="#parameters_3" class="md-nav__link">
     Parameters
   </a>
   
@@ -2834,7 +2854,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#parameters_3" class="md-nav__link">
+  <a href="#parameters_4" class="md-nav__link">
     Parameters
   </a>
   
@@ -2854,7 +2874,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#parameters_4" class="md-nav__link">
+  <a href="#parameters_5" class="md-nav__link">
     Parameters
   </a>
   
@@ -2871,26 +2891,6 @@
   </a>
   
     <nav class="md-nav" aria-label="to_string (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters_5" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#active_in_range-udf" class="md-nav__link">
-    active_in_range (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="active_in_range (UDF)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3478,11 +3478,11 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#to_dates-udf" class="md-nav__link">
-    to_dates (UDF)
+  <a href="#active_in_range-udf" class="md-nav__link">
+    active_in_range (UDF)
   </a>
   
-    <nav class="md-nav" aria-label="to_dates (UDF)">
+    <nav class="md-nav" aria-label="active_in_range (UDF)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3518,6 +3518,26 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#to_dates-udf" class="md-nav__link">
+    to_dates (UDF)
+  </a>
+  
+    <nav class="md-nav" aria-label="to_dates (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_2" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#days_since_seen-udf" class="md-nav__link">
     days_since_seen (UDF)
   </a>
@@ -3526,7 +3546,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#parameters_2" class="md-nav__link">
+  <a href="#parameters_3" class="md-nav__link">
     Parameters
   </a>
   
@@ -3546,7 +3566,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#parameters_3" class="md-nav__link">
+  <a href="#parameters_4" class="md-nav__link">
     Parameters
   </a>
   
@@ -3566,7 +3586,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#parameters_4" class="md-nav__link">
+  <a href="#parameters_5" class="md-nav__link">
     Parameters
   </a>
   
@@ -3583,26 +3603,6 @@
   </a>
   
     <nav class="md-nav" aria-label="to_string (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters_5" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#active_in_range-udf" class="md-nav__link">
-    active_in_range (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="active_in_range (UDF)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3646,18 +3646,22 @@ metrics based on these usage histories, such as various retention definitions.</
 type of the field is a BigQuery INT64, but logically the integer
 represents an array of bits, with each 1 indicating a day where the given clients
 was active and each 0 indicating a day where the client was inactive.</p>
-<h2 id="to_dates-udf">to_dates (UDF)</h2>
-<p>Convert a bit pattern into an array of the dates is represents.</p>
+<h2 id="active_in_range-udf">active_in_range (UDF)</h2>
+<p>Return a boolean indicating if any bits are set in the specified range
+of a bit pattern. The <code>start_offset</code> must be zero or a negative number
+indicating an offset from the rightmost bit in the pattern. n_bits is
+the number of bits to consider, counting right from the bit at
+<code>start_offset</code>.</p>
 <p>See detailed docs for the bits28 suite of functions:
 <a href="https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference">https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference</a></p>
 <h3 id="parameters">Parameters</h3>
 <p><strong>INPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>bits INT64, submission_date DATE
+<div class="highlight"><pre><span></span><code>bits INT64, start_offset INT64, n_bits INT64
 </code></pre></div>
 <p><strong>OUTPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>ARRAY&lt;DATE&gt;
+<div class="highlight"><pre><span></span><code>BOOLEAN
 </code></pre></div>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/bits28/to_dates">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/bits28/to_dates/metadata.yaml">Edit</a></p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/bits28/active_in_range">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/bits28/active_in_range/metadata.yaml">Edit</a></p>
 <h2 id="range-udf">range (UDF)</h2>
 <p>Return an INT64 representing a range of bits from a source bit pattern.</p>
 <p>The start_offset must be zero or a negative number indicating an offset from
@@ -3683,6 +3687,18 @@ start_offset.</p>
 <div class="highlight"><pre><span></span><code>INT64
 </code></pre></div>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/bits28/range">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/bits28/range/metadata.yaml">Edit</a></p>
+<h2 id="to_dates-udf">to_dates (UDF)</h2>
+<p>Convert a bit pattern into an array of the dates is represents.</p>
+<p>See detailed docs for the bits28 suite of functions:
+<a href="https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference">https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference</a></p>
+<h3 id="parameters_2">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>bits INT64, submission_date DATE
+</code></pre></div>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>ARRAY&lt;DATE&gt;
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/bits28/to_dates">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/bits28/to_dates/metadata.yaml">Edit</a></p>
 <h2 id="days_since_seen-udf">days_since_seen (UDF)</h2>
 <p>Return the position of the rightmost set bit in an INT64 bit pattern.</p>
 <p>To determine this position, we take a bitwise AND of the bit pattern and
@@ -3694,7 +3710,7 @@ logarithm; see <a href="https://stackoverflow.com/a/42747608/1260237">https://st
 <span class="w">  </span><span class="n">mozfun</span><span class="p">.</span><span class="n">bits28</span><span class="p">.</span><span class="n">days_since_seen</span><span class="p">(</span><span class="mi">18</span><span class="p">)</span>
 <span class="c1">-- &gt;&gt; 1</span>
 </code></pre></div>
-<h3 id="parameters_2">Parameters</h3>
+<h3 id="parameters_3">Parameters</h3>
 <p><strong>INPUTS</strong></p>
 <div class="highlight"><pre><span></span><code>bits INT64
 </code></pre></div>
@@ -3707,7 +3723,7 @@ logarithm; see <a href="https://stackoverflow.com/a/42747608/1260237">https://st
 <p>Implementation based on <a href="https://stackoverflow.com/a/51600210/1260237">https://stackoverflow.com/a/51600210/1260237</a></p>
 <p>See detailed docs for the bits28 suite of functions:
 <a href="https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference">https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference</a></p>
-<h3 id="parameters_3">Parameters</h3>
+<h3 id="parameters_4">Parameters</h3>
 <p><strong>INPUTS</strong></p>
 <div class="highlight"><pre><span></span><code>s STRING
 </code></pre></div>
@@ -3718,7 +3734,7 @@ logarithm; see <a href="https://stackoverflow.com/a/42747608/1260237">https://st
 <h2 id="retention-udf">retention (UDF)</h2>
 <p>Return a nested struct providing booleans indicating whether a given client
 was active various time periods based on the passed bit pattern.</p>
-<h3 id="parameters_4">Parameters</h3>
+<h3 id="parameters_5">Parameters</h3>
 <p><strong>INPUTS</strong></p>
 <div class="highlight"><pre><span></span><code>bits INT64, submission_date DATE
 </code></pre></div>
@@ -3735,7 +3751,7 @@ the individual bits.</p>
 <span class="c1">--      &#39;0000000000000000000000000010&#39;,</span>
 <span class="c1">--      &#39;0000000000000000000000000011&#39;]</span>
 </code></pre></div>
-<h3 id="parameters_5">Parameters</h3>
+<h3 id="parameters_6">Parameters</h3>
 <p><strong>INPUTS</strong></p>
 <div class="highlight"><pre><span></span><code>bits INT64
 </code></pre></div>
@@ -3743,22 +3759,6 @@ the individual bits.</p>
 <div class="highlight"><pre><span></span><code>STRING
 </code></pre></div>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/bits28/to_string">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/bits28/to_string/metadata.yaml">Edit</a></p>
-<h2 id="active_in_range-udf">active_in_range (UDF)</h2>
-<p>Return a boolean indicating if any bits are set in the specified range
-of a bit pattern. The <code>start_offset</code> must be zero or a negative number
-indicating an offset from the rightmost bit in the pattern. n_bits is
-the number of bits to consider, counting right from the bit at
-<code>start_offset</code>.</p>
-<p>See detailed docs for the bits28 suite of functions:
-<a href="https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference">https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference</a></p>
-<h3 id="parameters_6">Parameters</h3>
-<p><strong>INPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>bits INT64, start_offset INT64, n_bits INT64
-</code></pre></div>
-<p><strong>OUTPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>BOOLEAN
-</code></pre></div>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/bits28/active_in_range">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/bits28/active_in_range/metadata.yaml">Edit</a></p>
 
 
 

@@ -106,11 +106,11 @@ def deploy(
         shutil.copytree(sql_dir, tmp_dir)
         sql_dir = tmp_dir / sql_dir.name
 
-    artifact_files = set()
+    artifact_files = list()
 
     # get SQL files for artifacts that are to be deployed
     for path in paths:
-        artifact_files.update(
+        artifact_files.extend(
             [
                 p
                 for p in paths_matching_name_pattern(
@@ -119,6 +119,7 @@ def deploy(
                 if p.suffix in [".sql", ".py"]
                 and p.name != "checks.sql"
                 and len(p.suffixes) == 1
+                and p not in artifact_files
             ]
         )
 
@@ -128,24 +129,25 @@ def deploy(
             metadata = Metadata.of_query_file(query_file)
             if metadata.schema and metadata.schema.derived_from:
                 for derived_from in metadata.schema.derived_from:
-                    artifact_files = set(
-                        [
-                            p
-                            for p in paths_matching_name_pattern(
-                                f"{derived_from.table[0]}.{derived_from.table[1]}.{derived_from.table[2]}",
-                                sql_dir,
-                                None,
-                                files=["*.sql", "*.py"],
-                            )
-                            if p.suffix in [".sql", ".py"]
-                            and p.name != "checks.sql"
-                            and len(p.suffixes) == 1
-                        ]
-                    ).union(artifact_files)
+                    artifact_files = [
+                        p
+                        for p in paths_matching_name_pattern(
+                            f"{derived_from.table[0]}.{derived_from.table[1]}.{derived_from.table[2]}",
+                            sql_dir,
+                            None,
+                            files=["*.sql", "*.py"],
+                        )
+                        if p.suffix in [".sql", ".py"]
+                        and p.name != "checks.sql"
+                        and len(p.suffixes) == 1
+                        and p not in artifact_files
+                    ] + artifact_files
                     derived_from.table[0] = project_id
 
-                    if dataset_suffix:
-                        derived_from.table[1] = f"{derived_from.table[1]}_{dataset_suffix}"
+                    if dataset_suffix and dataset_suffix not in derived_from.table[1]:
+                        derived_from.table[
+                            1
+                        ] = f"{derived_from.table[1]}_{dataset_suffix}"
                 metadata.write(query_file.parent / METADATA_FILE)
         except Exception as e:
             print(e)
@@ -153,15 +155,15 @@ def deploy(
 
     # any dependencies need to be determined an deployed as well since the stage
     # environment doesn't have access to the prod environment
-    artifact_files.update(_udf_dependencies(artifact_files))
-    artifact_files.update(_view_dependencies(artifact_files, sql_dir))
+    artifact_files.extend(list(_udf_dependencies(artifact_files)))
+    artifact_files.extend(list(_view_dependencies(artifact_files, sql_dir)))
 
     # update references of all deployed artifacts
     # references needs to be set to the stage project and the new dataset identifier
     if update_references:
         _update_references(artifact_files, project_id, dataset_suffix, sql_dir)
 
-    updated_artifact_files = set()
+    updated_artifact_files = list()
     (Path(sql_dir) / project_id).mkdir(parents=True, exist_ok=True)
     # copy updated files locally to a folder representing the stage env project
     for artifact_file in artifact_files:
@@ -179,7 +181,7 @@ def deploy(
         new_artifact_path = Path(sql_dir) / project_id / dataset / name
         new_artifact_path.mkdir(parents=True, exist_ok=True)
         shutil.copytree(artifact_file.parent, new_artifact_path, dirs_exist_ok=True)
-        updated_artifact_files.add(new_artifact_path / artifact_file.name)
+        updated_artifact_files.append(new_artifact_path / artifact_file.name)
 
         # copy tests to the right structure
         if test_path.exists():

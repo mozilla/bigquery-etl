@@ -52,8 +52,9 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="wstuckey@mozilla.com",
         email=["ascholtz@mozilla.com", "wstuckey@mozilla.com"],
-        date_partition_parameter="submission_date",
+        date_partition_parameter=None,
         depends_on_past=False,
+        task_concurrency=1,
     )
 
     monitoring_derived__average_ping_sizes__v1 = gke_command(

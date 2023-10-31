@@ -15,7 +15,8 @@ SELECT
             ) AS first_session_timestamp,
             metrics.datetime.first_session_timestamp AS raw_first_session_timestamp
           ) AS datetime
-        )
+        ),
+        metrics.text2 AS text
     ) AS metrics
   )
 FROM

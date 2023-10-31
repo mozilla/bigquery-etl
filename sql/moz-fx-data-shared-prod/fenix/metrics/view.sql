@@ -640,7 +640,12 @@ SELECT
       metrics.timing_distribution.networking_http_content_onstart_delay,
       metrics.timing_distribution.networking_http_content_onstop_delay,
       metrics.timing_distribution.metrics_search_page_load_time,
-      metrics.timing_distribution.fog_validation_gvsv_composite_time
+      metrics.timing_distribution.fog_validation_gvsv_composite_time,
+      metrics.timing_distribution.networking_http_content_html5parser_ondatafinished_to_onstop_delay,
+      metrics.timing_distribution.networking_http_content_html5parser_ondatafinished_to_onstop_delay_negative,
+      metrics.timing_distribution.networking_http_content_ondatafinished_delay,
+      metrics.timing_distribution.networking_http_content_ondatafinished_to_onstop_delay,
+      metrics.timing_distribution.networking_http_content_ondatafinished_to_onstop_delay_negative
     ) AS `timing_distribution`,
     metrics.memory_distribution,
     metrics.datetime,
@@ -1146,7 +1151,12 @@ SELECT
       metrics.timing_distribution.networking_http_content_onstart_delay,
       metrics.timing_distribution.networking_http_content_onstop_delay,
       metrics.timing_distribution.metrics_search_page_load_time,
-      metrics.timing_distribution.fog_validation_gvsv_composite_time
+      metrics.timing_distribution.fog_validation_gvsv_composite_time,
+      metrics.timing_distribution.networking_http_content_html5parser_ondatafinished_to_onstop_delay,
+      metrics.timing_distribution.networking_http_content_html5parser_ondatafinished_to_onstop_delay_negative,
+      metrics.timing_distribution.networking_http_content_ondatafinished_delay,
+      metrics.timing_distribution.networking_http_content_ondatafinished_to_onstop_delay,
+      metrics.timing_distribution.networking_http_content_ondatafinished_to_onstop_delay_negative
     ) AS `timing_distribution`,
     metrics.memory_distribution,
     metrics.datetime,

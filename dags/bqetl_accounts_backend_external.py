@@ -69,3 +69,15 @@ with DAG(
         depends_on_past=False,
         task_concurrency=1,
     )
+
+    accounts_backend_external__nonprod_emails__v1 = bigquery_etl_query(
+        task_id="accounts_backend_external__nonprod_emails__v1",
+        destination_table="nonprod_emails_v1",
+        dataset_id="accounts_backend_external",
+        project_id="moz-fx-data-shared-prod",
+        owner="akomar@mozilla.com",
+        email=["akomar@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )

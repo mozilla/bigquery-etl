@@ -3375,6 +3375,52 @@ This calculation only considers Desktop--Mobile's not in PingCentre.</p>
 </li>
 </ul>
 <table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>submission_date</td>
+        <td>Data submission date</td>
+        <td>Date</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>country</td>
+        <td>Two-letter code corresponding to country</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>newtab_clients</td>
+        <td>Count of clients available in newtab for submission_date</td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>as_clients</td>
+        <td>Count of clients available in activity-stream for submission_date</td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>newtab_visits</td>
+        <td>Count of visits available in newtab for submission_date</td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>as_sessions</td>
+        <td>Count of sessions available in activity-stream for submission_date</td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>conversion_factor</td>
+        <td>Daily conversion factor allowing the translation of newtab visits to activity-stream sessions (as_sessions / newtab_visits)</td>
+        <td>Float</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
+<table>
 <caption>Referenced Tables</caption>
     <tr>
         <th>Project</th>

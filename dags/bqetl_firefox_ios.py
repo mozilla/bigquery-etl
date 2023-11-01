@@ -376,6 +376,9 @@ with DAG(
     firefox_ios_derived__firefox_ios_clients__v1.set_upstream(
         checks__fail_firefox_ios_derived__new_profile_activation__v2
     )
+    firefox_ios_derived__firefox_ios_clients__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
 
     wait_for_baseline_clients_last_seen = ExternalTaskSensor(
         task_id="wait_for_baseline_clients_last_seen",

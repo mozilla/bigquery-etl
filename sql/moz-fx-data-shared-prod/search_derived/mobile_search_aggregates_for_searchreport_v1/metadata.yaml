@@ -7,15 +7,13 @@ description: |-
   Originally created for the search report dashboard.
 owners:
 - cmorales@mozilla.com
-- mmccorquodale@mozilla.com
 - xluo@mozilla.com
 labels:
   incremental: true
   schedule: daily
   dag: bqetl_search_dashboard
   owner1: cmorales
-  owner2: mmccorquodale
-  owner3: xluo
+  owner2: xluo
 scheduling:
   dag_name: bqetl_search_dashboard
   depends_on_past: false

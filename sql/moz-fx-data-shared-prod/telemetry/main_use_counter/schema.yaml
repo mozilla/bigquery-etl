@@ -10799,6 +10799,14 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Whether a page used SVGDeselectAll
+    - name: use_counter2_deprecated_is_external_ctap2_security_key_supported_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document used IsExternalCTAP2SecurityKeySupported
+    - name: use_counter2_deprecated_is_external_ctap2_security_key_supported_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page used IsExternalCTAP2SecurityKeySupported
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -21444,6 +21452,14 @@ fields:
           type: STRING
           mode: NULLABLE
           description: Whether a page used SVGDeselectAll
+        - name: use_counter2_deprecated_is_external_ctap2_security_key_supported_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document used IsExternalCTAP2SecurityKeySupported
+        - name: use_counter2_deprecated_is_external_ctap2_security_key_supported_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page used IsExternalCTAP2SecurityKeySupported
 - name: sample_id
   type: INTEGER
   mode: NULLABLE

@@ -10,7 +10,6 @@ labels:
   schedule: daily
 owners:
 - cmorales@mozilla.com
-- mmccorquodale@mozilla.com
 - xluo@mozilla.com
 scheduling:
   dag_name: bqetl_search_dashboard

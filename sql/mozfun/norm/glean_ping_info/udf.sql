@@ -27,7 +27,8 @@ SELECT
       STRUCT('2019-12-01T20:22+11:00' AS start_time, '2019-12-01T21:24+11:00' AS end_time)
     ).parsed_end_time
   ),
-  assert.null(
+  assert.equals(
+    TIMESTAMP '2019-12-01 10:24:00',
     norm.glean_ping_info(
       STRUCT('2019-12-01T20:22+11:00' AS start_time, '2019-12-01T21:24:00+11:00' AS end_time)
     ).parsed_end_time

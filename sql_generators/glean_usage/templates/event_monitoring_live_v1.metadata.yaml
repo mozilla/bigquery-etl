@@ -1,0 +1,9 @@
+friendly_name: Event Monitoring Live
+description: |-
+  Materialized view of experimentation related events
+  coming from {{ dataset_id }}.
+owners:
+- ascholtz@mozilla.com
+- akomar@mozilla.com
+labels:
+  materialized_view: true

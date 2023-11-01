@@ -24,15 +24,27 @@ CREATE OR REPLACE FUNCTION udf.bits_to_days_since_first_seen(b BYTES) AS (
 
 -- Tests
 SELECT
-  assert.equals(0, udf.bits_to_days_since_first_seen(b'\x00\x01')),
-  assert.equals(0, udf.bits_to_days_since_first_seen(b'\x00\x00\x00\x01')),
-  assert.equals(8, udf.bits_to_days_since_first_seen(b'\x01\x00')),
-  assert.equals(NULL, udf.bits_to_days_since_first_seen(b'\x00\x00')),
-  assert.equals(1, udf.bits_to_days_since_first_seen(b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x03')),
-  assert.equals(79, udf.bits_to_days_since_first_seen(b'\xF0\x00\x00\x00\x00\x00\x00\x00\x00\x00')),
-  assert.equals(79, udf.bits_to_days_since_first_seen(b'\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF')),
-  assert.equals(71, udf.bits_to_days_since_first_seen(b'\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF')),
-  assert.equals(
+  mozfun.assert.equals(0, udf.bits_to_days_since_first_seen(b'\x00\x01')),
+  mozfun.assert.equals(0, udf.bits_to_days_since_first_seen(b'\x00\x00\x00\x01')),
+  mozfun.assert.equals(8, udf.bits_to_days_since_first_seen(b'\x01\x00')),
+  mozfun.assert.equals(NULL, udf.bits_to_days_since_first_seen(b'\x00\x00')),
+  mozfun.assert.equals(
+    1,
+    udf.bits_to_days_since_first_seen(b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x03')
+  ),
+  mozfun.assert.equals(
+    79,
+    udf.bits_to_days_since_first_seen(b'\xF0\x00\x00\x00\x00\x00\x00\x00\x00\x00')
+  ),
+  mozfun.assert.equals(
+    79,
+    udf.bits_to_days_since_first_seen(b'\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF')
+  ),
+  mozfun.assert.equals(
+    71,
+    udf.bits_to_days_since_first_seen(b'\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF')
+  ),
+  mozfun.assert.equals(
     3,
     udf.bits_to_days_since_first_seen(
       FROM_HEX(
@@ -40,7 +52,7 @@ SELECT
       )
     )
   ),
-  assert.equals(
+  mozfun.assert.equals(
     11,
     udf.bits_to_days_since_first_seen(
       FROM_HEX(
@@ -48,7 +60,7 @@ SELECT
       )
     )
   ),
-  assert.equals(
+  mozfun.assert.equals(
     19,
     udf.bits_to_days_since_first_seen(
       FROM_HEX(
@@ -56,7 +68,7 @@ SELECT
       )
     )
   ),
-  assert.equals(
+  mozfun.assert.equals(
     254,
     udf.bits_to_days_since_first_seen(
       FROM_HEX(

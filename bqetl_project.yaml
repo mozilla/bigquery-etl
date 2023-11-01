@@ -20,6 +20,8 @@ dry_run:
   function: https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/bigquery-etl-dryrun
   skip:
   # Access Denied
+  - sql/moz-fx-data-shared-prod/monitoring_derived/glean_server_knob_experiments_v1/query.sql
+  - sql/moz-fx-data-shared-prod/ads/nt_visits_to_sessions_conversion_factors_daily/view.sql
   - sql/moz-fx-data-shared-prod/account_ecosystem_derived/ecosystem_client_id_lookup_v1/query.sql
   - sql/moz-fx-data-shared-prod/account_ecosystem_derived/desktop_clients_daily_v1/query.sql
   - sql/moz-fx-data-shared-prod/account_ecosystem_restricted/ecosystem_client_id_deletion_v1/query.sql
@@ -45,6 +47,11 @@ dry_run:
   - sql/moz-fx-data-shared-prod/pocket/pocket_reach_mau/view.sql
   - sql/moz-fx-data-shared-prod/telemetry/buildhub2/view.sql
   - sql/moz-fx-data-shared-prod/accounts_backend_external/nonprod_accounts_v1/query.sql
+  - sql/moz-fx-data-shared-prod/accounts_backend_external/nonprod_emails_v1/query.sql
+  - sql/moz-fx-data-shared-prod/accounts_backend/nonprod_accounts/view.sql
+  - sql/moz-fx-data-shared-prod/accounts_backend_external/accounts_v1/query.sql
+  - sql/moz-fx-data-shared-prod/accounts_backend_external/emails_v1/query.sql
+  - sql/moz-fx-data-shared-prod/accounts_backend/accounts/view.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_content_events_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_auth_bounce_events_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_auth_events_v1/query.sql
@@ -264,6 +271,7 @@ format:
   - sql_generators/search/templates/*.sql
   - sql_generators/experiment_monitoring/templates/**/*.sql
   - sql_generators/feature_usage/templates/*.sql
+  - sql_generators/funnels/templates/*.sql
   - sql/moz-fx-data-shared-prod/telemetry/fenix_events_v1/view.sql
   - sql/moz-fx-data-shared-prod/telemetry/fennec_ios_events_v1/view.sql
   - sql/moz-fx-data-shared-prod/telemetry/fire_tv_events_v1/view.sql
@@ -349,7 +357,6 @@ routine:
     gcs_path: ""
     skip:
     - sql/moz-fx-data-shared-prod/udf/main_summary_scalars/udf.sql
-  assert_udf_dir: tests/assert
   example_dir: examples
   project: mozfun
 
@@ -359,6 +366,7 @@ view:
     # tests
     - sql/moz-fx-data-test-project/test/simple_view/view.sql
     # Access Denied
+    - sql/moz-fx-data-shared-prod/ads/nt_visits_to_sessions_conversion_factors_daily/view.sql
     - sql/moz-fx-data-shared-prod/telemetry/experiment_enrollment_cumulative_population_estimate/view.sql
     - sql/moz-fx-data-shared-prod/mlhackweek_search/events/view.sql
     - sql/moz-fx-data-shared-prod/regrets_reporter_ucs/deletion_request/view.sql

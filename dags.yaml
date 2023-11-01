@@ -119,12 +119,11 @@ bqetl_accounts_backend_external:
   default_args:
     owner: akomar@mozilla.com
     start_date: "2023-09-19"
-    email: ["akomar@mozilla.com"]
+    email: ["akomar@mozilla.com", "telemetry-alerts@mozilla.com"]
     retries: 1
     retry_delay: 10m
   tags:
     - impact/tier_3
-    - triage/no_triage
     - repo/bigquery-etl
 
 bqetl_subplat:
@@ -712,7 +711,6 @@ bqetl_urlbar:
       - "telemetry-alerts@mozilla.com"
       - "anicholson@mozilla.com"
       - "akomar@mozilla.com"
-      - "tbrooks@mozilla.com"
     retries: 2
     retry_delay: 30m
   tags:
@@ -1176,7 +1174,7 @@ bqetl_kpis_shredder:
       - https://github.com/mozilla/bigquery-etl/pull/4239
     This DAG calculates KPIs for shredder client_ids
   repo: bigquery-etl
-  schedule_interval: 0 0 */28 * *
+  schedule_interval: 0 2 */28 * *
   tags:
     - impact/tier_3
     - repo/bigquery-etl
@@ -1216,6 +1214,85 @@ bqetl_reference:
     retry_delay: 30m
     start_date: '2023-09-18'
   description: DAG to build reference data
+  repo: bigquery-etl
+  schedule_interval: daily
+  tags:
+    - impact/tier_1
+    - repo/bigquery-etl
+
+bqetl_generated_funnels:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - ascholtz@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    owner: ascholtz@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2023-10-14'
+  description: DAG scheduling funnels defined in sql_generators/funnels
+  repo: bigquery-etl
+  schedule_interval: 0 5 * * *
+  tags:
+    - impact/tier_3
+    - triage/no_triage
+
+bqetl_serp:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - akommasani@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    owner: akommasani@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2023-10-01'
+  description: DAG to build serp events data
+  repo: bigquery-etl
+  schedule_interval: daily
+  tags:
+    - impact/tier_1
+    - repo/bigquery-etl
+
+bqetl_review_checker:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - akommasani@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    owner: akommasani@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2023-10-01'
+  description: DAG to build review checker data
+  repo: bigquery-etl
+  schedule_interval: daily
+  tags:
+    - impact/tier_1
+    - repo/bigquery-etl
+
+bqetl_ads:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - cmorales@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    owner: cmorales@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2023-10-10'
+  description: Tables related to ads
   repo: bigquery-etl
   schedule_interval: daily
   tags:

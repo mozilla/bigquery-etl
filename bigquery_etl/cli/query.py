@@ -25,6 +25,7 @@ from google.cloud import bigquery
 from google.cloud.exceptions import NotFound, PreconditionFailed
 
 from ..backfill.utils import QUALIFIED_TABLE_NAME_RE, qualified_table_name_matching
+from ..cli import check
 from ..cli.format import format
 from ..cli.utils import (
     is_authenticated,
@@ -514,6 +515,7 @@ def _backfill_query(
     partitioning_type,
     backfill_date,
     destination_table,
+    run_checks,
 ):
     """Run a query backfill for a specific date."""
     project, dataset, table = extract_from_query_path(query_file_path)
@@ -568,6 +570,21 @@ def _backfill_query(
             query_arguments=arguments,
         )
 
+        # Run checks on the query
+        checks_file = query_file_path.parent / "checks.sql"
+        if run_checks and checks_file.exists():
+            table_name = checks_file.parent.name
+            # query_args have things like format, which we don't want to push
+            # to the check; so we just take the query parameters
+            check_args = [qa for qa in arguments if qa.startswith("--parameter")]
+            check._run_check(
+                checks_file=checks_file,
+                project_id=project_id,
+                dataset_id=dataset,
+                table=table_name,
+                query_arguments=check_args,
+                dry_run=dry_run,
+            )
     else:
         click.echo(
             f"Skip {query_file_path} with @{date_partition_parameter}={backfill_date}"
@@ -660,6 +677,9 @@ def _backfill_query(
         + "If not set, determines destination table based on query."
     ),
 )
+@click.option(
+    "--checks/--no-checks", help="Whether to run checks during backfill", default=False
+)
 @click.pass_context
 def backfill(
     ctx,
@@ -674,6 +694,7 @@ def backfill(
     parallelism,
     no_partition,
     destination_table,
+    checks,
 ):
     """Run a backfill."""
     if not is_authenticated():
@@ -772,6 +793,7 @@ def backfill(
             ctx.args,
             partitioning_type,
             destination_table=destination_table,
+            run_checks=checks,
         )
 
         if not depends_on_past:
@@ -1369,15 +1391,14 @@ def initialize(ctx, name, sql_dir, project_id, dry_run):
 
             for init_file in init_files:
                 project = init_file.parent.parent.parent.name
+                client = bigquery.Client(project=project)
 
                 with open(init_file) as init_file_stream:
                     init_sql = init_file_stream.read()
                     dataset = Path(init_file).parent.parent.name
-                    destination_table = query_file.parent.name
                     job_config = bigquery.QueryJobConfig(
                         dry_run=dry_run,
                         default_dataset=f"{project}.{dataset}",
-                        destination=f"{project}.{dataset}.{destination_table}",
                     )
 
                     if "CREATE MATERIALIZED VIEW" in init_sql:
@@ -1773,6 +1794,7 @@ def _update_query_schema(
             content=sql_content,
             use_cloud_function=use_cloud_function,
             respect_skip=respect_dryrun_skip,
+            sql_dir=sql_dir,
         )
     except Exception:
         if not existing_schema_path.exists():
@@ -1984,6 +2006,7 @@ def deploy(
                     query_file_path,
                     use_cloud_function=use_cloud_function,
                     respect_skip=respect_dryrun_skip,
+                    sql_dir=sql_dir,
                 )
                 if not existing_schema.equal(query_schema):
                     click.echo(

@@ -5,4 +5,4 @@ AS
 SELECT
   *
 FROM
-  `{{ project_id }}.{{ app_name }}_derived.urlbar_events_v1`
+  `{{ project_id }}.{{ app_name }}_derived.urlbar_events_v2`

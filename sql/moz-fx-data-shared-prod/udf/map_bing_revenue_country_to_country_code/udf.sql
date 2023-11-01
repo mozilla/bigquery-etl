@@ -23,5 +23,5 @@ CREATE OR REPLACE FUNCTION udf.map_bing_revenue_country_to_country_code(country 
 
 -- Tests
 SELECT
-  assert.equals('US', udf.map_bing_revenue_country_to_country_code('CTY_United States')),
-  assert.equals('Other', udf.map_bing_revenue_country_to_country_code('CTY_Bolivia'))
+  mozfun.assert.equals('US', udf.map_bing_revenue_country_to_country_code('CTY_United States')),
+  mozfun.assert.equals('Other', udf.map_bing_revenue_country_to_country_code('CTY_Bolivia'))

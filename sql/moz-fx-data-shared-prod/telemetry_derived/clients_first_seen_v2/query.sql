@@ -289,7 +289,7 @@ shutdown_ping AS (
 ),
 main_ping AS (
   -- The columns set as NULL are not available in clients_daily_v6 and need to be
-  -- retrieved in the ETL from telemetry_stable.main_v4:<column>.
+  -- retrieved in the ETL from telemetry_stable.main_v5:<column>.
   SELECT
     client_id AS client_id,
     sample_id AS sample_id,

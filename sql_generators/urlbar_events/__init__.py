@@ -56,7 +56,7 @@ def generate(target_project, output_dir, use_cloud_function):
 
     write_sql(
         output_dir=output_dir,
-        full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}_v1",
+        full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}_v2",
         basename="query.sql",
         sql=query_sql,
         skip_existing=False,
@@ -64,7 +64,7 @@ def generate(target_project, output_dir, use_cloud_function):
 
     write_sql(
         output_dir=output_dir,
-        full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}_v1",
+        full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}_v2",
         basename="metadata.yaml",
         sql=render(
             metadata_template,

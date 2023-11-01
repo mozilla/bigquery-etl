@@ -304,36 +304,36 @@ main_ping AS (
     ARRAY_AGG(DATE(submission_date) ORDER BY submission_date ASC) AS all_dates,
     CAST(
       NULL AS STRING
-    ) AS architecture, -- main_v4:environment.build.architecture
+    ) AS architecture, -- main_v5:environment.build.architecture
     ARRAY_AGG(env_build_id RESPECT NULLS ORDER BY submission_date)[SAFE_OFFSET(0)] AS app_build_id,
     ARRAY_AGG(app_name RESPECT NULLS ORDER BY submission_date)[SAFE_OFFSET(0)] AS app_name,
     ARRAY_AGG(locale RESPECT NULLS ORDER BY submission_date)[SAFE_OFFSET(0)] AS locale,
     CAST(
       NULL AS STRING
-    ) AS platform_version, -- main_v4:environment.build.platform_version
+    ) AS platform_version, -- main_v5:environment.build.platform_version
     ARRAY_AGG(vendor RESPECT NULLS ORDER BY submission_date)[SAFE_OFFSET(0)] AS vendor,
     ARRAY_AGG(app_version RESPECT NULLS ORDER BY submission_date)[SAFE_OFFSET(0)] AS app_version,
     CAST(
       NULL AS STRING
-    ) AS xpcom_abi, -- main_v4:environment.build.xpcom_abi / application.xpcom_abi
+    ) AS xpcom_abi, -- main_v5:environment.build.xpcom_abi / application.xpcom_abi
     CAST(
       NULL AS STRING
-    ) AS document_id, -- main_v4:document_id
+    ) AS document_id, -- main_v5:document_id
     ARRAY_AGG(distribution_id RESPECT NULLS ORDER BY submission_date)[
       SAFE_OFFSET(0)
     ] AS distribution_id,
     CAST(
       NULL AS STRING
-    ) AS partner_distribution_version, -- main_v4:environment.partner.distribution_version
+    ) AS partner_distribution_version, -- main_v5:environment.partner.distribution_version
     CAST(
       NULL AS STRING
-    ) AS partner_distributor, -- main_v4:environment.partner.distributor
+    ) AS partner_distributor, -- main_v5:environment.partner.distributor
     CAST(
       NULL AS STRING
-    ) AS partner_distributor_channel, -- main_v4:environment.partner.distributor_channel
+    ) AS partner_distributor_channel, -- main_v5:environment.partner.distributor_channel
     CAST(
       NULL AS STRING
-    ) AS partner_id, -- main_v4:environment.partner.distribution_id
+    ) AS partner_id, -- main_v5:environment.partner.distribution_id
     ARRAY_AGG(attribution.campaign RESPECT NULLS ORDER BY submission_date)[
       SAFE_OFFSET(0)
     ] AS attribution_campaign,
@@ -351,7 +351,7 @@ main_ping AS (
     ] AS attribution_source,
     CAST(
       NULL AS STRING
-    ) AS attribution_ua, -- main_v4:environment.settings.attribution.ua
+    ) AS attribution_ua, -- main_v5:environment.settings.attribution.ua
     ARRAY_AGG(default_search_engine_data_load_path RESPECT NULLS ORDER BY submission_date)[
       SAFE_OFFSET(0)
     ] AS engine_data_load_path,
@@ -366,11 +366,11 @@ main_ping AS (
     ] AS engine_data_submission_url,
     CAST(
       NULL AS STRING
-    ) AS apple_model_id, -- main_v4:environment.system.apple_model_id
+    ) AS apple_model_id, -- main_v5:environment.system.apple_model_id
     ARRAY_AGG(city RESPECT NULLS ORDER BY submission_date)[SAFE_OFFSET(0)] AS city,
     CAST(
       NULL AS STRING
-    ) AS db_version, -- main_v4:metadata.geo.db_version
+    ) AS db_version, -- main_v5:metadata.geo.db_version
     ARRAY_AGG(geo_subdivision1 RESPECT NULLS ORDER BY submission_date)[
       SAFE_OFFSET(0)
     ] AS subdivision1,
@@ -384,13 +384,13 @@ main_ping AS (
     ] AS normalized_os_version,
     CAST(
       NULL AS STRING
-    ) AS startup_profile_selection_reason, -- main_v4:payload.processes.parent.scalars.startup_profile_selection_reason
+    ) AS startup_profile_selection_reason, -- main_v5:payload.processes.parent.scalars.startup_profile_selection_reason
     ARRAY_AGG(attribution.dltoken RESPECT NULLS ORDER BY submission_date)[
       SAFE_OFFSET(0)
     ] AS attribution_dltoken,
     CAST(
       NULL AS STRING
-    ) AS attribution_dlsource -- main_v4:environment.settings.attribution.dlsource
+    ) AS attribution_dlsource -- main_v5:environment.settings.attribution.dlsource
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6`
   WHERE

@@ -914,7 +914,6 @@ def _run_query(
     dataset_id,
     query_arguments,
     addl_templates: typing.Optional[dict] = None,
-    mapped_values=None,
 ):
     """Run a query."""
     if dataset_id is not None:
@@ -977,11 +976,6 @@ def _run_query(
                 destination_table = "{}:{}.{}".format(project, dataset, table)
 
             query_arguments.append("--destination_table={}".format(destination_table))
-
-        if mapped_values is not None and mapped_values != "":
-            query_arguments = query_arguments + [
-                f"--parameter=sample_id:INT64:{mapped_values}"
-            ]
 
         if bool(list(filter(lambda x: x.startswith("--parameter"), query_arguments))):
             # need to do this as parameters are not supported with legacy sql
@@ -1279,7 +1273,7 @@ def _initialize_in_parallel(
     query_file,
     arguments,
     parallelism,
-    mapped_values,
+    sample_ids,
     addl_templates,
 ):
     with ThreadPool(parallelism) as pool:
@@ -1292,10 +1286,9 @@ def _initialize_in_parallel(
                 None,
                 table,
                 dataset,
-                arguments,
-                addl_templates,
+                addl_templates=addl_templates,
             ),
-            mapped_values,
+            [arguments + [f"--parameter=sample_id:INT64:{i}"] for i in sample_ids],
         )
 
 
@@ -1320,7 +1313,7 @@ def _initialize_in_parallel(
 def initialize(ctx, name, sql_dir, project_id, dry_run):
     """Create the destination table for the provided query."""
     client = bigquery.Client()
-    mapped_values = [""]
+    sample_ids = [""]
 
     if not is_authenticated():
         click.echo("Authentication required for creating tables.", err=True)
@@ -1361,7 +1354,7 @@ def initialize(ctx, name, sql_dir, project_id, dry_run):
                 ctx.invoke(deploy, name=full_table_id, force=True)
 
             if "@sample_id" in sql_content:
-                mapped_values = list(range(0, 100))
+                sample_ids = list(range(0, 100))
             if "INSERT INTO" in sql_content:
                 destination_table = None
 
@@ -1381,7 +1374,7 @@ def initialize(ctx, name, sql_dir, project_id, dry_run):
                 query_file=query_file,
                 arguments=arguments,
                 parallelism=DEFAULT_PARALLELISM,
-                mapped_values=mapped_values,
+                sample_ids=sample_ids,
                 addl_templates={
                     "is_init": lambda: True,
                 },

@@ -3167,13 +3167,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#updating-the-airflow-dags" class="md-nav__link">
-    Updating the Airflow DAGs
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#get-data-review" class="md-nav__link">
     Get Data Review
   </a>
@@ -3528,13 +3521,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#updating-the-airflow-dags" class="md-nav__link">
-    Updating the Airflow DAGs
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#get-data-review" class="md-nav__link">
     Get Data Review
   </a>
@@ -3725,14 +3711,6 @@ If there are no problems, you should see no output.</p>
 <div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>query<span class="w"> </span>schedule<span class="w"> </span>org_mozilla_mozregression_derived.mozregression_aggregates_v1<span class="w"> </span>--dag<span class="w"> </span>bqetl_internal_tooling<span class="w"> </span>--task-name<span class="w"> </span>mozregression_aggregates__v1
 </code></pre></div></p>
 <p>Note that we are scheduling the generation of the underlying <em>table</em> which is <code>org_mozilla_mozregression_derived.mozregression_aggregates_v1</code> rather than the view.</p>
-<h2 id="updating-the-airflow-dags">Updating the Airflow DAGs</h2>
-<p>With the query schedule setup, you will want to generate the actual airflow configuration which telemetry-airflow will pick up. Run:</p>
-<div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>dag<span class="w"> </span>generate<span class="w"> </span>&lt;dag_name&gt;
-</code></pre></div>
-<p>For this example:
-<div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>dag<span class="w"> </span>generate<span class="w"> </span>bqetl_internal_tooling
-</code></pre></div></p>
-<p>This may take a while, as it currently does a dry run through every query defined in bigquery-etl.</p>
 <h2 id="get-data-review">Get Data Review</h2>
 <p><em>This is for public datasets only! You can skip this step if you're only creating a dataset for Mozilla-internal use.</em></p>
 <p>Before a dataset can be made public, it needs to go through data review according to our <a href="https://wiki.mozilla.org/Data_Publishing#Dataset_Publishing_Process_2">data publishing process</a>. This means filing a bug, answering a few questions, and then finding a <a href="https://wiki.mozilla.org/Firefox/Data_Collection">data steward</a> to review your proposal.</p>

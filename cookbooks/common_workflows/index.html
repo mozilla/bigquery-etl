@@ -3639,7 +3639,6 @@
 <li>Run <code>./bqetl query validate &lt;dataset&gt;.&lt;table&gt;_&lt;version&gt;</code> to dry run and format the query</li>
 <li>To schedule the query, first select a DAG from the <code>./bqetl dag info</code> list or create a new DAG <code>./bqetl dag create &lt;bqetl_new_dag&gt;</code></li>
 <li>Run <code>./bqetl query schedule &lt;dataset&gt;.&lt;table&gt;_&lt;version&gt; --dag &lt;bqetl_dag&gt;</code> to schedule the query</li>
-<li>Run <code>./bqetl dag generate &lt;bqetl_dag&gt;</code> to update the DAG file</li>
 <li>Create a pull request</li>
 <li>PR gets reviewed and eventually approved</li>
 <li>Merge pull-request</li>
@@ -3861,7 +3860,6 @@ is not yet defined.</p>
 </li>
 <li>If an internal dataset already exists, move it to <code>mozilla-public-data</code></li>
 <li>If an <code>init.sql</code> file exists for the query, change the destination project for the created table to <code>mozilla-public-data</code></li>
-<li>Run <code>./bqetl dag generate bqetl_public_public_data_json</code> to update the DAG</li>
 <li>Open a PR</li>
 <li>PR gets reviewed, approved and merged<ul>
 <li>Once, ETL is running a view will get automatically published to <code>moz-fx-data-shared-prod</code> referencing the public dataset</li>

@@ -485,7 +485,7 @@ bqetl_search_dashboard:
     retries: 2
     retry_delay: 30m
     start_date: "2020-12-14"
-  schedule_interval: 0 4 * * *
+  schedule_interval: 30 4 * * *
   tags:
     - impact/tier_2
 
@@ -813,7 +813,7 @@ bqetl_analytics_aggregations:
     It provides data to build growth, search and usage metrics, as well
     as acquisition and retention KPIs, in a model that facilitates
     reporting in Looker.
-  schedule_interval: 30 4 * * *
+  schedule_interval: 15 4 * * *
   tags:
     - impact/tier_1
 

@@ -113,3 +113,13 @@ fields:
 - mode: NULLABLE
   name: isp
   type: STRING
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: STRING
+  mode: REPEATED
+  name: experiments
+  type: RECORD

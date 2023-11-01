@@ -158,6 +158,19 @@ with DAG(
     telemetry_derived__unified_metrics__v1.set_upstream(
         wait_for_clients_last_seen_joined
     )
+    wait_for_copy_deduplicate_all = ExternalTaskSensor(
+        task_id="wait_for_copy_deduplicate_all",
+        external_dag_id="copy_deduplicate",
+        external_task_id="copy_deduplicate_all",
+        execution_delta=datetime.timedelta(seconds=7200),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    telemetry_derived__unified_metrics__v1.set_upstream(wait_for_copy_deduplicate_all)
     wait_for_search_derived__mobile_search_clients_daily__v1 = ExternalTaskSensor(
         task_id="wait_for_search_derived__mobile_search_clients_daily__v1",
         external_dag_id="bqetl_mobile_search",
@@ -172,6 +185,21 @@ with DAG(
 
     telemetry_derived__unified_metrics__v1.set_upstream(
         wait_for_search_derived__mobile_search_clients_daily__v1
+    )
+    wait_for_telemetry_derived__clients_daily_joined__v1 = ExternalTaskSensor(
+        task_id="wait_for_telemetry_derived__clients_daily_joined__v1",
+        external_dag_id="bqetl_main_summary",
+        external_task_id="telemetry_derived__clients_daily_joined__v1",
+        execution_delta=datetime.timedelta(seconds=3600),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    telemetry_derived__unified_metrics__v1.set_upstream(
+        wait_for_telemetry_derived__clients_daily_joined__v1
     )
     wait_for_telemetry_derived__clients_last_seen__v1 = ExternalTaskSensor(
         task_id="wait_for_telemetry_derived__clients_last_seen__v1",

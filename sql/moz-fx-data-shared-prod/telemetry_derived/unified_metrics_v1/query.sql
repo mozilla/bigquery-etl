@@ -347,13 +347,305 @@ desktop AS (
     telemetry.clients_last_seen
   WHERE
     submission_date = @submission_date
+),
+exp_org_mozilla_firefox_beta AS (
+  SELECT DISTINCT
+    DATE(submission_timestamp) AS submission_date,
+    e.key AS experiment_id,
+    e.value.branch AS branch,
+    client_info.client_id
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_firefox_beta.baseline`
+  CROSS JOIN
+    UNNEST(ping_info.experiments) AS e
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+),
+exp_org_mozilla_fenix AS (
+  SELECT DISTINCT
+    DATE(submission_timestamp) AS submission_date,
+    e.key AS experiment_id,
+    e.value.branch AS branch,
+    client_info.client_id
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_fenix.baseline`
+  CROSS JOIN
+    UNNEST(ping_info.experiments) AS e
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+),
+exp_org_mozilla_firefox AS (
+  SELECT DISTINCT
+    DATE(submission_timestamp) AS submission_date,
+    e.key AS experiment_id,
+    e.value.branch AS branch,
+    client_info.client_id
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_firefox.baseline`
+  CROSS JOIN
+    UNNEST(ping_info.experiments) AS e
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+),
+exp_org_mozilla_ios_firefox AS (
+  SELECT DISTINCT
+    DATE(submission_timestamp) AS submission_date,
+    e.key AS experiment_id,
+    e.value.branch AS branch,
+    client_info.client_id
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_ios_firefox.baseline`
+  CROSS JOIN
+    UNNEST(ping_info.experiments) AS e
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+),
+exp_org_mozilla_ios_firefoxbeta AS (
+  SELECT DISTINCT
+    DATE(submission_timestamp) AS submission_date,
+    e.key AS experiment_id,
+    e.value.branch AS branch,
+    client_info.client_id
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta.baseline`
+  CROSS JOIN
+    UNNEST(ping_info.experiments) AS e
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+),
+exp_org_mozilla_ios_fennec AS (
+  SELECT DISTINCT
+    DATE(submission_timestamp) AS submission_date,
+    e.key AS experiment_id,
+    e.value.branch AS branch,
+    client_info.client_id
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_ios_fennec.baseline`
+  CROSS JOIN
+    UNNEST(ping_info.experiments) AS e
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+),
+exp_telemetry AS (
+  SELECT DISTINCT
+    submission_date,
+    e.key AS experiment_id,
+    e.value AS branch,
+    client_id
+  FROM
+    telemetry.clients_daily
+  CROSS JOIN
+    UNNEST(experiments) AS e
+  WHERE
+    submission_date = @submission_date
+),
+exp_org_mozilla_klar AS (
+  SELECT DISTINCT
+    DATE(submission_timestamp) AS submission_date,
+    e.key AS experiment_id,
+    e.value.branch AS branch,
+    client_info.client_id
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_klar.baseline`
+  CROSS JOIN
+    UNNEST(ping_info.experiments) AS e
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+),
+exp_org_mozilla_focus AS (
+  SELECT DISTINCT
+    DATE(submission_timestamp) AS submission_date,
+    e.key AS experiment_id,
+    e.value.branch AS branch,
+    client_info.client_id
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_focus.baseline`
+  CROSS JOIN
+    UNNEST(ping_info.experiments) AS e
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+),
+exp_org_mozilla_focus_nightly AS (
+  SELECT DISTINCT
+    DATE(submission_timestamp) AS submission_date,
+    e.key AS experiment_id,
+    e.value.branch AS branch,
+    client_info.client_id
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_focus_nightly.baseline`
+  CROSS JOIN
+    UNNEST(ping_info.experiments) AS e
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+),
+exp_org_mozilla_focus_beta AS (
+  SELECT DISTINCT
+    DATE(submission_timestamp) AS submission_date,
+    e.key AS experiment_id,
+    e.value.branch AS branch,
+    client_info.client_id
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_focus_beta.baseline`
+  CROSS JOIN
+    UNNEST(ping_info.experiments) AS e
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+),
+exp_org_mozilla_ios_klar AS (
+  SELECT DISTINCT
+    DATE(submission_timestamp) AS submission_date,
+    e.key AS experiment_id,
+    e.value.branch AS branch,
+    client_info.client_id
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_ios_klar.baseline`
+  CROSS JOIN
+    UNNEST(ping_info.experiments) AS e
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+),
+exp_org_mozilla_ios_focus AS (
+  SELECT DISTINCT
+    DATE(submission_timestamp) AS submission_date,
+    e.key AS experiment_id,
+    e.value.branch AS branch,
+    client_info.client_id
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_ios_focus.baseline`
+  CROSS JOIN
+    UNNEST(ping_info.experiments) AS e
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+),
+experiments_information AS (
+  SELECT
+    *
+  FROM
+    (
+      SELECT
+        *
+      FROM
+        exp_org_mozilla_firefox_beta
+      UNION ALL
+      SELECT
+        *
+      FROM
+        exp_org_mozilla_fenix
+      UNION ALL
+      SELECT
+        *
+      FROM
+        exp_org_mozilla_firefox
+      UNION ALL
+      SELECT
+        *
+      FROM
+        exp_org_mozilla_ios_firefox
+      UNION ALL
+      SELECT
+        *
+      FROM
+        exp_org_mozilla_ios_firefoxbeta
+      UNION ALL
+      SELECT
+        *
+      FROM
+        exp_org_mozilla_ios_fennec
+      UNION ALL
+      SELECT
+        *
+      FROM
+        exp_telemetry
+      UNION ALL
+      SELECT
+        *
+      FROM
+        exp_org_mozilla_klar
+      UNION ALL
+      SELECT
+        *
+      FROM
+        exp_org_mozilla_focus
+      UNION ALL
+      SELECT
+        *
+      FROM
+        exp_org_mozilla_focus_nightly
+      UNION ALL
+      SELECT
+        *
+      FROM
+        exp_org_mozilla_focus_beta
+      UNION ALL
+      SELECT
+        *
+      FROM
+        exp_org_mozilla_ios_klar
+      UNION ALL
+      SELECT
+        *
+      FROM
+        exp_org_mozilla_ios_focus
+    )
+  WHERE
+    submission_date = @submission_date
+),
+unified_metrics_v1 AS (
+  SELECT
+    *
+  FROM
+    mobile_with_searches
+  UNION ALL
+  SELECT
+    *
+  FROM
+    desktop
 )
 SELECT
-  *
+  um.*,
+  ARRAY_AGG((STRUCT(e.experiment_id AS key, e.branch AS value))) AS experiments
 FROM
-  mobile_with_searches
-UNION ALL
-SELECT
-  *
-FROM
-  desktop
+  unified_metrics_v1 um
+LEFT JOIN
+  experiments_information e
+ON
+  e.client_id = um.client_id
+GROUP BY
+  client_id,
+  sample_id,
+  activity_segment,
+  normalized_app_name,
+  app_version,
+  normalized_channel,
+  country,
+  city,
+  days_seen_bits,
+  days_created_profile_bits,
+  days_since_first_seen,
+  device_model,
+  isp,
+  is_new_profile,
+  locale,
+  first_seen_date,
+  days_since_seen,
+  normalized_os,
+  normalized_os_version,
+  os_version_major,
+  os_version_minor,
+  os_version_patch,
+  durations,
+  submission_date,
+  uri_count,
+  is_default_browser,
+  distribution_id,
+  attribution_content,
+  attribution_source,
+  attribution_medium,
+  attribution_campaign,
+  attribution_experiment,
+  attribution_variation,
+  ad_click,
+  organic_search_count,
+  search_count,
+  search_with_ads,
+  active_hours_sum

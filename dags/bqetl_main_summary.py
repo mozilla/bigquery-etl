@@ -251,6 +251,13 @@ with DAG(
         )
 
         ExternalTaskMarker(
+            task_id="bqetl_unified__wait_for_telemetry_derived__clients_daily_joined__v1",
+            external_dag_id="bqetl_unified",
+            external_task_id="wait_for_telemetry_derived__clients_daily_joined__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_urlbar__wait_for_telemetry_derived__clients_daily_joined__v1",
             external_dag_id="bqetl_urlbar",
             external_task_id="wait_for_telemetry_derived__clients_daily_joined__v1",

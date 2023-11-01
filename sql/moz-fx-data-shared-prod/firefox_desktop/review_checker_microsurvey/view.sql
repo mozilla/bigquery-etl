@@ -4,4 +4,4 @@ AS
 SELECT
   *
 FROM
-  `moz-fx-data-shared-prod.firefox_desktop_derived.review_checker_microsurvey_v2`
+  `moz-fx-data-shared-prod.firefox_desktop_derived.review_checker_microsurvey_v1`

@@ -19,9 +19,9 @@ SELECT
   MAX(CASE WHEN name = 'surface_reactivated_button_clicked' THEN 1 ELSE 0 END) is_surface_reactivated_button_clicked,
   MAX(CASE WHEN name = 'surface_reanalyze_clicked' THEN 1 ELSE 0 END) is_surface_reanalyze_clicked,
   MAX(CASE WHEN name = 'surface_powered_by_fakespot_link_clicked' THEN 1 ELSE 0 END) is_surface_powered_by_fakespot_link_clicked,
-  MAX(CASE WHEN name = 'surface_show_more_reviews_button_clicked' THEN 1 ELSE 0 END) is_surface_show_more_reviews_button_clicked,
+  MAX(CASE WHEN name = 'surface_show_more_recent_reviews_clicked' THEN 1 ELSE 0 END) is_surface_show_more_reviews_button_clicked,
   MAX(CASE WHEN name = 'surface_show_privacy_policy_clicked' THEN 1 ELSE 0 END) is_surface_show_privacy_policy_clicked,
-  MAX(CASE WHEN name = 'surface_review_quality_explainer_url_clicked' THEN 1 ELSE 0 END) is_surface_show_quality_explainer_url_clicked,
+  MAX(CASE WHEN name = 'surface_show_quality_explainer_clicked' THEN 1 ELSE 0 END) is_surface_show_quality_explainer_url_clicked,
   MAX(CASE WHEN name = 'surface_show_terms_clicked' THEN 1 ELSE 0 END) is_surface_show_terms_clicked,
   MAX(CASE WHEN name = 'surface_stale_analysis_shown' THEN 1 ELSE 0 END) is_surface_stale_analysis_shown,
   MAX(
@@ -33,10 +33,10 @@ SELECT
           'surface_not_now_clicked',
           'surface_reactivated_button_clicked',
           'surface_reanalyze_clicked',
-          'surface_expand_settings',
+          'surface_settings_expand_clicked',
           'surface_show_more_recent_reviews_clicked',
           'surface_show_privacy_policy_clicked',
-          'surface_review_quality_explainer_url_clicked',
+          'surface_show_quality_explainer_clicked',
           'surface_show_terms_clicked'
         )
         THEN 1
@@ -49,7 +49,7 @@ SELECT
   sample_id,
   mozfun.norm.truncate_version(client_info.app_display_version, "major") AS app_version,
 FROM
-  `moz-fx-data-shared-prod.org_mozilla_fenix_stable.events_v1` AS e,
+  `moz-fx-data-shared-prod.org_mozilla_ios_firefox_stable.events_v1` AS e,
   UNNEST(events)
 WHERE
   DATE(submission_timestamp) = @submission_date

@@ -26,12 +26,6 @@ fields:
 - name: is_opt_out
   type: INTEGER
   mode: NULLABLE
-- name: is_nimbus_disabled
-  type: INTEGER
-  mode: NULLABLE
-- name: is_onboarded
-  type: INTEGER
-  mode: NULLABLE
 - name: sap
   type: INTEGER
   mode: NULLABLE
@@ -42,5 +36,5 @@ fields:
   type: FLOAT
   mode: NULLABLE
 - name: is_fx_dau
-  type: STRING
-  mode: INTEGER
+  type: INTEGER
+  mode: NULLABLE

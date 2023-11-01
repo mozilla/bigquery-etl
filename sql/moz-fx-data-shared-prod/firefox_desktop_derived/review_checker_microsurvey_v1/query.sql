@@ -23,9 +23,7 @@ filter_ms_microsurvey AS (
     msg.sample_id,
     msg.normalized_channel AS normalized_channel,
     msg.normalized_country_code AS country_code,
-    client_info.os AS os,
-    client_info.os_version AS os_version,
-    mozfun.norm.truncate_version(client_info.app_display_version, "major") AS app_version,
+    mozfun.norm.truncate_version(client_info.app_display_version, "major") AS os_version,
     DATE(submission_timestamp) AS submission_date,
     metrics.text.messaging_system_message_id AS message_id,
     metrics.string.messaging_system_event AS event,
@@ -70,7 +68,7 @@ filter_ms_microsurvey AS (
     END AS coded_answers,
     ping_info.experiments
   FROM
-    `{{ project_id }}.{{ app_name }}.messaging_system` msg
+    `moz-fx-data-shared-prod.firefox_desktop.messaging_system` msg
   LEFT JOIN
     `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v2` cfs
   ON

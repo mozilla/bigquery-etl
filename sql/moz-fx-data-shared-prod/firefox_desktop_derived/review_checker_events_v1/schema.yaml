@@ -1,0 +1,55 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+- name: is_exposed_event
+  type: INTERGER
+  mode: NULLABLE
+- name: is_opt_in_event
+  type: INTERGER
+  mode: NULLABLE
+- name: is_surface_displayed
+  type: INTERGER
+  mode: NULLABLE
+- name: is_engaged_with_sidebar
+  type: INTERGER
+  mode: NULLABLE
+- name: experiments
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: key
+    type: STRING
+    mode: NULLABLE
+  - name: value
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: branch
+      type: STRING
+      mode: NULLABLE
+    - name: extra
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: enrollment_id
+        type: STRING
+        mode: NULLABLE
+      - name: type
+        type: STRING
+        mode: NULLABLE
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+- name: normalized_country_code
+  type: STRING
+  mode: NULLABLE
+- name: sample_id
+  type: INTEGER
+  mode: NULLABLE
+- name: os_version
+  type: INTEGER
+  mode: NULLABLE

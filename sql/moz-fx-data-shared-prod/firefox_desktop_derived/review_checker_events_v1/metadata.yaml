@@ -1,4 +1,4 @@
-friendly_name: Review checker clients data
+friendly_name: Review checker events data
 description: |-
 owners:
 - akommasani@mozilla.com
@@ -8,7 +8,7 @@ labels:
   schedule: daily
 scheduling:
   dag_name: bqetl_review_checker
-  task_name: firefox_desktop_review_checker_clients__v2
+  task_name: firefox_desktop_review_checker_events__v1
 bigquery:
   time_partitioning:
     type: day

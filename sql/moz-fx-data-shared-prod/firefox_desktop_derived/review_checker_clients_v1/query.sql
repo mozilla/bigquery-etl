@@ -2,8 +2,6 @@ WITH shopping_metrics AS (
   SELECT
     metrics.uuid.legacy_telemetry_client_id AS legacy_client_id,
     client_info.client_id AS client_id,
-    client_info.os AS os,
-    client_info.os_version AS os_version,
     DATE(submission_timestamp) AS submission_date,
     SUM(
       CASE
@@ -23,16 +21,6 @@ WITH shopping_metrics AS (
         THEN 1
       ELSE 0
     END AS is_opt_out,
-    CASE
-      WHEN metrics.boolean.shopping_settings_has_onboarded = TRUE
-        THEN 1
-      ELSE 0
-    END AS is_onboarded,
-    CASE
-      WHEN metrics.boolean.shopping_settings_nimbus_disabled_shopping = TRUE
-        THEN 1
-      ELSE 0
-    END AS is_nimbus_disabled,
     normalized_channel,
     normalized_country_code,
     sample_id
@@ -46,12 +34,8 @@ WITH shopping_metrics AS (
     submission_date,
     is_opt_in,
     is_opt_out,
-    is_onboarded,
-    is_nimbus_disabled,
     normalized_channel,
     normalized_country_code,
-    os,
-    os_version,
     sample_id
 ),
 active AS (
@@ -112,8 +96,6 @@ joined_data AS (
     sm.shopping_product_page_visits,
     sm.is_opt_in,
     sm.is_opt_out,
-    sm.is_nimbus_disabled,
-    sm.is_onboarded,
     s.sap,
     s.ad_click,
     active_agg.active_hours_sum,

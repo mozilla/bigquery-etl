@@ -9,6 +9,8 @@ RETURNS STRUCT<
   scenario STRING,
   interactionType STRING,
   contextId STRING,
+  matchType STRING,
+  position INTEGER,
   reportingUrl STRING,
   requestId STRING,
   submissionTimestamp TIMESTAMP,
@@ -86,7 +88,7 @@ WITH events AS (
       "source\u003dtopsites, formFactor\u003ddesktop, scenario\u003dnull, interactionType\u003dclick, contextId\u003d{10679079-b1cd-45a3-9e40-cdfb364d3476}, reportingUrl\u003dhttps://bridge.sfo1.ap01.net/ctp?ci\u003d1681139740815.12791\u0026country-code\u003dDE\u0026ctag\u003dpd_sl_08aeb79c14ac3da0f8e9116cdcb0afadec2e24da616da802ba033bf6\u0026dma-code\u003d\u0026form-factor\u003ddesktop\u0026key\u003d1681139740400900002.1\u0026os-family\u003dWindows\u0026product-version\u003dfirefox_111\u0026region-code\u003dNW\u0026version\u003d16.0.0, requestId\u003dnull, submissionTimestamp\u003d2023-04-10T15:41:55Z, originalDocType\u003dtopsites-click, originalNamespace\u003dcontextual-services"
     ) AS e1,
     udf_js.parse_sponsored_interaction(
-      "source\u003dtopsites , formFactor\u003d, scenario\u003dnull, interactionType\u003d click , contextId\u003d{10679079-b1cd-45a3-9e40-cdfb364d3476}, reportingUrl\u003dhttps://bridge.sfo1.ap01.net/ctp?ci\u003d1681139740815.12791\u0026country-code\u003dDE\u0026ctag\u003dpd_sl_08aeb79c14ac3da0f8e9116cdcb0afadec2e24da616da802ba033bf6\u0026dma-code\u003d\u0026form-factor\u003ddesktop\u0026key\u003d1681139740400900002.1\u0026os-family\u003dWindows\u0026product-version\u003dfirefox_111\u0026region-code\u003dNW\u0026version\u003d16.0.0, requestId\u003dnull, submissionTimestamp\u003d2023-04-10T15:41:55Z, originalDocType\u003dtopsites-click, originalNamespace\u003dcontextual-services"
+      "source\u003dtopsites , formFactor\u003d, scenario\u003dnull, position\u003d4 interactionType\u003d click, matchType\u003dreg, contextId\u003d{10679079-b1cd-45a3-9e40-cdfb364d3476}, reportingUrl\u003dhttps://bridge.sfo1.ap01.net/ctp?ci\u003d1681139740815.12791\u0026country-code\u003dDE\u0026ctag\u003dpd_sl_08aeb79c14ac3da0f8e9116cdcb0afadec2e24da616da802ba033bf6\u0026dma-code\u003d\u0026form-factor\u003ddesktop\u0026key\u003d1681139740400900002.1\u0026os-family\u003dWindows\u0026product-version\u003dfirefox_111\u0026region-code\u003dNW\u0026version\u003d16.0.0, requestId\u003dnull, submissionTimestamp\u003d2023-04-10T15:41:55Z, originalDocType\u003dtopsites-click, originalNamespace\u003dcontextual-services"
     ) AS e2
 )
 SELECT
@@ -100,6 +102,8 @@ SELECT
     e1.reportingUrl
   ),
   mozfun.assert.null(e1.requestId),
+  mozfun.assert.null(e1.matchType),
+  mozfun.assert.null(e1.position),
   mozfun.assert.equals(TIMESTAMP("2023-04-10 15:41:55 UTC"), e1.submissionTimestamp),
   mozfun.assert.equals("topsites-click", e1.originalDocType),
   mozfun.assert.equals("contextual-services", e1.originalNamespace),
@@ -120,6 +124,8 @@ SELECT
     e2.reportingUrl
   ),
   mozfun.assert.null(e2.requestId),
+  mozfun.assert.equals("reg", e2.matchType),
+  mozfun.assert.equals(4, e2.position),
   mozfun.assert.equals(TIMESTAMP("2023-04-10 15:41:55 UTC"), e2.submissionTimestamp),
   mozfun.assert.equals("topsites-click", e2.originalDocType),
   mozfun.assert.equals("contextual-services", e2.originalNamespace),

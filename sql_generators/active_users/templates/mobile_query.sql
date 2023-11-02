@@ -13,7 +13,7 @@ WITH attribution_data AS (
     CAST(NULL AS STRING) install_source
   FROM
     firefox_ios.firefox_ios_clients
-  WHERE first_seen_date = '2023-01-01'
+  WHERE first_seen_date = @submission_date
 ),
 baseline AS (
   SELECT
@@ -45,7 +45,7 @@ baseline AS (
   FROM
     `{{ project_id }}.{{ app_name }}.clients_last_seen_joined`
   WHERE
-    submission_date = '2023-01-01'
+    submission_date = @submission_date
 ),
 search_clients AS (
   SELECT
@@ -58,7 +58,7 @@ search_clients AS (
   FROM
     `moz-fx-data-shared-prod.search_derived.mobile_search_clients_daily_v1`
   WHERE
-    submission_date = '2023-01-01'
+    submission_date = @submission_date
 ),
 search_metrics AS (
   SELECT

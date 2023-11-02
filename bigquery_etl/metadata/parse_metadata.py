@@ -232,7 +232,7 @@ class Metadata:
                 metadata = yaml.safe_load(yaml_stream)
 
                 friendly_name = metadata.get("friendly_name", None)
-                description = metadata.get("description", None)
+                description = metadata.get("description", "No description available.")
 
                 if "labels" in metadata:
                     for key, label in metadata["labels"].items():

@@ -1354,15 +1354,12 @@ def initialize(ctx, name, sql_dir, project_id, dry_run):
                 ctx.invoke(deploy, name=full_table_id, force=True)
 
             if "@sample_id" in sql_content:
-                sample_ids = list(range(0, 100))
-            if "INSERT INTO" in sql_content:
-                destination_table = None
+                sample_ids = list(range(1, 100))
 
             arguments = [
                 "query",
-                "--use_legacy_sql=false",
-                "--replace",
                 "--format=none",
+                "--append_table",
             ]
             if dry_run:
                 arguments += ["--dry_run"]

@@ -1,8 +1,4 @@
 -- Query for telemetry_derived.clients_first_seen_v2
-{% if is_init() %}
-INSERT INTO
- `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v2`
-{% endif %}
 -- Each ping type subquery retrieves all attributes as reported on the first
 -- ping received and respecting NULLS.
 -- Once the first_seen_date is identified after comparing all pings, attributes

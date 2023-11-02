@@ -56,4 +56,3 @@ fields:
 - name: active_hours_sum
   type: FLOAT
   mode: NULLABLE
-

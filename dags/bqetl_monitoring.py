@@ -241,18 +241,6 @@ with DAG(
         sql_file_path="sql/moz-fx-data-shared-prod/monitoring_derived/stable_table_column_counts_v1/script.sql",
     )
 
-    monitoring_derived__structured_distinct_docids__v1 = gke_command(
-        task_id="monitoring_derived__structured_distinct_docids__v1",
-        command=[
-            "python",
-            "sql/moz-fx-data-shared-prod/monitoring_derived/structured_distinct_docids_v1/query.py",
-        ]
-        + ["--date", "{{ ds }}"],
-        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com"],
-    )
-
     monitoring_derived__structured_missing_columns__v1 = gke_command(
         task_id="monitoring_derived__structured_missing_columns__v1",
         command=[
@@ -263,17 +251,6 @@ with DAG(
         docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="amiyaguchi@mozilla.com",
         email=["amiyaguchi@mozilla.com", "ascholtz@mozilla.com"],
-    )
-
-    monitoring_derived__telemetry_distinct_docids__v1 = bigquery_etl_query(
-        task_id="monitoring_derived__telemetry_distinct_docids__v1",
-        destination_table="telemetry_distinct_docids_v1",
-        dataset_id="monitoring_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
     )
 
     monitoring_derived__telemetry_missing_columns__v3 = bigquery_etl_query(
@@ -352,22 +329,8 @@ with DAG(
         wait_for_copy_deduplicate_main_ping
     )
 
-    monitoring_derived__structured_distinct_docids__v1.set_upstream(
-        wait_for_copy_deduplicate_all
-    )
-    monitoring_derived__structured_distinct_docids__v1.set_upstream(
-        wait_for_copy_deduplicate_main_ping
-    )
-
     monitoring_derived__structured_missing_columns__v1.set_upstream(
         wait_for_copy_deduplicate_all
-    )
-
-    monitoring_derived__telemetry_distinct_docids__v1.set_upstream(
-        wait_for_copy_deduplicate_all
-    )
-    monitoring_derived__telemetry_distinct_docids__v1.set_upstream(
-        wait_for_copy_deduplicate_main_ping
     )
 
     monitoring_derived__telemetry_missing_columns__v3.set_upstream(

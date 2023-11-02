@@ -2,32 +2,24 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: null
 - name: namespace
   type: STRING
   mode: NULLABLE
-  description: null
 - name: doc_type
   type: STRING
   mode: NULLABLE
-  description: null
 - name: decoded
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: live
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: stable
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: decoded_nondistinct
   type: INTEGER
   mode: NULLABLE
-  description: Non-distinct count of submissions in the decoded table
 - name: live_nondistinct
   type: INTEGER
   mode: NULLABLE
-  description: Non-distinct count of submissions in the live table

@@ -1,0 +1,59 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+- name: normalized_country_code
+  type: STRING
+  mode: NULLABLE
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+- name: sample_id
+  type: INTEGER
+  mode: NULLABLE
+- name: shopping_product_page_visits
+  type: INTEGER
+  mode: NULLABLE
+- name: experiments
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: key
+    type: STRING
+    mode: NULLABLE
+  - name: value
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: branch
+      type: STRING
+      mode: NULLABLE
+    - name: extra
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: enrollment_id
+        type: STRING
+        mode: NULLABLE
+      - name: type
+        type: STRING
+        mode: NULLABLE
+- name: is_opt_in
+  type: INTEGER
+  mode: NULLABLE
+- name: is_opt_out
+  type: INTEGER
+  mode: NULLABLE
+- name: sap
+  type: INTEGER
+  mode: NULLABLE
+- name: ad_click
+  type: INTEGER
+  mode: NULLABLE
+- name: active_hours_sum
+  type: FLOAT
+  mode: NULLABLE
+

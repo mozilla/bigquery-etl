@@ -88,10 +88,40 @@ with DAG(
         depends_on_past=False,
     )
 
+    org_mozilla_fenix_review_checker_clients__v1 = bigquery_etl_query(
+        task_id="org_mozilla_fenix_review_checker_clients__v1",
+        destination_table="review_checker_clients_v1",
+        dataset_id="org_mozilla_fenix_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="akommasani@mozilla.com",
+        email=[
+            "akommasani@mozilla.com",
+            "betling@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     org_mozilla_fenix_review_checker_events__v1 = bigquery_etl_query(
         task_id="org_mozilla_fenix_review_checker_events__v1",
         destination_table="review_checker_events_v1",
         dataset_id="org_mozilla_fenix_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="akommasani@mozilla.com",
+        email=[
+            "akommasani@mozilla.com",
+            "betling@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    org_mozilla_ios_firefox_review_checker_clients__v1 = bigquery_etl_query(
+        task_id="org_mozilla_ios_firefox_review_checker_clients__v1",
+        destination_table="review_checker_clients_v1",
+        dataset_id="org_mozilla_ios_firefox_derived",
         project_id="moz-fx-data-shared-prod",
         owner="akommasani@mozilla.com",
         email=[
@@ -187,8 +217,34 @@ with DAG(
         wait_for_copy_deduplicate_all
     )
 
+    org_mozilla_fenix_review_checker_clients__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+    wait_for_search_derived__mobile_search_clients_daily__v1 = ExternalTaskSensor(
+        task_id="wait_for_search_derived__mobile_search_clients_daily__v1",
+        external_dag_id="bqetl_mobile_search",
+        external_task_id="search_derived__mobile_search_clients_daily__v1",
+        execution_delta=datetime.timedelta(days=-1, seconds=79200),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    org_mozilla_fenix_review_checker_clients__v1.set_upstream(
+        wait_for_search_derived__mobile_search_clients_daily__v1
+    )
+
     org_mozilla_fenix_review_checker_events__v1.set_upstream(
         wait_for_copy_deduplicate_all
+    )
+
+    org_mozilla_ios_firefox_review_checker_clients__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+    org_mozilla_ios_firefox_review_checker_clients__v1.set_upstream(
+        wait_for_search_derived__mobile_search_clients_daily__v1
     )
 
     org_mozilla_ios_firefox_review_checker_events__v1.set_upstream(

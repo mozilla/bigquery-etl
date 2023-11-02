@@ -20,7 +20,7 @@ SELECT
   os_version_minor,
   submission_date,
   language_name,
-  dau,
+  qdau AS dau,
   wau,
   mau,
   new_profiles,

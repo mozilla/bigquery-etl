@@ -13,6 +13,7 @@ WITH attribution_data AS (
     CAST(NULL AS STRING) install_source
   FROM
     firefox_ios.firefox_ios_clients
+  WHERE first_seen_date = '2023-01-01'
 ),
 baseline AS (
   SELECT
@@ -44,7 +45,7 @@ baseline AS (
   FROM
     `{{ project_id }}.{{ app_name }}.clients_last_seen_joined`
   WHERE
-    submission_date = @submission_date
+    submission_date = '2023-01-01'
 ),
 search_clients AS (
   SELECT
@@ -57,7 +58,7 @@ search_clients AS (
   FROM
     `moz-fx-data-shared-prod.search_derived.mobile_search_clients_daily_v1`
   WHERE
-    submission_date = @submission_date
+    submission_date = '2023-01-01'
 ),
 search_metrics AS (
   SELECT
@@ -126,7 +127,7 @@ baseline_with_searches AS (
       SAFE_CAST(NULLIF(SPLIT(baseline.normalized_os_version, ".")[SAFE_OFFSET(2)], "") AS INTEGER),
       0
     ) AS os_version_patch,
-    baseline.durations,
+    baseline.durations AS durations,
     baseline.submission_date,
     baseline.uri_count,
     baseline.is_default_browser,
@@ -182,6 +183,7 @@ todays_metrics AS (
     normalized_os_version AS os_version,
     os_version_major,
     os_version_minor,
+    durations,
     submission_date,
     days_since_seen,
     client_id,
@@ -223,8 +225,10 @@ SELECT
     search_with_ads,
     uri_count,
     active_hours_sum,
-    first_seen_date
+    first_seen_date,
+    durations
   ),
+  COUNT(DISTINCT IF(days_since_seen = 0 AND durations > 0, client_id, NULL)) AS qdau,
   COUNT(DISTINCT IF(days_since_seen = 0, client_id, NULL)) AS dau,
   COUNT(DISTINCT IF(days_since_seen < 7, client_id, NULL)) AS wau,
   COUNT(DISTINCT client_id) AS mau,

@@ -21,7 +21,6 @@ The [Creating derived datasets tutorial](https://mozilla.github.io/bigquery-etl/
 1. Run `./bqetl query validate <dataset>.<table>_<version>` to dry run and format the query
 1. To schedule the query, first select a DAG from the `./bqetl dag info` list or create a new DAG `./bqetl dag create <bqetl_new_dag>`
 1. Run `./bqetl query schedule <dataset>.<table>_<version> --dag <bqetl_dag>` to schedule the query
-1. Run `./bqetl dag generate <bqetl_dag>` to update the DAG file
 1. Create a pull request
 1. PR gets reviewed and eventually approved
 1. Merge pull-request
@@ -235,7 +234,6 @@ See also the reference for [Public Data](../reference/public_data.md).
    * Specify the `review_bugs`
 1. If an internal dataset already exists, move it to `mozilla-public-data`
 1. If an `init.sql` file exists for the query, change the destination project for the created table to `mozilla-public-data`
-1. Run `./bqetl dag generate bqetl_public_public_data_json` to update the DAG
 1. Open a PR
 1. PR gets reviewed, approved and merged
    * Once, ETL is running a view will get automatically published to `moz-fx-data-shared-prod` referencing the public dataset

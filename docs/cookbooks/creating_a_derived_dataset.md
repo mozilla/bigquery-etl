@@ -204,21 +204,6 @@ Here is the command for our example. Notice the name of the table as created wit
 
 Note that we are scheduling the generation of the underlying _table_ which is `org_mozilla_mozregression_derived.mozregression_aggregates_v1` rather than the view.
 
-## Updating the Airflow DAGs
-
-With the query schedule setup, you will want to generate the actual airflow configuration which telemetry-airflow will pick up. Run:
-
-```bash
-./bqetl dag generate <dag_name>
-```
-
-For this example:
-```bash
-./bqetl dag generate bqetl_internal_tooling
-```
-
-This may take a while, as it currently does a dry run through every query defined in bigquery-etl.
-
 ## Get Data Review
 
 _This is for public datasets only! You can skip this step if you're only creating a dataset for Mozilla-internal use._

@@ -3,7 +3,7 @@ WITH submission_date_activity AS (
   SELECT
     client_id,
     days_seen_bits,
-    submission_date
+    submission_date as activity_date
   FROM
     telemetry.clients_last_seen_v1 -- this might cause an issue because definition of first_seen_date in this table is different from clients_first_seen_v2
   WHERE
@@ -75,7 +75,7 @@ activity_cohort_match AS (
   LEFT JOIN
     submission_date_activity
   USING
-    (client_id, submission_date)
+    (client_id, activity_date)
 )
 SELECT
   cohort_date,

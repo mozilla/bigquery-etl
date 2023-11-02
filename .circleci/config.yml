@@ -581,11 +581,11 @@ jobs:
               "sql/"
             ./script/bqetl metadata update \
               sql/
-            ./script/bqetl dag generate
 
-            mkdir -p /tmp/workspace/main-generated-sql
+            mkdir -p /tmp/workspace/main-generated-sql/sql
             cp -r sql/ /tmp/workspace/main-generated-sql/sql
-            cp -r dags/ /tmp/workspace/main-generated-sql/dags
+            mkdir -p /tmp/workspace/main-generated-sql/dags
+            ./script/bqetl dag generate --output-dir /tmp/workspace/main-generated-sql/dags
       - persist_to_workspace:
           root: /tmp/workspace
           paths:

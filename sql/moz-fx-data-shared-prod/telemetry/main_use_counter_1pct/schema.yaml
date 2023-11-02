@@ -7988,6 +7988,12 @@ fields:
     - name: use_counter2_deprecated_svg_deselect_all_page
       type: STRING
       mode: NULLABLE
+    - name: use_counter2_deprecated_is_external_ctap2_security_key_supported_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_deprecated_is_external_ctap2_security_key_supported_page
+      type: STRING
+      mode: NULLABLE
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -15843,6 +15849,12 @@ fields:
           type: STRING
           mode: NULLABLE
         - name: use_counter2_deprecated_svg_deselect_all_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_deprecated_is_external_ctap2_security_key_supported_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_deprecated_is_external_ctap2_security_key_supported_page
           type: STRING
           mode: NULLABLE
 - name: sample_id

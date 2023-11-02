@@ -6983,6 +6983,12 @@ fields:
     - name: gvsv_audio_stream_inits
       type: STRING
       mode: NULLABLE
+    - name: strip_on_share_length_decrease
+      type: STRING
+      mode: NULLABLE
+    - name: strip_on_share_params_removed
+      type: STRING
+      mode: NULLABLE
   - name: info
     type: RECORD
     mode: NULLABLE

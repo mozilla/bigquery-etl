@@ -208,13 +208,8 @@ jobs:
       - run:
           name: Generate DAGs
           command: |
-            PATH="venv/bin:$PATH" script/bqetl dag generate
-            cp -R dags /tmp/workspace/generated-sql
-      - run:
-          name: Verify that DAGs were correctly generated and are up-to-date
-          command: |
-            git diff --exit-code dags/
-            diff <(git ls-files dags/*.py) <(ls dags/*.py)
+            mkdir -p /tmp/workspace/generated-sql/dags
+            PATH="venv/bin:$PATH" script/bqetl dag generate --output-dir=/tmp/workspace/generated-sql/dags
       # this task is overwriting the content produced by generate-sql;
       # the behaviour here is additive, generated DAGs are just added to
       # the generated-sql output
@@ -248,13 +243,13 @@ jobs:
           name: Pull telemetry-airflow
           command: |
             git clone https://github.com/mozilla/telemetry-airflow.git ~/telemetry-airflow
+      - *attach_generated_sql
+      - *copy_generated_sql
       - run:
           name: Replace telemetry-airflow DAGs with BigQuery ETL DAGs
           command: |
             rm ~/telemetry-airflow/dags/* -f || true
-            cp -a dags/. ~/telemetry-airflow/dags/
-      - *attach_generated_sql
-      - *copy_generated_sql
+            cp -a /tmp/workspace/generated-sql/dags/. ~/telemetry-airflow/dags/
       - run:
           name: Install telemetry-airflow dependencies
           command: |

@@ -1,3 +1,6 @@
+CREATE TABLE IF NOT EXISTS
+  `moz-fx-data-shared-prod`.fenix_derived.firefox_android_clients_v1
+AS
 -- Initialization query first observations for Firefox Android Clients.
 WITH baseline_clients AS (
   SELECT

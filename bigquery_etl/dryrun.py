@@ -53,6 +53,7 @@ class DryRun:
         use_cloud_function=True,
         client=None,
         respect_skip=True,
+        sql_dir=ConfigLoader.get("default", "sql_dir"),
     ):
         """Instantiate DryRun class."""
         self.sqlfile = sqlfile
@@ -62,19 +63,24 @@ class DryRun:
         self.client = client if use_cloud_function or client else bigquery.Client()
         self.respect_skip = respect_skip
         self.dry_run_url = ConfigLoader.get("dry_run", "function")
+        self.sql_dir = sql_dir
         try:
             self.metadata = Metadata.of_query_file(self.sqlfile)
         except FileNotFoundError:
             self.metadata = None
 
     @staticmethod
-    def skipped_files() -> Set[str]:
+    def skipped_files(sql_dir=ConfigLoader.get("default", "sql_dir")) -> Set[str]:
         """Return files skipped by dry run."""
+        default_sql_dir = Path(ConfigLoader.get("default", "sql_dir"))
+        sql_dir = Path(sql_dir)
+        file_pattern_re = re.compile(rf"^{re.escape(str(default_sql_dir))}/")
+
         skip_files = {
             file
             for skip in ConfigLoader.get("dry_run", "skip", fallback=[])
             for file in glob.glob(
-                skip,
+                file_pattern_re.sub(f"{str(sql_dir)}/", skip),
                 recursive=True,
             )
         }
@@ -97,7 +103,9 @@ class DryRun:
 
     def skip(self):
         """Determine if dry run should be skipped."""
-        return self.respect_skip and self.sqlfile in self.skipped_files()
+        return self.respect_skip and self.sqlfile in self.skipped_files(
+            sql_dir=self.sql_dir
+        )
 
     def get_sql(self):
         """Get SQL content."""

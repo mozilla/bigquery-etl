@@ -28,7 +28,6 @@ from ..view import View
 
 VIEW_FILE = "view.sql"
 QUERY_FILE = "query.sql"
-INIT_FILE = "init.sql"
 QUERY_SCRIPT = "query.py"
 ROOT = Path(__file__).parent.parent.parent
 TEST_DIR = ROOT / "tests" / "sql"
@@ -206,12 +205,9 @@ def _udf_dependencies(artifact_files):
         udfs_to_publish = accumulate_dependencies([], raw_routines, raw_routine.name)
 
         for dependency in udfs_to_publish:
-            dataset, name = dependency.split(".")
-            file_path = (
-                raw_routine.filepath.parent.parent.parent / dataset / name / UDF_FILE
-            )
-            if file_path not in artifact_files:
-                artifact_files.add(file_path)
+            if dependency in raw_routines:
+                file_path = Path(raw_routines[dependency].filepath)
+                udf_dependencies.add(file_path)
 
     return udf_dependencies
 
@@ -359,7 +355,7 @@ def _deploy_artifacts(ctx, artifact_files, project_id, dataset_suffix, sql_dir):
     query_files = [
         file
         for file in artifact_files
-        if file.name in [INIT_FILE, QUERY_FILE, QUERY_SCRIPT]
+        if file.name in [QUERY_FILE, QUERY_SCRIPT]
         # don't attempt to deploy wildcard or metadata tables
         and "*" not in file.parent.name and file.parent.name != "INFORMATION_SCHEMA"
     ]

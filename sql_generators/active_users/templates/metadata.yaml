@@ -6,8 +6,9 @@ description: |-
   country, city, device model, distribution_id, os details
   and activity segment.
 
-  For Firefox Desktop, qualified daily active users QDAU
-  are calculated. For mobile apps QDAU = DAU.
+  QDAU (Qualified Active Users) is calculated differently
+  for Mobile and Desktop and renamed to DAU in the user-facing
+  view telemetry.active_users_aggregates.
 
   The table is labeled as "change_controlled", which implies
   that changes require the approval of at least one owner.

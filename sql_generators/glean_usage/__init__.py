@@ -15,6 +15,7 @@ from sql_generators.glean_usage import (
     baseline_clients_first_seen,
     baseline_clients_last_seen,
     clients_last_seen_joined,
+    event_monitoring_live,
     events_unnested,
     glean_app_ping_views,
     metrics_clients_daily,
@@ -32,6 +33,7 @@ GLEAN_TABLES = [
     metrics_clients_daily.MetricsClientsDaily(),
     metrics_clients_last_seen.MetricsClientsLastSeen(),
     clients_last_seen_joined.ClientsLastSeenJoined(),
+    event_monitoring_live.EventMonitoringLive(),
 ]
 
 # * mlhackweek_search was an experiment that we don't want to generate tables
@@ -152,5 +154,22 @@ def generate(
         for table in GLEAN_TABLES
     ]
 
+    # Parameters to generate datasets that union all app datasets
+    generate_across_apps = [
+        (
+            partial(
+                table.generate_across_apps,
+                target_project,
+                output_dir=output_dir,
+                use_cloud_function=use_cloud_function,
+            ),
+            app_info,
+        )
+        for table in GLEAN_TABLES
+    ]
+
     with ProcessingPool(parallelism) as pool:
-        pool.map(lambda f: f[0](f[1]), generate_per_app_id + generate_per_app)
+        pool.map(
+            lambda f: f[0](f[1]),
+            generate_per_app_id + generate_per_app + generate_across_apps,
+        )

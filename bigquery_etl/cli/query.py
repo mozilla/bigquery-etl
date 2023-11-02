@@ -1323,7 +1323,13 @@ def initialize(ctx, name, sql_dir, project_id, dry_run):
         # allow name to be a path
         query_files = [Path(name)]
     else:
-        query_files = paths_matching_name_pattern(name, sql_dir, project_id)
+        file_regex = re.compile(
+            r"^.*/([a-zA-Z0-9-]+)/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+(_v[0-9]+)?)/"
+            r"(?:query\.sql|init\.sql)$"
+        )
+        query_files = paths_matching_name_pattern(
+            name, sql_dir, project_id, file_regex=file_regex
+        )
 
     if not query_files:
         click.echo(

@@ -22,7 +22,7 @@ mozilla-schema-generator==0.5.1
 pandas==2.1.0
 pathos==0.3.1
 pip-tools==7.3.0
-pre-commit==3.4.0
+pre-commit==3.5.0
 pyarrow==14.0.0
 pytest-black==0.3.12
 pytest-flake8==1.1.1

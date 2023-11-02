@@ -3,7 +3,7 @@ WITH submission_date_activity AS (
   SELECT
     client_id,
     days_seen_bits,
-    submission_date AS activity_date
+    submission_date
   FROM
     telemetry.clients_last_seen_v1 -- this might cause an issue because definition of first_seen_date in this table is different from clients_first_seen_v2
   WHERE
@@ -66,14 +66,14 @@ cohorts_in_range AS (
 activity_cohort_match AS (
   SELECT
     cohorts_in_range.client_id AS client_id,
-    client_activity.client_id AS active_client_id,
-    client_activity.days_seen_bits as active_client_days_seen_bits,
-    mozfun.bits28.days_since_seen(client_activity.days_seen_bits) as active_clients_days_since_seen,
+    submission_date_activity.client_id AS active_client_id,
+    submission_date_activity.days_seen_bits as active_client_days_seen_bits,
+    mozfun.bits28.days_since_seen(submission_date_activity.days_seen_bits) as active_clients_days_since_seen,
     cohorts_in_range.* EXCEPT (client_id)
   FROM
     cohorts_in_range
   LEFT JOIN
-    client_activity
+    submission_date_activity
   USING
     (client_id, submission_date)
 )

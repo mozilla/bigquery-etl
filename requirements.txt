@@ -730,13 +730,13 @@ mkdocs-awesome-pages-plugin==2.9.2 \
     --hash=sha256:9c795587695bd1ee85a8b7e43293005418df5a8b9ef296a3e628be427b693b4d \
     --hash=sha256:c3f7d366ecfe99b64524c49a84d8e13c576c19a918ea2e6f59bb486a259313af
     # via -r requirements.in
-mkdocs-material==9.3.1 \
-    --hash=sha256:614cdd1d695465375e0f50bfe9881db1eb68d1f17164b8edfedcda1457e61894 \
-    --hash=sha256:793c4ec0978582380491a68db8ac4f7e0d5467a736c9884c05baf95a143f32f7
+mkdocs-material==9.4.7 \
+    --hash=sha256:4d698d52bb6a6a3c452ab854481c4cdb68453a0420956a6aee2de55fe15fe610 \
+    --hash=sha256:e704e001c9ef17291e1d3462c202425217601653e18f68f85d28eff4690e662b
     # via -r requirements.in
-mkdocs-material-extensions==1.1.1 \
-    --hash=sha256:9c003da71e2cc2493d910237448c672e00cefc800d3d6ae93d2fc69979e3bd93 \
-    --hash=sha256:e41d9f38e4798b6617ad98ca8f7f1157b1e4385ac1459ca1e4ea219b556df945
+mkdocs-material-extensions==1.3 \
+    --hash=sha256:0297cc48ba68a9fdd1ef3780a3b41b534b0d0df1d1181a44676fda5f464eeadc \
+    --hash=sha256:f0446091503acb110a7cab9349cbc90eeac51b58d1caa92a704a81ca1e24ddbd
     # via mkdocs-material
 mozilla-metric-config-parser==2023.10.2 \
     --hash=sha256:17ccf8b93e7c531acebb627467f3c481e55d2f68024bc83ae36d058ae1108520 \

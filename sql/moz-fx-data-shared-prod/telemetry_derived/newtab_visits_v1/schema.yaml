@@ -140,6 +140,12 @@ fields:
     name: topsite_tile_id
     type: STRING
   - mode: NULLABLE
+    name: topsite_tile_assigned_sov_branch
+    type: STRING
+  - mode: NULLABLE
+    name: topsite_tile_displayed_sov_branch
+    type: STRING
+  - mode: NULLABLE
     name: topsite_tile_clicks
     type: INTEGER
   - mode: NULLABLE

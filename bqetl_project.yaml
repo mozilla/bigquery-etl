@@ -20,6 +20,8 @@ dry_run:
   function: https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/bigquery-etl-dryrun
   skip:
   # Access Denied
+  - sql/moz-fx-data-shared-prod/monitoring_derived/glean_server_knob_experiments_v1/query.sql
+  - sql/moz-fx-data-shared-prod/ads/nt_visits_to_sessions_conversion_factors_daily/view.sql
   - sql/moz-fx-data-shared-prod/account_ecosystem_derived/ecosystem_client_id_lookup_v1/query.sql
   - sql/moz-fx-data-shared-prod/account_ecosystem_derived/desktop_clients_daily_v1/query.sql
   - sql/moz-fx-data-shared-prod/account_ecosystem_restricted/ecosystem_client_id_deletion_v1/query.sql
@@ -44,6 +46,12 @@ dry_run:
   - sql/moz-fx-data-shared-prod/monitoring*/topsites*_rate*_live*/*.sql
   - sql/moz-fx-data-shared-prod/pocket/pocket_reach_mau/view.sql
   - sql/moz-fx-data-shared-prod/telemetry/buildhub2/view.sql
+  - sql/moz-fx-data-shared-prod/accounts_backend_external/nonprod_accounts_v1/query.sql
+  - sql/moz-fx-data-shared-prod/accounts_backend_external/nonprod_emails_v1/query.sql
+  - sql/moz-fx-data-shared-prod/accounts_backend/nonprod_accounts/view.sql
+  - sql/moz-fx-data-shared-prod/accounts_backend_external/accounts_v1/query.sql
+  - sql/moz-fx-data-shared-prod/accounts_backend_external/emails_v1/query.sql
+  - sql/moz-fx-data-shared-prod/accounts_backend/accounts/view.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_content_events_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_auth_bounce_events_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_auth_events_v1/query.sql
@@ -53,20 +61,26 @@ dry_run:
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_log_auth_events_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_log_content_events_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_log_device_command_events_v1/query.sql
+  - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_log_device_command_events_v2/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_users_services_first_seen_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_users_services_last_seen_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_amplitude_export_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_amplitude_user_ids_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_amplitude_user_ids_v1/init.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_stdout_events_v1/query.sql
+  - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_gcp_stderr_events_v1/query.sql
+  - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_gcp_stdout_events_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/nonprod_fxa_auth_events_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/nonprod_fxa_content_events_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/nonprod_fxa_stdout_events_v1/query.sql
-  - sql/moz-fx-data-shared-prod/firefox_accounts_derived/nonprod_fxa_server_events_v1/query.sql
+  - sql/moz-fx-data-shared-prod/firefox_accounts_derived/nonprod_fxa_gcp_stdout_events_v1/query.sql
+  - sql/moz-fx-data-shared-prod/firefox_accounts_derived/nonprod_fxa_gcp_stderr_events_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/docker_fxa_admin_server_sanitized_v1/init.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/docker_fxa_admin_server_sanitized_v1/query.sql
+  - sql/moz-fx-data-shared-prod/firefox_accounts_derived/docker_fxa_admin_server_sanitized_v2/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/docker_fxa_customs_sanitized_v1/init.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/docker_fxa_customs_sanitized_v1/query.sql
+  - sql/moz-fx-data-shared-prod/firefox_accounts_derived/docker_fxa_customs_sanitized_v2/query.sql
   - sql/moz-fx-data-shared-prod/fivetran_costs_derived/destinations_v1/query.sql
   - sql/moz-fx-data-shared-prod/fivetran_costs_derived/incremental_mar_v1/query.sql
   - sql/moz-fx-data-shared-prod/fivetran_costs_derived/monthly_costs_v1/query.sql
@@ -174,6 +188,8 @@ dry_run:
   - sql/moz-fx-data-shared-prod/org_mozilla_firefox_beta_derived/experiment_events_live_v1/init.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/experiment_enrollment_cumulative_population_estimate_v1/view.sql
   - sql/moz-fx-data-shared-prod/telemetry/experiment_enrollment_cumulative_population_estimate/view.sql
+  - sql/moz-fx-data-shared-prod/**/event_monitoring_live_v1/init.sql
+  - sql/moz-fx-data-shared-prod/monitoring/event_monitoring_live/view.sql
   # Already exists (and lacks an "OR REPLACE" clause)
   - sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/clients_first_seen_v1/init.sql
   - sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/clients_last_seen_v1/init.sql
@@ -203,6 +219,7 @@ dry_run:
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_last_seen_v1/init.sql
   # HTTP Error 408: Request Time-out
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_first_seen_v1/query.sql
+  - sql/moz-fx-data-shared-prod/telemetry_derived/clients_first_seen_v2/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_last_seen_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/latest_versions/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/italy_covid19_outage_v1/query.sql
@@ -256,6 +273,7 @@ format:
   - sql_generators/search/templates/*.sql
   - sql_generators/experiment_monitoring/templates/**/*.sql
   - sql_generators/feature_usage/templates/*.sql
+  - sql_generators/funnels/templates/*.sql
   - sql/moz-fx-data-shared-prod/telemetry/fenix_events_v1/view.sql
   - sql/moz-fx-data-shared-prod/telemetry/fennec_ios_events_v1/view.sql
   - sql/moz-fx-data-shared-prod/telemetry/fire_tv_events_v1/view.sql
@@ -341,7 +359,6 @@ routine:
     gcs_path: ""
     skip:
     - sql/moz-fx-data-shared-prod/udf/main_summary_scalars/udf.sql
-  assert_udf_dir: tests/assert
   example_dir: examples
   project: mozfun
 
@@ -351,6 +368,7 @@ view:
     # tests
     - sql/moz-fx-data-test-project/test/simple_view/view.sql
     # Access Denied
+    - sql/moz-fx-data-shared-prod/ads/nt_visits_to_sessions_conversion_factors_daily/view.sql
     - sql/moz-fx-data-shared-prod/telemetry/experiment_enrollment_cumulative_population_estimate/view.sql
     - sql/moz-fx-data-shared-prod/mlhackweek_search/events/view.sql
     - sql/moz-fx-data-shared-prod/regrets_reporter_ucs/deletion_request/view.sql
@@ -410,3 +428,8 @@ generate:
     - sql/moz-fx-data-shared-prod/mozilla_vpn/events/**
     - sql/moz-fx-data-shared-prod/mozilla_vpn/main/**
     - sql/moz-fx-data-shared-prod/fenix/client_deduplication/**
+  event_monitoring:
+    skip_apps:
+    - mlhackweek_search
+    - regrets_reporter
+    - regrets_reporter_ucs

@@ -110,6 +110,22 @@ bqetl_fxa_events:
   tags:
     - impact/tier_1
 
+bqetl_accounts_backend_external:
+  schedule_interval: 30 1 * * *
+  description: |
+    Copies data from Firefox Accounts (FxA) CloudSQL databases.
+
+    This DAG is under active development.
+  default_args:
+    owner: akomar@mozilla.com
+    start_date: "2023-09-19"
+    email: ["akomar@mozilla.com", "telemetry-alerts@mozilla.com"]
+    retries: 1
+    retry_delay: 10m
+  tags:
+    - impact/tier_3
+    - repo/bigquery-etl
+
 bqetl_subplat:
   schedule_interval: 45 1 * * *
   description: |
@@ -255,7 +271,6 @@ bqetl_main_summary:
       [
         "telemetry-alerts@mozilla.com",
         "dthorn@mozilla.com",
-        "jklukas@mozilla.com",
       ]
     retries: 2
     retry_delay: 30m
@@ -696,7 +711,6 @@ bqetl_urlbar:
       - "telemetry-alerts@mozilla.com"
       - "anicholson@mozilla.com"
       - "akomar@mozilla.com"
-      - "tbrooks@mozilla.com"
     retries: 2
     retry_delay: 30m
   tags:
@@ -1152,9 +1166,15 @@ bqetl_kpis_shredder:
     retries: 2
     retry_delay: 30m
     start_date: '2023-05-16'
-  description: This DAG calculates KPIs for shredder client_ids
+  description: |
+    Currently paused due to a bug causing the DAG upstream dependencies completion
+    not being detected correctly.
+    for more info, see:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1852517
+      - https://github.com/mozilla/bigquery-etl/pull/4239
+    This DAG calculates KPIs for shredder client_ids
   repo: bigquery-etl
-  schedule_interval: 0 0 */28 * *
+  schedule_interval: 0 2 */28 * *
   tags:
     - impact/tier_3
     - repo/bigquery-etl
@@ -1179,3 +1199,102 @@ bqetl_default:
   tags:
     - impact/tier_3
     - triage/no_triage
+
+bqetl_reference:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - cmorales@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    owner: cmorales@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2023-09-18'
+  description: DAG to build reference data
+  repo: bigquery-etl
+  schedule_interval: daily
+  tags:
+    - impact/tier_1
+    - repo/bigquery-etl
+
+bqetl_generated_funnels:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - ascholtz@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    owner: ascholtz@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2023-10-14'
+  description: DAG scheduling funnels defined in sql_generators/funnels
+  repo: bigquery-etl
+  schedule_interval: 0 5 * * *
+  tags:
+    - impact/tier_3
+    - triage/no_triage
+
+bqetl_serp:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - akommasani@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    owner: akommasani@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2023-10-01'
+  description: DAG to build serp events data
+  repo: bigquery-etl
+  schedule_interval: daily
+  tags:
+    - impact/tier_1
+    - repo/bigquery-etl
+
+bqetl_review_checker:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - akommasani@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    owner: akommasani@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2023-10-01'
+  description: DAG to build review checker data
+  repo: bigquery-etl
+  schedule_interval: daily
+  tags:
+    - impact/tier_1
+    - repo/bigquery-etl
+
+bqetl_ads:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - cmorales@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    owner: cmorales@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2023-10-10'
+  description: Tables related to ads
+  repo: bigquery-etl
+  schedule_interval: daily
+  tags:
+    - impact/tier_1
+    - repo/bigquery-etl

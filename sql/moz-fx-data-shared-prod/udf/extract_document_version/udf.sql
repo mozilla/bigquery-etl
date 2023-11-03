@@ -9,5 +9,8 @@ CREATE OR REPLACE FUNCTION udf.extract_document_version(table_name STRING) AS (
 
 -- Tests
 SELECT
-  assert.equals("1", udf.extract_document_version("type_v1")),
-  assert.equals("20191031", udf.extract_document_version("namespace__namespace_type_v20191031"));
+  mozfun.assert.equals("1", udf.extract_document_version("type_v1")),
+  mozfun.assert.equals(
+    "20191031",
+    udf.extract_document_version("namespace__namespace_type_v20191031")
+  );

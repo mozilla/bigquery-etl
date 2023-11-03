@@ -131,14 +131,36 @@ class FivetranTask:
     task_id: str = attr.ib()
 
 
-# Know tasks in telemetry-airflow, like stable table tasks
+# Known tasks in telemetry-airflow, like stable table tasks
 # https://github.com/mozilla/telemetry-airflow/blob/main/dags/copy_deduplicate.py
 EXTERNAL_TASKS = {
     TaskRef(
         dag_name="copy_deduplicate",
         task_id="copy_deduplicate_main_ping",
         schedule_interval="0 1 * * *",
-    ): ["telemetry_stable.main_v4"],
+    ): [
+        "telemetry_stable.main_v4",
+        "telemetry_stable.main_v5",
+        "telemetry_stable.main_use_counter_v4",
+    ],
+    TaskRef(
+        dag_name="copy_deduplicate",
+        task_id="copy_deduplicate_first_shutdown_ping",
+        schedule_interval="0 1 * * *",
+    ): [
+        "telemetry_stable.first_shutdown_v4",
+        "telemetry_stable.first_shutdown_v5",
+        "telemetry_stable.first_shutdown_use_counter_v4",
+    ],
+    TaskRef(
+        dag_name="copy_deduplicate",
+        task_id="copy_deduplicate_saved_session_ping",
+        schedule_interval="0 1 * * *",
+    ): [
+        "telemetry_stable.saved_session_v4",
+        "telemetry_stable.saved_session_v5",
+        "telemetry_stable.saved_session_use_counter_v4",
+    ],
     TaskRef(
         dag_name="copy_deduplicate",
         task_id="bq_main_events",
@@ -221,6 +243,8 @@ class Task:
     destination_table: Optional[str] = attr.ib(default=DEFAULT_DESTINATION_TABLE_STR)
     is_python_script: bool = attr.ib(False)
     is_dq_check: bool = attr.ib(False)
+    # Failure of the checks task will stop the dag from executing further
+    is_dq_check_fail: bool = attr.ib(True)
     task_concurrency: Optional[int] = attr.ib(None)
     retry_delay: Optional[str] = attr.ib(None)
     retries: Optional[int] = attr.ib(None)
@@ -299,7 +323,6 @@ class Task:
     def __attrs_post_init__(self):
         """Extract information from the query file name."""
         query_file_re = re.search(QUERY_FILE_RE, self.query_file)
-        check_file_re = re.search(CHECKS_FILE_RE, self.query_file)
         if query_file_re:
             self.project = query_file_re.group(1)
             self.dataset = query_file_re.group(2)
@@ -311,14 +334,6 @@ class Task:
                 self.task_name = f"{self.dataset}__{self.table}__{self.version}"[
                     -MAX_TASK_NAME_LENGTH:
                 ]
-                self.validate_task_name(None, self.task_name)
-
-            if check_file_re is not None:
-                self.task_name = (
-                    f"checks__{self.dataset}__{self.table}__{self.version}"[
-                        -MAX_TASK_NAME_LENGTH:
-                    ]
-                )
                 self.validate_task_name(None, self.task_name)
 
             if self.destination_table == DEFAULT_DESTINATION_TABLE_STR:
@@ -467,12 +482,28 @@ class Task:
         return task
 
     @classmethod
-    def of_dq_check(cls, query_file, metadata=None, dag_collection=None):
+    def of_dq_check(cls, query_file, is_check_fail, metadata=None, dag_collection=None):
         """Create a task that schedules DQ check file in Airflow."""
         task = cls.of_query(query_file, metadata, dag_collection)
         task.query_file_path = query_file
         task.is_dq_check = True
+        task.is_dq_check_fail = is_check_fail
+        task.retries = 0
         task.depends_on_fivetran = []
+        if task.is_dq_check_fail:
+            task.task_name = (
+                f"checks__fail_{task.dataset}__{task.table}__{task.version}"[
+                    -MAX_TASK_NAME_LENGTH:
+                ]
+            )
+            task.validate_task_name(None, task.task_name)
+        else:
+            task.task_name = (
+                f"checks__warn_{task.dataset}__{task.table}__{task.version}"[
+                    -MAX_TASK_NAME_LENGTH:
+                ]
+            )
+            task.validate_task_name(None, task.task_name)
         return task
 
     def to_ref(self, dag_collection):
@@ -527,7 +558,7 @@ class Task:
         for table in self._get_referenced_tables():
             # check if upstream task is accompanied by a check
             # the task running the check will be set as the upstream task instead
-            checks_upstream_task = dag_collection.checks_task_for_table(
+            checks_upstream_task = dag_collection.fail_checks_task_for_table(
                 table[0], table[1], table[2]
             )
             upstream_task = dag_collection.task_for_table(table[0], table[1], table[2])

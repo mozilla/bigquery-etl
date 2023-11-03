@@ -1,0 +1,116 @@
+[
+  {
+    "type": "STRING",
+    "name": "client_id"
+  },
+  {
+    "type": "INTEGER",
+    "name": "sample_id"
+  },
+  {
+    "type": "DATE",
+    "name": "submission_date"
+  },
+  {
+    "type": "TIMESTAMP",
+    "name": "submission_timestamp_min"
+  },
+  {
+    "type": "STRING",
+    "name": "env_build_id"
+  },
+  {
+    "type": "STRING",
+    "name": "normalized_channel"
+  },
+  {
+    "type": "STRING",
+    "name": "app_display_version"
+  },
+  {
+    "type": "STRING",
+    "name": "app_name"
+  },
+  {
+    "type": "STRING",
+    "name": "locale"
+  },
+  {
+    "type": "STRING",
+    "name": "vendor"
+  },
+  {
+    "type": "STRING",
+    "name": "app_version"
+  },
+  {
+    "type": "STRING",
+    "name": "distribution_id"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "campaign"
+      },
+      {
+        "type": "STRING",
+        "name": "content"
+      },
+      {
+        "type": "STRING",
+        "name": "experiment"
+      },
+      {
+        "type": "STRING",
+        "name": "medium"
+      },
+      {
+        "type": "STRING",
+        "name": "source"
+      },
+      {
+        "type": "STRING",
+        "name": "dltoken"
+      }
+    ],
+    "name": "attribution",
+    "type": "RECORD"
+  },
+  {
+    "type": "STRING",
+    "name": "default_search_engine_data_load_path"
+  },
+  {
+    "type": "STRING",
+    "name": "default_search_engine_data_name"
+  },
+  {
+    "type": "STRING",
+    "name": "default_search_engine_data_origin"
+  },
+  {
+    "type": "STRING",
+    "name": "default_search_engine_data_submission_url"
+  },
+  {
+    "type": "STRING",
+    "name": "city"
+  },
+  {
+    "type": "STRING",
+    "name": "geo_subdivision1"
+  },
+  {
+    "type": "STRING",
+    "name": "country"
+  },
+  {
+    "type": "STRING",
+    "name": "os"
+  },
+  {
+    "type": "STRING",
+    "name": "normalized_os_version"
+  }
+]

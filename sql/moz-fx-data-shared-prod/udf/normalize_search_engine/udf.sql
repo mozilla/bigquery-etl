@@ -20,8 +20,8 @@ CREATE OR REPLACE FUNCTION udf.normalize_search_engine(engine STRING) AS (
 
 -- Test
 SELECT
-  assert.equals('Engine1', udf.normalize_search_engine('engine1')),
-  assert.equals('Engine2', udf.normalize_search_engine('Engine2-abc')),
-  assert.equals('Other', udf.normalize_search_engine('not-Engine1')),
-  assert.equals('Other', udf.normalize_search_engine('engine')),
-  assert.null(udf.normalize_search_engine(NULL))
+  mozfun.assert.equals('Engine1', udf.normalize_search_engine('engine1')),
+  mozfun.assert.equals('Engine2', udf.normalize_search_engine('Engine2-abc')),
+  mozfun.assert.equals('Other', udf.normalize_search_engine('not-Engine1')),
+  mozfun.assert.equals('Other', udf.normalize_search_engine('engine')),
+  mozfun.assert.null(udf.normalize_search_engine(NULL))

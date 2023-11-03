@@ -50,6 +50,9 @@ def publish_metadata(client, dataset, table, metadata):
             if isinstance(value, str)
         }
 
+        if metadata.deprecated is True:
+            table.labels["deprecated"] = "true"
+
         client.update_table(table, ["friendly_name", "description", "labels"])
     except yaml.YAMLError as e:
         print(e)

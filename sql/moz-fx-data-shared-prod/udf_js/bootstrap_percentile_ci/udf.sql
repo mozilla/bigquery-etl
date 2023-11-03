@@ -46,7 +46,7 @@ AS
       throw "percentile must be a value between 0 and 100";
     }
   }
-  
+
   function getQuantileSamples(percentile, histogram, n_samples) {
     /*
     Returns a sorted array of quantile samples from a `histogram` at a target `percentile`.
@@ -76,7 +76,7 @@ AS
     */
     const scale = 1000;
     total = Math.ceil(total * scale);
-    
+
     /* sample the quantile of interest */
     var samples = [];
     for ( var i = 0; i < n_samples; i++ ) {
@@ -110,7 +110,7 @@ AS
   }
 
   function getPercentileBin(percentile, quantile_samples) {
-    /* 
+    /*
     Returns the target `percentile` from a sorted array of samples.
     */
     validatePercentile(percentile);
@@ -125,7 +125,7 @@ AS
   }
 
   function binToValue(bin_value, histogram, location) {
-    /* 
+    /*
     Returns the estimated value of a `location` inside a histogram bin,
     where `location` is between 0 (left edge) and 1 (right edge).
     */
@@ -152,7 +152,7 @@ AS
   }
 
   function getPercentilesWithCI(percentiles, histogram, metric) {
-    
+
     if ( !percentiles.length ) {
       throw "percentiles must be a non-empty array of integers";
     }
@@ -166,14 +166,14 @@ AS
       var lower = null;  /* left edge of lower estimate bin */
       var point = null;  /* center of point estimate bin */
       var upper = null;  /* right edge of upper estimate bin */
-      
+
       if ( histogram.values && histogram && histogramIsNonZero(histogram.values) ) {
         var quantile_samples = getQuantileSamples(percentile, histogram.values, 10000);
         lower = binToValue(getPercentileBin( 5, quantile_samples), histogram.values, 0.0);
         point = binToValue(getPercentileBin(50, quantile_samples), histogram.values, 0.5);
         upper = binToValue(getPercentileBin(95, quantile_samples), histogram.values, 1.0);
       }
-        
+
       results.push({
         "metric": metric,
         "statistic": "percentile",
@@ -275,48 +275,48 @@ seven_bin_results AS (
 )
 -- valid outputs
 SELECT
-  assert.equals('test', (SELECT DISTINCT metric FROM all_zero_results)),
-  assert.equals('percentile', (SELECT DISTINCT statistic FROM all_zero_results)),
-  assert.array_equals(
+  mozfun.assert.equals('test', (SELECT DISTINCT metric FROM all_zero_results)),
+  mozfun.assert.equals('percentile', (SELECT DISTINCT statistic FROM all_zero_results)),
+  mozfun.assert.array_equals(
     (SELECT ['5', '25', '50', '75', '95']),
     (SELECT ARRAY(SELECT parameter FROM all_zero_results))
   ),
-  assert.array_empty((SELECT ARRAY(SELECT lower FROM all_zero_results WHERE lower IS NOT NULL))),
-  assert.array_empty((SELECT ARRAY(SELECT point FROM all_zero_results WHERE point IS NOT NULL))),
-  assert.array_empty((SELECT ARRAY(SELECT upper FROM all_zero_results WHERE upper IS NOT NULL))),
-  assert.equals('test', (SELECT DISTINCT metric FROM one_bin_results)),
-  assert.equals('percentile', (SELECT DISTINCT statistic FROM one_bin_results)),
-  assert.array_equals(
+  mozfun.assert.array_empty((SELECT ARRAY(SELECT lower FROM all_zero_results WHERE lower IS NOT NULL))),
+  mozfun.assert.array_empty((SELECT ARRAY(SELECT point FROM all_zero_results WHERE point IS NOT NULL))),
+  mozfun.assert.array_empty((SELECT ARRAY(SELECT upper FROM all_zero_results WHERE upper IS NOT NULL))),
+  mozfun.assert.equals('test', (SELECT DISTINCT metric FROM one_bin_results)),
+  mozfun.assert.equals('percentile', (SELECT DISTINCT statistic FROM one_bin_results)),
+  mozfun.assert.array_equals(
     (SELECT ['5', '25', '50', '75', '95']),
     (SELECT ARRAY(SELECT parameter FROM one_bin_results))
   ),
-  assert.array_equals(
+  mozfun.assert.array_equals(
     (SELECT [1.0, 1.0, 1.0, 1.0, 1.0]),
     (SELECT ARRAY(SELECT lower FROM one_bin_results))
   ),
-  assert.array_equals(
+  mozfun.assert.array_equals(
     (SELECT [1.5, 1.5, 1.5, 1.5, 1.5]),
     (SELECT ARRAY(SELECT point FROM one_bin_results))
   ),
-  assert.array_equals(
+  mozfun.assert.array_equals(
     (SELECT [2.0, 2.0, 2.0, 2.0, 2.0]),
     (SELECT ARRAY(SELECT upper FROM one_bin_results))
   ),
-  assert.equals('test', (SELECT DISTINCT metric FROM seven_bin_results)),
-  assert.equals('percentile', (SELECT DISTINCT statistic FROM seven_bin_results)),
-  assert.array_equals(
+  mozfun.assert.equals('test', (SELECT DISTINCT metric FROM seven_bin_results)),
+  mozfun.assert.equals('percentile', (SELECT DISTINCT statistic FROM seven_bin_results)),
+  mozfun.assert.array_equals(
     (SELECT ['5', '25', '50', '75', '95']),
     (SELECT ARRAY(SELECT parameter FROM seven_bin_results))
   ),
-  assert.array_equals(
+  mozfun.assert.array_equals(
     (SELECT [-2.5, -1.5, -0.5, 0.5, 1.5]),
     (SELECT ARRAY(SELECT lower FROM seven_bin_results))
   ),
-  assert.array_equals(
+  mozfun.assert.array_equals(
     (SELECT [-2.0, -1.0, 0.0, 1.0, 2.0]),
     (SELECT ARRAY(SELECT point FROM seven_bin_results))
   ),
-  assert.array_equals(
+  mozfun.assert.array_equals(
     (SELECT [-1.5, -0.5, 0.5, 1.5, 2.5]),
     (SELECT ARRAY(SELECT upper FROM seven_bin_results))
   );

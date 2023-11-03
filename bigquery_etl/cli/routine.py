@@ -146,6 +146,8 @@ def create(ctx, name, sql_dir, project_id, udf, stored_procedure):
     routine_path = Path(sql_dir) / project_id / dataset / name
     routine_path.mkdir(parents=True)
 
+    assert_udf_qualifier = "" if project_id == "mozfun" else "mozfun."
+
     # create SQL file with UDF definition
     if udf:
         routine_file = routine_path / UDF_FILE
@@ -161,7 +163,7 @@ def create(ctx, name, sql_dir, project_id, udf, stored_procedure):
                 );
 
                 -- Tests
-                SELECT assert.true({dataset}.{name}())
+                SELECT {assert_udf_qualifier}assert.true({dataset}.{name}())
                 """
             )
             + "\n"
@@ -178,7 +180,7 @@ def create(ctx, name, sql_dir, project_id, udf, stored_procedure):
                 END;
 
                 -- Tests
-                SELECT assert.true({dataset}.{name}())
+                SELECT {assert_udf_qualifier}assert.true({dataset}.{name}())
                 """
             )
             + "\n"

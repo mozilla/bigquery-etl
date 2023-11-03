@@ -13,9 +13,13 @@ labels:
   schedule: daily
 scheduling:
   dag_name: bqetl_urlbar
-  task_name: {{ app_name }}_urlbar_events__v1
+  task_name: {{ app_name }}_urlbar_events__v2
 bigquery:
   time_partitioning:
     type: day
     field: submission_date
     require_partition_filter: true
+  clustering:
+    fields:
+      - normalized_channel
+      - sample_id

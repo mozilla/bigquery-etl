@@ -5,7 +5,7 @@ WITH placeholder_table_names AS (
   SELECT DISTINCT
     table_name
   FROM
-    `moz-fx-data-shared-prod`.telemetry_stable.INFORMATION_SCHEMA.TABLE_OPTIONS
+    `moz-fx-data-shared-prod.telemetry_stable.INFORMATION_SCHEMA.TABLE_OPTIONS`
   WHERE
     option_value LIKE '%placeholder_schema%'
 ),
@@ -26,7 +26,14 @@ extracted AS (
     )
     -- https://cloud.google.com/bigquery/docs/querying-wildcard-tables#filtering_selected_tables_using_table_suffix
     -- exclude pings derived from main schema to save on space, 300GB vs 3TB
-    AND _TABLE_SUFFIX NOT IN ('main_v4', 'saved_session_v4', 'first_shutdown_v4')
+    AND _TABLE_SUFFIX NOT IN (
+      'main_v4',
+      'saved_session_v4',
+      'first_shutdown_v4',
+      'main_v5',
+      'saved_session_v5',
+      'first_shutdown_v5'
+    )
     AND _TABLE_SUFFIX NOT IN (SELECT * FROM placeholder_table_names)
 ),
 transformed AS (

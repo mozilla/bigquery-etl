@@ -25,6 +25,7 @@ from google.cloud import bigquery
 from google.cloud.exceptions import NotFound
 
 from ..backfill.utils import QUALIFIED_TABLE_NAME_RE, qualified_table_name_matching
+from ..cli import check
 from ..cli.format import format
 from ..cli.utils import (
     is_authenticated,
@@ -338,8 +339,6 @@ def schedule(name, sql_dir, project_id, dag, depends_on_past, task_name):
 
     dags = DagCollection.from_file(sql_dir.parent / "dags.yaml")
 
-    dags_to_be_generated = set()
-
     for query_file in query_files:
         try:
             metadata = Metadata.of_query_file(query_file)
@@ -379,22 +378,12 @@ def schedule(name, sql_dir, project_id, dag, depends_on_past, task_name):
             )
 
             # update dags since new task has been added
-            dags = get_dags(None, sql_dir.parent / "dags.yaml")
-            dags_to_be_generated.add(dag)
+            dags = get_dags(None, sql_dir.parent / "dags.yaml", sql_dir=sql_dir)
         else:
-            dags = get_dags(None, sql_dir.parent / "dags.yaml")
+            dags = get_dags(None, sql_dir.parent / "dags.yaml", sql_dir=sql_dir)
             if metadata.scheduling == {}:
                 click.echo(f"No scheduling information for: {query_file}", err=True)
                 sys.exit(1)
-            else:
-                dags_to_be_generated.add(metadata.scheduling["dag_name"])
-
-    # re-run DAG generation for the affected DAG
-    for d in dags_to_be_generated:
-        existing_dag = dags.dag_by_name(d)
-        logging.info(f"Running DAG generation for {existing_dag.name}")
-        output_dir = sql_dir.parent / "dags"
-        dags.dag_to_airflow(output_dir, existing_dag)
 
 
 @query.command(
@@ -513,6 +502,7 @@ def _backfill_query(
     partitioning_type,
     backfill_date,
     destination_table,
+    run_checks,
 ):
     """Run a query backfill for a specific date."""
     project, dataset, table = extract_from_query_path(query_file_path)
@@ -567,6 +557,21 @@ def _backfill_query(
             query_arguments=arguments,
         )
 
+        # Run checks on the query
+        checks_file = query_file_path.parent / "checks.sql"
+        if run_checks and checks_file.exists():
+            table_name = checks_file.parent.name
+            # query_args have things like format, which we don't want to push
+            # to the check; so we just take the query parameters
+            check_args = [qa for qa in arguments if qa.startswith("--parameter")]
+            check._run_check(
+                checks_file=checks_file,
+                project_id=project_id,
+                dataset_id=dataset,
+                table=table_name,
+                query_arguments=check_args,
+                dry_run=dry_run,
+            )
     else:
         click.echo(
             f"Skip {query_file_path} with @{date_partition_parameter}={backfill_date}"
@@ -659,6 +664,9 @@ def _backfill_query(
         + "If not set, determines destination table based on query."
     ),
 )
+@click.option(
+    "--checks/--no-checks", help="Whether to run checks during backfill", default=False
+)
 @click.pass_context
 def backfill(
     ctx,
@@ -673,6 +681,7 @@ def backfill(
     parallelism,
     no_partition,
     destination_table,
+    checks,
 ):
     """Run a backfill."""
     if not is_authenticated():
@@ -771,6 +780,7 @@ def backfill(
             ctx.args,
             partitioning_type,
             destination_table=destination_table,
+            run_checks=checks,
         )
 
         if not depends_on_past:
@@ -1270,7 +1280,13 @@ def initialize(name, sql_dir, project_id, dry_run):
         # allow name to be a path
         query_files = [Path(name)]
     else:
-        query_files = paths_matching_name_pattern(name, sql_dir, project_id)
+        file_regex = re.compile(
+            r"^.*/([a-zA-Z0-9-]+)/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+(_v[0-9]+)?)/"
+            r"(?:query\.sql|init\.sql)$"
+        )
+        query_files = paths_matching_name_pattern(
+            name, sql_dir, project_id, file_regex=file_regex
+        )
 
     if not query_files:
         click.echo(
@@ -1311,19 +1327,17 @@ def initialize(name, sql_dir, project_id, dry_run):
             )
         else:
             init_files = Path(query_file.parent).rglob("init.sql")
-            client = bigquery.Client()
 
             for init_file in init_files:
                 project = init_file.parent.parent.parent.name
+                client = bigquery.Client(project=project)
 
                 with open(init_file) as init_file_stream:
                     init_sql = init_file_stream.read()
                     dataset = Path(init_file).parent.parent.name
-                    destination_table = query_file.parent.name
                     job_config = bigquery.QueryJobConfig(
                         dry_run=dry_run,
                         default_dataset=f"{project}.{dataset}",
-                        destination=f"{project}.{dataset}.{destination_table}",
                     )
 
                     if "CREATE MATERIALIZED VIEW" in init_sql:
@@ -1719,6 +1733,7 @@ def _update_query_schema(
             content=sql_content,
             use_cloud_function=use_cloud_function,
             respect_skip=respect_dryrun_skip,
+            sql_dir=sql_dir,
         )
     except Exception:
         if not existing_schema_path.exists():
@@ -1930,6 +1945,7 @@ def deploy(
                     query_file_path,
                     use_cloud_function=use_cloud_function,
                     respect_skip=respect_dryrun_skip,
+                    sql_dir=sql_dir,
                 )
                 if not existing_schema.equal(query_schema):
                     click.echo(

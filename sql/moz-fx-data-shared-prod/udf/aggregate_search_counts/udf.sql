@@ -67,7 +67,7 @@ CREATE OR REPLACE FUNCTION udf.aggregate_search_counts(
 
 -- Tests
 SELECT
-  assert.equals(
+  mozfun.assert.equals(
     STRUCT(
       5 AS search_count_abouthome,
       1 AS search_count_contextmenu,
@@ -95,7 +95,7 @@ SELECT
       ]
     )
   ),
-  assert.equals(
+  mozfun.assert.equals(
     STRUCT(
       0 AS search_count_all,
       0 AS search_count_abouthome,

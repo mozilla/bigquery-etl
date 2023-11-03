@@ -21,7 +21,6 @@ The [Creating derived datasets tutorial](https://mozilla.github.io/bigquery-etl/
 1. Run `./bqetl query validate <dataset>.<table>_<version>` to dry run and format the query
 1. To schedule the query, first select a DAG from the `./bqetl dag info` list or create a new DAG `./bqetl dag create <bqetl_new_dag>`
 1. Run `./bqetl query schedule <dataset>.<table>_<version> --dag <bqetl_dag>` to schedule the query
-1. Run `./bqetl dag generate <bqetl_dag>` to update the DAG file
 1. Create a pull request
 1. PR gets reviewed and eventually approved
 1. Merge pull-request
@@ -114,9 +113,11 @@ The following is an example to update a new field in `telemetry_derived.clients_
 1. Open the `clients_daily_v6` `query.sql` file and add new field definitions.
 1. Run `./bqetl format sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_v6/query.sql`
 1. Run `./bqetl query validate telemetry_derived.clients_daily_v6`.
-1. Run `./bqetl query schema update telemetry_derived.clients_daily_v6 --update_downstream --ignore-dryrun-skip`.
+1. Authenticate to GCP: `gcloud auth login --update-adc`
+1. Run `./bqetl query schema update telemetry_derived.clients_daily_v6 --update_downstream --ignore-dryrun-skip --use-cloud-function=false`.
    * [x] `schema.yaml` files of downstream dependencies, like `clients_last_seen_v1` are updated.
    * If the schema has no changes, we do not run schema updates on any of its downstream dependencies.
+   * `--use-cloud-function=false` is necessary when updating tables related to `clients_daily` but optional for other tables. The dry run cloud function times out when fetching the deployed table schema for some of `clients_daily`s downstream dependencies. Using GCP credentials instead works, however this means users need to have permissions to run queries in `moz-fx-data-shared-prod`.
 1. Open a PR with these changes.
 1. PR is reviewed and approved.
 1. Merge pull-request.
@@ -233,7 +234,6 @@ See also the reference for [Public Data](../reference/public_data.md).
    * Specify the `review_bugs`
 1. If an internal dataset already exists, move it to `mozilla-public-data`
 1. If an `init.sql` file exists for the query, change the destination project for the created table to `mozilla-public-data`
-1. Run `./bqetl dag generate bqetl_public_public_data_json` to update the DAG
 1. Open a PR
 1. PR gets reviewed, approved and merged
    * Once, ETL is running a view will get automatically published to `moz-fx-data-shared-prod` referencing the public dataset

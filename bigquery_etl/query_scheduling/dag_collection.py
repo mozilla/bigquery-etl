@@ -78,7 +78,7 @@ class DagCollection:
 
         return None
 
-    def checks_task_for_table(self, project, dataset, table):
+    def fail_checks_task_for_table(self, project, dataset, table):
         """Return the task that schedules the checks for the provided table."""
         for dag in self.dags:
             for task in dag.tasks:
@@ -87,6 +87,7 @@ class DagCollection:
                     and dataset == task.dataset
                     and table == f"{task.table}_{task.version}"
                     and task.is_dq_check
+                    and task.is_dq_check_fail
                 ):
                     return task
 
@@ -139,10 +140,14 @@ class DagCollection:
     def dag_to_airflow(self, output_dir, dag):
         """Generate the Airflow DAG representation for the provided DAG."""
         output_file = Path(output_dir) / (dag.name + ".py")
-        formatted_dag = format_file_contents(
-            dag.to_airflow_dag(), fast=False, mode=FileMode()
-        )
-        output_file.write_text(formatted_dag)
+
+        try:
+            formatted_dag = format_file_contents(
+                dag.to_airflow_dag(), fast=False, mode=FileMode()
+            )
+            output_file.write_text(formatted_dag)
+        except InvalidDag as e:
+            print(e)
 
     def to_airflow_dags(self, output_dir, dag_to_generate=None):
         """Write DAG representation as Airflow dags to file."""

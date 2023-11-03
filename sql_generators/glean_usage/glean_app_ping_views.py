@@ -250,14 +250,13 @@ class GleanAppPingViews(GleanTable):
                             # unnest repeated record
                             select_expr.append(
                                 f"""
-                                    (
-                                        SELECT ARRAY_AGG(
+                                    ARRAY(
+                                        SELECT
                                             STRUCT(
                                                 {self._generate_select_expression(node['fields'], app_schema_nodes[node_name]['fields'], [node_name])}
                                             )
-                                        )
-                                        FROM UNNEST({'.'.join(path + [node_name])}) AS {node_name}
-                                    ) AS {node_name}
+                                        FROM UNNEST({'.'.join(path + [node_name])}) AS `{node_name}`
+                                    ) AS `{node_name}`
                                 """
                             )
                         else:
@@ -266,21 +265,16 @@ class GleanAppPingViews(GleanTable):
                                 f"""
                                     STRUCT(
                                         {self._generate_select_expression(node['fields'], app_schema_nodes[node_name]['fields'], path + [node_name])}
-                                    ) AS {node_name}
+                                    ) AS `{node_name}`
                                 """
                             )
                     else:
-                        if node.get("mode", None) == "REPEATED":
-                            select_expr.append(
-                                f"SAFE_CAST(NULL AS ARRAY<{dtype}>) AS {node_name}"
-                            )
-                        else:
-                            select_expr.append(
-                                f"SAFE_CAST(NULL AS {dtype}) AS {node_name}"
-                            )
+                        select_expr.append(
+                            f"CAST(NULL AS {self._type_info(node)}) AS `{node_name}`"
+                        )
             else:
                 select_expr.append(
-                    f"CAST(NULL AS {self._type_info(node)}) AS {node_name}"
+                    f"CAST(NULL AS {self._type_info(node)}) AS `{node_name}`"
                 )
 
         return ", ".join(select_expr)
@@ -292,11 +286,13 @@ class GleanAppPingViews(GleanTable):
             dtype = (
                 "STRUCT<"
                 + ", ".join(
-                    f"{field['name']} {self._type_info(field)}"
+                    f"`{field['name']}` {self._type_info(field)}"
                     for field in node["fields"]
                 )
                 + ">"
             )
+        elif dtype == "FLOAT":
+            dtype = "FLOAT64"
         if node.get("mode") == "REPEATED":
             return f"ARRAY<{dtype}>"
         return dtype

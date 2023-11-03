@@ -270,7 +270,9 @@ def write_view_if_not_exists(target_project: str, sql_dir: Path, schema: SchemaF
         try:
             content = VIEW_CREATE_REGEX.sub("", target_file.read_text())
             content += " WHERE DATE(submission_timestamp) = '2020-01-01'"
-            view_schema = Schema.from_query_file(target_file, content=content)
+            view_schema = Schema.from_query_file(
+                target_file, content=content, sql_dir=sql_dir
+            )
 
             stable_table_schema = Schema.from_json({"fields": schema.schema})
 

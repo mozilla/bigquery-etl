@@ -11,10 +11,6 @@ labels:
   schedule: daily
 scheduling:
   dag_name: bqetl_amo_stats
-  # provide this value so that DAG generation does not have to dry run the
-  # query to get it, and that would be slow because main_v4 is referenced
-  referenced_tables: [['moz-fx-data-shared-prod', 'telemetry_stable',
-                       'main_v4']]
 bigquery:
   time_partitioning:
     type: day

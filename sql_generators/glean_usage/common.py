@@ -101,6 +101,7 @@ def table_names_from_baseline(baseline_table, include_project_id=True):
         daily_view=f"{prefix}.baseline_clients_daily",
         last_seen_view=f"{prefix}.baseline_clients_last_seen",
         first_seen_view=f"{prefix}.baseline_clients_first_seen",
+        event_monitoring=f"{prefix}_derived.event_monitoring_live_v1",
     )
 
 
@@ -160,6 +161,7 @@ class GleanTable:
         self.no_init = True
         self.per_app_id_enabled = True
         self.per_app_enabled = True
+        self.across_apps_enabled = True
         self.cross_channel_template = "cross_channel.view.sql"
 
     def skip_existing(self, output_dir="sql/", project_id="moz-fx-data-shared-prod"):
@@ -186,6 +188,7 @@ class GleanTable:
 
         init_filename = f"{self.target_table_id}.init.sql"
         query_filename = f"{self.target_table_id}.query.sql"
+        checks_filename = f"{self.target_table_id}.checks.sql"
         view_filename = f"{self.target_table_id[:-3]}.view.sql"
         view_metadata_filename = f"{self.target_table_id[:-3]}.metadata.yaml"
         table_metadata_filename = f"{self.target_table_id}.metadata.yaml"
@@ -208,6 +211,7 @@ class GleanTable:
         view_sql = render(
             view_filename, template_folder=PATH / "templates", **render_kwargs
         )
+
         view_metadata = render(
             view_metadata_filename,
             template_folder=PATH / "templates",
@@ -220,6 +224,14 @@ class GleanTable:
             format=False,
             **render_kwargs,
         )
+
+        # Checks are optional, for now!
+        try:
+            checks_sql = render(
+                checks_filename, template_folder=PATH / "templates", **render_kwargs
+            )
+        except TemplateNotFound:
+            checks_sql = None
 
         if not self.no_init:
             try:
@@ -234,24 +246,27 @@ class GleanTable:
                     **render_kwargs,
                 )
 
+        # generated files to update
+        Artifact = namedtuple("Artifact", "table_id basename sql")
+        artifacts = [
+            Artifact(view, "metadata.yaml", view_metadata),
+            Artifact(table, "metadata.yaml", table_metadata),
+            Artifact(table, "query.sql", query_sql),
+        ]
+
         if not (referenced_table_exists(view_sql)):
             logging.info("Skipping view for table which doesn't exist:" f" {table}")
-            return
+        else:
+            artifacts.append(Artifact(view, "view.sql", view_sql))
 
         skip_existing_artifact = self.skip_existing(output_dir, project_id)
 
         if output_dir:
-            # generated files to update
-            Artifact = namedtuple("Artifact", "table_id basename sql")
-            artifacts = [
-                Artifact(view, "metadata.yaml", view_metadata),
-                Artifact(view, "view.sql", view_sql),
-                Artifact(table, "metadata.yaml", table_metadata),
-                Artifact(table, "query.sql", query_sql),
-            ]
-
             if not self.no_init:
                 artifacts.append(Artifact(table, "init.sql", init_sql))
+
+            if checks_sql:
+                artifacts.append(Artifact(table, "checks.sql", checks_sql))
 
             for artifact in artifacts:
                 destination = (
@@ -380,3 +395,11 @@ class GleanTable:
 
                 write_dataset_metadata(output_dir, view)
                 write_dataset_metadata(output_dir, table, derived_dataset_metadata=True)
+
+    def generate_across_apps(
+        self, project_id, apps, output_dir=None, use_cloud_function=True
+    ):
+        """Generate a query across all apps."""
+        # logic for implementing cross-app queries needs to be implemented in the
+        # individual classes
+        return

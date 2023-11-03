@@ -28,7 +28,6 @@ from ..view import View
 
 VIEW_FILE = "view.sql"
 QUERY_FILE = "query.sql"
-INIT_FILE = "init.sql"
 QUERY_SCRIPT = "query.py"
 ROOT = Path(__file__).parent.parent.parent
 TEST_DIR = ROOT / "tests" / "sql"
@@ -116,7 +115,9 @@ def deploy(
                 for p in paths_matching_name_pattern(
                     path, sql_dir, None, files=["*.sql", "*.py"]
                 )
-                if p.suffix in [".sql", ".py"] and p.name != "checks.sql"
+                if p.suffix in [".sql", ".py"]
+                and p.name != "checks.sql"
+                and len(p.suffixes) == 1
             ]
         )
 
@@ -138,6 +139,9 @@ def deploy(
         dataset = artifact_file.parent.parent.name
         name = artifact_file.parent.name
         test_path = TEST_DIR / project / dataset / name
+
+        if dataset == "INFORMATION_SCHEMA" or "INFORMATION_SCHEMA" in name:
+            continue
 
         if dataset_suffix:
             dataset = f"{dataset}_{dataset_suffix}"
@@ -201,12 +205,9 @@ def _udf_dependencies(artifact_files):
         udfs_to_publish = accumulate_dependencies([], raw_routines, raw_routine.name)
 
         for dependency in udfs_to_publish:
-            dataset, name = dependency.split(".")
-            file_path = (
-                raw_routine.filepath.parent.parent.parent / dataset / name / UDF_FILE
-            )
-            if file_path not in artifact_files:
-                artifact_files.add(file_path)
+            if dependency in raw_routines:
+                file_path = Path(raw_routines[dependency].filepath)
+                udf_dependencies.add(file_path)
 
     return udf_dependencies
 
@@ -225,9 +226,14 @@ def _view_dependencies(artifact_files, sql_dir):
 
             for dependency in view.table_references:
                 dependency_components = dependency.split(".")
+                if dependency_components[1:2] == ["INFORMATION_SCHEMA"]:
+                    dependency_components.insert(0, view.project)
                 if dependency_components[2:3] == ["INFORMATION_SCHEMA"]:
-                    # INFORMATION_SCHEMA has more components that can be ignored here
-                    dependency_components = dependency_components[:3]
+                    # INFORMATION_SCHEMA has more components that will be treated as the table name
+                    # no deploys for INFORMATION_SCHEMA will happen later on
+                    dependency_components = dependency_components[:2] + [
+                        ".".join(dependency_components[2:])
+                    ]
                 if len(dependency_components) != 3:
                     raise ValueError(
                         f"Invalid table reference {dependency} in view {view.name}. "
@@ -286,7 +292,11 @@ def _update_references(artifact_files, project_id, dataset_suffix, sql_dir):
         name_pattern = name.replace("*", r"\*")  # match literal *
         original_dataset = artifact_file.parent.parent.name
         deployed_dataset = original_dataset
-        if dataset_suffix:
+        if dataset_suffix and original_dataset not in (
+            "INFORMATION_SCHEMA",
+            "region-eu",
+            "region-us",
+        ):
             deployed_dataset += f"_{dataset_suffix}"
         original_project = artifact_file.parent.parent.parent.name
         deployed_project = project_id
@@ -345,7 +355,7 @@ def _deploy_artifacts(ctx, artifact_files, project_id, dataset_suffix, sql_dir):
     query_files = [
         file
         for file in artifact_files
-        if file.name in [INIT_FILE, QUERY_FILE, QUERY_SCRIPT]
+        if file.name in [QUERY_FILE, QUERY_SCRIPT]
         # don't attempt to deploy wildcard or metadata tables
         and "*" not in file.parent.name and file.parent.name != "INFORMATION_SCHEMA"
     ]

@@ -1,0 +1,17 @@
+friendly_name: Applications
+description: |-
+  Information about existing applications.
+owners:
+- ascholtz@mozilla.com
+labels:
+  dag: bqetl_releases
+  owner1: ascholtz
+scheduling:
+  dag_name: bqetl_releases
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

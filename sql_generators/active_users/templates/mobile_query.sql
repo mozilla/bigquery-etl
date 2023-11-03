@@ -13,7 +13,8 @@ WITH attribution_data AS (
     CAST(NULL AS STRING) install_source
   FROM
     firefox_ios.firefox_ios_clients
-  WHERE first_seen_date = @submission_date
+  WHERE
+    first_seen_date = @submission_date
 ),
 baseline AS (
   SELECT

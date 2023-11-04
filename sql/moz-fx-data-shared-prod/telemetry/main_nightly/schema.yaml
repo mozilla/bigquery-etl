@@ -14810,6 +14810,9 @@ fields:
     - name: strip_on_share_params_removed
       type: STRING
       mode: NULLABLE
+    - name: gc_parallel_mark
+      type: STRING
+      mode: NULLABLE
   - name: info
     type: RECORD
     mode: NULLABLE
@@ -30739,6 +30742,9 @@ fields:
           type: STRING
           mode: NULLABLE
         - name: gvsv_audio_stream_inits
+          type: STRING
+          mode: NULLABLE
+        - name: gc_parallel_mark
           type: STRING
           mode: NULLABLE
       - name: keyed_histograms

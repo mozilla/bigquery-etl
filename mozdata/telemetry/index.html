@@ -7940,6 +7940,72 @@ and to contain only one row per distinct <code>document_id</code> within a given
 <p><code>telemetry.applications</code></p>
 <p>None</p>
 <table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>app_channel</td>
+        <td>App Channel</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>app_description</td>
+        <td>App Description</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>app_id</td>
+        <td>App ID</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>app_name</td>
+        <td>App Name</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>bq_dataset_family</td>
+        <td>Dataset name ping data is stored in</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>canonical_app_name</td>
+        <td>Human readable app name</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>document_namespace</td>
+        <td>Document Namespace</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>notification_emails</td>
+        <td>Set of emails that will receive any app-related notifications</td>
+        <td>String</td>
+        <td>No</td>
+    </tr><tr>
+        <td>url</td>
+        <td>Repository URL</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>v1_name</td>
+        <td>V1 App Name</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>is_glean</td>
+        <td>Whether the application is using Glean</td>
+        <td>Boolean</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
+<table>
 <caption>Referenced Tables</caption>
     <tr>
         <th>Project</th>

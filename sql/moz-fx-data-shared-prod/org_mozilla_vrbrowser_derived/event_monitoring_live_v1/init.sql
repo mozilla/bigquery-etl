@@ -67,7 +67,7 @@ IF
     UNNEST(events) AS event,
     UNNEST(event.extra) AS event_extra
   WHERE
-    DATE(submission_timestamp) >= "2023-11-04"
+    DATE(submission_timestamp) >= "2023-11-05"
   GROUP BY
     submission_date,
     window_start,

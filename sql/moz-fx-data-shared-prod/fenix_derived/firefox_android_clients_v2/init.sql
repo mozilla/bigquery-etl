@@ -85,6 +85,7 @@ metrics_ping_base AS (
     NULLIF(fenix_metrics.metrics.string.metrics_adjust_campaign, "") AS adjust_campaign,
     NULLIF(fenix_metrics.metrics.string.metrics_adjust_creative, "") AS adjust_creative,
     NULLIF(fenix_metrics.metrics.string.metrics_adjust_network, "") AS adjust_network,
+    NULLIF(fenix_metrics.metrics.string.metrics_install_source, "") AS install_source,
   FROM
     fenix.metrics AS fenix_metrics
   WHERE
@@ -115,6 +116,9 @@ metrics_ping AS (
       LIMIT
         1
     )[SAFE_OFFSET(0)] AS adjust_info,
+    ARRAY_AGG(install_source IGNORE NULLS ORDER BY submission_timestamp ASC)[
+      SAFE_OFFSET(0)
+    ] AS install_source,
   FROM
     metrics_ping_base
   GROUP BY
@@ -134,6 +138,7 @@ _current AS (
     os_version,
     app_version,
     COALESCE(first_session.adjust_info, metrics.adjust_info) AS adjust_info,
+    metrics.install_source,
     STRUCT(
       IF(first_session.client_id IS NULL, FALSE, TRUE) AS is_reported_first_session_ping,
       IF(metrics.client_id IS NULL, FALSE, TRUE) AS is_reported_metrics_ping,
@@ -171,6 +176,7 @@ SELECT
   _current.app_version AS app_version,
   activations.is_activated,
   _current.adjust_info.*,
+  _current.install_source,
   STRUCT(
     _current.metadata.is_reported_first_session_ping AS reported_first_session_ping,
     _current.metadata.is_reported_metrics_ping AS reported_metrics_ping,
@@ -180,4 +186,5 @@ FROM
   _current
 LEFT JOIN
   activations
-USING(client_id)
+USING
+  (client_id)

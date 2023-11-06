@@ -97,6 +97,12 @@ fields:
     The type of source of a client installation.
 
 - mode: NULLABLE
+  name: install_source
+  type: STRING
+  description: |
+    This value is only sourced from the metrics ping.
+
+- mode: NULLABLE
   name: metadata
   type: RECORD
   description: |

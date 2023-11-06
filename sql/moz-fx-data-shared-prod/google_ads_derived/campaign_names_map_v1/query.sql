@@ -13,10 +13,11 @@ SELECT
   campaign_names.campaign_id,
   campaign_names.campaign_name,
   campaign_names.is_most_recent_record
-
 FROM
   campaign_names
-JOIN `moz-fx-data-shared`.google_ads_derived.accounts_v1 as accounts
-ON accounts.account_id = campaign_names.customer_id
+JOIN
+  `moz-fx-data-shared`.google_ads_derived.accounts_v1 AS accounts
+ON
+  accounts.account_id = campaign_names.customer_id
 WHERE
   campaign_names.is_most_recent_record

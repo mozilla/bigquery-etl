@@ -1,7 +1,7 @@
 WITH conversion_counts AS (
   SELECT
     date,
-    customer_id as account_id,
+    customer_id AS account_id,
     campaign_id,
     SUM(biddable_app_install_conversions) AS installs,
     SUM(biddable_app_post_install_conversions) AS conversions,

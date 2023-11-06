@@ -20,7 +20,7 @@ existing_data AS (
 SELECT
   client_id,
   sample_id,
-  mozfun.map.set_key(ad_click_history, @submission_date, ad_clicks)
+  mozfun.map.set_key(ad_click_history, @submission_date, ad_clicks) AS ad_click_history
 FROM
   existing_data
 FULL OUTER JOIN

@@ -11,9 +11,17 @@ from argparse import ArgumentParser
 
 from google.cloud import bigquery
 
+DEFAULT_PROJECTS = [
+    "mozdata",
+    "moz-fx-data-shared-prod",
+    "moz-fx-data-marketing-prod",
+]
+
 parser = ArgumentParser(description=__doc__)
 parser.add_argument("--date", required=True)  # expect string with format yyyy-mm-dd
 parser.add_argument("--project", default="moz-fx-data-shared-prod")
+# projects queries were run from that access table
+parser.add_argument("--source_projects", nargs="+", default=DEFAULT_PROJECTS)
 parser.add_argument("--destination_project", default="moz-fx-data-shared-prod")
 parser.add_argument("--destination_dataset", default="monitoring_derived")
 parser.add_argument("--destination_table", default="bigquery_usage_v2")
@@ -121,11 +129,13 @@ def main():
     client = bigquery.Client(project)
     client.delete_table(destination_table, not_found_ok=True)
 
-    query = create_query(args.date, project)
-    job_config = bigquery.QueryJobConfig(
-        destination=destination_table, write_disposition="WRITE_APPEND"
-    )
-    client.query(query, job_config=job_config).result()
+    for project in args.source_projects:
+        client = bigquery.Client(project)
+        query = create_query(args.date, project)
+        job_config = bigquery.QueryJobConfig(
+            destination=destination_table, write_disposition="WRITE_APPEND"
+        )
+        client.query(query, job_config=job_config).result()
 
 
 if __name__ == "__main__":

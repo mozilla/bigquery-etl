@@ -70,17 +70,7 @@ def _parse_check_output(output: str) -> str:
 @click.group(
     help="""
         Commands for managing and running bqetl data checks.
-
-        ––––––––––––––––––––––––––––––––––––––––––––––
-
-        IN ACTIVE DEVELOPMENT
-
-        The current progress can be found under:
-
-        \thttps://mozilla-hub.atlassian.net/browse/DENG-919
-
-        ––––––––––––––––––––––––––––––––––––––––––––––
-        """
+    """
 )
 @click.pass_context
 def check(ctx):

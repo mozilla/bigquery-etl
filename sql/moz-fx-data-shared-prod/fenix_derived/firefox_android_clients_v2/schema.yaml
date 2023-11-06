@@ -61,6 +61,12 @@ fields:
     App display version for this client installation.
 
 - mode: NULLABLE
+  name: locale
+  type: STRING
+  description: |
+    Client's initial locale.
+
+- mode: NULLABLE
   name: is_activated
   type: BOOLEAN
   description: |

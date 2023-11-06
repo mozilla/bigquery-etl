@@ -17,7 +17,11 @@ WITH first_seen AS (
   FROM
     fenix.baseline_clients_first_seen
   WHERE
-    submission_date = @submission_date
+    {% if is_init() %}
+      submission_date < CURRENT_DATE
+    {% else %}
+      submission_date = @submission_date
+    {% endif %}
     AND client_id IS NOT NULL
 ),
 activations AS (
@@ -27,7 +31,11 @@ activations AS (
   FROM
     fenix.new_profile_activation
   WHERE
-    submission_date = @submission_date
+    {% if is_init() %}
+      submission_date < CURRENT_DATE
+    {% else %}
+      submission_date = @submission_date
+    {% endif %}
 ),
 -- Find earliest data per client from the first_session ping.
 first_session_ping_base AS (
@@ -42,7 +50,11 @@ first_session_ping_base AS (
   FROM
     fenix.first_session
   WHERE
-    DATE(submission_timestamp) = @submission_date
+    {% if is_init() %}
+      DATE(submission_timestamp) < CURRENT_DATE
+    {% else %}
+      DATE(submission_timestamp) = @submission_date
+    {% endif %}
     AND client_info.client_id IS NOT NULL
 ),
 first_session_ping AS (
@@ -89,7 +101,11 @@ metrics_ping_base AS (
   FROM
     fenix.metrics AS fenix_metrics
   WHERE
-    DATE(submission_timestamp) = @submission_date
+    {% if is_init() %}
+      DATE(submission_timestamp) < CURRENT_DATE
+    {% else %}
+      DATE(submission_timestamp) = @submission_date
+    {% endif %}
     AND client_info.client_id IS NOT NULL
 ),
 metrics_ping AS (
@@ -137,6 +153,7 @@ _current AS (
     device_model,
     os_version,
     app_version,
+    first_seen.locale,
     COALESCE(first_session.adjust_info, metrics.adjust_info) AS adjust_info,
     metrics.install_source,
     STRUCT(
@@ -183,6 +200,7 @@ SELECT
   COALESCE(_previous.device_model, _current.device_model) AS device_model,
   COALESCE(_previous.os_version, _current.os_version) AS os_version,
   COALESCE(_previous.app_version, _current.app_version) AS app_version,
+  COALESCE(_previous.locale, _current.locale) AS locale,
   activations.is_activated,
   -- below is to avoid mix and matching different adjust attributes
   -- from different records. This way we always treat them as a single "unit"

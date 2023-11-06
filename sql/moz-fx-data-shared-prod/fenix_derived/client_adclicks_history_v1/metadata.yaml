@@ -18,6 +18,7 @@ labels:
   owner1: frank@mozilla.com
 scheduling:
   dag_name: bqetl_org_mozilla_firefox_derived
+  date_partition_parameter: null
 bigquery:
   clustering:
     fields: [sample_id]

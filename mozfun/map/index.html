@@ -2960,11 +2960,11 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#mode_last-udf" class="md-nav__link">
-    mode_last (UDF)
+  <a href="#get_key_with_null-udf" class="md-nav__link">
+    get_key_with_null (UDF)
   </a>
   
-    <nav class="md-nav" aria-label="mode_last (UDF)">
+    <nav class="md-nav" aria-label="get_key_with_null (UDF)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -2980,11 +2980,11 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#get_key_with_null-udf" class="md-nav__link">
-    get_key_with_null (UDF)
+  <a href="#mode_last-udf" class="md-nav__link">
+    mode_last (UDF)
   </a>
   
-    <nav class="md-nav" aria-label="get_key_with_null (UDF)">
+    <nav class="md-nav" aria-label="mode_last (UDF)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3409,11 +3409,11 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#mode_last-udf" class="md-nav__link">
-    mode_last (UDF)
+  <a href="#get_key_with_null-udf" class="md-nav__link">
+    get_key_with_null (UDF)
   </a>
   
-    <nav class="md-nav" aria-label="mode_last (UDF)">
+    <nav class="md-nav" aria-label="get_key_with_null (UDF)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3429,11 +3429,11 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#get_key_with_null-udf" class="md-nav__link">
-    get_key_with_null (UDF)
+  <a href="#mode_last-udf" class="md-nav__link">
+    mode_last (UDF)
   </a>
   
-    <nav class="md-nav" aria-label="get_key_with_null (UDF)">
+    <nav class="md-nav" aria-label="mode_last (UDF)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3472,20 +3472,13 @@
 
 <h1 id="map">map</h1>
 <p>Functions for working with arrays of key/value structs.</p>
-<h2 id="mode_last-udf">mode_last (UDF)</h2>
-<p>Combine entries from multiple maps, determine the value for each key using mozfun.stats.mode_last.</p>
-<h3 id="parameters">Parameters</h3>
-<p><strong>INPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>entries ANY TYPE
-</code></pre></div>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/map/mode_last">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/map/mode_last/metadata.yaml">Edit</a></p>
 <h2 id="get_key_with_null-udf">get_key_with_null (UDF)</h2>
 <p>Fetch the value associated with a given key from an array of
 key/value structs.</p>
 <p>Because map types aren't available in BigQuery, we model maps as arrays
 of structs instead, and this function provides map-like access to such fields.
 This version matches NULL keys as well.</p>
-<h3 id="parameters_1">Parameters</h3>
+<h3 id="parameters">Parameters</h3>
 <p><strong>INPUTS</strong></p>
 <div class="highlight"><pre><span></span><code>map ANY TYPE, k ANY TYPE
 </code></pre></div>
@@ -3493,6 +3486,13 @@ This version matches NULL keys as well.</p>
 <div class="highlight"><pre><span></span><code>STRING
 </code></pre></div>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/map/get_key_with_null">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/map/get_key_with_null/metadata.yaml">Edit</a></p>
+<h2 id="mode_last-udf">mode_last (UDF)</h2>
+<p>Combine entries from multiple maps, determine the value for each key using mozfun.stats.mode_last.</p>
+<h3 id="parameters_1">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>entries ANY TYPE
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/map/mode_last">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/map/mode_last/metadata.yaml">Edit</a></p>
 <h2 id="extract_keyed_scalar_sum-udf">extract_keyed_scalar_sum (UDF)</h2>
 <p>Sums all values in a keyed scalar.</p>
 <h1 id="extract-keyed-scalar-sum">Extract Keyed Scalar Sum</h1>

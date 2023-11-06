@@ -6,16 +6,16 @@ fields:
   type: STRING
   mode: NULLABLE
 - name: is_exposed_event
-  type: INTERGER
+  type: INTEGER
   mode: NULLABLE
 - name: is_opt_in_event
-  type: INTERGER
+  type: INTEGER
   mode: NULLABLE
 - name: is_surface_displayed
-  type: INTERGER
+  type: INTEGER
   mode: NULLABLE
 - name: is_engaged_with_sidebar
-  type: INTERGER
+  type: INTEGER
   mode: NULLABLE
 - name: experiments
   type: RECORD
@@ -51,5 +51,5 @@ fields:
   type: INTEGER
   mode: NULLABLE
 - name: os_version
-  type: INTEGER
+  type: NUMERIC
   mode: NULLABLE

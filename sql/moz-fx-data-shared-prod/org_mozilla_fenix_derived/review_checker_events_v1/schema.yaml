@@ -32,7 +32,7 @@ fields:
 - name: is_surface_displayed
   type: INTEGER
   mode: NULLABLE
-- name: is_surface_settings_expand_clicked
+- name: is_surface_expand_settings
   type: INTEGER
   mode: NULLABLE
 - name: is_surface_learn_more_clicked
@@ -41,13 +41,10 @@ fields:
 - name: is_surface_no_review_reliability_available
   type: INTEGER
   mode: NULLABLE
-- name: is_surface_not_now_clicked
-  type: INTEGER
-  mode: NULLABLE
 - name: is_surface_onboarding_displayed
   type: INTEGER
   mode: NULLABLE
-- name: is_surface_opt_in_clicked
+- name: surface_opt_in_accepted
   type: INTEGER
   mode: NULLABLE
 - name: is_surface_reactivated_button_clicked
@@ -56,7 +53,7 @@ fields:
 - name: is_surface_reanalyze_clicked
   type: INTEGER
   mode: NULLABLE
-- name: is_surface_show_more_reviews_button_clicked
+- name: is_surface_show_more_recent_reviews_clicked
   type: INTEGER
   mode: NULLABLE
 - name: is_surface_show_privacy_policy_clicked
@@ -105,5 +102,5 @@ fields:
   type: INTEGER
   mode: NULLABLE
 - name: app_version
-  type: INTEGER
+  type: NUMERIC
   mode: NULLABLE

@@ -41,13 +41,10 @@ fields:
 - name: is_surface_no_review_reliability_available
   type: INTEGER
   mode: NULLABLE
-- name: is_surface_not_now_clicked
-  type: INTEGER
-  mode: NULLABLE
 - name: is_surface_onboarding_displayed
   type: INTEGER
   mode: NULLABLE
-- name: is_surface_opt_in_clicked
+- name: is_surface_opt_in_accepted
   type: INTEGER
   mode: NULLABLE
 - name: is_surface_reactivated_button_clicked
@@ -111,5 +108,5 @@ fields:
   type: INTEGER
   mode: NULLABLE
 - name: app_version
-  type: INTEGER
+  type: NUMERIC
   mode: NULLABLE

@@ -1,0 +1,33 @@
+friendly_name: Client Adclicks History
+description: |-
+  Contains the full history of ad-clicks for each client.
+
+  This should only be used for the LTV project.
+  To calculate LTV for any client, we add together two things -
+  1. Predicted future Ad Clicks
+  2. Total historical ad clicks
+
+  This table provides 2.
+  The full history of each client's ad_clicks
+  are available as a MAP, keyed by date,
+  where the value is the number of ad clicks.
+owners:
+- frank@mozilla.com
+labels:
+  incremental: true
+  owner1: frank
+  dag: bqetl_org_mozilla_firefox_derived
+scheduling:
+  dag_name: bqetl_org_mozilla_firefox_derived
+  date_partition_parameter: null
+bigquery:
+  time_partitioning: null
+  clustering:
+    fields:
+    - sample_id
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

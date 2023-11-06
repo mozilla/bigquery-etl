@@ -40,6 +40,19 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
+    checks__fail_fenix_derived__client_adclicks_history__v1 = bigquery_dq_check(
+        task_id="checks__fail_fenix_derived__client_adclicks_history__v1",
+        source_table="client_adclicks_history_v1",
+        dataset_id="fenix_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=True,
+        owner="frank@mozilla.com",
+        email=["frank@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        task_concurrency=1,
+        retries=0,
+    )
+
     fenix_derived__attributable_clients__v1 = bigquery_etl_query(
         task_id="fenix_derived__attributable_clients__v1",
         destination_table="attributable_clients_v1",
@@ -74,6 +87,18 @@ with DAG(
         email=["frank@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+    )
+
+    fenix_derived__client_adclicks_history__v1 = bigquery_etl_query(
+        task_id="fenix_derived__client_adclicks_history__v1",
+        destination_table="client_adclicks_history_v1",
+        dataset_id="fenix_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="frank@mozilla.com",
+        email=["frank@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
     )
 
     fenix_derived__clients_yearly__v1 = bigquery_etl_query(
@@ -123,6 +148,10 @@ with DAG(
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
     )
 
+    checks__fail_fenix_derived__client_adclicks_history__v1.set_upstream(
+        fenix_derived__client_adclicks_history__v1
+    )
+
     wait_for_baseline_clients_daily = ExternalTaskSensor(
         task_id="wait_for_baseline_clients_daily",
         external_dag_id="copy_deduplicate",
@@ -159,6 +188,10 @@ with DAG(
     )
     fenix_derived__attributable_clients__v2.set_upstream(
         wait_for_search_derived__mobile_search_clients_daily__v1
+    )
+
+    fenix_derived__client_adclicks_history__v1.set_upstream(
+        fenix_derived__attributable_clients__v2
     )
 
     fenix_derived__clients_yearly__v1.set_upstream(wait_for_baseline_clients_daily)

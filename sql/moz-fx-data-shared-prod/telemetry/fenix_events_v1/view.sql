@@ -5,7 +5,7 @@ SELECT
     client_info.client_id AS device_id,
     CONCAT(document_id, CAST(event.timestamp AS STRING)) AS insert_id,
     CONCAT(event.category, '.', event.name) AS event_type,
-    TIMESTAMP_ADD(PARSE_TIMESTAMP('%Y-%m-%dT%H:%M%Ez', ping_info.start_time), INTERVAL event.timestamp SECOND) AS timestamp,
+    TIMESTAMP_ADD(mozfun.glean.parse_datetime(ping_info.start_time), INTERVAL event.timestamp SECOND) AS timestamp,
     client_info.app_display_version AS app_version,
     client_info.os AS platform,
     client_info.os AS os_name,

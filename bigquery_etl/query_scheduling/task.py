@@ -488,6 +488,7 @@ class Task:
         task.query_file_path = query_file
         task.is_dq_check = True
         task.is_dq_check_fail = is_check_fail
+        task.depends_on_past = False
         task.retries = 0
         task.depends_on_fivetran = []
         if task.is_dq_check_fail:

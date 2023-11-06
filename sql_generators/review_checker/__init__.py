@@ -2,8 +2,9 @@
 import os
 from enum import Enum
 from pathlib import Path
-import yaml
+
 import click
+import yaml
 from jinja2 import Environment, FileSystemLoader
 
 from bigquery_etl.cli.utils import use_cloud_function_option
@@ -41,11 +42,11 @@ def generate(target_project, output_dir, use_cloud_function):
     """
     with open(THIS_PATH / "templates/templating.yaml", "r") as f:
         template_config = yaml.safe_load(f)
-    
+
     output_dir = Path(output_dir) / target_project
     for query, args in template_config["queries"].items():
         template_query_dir = THIS_PATH / "templates" / query
-        env = Environment(loader=FileSystemLoader(str(THIS_PATH / "templates"/query)))
+        env = Environment(loader=FileSystemLoader(str(THIS_PATH / "templates" / query)))
         query_template = env.get_template("query.sql")
         metadata_template = "metadata.yaml"
         view_template = env.get_template("view.sql")

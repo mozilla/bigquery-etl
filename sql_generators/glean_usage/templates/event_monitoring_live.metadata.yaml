@@ -1,0 +1,6 @@
+friendly_name: Event Monitoring Live
+description: |-
+  View that combines live and aggregated event monitoring data for {{ dataset_id }}
+owners:
+- ascholtz@mozilla.com
+- akomar@mozilla.com

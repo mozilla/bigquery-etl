@@ -74,7 +74,7 @@ with DAG(
             task_id="bqetl_analytics_aggregations__wait_for_telemetry_derived__rolling_cohorts__v1",
             external_dag_id="bqetl_analytics_aggregations",
             external_task_id="wait_for_telemetry_derived__rolling_cohorts__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=84600)).isoformat() }}",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=81900)).isoformat() }}",
         )
 
         telemetry_derived__rolling_cohorts__v1_external.set_upstream(
@@ -105,7 +105,7 @@ with DAG(
             task_id="bqetl_analytics_aggregations__wait_for_telemetry_derived__unified_metrics__v1",
             external_dag_id="bqetl_analytics_aggregations",
             external_task_id="wait_for_telemetry_derived__unified_metrics__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=84600)).isoformat() }}",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=81900)).isoformat() }}",
         )
 
         ExternalTaskMarker(

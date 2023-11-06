@@ -144,7 +144,7 @@ with DAG(
             task_id="bqetl_analytics_aggregations__wait_for_firefox_android_clients",
             external_dag_id="bqetl_analytics_aggregations",
             external_task_id="wait_for_firefox_android_clients",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=81000)).isoformat() }}",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=78300)).isoformat() }}",
         )
 
         firefox_android_clients_external.set_upstream(firefox_android_clients)

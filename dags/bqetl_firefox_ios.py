@@ -64,7 +64,8 @@ with DAG(
         is_dq_check_fail=True,
         owner="kik@mozilla.com",
         email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=True,
+        depends_on_past=False,
+        task_concurrency=1,
         parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
     )
@@ -134,7 +135,7 @@ with DAG(
             "telemetry-alerts@mozilla.com",
             "vsabino@mozilla.com",
         ],
-        depends_on_past=True,
+        depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
     )
@@ -160,7 +161,8 @@ with DAG(
         is_dq_check_fail=False,
         owner="kik@mozilla.com",
         email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=True,
+        depends_on_past=False,
+        task_concurrency=1,
         parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
     )

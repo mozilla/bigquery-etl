@@ -78,7 +78,7 @@ SELECT
   app_version,
   attribution_campaign,
   attribution_content,
-  attribution_dl_source,
+  attribution_dlsource,
   attribution_experiment,
   attribution_medium,
   attribution_source,

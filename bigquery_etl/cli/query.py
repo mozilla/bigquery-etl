@@ -22,7 +22,7 @@ import click
 import yaml
 from dateutil.rrule import MONTHLY, rrule
 from google.cloud import bigquery
-from google.cloud.exceptions import NotFound, PreconditionFailed
+from google.cloud.exceptions import NotFound
 
 from ..backfill.utils import QUALIFIED_TABLE_NAME_RE, qualified_table_name_matching
 from ..cli import check
@@ -70,7 +70,7 @@ QUERY_NAME_RE = re.compile(r"(?P<dataset>[a-zA-z0-9_]+)\.(?P<name>[a-zA-z0-9_]+)
 VERSION_RE = re.compile(r"_v[0-9]+")
 DESTINATION_TABLE_RE = re.compile(r"^[a-zA-Z0-9_$]{0,1024}$")
 DEFAULT_DAG_NAME = "bqetl_default"
-DEFAULT_PARALLELISM = 10
+DEFAULT_INIT_PARALLELISM = 10
 
 
 @click.group(help="Commands for managing queries.")
@@ -1297,11 +1297,11 @@ def _initialize_in_parallel(
     "--dry-run/--no-dry-run",
     help="Dry run the initialization",
 )
+@parallelism_option(default=DEFAULT_INIT_PARALLELISM)
 @click.pass_context
-def initialize(ctx, name, sql_dir, project_id, dry_run):
+def initialize(ctx, name, sql_dir, project_id, dry_run, parallelism):
     """Create the destination table for the provided query."""
     client = bigquery.Client()
-    sample_ids = [""]
 
     if not is_authenticated():
         click.echo("Authentication required for creating tables.", err=True)
@@ -1340,36 +1340,51 @@ def initialize(ctx, name, sql_dir, project_id, dry_run):
             full_table_id = f"{project}.{dataset}.{destination_table}"
 
             try:
-                client.get_table(full_table_id)
-                raise PreconditionFailed(
-                    f"Table {full_table_id} already exists. The initialization process is terminated."
-                )
+                table = client.get_table(full_table_id)
+                if table.num_rows > 0:
+                    raise click.ClickException(
+                        f"Table {full_table_id} already exists and contains data. The initialization process is terminated."
+                    )
             except NotFound:
                 ctx.invoke(deploy, name=full_table_id, force=True)
 
-            if "@sample_id" in sql_content:
-                sample_ids = list(range(1, 100))
-
             arguments = [
                 "query",
+                "--use_legacy_sql=false",
                 "--format=none",
                 "--append_table",
+                "--noreplace",
             ]
             if dry_run:
                 arguments += ["--dry_run"]
 
-            _initialize_in_parallel(
-                project=project,
-                table=destination_table,
-                dataset=dataset,
-                query_file=query_file,
-                arguments=arguments,
-                parallelism=DEFAULT_PARALLELISM,
-                sample_ids=sample_ids,
-                addl_templates={
-                    "is_init": lambda: True,
-                },
-            )
+            if "@sample_id" in sql_content:
+                sample_ids = list(range(0, 100))
+
+                _initialize_in_parallel(
+                    project=project,
+                    table=destination_table,
+                    dataset=dataset,
+                    query_file=query_file,
+                    arguments=arguments,
+                    parallelism=parallelism,
+                    sample_ids=sample_ids,
+                    addl_templates={
+                        "is_init": lambda: True,
+                    },
+                )
+            else:
+                _run_query(
+                    query_files=[query_file],
+                    project_id=project,
+                    public_project_id=None,
+                    destination_table=destination_table,
+                    dataset_id=dataset,
+                    query_arguments=arguments,
+                    addl_templates={
+                        "is_init": lambda: True,
+                    },
+                )
         else:
             init_files = Path(query_file.parent).rglob("init.sql")
 
@@ -1546,7 +1561,7 @@ def schema():
 )
 @use_cloud_function_option
 @respect_dryrun_skip_option(default=True)
-@parallelism_option
+@parallelism_option()
 def update(
     name,
     sql_dir,
@@ -1925,7 +1940,7 @@ def _update_query_schema(
         + "Must be fully qualified (project.dataset.table)."
     ),
 )
-@parallelism_option
+@parallelism_option()
 @click.pass_context
 def deploy(
     ctx,

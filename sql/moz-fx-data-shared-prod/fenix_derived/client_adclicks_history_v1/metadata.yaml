@@ -20,6 +20,8 @@ labels:
 scheduling:
   dag_name: bqetl_org_mozilla_firefox_derived
   date_partition_parameter: null
+  parameters:
+  - submission_date:DATE:{{ds}}
 bigquery:
   time_partitioning: null
   clustering:

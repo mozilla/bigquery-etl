@@ -50,6 +50,7 @@ with DAG(
         email=["frank@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
+        parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
     )
 
@@ -99,6 +100,7 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
+        parameters=["submission_date:DATE:{{ds}}"],
     )
 
     fenix_derived__clients_yearly__v1 = bigquery_etl_query(

@@ -163,13 +163,16 @@ use_cloud_function_option = click.option(
     default=True,
 )
 
-parallelism_option = click.option(
-    "--parallelism",
-    "-p",
-    default=8,
-    type=int,
-    help="Number of threads for parallel processing",
-)
+
+def parallelism_option(default=8):
+    """Generate a parallelism option, with optional default."""
+    return click.option(
+        "--parallelism",
+        "-p",
+        default=default,
+        type=int,
+        help="Number of threads for parallel processing",
+    )
 
 
 def project_id_option(default=None, required=False):

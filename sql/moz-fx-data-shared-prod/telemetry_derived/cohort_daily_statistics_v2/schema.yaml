@@ -15,6 +15,9 @@ fields:
   name: attribution_content
   type: STRING
 - mode: NULLABLE
+  name: attribution_dlsource
+  type: STRING
+- mode: NULLABLE
   name: attribution_experiment
   type: STRING
 - mode: NULLABLE
@@ -82,4 +85,16 @@ fields:
   type: INTEGER
 - mode: NULLABLE
   name: num_clients_active_atleastonce_in_last_28_days
+  type: INTEGER
+- mode: NULLABLE
+  name: num_clients_repeat_first_month_users
+  type: INTEGER
+- mode: NULLABLE
+  name: num_clients_dau_active_atleastonce_in_last_7_days
+  type: INTEGER
+- mode: NULLABLE
+  name: num_clients_dau_active_atleastonce_in_last_28_days
+  type: INTEGER
+- mode: NULLABLE
+  name: num_clients_dau_repeat_first_month_users
   type: INTEGER

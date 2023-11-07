@@ -15,7 +15,7 @@ WITH submission_date_activity AS (
     days_seen_bits,
     (days_visited_1_uri_bits & days_interacted_bits)
 ),
--- Get all the cohorts that are still in range of the current day of activity (180 days)
+-- Get all the cohorts that are still in range of the current day of activity (196 days)
 cohorts_in_range AS (
   SELECT
     client_id,

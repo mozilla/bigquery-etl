@@ -20,9 +20,6 @@ fields:
 - name: is_address_bar_icon_displayed
   type: INTEGER
   mode: NULLABLE
-- name: is_product_page_visits
-  type: INTEGER
-  mode: NULLABLE
 - name: is_surface_analyze_reviews_none_available_clicked
   type: INTEGER
   mode: NULLABLE

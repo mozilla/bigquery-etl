@@ -35,7 +35,7 @@ WITH shopping_metrics AS (
     sample_id,
     ANY_VALUE(ping_info.experiments) AS experiments,
   FROM
-    `moz-fx-data-shared-prod.org_mozilla_fenix_stable.metrics_v1` AS m
+    `moz-fx-data-shared-prod.org_mozilla_fenix_stable.metrics_v1`
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -57,7 +57,7 @@ active AS (
   FROM
     `moz-fx-data-shared-prod.fenix.baseline`
   WHERE
-    DATE(submission_timestamp) > DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY)
+    DATE(submission_timestamp) = @submission_date
   GROUP BY
     client_info.client_id,
     submission_date
@@ -69,7 +69,7 @@ search AS (
     search_count AS sap,
     ad_click
   FROM
-    `mozdata.search.mobile_search_clients_engines_sources_daily`
+    `moz-fx-data-shared-prod.search.mobile_search_clients_engines_sources_daily`
   WHERE
     submission_date = @submission_date
     AND normalized_app_name = "Fenix"
@@ -104,4 +104,4 @@ joined_data AS (
 SELECT
   *
 FROM
-  joined_data;
+  joined_data

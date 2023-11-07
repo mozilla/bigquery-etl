@@ -6,7 +6,6 @@ SELECT
   MAX(CASE WHEN name = 'address_bar_feature_callout_displayed' THEN 1 ELSE 0 END) is_address_bar_feature_callout_displayed,
   MAX(CASE WHEN name = 'address_bar_icon_clicked' THEN 1 ELSE 0 END) is_address_bar_icon_clicked,
   MAX(CASE WHEN name = 'address_bar_icon_displayed' THEN 1 ELSE 0 END) is_address_bar_icon_displayed,
-  MAX(CASE WHEN name = 'product_page_visits' THEN 1 ELSE 0 END) is_product_page_visits,
   MAX(CASE WHEN name = 'surface_analyze_reviews_none_available_clicked' THEN 1 ELSE 0 END) is_surface_analyze_reviews_none_available_clicked,
   MAX(CASE WHEN name = 'surface_closed' THEN 1 ELSE 0 END) is_surface_closed,
   MAX(CASE WHEN name = 'surface_displayed' THEN 1 ELSE 0 END) is_surface_displayed,

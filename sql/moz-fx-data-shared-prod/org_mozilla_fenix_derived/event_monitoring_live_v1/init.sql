@@ -60,14 +60,34 @@ IF
     'Firefox for Android' AS normalized_app_name,
     normalized_channel,
     client_info.app_display_version AS version,
+      -- Access experiment information.
+      -- Additional iteration is necessary to aggregate total event count across experiments
+      -- which is denoted with "*".
+      -- Some clients are enrolled in multiple experiments, so simply summing up the totals
+      -- across all the experiments would double count events.
+    CASE
+      experiment_index
+      WHEN ARRAY_LENGTH(ping_info.experiments)
+        THEN "*"
+      ELSE ping_info.experiments[SAFE_OFFSET(experiment_index)].key
+    END AS experiment,
+    CASE
+      experiment_index
+      WHEN ARRAY_LENGTH(ping_info.experiments)
+        THEN "*"
+      ELSE ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch
+    END AS experiment_branch,
     COUNT(*) AS total_events
   FROM
     `moz-fx-data-shared-prod.org_mozilla_fenix_live.events_v1`
   CROSS JOIN
     UNNEST(events) AS event,
-    UNNEST(event.extra) AS event_extra
+    UNNEST(event.extra) AS event_extra,
+      -- Iterator for accessing experiments.
+      -- Add one more for aggregating events across all experiments
+    UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   WHERE
-    DATE(submission_timestamp) >= "2023-11-06"
+    DATE(submission_timestamp) >= "2023-11-07"
   GROUP BY
     submission_date,
     window_start,
@@ -78,4 +98,6 @@ IF
     country,
     normalized_app_name,
     normalized_channel,
-    version
+    version,
+    experiment,
+    experiment_branch

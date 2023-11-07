@@ -4860,6 +4860,32 @@ where the value is the number of ad clicks.</p>
 </li>
 </ul>
 <table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>client_id</td>
+        <td>Unique ID for the client installation.</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>sample_id</td>
+        <td>Sample ID to limit query results during an analysis.</td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>ad_click_history</td>
+        <td>History of ad_clicks for a user, by submission_date</td>
+        <td>Record</td>
+        <td>No</td>
+    </tr>
+</table>
+
+<table>
 <caption>Referenced Tables</caption>
     <tr>
         <th>Project</th>

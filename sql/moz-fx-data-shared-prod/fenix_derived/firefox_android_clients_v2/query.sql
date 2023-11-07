@@ -1,5 +1,18 @@
 -- Query first observations for Firefox Android Clients.
-WITH first_seen AS (
+WITH channel_rank AS (
+  SELECT
+    "release" AS normalized_channel,
+    1 AS channel_rank
+  UNION ALL
+  SELECT
+    "beta",
+    2,
+  UNION ALL
+  SELECT
+    "nightly",
+    3,
+),
+first_seen AS (
   SELECT
     client_id,
     submission_date,
@@ -16,13 +29,27 @@ WITH first_seen AS (
     locale,
   FROM
     fenix.baseline_clients_first_seen
+  LEFT JOIN
+    channel_rank
+  USING
+    (normalized_channel)
   WHERE
     {% if is_init() %}
-      submission_date < CURRENT_DATE
+      submission_date >= "2020-01-01"
     {% else %}
       submission_date = @submission_date
     {% endif %}
     AND client_id IS NOT NULL
+  -- There are some cases where the same client_id has entries for multiple channels on the same day resulting in duplicate entries in the resulting table (undesired).
+  -- This is to make sure we only grab 1 entry per client in such cases and priority "release" channel entries over "beta" over "nightly".
+  QUALIFY
+    ROW_NUMBER() OVER (
+      PARTITION BY
+        client_id
+      ORDER BY
+        channel_rank.channel_rank ASC,
+        first_run_datetime ASC
+    ) = 1
 ),
 activations AS (
   SELECT
@@ -32,7 +59,7 @@ activations AS (
     fenix.new_profile_activation
   WHERE
     {% if is_init() %}
-      submission_date < CURRENT_DATE
+      submission_date >= "2020-01-01"
     {% else %}
       submission_date = @submission_date
     {% endif %}
@@ -51,7 +78,7 @@ first_session_ping_base AS (
     fenix.first_session
   WHERE
     {% if is_init() %}
-      DATE(submission_timestamp) < CURRENT_DATE
+      DATE(submission_timestamp) >= "2020-01-01"
     {% else %}
       DATE(submission_timestamp) = @submission_date
     {% endif %}
@@ -102,7 +129,7 @@ metrics_ping_base AS (
     fenix.metrics AS fenix_metrics
   WHERE
     {% if is_init() %}
-      DATE(submission_timestamp) < CURRENT_DATE
+      DATE(submission_timestamp) >= "2020-01-01"
     {% else %}
       DATE(submission_timestamp) = @submission_date
     {% endif %}
@@ -245,3 +272,10 @@ LEFT JOIN
   activations
 USING
   (client_id)
+  {% if is_init() %}
+  -- we have to do additional deduplication when initializing the table in case upstream tables have multiple entries
+  -- for client with different first_seen_dates to avoid the same client being added to the table twice.
+  -- For incremental workload this is achieved by relying on _previous CTE.
+    QUALIFY
+      ROW_NUMBER() OVER (PARTITION BY client_id ORDER BY first_seen_date ASC) = 1
+  {% endif %}

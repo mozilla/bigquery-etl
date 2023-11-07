@@ -340,8 +340,6 @@ def schedule(name, sql_dir, project_id, dag, depends_on_past, task_name):
 
     dags = DagCollection.from_file(sql_dir.parent / "dags.yaml")
 
-    dags_to_be_generated = set()
-
     for query_file in query_files:
         try:
             metadata = Metadata.of_query_file(query_file)
@@ -382,21 +380,11 @@ def schedule(name, sql_dir, project_id, dag, depends_on_past, task_name):
 
             # update dags since new task has been added
             dags = get_dags(None, sql_dir.parent / "dags.yaml", sql_dir=sql_dir)
-            dags_to_be_generated.add(dag)
         else:
             dags = get_dags(None, sql_dir.parent / "dags.yaml", sql_dir=sql_dir)
             if metadata.scheduling == {}:
                 click.echo(f"No scheduling information for: {query_file}", err=True)
                 sys.exit(1)
-            else:
-                dags_to_be_generated.add(metadata.scheduling["dag_name"])
-
-    # re-run DAG generation for the affected DAG
-    for d in dags_to_be_generated:
-        existing_dag = dags.dag_by_name(d)
-        logging.info(f"Running DAG generation for {existing_dag.name}")
-        output_dir = sql_dir.parent / "dags"
-        dags.dag_to_airflow(output_dir, existing_dag)
 
 
 @query.command(

@@ -26,6 +26,12 @@ fields:
 - name: version
   type: STRING
   mode: NULLABLE
+- name: experiment
+  type: STRING
+  mode: NULLABLE
+- name: experiment_branch
+  type: STRING
+  mode: NULLABLE
 - name: total_events
   type: INTEGER
   mode: NULLABLE

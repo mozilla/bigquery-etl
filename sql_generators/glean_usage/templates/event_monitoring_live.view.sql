@@ -13,6 +13,8 @@ SELECT
   normalized_app_name,
   normalized_channel,
   version,
+  experiment,
+  experiment_branch,
   total_events
 FROM 
   `{{ project_id }}.{{ dataset['bq_dataset_family'] }}_derived.event_monitoring_live_v1`
@@ -32,6 +34,8 @@ SELECT
   normalized_app_name,
   normalized_channel,
   version,
+  experiment,
+  experiment_branch,
   total_events
 FROM 
   `{{ project_id }}.{{ target_table }}`

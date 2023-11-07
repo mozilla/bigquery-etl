@@ -25,9 +25,59 @@ parser.add_argument("--source_projects", nargs="+", default=DEFAULT_PROJECTS)
 parser.add_argument("--destination_project", default="moz-fx-data-shared-prod")
 parser.add_argument("--destination_dataset", default="monitoring_derived")
 parser.add_argument("--destination_table", default="bigquery_usage_v2")
+parser.add_argument("--tmp_table", default="bigquery_jobs_by_project_tmp")
 
 
-def create_query(date, project):
+def create_jobs_by_org_tmp_table(date, project, source_projects, tmp_table_name):
+    """Create temp table to capture data from INFORMATION_SCHEMA.JOBS_BY_PROJECT."""
+    # remove old table in case of re-run
+    client = bigquery.Client(project)
+    client.delete_table(tmp_table_name, not_found_ok=True)
+
+    tmp_table = bigquery.Table(tmp_table_name)
+    tmp_table.schema = (
+        bigquery.SchemaField("source_project", "STRING"),
+        bigquery.SchemaField("date", "DATE"),
+        bigquery.SchemaField("job_id", "STRING"),
+        bigquery.SchemaField("reference_project_id", "STRING"),
+        bigquery.SchemaField("reference_dataset_id", "STRING"),
+        bigquery.SchemaField("reference_table_id", "STRING"),
+        bigquery.SchemaField("user_email", "STRING"),
+        bigquery.SchemaField("username", "STRING"),
+        bigquery.SchemaField("query_id", "STRING"),
+    )
+    client.create_table(tmp_table)
+
+    for source_project in source_projects:
+        query = f"""jobs_by_project AS (
+            SELECT
+              "{source_project}" AS source_project,
+              date(creation_time) as creation_date,
+              job_id,
+              referenced_tables.project_id AS reference_project_id,
+              referenced_tables.dataset_id AS reference_dataset_id,
+              referenced_tables.table_id AS reference_table_id,
+              user_email,
+              REGEXP_EXTRACT(query, r'Username: (.*?),') AS username,
+              REGEXP_EXTRACT(query, r'Query ID: (\\w+),') AS query_id,
+            FROM
+              `{source_project}.region-us.INFORMATION_SCHEMA.JOBS_BY_PROJECT` jp
+            LEFT JOIN
+              UNNEST(referenced_tables) AS referenced_tables
+            )
+
+          """
+    try:
+        job_config = bigquery.QueryJobConfig(
+            destination=tmp_table_name, write_disposition="WRITE_APPEND"
+        )
+        client.query(query, job_config=job_config).result()
+
+    except Exception as e:
+        print(f"Error querying dataset {source_project}: {e}")
+
+
+def create_query(date, tmp_table_name):
     """Create query with filter for source projects."""
     return f"""
         WITH jobs_by_org AS (
@@ -62,22 +112,6 @@ def create_query(date, project):
       LEFT JOIN
         UNNEST(referenced_tables) AS referenced_tables
       ),
-  jobs_by_project AS (
-      SELECT
-        jp.project_id AS source_project,
-        date(creation_time) as creation_date,
-        job_id,
-        referenced_tables.project_id AS reference_project_id,
-        referenced_tables.dataset_id AS reference_dataset_id,
-        referenced_tables.table_id AS reference_table_id,
-        user_email,
-        REGEXP_EXTRACT(query, r'Username: (.*?),') AS username,
-        REGEXP_EXTRACT(query, r'Query ID: (\\w+),') AS query_id,
-      FROM
-        `moz-fx-data-shared-prod.region-us.INFORMATION_SCHEMA.JOBS_BY_PROJECT` jp
-      LEFT JOIN
-        UNNEST(referenced_tables) AS referenced_tables
-      )
       SELECT
         jo.source_project,
         jo.creation_date,
@@ -106,7 +140,7 @@ def create_query(date, project):
         jo.resource_warning,
         DATE('{date}') AS submission_date,
       FROM jobs_by_org jo
-      LEFT JOIN jobs_by_project jp
+      LEFT JOIN {tmp_table_name} jp
       USING(source_project,
           creation_date,
           job_id,
@@ -124,18 +158,23 @@ def main():
 
     partition = args.date.replace("-", "")
     destination_table = f"{args.destination_project}.{args.destination_dataset}.{args.destination_table}${partition}"
-
+    tmp_table_name = f"{args.project}.{args.destination_dataset}.{args.tmp_table}"
     # remove old partition in case of re-run
     client = bigquery.Client(project)
     client.delete_table(destination_table, not_found_ok=True)
 
-    for project in args.source_projects:
-        client = bigquery.Client(project)
-        query = create_query(args.date, project)
-        job_config = bigquery.QueryJobConfig(
-            destination=destination_table, write_disposition="WRITE_APPEND"
-        )
-        client.query(query, job_config=job_config).result()
+    # for project in args.source_projects:
+    create_jobs_by_org_tmp_table(
+        args.date, project, args.source_projects, tmp_table_name
+    )
+    client = bigquery.Client(project)
+    query = create_query(args.date, tmp_table_name)
+    job_config = bigquery.QueryJobConfig(
+        destination=destination_table, write_disposition="WRITE_APPEND"
+    )
+    client.query(query, job_config=job_config).result()
+
+    client.delete_table(tmp_table_name, not_found_ok=True)
 
 
 if __name__ == "__main__":

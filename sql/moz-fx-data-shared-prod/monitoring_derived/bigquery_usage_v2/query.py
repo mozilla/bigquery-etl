@@ -25,10 +25,10 @@ parser.add_argument("--source_projects", nargs="+", default=DEFAULT_PROJECTS)
 parser.add_argument("--destination_project", default="moz-fx-data-shared-prod")
 parser.add_argument("--destination_dataset", default="monitoring_derived")
 parser.add_argument("--destination_table", default="bigquery_usage_v2")
-parser.add_argument("--tmp_table", default="bigquery_jobs_by_project_tmp")
+parser.add_argument("--tmp_table", default="bq_jobs_by_project_tmp")
 
 
-def create_jobs_by_org_tmp_table(date, project, source_projects, tmp_table_name):
+def create_jobs_by_org_tmp_table(project, source_projects, tmp_table_name):
     """Create temp table to capture data from INFORMATION_SCHEMA.JOBS_BY_PROJECT."""
     # remove old table in case of re-run
     client = bigquery.Client(project)
@@ -37,7 +37,7 @@ def create_jobs_by_org_tmp_table(date, project, source_projects, tmp_table_name)
     tmp_table = bigquery.Table(tmp_table_name)
     tmp_table.schema = (
         bigquery.SchemaField("source_project", "STRING"),
-        bigquery.SchemaField("date", "DATE"),
+        bigquery.SchemaField("creation_date", "DATE"),
         bigquery.SchemaField("job_id", "STRING"),
         bigquery.SchemaField("reference_project_id", "STRING"),
         bigquery.SchemaField("reference_dataset_id", "STRING"),
@@ -164,9 +164,7 @@ def main():
     client.delete_table(destination_table, not_found_ok=True)
 
     # for project in args.source_projects:
-    create_jobs_by_org_tmp_table(
-        args.date, project, args.source_projects, tmp_table_name
-    )
+    create_jobs_by_org_tmp_table(project, args.source_projects, tmp_table_name)
     client = bigquery.Client(project)
     query = create_query(args.date, tmp_table_name)
     job_config = bigquery.QueryJobConfig(

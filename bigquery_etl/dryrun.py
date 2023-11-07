@@ -436,7 +436,7 @@ class DryRun:
             if not existing_schema.equal(query_schema):
                 click.echo(
                     click.style(
-                        f"Schema defined in {existing_schema_path} "
+                        f"ERROR: Schema defined in {existing_schema_path} "
                         f"incompatible with query {query_file_path}",
                         fg="red",
                     ),

@@ -1,0 +1,5 @@
+description: |
+  Set a key to a value in a map.
+  If you call map.get_key after setting,
+  the value you set will be returned.
+friendly_name: Set Key

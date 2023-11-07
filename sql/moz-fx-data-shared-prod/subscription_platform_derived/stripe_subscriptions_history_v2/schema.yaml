@@ -452,6 +452,23 @@ fields:
     type: TIMESTAMP
     mode: NULLABLE
     description: If the subscription has a trial, the start time of that trial.
+  - name: payment_provider
+    type: STRING
+    mode: NULLABLE
+    description: Payment provider used for the subscription ("Stripe" or "PayPal").
+  - name: country_code
+    type: STRING
+    mode: NULLABLE
+    description: Two-letter code for the country the subscription is considered to
+      be in (ISO 3166-1 alpha-2).
+  - name: has_refunds
+    type: BOOLEAN
+    mode: NULLABLE
+    description: Whether refunds have been issued for the subscription.
+  - name: has_fraudulent_charges
+    type: BOOLEAN
+    mode: NULLABLE
+    description: Whether the subscription has charges identified as fraudulent.
 - name: customer
   type: RECORD
   mode: NULLABLE

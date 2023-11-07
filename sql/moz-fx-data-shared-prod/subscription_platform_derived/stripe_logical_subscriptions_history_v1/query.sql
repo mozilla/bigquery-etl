@@ -51,57 +51,6 @@ plan_services AS (
     plan_id IN UNNEST(tier.stripe_plan_ids)
   GROUP BY
     plan_id
-),
-paypal_subscriptions AS (
-  SELECT DISTINCT
-    subscription_id
-  FROM
-    `moz-fx-data-shared-prod.stripe_external.invoice_v1`
-  WHERE
-    JSON_VALUE(metadata, '$.paypalTransactionId') IS NOT NULL
-),
-subscriptions_history_charge_summaries AS (
-  SELECT
-    history.id AS subscriptions_history_id,
-    ARRAY_AGG(
-      cards.country IGNORE NULLS
-      ORDER BY
-        -- Prefer charges that succeeded.
-        IF(charges.status = 'succeeded', 1, 2),
-        charges.created DESC
-      LIMIT
-        1
-    )[SAFE_ORDINAL(1)] AS latest_card_country,
-    LOGICAL_OR(refunds.status = 'succeeded') AS has_refunds,
-    LOGICAL_OR(
-      charges.fraud_details_user_report = 'fraudulent'
-      OR (
-        charges.fraud_details_stripe_report = 'fraudulent'
-        AND charges.fraud_details_user_report IS DISTINCT FROM 'safe'
-      )
-      OR (refunds.reason = 'fraudulent' AND refunds.status = 'succeeded')
-    ) AS has_fraudulent_charges
-  FROM
-    `moz-fx-data-shared-prod.stripe_external.charge_v1` AS charges
-  JOIN
-    `moz-fx-data-shared-prod.stripe_external.invoice_v1` AS invoices
-  ON
-    charges.invoice_id = invoices.id
-  JOIN
-    active_subscriptions_history AS history
-  ON
-    invoices.subscription_id = history.subscription.id
-    AND charges.created < history.valid_to
-  LEFT JOIN
-    `moz-fx-data-shared-prod.stripe_external.card_v1` AS cards
-  ON
-    charges.card_id = cards.id
-  LEFT JOIN
-    `moz-fx-data-shared-prod.stripe_external.refund_v1` AS refunds
-  ON
-    charges.id = refunds.charge_id
-  GROUP BY
-    subscriptions_history_id
 )
 SELECT
   CONCAT(
@@ -123,31 +72,14 @@ SELECT
       FORMAT_TIMESTAMP('%FT%H:%M:%E6S', history.subscription_first_active_at)
     ) AS id,
     'Stripe' AS provider,
-    IF(paypal_subscriptions.subscription_id IS NOT NULL, 'PayPal', 'Stripe') AS payment_provider,
+    history.subscription.payment_provider,
     history.subscription.id AS provider_subscription_id,
     subscription_item.id AS provider_subscription_item_id,
     history.subscription.created AS provider_subscription_created_at,
     history.subscription.customer_id AS provider_customer_id,
     history.customer.metadata.userid AS mozilla_account_id,
     history.customer.metadata.userid_sha256 AS mozilla_account_id_sha256,
-    CASE
-      -- Use the same address hierarchy as Stripe Tax after we enabled Stripe Tax (FXA-5457).
-      -- https://stripe.com/docs/tax/customer-locations#address-hierarchy
-      WHEN DATE(history.valid_to) >= '2022-12-01'
-        AND (
-          DATE(history.subscription.ended_at) >= '2022-12-01'
-          OR history.subscription.ended_at IS NULL
-        )
-        THEN COALESCE(
-            NULLIF(history.customer.shipping.address.country, ''),
-            NULLIF(history.customer.address.country, ''),
-            charge_summaries.latest_card_country
-          )
-      -- SubPlat copies the PayPal billing agreement country to the customer's address.
-      WHEN paypal_subscriptions.subscription_id IS NOT NULL
-        THEN NULLIF(history.customer.address.country, '')
-      ELSE charge_summaries.latest_card_country
-    END AS country_code,
+    history.subscription.country_code,
     plan_services.services,
     subscription_item.plan.product.id AS provider_product_id,
     subscription_item.plan.product.name AS product_name,
@@ -190,8 +122,8 @@ SELECT
     ) AS auto_renew_disabled_at,
     -- TODO: promotion_codes
     -- TODO: promotion_discounts_amount
-    COALESCE(charge_summaries.has_refunds, FALSE) AS has_refunds,
-    COALESCE(charge_summaries.has_fraudulent_charges, FALSE) AS has_fraudulent_charges
+    history.subscription.has_refunds,
+    history.subscription.has_fraudulent_charges
   ) AS subscription
 FROM
   active_subscriptions_history AS history
@@ -201,11 +133,3 @@ LEFT JOIN
   plan_services
 ON
   subscription_item.plan.id = plan_services.plan_id
-LEFT JOIN
-  paypal_subscriptions
-ON
-  history.subscription.id = paypal_subscriptions.subscription_id
-LEFT JOIN
-  subscriptions_history_charge_summaries AS charge_summaries
-ON
-  history.id = charge_summaries.subscriptions_history_id

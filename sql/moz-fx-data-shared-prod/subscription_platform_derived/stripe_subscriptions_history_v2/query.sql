@@ -1,4 +1,4 @@
-WITH subscriptions_history AS (
+WITH original_subscriptions_history AS (
   SELECT
     id,
     `timestamp` AS valid_from,
@@ -10,47 +10,142 @@ WITH subscriptions_history AS (
     subscription
   FROM
     `moz-fx-data-shared-prod`.subscription_platform_derived.stripe_subscriptions_revised_changelog_v1
+),
+subscriptions_history AS (
+  -- Include customers as they existed at the start of each subscription history period.
+  SELECT
+    subscriptions_history.id,
+    subscriptions_history.valid_from,
+    IF(
+      customers_history.valid_to IS NOT NULL,
+      LEAST(subscriptions_history.valid_to, customers_history.valid_to),
+      subscriptions_history.valid_to
+    ) AS valid_to,
+    subscriptions_history.stripe_subscriptions_revised_changelog_id,
+    customers_history.stripe_customers_revised_changelog_id,
+    subscriptions_history.subscription,
+    customers_history.customer
+  FROM
+    original_subscriptions_history AS subscriptions_history
+  LEFT JOIN
+    `moz-fx-data-shared-prod`.subscription_platform_derived.stripe_customers_history_v1 AS customers_history
+  ON
+    subscriptions_history.subscription.customer_id = customers_history.customer.id
+    AND subscriptions_history.valid_from >= customers_history.valid_from
+    AND subscriptions_history.valid_from < customers_history.valid_to
+  UNION ALL
+  -- Include customer changes during the subscription history periods.
+  SELECT
+    CONCAT(
+      subscriptions_history.subscription.id,
+      '-',
+      FORMAT_TIMESTAMP('%FT%H:%M:%E6S', customers_history.valid_from)
+    ) AS id,
+    customers_history.valid_from,
+    LEAST(subscriptions_history.valid_to, customers_history.valid_to) AS valid_to,
+    subscriptions_history.stripe_subscriptions_revised_changelog_id,
+    customers_history.stripe_customers_revised_changelog_id,
+    subscriptions_history.subscription,
+    customers_history.customer
+  FROM
+    original_subscriptions_history AS subscriptions_history
+  JOIN
+    `moz-fx-data-shared-prod`.subscription_platform_derived.stripe_customers_history_v1 AS customers_history
+  ON
+    subscriptions_history.subscription.customer_id = customers_history.customer.id
+    AND subscriptions_history.valid_from < customers_history.valid_from
+    AND subscriptions_history.valid_to > customers_history.valid_from
+),
+paypal_subscriptions AS (
+  SELECT DISTINCT
+    subscription_id
+  FROM
+    `moz-fx-data-shared-prod.stripe_external.invoice_v1`
+  WHERE
+    JSON_VALUE(metadata, '$.paypalTransactionId') IS NOT NULL
+),
+subscriptions_history_charge_summaries AS (
+  SELECT
+    history.id AS subscriptions_history_id,
+    ARRAY_AGG(
+      cards.country IGNORE NULLS
+      ORDER BY
+        -- Prefer charges that succeeded.
+        IF(charges.status = 'succeeded', 1, 2),
+        charges.created DESC
+      LIMIT
+        1
+    )[SAFE_ORDINAL(1)] AS latest_card_country,
+    LOGICAL_OR(refunds.status = 'succeeded') AS has_refunds,
+    LOGICAL_OR(
+      charges.fraud_details_user_report = 'fraudulent'
+      OR (
+        charges.fraud_details_stripe_report = 'fraudulent'
+        AND charges.fraud_details_user_report IS DISTINCT FROM 'safe'
+      )
+      OR (refunds.reason = 'fraudulent' AND refunds.status = 'succeeded')
+    ) AS has_fraudulent_charges
+  FROM
+    `moz-fx-data-shared-prod.stripe_external.charge_v1` AS charges
+  JOIN
+    `moz-fx-data-shared-prod.stripe_external.invoice_v1` AS invoices
+  ON
+    charges.invoice_id = invoices.id
+  JOIN
+    subscriptions_history AS history
+  ON
+    invoices.subscription_id = history.subscription.id
+    AND charges.created < history.valid_to
+  LEFT JOIN
+    `moz-fx-data-shared-prod.stripe_external.card_v1` AS cards
+  ON
+    charges.card_id = cards.id
+  LEFT JOIN
+    `moz-fx-data-shared-prod.stripe_external.refund_v1` AS refunds
+  ON
+    charges.id = refunds.charge_id
+  GROUP BY
+    subscriptions_history_id
 )
--- Include customers as they existed at the start of each subscription history period.
 SELECT
-  subscriptions_history.id,
-  subscriptions_history.valid_from,
-  IF(
-    customers_history.valid_to IS NOT NULL,
-    LEAST(subscriptions_history.valid_to, customers_history.valid_to),
-    subscriptions_history.valid_to
-  ) AS valid_to,
-  subscriptions_history.stripe_subscriptions_revised_changelog_id,
-  customers_history.stripe_customers_revised_changelog_id,
-  subscriptions_history.subscription,
-  customers_history.customer
+  history.id,
+  history.valid_from,
+  history.valid_to,
+  history.stripe_subscriptions_revised_changelog_id,
+  history.stripe_customers_revised_changelog_id,
+  (
+    SELECT AS STRUCT
+      history.subscription.*,
+      IF(paypal_subscriptions.subscription_id IS NOT NULL, 'PayPal', 'Stripe') AS payment_provider,
+      CASE
+        -- Use the same address hierarchy as Stripe Tax after we enabled Stripe Tax (FXA-5457).
+        -- https://stripe.com/docs/tax/customer-locations#address-hierarchy
+        WHEN DATE(history.valid_to) >= '2022-12-01'
+          AND (
+            DATE(history.subscription.ended_at) >= '2022-12-01'
+            OR history.subscription.ended_at IS NULL
+          )
+          THEN COALESCE(
+              NULLIF(history.customer.shipping.address.country, ''),
+              NULLIF(history.customer.address.country, ''),
+              charge_summaries.latest_card_country
+            )
+        -- SubPlat copies the PayPal billing agreement country to the customer's address.
+        WHEN paypal_subscriptions.subscription_id IS NOT NULL
+          THEN NULLIF(history.customer.address.country, '')
+        ELSE charge_summaries.latest_card_country
+      END AS country_code,
+      COALESCE(charge_summaries.has_refunds, FALSE) AS has_refunds,
+      COALESCE(charge_summaries.has_fraudulent_charges, FALSE) AS has_fraudulent_charges
+  ) AS subscription,
+  history.customer
 FROM
-  subscriptions_history
+  subscriptions_history AS history
 LEFT JOIN
-  `moz-fx-data-shared-prod`.subscription_platform_derived.stripe_customers_history_v1 AS customers_history
+  paypal_subscriptions
 ON
-  subscriptions_history.subscription.customer_id = customers_history.customer.id
-  AND subscriptions_history.valid_from >= customers_history.valid_from
-  AND subscriptions_history.valid_from < customers_history.valid_to
-UNION ALL
--- Include customer changes during the subscription history periods.
-SELECT
-  CONCAT(
-    subscriptions_history.subscription.id,
-    '-',
-    FORMAT_TIMESTAMP('%FT%H:%M:%E6S', customers_history.valid_from)
-  ) AS id,
-  customers_history.valid_from,
-  LEAST(subscriptions_history.valid_to, customers_history.valid_to) AS valid_to,
-  subscriptions_history.stripe_subscriptions_revised_changelog_id,
-  customers_history.stripe_customers_revised_changelog_id,
-  subscriptions_history.subscription,
-  customers_history.customer
-FROM
-  subscriptions_history
-JOIN
-  `moz-fx-data-shared-prod`.subscription_platform_derived.stripe_customers_history_v1 AS customers_history
+  history.subscription.id = paypal_subscriptions.subscription_id
+LEFT JOIN
+  subscriptions_history_charge_summaries AS charge_summaries
 ON
-  subscriptions_history.subscription.customer_id = customers_history.customer.id
-  AND subscriptions_history.valid_from < customers_history.valid_from
-  AND subscriptions_history.valid_to > customers_history.valid_from
+  history.id = charge_summaries.subscriptions_history_id

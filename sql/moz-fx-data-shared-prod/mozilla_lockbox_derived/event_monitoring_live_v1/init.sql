@@ -14,7 +14,7 @@ IF
         ),
         HOUR
       ),
-        -- Aggregates event counts over 30-minute intervals
+        -- Aggregates event counts over 60-minute intervals
       INTERVAL(
         DIV(
           EXTRACT(

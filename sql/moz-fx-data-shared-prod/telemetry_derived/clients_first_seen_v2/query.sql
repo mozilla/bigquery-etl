@@ -1,8 +1,4 @@
 -- Query for telemetry_derived.clients_first_seen_v2
-{% if is_init() and parallel_run() %}
-INSERT INTO
-    `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v2`
-{% endif %}
 -- Each ping type subquery retrieves all attributes as reported on the first
 -- ping received and respecting NULLS.
 -- Once the first_seen_date is identified after comparing all pings, attributes
@@ -13,49 +9,133 @@ WITH new_profile_ping AS (
     sample_id AS sample_id,
     MIN(submission_timestamp) AS first_seen_timestamp,
     ARRAY_AGG(DATE(submission_timestamp) ORDER BY submission_timestamp ASC) AS all_dates,
-    ARRAY_AGG(application.architecture RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS architecture,
-    ARRAY_AGG(environment.build.build_id RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS app_build_id,
-    ARRAY_AGG(normalized_app_name RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS app_name,
-    ARRAY_AGG(environment.settings.locale RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS locale,
-    ARRAY_AGG(application.platform_version RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS platform_version,
-    ARRAY_AGG(application.vendor RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS vendor,
-    ARRAY_AGG(application.version RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS app_version,
-    ARRAY_AGG(application.xpcom_abi RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS xpcom_abi,
-    ARRAY_AGG(document_id RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS document_id,
-    ARRAY_AGG(environment.partner.distribution_id RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS distribution_id,
-    ARRAY_AGG(environment.partner.distribution_version RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS partner_distribution_version,
-    ARRAY_AGG(environment.partner.distributor RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS partner_distributor,
-    ARRAY_AGG(environment.partner.distributor_channel RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS partner_distributor_channel,
-    ARRAY_AGG(environment.partner.partner_id RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS partner_id,
-    ARRAY_AGG(environment.settings.attribution.campaign RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS attribution_campaign,
-    ARRAY_AGG(environment.settings.attribution.content RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS attribution_content,
-    ARRAY_AGG(environment.settings.attribution.experiment RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS attribution_experiment,
-    ARRAY_AGG(environment.settings.attribution.medium RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS attribution_medium,
-    ARRAY_AGG(environment.settings.attribution.source RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS attribution_source,
-    ARRAY_AGG(environment.settings.attribution.ua RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS attribution_ua,
-    ARRAY_AGG(environment.settings.default_search_engine_data.load_path RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS engine_data_load_path,
-    ARRAY_AGG(environment.settings.default_search_engine_data.name RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS engine_data_name,
-    ARRAY_AGG(environment.settings.default_search_engine_data.origin RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS engine_data_origin,
-    ARRAY_AGG(environment.settings.default_search_engine_data.submission_url RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS engine_data_submission_url,
-    ARRAY_AGG(environment.system.apple_model_id RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS apple_model_id,
-    ARRAY_AGG(metadata.geo.city RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS city,
-    ARRAY_AGG(metadata.geo.db_version RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS db_version,
-    ARRAY_AGG(metadata.geo.subdivision1 RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS subdivision1,
-    ARRAY_AGG(normalized_channel RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS normalized_channel,
-    ARRAY_AGG(normalized_country_code RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS country,
-    ARRAY_AGG(normalized_os RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS normalized_os,
-    ARRAY_AGG(normalized_os_version RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS normalized_os_version,
-    ARRAY_AGG(payload.processes.parent.scalars.startup_profile_selection_reason RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS startup_profile_selection_reason,
-    ARRAY_AGG(environment.settings.attribution.dltoken RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS attribution_dltoken,
-    ARRAY_AGG(environment.settings.attribution.dlsource RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS attribution_dlsource,
+    ARRAY_AGG(application.architecture RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS architecture,
+    ARRAY_AGG(environment.build.build_id RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS app_build_id,
+    ARRAY_AGG(normalized_app_name RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS app_name,
+    ARRAY_AGG(environment.settings.locale RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS locale,
+    ARRAY_AGG(application.platform_version RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS platform_version,
+    ARRAY_AGG(application.vendor RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS vendor,
+    ARRAY_AGG(application.version RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS app_version,
+    ARRAY_AGG(application.xpcom_abi RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS xpcom_abi,
+    ARRAY_AGG(document_id RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS document_id,
+    ARRAY_AGG(environment.partner.distribution_id RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS distribution_id,
+    ARRAY_AGG(environment.partner.distribution_version RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS partner_distribution_version,
+    ARRAY_AGG(environment.partner.distributor RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS partner_distributor,
+    ARRAY_AGG(environment.partner.distributor_channel RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS partner_distributor_channel,
+    ARRAY_AGG(environment.partner.partner_id RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS partner_id,
+    ARRAY_AGG(
+      environment.settings.attribution.campaign RESPECT NULLS
+      ORDER BY
+        submission_timestamp
+    )[SAFE_OFFSET(0)] AS attribution_campaign,
+    ARRAY_AGG(environment.settings.attribution.content RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS attribution_content,
+    ARRAY_AGG(
+      environment.settings.attribution.experiment RESPECT NULLS
+      ORDER BY
+        submission_timestamp
+    )[SAFE_OFFSET(0)] AS attribution_experiment,
+    ARRAY_AGG(environment.settings.attribution.medium RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS attribution_medium,
+    ARRAY_AGG(environment.settings.attribution.source RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS attribution_source,
+    ARRAY_AGG(environment.settings.attribution.ua RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS attribution_ua,
+    ARRAY_AGG(
+      environment.settings.default_search_engine_data.load_path RESPECT NULLS
+      ORDER BY
+        submission_timestamp
+    )[SAFE_OFFSET(0)] AS engine_data_load_path,
+    ARRAY_AGG(
+      environment.settings.default_search_engine_data.name RESPECT NULLS
+      ORDER BY
+        submission_timestamp
+    )[SAFE_OFFSET(0)] AS engine_data_name,
+    ARRAY_AGG(
+      environment.settings.default_search_engine_data.origin RESPECT NULLS
+      ORDER BY
+        submission_timestamp
+    )[SAFE_OFFSET(0)] AS engine_data_origin,
+    ARRAY_AGG(
+      environment.settings.default_search_engine_data.submission_url RESPECT NULLS
+      ORDER BY
+        submission_timestamp
+    )[SAFE_OFFSET(0)] AS engine_data_submission_url,
+    ARRAY_AGG(environment.system.apple_model_id RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS apple_model_id,
+    ARRAY_AGG(metadata.geo.city RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS city,
+    ARRAY_AGG(metadata.geo.db_version RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS db_version,
+    ARRAY_AGG(metadata.geo.subdivision1 RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS subdivision1,
+    ARRAY_AGG(normalized_channel RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS normalized_channel,
+    ARRAY_AGG(normalized_country_code RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS country,
+    ARRAY_AGG(normalized_os RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS normalized_os,
+    ARRAY_AGG(normalized_os_version RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS normalized_os_version,
+    ARRAY_AGG(
+      payload.processes.parent.scalars.startup_profile_selection_reason RESPECT NULLS
+      ORDER BY
+        submission_timestamp
+    )[SAFE_OFFSET(0)] AS startup_profile_selection_reason,
+    ARRAY_AGG(environment.settings.attribution.dltoken RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS attribution_dltoken,
+    ARRAY_AGG(
+      environment.settings.attribution.dlsource RESPECT NULLS
+      ORDER BY
+        submission_timestamp
+    )[SAFE_OFFSET(0)] AS attribution_dlsource,
   FROM
     `moz-fx-data-shared-prod.telemetry.new_profile`
   WHERE
     {% if is_init() %}
       DATE(submission_timestamp) >= '2010-01-01'
-      {% if parallel_run() %}
-        AND {mapped_values}
-      {% endif %}
+      AND sample_id = @sample_id
     {% else %}
       DATE(submission_timestamp) = @submission_date
     {% endif %}
@@ -69,49 +149,133 @@ shutdown_ping AS (
     sample_id AS sample_id,
     MIN(submission_timestamp) AS first_seen_timestamp,
     ARRAY_AGG(DATE(submission_timestamp) ORDER BY submission_timestamp ASC) AS all_dates,
-    ARRAY_AGG(application.architecture RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS architecture,
-    ARRAY_AGG(environment.build.build_id RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS app_build_id,
-    ARRAY_AGG(normalized_app_name RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS app_name,
-    ARRAY_AGG(environment.settings.locale RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS locale,
-    ARRAY_AGG(application.platform_version RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS platform_version,
-    ARRAY_AGG(application.vendor RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS vendor,
-    ARRAY_AGG(application.version RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS app_version,
-    ARRAY_AGG(application.xpcom_abi RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS xpcom_abi,
-    ARRAY_AGG(document_id RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS document_id,
-    ARRAY_AGG(environment.partner.distribution_id RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS distribution_id,
-    ARRAY_AGG(environment.partner.distribution_version RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS partner_distribution_version,
-    ARRAY_AGG(environment.partner.distributor RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS partner_distributor,
-    ARRAY_AGG(environment.partner.distributor_channel RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS partner_distributor_channel,
-    ARRAY_AGG(environment.partner.partner_id RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS partner_id,
-    ARRAY_AGG(environment.settings.attribution.campaign RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS attribution_campaign,
-    ARRAY_AGG(environment.settings.attribution.content RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS attribution_content,
-    ARRAY_AGG(environment.settings.attribution.experiment RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS attribution_experiment,
-    ARRAY_AGG(environment.settings.attribution.medium RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS attribution_medium,
-    ARRAY_AGG(environment.settings.attribution.source RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS attribution_source,
-    ARRAY_AGG(environment.settings.attribution.ua RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS attribution_ua,
-    ARRAY_AGG(environment.settings.default_search_engine_data.load_path RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS engine_data_load_path,
-    ARRAY_AGG(environment.settings.default_search_engine_data.name RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS engine_data_name,
-    ARRAY_AGG(environment.settings.default_search_engine_data.origin RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS engine_data_origin,
-    ARRAY_AGG(environment.settings.default_search_engine_data.submission_url RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS engine_data_submission_url,
-    ARRAY_AGG(environment.system.apple_model_id RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS apple_model_id,
-    ARRAY_AGG(metadata.geo.city RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS city,
-    ARRAY_AGG(metadata.geo.db_version RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS db_version,
-    ARRAY_AGG(metadata.geo.subdivision1 RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS subdivision1,
-    ARRAY_AGG(normalized_channel RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS normalized_channel,
-    ARRAY_AGG(normalized_country_code RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS country,
-    ARRAY_AGG(normalized_os RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS normalized_os,
-    ARRAY_AGG(normalized_os_version RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS normalized_os_version,
-    ARRAY_AGG(payload.processes.parent.scalars.startup_profile_selection_reason RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS startup_profile_selection_reason,
-    ARRAY_AGG(environment.settings.attribution.dltoken RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS attribution_dltoken,
-    ARRAY_AGG(environment.settings.attribution.dlsource RESPECT NULLS ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS attribution_dlsource,
+    ARRAY_AGG(application.architecture RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS architecture,
+    ARRAY_AGG(environment.build.build_id RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS app_build_id,
+    ARRAY_AGG(normalized_app_name RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS app_name,
+    ARRAY_AGG(environment.settings.locale RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS locale,
+    ARRAY_AGG(application.platform_version RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS platform_version,
+    ARRAY_AGG(application.vendor RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS vendor,
+    ARRAY_AGG(application.version RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS app_version,
+    ARRAY_AGG(application.xpcom_abi RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS xpcom_abi,
+    ARRAY_AGG(document_id RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS document_id,
+    ARRAY_AGG(environment.partner.distribution_id RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS distribution_id,
+    ARRAY_AGG(environment.partner.distribution_version RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS partner_distribution_version,
+    ARRAY_AGG(environment.partner.distributor RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS partner_distributor,
+    ARRAY_AGG(environment.partner.distributor_channel RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS partner_distributor_channel,
+    ARRAY_AGG(environment.partner.partner_id RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS partner_id,
+    ARRAY_AGG(
+      environment.settings.attribution.campaign RESPECT NULLS
+      ORDER BY
+        submission_timestamp
+    )[SAFE_OFFSET(0)] AS attribution_campaign,
+    ARRAY_AGG(environment.settings.attribution.content RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS attribution_content,
+    ARRAY_AGG(
+      environment.settings.attribution.experiment RESPECT NULLS
+      ORDER BY
+        submission_timestamp
+    )[SAFE_OFFSET(0)] AS attribution_experiment,
+    ARRAY_AGG(environment.settings.attribution.medium RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS attribution_medium,
+    ARRAY_AGG(environment.settings.attribution.source RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS attribution_source,
+    ARRAY_AGG(environment.settings.attribution.ua RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS attribution_ua,
+    ARRAY_AGG(
+      environment.settings.default_search_engine_data.load_path RESPECT NULLS
+      ORDER BY
+        submission_timestamp
+    )[SAFE_OFFSET(0)] AS engine_data_load_path,
+    ARRAY_AGG(
+      environment.settings.default_search_engine_data.name RESPECT NULLS
+      ORDER BY
+        submission_timestamp
+    )[SAFE_OFFSET(0)] AS engine_data_name,
+    ARRAY_AGG(
+      environment.settings.default_search_engine_data.origin RESPECT NULLS
+      ORDER BY
+        submission_timestamp
+    )[SAFE_OFFSET(0)] AS engine_data_origin,
+    ARRAY_AGG(
+      environment.settings.default_search_engine_data.submission_url RESPECT NULLS
+      ORDER BY
+        submission_timestamp
+    )[SAFE_OFFSET(0)] AS engine_data_submission_url,
+    ARRAY_AGG(environment.system.apple_model_id RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS apple_model_id,
+    ARRAY_AGG(metadata.geo.city RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS city,
+    ARRAY_AGG(metadata.geo.db_version RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS db_version,
+    ARRAY_AGG(metadata.geo.subdivision1 RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS subdivision1,
+    ARRAY_AGG(normalized_channel RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS normalized_channel,
+    ARRAY_AGG(normalized_country_code RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS country,
+    ARRAY_AGG(normalized_os RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS normalized_os,
+    ARRAY_AGG(normalized_os_version RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS normalized_os_version,
+    ARRAY_AGG(
+      payload.processes.parent.scalars.startup_profile_selection_reason RESPECT NULLS
+      ORDER BY
+        submission_timestamp
+    )[SAFE_OFFSET(0)] AS startup_profile_selection_reason,
+    ARRAY_AGG(environment.settings.attribution.dltoken RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS attribution_dltoken,
+    ARRAY_AGG(
+      environment.settings.attribution.dlsource RESPECT NULLS
+      ORDER BY
+        submission_timestamp
+    )[SAFE_OFFSET(0)] AS attribution_dlsource,
   FROM
     `moz-fx-data-shared-prod.telemetry.first_shutdown`
   WHERE
     {% if is_init() %}
       DATE(submission_timestamp) >= '2010-01-01'
-      {% if parallel_run() %}
-        AND {mapped_values}
-      {% endif %}
+      AND sample_id = @sample_id
     {% else %}
       DATE(submission_timestamp) = @submission_date
     {% endif %}
@@ -134,49 +298,101 @@ main_ping AS (
       TIMESTAMP(MIN(submission_date))
     ) AS first_seen_timestamp,
     ARRAY_AGG(DATE(submission_date) ORDER BY submission_date ASC) AS all_dates,
-    CAST(NULL AS STRING) AS architecture, -- main_v5:environment.build.architecture
+    CAST(
+      NULL AS STRING
+    ) AS architecture, -- main_v5:environment.build.architecture
     ARRAY_AGG(env_build_id RESPECT NULLS ORDER BY submission_date)[SAFE_OFFSET(0)] AS app_build_id,
     ARRAY_AGG(app_name RESPECT NULLS ORDER BY submission_date)[SAFE_OFFSET(0)] AS app_name,
     ARRAY_AGG(locale RESPECT NULLS ORDER BY submission_date)[SAFE_OFFSET(0)] AS locale,
-    CAST(NULL AS STRING) AS platform_version, -- main_v5:environment.build.platform_version
+    CAST(
+      NULL AS STRING
+    ) AS platform_version, -- main_v5:environment.build.platform_version
     ARRAY_AGG(vendor RESPECT NULLS ORDER BY submission_date)[SAFE_OFFSET(0)] AS vendor,
     ARRAY_AGG(app_version RESPECT NULLS ORDER BY submission_date)[SAFE_OFFSET(0)] AS app_version,
-    CAST(NULL AS STRING) AS xpcom_abi, -- main_v5:environment.build.xpcom_abi / application.xpcom_abi
-    CAST(NULL AS STRING) AS document_id, -- main_v5:document_id
-    ARRAY_AGG(distribution_id RESPECT NULLS ORDER BY submission_date)[SAFE_OFFSET(0)] AS distribution_id,
-    CAST(NULL AS STRING) AS partner_distribution_version, -- main_v5:environment.partner.distribution_version
-    CAST(NULL AS STRING) AS partner_distributor, -- main_v5:environment.partner.distributor
-    CAST(NULL AS STRING) AS partner_distributor_channel, -- main_v5:environment.partner.distributor_channel
-    CAST(NULL AS STRING) AS partner_id, -- main_v5:environment.partner.distribution_id
-    ARRAY_AGG(attribution.campaign RESPECT NULLS ORDER BY submission_date)[SAFE_OFFSET(0)] AS attribution_campaign,
-    ARRAY_AGG(attribution.content RESPECT NULLS ORDER BY submission_date)[SAFE_OFFSET(0)] AS attribution_content,
-    ARRAY_AGG(attribution.experiment RESPECT NULLS ORDER BY submission_date)[SAFE_OFFSET(0)] AS attribution_experiment,
-    ARRAY_AGG(attribution.medium RESPECT NULLS ORDER BY submission_date)[SAFE_OFFSET(0)] AS attribution_medium,
-    ARRAY_AGG(attribution.source RESPECT NULLS ORDER BY submission_date)[SAFE_OFFSET(0)] AS attribution_source,
-    CAST(NULL AS STRING) AS attribution_ua, -- main_v5:environment.settings.attribution.ua
-    ARRAY_AGG(default_search_engine_data_load_path RESPECT NULLS ORDER BY submission_date)[SAFE_OFFSET(0)] AS engine_data_load_path,
-    ARRAY_AGG(default_search_engine_data_name RESPECT NULLS ORDER BY submission_date)[SAFE_OFFSET(0)] AS engine_data_name,
-    ARRAY_AGG(default_search_engine_data_origin RESPECT NULLS ORDER BY submission_date)[SAFE_OFFSET(0)] AS engine_data_origin,
-    ARRAY_AGG(default_search_engine_data_submission_url RESPECT NULLS ORDER BY submission_date)[SAFE_OFFSET(0)] AS engine_data_submission_url,
-    CAST(NULL AS STRING) AS apple_model_id, -- main_v5:environment.system.apple_model_id
+    CAST(
+      NULL AS STRING
+    ) AS xpcom_abi, -- main_v5:environment.build.xpcom_abi / application.xpcom_abi
+    CAST(
+      NULL AS STRING
+    ) AS document_id, -- main_v5:document_id
+    ARRAY_AGG(distribution_id RESPECT NULLS ORDER BY submission_date)[
+      SAFE_OFFSET(0)
+    ] AS distribution_id,
+    CAST(
+      NULL AS STRING
+    ) AS partner_distribution_version, -- main_v5:environment.partner.distribution_version
+    CAST(
+      NULL AS STRING
+    ) AS partner_distributor, -- main_v5:environment.partner.distributor
+    CAST(
+      NULL AS STRING
+    ) AS partner_distributor_channel, -- main_v5:environment.partner.distributor_channel
+    CAST(
+      NULL AS STRING
+    ) AS partner_id, -- main_v5:environment.partner.distribution_id
+    ARRAY_AGG(attribution.campaign RESPECT NULLS ORDER BY submission_date)[
+      SAFE_OFFSET(0)
+    ] AS attribution_campaign,
+    ARRAY_AGG(attribution.content RESPECT NULLS ORDER BY submission_date)[
+      SAFE_OFFSET(0)
+    ] AS attribution_content,
+    ARRAY_AGG(attribution.experiment RESPECT NULLS ORDER BY submission_date)[
+      SAFE_OFFSET(0)
+    ] AS attribution_experiment,
+    ARRAY_AGG(attribution.medium RESPECT NULLS ORDER BY submission_date)[
+      SAFE_OFFSET(0)
+    ] AS attribution_medium,
+    ARRAY_AGG(attribution.source RESPECT NULLS ORDER BY submission_date)[
+      SAFE_OFFSET(0)
+    ] AS attribution_source,
+    CAST(
+      NULL AS STRING
+    ) AS attribution_ua, -- main_v5:environment.settings.attribution.ua
+    ARRAY_AGG(default_search_engine_data_load_path RESPECT NULLS ORDER BY submission_date)[
+      SAFE_OFFSET(0)
+    ] AS engine_data_load_path,
+    ARRAY_AGG(default_search_engine_data_name RESPECT NULLS ORDER BY submission_date)[
+      SAFE_OFFSET(0)
+    ] AS engine_data_name,
+    ARRAY_AGG(default_search_engine_data_origin RESPECT NULLS ORDER BY submission_date)[
+      SAFE_OFFSET(0)
+    ] AS engine_data_origin,
+    ARRAY_AGG(default_search_engine_data_submission_url RESPECT NULLS ORDER BY submission_date)[
+      SAFE_OFFSET(0)
+    ] AS engine_data_submission_url,
+    CAST(
+      NULL AS STRING
+    ) AS apple_model_id, -- main_v5:environment.system.apple_model_id
     ARRAY_AGG(city RESPECT NULLS ORDER BY submission_date)[SAFE_OFFSET(0)] AS city,
-    CAST(NULL AS STRING) AS db_version, -- main_v5:metadata.geo.db_version
-    ARRAY_AGG(geo_subdivision1 RESPECT NULLS ORDER BY submission_date)[SAFE_OFFSET(0)] AS subdivision1,
-    ARRAY_AGG(normalized_channel RESPECT NULLS ORDER BY submission_date)[SAFE_OFFSET(0)] AS normalized_channel,
+    CAST(
+      NULL AS STRING
+    ) AS db_version, -- main_v5:metadata.geo.db_version
+    ARRAY_AGG(geo_subdivision1 RESPECT NULLS ORDER BY submission_date)[
+      SAFE_OFFSET(0)
+    ] AS subdivision1,
+    ARRAY_AGG(normalized_channel RESPECT NULLS ORDER BY submission_date)[
+      SAFE_OFFSET(0)
+    ] AS normalized_channel,
     ARRAY_AGG(country RESPECT NULLS ORDER BY submission_date)[SAFE_OFFSET(0)] AS country,
     ARRAY_AGG(os RESPECT NULLS ORDER BY submission_date)[SAFE_OFFSET(0)] AS normalized_os,
-    ARRAY_AGG(normalized_os_version RESPECT NULLS ORDER BY submission_date)[SAFE_OFFSET(0)] AS normalized_os_version,
-    CAST(NULL AS STRING) AS startup_profile_selection_reason, -- main_v5:payload.processes.parent.scalars.startup_profile_selection_reason
-    ARRAY_AGG(attribution.dltoken RESPECT NULLS ORDER BY submission_date)[SAFE_OFFSET(0)] AS attribution_dltoken,
-    CAST(NULL AS STRING) AS attribution_dlsource -- main_v5:environment.settings.attribution.dlsource
+    ARRAY_AGG(normalized_os_version RESPECT NULLS ORDER BY submission_date)[
+      SAFE_OFFSET(0)
+    ] AS normalized_os_version,
+    CAST(
+      NULL AS STRING
+    ) AS startup_profile_selection_reason, -- main_v5:payload.processes.parent.scalars.startup_profile_selection_reason
+    ARRAY_AGG(attribution.dltoken RESPECT NULLS ORDER BY submission_date)[
+      SAFE_OFFSET(0)
+    ] AS attribution_dltoken,
+    CAST(
+      NULL AS STRING
+    ) AS attribution_dlsource -- main_v5:environment.settings.attribution.dlsource
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6`
   WHERE
     {% if is_init() %}
       submission_date >= '2010-01-01'
-      {% if parallel_run() %}
-        AND {mapped_values}
-      {% endif %}
+      AND sample_id = @sample_id
     {% else %}
       submission_date = @submission_date
     {% endif %}
@@ -215,7 +431,9 @@ first_seen_date AS (
     client_id,
     DATE(MIN(first_seen_timestamp)) AS first_seen_date,
     MIN(first_seen_timestamp) AS first_seen_timestamp,
-    ARRAY_AGG(source_ping ORDER BY first_seen_timestamp, source_ping_priority)[SAFE_OFFSET(0)] AS first_seen_source_ping
+    ARRAY_AGG(source_ping ORDER BY first_seen_timestamp, source_ping_priority)[
+      SAFE_OFFSET(0)
+    ] AS first_seen_source_ping
   FROM
     unioned
   GROUP BY
@@ -272,9 +490,11 @@ _current AS (
   INNER JOIN
     first_seen_date AS fsd
   ON
-    (unioned.client_id = fsd.client_id
-    AND unioned.first_seen_timestamp = fsd.first_seen_timestamp
-    AND unioned.source_ping = fsd.first_seen_source_ping)
+    (
+      unioned.client_id = fsd.client_id
+      AND unioned.first_seen_timestamp = fsd.first_seen_timestamp
+      AND unioned.source_ping = fsd.first_seen_source_ping
+    )
   LEFT JOIN
     second_seen_date AS ssd
   ON

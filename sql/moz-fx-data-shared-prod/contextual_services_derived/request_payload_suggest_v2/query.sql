@@ -43,7 +43,7 @@ ping_data AS (
     AND reporting_url IS NOT NULL
     -- For firefox 116+ use firefox_desktop.quick_suggest instead
     -- https://bugzilla.mozilla.org/show_bug.cgi?id=1836283
-    AND SAFE_CAST(SPLIT(version, ".")[OFFSET(0)] AS INT64) < 116
+    AND SAFE_CAST(metadata.user_agent.version AS INT64) < 116
   UNION ALL
   SELECT DISTINCT
     context_id,
@@ -60,7 +60,7 @@ ping_data AS (
     AND reporting_url IS NOT NULL
     -- For firefox 116+ use firefox_desktop.quick_suggest instead
     -- https://bugzilla.mozilla.org/show_bug.cgi?id=1836283
-    AND SAFE_CAST(SPLIT(version, ".")[OFFSET(0)] AS INT64) < 116
+    AND SAFE_CAST(metadata.user_agent.version AS INT64) < 116
 ),
 quicksuggest AS (
   SELECT

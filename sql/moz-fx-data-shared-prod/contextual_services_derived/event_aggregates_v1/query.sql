@@ -56,7 +56,7 @@ WITH combined AS (
   WHERE
     -- For firefox 116+ use firefox_desktop.quick_suggest instead
     -- https://bugzilla.mozilla.org/show_bug.cgi?id=1836283
-    SAFE_CAST(SPLIT(version, ".")[OFFSET(0)] AS INT64) < 116
+    SAFE_CAST(metadata.user_agent.version AS INT64) < 116
   UNION ALL
   SELECT
     context_id,
@@ -87,7 +87,7 @@ WITH combined AS (
   WHERE
     -- For firefox 116+ use firefox_desktop.quick_suggest instead
     -- https://bugzilla.mozilla.org/show_bug.cgi?id=1836283
-    SAFE_CAST(SPLIT(version, ".")[OFFSET(0)] AS INT64) < 116
+    SAFE_CAST(metadata.user_agent.version AS INT64) < 116
   UNION ALL
   SELECT
     metrics.uuid.top_sites_context_id AS context_id,
@@ -141,7 +141,7 @@ WITH combined AS (
   WHERE
     -- For firefox 116+ use firefox_desktop.top_sites instead
     -- https://bugzilla.mozilla.org/show_bug.cgi?id=1836283
-    SAFE_CAST(SPLIT(version, ".")[OFFSET(0)] AS INT64) < 116
+    SAFE_CAST(metadata.user_agent.version AS INT64) < 116
   UNION ALL
   SELECT
     context_id,
@@ -169,7 +169,7 @@ WITH combined AS (
   WHERE
     -- For firefox 116+ use firefox_desktop.top_sites instead
     -- https://bugzilla.mozilla.org/show_bug.cgi?id=1836283
-    SAFE_CAST(SPLIT(version, ".")[OFFSET(0)] AS INT64) < 116
+    SAFE_CAST(metadata.user_agent.version AS INT64) < 116
   UNION ALL
   SELECT
     metrics.uuid.top_sites_context_id AS context_id,

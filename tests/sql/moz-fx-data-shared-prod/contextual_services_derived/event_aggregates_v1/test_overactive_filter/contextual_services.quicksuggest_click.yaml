@@ -7,6 +7,7 @@
       subdivision1: AZ
     user_agent:
       os: "Windows 11"
+      version: "116.0.0"
   normalized_country_code: US
   advertiser: ad1
   release_channel: release
@@ -15,7 +16,6 @@
   match_type: "firefox-suggest"
   scenario: online
   improve_suggest_experience_checked: true
-  version: "116.0.0"
 - <<: *base
   context_id: b
 - <<: *base

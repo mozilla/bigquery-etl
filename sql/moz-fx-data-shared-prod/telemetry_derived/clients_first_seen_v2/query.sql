@@ -397,28 +397,30 @@ unioned AS (
   SELECT
     *,
     'shutdown' AS source_ping,
-    3 AS source_ping_priority
+    2 AS source_ping_priority
   FROM
     shutdown_ping
   UNION ALL
   SELECT
     *,
     'main' AS source_ping,
-    2 AS source_ping_priority
+    3 AS source_ping_priority
   FROM
     main_ping
 ),
 -- The next CTE returns the first_seen_date and reporting ping.
--- The ping type priority is used to prioritize which ping type to select when the timestamp is the same
+-- The source_ping_priority and first_seen_timestamp are used to prioritize which ping to select on the first_seen_date
 -- The timestamp is retrieved to select the first_seen attributes.
 first_seen_date AS (
   SELECT
     client_id,
     DATE(MIN(first_seen_timestamp)) AS first_seen_date,
-    MIN(first_seen_timestamp) AS first_seen_timestamp,
-    ARRAY_AGG(source_ping ORDER BY first_seen_timestamp, source_ping_priority)[
+    ARRAY_AGG(source_ping ORDER BY DATE(first_seen_timestamp), source_ping_priority)[
       SAFE_OFFSET(0)
-    ] AS first_seen_source_ping
+    ] AS first_seen_source_ping,
+    ARRAY_AGG(first_seen_timestamp ORDER BY DATE(first_seen_timestamp), source_ping_priority)[
+      SAFE_OFFSET(0)
+    ] AS first_seen_source_ping_timestamp
   FROM
     unioned
   GROUP BY
@@ -485,7 +487,7 @@ _current AS (
   ON
     (
       unioned.client_id = fsd.client_id
-      AND unioned.first_seen_timestamp = fsd.first_seen_timestamp
+      AND unioned.first_seen_timestamp = fsd.first_seen_source_ping_timestamp
       AND unioned.source_ping = fsd.first_seen_source_ping
     )
   LEFT JOIN

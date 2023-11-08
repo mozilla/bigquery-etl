@@ -99,7 +99,7 @@ IF
       DATE(submission_timestamp) AS submission_date,
       TIMESTAMP_ADD(
         TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
-        -- Aggregates event counts over 30-minute intervals
+        -- Aggregates event counts over 60-minute intervals
         INTERVAL(
           DIV(
             EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)),

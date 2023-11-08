@@ -255,6 +255,7 @@ clients_summary AS (
     submission_timestamp,
     client_id,
     sample_id,
+    document_id,
     metadata.uri.app_update_channel AS channel,
     normalized_channel,
     normalized_os_version,
@@ -262,6 +263,7 @@ clients_summary AS (
     metadata.geo.city,
     metadata.geo.subdivision1 AS geo_subdivision1,
     metadata.geo.subdivision2 AS geo_subdivision2,
+    metadata.geo.db_version AS geo_db_version,
     metadata.isp.name AS isp_name,
     metadata.isp.organization AS isp_organization,
     environment.system.os.name AS os,
@@ -272,6 +274,7 @@ clients_summary AS (
     SAFE_CAST(environment.system.os.windows_ubr AS INT64) AS windows_ubr,
     SAFE_CAST(environment.system.os.install_year AS INT64) AS install_year,
     environment.system.is_wow64,
+    environment.system.apple_model_id,
     SAFE_CAST(environment.system.memory_mb AS INT64) AS memory_mb,
     environment.system.cpu.count AS cpu_count,
     environment.system.cpu.cores AS cpu_cores,
@@ -292,6 +295,10 @@ clients_summary AS (
     payload.info.subsession_counter,
     payload.info.subsession_length,
     environment.partner.distribution_id,
+    environment.partner.partner_id,
+    environment.partner.distribution_version,
+    environment.partner.distributor,
+    environment.partner.distributor_channel,
     IFNULL(
       environment.services.account_enabled,
       udf.boolean_histogram_to_boolean(payload.histograms.fxa_configured)
@@ -313,6 +320,8 @@ clients_summary AS (
     environment.build.build_id AS env_build_id,
     environment.build.version AS env_build_version,
     environment.build.architecture AS env_build_arch,
+    environment.build.platform_version AS env_build_platform_version,
+    environment.build.xpcom_abi AS env_build_xpcom_abi,
     environment.settings.e10s_enabled,
     environment.settings.locale,
     environment.settings.update.channel AS update_channel,
@@ -329,7 +338,8 @@ clients_summary AS (
         environment.settings.attribution.experiment,
         environment.settings.attribution.variation,
         environment.settings.attribution.dltoken,
-        environment.settings.attribution.dlsource
+        environment.settings.attribution.dlsource,
+        environment.settings.attribution.ua
       ),
       NULL
     ) AS attribution,
@@ -764,6 +774,7 @@ aggregates AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
     client_id,
+    ARRAY_AGG(document_id ORDER BY submission_timestamp)[OFFSET(0)] AS first_document_id,
     SUM(aborts_content) AS aborts_content_sum,
     SUM(aborts_gmplugin) AS aborts_gmplugin_sum,
     SUM(aborts_plugin) AS aborts_plugin_sum,
@@ -850,10 +861,24 @@ aggregates AS (
     mozfun.stats.mode_last(
       ARRAY_AGG(distribution_id ORDER BY submission_timestamp)
     ) AS distribution_id,
+    mozfun.stats.mode_last(ARRAY_AGG(partner_id ORDER BY submission_timestamp)) AS partner_id,
+    mozfun.stats.mode_last(
+      ARRAY_AGG(distribution_version ORDER BY submission_timestamp)
+    ) AS distribution_version,
+    mozfun.stats.mode_last(ARRAY_AGG(distributor ORDER BY submission_timestamp)) AS distributor,
+    mozfun.stats.mode_last(
+      ARRAY_AGG(distributor_channel ORDER BY submission_timestamp)
+    ) AS distributor_channel,
     mozfun.stats.mode_last(ARRAY_AGG(e10s_enabled ORDER BY submission_timestamp)) AS e10s_enabled,
     mozfun.stats.mode_last(
       ARRAY_AGG(env_build_arch ORDER BY submission_timestamp)
     ) AS env_build_arch,
+    mozfun.stats.mode_last(
+      ARRAY_AGG(env_build_platform_version ORDER BY submission_timestamp)
+    ) AS env_build_platform_version,
+    mozfun.stats.mode_last(
+      ARRAY_AGG(env_build_xpcom_abi ORDER BY submission_timestamp)
+    ) AS env_build_xpcom_abi,
     mozfun.stats.mode_last(ARRAY_AGG(env_build_id ORDER BY submission_timestamp)) AS env_build_id,
     mozfun.stats.mode_last(
       ARRAY_AGG(env_build_version ORDER BY submission_timestamp)
@@ -936,6 +961,9 @@ aggregates AS (
           submission_timestamp
       )
     ).*,
+    mozfun.stats.mode_last(
+      ARRAY_AGG(geo_db_version ORDER BY submission_timestamp)
+    ) AS geo_db_version,
     mozfun.json.mode_last(
       ARRAY_AGG(
         IF(
@@ -1056,6 +1084,9 @@ aggregates AS (
       ARRAY_AGG(is_default_browser ORDER BY submission_timestamp)
     ) AS is_default_browser,
     mozfun.stats.mode_last(ARRAY_AGG(is_wow64 ORDER BY submission_timestamp)) AS is_wow64,
+    mozfun.stats.mode_last(
+      ARRAY_AGG(apple_model_id ORDER BY submission_timestamp)
+    ) AS apple_model_id,
     mozfun.stats.mode_last(ARRAY_AGG(locale ORDER BY submission_timestamp)) AS locale,
     mozfun.stats.mode_last(ARRAY_AGG(memory_mb ORDER BY submission_timestamp)) AS memory_mb,
     mozfun.stats.mode_last(
@@ -1213,6 +1244,8 @@ aggregates AS (
     udf.aggregate_search_counts(ARRAY_CONCAT_AGG(search_counts ORDER BY submission_timestamp)).*,
     AVG(session_restored) AS session_restored_mean,
     COUNTIF(subsession_counter = 1) AS sessions_started_on_this_day,
+    MAX(subsession_counter) AS max_subsession_counter,
+    MIN(subsession_counter) AS min_subsession_counter,
     SUM(shutdown_kill) AS shutdown_kill_sum,
     SUM(subsession_length / NUMERIC '3600') AS subsession_hours_sum,
     SUM(ssl_handshake_result_failure) AS ssl_handshake_result_failure_sum,

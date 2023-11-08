@@ -14,7 +14,7 @@ THIS_PATH = Path(os.path.dirname(__file__))
 TABLE_NAME = "active_users_aggregates"
 DATASET_FOR_UNIONED_VIEWS = "telemetry"
 DESKTOP_TABLE_VERSION = "v1"
-MOBILE_TABLE_VERSION = "v2"
+MOBILE_TABLE_VERSION = "v3"
 
 
 class Browsers(Enum):

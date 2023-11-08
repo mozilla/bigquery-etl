@@ -1601,9 +1601,6 @@ fields:
     - name: container_used
       type: STRING
       mode: NULLABLE
-    - name: content_documents_destroyed
-      type: STRING
-      mode: NULLABLE
     - name: content_frame_time
       type: STRING
       mode: NULLABLE
@@ -1947,9 +1944,6 @@ fields:
       type: STRING
       mode: NULLABLE
     - name: decoder_instantiated_macturkish
-      type: STRING
-      mode: NULLABLE
-    - name: dedicated_worker_destroyed
       type: STRING
       mode: NULLABLE
     - name: dedicated_worker_spawn_gets_queued
@@ -4526,6 +4520,15 @@ fields:
     - name: network_time_between_network_change_events
       type: STRING
       mode: NULLABLE
+    - name: networking_download_throughput_http_1
+      type: STRING
+      mode: NULLABLE
+    - name: networking_download_throughput_http_2
+      type: STRING
+      mode: NULLABLE
+    - name: networking_download_throughput_http_3
+      type: STRING
+      mode: NULLABLE
     - name: newtab_page_blocked_sites_count
       type: STRING
       mode: NULLABLE
@@ -5237,9 +5240,6 @@ fields:
     - name: service_worker_controlled_documents
       type: STRING
       mode: NULLABLE
-    - name: service_worker_destroyed
-      type: STRING
-      mode: NULLABLE
     - name: service_worker_fetch_running
       type: STRING
       mode: NULLABLE
@@ -5292,9 +5292,6 @@ fields:
       type: STRING
       mode: NULLABLE
     - name: shared_worker_count
-      type: STRING
-      mode: NULLABLE
-    - name: shared_worker_destroyed
       type: STRING
       mode: NULLABLE
     - name: shared_worker_spawn_gets_queued
@@ -5958,9 +5955,6 @@ fields:
       type: STRING
       mode: NULLABLE
     - name: tls_error_report_ui
-      type: STRING
-      mode: NULLABLE
-    - name: top_level_content_documents_destroyed
       type: STRING
       mode: NULLABLE
     - name: total_containers_opened
@@ -6962,15 +6956,6 @@ fields:
     - name: zoomed_view_enabled
       type: STRING
       mode: NULLABLE
-    - name: networking_download_throughput_http_1
-      type: STRING
-      mode: NULLABLE
-    - name: networking_download_throughput_http_2
-      type: STRING
-      mode: NULLABLE
-    - name: networking_download_throughput_http_3
-      type: STRING
-      mode: NULLABLE
     - name: http_upload_throughput_mbps_http_1
       type: STRING
       mode: NULLABLE
@@ -6990,6 +6975,30 @@ fields:
       type: STRING
       mode: NULLABLE
     - name: gc_parallel_mark
+      type: STRING
+      mode: NULLABLE
+    - name: memory_phc_slop
+      type: STRING
+      mode: NULLABLE
+    - name: memory_phc_slots_allocated
+      type: STRING
+      mode: NULLABLE
+    - name: memory_phc_slots_freed
+      type: STRING
+      mode: NULLABLE
+    - name: content_documents_destroyed
+      type: STRING
+      mode: NULLABLE
+    - name: dedicated_worker_destroyed
+      type: STRING
+      mode: NULLABLE
+    - name: service_worker_destroyed
+      type: STRING
+      mode: NULLABLE
+    - name: shared_worker_destroyed
+      type: STRING
+      mode: NULLABLE
+    - name: top_level_content_documents_destroyed
       type: STRING
       mode: NULLABLE
   - name: info
@@ -7741,6 +7750,16 @@ fields:
       - name: value
         type: STRING
         mode: NULLABLE
+    - name: fx_migration_extensions_quantity
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: STRING
+        mode: NULLABLE
     - name: fx_migration_history_import_ms
       type: RECORD
       mode: REPEATED
@@ -8251,6 +8270,16 @@ fields:
       - name: value
         type: STRING
         mode: NULLABLE
+    - name: http_connection_close_reason
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: STRING
+        mode: NULLABLE
     - name: http_traffic_analysis
       type: RECORD
       mode: REPEATED
@@ -8581,6 +8610,36 @@ fields:
       - name: value
         type: STRING
         mode: NULLABLE
+    - name: networking_http_1_download_throughput
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: STRING
+        mode: NULLABLE
+    - name: networking_http_2_download_throughput
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: STRING
+        mode: NULLABLE
+    - name: networking_http_3_download_throughput
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: STRING
+        mode: NULLABLE
     - name: notify_observers_latency_ms
       type: RECORD
       mode: REPEATED
@@ -8862,6 +8921,16 @@ fields:
         type: STRING
         mode: NULLABLE
     - name: qm_quota_info_load_time_v0
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: STRING
+        mode: NULLABLE
+    - name: qm_shutdown_time_v0
       type: RECORD
       mode: REPEATED
       fields:
@@ -9232,6 +9301,16 @@ fields:
         type: STRING
         mode: NULLABLE
     - name: trr_relevant_skip_reason_trr_first
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: STRING
+        mode: NULLABLE
+    - name: trr_relevant_skip_reason_trr_first_type_rec
       type: RECORD
       mode: REPEATED
       fields:
@@ -9632,76 +9711,6 @@ fields:
         type: STRING
         mode: NULLABLE
     - name: webext_user_script_injection_ms_by_addonid
-      type: RECORD
-      mode: REPEATED
-      fields:
-      - name: key
-        type: STRING
-        mode: NULLABLE
-      - name: value
-        type: STRING
-        mode: NULLABLE
-    - name: fx_migration_extensions_quantity
-      type: RECORD
-      mode: REPEATED
-      fields:
-      - name: key
-        type: STRING
-        mode: NULLABLE
-      - name: value
-        type: STRING
-        mode: NULLABLE
-    - name: networking_http_1_download_throughput
-      type: RECORD
-      mode: REPEATED
-      fields:
-      - name: key
-        type: STRING
-        mode: NULLABLE
-      - name: value
-        type: STRING
-        mode: NULLABLE
-    - name: networking_http_2_download_throughput
-      type: RECORD
-      mode: REPEATED
-      fields:
-      - name: key
-        type: STRING
-        mode: NULLABLE
-      - name: value
-        type: STRING
-        mode: NULLABLE
-    - name: networking_http_3_download_throughput
-      type: RECORD
-      mode: REPEATED
-      fields:
-      - name: key
-        type: STRING
-        mode: NULLABLE
-      - name: value
-        type: STRING
-        mode: NULLABLE
-    - name: trr_relevant_skip_reason_trr_first_type_rec
-      type: RECORD
-      mode: REPEATED
-      fields:
-      - name: key
-        type: STRING
-        mode: NULLABLE
-      - name: value
-        type: STRING
-        mode: NULLABLE
-    - name: qm_shutdown_time_v0
-      type: RECORD
-      mode: REPEATED
-      fields:
-      - name: key
-        type: STRING
-        mode: NULLABLE
-      - name: value
-        type: STRING
-        mode: NULLABLE
-    - name: http_connection_close_reason
       type: RECORD
       mode: REPEATED
       fields:
@@ -10383,9 +10392,6 @@ fields:
         - name: container_used
           type: STRING
           mode: NULLABLE
-        - name: content_documents_destroyed
-          type: STRING
-          mode: NULLABLE
         - name: content_full_paint_time
           type: STRING
           mode: NULLABLE
@@ -10654,9 +10660,6 @@ fields:
           type: STRING
           mode: NULLABLE
         - name: decoder_instantiated_macturkish
-          type: STRING
-          mode: NULLABLE
-        - name: dedicated_worker_destroyed
           type: STRING
           mode: NULLABLE
         - name: dedicated_worker_spawn_gets_queued
@@ -11326,6 +11329,9 @@ fields:
           type: STRING
           mode: NULLABLE
         - name: find_plugins
+          type: STRING
+          mode: NULLABLE
+        - name: fingerprinting_protection_canvas_noise_calculate_time_ms
           type: STRING
           mode: NULLABLE
         - name: fips_enabled
@@ -13638,9 +13644,6 @@ fields:
         - name: service_worker_controlled_documents
           type: STRING
           mode: NULLABLE
-        - name: service_worker_destroyed
-          type: STRING
-          mode: NULLABLE
         - name: service_worker_isolated_launch_time
           type: STRING
           mode: NULLABLE
@@ -13678,9 +13681,6 @@ fields:
           type: STRING
           mode: NULLABLE
         - name: shared_worker_count
-          type: STRING
-          mode: NULLABLE
-        - name: shared_worker_destroyed
           type: STRING
           mode: NULLABLE
         - name: shared_worker_spawn_gets_queued
@@ -14293,9 +14293,6 @@ fields:
           type: STRING
           mode: NULLABLE
         - name: tls_error_report_ui
-          type: STRING
-          mode: NULLABLE
-        - name: top_level_content_documents_destroyed
           type: STRING
           mode: NULLABLE
         - name: total_containers_opened
@@ -15147,13 +15144,40 @@ fields:
         - name: zoomed_view_enabled
           type: STRING
           mode: NULLABLE
-        - name: fingerprinting_protection_canvas_noise_calculate_time_ms
-          type: STRING
-          mode: NULLABLE
         - name: gvsv_audio_stream_inits
           type: STRING
           mode: NULLABLE
         - name: gc_parallel_mark
+          type: STRING
+          mode: NULLABLE
+        - name: memory_phc_slop
+          type: STRING
+          mode: NULLABLE
+        - name: memory_phc_slots_allocated
+          type: STRING
+          mode: NULLABLE
+        - name: memory_phc_slots_freed
+          type: STRING
+          mode: NULLABLE
+        - name: perf_largest_contentful_paint_from_response_start_ms
+          type: STRING
+          mode: NULLABLE
+        - name: perf_largest_contentful_paint_ms
+          type: STRING
+          mode: NULLABLE
+        - name: content_documents_destroyed
+          type: STRING
+          mode: NULLABLE
+        - name: dedicated_worker_destroyed
+          type: STRING
+          mode: NULLABLE
+        - name: service_worker_destroyed
+          type: STRING
+          mode: NULLABLE
+        - name: shared_worker_destroyed
+          type: STRING
+          mode: NULLABLE
+        - name: top_level_content_documents_destroyed
           type: STRING
           mode: NULLABLE
       - name: keyed_histograms
@@ -15561,6 +15585,16 @@ fields:
             type: STRING
             mode: NULLABLE
         - name: dom_script_src_encoding
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: STRING
+            mode: NULLABLE
+        - name: eh_perf_channel_completion_time
           type: RECORD
           mode: REPEATED
           fields:
@@ -17020,16 +17054,6 @@ fields:
           - name: value
             type: STRING
             mode: NULLABLE
-        - name: eh_perf_channel_completion_time
-          type: RECORD
-          mode: REPEATED
-          fields:
-          - name: key
-            type: STRING
-            mode: NULLABLE
-          - name: value
-            type: STRING
-            mode: NULLABLE
       - name: keyed_scalars
         type: RECORD
         mode: NULLABLE
@@ -17244,6 +17268,9 @@ fields:
         - name: avif_dav1d_decode_error
           type: INTEGER
           mode: NULLABLE
+        - name: bloburl_resolve_stopped
+          type: INTEGER
+          mode: NULLABLE
         - name: browser_feeds_preview_loaded
           type: INTEGER
           mode: NULLABLE
@@ -17412,6 +17439,15 @@ fields:
         - name: script_preloader_mainthread_recompile
           type: INTEGER
           mode: NULLABLE
+        - name: shopping_component_opted_out
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: shopping_has_onboarded
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: shopping_nimbus_disabled
+          type: BOOLEAN
+          mode: NULLABLE
         - name: sw_alternative_body_used_count
           type: INTEGER
           mode: NULLABLE
@@ -17494,18 +17530,6 @@ fields:
           type: INTEGER
           mode: NULLABLE
         - name: webrtc_peerconnection_promise_stats_used
-          type: INTEGER
-          mode: NULLABLE
-        - name: shopping_component_opted_out
-          type: BOOLEAN
-          mode: NULLABLE
-        - name: shopping_has_onboarded
-          type: BOOLEAN
-          mode: NULLABLE
-        - name: shopping_nimbus_disabled
-          type: BOOLEAN
-          mode: NULLABLE
-        - name: bloburl_resolve_stopped
           type: INTEGER
           mode: NULLABLE
     - name: dynamic
@@ -20060,6 +20084,16 @@ fields:
           - name: value
             type: INTEGER
             mode: NULLABLE
+        - name: networking_doh_heuristic_ever_tripped
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: BOOLEAN
+            mode: NULLABLE
         - name: networking_speculative_connect_outcome
           type: RECORD
           mode: REPEATED
@@ -20640,6 +20674,26 @@ fields:
           - name: value
             type: INTEGER
             mode: NULLABLE
+        - name: urlbar_picked_bookmark_adaptive
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+        - name: urlbar_picked_clipboard
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
         - name: urlbar_picked_dynamic
           type: RECORD
           mode: REPEATED
@@ -20681,6 +20735,16 @@ fields:
             type: INTEGER
             mode: NULLABLE
         - name: urlbar_picked_history
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+        - name: urlbar_picked_history_adaptive
           type: RECORD
           mode: REPEATED
           fields:
@@ -21199,46 +21263,6 @@ fields:
             mode: NULLABLE
           - name: value
             type: BOOLEAN
-            mode: NULLABLE
-        - name: urlbar_picked_bookmark_adaptive
-          type: RECORD
-          mode: REPEATED
-          fields:
-          - name: key
-            type: STRING
-            mode: NULLABLE
-          - name: value
-            type: INTEGER
-            mode: NULLABLE
-        - name: urlbar_picked_history_adaptive
-          type: RECORD
-          mode: REPEATED
-          fields:
-          - name: key
-            type: STRING
-            mode: NULLABLE
-          - name: value
-            type: INTEGER
-            mode: NULLABLE
-        - name: networking_doh_heuristic_ever_tripped
-          type: RECORD
-          mode: REPEATED
-          fields:
-          - name: key
-            type: STRING
-            mode: NULLABLE
-          - name: value
-            type: BOOLEAN
-            mode: NULLABLE
-        - name: urlbar_picked_clipboard
-          type: RECORD
-          mode: REPEATED
-          fields:
-          - name: key
-            type: STRING
-            mode: NULLABLE
-          - name: value
-            type: INTEGER
             mode: NULLABLE
         - name: urlbar_picked_recent_search
           type: RECORD
@@ -21791,6 +21815,15 @@ fields:
         - name: extensions_apis_dnr_evaluate_rules_count_max
           type: INTEGER
           mode: NULLABLE
+        - name: extensions_quarantined_domains_listhash
+          type: STRING
+          mode: NULLABLE
+        - name: extensions_quarantined_domains_listsize
+          type: INTEGER
+          mode: NULLABLE
+        - name: extensions_quarantined_domains_remotehash
+          type: STRING
+          mode: NULLABLE
         - name: extensions_startup_cache_load_time
           type: INTEGER
           mode: NULLABLE
@@ -21818,7 +21851,13 @@ fields:
         - name: findbar_whole_words
           type: INTEGER
           mode: NULLABLE
+        - name: first_startup_delete_tasks_time
+          type: INTEGER
+          mode: NULLABLE
         - name: first_startup_elapsed
+          type: INTEGER
+          mode: NULLABLE
+        - name: first_startup_normandy_init_time
           type: INTEGER
           mode: NULLABLE
         - name: first_startup_status_code
@@ -22016,6 +22055,12 @@ fields:
         - name: mediarecorder_recording_count
           type: INTEGER
           mode: NULLABLE
+        - name: migration_time_to_produce_legacy_migrator_list
+          type: INTEGER
+          mode: NULLABLE
+        - name: migration_time_to_produce_migrator_list
+          type: INTEGER
+          mode: NULLABLE
         - name: migration_uninstaller_profile_refresh
           type: BOOLEAN
           mode: NULLABLE
@@ -22035,6 +22080,15 @@ fields:
           type: INTEGER
           mode: NULLABLE
         - name: networking_data_transferred_captive_portal
+          type: INTEGER
+          mode: NULLABLE
+        - name: networking_doh_heuristics_attempts
+          type: INTEGER
+          mode: NULLABLE
+        - name: networking_doh_heuristics_pass_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: networking_doh_heuristics_result
           type: INTEGER
           mode: NULLABLE
         - name: networking_ftp_opened_channels_files
@@ -22219,6 +22273,18 @@ fields:
           mode: NULLABLE
         - name: services_sync_fxa_verification_method
           type: STRING
+          mode: NULLABLE
+        - name: shopping_component_opted_out
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: shopping_has_onboarded
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: shopping_nimbus_disabled
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: shopping_product_page_visits
+          type: INTEGER
           mode: NULLABLE
         - name: startup_first_run_is_from_dmg
           type: BOOLEAN
@@ -22487,6 +22553,9 @@ fields:
         - name: urlbar_persistedsearchterms_view_count
           type: INTEGER
           mode: NULLABLE
+        - name: urlbar_trending_block
+          type: INTEGER
+          mode: NULLABLE
         - name: urlbar_zeroprefix_abandonment
           type: INTEGER
           mode: NULLABLE
@@ -22564,51 +22633,6 @@ fields:
           mode: NULLABLE
         - name: widget_gtk_version
           type: STRING
-          mode: NULLABLE
-        - name: extensions_quarantined_domains_listsize
-          type: INTEGER
-          mode: NULLABLE
-        - name: first_startup_delete_tasks_time
-          type: INTEGER
-          mode: NULLABLE
-        - name: first_startup_normandy_init_time
-          type: INTEGER
-          mode: NULLABLE
-        - name: migration_time_to_produce_legacy_migrator_list
-          type: INTEGER
-          mode: NULLABLE
-        - name: migration_time_to_produce_migrator_list
-          type: INTEGER
-          mode: NULLABLE
-        - name: extensions_quarantined_domains_listhash
-          type: STRING
-          mode: NULLABLE
-        - name: extensions_quarantined_domains_remotehash
-          type: STRING
-          mode: NULLABLE
-        - name: shopping_component_opted_out
-          type: BOOLEAN
-          mode: NULLABLE
-        - name: shopping_has_onboarded
-          type: BOOLEAN
-          mode: NULLABLE
-        - name: shopping_nimbus_disabled
-          type: BOOLEAN
-          mode: NULLABLE
-        - name: urlbar_trending_block
-          type: INTEGER
-          mode: NULLABLE
-        - name: networking_doh_heuristics_attempts
-          type: INTEGER
-          mode: NULLABLE
-        - name: networking_doh_heuristics_pass_count
-          type: INTEGER
-          mode: NULLABLE
-        - name: networking_doh_heuristics_result
-          type: INTEGER
-          mode: NULLABLE
-        - name: shopping_product_page_visits
-          type: INTEGER
           mode: NULLABLE
     - name: socket
       type: RECORD
@@ -22807,6 +22831,16 @@ fields:
           - name: value
             type: STRING
             mode: NULLABLE
+        - name: http_connection_close_reason
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: STRING
+            mode: NULLABLE
         - name: https_rr_waiting_time
           type: RECORD
           mode: REPEATED
@@ -22858,6 +22892,16 @@ fields:
             type: STRING
             mode: NULLABLE
         - name: trr_relevant_skip_reason_trr_first
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: STRING
+            mode: NULLABLE
+        - name: trr_relevant_skip_reason_trr_first_type_rec
           type: RECORD
           mode: REPEATED
           fields:
@@ -22928,26 +22972,6 @@ fields:
             type: STRING
             mode: NULLABLE
         - name: uptake_remote_content_result_1
-          type: RECORD
-          mode: REPEATED
-          fields:
-          - name: key
-            type: STRING
-            mode: NULLABLE
-          - name: value
-            type: STRING
-            mode: NULLABLE
-        - name: trr_relevant_skip_reason_trr_first_type_rec
-          type: RECORD
-          mode: REPEATED
-          fields:
-          - name: key
-            type: STRING
-            mode: NULLABLE
-          - name: value
-            type: STRING
-            mode: NULLABLE
-        - name: http_connection_close_reason
           type: RECORD
           mode: REPEATED
           fields:
@@ -23121,6 +23145,16 @@ fields:
           - name: value
             type: STRING
             mode: NULLABLE
+        - name: http_connection_close_reason
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: STRING
+            mode: NULLABLE
         - name: https_rr_waiting_time
           type: RECORD
           mode: REPEATED
@@ -23172,6 +23206,16 @@ fields:
             type: STRING
             mode: NULLABLE
         - name: trr_relevant_skip_reason_trr_first
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: STRING
+            mode: NULLABLE
+        - name: trr_relevant_skip_reason_trr_first_type_rec
           type: RECORD
           mode: REPEATED
           fields:
@@ -23242,26 +23286,6 @@ fields:
             type: STRING
             mode: NULLABLE
         - name: uptake_remote_content_result_1
-          type: RECORD
-          mode: REPEATED
-          fields:
-          - name: key
-            type: STRING
-            mode: NULLABLE
-          - name: value
-            type: STRING
-            mode: NULLABLE
-        - name: trr_relevant_skip_reason_trr_first_type_rec
-          type: RECORD
-          mode: REPEATED
-          fields:
-          - name: key
-            type: STRING
-            mode: NULLABLE
-          - name: value
-            type: STRING
-            mode: NULLABLE
-        - name: http_connection_close_reason
           type: RECORD
           mode: REPEATED
           fields:

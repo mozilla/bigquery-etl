@@ -170,6 +170,9 @@ fields:
   - mode: NULLABLE
     name: dlsource
     type: STRING
+  - mode: NULLABLE
+    name: ua
+    type: STRING
   mode: NULLABLE
   name: attribution
   type: RECORD
@@ -2106,4 +2109,37 @@ fields:
     mode: NULLABLE
 - name: startup_profile_selection_reason_first
   type: STRING
+  mode: NULLABLE
+- name: first_document_id
+  type: STRING
+  mode: NULLABLE
+- name: partner_id
+  type: STRING
+  mode: NULLABLE
+- name: distribution_version
+  type: STRING
+  mode: NULLABLE
+- name: distributor
+  type: STRING
+  mode: NULLABLE
+- name: distributor_channel
+  type: STRING
+  mode: NULLABLE
+- name: env_build_platform_version
+  type: STRING
+  mode: NULLABLE
+- name: env_build_xpcom_abi
+  type: STRING
+  mode: NULLABLE
+- name: geo_db_version
+  type: STRING
+  mode: NULLABLE
+- name: apple_model_id
+  type: STRING
+  mode: NULLABLE
+- name: max_subsession_counter
+  type: INTEGER
+  mode: NULLABLE
+- name: min_subsession_counter
+  type: INTEGER
   mode: NULLABLE

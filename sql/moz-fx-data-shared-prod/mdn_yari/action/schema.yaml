@@ -358,6 +358,13 @@ fields:
         "not_baseline" the page is not baseline
 
         '
+    - name: navigator_geo_iso
+      type: STRING
+      mode: NULLABLE
+      description: 'The navigator''s two-letter ISO 3166 country code based on geo
+        ip.
+
+        '
   - name: quantity
     type: RECORD
     mode: NULLABLE

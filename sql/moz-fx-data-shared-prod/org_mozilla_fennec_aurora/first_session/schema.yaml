@@ -479,11 +479,20 @@ fields:
       description: 'The Meta attribution data in encrypted format.
 
         '
+    - name: play_store_attribution_install_referrer_response
+      type: STRING
+      mode: NULLABLE
+      description: 'The full install referrer response.
+
+        '
   - name: text
     type: RECORD
     mode: NULLABLE
     fields:
     - name: meta_attribution_data
+      type: STRING
+      mode: NULLABLE
+    - name: play_store_attribution_install_referrer_response
       type: STRING
       mode: NULLABLE
 - name: normalized_app_name

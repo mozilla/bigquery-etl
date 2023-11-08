@@ -87,7 +87,7 @@ IF
       -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   WHERE
-    DATE(submission_timestamp) >= "2023-11-07"
+    DATE(submission_timestamp) >= "2023-11-08"
   GROUP BY
     submission_date,
     window_start,

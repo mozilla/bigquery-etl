@@ -1499,6 +1499,22 @@ fields:
         Uses a single label due to only labeled counters being supported
 
         '
+    - name: search_service_initialization_status
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: "Counts the type of initialization statuses on start up.\nfailedSettings\
+        \ - failed loading and migrating the search settings file.\nfailedFetchEngines\
+        \ - failed to load or parse the configuration from remote\n              \
+        \       settings.\nfailedLoadEngines - failed to create all the search engines\
+        \ from the\n                    configuration or user installed engines.\n\
+        success - search service successfully initialized.\n"
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -1905,7 +1921,7 @@ fields:
       type: TIMESTAMP
       mode: NULLABLE
       description: 'Keep track of the timestamp of the most recent stash of the addons
-        blocklist. Only meaningful when mlbf_enabled is true.
+        blocklist.
 
         '
     - name: raw_blocklist_mlbf_stash_time_newest
@@ -1915,7 +1931,7 @@ fields:
       type: TIMESTAMP
       mode: NULLABLE
       description: 'Keep track of the timestamp of the oldest stash of the addons
-        blocklist. Only meaningful when mlbf_enabled is true.
+        blocklist.
 
         '
     - name: raw_blocklist_mlbf_stash_time_oldest
@@ -3596,6 +3612,92 @@ fields:
           mode: NULLABLE
       description: 'The time between processing OnStopRequest and processing OnDataFinished
         (if OnStopRequest comes first)
+
+        '
+    - name: perf_largest_contentful_paint
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time from navigation start to largest contentful paint.
+
+        '
+    - name: perf_largest_contentful_paint_from_response_start
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time from response start to largest contentful paint.
 
         '
   - name: quantity

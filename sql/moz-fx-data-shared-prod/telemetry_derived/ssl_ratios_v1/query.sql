@@ -26,7 +26,7 @@ FROM
             DATE(submission_timestamp) AS submission_date,
             environment.experiments
           FROM
-            `moz-fx-data-shared-prod.telemetry_stable.main_v4`
+            `moz-fx-data-shared-prod.telemetry_stable.main_v5`
         )
       WHERE
         sample_id = 42

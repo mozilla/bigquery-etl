@@ -13,7 +13,131 @@ SELECT
   document_id,
   events,
   metadata,
-  metrics,
+  STRUCT(
+    metrics.boolean,
+    metrics.counter,
+    metrics.custom_distribution,
+    STRUCT(
+      metrics.labeled_counter.crash_metrics_crash_count,
+      metrics.labeled_counter.gfx_content_frame_time_reason,
+      metrics.labeled_counter.glean_error_invalid_label,
+      metrics.labeled_counter.glean_error_invalid_overflow,
+      metrics.labeled_counter.glean_error_invalid_state,
+      metrics.labeled_counter.glean_error_invalid_value,
+      metrics.labeled_counter.logins_store_read_query_error_count,
+      metrics.labeled_counter.logins_store_unlock_error_count,
+      metrics.labeled_counter.logins_store_write_query_error_count,
+      metrics.labeled_counter.metrics_search_count,
+      metrics.labeled_counter.browser_search_ad_clicks,
+      metrics.labeled_counter.browser_search_in_content,
+      metrics.labeled_counter.browser_search_with_ads,
+      metrics.labeled_counter.glean_upload_ping_upload_failure,
+      metrics.labeled_counter.places_manager_read_query_error_count,
+      metrics.labeled_counter.places_manager_write_query_error_count,
+      metrics.labeled_counter.avif_bit_depth,
+      metrics.labeled_counter.avif_decode_result,
+      metrics.labeled_counter.avif_decoder,
+      metrics.labeled_counter.avif_yuv_color_space,
+      metrics.labeled_counter.media_audio_backend,
+      metrics.labeled_counter.media_audio_init_failure,
+      metrics.labeled_counter.glean_validation_pings_submitted,
+      metrics.labeled_counter.engine_tab_kills,
+      metrics.labeled_counter.perf_startup_startup_type,
+      metrics.labeled_counter.avif_alpha,
+      metrics.labeled_counter.avif_cicp_cp,
+      metrics.labeled_counter.avif_cicp_mc,
+      metrics.labeled_counter.avif_cicp_tc,
+      metrics.labeled_counter.avif_colr,
+      metrics.labeled_counter.avif_ispe,
+      metrics.labeled_counter.avif_pixi,
+      metrics.labeled_counter.wallpapers_new_wallpaper_applied,
+      metrics.labeled_counter.avif_a1lx,
+      metrics.labeled_counter.avif_a1op,
+      metrics.labeled_counter.avif_clap,
+      metrics.labeled_counter.avif_grid,
+      metrics.labeled_counter.avif_ipro,
+      metrics.labeled_counter.avif_lsel,
+      metrics.labeled_counter.avif_major_brand,
+      metrics.labeled_counter.avif_pasp,
+      metrics.labeled_counter.avif_sequence,
+      metrics.labeled_counter.power_cpu_time_per_process_type_ms,
+      metrics.labeled_counter.power_gpu_time_per_process_type_ms,
+      metrics.labeled_counter.power_wakeups_per_process_type,
+      metrics.labeled_counter.gmp_update_xml_fetch_result,
+      metrics.labeled_counter.recent_synced_tabs_recent_synced_tab_opened,
+      metrics.labeled_counter.recent_synced_tabs_recent_synced_tab_shown,
+      metrics.labeled_counter.tabs_tray_access_point,
+      metrics.labeled_counter.power_cpu_ms_per_thread_content_background,
+      metrics.labeled_counter.power_cpu_ms_per_thread_content_foreground,
+      metrics.labeled_counter.power_cpu_ms_per_thread_gpu_process,
+      metrics.labeled_counter.power_cpu_ms_per_thread_parent_active,
+      metrics.labeled_counter.power_cpu_ms_per_thread_parent_inactive,
+      metrics.labeled_counter.power_wakeups_per_thread_content_background,
+      metrics.labeled_counter.power_wakeups_per_thread_content_foreground,
+      metrics.labeled_counter.power_wakeups_per_thread_gpu_process,
+      metrics.labeled_counter.power_wakeups_per_thread_parent_active,
+      metrics.labeled_counter.power_wakeups_per_thread_parent_inactive,
+      metrics.labeled_counter.netwerk_early_hints,
+      metrics.labeled_counter.netwerk_eh_link_type,
+      metrics.labeled_counter.cookie_banners_click_result,
+      metrics.labeled_counter.power_cpu_time_per_tracker_type_ms,
+      metrics.labeled_counter.ipc_received_messages_content_background,
+      metrics.labeled_counter.ipc_received_messages_content_foreground,
+      metrics.labeled_counter.ipc_received_messages_gpu_process,
+      metrics.labeled_counter.ipc_received_messages_parent_active,
+      metrics.labeled_counter.ipc_received_messages_parent_inactive,
+      metrics.labeled_counter.ipc_sent_messages_content_background,
+      metrics.labeled_counter.ipc_sent_messages_content_foreground,
+      metrics.labeled_counter.ipc_sent_messages_gpu_process,
+      metrics.labeled_counter.ipc_sent_messages_parent_active,
+      metrics.labeled_counter.ipc_sent_messages_parent_inactive,
+      metrics.labeled_counter.cookie_banners_rule_lookup_by_domain,
+      metrics.labeled_counter.cookie_banners_rule_lookup_by_load,
+      metrics.labeled_counter.pdfjs_buttons,
+      metrics.labeled_counter.pdfjs_editing,
+      metrics.labeled_counter.network_data_size_pb_per_type,
+      metrics.labeled_counter.network_data_size_per_type,
+      metrics.labeled_counter.networking_speculative_connection_outcome,
+      metrics.labeled_counter.networking_speculative_connect_outcome,
+      metrics.labeled_counter.networking_cookie_timestamp_fixed_count,
+      metrics.labeled_counter.rtcrtpsender_setparameters_blame_length_changed,
+      metrics.labeled_counter.rtcrtpsender_setparameters_blame_no_getparameters,
+      metrics.labeled_counter.rtcrtpsender_setparameters_blame_no_transactionid,
+      metrics.labeled_counter.rtcrtpsender_setparameters_blame_stale_transactionid,
+      metrics.labeled_counter.dotprint_failure,
+      metrics.labeled_counter.pdfjs_geckoview,
+      metrics.labeled_counter.network_cors_authorization_header,
+      metrics.labeled_counter.metrics_bookmarks_add,
+      metrics.labeled_counter.metrics_bookmarks_delete,
+      metrics.labeled_counter.metrics_bookmarks_edit,
+      metrics.labeled_counter.metrics_bookmarks_open,
+      metrics.labeled_counter.extensions_apis_dnr_startup_cache_entries,
+      metrics.labeled_counter.pwmgr_form_autofill_result,
+      metrics.labeled_counter.extensions_process_event,
+      metrics.labeled_counter.data_storage_entries,
+      metrics.labeled_counter.pdfjs_stamp,
+      metrics.labeled_counter.fog_validation_gvsv_audio_stream_init,
+      metrics.labeled_counter.fog_validation_gvsv_audio_stream_init_gecko,
+      metrics.labeled_counter.fxa_client_error_count,
+      CAST(
+        NULL
+        AS
+          ARRAY<STRUCT<`key` STRING, `value` INTEGER>>
+      ) AS `fog_validation_gvsv_audio_stream_init_gvst`
+    ) AS `labeled_counter`,
+    metrics.quantity,
+    metrics.string,
+    metrics.string_list,
+    metrics.timing_distribution,
+    metrics.memory_distribution,
+    metrics.datetime,
+    metrics.timespan,
+    metrics.url2,
+    metrics.labeled_boolean,
+    metrics.rate,
+    metrics.uuid,
+    metrics.url
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,
@@ -139,7 +263,13 @@ SELECT
       metrics.labeled_counter.data_storage_entries,
       metrics.labeled_counter.pdfjs_stamp,
       metrics.labeled_counter.fog_validation_gvsv_audio_stream_init,
-      metrics.labeled_counter.fog_validation_gvsv_audio_stream_init_gecko
+      metrics.labeled_counter.fog_validation_gvsv_audio_stream_init_gecko,
+      metrics.labeled_counter.fxa_client_error_count,
+      CAST(
+        NULL
+        AS
+          ARRAY<STRUCT<`key` STRING, `value` INTEGER>>
+      ) AS `fog_validation_gvsv_audio_stream_init_gvst`
     ) AS `labeled_counter`,
     metrics.quantity,
     metrics.string,
@@ -321,7 +451,8 @@ SELECT
       metrics.counter.bloburl_resolve_stopped,
       metrics.counter.addons_extensions_process_ui_disable,
       metrics.counter.addons_extensions_process_ui_retry,
-      metrics.counter.shopping_product_page_visits
+      metrics.counter.shopping_product_page_visits,
+      metrics.counter.fxa_client_operation_count
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -456,7 +587,13 @@ SELECT
       metrics.labeled_counter.data_storage_entries,
       metrics.labeled_counter.pdfjs_stamp,
       metrics.labeled_counter.fog_validation_gvsv_audio_stream_init,
-      metrics.labeled_counter.fog_validation_gvsv_audio_stream_init_gecko
+      metrics.labeled_counter.fog_validation_gvsv_audio_stream_init_gecko,
+      metrics.labeled_counter.fxa_client_error_count,
+      CAST(
+        NULL
+        AS
+          ARRAY<STRUCT<`key` STRING, `value` INTEGER>>
+      ) AS `fog_validation_gvsv_audio_stream_init_gvst`
     ) AS `labeled_counter`,
     metrics.quantity,
     STRUCT(
@@ -645,7 +782,9 @@ SELECT
       metrics.timing_distribution.networking_http_content_html5parser_ondatafinished_to_onstop_delay_negative,
       metrics.timing_distribution.networking_http_content_ondatafinished_delay,
       metrics.timing_distribution.networking_http_content_ondatafinished_to_onstop_delay,
-      metrics.timing_distribution.networking_http_content_ondatafinished_to_onstop_delay_negative
+      metrics.timing_distribution.networking_http_content_ondatafinished_to_onstop_delay_negative,
+      metrics.timing_distribution.perf_largest_contentful_paint,
+      metrics.timing_distribution.perf_largest_contentful_paint_from_response_start
     ) AS `timing_distribution`,
     metrics.memory_distribution,
     metrics.datetime,
@@ -832,7 +971,8 @@ SELECT
       metrics.counter.bloburl_resolve_stopped,
       metrics.counter.addons_extensions_process_ui_disable,
       metrics.counter.addons_extensions_process_ui_retry,
-      metrics.counter.shopping_product_page_visits
+      metrics.counter.shopping_product_page_visits,
+      metrics.counter.fxa_client_operation_count
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -967,7 +1107,9 @@ SELECT
       metrics.labeled_counter.data_storage_entries,
       metrics.labeled_counter.pdfjs_stamp,
       metrics.labeled_counter.fog_validation_gvsv_audio_stream_init,
-      metrics.labeled_counter.fog_validation_gvsv_audio_stream_init_gecko
+      metrics.labeled_counter.fog_validation_gvsv_audio_stream_init_gecko,
+      metrics.labeled_counter.fxa_client_error_count,
+      metrics.labeled_counter.fog_validation_gvsv_audio_stream_init_gvst
     ) AS `labeled_counter`,
     metrics.quantity,
     STRUCT(
@@ -1156,7 +1298,9 @@ SELECT
       metrics.timing_distribution.networking_http_content_html5parser_ondatafinished_to_onstop_delay_negative,
       metrics.timing_distribution.networking_http_content_ondatafinished_delay,
       metrics.timing_distribution.networking_http_content_ondatafinished_to_onstop_delay,
-      metrics.timing_distribution.networking_http_content_ondatafinished_to_onstop_delay_negative
+      metrics.timing_distribution.networking_http_content_ondatafinished_to_onstop_delay_negative,
+      metrics.timing_distribution.perf_largest_contentful_paint,
+      metrics.timing_distribution.perf_largest_contentful_paint_from_response_start
     ) AS `timing_distribution`,
     metrics.memory_distribution,
     metrics.datetime,
@@ -1301,7 +1445,13 @@ SELECT
       metrics.labeled_counter.data_storage_entries,
       metrics.labeled_counter.pdfjs_stamp,
       metrics.labeled_counter.fog_validation_gvsv_audio_stream_init,
-      metrics.labeled_counter.fog_validation_gvsv_audio_stream_init_gecko
+      metrics.labeled_counter.fog_validation_gvsv_audio_stream_init_gecko,
+      metrics.labeled_counter.fxa_client_error_count,
+      CAST(
+        NULL
+        AS
+          ARRAY<STRUCT<`key` STRING, `value` INTEGER>>
+      ) AS `fog_validation_gvsv_audio_stream_init_gvst`
     ) AS `labeled_counter`,
     metrics.quantity,
     metrics.string,

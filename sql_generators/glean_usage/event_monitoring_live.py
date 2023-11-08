@@ -111,7 +111,7 @@ class EventMonitoringLive(GleanTable):
             s.bq_dataset_family
             for s in get_stable_table_schemas()
             if s.schema_id == "moz://mozilla.org/schemas/glean/ping/1"
-            and s.bq_table == "event_v1"
+            and s.bq_table == "events_v1"
         ]
 
         aggregate_table = "event_monitoring_aggregates_v1"

@@ -25,7 +25,6 @@ parser.add_argument("--source_projects", nargs="+", default=DEFAULT_PROJECTS)
 parser.add_argument("--destination_project", default="moz-fx-data-shared-prod")
 parser.add_argument("--destination_dataset", default="monitoring_derived")
 parser.add_argument("--destination_table", default="bigquery_usage_v2")
-parser.add_argument("--tmp_table", default="bq_jobs_by_project_tmp")
 
 
 def create_query(date, project):
@@ -78,6 +77,8 @@ def create_query(date, project):
         `moz-fx-data-shared-prod.region-us.INFORMATION_SCHEMA.JOBS_BY_PROJECT` jp
       LEFT JOIN
         UNNEST(referenced_tables) AS referenced_tables
+      WHERE
+        DATE(creation_time) = '{date}'
       UNION ALL
       SELECT
         jp.project_id AS source_project,
@@ -93,6 +94,8 @@ def create_query(date, project):
         `mozdata.region-us.INFORMATION_SCHEMA.JOBS_BY_PROJECT` jp
       LEFT JOIN
         UNNEST(referenced_tables) AS referenced_tables
+      WHERE
+        DATE(creation_time) = '{date}'
       UNION ALL
       SELECT
         jp.project_id AS source_project,
@@ -108,6 +111,8 @@ def create_query(date, project):
         `moz-fx-data-marketing-prod.region-us.INFORMATION_SCHEMA.JOBS_BY_PROJECT` jp
       LEFT JOIN
         UNNEST(referenced_tables) AS referenced_tables
+      WHERE
+        DATE(creation_time) = '{date}'
       )
       SELECT
         jo.source_project,

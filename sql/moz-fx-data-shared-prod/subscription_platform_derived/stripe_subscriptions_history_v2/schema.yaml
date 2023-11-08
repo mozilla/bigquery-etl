@@ -469,6 +469,11 @@ fields:
     type: BOOLEAN
     mode: NULLABLE
     description: Whether the subscription has charges identified as fraudulent.
+  - name: has_fraudulent_charge_refunds
+    type: BOOLEAN
+    mode: NULLABLE
+    description: Whether refunds have been issued for subscription charges identified
+      as fraudulent.
 - name: customer
   type: RECORD
   mode: NULLABLE

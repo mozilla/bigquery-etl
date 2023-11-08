@@ -80,7 +80,18 @@ subscriptions_history_invoice_summaries AS (
         AND charges.fraud_details_user_report IS DISTINCT FROM 'safe'
       )
       OR (refunds.reason = 'fraudulent' AND refunds.status = 'succeeded')
-    ) AS has_fraudulent_charges
+    ) AS has_fraudulent_charges,
+    LOGICAL_OR(
+      refunds.status = 'succeeded'
+      AND (
+        charges.fraud_details_user_report = 'fraudulent'
+        OR (
+          charges.fraud_details_stripe_report = 'fraudulent'
+          AND charges.fraud_details_user_report IS DISTINCT FROM 'safe'
+        )
+        OR refunds.reason = 'fraudulent'
+      )
+    ) AS has_fraudulent_charge_refunds
   FROM
     `moz-fx-data-shared-prod.stripe_external.invoice_v1` AS invoices
   JOIN
@@ -132,7 +143,11 @@ SELECT
         ELSE invoice_summaries.latest_card_country
       END AS country_code,
       COALESCE(invoice_summaries.has_refunds, FALSE) AS has_refunds,
-      COALESCE(invoice_summaries.has_fraudulent_charges, FALSE) AS has_fraudulent_charges
+      COALESCE(invoice_summaries.has_fraudulent_charges, FALSE) AS has_fraudulent_charges,
+      COALESCE(
+        invoice_summaries.has_fraudulent_charge_refunds,
+        FALSE
+      ) AS has_fraudulent_charge_refunds
   ) AS subscription,
   history.customer
 FROM

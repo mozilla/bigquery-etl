@@ -198,6 +198,7 @@ SELECT
     history.subscription.auto_renew_disabled_at,
     history.subscription.has_refunds,
     history.subscription.has_fraudulent_charges,
+    history.subscription.has_fraudulent_charge_refunds,
     subscription_attributions.first_touch_attribution,
     subscription_attributions.last_touch_attribution
   ) AS subscription

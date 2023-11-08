@@ -123,7 +123,8 @@ SELECT
     -- TODO: promotion_codes
     -- TODO: promotion_discounts_amount
     history.subscription.has_refunds,
-    history.subscription.has_fraudulent_charges
+    history.subscription.has_fraudulent_charges,
+    history.subscription.has_fraudulent_charge_refunds
   ) AS subscription
 FROM
   active_subscriptions_history AS history

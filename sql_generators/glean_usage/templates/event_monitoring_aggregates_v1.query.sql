@@ -88,7 +88,7 @@
     version,
     experiment,
     experiment_branch
-{% elif dataset in ["accounts_frontend", "accounts_backend"] %}
+{% elif dataset['bq_dataset_family'] in ["accounts_frontend", "accounts_backend"] %}
   {% if not outer_loop.first -%}
   UNION ALL
   {% endif -%}

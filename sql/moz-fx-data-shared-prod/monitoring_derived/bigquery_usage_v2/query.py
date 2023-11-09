@@ -165,7 +165,7 @@ def main():
     client = bigquery.Client(project)
     client.delete_table(destination_table, not_found_ok=True)
 
-    # for project in args.source_projects:
+    # for project in args.source_projects: -- this will be used in a future refactoring
     query = create_query(args.date, project)
     job_config = bigquery.QueryJobConfig(
         destination=destination_table, write_disposition="WRITE_APPEND"

@@ -6,9 +6,10 @@ description: |-
   country, city, device model, distribution_id, os details
   and activity segment.
 
-  dau is counting the daily active users that are considered qualified.
-  all_dau counts both qualified and unqualified daily active users.
-  Only dau is exposed in the user-facing view telemetry.active_users_aggregates.
+  - dau is counting the daily active users that are considered qualified.
+  - daily_users counts all the active users including both qualified and
+    unqualified.
+  Only dau is exposed in the view telemetry.active_users_aggregates.
 
   The table is labeled as "change_controlled", which implies
   that changes require the approval of at least one owner.

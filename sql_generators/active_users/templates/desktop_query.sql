@@ -74,7 +74,7 @@ SELECT
     active_hours_sum,
     first_seen_date
   ),
-  COUNT(DISTINCT IF(days_since_seen = 0, client_id, NULL)) AS all_dau,
+  COUNT(DISTINCT IF(days_since_seen = 0, client_id, NULL)) AS daily_users,
   COUNT(DISTINCT IF(days_since_seen < 7, client_id, NULL)) AS wau,
   COUNT(DISTINCT client_id) AS mau,
   COUNT(

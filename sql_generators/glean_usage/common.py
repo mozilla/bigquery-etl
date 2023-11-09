@@ -51,13 +51,13 @@ def write_dataset_metadata(output_dir, full_table_id, derived_dataset_metadata=F
         target.write_text(rendered)
 
 
-def list_baseline_tables(project_id, only_tables, table_filter):
+def list_tables(project_id, only_tables, table_filter, table_name="baseline_v1"):
     """Return names of all matching baseline tables in shared-prod."""
     prod_baseline_tables = [
         s.stable_table
         for s in get_stable_table_schemas()
         if s.schema_id == "moz://mozilla.org/schemas/glean/ping/1"
-        and s.bq_table == "baseline_v1"
+        and s.bq_table == table_name
     ]
     prod_datasets_with_baseline = [t.split(".")[0] for t in prod_baseline_tables]
     stable_datasets = prod_datasets_with_baseline
@@ -78,9 +78,9 @@ def list_baseline_tables(project_id, only_tables, table_filter):
             if d.endswith("_stable") and d in prod_datasets_with_baseline
         }
     return [
-        f"{project_id}.{d}.baseline_v1"
+        f"{project_id}.{d}.{table_name}"
         for d in stable_datasets
-        if table_filter(f"{d}.baseline_v1")
+        if table_filter(f"{d}.{table_name}")
     ]
 
 
@@ -163,6 +163,7 @@ class GleanTable:
         self.per_app_enabled = True
         self.across_apps_enabled = True
         self.cross_channel_template = "cross_channel.view.sql"
+        self.base_table_name = "baseline_v1"
 
     def skip_existing(self, output_dir="sql/", project_id="moz-fx-data-shared-prod"):
         """Existing files configured not to be overridden during generation."""

@@ -14,7 +14,7 @@ IF
           ),
           HOUR
         ),
-        -- Aggregates event counts over 30-minute intervals
+        -- Aggregates event counts over 60-minute intervals
         INTERVAL(
           DIV(
             EXTRACT(
@@ -60,11 +60,38 @@ IF
       '{{ app_name }}' AS normalized_app_name,
       normalized_channel,
       client_info.app_display_version AS version,
+      -- Access experiment information.
+      -- Additional iteration is necessary to aggregate total event count across experiments
+      -- which is denoted with "*".
+      -- Some clients are enrolled in multiple experiments, so simply summing up the totals 
+      -- across all the experiments would double count events.
+      CASE 
+        experiment_index 
+      WHEN 
+        ARRAY_LENGTH(ping_info.experiments) 
+      THEN 
+        "*" 
+      ELSE 
+        ping_info.experiments[SAFE_OFFSET(experiment_index)].key 
+      END AS experiment,
+      CASE 
+        experiment_index 
+      WHEN 
+        ARRAY_LENGTH(ping_info.experiments) 
+      THEN 
+        "*" 
+      ELSE 
+        ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch 
+      END AS experiment_branch,
       COUNT(*) AS total_events
     FROM
       `{{ project_id }}.{{ dataset }}_live.events_v1`
     CROSS JOIN
       UNNEST(events) AS event,
+      -- Iterator for accessing experiments.
+      -- Add one more for aggregating events across all experiments
+      UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
+    LEFT JOIN
       UNNEST(event.extra) AS event_extra
     {% elif dataset_id in ["accounts_frontend", "accounts_backend"] %}
       -- FxA uses custom pings to send events without a category and extras.
@@ -72,7 +99,7 @@ IF
       DATE(submission_timestamp) AS submission_date,
       TIMESTAMP_ADD(
         TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
-        -- Aggregates event counts over 30-minute intervals
+        -- Aggregates event counts over 60-minute intervals
         INTERVAL(
           DIV(
             EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)),
@@ -98,9 +125,36 @@ IF
       '{{ app_name }}' AS normalized_app_name,
       normalized_channel,
       client_info.app_display_version AS VERSION,
+      -- Access experiment information.
+      -- Additional iteration is necessary to aggregate total event count across experiments
+      -- which is denoted with "*".
+      -- Some clients are enrolled in multiple experiments, so simply summing up the totals 
+      -- across all the experiments would double count events.
+      CASE 
+        experiment_index 
+      WHEN 
+        ARRAY_LENGTH(ping_info.experiments) 
+      THEN 
+        "*" 
+      ELSE 
+        ping_info.experiments[SAFE_OFFSET(experiment_index)].key 
+      END AS experiment,
+      CASE 
+        experiment_index 
+      WHEN 
+        ARRAY_LENGTH(ping_info.experiments) 
+      THEN 
+        "*" 
+      ELSE 
+        ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch 
+      END AS experiment_branch,
       COUNT(*) AS total_events
     FROM
       `{{ project_id }}.{{ dataset }}_live.accounts_events_v1`
+    CROSS JOIN
+      -- Iterator for accessing experiments.
+      -- Add one more for aggregating events across all experiments
+      UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
     {% endif %}
     WHERE
       DATE(submission_timestamp) >= "{{ current_date }}"
@@ -114,4 +168,6 @@ IF
       country,
       normalized_app_name,
       normalized_channel,
-      version
+      version,
+      experiment,
+      experiment_branch

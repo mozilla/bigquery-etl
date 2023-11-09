@@ -153,7 +153,7 @@ Example:
 {{ not_null(["submission_date", "os"], "submission_date = @submission_date") }}
 ```
 
-### period_over_period_change ([source](../../tests/checks/period_over_period_change.jinja))
+### revenue_period_over_period_change ([source](../../tests/checks/revenue_period_over_period_change.jinja))
 
 Usage:
 

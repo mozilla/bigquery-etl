@@ -537,6 +537,42 @@ SELECT
   experiment_branch,
   total_events
 FROM
+  `moz-fx-data-shared-prod.org_mozilla_bergamot_derived.event_monitoring_live_v1`
+WHERE
+  submission_date > DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY)
+UNION ALL
+SELECT
+  window_start,
+  window_end,
+  event_category,
+  event_name,
+  event_extra_key,
+  country,
+  normalized_app_name,
+  normalized_channel,
+  version,
+  experiment,
+  experiment_branch,
+  total_events
+FROM
+  `moz-fx-data-shared-prod.firefox_translations_derived.event_monitoring_live_v1`
+WHERE
+  submission_date > DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY)
+UNION ALL
+SELECT
+  window_start,
+  window_end,
+  event_category,
+  event_name,
+  event_extra_key,
+  country,
+  normalized_app_name,
+  normalized_channel,
+  version,
+  experiment,
+  experiment_branch,
+  total_events
+FROM
   `moz-fx-data-shared-prod.mozillavpn_derived.event_monitoring_live_v1`
 WHERE
   submission_date > DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY)
@@ -609,7 +645,115 @@ SELECT
   experiment_branch,
   total_events
 FROM
+  `moz-fx-data-shared-prod.glean_dictionary_derived.event_monitoring_live_v1`
+WHERE
+  submission_date > DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY)
+UNION ALL
+SELECT
+  window_start,
+  window_end,
+  event_category,
+  event_name,
+  event_extra_key,
+  country,
+  normalized_app_name,
+  normalized_channel,
+  version,
+  experiment,
+  experiment_branch,
+  total_events
+FROM
+  `moz-fx-data-shared-prod.mdn_yari_derived.event_monitoring_live_v1`
+WHERE
+  submission_date > DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY)
+UNION ALL
+SELECT
+  window_start,
+  window_end,
+  event_category,
+  event_name,
+  event_extra_key,
+  country,
+  normalized_app_name,
+  normalized_channel,
+  version,
+  experiment,
+  experiment_branch,
+  total_events
+FROM
+  `moz-fx-data-shared-prod.bedrock_derived.event_monitoring_live_v1`
+WHERE
+  submission_date > DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY)
+UNION ALL
+SELECT
+  window_start,
+  window_end,
+  event_category,
+  event_name,
+  event_extra_key,
+  country,
+  normalized_app_name,
+  normalized_channel,
+  version,
+  experiment,
+  experiment_branch,
+  total_events
+FROM
+  `moz-fx-data-shared-prod.viu_politica_derived.event_monitoring_live_v1`
+WHERE
+  submission_date > DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY)
+UNION ALL
+SELECT
+  window_start,
+  window_end,
+  event_category,
+  event_name,
+  event_extra_key,
+  country,
+  normalized_app_name,
+  normalized_channel,
+  version,
+  experiment,
+  experiment_branch,
+  total_events
+FROM
+  `moz-fx-data-shared-prod.treeherder_derived.event_monitoring_live_v1`
+WHERE
+  submission_date > DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY)
+UNION ALL
+SELECT
+  window_start,
+  window_end,
+  event_category,
+  event_name,
+  event_extra_key,
+  country,
+  normalized_app_name,
+  normalized_channel,
+  version,
+  experiment,
+  experiment_branch,
+  total_events
+FROM
   `moz-fx-data-shared-prod.firefox_desktop_background_tasks_derived.event_monitoring_live_v1`
+WHERE
+  submission_date > DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY)
+UNION ALL
+SELECT
+  window_start,
+  window_end,
+  event_category,
+  event_name,
+  event_extra_key,
+  country,
+  normalized_app_name,
+  normalized_channel,
+  version,
+  experiment,
+  experiment_branch,
+  total_events
+FROM
+  `moz-fx-data-shared-prod.accounts_frontend_derived.event_monitoring_live_v1`
 WHERE
   submission_date > DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY)
 UNION ALL
@@ -646,6 +790,42 @@ SELECT
   total_events
 FROM
   `moz-fx-data-shared-prod.monitor_cirrus_derived.event_monitoring_live_v1`
+WHERE
+  submission_date > DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY)
+UNION ALL
+SELECT
+  window_start,
+  window_end,
+  event_category,
+  event_name,
+  event_extra_key,
+  country,
+  normalized_app_name,
+  normalized_channel,
+  version,
+  experiment,
+  experiment_branch,
+  total_events
+FROM
+  `moz-fx-data-shared-prod.debug_ping_view_derived.event_monitoring_live_v1`
+WHERE
+  submission_date > DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY)
+UNION ALL
+SELECT
+  window_start,
+  window_end,
+  event_category,
+  event_name,
+  event_extra_key,
+  country,
+  normalized_app_name,
+  normalized_channel,
+  version,
+  experiment,
+  experiment_branch,
+  total_events
+FROM
+  `moz-fx-data-shared-prod.monitor_frontend_derived.event_monitoring_live_v1`
 WHERE
   submission_date > DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY)
 UNION ALL

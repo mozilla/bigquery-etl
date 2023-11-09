@@ -82,12 +82,13 @@ IF
     `moz-fx-data-shared-prod.org_mozilla_vrbrowser_live.events_v1`
   CROSS JOIN
     UNNEST(events) AS event,
-    UNNEST(event.extra) AS event_extra,
       -- Iterator for accessing experiments.
       -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
+  LEFT JOIN
+    UNNEST(event.extra) AS event_extra
   WHERE
-    DATE(submission_timestamp) >= "2023-11-08"
+    DATE(submission_timestamp) >= "2023-11-09"
   GROUP BY
     submission_date,
     window_start,

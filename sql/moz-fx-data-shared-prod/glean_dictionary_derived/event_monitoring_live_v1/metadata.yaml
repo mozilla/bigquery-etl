@@ -1,0 +1,20 @@
+friendly_name: Event Monitoring Live
+description: |-
+  Materialized view of experimentation related events
+  coming from .
+owners:
+- ascholtz@mozilla.com
+- akomar@mozilla.com
+labels:
+  materialized_view: true
+  owner1: ascholtz
+  owner2: akomar
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  init.sql:
+  - moz-fx-data-shared-prod.glean_dictionary_live.events_v1
+deprecated: false

@@ -7994,6 +7994,78 @@ fields:
     - name: use_counter2_deprecated_is_external_ctap2_security_key_supported_page
       type: STRING
       mode: NULLABLE
+    - name: use_counter2_mixedcontentnotupgradedaudiofailure_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_mixedcontentnotupgradedaudiofailure_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_mixedcontentnotupgradedaudiosuccess_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_mixedcontentnotupgradedaudiosuccess_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_mixedcontentnotupgradedimagefailure_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_mixedcontentnotupgradedimagefailure_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_mixedcontentnotupgradedimagesuccess_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_mixedcontentnotupgradedimagesuccess_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_mixedcontentnotupgradedvideofailure_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_mixedcontentnotupgradedvideofailure_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_mixedcontentnotupgradedvideosuccess_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_mixedcontentnotupgradedvideosuccess_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_mixedcontentupgradedaudiofailure_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_mixedcontentupgradedaudiofailure_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_mixedcontentupgradedaudiosuccess_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_mixedcontentupgradedaudiosuccess_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_mixedcontentupgradedimagefailure_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_mixedcontentupgradedimagefailure_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_mixedcontentupgradedimagesuccess_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_mixedcontentupgradedimagesuccess_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_mixedcontentupgradedvideofailure_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_mixedcontentupgradedvideofailure_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_mixedcontentupgradedvideosuccess_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_mixedcontentupgradedvideosuccess_page
+      type: STRING
+      mode: NULLABLE
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -15855,6 +15927,78 @@ fields:
           type: STRING
           mode: NULLABLE
         - name: use_counter2_deprecated_is_external_ctap2_security_key_supported_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_mixedcontentnotupgradedaudiofailure_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_mixedcontentnotupgradedaudiofailure_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_mixedcontentnotupgradedaudiosuccess_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_mixedcontentnotupgradedaudiosuccess_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_mixedcontentnotupgradedimagefailure_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_mixedcontentnotupgradedimagefailure_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_mixedcontentnotupgradedimagesuccess_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_mixedcontentnotupgradedimagesuccess_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_mixedcontentnotupgradedvideofailure_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_mixedcontentnotupgradedvideofailure_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_mixedcontentnotupgradedvideosuccess_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_mixedcontentnotupgradedvideosuccess_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_mixedcontentupgradedaudiofailure_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_mixedcontentupgradedaudiofailure_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_mixedcontentupgradedaudiosuccess_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_mixedcontentupgradedaudiosuccess_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_mixedcontentupgradedimagefailure_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_mixedcontentupgradedimagefailure_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_mixedcontentupgradedimagesuccess_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_mixedcontentupgradedimagesuccess_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_mixedcontentupgradedvideofailure_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_mixedcontentupgradedvideofailure_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_mixedcontentupgradedvideosuccess_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_mixedcontentupgradedvideosuccess_page
           type: STRING
           mode: NULLABLE
 - name: sample_id

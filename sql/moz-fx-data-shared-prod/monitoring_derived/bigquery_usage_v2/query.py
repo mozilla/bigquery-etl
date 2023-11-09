@@ -31,6 +31,7 @@ parser.add_argument("--tmp_table", default="bq_jobs_by_project_tmp")
 def create_jobs_by_org_tmp_table(project, date, source_projects, tmp_table_name):
     """Create temp table to capture data from INFORMATION_SCHEMA.JOBS_BY_PROJECT."""
     # remove old table in case of re-run
+
     client = bigquery.Client(project)
     client.delete_table(tmp_table_name, not_found_ok=True)
 
@@ -49,10 +50,10 @@ def create_jobs_by_org_tmp_table(project, date, source_projects, tmp_table_name)
     client.create_table(tmp_table)
 
     for source_project in source_projects:
-        query = f"""jobs_by_project AS (
+        query = f"""
             SELECT
               "{source_project}" AS source_project,
-              date(creation_time) as creation_date,
+              DATE(creation_time) as creation_date,
               job_id,
               referenced_tables.project_id AS reference_project_id,
               referenced_tables.dataset_id AS reference_dataset_id,
@@ -65,18 +66,18 @@ def create_jobs_by_org_tmp_table(project, date, source_projects, tmp_table_name)
             LEFT JOIN
               UNNEST(referenced_tables) AS referenced_tables
             WHERE
-                DATE(creation_time) = '{date}'
-            )
-
+              creation_time is not null
+                AND
+              DATE(creation_time) = DATE('{date}')
           """
-    try:
-        job_config = bigquery.QueryJobConfig(
-            destination=tmp_table_name, write_disposition="WRITE_APPEND"
-        )
-        client.query(query, job_config=job_config).result()
+        try:
+            job_config = bigquery.QueryJobConfig(
+                destination=tmp_table_name, write_disposition="WRITE_APPEND"
+            )
+            client.query(query, job_config=job_config).result()
 
-    except Exception as e:
-        print(f"Error querying dataset {source_project}: {e}")
+        except Exception as e:
+            print(f"Error querying dataset {source_project}: {e}")
 
 
 def create_query(date, tmp_table_name):
@@ -113,7 +114,7 @@ def create_query(date, tmp_table_name):
         `moz-fx-data-shared-prod.monitoring_derived.jobs_by_organization_v1` AS t1
       LEFT JOIN
         UNNEST(referenced_tables) AS referenced_tables
-      ),
+      )
       SELECT
         jo.source_project,
         jo.creation_date,
@@ -150,6 +151,7 @@ def create_query(date, tmp_table_name):
           reference_dataset_id,
           reference_table_id)
       WHERE creation_date > '2023-03-01'
+      AND DATE('{date}') = creation_date
     """
 
 
@@ -164,7 +166,6 @@ def main():
     # remove old partition in case of re-run
     client = bigquery.Client(project)
     client.delete_table(destination_table, not_found_ok=True)
-
     # for project in args.source_projects:
     create_jobs_by_org_tmp_table(
         project, args.date, args.source_projects, tmp_table_name
@@ -172,7 +173,11 @@ def main():
     client = bigquery.Client(project)
     query = create_query(args.date, tmp_table_name)
     job_config = bigquery.QueryJobConfig(
-        destination=destination_table, write_disposition="WRITE_APPEND"
+        destination=destination_table,
+        write_disposition="WRITE_APPEND",
+        time_partitioning=bigquery.TimePartitioning(
+            type_=bigquery.TimePartitioningType.DAY, field="submission_date"
+        ),
     )
     client.query(query, job_config=job_config).result()
 

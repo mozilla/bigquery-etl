@@ -10,7 +10,7 @@
     @submission_date AS submission_date,
     TIMESTAMP_ADD(
       TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
-    -- Aggregates event counts over 30-minute intervals
+    -- Aggregates event counts over 60-minute intervals
       INTERVAL(
         DIV(
           EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)),
@@ -68,10 +68,11 @@
     `{{ project_id }}.{{ dataset['bq_dataset_family'] }}_stable.events_v1`
   CROSS JOIN
     UNNEST(events) AS event,
-    UNNEST(event.extra) AS event_extra,
     -- Iterator for accessing experiments.
     -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
+  LEFT JOIN
+    UNNEST(event.extra) AS event_extra
   WHERE 
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -96,7 +97,7 @@
     @submission_date AS submission_date,
     TIMESTAMP_ADD(
       TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
-      -- Aggregates event counts over 30-minute intervals
+      -- Aggregates event counts over 60-minute intervals
       INTERVAL(
         DIV(
           EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)),

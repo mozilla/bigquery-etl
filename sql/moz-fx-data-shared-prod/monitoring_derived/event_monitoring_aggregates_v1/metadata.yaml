@@ -29,6 +29,8 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
+  - moz-fx-data-shared-prod.accounts_backend_stable.accounts_events_v1
+  - moz-fx-data-shared-prod.accounts_frontend_stable.accounts_events_v1
   - moz-fx-data-shared-prod.bedrock_stable.events_v1
   - moz-fx-data-shared-prod.burnham_stable.events_v1
   - moz-fx-data-shared-prod.debug_ping_view_stable.events_v1

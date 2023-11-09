@@ -2746,6 +2746,134 @@ GROUP BY
   experiment,
   experiment_branch
 UNION ALL
+  -- FxA uses custom pings to send events without a category and extras.
+SELECT
+  @submission_date AS submission_date,
+  TIMESTAMP_ADD(
+    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
+      -- Aggregates event counts over 60-minute intervals
+    INTERVAL(
+      DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) * 60
+    ) MINUTE
+  ) AS window_start,
+  TIMESTAMP_ADD(
+    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
+    INTERVAL(
+      (
+        DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) + 1
+      ) * 60
+    ) MINUTE
+  ) AS window_end,
+  NULL AS event_category,
+  metrics.string.event_name,
+  NULL AS event_extra_key,
+  normalized_country_code AS country,
+  "Firefox Accounts Frontend" AS normalized_app_name,
+  normalized_channel,
+  client_info.app_display_version AS version,
+    -- Access experiment information.
+    -- Additional iteration is necessary to aggregate total event count across experiments
+    -- which is denoted with "*".
+    -- Some clients are enrolled in multiple experiments, so simply summing up the totals
+    -- across all the experiments would double count events.
+  CASE
+    experiment_index
+    WHEN ARRAY_LENGTH(ping_info.experiments)
+      THEN "*"
+    ELSE ping_info.experiments[SAFE_OFFSET(experiment_index)].key
+  END AS experiment,
+  CASE
+    experiment_index
+    WHEN ARRAY_LENGTH(ping_info.experiments)
+      THEN "*"
+    ELSE ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch
+  END AS experiment_branch,
+  COUNT(*) AS total_events
+FROM
+  `moz-fx-data-shared-prod.accounts_frontend_stable.accounts_events_v1`
+CROSS JOIN
+    -- Iterator for accessing experiments.
+    -- Add one more for aggregating events across all experiments
+  UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
+WHERE
+  DATE(submission_timestamp) = @submission_date
+GROUP BY
+  window_start,
+  window_end,
+  event_category,
+  event_name,
+  event_extra_key,
+  country,
+  normalized_app_name,
+  normalized_channel,
+  version,
+  experiment,
+  experiment_branch
+UNION ALL
+  -- FxA uses custom pings to send events without a category and extras.
+SELECT
+  @submission_date AS submission_date,
+  TIMESTAMP_ADD(
+    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
+      -- Aggregates event counts over 60-minute intervals
+    INTERVAL(
+      DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) * 60
+    ) MINUTE
+  ) AS window_start,
+  TIMESTAMP_ADD(
+    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
+    INTERVAL(
+      (
+        DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) + 1
+      ) * 60
+    ) MINUTE
+  ) AS window_end,
+  NULL AS event_category,
+  metrics.string.event_name,
+  NULL AS event_extra_key,
+  normalized_country_code AS country,
+  "Firefox Accounts Backend" AS normalized_app_name,
+  normalized_channel,
+  client_info.app_display_version AS version,
+    -- Access experiment information.
+    -- Additional iteration is necessary to aggregate total event count across experiments
+    -- which is denoted with "*".
+    -- Some clients are enrolled in multiple experiments, so simply summing up the totals
+    -- across all the experiments would double count events.
+  CASE
+    experiment_index
+    WHEN ARRAY_LENGTH(ping_info.experiments)
+      THEN "*"
+    ELSE ping_info.experiments[SAFE_OFFSET(experiment_index)].key
+  END AS experiment,
+  CASE
+    experiment_index
+    WHEN ARRAY_LENGTH(ping_info.experiments)
+      THEN "*"
+    ELSE ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch
+  END AS experiment_branch,
+  COUNT(*) AS total_events
+FROM
+  `moz-fx-data-shared-prod.accounts_backend_stable.accounts_events_v1`
+CROSS JOIN
+    -- Iterator for accessing experiments.
+    -- Add one more for aggregating events across all experiments
+  UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
+WHERE
+  DATE(submission_timestamp) = @submission_date
+GROUP BY
+  window_start,
+  window_end,
+  event_category,
+  event_name,
+  event_extra_key,
+  country,
+  normalized_app_name,
+  normalized_channel,
+  version,
+  experiment,
+  experiment_branch
+UNION ALL
 SELECT
   @submission_date AS submission_date,
   TIMESTAMP_ADD(

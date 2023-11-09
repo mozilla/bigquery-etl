@@ -21,7 +21,7 @@ from sql_generators.glean_usage import (
     metrics_clients_daily,
     metrics_clients_last_seen,
 )
-from sql_generators.glean_usage.common import get_app_info, list_baseline_tables
+from sql_generators.glean_usage.common import get_app_info, list_tables
 
 # list of methods for generating queries
 GLEAN_TABLES = [
@@ -97,19 +97,21 @@ def generate(
     elif exclude:
         table_filter = partial(table_matches_patterns, exclude, True)
 
-    baseline_tables = list_baseline_tables(
-        project_id=target_project,
-        only_tables=[only] if only else None,
-        table_filter=table_filter,
-    )
+    def get_tables(table_name="baseline_v1"):
+        baseline_tables = list_tables(
+            project_id=target_project,
+            only_tables=[only] if only else None,
+            table_filter=table_filter,
+            table_name=table_name,
+        )
 
-    # filter out skipped apps
-    baseline_tables = [
-        baseline_table
-        for baseline_table in baseline_tables
-        if baseline_table.split(".")[1]
-        not in [f"{skipped_app}_stable" for skipped_app in SKIP_APPS]
-    ]
+        # filter out skipped apps
+        return [
+            baseline_table
+            for baseline_table in baseline_tables
+            if baseline_table.split(".")[1]
+            not in [f"{skipped_app}_stable" for skipped_app in SKIP_APPS]
+        ]
 
     output_dir = Path(output_dir) / target_project
 
@@ -134,8 +136,8 @@ def generate(
             ),
             baseline_table,
         )
-        for baseline_table in baseline_tables
         for table in GLEAN_TABLES
+        for baseline_table in get_tables(table_name=table.base_table_name)
     ]
 
     # Parameters to generate per-app datasets consist of the function to be called

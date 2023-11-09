@@ -31,7 +31,17 @@
         IF(
           COUNTIF(
             SAFE_DIVIDE(
-              {{ col }},
+              {{ col }} - LAG({{ col }})
+                OVER(
+                  {% if dimensions %}
+                    PARTITION BY
+                    {% for dim in dimensions %}
+                      {{ dim }}
+                    {{ ", " if not loop.last else "" }}
+                    {% endfor %}
+                  {% endif %}
+                  ORDER BY {{ period_column }} ASC
+                ),
               LAG({{ col }})
                 OVER(
                   {% if dimensions %}

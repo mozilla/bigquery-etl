@@ -1,0 +1,134 @@
+fields:
+
+- mode: NULLABLE
+  name: client_id
+  type: STRING
+  description: |
+    Unique ID for the client installation.
+
+- mode: NULLABLE
+  name: sample_id
+  type: INTEGER
+  description: |
+    Sample ID to limit query results during an analysis.
+
+- mode: NULLABLE
+  name: first_seen_date
+  type: DATE
+  description: |
+    Date when the app first reported a baseline ping for the client.
+
+- mode: NULLABLE
+  name: first_reported_country
+  type: STRING
+  description: |
+    First reported country for the client installation.
+
+- mode: NULLABLE
+  name: first_reported_isp
+  type: STRING
+  description: |
+    Name of the first reported isp (Internet Service Provider).
+
+- mode: NULLABLE
+  name: channel
+  type: STRING
+  description: |
+    Channel where the browser is released.
+
+- mode: NULLABLE
+  name: device_manufacturer
+  type: STRING
+  description: |
+    Manufacturer of the device where the client is installed.
+
+- mode: NULLABLE
+  name: device_model
+  type: STRING
+  description: |
+    Model of the device where the client is installed.
+
+- mode: NULLABLE
+  name: os_version
+  type: STRING
+  description: |
+    Version of the Operating System where the client is originally installed.
+
+- mode: NULLABLE
+  name: app_version
+  type: STRING
+  description: |
+    App display version for this client installation.
+
+- mode: NULLABLE
+  name: locale
+  type: STRING
+  description: |
+    Client's initial locale.
+
+- mode: NULLABLE
+  name: is_activated
+  type: BOOLEAN
+  description: |
+    Determines if a client is activated based on the activation metric and a 7 day lag.
+
+- mode: NULLABLE
+  name: submission_timestamp
+  type: TIMESTAMP
+  description: |
+    Timestamp of the ping which contained the adjust information.
+
+- mode: NULLABLE
+  name: adjust_ad_group
+  type: STRING
+  description: |
+    Structure parameter for the the ad group of a campaign.
+
+- mode: NULLABLE
+  name: adjust_campaign
+  type: STRING
+  description: |
+    Structure parameter for the campaign name.
+
+- mode: NULLABLE
+  name: adjust_creative
+  type: STRING
+  description: |
+    Structure parameter for the creative content of a campaign.
+
+- mode: NULLABLE
+  name: adjust_network
+  type: STRING
+  description: |
+    The type of source of a client installation.
+
+- mode: NULLABLE
+  name: install_source
+  type: STRING
+  description: |
+    This value is only sourced from the metrics ping.
+
+- mode: NULLABLE
+  name: metadata
+  type: RECORD
+  description: |
+    Additional context around the source of this record.
+
+  fields:
+  - mode: NULLABLE
+    name: reported_first_session_ping
+    type: BOOLEAN
+    description: |
+      True if the client ever reported a first_session ping.
+
+  - mode: NULLABLE
+    name: reported_metrics_ping
+    type: BOOLEAN
+    description: |
+      True if the client ever reported a metrics ping.
+
+  - mode: NULLABLE
+    name: adjust_info__source_ping
+    type: STRING
+    description: |
+      Ping from which the adjust_info values originate.

@@ -101,7 +101,7 @@ def create(name, sql_dir, project_id, owner):
     is_flag=True,
     default=False,
 )
-@parallelism_option
+@parallelism_option()
 @respect_dryrun_skip_option()
 @no_dryrun_option(default=False)
 @click.pass_context
@@ -170,7 +170,7 @@ def _view_is_valid(view):
     ),
 )
 @click.option("--log-level", default="INFO", help="Defaults to INFO")
-@parallelism_option
+@parallelism_option()
 @click.option(
     "--dry_run",
     "--dry-run",
@@ -311,7 +311,7 @@ def _collect_views(name, sql_dir, project_id, user_facing_only, skip_authorized)
     ),
 )
 @click.option("--log-level", default="INFO", help="Defaults to INFO")
-@parallelism_option
+@parallelism_option()
 @click.option(
     "--dry_run",
     "--dry-run",
@@ -426,7 +426,7 @@ def _remove_view(client, view_id, dry_run):
     """
 )
 @project_id_option()
-@parallelism_option
+@parallelism_option()
 @click.option(
     "--only",
     "-o",

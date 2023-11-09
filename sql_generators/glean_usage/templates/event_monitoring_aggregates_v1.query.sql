@@ -68,10 +68,11 @@
     `{{ project_id }}.{{ dataset['bq_dataset_family'] }}_stable.events_v1`
   CROSS JOIN
     UNNEST(events) AS event,
-    UNNEST(event.extra) AS event_extra,
     -- Iterator for accessing experiments.
     -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
+  LEFT JOIN
+    UNNEST(event.extra) AS event_extra
   WHERE 
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -87,7 +88,7 @@
     version,
     experiment,
     experiment_branch
-{% elif dataset in ["accounts_frontend", "accounts_backend"] %}
+{% elif dataset['bq_dataset_family'] in ["accounts_frontend", "accounts_backend"] %}
   {% if not outer_loop.first -%}
   UNION ALL
   {% endif -%}

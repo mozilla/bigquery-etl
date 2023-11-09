@@ -68,7 +68,7 @@ filter_ms_microsurvey AS (
     END AS coded_answers,
     ping_info.experiments
   FROM
-    `{{ project_id }}.{{ app_name }}.messaging_system` msg
+    `moz-fx-data-shared-prod.firefox_desktop.messaging_system` msg
   LEFT JOIN
     `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v2` cfs
   ON

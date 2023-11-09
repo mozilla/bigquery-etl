@@ -1,0 +1,20 @@
+friendly_name: Fenix review checker clients data
+description: |-
+owners:
+- akommasani@mozilla.com
+- betling@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_review_checker
+  task_name: org_mozilla_fenix_review_checker_clients__v1
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+  clustering:
+    fields:
+    - normalized_channel
+    - sample_id

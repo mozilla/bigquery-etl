@@ -71,8 +71,8 @@ def create_query(date, project):
         referenced_tables.dataset_id AS reference_dataset_id,
         referenced_tables.table_id AS reference_table_id,
         user_email,
-        REGEXP_EXTRACT(query, 'Username: (.*?),') AS username,
-        REGEXP_EXTRACT(query, 'Query ID: (\\w+),') AS query_id,
+        REGEXP_EXTRACT(query, r'Username: (.*?),') AS username,
+        REGEXP_EXTRACT(query, r'Query ID: (\\w+), ') AS query_id,
       FROM
         `moz-fx-data-shared-prod.region-us.INFORMATION_SCHEMA.JOBS_BY_PROJECT` jp
       LEFT JOIN
@@ -88,8 +88,8 @@ def create_query(date, project):
         referenced_tables.dataset_id AS reference_dataset_id,
         referenced_tables.table_id AS reference_table_id,
         user_email,
-        REGEXP_EXTRACT(query, 'Username: (.*?),') AS username,
-        REGEXP_EXTRACT(query, 'Query ID: (\\w+),') AS query_id,
+        REGEXP_EXTRACT(query, r'Username: (.*?),') AS username,
+        REGEXP_EXTRACT(query, r'Query ID: (\\w+), ') AS query_id,
       FROM
         `mozdata.region-us.INFORMATION_SCHEMA.JOBS_BY_PROJECT` jp
       LEFT JOIN
@@ -105,8 +105,8 @@ def create_query(date, project):
         referenced_tables.dataset_id AS reference_dataset_id,
         referenced_tables.table_id AS reference_table_id,
         user_email,
-        REGEXP_EXTRACT(query, 'Username: (.*?),') AS username,
-        REGEXP_EXTRACT(query, 'Query ID: (\\w+),') AS query_id,
+        REGEXP_EXTRACT(query, r'Username: (.*?),') AS username,
+        REGEXP_EXTRACT(query, r'Query ID: (\\w+), ') AS query_id,
       FROM
         `moz-fx-data-marketing-prod.region-us.INFORMATION_SCHEMA.JOBS_BY_PROJECT` jp
       LEFT JOIN
@@ -168,7 +168,11 @@ def main():
     # for project in args.source_projects: -- this will be used in a future refactoring
     query = create_query(args.date, project)
     job_config = bigquery.QueryJobConfig(
-        destination=destination_table, write_disposition="WRITE_APPEND"
+        destination=destination_table,
+        write_disposition="WRITE_APPEND",
+        time_partitioning=bigquery.TimePartitioning(
+            type_=bigquery.TimePartitioningType.DAY, field="submission_date"
+        ),
     )
     client.query(query, job_config=job_config).result()
 

@@ -150,8 +150,8 @@ def create_query(date, tmp_table_name):
           reference_project_id,
           reference_dataset_id,
           reference_table_id)
-      WHERE creation_date > '2023-03-01'
-      AND DATE('{date}') = creation_date
+      WHERE
+        DATE('{date}') = creation_date
     """
 
 

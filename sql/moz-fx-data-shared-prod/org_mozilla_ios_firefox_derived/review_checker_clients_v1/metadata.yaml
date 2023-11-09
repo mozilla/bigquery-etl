@@ -1,7 +1,5 @@
-friendly_name: Review checker events data
-description: |-
-  The events table includes telemetry related to the review checker sidebar including user
-  interaction with the sidebar, open and closed states, and the status of reviews (stale, unavailable, etc.)
+friendly_name: Firefox iOS review checker clients data
+description: ""
 owners:
 - akommasani@mozilla.com
 - betling@mozilla.com
@@ -13,7 +11,7 @@ labels:
   owner2: betling
 scheduling:
   dag_name: bqetl_review_checker
-  task_name: firefox_desktop_review_checker_events__v1
+  task_name: org_mozilla_ios_firefox_review_checker_clients__v1
 bigquery:
   time_partitioning:
     type: day
@@ -30,5 +28,7 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - moz-fx-data-shared-prod.firefox_desktop_stable.events_v1
+  - moz-fx-data-shared-prod.firefox_ios.baseline
+  - moz-fx-data-shared-prod.org_mozilla_ios_firefox_stable.metrics_v1
+  - moz-fx-data-shared-prod.search.mobile_search_clients_engines_sources_daily
 deprecated: false

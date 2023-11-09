@@ -1,4 +1,3 @@
---- User-facing view. Generated via sql_generators.active_users.
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.firefox_desktop.review_checker_clients`
 AS

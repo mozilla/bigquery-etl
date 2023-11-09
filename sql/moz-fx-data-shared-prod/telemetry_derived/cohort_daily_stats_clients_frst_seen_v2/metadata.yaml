@@ -1,0 +1,14 @@
+friendly_name: null
+description: |-
+  None
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  query.sql:
+  - clients_daily_statistics
+deprecated: false

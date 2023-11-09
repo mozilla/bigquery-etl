@@ -25,7 +25,7 @@ WITH shopping_metrics AS (
     normalized_country_code,
     sample_id
   FROM
-    `{{ project_id }}.{{ app_name }}_stable.metrics_v1` AS m
+    `moz-fx-data-shared-prod.firefox_desktop_stable.metrics_v1`
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -116,4 +116,4 @@ joined_data AS (
 SELECT
   *
 FROM
-  joined_data;
+  joined_data

@@ -68,7 +68,6 @@ subscriptions_history_invoice_summaries AS (
       LIMIT
         1
     )[SAFE_ORDINAL(1)] AS latest_card_country,
-    LOGICAL_OR(JSON_VALUE(invoices.metadata, '$.paypalTransactionId') IS NOT NULL) AS uses_paypal,
     LOGICAL_OR(
       refunds.status = 'succeeded'
       OR JSON_VALUE(invoices.metadata, '$.paypalRefundTransactionId') IS NOT NULL
@@ -123,7 +122,11 @@ SELECT
   (
     SELECT AS STRUCT
       history.subscription.*,
-      IF(invoice_summaries.uses_paypal, 'PayPal', 'Stripe') AS payment_provider,
+      IF(
+        history.subscription.collection_method = 'send_invoice',
+        'PayPal',
+        'Stripe'
+      ) AS payment_provider,
       CASE
         -- Use the same address hierarchy as Stripe Tax after we enabled Stripe Tax (FXA-5457).
         -- https://stripe.com/docs/tax/customer-locations#address-hierarchy
@@ -138,7 +141,7 @@ SELECT
               invoice_summaries.latest_card_country
             )
         -- SubPlat copies the PayPal billing agreement country to the customer's address.
-        WHEN invoice_summaries.uses_paypal
+        WHEN history.subscription.collection_method = 'send_invoice'
           THEN NULLIF(history.customer.address.country, '')
         ELSE invoice_summaries.latest_card_country
       END AS country_code,

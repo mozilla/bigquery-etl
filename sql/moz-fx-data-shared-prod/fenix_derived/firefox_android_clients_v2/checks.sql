@@ -87,6 +87,7 @@ upstream AS (
     `moz-fx-data-shared-prod.fenix_derived.new_profile_activation_v1`
   WHERE
     first_seen_date = @submission_date
+    AND submission_date = DATE_SUB(@submission_date, INTERVAL 6 DAY)
 )
 SELECT
   IF(

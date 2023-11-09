@@ -31,7 +31,7 @@ SELECT
   sample_id,
   mozfun.norm.truncate_version(client_info.app_display_version, "major") AS os_version,
 FROM
-  `{{ project_id }}.{{ app_name }}_stable.events_v1` AS e,
+  `moz-fx-data-shared-prod.firefox_desktop_stable.events_v1` AS e,
   UNNEST(events)
 WHERE
   DATE(submission_timestamp) = @submission_date

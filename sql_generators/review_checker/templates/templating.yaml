@@ -1,9 +1,0 @@
-queries:
-  review_checker_clients:
-    per_app: true
-  review_checker_events:
-    per_app: true
-  review_checker_microsurvey:
-    per_app: true
-applications:
-  - firefox_desktop

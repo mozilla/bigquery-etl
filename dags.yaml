@@ -338,7 +338,7 @@ bqetl_deletion_request_volume:
 bqetl_fenix_event_rollup:
   schedule_interval: 0 2 * * *
   default_args:
-    owner: wlachance@mozilla.com
+    owner: frank@mozilla.com
     start_date: "2020-09-09"
     email: ["wlachance@mozilla.com"]
     retries: 2
@@ -351,7 +351,7 @@ bqetl_org_mozilla_fenix_derived:
   default_args:
     depends_on_past: false
     email:
-      - amiyaguchi@mozilla.com
+      - frank@mozilla.com
       - telemetry-alerts@mozilla.com
     email_on_failure: true
     email_on_retry: true
@@ -1298,3 +1298,19 @@ bqetl_ads:
   tags:
     - impact/tier_1
     - repo/bigquery-etl
+
+bqetl_mozilla_org_derived:
+  schedule_interval: 0 2 * * *
+  default_args:
+    depends_on_past: false
+    email:
+      - frank@mozilla.com
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    owner: frank@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: "2020-10-18"
+  tags:
+    - impact/tier_1

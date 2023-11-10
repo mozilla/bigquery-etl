@@ -2764,9 +2764,9 @@ SELECT
       ) * 60
     ) MINUTE
   ) AS window_end,
-  NULL AS event_category,
+  CAST(NULL AS STRING) AS event_category,
   metrics.string.event_name,
-  NULL AS event_extra_key,
+  CAST(NULL AS STRING) AS event_extra_key,
   normalized_country_code AS country,
   "Firefox Accounts Frontend" AS normalized_app_name,
   normalized_channel,
@@ -2828,9 +2828,9 @@ SELECT
       ) * 60
     ) MINUTE
   ) AS window_end,
-  NULL AS event_category,
+  CAST(NULL AS STRING) AS event_category,
   metrics.string.event_name,
-  NULL AS event_extra_key,
+  CAST(NULL AS STRING) AS event_extra_key,
   normalized_country_code AS country,
   "Firefox Accounts Backend" AS normalized_app_name,
   normalized_channel,

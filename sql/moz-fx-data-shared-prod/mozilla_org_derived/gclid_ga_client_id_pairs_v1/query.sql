@@ -2,13 +2,12 @@ WITH history AS (
   SELECT
     *
   FROM
-    mozdata.analysis.gclids_v1
+    mozdata.analysis.gclid_ga_client_id_pairs_v1
 ),
 new_data AS (
   SELECT
-    trafficSource.adwordsClickInfo.gclId AS gclid,
-    -- We take the first ga_client_id
-    MIN_BY(clientId, visitStartTime) AS ga_client_id,
+    mozfun.ga.nullify_string(trafficSource.adwordsClickInfo.gclId) AS gclid,
+    mozfun.ga.nullify_string(clientId) AS ga_client_id,
     MIN(visitStartTime) AS min_start_time,
     MIN(PARSE_DATE('%Y%m%d', date)) AS first_seen_date,
     MAX(PARSE_DATE('%Y%m%d', date)) AS last_seen_date,
@@ -21,24 +20,15 @@ new_data AS (
     AND FORMAT_DATE('%Y%m%d', @session_date)
     AND trafficSource.adwordsClickInfo.gclId IS NOT NULL
   GROUP BY
-    gclid
+    gclid,
+    ga_client_id
+  HAVING
+    gclid IS NOT NULL
+    AND ga_client_id IS NOT NULL
 )
 SELECT
   gclid,
-  -- We try and find the earliest ga_client_id
-  CASE
-    WHEN _current.ga_client_id IS NULL
-      OR _current.min_start_time IS NULL
-      THEN _previous.ga_client_id
-    WHEN _previous.ga_client_id IS NULL
-      OR _previous.min_start_time IS NULL
-      THEN _current.ga_client_id
-    WHEN _previous.min_start_time <= _current.min_start_time
-      THEN _previous.ga_client_id
-    WHEN _current.min_start_time < _previous.min_start_time
-      THEN _current.ga_client_id
-    ELSE NULL
-  END AS ga_client_id,
+  ga_client_id,
   -- Least and greatest return NULL if any input is NULL, so we coalesce each value first
   LEAST(
     COALESCE(_previous.min_start_time, _current.min_start_time),
@@ -57,4 +47,4 @@ FROM
 FULL OUTER JOIN
   new_data AS _current
 USING
-  (gclid)
+  (gclid, ga_client_id)

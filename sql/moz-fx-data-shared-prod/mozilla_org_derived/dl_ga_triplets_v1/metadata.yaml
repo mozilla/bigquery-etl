@@ -19,3 +19,6 @@ bigquery:
     fields: [first_seen_date]
 references: {}
 deprecated: false
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members: [workgroup:data-science/duet]

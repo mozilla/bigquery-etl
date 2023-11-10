@@ -1,0 +1,21 @@
+fields:
+  - name: gclid
+    mode: NULLABLE
+    type: STRING
+    description: "A Google Click ID, which uniquely represent an ad impression for Google ads."
+  - name: ga_client_id
+    mode: NULLABLE
+    type: STRING
+    description: "Uniquely identifiers a GA client, using a cookie on moz.org."
+  - name: min_start_time
+    mode: NULLABLE
+    type: INTEGER
+    description: "The earliest session_start_time we had for this GCLID."
+  - name: first_seen_date
+    mode: NULLABLE
+    type: DATE
+    description: "The first date we saw this GCLID."
+  - name: last_seen_date
+    mode: NULLABLE
+    type: DATE
+    description: "The first date we saw this GCLID."

@@ -1,0 +1,24 @@
+friendly_name: Gclids
+description: |-
+  A mapping of GCLIDs to GA Client IDs
+  Grain is one row per gclid.
+
+  A gclid is a google click id. It is a string
+  that is used to identify an ad impression on
+  Google's platform.
+
+  We use these for post-install conversion events.
+owners:
+- frank@mozilla.com
+labels:
+  incremental: true
+  owner1: frank@mozilla.com
+scheduling:
+  dag_name: bqetl_mozilla_org_derived
+  date_partition_parameter: null
+  parameters: ["session_date:DATE:{{ds}}"]
+bigquery:
+  clustering:
+    fields: [first_seen_date]
+references: {}
+deprecated: false

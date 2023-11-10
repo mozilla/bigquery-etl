@@ -1,0 +1,163 @@
+fields:
+  - name: ga_client_id
+    mode: NULLABLE
+    type: STRING
+    description: "Uniquely identifiers a GA client, using a cookie on moz.org"
+  - name: first_seen_date
+    mode: NULLABLE
+    type: DATE
+    description: "The first date we saw this GA client"
+  - name: last_seen_date
+    mode: NULLABLE
+    type: DATE
+    description: "The last date we saw this GA client"
+  - name: first_reported
+    description: "First instances of fields for a GA client"
+    type: RECORD
+    mode: NULLABLE
+    fields:
+      - name: country
+        type: STRING
+        mode: NULLABLE
+        description: "First reported country for a GA user"
+      - name: region
+        type: STRING
+        mode: NULLABLE
+        description: "First reported region for a GA user"
+      - name: city
+        type: STRING
+        mode: NULLABLE
+        description: "First reported city for a GA user"
+      - name: campaign_id
+        type: STRING
+        mode: NULLABLE
+        description: "First reported campaign ID. Usually associated with AdWords"
+      - name: campaign
+        type: STRING
+        mode: NULLABLE
+        description: "First reported campaign value. Usually set by the utm_campaign URL parameter"
+      - name: source
+        type: STRING
+        mode: NULLABLE
+        description: >
+          First reported source of the traffic. Could be the name of the search engine,
+          the referring hostname, or a value of the utm_source URL parameter.
+      - name: medium
+        type: STRING
+        mode: NULLABLE
+        description: "First reported medium of the traffic source. Could be 'organic', 'cpc', 'referral', or the value of the utm_medium URL parameter."
+      - name: term
+        type: STRING
+        mode: NULLABLE
+        description: "First reported term, or keyword, value. If this was a search results page, this is the keyword entered."
+      - name: content
+        type: STRING
+        mode: NULLABLE
+        description: "First reported ad content of the traffic source. Can be set by the utm_content URL parameter."
+      - name: device_category
+        type: STRING
+        mode: NULLABLE
+        description: "First reported device category value. The type of device (Mobile, Tablet, Desktop)."
+      - name: mobile_device_model
+        type: STRING
+        mode: NULLABLE
+        description: "First reported device model value."
+      - name: mobile_device_string
+        type: STRING
+        mode: NULLABLE
+        description: "First reported mobile device string. The branding, model, and marketing name used to identify the mobile device."
+      - name: os
+        type: STRING
+        mode: NULLABLE
+        description: "First reported operating system of the device (e.g., 'Macintosh' or 'Windows')."
+      - name: os_version
+        type: STRING
+        mode: NULLABLE
+        description: "First reported os_version value."
+      - name: language
+        type: STRING
+        mode: NULLABLE
+        description: "First reported language the device is set to use. Expressed as the IETF language code."
+      - name: browser
+        type: STRING
+        mode: NULLABLE
+        description: "First reported browser used (e.g., 'Chrome' or 'Firefox')."
+      - name: browser_version
+        type: STRING
+        mode: NULLABLE
+        description: "First reported browser_version value."
+  - name: last_reported
+    description: "Last instances of fields for a GA client"
+    type: RECORD
+    mode: NULLABLE
+    fields:
+      - name: country
+        type: STRING
+        mode: NULLABLE
+        description: "Last reported country for a GA user"
+      - name: region
+        type: STRING
+        mode: NULLABLE
+        description: "Last reported region for a GA user"
+      - name: city
+        type: STRING
+        mode: NULLABLE
+        description: "Last reported city for a GA user"
+      - name: campaign_id
+        type: STRING
+        mode: NULLABLE
+        description: "Last reported campaign ID. Usually associated with AdWords"
+      - name: campaign
+        type: STRING
+        mode: NULLABLE
+        description: "Last reported campaign value. Usually set by the utm_campaign URL parameter"
+      - name: source
+        type: STRING
+        mode: NULLABLE
+        description: >
+          Last reported source of the traffic. Could be the name of the search engine,
+          the referring hostname, or a value of the utm_source URL parameter.
+      - name: medium
+        type: STRING
+        mode: NULLABLE
+        description: "Last reported medium of the traffic source. Could be 'organic', 'cpc', 'referral', or the value of the utm_medium URL parameter."
+      - name: term
+        type: STRING
+        mode: NULLABLE
+        description: "Last reported term, or keyword, value. If this was a search results page, this is the keyword entered."
+      - name: content
+        type: STRING
+        mode: NULLABLE
+        description: "Last reported ad content of the traffic source. Can be set by the utm_content URL parameter."
+      - name: device_category
+        type: STRING
+        mode: NULLABLE
+        description: "Last reported device category value. The type of device (Mobile, Tablet, Desktop)."
+      - name: mobile_device_model
+        type: STRING
+        mode: NULLABLE
+        description: "Last reported device model value."
+      - name: mobile_device_string
+        type: STRING
+        mode: NULLABLE
+        description: "Last reported mobile device string. The branding, model, and marketing name used to identify the mobile device."
+      - name: os
+        type: STRING
+        mode: NULLABLE
+        description: "Last reported operating system of the device (e.g., 'Macintosh' or 'Windows')."
+      - name: os_version
+        type: STRING
+        mode: NULLABLE
+        description: "Last reported os_version value."
+      - name: language
+        type: STRING
+        mode: NULLABLE
+        description: "Last reported language the device is set to use. Expressed as the IETF language code."
+      - name: browser
+        type: STRING
+        mode: NULLABLE
+        description: "Last reported browser used (e.g., 'Chrome' or 'Firefox')."
+      - name: browser_version
+        type: STRING
+        mode: NULLABLE
+        description: "Last reported browser_version value."

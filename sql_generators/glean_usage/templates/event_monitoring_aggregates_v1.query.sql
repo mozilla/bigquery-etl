@@ -88,7 +88,7 @@
     version,
     experiment,
     experiment_branch
-{% elif dataset in ["accounts_frontend", "accounts_backend"] %}
+{% elif dataset['bq_dataset_family'] in ["accounts_frontend", "accounts_backend"] %}
   {% if not outer_loop.first -%}
   UNION ALL
   {% endif -%}
@@ -116,9 +116,9 @@
         ) * 60
       ) MINUTE
     ) AS window_end,
-    NULL AS event_category,
+    CAST(NULL AS STRING) AS event_category,
     metrics.string.event_name,
-    NULL AS event_extra_key,
+    CAST(NULL AS STRING) AS event_extra_key,
     normalized_country_code AS country,
     "{{ dataset['canonical_app_name'] }}" AS normalized_app_name,
     normalized_channel,

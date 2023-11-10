@@ -11,9 +11,17 @@ from argparse import ArgumentParser
 
 from google.cloud import bigquery
 
+DEFAULT_PROJECTS = [
+    "mozdata",
+    "moz-fx-data-shared-prod",
+    "moz-fx-data-marketing-prod",
+]
+
 parser = ArgumentParser(description=__doc__)
 parser.add_argument("--date", required=True)  # expect string with format yyyy-mm-dd
 parser.add_argument("--project", default="moz-fx-data-shared-prod")
+# projects queries were run from that access table
+parser.add_argument("--source_projects", nargs="+", default=DEFAULT_PROJECTS)
 parser.add_argument("--destination_project", default="moz-fx-data-shared-prod")
 parser.add_argument("--destination_dataset", default="monitoring_derived")
 parser.add_argument("--destination_table", default="bigquery_usage_v2")
@@ -22,7 +30,7 @@ parser.add_argument("--destination_table", default="bigquery_usage_v2")
 def create_query(date, project):
     """Create query with filter for source projects."""
     return f"""
-        WITH jobs_by_org AS (
+      WITH jobs_by_org AS (
       SELECT
         t1.project_id AS source_project,
         creation_date,
@@ -64,11 +72,47 @@ def create_query(date, project):
         referenced_tables.table_id AS reference_table_id,
         user_email,
         REGEXP_EXTRACT(query, r'Username: (.*?),') AS username,
-        REGEXP_EXTRACT(query, r'Query ID: (\\w+),') AS query_id,
+        REGEXP_EXTRACT(query, r'Query ID: (\\w+), ') AS query_id,
       FROM
         `moz-fx-data-shared-prod.region-us.INFORMATION_SCHEMA.JOBS_BY_PROJECT` jp
       LEFT JOIN
         UNNEST(referenced_tables) AS referenced_tables
+      WHERE
+        DATE(creation_time) = '{date}'
+      UNION ALL
+      SELECT
+        jp.project_id AS source_project,
+        date(creation_time) as creation_date,
+        job_id,
+        referenced_tables.project_id AS reference_project_id,
+        referenced_tables.dataset_id AS reference_dataset_id,
+        referenced_tables.table_id AS reference_table_id,
+        user_email,
+        REGEXP_EXTRACT(query, r'Username: (.*?),') AS username,
+        REGEXP_EXTRACT(query, r'Query ID: (\\w+), ') AS query_id,
+      FROM
+        `mozdata.region-us.INFORMATION_SCHEMA.JOBS_BY_PROJECT` jp
+      LEFT JOIN
+        UNNEST(referenced_tables) AS referenced_tables
+      WHERE
+        DATE(creation_time) = '{date}'
+      UNION ALL
+      SELECT
+        jp.project_id AS source_project,
+        date(creation_time) as creation_date,
+        job_id,
+        referenced_tables.project_id AS reference_project_id,
+        referenced_tables.dataset_id AS reference_dataset_id,
+        referenced_tables.table_id AS reference_table_id,
+        user_email,
+        REGEXP_EXTRACT(query, r'Username: (.*?),') AS username,
+        REGEXP_EXTRACT(query, r'Query ID: (\\w+), ') AS query_id,
+      FROM
+        `moz-fx-data-marketing-prod.region-us.INFORMATION_SCHEMA.JOBS_BY_PROJECT` jp
+      LEFT JOIN
+        UNNEST(referenced_tables) AS referenced_tables
+      WHERE
+        DATE(creation_time) = '{date}'
       )
       SELECT
         jo.source_project,
@@ -105,7 +149,7 @@ def create_query(date, project):
           reference_project_id,
           reference_dataset_id,
           reference_table_id)
-      WHERE creation_date > '2023-03-01'
+      WHERE DATE('{date}') = creation_date
     """
 
 
@@ -121,9 +165,14 @@ def main():
     client = bigquery.Client(project)
     client.delete_table(destination_table, not_found_ok=True)
 
+    # for project in args.source_projects: -- this will be used in a future refactoring
     query = create_query(args.date, project)
     job_config = bigquery.QueryJobConfig(
-        destination=destination_table, write_disposition="WRITE_APPEND"
+        destination=destination_table,
+        write_disposition="WRITE_APPEND",
+        time_partitioning=bigquery.TimePartitioning(
+            type_=bigquery.TimePartitioningType.DAY, field="submission_date"
+        ),
     )
     client.query(query, job_config=job_config).result()
 

@@ -8,7 +8,7 @@ WITH historical_clients AS (
 ),
 new_sessions AS (
   SELECT
-    clientId AS ga_client_id,
+    mozfun.ga.nullify_string(clientId) AS ga_client_id,
     MIN(PARSE_DATE('%Y%m%d', date)) AS first_seen_date,
     MAX(PARSE_DATE('%Y%m%d', date)) AS last_seen_date,
     STRUCT(
@@ -64,6 +64,8 @@ new_sessions AS (
     AND FORMAT_DATE('%Y%m%d', @session_date)
   GROUP BY
     ga_client_id
+  HAVING
+    ga_client_id IS NOT NULL
 )
 SELECT
   ga_client_id,

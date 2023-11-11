@@ -8,11 +8,11 @@ labels:
   incremental: true
   owner1: frank@mozilla.com
 scheduling:
+  depends_on_past: true
   dag_name: bqetl_mozilla_org_derived
-  date_partition_parameter: null
-  parameters: ["session_date:DATE:{{ds}}"]
+  date_partition_parameter: session_date
 bigquery:
   clustering:
-    fields: ["first_seen_date"]
+    fields: ["first_seen_date", "country"]
 references: {}
 deprecated: false

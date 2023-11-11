@@ -1,5 +1,13 @@
--- Important Note: This table is meant to be forwards-compatible
--- with the GA4 schema: https://support.google.com/analytics/answer/7029846?hl=en#zippy=%2Citems%2Cecommerce%2Cstream-and-platform%2Ctraffic-source%2Ccollected-traffic-source
+-- First note: This table is meant to be forwards-compatible
+--   with the GA4 schema: https://support.google.com/analytics/answer/7029846
+-- Second note: We do not store user_ids, only client_ids
+--   After migration client_ids will be called pseudo_user_ids, see
+--   https://louder.com.au/2022/06/27/client-id-in-ga4-what-is-it-and-how-to-get-it-in-your-report/
+-- Third note: The only non-forwards-compatible field is mobileDeviceInfo
+--   in GA4, that will be split into its components (model, manufacturer, etc.)
+--   I think we can simply handle this in the view using some UDFs
+-- Fourth note: Data is updated up to three days after the event happens, see
+--   https://support.google.com/analytics/answer/7029846?#tables
 WITH historical_clients AS (
   SELECT
     *
@@ -58,9 +66,9 @@ new_sessions AS (
   FROM
     `moz-fx-data-marketing-prod.65789850.ga_sessions_*`
   WHERE
-    -- Re-process yesterday, to account for late-arriving data
+    -- Re-process three days, to account for late-arriving data
     _TABLE_SUFFIX
-    BETWEEN FORMAT_DATE('%Y%m%d', DATE_SUB(@session_date, INTERVAL 1 DAY))
+    BETWEEN FORMAT_DATE('%Y%m%d', DATE_SUB(@session_date, INTERVAL 3 DAY))
     AND FORMAT_DATE('%Y%m%d', @session_date)
   GROUP BY
     ga_client_id

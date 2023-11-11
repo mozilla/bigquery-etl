@@ -7001,6 +7001,9 @@ fields:
     - name: top_level_content_documents_destroyed
       type: STRING
       mode: NULLABLE
+    - name: tls_cipher_suite
+      type: STRING
+      mode: NULLABLE
   - name: info
     type: RECORD
     mode: NULLABLE

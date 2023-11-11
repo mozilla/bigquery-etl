@@ -9,9 +9,9 @@ WITH historical_triplets AS (
 ),
 new_downloads AS (
   SELECT
-    mozfun.ga.nullify_string(jsonPayload.fields.dltoken) AS dl_token,
-    mozfun.ga.nullify_string(jsonPayload.fields.visit_id) AS ga_client_id,
-    mozfun.ga.nullify_string(jsonPayload.fields.session_id) AS stub_session_id,
+    mozdata.analysis.ga_nullify_string(jsonPayload.fields.dltoken) AS dl_token,
+    mozdata.analysis.ga_nullify_string(jsonPayload.fields.visit_id) AS ga_client_id,
+    mozdata.analysis.ga_nullify_string(jsonPayload.fields.session_id) AS stub_session_id,
     @download_date AS first_seen_date,
     -- Stub attribution logs have a 90-day retention period, so we don't want to overwrite our data if it's been deleted from the source!
     IF(

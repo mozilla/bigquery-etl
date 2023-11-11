@@ -6,8 +6,8 @@ WITH history AS (
 ),
 new_data AS (
   SELECT
-    mozfun.ga.nullify_string(trafficSource.adwordsClickInfo.gclId) AS gclid,
-    mozfun.ga.nullify_string(clientId) AS ga_client_id,
+    mozdata.analysis.ga_nullify_string(trafficSource.adwordsClickInfo.gclId) AS gclid,
+    mozdata.analysis.ga_nullify_string(clientId) AS ga_client_id,
     MIN(visitStartTime) AS min_start_time,
     MIN(PARSE_DATE('%Y%m%d', date)) AS first_seen_date,
     MAX(PARSE_DATE('%Y%m%d', date)) AS last_seen_date,

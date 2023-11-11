@@ -4,11 +4,11 @@ WITH historical_clients AS (
   SELECT
     *
   FROM
-    `moz-fx-data-shared-prod`.mozilla_org_derived.ga_clients_v1
+    mozdata.analysis.ga_clients_v1
 ),
 new_sessions AS (
   SELECT
-    mozfun.ga.nullify_string(clientId) AS ga_client_id,
+    mozdata.analysis.ga_nullify_string(clientId) AS ga_client_id,
     MIN(PARSE_DATE('%Y%m%d', date)) AS first_seen_date,
     MAX(PARSE_DATE('%Y%m%d', date)) AS last_seen_date,
     STRUCT(

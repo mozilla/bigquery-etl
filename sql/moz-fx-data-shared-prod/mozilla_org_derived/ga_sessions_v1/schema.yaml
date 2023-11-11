@@ -1,0 +1,115 @@
+fields:
+  - name: ga_client_id
+    mode: NULLABLE
+    type: STRING
+    description: "Uniquely identifiers a GA client, using a cookie on moz.org."
+  - name: ga_session_id
+    mode: NULLABLE
+    type: STRING
+    description: "Uniquely identifiers a GA session."
+  - name: session_date
+    mode: NULLABLE
+    type: DATE
+    description: "The date of the session. Some sessions span two days: if it does, we take the earlier date."
+  - name: is_first_session
+    mode: NULLABLE
+    type: BOOLEAN
+    description: "Whether this is the first session for the client."
+  - name: session_number
+    mode: NULLABLE
+    type: INTEGER
+    description: "The session number for this client. Starts at 1, consecutively increasing."
+  - name: country
+    type: STRING
+    mode: NULLABLE
+    description: "First reported country for a GA user."
+  - name: region
+    type: STRING
+    mode: NULLABLE
+    description: "First reported region for a GA user."
+  - name: city
+    type: STRING
+    mode: NULLABLE
+    description: "First reported city for a GA user."
+  - name: campaign_id
+    type: STRING
+    mode: NULLABLE
+    description: "First reported campaign ID. Usually associated with AdWords."
+  - name: campaign
+    type: STRING
+    mode: NULLABLE
+    description: "First reported campaign value. Usually set by the utm_campaign URL parameter."
+  - name: source
+    type: STRING
+    mode: NULLABLE
+    description: >
+      First reported source of the traffic. Could be the name of the search engine,
+      the referring hostname, or a value of the utm_source URL parameter.
+  - name: medium
+    type: STRING
+    mode: NULLABLE
+    description: "First reported medium of the traffic source. Could be 'organic', 'cpc', 'referral', or the value of the utm_medium URL parameter."
+  - name: term
+    type: STRING
+    mode: NULLABLE
+    description: "First reported term, or keyword, value. If this was a search results page, this is the keyword entered."
+  - name: content
+    type: STRING
+    mode: NULLABLE
+    description: "First reported ad content of the traffic source. Can be set by the utm_content URL parameter."
+  - name: device_category
+    type: STRING
+    mode: NULLABLE
+    description: "First reported device category value. The type of device (Mobile, Tablet, Desktop)."
+  - name: mobile_device_model
+    type: STRING
+    mode: NULLABLE
+    description: "First reported device model value."
+  - name: mobile_device_string
+    type: STRING
+    mode: NULLABLE
+    description: "First reported mobile device string. The branding, model, and marketing name used to identify the mobile device."
+  - name: os
+    type: STRING
+    mode: NULLABLE
+    description: "First reported operating system of the device (e.g., 'Macintosh' or 'Windows')."
+  - name: os_version
+    type: STRING
+    mode: NULLABLE
+    description: "First reported os_version value."
+  - name: language
+    type: STRING
+    mode: NULLABLE
+    description: "First reported language the device is set to use. Expressed as the IETF language code."
+  - name: browser
+    type: STRING
+    mode: NULLABLE
+    description: "First reported browser used (e.g., 'Chrome' or 'Firefox')."
+  - name: browser_version
+    type: STRING
+    mode: NULLABLE
+    description: "First reported browser_version value."
+  - name: had_download_event
+    type: BOOLEAN
+    mode: NULLABLE
+    description: "Whether this session had a download event for Firefox."
+  - name: last_reported_install_target
+    type: STRING
+    mode: NULLABLE
+    description: "The last reported install target for this session (e.g. 'desktop_release' or 'android_beta')."
+  - name: all_reported_install_targets
+    type: STRING
+    mode: REPEATED
+    description: "All install targets reported for this session (e.g. 'desktop_release' or 'android_beta'."
+  - name: last_reported_stub_session_id
+    type: STRING
+    mode: NULLABLE
+    description: "The last reported Stub Session ID for this session. Can be used to join with `dl_ga_triplets` to get dl_tokens."
+  - name: all_reported_stub_session_ids
+    type: STRING
+    mode: REPEATED
+    description: "All reported Stub Session IDs for this session. Can be used to join with `dl_ga_triplets` to get dl_tokens."
+  - name: landing_screen
+    type: STRING
+    mode: NULLABLE
+    description: "The first reported landing screen for this session. Most sessions only have one, so this is a save value to use."

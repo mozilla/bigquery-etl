@@ -155,7 +155,9 @@ SELECT
       metrics.labeled_counter.data_storage_entries,
       metrics.labeled_counter.pdfjs_stamp,
       metrics.labeled_counter.fog_validation_gvsv_audio_stream_init,
-      metrics.labeled_counter.fog_validation_gvsv_audio_stream_init_gecko
+      metrics.labeled_counter.fog_validation_gvsv_audio_stream_init_gecko,
+      metrics.labeled_counter.extensions_counters_browser_action_preload_result,
+      metrics.labeled_counter.extensions_counters_event_page_idle_result
     ) AS `labeled_counter`,
     metrics.memory_distribution,
     STRUCT(
@@ -323,7 +325,9 @@ SELECT
       metrics.labeled_counter.data_storage_entries,
       metrics.labeled_counter.pdfjs_stamp,
       metrics.labeled_counter.fog_validation_gvsv_audio_stream_init,
-      metrics.labeled_counter.fog_validation_gvsv_audio_stream_init_gecko
+      metrics.labeled_counter.fog_validation_gvsv_audio_stream_init_gecko,
+      metrics.labeled_counter.extensions_counters_browser_action_preload_result,
+      metrics.labeled_counter.extensions_counters_event_page_idle_result
     ) AS `labeled_counter`,
     metrics.memory_distribution,
     STRUCT(

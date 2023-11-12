@@ -119,6 +119,8 @@ SELECT
       metrics.labeled_counter.fog_validation_gvsv_audio_stream_init,
       metrics.labeled_counter.fog_validation_gvsv_audio_stream_init_gecko,
       metrics.labeled_counter.fxa_client_error_count,
+      metrics.labeled_counter.extensions_counters_browser_action_preload_result,
+      metrics.labeled_counter.extensions_counters_event_page_idle_result,
       CAST(
         NULL
         AS
@@ -265,6 +267,8 @@ SELECT
       metrics.labeled_counter.fog_validation_gvsv_audio_stream_init,
       metrics.labeled_counter.fog_validation_gvsv_audio_stream_init_gecko,
       metrics.labeled_counter.fxa_client_error_count,
+      metrics.labeled_counter.extensions_counters_browser_action_preload_result,
+      metrics.labeled_counter.extensions_counters_event_page_idle_result,
       CAST(
         NULL
         AS
@@ -485,7 +489,8 @@ SELECT
       metrics.custom_distribution.networking_http_1_upload_throughput,
       metrics.custom_distribution.networking_http_2_upload_throughput,
       metrics.custom_distribution.networking_http_3_upload_throughput,
-      metrics.custom_distribution.fog_validation_gvsv_number_of_unique_site_origins_all_tabs
+      metrics.custom_distribution.fog_validation_gvsv_number_of_unique_site_origins_all_tabs,
+      metrics.custom_distribution.extensions_timing_event_page_running_time
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -589,6 +594,8 @@ SELECT
       metrics.labeled_counter.fog_validation_gvsv_audio_stream_init,
       metrics.labeled_counter.fog_validation_gvsv_audio_stream_init_gecko,
       metrics.labeled_counter.fxa_client_error_count,
+      metrics.labeled_counter.extensions_counters_browser_action_preload_result,
+      metrics.labeled_counter.extensions_counters_event_page_idle_result,
       CAST(
         NULL
         AS
@@ -784,7 +791,16 @@ SELECT
       metrics.timing_distribution.networking_http_content_ondatafinished_to_onstop_delay,
       metrics.timing_distribution.networking_http_content_ondatafinished_to_onstop_delay_negative,
       metrics.timing_distribution.perf_largest_contentful_paint,
-      metrics.timing_distribution.perf_largest_contentful_paint_from_response_start
+      metrics.timing_distribution.perf_largest_contentful_paint_from_response_start,
+      metrics.timing_distribution.extensions_timing_background_page_load,
+      metrics.timing_distribution.extensions_timing_browser_action_popup_open,
+      metrics.timing_distribution.extensions_timing_content_script_injection,
+      metrics.timing_distribution.extensions_timing_extension_startup,
+      metrics.timing_distribution.extensions_timing_page_action_popup_open,
+      metrics.timing_distribution.extensions_timing_storage_local_get_idb,
+      metrics.timing_distribution.extensions_timing_storage_local_get_json,
+      metrics.timing_distribution.extensions_timing_storage_local_set_idb,
+      metrics.timing_distribution.extensions_timing_storage_local_set_json
     ) AS `timing_distribution`,
     metrics.memory_distribution,
     metrics.datetime,
@@ -1005,7 +1021,8 @@ SELECT
       metrics.custom_distribution.networking_http_1_upload_throughput,
       metrics.custom_distribution.networking_http_2_upload_throughput,
       metrics.custom_distribution.networking_http_3_upload_throughput,
-      metrics.custom_distribution.fog_validation_gvsv_number_of_unique_site_origins_all_tabs
+      metrics.custom_distribution.fog_validation_gvsv_number_of_unique_site_origins_all_tabs,
+      metrics.custom_distribution.extensions_timing_event_page_running_time
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -1109,6 +1126,8 @@ SELECT
       metrics.labeled_counter.fog_validation_gvsv_audio_stream_init,
       metrics.labeled_counter.fog_validation_gvsv_audio_stream_init_gecko,
       metrics.labeled_counter.fxa_client_error_count,
+      metrics.labeled_counter.extensions_counters_browser_action_preload_result,
+      metrics.labeled_counter.extensions_counters_event_page_idle_result,
       metrics.labeled_counter.fog_validation_gvsv_audio_stream_init_gvst
     ) AS `labeled_counter`,
     metrics.quantity,
@@ -1300,7 +1319,16 @@ SELECT
       metrics.timing_distribution.networking_http_content_ondatafinished_to_onstop_delay,
       metrics.timing_distribution.networking_http_content_ondatafinished_to_onstop_delay_negative,
       metrics.timing_distribution.perf_largest_contentful_paint,
-      metrics.timing_distribution.perf_largest_contentful_paint_from_response_start
+      metrics.timing_distribution.perf_largest_contentful_paint_from_response_start,
+      metrics.timing_distribution.extensions_timing_background_page_load,
+      metrics.timing_distribution.extensions_timing_browser_action_popup_open,
+      metrics.timing_distribution.extensions_timing_content_script_injection,
+      metrics.timing_distribution.extensions_timing_extension_startup,
+      metrics.timing_distribution.extensions_timing_page_action_popup_open,
+      metrics.timing_distribution.extensions_timing_storage_local_get_idb,
+      metrics.timing_distribution.extensions_timing_storage_local_get_json,
+      metrics.timing_distribution.extensions_timing_storage_local_set_idb,
+      metrics.timing_distribution.extensions_timing_storage_local_set_json
     ) AS `timing_distribution`,
     metrics.memory_distribution,
     metrics.datetime,
@@ -1447,6 +1475,8 @@ SELECT
       metrics.labeled_counter.fog_validation_gvsv_audio_stream_init,
       metrics.labeled_counter.fog_validation_gvsv_audio_stream_init_gecko,
       metrics.labeled_counter.fxa_client_error_count,
+      metrics.labeled_counter.extensions_counters_browser_action_preload_result,
+      metrics.labeled_counter.extensions_counters_event_page_idle_result,
       CAST(
         NULL
         AS

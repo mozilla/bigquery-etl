@@ -22637,6 +22637,9 @@ fields:
         - name: widget_gtk_version
           type: STRING
           mode: NULLABLE
+        - name: a11y_always_underline_links
+          type: BOOLEAN
+          mode: NULLABLE
     - name: socket
       type: RECORD
       mode: NULLABLE

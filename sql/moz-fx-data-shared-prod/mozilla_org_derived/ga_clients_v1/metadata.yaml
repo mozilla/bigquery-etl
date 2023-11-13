@@ -13,6 +13,6 @@ scheduling:
   date_partition_parameter: session_date
 bigquery:
   clustering:
-    fields: ["first_seen_date", "country"]
+    fields: ["first_seen_date"]
 references: {}
 deprecated: false

@@ -35,7 +35,7 @@ metrics_searches AS (
     SUM(search_with_ads) AS searches_with_ads,
     SUM(ad_click) AS ad_clicks
   FROM
-    `moz-fx-data-shared-prod.search_derived.mobile_search_clients_daily_v1`
+    search_derived.mobile_search_clients_daily_v1
   WHERE
     {% if is_init() %}
       submission_date >= "2020-05-01"

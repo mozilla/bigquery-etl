@@ -49,6 +49,9 @@ WITH daily_sessions AS (
     MIN_BY(trafficSource.medium, visitStartTime) AS medium,
     MIN_BY(trafficSource.keyword, visitStartTime) AS term,
     MIN_BY(trafficSource.adContent, visitStartTime) AS content,
+    ARRAY_AGG(
+      mozdata.analysis.ga_nullify_string(trafficSource.adwordsClickInfo.gclId) IGNORE NULLS
+    )[0] AS gclid,
     /* Device */
     MIN_BY(device.deviceCategory, visitStartTime) AS device_category,
     MIN_BY(device.mobileDeviceModel, visitStartTime) AS mobile_device_model,

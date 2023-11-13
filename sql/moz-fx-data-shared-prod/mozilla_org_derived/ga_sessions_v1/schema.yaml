@@ -57,6 +57,10 @@ fields:
     type: STRING
     mode: NULLABLE
     description: "First reported ad content of the traffic source. Can be set by the utm_content URL parameter."
+  - name: gclid
+    type: STRING
+    mode: NULLABLE
+    description: "A Google Click ID, which uniquely represent an ad click for Google ads."
   - name: device_category
     type: STRING
     mode: NULLABLE
@@ -112,4 +116,4 @@ fields:
   - name: landing_screen
     type: STRING
     mode: NULLABLE
-    description: "The first reported landing screen for this session. Most sessions only have one, so this is a save value to use."
+    description: "The first reported landing screen for this session. Most sessions only have one, so this is a safe value to use."

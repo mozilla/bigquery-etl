@@ -85,3 +85,8 @@ fields:
 - name: days_interacted_bits
   type: INTEGER
   mode: NULLABLE
+- name: startup_profile_selection_reason
+  type: STRING
+  mode: NULLABLE
+  description: How the profile was selected during startup, as reported by the first
+    ping received.

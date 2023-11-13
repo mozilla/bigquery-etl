@@ -2205,6 +2205,9 @@ fields:
 - name: min_subsession_counter
   type: INTEGER
   mode: NULLABLE
+- name: startup_profile_selection_first_ping_only
+  type: STRING
+  mode: NULLABLE
 - name: _sample_id_string
   type: STRING
   mode: NULLABLE

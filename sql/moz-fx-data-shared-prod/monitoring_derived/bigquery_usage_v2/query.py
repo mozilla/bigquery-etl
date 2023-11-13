@@ -133,7 +133,7 @@ def create_query(date, project):
           reference_project_id,
           reference_dataset_id,
           reference_table_id)
-      WHERE WHERE creation_date > '2023-05-01'
+      WHERE creation_date > '2023-05-01'
     """
 
 

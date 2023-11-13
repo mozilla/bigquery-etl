@@ -16,9 +16,9 @@ WITH client_days AS (
     firefox_ios.baseline
   WHERE
     {% if is_init() %}
-      submission_date >= "2020-05-01"
+      DATE(submission_timestamp) >= "2020-05-01"
     {% else %}
-      submission_date = @submission_date
+      DATE(submission_timestamp) = @submission_date
     {% endif %}
   GROUP BY
     submission_date,

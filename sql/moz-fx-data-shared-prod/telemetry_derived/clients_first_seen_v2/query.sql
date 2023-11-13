@@ -364,9 +364,11 @@ main_ping AS (
     ARRAY_AGG(normalized_os_version RESPECT NULLS ORDER BY submission_date)[
       SAFE_OFFSET(0)
     ] AS normalized_os_version,
-    CAST(
-      NULL AS STRING
-    ) AS startup_profile_selection_reason, -- main_v5:payload.processes.parent.scalars.startup_profile_selection_reason
+    ARRAY_AGG(
+      startup_profile_selection_reason_first_ping_only RESPECT NULLS
+      ORDER BY
+        submission_date
+    )[SAFE_OFFSET(0)] AS startup_profile_selection_reason,
     ARRAY_AGG(attribution.dltoken RESPECT NULLS ORDER BY submission_date)[
       SAFE_OFFSET(0)
     ] AS attribution_dltoken,

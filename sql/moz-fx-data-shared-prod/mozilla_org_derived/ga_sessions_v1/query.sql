@@ -36,9 +36,9 @@ RETURNS STRING AS (
 
 WITH daily_sessions AS (
   SELECT
-    mozdata.analysis.ga_nullify_string(clientId) AS ga_client_id,
+    mozfun.ga.nullify_string(clientId) AS ga_client_id,
     -- visitId (or sessionId in GA4) is guaranteed unique only among one client, look at visitId here https://support.google.com/analytics/answer/3437719?hl=en
-    CONCAT(mozdata.analysis.ga_nullify_string(clientId), CAST(visitId AS STRING)) AS ga_session_id,
+    CONCAT(mozfun.ga.nullify_string(clientId), CAST(visitId AS STRING)) AS ga_session_id,
     MIN(PARSE_DATE('%Y%m%d', date)) AS session_date,
     MIN(visitNumber) = 1 AS is_first_session,
     MIN(visitNumber) AS session_number,
@@ -60,7 +60,7 @@ WITH daily_sessions AS (
     MIN_BY(trafficSource.keyword, visitStartTime) AS term,
     MIN_BY(trafficSource.adContent, visitStartTime) AS content,
     ARRAY_AGG(
-      mozdata.analysis.ga_nullify_string(trafficSource.adwordsClickInfo.gclId) IGNORE NULLS
+      mozfun.ga.nullify_string(trafficSource.adwordsClickInfo.gclId) IGNORE NULLS
     )[0] AS gclid,
     /* Device */
     MIN_BY(device.deviceCategory, visitStartTime) AS device_category,
@@ -130,7 +130,7 @@ SELECT
     WHERE
       type = 'EVENT'
       AND eventInfo.eventAction = 'Stub Session ID'
-      AND mozdata.analysis.ga_nullify_string(eventInfo.eventLabel) IS NOT NULL
+      AND mozfun.ga.nullify_string(eventInfo.eventLabel) IS NOT NULL
   ) AS last_reported_stub_session_id,
   (
     SELECT
@@ -140,7 +140,7 @@ SELECT
     WHERE
       type = 'EVENT'
       AND eventInfo.eventAction = 'Stub Session ID'
-      AND mozdata.analysis.ga_nullify_string(eventInfo.eventLabel) IS NOT NULL
+      AND mozfun.ga.nullify_string(eventInfo.eventLabel) IS NOT NULL
   ) AS all_reported_stub_session_ids,
   (
     -- Most sessions only have 1 landing screen

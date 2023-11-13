@@ -3,11 +3,11 @@ CREATE OR REPLACE VIEW
 AS
 SELECT
   * REPLACE (
-    mozdata.analysis.ga_nullify_string(campaign) AS campaign,
-    mozdata.analysis.ga_nullify_string(source) AS source,
-    mozdata.analysis.ga_nullify_string(medium) AS medium,
-    mozdata.analysis.ga_nullify_string(term) AS term,
-    mozdata.analysis.ga_nullify_string(content) AS content
+    mozfun.ga.nullify_string(campaign) AS campaign,
+    mozfun.ga.nullify_string(source) AS source,
+    mozfun.ga.nullify_string(medium) AS medium,
+    mozfun.ga.nullify_string(term) AS term,
+    mozfun.ga.nullify_string(content) AS content
   )
 FROM
   `moz-fx-data-shared-prod.mozilla_org_derived.ga_sessions_v1`

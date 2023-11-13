@@ -1,4 +1,6 @@
 WITH shopping_metrics AS (
+  --we're missing fx_dau, user_has_onboarded, and nimbus_disabled_shopping in looker
+  --for android and possibly also iOS
   SELECT
     client_info.client_id AS client_id,
     DATE(submission_timestamp) AS submission_date,

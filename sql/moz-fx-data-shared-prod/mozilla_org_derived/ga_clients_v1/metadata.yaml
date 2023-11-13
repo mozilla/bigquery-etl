@@ -1,0 +1,18 @@
+friendly_name: GA Clients
+description: |-
+  A table representing GA clients. Grain is one row per client.
+  Key is ga_client_id.
+owners:
+- frank@mozilla.com
+labels:
+  incremental: true
+  owner1: frank@mozilla.com
+scheduling:
+  depends_on_past: true
+  dag_name: bqetl_mozilla_org_derived
+  date_partition_parameter: session_date
+bigquery:
+  clustering:
+    fields: ["first_seen_date"]
+references: {}
+deprecated: false

@@ -54,7 +54,7 @@ fields:
 - description:
   mode: NULLABLE
   name: next_kwargs
-  type: JSON
+  type: STRING
 - description:
   mode: NULLABLE
   name: next_method

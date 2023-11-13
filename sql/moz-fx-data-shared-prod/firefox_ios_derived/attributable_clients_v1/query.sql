@@ -8,7 +8,9 @@ WITH client_days AS (
     DATE(submission_timestamp) AS submission_date,
     sample_id,
     client_info.client_id,
-    LOGICAL_OR(mozfun.norm.extract_version(app_version, 'major') >= 108) AS has_search_data,
+    LOGICAL_OR(
+      mozfun.norm.extract_version(client_info.app_display_version, 'major') >= 108
+    ) AS has_search_data,
     SUM(sum_map_values(metrics.labeled_counter.search_in_content)) AS searches,
     SUM(sum_map_values(metrics.labeled_counter.browser_search_with_ads)) AS searches_with_ads,
     SUM(sum_map_values(metrics.labeled_counter.browser_search_ad_clicks)) AS ad_clicks,

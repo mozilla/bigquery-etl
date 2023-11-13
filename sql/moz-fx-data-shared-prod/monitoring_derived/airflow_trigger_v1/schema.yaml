@@ -14,7 +14,7 @@ fields:
 - description:
   mode: NULLABLE
   name: kwargs
-  type: JSON
+  type: STRING
 - description:
   mode: NULLABLE
   name: classpath

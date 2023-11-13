@@ -103,6 +103,8 @@ joined_data AS (
     s.sap,
     s.ad_click,
     active.active_hours AS active_hours_sum,
+    sm.is_onboarded,
+    sm.is_nimbus_disabled,
     fx_dau.is_fx_dau
   FROM
     shopping_metrics sm

@@ -15,7 +15,7 @@ WITH client_days AS (
   FROM
     firefox_ios.baseline
   WHERE
-    submission_date = @submission_date
+    DATE(submission_timestamp) = @submission_date
   GROUP BY
     submission_date,
     sample_id,

@@ -1,0 +1,20 @@
+friendly_name: Ga Sessions
+description: |-
+  One row for each GA session.
+owners:
+- frank@mozilla.com
+labels:
+  incremental: true
+  owner1: frank@mozilla.com
+scheduling:
+  dag_name: bqetl_mozilla_org_derived
+bigquery:
+  time_partitioning:
+    type: day
+    field: 'session_date'
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields: ["country"]
+references: {}
+deprecated: false

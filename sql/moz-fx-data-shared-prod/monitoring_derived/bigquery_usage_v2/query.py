@@ -97,8 +97,25 @@ def create_query(date, project):
         UNNEST(referenced_tables) AS referenced_tables
       WHERE
         DATE(creation_time) = '{date}'
-      )
+      UNION ALL
       SELECT
+        jp.project_id AS source_project,
+        date(creation_time) as creation_date,
+        job_id,
+        referenced_tables.project_id AS reference_project_id,
+        referenced_tables.dataset_id AS reference_dataset_id,
+        referenced_tables.table_id AS reference_table_id,
+        user_email,
+        REGEXP_EXTRACT(query, r'Username: (.*?),') AS username,
+        REGEXP_EXTRACT(query, r'Query ID: (\\w+), ') AS query_id,
+      FROM
+        `moz-fx-data-shared-prod.region-us.INFORMATION_SCHEMA.JOBS_BY_PROJECT` jp
+      LEFT JOIN
+        UNNEST(referenced_tables) AS referenced_tables
+      WHERE
+        DATE(creation_time) = '{date}'
+      )
+      SELECT DISTINCT
         jo.source_project,
         jo.creation_date,
         jo.job_id,
@@ -133,7 +150,7 @@ def create_query(date, project):
           reference_project_id,
           reference_dataset_id,
           reference_table_id)
-      WHERE creation_date > '2023-05-01'
+      WHERE creation_date = DATE('{date}')
     """
 
 

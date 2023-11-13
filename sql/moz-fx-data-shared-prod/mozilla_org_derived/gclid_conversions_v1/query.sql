@@ -4,7 +4,7 @@ WITH gclids_to_ga_ids AS (
     ga_client_id,
     stub_session_id,
   FROM
-    mozilla_org_derived.gclid_conversions_v1
+    mozilla_org_derived.ga_sessions_v1
   CROSS JOIN
     UNNEST(all_reported_stub_session_ids) AS stub_session_id
   WHERE

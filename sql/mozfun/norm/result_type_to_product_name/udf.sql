@@ -5,7 +5,7 @@ RETURNS STRING AS (
       THEN 'autofill'
     WHEN res IN ('addon')
       THEN 'xchannels_add_on'
-    WHEN res IN ('rs_amo')
+    WHEN res IN ('rs_amo', 'rust_amo')
       THEN 'suggest_add_on'
     WHEN res IN ('search_suggest', 'search_history', 'search_suggest_rich')
       THEN 'default_partner_search_suggestion'
@@ -19,11 +19,21 @@ RETURNS STRING AS (
       THEN 'bookmark'
     WHEN res IN ('tab')
       THEN 'open_tab'
-    WHEN res IN ('merino_adm_sponsored', 'rs_adm_sponsored', 'suggest_sponsor')
+    WHEN res IN (
+        'merino_adm_sponsored',
+        'rs_adm_sponsored',
+        'suggest_sponsor',
+        'rust_adm_sponsored'
+      )
       THEN 'admarketplace_sponsored'
     WHEN res IN ('merino_top_picks')
       THEN 'navigational'
-    WHEN res IN ('rs_adm_nonsponsored', 'merino_adm_nonsponsored', 'suggest_non_sponsor')
+    WHEN res IN (
+        'rs_adm_nonsponsored',
+        'merino_adm_nonsponsored',
+        'suggest_non_sponsor',
+        'rust_adm_nonsponsored'
+      )
       THEN 'wikipedia_enhanced'
     WHEN res IN ('dynamic_wikipedia', 'merino_wikipedia')
       THEN 'wikipedia_dynamic'
@@ -37,7 +47,7 @@ RETURNS STRING AS (
         'intervention_update'
       )
       THEN 'quick_action'
-    WHEN res IN ('rs_pocket')
+    WHEN res IN ('rs_pocket', 'rust_pocket')
       THEN 'pocket_collection'
     ELSE 'other'
   END

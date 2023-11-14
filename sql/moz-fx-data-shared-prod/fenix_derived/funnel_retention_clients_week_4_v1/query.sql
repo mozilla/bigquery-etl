@@ -27,7 +27,7 @@ clients_first_seen AS (
     -- 28 days need to elapse before calculating the week 4 and day 28 retention metrics
     first_seen_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
     AND channel = "release"
-    AND install_source = 'com.android.vending'
+    AND install_source = "com.android.vending"
 ),
 retention_calculation AS (
   SELECT

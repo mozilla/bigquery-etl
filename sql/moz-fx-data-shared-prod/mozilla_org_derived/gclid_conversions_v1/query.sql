@@ -17,7 +17,7 @@ ga_ids_to_dl_token AS (
     stub_session_id,
     dl_token,
   FROM
-    mozila_org_derived.dl_ga_triplets_v1
+    stub_attribution_service_derived.dl_ga_triplets_v1
   WHERE
     ga_client_id IS NOT NULL
     AND stub_session_id IS NOT NULL
@@ -33,6 +33,7 @@ dl_token_to_telemetry_id AS (
 telemetry_id_to_activity AS (
   SELECT
     client_id AS telemetry_client_id,
+    @activity_date AS activity_date,
     search_count_all > 0 AS did_search,
     ad_clicks_count_all > 0 AS did_click_ad,
     TRUE AS was_active,
@@ -42,12 +43,12 @@ telemetry_id_to_activity AS (
     submission_date = @activity_date
 )
 SELECT
-  @activity_date AS activity_date,
+  activity_date,
   gclid,
   COALESCE(LOGICAL_OR(did_search), FALSE) AS did_search,
   COALESCE(LOGICAL_OR(did_click_ad), FALSE) AS did_click_ad,
   COALESCE(
-    LOGICAL_OR(was_active AND @activity_date > first_seen_date),
+    LOGICAL_OR(was_active AND activity_date > first_seen_date),
     FALSE
   ) AS did_returned_second_day
 FROM

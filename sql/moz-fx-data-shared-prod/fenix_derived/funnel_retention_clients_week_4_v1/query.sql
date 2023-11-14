@@ -21,13 +21,13 @@ clients_first_seen AS (
     adjust_campaign,
     adjust_creative,
     adjust_network,
+    install_source,
   FROM
     fenix.firefox_android_clients
   WHERE
     -- 28 days need to elapse before calculating the week 4 and day 28 retention metrics
     first_seen_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
     AND channel = "release"
-    AND install_source = "com.android.vending"
 ),
 retention_calculation AS (
   SELECT

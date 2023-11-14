@@ -153,28 +153,6 @@ Example:
 {{ not_null(["submission_date", "os"], "submission_date = @submission_date") }}
 ```
 
-### revenue_period_over_period_change ([source](../../tests/checks/revenue_period_over_period_change.jinja))
-
-Usage:
-
-```
-Arguments:
-
-metric_columns: List[str] - A list of columns to calculate the period-over-period percent change.
-period_column: str - The column that defines the periods over which changes in the metric columns will be summed.
-threshold: float - The value in (0, 1) under which the percent change in metrics is expected to fall.
-dimensions: Optional[List[str]] - A list of columns to define the dimensions over which the metrics should be summed.
-date_where: Optional[str] - A condition that will be injected into the `WHERE` clause of the check that defines which date to base the comparison on. Metrics in the period that satisfies this date condition will be the value for the percent change calcuation based on the previous period's value. For example, "created_date = @submission_date" so that the check is only executed when a new row is created.
-field_where: Optional[str] - A condition that will be injected into the `WHERE` clause of the check. For example, "partner_code = 'Google'" so that the check is only executed for a specific partner.
-```
-
-Example:
-
-```sql
-#fail
-{{ period_over_period_change(["impressions", "clicks"], "submission_date", .25, ["country_code", "form_factor"], "submission_date = @submission_date", "country_code IN ('US','DE')") }}
-```
-
 Please keep in mind the below checks can be combined and specified in the same `checks.sql` file. For example:
 
 ```sql

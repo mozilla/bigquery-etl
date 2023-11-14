@@ -4,6 +4,7 @@ import enum
 import os
 import re
 import string
+from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 import attr
@@ -231,7 +232,7 @@ class Metadata:
         with open(metadata_file, "r") as yaml_stream:
             try:
                 metadata = yaml.safe_load(yaml_stream)
-                table_name = str(metadata_file.parent.name)
+                table_name = str(Path(metadata_file).parent.name)
                 friendly_name = metadata.get(
                     "friendly_name", string.capwords(table_name.replace("_", " "))
                 )

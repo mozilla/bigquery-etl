@@ -56,3 +56,12 @@ fields:
 - name: active_hours_sum
   type: FLOAT
   mode: NULLABLE
+- name: is_onboarded
+  type: INTEGER
+  mode: NULLABLE
+- name: is_nimbus_disabled
+  type: INTEGER
+  mode: NULLABLE
+- name: is_fx_dau
+  type: INTEGER
+  mode: NULLABLE

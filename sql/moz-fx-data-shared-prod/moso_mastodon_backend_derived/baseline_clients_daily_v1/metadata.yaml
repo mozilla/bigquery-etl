@@ -1,0 +1,35 @@
+friendly_name: Baseline Clients Daily
+description: |-
+  A daily aggregate of baseline pings per `client_id`.
+
+  Clustering fields: `normalized_channel`, `sample_id`
+
+  See also: `baseline_clients_last_seen`
+owners:
+- jklukas@mozilla.com
+labels:
+  owner1: jklukas
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+    - normalized_channel
+    - sample_id
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  checks.sql:
+  - moz-fx-data-shared-prod.moso_mastodon_backend_derived.baseline_clients_daily_v1
+  init.sql:
+  - moso_mastodon_backend_derived.baseline_clients_first_seen_v1
+  - moso_mastodon_backend_stable.baseline_v1
+  query.sql:
+  - moso_mastodon_backend_derived.baseline_clients_first_seen_v1
+  - moso_mastodon_backend_stable.baseline_v1
+deprecated: false

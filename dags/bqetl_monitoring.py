@@ -306,6 +306,10 @@ with DAG(
         wait_for_copy_deduplicate_all
     )
 
+    monitoring_derived__bigquery_usage__v2.set_upstream(
+        monitoring_derived__jobs_by_organization__v1
+    )
+
     wait_for_copy_deduplicate_main_ping = ExternalTaskSensor(
         task_id="wait_for_copy_deduplicate_main_ping",
         external_dag_id="copy_deduplicate",

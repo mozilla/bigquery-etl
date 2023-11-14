@@ -160,5 +160,9 @@
   {
     "type": "STRING",
     "name": "normalized_os_version"
+  },
+  {
+    "type": "STRING",
+    "name": "startup_profile_selection_reason_first_ping_only"
   }
 ]

@@ -2110,6 +2110,9 @@ fields:
 - name: startup_profile_selection_reason_first
   type: STRING
   mode: NULLABLE
+- name: startup_profile_selection_reason_first_ping_only
+  type: STRING
+  mode: NULLABLE
 - name: first_document_id
   type: STRING
   mode: NULLABLE

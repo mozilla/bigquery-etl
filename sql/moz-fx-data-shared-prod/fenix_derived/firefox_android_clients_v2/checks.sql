@@ -21,6 +21,7 @@ upstream AS (
     `{{ project_id }}.{{ dataset_id }}.new_profile_activation_v1`
   WHERE
     first_seen_date = @submission_date
+    AND submission_date = DATE_SUB(@submission_date, INTERVAL 6 DAY)
 )
 SELECT
   IF(

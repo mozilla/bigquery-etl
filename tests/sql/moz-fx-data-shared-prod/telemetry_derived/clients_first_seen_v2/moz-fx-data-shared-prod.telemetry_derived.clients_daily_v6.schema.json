@@ -163,6 +163,6 @@
   },
   {
     "type": "STRING",
-    "name": "startup_profile_selection_reason_first_ping_only"
+    "name": "startup_profile_selection_first_ping_only"
   }
 ]

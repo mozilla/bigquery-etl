@@ -29,5 +29,5 @@ workgroup_access:
 references:
   query.sql:
   - fenix.baseline_clients_last_seen
-  - fenix_derived.firefox_android_clients_v2
+  - fenix.firefox_android_clients
 deprecated: false

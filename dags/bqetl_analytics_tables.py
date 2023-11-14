@@ -328,7 +328,7 @@ with DAG(
     )
 
     fenix_derived__funnel_retention_clients_week_2__v1.set_upstream(
-        checks__fail_fenix_derived__firefox_android_clients__v2
+        firefox_android_clients
     )
 
     fenix_derived__funnel_retention_clients_week_4__v1.set_upstream(
@@ -336,7 +336,7 @@ with DAG(
     )
 
     fenix_derived__funnel_retention_clients_week_4__v1.set_upstream(
-        checks__fail_fenix_derived__firefox_android_clients__v2
+        firefox_android_clients
     )
 
     fenix_derived__funnel_retention_week_4__v1.set_upstream(

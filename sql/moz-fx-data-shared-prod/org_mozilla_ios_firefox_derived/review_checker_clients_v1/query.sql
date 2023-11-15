@@ -80,14 +80,17 @@ search AS (
   SELECT
     submission_date,
     client_id,
-    search_count AS sap,
-    ad_click
+    SUM(search_count) AS sap,
+    SUM(ad_click) AS ad_click
   FROM
     `moz-fx-data-shared-prod.search.mobile_search_clients_engines_sources_daily`
   WHERE
     os = "iOS"
     AND normalized_app_name = "Fennec"
     AND DATE(submission_date) = @submission_date
+  GROUP BY
+    client_id,
+    submission_date
 ),
 joined_data AS (
   SELECT

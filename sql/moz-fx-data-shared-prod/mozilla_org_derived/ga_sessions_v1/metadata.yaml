@@ -17,5 +17,15 @@ bigquery:
     expiration_days: null
   clustering:
     fields: ["country"]
+  depends_on:
+  - task_id: mozilla_org_derived__ga_sessions__v1__backfill_-1
+    dag_name: ga_sessions_backfill
+    execution_delta: 1h
+  - task_id: mozilla_org_derived__ga_sessions__v1__backfill_-2
+    dag_name: ga_sessions_backfill
+    execution_delta: 1h
+  - task_id: mozilla_org_derived__ga_sessions__v1__backfill_-3
+    dag_name: ga_sessions_backfill
+    execution_delta: 1h
 references: {}
 deprecated: false

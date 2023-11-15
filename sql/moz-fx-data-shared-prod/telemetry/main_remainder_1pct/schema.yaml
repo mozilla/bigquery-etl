@@ -6986,6 +6986,12 @@ fields:
     - name: memory_phc_slots_freed
       type: STRING
       mode: NULLABLE
+    - name: tls_cipher_suite
+      type: STRING
+      mode: NULLABLE
+    - name: font_fingerprinting_per_tab
+      type: STRING
+      mode: NULLABLE
     - name: content_documents_destroyed
       type: STRING
       mode: NULLABLE
@@ -6999,9 +7005,6 @@ fields:
       type: STRING
       mode: NULLABLE
     - name: top_level_content_documents_destroyed
-      type: STRING
-      mode: NULLABLE
-    - name: tls_cipher_suite
       type: STRING
       mode: NULLABLE
   - name: info
@@ -9714,6 +9717,16 @@ fields:
         type: STRING
         mode: NULLABLE
     - name: webext_user_script_injection_ms_by_addonid
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: STRING
+        mode: NULLABLE
+    - name: canvas_fingerprinting_per_tab
       type: RECORD
       mode: REPEATED
       fields:

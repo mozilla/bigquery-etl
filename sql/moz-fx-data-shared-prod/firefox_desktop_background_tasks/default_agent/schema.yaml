@@ -361,6 +361,19 @@ fields:
         will be the same.
 
         '
+    - name: system_default_pdf_handler
+      type: STRING
+      mode: NULLABLE
+      description: 'Which pdf handler is currently set as the system default handler.
+        This is simply a string with the name of the handler binned to a fixed set
+        of known handlers.
+
+        Possible values currently include the following (from [DefaultPDF.cpp](https://searchfox.org/mozilla-central/source/toolkit/mozapps/defaultagent/DefaultPDF.cpp)):
+        * "Error" * "" (unknown) * "Firefox" * "Microsoft Edge" * "Google Chrome"
+        * "Adobe Acrobat" * "WPS" * "Nitro" * "Foxit" * "PDF-XChange" * "Avast" *
+        "Sumatra"
+
+        '
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

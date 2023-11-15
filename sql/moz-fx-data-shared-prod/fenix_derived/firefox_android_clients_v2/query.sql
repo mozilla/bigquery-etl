@@ -153,7 +153,7 @@ _current AS (
     device_model,
     os_version,
     app_version,
-    baseline_first_seen.locale,
+   locale,
     COALESCE(first_session.adjust_info, metrics.adjust_info) AS adjust_info,
     metrics.install_source,
     STRUCT(

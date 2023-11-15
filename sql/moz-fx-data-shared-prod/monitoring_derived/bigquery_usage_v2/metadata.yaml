@@ -16,7 +16,7 @@ scheduling:
   - - moz-fx-data-shared-prod
     - monitoring_derived
     - job_by_organization_v1
-  upstream_dependencies:
+  depends_on:
   - task_id: monitoring_derived__jobs_by_organization__v1
     dag_name: bqetl_monitoring
   arguments:

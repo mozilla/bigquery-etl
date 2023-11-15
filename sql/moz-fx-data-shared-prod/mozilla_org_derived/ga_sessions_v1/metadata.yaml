@@ -8,6 +8,7 @@ labels:
   owner1: frank@mozilla.com
 scheduling:
   dag_name: bqetl_mozilla_org_derived
+  date_partition_parameter: session_date
 bigquery:
   time_partitioning:
     type: day

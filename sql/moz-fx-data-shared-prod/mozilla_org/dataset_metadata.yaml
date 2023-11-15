@@ -1,6 +1,6 @@
 friendly_name: Mozilla.org
 description: |-
-  Mozilla.org data, usually derived from GA.
+  Mozilla.org data, usually derived from Google Analytics (GA).
 dataset_base_acl: view
 user_facing: true
 labels: {}

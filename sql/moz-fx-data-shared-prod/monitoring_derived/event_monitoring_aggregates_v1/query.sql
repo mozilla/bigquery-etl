@@ -21,7 +21,7 @@ SELECT
   event_extra.key AS event_extra_key,
   normalized_country_code AS country,
   "Firefox for Desktop" AS normalized_app_name,
-  "release" AS normalized_channel,
+  client_info.app_channel AS channel,
   client_info.app_display_version AS version,
     -- Access experiment information.
     -- Additional iteration is necessary to aggregate total event count across experiments
@@ -61,7 +61,7 @@ GROUP BY
   event_extra_key,
   country,
   normalized_app_name,
-  normalized_channel,
+  channel,
   version,
   experiment,
   experiment_branch
@@ -88,7 +88,7 @@ SELECT
   event_extra.key AS event_extra_key,
   normalized_country_code AS country,
   "Firefox for Desktop Background Update Task" AS normalized_app_name,
-  "release" AS normalized_channel,
+  client_info.app_channel AS channel,
   client_info.app_display_version AS version,
     -- Access experiment information.
     -- Additional iteration is necessary to aggregate total event count across experiments
@@ -128,7 +128,7 @@ GROUP BY
   event_extra_key,
   country,
   normalized_app_name,
-  normalized_channel,
+  channel,
   version,
   experiment,
   experiment_branch
@@ -155,7 +155,7 @@ SELECT
   event_extra.key AS event_extra_key,
   normalized_country_code AS country,
   "Firefox Desktop Default Agent Task" AS normalized_app_name,
-  "release" AS normalized_channel,
+  client_info.app_channel AS channel,
   client_info.app_display_version AS version,
     -- Access experiment information.
     -- Additional iteration is necessary to aggregate total event count across experiments
@@ -195,7 +195,7 @@ GROUP BY
   event_extra_key,
   country,
   normalized_app_name,
-  normalized_channel,
+  channel,
   version,
   experiment,
   experiment_branch
@@ -222,7 +222,7 @@ SELECT
   event_extra.key AS event_extra_key,
   normalized_country_code AS country,
   "Pinebuild" AS normalized_app_name,
-  "release" AS normalized_channel,
+  client_info.app_channel AS channel,
   client_info.app_display_version AS version,
     -- Access experiment information.
     -- Additional iteration is necessary to aggregate total event count across experiments
@@ -262,7 +262,7 @@ GROUP BY
   event_extra_key,
   country,
   normalized_app_name,
-  normalized_channel,
+  channel,
   version,
   experiment,
   experiment_branch
@@ -289,7 +289,7 @@ SELECT
   event_extra.key AS event_extra_key,
   normalized_country_code AS country,
   "Firefox for Android" AS normalized_app_name,
-  "release" AS normalized_channel,
+  client_info.app_channel AS channel,
   client_info.app_display_version AS version,
     -- Access experiment information.
     -- Additional iteration is necessary to aggregate total event count across experiments
@@ -329,7 +329,7 @@ GROUP BY
   event_extra_key,
   country,
   normalized_app_name,
-  normalized_channel,
+  channel,
   version,
   experiment,
   experiment_branch
@@ -356,7 +356,7 @@ SELECT
   event_extra.key AS event_extra_key,
   normalized_country_code AS country,
   "Firefox for Android" AS normalized_app_name,
-  "beta" AS normalized_channel,
+  client_info.app_channel AS channel,
   client_info.app_display_version AS version,
     -- Access experiment information.
     -- Additional iteration is necessary to aggregate total event count across experiments
@@ -396,7 +396,7 @@ GROUP BY
   event_extra_key,
   country,
   normalized_app_name,
-  normalized_channel,
+  channel,
   version,
   experiment,
   experiment_branch
@@ -423,7 +423,7 @@ SELECT
   event_extra.key AS event_extra_key,
   normalized_country_code AS country,
   "Firefox for Android" AS normalized_app_name,
-  "nightly" AS normalized_channel,
+  client_info.app_channel AS channel,
   client_info.app_display_version AS version,
     -- Access experiment information.
     -- Additional iteration is necessary to aggregate total event count across experiments
@@ -463,7 +463,7 @@ GROUP BY
   event_extra_key,
   country,
   normalized_app_name,
-  normalized_channel,
+  channel,
   version,
   experiment,
   experiment_branch
@@ -490,7 +490,7 @@ SELECT
   event_extra.key AS event_extra_key,
   normalized_country_code AS country,
   "Firefox for Android" AS normalized_app_name,
-  "nightly" AS normalized_channel,
+  client_info.app_channel AS channel,
   client_info.app_display_version AS version,
     -- Access experiment information.
     -- Additional iteration is necessary to aggregate total event count across experiments
@@ -530,7 +530,7 @@ GROUP BY
   event_extra_key,
   country,
   normalized_app_name,
-  normalized_channel,
+  channel,
   version,
   experiment,
   experiment_branch
@@ -557,7 +557,7 @@ SELECT
   event_extra.key AS event_extra_key,
   normalized_country_code AS country,
   "Firefox for Android" AS normalized_app_name,
-  "nightly" AS normalized_channel,
+  client_info.app_channel AS channel,
   client_info.app_display_version AS version,
     -- Access experiment information.
     -- Additional iteration is necessary to aggregate total event count across experiments
@@ -597,7 +597,7 @@ GROUP BY
   event_extra_key,
   country,
   normalized_app_name,
-  normalized_channel,
+  channel,
   version,
   experiment,
   experiment_branch
@@ -624,7 +624,7 @@ SELECT
   event_extra.key AS event_extra_key,
   normalized_country_code AS country,
   "Firefox for iOS" AS normalized_app_name,
-  "release" AS normalized_channel,
+  client_info.app_channel AS channel,
   client_info.app_display_version AS version,
     -- Access experiment information.
     -- Additional iteration is necessary to aggregate total event count across experiments
@@ -664,7 +664,7 @@ GROUP BY
   event_extra_key,
   country,
   normalized_app_name,
-  normalized_channel,
+  channel,
   version,
   experiment,
   experiment_branch
@@ -691,7 +691,7 @@ SELECT
   event_extra.key AS event_extra_key,
   normalized_country_code AS country,
   "Firefox for iOS" AS normalized_app_name,
-  "beta" AS normalized_channel,
+  client_info.app_channel AS channel,
   client_info.app_display_version AS version,
     -- Access experiment information.
     -- Additional iteration is necessary to aggregate total event count across experiments
@@ -731,7 +731,7 @@ GROUP BY
   event_extra_key,
   country,
   normalized_app_name,
-  normalized_channel,
+  channel,
   version,
   experiment,
   experiment_branch
@@ -758,7 +758,7 @@ SELECT
   event_extra.key AS event_extra_key,
   normalized_country_code AS country,
   "Firefox for iOS" AS normalized_app_name,
-  "nightly" AS normalized_channel,
+  client_info.app_channel AS channel,
   client_info.app_display_version AS version,
     -- Access experiment information.
     -- Additional iteration is necessary to aggregate total event count across experiments
@@ -798,7 +798,7 @@ GROUP BY
   event_extra_key,
   country,
   normalized_app_name,
-  normalized_channel,
+  channel,
   version,
   experiment,
   experiment_branch
@@ -825,7 +825,7 @@ SELECT
   event_extra.key AS event_extra_key,
   normalized_country_code AS country,
   "Reference Browser" AS normalized_app_name,
-  "release" AS normalized_channel,
+  client_info.app_channel AS channel,
   client_info.app_display_version AS version,
     -- Access experiment information.
     -- Additional iteration is necessary to aggregate total event count across experiments
@@ -865,7 +865,7 @@ GROUP BY
   event_extra_key,
   country,
   normalized_app_name,
-  normalized_channel,
+  channel,
   version,
   experiment,
   experiment_branch
@@ -892,7 +892,7 @@ SELECT
   event_extra.key AS event_extra_key,
   normalized_country_code AS country,
   "Firefox for Fire TV" AS normalized_app_name,
-  "release" AS normalized_channel,
+  client_info.app_channel AS channel,
   client_info.app_display_version AS version,
     -- Access experiment information.
     -- Additional iteration is necessary to aggregate total event count across experiments
@@ -932,7 +932,7 @@ GROUP BY
   event_extra_key,
   country,
   normalized_app_name,
-  normalized_channel,
+  channel,
   version,
   experiment,
   experiment_branch
@@ -959,7 +959,7 @@ SELECT
   event_extra.key AS event_extra_key,
   normalized_country_code AS country,
   "Firefox Reality" AS normalized_app_name,
-  "release" AS normalized_channel,
+  client_info.app_channel AS channel,
   client_info.app_display_version AS version,
     -- Access experiment information.
     -- Additional iteration is necessary to aggregate total event count across experiments
@@ -999,7 +999,7 @@ GROUP BY
   event_extra_key,
   country,
   normalized_app_name,
-  normalized_channel,
+  channel,
   version,
   experiment,
   experiment_branch
@@ -1026,7 +1026,7 @@ SELECT
   event_extra.key AS event_extra_key,
   normalized_country_code AS country,
   "Lockwise for Android" AS normalized_app_name,
-  "release" AS normalized_channel,
+  client_info.app_channel AS channel,
   client_info.app_display_version AS version,
     -- Access experiment information.
     -- Additional iteration is necessary to aggregate total event count across experiments
@@ -1066,7 +1066,7 @@ GROUP BY
   event_extra_key,
   country,
   normalized_app_name,
-  normalized_channel,
+  channel,
   version,
   experiment,
   experiment_branch
@@ -1093,7 +1093,7 @@ SELECT
   event_extra.key AS event_extra_key,
   normalized_country_code AS country,
   "Lockwise for iOS" AS normalized_app_name,
-  "release" AS normalized_channel,
+  client_info.app_channel AS channel,
   client_info.app_display_version AS version,
     -- Access experiment information.
     -- Additional iteration is necessary to aggregate total event count across experiments
@@ -1133,7 +1133,7 @@ GROUP BY
   event_extra_key,
   country,
   normalized_app_name,
-  normalized_channel,
+  channel,
   version,
   experiment,
   experiment_branch
@@ -1160,7 +1160,7 @@ SELECT
   event_extra.key AS event_extra_key,
   normalized_country_code AS country,
   "mozregression" AS normalized_app_name,
-  "release" AS normalized_channel,
+  client_info.app_channel AS channel,
   client_info.app_display_version AS version,
     -- Access experiment information.
     -- Additional iteration is necessary to aggregate total event count across experiments
@@ -1200,7 +1200,7 @@ GROUP BY
   event_extra_key,
   country,
   normalized_app_name,
-  normalized_channel,
+  channel,
   version,
   experiment,
   experiment_branch
@@ -1227,7 +1227,7 @@ SELECT
   event_extra.key AS event_extra_key,
   normalized_country_code AS country,
   "Burnham" AS normalized_app_name,
-  "release" AS normalized_channel,
+  client_info.app_channel AS channel,
   client_info.app_display_version AS version,
     -- Access experiment information.
     -- Additional iteration is necessary to aggregate total event count across experiments
@@ -1267,7 +1267,7 @@ GROUP BY
   event_extra_key,
   country,
   normalized_app_name,
-  normalized_channel,
+  channel,
   version,
   experiment,
   experiment_branch
@@ -1294,7 +1294,7 @@ SELECT
   event_extra.key AS event_extra_key,
   normalized_country_code AS country,
   "mozphab" AS normalized_app_name,
-  "release" AS normalized_channel,
+  client_info.app_channel AS channel,
   client_info.app_display_version AS version,
     -- Access experiment information.
     -- Additional iteration is necessary to aggregate total event count across experiments
@@ -1334,7 +1334,7 @@ GROUP BY
   event_extra_key,
   country,
   normalized_app_name,
-  normalized_channel,
+  channel,
   version,
   experiment,
   experiment_branch
@@ -1361,7 +1361,7 @@ SELECT
   event_extra.key AS event_extra_key,
   normalized_country_code AS country,
   "Firefox for Echo Show" AS normalized_app_name,
-  "release" AS normalized_channel,
+  client_info.app_channel AS channel,
   client_info.app_display_version AS version,
     -- Access experiment information.
     -- Additional iteration is necessary to aggregate total event count across experiments
@@ -1401,7 +1401,7 @@ GROUP BY
   event_extra_key,
   country,
   normalized_app_name,
-  normalized_channel,
+  channel,
   version,
   experiment,
   experiment_branch
@@ -1428,7 +1428,7 @@ SELECT
   event_extra.key AS event_extra_key,
   normalized_country_code AS country,
   "Firefox Reality for PC-connected VR platforms" AS normalized_app_name,
-  "release" AS normalized_channel,
+  client_info.app_channel AS channel,
   client_info.app_display_version AS version,
     -- Access experiment information.
     -- Additional iteration is necessary to aggregate total event count across experiments
@@ -1468,7 +1468,7 @@ GROUP BY
   event_extra_key,
   country,
   normalized_app_name,
-  normalized_channel,
+  channel,
   version,
   experiment,
   experiment_branch
@@ -1495,7 +1495,7 @@ SELECT
   event_extra.key AS event_extra_key,
   normalized_country_code AS country,
   "mach" AS normalized_app_name,
-  "release" AS normalized_channel,
+  client_info.app_channel AS channel,
   client_info.app_display_version AS version,
     -- Access experiment information.
     -- Additional iteration is necessary to aggregate total event count across experiments
@@ -1535,7 +1535,7 @@ GROUP BY
   event_extra_key,
   country,
   normalized_app_name,
-  normalized_channel,
+  channel,
   version,
   experiment,
   experiment_branch
@@ -1562,7 +1562,7 @@ SELECT
   event_extra.key AS event_extra_key,
   normalized_country_code AS country,
   "Firefox Focus for iOS" AS normalized_app_name,
-  "release" AS normalized_channel,
+  client_info.app_channel AS channel,
   client_info.app_display_version AS version,
     -- Access experiment information.
     -- Additional iteration is necessary to aggregate total event count across experiments
@@ -1602,7 +1602,7 @@ GROUP BY
   event_extra_key,
   country,
   normalized_app_name,
-  normalized_channel,
+  channel,
   version,
   experiment,
   experiment_branch
@@ -1629,7 +1629,7 @@ SELECT
   event_extra.key AS event_extra_key,
   normalized_country_code AS country,
   "Firefox Klar for iOS" AS normalized_app_name,
-  "release" AS normalized_channel,
+  client_info.app_channel AS channel,
   client_info.app_display_version AS version,
     -- Access experiment information.
     -- Additional iteration is necessary to aggregate total event count across experiments
@@ -1669,7 +1669,7 @@ GROUP BY
   event_extra_key,
   country,
   normalized_app_name,
-  normalized_channel,
+  channel,
   version,
   experiment,
   experiment_branch
@@ -1696,7 +1696,7 @@ SELECT
   event_extra.key AS event_extra_key,
   normalized_country_code AS country,
   "Firefox Focus for Android" AS normalized_app_name,
-  "release" AS normalized_channel,
+  client_info.app_channel AS channel,
   client_info.app_display_version AS version,
     -- Access experiment information.
     -- Additional iteration is necessary to aggregate total event count across experiments
@@ -1736,7 +1736,7 @@ GROUP BY
   event_extra_key,
   country,
   normalized_app_name,
-  normalized_channel,
+  channel,
   version,
   experiment,
   experiment_branch
@@ -1763,7 +1763,7 @@ SELECT
   event_extra.key AS event_extra_key,
   normalized_country_code AS country,
   "Firefox Focus for Android" AS normalized_app_name,
-  "beta" AS normalized_channel,
+  client_info.app_channel AS channel,
   client_info.app_display_version AS version,
     -- Access experiment information.
     -- Additional iteration is necessary to aggregate total event count across experiments
@@ -1803,7 +1803,7 @@ GROUP BY
   event_extra_key,
   country,
   normalized_app_name,
-  normalized_channel,
+  channel,
   version,
   experiment,
   experiment_branch
@@ -1830,7 +1830,7 @@ SELECT
   event_extra.key AS event_extra_key,
   normalized_country_code AS country,
   "Firefox Focus for Android" AS normalized_app_name,
-  "nightly" AS normalized_channel,
+  client_info.app_channel AS channel,
   client_info.app_display_version AS version,
     -- Access experiment information.
     -- Additional iteration is necessary to aggregate total event count across experiments
@@ -1870,7 +1870,7 @@ GROUP BY
   event_extra_key,
   country,
   normalized_app_name,
-  normalized_channel,
+  channel,
   version,
   experiment,
   experiment_branch
@@ -1897,7 +1897,7 @@ SELECT
   event_extra.key AS event_extra_key,
   normalized_country_code AS country,
   "Firefox Klar for Android" AS normalized_app_name,
-  "release" AS normalized_channel,
+  client_info.app_channel AS channel,
   client_info.app_display_version AS version,
     -- Access experiment information.
     -- Additional iteration is necessary to aggregate total event count across experiments
@@ -1937,7 +1937,7 @@ GROUP BY
   event_extra_key,
   country,
   normalized_app_name,
-  normalized_channel,
+  channel,
   version,
   experiment,
   experiment_branch
@@ -1964,7 +1964,7 @@ SELECT
   event_extra.key AS event_extra_key,
   normalized_country_code AS country,
   "Bergamot Translator" AS normalized_app_name,
-  "release" AS normalized_channel,
+  client_info.app_channel AS channel,
   client_info.app_display_version AS version,
     -- Access experiment information.
     -- Additional iteration is necessary to aggregate total event count across experiments
@@ -2004,7 +2004,7 @@ GROUP BY
   event_extra_key,
   country,
   normalized_app_name,
-  normalized_channel,
+  channel,
   version,
   experiment,
   experiment_branch
@@ -2031,7 +2031,7 @@ SELECT
   event_extra.key AS event_extra_key,
   normalized_country_code AS country,
   "Firefox Translations" AS normalized_app_name,
-  "release" AS normalized_channel,
+  client_info.app_channel AS channel,
   client_info.app_display_version AS version,
     -- Access experiment information.
     -- Additional iteration is necessary to aggregate total event count across experiments
@@ -2071,7 +2071,7 @@ GROUP BY
   event_extra_key,
   country,
   normalized_app_name,
-  normalized_channel,
+  channel,
   version,
   experiment,
   experiment_branch
@@ -2098,7 +2098,7 @@ SELECT
   event_extra.key AS event_extra_key,
   normalized_country_code AS country,
   "Mozilla VPN" AS normalized_app_name,
-  "release" AS normalized_channel,
+  client_info.app_channel AS channel,
   client_info.app_display_version AS version,
     -- Access experiment information.
     -- Additional iteration is necessary to aggregate total event count across experiments
@@ -2138,7 +2138,7 @@ GROUP BY
   event_extra_key,
   country,
   normalized_app_name,
-  normalized_channel,
+  channel,
   version,
   experiment,
   experiment_branch
@@ -2165,7 +2165,7 @@ SELECT
   event_extra.key AS event_extra_key,
   normalized_country_code AS country,
   "Mozilla VPN" AS normalized_app_name,
-  "release" AS normalized_channel,
+  client_info.app_channel AS channel,
   client_info.app_display_version AS version,
     -- Access experiment information.
     -- Additional iteration is necessary to aggregate total event count across experiments
@@ -2205,7 +2205,7 @@ GROUP BY
   event_extra_key,
   country,
   normalized_app_name,
-  normalized_channel,
+  channel,
   version,
   experiment,
   experiment_branch
@@ -2232,7 +2232,7 @@ SELECT
   event_extra.key AS event_extra_key,
   normalized_country_code AS country,
   "Mozilla VPN" AS normalized_app_name,
-  "release" AS normalized_channel,
+  client_info.app_channel AS channel,
   client_info.app_display_version AS version,
     -- Access experiment information.
     -- Additional iteration is necessary to aggregate total event count across experiments
@@ -2272,7 +2272,7 @@ GROUP BY
   event_extra_key,
   country,
   normalized_app_name,
-  normalized_channel,
+  channel,
   version,
   experiment,
   experiment_branch
@@ -2299,7 +2299,7 @@ SELECT
   event_extra.key AS event_extra_key,
   normalized_country_code AS country,
   "Mozilla VPN" AS normalized_app_name,
-  "release" AS normalized_channel,
+  client_info.app_channel AS channel,
   client_info.app_display_version AS version,
     -- Access experiment information.
     -- Additional iteration is necessary to aggregate total event count across experiments
@@ -2339,7 +2339,7 @@ GROUP BY
   event_extra_key,
   country,
   normalized_app_name,
-  normalized_channel,
+  channel,
   version,
   experiment,
   experiment_branch
@@ -2366,7 +2366,7 @@ SELECT
   event_extra.key AS event_extra_key,
   normalized_country_code AS country,
   "Glean Dictionary" AS normalized_app_name,
-  "release" AS normalized_channel,
+  client_info.app_channel AS channel,
   client_info.app_display_version AS version,
     -- Access experiment information.
     -- Additional iteration is necessary to aggregate total event count across experiments
@@ -2406,7 +2406,7 @@ GROUP BY
   event_extra_key,
   country,
   normalized_app_name,
-  normalized_channel,
+  channel,
   version,
   experiment,
   experiment_branch
@@ -2433,7 +2433,7 @@ SELECT
   event_extra.key AS event_extra_key,
   normalized_country_code AS country,
   "Mozilla Developer Network" AS normalized_app_name,
-  "release" AS normalized_channel,
+  client_info.app_channel AS channel,
   client_info.app_display_version AS version,
     -- Access experiment information.
     -- Additional iteration is necessary to aggregate total event count across experiments
@@ -2473,7 +2473,7 @@ GROUP BY
   event_extra_key,
   country,
   normalized_app_name,
-  normalized_channel,
+  channel,
   version,
   experiment,
   experiment_branch
@@ -2500,7 +2500,7 @@ SELECT
   event_extra.key AS event_extra_key,
   normalized_country_code AS country,
   "www.mozilla.org" AS normalized_app_name,
-  "release" AS normalized_channel,
+  client_info.app_channel AS channel,
   client_info.app_display_version AS version,
     -- Access experiment information.
     -- Additional iteration is necessary to aggregate total event count across experiments
@@ -2540,7 +2540,7 @@ GROUP BY
   event_extra_key,
   country,
   normalized_app_name,
-  normalized_channel,
+  channel,
   version,
   experiment,
   experiment_branch
@@ -2567,7 +2567,7 @@ SELECT
   event_extra.key AS event_extra_key,
   normalized_country_code AS country,
   "Viu Politica" AS normalized_app_name,
-  "release" AS normalized_channel,
+  client_info.app_channel AS channel,
   client_info.app_display_version AS version,
     -- Access experiment information.
     -- Additional iteration is necessary to aggregate total event count across experiments
@@ -2607,7 +2607,7 @@ GROUP BY
   event_extra_key,
   country,
   normalized_app_name,
-  normalized_channel,
+  channel,
   version,
   experiment,
   experiment_branch
@@ -2634,7 +2634,7 @@ SELECT
   event_extra.key AS event_extra_key,
   normalized_country_code AS country,
   "Treeherder" AS normalized_app_name,
-  "release" AS normalized_channel,
+  client_info.app_channel AS channel,
   client_info.app_display_version AS version,
     -- Access experiment information.
     -- Additional iteration is necessary to aggregate total event count across experiments
@@ -2674,7 +2674,7 @@ GROUP BY
   event_extra_key,
   country,
   normalized_app_name,
-  normalized_channel,
+  channel,
   version,
   experiment,
   experiment_branch
@@ -2701,7 +2701,7 @@ SELECT
   event_extra.key AS event_extra_key,
   normalized_country_code AS country,
   "Firefox Desktop background tasks" AS normalized_app_name,
-  "release" AS normalized_channel,
+  client_info.app_channel AS channel,
   client_info.app_display_version AS version,
     -- Access experiment information.
     -- Additional iteration is necessary to aggregate total event count across experiments
@@ -2741,7 +2741,7 @@ GROUP BY
   event_extra_key,
   country,
   normalized_app_name,
-  normalized_channel,
+  channel,
   version,
   experiment,
   experiment_branch
@@ -2769,7 +2769,7 @@ SELECT
   CAST(NULL AS STRING) AS event_extra_key,
   normalized_country_code AS country,
   "Firefox Accounts Frontend" AS normalized_app_name,
-  normalized_channel,
+  client_info.app_channel AS channel,
   client_info.app_display_version AS version,
     -- Access experiment information.
     -- Additional iteration is necessary to aggregate total event count across experiments
@@ -2805,7 +2805,7 @@ GROUP BY
   event_extra_key,
   country,
   normalized_app_name,
-  normalized_channel,
+  channel,
   version,
   experiment,
   experiment_branch
@@ -2833,7 +2833,7 @@ SELECT
   CAST(NULL AS STRING) AS event_extra_key,
   normalized_country_code AS country,
   "Firefox Accounts Backend" AS normalized_app_name,
-  normalized_channel,
+  client_info.app_channel AS channel,
   client_info.app_display_version AS version,
     -- Access experiment information.
     -- Additional iteration is necessary to aggregate total event count across experiments
@@ -2869,7 +2869,7 @@ GROUP BY
   event_extra_key,
   country,
   normalized_app_name,
-  normalized_channel,
+  channel,
   version,
   experiment,
   experiment_branch
@@ -2896,7 +2896,7 @@ SELECT
   event_extra.key AS event_extra_key,
   normalized_country_code AS country,
   "Firefox Monitor (Cirrus)" AS normalized_app_name,
-  "release" AS normalized_channel,
+  client_info.app_channel AS channel,
   client_info.app_display_version AS version,
     -- Access experiment information.
     -- Additional iteration is necessary to aggregate total event count across experiments
@@ -2936,7 +2936,7 @@ GROUP BY
   event_extra_key,
   country,
   normalized_app_name,
-  normalized_channel,
+  channel,
   version,
   experiment,
   experiment_branch
@@ -2963,7 +2963,7 @@ SELECT
   event_extra.key AS event_extra_key,
   normalized_country_code AS country,
   "Glean Debug Ping Viewer" AS normalized_app_name,
-  "release" AS normalized_channel,
+  client_info.app_channel AS channel,
   client_info.app_display_version AS version,
     -- Access experiment information.
     -- Additional iteration is necessary to aggregate total event count across experiments
@@ -3003,7 +3003,7 @@ GROUP BY
   event_extra_key,
   country,
   normalized_app_name,
-  normalized_channel,
+  channel,
   version,
   experiment,
   experiment_branch
@@ -3030,7 +3030,7 @@ SELECT
   event_extra.key AS event_extra_key,
   normalized_country_code AS country,
   "Firefox Monitor (Frontend)" AS normalized_app_name,
-  "release" AS normalized_channel,
+  client_info.app_channel AS channel,
   client_info.app_display_version AS version,
     -- Access experiment information.
     -- Additional iteration is necessary to aggregate total event count across experiments
@@ -3070,7 +3070,7 @@ GROUP BY
   event_extra_key,
   country,
   normalized_app_name,
-  normalized_channel,
+  channel,
   version,
   experiment,
   experiment_branch
@@ -3097,7 +3097,7 @@ SELECT
   event_extra.key AS event_extra_key,
   normalized_country_code AS country,
   "Mozilla.Social Mastodon Backend" AS normalized_app_name,
-  "release" AS normalized_channel,
+  client_info.app_channel AS channel,
   client_info.app_display_version AS version,
     -- Access experiment information.
     -- Additional iteration is necessary to aggregate total event count across experiments
@@ -3137,7 +3137,7 @@ GROUP BY
   event_extra_key,
   country,
   normalized_app_name,
-  normalized_channel,
+  channel,
   version,
   experiment,
   experiment_branch

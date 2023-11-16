@@ -21,7 +21,7 @@ bigquery:
   clustering:
     fields:
     - event_name
-    - normalized_channel
+    - channel
     - normalized_app_name
 workgroup_access:
 - role: roles/bigquery.dataViewer

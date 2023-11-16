@@ -20,7 +20,7 @@ fields:
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE
-- name: normalized_channel
+- name: channel
   type: STRING
   mode: NULLABLE
 - name: version

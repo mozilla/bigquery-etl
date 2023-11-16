@@ -257,7 +257,7 @@ mobile_data_bing_ddg AS (
     ) AS ddg_dau_w_engine_as_default,
     COUNT(
       DISTINCT IF(
-        (engine) IN ('ddg', 'duckduckgo','ddg-lm','duckduckgo-lm')
+        (engine) IN ('ddg', 'duckduckgo')
         AND sap > 0
         AND (default_search_engine LIKE('%ddg%') OR default_search_engine LIKE('%duckduckgo%')),
         client_id,

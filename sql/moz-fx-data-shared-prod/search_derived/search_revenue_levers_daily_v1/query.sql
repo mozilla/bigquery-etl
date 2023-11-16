@@ -100,7 +100,7 @@ desktop_data_ddg AS (
     ) AS ddg_dau_w_engine_as_default,
     COUNT(
       DISTINCT IF(
-        (engine) IN ('ddg', 'duckduckgo')
+        (engine) IN ('ddg', 'duckduckgo','ddg-lm','duckduckgo-lm')
         AND sap > 0
         AND (
           default_search_engine LIKE('%ddg%')
@@ -111,17 +111,17 @@ desktop_data_ddg AS (
         NULL
       )
     ) AS ddg_dau_engaged_w_sap,
-    SUM(IF(engine IN ('ddg', 'duckduckgo'), sap, 0)) AS ddg_sap,
-    SUM(IF(engine IN ('ddg', 'duckduckgo'), tagged_sap, 0)) AS ddg_tagged_sap,
-    SUM(IF(engine IN ('ddg', 'duckduckgo'), tagged_follow_on, 0)) AS ddg_tagged_follow_on,
-    SUM(IF(engine IN ('ddg', 'duckduckgo'), search_with_ads, 0)) AS ddg_search_with_ads,
-    SUM(IF(engine IN ('ddg', 'duckduckgo'), ad_click, 0)) AS ddg_ad_click,
-    SUM(IF(engine IN ('ddg', 'duckduckgo'), organic, 0)) AS ddg_organic,
-    SUM(IF(engine IN ('ddg', 'duckduckgo'), ad_click_organic, 0)) AS ddg_ad_click_organic,
+    SUM(IF(engine IN ('ddg', 'duckduckgo','ddg-lm','duckduckgo-lm'), sap, 0)) AS ddg_sap,
+    SUM(IF(engine IN ('ddg', 'duckduckgo','ddg-lm','duckduckgo-lm'), tagged_sap, 0)) AS ddg_tagged_sap,
+    SUM(IF(engine IN ('ddg', 'duckduckgo','ddg-lm','duckduckgo-lm'), tagged_follow_on, 0)) AS ddg_tagged_follow_on,
+    SUM(IF(engine IN ('ddg', 'duckduckgo','ddg-lm','duckduckgo-lm'), search_with_ads, 0)) AS ddg_search_with_ads,
+    SUM(IF(engine IN ('ddg', 'duckduckgo','ddg-lm','duckduckgo-lm'), ad_click, 0)) AS ddg_ad_click,
+    SUM(IF(engine IN ('ddg', 'duckduckgo','ddg-lm','duckduckgo-lm'), organic, 0)) AS ddg_organic,
+    SUM(IF(engine IN ('ddg', 'duckduckgo','ddg-lm','duckduckgo-lm'), ad_click_organic, 0)) AS ddg_ad_click_organic,
     SUM(
-      IF(engine IN ('ddg', 'duckduckgo'), search_with_ads_organic, 0)
+      IF(engine IN ('ddg', 'duckduckgo','ddg-lm','duckduckgo-lm'), search_with_ads_organic, 0)
     ) AS ddg_search_with_ads_organic,
-    SUM(IF(engine IN ('ddg', 'duckduckgo') AND is_sap_monetizable, sap, 0)) AS ddg_monetizable_sap,
+    SUM(IF(engine IN ('ddg', 'duckduckgo','ddg-lm','duckduckgo-lm') AND is_sap_monetizable, sap, 0)) AS ddg_monetizable_sap,
     -- in-content probes not available for addon so these metrics although being here will be zero
     COUNT(
       DISTINCT IF(default_search_engine LIKE('ddg%addon'), client_id, NULL)
@@ -257,7 +257,7 @@ mobile_data_bing_ddg AS (
     ) AS ddg_dau_w_engine_as_default,
     COUNT(
       DISTINCT IF(
-        (engine) IN ('ddg', 'duckduckgo')
+        (engine) IN ('ddg', 'duckduckgo','ddg-lm','duckduckgo-lm')
         AND sap > 0
         AND (default_search_engine LIKE('%ddg%') OR default_search_engine LIKE('%duckduckgo%')),
         client_id,

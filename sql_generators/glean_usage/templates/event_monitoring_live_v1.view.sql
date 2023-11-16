@@ -1,9 +1,11 @@
-CREATE MATERIALIZED VIEW
-IF
-  NOT EXISTS `{{ project_id }}.{{ derived_dataset }}.event_monitoring_live_v1`
-  OPTIONS
-    (enable_refresh = TRUE, refresh_interval_minutes = 60) AS
-    {% if dataset_id not in ["telemetry", "accounts_frontend", "accounts_backend"] %}
+CREATE OR REPLACE MATERIALIZED VIEW
+  `{{ project_id }}.{{ derived_dataset }}.event_monitoring_live_v1`
+OPTIONS(
+  enable_refresh = TRUE,
+  refresh_interval_minutes = 60
+)
+AS
+  {% if dataset_id not in ["telemetry", "accounts_frontend", "accounts_backend"] %}
     SELECT
       DATE(submission_timestamp) AS submission_date,
       TIMESTAMP_ADD(
@@ -93,7 +95,7 @@ IF
       UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
     LEFT JOIN
       UNNEST(event.extra) AS event_extra
-    {% elif dataset_id in ["accounts_frontend", "accounts_backend"] %}
+  {% elif dataset_id in ["accounts_frontend", "accounts_backend"] %}
       -- FxA uses custom pings to send events without a category and extras.
     SELECT
       DATE(submission_timestamp) AS submission_date,
@@ -155,7 +157,7 @@ IF
       -- Iterator for accessing experiments.
       -- Add one more for aggregating events across all experiments
       UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
-    {% endif %}
+  {% endif %}
     WHERE
       DATE(submission_timestamp) >= "{{ current_date }}"
     GROUP BY

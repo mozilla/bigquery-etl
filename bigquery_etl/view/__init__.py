@@ -190,14 +190,13 @@ class View:
             for t in parsed.tokens
             if not (t.is_whitespace or isinstance(t, sqlparse.sql.Comment))
         ]
-        is_view_statement = (
-            " ".join(tokens[0].normalized.split()) == "CREATE OR REPLACE"
-            and (
-                tokens[1].normalized == "VIEW"
-                or (
-                    tokens[1].normalized.upper() == "MATERIALIZED"
-                    and tokens[2].normalized == "VIEW"
-                )
+        is_view_statement = " ".join(
+            tokens[0].normalized.split()
+        ) == "CREATE OR REPLACE" and (
+            tokens[1].normalized == "VIEW"
+            or (
+                tokens[1].normalized.upper() == "MATERIALIZED"
+                and tokens[2].normalized == "VIEW"
             )
         )
         if is_view_statement:

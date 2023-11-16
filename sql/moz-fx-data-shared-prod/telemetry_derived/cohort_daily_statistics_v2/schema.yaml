@@ -6,9 +6,6 @@ fields:
   name: activity_date
   type: DATE
 - mode: NULLABLE
-  name: sample_id
-  type: integer
-- mode: NULLABLE
   name: app_build_id
   type: STRING
 - mode: NULLABLE
@@ -60,7 +57,7 @@ fields:
   name: city
   type: STRING
 - mode: NULLABLE
-  name: subdivision_1
+  name: subdivision1
   type: STRING
 - mode: NULLABLE
   name: country

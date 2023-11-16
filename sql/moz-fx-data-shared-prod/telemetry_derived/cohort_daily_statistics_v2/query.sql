@@ -21,7 +21,6 @@ cohorts_in_range AS (
     client_id,
     first_seen_date AS cohort_date,
     DATE(@activity_date) AS activity_date,
-    sample_id,
     app_build_id,
     app_version,
     architecture,
@@ -90,7 +89,6 @@ activity_cohort_match AS (
 SELECT
   cohort_date,
   activity_date,
-  sample_id,
   app_build_id,
   app_version,
   architecture,
@@ -163,7 +161,6 @@ FROM
 GROUP BY
   cohort_date,
   activity_date,
-  sample_id,
   app_build_id,
   app_version,
   architecture,

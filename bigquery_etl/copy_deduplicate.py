@@ -255,7 +255,7 @@ def _list_live_tables(client, pool, project_id, only_tables, table_filter):
     type=lambda d: datetime.strptime(d, "%Y-%m-%d").date(),
     help="One or more days of data to copy, in format 2019-01-01",
 )
-@parallelism_option
+@parallelism_option()
 @click.option(
     "--dry_run",
     "--dry-run",

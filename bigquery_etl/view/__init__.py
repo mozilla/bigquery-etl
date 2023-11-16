@@ -192,10 +192,17 @@ class View:
         ]
         is_view_statement = (
             " ".join(tokens[0].normalized.split()) == "CREATE OR REPLACE"
-            and tokens[1].normalized == "VIEW"
+            and (
+                tokens[1].normalized == "VIEW"
+                or (
+                    tokens[1].normalized.upper() == "MATERIALIZED"
+                    and tokens[2].normalized == "VIEW"
+                )
+            )
         )
         if is_view_statement:
-            target_view = str(tokens[2]).strip().split()[0]
+            view_id_token = tokens[2] if tokens[1].normalized == "VIEW" else tokens[3]
+            target_view = str(view_id_token).strip().split()[0]
             try:
                 [project_id, dataset_id, view_id] = target_view.replace("`", "").split(
                     "."

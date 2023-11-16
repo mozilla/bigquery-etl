@@ -6,7 +6,16 @@ fields:
   name: activity_date
   type: DATE
 - mode: NULLABLE
+  name: sample_id
+  type: integer
+- mode: NULLABLE
+  name: app_build_id
+  type: STRING
+- mode: NULLABLE
   name: app_version
+  type: STRING
+- mode: NULLABLE
+  name: architecture
   type: STRING
 - mode: NULLABLE
   name: attribution_campaign
@@ -16,6 +25,9 @@ fields:
   type: STRING
 - mode: NULLABLE
   name: attribution_dlsource
+  type: STRING
+- mode: NULLABLE
+  name: attribution_dltoken
   type: STRING
 - mode: NULLABLE
   name: attribution_experiment
@@ -42,7 +54,13 @@ fields:
   name: partner_id
   type: STRING
 - mode: NULLABLE
+  name: platform_version
+  type: STRING
+- mode: NULLABLE
   name: city
+  type: STRING
+- mode: NULLABLE
+  name: subdivision_1
   type: STRING
 - mode: NULLABLE
   name: country
@@ -51,7 +69,25 @@ fields:
   name: apple_model_id
   type: STRING
 - mode: NULLABLE
+  name: db_version
+  type: STRING
+- mode: NULLABLE
   name: distribution_id
+  type: STRING
+- mode: NULLABLE
+  name: document_id
+  type: STRING
+- mode: NULLABLE
+  name: engine_data_load_path
+  type: STRING
+- mode: NULLABLE
+  name: engine_data_name
+  type: STRING
+- mode: NULLABLE
+  name: engine_data_origin
+  type: STRING
+- mode: NULLABLE
+  name: engine_data_submission_url
   type: STRING
 - mode: NULLABLE
   name: locale
@@ -67,6 +103,15 @@ fields:
   type: STRING
 - mode: NULLABLE
   name: normalized_os_version
+  type: STRING
+- mode: NULLABLE
+  name: startup_profile_selection_reason
+  type: STRING
+- mode: NULLABLE
+  name: vendor
+  type: STRING
+- mode: NULLABLE
+  name: xpcom_abi
   type: STRING
 - mode: NULLABLE
   name: os_version_major

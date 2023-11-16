@@ -13,12 +13,7 @@
   WITH event_counters AS (
     SELECT
       DATE(submission_timestamp) AS submission_date,
-      "{{ dataset['canonical_app_name'] }}" AS normalized_app_name,
-      {% if app_name == "fenix" -%}
-      mozfun.norm.fenix_app_info("{{ dataset['bq_dataset_family'] }}", app_build).channel AS channel,
-      {% else %}
-      "{{ dataset.get('app_channel', 'release') }}" AS channel,
-      {% endif %}
+      client_info.app_channel AS channel,
       metrics.labeled_counter
     FROM
       `{{ project_id }}.{{ dataset['bq_dataset_family'] }}_stable.events_v1`

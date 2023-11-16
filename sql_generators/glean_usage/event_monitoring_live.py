@@ -40,7 +40,7 @@ class EventMonitoringLive(GleanTable):
     ):
         tables = table_names_from_baseline(baseline_table, include_project_id=False)
 
-        init_filename = f"{self.target_table_id}.init.sql"
+        view_filename = f"{self.target_table_id}.view.sql"
         metadata_filename = f"{self.target_table_id}.metadata.yaml"
 
         table = tables[f"{self.prefix}"]
@@ -69,8 +69,8 @@ class EventMonitoringLive(GleanTable):
         artifacts = []
 
         if not self.no_init:
-            init_sql = render(
-                init_filename, template_folder=PATH / "templates", **render_kwargs
+            view_sql = render(
+                view_filename, template_folder=PATH / "templates", **render_kwargs
             )
             metadata = render(
                 metadata_filename,
@@ -84,7 +84,7 @@ class EventMonitoringLive(GleanTable):
 
         if output_dir:
             if not self.no_init:
-                artifacts.append(Artifact(table, "init.sql", init_sql))
+                artifacts.append(Artifact(table, "view.sql", view_sql))
 
             for artifact in artifacts:
                 destination = (

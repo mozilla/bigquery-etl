@@ -8066,6 +8066,12 @@ fields:
     - name: use_counter2_mixedcontentupgradedvideosuccess_page
       type: STRING
       mode: NULLABLE
+    - name: use_counter2_js_late_weekday_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_js_late_weekday_page
+      type: STRING
+      mode: NULLABLE
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -15999,6 +16005,12 @@ fields:
           type: STRING
           mode: NULLABLE
         - name: use_counter2_mixedcontentupgradedvideosuccess_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_js_late_weekday_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_js_late_weekday_page
           type: STRING
           mode: NULLABLE
 - name: sample_id

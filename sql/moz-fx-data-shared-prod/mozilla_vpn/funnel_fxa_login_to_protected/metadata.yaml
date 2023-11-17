@@ -1,6 +1,6 @@
-friendly_name: null
+friendly_name: Funnel Fxa Login To Protected
 description: |-
-  None
+  Please provide a description for the query
 owners: []
 labels: {}
 bigquery: null

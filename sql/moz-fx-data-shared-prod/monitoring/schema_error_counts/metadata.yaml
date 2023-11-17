@@ -1,6 +1,6 @@
-friendly_name: null
+friendly_name: Schema Error Counts
 description: |-
-  None
+  Please provide a description for the query
 owners: []
 labels: {}
 bigquery: null

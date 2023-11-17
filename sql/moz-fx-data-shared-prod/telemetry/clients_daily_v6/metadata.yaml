@@ -1,6 +1,6 @@
-friendly_name: null
+friendly_name: Clients Daily V6
 description: |-
-  None
+  Please provide a description for the query
 owners: []
 labels: {}
 bigquery: null

@@ -1,6 +1,6 @@
-friendly_name: null
+friendly_name: Airflow Task Instance
 description: |-
-  None
+  Please provide a description for the query
 owners: []
 labels: {}
 bigquery: null

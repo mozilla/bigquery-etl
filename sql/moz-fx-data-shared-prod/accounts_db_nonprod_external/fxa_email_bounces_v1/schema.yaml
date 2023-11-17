@@ -1,0 +1,19 @@
+fields:
+- name: email
+  type: STRING
+  mode: NULLABLE
+- name: bounceType
+  type: BOOLEAN
+  mode: NULLABLE
+- name: bounceSubType
+  type: BOOLEAN
+  mode: NULLABLE
+- name: createdAt
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: emailTypeId
+  type: BOOLEAN
+  mode: NULLABLE
+- name: diagnosticCode
+  type: STRING
+  mode: NULLABLE

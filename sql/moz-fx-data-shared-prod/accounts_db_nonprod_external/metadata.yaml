@@ -1,0 +1,14 @@
+---
+friendly_name: Firefox Accounts Backend nonprod (stage) External
+description: |-
+  Data extracted from the nonprod (stage) FxA backend services databases.
+  See https://mozilla.github.io/ecosystem-platform/reference/database-structure#database-fxa for more information.
+
+  Access to this dataset is restricted to accounts-confidential workgroup because some tables here contain sensitive data.
+dataset_base_acl: restricted
+user_facing: false
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:accounts-confidential

@@ -1,0 +1,8 @@
+fields:
+- name: id
+  type: INTEGER
+  mode: NULLABLE
+- name: uid
+  type: STRING
+  mode: NULLABLE
+  description: Account ID in hexadecimal format.

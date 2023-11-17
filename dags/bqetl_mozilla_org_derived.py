@@ -53,6 +53,20 @@ with DAG(
         retries=0,
     )
 
+    checks__fail_stub_attribution_service_derived__dl_token_ga_attribution_lookup__v1 = bigquery_dq_check(
+        task_id="checks__fail_stub_attribution_service_derived__dl_token_ga_attribution_lookup__v1",
+        source_table="dl_token_ga_attribution_lookup_v1",
+        dataset_id="stub_attribution_service_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=True,
+        owner="frank@mozilla.com",
+        email=["frank@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        task_concurrency=1,
+        parameters=["download_date:DATE:{{ds}}"],
+        retries=0,
+    )
+
     mozilla_org_derived__ga_sessions__v1 = bigquery_etl_query(
         task_id="mozilla_org_derived__ga_sessions__v1",
         destination_table="ga_sessions_v1",
@@ -62,6 +76,19 @@ with DAG(
         email=["frank@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="session_date",
         depends_on_past=False,
+    )
+
+    stub_attribution_service_derived__dl_token_ga_attribution_lookup__v1 = bigquery_etl_query(
+        task_id="stub_attribution_service_derived__dl_token_ga_attribution_lookup__v1",
+        destination_table="dl_token_ga_attribution_lookup_v1",
+        dataset_id="stub_attribution_service_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="frank@mozilla.com",
+        email=["frank@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+        parameters=["download_date:DATE:{{ds}}"],
     )
 
     checks__fail_mozilla_org_derived__ga_sessions__v1.set_upstream(
@@ -111,6 +138,10 @@ with DAG(
 
     checks__fail_mozilla_org_derived__ga_sessions__v1.set_upstream(
         wait_for_mozilla_org_derived__ga_sessions__v1__backfill__3
+    )
+
+    checks__fail_stub_attribution_service_derived__dl_token_ga_attribution_lookup__v1.set_upstream(
+        stub_attribution_service_derived__dl_token_ga_attribution_lookup__v1
     )
 
     mozilla_org_derived__ga_sessions__v1.set_upstream(

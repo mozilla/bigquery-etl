@@ -1,0 +1,14 @@
+friendly_name: Dl Token Ga Attribution Lookup
+description: |-
+  Please provide a description for the query
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:data-science/duet
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.stub_attribution_service_derived.dl_token_ga_attribution_lookup_v1
+deprecated: false

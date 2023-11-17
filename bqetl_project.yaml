@@ -177,6 +177,7 @@ dry_run:
   - sql/moz-fx-data-shared-prod/fenix/installs_by_country/view.sql
   - sql/moz-fx-data-shared-prod/firefox_desktop/top_sites/view.sql
   - sql/moz-fx-data-shared-prod/firefox_desktop/quick_suggest/view.sql
+  - sql/moz-fx-data-shared-prod/stub_attribution_service_derived/dl_token_ga_attribution_lookup_v1/query.sql
   # Materialized views
   - sql/moz-fx-data-shared-prod/telemetry_derived/experiment_search_events_live_v1/init.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/experiment_events_live_v1/init.sql

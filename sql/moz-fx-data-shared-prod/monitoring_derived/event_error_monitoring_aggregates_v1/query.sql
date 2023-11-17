@@ -6,6 +6,7 @@
   WITH event_counters AS (
     SELECT
       DATE(submission_timestamp) AS submission_date,
+      "Firefox for Desktop" AS normalized_app_name,
       client_info.app_channel AS channel,
       metrics.labeled_counter
     FROM
@@ -52,6 +53,7 @@ UNION ALL
     WITH event_counters AS (
       SELECT
         DATE(submission_timestamp) AS submission_date,
+        "Firefox for Desktop Background Update Task" AS normalized_app_name,
         client_info.app_channel AS channel,
         metrics.labeled_counter
       FROM
@@ -98,6 +100,7 @@ UNION ALL
     WITH event_counters AS (
       SELECT
         DATE(submission_timestamp) AS submission_date,
+        "Firefox Desktop Default Agent Task" AS normalized_app_name,
         client_info.app_channel AS channel,
         metrics.labeled_counter
       FROM
@@ -144,6 +147,7 @@ UNION ALL
     WITH event_counters AS (
       SELECT
         DATE(submission_timestamp) AS submission_date,
+        "Pinebuild" AS normalized_app_name,
         client_info.app_channel AS channel,
         metrics.labeled_counter
       FROM
@@ -190,6 +194,7 @@ UNION ALL
     WITH event_counters AS (
       SELECT
         DATE(submission_timestamp) AS submission_date,
+        "Firefox for Android" AS normalized_app_name,
         client_info.app_channel AS channel,
         metrics.labeled_counter
       FROM
@@ -236,6 +241,7 @@ UNION ALL
     WITH event_counters AS (
       SELECT
         DATE(submission_timestamp) AS submission_date,
+        "Firefox for Android" AS normalized_app_name,
         client_info.app_channel AS channel,
         metrics.labeled_counter
       FROM
@@ -282,6 +288,7 @@ UNION ALL
     WITH event_counters AS (
       SELECT
         DATE(submission_timestamp) AS submission_date,
+        "Firefox for Android" AS normalized_app_name,
         client_info.app_channel AS channel,
         metrics.labeled_counter
       FROM
@@ -328,6 +335,7 @@ UNION ALL
     WITH event_counters AS (
       SELECT
         DATE(submission_timestamp) AS submission_date,
+        "Firefox for Android" AS normalized_app_name,
         client_info.app_channel AS channel,
         metrics.labeled_counter
       FROM
@@ -374,6 +382,7 @@ UNION ALL
     WITH event_counters AS (
       SELECT
         DATE(submission_timestamp) AS submission_date,
+        "Firefox for Android" AS normalized_app_name,
         client_info.app_channel AS channel,
         metrics.labeled_counter
       FROM
@@ -420,6 +429,7 @@ UNION ALL
     WITH event_counters AS (
       SELECT
         DATE(submission_timestamp) AS submission_date,
+        "Firefox for iOS" AS normalized_app_name,
         client_info.app_channel AS channel,
         metrics.labeled_counter
       FROM
@@ -466,6 +476,7 @@ UNION ALL
     WITH event_counters AS (
       SELECT
         DATE(submission_timestamp) AS submission_date,
+        "Firefox for iOS" AS normalized_app_name,
         client_info.app_channel AS channel,
         metrics.labeled_counter
       FROM
@@ -512,6 +523,7 @@ UNION ALL
     WITH event_counters AS (
       SELECT
         DATE(submission_timestamp) AS submission_date,
+        "Firefox for iOS" AS normalized_app_name,
         client_info.app_channel AS channel,
         metrics.labeled_counter
       FROM
@@ -558,6 +570,7 @@ UNION ALL
     WITH event_counters AS (
       SELECT
         DATE(submission_timestamp) AS submission_date,
+        "Reference Browser" AS normalized_app_name,
         client_info.app_channel AS channel,
         metrics.labeled_counter
       FROM
@@ -604,6 +617,7 @@ UNION ALL
     WITH event_counters AS (
       SELECT
         DATE(submission_timestamp) AS submission_date,
+        "Firefox for Fire TV" AS normalized_app_name,
         client_info.app_channel AS channel,
         metrics.labeled_counter
       FROM
@@ -650,6 +664,7 @@ UNION ALL
     WITH event_counters AS (
       SELECT
         DATE(submission_timestamp) AS submission_date,
+        "Firefox Reality" AS normalized_app_name,
         client_info.app_channel AS channel,
         metrics.labeled_counter
       FROM
@@ -696,6 +711,7 @@ UNION ALL
     WITH event_counters AS (
       SELECT
         DATE(submission_timestamp) AS submission_date,
+        "Lockwise for Android" AS normalized_app_name,
         client_info.app_channel AS channel,
         metrics.labeled_counter
       FROM
@@ -742,6 +758,7 @@ UNION ALL
     WITH event_counters AS (
       SELECT
         DATE(submission_timestamp) AS submission_date,
+        "Lockwise for iOS" AS normalized_app_name,
         client_info.app_channel AS channel,
         metrics.labeled_counter
       FROM
@@ -788,6 +805,7 @@ UNION ALL
     WITH event_counters AS (
       SELECT
         DATE(submission_timestamp) AS submission_date,
+        "mozregression" AS normalized_app_name,
         client_info.app_channel AS channel,
         metrics.labeled_counter
       FROM
@@ -834,6 +852,7 @@ UNION ALL
     WITH event_counters AS (
       SELECT
         DATE(submission_timestamp) AS submission_date,
+        "Burnham" AS normalized_app_name,
         client_info.app_channel AS channel,
         metrics.labeled_counter
       FROM
@@ -880,6 +899,7 @@ UNION ALL
     WITH event_counters AS (
       SELECT
         DATE(submission_timestamp) AS submission_date,
+        "mozphab" AS normalized_app_name,
         client_info.app_channel AS channel,
         metrics.labeled_counter
       FROM
@@ -926,6 +946,7 @@ UNION ALL
     WITH event_counters AS (
       SELECT
         DATE(submission_timestamp) AS submission_date,
+        "Firefox for Echo Show" AS normalized_app_name,
         client_info.app_channel AS channel,
         metrics.labeled_counter
       FROM
@@ -972,6 +993,7 @@ UNION ALL
     WITH event_counters AS (
       SELECT
         DATE(submission_timestamp) AS submission_date,
+        "Firefox Reality for PC-connected VR platforms" AS normalized_app_name,
         client_info.app_channel AS channel,
         metrics.labeled_counter
       FROM
@@ -1018,6 +1040,7 @@ UNION ALL
     WITH event_counters AS (
       SELECT
         DATE(submission_timestamp) AS submission_date,
+        "mach" AS normalized_app_name,
         client_info.app_channel AS channel,
         metrics.labeled_counter
       FROM
@@ -1064,6 +1087,7 @@ UNION ALL
     WITH event_counters AS (
       SELECT
         DATE(submission_timestamp) AS submission_date,
+        "Firefox Focus for iOS" AS normalized_app_name,
         client_info.app_channel AS channel,
         metrics.labeled_counter
       FROM
@@ -1110,6 +1134,7 @@ UNION ALL
     WITH event_counters AS (
       SELECT
         DATE(submission_timestamp) AS submission_date,
+        "Firefox Klar for iOS" AS normalized_app_name,
         client_info.app_channel AS channel,
         metrics.labeled_counter
       FROM
@@ -1156,6 +1181,7 @@ UNION ALL
     WITH event_counters AS (
       SELECT
         DATE(submission_timestamp) AS submission_date,
+        "Firefox Focus for Android" AS normalized_app_name,
         client_info.app_channel AS channel,
         metrics.labeled_counter
       FROM
@@ -1202,6 +1228,7 @@ UNION ALL
     WITH event_counters AS (
       SELECT
         DATE(submission_timestamp) AS submission_date,
+        "Firefox Focus for Android" AS normalized_app_name,
         client_info.app_channel AS channel,
         metrics.labeled_counter
       FROM
@@ -1248,6 +1275,7 @@ UNION ALL
     WITH event_counters AS (
       SELECT
         DATE(submission_timestamp) AS submission_date,
+        "Firefox Focus for Android" AS normalized_app_name,
         client_info.app_channel AS channel,
         metrics.labeled_counter
       FROM
@@ -1294,6 +1322,7 @@ UNION ALL
     WITH event_counters AS (
       SELECT
         DATE(submission_timestamp) AS submission_date,
+        "Firefox Klar for Android" AS normalized_app_name,
         client_info.app_channel AS channel,
         metrics.labeled_counter
       FROM
@@ -1340,6 +1369,7 @@ UNION ALL
     WITH event_counters AS (
       SELECT
         DATE(submission_timestamp) AS submission_date,
+        "Bergamot Translator" AS normalized_app_name,
         client_info.app_channel AS channel,
         metrics.labeled_counter
       FROM
@@ -1386,6 +1416,7 @@ UNION ALL
     WITH event_counters AS (
       SELECT
         DATE(submission_timestamp) AS submission_date,
+        "Firefox Translations" AS normalized_app_name,
         client_info.app_channel AS channel,
         metrics.labeled_counter
       FROM
@@ -1432,6 +1463,7 @@ UNION ALL
     WITH event_counters AS (
       SELECT
         DATE(submission_timestamp) AS submission_date,
+        "Mozilla VPN" AS normalized_app_name,
         client_info.app_channel AS channel,
         metrics.labeled_counter
       FROM
@@ -1478,6 +1510,7 @@ UNION ALL
     WITH event_counters AS (
       SELECT
         DATE(submission_timestamp) AS submission_date,
+        "Mozilla VPN" AS normalized_app_name,
         client_info.app_channel AS channel,
         metrics.labeled_counter
       FROM
@@ -1524,6 +1557,7 @@ UNION ALL
     WITH event_counters AS (
       SELECT
         DATE(submission_timestamp) AS submission_date,
+        "Mozilla VPN" AS normalized_app_name,
         client_info.app_channel AS channel,
         metrics.labeled_counter
       FROM
@@ -1570,6 +1604,7 @@ UNION ALL
     WITH event_counters AS (
       SELECT
         DATE(submission_timestamp) AS submission_date,
+        "Mozilla VPN" AS normalized_app_name,
         client_info.app_channel AS channel,
         metrics.labeled_counter
       FROM
@@ -1616,6 +1651,7 @@ UNION ALL
     WITH event_counters AS (
       SELECT
         DATE(submission_timestamp) AS submission_date,
+        "Glean Dictionary" AS normalized_app_name,
         client_info.app_channel AS channel,
         metrics.labeled_counter
       FROM
@@ -1662,6 +1698,7 @@ UNION ALL
     WITH event_counters AS (
       SELECT
         DATE(submission_timestamp) AS submission_date,
+        "Mozilla Developer Network" AS normalized_app_name,
         client_info.app_channel AS channel,
         metrics.labeled_counter
       FROM
@@ -1708,6 +1745,7 @@ UNION ALL
     WITH event_counters AS (
       SELECT
         DATE(submission_timestamp) AS submission_date,
+        "www.mozilla.org" AS normalized_app_name,
         client_info.app_channel AS channel,
         metrics.labeled_counter
       FROM
@@ -1754,6 +1792,7 @@ UNION ALL
     WITH event_counters AS (
       SELECT
         DATE(submission_timestamp) AS submission_date,
+        "Viu Politica" AS normalized_app_name,
         client_info.app_channel AS channel,
         metrics.labeled_counter
       FROM
@@ -1800,6 +1839,7 @@ UNION ALL
     WITH event_counters AS (
       SELECT
         DATE(submission_timestamp) AS submission_date,
+        "Treeherder" AS normalized_app_name,
         client_info.app_channel AS channel,
         metrics.labeled_counter
       FROM
@@ -1846,6 +1886,7 @@ UNION ALL
     WITH event_counters AS (
       SELECT
         DATE(submission_timestamp) AS submission_date,
+        "Firefox Desktop background tasks" AS normalized_app_name,
         client_info.app_channel AS channel,
         metrics.labeled_counter
       FROM
@@ -1992,6 +2033,7 @@ UNION ALL
     WITH event_counters AS (
       SELECT
         DATE(submission_timestamp) AS submission_date,
+        "Firefox Monitor (Cirrus)" AS normalized_app_name,
         client_info.app_channel AS channel,
         metrics.labeled_counter
       FROM
@@ -2038,6 +2080,7 @@ UNION ALL
     WITH event_counters AS (
       SELECT
         DATE(submission_timestamp) AS submission_date,
+        "Glean Debug Ping Viewer" AS normalized_app_name,
         client_info.app_channel AS channel,
         metrics.labeled_counter
       FROM
@@ -2084,6 +2127,7 @@ UNION ALL
     WITH event_counters AS (
       SELECT
         DATE(submission_timestamp) AS submission_date,
+        "Firefox Monitor (Frontend)" AS normalized_app_name,
         client_info.app_channel AS channel,
         metrics.labeled_counter
       FROM
@@ -2130,6 +2174,7 @@ UNION ALL
     WITH event_counters AS (
       SELECT
         DATE(submission_timestamp) AS submission_date,
+        "Mozilla.Social Mastodon Backend" AS normalized_app_name,
         client_info.app_channel AS channel,
         metrics.labeled_counter
       FROM

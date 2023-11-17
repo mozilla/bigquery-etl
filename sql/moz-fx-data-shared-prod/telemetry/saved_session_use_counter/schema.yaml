@@ -10919,6 +10919,16 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Whether a page includes a mixed content video element that loads.
+    - name: use_counter2_js_late_weekday_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document parses a Date with day of week in an unexpected
+        position
+    - name: use_counter2_js_late_weekday_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page parses a Date with day of week in an unexpected
+        position
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -21690,6 +21700,16 @@ fields:
           mode: NULLABLE
           description: Whether a page includes a mixed content video element that
             loads.
+        - name: use_counter2_js_late_weekday_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document parses a Date with day of week in an unexpected
+            position
+        - name: use_counter2_js_late_weekday_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page parses a Date with day of week in an unexpected
+            position
 - name: sample_id
   type: INTEGER
   mode: NULLABLE

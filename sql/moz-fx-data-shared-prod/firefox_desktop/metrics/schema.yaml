@@ -1543,6 +1543,35 @@ fields:
         in one of the labels.
 
         '
+    - name: protocolhandler_mailto_handler_prompt_shown
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'A website was visited, which called registerProtocolHandler for
+        mailto://
+
+        '
+    - name: protocolhandler_mailto_prompt_clicked
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'User clicked on a button to approve setting the current site as
+        default web mail site. The sum of all counters is the total amount of user
+        interactions and dismissing the same dialog often could be a sign of a bug.
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE

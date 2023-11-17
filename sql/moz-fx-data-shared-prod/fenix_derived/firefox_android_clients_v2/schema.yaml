@@ -116,6 +116,12 @@ fields:
 
   fields:
   - mode: NULLABLE
+    name: reported_baseline_ping
+    type: BOOLEAN
+    description: |
+      True if the client reported a baseline_clients_first_seen ping.
+
+  - mode: NULLABLE
     name: reported_first_session_ping
     type: BOOLEAN
     description: |

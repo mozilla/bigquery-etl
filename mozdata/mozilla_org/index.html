@@ -3452,6 +3452,173 @@
 <p><code>mozilla_org.ga_sessions</code></p>
 <p>None</p>
 <table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>ga_client_id</td>
+        <td>Uniquely identifiers a GA client, using a cookie on moz.org.</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>ga_session_id</td>
+        <td>Uniquely identifiers a GA session.</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>session_date</td>
+        <td>The date of the session. Some sessions span two days: if it does, we take the earlier date.</td>
+        <td>Date</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>is_first_session</td>
+        <td>Whether this is the first session for the client.</td>
+        <td>Boolean</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>session_number</td>
+        <td>The session number for this client. Starts at 1, consecutively increasing.</td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>time_on_site</td>
+        <td>Amount of time the user was on the site for this session.</td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>pageviews</td>
+        <td>Total pageviews for this session.</td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>country</td>
+        <td>First reported country for a GA user.</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>region</td>
+        <td>First reported region for a GA user.</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>city</td>
+        <td>First reported city for a GA user.</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>campaign_id</td>
+        <td>First reported campaign ID. Usually associated with AdWords.</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>campaign</td>
+        <td>First reported campaign value. Usually set by the utm_campaign URL parameter.</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>source</td>
+        <td>First reported source of the traffic. Could be the name of the search engine, the referring hostname, or a value of the utm_source URL parameter.
+</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>medium</td>
+        <td>First reported medium of the traffic source. Could be 'organic', 'cpc', 'referral', or the value of the utm_medium URL parameter.</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>term</td>
+        <td>First reported term, or keyword, value. If this was a search results page, this is the keyword entered.</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>content</td>
+        <td>First reported ad content of the traffic source. Can be set by the utm_content URL parameter.</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>gclid</td>
+        <td>A Google Click ID, which uniquely represent an ad click for Google ads.</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>device_category</td>
+        <td>First reported device category value. The type of device (Mobile, Tablet, Desktop).</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>mobile_device_model</td>
+        <td>First reported device model value.</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>mobile_device_string</td>
+        <td>First reported mobile device string. The branding, model, and marketing name used to identify the mobile device.</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>os</td>
+        <td>First reported operating system of the device (e.g., 'Macintosh' or 'Windows').</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>os_version</td>
+        <td>First reported os_version value.</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>language</td>
+        <td>First reported language the device is set to use. Expressed as the IETF language code.</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>browser</td>
+        <td>First reported browser used (e.g., 'Chrome' or 'Firefox').</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>browser_version</td>
+        <td>First reported browser_version value.</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>had_download_event</td>
+        <td>Whether this session had a download event for Firefox.</td>
+        <td>Boolean</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>last_reported_install_target</td>
+        <td>The last reported install target for this session (e.g. 'desktop_release' or 'android_beta').</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>all_reported_install_targets</td>
+        <td>All install targets reported for this session (e.g. 'desktop_release' or 'android_beta'.</td>
+        <td>String</td>
+        <td>No</td>
+    </tr><tr>
+        <td>last_reported_stub_session_id</td>
+        <td>The last reported Stub Session ID for this session. Can be used to join with `dl_ga_triplets` to get dl_tokens.</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>all_reported_stub_session_ids</td>
+        <td>All reported Stub Session IDs for this session. Can be used to join with `dl_ga_triplets` to get dl_tokens.</td>
+        <td>String</td>
+        <td>No</td>
+    </tr><tr>
+        <td>landing_screen</td>
+        <td>The first reported landing screen for this session. Most sessions only have one, so this is a safe value to use.</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
+<table>
 <caption>Referenced Tables</caption>
     <tr>
         <th>Project</th>

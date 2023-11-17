@@ -6,6 +6,8 @@ WITH non_unique AS (
     COUNT(*) AS total_count
   FROM
     `moz-fx-data-shared-prod.mozilla_org_derived.ga_sessions_v1`
+  WHERE
+    session_date = @session_date
   GROUP BY
     ga_session_id
   HAVING
@@ -26,15 +28,17 @@ WITH min_row_count AS (
     COUNT(*) AS total_rows
   FROM
     `moz-fx-data-shared-prod.mozilla_org_derived.ga_sessions_v1`
+  WHERE
+    session_date = @session_date
 )
 SELECT
   IF(
-    (SELECT COUNTIF(total_rows < 10000) FROM min_row_count) > 0,
+    (SELECT COUNTIF(total_rows < 100) FROM min_row_count) > 0,
     ERROR(
       CONCAT(
         "Less than ",
         (SELECT total_rows FROM min_row_count),
-        " rows found (expected more than 10000)"
+        " rows found (expected more than 100)"
       )
     ),
     NULL

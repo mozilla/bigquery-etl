@@ -195,18 +195,23 @@ class View:
             "CREATE OR REPLACE",
         ) and (
             tokens[1].normalized == "VIEW"
-            or (
-                tokens[1].normalized.upper() == "MATERIALIZED"
-                and tokens[2].normalized == "VIEW"
-            )
+            or " ".join(t.normalized for t in tokens[1:3]).upper()
+            == "MATERIALIZED VIEW"
         )
         if is_view_statement:
-            view_id_token = tokens[2] if tokens[1].normalized == "VIEW" else tokens[3]
-            target_view = str(view_id_token).strip().split()[0]
-            try:
-                [project_id, dataset_id, view_id] = target_view.replace("`", "").split(
-                    "."
+            view_kw_index = 1 if tokens[1].normalized == "VIEW" else 2
+            if (
+                " ".join(
+                    t.normalized for t in tokens[view_kw_index + 1 : view_kw_index + 4]
                 )
+                == "IF NOT EXISTS"
+            ):
+                view_id_token = tokens[view_kw_index + 4]
+            else:
+                view_id_token = tokens[view_kw_index + 1]
+            target_view = str(view_id_token).replace("`", "").strip().split()[0]
+            try:
+                [project_id, dataset_id, view_id] = target_view.split(".")
                 if not (
                     self.name == view_id
                     and self.dataset == dataset_id

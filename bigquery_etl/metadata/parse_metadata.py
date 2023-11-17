@@ -237,7 +237,8 @@ class Metadata:
                     "friendly_name", string.capwords(table_name.replace("_", " "))
                 )
                 description = metadata.get(
-                    "description", "Please provide a description for the query",
+                    "description",
+                    "Please provide a description for the query",
                 )
 
                 if "labels" in metadata:

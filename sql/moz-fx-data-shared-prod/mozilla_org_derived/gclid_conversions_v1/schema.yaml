@@ -1,0 +1,21 @@
+fields:
+  - name: activity_date
+    mode: NULLABLE
+    type: DATE
+    description: "The date that the conversion action took place."
+  - name: gclid
+    mode: NULLABLE
+    type: STRING
+    description: "A Google Click ID, which uniquely represent an ad impression for Google ads."
+  - name: did_search
+    mode: NULLABLE
+    type: BOOLEAN
+    description: "Whether the GA session associated with this GCLID resulted in a Firefox install with a search on this day."
+  - name: did_click_ad
+    mode: NULLABLE
+    type: BOOLEAN
+    description: "Whether the GA session associated with this GCLID resulted in a Firefox install with an ad click on this day."
+  - name: did_returned_second_day
+    mode: NULLABLE
+    type: BOOLEAN
+    description: "Whether the GA session associated with this GCLID resulted in a Firefox install that returned on this day."

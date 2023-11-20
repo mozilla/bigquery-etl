@@ -62,17 +62,32 @@ active AS (
     client_info.client_id,
     submission_date
 ),
+fx_dau AS (
+  SELECT
+    client_info.client_id,
+    DATE(submission_timestamp) AS submission_date,
+    CASE
+      WHEN LOWER(metadata.isp.name) != 'browserstack'
+        THEN 1
+      ELSE 0
+    END AS is_fx_dau
+  FROM
+    `moz-fx-data-shared-prod.fenix.baseline`
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+),
 search AS (
   SELECT
     submission_date,
     client_id,
-    search_count AS sap,
-    ad_click
+    SUM(search_count) AS sap,
+    SUM(ad_click) as ad_click
   FROM
     `moz-fx-data-shared-prod.search.mobile_search_clients_engines_sources_daily`
   WHERE
     submission_date = @submission_date
     AND normalized_app_name = "Fenix"
+  GROUP BY client_id, submission_date
 ),
 joined_data AS (
   SELECT
@@ -87,7 +102,10 @@ joined_data AS (
     sm.is_opt_out,
     s.sap,
     s.ad_click,
-    active.active_hours AS active_hours_sum
+    active.active_hours AS active_hours_sum,
+    sm.is_onboarded,
+    sm.is_nimbus_disabled,
+    fx_dau.is_fx_dau
   FROM
     shopping_metrics sm
   LEFT JOIN
@@ -100,6 +118,11 @@ joined_data AS (
   ON
     s.client_id = sm.client_id
     AND s.submission_date = sm.submission_date
+  LEFT JOIN
+    fx_dau
+  ON
+    fx_dau.client_id = sm.client_id
+    AND fx_dau.submission_date = sm.submission_date
 )
 SELECT
   *

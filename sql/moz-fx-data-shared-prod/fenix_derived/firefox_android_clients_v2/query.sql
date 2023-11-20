@@ -1,5 +1,5 @@
 -- Query first observations for Firefox Android Clients.
-WITH first_seen AS (
+WITH baseline_first_seen AS (
   SELECT
     client_id,
     submission_date,
@@ -153,12 +153,13 @@ _current AS (
     device_model,
     os_version,
     app_version,
-    first_seen.locale,
+   locale,
     COALESCE(first_session.adjust_info, metrics.adjust_info) AS adjust_info,
     metrics.install_source,
     STRUCT(
-      IF(first_session.client_id IS NULL, FALSE, TRUE) AS is_reported_first_session_ping,
-      IF(metrics.client_id IS NULL, FALSE, TRUE) AS is_reported_metrics_ping,
+      IF(baseline_first_seen.client_id IS NULL, FALSE, TRUE) AS reported_baseline_ping,
+      IF(first_session.client_id IS NULL, FALSE, TRUE) AS reported_first_session_ping,
+      IF(metrics.client_id IS NULL, FALSE, TRUE) AS reported_metrics_ping,
       CASE
         WHEN first_session.adjust_info IS NOT NULL
           THEN "first_session"
@@ -168,7 +169,7 @@ _current AS (
       END AS adjust_info__source_ping
     ) AS metadata,
   FROM
-    first_seen
+    baseline_first_seen
   FULL OUTER JOIN
     first_session_ping AS first_session
   USING
@@ -221,13 +222,18 @@ SELECT
   COALESCE(_previous.install_source, _current.install_source) AS install_source,
   STRUCT(
     COALESCE(
+      _previous.metadata.reported_baseline_ping
+      OR _current.metadata.reported_baseline_ping,
+      FALSE
+    ) AS reported_baseline_ping,
+    COALESCE(
       _previous.metadata.reported_first_session_ping
-      OR _current.metadata.is_reported_first_session_ping,
+      OR _current.metadata.reported_first_session_ping,
       FALSE
     ) AS reported_first_session_ping,
     COALESCE(
       _previous.metadata.reported_metrics_ping
-      OR _current.metadata.is_reported_metrics_ping,
+      OR _current.metadata.reported_metrics_ping,
       FALSE
     ) AS reported_metrics_ping,
     COALESCE(

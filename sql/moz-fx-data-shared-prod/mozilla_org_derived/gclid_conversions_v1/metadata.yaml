@@ -1,0 +1,32 @@
+friendly_name: Gclid Conversions
+description: |-
+  All conversions for GCLIDs.
+  Partitioned by activity_date; a single GCLID
+  can have multiple entries in this table,
+  if they perform different conversion actions
+  on different days.
+owners:
+- frank@mozilla.com
+labels:
+  incremental: true
+  owner1: frank
+  dag: bqetl_mozilla_org_derived
+scheduling:
+  dag_name: bqetl_mozilla_org_derived
+  date_partition_parameter: activity_date
+  parameters:
+  - conversion_window:INT64:30
+  - activity_date:DATE:{{ds}}
+bigquery:
+  time_partitioning:
+    type: day
+    field: activity_date
+    require_partition_filter: false
+    expiration_days: null
+  clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

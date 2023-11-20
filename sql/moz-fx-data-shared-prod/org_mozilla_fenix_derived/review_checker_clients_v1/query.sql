@@ -63,6 +63,7 @@ shopping_metrics AS (
     ranked_data
   WHERE
     DATE(submission_timestamp) = @submission_date
+    AND row_num = 1
   GROUP BY
     client_id,
     submission_date,

@@ -42,7 +42,7 @@ WITH historic_and_intraday AS (
   WHERE
     -- This table is partitioned, so we only process the data from session_date
     -- To handle late-arriving data, we process 3 days of data each day (re-processing the past 2)
-    -- as separate Airflow tasks (or via bqetl backfill, I haven't decided yet)
+    -- as separate Airflow tasks
     --
     -- Here, we need to take data from yesterday, just in case some of our sessions from today
     -- actually started yesterday. If they did, they'll be filtered out in the HAVING clause

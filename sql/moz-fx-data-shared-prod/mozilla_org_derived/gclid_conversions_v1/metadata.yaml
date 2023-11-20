@@ -12,6 +12,7 @@ labels:
   owner1: frank@mozilla.com
 scheduling:
   dag_name: bqetl_mozilla_org_derived
+  date_partition_parameter: activity_date
   parameters: ["conversion_window:INT64:30"]
 bigquery:
   time_partitioning:

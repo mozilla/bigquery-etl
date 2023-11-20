@@ -28,7 +28,7 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - messaging_system.onboarding
   - moz-fx-data-shared-prod.firefox_desktop.messaging_system
+  - moz-fx-data-shared-prod.firefox_desktop.onboarding
   - moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v2
 deprecated: false

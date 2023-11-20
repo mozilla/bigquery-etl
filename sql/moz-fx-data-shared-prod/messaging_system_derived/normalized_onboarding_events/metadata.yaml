@@ -10,5 +10,5 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   view.sql:
-  - moz-fx-data-shared-prod.messaging_system_stable.onboarding_v1
+  - moz-fx-data-shared-prod.firefox_desktop.onboarding
 deprecated: false

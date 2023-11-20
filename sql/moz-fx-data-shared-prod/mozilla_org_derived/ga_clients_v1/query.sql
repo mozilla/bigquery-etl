@@ -37,14 +37,13 @@ new_sessions AS (
   FROM
     mozilla_org_derived.ga_sessions_v1
   WHERE
+    ga_client_id IS NOT NULL
     -- Re-process three days, to account for late-arriving data
-    session_date
-    BETWEEN DATE_SUB(@session_date, INTERVAL 3 DAY)
+    AND session_date
+    BETWEEN DATE_SUB(@session_date, INTERVAL 3 DAY) 
     AND @session_date
   GROUP BY
     ga_client_id
-  HAVING
-    ga_client_id IS NOT NULL
 )
 SELECT
   ga_client_id,

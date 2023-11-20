@@ -58,7 +58,7 @@ shopping_metrics AS (
     normalized_channel,
     normalized_country_code,
     sample_id,
-    ANY_VALUE(experiments)
+    ANY_VALUE(experiments) AS experiments
   FROM
     ranked_data
   WHERE

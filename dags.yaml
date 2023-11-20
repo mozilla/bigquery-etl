@@ -1314,3 +1314,19 @@ bqetl_mozilla_org_derived:
     start_date: "2023-11-13"
   tags:
     - impact/tier_1
+
+bqetl_glean_usage:
+  schedule_interval: 0 2 * * *
+  default_args:
+    depends_on_past: false
+    email:
+      - ascholtz@mozilla.com
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    owner: ascholtz@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: "2023-11-20"
+  tags:
+    - impact/tier_1

@@ -4,7 +4,7 @@ WITH historical_clients AS (
   FROM
     mozilla_org_derived.ga_clients_v1
 ),
-new_sessions AS (
+new_clients AS (
   SELECT
     ga_client_id,
     MIN(session_date) AS first_seen_date,
@@ -73,6 +73,6 @@ SELECT
 FROM
   historical_clients AS _previous
 FULL OUTER JOIN
-  new_sessions AS _current
+  new_clients AS _current
 USING
   (ga_client_id)

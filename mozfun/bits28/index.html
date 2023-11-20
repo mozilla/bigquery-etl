@@ -2860,11 +2860,11 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#range-udf" class="md-nav__link">
-    range (UDF)
+  <a href="#to_dates-udf" class="md-nav__link">
+    to_dates (UDF)
   </a>
   
-    <nav class="md-nav" aria-label="range (UDF)">
+    <nav class="md-nav" aria-label="to_dates (UDF)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -2880,11 +2880,11 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#to_dates-udf" class="md-nav__link">
-    to_dates (UDF)
+  <a href="#range-udf" class="md-nav__link">
+    range (UDF)
   </a>
   
-    <nav class="md-nav" aria-label="to_dates (UDF)">
+    <nav class="md-nav" aria-label="range (UDF)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3602,11 +3602,11 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#range-udf" class="md-nav__link">
-    range (UDF)
+  <a href="#to_dates-udf" class="md-nav__link">
+    to_dates (UDF)
   </a>
   
-    <nav class="md-nav" aria-label="range (UDF)">
+    <nav class="md-nav" aria-label="to_dates (UDF)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3622,11 +3622,11 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#to_dates-udf" class="md-nav__link">
-    to_dates (UDF)
+  <a href="#range-udf" class="md-nav__link">
+    range (UDF)
   </a>
   
-    <nav class="md-nav" aria-label="to_dates (UDF)">
+    <nav class="md-nav" aria-label="range (UDF)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3766,6 +3766,18 @@ the number of bits to consider, counting right from the bit at
 <div class="highlight"><pre><span></span><code>BOOLEAN
 </code></pre></div>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/bits28/active_in_range">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/bits28/active_in_range/metadata.yaml">Edit</a></p>
+<h2 id="to_dates-udf">to_dates (UDF)</h2>
+<p>Convert a bit pattern into an array of the dates is represents.</p>
+<p>See detailed docs for the bits28 suite of functions:
+<a href="https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference">https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference</a></p>
+<h3 id="parameters_1">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>bits INT64, submission_date DATE
+</code></pre></div>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>ARRAY&lt;DATE&gt;
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/bits28/to_dates">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/bits28/to_dates/metadata.yaml">Edit</a></p>
 <h2 id="range-udf">range (UDF)</h2>
 <p>Return an INT64 representing a range of bits from a source bit pattern.</p>
 <p>The start_offset must be zero or a negative number indicating an offset from
@@ -3783,7 +3795,7 @@ start_offset.</p>
 <span class="k">WHERE</span>
 <span class="w">  </span><span class="n">submission_date</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="s1">&#39;2020-01-01&#39;</span>
 </code></pre></div>
-<h3 id="parameters_1">Parameters</h3>
+<h3 id="parameters_2">Parameters</h3>
 <p><strong>INPUTS</strong></p>
 <div class="highlight"><pre><span></span><code>bits INT64, start_offset INT64, n_bits INT64
 </code></pre></div>
@@ -3791,18 +3803,6 @@ start_offset.</p>
 <div class="highlight"><pre><span></span><code>INT64
 </code></pre></div>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/bits28/range">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/bits28/range/metadata.yaml">Edit</a></p>
-<h2 id="to_dates-udf">to_dates (UDF)</h2>
-<p>Convert a bit pattern into an array of the dates is represents.</p>
-<p>See detailed docs for the bits28 suite of functions:
-<a href="https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference">https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference</a></p>
-<h3 id="parameters_2">Parameters</h3>
-<p><strong>INPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>bits INT64, submission_date DATE
-</code></pre></div>
-<p><strong>OUTPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>ARRAY&lt;DATE&gt;
-</code></pre></div>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/bits28/to_dates">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/bits28/to_dates/metadata.yaml">Edit</a></p>
 <h2 id="from_string-udf">from_string (UDF)</h2>
 <p>Convert a string representing individual bits into an INT64.</p>
 <p>Implementation based on <a href="https://stackoverflow.com/a/51600210/1260237">https://stackoverflow.com/a/51600210/1260237</a></p>

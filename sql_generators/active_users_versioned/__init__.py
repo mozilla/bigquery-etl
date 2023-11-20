@@ -20,8 +20,8 @@ class Browsers(Enum):
     """Enumeration with browser names and equivalent dataset names."""
 
     # fenix = "Fenix"
-    # focus_ios = "Focus iOS"
     # firefox_ios = "Firefox iOS"
+    focus_ios = "Focus iOS"
     klar_ios = "Klar iOS"
 
 
@@ -52,18 +52,24 @@ def generate(target_project, output_dir, use_cloud_function):
     output_dir = Path(output_dir) / target_project
 
     for browser in Browsers:
+        current_version = MOBILE_TABLE_VERSION
+        full_table_id = (
+            f"{target_project}.{browser.name}_derived.{TABLE_NAME}_{current_version}"
+        )
+        full_view_id = f"{target_project}.{browser.name}.{TABLE_NAME}"
+
         query_sql = reformat(
             mobile_query_template.render(
                 project_id=target_project,
                 app_value=browser.value,
                 app_name=browser.name,
+                full_table_id=full_table_id,
             )
         )
-        current_version = MOBILE_TABLE_VERSION
 
         write_sql(
             output_dir=output_dir,
-            full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}_{current_version}",
+            full_table_id=full_table_id,
             basename="query.sql",
             sql=query_sql,
             skip_existing=False,
@@ -71,7 +77,7 @@ def generate(target_project, output_dir, use_cloud_function):
 
         write_sql(
             output_dir=output_dir,
-            full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}_{current_version}",
+            full_table_id=full_table_id,
             basename="metadata.yaml",
             sql=render(
                 metadata_template,
@@ -85,7 +91,7 @@ def generate(target_project, output_dir, use_cloud_function):
 
         write_sql(
             output_dir=output_dir,
-            full_table_id=f"{target_project}.{browser.name}.{TABLE_NAME}",
+            full_table_id=full_view_id,
             basename="view.sql",
             sql=reformat(
                 view_template.render(

@@ -2,7 +2,7 @@
 friendly_name: tokens table from nonprod (stage) fxa_oauth database
 description: >
   A mirror of the `tokens` table from the nonprod (stage) `fxa_oauth` CloudSQL database,
-  updated daily to match the current state of the table.
+  excluding columns containing confidential data, updated daily to match the current state of the table.
 
   See https://mozilla.github.io/ecosystem-platform/reference/database-structure#database-fxa
 owners:

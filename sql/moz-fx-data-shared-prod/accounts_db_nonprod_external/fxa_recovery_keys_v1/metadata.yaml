@@ -2,7 +2,7 @@
 friendly_name: recoveryKeys table from nonprod (stage) fxa database
 description: >
   A mirror of the `recoveryKeys` table from the nonprod (stage) `fxa` CloudSQL database,
-  updated daily to match the current state of the table.
+  excluding columns containing confidential data, updated daily to match the current state of the table.
 
   See https://mozilla.github.io/ecosystem-platform/reference/database-structure#database-fxa
 owners:

@@ -10,12 +10,12 @@ fields:
   - name: did_search
     mode: NULLABLE
     type: BOOLEAN
-    description: "Whether the GCLID did a search on this day."
+    description: "Whether the GA session associated with this GCLID resulted in a Firefox install with a search on this day."
   - name: did_click_ad
     mode: NULLABLE
     type: BOOLEAN
-    description: "Whether the GCLID clicked an ad on this day."
+    description: "Whether the GA session associated with this GCLID resulted in a Firefox install with an ad click on this day."
   - name: did_returned_second_day
     mode: NULLABLE
     type: BOOLEAN
-    description: "Whether the GCLID returned for a second (or later) day."
+    description: "Whether the GA session associated with this GCLID resulted in a Firefox install that returned on this day."

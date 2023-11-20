@@ -87,13 +87,14 @@ def paths_matching_checks_pattern(
         pattern, sql_path, project_id, ["checks.sql"], CHECKS_FILE_RE
     )
 
-    for checks_file in checks_files:
-        match = CHECKS_FILE_RE.match(str(checks_file))
-        if match:
-            project = match.group(1)
-            dataset = match.group(2)
-            table = match.group(3)
-        yield checks_file, project, dataset, table
+    if checks_files:
+        for checks_file in checks_files:
+            match = CHECKS_FILE_RE.match(str(checks_file))
+            if match:
+                project = match.group(1)
+                dataset = match.group(2)
+                table = match.group(3)
+            yield checks_file, project, dataset, table
     else:
         print(f"No checks.sql file found in {sql_path}/{project_id}/{pattern}")
 

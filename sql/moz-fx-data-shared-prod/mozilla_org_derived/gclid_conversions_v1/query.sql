@@ -53,11 +53,11 @@ SELECT
   ) AS did_returned_second_day
 FROM
   gclids_to_ga_ids
-LEFT JOIN
+INNER JOIN
   ga_ids_to_dl_token
 USING
   (ga_client_id, stub_session_id)
-LEFT JOIN
+INNER JOIN
   dl_token_to_telemetry_id
 USING
   (dl_token)

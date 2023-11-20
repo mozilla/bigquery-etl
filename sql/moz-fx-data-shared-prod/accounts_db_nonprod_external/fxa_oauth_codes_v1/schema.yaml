@@ -18,7 +18,7 @@ fields:
   type: STRING
   mode: NULLABLE
 - name: aal
-  type: BOOLEAN
+  type: INTEGER
   mode: NULLABLE
 - name: offline
   type: BOOLEAN

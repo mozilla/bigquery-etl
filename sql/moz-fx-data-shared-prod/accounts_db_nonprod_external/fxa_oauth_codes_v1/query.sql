@@ -6,7 +6,7 @@ SELECT
   SAFE.TIMESTAMP_MILLIS(SAFE_CAST(authAt AS INT)) AS authAt,
   amr,
   aal,
-  offline,
+  SAFE_CAST(offline AS BOOL) AS offline,
   codeChallengeMethod,
   SAFE.TIMESTAMP_MILLIS(SAFE_CAST(profileChangedAt AS INT)) AS profileChangedAt,
   sessionTokenId,

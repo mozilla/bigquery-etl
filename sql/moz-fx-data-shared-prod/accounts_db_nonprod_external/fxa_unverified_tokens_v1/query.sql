@@ -1,6 +1,6 @@
 SELECT
   TO_HEX(uid) AS uid,
-  mustVerify,
+  SAFE_CAST(mustVerify AS BOOL) AS mustVerify,
   SAFE.TIMESTAMP_MILLIS(
     SAFE_CAST(tokenVerificationCodeExpiresAt AS INT)
   ) AS tokenVerificationCodeExpiresAt,

@@ -3,16 +3,16 @@ fields:
   type: STRING
   mode: NULLABLE
 - name: bounceType
-  type: BOOLEAN
+  type: INTEGER
   mode: NULLABLE
 - name: bounceSubType
-  type: BOOLEAN
+  type: INTEGER
   mode: NULLABLE
 - name: createdAt
   type: TIMESTAMP
   mode: NULLABLE
 - name: emailTypeId
-  type: BOOLEAN
+  type: INTEGER
   mode: NULLABLE
 - name: diagnosticCode
   type: STRING

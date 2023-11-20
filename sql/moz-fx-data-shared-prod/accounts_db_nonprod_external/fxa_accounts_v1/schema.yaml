@@ -13,7 +13,7 @@ fields:
   type: BOOLEAN
   mode: NULLABLE
 - name: verifierVersion
-  type: BOOLEAN
+  type: INTEGER
   mode: NULLABLE
 - name: verifierSetAt
   type: TIMESTAMP

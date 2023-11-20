@@ -12,8 +12,7 @@ WITH ranked_data AS (
     sample_id,
     ping_info.experiments AS experiments,
     ROW_NUMBER() OVER (
-      PARTITION BY
-        DATE(submission_timestamp),
+      PARTITION BY 
         client_info.client_id
       ORDER BY
         submission_timestamp
@@ -97,7 +96,7 @@ ranked_fx_dau AS (
         THEN 1
       ELSE 0
     END AS is_fx_dau,
-    ROW_NUMBER() OVER (PARTITION BY  DATE(submission_timestamp), client_info.client_id ORDER BY submission_timestamp) AS row_num
+    ROW_NUMBER() OVER (PARTITION BY client_info.client_id ORDER BY submission_timestamp) AS row_num
   FROM
     `moz-fx-data-shared-prod.fenix.baseline`
   WHERE

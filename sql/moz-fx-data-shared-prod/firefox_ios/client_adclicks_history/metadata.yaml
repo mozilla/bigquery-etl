@@ -1,0 +1,18 @@
+friendly_name: Client Adclicks History
+description: |-
+  Client Adclick History. Contains a map
+  of each day in a clients history and the
+  number of adclicks on that day.
+
+  For use with LTV.
+owners:
+- frank@mozilla.com
+labels:
+  owner1: frank
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

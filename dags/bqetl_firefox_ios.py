@@ -69,6 +69,20 @@ with DAG(
         retries=0,
     )
 
+    checks__fail_firefox_ios_derived__client_adclicks_history__v1 = bigquery_dq_check(
+        task_id="checks__fail_firefox_ios_derived__client_adclicks_history__v1",
+        source_table="client_adclicks_history_v1",
+        dataset_id="firefox_ios_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=True,
+        owner="frank@mozilla.com",
+        email=["frank@mozilla.com", "kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        task_concurrency=1,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+    )
+
     checks__fail_firefox_ios_derived__firefox_ios_clients__v1 = bigquery_dq_check(
         task_id="checks__fail_firefox_ios_derived__firefox_ios_clients__v1",
         source_table="firefox_ios_clients_v1",
@@ -213,6 +227,19 @@ with DAG(
         depends_on_past=True,
     )
 
+    firefox_ios_derived__client_adclicks_history__v1 = bigquery_etl_query(
+        task_id="firefox_ios_derived__client_adclicks_history__v1",
+        destination_table="client_adclicks_history_v1",
+        dataset_id="firefox_ios_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="frank@mozilla.com",
+        email=["frank@mozilla.com", "kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+        parameters=["submission_date:DATE:{{ds}}"],
+    )
+
     firefox_ios_derived__firefox_ios_clients__v1 = bigquery_etl_query(
         task_id="firefox_ios_derived__firefox_ios_clients__v1",
         destination_table="firefox_ios_clients_v1",
@@ -291,6 +318,10 @@ with DAG(
 
     checks__fail_firefox_ios_derived__baseline_clients_yearly__v1.set_upstream(
         firefox_ios_derived__baseline_clients_yearly__v1
+    )
+
+    checks__fail_firefox_ios_derived__client_adclicks_history__v1.set_upstream(
+        firefox_ios_derived__client_adclicks_history__v1
     )
 
     wait_for_baseline_clients_daily = ExternalTaskSensor(
@@ -412,6 +443,10 @@ with DAG(
 
     firefox_ios_derived__attributable_clients__v1.set_upstream(
         wait_for_search_derived__mobile_search_clients_daily__v1
+    )
+
+    firefox_ios_derived__client_adclicks_history__v1.set_upstream(
+        firefox_ios_derived__attributable_clients__v1
     )
 
     firefox_ios_derived__firefox_ios_clients__v1.set_upstream(

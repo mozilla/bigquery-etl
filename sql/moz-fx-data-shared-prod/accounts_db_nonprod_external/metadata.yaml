@@ -1,5 +1,5 @@
 ---
-friendly_name: Firefox Accounts Backend nonprod (stage) External
+friendly_name: Firefox Accounts Databases nonprod (stage) External
 description: |-
   Data extracted from the nonprod (stage) FxA backend services databases.
   See https://mozilla.github.io/ecosystem-platform/reference/database-structure#database-fxa for more information.

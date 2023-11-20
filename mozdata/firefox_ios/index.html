@@ -1163,6 +1163,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#client_adclicks_history" class="md-nav__link">
+    client_adclicks_history
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#clients_last_seen_joined" class="md-nav__link">
     clients_last_seen_joined
   </a>
@@ -3779,6 +3786,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#client_adclicks_history" class="md-nav__link">
+    client_adclicks_history
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#clients_last_seen_joined" class="md-nav__link">
     clients_last_seen_joined
   </a>
@@ -4936,6 +4950,33 @@ across all channels of the Glean application "Firefox for iOS"
 </table>
 
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_ios/bookmarks_sync">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_ios/bookmarks_sync/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_ios/bookmarks_sync/metadata.yaml">Metadata File</a> </p>
+<hr />
+<h2 id="client_adclicks_history"><a href="#client_adclicks_history">client_adclicks_history</a></h2>
+<p><strong>Client Adclicks History</strong></p>
+<p><code>firefox_ios.client_adclicks_history</code></p>
+<p>Client Adclick History. Contains a map
+of each day in a clients history and the
+number of adclicks on that day.</p>
+<p>For use with LTV.</p>
+<ul>
+<li>Owners:<p>- <a href="mailto:frank@mozilla.com">frank@mozilla.com</a></p>
+</li>
+</ul>
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_ios_derived>firefox_ios_derived</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_ios_derived/client_adclicks_history_v1>client_adclicks_history_v1</a></td>
+        </tr>
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_ios/client_adclicks_history">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_ios/client_adclicks_history/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_ios/client_adclicks_history/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="clients_last_seen_joined"><a href="#clients_last_seen_joined">clients_last_seen_joined</a></h2>
 <p><strong>Clients Last Seen Joined</strong></p>

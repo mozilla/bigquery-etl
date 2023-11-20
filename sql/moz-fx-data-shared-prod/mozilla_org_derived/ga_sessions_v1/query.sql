@@ -34,7 +34,39 @@ RETURNS STRING AS (
   END
 );
 
-WITH daily_sessions AS (
+WITH historic_and_intraday AS (
+  SELECT
+    *
+  FROM
+    `moz-fx-data-marketing-prod.65789850.ga_sessions_*`
+  WHERE
+    -- This table is partitioned, so we only process the data from session_date
+    -- To handle late-arriving data, we process 3 days of data each day (re-processing the past 2)
+    -- as separate Airflow tasks (or via bqetl backfill, I haven't decided yet)
+    --
+    -- Here, we need to take data from yesterday, just in case some of our sessions from today
+    -- actually started yesterday. If they did, they'll be filtered out in the HAVING clause
+    _TABLE_SUFFIX
+    BETWEEN FORMAT_DATE('%Y%m%d', DATE_SUB(@session_date, INTERVAL 1 DAY))
+    -- However, we have data for today that will arrive _tomorrow_! Some inter-day sessions
+    -- will be present in two days, with the same ids. A session should never span more
+    -- than two days though, see https://sql.telemetry.mozilla.org/queries/95882/source
+    -- If one does, our uniqueness check will alert us
+    AND FORMAT_DATE('%Y%m%d', DATE_ADD(@session_date, INTERVAL 1 DAY))
+  UNION ALL
+  -- Intraday sessions are "real-time" exports of sessions of the current day
+  -- usually we wouldn't need these, but sometimes GA is slow in adding the
+  -- intraday sessions back into ga_sessions
+  SELECT
+    *
+  FROM
+    `moz-fx-data-marketing-prod.65789850.ga_sessions_intraday_*`
+  WHERE
+    _TABLE_SUFFIX
+    BETWEEN FORMAT_DATE('%Y%m%d', DATE_SUB(@session_date, INTERVAL 1 DAY))
+    AND FORMAT_DATE('%Y%m%d', DATE_ADD(@session_date, INTERVAL 1 DAY))
+),
+daily_sessions AS (
   SELECT
     mozfun.ga.nullify_string(clientId) AS ga_client_id,
     -- visitId (or sessionId in GA4) is guaranteed unique only among one client, look at visitId here https://support.google.com/analytics/answer/3437719?hl=en
@@ -59,9 +91,9 @@ WITH daily_sessions AS (
     MIN_BY(trafficSource.medium, visitStartTime) AS medium,
     MIN_BY(trafficSource.keyword, visitStartTime) AS term,
     MIN_BY(trafficSource.adContent, visitStartTime) AS content,
-    ARRAY_AGG(
-      mozfun.ga.nullify_string(trafficSource.adwordsClickInfo.gclId) IGNORE NULLS
-    )[0] AS gclid,
+    ARRAY_AGG(mozfun.ga.nullify_string(trafficSource.adwordsClickInfo.gclId) IGNORE NULLS)[
+      0
+    ] AS gclid,
     /* Device */
     MIN_BY(device.deviceCategory, visitStartTime) AS device_category,
     MIN_BY(device.mobileDeviceModel, visitStartTime) AS mobile_device_model,
@@ -72,26 +104,12 @@ WITH daily_sessions AS (
     MIN_BY(device.browser, visitStartTime) AS browser,
     MIN_BY(device.browserVersion, visitStartTime) AS browser_version,
   FROM
-    `moz-fx-data-marketing-prod.65789850.ga_sessions_*`
-  WHERE
-    -- This table is partitioned, so we only process the data from session_date
-    -- To handle late-arriving data, we process 3 days of data each day (re-processing the past 2)
-    -- as separate Airflow tasks (or via bqetl backfill, I haven't decided yet)
-    --
-    -- Here, we need to take data from yesterday, just in case some of our sessions from today
-    -- actually started yesterday. If they did, they'll be filtered out in the HAVING clause
-    _TABLE_SUFFIX
-    BETWEEN FORMAT_DATE('%Y%m%d', DATE_SUB(@session_date, INTERVAL 1 DAY))
-    -- However, we have data for today that will arrive _tomorrow_! Some inter-day sessions
-    -- will be present in two days, with the same ids. A session should never span more
-    -- than two days though, see https://sql.telemetry.mozilla.org/queries/95882/source
-    -- If one does, our uniqueness check will alert us
-    AND FORMAT_DATE('%Y%m%d', DATE_ADD(@session_date, INTERVAL 1 DAY))
+    historic_and_intraday
   GROUP BY
     ga_client_id,
     ga_session_id
   HAVING
-    -- Don't include entries from today that started yesterday
+    -- Don't include entries from that started yesterday or tomorrow
     session_date = @session_date
 )
 SELECT

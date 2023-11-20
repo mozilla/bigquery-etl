@@ -1,6 +1,6 @@
 SELECT
   scope,
-  hasScopedKeys,
+  SAFE_CAST(hasScopedKeys AS BOOL) AS hasScopedKeys,
 FROM
   EXTERNAL_QUERY(
     "moz-fx-fxa-nonprod.us.fxa-oauth-nonprod-stage-fxa-oauth",

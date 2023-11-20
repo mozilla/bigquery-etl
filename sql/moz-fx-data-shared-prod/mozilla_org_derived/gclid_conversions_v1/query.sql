@@ -46,8 +46,7 @@ SELECT
   activity_date,
   gclid,
   COALESCE(
-    LOGICAL_OR(was_active)
-    AND activity_date = first_seen_date,
+    LOGICAL_OR(was_active AND activity_date = first_seen_date),
     FALSE
   ) AS did_firefox_first_run,
   COALESCE(LOGICAL_OR(did_search), FALSE) AS did_search,
@@ -73,7 +72,3 @@ USING
 GROUP BY
   activity_date,
   gclid
-HAVING
-  did_search
-  OR did_click_ad
-  OR did_returned_second_day

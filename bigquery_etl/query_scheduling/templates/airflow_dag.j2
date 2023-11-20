@@ -45,6 +45,10 @@ default_args = {{
 tags = {{ tags }}
 
 with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None -%}, schedule_interval={{ schedule_interval | format_timedelta | format_schedule_interval }}{%+ endif -%}, doc_md = docs, tags = tags) as dag:
+{% for task_group in task_groups | sort %}
+    task_group_{{ task_group }} = TaskGroup('{{ task_group }}')
+{% endfor %}
+
 {% for task in tasks | sort(attribute='task_name') %}
     {% if task.is_python_script -%}
         {{ task.task_name }} = gke_command(
@@ -195,6 +199,9 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
             {%+ endif -%}
             {%+ if task.email_on_retry != None -%}
             email_on_retry={{ task.email_on_retry }},
+            {%+ endif -%}
+            {%+ if task.task_group != None -%}
+            task_group=task_group_{{ task.task_group}},
             {%+ endif -%}
     {% if not task.is_python_script -%}
     {% endif -%}

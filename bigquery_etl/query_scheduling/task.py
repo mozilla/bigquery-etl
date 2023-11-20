@@ -254,6 +254,7 @@ class Task:
     gke_location: Optional[str] = attr.ib(None)
     gke_cluster_name: Optional[str] = attr.ib(None)
     query_project: Optional[str] = attr.ib(None)
+    task_group: Optional[str] = attr.ib(None)
 
     @property
     def task_key(self):
@@ -318,6 +319,14 @@ class Task:
             raise ValueError(
                 f"Invalid timedelta definition for {attribute}: {value}."
                 "Timedeltas should be specified like: 1h, 30m, 1h15m, 1d4h45m, ..."
+            )
+
+    @task_group.validator
+    def validate_task_group(self, attribute, value):
+        """Check that the task group name is valid."""
+        if value is not None and not re.match(r"[a-zA-Z0-9_]+", value):
+            raise ValueError(
+                "Invalid task group identifier. Group name must match pattern [a-zA-Z0-9_]+"
             )
 
     def __attrs_post_init__(self):

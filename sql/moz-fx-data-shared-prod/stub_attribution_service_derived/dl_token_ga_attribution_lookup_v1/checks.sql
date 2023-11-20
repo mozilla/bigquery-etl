@@ -33,9 +33,9 @@ SELECT
     (SELECT COUNTIF(total_rows < 1000) FROM min_row_count) > 0,
     ERROR(
       CONCAT(
-        "Less than ",
+        "Min Row Count Error: ",
         (SELECT total_rows FROM min_row_count),
-        " rows found (expected more than 1000)"
+        " rows found, expected more than 1000 rows"
       )
     ),
     NULL

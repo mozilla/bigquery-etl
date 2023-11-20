@@ -70,9 +70,9 @@ SELECT
     (SELECT COUNTIF(total_rows < 1) FROM min_row_count) > 0,
     ERROR(
       CONCAT(
-        "Less than ",
+        "Min Row Count Error: ",
         (SELECT total_rows FROM min_row_count),
-        " rows found (expected more than 1)"
+        " rows found, expected more than 1 rows"
       )
     ),
     NULL

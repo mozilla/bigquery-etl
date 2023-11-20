@@ -140,6 +140,12 @@ with DAG(
         )
 
         ExternalTaskMarker(
+            task_id="bqetl_mozilla_org_derived__wait_for_telemetry_derived__clients_daily__v6",
+            external_dag_id="bqetl_mozilla_org_derived",
+            external_task_id="wait_for_telemetry_derived__clients_daily__v6",
+        )
+
+        ExternalTaskMarker(
             task_id="jetstream__wait_for_clients_daily",
             external_dag_id="jetstream",
             external_task_id="wait_for_clients_daily",

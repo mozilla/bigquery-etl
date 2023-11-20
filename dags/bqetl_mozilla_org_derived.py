@@ -187,6 +187,10 @@ with DAG(
     mozilla_org_derived__gclid_conversions__v1.set_upstream(
         checks__fail_mozilla_org_derived__ga_sessions__v1
     )
+
+    mozilla_org_derived__gclid_conversions__v1.set_upstream(
+        checks__fail_stub_attribution_service_derived__dl_token_ga_attribution_lookup__v1
+    )
     wait_for_clients_first_seen_v2 = ExternalTaskSensor(
         task_id="wait_for_clients_first_seen_v2",
         external_dag_id="bqetl_analytics_tables",
@@ -200,4 +204,18 @@ with DAG(
 
     mozilla_org_derived__gclid_conversions__v1.set_upstream(
         wait_for_clients_first_seen_v2
+    )
+    wait_for_telemetry_derived__clients_daily__v6 = ExternalTaskSensor(
+        task_id="wait_for_telemetry_derived__clients_daily__v6",
+        external_dag_id="bqetl_main_summary",
+        external_task_id="telemetry_derived__clients_daily__v6",
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    mozilla_org_derived__gclid_conversions__v1.set_upstream(
+        wait_for_telemetry_derived__clients_daily__v6
     )

@@ -72,7 +72,7 @@ class TestParseMetadata(object):
         metadata = Metadata.from_file(metadata_file)
 
         assert metadata.friendly_name == "Test metadata file"
-        assert metadata.description is None
+        assert metadata.description == "Please provide a description for the query"
         assert "schedule" in metadata.labels
         assert metadata.labels["schedule"] == "daily"
         assert "public_json" in metadata.labels

@@ -128,4 +128,4 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: Date Airflow DAG is executed
+  description: Date Airflow DAG is executed, and partition date

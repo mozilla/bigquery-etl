@@ -3020,26 +3020,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#parse_android_receipt-udf" class="md-nav__link">
-    parse_android_receipt (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="parse_android_receipt (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters_1" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#scrub_apple_receipt-udf" class="md-nav__link">
     scrub_apple_receipt (UDF)
   </a>
@@ -3048,7 +3028,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#parameters_2" class="md-nav__link">
+  <a href="#parameters_1" class="md-nav__link">
     Parameters
   </a>
   
@@ -3065,6 +3045,26 @@
   </a>
   
     <nav class="md-nav" aria-label="parse_apple_event (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_2" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parse_android_receipt-udf" class="md-nav__link">
+    parse_android_receipt (UDF)
+  </a>
+  
+    <nav class="md-nav" aria-label="parse_android_receipt (UDF)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3562,26 +3562,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#parse_android_receipt-udf" class="md-nav__link">
-    parse_android_receipt (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="parse_android_receipt (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters_1" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#scrub_apple_receipt-udf" class="md-nav__link">
     scrub_apple_receipt (UDF)
   </a>
@@ -3590,7 +3570,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#parameters_2" class="md-nav__link">
+  <a href="#parameters_1" class="md-nav__link">
     Parameters
   </a>
   
@@ -3607,6 +3587,26 @@
   </a>
   
     <nav class="md-nav" aria-label="parse_apple_event (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_2" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parse_android_receipt-udf" class="md-nav__link">
+    parse_android_receipt (UDF)
+  </a>
+  
+    <nav class="md-nav" aria-label="parse_android_receipt (UDF)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3667,16 +3667,9 @@
 <div class="highlight"><pre><span></span><code>STRUCT&lt;`interval` STRING, interval_count INT64&gt;
 </code></pre></div>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/iap/derive_apple_subscription_interval">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/iap/derive_apple_subscription_interval/metadata.yaml">Edit</a></p>
-<h2 id="parse_android_receipt-udf">parse_android_receipt (UDF)</h2>
-<p>Used to parse <code>data</code> field from firestore export of fxa dataset iap_google_raw. The content is documented at <a href="https://developer.android.com/google/play/billing/subscriptions">https://developer.android.com/google/play/billing/subscriptions</a> and <a href="https://developers.google.com/android-publisher/api-ref/rest/v3/purchases.subscriptions">https://developers.google.com/android-publisher/api-ref/rest/v3/purchases.subscriptions</a></p>
-<h3 id="parameters_1">Parameters</h3>
-<p><strong>INPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>input STRING
-</code></pre></div>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/iap/parse_android_receipt">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/iap/parse_android_receipt/metadata.yaml">Edit</a></p>
 <h2 id="scrub_apple_receipt-udf">scrub_apple_receipt (UDF)</h2>
 <p>Take output from mozfun.iap.parse_apple_receipt and remove fields or reduce their granularity so that the returned value can be exposed to all employees via redash.</p>
-<h3 id="parameters_2">Parameters</h3>
+<h3 id="parameters_1">Parameters</h3>
 <p><strong>INPUTS</strong></p>
 <div class="highlight"><pre><span></span><code>apple_receipt ANY TYPE
 </code></pre></div>
@@ -3686,11 +3679,18 @@
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/iap/scrub_apple_receipt">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/iap/scrub_apple_receipt/metadata.yaml">Edit</a></p>
 <h2 id="parse_apple_event-udf">parse_apple_event (UDF)</h2>
 <p>Used to parse <code>data</code> field from firestore export of fxa dataset iap_app_store_purchases_raw. The content is documented at <a href="https://developer.apple.com/documentation/appstoreservernotifications/responsebodyv2decodedpayload">https://developer.apple.com/documentation/appstoreservernotifications/responsebodyv2decodedpayload</a> and <a href="https://github.com/mozilla/fxa/blob/700ed771860da450add97d62f7e6faf2ead0c6ba/packages/fxa-shared/payments/iap/apple-app-store/subscription-purchase.ts#L115-L171">https://github.com/mozilla/fxa/blob/700ed771860da450add97d62f7e6faf2ead0c6ba/packages/fxa-shared/payments/iap/apple-app-store/subscription-purchase.ts#L115-L171</a></p>
-<h3 id="parameters_3">Parameters</h3>
+<h3 id="parameters_2">Parameters</h3>
 <p><strong>INPUTS</strong></p>
 <div class="highlight"><pre><span></span><code>input STRING
 </code></pre></div>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/iap/parse_apple_event">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/iap/parse_apple_event/metadata.yaml">Edit</a></p>
+<h2 id="parse_android_receipt-udf">parse_android_receipt (UDF)</h2>
+<p>Used to parse <code>data</code> field from firestore export of fxa dataset iap_google_raw. The content is documented at <a href="https://developer.android.com/google/play/billing/subscriptions">https://developer.android.com/google/play/billing/subscriptions</a> and <a href="https://developers.google.com/android-publisher/api-ref/rest/v3/purchases.subscriptions">https://developers.google.com/android-publisher/api-ref/rest/v3/purchases.subscriptions</a></p>
+<h3 id="parameters_3">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>input STRING
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/iap/parse_android_receipt">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/iap/parse_android_receipt/metadata.yaml">Edit</a></p>
 <h2 id="parse_apple_receipt-udf">parse_apple_receipt (UDF)</h2>
 <p>Used to parse provider_receipt_json in mozilla vpn subscriptions where provider is "APPLE". The content is documented at <a href="https://developer.apple.com/documentation/appstorereceipts/responsebody">https://developer.apple.com/documentation/appstorereceipts/responsebody</a></p>
 <h3 id="parameters_4">Parameters</h3>

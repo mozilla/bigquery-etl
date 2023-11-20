@@ -7,6 +7,10 @@ fields:
     mode: NULLABLE
     type: STRING
     description: "A Google Click ID, which uniquely represent an ad impression for Google ads."
+  - name: did_firefox_first_run
+    mode: NULLABLE
+    type: BOOLEAN
+    description: "Whether the GA session associated with this GCLID resulted in a Firefox install which ran the first time on this day."
   - name: did_search
     mode: NULLABLE
     type: BOOLEAN

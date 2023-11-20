@@ -1,0 +1,9 @@
+friendly_name: Client Adclicks History
+description: |-
+  Please provide a description for the view
+owners:
+- example@mozilla.com
+labels: {}
+bigquery: null
+references: {}
+deprecated: false

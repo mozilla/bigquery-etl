@@ -17,7 +17,8 @@ WITH histogram_data AS (
     h1.metric,
     h1.key,
     h1.agg_type,
-    h1.value
+    h1.value,
+    IF(os = 'Windows', 10, 1) AS sample_mult
   FROM
     `{{ project }}.{{ dataset }}.{{ prefix }}__clients_histogram_aggregates_v1`, UNNEST(histogram_aggregates) h1
 ),
@@ -32,11 +33,12 @@ scalars_histogram_data AS (
     s1.metric,
     s1.key,
     agg_type,
-    s1.value
+    s1.value,
+    IF(os = 'Windows', 10, 1) AS sample_mult
   FROM
     `{{ project }}.{{ dataset }}.{{ prefix }}__clients_scalar_aggregates_v1`, UNNEST(scalar_aggregates) s1
 
-  UNION ALL 
+  UNION ALL
 
   SELECT
     client_id,
@@ -48,7 +50,8 @@ scalars_histogram_data AS (
     metric,
     v1.key,
     agg_type,
-    v1.value
+    v1.value,
+    sample_mult
   FROM
     histogram_data,
     UNNEST(value) v1
@@ -64,16 +67,16 @@ scalars_histogram_data AS (
 }}
 SELECT
     {{ attributes }},
-    metric, 
+    metric,
     '' AS key,
     agg_type,
-    SUM(value) as total_sample
+    SUM(value) * sample_mult as total_sample
 FROM
     all_combos
 WHERE agg_type = 'summed_histogram'
 GROUP BY
-    {{ attributes }}, 
-    metric, 
+    {{ attributes }},
+    metric,
     key,
     agg_type
 
@@ -84,7 +87,7 @@ SELECT
     metric,
     key,
     agg_type,
-    SUM(value) as total_sample
+    SUM(value) * sample_mult as total_sample
 FROM
     all_combos
 WHERE agg_type <> 'summed_histogram'

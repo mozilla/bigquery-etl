@@ -76,8 +76,7 @@ with DAG(
         owner="frank@mozilla.com",
         email=["frank@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
-        parameters=["conversion_window:INT64:30", "activity_date:DATE:{{ds}}"]
-        + ["activity_date:DATE:{{ds}}"],
+        parameters=["conversion_window:INT64:30"] + ["activity_date:DATE:{{ds}}"],
         retries=0,
     )
 
@@ -127,7 +126,7 @@ with DAG(
         email=["frank@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="activity_date",
         depends_on_past=False,
-        parameters=["conversion_window:INT64:30", "activity_date:DATE:{{ds}}"],
+        parameters=["conversion_window:INT64:30"],
     )
 
     stub_attribution_service_derived__dl_token_ga_attribution_lookup__v1 = bigquery_etl_query(

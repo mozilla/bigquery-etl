@@ -16,7 +16,6 @@ scheduling:
   date_partition_parameter: activity_date
   parameters:
   - conversion_window:INT64:30
-  - activity_date:DATE:{{ds}}
 bigquery:
   time_partitioning:
     type: day

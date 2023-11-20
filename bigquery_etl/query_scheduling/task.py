@@ -178,20 +178,6 @@ EXTERNAL_TASKS = {
     ): ["*.core_clients_first_seen*"],
     TaskRef(
         dag_name="copy_deduplicate",
-        task_id="baseline_clients_last_seen",
-        schedule_interval="0 1 * * *",
-    ): ["*.baseline_clients_last_seen*"],
-    TaskRef(
-        dag_name="copy_deduplicate",
-        task_id="clients_last_seen_joined",
-        schedule_interval="0 1 * * *",
-        date_partition_offset=-1,
-    ): ["*.clients_last_seen_joined*"],
-    # *_stable.* should be matched last since all
-    # pattern before are downstream dependencies of
-    # copy_deduplicate_all.
-    TaskRef(
-        dag_name="copy_deduplicate",
         task_id="copy_deduplicate_all",
         schedule_interval="0 1 * * *",
     ): ["*_stable.*"],

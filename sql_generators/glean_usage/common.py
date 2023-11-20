@@ -184,7 +184,7 @@ class GleanTable:
         baseline_table,
         output_dir=None,
         use_cloud_function=True,
-        app_info={},
+        app_info=[],
     ):
         """Generate the baseline table query per app_id."""
         if not self.per_app_id_enabled:
@@ -206,9 +206,9 @@ class GleanTable:
 
         app_name = dataset
         for app in app_info:
-            for dataset in app:
-                if dataset["bq_dataset_family"] == dataset:
-                    app_name = app["app_name"]
+            for app_dataset in app:
+                if app_dataset["bq_dataset_family"] == dataset:
+                    app_name = app_dataset["app_name"]
                     break
 
         render_kwargs = dict(

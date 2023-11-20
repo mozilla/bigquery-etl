@@ -209,7 +209,12 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
 
     {% if (task.downstream_dependencies + task.external_downstream_tasks)|length > 0 -%}
     {% set seenDownstreamDags = [] %}
-    with TaskGroup('{{ task.task_name }}_external') as {{ task.task_name }}_external:
+    with TaskGroup(
+        '{{ task.task_name }}_external',
+        {%+ if task.task_group != None -%}
+        parent_group=task_group_{{ task.task_group }}
+        {%+ endif -%}
+    ) as {{ task.task_name }}_external:
         {% for downstream_task in task.downstream_dependencies | sort(attribute='task_id') -%}
         {% if downstream_task.dag_name not in seenDownstreamDags -%}
         ExternalTaskMarker(

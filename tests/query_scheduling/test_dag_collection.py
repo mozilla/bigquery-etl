@@ -286,7 +286,7 @@ class TestDagCollection:
                 "dag_name": "bqetl_test_dag",
                 "depends_on_past": True,
                 "arguments": ["--date", "{{ds}}"],
-                "task_group": "test_group"
+                "task_group": "test_group",
             },
         )
 

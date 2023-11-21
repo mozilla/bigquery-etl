@@ -269,11 +269,7 @@ SELECT
       metrics.labeled_counter.fxa_client_error_count,
       metrics.labeled_counter.extensions_counters_browser_action_preload_result,
       metrics.labeled_counter.extensions_counters_event_page_idle_result,
-      CAST(
-        NULL
-        AS
-          ARRAY<STRUCT<`key` STRING, `value` INTEGER>>
-      ) AS `fog_validation_gvsv_audio_stream_init_gvst`
+      metrics.labeled_counter.fog_validation_gvsv_audio_stream_init_gvst
     ) AS `labeled_counter`,
     metrics.quantity,
     metrics.string,
@@ -596,11 +592,7 @@ SELECT
       metrics.labeled_counter.fxa_client_error_count,
       metrics.labeled_counter.extensions_counters_browser_action_preload_result,
       metrics.labeled_counter.extensions_counters_event_page_idle_result,
-      CAST(
-        NULL
-        AS
-          ARRAY<STRUCT<`key` STRING, `value` INTEGER>>
-      ) AS `fog_validation_gvsv_audio_stream_init_gvst`
+      metrics.labeled_counter.fog_validation_gvsv_audio_stream_init_gvst
     ) AS `labeled_counter`,
     metrics.quantity,
     STRUCT(
@@ -1477,11 +1469,7 @@ SELECT
       metrics.labeled_counter.fxa_client_error_count,
       metrics.labeled_counter.extensions_counters_browser_action_preload_result,
       metrics.labeled_counter.extensions_counters_event_page_idle_result,
-      CAST(
-        NULL
-        AS
-          ARRAY<STRUCT<`key` STRING, `value` INTEGER>>
-      ) AS `fog_validation_gvsv_audio_stream_init_gvst`
+      metrics.labeled_counter.fog_validation_gvsv_audio_stream_init_gvst
     ) AS `labeled_counter`,
     metrics.quantity,
     metrics.string,

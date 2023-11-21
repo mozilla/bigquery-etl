@@ -3731,6 +3731,24 @@ fields:
         in one of the labels.
 
         '
+    - name: fog_validation_gvsv_audio_stream_init_gvst
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Incremented when an audio stream is initialized, recorded alongside
+        the
+
+        Glean API for the purposes of Validation (hence GVSV).
+
+        Uses a single label due to only labeled counters being supported
+
+        '
   - name: quantity
     type: RECORD
     mode: NULLABLE

@@ -485,3 +485,10 @@ fields:
   - name: totalSplits
     type: INTEGER
     mode: NULLABLE
+- name: errorGroups
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: id
+    type: STRING
+    mode: NULLABLE

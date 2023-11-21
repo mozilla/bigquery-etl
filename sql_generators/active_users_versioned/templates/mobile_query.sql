@@ -552,32 +552,32 @@ only_previous AS (
     _previous.*
   FROM
     _previous
-  LEFT JOIN
+  LEFT OUTER JOIN
     _current
-  USING
-    (
-      app_version,
-      attribution_medium,
-      attribution_source,
-      attributed,
-      city,
-      country,
-      distribution_id,
-      first_seen_year,
-      is_default_browser,
-      language_name,
-      app_name,
-      channel,
-      os,
-      os_version,
-      os_version_major,
-      os_version_minor,
-      submission_date,
-      segment,
-      adjust_network,
-      install_source
-      -- TODO: New column device_manufacturer not added here because it doesn't need to match, it's set as '??'. To be updated in next backfill (?)
-    )
+  ON
+    _previous.submission_date = _current.submission_date
+    AND IFNULL(_previous.attribution_medium, 'NULL') = IFNULL(_current.attribution_medium, 'NULL')
+    AND IFNULL(_previous.attribution_source, 'NULL') = IFNULL(_current.attribution_source, 'NULL')
+    AND IFNULL(_previous.attributed, FALSE) = IFNULL(_current.attributed, FALSE)
+    AND IFNULL(_previous.app_version, 'NULL') = IFNULL(_current.app_version, 'NULL')
+    AND IFNULL(_previous.attribution_medium, 'NULL') = IFNULL(_current.attribution_medium, 'NULL')
+    AND IFNULL(_previous.attribution_source, 'NULL') = IFNULL(_current.attribution_source, 'NULL')
+    AND IFNULL(_previous.city, 'NULL') = IFNULL(_current.city, 'NULL')
+    AND IFNULL(_previous.country, 'NULL') = IFNULL(_current.country, 'NULL')
+    AND IFNULL(_previous.distribution_id, 'NULL') = IFNULL(_current.distribution_id, 'NULL')
+    AND IFNULL(_previous.first_seen_year, 0) = IFNULL(_current.first_seen_year, 0)
+    AND IFNULL(_previous.is_default_browser, FALSE) = IFNULL(_current.is_default_browser, FALSE)
+    AND IFNULL(_previous.language_name, 'NULL') = IFNULL(_current.language_name, 'NULL')
+    AND IFNULL(_previous.app_name, 'NULL') = IFNULL(_current.app_name, 'NULL')
+    AND IFNULL(_previous.channel, 'NULL') = IFNULL(_current.channel, 'NULL')
+    AND IFNULL(_previous.os, 'NULL') = IFNULL(_current.os, 'NULL')
+    AND IFNULL(_previous.os_version, 'NULL') = IFNULL(_current.os_version, 'NULL')
+    AND IFNULL(_previous.os_version_major, 0) = IFNULL(_current.os_version_major, 0)
+    AND IFNULL(_previous.os_version_minor, 0) = IFNULL(_current.os_version_minor, 0)
+    AND IFNULL(_previous.segment, 'NULL') = IFNULL(_current.segment, 'NULL')
+    AND IFNULL(_previous.adjust_network, 'NULL') = IFNULL(_current.adjust_network, 'NULL')
+    AND IFNULL(_previous.install_source, 'NULL') = IFNULL(_current.install_source, 'NULL')
+    -- TODO: New column device_manufacturer not added here because it doesn't need to match, it's set as '??'. To be updated in next backfill (?)
   WHERE
     _current.last_updated_timestamp IS NULL
 ),

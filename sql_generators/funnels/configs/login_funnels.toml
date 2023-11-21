@@ -1,4 +1,4 @@
-destination_dataset = "firefox_accounts"
+destination_dataset = "firefox_accounts_derived"
 platform = "firefox_accounts"
 owners = ["ksiegler@mozilla.org"]  # optional; users getting notification if funnel run fails
 version = "1"  # optional; default is set to 1

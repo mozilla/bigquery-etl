@@ -65,8 +65,6 @@ join_previous_step_on = "flow_id"
 [data_sources]
 
 [data_sources.all_events]
-from_expression = """
-    (SELECT * FROM mozdata.firefox_accounts.fxa_all_events)
-"""
+from_expression = "mozdata.firefox_accounts.fxa_all_events"
 submission_date_column = "DATE(timestamp)"
 client_id_column = "user_id"

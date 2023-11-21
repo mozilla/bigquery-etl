@@ -1,0 +1,4 @@
+---
+- name: session_date
+  type: DATE
+  value: 2023-03-31

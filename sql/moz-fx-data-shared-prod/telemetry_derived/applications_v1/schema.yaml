@@ -1,0 +1,45 @@
+fields:
+- mode: NULLABLE
+  name: app_channel
+  type: STRING
+  description: App Channel
+- mode: NULLABLE
+  name: app_description
+  type: STRING
+  description: App Description
+- mode: NULLABLE
+  name: app_id
+  type: STRING
+  description: App ID
+- mode: NULLABLE
+  name: app_name
+  type: STRING
+  description: App Name
+- mode: NULLABLE
+  name: bq_dataset_family
+  type: STRING
+  description: Dataset name ping data is stored in
+- mode: NULLABLE
+  name: canonical_app_name
+  type: STRING
+  description: Human readable app name
+- mode: NULLABLE
+  name: document_namespace
+  type: STRING
+  description: Document Namespace
+- mode: REPEATED
+  name: notification_emails
+  type: STRING
+  description: Set of emails that will receive any app-related notifications
+- mode: NULLABLE
+  name: url
+  type: STRING
+  description: Repository URL
+- mode: NULLABLE
+  name: v1_name
+  type: STRING
+  description: V1 App Name
+- mode: NULLABLE
+  name: is_glean
+  type: BOOL
+  description: Whether the application is using Glean

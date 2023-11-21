@@ -87,13 +87,14 @@ def paths_matching_checks_pattern(
         pattern, sql_path, project_id, ["checks.sql"], CHECKS_FILE_RE
     )
 
-    for checks_file in checks_files:
-        match = CHECKS_FILE_RE.match(str(checks_file))
-        if match:
-            project = match.group(1)
-            dataset = match.group(2)
-            table = match.group(3)
-        yield checks_file, project, dataset, table
+    if checks_files:
+        for checks_file in checks_files:
+            match = CHECKS_FILE_RE.match(str(checks_file))
+            if match:
+                project = match.group(1)
+                dataset = match.group(2)
+                table = match.group(3)
+            yield checks_file, project, dataset, table
     else:
         print(f"No checks.sql file found in {sql_path}/{project_id}/{pattern}")
 
@@ -163,13 +164,16 @@ use_cloud_function_option = click.option(
     default=True,
 )
 
-parallelism_option = click.option(
-    "--parallelism",
-    "-p",
-    default=8,
-    type=int,
-    help="Number of threads for parallel processing",
-)
+
+def parallelism_option(default=8):
+    """Generate a parallelism option, with optional default."""
+    return click.option(
+        "--parallelism",
+        "-p",
+        default=default,
+        type=int,
+        help="Number of threads for parallel processing",
+    )
 
 
 def project_id_option(default=None, required=False):

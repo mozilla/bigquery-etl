@@ -3501,6 +3501,42 @@
 <p><code>mozilla_org.ga_clients</code></p>
 <p>Please provide a description for the query</p>
 <table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>ga_client_id</td>
+        <td>Uniquely identifiers a GA client, using a cookie on moz.org.</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>first_seen_date</td>
+        <td>The first date we saw this GA client.</td>
+        <td>Date</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>last_seen_date</td>
+        <td>The last date we saw this GA client.</td>
+        <td>Date</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>had_download_event</td>
+        <td>Whether this GA client has ever had a download event.</td>
+        <td>Boolean</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>first_reported</td>
+        <td>First instances of fields for a GA client.</td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
+<table>
 <caption>Referenced Tables</caption>
     <tr>
         <th>Project</th>
@@ -3707,6 +3743,47 @@
 <p><strong>Gclid Conversions</strong></p>
 <p><code>mozilla_org.gclid_conversions</code></p>
 <p>Please provide a description for the query</p>
+<table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>activity_date</td>
+        <td>The date that the conversion action took place.</td>
+        <td>Date</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>gclid</td>
+        <td>A Google Click ID, which uniquely represent an ad impression for Google ads.</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>did_firefox_first_run</td>
+        <td>Whether the GA session associated with this GCLID resulted in a Firefox install which ran the first time on this day.</td>
+        <td>Boolean</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>did_search</td>
+        <td>Whether the GA session associated with this GCLID resulted in a Firefox install with a search on this day.</td>
+        <td>Boolean</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>did_click_ad</td>
+        <td>Whether the GA session associated with this GCLID resulted in a Firefox install with an ad click on this day.</td>
+        <td>Boolean</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>did_returned_second_day</td>
+        <td>Whether the GA session associated with this GCLID resulted in a Firefox install that returned on this day.</td>
+        <td>Boolean</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
 <table>
 <caption>Referenced Tables</caption>
     <tr>

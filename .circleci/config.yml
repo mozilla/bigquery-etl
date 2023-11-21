@@ -608,6 +608,9 @@ jobs:
           root: /tmp/workspace
           paths:
             - generated-sql
+      - store_artifacts:
+          path: /tmp/workspace/generated-sql/sql.diff
+          destination: sql.diff
   post-diff:
     docker:
       - image: circleci/node:8.10.0
@@ -617,9 +620,6 @@ jobs:
           at: /tmp/workspace
       - run: npm i circle-github-bot
       - run: .circleci/post-diff.js
-      - store_artifacts:
-          path: /tmp/integration
-          destination: /app/integration
   reset-stage-env:
     docker: *docker
     steps:

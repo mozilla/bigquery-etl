@@ -4307,8 +4307,13 @@ Options:
 <span class="w">  </span>ga_derived.blogs_goals_v1
 </code></pre></div>
 <h4 id="initialize"><code>initialize</code></h4>
-<p>Create and initialize the destination table for the query.
-    Only for queries that have an <code>init.sql</code> file.</p>
+<p>Run a full backfill on the destination table for the query.
+       Using this command will:
+        - Create the table if it doesn't exist and run a full backfill.
+        - Run a full backfill if the table exists and is empty.
+        - Raise an exception if the table exists and has data, or if the table exists and the schema doesn't match the query.
+       It supports <code>query.sql</code> files that use the is_init() pattern, and <code>init.sql</code> files.
+       To run in parallel per sample_id, include a @sample_id parameter in the query.</p>
 <p><strong>Usage</strong></p>
 <div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>query<span class="w"> </span>initialize<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>name<span class="o">]</span>
 
@@ -4320,7 +4325,9 @@ Options:
 --parallelism:<span class="w"> </span>Number<span class="w"> </span>of<span class="w"> </span>threads<span class="w"> </span><span class="k">for</span><span class="w"> </span>parallel<span class="w"> </span>processing
 </code></pre></div>
 <p><strong>Examples</strong></p>
-<div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>query<span class="w"> </span>initialize<span class="w"> </span>telemetry_derived.ssl_ratios_v1
+<div class="highlight"><pre><span></span><code>Examples:
+<span class="w">   </span>-<span class="w"> </span>For<span class="w"> </span>init.sql<span class="w"> </span>files:<span class="w"> </span>./bqetl<span class="w"> </span>query<span class="w"> </span>initialize<span class="w"> </span>telemetry_derived.ssl_ratios_v1
+<span class="w">   </span>-<span class="w"> </span>For<span class="w"> </span>query.sql<span class="w"> </span>files<span class="w"> </span>and<span class="w"> </span>parallel<span class="w"> </span>run:<span class="w"> </span>./bqetl<span class="w"> </span>query<span class="w"> </span>initialize<span class="w"> </span>sql/moz-fx-data-shared-prod/telemetry_derived/clients_first_seen_v2/query.sql
 </code></pre></div>
 <h4 id="render"><code>render</code></h4>
 <p>Render a query Jinja template.</p>

@@ -13,6 +13,7 @@
   WITH event_counters AS (
     SELECT
       DATE(submission_timestamp) AS submission_date,
+      "{{ dataset['canonical_app_name'] }}" AS normalized_app_name,
       client_info.app_channel AS channel,
       metrics.labeled_counter
     FROM

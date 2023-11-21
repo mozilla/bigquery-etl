@@ -1,0 +1,22 @@
+friendly_name: Review checker events data
+description: |-
+  The events table includes telemetry related to the review checker sidebar including user
+  interaction with the sidebar, open and closed states, and the status of reviews (stale, unavailable, etc.)
+owners:
+- akommasani@mozilla.com
+- betling@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_review_checker
+  task_name: firefox_desktop_review_checker_events__v1
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+  clustering:
+    fields:
+    - normalized_channel
+    - sample_id

@@ -1,0 +1,16 @@
+- dl_token: dltoken_3
+  ga_client_id: only_present_historically
+  stub_session_id: stub_session_id_3
+  first_seen_date: 2023-01-01
+- dl_token: dltoken_2
+  ga_client_id: also_present_today
+  stub_session_id: stub_session_id_2
+  first_seen_date: 2023-01-01
+- dl_token: testNullJoins
+  ga_client_id: NULL
+  stub_session_id: NULL
+  first_seen_date: 2023-01-01
+- dl_token: testEmptyStringWithNullJoins
+  ga_client_id: ""
+  stub_session_id: ""
+  first_seen_date: 2023-01-01

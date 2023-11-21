@@ -34,11 +34,7 @@
     event_extra.key AS event_extra_key,
     normalized_country_code AS country,
     "{{ dataset['canonical_app_name'] }}" AS normalized_app_name,
-    {% if app_name == "fenix" -%}
-    mozfun.norm.fenix_app_info("{{ dataset['bq_dataset_family'] }}", app_build).channel AS normalized_channel,
-    {% else %}
-    "{{ dataset.get('app_channel', 'release') }}" AS normalized_channel,
-    {% endif %}
+    client_info.app_channel AS channel,
     client_info.app_display_version AS version,
     -- Access experiment information.
     -- Additional iteration is necessary to aggregate total event count across experiments
@@ -68,10 +64,11 @@
     `{{ project_id }}.{{ dataset['bq_dataset_family'] }}_stable.events_v1`
   CROSS JOIN
     UNNEST(events) AS event,
-    UNNEST(event.extra) AS event_extra,
     -- Iterator for accessing experiments.
     -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
+  LEFT JOIN
+    UNNEST(event.extra) AS event_extra
   WHERE 
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -83,11 +80,11 @@
     event_extra_key,
     country,
     normalized_app_name,
-    normalized_channel,
+    channel,
     version,
     experiment,
     experiment_branch
-{% elif dataset in ["accounts_frontend", "accounts_backend"] %}
+{% elif dataset['bq_dataset_family'] in ["accounts_frontend", "accounts_backend"] %}
   {% if not outer_loop.first -%}
   UNION ALL
   {% endif -%}
@@ -115,12 +112,12 @@
         ) * 60
       ) MINUTE
     ) AS window_end,
-    NULL AS event_category,
+    CAST(NULL AS STRING) AS event_category,
     metrics.string.event_name,
-    NULL AS event_extra_key,
+    CAST(NULL AS STRING) AS event_extra_key,
     normalized_country_code AS country,
     "{{ dataset['canonical_app_name'] }}" AS normalized_app_name,
-    normalized_channel,
+    client_info.app_channel AS channel,
     client_info.app_display_version AS version,
     -- Access experiment information.
     -- Additional iteration is necessary to aggregate total event count across experiments
@@ -162,7 +159,7 @@
     event_extra_key,
     country,
     normalized_app_name,
-    normalized_channel,
+    channel,
     version,
     experiment,
     experiment_branch

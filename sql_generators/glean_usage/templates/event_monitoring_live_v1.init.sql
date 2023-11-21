@@ -58,7 +58,7 @@ IF
       event_extra.key AS event_extra_key,
       normalized_country_code AS country,
       '{{ app_name }}' AS normalized_app_name,
-      normalized_channel,
+      client_info.app_channel AS channel,
       client_info.app_display_version AS version,
       -- Access experiment information.
       -- Additional iteration is necessary to aggregate total event count across experiments
@@ -88,10 +88,11 @@ IF
       `{{ project_id }}.{{ dataset }}_live.events_v1`
     CROSS JOIN
       UNNEST(events) AS event,
-      UNNEST(event.extra) AS event_extra,
       -- Iterator for accessing experiments.
       -- Add one more for aggregating events across all experiments
       UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
+    LEFT JOIN
+      UNNEST(event.extra) AS event_extra
     {% elif dataset_id in ["accounts_frontend", "accounts_backend"] %}
       -- FxA uses custom pings to send events without a category and extras.
     SELECT
@@ -122,7 +123,7 @@ IF
       NULL AS event_extra_key,
       normalized_country_code AS country,
       '{{ app_name }}' AS normalized_app_name,
-      normalized_channel,
+      client_info.app_channel AS channel,
       client_info.app_display_version AS VERSION,
       -- Access experiment information.
       -- Additional iteration is necessary to aggregate total event count across experiments
@@ -166,7 +167,7 @@ IF
       event_extra_key,
       country,
       normalized_app_name,
-      normalized_channel,
+      channel,
       version,
       experiment,
       experiment_branch

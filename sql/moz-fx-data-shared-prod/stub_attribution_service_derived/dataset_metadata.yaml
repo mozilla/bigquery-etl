@@ -1,0 +1,15 @@
+friendly_name: Stub Attribution Service Derived
+description: |-
+  Stub Attribution Service data.
+  Separated into a new dataset to ensure correct workgroup access.
+dataset_base_acl: derived_restricted
+user_facing: false
+labels: {}
+default_table_workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:data-science/duet
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:data-science/duet

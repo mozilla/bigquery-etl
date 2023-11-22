@@ -11,8 +11,10 @@ SELECT
   event_extra_key,
   country,
   normalized_app_name,
-  normalized_channel,
+  channel,
   version,
+  experiment,
+  experiment_branch,
   total_events
 FROM 
   `{{ project_id }}.{{ dataset['bq_dataset_family'] }}_derived.event_monitoring_live_v1`
@@ -30,8 +32,10 @@ SELECT
   event_extra_key,
   country,
   normalized_app_name,
-  normalized_channel,
+  channel,
   version,
+  experiment,
+  experiment_branch,
   total_events
 FROM 
   `{{ project_id }}.{{ target_table }}`

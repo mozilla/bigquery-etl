@@ -1,0 +1,61 @@
+- clientId: clientIntraday
+  visitId: '1'
+  visitNumber: 1
+  date: '20230331'
+  visitStartTime: 1
+  geoNetwork:
+    country: "earlierCountry"
+    region: "earlierRegion"
+    city: "earlierCity"
+  trafficSource:
+    adwordsClickInfo:
+      campaignId: 1
+      gclId: "earlierGclid"
+    campaign: "earlierCampaign"
+    source: "earlierSource"
+    medium: "earlierMedium"
+    adContent: "earlierContent"
+    keyword: "earlierKeyword"
+  device:
+    deviceCategory: "earlierDeviceCategory"
+    mobileDeviceModel: "earlierMobileDeviceModel"
+    mobileDeviceInfo: "earlierMobileDeviceInfo"
+    operatingSystem: "earlierOperatingSystem"
+    operatingSystemVersion: "earlierOperatingSystemVersion"
+    language: "earlierLanguage"
+    browser: "earlierBrowser"
+    browserVersion: "earlierBrowserVersion"
+  totals:
+    pageviews: 1
+    timeOnSite: 11
+  hits:
+    - page:
+        pagePath: "/en-GB/firefox/session"
+      appInfo:
+        landingScreenName: first
+      eventInfo:
+        eventCategory: "/firefox/ Interactions"
+        eventAction: Stub Session ID
+        eventLabel: earlierStubSessionId
+      hitNumber: 1
+      type: EVENT
+    - page:
+        pagePath: "/en-GB/firefox/session"
+      appInfo:
+        landingScreenName: second
+      eventInfo:
+        eventCategory: "/firefox/ Interactions"
+        eventAction: Stub Session ID
+        eventLabel: laterStubSessionId
+      hitNumber: 2
+      type: EVENT
+    - page:
+        pagePath: "/en-GB/firefox/"
+      appInfo:
+        landingScreenName: third
+      eventInfo:
+        eventCategory: "/firefox/ Interactions"
+        eventAction: Firefox Download
+        eventLabel: Firefox for Desktop
+      hitNumber: 3
+      type: EVENT

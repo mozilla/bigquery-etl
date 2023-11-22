@@ -2,7 +2,6 @@
 import os
 from enum import Enum
 from pathlib import Path
-import yaml
 import shutil
 
 import click
@@ -59,14 +58,6 @@ def generate(target_project, output_dir, use_cloud_function):
     full_table_id = f"{target_project}.{browser.name}_derived.{TABLE_NAME}_v2"
     full_view_id = f"{target_project}.{browser.name}_derived.{TABLE_NAME}"
 
-    final_path = Path(os.path.join(output_dir, *list(full_table_id.split(".")[-2:])))
-
-    shutil.copyfile(
-        THIS_PATH / "templates" / "schema.yaml",
-        final_path / "schema.yaml",
-    )
-
-
     write_sql(
         output_dir=output_dir,
         full_table_id=full_table_id,
@@ -101,3 +92,10 @@ def generate(target_project, output_dir, use_cloud_function):
         ),
         skip_existing=False,
     )
+
+    final_path = Path(os.path.join(output_dir, *list(full_table_id.split(".")[-2:])))
+    source_schema_path = THIS_PATH / "templates" / "schema.yaml"
+    final_schema_path = final_path / "schema.yaml"
+
+    if os.path.exists(source_schema_path):
+        shutil.copyfile(source_schema_path, final_schema_path)

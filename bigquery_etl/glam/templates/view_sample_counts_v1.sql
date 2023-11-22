@@ -70,7 +70,7 @@ SELECT
     metric,
     '' AS key,
     agg_type,
-    SUM(value) * sample_mult as total_sample
+    SUM(value) * MAX(sample_mult) as total_sample
 FROM
     all_combos
 WHERE agg_type = 'summed_histogram'
@@ -87,7 +87,7 @@ SELECT
     metric,
     key,
     agg_type,
-    SUM(value) * sample_mult as total_sample
+    SUM(value) * MAX(sample_mult) as total_sample
 FROM
     all_combos
 WHERE agg_type <> 'summed_histogram'

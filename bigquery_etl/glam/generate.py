@@ -278,6 +278,7 @@ def main():
                 source_table=f"glam_etl.{args.prefix}__scalar_bucket_counts_v1",
                 is_scalar=True,
             ),
+            channel=channel_prefixes[args.prefix],
         ),
         table(
             "probe_counts_v1",
@@ -286,6 +287,7 @@ def main():
                 source_table=f"glam_etl.{args.prefix}__histogram_bucket_counts_v1",
                 is_scalar=False,
             ),
+            channel=channel_prefixes[args.prefix],
         ),
         table(
             "scalar_percentiles_v1",

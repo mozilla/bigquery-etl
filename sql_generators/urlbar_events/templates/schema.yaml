@@ -28,26 +28,26 @@ fields:
   type: RECORD
   mode: REPEATED
   fields:
- - name: key
-   type: STRING
-   mode: NULLABLE
- - name: value
-   type: RECORD
-   mode: NULLABLE
-   fields:
-   - name: branch
-     type: STRING
-     mode: NULLABLE
-   - name: extra
-     type: RECORD
-     mode: NULLABLE
-     fields:
-     - name: enrollment_id
-       type: STRING
-       mode: NULLABLE
-     - name: type
-       type: STRING
-       mode: NULLABLE
+  - name: key
+    type: STRING
+    mode: NULLABLE
+  - name: value
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: branch
+      type: STRING
+      mode: NULLABLE
+    - name: extra
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: enrollment_id
+        type: STRING
+        mode: NULLABLE
+      - name: type
+        type: STRING
+        mode: NULLABLE
 - name: seq
   type: INTEGER
   mode: NULLABLE

@@ -56,7 +56,7 @@ def generate(target_project, output_dir, use_cloud_function):
         )
     )
     full_table_id = f"{target_project}.{browser.name}_derived.{TABLE_NAME}_v2"
-    full_view_id = f"{target_project}.{browser.name}_derived.{TABLE_NAME}"
+    full_view_id = f"{target_project}.{browser.name}.{TABLE_NAME}"
 
     write_sql(
         output_dir=output_dir,

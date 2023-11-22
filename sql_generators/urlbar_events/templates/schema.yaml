@@ -1,154 +1,157 @@
+---
 fields:
-- name: submission_date
-  type: DATE
-  mode: NULLABLE
-- name: glean_client_id
-  type: STRING
-  mode: NULLABLE
-- name: legacy_telemetry_client_id
-  type: STRING
-  mode: NULLABLE
-- name: sample_id
-  type: INTEGER
-  mode: NULLABLE
-- name: event_name
-  type: STRING
-  mode: NULLABLE
-  description: Name of the 'urlbar' event represented by this row- 'engagement' or 'abandonment'
-- name: event_timestamp
-  type: INTEGER
-  mode: NULLABLE
-  description: Glean event timestamp
-- name: event_id
-  type: STRING
-  mode: NULLABLE
-  description: Row identifier UUID.
-    When unnesting the results column, use 'COUNT(DISTINCT event_id)' to count events.
-- name: experiments
-  type: RECORD
-  mode: REPEATED
-  fields:
-  - name: key
+  - name: submission_date
+    type: DATE
+    mode: NULLABLE
+  - name: glean_client_id
     type: STRING
     mode: NULLABLE
-  - name: value
-    type: RECORD
+  - name: legacy_telemetry_client_id
+    type: STRING
     mode: NULLABLE
-    fields:
-    - name: branch
-      type: STRING
-      mode: NULLABLE
-    - name: extra
-      type: RECORD
-      mode: NULLABLE
-      fields:
-      - name: enrollment_id
-        type: STRING
-        mode: NULLABLE
-      - name: type
-        type: STRING
-        mode: NULLABLE
-- name: seq
-  type: INTEGER
-  mode: NULLABLE
-  description: 'ping_info.seq' from the events ping.
-    Use together with 'event_timestamp' for event sequencing.
-- name: normalized_channel
-  type: STRING
-  mode: NULLABLE
-- name: normalized_country_code
-  type: STRING
-  mode: NULLABLE
-- name: normalized_engine
-  type: STRING
-  mode: NULLABLE
-  description: Normalized default search engine
-- name: pref_data_collection
-  type: BOOLEAN
-  mode: NULLABLE
-  description: Has the user opted into Firefox Suggest data collection, aka Suggest Online.
-- name: pref_sponsored_suggestions
-  type: BOOLEAN
-  mode: NULLABLE
-  description: Are Firefox Suggest sponsored suggestions enabled
-- name: pref_fx_suggestions
-  type: BOOLEAN
-  mode: NULLABLE
-  description: Is Firefox Suggest enabled (nonsponsored suggestions)
-- name: engagement_type
-  type: STRING
-  mode: NULLABLE
-  description: How the user selected the result. Eg. 'click', 'enter'.
-- name: interaction
-  type: STRING
-  mode: NULLABLE
-  description: How the user started the search action. Eg. 'typed', 'pasted'.
-- name: num_chars_typed
-  type: INTEGER
-  mode: NULLABLE
-- name: num_chars_typed
-  type: INTEGER
-  mode: NULLABLE
-  description: Length of the query string typed by the user
-- name: num_total_results
-  type: INTEGER
-  mode: NULLABLE
-  description: Number of results displayed
-- name: selected_position
-  type: INTEGER
-  mode: NULLABLE
-  description: Rank of the selected result, starting from 1, if any.
-- name: selected_result
-  type: STRING
-  mode: NULLABLE
-  description: Raw type identifier for the selected result, if any.
-    Eg. 'search_suggest', 'bookmark'.
-- name: results
-  type: RECORD
-  mode: REPEATED
-  description: Array listing info about each result displayed.
-  fields:
-  - name: position
+  - name: sample_id
     type: INTEGER
     mode: NULLABLE
-    description: Display rank of this result, starting from 1.
-  - name: result_type
+  - name: event_name
     type: STRING
     mode: NULLABLE
-    description: Raw type identifier for this result.
-  - name: product_result_type
+    description: Name of the 'urlbar' event represented by this row- 'engagement' or
+      'abandonment'
+  - name: event_timestamp
+    type: INTEGER
+    mode: NULLABLE
+    description: Glean event timestamp
+  - name: event_id
     type: STRING
     mode: NULLABLE
-    description: Product type identifier for this result.
-  - name: result_group
+    description: Row identifier UUID. When unnesting the results column, use
+      'COUNT(DISTINCT event_id)' to count events.
+  - name: experiments
+    type: RECORD
+    mode: REPEATED
+    fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+          - name: branch
+            type: STRING
+            mode: NULLABLE
+          - name: extra
+            type: RECORD
+            mode: NULLABLE
+            fields:
+              - name: enrollment_id
+                type: STRING
+                mode: NULLABLE
+              - name: type
+                type: STRING
+                mode: NULLABLE
+  - name: seq
+    type: INTEGER
+    mode: NULLABLE
+    description: ping_info.seq from the events ping. Use together with
+      event_timestamp for event sequencing.
+  - name: normalized_channel
     type: STRING
     mode: NULLABLE
-    description: Result group this result belongs to. Eg. 'heuristic', 'suggest'.
-- name: product_selected_result
-  type: STRING
-  mode: NULLABLE
-  description: Product type identifier for the selected result, if any. 
-    Eg. 'wikipedia_enhanced', 'default_partner_search_suggestion'.
-- name: event_action
-  type: STRING
-  mode: NULLABLE
-  description: Action taken by the user
-    which generated the event- 'engaged', 'abandoned', or 'annoyance'.
-- name: is_terminal
-  type: BOOLEAN
-  mode: NULLABLE
-  description: Did the event action cause the search session to end? 
-    Filter on 'is_terminal = TRUE' to count unique search sessions.
-- name: engaged_result_type
-  type: STRING
-  mode: NULLABLE
-  description: Raw type identifier for the selected result, if any.
-- name: product_engaged_result_type
-  type: STRING
-  mode: NULLABLE
-  description: Product type identifier for the selected result, if any.
-- name: annoyance_signal_type
-  type: STRING
-  mode: NULLABLE
-  description: Annoyance option selected, if any.
-    This uses the value of 'engagement_type' when 'event_action' is annoyance. Eg. 'dismiss', 'help'.
+  - name: normalized_country_code
+    type: STRING
+    mode: NULLABLE
+  - name: normalized_engine
+    type: STRING
+    mode: NULLABLE
+    description: Normalized default search engine
+  - name: pref_data_collection
+    type: BOOLEAN
+    mode: NULLABLE
+    description: Has the user opted into Firefox Suggest data collection, aka
+      Suggest Online.
+  - name: pref_sponsored_suggestions
+    type: BOOLEAN
+    mode: NULLABLE
+    description: Are Firefox Suggest sponsored suggestions enabled
+  - name: pref_fx_suggestions
+    type: BOOLEAN
+    mode: NULLABLE
+    description: Is Firefox Suggest enabled (nonsponsored suggestions)
+  - name: engagement_type
+    type: STRING
+    mode: NULLABLE
+    description: How the user selected the result. Eg. 'click', 'enter'.
+  - name: interaction
+    type: STRING
+    mode: NULLABLE
+    description: How the user started the search action. Eg. 'typed', 'pasted'.
+  - name: num_chars_typed
+    type: INTEGER
+    mode: NULLABLE
+  - name: num_chars_typed
+    type: INTEGER
+    mode: NULLABLE
+    description: Length of the query string typed by the user
+  - name: num_total_results
+    type: INTEGER
+    mode: NULLABLE
+    description: Number of results displayed
+  - name: selected_position
+    type: INTEGER
+    mode: NULLABLE
+    description: Rank of the selected result, starting from 1, if any.
+  - name: selected_result
+    type: STRING
+    mode: NULLABLE
+    description: Raw type identifier for the selected result, if any. Eg.
+      'search_suggest', 'bookmark'.
+  - name: results
+    type: RECORD
+    mode: REPEATED
+    description: Array listing info about each result displayed.
+    fields:
+      - name: position
+        type: INTEGER
+        mode: NULLABLE
+        description: Display rank of this result, starting from 1.
+      - name: result_type
+        type: STRING
+        mode: NULLABLE
+        description: Raw type identifier for this result.
+      - name: product_result_type
+        type: STRING
+        mode: NULLABLE
+        description: Product type identifier for this result.
+      - name: result_group
+        type: STRING
+        mode: NULLABLE
+        description: Result group this result belongs to. Eg. 'heuristic', 'suggest'.
+  - name: product_selected_result
+    type: STRING
+    mode: NULLABLE
+    description: Product type identifier for the selected result, if any. Eg.
+      'wikipedia_enhanced', 'default_partner_search_suggestion'.
+  - name: event_action
+    type: STRING
+    mode: NULLABLE
+    description: Action taken by the user which generated the event- 'engaged',
+      'abandoned', or 'annoyance'.
+  - name: is_terminal
+    type: BOOLEAN
+    mode: NULLABLE
+    description: Did the event action cause the search session to end? Filter on
+      'is_terminal = TRUE' to count unique search sessions.
+  - name: engaged_result_type
+    type: STRING
+    mode: NULLABLE
+    description: Raw type identifier for the selected result, if any.
+  - name: product_engaged_result_type
+    type: STRING
+    mode: NULLABLE
+    description: Product type identifier for the selected result, if any.
+  - name: annoyance_signal_type
+    type: STRING
+    mode: NULLABLE
+    description: Annoyance option selected, if any. This uses the value of
+      'engagement_type' when 'event_action' is annoyance. Eg. 'dismiss', 'help'.

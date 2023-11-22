@@ -50,3 +50,20 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
+
+    monitoring_derived__deletion_request_volume__v2 = bigquery_etl_query(
+        task_id="monitoring_derived__deletion_request_volume__v2",
+        destination_table=None,
+        dataset_id="monitoring_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="ascholtz@mozilla.com",
+        email=[
+            "ascholtz@mozilla.com",
+            "dthorn@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        sql_file_path="sql/moz-fx-data-shared-prod/monitoring_derived/deletion_request_volume_v2/script.sql",
+    )

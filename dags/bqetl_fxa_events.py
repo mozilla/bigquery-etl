@@ -112,6 +112,13 @@ with DAG(
         )
 
         ExternalTaskMarker(
+            task_id="bqetl_generated_funnels__wait_for_firefox_accounts_derived__fxa_auth_events__v1",
+            external_dag_id="bqetl_generated_funnels",
+            external_task_id="wait_for_firefox_accounts_derived__fxa_auth_events__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=73800)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_event_rollup__wait_for_firefox_accounts_derived__fxa_auth_events__v1",
             external_dag_id="bqetl_event_rollup",
             external_task_id="wait_for_firefox_accounts_derived__fxa_auth_events__v1",
@@ -142,6 +149,13 @@ with DAG(
             external_dag_id="bqetl_subplat",
             external_task_id="wait_for_firefox_accounts_derived__fxa_content_events__v1",
             execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=85500)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_generated_funnels__wait_for_firefox_accounts_derived__fxa_content_events__v1",
+            external_dag_id="bqetl_generated_funnels",
+            external_task_id="wait_for_firefox_accounts_derived__fxa_content_events__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=73800)).isoformat() }}",
         )
 
         ExternalTaskMarker(
@@ -190,6 +204,13 @@ with DAG(
         )
 
         ExternalTaskMarker(
+            task_id="bqetl_generated_funnels__wait_for_firefox_accounts_derived__fxa_gcp_stderr_events__v1",
+            external_dag_id="bqetl_generated_funnels",
+            external_task_id="wait_for_firefox_accounts_derived__fxa_gcp_stderr_events__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=73800)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_event_rollup__wait_for_firefox_accounts_derived__fxa_gcp_stderr_events__v1",
             external_dag_id="bqetl_event_rollup",
             external_task_id="wait_for_firefox_accounts_derived__fxa_gcp_stderr_events__v1",
@@ -221,6 +242,13 @@ with DAG(
             external_dag_id="bqetl_subplat",
             external_task_id="wait_for_firefox_accounts_derived__fxa_gcp_stdout_events__v1",
             execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=85500)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_generated_funnels__wait_for_firefox_accounts_derived__fxa_gcp_stdout_events__v1",
+            external_dag_id="bqetl_generated_funnels",
+            external_task_id="wait_for_firefox_accounts_derived__fxa_gcp_stdout_events__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=73800)).isoformat() }}",
         )
 
         ExternalTaskMarker(
@@ -288,6 +316,13 @@ with DAG(
             external_dag_id="bqetl_subplat",
             external_task_id="wait_for_firefox_accounts_derived__fxa_stdout_events__v1",
             execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=85500)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_generated_funnels__wait_for_firefox_accounts_derived__fxa_stdout_events__v1",
+            external_dag_id="bqetl_generated_funnels",
+            external_task_id="wait_for_firefox_accounts_derived__fxa_stdout_events__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=73800)).isoformat() }}",
         )
 
         ExternalTaskMarker(

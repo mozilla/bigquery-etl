@@ -1,0 +1,26 @@
+friendly_name: Login Funnels
+description: |-
+  Please provide a description for the query
+owners:
+- ksiegler@mozilla.org
+labels:
+  incremental: true
+  dag: bqetl_generated_funnels
+  owner1: ksiegler
+scheduling:
+  dag_name: bqetl_generated_funnels
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: null
+  clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  query.sql:
+  - mozdata.firefox_accounts.fxa_all_events
+deprecated: false

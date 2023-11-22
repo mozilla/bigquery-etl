@@ -1,3 +1,5 @@
+DECLARE dummy INT64; -- declare a dummy variable to indicate that this is a script to bigquery-etl
+
 CREATE TEMP TABLE
   deletion_counts(submission_date DATE, dataset_id STRING, num_rows INT64);
 
@@ -8,7 +10,6 @@ FOR record IN (
     `moz-fx-data-shared-prod.INFORMATION_SCHEMA.SCHEMATA`
   WHERE
     schema_name LIKE "%_live%"
-    AND schema_name LIKE "%ios%"
 )
 DO
   EXECUTE IMMEDIATE CONCAT(

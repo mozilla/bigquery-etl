@@ -1,0 +1,31 @@
+friendly_name: Ga Sessions
+description: |-
+  One row for each GA session.
+owners:
+- frank@mozilla.com
+labels:
+  incremental: true
+  owner1: frank@mozilla.com
+scheduling:
+  dag_name: bqetl_mozilla_org_derived
+  date_partition_parameter: session_date
+  depends_on:
+  - task_id: "mozilla_org_derived__ga_sessions__v1__backfill_-1"
+    dag_name: ga_sessions_backfill
+    execution_delta: 1h
+  - task_id: "mozilla_org_derived__ga_sessions__v1__backfill_-2"
+    dag_name: ga_sessions_backfill
+    execution_delta: 1h
+  - task_id: "mozilla_org_derived__ga_sessions__v1__backfill_-3"
+    dag_name: ga_sessions_backfill
+    execution_delta: 1h
+bigquery:
+  time_partitioning:
+    type: day
+    field: 'session_date'
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields: ["country"]
+references: {}
+deprecated: false

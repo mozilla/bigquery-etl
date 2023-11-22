@@ -9,7 +9,7 @@ WITH microsurvey_responses AS (
       'SHOPPING_MICROSURVEY_(\\d)_SHOPPING_MICROSURVEY_SCREEN_.*'
     ) AS question_index
   FROM
-    messaging_system.onboarding
+    `moz-fx-data-shared-prod.firefox_desktop.onboarding`
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND message_id LIKE '%SHOPPING%'

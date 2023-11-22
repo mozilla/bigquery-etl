@@ -1,43 +1,68 @@
-WITH shopping_metrics AS (
+WITH ranked_data AS (
   SELECT
     client_info.client_id AS client_id,
+    submission_timestamp,
+    DATE(submission_timestamp) AS submission_date,
+    metrics.counter.shopping_product_page_visits AS shopping_product_page_visits,
+    metrics.boolean.shopping_settings_user_has_onboarded AS is_user_onboarded,
+    metrics.boolean.shopping_settings_component_opted_out AS is_component_opted_out,
+    metrics.boolean.shopping_settings_nimbus_disabled_shopping AS is_nimbus_disabled,
+    normalized_channel,
+    normalized_country_code,
+    sample_id,
+    ping_info.experiments AS experiments,
+    ROW_NUMBER() OVER (
+      PARTITION BY
+        client_info.client_id
+      ORDER BY
+        submission_timestamp
+    ) AS row_num
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_ios_firefox_stable.metrics_v1`
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+),
+shopping_metrics AS (
+  SELECT
+    client_id AS client_id,
     DATE(submission_timestamp) AS submission_date,
     SUM(
       CASE
-        WHEN metrics.counter.shopping_product_page_visits IS NOT NULL
-          THEN COALESCE(CAST(metrics.counter.shopping_product_page_visits AS INT64), 0)
+        WHEN shopping_product_page_visits IS NOT NULL
+          THEN COALESCE(CAST(shopping_product_page_visits AS INT64), 0)
         ELSE 0
       END
     ) AS shopping_product_page_visits,
     CASE
-      WHEN metrics.boolean.shopping_settings_user_has_onboarded = TRUE
-        AND metrics.boolean.shopping_settings_component_opted_out = FALSE
+      WHEN is_user_onboarded = TRUE
+        AND is_component_opted_out = FALSE
         THEN 1
       ELSE 0
     END AS is_opt_in,
     CASE
-      WHEN metrics.boolean.shopping_settings_component_opted_out = TRUE
+      WHEN is_component_opted_out = TRUE
         THEN 1
       ELSE 0
     END AS is_opt_out,
     CASE
-      WHEN metrics.boolean.shopping_settings_user_has_onboarded = TRUE
+      WHEN is_user_onboarded = TRUE
         THEN 1
       ELSE 0
     END AS is_onboarded,
     CASE
-      WHEN metrics.boolean.shopping_settings_nimbus_disabled_shopping = TRUE
+      WHEN is_nimbus_disabled = TRUE
         THEN 1
       ELSE 0
     END AS is_nimbus_disabled,
     normalized_channel,
     normalized_country_code,
     sample_id,
-    ANY_VALUE(ping_info.experiments) AS experiments
+    ANY_VALUE(experiments) AS experiments
   FROM
-    `moz-fx-data-shared-prod.org_mozilla_ios_firefox_stable.metrics_v1`
+    ranked_data
   WHERE
     DATE(submission_timestamp) = @submission_date
+    AND row_num = 1
   GROUP BY
     client_id,
     submission_date,
@@ -57,12 +82,12 @@ active AS (
   FROM
     `moz-fx-data-shared-prod.firefox_ios.baseline`
   WHERE
-    DATE(submission_timestamp)= @submission_date
+    DATE(submission_timestamp) = @submission_date
   GROUP BY
     client_info.client_id,
     submission_date
 ),
-fx_dau AS (
+ranked_fx_dau AS (
   SELECT
     client_info.client_id,
     DATE(submission_timestamp) AS submission_date,
@@ -70,25 +95,38 @@ fx_dau AS (
       WHEN LOWER(metadata.isp.name) != 'browserstack'
         THEN 1
       ELSE 0
-    END AS is_fx_dau
+    END AS is_fx_dau,
+    ROW_NUMBER() OVER (PARTITION BY client_info.client_id ORDER BY submission_timestamp) AS row_num
   FROM
     `moz-fx-data-shared-prod.firefox_ios.baseline`
   WHERE
     DATE(submission_timestamp) = @submission_date
+),
+fx_dau AS (
+  SELECT
+    client_id,
+    submission_date,
+    is_fx_dau
+  FROM
+    ranked_fx_dau
+  WHERE
+    row_num = 1
 ),
 search AS (
   SELECT
     submission_date,
     client_id,
     SUM(search_count) AS sap,
-    SUM(ad_click) as ad_click
+    SUM(ad_click) AS ad_click
   FROM
     `moz-fx-data-shared-prod.search.mobile_search_clients_engines_sources_daily`
   WHERE
-    os = "iOS"
+    submission_date = @submission_date
+    AND os = "iOS"
     AND normalized_app_name = "Fennec"
-    AND DATE(submission_date) = @submission_date
-  GROUP BY client_id, submission_date
+  GROUP BY
+    client_id,
+    submission_date
 ),
 joined_data AS (
   SELECT

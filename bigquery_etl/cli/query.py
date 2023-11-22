@@ -1281,13 +1281,18 @@ def _initialize_in_parallel(
 
 
 @query.command(
-    help="""Create and initialize the destination table for the query.
-    Only for queries that have an `init.sql` file.
+    help="""Run a full backfill on the destination table for the query.
+       Using this command will:
+        - Create the table if it doesn't exist and run a full backfill.
+        - Run a full backfill if the table exists and is empty.
+        - Raise an exception if the table exists and has data, or if the table exists and the schema doesn't match the query.
+       It supports `query.sql` files that use the is_init() pattern, and `init.sql` files.
+       To run in parallel per sample_id, include a @sample_id parameter in the query.
 
-    Examples:
-
-    ./bqetl query initialize telemetry_derived.ssl_ratios_v1
-    """,
+       Examples:
+       - For init.sql files: ./bqetl query initialize telemetry_derived.ssl_ratios_v1
+       - For query.sql files and parallel run: ./bqetl query initialize sql/moz-fx-data-shared-prod/telemetry_derived/clients_first_seen_v2/query.sql
+       """,
 )
 @click.argument("name")
 @sql_dir_option

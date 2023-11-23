@@ -8,7 +8,8 @@ WITH histogram_data AS (
     process,
     key,
     h1.agg_type,
-    h1.aggregates
+    h1.aggregates,
+    IF(os = 'Windows' AND channel = 'release', 10, 1) AS sample_mult
   FROM
     clients_histogram_aggregates_v2,
     UNNEST(histogram_aggregates) h1
@@ -21,7 +22,8 @@ scalars_data AS (
     app_version,
     app_build_id,
     channel,
-    scalar_aggregates
+    scalar_aggregates,
+    IF(os = 'Windows' AND channel = 'release', 10, 1) AS sample_mult
   FROM
     clients_scalar_aggregates_v1
   WHERE
@@ -36,7 +38,7 @@ SELECT
   process,
   histogram_data.key,
   agg_type,
-  SUM(v1.value) AS total_sample
+  SUM(v1.value) * MAX(sample_mult) AS total_sample
 FROM
   histogram_data,
   UNNEST(aggregates) v1
@@ -59,7 +61,7 @@ SELECT
   process,
   histogram_data.key,
   agg_type,
-  SUM(v1.value) AS total_sample
+  SUM(v1.value) * MAX(sample_mult) AS total_sample
 FROM
   histogram_data,
   UNNEST(aggregates) v1
@@ -81,7 +83,7 @@ SELECT
   process,
   histogram_data.key,
   agg_type,
-  SUM(v1.value) AS total_sample
+  SUM(v1.value) * MAX(sample_mult) AS total_sample
 FROM
   histogram_data,
   UNNEST(aggregates) v1
@@ -103,7 +105,7 @@ SELECT
   process,
   histogram_data.key,
   agg_type,
-  SUM(v1.value) AS total_sample
+  SUM(v1.value) * MAX(sample_mult) AS total_sample
 FROM
   histogram_data,
   UNNEST(aggregates) v1
@@ -126,7 +128,7 @@ SELECT
   agg_type,
   CASE
     WHEN agg_type IN ('count', 'true', 'false')
-      THEN SUM(value)
+      THEN SUM(value) * MAX(sample_mult)
     ELSE NULL
   END AS total_sample
 FROM
@@ -153,7 +155,7 @@ SELECT
   agg_type,
   CASE
     WHEN agg_type IN ('count', 'true', 'false')
-      THEN SUM(value)
+      THEN SUM(value) * MAX(sample_mult)
     ELSE NULL
   END AS total_sample
 FROM
@@ -179,7 +181,7 @@ SELECT
   agg_type,
   CASE
     WHEN agg_type IN ('count', 'true', 'false')
-      THEN SUM(value)
+      THEN SUM(value) * MAX(sample_mult)
     ELSE NULL
   END AS total_sample
 FROM
@@ -205,7 +207,7 @@ SELECT
   agg_type,
   CASE
     WHEN agg_type IN ('count', 'true', 'false')
-      THEN SUM(value)
+      THEN SUM(value) * MAX(sample_mult)
     ELSE NULL
   END AS total_sample
 FROM

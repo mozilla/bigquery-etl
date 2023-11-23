@@ -29,6 +29,7 @@ references:
   - moz-fx-data-shared-prod.monitor_frontend_derived.event_monitoring_live_v1
   - moz-fx-data-shared-prod.monitoring_derived.event_monitoring_aggregates_v1
   - moz-fx-data-shared-prod.moso_mastodon_backend_derived.event_monitoring_live_v1
+  - moz-fx-data-shared-prod.moso_mastodon_web_derived.event_monitoring_live_v1
   - moz-fx-data-shared-prod.mozilla_lockbox_derived.event_monitoring_live_v1
   - moz-fx-data-shared-prod.mozilla_mach_derived.event_monitoring_live_v1
   - moz-fx-data-shared-prod.mozillavpn_derived.event_monitoring_live_v1

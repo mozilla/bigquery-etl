@@ -1,0 +1,20 @@
+friendly_name: App-specific view for Glean ping "use-counters"
+description: |-
+  This a view that UNIONs the stable ping tables
+  across all channels of the Glean application "Firefox Focus for Android"
+  (org_mozilla_focus.use_counters, org_mozilla_focus_beta.use_counters, org_mozilla_focus_nightly.use_counters).
+
+  It is used by Looker.
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.org_mozilla_focus.use_counters
+  - moz-fx-data-shared-prod.org_mozilla_focus_beta.use_counters
+  - moz-fx-data-shared-prod.org_mozilla_focus_nightly.use_counters
+deprecated: false

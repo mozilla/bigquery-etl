@@ -1300,6 +1300,13 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: The total number of operations performed by the FxA client.
+    - name: networking_residual_cache_folder_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counts how often we find a cache folder that wasn''t purged at
+        shutdown by a background task process.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -2882,6 +2889,20 @@ fields:
         Glean API for the purposes of Validation (hence GVSV).
 
         Uses a single label due to only labeled counters being supported
+
+        '
+    - name: networking_residual_cache_folder_removal
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts how often succeed/fail in removing cache folder that wasn''t
+        purged at shutdown
 
         '
   - name: string

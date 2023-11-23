@@ -121,6 +121,7 @@ SELECT
       metrics.labeled_counter.fxa_client_error_count,
       metrics.labeled_counter.extensions_counters_browser_action_preload_result,
       metrics.labeled_counter.extensions_counters_event_page_idle_result,
+      metrics.labeled_counter.networking_residual_cache_folder_removal,
       CAST(
         NULL
         AS
@@ -269,6 +270,7 @@ SELECT
       metrics.labeled_counter.fxa_client_error_count,
       metrics.labeled_counter.extensions_counters_browser_action_preload_result,
       metrics.labeled_counter.extensions_counters_event_page_idle_result,
+      metrics.labeled_counter.networking_residual_cache_folder_removal,
       metrics.labeled_counter.fog_validation_gvsv_audio_stream_init_gvst
     ) AS `labeled_counter`,
     metrics.quantity,
@@ -452,7 +454,8 @@ SELECT
       metrics.counter.addons_extensions_process_ui_disable,
       metrics.counter.addons_extensions_process_ui_retry,
       metrics.counter.shopping_product_page_visits,
-      metrics.counter.fxa_client_operation_count
+      metrics.counter.fxa_client_operation_count,
+      metrics.counter.networking_residual_cache_folder_count
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -592,6 +595,7 @@ SELECT
       metrics.labeled_counter.fxa_client_error_count,
       metrics.labeled_counter.extensions_counters_browser_action_preload_result,
       metrics.labeled_counter.extensions_counters_event_page_idle_result,
+      metrics.labeled_counter.networking_residual_cache_folder_removal,
       metrics.labeled_counter.fog_validation_gvsv_audio_stream_init_gvst
     ) AS `labeled_counter`,
     metrics.quantity,
@@ -980,7 +984,8 @@ SELECT
       metrics.counter.addons_extensions_process_ui_disable,
       metrics.counter.addons_extensions_process_ui_retry,
       metrics.counter.shopping_product_page_visits,
-      metrics.counter.fxa_client_operation_count
+      metrics.counter.fxa_client_operation_count,
+      metrics.counter.networking_residual_cache_folder_count
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -1120,6 +1125,7 @@ SELECT
       metrics.labeled_counter.fxa_client_error_count,
       metrics.labeled_counter.extensions_counters_browser_action_preload_result,
       metrics.labeled_counter.extensions_counters_event_page_idle_result,
+      metrics.labeled_counter.networking_residual_cache_folder_removal,
       metrics.labeled_counter.fog_validation_gvsv_audio_stream_init_gvst
     ) AS `labeled_counter`,
     metrics.quantity,
@@ -1469,6 +1475,7 @@ SELECT
       metrics.labeled_counter.fxa_client_error_count,
       metrics.labeled_counter.extensions_counters_browser_action_preload_result,
       metrics.labeled_counter.extensions_counters_event_page_idle_result,
+      metrics.labeled_counter.networking_residual_cache_folder_removal,
       metrics.labeled_counter.fog_validation_gvsv_audio_stream_init_gvst
     ) AS `labeled_counter`,
     metrics.quantity,

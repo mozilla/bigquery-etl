@@ -358,6 +358,9 @@ fields:
     - name: bloburl_resolve_stopped
       type: INTEGER
       mode: NULLABLE
+    - name: networking_residual_cache_folder_count
+      type: INTEGER
+      mode: NULLABLE
   - name: datetime
     type: RECORD
     mode: NULLABLE
@@ -1047,6 +1050,16 @@ fields:
         type: INTEGER
         mode: NULLABLE
     - name: extensions_counters_event_page_idle_result
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: networking_residual_cache_folder_removal
       type: RECORD
       mode: REPEATED
       fields:

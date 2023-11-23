@@ -596,6 +596,13 @@ fields:
         of the shopping experiment.
 
         '
+    - name: networking_residual_cache_folder_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counts how often we find a cache folder that wasn''t purged at
+        shutdown by a background task process.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -1570,6 +1577,20 @@ fields:
       description: 'User clicked on a button to approve setting the current site as
         default web mail site. The sum of all counters is the total amount of user
         interactions and dismissing the same dialog often could be a sign of a bug.
+
+        '
+    - name: networking_residual_cache_folder_removal
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts how often succeed/fail in removing cache folder that wasn''t
+        purged at shutdown
 
         '
   - name: memory_distribution

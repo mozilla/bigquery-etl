@@ -1,0 +1,22 @@
+friendly_name: App-specific view for Glean ping "broken-site-report"
+description: |-
+  This a view that UNIONs the stable ping tables
+  across all channels of the Glean application "Firefox for Android"
+  (org_mozilla_firefox.broken_site_report, org_mozilla_firefox_beta.broken_site_report, org_mozilla_fenix.broken_site_report, org_mozilla_fenix_nightly.broken_site_report, org_mozilla_fennec_aurora.broken_site_report).
+
+  It is used by Looker.
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.org_mozilla_fenix.broken_site_report
+  - moz-fx-data-shared-prod.org_mozilla_fenix_nightly.broken_site_report
+  - moz-fx-data-shared-prod.org_mozilla_fennec_aurora.broken_site_report
+  - moz-fx-data-shared-prod.org_mozilla_firefox.broken_site_report
+  - moz-fx-data-shared-prod.org_mozilla_firefox_beta.broken_site_report
+deprecated: false

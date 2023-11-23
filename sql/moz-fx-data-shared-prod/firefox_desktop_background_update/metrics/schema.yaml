@@ -488,6 +488,13 @@ fields:
         different partition keys
 
         '
+    - name: networking_residual_cache_folder_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counts how often we find a cache folder that wasn''t purged at
+        shutdown by a background task process.
+
+        '
   - name: datetime
     type: RECORD
     mode: NULLABLE
@@ -1388,6 +1395,20 @@ fields:
         mode: NULLABLE
       description: 'Number of times an event page hit the idle timeout and results
         in one of the labels.
+
+        '
+    - name: networking_residual_cache_folder_removal
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts how often succeed/fail in removing cache folder that wasn''t
+        purged at shutdown
 
         '
   - name: memory_distribution

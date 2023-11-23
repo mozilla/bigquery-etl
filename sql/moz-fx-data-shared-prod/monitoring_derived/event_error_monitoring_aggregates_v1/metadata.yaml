@@ -43,6 +43,7 @@ references:
   - moz-fx-data-shared-prod.monitor_cirrus_stable.events_v1
   - moz-fx-data-shared-prod.monitor_frontend_stable.events_v1
   - moz-fx-data-shared-prod.moso_mastodon_backend_stable.events_v1
+  - moz-fx-data-shared-prod.moso_mastodon_web_stable.events_v1
   - moz-fx-data-shared-prod.mozilla_lockbox_stable.events_v1
   - moz-fx-data-shared-prod.mozilla_mach_stable.events_v1
   - moz-fx-data-shared-prod.mozillavpn_stable.events_v1

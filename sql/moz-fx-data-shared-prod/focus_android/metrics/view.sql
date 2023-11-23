@@ -88,7 +88,8 @@ SELECT
       metrics.counter.dotprint_android_dialog_requested,
       metrics.counter.translations_requests_count,
       metrics.counter.fog_inits_during_shutdown,
-      metrics.counter.bloburl_resolve_stopped
+      metrics.counter.bloburl_resolve_stopped,
+      metrics.counter.networking_residual_cache_folder_count
     ) AS `counter`,
     metrics.datetime,
     STRUCT(
@@ -157,7 +158,8 @@ SELECT
       metrics.labeled_counter.fog_validation_gvsv_audio_stream_init,
       metrics.labeled_counter.fog_validation_gvsv_audio_stream_init_gecko,
       metrics.labeled_counter.extensions_counters_browser_action_preload_result,
-      metrics.labeled_counter.extensions_counters_event_page_idle_result
+      metrics.labeled_counter.extensions_counters_event_page_idle_result,
+      metrics.labeled_counter.networking_residual_cache_folder_removal
     ) AS `labeled_counter`,
     metrics.memory_distribution,
     STRUCT(
@@ -258,7 +260,8 @@ SELECT
       metrics.counter.dotprint_android_dialog_requested,
       metrics.counter.translations_requests_count,
       metrics.counter.fog_inits_during_shutdown,
-      metrics.counter.bloburl_resolve_stopped
+      metrics.counter.bloburl_resolve_stopped,
+      metrics.counter.networking_residual_cache_folder_count
     ) AS `counter`,
     metrics.datetime,
     STRUCT(
@@ -327,7 +330,8 @@ SELECT
       metrics.labeled_counter.fog_validation_gvsv_audio_stream_init,
       metrics.labeled_counter.fog_validation_gvsv_audio_stream_init_gecko,
       metrics.labeled_counter.extensions_counters_browser_action_preload_result,
-      metrics.labeled_counter.extensions_counters_event_page_idle_result
+      metrics.labeled_counter.extensions_counters_event_page_idle_result,
+      metrics.labeled_counter.networking_residual_cache_folder_removal
     ) AS `labeled_counter`,
     metrics.memory_distribution,
     STRUCT(

@@ -1,0 +1,22 @@
+friendly_name: Historical Pings for `moso-mastodon-web/deletion-request`
+description: |-
+  A historical view of pings sent for the
+  `moso-mastodon-web/deletion-request`
+  document type.
+
+  This view is guaranteed to contain only complete days
+  (per `submission_timestamp`)
+  and to contain only one row per distinct `document_id` within a given date.
+
+  Clustering fields: `normalized_channel`, `sample_id`
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.moso_mastodon_web_stable.deletion_request_v1
+deprecated: false

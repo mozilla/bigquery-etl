@@ -598,9 +598,17 @@ jobs:
       - run:
           name: Generate diff
           command: |
+            diff -qr --no-dereference \
+              /tmp/workspace/main-generated-sql/dags/ /tmp/workspace/generated-sql/dags/ \
+              | grep '^Only in' \
+              > /tmp/workspace/generated-sql/sql.diff || true
             diff -bur --no-dereference --new-file \
               /tmp/workspace/main-generated-sql/dags/ /tmp/workspace/generated-sql/dags/ \
-              > /tmp/workspace/generated-sql/sql.diff || true
+              >> /tmp/workspace/generated-sql/sql.diff || true
+            diff -qr --no-dereference \
+              /tmp/workspace/main-generated-sql/sql/ /tmp/workspace/generated-sql/sql/ \
+              | grep '^Only in' \
+              >> /tmp/workspace/generated-sql/sql.diff || true
             diff -bur --no-dereference --new-file \
               /tmp/workspace/main-generated-sql/sql/ /tmp/workspace/generated-sql/sql/ \
               >> /tmp/workspace/generated-sql/sql.diff || true

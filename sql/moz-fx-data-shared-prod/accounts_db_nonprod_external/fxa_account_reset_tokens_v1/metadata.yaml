@@ -1,0 +1,18 @@
+---
+friendly_name: accountResetTokens table from nonprod (stage) fxa database
+description: >
+  A mirror of the `accountResetTokens` table from the nonprod (stage) `fxa` CloudSQL database,
+  excluding columns containing confidential data, updated daily to match the current state of the table.
+
+  See https://mozilla.github.io/ecosystem-platform/reference/database-structure#database-fxa
+owners:
+  - akomar@mozilla.com
+labels:
+  application: accounts_backend
+  schedule: daily
+scheduling:
+  dag_name: bqetl_accounts_backend_external
+  # destination is the whole table, not a single partition,
+  # so don't use date_partition_parameter
+  date_partition_parameter: null
+  referenced_tables: []

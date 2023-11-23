@@ -1,0 +1,18 @@
+---
+friendly_name: clients table from nonprod (stage) fxa_oauth database
+description: >
+  A mirror of the `clients` table from the nonprod (stage) `fxa_oauth` CloudSQL database,
+  excluding columns containing confidential data, updated daily to match the current state of the table.
+
+  See https://mozilla.github.io/ecosystem-platform/reference/database-structure#database-fxa
+owners:
+  - akomar@mozilla.com
+labels:
+  application: accounts_backend
+  schedule: daily
+scheduling:
+  dag_name: bqetl_accounts_backend_external
+  # destination is the whole table, not a single partition,
+  # so don't use date_partition_parameter
+  date_partition_parameter: null
+  referenced_tables: []

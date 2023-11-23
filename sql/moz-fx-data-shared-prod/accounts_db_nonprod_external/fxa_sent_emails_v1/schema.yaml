@@ -1,0 +1,17 @@
+fields:
+- name: id
+  type: INTEGER
+  mode: NULLABLE
+- name: uid
+  type: STRING
+  mode: NULLABLE
+  description: Account ID in hexadecimal format.
+- name: emailTypeId
+  type: INTEGER
+  mode: NULLABLE
+- name: params
+  type: STRING
+  mode: NULLABLE
+- name: sentAt
+  type: TIMESTAMP
+  mode: NULLABLE

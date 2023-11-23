@@ -1,0 +1,24 @@
+friendly_name: emailBounces table from nonprod (stage) fxa database
+description: |
+  A mirror of the `emailBounces` table from the nonprod (stage) `fxa` CloudSQL database, updated daily to match the current state of the table.
+  See https://mozilla.github.io/ecosystem-platform/reference/database-structure#database-fxa
+owners:
+- akomar@mozilla.com
+labels:
+  application: accounts_backend
+  schedule: daily
+  dag: bqetl_accounts_backend_external
+  owner1: akomar
+scheduling:
+  dag_name: bqetl_accounts_backend_external
+  date_partition_parameter: null
+  referenced_tables: []
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:accounts-confidential
+references:
+  query.sql:
+  - EXTERNAL_QUERY('moz-fx-fxa-nonprod.us.fxa-rds-nonprod-stage-fxa', 'SELECT\n         email,\n         bounceType,\n         bounceSubType,\n         createdAt,\n         emailTypeId,\n         diagnosticCode\n       FROM\n         fxa.emailBounces\n    ')
+deprecated: false

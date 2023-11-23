@@ -1,0 +1,24 @@
+friendly_name: avatars table from nonprod (stage) fxa_profile database
+description: |
+  A mirror of the `avatars` table from the nonprod (stage) `fxa_profile` CloudSQL database, updated daily to match the current state of the table.
+  See https://mozilla.github.io/ecosystem-platform/reference/database-structure#database-fxa
+owners:
+- akomar@mozilla.com
+labels:
+  application: accounts_backend
+  schedule: daily
+  dag: bqetl_accounts_backend_external
+  owner1: akomar
+scheduling:
+  dag_name: bqetl_accounts_backend_external
+  date_partition_parameter: null
+  referenced_tables: []
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:accounts-confidential
+references:
+  query.sql:
+  - EXTERNAL_QUERY('moz-fx-fxa-nonprod.us.fxa-rds-nonprod-stage-fxa-profile', 'SELECT\n         id,\n         url,\n         userId,\n         providerId\n       FROM\n         fxa_profile.avatars\n    ')
+deprecated: false

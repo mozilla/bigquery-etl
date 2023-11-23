@@ -1,0 +1,24 @@
+friendly_name: accounts table from nonprod (stage) fxa database
+description: |
+  A mirror of the `accounts` table from the nonprod (stage) `fxa` CloudSQL database, excluding columns containing confidential data, updated daily to match the current state of the table.
+  See https://mozilla.github.io/ecosystem-platform/reference/database-structure#database-fxa
+owners:
+- akomar@mozilla.com
+labels:
+  application: accounts_backend
+  schedule: daily
+  dag: bqetl_accounts_backend_external
+  owner1: akomar
+scheduling:
+  dag_name: bqetl_accounts_backend_external
+  date_partition_parameter: null
+  referenced_tables: []
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:accounts-confidential
+references:
+  query.sql:
+  - EXTERNAL_QUERY('moz-fx-fxa-nonprod.us.fxa-rds-nonprod-stage-fxa', 'SELECT\n         uid,\n         normalizedEmail,\n         email,\n         emailVerified,\n         verifierVersion,\n         verifierSetAt,\n         createdAt,\n         locale,\n         lockedAt,\n         profileChangedAt,\n         keysChangedAt,\n         ecosystemAnonId,\n         disabledAt,\n         metricsOptOutAt\n       FROM\n         fxa.accounts\n    ')
+deprecated: false

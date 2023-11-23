@@ -1,0 +1,22 @@
+fields:
+- name: clientId
+  type: STRING
+  mode: NULLABLE
+- name: userId
+  type: STRING
+  mode: NULLABLE
+- name: type
+  type: STRING
+  mode: NULLABLE
+- name: scope
+  type: STRING
+  mode: NULLABLE
+- name: createdAt
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: expiresAt
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: profileChangedAt
+  type: TIMESTAMP
+  mode: NULLABLE

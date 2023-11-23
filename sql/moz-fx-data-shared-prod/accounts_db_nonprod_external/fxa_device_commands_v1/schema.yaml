@@ -1,0 +1,11 @@
+fields:
+- name: uid
+  type: STRING
+  mode: NULLABLE
+  description: Account ID in hexadecimal format.
+- name: deviceId
+  type: STRING
+  mode: NULLABLE
+- name: commandId
+  type: INTEGER
+  mode: NULLABLE

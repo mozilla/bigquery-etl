@@ -10,7 +10,7 @@ SELECT
   currency,
   `interval`,
   interval_count,
-  PARSE_JSON(metadata) AS metadata,
+  metadata,
   nickname,
   tiers_mode,
   trial_period_days,

@@ -25,7 +25,7 @@ fields:
   type: STRING
 - mode: NULLABLE
   name: metadata
-  type: STRING
+  type: JSON
 - mode: NULLABLE
   name: shipping_carrier
   type: STRING

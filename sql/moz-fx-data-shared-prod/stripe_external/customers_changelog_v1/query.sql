@@ -9,7 +9,7 @@ WITH customers AS (
     created,
     default_card_id,
     is_deleted,
-    PARSE_JSON(metadata) AS metadata,
+    metadata,
     shipping_address_country,
     shipping_address_postal_code,
     shipping_address_state,
@@ -41,7 +41,7 @@ customer_latest_discounts AS (
           coupons.currency,
           coupons.duration,
           coupons.duration_in_months,
-          PARSE_JSON(coupons.metadata) AS metadata,
+          metadata,
           coupons.name,
           coupons.percent_off,
           coupons.redeem_by

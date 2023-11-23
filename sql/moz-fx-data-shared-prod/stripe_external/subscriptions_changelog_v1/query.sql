@@ -21,7 +21,7 @@ WITH subscriptions_history AS (
     default_source_id,
     ended_at,
     latest_invoice_id,
-    PARSE_JSON(metadata) AS metadata,
+    metadata,
     pending_setup_intent_id,
     start_date,
     status,
@@ -40,7 +40,7 @@ subscription_items AS (
   SELECT
     id,
     created,
-    PARSE_JSON(metadata) AS metadata,
+    metadata,
     plan_id,
     quantity,
     subscription_id,
@@ -56,7 +56,7 @@ products AS (
     id,
     created,
     description,
-    PARSE_JSON(metadata) AS metadata,
+    metadata,
     name,
     statement_descriptor,
     updated,
@@ -73,7 +73,7 @@ plans AS (
     currency,
     `interval`,
     interval_count,
-    PARSE_JSON(metadata) AS metadata,
+    metadata,
     nickname,
     product_id,
     tiers_mode,
@@ -142,7 +142,7 @@ subscriptions_history_tax_rates AS (
         tax_rates.display_name,
         tax_rates.inclusive,
         tax_rates.jurisdiction,
-        PARSE_JSON(tax_rates.metadata) AS metadata,
+        metadata,
         tax_rates.percentage
       )
       ORDER BY
@@ -175,7 +175,7 @@ subscriptions_history_latest_discounts AS (
           coupons.currency,
           coupons.duration,
           coupons.duration_in_months,
-          PARSE_JSON(coupons.metadata) AS metadata,
+          metadata,
           coupons.name,
           coupons.percent_off,
           coupons.redeem_by

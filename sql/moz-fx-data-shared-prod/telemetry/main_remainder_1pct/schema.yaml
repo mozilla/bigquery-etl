@@ -21290,6 +21290,16 @@ fields:
           - name: value
             type: INTEGER
             mode: NULLABLE
+        - name: widget_ime_name_on_windows_inserted_crlf
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: BOOLEAN
+            mode: NULLABLE
       - name: scalars
         type: RECORD
         mode: NULLABLE

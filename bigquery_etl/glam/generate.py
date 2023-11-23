@@ -298,7 +298,11 @@ def main():
         table("histogram_percentiles_v1"),
         view("view_probe_counts_v1"),
         view("view_user_counts_v1", **models.user_counts()),
-        view("view_sample_counts_v1", **models.sample_counts()),
+        view(
+            "view_sample_counts_v1",
+            **models.sample_counts(),
+            channel=channel_prefixes[args.prefix],
+        ),
         table("extract_user_counts_v1", **config[args.prefix]),
         table("extract_probe_counts_v1", **config[args.prefix]),
     ]

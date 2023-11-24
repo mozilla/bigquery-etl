@@ -122,6 +122,8 @@ SELECT
       metrics.labeled_counter.extensions_counters_browser_action_preload_result,
       metrics.labeled_counter.extensions_counters_event_page_idle_result,
       metrics.labeled_counter.networking_residual_cache_folder_removal,
+      metrics.labeled_counter.cookie_banners_cmp_detected_cmp,
+      metrics.labeled_counter.cookie_banners_cmp_result,
       CAST(
         NULL
         AS
@@ -271,6 +273,8 @@ SELECT
       metrics.labeled_counter.extensions_counters_browser_action_preload_result,
       metrics.labeled_counter.extensions_counters_event_page_idle_result,
       metrics.labeled_counter.networking_residual_cache_folder_removal,
+      metrics.labeled_counter.cookie_banners_cmp_detected_cmp,
+      metrics.labeled_counter.cookie_banners_cmp_result,
       metrics.labeled_counter.fog_validation_gvsv_audio_stream_init_gvst
     ) AS `labeled_counter`,
     metrics.quantity,
@@ -455,7 +459,8 @@ SELECT
       metrics.counter.addons_extensions_process_ui_retry,
       metrics.counter.shopping_product_page_visits,
       metrics.counter.fxa_client_operation_count,
-      metrics.counter.networking_residual_cache_folder_count
+      metrics.counter.networking_residual_cache_folder_count,
+      metrics.counter.cookie_banners_cookie_injection_fail
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -489,7 +494,14 @@ SELECT
       metrics.custom_distribution.networking_http_2_upload_throughput,
       metrics.custom_distribution.networking_http_3_upload_throughput,
       metrics.custom_distribution.fog_validation_gvsv_number_of_unique_site_origins_all_tabs,
-      metrics.custom_distribution.extensions_timing_event_page_running_time
+      metrics.custom_distribution.extensions_timing_event_page_running_time,
+      metrics.custom_distribution.networking_cookie_count_part_by_key,
+      metrics.custom_distribution.networking_cookie_count_partitioned,
+      metrics.custom_distribution.networking_cookie_count_total,
+      metrics.custom_distribution.networking_cookie_count_unpart_by_key,
+      metrics.custom_distribution.networking_cookie_count_unpartitioned,
+      metrics.custom_distribution.networking_cookie_purge_entry_max,
+      metrics.custom_distribution.networking_cookie_purge_max
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -596,6 +608,8 @@ SELECT
       metrics.labeled_counter.extensions_counters_browser_action_preload_result,
       metrics.labeled_counter.extensions_counters_event_page_idle_result,
       metrics.labeled_counter.networking_residual_cache_folder_removal,
+      metrics.labeled_counter.cookie_banners_cmp_detected_cmp,
+      metrics.labeled_counter.cookie_banners_cmp_result,
       metrics.labeled_counter.fog_validation_gvsv_audio_stream_init_gvst
     ) AS `labeled_counter`,
     metrics.quantity,
@@ -796,7 +810,8 @@ SELECT
       metrics.timing_distribution.extensions_timing_storage_local_get_idb,
       metrics.timing_distribution.extensions_timing_storage_local_get_json,
       metrics.timing_distribution.extensions_timing_storage_local_set_idb,
-      metrics.timing_distribution.extensions_timing_storage_local_set_json
+      metrics.timing_distribution.extensions_timing_storage_local_set_json,
+      metrics.timing_distribution.cookie_banners_cmp_handle_duration
     ) AS `timing_distribution`,
     metrics.memory_distribution,
     metrics.datetime,
@@ -985,7 +1000,8 @@ SELECT
       metrics.counter.addons_extensions_process_ui_retry,
       metrics.counter.shopping_product_page_visits,
       metrics.counter.fxa_client_operation_count,
-      metrics.counter.networking_residual_cache_folder_count
+      metrics.counter.networking_residual_cache_folder_count,
+      metrics.counter.cookie_banners_cookie_injection_fail
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -1019,7 +1035,14 @@ SELECT
       metrics.custom_distribution.networking_http_2_upload_throughput,
       metrics.custom_distribution.networking_http_3_upload_throughput,
       metrics.custom_distribution.fog_validation_gvsv_number_of_unique_site_origins_all_tabs,
-      metrics.custom_distribution.extensions_timing_event_page_running_time
+      metrics.custom_distribution.extensions_timing_event_page_running_time,
+      metrics.custom_distribution.networking_cookie_count_part_by_key,
+      metrics.custom_distribution.networking_cookie_count_partitioned,
+      metrics.custom_distribution.networking_cookie_count_total,
+      metrics.custom_distribution.networking_cookie_count_unpart_by_key,
+      metrics.custom_distribution.networking_cookie_count_unpartitioned,
+      metrics.custom_distribution.networking_cookie_purge_entry_max,
+      metrics.custom_distribution.networking_cookie_purge_max
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -1126,6 +1149,8 @@ SELECT
       metrics.labeled_counter.extensions_counters_browser_action_preload_result,
       metrics.labeled_counter.extensions_counters_event_page_idle_result,
       metrics.labeled_counter.networking_residual_cache_folder_removal,
+      metrics.labeled_counter.cookie_banners_cmp_detected_cmp,
+      metrics.labeled_counter.cookie_banners_cmp_result,
       metrics.labeled_counter.fog_validation_gvsv_audio_stream_init_gvst
     ) AS `labeled_counter`,
     metrics.quantity,
@@ -1326,7 +1351,8 @@ SELECT
       metrics.timing_distribution.extensions_timing_storage_local_get_idb,
       metrics.timing_distribution.extensions_timing_storage_local_get_json,
       metrics.timing_distribution.extensions_timing_storage_local_set_idb,
-      metrics.timing_distribution.extensions_timing_storage_local_set_json
+      metrics.timing_distribution.extensions_timing_storage_local_set_json,
+      metrics.timing_distribution.cookie_banners_cmp_handle_duration
     ) AS `timing_distribution`,
     metrics.memory_distribution,
     metrics.datetime,
@@ -1476,6 +1502,8 @@ SELECT
       metrics.labeled_counter.extensions_counters_browser_action_preload_result,
       metrics.labeled_counter.extensions_counters_event_page_idle_result,
       metrics.labeled_counter.networking_residual_cache_folder_removal,
+      metrics.labeled_counter.cookie_banners_cmp_detected_cmp,
+      metrics.labeled_counter.cookie_banners_cmp_result,
       metrics.labeled_counter.fog_validation_gvsv_audio_stream_init_gvst
     ) AS `labeled_counter`,
     metrics.quantity,

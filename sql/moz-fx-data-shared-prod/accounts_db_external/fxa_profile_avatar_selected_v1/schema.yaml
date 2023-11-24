@@ -1,0 +1,7 @@
+fields:
+- name: userId
+  type: STRING
+  mode: NULLABLE
+- name: avatarId
+  type: STRING
+  mode: NULLABLE

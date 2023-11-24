@@ -89,7 +89,8 @@ SELECT
       metrics.counter.translations_requests_count,
       metrics.counter.fog_inits_during_shutdown,
       metrics.counter.bloburl_resolve_stopped,
-      metrics.counter.networking_residual_cache_folder_count
+      metrics.counter.networking_residual_cache_folder_count,
+      metrics.counter.cookie_banners_cookie_injection_fail
     ) AS `counter`,
     metrics.datetime,
     STRUCT(
@@ -159,7 +160,9 @@ SELECT
       metrics.labeled_counter.fog_validation_gvsv_audio_stream_init_gecko,
       metrics.labeled_counter.extensions_counters_browser_action_preload_result,
       metrics.labeled_counter.extensions_counters_event_page_idle_result,
-      metrics.labeled_counter.networking_residual_cache_folder_removal
+      metrics.labeled_counter.networking_residual_cache_folder_removal,
+      metrics.labeled_counter.cookie_banners_cmp_detected_cmp,
+      metrics.labeled_counter.cookie_banners_cmp_result
     ) AS `labeled_counter`,
     metrics.memory_distribution,
     STRUCT(
@@ -261,7 +264,8 @@ SELECT
       metrics.counter.translations_requests_count,
       metrics.counter.fog_inits_during_shutdown,
       metrics.counter.bloburl_resolve_stopped,
-      metrics.counter.networking_residual_cache_folder_count
+      metrics.counter.networking_residual_cache_folder_count,
+      metrics.counter.cookie_banners_cookie_injection_fail
     ) AS `counter`,
     metrics.datetime,
     STRUCT(
@@ -331,7 +335,9 @@ SELECT
       metrics.labeled_counter.fog_validation_gvsv_audio_stream_init_gecko,
       metrics.labeled_counter.extensions_counters_browser_action_preload_result,
       metrics.labeled_counter.extensions_counters_event_page_idle_result,
-      metrics.labeled_counter.networking_residual_cache_folder_removal
+      metrics.labeled_counter.networking_residual_cache_folder_removal,
+      metrics.labeled_counter.cookie_banners_cmp_detected_cmp,
+      metrics.labeled_counter.cookie_banners_cmp_result
     ) AS `labeled_counter`,
     metrics.memory_distribution,
     STRUCT(

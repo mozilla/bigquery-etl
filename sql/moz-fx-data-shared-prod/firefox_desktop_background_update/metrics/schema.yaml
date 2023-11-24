@@ -495,6 +495,13 @@ fields:
         shutdown by a background task process.
 
         '
+    - name: cookie_banners_cookie_injection_fail
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counts how often the cookie banner is still shown even if we have
+        injected cookies.
+
+        '
   - name: datetime
     type: RECORD
     mode: NULLABLE
@@ -1411,6 +1418,36 @@ fields:
         purged at shutdown
 
         '
+    - name: cookie_banners_cmp_detected_cmp
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts how often a specific cmp has been detected by our cookie
+        banner handling.
+
+        '
+    - name: cookie_banners_cmp_result
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Given a matching CMP rule, how often do we handle or fail to handle
+        cookie banners, labelled by reason. The ''success'' and ''fail'' counters
+        count the total numbers independently of the reason counters. Counters are
+        incremented after the content window has been destroyed.
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -2107,6 +2144,186 @@ fields:
         or the entire addon shutdown.
 
         '
+    - name: networking_cookie_count_part_by_key
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'A distribution of the partitioned cookies in storage belonging
+        to a particular cookie key (host + origin attributes)
+
+        '
+    - name: networking_cookie_count_partitioned
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Reports the number of partitioned cookies in storage
+
+        '
+    - name: networking_cookie_count_total
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Reports the total number of cookies in storage
+
+        '
+    - name: networking_cookie_count_unpart_by_key
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'A distribution of the unpartitioned cookies in storage belonging
+        to a particular cookie key (host + origin attributes)
+
+        '
+    - name: networking_cookie_count_unpartitioned
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Reports the number of unpartitioned cookies in storage
+
+        '
+    - name: networking_cookie_purge_entry_max
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'A distribution of the number of cookies purged for a single host
+        + OA entry as a result of exceeding the maximum threshold for the given host
+        + OA (single purge)
+
+        '
+    - name: networking_cookie_purge_max
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'A distribution of the number of cookies purged across all host
+        + OAs as a result of exceeding the cookie maximum threshold (single purge)
+
+        '
   - name: labeled_boolean
     type: RECORD
     mode: NULLABLE
@@ -2368,6 +2585,20 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'The rate of failed translations requests.
+
+        '
+    - name: cookie_banners_cmp_ratio_handled_by_cmp_rule
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: denominator
+        type: INTEGER
+        mode: NULLABLE
+      - name: numerator
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The proportion of cookie banners handled by CMP rules within the
+        total number of cases handled, including those handled by site-specific rules.
 
         '
   - name: timespan
@@ -4465,6 +4696,51 @@ fields:
           mode: NULLABLE
       description: 'Amount of time it takes to perform a set via storage.local using
         the JSONFile backend.
+
+        '
+    - name: cookie_banners_cmp_handle_duration
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Counts how long it takes to handle cookie banners successfully
+        using CMP rules from DOMContentLoaded until click. This metric is a variant
+        of the cookieBanners.click.handle_duration.
 
         '
   - name: quantity

@@ -1,0 +1,24 @@
+friendly_name: profile table from production fxa_profile database
+description: |
+  A mirror of the `profile` table from the production `fxa_profile` CloudSQL database, updated daily to match the current state of the table.
+  See https://mozilla.github.io/ecosystem-platform/reference/database-structure#database-fxa
+owners:
+- akomar@mozilla.com
+labels:
+  application: accounts_backend
+  schedule: daily
+  dag: bqetl_accounts_backend_external
+  owner1: akomar
+scheduling:
+  dag_name: bqetl_accounts_backend_external
+  date_partition_parameter: null
+  referenced_tables: []
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:accounts-confidential
+references:
+  query.sql:
+  - EXTERNAL_QUERY('moz-fx-fxa-prod.us.fxa-rds-prod-prod-fxa-profile', 'SELECT\n         userId,\n         displayName\n       FROM\n         fxa_profile.profile\n    ')
+deprecated: false

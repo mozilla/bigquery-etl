@@ -1,0 +1,13 @@
+SELECT
+  id,
+  name,
+FROM
+  EXTERNAL_QUERY(
+    "moz-fx-fxa-prod.us.fxa-rds-prod-prod-fxa",
+    """SELECT
+         id,
+         name
+       FROM
+         fxa.securityEventNames
+    """
+  )

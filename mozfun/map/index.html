@@ -3060,86 +3060,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#get_key-udf" class="md-nav__link">
-    get_key (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="get_key (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#set_key-udf" class="md-nav__link">
-    set_key (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="set_key (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters_1" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#mode_last-udf" class="md-nav__link">
-    mode_last (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="mode_last (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters_2" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#sum-udf" class="md-nav__link">
-    sum (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="sum (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters_3" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#extract_keyed_scalar_sum-udf" class="md-nav__link">
     extract_keyed_scalar_sum (UDF)
   </a>
@@ -3549,86 +3469,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#get_key-udf" class="md-nav__link">
-    get_key (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="get_key (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#set_key-udf" class="md-nav__link">
-    set_key (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="set_key (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters_1" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#mode_last-udf" class="md-nav__link">
-    mode_last (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="mode_last (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters_2" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#sum-udf" class="md-nav__link">
-    sum (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="sum (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters_3" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#extract_keyed_scalar_sum-udf" class="md-nav__link">
     extract_keyed_scalar_sum (UDF)
   </a>
@@ -3652,12 +3492,35 @@
 
 <h1 id="map">map</h1>
 <p>Functions for working with arrays of key/value structs.</p>
+<h2 id="extract_keyed_scalar_sum-udf">extract_keyed_scalar_sum (UDF)</h2>
+<p>Sums all values in a keyed scalar.</p>
+<h1 id="extract-keyed-scalar-sum">Extract Keyed Scalar Sum</h1>
+<p>Takes a keyed scalar and returns a single number:
+the sum of all values it contains. The expected input
+type is <code>ARRAY&lt;STRUCT&lt;key STRING, value INT64&gt;&gt;</code></p>
+<p>The return type is <code>INT64</code>.</p>
+<p>The <code>key</code> field will be ignored.</p>
+<h3 id="parameters">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>keyed_scalar ARRAY&lt;STRUCT&lt;key STRING, value INT64&gt;&gt;
+</code></pre></div>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>INT64
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/map/extract_keyed_scalar_sum">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/map/extract_keyed_scalar_sum/metadata.yaml">Edit</a></p>
+<h2 id="sum-udf">sum (UDF)</h2>
+<p>Return the sum of values by key in an array of map entries. The expected schema for entries is ARRAY<STRUCT\<key ANY TYPE, value ANY TYPE>>, where the type for value must be supported by SUM, which allows numeric data types INT64, NUMERIC, and FLOAT64.</p>
+<h3 id="parameters_1">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>entries ANY TYPE
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/map/sum">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/map/sum/metadata.yaml">Edit</a></p>
 <h2 id="get_key-udf">get_key (UDF)</h2>
 <p>Fetch the value associated with a given key from an array of key/value
 structs.</p>
 <p>Because map types aren't available in BigQuery, we model maps as arrays
 of structs instead, and this function provides map-like access to such fields.</p>
-<h3 id="parameters">Parameters</h3>
+<h3 id="parameters_2">Parameters</h3>
 <p><strong>INPUTS</strong></p>
 <div class="highlight"><pre><span></span><code>map ANY TYPE, k ANY TYPE
 </code></pre></div>
@@ -3672,7 +3535,7 @@ We represent maps as Arrays of Key/Value structs:
 <code>ARRAY&lt;STRUCT&lt;key ANY TYPE, value ANY TYPE&gt;&gt;</code>.</p>
 <p>The type of the key and value you are setting must
 match the types in the map itself.</p>
-<h3 id="parameters_1">Parameters</h3>
+<h3 id="parameters_3">Parameters</h3>
 <p><strong>INPUTS</strong></p>
 <div class="highlight"><pre><span></span><code>map ANY TYPE, new_key ANY TYPE, new_value ANY TYPE
 </code></pre></div>
@@ -3682,34 +3545,11 @@ match the types in the map itself.</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/map/set_key">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/map/set_key/metadata.yaml">Edit</a></p>
 <h2 id="mode_last-udf">mode_last (UDF)</h2>
 <p>Combine entries from multiple maps, determine the value for each key using mozfun.stats.mode_last.</p>
-<h3 id="parameters_2">Parameters</h3>
+<h3 id="parameters_4">Parameters</h3>
 <p><strong>INPUTS</strong></p>
 <div class="highlight"><pre><span></span><code>entries ANY TYPE
 </code></pre></div>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/map/mode_last">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/map/mode_last/metadata.yaml">Edit</a></p>
-<h2 id="sum-udf">sum (UDF)</h2>
-<p>Return the sum of values by key in an array of map entries. The expected schema for entries is ARRAY<STRUCT\<key ANY TYPE, value ANY TYPE>>, where the type for value must be supported by SUM, which allows numeric data types INT64, NUMERIC, and FLOAT64.</p>
-<h3 id="parameters_3">Parameters</h3>
-<p><strong>INPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>entries ANY TYPE
-</code></pre></div>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/map/sum">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/map/sum/metadata.yaml">Edit</a></p>
-<h2 id="extract_keyed_scalar_sum-udf">extract_keyed_scalar_sum (UDF)</h2>
-<p>Sums all values in a keyed scalar.</p>
-<h1 id="extract-keyed-scalar-sum">Extract Keyed Scalar Sum</h1>
-<p>Takes a keyed scalar and returns a single number:
-the sum of all values it contains. The expected input
-type is <code>ARRAY&lt;STRUCT&lt;key STRING, value INT64&gt;&gt;</code></p>
-<p>The return type is <code>INT64</code>.</p>
-<p>The <code>key</code> field will be ignored.</p>
-<h3 id="parameters_4">Parameters</h3>
-<p><strong>INPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>keyed_scalar ARRAY&lt;STRUCT&lt;key STRING, value INT64&gt;&gt;
-</code></pre></div>
-<p><strong>OUTPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>INT64
-</code></pre></div>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/map/extract_keyed_scalar_sum">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/map/extract_keyed_scalar_sum/metadata.yaml">Edit</a></p>
 <h2 id="get_key_with_null-udf">get_key_with_null (UDF)</h2>
 <p>Fetch the value associated with a given key from an array of
 key/value structs.</p>

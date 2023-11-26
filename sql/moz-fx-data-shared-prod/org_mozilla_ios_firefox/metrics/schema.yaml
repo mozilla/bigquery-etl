@@ -1382,6 +1382,27 @@ fields:
         user.
 
         '
+    - name: credit_card_deleted
+      type: INTEGER
+      mode: NULLABLE
+      description: 'A counter of the number of credit cards that have been deleted
+        by the user.
+
+        '
+    - name: credit_card_modified
+      type: INTEGER
+      mode: NULLABLE
+      description: 'A counter of the number of credit cards that have been modified
+        by the user.
+
+        '
+    - name: credit_card_saved
+      type: INTEGER
+      mode: NULLABLE
+      description: 'A counter of the number of credit cards that have been saved by
+        the user.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -2918,6 +2939,13 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: 'Record the number of ALL the passwords that have been currently
+        stored by the user.
+
+        '
+    - name: credit_card_saved_all
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Record the number of ALL the credit cards that have been currently
         stored by the user.
 
         '

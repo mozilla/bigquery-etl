@@ -634,6 +634,15 @@ fields:
     - name: logins_saved
       type: INTEGER
       mode: NULLABLE
+    - name: credit_card_deleted
+      type: INTEGER
+      mode: NULLABLE
+    - name: credit_card_modified
+      type: INTEGER
+      mode: NULLABLE
+    - name: credit_card_saved
+      type: INTEGER
+      mode: NULLABLE
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -1654,6 +1663,9 @@ fields:
       type: INTEGER
       mode: NULLABLE
     - name: logins_saved_all
+      type: INTEGER
+      mode: NULLABLE
+    - name: credit_card_saved_all
       type: INTEGER
       mode: NULLABLE
   - name: rate

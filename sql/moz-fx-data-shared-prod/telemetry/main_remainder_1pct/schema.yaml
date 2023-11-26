@@ -7007,6 +7007,9 @@ fields:
     - name: top_level_content_documents_destroyed
       type: STRING
       mode: NULLABLE
+    - name: fx_session_restore_closed_tabs_not_saved
+      type: STRING
+      mode: NULLABLE
   - name: info
     type: RECORD
     mode: NULLABLE
@@ -15194,6 +15197,9 @@ fields:
           type: STRING
           mode: NULLABLE
         - name: top_level_content_documents_destroyed
+          type: STRING
+          mode: NULLABLE
+        - name: fx_session_restore_closed_tabs_not_saved
           type: STRING
           mode: NULLABLE
       - name: keyed_histograms

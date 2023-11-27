@@ -13,5 +13,3 @@ SELECT
   `mozfun.norm.os`(os) AS os_grouped
 FROM
   `{{ project_id }}.{{ app_name }}_derived.active_users_aggregates_{{ table_version }}`
-WHERE
-    active

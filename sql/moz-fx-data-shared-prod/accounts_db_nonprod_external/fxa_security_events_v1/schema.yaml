@@ -13,11 +13,11 @@ fields:
   type: BOOLEAN
   mode: NULLABLE
 - name: ipAddrHmac
-  type: STRING
+  type: BYTES
   mode: NULLABLE
 - name: createdAt
   type: TIMESTAMP
   mode: NULLABLE
 - name: tokenVerificationId
-  type: STRING
+  type: BYTES
   mode: NULLABLE

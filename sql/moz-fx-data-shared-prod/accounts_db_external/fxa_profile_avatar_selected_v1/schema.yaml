@@ -1,7 +1,7 @@
 fields:
 - name: userId
-  type: STRING
+  type: BYTES
   mode: NULLABLE
 - name: avatarId
-  type: STRING
+  type: BYTES
   mode: NULLABLE

@@ -1,9 +1,9 @@
 fields:
 - name: clientId
-  type: STRING
+  type: BYTES
   mode: NULLABLE
 - name: userId
-  type: STRING
+  type: BYTES
   mode: NULLABLE
 - name: type
   type: STRING

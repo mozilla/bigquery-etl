@@ -7121,17 +7121,17 @@ and to contain only one row per distinct <code>document_id</code> within a given
         <td>Yes</td>
     </tr><tr>
         <td>event_name</td>
-        <td></td>
+        <td>Name of the 'urlbar' event represented by this row- 'engagement' or 'abandonment'</td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>event_timestamp</td>
-        <td></td>
+        <td>Glean event timestamp</td>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
         <td>event_id</td>
-        <td></td>
+        <td>Row identifier UUID. When unnesting the results column, use 'COUNT(DISTINCT event_id)' to count events.</td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
@@ -7141,7 +7141,7 @@ and to contain only one row per distinct <code>document_id</code> within a given
         <td>No</td>
     </tr><tr>
         <td>seq</td>
-        <td></td>
+        <td>ping_info.seq from the events ping. Use together with event_timestamp for event sequencing.</td>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
@@ -7156,87 +7156,87 @@ and to contain only one row per distinct <code>document_id</code> within a given
         <td>Yes</td>
     </tr><tr>
         <td>normalized_engine</td>
-        <td></td>
+        <td>Normalized default search engine</td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>pref_data_collection</td>
-        <td></td>
+        <td>Has the user opted into Firefox Suggest data collection, aka Suggest Online.</td>
         <td>Boolean</td>
         <td>Yes</td>
     </tr><tr>
         <td>pref_sponsored_suggestions</td>
-        <td></td>
+        <td>Are Firefox Suggest sponsored suggestions enabled</td>
         <td>Boolean</td>
         <td>Yes</td>
     </tr><tr>
         <td>pref_fx_suggestions</td>
-        <td></td>
+        <td>Is Firefox Suggest enabled (nonsponsored suggestions)</td>
         <td>Boolean</td>
         <td>Yes</td>
     </tr><tr>
         <td>engagement_type</td>
-        <td></td>
+        <td>How the user selected the result. Eg. 'click', 'enter'.</td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>interaction</td>
-        <td></td>
+        <td>How the user started the search action. Eg. 'typed', 'pasted'.</td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>num_chars_typed</td>
-        <td></td>
+        <td>Length of the query string typed by the user</td>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
         <td>num_total_results</td>
-        <td></td>
+        <td>Number of results displayed</td>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
         <td>selected_position</td>
-        <td></td>
+        <td>Rank of the selected result, starting from 1, if any.</td>
         <td>Integer</td>
         <td>Yes</td>
     </tr><tr>
         <td>selected_result</td>
-        <td></td>
+        <td>Raw type identifier for the selected result, if any. Eg. 'search_suggest', 'bookmark'.</td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>results</td>
-        <td></td>
+        <td>Array listing info about each result displayed.</td>
         <td>Record</td>
         <td>No</td>
     </tr><tr>
         <td>product_selected_result</td>
-        <td></td>
+        <td>Product type identifier for the selected result, if any. Eg. 'wikipedia_enhanced', 'default_partner_search_suggestion'.</td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>event_action</td>
-        <td></td>
+        <td>Action taken by the user which generated the event- 'engaged', 'abandoned', or 'annoyance'.</td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>is_terminal</td>
-        <td></td>
+        <td>Did the event action cause the search session to end? Filter on 'is_terminal = TRUE' to count unique search sessions.</td>
         <td>Boolean</td>
         <td>Yes</td>
     </tr><tr>
         <td>engaged_result_type</td>
-        <td></td>
+        <td>Raw type identifier for the selected result, if any.</td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>product_engaged_result_type</td>
-        <td></td>
+        <td>Product type identifier for the selected result, if any.</td>
         <td>String</td>
         <td>Yes</td>
     </tr><tr>
         <td>annoyance_signal_type</td>
-        <td></td>
+        <td>Annoyance option selected, if any. This uses the value of 'engagement_type' when 'event_action' is annoyance. Eg. 'dismiss', 'help'.</td>
         <td>String</td>
         <td>Yes</td>
     </tr>

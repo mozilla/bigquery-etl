@@ -4,30 +4,28 @@ WITH submission_date_activity AS (
     client_id,
     days_seen_bits,
     (days_visited_1_uri_bits & days_interacted_bits) AS days_seen_dau_bits,
-    DATE(submission_date) as activity_date
+    DATE(submission_date) as submission_date
   FROM
     telemetry.clients_last_seen_v1 -- this might cause an issue because definition of first_seen_date in this table is different from clients_first_seen_v2
   WHERE
-    submission_date = @activity_date
+    submission_date = @submission_date
   GROUP BY
     client_id,
     submission_date,
     days_seen_bits,
     (days_visited_1_uri_bits & days_interacted_bits)
 ),
--- Get all the cohorts that are still in range of the current day of activity (196 days)
+-- Get all the cohorts that are still in range of the current day of activity (106 days)
 cohorts_in_range AS (
   SELECT
     client_id,
-    first_seen_date AS cohort_date,
-    DATE(@activity_date) AS activity_date,
-    app_build_id,
+    first_seen_date,
+    DATE(@submission_date) AS submission_date,
     app_version,
     architecture,
     attribution_campaign,
     attribution_content,
     attribution_dlsource,
-    attribution_dltoken,
     attribution_experiment,
     attribution_medium,
     attribution_source,
@@ -43,7 +41,6 @@ cohorts_in_range AS (
     apple_model_id, -- from clients_first_seen_v2
     db_version,
     distribution_id,
-    document_id,
     engine_data_load_path,
     engine_data_name,
     engine_data_origin,
@@ -68,8 +65,8 @@ cohorts_in_range AS (
     telemetry_derived.clients_first_seen_v2
   WHERE
     first_seen_date
-    BETWEEN DATE_SUB(@activity_date, INTERVAL 196 DAY)
-    AND DATE_SUB(@activity_date, INTERVAL 1 DAY)
+    BETWEEN DATE_SUB(@submission_date, INTERVAL 106 DAY)
+    AND DATE_SUB(@submission_date, INTERVAL 1 DAY)
 ),
 activity_cohort_match AS (
   SELECT
@@ -84,18 +81,16 @@ activity_cohort_match AS (
   LEFT JOIN
     submission_date_activity
   USING
-    (client_id, activity_date)
+    (client_id, submission_date)
 )
 SELECT
-  cohort_date,
-  activity_date,
-  app_build_id,
+  first_seen_date,
+  submission_date,
   app_version,
   architecture,
   attribution_campaign,
   attribution_content,
   attribution_dlsource,
-  attribution_dltoken,
   attribution_experiment,
   attribution_medium,
   attribution_source,
@@ -111,7 +106,6 @@ SELECT
   apple_model_id, -- from clients_first_seen_v2
   db_version,
   distribution_id,
-  document_id,
   engine_data_load_path,
   engine_data_name,
   engine_data_origin,
@@ -138,7 +132,7 @@ SELECT
     BIT_COUNT(active_client_days_seen_bits) > 0,
     FALSE) )) AS num_clients_active_atleastonce_in_last_28_days,
   COUNTIF((active_client_id IS NOT NULL) AND
-    DATE_DIFF(activity_date, cohort_date, DAY) = 27 AND
+    DATE_DIFF(submission_date, first_seen_date, DAY) = 27 AND
     ( COALESCE(
     BIT_COUNT(mozfun.bits28.from_string('0111111111111111111111111111') & active_client_days_seen_bits) > 0,
     FALSE) )) AS num_clients_repeat_first_month_users,
@@ -152,22 +146,20 @@ SELECT
     BIT_COUNT(days_seen_dau_bits) > 0,
     FALSE) )) AS num_clients_dau_active_atleastonce_in_last_28_days,
   COUNTIF((active_client_id IS NOT NULL) AND
-    DATE_DIFF(activity_date, cohort_date, DAY) = 27 AND
+    DATE_DIFF(submission_date, first_seen_date, DAY) = 27 AND
     ( COALESCE(
     BIT_COUNT(mozfun.bits28.from_string('0111111111111111111111111111') & days_seen_dau_bits) > 0,
     FALSE) )) AS num_clients_dau_repeat_first_month_users
 FROM
   activity_cohort_match
 GROUP BY
-  cohort_date,
-  activity_date,
-  app_build_id,
+  first_seen_date,
+  submission_date,
   app_version,
   architecture,
   attribution_campaign,
   attribution_content,
   attribution_dlsource,
-  attribution_dltoken,
   attribution_experiment,
   attribution_medium,
   attribution_source,
@@ -183,7 +175,6 @@ GROUP BY
   apple_model_id, -- from clients_first_seen_v2
   db_version,
   distribution_id,
-  document_id,
   engine_data_load_path,
   engine_data_name,
   engine_data_origin,

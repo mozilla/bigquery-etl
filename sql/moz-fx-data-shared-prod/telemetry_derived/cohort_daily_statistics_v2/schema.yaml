@@ -1,13 +1,10 @@
 fields:
 - mode: NULLABLE
-  name: cohort_date
+  name: first_seen_date
   type: DATE
 - mode: NULLABLE
-  name: activity_date
+  name: submission_date
   type: DATE
-- mode: NULLABLE
-  name: app_build_id
-  type: STRING
 - mode: NULLABLE
   name: app_version
   type: STRING
@@ -22,9 +19,6 @@ fields:
   type: STRING
 - mode: NULLABLE
   name: attribution_dlsource
-  type: STRING
-- mode: NULLABLE
-  name: attribution_dltoken
   type: STRING
 - mode: NULLABLE
   name: attribution_experiment
@@ -70,9 +64,6 @@ fields:
   type: STRING
 - mode: NULLABLE
   name: distribution_id
-  type: STRING
-- mode: NULLABLE
-  name: document_id
   type: STRING
 - mode: NULLABLE
   name: engine_data_load_path

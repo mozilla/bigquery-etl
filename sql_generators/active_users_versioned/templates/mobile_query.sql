@@ -1,8 +1,6 @@
-DECLARE device_manufacturer STRING DEFAULT "??";
-
-DECLARE _current_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
-
-WITH _current_base AS (
+-- Values that cannot be determined are set as UNDETERMINED to differentiate from values not collected, set as ??.
+-- Next CTE is the daily query for the aggregates
+WITH _base AS (
   WITH attribution_data AS (
     SELECT
       client_id,
@@ -45,11 +43,12 @@ WITH _current_base AS (
         CONCAT('{{ app_value }}', ' BrowserStack'),
         '{{ app_value }}'
       ) AS app_name,
-      device_manufacturer --TODO: New column
+      device_manufacturer --New column
     FROM
       `{{ project_id }}.{{ app_name }}.clients_last_seen_joined`
     WHERE
-      submission_date = @submission_date
+      {{ init_code }}
+
   ),
   search_clients AS (
     SELECT
@@ -62,7 +61,8 @@ WITH _current_base AS (
     FROM
       `{{ project_id }}.search_derived.mobile_search_clients_daily_v1`
     WHERE
-      submission_date = @submission_date
+      {{ init_code }}
+
   ),
   search_metrics AS (
     SELECT
@@ -148,7 +148,7 @@ WITH _current_base AS (
       CAST(NULL AS string) AS attribution_campaign,
       CAST(NULL AS string) AS attribution_experiment,
       CAST(NULL AS string) AS attribution_variation,
-      device_manufacturer, --TODO: New column,
+      device_manufacturer, -- New column,
       search.ad_clicks,
       search.organic_search_count,
       search.search_count,
@@ -207,7 +207,7 @@ WITH _current_base AS (
       adjust_network,
       install_source,
       durations,
-      device_manufacturer ----TODO: New column
+      device_manufacturer ---- New column
     FROM
       baseline_with_searches_and_attribution
   ),
@@ -248,8 +248,8 @@ WITH _current_base AS (
     install_source,
     app_name,
     app_version,
-    device_manufacturer,
-    _current_timestamp AS last_updated_timestamp,
+    device_manufacturer, -- New column
+    CURRENT_TIMESTAMP AS last_updated_timestamp,
     COUNT(DISTINCT IF(days_since_seen = 0, client_id, NULL)) AS dau,
     COUNT(DISTINCT IF(days_since_seen < 7, client_id, NULL)) AS wau,
     COUNT(DISTINCT client_id) AS mau,
@@ -285,7 +285,9 @@ WITH _current_base AS (
     install_source,
     device_manufacturer,
     last_updated_timestamp
-),
+) {{ init_start }}
+,
+-- Next CTE returns the daily query aggregated before adding the new column.
 _current AS (
   SELECT
     segment,
@@ -318,10 +320,9 @@ _current AS (
     install_source,
     app_name,
     app_version,
-    device_manufacturer,
     last_updated_timestamp
   FROM
-    _current_base
+    _base
   WINDOW
     dimensions AS (
       PARTITION BY
@@ -345,11 +346,11 @@ _current AS (
         segment,
         adjust_network,
         install_source
-        -- TODO: New column device_manufacturer not added here, until... next backfill??
       ORDER BY
         last_updated_timestamp
     )
 ),
+-- Next CTE returns is the historical data before adding the new column.
 _previous AS (
   SELECT
     * EXCEPT (
@@ -357,21 +358,19 @@ _previous AS (
       app_version_minor,
       app_version_patch_revision,
       app_version_is_major_release,
-      os_grouped
-    ),
-    device_manufacturer, --TODO: New column. Needs to be in a DECLARE statement so this query doesn't break becuase the column doesn;t exist yet, and continues working after the backfill once the column exists.
-    DATE_SUB(
-      CURRENT_TIMESTAMP,
-      INTERVAL 365 DAY
-    ) AS last_updated_timestamp --TODO: This column is expected in the view. Adding it manually to simulate previous backfills.
+      os_grouped,
+      device_manufacturer
+    )
   FROM
-    `{{ project_id }}.{{ app_name }}.active_users_aggregates` -- TODO: Query the view (to retrive records HAVING MAX(last_updated_timestamp))
+    `{{ project_id }}.{{ app_name }}.active_users_aggregates` -- Query the view (not the table) in order to retrive records HAVING MAX(last_updated_timestamp)
   WHERE
-    submission_date = @submission_date
+    submission_timestamp >= "2021-01-01"
 ),
+-- Next CTE returns the union of _current and _previous, which is used later to calculate differences between historical and new data.
+-- TODO: Using MERGE can replace unioned, only_previous and _all. Pending to check if it replaces backfill_delta for a simpler query.
 unioned AS (
   SELECT
-    * EXCEPT (device_manufacturer)
+    *
   FROM
     _previous
   UNION ALL
@@ -407,7 +406,6 @@ unioned AS (
     app_name,
     app_version,
     last_updated_timestamp
-    -- TODO: New column device_manufacturer not added here, until... next backfill??
   FROM
     _current
   GROUP BY
@@ -433,6 +431,7 @@ unioned AS (
     install_source,
     last_updated_timestamp
 ),
+-- Next CTE returns the difference in metrics calculated between historical and new records for the new column. The delta is set as UNDETERMINED.
 backfill_delta AS (
   SELECT
     segment,
@@ -452,61 +451,61 @@ backfill_delta AS (
     submission_date,
     language_name,
     IF(
-      last_updated_timestamp = _current_timestamp
+      last_updated_timestamp = @current_timestamp
       AND (LAG(dau) OVER dimensions - dau) > 0,
       LAG(dau) OVER dimensions - dau,
       NULL
     ) AS dau,
     IF(
-      last_updated_timestamp = _current_timestamp
+      last_updated_timestamp = @current_timestamp
       AND (LAG(wau) OVER dimensions - wau) > 0,
       LAG(wau) OVER dimensions - wau,
       NULL
     ) AS wau,
     IF(
-      last_updated_timestamp = _current_timestamp
+      last_updated_timestamp = @current_timestamp
       AND (LAG(mau) OVER dimensions - mau) > 0,
       LAG(mau) OVER dimensions - mau,
       NULL
     ) AS mau,
     IF(
-      last_updated_timestamp = _current_timestamp
+      last_updated_timestamp = @current_timestamp
       AND (LAG(new_profiles) OVER dimensions - new_profiles) > 0,
       LAG(new_profiles) OVER dimensions - new_profiles,
       NULL
     ) AS new_profiles,
     IF(
-      last_updated_timestamp = _current_timestamp
+      last_updated_timestamp = @current_timestamp
       AND (LAG(ad_clicks) OVER dimensions - ad_clicks) > 0,
       LAG(ad_clicks) OVER dimensions - ad_clicks,
       NULL
     ) AS ad_clicks,
     IF(
-      last_updated_timestamp = _current_timestamp
+      last_updated_timestamp = @current_timestamp
       AND (LAG(organic_search_count) OVER dimensions - organic_search_count) > 0,
       LAG(organic_search_count) OVER dimensions - organic_search_count,
       NULL
     ) AS organic_search_count,
     IF(
-      last_updated_timestamp = _current_timestamp
+      last_updated_timestamp = @current_timestamp
       AND (LAG(search_count) OVER dimensions - search_count) > 0,
       LAG(search_count) OVER dimensions - search_count,
       NULL
     ) AS search_count,
     IF(
-      last_updated_timestamp = _current_timestamp
+      last_updated_timestamp = @current_timestamp
       AND (LAG(search_with_ads) OVER dimensions - search_with_ads) > 0,
       LAG(search_with_ads) OVER dimensions - search_with_ads,
       NULL
     ) AS search_with_ads,
     IF(
-      last_updated_timestamp = _current_timestamp
+      last_updated_timestamp = @current_timestamp
       AND (LAG(uri_count) OVER dimensions - uri_count) > 0,
       LAG(uri_count) OVER dimensions - uri_count,
       NULL
     ) AS uri_count,
     IF(
-      last_updated_timestamp = _current_timestamp
+      last_updated_timestamp = @current_timestamp
       AND (LAG(active_hours) OVER dimensions - active_hours) > 0,
       LAG(active_hours) OVER dimensions - active_hours,
       NULL
@@ -515,7 +514,7 @@ backfill_delta AS (
     install_source,
     app_name,
     app_version,
-    '??' AS device_manufacturer, --TODO: New column
+    'UNDETERMINED' AS device_manufacturer, -- New column
     last_updated_timestamp
   FROM
     unioned
@@ -542,14 +541,16 @@ backfill_delta AS (
         segment,
         adjust_network,
         install_source
-        -- TODO: New column device_manufacturer not added here because it doesn't need to match, it's set as '??'. To be updated in next backfill (?)
       ORDER BY
         last_updated_timestamp
     )
 ),
+    -- Next CTE returns the historical data that does not appear in the results of the base query / has been shredded.
 only_previous AS (
   SELECT
-    _previous.*
+    _previous.* EXCEPT (last_updated_timestamp),
+    'UNDETERMINED' AS device_manufacturer, --New column
+    _previous.last_updated_timestamp
   FROM
     _previous
   LEFT OUTER JOIN
@@ -565,22 +566,22 @@ only_previous AS (
     AND IFNULL(_previous.city, 'NULL') = IFNULL(_current.city, 'NULL')
     AND IFNULL(_previous.country, 'NULL') = IFNULL(_current.country, 'NULL')
     AND IFNULL(_previous.distribution_id, 'NULL') = IFNULL(_current.distribution_id, 'NULL')
-    AND IFNULL(_previous.first_seen_year, 0) = IFNULL(_current.first_seen_year, 0)
+    AND IFNULL(_previous.first_seen_year, -1) = IFNULL(_current.first_seen_year, -1)
     AND IFNULL(_previous.is_default_browser, FALSE) = IFNULL(_current.is_default_browser, FALSE)
     AND IFNULL(_previous.language_name, 'NULL') = IFNULL(_current.language_name, 'NULL')
     AND IFNULL(_previous.app_name, 'NULL') = IFNULL(_current.app_name, 'NULL')
     AND IFNULL(_previous.channel, 'NULL') = IFNULL(_current.channel, 'NULL')
     AND IFNULL(_previous.os, 'NULL') = IFNULL(_current.os, 'NULL')
     AND IFNULL(_previous.os_version, 'NULL') = IFNULL(_current.os_version, 'NULL')
-    AND IFNULL(_previous.os_version_major, 0) = IFNULL(_current.os_version_major, 0)
-    AND IFNULL(_previous.os_version_minor, 0) = IFNULL(_current.os_version_minor, 0)
+    AND IFNULL(_previous.os_version_major, -1) = IFNULL(_current.os_version_major, -1)
+    AND IFNULL(_previous.os_version_minor, -1) = IFNULL(_current.os_version_minor, -1)
     AND IFNULL(_previous.segment, 'NULL') = IFNULL(_current.segment, 'NULL')
     AND IFNULL(_previous.adjust_network, 'NULL') = IFNULL(_current.adjust_network, 'NULL')
     AND IFNULL(_previous.install_source, 'NULL') = IFNULL(_current.install_source, 'NULL')
-    -- TODO: New column device_manufacturer not added here because it doesn't need to match, it's set as '??'. To be updated in next backfill (?)
   WHERE
     _current.last_updated_timestamp IS NULL
 ),
+-- Next is result set for a full backfill, as the UNION of (base data + delta + only_previous)
 _all AS (
   SELECT
     segment,
@@ -616,7 +617,7 @@ _all AS (
     device_manufacturer,
     last_updated_timestamp
   FROM
-    _current_base
+    _base
   GROUP BY
     app_version,
     attribution_medium,
@@ -638,7 +639,7 @@ _all AS (
     segment,
     adjust_network,
     install_source,
-    device_manufacturer, --TODO: New column
+    device_manufacturer, -- New column
     last_updated_timestamp
   UNION ALL
   SELECT
@@ -646,7 +647,7 @@ _all AS (
   FROM
     backfill_delta
   WHERE
-    last_updated_timestamp = _current_timestamp
+    last_updated_timestamp = @current_timestamp
     AND dau IS NOT NULL
   UNION ALL
   SELECT
@@ -660,7 +661,14 @@ _all AS (
     4,
     5
 )
+-- For a full backfill the result set is the UNION of the historical data combined with the new calculation for the column added and the difference between them.
 SELECT
   *
 FROM
-  _all
+  _all {{ init_else }}
+-- For a daily backfill the result set is inly the data for that day.
+SELECT
+  *
+FROM
+  _base {{ init_end }}
+

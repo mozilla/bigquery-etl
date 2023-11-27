@@ -7,11 +7,13 @@ description: |-
   and activity segment.
 
   It is a prototype where versions of historical data are kept
-  and only the active metrics are exposed in the view.
+  and only the latest version of each record is exposed in the view.
 owners:
   - lvargas@mozilla.com
 labels:
   incremental: true
+scheduling:
+  parameters: {{ parameters }}
 bigquery:
   time_partitioning:
     type: day

@@ -48,6 +48,7 @@ def generate(target_project, output_dir, use_cloud_function):
     env = Environment(loader=FileSystemLoader(str(THIS_PATH / "templates")))
     mobile_query_template = env.get_template("mobile_query.sql")
     metadata_template = "metadata.yaml"
+    schema_template = "schema.yaml"
     view_template = env.get_template("view.sql")
     output_dir = Path(output_dir) / target_project
 
@@ -57,6 +58,17 @@ def generate(target_project, output_dir, use_cloud_function):
             f"{target_project}.{browser.name}_derived.{TABLE_NAME}_{current_version}"
         )
         full_view_id = f"{target_project}.{browser.name}.{TABLE_NAME}"
+        init_code = (
+            "{% if is_init() %} "
+            "submission_date = '2021-01-01' "
+            "{% else %} "
+            "submission_date = @submission_date "
+            "{% endif %}"
+        )
+
+        init_start = "{% if is_init() %}"
+        init_else = "{% else %}"
+        init_end = "{% endif %}"
 
         query_sql = reformat(
             mobile_query_template.render(
@@ -64,6 +76,10 @@ def generate(target_project, output_dir, use_cloud_function):
                 app_value=browser.value,
                 app_name=browser.name,
                 full_table_id=full_table_id,
+                init_code=init_code,
+                init_start=init_start,
+                init_else=init_else,
+                init_end=init_end,
             )
         )
 
@@ -84,6 +100,7 @@ def generate(target_project, output_dir, use_cloud_function):
                 template_folder=THIS_PATH / "templates",
                 app_value=browser.value,
                 app_name=browser.name,
+                parameters='["current_timestamp:TIMESTAMP:{{CURRENT_TIMESTAMP}}"]',
                 format=False,
             ),
             skip_existing=False,
@@ -99,6 +116,18 @@ def generate(target_project, output_dir, use_cloud_function):
                     app_name=browser.name,
                     table_version=MOBILE_TABLE_VERSION,
                 )
+            ),
+            skip_existing=False,
+        )
+
+        write_sql(
+            output_dir=output_dir,
+            full_table_id=full_table_id,
+            basename="schema.yaml",
+            sql=render(
+                schema_template,
+                template_folder=THIS_PATH / "templates",
+                format=False,
             ),
             skip_existing=False,
         )

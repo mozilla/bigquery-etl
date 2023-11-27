@@ -197,6 +197,8 @@ jobs:
           # yamllint disable rule:line-length
           command: |
             PATH="venv/bin:$PATH" script/entrypoint -m 'integration' -n 8
+          # workaround for job failing with `Too long with no output (exceeded 10m0s): context deadline exceeded` error
+          no_output_timeout: 30m
   generate-dags:
     docker: *docker
     steps:
@@ -368,6 +370,8 @@ jobs:
               --dataset-suffix=$CIRCLE_SHA1 \
               --remove-updated-artifacts \
               $PATHS
+          # workaround for job failing with `Too long with no output (exceeded 10m0s): context deadline exceeded` error
+          no_output_timeout: 30m
       - run:
           name: Copy generated SQL to temporary stage directory
           command: |
@@ -598,9 +602,17 @@ jobs:
       - run:
           name: Generate diff
           command: |
+            diff -qr --no-dereference \
+              /tmp/workspace/main-generated-sql/dags/ /tmp/workspace/generated-sql/dags/ \
+              | grep '^Only in' \
+              > /tmp/workspace/generated-sql/sql.diff || true
             diff -bur --no-dereference --new-file \
               /tmp/workspace/main-generated-sql/dags/ /tmp/workspace/generated-sql/dags/ \
-              > /tmp/workspace/generated-sql/sql.diff || true
+              >> /tmp/workspace/generated-sql/sql.diff || true
+            diff -qr --no-dereference \
+              /tmp/workspace/main-generated-sql/sql/ /tmp/workspace/generated-sql/sql/ \
+              | grep '^Only in' \
+              >> /tmp/workspace/generated-sql/sql.diff || true
             diff -bur --no-dereference --new-file \
               /tmp/workspace/main-generated-sql/sql/ /tmp/workspace/generated-sql/sql/ \
               >> /tmp/workspace/generated-sql/sql.diff || true

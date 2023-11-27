@@ -1,6 +1,6 @@
 fields:
 - name: userId
-  type: STRING
+  type: BYTES
   mode: NULLABLE
 - name: displayName
   type: STRING

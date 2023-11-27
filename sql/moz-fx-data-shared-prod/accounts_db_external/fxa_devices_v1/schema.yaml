@@ -4,7 +4,7 @@ fields:
   mode: NULLABLE
   description: Account ID in hexadecimal format.
 - name: id
-  type: STRING
+  type: BYTES
   mode: NULLABLE
 - name: name
   type: STRING

@@ -51,19 +51,9 @@ fields:
 - name: new_profiles
   type: INTEGER
   mode: NULLABLE
-  description: 'Count of new_profiles for the given grouping.
-
-    '
 - name: repeat_user
   type: INTEGER
   mode: NULLABLE
-  description: 'Count of clients categorised as "repeat_first_month_user" for the
-    grouping.
-
-    '
 - name: retained_week_4
   type: INTEGER
   mode: NULLABLE
-  description: 'Count of clients categorised as "retained_week_4" for the grouping.
-
-    '

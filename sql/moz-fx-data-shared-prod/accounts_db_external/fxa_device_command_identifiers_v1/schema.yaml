@@ -1,0 +1,7 @@
+fields:
+- name: commandId
+  type: INTEGER
+  mode: NULLABLE
+- name: commandName
+  type: STRING
+  mode: NULLABLE

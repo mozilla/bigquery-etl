@@ -1,0 +1,13 @@
+fields:
+- name: id
+  type: STRING
+  mode: NULLABLE
+- name: url
+  type: STRING
+  mode: NULLABLE
+- name: userId
+  type: STRING
+  mode: NULLABLE
+- name: providerId
+  type: INTEGER
+  mode: NULLABLE

@@ -21,6 +21,7 @@ clients_first_seen AS (
     adjust_campaign,
     adjust_creative,
     adjust_network,
+    install_source,
   FROM
     fenix.firefox_android_clients
   WHERE

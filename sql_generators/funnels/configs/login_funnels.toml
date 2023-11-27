@@ -1,0 +1,70 @@
+destination_dataset = "firefox_accounts_derived"
+platform = "firefox_accounts"
+owners = ["ksiegler@mozilla.org"]  # optional; users getting notification if funnel run fails
+version = "1"  # optional; default is set to 1
+
+[funnels]
+
+[funnels.login_overall_success]
+
+friendly_name = "Login Funnel Conversion"
+description = "Overall login funnel conversion rate"
+steps = ["login_view", "login_success"]
+
+[funnels.login_email_confirmation]
+
+friendly_name = "Login Funnel Conversion with Email Confirmation"
+description = "Funnel steps from Login View through Email Confirmation steps"
+steps = ["login_view", "confirm_email", "login_success"]
+
+[funnels.login_2fa]
+
+friendly_name = "Login Funnel Conversion through 2FA"
+description = "Funnel steps from Login View through 2FA (no backup codes)"
+steps = ["login_view", "login_confirm_2fa", "login_success"]
+
+[steps]
+
+[steps.login_view]
+friendly_name = "Login View Form"
+description = "View of the top of the login funnel"
+data_source = "all_events"
+where_expression = "event_type = 'fxa_login - view'"
+join_previous_step_on = "flow_id"
+select_expression = "flow_id"
+aggregation = "count distinct"
+
+[steps.confirm_email]
+friendly_name = "Email confirmation sent"
+description = "Confirm email"
+data_source = "all_events"
+select_expression = "flow_id"
+where_expression = "event_type = 'fxa_email - sent' AND JSON_VALUE(event_properties, '$.email_type')  = 'login'"
+aggregation = "count distinct"
+join_previous_step_on = "flow_id"
+
+[steps.login_confirm_2fa]
+friendly_name = "Login 2FA Form"
+description = "Login step requiring two factor authentication"
+data_source = "all_events"
+where_expression = "event_type = 'fxa_login - totp_code_view'"
+join_previous_step_on = "flow_id"
+select_expression = "flow_id"
+aggregation = "count distinct"
+
+[steps.login_success]
+friendly_name = "Successful Login Completion"
+description = "The login flow was completed successfully"
+data_source = "all_events"
+select_expression = "flow_id"
+where_expression = "event_type = 'fxa_login - complete'"
+aggregation = "count distinct"
+join_previous_step_on = "flow_id"
+
+
+[data_sources]
+
+[data_sources.all_events]
+from_expression = "mozdata.firefox_accounts.fxa_all_events"
+submission_date_column = "DATE(timestamp)"
+client_id_column = "user_id"

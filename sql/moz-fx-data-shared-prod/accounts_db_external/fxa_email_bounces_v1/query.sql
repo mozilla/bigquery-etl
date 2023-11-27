@@ -1,0 +1,21 @@
+SELECT
+  email,
+  bounceType,
+  bounceSubType,
+  SAFE.TIMESTAMP_MILLIS(SAFE_CAST(createdAt AS INT)) AS createdAt,
+  emailTypeId,
+  diagnosticCode,
+FROM
+  EXTERNAL_QUERY(
+    "moz-fx-fxa-prod.us.fxa-rds-prod-prod-fxa",
+    """SELECT
+         email,
+         bounceType,
+         bounceSubType,
+         createdAt,
+         emailTypeId,
+         diagnosticCode
+       FROM
+         fxa.emailBounces
+    """
+  )

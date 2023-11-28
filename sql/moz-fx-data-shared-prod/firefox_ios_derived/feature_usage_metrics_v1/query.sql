@@ -1,6 +1,6 @@
 -- Query for firefox_ios_derived.feature_usage_metrics_v1
-            -- For more information on writing queries see:
-            -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
+-- For more information on writing queries see:
+-- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
 DECLARE start_date DATE DEFAULT "2021-01-01";
 
 DECLARE end_date DATE DEFAULT current_date;
@@ -10,15 +10,15 @@ WITH dau_segments AS (
     DATE(submission_timestamp) AS submission_date,
     COUNT(DISTINCT client_info.client_id) AS dau
   FROM
-    `mozdata.firefox_ios.metrics`
+    `firefox_ios.metrics`
   WHERE
     DATE(submission_timestamp) >= start_date
   GROUP BY
-    1
+    submission_date
 ),
 product_features AS (
   SELECT
-    client_info.client_id,
+    client_info.client_id AS client_id,
     DATE(submission_timestamp) AS submission_date,
     /*Credit Card*/
     COALESCE(
@@ -114,12 +114,12 @@ product_features AS (
       0
     ) AS firefox_home_page_customize_homepage_button
   FROM
-    `mozdata.firefox_ios.metrics`
+    `firefox_ios.metrics`
   WHERE
     DATE(submission_timestamp) >= start_date
   GROUP BY
-    1,
-    2
+    client_id,
+    submission_date
 ),
 product_features_agg AS (
   SELECT
@@ -359,19 +359,17 @@ product_features_agg AS (
   WHERE
     submission_date >= start_date
   GROUP BY
-    1
+    submission_date
 )
 SELECT
   submission_date,
-  dau
+  dau,
 /*Credit Card*/
-  ,
   credit_card_autofill_enabled_users,
   credit_card_autofill_enabled,
   credit_card_sync_enabled_users,
-  credit_card_sync_enabled
+  credit_card_sync_enabled,
 /*Bookmark*/
-  ,
   bookmarks_add_users,
   bookmarks_add,
   bookmarks_delete_users,
@@ -385,17 +383,15 @@ SELECT
   bookmarks_open_users,
   bookmarks_open,
   bookmarks_view_list_users,
-  bookmarks_view_list
+  bookmarks_view_list,
 /*FxA*/
-  ,
   sync_create_account_pressed_users,
   sync_create_account_pressed,
   sync_open_tab_users,
   sync_open_tab,
   sync_sign_in_sync_pressed_users,
-  sync_sign_in_sync_pressed
+  sync_sign_in_sync_pressed,
 /*Privacy*/
-  ,
   tabs_private_tabs_quantity_users,
   tabs_private_tabs_quantity,
   preferences_close_private_tabs_users,
@@ -403,27 +399,23 @@ SELECT
   tracking_protection_enabled_users,
   tracking_protection_enabled,
   tracking_protection_strict_users,
-  tracking_protection_strict
+  tracking_protection_strict,
 /*Tab Count*/
-  ,
   tabs_normal_tabs_quantity_users,
   tabs_normal_tabs_quantity,
   tabs_inactive_tabs_count_users,
-  tabs_inactive_tabs_count
+  tabs_inactive_tabs_count,
 /*Default Browser*/
-  ,
   app_opened_as_default_browser_users,
   app_opened_as_default_browser,
   settings_menu_set_as_default_browser_pressed_users,
-  settings_menu_set_as_default_browser_pressed
+  settings_menu_set_as_default_browser_pressed,
 /*Notification*/
-  ,
   preferences_sync_notifs_users,
   preferences_sync_notifs,
   preferences_tips_and_features_notifs_users,
-  preferences_tips_and_features_notifs
+  preferences_tips_and_features_notifs,
 /*Customize Home*/
-  ,
   preferences_jump_back_in_users,
   preferences_jump_back_in,
   preferences_recently_visited_users,

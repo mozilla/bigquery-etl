@@ -1,6 +1,6 @@
 -- Query for fenix_derived.feature_usage_metrics_v1
-            -- For more information on writing queries see:
-            -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
+-- For more information on writing queries see:
+-- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
 DECLARE start_date DATE DEFAULT "2021-05-05";
 
 DECLARE end_date DATE DEFAULT current_date;
@@ -10,15 +10,15 @@ WITH dau_segments AS (
     DATE(submission_timestamp) AS submission_date,
     COUNT(DISTINCT client_info.client_id) AS dau
   FROM
-    `mozdata.fenix.metrics`
+    `fenix.metrics`
   WHERE
     DATE(submission_timestamp) >= start_date
   GROUP BY
-    1
+    submission_date
 ),
 product_features AS (
   SELECT
-    client_info.client_id,
+    client_info.client_id AS client_id,
     DATE(submission_timestamp) AS submission_date,
     --Credential Management: Logins
     COALESCE(SUM(metrics.counter.logins_deleted), 0) AS logins_deleted,
@@ -181,13 +181,12 @@ product_features AS (
       SUM(CASE WHEN metrics.boolean.customize_home_recently_visited THEN 1 ELSE 0 END)
     ) AS customize_home_recently_visited,
   FROM
-    `mozdata.fenix.metrics`
+    `fenix.metrics`
   WHERE
     DATE(submission_timestamp) >= start_date
---AND sample_id = 0
   GROUP BY
-    1,
-    2
+    client_id,
+    submission_date
 ),
 product_features_agg AS (
   SELECT
@@ -426,35 +425,31 @@ product_features_agg AS (
   WHERE
     submission_date >= start_date
   GROUP BY
-    1
+    submission_date
 )
 SELECT
-  d.submission_date,
-  dau
+  submission_date,
+  dau,
 /*logins*/
-  ,
   logins_deleted_users,
   logins_deleted,
   logins_modified_users,
   logins_modified,
   currently_stored_logins_users,
-  currently_stored_logins
+  currently_stored_logins,
 /*credit card*/
-  ,
   credit_cards_deleted_users,
   credit_cards_deleted,
   currently_stored_credit_cards_users,
-  currently_stored_credit_cards
+  currently_stored_credit_cards,
 /*addresses*/
-  ,
   addresses_deleted_users,
   addresses_deleted,
   addresses_modified_users,
   addresses_modified,
   currently_stored_addresses_users,
-  currently_stored_addresses
+  currently_stored_addresses,
 /*bookmark*/
-  ,
   bookmarks_add_users,
   bookmarks_add,
   bookmarks_delete_users,
@@ -470,9 +465,8 @@ SELECT
   metrics_has_desktop_bookmarks_users,
   metrics_has_desktop_bookmarks,
   metrics_has_mobile_bookmarks_users,
-  metrics_has_mobile_bookmarks
+  metrics_has_mobile_bookmarks,
 /*privacy*/
-  ,
   etp_standard_users,
   etp_standard,
   etp_strict_users,
@@ -480,25 +474,21 @@ SELECT
   etp_custom_users,
   etp_custom,
   etp_disabled_users,
-  etp_disabled
+  etp_disabled,
 /*Tab count*/
-  ,
   metrics_private_tabs_open_count_users,
   metrics_private_tabs_open_count,
   metrics_tabs_open_count_users,
-  metrics_tabs_open_count
+  metrics_tabs_open_count,
 /*Default browser*/
-  ,
   metrics_default_browser_users,
-  metrics_default_browser
+  metrics_default_browser,
 /*Notification*/
-  ,
   metrics_notifications_allowed_users,
   metrics_notifications_allowed,
   events_marketing_notification_allowed_users,
-  events_marketing_notification_allowed
+  events_marketing_notification_allowed,
 /*Customize Home*/
-  ,
   customize_home_contile_users,
   customize_home_contile,
   customize_home_jump_back_in_users,
@@ -512,8 +502,8 @@ SELECT
   customize_home_recently_visited_users,
   customize_home_recently_visited
 FROM
-  dau_segments d
+  dau_segments
 LEFT JOIN
-  product_features_agg p
-ON
-  d.submission_date = p.submission_date
+  product_features_agg
+USING
+  (submission_date)

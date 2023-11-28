@@ -653,6 +653,12 @@ fields:
       description: 'Whether or the user has completed the review quality check onboarding.
 
         '
+    - name: shopping_settings_disabled_ads
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Indicates if the user has disabled ads.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE

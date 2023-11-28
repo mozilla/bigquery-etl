@@ -384,7 +384,8 @@ SELECT
       metrics.boolean.extensions_use_remote_pref,
       metrics.boolean.shopping_settings_component_opted_out,
       metrics.boolean.shopping_settings_nimbus_disabled_shopping,
-      metrics.boolean.shopping_settings_user_has_onboarded
+      metrics.boolean.shopping_settings_user_has_onboarded,
+      metrics.boolean.shopping_settings_disabled_ads
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -925,7 +926,8 @@ SELECT
       metrics.boolean.extensions_use_remote_pref,
       metrics.boolean.shopping_settings_component_opted_out,
       metrics.boolean.shopping_settings_nimbus_disabled_shopping,
-      metrics.boolean.shopping_settings_user_has_onboarded
+      metrics.boolean.shopping_settings_user_has_onboarded,
+      metrics.boolean.shopping_settings_disabled_ads
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,

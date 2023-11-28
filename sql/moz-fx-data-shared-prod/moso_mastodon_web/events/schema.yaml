@@ -292,6 +292,50 @@ fields:
         The labels are the `category.name` identifier of the metric.
 
         '
+  - name: string
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: identifiers_fxa_account_id
+      type: STRING
+      mode: NULLABLE
+      description: "The user's FxA account ID, if available.\ndata_taxonomy:\n  data_categories:\
+        \ [user.unique_id]\n  data_uses: [analytics.reporting, personalize.content]\n\
+        \  data_subjects: [customer]\n  data_qualifier: [identified]\n"
+    - name: identifiers_mastodon_account_handle
+      type: STRING
+      mode: NULLABLE
+      description: "The user's full account handle, with domain. For example, `account_name@mozilla.social`.\n\
+        data_taxonomy:\n  data_categories: [user.account.username]\n  data_uses: [analytics.reporting,\
+        \ personalize.content]\n  data_subjects: [customer]\n"
+    - name: identifiers_mastodon_account_id
+      type: STRING
+      mode: NULLABLE
+      description: "The user's numeric account ID from Mastodon.\ndata_taxonomy:\n\
+        \  data_categories: [user.unique_id]\n  data_uses: [analytics.reporting, personalize.content]\n\
+        \  data_subjects: [customer]\n  data_qualifier: [identified]\n"
+    - name: identifiers_user_agent
+      type: STRING
+      mode: NULLABLE
+      description: "The device user agent string.\ndata_taxonomy:\n  data_categories:\
+        \ [user.device]\n  data_uses: [analytics.reporting]\n  data_subjects: [customer,\
+        \ visitor]\n  data_qualifier: [n/a]\n"
+    - name: web_page_url
+      type: STRING
+      mode: NULLABLE
+      description: "The full URL of the page that was visited, along with URL query\
+        \ parameters. For example, `https://mozilla.social/home?utm_source=test`.\n\
+        data_taxonomy:\n  data_categories: [user.behavior.browsing_history]\n  data_uses:\
+        \ [analytics.reporting]\n  data_subjects: [customer, visitor]\n  data_qualifier:\
+        \ [n/a]\n"
+    - name: web_referrer_url
+      type: STRING
+      mode: NULLABLE
+      description: "The full URL of the previous web page from which a link was followed\
+        \ in order to trigger the page view. Comes from the `referrer` field of the\
+        \ HTTP header. May not always be available. For example, `https://www.google.com`.\n\
+        data_taxonomy:\n  data_categories: []\n  data_uses: [analytics.reporting]\n\
+        \  data_subjects: [customer, visitor]\n  data_qualifier: [n/a]\n"
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

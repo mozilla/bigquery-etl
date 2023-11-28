@@ -1,0 +1,15 @@
+friendly_name: Desktop Acquisition Funnel
+description: |-
+  Please provide a description for the query
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:dataops-managed/taar
+  - workgroup:mozilla-confidential
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_28_days_later_v1
+deprecated: false

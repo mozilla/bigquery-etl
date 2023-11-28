@@ -1,14 +1,15 @@
-friendly_name: Gclid Conversions
+friendly_name: Gclid Conversions V1
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  1-row per conversion. Provides conversion events to
+  send to Google Ads.
+owners:
+- frank@mozilla.com
+labels:
+  owner1: frank
 bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:mozilla-confidential
-references:
-  view.sql:
-  - moz-fx-data-shared-prod.mozilla_org_derived.gclid_conversions_v1
+  - workgroup:dataops-managed/external-census
+references: {}
 deprecated: false

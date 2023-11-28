@@ -26,6 +26,6 @@ bigquery:
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:mozilla-confidential
+  - workgroup:dataops-managed/external-census
 references: {}
 deprecated: false

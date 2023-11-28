@@ -43,14 +43,11 @@ SELECT
   startup_profile_selection_reason,
   COUNT(client_id) AS cohort,
   COUNTIF(activated) AS activated,
-  -- TODO: naming here should probably change to repeat first month user
   COUNTIF(returned_second_day) AS returned_second_day,
-  -- TODO: naming here should probably change to qualified repeat first month user
   COUNTIF(qualified_second_day) AS qualified_second_day,
   COUNTIF(retained_week4) AS retained_week4,
   COUNTIF(qualified_week4) AS qualified_week4
 FROM
-  -- TODO: Let's discuss the name of this table
   `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_28_days_later_v1`
 WHERE
   first_seen_date >= "2022-01-01"

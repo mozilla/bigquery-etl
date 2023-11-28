@@ -89,9 +89,6 @@ fields:
   - name: num_chars_typed
     type: INTEGER
     mode: NULLABLE
-  - name: num_chars_typed
-    type: INTEGER
-    mode: NULLABLE
     description: Length of the query string typed by the user
   - name: num_total_results
     type: INTEGER

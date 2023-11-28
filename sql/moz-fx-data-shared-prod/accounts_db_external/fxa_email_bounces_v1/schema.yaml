@@ -1,0 +1,19 @@
+fields:
+- name: email
+  type: STRING
+  mode: NULLABLE
+- name: bounceType
+  type: INTEGER
+  mode: NULLABLE
+- name: bounceSubType
+  type: INTEGER
+  mode: NULLABLE
+- name: createdAt
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: emailTypeId
+  type: INTEGER
+  mode: NULLABLE
+- name: diagnosticCode
+  type: STRING
+  mode: NULLABLE

@@ -52,6 +52,8 @@ dry_run:
   - sql/moz-fx-data-shared-prod/accounts_backend_external/accounts_v1/query.sql
   - sql/moz-fx-data-shared-prod/accounts_backend_external/emails_v1/query.sql
   - sql/moz-fx-data-shared-prod/accounts_backend/accounts/view.sql
+  - sql/moz-fx-data-shared-prod/accounts_db_external/**/*.sql
+  - sql/moz-fx-data-shared-prod/accounts_db_nonprod_external/**/*.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_content_events_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_auth_bounce_events_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_auth_events_v1/query.sql
@@ -177,6 +179,10 @@ dry_run:
   - sql/moz-fx-data-shared-prod/fenix/installs_by_country/view.sql
   - sql/moz-fx-data-shared-prod/firefox_desktop/top_sites/view.sql
   - sql/moz-fx-data-shared-prod/firefox_desktop/quick_suggest/view.sql
+  - sql/moz-fx-data-shared-prod/stub_attribution_service_derived/dl_token_ga_attribution_lookup_v1/query.sql
+  - sql/moz-fx-data-shared-prod/stub_attribution_service/dl_token_ga_attribution_lookup/view.sql
+  - sql/moz-fx-data-shared-prod/mozilla_org_derived/gclid_conversions_v1/query.sql
+  - sql/moz-fx-data-shared-prod/mozilla_org/gclid_conversions/view.sql
   # Materialized views
   - sql/moz-fx-data-shared-prod/telemetry_derived/experiment_search_events_live_v1/init.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/experiment_events_live_v1/init.sql

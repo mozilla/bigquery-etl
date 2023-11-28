@@ -4,4 +4,4 @@ AS
 SELECT
   *
 FROM
-  `moz-fx-data-shared-prod.monitoring_derived.deletion_request_volume_v1`
+  `moz-fx-data-shared-prod.monitoring_derived.deletion_request_volume_v2`

@@ -428,7 +428,6 @@ google-api-core[grpc]==2.11.0 \
     --hash=sha256:4b9bb5d5a380a0befa0573b302651b8a9a89262c1730e37bf423cec511804c22 \
     --hash=sha256:ce222e27b0de0d7bc63eb043b956996d6dccab14cc3b690aaea91c9cc99dc16e
     # via
-    #   google-api-core
     #   google-cloud-bigquery
     #   google-cloud-core
     #   google-cloud-storage
@@ -1494,9 +1493,9 @@ snowballstemmer==2.2.0 \
     --hash=sha256:09b16deb8547d3412ad7b590689584cd0fe25ec8db3be37788be3810cbf19cb1 \
     --hash=sha256:c8e1716e83cc398ae16824e5572ae04e0d9fc2c6b985fb0f900f5f0c96ecba1a
     # via pydocstyle
-sqlglot==19.0.3 \
-    --hash=sha256:27df5eed15b92426113ac7cbb072c11024f880347ca0e90bb266af456853d20a \
-    --hash=sha256:69ea28d2e215b96c887952ea43beda8c449d19574b7110ca07e7218c43d109f3
+sqlglot==19.6.0 \
+    --hash=sha256:64f76a8ba9d658552b0c37d14edf75651d3f5ec2597006c201754efc1faf028f \
+    --hash=sha256:d8cdcba0b93408797d4c61cb1456952aeb7c9ce59467c9f341bda05aa647964c
     # via -r requirements.in
 sqlparse==0.4.4 \
     --hash=sha256:5430a4fe2ac7d0f93e66f1efc6e1338a41884b7ddf2a350cedd20ccc4d9d28f3 \

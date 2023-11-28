@@ -19,7 +19,7 @@ SELECT
     ELSE NULL
   END AS conversion_name,
 FROM
-  mozilla_org_derived.gclid_conversions_v1 UNPIVOT(
+  `moz-fx-data-shared-prod`.mozilla_org_derived.gclid_conversions_v1 UNPIVOT(
     did_conversion FOR conversion_name IN (
       did_firefox_first_run,
       did_search,

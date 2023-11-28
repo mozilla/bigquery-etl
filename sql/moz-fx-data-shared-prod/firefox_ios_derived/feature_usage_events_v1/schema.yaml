@@ -203,7 +203,7 @@ fields:
 - name: notification_status_denied
   type: INTEGER
   mode: NULLABLE
-- name: notification_alert_setting_notSupported
+- name: notification_alert_setting_not_supported
   type: INTEGER
   mode: NULLABLE
 - name: notification_alert_setting_disabled

@@ -1,15 +1,15 @@
-friendly_name: Feature Usage Metrics
+friendly_name: Feature Usage Metrics (Firefox iOS)
 description: |-
   Metrics from metrics pings for mobile feature usage dashboards (iOS)
 owners:
 - rzhao@mozilla.com
 labels:
+  application: ios
   incremental: true
   owner1: rzhao
-  dag: bqetl_default
 scheduling:
   dag_name: bqetl_mobile_feature_usage
-  task_name: ios_feature_usage_metrics__v1
+  task_name:
 bigquery:
   time_partitioning:
     type: day

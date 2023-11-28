@@ -1,6 +1,6 @@
 -- Query for firefox_ios_derived.feature_usage_events_v1
-            -- For more information on writing queries see:
-            -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
+-- For more information on writing queries see:
+-- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
 DECLARE start_date DATE DEFAULT "2022-04-01";
 
 WITH dau_segments AS (
@@ -8,12 +8,11 @@ WITH dau_segments AS (
     DATE(submission_timestamp) AS submission_date,
     COUNT(DISTINCT client_info.client_id) AS dau
   FROM
-    `mozdata.firefox_ios.events_unnested`
-    --AND channel = 'release'
+    `firefox_ios.events_unnested`
   WHERE
     DATE(submission_timestamp) >= '2023-06-23'
   GROUP BY
-    1
+    submission_date
 ),
 product_features AS (
   SELECT
@@ -246,7 +245,7 @@ product_features AS (
         AND extra.value = 'notSupported'
         THEN 1
       ELSE 0
-    END AS notification_alert_setting_notSupported,
+    END AS notification_alert_setting_not_supported,
     CASE
       WHEN event_category = 'app'
         AND event_name = 'notification_permission'
@@ -264,7 +263,7 @@ product_features AS (
       ELSE 0
     END AS notification_alert_setting_enabled
   FROM
-    `mozdata.firefox_ios.events_unnested`
+    `firefox_ios.events_unnested`
   LEFT JOIN
     UNNEST(event_extra) AS extra
   WHERE
@@ -474,7 +473,7 @@ product_features_agg AS (
     ) AS notification_status_authorized_users,
     SUM(notification_status_notDetermined) AS notification_status_notDetermined,
     SUM(notification_status_denied) AS notification_status_denied,
-    SUM(notification_alert_setting_notSupported) AS notification_alert_setting_notSupported,
+    SUM(notification_alert_setting_not_supported) AS notification_alert_setting_not_supported,
     SUM(notification_alert_setting_disabled) AS notification_alert_setting_disabled,
     SUM(notification_alert_setting_enabled) AS notification_alert_setting_enabled
   FROM
@@ -482,10 +481,10 @@ product_features_agg AS (
   WHERE
     submission_date >= start_date
   GROUP BY
-    1
+    submission_date
 )
 SELECT
-  d.submission_date,
+  submission_date,
   dau,
     /*Credit Card*/
   cc_autofill_failed,
@@ -559,14 +558,15 @@ SELECT
   notification_status_authorized_users,
   notification_status_notDetermined,
   notification_status_denied,
-  notification_alert_setting_notSupported,
+  notification_alert_setting_not_supported,
   notification_alert_setting_disabled,
   notification_alert_setting_enabled
 FROM
-  dau_segments d
-LEFT JOIN
-  product_features_agg p
-ON
-  d.submission_date = p.submission_date
-ORDER BY
-  d.submission_date
+  dau_segments
+JOIN
+  product_features_agg
+USING
+  (submission_date)
+
+
+

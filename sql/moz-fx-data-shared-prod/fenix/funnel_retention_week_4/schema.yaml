@@ -67,7 +67,3 @@ fields:
   description: 'Count of clients categorised as "retained_week_4" for the grouping.
 
     '
-- name: install_source
-  type: STRING
-  mode: NULLABLE
-  description: null

@@ -1,4 +1,4 @@
--- Get all clients who had activity in the last 28 days and their bit patterns.
+-- Get all clients who had activity for 28 days and get their bit patterns.
 WITH submission_date_activity AS (
   SELECT
     client_id,
@@ -6,7 +6,7 @@ WITH submission_date_activity AS (
     (days_visited_1_uri_bits & days_interacted_bits) AS days_seen_dau_bits,
     DATE(submission_date) as submission_date
   FROM
-    telemetry.clients_last_seen_v1 -- this might cause an issue because definition of first_seen_date in this table is different from clients_first_seen_v2
+    telemetry.clients_last_seen_v1
   WHERE
     submission_date = @submission_date
   GROUP BY
@@ -15,7 +15,7 @@ WITH submission_date_activity AS (
     days_seen_bits,
     (days_visited_1_uri_bits & days_interacted_bits)
 ),
--- Get all the cohorts that are still in range of the current day of activity (106 days)
+-- Get all the cohorts that are still in range of the current day of activity up to 112 days (which is 4 periods of 28 days)
 cohorts_in_range AS (
   SELECT
     client_id,
@@ -25,7 +25,6 @@ cohorts_in_range AS (
     architecture,
     attribution_campaign,
     attribution_content,
-    attribution_dlsource,
     attribution_experiment,
     attribution_medium,
     attribution_source,
@@ -38,13 +37,8 @@ cohorts_in_range AS (
     city,
     subdivision1,
     country,
-    apple_model_id, -- from clients_first_seen_v2
     db_version,
     distribution_id,
-    engine_data_load_path,
-    engine_data_name,
-    engine_data_origin,
-    engine_data_submission_url,
     locale,
     app_name as normalized_app_name,
     normalized_channel,
@@ -52,7 +46,6 @@ cohorts_in_range AS (
     normalized_os_version,
     startup_profile_selection_reason,
     vendor,
-    xpcom_abi,
     COALESCE(
       SAFE_CAST(NULLIF(SPLIT(normalized_os_version, ".")[SAFE_OFFSET(0)], "") AS INTEGER),
       0
@@ -65,7 +58,7 @@ cohorts_in_range AS (
     telemetry_derived.clients_first_seen_v2
   WHERE
     first_seen_date
-    BETWEEN DATE_SUB(@submission_date, INTERVAL 106 DAY)
+    BETWEEN DATE_SUB(@submission_date, INTERVAL 112 DAY)
     AND DATE_SUB(@submission_date, INTERVAL 1 DAY)
 ),
 activity_cohort_match AS (
@@ -90,7 +83,6 @@ SELECT
   architecture,
   attribution_campaign,
   attribution_content,
-  attribution_dlsource,
   attribution_experiment,
   attribution_medium,
   attribution_source,
@@ -103,13 +95,8 @@ SELECT
   city,
   subdivision1,
   country,
-  apple_model_id, -- from clients_first_seen_v2
   db_version,
   distribution_id,
-  engine_data_load_path,
-  engine_data_name,
-  engine_data_origin,
-  engine_data_submission_url,
   locale,
   normalized_app_name,
   normalized_channel,
@@ -117,7 +104,6 @@ SELECT
   normalized_os_version,
   startup_profile_selection_reason,
   vendor,
-  xpcom_abi,
   os_version_major,
   os_version_minor,
   COUNT(client_id) AS num_clients_in_cohort,
@@ -159,7 +145,6 @@ GROUP BY
   architecture,
   attribution_campaign,
   attribution_content,
-  attribution_dlsource,
   attribution_experiment,
   attribution_medium,
   attribution_source,
@@ -172,13 +157,8 @@ GROUP BY
   city,
   subdivision1,
   country,
-  apple_model_id, -- from clients_first_seen_v2
   db_version,
   distribution_id,
-  engine_data_load_path,
-  engine_data_name,
-  engine_data_origin,
-  engine_data_submission_url,
   locale,
   normalized_app_name,
   normalized_channel,
@@ -186,6 +166,5 @@ GROUP BY
   normalized_os_version,
   startup_profile_selection_reason,
   vendor,
-  xpcom_abi,
   os_version_major,
   os_version_minor

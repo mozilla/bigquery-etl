@@ -51,7 +51,7 @@ SELECT
   COUNTIF(qualified_week4) AS qualified_week4
 FROM
   -- TODO: Let's discuss the name of this table
-  `mozdata.telemetry.clients_first_seen_28_days_later`
+  `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_28_days_later_v1`
 WHERE
   first_seen_date >= "2022-01-01"
 GROUP BY

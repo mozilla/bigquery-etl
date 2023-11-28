@@ -26,7 +26,8 @@ from bigquery_etl.util.common import render
 
 # Regex matching CREATE VIEW statement so it can be removed to get the view query
 CREATE_VIEW_PATTERN = re.compile(
-    r"CREATE\s+OR\s+REPLACE\s+VIEW\s+[^\s]+\s+AS", re.IGNORECASE
+    r"CREATE(?:\s+OR\s+REPLACE)?(?:\s+MATERIALIZED)?\s+VIEW(?:\s+IF\s+NOT\s+EXISTS)?\s+[^\s]+\s+AS",
+    re.IGNORECASE,
 )
 
 

@@ -184,32 +184,14 @@ class View:
 
     def _valid_view_naming(self):
         """Validate that the created view naming matches the directory structure."""
-        parsed = sqlparse.parse(self.content)[0]
-        tokens = [
-            t
-            for t in parsed.tokens
-            if not (t.is_whitespace or isinstance(t, sqlparse.sql.Comment))
-        ]
-        is_view_statement = " ".join(tokens[0].normalized.split()) in (
-            "CREATE",
-            "CREATE OR REPLACE",
-        ) and (
-            tokens[1].normalized == "VIEW"
-            or " ".join(t.normalized for t in tokens[1:3]).upper()
-            == "MATERIALIZED VIEW"
-        )
-        if is_view_statement:
-            view_kw_index = 1 if tokens[1].normalized == "VIEW" else 2
-            if (
-                " ".join(
-                    t.normalized for t in tokens[view_kw_index + 1 : view_kw_index + 4]
-                )
-                == "IF NOT EXISTS"
-            ):
-                view_id_token = tokens[view_kw_index + 4]
-            else:
-                view_id_token = tokens[view_kw_index + 1]
-            target_view = str(view_id_token).replace("`", "").strip().split()[0]
+        sql = sqlparse.format(self.content, strip_comments=True).strip()
+        if view_statement_match := re.match(
+            r"CREATE(?:\s+OR\s+REPLACE)?(?:\s+MATERIALIZED)?\s+VIEW(?:\s+IF\s+NOT\s+EXISTS)?"
+            r"\s+(?P<view_id>(?:(?:`?[\w-]+`?\.)?`?\w+`?\.)?`?\w+`?)",
+            sql,
+            re.IGNORECASE,
+        ):
+            target_view = view_statement_match["view_id"].replace("`", "")
             try:
                 [project_id, dataset_id, view_id] = target_view.split(".")
                 if not (

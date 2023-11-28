@@ -358,16 +358,16 @@ _previous AS (
       app_version_minor,
       app_version_patch_revision,
       app_version_is_major_release,
-      os_grouped,
-      device_manufacturer
-    )
+      os_grouped
+    ),
+    DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 DAY) AS last_updated_timestamp
   FROM
     `{{ project_id }}.{{ app_name }}.active_users_aggregates` -- Query the view (not the table) in order to retrive records HAVING MAX(last_updated_timestamp)
   WHERE
-    submission_timestamp >= "2021-01-01"
+    submission_date >= "2021-01-01"
 ),
 -- Next CTE returns the union of _current and _previous, which is used later to calculate differences between historical and new data.
--- TODO: Using MERGE can replace unioned, only_previous and _all. Pending to check if it replaces backfill_delta for a simpler query.
+-- NOTE. Using MERGE from here in query2 for better performance and clarity. It requires this file to run as a script.
 unioned AS (
   SELECT
     *

@@ -702,59 +702,49 @@ def backfill(
         )
         query_files = paths_matching_name_pattern(name, ctx.obj["TMP_DIR"], project_id)
 
-    dates = [start_date + timedelta(i) for i in range((end_date - start_date).days + 1)]
-
     for query_file in query_files:
         query_file_path = Path(query_file)
 
-        depends_on_past = False
-        date_partition_parameter = "submission_date"
-
         try:
             metadata = Metadata.of_query_file(str(query_file_path))
-            depends_on_past = metadata.scheduling.get(
-                "depends_on_past", depends_on_past
-            )
-            date_partition_parameter = metadata.scheduling.get(
-                "date_partition_parameter", date_partition_parameter
-            )
-
-            # For backwards compatibility assume partitioning type is day
-            # in case metadata is missing
-            if metadata.bigquery:
-                partitioning_type = metadata.bigquery.time_partitioning.type
-            else:
-                partitioning_type = PartitionType.DAY
-                click.echo(
-                    "Bigquery partitioning type not set. Using PartitionType.DAY"
-                )
-
-            match partitioning_type:
-                case PartitionType.DAY:
-                    dates = [
-                        start_date + timedelta(i)
-                        for i in range((end_date - start_date).days + 1)
-                    ]
-                case PartitionType.MONTH:
-                    dates = list(
-                        rrule(
-                            freq=MONTHLY,
-                            dtstart=start_date.replace(day=1),
-                            until=end_date,
-                        )
-                    )
-                    # Dates in excluded must be the first day of the month to match `dates`
-                    exclude = [
-                        date.fromisoformat(day).replace(day=1).strftime("%Y-%m-%d")
-                        for day in exclude
-                    ]
-                case _:
-                    raise ValueError(
-                        f"Unsupported partitioning type: {partitioning_type}"
-                    )
-
         except FileNotFoundError:
-            click.echo(f"No metadata defined for {query_file_path}")
+            click.echo(f"Can't run backfill without metadata for {query_file_path}.")
+            continue
+
+        depends_on_past = metadata.scheduling.get("depends_on_past", False)
+        date_partition_parameter = metadata.scheduling.get(
+            "date_partition_parameter", "submission_date"
+        )
+
+        # For backwards compatibility assume partitioning type is day
+        # in case metadata is missing
+        if metadata.bigquery:
+            partitioning_type = metadata.bigquery.time_partitioning.type
+        else:
+            partitioning_type = PartitionType.DAY
+            click.echo("Bigquery partitioning type not set. Using PartitionType.DAY")
+
+        match partitioning_type:
+            case PartitionType.DAY:
+                dates = [
+                    start_date + timedelta(i)
+                    for i in range((end_date - start_date).days + 1)
+                ]
+            case PartitionType.MONTH:
+                dates = list(
+                    rrule(
+                        freq=MONTHLY,
+                        dtstart=start_date.replace(day=1),
+                        until=end_date,
+                    )
+                )
+                # Dates in excluded must be the first day of the month to match `dates`
+                exclude = [
+                    date.fromisoformat(day).replace(day=1).strftime("%Y-%m-%d")
+                    for day in exclude
+                ]
+            case _:
+                raise ValueError(f"Unsupported partitioning type: {partitioning_type}")
 
         if depends_on_past and exclude != []:
             click.echo(

@@ -165,6 +165,13 @@ with DAG(
             external_task_id="wait_for_clients_first_seen_v2",
         )
 
+        ExternalTaskMarker(
+            task_id="bqetl_analytics_aggregations__wait_for_clients_first_seen_v2",
+            external_dag_id="bqetl_analytics_aggregations",
+            external_task_id="wait_for_clients_first_seen_v2",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=78300)).isoformat() }}",
+        )
+
         clients_first_seen_v2_external.set_upstream(clients_first_seen_v2)
 
     fenix_derived__firefox_android_clients__v2 = bigquery_etl_query(

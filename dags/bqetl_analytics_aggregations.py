@@ -221,6 +221,22 @@ with DAG(
         parameters=["activity_date:DATE:{{macros.ds_add(ds, -1)}}"],
     )
 
+    telemetry_derived__desktop_cohort_daily_retention__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__desktop_cohort_daily_retention__v1",
+        destination_table="desktop_cohort_daily_retention_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="mhirose@mozilla.com",
+        email=[
+            "gkaberere@mozilla.com",
+            "lvargas@mozilla.com",
+            "mhirose@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     wait_for_checks__fail_fenix_derived__firefox_android_clients__v1 = (
         ExternalTaskSensor(
             task_id="wait_for_checks__fail_fenix_derived__firefox_android_clients__v1",
@@ -397,4 +413,23 @@ with DAG(
     )
     telemetry_derived__cohort_daily_statistics__v1.set_upstream(
         wait_for_telemetry_derived__unified_metrics__v1
+    )
+
+    wait_for_clients_first_seen_v2 = ExternalTaskSensor(
+        task_id="wait_for_clients_first_seen_v2",
+        external_dag_id="bqetl_analytics_tables",
+        external_task_id="clients_first_seen_v2",
+        execution_delta=datetime.timedelta(seconds=8100),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    telemetry_derived__desktop_cohort_daily_retention__v1.set_upstream(
+        wait_for_clients_first_seen_v2
+    )
+    telemetry_derived__desktop_cohort_daily_retention__v1.set_upstream(
+        wait_for_telemetry_derived__clients_last_seen__v1
     )

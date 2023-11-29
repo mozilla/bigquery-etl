@@ -19,13 +19,18 @@ stable_views = None
 
 
 def _raw_table_name(table: sqlglot.exp.Table) -> str:
-    return (
+    with_replacements = (
         table.sql("bigquery", comments=False)
         # remove alias
         .split(" AS ", 1)[0]
         # remove quotes
         .replace("`", "")
+        # remove PIVOT/UNPIVOT
+        # .replace("UNPIVOT
     )
+    removed_pivots = re.sub(" (?:UN)?PIVOT.*$", "", with_replacements)
+
+    return removed_pivots
 
 
 def extract_table_references(sql: str) -> List[str]:

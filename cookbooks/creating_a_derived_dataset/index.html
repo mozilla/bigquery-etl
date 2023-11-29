@@ -3868,7 +3868,7 @@ git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </
 <div class="highlight"><pre><span></span><code>bqetl<span class="w"> </span>query<span class="w"> </span>backfill<span class="w"> </span>&lt;dataset&gt;.&lt;table&gt;<span class="w"> </span>--project_id<span class="o">=</span>moz-fx-data-shared-prod<span class="w"> </span>-s<span class="w"> </span>&lt;YYYY-MM-DD&gt;<span class="w"> </span>-e<span class="w"> </span>&lt;YYYY-MM-DD&gt;<span class="w"> </span>-n<span class="w"> </span><span class="m">0</span>
 </code></pre></div>
 <p>For our example:
-<div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>query<span class="w"> </span>backfill<span class="w"> </span>org_mozilla_mozregression_derived.mozregression_aggregates_v1<span class="w"> </span>--s<span class="w"> </span><span class="m">2020</span>-04-01<span class="w"> </span>--e<span class="w"> </span><span class="m">2021</span>-02-01
+<div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>query<span class="w"> </span>backfill<span class="w"> </span>org_mozilla_mozregression_derived.mozregression_aggregates_v1<span class="w"> </span>--project_id<span class="o">=</span>moz-fx-data-shared-prod<span class="w"> </span>-s<span class="w"> </span><span class="m">2020</span>-04-01<span class="w"> </span>-e<span class="w"> </span><span class="m">2021</span>-02-01
 </code></pre></div></p>
 <p><strong>Note</strong>. Alternatively, you can trigger the Airflow DAG to backfill the data. In this case, it is recommended to talk to someone in in Data Engineering or Data SRE to trigger the DAG.</p>
 <h2 id="completing-the-pull-request">Completing the Pull Request</h2>

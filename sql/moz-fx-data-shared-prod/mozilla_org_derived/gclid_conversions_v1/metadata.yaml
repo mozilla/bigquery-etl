@@ -22,3 +22,6 @@ bigquery:
     expiration_days: null
 references: {}
 deprecated: false
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members: [workgroup:dataops-managed/external-census]

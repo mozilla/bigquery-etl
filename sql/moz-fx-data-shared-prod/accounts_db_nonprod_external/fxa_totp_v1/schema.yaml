@@ -1,6 +1,6 @@
 fields:
 - name: id
-  type: INTEGER
+  type: NUMERIC
   mode: NULLABLE
 - name: uid
   type: STRING

@@ -1,9 +1,9 @@
 fields:
 - name: clientId
-  type: STRING
+  type: BYTES
   mode: NULLABLE
 - name: userId
-  type: STRING
+  type: BYTES
   mode: NULLABLE
 - name: scope
   type: STRING
@@ -30,5 +30,5 @@ fields:
   type: TIMESTAMP
   mode: NULLABLE
 - name: sessionTokenId
-  type: STRING
+  type: BYTES
   mode: NULLABLE

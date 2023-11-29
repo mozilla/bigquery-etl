@@ -7,5 +7,5 @@ fields:
   type: TIMESTAMP
   mode: NULLABLE
 - name: flowId
-  type: STRING
+  type: BYTES
   mode: NULLABLE

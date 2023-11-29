@@ -25,9 +25,8 @@ def _raw_table_name(table: sqlglot.exp.Table) -> str:
         .split(" AS ", 1)[0]
         # remove quotes
         .replace("`", "")
-        # remove PIVOT/UNPIVOT
-        # .replace("UNPIVOT
     )
+    # remove PIVOT/UNPIVOT
     removed_pivots = re.sub(" (?:UN)?PIVOT.*$", "", with_replacements)
 
     return removed_pivots

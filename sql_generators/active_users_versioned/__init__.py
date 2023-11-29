@@ -13,7 +13,7 @@ from bigquery_etl.util.common import render, write_sql
 THIS_PATH = Path(os.path.dirname(__file__))
 TABLE_NAME = "active_users_aggregates_versioned"
 DATASET_FOR_UNIONED_VIEWS = "telemetry"
-MOBILE_TABLE_VERSION = "v3"
+MOBILE_TABLE_VERSION = "v2"
 
 
 class Browsers(Enum):

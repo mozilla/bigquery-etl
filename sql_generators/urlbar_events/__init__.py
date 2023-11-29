@@ -2,6 +2,7 @@
 import os
 from enum import Enum
 from pathlib import Path
+import shutil
 
 import click
 from jinja2 import Environment, FileSystemLoader
@@ -9,6 +10,7 @@ from jinja2 import Environment, FileSystemLoader
 from bigquery_etl.cli.utils import use_cloud_function_option
 from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.util.common import render, write_sql
+from bigquery_etl.schema import SCHEMA_FILE, Schema
 
 THIS_PATH = Path(os.path.dirname(__file__))
 TABLE_NAME = "urlbar_events"
@@ -53,10 +55,12 @@ def generate(target_project, output_dir, use_cloud_function):
             app_name=browser.name,
         )
     )
+    full_table_id = f"{target_project}.{browser.name}_derived.{TABLE_NAME}_v2"
+    full_view_id = f"{target_project}.{browser.name}.{TABLE_NAME}"
 
     write_sql(
         output_dir=output_dir,
-        full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}_v2",
+        full_table_id=full_table_id,
         basename="query.sql",
         sql=query_sql,
         skip_existing=False,
@@ -64,7 +68,7 @@ def generate(target_project, output_dir, use_cloud_function):
 
     write_sql(
         output_dir=output_dir,
-        full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}_v2",
+        full_table_id=full_table_id,
         basename="metadata.yaml",
         sql=render(
             metadata_template,
@@ -78,7 +82,7 @@ def generate(target_project, output_dir, use_cloud_function):
 
     write_sql(
         output_dir=output_dir,
-        full_table_id=f"{target_project}.{browser.name}.{TABLE_NAME}",
+        full_table_id=full_view_id,
         basename="view.sql",
         sql=reformat(
             view_template.render(
@@ -88,3 +92,10 @@ def generate(target_project, output_dir, use_cloud_function):
         ),
         skip_existing=False,
     )
+
+    final_path = Path(os.path.join(output_dir, *list(full_table_id.split(".")[-2:])))
+    source_schema_path = THIS_PATH / "templates" / "schema.yaml"
+    final_schema_path = final_path / "schema.yaml"
+
+    if os.path.exists(source_schema_path):
+        shutil.copyfile(source_schema_path, final_schema_path)

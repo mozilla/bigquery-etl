@@ -316,14 +316,6 @@ with DAG(
         firefox_ios_derived__app_store_funnel__v1
     )
 
-    checks__fail_firefox_ios_derived__baseline_clients_yearly__v1.set_upstream(
-        firefox_ios_derived__baseline_clients_yearly__v1
-    )
-
-    checks__fail_firefox_ios_derived__client_adclicks_history__v1.set_upstream(
-        firefox_ios_derived__client_adclicks_history__v1
-    )
-
     wait_for_baseline_clients_daily = ExternalTaskSensor(
         task_id="wait_for_baseline_clients_daily",
         external_dag_id="copy_deduplicate",
@@ -334,6 +326,18 @@ with DAG(
         allowed_states=ALLOWED_STATES,
         failed_states=FAILED_STATES,
         pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    checks__fail_firefox_ios_derived__baseline_clients_yearly__v1.set_upstream(
+        wait_for_baseline_clients_daily
+    )
+
+    checks__fail_firefox_ios_derived__baseline_clients_yearly__v1.set_upstream(
+        firefox_ios_derived__baseline_clients_yearly__v1
+    )
+
+    checks__fail_firefox_ios_derived__client_adclicks_history__v1.set_upstream(
+        firefox_ios_derived__client_adclicks_history__v1
     )
 
     checks__fail_firefox_ios_derived__firefox_ios_clients__v1.set_upstream(
@@ -443,6 +447,10 @@ with DAG(
 
     firefox_ios_derived__attributable_clients__v1.set_upstream(
         wait_for_search_derived__mobile_search_clients_daily__v1
+    )
+
+    firefox_ios_derived__baseline_clients_yearly__v1.set_upstream(
+        wait_for_baseline_clients_daily
     )
 
     firefox_ios_derived__client_adclicks_history__v1.set_upstream(

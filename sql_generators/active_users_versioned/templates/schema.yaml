@@ -93,3 +93,6 @@ fields:
 - description: TODO
   name: device_manufacturer
   type: STRING
+- description: TODO
+  name: last_updated_timestamp
+  type: TIMESTAMP

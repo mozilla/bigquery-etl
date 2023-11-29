@@ -124,6 +124,7 @@ SELECT
       metrics.labeled_counter.networking_residual_cache_folder_removal,
       metrics.labeled_counter.cookie_banners_cmp_detected_cmp,
       metrics.labeled_counter.cookie_banners_cmp_result,
+      metrics.labeled_counter.extensions_startup_cache_read_errors,
       CAST(
         NULL
         AS
@@ -275,6 +276,7 @@ SELECT
       metrics.labeled_counter.networking_residual_cache_folder_removal,
       metrics.labeled_counter.cookie_banners_cmp_detected_cmp,
       metrics.labeled_counter.cookie_banners_cmp_result,
+      metrics.labeled_counter.extensions_startup_cache_read_errors,
       metrics.labeled_counter.fog_validation_gvsv_audio_stream_init_gvst
     ) AS `labeled_counter`,
     metrics.quantity,
@@ -611,6 +613,7 @@ SELECT
       metrics.labeled_counter.networking_residual_cache_folder_removal,
       metrics.labeled_counter.cookie_banners_cmp_detected_cmp,
       metrics.labeled_counter.cookie_banners_cmp_result,
+      metrics.labeled_counter.extensions_startup_cache_read_errors,
       metrics.labeled_counter.fog_validation_gvsv_audio_stream_init_gvst
     ) AS `labeled_counter`,
     metrics.quantity,
@@ -1153,6 +1156,7 @@ SELECT
       metrics.labeled_counter.networking_residual_cache_folder_removal,
       metrics.labeled_counter.cookie_banners_cmp_detected_cmp,
       metrics.labeled_counter.cookie_banners_cmp_result,
+      metrics.labeled_counter.extensions_startup_cache_read_errors,
       metrics.labeled_counter.fog_validation_gvsv_audio_stream_init_gvst
     ) AS `labeled_counter`,
     metrics.quantity,
@@ -1506,6 +1510,7 @@ SELECT
       metrics.labeled_counter.networking_residual_cache_folder_removal,
       metrics.labeled_counter.cookie_banners_cmp_detected_cmp,
       metrics.labeled_counter.cookie_banners_cmp_result,
+      metrics.labeled_counter.extensions_startup_cache_read_errors,
       metrics.labeled_counter.fog_validation_gvsv_audio_stream_init_gvst
     ) AS `labeled_counter`,
     metrics.quantity,

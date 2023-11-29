@@ -2431,6 +2431,16 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
+    - name: extensions_startup_cache_read_errors
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
     - name: fog_validation_gvsv_audio_stream_init_gvst
       type: RECORD
       mode: REPEATED
@@ -2497,6 +2507,9 @@ fields:
       type: INTEGER
       mode: NULLABLE
     - name: fog_validation_gvsv_primary_width
+      type: INTEGER
+      mode: NULLABLE
+    - name: extensions_startup_cache_write_bytelength
       type: INTEGER
       mode: NULLABLE
   - name: string

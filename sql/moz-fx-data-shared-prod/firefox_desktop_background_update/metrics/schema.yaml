@@ -1312,10 +1312,17 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: "Counters for how many times the extension process has crashed\
-        \ or been created.\nThe labels with \"_fg\" / \"_bg\" suffixes are only recorded\
-        \ in Android builds,\nwhile the \"created\" and \"crashed\" labels are recorded\
-        \ on both Desktop and Android\nbuilds. \n"
+      description: 'Counters for how many times the extension process has crashed
+        or been created.
+
+        The labels with "_fg" / "_bg" suffixes are only recorded in Android builds,
+
+        while the "created" and "crashed" labels are recorded on both Desktop and
+        Android
+
+        builds.
+
+        '
     - name: data_storage_entries
       type: RECORD
       mode: REPEATED
@@ -1446,6 +1453,22 @@ fields:
         cookie banners, labelled by reason. The ''success'' and ''fail'' counters
         count the total numbers independently of the reason counters. Counters are
         incremented after the content window has been destroyed.
+
+        '
+    - name: extensions_startup_cache_read_errors
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The number of times an unexpected error has been raised while
+        reading
+
+        the extensions StartupCache file.
 
         '
   - name: memory_distribution
@@ -4784,6 +4807,12 @@ fields:
       mode: NULLABLE
       description: "Primary display pixel width, recorded alongside the GeckoView\
         \ Streaming \nAPI for the purposes of Validation (hence GVSV).\n"
+    - name: extensions_startup_cache_write_bytelength
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The amount of bytes written to the extensions StartupCache file.
+
+        '
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

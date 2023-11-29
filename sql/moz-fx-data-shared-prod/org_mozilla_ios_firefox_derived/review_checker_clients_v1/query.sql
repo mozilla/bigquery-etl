@@ -13,7 +13,7 @@ WITH ranked_data AS (
     ping_info.experiments AS experiments,
     ROW_NUMBER() OVER (PARTITION BY client_info.client_id ORDER BY submission_timestamp) AS row_num
   FROM
-    `moz-fx-data-shared-prod.org_mozilla_ios_firefox_stable.metrics_v1`
+    `moz-fx-data-shared-prod.firefox_ios.metrics`
   WHERE
     DATE(submission_timestamp) = @submission_date
 ),

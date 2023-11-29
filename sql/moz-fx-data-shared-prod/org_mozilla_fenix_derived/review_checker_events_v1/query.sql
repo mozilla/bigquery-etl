@@ -110,7 +110,7 @@ SELECT
   sample_id,
   mozfun.norm.truncate_version(client_info.app_display_version, "major") AS app_version,
 FROM
-  `moz-fx-data-shared-prod.org_mozilla_fenix_stable.events_v1` AS e,
+  `moz-fx-data-shared-prod.fenix.events` AS e,
   UNNEST(events)
 WHERE
   DATE(submission_timestamp) = @submission_date

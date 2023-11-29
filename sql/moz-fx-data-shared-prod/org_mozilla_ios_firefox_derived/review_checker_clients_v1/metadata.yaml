@@ -29,6 +29,6 @@ workgroup_access:
 references:
   query.sql:
   - moz-fx-data-shared-prod.firefox_ios.baseline
-  - moz-fx-data-shared-prod.org_mozilla_ios_firefox_stable.metrics_v1
+  - moz-fx-data-shared-prod.firefox_ios.metrics
   - moz-fx-data-shared-prod.search.mobile_search_clients_engines_sources_daily
 deprecated: false

@@ -14,6 +14,10 @@ labels:
 scheduling:
   dag_name: bqetl_firefox_ios
   depends_on_past: true
+  depends_on:
+    - dag_name: copy_deduplicate
+      task_id: baseline_clients_daily
+      execution_delta: 3h
 bigquery:
   time_partitioning:
     type: day

@@ -47,7 +47,7 @@ WITH _base AS (
     FROM
       `{{ project_id }}.{{ app_name }}.clients_last_seen_joined`
     WHERE
-      {{ init_code }}
+      submission_date = @submission_date
 
   ),
   search_clients AS (
@@ -61,7 +61,7 @@ WITH _base AS (
     FROM
       `{{ project_id }}.search_derived.mobile_search_clients_daily_v1`
     WHERE
-      {{ init_code }}
+      submission_date = @submission_date
 
   ),
   search_metrics AS (
@@ -285,8 +285,7 @@ WITH _base AS (
     install_source,
     device_manufacturer,
     last_updated_timestamp
-) {{ init_start }}
-,
+),
 -- Next CTE returns the daily query aggregated before adding the new column.
 _current AS (
   SELECT
@@ -364,7 +363,7 @@ _previous AS (
   FROM
     `{{ project_id }}.{{ app_name }}.active_users_aggregates` -- Query the view (not the table) in order to retrive records HAVING MAX(last_updated_timestamp)
   WHERE
-    submission_date >= "2021-01-01"
+    submission_date = @submission_date
 ),
 -- Next CTE returns the union of _current and _previous, which is used later to calculate differences between historical and new data.
 -- NOTE. Using MERGE from here in query2 for better performance and clarity. It requires this file to run as a script.
@@ -451,61 +450,61 @@ backfill_delta AS (
     submission_date,
     language_name,
     IF(
-      last_updated_timestamp = @current_timestamp
+      last_updated_timestamp = CURRENT_TIMESTAMP
       AND (LAG(dau) OVER dimensions - dau) > 0,
       LAG(dau) OVER dimensions - dau,
       NULL
     ) AS dau,
     IF(
-      last_updated_timestamp = @current_timestamp
+      last_updated_timestamp = CURRENT_TIMESTAMP
       AND (LAG(wau) OVER dimensions - wau) > 0,
       LAG(wau) OVER dimensions - wau,
       NULL
     ) AS wau,
     IF(
-      last_updated_timestamp = @current_timestamp
+      last_updated_timestamp = CURRENT_TIMESTAMP
       AND (LAG(mau) OVER dimensions - mau) > 0,
       LAG(mau) OVER dimensions - mau,
       NULL
     ) AS mau,
     IF(
-      last_updated_timestamp = @current_timestamp
+      last_updated_timestamp = CURRENT_TIMESTAMP
       AND (LAG(new_profiles) OVER dimensions - new_profiles) > 0,
       LAG(new_profiles) OVER dimensions - new_profiles,
       NULL
     ) AS new_profiles,
     IF(
-      last_updated_timestamp = @current_timestamp
+      last_updated_timestamp = CURRENT_TIMESTAMP
       AND (LAG(ad_clicks) OVER dimensions - ad_clicks) > 0,
       LAG(ad_clicks) OVER dimensions - ad_clicks,
       NULL
     ) AS ad_clicks,
     IF(
-      last_updated_timestamp = @current_timestamp
+      last_updated_timestamp = CURRENT_TIMESTAMP
       AND (LAG(organic_search_count) OVER dimensions - organic_search_count) > 0,
       LAG(organic_search_count) OVER dimensions - organic_search_count,
       NULL
     ) AS organic_search_count,
     IF(
-      last_updated_timestamp = @current_timestamp
+      last_updated_timestamp = CURRENT_TIMESTAMP
       AND (LAG(search_count) OVER dimensions - search_count) > 0,
       LAG(search_count) OVER dimensions - search_count,
       NULL
     ) AS search_count,
     IF(
-      last_updated_timestamp = @current_timestamp
+      last_updated_timestamp = CURRENT_TIMESTAMP
       AND (LAG(search_with_ads) OVER dimensions - search_with_ads) > 0,
       LAG(search_with_ads) OVER dimensions - search_with_ads,
       NULL
     ) AS search_with_ads,
     IF(
-      last_updated_timestamp = @current_timestamp
+      last_updated_timestamp = CURRENT_TIMESTAMP
       AND (LAG(uri_count) OVER dimensions - uri_count) > 0,
       LAG(uri_count) OVER dimensions - uri_count,
       NULL
     ) AS uri_count,
     IF(
-      last_updated_timestamp = @current_timestamp
+      last_updated_timestamp = CURRENT_TIMESTAMP
       AND (LAG(active_hours) OVER dimensions - active_hours) > 0,
       LAG(active_hours) OVER dimensions - active_hours,
       NULL
@@ -647,7 +646,7 @@ _all AS (
   FROM
     backfill_delta
   WHERE
-    last_updated_timestamp = @current_timestamp
+    last_updated_timestamp = CURRENT_TIMESTAMP
     AND dau IS NOT NULL
   UNION ALL
   SELECT
@@ -661,14 +660,7 @@ _all AS (
     4,
     5
 )
--- For a full backfill the result set is the UNION of the historical data combined with the new calculation for the column added and the difference between them.
 SELECT
   *
 FROM
-  _all {{ init_else }}
--- For a daily backfill the result set is inly the data for that day.
-SELECT
-  *
-FROM
-  _base {{ init_end }}
-
+  _all

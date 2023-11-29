@@ -58,17 +58,6 @@ def generate(target_project, output_dir, use_cloud_function):
             f"{target_project}.{browser.name}_derived.{TABLE_NAME}_{current_version}"
         )
         full_view_id = f"{target_project}.{browser.name}.{TABLE_NAME}"
-        init_code = (
-            "{% if is_init() %} "
-            "submission_date = '2021-01-01' "
-            "{% else %} "
-            "submission_date = @submission_date "
-            "{% endif %}"
-        )
-
-        init_start = "{% if is_init() %}"
-        init_else = "{% else %}"
-        init_end = "{% endif %}"
 
         query_sql = reformat(
             mobile_query_template.render(
@@ -76,10 +65,6 @@ def generate(target_project, output_dir, use_cloud_function):
                 app_value=browser.value,
                 app_name=browser.name,
                 full_table_id=full_table_id,
-                init_code=init_code,
-                init_start=init_start,
-                init_else=init_else,
-                init_end=init_end,
             )
         )
 

@@ -43,6 +43,22 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
+    google_ads_derived__accounts__v1 = bigquery_etl_query(
+        task_id="google_ads_derived__accounts__v1",
+        destination_table="accounts_v1",
+        dataset_id="google_ads_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="lschiestl@mozilla.com",
+        email=[
+            "frank@mozilla.com",
+            "lschiestl@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
     google_ads_derived__campaign_conversions_by_date__v1 = bigquery_etl_query(
         task_id="google_ads_derived__campaign_conversions_by_date__v1",
         destination_table="campaign_conversions_by_date_v1",

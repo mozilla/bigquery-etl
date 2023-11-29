@@ -1,12 +1,13 @@
-friendly_name: Campaign Names Map
+friendly_name: Accounts
 description: |-
-  A mapping from campaign_id to campaign_name for google_ads campaigns.
+  Account information for different Google Ads accounts
 owners:
-- frank@mozilla.com
+- lschiestl@mozilla.com
 labels:
   dag: bqetl_fivetran_google_ads
-  owner1: frank
+  owner1: lschiestl
 scheduling:
+  scheduling: null
   dag_name: bqetl_fivetran_google_ads
   depends_on_past: false
   date_partition_parameter: null
@@ -15,8 +16,5 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references:
-  query.sql:
-  - moz-fx-data-bq-fivetran.ads_google_mmc.campaign_history
-  - moz-fx-data-shared.google_ads_derived.accounts_v1
+references: {}
 deprecated: false

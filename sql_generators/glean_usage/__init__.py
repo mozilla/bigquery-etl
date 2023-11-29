@@ -1,5 +1,5 @@
 """GLEAN Usage."""
-from functools import partial
+from functools import cache, partial
 from pathlib import Path
 
 import click
@@ -99,6 +99,7 @@ def generate(
     elif exclude:
         table_filter = partial(table_matches_patterns, exclude, True)
 
+    @cache
     def get_tables(table_name="baseline_v1"):
         baseline_tables = list_tables(
             project_id=target_project,

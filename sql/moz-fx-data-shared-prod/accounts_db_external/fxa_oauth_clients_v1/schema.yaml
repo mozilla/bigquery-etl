@@ -1,6 +1,6 @@
 fields:
 - name: id
-  type: STRING
+  type: BYTES
   mode: NULLABLE
 - name: name
   type: STRING

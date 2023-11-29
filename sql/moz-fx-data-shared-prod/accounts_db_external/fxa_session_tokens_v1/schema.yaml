@@ -22,7 +22,7 @@ fields:
   type: STRING
   mode: NULLABLE
 - name: lastAccessTime
-  type: INTEGER
+  type: NUMERIC
   mode: NULLABLE
 - name: uaFormFactor
   type: STRING

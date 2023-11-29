@@ -1,0 +1,13 @@
+friendly_name: Gclid Conversions V1
+description: |-
+  1-row per conversion. Provides conversion events to
+  send to Google Ads.
+owners:
+- frank@mozilla.com
+labels: {}
+bigquery: null
+references: {}
+deprecated: false
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members: [workgroup:dataops-managed/external-census]

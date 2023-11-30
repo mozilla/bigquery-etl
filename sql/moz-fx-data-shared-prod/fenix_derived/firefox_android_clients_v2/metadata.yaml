@@ -33,14 +33,6 @@ scheduling:
   date_partition_parameter: null
   parameters:
   - submission_date:DATE:{{ds}}
-  depends_on:
-  - task_id: baseline_clients_daily
-    dag_name: copy_deduplicate
-    execution_delta: 1h
-  # referenced_tables:
-  # - - moz-fx-data-shared-prod
-  #   - org_mozilla_firefox
-  #   - baseline_clients_daily_v1
 bigquery:
   time_partitioning:
     type: day

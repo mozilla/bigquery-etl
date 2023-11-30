@@ -135,6 +135,7 @@ def generate(
                 target_project,
                 output_dir=output_dir,
                 use_cloud_function=use_cloud_function,
+                app_info=app_info,
             ),
             baseline_table,
         )

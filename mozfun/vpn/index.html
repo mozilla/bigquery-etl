@@ -480,6 +480,26 @@
   
   
     <li class="md-nav__item">
+      <a href="../../mozdata/accounts_db/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Firefox Accounts Databases production
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../mozdata/accounts_frontend/" class="md-nav__link">
         
   
@@ -3140,26 +3160,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#normalize_utm_parameters-udf" class="md-nav__link">
-    normalize_utm_parameters (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="normalize_utm_parameters (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#pricing_plan-udf" class="md-nav__link">
     pricing_plan (UDF)
   </a>
@@ -3168,7 +3168,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#parameters_1" class="md-nav__link">
+  <a href="#parameters" class="md-nav__link">
     Parameters
   </a>
   
@@ -3188,7 +3188,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#parameters_2" class="md-nav__link">
+  <a href="#parameters_1" class="md-nav__link">
     Parameters
   </a>
   
@@ -3205,6 +3205,26 @@
   </a>
   
     <nav class="md-nav" aria-label="channel_group (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_2" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#normalize_utm_parameters-udf" class="md-nav__link">
+    normalize_utm_parameters (UDF)
+  </a>
+  
+    <nav class="md-nav" aria-label="normalize_utm_parameters (UDF)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3562,26 +3582,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#normalize_utm_parameters-udf" class="md-nav__link">
-    normalize_utm_parameters (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="normalize_utm_parameters (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#pricing_plan-udf" class="md-nav__link">
     pricing_plan (UDF)
   </a>
@@ -3590,7 +3590,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#parameters_1" class="md-nav__link">
+  <a href="#parameters" class="md-nav__link">
     Parameters
   </a>
   
@@ -3610,7 +3610,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#parameters_2" class="md-nav__link">
+  <a href="#parameters_1" class="md-nav__link">
     Parameters
   </a>
   
@@ -3627,6 +3627,26 @@
   </a>
   
     <nav class="md-nav" aria-label="channel_group (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_2" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#normalize_utm_parameters-udf" class="md-nav__link">
+    normalize_utm_parameters (UDF)
+  </a>
+  
+    <nav class="md-nav" aria-label="normalize_utm_parameters (UDF)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3658,19 +3678,9 @@
 
 <h1 id="vpn">vpn</h1>
 <p>Functions for processing VPN data.</p>
-<h2 id="normalize_utm_parameters-udf">normalize_utm_parameters (UDF)</h2>
-<p>Normalize utm parameters to use the same NULL placeholders as Google Analytics</p>
-<h3 id="parameters">Parameters</h3>
-<p><strong>INPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>utm_campaign STRING, utm_content STRING, utm_medium STRING, utm_source STRING
-</code></pre></div>
-<p><strong>OUTPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>STRUCT&lt;utm_campaign STRING, utm_content STRING, utm_medium STRING, utm_source STRING&gt;
-</code></pre></div>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/vpn/normalize_utm_parameters">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/vpn/normalize_utm_parameters/metadata.yaml">Edit</a></p>
 <h2 id="pricing_plan-udf">pricing_plan (UDF)</h2>
 <p>Combine the pricing and interval for a subscription plan into a single field</p>
-<h3 id="parameters_1">Parameters</h3>
+<h3 id="parameters">Parameters</h3>
 <p><strong>INPUTS</strong></p>
 <div class="highlight"><pre><span></span><code>provider STRING, amount INTEGER, currency STRING, `interval` STRING, interval_count INTEGER
 </code></pre></div>
@@ -3680,7 +3690,7 @@
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/vpn/pricing_plan">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/vpn/pricing_plan/metadata.yaml">Edit</a></p>
 <h2 id="acquisition_channel-udf">acquisition_channel (UDF)</h2>
 <p>Assign an acquisition channel based on utm parameters</p>
-<h3 id="parameters_2">Parameters</h3>
+<h3 id="parameters_1">Parameters</h3>
 <p><strong>INPUTS</strong></p>
 <div class="highlight"><pre><span></span><code>utm_campaign STRING, utm_content STRING, utm_medium STRING, utm_source STRING
 </code></pre></div>
@@ -3690,7 +3700,7 @@
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/vpn/acquisition_channel">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/vpn/acquisition_channel/metadata.yaml">Edit</a></p>
 <h2 id="channel_group-udf">channel_group (UDF)</h2>
 <p>Assign a channel group based on utm parameters</p>
-<h3 id="parameters_3">Parameters</h3>
+<h3 id="parameters_2">Parameters</h3>
 <p><strong>INPUTS</strong></p>
 <div class="highlight"><pre><span></span><code>utm_campaign STRING, utm_content STRING, utm_medium STRING, utm_source STRING
 </code></pre></div>
@@ -3698,6 +3708,16 @@
 <div class="highlight"><pre><span></span><code>STRING
 </code></pre></div>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/vpn/channel_group">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/vpn/channel_group/metadata.yaml">Edit</a></p>
+<h2 id="normalize_utm_parameters-udf">normalize_utm_parameters (UDF)</h2>
+<p>Normalize utm parameters to use the same NULL placeholders as Google Analytics</p>
+<h3 id="parameters_3">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>utm_campaign STRING, utm_content STRING, utm_medium STRING, utm_source STRING
+</code></pre></div>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>STRUCT&lt;utm_campaign STRING, utm_content STRING, utm_medium STRING, utm_source STRING&gt;
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/vpn/normalize_utm_parameters">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/vpn/normalize_utm_parameters/metadata.yaml">Edit</a></p>
 
 
 

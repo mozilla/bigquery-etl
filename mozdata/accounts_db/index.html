@@ -13,10 +13,10 @@
       
       
       
-        <link rel="prev" href="../app_store/">
+        <link rel="prev" href="../accounts_backend/">
       
       
-        <link rel="next" href="../bedrock/">
+        <link rel="next" href="../accounts_frontend/">
       
       
       <link rel="icon" href="../../favicon.png">
@@ -24,7 +24,7 @@
     
     
       
-        <title>Apple Ads - BigQuery ETL</title>
+        <title>Firefox Accounts Databases production - BigQuery ETL</title>
       
     
     
@@ -75,7 +75,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#ad_group_report" class="md-skip">
+        <a href="#fxa_oauth_clients" class="md-skip">
           Skip to content
         </a>
       
@@ -109,7 +109,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Apple Ads
+              Firefox Accounts Databases production
             
           </span>
         </div>
@@ -482,9 +482,27 @@
                 
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../accounts_db/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Firefox Accounts Databases production
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -493,6 +511,31 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#fxa_oauth_clients" class="md-nav__link">
+    fxa_oauth_clients
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -662,27 +705,9 @@
                 
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    Apple Ads
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../apple_ads/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -691,59 +716,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#ad_group_report" class="md-nav__link">
-    ad_group_report
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#campaign_report" class="md-nav__link">
-    campaign_report
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#keyword_report" class="md-nav__link">
-    keyword_report
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#organization_report" class="md-nav__link">
-    organization_report
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#search_term_report" class="md-nav__link">
-    search_term_report
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -3531,36 +3503,8 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#ad_group_report" class="md-nav__link">
-    ad_group_report
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#campaign_report" class="md-nav__link">
-    campaign_report
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#keyword_report" class="md-nav__link">
-    keyword_report
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#organization_report" class="md-nav__link">
-    organization_report
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#search_term_report" class="md-nav__link">
-    search_term_report
+  <a href="#fxa_oauth_clients" class="md-nav__link">
+    fxa_oauth_clients
   </a>
   
 </li>
@@ -3580,128 +3524,18 @@
                   
 
 
-  <h1>Apple Ads</h1>
+  <h1>Firefox Accounts Databases production</h1>
 
-<p>User facing views for Apple Ads data ingested via Fivetran.</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/apple_ads">Source Directory</a></p>
-<h2 id="ad_group_report"><a href="#ad_group_report">ad_group_report</a></h2>
-<p><strong>Ad Group Report</strong></p>
-<p><code>apple_ads.ad_group_report</code></p>
-<p>Please provide a description for the query</p>
-<table>
-<caption>Schema</caption>
-    <tr>
-        <th>Column</th>
-        <th>Description</th>
-        <th>Type</th>
-        <th>Nullable</th>
-    </tr>
-<tr>
-        <td>date_day</td>
-        <td>Date of the report.
-</td>
-        <td>Date</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>organization_id</td>
-        <td>Organization ID associated with this record.
-</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>organization_name</td>
-        <td>Organization name associated with this record.
-</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>campaign_id</td>
-        <td>Campaign ID associated with this record.
-</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>campaign_name</td>
-        <td>Campaign name associated with this record.
-</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>ad_group_id</td>
-        <td>Ad group ID associated with this record.
-</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>ad_group_name</td>
-        <td>Ad group name associated with this record.
-</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>currency</td>
-        <td>This currency value should match the respective organization's currency value.
-</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>ad_group_status</td>
-        <td>The status of the ad group associated with this record.
-</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>start_at</td>
-        <td>The start timestamp for this ad group.
-</td>
-        <td>Timestamp</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>end_at</td>
-        <td>The end timestamp for this ad group.
-</td>
-        <td>Timestamp</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>taps</td>
-        <td>Number of taps on ad group on given day.
-</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>new_downloads</td>
-        <td>App downloads from new users who have never before installed app of ad group in a given day.
-</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>redownloads</td>
-        <td>Number of user downloads where user deletes app and downloads the same app again following
-a tap on an ad on the App Store, or downloads the same app to an additional device of ad group in a given day.
-</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>total_downloads</td>
-        <td>The sum of new_downloads and redownloads.
-</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>impressions</td>
-        <td>The number of impressions of ad group in a given day.
-</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>spend</td>
-        <td>The spend on ad group in the given day.
-</td>
-        <td>Bignumeric</td>
-        <td>Yes</td>
-    </tr>
-</table>
-
+<p>Views for accessing data extracted from Mozilla Accounts backend services databases.</p>
+<p>Contains views to selected tables and columns from <code>accounts_db_external</code> dataset that are useful for analysis.</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/accounts_db">Source Directory</a></p>
+<h2 id="fxa_oauth_clients"><a href="#fxa_oauth_clients">fxa_oauth_clients</a></h2>
+<p><strong>Clients table from production fxa_oauth database</strong></p>
+<p><code>accounts_db.fxa_oauth_clients</code></p>
+<p>An authorized view on top of the <code>accounts_db_external.fxa_oauth_clients_v1</code> table.
+Contains mappings of oauth client ids to their names.</p>
+<p><code>id</code> column is converted from bytes to a hex string.</p>
+<p>See https://mozilla.github.io/ecosystem-platform/reference/database-structure#database-fxa</p>
 <table>
 <caption>Referenced Tables</caption>
     <tr>
@@ -3711,504 +3545,12 @@ a tap on an ad on the App Store, or downloads the same app to an additional devi
     </tr>
 <tr>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/apple_ads_external>apple_ads_external</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/apple_ads_external/ad_group_report_v1>ad_group_report_v1</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/accounts_db_external>accounts_db_external</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/accounts_db_external/fxa_oauth_clients_v1>fxa_oauth_clients_v1</a></td>
         </tr>
 </table>
 
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/apple_ads/ad_group_report">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/apple_ads/ad_group_report/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/apple_ads/ad_group_report/metadata.yaml">Metadata File</a> </p>
-<hr />
-<h2 id="campaign_report"><a href="#campaign_report">campaign_report</a></h2>
-<p><strong>Campaign Report</strong></p>
-<p><code>apple_ads.campaign_report</code></p>
-<p>Please provide a description for the query</p>
-<table>
-<caption>Schema</caption>
-    <tr>
-        <th>Column</th>
-        <th>Description</th>
-        <th>Type</th>
-        <th>Nullable</th>
-    </tr>
-<tr>
-        <td>date_day</td>
-        <td>Date of the report.
-</td>
-        <td>Date</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>organization_id</td>
-        <td>Organization ID associated with this record.
-</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>organization_name</td>
-        <td>Organization name associated with this record.
-</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>campaign_id</td>
-        <td>Campaign ID associated with this record.
-</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>campaign_name</td>
-        <td>Campaign name associated with this record.
-</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>currency</td>
-        <td>This currency value should match the respective organization's currency value.
-</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>campaign_status</td>
-        <td>The status of the campaign associted with this record.
-</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>start_at</td>
-        <td>The start timestamp for this ad group.
-</td>
-        <td>Timestamp</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>end_at</td>
-        <td>The end timestamp for this ad group.
-</td>
-        <td>Timestamp</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>taps</td>
-        <td>Number of taps on ad group on given day.
-</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>new_downloads</td>
-        <td>App downloads from new users who have never before installed app of ad group in a given day.
-</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>redownloads</td>
-        <td>Number of user downloads where user deletes app and downloads the same app again following
-a tap on an ad on the App Store, or downloads the same app to an additional device of ad group in a given day.
-</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>total_downloads</td>
-        <td>The sum of new_downloads and redownloads.
-</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>impressions</td>
-        <td>The number of impressions of ad group in a given day.
-</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>spend</td>
-        <td>The spend on ad group in the given day.
-</td>
-        <td>Bignumeric</td>
-        <td>Yes</td>
-    </tr>
-</table>
-
-<table>
-<caption>Referenced Tables</caption>
-    <tr>
-        <th>Project</th>
-        <th>Dataset</th>
-        <th>Table</th>
-    </tr>
-<tr>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/apple_ads_external>apple_ads_external</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/apple_ads_external/campaign_report_v1>campaign_report_v1</a></td>
-        </tr>
-</table>
-
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/apple_ads/campaign_report">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/apple_ads/campaign_report/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/apple_ads/campaign_report/metadata.yaml">Metadata File</a> </p>
-<hr />
-<h2 id="keyword_report"><a href="#keyword_report">keyword_report</a></h2>
-<p><strong>Keyword Report</strong></p>
-<p><code>apple_ads.keyword_report</code></p>
-<p>Please provide a description for the query</p>
-<table>
-<caption>Schema</caption>
-    <tr>
-        <th>Column</th>
-        <th>Description</th>
-        <th>Type</th>
-        <th>Nullable</th>
-    </tr>
-<tr>
-        <td>date_day</td>
-        <td>Date of the report.
-</td>
-        <td>Date</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>organization_id</td>
-        <td>Organization ID associated with this record.
-</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>organization_name</td>
-        <td>Organization name associated with this record.
-</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>campaign_id</td>
-        <td>Campaign ID associated with this record.
-</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>campaign_name</td>
-        <td>Campaign name associated with this record.
-</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>ad_group_id</td>
-        <td>Ad group ID associated with this record.
-</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>ad_group_name</td>
-        <td>Ad group name associated with this record.
-</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>keyword_id</td>
-        <td>Creative set name associatd with this record.
-</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>keyword_text</td>
-        <td>Creative set ID associated with this record.
-</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>match_type</td>
-        <td>Controls how ads are matched to user searches; EXACT or BROAD.
-</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>currency</td>
-        <td>This currency value should match the respective organization's currency value.
-</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>keyword_status</td>
-        <td>The status of the keyword associated with this record.
-</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>taps</td>
-        <td>Number of taps on keyword on given day.
-</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>new_downloads</td>
-        <td>App downloads from new users who have never before installed app of keyword in a given day.
-</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>redownloads</td>
-        <td>Number of user downloads where user deletes app and downloads the same app again following
-a tap on an ad on the App Store, or downloads the same app to an additional device of keyword in a given day.
-</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>total_downloads</td>
-        <td>The sum of new_downloads and redownloads.
-</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>impressions</td>
-        <td>The number of impressions of keyword in a given day.
-</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>spend</td>
-        <td>The spend on keyword in the given day.
-</td>
-        <td>Bignumeric</td>
-        <td>Yes</td>
-    </tr>
-</table>
-
-<table>
-<caption>Referenced Tables</caption>
-    <tr>
-        <th>Project</th>
-        <th>Dataset</th>
-        <th>Table</th>
-    </tr>
-<tr>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/apple_ads_external>apple_ads_external</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/apple_ads_external/keyword_report_v1>keyword_report_v1</a></td>
-        </tr>
-</table>
-
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/apple_ads/keyword_report">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/apple_ads/keyword_report/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/apple_ads/keyword_report/metadata.yaml">Metadata File</a> </p>
-<hr />
-<h2 id="organization_report"><a href="#organization_report">organization_report</a></h2>
-<p><strong>Organization Report</strong></p>
-<p><code>apple_ads.organization_report</code></p>
-<p>Please provide a description for the query</p>
-<table>
-<caption>Schema</caption>
-    <tr>
-        <th>Column</th>
-        <th>Description</th>
-        <th>Type</th>
-        <th>Nullable</th>
-    </tr>
-<tr>
-        <td>date_day</td>
-        <td>Date of the report.
-</td>
-        <td>Date</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>organization_id</td>
-        <td>Organization ID associated with this record.
-</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>organization_name</td>
-        <td>Organization name associated with this record.
-</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>currency</td>
-        <td>This currency value should match the respective organization's currency value.
-</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>taps</td>
-        <td>Number of taps on organization on given day.
-</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>new_downloads</td>
-        <td>App downloads from new users who have never before installed app of organization in a given day.
-</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>redownloads</td>
-        <td>Number of user downloads where user deletes app and downloads the same app again following
-a tap on an ad on the App Store, or downloads the same app to an additional device of organization in a given day.
-</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>total_downloads</td>
-        <td>The sum of new_downloads and redownloads.
-</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>impressions</td>
-        <td>The number of impressions of organization in a given day.
-</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>spend</td>
-        <td>The spend on organization in the given day.
-</td>
-        <td>Bignumeric</td>
-        <td>Yes</td>
-    </tr>
-</table>
-
-<table>
-<caption>Referenced Tables</caption>
-    <tr>
-        <th>Project</th>
-        <th>Dataset</th>
-        <th>Table</th>
-    </tr>
-<tr>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/apple_ads_external>apple_ads_external</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/apple_ads_external/organization_report_v1>organization_report_v1</a></td>
-        </tr>
-</table>
-
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/apple_ads/organization_report">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/apple_ads/organization_report/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/apple_ads/organization_report/metadata.yaml">Metadata File</a> </p>
-<hr />
-<h2 id="search_term_report"><a href="#search_term_report">search_term_report</a></h2>
-<p><strong>Search Term Report</strong></p>
-<p><code>apple_ads.search_term_report</code></p>
-<p>Please provide a description for the query</p>
-<table>
-<caption>Schema</caption>
-    <tr>
-        <th>Column</th>
-        <th>Description</th>
-        <th>Type</th>
-        <th>Nullable</th>
-    </tr>
-<tr>
-        <td>date_day</td>
-        <td>Date of the report.
-</td>
-        <td>Date</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>organization_id</td>
-        <td>Organization ID associated with this record.
-</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>organization_name</td>
-        <td>Organization name associated with this record.
-</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>campaign_id</td>
-        <td>Campaign ID associated with this record.
-</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>campaign_name</td>
-        <td>Campaign name associated with this record.
-</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>ad_group_id</td>
-        <td>Ad group ID associated with this record.
-</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>ad_group_name</td>
-        <td>Ad group name associated with this record.
-</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>keyword_id</td>
-        <td></td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>keyword_text</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>search_term_text</td>
-        <td>Search term text.
-</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>match_type</td>
-        <td>Controls how ads are matched to user searches; EXACT or BROAD.
-</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>currency</td>
-        <td>This currency value should match the respective organization's currency value.
-</td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>taps</td>
-        <td>Number of taps on organization on given day.
-</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>new_downloads</td>
-        <td>App downloads from new users who have never before installed app of organization in a given day.
-</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>redownloads</td>
-        <td>Number of user downloads where user deletes app and downloads the same app again following
-a tap on an ad on the App Store, or downloads the same app to an additional device of organization in a given day.
-</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>total_downloads</td>
-        <td>The sum of new_downloads and redownloads.
-</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>impressions</td>
-        <td>The number of impressions of organization in a given day.
-</td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>spend</td>
-        <td>The spend on organization in the given day.
-</td>
-        <td>Bignumeric</td>
-        <td>Yes</td>
-    </tr>
-</table>
-
-<table>
-<caption>Referenced Tables</caption>
-    <tr>
-        <th>Project</th>
-        <th>Dataset</th>
-        <th>Table</th>
-    </tr>
-<tr>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/apple_ads_external>apple_ads_external</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/apple_ads_external/search_term_report_v1>search_term_report_v1</a></td>
-        </tr>
-</table>
-
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/apple_ads/search_term_report">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/apple_ads/search_term_report/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/apple_ads/search_term_report/metadata.yaml">Metadata File</a> </p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/accounts_db/fxa_oauth_clients">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/accounts_db/fxa_oauth_clients/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/accounts_db/fxa_oauth_clients/metadata.yaml">Metadata File</a> </p>
 <hr />
 
 

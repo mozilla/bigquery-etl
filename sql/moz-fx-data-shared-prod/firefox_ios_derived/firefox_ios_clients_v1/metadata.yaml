@@ -29,10 +29,6 @@ scheduling:
   dag_name: bqetl_firefox_ios
   depends_on_past: true
   date_partition_parameter: null
-  depends_on:
-  - task_id: baseline_clients_daily
-    dag_name: copy_deduplicate
-    execution_delta: 3h
   parameters:
   - submission_date:DATE:{{ds}}
 bigquery:

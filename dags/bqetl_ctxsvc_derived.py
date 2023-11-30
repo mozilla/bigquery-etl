@@ -49,7 +49,7 @@ with DAG(
 ) as dag:
     contextual_services_derived__adm_forecasting__v1 = bigquery_etl_query(
         task_id="contextual_services_derived__adm_forecasting__v1",
-        destination_table='adm_forecasting_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
+        destination_table="adm_forecasting_v1",
         dataset_id="contextual_services_derived",
         project_id="moz-fx-data-shared-prod",
         owner="skahmann@mozilla.com",
@@ -59,9 +59,8 @@ with DAG(
             "telemetry-alerts@mozilla.com",
             "wstuckey@mozilla.com",
         ],
-        date_partition_parameter=None,
+        date_partition_parameter="submission_date",
         depends_on_past=False,
-        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
     )
 
     contextual_services_derived__event_aggregates__v1 = bigquery_etl_query(
@@ -166,7 +165,7 @@ with DAG(
 
     contextual_services_derived__suggest_revenue_levers_daily__v1 = bigquery_etl_query(
         task_id="contextual_services_derived__suggest_revenue_levers_daily__v1",
-        destination_table='suggest_revenue_levers_daily_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
+        destination_table="suggest_revenue_levers_daily_v1",
         dataset_id="contextual_services_derived",
         project_id="moz-fx-data-shared-prod",
         owner="skahmann@mozilla.com",
@@ -176,9 +175,8 @@ with DAG(
             "telemetry-alerts@mozilla.com",
             "wstuckey@mozilla.com",
         ],
-        date_partition_parameter=None,
+        date_partition_parameter="submission_date",
         depends_on_past=False,
-        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
     )
 
     contextual_services_derived__adm_forecasting__v1.set_upstream(

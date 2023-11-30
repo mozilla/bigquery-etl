@@ -196,7 +196,7 @@ with DAG(
     )
 
     with TaskGroup(
-        "mozilla_vpn_derived__all_subscriptions__v1_external"
+        "mozilla_vpn_derived__all_subscriptions__v1_external",
     ) as mozilla_vpn_derived__all_subscriptions__v1_external:
         ExternalTaskMarker(
             task_id="bqetl_mozilla_vpn_site_metrics__wait_for_mozilla_vpn_derived__all_subscriptions__v1",

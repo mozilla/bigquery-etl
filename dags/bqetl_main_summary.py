@@ -131,7 +131,7 @@ with DAG(
     )
 
     with TaskGroup(
-        "telemetry_derived__clients_daily__v6_external"
+        "telemetry_derived__clients_daily__v6_external",
     ) as telemetry_derived__clients_daily__v6_external:
         ExternalTaskMarker(
             task_id="bqetl_analytics_tables__wait_for_telemetry_derived__clients_daily__v6",
@@ -205,7 +205,7 @@ with DAG(
     )
 
     with TaskGroup(
-        "telemetry_derived__clients_daily_joined__v1_external"
+        "telemetry_derived__clients_daily_joined__v1_external",
     ) as telemetry_derived__clients_daily_joined__v1_external:
         ExternalTaskMarker(
             task_id="bqetl_ctxsvc_derived__wait_for_telemetry_derived__clients_daily_joined__v1",
@@ -299,7 +299,7 @@ with DAG(
     )
 
     with TaskGroup(
-        "telemetry_derived__clients_last_seen__v1_external"
+        "telemetry_derived__clients_last_seen__v1_external",
     ) as telemetry_derived__clients_last_seen__v1_external:
         ExternalTaskMarker(
             task_id="bqetl_analytics_aggregations__wait_for_telemetry_derived__clients_last_seen__v1",
@@ -389,10 +389,10 @@ with DAG(
         destination_table="clients_last_seen_joined_v1",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="jklukas@mozilla.com",
+        owner="ascholtzs@mozilla.com",
         email=[
+            "ascholtzs@mozilla.com",
             "dthorn@mozilla.com",
-            "jklukas@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
         start_date=datetime.datetime(2021, 1, 19, 0, 0),
@@ -486,7 +486,7 @@ with DAG(
     )
 
     with TaskGroup(
-        "telemetry_derived__main_remainder_1pct__v1_external"
+        "telemetry_derived__main_remainder_1pct__v1_external",
     ) as telemetry_derived__main_remainder_1pct__v1_external:
         ExternalTaskMarker(
             task_id="bqetl_feature_usage__wait_for_telemetry_derived__main_remainder_1pct__v1",
@@ -532,7 +532,7 @@ with DAG(
     )
 
     with TaskGroup(
-        "telemetry_derived__suggest_clients_daily__v1_external"
+        "telemetry_derived__suggest_clients_daily__v1_external",
     ) as telemetry_derived__suggest_clients_daily__v1_external:
         ExternalTaskMarker(
             task_id="bqetl_ctxsvc_derived__wait_for_telemetry_derived__suggest_clients_daily__v1",

@@ -4,7 +4,13 @@ description: |-
 owners:
 - ascholtz@mozilla.com
 labels:
+  incremental: true
+  schedule: daily
+  dag: bqetl_glean_usage
   owner1: ascholtz
+scheduling:
+  dag_name: bqetl_glean_usage
+  task_group: klar_android
 bigquery:
   time_partitioning:
     type: day

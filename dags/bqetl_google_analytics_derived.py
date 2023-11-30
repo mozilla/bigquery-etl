@@ -159,7 +159,7 @@ with DAG(
     )
 
     with TaskGroup(
-        "ga_derived__www_site_empty_check__v1_external"
+        "ga_derived__www_site_empty_check__v1_external",
     ) as ga_derived__www_site_empty_check__v1_external:
         ExternalTaskMarker(
             task_id="bqetl_download_funnel_attribution__wait_for_ga_derived__www_site_empty_check__v1",

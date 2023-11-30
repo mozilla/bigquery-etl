@@ -61,7 +61,7 @@ with DAG(
     )
 
     with TaskGroup(
-        "firefox_desktop_derived__onboarding__v2_external"
+        "firefox_desktop_derived__onboarding__v2_external",
     ) as firefox_desktop_derived__onboarding__v2_external:
         ExternalTaskMarker(
             task_id="bqetl_review_checker__wait_for_firefox_desktop_derived__onboarding__v2",

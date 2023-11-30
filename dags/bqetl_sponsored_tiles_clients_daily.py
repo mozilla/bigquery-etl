@@ -45,7 +45,7 @@ with DAG(
 ) as dag:
     sponsored_tiles_clients_daily_v1 = bigquery_etl_query(
         task_id="sponsored_tiles_clients_daily_v1",
-        destination_table='sponsored_tiles_clients_daily_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
+        destination_table="sponsored_tiles_clients_daily_v1",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         owner="skahmann@mozilla.com",
@@ -54,9 +54,8 @@ with DAG(
             "skahmann@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
-        date_partition_parameter=None,
+        date_partition_parameter="submission_date",
         depends_on_past=False,
-        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
     )
 
     wait_for_copy_deduplicate_all = ExternalTaskSensor(

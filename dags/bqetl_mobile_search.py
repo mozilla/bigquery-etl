@@ -78,7 +78,7 @@ with DAG(
     )
 
     with TaskGroup(
-        "search_derived__mobile_search_clients_daily__v1_external"
+        "search_derived__mobile_search_clients_daily__v1_external",
     ) as search_derived__mobile_search_clients_daily__v1_external:
         ExternalTaskMarker(
             task_id="bqetl_analytics_aggregations__wait_for_search_derived__mobile_search_clients_daily__v1",

@@ -49,7 +49,7 @@ with DAG(
 ) as dag:
     active_users_aggregates_attribution_v1 = bigquery_etl_query(
         task_id="active_users_aggregates_attribution_v1",
-        destination_table='active_users_aggregates_attribution_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
+        destination_table="active_users_aggregates_attribution_v1",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         owner="lvargas@mozilla.com",
@@ -58,14 +58,13 @@ with DAG(
             "lvargas@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
-        date_partition_parameter=None,
+        date_partition_parameter="submission_date",
         depends_on_past=False,
-        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
     )
 
     active_users_aggregates_device_v1 = bigquery_etl_query(
         task_id="active_users_aggregates_device_v1",
-        destination_table='active_users_aggregates_device_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
+        destination_table="active_users_aggregates_device_v1",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         owner="lvargas@mozilla.com",
@@ -74,13 +73,12 @@ with DAG(
             "lvargas@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
-        date_partition_parameter=None,
+        date_partition_parameter="submission_date",
         depends_on_past=False,
-        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
     )
 
     with TaskGroup(
-        "active_users_aggregates_device_v1_external"
+        "active_users_aggregates_device_v1_external",
     ) as active_users_aggregates_device_v1_external:
         ExternalTaskMarker(
             task_id="bqetl_search_dashboard__wait_for_active_users_aggregates_device_v1",
@@ -95,7 +93,7 @@ with DAG(
 
     active_users_aggregates_v1 = bigquery_etl_query(
         task_id="active_users_aggregates_v1",
-        destination_table='active_users_aggregates_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
+        destination_table="active_users_aggregates_v1",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         owner="lvargas@mozilla.com",
@@ -104,14 +102,13 @@ with DAG(
             "lvargas@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
-        date_partition_parameter=None,
+        date_partition_parameter="submission_date",
         depends_on_past=False,
-        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
     )
 
     fenix_active_users_aggregates = bigquery_etl_query(
         task_id="fenix_active_users_aggregates",
-        destination_table='active_users_aggregates_v2${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
+        destination_table="active_users_aggregates_v2",
         dataset_id="fenix_derived",
         project_id="moz-fx-data-shared-prod",
         owner="lvargas@mozilla.com",
@@ -120,9 +117,8 @@ with DAG(
             "lvargas@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
-        date_partition_parameter=None,
+        date_partition_parameter="submission_date",
         depends_on_past=False,
-        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
     )
 
     firefox_desktop_active_users_aggregates = bigquery_etl_query(
@@ -142,7 +138,7 @@ with DAG(
 
     firefox_ios_active_users_aggregates = bigquery_etl_query(
         task_id="firefox_ios_active_users_aggregates",
-        destination_table='active_users_aggregates_v2${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
+        destination_table="active_users_aggregates_v2",
         dataset_id="firefox_ios_derived",
         project_id="moz-fx-data-shared-prod",
         owner="lvargas@mozilla.com",
@@ -151,14 +147,13 @@ with DAG(
             "lvargas@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
-        date_partition_parameter=None,
+        date_partition_parameter="submission_date",
         depends_on_past=False,
-        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
     )
 
     focus_android_active_users_aggregates = bigquery_etl_query(
         task_id="focus_android_active_users_aggregates",
-        destination_table='active_users_aggregates_v2${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
+        destination_table="active_users_aggregates_v2",
         dataset_id="focus_android_derived",
         project_id="moz-fx-data-shared-prod",
         owner="lvargas@mozilla.com",
@@ -167,14 +162,13 @@ with DAG(
             "lvargas@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
-        date_partition_parameter=None,
+        date_partition_parameter="submission_date",
         depends_on_past=False,
-        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
     )
 
     focus_ios_active_users_aggregates = bigquery_etl_query(
         task_id="focus_ios_active_users_aggregates",
-        destination_table='active_users_aggregates_v2${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
+        destination_table="active_users_aggregates_v2",
         dataset_id="focus_ios_derived",
         project_id="moz-fx-data-shared-prod",
         owner="lvargas@mozilla.com",
@@ -183,14 +177,13 @@ with DAG(
             "lvargas@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
-        date_partition_parameter=None,
+        date_partition_parameter="submission_date",
         depends_on_past=False,
-        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
     )
 
     klar_ios_active_users_aggregates = bigquery_etl_query(
         task_id="klar_ios_active_users_aggregates",
-        destination_table='active_users_aggregates_v2${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
+        destination_table="active_users_aggregates_v2",
         dataset_id="klar_ios_derived",
         project_id="moz-fx-data-shared-prod",
         owner="lvargas@mozilla.com",
@@ -199,14 +192,13 @@ with DAG(
             "lvargas@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
-        date_partition_parameter=None,
+        date_partition_parameter="submission_date",
         depends_on_past=False,
-        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
     )
 
     telemetry_derived__cohort_daily_statistics__v1 = bigquery_etl_query(
         task_id="telemetry_derived__cohort_daily_statistics__v1",
-        destination_table='cohort_daily_statistics_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
+        destination_table="cohort_daily_statistics_v1",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         owner="anicholson@mozilla.com",
@@ -216,9 +208,8 @@ with DAG(
             "lvargas@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
-        date_partition_parameter=None,
+        date_partition_parameter="activity_date",
         depends_on_past=False,
-        parameters=["activity_date:DATE:{{macros.ds_add(ds, -1)}}"],
     )
 
     telemetry_derived__desktop_cohort_daily_retention__v1 = bigquery_etl_query(
@@ -296,11 +287,11 @@ with DAG(
     fenix_active_users_aggregates.set_upstream(
         wait_for_checks__fail_firefox_ios_derived__firefox_ios_clients__v1
     )
-    wait_for_clients_last_seen_joined = ExternalTaskSensor(
-        task_id="wait_for_clients_last_seen_joined",
-        external_dag_id="copy_deduplicate",
-        external_task_id="clients_last_seen_joined",
-        execution_delta=datetime.timedelta(seconds=11700),
+    wait_for_fenix_derived__clients_last_seen_joined__v1 = ExternalTaskSensor(
+        task_id="wait_for_fenix_derived__clients_last_seen_joined__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="fenix_derived__clients_last_seen_joined__v1",
+        execution_delta=datetime.timedelta(seconds=8100),
         check_existence=True,
         mode="reschedule",
         allowed_states=ALLOWED_STATES,
@@ -308,7 +299,9 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    fenix_active_users_aggregates.set_upstream(wait_for_clients_last_seen_joined)
+    fenix_active_users_aggregates.set_upstream(
+        wait_for_fenix_derived__clients_last_seen_joined__v1
+    )
     wait_for_search_derived__mobile_search_clients_daily__v1 = ExternalTaskSensor(
         task_id="wait_for_search_derived__mobile_search_clients_daily__v1",
         external_dag_id="bqetl_mobile_search",
@@ -347,13 +340,39 @@ with DAG(
     firefox_ios_active_users_aggregates.set_upstream(
         wait_for_checks__fail_firefox_ios_derived__firefox_ios_clients__v1
     )
-    firefox_ios_active_users_aggregates.set_upstream(wait_for_clients_last_seen_joined)
+    wait_for_firefox_ios_derived__clients_last_seen_joined__v1 = ExternalTaskSensor(
+        task_id="wait_for_firefox_ios_derived__clients_last_seen_joined__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="firefox_ios_derived__clients_last_seen_joined__v1",
+        execution_delta=datetime.timedelta(seconds=8100),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    firefox_ios_active_users_aggregates.set_upstream(
+        wait_for_firefox_ios_derived__clients_last_seen_joined__v1
+    )
     firefox_ios_active_users_aggregates.set_upstream(
         wait_for_search_derived__mobile_search_clients_daily__v1
     )
 
+    wait_for_focus_android_derived__clients_last_seen_joined__v1 = ExternalTaskSensor(
+        task_id="wait_for_focus_android_derived__clients_last_seen_joined__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="focus_android_derived__clients_last_seen_joined__v1",
+        execution_delta=datetime.timedelta(seconds=8100),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     focus_android_active_users_aggregates.set_upstream(
-        wait_for_clients_last_seen_joined
+        wait_for_focus_android_derived__clients_last_seen_joined__v1
     )
     focus_android_active_users_aggregates.set_upstream(
         wait_for_search_derived__mobile_search_clients_daily__v1
@@ -380,7 +399,21 @@ with DAG(
     focus_ios_active_users_aggregates.set_upstream(
         wait_for_checks__fail_firefox_ios_derived__firefox_ios_clients__v1
     )
-    focus_ios_active_users_aggregates.set_upstream(wait_for_clients_last_seen_joined)
+    wait_for_focus_ios_derived__clients_last_seen_joined__v1 = ExternalTaskSensor(
+        task_id="wait_for_focus_ios_derived__clients_last_seen_joined__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="focus_ios_derived__clients_last_seen_joined__v1",
+        execution_delta=datetime.timedelta(seconds=8100),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    focus_ios_active_users_aggregates.set_upstream(
+        wait_for_focus_ios_derived__clients_last_seen_joined__v1
+    )
     focus_ios_active_users_aggregates.set_upstream(
         wait_for_search_derived__mobile_search_clients_daily__v1
     )
@@ -391,7 +424,21 @@ with DAG(
     klar_ios_active_users_aggregates.set_upstream(
         wait_for_checks__fail_firefox_ios_derived__firefox_ios_clients__v1
     )
-    klar_ios_active_users_aggregates.set_upstream(wait_for_clients_last_seen_joined)
+    wait_for_klar_ios_derived__clients_last_seen_joined__v1 = ExternalTaskSensor(
+        task_id="wait_for_klar_ios_derived__clients_last_seen_joined__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="klar_ios_derived__clients_last_seen_joined__v1",
+        execution_delta=datetime.timedelta(seconds=8100),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    klar_ios_active_users_aggregates.set_upstream(
+        wait_for_klar_ios_derived__clients_last_seen_joined__v1
+    )
     klar_ios_active_users_aggregates.set_upstream(
         wait_for_search_derived__mobile_search_clients_daily__v1
     )

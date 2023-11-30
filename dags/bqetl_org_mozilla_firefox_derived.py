@@ -66,7 +66,7 @@ with DAG(
     )
 
     with TaskGroup(
-        "fenix_derived__attributable_clients__v1_external"
+        "fenix_derived__attributable_clients__v1_external",
     ) as fenix_derived__attributable_clients__v1_external:
         ExternalTaskMarker(
             task_id="bqetl_campaign_cost_breakdowns__wait_for_fenix_derived__attributable_clients__v1",
@@ -154,21 +154,6 @@ with DAG(
         fenix_derived__client_adclicks_history__v1
     )
 
-    wait_for_baseline_clients_daily = ExternalTaskSensor(
-        task_id="wait_for_baseline_clients_daily",
-        external_dag_id="copy_deduplicate",
-        external_task_id="baseline_clients_daily",
-        execution_delta=datetime.timedelta(seconds=3600),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    fenix_derived__attributable_clients__v1.set_upstream(
-        wait_for_baseline_clients_daily
-    )
     wait_for_search_derived__mobile_search_clients_daily__v1 = ExternalTaskSensor(
         task_id="wait_for_search_derived__mobile_search_clients_daily__v1",
         external_dag_id="bqetl_mobile_search",
@@ -186,17 +171,12 @@ with DAG(
     )
 
     fenix_derived__attributable_clients__v2.set_upstream(
-        wait_for_baseline_clients_daily
-    )
-    fenix_derived__attributable_clients__v2.set_upstream(
         wait_for_search_derived__mobile_search_clients_daily__v1
     )
 
     fenix_derived__client_adclicks_history__v1.set_upstream(
         fenix_derived__attributable_clients__v2
     )
-
-    fenix_derived__clients_yearly__v1.set_upstream(wait_for_baseline_clients_daily)
 
     wait_for_copy_deduplicate_all = ExternalTaskSensor(
         task_id="wait_for_copy_deduplicate_all",

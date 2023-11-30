@@ -82,7 +82,7 @@ with DAG(
     )
 
     with TaskGroup(
-        "telemetry_derived__addons__v2_external"
+        "telemetry_derived__addons__v2_external",
     ) as telemetry_derived__addons__v2_external:
         ExternalTaskMarker(
             task_id="bqetl_feature_usage__wait_for_telemetry_derived__addons__v2",

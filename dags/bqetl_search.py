@@ -62,7 +62,7 @@ with DAG(
     )
 
     with TaskGroup(
-        "search_derived__search_aggregates__v8_external"
+        "search_derived__search_aggregates__v8_external",
     ) as search_derived__search_aggregates__v8_external:
         ExternalTaskMarker(
             task_id="bqetl_search_dashboard__wait_for_search_derived__search_aggregates__v8",
@@ -92,7 +92,7 @@ with DAG(
     )
 
     with TaskGroup(
-        "search_derived__search_clients_daily__v8_external"
+        "search_derived__search_clients_daily__v8_external",
     ) as search_derived__search_clients_daily__v8_external:
         ExternalTaskMarker(
             task_id="bqetl_ctxsvc_derived__wait_for_search_derived__search_clients_daily__v8",
@@ -156,7 +156,7 @@ with DAG(
     )
 
     with TaskGroup(
-        "search_derived__search_clients_last_seen__v1_external"
+        "search_derived__search_clients_last_seen__v1_external",
     ) as search_derived__search_clients_last_seen__v1_external:
         ExternalTaskMarker(
             task_id="ltv_daily__wait_for_search_clients_last_seen",

@@ -68,7 +68,7 @@ with DAG(
     )
 
     with TaskGroup(
-        "telemetry_derived__core_clients_last_seen__v1_external"
+        "telemetry_derived__core_clients_last_seen__v1_external",
     ) as telemetry_derived__core_clients_last_seen__v1_external:
         ExternalTaskMarker(
             task_id="bqetl_nondesktop__wait_for_telemetry_derived__core_clients_last_seen__v1",

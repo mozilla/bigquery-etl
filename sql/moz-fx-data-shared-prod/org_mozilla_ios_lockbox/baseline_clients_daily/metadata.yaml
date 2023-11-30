@@ -6,9 +6,9 @@ description: |-
 
   See also: `baseline_clients_last_seen`
 owners:
-- jklukas@mozilla.com
+- ascholtz@mozilla.com
 labels:
-  owner1: jklukas
+  owner1: ascholtz
 bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer

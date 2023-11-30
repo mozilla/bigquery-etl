@@ -10,9 +10,22 @@ description: |-
 
   See also: `baseline_clients_daily` and `baseline_clients_last_seen`.
 owners:
-- jklukas@mozilla.com
+- ascholtz@mozilla.com
 labels:
-  owner1: jklukas
+  schedule: daily
+  dag: bqetl_glean_usage
+  owner1: ascholtz
+scheduling:
+  dag_name: bqetl_glean_usage
+  task_group: firefox_desktop_background_update
+  depends_on_past: true
+  date_partition_parameter: null
+  parameters:
+  - submission_date:DATE: null
+  depends_on:
+  - task_id: telemetry_derived__core_clients_first_seen__v1
+    dag_name: copy_deduplicate
+    execution_delta: 1h
 bigquery:
   time_partitioning:
     type: day

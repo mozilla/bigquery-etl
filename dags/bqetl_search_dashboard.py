@@ -90,7 +90,7 @@ with DAG(
 
     search_derived__search_revenue_levers_daily__v1 = bigquery_etl_query(
         task_id="search_derived__search_revenue_levers_daily__v1",
-        destination_table='search_revenue_levers_daily_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
+        destination_table="search_revenue_levers_daily_v1",
         dataset_id="search_derived",
         project_id="moz-fx-data-shared-prod",
         owner="xluo@mozilla.com",
@@ -100,9 +100,8 @@ with DAG(
             "telemetry-alerts@mozilla.com",
             "xluo@mozilla.com",
         ],
-        date_partition_parameter=None,
+        date_partition_parameter="submission_date",
         depends_on_past=False,
-        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
     )
 
     wait_for_telemetry_derived__clients_last_seen__v1 = ExternalTaskSensor(

@@ -57,7 +57,7 @@ with DAG(
     )
 
     with TaskGroup(
-        "app_store_external__firefox_app_store_territory_source_type_report__v1_external"
+        "app_store_external__firefox_app_store_territory_source_type_report__v1_external",
     ) as app_store_external__firefox_app_store_territory_source_type_report__v1_external:
         ExternalTaskMarker(
             task_id="bqetl_firefox_ios__wait_for_app_store_external__firefox_app_store_territory_source_type_report__v1",
@@ -83,7 +83,7 @@ with DAG(
     )
 
     with TaskGroup(
-        "app_store_external__firefox_downloads_territory_source_type_report__v1_external"
+        "app_store_external__firefox_downloads_territory_source_type_report__v1_external",
     ) as app_store_external__firefox_downloads_territory_source_type_report__v1_external:
         ExternalTaskMarker(
             task_id="bqetl_firefox_ios__wait_for_app_store_external__firefox_downloads_territory_source_type_report__v1",

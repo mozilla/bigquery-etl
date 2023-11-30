@@ -102,7 +102,7 @@ with DAG(
     )
 
     with TaskGroup(
-        "firefox_accounts_derived__fxa_auth_events__v1_external"
+        "firefox_accounts_derived__fxa_auth_events__v1_external",
     ) as firefox_accounts_derived__fxa_auth_events__v1_external:
         ExternalTaskMarker(
             task_id="bqetl_subplat__wait_for_firefox_accounts_derived__fxa_auth_events__v1",
@@ -142,7 +142,7 @@ with DAG(
     )
 
     with TaskGroup(
-        "firefox_accounts_derived__fxa_content_events__v1_external"
+        "firefox_accounts_derived__fxa_content_events__v1_external",
     ) as firefox_accounts_derived__fxa_content_events__v1_external:
         ExternalTaskMarker(
             task_id="bqetl_subplat__wait_for_firefox_accounts_derived__fxa_content_events__v1",
@@ -194,7 +194,7 @@ with DAG(
     )
 
     with TaskGroup(
-        "firefox_accounts_derived__fxa_gcp_stderr_events__v1_external"
+        "firefox_accounts_derived__fxa_gcp_stderr_events__v1_external",
     ) as firefox_accounts_derived__fxa_gcp_stderr_events__v1_external:
         ExternalTaskMarker(
             task_id="bqetl_subplat__wait_for_firefox_accounts_derived__fxa_gcp_stderr_events__v1",
@@ -235,7 +235,7 @@ with DAG(
     )
 
     with TaskGroup(
-        "firefox_accounts_derived__fxa_gcp_stdout_events__v1_external"
+        "firefox_accounts_derived__fxa_gcp_stdout_events__v1_external",
     ) as firefox_accounts_derived__fxa_gcp_stdout_events__v1_external:
         ExternalTaskMarker(
             task_id="bqetl_subplat__wait_for_firefox_accounts_derived__fxa_gcp_stdout_events__v1",
@@ -309,7 +309,7 @@ with DAG(
     )
 
     with TaskGroup(
-        "firefox_accounts_derived__fxa_stdout_events__v1_external"
+        "firefox_accounts_derived__fxa_stdout_events__v1_external",
     ) as firefox_accounts_derived__fxa_stdout_events__v1_external:
         ExternalTaskMarker(
             task_id="bqetl_subplat__wait_for_firefox_accounts_derived__fxa_stdout_events__v1",
@@ -378,7 +378,7 @@ with DAG(
     )
 
     with TaskGroup(
-        "firefox_accounts_derived__fxa_users_last_seen__v1_external"
+        "firefox_accounts_derived__fxa_users_last_seen__v1_external",
     ) as firefox_accounts_derived__fxa_users_last_seen__v1_external:
         ExternalTaskMarker(
             task_id="bqetl_gud__wait_for_firefox_accounts_derived__fxa_users_last_seen__v1",

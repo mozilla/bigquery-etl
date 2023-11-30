@@ -7,9 +7,16 @@ description: |-
 
   See also: `baseline_clients_daily`
 owners:
-- jklukas@mozilla.com
+- ascholtz@mozilla.com
 labels:
-  owner1: jklukas
+  incremental: true
+  schedule: daily
+  dag: bqetl_glean_usage
+  owner1: ascholtz
+scheduling:
+  dag_name: bqetl_glean_usage
+  task_group: klar_android
+  depends_on_past: true
 bigquery:
   time_partitioning:
     type: day

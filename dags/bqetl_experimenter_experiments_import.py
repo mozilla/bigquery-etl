@@ -60,7 +60,7 @@ with DAG(
     )
 
     with TaskGroup(
-        "monitoring__experimenter_experiments__v1_external"
+        "monitoring__experimenter_experiments__v1_external",
     ) as monitoring__experimenter_experiments__v1_external:
         ExternalTaskMarker(
             task_id="bqetl_monitoring__wait_for_monitoring__experimenter_experiments__v1",

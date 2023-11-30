@@ -12,7 +12,7 @@ CREATE OR REPLACE FUNCTION ltv.android_states_v1(
   max_weeks INT64,
   country STRING
 ) AS (
-    -- Users age. 0 on their first day (we need this uniquely ID'd) and then number of the week (1-indexed) since they were new.
+    -- Client's age. 0 on their first day (we need this uniquely ID'd) and then number of the week (1-indexed) since they were new.
     -- their second week starts on day 8, etc.
   CONCAT(
     CASE

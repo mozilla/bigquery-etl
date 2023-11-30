@@ -3591,7 +3591,7 @@
 </code></pre></div></li>
 </ul>
 </li>
-<li>Should not specify a project or dataset in table names to simplify testing</li>
+<li>For tables in <code>moz-fx-data-shared-prod</code> the project prefix should be omitted to simplify testing. (Other projects do need the project prefix)</li>
 <li>Should be <a href="../incremental/">incremental</a></li>
 <li>Should filter input tables on partition and clustering columns</li>
 <li>Should use <code>_</code> prefix in generated column names not meant for output</li>

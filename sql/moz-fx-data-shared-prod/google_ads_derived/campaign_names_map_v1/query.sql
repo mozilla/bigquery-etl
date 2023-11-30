@@ -16,7 +16,7 @@ SELECT
 FROM
   campaign_names
 JOIN
-  `moz-fx-data-shared-prod`.google_ads_derived.accounts_v1 AS accounts
+  google_ads_derived.accounts_v1 AS accounts
 ON
   accounts.account_id = campaign_names.customer_id
 WHERE

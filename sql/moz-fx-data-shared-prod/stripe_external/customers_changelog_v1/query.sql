@@ -41,7 +41,7 @@ customer_latest_discounts AS (
           coupons.currency,
           coupons.duration,
           coupons.duration_in_months,
-          metadata,
+          coupons.metadata,
           coupons.name,
           coupons.percent_off,
           coupons.redeem_by

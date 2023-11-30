@@ -142,7 +142,7 @@ subscriptions_history_tax_rates AS (
         tax_rates.display_name,
         tax_rates.inclusive,
         tax_rates.jurisdiction,
-        metadata,
+        tax_rates.metadata,
         tax_rates.percentage
       )
       ORDER BY
@@ -175,7 +175,7 @@ subscriptions_history_latest_discounts AS (
           coupons.currency,
           coupons.duration,
           coupons.duration_in_months,
-          metadata,
+          coupons.metadata,
           coupons.name,
           coupons.percent_off,
           coupons.redeem_by

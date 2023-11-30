@@ -1,0 +1,24 @@
+{{ header_yaml }}
+friendly_name: Events Stream
+description: |-
+  An events stream table, with one row per event.
+
+owners:
+  - jrediger@mozilla.com
+  - wstuckey@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_glean_usage
+  task_group: {{ app_name }}
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+  clustering:
+    fields:
+    - normalized_channel
+    - sample_id
+

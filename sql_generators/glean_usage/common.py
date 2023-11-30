@@ -120,6 +120,9 @@ def table_names_from_baseline(baseline_table, include_project_id=True):
         last_seen_view=f"{prefix}.baseline_clients_last_seen",
         first_seen_view=f"{prefix}.baseline_clients_first_seen",
         event_monitoring=f"{prefix}_derived.event_monitoring_live_v1",
+        events_view=f"{prefix}.events",
+        events_stream_table=f"{prefix}_derived.events_stream_v1",
+        events_stream_view=f"{prefix}_derived.events_stream",
     )
 
 

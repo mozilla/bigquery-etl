@@ -3,6 +3,7 @@ CREATE OR REPLACE VIEW
 AS
 SELECT
   TO_HEX(id) AS id,
-  name
+  name,
+  createdAt,
 FROM
   `moz-fx-data-shared-prod.accounts_db_external.fxa_oauth_clients_v1`

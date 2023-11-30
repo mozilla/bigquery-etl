@@ -36,6 +36,10 @@ tags = {{ tags }}
 
 with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None -%}, schedule_interval={{ schedule_interval | format_timedelta | format_schedule_interval }}{%+ endif -%}, doc_md = docs, tags = tags) as dag:
     docker_image = "gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest"
+{% for task_group in task_groups | sort %}
+    task_group_{{ task_group }} = TaskGroup('{{ task_group }}')
+{% endfor %}
+
 {% for task in tasks | sort(attribute='task_name') %}
     {{ task.task_name }} = GKEPodOperator(
         task_id="{{ task.task_name }}",
@@ -48,6 +52,9 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
         {% if task.date_partition_parameter -%}
         + ["--parameter={{ task.date_partition_parameter }}:DATE:{% raw %}{{ds}}{% endraw -%}"]
         {%- endif -%},
+        {%+ if task.task_group != None -%}
+        task_group=task_group_{{ task.task_group}},
+        {%+ endif -%}
         image=docker_image,
     )
 {% endfor -%}
@@ -77,7 +84,12 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
 
     {% if (task.downstream_dependencies + task.external_downstream_tasks)|length > 0 -%}
     {% set seenDownstreamDags = [] %}
-    with TaskGroup('{{ task.task_name }}_external') as {{ task.task_name }}_external:
+    with TaskGroup(
+        '{{ task.task_name }}_external',
+        {%+ if task.task_group != None -%}
+        parent_group=task_group_{{ task.task_group }}
+        {%+ endif -%}
+    ) as {{ task.task_name }}_external:
         {% for downstream_task in task.downstream_dependencies | sort(attribute='task_id') -%}
         {% if downstream_task.dag_name not in seenDownstreamDags -%}
         ExternalTaskMarker(

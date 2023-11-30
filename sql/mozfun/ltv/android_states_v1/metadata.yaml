@@ -1,2 +1,4 @@
-description: Please provide a description for the routine
+description: |
+  LTV states for Android. Results in strings like:
+  "1_dow3_2_1" and "0_dow1_1_1"
 friendly_name: Android States V1

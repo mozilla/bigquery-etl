@@ -507,8 +507,9 @@ def _backfill_query(
     run_checks,
 ):
     """Run a query backfill for a specific date."""
-    if backfill_date in exclude:
-        click.echo(f"Skip {query_file_path} backfill for run date {backfill_date}")
+    backfill_date_str = backfill_date.strftime("%Y-%m-%d")
+    if backfill_date_str in exclude:
+        click.echo(f"Skip {query_file_path} backfill for run date {backfill_date_str}")
         return True
 
     project, dataset, table = extract_from_query_path(query_file_path)
@@ -520,12 +521,10 @@ def _backfill_query(
         case PartitionType.MONTH:
             if date_partition_parameter != 0:
                 # TODO: Support offsets here e.g. desktop_mobile_search_clients_monthly_v1
-                raise ValueError("TODO: Can't set offset for month partitions.")
+                raise ValueError("Unsupported offset for month partitions.")
             partition = backfill_date.strftime("%Y%m")
         case _:
             raise ValueError(f"Unsupported partitioning type: {partitioning_type}")
-
-    backfill_date_str = backfill_date.strftime("%Y-%m-%d")
 
     if destination_table is None:
         destination_table = f"{project}.{dataset}.{table}"
@@ -764,7 +763,7 @@ def backfill(
             case _:
                 raise ValueError(f"Unsupported partitioning type: {partitioning_type}")
 
-        if depends_on_past and exclude != []:
+        if depends_on_past and exclude:
             click.echo(
                 f"Warning: depends_on_past = True for {query_file_path} but the"
                 f"following dates will be excluded from the backfill: {exclude}"

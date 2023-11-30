@@ -2,6 +2,12 @@ fields:
 - name: date
   type: DATE
   mode: NULLABLE
+- name: account_name
+  type: STRING
+  mode: NULLABLE
+- name: account_id
+  type: INTEGER
+  mode: NULLABLE
 - name: campaign_name
   type: STRING
   mode: NULLABLE

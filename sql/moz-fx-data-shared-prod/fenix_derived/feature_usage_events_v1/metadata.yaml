@@ -9,7 +9,6 @@ labels:
   dag: bqetl_default
 scheduling:
   dag_name: bqetl_mobile_feature_usage
-  task_name: fenix_feature_usage_events__v1
 bigquery:
   time_partitioning:
     type: day

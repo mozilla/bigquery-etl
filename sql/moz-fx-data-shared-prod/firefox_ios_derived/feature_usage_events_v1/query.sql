@@ -8,7 +8,7 @@ WITH dau_segments AS (
     DATE(submission_timestamp) AS submission_date,
     COUNT(DISTINCT client_info.client_id) AS dau
   FROM
-    `firefox_ios.events_unnested`
+    firefox_ios.events_unnested
   WHERE
     DATE(submission_timestamp) >= '2023-06-23'
   GROUP BY
@@ -263,7 +263,7 @@ product_features AS (
       ELSE 0
     END AS notification_alert_setting_enabled
   FROM
-    `firefox_ios.events_unnested`
+    firefox_ios.events_unnested
   LEFT JOIN
     UNNEST(event_extra) AS extra
   WHERE

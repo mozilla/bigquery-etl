@@ -10,7 +10,7 @@ WITH dau_segments AS (
     DATE(submission_timestamp) AS submission_date,
     COUNT(DISTINCT client_info.client_id) AS dau
   FROM
-    `firefox_ios.metrics`
+    firefox_ios.metrics
   WHERE
     DATE(submission_timestamp) >= start_date
   GROUP BY
@@ -18,7 +18,7 @@ WITH dau_segments AS (
 ),
 product_features AS (
   SELECT
-    client_info.client_id AS client_id,
+    client_info.client_id,
     DATE(submission_timestamp) AS submission_date,
     /*Credit Card*/
     COALESCE(
@@ -114,7 +114,7 @@ product_features AS (
       0
     ) AS firefox_home_page_customize_homepage_button
   FROM
-    `firefox_ios.metrics`
+    firefox_ios.metrics
   WHERE
     DATE(submission_timestamp) >= start_date
   GROUP BY

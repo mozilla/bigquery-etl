@@ -630,7 +630,7 @@ jobs:
       - checkout
       - attach_workspace:
           at: /tmp/workspace
-      - run: npm i circle-github-bot
+      - run: npm i circle-github-bot @octokit/graphql
       - run: .circleci/post-diff.js
   reset-stage-env:
     docker: *docker

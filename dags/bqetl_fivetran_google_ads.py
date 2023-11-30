@@ -110,3 +110,7 @@ with DAG(
     google_ads_derived__campaign_conversions_by_date__v1.set_upstream(
         google_ads_derived__campaign_names_map__v1
     )
+
+    google_ads_derived__campaign_names_map__v1.set_upstream(
+        google_ads_derived__accounts__v1
+    )

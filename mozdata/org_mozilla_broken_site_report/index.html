@@ -13,10 +13,10 @@
       
       
       
-        <link rel="prev" href="../search/">
+        <link rel="prev" href="../org_mozilla_bergamot/">
       
       
-        <link rel="next" href="../static/">
+        <link rel="next" href="../org_mozilla_connect_firefox/">
       
       
       <link rel="icon" href="../../favicon.png">
@@ -24,7 +24,7 @@
     
     
       
-        <title>Search Terms - BigQuery ETL</title>
+        <title>Broken site reports - BigQuery ETL</title>
       
     
     
@@ -75,7 +75,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#aggregated_search_terms_daily" class="md-skip">
+        <a href="#user_reports" class="md-skip">
           Skip to content
         </a>
       
@@ -109,7 +109,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Search Terms
+              Broken site reports
             
           </span>
         </div>
@@ -1782,9 +1782,27 @@
                 
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../org_mozilla_broken_site_report/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Broken site reports
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -1793,6 +1811,31 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#user_reports" class="md-nav__link">
+    user_reports
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -2442,27 +2485,9 @@
                 
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    Search Terms
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../search_terms/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2471,52 +2496,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#aggregated_search_terms_daily" class="md-nav__link">
-    aggregated_search_terms_daily
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#sanitization_job_data_validation_metrics" class="md-nav__link">
-    sanitization_job_data_validation_metrics
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#sanitization_job_languages" class="md-nav__link">
-    sanitization_job_languages
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#search_terms_daily" class="md-nav__link">
-    search_terms_daily
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -3504,29 +3483,8 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#aggregated_search_terms_daily" class="md-nav__link">
-    aggregated_search_terms_daily
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#sanitization_job_data_validation_metrics" class="md-nav__link">
-    sanitization_job_data_validation_metrics
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#sanitization_job_languages" class="md-nav__link">
-    sanitization_job_languages
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#search_terms_daily" class="md-nav__link">
-    search_terms_daily
+  <a href="#user_reports" class="md-nav__link">
+    user_reports
   </a>
   
 </li>
@@ -3546,19 +3504,14 @@
                   
 
 
-  <h1>Search Terms</h1>
+  <h1>Broken site reports</h1>
 
-<p>Views related to search terms data</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search_terms">Source Directory</a></p>
-<h2 id="aggregated_search_terms_daily"><a href="#aggregated_search_terms_daily">aggregated_search_terms_daily</a></h2>
-<p><strong>Aggregated Search Terms Daily</strong></p>
-<p><code>search_terms.aggregated_search_terms_daily</code></p>
-<p>Impression, click and client counts for search queries logged via
-Contextual Services Suggest Impression Pings</p>
-<ul>
-<li>Owners:<p>- <a href="mailto:rburwei@mozilla.com">rburwei@mozilla.com</a></p>
-</li>
-</ul>
+<p>Data related to user reports about broken sites</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_broken_site_report">Source Directory</a></p>
+<h2 id="user_reports"><a href="#user_reports">user_reports</a></h2>
+<p><strong>User Reports</strong></p>
+<p><code>org_mozilla_broken_site_report.user_reports</code></p>
+<p>Please provide a description for the query</p>
 <table>
 <caption>Referenced Tables</caption>
     <tr>
@@ -3568,95 +3521,16 @@ Contextual Services Suggest Impression Pings</p>
     </tr>
 <tr>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search_terms_derived>search_terms_derived</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search_terms_derived/aggregated_search_terms_daily_v1>aggregated_search_terms_daily_v1</a></td>
-        </tr>
-</table>
-
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search_terms/aggregated_search_terms_daily">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search_terms/aggregated_search_terms_daily/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search_terms/aggregated_search_terms_daily/metadata.yaml">Metadata File</a> </p>
-<hr />
-<h2 id="sanitization_job_data_validation_metrics"><a href="#sanitization_job_data_validation_metrics">sanitization_job_data_validation_metrics</a></h2>
-<p><strong>Sanitization Job Data Validation Metrics</strong></p>
-<p><code>search_terms.sanitization_job_data_validation_metrics</code></p>
-<p>The proportion of raw customer search volume that possesses
-characteristics like capital letters, census surnames, or English words.</p>
-<p>We use this + other metrics to assess
-whether the constituency using our search features is changing.</p>
-<ul>
-<li>Owners:<p>- <a href="mailto:ctroy@mozilla.com">ctroy@mozilla.com</a></p>
-<p>- <a href="mailto:dzeber@mozilla.com">dzeber@mozilla.com</a></p>
-</li>
-</ul>
-<table>
-<caption>Referenced Tables</caption>
-    <tr>
-        <th>Project</th>
-        <th>Dataset</th>
-        <th>Table</th>
-    </tr>
-<tr>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search_terms>search_terms</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search_terms/sanitization_job_languages>sanitization_job_languages</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop_live>firefox_desktop_live</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop_live/broken_site_report_v1>broken_site_report_v1</a></td>
         </tr><tr>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search_terms_derived>search_terms_derived</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search_terms_derived/sanitization_job_metadata_v2>sanitization_job_metadata_v2</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop_stable>firefox_desktop_stable</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop_stable/broken_site_report_v1>broken_site_report_v1</a></td>
         </tr>
 </table>
 
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search_terms/sanitization_job_data_validation_metrics">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search_terms/sanitization_job_data_validation_metrics/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search_terms/sanitization_job_data_validation_metrics/metadata.yaml">Metadata File</a> </p>
-<hr />
-<h2 id="sanitization_job_languages"><a href="#sanitization_job_languages">sanitization_job_languages</a></h2>
-<p><strong>Sanitization Job Languages</strong></p>
-<p><code>search_terms.sanitization_job_languages</code></p>
-<p>How many search terms got each language tag, by job.</p>
-<p>We use this + other metrics to assess
-whether the constituency using our search features is changing.</p>
-<ul>
-<li>Owners:<p>- <a href="mailto:ctroy@mozilla.com">ctroy@mozilla.com</a></p>
-</li>
-</ul>
-<table>
-<caption>Referenced Tables</caption>
-    <tr>
-        <th>Project</th>
-        <th>Dataset</th>
-        <th>Table</th>
-    </tr>
-<tr>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search_terms_derived>search_terms_derived</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search_terms_derived/sanitization_job_metadata_v2>sanitization_job_metadata_v2</a></td>
-        </tr>
-</table>
-
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search_terms/sanitization_job_languages">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search_terms/sanitization_job_languages/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search_terms/sanitization_job_languages/metadata.yaml">Metadata File</a> </p>
-<hr />
-<h2 id="search_terms_daily"><a href="#search_terms_daily">search_terms_daily</a></h2>
-<p><strong>Search Terms Daily</strong></p>
-<p><code>search_terms.search_terms_daily</code></p>
-<p>Daily count of terminal search terms collected by Merino.</p>
-<ul>
-<li>Owners:<p>- <a href="mailto:ctroy@mozilla.com">ctroy@mozilla.com</a></p>
-<p>- <a href="mailto:rburwei@mozilla.com">rburwei@mozilla.com</a></p>
-</li>
-</ul>
-<table>
-<caption>Referenced Tables</caption>
-    <tr>
-        <th>Project</th>
-        <th>Dataset</th>
-        <th>Table</th>
-    </tr>
-<tr>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search_terms_derived>search_terms_derived</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search_terms_derived/search_terms_daily_v1>search_terms_daily_v1</a></td>
-        </tr>
-</table>
-
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search_terms/search_terms_daily">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search_terms/search_terms_daily/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search_terms/search_terms_daily/metadata.yaml">Metadata File</a> </p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_broken_site_report/user_reports">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_broken_site_report/user_reports/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_broken_site_report/user_reports/metadata.yaml">Metadata File</a> </p>
 <hr />
 
 

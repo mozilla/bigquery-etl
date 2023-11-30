@@ -1,0 +1,12 @@
+friendly_name: Firefox Accounts Databases production
+description: |-
+  Views for accessing data extracted from Mozilla Accounts backend services databases.
+
+  Contains views to selected tables and columns from `accounts_db_external` dataset that are useful for analysis.
+dataset_base_acl: view
+user_facing: true
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

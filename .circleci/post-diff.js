@@ -99,7 +99,7 @@ ${warnings}
 }
 
 if (process.env.CIRCLE_PULL_REQUEST) {
-    await minimize_pr_diff_comments(process.env.CIRCLE_PULL_REQUEST);
+    minimize_pr_diff_comments(process.env.CIRCLE_PULL_REQUEST);
 }
 
 bot.comment(process.env.GH_AUTH_TOKEN, `

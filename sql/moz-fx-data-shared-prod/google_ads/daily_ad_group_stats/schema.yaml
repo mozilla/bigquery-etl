@@ -8,6 +8,9 @@ fields:
 - name: account_id
   type: INTEGER
   mode: NULLABLE
+- name: currency_code
+  type: STRING
+  mode: NULLABLE
 - name: campaign_name
   type: STRING
   mode: NULLABLE

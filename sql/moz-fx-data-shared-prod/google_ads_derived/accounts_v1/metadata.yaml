@@ -1,0 +1,14 @@
+friendly_name: Accounts
+description: |-
+  Account information for different Google Ads accounts
+owners:
+- lschiestl@mozilla.com
+labels: {}
+scheduling:
+  scheduling:
+  dag_name: bqetl_fivetran_google_ads
+  depends_on_past: false
+  date_partition_parameter: null
+bigquery: null
+references: {}
+deprecated: false

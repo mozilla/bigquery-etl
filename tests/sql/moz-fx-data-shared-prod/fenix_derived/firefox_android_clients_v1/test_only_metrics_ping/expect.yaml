@@ -9,16 +9,16 @@
   last_reported_country: CA
   sample_id: 54
   activated: false
-  adjust_network: 'Organic'
-  last_reported_adjust_network: 'Organic'
+  adjust_network: Organic
+  last_reported_adjust_network: Organic
   channel: release
   metadata:
+    adjust_network__source_ping: metrics
+    adjust_network__source_ping_datetime: 2023-01-01T00:00:00
+    min_metrics_ping_submission_date: 2023-01-01
     reported_first_session_ping: false
     reported_metrics_ping: true
     reported_baseline_ping: true
-    min_metrics_ping_submission_date: 2023-01-01
-    adjust_network__source_ping_datetime: '2023-01-01T00:00:00'
-    adjust_network__source_ping: metrics
 - client_id: client-2
   install_source: 'Test Install Source'
   sample_id: 40

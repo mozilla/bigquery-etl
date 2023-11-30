@@ -1,0 +1,7 @@
+fields:
+- name: scope
+  type: STRING
+  mode: NULLABLE
+- name: hasScopedKeys
+  type: BOOLEAN
+  mode: NULLABLE

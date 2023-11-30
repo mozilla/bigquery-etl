@@ -1,0 +1,20 @@
+friendly_name: Clients table from production fxa_oauth database
+description: |-
+  An authorized view on top of the `accounts_db_external.fxa_oauth_clients_v1` table.
+  Contains mappings of oauth client ids to their names.
+
+  `id` column is converted from bytes to a hex string.
+
+  See https://mozilla.github.io/ecosystem-platform/reference/database-structure#database-fxa
+owners: []
+labels:
+  authorized: true
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.accounts_db_external.fxa_oauth_clients_v1
+deprecated: false

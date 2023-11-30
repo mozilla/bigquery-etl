@@ -10,7 +10,7 @@ WITH dau_segments AS (
     DATE(submission_timestamp) AS submission_date,
     COUNT(DISTINCT client_info.client_id) AS dau
   FROM
-    `fenix.metrics`
+    fenix.metrics
   WHERE
     DATE(submission_timestamp) >= start_date
   GROUP BY
@@ -18,7 +18,7 @@ WITH dau_segments AS (
 ),
 product_features AS (
   SELECT
-    client_info.client_id AS client_id,
+    client_info.client_id,
     DATE(submission_timestamp) AS submission_date,
     --Credential Management: Logins
     COALESCE(SUM(metrics.counter.logins_deleted), 0) AS logins_deleted,
@@ -181,7 +181,7 @@ product_features AS (
       SUM(CASE WHEN metrics.boolean.customize_home_recently_visited THEN 1 ELSE 0 END)
     ) AS customize_home_recently_visited,
   FROM
-    `fenix.metrics`
+    fenix.metrics
   WHERE
     DATE(submission_timestamp) >= start_date
   GROUP BY

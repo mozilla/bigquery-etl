@@ -10,7 +10,7 @@ WITH dau_segments AS (
     DATE(submission_timestamp) AS submission_date,
     COUNT(DISTINCT client_info.client_id) AS dau
   FROM
-    `mozdata.fenix.events_unnested`
+    mozdata.fenix.events_unnested
       --AND channel = 'release'
   WHERE
     DATE(submission_timestamp) >= '2021-01-01'
@@ -550,7 +550,7 @@ product_features AS (
       ELSE 0
     END AS home_page_customize_home_clicked
   FROM
-    `mozdata.fenix.events_unnested`
+    mozdata.fenix.events_unnested
   WHERE
     DATE(submission_timestamp) >= start_date
 ),
@@ -1276,9 +1276,8 @@ product_features_agg AS (
 )
 SELECT
   d.submission_date,
-  dau
+  dau,
 /*logins*/
-  ,
   autofill_password_detected_logins,
   autofill_password_detected_users_logins,
   autofill_prompt_shown_sum_logins,
@@ -1290,9 +1289,8 @@ SELECT
   management_add_tapped_sum_logins,
   management_add_tapped_users_logins,
   management_tapped_sum_logins,
-  management_tapped_users_logins
+  management_tapped_users_logins,
 /*credit card*/
-  ,
   form_detected_sum_cc,
   form_detected_users_cc,
   autofill_prompt_shown_sum_cc,
@@ -1312,9 +1310,8 @@ SELECT
   management_add_tapped_sum_cc,
   management_add_tapped_users_cc,
   management_tapped_sum_cc,
-  management_tapped_users_cc
+  management_tapped_users_cc,
 /*addresses*/
-  ,
   form_detected_sum_address,
   form_detected_users_address,
   autofill_prompt_shown_sum_address,
@@ -1328,9 +1325,8 @@ SELECT
   management_add_tapped_sum_address,
   management_add_tapped_users_address,
   management_tapped_sum_address,
-  management_tapped_users_address
+  management_tapped_users_address,
 /*Bookmark*/
-  ,
   bookmark_copied,
   bookmark_copied_users,
   bookmark_edited,
@@ -1358,9 +1354,8 @@ SELECT
   bookmark_search_result_tapped,
   bookmark_search_result_tapped_users,
   bookmark_shared,
-  bookmark_shared_users
+  bookmark_shared_users,
 /*History*/
-  ,
   history_opened,
   history_opened_users,
   history_opened_item,
@@ -1394,9 +1389,8 @@ SELECT
   history_search_term_group_tapped,
   history_search_term_group_tapped_users,
   history_shared,
-  history_shared_users
+  history_shared_users,
 /*FxA*/
-  ,
   sync_failed,
   sync_failed_users,
   sync_account_opened,
@@ -1428,9 +1422,8 @@ SELECT
   sync_auth_use_email,
   sync_auth_use_email_users,
   sync_auth_use_email_problem,
-  sync_auth_use_email_problem_users
+  sync_auth_use_email_problem_users,
 /*Privacy*/
-  ,
   hp_private_mode_tapped,
   hp_private_mode_tapped_users,
   tab_tray_private_mode_switched,
@@ -1446,19 +1439,16 @@ SELECT
   etp_shield,
   etp_shield_users,
   etp_tracker_list,
-  etp_tracker_list_users
+  etp_tracker_list_users,
 /*Default Browser*/
-  ,
   default_browser_changed_users,
-  default_browser_changed
+  default_browser_changed,
 /*Notification*/
-  ,
   re_engagement_notif_shown,
   re_engagement_notif_shown_users,
   re_engagement_notif_tapped,
-  re_engagement_notif_tapped_users
+  re_engagement_notif_tapped_users,
 /*Customize Home*/
-  ,
   app_menu_customize_homepage,
   app_menu_customize_homepage_users,
   home_page_customize_home_clicked,

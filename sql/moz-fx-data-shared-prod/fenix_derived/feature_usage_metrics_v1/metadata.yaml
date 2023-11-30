@@ -9,7 +9,6 @@ labels:
   owner1: rzhao
 scheduling:
   dag_name: bqetl_mobile_feature_usage
-  task_name:
 bigquery:
   time_partitioning:
     type: day

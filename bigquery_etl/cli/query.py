@@ -792,7 +792,7 @@ def backfill(
             run_checks=checks,
         )
 
-        if not depends_on_past:
+        if not depends_on_past and parallelism > 0:
             # run backfill for dates in parallel if depends_on_past is false
             with Pool(parallelism) as p:
                 result = p.map(backfill_query, dates, chunksize=1)

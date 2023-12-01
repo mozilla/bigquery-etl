@@ -2441,6 +2441,16 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
+    - name: networking_trr_request_count
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
     - name: fog_validation_gvsv_audio_stream_init_gvst
       type: RECORD
       mode: REPEATED

@@ -3998,6 +3998,20 @@ fields:
         the extensions StartupCache file.
 
         '
+    - name: networking_trr_request_count
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The count of successful TRR requests keyed by regular/private
+        browsing
+
+        '
   - name: quantity
     type: RECORD
     mode: NULLABLE
@@ -4115,13 +4129,21 @@ fields:
     - name: fog_validation_gvsv_primary_height
       type: INTEGER
       mode: NULLABLE
-      description: "Primary display pixel height, recorded alongside the GeckoView\
-        \ Streaming \nAPI for the purposes of Validation (hence GVSV).\n"
+      description: 'Primary display pixel height, recorded alongside the GeckoView
+        Streaming
+
+        API for the purposes of Validation (hence GVSV).
+
+        '
     - name: fog_validation_gvsv_primary_width
       type: INTEGER
       mode: NULLABLE
-      description: "Primary display pixel width, recorded alongside the GeckoView\
-        \ Streaming \nAPI for the purposes of Validation (hence GVSV).\n"
+      description: 'Primary display pixel width, recorded alongside the GeckoView
+        Streaming
+
+        API for the purposes of Validation (hence GVSV).
+
+        '
     - name: extensions_startup_cache_write_bytelength
       type: INTEGER
       mode: NULLABLE
@@ -10647,9 +10669,9 @@ fields:
         - name: value
           type: INTEGER
           mode: NULLABLE
-      description: 'Glean equivalent to the Geckoview Stream gfx Composite Time metric.  Represents
-        The time taken to composite a frame. Differs between  non-webrender and webrender,
-        see the non-validation version for more details.
+      description: 'Glean equivalent to the Geckoview Stream gfx Composite Time metric.
+        Represents The time taken to composite a frame. Differs between non-webrender
+        and webrender, see the non-validation version for more details.
 
         '
     - name: networking_http_content_html5parser_ondatafinished_to_onstop_delay

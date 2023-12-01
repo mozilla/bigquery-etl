@@ -2,7 +2,7 @@
   LTV states for Android. Results in strings like:
   "1_dow3_organic_2_1" and "0_dow1_paid_1_1"
 
-  Compared to V1, these states have a "dead" state, determined by "dead_time".
+  Compared to V1, these states have a "dead" state, determined by "death_time".
   The model can use this state as a sink, where the client will never return if they are dead.
 */
 CREATE OR REPLACE FUNCTION ltv.android_states_with_paid_v2(

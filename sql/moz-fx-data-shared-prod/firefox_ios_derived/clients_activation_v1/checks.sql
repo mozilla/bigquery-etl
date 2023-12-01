@@ -19,7 +19,7 @@ SELECT
     (SELECT * FROM upstream_clients_count) <> (SELECT * FROM activations_clients_count),
     ERROR("Number of client records should match for the same first_seen_date."),
     NULL
-  )
+  );
 #fail
 SELECT
   IF(

@@ -259,7 +259,11 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
     wait_for_{{ dependency.task_id | replace('-', '_') }} = ExternalTaskSensor(
         task_id='wait_for_{{ dependency.task_id }}',
         external_dag_id='{{ dependency.dag_name }}',
+        {% if dependency.task_group -%}
+        external_task_id='{{dependency.task_group}}.{{ dependency.task_id }}',
+        {% else -%}
         external_task_id='{{ dependency.task_id }}',
+        {% endif -%}
         {% if dependency.get_execution_delta(schedule_interval) -%}
         execution_delta={{ dependency.get_execution_delta(schedule_interval) | format_timedelta | format_repr }},
         {% endif -%}

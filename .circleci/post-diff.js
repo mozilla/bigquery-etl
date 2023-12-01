@@ -10,15 +10,18 @@ const { graphql } = require("@octokit/graphql");
 const path = require("path");
 
 const diff_file = "sql.diff";
+const graphql_authorized = graphql.defaults({
+    headers: {
+        authorization: `token ${process.env.GH_AUTH_TOKEN}`,
+    },
+});
 // Github comments can have a maximum length of 65536 characters
 const max_content_length = 65000;
 
-async function minimize_pr_diff_comments(pr_url) {
-    const graphql_authorized = graphql.defaults({
-        headers: {
-            authorization: `token ${process.env.GH_AUTH_TOKEN}`,
-        },
-    });
+async function minimize_pr_diff_comments() {
+    if (!process.env.CIRCLE_PULL_REQUEST) {
+        return;
+    }
     const { viewer } = await graphql_authorized(
         `query {
             viewer {
@@ -46,7 +49,7 @@ async function minimize_pr_diff_comments(pr_url) {
         {
             repo_owner: process.env.CIRCLE_PROJECT_USERNAME,
             repo_name: process.env.CIRCLE_PROJECT_REPONAME,
-            pr_number: parseInt(path.basename(pr_url)),
+            pr_number: parseInt(path.basename(process.env.CIRCLE_PULL_REQUEST)),
         }
     );
     for (const comment of repository.pullRequest.comments.nodes) {
@@ -98,13 +101,15 @@ ${warnings}
     return content;
 }
 
-if (process.env.CIRCLE_PULL_REQUEST) {
-    minimize_pr_diff_comments(process.env.CIRCLE_PULL_REQUEST);
-}
-
-bot.comment(process.env.GH_AUTH_TOKEN, `
-### Integration report for "${bot.env.commitMessage}"
+function post_diff() {
+    bot.comment(
+        process.env.GH_AUTH_TOKEN,
+        `### Integration report for "${bot.env.commitMessage}"
 ${diff()}
 
 [Link to full diff](https://output.circle-artifacts.com/output/job/${process.env.CIRCLE_WORKFLOW_JOB_ID}/artifacts/${process.env.CIRCLE_NODE_INDEX}/sql.diff)
-`);
+`
+    );
+}
+
+minimize_pr_diff_comments().then(post_diff);

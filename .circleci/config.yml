@@ -40,7 +40,7 @@ jobs:
           name: Build
           command: |
             python3 -m venv venv/
-            venv/bin/pip install pip-tools --constraint requirements.in
+            venv/bin/pip install --no-deps -r requirements.txt
             venv/bin/pip-sync --pip-args=--no-deps
       - run:
           name: Yamllint Test
@@ -84,15 +84,13 @@ jobs:
     docker: *docker
     steps:
       - checkout
+      - *restore_venv_cache
+      - *build
       - run:
           name: Verify that requirements.txt contains the right dependencies for
             this python version
-          # use `--constraint` with `requirements.in` not `requirements.txt`
-          # because for pip>=20.3 "Constraints are only allowed to take the form
-          # of a package name and a version specifier"
           command: |
-            pip install pip-tools --constraint requirements.in
-            pip-compile --allow-unsafe --generate-hashes --quiet
+            venv/bin/pip-compile --allow-unsafe --generate-hashes --quiet
             git diff --exit-code -G '^ *[^# ]' -- requirements.txt
   test-sql:
     docker: *docker

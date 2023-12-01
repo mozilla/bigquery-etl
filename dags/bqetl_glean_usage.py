@@ -119,7 +119,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=True,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         task_group=task_group_accounts_backend,
     )
 
@@ -168,7 +168,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=True,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         task_group=task_group_burnham,
     )
 
@@ -246,7 +246,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
         task_group=task_group_accounts_backend,
     )
@@ -289,7 +289,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
         task_group=task_group_burnham,
     )
@@ -332,7 +332,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
         task_group=task_group_firefox_desktop_background_defaultagent,
     )
@@ -375,7 +375,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
         task_group=task_group_firefox_desktop_background_tasks,
     )
@@ -418,7 +418,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
         task_group=task_group_firefox_desktop_background_update,
     )
@@ -463,7 +463,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
         task_group=task_group_firefox_desktop,
     )
@@ -506,7 +506,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
         task_group=task_group_monitor_cirrus,
     )
@@ -549,7 +549,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
         task_group=task_group_moso_mastodon_backend,
     )
@@ -594,7 +594,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
         task_group=task_group_lockwise_android,
     )
@@ -659,7 +659,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
         task_group=task_group_mach,
     )
@@ -705,7 +705,7 @@ with DAG(
             email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
             depends_on_past=False,
             task_concurrency=1,
-            parameters=["{'submission_date:DATE': None}"],
+            parameters=["submission_date:DATE:{{ds}}"],
             retries=0,
             task_group=task_group_mozilla_vpn,
         )
@@ -749,7 +749,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
         task_group=task_group_mozphab,
     )
@@ -792,7 +792,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
         task_group=task_group_firefox_echo_show,
     )
@@ -849,7 +849,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
         task_group=task_group_fenix,
     )
@@ -934,7 +934,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
         task_group=task_group_fenix,
     )
@@ -1019,7 +1019,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
         task_group=task_group_fenix,
     )
@@ -1104,7 +1104,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
         task_group=task_group_fenix,
     )
@@ -1189,7 +1189,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
         task_group=task_group_fenix,
     )
@@ -1260,7 +1260,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
         task_group=task_group_mozilla_vpn,
     )
@@ -1303,7 +1303,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
         task_group=task_group_firefox_reality_pc,
     )
@@ -1346,7 +1346,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
         task_group=task_group_focus_android,
     )
@@ -1389,7 +1389,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
         task_group=task_group_focus_android,
     )
@@ -1454,7 +1454,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
         task_group=task_group_focus_android,
     )
@@ -1519,7 +1519,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
         task_group=task_group_firefox_ios,
     )
@@ -1620,7 +1620,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
         task_group=task_group_firefox_ios,
     )
@@ -1707,7 +1707,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
         task_group=task_group_firefox_ios,
     )
@@ -1772,7 +1772,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
         task_group=task_group_mozilla_vpn,
     )
@@ -1815,7 +1815,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
         task_group=task_group_mozilla_vpn,
     )
@@ -1858,7 +1858,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
         task_group=task_group_focus_ios,
     )
@@ -1923,7 +1923,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
         task_group=task_group_klar_ios,
     )
@@ -1988,7 +1988,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
         task_group=task_group_lockwise_ios,
     )
@@ -2055,7 +2055,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
         task_group=task_group_klar_android,
     )
@@ -2120,7 +2120,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
         task_group=task_group_mozregression,
     )
@@ -2163,7 +2163,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
         task_group=task_group_reference_browser,
     )
@@ -2228,7 +2228,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
         task_group=task_group_firefox_fire_tv,
     )
@@ -2293,7 +2293,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
         task_group=task_group_firefox_reality,
     )
@@ -2358,7 +2358,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
         task_group=task_group_pine,
     )
@@ -2462,7 +2462,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=True,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         task_group=task_group_firefox_desktop_background_defaultagent,
     )
 
@@ -2511,7 +2511,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=True,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         task_group=task_group_firefox_desktop_background_tasks,
     )
 
@@ -2560,7 +2560,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=True,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         task_group=task_group_firefox_desktop_background_update,
     )
 
@@ -2633,7 +2633,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=True,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         task_group=task_group_firefox_desktop,
     )
 
@@ -3244,7 +3244,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=True,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         task_group=task_group_monitor_cirrus,
     )
 
@@ -3293,7 +3293,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=True,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         task_group=task_group_moso_mastodon_backend,
     )
 
@@ -3342,7 +3342,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=True,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         task_group=task_group_lockwise_android,
     )
 
@@ -3379,7 +3379,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=True,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         task_group=task_group_mach,
     )
 
@@ -3428,7 +3428,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=True,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         task_group=task_group_mozilla_vpn,
     )
 
@@ -3465,7 +3465,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=True,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         task_group=task_group_mozphab,
     )
 
@@ -3576,7 +3576,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=True,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         task_group=task_group_firefox_echo_show,
     )
 
@@ -3613,7 +3613,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=True,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         task_group=task_group_fenix,
     )
 
@@ -3650,7 +3650,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=True,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         task_group=task_group_fenix,
     )
 
@@ -3689,7 +3689,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=True,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         task_group=task_group_fenix,
     )
 
@@ -3729,7 +3729,7 @@ with DAG(
             email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
             date_partition_parameter=None,
             depends_on_past=True,
-            parameters=["{'submission_date:DATE': None}"],
+            parameters=["submission_date:DATE:{{ds}}"],
             task_group=task_group_fenix,
         )
     )
@@ -3769,7 +3769,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=True,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         task_group=task_group_fenix,
     )
 
@@ -3807,7 +3807,7 @@ with DAG(
             email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
             date_partition_parameter=None,
             depends_on_past=True,
-            parameters=["{'submission_date:DATE': None}"],
+            parameters=["submission_date:DATE:{{ds}}"],
             task_group=task_group_mozilla_vpn,
         )
     )
@@ -3847,7 +3847,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=True,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         task_group=task_group_firefox_reality_pc,
     )
 
@@ -3885,7 +3885,7 @@ with DAG(
             email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
             date_partition_parameter=None,
             depends_on_past=True,
-            parameters=["{'submission_date:DATE': None}"],
+            parameters=["submission_date:DATE:{{ds}}"],
             task_group=task_group_focus_android,
         )
     )
@@ -3923,7 +3923,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=True,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         task_group=task_group_focus_android,
     )
 
@@ -3960,7 +3960,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=True,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         task_group=task_group_focus_android,
     )
 
@@ -4000,7 +4000,7 @@ with DAG(
             email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
             date_partition_parameter=None,
             depends_on_past=True,
-            parameters=["{'submission_date:DATE': None}"],
+            parameters=["submission_date:DATE:{{ds}}"],
             task_group=task_group_firefox_ios,
         )
     )
@@ -4039,7 +4039,7 @@ with DAG(
             email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
             date_partition_parameter=None,
             depends_on_past=True,
-            parameters=["{'submission_date:DATE': None}"],
+            parameters=["submission_date:DATE:{{ds}}"],
             task_group=task_group_firefox_ios,
         )
     )
@@ -4081,7 +4081,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=True,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         task_group=task_group_firefox_ios,
     )
 
@@ -4118,7 +4118,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=True,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         task_group=task_group_mozilla_vpn,
     )
 
@@ -4155,7 +4155,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=True,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         task_group=task_group_mozilla_vpn,
     )
 
@@ -4192,7 +4192,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=True,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         task_group=task_group_focus_ios,
     )
 
@@ -4229,7 +4229,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=True,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         task_group=task_group_klar_ios,
     )
 
@@ -4267,7 +4267,7 @@ with DAG(
             email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
             date_partition_parameter=None,
             depends_on_past=True,
-            parameters=["{'submission_date:DATE': None}"],
+            parameters=["submission_date:DATE:{{ds}}"],
             task_group=task_group_lockwise_ios,
         )
     )
@@ -4307,7 +4307,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=True,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         task_group=task_group_klar_android,
     )
 
@@ -4344,7 +4344,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=True,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         task_group=task_group_mozregression,
     )
 
@@ -4385,7 +4385,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=True,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         task_group=task_group_reference_browser,
     )
 
@@ -4423,7 +4423,7 @@ with DAG(
             email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
             date_partition_parameter=None,
             depends_on_past=True,
-            parameters=["{'submission_date:DATE': None}"],
+            parameters=["submission_date:DATE:{{ds}}"],
             task_group=task_group_firefox_fire_tv,
         )
     )
@@ -4461,7 +4461,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=True,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         task_group=task_group_firefox_reality,
     )
 
@@ -4498,7 +4498,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=True,
-        parameters=["{'submission_date:DATE': None}"],
+        parameters=["submission_date:DATE:{{ds}}"],
         task_group=task_group_pine,
     )
 

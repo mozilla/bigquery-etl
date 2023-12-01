@@ -21,7 +21,7 @@ scheduling:
   depends_on_past: true
   date_partition_parameter: null
   parameters:
-  - submission_date:DATE: null
+  - submission_date:DATE:{{ds}}
   depends_on:
   - task_id: telemetry_derived__core_clients_first_seen__v1
     dag_name: copy_deduplicate

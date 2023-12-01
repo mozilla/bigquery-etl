@@ -8,5 +8,8 @@ WHERE
     metric NOT LIKE "%search_counts%"
     AND metric NOT LIKE "%browser_search%"
     AND metric NOT LIKE "%event_counts%"
+    AND metric NOT LIKE "%browser_engagement_navigation%"
+    AND metric NOT LIKE "%manager_message_size%"
+    AND metric NOT LIKE "%dropped_frames_proportion%"
   )
   AND channel = "nightly"

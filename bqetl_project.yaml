@@ -183,8 +183,6 @@ dry_run:
   - sql/moz-fx-data-shared-prod/stub_attribution_service/dl_token_ga_attribution_lookup/view.sql
   - sql/moz-fx-data-shared-prod/mozilla_org_derived/gclid_conversions_v1/query.sql
   - sql/moz-fx-data-shared-prod/mozilla_org/gclid_conversions/view.sql
-  - sql/moz-fx-data-shared-prod/glam_derived/client_probe_counts_fenix_beta_v1/query.sql
-  - sql/moz-fx-data-shared-prod/glam_derived/client_probe_counts_fenix_nightly_v1/query.sql
   # Materialized views
   - sql/moz-fx-data-shared-prod/telemetry_derived/experiment_search_events_live_v1/init.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/experiment_events_live_v1/init.sql

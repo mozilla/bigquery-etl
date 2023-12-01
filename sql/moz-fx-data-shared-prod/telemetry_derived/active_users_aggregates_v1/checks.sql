@@ -1,2 +1,2 @@
 #fail
-{{ previous_row_count_avg_within_expected_delta(days=7, expected_percentage_delta=5) }}
+{{ is_within_row_count_for_historic_partitions(number_of_days=7, threshold_percentage=5) }}

@@ -290,7 +290,7 @@ with DAG(
     wait_for_fenix_derived__clients_last_seen_joined__v1 = ExternalTaskSensor(
         task_id="wait_for_fenix_derived__clients_last_seen_joined__v1",
         external_dag_id="bqetl_glean_usage",
-        external_task_id="fenix_derived__clients_last_seen_joined__v1",
+        external_task_id="fenix.fenix_derived__clients_last_seen_joined__v1",
         execution_delta=datetime.timedelta(seconds=8100),
         check_existence=True,
         mode="reschedule",
@@ -343,7 +343,7 @@ with DAG(
     wait_for_firefox_ios_derived__clients_last_seen_joined__v1 = ExternalTaskSensor(
         task_id="wait_for_firefox_ios_derived__clients_last_seen_joined__v1",
         external_dag_id="bqetl_glean_usage",
-        external_task_id="firefox_ios_derived__clients_last_seen_joined__v1",
+        external_task_id="firefox_ios.firefox_ios_derived__clients_last_seen_joined__v1",
         execution_delta=datetime.timedelta(seconds=8100),
         check_existence=True,
         mode="reschedule",
@@ -362,7 +362,7 @@ with DAG(
     wait_for_focus_android_derived__clients_last_seen_joined__v1 = ExternalTaskSensor(
         task_id="wait_for_focus_android_derived__clients_last_seen_joined__v1",
         external_dag_id="bqetl_glean_usage",
-        external_task_id="focus_android_derived__clients_last_seen_joined__v1",
+        external_task_id="focus_android.focus_android_derived__clients_last_seen_joined__v1",
         execution_delta=datetime.timedelta(seconds=8100),
         check_existence=True,
         mode="reschedule",
@@ -402,7 +402,7 @@ with DAG(
     wait_for_focus_ios_derived__clients_last_seen_joined__v1 = ExternalTaskSensor(
         task_id="wait_for_focus_ios_derived__clients_last_seen_joined__v1",
         external_dag_id="bqetl_glean_usage",
-        external_task_id="focus_ios_derived__clients_last_seen_joined__v1",
+        external_task_id="focus_ios.focus_ios_derived__clients_last_seen_joined__v1",
         execution_delta=datetime.timedelta(seconds=8100),
         check_existence=True,
         mode="reschedule",
@@ -427,7 +427,7 @@ with DAG(
     wait_for_klar_ios_derived__clients_last_seen_joined__v1 = ExternalTaskSensor(
         task_id="wait_for_klar_ios_derived__clients_last_seen_joined__v1",
         external_dag_id="bqetl_glean_usage",
-        external_task_id="klar_ios_derived__clients_last_seen_joined__v1",
+        external_task_id="klar_ios.klar_ios_derived__clients_last_seen_joined__v1",
         execution_delta=datetime.timedelta(seconds=8100),
         check_existence=True,
         mode="reschedule",

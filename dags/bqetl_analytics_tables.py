@@ -273,7 +273,7 @@ with DAG(
     wait_for_checks__fail_org_mozilla_fenix_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
         task_id="wait_for_checks__fail_org_mozilla_fenix_derived__baseline_clients_last_seen__v1",
         external_dag_id="bqetl_glean_usage",
-        external_task_id="checks__fail_org_mozilla_fenix_derived__baseline_clients_last_seen__v1",
+        external_task_id="fenix.checks__fail_org_mozilla_fenix_derived__baseline_clients_last_seen__v1",
         check_existence=True,
         mode="reschedule",
         allowed_states=ALLOWED_STATES,
@@ -287,7 +287,7 @@ with DAG(
     wait_for_checks__fail_org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
         task_id="wait_for_checks__fail_org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1",
         external_dag_id="bqetl_glean_usage",
-        external_task_id="checks__fail_org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1",
+        external_task_id="fenix.checks__fail_org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1",
         check_existence=True,
         mode="reschedule",
         allowed_states=ALLOWED_STATES,
@@ -301,7 +301,7 @@ with DAG(
     wait_for_checks__fail_org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
         task_id="wait_for_checks__fail_org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1",
         external_dag_id="bqetl_glean_usage",
-        external_task_id="checks__fail_org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1",
+        external_task_id="fenix.checks__fail_org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1",
         check_existence=True,
         mode="reschedule",
         allowed_states=ALLOWED_STATES,
@@ -315,7 +315,7 @@ with DAG(
     wait_for_checks__fail_org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
         task_id="wait_for_checks__fail_org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1",
         external_dag_id="bqetl_glean_usage",
-        external_task_id="checks__fail_org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1",
+        external_task_id="fenix.checks__fail_org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1",
         check_existence=True,
         mode="reschedule",
         allowed_states=ALLOWED_STATES,
@@ -329,7 +329,7 @@ with DAG(
     wait_for_checks__fail_org_mozilla_firefox_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
         task_id="wait_for_checks__fail_org_mozilla_firefox_derived__baseline_clients_last_seen__v1",
         external_dag_id="bqetl_glean_usage",
-        external_task_id="checks__fail_org_mozilla_firefox_derived__baseline_clients_last_seen__v1",
+        external_task_id="fenix.checks__fail_org_mozilla_firefox_derived__baseline_clients_last_seen__v1",
         check_existence=True,
         mode="reschedule",
         allowed_states=ALLOWED_STATES,

@@ -118,7 +118,7 @@ with DAG(
     wait_for_checks__fail_mozilla_lockbox_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
         task_id="wait_for_checks__fail_mozilla_lockbox_derived__baseline_clients_last_seen__v1",
         external_dag_id="bqetl_glean_usage",
-        external_task_id="checks__fail_mozilla_lockbox_derived__baseline_clients_last_seen__v1",
+        external_task_id="lockwise_android.checks__fail_mozilla_lockbox_derived__baseline_clients_last_seen__v1",
         execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
@@ -133,7 +133,7 @@ with DAG(
     wait_for_checks__fail_org_mozilla_fenix_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
         task_id="wait_for_checks__fail_org_mozilla_fenix_derived__baseline_clients_last_seen__v1",
         external_dag_id="bqetl_glean_usage",
-        external_task_id="checks__fail_org_mozilla_fenix_derived__baseline_clients_last_seen__v1",
+        external_task_id="fenix.checks__fail_org_mozilla_fenix_derived__baseline_clients_last_seen__v1",
         execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
@@ -148,7 +148,7 @@ with DAG(
     wait_for_checks__fail_org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
         task_id="wait_for_checks__fail_org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1",
         external_dag_id="bqetl_glean_usage",
-        external_task_id="checks__fail_org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1",
+        external_task_id="fenix.checks__fail_org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1",
         execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
@@ -163,7 +163,7 @@ with DAG(
     wait_for_checks__fail_org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
         task_id="wait_for_checks__fail_org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1",
         external_dag_id="bqetl_glean_usage",
-        external_task_id="checks__fail_org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1",
+        external_task_id="fenix.checks__fail_org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1",
         execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
@@ -178,7 +178,7 @@ with DAG(
     wait_for_checks__fail_org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
         task_id="wait_for_checks__fail_org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1",
         external_dag_id="bqetl_glean_usage",
-        external_task_id="checks__fail_org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1",
+        external_task_id="fenix.checks__fail_org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1",
         execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
@@ -193,7 +193,7 @@ with DAG(
     wait_for_checks__fail_org_mozilla_firefox_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
         task_id="wait_for_checks__fail_org_mozilla_firefox_derived__baseline_clients_last_seen__v1",
         external_dag_id="bqetl_glean_usage",
-        external_task_id="checks__fail_org_mozilla_firefox_derived__baseline_clients_last_seen__v1",
+        external_task_id="fenix.checks__fail_org_mozilla_firefox_derived__baseline_clients_last_seen__v1",
         execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
@@ -208,7 +208,7 @@ with DAG(
     wait_for_checks__fail_org_mozilla_focus_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
         task_id="wait_for_checks__fail_org_mozilla_focus_derived__baseline_clients_last_seen__v1",
         external_dag_id="bqetl_glean_usage",
-        external_task_id="checks__fail_org_mozilla_focus_derived__baseline_clients_last_seen__v1",
+        external_task_id="focus_android.checks__fail_org_mozilla_focus_derived__baseline_clients_last_seen__v1",
         execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
@@ -223,7 +223,7 @@ with DAG(
     wait_for_checks__fail_org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
         task_id="wait_for_checks__fail_org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1",
         external_dag_id="bqetl_glean_usage",
-        external_task_id="checks__fail_org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1",
+        external_task_id="firefox_ios.checks__fail_org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1",
         execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
@@ -238,7 +238,7 @@ with DAG(
     wait_for_checks__fail_org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
         task_id="wait_for_checks__fail_org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1",
         external_dag_id="bqetl_glean_usage",
-        external_task_id="checks__fail_org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1",
+        external_task_id="focus_ios.checks__fail_org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1",
         execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
@@ -253,7 +253,7 @@ with DAG(
     wait_for_checks__fail_org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
         task_id="wait_for_checks__fail_org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1",
         external_dag_id="bqetl_glean_usage",
-        external_task_id="checks__fail_org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1",
+        external_task_id="klar_ios.checks__fail_org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1",
         execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
@@ -268,7 +268,7 @@ with DAG(
     wait_for_checks__fail_org_mozilla_ios_lockbox_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
         task_id="wait_for_checks__fail_org_mozilla_ios_lockbox_derived__baseline_clients_last_seen__v1",
         external_dag_id="bqetl_glean_usage",
-        external_task_id="checks__fail_org_mozilla_ios_lockbox_derived__baseline_clients_last_seen__v1",
+        external_task_id="lockwise_ios.checks__fail_org_mozilla_ios_lockbox_derived__baseline_clients_last_seen__v1",
         execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
@@ -283,7 +283,7 @@ with DAG(
     wait_for_checks__fail_org_mozilla_klar_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
         task_id="wait_for_checks__fail_org_mozilla_klar_derived__baseline_clients_last_seen__v1",
         external_dag_id="bqetl_glean_usage",
-        external_task_id="checks__fail_org_mozilla_klar_derived__baseline_clients_last_seen__v1",
+        external_task_id="klar_android.checks__fail_org_mozilla_klar_derived__baseline_clients_last_seen__v1",
         execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
@@ -298,7 +298,7 @@ with DAG(
     wait_for_checks__fail_org_mozilla_reference_browser_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
         task_id="wait_for_checks__fail_org_mozilla_reference_browser_derived__baseline_clients_last_seen__v1",
         external_dag_id="bqetl_glean_usage",
-        external_task_id="checks__fail_org_mozilla_reference_browser_derived__baseline_clients_last_seen__v1",
+        external_task_id="reference_browser.checks__fail_org_mozilla_reference_browser_derived__baseline_clients_last_seen__v1",
         execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
@@ -313,7 +313,7 @@ with DAG(
     wait_for_checks__fail_org_mozilla_vrbrowser_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
         task_id="wait_for_checks__fail_org_mozilla_vrbrowser_derived__baseline_clients_last_seen__v1",
         external_dag_id="bqetl_glean_usage",
-        external_task_id="checks__fail_org_mozilla_vrbrowser_derived__baseline_clients_last_seen__v1",
+        external_task_id="firefox_reality.checks__fail_org_mozilla_vrbrowser_derived__baseline_clients_last_seen__v1",
         execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
@@ -328,7 +328,7 @@ with DAG(
     wait_for_org_mozilla_tv_firefox_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
         task_id="wait_for_org_mozilla_tv_firefox_derived__baseline_clients_last_seen__v1",
         external_dag_id="bqetl_glean_usage",
-        external_task_id="org_mozilla_tv_firefox_derived__baseline_clients_last_seen__v1",
+        external_task_id="firefox_fire_tv.org_mozilla_tv_firefox_derived__baseline_clients_last_seen__v1",
         execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",

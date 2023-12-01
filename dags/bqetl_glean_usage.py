@@ -2163,42 +2163,6 @@ with DAG(
         task_group=task_group_firefox_fire_tv,
     )
 
-    checks__fail_org_mozilla_tv_firefox_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
-        task_id="checks__fail_org_mozilla_tv_firefox_derived__baseline_clients_last_seen__v1",
-        source_table="baseline_clients_last_seen_v1",
-        dataset_id="org_mozilla_tv_firefox_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=True,
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
-        task_group=task_group_firefox_fire_tv,
-    )
-
-    with TaskGroup(
-        "checks__fail_org_mozilla_tv_firefox_derived__baseline_clients_last_seen__v1_external",
-        parent_group=task_group_firefox_fire_tv,
-    ) as checks__fail_org_mozilla_tv_firefox_derived__baseline_clients_last_seen__v1_external:
-        ExternalTaskMarker(
-            task_id="bqetl_nondesktop__wait_for_checks__fail_org_mozilla_tv_firefox_derived__baseline_clients_last_seen__v1",
-            external_dag_id="bqetl_nondesktop",
-            external_task_id="wait_for_checks__fail_org_mozilla_tv_firefox_derived__baseline_clients_last_seen__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
-            task_id="bqetl_gud__wait_for_checks__fail_org_mozilla_tv_firefox_derived__baseline_clients_last_seen__v1",
-            external_dag_id="bqetl_gud",
-            external_task_id="wait_for_checks__fail_org_mozilla_tv_firefox_derived__baseline_clients_last_seen__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
-        )
-
-        checks__fail_org_mozilla_tv_firefox_derived__baseline_clients_last_seen__v1_external.set_upstream(
-            checks__fail_org_mozilla_tv_firefox_derived__baseline_clients_last_seen__v1
-        )
-
     checks__fail_org_mozilla_vrbrowser_derived__baseline_clients_daily__v1 = bigquery_dq_check(
         task_id="checks__fail_org_mozilla_vrbrowser_derived__baseline_clients_daily__v1",
         source_table="baseline_clients_daily_v1",
@@ -4370,6 +4334,28 @@ with DAG(
         task_group=task_group_firefox_fire_tv,
     )
 
+    with TaskGroup(
+        "org_mozilla_tv_firefox_derived__baseline_clients_last_seen__v1_external",
+        parent_group=task_group_firefox_fire_tv,
+    ) as org_mozilla_tv_firefox_derived__baseline_clients_last_seen__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_nondesktop__wait_for_org_mozilla_tv_firefox_derived__baseline_clients_last_seen__v1",
+            external_dag_id="bqetl_nondesktop",
+            external_task_id="wait_for_org_mozilla_tv_firefox_derived__baseline_clients_last_seen__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_gud__wait_for_org_mozilla_tv_firefox_derived__baseline_clients_last_seen__v1",
+            external_dag_id="bqetl_gud",
+            external_task_id="wait_for_org_mozilla_tv_firefox_derived__baseline_clients_last_seen__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
+        )
+
+        org_mozilla_tv_firefox_derived__baseline_clients_last_seen__v1_external.set_upstream(
+            org_mozilla_tv_firefox_derived__baseline_clients_last_seen__v1
+        )
+
     org_mozilla_vrbrowser_derived__baseline_clients_daily__v1 = bigquery_etl_query(
         task_id="org_mozilla_vrbrowser_derived__baseline_clients_daily__v1",
         destination_table="baseline_clients_daily_v1",
@@ -5093,10 +5079,6 @@ with DAG(
         wait_for_telemetry_derived__core_clients_first_seen__v1
     )
 
-    checks__fail_org_mozilla_tv_firefox_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_tv_firefox_derived__baseline_clients_last_seen__v1
-    )
-
     checks__fail_org_mozilla_vrbrowser_derived__baseline_clients_daily__v1.set_upstream(
         org_mozilla_vrbrowser_derived__baseline_clients_daily__v1
     )
@@ -5286,11 +5268,11 @@ with DAG(
     )
 
     firefox_fire_tv_derived__clients_last_seen_joined__v1.set_upstream(
-        checks__fail_org_mozilla_tv_firefox_derived__baseline_clients_last_seen__v1
+        firefox_fire_tv_derived__metrics_clients_last_seen__v1
     )
 
     firefox_fire_tv_derived__clients_last_seen_joined__v1.set_upstream(
-        firefox_fire_tv_derived__metrics_clients_last_seen__v1
+        org_mozilla_tv_firefox_derived__baseline_clients_last_seen__v1
     )
 
     firefox_fire_tv_derived__metrics_clients_daily__v1.set_upstream(

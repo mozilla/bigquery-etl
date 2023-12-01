@@ -1,0 +1,66 @@
+{% macro previous_row_count_avg_within_expected_delta(days, expected_percentage_delta, partition_field) %}
+{% set partition_field = partition_field|default('submission_date') %}
+
+WITH CTE AS (
+    SELECT
+        ARRAY_AGG(
+            STRUCT(
+                PARSE_DATE('%Y%m%d', partition_id) AS table_partition,
+                total_rows
+            )
+        ) AS included_partition_info
+    FROM
+        `{{ project_id }}.{{ dataset_id }}.INFORMATION_SCHEMA.PARTITIONS`
+    WHERE
+        table_name = "{{ table_name }}"
+        AND partition_id <> "__NULL__"
+        AND PARSE_DATE('%Y%m%d', partition_id)
+            BETWEEN DATE_SUB(@{{ partition_field }}, INTERVAL {{ days }} + 1 DAY) AND DATE(@{{ partition_field }})
+)
+
+, DATE_RANGE_ROW_COUNT_AVG AS (
+    SELECT
+        IF(
+            date_range_avg_row_count IS NULL,
+            ERROR("looks like no data was found for past partitions. Make sure you're using a table and not a view."),
+            CAST(date_range_avg_row_count AS INTEGER)
+        ) AS date_range_avg_row_count
+        FROM (
+            SELECT
+                AVG(partition_info.total_rows) AS date_range_avg_row_count,
+            FROM CTE,
+            UNNEST (included_partition_info) AS partition_info
+            WHERE partition_info.table_partition <> DATE(@{{ partition_field }})
+        )
+)
+
+, ROW_COUNT_BOUNDARIES AS (
+    SELECT
+        CAST(date_range_avg_row_count - (date_range_avg_row_count / 100 * {{ expected_percentage_delta }}) AS INTEGER) AS min_expected,
+        CAST(date_range_avg_row_count + (date_range_avg_row_count / 100 * {{ expected_percentage_delta }}) AS INTEGER) AS max_expected,
+    FROM DATE_RANGE_ROW_COUNT_AVG
+)
+
+, CURRENT_PARTITION_ROW_COUNT AS (
+    SELECT
+        CAST(partition_info.total_rows AS INTEGER) AS total_rows
+    FROM CTE,
+    UNNEST (included_partition_info) AS partition_info
+    WHERE partition_info.table_partition = DATE(@{{ partition_field }})
+)
+
+SELECT
+  IF(
+    (SELECT total_rows FROM CURRENT_PARTITION_ROW_COUNT) NOT BETWEEN (SELECT min_expected FROM ROW_COUNT_BOUNDARIES) AND (SELECT max_expected FROM ROW_COUNT_BOUNDARIES),
+    ERROR(
+        CONCAT(
+            "The row count for partition ", @{{ partition_field }}, " is outside of the expected boundaries. ",
+            "Row count for the current partition: ",
+            (SELECT total_rows FROM CURRENT_PARTITION_ROW_COUNT),
+            ". Expected boundary: ",
+            (SELECT min_expected FROM ROW_COUNT_BOUNDARIES), " - ", (SELECT max_expected FROM ROW_COUNT_BOUNDARIES)
+        )
+    ),
+    null
+  );
+{% endmacro %}

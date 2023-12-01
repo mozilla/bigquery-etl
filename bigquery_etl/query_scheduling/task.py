@@ -90,6 +90,7 @@ class TaskRef:
     execution_delta: Optional[str] = attr.ib(None)
     schedule_interval: Optional[str] = attr.ib(None)
     date_partition_offset: Optional[int] = attr.ib(None)
+    task_group: Optional[str] = attr.ib(None)
 
     @property
     def task_key(self):
@@ -511,6 +512,7 @@ class Task:
             schedule_interval=dag_collection.dag_by_name(
                 self.dag_name
             ).schedule_interval,
+            task_group=self.task_group,
         )
 
     def _get_referenced_tables(self):

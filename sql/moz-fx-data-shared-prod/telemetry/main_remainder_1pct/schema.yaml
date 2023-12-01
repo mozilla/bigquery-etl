@@ -6992,6 +6992,9 @@ fields:
     - name: font_fingerprinting_per_tab
       type: STRING
       mode: NULLABLE
+    - name: fx_session_restore_closed_tabs_not_saved
+      type: STRING
+      mode: NULLABLE
     - name: content_documents_destroyed
       type: STRING
       mode: NULLABLE
@@ -7005,9 +7008,6 @@ fields:
       type: STRING
       mode: NULLABLE
     - name: top_level_content_documents_destroyed
-      type: STRING
-      mode: NULLABLE
-    - name: fx_session_restore_closed_tabs_not_saved
       type: STRING
       mode: NULLABLE
   - name: info
@@ -15184,6 +15184,9 @@ fields:
         - name: perf_largest_contentful_paint_ms
           type: STRING
           mode: NULLABLE
+        - name: fx_session_restore_closed_tabs_not_saved
+          type: STRING
+          mode: NULLABLE
         - name: content_documents_destroyed
           type: STRING
           mode: NULLABLE
@@ -15197,9 +15200,6 @@ fields:
           type: STRING
           mode: NULLABLE
         - name: top_level_content_documents_destroyed
-          type: STRING
-          mode: NULLABLE
-        - name: fx_session_restore_closed_tabs_not_saved
           type: STRING
           mode: NULLABLE
       - name: keyed_histograms
@@ -22667,6 +22667,9 @@ fields:
           type: STRING
           mode: NULLABLE
         - name: a11y_always_underline_links
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: shopping_disabled_ads
           type: BOOLEAN
           mode: NULLABLE
     - name: socket

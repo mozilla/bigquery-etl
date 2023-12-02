@@ -58,6 +58,7 @@ async function minimize_pr_diff_comments() {
             && comment.bodyText.includes(diff_file)
             && !comment.isMinimized
         ) {
+            console.log(`Minimizing comment ${comment.id}.`);
             await graphql_authorized(
                 `mutation($comment_id:ID!) {
                     minimizeComment(input: {subjectId: $comment_id, classifier: OUTDATED}) {

@@ -108,7 +108,7 @@ function post_diff() {
         `### Integration report for "${bot.env.commitMessage}"
 ${diff()}
 
-[Link to full diff](https://output.circle-artifacts.com/output/job/${process.env.CIRCLE_WORKFLOW_JOB_ID}/artifacts/${process.env.CIRCLE_NODE_INDEX}/sql.diff)
+[Link to full diff](https://output.circle-artifacts.com/output/job/${process.env.CIRCLE_WORKFLOW_JOB_ID}/artifacts/${process.env.CIRCLE_NODE_INDEX}/${diff_file})
 `
     );
 }

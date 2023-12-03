@@ -708,6 +708,13 @@ fields:
         injected cookies.
 
         '
+    - name: networking_set_cookie
+      type: INTEGER
+      mode: NULLABLE
+      description: 'This counts the number of times we set a cookie. Introduced as
+        a denomenator for measuring CHIPS adoption.
+
+        '
   - name: datetime
     type: RECORD
     mode: NULLABLE
@@ -1875,6 +1882,61 @@ fields:
         mode: NULLABLE
       description: 'The count of successful TRR requests keyed by regular/private
         browsing
+
+        '
+    - name: codec_stats_audio_preferred_codec
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the preferred audio codec being signaled to us to identify
+        preferred audio codec.
+
+        '
+    - name: codec_stats_other_fec_signaled
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Count how many other fec options are being offered.
+
+        '
+    - name: codec_stats_ulpfec_negotiated
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the number of times that ulpfec is negotiated or not negotiated
+        on the first negotiation for each video transceiver.
+
+        '
+    - name: codec_stats_video_preferred_codec
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the preferred video codec being signaled to us to identify
+        preferred video codec.
 
         '
   - name: memory_distribution
@@ -5365,6 +5427,49 @@ fields:
         mode: NULLABLE
       description: 'The proportion of cookie banners handled by CMP rules within the
         total number of cases handled, including those handled by site-specific rules.
+
+        '
+    - name: networking_set_cookie_foreign
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: denominator
+        type: INTEGER
+        mode: NULLABLE
+      - name: numerator
+        type: INTEGER
+        mode: NULLABLE
+      description: 'This counts the number of times we set a cookie from a foreign
+        (not same-site) context. Introduced as a denomenator for measuring CHIPS adoption.
+
+        '
+    - name: networking_set_cookie_foreign_partitioned
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: denominator
+        type: INTEGER
+        mode: NULLABLE
+      - name: numerator
+        type: INTEGER
+        mode: NULLABLE
+      description: 'This counts the number of times we set a cookie that has the Partitioned
+        attribute in a foreign (not same-site) context. This tracks the adoption of
+        CHIPS.
+
+        '
+    - name: networking_set_cookie_partitioned
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: denominator
+        type: INTEGER
+        mode: NULLABLE
+      - name: numerator
+        type: INTEGER
+        mode: NULLABLE
+      description: 'This counts the number of times we set a cookie that has the Partitioned
+        attribute. This tracks the adoption of CHIPS.
 
         '
   - name: uuid

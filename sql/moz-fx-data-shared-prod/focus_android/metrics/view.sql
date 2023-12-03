@@ -90,7 +90,8 @@ SELECT
       metrics.counter.fog_inits_during_shutdown,
       metrics.counter.bloburl_resolve_stopped,
       metrics.counter.networking_residual_cache_folder_count,
-      metrics.counter.cookie_banners_cookie_injection_fail
+      metrics.counter.cookie_banners_cookie_injection_fail,
+      metrics.counter.networking_set_cookie
     ) AS `counter`,
     metrics.datetime,
     STRUCT(
@@ -164,7 +165,11 @@ SELECT
       metrics.labeled_counter.cookie_banners_cmp_detected_cmp,
       metrics.labeled_counter.cookie_banners_cmp_result,
       metrics.labeled_counter.extensions_startup_cache_read_errors,
-      metrics.labeled_counter.networking_trr_request_count
+      metrics.labeled_counter.networking_trr_request_count,
+      metrics.labeled_counter.codec_stats_audio_preferred_codec,
+      metrics.labeled_counter.codec_stats_other_fec_signaled,
+      metrics.labeled_counter.codec_stats_ulpfec_negotiated,
+      metrics.labeled_counter.codec_stats_video_preferred_codec
     ) AS `labeled_counter`,
     metrics.memory_distribution,
     STRUCT(
@@ -267,7 +272,8 @@ SELECT
       metrics.counter.fog_inits_during_shutdown,
       metrics.counter.bloburl_resolve_stopped,
       metrics.counter.networking_residual_cache_folder_count,
-      metrics.counter.cookie_banners_cookie_injection_fail
+      metrics.counter.cookie_banners_cookie_injection_fail,
+      metrics.counter.networking_set_cookie
     ) AS `counter`,
     metrics.datetime,
     STRUCT(
@@ -341,7 +347,11 @@ SELECT
       metrics.labeled_counter.cookie_banners_cmp_detected_cmp,
       metrics.labeled_counter.cookie_banners_cmp_result,
       metrics.labeled_counter.extensions_startup_cache_read_errors,
-      metrics.labeled_counter.networking_trr_request_count
+      metrics.labeled_counter.networking_trr_request_count,
+      metrics.labeled_counter.codec_stats_audio_preferred_codec,
+      metrics.labeled_counter.codec_stats_other_fec_signaled,
+      metrics.labeled_counter.codec_stats_ulpfec_negotiated,
+      metrics.labeled_counter.codec_stats_video_preferred_codec
     ) AS `labeled_counter`,
     metrics.memory_distribution,
     STRUCT(

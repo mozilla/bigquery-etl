@@ -583,6 +583,9 @@ fields:
     - name: cookie_banners_cookie_injection_fail
       type: INTEGER
       mode: NULLABLE
+    - name: networking_set_cookie
+      type: INTEGER
+      mode: NULLABLE
   - name: custom_distribution
     type: RECORD
     mode: NULLABLE
@@ -2442,6 +2445,46 @@ fields:
         type: INTEGER
         mode: NULLABLE
     - name: networking_trr_request_count
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: codec_stats_audio_preferred_codec
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: codec_stats_other_fec_signaled
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: codec_stats_ulpfec_negotiated
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: codec_stats_video_preferred_codec
       type: RECORD
       mode: REPEATED
       fields:
@@ -9068,6 +9111,36 @@ fields:
         type: INTEGER
         mode: NULLABLE
     - name: cookie_banners_cmp_ratio_handled_by_cmp_rule
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: denominator
+        type: INTEGER
+        mode: NULLABLE
+      - name: numerator
+        type: INTEGER
+        mode: NULLABLE
+    - name: networking_set_cookie_foreign
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: denominator
+        type: INTEGER
+        mode: NULLABLE
+      - name: numerator
+        type: INTEGER
+        mode: NULLABLE
+    - name: networking_set_cookie_foreign_partitioned
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: denominator
+        type: INTEGER
+        mode: NULLABLE
+      - name: numerator
+        type: INTEGER
+        mode: NULLABLE
+    - name: networking_set_cookie_partitioned
       type: RECORD
       mode: NULLABLE
       fields:

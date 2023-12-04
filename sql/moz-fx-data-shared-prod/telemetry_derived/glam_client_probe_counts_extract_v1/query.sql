@@ -84,7 +84,7 @@ SELECT
   CASE
     WHEN client_agg_type = '' THEN 0
   ELSE
-    total_sample
+    CAST(total_sample as BIGNUMERIC)
   END
   AS total_sample,
   non_norm_histogram,

@@ -166,6 +166,25 @@ Please keep in mind the below checks can be combined and specified in the same `
  {{ in_range(["non_ssl_loads", "ssl_loads", "reporting_ratio"], 0, none, "submission_date = @submission_date") }}
 ```
 
+### row_count_within_past_partitions_avg([source](../../tests/checks/row_count_within_past_partitions_avg.jinja))
+Compares the row count of the current partition to the average of `number_of_days` past partitions and checks if the row count is within the average +- `threshold_percentage` %
+
+Usage:
+
+```
+Arguments:
+
+number_of_days: int - Number of days we are comparing the row count to
+threshold_percentage: int - How many percent above or below the average row count is ok.
+partition_field: Optional[str] - What column is the partition_field (default = "submission_date")
+```
+
+Example:
+```sql
+#fail
+{{ row_count_within_past_partitions_avg(7, 5, "submission_date") }}
+```
+
 
 ## Running checks locally / Commands
 

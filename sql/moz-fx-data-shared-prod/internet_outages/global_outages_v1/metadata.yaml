@@ -79,6 +79,8 @@ workgroup_access:
   - workgroup:mozilla-confidential
   - workgroup:internet-outages/external
 references:
+  checks.sql:
+  - moz-fx-data-shared-prod.internet_outages.global_outages_v1
   query.sql:
   - C
   - telemetry.clients_daily

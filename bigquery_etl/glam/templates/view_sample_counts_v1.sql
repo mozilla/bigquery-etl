@@ -77,9 +77,9 @@ SELECT
     '' AS key,
     agg_type,
     {% if channel == 'release' %}
-      CAST(SUM(value) * MAX(sample_mult) as numeric) as total_sample
+      CAST(SUM(value) * MAX(sample_mult) as BIGNUMERIC) as total_sample
     {% else %}
-      CAST(SUM(value) as numeric) as total_sample
+      CAST(SUM(value) as BIGNUMERIC) as total_sample
     {% endif %}
 FROM
     all_combos
@@ -98,9 +98,9 @@ SELECT
     key,
     agg_type,
     {% if channel == 'release' %}
-      CAST(SUM(value) * MAX(sample_mult) as numeric) as total_sample
+      CAST(SUM(value) * MAX(sample_mult) as BIGNUMERIC) as total_sample
     {% else %}
-      CAST(SUM(value) as numeric) as total_sample
+      CAST(SUM(value) as BIGNUMERIC) as total_sample
     {% endif %}
 FROM
     all_combos

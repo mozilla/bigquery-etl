@@ -14,7 +14,6 @@ WITH new_clients AS (
   FROM firefox_ios.firefox_ios_clients
   WHERE
     first_seen_date = DATE_SUB(@submission_date, INTERVAL 6 DAY)
-    AND NOT is_suspicious_device_client
 ),
 new_clients_activity AS (
   SELECT

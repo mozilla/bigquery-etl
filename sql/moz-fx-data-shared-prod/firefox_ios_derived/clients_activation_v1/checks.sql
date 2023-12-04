@@ -7,7 +7,6 @@ WITH upstream_clients_count AS (
   SELECT COUNT(*)
   FROM `{{ project_id }}.firefox_ios.firefox_ios_clients`
   WHERE first_seen_date = DATE_SUB(@submission_date, INTERVAL 6 DAY)
-  AND NOT is_suspicious_device_client
 ),
 activations_clients_count AS (
   SELECT COUNT(*)

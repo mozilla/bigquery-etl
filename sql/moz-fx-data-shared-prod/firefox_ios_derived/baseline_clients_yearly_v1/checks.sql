@@ -7,7 +7,7 @@
 
 #fail
 -- Should have clients who were active on that date present
-{{ min_row_count(10000, "days_since_seen = 0 AND submission_date = @submission_date") }}
+{{ min_row_count(10000, "`moz-fx-data-shared-prod`.udf.bits_to_days_since_seen(days_seen_bytes) = 0 AND submission_date = @submission_date") }}
 
 #fail
 -- Should have a bunch of new profiles each date

@@ -404,7 +404,8 @@ THEN
       install_source,
       app_name,
       app_version,
-      last_updated_timestamp device_manufacturer,
+      last_updated_timestamp,
+      device_manufacturer,
       dau,
       wau,
       mau,
@@ -460,11 +461,13 @@ THEN
       _previous.active_hours
     )
   WHEN MATCHED
-    AND _previous.dau > _current.dau
-    OR _previous.wau > _current.wau
-    OR _previous.mau > _current.mau
-    OR _previous.uri_count > _current.uri_count
-    OR _previous.active_hours > _current.active_hours
+    AND (
+      _current.dau < _previous.dau
+      OR _current.wau < _previous.wau
+      OR _current.mau < _previous.mau
+      OR _current.uri_count < _previous.uri_count
+      OR _current.active_hours < _previous.active_hours
+    )
 THEN
   UPDATE
     SET device_manufacturer = ARRAY_CONCAT(
@@ -481,45 +484,17 @@ THEN
       >[
         (
           'UNDETERMINED',
-          IF(_previous.dau > _current.dau, (_previous.dau - _current.dau), _current.dau),
-          IF(_previous.wau > _current.wau, (_previous.wau - _current.wau), _current.wau),
-          IF(_previous.mau > _current.mau, (_previous.mau - _current.mau), _current.mau),
-          IF(
-            _previous.uri_count > _current.uri_count,
-            (_previous.uri_count - _current.uri_count),
-            _current.uri_count
-          ),
-          IF(
-            _previous.active_hours > _current.active_hours,
-            (_previous.active_hours - _current.active_hours),
-            _current.active_hours
-          )
+          _previous.dau - _current.dau,
+          _previous.wau - _current.wau,
+          _previous.mau - _current.mau,
+          _previous.uri_count - _current.uri_count,
+          _previous.active_hours - _current.active_hours
         )
       ]
     ),
-    dau = IF(
-      _previous.dau > _current.dau,
-      _current.dau + (_previous.dau - _current.dau),
-      _current.dau
-    ),
-    wau = IF(
-      _previous.wau > _current.wau,
-      _current.wau + (_previous.wau - _current.wau),
-      _current.wau
-    ),
-    mau = IF(
-      _previous.mau > _current.mau,
-      _current.mau + (_previous.mau - _current.mau),
-      _current.mau
-    ),
-    uri_count = IF(
-      _previous.uri_count > _current.uri_count,
-      _current.uri_count + (_previous.uri_count - _current.uri_count),
-      _current.uri_count
-    ),
-    active_hours = IF(
-      _previous.active_hours > _current.active_hours,
-      _current.active_hours + (_previous.active_hours - _current.active_hours),
-      _current.active_hours
-    ),
+    dau = _current.dau + (_previous.dau - _current.dau),
+    wau = _current.wau + (_previous.wau - _current.wau),
+    mau = _current.mau + (_previous.mau - _current.mau),
+    uri_count = _current.uri_count + (_previous.uri_count - _current.uri_count),
+    active_hours = _current.active_hours + (_previous.active_hours - _current.active_hours),
     last_updated_timestamp = _current.last_updated_timestamp;

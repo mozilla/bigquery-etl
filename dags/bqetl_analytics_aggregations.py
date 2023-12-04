@@ -106,6 +106,23 @@ with DAG(
         depends_on_past=False,
     )
 
+    checks__fail_telemetry_derived__active_users_aggregates__v1 = bigquery_dq_check(
+        task_id="checks__fail_telemetry_derived__active_users_aggregates__v1",
+        source_table="active_users_aggregates_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=True,
+        owner="lvargas@mozilla.com",
+        email=[
+            "gkaberere@mozilla.com",
+            "lvargas@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+    )
+
     fenix_active_users_aggregates = bigquery_etl_query(
         task_id="fenix_active_users_aggregates",
         destination_table="active_users_aggregates_v2",
@@ -267,6 +284,10 @@ with DAG(
 
     active_users_aggregates_v1.set_upstream(
         wait_for_telemetry_derived__unified_metrics__v1
+    )
+
+    checks__fail_telemetry_derived__active_users_aggregates__v1.set_upstream(
+        active_users_aggregates_v1
     )
 
     fenix_active_users_aggregates.set_upstream(

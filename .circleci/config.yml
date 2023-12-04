@@ -625,12 +625,12 @@ jobs:
           destination: sql.diff
   post-diff:
     docker:
-      - image: circleci/node:8.10.0
+      - image: cimg/node:21.2.0
     steps:
       - checkout
       - attach_workspace:
           at: /tmp/workspace
-      - run: npm i circle-github-bot
+      - run: npm i circle-github-bot@2.1.0 @octokit/graphql@7.0.2
       - run: .circleci/post-diff.js
   reset-stage-env:
     docker: *docker

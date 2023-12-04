@@ -53,7 +53,7 @@ SELECT
   first_seen_date,
   client_id,
   sample_id,
-  IF(days_2_7 > 1 AND COALESCE(search_count, 0) > 0, TRUE, FALSE) AS is_activated,
+  (days_2_7 > 1 AND COALESCE(search_count, 0) > 0) AS is_activated,
 FROM
   new_clients
 LEFT JOIN

@@ -52,7 +52,7 @@ WITH min_row_count AS (
   FROM
     `moz-fx-data-shared-prod.firefox_ios_derived.baseline_clients_yearly_v1`
   WHERE
-    days_since_seen = 0
+    `moz-fx-data-shared-prod`.udf.bits_to_days_since_seen(days_seen_bytes) = 0
     AND submission_date = @submission_date
 )
 SELECT

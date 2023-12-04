@@ -509,7 +509,7 @@ def _backfill_query(
     """Run a query backfill for a specific date."""
     backfill_date_str = backfill_date.strftime("%Y-%m-%d")
     if backfill_date_str in exclude:
-        click.echo(f"Skip {query_file_path} backfill for run date {backfill_date_str}")
+        click.echo(f"Skipping {query_file_path} backfill for run date {backfill_date_str}")
         return True
 
     project, dataset, table = extract_from_query_path(query_file_path)
@@ -519,9 +519,9 @@ def _backfill_query(
             partition_date = backfill_date + timedelta(days=date_partition_offset)
             partition = partition_date.strftime("%Y%m%d")
         case PartitionType.MONTH:
-            if date_partition_parameter != 0:
+            if date_partition_offset != 0:
                 # TODO: Support offsets here e.g. desktop_mobile_search_clients_monthly_v1
-                raise ValueError("Unsupported offset for month partitions.")
+                raise ValueError("Offsets are unsupported for non-daily partitions (found date_partition_offset={date_partition_offset}).")
             partition = backfill_date.strftime("%Y%m")
         case _:
             raise ValueError(f"Unsupported partitioning type: {partitioning_type}")

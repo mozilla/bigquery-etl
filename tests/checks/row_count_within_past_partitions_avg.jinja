@@ -1,4 +1,4 @@
-{% macro is_within_row_count_for_historic_partitions(number_of_days, threshold_percentage, partition_field) %}
+{% macro row_count_within_past_partitions_avg(number_of_days, threshold_percentage, partition_field) %}
 	{% set partition_field = partition_field | default("submission_date") %}
 
 	WITH rows_per_partition AS (

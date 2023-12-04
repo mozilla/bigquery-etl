@@ -11,7 +11,8 @@ WITH new_clients AS (
     first_seen_date,
     sample_id,
     channel,
-  FROM firefox_ios.firefox_ios_clients
+  FROM
+    firefox_ios.firefox_ios_clients
   WHERE
     first_seen_date = DATE_SUB(@submission_date, INTERVAL 6 DAY)
 ),
@@ -43,7 +44,9 @@ clients_search AS (
     AND os = 'iOS'
     AND normalized_app_name = 'Fennec'
   GROUP BY
-    client_id, sample_id, channel
+    client_id,
+    sample_id,
+    channel
 )
 SELECT
   @submission_date AS submission_date,

@@ -83,7 +83,7 @@ SELECT
   CASE
     WHEN client_agg_type = ''
       THEN 0
-    ELSE total_sample
+    ELSE CAST(total_sample AS BIGNUMERIC)
   END AS total_sample,
   non_norm_histogram,
   non_norm_percentiles

@@ -1,6 +1,6 @@
 # bqetl Data Checks
 
-> Instructions on how to add data checks can be found under the [Adding data checks](../cookbooks/adding_data_checks.md) cookbook.
+> Instructions on how to add data checks can be found in the [Adding data checks](#adding-data-checks) section below.
 
 ## Background
 

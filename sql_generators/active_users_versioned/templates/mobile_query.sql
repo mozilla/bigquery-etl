@@ -48,7 +48,6 @@ WITH _base AS (
       `{{ project_id }}.{{ app_name }}.clients_last_seen_joined`
     WHERE
       submission_date = @submission_date
-
   ),
   search_clients AS (
     SELECT
@@ -62,7 +61,6 @@ WITH _base AS (
       `{{ project_id }}.search_derived.mobile_search_clients_daily_v1`
     WHERE
       submission_date = @submission_date
-
   ),
   search_metrics AS (
     SELECT

@@ -360,30 +360,31 @@ MERGE
 USING
   _previous
 ON
-  _previous.segment = _current.segment
-  AND _previous.attribution_medium = _current.attribution_medium
-  AND _previous.attribution_source = _current.attribution_source
-  AND _previous.attributed = _current.attributed
-  AND _previous.city = _current.city
-  AND _previous.country = _current.country
-  AND _previous.distribution_id = _current.distribution_id
-  AND _previous.first_seen_year = _current.first_seen_year
-  AND _previous.is_default_browser = _current.is_default_browser
-  AND _previous.channel = _current.channel
-  AND _previous.os = _current.os
-  AND _previous.os_version = _current.os_version
-  AND _previous.os_version_major = _current.os_version_major
-  AND _previous.os_version_minor = _current.os_version_minor
-  AND _previous.submission_date = _current.submission_date
-  AND _previous.language_name = _current.language_name
-  AND _previous.adjust_network = _current.adjust_network
-  AND _previous.install_source = _current.install_source
-  AND _previous.app_name = _current.app_name
-  AND _previous.app_version = _current.app_version
+  _previous.submission_date = _current.submission_date
+  AND _previous.segment IS NOT DISTINCT FROM _current.segment
+  AND _previous.attribution_medium IS NOT DISTINCT FROM _current.attribution_medium
+  AND _previous.attribution_source IS NOT DISTINCT FROM _current.attribution_source
+  AND _previous.attributed IS NOT DISTINCT FROM _current.attributed
+  AND _previous.city IS NOT DISTINCT FROM _current.city
+  AND _previous.country IS NOT DISTINCT FROM _current.country
+  AND _previous.distribution_id IS NOT DISTINCT FROM _current.distribution_id
+  AND _previous.first_seen_year IS NOT DISTINCT FROM _current.first_seen_year
+  AND _previous.is_default_browser IS NOT DISTINCT FROM _current.is_default_browser
+  AND _previous.channel IS NOT DISTINCT FROM _current.channel
+  AND _previous.os IS NOT DISTINCT FROM _current.os
+  AND _previous.os_version IS NOT DISTINCT FROM _current.os_version
+  AND _previous.os_version_major IS NOT DISTINCT FROM _current.os_version_major
+  AND _previous.os_version_minor IS NOT DISTINCT FROM _current.os_version_minor
+  AND _previous.language_name IS NOT DISTINCT FROM _current.language_name
+  AND _previous.adjust_network IS NOT DISTINCT FROM _current.adjust_network
+  AND _previous.install_source IS NOT DISTINCT FROM _current.install_source
+  AND _previous.app_name IS NOT DISTINCT FROM _current.app_name
+  AND _previous.app_version IS NOT DISTINCT FROM _current.app_version
 WHEN NOT MATCHED
 THEN
   INSERT
     (
+      submission_date,
       segment,
       attribution_medium,
       attribution_source,
@@ -398,13 +399,12 @@ THEN
       os_version,
       os_version_major,
       os_version_minor,
-      submission_date,
       language_name,
       adjust_network,
       install_source,
       app_name,
       app_version,
-      device_manufacturer,
+      last_updated_timestamp device_manufacturer,
       dau,
       wau,
       mau,
@@ -413,6 +413,7 @@ THEN
     )
   VALUES
     (
+      _previous.submission_date,
       _previous.segment,
       _previous.attribution_medium,
       _previous.attribution_source,
@@ -427,12 +428,12 @@ THEN
       _previous.os_version,
       _previous.os_version_major,
       _previous.os_version_minor,
-      _previous.submission_date,
       _previous.language_name,
       _previous.adjust_network,
       _previous.install_source,
       _previous.app_name,
       _previous.app_version,
+      _previous.last_updated_timestamp,
       ARRAY<
         STRUCT<
           device_manufacturer STRING,
@@ -480,16 +481,45 @@ THEN
       >[
         (
           'UNDETERMINED',
-          (_previous.dau - _current.dau),
-          (_previous.wau - _current.wau),
-          (_previous.mau - _current.mau),
-          (_previous.uri_count - _current.uri_count),
-          (_previous.active_hours - _current.active_hours)
+          IF(_previous.dau > _current.dau, (_previous.dau - _current.dau), _current.dau),
+          IF(_previous.wau > _current.wau, (_previous.wau - _current.wau), _current.wau),
+          IF(_previous.mau > _current.mau, (_previous.mau - _current.mau), _current.mau),
+          IF(
+            _previous.uri_count > _current.uri_count,
+            (_previous.uri_count - _current.uri_count),
+            _current.uri_count
+          ),
+          IF(
+            _previous.active_hours > _current.active_hours,
+            (_previous.active_hours - _current.active_hours),
+            _current.active_hours
+          )
         )
       ]
     ),
-    dau = _current.dau + (_previous.dau - _current.dau),
-    wau = _current.wau + (_previous.wau - _current.wau),
-    mau = _current.mau + (_previous.mau - _current.mau),
-    uri_count = _current.uri_count + (_previous.uri_count - _current.uri_count),
-    active_hours = _current.active_hours + (_previous.active_hours - _current.active_hours);
+    dau = IF(
+      _previous.dau > _current.dau,
+      _current.dau + (_previous.dau - _current.dau),
+      _current.dau
+    ),
+    wau = IF(
+      _previous.wau > _current.wau,
+      _current.wau + (_previous.wau - _current.wau),
+      _current.wau
+    ),
+    mau = IF(
+      _previous.mau > _current.mau,
+      _current.mau + (_previous.mau - _current.mau),
+      _current.mau
+    ),
+    uri_count = IF(
+      _previous.uri_count > _current.uri_count,
+      _current.uri_count + (_previous.uri_count - _current.uri_count),
+      _current.uri_count
+    ),
+    active_hours = IF(
+      _previous.active_hours > _current.active_hours,
+      _current.active_hours + (_previous.active_hours - _current.active_hours),
+      _current.active_hours
+    ),
+    last_updated_timestamp = _current.last_updated_timestamp;

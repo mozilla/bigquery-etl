@@ -90,6 +90,7 @@ class TaskRef:
     execution_delta: Optional[str] = attr.ib(None)
     schedule_interval: Optional[str] = attr.ib(None)
     date_partition_offset: Optional[int] = attr.ib(None)
+    task_group: Optional[str] = attr.ib(None)
 
     @property
     def task_key(self):
@@ -178,20 +179,6 @@ EXTERNAL_TASKS = {
     ): ["*.core_clients_first_seen*"],
     TaskRef(
         dag_name="copy_deduplicate",
-        task_id="baseline_clients_last_seen",
-        schedule_interval="0 1 * * *",
-    ): ["*.baseline_clients_last_seen*"],
-    TaskRef(
-        dag_name="copy_deduplicate",
-        task_id="clients_last_seen_joined",
-        schedule_interval="0 1 * * *",
-        date_partition_offset=-1,
-    ): ["*.clients_last_seen_joined*"],
-    # *_stable.* should be matched last since all
-    # pattern before are downstream dependencies of
-    # copy_deduplicate_all.
-    TaskRef(
-        dag_name="copy_deduplicate",
         task_id="copy_deduplicate_all",
         schedule_interval="0 1 * * *",
     ): ["*_stable.*"],
@@ -254,6 +241,7 @@ class Task:
     gke_location: Optional[str] = attr.ib(None)
     gke_cluster_name: Optional[str] = attr.ib(None)
     query_project: Optional[str] = attr.ib(None)
+    task_group: Optional[str] = attr.ib(None)
 
     @property
     def task_key(self):
@@ -318,6 +306,14 @@ class Task:
             raise ValueError(
                 f"Invalid timedelta definition for {attribute}: {value}."
                 "Timedeltas should be specified like: 1h, 30m, 1h15m, 1d4h45m, ..."
+            )
+
+    @task_group.validator
+    def validate_task_group(self, attribute, value):
+        """Check that the task group name is valid."""
+        if value is not None and not re.match(r"[a-zA-Z0-9_]+", value):
+            raise ValueError(
+                "Invalid task group identifier. Group name must match pattern [a-zA-Z0-9_]+"
             )
 
     def __attrs_post_init__(self):
@@ -516,6 +512,7 @@ class Task:
             schedule_interval=dag_collection.dag_by_name(
                 self.dag_name
             ).schedule_interval,
+            task_group=self.task_group,
         )
 
     def _get_referenced_tables(self):

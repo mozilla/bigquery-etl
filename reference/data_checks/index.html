@@ -3557,6 +3557,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#row_count_within_past_partitions_avgsource" class="md-nav__link">
+    row_count_within_past_partitions_avg(source)
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -3749,6 +3756,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#row_count_within_past_partitions_avgsource" class="md-nav__link">
+    row_count_within_past_partitions_avg(source)
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -3925,6 +3939,19 @@ where: Optional[str] - A condition that will be injected into the `WHERE` clause
 <span class="w"> </span><span class="o">#</span><span class="n">warn</span>
 <span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="n">in_range</span><span class="p">([</span><span class="ss">&quot;non_ssl_loads&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;ssl_loads&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;reporting_ratio&quot;</span><span class="p">],</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="k">none</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;submission_date = @submission_date&quot;</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
 </code></pre></div>
+<h3 id="row_count_within_past_partitions_avgsource">row_count_within_past_partitions_avg(<a href="../../tests/checks/row_count_within_past_partitions_avg.jinja">source</a>)</h3>
+<p>Compares the row count of the current partition to the average of <code>number_of_days</code> past partitions and checks if the row count is within the average +- <code>threshold_percentage</code> %</p>
+<p>Usage:</p>
+<div class="highlight"><pre><span></span><code>Arguments:
+
+number_of_days: int - Number of days we are comparing the row count to
+threshold_percentage: int - How many percent above or below the average row count is ok.
+partition_field: Optional[str] - What column is the partition_field (default = &quot;submission_date&quot;)
+</code></pre></div>
+<p>Example:
+<div class="highlight"><pre><span></span><code><span class="o">#</span><span class="n">fail</span>
+<span class="err">{{</span><span class="w"> </span><span class="n">row_count_within_past_partitions_avg</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;submission_date&quot;</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
+</code></pre></div></p>
 <h2 id="running-checks-locally-commands">Running checks locally / Commands</h2>
 <p>To list all available commands in the bqetl data checks CLI:</p>
 <div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>check

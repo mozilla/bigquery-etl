@@ -583,6 +583,7 @@ bqetl_firefox_ios:
     depends_on_past: false
     email:
       - kik@mozilla.com
+      - frank@mozilla.com
       - telemetry-alerts@mozilla.com
     email_on_failure: true
     email_on_retry: true

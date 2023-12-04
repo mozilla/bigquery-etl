@@ -17,8 +17,8 @@
 
 	row_counts_current_and_historic AS (
 		SELECT
-			SUM(IF(table_partition = @{{ partition_field }}, total_rows, NULL)) as current_partition_row_count,
-			AVG(IF(table_partition != @{{ partition_field }}, total_rows, NULL)) as historic_partition_avg_row_count,
+			SUM(IF(table_partition = @{{ partition_field }}, total_rows, NULL)) AS current_partition_row_count,
+			AVG(IF(table_partition < @{{ partition_field }}, total_rows, NULL)) AS historic_partition_avg_row_count,
 
 		FROM rows_per_partition
 	),

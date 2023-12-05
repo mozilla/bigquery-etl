@@ -68,6 +68,7 @@ activity_cohort_match AS (
     submission_date_activity.days_seen_bits as active_client_days_seen_bits,
     submission_date_activity.days_seen_dau_bits,
     mozfun.bits28.days_since_seen(submission_date_activity.days_seen_bits) as active_clients_days_since_seen,
+    mozfun.bits28.days_since_seen(submission_date_activity.days_seen_dau_bits) as dau_clients_days_since_seen,
     cohorts_in_range.* EXCEPT (client_id)
   FROM
     cohorts_in_range
@@ -108,6 +109,7 @@ SELECT
   os_version_minor,
   COUNT(client_id) AS num_clients_in_cohort,
   COUNTIF((active_client_id IS NOT NULL) AND (active_clients_days_since_seen = 0)) AS num_clients_active_on_day,
+  COUNTIF((active_client_id IS NOT NULL) AND (dau_clients_days_since_seen = 0)) AS num_clients_dau_on_day,
   COUNTIF((active_client_id IS NOT NULL) AND
     (COALESCE(
     BIT_COUNT(mozfun.bits28.from_string('0000000000000000000001111111') & active_client_days_seen_bits) > 0,

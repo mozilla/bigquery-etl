@@ -4,9 +4,10 @@ WITH clients_yearly AS (
     sample_id,
     submission_date,
     first_seen_date,
-    days_since_seen,
-    days_seen_bytes,
     days_since_first_seen,
+    days_since_seen,
+    consecutive_days_seen,
+    days_seen_bytes,
   FROM
     fenix.clients_yearly
   WHERE

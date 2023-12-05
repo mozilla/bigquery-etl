@@ -5,6 +5,30 @@ fields:
 - name: dau
   type: INTEGER
   mode: NULLABLE
+- name: logins_deleted_users
+  type: INTEGER
+  mode: NULLABLE
+- name: logins_deleted
+  type: INTEGER
+  mode: NULLABLE
+- name: logins_modified_users
+  type: INTEGER
+  mode: NULLABLE
+- name: logins_modified
+  type: INTEGER
+  mode: NULLABLE
+- name: logins_saved_users
+  type: INTEGER
+  mode: NULLABLE
+- name: logins_saved
+  type: INTEGER
+  mode: NULLABLE
+- name: logins_saved_all_users
+  type: INTEGER
+  mode: NULLABLE
+- name: logins_saved_all
+  type: INTEGER
+  mode: NULLABLE
 - name: credit_card_autofill_enabled_users
   type: INTEGER
   mode: NULLABLE

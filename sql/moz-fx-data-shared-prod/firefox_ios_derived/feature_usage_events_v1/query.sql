@@ -18,6 +18,32 @@ product_features AS (
   SELECT
     client_info.client_id,
     DATE(submission_timestamp) AS submission_date,
+    /*Logins*/
+    CASE
+      WHEN event_category = 'logins'
+        AND event_name = 'autofill_failed'
+        THEN 1
+      ELSE 0
+    END AS logins_autofill_failed,
+    CASE
+      WHEN event_category = 'logins'
+        AND event_name = 'autofilled'
+        THEN 1
+      ELSE 0
+    END AS logins_autofilled,
+    CASE
+      WHEN event_category = 'logins'
+        AND event_name = 'management_add_tapped'
+        THEN 1
+      ELSE 0
+    END AS logins_management_add_tapped,
+    CASE
+      WHEN event_category = 'logins'
+        AND event_name = 'management_logins_tapped'
+        THEN 1
+      ELSE 0
+    END AS logins_management_logins_tapped,
+
     /*Credit Card*/
     CASE
       WHEN event_category = 'credit_card'
@@ -272,6 +298,19 @@ product_features AS (
 product_features_agg AS (
   SELECT
     submission_date,
+/*Logins*/
+--autofill_failed
+    SUM(logins_autofill_failed) AS logins_autofill_failed,
+    COUNT(DISTINCT CASE WHEN logins_autofill_failed > 0 THEN client_id END) AS logins_autofill_failed_users,
+--logins_autofilled
+    SUM(logins_autofilled) AS logins_autofilled,
+    COUNT(DISTINCT CASE WHEN logins_autofilled > 0 THEN client_id END) AS logins_autofilled_users,
+--logins_management_add_tapped
+    SUM(logins_management_add_tapped) AS logins_management_add_tapped,
+    COUNT(DISTINCT CASE WHEN logins_management_add_tapped > 0 THEN client_id END) AS logins_management_add_tapped_users,
+--logins_management_logins_tapped
+    SUM(logins_management_logins_tapped) AS logins_management_logins_tapped,
+    COUNT(DISTINCT CASE WHEN logins_management_logins_tapped > 0 THEN client_id END) AS logins_management_logins_tapped_users,
 /*Credit Card*/
 --autofill_failed
     SUM(cc_autofill_failed) AS cc_autofill_failed,
@@ -486,6 +525,15 @@ product_features_agg AS (
 SELECT
   submission_date,
   dau,
+    /*Logins*/
+  logins_autofill_failed,
+  logins_autofill_failed_users,
+  logins_autofilled,
+  logins_autofilled_users,
+  logins_management_add_tapped,
+  logins_management_add_tapped_users,
+  logins_management_logins_tapped,
+  logins_management_logins_tapped_users,
     /*Credit Card*/
   cc_autofill_failed,
   cc_autofill_failed_users,

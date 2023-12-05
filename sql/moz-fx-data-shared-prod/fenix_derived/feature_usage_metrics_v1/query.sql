@@ -33,19 +33,19 @@ product_features AS (
     COALESCE(SUM(metrics.quantity.addresses_saved_all), 0) AS currently_stored_addresses,
     --Bookmark
     COALESCE(
-      SUM(metrics.labeled_counter.metrics_bookmarks_add[SAFE_OFFSET(0)].value),
+      SUM(metrics_bookmarks_add_table.value),
       0
     ) AS bookmarks_add,
     COALESCE(
-      SUM(metrics.labeled_counter.metrics_bookmarks_delete[SAFE_OFFSET(0)].value),
+      SUM(metrics_bookmarks_delete_table.value),
       0
     ) AS bookmarks_delete,
     COALESCE(
-      SUM(metrics.labeled_counter.metrics_bookmarks_edit[SAFE_OFFSET(0)].value),
+      SUM(metrics_bookmarks_edit_table.value),
       0
     ) AS bookmarks_edit,
     COALESCE(
-      SUM(metrics.labeled_counter.metrics_bookmarks_open[SAFE_OFFSET(0)].value),
+      SUM(metrics_bookmarks_open_table.value),
       0
     ) AS bookmarks_open,
     COALESCE(
@@ -181,7 +181,11 @@ product_features AS (
       SUM(CASE WHEN metrics.boolean.customize_home_recently_visited THEN 1 ELSE 0 END)
     ) AS customize_home_recently_visited,
   FROM
-    fenix.metrics
+    fenix.metrics AS metric,
+    UNNEST(metrics.labeled_counter.metrics_bookmarks_add) AS metrics_bookmarks_add_table,
+    UNNEST(metrics.labeled_counter.metrics_bookmarks_delete) AS metrics_bookmarks_delete_table,
+    UNNEST(metrics.labeled_counter.metrics_bookmarks_edit) AS metrics_bookmarks_edit_table,
+    UNNEST(metrics.labeled_counter.metrics_bookmarks_open) AS metrics_bookmarks_open_table
   WHERE
     DATE(submission_timestamp) >= start_date
   GROUP BY

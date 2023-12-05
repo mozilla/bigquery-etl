@@ -20,6 +20,24 @@ product_features AS (
   SELECT
     client_info.client_id,
     DATE(submission_timestamp) AS submission_date,
+    /*Logins*/
+    COALESCE(
+      SUM(metrics.counter.logins_deleted),
+      0
+    ) AS logins_deleted,
+    COALESCE(
+      SUM(metrics.counter.logins_modified),
+      0
+    ) AS logins_modified,
+    COALESCE(
+      SUM(metrics.counter.logins_saved),
+      0
+    ) AS logins_saved,
+    COALESCE(
+      SUM(metrics.quantity.logins_saved_all),
+      0
+    ) AS logins_saved_all,
+
     /*Credit Card*/
     COALESCE(
       SUM(CASE WHEN metrics.boolean.credit_card_autofill_enabled THEN 1 ELSE 0 END),
@@ -30,13 +48,13 @@ product_features AS (
       0
     ) AS credit_card_sync_enabled,
     /*Bookmark*/
-    COALESCE(SUM(metrics.labeled_counter.bookmarks_add[SAFE_OFFSET(0)].value), 0) AS bookmarks_add,
+    COALESCE(SUM(bookmarks_add_table.value), 0) AS bookmarks_add,
     COALESCE(
-      SUM(metrics.labeled_counter.bookmarks_delete[SAFE_OFFSET(0)].value),
+      SUM(bookmarks_delete_table.value),
       0
     ) AS bookmarks_delete,
     COALESCE(
-      SUM(metrics.labeled_counter.bookmarks_edit[SAFE_OFFSET(0)].value),
+      SUM(bookmarks_edit_table.value),
       0
     ) AS bookmarks_edit,
     COALESCE(
@@ -45,11 +63,11 @@ product_features AS (
     ) AS has_mobile_bookmarks,
     COALESCE(SUM(metrics.quantity.bookmarks_mobile_bookmarks_count), 0) AS mobile_bookmarks_count,
     COALESCE(
-      SUM(metrics.labeled_counter.bookmarks_open[SAFE_OFFSET(0)].value),
+      SUM(bookmarks_open_table.value),
       0
     ) AS bookmarks_open,
     COALESCE(
-      SUM(metrics.labeled_counter.bookmarks_view_list[SAFE_OFFSET(0)].value),
+      SUM(bookmarks_view_list_table.value),
       0
     ) AS bookmarks_view_list,
     /*FxA*/
@@ -114,7 +132,12 @@ product_features AS (
       0
     ) AS firefox_home_page_customize_homepage_button
   FROM
-    firefox_ios.metrics
+    firefox_ios.metrics AS metric,
+    UNNEST(metric.metrics.labeled_counter.bookmarks_add) AS bookmarks_add_table,
+    UNNEST(metric.metrics.labeled_counter.bookmarks_delete) AS bookmarks_delete_table,
+    UNNEST(metric.metrics.labeled_counter.bookmarks_edit) AS bookmarks_edit_table,
+    UNNEST(metric.metrics.labeled_counter.bookmarks_open) AS bookmarks_open_table,
+    UNNEST(metric.metrics.labeled_counter.bookmarks_view_list) AS bookmarks_view_list_table
   WHERE
     DATE(submission_timestamp) >= start_date
   GROUP BY
@@ -124,6 +147,43 @@ product_features AS (
 product_features_agg AS (
   SELECT
     submission_date,
+    /*Logins*/
+    --logins_deleted
+    COUNT(
+      DISTINCT
+      CASE
+        WHEN logins_deleted > 0
+          THEN client_id
+      END
+    ) AS logins_deleted_users,
+    COALESCE(SUM(logins_deleted), 0) AS logins_deleted,
+    --logins_modified
+    COUNT(
+      DISTINCT
+      CASE
+        WHEN logins_modified > 0
+          THEN client_id
+      END
+    ) AS logins_modified_users,
+    COALESCE(SUM(logins_modified), 0) AS logins_modified,
+    --logins_saved
+    COUNT(
+      DISTINCT
+      CASE
+        WHEN logins_saved > 0
+          THEN client_id
+      END
+    ) AS logins_saved_users,
+    COALESCE(SUM(logins_saved), 0) AS logins_saved,
+    --logins_saved_all
+    COUNT(
+      DISTINCT
+      CASE
+        WHEN logins_saved_all > 0
+          THEN client_id
+      END
+    ) AS logins_saved_all_users,
+    COALESCE(SUM(logins_saved_all), 0) AS logins_saved_all,
     /*Credit Card*/
     --credit card autofill enabled
     COUNT(
@@ -364,6 +424,15 @@ product_features_agg AS (
 SELECT
   submission_date,
   dau,
+/*Logins*/
+  logins_deleted_users,
+  logins_deleted,
+  logins_modified_users,
+  logins_modified,
+  logins_saved_users,
+  logins_saved,
+  logins_saved_all_users,
+  logins_saved_all,
 /*Credit Card*/
   credit_card_autofill_enabled_users,
   credit_card_autofill_enabled,

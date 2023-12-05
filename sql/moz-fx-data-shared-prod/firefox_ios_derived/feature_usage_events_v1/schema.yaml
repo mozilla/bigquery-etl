@@ -5,6 +5,30 @@ fields:
 - name: dau
   type: INTEGER
   mode: NULLABLE
+- name: logins_autofill_failed
+  type: INTEGER
+  mode: NULLABLE
+- name: logins_autofill_failed_users
+  type: INTEGER
+  mode: NULLABLE
+- name: logins_autofilled
+  type: INTEGER
+  mode: NULLABLE
+- name: logins_autofilled_users
+  type: INTEGER
+  mode: NULLABLE
+- name: logins_management_add_tapped
+  type: INTEGER
+  mode: NULLABLE
+- name: logins_management_add_tapped_users
+  type: INTEGER
+  mode: NULLABLE
+- name: logins_management_logins_tapped
+  type: INTEGER
+  mode: NULLABLE
+- name: logins_management_logins_tapped_users
+  type: INTEGER
+  mode: NULLABLE
 - name: cc_autofill_failed
   type: INTEGER
   mode: NULLABLE

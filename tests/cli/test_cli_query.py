@@ -1,5 +1,6 @@
 import os
 import types
+from unittest.mock import patch
 
 import pytest
 import yaml
@@ -7,6 +8,7 @@ from click.testing import CliRunner
 
 from bigquery_etl.cli.query import (
     _attach_metadata,
+    backfill,
     create,
     info,
     paths_matching_name_pattern,
@@ -482,3 +484,59 @@ class TestQuery:
             assert "foo" in table.labels
             assert table.labels["foo"] == "abc"
             assert "review_bugs" not in table.labels
+
+    def test_query_backfill_with_offset(self, runner):
+        with (
+            runner.isolated_filesystem(),
+            # Mock client to avoid NotFound
+            patch("google.cloud.bigquery.Client", autospec=True),
+            patch("subprocess.check_call", autospec=True) as check_call,
+        ):
+            os.makedirs("sql/moz-fx-data-shared-prod/telemetry_derived/query_v1")
+            os.makedirs("sql/moz-fx-data-shared-prod/telemetry_derived/query_v2")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/query.sql", "w"
+            ) as f:
+                f.write(
+                    "SELECT DATE('2021-01-01') as submission_date WHERE submission_date = @submission_date"
+                )
+
+            metadata_conf = {
+                "friendly_name": "test",
+                "description": "test",
+                "owners": ["test@example.org"],
+                "scheduling": {"dag_name": "bqetl_test", "date_partition_offset": -2},
+            }
+
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(metadata_conf))
+
+            result = runner.invoke(
+                backfill,
+                [
+                    "telemetry_derived.query_v1",
+                    "--project_id=moz-fx-data-shared-prod",
+                    "--start_date=2021-01-05",
+                    "--end_date=2021-01-09",
+                    "--parallelism=0",
+                ],
+            )
+
+            assert result.exit_code == 0
+
+            expected_submission_date_params = [
+                f"--parameter=submission_date:DATE:2021-01-0{day}"
+                for day in range(3, 8)
+            ]
+
+            assert check_call.call_count == 5
+            for call in check_call.call_args_list:
+                submission_date_params = [
+                    arg for arg in call.args[0] if "--parameter=submission_date" in arg
+                ]
+                assert len(submission_date_params) == 1
+                assert submission_date_params[0] in expected_submission_date_params

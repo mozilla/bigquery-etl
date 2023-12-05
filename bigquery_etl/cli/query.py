@@ -495,6 +495,7 @@ def _backfill_query(
     query_file_path,
     project_id,
     date_partition_parameter,
+    date_partition_offset,
     exclude,
     max_rows,
     dry_run,
@@ -506,76 +507,93 @@ def _backfill_query(
     run_checks,
 ):
     """Run a query backfill for a specific date."""
+    backfill_date_str = backfill_date.strftime("%Y-%m-%d")
+    if backfill_date_str in exclude:
+        click.echo(
+            f"Skipping {query_file_path} backfill for run date {backfill_date_str}"
+        )
+        return True
+
     project, dataset, table = extract_from_query_path(query_file_path)
 
     match partitioning_type:
         case PartitionType.DAY:
-            partition = backfill_date.strftime("%Y%m%d")
+            partition_date = backfill_date + timedelta(days=date_partition_offset)
+            partition = partition_date.strftime("%Y%m%d")
         case PartitionType.MONTH:
+            if date_partition_offset != 0:
+                # TODO: Support offsets here e.g. desktop_mobile_search_clients_monthly_v1
+                raise ValueError(
+                    "Offsets are unsupported for non-daily partitions (found date_partition_offset={date_partition_offset})."
+                )
             partition = backfill_date.strftime("%Y%m")
         case _:
             raise ValueError(f"Unsupported partitioning type: {partitioning_type}")
 
-    backfill_date = backfill_date.strftime("%Y-%m-%d")
-    if backfill_date not in exclude:
-        if destination_table is None:
-            destination_table = f"{project}.{dataset}.{table}"
+    if destination_table is None:
+        destination_table = f"{project}.{dataset}.{table}"
 
-        if not no_partition:
-            destination_table = f"{destination_table}${partition}"
+    if not no_partition:
+        destination_table = f"{destination_table}${partition}"
 
-        if not QUALIFIED_TABLE_NAME_RE.match(destination_table):
-            click.echo(
-                "Destination table must be named like:" + " <project>.<dataset>.<table>"
-            )
-            sys.exit(1)
+    if not QUALIFIED_TABLE_NAME_RE.match(destination_table):
+        click.echo("Destination table must be named like: <project>.<dataset>.<table>")
+        sys.exit(1)
 
-        click.echo(
-            f"Run backfill for {destination_table} "
-            f"with @{date_partition_parameter}={backfill_date}"
-        )
+    scheduling_params = []
+    if date_partition_parameter is not None:
+        # TODO: Support non date_partition_parameter scheduling.parameters e.g. clients_first_seen_28_days_later_v1
+        offset_param = backfill_date + timedelta(days=date_partition_offset)
+        scheduling_params += [
+            f"--parameter={date_partition_parameter}:DATE:{offset_param.strftime('%Y-%m-%d')}"
+        ]
 
-        arguments = [
+    arguments = (
+        [
             "query",
-            f"--parameter={date_partition_parameter}:DATE:{backfill_date}",
             "--use_legacy_sql=false",
             "--replace",
             f"--max_rows={max_rows}",
             f"--project_id={project_id}",
             "--format=none",
-        ] + args
-        if dry_run:
-            arguments += ["--dry_run"]
+        ]
+        + args
+        + scheduling_params
+    )
+    if dry_run:
+        arguments += ["--dry_run"]
 
-        _run_query(
-            [query_file_path],
+    click.echo(
+        f"Backfill run: {backfill_date_str} "
+        f"Destination_table: {destination_table} "
+        f"Scheduling Parameters: {scheduling_params}"
+    )
+
+    _run_query(
+        [query_file_path],
+        project_id=project_id,
+        dataset_id=dataset,
+        destination_table=destination_table,
+        public_project_id=ConfigLoader.get(
+            "default", "public_project", fallback="mozilla-public-data"
+        ),
+        query_arguments=arguments,
+    )
+
+    # Run checks on the query
+    checks_file = query_file_path.parent / "checks.sql"
+    if run_checks and checks_file.exists():
+        table_name = checks_file.parent.name
+        # query_args have things like format, which we don't want to push
+        # to the check; so we just take the query parameters
+        check_args = [qa for qa in arguments if qa.startswith("--parameter")]
+        check._run_check(
+            checks_file=checks_file,
             project_id=project_id,
             dataset_id=dataset,
-            destination_table=destination_table,
-            public_project_id=ConfigLoader.get(
-                "default", "public_project", fallback="mozilla-public-data"
-            ),
-            query_arguments=arguments,
-        )
-
-        # Run checks on the query
-        checks_file = query_file_path.parent / "checks.sql"
-        if run_checks and checks_file.exists():
-            table_name = checks_file.parent.name
-            # query_args have things like format, which we don't want to push
-            # to the check; so we just take the query parameters
-            check_args = [qa for qa in arguments if qa.startswith("--parameter")]
-            check._run_check(
-                checks_file=checks_file,
-                project_id=project_id,
-                dataset_id=dataset,
-                table=table_name,
-                query_arguments=check_args,
-                dry_run=dry_run,
-            )
-    else:
-        click.echo(
-            f"Skip {query_file_path} with @{date_partition_parameter}={backfill_date}"
+            table=table_name,
+            query_arguments=check_args,
+            dry_run=dry_run,
         )
 
     return True
@@ -702,61 +720,54 @@ def backfill(
         )
         query_files = paths_matching_name_pattern(name, ctx.obj["TMP_DIR"], project_id)
 
-    dates = [start_date + timedelta(i) for i in range((end_date - start_date).days + 1)]
-
     for query_file in query_files:
         query_file_path = Path(query_file)
 
-        depends_on_past = False
-        date_partition_parameter = "submission_date"
-
         try:
             metadata = Metadata.of_query_file(str(query_file_path))
-            depends_on_past = metadata.scheduling.get(
-                "depends_on_past", depends_on_past
-            )
-            date_partition_parameter = metadata.scheduling.get(
-                "date_partition_parameter", date_partition_parameter
-            )
-
-            # For backwards compatibility assume partitioning type is day
-            # in case metadata is missing
-            if metadata.bigquery:
-                partitioning_type = metadata.bigquery.time_partitioning.type
-            else:
-                partitioning_type = PartitionType.DAY
-                click.echo(
-                    "Bigquery partitioning type not set. Using PartitionType.DAY"
-                )
-
-            match partitioning_type:
-                case PartitionType.DAY:
-                    dates = [
-                        start_date + timedelta(i)
-                        for i in range((end_date - start_date).days + 1)
-                    ]
-                case PartitionType.MONTH:
-                    dates = list(
-                        rrule(
-                            freq=MONTHLY,
-                            dtstart=start_date.replace(day=1),
-                            until=end_date,
-                        )
-                    )
-                    # Dates in excluded must be the first day of the month to match `dates`
-                    exclude = [
-                        date.fromisoformat(day).replace(day=1).strftime("%Y-%m-%d")
-                        for day in exclude
-                    ]
-                case _:
-                    raise ValueError(
-                        f"Unsupported partitioning type: {partitioning_type}"
-                    )
-
         except FileNotFoundError:
-            click.echo(f"No metadata defined for {query_file_path}")
+            click.echo(f"Can't run backfill without metadata for {query_file_path}.")
+            continue
 
-        if depends_on_past and exclude != []:
+        depends_on_past = metadata.scheduling.get("depends_on_past", False)
+        # If date_partition_parameter isn't set it's assumed to be submission_date:
+        # https://github.com/mozilla/telemetry-airflow/blob/dbc2782fa23a34ae8268e7788f9621089ac71def/utils/gcp.py#L194C48-L194C48
+        date_partition_parameter = metadata.scheduling.get(
+            "date_partition_parameter", "submission_date"
+        )
+        date_partition_offset = metadata.scheduling.get("date_partition_offset", 0)
+
+        # For backwards compatibility assume partitioning type is day
+        # in case metadata is missing
+        if metadata.bigquery:
+            partitioning_type = metadata.bigquery.time_partitioning.type
+        else:
+            partitioning_type = PartitionType.DAY
+            click.echo("Bigquery partitioning type not set. Using PartitionType.DAY")
+
+        match partitioning_type:
+            case PartitionType.DAY:
+                dates = [
+                    start_date + timedelta(i)
+                    for i in range((end_date - start_date).days + 1)
+                ]
+            case PartitionType.MONTH:
+                dates = list(
+                    rrule(
+                        freq=MONTHLY,
+                        dtstart=start_date.replace(day=1),
+                        until=end_date,
+                    )
+                )
+                # Dates in excluded must be the first day of the month to match `dates`
+                exclude = [
+                    date.fromisoformat(day).replace(day=1).strftime("%Y-%m-%d")
+                    for day in exclude
+                ]
+            case _:
+                raise ValueError(f"Unsupported partitioning type: {partitioning_type}")
+
+        if depends_on_past and exclude:
             click.echo(
                 f"Warning: depends_on_past = True for {query_file_path} but the"
                 f"following dates will be excluded from the backfill: {exclude}"
@@ -774,6 +785,7 @@ def backfill(
             query_file_path,
             project_id,
             date_partition_parameter,
+            date_partition_offset,
             exclude,
             max_rows,
             dry_run,
@@ -784,7 +796,7 @@ def backfill(
             run_checks=checks,
         )
 
-        if not depends_on_past:
+        if not depends_on_past and parallelism > 0:
             # run backfill for dates in parallel if depends_on_past is false
             with Pool(parallelism) as p:
                 result = p.map(backfill_query, dates, chunksize=1)

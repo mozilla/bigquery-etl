@@ -23,6 +23,12 @@ fields:
     mode: NULLABLE
     type: INTEGER
     description: "Number of days since this client was last seen. For example, if they were seen yesterday, days_since_seen would be 1."
+  - name: consecutive_days_seen
+    mode: NULLABLE
+    type: INTEGER
+    description: >
+      Number of consecutive days this client has been seen.
+      For example, if they were missing two days ago but present yesterday & today, consecutive_days_seen would be 2.
   - name: days_seen_bytes
     mode: NULLABLE
     type: BYTES
@@ -47,3 +53,7 @@ fields:
     mode: NULLABLE
     type: STRING
     description: "First Adjust Network reported by this client."
+  - name: install_source
+    mode: NULLABLE
+    type: STRING
+    description: "First install source reported by this client."

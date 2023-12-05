@@ -23,6 +23,7 @@ SELECT
   clients_yearly.first_seen_date,
   clients_yearly.days_since_first_seen,
   clients_yearly.days_since_seen,
+  clients_yearly.consecutive_days_seen,
   clients_yearly.days_seen_bytes,
   (
     SELECT
@@ -43,6 +44,7 @@ SELECT
   firefox_android_clients.first_reported_country,
   firefox_android_clients.first_reported_isp,
   firefox_android_clients.adjust_network,
+  firefox_android_clients.install_source,
 FROM
   clients_yearly
 JOIN

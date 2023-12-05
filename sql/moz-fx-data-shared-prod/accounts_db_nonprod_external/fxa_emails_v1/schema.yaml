@@ -1,0 +1,26 @@
+fields:
+- name: id
+  type: INTEGER
+  mode: NULLABLE
+- name: normalizedEmail
+  type: STRING
+  mode: NULLABLE
+- name: email
+  type: STRING
+  mode: NULLABLE
+- name: uid
+  type: STRING
+  mode: NULLABLE
+  description: Account ID in hexadecimal format.
+- name: isVerified
+  type: BOOLEAN
+  mode: NULLABLE
+- name: isPrimary
+  type: BOOLEAN
+  mode: NULLABLE
+- name: verifiedAt
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: createdAt
+  type: TIMESTAMP
+  mode: NULLABLE

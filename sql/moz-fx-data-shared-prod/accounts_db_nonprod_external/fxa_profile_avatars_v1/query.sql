@@ -1,0 +1,17 @@
+SELECT
+  id,
+  url,
+  userId,
+  providerId,
+FROM
+  EXTERNAL_QUERY(
+    "moz-fx-fxa-nonprod.us.fxa-rds-nonprod-stage-fxa-profile",
+    """SELECT
+         id,
+         url,
+         userId,
+         providerId
+       FROM
+         fxa_profile.avatars
+    """
+  )

@@ -40,6 +40,8 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
+    task_group_test_group = TaskGroup("test_group")
+
     test__python_script_query__v1 = gke_command(
         task_id="test__python_script_query__v1",
         command=[
@@ -50,4 +52,5 @@ with DAG(
         docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="test@example.com",
         email=["test@example.com"],
+        task_group=task_group_test_group,
     )

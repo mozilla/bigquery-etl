@@ -16,11 +16,6 @@ WITH extracted_fields AS (
     BIT_COUNT(`mozfun`.bytes.extract_bits(days_seen_bytes, -1, 1)) AS active_on_this_date,
   FROM
     `moz-fx-data-shared-prod.fenix_derived.ltv_states_v1`
-  WHERE
-    -- BrowserStack clients are bots, we don't want to accidentally report on them
-    first_reported_isp != "BrowserStack"
-    -- Remove clients who are new on this day, but have more/less than 1 day of activity
-    AND NOT (days_since_first_seen = 0 AND BIT_COUNT(days_seen_bytes) != 1)
 )
 SELECT
   client_id,

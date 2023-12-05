@@ -53,3 +53,8 @@ LEFT JOIN
   fenix.client_adclicks_history
 USING
   (sample_id, client_id)
+WHERE
+    -- BrowserStack clients are bots, we don't want to accidentally report on them
+  first_reported_isp != "BrowserStack"
+    -- Remove clients who are new on this day, but have more/less than 1 day of activity
+  AND NOT (days_since_first_seen = 0 AND BIT_COUNT(days_seen_bytes) != 1)

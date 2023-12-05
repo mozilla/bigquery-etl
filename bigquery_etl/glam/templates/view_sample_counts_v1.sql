@@ -14,6 +14,9 @@ WITH histogram_data AS (
     app_version,
     app_build_id,
     channel,
+    {% if channel == 'release' %}
+      IF(os = 'Windows', 10, 1) AS sample_mult,
+    {% endif %}
     h1.metric,
     h1.key,
     h1.agg_type,
@@ -29,6 +32,9 @@ scalars_histogram_data AS (
     app_version,
     app_build_id,
     channel,
+    {% if channel == 'release' %}
+      IF(os = 'Windows', 10, 1) AS sample_mult,
+    {% endif %}
     s1.metric,
     s1.key,
     agg_type,
@@ -36,7 +42,7 @@ scalars_histogram_data AS (
   FROM
     `{{ project }}.{{ dataset }}.{{ prefix }}__clients_scalar_aggregates_v1`, UNNEST(scalar_aggregates) s1
 
-  UNION ALL 
+  UNION ALL
 
   SELECT
     client_id,
@@ -45,6 +51,9 @@ scalars_histogram_data AS (
     app_version,
     app_build_id,
     channel,
+    {% if channel == 'release' %}
+      sample_mult,
+    {% endif %}
     metric,
     v1.key,
     agg_type,
@@ -64,16 +73,20 @@ scalars_histogram_data AS (
 }}
 SELECT
     {{ attributes }},
-    metric, 
+    metric,
     '' AS key,
     agg_type,
-    SUM(value) as total_sample
+    {% if channel == 'release' %}
+      CAST(SUM(value) * MAX(sample_mult) as BIGNUMERIC) as total_sample
+    {% else %}
+      CAST(SUM(value) as BIGNUMERIC) as total_sample
+    {% endif %}
 FROM
     all_combos
 WHERE agg_type = 'summed_histogram'
 GROUP BY
-    {{ attributes }}, 
-    metric, 
+    {{ attributes }},
+    metric,
     key,
     agg_type
 
@@ -84,7 +97,11 @@ SELECT
     metric,
     key,
     agg_type,
-    SUM(value) as total_sample
+    {% if channel == 'release' %}
+      CAST(SUM(value) * MAX(sample_mult) as BIGNUMERIC) as total_sample
+    {% else %}
+      CAST(SUM(value) as BIGNUMERIC) as total_sample
+    {% endif %}
 FROM
     all_combos
 WHERE agg_type <> 'summed_histogram'

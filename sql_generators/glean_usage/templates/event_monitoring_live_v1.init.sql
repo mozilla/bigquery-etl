@@ -58,7 +58,7 @@ IF
       event_extra.key AS event_extra_key,
       normalized_country_code AS country,
       '{{ app_name }}' AS normalized_app_name,
-      normalized_channel,
+      client_info.app_channel AS channel,
       client_info.app_display_version AS version,
       -- Access experiment information.
       -- Additional iteration is necessary to aggregate total event count across experiments
@@ -123,7 +123,7 @@ IF
       NULL AS event_extra_key,
       normalized_country_code AS country,
       '{{ app_name }}' AS normalized_app_name,
-      normalized_channel,
+      client_info.app_channel AS channel,
       client_info.app_display_version AS VERSION,
       -- Access experiment information.
       -- Additional iteration is necessary to aggregate total event count across experiments
@@ -167,7 +167,7 @@ IF
       event_extra_key,
       country,
       normalized_app_name,
-      normalized_channel,
+      channel,
       version,
       experiment,
       experiment_branch

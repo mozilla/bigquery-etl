@@ -1,0 +1,17 @@
+fields:
+- name: id
+  type: NUMERIC
+  mode: NULLABLE
+- name: uid
+  type: STRING
+  mode: NULLABLE
+  description: Account ID in hexadecimal format.
+- name: createdAt
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: verified
+  type: BOOLEAN
+  mode: NULLABLE
+- name: enabled
+  type: BOOLEAN
+  mode: NULLABLE

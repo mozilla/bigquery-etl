@@ -7,6 +7,7 @@ SELECT
   adjust_campaign,
   adjust_creative,
   adjust_network,
+  install_source,
   COUNT(*) AS new_profiles,
   COUNTIF(repeat_first_month_user) AS repeat_user,
   COUNTIF(retained_week_4) AS retained_week_4,
@@ -22,4 +23,5 @@ GROUP BY
   adjust_ad_group,
   adjust_campaign,
   adjust_creative,
-  adjust_network
+  adjust_network,
+  install_source

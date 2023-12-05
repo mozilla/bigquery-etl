@@ -1,0 +1,18 @@
+- ga_client_id: newClient
+  first_seen_date: 2023-01-31
+  last_seen_date: 2023-02-01
+  had_download_event: True
+  first_reported:
+    country: earlierCountry
+- ga_client_id: existingClientNewerRecord
+  first_seen_date: 2023-01-01
+  last_seen_date: 2023-02-01
+  had_download_event: True
+  first_reported:
+    country: existingDataCountry
+- ga_client_id: existingClientOlderRecord
+  first_seen_date: 2023-02-01
+  last_seen_date: 2023-03-01
+  had_download_event: True
+  first_reported:
+    country: newDataCountry

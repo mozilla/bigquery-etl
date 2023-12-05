@@ -179,7 +179,12 @@ class GleanTable:
         ]
 
     def generate_per_app_id(
-        self, project_id, baseline_table, output_dir=None, use_cloud_function=True
+        self,
+        project_id,
+        baseline_table,
+        output_dir=None,
+        use_cloud_function=True,
+        app_info=[],
     ):
         """Generate the baseline table query per app_id."""
         if not self.per_app_id_enabled:
@@ -196,11 +201,22 @@ class GleanTable:
 
         table = tables[f"{self.prefix}_table"]
         view = tables[f"{self.prefix}_view"]
+        derived_dataset = tables["daily_table"].split(".")[-2]
+        dataset = derived_dataset.replace("_derived", "")
+
+        app_name = dataset
+        for app in app_info:
+            for app_dataset in app:
+                if app_dataset["bq_dataset_family"] == dataset:
+                    app_name = app_dataset["app_name"]
+                    break
+
         render_kwargs = dict(
             header="-- Generated via bigquery_etl.glean_usage\n",
             header_yaml="---\n# Generated via bigquery_etl.glean_usage\n",
             project_id=project_id,
-            derived_dataset=tables["daily_table"].split(".")[-2],
+            derived_dataset=derived_dataset,
+            app_name=app_name,
         )
 
         render_kwargs.update(self.custom_render_kwargs)

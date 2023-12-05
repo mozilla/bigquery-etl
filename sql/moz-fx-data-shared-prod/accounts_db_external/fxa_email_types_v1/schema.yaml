@@ -1,0 +1,7 @@
+fields:
+- name: id
+  type: INTEGER
+  mode: NULLABLE
+- name: emailType
+  type: STRING
+  mode: NULLABLE

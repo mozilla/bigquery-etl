@@ -9,6 +9,12 @@ description: |-
     metrics pings
 owners:
   - ascholtz@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_glean_usage
+  task_group: {{ app_name }}
 bigquery:
   time_partitioning:
     type: day

@@ -1,6 +1,6 @@
 """Represents an Airflow DAG."""
 
-from typing import List, Optional
+from typing import List, Optional, Set
 
 import attr
 import cattrs
@@ -177,6 +177,15 @@ class Dag:
 
         return {name: d}
 
+    @property
+    def task_groups(self) -> Set[str]:
+        """
+        Return list of task groups in this DAG.
+
+        Task groups are specified as part of the task configurations.
+        """
+        return {task.task_group for task in self.tasks if task.task_group is not None}
+
     @classmethod
     def from_dict(cls: type, d: dict):
         """
@@ -242,6 +251,7 @@ class Dag:
         env = self._jinja_env()
         dag_template = env.get_template(AIRFLOW_DAG_TEMPLATE)
         args = self.__dict__
+        args["task_groups"] = self.task_groups
 
         return dag_template.render(args)
 

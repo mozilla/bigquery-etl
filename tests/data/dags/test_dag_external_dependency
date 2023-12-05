@@ -7,6 +7,7 @@ from airflow.utils.task_group import TaskGroup
 import datetime
 from utils.constants import ALLOWED_STATES, FAILED_STATES
 from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
+from utils.slack import send_slack_notification
 
 docs = """
 ### bqetl_external_test_dag

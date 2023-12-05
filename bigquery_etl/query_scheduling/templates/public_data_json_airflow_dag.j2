@@ -7,7 +7,7 @@ from operators.gcp_container_operator import GKEPodOperator
 from airflow.sensors.external_task import ExternalTaskSensor
 from utils.constants import ALLOWED_STATES, FAILED_STATES
 from utils.gcp import gke_command
-from airflow.providers.slack.notifications.slack import send_slack_notification
+from utils.slack import send_slack_notification
 
 docs = """
 ### {{ name }}

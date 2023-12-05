@@ -7,14 +7,14 @@ import re
 from enum import Enum
 from fnmatch import fnmatchcase
 from pathlib import Path
-from typing import List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple
 
 import attr
 import cattrs
 import click
 
 from bigquery_etl.dependency import extract_table_references_without_views
-from bigquery_etl.metadata.parse_metadata import Metadata, PartitionType, SlackNotificationMetdata
+from bigquery_etl.metadata.parse_metadata import Metadata, PartitionType
 from bigquery_etl.query_scheduling.utils import (
     is_date_string,
     is_email,
@@ -242,7 +242,7 @@ class Task:
     gke_cluster_name: Optional[str] = attr.ib(None)
     query_project: Optional[str] = attr.ib(None)
     task_group: Optional[str] = attr.ib(None)
-    slack_notification: Optional[SlackNotificationMetdata] = attr.ib(None)
+    slack_notification: Optional[Dict] = attr.ib(None)
 
     @property
     def task_key(self):
@@ -507,7 +507,10 @@ class Task:
             metadata = Metadata.of_query_file(query_file)
 
         if metadata.checks and metadata.checks.slack_notification:
-            task.slack_notification = metadata.checks.slack_notification
+            task.slack_notification = {
+                "channel": metadata.checks.slack_notification.channel,
+                "status": [s.value for s in metadata.checks.slack_notification.status],
+            }
 
         return task
 

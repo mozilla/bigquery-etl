@@ -132,21 +132,26 @@ class ExternalDataMetadata:
     source_uris: List[str]
     options: Optional[Dict[str, Any]] = attr.ib(None)
 
+
 class CheckStatus(enum.Enum):
     FAIL = "fail"
     WARN = "warn"
     SUCCESS = "success"
 
+
 @attr.s(auto_attribs=True)
-class SlackNotificationMetdata:
+class SlackNotificationMetadata:
     """Metadata for configuring slack notifications for checks."""
+
     status: List[CheckStatus]
     channel: str
+
 
 @attr.s(auto_attribs=True)
 class ChecksMetadata:
     """Metadata for configuring ETL checks."""
-    slack_notification: SlackNotificationMetdata
+
+    slack_notification: SlackNotificationMetadata
 
 
 @attr.s(auto_attribs=True)
@@ -332,7 +337,7 @@ class Metadata:
                     references,
                     external_data,
                     deprecated,
-                    checks
+                    checks,
                 )
             except yaml.YAMLError as e:
                 raise e

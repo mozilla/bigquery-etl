@@ -3,7 +3,12 @@ from pathlib import Path
 
 import pytest
 
-from bigquery_etl.metadata.parse_metadata import Metadata
+from bigquery_etl.metadata.parse_metadata import (
+    Metadata,
+    ChecksMetadata,
+    SlackNotificationMetadata,
+    CheckStatus,
+)
 from bigquery_etl.query_scheduling.dag import DagParseException, InvalidDag
 from bigquery_etl.query_scheduling.dag_collection import DagCollection
 from bigquery_etl.query_scheduling.task import Task, TaskRef
@@ -367,6 +372,11 @@ class TestDagCollection:
                 "dag_name": "bqetl_external_test_dag",
                 "default_args": {"owner": "test@example.org"},
             },
+            checks=ChecksMetadata(
+                slack_notification=SlackNotificationMetadata(
+                    status=[CheckStatus.FAIL], channel="slack-channel"
+                )
+            ),
         )
 
         external_table_task = Task.of_query(
@@ -550,6 +560,11 @@ class TestDagCollection:
                 "dag_name": "bqetl_test_dag",
                 "default_args": {"owner": "test@example.org"},
             },
+            checks=ChecksMetadata(
+                slack_notification=SlackNotificationMetadata(
+                    status=[CheckStatus.FAIL], channel="slack-channel"
+                )
+            ),
         )
 
         task = Task.of_query(query_file, metadata)
@@ -571,6 +586,10 @@ class TestDagCollection:
             is_check_fail=True,
             metadata=metadata,
         )
+
+        assert checks_task1.slack_notification is not None
+        assert checks_task1.slack_notification["channel"] == "slack-channel"
+        assert checks_task1.slack_notification["status"] == ["fail"]
 
         checks_task1.upstream_dependencies.append(table_task1_ref)
 
@@ -595,6 +614,12 @@ class TestDagCollection:
                 "dag_name": "bqetl_external_test_dag",
                 "default_args": {"owner": "test@example.org"},
             },
+            checks=ChecksMetadata(
+                slack_notification=SlackNotificationMetadata(
+                    status=[CheckStatus.FAIL, CheckStatus.SUCCESS],
+                    channel="slack-channel",
+                )
+            ),
         )
 
         external_table_task = Task.of_query(

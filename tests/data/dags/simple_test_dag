@@ -11,6 +11,7 @@ from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 from fivetran_provider.operators.fivetran import FivetranOperator
 from fivetran_provider.sensors.fivetran import FivetranSensor
 from utils.callbacks import retry_tasks_callback
+from utils.slack import send_slack_notification
 
 docs = """
 ### bqetl_test_dag

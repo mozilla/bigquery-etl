@@ -1,0 +1,20 @@
+{% macro accepted_values(column, values, where) %}
+    {% if values is string %}
+        {%set values = [values] %}
+    {% endif %}
+
+    SELECT
+        IF(
+            COUNTIF(
+                {{ column }} NOT IN UNNEST({{ values }})
+            ) > 0,
+            ERROR("Unexpected values for field {{ column }} detected."),
+            NULL
+        )
+
+    FROM `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`
+    {% if where %}
+    WHERE {{ where }}
+    {% endif %}
+
+{% endmacro %}

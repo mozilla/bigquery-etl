@@ -7,7 +7,7 @@ labels:
   incremental: true
   owner1: frank@mozilla.com
 scheduling:
-  dag_name: bqetl_org_mozilla_firefox
+  dag_name: bqetl_org_mozilla_firefox_derived
 bigquery:
   time_partitioning:
     type: day

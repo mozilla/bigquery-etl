@@ -14,7 +14,7 @@ import cattrs
 import click
 
 from bigquery_etl.dependency import extract_table_references_without_views
-from bigquery_etl.metadata.parse_metadata import Metadata, PartitionType
+from bigquery_etl.metadata.parse_metadata import Metadata, PartitionType, SlackNotificationMetdata
 from bigquery_etl.query_scheduling.utils import (
     is_date_string,
     is_email,
@@ -242,6 +242,7 @@ class Task:
     gke_cluster_name: Optional[str] = attr.ib(None)
     query_project: Optional[str] = attr.ib(None)
     task_group: Optional[str] = attr.ib(None)
+    slack_notification: Optional[SlackNotificationMetdata] = attr.ib(None)
 
     @property
     def task_key(self):
@@ -501,6 +502,13 @@ class Task:
                 ]
             )
             task.validate_task_name(None, task.task_name)
+
+        if metadata is None:
+            metadata = Metadata.of_query_file(query_file)
+
+        if metadata.checks and metadata.checks.slack_notification:
+            task.slack_notification = metadata.checks.slack_notification
+
         return task
 
     def to_ref(self, dag_collection):

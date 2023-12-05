@@ -7,6 +7,7 @@ from airflow.utils.task_group import TaskGroup
 import datetime
 from utils.constants import ALLOWED_STATES, FAILED_STATES
 from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
+from airflow.providers.slack.notifications.slack import send_slack_notification
 
 {% set ns = namespace(uses_fivetran=False) -%}
 {% for task in tasks -%}
@@ -107,6 +108,60 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
             {%+ endif -%}
             {%+ elif task.date_partition_parameter -%}
             parameters=["{{ task.date_partition_parameter }}:DATE:{% raw %}{{ds}}{% endraw %}"],
+            {%+ endif -%}
+            {%+ if task.slack_notification -%}
+            {%+ if task.is_dq_check_fail and "fail" in task.slack_notification.status -%}
+            on_failure_callback=[
+                send_slack_notification(
+                    text="""
+                    **ETL Check notification**
+                    DAG: `{{ name }}`
+                    Check: `{{ task.task_name }}`
+                    Status: :red_circle: Failed
+                    Owner: {{ task.owner }}
+                    {% raw %}
+                    Execution Date: {{ ds }}
+                    {% endraw %}
+                    Airflow Link: Airflow Link: https://workflow.telemetry.mozilla.org/dags/{{ dag }}/grid?task_id={{ task }}&tab=logs&dag_run_id=scheduled__{{ ts }}
+                    """,
+                    channel="#{{ task.slack_notification.channel }}",
+                )
+            ]
+            {% elif not task.is_dq_check_fail and "warn" in task.slack_notification.status %}
+            on_failure_callback=[
+                send_slack_notification(
+                    text="""
+                    **ETL Check notification**
+                    DAG: `{{ name }}`
+                    Check: `{{ task.task_name }}`
+                    Status: :orange_circle: Warning
+                    Owner: {{ task.owner }}
+                    {% raw %}
+                    Execution Date: {{ ds }}
+                    {% endraw %}
+                    Airflow Link: Airflow Link: https://workflow.telemetry.mozilla.org/dags/{{ dag }}/grid?task_id={{ task }}&tab=logs&dag_run_id=scheduled__{{ ts }}
+                    """,
+                    channel="#{{ task.slack_notification.channel }}",
+                )
+            ]
+            {% elif "success" in task.slack_notification.status %}
+            on_success_callback=[
+                send_slack_notification(
+                    text="""
+                    **ETL Check notification**
+                    DAG: `{{ name }}`
+                    Check: `{{ task.task_name }}`
+                    Status: :green_circle: Success
+                    Owner: {{ task.owner }}
+                    {% raw %}
+                    Execution Date: {{ ds }}
+                    Airflow Link: https://workflow.telemetry.mozilla.org/dags/{{ dag }}/grid?task_id={{ task }}&tab=logs&dag_run_id=scheduled__{{ ts }}
+                    {% endraw %}
+                    """,
+                    channel="#{{ task.slack_notification.channel }}",
+                )
+            ]
+            {%+ endif -%}
             {%+ endif -%}
     {%+ else -%}
         {{ task.task_name }} = bigquery_etl_query(

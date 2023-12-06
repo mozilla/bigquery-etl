@@ -1341,6 +1341,6 @@ bqetl_mobile_feature_usage:
     start_date: '2023-10-24'
   description: schedule run for mobile feature usage tables
   repo: bigquery-etl
-  schedule_interval: 0 4 * * *
+  schedule_interval: 0 6 * * *
   tags:
     - impact/tier_3

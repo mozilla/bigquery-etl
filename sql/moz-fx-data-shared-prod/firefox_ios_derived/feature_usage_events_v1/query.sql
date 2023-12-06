@@ -1,3 +1,4 @@
+
 -- Query for firefox_ios_derived.feature_usage_events_v1
 -- For more information on writing queries see:
 -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
@@ -19,281 +20,62 @@ product_features AS (
     client_info.client_id,
     DATE(submission_timestamp) AS submission_date,
     /*Logins*/
-    CASE
-      WHEN event_category = 'logins'
-        AND event_name = 'autofill_failed'
-        THEN 1
-      ELSE 0
-    END AS logins_autofill_failed,
-    CASE
-      WHEN event_category = 'logins'
-        AND event_name = 'autofilled'
-        THEN 1
-      ELSE 0
-    END AS logins_autofilled,
-    CASE
-      WHEN event_category = 'logins'
-        AND event_name = 'management_add_tapped'
-        THEN 1
-      ELSE 0
-    END AS logins_management_add_tapped,
-    CASE
-      WHEN event_category = 'logins'
-        AND event_name = 'management_logins_tapped'
-        THEN 1
-      ELSE 0
-    END AS logins_management_logins_tapped,
-
+    COUNTIF(event_category = 'logins' AND event_name = 'autofill_failed') AS logins_autofill_failed,
+    COUNTIF(event_category = 'logins' AND event_name = 'autofilled') AS logins_autofilled,
+    COUNTIF(event_category = 'logins' AND event_name = 'management_add_tapped') AS logins_management_add_tapped,
+    COUNTIF(event_category = 'logins' AND event_name = 'management_logins_tapped') AS logins_management_logins_tapped,
     /*Credit Card*/
-    CASE
-      WHEN event_category = 'credit_card'
-        AND event_name = 'autofill_failed'
-        THEN 1
-      ELSE 0
-    END AS cc_autofill_failed,
-    CASE
-      WHEN event_category = 'credit_card'
-        AND event_name = 'autofill_settings_tapped'
-        THEN 1
-      ELSE 0
-    END AS cc_autofill_settings_tapped,
-    CASE
-      WHEN event_category = 'credit_card'
-        AND event_name = 'autofill_toggle'
-        THEN 1
-      ELSE 0
-    END AS cc_autofill_toggle,
-    CASE
-      WHEN event_category = 'credit_card'
-        AND event_name = 'autofilled'
-        THEN 1
-      ELSE 0
-    END AS cc_autofilled,
-    CASE
-      WHEN event_category = 'credit_card'
-        AND event_name = 'form_detected'
-        THEN 1
-      ELSE 0
-    END AS cc_form_detected,
-    CASE
-      WHEN event_category = 'credit_card'
-        AND event_name = 'save_prompt_create'
-        THEN 1
-      ELSE 0
-    END AS cc_save_prompt_create,
-    CASE
-      WHEN event_category = 'credit_card'
-        AND event_name = 'sync_toggle'
-        THEN 1
-      ELSE 0
-    END AS cc_sync_toggle,
+    COUNTIF(event_category = 'credit_card' AND event_name = 'autofill_failed') AS cc_autofill_failed,
+    COUNTIF(event_category = 'credit_card' AND event_name = 'autofill_settings_tapped') AS cc_autofill_settings_tapped,
+    COUNTIF(event_category = 'credit_card' AND event_name = 'autofill_toggle') AS cc_autofill_toggle,
+    COUNTIF(event_category = 'credit_card' AND event_name = 'autofilled') AS cc_autofilled,
+    COUNTIF(event_category = 'credit_card' AND event_name = 'form_detected') AS cc_form_detected,
+    COUNTIF(event_category = 'credit_card' AND event_name = 'save_prompt_create') AS cc_save_prompt_create,
+    COUNTIF(event_category = 'credit_card' AND event_name = 'sync_toggle') AS cc_sync_toggle,
     /*Histroy*/
-    CASE
-      WHEN event_category = 'history'
-        AND event_name = 'delete_tap'
-        THEN 1
-      ELSE 0
-    END AS history_delete_tap,
-    CASE
-      WHEN event_category = 'history'
-        AND event_name = 'opened'
-        THEN 1
-      ELSE 0
-    END AS history_opened,
-    CASE
-      WHEN event_category = 'history'
-        AND event_name = 'removed'
-        THEN 1
-      ELSE 0
-    END AS history_removed,
-    CASE
-      WHEN event_category = 'history'
-        AND event_name = 'removed_all'
-        THEN 1
-      ELSE 0
-    END AS history_removed_all,
-    CASE
-      WHEN event_category = 'history'
-        AND event_name = 'removed_today'
-        THEN 1
-      ELSE 0
-    END AS history_removed_today,
-    CASE
-      WHEN event_category = 'history'
-        AND event_name = 'removed_today_and_yesterday'
-        THEN 1
-      ELSE 0
-    END AS history_removed_today_and_yesterday,
-    CASE
-      WHEN event_category = 'history'
-        AND event_name = 'search_tap'
-        THEN 1
-      ELSE 0
-    END AS history_search_tap,
+    COUNTIF(event_category = 'history' AND event_name = 'delete_tap') AS history_delete_tap,
+    COUNTIF(event_category = 'history' AND event_name = 'opened') AS history_opened,
+    COUNTIF(event_category = 'history' AND event_name = 'removed') AS history_removed,
+    COUNTIF(event_category = 'history' AND event_name = 'removed_all') AS history_removed_all,
+    COUNTIF(event_category = 'history' AND event_name = 'removed_today') AS history_removed_today,
+    COUNTIF(event_category = 'history' AND event_name = 'removed_today_and_yesterday') AS history_removed_today_and_yesterday,
+    COUNTIF(event_category = 'history' AND event_name = 'search_tap') AS history_search_tap,
     /*FxA*/
-    CASE
-      WHEN event_category = 'sync'
-        AND event_name = 'disconnect'
-        THEN 1
-      ELSE 0
-    END AS fxa_disconnect,
-    CASE
-      WHEN event_category = 'sync'
-        AND event_name = 'login_completed_view'
-        THEN 1
-      ELSE 0
-    END AS fxa_login_completed_view,
-    CASE
-      WHEN event_category = 'sync'
-        AND event_name = 'login_token_view'
-        THEN 1
-      ELSE 0
-    END AS fxa_login_token_view,
-    CASE
-      WHEN event_category = 'sync'
-        AND event_name = 'login_view'
-        THEN 1
-      ELSE 0
-    END AS fxa_login_view,
-    CASE
-      WHEN event_category = 'sync'
-        AND event_name = 'paired'
-        THEN 1
-      ELSE 0
-    END AS fxa_paired,
-    CASE
-      WHEN event_category = 'sync'
-        AND event_name = 'registration_code_view'
-        THEN 1
-      ELSE 0
-    END AS fxa_registration_code_view,
-    CASE
-      WHEN event_category = 'sync'
-        AND event_name = 'registration_completed_view'
-        THEN 1
-      ELSE 0
-    END AS fxa_registration_completed_view,
-    CASE
-      WHEN event_category = 'sync'
-        AND event_name = 'registration_view'
-        THEN 1
-      ELSE 0
-    END AS fxa_registration_view,
-    CASE
-      WHEN event_category = 'sync'
-        AND event_name = 'use_email'
-        THEN 1
-      ELSE 0
-    END AS fxa_use_email,
+    COUNTIF(event_category = 'sync' AND event_name = 'disconnect') AS fxa_disconnect,
+    COUNTIF(event_category = 'sync' AND event_name = 'login_completed_view') AS fxa_login_completed_view,
+    COUNTIF(event_category = 'sync' AND event_name = 'login_token_view') AS fxa_login_token_view,
+    COUNTIF(event_category = 'sync' AND event_name = 'login_view') AS fxa_login_view,
+    COUNTIF(event_category = 'sync' AND event_name = 'paired') AS fxa_paired,
+    COUNTIF(event_category = 'sync' AND event_name = 'registration_code_view') AS fxa_registration_code_view,
+    COUNTIF(event_category = 'sync' AND event_name = 'registration_completed_view') AS fxa_registration_completed_view,
+    COUNTIF(event_category = 'sync' AND event_name = 'registration_view') AS fxa_registration_view,
+    COUNTIF(event_category = 'sync' AND event_name = 'use_email') AS fxa_use_email,
     /*Privacy*/
-    CASE
-      WHEN event_category = 'preferences'
-        AND event_name = 'private_browsing_button_tapped'
-        AND extra.key = 'is_private'
-        AND extra.value = 'true'
-        THEN 1
-      ELSE 0
-    END AS private_browsing_button_tapped_enter_private_mode,
-    CASE
-      WHEN event_category = 'preferences'
-        AND event_name = 'private_browsing_button_tapped'
-        THEN 1
-      ELSE 0
-    END AS private_browsing_button_tapped,
-    CASE
-      WHEN event_category = 'tabs_tray'
-        AND event_name = 'private_browsing_icon_tapped'
-        THEN 1
-      ELSE 0
-    END AS private_browsing_icon_tapped,
-    CASE
-      WHEN event_category = 'app_icon'
-        AND event_name = 'new_private_tab_tapped'
-        THEN 1
-      ELSE 0
-    END AS app_icon_new_private_tab_tapped,
-    CASE
-      WHEN event_category = 'tabs_tray'
-        AND event_name = 'new_private_tab_tapped'
-        THEN 1
-      ELSE 0
-    END AS tabs_tray_new_private_tab_tapped,
+    COUNTIF(event_category = 'preferences' AND event_name = 'private_browsing_button_tapped' AND extra.key = 'is_private' AND extra.value = 'true') AS private_browsing_button_tapped_enter_private_mode,
+    COUNTIF(event_category = 'preferences' AND event_name = 'private_browsing_button_tapped') AS private_browsing_button_tapped,
+    COUNTIF(event_category = 'tabs_tray' AND event_name = 'private_browsing_icon_tapped') AS private_browsing_icon_tapped,
+    COUNTIF(event_category = 'app_icon' AND event_name = 'new_private_tab_tapped') AS app_icon_new_private_tab_tapped,
+    COUNTIF(event_category = 'tabs_tray' AND event_name = 'new_private_tab_tapped') AS tabs_tray_new_private_tab_tapped,
     /*Awesomebar Location*/
-    CASE
-      WHEN event_category = 'awesomebar'
-        AND event_name = 'drag_location_bar'
-        THEN 1
-      ELSE 0
-    END AS drag_location_bar,
-    CASE
-      WHEN event_category = 'awesomebar'
-        AND event_name = 'location'
-        AND extra.value = 'top'
-        THEN 1
-      ELSE 0
-    END AS location_top,
-    CASE
-      WHEN event_category = 'awesomebar'
-        AND event_name = 'location'
-        AND extra.value = 'bottom'
-        THEN 1
-      ELSE 0
-    END AS location_bottom,
+    COUNTIF(event_category = 'awesomebar' AND event_name = 'drag_location_bar') AS drag_location_bar,
+    COUNTIF(event_category = 'awesomebar' AND event_name = 'location' AND extra.value = 'top') AS location_top,
+    COUNTIF(event_category = 'awesomebar' AND event_name = 'location' AND extra.value = 'bottom') AS location_bottom,
     /*Notification*/
-    CASE
-      WHEN event_category = 'app'
-        AND event_name = 'notification_permission'
-        AND extra.key = 'status'
-        AND extra.value = 'authorized'
-        THEN 1
-      ELSE 0
-    END AS notification_status_authorized,
-    CASE
-      WHEN event_category = 'app'
-        AND event_name = 'notification_permission'
-        AND extra.key = 'status'
-        AND extra.value = 'notDetermined'
-        THEN 1
-      ELSE 0
-    END AS notification_status_notDetermined,
-    CASE
-      WHEN event_category = 'app'
-        AND event_name = 'notification_permission'
-        AND extra.key = 'status'
-        AND extra.value = 'denied'
-        THEN 1
-      ELSE 0
-    END AS notification_status_denied,
-    CASE
-      WHEN event_category = 'app'
-        AND event_name = 'notification_permission'
-        AND extra.key = 'alert_setting'
-        AND extra.value = 'notSupported'
-        THEN 1
-      ELSE 0
-    END AS notification_alert_setting_not_supported,
-    CASE
-      WHEN event_category = 'app'
-        AND event_name = 'notification_permission'
-        AND extra.key = 'alert_setting'
-        AND extra.value = 'disabled'
-        THEN 1
-      ELSE 0
-    END AS notification_alert_setting_disabled,
-    CASE
-      WHEN event_category = 'app'
-        AND event_name = 'notification_permission'
-        AND extra.key = 'alert_setting'
-        AND extra.value = 'enabled'
-        THEN 1
-      ELSE 0
-    END AS notification_alert_setting_enabled
+    COUNTIF(event_category = 'app' AND event_name = 'notification_permission' AND extra.key = 'status' AND extra.value = 'authorized') AS notification_status_authorized,
+    COUNTIF(event_category = 'app' AND event_name = 'notification_permission' AND extra.key = 'status' AND extra.value = 'notDetermined') AS notification_status_notDetermined,
+    COUNTIF(event_category = 'app' AND event_name = 'notification_permission' AND extra.key = 'status' AND extra.value = 'denied') AS notification_status_denied,
+    COUNTIF(event_category = 'app' AND event_name = 'notification_permission' AND extra.key = 'alert_setting' AND extra.value = 'notSupported') AS notification_alert_setting_not_supported,
+    COUNTIF(event_category = 'app' AND event_name = 'notification_permission' AND extra.key = 'alert_setting' AND extra.value = 'disabled') AS notification_alert_setting_disabled,
+    COUNTIF(event_category = 'app' AND event_name = 'notification_permission' AND extra.key = 'alert_setting' AND extra.value = 'enabled') AS notification_alert_setting_enabled
   FROM
     firefox_ios.events_unnested
   LEFT JOIN
     UNNEST(event_extra) AS extra
   WHERE
     DATE(submission_timestamp) >= start_date
+  GROUP BY
+    client_info.client_id,
+    submission_date
 ),
 product_features_agg AS (
   SELECT
@@ -615,6 +397,3 @@ JOIN
   product_features_agg
 USING
   (submission_date)
-
-
-

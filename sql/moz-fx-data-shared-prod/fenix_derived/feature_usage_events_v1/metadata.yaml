@@ -6,7 +6,6 @@ owners:
 labels:
   incremental: true
   owner1: rzhao
-  dag: bqetl_default
 scheduling:
   dag_name: bqetl_mobile_feature_usage
 bigquery:

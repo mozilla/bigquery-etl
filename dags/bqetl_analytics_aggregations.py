@@ -262,10 +262,10 @@ with DAG(
     active_users_aggregates_attribution_v1.set_upstream(
         wait_for_checks__fail_fenix_derived__firefox_android_clients__v1
     )
-    wait_for_telemetry_derived__unified_metrics__v1 = ExternalTaskSensor(
-        task_id="wait_for_telemetry_derived__unified_metrics__v1",
+    wait_for_checks__fail_telemetry_derived__unified_metrics__v1 = ExternalTaskSensor(
+        task_id="wait_for_checks__fail_telemetry_derived__unified_metrics__v1",
         external_dag_id="bqetl_unified",
-        external_task_id="telemetry_derived__unified_metrics__v1",
+        external_task_id="checks__fail_telemetry_derived__unified_metrics__v1",
         execution_delta=datetime.timedelta(seconds=4500),
         check_existence=True,
         mode="reschedule",
@@ -275,15 +275,15 @@ with DAG(
     )
 
     active_users_aggregates_attribution_v1.set_upstream(
-        wait_for_telemetry_derived__unified_metrics__v1
+        wait_for_checks__fail_telemetry_derived__unified_metrics__v1
     )
 
     active_users_aggregates_device_v1.set_upstream(
-        wait_for_telemetry_derived__unified_metrics__v1
+        wait_for_checks__fail_telemetry_derived__unified_metrics__v1
     )
 
     active_users_aggregates_v1.set_upstream(
-        wait_for_telemetry_derived__unified_metrics__v1
+        wait_for_checks__fail_telemetry_derived__unified_metrics__v1
     )
 
     checks__fail_telemetry_derived__active_users_aggregates__v1.set_upstream(
@@ -464,6 +464,9 @@ with DAG(
         wait_for_search_derived__mobile_search_clients_daily__v1
     )
 
+    telemetry_derived__cohort_daily_statistics__v1.set_upstream(
+        wait_for_checks__fail_telemetry_derived__unified_metrics__v1
+    )
     wait_for_telemetry_derived__rolling_cohorts__v1 = ExternalTaskSensor(
         task_id="wait_for_telemetry_derived__rolling_cohorts__v1",
         external_dag_id="bqetl_unified",
@@ -478,9 +481,6 @@ with DAG(
 
     telemetry_derived__cohort_daily_statistics__v1.set_upstream(
         wait_for_telemetry_derived__rolling_cohorts__v1
-    )
-    telemetry_derived__cohort_daily_statistics__v1.set_upstream(
-        wait_for_telemetry_derived__unified_metrics__v1
     )
 
     wait_for_clients_first_seen_v2 = ExternalTaskSensor(

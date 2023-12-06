@@ -179,6 +179,21 @@ with DAG(
         depends_on_past=False,
     )
 
+    wait_for_checks__fail_telemetry_derived__unified_metrics__v1 = ExternalTaskSensor(
+        task_id="wait_for_checks__fail_telemetry_derived__unified_metrics__v1",
+        external_dag_id="bqetl_unified",
+        external_task_id="checks__fail_telemetry_derived__unified_metrics__v1",
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    contextual_services_derived__adm_forecasting__v1.set_upstream(
+        wait_for_checks__fail_telemetry_derived__unified_metrics__v1
+    )
+
     contextual_services_derived__adm_forecasting__v1.set_upstream(
         contextual_services_derived__event_aggregates__v1
     )
@@ -196,20 +211,6 @@ with DAG(
 
     contextual_services_derived__adm_forecasting__v1.set_upstream(
         wait_for_telemetry_derived__clients_daily_joined__v1
-    )
-    wait_for_telemetry_derived__unified_metrics__v1 = ExternalTaskSensor(
-        task_id="wait_for_telemetry_derived__unified_metrics__v1",
-        external_dag_id="bqetl_unified",
-        external_task_id="telemetry_derived__unified_metrics__v1",
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    contextual_services_derived__adm_forecasting__v1.set_upstream(
-        wait_for_telemetry_derived__unified_metrics__v1
     )
 
     wait_for_copy_deduplicate_all = ExternalTaskSensor(
@@ -244,6 +245,9 @@ with DAG(
         wait_for_copy_deduplicate_all
     )
 
+    contextual_services_derived__suggest_revenue_levers_daily__v1.set_upstream(
+        wait_for_checks__fail_telemetry_derived__unified_metrics__v1
+    )
     wait_for_search_derived__search_clients_daily__v8 = ExternalTaskSensor(
         task_id="wait_for_search_derived__search_clients_daily__v8",
         external_dag_id="bqetl_search",
@@ -272,7 +276,4 @@ with DAG(
 
     contextual_services_derived__suggest_revenue_levers_daily__v1.set_upstream(
         wait_for_telemetry_derived__suggest_clients_daily__v1
-    )
-    contextual_services_derived__suggest_revenue_levers_daily__v1.set_upstream(
-        wait_for_telemetry_derived__unified_metrics__v1
     )

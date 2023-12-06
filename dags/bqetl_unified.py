@@ -49,6 +49,97 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
+    checks__fail_telemetry_derived__unified_metrics__v1 = bigquery_dq_check(
+        task_id="checks__fail_telemetry_derived__unified_metrics__v1",
+        source_table="unified_metrics_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=True,
+        owner="loines@mozilla.com",
+        email=[
+            "ascholtz@mozilla.com",
+            "loines@mozilla.com",
+            "lvargas@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+    )
+
+    with TaskGroup(
+        "checks__fail_telemetry_derived__unified_metrics__v1_external",
+    ) as checks__fail_telemetry_derived__unified_metrics__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_analytics_aggregations__wait_for_checks__fail_telemetry_derived__unified_metrics__v1",
+            external_dag_id="bqetl_analytics_aggregations",
+            external_task_id="wait_for_checks__fail_telemetry_derived__unified_metrics__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=81900)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_ctxsvc_derived__wait_for_checks__fail_telemetry_derived__unified_metrics__v1",
+            external_dag_id="bqetl_ctxsvc_derived",
+            external_task_id="wait_for_checks__fail_telemetry_derived__unified_metrics__v1",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_sponsored_tiles_clients_daily__wait_for_checks__fail_telemetry_derived__unified_metrics__v1",
+            external_dag_id="bqetl_sponsored_tiles_clients_daily",
+            external_task_id="wait_for_checks__fail_telemetry_derived__unified_metrics__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_newtab__wait_for_checks__fail_telemetry_derived__unified_metrics__v1",
+            external_dag_id="bqetl_newtab",
+            external_task_id="wait_for_checks__fail_telemetry_derived__unified_metrics__v1",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=10800)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
+            task_id="kpi_forecasting__wait_for_unified_metrics",
+            external_dag_id="kpi_forecasting",
+            external_task_id="wait_for_unified_metrics",
+            execution_date="{{ (execution_date + macros.timedelta(seconds=3600)).isoformat() }}",
+        )
+
+        checks__fail_telemetry_derived__unified_metrics__v1_external.set_upstream(
+            checks__fail_telemetry_derived__unified_metrics__v1
+        )
+
+    checks__warn_telemetry_derived__unified_metrics__v1 = bigquery_dq_check(
+        task_id="checks__warn_telemetry_derived__unified_metrics__v1",
+        source_table="unified_metrics_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=False,
+        owner="loines@mozilla.com",
+        email=[
+            "ascholtz@mozilla.com",
+            "loines@mozilla.com",
+            "lvargas@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+    )
+
+    with TaskGroup(
+        "checks__warn_telemetry_derived__unified_metrics__v1_external",
+    ) as checks__warn_telemetry_derived__unified_metrics__v1_external:
+        ExternalTaskMarker(
+            task_id="kpi_forecasting__wait_for_unified_metrics",
+            external_dag_id="kpi_forecasting",
+            external_task_id="wait_for_unified_metrics",
+            execution_date="{{ (execution_date + macros.timedelta(seconds=3600)).isoformat() }}",
+        )
+
+        checks__warn_telemetry_derived__unified_metrics__v1_external.set_upstream(
+            checks__warn_telemetry_derived__unified_metrics__v1
+        )
+
     telemetry_derived__rolling_cohorts__v1 = bigquery_etl_query(
         task_id="telemetry_derived__rolling_cohorts__v1",
         destination_table="rolling_cohorts_v1",
@@ -100,33 +191,6 @@ with DAG(
         "telemetry_derived__unified_metrics__v1_external",
     ) as telemetry_derived__unified_metrics__v1_external:
         ExternalTaskMarker(
-            task_id="bqetl_analytics_aggregations__wait_for_telemetry_derived__unified_metrics__v1",
-            external_dag_id="bqetl_analytics_aggregations",
-            external_task_id="wait_for_telemetry_derived__unified_metrics__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=81900)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
-            task_id="bqetl_ctxsvc_derived__wait_for_telemetry_derived__unified_metrics__v1",
-            external_dag_id="bqetl_ctxsvc_derived",
-            external_task_id="wait_for_telemetry_derived__unified_metrics__v1",
-        )
-
-        ExternalTaskMarker(
-            task_id="bqetl_sponsored_tiles_clients_daily__wait_for_telemetry_derived__unified_metrics__v1",
-            external_dag_id="bqetl_sponsored_tiles_clients_daily",
-            external_task_id="wait_for_telemetry_derived__unified_metrics__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
-            task_id="bqetl_newtab__wait_for_telemetry_derived__unified_metrics__v1",
-            external_dag_id="bqetl_newtab",
-            external_task_id="wait_for_telemetry_derived__unified_metrics__v1",
-            execution_date="{{ (execution_date - macros.timedelta(seconds=10800)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
             task_id="kpi_forecasting__wait_for_unified_metrics",
             external_dag_id="kpi_forecasting",
             external_task_id="wait_for_unified_metrics",
@@ -137,8 +201,16 @@ with DAG(
             telemetry_derived__unified_metrics__v1
         )
 
-    telemetry_derived__rolling_cohorts__v1.set_upstream(
+    checks__fail_telemetry_derived__unified_metrics__v1.set_upstream(
         telemetry_derived__unified_metrics__v1
+    )
+
+    checks__warn_telemetry_derived__unified_metrics__v1.set_upstream(
+        telemetry_derived__unified_metrics__v1
+    )
+
+    telemetry_derived__rolling_cohorts__v1.set_upstream(
+        checks__fail_telemetry_derived__unified_metrics__v1
     )
 
     wait_for_fenix_derived__clients_last_seen_joined__v1 = ExternalTaskSensor(

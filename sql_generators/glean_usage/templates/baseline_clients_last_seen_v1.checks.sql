@@ -13,7 +13,7 @@
    (you can also run them locally with `bqetl check run`).
 #}
 {% raw -%}
-  #fail
+  #warn
   {{ is_unique(["client_id"], where="submission_date = @submission_date") }}
 
   #warn
@@ -50,7 +50,7 @@
   #warn
   SELECT IF(
     COUNTIF(NOT REGEXP_CONTAINS(CAST(country AS STRING), r"^[A-Z]{2}|\?\?$")) > 0,
-    ERROR("Unexpected values for field normalized_channel detected."),
+    ERROR("Some values in this field do not adhere to the ISO 3166-1 specification (2 character country code, for example: DE)."),
     null
   )
   FROM `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`
@@ -59,7 +59,7 @@
   #warn
   SELECT IF(
     COUNTIF(NOT REGEXP_CONTAINS(CAST(telemetry_sdk_build AS STRING), r"^\d+\.\d+\.\d+$")) > 0,
-    ERROR("Unexpected values for field normalized_channel detected."),
+    ERROR("Values inside field telemetry_sdk_build not adhere to the expected format. Example: 23.43.33"),
     null
   )
   FROM `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`

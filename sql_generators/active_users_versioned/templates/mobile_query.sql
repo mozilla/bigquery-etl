@@ -1,5 +1,5 @@
 -- Values that cannot be determined are set as UNDETERMINED to differentiate from values not collected, set as ??.
--- Next CTE is the daily query for the aggregates
+-- Next is the daily query for the aggregates.
 WITH _base AS (
   WITH attribution_data AS (
     SELECT
@@ -209,7 +209,8 @@ WITH _base AS (
     FROM
       baseline_with_searches_and_attribution
   ),
-  todays_metrics_enriched AS (
+  todays_metrics_enriched AS
+  (
     SELECT
       todays_metrics.* EXCEPT (locale),
       CASE
@@ -246,18 +247,8 @@ WITH _base AS (
     install_source,
     app_name,
     app_version,
-    device_manufacturer, -- New column
-    CURRENT_TIMESTAMP AS last_updated_timestamp,
-    COUNT(DISTINCT IF(days_since_seen = 0, client_id, NULL)) AS dau,
-    COUNT(DISTINCT IF(days_since_seen < 7, client_id, NULL)) AS wau,
-    COUNT(DISTINCT client_id) AS mau,
-    COUNT(DISTINCT IF(submission_date = first_seen_date, client_id, NULL)) AS new_profiles,
-    SUM(ad_clicks) AS ad_clicks,
-    SUM(organic_search_count) AS organic_search_count,
-    SUM(search_count) AS search_count,
-    SUM(search_with_ads) AS search_with_ads,
-    SUM(uri_count) AS uri_count,
-    SUM(active_hours_sum) AS active_hours
+    device_manufacturer,
+    COUNT(DISTINCT IF(days_since_seen = 0, client_id, NULL)) AS dau
   FROM
     todays_metrics_enriched
   GROUP BY
@@ -281,11 +272,11 @@ WITH _base AS (
     segment,
     adjust_network,
     install_source,
-    device_manufacturer,
-    last_updated_timestamp
+    device_manufacturer
 ),
--- Next CTE returns the daily query aggregated before adding the new column.
-_current AS (
+-- Aggregate the query results before adding the new column
+base_agg AS
+(
   SELECT
     segment,
     attribution_medium,
@@ -303,362 +294,125 @@ _current AS (
     os_version_minor,
     submission_date,
     language_name,
-    SUM(dau) OVER dimensions AS dau,
-    SUM(wau) OVER dimensions AS wau,
-    SUM(mau) OVER dimensions AS mau,
-    SUM(new_profiles) OVER dimensions AS new_profiles,
-    SUM(ad_clicks) OVER dimensions AS ad_clicks,
-    SUM(organic_search_count) OVER dimensions AS organic_search_count,
-    SUM(search_count) OVER dimensions AS search_count,
-    SUM(search_with_ads) OVER dimensions AS search_with_ads,
-    SUM(uri_count) OVER dimensions AS uri_count,
-    SUM(active_hours) OVER dimensions AS active_hours,
     adjust_network,
     install_source,
     app_name,
     app_version,
-    last_updated_timestamp
+    SUM(dau) AS dau
   FROM
     _base
-  WINDOW
-    dimensions AS (
-      PARTITION BY
-        app_version,
-        attribution_medium,
-        attribution_source,
-        attributed,
-        city,
-        country,
-        distribution_id,
-        first_seen_year,
-        is_default_browser,
-        language_name,
-        app_name,
-        channel,
-        os,
-        os_version,
-        os_version_major,
-        os_version_minor,
-        submission_date,
-        segment,
-        adjust_network,
-        install_source
-      ORDER BY
-        last_updated_timestamp
-    )
+  GROUP BY
+    app_version,
+    attribution_medium,
+    attribution_source,
+    attributed,
+    city,
+    country,
+    distribution_id,
+    first_seen_year,
+    is_default_browser,
+    language_name,
+    app_name,
+    channel,
+    os,
+    os_version,
+    os_version_major,
+    os_version_minor,
+    submission_date,
+    segment,
+    adjust_network,
+    install_source
 ),
--- Next CTE returns is the historical data before adding the new column.
 _previous AS (
   SELECT
-    * EXCEPT (
-      app_version_major,
-      app_version_minor,
-      app_version_patch_revision,
-      app_version_is_major_release,
-      os_grouped
-    ),
-    DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 DAY) AS last_updated_timestamp
+    segment,
+    attribution_medium,
+    attribution_source,
+    attributed,
+    city,
+    country,
+    distribution_id,
+    first_seen_year,
+    is_default_browser,
+    channel,
+    os,
+    os_version,
+    os_version_major,
+    os_version_minor,
+    submission_date,
+    language_name,
+    adjust_network,
+    install_source,
+    app_name,
+    app_version,
+    'UNDETERMINED' AS device_manufacturer,
+    dau
   FROM
     `{{ project_id }}.{{ app_name }}.active_users_aggregates` -- Query the view (not the table) in order to retrive records HAVING MAX(last_updated_timestamp)
   WHERE
     submission_date = @submission_date
 ),
--- Next CTE returns the union of _current and _previous, which is used later to calculate differences between historical and new data.
--- NOTE. Using MERGE from here in query2 for better performance and clarity. It requires this file to run as a script.
-unioned AS (
+-- Get the difference in metrics for all dimensions
+_changed AS (
   SELECT
-    *
-  FROM
-    _previous
-  UNION ALL
-  SELECT
-    segment,
-    attribution_medium,
-    attribution_source,
-    attributed,
-    city,
-    country,
-    distribution_id,
-    first_seen_year,
-    is_default_browser,
-    channel,
-    os,
-    os_version,
-    os_version_major,
-    os_version_minor,
-    submission_date,
-    language_name,
-    MAX(dau) AS dau,
-    MAX(wau) AS wau,
-    MAX(mau) AS mau,
-    MAX(new_profiles) AS new_profiles,
-    MAX(ad_clicks) AS ad_clicks,
-    MAX(organic_search_count) AS organic_search_count,
-    MAX(search_count) AS search_count,
-    MAX(search_with_ads) AS search_with_ads,
-    MAX(uri_count) AS uri_count,
-    MAX(active_hours) AS active_hours,
-    adjust_network,
-    install_source,
-    app_name,
-    app_version,
-    last_updated_timestamp
-  FROM
-    _current
-  GROUP BY
-    app_version,
-    attribution_medium,
-    attribution_source,
-    attributed,
-    city,
-    country,
-    distribution_id,
-    first_seen_year,
-    is_default_browser,
-    language_name,
-    app_name,
-    channel,
-    os,
-    os_version,
-    os_version_major,
-    os_version_minor,
-    submission_date,
-    segment,
-    adjust_network,
-    install_source,
-    last_updated_timestamp
+  _previous.* EXCEPT (dau), _previous.dau - base_agg.dau AS dau
+  FROM _previous
+  INNER JOIN base_agg
+  ON _previous.submission_date = base_agg.submission_date
+    AND _previous.country IS NOT DISTINCT FROM base_agg.country
+    AND _previous.segment  IS NOT DISTINCT FROM base_agg.segment
+    AND _previous.attribution_medium  IS NOT DISTINCT FROM base_agg.attribution_medium
+    AND _previous.attribution_source  IS NOT DISTINCT FROM base_agg.attribution_source
+    AND _previous.attributed  IS NOT DISTINCT FROM base_agg.attributed
+    AND _previous.city  IS NOT DISTINCT FROM base_agg.city
+    AND _previous.country  IS NOT DISTINCT FROM base_agg.country
+    AND _previous.distribution_id  IS NOT DISTINCT FROM base_agg.distribution_id
+    AND _previous.first_seen_year  IS NOT DISTINCT FROM base_agg.first_seen_year
+    AND _previous.is_default_browser  IS NOT DISTINCT FROM base_agg.is_default_browser
+    AND _previous.channel  IS NOT DISTINCT FROM base_agg.channel
+    AND _previous.os  IS NOT DISTINCT FROM base_agg.os
+    AND _previous.os_version  IS NOT DISTINCT FROM base_agg.os_version
+    AND _previous.os_version_major  IS NOT DISTINCT FROM base_agg.os_version_major
+    AND _previous.os_version_minor  IS NOT DISTINCT FROM base_agg.os_version_minor
+    AND _previous.language_name  IS NOT DISTINCT FROM base_agg.language_name
+    AND _previous.adjust_network  IS NOT DISTINCT FROM base_agg.adjust_network
+    AND _previous.install_source  IS NOT DISTINCT FROM base_agg.install_source
+    AND _previous.app_name  IS NOT DISTINCT FROM base_agg.app_name
+    AND _previous.app_version  IS NOT DISTINCT FROM base_agg.app_version
 ),
--- Next CTE returns the difference in metrics calculated between historical and new records for the new column. The delta is set as UNDETERMINED.
-backfill_delta AS (
+-- Get from the existing aggregates the dimensions that are not returned by the query
+_removed AS
+(
   SELECT
-    segment,
-    attribution_medium,
-    attribution_source,
-    attributed,
-    city,
-    country,
-    distribution_id,
-    first_seen_year,
-    is_default_browser,
-    channel,
-    os,
-    os_version,
-    os_version_major,
-    os_version_minor,
-    submission_date,
-    language_name,
-    IF(
-      last_updated_timestamp = CURRENT_TIMESTAMP
-      AND (LAG(dau) OVER dimensions - dau) > 0,
-      LAG(dau) OVER dimensions - dau,
-      NULL
-    ) AS dau,
-    IF(
-      last_updated_timestamp = CURRENT_TIMESTAMP
-      AND (LAG(wau) OVER dimensions - wau) > 0,
-      LAG(wau) OVER dimensions - wau,
-      NULL
-    ) AS wau,
-    IF(
-      last_updated_timestamp = CURRENT_TIMESTAMP
-      AND (LAG(mau) OVER dimensions - mau) > 0,
-      LAG(mau) OVER dimensions - mau,
-      NULL
-    ) AS mau,
-    IF(
-      last_updated_timestamp = CURRENT_TIMESTAMP
-      AND (LAG(new_profiles) OVER dimensions - new_profiles) > 0,
-      LAG(new_profiles) OVER dimensions - new_profiles,
-      NULL
-    ) AS new_profiles,
-    IF(
-      last_updated_timestamp = CURRENT_TIMESTAMP
-      AND (LAG(ad_clicks) OVER dimensions - ad_clicks) > 0,
-      LAG(ad_clicks) OVER dimensions - ad_clicks,
-      NULL
-    ) AS ad_clicks,
-    IF(
-      last_updated_timestamp = CURRENT_TIMESTAMP
-      AND (LAG(organic_search_count) OVER dimensions - organic_search_count) > 0,
-      LAG(organic_search_count) OVER dimensions - organic_search_count,
-      NULL
-    ) AS organic_search_count,
-    IF(
-      last_updated_timestamp = CURRENT_TIMESTAMP
-      AND (LAG(search_count) OVER dimensions - search_count) > 0,
-      LAG(search_count) OVER dimensions - search_count,
-      NULL
-    ) AS search_count,
-    IF(
-      last_updated_timestamp = CURRENT_TIMESTAMP
-      AND (LAG(search_with_ads) OVER dimensions - search_with_ads) > 0,
-      LAG(search_with_ads) OVER dimensions - search_with_ads,
-      NULL
-    ) AS search_with_ads,
-    IF(
-      last_updated_timestamp = CURRENT_TIMESTAMP
-      AND (LAG(uri_count) OVER dimensions - uri_count) > 0,
-      LAG(uri_count) OVER dimensions - uri_count,
-      NULL
-    ) AS uri_count,
-    IF(
-      last_updated_timestamp = CURRENT_TIMESTAMP
-      AND (LAG(active_hours) OVER dimensions - active_hours) > 0,
-      LAG(active_hours) OVER dimensions - active_hours,
-      NULL
-    ) AS active_hours,
-    adjust_network,
-    install_source,
-    app_name,
-    app_version,
-    'UNDETERMINED' AS device_manufacturer, -- New column
-    last_updated_timestamp
-  FROM
-    unioned
-  WINDOW
-    dimensions AS (
-      PARTITION BY
-        app_version,
-        attribution_medium,
-        attribution_source,
-        attributed,
-        city,
-        country,
-        distribution_id,
-        first_seen_year,
-        is_default_browser,
-        language_name,
-        app_name,
-        channel,
-        os,
-        os_version,
-        os_version_major,
-        os_version_minor,
-        submission_date,
-        segment,
-        adjust_network,
-        install_source
-      ORDER BY
-        last_updated_timestamp
-    )
-),
-    -- Next CTE returns the historical data that does not appear in the results of the base query / has been shredded.
-only_previous AS (
-  SELECT
-    _previous.* EXCEPT (last_updated_timestamp),
-    'UNDETERMINED' AS device_manufacturer, --New column
-    _previous.last_updated_timestamp
-  FROM
-    _previous
-  LEFT OUTER JOIN
-    _current
-  ON
-    _previous.submission_date = _current.submission_date
-    AND IFNULL(_previous.attribution_medium, 'NULL') = IFNULL(_current.attribution_medium, 'NULL')
-    AND IFNULL(_previous.attribution_source, 'NULL') = IFNULL(_current.attribution_source, 'NULL')
-    AND IFNULL(_previous.attributed, FALSE) = IFNULL(_current.attributed, FALSE)
-    AND IFNULL(_previous.app_version, 'NULL') = IFNULL(_current.app_version, 'NULL')
-    AND IFNULL(_previous.attribution_medium, 'NULL') = IFNULL(_current.attribution_medium, 'NULL')
-    AND IFNULL(_previous.attribution_source, 'NULL') = IFNULL(_current.attribution_source, 'NULL')
-    AND IFNULL(_previous.city, 'NULL') = IFNULL(_current.city, 'NULL')
-    AND IFNULL(_previous.country, 'NULL') = IFNULL(_current.country, 'NULL')
-    AND IFNULL(_previous.distribution_id, 'NULL') = IFNULL(_current.distribution_id, 'NULL')
-    AND IFNULL(_previous.first_seen_year, -1) = IFNULL(_current.first_seen_year, -1)
-    AND IFNULL(_previous.is_default_browser, FALSE) = IFNULL(_current.is_default_browser, FALSE)
-    AND IFNULL(_previous.language_name, 'NULL') = IFNULL(_current.language_name, 'NULL')
-    AND IFNULL(_previous.app_name, 'NULL') = IFNULL(_current.app_name, 'NULL')
-    AND IFNULL(_previous.channel, 'NULL') = IFNULL(_current.channel, 'NULL')
-    AND IFNULL(_previous.os, 'NULL') = IFNULL(_current.os, 'NULL')
-    AND IFNULL(_previous.os_version, 'NULL') = IFNULL(_current.os_version, 'NULL')
-    AND IFNULL(_previous.os_version_major, -1) = IFNULL(_current.os_version_major, -1)
-    AND IFNULL(_previous.os_version_minor, -1) = IFNULL(_current.os_version_minor, -1)
-    AND IFNULL(_previous.segment, 'NULL') = IFNULL(_current.segment, 'NULL')
-    AND IFNULL(_previous.adjust_network, 'NULL') = IFNULL(_current.adjust_network, 'NULL')
-    AND IFNULL(_previous.install_source, 'NULL') = IFNULL(_current.install_source, 'NULL')
-  WHERE
-    _current.last_updated_timestamp IS NULL
-),
--- Next is result set for a full backfill, as the UNION of (base data + delta + only_previous)
-_all AS (
-  SELECT
-    segment,
-    attribution_medium,
-    attribution_source,
-    attributed,
-    city,
-    country,
-    distribution_id,
-    first_seen_year,
-    is_default_browser,
-    channel,
-    os,
-    os_version,
-    os_version_major,
-    os_version_minor,
-    submission_date,
-    language_name,
-    SUM(dau) AS dau,
-    SUM(wau) AS wau,
-    SUM(mau) AS mau,
-    SUM(new_profiles) AS new_profiles,
-    SUM(ad_clicks) AS ad_clicks,
-    SUM(organic_search_count) AS organic_search_count,
-    SUM(search_count) AS search_count,
-    SUM(search_with_ads) AS search_with_ads,
-    SUM(uri_count) AS uri_count,
-    SUM(active_hours) AS active_hours,
-    adjust_network,
-    install_source,
-    app_name,
-    app_version,
-    device_manufacturer,
-    last_updated_timestamp
-  FROM
-    _base
-  GROUP BY
-    app_version,
-    attribution_medium,
-    attribution_source,
-    attributed,
-    city,
-    country,
-    distribution_id,
-    first_seen_year,
-    is_default_browser,
-    language_name,
-    app_name,
-    channel,
-    os,
-    os_version,
-    os_version_major,
-    os_version_minor,
-    submission_date,
-    segment,
-    adjust_network,
-    install_source,
-    device_manufacturer, -- New column
-    last_updated_timestamp
-  UNION ALL
-  SELECT
-    *
-  FROM
-    backfill_delta
-  WHERE
-    last_updated_timestamp = CURRENT_TIMESTAMP
-    AND dau IS NOT NULL
-  UNION ALL
-  SELECT
-    *
-  FROM
-    only_previous
-  ORDER BY
-    1,
-    2,
-    3,
-    4,
-    5
+  _previous.* EXCEPT (dau), _previous.dau - base_agg.dau AS dau
+  FROM _previous
+  LEFT JOIN base_agg
+   ON _previous.submission_date = base_agg.submission_date
+    AND _previous.country IS NOT DISTINCT FROM base_agg.country
+    AND _previous.segment  IS NOT DISTINCT FROM base_agg.segment
+    AND _previous.attribution_medium  IS NOT DISTINCT FROM base_agg.attribution_medium
+    AND _previous.attribution_source  IS NOT DISTINCT FROM base_agg.attribution_source
+    AND _previous.attributed  IS NOT DISTINCT FROM base_agg.attributed
+    AND _previous.city  IS NOT DISTINCT FROM base_agg.city
+    AND _previous.country  IS NOT DISTINCT FROM base_agg.country
+    AND _previous.distribution_id  IS NOT DISTINCT FROM base_agg.distribution_id
+    AND _previous.first_seen_year  IS NOT DISTINCT FROM base_agg.first_seen_year
+    AND _previous.is_default_browser  IS NOT DISTINCT FROM base_agg.is_default_browser
+    AND _previous.channel  IS NOT DISTINCT FROM base_agg.channel
+    AND _previous.os  IS NOT DISTINCT FROM base_agg.os
+    AND _previous.os_version  IS NOT DISTINCT FROM base_agg.os_version
+    AND _previous.os_version_major  IS NOT DISTINCT FROM base_agg.os_version_major
+    AND _previous.os_version_minor  IS NOT DISTINCT FROM base_agg.os_version_minor
+    AND _previous.language_name  IS NOT DISTINCT FROM base_agg.language_name
+    AND _previous.adjust_network  IS NOT DISTINCT FROM base_agg.adjust_network
+    AND _previous.install_source  IS NOT DISTINCT FROM base_agg.install_source
+    AND _previous.app_name  IS NOT DISTINCT FROM base_agg.app_name
+    AND _previous.app_version  IS NOT DISTINCT FROM base_agg.app_version
+  WHERE base_agg.submission_date IS NULL
 )
-SELECT
-  *
-FROM
-  _all
+SELECT * FROM _base
+UNION ALL
+SELECT * FROM _changed
+UNION ALL
+SELECT * FROM _removed
+ORDER BY 1,2,3

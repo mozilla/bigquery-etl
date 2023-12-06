@@ -37,10 +37,61 @@ DO
 END
 FOR;
 
+CREATE TEMP TABLE
+  error_counts(
+    submission_date DATE,
+    document_namespace STRING,
+    document_type STRING,
+    document_version STRING,
+    ping_count INTEGER,
+    error_type STRING,
+    error_count INTEGER,
+    error_ratio FLOAT64
+  )
+AS
+WITH errors AS (
+  SELECT
+    DATE(submission_timestamp) AS submission_date,
+    document_namespace,
+    document_type,
+    document_version,
+    error_type,
+    COUNT(*) AS error_count
+  FROM
+    `moz-fx-data-shared-prod.monitoring.payload_bytes_error_structured`
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+  GROUP BY
+    submission_date,
+    document_namespace,
+    document_type,
+    document_version,
+    error_type
+)
+SELECT
+  submission_date,
+  document_namespace,
+  document_type,
+  document_version,
+  ping_count,
+  error_type,
+  COALESCE(ping_count, 0) + COALESCE(error_count, 0) AS ping_count,
+  COALESCE(error_count, 0) AS error_count,
+  SAFE_DIVIDE(
+    1.0 * COALESCE(error_count, 0),
+    COALESCE(ping_count, 0) + COALESCE(error_count, 0)
+  ) AS error_ratio
+FROM
+  ping_counts
+FULL OUTER JOIN
+  errors
+USING
+  (submission_date, document_namespace, document_type, document_version);
+
 MERGE
   `moz-fx-data-shared-prod.monitoring_derived.structured_error_counts_v2` r
 USING
-  ping_counts d
+  error_counts d
 ON
   d.submission_date = r.submission_date
   AND r.document_namespace = d.document_namespace
@@ -49,9 +100,28 @@ ON
 WHEN NOT MATCHED
 THEN
   INSERT
-    (submission_date, document_namespace, document_type, document_version, ping_count)
+    (
+      submission_date,
+      document_namespace,
+      document_type,
+      document_version,
+      ping_count,
+      error_type,
+      error_count,
+      error_ratio
+    )
   VALUES
-    (d.submission_date, d.document_namespace, d.document_type, d.document_version, d.ping_count)
+    (
+      d.submission_date,
+      d.document_namespace,
+      d.document_type,
+      d.document_version,
+      d.ping_count,
+      d.error_type,
+      d.error_count,
+      d.error_ratio
+    )
   WHEN NOT MATCHED BY SOURCE
+    AND r.submission_date = @submission_date
 THEN
   DELETE;

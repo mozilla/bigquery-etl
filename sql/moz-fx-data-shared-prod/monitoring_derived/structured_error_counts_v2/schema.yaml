@@ -14,3 +14,12 @@ fields:
 - mode: NULLABLE
   name: ping_count
   type: INTEGER
+- mode: NULLABLE
+  name: error_type
+  type: STRING
+- mode: NULLABLE
+  name: error_count
+  type: INTEGER
+- mode: NULLABLE
+  name: error_ratio
+  type: FLOAT

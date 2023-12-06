@@ -5083,6 +5083,47 @@ number of adclicks on that day.</p>
 <p><code>firefox_ios.clients_activation</code></p>
 <p>Please provide a description for the query</p>
 <table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>submission_date</td>
+        <td>Date when a client activated.
+</td>
+        <td>Date</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>first_seen_date</td>
+        <td>Date when the app first reported a baseline ping for the client.
+</td>
+        <td>Date</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>client_id</td>
+        <td>Unique ID for the client installation.
+</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>sample_id</td>
+        <td>Sample ID to limit query results during an analysis.
+</td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>is_activated</td>
+        <td>Determines if a client is activated based on the activation metric and a 7 day lag.
+</td>
+        <td>Boolean</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
+<table>
 <caption>Referenced Tables</caption>
     <tr>
         <th>Project</th>

@@ -7973,6 +7973,103 @@ across all channels of the Glean application "Firefox for Android"
 <p><code>fenix.ltv_states</code></p>
 <p>Please provide a description for the query</p>
 <table>
+<caption>Schema</caption>
+    <tr>
+        <th>Column</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Nullable</th>
+    </tr>
+<tr>
+        <td>client_id</td>
+        <td>Client ID; uniquely identifies a client. Joinable with fenix.firefox_android_clients.</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>submission_date</td>
+        <td>Submission date, the date of the data. Also the partition key.</td>
+        <td>Date</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>markov_states</td>
+        <td></td>
+        <td>Record</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>sample_id</td>
+        <td>A number, 0-99, that samples by client_id.</td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>first_seen_date</td>
+        <td>First submission date that this client was seen on.</td>
+        <td>Date</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>days_since_first_seen</td>
+        <td>Number of days since this client was first seen.</td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>days_since_seen</td>
+        <td>Number of days since this client was last seen. For example, if they were seen yesterday, days_since_seen would be 1.</td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>consecutive_days_seen</td>
+        <td>Number of consecutive days this client has been seen. For example, if they were missing two days ago but present yesterday & today, consecutive_days_seen would be 2.
+</td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>days_seen_bytes</td>
+        <td>Days seen over the past year, represented as bytes.</td>
+        <td>Bytes</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>ad_clicks_on_date</td>
+        <td>Number of ad clicks by this client on this submission date.</td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>total_historic_ad_clicks</td>
+        <td>Total historic ad clicks by this client up to this date (inclusive of this date).</td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>first_reported_country</td>
+        <td>First country reported by this client.</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>first_reported_isp</td>
+        <td>First ISP reported by this client.</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>adjust_network</td>
+        <td>First Adjust Network reported by this client.</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>install_source</td>
+        <td>First install source reported by this client.</td>
+        <td>String</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>activity_pattern</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>active_on_this_date</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr>
+</table>
+
+<table>
 <caption>Referenced Tables</caption>
     <tr>
         <th>Project</th>

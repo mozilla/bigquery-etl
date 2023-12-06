@@ -2920,6 +2920,26 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#bit_pos_to_byte_pos-udf" class="md-nav__link">
+    bit_pos_to_byte_pos (UDF)
+  </a>
+  
+    <nav class="md-nav" aria-label="bit_pos_to_byte_pos (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#extract_bits-udf" class="md-nav__link">
     extract_bits (UDF)
   </a>
@@ -2928,7 +2948,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#parameters" class="md-nav__link">
+  <a href="#parameters_1" class="md-nav__link">
     Parameters
   </a>
   
@@ -2945,26 +2965,6 @@
   </a>
   
     <nav class="md-nav" aria-label="zero_right (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters_1" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#bit_pos_to_byte_pos-udf" class="md-nav__link">
-    bit_pos_to_byte_pos (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="bit_pos_to_byte_pos (UDF)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3562,6 +3562,26 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#bit_pos_to_byte_pos-udf" class="md-nav__link">
+    bit_pos_to_byte_pos (UDF)
+  </a>
+  
+    <nav class="md-nav" aria-label="bit_pos_to_byte_pos (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#extract_bits-udf" class="md-nav__link">
     extract_bits (UDF)
   </a>
@@ -3570,7 +3590,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#parameters" class="md-nav__link">
+  <a href="#parameters_1" class="md-nav__link">
     Parameters
   </a>
   
@@ -3587,26 +3607,6 @@
   </a>
   
     <nav class="md-nav" aria-label="zero_right (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters_1" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#bit_pos_to_byte_pos-udf" class="md-nav__link">
-    bit_pos_to_byte_pos (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="bit_pos_to_byte_pos (UDF)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3637,6 +3637,17 @@
 
 
 <h1 id="bytes">bytes</h1>
+<h2 id="bit_pos_to_byte_pos-udf">bit_pos_to_byte_pos (UDF)</h2>
+<p>Given a bit position, get the byte that bit appears in.
+1-indexed (to match substr), and accepts negative values.</p>
+<h3 id="parameters">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>bit_pos INT64
+</code></pre></div>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>INT64
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/bytes/bit_pos_to_byte_pos">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/bytes/bit_pos_to_byte_pos/metadata.yaml">Edit</a></p>
 <h2 id="extract_bits-udf">extract_bits (UDF)</h2>
 <p>Extract bits from a byte array. Roughly matches substr
 with three arguments:
@@ -3651,7 +3662,7 @@ the byte array will have trailing 0s for any non-relevant fields.</p>
 <p>Examples:
 bytes.extract_bits(b'\x0F\xF0', 5, 8) = b'\xFF'
 bytes.extract_bits(b'\x0C\xC0', -12, 8) = b'\xCC'</p>
-<h3 id="parameters">Parameters</h3>
+<h3 id="parameters_1">Parameters</h3>
 <p><strong>INPUTS</strong></p>
 <div class="highlight"><pre><span></span><code>b BYTES, `begin` INT64, length INT64
 </code></pre></div>
@@ -3661,7 +3672,7 @@ bytes.extract_bits(b'\x0C\xC0', -12, 8) = b'\xCC'</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/bytes/extract_bits">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/bytes/extract_bits/metadata.yaml">Edit</a></p>
 <h2 id="zero_right-udf">zero_right (UDF)</h2>
 <p>Zero bits on the right of byte</p>
-<h3 id="parameters_1">Parameters</h3>
+<h3 id="parameters_2">Parameters</h3>
 <p><strong>INPUTS</strong></p>
 <div class="highlight"><pre><span></span><code>b BYTES, length INT64
 </code></pre></div>
@@ -3669,17 +3680,6 @@ bytes.extract_bits(b'\x0C\xC0', -12, 8) = b'\xCC'</p>
 <div class="highlight"><pre><span></span><code>BYTES
 </code></pre></div>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/bytes/zero_right">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/bytes/zero_right/metadata.yaml">Edit</a></p>
-<h2 id="bit_pos_to_byte_pos-udf">bit_pos_to_byte_pos (UDF)</h2>
-<p>Given a bit position, get the byte that bit appears in.
-1-indexed (to match substr), and accepts negative values.</p>
-<h3 id="parameters_2">Parameters</h3>
-<p><strong>INPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>bit_pos INT64
-</code></pre></div>
-<p><strong>OUTPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>INT64
-</code></pre></div>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/bytes/bit_pos_to_byte_pos">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/bytes/bit_pos_to_byte_pos/metadata.yaml">Edit</a></p>
 
 
 

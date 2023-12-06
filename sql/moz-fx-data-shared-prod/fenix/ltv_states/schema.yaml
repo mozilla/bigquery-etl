@@ -1,0 +1,82 @@
+fields:
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+  description: Client ID; uniquely identifies a client. Joinable with fenix.firefox_android_clients.
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Submission date, the date of the data. Also the partition key.
+- name: markov_states
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: android_states_v1
+    type: STRING
+    mode: NULLABLE
+  - name: android_states_with_paid_v1
+    type: STRING
+    mode: NULLABLE
+  - name: android_states_with_paid_v2
+    type: STRING
+    mode: NULLABLE
+- name: sample_id
+  type: INTEGER
+  mode: NULLABLE
+  description: A number, 0-99, that samples by client_id.
+- name: first_seen_date
+  type: DATE
+  mode: NULLABLE
+  description: First submission date that this client was seen on.
+- name: days_since_first_seen
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of days since this client was first seen.
+- name: days_since_seen
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of days since this client was last seen. For example, if they
+    were seen yesterday, days_since_seen would be 1.
+- name: consecutive_days_seen
+  type: INTEGER
+  mode: NULLABLE
+  description: 'Number of consecutive days this client has been seen. For example,
+    if they were missing two days ago but present yesterday & today, consecutive_days_seen
+    would be 2.
+
+    '
+- name: days_seen_bytes
+  type: BYTES
+  mode: NULLABLE
+  description: Days seen over the past year, represented as bytes.
+- name: ad_clicks_on_date
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of ad clicks by this client on this submission date.
+- name: total_historic_ad_clicks
+  type: INTEGER
+  mode: NULLABLE
+  description: Total historic ad clicks by this client up to this date (inclusive
+    of this date).
+- name: first_reported_country
+  type: STRING
+  mode: NULLABLE
+  description: First country reported by this client.
+- name: first_reported_isp
+  type: STRING
+  mode: NULLABLE
+  description: First ISP reported by this client.
+- name: adjust_network
+  type: STRING
+  mode: NULLABLE
+  description: First Adjust Network reported by this client.
+- name: install_source
+  type: STRING
+  mode: NULLABLE
+  description: First install source reported by this client.
+- name: activity_pattern
+  type: INTEGER
+  mode: NULLABLE
+- name: active_on_this_date
+  type: INTEGER
+  mode: NULLABLE

@@ -435,6 +435,13 @@ generate:
     - sql/moz-fx-data-shared-prod/mozilla_vpn/main/**
     - sql/moz-fx-data-shared-prod/fenix/client_deduplication/**
     - sql/moz-fx-data-shared-prod/org_mozilla_tv_firefox_derived/baseline_clients_last_seen_v1/checks.sql
+    events_stream:
+      datasets:
+      - fenix
+      app_ids:
+      - org_mozilla_firefox
+      - org_mozilla_fenix
+      - org_mozilla_fenix_beta
   event_monitoring:
     skip_apps:
     - mlhackweek_search

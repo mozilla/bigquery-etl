@@ -17,11 +17,11 @@ from sql_generators.glean_usage import (
     clients_last_seen_joined,
     event_error_monitoring,
     event_monitoring_live,
+    events_stream,
     events_unnested,
     glean_app_ping_views,
     metrics_clients_daily,
     metrics_clients_last_seen,
-    events_stream,
 )
 from sql_generators.glean_usage.common import get_app_info, list_tables
 

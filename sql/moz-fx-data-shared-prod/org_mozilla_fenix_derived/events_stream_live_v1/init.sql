@@ -1,18 +1,13 @@
-{{ header }}
-
-{% if init %}
-CREATE TABLE IF NOT EXISTS
-  `{{ events_stream_table }}`
-PARTITION BY
-  submission_date
-CLUSTER BY
-  sample_id,
-  submission_date
+CREATE MATERIALIZED VIEW
+IF
+  NOT EXISTS `moz-fx-data-shared-prod.org_mozilla_fenix_derived.events_stream_live_v1`
+  CLUSTER BY
+    sample_id
+  OPTIONS
+    (enable_refresh = TRUE, refresh_interval_minutes = 30)
   AS
-{% endif %}
-WITH base AS (
   SELECT
-    * EXCEPT (metrics, events, name, category, extra, timestamp) REPLACE (
+    * EXCEPT (metrics, events, name, category, extra, timestamp) REPLACE(
       STRUCT(
         client_info.app_build AS app_build,
         client_info.app_channel AS app_channel,
@@ -30,35 +25,23 @@ WITH base AS (
       STRUCT(
         ping_info.seq,
         ping_info.start_time,
-        ping_info.parsed_start_time,
         ping_info.end_time,
-        ping_info.parsed_end_time,
-        ping_info.ping_type,
+        ping_info.ping_type
       ) AS ping_info
     ),
     DATE(submission_timestamp) AS submission_date,
     client_info.client_id AS client_id,
     ping_info.reason AS reason,
-    `mozfun.json.from_map`(ping_info.experiments) AS experiments,
+    ping_info.experiments AS experiments,
     SAFE.TIMESTAMP_ADD(
-      ping_info.parsed_start_time,
+      SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time),
       INTERVAL event.timestamp MILLISECOND
     ) AS event_timestamp,
     (event.category || '.' || event.name) AS event,
-    `mozfun.json.from_map`(event.extra) AS event_extra,
+    event.extra,
   FROM
-    `{{ events_view }}` AS e
+    `moz-fx-data-shared-prod.org_mozilla_fenix_live.events_v1` AS e
   CROSS JOIN
     UNNEST(events) AS event
   WHERE
-    {% if init %}
-      DATE(submission_timestamp) >= '2023-11-01'
-    {% else %}
-      DATE(submission_timestamp) = @submission_date
-    {% endif %}
-)
---
-SELECT
-  *
-FROM
-  base
+    DATE(submission_timestamp) > '2023-11-01'

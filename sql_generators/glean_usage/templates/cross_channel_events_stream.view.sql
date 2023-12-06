@@ -16,5 +16,5 @@ SELECT
     "{{ channel }}" AS normalized_channel,
     {% endif -%}
   ),
-FROM `{{ project_id }}.{{ dataset }}_derived.events_stream` AS e
+FROM `{{ project_id }}.{{ dataset }}.{{ target_view }}` AS e
 {% endfor %}

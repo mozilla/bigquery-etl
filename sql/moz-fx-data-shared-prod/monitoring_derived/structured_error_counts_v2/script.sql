@@ -73,9 +73,8 @@ SELECT
   document_namespace,
   document_type,
   document_version,
-  ping_count,
-  error_type,
   COALESCE(ping_count, 0) + COALESCE(error_count, 0) AS ping_count,
+  error_type,
   COALESCE(error_count, 0) AS error_count,
   SAFE_DIVIDE(
     1.0 * COALESCE(error_count, 0),

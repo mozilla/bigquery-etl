@@ -54,6 +54,19 @@ with DAG(
         retries=0,
     )
 
+    checks__fail_fenix_derived__ltv_states__v1 = bigquery_dq_check(
+        task_id="checks__fail_fenix_derived__ltv_states__v1",
+        source_table="ltv_states_v1",
+        dataset_id="fenix_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=True,
+        owner="frank@mozilla.com",
+        email=["frank@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+    )
+
     fenix_derived__attributable_clients__v1 = bigquery_etl_query(
         task_id="fenix_derived__attributable_clients__v1",
         destination_table="attributable_clients_v1",
@@ -114,6 +127,17 @@ with DAG(
         depends_on_past=True,
     )
 
+    fenix_derived__ltv_states__v1 = bigquery_etl_query(
+        task_id="fenix_derived__ltv_states__v1",
+        destination_table="ltv_states_v1",
+        dataset_id="fenix_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="frank@mozilla.com",
+        email=["frank@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     org_mozilla_fenix_derived__client_deduplication__v1 = bigquery_etl_query(
         task_id="org_mozilla_fenix_derived__client_deduplication__v1",
         destination_table="client_deduplication_v1",
@@ -154,6 +178,10 @@ with DAG(
         fenix_derived__client_adclicks_history__v1
     )
 
+    checks__fail_fenix_derived__ltv_states__v1.set_upstream(
+        fenix_derived__ltv_states__v1
+    )
+
     wait_for_search_derived__mobile_search_clients_daily__v1 = ExternalTaskSensor(
         task_id="wait_for_search_derived__mobile_search_clients_daily__v1",
         external_dag_id="bqetl_mobile_search",
@@ -177,6 +205,28 @@ with DAG(
     fenix_derived__client_adclicks_history__v1.set_upstream(
         fenix_derived__attributable_clients__v2
     )
+
+    fenix_derived__ltv_states__v1.set_upstream(
+        checks__fail_fenix_derived__client_adclicks_history__v1
+    )
+    wait_for_checks__fail_fenix_derived__firefox_android_clients__v1 = (
+        ExternalTaskSensor(
+            task_id="wait_for_checks__fail_fenix_derived__firefox_android_clients__v1",
+            external_dag_id="bqetl_analytics_tables",
+            external_task_id="checks__fail_fenix_derived__firefox_android_clients__v1",
+            check_existence=True,
+            mode="reschedule",
+            allowed_states=ALLOWED_STATES,
+            failed_states=FAILED_STATES,
+            pool="DATA_ENG_EXTERNALTASKSENSOR",
+        )
+    )
+
+    fenix_derived__ltv_states__v1.set_upstream(
+        wait_for_checks__fail_fenix_derived__firefox_android_clients__v1
+    )
+
+    fenix_derived__ltv_states__v1.set_upstream(fenix_derived__clients_yearly__v1)
 
     wait_for_copy_deduplicate_all = ExternalTaskSensor(
         task_id="wait_for_copy_deduplicate_all",

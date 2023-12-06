@@ -75,6 +75,12 @@ with DAG(
             execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=78300)).isoformat() }}",
         )
 
+        ExternalTaskMarker(
+            task_id="bqetl_org_mozilla_firefox_derived__wait_for_checks__fail_fenix_derived__firefox_android_clients__v1",
+            external_dag_id="bqetl_org_mozilla_firefox_derived",
+            external_task_id="wait_for_checks__fail_fenix_derived__firefox_android_clients__v1",
+        )
+
         checks__fail_fenix_derived__firefox_android_clients__v1_external.set_upstream(
             checks__fail_fenix_derived__firefox_android_clients__v1
         )

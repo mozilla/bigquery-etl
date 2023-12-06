@@ -42,5 +42,6 @@ THEN
   VALUES
     (d.submission_date, d.dataset_id, num_rows)
   WHEN NOT MATCHED BY SOURCE
+    AND r.submission_date = @submission_date
 THEN
   DELETE;

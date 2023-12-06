@@ -4,6 +4,7 @@ description: |-
 owners:
 - rzhao@mozilla.com
 labels:
+  application: fenix
   incremental: true
   owner1: rzhao
 scheduling:

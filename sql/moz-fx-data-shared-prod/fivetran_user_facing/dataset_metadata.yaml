@@ -1,0 +1,18 @@
+# prod-only: assumes no dev-fivetran equivalent should be provisioned
+# creates `moz-fx-data-shared-prod.fivetran_user_facing` and `mozdata.fivetran_user_facing`
+friendly_name: fivetran_user_facing
+dataset_base_acl: syndicate
+user_facing: true
+labels: {}
+syndication:
+  prod:
+    syndicated_project: "moz-fx-data-shared-prod"
+    syndicated_dataset: "fivetran_dataset_syndicate"
+    syndicated_tables:
+      - table_1
+      - table_2
+  administer_views: false
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

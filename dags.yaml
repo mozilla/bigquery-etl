@@ -1339,8 +1339,7 @@ bqetl_mobile_feature_usage:
     retries: 2
     retry_delay: 30m
     start_date: '2023-10-24'
-  description: schedule run for mobile feature usage tables
-  repo: bigquery-etl
+  description: Schedule run for mobile feature usage tables
   schedule_interval: 0 6 * * *
   tags:
     - impact/tier_3

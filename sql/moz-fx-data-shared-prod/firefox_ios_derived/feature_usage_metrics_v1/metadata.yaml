@@ -4,7 +4,7 @@ description: |-
 owners:
 - rzhao@mozilla.com
 labels:
-  application: ios
+  application: firefox_ios
   incremental: true
   owner1: rzhao
 scheduling:

@@ -391,6 +391,7 @@ view:
     - sql/moz-fx-data-shared-prod/mlhackweek_search/action/view.sql
     - sql/moz-fx-data-shared-prod/**/client_deduplication/view.sql
     - sql/moz-fx-data-shared-prod/stripe/itemized_tax_transactions/view.sql
+    - sql/moz-fx-data-shared-prod/accounts_db/fxa_oauth_clients/view.sql
   publish:
     skip:
     - sql/moz-fx-data-shared-prod/activity_stream/tile_id_types/view.sql

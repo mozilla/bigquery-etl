@@ -2,7 +2,7 @@ friendly_name: App-specific view for Glean ping "baseline"
 description: |-
   This a view that UNIONs the stable ping tables
   across all channels of the Glean application "Firefox for iOS"
-  (org_mozilla_ios_firefox.baseline, org_mozilla_ios_firefoxbeta.baseline, org_mozilla_ios_fennec.baseline).
+  (org_mozilla_ios_firefox.baseline, org_mozilla_ios_firefoxbeta.baseline).
 
   It is used by Looker.
 owners: []
@@ -14,7 +14,6 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   view.sql:
-  - moz-fx-data-shared-prod.org_mozilla_ios_fennec.baseline
   - moz-fx-data-shared-prod.org_mozilla_ios_firefox.baseline
   - moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta.baseline
 deprecated: false

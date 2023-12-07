@@ -1,0 +1,30 @@
+friendly_name: Client Probe Counts Firefox Desktop Beta
+description: |-
+  This dataset contains client probe counts for Firefox Desktop Beta.
+owners:
+- ascholtz@mozilla.com
+- efilho@mozilla.com
+labels:
+  public_bigquery: true
+  public_json: true
+  review_bugs:
+  - '1866889'
+  dag: bqetl_glam_export
+  owner1: ascholtz
+  owner2: efilho
+scheduling:
+  dag_name: bqetl_glam_export
+  date_partition_parameter: null
+  depends_on:
+  - task_id: extracts
+    dag_name: glam
+    execution_delta: 6h
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.client_probe_counts_v1
+deprecated: false

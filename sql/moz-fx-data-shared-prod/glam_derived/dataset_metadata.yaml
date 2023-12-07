@@ -1,0 +1,10 @@
+friendly_name: GLAM Derived
+description: |-
+  Derived tables used for exporting GLAM data.
+dataset_base_acl: derived
+user_facing: false
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

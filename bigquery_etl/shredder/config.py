@@ -97,6 +97,9 @@ CONTEXTUAL_SERVICES_SRC = DeleteSource(
     field="payload.scalars.parent.deletion_request_context_id",
 )
 FENIX_SRC = DeleteSource(table="fenix.deletion_request", field=GLEAN_CLIENT_ID)
+FIREFOX_IOS_SRC = DeleteSource(
+    table="firefox_ios.deletion_request", field=GLEAN_CLIENT_ID
+)
 FXA_HMAC_SRC = DeleteSource(
     table="firefox_accounts_derived.fxa_delete_events_v1", field="hmac_user_id"
 )
@@ -158,6 +161,9 @@ DELETE_TARGETS: DeleteIndex = {
     client_id_target(table="fenix_derived.new_profile_activation_v1"): FENIX_SRC,
     client_id_target(table="fenix_derived.firefox_android_clients_v1"): FENIX_SRC,
     client_id_target(table="search_derived.acer_cohort_v1"): DESKTOP_SRC,
+    client_id_target(
+        table="firefox_ios_derived.clients_activation_v1"
+    ): FIREFOX_IOS_SRC,
     client_id_target(
         table="search_derived.mobile_search_clients_daily_v1"
     ): DESKTOP_SRC,

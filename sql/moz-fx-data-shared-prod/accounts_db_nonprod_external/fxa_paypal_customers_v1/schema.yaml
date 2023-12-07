@@ -1,0 +1,17 @@
+fields:
+- name: uid
+  type: STRING
+  mode: NULLABLE
+  description: Account ID in hexadecimal format.
+- name: billingAgreementId
+  type: STRING
+  mode: NULLABLE
+- name: status
+  type: STRING
+  mode: NULLABLE
+- name: createdAt
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: endedAt
+  type: TIMESTAMP
+  mode: NULLABLE

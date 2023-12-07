@@ -127,6 +127,7 @@ def get_dags(project_id, dags_config, sql_dir=None):
                                 upstream_task_ref = TaskRef(
                                     dag_name=task.dag_name,
                                     task_id=task.task_name,
+                                    task_group=task.task_group,
                                 )
                                 checks_task.upstream_dependencies.append(
                                     upstream_task_ref

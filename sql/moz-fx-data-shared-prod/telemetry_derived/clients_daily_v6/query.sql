@@ -1453,6 +1453,9 @@ aggregates AS (
     ARRAY_AGG(startup_profile_selection_reason ORDER BY submission_timestamp ASC)[
       OFFSET(0)
     ] AS startup_profile_selection_reason_first,
+    mozfun.stats.mode_last(
+        ARRAY_AGG(IF(subsession_counter = 1, startup_profile_selection_reason, NULL) ORDER BY submission_timestamp ASC)
+    ) as startup_profile_selection_first_ping_only,
     SUM(
       scalar_parent_browser_ui_interaction_textrecognition_error
     ) AS scalar_parent_browser_ui_interaction_textrecognition_error_sum,

@@ -1,0 +1,23 @@
+friendly_name: DL Token GA Attribution Lookup
+description: |-
+  This table lets you lookup GA attribution data for dl_tokens.
+
+  1 row per-(dl_token, ga_client_id, stub_session_id) triplet.
+
+  dl_token - Available in Stub Attribution Service and Telemetry
+  ga_client_id - Available in Stub Attribution Service and GA
+  stub_session_id - Available in Stub Attribution Service and GA
+owners:
+- frank@mozilla.com
+labels:
+  incremental: true
+  owner1: frank@mozilla.com
+scheduling:
+  dag_name: bqetl_mozilla_org_derived
+  date_partition_parameter: null
+  parameters: ["download_date:DATE:{{ds}}"]
+bigquery:
+  clustering:
+    fields: [first_seen_date]
+references: {}
+deprecated: false

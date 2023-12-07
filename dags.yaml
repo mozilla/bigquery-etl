@@ -583,6 +583,7 @@ bqetl_firefox_ios:
     depends_on_past: false
     email:
       - kik@mozilla.com
+      - frank@mozilla.com
       - telemetry-alerts@mozilla.com
     email_on_failure: true
     email_on_retry: true
@@ -1167,11 +1168,6 @@ bqetl_kpis_shredder:
     retry_delay: 30m
     start_date: '2023-05-16'
   description: |
-    Currently paused due to a bug causing the DAG upstream dependencies completion
-    not being detected correctly.
-    for more info, see:
-      - https://bugzilla.mozilla.org/show_bug.cgi?id=1852517
-      - https://github.com/mozilla/bigquery-etl/pull/4239
     This DAG calculates KPIs for shredder client_ids
   repo: bigquery-etl
   schedule_interval: 0 2 */28 * *
@@ -1298,3 +1294,35 @@ bqetl_ads:
   tags:
     - impact/tier_1
     - repo/bigquery-etl
+
+bqetl_mozilla_org_derived:
+  schedule_interval: 0 2 * * *
+  default_args:
+    depends_on_past: false
+    email:
+      - frank@mozilla.com
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    owner: frank@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: "2023-11-13"
+  tags:
+    - impact/tier_1
+
+bqetl_glean_usage:
+  schedule_interval: 0 2 * * *
+  default_args:
+    depends_on_past: false
+    email:
+      - ascholtz@mozilla.com
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    owner: ascholtz@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: "2023-11-20"
+  tags:
+    - impact/tier_1

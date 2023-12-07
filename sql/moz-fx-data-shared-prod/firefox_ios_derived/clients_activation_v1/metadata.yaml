@@ -1,0 +1,26 @@
+friendly_name: Clients Activation (Firefox iOS)
+description: |-
+  Mobile activation metric used for Marketing campaign performance.
+  A records per client indicating whether they became activated.
+
+  Activated means, a week has elapsed since the client was first seen
+  and within days 2 and 7 they had at least one instance of activity along
+  along with at least 1 search count.
+owners:
+- vsabino@mozilla.com
+- kik@mozilla.com
+labels:
+  incremental: true
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: null
+  clustering:
+    fields:
+    - sample_id
+scheduling:
+  dag_name: bqetl_firefox_ios
+  date_partition_parameter: submission_date
+  depends_on_past: false

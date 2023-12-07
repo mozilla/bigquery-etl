@@ -2090,6 +2090,26 @@
   
   
     <li class="md-nav__item">
+      <a href="../mozillavpn_cirrus/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    mozillavpn-cirrus
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../mozphab/" class="md-nav__link">
         
   
@@ -5175,6 +5195,16 @@ including views on <code>payload_bytes</code> tables</p>
         <td></td>
         <td>Integer</td>
         <td>Yes</td>
+    </tr><tr>
+        <td>trigger_id</td>
+        <td></td>
+        <td>Integer</td>
+        <td>Yes</td>
+    </tr><tr>
+        <td>created_at</td>
+        <td></td>
+        <td>Timestamp</td>
+        <td>Yes</td>
     </tr>
 </table>
 
@@ -6290,6 +6320,10 @@ including views on <code>payload_bytes</code> tables</p>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/mozilla_mach_derived/event_monitoring_live_v1>event_monitoring_live_v1</a></td>
         </tr><tr>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/mozillavpn_cirrus_derived>mozillavpn_cirrus_derived</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/mozillavpn_cirrus_derived/event_monitoring_live_v1>event_monitoring_live_v1</a></td>
+        </tr><tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/mozillavpn_derived>mozillavpn_derived</a></td>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/mozillavpn_derived/event_monitoring_live_v1>event_monitoring_live_v1</a></td>
         </tr><tr>
@@ -6886,67 +6920,6 @@ fields except the payload.</p>
 <p><strong>Structured Detailed Error Counts</strong></p>
 <p><code>monitoring.structured_detailed_error_counts</code></p>
 <p>Please provide a description for the query</p>
-<table>
-<caption>Schema</caption>
-    <tr>
-        <th>Column</th>
-        <th>Description</th>
-        <th>Type</th>
-        <th>Nullable</th>
-    </tr>
-<tr>
-        <td>hour</td>
-        <td></td>
-        <td>Timestamp</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>document_namespace</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>document_type</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>document_version</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>error_type</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>ping_count</td>
-        <td></td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>error_count</td>
-        <td></td>
-        <td>Integer</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>error_message</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>sample_payload</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>error_ratio</td>
-        <td></td>
-        <td>Float</td>
-        <td>Yes</td>
-    </tr>
-</table>
-
 <table>
 <caption>Referenced Tables</caption>
     <tr>

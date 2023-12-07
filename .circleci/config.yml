@@ -502,9 +502,6 @@ jobs:
 
             cp -r sql/ /tmp/workspace/private-generated-sql/sql
             # Don't depend on dry run for PRs
-            $bqetl_script generate all \
-              --output-dir /tmp/workspace/private-generated-sql/sql/ \
-              --target-project moz-fx-data-shared-prod
             $bqetl_script query render \
               --sql-dir /tmp/workspace/private-generated-sql/sql/ \
               --output-dir /tmp/workspace/private-generated-sql/sql/ \

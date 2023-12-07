@@ -488,27 +488,31 @@ jobs:
       - run:
           name: Generate SQL content
           command: |
+            export PATH="$PWD/venv/bin:$PATH"
+            export PYTHONPATH="$PWD:$PYTHONPATH"
+            bqetl_script="$PWD/script/bqetl"
+            cd ~/private-bigquery-etl
+
             mkdir -p /tmp/workspace/private-generated-sql
 
             mkdir -p /tmp/workspace/private-generated-sql/dags
-            PATH="venv/bin:$PATH" script/bqetl dag generate \
+            $bqetl_script dag generate \
               --dags-config dags.yaml \
-              --sql-dir ~/private-bigquery-etl/sql/ \
               --output-dir /tmp/workspace/private-generated-sql/dags/
 
             cp -r sql/ /tmp/workspace/private-generated-sql/sql
             # Don't depend on dry run for PRs
-            PATH="venv/bin:$PATH" script/bqetl generate all \
+            $bqetl_script generate all \
               --output-dir /tmp/workspace/private-generated-sql/sql/ \
               --target-project moz-fx-data-shared-prod
-            PATH="venv/bin:$PATH" script/bqetl query render \
+            $bqetl_script query render \
               --sql-dir /tmp/workspace/private-generated-sql/sql/ \
               --output-dir /tmp/workspace/private-generated-sql/sql/ \
               /tmp/workspace/private-generated-sql/sql/
-            PATH="venv/bin:$PATH" script/bqetl dependency record \
+            $bqetl_script dependency record \
               --skip-existing \
               "/tmp/workspace/private-generated-sql/sql/"
-            PATH="venv/bin:$PATH" script/bqetl metadata update \
+            $bqetl_script metadata update \
               --sql-dir /tmp/workspace/private-generated-sql/sql/ \
               /tmp/workspace/private-generated-sql/sql/
       - persist_to_workspace:

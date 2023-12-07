@@ -23008,6 +23008,12 @@ fields:
         - name: fx_session_restore_closed_tabs_not_saved
           type: STRING
           mode: NULLABLE
+        - name: screenwakelock_held_duration_ms
+          type: STRING
+          mode: NULLABLE
+        - name: screenwakelock_release_battery_level_discharging
+          type: STRING
+          mode: NULLABLE
         - name: content_documents_destroyed
           type: STRING
           mode: NULLABLE

@@ -1,14 +1,20 @@
-friendly_name: Socorro Crash
+friendly_name: Soccoro Crash Data
 description: |-
-  Please provide a description for the query
+  Socorro crash data.
+
+  The source data is an ETL defined in Airflow here:
+  https://github.com/mozilla/telemetry-airflow/blob/main/dags/socorro_import.py
+
+  As such, you will not find a table definition
+  for the materialized data in bigquery-etl.
 owners: []
-labels: {}
+labels:
+  authorized: true
 bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:dataops-managed/taar
-  - workgroup:mozilla-confidential
+  - workgroup:ci-and-quality-tools/taskcluster
 references:
   view.sql:
   - moz-fx-data-shared-prod.telemetry.socorro_crash_v2

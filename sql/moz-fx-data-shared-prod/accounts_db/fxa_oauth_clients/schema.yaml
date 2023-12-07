@@ -1,0 +1,10 @@
+fields:
+- name: id
+  type: STRING
+  mode: NULLABLE
+- name: name
+  type: STRING
+  mode: NULLABLE
+- name: createdAt
+  type: TIMESTAMP
+  mode: NULLABLE

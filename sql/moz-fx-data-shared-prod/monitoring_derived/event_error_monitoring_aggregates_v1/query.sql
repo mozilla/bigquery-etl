@@ -1651,6 +1651,53 @@ UNION ALL
     WITH event_counters AS (
       SELECT
         DATE(submission_timestamp) AS submission_date,
+        "Mozilla VPN Cirrus Sidecar" AS normalized_app_name,
+        client_info.app_channel AS channel,
+        metrics.labeled_counter
+      FROM
+        `moz-fx-data-shared-prod.mozillavpn_cirrus_stable.events_v1`
+      WHERE
+        DATE(submission_timestamp) = @submission_date
+    )
+    SELECT
+      submission_date,
+      normalized_app_name,
+      channel,
+      'overflow' AS error_type,
+      KEY AS metric,
+      COALESCE(SUM(value), 0) AS error_sum
+    FROM
+      event_counters,
+      UNNEST(labeled_counter.glean_error_invalid_overflow)
+    GROUP BY
+      submission_date,
+      normalized_app_name,
+      channel,
+      error_type,
+      metric
+    UNION ALL
+    SELECT
+      submission_date,
+      normalized_app_name,
+      channel,
+      'invalid_value' AS error_type,
+      KEY AS metric,
+      COALESCE(SUM(value), 0) AS error_sum
+    FROM
+      event_counters,
+      UNNEST(labeled_counter.glean_error_invalid_value)
+    GROUP BY
+      submission_date,
+      normalized_app_name,
+      channel,
+      error_type,
+      metric
+  )
+UNION ALL
+  (
+    WITH event_counters AS (
+      SELECT
+        DATE(submission_timestamp) AS submission_date,
         "Glean Dictionary" AS normalized_app_name,
         client_info.app_channel AS channel,
         metrics.labeled_counter

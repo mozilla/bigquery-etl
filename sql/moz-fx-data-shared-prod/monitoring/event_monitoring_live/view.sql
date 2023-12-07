@@ -645,6 +645,24 @@ SELECT
   experiment_branch,
   total_events
 FROM
+  `moz-fx-data-shared-prod.mozillavpn_cirrus_derived.event_monitoring_live_v1`
+WHERE
+  submission_date > DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY)
+UNION ALL
+SELECT
+  window_start,
+  window_end,
+  event_category,
+  event_name,
+  event_extra_key,
+  country,
+  normalized_app_name,
+  channel,
+  version,
+  experiment,
+  experiment_branch,
+  total_events
+FROM
   `moz-fx-data-shared-prod.glean_dictionary_derived.event_monitoring_live_v1`
 WHERE
   submission_date > DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY)

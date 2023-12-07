@@ -1,0 +1,14 @@
+friendly_name: mozillavpn-cirrus
+description: |-
+  User-facing views related to document namespace mozillavpn-cirrus; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/mozillavpn-cirrus
+dataset_base_acl: view
+user_facing: true
+labels: {}
+default_table_workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

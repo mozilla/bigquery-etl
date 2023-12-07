@@ -1,0 +1,6 @@
+friendly_name: Clients Daily Joined
+description: Joined clients_daily view
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:cloudops-managed/poucave

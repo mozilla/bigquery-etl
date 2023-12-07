@@ -133,7 +133,7 @@ class TestEntrypoint:
     def test_run_query_no_query_file(self):
         with pytest.raises(subprocess.CalledProcessError) as e:
             subprocess.run(
-                [ENTRYPOINT_SCRIPT, "nonexistent_query"],
+                [ENTRYPOINT_SCRIPT, "query"],
                 check=True,
                 capture_output=True,
             )

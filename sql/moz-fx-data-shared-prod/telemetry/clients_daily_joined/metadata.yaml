@@ -1,0 +1,14 @@
+friendly_name: Clients Daily Joined
+description: |-
+  Joined clients_daily view
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:cloudops-managed/poucave
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.clients_daily_joined_v1
+deprecated: false

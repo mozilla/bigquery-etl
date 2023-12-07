@@ -418,7 +418,7 @@ def info(ctx, name, sql_dir, project_id, cost, last_updated):
 
     query_files = paths_matching_name_pattern(name, sql_dir, project_id)
     if query_files == []:
-        raise click.ClickException(f"No query matching `{name}` was found.")
+        raise click.ClickException(f"No queries matching `{name}` were found.")
 
     for query_file in query_files:
         query_file_path = Path(query_file)
@@ -705,7 +705,7 @@ def backfill(
 
     query_files = paths_matching_name_pattern(name, sql_dir, project_id)
     if query_files == []:
-        raise click.ClickException(f"No query matching `{name}` was found.")
+        raise click.ClickException(f"No queries matching `{name}` were found.")
 
     for query_file in query_files:
         query_file_path = Path(query_file)
@@ -875,7 +875,7 @@ def run(
 
     query_files = paths_matching_name_pattern(name, sql_dir, project_id)
     if query_files == []:
-        raise click.ClickException(f"No query matching `{name}` was found.")
+        raise click.ClickException(f"No queries matching `{name}` were found.")
 
     _run_query(
         query_files,
@@ -1964,7 +1964,7 @@ def deploy(
 
     query_files = paths_matching_name_pattern(name, sql_dir, project_id, ["query.*"])
     if not query_files:
-        raise click.ClickException(f"No query matching `{name}` was found.")
+        raise click.ClickException(f"No queries matching `{name}` were found.")
 
     def _deploy(query_file):
         if respect_dryrun_skip and str(query_file) in DryRun.skipped_files():
@@ -2219,7 +2219,7 @@ def validate_schema(
     """Validate the defined query schema with the query and the destination table."""
     query_files = paths_matching_name_pattern(name, sql_dir, project_id)
     if query_files == []:
-        raise click.ClickException(f"No query matching `{name}` was found.")
+        raise click.ClickException(f"No queries matching `{name}` were found.")
 
     _validate_schema = partial(
         _validate_schema_from_path,

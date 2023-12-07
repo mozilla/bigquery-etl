@@ -131,5 +131,10 @@ class TestEntrypoint:
 
     @pytest.mark.integration
     def test_run_query_no_query_file(self):
-        result = subprocess.check_output([ENTRYPOINT_SCRIPT, "query"])
-        assert b"No files matching:" in result
+        with pytest.raises(subprocess.CalledProcessError) as e:
+            subprocess.run(
+                [ENTRYPOINT_SCRIPT, "nonexistent_query"],
+                check=True,
+                capture_output=True,
+            )
+        assert b"No queries matching" in e.value.stderr

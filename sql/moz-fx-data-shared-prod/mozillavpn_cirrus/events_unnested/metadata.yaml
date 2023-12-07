@@ -1,0 +1,14 @@
+friendly_name: Events Unnested
+description: |-
+  Please provide a description for the query
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.mozillavpn_cirrus.events
+deprecated: false

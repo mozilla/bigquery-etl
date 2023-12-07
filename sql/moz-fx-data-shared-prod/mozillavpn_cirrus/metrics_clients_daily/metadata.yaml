@@ -1,0 +1,14 @@
+friendly_name: Metrics Clients Daily
+description: |-
+  Please provide a description for the query
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.mozillavpn_cirrus_derived.metrics_clients_daily_v1
+deprecated: false

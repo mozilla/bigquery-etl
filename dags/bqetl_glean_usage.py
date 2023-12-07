@@ -3009,6 +3009,18 @@ with DAG(
         task_group=task_group_mozillavpn_cirrus,
     )
 
+    mozillavpn_cirrus_derived__metrics_clients_daily__v1 = bigquery_etl_query(
+        task_id="mozillavpn_cirrus_derived__metrics_clients_daily__v1",
+        destination_table="metrics_clients_daily_v1",
+        dataset_id="mozillavpn_cirrus_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        task_group=task_group_mozillavpn_cirrus,
+    )
+
     mozillavpn_derived__baseline_clients_daily__v1 = bigquery_etl_query(
         task_id="mozillavpn_derived__baseline_clients_daily__v1",
         destination_table="baseline_clients_daily_v1",
@@ -5654,6 +5666,10 @@ with DAG(
 
     mozillavpn_cirrus_derived__baseline_clients_last_seen__v1.set_upstream(
         checks__fail_mozillavpn_cirrus_derived__baseline_clients_daily__v1
+    )
+
+    mozillavpn_cirrus_derived__metrics_clients_daily__v1.set_upstream(
+        wait_for_copy_deduplicate_all
     )
 
     mozillavpn_derived__baseline_clients_daily__v1.set_upstream(

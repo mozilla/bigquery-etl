@@ -33653,9 +33653,13 @@ and to contain only one row per distinct <code>document_id</code> within a given
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/smoot_usage_day_13">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/smoot_usage_day_13/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/smoot_usage_day_13/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="socorro_crash"><a href="#socorro_crash">socorro_crash</a></h2>
-<p><strong>Socorro Crash</strong></p>
+<p><strong>Soccoro Crash Data</strong></p>
 <p><code>telemetry.socorro_crash</code></p>
-<p>Please provide a description for the query</p>
+<p>Socorro crash data.</p>
+<p>The source data is an ETL defined in Airflow here:
+https://github.com/mozilla/telemetry-airflow/blob/main/dags/socorro_import.py</p>
+<p>As such, you will not find a table definition
+for the materialized data in bigquery-etl.</p>
 <table>
 <caption>Referenced Tables</caption>
     <tr>

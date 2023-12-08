@@ -32,10 +32,6 @@ scheduling:
   task_name: firefox_android_clients
   depends_on_past: true
   date_partition_parameter: null
-  referenced_tables:
-  - - moz-fx-data-shared-prod
-    - org_mozilla_firefox
-    - baseline_clients_daily_v1
   parameters:
   - submission_date:DATE:{{ds}}
 bigquery:

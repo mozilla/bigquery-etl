@@ -60,7 +60,7 @@ with DAG(
                     Status: :red_circle: Failed
                     Owner: test@example.org
                     Execution Date: {{ ds }}
-                    Airflow Link: Airflow Link: https://workflow.telemetry.mozilla.org/dags/{{ dag }}/grid?task_id={{ task }}&tab=logs&dag_run_id=scheduled__{{ ts }}
+                    Airflow Link: https://workflow.telemetry.mozilla.org/dags/{{ dag }}/grid?task_id={{ task }}&tab=logs&dag_run_id=scheduled__{{ ts }}
                     """,
                 channel="#slack-channel",
             )

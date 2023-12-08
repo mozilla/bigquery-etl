@@ -134,6 +134,8 @@ class ExternalDataMetadata:
 
 
 class CheckStatus(enum.Enum):
+    """ETL Check status for which to send slack notification."""
+
     FAIL = "fail"
     WARN = "warn"
     SUCCESS = "success"

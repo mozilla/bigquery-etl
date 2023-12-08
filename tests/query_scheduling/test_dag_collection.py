@@ -4,10 +4,10 @@ from pathlib import Path
 import pytest
 
 from bigquery_etl.metadata.parse_metadata import (
-    Metadata,
     ChecksMetadata,
-    SlackNotificationMetadata,
     CheckStatus,
+    Metadata,
+    SlackNotificationMetadata,
 )
 from bigquery_etl.query_scheduling.dag import DagParseException, InvalidDag
 from bigquery_etl.query_scheduling.dag_collection import DagCollection

@@ -1,5 +1,33 @@
 WITH combined AS (
   SELECT
+    metrics.uuid.quick_suggest_context_id AS context_id,
+    DATE(submission_timestamp) AS submission_date,
+    'suggest' AS source,
+    IF(
+      metrics.string.quick_suggest_ping_type = "quicksuggest-click",
+      "click",
+      "impression"
+    ) AS event_type,
+    'desktop' AS form_factor,
+    normalized_country_code AS country,
+    metadata.geo.subdivision1 AS subdivision1,
+    metrics.string.quick_suggest_advertiser AS advertiser,
+    client_info.app_channel AS release_channel,
+    metrics.quantity.quick_suggest_position AS position,
+    CASE
+      WHEN NULLIF(metrics.string.quick_suggest_request_id, "") IS NULL
+        THEN 'remote settings'
+      ELSE 'merino'
+    END AS provider,
+    metrics.string.quick_suggest_match_type AS match_type,
+    SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
+    (metrics.boolean.quick_suggest_improve_suggest_experience) AS suggest_data_sharing_enabled,
+  FROM
+    firefox_desktop.quick_suggest
+  WHERE
+    metrics.string.quick_suggest_ping_type IN ("quicksuggest-click", "quicksuggest-impression")
+  UNION ALL
+  SELECT
     context_id,
     DATE(submission_timestamp) AS submission_date,
     'suggest' AS source,
@@ -25,6 +53,10 @@ WITH combined AS (
     ) AS suggest_data_sharing_enabled,
   FROM
     contextual_services.quicksuggest_impression
+  WHERE
+    -- For firefox 116+ use firefox_desktop.quick_suggest instead
+    -- https://bugzilla.mozilla.org/show_bug.cgi?id=1836283
+    SAFE_CAST(metadata.user_agent.version AS INT64) < 116
   UNION ALL
   SELECT
     context_id,
@@ -52,6 +84,36 @@ WITH combined AS (
     ) AS suggest_data_sharing_enabled,
   FROM
     contextual_services.quicksuggest_click
+  WHERE
+    -- For firefox 116+ use firefox_desktop.quick_suggest instead
+    -- https://bugzilla.mozilla.org/show_bug.cgi?id=1836283
+    SAFE_CAST(metadata.user_agent.version AS INT64) < 116
+  UNION ALL
+  SELECT
+    metrics.uuid.top_sites_context_id AS context_id,
+    DATE(submission_timestamp) AS submission_date,
+    'topsites' AS source,
+    IF(metrics.string.top_sites_ping_type = "topsites-click", "click", "impression") AS event_type,
+    'desktop' AS form_factor,
+    normalized_country_code AS country,
+    metadata.geo.subdivision1 AS subdivision1,
+    metrics.string.top_sites_advertiser AS advertiser,
+    client_info.app_channel AS release_channel,
+    metrics.quantity.top_sites_position AS position,
+    CASE
+      WHEN metrics.url.top_sites_reporting_url IS NULL
+        THEN 'remote settings'
+      ELSE 'contile'
+    END AS provider,
+    -- `match_type` is only available for `quicksuggest_*` tables
+    NULL AS match_type,
+    SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
+    -- 'suggest_data_sharing_enabled' is only available for `quicksuggest_*` tables
+    NULL AS suggest_data_sharing_enabled,
+  FROM
+    firefox_desktop.top_sites
+  WHERE
+    metrics.string.top_sites_ping_type IN ("topsites-click", "topsites-impression")
   UNION ALL
   SELECT
     context_id,
@@ -76,6 +138,10 @@ WITH combined AS (
     NULL AS suggest_data_sharing_enabled,
   FROM
     contextual_services.topsites_impression
+  WHERE
+    -- For firefox 116+ use firefox_desktop.top_sites instead
+    -- https://bugzilla.mozilla.org/show_bug.cgi?id=1836283
+    SAFE_CAST(metadata.user_agent.version AS INT64) < 116
   UNION ALL
   SELECT
     context_id,
@@ -100,6 +166,10 @@ WITH combined AS (
     NULL AS suggest_data_sharing_enabled,
   FROM
     contextual_services.topsites_click
+  WHERE
+    -- For firefox 116+ use firefox_desktop.top_sites instead
+    -- https://bugzilla.mozilla.org/show_bug.cgi?id=1836283
+    SAFE_CAST(metadata.user_agent.version AS INT64) < 116
   UNION ALL
   SELECT
     metrics.uuid.top_sites_context_id AS context_id,

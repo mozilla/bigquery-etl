@@ -1326,3 +1326,20 @@ bqetl_glean_usage:
     start_date: "2023-11-20"
   tags:
     - impact/tier_1
+
+bqetl_glam_export:
+  schedule_interval: 0 8 * * *
+  default_args:
+    depends_on_past: false
+    email:
+      - ascholtz@mozilla.com
+      - efilho@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    owner: ascholtz@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: "2023-11-28"
+  tags:
+    - impact/tier_2
+  description: DAG to prepare GLAM data for public export.

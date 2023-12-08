@@ -131,7 +131,7 @@ def generate(target_project, output_dir, use_cloud_function):
         write_sql(
             output_dir=output_dir,
             full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}_{current_version}",
-            basename="checks.yaml",
+            basename="checks.sql",
             sql=checks_sql,
             skip_existing=False,
         )

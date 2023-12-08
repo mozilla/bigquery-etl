@@ -195,7 +195,7 @@ dry_run:
   - sql/moz-fx-data-shared-prod/org_mozilla_firefox_beta_derived/experiment_events_live_v1/init.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/experiment_enrollment_cumulative_population_estimate_v1/view.sql
   - sql/moz-fx-data-shared-prod/telemetry/experiment_enrollment_cumulative_population_estimate/view.sql
-  - sql/moz-fx-data-shared-prod/**/event_monitoring_live_v1/init.sql
+  - sql/moz-fx-data-shared-prod/**/event_monitoring_live_v1/view.sql
   - sql/moz-fx-data-shared-prod/monitoring/event_monitoring_live/view.sql
   # Already exists (and lacks an "OR REPLACE" clause)
   - sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/clients_first_seen_v1/init.sql

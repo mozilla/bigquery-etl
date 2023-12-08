@@ -54,6 +54,7 @@ dry_run:
   - sql/moz-fx-data-shared-prod/accounts_backend/accounts/view.sql
   - sql/moz-fx-data-shared-prod/accounts_db_external/**/*.sql
   - sql/moz-fx-data-shared-prod/accounts_db_nonprod_external/**/*.sql
+  - sql/moz-fx-data-shared-prod/accounts_db/fxa_oauth_clients/view.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_content_events_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_auth_bounce_events_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_auth_events_v1/query.sql

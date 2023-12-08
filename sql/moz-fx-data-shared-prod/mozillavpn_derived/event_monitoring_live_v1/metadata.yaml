@@ -15,6 +15,6 @@ workgroup_access:
   members:
   - workgroup:mozilla-confidential
 references:
-  init.sql:
+  view.sql:
   - moz-fx-data-shared-prod.mozillavpn_live.events_v1
 deprecated: false

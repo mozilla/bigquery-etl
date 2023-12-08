@@ -1,0 +1,23 @@
+{% macro value_length(columns, expected_length, where) %}
+  {% if columns is string %}
+    {% set columns = [columns] %}
+  {% endif %}
+  WITH value_length_checks AS (
+    SELECT [
+      {% for col in columns %}
+        IF(COUNTIF(LENGTH({{ col }}) <> {{ expected_length }}) > 0, "{{ col }}", NULL){% if not loop.last -%},{% endif -%}
+      {% endfor %}
+    ] AS checks
+    FROM `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`
+    {% if where %}
+    WHERE {{ where }}
+    {% endif %}
+  ), failed_columns AS (
+    SELECT ARRAY_AGG(u IGNORE NULLS) AS checks FROM value_length_checks, UNNEST(checks) AS u
+  )
+  SELECT IF(
+   (SELECT ARRAY_LENGTH(checks) FROM failed_columns) > 0,
+   ERROR(CONCAT("Columns with unexpected value length: ", (SELECT ARRAY_TO_STRING(checks, ", ") FROM failed_columns))),
+   NULL
+  );
+{% endmacro %}

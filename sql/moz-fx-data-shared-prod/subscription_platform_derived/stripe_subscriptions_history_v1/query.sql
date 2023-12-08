@@ -200,11 +200,19 @@ plans AS (
   USING
     (product_id)
 ),
+us_zip_codes AS (
+  SELECT
+    zip_code,
+    state_code,
+  FROM
+    -- https://console.cloud.google.com/marketplace/product/united-states-census-bureau/us-geographic-boundaries
+    `bigquery-public-data.geo_us_boundaries.zip_codes`
+),
 ca_postal_districts AS (
-  -- https://en.wikipedia.org/wiki/Postal_codes_in_Canada#Components_of_a_postal_code
   SELECT
     *
   FROM
+    -- https://en.wikipedia.org/wiki/Postal_codes_in_Canada#Components_of_a_postal_code
     UNNEST(
       ARRAY<STRUCT<district STRING, province_code STRING>>[
         ("A", "NL"),
@@ -258,7 +266,7 @@ customers AS (
   USING
     (id)
   LEFT JOIN
-    `bigquery-public-data.geo_us_boundaries.zip_codes` AS us_shipping_zip_codes
+    us_zip_codes AS us_shipping_zip_codes
   ON
     customers.shipping_address_country = "US"
     AND LEFT(customers.shipping_address_postal_code, 5) = us_shipping_zip_codes.zip_code
@@ -284,7 +292,7 @@ charges AS (
   ON
     charges.card_id = cards.id
   LEFT JOIN
-    `bigquery-public-data.geo_us_boundaries.zip_codes` AS us_zip_codes
+    us_zip_codes
   ON
     COALESCE(NULLIF(charges.billing_detail_address_country, ""), cards.country) = "US"
     AND LEFT(charges.billing_detail_address_postal_code, 5) = us_zip_codes.zip_code

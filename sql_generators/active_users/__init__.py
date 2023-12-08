@@ -49,17 +49,24 @@ def generate(target_project, output_dir, use_cloud_function):
     The parent folders will be created if not existing and existing files will be overwritten.
     """
     env = Environment(loader=FileSystemLoader(str(THIS_PATH / "templates")))
+    output_dir = Path(output_dir) / target_project
+    # query templates
     mobile_query_template = env.get_template("mobile_query.sql")
-    mobile_checks_template = env.get_template("mobile_checks.sql")
     desktop_query_template = env.get_template("desktop_query.sql")
-    desktop_checks_template = env.get_template("desktop_checks.sql")
     focus_android_query_template = env.get_template("focus_android_query.sql")
-    focus_android_checks_template = env.get_template("focus_android_checks.sql")
-    metadata_template = "metadata.yaml"
-    view_template = env.get_template("view.sql")
+    # view templates
     focus_android_view_template = env.get_template("focus_android_view.sql")
     mobile_view_template = env.get_template("mobile_view.sql")
-    output_dir = Path(output_dir) / target_project
+    view_template = env.get_template("view.sql")
+    # metadata template
+    metadata_template = "metadata.yaml"
+    # checks templates
+    desktop_checks_template = env.get_template("desktop_checks.sql")
+    focus_android_checks_template = env.get_template("focus_android_checks.sql")
+    fenix_checks_template = env.get_template("fenix_checks.sql")
+    focus_ios_checks_template = env.get_template("focus_ios_checks.sql")
+    firefox_ios_checks_template = env.get_template("firefox_ios_checks.sql")
+    klar_ios_checks_template = env.get_template("klar_ios_checks.sql")
 
     for browser in Browsers:
         if browser.name == "firefox_desktop":
@@ -70,11 +77,6 @@ def generate(target_project, output_dir, use_cloud_function):
                     app_name=browser.name,
                 )
             )
-            checks_sql = desktop_checks_template.render(
-                project_id=target_project,
-                app_value=browser.value,
-                app_name=browser.name,
-            )
         elif browser.name == "focus_android":
             query_sql = reformat(
                 focus_android_query_template.render(
@@ -82,11 +84,6 @@ def generate(target_project, output_dir, use_cloud_function):
                     app_value=browser.value,
                     app_name=browser.name,
                 )
-            )
-            checks_sql = focus_android_checks_template.render(
-                project_id=target_project,
-                app_value=browser.value,
-                app_name=browser.name,
             )
         else:
             query_sql = reformat(
@@ -96,7 +93,39 @@ def generate(target_project, output_dir, use_cloud_function):
                     app_name=browser.name,
                 )
             )
-            checks_sql = mobile_checks_template.render(
+        # create checks_sql
+        if browser.name == "firefox_desktop":
+            checks_sql = desktop_checks_template.render(
+                project_id=target_project,
+                app_value=browser.value,
+                app_name=browser.name,
+            )
+        elif browser.name == "fenix":
+            checks_sql = fenix_checks_template.render(
+                project_id=target_project,
+                app_value=browser.value,
+                app_name=browser.name,
+            )
+        elif browser.name == "firefox_ios":
+            checks_sql = firefox_ios_checks_template.render(
+                project_id=target_project,
+                app_value=browser.value,
+                app_name=browser.name,
+            )
+        elif browser.name == "focus_ios":
+            checks_sql = focus_ios_checks_template.render(
+                project_id=target_project,
+                app_value=browser.value,
+                app_name=browser.name,
+            )
+        elif browser.name == "focus_android":
+            checks_sql = focus_android_checks_template.render(
+                project_id=target_project,
+                app_value=browser.value,
+                app_name=browser.name,
+            )
+        elif browser.name == "klar_ios":
+            checks_sql = klar_ios_checks_template.render(
                 project_id=target_project,
                 app_value=browser.value,
                 app_name=browser.name,

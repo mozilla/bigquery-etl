@@ -18,30 +18,31 @@ dau_sum AS (
         `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`
     WHERE
         submission_date = @submission_date
-
 ),
 distinct_client_count_base AS (
-    -- release channel
     SELECT
+        "release" AS channel,
         COUNT(DISTINCT client_info.client_id) AS distinct_client_count,
     FROM
-        `moz-fx-data-shared-prod.org_mozilla_focus_live.baseline_v1`
+        `moz-fx-data-shared-prod.org_mozilla_ios_firefox_live.baseline_v1`
     WHERE
         DATE(submission_timestamp) = @submission_date
     -- beta channel
     UNION ALL
     SELECT
+        "beta" AS channel,
         COUNT(DISTINCT client_info.client_id) AS distinct_client_count,
     FROM
-        `moz-fx-data-shared-prod.org_mozilla_focus_beta_live.baseline_v1`
+        `moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta_live.baseline_v1`
     WHERE
         DATE(submission_timestamp) = @submission_date
-    -- nigthly channel
+    -- nightly channel
     UNION ALL
     SELECT
+        "nightly" AS channel,
         COUNT(DISTINCT client_info.client_id) AS distinct_client_count,
     FROM
-        `moz-fx-data-shared-prod.org_mozilla_focus_nightly_live.baseline_v1`
+        `moz-fx-data-shared-prod.org_mozilla_ios_fennec_live.baseline_v1`
     WHERE
         DATE(submission_timestamp) = @submission_date
 ),

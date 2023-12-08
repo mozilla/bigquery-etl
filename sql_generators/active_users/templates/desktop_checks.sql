@@ -9,10 +9,8 @@
    (you can also run them locally with `bqetl check run`).
 #}
 {% raw -%}
-
 #warn
 WITH
-
 qdau_sum AS (
     SELECT
         SUM(qdau),
@@ -21,7 +19,6 @@ qdau_sum AS (
     WHERE
         submission_date = @submission_date
 ),
-
 live_table_qdau_count_base AS (
     SELECT
         client_id,
@@ -46,7 +43,6 @@ live_table_qdau_count_base AS (
     GROUP BY
         client_id
 ),
-
 overactive AS (
     SELECT
         client_id
@@ -57,7 +53,6 @@ overactive AS (
     HAVING
         COUNT(*) > 150000
 ),
-
 client_summary AS (
     SELECT
         client_id,
@@ -88,7 +83,6 @@ last_seen AS (
     WHERE
         submission_date = @submission_date
 ),
-
 live_table_qdau_count AS (
     SELECT
         COUNTIF(active_hours_sum > 0 AND total_uri_count > 0 AND days_since_seen = 0)
@@ -116,7 +110,6 @@ dau_sum AS (
     WHERE
         submission_date = @submission_date
 ),
-
 distinct_client_count_base AS (
     SELECT
         client_id
@@ -127,7 +120,6 @@ distinct_client_count_base AS (
         AND normalized_app_name = 'Firefox'
         AND document_id IS NOT NULL
 ),
-
 overactive AS (
     SELECT
         client_id
@@ -138,7 +130,6 @@ overactive AS (
     HAVING
         COUNT(*) > 150000
 ),
-
 distinct_client_count AS (
     SELECT
         COUNT(DISTINCT client_id),
@@ -151,7 +142,6 @@ distinct_client_count AS (
     WHERE
         overactive.client_id IS NULL
 )
-
 SELECT
     IF(
         (SELECT * FROM dau_sum) <> (SELECT * FROM distinct_client_count),

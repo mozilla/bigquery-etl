@@ -98,6 +98,9 @@ fields:
 - mode: NULLABLE
   name: country
   type: STRING
+- mode: NULLABLE
+  name: state
+  type: STRING
 - mode: REPEATED
   name: promotion_codes
   type: STRING

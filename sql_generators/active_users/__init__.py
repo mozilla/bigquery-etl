@@ -50,8 +50,11 @@ def generate(target_project, output_dir, use_cloud_function):
     """
     env = Environment(loader=FileSystemLoader(str(THIS_PATH / "templates")))
     mobile_query_template = env.get_template("mobile_query.sql")
+    mobile_checks_template = env.get_template("mobile_checks.sql")
     desktop_query_template = env.get_template("desktop_query.sql")
+    desktop_checks_template = env.get_template("desktop_checks.sql")
     focus_android_query_template = env.get_template("focus_android_query.sql")
+    focus_android_checks_template = env.get_template("focus_android_checks.sql")
     metadata_template = "metadata.yaml"
     view_template = env.get_template("view.sql")
     focus_android_view_template = env.get_template("focus_android_view.sql")
@@ -67,6 +70,11 @@ def generate(target_project, output_dir, use_cloud_function):
                     app_name=browser.name,
                 )
             )
+            checks_sql = desktop_checks_template.render(
+                project_id=target_project,
+                app_value=browser.value,
+                app_name=browser.name,
+            )
         elif browser.name == "focus_android":
             query_sql = reformat(
                 focus_android_query_template.render(
@@ -75,6 +83,11 @@ def generate(target_project, output_dir, use_cloud_function):
                     app_name=browser.name,
                 )
             )
+            checks_sql = focus_android_checks_template.render(
+                project_id=target_project,
+                app_value=browser.value,
+                app_name=browser.name,
+            )
         else:
             query_sql = reformat(
                 mobile_query_template.render(
@@ -82,6 +95,11 @@ def generate(target_project, output_dir, use_cloud_function):
                     app_value=browser.value,
                     app_name=browser.name,
                 )
+            )
+            checks_sql = mobile_checks_template.render(
+                project_id=target_project,
+                app_value=browser.value,
+                app_name=browser.name,
             )
         if browser.name == "firefox_desktop":
             current_version = DESKTOP_TABLE_VERSION
@@ -107,6 +125,14 @@ def generate(target_project, output_dir, use_cloud_function):
                 app_name=browser.name,
                 format=False,
             ),
+            skip_existing=False,
+        )
+
+        write_sql(
+            output_dir=output_dir,
+            full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}_{current_version}",
+            basename="checks.yaml",
+            sql=checks_sql,
             skip_existing=False,
         )
 

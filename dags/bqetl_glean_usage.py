@@ -650,6 +650,20 @@ with DAG(
         task_group=task_group_fenix,
     )
 
+    with TaskGroup(
+        "checks__fail_org_mozilla_fenix_derived__baseline_clients_daily__v1_external",
+        parent_group=task_group_fenix,
+    ) as checks__fail_org_mozilla_fenix_derived__baseline_clients_daily__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_analytics_tables__wait_for_checks__fail_org_mozilla_fenix_derived__baseline_clients_daily__v1",
+            external_dag_id="bqetl_analytics_tables",
+            external_task_id="wait_for_checks__fail_org_mozilla_fenix_derived__baseline_clients_daily__v1",
+        )
+
+        checks__fail_org_mozilla_fenix_derived__baseline_clients_daily__v1_external.set_upstream(
+            checks__fail_org_mozilla_fenix_derived__baseline_clients_daily__v1
+        )
+
     checks__fail_org_mozilla_fenix_derived__baseline_clients_first_seen__v1 = bigquery_dq_check(
         task_id="checks__fail_org_mozilla_fenix_derived__baseline_clients_first_seen__v1",
         source_table="baseline_clients_first_seen_v1",
@@ -678,6 +692,20 @@ with DAG(
         retries=0,
         task_group=task_group_fenix,
     )
+
+    with TaskGroup(
+        "checks__fail_org_mozilla_fenix_nightly_derived__baseline_clients_daily__v1_external",
+        parent_group=task_group_fenix,
+    ) as checks__fail_org_mozilla_fenix_nightly_derived__baseline_clients_daily__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_analytics_tables__wait_for_checks__fail_org_mozilla_fenix_nightly_derived__baseline_clients_daily__v1",
+            external_dag_id="bqetl_analytics_tables",
+            external_task_id="wait_for_checks__fail_org_mozilla_fenix_nightly_derived__baseline_clients_daily__v1",
+        )
+
+        checks__fail_org_mozilla_fenix_nightly_derived__baseline_clients_daily__v1_external.set_upstream(
+            checks__fail_org_mozilla_fenix_nightly_derived__baseline_clients_daily__v1
+        )
 
     checks__fail_org_mozilla_fenix_nightly_derived__baseline_clients_first_seen__v1 = bigquery_dq_check(
         task_id="checks__fail_org_mozilla_fenix_nightly_derived__baseline_clients_first_seen__v1",
@@ -708,6 +736,20 @@ with DAG(
         task_group=task_group_fenix,
     )
 
+    with TaskGroup(
+        "checks__fail_org_mozilla_fennec_aurora_derived__baseline_clients_daily__v1_external",
+        parent_group=task_group_fenix,
+    ) as checks__fail_org_mozilla_fennec_aurora_derived__baseline_clients_daily__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_analytics_tables__wait_for_checks__fail_org_mozilla_fennec_aurora_derived__baseline_clients_daily__v1",
+            external_dag_id="bqetl_analytics_tables",
+            external_task_id="wait_for_checks__fail_org_mozilla_fennec_aurora_derived__baseline_clients_daily__v1",
+        )
+
+        checks__fail_org_mozilla_fennec_aurora_derived__baseline_clients_daily__v1_external.set_upstream(
+            checks__fail_org_mozilla_fennec_aurora_derived__baseline_clients_daily__v1
+        )
+
     checks__fail_org_mozilla_fennec_aurora_derived__baseline_clients_first_seen__v1 = bigquery_dq_check(
         task_id="checks__fail_org_mozilla_fennec_aurora_derived__baseline_clients_first_seen__v1",
         source_table="baseline_clients_first_seen_v1",
@@ -737,6 +779,20 @@ with DAG(
         task_group=task_group_fenix,
     )
 
+    with TaskGroup(
+        "checks__fail_org_mozilla_firefox_beta_derived__baseline_clients_daily__v1_external",
+        parent_group=task_group_fenix,
+    ) as checks__fail_org_mozilla_firefox_beta_derived__baseline_clients_daily__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_analytics_tables__wait_for_checks__fail_org_mozilla_firefox_beta_derived__baseline_clients_daily__v1",
+            external_dag_id="bqetl_analytics_tables",
+            external_task_id="wait_for_checks__fail_org_mozilla_firefox_beta_derived__baseline_clients_daily__v1",
+        )
+
+        checks__fail_org_mozilla_firefox_beta_derived__baseline_clients_daily__v1_external.set_upstream(
+            checks__fail_org_mozilla_firefox_beta_derived__baseline_clients_daily__v1
+        )
+
     checks__fail_org_mozilla_firefox_beta_derived__baseline_clients_first_seen__v1 = bigquery_dq_check(
         task_id="checks__fail_org_mozilla_firefox_beta_derived__baseline_clients_first_seen__v1",
         source_table="baseline_clients_first_seen_v1",
@@ -765,6 +821,20 @@ with DAG(
         retries=0,
         task_group=task_group_fenix,
     )
+
+    with TaskGroup(
+        "checks__fail_org_mozilla_firefox_derived__baseline_clients_daily__v1_external",
+        parent_group=task_group_fenix,
+    ) as checks__fail_org_mozilla_firefox_derived__baseline_clients_daily__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_analytics_tables__wait_for_checks__fail_org_mozilla_firefox_derived__baseline_clients_daily__v1",
+            external_dag_id="bqetl_analytics_tables",
+            external_task_id="wait_for_checks__fail_org_mozilla_firefox_derived__baseline_clients_daily__v1",
+        )
+
+        checks__fail_org_mozilla_firefox_derived__baseline_clients_daily__v1_external.set_upstream(
+            checks__fail_org_mozilla_firefox_derived__baseline_clients_daily__v1
+        )
 
     checks__fail_org_mozilla_firefox_derived__baseline_clients_first_seen__v1 = bigquery_dq_check(
         task_id="checks__fail_org_mozilla_firefox_derived__baseline_clients_first_seen__v1",

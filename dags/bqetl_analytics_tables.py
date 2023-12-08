@@ -370,6 +370,93 @@ with DAG(
         fenix_derived__funnel_retention_clients_week_4__v1
     )
 
+    wait_for_checks__fail_org_mozilla_fenix_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
+        task_id="wait_for_checks__fail_org_mozilla_fenix_derived__baseline_clients_daily__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="fenix.checks__fail_org_mozilla_fenix_derived__baseline_clients_daily__v1",
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    firefox_android_clients.set_upstream(
+        wait_for_checks__fail_org_mozilla_fenix_derived__baseline_clients_daily__v1
+    )
+    wait_for_checks__fail_org_mozilla_fenix_nightly_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
+        task_id="wait_for_checks__fail_org_mozilla_fenix_nightly_derived__baseline_clients_daily__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="fenix.checks__fail_org_mozilla_fenix_nightly_derived__baseline_clients_daily__v1",
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    firefox_android_clients.set_upstream(
+        wait_for_checks__fail_org_mozilla_fenix_nightly_derived__baseline_clients_daily__v1
+    )
+    wait_for_checks__fail_org_mozilla_fennec_aurora_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
+        task_id="wait_for_checks__fail_org_mozilla_fennec_aurora_derived__baseline_clients_daily__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="fenix.checks__fail_org_mozilla_fennec_aurora_derived__baseline_clients_daily__v1",
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    firefox_android_clients.set_upstream(
+        wait_for_checks__fail_org_mozilla_fennec_aurora_derived__baseline_clients_daily__v1
+    )
+    wait_for_checks__fail_org_mozilla_firefox_beta_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
+        task_id="wait_for_checks__fail_org_mozilla_firefox_beta_derived__baseline_clients_daily__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="fenix.checks__fail_org_mozilla_firefox_beta_derived__baseline_clients_daily__v1",
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    firefox_android_clients.set_upstream(
+        wait_for_checks__fail_org_mozilla_firefox_beta_derived__baseline_clients_daily__v1
+    )
+    wait_for_checks__fail_org_mozilla_firefox_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
+        task_id="wait_for_checks__fail_org_mozilla_firefox_derived__baseline_clients_daily__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="fenix.checks__fail_org_mozilla_firefox_derived__baseline_clients_daily__v1",
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    firefox_android_clients.set_upstream(
+        wait_for_checks__fail_org_mozilla_firefox_derived__baseline_clients_daily__v1
+    )
+    firefox_android_clients.set_upstream(wait_for_copy_deduplicate_all)
+    wait_for_fenix_derived__new_profile_activation__v1 = ExternalTaskSensor(
+        task_id="wait_for_fenix_derived__new_profile_activation__v1",
+        external_dag_id="bqetl_mobile_activation",
+        external_task_id="fenix_derived__new_profile_activation__v1",
+        execution_delta=datetime.timedelta(seconds=7200),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    firefox_android_clients.set_upstream(
+        wait_for_fenix_derived__new_profile_activation__v1
+    )
+
     telemetry_derived__clients_first_seen_28_days_later__v1.set_upstream(
         clients_first_seen_v2
     )

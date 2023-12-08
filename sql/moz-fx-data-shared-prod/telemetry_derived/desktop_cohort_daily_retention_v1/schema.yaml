@@ -93,6 +93,9 @@ fields:
   name: num_clients_active_on_day
   type: INTEGER
 - mode: NULLABLE
+  name: num_clients_dau_on_day
+  type: INTEGER
+- mode: NULLABLE
   name: num_clients_active_atleastonce_in_last_7_days
   type: INTEGER
 - mode: NULLABLE

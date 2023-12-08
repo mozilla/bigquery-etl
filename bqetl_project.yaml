@@ -54,6 +54,7 @@ dry_run:
   - sql/moz-fx-data-shared-prod/accounts_backend/accounts/view.sql
   - sql/moz-fx-data-shared-prod/accounts_db_external/**/*.sql
   - sql/moz-fx-data-shared-prod/accounts_db_nonprod_external/**/*.sql
+  - sql/moz-fx-data-shared-prod/accounts_db/fxa_oauth_clients/view.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_content_events_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_auth_bounce_events_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_auth_events_v1/query.sql
@@ -391,6 +392,7 @@ view:
     - sql/moz-fx-data-shared-prod/mlhackweek_search/action/view.sql
     - sql/moz-fx-data-shared-prod/**/client_deduplication/view.sql
     - sql/moz-fx-data-shared-prod/stripe/itemized_tax_transactions/view.sql
+    - sql/moz-fx-data-shared-prod/accounts_db/fxa_oauth_clients/view.sql
   publish:
     skip:
     - sql/moz-fx-data-shared-prod/activity_stream/tile_id_types/view.sql
@@ -434,6 +436,7 @@ generate:
     - sql/moz-fx-data-shared-prod/mozilla_vpn/events/**
     - sql/moz-fx-data-shared-prod/mozilla_vpn/main/**
     - sql/moz-fx-data-shared-prod/fenix/client_deduplication/**
+    - sql/moz-fx-data-shared-prod/org_mozilla_tv_firefox_derived/baseline_clients_last_seen_v1/checks.sql
   event_monitoring:
     skip_apps:
     - mlhackweek_search

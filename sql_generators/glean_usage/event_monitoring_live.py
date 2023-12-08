@@ -36,7 +36,7 @@ class EventMonitoringLive(GleanTable):
         self.base_table_name = "events_v1"
 
     def generate_per_app_id(
-        self, project_id, baseline_table, output_dir=None, use_cloud_function=True
+        self, project_id, baseline_table, output_dir=None, use_cloud_function=True, app_info=[]
     ):
         """Generate per-app_id views."""
         tables = table_names_from_baseline(baseline_table, include_project_id=False)

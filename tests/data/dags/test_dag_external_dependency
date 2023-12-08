@@ -52,7 +52,7 @@ with DAG(
     )
 
     with TaskGroup(
-        "test__external_table__v1_external"
+        "test__external_table__v1_external",
     ) as test__external_table__v1_external:
         ExternalTaskMarker(
             task_id="bqetl_test_dag__wait_for_test__external_table__v1",

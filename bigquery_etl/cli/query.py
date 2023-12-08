@@ -426,6 +426,8 @@ def info(ctx, name, sql_dir, project_id, cost, last_updated):
             ignore=["derived_view_schemas", "stable_views"],
         )
         query_files = paths_matching_name_pattern(name, ctx.obj["TMP_DIR"], project_id)
+        if query_files == []:
+            raise click.ClickException(f"No queries matching `{name}` were found.")
 
     for query_file in query_files:
         query_file_path = Path(query_file)
@@ -719,6 +721,8 @@ def backfill(
             ignore=["derived_view_schemas", "stable_views", "country_code_lookup"],
         )
         query_files = paths_matching_name_pattern(name, ctx.obj["TMP_DIR"], project_id)
+        if query_files == []:
+            raise click.ClickException(f"No queries matching `{name}` were found.")
 
     for query_file in query_files:
         query_file_path = Path(query_file)
@@ -895,6 +899,8 @@ def run(
             ignore=["derived_view_schemas", "stable_views", "country_code_lookup"],
         )
         query_files = paths_matching_name_pattern(name, ctx.obj["TMP_DIR"], project_id)
+        if query_files == []:
+            raise click.ClickException(f"No queries matching `{name}` were found.")
 
     _run_query(
         query_files,
@@ -1992,6 +1998,8 @@ def deploy(
         query_files = paths_matching_name_pattern(
             name, ctx.obj["TMP_DIR"], project_id, ["query.*"]
         )
+        if not query_files:
+            raise click.ClickException(f"No queries matching `{name}` were found.")
 
     def _deploy(query_file):
         if respect_dryrun_skip and str(query_file) in DryRun.skipped_files():
@@ -2253,6 +2261,8 @@ def validate_schema(
             ignore=["derived_view_schemas", "stable_views"],
         )
         query_files = paths_matching_name_pattern(name, ctx.obj["TMP_DIR"], project_id)
+        if query_files == []:
+            raise click.ClickException(f"No queries matching `{name}` were found.")
 
     _validate_schema = partial(
         _validate_schema_from_path,

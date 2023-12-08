@@ -30,6 +30,7 @@ SELECT
   plan_interval_timezone,
   provider,
   country,
+  state,
   promotion_codes,
   promotion_discounts_amount,
 FROM

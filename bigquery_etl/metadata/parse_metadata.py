@@ -323,9 +323,7 @@ class Metadata:
 
                 if "checks" in metadata:
                     converter = cattrs.BaseConverter()
-                    external_data = converter.structure(
-                        metadata["checks"], ChecksMetadata
-                    )
+                    checks = converter.structure(metadata["checks"], ChecksMetadata)
 
                 return cls(
                     friendly_name,

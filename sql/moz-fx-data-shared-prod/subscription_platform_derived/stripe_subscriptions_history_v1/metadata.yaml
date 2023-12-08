@@ -17,6 +17,7 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
+  - bigquery-public-data.geo_us_boundaries.zip_codes
   - moz-fx-data-shared-prod.stripe_external.card_v1
   - moz-fx-data-shared-prod.stripe_external.charge_v1
   - moz-fx-data-shared-prod.stripe_external.coupon_v1

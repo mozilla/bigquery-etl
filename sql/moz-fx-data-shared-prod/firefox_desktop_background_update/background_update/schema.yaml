@@ -329,6 +329,20 @@ fields:
         a registered restart.
 
         '
+    - name: background_update_automatic_restart_attempted
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'True if the background update task successfully attempted an automatic
+        restart.
+
+        '
+    - name: background_update_automatic_restart_success
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'True if the background update task successfully restarted after
+        an automatic restart.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

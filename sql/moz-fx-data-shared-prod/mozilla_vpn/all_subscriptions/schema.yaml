@@ -65,6 +65,9 @@ fields:
 - name: country_name
   type: STRING
   mode: NULLABLE
+- name: state
+  type: STRING
+  mode: NULLABLE
 - name: user_registration_date
   type: TIMESTAMP
   mode: NULLABLE

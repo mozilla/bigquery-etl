@@ -515,7 +515,16 @@ SELECT
       metrics.custom_distribution.networking_cookie_count_unpart_by_key,
       metrics.custom_distribution.networking_cookie_count_unpartitioned,
       metrics.custom_distribution.networking_cookie_purge_entry_max,
-      metrics.custom_distribution.networking_cookie_purge_max
+      metrics.custom_distribution.networking_cookie_purge_max,
+      metrics.custom_distribution.networking_http_1_upload_throughput_100,
+      metrics.custom_distribution.networking_http_1_upload_throughput_10_50,
+      metrics.custom_distribution.networking_http_1_upload_throughput_50_100,
+      metrics.custom_distribution.networking_http_2_upload_throughput_100,
+      metrics.custom_distribution.networking_http_2_upload_throughput_10_50,
+      metrics.custom_distribution.networking_http_2_upload_throughput_50_100,
+      metrics.custom_distribution.networking_http_3_upload_throughput_100,
+      metrics.custom_distribution.networking_http_3_upload_throughput_10_50,
+      metrics.custom_distribution.networking_http_3_upload_throughput_50_100
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -1064,7 +1073,16 @@ SELECT
       metrics.custom_distribution.networking_cookie_count_unpart_by_key,
       metrics.custom_distribution.networking_cookie_count_unpartitioned,
       metrics.custom_distribution.networking_cookie_purge_entry_max,
-      metrics.custom_distribution.networking_cookie_purge_max
+      metrics.custom_distribution.networking_cookie_purge_max,
+      metrics.custom_distribution.networking_http_1_upload_throughput_100,
+      metrics.custom_distribution.networking_http_1_upload_throughput_10_50,
+      metrics.custom_distribution.networking_http_1_upload_throughput_50_100,
+      metrics.custom_distribution.networking_http_2_upload_throughput_100,
+      metrics.custom_distribution.networking_http_2_upload_throughput_10_50,
+      metrics.custom_distribution.networking_http_2_upload_throughput_50_100,
+      metrics.custom_distribution.networking_http_3_upload_throughput_100,
+      metrics.custom_distribution.networking_http_3_upload_throughput_10_50,
+      metrics.custom_distribution.networking_http_3_upload_throughput_50_100
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,

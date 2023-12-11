@@ -26,4 +26,4 @@
 ], where="DATE(`datetime`) = @submission_date") }}
 
 #warn
-{{ value_length(columns=["country"], expected_length=2, where="DATE(`datetime`) = @submission_date") }}
+{{ value_length(column="country", expected_length=2, where="DATE(`datetime`) = @submission_date") }}

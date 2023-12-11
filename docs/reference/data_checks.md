@@ -186,7 +186,7 @@ Example:
 {{ row_count_within_past_partitions_avg(7, 5, "submission_date") }}
 ```
 
-### row_count_within_past_partitions_avg([source](../../tests/checks/value_length.jinja))
+### value_length([source](../../tests/checks/value_length.jinja))
 
 Checks that the columns have values of specific character length.
 
@@ -203,7 +203,7 @@ where: Optional[str]: Any additional filtering rules that should be applied when
 Example:
 ```sql
 #warn
-{{ value_length(columns=["country"], expected_length=2, where="submission_date = @submission_date") }}
+{{ value_length(column="country", expected_length=2, where="submission_date = @submission_date") }}
 ```
 
 

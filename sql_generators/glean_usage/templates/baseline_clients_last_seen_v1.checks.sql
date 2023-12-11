@@ -66,7 +66,7 @@
   WHERE submission_date = @submission_date;
 
 #warn
-{{ value_length(columns=["client_id"], expected_length=36, where="submission_date = @submission_date") }}
+{{ value_length(column="client_id", expected_length=36, where="submission_date = @submission_date") }}
 
 {% endraw %}
 

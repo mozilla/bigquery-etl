@@ -8,7 +8,7 @@
 {{ row_count_within_past_partitions_avg(number_of_days=7, threshold_percentage=5) }}
 
 #fail
-{{ value_length(columns=["client_id"], expected_length=36, where="submission_date = @submission_date") }}
+{{ value_length(column="client_id", expected_length=36, where="submission_date = @submission_date") }}
 
 #warn
 {{ is_unique(columns=["client_id"], where="submission_date = @submission_date") }}
@@ -32,7 +32,7 @@
 ], where="submission_date = @submission_date") }}
 
 #warn
-{{ value_length(columns=["country"], expected_length=2, where="submission_date = @submission_date") }}
+{{ value_length(column="country", expected_length=2, where="submission_date = @submission_date") }}
 
 #warn
 SELECT IF(

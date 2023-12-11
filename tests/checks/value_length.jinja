@@ -1,12 +1,7 @@
-{% macro value_length(columns, expected_length, where) %}
-  {% if columns is string %}
-    {% set columns = [columns] %}
-  {% endif %}
+{% macro value_length(column, expected_length, where) %}
   WITH value_length_checks AS (
     SELECT [
-      {% for col in columns %}
-        IF(COUNTIF(LENGTH({{ col }}) <> {{ expected_length }}) > 0, "{{ col }}", NULL){% if not loop.last -%},{% endif -%}
-      {% endfor %}
+      IF(COUNTIF(LENGTH({{ column }}) <> {{ expected_length }}) > 0, "{{ column }}", NULL)
     ] AS checks
     FROM `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`
     {% if where %}

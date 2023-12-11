@@ -222,66 +222,6 @@ with DAG(
         task_group=task_group_burnham,
     )
 
-    checks__fail_accounts_backend_derived__baseline_clients_daily__v1 = (
-        bigquery_dq_check(
-            task_id="checks__fail_accounts_backend_derived__baseline_clients_daily__v1",
-            source_table="baseline_clients_daily_v1",
-            dataset_id="accounts_backend_derived",
-            project_id="moz-fx-data-shared-prod",
-            is_dq_check_fail=True,
-            owner="ascholtz@mozilla.com",
-            email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-            depends_on_past=False,
-            parameters=["submission_date:DATE:{{ds}}"],
-            retries=0,
-            task_group=task_group_accounts_backend,
-        )
-    )
-
-    checks__fail_accounts_backend_derived__baseline_clients_first_seen__v1 = bigquery_dq_check(
-        task_id="checks__fail_accounts_backend_derived__baseline_clients_first_seen__v1",
-        source_table="baseline_clients_first_seen_v1",
-        dataset_id="accounts_backend_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=True,
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        task_concurrency=1,
-        parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
-        task_group=task_group_accounts_backend,
-    )
-
-    checks__fail_burnham_derived__baseline_clients_daily__v1 = bigquery_dq_check(
-        task_id="checks__fail_burnham_derived__baseline_clients_daily__v1",
-        source_table="baseline_clients_daily_v1",
-        dataset_id="burnham_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=True,
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
-        task_group=task_group_burnham,
-    )
-
-    checks__fail_burnham_derived__baseline_clients_first_seen__v1 = bigquery_dq_check(
-        task_id="checks__fail_burnham_derived__baseline_clients_first_seen__v1",
-        source_table="baseline_clients_first_seen_v1",
-        dataset_id="burnham_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=True,
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        task_concurrency=1,
-        parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
-        task_group=task_group_burnham,
-    )
-
     checks__fail_firefox_desktop_background_defaultagent_derived__baseline_clients_daily__v1 = bigquery_dq_check(
         task_id="checks__fail_firefox_desktop_background_defaultagent_derived__baseline_clients_daily__v1",
         source_table="baseline_clients_daily_v1",
@@ -398,213 +338,6 @@ with DAG(
         parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
         task_group=task_group_firefox_desktop,
-    )
-
-    checks__fail_monitor_cirrus_derived__baseline_clients_daily__v1 = bigquery_dq_check(
-        task_id="checks__fail_monitor_cirrus_derived__baseline_clients_daily__v1",
-        source_table="baseline_clients_daily_v1",
-        dataset_id="monitor_cirrus_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=True,
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
-        task_group=task_group_monitor_cirrus,
-    )
-
-    checks__fail_monitor_cirrus_derived__baseline_clients_first_seen__v1 = bigquery_dq_check(
-        task_id="checks__fail_monitor_cirrus_derived__baseline_clients_first_seen__v1",
-        source_table="baseline_clients_first_seen_v1",
-        dataset_id="monitor_cirrus_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=True,
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        task_concurrency=1,
-        parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
-        task_group=task_group_monitor_cirrus,
-    )
-
-    checks__fail_moso_mastodon_backend_derived__baseline_clients_daily__v1 = bigquery_dq_check(
-        task_id="checks__fail_moso_mastodon_backend_derived__baseline_clients_daily__v1",
-        source_table="baseline_clients_daily_v1",
-        dataset_id="moso_mastodon_backend_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=True,
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
-        task_group=task_group_moso_mastodon_backend,
-    )
-
-    checks__fail_moso_mastodon_backend_derived__baseline_clients_first_seen__v1 = bigquery_dq_check(
-        task_id="checks__fail_moso_mastodon_backend_derived__baseline_clients_first_seen__v1",
-        source_table="baseline_clients_first_seen_v1",
-        dataset_id="moso_mastodon_backend_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=True,
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        task_concurrency=1,
-        parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
-        task_group=task_group_moso_mastodon_backend,
-    )
-
-    checks__fail_mozilla_lockbox_derived__baseline_clients_daily__v1 = (
-        bigquery_dq_check(
-            task_id="checks__fail_mozilla_lockbox_derived__baseline_clients_daily__v1",
-            source_table="baseline_clients_daily_v1",
-            dataset_id="mozilla_lockbox_derived",
-            project_id="moz-fx-data-shared-prod",
-            is_dq_check_fail=True,
-            owner="ascholtz@mozilla.com",
-            email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-            depends_on_past=False,
-            parameters=["submission_date:DATE:{{ds}}"],
-            retries=0,
-            task_group=task_group_lockwise_android,
-        )
-    )
-
-    checks__fail_mozilla_lockbox_derived__baseline_clients_first_seen__v1 = bigquery_dq_check(
-        task_id="checks__fail_mozilla_lockbox_derived__baseline_clients_first_seen__v1",
-        source_table="baseline_clients_first_seen_v1",
-        dataset_id="mozilla_lockbox_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=True,
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        task_concurrency=1,
-        parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
-        task_group=task_group_lockwise_android,
-    )
-
-    checks__fail_mozilla_mach_derived__baseline_clients_daily__v1 = bigquery_dq_check(
-        task_id="checks__fail_mozilla_mach_derived__baseline_clients_daily__v1",
-        source_table="baseline_clients_daily_v1",
-        dataset_id="mozilla_mach_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=True,
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
-        task_group=task_group_mach,
-    )
-
-    checks__fail_mozilla_mach_derived__baseline_clients_first_seen__v1 = bigquery_dq_check(
-        task_id="checks__fail_mozilla_mach_derived__baseline_clients_first_seen__v1",
-        source_table="baseline_clients_first_seen_v1",
-        dataset_id="mozilla_mach_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=True,
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        task_concurrency=1,
-        parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
-        task_group=task_group_mach,
-    )
-
-    checks__fail_mozillavpn_cirrus_derived__baseline_clients_daily__v1 = bigquery_dq_check(
-        task_id="checks__fail_mozillavpn_cirrus_derived__baseline_clients_daily__v1",
-        source_table="baseline_clients_daily_v1",
-        dataset_id="mozillavpn_cirrus_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=True,
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
-        task_group=task_group_mozillavpn_cirrus,
-    )
-
-    checks__fail_mozillavpn_cirrus_derived__baseline_clients_first_seen__v1 = bigquery_dq_check(
-        task_id="checks__fail_mozillavpn_cirrus_derived__baseline_clients_first_seen__v1",
-        source_table="baseline_clients_first_seen_v1",
-        dataset_id="mozillavpn_cirrus_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=True,
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        task_concurrency=1,
-        parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
-        task_group=task_group_mozillavpn_cirrus,
-    )
-
-    checks__fail_mozillavpn_derived__baseline_clients_daily__v1 = bigquery_dq_check(
-        task_id="checks__fail_mozillavpn_derived__baseline_clients_daily__v1",
-        source_table="baseline_clients_daily_v1",
-        dataset_id="mozillavpn_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=True,
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
-        task_group=task_group_mozilla_vpn,
-    )
-
-    checks__fail_mozillavpn_derived__baseline_clients_first_seen__v1 = (
-        bigquery_dq_check(
-            task_id="checks__fail_mozillavpn_derived__baseline_clients_first_seen__v1",
-            source_table="baseline_clients_first_seen_v1",
-            dataset_id="mozillavpn_derived",
-            project_id="moz-fx-data-shared-prod",
-            is_dq_check_fail=True,
-            owner="ascholtz@mozilla.com",
-            email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-            depends_on_past=False,
-            task_concurrency=1,
-            parameters=["submission_date:DATE:{{ds}}"],
-            retries=0,
-            task_group=task_group_mozilla_vpn,
-        )
-    )
-
-    checks__fail_mozphab_derived__baseline_clients_daily__v1 = bigquery_dq_check(
-        task_id="checks__fail_mozphab_derived__baseline_clients_daily__v1",
-        source_table="baseline_clients_daily_v1",
-        dataset_id="mozphab_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=True,
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
-        task_group=task_group_mozphab,
-    )
-
-    checks__fail_mozphab_derived__baseline_clients_first_seen__v1 = bigquery_dq_check(
-        task_id="checks__fail_mozphab_derived__baseline_clients_first_seen__v1",
-        source_table="baseline_clients_first_seen_v1",
-        dataset_id="mozphab_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=True,
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        task_concurrency=1,
-        parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
-        task_group=task_group_mozphab,
     )
 
     checks__fail_org_mozilla_connect_firefox_derived__baseline_clients_daily__v1 = bigquery_dq_check(
@@ -851,64 +584,6 @@ with DAG(
         task_group=task_group_fenix,
     )
 
-    checks__fail_org_mozilla_firefox_vpn_derived__baseline_clients_daily__v1 = bigquery_dq_check(
-        task_id="checks__fail_org_mozilla_firefox_vpn_derived__baseline_clients_daily__v1",
-        source_table="baseline_clients_daily_v1",
-        dataset_id="org_mozilla_firefox_vpn_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=True,
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
-        task_group=task_group_mozilla_vpn,
-    )
-
-    checks__fail_org_mozilla_firefox_vpn_derived__baseline_clients_first_seen__v1 = bigquery_dq_check(
-        task_id="checks__fail_org_mozilla_firefox_vpn_derived__baseline_clients_first_seen__v1",
-        source_table="baseline_clients_first_seen_v1",
-        dataset_id="org_mozilla_firefox_vpn_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=True,
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        task_concurrency=1,
-        parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
-        task_group=task_group_mozilla_vpn,
-    )
-
-    checks__fail_org_mozilla_firefoxreality_derived__baseline_clients_daily__v1 = bigquery_dq_check(
-        task_id="checks__fail_org_mozilla_firefoxreality_derived__baseline_clients_daily__v1",
-        source_table="baseline_clients_daily_v1",
-        dataset_id="org_mozilla_firefoxreality_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=True,
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
-        task_group=task_group_firefox_reality_pc,
-    )
-
-    checks__fail_org_mozilla_firefoxreality_derived__baseline_clients_first_seen__v1 = bigquery_dq_check(
-        task_id="checks__fail_org_mozilla_firefoxreality_derived__baseline_clients_first_seen__v1",
-        source_table="baseline_clients_first_seen_v1",
-        dataset_id="org_mozilla_firefoxreality_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=True,
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        task_concurrency=1,
-        parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
-        task_group=task_group_firefox_reality_pc,
-    )
-
     checks__fail_org_mozilla_focus_beta_derived__baseline_clients_daily__v1 = bigquery_dq_check(
         task_id="checks__fail_org_mozilla_focus_beta_derived__baseline_clients_daily__v1",
         source_table="baseline_clients_daily_v1",
@@ -1149,64 +824,6 @@ with DAG(
         task_group=task_group_firefox_ios,
     )
 
-    checks__fail_org_mozilla_ios_firefoxvpn_derived__baseline_clients_daily__v1 = bigquery_dq_check(
-        task_id="checks__fail_org_mozilla_ios_firefoxvpn_derived__baseline_clients_daily__v1",
-        source_table="baseline_clients_daily_v1",
-        dataset_id="org_mozilla_ios_firefoxvpn_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=True,
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
-        task_group=task_group_mozilla_vpn,
-    )
-
-    checks__fail_org_mozilla_ios_firefoxvpn_derived__baseline_clients_first_seen__v1 = bigquery_dq_check(
-        task_id="checks__fail_org_mozilla_ios_firefoxvpn_derived__baseline_clients_first_seen__v1",
-        source_table="baseline_clients_first_seen_v1",
-        dataset_id="org_mozilla_ios_firefoxvpn_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=True,
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        task_concurrency=1,
-        parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
-        task_group=task_group_mozilla_vpn,
-    )
-
-    checks__fail_org_mozilla_ios_firefoxvpn_network_extension_derived__baseline_clients_daily__v1 = bigquery_dq_check(
-        task_id="checks__fail_org_mozilla_ios_firefoxvpn_network_extension_derived__baseline_clients_daily__v1",
-        source_table="baseline_clients_daily_v1",
-        dataset_id="org_mozilla_ios_firefoxvpn_network_extension_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=True,
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
-        task_group=task_group_mozilla_vpn,
-    )
-
-    checks__fail_org_mozilla_ios_firefoxvpn_network_extension_derived__baseline_clients_first_seen__v1 = bigquery_dq_check(
-        task_id="checks__fail_org_mozilla_ios_firefoxvpn_network_extension_derived__baseline_clients_first_seen__v1",
-        source_table="baseline_clients_first_seen_v1",
-        dataset_id="org_mozilla_ios_firefoxvpn_network_extension_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=True,
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        task_concurrency=1,
-        parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
-        task_group=task_group_mozilla_vpn,
-    )
-
     checks__fail_org_mozilla_ios_focus_derived__baseline_clients_daily__v1 = bigquery_dq_check(
         task_id="checks__fail_org_mozilla_ios_focus_derived__baseline_clients_daily__v1",
         source_table="baseline_clients_daily_v1",
@@ -1325,35 +942,6 @@ with DAG(
         task_group=task_group_klar_android,
     )
 
-    checks__fail_org_mozilla_mozregression_derived__baseline_clients_daily__v1 = bigquery_dq_check(
-        task_id="checks__fail_org_mozilla_mozregression_derived__baseline_clients_daily__v1",
-        source_table="baseline_clients_daily_v1",
-        dataset_id="org_mozilla_mozregression_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=True,
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
-        task_group=task_group_mozregression,
-    )
-
-    checks__fail_org_mozilla_mozregression_derived__baseline_clients_first_seen__v1 = bigquery_dq_check(
-        task_id="checks__fail_org_mozilla_mozregression_derived__baseline_clients_first_seen__v1",
-        source_table="baseline_clients_first_seen_v1",
-        dataset_id="org_mozilla_mozregression_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=True,
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        task_concurrency=1,
-        parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
-        task_group=task_group_mozregression,
-    )
-
     checks__fail_org_mozilla_reference_browser_derived__baseline_clients_daily__v1 = bigquery_dq_check(
         task_id="checks__fail_org_mozilla_reference_browser_derived__baseline_clients_daily__v1",
         source_table="baseline_clients_daily_v1",
@@ -1470,34 +1058,6 @@ with DAG(
         task_group=task_group_pine,
     )
 
-    checks__warn_accounts_backend_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
-        task_id="checks__warn_accounts_backend_derived__baseline_clients_last_seen__v1",
-        source_table="baseline_clients_last_seen_v1",
-        dataset_id="accounts_backend_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=False,
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
-        task_group=task_group_accounts_backend,
-    )
-
-    checks__warn_burnham_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
-        task_id="checks__warn_burnham_derived__baseline_clients_last_seen__v1",
-        source_table="baseline_clients_last_seen_v1",
-        dataset_id="burnham_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=False,
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
-        task_group=task_group_burnham,
-    )
-
     checks__warn_firefox_desktop_background_defaultagent_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
         task_id="checks__warn_firefox_desktop_background_defaultagent_derived__baseline_clients_last_seen__v1",
         source_table="baseline_clients_last_seen_v1",
@@ -1552,106 +1112,6 @@ with DAG(
         parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
         task_group=task_group_firefox_desktop,
-    )
-
-    checks__warn_monitor_cirrus_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
-        task_id="checks__warn_monitor_cirrus_derived__baseline_clients_last_seen__v1",
-        source_table="baseline_clients_last_seen_v1",
-        dataset_id="monitor_cirrus_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=False,
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
-        task_group=task_group_monitor_cirrus,
-    )
-
-    checks__warn_moso_mastodon_backend_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
-        task_id="checks__warn_moso_mastodon_backend_derived__baseline_clients_last_seen__v1",
-        source_table="baseline_clients_last_seen_v1",
-        dataset_id="moso_mastodon_backend_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=False,
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
-        task_group=task_group_moso_mastodon_backend,
-    )
-
-    checks__warn_mozilla_lockbox_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
-        task_id="checks__warn_mozilla_lockbox_derived__baseline_clients_last_seen__v1",
-        source_table="baseline_clients_last_seen_v1",
-        dataset_id="mozilla_lockbox_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=False,
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
-        task_group=task_group_lockwise_android,
-    )
-
-    checks__warn_mozilla_mach_derived__baseline_clients_last_seen__v1 = (
-        bigquery_dq_check(
-            task_id="checks__warn_mozilla_mach_derived__baseline_clients_last_seen__v1",
-            source_table="baseline_clients_last_seen_v1",
-            dataset_id="mozilla_mach_derived",
-            project_id="moz-fx-data-shared-prod",
-            is_dq_check_fail=False,
-            owner="ascholtz@mozilla.com",
-            email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-            depends_on_past=False,
-            parameters=["submission_date:DATE:{{ds}}"],
-            retries=0,
-            task_group=task_group_mach,
-        )
-    )
-
-    checks__warn_mozillavpn_cirrus_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
-        task_id="checks__warn_mozillavpn_cirrus_derived__baseline_clients_last_seen__v1",
-        source_table="baseline_clients_last_seen_v1",
-        dataset_id="mozillavpn_cirrus_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=False,
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
-        task_group=task_group_mozillavpn_cirrus,
-    )
-
-    checks__warn_mozillavpn_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
-        task_id="checks__warn_mozillavpn_derived__baseline_clients_last_seen__v1",
-        source_table="baseline_clients_last_seen_v1",
-        dataset_id="mozillavpn_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=False,
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
-        task_group=task_group_mozilla_vpn,
-    )
-
-    checks__warn_mozphab_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
-        task_id="checks__warn_mozphab_derived__baseline_clients_last_seen__v1",
-        source_table="baseline_clients_last_seen_v1",
-        dataset_id="mozphab_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=False,
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
-        task_group=task_group_mozphab,
     )
 
     checks__warn_org_mozilla_connect_firefox_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
@@ -1738,34 +1198,6 @@ with DAG(
         task_group=task_group_fenix,
     )
 
-    checks__warn_org_mozilla_firefox_vpn_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
-        task_id="checks__warn_org_mozilla_firefox_vpn_derived__baseline_clients_last_seen__v1",
-        source_table="baseline_clients_last_seen_v1",
-        dataset_id="org_mozilla_firefox_vpn_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=False,
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
-        task_group=task_group_mozilla_vpn,
-    )
-
-    checks__warn_org_mozilla_firefoxreality_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
-        task_id="checks__warn_org_mozilla_firefoxreality_derived__baseline_clients_last_seen__v1",
-        source_table="baseline_clients_last_seen_v1",
-        dataset_id="org_mozilla_firefoxreality_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=False,
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
-        task_group=task_group_firefox_reality_pc,
-    )
-
     checks__warn_org_mozilla_focus_beta_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
         task_id="checks__warn_org_mozilla_focus_beta_derived__baseline_clients_last_seen__v1",
         source_table="baseline_clients_last_seen_v1",
@@ -1850,34 +1282,6 @@ with DAG(
         task_group=task_group_firefox_ios,
     )
 
-    checks__warn_org_mozilla_ios_firefoxvpn_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
-        task_id="checks__warn_org_mozilla_ios_firefoxvpn_derived__baseline_clients_last_seen__v1",
-        source_table="baseline_clients_last_seen_v1",
-        dataset_id="org_mozilla_ios_firefoxvpn_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=False,
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
-        task_group=task_group_mozilla_vpn,
-    )
-
-    checks__warn_org_mozilla_ios_firefoxvpn_network_extension_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
-        task_id="checks__warn_org_mozilla_ios_firefoxvpn_network_extension_derived__baseline_clients_last_seen__v1",
-        source_table="baseline_clients_last_seen_v1",
-        dataset_id="org_mozilla_ios_firefoxvpn_network_extension_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=False,
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
-        task_group=task_group_mozilla_vpn,
-    )
-
     checks__warn_org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
         task_id="checks__warn_org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1",
         source_table="baseline_clients_last_seen_v1",
@@ -1932,20 +1336,6 @@ with DAG(
         parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
         task_group=task_group_klar_android,
-    )
-
-    checks__warn_org_mozilla_mozregression_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
-        task_id="checks__warn_org_mozilla_mozregression_derived__baseline_clients_last_seen__v1",
-        source_table="baseline_clients_last_seen_v1",
-        dataset_id="org_mozilla_mozregression_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=False,
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
-        task_group=task_group_mozregression,
     )
 
     checks__warn_org_mozilla_reference_browser_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
@@ -4643,7 +4033,7 @@ with DAG(
     )
 
     accounts_backend_derived__baseline_clients_daily__v1.set_upstream(
-        checks__fail_accounts_backend_derived__baseline_clients_first_seen__v1
+        accounts_backend_derived__baseline_clients_first_seen__v1
     )
     wait_for_copy_deduplicate_all = ExternalTaskSensor(
         task_id="wait_for_copy_deduplicate_all",
@@ -4681,7 +4071,7 @@ with DAG(
     )
 
     accounts_backend_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_accounts_backend_derived__baseline_clients_daily__v1
+        accounts_backend_derived__baseline_clients_daily__v1
     )
 
     accounts_backend_derived__metrics_clients_daily__v1.set_upstream(
@@ -4689,7 +4079,7 @@ with DAG(
     )
 
     burnham_derived__baseline_clients_daily__v1.set_upstream(
-        checks__fail_burnham_derived__baseline_clients_first_seen__v1
+        burnham_derived__baseline_clients_first_seen__v1
     )
     burnham_derived__baseline_clients_daily__v1.set_upstream(
         wait_for_copy_deduplicate_all
@@ -4703,7 +4093,7 @@ with DAG(
     )
 
     burnham_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_burnham_derived__baseline_clients_daily__v1
+        burnham_derived__baseline_clients_daily__v1
     )
 
     burnham_derived__clients_last_seen_joined__v1.set_upstream(
@@ -4720,28 +4110,6 @@ with DAG(
 
     burnham_derived__metrics_clients_last_seen__v1.set_upstream(
         burnham_derived__metrics_clients_daily__v1
-    )
-
-    checks__fail_accounts_backend_derived__baseline_clients_daily__v1.set_upstream(
-        accounts_backend_derived__baseline_clients_daily__v1
-    )
-
-    checks__fail_accounts_backend_derived__baseline_clients_first_seen__v1.set_upstream(
-        accounts_backend_derived__baseline_clients_first_seen__v1
-    )
-    checks__fail_accounts_backend_derived__baseline_clients_first_seen__v1.set_upstream(
-        wait_for_telemetry_derived__core_clients_first_seen__v1
-    )
-
-    checks__fail_burnham_derived__baseline_clients_daily__v1.set_upstream(
-        burnham_derived__baseline_clients_daily__v1
-    )
-
-    checks__fail_burnham_derived__baseline_clients_first_seen__v1.set_upstream(
-        burnham_derived__baseline_clients_first_seen__v1
-    )
-    checks__fail_burnham_derived__baseline_clients_first_seen__v1.set_upstream(
-        wait_for_telemetry_derived__core_clients_first_seen__v1
     )
 
     checks__fail_firefox_desktop_background_defaultagent_derived__baseline_clients_daily__v1.set_upstream(
@@ -4785,83 +4153,6 @@ with DAG(
         firefox_desktop_derived__baseline_clients_first_seen__v1
     )
     checks__fail_firefox_desktop_derived__baseline_clients_first_seen__v1.set_upstream(
-        wait_for_telemetry_derived__core_clients_first_seen__v1
-    )
-
-    checks__fail_monitor_cirrus_derived__baseline_clients_daily__v1.set_upstream(
-        monitor_cirrus_derived__baseline_clients_daily__v1
-    )
-
-    checks__fail_monitor_cirrus_derived__baseline_clients_first_seen__v1.set_upstream(
-        monitor_cirrus_derived__baseline_clients_first_seen__v1
-    )
-    checks__fail_monitor_cirrus_derived__baseline_clients_first_seen__v1.set_upstream(
-        wait_for_telemetry_derived__core_clients_first_seen__v1
-    )
-
-    checks__fail_moso_mastodon_backend_derived__baseline_clients_daily__v1.set_upstream(
-        moso_mastodon_backend_derived__baseline_clients_daily__v1
-    )
-
-    checks__fail_moso_mastodon_backend_derived__baseline_clients_first_seen__v1.set_upstream(
-        moso_mastodon_backend_derived__baseline_clients_first_seen__v1
-    )
-    checks__fail_moso_mastodon_backend_derived__baseline_clients_first_seen__v1.set_upstream(
-        wait_for_telemetry_derived__core_clients_first_seen__v1
-    )
-
-    checks__fail_mozilla_lockbox_derived__baseline_clients_daily__v1.set_upstream(
-        mozilla_lockbox_derived__baseline_clients_daily__v1
-    )
-
-    checks__fail_mozilla_lockbox_derived__baseline_clients_first_seen__v1.set_upstream(
-        mozilla_lockbox_derived__baseline_clients_first_seen__v1
-    )
-    checks__fail_mozilla_lockbox_derived__baseline_clients_first_seen__v1.set_upstream(
-        wait_for_telemetry_derived__core_clients_first_seen__v1
-    )
-
-    checks__fail_mozilla_mach_derived__baseline_clients_daily__v1.set_upstream(
-        mozilla_mach_derived__baseline_clients_daily__v1
-    )
-
-    checks__fail_mozilla_mach_derived__baseline_clients_first_seen__v1.set_upstream(
-        mozilla_mach_derived__baseline_clients_first_seen__v1
-    )
-    checks__fail_mozilla_mach_derived__baseline_clients_first_seen__v1.set_upstream(
-        wait_for_telemetry_derived__core_clients_first_seen__v1
-    )
-
-    checks__fail_mozillavpn_cirrus_derived__baseline_clients_daily__v1.set_upstream(
-        mozillavpn_cirrus_derived__baseline_clients_daily__v1
-    )
-
-    checks__fail_mozillavpn_cirrus_derived__baseline_clients_first_seen__v1.set_upstream(
-        mozillavpn_cirrus_derived__baseline_clients_first_seen__v1
-    )
-    checks__fail_mozillavpn_cirrus_derived__baseline_clients_first_seen__v1.set_upstream(
-        wait_for_telemetry_derived__core_clients_first_seen__v1
-    )
-
-    checks__fail_mozillavpn_derived__baseline_clients_daily__v1.set_upstream(
-        mozillavpn_derived__baseline_clients_daily__v1
-    )
-
-    checks__fail_mozillavpn_derived__baseline_clients_first_seen__v1.set_upstream(
-        mozillavpn_derived__baseline_clients_first_seen__v1
-    )
-    checks__fail_mozillavpn_derived__baseline_clients_first_seen__v1.set_upstream(
-        wait_for_telemetry_derived__core_clients_first_seen__v1
-    )
-
-    checks__fail_mozphab_derived__baseline_clients_daily__v1.set_upstream(
-        mozphab_derived__baseline_clients_daily__v1
-    )
-
-    checks__fail_mozphab_derived__baseline_clients_first_seen__v1.set_upstream(
-        mozphab_derived__baseline_clients_first_seen__v1
-    )
-    checks__fail_mozphab_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_telemetry_derived__core_clients_first_seen__v1
     )
 
@@ -4931,28 +4222,6 @@ with DAG(
         wait_for_telemetry_derived__core_clients_first_seen__v1
     )
 
-    checks__fail_org_mozilla_firefox_vpn_derived__baseline_clients_daily__v1.set_upstream(
-        org_mozilla_firefox_vpn_derived__baseline_clients_daily__v1
-    )
-
-    checks__fail_org_mozilla_firefox_vpn_derived__baseline_clients_first_seen__v1.set_upstream(
-        org_mozilla_firefox_vpn_derived__baseline_clients_first_seen__v1
-    )
-    checks__fail_org_mozilla_firefox_vpn_derived__baseline_clients_first_seen__v1.set_upstream(
-        wait_for_telemetry_derived__core_clients_first_seen__v1
-    )
-
-    checks__fail_org_mozilla_firefoxreality_derived__baseline_clients_daily__v1.set_upstream(
-        org_mozilla_firefoxreality_derived__baseline_clients_daily__v1
-    )
-
-    checks__fail_org_mozilla_firefoxreality_derived__baseline_clients_first_seen__v1.set_upstream(
-        org_mozilla_firefoxreality_derived__baseline_clients_first_seen__v1
-    )
-    checks__fail_org_mozilla_firefoxreality_derived__baseline_clients_first_seen__v1.set_upstream(
-        wait_for_telemetry_derived__core_clients_first_seen__v1
-    )
-
     checks__fail_org_mozilla_focus_beta_derived__baseline_clients_daily__v1.set_upstream(
         org_mozilla_focus_beta_derived__baseline_clients_daily__v1
     )
@@ -5019,28 +4288,6 @@ with DAG(
         wait_for_telemetry_derived__core_clients_first_seen__v1
     )
 
-    checks__fail_org_mozilla_ios_firefoxvpn_derived__baseline_clients_daily__v1.set_upstream(
-        org_mozilla_ios_firefoxvpn_derived__baseline_clients_daily__v1
-    )
-
-    checks__fail_org_mozilla_ios_firefoxvpn_derived__baseline_clients_first_seen__v1.set_upstream(
-        org_mozilla_ios_firefoxvpn_derived__baseline_clients_first_seen__v1
-    )
-    checks__fail_org_mozilla_ios_firefoxvpn_derived__baseline_clients_first_seen__v1.set_upstream(
-        wait_for_telemetry_derived__core_clients_first_seen__v1
-    )
-
-    checks__fail_org_mozilla_ios_firefoxvpn_network_extension_derived__baseline_clients_daily__v1.set_upstream(
-        org_mozilla_ios_firefoxvpn_network_extension_derived__baseline_clients_daily__v1
-    )
-
-    checks__fail_org_mozilla_ios_firefoxvpn_network_extension_derived__baseline_clients_first_seen__v1.set_upstream(
-        org_mozilla_ios_firefoxvpn_network_extension_derived__baseline_clients_first_seen__v1
-    )
-    checks__fail_org_mozilla_ios_firefoxvpn_network_extension_derived__baseline_clients_first_seen__v1.set_upstream(
-        wait_for_telemetry_derived__core_clients_first_seen__v1
-    )
-
     checks__fail_org_mozilla_ios_focus_derived__baseline_clients_daily__v1.set_upstream(
         org_mozilla_ios_focus_derived__baseline_clients_daily__v1
     )
@@ -5082,17 +4329,6 @@ with DAG(
         org_mozilla_klar_derived__baseline_clients_first_seen__v1
     )
     checks__fail_org_mozilla_klar_derived__baseline_clients_first_seen__v1.set_upstream(
-        wait_for_telemetry_derived__core_clients_first_seen__v1
-    )
-
-    checks__fail_org_mozilla_mozregression_derived__baseline_clients_daily__v1.set_upstream(
-        org_mozilla_mozregression_derived__baseline_clients_daily__v1
-    )
-
-    checks__fail_org_mozilla_mozregression_derived__baseline_clients_first_seen__v1.set_upstream(
-        org_mozilla_mozregression_derived__baseline_clients_first_seen__v1
-    )
-    checks__fail_org_mozilla_mozregression_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_telemetry_derived__core_clients_first_seen__v1
     )
 
@@ -5140,14 +4376,6 @@ with DAG(
         wait_for_telemetry_derived__core_clients_first_seen__v1
     )
 
-    checks__warn_accounts_backend_derived__baseline_clients_last_seen__v1.set_upstream(
-        accounts_backend_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__warn_burnham_derived__baseline_clients_last_seen__v1.set_upstream(
-        burnham_derived__baseline_clients_last_seen__v1
-    )
-
     checks__warn_firefox_desktop_background_defaultagent_derived__baseline_clients_last_seen__v1.set_upstream(
         firefox_desktop_background_defaultagent_derived__baseline_clients_last_seen__v1
     )
@@ -5162,34 +4390,6 @@ with DAG(
 
     checks__warn_firefox_desktop_derived__baseline_clients_last_seen__v1.set_upstream(
         firefox_desktop_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__warn_monitor_cirrus_derived__baseline_clients_last_seen__v1.set_upstream(
-        monitor_cirrus_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__warn_moso_mastodon_backend_derived__baseline_clients_last_seen__v1.set_upstream(
-        moso_mastodon_backend_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__warn_mozilla_lockbox_derived__baseline_clients_last_seen__v1.set_upstream(
-        mozilla_lockbox_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__warn_mozilla_mach_derived__baseline_clients_last_seen__v1.set_upstream(
-        mozilla_mach_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__warn_mozillavpn_cirrus_derived__baseline_clients_last_seen__v1.set_upstream(
-        mozillavpn_cirrus_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__warn_mozillavpn_derived__baseline_clients_last_seen__v1.set_upstream(
-        mozillavpn_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__warn_mozphab_derived__baseline_clients_last_seen__v1.set_upstream(
-        mozphab_derived__baseline_clients_last_seen__v1
     )
 
     checks__warn_org_mozilla_connect_firefox_derived__baseline_clients_last_seen__v1.set_upstream(
@@ -5216,14 +4416,6 @@ with DAG(
         org_mozilla_firefox_derived__baseline_clients_last_seen__v1
     )
 
-    checks__warn_org_mozilla_firefox_vpn_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_firefox_vpn_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__warn_org_mozilla_firefoxreality_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_firefoxreality_derived__baseline_clients_last_seen__v1
-    )
-
     checks__warn_org_mozilla_focus_beta_derived__baseline_clients_last_seen__v1.set_upstream(
         org_mozilla_focus_beta_derived__baseline_clients_last_seen__v1
     )
@@ -5248,14 +4440,6 @@ with DAG(
         org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1
     )
 
-    checks__warn_org_mozilla_ios_firefoxvpn_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefoxvpn_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__warn_org_mozilla_ios_firefoxvpn_network_extension_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefoxvpn_network_extension_derived__baseline_clients_last_seen__v1
-    )
-
     checks__warn_org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1.set_upstream(
         org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1
     )
@@ -5270,10 +4454,6 @@ with DAG(
 
     checks__warn_org_mozilla_klar_derived__baseline_clients_last_seen__v1.set_upstream(
         org_mozilla_klar_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__warn_org_mozilla_mozregression_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_mozregression_derived__baseline_clients_last_seen__v1
     )
 
     checks__warn_org_mozilla_reference_browser_derived__baseline_clients_last_seen__v1.set_upstream(
@@ -5637,10 +4817,11 @@ with DAG(
     )
 
     monitor_cirrus_derived__baseline_clients_daily__v1.set_upstream(
-        checks__fail_monitor_cirrus_derived__baseline_clients_first_seen__v1
-    )
-    monitor_cirrus_derived__baseline_clients_daily__v1.set_upstream(
         wait_for_copy_deduplicate_all
+    )
+
+    monitor_cirrus_derived__baseline_clients_daily__v1.set_upstream(
+        monitor_cirrus_derived__baseline_clients_first_seen__v1
     )
 
     monitor_cirrus_derived__baseline_clients_first_seen__v1.set_upstream(
@@ -5651,7 +4832,7 @@ with DAG(
     )
 
     monitor_cirrus_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_monitor_cirrus_derived__baseline_clients_daily__v1
+        monitor_cirrus_derived__baseline_clients_daily__v1
     )
 
     monitor_cirrus_derived__metrics_clients_daily__v1.set_upstream(
@@ -5659,10 +4840,11 @@ with DAG(
     )
 
     moso_mastodon_backend_derived__baseline_clients_daily__v1.set_upstream(
-        checks__fail_moso_mastodon_backend_derived__baseline_clients_first_seen__v1
-    )
-    moso_mastodon_backend_derived__baseline_clients_daily__v1.set_upstream(
         wait_for_copy_deduplicate_all
+    )
+
+    moso_mastodon_backend_derived__baseline_clients_daily__v1.set_upstream(
+        moso_mastodon_backend_derived__baseline_clients_first_seen__v1
     )
 
     moso_mastodon_backend_derived__baseline_clients_first_seen__v1.set_upstream(
@@ -5673,7 +4855,7 @@ with DAG(
     )
 
     moso_mastodon_backend_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_moso_mastodon_backend_derived__baseline_clients_daily__v1
+        moso_mastodon_backend_derived__baseline_clients_daily__v1
     )
 
     moso_mastodon_backend_derived__metrics_clients_daily__v1.set_upstream(
@@ -5681,10 +4863,11 @@ with DAG(
     )
 
     mozilla_lockbox_derived__baseline_clients_daily__v1.set_upstream(
-        checks__fail_mozilla_lockbox_derived__baseline_clients_first_seen__v1
-    )
-    mozilla_lockbox_derived__baseline_clients_daily__v1.set_upstream(
         wait_for_copy_deduplicate_all
+    )
+
+    mozilla_lockbox_derived__baseline_clients_daily__v1.set_upstream(
+        mozilla_lockbox_derived__baseline_clients_first_seen__v1
     )
 
     mozilla_lockbox_derived__baseline_clients_first_seen__v1.set_upstream(
@@ -5695,14 +4878,15 @@ with DAG(
     )
 
     mozilla_lockbox_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_mozilla_lockbox_derived__baseline_clients_daily__v1
+        mozilla_lockbox_derived__baseline_clients_daily__v1
     )
 
     mozilla_mach_derived__baseline_clients_daily__v1.set_upstream(
-        checks__fail_mozilla_mach_derived__baseline_clients_first_seen__v1
-    )
-    mozilla_mach_derived__baseline_clients_daily__v1.set_upstream(
         wait_for_copy_deduplicate_all
+    )
+
+    mozilla_mach_derived__baseline_clients_daily__v1.set_upstream(
+        mozilla_mach_derived__baseline_clients_first_seen__v1
     )
 
     mozilla_mach_derived__baseline_clients_first_seen__v1.set_upstream(
@@ -5713,7 +4897,7 @@ with DAG(
     )
 
     mozilla_mach_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_mozilla_mach_derived__baseline_clients_daily__v1
+        mozilla_mach_derived__baseline_clients_daily__v1
     )
 
     mozilla_vpn_derived__metrics_clients_daily__v1.set_upstream(
@@ -5721,10 +4905,11 @@ with DAG(
     )
 
     mozillavpn_cirrus_derived__baseline_clients_daily__v1.set_upstream(
-        checks__fail_mozillavpn_cirrus_derived__baseline_clients_first_seen__v1
-    )
-    mozillavpn_cirrus_derived__baseline_clients_daily__v1.set_upstream(
         wait_for_copy_deduplicate_all
+    )
+
+    mozillavpn_cirrus_derived__baseline_clients_daily__v1.set_upstream(
+        mozillavpn_cirrus_derived__baseline_clients_first_seen__v1
     )
 
     mozillavpn_cirrus_derived__baseline_clients_first_seen__v1.set_upstream(
@@ -5735,7 +4920,7 @@ with DAG(
     )
 
     mozillavpn_cirrus_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_mozillavpn_cirrus_derived__baseline_clients_daily__v1
+        mozillavpn_cirrus_derived__baseline_clients_daily__v1
     )
 
     mozillavpn_cirrus_derived__metrics_clients_daily__v1.set_upstream(
@@ -5743,10 +4928,11 @@ with DAG(
     )
 
     mozillavpn_derived__baseline_clients_daily__v1.set_upstream(
-        checks__fail_mozillavpn_derived__baseline_clients_first_seen__v1
-    )
-    mozillavpn_derived__baseline_clients_daily__v1.set_upstream(
         wait_for_copy_deduplicate_all
+    )
+
+    mozillavpn_derived__baseline_clients_daily__v1.set_upstream(
+        mozillavpn_derived__baseline_clients_first_seen__v1
     )
 
     mozillavpn_derived__baseline_clients_first_seen__v1.set_upstream(
@@ -5757,14 +4943,15 @@ with DAG(
     )
 
     mozillavpn_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_mozillavpn_derived__baseline_clients_daily__v1
+        mozillavpn_derived__baseline_clients_daily__v1
     )
 
     mozphab_derived__baseline_clients_daily__v1.set_upstream(
-        checks__fail_mozphab_derived__baseline_clients_first_seen__v1
-    )
-    mozphab_derived__baseline_clients_daily__v1.set_upstream(
         wait_for_copy_deduplicate_all
+    )
+
+    mozphab_derived__baseline_clients_daily__v1.set_upstream(
+        mozphab_derived__baseline_clients_first_seen__v1
     )
 
     mozphab_derived__baseline_clients_first_seen__v1.set_upstream(
@@ -5775,7 +4962,7 @@ with DAG(
     )
 
     mozphab_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_mozphab_derived__baseline_clients_daily__v1
+        mozphab_derived__baseline_clients_daily__v1
     )
 
     mozphab_derived__clients_last_seen_joined__v1.set_upstream(
@@ -5919,10 +5106,11 @@ with DAG(
     )
 
     org_mozilla_firefox_vpn_derived__baseline_clients_daily__v1.set_upstream(
-        checks__fail_org_mozilla_firefox_vpn_derived__baseline_clients_first_seen__v1
-    )
-    org_mozilla_firefox_vpn_derived__baseline_clients_daily__v1.set_upstream(
         wait_for_copy_deduplicate_all
+    )
+
+    org_mozilla_firefox_vpn_derived__baseline_clients_daily__v1.set_upstream(
+        org_mozilla_firefox_vpn_derived__baseline_clients_first_seen__v1
     )
 
     org_mozilla_firefox_vpn_derived__baseline_clients_first_seen__v1.set_upstream(
@@ -5933,14 +5121,15 @@ with DAG(
     )
 
     org_mozilla_firefox_vpn_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_org_mozilla_firefox_vpn_derived__baseline_clients_daily__v1
+        org_mozilla_firefox_vpn_derived__baseline_clients_daily__v1
     )
 
     org_mozilla_firefoxreality_derived__baseline_clients_daily__v1.set_upstream(
-        checks__fail_org_mozilla_firefoxreality_derived__baseline_clients_first_seen__v1
-    )
-    org_mozilla_firefoxreality_derived__baseline_clients_daily__v1.set_upstream(
         wait_for_copy_deduplicate_all
+    )
+
+    org_mozilla_firefoxreality_derived__baseline_clients_daily__v1.set_upstream(
+        org_mozilla_firefoxreality_derived__baseline_clients_first_seen__v1
     )
 
     org_mozilla_firefoxreality_derived__baseline_clients_first_seen__v1.set_upstream(
@@ -5951,7 +5140,7 @@ with DAG(
     )
 
     org_mozilla_firefoxreality_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_org_mozilla_firefoxreality_derived__baseline_clients_daily__v1
+        org_mozilla_firefoxreality_derived__baseline_clients_daily__v1
     )
 
     org_mozilla_focus_beta_derived__baseline_clients_daily__v1.set_upstream(
@@ -6063,10 +5252,11 @@ with DAG(
     )
 
     org_mozilla_ios_firefoxvpn_derived__baseline_clients_daily__v1.set_upstream(
-        checks__fail_org_mozilla_ios_firefoxvpn_derived__baseline_clients_first_seen__v1
-    )
-    org_mozilla_ios_firefoxvpn_derived__baseline_clients_daily__v1.set_upstream(
         wait_for_copy_deduplicate_all
+    )
+
+    org_mozilla_ios_firefoxvpn_derived__baseline_clients_daily__v1.set_upstream(
+        org_mozilla_ios_firefoxvpn_derived__baseline_clients_first_seen__v1
     )
 
     org_mozilla_ios_firefoxvpn_derived__baseline_clients_first_seen__v1.set_upstream(
@@ -6077,14 +5267,15 @@ with DAG(
     )
 
     org_mozilla_ios_firefoxvpn_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_org_mozilla_ios_firefoxvpn_derived__baseline_clients_daily__v1
+        org_mozilla_ios_firefoxvpn_derived__baseline_clients_daily__v1
     )
 
     org_mozilla_ios_firefoxvpn_network_extension_derived__baseline_clients_daily__v1.set_upstream(
-        checks__fail_org_mozilla_ios_firefoxvpn_network_extension_derived__baseline_clients_first_seen__v1
-    )
-    org_mozilla_ios_firefoxvpn_network_extension_derived__baseline_clients_daily__v1.set_upstream(
         wait_for_copy_deduplicate_all
+    )
+
+    org_mozilla_ios_firefoxvpn_network_extension_derived__baseline_clients_daily__v1.set_upstream(
+        org_mozilla_ios_firefoxvpn_network_extension_derived__baseline_clients_first_seen__v1
     )
 
     org_mozilla_ios_firefoxvpn_network_extension_derived__baseline_clients_first_seen__v1.set_upstream(
@@ -6095,7 +5286,7 @@ with DAG(
     )
 
     org_mozilla_ios_firefoxvpn_network_extension_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_org_mozilla_ios_firefoxvpn_network_extension_derived__baseline_clients_daily__v1
+        org_mozilla_ios_firefoxvpn_network_extension_derived__baseline_clients_daily__v1
     )
 
     org_mozilla_ios_focus_derived__baseline_clients_daily__v1.set_upstream(
@@ -6171,10 +5362,11 @@ with DAG(
     )
 
     org_mozilla_mozregression_derived__baseline_clients_daily__v1.set_upstream(
-        checks__fail_org_mozilla_mozregression_derived__baseline_clients_first_seen__v1
-    )
-    org_mozilla_mozregression_derived__baseline_clients_daily__v1.set_upstream(
         wait_for_copy_deduplicate_all
+    )
+
+    org_mozilla_mozregression_derived__baseline_clients_daily__v1.set_upstream(
+        org_mozilla_mozregression_derived__baseline_clients_first_seen__v1
     )
 
     org_mozilla_mozregression_derived__baseline_clients_first_seen__v1.set_upstream(
@@ -6185,7 +5377,7 @@ with DAG(
     )
 
     org_mozilla_mozregression_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_org_mozilla_mozregression_derived__baseline_clients_daily__v1
+        org_mozilla_mozregression_derived__baseline_clients_daily__v1
     )
 
     org_mozilla_reference_browser_derived__baseline_clients_daily__v1.set_upstream(

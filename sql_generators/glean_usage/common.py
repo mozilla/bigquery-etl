@@ -18,24 +18,6 @@ from bigquery_etl.util.common import get_table_dir, render, write_sql
 APP_LISTINGS_URL = "https://probeinfo.telemetry.mozilla.org/v2/glean/app-listings"
 PATH = Path(os.path.dirname(__file__))
 
-# added as the result of baseline checks being added to the template,
-# these apps do not receive a baseline ping causing a very basic row_count
-# check to fail. For this reason, the checks relying on this ping
-# need to be omitted. For more info see: bug-1868848
-NO_BASELINE_PING_APPS = (
-    "mozilla_vpn",
-    "mozillavpn_cirrus",
-    "accounts_backend",
-    "burnham",
-    "firefox_reality_pc",
-    "lockwise_android",
-    "mach",
-    "monitor_cirrus",
-    "moso_mastodon_backend",
-    "mozphab",
-    "mozregression",
-)
-
 
 def write_dataset_metadata(output_dir, full_table_id, derived_dataset_metadata=False):
     """
@@ -301,7 +283,9 @@ class GleanTable:
                 artifacts.append(Artifact(table, "init.sql", init_sql))
 
             if checks_sql:
-                if "baseline" in table and app_name in NO_BASELINE_PING_APPS:
+                if "baseline" in table and app_name in ConfigLoader.get(
+                    "generate", "glean_usage", "no_baseline_ping_apps", fallback=[]
+                ):
                     logging.info(
                         "Skipped copying ETL check for %s as app: %s is marked as not having baseline ping"
                         % (table, app_name)

@@ -16,6 +16,9 @@
   #warn
   {{ is_unique(["client_id"], where="submission_date = @submission_date") }}
 
+  #warn
+  {{ min_row_count(1, where="submission_date = @submission_date") }}
+
   # warn
   {{ not_null([
     "submission_date",

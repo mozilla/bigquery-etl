@@ -437,6 +437,22 @@ generate:
     - sql/moz-fx-data-shared-prod/mozilla_vpn/main/**
     - sql/moz-fx-data-shared-prod/fenix/client_deduplication/**
     - sql/moz-fx-data-shared-prod/org_mozilla_tv_firefox_derived/baseline_clients_last_seen_v1/checks.sql
+    # added as the result of baseline checks being added to the template,
+    # these apps do not receive a baseline ping causing a very basic row_count
+    # check to fail. For this reason, the checks relying on this ping
+    # need to be omitted. For more info see: bug-1868848
+    no_baseline_ping_apps:
+    - mozilla_vpn
+    - mozillavpn_cirrus
+    - accounts_backend
+    - burnham
+    - firefox_reality_pc
+    - lockwise_android
+    - mach
+    - monitor_cirrus
+    - moso_mastodon_backend
+    - mozphab
+    - mozregression
   event_monitoring:
     skip_apps:
     - mlhackweek_search

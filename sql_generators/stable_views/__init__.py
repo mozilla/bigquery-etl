@@ -110,7 +110,8 @@ def write_view_if_not_exists(target_project: str, sql_dir: Path, schema: SchemaF
     from sql_generators.stable_views import VIEW_METADATA_TEMPLATE, VIEW_QUERY_TEMPLATE
 
     VIEW_CREATE_REGEX = re.compile(
-        r"CREATE OR REPLACE VIEW\n\s*[^\s]+\s*\nAS", re.IGNORECASE
+        r"CREATE(?:\s+OR\s+REPLACE)?(?:\s+MATERIALIZED)?\s+VIEW(?:\s+IF\s+NOT\s+EXISTS)?\s+[^\s]+\s+AS",
+        re.IGNORECASE,
     )
 
     SKIP_VIEW_SCHEMA = {

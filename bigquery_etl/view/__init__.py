@@ -254,6 +254,12 @@ class View:
         expected_view_query = CREATE_VIEW_PATTERN.sub(
             "", sqlparse.format(self.content, strip_comments=True), count=1
         ).strip(";" + string.whitespace)
+        
+        if table.view_query is None:
+            # Materialized views do not have view_query.
+            # Always assume they are unchanged since they can't be replaced anyway
+            return False
+        
         actual_view_query = sqlparse.format(
             table.view_query, strip_comments=True
         ).strip(";" + string.whitespace)

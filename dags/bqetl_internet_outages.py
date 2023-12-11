@@ -58,6 +58,19 @@ with DAG(
         retries=0,
     )
 
+    checks__warn_internet_outages__global_outages__v1 = bigquery_dq_check(
+        task_id="checks__warn_internet_outages__global_outages__v1",
+        source_table="global_outages_v1",
+        dataset_id="internet_outages",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=False,
+        owner="aplacitelli@mozilla.com",
+        email=["aplacitelli@mozilla.com"],
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+    )
+
     internet_outages__global_outages__v1 = bigquery_etl_query(
         task_id="internet_outages__global_outages__v1",
         destination_table="global_outages_v1",
@@ -70,6 +83,10 @@ with DAG(
     )
 
     checks__fail_internet_outages__global_outages__v1.set_upstream(
+        internet_outages__global_outages__v1
+    )
+
+    checks__warn_internet_outages__global_outages__v1.set_upstream(
         internet_outages__global_outages__v1
     )
 

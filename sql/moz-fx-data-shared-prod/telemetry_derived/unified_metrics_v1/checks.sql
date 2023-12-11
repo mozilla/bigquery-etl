@@ -111,7 +111,7 @@ FROM
 SELECT
   IF(
     COUNTIF(LENGTH(client_id) <> 36) > 0,
-    ERROR("client_id is expected to be 36 characters in length."),
+    ERROR("Column: `client_id` has values of unexpected length."),
     NULL
   )
 FROM
@@ -188,9 +188,7 @@ SELECT
 SELECT
   IF(
     COUNTIF(LENGTH(country) <> 2) > 0,
-    ERROR(
-      "Some values in this field do not adhere to the ISO 3166-1 specification (2 character country code)."
-    ),
+    ERROR("Column: `country` has values of unexpected length."),
     NULL
   )
 FROM

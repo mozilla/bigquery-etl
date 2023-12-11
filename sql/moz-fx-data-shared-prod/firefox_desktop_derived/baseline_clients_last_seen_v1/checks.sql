@@ -120,3 +120,15 @@ FROM
   `moz-fx-data-shared-prod.firefox_desktop_derived.baseline_clients_last_seen_v1`
 WHERE
   submission_date = @submission_date;
+
+#warn
+SELECT
+  IF(
+    COUNTIF(LENGTH(client_id) <> 36) > 0,
+    ERROR("Column: `client_id` has values of unexpected length."),
+    NULL
+  )
+FROM
+  `moz-fx-data-shared-prod.firefox_desktop_derived.baseline_clients_last_seen_v1`
+WHERE
+  submission_date = @submission_date;

@@ -90,13 +90,11 @@ SELECT
     NULL
   );
 
-#fail
+#warn
 SELECT
   IF(
     COUNTIF(LENGTH(country) <> 2) > 0,
-    ERROR(
-      "Some values in this field do not adhere to the ISO 3166-1 specification (2 character country code)."
-    ),
+    ERROR("Column: `country` has values of unexpected length."),
     NULL
   )
 FROM

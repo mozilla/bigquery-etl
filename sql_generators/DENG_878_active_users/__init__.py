@@ -11,7 +11,7 @@ from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.util.common import render, write_sql
 
 THIS_PATH = Path(os.path.dirname(__file__))
-TABLE_NAME = "active_users_aggregates_versioned"
+TABLE_NAME = "deng-878_active_users_aggregates"
 DATASET_FOR_UNIONED_VIEWS = "telemetry"
 MOBILE_TABLE_VERSION = "v2"
 

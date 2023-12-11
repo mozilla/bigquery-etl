@@ -14831,6 +14831,33 @@ fields:
     - name: use_counter2_workernavigator_permissions_page
       type: STRING
       mode: NULLABLE
+    - name: http_upload_throughput_mbps_http_1_100
+      type: STRING
+      mode: NULLABLE
+    - name: http_upload_throughput_mbps_http_1_10_50
+      type: STRING
+      mode: NULLABLE
+    - name: http_upload_throughput_mbps_http_1_50_100
+      type: STRING
+      mode: NULLABLE
+    - name: http_upload_throughput_mbps_http_2_100
+      type: STRING
+      mode: NULLABLE
+    - name: http_upload_throughput_mbps_http_2_10_50
+      type: STRING
+      mode: NULLABLE
+    - name: http_upload_throughput_mbps_http_2_50_100
+      type: STRING
+      mode: NULLABLE
+    - name: http_upload_throughput_mbps_http_3_100
+      type: STRING
+      mode: NULLABLE
+    - name: http_upload_throughput_mbps_http_3_10_50
+      type: STRING
+      mode: NULLABLE
+    - name: http_upload_throughput_mbps_http_3_50_100
+      type: STRING
+      mode: NULLABLE
   - name: info
     type: RECORD
     mode: NULLABLE

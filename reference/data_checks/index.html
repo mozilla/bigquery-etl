@@ -3584,6 +3584,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#value_lengthsource" class="md-nav__link">
+    value_length(source)
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -3783,6 +3790,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#value_lengthsource" class="md-nav__link">
+    value_length(source)
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -3971,6 +3985,19 @@ partition_field: Optional[str] - What column is the partition_field (default = &
 <p>Example:
 <div class="highlight"><pre><span></span><code><span class="o">#</span><span class="n">fail</span>
 <span class="err">{{</span><span class="w"> </span><span class="n">row_count_within_past_partitions_avg</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;submission_date&quot;</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
+</code></pre></div></p>
+<h3 id="value_lengthsource">value_length(<a href="../../tests/checks/value_length.jinja">source</a>)</h3>
+<p>Checks that the columns have values of specific character length.</p>
+<p>Usage:</p>
+<div class="highlight"><pre><span></span><code>Arguments:
+
+columns: List[str] - Columns which will be checked against the `expected_length`.
+expected_length: int - Describes the expected character length of the value inside the specified columns.
+where: Optional[str]: Any additional filtering rules that should be applied when retrieving the data to run the check against.
+</code></pre></div>
+<p>Example:
+<div class="highlight"><pre><span></span><code><span class="o">#</span><span class="n">warn</span>
+<span class="err">{{</span><span class="w"> </span><span class="n">value_length</span><span class="p">(</span><span class="k">column</span><span class="o">=</span><span class="ss">&quot;country&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">expected_length</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="k">where</span><span class="o">=</span><span class="ss">&quot;submission_date = @submission_date&quot;</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
 </code></pre></div></p>
 <h2 id="running-checks-locally-commands">Running checks locally / Commands</h2>
 <p>To list all available commands in the bqetl data checks CLI:</p>

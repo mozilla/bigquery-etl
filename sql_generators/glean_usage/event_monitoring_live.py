@@ -26,7 +26,7 @@ class EventMonitoringLive(GleanTable):
 
     def __init__(self) -> None:
         """Initialize materialized view generation."""
-        self.no_init = False
+        self.no_init = True
         self.per_app_id_enabled = True
         self.per_app_enabled = False
         self.across_apps_enabled = True
@@ -38,9 +38,10 @@ class EventMonitoringLive(GleanTable):
     def generate_per_app_id(
         self, project_id, baseline_table, output_dir=None, use_cloud_function=True, app_info=[]
     ):
+        """Generate per-app_id views."""
         tables = table_names_from_baseline(baseline_table, include_project_id=False)
 
-        init_filename = f"{self.target_table_id}.init.sql"
+        view_filename = f"{self.target_table_id}.view.sql"
         metadata_filename = f"{self.target_table_id}.metadata.yaml"
 
         table = tables[f"{self.prefix}"]
@@ -68,23 +69,21 @@ class EventMonitoringLive(GleanTable):
         Artifact = namedtuple("Artifact", "table_id basename sql")
         artifacts = []
 
-        if not self.no_init:
-            init_sql = render(
-                init_filename, template_folder=PATH / "templates", **render_kwargs
-            )
-            metadata = render(
-                metadata_filename,
-                template_folder=PATH / "templates",
-                format=False,
-                **render_kwargs,
-            )
-            artifacts.append(Artifact(table, "metadata.yaml", metadata))
+        view_sql = render(
+            view_filename, template_folder=PATH / "templates", **render_kwargs
+        )
+        metadata = render(
+            metadata_filename,
+            template_folder=PATH / "templates",
+            format=False,
+            **render_kwargs,
+        )
+        artifacts.append(Artifact(table, "metadata.yaml", metadata))
 
         skip_existing_artifact = self.skip_existing(output_dir, project_id)
 
         if output_dir:
-            if not self.no_init:
-                artifacts.append(Artifact(table, "init.sql", init_sql))
+            artifacts.append(Artifact(table, "view.sql", view_sql))
 
             for artifact in artifacts:
                 destination = (

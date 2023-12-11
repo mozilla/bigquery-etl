@@ -26,7 +26,8 @@ from bigquery_etl.util.common import render
 
 # Regex matching CREATE VIEW statement so it can be removed to get the view query
 CREATE_VIEW_PATTERN = re.compile(
-    r"CREATE\s+OR\s+REPLACE\s+VIEW\s+[^\s]+\s+AS", re.IGNORECASE
+    r"CREATE(?:\s+OR\s+REPLACE)?(?:\s+MATERIALIZED)?\s+VIEW(?:\s+IF\s+NOT\s+EXISTS)?\s+[^\s]+\s+AS",
+    re.IGNORECASE,
 )
 
 
@@ -184,22 +185,16 @@ class View:
 
     def _valid_view_naming(self):
         """Validate that the created view naming matches the directory structure."""
-        parsed = sqlparse.parse(self.content)[0]
-        tokens = [
-            t
-            for t in parsed.tokens
-            if not (t.is_whitespace or isinstance(t, sqlparse.sql.Comment))
-        ]
-        is_view_statement = (
-            " ".join(tokens[0].normalized.split()) == "CREATE OR REPLACE"
-            and tokens[1].normalized == "VIEW"
-        )
-        if is_view_statement:
-            target_view = str(tokens[2]).strip().split()[0]
+        sql = sqlparse.format(self.content, strip_comments=True).strip()
+        if view_statement_match := re.match(
+            r"CREATE(?:\s+OR\s+REPLACE)?(?:\s+MATERIALIZED)?\s+VIEW(?:\s+IF\s+NOT\s+EXISTS)?"
+            r"\s+(?P<view_id>(?:(?:`?[\w-]+`?\.)?`?\w+`?\.)?`?\w+`?)",
+            sql,
+            re.IGNORECASE,
+        ):
+            target_view = view_statement_match["view_id"].replace("`", "")
             try:
-                [project_id, dataset_id, view_id] = target_view.replace("`", "").split(
-                    "."
-                )
+                [project_id, dataset_id, view_id] = target_view.split(".")
                 if not (
                     self.name == view_id
                     and self.dataset == dataset_id

@@ -1,5 +1,4 @@
 DECLARE dummy INT64; -- declare a dummy variable to indicate that this is a script to bigquery-etl
-
 CREATE TEMP TABLE
   deletion_counts(submission_date DATE, dataset_id STRING, num_rows INT64);
 
@@ -43,5 +42,6 @@ THEN
   VALUES
     (d.submission_date, d.dataset_id, num_rows)
   WHEN NOT MATCHED BY SOURCE
+    AND r.submission_date = @submission_date
 THEN
   DELETE;

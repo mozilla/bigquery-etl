@@ -1,0 +1,20 @@
+friendly_name: Ltv States
+description: |-
+  Fields required for retrieving LTV for clients.
+owners:
+- frank@mozilla.com
+labels:
+  incremental: true
+  owner1: frank@mozilla.com
+scheduling:
+  dag_name: bqetl_org_mozilla_firefox_derived
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields: [first_reported_country, first_seen_date]
+references: {}
+deprecated: false

@@ -25,11 +25,5 @@
 
 ], where="DATE(`datetime`) = @submission_date") }}
 
-#fail
-SELECT IF(
-  COUNTIF(LENGTH(country) <> 2) > 0,
-  ERROR("Some values in this field do not adhere to the ISO 3166-1 specification (2 character country code)."),
-  null
-)
-FROM `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`
-WHERE DATE(`datetime`) = @submission_date;
+#warn
+{{ value_length(column="country", expected_length=2, where="DATE(`datetime`) = @submission_date") }}

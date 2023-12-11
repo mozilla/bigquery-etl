@@ -95,6 +95,7 @@ SELECT
   SUM(search_with_ads) AS search_with_ads,
   SUM(uri_count) AS uri_count,
   SUM(active_hours_sum) AS active_hours,
+  @partition_date AS partition_date,
 FROM
   todays_metrics_enriched
 GROUP BY

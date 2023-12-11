@@ -365,6 +365,7 @@ class DryRun:
                 "does not have bigquery.tables.create permission for dataset"
                 in error_message
                 or "Permission bigquery.tables.create denied" in error_message
+                or "Permission bigquery.datasets.update denied" in error_message
             ):
                 return Errors.READ_ONLY
             if "without a filter over column(s)" in error_message:

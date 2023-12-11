@@ -490,12 +490,6 @@ jobs:
           command: |
             mkdir -p /tmp/workspace/private-generated-sql
 
-            mkdir -p /tmp/workspace/private-generated-sql/dags
-            PATH="venv/bin:$PATH" script/bqetl dag generate \
-              --dags-config dags.yaml \
-              --sql-dir ~/private-bigquery-etl/sql/ \
-              --output-dir /tmp/workspace/private-generated-sql/dags/
-
             cp -r sql/ /tmp/workspace/private-generated-sql/sql
             # Don't depend on dry run for PRs
             PATH="venv/bin:$PATH" script/bqetl generate all \
@@ -511,6 +505,15 @@ jobs:
             PATH="venv/bin:$PATH" script/bqetl metadata update \
               --sql-dir /tmp/workspace/private-generated-sql/sql/ \
               /tmp/workspace/private-generated-sql/sql/
+
+            # Change directory to generate DAGs so `sql_file_path` values are relative to the repo root.
+            export PATH="$PWD/venv/bin:$PATH"
+            export PYTHONPATH="$PWD:$PYTHONPATH"
+            bqetl_script="$PWD/script/bqetl"
+            cd ~/private-bigquery-etl
+            mkdir -p /tmp/workspace/private-generated-sql/dags
+            $bqetl_script dag generate \
+              --output-dir /tmp/workspace/private-generated-sql/dags/
       - persist_to_workspace:
           root: /tmp/workspace
           paths:

@@ -49,7 +49,7 @@ WITH todays_metrics AS (
     client_info.client_id = client_id
   WHERE
     last_seen.submission_date >= '2021-01-01'
-        AND last_seen.submission_date <= @end_date
+    AND last_seen.submission_date <= @end_date
     AND DATE(request.submission_timestamp)
     BETWEEN @start_date
     AND @end_date

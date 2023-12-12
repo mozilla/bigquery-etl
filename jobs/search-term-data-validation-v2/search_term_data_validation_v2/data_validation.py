@@ -9,6 +9,8 @@ import re
 import json
 import string
 
+project = "mozdata"
+
 
 def calculate_data_validation_metrics(metadata_source, languages_source):
     """
@@ -62,7 +64,7 @@ def calculate_data_validation_metrics(metadata_source, languages_source):
     WHERE status = 'SUCCESS'
     ORDER BY finished_at ASC;
     """
-    client = bigquery.Client()
+    client = bigquery.Client(project=project)
     query_job = client.query(SUCCESSFUL_SANITIZATION_JOB_RUN_METADATA)
     results_as_dataframe = query_job.result().to_dataframe()
 
@@ -80,7 +82,7 @@ def export_data_validation_metrics_to_bigquery(dataframe, destination_table_id):
     Returns: Nothing.
     It does print a result value as a cursory logging mechanism. That result object can be parsed and logged to wherever we like.
     """
-    client = bigquery.Client()
+    client = bigquery.Client(project=project)
 
     schema = [
         bigquery.SchemaField("finished_at", bigquery.enums.SqlTypeNames.STRING),
@@ -144,7 +146,7 @@ def retrieve_data_validation_metrics(metrics_source):
         FROM `{metrics_source_no_injection}` AS metadata
     ORDER BY finished_at ASC;
     """
-    client = bigquery.Client()
+    client = bigquery.Client(project=project)
     query_job = client.query(DATA_VALIDATION_METRICS_QUERY)
     results_as_dataframe = query_job.result().to_dataframe()
 
@@ -337,7 +339,7 @@ def record_validation_results(val_df, destination_table):
         "InputSet",
         "name full_lookback_window range_test_window range_lower_bound range_upper_bound mean_test_window mean_lower_bound mean_upper_bound moving_average_window",
     )
-    client = bigquery.Client()
+    client = bigquery.Client(project=project)
     started_at = datetime.utcnow()
 
     for metric in [
@@ -350,7 +352,8 @@ def record_validation_results(val_df, destination_table):
             mean_test_window=8,
             mean_lower_bound=0.01,
             mean_upper_bound=0.99,
-            moving_average_window=7),
+            moving_average_window=7,
+        ),
         InputSet(
             name="pct_sanitized_contained_at",
             full_lookback_window=90,
@@ -360,7 +363,8 @@ def record_validation_results(val_df, destination_table):
             mean_test_window=8,
             mean_lower_bound=0.025,
             mean_upper_bound=0.975,
-            moving_average_window=7),
+            moving_average_window=7,
+        ),
         InputSet(
             name="pct_sanitized_contained_numbers",
             full_lookback_window=90,
@@ -370,7 +374,7 @@ def record_validation_results(val_df, destination_table):
             mean_test_window=8,
             mean_lower_bound=0.01,
             mean_upper_bound=0.99,
-            moving_average_window=7
+            moving_average_window=7,
         ),
         InputSet(
             name="pct_sanitized_contained_name",
@@ -381,7 +385,8 @@ def record_validation_results(val_df, destination_table):
             mean_test_window=7,
             mean_lower_bound=0.01,
             mean_upper_bound=0.99,
-            moving_average_window=7),
+            moving_average_window=7,
+        ),
         InputSet(
             name="pct_terms_containing_us_census_surname",
             full_lookback_window=90,
@@ -402,7 +407,7 @@ def record_validation_results(val_df, destination_table):
             mean_test_window=8,
             mean_lower_bound=0.01,
             mean_upper_bound=0.99,
-            moving_average_window=7
+            moving_average_window=7,
         ),
         InputSet(
             name="avg_words_all_search_terms",
@@ -413,7 +418,8 @@ def record_validation_results(val_df, destination_table):
             mean_test_window=8,
             mean_lower_bound=0.025,
             mean_upper_bound=0.975,
-            moving_average_window=7),
+            moving_average_window=7,
+        ),
         InputSet(
             name="pct_terms_non_english",
             full_lookback_window=90,
@@ -423,7 +429,8 @@ def record_validation_results(val_df, destination_table):
             mean_test_window=8,
             mean_lower_bound=0.01,
             mean_upper_bound=0.99,
-            moving_average_window=5),
+            moving_average_window=5,
+        ),
     ]:
         (
             finished_at,

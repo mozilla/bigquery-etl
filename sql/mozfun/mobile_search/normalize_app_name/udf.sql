@@ -1,6 +1,6 @@
 
 
-CREATE OR REPLACE FUNCTION `normalize_app_name`(app_name STRING, os STRING)
+CREATE OR REPLACE FUNCTION `mobile_search.normalize_app_name`(app_name STRING, os STRING)
 RETURNS STRUCT<normalized_app_name STRING, normalized_app_name_os STRING>
 AS
 (

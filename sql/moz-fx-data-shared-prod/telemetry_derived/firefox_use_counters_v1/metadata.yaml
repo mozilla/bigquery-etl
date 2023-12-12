@@ -7,7 +7,7 @@ labels:
   incremental: true
   owner1: kwindau@mozilla.com
 scheduling:
-  dag_name: use_counter_analysis
+  dag_name: bqetl_use_counter_analysis
 bigquery:
   time_partitioning:
     type: day

@@ -1374,5 +1374,4 @@ use_counter_analysis:
     start_date: "2023-12-02"
   tags:
     - impact/tier_2
-  description: DAG to prepare use counter data for Firefox Desktop & Fenix for visualization.
-  
+  description: DAG to prepare use counter data for Firefox Desktop & Fenix for visualization

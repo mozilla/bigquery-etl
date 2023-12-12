@@ -1,4 +1,4 @@
-destination_dataset = "android_onboarding"
+destination_dataset = "fenix_derived"
 platform = "fenix"
 owners = ["loines@mozilla.org"]  # optional; users getting notification if funnel run fails
 version = "1"  # optional; default is set to 1

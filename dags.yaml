@@ -1366,6 +1366,7 @@ bqetl_use_counter_analysis:
     depends_on_past: false
     email:
       - kwindau@mozilla.com
+      - telemetry-alerts@mozilla.com
     email_on_failure: true
     email_on_retry: true
     owner: kwindau@mozilla.com

@@ -1,0 +1,20 @@
+friendly_name: Firefox Use Counters
+description: |-
+  Tall dataset containing use counters and their relative proportions by day, country, version, and platform (Fenix vs Desktop Firefox); only shows data for date/country/version combinations with at least 5000 unique clients reporting that day.
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau@mozilla.com
+scheduling:
+  dag_name: use_counter_analysis
+bigquery:
+  time_partitioning:
+    type: day
+    field: 'received_date'
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields: ['metric']
+references: {}
+deprecated: false

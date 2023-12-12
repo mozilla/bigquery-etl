@@ -1,0 +1,19 @@
+fields:
+- mode: NULLABLE
+  name: received_date
+  type: DATE
+- mode: NULLABLE
+  name: version_major
+  type: NUMERIC
+- mode: NULLABLE
+  name: geo_country
+  type: STRING
+- mode: NULLABLE
+  name: platform
+  type: STRING
+- mode: NULLABLE
+  name: metric
+  type: STRING
+- mode: NULLABLE
+  name: rate
+  type: FLOAT

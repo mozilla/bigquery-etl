@@ -1359,3 +1359,20 @@ bqetl_crash:
     start_date: "2023-12-10"
   tags:
     - impact/tier_2
+
+use_counter_analysis:
+  schedule_interval: 0 8 * * *
+  default_args:
+    depends_on_past: false
+    email:
+      - kwindau@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    owner: kwindau@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: "2023-12-02"
+  tags:
+    - impact/tier_2
+  description: DAG to prepare use counter data for Firefox Desktop & Fenix for visualization.
+  

@@ -125,4 +125,5 @@ SELECT
     ERROR("DAU mismatch between aggregates table and live table"),
     NULL
   );
+
 {% endraw %}

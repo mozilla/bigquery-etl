@@ -10,7 +10,20 @@ version = "1"  # optional; default is set to 1
 friendly_name = "Start Subscription Funnel"
 description = "Funnel from Signup to starting a subscription"
 steps = ["first_card", "second_card", "third_card", "onboarding_completed"]
-dimensions = ["funnel_id", "action", "element_type"]
+dimensions = ["funnel_id",
+              "action",
+              "element_type",
+              "country",
+              "locale",
+              "android_version",
+              "channel",
+              "device_model",
+              "device_manufacturer",
+              "first_seen_date",
+              "adjust_network",
+              "adjust_campaign",
+              "adjust_creative",
+              "adjust_ad_group"]
 
 
 [steps]
@@ -71,7 +84,7 @@ aggregation = "count distinct"
 
 [data_sources.onboarding_events]
 from_expression = """
-  fenix.events_unnested
+  fenix.events_unnested eu LEFT JOIN fenix.firefox_android_clients ac ON eu.client_info.client_id = ac.client_id
 """
 submission_date_column = "DATE(submission_timestamp)"
 client_id_column = "client_info.client_id"
@@ -79,6 +92,7 @@ client_id_column = "client_info.client_id"
 
 [dimensions]
 
+# these dimensions are sourced from events_unnested
 [dimensions.action]
 data_source = "onboarding_events"
 select_expression = "`mozfun.map.get_key`(event_extra, 'action')"
@@ -100,9 +114,72 @@ friendly_name = "Element Type"
 description = "Type of Card Element Interacted With"
 client_id_column = "client_info.client_id"
 
+# these dimensions are sourced from firefox_android_clients
 [dimensions.country]
 data_source = "onboarding_events"
-select_expression = "normalized_country_code"
+select_expression = "first_reported_country"
 friendly_name = "Country"
-description = "normed country code"
+description = "Client's First Reported Country"
+client_id_column = "client_info.client_id"
+
+[dimensions.locale]
+data_source = "onboarding_events"
+select_expression = "ac.locale"
+friendly_name = "Locale"
+description = "Client's First Reported Language"
+client_id_column = "client_info.client_id"
+
+[dimensions.android_version]
+data_source = "onboarding_events"
+select_expression = "os_version"
+friendly_name = "First Reported Android OS Version"
+client_id_column = "client_info.client_id"
+
+[dimensions.channel]
+data_source = "onboarding_events"
+select_expression = "channel"
+friendly_name = "First Reported Release Channel"
+client_id_column = "client_info.client_id"
+
+[dimensions.device_model]
+data_source = "onboarding_events"
+select_expression = "ac.device_model"
+friendly_name = "First Reported Device Model"
+client_id_column = "client_info.client_id"
+
+[dimensions.device_manufacturer]
+data_source = "onboarding_events"
+select_expression = "ac.device_manufacturer"
+friendly_name = "First Reported Device Manufacturer"
+client_id_column = "client_info.client_id"
+
+[dimensions.first_seen_date]
+data_source = "onboarding_events"
+select_expression = "first_seen_date"
+friendly_name = "First Seen Date"
+description = "First day this client_id shows up in our data."
+client_id_column = "client_info.client_id"
+
+[dimensions.adjust_network]
+data_source = "onboarding_events"
+select_expression = "adjust_network"
+friendly_name = "Adjust Network"
+client_id_column = "client_info.client_id"
+
+[dimensions.adjust_campaign]
+data_source = "onboarding_events"
+select_expression = "adjust_campaign"
+friendly_name = "Adjust Campaign"
+client_id_column = "client_info.client_id"
+
+[dimensions.adjust_creative]
+data_source = "onboarding_events"
+select_expression = "adjust_creative"
+friendly_name = "Adjust Creative"
+client_id_column = "client_info.client_id"
+
+[dimensions.adjust_ad_group]
+data_source = "onboarding_events"
+select_expression = "adjust_ad_group"
+friendly_name = "Adjust Ad Group"
 client_id_column = "client_info.client_id"

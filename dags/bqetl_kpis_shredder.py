@@ -59,6 +59,21 @@ with DAG(
         ],
     )
 
+    firefox_desktop_active_users_aggregates_for_deletion_requests = bigquery_etl_query(
+        task_id="firefox_desktop_active_users_aggregates_for_deletion_requests",
+        destination_table="active_users_aggregates_deletion_request_v1",
+        dataset_id="firefox_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="lvargas@mozilla.com",
+        email=["lvargas@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="partition_date",
+        depends_on_past=False,
+        parameters=[
+            "end_date:DATE:{{macros.ds_add(ds, 27)}}",
+            "start_date:DATE:{{macros.ds_add(ds, 27-28*4)}}",
+        ],
+    )
+
     firefox_ios_active_users_aggregates_for_deletion_requests = bigquery_etl_query(
         task_id="firefox_ios_active_users_aggregates_for_deletion_requests",
         destination_table="active_users_aggregates_deletion_request_v1",
@@ -147,6 +162,27 @@ with DAG(
 
     fenix_active_users_aggregates_for_deletion_requests.set_upstream(
         wait_for_search_derived__mobile_search_clients_daily__v1
+    )
+
+    firefox_desktop_active_users_aggregates_for_deletion_requests.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+    firefox_desktop_active_users_aggregates_for_deletion_requests.set_upstream(
+        wait_for_search_derived__mobile_search_clients_daily__v1
+    )
+    wait_for_telemetry_derived__clients_last_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_telemetry_derived__clients_last_seen__v1",
+        external_dag_id="bqetl_main_summary",
+        external_task_id="telemetry_derived__clients_last_seen__v1",
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    firefox_desktop_active_users_aggregates_for_deletion_requests.set_upstream(
+        wait_for_telemetry_derived__clients_last_seen__v1
     )
 
     firefox_ios_active_users_aggregates_for_deletion_requests.set_upstream(

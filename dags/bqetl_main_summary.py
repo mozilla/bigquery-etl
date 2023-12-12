@@ -309,6 +309,12 @@ with DAG(
         )
 
         ExternalTaskMarker(
+            task_id="bqetl_kpis_shredder__wait_for_telemetry_derived__clients_last_seen__v1",
+            external_dag_id="bqetl_kpis_shredder",
+            external_task_id="wait_for_telemetry_derived__clients_last_seen__v1",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_search_dashboard__wait_for_telemetry_derived__clients_last_seen__v1",
             external_dag_id="bqetl_search_dashboard",
             external_task_id="wait_for_telemetry_derived__clients_last_seen__v1",

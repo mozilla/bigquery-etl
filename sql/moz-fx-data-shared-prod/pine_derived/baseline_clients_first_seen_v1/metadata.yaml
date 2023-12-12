@@ -41,8 +41,6 @@ workgroup_access:
   members:
   - workgroup:mozilla-confidential
 references:
-  checks.sql:
-  - moz-fx-data-shared-prod.pine_derived.baseline_clients_first_seen_v1
   init.sql:
   - pine_stable.baseline_v1
   query.sql:

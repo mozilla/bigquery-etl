@@ -20,6 +20,7 @@ class Browsers(Enum):
     # The initial implementation is a prototype for some mobile browsers.
     # Desktop is excluded due to the bigger size of data.
     # Focus Android is excluded due to its higher complexity.
+    firefox_desktop = "Firefox Desktop"
     fenix = "Fenix"
     focus_ios = "Focus iOS"
     firefox_ios = "Firefox iOS"
@@ -50,23 +51,41 @@ def generate(target_project, output_dir, use_cloud_function):
     mobile_deletion_request_query_template = env.get_template(
         "mobile_deletion_request_query.sql"
     )
+    desktop_deletion_request_query_template = env.get_template(
+        "desktop_deletion_request_query.sql"
+    )
     metadata_deletion_request_template = "metadata_deletion_request.yaml"
     output_dir = Path(output_dir) / target_project
 
     for browser in Browsers:
-        write_sql(
-            output_dir=output_dir,
-            full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME_DELETION_REQUEST}_v1",
-            basename="query.sql",
-            sql=reformat(
-                mobile_deletion_request_query_template.render(
-                    project_id=target_project,
-                    app_value=browser.value,
-                    app_name=browser.name,
-                )
-            ),
-            skip_existing=False,
-        )
+        if browser.name == "firefox_desktop":
+            write_sql(
+                output_dir=output_dir,
+                full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME_DELETION_REQUEST}_v1",
+                basename="query.sql",
+                sql=reformat(
+                    desktop_deletion_request_query_template.render(
+                        project_id=target_project,
+                        app_value=browser.value,
+                        app_name=browser.name,
+                    )
+                ),
+                skip_existing=False,
+            )
+        else:
+            write_sql(
+                output_dir=output_dir,
+                full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME_DELETION_REQUEST}_v1",
+                basename="query.sql",
+                sql=reformat(
+                    mobile_deletion_request_query_template.render(
+                        project_id=target_project,
+                        app_value=browser.value,
+                        app_name=browser.name,
+                    )
+                ),
+                skip_existing=False,
+            )
 
         write_sql(
             output_dir=output_dir,

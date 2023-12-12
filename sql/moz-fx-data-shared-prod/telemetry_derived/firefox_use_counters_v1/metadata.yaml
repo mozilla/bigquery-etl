@@ -16,5 +16,4 @@ bigquery:
     expiration_days: null
   clustering:
     fields: ['metric']
-references: {}
 deprecated: false

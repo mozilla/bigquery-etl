@@ -1368,7 +1368,7 @@ bqetl_use_counter_analysis:
       - kwindau@mozilla.com
       - telemetry-alerts@mozilla.com
     email_on_failure: true
-    email_on_retry: true
+    email_on_retry: false
     owner: kwindau@mozilla.com
     retries: 2
     retry_delay: 30m

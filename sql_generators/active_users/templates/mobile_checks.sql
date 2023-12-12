@@ -8,40 +8,32 @@
    during `bqetl query backfill`.
    (you can also run them locally with `bqetl check run`).
 #}
-{% raw -%}
 #warn
 WITH dau_sum AS (
   SELECT
     SUM(dau),
   FROM
-    `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`
+    {%- raw %}
+    `{{ project_id }}.{{ dataset_id }}.{{ table_name }}` {% endraw -%}
   WHERE
     submission_date = @submission_date
 ),
 distinct_client_count_base AS (
-    -- release channel
-  SELECT
-    COUNT(DISTINCT client_info.client_id) AS distinct_client_count,
-  FROM
-    `moz-fx-data-shared-prod.org_mozilla_focus_live.baseline_v1`
-  WHERE
-    DATE(submission_timestamp) = @submission_date
-    -- beta channel
+  {%- for channel in channels %}
+  {%- if not loop.first -%}
   UNION ALL
+    {%- endif %}
+    {% if channel.name -%}
+  -- {{ channel.name }} channel
+    {% endif -%}
   SELECT
     COUNT(DISTINCT client_info.client_id) AS distinct_client_count,
   FROM
-    `moz-fx-data-shared-prod.org_mozilla_focus_beta_live.baseline_v1`
+    {{ channel.table }}
+
   WHERE
     DATE(submission_timestamp) = @submission_date
-    -- nigthly channel
-  UNION ALL
-  SELECT
-    COUNT(DISTINCT client_info.client_id) AS distinct_client_count,
-  FROM
-    `moz-fx-data-shared-prod.org_mozilla_focus_nightly_live.baseline_v1`
-  WHERE
-    DATE(submission_timestamp) = @submission_date
+{% endfor -%}
 ),
 distinct_client_count AS (
   SELECT
@@ -55,5 +47,3 @@ SELECT
     ERROR("DAU mismatch between aggregates table and live table"),
     NULL
   );
-
-{% endraw %}

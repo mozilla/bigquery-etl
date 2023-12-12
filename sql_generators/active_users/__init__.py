@@ -62,11 +62,8 @@ def generate(target_project, output_dir, use_cloud_function):
     metadata_template = "metadata.yaml"
     # checks templates
     desktop_checks_template = env.get_template("desktop_checks.sql")
-    focus_android_checks_template = env.get_template("focus_android_checks.sql")
     fenix_checks_template = env.get_template("fenix_checks.sql")
-    focus_ios_checks_template = env.get_template("focus_ios_checks.sql")
-    firefox_ios_checks_template = env.get_template("firefox_ios_checks.sql")
-    klar_ios_checks_template = env.get_template("klar_ios_checks.sql")
+    mobile_checks_template = env.get_template("mobile_checks.sql")
 
     for browser in Browsers:
         if browser.name == "firefox_desktop":
@@ -107,28 +104,66 @@ def generate(target_project, output_dir, use_cloud_function):
                 app_name=browser.name,
             )
         elif browser.name == "firefox_ios":
-            checks_sql = firefox_ios_checks_template.render(
+            checks_sql = mobile_checks_template.render(
                 project_id=target_project,
                 app_value=browser.value,
                 app_name=browser.name,
+                channels=[
+                    {
+                        "name": "release",
+                        "table": "`moz-fx-data-shared-prod.org_mozilla_ios_firefox_live.baseline_v1`",
+                    },
+                    {
+                        "name": "beta",
+                        "table": "`moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta_live.baseline_v1`",
+                    },
+                    {
+                        "name": "nightly",
+                        "table": "`moz-fx-data-shared-prod.org_mozilla_ios_fennec_live.baseline_v1`",
+                    },
+                ],
             )
         elif browser.name == "focus_ios":
-            checks_sql = focus_ios_checks_template.render(
+            checks_sql = mobile_checks_template.render(
                 project_id=target_project,
                 app_value=browser.value,
                 app_name=browser.name,
+                channels=[
+                    {
+                        "table": "`moz-fx-data-shared-prod.org_mozilla_ios_focus_live.baseline_v1`"
+                    }
+                ],
             )
         elif browser.name == "focus_android":
-            checks_sql = focus_android_checks_template.render(
+            checks_sql = mobile_checks_template.render(
                 project_id=target_project,
                 app_value=browser.value,
                 app_name=browser.name,
+                channels=[
+                    {
+                        "name": "release",
+                        "table": "`moz-fx-data-shared-prod.org_mozilla_focus_live.baseline_v1`",
+                    },
+                    {
+                        "name": "beta",
+                        "table": "`moz-fx-data-shared-prod.org_mozilla_focus_beta_live.baseline_v1`",
+                    },
+                    {
+                        "name": "nightly",
+                        "table": "`moz-fx-data-shared-prod.org_mozilla_focus_nightly_live.baseline_v1`",
+                    },
+                ],
             )
         elif browser.name == "klar_ios":
-            checks_sql = klar_ios_checks_template.render(
+            checks_sql = mobile_checks_template.render(
                 project_id=target_project,
                 app_value=browser.value,
                 app_name=browser.name,
+                channels=[
+                    {
+                        "table": "`moz-fx-data-shared-prod.org_mozilla_ios_klar_live.baseline_v1`"
+                    }
+                ],
             )
         if browser.name == "firefox_desktop":
             current_version = DESKTOP_TABLE_VERSION

@@ -9,4 +9,3 @@ workgroup_access:
   members:
   - workgroup:mozilla-confidential
   - workgroup:pocket/prefect
-#adding comment to add a change

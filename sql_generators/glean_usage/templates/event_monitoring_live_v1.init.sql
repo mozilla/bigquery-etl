@@ -7,48 +7,21 @@ IF
     SELECT
       DATE(submission_timestamp) AS submission_date,
       TIMESTAMP_ADD(
-        TIMESTAMP_TRUNC(
-          TIMESTAMP_ADD(
-            SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time),
-            -- limit event.timestamp, otherwise this will cause an overflow
-            INTERVAL LEAST(event.timestamp, 20000000000000) MILLISECOND
-          ),
-          HOUR
-        ),
+        TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
         -- Aggregates event counts over 60-minute intervals
         INTERVAL(
           DIV(
-            EXTRACT(
-              MINUTE
-              FROM
-                TIMESTAMP_ADD(
-                  SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time),
-                  INTERVAL LEAST(event.timestamp, 20000000000000) MILLISECOND
-                )
-            ),
+            EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)),
             60
           ) * 60
         ) MINUTE
       ) AS window_start,
       TIMESTAMP_ADD(
-        TIMESTAMP_TRUNC(
-          TIMESTAMP_ADD(
-            SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time),
-            INTERVAL LEAST(event.timestamp, 20000000000000) MILLISECOND
-          ),
-          HOUR
-        ),
+        TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
         INTERVAL(
           (
             DIV(
-              EXTRACT(
-                MINUTE
-                FROM
-                  TIMESTAMP_ADD(
-                    SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time),
-                    INTERVAL LEAST(event.timestamp, 20000000000000) MILLISECOND
-                  )
-              ),
+              EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)),
               60
             ) + 1
           ) * 60

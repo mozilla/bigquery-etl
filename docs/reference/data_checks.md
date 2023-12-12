@@ -167,6 +167,7 @@ Please keep in mind the below checks can be combined and specified in the same `
 ```
 
 ### row_count_within_past_partitions_avg([source](../../tests/checks/row_count_within_past_partitions_avg.jinja))
+
 Compares the row count of the current partition to the average of `number_of_days` past partitions and checks if the row count is within the average +- `threshold_percentage` %
 
 Usage:
@@ -183,6 +184,26 @@ Example:
 ```sql
 #fail
 {{ row_count_within_past_partitions_avg(7, 5, "submission_date") }}
+```
+
+### value_length([source](../../tests/checks/value_length.jinja))
+
+Checks that the columns have values of specific character length.
+
+Usage:
+
+```
+Arguments:
+
+columns: List[str] - Columns which will be checked against the `expected_length`.
+expected_length: int - Describes the expected character length of the value inside the specified columns.
+where: Optional[str]: Any additional filtering rules that should be applied when retrieving the data to run the check against.
+```
+
+Example:
+```sql
+#warn
+{{ value_length(column="country", expected_length=2, where="submission_date = @submission_date") }}
 ```
 
 

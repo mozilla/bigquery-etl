@@ -11,7 +11,7 @@ IF
           TIMESTAMP_ADD(
             SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time),
             -- limit event.timestamp, otherwise this will cause an overflow
-            INTERVAL LEAST(event.timestamp, 200000000000000) MILLISECOND
+            INTERVAL LEAST(event.timestamp, 20000000000000) MILLISECOND
           ),
           HOUR
         ),
@@ -23,7 +23,7 @@ IF
               FROM
                 TIMESTAMP_ADD(
                   SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time),
-                  INTERVAL LEAST(event.timestamp, 200000000000000) MILLISECOND
+                  INTERVAL LEAST(event.timestamp, 20000000000000) MILLISECOND
                 )
             ),
             60
@@ -34,7 +34,7 @@ IF
         TIMESTAMP_TRUNC(
           TIMESTAMP_ADD(
             SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time),
-            INTERVAL LEAST(event.timestamp, 200000000000000) MILLISECOND
+            INTERVAL LEAST(event.timestamp, 20000000000000) MILLISECOND
           ),
           HOUR
         ),
@@ -46,7 +46,7 @@ IF
                 FROM
                   TIMESTAMP_ADD(
                     SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time),
-                    INTERVAL LEAST(event.timestamp, 200000000000000) MILLISECOND
+                    INTERVAL LEAST(event.timestamp, 20000000000000) MILLISECOND
                   )
               ),
               60

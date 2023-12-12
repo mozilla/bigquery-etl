@@ -15,7 +15,7 @@ crash_symbols AS (
     submission_date = @submission_date
   QUALIFY
     -- symbols may be appended over multiple attempts, so only use the most recent symbols
-    0 = ROW_NUMBER() OVER (
+    1 = ROW_NUMBER() OVER (
       PARTITION BY
         debug_file,
         debug_id,

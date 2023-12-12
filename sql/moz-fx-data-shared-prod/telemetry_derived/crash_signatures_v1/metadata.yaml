@@ -10,10 +10,6 @@ scheduling:
   dag_name: bqetl_crash
   start_date: '2023-12-10'
   retry_delay: 5m
-  gke_cluster_name: workloads-prod-v1
-  gke_location: us-west1
-  gcp_conn_id: google_cloud_airflow_gke
-  gke_project_id: moz-fx-data-airflow-gke-prod
   arguments: ["--submission-date", "{{ ds }}"]
   referenced_tables:
   - - 'moz-fx-data-shared-prod'

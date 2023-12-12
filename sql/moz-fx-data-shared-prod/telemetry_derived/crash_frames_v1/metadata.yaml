@@ -6,7 +6,6 @@ owners:
 labels:
   application: firefox
   schedule: daily
-  owner: dthorn
   dag: bqetl_crash
   owner1: dthorn
 scheduling:

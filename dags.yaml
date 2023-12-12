@@ -1351,8 +1351,8 @@ bqetl_crash:
     email:
       - dthorn@mozilla.com
       - telemetry-alerts@mozilla.com
-    email_on_failure: false
-    email_on_retry: true
+    email_on_failure: true
+    email_on_retry: false
     owner: dthorn@mozilla.com
     retries: 2
     retry_delay: 30m

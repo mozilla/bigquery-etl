@@ -1,0 +1,43 @@
+friendly_name: Crash Symbols
+description: |-
+  Symbols for symbolicating crash frames.
+owners:
+- dthorn@mozilla.com
+labels:
+  application: firefox
+  schedule: daily
+  dag: bqetl_crash
+  owner1: dthorn
+scheduling:
+  dag_name: bqetl_crash
+  start_date: '2023-12-10'
+  retry_delay: 5m
+  arguments:
+  - --submission-date
+  - '{{ ds }}'
+  referenced_tables:
+  - - moz-fx-data-shared-prod
+    - telemetry_derived
+    - crash_frames_v1
+  container_resources:
+    request_memory: 102400Mi
+    request_cpu: null
+    limit_memory: 102400Mi
+    limit_cpu: null
+    limit_gpu: null
+  node_selector:
+    nodepool: highmem-16
+  startup_timeout_seconds: 360
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

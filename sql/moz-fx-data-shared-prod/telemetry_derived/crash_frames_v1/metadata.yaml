@@ -1,0 +1,28 @@
+friendly_name: Crash Frames
+description: |-
+  Unnested frames from crash pings.
+owners:
+- dthorn@mozilla.com
+labels:
+  application: firefox
+  schedule: daily
+  dag: bqetl_crash
+  owner1: dthorn
+scheduling:
+  dag_name: bqetl_crash
+  start_date: '2023-12-10'
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_timestamp
+    require_partition_filter: true
+    expiration_days: null
+  clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.telemetry_stable.crash_v4
+deprecated: false

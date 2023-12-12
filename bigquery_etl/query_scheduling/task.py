@@ -243,6 +243,9 @@ class Task:
     query_project: Optional[str] = attr.ib(None)
     task_group: Optional[str] = attr.ib(None)
     slack_notification: Optional[Dict] = attr.ib(None)
+    container_resources: Optional[Dict[str, str]] = attr.ib(None)
+    node_selector: Optional[Dict[str, str]] = attr.ib(None)
+    startup_timeout_seconds: Optional[int] = attr.ib(None)
 
     @property
     def task_key(self):

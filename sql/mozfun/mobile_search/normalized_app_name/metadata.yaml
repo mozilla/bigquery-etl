@@ -1,0 +1,2 @@
+description: Returns normalized_app_name and normalized_app_os_name (for mobile search tables only).
+friendly_name: Normalized app and os name (mobile)

@@ -1,0 +1,15 @@
+friendly_name: Use Counter Data for Firefox Desktop & Fenix
+description: |-
+  Tall dataset containing use counters and their relative proportions by day, country, version, and platform (Fenix vs Desktop Firefox); only shows data for date/country/version combinations with at least 5000 unique clients reporting that day.
+owners:
+  - kwindau@mozilla.com
+labels:
+  application: firefox
+  incremental: true
+  public_json: true
+  public_bigquery: true
+  review_bugs:
+    - 1866834
+  incremental_export: false
+scheduling:
+  dag_name: use_counter_analysis

@@ -1360,7 +1360,7 @@ bqetl_crash:
   tags:
     - impact/tier_2
 
-use_counter_analysis:
+bqetl_use_counter_analysis:
   schedule_interval: 0 8 * * *
   default_args:
     depends_on_past: false

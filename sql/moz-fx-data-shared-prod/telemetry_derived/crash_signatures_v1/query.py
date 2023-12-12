@@ -40,6 +40,9 @@ def main(
         read_session=bigquery_storage.ReadSession(
             table=source.path.lstrip("/"),
             data_format=bigquery_storage.DataFormat.AVRO,
+            read_options=bigquery_storage.ReadSession.TableReadOptions(
+                row_restriction=f"DATE(submission_timestamp) = '{submission_date:%F}'",
+            ),
         ),
         max_stream_count=1,
     )
@@ -55,7 +58,7 @@ def main(
 
     job = bq.load_table_from_json(
         json_rows=json_rows,
-        destination=f'{destination_table}${submission_date.replace("-", "")}',
+        destination=f"{destination_table}${submission_date:%Y%m%d}",
         job_config=bigquery.LoadJobConfig(
             ignore_unknown_values=False,
             schema=OUTPUT_SCHEMA,

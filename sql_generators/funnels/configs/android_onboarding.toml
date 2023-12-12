@@ -7,8 +7,8 @@ version = "1"  # optional; default is set to 1
 
 [funnels.onboarding_funnel]
 
-friendly_name = "Start Subscription Funnel"
-description = "Funnel from Signup to starting a subscription"
+friendly_name = "Firefox for Android Onboarding Funnel"
+description = "Funnel Steps for Firefox for Android Onboarding"
 steps = ["first_card", "second_card", "third_card", "onboarding_completed"]
 dimensions = ["funnel_id",
               "action",

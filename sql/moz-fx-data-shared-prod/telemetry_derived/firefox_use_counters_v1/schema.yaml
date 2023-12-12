@@ -1,6 +1,6 @@
 fields:
 - mode: NULLABLE
-  name: received_date
+  name: submission_date
   type: DATE
 - mode: NULLABLE
   name: version_major

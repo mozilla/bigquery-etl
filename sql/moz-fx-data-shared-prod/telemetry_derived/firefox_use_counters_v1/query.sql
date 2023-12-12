@@ -16597,7 +16597,7 @@ final_staging AS (
     fenix_staging
 )
 SELECT
-  received_date,
+  received_date AS submission_date,
   version_major,
   geo_country,
   platform,

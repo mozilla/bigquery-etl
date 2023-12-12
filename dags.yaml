@@ -1371,7 +1371,7 @@ use_counter_analysis:
     owner: kwindau@mozilla.com
     retries: 2
     retry_delay: 30m
-    start_date: "2023-12-02"
+    start_date: "2023-12-12"
   tags:
     - impact/tier_2
   description: DAG to prepare use counter data for Firefox Desktop & Fenix for visualization

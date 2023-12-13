@@ -54,6 +54,7 @@ dry_run:
   - sql/moz-fx-data-shared-prod/accounts_backend/accounts/view.sql
   - sql/moz-fx-data-shared-prod/accounts_db_external/**/*.sql
   - sql/moz-fx-data-shared-prod/accounts_db_nonprod_external/**/*.sql
+  - sql/moz-fx-data-shared-prod/accounts_db/fxa_oauth_clients/view.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_content_events_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_auth_bounce_events_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_auth_events_v1/query.sql
@@ -147,6 +148,7 @@ dry_run:
   - sql/moz-fx-data-shared-prod/mozilla_vpn_external/devices_v1/init.sql
   - sql/moz-fx-data-shared-prod/fenix_derived/google_ads_campaign_cost_breakdowns_v1/query.sql
   - sql/moz-fx-data-shared-prod/search_derived/search_clients_daily_v8/query.sql
+  - sql/moz-fx-data-shared-prod/search_derived/mobile_search_aggregates_v1/query.sql
   - sql/moz-fx-data-shared-prod/search_terms*/**/*.sql
   - sql/moz-fx-data-bq-performance/release_criteria/dashboard_health_v1/query.sql
   - sql/moz-fx-data-bq-performance/release_criteria/rc_flattened_test_data_v1/query.sql
@@ -391,6 +393,7 @@ view:
     - sql/moz-fx-data-shared-prod/mlhackweek_search/action/view.sql
     - sql/moz-fx-data-shared-prod/**/client_deduplication/view.sql
     - sql/moz-fx-data-shared-prod/stripe/itemized_tax_transactions/view.sql
+    - sql/moz-fx-data-shared-prod/accounts_db/fxa_oauth_clients/view.sql
   publish:
     skip:
     - sql/moz-fx-data-shared-prod/activity_stream/tile_id_types/view.sql

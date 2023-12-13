@@ -200,6 +200,43 @@ plans AS (
   USING
     (product_id)
 ),
+us_zip_codes AS (
+  SELECT
+    zip_code,
+    state_code,
+  FROM
+    -- https://console.cloud.google.com/marketplace/product/united-states-census-bureau/us-geographic-boundaries
+    `bigquery-public-data.geo_us_boundaries.zip_codes`
+),
+ca_postal_districts AS (
+  SELECT
+    *
+  FROM
+    -- https://en.wikipedia.org/wiki/Postal_codes_in_Canada#Components_of_a_postal_code
+    UNNEST(
+      ARRAY<STRUCT<district STRING, province_code STRING>>[
+        ("A", "NL"),
+        ("B", "NS"),
+        ("C", "PE"),
+        ("E", "NB"),
+        ("G", "QC"),
+        ("H", "QC"),
+        ("J", "QC"),
+        ("K", "ON"),
+        ("L", "ON"),
+        ("M", "ON"),
+        ("N", "ON"),
+        ("P", "ON"),
+        ("R", "MB"),
+        ("S", "SK"),
+        ("T", "AB"),
+        ("V", "BC"),
+        -- District X covers both NT and NU, so we can't tell which one.
+        ("X", NULL),
+        ("Y", "YT")
+      ]
+    )
+),
 customers AS (
   SELECT
     id AS customer_id,
@@ -207,8 +244,20 @@ customers AS (
       TO_HEX(SHA256(JSON_VALUE(customers.metadata, "$.userid"))),
       JSON_VALUE(pre_fivetran_customers.metadata, "$.fxa_uid")
     ) AS fxa_uid,
-    COALESCE(customers.address_country, pre_fivetran_customers.address_country) AS address_country,
-    customers.shipping_address_country,
+    COALESCE(
+      NULLIF(customers.address_country, ""),
+      pre_fivetran_customers.address_country
+    ) AS address_country,
+    COALESCE(
+      IF(LENGTH(customers.address_state) = 2, customers.address_state, NULL),
+      pre_fivetran_customers.address_state
+    ) AS address_state,
+    NULLIF(customers.shipping_address_country, "") AS shipping_address_country,
+    COALESCE(
+      NULLIF(customers.shipping_address_state, ""),
+      us_shipping_zip_codes.state_code,
+      ca_shipping_postal_districts.province_code
+    ) AS shipping_address_state,
   FROM
     `moz-fx-data-shared-prod`.stripe_external.customer_v1 AS customers
   FULL JOIN
@@ -216,28 +265,57 @@ customers AS (
     `moz-fx-data-shared-prod`.stripe_external.pre_fivetran_customers_v1 AS pre_fivetran_customers
   USING
     (id)
+  LEFT JOIN
+    us_zip_codes AS us_shipping_zip_codes
+  ON
+    customers.shipping_address_country = "US"
+    AND LEFT(customers.shipping_address_postal_code, 5) = us_shipping_zip_codes.zip_code
+  LEFT JOIN
+    ca_postal_districts AS ca_shipping_postal_districts
+  ON
+    customers.shipping_address_country = "CA"
+    AND LEFT(customers.shipping_address_postal_code, 1) = ca_shipping_postal_districts.district
 ),
 charges AS (
   SELECT
     charges.id AS charge_id,
-    COALESCE(cards.country, charges.billing_detail_address_country) AS country,
+    COALESCE(NULLIF(charges.billing_detail_address_country, ""), cards.country) AS country,
+    COALESCE(
+      NULLIF(charges.billing_detail_address_state, ""),
+      us_zip_codes.state_code,
+      ca_postal_districts.province_code
+    ) AS state,
   FROM
     `moz-fx-data-shared-prod`.stripe_external.charge_v1 AS charges
   JOIN
     `moz-fx-data-shared-prod`.stripe_external.card_v1 AS cards
   ON
     charges.card_id = cards.id
+  LEFT JOIN
+    us_zip_codes
+  ON
+    COALESCE(NULLIF(charges.billing_detail_address_country, ""), cards.country) = "US"
+    AND LEFT(charges.billing_detail_address_postal_code, 5) = us_zip_codes.zip_code
+  LEFT JOIN
+    ca_postal_districts
+  ON
+    COALESCE(NULLIF(charges.billing_detail_address_country, ""), cards.country) = "CA"
+    AND UPPER(LEFT(charges.billing_detail_address_postal_code, 1)) = ca_postal_districts.district
   WHERE
     charges.status = "succeeded"
 ),
-invoices_provider_country AS (
+invoices_provider_location AS (
   SELECT
     invoices.subscription_id,
     IF(
       JSON_VALUE(invoices.metadata, "$.paypalTransactionId") IS NOT NULL,
-      -- FxA copies PayPal billing agreement country to customer address.
-      STRUCT("Paypal" AS provider, customers.address_country AS country),
-      ("Stripe", charges.country)
+      -- FxA copied PayPal billing address to customer address before we enabled Stripe Tax (FXA-5457).
+      STRUCT(
+        "Paypal" AS provider,
+        customers.address_country AS country,
+        customers.address_state AS state
+      ),
+      STRUCT("Stripe" AS provider, charges.country, charges.state)
     ).*,
     invoices.created,
   FROM
@@ -253,27 +331,31 @@ invoices_provider_country AS (
   WHERE
     invoices.status = "paid"
 ),
-subscriptions_history_invoice_provider_country AS (
+subscriptions_history_invoice_provider_location AS (
   SELECT
     subscriptions_history.subscription_id,
     subscriptions_history.valid_from,
     ARRAY_AGG(
-      STRUCT(invoices_provider_country.provider, invoices_provider_country.country)
+      STRUCT(
+        invoices_provider_location.provider,
+        invoices_provider_location.country,
+        invoices_provider_location.state
+      )
       ORDER BY
         -- prefer rows with country
-        IF(invoices_provider_country.country IS NULL, 0, 1) DESC,
-        invoices_provider_country.created DESC
+        IF(invoices_provider_location.country IS NULL, 0, 1) DESC,
+        invoices_provider_location.created DESC
       LIMIT
         1
     )[OFFSET(0)].*
   FROM
     subscriptions_history
   JOIN
-    invoices_provider_country
+    invoices_provider_location
   ON
-    subscriptions_history.subscription_id = invoices_provider_country.subscription_id
+    subscriptions_history.subscription_id = invoices_provider_location.subscription_id
     AND (
-      invoices_provider_country.created < subscriptions_history.valid_to
+      invoices_provider_location.created < subscriptions_history.valid_to
       OR subscriptions_history.valid_to IS NULL
     )
   GROUP BY
@@ -351,27 +433,33 @@ SELECT
   plans.plan_interval,
   plans.plan_interval_count,
   "Etc/UTC" AS plan_interval_timezone,
-  subscriptions_history_invoice_provider_country.provider,
-  LOWER(
-    -- Use the same address hierarchy as Stripe Tax after we enabled Stripe Tax (FXA-5457).
-    -- https://stripe.com/docs/tax/customer-locations#address-hierarchy
-    IF(
-      (
-        DATE(subscriptions_history.valid_to) >= "2022-12-01"
-        OR subscriptions_history.valid_to IS NULL
-      )
-      AND (
-        DATE(subscriptions_history.ended_at) >= "2022-12-01"
-        OR subscriptions_history.ended_at IS NULL
-      ),
-      COALESCE(
-        NULLIF(customers.shipping_address_country, ""),
-        NULLIF(customers.address_country, ""),
-        subscriptions_history_invoice_provider_country.country
-      ),
-      subscriptions_history_invoice_provider_country.country
+  subscriptions_history_invoice_provider_location.provider,
+  -- Use the same address hierarchy as Stripe Tax after we enabled Stripe Tax (FXA-5457).
+  -- https://stripe.com/docs/tax/customer-locations#address-hierarchy
+  IF(
+    (DATE(subscriptions_history.valid_to) >= "2022-12-01" OR subscriptions_history.valid_to IS NULL)
+    AND (
+      DATE(subscriptions_history.ended_at) >= "2022-12-01"
+      OR subscriptions_history.ended_at IS NULL
+    ),
+    CASE
+      WHEN customers.shipping_address_country IS NOT NULL
+        THEN STRUCT(
+            LOWER(customers.shipping_address_country) AS country,
+            customers.shipping_address_state AS state
+          )
+      WHEN customers.address_country IS NOT NULL
+        THEN STRUCT(LOWER(customers.address_country) AS country, customers.address_state AS state)
+      ELSE STRUCT(
+          LOWER(subscriptions_history_invoice_provider_location.country) AS country,
+          subscriptions_history_invoice_provider_location.state
+        )
+    END,
+    STRUCT(
+      LOWER(subscriptions_history_invoice_provider_location.country) AS country,
+      subscriptions_history_invoice_provider_location.state
     )
-  ) AS country,
+  ).*,
   subscriptions_history_promotions.promotion_codes,
   subscriptions_history_promotions.promotion_discounts_amount,
 FROM
@@ -385,7 +473,7 @@ LEFT JOIN
 USING
   (customer_id)
 LEFT JOIN
-  subscriptions_history_invoice_provider_country
+  subscriptions_history_invoice_provider_location
 USING
   (subscription_id, valid_from)
 LEFT JOIN

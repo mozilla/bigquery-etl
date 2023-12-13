@@ -14,7 +14,7 @@ WITH dau_sum AS (
     SUM(dau),
   FROM
     {%- raw %}
-    `{{ project_id }}.{{ dataset_id }}.{{ table_name }}` {% endraw -%}
+    `{{ project_id }}.{{ dataset_id }}.{{ table_name }}` {%- endraw %}
   WHERE
     submission_date = @submission_date
 ),

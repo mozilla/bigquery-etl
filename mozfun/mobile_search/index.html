@@ -13,10 +13,10 @@
       
       
       
-        <link rel="prev" href="../accounts_backend/">
+        <link rel="prev" href="../map/">
       
       
-        <link rel="next" href="../accounts_frontend/">
+        <link rel="next" href="../norm/">
       
       
       <link rel="icon" href="../../favicon.png">
@@ -24,7 +24,7 @@
     
     
       
-        <title>Firefox Accounts Databases production - BigQuery ETL</title>
+        <title>Mobile search - BigQuery ETL</title>
       
     
     
@@ -75,7 +75,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#fxa_oauth_clients" class="md-skip">
+        <a href="#normalize_app_name-udf" class="md-skip">
           Skip to content
         </a>
       
@@ -109,7 +109,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Firefox Accounts Databases production
+              Mobile search
             
           </span>
         </div>
@@ -204,21 +204,17 @@
         
   
   
-    
-  
   
     
     
       
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../introduction/" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../../mozdata/introduction/" class="md-tabs__link">
           
   
   Datasets
@@ -235,17 +231,21 @@
         
   
   
+    
+  
   
     
     
       
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../../mozfun/about/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../about/" class="md-tabs__link">
           
   
   UDFs
@@ -363,8 +363,6 @@
       
   
   
-    
-  
   
     
     
@@ -374,12 +372,12 @@
       
       
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
         
           
           <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
@@ -393,7 +391,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             Datasets
@@ -404,20 +402,18 @@
                 
   
   
-    
-  
   
     
     
     
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_1" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_1" >
         
           
           <label class="md-nav__link" for="__nav_2_1" id="__nav_2_1_label" tabindex="0">
@@ -431,7 +427,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_1_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_1_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2_1">
             <span class="md-nav__icon md-icon"></span>
             Mozdata
@@ -444,7 +440,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../introduction/" class="md-nav__link">
+      <a href="../../mozdata/introduction/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -464,7 +460,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../accounts_backend/" class="md-nav__link">
+      <a href="../../mozdata/accounts_backend/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -482,27 +478,9 @@
                 
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    Firefox Accounts Databases production
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../mozdata/accounts_db/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -511,31 +489,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#fxa_oauth_clients" class="md-nav__link">
-    fxa_oauth_clients
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -547,7 +500,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../accounts_frontend/" class="md-nav__link">
+      <a href="../../mozdata/accounts_frontend/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -567,7 +520,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../activity_stream/" class="md-nav__link">
+      <a href="../../mozdata/activity_stream/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -587,7 +540,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../adjust/" class="md-nav__link">
+      <a href="../../mozdata/adjust/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -607,7 +560,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../ads/" class="md-nav__link">
+      <a href="../../mozdata/ads/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -627,7 +580,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../amo_dev/" class="md-nav__link">
+      <a href="../../mozdata/amo_dev/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -647,7 +600,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../amo_prod/" class="md-nav__link">
+      <a href="../../mozdata/amo_prod/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -667,7 +620,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../analysis/" class="md-nav__link">
+      <a href="../../mozdata/analysis/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -687,7 +640,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../app_store/" class="md-nav__link">
+      <a href="../../mozdata/app_store/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -707,7 +660,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../apple_ads/" class="md-nav__link">
+      <a href="../../mozdata/apple_ads/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -727,7 +680,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../bedrock/" class="md-nav__link">
+      <a href="../../mozdata/bedrock/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -747,7 +700,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../bergamot/" class="md-nav__link">
+      <a href="../../mozdata/bergamot/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -767,7 +720,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../blpadi/" class="md-nav__link">
+      <a href="../../mozdata/blpadi/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -787,7 +740,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../burnham/" class="md-nav__link">
+      <a href="../../mozdata/burnham/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -807,7 +760,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../contextual_services/" class="md-nav__link">
+      <a href="../../mozdata/contextual_services/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -827,7 +780,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../coverage/" class="md-nav__link">
+      <a href="../../mozdata/coverage/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -847,7 +800,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../debug_ping_view/" class="md-nav__link">
+      <a href="../../mozdata/debug_ping_view/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -867,7 +820,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../default_browser_agent/" class="md-nav__link">
+      <a href="../../mozdata/default_browser_agent/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -887,7 +840,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../edge_validator/" class="md-nav__link">
+      <a href="../../mozdata/edge_validator/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -907,7 +860,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../eng_workflow/" class="md-nav__link">
+      <a href="../../mozdata/eng_workflow/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -927,7 +880,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../fenix/" class="md-nav__link">
+      <a href="../../mozdata/fenix/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -947,7 +900,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../firefox_accounts/" class="md-nav__link">
+      <a href="../../mozdata/firefox_accounts/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -967,7 +920,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../firefox_desktop/" class="md-nav__link">
+      <a href="../../mozdata/firefox_desktop/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -987,7 +940,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../firefox_desktop_background_defaultagent/" class="md-nav__link">
+      <a href="../../mozdata/firefox_desktop_background_defaultagent/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1007,7 +960,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../firefox_desktop_background_tasks/" class="md-nav__link">
+      <a href="../../mozdata/firefox_desktop_background_tasks/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1027,7 +980,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../firefox_desktop_background_update/" class="md-nav__link">
+      <a href="../../mozdata/firefox_desktop_background_update/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1047,7 +1000,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../firefox_echo_show/" class="md-nav__link">
+      <a href="../../mozdata/firefox_echo_show/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1067,7 +1020,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../firefox_fire_tv/" class="md-nav__link">
+      <a href="../../mozdata/firefox_fire_tv/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1087,7 +1040,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../firefox_installer/" class="md-nav__link">
+      <a href="../../mozdata/firefox_installer/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1107,7 +1060,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../firefox_ios/" class="md-nav__link">
+      <a href="../../mozdata/firefox_ios/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1127,7 +1080,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../firefox_launcher_process/" class="md-nav__link">
+      <a href="../../mozdata/firefox_launcher_process/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1147,7 +1100,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../firefox_reality/" class="md-nav__link">
+      <a href="../../mozdata/firefox_reality/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1167,7 +1120,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../firefox_reality_pc/" class="md-nav__link">
+      <a href="../../mozdata/firefox_reality_pc/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1187,7 +1140,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../firefox_translations/" class="md-nav__link">
+      <a href="../../mozdata/firefox_translations/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1207,7 +1160,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../fivetran_costs/" class="md-nav__link">
+      <a href="../../mozdata/fivetran_costs/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1227,7 +1180,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../focus_android/" class="md-nav__link">
+      <a href="../../mozdata/focus_android/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1247,7 +1200,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../focus_ios/" class="md-nav__link">
+      <a href="../../mozdata/focus_ios/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1267,7 +1220,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../glean_dictionary/" class="md-nav__link">
+      <a href="../../mozdata/glean_dictionary/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1287,7 +1240,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../google_ads/" class="md-nav__link">
+      <a href="../../mozdata/google_ads/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1307,7 +1260,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../hubs/" class="md-nav__link">
+      <a href="../../mozdata/hubs/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1327,7 +1280,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../internet_outages/" class="md-nav__link">
+      <a href="../../mozdata/internet_outages/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1347,7 +1300,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../klar_android/" class="md-nav__link">
+      <a href="../../mozdata/klar_android/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1367,7 +1320,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../klar_ios/" class="md-nav__link">
+      <a href="../../mozdata/klar_ios/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1387,7 +1340,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../lockwise_android/" class="md-nav__link">
+      <a href="../../mozdata/lockwise_android/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1407,7 +1360,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../lockwise_ios/" class="md-nav__link">
+      <a href="../../mozdata/lockwise_ios/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1427,7 +1380,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../mach/" class="md-nav__link">
+      <a href="../../mozdata/mach/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1447,7 +1400,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../mdn_yari/" class="md-nav__link">
+      <a href="../../mozdata/mdn_yari/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1467,7 +1420,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../messaging_system/" class="md-nav__link">
+      <a href="../../mozdata/messaging_system/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1487,7 +1440,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../mlhackweek_search/" class="md-nav__link">
+      <a href="../../mozdata/mlhackweek_search/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1507,7 +1460,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../mobile/" class="md-nav__link">
+      <a href="../../mozdata/mobile/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1527,7 +1480,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../monitor_cirrus/" class="md-nav__link">
+      <a href="../../mozdata/monitor_cirrus/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1547,7 +1500,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../monitor_frontend/" class="md-nav__link">
+      <a href="../../mozdata/monitor_frontend/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1567,7 +1520,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../monitoring/" class="md-nav__link">
+      <a href="../../mozdata/monitoring/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1587,7 +1540,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../moso_mastodon_backend/" class="md-nav__link">
+      <a href="../../mozdata/moso_mastodon_backend/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1607,7 +1560,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../moso_mastodon_web/" class="md-nav__link">
+      <a href="../../mozdata/moso_mastodon_web/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1627,7 +1580,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../mozdata/" class="md-nav__link">
+      <a href="../../mozdata/mozdata/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1647,7 +1600,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../mozilla_lockbox/" class="md-nav__link">
+      <a href="../../mozdata/mozilla_lockbox/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1667,7 +1620,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../mozilla_mach/" class="md-nav__link">
+      <a href="../../mozdata/mozilla_mach/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1687,7 +1640,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../mozilla_org/" class="md-nav__link">
+      <a href="../../mozdata/mozilla_org/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1707,7 +1660,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../mozilla_vpn/" class="md-nav__link">
+      <a href="../../mozdata/mozilla_vpn/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1727,7 +1680,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../mozillavpn/" class="md-nav__link">
+      <a href="../../mozdata/mozillavpn/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1747,7 +1700,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../mozillavpn_cirrus/" class="md-nav__link">
+      <a href="../../mozdata/mozillavpn_cirrus/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1767,7 +1720,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../mozphab/" class="md-nav__link">
+      <a href="../../mozdata/mozphab/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1787,7 +1740,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../mozregression/" class="md-nav__link">
+      <a href="../../mozdata/mozregression/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1807,7 +1760,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../mozza/" class="md-nav__link">
+      <a href="../../mozdata/mozza/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1827,7 +1780,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../operational_monitoring/" class="md-nav__link">
+      <a href="../../mozdata/operational_monitoring/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1847,7 +1800,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_bergamot/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_bergamot/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1867,7 +1820,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_broken_site_report/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_broken_site_report/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1887,7 +1840,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_connect_firefox/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_connect_firefox/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1907,7 +1860,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_fenix/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_fenix/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1927,7 +1880,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_fenix_nightly/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_fenix_nightly/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1947,7 +1900,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_fennec_aurora/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_fennec_aurora/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1967,7 +1920,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_firefox/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_firefox/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1987,7 +1940,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_firefox_beta/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_firefox_beta/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2007,7 +1960,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_firefox_vpn/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_firefox_vpn/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2027,7 +1980,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_firefoxreality/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_firefoxreality/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2047,7 +2000,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_focus/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_focus/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2067,7 +2020,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_focus_beta/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_focus_beta/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2087,7 +2040,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_focus_nightly/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_focus_nightly/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2107,7 +2060,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_ios_fennec/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_ios_fennec/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2127,7 +2080,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_ios_firefox/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_ios_firefox/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2147,7 +2100,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_ios_firefoxbeta/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_ios_firefoxbeta/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2167,7 +2120,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_ios_firefoxvpn/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_ios_firefoxvpn/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2187,7 +2140,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_ios_firefoxvpn_network_extension/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_ios_firefoxvpn_network_extension/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2207,7 +2160,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_ios_focus/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_ios_focus/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2227,7 +2180,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_ios_klar/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_ios_klar/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2247,7 +2200,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_ios_lockbox/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_ios_lockbox/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2267,7 +2220,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_klar/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_klar/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2287,7 +2240,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_mozregression/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_mozregression/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2307,7 +2260,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_reference_browser/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_reference_browser/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2327,7 +2280,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_tv_firefox/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_tv_firefox/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2347,7 +2300,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_vrbrowser/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_vrbrowser/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2367,7 +2320,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../pine/" class="md-nav__link">
+      <a href="../../mozdata/pine/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2387,7 +2340,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../pocket/" class="md-nav__link">
+      <a href="../../mozdata/pocket/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2407,7 +2360,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../reference/" class="md-nav__link">
+      <a href="../../mozdata/reference/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2427,7 +2380,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../reference_browser/" class="md-nav__link">
+      <a href="../../mozdata/reference_browser/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2447,7 +2400,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../regrets_reporter/" class="md-nav__link">
+      <a href="../../mozdata/regrets_reporter/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2467,7 +2420,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../regrets_reporter_ucs/" class="md-nav__link">
+      <a href="../../mozdata/regrets_reporter_ucs/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2487,7 +2440,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../relay/" class="md-nav__link">
+      <a href="../../mozdata/relay/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2507,7 +2460,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../search/" class="md-nav__link">
+      <a href="../../mozdata/search/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2527,7 +2480,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../search_terms/" class="md-nav__link">
+      <a href="../../mozdata/search_terms/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2547,7 +2500,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../static/" class="md-nav__link">
+      <a href="../../mozdata/static/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2567,7 +2520,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../stripe/" class="md-nav__link">
+      <a href="../../mozdata/stripe/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2587,7 +2540,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../stub_attribution_service/" class="md-nav__link">
+      <a href="../../mozdata/stub_attribution_service/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2607,7 +2560,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../subscription_platform/" class="md-nav__link">
+      <a href="../../mozdata/subscription_platform/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2627,7 +2580,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../telemetry/" class="md-nav__link">
+      <a href="../../mozdata/telemetry/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2647,7 +2600,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../treeherder/" class="md-nav__link">
+      <a href="../../mozdata/treeherder/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2667,7 +2620,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../udf/" class="md-nav__link">
+      <a href="../../mozdata/udf/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2687,7 +2640,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../udf_js/" class="md-nav__link">
+      <a href="../../mozdata/udf_js/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2707,7 +2660,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../udf_js_lib/" class="md-nav__link">
+      <a href="../../mozdata/udf_js_lib/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2727,7 +2680,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../udf_legacy/" class="md-nav__link">
+      <a href="../../mozdata/udf_legacy/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2747,7 +2700,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../viu_politica/" class="md-nav__link">
+      <a href="../../mozdata/viu_politica/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2767,7 +2720,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../webpagetest/" class="md-nav__link">
+      <a href="../../mozdata/webpagetest/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2800,6 +2753,8 @@
       
   
   
+    
+  
   
     
     
@@ -2809,12 +2764,12 @@
       
       
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
           <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
@@ -2828,7 +2783,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             UDFs
@@ -2839,18 +2794,20 @@
                 
   
   
+    
+  
   
     
     
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" checked>
         
           
           <label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
@@ -2864,7 +2821,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3_1">
             <span class="md-nav__icon md-icon"></span>
             Mozfun
@@ -2877,7 +2834,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../mozfun/about/" class="md-nav__link">
+      <a href="../about/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2897,7 +2854,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../mozfun/addons/" class="md-nav__link">
+      <a href="../addons/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2917,7 +2874,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../mozfun/bits28/" class="md-nav__link">
+      <a href="../bits28/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2937,7 +2894,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../mozfun/bytes/" class="md-nav__link">
+      <a href="../bytes/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2957,7 +2914,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../mozfun/datetime_util/" class="md-nav__link">
+      <a href="../datetime_util/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2977,7 +2934,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../mozfun/event_analysis/" class="md-nav__link">
+      <a href="../event_analysis/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2997,7 +2954,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../mozfun/ga/" class="md-nav__link">
+      <a href="../ga/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -3017,7 +2974,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../mozfun/glam/" class="md-nav__link">
+      <a href="../glam/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -3037,7 +2994,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../mozfun/glean/" class="md-nav__link">
+      <a href="../glean/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -3057,7 +3014,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../mozfun/hist/" class="md-nav__link">
+      <a href="../hist/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -3077,7 +3034,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../mozfun/iap/" class="md-nav__link">
+      <a href="../iap/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -3097,7 +3054,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../mozfun/json/" class="md-nav__link">
+      <a href="../json/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -3117,7 +3074,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../mozfun/map/" class="md-nav__link">
+      <a href="../map/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -3135,9 +3092,27 @@
                 
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../../mozfun/mobile_search/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Mobile search
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -3146,6 +3121,51 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#normalize_app_name-udf" class="md-nav__link">
+    normalize_app_name (UDF)
+  </a>
+  
+    <nav class="md-nav" aria-label="normalize_app_name (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#normalized-app-and-os-name-for-mobile-search-related-tables" class="md-nav__link">
+    Normalized app and os name for mobile search related tables
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -3157,7 +3177,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../mozfun/norm/" class="md-nav__link">
+      <a href="../norm/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -3177,7 +3197,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../mozfun/stats/" class="md-nav__link">
+      <a href="../stats/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -3197,7 +3217,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../mozfun/vpn/" class="md-nav__link">
+      <a href="../vpn/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -3543,9 +3563,29 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#fxa_oauth_clients" class="md-nav__link">
-    fxa_oauth_clients
+  <a href="#normalize_app_name-udf" class="md-nav__link">
+    normalize_app_name (UDF)
   </a>
+  
+    <nav class="md-nav" aria-label="normalize_app_name (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#normalized-app-and-os-name-for-mobile-search-related-tables" class="md-nav__link">
+    Normalized app and os name for mobile search related tables
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -3564,60 +3604,18 @@
                   
 
 
-  <h1>Firefox Accounts Databases production</h1>
+  <h1>Mobile search</h1>
 
-<p>Views for accessing data extracted from Mozilla Accounts backend services databases.</p>
-<p>Contains views to selected tables and columns from <code>accounts_db_external</code> dataset that are useful for analysis.</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/accounts_db">Source Directory</a></p>
-<h2 id="fxa_oauth_clients"><a href="#fxa_oauth_clients">fxa_oauth_clients</a></h2>
-<p><strong>Clients table from production fxa_oauth database</strong></p>
-<p><code>accounts_db.fxa_oauth_clients</code></p>
-<p>An authorized view on top of the <code>accounts_db_external.fxa_oauth_clients_v1</code> table.
-Contains mappings of oauth client ids to their names.</p>
-<p><code>id</code> column is converted from bytes to a hex string.</p>
-<p>See https://mozilla.github.io/ecosystem-platform/reference/database-structure#database-fxa</p>
-<table>
-<caption>Schema</caption>
-    <tr>
-        <th>Column</th>
-        <th>Description</th>
-        <th>Type</th>
-        <th>Nullable</th>
-    </tr>
-<tr>
-        <td>id</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>name</td>
-        <td></td>
-        <td>String</td>
-        <td>Yes</td>
-    </tr><tr>
-        <td>createdAt</td>
-        <td></td>
-        <td>Timestamp</td>
-        <td>Yes</td>
-    </tr>
-</table>
-
-<table>
-<caption>Referenced Tables</caption>
-    <tr>
-        <th>Project</th>
-        <th>Dataset</th>
-        <th>Table</th>
-    </tr>
-<tr>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/accounts_db_external>accounts_db_external</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/accounts_db_external/fxa_oauth_clients_v1>fxa_oauth_clients_v1</a></td>
-        </tr>
-</table>
-
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/accounts_db/fxa_oauth_clients">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/accounts_db/fxa_oauth_clients/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/accounts_db/fxa_oauth_clients/metadata.yaml">Metadata File</a> </p>
-<hr />
+<h2 id="normalize_app_name-udf">normalize_app_name (UDF)</h2>
+<p>Returns normalized_app_name and normalized_app_name_os (for mobile search tables only).</p>
+<h3 id="normalized-app-and-os-name-for-mobile-search-related-tables">Normalized app and os name for mobile search related tables</h3>
+<p>Takes app name and os as input :
+Returns a struct of normalized_app_name and normalized_app_name_os based on <a href="https://mozilla-hub.atlassian.net/browse/RS-805">discussion provided here</a></p>
+<h3 id="parameters">Parameters</h3>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>STRUCT&lt;normalized_app_name STRING, normalized_app_name_os STRING&gt;
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/mobile_search/normalize_app_name">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/mobile_search/normalize_app_name/metadata.yaml">Edit</a></p>
 
 
 

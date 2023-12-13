@@ -1,6 +1,3 @@
--- Query for firefox_desktop_derived.use_counters_v1
-            -- For more information on writing queries see:
-            -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
 -- Query for telemetry_derived.firefox_use_counters_v1
             -- For more information on writing queries see:
             -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html

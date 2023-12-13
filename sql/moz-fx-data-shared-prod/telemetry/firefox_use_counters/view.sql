@@ -1,5 +1,6 @@
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.telemetry.firefox_use_counters`
+AS 
 SELECT
   submission_date,
   version_major,

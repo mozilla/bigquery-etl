@@ -117,7 +117,7 @@ search AS (
     `moz-fx-data-shared-prod.search.mobile_search_clients_engines_sources_daily`
   WHERE
     submission_date = @submission_date
-    AND normalized_app_name = "Fenix"
+    AND normalized_app_name_os IN ('Firefox Android', 'Firefox Preview')
   GROUP BY
     client_id,
     submission_date

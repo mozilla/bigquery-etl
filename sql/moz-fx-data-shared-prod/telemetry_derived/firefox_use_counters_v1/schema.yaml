@@ -5,8 +5,8 @@ fields:
   description: The date when the ingestion edge server accepted this message
 - mode: NULLABLE
   name: version_major
-  type: NUMERIC
-  description: The user visible main portion of version string (e.g. 1, 2, etc). In the unlikely event that the display version can not be retrieved, it is set to "inaccessible".
+  type: INT64
+  description: The user visible main portion of version string (e.g. 1, 2, etc). 
 - mode: NULLABLE
   name: geo_country
   type: STRING

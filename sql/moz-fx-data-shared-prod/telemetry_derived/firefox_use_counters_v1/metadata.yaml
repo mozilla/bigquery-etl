@@ -17,6 +17,6 @@ bigquery:
     require_partition_filter: true
     expiration_days: null
   clustering:
-    fields: 
+    fields:
     - metric
 deprecated: false

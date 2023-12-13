@@ -1,14 +1,13 @@
 -- Query for telemetry_derived.firefox_use_counters_v1
             -- For more information on writing queries see:
             -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
----------SECTION 1 - FIREFOX DESKTOP ---------
+
 WITH firefox_desktop_use_counts_by_day_version_and_country_stg AS (
   SELECT
     DATE(a.submission_timestamp) AS submission_date,
     mozfun.norm.truncate_version(client_info.app_display_version, 'major') AS version_major,
     metadata.geo.country AS geo_country,
     normalized_app_name AS platform,
-    --5 main denominators
     SUM(
       metrics.counter.use_counter_content_documents_destroyed
     ) AS use_counter_content_documents_destroyed,
@@ -5931,14 +5930,14 @@ WITH firefox_desktop_use_counts_by_day_version_and_country_stg AS (
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
-    1,
-    2,
-    3,
-    4
+    DATE(a.submission_timestamp),
+    mozfun.norm.truncate_version(client_info.app_display_version, 'major'),
+    metadata.geo.country,
+    normalized_app_name
   HAVING
     COUNT(
       DISTINCT(client_info.client_id)
-    ) >= 5000 --only keep day/country/versions with 5000+ clients that day
+    ) >= 5000 
 ),
 firefox_desktop_pivoted_raw AS (
   SELECT
@@ -8252,7 +8251,6 @@ firefox_desktop_staging AS (
     version_major,
     geo_country,
     platform,
-  --denominators
     use_counter_content_documents_destroyed,
     use_counter_top_level_content_documents_destroyed,
     use_counter_service_workers_destroyed,
@@ -8288,14 +8286,13 @@ firefox_desktop_staging AS (
   FROM
     firefox_desktop_pivoted_raw
 ),
----------SECTION 2 - FENIX---------
+            
 fenix_firefox_use_counts_by_day_version_and_country_stg AS (
   SELECT
     DATE(a.submission_timestamp) AS submission_date,
     mozfun.norm.truncate_version(client_info.app_display_version, 'major') AS version_major,
     metadata.geo.country AS geo_country,
     'Fenix' AS platform,
-  --5 main denominators
     SUM(
       metrics.counter.use_counter_content_documents_destroyed
     ) AS use_counter_content_documents_destroyed,
@@ -14225,7 +14222,7 @@ fenix_firefox_use_counts_by_day_version_and_country_stg AS (
   HAVING
     COUNT(
       DISTINCT(client_info.client_id)
-    ) >= 5000 --only keep day/country/versions with 5000+ clients that day
+    ) >= 5000 
 ),
 fenix_pivoted_raw AS (
   SELECT

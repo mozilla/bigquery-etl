@@ -205,7 +205,7 @@ def main(
         job_config=bigquery.QueryJobConfig(
             query_parameters=[
                 bigquery.ScalarQueryParameter(
-                    "submission_date", "DATE", submission_date
+                    "submission_date", "DATE", f"{submission_date:%F}"
                 ),
             ],
         ),
@@ -236,7 +236,7 @@ def main(
                 job_config=bigquery.QueryJobConfig(
                     query_parameters=[
                         bigquery.ScalarQueryParameter(
-                            "submission_date", "DATE", submission_date
+                            "submission_date", "DATE", f"{submission_date:%F}"
                         ),
                     ],
                 ),
@@ -277,7 +277,7 @@ def main(
 
     load_job = bq.load_table_from_json(
         json_rows=symbols,
-        destination=f'{destination_table}${submission_date.replace("-", "")}',
+        destination=f"{destination_table}${submission_date:%Y%m%d}",
         job_config=bigquery.LoadJobConfig(
             ignore_unknown_values=False,
             schema=OUTPUT_SCHEMA,

@@ -39,6 +39,8 @@ workgroup_access:
   members:
   - workgroup:mozilla-confidential
 references:
+  checks.sql:
+  - moz-fx-data-shared-prod.org_mozilla_fenix_nightly_derived.baseline_clients_last_seen_v1
   init.sql:
   - org_mozilla_fenix_nightly_derived.baseline_clients_daily_v1
   query.sql:

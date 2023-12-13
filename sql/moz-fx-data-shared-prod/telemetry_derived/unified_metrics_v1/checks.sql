@@ -257,8 +257,10 @@ WHERE
 #warn
 SELECT
   IF(
-    COUNTIF(NOT REGEXP_CONTAINS(CAST(country AS STRING), r"^[A-Z]{2}|\?\?$")) > 0,
-    ERROR("Unexpected values for field normalized_channel detected."),
+    COUNTIF(NOT REGEXP_CONTAINS(country, r"^[A-Z]{2}$")) > 0,
+    ERROR(
+      "Some values in this field do not adhere to the ISO 3166-1 specification (2 character country code, for example: DE)."
+    ),
     NULL
   )
 FROM

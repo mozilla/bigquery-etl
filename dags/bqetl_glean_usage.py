@@ -222,6 +222,328 @@ with DAG(
         task_group=task_group_burnham,
     )
 
+    checks__warn_firefox_desktop_background_defaultagent_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
+        task_id="checks__warn_firefox_desktop_background_defaultagent_derived__baseline_clients_last_seen__v1",
+        source_table="baseline_clients_last_seen_v1",
+        dataset_id="firefox_desktop_background_defaultagent_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=False,
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+        task_group=task_group_firefox_desktop_background_defaultagent,
+    )
+
+    checks__warn_firefox_desktop_background_tasks_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
+        task_id="checks__warn_firefox_desktop_background_tasks_derived__baseline_clients_last_seen__v1",
+        source_table="baseline_clients_last_seen_v1",
+        dataset_id="firefox_desktop_background_tasks_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=False,
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+        task_group=task_group_firefox_desktop_background_tasks,
+    )
+
+    checks__warn_firefox_desktop_background_update_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
+        task_id="checks__warn_firefox_desktop_background_update_derived__baseline_clients_last_seen__v1",
+        source_table="baseline_clients_last_seen_v1",
+        dataset_id="firefox_desktop_background_update_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=False,
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+        task_group=task_group_firefox_desktop_background_update,
+    )
+
+    checks__warn_firefox_desktop_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
+        task_id="checks__warn_firefox_desktop_derived__baseline_clients_last_seen__v1",
+        source_table="baseline_clients_last_seen_v1",
+        dataset_id="firefox_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=False,
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+        task_group=task_group_firefox_desktop,
+    )
+
+    checks__warn_org_mozilla_connect_firefox_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
+        task_id="checks__warn_org_mozilla_connect_firefox_derived__baseline_clients_last_seen__v1",
+        source_table="baseline_clients_last_seen_v1",
+        dataset_id="org_mozilla_connect_firefox_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=False,
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+        task_group=task_group_firefox_echo_show,
+    )
+
+    checks__warn_org_mozilla_fenix_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
+        task_id="checks__warn_org_mozilla_fenix_derived__baseline_clients_last_seen__v1",
+        source_table="baseline_clients_last_seen_v1",
+        dataset_id="org_mozilla_fenix_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=False,
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+        task_group=task_group_fenix,
+    )
+
+    checks__warn_org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
+        task_id="checks__warn_org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1",
+        source_table="baseline_clients_last_seen_v1",
+        dataset_id="org_mozilla_fenix_nightly_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=False,
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+        task_group=task_group_fenix,
+    )
+
+    checks__warn_org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
+        task_id="checks__warn_org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1",
+        source_table="baseline_clients_last_seen_v1",
+        dataset_id="org_mozilla_fennec_aurora_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=False,
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+        task_group=task_group_fenix,
+    )
+
+    checks__warn_org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
+        task_id="checks__warn_org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1",
+        source_table="baseline_clients_last_seen_v1",
+        dataset_id="org_mozilla_firefox_beta_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=False,
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+        task_group=task_group_fenix,
+    )
+
+    checks__warn_org_mozilla_firefox_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
+        task_id="checks__warn_org_mozilla_firefox_derived__baseline_clients_last_seen__v1",
+        source_table="baseline_clients_last_seen_v1",
+        dataset_id="org_mozilla_firefox_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=False,
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+        task_group=task_group_fenix,
+    )
+
+    checks__warn_org_mozilla_focus_beta_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
+        task_id="checks__warn_org_mozilla_focus_beta_derived__baseline_clients_last_seen__v1",
+        source_table="baseline_clients_last_seen_v1",
+        dataset_id="org_mozilla_focus_beta_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=False,
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+        task_group=task_group_focus_android,
+    )
+
+    checks__warn_org_mozilla_focus_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
+        task_id="checks__warn_org_mozilla_focus_derived__baseline_clients_last_seen__v1",
+        source_table="baseline_clients_last_seen_v1",
+        dataset_id="org_mozilla_focus_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=False,
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+        task_group=task_group_focus_android,
+    )
+
+    checks__warn_org_mozilla_focus_nightly_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
+        task_id="checks__warn_org_mozilla_focus_nightly_derived__baseline_clients_last_seen__v1",
+        source_table="baseline_clients_last_seen_v1",
+        dataset_id="org_mozilla_focus_nightly_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=False,
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+        task_group=task_group_focus_android,
+    )
+
+    checks__warn_org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
+        task_id="checks__warn_org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1",
+        source_table="baseline_clients_last_seen_v1",
+        dataset_id="org_mozilla_ios_fennec_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=False,
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+        task_group=task_group_firefox_ios,
+    )
+
+    checks__warn_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
+        task_id="checks__warn_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1",
+        source_table="baseline_clients_last_seen_v1",
+        dataset_id="org_mozilla_ios_firefox_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=False,
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+        task_group=task_group_firefox_ios,
+    )
+
+    checks__warn_org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
+        task_id="checks__warn_org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1",
+        source_table="baseline_clients_last_seen_v1",
+        dataset_id="org_mozilla_ios_firefoxbeta_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=False,
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+        task_group=task_group_firefox_ios,
+    )
+
+    checks__warn_org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
+        task_id="checks__warn_org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1",
+        source_table="baseline_clients_last_seen_v1",
+        dataset_id="org_mozilla_ios_focus_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=False,
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+        task_group=task_group_focus_ios,
+    )
+
+    checks__warn_org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
+        task_id="checks__warn_org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1",
+        source_table="baseline_clients_last_seen_v1",
+        dataset_id="org_mozilla_ios_klar_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=False,
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+        task_group=task_group_klar_ios,
+    )
+
+    checks__warn_org_mozilla_ios_lockbox_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
+        task_id="checks__warn_org_mozilla_ios_lockbox_derived__baseline_clients_last_seen__v1",
+        source_table="baseline_clients_last_seen_v1",
+        dataset_id="org_mozilla_ios_lockbox_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=False,
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+        task_group=task_group_lockwise_ios,
+    )
+
+    checks__warn_org_mozilla_klar_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
+        task_id="checks__warn_org_mozilla_klar_derived__baseline_clients_last_seen__v1",
+        source_table="baseline_clients_last_seen_v1",
+        dataset_id="org_mozilla_klar_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=False,
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+        task_group=task_group_klar_android,
+    )
+
+    checks__warn_org_mozilla_reference_browser_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
+        task_id="checks__warn_org_mozilla_reference_browser_derived__baseline_clients_last_seen__v1",
+        source_table="baseline_clients_last_seen_v1",
+        dataset_id="org_mozilla_reference_browser_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=False,
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+        task_group=task_group_reference_browser,
+    )
+
+    checks__warn_org_mozilla_vrbrowser_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
+        task_id="checks__warn_org_mozilla_vrbrowser_derived__baseline_clients_last_seen__v1",
+        source_table="baseline_clients_last_seen_v1",
+        dataset_id="org_mozilla_vrbrowser_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=False,
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+        task_group=task_group_firefox_reality,
+    )
+
+    checks__warn_pine_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
+        task_id="checks__warn_pine_derived__baseline_clients_last_seen__v1",
+        source_table="baseline_clients_last_seen_v1",
+        dataset_id="pine_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=False,
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+        task_group=task_group_pine,
+    )
+
     fenix_derived__clients_last_seen_joined__v1 = bigquery_etl_query(
         task_id="fenix_derived__clients_last_seen_joined__v1",
         destination_table="clients_last_seen_joined_v1",
@@ -3088,6 +3410,98 @@ with DAG(
 
     burnham_derived__metrics_clients_last_seen__v1.set_upstream(
         burnham_derived__metrics_clients_daily__v1
+    )
+
+    checks__warn_firefox_desktop_background_defaultagent_derived__baseline_clients_last_seen__v1.set_upstream(
+        firefox_desktop_background_defaultagent_derived__baseline_clients_last_seen__v1
+    )
+
+    checks__warn_firefox_desktop_background_tasks_derived__baseline_clients_last_seen__v1.set_upstream(
+        firefox_desktop_background_tasks_derived__baseline_clients_last_seen__v1
+    )
+
+    checks__warn_firefox_desktop_background_update_derived__baseline_clients_last_seen__v1.set_upstream(
+        firefox_desktop_background_update_derived__baseline_clients_last_seen__v1
+    )
+
+    checks__warn_firefox_desktop_derived__baseline_clients_last_seen__v1.set_upstream(
+        firefox_desktop_derived__baseline_clients_last_seen__v1
+    )
+
+    checks__warn_org_mozilla_connect_firefox_derived__baseline_clients_last_seen__v1.set_upstream(
+        org_mozilla_connect_firefox_derived__baseline_clients_last_seen__v1
+    )
+
+    checks__warn_org_mozilla_fenix_derived__baseline_clients_last_seen__v1.set_upstream(
+        org_mozilla_fenix_derived__baseline_clients_last_seen__v1
+    )
+
+    checks__warn_org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1.set_upstream(
+        org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1
+    )
+
+    checks__warn_org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1.set_upstream(
+        org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1
+    )
+
+    checks__warn_org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1.set_upstream(
+        org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1
+    )
+
+    checks__warn_org_mozilla_firefox_derived__baseline_clients_last_seen__v1.set_upstream(
+        org_mozilla_firefox_derived__baseline_clients_last_seen__v1
+    )
+
+    checks__warn_org_mozilla_focus_beta_derived__baseline_clients_last_seen__v1.set_upstream(
+        org_mozilla_focus_beta_derived__baseline_clients_last_seen__v1
+    )
+
+    checks__warn_org_mozilla_focus_derived__baseline_clients_last_seen__v1.set_upstream(
+        org_mozilla_focus_derived__baseline_clients_last_seen__v1
+    )
+
+    checks__warn_org_mozilla_focus_nightly_derived__baseline_clients_last_seen__v1.set_upstream(
+        org_mozilla_focus_nightly_derived__baseline_clients_last_seen__v1
+    )
+
+    checks__warn_org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1.set_upstream(
+        org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1
+    )
+
+    checks__warn_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1.set_upstream(
+        org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
+    )
+
+    checks__warn_org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1.set_upstream(
+        org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1
+    )
+
+    checks__warn_org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1.set_upstream(
+        org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1
+    )
+
+    checks__warn_org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1.set_upstream(
+        org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1
+    )
+
+    checks__warn_org_mozilla_ios_lockbox_derived__baseline_clients_last_seen__v1.set_upstream(
+        org_mozilla_ios_lockbox_derived__baseline_clients_last_seen__v1
+    )
+
+    checks__warn_org_mozilla_klar_derived__baseline_clients_last_seen__v1.set_upstream(
+        org_mozilla_klar_derived__baseline_clients_last_seen__v1
+    )
+
+    checks__warn_org_mozilla_reference_browser_derived__baseline_clients_last_seen__v1.set_upstream(
+        org_mozilla_reference_browser_derived__baseline_clients_last_seen__v1
+    )
+
+    checks__warn_org_mozilla_vrbrowser_derived__baseline_clients_last_seen__v1.set_upstream(
+        org_mozilla_vrbrowser_derived__baseline_clients_last_seen__v1
+    )
+
+    checks__warn_pine_derived__baseline_clients_last_seen__v1.set_upstream(
+        pine_derived__baseline_clients_last_seen__v1
     )
 
     fenix_derived__clients_last_seen_joined__v1.set_upstream(

@@ -6306,7 +6306,7 @@ WITH firefox_desktop_pivoted_raw AS (
       WHERE
         DATE(
           submission_timestamp
-        ) = '2023-12-03' --@submission_date
+        ) = @submission_date
       GROUP BY
         1,
         2,
@@ -15554,7 +15554,7 @@ FROM
                 WHERE
                   DATE(
                     submission_timestamp
-                  ) = '2023-12-03' --@submission_date
+                  ) = @submission_date
                 GROUP BY
                   1,
                   2,

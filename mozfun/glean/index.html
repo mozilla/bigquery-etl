@@ -3040,46 +3040,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#legacy_compatible_experiments-udf" class="md-nav__link">
-    legacy_compatible_experiments (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="legacy_compatible_experiments (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#parse_datetime-udf" class="md-nav__link">
-    parse_datetime (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="parse_datetime (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters_1" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#timespan_nanos-udf" class="md-nav__link">
     timespan_nanos (UDF)
   </a>
@@ -3088,7 +3048,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#parameters_2" class="md-nav__link">
+  <a href="#parameters" class="md-nav__link">
     Parameters
   </a>
   
@@ -3105,6 +3065,46 @@
   </a>
   
     <nav class="md-nav" aria-label="timespan_seconds (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_1" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#legacy_compatible_experiments-udf" class="md-nav__link">
+    legacy_compatible_experiments (UDF)
+  </a>
+  
+    <nav class="md-nav" aria-label="legacy_compatible_experiments (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_2" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parse_datetime-udf" class="md-nav__link">
+    parse_datetime (UDF)
+  </a>
+  
+    <nav class="md-nav" aria-label="parse_datetime (UDF)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3622,46 +3622,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#legacy_compatible_experiments-udf" class="md-nav__link">
-    legacy_compatible_experiments (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="legacy_compatible_experiments (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#parse_datetime-udf" class="md-nav__link">
-    parse_datetime (UDF)
-  </a>
-  
-    <nav class="md-nav" aria-label="parse_datetime (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters_1" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#timespan_nanos-udf" class="md-nav__link">
     timespan_nanos (UDF)
   </a>
@@ -3670,7 +3630,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#parameters_2" class="md-nav__link">
+  <a href="#parameters" class="md-nav__link">
     Parameters
   </a>
   
@@ -3687,6 +3647,46 @@
   </a>
   
     <nav class="md-nav" aria-label="timespan_seconds (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_1" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#legacy_compatible_experiments-udf" class="md-nav__link">
+    legacy_compatible_experiments (UDF)
+  </a>
+  
+    <nav class="md-nav" aria-label="legacy_compatible_experiments (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_2" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parse_datetime-udf" class="md-nav__link">
+    parse_datetime (UDF)
+  </a>
+  
+    <nav class="md-nav" aria-label="parse_datetime (UDF)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3718,33 +3718,10 @@
 
 <h1 id="glean">glean</h1>
 <p>Functions for working with Glean data.</p>
-<h2 id="legacy_compatible_experiments-udf">legacy_compatible_experiments (UDF)</h2>
-<p>Formats a Glean experiments field into a Legacy Telemetry experiments field by dropping the extra information that Glean collects</p>
-<p>This UDF transforms the <code>ping_info.experiments</code> field from Glean pings into the format for <code>experiments</code> used by Legacy Telemetry pings. In particular, it drops the exta information that Glean pings collect.</p>
-<p>If you need to combine Glean data with Legacy Telemetry data, then you can use this UDF to transform a Glean experiments field into the structure of a Legacy Telemetry one.</p>
-<h3 id="parameters">Parameters</h3>
-<p><strong>INPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>ping_info__experiments ARRAY&lt;STRUCT&lt;key STRING, value STRUCT&lt;branch STRING, extra STRUCT&lt;type STRING, enrollment_id STRING&gt;&gt;&gt;&gt;
-</code></pre></div>
-<p><strong>OUTPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>ARRAY&lt;STRUCT&lt;key STRING, value STRING&gt;&gt;
-</code></pre></div>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/glean/legacy_compatible_experiments">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/glean/legacy_compatible_experiments/metadata.yaml">Edit</a></p>
-<h2 id="parse_datetime-udf">parse_datetime (UDF)</h2>
-<p>Parses a Glean datetime metric string value as a BigQuery timestamp.</p>
-<p>See <a href="https://mozilla.github.io/glean/book/reference/metrics/datetime.html">https://mozilla.github.io/glean/book/reference/metrics/datetime.html</a></p>
-<h3 id="parameters_1">Parameters</h3>
-<p><strong>INPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>datetime_string STRING
-</code></pre></div>
-<p><strong>OUTPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>TIMESTAMP
-</code></pre></div>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/glean/parse_datetime">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/glean/parse_datetime/metadata.yaml">Edit</a></p>
 <h2 id="timespan_nanos-udf">timespan_nanos (UDF)</h2>
 <p>Returns the number of nanoseconds represented by a Glean timespan struct.</p>
 <p>See <a href="https://mozilla.github.io/glean/book/user/metrics/timespan.html">https://mozilla.github.io/glean/book/user/metrics/timespan.html</a></p>
-<h3 id="parameters_2">Parameters</h3>
+<h3 id="parameters">Parameters</h3>
 <p><strong>INPUTS</strong></p>
 <div class="highlight"><pre><span></span><code>timespan STRUCT&lt;time_unit STRING, value INT64&gt;
 </code></pre></div>
@@ -3756,7 +3733,7 @@
 <p>Returns the number of seconds represented by a Glean timespan struct,
 rounded down to full seconds.</p>
 <p>See <a href="https://mozilla.github.io/glean/book/user/metrics/timespan.html">https://mozilla.github.io/glean/book/user/metrics/timespan.html</a></p>
-<h3 id="parameters_3">Parameters</h3>
+<h3 id="parameters_1">Parameters</h3>
 <p><strong>INPUTS</strong></p>
 <div class="highlight"><pre><span></span><code>timespan STRUCT&lt;time_unit STRING, value INT64&gt;
 </code></pre></div>
@@ -3764,6 +3741,29 @@ rounded down to full seconds.</p>
 <div class="highlight"><pre><span></span><code>INT64
 </code></pre></div>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/glean/timespan_seconds">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/glean/timespan_seconds/metadata.yaml">Edit</a></p>
+<h2 id="legacy_compatible_experiments-udf">legacy_compatible_experiments (UDF)</h2>
+<p>Formats a Glean experiments field into a Legacy Telemetry experiments field by dropping the extra information that Glean collects</p>
+<p>This UDF transforms the <code>ping_info.experiments</code> field from Glean pings into the format for <code>experiments</code> used by Legacy Telemetry pings. In particular, it drops the exta information that Glean pings collect.</p>
+<p>If you need to combine Glean data with Legacy Telemetry data, then you can use this UDF to transform a Glean experiments field into the structure of a Legacy Telemetry one.</p>
+<h3 id="parameters_2">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>ping_info__experiments ARRAY&lt;STRUCT&lt;key STRING, value STRUCT&lt;branch STRING, extra STRUCT&lt;type STRING, enrollment_id STRING&gt;&gt;&gt;&gt;
+</code></pre></div>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>ARRAY&lt;STRUCT&lt;key STRING, value STRING&gt;&gt;
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/glean/legacy_compatible_experiments">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/glean/legacy_compatible_experiments/metadata.yaml">Edit</a></p>
+<h2 id="parse_datetime-udf">parse_datetime (UDF)</h2>
+<p>Parses a Glean datetime metric string value as a BigQuery timestamp.</p>
+<p>See <a href="https://mozilla.github.io/glean/book/reference/metrics/datetime.html">https://mozilla.github.io/glean/book/reference/metrics/datetime.html</a></p>
+<h3 id="parameters_3">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>datetime_string STRING
+</code></pre></div>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>TIMESTAMP
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql//mozfun/glean/parse_datetime">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql//mozfun/glean/parse_datetime/metadata.yaml">Edit</a></p>
 
 
 

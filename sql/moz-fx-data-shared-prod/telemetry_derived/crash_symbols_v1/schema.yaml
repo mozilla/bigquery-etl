@@ -1,0 +1,45 @@
+---
+fields:
+- name: submission_date
+  type: DATE
+  mode: REQUIRED
+- name: request_timestamp
+  type: TIMESTAMP
+  mode: REQUIRED
+- name: debug_file
+  type: STRING
+  mode: REQUIRED
+- name: debug_id
+  type: STRING
+  mode: REQUIRED
+- name: module_offset
+  type: STRING
+  mode: REQUIRED
+- name: module
+  type: STRING
+  mode: REQUIRED
+- name: function
+  type: STRING
+  mode: REQUIRED
+- name: function_offset
+  type: STRING
+  mode: REQUIRED
+- name: file
+  type: STRING
+  mode: NULLABLE
+- name: line
+  type: INT64
+  mode: NULLABLE
+- name: inlines
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: function
+    type: STRING
+    mode: REQUIRED
+  - name: file
+    type: STRING
+    mode: NULLABLE
+  - name: line
+    type: INT64
+    mode: NULLABLE

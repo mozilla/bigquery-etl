@@ -188,14 +188,14 @@ Example:
 
 ### value_length([source](../../tests/checks/value_length.jinja))
 
-Checks that the columns have values of specific character length.
+Checks that the column has values of specific character length.
 
 Usage:
 
 ```
 Arguments:
 
-columns: List[str] - Columns which will be checked against the `expected_length`.
+column: str - Column which will be checked against the `expected_length`.
 expected_length: int - Describes the expected character length of the value inside the specified columns.
 where: Optional[str]: Any additional filtering rules that should be applied when retrieving the data to run the check against.
 ```
@@ -204,6 +204,27 @@ Example:
 ```sql
 #warn
 {{ value_length(column="country", expected_length=2, where="submission_date = @submission_date") }}
+```
+
+### matches_pattern([source](../../tests/checks/matches_pattern.jinja))
+
+Checks that the column values adhere to a pattern based on a regex expression.
+
+Usage:
+
+```
+Arguments:
+
+column: str - Column which values will be checked against the regex.
+pattern: str - Regex pattern specifying the expected shape / pattern of the values inside the column.
+where: Optional[str]: Any additional filtering rules that should be applied when retrieving the data to run the check against.
+message: Optional[str]: Custom error message.
+```
+
+Example:
+```sql
+#warn
+{{ matches_pattern(column="country", pattern="^[A-Z]{2}$", where="submission_date = @submission_date", message="Oops") }}
 ```
 
 

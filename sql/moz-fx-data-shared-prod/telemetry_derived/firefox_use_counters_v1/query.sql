@@ -4,7 +4,7 @@
 ---------SECTION 1 - FIREFOX DESKTOP ---------
 WITH firefox_desktop_use_counts_by_day_version_and_country_stg AS (
   SELECT
-    DATE(a.submission_timestamp) AS received_date,
+    DATE(a.submission_timestamp) AS submission_date,
     mozfun.norm.truncate_version(client_info.app_display_version, 'major') AS version_major,
     metadata.geo.country AS geo_country,
     normalized_app_name AS platform,
@@ -8248,7 +8248,7 @@ firefox_desktop_pivoted_raw AS (
 ),
 firefox_desktop_staging AS (
   SELECT
-    received_date,
+    submission_date,
     version_major,
     geo_country,
     platform,
@@ -8291,7 +8291,7 @@ firefox_desktop_staging AS (
 ---------SECTION 2 - FENIX---------
 fenix_firefox_use_counts_by_day_version_and_country_stg AS (
   SELECT
-    DATE(a.submission_timestamp) AS received_date,
+    DATE(a.submission_timestamp) AS submission_date,
     mozfun.norm.truncate_version(client_info.app_display_version, 'major') AS version_major,
     metadata.geo.country AS geo_country,
     'Fenix' AS platform,
@@ -16535,7 +16535,7 @@ fenix_pivoted_raw AS (
 ),
 fenix_staging AS (
   SELECT
-    received_date,
+    submission_date,
     version_major,
     geo_country,
     platform,
@@ -16577,7 +16577,7 @@ fenix_staging AS (
 ),
 final_staging AS (
   SELECT
-    received_date,
+    submission_date,
     version_major,
     geo_country,
     platform,
@@ -16587,7 +16587,7 @@ final_staging AS (
     firefox_desktop_staging
   UNION ALL
   SELECT
-    received_date,
+    submission_date,
     version_major,
     geo_country,
     platform,
@@ -16597,7 +16597,7 @@ final_staging AS (
     fenix_staging
 )
 SELECT
-  received_date AS submission_date,
+  submission_date,
   version_major,
   geo_country,
   platform,

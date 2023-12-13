@@ -1,0 +1,18 @@
+friendly_name: Live Pings for `firefox-desktop/newtab`
+description: |-
+  A live view of pings sent for the
+  `firefox-desktop/newtab`
+  document type.
+
+  Clustering fields: `submission_timestamp`
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:pocket/prefect
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.firefox_desktop_live.newtab_v1
+deprecated: false

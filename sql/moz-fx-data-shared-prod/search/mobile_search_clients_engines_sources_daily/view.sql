@@ -2,10 +2,15 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.search.mobile_search_clients_engines_sources_daily`
 AS
 SELECT
-  * EXCEPT (normalized_engine),
+  * EXCEPT (normalized_engine, normalized_app_name),
   `moz-fx-data-shared-prod`.udf.normalize_search_engine(engine) AS normalized_engine,
+  `mozfun.mobile_search.normalize_app_name`(
+    app_name,
+    os
+  ).normalized_app_name AS normalized_app_name,
   `mozfun.norm.browser_version_info`(app_version) AS browser_version_info,
   search_count AS sap,
+  `mozfun.mobile_search.normalize_app_name`(app_name, os).normalized_app_name_os
 FROM
   `moz-fx-data-shared-prod.search_derived.mobile_search_clients_daily_v1`
 WHERE

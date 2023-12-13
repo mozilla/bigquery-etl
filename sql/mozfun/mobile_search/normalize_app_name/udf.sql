@@ -55,4 +55,4 @@ SELECT
   assert.equals(
     STRUCT('Firefox Lite' AS normalized_app_name, 'Firefox Lite Android' AS normalized_app_name_os),
     mobile_search.normalize_app_name('Zerda', 'Android')
-  ),;
+  );

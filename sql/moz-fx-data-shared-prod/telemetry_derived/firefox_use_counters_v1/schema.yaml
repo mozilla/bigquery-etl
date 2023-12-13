@@ -6,7 +6,7 @@ fields:
 - mode: NULLABLE
   name: version_major
   type: INT64
-  description: The user visible main portion of version string (e.g. 1, 2, etc). 
+  description: The user visible main portion of version string (e.g. 1, 2, etc).
 - mode: NULLABLE
   name: geo_country
   type: STRING

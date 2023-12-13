@@ -109,9 +109,9 @@ RETURNS STRUCT<normalized_app_name STRING, normalized_app_name_os STRING> AS (
 SELECT
   assert.equals(
     STRUCT('Firefox' AS normalized_app_name, 'Firefox Android' AS normalized_app_name_os),
-    normalize_app_name('Fenix', 'Android')
+    mobile_search.normalize_app_name('Fenix', 'Android')
   ),
   assert.equals(
     STRUCT('Firefox Lite' AS normalized_app_name, 'Firefox Lite Android' AS normalized_app_name_os),
-    normalize_app_name('Zerda', 'Android')
+    mobile_search.normalize_app_name('Zerda', 'Android')
   ),;

@@ -46,6 +46,7 @@ AS
   )
 );
 
+-- Tests
 SELECT
   assert.equals(
     STRUCT('Firefox' AS normalized_app_name, 'Firefox Android' AS normalized_app_name_os),

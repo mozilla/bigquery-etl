@@ -16598,7 +16598,7 @@ final_staging AS (
 )
 SELECT
   submission_date,
-  version_major,
+  SAFE_CAST(version_major AS INT64) AS version_major,
   geo_country,
   platform,
   REGEXP_REPLACE(

@@ -7,7 +7,7 @@ import re
 from enum import Enum
 from fnmatch import fnmatchcase
 from pathlib import Path
-from typing import List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple
 
 import attr
 import cattrs
@@ -242,6 +242,9 @@ class Task:
     gke_cluster_name: Optional[str] = attr.ib(None)
     query_project: Optional[str] = attr.ib(None)
     task_group: Optional[str] = attr.ib(None)
+    container_resources: Optional[Dict[str, str]] = attr.ib(None)
+    node_selector: Optional[Dict[str, str]] = attr.ib(None)
+    startup_timeout_seconds: Optional[int] = attr.ib(None)
 
     @property
     def task_key(self):

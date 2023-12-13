@@ -876,6 +876,7 @@ unfiltered_search_clients AS (
     ANY_VALUE(sample_id) AS sample_id,
     udf.map_mode_last(ARRAY_CONCAT_AGG(experiments)) AS experiments,
     SUM(total_uri_count) AS total_uri_count,
+    NULL AS normalized_engine,
   FROM
     combined_search_clients
   WHERE

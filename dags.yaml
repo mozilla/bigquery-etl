@@ -1376,4 +1376,3 @@ bqetl_use_counter_analysis:
   tags:
     - impact/tier_2
   description: DAG to prepare use counter data for Firefox Desktop & Fenix for visualization
-  

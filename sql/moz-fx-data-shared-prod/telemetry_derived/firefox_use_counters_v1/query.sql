@@ -1,7 +1,6 @@
 -- Query for telemetry_derived.firefox_use_counters_v1
             -- For more information on writing queries see:
             -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
-
 WITH firefox_desktop_use_counts_by_day_version_and_country_stg AS (
   SELECT
     DATE(a.submission_timestamp) AS submission_date,
@@ -23,7 +22,6 @@ WITH firefox_desktop_use_counts_by_day_version_and_country_stg AS (
     SUM(
       metrics.counter.use_counter_dedicated_workers_destroyed
     ) AS use_counter_dedicated_workers_destroyed,
-    --rest of use counters which we will unpivot to tall table format later on
     SUM(
       metrics.counter.use_counter_css_doc_alignment_baseline
     ) AS use_counter_css_doc_alignment_baseline,
@@ -5928,16 +5926,16 @@ WITH firefox_desktop_use_counts_by_day_version_and_country_stg AS (
   FROM
     `moz-fx-data-shared-prod.firefox_desktop.use_counters` a
   WHERE
-    DATE(submission_timestamp) = @submission_date
+    DATE(
+      submission_timestamp
+    ) = '2023-12-03' --@submission_date
   GROUP BY
     1,
     2,
     3,
     4
   HAVING
-    COUNT(
-      DISTINCT(client_info.client_id)
-    ) >= 5000 
+    COUNT(DISTINCT(client_info.client_id)) >= 5000
 ),
 firefox_desktop_pivoted_raw AS (
   SELECT
@@ -8286,7 +8284,6 @@ firefox_desktop_staging AS (
   FROM
     firefox_desktop_pivoted_raw
 ),
-            
 fenix_firefox_use_counts_by_day_version_and_country_stg AS (
   SELECT
     DATE(a.submission_timestamp) AS submission_date,
@@ -14213,16 +14210,16 @@ fenix_firefox_use_counts_by_day_version_and_country_stg AS (
   FROM
     `moz-fx-data-shared-prod.fenix.use_counters` a
   WHERE
-    DATE(submission_timestamp) = @submission_date
+    DATE(
+      submission_timestamp
+    ) = '2023-12-03' --@submission_date
   GROUP BY
     1,
     2,
     3,
     4
   HAVING
-    COUNT(
-      DISTINCT(client_info.client_id)
-    ) >= 5000 
+    COUNT(DISTINCT(client_info.client_id)) >= 5000
 ),
 fenix_pivoted_raw AS (
   SELECT
@@ -16529,69 +16526,6 @@ fenix_pivoted_raw AS (
         use_counter_worker_shared_scheduler_posttask
       )
     )
-),
-fenix_staging AS (
-  SELECT
-    submission_date,
-    version_major,
-    geo_country,
-    platform,
-  --denominators,
-    use_counter_content_documents_destroyed,
-    use_counter_top_level_content_documents_destroyed,
-    use_counter_service_workers_destroyed,
-    use_counter_shared_workers_destroyed,
-    use_counter_dedicated_workers_destroyed,
-    metric,
-    cnt,
-    CASE
-      WHEN metric LIKE 'use_counter_css_doc_%'
-        THEN SAFE_DIVIDE(cnt, use_counter_content_documents_destroyed)
-      ELSE NULL
-    END AS doc_rate,
-    CASE
-      WHEN metric LIKE 'use_counter_css_page_%'
-        THEN SAFE_DIVIDE(cnt, use_counter_top_level_content_documents_destroyed)
-      ELSE NULL
-    END AS page_rate,
-    CASE
-      WHEN metric LIKE 'use_counter_worker_service_%'
-        THEN SAFE_DIVIDE(cnt, use_counter_service_workers_destroyed)
-      ELSE NULL
-    END AS service_rate,
-    CASE
-      WHEN metric LIKE 'use_counter_worker_shared_%'
-        THEN SAFE_DIVIDE(cnt, use_counter_shared_workers_destroyed)
-      ELSE NULL
-    END AS shared_rate,
-    CASE
-      WHEN metric LIKE 'use_counter_worker_dedicated_%'
-        THEN SAFE_DIVIDE(cnt, use_counter_dedicated_workers_destroyed)
-      ELSE NULL
-    END AS dedicated_rate
-  FROM
-    fenix_pivoted_raw
-),
-final_staging AS (
-  SELECT
-    submission_date,
-    version_major,
-    geo_country,
-    platform,
-    metric,
-    COALESCE(doc_rate, page_rate, service_rate, shared_rate, dedicated_rate) AS rate
-  FROM
-    firefox_desktop_staging
-  UNION ALL
-  SELECT
-    submission_date,
-    version_major,
-    geo_country,
-    platform,
-    metric,
-    COALESCE(doc_rate, page_rate, service_rate, shared_rate, dedicated_rate) AS rate
-  FROM
-    fenix_staging
 )
 SELECT
   submission_date,
@@ -16617,4 +16551,104 @@ SELECT
   ) AS metric,
   rate
 FROM
-  final_staging
+  (
+    SELECT
+      submission_date,
+      version_major,
+      geo_country,
+      platform,
+      metric,
+      COALESCE(doc_rate, page_rate, service_rate, shared_rate, dedicated_rate) AS rate
+    FROM
+      (
+        SELECT
+          submission_date,
+          version_major,
+          geo_country,
+          platform,
+          use_counter_content_documents_destroyed,
+          use_counter_top_level_content_documents_destroyed,
+          use_counter_service_workers_destroyed,
+          use_counter_shared_workers_destroyed,
+          use_counter_dedicated_workers_destroyed,
+          metric,
+          cnt,
+          CASE
+            WHEN metric LIKE 'use_counter_css_doc_%'
+              THEN SAFE_DIVIDE(cnt, use_counter_content_documents_destroyed)
+            ELSE NULL
+          END AS doc_rate,
+          CASE
+            WHEN metric LIKE 'use_counter_css_page_%'
+              THEN SAFE_DIVIDE(cnt, use_counter_top_level_content_documents_destroyed)
+            ELSE NULL
+          END AS page_rate,
+          CASE
+            WHEN metric LIKE 'use_counter_worker_service_%'
+              THEN SAFE_DIVIDE(cnt, use_counter_service_workers_destroyed)
+            ELSE NULL
+          END AS service_rate,
+          CASE
+            WHEN metric LIKE 'use_counter_worker_shared_%'
+              THEN SAFE_DIVIDE(cnt, use_counter_shared_workers_destroyed)
+            ELSE NULL
+          END AS shared_rate,
+          CASE
+            WHEN metric LIKE 'use_counter_worker_dedicated_%'
+              THEN SAFE_DIVIDE(cnt, use_counter_dedicated_workers_destroyed)
+            ELSE NULL
+          END AS dedicated_rate
+        FROM
+          firefox_desktop_pivoted_raw
+      ) firefox_desktop_staging
+    UNION ALL
+    SELECT
+      submission_date,
+      version_major,
+      geo_country,
+      platform,
+      metric,
+      COALESCE(doc_rate, page_rate, service_rate, shared_rate, dedicated_rate) AS rate
+    FROM
+      (
+        SELECT
+          submission_date,
+          version_major,
+          geo_country,
+          platform,
+          use_counter_content_documents_destroyed,
+          use_counter_top_level_content_documents_destroyed,
+          use_counter_service_workers_destroyed,
+          use_counter_shared_workers_destroyed,
+          use_counter_dedicated_workers_destroyed,
+          metric,
+          cnt,
+          CASE
+            WHEN metric LIKE 'use_counter_css_doc_%'
+              THEN SAFE_DIVIDE(cnt, use_counter_content_documents_destroyed)
+            ELSE NULL
+          END AS doc_rate,
+          CASE
+            WHEN metric LIKE 'use_counter_css_page_%'
+              THEN SAFE_DIVIDE(cnt, use_counter_top_level_content_documents_destroyed)
+            ELSE NULL
+          END AS page_rate,
+          CASE
+            WHEN metric LIKE 'use_counter_worker_service_%'
+              THEN SAFE_DIVIDE(cnt, use_counter_service_workers_destroyed)
+            ELSE NULL
+          END AS service_rate,
+          CASE
+            WHEN metric LIKE 'use_counter_worker_shared_%'
+              THEN SAFE_DIVIDE(cnt, use_counter_shared_workers_destroyed)
+            ELSE NULL
+          END AS shared_rate,
+          CASE
+            WHEN metric LIKE 'use_counter_worker_dedicated_%'
+              THEN SAFE_DIVIDE(cnt, use_counter_dedicated_workers_destroyed)
+            ELSE NULL
+          END AS dedicated_rate
+        FROM
+          fenix_pivoted_raw
+      ) fenix_staging
+  ) final_staging

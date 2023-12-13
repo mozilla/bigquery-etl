@@ -87,10 +87,4 @@ FROM `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`
 WHERE submission_date = @submission_date;
 
 #warn
-SELECT IF(
-  COUNTIF(NOT REGEXP_CONTAINS(CAST(country AS STRING), r"^[A-Z]{2}|\?\?$")) > 0,
-  ERROR("Unexpected values for field normalized_channel detected."),
-  null
-)
-FROM `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`
-WHERE submission_date = @submission_date;
+{{ matches_pattern(column="country", pattern="^[A-Z]{2}$", where="submission_date = @submission_date", message="Some values in this field do not adhere to the ISO 3166-1 specification (2 character country code, for example: DE).") }}

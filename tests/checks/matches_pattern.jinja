@@ -1,0 +1,14 @@
+{% macro matches_pattern(column, pattern, where, message) %}
+  {% set message = message|default('Some values inside the `' ~ column ~ '` column do not match the expected pattern: `' ~ pattern ~ '`') %}
+
+  SELECT
+    IF(
+      COUNTIF(NOT REGEXP_CONTAINS({{ column }}, r"{{ pattern }}")) > 0,
+      ERROR("{{ message }}"),
+      NULL
+    )
+  FROM `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`
+  {% if where %}
+  WHERE {{ where }}
+  {% endif %};
+{% endmacro %}

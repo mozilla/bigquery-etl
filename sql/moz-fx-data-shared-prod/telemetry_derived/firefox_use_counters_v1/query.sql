@@ -5930,10 +5930,10 @@ WITH firefox_desktop_use_counts_by_day_version_and_country_stg AS (
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
-    DATE(a.submission_timestamp),
-    mozfun.norm.truncate_version(client_info.app_display_version, 'major'),
-    metadata.geo.country,
-    normalized_app_name
+    1,
+    2,
+    3,
+    4
   HAVING
     COUNT(
       DISTINCT(client_info.client_id)

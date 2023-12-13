@@ -108,6 +108,15 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
             {%+ elif task.date_partition_parameter -%}
             parameters=["{{ task.date_partition_parameter }}:DATE:{% raw %}{{ds}}{% endraw %}"],
             {%+ endif -%}
+            {%+ if task.container_resources -%}
+            container_resources={{ task.container_resources }},
+            {%+ endif -%}
+            {%+ if task.node_selector -%}
+            node_selector={{ task.node_selector }},
+            {%+ endif -%}
+            {%+ if task.startup_timeout_seconds -%}
+            startup_timeout_seconds={{ task.startup_timeout_seconds }},
+            {%+ endif -%}
     {%+ else -%}
         {{ task.task_name }} = bigquery_etl_query(
             {% if name == "bqetl_default" -%}

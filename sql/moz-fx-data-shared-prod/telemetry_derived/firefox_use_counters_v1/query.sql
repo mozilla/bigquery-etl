@@ -5928,7 +5928,7 @@ WITH firefox_desktop_use_counts_by_day_version_and_country_stg AS (
   WHERE
     DATE(
       submission_timestamp
-    ) = '2023-12-03' --@submission_date
+    ) = @submission_date
   GROUP BY
     1,
     2,
@@ -14212,7 +14212,7 @@ fenix_firefox_use_counts_by_day_version_and_country_stg AS (
   WHERE
     DATE(
       submission_timestamp
-    ) = '2023-12-03' --@submission_date
+    ) = @submission_date
   GROUP BY
     1,
     2,

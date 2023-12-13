@@ -42,6 +42,9 @@ workgroup_access:
   members:
   - workgroup:mozilla-confidential
 references:
+  checks.sql:
+  - moz-fx-data-shared-prod.klar_ios_derived.active_users_aggregates_v2
+  - moz-fx-data-shared-prod.org_mozilla_ios_klar_live.baseline_v1
   query.sql:
   - fenix.firefox_android_clients
   - firefox_ios.firefox_ios_clients

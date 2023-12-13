@@ -42,6 +42,14 @@ workgroup_access:
   members:
   - workgroup:mozilla-confidential
 references:
+  checks.sql:
+  - moz-fx-data-shared-prod.fenix.baseline_clients_last_seen
+  - moz-fx-data-shared-prod.fenix_derived.active_users_aggregates_v2
+  - moz-fx-data-shared-prod.org_mozilla_fenix_live.baseline_v1
+  - moz-fx-data-shared-prod.org_mozilla_fenix_nightly_live.baseline_v1
+  - moz-fx-data-shared-prod.org_mozilla_fennec_aurora_live.baseline_v1
+  - moz-fx-data-shared-prod.org_mozilla_firefox_beta_live.baseline_v1
+  - moz-fx-data-shared-prod.org_mozilla_firefox_live.baseline_v1
   query.sql:
   - fenix.firefox_android_clients
   - firefox_ios.firefox_ios_clients

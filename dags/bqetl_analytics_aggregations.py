@@ -123,6 +123,110 @@ with DAG(
         retries=0,
     )
 
+    checks__warn_fenix_derived__active_users_aggregates__v2 = bigquery_dq_check(
+        task_id="checks__warn_fenix_derived__active_users_aggregates__v2",
+        source_table="active_users_aggregates_v2",
+        dataset_id="fenix_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=False,
+        owner="lvargas@mozilla.com",
+        email=[
+            "gkaberere@mozilla.com",
+            "lvargas@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+    )
+
+    checks__warn_firefox_desktop_derived__active_users_aggregates__v1 = (
+        bigquery_dq_check(
+            task_id="checks__warn_firefox_desktop_derived__active_users_aggregates__v1",
+            source_table="active_users_aggregates_v1",
+            dataset_id="firefox_desktop_derived",
+            project_id="moz-fx-data-shared-prod",
+            is_dq_check_fail=False,
+            owner="lvargas@mozilla.com",
+            email=[
+                "gkaberere@mozilla.com",
+                "lvargas@mozilla.com",
+                "telemetry-alerts@mozilla.com",
+            ],
+            depends_on_past=False,
+            parameters=["submission_date:DATE:{{ds}}"],
+            retries=0,
+        )
+    )
+
+    checks__warn_firefox_ios_derived__active_users_aggregates__v2 = bigquery_dq_check(
+        task_id="checks__warn_firefox_ios_derived__active_users_aggregates__v2",
+        source_table="active_users_aggregates_v2",
+        dataset_id="firefox_ios_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=False,
+        owner="lvargas@mozilla.com",
+        email=[
+            "gkaberere@mozilla.com",
+            "lvargas@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+    )
+
+    checks__warn_focus_android_derived__active_users_aggregates__v2 = bigquery_dq_check(
+        task_id="checks__warn_focus_android_derived__active_users_aggregates__v2",
+        source_table="active_users_aggregates_v2",
+        dataset_id="focus_android_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=False,
+        owner="lvargas@mozilla.com",
+        email=[
+            "gkaberere@mozilla.com",
+            "lvargas@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+    )
+
+    checks__warn_focus_ios_derived__active_users_aggregates__v2 = bigquery_dq_check(
+        task_id="checks__warn_focus_ios_derived__active_users_aggregates__v2",
+        source_table="active_users_aggregates_v2",
+        dataset_id="focus_ios_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=False,
+        owner="lvargas@mozilla.com",
+        email=[
+            "gkaberere@mozilla.com",
+            "lvargas@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+    )
+
+    checks__warn_klar_ios_derived__active_users_aggregates__v2 = bigquery_dq_check(
+        task_id="checks__warn_klar_ios_derived__active_users_aggregates__v2",
+        source_table="active_users_aggregates_v2",
+        dataset_id="klar_ios_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=False,
+        owner="lvargas@mozilla.com",
+        email=[
+            "gkaberere@mozilla.com",
+            "lvargas@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+    )
+
     fenix_active_users_aggregates = bigquery_etl_query(
         task_id="fenix_active_users_aggregates",
         destination_table="active_users_aggregates_v2",
@@ -288,6 +392,30 @@ with DAG(
 
     checks__fail_telemetry_derived__active_users_aggregates__v1.set_upstream(
         active_users_aggregates_v1
+    )
+
+    checks__warn_fenix_derived__active_users_aggregates__v2.set_upstream(
+        fenix_active_users_aggregates
+    )
+
+    checks__warn_firefox_desktop_derived__active_users_aggregates__v1.set_upstream(
+        firefox_desktop_active_users_aggregates
+    )
+
+    checks__warn_firefox_ios_derived__active_users_aggregates__v2.set_upstream(
+        firefox_ios_active_users_aggregates
+    )
+
+    checks__warn_focus_android_derived__active_users_aggregates__v2.set_upstream(
+        focus_android_active_users_aggregates
+    )
+
+    checks__warn_focus_ios_derived__active_users_aggregates__v2.set_upstream(
+        focus_ios_active_users_aggregates
+    )
+
+    checks__warn_klar_ios_derived__active_users_aggregates__v2.set_upstream(
+        klar_ios_active_users_aggregates
     )
 
     fenix_active_users_aggregates.set_upstream(

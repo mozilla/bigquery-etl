@@ -42,6 +42,11 @@ workgroup_access:
   members:
   - workgroup:mozilla-confidential
 references:
+  checks.sql:
+  - moz-fx-data-shared-prod.focus_android_derived.active_users_aggregates_v2
+  - moz-fx-data-shared-prod.org_mozilla_focus_beta_live.baseline_v1
+  - moz-fx-data-shared-prod.org_mozilla_focus_live.baseline_v1
+  - moz-fx-data-shared-prod.org_mozilla_focus_nightly_live.baseline_v1
   query.sql:
   - moz-fx-data-shared-prod.focus_android.clients_last_seen_joined
   - moz-fx-data-shared-prod.search_derived.mobile_search_clients_daily_v1

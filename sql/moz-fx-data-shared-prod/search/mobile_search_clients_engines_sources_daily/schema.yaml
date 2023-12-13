@@ -14,9 +14,6 @@ fields:
 - name: app_name
   type: STRING
   mode: NULLABLE
-- name: normalized_app_name
-  type: STRING
-  mode: NULLABLE
 - name: search_count
   type: INTEGER
   mode: NULLABLE
@@ -93,6 +90,9 @@ fields:
 - name: normalized_engine
   type: STRING
   mode: NULLABLE
+- name: normalized_app_name
+  type: STRING
+  mode: NULLABLE
 - name: browser_version_info
   type: RECORD
   mode: NULLABLE
@@ -114,4 +114,7 @@ fields:
     mode: NULLABLE
 - name: sap
   type: INTEGER
+  mode: NULLABLE
+- name: normalized_app_name_os
+  type: STRING
   mode: NULLABLE

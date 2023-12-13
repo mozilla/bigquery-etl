@@ -304,6 +304,36 @@ fields:
         for the purpose of experimentation enrollment.
 
         '
+    - name: identifiers_adjust_device_id
+      type: STRING
+      mode: NULLABLE
+      description: 'The Adjust device ID for this user, if available.
+
+        '
+    - name: identifiers_fxa_account_id
+      type: STRING
+      mode: NULLABLE
+      description: 'The user''s FxA account ID, if available.
+
+        '
+    - name: identifiers_mastodon_account_handle
+      type: STRING
+      mode: NULLABLE
+      description: 'The user''s full account handle, with domain. For example, `account_name@mozilla.social`.
+
+        '
+    - name: identifiers_mastodon_account_id
+      type: STRING
+      mode: NULLABLE
+      description: 'The user''s numeric account ID from Mastodon.
+
+        '
+    - name: identifiers_user_agent
+      type: STRING
+      mode: NULLABLE
+      description: 'The device user agent string.
+
+        '
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

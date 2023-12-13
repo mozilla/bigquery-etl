@@ -462,6 +462,9 @@ fields:
     - name: glean_client_annotation_experimentation_id
       type: STRING
       mode: NULLABLE
+    - name: glean_database_rkv_load_error
+      type: STRING
+      mode: NULLABLE
   - name: datetime
     type: RECORD
     mode: NULLABLE

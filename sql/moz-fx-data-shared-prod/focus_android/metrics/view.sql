@@ -183,7 +183,8 @@ SELECT
       metrics.string.blocklist_mlbf_source,
       metrics.string.extensions_quarantined_domains_listhash,
       metrics.string.extensions_quarantined_domains_remotehash,
-      metrics.string.glean_client_annotation_experimentation_id
+      metrics.string.glean_client_annotation_experimentation_id,
+      metrics.string.glean_database_rkv_load_error
     ) AS `string`,
     metrics.quantity,
     metrics.custom_distribution,
@@ -365,7 +366,8 @@ SELECT
       metrics.string.blocklist_mlbf_source,
       metrics.string.extensions_quarantined_domains_listhash,
       metrics.string.extensions_quarantined_domains_remotehash,
-      metrics.string.glean_client_annotation_experimentation_id
+      metrics.string.glean_client_annotation_experimentation_id,
+      metrics.string.glean_database_rkv_load_error
     ) AS `string`,
     metrics.quantity,
     metrics.custom_distribution,

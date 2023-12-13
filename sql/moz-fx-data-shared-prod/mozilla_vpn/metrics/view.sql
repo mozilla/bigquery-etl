@@ -211,7 +211,8 @@ SELECT
     metrics.memory_distribution,
     STRUCT(
       metrics.string.ping_reason,
-      metrics.string.glean_client_annotation_experimentation_id
+      metrics.string.glean_client_annotation_experimentation_id,
+      metrics.string.glean_database_rkv_load_error
     ) AS `string`,
     metrics.timing_distribution
   ) AS `metrics`,

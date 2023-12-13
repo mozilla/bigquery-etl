@@ -4829,6 +4829,12 @@ fields:
         for the purpose of experimentation enrollment.
 
         '
+    - name: glean_database_rkv_load_error
+      type: STRING
+      mode: NULLABLE
+      description: 'If there was an error loading the RKV database, record it.
+
+        '
   - name: string_list
     type: RECORD
     mode: NULLABLE

@@ -2,18 +2,24 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
+  description: The date when the ingestion edge server accepted this message
 - mode: NULLABLE
   name: version_major
   type: NUMERIC
+  description: The user visible main portion of version string (e.g. 1, 2, etc). In the unlikely event that the display version can not be retrieved, it is set to "inaccessible". 
 - mode: NULLABLE
   name: geo_country
   type: STRING
+  description: Results of a geographic lookup based on the client's IP address; An ISO 3166-1 alpha-2 country code
 - mode: NULLABLE
   name: platform
   type: STRING
+  description: Indicates if the data is from Firefox Desktop or Mobile (Fenix)
 - mode: NULLABLE
   name: metric
   type: STRING
+  description: The name of the metric; naming matches that found in the Glean dictionary
 - mode: NULLABLE
   name: rate
   type: FLOAT
+  description: The rate of use for this metric, as measured by the sum(use counter) / denominator, where the denominator depends on the specific metric.  For example, doc metrics use use_counter_content_documents_destroyed, page metrics use use_counter_top_level_content_documents_destroyed, worker service metrics use use_counter_service_workers_destroyed, worker shared metrics use use_counter_shared_workers_destroyed, and worker dedicated metrics use use_counter_dedicated_workers_destroyed as the denominator.

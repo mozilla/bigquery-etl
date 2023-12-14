@@ -5926,7 +5926,7 @@ WITH fenix_firefox_use_counts_by_day_version_and_country_stg AS (
   FROM
     `moz-fx-data-shared-prod.fenix.use_counters` a
   WHERE
-    DATE(submission_timestamp) = @submission_date
+    DATE(a.submission_timestamp) = @submission_date
   GROUP BY
     1,
     2,

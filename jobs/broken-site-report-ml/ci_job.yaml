@@ -1,0 +1,15 @@
+build-job-broken-site-report-ml:
+  docker:
+    - image: << pipeline.parameters.git-image >>
+  steps:
+    - checkout
+    - compare-branch:
+        pattern: ^jobs/broken-site-report-ml/
+    - setup_remote_docker:
+        version: << pipeline.parameters.docker-version >>
+    - run:
+        name: Build Docker image
+        command: docker build -t app:build jobs/broken-site-report-ml/
+    - run:
+        name: Test Code
+        command: docker run app:build pytest --flake8 --black

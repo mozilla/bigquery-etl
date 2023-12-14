@@ -77,6 +77,22 @@ jobs:
           name: Build Docker image
           command: docker build -t app:build jobs/bq2sftp/
 
+  build-job-broken-site-report-ml:
+    docker:
+      - image: << pipeline.parameters.git-image >>
+    steps:
+      - checkout
+      - compare-branch:
+          pattern: ^jobs/broken-site-report-ml/
+      - setup_remote_docker:
+          version: << pipeline.parameters.docker-version >>
+      - run:
+          name: Build Docker image
+          command: docker build -t app:build jobs/broken-site-report-ml/
+      - run:
+          name: Test Code
+          command: docker run app:build pytest --flake8 --black
+
   build-job-client-regeneration:
     docker:
       - image: << pipeline.parameters.git-image >>
@@ -331,6 +347,20 @@ workflows:
             branches:
               only: main
 
+
+  job-broken-site-report-ml:
+    jobs:
+      - build-job-broken-site-report-ml
+      - gcp-gcr/build-and-push-image:
+          context: data-eng-airflow-gcr
+          docker-context: jobs/broken-site-report-ml/
+          path: jobs/broken-site-report-ml/
+          image: broken-site-report-ml_docker_etl
+          requires:
+            - build-job-broken-site-report-ml
+          filters:
+            branches:
+              only: main
 
   job-client-regeneration:
     jobs:

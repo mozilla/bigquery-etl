@@ -1,0 +1,13 @@
+job-broken-site-report-ml:
+  jobs:
+    - build-job-broken-site-report-ml
+    - gcp-gcr/build-and-push-image:
+        context: data-eng-airflow-gcr
+        docker-context: jobs/broken-site-report-ml/
+        path: jobs/broken-site-report-ml/
+        image: broken-site-report-ml_docker_etl
+        requires:
+          - build-job-broken-site-report-ml
+        filters:
+          branches:
+            only: main

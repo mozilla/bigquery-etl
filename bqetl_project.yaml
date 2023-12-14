@@ -148,6 +148,7 @@ dry_run:
   - sql/moz-fx-data-shared-prod/mozilla_vpn_external/devices_v1/init.sql
   - sql/moz-fx-data-shared-prod/fenix_derived/google_ads_campaign_cost_breakdowns_v1/query.sql
   - sql/moz-fx-data-shared-prod/search_derived/search_clients_daily_v8/query.sql
+  - sql/moz-fx-data-shared-prod/search_derived/mobile_search_aggregates_v1/query.sql
   - sql/moz-fx-data-shared-prod/search_terms*/**/*.sql
   - sql/moz-fx-data-bq-performance/release_criteria/dashboard_health_v1/query.sql
   - sql/moz-fx-data-bq-performance/release_criteria/rc_flattened_test_data_v1/query.sql

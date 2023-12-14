@@ -331,7 +331,7 @@ invoices_provider_location AS (
   WHERE
     invoices.status = "paid"
 ),
-subscriptions_history_invoice_provider_location AS (
+subscriptions_history_provider_location AS (
   SELECT
     subscriptions_history.subscription_id,
     subscriptions_history.valid_from,
@@ -358,6 +358,59 @@ subscriptions_history_invoice_provider_location AS (
       invoices_provider_location.created < subscriptions_history.valid_to
       OR subscriptions_history.valid_to IS NULL
     )
+  GROUP BY
+    subscription_id,
+    valid_from
+),
+subscriptions_history_fraud_refunds AS (
+  SELECT
+    subscriptions_history.subscription_id,
+    subscriptions_history.valid_from,
+    LOGICAL_OR(
+      refunds.status = 'succeeded'
+      OR JSON_VALUE(invoices.metadata, '$.paypalRefundTransactionId') IS NOT NULL
+    ) AS has_refunds,
+    LOGICAL_OR(
+      charges.fraud_details_user_report = 'fraudulent'
+      OR (
+        charges.fraud_details_stripe_report = 'fraudulent'
+        AND charges.fraud_details_user_report IS DISTINCT FROM 'safe'
+      )
+      OR (refunds.reason = 'fraudulent' AND refunds.status = 'succeeded')
+    ) AS has_fraudulent_charges,
+    LOGICAL_OR(
+      refunds.status = 'succeeded'
+      AND (
+        charges.fraud_details_user_report = 'fraudulent'
+        OR (
+          charges.fraud_details_stripe_report = 'fraudulent'
+          AND charges.fraud_details_user_report IS DISTINCT FROM 'safe'
+        )
+        OR refunds.reason = 'fraudulent'
+      )
+    ) AS has_fraudulent_charge_refunds
+  FROM
+    subscriptions_history
+  JOIN
+    `moz-fx-data-shared-prod.stripe_external.invoice_v1` AS invoices
+  ON
+    subscriptions_history.subscription_id = invoices.subscription_id
+    AND (
+      invoices.created < subscriptions_history.valid_to
+      OR subscriptions_history.valid_to IS NULL
+    )
+  LEFT JOIN
+    `moz-fx-data-shared-prod.stripe_external.charge_v1` AS charges
+  ON
+    invoices.id = charges.invoice_id
+  LEFT JOIN
+    `moz-fx-data-shared-prod.stripe_external.card_v1` AS cards
+  ON
+    charges.card_id = cards.id
+  LEFT JOIN
+    `moz-fx-data-shared-prod.stripe_external.refund_v1` AS refunds
+  ON
+    charges.id = refunds.charge_id
   GROUP BY
     subscription_id,
     valid_from
@@ -433,7 +486,7 @@ SELECT
   plans.plan_interval,
   plans.plan_interval_count,
   "Etc/UTC" AS plan_interval_timezone,
-  subscriptions_history_invoice_provider_location.provider,
+  subscriptions_history_provider_location.provider,
   -- Use the same address hierarchy as Stripe Tax after we enabled Stripe Tax (FXA-5457).
   -- https://stripe.com/docs/tax/customer-locations#address-hierarchy
   IF(
@@ -451,15 +504,24 @@ SELECT
       WHEN customers.address_country IS NOT NULL
         THEN STRUCT(LOWER(customers.address_country) AS country, customers.address_state AS state)
       ELSE STRUCT(
-          LOWER(subscriptions_history_invoice_provider_location.country) AS country,
-          subscriptions_history_invoice_provider_location.state
+          LOWER(subscriptions_history_provider_location.country) AS country,
+          subscriptions_history_provider_location.state
         )
     END,
     STRUCT(
-      LOWER(subscriptions_history_invoice_provider_location.country) AS country,
-      subscriptions_history_invoice_provider_location.state
+      LOWER(subscriptions_history_provider_location.country) AS country,
+      subscriptions_history_provider_location.state
     )
   ).*,
+  COALESCE(subscriptions_history_fraud_refunds.has_refunds, FALSE) AS has_refunds,
+  COALESCE(
+    subscriptions_history_fraud_refunds.has_fraudulent_charges,
+    FALSE
+  ) AS has_fraudulent_charges,
+  COALESCE(
+    subscriptions_history_fraud_refunds.has_fraudulent_charge_refunds,
+    FALSE
+  ) AS has_fraudulent_charge_refunds,
   subscriptions_history_promotions.promotion_codes,
   subscriptions_history_promotions.promotion_discounts_amount,
 FROM
@@ -473,7 +535,11 @@ LEFT JOIN
 USING
   (customer_id)
 LEFT JOIN
-  subscriptions_history_invoice_provider_location
+  subscriptions_history_provider_location
+USING
+  (subscription_id, valid_from)
+LEFT JOIN
+  subscriptions_history_fraud_refunds
 USING
   (subscription_id, valid_from)
 LEFT JOIN

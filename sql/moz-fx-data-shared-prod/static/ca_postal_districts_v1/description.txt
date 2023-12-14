@@ -1,0 +1,3 @@
+Mappings from one-character Canadian postal district codes to Canadian province codes.
+
+Data source: https://en.wikipedia.org/wiki/Postal_codes_in_Canada#Components_of_a_postal_code

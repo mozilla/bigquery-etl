@@ -1132,6 +1132,18 @@ with DAG(
         task_concurrency=1,
     )
 
+    subscription_platform_derived__stripe_subscriptions__v2 = bigquery_etl_query(
+        task_id="subscription_platform_derived__stripe_subscriptions__v2",
+        destination_table="stripe_subscriptions_v2",
+        dataset_id="subscription_platform_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
     subscription_platform_derived__stripe_subscriptions_history__v1 = (
         bigquery_etl_query(
             task_id="subscription_platform_derived__stripe_subscriptions_history__v1",
@@ -1684,6 +1696,10 @@ with DAG(
 
     subscription_platform_derived__stripe_subscriptions__v1.set_upstream(
         subscription_platform_derived__stripe_subscriptions_history__v1
+    )
+
+    subscription_platform_derived__stripe_subscriptions__v2.set_upstream(
+        subscription_platform_derived__stripe_subscriptions_history__v2
     )
 
     subscription_platform_derived__stripe_subscriptions_history__v1.set_upstream(

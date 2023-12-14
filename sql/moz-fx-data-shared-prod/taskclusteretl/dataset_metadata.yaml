@@ -1,0 +1,24 @@
+friendly_name: taskclusteretl
+description: taskclusteretl syndicate views
+dataset_base_acl: syndicate
+user_facing: true
+labels: {}
+syndication:
+  stage:
+    syndicated_project: "moz-fx-data-task-nonprod-3905"
+    syndicated_dataset: "taskclusteretl"
+    syndicated_tables:
+      - "commit_log"
+      - "derived_task_summary"
+      - "error"
+      - "perfherder"
+      - "perfherder_alert"
+      - "task_definition"
+  prod:
+    syndicated_project: "moz-fx-data-taskclu-prod-8fbf"
+    syndicated_dataset: "taskclusteretl"
+  administer_views: true
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:mozilla-confidential

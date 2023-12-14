@@ -6,4 +6,4 @@ SELECT
 FROM
   `moz-fx-data-shared-prod.telemetry_derived.cohort_daily_statistics_v1`
 WHERE
-  normalized_app_name not like "%Desktop%"
+  normalized_app_name != "Firefox Desktop"

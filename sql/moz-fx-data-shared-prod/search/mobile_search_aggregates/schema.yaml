@@ -11,9 +11,6 @@ fields:
 - name: app_name
   type: STRING
   mode: NULLABLE
-- name: normalized_app_name
-  type: STRING
-  mode: NULLABLE
 - name: app_version
   type: STRING
   mode: NULLABLE
@@ -68,6 +65,12 @@ fields:
 - name: normalized_engine
   type: STRING
   mode: NULLABLE
+- name: normalized_app_name
+  type: STRING
+  mode: NULLABLE
 - name: sap
   type: INTEGER
+  mode: NULLABLE
+- name: normalized_app_name_os
+  type: STRING
   mode: NULLABLE

@@ -8298,22 +8298,30 @@ SELECT
       REGEXP_REPLACE(
         REGEXP_REPLACE(
           REGEXP_REPLACE(
-            REGEXP_REPLACE(metric, 'use_counter_css_doc_', 'use.counter.css.doc.'),
-            'use_counter_css_page_',
-            'use.counter.css.page.'
+            REGEXP_REPLACE(
+              REGEXP_REPLACE(
+                REGEXP_REPLACE(metric, 'use_counter_css_doc_', 'use.counter.css.doc.'),
+                'use_counter_css_page_',
+                'use.counter.css.page.'
+              ),
+              'use_counter_worker_dedicated',
+              'use.counter.worker.dedicated.'
+            ),
+            'use_counter_worker_shared_',
+            'use.counter.worker.shared.'
           ),
-          'use_counter_worker_dedicated',
-          'use.counter.worker.dedicated.'
+          'use_counter_worker_service_',
+          'use.counter.worker.service.'
         ),
-        'use_counter_worker_shared_',
-        'use.counter.worker.shared.'
+      'use_counter_deprecated_ops_doc_',
+      'use.counter.deprecated_ops.doc.'
       ),
-      'use_counter_worker_service_',
-      'use.counter.worker.service.'
+    'use_counter_doc_', 
+    'use.counter.doc.'
     ),
-  'use_counter_deprecated_ops_doc_',
-  'use.counter.deprecated_ops.doc.'
-  )
+  'use_counter_page_',
+  'use.counter.page.'
+  ) 
   AS metric,
   cnt,
   COALESCE(doc_rate, page_rate, service_rate, shared_rate, dedicated_rate) AS rate

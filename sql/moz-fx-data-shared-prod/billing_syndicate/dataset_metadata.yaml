@@ -1,0 +1,17 @@
+friendly_name: billing_syndicate
+description: billing syndicate views
+dataset_base_acl: syndicate
+user_facing: false
+labels: {}
+syndication:
+  prod:
+    syndicated_project: moz-fx-billing-212017
+    syndicated_dataset: billing
+  syndicated_tables:
+    - gcp_billing_export_resource_v1_01E7D5_97288E_E2EBA0
+    - gcp_billing_export_v1_01E7D5_97288E_E2EBA0
+  administer_views: false
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:mozilla-confidential

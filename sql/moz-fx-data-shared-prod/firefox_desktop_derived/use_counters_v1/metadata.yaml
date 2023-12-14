@@ -5,8 +5,6 @@ owners:
 - kwindau@mozilla.com
 labels:
   incremental: true
-  public_json: true
-  public_bigquery: true
   owner1: kwindau@mozilla.com
 scheduling:
   dag_name: bqetl_use_counter_analysis

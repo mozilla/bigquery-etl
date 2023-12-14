@@ -5,7 +5,7 @@ WITH fenix_firefox_use_counts_by_day_version_and_country_stg AS (
   SELECT
     DATE(a.submission_timestamp) AS submission_date,
     mozfun.norm.truncate_version(client_info.app_display_version, 'major') AS version_major,
-    metadata.geo.country AS geo_country,
+    metadata.geo.country AS country,
     'Fenix' AS platform,
     SUM(
       metrics.counter.use_counter_content_documents_destroyed
@@ -8245,7 +8245,7 @@ fenix_staging AS (
   SELECT
     submission_date,
     version_major,
-    geo_country,
+    country,
     platform,
     use_counter_content_documents_destroyed,
     use_counter_top_level_content_documents_destroyed,
@@ -8286,7 +8286,7 @@ fenix_staging AS (
 SELECT
   submission_date,
   SAFE_CAST(version_major AS INT64) AS version_major,
-  geo_country,
+  country,
   platform,
   use_counter_content_documents_destroyed,
   use_counter_top_level_content_documents_destroyed,

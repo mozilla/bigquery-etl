@@ -8,7 +8,7 @@ fields:
   type: INT64
   description: The user visible main portion of version string (e.g. 1, 2, etc).
 - mode: NULLABLE
-  name: geo_country
+  name: country
   type: STRING
   description: Results of a geographic lookup based on the client's IP address; An ISO 3166-1 alpha-2 country code
 - mode: NULLABLE

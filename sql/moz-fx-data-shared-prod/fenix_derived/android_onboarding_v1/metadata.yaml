@@ -1,0 +1,28 @@
+friendly_name: Android Onboarding
+description: |-
+  Please provide a description for the query
+owners:
+- loines@mozilla.org
+labels:
+  incremental: true
+  dag: bqetl_generated_funnels
+  owner1: loines
+scheduling:
+  dag_name: bqetl_generated_funnels
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: null
+  clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  query.sql:
+  - fenix.events_unnested
+  - fenix.firefox_android_clients
+  - moz-fx-data-shared-prod.fenix_derived.funnel_retention_clients_week_4_v1
+deprecated: false

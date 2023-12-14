@@ -125,6 +125,15 @@ fields:
 - name: billing_grace_period
   type: INTERVAL
   mode: NULLABLE
+- name: has_refunds
+  type: BOOLEAN
+  mode: NULLABLE
+- name: has_fraudulent_charges
+  type: BOOLEAN
+  mode: NULLABLE
+- name: has_fraudulent_charge_refunds
+  type: BOOLEAN
+  mode: NULLABLE
 - name: promotion_codes
   type: STRING
   mode: REPEATED

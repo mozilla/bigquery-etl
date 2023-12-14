@@ -36,6 +36,7 @@ nav:
       - ... | mozdata/**.md
   - UDFs:
       - ... | mozfun/**.md
+      - ... | moz-fx-data-shared-prod/**.md
   - Cookbooks:
       - Common workflows: cookbooks/common_workflows.md
       - Creating a derived dataset: cookbooks/creating_a_derived_dataset.md

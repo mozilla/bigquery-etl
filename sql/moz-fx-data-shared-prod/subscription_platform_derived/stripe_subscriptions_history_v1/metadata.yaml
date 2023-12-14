@@ -29,6 +29,7 @@ references:
   - moz-fx-data-shared-prod.stripe_external.pre_fivetran_customers_v1
   - moz-fx-data-shared-prod.stripe_external.product_v1
   - moz-fx-data-shared-prod.stripe_external.promotion_code_v1
+  - moz-fx-data-shared-prod.stripe_external.refund_v1
   - moz-fx-data-shared-prod.stripe_external.subscription_history_v1
   - moz-fx-data-shared-prod.stripe_external.subscription_item_v1
 deprecated: false

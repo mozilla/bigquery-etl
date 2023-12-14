@@ -8282,7 +8282,6 @@ firefox_desktop_staging AS (
   FROM
     firefox_desktop_pivoted_raw
 )
-
 SELECT
   submission_date,
   SAFE_CAST(version_major AS INT64) AS version_major,
@@ -8314,19 +8313,18 @@ SELECT
             'use_counter_worker_service_',
             'use.counter.worker.service.'
           ),
-        'use_counter_deprecated_ops_doc_',
-        'use.counter.deprecated_ops.doc.'
+          'use_counter_deprecated_ops_doc_',
+          'use.counter.deprecated_ops.doc.'
         ),
-      'use_counter_doc_', 
-      'use.counter.doc.'
+        'use_counter_doc_',
+        'use.counter.doc.'
       ),
-    'use_counter_page_',
-    'use.counter.page.'
+      'use_counter_page_',
+      'use.counter.page.'
     ),
-  'use_counter_deprecated_ops_page_',
-  'use.counter.deprecated_ops.page.'
-  )
-  AS metric,
+    'use_counter_deprecated_ops_page_',
+    'use.counter.deprecated_ops.page.'
+  ) AS metric,
   cnt,
   COALESCE(doc_rate, page_rate, service_rate, shared_rate, dedicated_rate) AS rate
 FROM

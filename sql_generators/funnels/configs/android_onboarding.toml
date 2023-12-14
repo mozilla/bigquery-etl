@@ -9,7 +9,12 @@ version = "1"  # optional; default is set to 1
 
 friendly_name = "Firefox for Android Onboarding Funnel"
 description = "Funnel Steps for Firefox for Android Onboarding"
-steps = ["first_card", "second_card", "third_card", "onboarding_completed"]
+steps = ["first_card",
+         "second_card",
+         "third_card",
+         "onboarding_completed"
+         ]
+
 dimensions = ["funnel_id",
               "action",
               "element_type",
@@ -23,10 +28,12 @@ dimensions = ["funnel_id",
               "adjust_network",
               "adjust_campaign",
               "adjust_creative",
-              "adjust_ad_group"]
-
-
-[steps]
+              "adjust_ad_group",
+              "install_source",
+              "repeat_first_month_user",
+              "retained_week_2",
+              "retained_week_4"
+              ]
 
 [steps.first_card]
 friendly_name = "First Card"
@@ -36,7 +43,6 @@ where_expression = """
     `mozfun.map.get_key`(event_extra, 'sequence_position') = '1' AND
     event_name != 'completed' AND
     event_category = 'onboarding'
-
 """
 join_previous_step_on = "client_info.client_id"
 select_expression = "client_info.client_id"
@@ -84,8 +90,13 @@ aggregation = "count distinct"
 
 [data_sources.onboarding_events]
 from_expression = """
-  fenix.events_unnested eu LEFT JOIN fenix.firefox_android_clients ac ON eu.client_info.client_id = ac.client_id
+  fenix.events_unnested eu
+  LEFT JOIN `moz-fx-data-shared-prod`.fenix_derived.funnel_retention_clients_week_4_v1 r
+  ON eu.client_info.client_id = r.client_id
+  LEFT JOIN fenix.firefox_android_clients ac
+  ON eu.client_info.client_id = ac.client_id
 """
+
 submission_date_column = "DATE(submission_timestamp)"
 client_id_column = "client_info.client_id"
 
@@ -98,88 +109,116 @@ data_source = "onboarding_events"
 select_expression = "`mozfun.map.get_key`(event_extra, 'action')"
 friendly_name = "Card Action"
 description = "Action Taken on Card"
-client_id_column = "client_info.client_id"
+client_id_column = "eu.client_id"
 
 [dimensions.funnel_id]
 data_source = "onboarding_events"
 select_expression = "`mozfun.map.get_key`(event_extra, 'sequence_id')"
 friendly_name = "Funnel ID"
 description = "ID of the Onboarding Funnel"
-client_id_column = "client_info.client_id"
+client_id_column = "eu.client_id"
 
 [dimensions.element_type]
 data_source = "onboarding_events"
 select_expression = "`mozfun.map.get_key`(event_extra, 'element_type')"
 friendly_name = "Element Type"
 description = "Type of Card Element Interacted With"
-client_id_column = "client_info.client_id"
+client_id_column = "eu.client_id"
+
+# these dimensions are sourced from funnel_retention_clients_week_4_v1
+[dimensions.repeat_first_month_user]
+friendly_name = "Repeat First Month User"
+description = "Whether the Client is a Repeat First Month User"
+data_source = "onboarding_events"
+select_expression = "r.repeat_first_month_user"
+client_id_column = "r.client_id"
+
+[dimensions.retained_week_2]
+friendly_name = "Repeat First Month User"
+description = "Whether the Client is Retained in their Second Week"
+data_source = "onboarding_events"
+select_expression = "r.retained_week_2"
+client_id_column = "r.client_id"
+
+[dimensions.retained_week_4]
+friendly_name = "Repeat First Month User"
+description = "Whether the Client is Retained in their Fourth Week"
+data_source = "onboarding_events"
+select_expression = "r.retained_week_4"
+client_id_column = "r.client_id"
 
 # these dimensions are sourced from firefox_android_clients
 [dimensions.country]
 data_source = "onboarding_events"
-select_expression = "first_reported_country"
+select_expression = "ac.first_reported_country"
 friendly_name = "Country"
 description = "Client's First Reported Country"
-client_id_column = "client_info.client_id"
+client_id_column = "ac.client_id"
 
 [dimensions.locale]
 data_source = "onboarding_events"
 select_expression = "ac.locale"
 friendly_name = "Locale"
 description = "Client's First Reported Language"
-client_id_column = "client_info.client_id"
+client_id_column = "ac.client_id"
 
 [dimensions.android_version]
 data_source = "onboarding_events"
-select_expression = "os_version"
+select_expression = "ac.os_version"
 friendly_name = "First Reported Android OS Version"
-client_id_column = "client_info.client_id"
+client_id_column = "ac.client_id"
 
 [dimensions.channel]
 data_source = "onboarding_events"
-select_expression = "channel"
+select_expression = "ac.channel"
 friendly_name = "First Reported Release Channel"
-client_id_column = "client_info.client_id"
+client_id_column = "ac.client_id"
 
 [dimensions.device_model]
 data_source = "onboarding_events"
 select_expression = "ac.device_model"
 friendly_name = "First Reported Device Model"
-client_id_column = "client_info.client_id"
+client_id_column = "ac.client_id"
 
 [dimensions.device_manufacturer]
 data_source = "onboarding_events"
 select_expression = "ac.device_manufacturer"
 friendly_name = "First Reported Device Manufacturer"
-client_id_column = "client_info.client_id"
+client_id_column = "ac.client_id"
 
 [dimensions.first_seen_date]
 data_source = "onboarding_events"
-select_expression = "first_seen_date"
+select_expression = "ac.first_seen_date"
 friendly_name = "First Seen Date"
 description = "First day this client_id shows up in our data."
-client_id_column = "client_info.client_id"
+client_id_column = "ac.client_id"
 
 [dimensions.adjust_network]
 data_source = "onboarding_events"
-select_expression = "adjust_network"
+select_expression = "ac.adjust_network"
 friendly_name = "Adjust Network"
-client_id_column = "client_info.client_id"
+client_id_column = "ac.client_id"
 
 [dimensions.adjust_campaign]
 data_source = "onboarding_events"
-select_expression = "adjust_campaign"
+select_expression = "ac.adjust_campaign"
 friendly_name = "Adjust Campaign"
-client_id_column = "client_info.client_id"
+client_id_column = "ac.client_id"
 
 [dimensions.adjust_creative]
 data_source = "onboarding_events"
-select_expression = "adjust_creative"
+select_expression = "ac.adjust_creative"
 friendly_name = "Adjust Creative"
-client_id_column = "client_info.client_id"
+client_id_column = "ac.client_id"
 
 [dimensions.adjust_ad_group]
 data_source = "onboarding_events"
-select_expression = "adjust_ad_group"
+select_expression = "ac.adjust_ad_group"
 friendly_name = "Adjust Ad Group"
-client_id_column = "client_info.client_id"
+client_id_column = "ac.client_id"
+
+[dimensions.install_source]
+data_source = "onboarding_events"
+select_expression = "ac.install_source"
+friendly_name = "Install Source"
+client_id_column = "ac.client_id"

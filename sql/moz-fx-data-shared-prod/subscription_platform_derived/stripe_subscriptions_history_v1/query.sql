@@ -200,14 +200,6 @@ plans AS (
   USING
     (product_id)
 ),
-us_zip_codes AS (
-  SELECT
-    zip_code,
-    state_code,
-  FROM
-    -- https://console.cloud.google.com/marketplace/product/united-states-census-bureau/us-geographic-boundaries
-    `bigquery-public-data.geo_us_boundaries.zip_codes`
-),
 ca_postal_districts AS (
   SELECT
     *
@@ -255,7 +247,7 @@ customers AS (
     NULLIF(customers.shipping_address_country, "") AS shipping_address_country,
     COALESCE(
       NULLIF(customers.shipping_address_state, ""),
-      us_shipping_zip_codes.state_code,
+      us_shipping_zip_code_prefixes.state_code,
       ca_shipping_postal_districts.province_code
     ) AS shipping_address_state,
   FROM
@@ -266,10 +258,13 @@ customers AS (
   USING
     (id)
   LEFT JOIN
-    us_zip_codes AS us_shipping_zip_codes
+    `moz-fx-data-shared-prod.static.us_zip_code_prefixes_v1` AS us_shipping_zip_code_prefixes
   ON
     customers.shipping_address_country = "US"
-    AND LEFT(customers.shipping_address_postal_code, 5) = us_shipping_zip_codes.zip_code
+    AND LEFT(
+      customers.shipping_address_postal_code,
+      3
+    ) = us_shipping_zip_code_prefixes.zip_code_prefix
   LEFT JOIN
     ca_postal_districts AS ca_shipping_postal_districts
   ON
@@ -282,7 +277,7 @@ charges AS (
     COALESCE(NULLIF(charges.billing_detail_address_country, ""), cards.country) AS country,
     COALESCE(
       NULLIF(charges.billing_detail_address_state, ""),
-      us_zip_codes.state_code,
+      us_zip_code_prefixes.state_code,
       ca_postal_districts.province_code
     ) AS state,
   FROM
@@ -292,10 +287,10 @@ charges AS (
   ON
     charges.card_id = cards.id
   LEFT JOIN
-    us_zip_codes
+    `moz-fx-data-shared-prod.static.us_zip_code_prefixes_v1` AS us_zip_code_prefixes
   ON
     COALESCE(NULLIF(charges.billing_detail_address_country, ""), cards.country) = "US"
-    AND LEFT(charges.billing_detail_address_postal_code, 5) = us_zip_codes.zip_code
+    AND LEFT(charges.billing_detail_address_postal_code, 3) = us_zip_code_prefixes.zip_code_prefix
   LEFT JOIN
     ca_postal_districts
   ON

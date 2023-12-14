@@ -200,35 +200,6 @@ plans AS (
   USING
     (product_id)
 ),
-ca_postal_districts AS (
-  SELECT
-    *
-  FROM
-    -- https://en.wikipedia.org/wiki/Postal_codes_in_Canada#Components_of_a_postal_code
-    UNNEST(
-      ARRAY<STRUCT<district STRING, province_code STRING>>[
-        ("A", "NL"),
-        ("B", "NS"),
-        ("C", "PE"),
-        ("E", "NB"),
-        ("G", "QC"),
-        ("H", "QC"),
-        ("J", "QC"),
-        ("K", "ON"),
-        ("L", "ON"),
-        ("M", "ON"),
-        ("N", "ON"),
-        ("P", "ON"),
-        ("R", "MB"),
-        ("S", "SK"),
-        ("T", "AB"),
-        ("V", "BC"),
-        -- District X covers both NT and NU, so we can't tell which one.
-        ("X", NULL),
-        ("Y", "YT")
-      ]
-    )
-),
 customers AS (
   SELECT
     id AS customer_id,
@@ -266,10 +237,12 @@ customers AS (
       3
     ) = us_shipping_zip_code_prefixes.zip_code_prefix
   LEFT JOIN
-    ca_postal_districts AS ca_shipping_postal_districts
+    `moz-fx-data-shared-prod.static.ca_postal_districts_v1` AS ca_shipping_postal_districts
   ON
     customers.shipping_address_country = "CA"
-    AND LEFT(customers.shipping_address_postal_code, 1) = ca_shipping_postal_districts.district
+    AND UPPER(
+      LEFT(customers.shipping_address_postal_code, 1)
+    ) = ca_shipping_postal_districts.postal_district_code
 ),
 charges AS (
   SELECT
@@ -292,10 +265,12 @@ charges AS (
     COALESCE(NULLIF(charges.billing_detail_address_country, ""), cards.country) = "US"
     AND LEFT(charges.billing_detail_address_postal_code, 3) = us_zip_code_prefixes.zip_code_prefix
   LEFT JOIN
-    ca_postal_districts
+    `moz-fx-data-shared-prod.static.ca_postal_districts_v1` AS ca_postal_districts
   ON
     COALESCE(NULLIF(charges.billing_detail_address_country, ""), cards.country) = "CA"
-    AND UPPER(LEFT(charges.billing_detail_address_postal_code, 1)) = ca_postal_districts.district
+    AND UPPER(
+      LEFT(charges.billing_detail_address_postal_code, 1)
+    ) = ca_postal_districts.postal_district_code
   WHERE
     charges.status = "succeeded"
 ),

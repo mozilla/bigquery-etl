@@ -4,4 +4,4 @@ AS
 SELECT
   *
 FROM
-  `moz-fx-data-shared-prod.fakespot_syndicate.fakespot_daily_events_rollup`
+  `moz-fx-data-shared-prod.fakespot_syndicate.daily_events_rollup`

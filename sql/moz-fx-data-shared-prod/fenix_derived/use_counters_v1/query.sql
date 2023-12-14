@@ -8326,6 +8326,6 @@ SELECT
     'use.counter.deprecated_ops.page.'
   ) AS metric,
   cnt,
-  COALESCE(doc_rate, page_rate, service_rate, shared_rate, dedicated_rate) AS rate
+  CAST(COALESCE(doc_rate, page_rate, service_rate, shared_rate, dedicated_rate) as numeric) AS rate
 FROM
   fenix_staging

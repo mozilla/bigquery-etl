@@ -45,5 +45,5 @@ fields:
   description: The count for this metric
 - mode: NULLABLE
   name: rate
-  type: FLOAT
+  type: NUMERIC
   description: Usage rate; denominator depends on if metric is a doc, page, worker shared, worker service, or worker dedicated type of metric.

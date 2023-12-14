@@ -4,7 +4,7 @@ AS
 SELECT
   submission_date,
   version_major,
-  geo_country,
+  country,
   platform,
   metric,
   rate
@@ -14,7 +14,7 @@ UNION ALL
 SELECT
   submission_date,
   version_major,
-  geo_country,
+  country,
   platform,
   metric,
   rate

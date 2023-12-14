@@ -2,20 +2,20 @@
 -- Query for firefox_ios_derived.feature_usage_events_v1
 -- For more information on writing queries see:
 -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
-DECLARE start_date DATE DEFAULT "2022-04-01";
+DECLARE submission_date DATE DEFAULT "2023-12-07";
 
-WITH dau_segments AS (
+WITH events_ping_distinct_client_count AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
-    COUNT(DISTINCT client_info.client_id) AS dau
+    COUNT(DISTINCT client_info.client_id) AS events_ping_client_count
   FROM
     firefox_ios.events_unnested
   WHERE
-    DATE(submission_timestamp) >= '2023-06-23'
+    DATE(submission_timestamp) = @submission_date
   GROUP BY
     submission_date
 ),
-product_features AS (
+client_product_feature_usage AS (
   SELECT
     client_info.client_id,
     DATE(submission_timestamp) AS submission_date,
@@ -72,7 +72,7 @@ product_features AS (
   LEFT JOIN
     UNNEST(event_extra) AS extra
   WHERE
-    DATE(submission_timestamp) >= start_date
+    DATE(submission_timestamp) = @submission_date
   GROUP BY
     client_info.client_id,
     submission_date
@@ -298,15 +298,13 @@ product_features_agg AS (
     SUM(notification_alert_setting_disabled) AS notification_alert_setting_disabled,
     SUM(notification_alert_setting_enabled) AS notification_alert_setting_enabled
   FROM
-    product_features
-  WHERE
-    submission_date >= start_date
+    client_product_feature_usage
   GROUP BY
     submission_date
 )
 SELECT
   submission_date,
-  dau,
+  events_ping_client_count,
     /*Logins*/
   logins_autofill_failed,
   logins_autofill_failed_users,
@@ -392,7 +390,7 @@ SELECT
   notification_alert_setting_disabled,
   notification_alert_setting_enabled
 FROM
-  dau_segments
+  events_ping_distinct_client_count
 JOIN
   product_features_agg
 USING

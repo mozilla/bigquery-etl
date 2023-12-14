@@ -1,18 +1,17 @@
 -- Query for firefox_ios_derived.feature_usage_metrics_v1
 -- For more information on writing queries see:
 -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
-DECLARE start_date DATE DEFAULT "2021-01-01";
+DECLARE submission_date DATE DEFAULT "2023-12-07";
 
-DECLARE end_date DATE DEFAULT current_date;
 
-WITH dau_segments AS (
+WITH metrics_ping_distinct_client_count AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
-    COUNT(DISTINCT client_info.client_id) AS dau
+    COUNT(DISTINCT client_info.client_id) AS metrics_ping_client_count
   FROM
     firefox_ios.metrics
   WHERE
-    DATE(submission_timestamp) >= start_date
+    DATE(submission_timestamp) = @submission_date
   GROUP BY
     submission_date
 ),
@@ -96,14 +95,14 @@ product_features AS (
       0
     ) AS firefox_home_page_customize_homepage_button
   FROM
-    firefox_ios.metrics AS metric,
-    UNNEST(metric.metrics.labeled_counter.bookmarks_add) AS bookmarks_add_table,
-    UNNEST(metric.metrics.labeled_counter.bookmarks_delete) AS bookmarks_delete_table,
-    UNNEST(metric.metrics.labeled_counter.bookmarks_edit) AS bookmarks_edit_table,
-    UNNEST(metric.metrics.labeled_counter.bookmarks_open) AS bookmarks_open_table,
-    UNNEST(metric.metrics.labeled_counter.bookmarks_view_list) AS bookmarks_view_list_table
+    firefox_ios.metrics AS metric
+    LEFT JOIN UNNEST(metric.metrics.labeled_counter.bookmarks_add) AS bookmarks_add_table
+    LEFT JOIN UNNEST(metric.metrics.labeled_counter.bookmarks_delete) AS bookmarks_delete_table
+    LEFT JOIN UNNEST(metric.metrics.labeled_counter.bookmarks_edit) AS bookmarks_edit_table
+    LEFT JOIN UNNEST(metric.metrics.labeled_counter.bookmarks_open) AS bookmarks_open_table
+    LEFT JOIN UNNEST(metric.metrics.labeled_counter.bookmarks_view_list) AS bookmarks_view_list_table
   WHERE
-    DATE(submission_timestamp) >= start_date
+    DATE(submission_timestamp) = @submission_date
   GROUP BY
     client_id,
     submission_date
@@ -374,14 +373,12 @@ product_features_agg AS (
     SUM(firefox_home_page_customize_homepage_button) AS firefox_home_page_customize_homepage_button
   FROM
     product_features
-  WHERE
-    submission_date >= start_date
   GROUP BY
     submission_date
 )
 SELECT
   submission_date,
-  dau,
+  metrics_ping_client_count,
 /*Logins*/
   logins_deleted_users,
   logins_deleted,
@@ -456,7 +453,7 @@ SELECT
   firefox_home_page_customize_homepage_button_users,
   firefox_home_page_customize_homepage_button
 FROM
-  dau_segments
+  metrics_ping_distinct_client_count
 JOIN
   product_features_agg
 USING

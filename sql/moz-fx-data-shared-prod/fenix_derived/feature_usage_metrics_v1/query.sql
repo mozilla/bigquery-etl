@@ -1,22 +1,21 @@
 -- Query for fenix_derived.feature_usage_metrics_v1
 -- For more information on writing queries see:
 -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
-DECLARE start_date DATE DEFAULT "2021-05-05";
+DECLARE submission_date DATE DEFAULT "2023-12-07";
 
-DECLARE end_date DATE DEFAULT current_date;
-
-WITH dau_segments AS (
+WITH metrics_ping_distinct_client_count AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
-    COUNT(DISTINCT client_info.client_id) AS dau
+    COUNT(DISTINCT client_info.client_id) AS metrics_ping_client_count
   FROM
     fenix.metrics
   WHERE
-    DATE(submission_timestamp) >= start_date
+    DATE(submission_timestamp) = @submission_date
   GROUP BY
     submission_date
 ),
-product_features AS (
+
+client_product_feature_usage AS (
   SELECT
     client_info.client_id,
     DATE(submission_timestamp) AS submission_date,
@@ -136,13 +135,13 @@ product_features AS (
     SUM(CASE WHEN metrics.boolean.customize_home_recently_saved THEN 1 ELSE 0 END) AS customize_home_recently_saved,
     SUM(CASE WHEN metrics.boolean.customize_home_recently_visited THEN 1 ELSE 0 END) AS customize_home_recently_visited
   FROM
-    fenix.metrics AS metric,
-    UNNEST(metrics.labeled_counter.metrics_bookmarks_add) AS metrics_bookmarks_add_table,
-    UNNEST(metrics.labeled_counter.metrics_bookmarks_delete) AS metrics_bookmarks_delete_table,
-    UNNEST(metrics.labeled_counter.metrics_bookmarks_edit) AS metrics_bookmarks_edit_table,
-    UNNEST(metrics.labeled_counter.metrics_bookmarks_open) AS metrics_bookmarks_open_table
+    fenix.metrics AS metric
+    LEFT JOIN UNNEST(metrics.labeled_counter.metrics_bookmarks_add) AS metrics_bookmarks_add_table
+    LEFT JOIN UNNEST(metrics.labeled_counter.metrics_bookmarks_delete) AS metrics_bookmarks_delete_table
+    LEFT JOIN UNNEST(metrics.labeled_counter.metrics_bookmarks_edit) AS metrics_bookmarks_edit_table
+    LEFT JOIN UNNEST(metrics.labeled_counter.metrics_bookmarks_open) AS metrics_bookmarks_open_table
   WHERE
-    DATE(submission_timestamp) >= start_date
+    DATE(submission_timestamp) = @submission_date
   GROUP BY
     client_id,
     submission_date
@@ -377,15 +376,13 @@ product_features_agg AS (
     ) AS customize_home_recently_visited_users,
     SUM(customize_home_recently_visited) AS customize_home_recently_visited,
   FROM
-    product_features
-  WHERE
-    submission_date >= start_date
+    client_product_feature_usage
   GROUP BY
     submission_date
 )
 SELECT
   submission_date,
-  dau,
+  metrics_ping_client_count,
 /*logins*/
   logins_deleted_users,
   logins_deleted,
@@ -458,7 +455,7 @@ SELECT
   customize_home_recently_visited_users,
   customize_home_recently_visited
 FROM
-  dau_segments
+  metrics_ping_distinct_client_count
 LEFT JOIN
   product_features_agg
 USING

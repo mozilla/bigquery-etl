@@ -1,22 +1,21 @@
 -- Query for fenix_derived.feature_usage_events_v1
 -- For more information on writing queries see:
 -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
-DECLARE start_date DATE DEFAULT "2021-01-01";
+DECLARE submission_date DATE DEFAULT "2023-12-07";
 
-DECLARE end_date DATE DEFAULT current_date;
-
-WITH dau_segments AS (
+WITH events_ping_distinct_client_count AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
-    COUNT(DISTINCT client_info.client_id) AS dau
+    COUNT(DISTINCT client_info.client_id) AS events_ping_client_count
   FROM
     fenix.events_unnested
   WHERE
-    DATE(submission_timestamp) >= '2021-01-01'
+    DATE(submission_timestamp) = @submission_date
   GROUP BY
     submission_date
 ),
-product_features AS (
+
+client_product_feature_usage AS (
   SELECT
     client_info.client_id,
     DATE(submission_timestamp) AS submission_date,
@@ -126,7 +125,7 @@ product_features AS (
   FROM
     fenix.events_unnested
   WHERE
-    DATE(submission_timestamp) >= start_date
+    DATE(submission_timestamp) = @submission_date
   GROUP BY
     client_info.client_id,
     submission_date
@@ -763,15 +762,13 @@ product_features_agg AS (
       END
     ) AS home_page_customize_home_clicked_users
   FROM
-    product_features
-  WHERE
-    submission_date >= start_date
+    client_product_feature_usage
   GROUP BY
     submission_date
 )
 SELECT
   submission_date,
-  dau,
+  events_ping_client_count,
 /*logins*/
   autofill_password_detected_logins,
   autofill_password_detected_users_logins,
@@ -949,7 +946,7 @@ SELECT
   home_page_customize_home_clicked,
   home_page_customize_home_clicked_users
 FROM
-  dau_segments
+  events_ping_distinct_client_count
 LEFT JOIN
   product_features_agg
 USING

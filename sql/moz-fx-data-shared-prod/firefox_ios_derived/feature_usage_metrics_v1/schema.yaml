@@ -2,7 +2,7 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-- name: dau
+- name: metrics_ping_client_count
   type: INTEGER
   mode: NULLABLE
 - name: logins_deleted_users

@@ -9,6 +9,7 @@ SELECT
   metrics.boolean.pocket_enabled,
   metrics.boolean.pocket_sponsored_stories_enabled,
   metrics.string.newtab_locale,
+  client_info.app_build,
   client_info.app_display_version,
   client_info.client_id,
   events

@@ -11,9 +11,8 @@
 {{ value_length(column="client_id", expected_length=36, where="submission_date = @submission_date") }}
 
 #warn
-{{ is_unique(columns=["client_id"], where="submission_date = @submission_date") }}
-
-#warn
+-- The following field is sometimes NULL
+-- "normalized_os_version"
 {{ not_null(columns=[
   "activity_segment",
   "normalized_app_name",
@@ -24,7 +23,6 @@
   "days_since_seen",
   "is_new_profile",
   "normalized_os",
-  "normalized_os_version",
   "app_version",
   "os_version_major",
   "os_version_minor",

@@ -1,0 +1,12 @@
+friendly_name: fakespot_syndicate
+description: |
+  Syndicated data from Fakespot. User-facing views into this data can be found
+  in the ads dataset
+dataset_base_acl: syndicate
+user_facing: false
+syndication:
+  prod:
+    syndicated_project: "moz-fx-fakespot-prod"
+    syndicated_dataset: "fakespot"
+  administer_views: false
+workgroup_access: []

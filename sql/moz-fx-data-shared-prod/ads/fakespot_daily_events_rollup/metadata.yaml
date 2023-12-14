@@ -1,0 +1,17 @@
+friendly_name: Fakespot daily events rollup
+description: |-
+  Daily events rollup from Fakespot, pulled from syndicate dataset
+owners:
+- cmorales@mozilla.com
+labels:
+  authorized: true
+  owner1: cmorales
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:ads
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.fakespot_syndicate.daily_events_rollup
+deprecated: false

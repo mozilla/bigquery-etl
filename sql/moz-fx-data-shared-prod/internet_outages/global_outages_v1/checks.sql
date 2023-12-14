@@ -46,6 +46,15 @@ SELECT
   );
 
 #fail
+/*
+  This statement used to contain the following fields,
+  but these are sometimes missing from country/city combinations
+  See https://sql.telemetry.mozilla.org/queries/96541/source
+  and bug 1868674
+
+  "avg_tls_handshake_time"
+  "count_dns_failure"
+*/
 WITH null_checks AS (
   SELECT
     [
@@ -62,9 +71,7 @@ WITH null_checks AS (
       IF(COUNTIF(missing_dns_success IS NULL) > 0, "missing_dns_success", NULL),
       IF(COUNTIF(avg_dns_failure_time IS NULL) > 0, "avg_dns_failure_time", NULL),
       IF(COUNTIF(missing_dns_failure IS NULL) > 0, "missing_dns_failure", NULL),
-      IF(COUNTIF(count_dns_failure IS NULL) > 0, "count_dns_failure", NULL),
-      IF(COUNTIF(ssl_error_prop IS NULL) > 0, "ssl_error_prop", NULL),
-      IF(COUNTIF(avg_tls_handshake_time IS NULL) > 0, "avg_tls_handshake_time", NULL)
+      IF(COUNTIF(ssl_error_prop IS NULL) > 0, "ssl_error_prop", NULL)
     ] AS checks
   FROM
     `moz-fx-data-shared-prod.internet_outages.global_outages_v1`

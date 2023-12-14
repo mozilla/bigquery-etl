@@ -3,7 +3,8 @@ description: |-
   Daily events rollup from Fakespot, pulled from syndicate dataset
 owners:
   - cmorales@mozilla.com
-authorized: true
+labels:
+  authorized: true
 workgroup_access:
   - role: roles/bigquery.dataViewer
     members:

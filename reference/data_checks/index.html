@@ -4331,11 +4331,12 @@ where: Optional[str]: Any additional filtering rules that should be applied when
 column: str - Column which values will be checked against the regex.
 pattern: str - Regex pattern specifying the expected shape / pattern of the values inside the column.
 where: Optional[str]: Any additional filtering rules that should be applied when retrieving the data to run the check against.
+threshold_fail_percentage: Optional[int] - Percentage of how many rows can fail the check before causing it to fail.
 message: Optional[str]: Custom error message.
 </code></pre></div>
 <p>Example:
 <div class="highlight"><pre><span></span><code><span class="o">#</span><span class="n">warn</span>
-<span class="err">{{</span><span class="w"> </span><span class="n">matches_pattern</span><span class="p">(</span><span class="k">column</span><span class="o">=</span><span class="ss">&quot;country&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">pattern</span><span class="o">=</span><span class="ss">&quot;^[A-Z]{2}$&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">where</span><span class="o">=</span><span class="ss">&quot;submission_date = @submission_date&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">message</span><span class="o">=</span><span class="ss">&quot;Oops&quot;</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
+<span class="err">{{</span><span class="w"> </span><span class="n">matches_pattern</span><span class="p">(</span><span class="k">column</span><span class="o">=</span><span class="ss">&quot;country&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">pattern</span><span class="o">=</span><span class="ss">&quot;^[A-Z]{2}$&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">where</span><span class="o">=</span><span class="ss">&quot;submission_date = @submission_date&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">threshold_fail_percentage</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="n">message</span><span class="o">=</span><span class="ss">&quot;Oops&quot;</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
 </code></pre></div></p>
 <h2 id="running-checks-locally-commands">Running checks locally / Commands</h2>
 <p>To list all available commands in the bqetl data checks CLI:</p>

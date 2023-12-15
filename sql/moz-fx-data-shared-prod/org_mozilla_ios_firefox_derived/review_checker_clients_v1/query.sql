@@ -123,7 +123,7 @@ search AS (
   WHERE
     submission_date = @submission_date
     AND os = "iOS"
-    AND normalized_app_name = "Fennec"
+    AND normalized_app_name = "Firefox"
   GROUP BY
     client_id,
     submission_date

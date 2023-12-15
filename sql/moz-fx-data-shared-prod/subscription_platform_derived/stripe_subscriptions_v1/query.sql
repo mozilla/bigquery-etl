@@ -31,6 +31,9 @@ SELECT
   provider,
   country,
   state,
+  has_refunds,
+  has_fraudulent_charges,
+  has_fraudulent_charge_refunds,
   promotion_codes,
   promotion_discounts_amount,
 FROM

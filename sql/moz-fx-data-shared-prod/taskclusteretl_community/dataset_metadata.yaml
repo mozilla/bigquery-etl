@@ -1,0 +1,14 @@
+friendly_name: taskclusteretl_community
+description: taskclusteretl_community syndicate views
+dataset_base_acl: syndicate
+user_facing: true
+labels: {}
+syndication:
+  prod:
+    syndicated_project: "moz-fx-data-taskclu-prod-8fbf"
+    syndicated_dataset: "taskclusteretl_community"
+  administer_views: true
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

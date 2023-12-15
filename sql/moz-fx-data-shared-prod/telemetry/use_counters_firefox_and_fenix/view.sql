@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.telemetry.use_counters`
+  `moz-fx-data-shared-prod.telemetry.use_counters_firefox_and_fenix`
 AS 
 SELECT
   submission_date,

@@ -257,7 +257,7 @@ WHERE
 #warn
 SELECT
   IF(
-    COUNTIF(NOT REGEXP_CONTAINS(country, r"^[A-Z]{2}$")) > 0,
+    ROUND((COUNTIF(NOT REGEXP_CONTAINS(country, r"^[A-Z]{2}$"))) / COUNT(*) * 100, 2) > 0,
     ERROR(
       "Some values in this field do not adhere to the ISO 3166-1 specification (2 character country code, for example: DE)."
     ),

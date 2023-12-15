@@ -1376,3 +1376,21 @@ bqetl_use_counter_analysis:
   tags:
     - impact/tier_2
   description: DAG to prepare use counter data for Firefox Desktop & Fenix for visualization
+
+bqetl_mobile_feature_usage:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - rzhao@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    owner: rzhao@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2023-10-24'
+  description: Schedule run for mobile feature usage tables
+  schedule_interval: 0 6 * * *
+  tags:
+    - impact/tier_3

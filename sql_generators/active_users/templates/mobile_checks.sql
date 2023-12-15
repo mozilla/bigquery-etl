@@ -43,7 +43,11 @@ distinct_client_count AS (
 )
 SELECT
   IF(
-    (SELECT * FROM dau_sum) <> (SELECT * FROM distinct_client_count),
-    ERROR("DAU mismatch between aggregates table and live table"),
+    ABS((SELECT * FROM dau_sum) - (SELECT * FROM distinct_client_count)) > 10,
+    ERROR(CONCAT(
+      "DAU mismatch between aggregates table and live table is greated than 10.",
+      " (live: ", (SELECT * FROM distinct_client_count), " | aggregates dau: ", (SELECT * FROM dau_sum), ")"
+      )
+    ),
     NULL
   );

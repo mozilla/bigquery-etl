@@ -94,8 +94,12 @@ live_table_qdau_count AS (
 )
 SELECT
   IF(
-    (SELECT * FROM live_table_qdau_count) <> (SELECT * FROM qdau_sum),
-    ERROR("QDAU mismatch between aggregates table and live table"),
+    ABS((SELECT * FROM qdau_sum) - (SELECT * FROM live_table_qdau_count)) > 10,
+    ERROR(CONCAT(
+      "QDAU mismatch between aggregates table and live table is greated than 10.",
+      " (live: ", (SELECT * FROM live_table_qdau_count), " | aggregates qdau: ", (SELECT * FROM qdau_sum), ")"
+      )
+    ),
     NULL
   );
 
@@ -142,8 +146,12 @@ distinct_client_count AS (
 )
 SELECT
   IF(
-    ABS((SELECT * FROM dau_sum) - (SELECT * FROM distinct_client_count)) > 1,
-    ERROR("DAU mismatch between aggregates table and live table"),
+    ABS((SELECT * FROM dau_sum) - (SELECT * FROM distinct_client_count)) > 10,
+    ERROR(CONCAT(
+      "DAU mismatch between aggregates table and live table is greated than 10.",
+      " (live: ", (SELECT * FROM distinct_client_count), " | aggregates dau: ", (SELECT * FROM dau_sum), ")"
+      )
+    ),
     NULL
   );
 

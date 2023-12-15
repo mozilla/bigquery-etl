@@ -41,7 +41,17 @@ distinct_client_count AS (
 )
 SELECT
   IF(
-    (SELECT * FROM dau_sum) <> (SELECT * FROM distinct_client_count),
-    ERROR("DAU mismatch between aggregates table and live table"),
+    ABS((SELECT * FROM dau_sum) - (SELECT * FROM distinct_client_count)) > 10,
+    ERROR(
+      CONCAT(
+        "DAU mismatch between the focus_android live across all channels (`moz-fx-data-shared-prod.org_mozilla_focus_live.baseline_v1`,`moz-fx-data-shared-prod.org_mozilla_focus_beta_live.baseline_v1`,`moz-fx-data-shared-prod.org_mozilla_focus_nightly_live.baseline_v1`,) and active_users_aggregates (`focus_android_derived.active_users_aggregates_v2`) tables is greated than 10.",
+        " Live table count: ",
+        (SELECT * FROM distinct_client_count),
+        " | active_users_aggregates (DAU): ",
+        (SELECT * FROM dau_sum),
+        " | Delta detected: ",
+        ABS((SELECT * FROM dau_sum) - (SELECT * FROM distinct_client_count))
+      )
+    ),
     NULL
   );

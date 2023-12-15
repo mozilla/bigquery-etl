@@ -17,3 +17,4 @@ workgroup_access:
   - workgroup:mozilla-confidential
   - workgroup:pocket/external
   - workgroup:pocket/prefect
+syndication: {}

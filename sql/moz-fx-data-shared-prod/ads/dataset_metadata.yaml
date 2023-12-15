@@ -6,3 +6,4 @@ user_facing: true
 labels: {}
 default_table_workgroup_access: []
 workgroup_access: []
+syndication: {}

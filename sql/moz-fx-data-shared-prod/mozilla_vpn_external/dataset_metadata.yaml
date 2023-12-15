@@ -12,3 +12,4 @@ workgroup_access:
 - role: roles/bigquery.dataEditor
   members:
   - workgroup:platform-infra/internal
+syndication: {}

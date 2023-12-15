@@ -17,3 +17,4 @@ workgroup_access:
   members:
   - workgroup:mozilla-confidential
   - workgroup:internet-outages/external
+syndication: {}

@@ -12,3 +12,4 @@ workgroup_access:
 - role: roles/bigquery.metadataViewer
   members:
   - workgroup:search-terms/sanitized-writer
+syndication: {}

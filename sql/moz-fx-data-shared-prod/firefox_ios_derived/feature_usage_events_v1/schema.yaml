@@ -2,7 +2,7 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-- name: events_ping_client_count
+- name: events_ping_distinct_client_count
   type: INTEGER
   mode: NULLABLE
 - name: logins_autofill_failed

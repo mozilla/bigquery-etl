@@ -1,13 +1,7 @@
--- Query for firefox_ios_derived.feature_usage_metrics_v1
--- For more information on writing queries see:
--- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
-DECLARE submission_date DATE DEFAULT "2023-12-07";
-
-
-WITH metrics_ping_distinct_client_count AS (
+WITH _metrics_ping_distinct_client_count AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
-    COUNT(DISTINCT client_info.client_id) AS metrics_ping_client_count
+    COUNT(DISTINCT client_info.client_id) AS metrics_ping_distinct_client_count
   FROM
     firefox_ios.metrics
   WHERE
@@ -453,7 +447,7 @@ SELECT
   firefox_home_page_customize_homepage_button_users,
   firefox_home_page_customize_homepage_button
 FROM
-  metrics_ping_distinct_client_count
+  _metrics_ping_distinct_client_count
 JOIN
   product_features_agg
 USING

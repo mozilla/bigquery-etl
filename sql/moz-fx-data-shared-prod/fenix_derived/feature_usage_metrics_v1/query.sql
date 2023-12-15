@@ -1,12 +1,7 @@
--- Query for fenix_derived.feature_usage_metrics_v1
--- For more information on writing queries see:
--- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
-DECLARE submission_date DATE DEFAULT "2023-12-07";
-
-WITH metrics_ping_distinct_client_count AS (
+WITH _metrics_ping_distinct_client_count AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
-    COUNT(DISTINCT client_info.client_id) AS metrics_ping_client_count
+    COUNT(DISTINCT client_info.client_id) AS metrics_ping_distinct_client_count
   FROM
     fenix.metrics
   WHERE
@@ -455,7 +450,7 @@ SELECT
   customize_home_recently_visited_users,
   customize_home_recently_visited
 FROM
-  metrics_ping_distinct_client_count
+  _metrics_ping_distinct_client_count
 LEFT JOIN
   product_features_agg
 USING

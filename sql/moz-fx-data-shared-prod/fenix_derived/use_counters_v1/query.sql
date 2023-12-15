@@ -3,7 +3,7 @@
             -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
 WITH fenix_firefox_use_counts_by_day_version_and_country_stg AS (
   SELECT
-    DATE(a.submission_timestamp) AS submission_date,
+    DATE(submission_timestamp) AS submission_date,
     mozfun.norm.truncate_version(client_info.app_display_version, 'major') AS version_major,
     metadata.geo.country AS country,
     'Fenix' AS platform,
@@ -5924,9 +5924,9 @@ WITH fenix_firefox_use_counts_by_day_version_and_country_stg AS (
       metrics.counter.use_counter_worker_shared_scheduler_posttask
     ) AS use_counter_worker_shared_scheduler_posttask
   FROM
-    `moz-fx-data-shared-prod.fenix.use_counters` a
+    `moz-fx-data-shared-prod.fenix.use_counters` 
   WHERE
-    DATE(a.submission_timestamp) = @submission_date
+    DATE(submission_timestamp) = @submission_date
   GROUP BY
     1,
     2,

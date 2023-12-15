@@ -1,12 +1,12 @@
--- Query for telemetry_derived.firefox_use_counters_v1
+-- Query for fenix_derived.use_counters_v1
             -- For more information on writing queries see:
             -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
-WITH firefox_desktop_use_counts_by_day_version_and_country_stg AS (
+WITH fenix_firefox_use_counts_by_day_version_and_country_stg AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
     mozfun.norm.truncate_version(client_info.app_display_version, 'major') AS version_major,
     metadata.geo.country AS country,
-    normalized_app_name AS platform,
+    'Fenix' AS platform,
     SUM(
       metrics.counter.use_counter_content_documents_destroyed
     ) AS use_counter_content_documents_destroyed,
@@ -5924,7 +5924,7 @@ WITH firefox_desktop_use_counts_by_day_version_and_country_stg AS (
       metrics.counter.use_counter_worker_shared_scheduler_posttask
     ) AS use_counter_worker_shared_scheduler_posttask
   FROM
-    `moz-fx-data-shared-prod.firefox_desktop.use_counters` 
+    `moz-fx-data-shared-prod.fenix.use_counters`
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -5935,11 +5935,11 @@ WITH firefox_desktop_use_counts_by_day_version_and_country_stg AS (
   HAVING
     COUNT(DISTINCT(client_info.client_id)) >= 5000
 ),
-firefox_desktop_pivoted_raw AS (
+fenix_pivoted_raw AS (
   SELECT
     *
   FROM
-    firefox_desktop_use_counts_by_day_version_and_country_stg a UNPIVOT(
+    fenix_firefox_use_counts_by_day_version_and_country_stg a UNPIVOT(
       cnt FOR metric IN (
         use_counter_css_doc_alignment_baseline,
         use_counter_css_doc_background_repeat_x,
@@ -8241,7 +8241,7 @@ firefox_desktop_pivoted_raw AS (
       )
     )
 ),
-firefox_desktop_staging AS (
+fenix_staging AS (
   SELECT
     submission_date,
     version_major,
@@ -8280,7 +8280,7 @@ firefox_desktop_staging AS (
       ELSE NULL
     END AS dedicated_rate
   FROM
-    firefox_desktop_pivoted_raw
+    fenix_pivoted_raw
 )
 SELECT
   submission_date,
@@ -8328,4 +8328,4 @@ SELECT
   cnt,
   CAST(COALESCE(doc_rate, page_rate, service_rate, shared_rate, dedicated_rate) as numeric) AS rate
 FROM
-  firefox_desktop_staging
+  fenix_staging

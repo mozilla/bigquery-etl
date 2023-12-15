@@ -7,51 +7,13 @@ IF
   SELECT
     DATE(submission_timestamp) AS submission_date,
     TIMESTAMP_ADD(
-      TIMESTAMP_TRUNC(
-        TIMESTAMP_ADD(
-          SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time),
-          INTERVAL event.timestamp MILLISECOND
-        ),
-        HOUR
-      ),
+      TIMESTAMP_TRUNC(submission_timestamp, HOUR),
         -- Aggregates event counts over 60-minute intervals
-      INTERVAL(
-        DIV(
-          EXTRACT(
-            MINUTE
-            FROM
-              TIMESTAMP_ADD(
-                SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time),
-                INTERVAL event.timestamp MILLISECOND
-              )
-          ),
-          60
-        ) * 60
-      ) MINUTE
+      INTERVAL(DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) * 60) MINUTE
     ) AS window_start,
     TIMESTAMP_ADD(
-      TIMESTAMP_TRUNC(
-        TIMESTAMP_ADD(
-          SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time),
-          INTERVAL event.timestamp MILLISECOND
-        ),
-        HOUR
-      ),
-      INTERVAL(
-        (
-          DIV(
-            EXTRACT(
-              MINUTE
-              FROM
-                TIMESTAMP_ADD(
-                  SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time),
-                  INTERVAL event.timestamp MILLISECOND
-                )
-            ),
-            60
-          ) + 1
-        ) * 60
-      ) MINUTE
+      TIMESTAMP_TRUNC(submission_timestamp, HOUR),
+      INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) + 1) * 60) MINUTE
     ) AS window_end,
     event.category AS event_category,
     event.name AS event_name,

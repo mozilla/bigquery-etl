@@ -2,19 +2,13 @@
 SELECT
   @submission_date AS submission_date,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
     -- Aggregates event counts over 60-minute intervals
-    INTERVAL(
-      DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) * 60
-    ) MINUTE
+    INTERVAL(DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) * 60) MINUTE
   ) AS window_start,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
-    INTERVAL(
-      (
-        DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) + 1
-      ) * 60
-    ) MINUTE
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
+    INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) + 1) * 60) MINUTE
   ) AS window_end,
   event.category AS event_category,
   event.name AS event_name,
@@ -69,19 +63,13 @@ UNION ALL
 SELECT
   @submission_date AS submission_date,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
     -- Aggregates event counts over 60-minute intervals
-    INTERVAL(
-      DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) * 60
-    ) MINUTE
+    INTERVAL(DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) * 60) MINUTE
   ) AS window_start,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
-    INTERVAL(
-      (
-        DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) + 1
-      ) * 60
-    ) MINUTE
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
+    INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) + 1) * 60) MINUTE
   ) AS window_end,
   event.category AS event_category,
   event.name AS event_name,
@@ -136,19 +124,13 @@ UNION ALL
 SELECT
   @submission_date AS submission_date,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
     -- Aggregates event counts over 60-minute intervals
-    INTERVAL(
-      DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) * 60
-    ) MINUTE
+    INTERVAL(DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) * 60) MINUTE
   ) AS window_start,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
-    INTERVAL(
-      (
-        DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) + 1
-      ) * 60
-    ) MINUTE
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
+    INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) + 1) * 60) MINUTE
   ) AS window_end,
   event.category AS event_category,
   event.name AS event_name,
@@ -203,19 +185,13 @@ UNION ALL
 SELECT
   @submission_date AS submission_date,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
     -- Aggregates event counts over 60-minute intervals
-    INTERVAL(
-      DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) * 60
-    ) MINUTE
+    INTERVAL(DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) * 60) MINUTE
   ) AS window_start,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
-    INTERVAL(
-      (
-        DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) + 1
-      ) * 60
-    ) MINUTE
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
+    INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) + 1) * 60) MINUTE
   ) AS window_end,
   event.category AS event_category,
   event.name AS event_name,
@@ -270,19 +246,13 @@ UNION ALL
 SELECT
   @submission_date AS submission_date,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
     -- Aggregates event counts over 60-minute intervals
-    INTERVAL(
-      DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) * 60
-    ) MINUTE
+    INTERVAL(DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) * 60) MINUTE
   ) AS window_start,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
-    INTERVAL(
-      (
-        DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) + 1
-      ) * 60
-    ) MINUTE
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
+    INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) + 1) * 60) MINUTE
   ) AS window_end,
   event.category AS event_category,
   event.name AS event_name,
@@ -337,19 +307,13 @@ UNION ALL
 SELECT
   @submission_date AS submission_date,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
     -- Aggregates event counts over 60-minute intervals
-    INTERVAL(
-      DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) * 60
-    ) MINUTE
+    INTERVAL(DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) * 60) MINUTE
   ) AS window_start,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
-    INTERVAL(
-      (
-        DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) + 1
-      ) * 60
-    ) MINUTE
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
+    INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) + 1) * 60) MINUTE
   ) AS window_end,
   event.category AS event_category,
   event.name AS event_name,
@@ -404,19 +368,13 @@ UNION ALL
 SELECT
   @submission_date AS submission_date,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
     -- Aggregates event counts over 60-minute intervals
-    INTERVAL(
-      DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) * 60
-    ) MINUTE
+    INTERVAL(DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) * 60) MINUTE
   ) AS window_start,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
-    INTERVAL(
-      (
-        DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) + 1
-      ) * 60
-    ) MINUTE
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
+    INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) + 1) * 60) MINUTE
   ) AS window_end,
   event.category AS event_category,
   event.name AS event_name,
@@ -471,19 +429,13 @@ UNION ALL
 SELECT
   @submission_date AS submission_date,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
     -- Aggregates event counts over 60-minute intervals
-    INTERVAL(
-      DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) * 60
-    ) MINUTE
+    INTERVAL(DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) * 60) MINUTE
   ) AS window_start,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
-    INTERVAL(
-      (
-        DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) + 1
-      ) * 60
-    ) MINUTE
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
+    INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) + 1) * 60) MINUTE
   ) AS window_end,
   event.category AS event_category,
   event.name AS event_name,
@@ -538,19 +490,13 @@ UNION ALL
 SELECT
   @submission_date AS submission_date,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
     -- Aggregates event counts over 60-minute intervals
-    INTERVAL(
-      DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) * 60
-    ) MINUTE
+    INTERVAL(DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) * 60) MINUTE
   ) AS window_start,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
-    INTERVAL(
-      (
-        DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) + 1
-      ) * 60
-    ) MINUTE
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
+    INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) + 1) * 60) MINUTE
   ) AS window_end,
   event.category AS event_category,
   event.name AS event_name,
@@ -605,19 +551,13 @@ UNION ALL
 SELECT
   @submission_date AS submission_date,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
     -- Aggregates event counts over 60-minute intervals
-    INTERVAL(
-      DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) * 60
-    ) MINUTE
+    INTERVAL(DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) * 60) MINUTE
   ) AS window_start,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
-    INTERVAL(
-      (
-        DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) + 1
-      ) * 60
-    ) MINUTE
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
+    INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) + 1) * 60) MINUTE
   ) AS window_end,
   event.category AS event_category,
   event.name AS event_name,
@@ -672,19 +612,13 @@ UNION ALL
 SELECT
   @submission_date AS submission_date,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
     -- Aggregates event counts over 60-minute intervals
-    INTERVAL(
-      DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) * 60
-    ) MINUTE
+    INTERVAL(DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) * 60) MINUTE
   ) AS window_start,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
-    INTERVAL(
-      (
-        DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) + 1
-      ) * 60
-    ) MINUTE
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
+    INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) + 1) * 60) MINUTE
   ) AS window_end,
   event.category AS event_category,
   event.name AS event_name,
@@ -739,19 +673,13 @@ UNION ALL
 SELECT
   @submission_date AS submission_date,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
     -- Aggregates event counts over 60-minute intervals
-    INTERVAL(
-      DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) * 60
-    ) MINUTE
+    INTERVAL(DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) * 60) MINUTE
   ) AS window_start,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
-    INTERVAL(
-      (
-        DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) + 1
-      ) * 60
-    ) MINUTE
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
+    INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) + 1) * 60) MINUTE
   ) AS window_end,
   event.category AS event_category,
   event.name AS event_name,
@@ -806,19 +734,13 @@ UNION ALL
 SELECT
   @submission_date AS submission_date,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
     -- Aggregates event counts over 60-minute intervals
-    INTERVAL(
-      DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) * 60
-    ) MINUTE
+    INTERVAL(DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) * 60) MINUTE
   ) AS window_start,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
-    INTERVAL(
-      (
-        DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) + 1
-      ) * 60
-    ) MINUTE
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
+    INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) + 1) * 60) MINUTE
   ) AS window_end,
   event.category AS event_category,
   event.name AS event_name,
@@ -873,19 +795,13 @@ UNION ALL
 SELECT
   @submission_date AS submission_date,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
     -- Aggregates event counts over 60-minute intervals
-    INTERVAL(
-      DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) * 60
-    ) MINUTE
+    INTERVAL(DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) * 60) MINUTE
   ) AS window_start,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
-    INTERVAL(
-      (
-        DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) + 1
-      ) * 60
-    ) MINUTE
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
+    INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) + 1) * 60) MINUTE
   ) AS window_end,
   event.category AS event_category,
   event.name AS event_name,
@@ -940,19 +856,13 @@ UNION ALL
 SELECT
   @submission_date AS submission_date,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
     -- Aggregates event counts over 60-minute intervals
-    INTERVAL(
-      DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) * 60
-    ) MINUTE
+    INTERVAL(DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) * 60) MINUTE
   ) AS window_start,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
-    INTERVAL(
-      (
-        DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) + 1
-      ) * 60
-    ) MINUTE
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
+    INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) + 1) * 60) MINUTE
   ) AS window_end,
   event.category AS event_category,
   event.name AS event_name,
@@ -1007,19 +917,13 @@ UNION ALL
 SELECT
   @submission_date AS submission_date,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
     -- Aggregates event counts over 60-minute intervals
-    INTERVAL(
-      DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) * 60
-    ) MINUTE
+    INTERVAL(DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) * 60) MINUTE
   ) AS window_start,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
-    INTERVAL(
-      (
-        DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) + 1
-      ) * 60
-    ) MINUTE
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
+    INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) + 1) * 60) MINUTE
   ) AS window_end,
   event.category AS event_category,
   event.name AS event_name,
@@ -1074,19 +978,13 @@ UNION ALL
 SELECT
   @submission_date AS submission_date,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
     -- Aggregates event counts over 60-minute intervals
-    INTERVAL(
-      DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) * 60
-    ) MINUTE
+    INTERVAL(DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) * 60) MINUTE
   ) AS window_start,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
-    INTERVAL(
-      (
-        DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) + 1
-      ) * 60
-    ) MINUTE
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
+    INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) + 1) * 60) MINUTE
   ) AS window_end,
   event.category AS event_category,
   event.name AS event_name,
@@ -1141,19 +1039,13 @@ UNION ALL
 SELECT
   @submission_date AS submission_date,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
     -- Aggregates event counts over 60-minute intervals
-    INTERVAL(
-      DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) * 60
-    ) MINUTE
+    INTERVAL(DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) * 60) MINUTE
   ) AS window_start,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
-    INTERVAL(
-      (
-        DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) + 1
-      ) * 60
-    ) MINUTE
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
+    INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) + 1) * 60) MINUTE
   ) AS window_end,
   event.category AS event_category,
   event.name AS event_name,
@@ -1208,19 +1100,13 @@ UNION ALL
 SELECT
   @submission_date AS submission_date,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
     -- Aggregates event counts over 60-minute intervals
-    INTERVAL(
-      DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) * 60
-    ) MINUTE
+    INTERVAL(DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) * 60) MINUTE
   ) AS window_start,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
-    INTERVAL(
-      (
-        DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) + 1
-      ) * 60
-    ) MINUTE
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
+    INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) + 1) * 60) MINUTE
   ) AS window_end,
   event.category AS event_category,
   event.name AS event_name,
@@ -1275,19 +1161,13 @@ UNION ALL
 SELECT
   @submission_date AS submission_date,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
     -- Aggregates event counts over 60-minute intervals
-    INTERVAL(
-      DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) * 60
-    ) MINUTE
+    INTERVAL(DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) * 60) MINUTE
   ) AS window_start,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
-    INTERVAL(
-      (
-        DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) + 1
-      ) * 60
-    ) MINUTE
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
+    INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) + 1) * 60) MINUTE
   ) AS window_end,
   event.category AS event_category,
   event.name AS event_name,
@@ -1342,19 +1222,13 @@ UNION ALL
 SELECT
   @submission_date AS submission_date,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
     -- Aggregates event counts over 60-minute intervals
-    INTERVAL(
-      DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) * 60
-    ) MINUTE
+    INTERVAL(DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) * 60) MINUTE
   ) AS window_start,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
-    INTERVAL(
-      (
-        DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) + 1
-      ) * 60
-    ) MINUTE
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
+    INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) + 1) * 60) MINUTE
   ) AS window_end,
   event.category AS event_category,
   event.name AS event_name,
@@ -1409,19 +1283,13 @@ UNION ALL
 SELECT
   @submission_date AS submission_date,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
     -- Aggregates event counts over 60-minute intervals
-    INTERVAL(
-      DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) * 60
-    ) MINUTE
+    INTERVAL(DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) * 60) MINUTE
   ) AS window_start,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
-    INTERVAL(
-      (
-        DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) + 1
-      ) * 60
-    ) MINUTE
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
+    INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) + 1) * 60) MINUTE
   ) AS window_end,
   event.category AS event_category,
   event.name AS event_name,
@@ -1476,19 +1344,13 @@ UNION ALL
 SELECT
   @submission_date AS submission_date,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
     -- Aggregates event counts over 60-minute intervals
-    INTERVAL(
-      DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) * 60
-    ) MINUTE
+    INTERVAL(DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) * 60) MINUTE
   ) AS window_start,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
-    INTERVAL(
-      (
-        DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) + 1
-      ) * 60
-    ) MINUTE
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
+    INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) + 1) * 60) MINUTE
   ) AS window_end,
   event.category AS event_category,
   event.name AS event_name,
@@ -1543,19 +1405,13 @@ UNION ALL
 SELECT
   @submission_date AS submission_date,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
     -- Aggregates event counts over 60-minute intervals
-    INTERVAL(
-      DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) * 60
-    ) MINUTE
+    INTERVAL(DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) * 60) MINUTE
   ) AS window_start,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
-    INTERVAL(
-      (
-        DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) + 1
-      ) * 60
-    ) MINUTE
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
+    INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) + 1) * 60) MINUTE
   ) AS window_end,
   event.category AS event_category,
   event.name AS event_name,
@@ -1610,19 +1466,13 @@ UNION ALL
 SELECT
   @submission_date AS submission_date,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
     -- Aggregates event counts over 60-minute intervals
-    INTERVAL(
-      DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) * 60
-    ) MINUTE
+    INTERVAL(DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) * 60) MINUTE
   ) AS window_start,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
-    INTERVAL(
-      (
-        DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) + 1
-      ) * 60
-    ) MINUTE
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
+    INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) + 1) * 60) MINUTE
   ) AS window_end,
   event.category AS event_category,
   event.name AS event_name,
@@ -1677,19 +1527,13 @@ UNION ALL
 SELECT
   @submission_date AS submission_date,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
     -- Aggregates event counts over 60-minute intervals
-    INTERVAL(
-      DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) * 60
-    ) MINUTE
+    INTERVAL(DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) * 60) MINUTE
   ) AS window_start,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
-    INTERVAL(
-      (
-        DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) + 1
-      ) * 60
-    ) MINUTE
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
+    INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) + 1) * 60) MINUTE
   ) AS window_end,
   event.category AS event_category,
   event.name AS event_name,
@@ -1744,19 +1588,13 @@ UNION ALL
 SELECT
   @submission_date AS submission_date,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
     -- Aggregates event counts over 60-minute intervals
-    INTERVAL(
-      DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) * 60
-    ) MINUTE
+    INTERVAL(DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) * 60) MINUTE
   ) AS window_start,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
-    INTERVAL(
-      (
-        DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) + 1
-      ) * 60
-    ) MINUTE
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
+    INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) + 1) * 60) MINUTE
   ) AS window_end,
   event.category AS event_category,
   event.name AS event_name,
@@ -1811,19 +1649,13 @@ UNION ALL
 SELECT
   @submission_date AS submission_date,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
     -- Aggregates event counts over 60-minute intervals
-    INTERVAL(
-      DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) * 60
-    ) MINUTE
+    INTERVAL(DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) * 60) MINUTE
   ) AS window_start,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
-    INTERVAL(
-      (
-        DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) + 1
-      ) * 60
-    ) MINUTE
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
+    INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) + 1) * 60) MINUTE
   ) AS window_end,
   event.category AS event_category,
   event.name AS event_name,
@@ -1878,19 +1710,13 @@ UNION ALL
 SELECT
   @submission_date AS submission_date,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
     -- Aggregates event counts over 60-minute intervals
-    INTERVAL(
-      DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) * 60
-    ) MINUTE
+    INTERVAL(DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) * 60) MINUTE
   ) AS window_start,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
-    INTERVAL(
-      (
-        DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) + 1
-      ) * 60
-    ) MINUTE
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
+    INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) + 1) * 60) MINUTE
   ) AS window_end,
   event.category AS event_category,
   event.name AS event_name,
@@ -1945,19 +1771,13 @@ UNION ALL
 SELECT
   @submission_date AS submission_date,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
     -- Aggregates event counts over 60-minute intervals
-    INTERVAL(
-      DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) * 60
-    ) MINUTE
+    INTERVAL(DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) * 60) MINUTE
   ) AS window_start,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
-    INTERVAL(
-      (
-        DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) + 1
-      ) * 60
-    ) MINUTE
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
+    INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) + 1) * 60) MINUTE
   ) AS window_end,
   event.category AS event_category,
   event.name AS event_name,
@@ -2012,19 +1832,13 @@ UNION ALL
 SELECT
   @submission_date AS submission_date,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
     -- Aggregates event counts over 60-minute intervals
-    INTERVAL(
-      DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) * 60
-    ) MINUTE
+    INTERVAL(DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) * 60) MINUTE
   ) AS window_start,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
-    INTERVAL(
-      (
-        DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) + 1
-      ) * 60
-    ) MINUTE
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
+    INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) + 1) * 60) MINUTE
   ) AS window_end,
   event.category AS event_category,
   event.name AS event_name,
@@ -2079,19 +1893,13 @@ UNION ALL
 SELECT
   @submission_date AS submission_date,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
     -- Aggregates event counts over 60-minute intervals
-    INTERVAL(
-      DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) * 60
-    ) MINUTE
+    INTERVAL(DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) * 60) MINUTE
   ) AS window_start,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
-    INTERVAL(
-      (
-        DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) + 1
-      ) * 60
-    ) MINUTE
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
+    INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) + 1) * 60) MINUTE
   ) AS window_end,
   event.category AS event_category,
   event.name AS event_name,
@@ -2146,19 +1954,13 @@ UNION ALL
 SELECT
   @submission_date AS submission_date,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
     -- Aggregates event counts over 60-minute intervals
-    INTERVAL(
-      DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) * 60
-    ) MINUTE
+    INTERVAL(DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) * 60) MINUTE
   ) AS window_start,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
-    INTERVAL(
-      (
-        DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) + 1
-      ) * 60
-    ) MINUTE
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
+    INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) + 1) * 60) MINUTE
   ) AS window_end,
   event.category AS event_category,
   event.name AS event_name,
@@ -2213,19 +2015,13 @@ UNION ALL
 SELECT
   @submission_date AS submission_date,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
     -- Aggregates event counts over 60-minute intervals
-    INTERVAL(
-      DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) * 60
-    ) MINUTE
+    INTERVAL(DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) * 60) MINUTE
   ) AS window_start,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
-    INTERVAL(
-      (
-        DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) + 1
-      ) * 60
-    ) MINUTE
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
+    INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) + 1) * 60) MINUTE
   ) AS window_end,
   event.category AS event_category,
   event.name AS event_name,
@@ -2280,19 +2076,13 @@ UNION ALL
 SELECT
   @submission_date AS submission_date,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
     -- Aggregates event counts over 60-minute intervals
-    INTERVAL(
-      DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) * 60
-    ) MINUTE
+    INTERVAL(DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) * 60) MINUTE
   ) AS window_start,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
-    INTERVAL(
-      (
-        DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) + 1
-      ) * 60
-    ) MINUTE
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
+    INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) + 1) * 60) MINUTE
   ) AS window_end,
   event.category AS event_category,
   event.name AS event_name,
@@ -2347,19 +2137,13 @@ UNION ALL
 SELECT
   @submission_date AS submission_date,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
     -- Aggregates event counts over 60-minute intervals
-    INTERVAL(
-      DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) * 60
-    ) MINUTE
+    INTERVAL(DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) * 60) MINUTE
   ) AS window_start,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
-    INTERVAL(
-      (
-        DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) + 1
-      ) * 60
-    ) MINUTE
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
+    INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) + 1) * 60) MINUTE
   ) AS window_end,
   event.category AS event_category,
   event.name AS event_name,
@@ -2414,19 +2198,13 @@ UNION ALL
 SELECT
   @submission_date AS submission_date,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
     -- Aggregates event counts over 60-minute intervals
-    INTERVAL(
-      DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) * 60
-    ) MINUTE
+    INTERVAL(DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) * 60) MINUTE
   ) AS window_start,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
-    INTERVAL(
-      (
-        DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) + 1
-      ) * 60
-    ) MINUTE
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
+    INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) + 1) * 60) MINUTE
   ) AS window_end,
   event.category AS event_category,
   event.name AS event_name,
@@ -2481,19 +2259,13 @@ UNION ALL
 SELECT
   @submission_date AS submission_date,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
     -- Aggregates event counts over 60-minute intervals
-    INTERVAL(
-      DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) * 60
-    ) MINUTE
+    INTERVAL(DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) * 60) MINUTE
   ) AS window_start,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
-    INTERVAL(
-      (
-        DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) + 1
-      ) * 60
-    ) MINUTE
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
+    INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) + 1) * 60) MINUTE
   ) AS window_end,
   event.category AS event_category,
   event.name AS event_name,
@@ -2548,19 +2320,13 @@ UNION ALL
 SELECT
   @submission_date AS submission_date,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
     -- Aggregates event counts over 60-minute intervals
-    INTERVAL(
-      DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) * 60
-    ) MINUTE
+    INTERVAL(DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) * 60) MINUTE
   ) AS window_start,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
-    INTERVAL(
-      (
-        DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) + 1
-      ) * 60
-    ) MINUTE
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
+    INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) + 1) * 60) MINUTE
   ) AS window_end,
   event.category AS event_category,
   event.name AS event_name,
@@ -2615,19 +2381,13 @@ UNION ALL
 SELECT
   @submission_date AS submission_date,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
     -- Aggregates event counts over 60-minute intervals
-    INTERVAL(
-      DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) * 60
-    ) MINUTE
+    INTERVAL(DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) * 60) MINUTE
   ) AS window_start,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
-    INTERVAL(
-      (
-        DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) + 1
-      ) * 60
-    ) MINUTE
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
+    INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) + 1) * 60) MINUTE
   ) AS window_end,
   event.category AS event_category,
   event.name AS event_name,
@@ -2682,19 +2442,13 @@ UNION ALL
 SELECT
   @submission_date AS submission_date,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
     -- Aggregates event counts over 60-minute intervals
-    INTERVAL(
-      DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) * 60
-    ) MINUTE
+    INTERVAL(DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) * 60) MINUTE
   ) AS window_start,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
-    INTERVAL(
-      (
-        DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) + 1
-      ) * 60
-    ) MINUTE
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
+    INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) + 1) * 60) MINUTE
   ) AS window_end,
   event.category AS event_category,
   event.name AS event_name,
@@ -2749,19 +2503,13 @@ UNION ALL
 SELECT
   @submission_date AS submission_date,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
     -- Aggregates event counts over 60-minute intervals
-    INTERVAL(
-      DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) * 60
-    ) MINUTE
+    INTERVAL(DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) * 60) MINUTE
   ) AS window_start,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
-    INTERVAL(
-      (
-        DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) + 1
-      ) * 60
-    ) MINUTE
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
+    INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) + 1) * 60) MINUTE
   ) AS window_end,
   event.category AS event_category,
   event.name AS event_name,
@@ -2817,19 +2565,13 @@ UNION ALL
 SELECT
   @submission_date AS submission_date,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
       -- Aggregates event counts over 60-minute intervals
-    INTERVAL(
-      DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) * 60
-    ) MINUTE
+    INTERVAL(DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) * 60) MINUTE
   ) AS window_start,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
-    INTERVAL(
-      (
-        DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) + 1
-      ) * 60
-    ) MINUTE
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
+    INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) + 1) * 60) MINUTE
   ) AS window_end,
   CAST(NULL AS STRING) AS event_category,
   metrics.string.event_name,
@@ -2881,19 +2623,13 @@ UNION ALL
 SELECT
   @submission_date AS submission_date,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
       -- Aggregates event counts over 60-minute intervals
-    INTERVAL(
-      DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) * 60
-    ) MINUTE
+    INTERVAL(DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) * 60) MINUTE
   ) AS window_start,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
-    INTERVAL(
-      (
-        DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) + 1
-      ) * 60
-    ) MINUTE
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
+    INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) + 1) * 60) MINUTE
   ) AS window_end,
   CAST(NULL AS STRING) AS event_category,
   metrics.string.event_name,
@@ -2944,19 +2680,13 @@ UNION ALL
 SELECT
   @submission_date AS submission_date,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
     -- Aggregates event counts over 60-minute intervals
-    INTERVAL(
-      DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) * 60
-    ) MINUTE
+    INTERVAL(DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) * 60) MINUTE
   ) AS window_start,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
-    INTERVAL(
-      (
-        DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) + 1
-      ) * 60
-    ) MINUTE
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
+    INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) + 1) * 60) MINUTE
   ) AS window_end,
   event.category AS event_category,
   event.name AS event_name,
@@ -3011,19 +2741,13 @@ UNION ALL
 SELECT
   @submission_date AS submission_date,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
     -- Aggregates event counts over 60-minute intervals
-    INTERVAL(
-      DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) * 60
-    ) MINUTE
+    INTERVAL(DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) * 60) MINUTE
   ) AS window_start,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
-    INTERVAL(
-      (
-        DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) + 1
-      ) * 60
-    ) MINUTE
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
+    INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) + 1) * 60) MINUTE
   ) AS window_end,
   event.category AS event_category,
   event.name AS event_name,
@@ -3078,19 +2802,13 @@ UNION ALL
 SELECT
   @submission_date AS submission_date,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
     -- Aggregates event counts over 60-minute intervals
-    INTERVAL(
-      DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) * 60
-    ) MINUTE
+    INTERVAL(DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) * 60) MINUTE
   ) AS window_start,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
-    INTERVAL(
-      (
-        DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) + 1
-      ) * 60
-    ) MINUTE
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
+    INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) + 1) * 60) MINUTE
   ) AS window_end,
   event.category AS event_category,
   event.name AS event_name,
@@ -3145,19 +2863,13 @@ UNION ALL
 SELECT
   @submission_date AS submission_date,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
     -- Aggregates event counts over 60-minute intervals
-    INTERVAL(
-      DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) * 60
-    ) MINUTE
+    INTERVAL(DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) * 60) MINUTE
   ) AS window_start,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
-    INTERVAL(
-      (
-        DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) + 1
-      ) * 60
-    ) MINUTE
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
+    INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) + 1) * 60) MINUTE
   ) AS window_end,
   event.category AS event_category,
   event.name AS event_name,
@@ -3212,19 +2924,13 @@ UNION ALL
 SELECT
   @submission_date AS submission_date,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
     -- Aggregates event counts over 60-minute intervals
-    INTERVAL(
-      DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) * 60
-    ) MINUTE
+    INTERVAL(DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) * 60) MINUTE
   ) AS window_start,
   TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time), HOUR),
-    INTERVAL(
-      (
-        DIV(EXTRACT(MINUTE FROM SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time)), 60) + 1
-      ) * 60
-    ) MINUTE
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
+    INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) + 1) * 60) MINUTE
   ) AS window_end,
   event.category AS event_category,
   event.name AS event_name,

@@ -377,7 +377,7 @@ product_features_agg AS (
 )
 SELECT
   submission_date,
-  metrics_ping_client_count,
+  metrics_ping_distinct_client_count,
 /*logins*/
   logins_deleted_users,
   logins_deleted,

@@ -763,7 +763,7 @@ product_features_agg AS (
 )
 SELECT
   submission_date,
-  events_ping_client_count,
+  events_ping_distinct_client_count,
 /*logins*/
   autofill_password_detected_logins,
   autofill_password_detected_users_logins,

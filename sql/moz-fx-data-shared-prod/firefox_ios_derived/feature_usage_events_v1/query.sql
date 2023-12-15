@@ -298,7 +298,7 @@ product_features_agg AS (
 )
 SELECT
   submission_date,
-  events_ping_client_count,
+  events_ping_distinct_client_count,
     /*Logins*/
   logins_autofill_failed,
   logins_autofill_failed_users,

@@ -213,7 +213,7 @@ WITH _base AS (
       adjust_network,
       install_source,
       durations,
-      device_manufacturer ---- New column
+      device_manufacturer -- New column
     FROM
       baseline_with_searches_and_attribution
   ),
@@ -356,9 +356,9 @@ _previous AS (
     'UNDETERMINED' AS device_manufacturer,
     dau
   FROM
-    `{{ project_id }}.{{ app_name }}.active_users_aggregates` -- Query the view (not the table) in order to retrive records HAVING MAX(last_updated_timestamp)
+    `{{ project_id }}.{{ app_name }}.active_users_aggregates`
   WHERE
-    submission_date = @submission_date
+    submission_date >= '2021-01-01'
 ),
 -- Get the difference in metrics for all dimensions
 _changed AS (

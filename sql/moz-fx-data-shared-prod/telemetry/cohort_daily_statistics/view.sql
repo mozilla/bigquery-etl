@@ -46,7 +46,7 @@ SELECT
   country,
   CAST(NULL AS STRING) AS device_model,
   distribution_id,
-  CAST(NULL AS BOOL) AS as is_default_browser,
+  CAST(NULL AS BOOL) AS is_default_browser,
   locale,
   "Firefox Desktop" AS normalized_app_name,
   normalized_channel,

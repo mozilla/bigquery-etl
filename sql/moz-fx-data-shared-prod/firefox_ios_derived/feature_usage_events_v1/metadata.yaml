@@ -1,0 +1,27 @@
+friendly_name: Feature Usage Events (Firefox iOS)
+description: |-
+  Metrics from events pings for mobile feature usage dashboards (iOS)
+owners:
+- rzhao@mozilla.com
+labels:
+  application: firefox_ios
+  incremental: true
+  owner1: rzhao
+  dag: bqetl_mobile_feature_usage
+scheduling:
+  dag_name: bqetl_mobile_feature_usage
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  query.sql:
+  - firefox_ios.events_unnested
+deprecated: false

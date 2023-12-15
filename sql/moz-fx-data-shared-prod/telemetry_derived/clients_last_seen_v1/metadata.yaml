@@ -9,19 +9,16 @@ description: |
   which merges in fields based on the `event` ping.
   See https://github.com/mozilla/bigquery-etl/issues/1761
 owners:
-- dthorn@mozilla.com
+- ascholtz@mozilla.com
 labels:
   application: firefox
   schedule: daily
   dag: bqetl_main_summary
-  owner1: dthorn
+  owner1: ascholtz
 scheduling:
   dag_name: bqetl_main_summary
   priority: 85
   start_date: '2019-04-15'
-  email:
-  - dthorn@mozilla.com
-  - jklukas@mozilla.com
   depends_on_past: true
   external_downstream_tasks:
   - task_id: wait_for_clients_last_seen

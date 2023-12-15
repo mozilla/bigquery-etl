@@ -2,13 +2,13 @@ friendly_name: Firefox Accounts Exact Mau 28
 description: |-
   Base table for exact FxA MAU by dimensions
 owners:
-- dthorn@mozilla.com
+- kik@mozilla.com
 labels:
   application: fxa
   incremental: true
   schedule: daily
   dag: bqetl_fxa_events
-  owner1: dthorn
+  owner1: kik
 scheduling:
   dag_name: bqetl_fxa_events
 bigquery:

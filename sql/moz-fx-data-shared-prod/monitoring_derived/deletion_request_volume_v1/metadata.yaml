@@ -2,11 +2,11 @@ friendly_name: Deletion Request Volume
 description: |
   A daily count of deletion request pings by document namespace
 owners:
-- dthorn@mozilla.com
+- akomar@mozilla.com
 labels:
   schedule: daily
   dag: bqetl_deletion_request_volume
-  owner1: dthorn
+  owner1: akomar
 scheduling:
   dag_name: bqetl_deletion_request_volume
   referenced_tables:

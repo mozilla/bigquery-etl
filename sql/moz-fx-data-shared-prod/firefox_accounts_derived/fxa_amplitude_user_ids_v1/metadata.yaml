@@ -2,12 +2,12 @@ friendly_name: FxA Hashed User IDs
 description: |
   Contains exactly one entry for each FxA user, giving the 64-character hashed user ID used for all exports to Amplitude. This table is useful as a lookup for sync pings which contain a truncated 32-character version of the same hash.
 owners:
-- dthorn@mozilla.com
+- kik@mozilla.com
 labels:
   application: fxa
   incremental: true
   schedule: daily
-  owner1: dthorn
+  owner1: kik
 bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer

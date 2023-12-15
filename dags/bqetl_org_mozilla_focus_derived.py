@@ -15,15 +15,15 @@ Built from bigquery-etl repo, [`dags/bqetl_org_mozilla_focus_derived.py`](https:
 
 #### Owner
 
-dthorn@mozilla.com
+akomar@mozilla.com
 """
 
 
 default_args = {
-    "owner": "dthorn@mozilla.com",
+    "owner": "akomar@mozilla.com",
     "start_date": datetime.datetime(2023, 2, 22, 0, 0),
     "end_date": None,
-    "email": ["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+    "email": ["akomar@mozilla.com", "telemetry-alerts@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),
     "email_on_failure": True,
@@ -46,8 +46,8 @@ with DAG(
             destination_table="additional_deletion_requests_v1",
             dataset_id="org_mozilla_focus_beta_derived",
             project_id="moz-fx-data-shared-prod",
-            owner="dthorn@mozilla.com",
-            email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+            owner="akomar@mozilla.com",
+            email=["akomar@mozilla.com", "telemetry-alerts@mozilla.com"],
             date_partition_parameter="submission_date",
             depends_on_past=False,
         )
@@ -58,8 +58,8 @@ with DAG(
         destination_table="additional_deletion_requests_v1",
         dataset_id="org_mozilla_focus_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="akomar@mozilla.com",
+        email=["akomar@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -69,8 +69,8 @@ with DAG(
         destination_table="additional_deletion_requests_v1",
         dataset_id="org_mozilla_focus_nightly_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="akomar@mozilla.com",
+        email=["akomar@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )

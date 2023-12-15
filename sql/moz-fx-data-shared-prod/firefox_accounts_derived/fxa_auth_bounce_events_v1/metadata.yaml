@@ -2,12 +2,12 @@ friendly_name: FxA Auth Bounce Events
 description: |-
   Selected Amplitude events extracted from FxA auth_bounce server logs
 owners:
-- dthorn@mozilla.com
+- kik@mozilla.com
 labels:
   application: fxa
   incremental: true
   schedule: daily
-  owner1: dthorn
+  owner1: kik
 bigquery:
   time_partitioning:
     type: day

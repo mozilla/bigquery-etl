@@ -5,13 +5,13 @@ description: |-
 
   See https://bugzilla.mozilla.org/show_bug.cgi?id=1628708
 owners:
-- dthorn@mozilla.com
+- kik@mozilla.com
 labels:
   application: fxa
   incremental: true
   schedule: daily
   dag: bqetl_fxa_events
-  owner1: dthorn
+  owner1: kik
 scheduling:
   dag_name: bqetl_fxa_events
   referenced_tables: []

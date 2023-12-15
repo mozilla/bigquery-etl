@@ -20,15 +20,15 @@ This is one of our highest-impact DAGs and should be handled carefully.
 
 #### Owner
 
-dthorn@mozilla.com
+ascholtz@mozilla.com
 """
 
 
 default_args = {
-    "owner": "dthorn@mozilla.com",
+    "owner": "ascholtz@mozilla.com",
     "start_date": datetime.datetime(2018, 11, 27, 0, 0),
     "end_date": None,
-    "email": ["telemetry-alerts@mozilla.com", "dthorn@mozilla.com"],
+    "email": ["telemetry-alerts@mozilla.com", "ascholtz@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),
     "email_on_failure": True,
@@ -52,7 +52,7 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="wlachance@mozilla.com",
         email=[
-            "dthorn@mozilla.com",
+            "ascholtz@mozilla.com",
             "telemetry-alerts@mozilla.com",
             "wlachance@mozilla.com",
         ],
@@ -68,7 +68,7 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="frank@mozilla.com",
         email=[
-            "dthorn@mozilla.com",
+            "ascholtz@mozilla.com",
             "frank@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
@@ -84,7 +84,7 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="jklukas@mozilla.com",
         email=[
-            "dthorn@mozilla.com",
+            "ascholtz@mozilla.com",
             "jklukas@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
@@ -97,8 +97,8 @@ with DAG(
         destination_table="firefox_desktop_exact_mau28_by_dimensions_v1",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -110,7 +110,7 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="jklukas@mozilla.com",
         email=[
-            "dthorn@mozilla.com",
+            "ascholtz@mozilla.com",
             "jklukas@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
@@ -123,8 +123,8 @@ with DAG(
         destination_table="clients_daily_v6",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         start_date=datetime.datetime(2019, 11, 5, 0, 0),
         date_partition_parameter="submission_date",
         depends_on_past=False,
@@ -177,7 +177,7 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="jklukas@mozilla.com",
         email=[
-            "dthorn@mozilla.com",
+            "ascholtz@mozilla.com",
             "jklukas@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
@@ -194,7 +194,7 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="frank@mozilla.com",
         email=[
-            "dthorn@mozilla.com",
+            "ascholtz@mozilla.com",
             "frank@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
@@ -274,7 +274,7 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="jklukas@mozilla.com",
         email=[
-            "dthorn@mozilla.com",
+            "ascholtz@mozilla.com",
             "jklukas@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
@@ -290,8 +290,8 @@ with DAG(
         destination_table="clients_last_seen_v1",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "jklukas@mozilla.com"],
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         start_date=datetime.datetime(2019, 4, 15, 0, 0),
         date_partition_parameter="submission_date",
         depends_on_past=True,
@@ -380,7 +380,7 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="jklukas@mozilla.com",
         email=[
-            "dthorn@mozilla.com",
+            "ascholtz@mozilla.com",
             "jklukas@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
@@ -397,8 +397,8 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="ascholtzs@mozilla.com",
         email=[
+            "ascholtz@mozilla.com",
             "ascholtzs@mozilla.com",
-            "dthorn@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
         start_date=datetime.datetime(2021, 1, 19, 0, 0),
@@ -414,7 +414,7 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="jklukas@mozilla.com",
         email=[
-            "dthorn@mozilla.com",
+            "ascholtz@mozilla.com",
             "jklukas@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
@@ -431,7 +431,7 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="jklukas@mozilla.com",
         email=[
-            "dthorn@mozilla.com",
+            "ascholtz@mozilla.com",
             "jklukas@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
@@ -447,7 +447,7 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="jklukas@mozilla.com",
         email=[
-            "dthorn@mozilla.com",
+            "ascholtz@mozilla.com",
             "jklukas@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
@@ -464,7 +464,7 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="jklukas@mozilla.com",
         email=[
-            "dthorn@mozilla.com",
+            "ascholtz@mozilla.com",
             "jklukas@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
@@ -480,11 +480,7 @@ with DAG(
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         owner="ascholtz@mozilla.com",
-        email=[
-            "ascholtz@mozilla.com",
-            "dthorn@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         start_date=datetime.datetime(2023, 7, 1, 0, 0),
         date_partition_parameter="submission_date",
         depends_on_past=False,
@@ -511,11 +507,7 @@ with DAG(
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         owner="ascholtz@mozilla.com",
-        email=[
-            "ascholtz@mozilla.com",
-            "dthorn@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         start_date=datetime.datetime(2023, 7, 1, 0, 0),
         date_partition_parameter="submission_date",
         depends_on_past=False,
@@ -529,7 +521,7 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="rburwei@mozilla.com",
         email=[
-            "dthorn@mozilla.com",
+            "ascholtz@mozilla.com",
             "rburwei@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],

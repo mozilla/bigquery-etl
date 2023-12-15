@@ -15,15 +15,15 @@ Built from bigquery-etl repo, [`dags/bqetl_deletion_request_volume.py`](https://
 
 #### Owner
 
-dthorn@mozilla.com
+akomar@mozilla.com
 """
 
 
 default_args = {
-    "owner": "dthorn@mozilla.com",
+    "owner": "akomar@mozilla.com",
     "start_date": datetime.datetime(2020, 6, 29, 0, 0),
     "end_date": None,
-    "email": ["telemetry-alerts@mozilla.com", "dthorn@mozilla.com"],
+    "email": ["telemetry-alerts@mozilla.com", "akomar@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),
     "email_on_failure": True,
@@ -45,8 +45,8 @@ with DAG(
         destination_table="deletion_request_volume_v1",
         dataset_id="monitoring_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="akomar@mozilla.com",
+        email=["akomar@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -58,8 +58,8 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="ascholtz@mozilla.com",
         email=[
+            "akomar@mozilla.com",
             "ascholtz@mozilla.com",
-            "dthorn@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
         date_partition_parameter=None,

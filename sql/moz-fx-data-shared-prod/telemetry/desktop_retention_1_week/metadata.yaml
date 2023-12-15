@@ -2,12 +2,10 @@ friendly_name: Desktop 1-Week Retention
 description: |
   Among profiles that were active at least once in the week starting on the specified day (days 0 through 6), whether each profile is active during the following week (days 7 through 13). This based on https://docs.telemetry.mozilla.org/cookbooks/retention.html#1-week-retention for the usage criterion "Any Firefox Activity" on Firefox (Desktop)
 owners:
-- dthorn@mozilla.com
-- jklukas@mozilla.com
+- ascholtz@mozilla.com
 labels:
   application: firefox
-  owner1: dthorn
-  owner2: jklukas
+  owner1: ascholtz
 bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer

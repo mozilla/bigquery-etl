@@ -223,8 +223,8 @@ with DAG(
             "moz-fx-data-shared-prod.monitoring_derived.shredder_rows_deleted_v1${{ds_nodash}}",
         ],
         docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="dthorn@mozilla.com",
-        email=["ascholtz@mozilla.com", "dthorn@mozilla.com"],
+        owner="akomar@mozilla.com",
+        email=["akomar@mozilla.com", "ascholtz@mozilla.com"],
     )
 
     monitoring_derived__stable_and_derived_table_sizes__v1 = gke_command(

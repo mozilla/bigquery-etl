@@ -2,13 +2,13 @@ friendly_name: FxA Users Services Daily
 description: |-
   Usage aggregations per FxA user per FxA service per day
 owners:
-- dthorn@mozilla.com
+- kik@mozilla.com
 labels:
   application: fxa
   incremental: true
   schedule: daily
   dag: bqetl_fxa_events
-  owner1: dthorn
+  owner1: kik
 scheduling:
   dag_name: bqetl_fxa_events
   date_partition_parameter: submission_date

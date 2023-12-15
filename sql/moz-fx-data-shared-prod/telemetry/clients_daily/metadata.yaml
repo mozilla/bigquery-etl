@@ -7,10 +7,10 @@ description: |-
 
   See also: `clients_last_seen`, `clients_first_seen`
 owners:
-- dthorn@mozilla.com
+- ascholtz@mozilla.com
 labels:
   application: firefox
-  owner1: dthorn
+  owner1: ascholtz
 bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer

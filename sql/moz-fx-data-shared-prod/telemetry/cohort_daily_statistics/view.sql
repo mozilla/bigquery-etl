@@ -33,7 +33,7 @@ SELECT
   attribution_campaign,
   attribution_content,
   attribution_experiment,
-  NULL AS attribution_variation,
+  CAST(NULL AS STRING) AS attribution_variation,
   num_clients_active_on_day,
   num_clients_in_cohort
 FROM

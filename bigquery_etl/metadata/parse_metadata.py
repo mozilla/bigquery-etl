@@ -420,6 +420,7 @@ class DatasetMetadata:
     labels: Dict = attr.ib({})
     default_table_workgroup_access: Optional[List[Dict[str, Any]]] = attr.ib(None)
     workgroup_access: list = attr.ib(DEFAULT_WORKGROUP_ACCESS)
+    syndication: Dict = attr.ib({})
 
     def __attrs_post_init__(self):
         """Set default table workgroup access to workgroup access."""

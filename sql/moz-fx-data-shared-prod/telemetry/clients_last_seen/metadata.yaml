@@ -23,6 +23,6 @@ description: |-
 
   See also: `clients_daily`, `clients_first_seen`
 owners:
-  - dthorn@mozilla.com
+  - ascholtz@mozilla.com
 labels:
   application: firefox

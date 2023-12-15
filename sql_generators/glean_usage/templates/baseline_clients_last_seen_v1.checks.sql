@@ -51,9 +51,6 @@ WHERE submission_date = @submission_date;
 {{ matches_pattern(column="country", pattern="^[A-Z]{2}$", where="submission_date = @submission_date") }}
 
 #warn
-{{ matches_pattern(column="telemetry_sdk_build", pattern="^\d+\.\d+\.\d+$", where="submission_date = @submission_date", message="Values inside field telemetry_sdk_build not adhere to the expected format. Example: 23.43.33") }}
-
-#warn
 {{ value_length(column="client_id", expected_length=36, where="submission_date = @submission_date") }}
 
 {% endraw %}

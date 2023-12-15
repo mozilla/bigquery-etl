@@ -3834,6 +3834,13 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#accepted_values-source" class="md-nav__link">
+    accepted_values (source)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#in_range-source" class="md-nav__link">
     in_range (source)
   </a>
@@ -4047,6 +4054,13 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#accepted_values-source" class="md-nav__link">
+    accepted_values (source)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#in_range-source" class="md-nav__link">
     in_range (source)
   </a>
@@ -4215,6 +4229,18 @@
 <span class="err">{{</span><span class="w"> </span><span class="n">in_range</span><span class="p">([</span><span class="ss">&quot;non_ssl_loads&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;ssl_loads&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;reporting_ratio&quot;</span><span class="p">],</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="k">none</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;submission_date = @submission_date&quot;</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
 </code></pre></div>
 <h2 id="data-checks-available-with-examples">Data Checks Available with Examples</h2>
+<h3 id="accepted_values-source">accepted_values (<a href="../../tests/accepted_values.jinja">source</a>)</h3>
+<p>Usage:
+<div class="highlight"><pre><span></span><code>Arguments:
+
+column: str - name of the column to check
+values: List[str] - list of accepted values
+where: Optional[str] - A condition that will be injected into the `WHERE` clause of the check. For example, &quot;submission_date = @submission_date&quot; so that the check is only executed against a specific partition.
+</code></pre></div></p>
+<p>Example:</p>
+<div class="highlight"><pre><span></span><code><span class="o">#</span><span class="n">warn</span>
+<span class="err">{{</span><span class="w"> </span><span class="n">accepted_values</span><span class="p">(</span><span class="ss">&quot;column_1&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="ss">&quot;value_1&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;value_2&quot;</span><span class="p">],</span><span class="ss">&quot;submission_date = @submission_date&quot;</span><span class="p">)</span><span class="w"> </span><span class="err">}}</span>
+</code></pre></div>
 <h3 id="in_range-source">in_range (<a href="../../tests/checks/in_range.jinja">source</a>)</h3>
 <p>Usage:</p>
 <div class="highlight"><pre><span></span><code>Arguments:

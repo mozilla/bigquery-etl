@@ -97,12 +97,13 @@ SELECT
     ABS((SELECT * FROM qdau_sum) - (SELECT * FROM live_table_qdau_count)) > 10,
     ERROR(
       CONCAT(
-        "QDAU mismatch between aggregates table and live table is greated than 10.",
-        " (live: ",
+        "QDAU mismatch between the live (`telemetry_live.main_v5`) and active_users_aggregates (`{{ dataset_id }}.{{ table_name }}`) tables is greated than 10.",
+        " Live table count: ",
         (SELECT * FROM live_table_qdau_count),
-        " | aggregates qdau: ",
+        " | active_users_aggregates (QDAU): ",
         (SELECT * FROM qdau_sum),
-        ")"
+        " | Delta detected: ",
+        ABS((SELECT * FROM qdau_sum) - (SELECT * FROM live_table_qdau_count))
       )
     ),
     NULL
@@ -154,12 +155,13 @@ SELECT
     ABS((SELECT * FROM dau_sum) - (SELECT * FROM distinct_client_count)) > 10,
     ERROR(
       CONCAT(
-        "DAU mismatch between aggregates table and live table is greated than 10.",
-        " (live: ",
+        "DAU mismatch between the live (`telemetry_live.main_v5`) and active_users_aggregates (`{{ dataset_id }}.{{ table_name }}`) tables is greated than 10.",
+        " Live table count: ",
         (SELECT * FROM distinct_client_count),
-        " | aggregates dau: ",
+        " | active_users_aggregates (DAU): ",
         (SELECT * FROM dau_sum),
-        ")"
+        " | Delta detected: ",
+        ABS((SELECT * FROM dau_sum) - (SELECT * FROM distinct_client_count))
       )
     ),
     NULL

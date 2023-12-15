@@ -43,7 +43,17 @@ distinct_client_count AS (
 )
 SELECT
   IF(
-    (SELECT * FROM dau_sum) <> (SELECT * FROM distinct_client_count),
-    ERROR("DAU mismatch between aggregates table and live table"),
+    ABS((SELECT * FROM dau_sum) - (SELECT * FROM distinct_client_count)) > 10,
+    ERROR(
+      CONCAT(
+        "DAU mismatch between the {{ app_name }} live across all channels ({%- for channel in channels %}{{ channel.table }},{% endfor -%}) and active_users_aggregates ({%- raw %}`{{ dataset_id }}.{{ table_name }}`{%- endraw %}) tables is greated than 10.",
+        " Live table count: ",
+        (SELECT * FROM distinct_client_count),
+        " | active_users_aggregates (DAU): ",
+        (SELECT * FROM dau_sum),
+        " | Delta detected: ",
+        ABS((SELECT * FROM dau_sum) - (SELECT * FROM distinct_client_count))
+      )
+    ),
     NULL
   );

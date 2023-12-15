@@ -110,20 +110,6 @@ WHERE
 #warn
 SELECT
   IF(
-    COUNTIF(NOT REGEXP_CONTAINS(telemetry_sdk_build, r"^\d+\.\d+\.\d+$")) > 0,
-    ERROR(
-      "Values inside field telemetry_sdk_build not adhere to the expected format. Example: 23.43.33"
-    ),
-    NULL
-  )
-FROM
-  `moz-fx-data-shared-prod.org_mozilla_focus_beta_derived.baseline_clients_last_seen_v1`
-WHERE
-  submission_date = @submission_date;
-
-#warn
-SELECT
-  IF(
     COUNTIF(LENGTH(client_id) <> 36) > 0,
     ERROR("Column: `client_id` has values of unexpected length."),
     NULL

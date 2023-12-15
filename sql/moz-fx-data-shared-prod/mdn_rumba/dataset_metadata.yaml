@@ -1,5 +1,6 @@
 friendly_name: mdn_rumba
 dataset_base_acl: syndicate
+description: mdn_rumba syndicate views
 user_facing: true
 labels: {}
 syndication:

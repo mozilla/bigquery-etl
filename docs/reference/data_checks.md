@@ -1,6 +1,6 @@
 # bqetl Data Checks
 
-> Instructions on how to add data checks can be found under the [Adding data checks](../cookbooks/adding_data_checks.md) cookbook.
+> Instructions on how to add data checks can be found in the [Adding data checks](#adding-data-checks) section below.
 
 ## Background
 
@@ -164,6 +164,67 @@ Please keep in mind the below checks can be combined and specified in the same `
  {{ is_unique(["submission_date", "os", "country"], "submission_date = @submission_date")}}
  #warn
  {{ in_range(["non_ssl_loads", "ssl_loads", "reporting_ratio"], 0, none, "submission_date = @submission_date") }}
+```
+
+### row_count_within_past_partitions_avg([source](../../tests/checks/row_count_within_past_partitions_avg.jinja))
+
+Compares the row count of the current partition to the average of `number_of_days` past partitions and checks if the row count is within the average +- `threshold_percentage` %
+
+Usage:
+
+```
+Arguments:
+
+number_of_days: int - Number of days we are comparing the row count to
+threshold_percentage: int - How many percent above or below the average row count is ok.
+partition_field: Optional[str] - What column is the partition_field (default = "submission_date")
+```
+
+Example:
+```sql
+#fail
+{{ row_count_within_past_partitions_avg(7, 5, "submission_date") }}
+```
+
+### value_length([source](../../tests/checks/value_length.jinja))
+
+Checks that the column has values of specific character length.
+
+Usage:
+
+```
+Arguments:
+
+column: str - Column which will be checked against the `expected_length`.
+expected_length: int - Describes the expected character length of the value inside the specified columns.
+where: Optional[str]: Any additional filtering rules that should be applied when retrieving the data to run the check against.
+```
+
+Example:
+```sql
+#warn
+{{ value_length(column="country", expected_length=2, where="submission_date = @submission_date") }}
+```
+
+### matches_pattern([source](../../tests/checks/matches_pattern.jinja))
+
+Checks that the column values adhere to a pattern based on a regex expression.
+
+Usage:
+
+```
+Arguments:
+
+column: str - Column which values will be checked against the regex.
+pattern: str - Regex pattern specifying the expected shape / pattern of the values inside the column.
+where: Optional[str]: Any additional filtering rules that should be applied when retrieving the data to run the check against.
+message: Optional[str]: Custom error message.
+```
+
+Example:
+```sql
+#warn
+{{ matches_pattern(column="country", pattern="^[A-Z]{2}$", where="submission_date = @submission_date", message="Oops") }}
 ```
 
 

@@ -60,9 +60,12 @@ function write_clients_daily_aggregates {
 
     # e.g. baseline_v1
     local tables;
+    # we're excluding use_counters because they are not supported in GLAM
+    # and generated query is too big to run
     tables=$(
         bq ls "$qualified" \
         | grep TABLE \
+        | grep -v use_counters \
         | awk '{print $1}'
     )
     # generate all of the schemas in parallel

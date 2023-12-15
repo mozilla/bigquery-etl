@@ -33,9 +33,10 @@ class EventMonitoringLive(GleanTable):
         self.prefix = PREFIX
         self.target_table_id = TARGET_TABLE_ID
         self.custom_render_kwargs = {}
+        self.base_table_name = "events_v1"
 
     def generate_per_app_id(
-        self, project_id, baseline_table, output_dir=None, use_cloud_function=True
+        self, project_id, baseline_table, output_dir=None, use_cloud_function=True, app_info=[]
     ):
         tables = table_names_from_baseline(baseline_table, include_project_id=False)
 
@@ -106,11 +107,11 @@ class EventMonitoringLive(GleanTable):
         if not self.across_apps_enabled:
             return
 
-        prod_datasets_with_baseline = [
+        prod_datasets_with_event = [
             s.bq_dataset_family
             for s in get_stable_table_schemas()
             if s.schema_id == "moz://mozilla.org/schemas/glean/ping/1"
-            and s.bq_table == "baseline_v1"
+            and s.bq_table == "events_v1"
         ]
 
         aggregate_table = "event_monitoring_aggregates_v1"
@@ -124,7 +125,7 @@ class EventMonitoringLive(GleanTable):
             table=target_view_name,
             target_table=f"{TARGET_DATASET_CROSS_APP}_derived.{aggregate_table}",
             apps=apps,
-            prod_datasets=prod_datasets_with_baseline,
+            prod_datasets=prod_datasets_with_event,
         )
         render_kwargs.update(self.custom_render_kwargs)
 

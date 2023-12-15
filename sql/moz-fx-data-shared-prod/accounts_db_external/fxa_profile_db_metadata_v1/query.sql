@@ -1,0 +1,13 @@
+SELECT
+  name,
+  value,
+FROM
+  EXTERNAL_QUERY(
+    "moz-fx-fxa-prod.us.fxa-rds-prod-prod-fxa-profile",
+    """SELECT
+         name,
+         value
+       FROM
+         fxa_profile.dbMetadata
+    """
+  )

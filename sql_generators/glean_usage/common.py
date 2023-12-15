@@ -18,6 +18,24 @@ from bigquery_etl.util.common import get_table_dir, render, write_sql
 APP_LISTINGS_URL = "https://probeinfo.telemetry.mozilla.org/v2/glean/app-listings"
 PATH = Path(os.path.dirname(__file__))
 
+# added as the result of baseline checks being added to the template,
+# these apps do not receive a baseline ping causing a very basic row_count
+# check to fail. For this reason, the checks relying on this ping
+# need to be omitted. For more info see: bug-1868848
+NO_BASELINE_PING_APPS = (
+    "mozilla_vpn",
+    "mozillavpn_cirrus",
+    "accounts_backend",
+    "burnham",
+    "firefox_reality_pc",
+    "lockwise_android",
+    "mach",
+    "monitor_cirrus",
+    "moso_mastodon_backend",
+    "mozphab",
+    "mozregression",
+)
+
 
 def write_dataset_metadata(output_dir, full_table_id, derived_dataset_metadata=False):
     """
@@ -51,13 +69,13 @@ def write_dataset_metadata(output_dir, full_table_id, derived_dataset_metadata=F
         target.write_text(rendered)
 
 
-def list_baseline_tables(project_id, only_tables, table_filter):
+def list_tables(project_id, only_tables, table_filter, table_name="baseline_v1"):
     """Return names of all matching baseline tables in shared-prod."""
     prod_baseline_tables = [
         s.stable_table
         for s in get_stable_table_schemas()
         if s.schema_id == "moz://mozilla.org/schemas/glean/ping/1"
-        and s.bq_table == "baseline_v1"
+        and s.bq_table == table_name
     ]
     prod_datasets_with_baseline = [t.split(".")[0] for t in prod_baseline_tables]
     stable_datasets = prod_datasets_with_baseline
@@ -78,9 +96,9 @@ def list_baseline_tables(project_id, only_tables, table_filter):
             if d.endswith("_stable") and d in prod_datasets_with_baseline
         }
     return [
-        f"{project_id}.{d}.baseline_v1"
+        f"{project_id}.{d}.{table_name}"
         for d in stable_datasets
-        if table_filter(f"{d}.baseline_v1")
+        if table_filter(f"{d}.{table_name}")
     ]
 
 
@@ -163,6 +181,7 @@ class GleanTable:
         self.per_app_enabled = True
         self.across_apps_enabled = True
         self.cross_channel_template = "cross_channel.view.sql"
+        self.base_table_name = "baseline_v1"
 
     def skip_existing(self, output_dir="sql/", project_id="moz-fx-data-shared-prod"):
         """Existing files configured not to be overridden during generation."""
@@ -178,7 +197,12 @@ class GleanTable:
         ]
 
     def generate_per_app_id(
-        self, project_id, baseline_table, output_dir=None, use_cloud_function=True
+        self,
+        project_id,
+        baseline_table,
+        output_dir=None,
+        use_cloud_function=True,
+        app_info=[],
     ):
         """Generate the baseline table query per app_id."""
         if not self.per_app_id_enabled:
@@ -195,11 +219,22 @@ class GleanTable:
 
         table = tables[f"{self.prefix}_table"]
         view = tables[f"{self.prefix}_view"]
+        derived_dataset = tables["daily_table"].split(".")[-2]
+        dataset = derived_dataset.replace("_derived", "")
+
+        app_name = dataset
+        for app in app_info:
+            for app_dataset in app:
+                if app_dataset["bq_dataset_family"] == dataset:
+                    app_name = app_dataset["app_name"]
+                    break
+
         render_kwargs = dict(
             header="-- Generated via bigquery_etl.glean_usage\n",
             header_yaml="---\n# Generated via bigquery_etl.glean_usage\n",
             project_id=project_id,
-            derived_dataset=tables["daily_table"].split(".")[-2],
+            derived_dataset=derived_dataset,
+            app_name=app_name,
         )
 
         render_kwargs.update(self.custom_render_kwargs)
@@ -266,7 +301,13 @@ class GleanTable:
                 artifacts.append(Artifact(table, "init.sql", init_sql))
 
             if checks_sql:
-                artifacts.append(Artifact(table, "checks.sql", checks_sql))
+                if "baseline" in table and app_name in NO_BASELINE_PING_APPS:
+                    logging.info(
+                        "Skipped copying ETL check for %s as app: %s is marked as not having baseline ping"
+                        % (table, app_name)
+                    )
+                else:
+                    artifacts.append(Artifact(table, "checks.sql", checks_sql))
 
             for artifact in artifacts:
                 destination = (

@@ -1,0 +1,14 @@
+[
+  {
+    "name": "postal_district_code",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "One-character Canadian postal district code."
+  },
+  {
+    "name": "province_code",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "Two-character Canadian province/territory code (if any)."
+  }
+]

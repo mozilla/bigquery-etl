@@ -45,6 +45,10 @@ default_args = {{
 tags = {{ tags }}
 
 with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None -%}, schedule_interval={{ schedule_interval | format_timedelta | format_schedule_interval }}{%+ endif -%}, doc_md = docs, tags = tags) as dag:
+{% for task_group in task_groups | sort %}
+    task_group_{{ task_group }} = TaskGroup('{{ task_group }}')
+{% endfor %}
+
 {% for task in tasks | sort(attribute='task_name') %}
     {% if task.is_python_script -%}
         {{ task.task_name }} = gke_command(
@@ -103,6 +107,15 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
             {%+ endif -%}
             {%+ elif task.date_partition_parameter -%}
             parameters=["{{ task.date_partition_parameter }}:DATE:{% raw %}{{ds}}{% endraw %}"],
+            {%+ endif -%}
+            {%+ if task.container_resources -%}
+            container_resources={{ task.container_resources }},
+            {%+ endif -%}
+            {%+ if task.node_selector -%}
+            node_selector={{ task.node_selector }},
+            {%+ endif -%}
+            {%+ if task.startup_timeout_seconds -%}
+            startup_timeout_seconds={{ task.startup_timeout_seconds }},
             {%+ endif -%}
     {%+ else -%}
         {{ task.task_name }} = bigquery_etl_query(
@@ -196,13 +209,21 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
             {%+ if task.email_on_retry != None -%}
             email_on_retry={{ task.email_on_retry }},
             {%+ endif -%}
+            {%+ if task.task_group != None -%}
+            task_group=task_group_{{ task.task_group}},
+            {%+ endif -%}
     {% if not task.is_python_script -%}
     {% endif -%}
         )
 
     {% if (task.downstream_dependencies + task.external_downstream_tasks)|length > 0 -%}
     {% set seenDownstreamDags = [] %}
-    with TaskGroup('{{ task.task_name }}_external') as {{ task.task_name }}_external:
+    with TaskGroup(
+        '{{ task.task_name }}_external',
+        {%+ if task.task_group != None -%}
+        parent_group=task_group_{{ task.task_group }}
+        {%+ endif -%}
+    ) as {{ task.task_name }}_external:
         {% for downstream_task in task.downstream_dependencies | sort(attribute='task_id') -%}
         {% if downstream_task.dag_name not in seenDownstreamDags -%}
         ExternalTaskMarker(
@@ -238,7 +259,7 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
 {% set fivetran_seen = [] -%}
 {% for task in tasks | sort(attribute='task_name') %}
     {% for dependency in (task.upstream_dependencies + task.depends_on) | sort(attribute='task_id') -%}
-    {% if dependency.dag_name == name and dependency not in task.depends_on -%}
+    {% if dependency.dag_name == name and dependency.get_execution_delta(schedule_interval) in [none, '0h', '0m', '0s'] -%}
     {% if dependency.task_id != task.task_name %}
     {{ task.task_name }}.set_upstream({{ dependency.task_id }})
     {% endif -%}
@@ -247,7 +268,11 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
     wait_for_{{ dependency.task_id | replace('-', '_') }} = ExternalTaskSensor(
         task_id='wait_for_{{ dependency.task_id }}',
         external_dag_id='{{ dependency.dag_name }}',
+        {% if dependency.task_group -%}
+        external_task_id='{{dependency.task_group}}.{{ dependency.task_id }}',
+        {% else -%}
         external_task_id='{{ dependency.task_id }}',
+        {% endif -%}
         {% if dependency.get_execution_delta(schedule_interval) -%}
         execution_delta={{ dependency.get_execution_delta(schedule_interval) | format_timedelta | format_repr }},
         {% endif -%}

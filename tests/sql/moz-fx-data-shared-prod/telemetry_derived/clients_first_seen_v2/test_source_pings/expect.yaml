@@ -14,7 +14,7 @@
   sample_id: 30
   metadata:
     first_seen_date_source_ping: new_profile
-    reported_main_ping: false
+    reported_main_ping: true
     reported_new_profile_ping: true
     reported_shutdown_ping: true
 - client_id: client-4

@@ -1359,8 +1359,8 @@ bqetl_crash:
     start_date: "2023-12-10"
   tags:
     - impact/tier_2
-    
- bqetl_mobile_feature_usage:
+
+bqetl_mobile_feature_usage:
   default_args:
     depends_on_past: false
     email:

@@ -1,0 +1,18 @@
+friendly_name: Stripe subscriptions
+description: |-
+  Stripe subscriptions as recorded by Fivetran, with revisions to improve historical accuracy.
+
+  This table's schema closely mirrors Stripe's subscriptions API (https://stripe.com/docs/api/subscriptions/object).
+  Fields which Fivetran doesn't sync and fields we've specifically chosen not to include (e.g. PII) have been omitted.
+  In particular, all address fields except country have been omitted because Firefox Account user IDs are present and this is in a Mozilla-confidential dataset.
+owners:
+- srose@mozilla.com
+labels:
+  incremental: false
+  schedule: daily
+scheduling:
+  dag_name: bqetl_subplat
+  # The whole table is overwritten every time, not a specific date partition.
+  date_partition_parameter: null
+bigquery: null
+references: {}

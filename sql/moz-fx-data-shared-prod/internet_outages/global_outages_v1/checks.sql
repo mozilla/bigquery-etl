@@ -5,6 +5,15 @@
 {{ is_unique(columns=["datetime", "city", "country"], where="DATE(`datetime`) = @submission_date") }}
 
 #fail
+/*
+  This statement used to contain the following fields,
+  but these are sometimes missing from country/city combinations
+  See https://sql.telemetry.mozilla.org/queries/96541/source
+  and bug 1868674
+
+  "avg_tls_handshake_time"
+  "count_dns_failure"
+*/
 {{ not_null(columns=[
   "datetime",
   "city",
@@ -19,9 +28,7 @@
   "missing_dns_success",
   "avg_dns_failure_time",
   "missing_dns_failure",
-  "count_dns_failure",
   "ssl_error_prop",
-  "avg_tls_handshake_time"
 
 ], where="DATE(`datetime`) = @submission_date") }}
 

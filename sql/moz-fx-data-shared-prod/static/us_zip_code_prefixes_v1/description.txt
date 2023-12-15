@@ -1,0 +1,3 @@
+Mappings from three-digit US ZIP code prefixes to US state codes.
+
+Data source: https://simple.wikipedia.org/wiki/List_of_ZIP_Code_prefixes

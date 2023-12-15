@@ -1,0 +1,15 @@
+{% macro matches_pattern(column, pattern, where, threshold_fail_percentage, message) %}
+  {% set threshold_fail_percentage = threshold_fail_percentage|default(0) %}
+  {% set message = message|default('The rate of fields that failed to match the pattern for column: `' ~ column ~ '` is greated than the `threshold_fail_percentage` (set to: ' ~ threshold_fail_percentage ~ '). Expected pattern: `' ~ pattern ~ '`.') %}
+
+  SELECT
+    IF(
+      ROUND((COUNTIF(NOT REGEXP_CONTAINS({{ column }}, r"{{ pattern }}"))) / COUNT(*) * 100, 2) > {{ threshold_fail_percentage }},
+      ERROR("{{ message }}"),
+      NULL
+    )
+  FROM `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`
+  {% if where %}
+  WHERE {{ where }}
+  {% endif %};
+{% endmacro %}

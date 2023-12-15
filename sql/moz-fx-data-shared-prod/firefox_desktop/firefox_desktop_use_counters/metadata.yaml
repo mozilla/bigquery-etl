@@ -1,0 +1,14 @@
+friendly_name: Firefox Desktop Use Counters
+description: |-
+  Please provide a description for the query
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.firefox_desktop_derived.firefox_desktop_use_counters_v1
+deprecated: false

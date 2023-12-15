@@ -1,0 +1,14 @@
+friendly_name: Fenix Use Counters
+description: |-
+  Please provide a description for the query
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.fenix_derived.fenix_use_counters_v1
+deprecated: false

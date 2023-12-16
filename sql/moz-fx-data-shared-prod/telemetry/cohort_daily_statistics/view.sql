@@ -32,8 +32,8 @@ WHERE
   normalized_app_name != "Firefox Desktop"
 UNION ALL
 SELECT
-  submission_date AS activity_date,
   first_seen_date AS cohort_date,
+  submission_date AS activity_date,
   CAST(NULL AS STRING) AS activity_segment,
   app_version,
   attribution_campaign,

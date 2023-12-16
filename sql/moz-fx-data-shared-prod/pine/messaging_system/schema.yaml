@@ -497,8 +497,9 @@ fields:
     - name: messaging_system_event
       type: STRING
       mode: NULLABLE
-      description: "The type of event. Any user defined string (e.g. \u201Cclick\u201D\
-        , \u201Cshare\u201D, \u201Cdelete\u201D, \u201Cmore_items\u201D)\n"
+      description: "The type of event. Any user defined string (e.g. \u201CIMPRESSION\u201D\
+        , \u201CCLICK_BUTTON\u201D, \"INDEXEDDB_OPEN_FAILED\", \u201CSESSION_END\u201D\
+        )\n"
     - name: messaging_system_event_page
       type: STRING
       mode: NULLABLE

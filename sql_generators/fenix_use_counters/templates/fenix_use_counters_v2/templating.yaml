@@ -1,5 +1,10 @@
-fenix_use_counters:
+fenix_use_counter_denominators: 
   - name: use_counter_content_documents_destroyed
+  - name: use_counter_top_level_content_documents_destroyed
+  - name: use_counter_service_workers_destroyed
+  - name: use_counter_shared_workers_destroyed
+  - name: use_counter_dedicated_workers_destroyed
+fenix_use_counters:
   - name: use_counter_css_doc_alignment_baseline
   - name: use_counter_css_doc_background_repeat_x
   - name: use_counter_css_doc_background_repeat_y
@@ -1386,7 +1391,6 @@ fenix_use_counters:
   - name: use_counter_css_page_webkit_user_modify
   - name: use_counter_css_page_webkit_writing_mode
   - name: use_counter_css_page_widows
-  - name: use_counter_dedicated_workers_destroyed
   - name: use_counter_deprecated_ops_doc_ambient_light_event
   - name: use_counter_deprecated_ops_doc_app_cache
   - name: use_counter_deprecated_ops_doc_components
@@ -2199,9 +2203,6 @@ fenix_use_counters:
   - name: use_counter_page_xslstylesheet
   - name: use_counter_page_xsltprocessor_constructor
   - name: use_counter_page_you_tube_flash_embed
-  - name: use_counter_service_workers_destroyed
-  - name: use_counter_shared_workers_destroyed
-  - name: use_counter_top_level_content_documents_destroyed
   - name: use_counter_worker_dedicated_console_assert
   - name: use_counter_worker_dedicated_console_clear
   - name: use_counter_worker_dedicated_console_count

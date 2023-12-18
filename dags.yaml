@@ -1394,3 +1394,23 @@ bqetl_mobile_feature_usage:
   schedule_interval: 0 6 * * *
   tags:
     - impact/tier_3
+
+bqetl_telemetry_dev_cycle:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - leli@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    owner: leli@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2023-12-19'
+  description: DAG for Telemetry Dev Cycle Dashboard
+  repo: bigquery-etl
+  schedule_interval: 0 18 * * *
+  tags:
+    - impact/tier_3
+    - repo/bigquery-etl

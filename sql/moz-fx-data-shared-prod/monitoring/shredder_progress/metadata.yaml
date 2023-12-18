@@ -10,5 +10,8 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   view.sql:
-  - moz-fx-data-shared-prod.monitoring_derived.shredder_progress_v1
+  - moz-fx-data-bq-batch-prod.region-us.INFORMATION_SCHEMA.JOBS_BY_PROJECT
+  - moz-fx-data-shredder.region-us.INFORMATION_SCHEMA.JOBS_BY_PROJECT
+  - moz-fx-data-shredder.shredder_state.shredder_state
+  - moz-fx-data-shredder.shredder_state.tasks
 deprecated: false

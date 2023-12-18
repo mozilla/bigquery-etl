@@ -1,6 +1,6 @@
-friendly_name: Glean Metrics External
+friendly_name: Telemetry Probes External
 description: |-
-  This table represents data downloaded from https://probeinfo.telemetry.mozilla.org/glean/{glean_app}/metric.
+  This table represents data downloaded from https://probeinfo.teletemetry.mozilla.org/firefox/{channel}/main/all_probes.
   The downloaded data is cleaned and only data relevant for the telemetry dev cycle dashboard is stored here.
 owners:
 - leli@mozilla.com

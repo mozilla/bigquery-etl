@@ -8,11 +8,10 @@ WITH firefox_desktop_use_counts_by_day_version_and_country_stg AS (
     metadata.geo.country AS country,
     normalized_app_name AS platform,
     {% for use_counter_denom in firefox_desktop_use_counter_denominators %}
-    sum(metrics.counter.{{use_counter_denom.name}}) AS {{use_counter_denom.name}},
+      SUM(metrics.counter.{{use_counter_denom.name}}) AS {{use_counter_denom.name}},
     {% endfor %}
-
     {% for use_counter in firefox_desktop_use_counters %}
-    sum(metrics.counter.{{use_counter.name}}) AS {{use_counter.name}},
+      SUM(metrics.counter.{{use_counter.name}}) AS {{use_counter.name}},
     {% endfor %}
   FROM
     `moz-fx-data-shared-prod.firefox_desktop.use_counters`
@@ -33,7 +32,7 @@ firefox_desktop_pivoted_raw AS (
     firefox_desktop_use_counts_by_day_version_and_country_stg a UNPIVOT(
       cnt FOR metric IN (
         {% for use_counter in firefox_desktop_use_counters %}
-        sum(metrics.counter.{{use_counter.name}}) AS {{use_counter.name}},
+          SUM(metrics.counter.{{use_counter.name}}) AS {{use_counter.name}},
         {% endfor %}
       )
     )
@@ -123,6 +122,6 @@ SELECT
     'use.counter.deprecated_ops.page.'
   ) AS metric,
   cnt,
-  CAST(COALESCE(doc_rate, page_rate, service_rate, shared_rate, dedicated_rate) as numeric) AS rate
+  CAST(COALESCE(doc_rate, page_rate, service_rate, shared_rate, dedicated_rate) AS numeric) AS rate
 FROM
   firefox_desktop_staging

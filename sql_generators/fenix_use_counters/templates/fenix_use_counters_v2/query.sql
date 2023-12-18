@@ -4,15 +4,12 @@ WITH fenix_firefox_use_counts_by_day_version_and_country_stg AS (
     mozfun.norm.truncate_version(client_info.app_display_version, 'major') AS version_major,
     metadata.geo.country AS country,
     'Fenix' AS platform,
-
     {% for use_counter_denom in fenix_use_counter_denominators %}
-    sum(metrics.counter.{{use_counter_denom.name}}) AS {{use_counter_denom.name}},
+      SUM(metrics.counter.{{use_counter_denom.name}}) AS {{use_counter_denom.name}},
     {% endfor %}
-
     {% for use_counter in fenix_use_counters %}
-    sum(metrics.counter.{{use_counter.name}}) AS {{use_counter.name}},
+      SUM(metrics.counter.{{use_counter.name}}) AS {{use_counter.name}},
     {% endfor %}
-
   FROM
     `moz-fx-data-shared-prod.fenix.use_counters`
   WHERE
@@ -32,7 +29,7 @@ fenix_pivoted_raw AS (
     fenix_firefox_use_counts_by_day_version_and_country_stg a UNPIVOT(
       cnt FOR metric IN (
         {% for use_counter in fenix_use_counters %}
-        {{use_counter.name}},
+          {{use_counter.name}},
         {% endfor %}
       )
     )
@@ -122,6 +119,6 @@ SELECT
     'use.counter.deprecated_ops.page.'
   ) AS metric,
   cnt,
-  CAST(COALESCE(doc_rate, page_rate, service_rate, shared_rate, dedicated_rate) as numeric) AS rate
+  CAST(COALESCE(doc_rate, page_rate, service_rate, shared_rate, dedicated_rate) AS numeric) AS rate
 FROM
   fenix_staging

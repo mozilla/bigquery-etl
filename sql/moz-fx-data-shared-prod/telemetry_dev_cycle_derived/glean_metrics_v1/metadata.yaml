@@ -1,0 +1,20 @@
+friendly_name: Glean Metrics
+description: |-
+  Please provide a description for the query
+owners:
+- example@mozilla.com
+labels:
+  incremental: true
+  owner1: example
+scheduling:
+  dag_name: bqetl_default
+bigquery:
+  time_partitioning:
+    type: day
+    field: ''
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields: []
+references: {}
+deprecated: false

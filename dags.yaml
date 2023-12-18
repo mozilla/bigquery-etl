@@ -102,9 +102,9 @@ bqetl_fxa_events:
     See https://github.com/mozilla/bigquery-etl/issues/1684 for an example
     mitigation.
   default_args:
-    owner: dthorn@mozilla.com
+    owner: kik@mozilla.com
     start_date: "2019-03-01"
-    email: ["telemetry-alerts@mozilla.com", "dthorn@mozilla.com"]
+    email: ["telemetry-alerts@mozilla.com", "kik@mozilla.com"]
     retries: 1
     retry_delay: 10m
   tags:
@@ -265,12 +265,12 @@ bqetl_main_summary:
     General-purpose derived tables for analyzing usage of desktop Firefox.
     This is one of our highest-impact DAGs and should be handled carefully.
   default_args:
-    owner: dthorn@mozilla.com
+    owner: ascholtz@mozilla.com
     start_date: "2018-11-27"
     email:
       [
         "telemetry-alerts@mozilla.com",
-        "dthorn@mozilla.com",
+        "ascholtz@mozilla.com",
       ]
     retries: 2
     retry_delay: 30m
@@ -327,9 +327,9 @@ bqetl_internet_outages:
 bqetl_deletion_request_volume:
   schedule_interval: 0 1 * * *
   default_args:
-    owner: dthorn@mozilla.com
+    owner: akomar@mozilla.com
     start_date: "2020-06-29"
-    email: ["telemetry-alerts@mozilla.com", "dthorn@mozilla.com"]
+    email: ["telemetry-alerts@mozilla.com", "akomar@mozilla.com"]
     retries: 2
     retry_delay: 30m
   tags:
@@ -383,11 +383,11 @@ bqetl_org_mozilla_focus_derived:
   default_args:
     depends_on_past: false
     email:
-      - dthorn@mozilla.com
+      - akomar@mozilla.com
       - telemetry-alerts@mozilla.com
     email_on_failure: true
     email_on_retry: true
-    owner: dthorn@mozilla.com
+    owner: akomar@mozilla.com
     retries: 2
     retry_delay: 30m
     start_date: "2023-02-22"
@@ -532,7 +532,7 @@ bqetl_release_criteria:
     start_date: "2020-12-03"
     email:
       - telemetry-alerts@mozilla.com
-      - dthorn@mozilla.com
+      - esmyth@mozilla.com
     retries: 2
     retry_delay: 30m
   tags:
@@ -1359,3 +1359,38 @@ bqetl_crash:
     start_date: "2023-12-10"
   tags:
     - impact/tier_2
+
+bqetl_use_counter_analysis:
+  schedule_interval: 0 8 * * *
+  default_args:
+    depends_on_past: false
+    email:
+      - kwindau@mozilla.com
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    owner: kwindau@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: "2023-12-13"
+  tags:
+    - impact/tier_2
+  description: DAG to prepare use counter data for Firefox Desktop & Fenix for visualization
+
+bqetl_mobile_feature_usage:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - rzhao@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    owner: rzhao@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2023-10-24'
+  description: Schedule run for mobile feature usage tables
+  schedule_interval: 0 6 * * *
+  tags:
+    - impact/tier_3

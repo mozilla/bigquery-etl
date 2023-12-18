@@ -5,7 +5,7 @@ description: |
   See https://bugzilla.mozilla.org/show_bug.cgi?id=1805184
   and https://bugzilla.mozilla.org/show_bug.cgi?id=1810236
 owners:
-- dthorn@mozilla.com
+- akomar@mozilla.com
 labels:
   schedule: daily
 scheduling:

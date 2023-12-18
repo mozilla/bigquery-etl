@@ -1,0 +1,17 @@
+friendly_name: ctms
+description: ctms syndicate views
+dataset_base_acl: syndicate
+user_facing: true
+labels: {}
+syndication:
+  stage:
+    syndicated_project: "moz-fx-ctms-nonprod"
+    syndicated_dataset: "ctms"
+  prod:
+    syndicated_project: "moz-fx-ctms-prod"
+    syndicated_dataset: "ctms"
+  administer_views: false
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

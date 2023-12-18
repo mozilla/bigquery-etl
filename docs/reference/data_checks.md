@@ -79,6 +79,24 @@ ASSERT (
 
 ## Data Checks Available with Examples
 
+### accepted_values ([source](../../tests/accepted_values.jinja))
+
+Usage:
+```
+Arguments:
+
+column: str - name of the column to check
+values: List[str] - list of accepted values
+where: Optional[str] - A condition that will be injected into the `WHERE` clause of the check. For example, "submission_date = @submission_date" so that the check is only executed against a specific partition.
+```
+
+Example:
+
+```sql
+#warn
+{{ accepted_values("column_1", ["value_1", "value_2"],"submission_date = @submission_date") }}
+```
+
 ### in_range ([source](../../tests/checks/in_range.jinja))
 
 Usage:
@@ -218,13 +236,14 @@ Arguments:
 column: str - Column which values will be checked against the regex.
 pattern: str - Regex pattern specifying the expected shape / pattern of the values inside the column.
 where: Optional[str]: Any additional filtering rules that should be applied when retrieving the data to run the check against.
+threshold_fail_percentage: Optional[int] - Percentage of how many rows can fail the check before causing it to fail.
 message: Optional[str]: Custom error message.
 ```
 
 Example:
 ```sql
 #warn
-{{ matches_pattern(column="country", pattern="^[A-Z]{2}$", where="submission_date = @submission_date", message="Oops") }}
+{{ matches_pattern(column="country", pattern="^[A-Z]{2}$", where="submission_date = @submission_date", threshold_fail_percentage=10, message="Oops") }}
 ```
 
 

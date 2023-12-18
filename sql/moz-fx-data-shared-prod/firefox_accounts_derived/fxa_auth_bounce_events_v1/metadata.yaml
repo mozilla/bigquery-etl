@@ -3,7 +3,7 @@ friendly_name: FxA Auth Bounce Events
 description: Selected Amplitude events extracted from FxA auth_bounce
  server logs
 owners:
-  - dthorn@mozilla.com
+  - kik@mozilla.com
 labels:
   application: fxa
   incremental: true

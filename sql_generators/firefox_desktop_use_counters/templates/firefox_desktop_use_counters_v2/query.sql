@@ -7,8 +7,13 @@ WITH firefox_desktop_use_counts_by_day_version_and_country_stg AS (
     mozfun.norm.truncate_version(client_info.app_display_version, 'major') AS version_major,
     metadata.geo.country AS country,
     normalized_app_name AS platform,
-    --example - SUM(metrics.counter.?) AS use_counter_content_documents_destroyed,
+    {% for use_counter_denom in firefox_desktop_use_counter_denominators %}
+    sum(metrics.counter.{{use_counter_denom.name}}) AS {{use_counter_denom.name}},
+    {% endfor %}
 
+    {% for use_counter in firefox_desktop_use_counters %}
+    sum(metrics.counter.{{use_counter.name}}) AS {{use_counter.name}},
+    {% endfor %}
   FROM
     `moz-fx-data-shared-prod.firefox_desktop.use_counters`
   WHERE
@@ -27,8 +32,9 @@ firefox_desktop_pivoted_raw AS (
   FROM
     firefox_desktop_use_counts_by_day_version_and_country_stg a UNPIVOT(
       cnt FOR metric IN (
-        --use_counter_css_doc_alignment_baseline,
-  
+        {% for use_counter in firefox_desktop_use_counters %}
+        sum(metrics.counter.{{use_counter.name}}) AS {{use_counter.name}},
+        {% endfor %}
       )
     )
 ),

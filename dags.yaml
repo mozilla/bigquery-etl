@@ -1402,7 +1402,7 @@ bqetl_telemetry_dev_cycle:
       - telemetry-alerts@mozilla.com
       - leli@mozilla.com
     email_on_failure: true
-    email_on_retry: true
+    email_on_retry: false
     end_date: null
     owner: leli@mozilla.com
     retries: 2

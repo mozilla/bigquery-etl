@@ -89,7 +89,7 @@ def generate_metadata(project, dataset, destination_table, write_dir):
 def generate(
     ctx, target_project, dataset, destination_table, output_dir, use_cloud_function
 ):
-    """Generate the feature usage table."""
+    """Generate the firefox desktop use counters V2 table."""
     output_dir = Path(output_dir)
     generate_query(target_project, dataset, destination_table, output_dir)
     generate_view(target_project, dataset, destination_table, output_dir)

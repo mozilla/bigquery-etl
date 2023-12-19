@@ -1,7 +1,8 @@
 fields:
 - name: userId
-  type: BYTES
+  type: STRING
   mode: NULLABLE
+  description: userId in hexadecimal format.
 - name: displayName
   type: STRING
   mode: NULLABLE

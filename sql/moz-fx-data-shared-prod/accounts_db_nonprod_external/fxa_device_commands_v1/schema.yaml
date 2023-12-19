@@ -4,8 +4,9 @@ fields:
   mode: NULLABLE
   description: Account ID in hexadecimal format.
 - name: deviceId
-  type: BYTES
+  type: STRING
   mode: NULLABLE
+  description: deviceId in hexadecimal format.
 - name: commandId
   type: INTEGER
   mode: NULLABLE

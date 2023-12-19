@@ -13,7 +13,7 @@ from bigquery_etl.util.common import write_sql
 
 FILE_PATH = Path(os.path.dirname(__file__))
 BASE_DIR = Path(FILE_PATH).parent.parent
-TEMPLATE_CONFIG = FILE_PATH / "templating.yaml"
+TEMPLATE_CONFIG = FILE_PATH / "templates/templating.yaml"
 
 
 def generate_query(project, dataset, destination_table, write_dir):

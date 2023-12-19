@@ -1,0 +1,21 @@
+fields:
+
+- name: version
+  type: INT64
+  mode: NULLABLE
+  description: Major release version for firefox.
+
+- name: publish_date_release
+  type: DATE
+  mode: NULLABLE
+  description: Publish date for Firefox release version
+
+- name: publish_date_beta
+  type: DATE
+  mode: NULLABLE
+  description: Publish date for Firefox beta version
+
+- name: publish_date_nightly
+  type: DATE
+  mode: NULLABLE
+  description: Publish date for Firefox nightly version

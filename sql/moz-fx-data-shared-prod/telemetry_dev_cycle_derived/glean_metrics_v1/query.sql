@@ -1,34 +1,46 @@
-WITH glean_metrics AS (
+WITH glean_app_with_parsed_expiry_date AS (
   SELECT
-    product,
+    glean.glean_app,
+    glean.metric,
+    glean.type,
+    glean.first_seen_date AS release_date,
+    glean.last_seen_date AS last_date,
+    glean.expires,
+    CASE
+      WHEN glean.expires = "never"
+        THEN NULL
+      WHEN REGEXP_CONTAINS(glean.expires, r'[0-9]{4}-[0-9]{2}-[0-9]{2}')
+        THEN CAST(glean.expires AS DATE)
+      WHEN REGEXP_CONTAINS(glean.glean_app, r'beta')
+        THEN releases.publish_date_beta
+      WHEN REGEXP_CONTAINS(glean.glean_app, r"nightly")
+        THEN releases.publish_date_nightly
+      ELSE releases.publish_date_release
+    END AS expiry_date,
+  FROM
+    `telemetry_dev_cycle_derived.glean_metrics_external_v1` AS glean
+  LEFT JOIN
+    `telemetry_dev_cycle_derived.firefox_major_releases_dates_v1` AS releases
+  ON
+    glean.expires = CAST(releases.version AS STRING)
+),
+final AS (
+  SELECT
+    glean_app,
     metric,
     type,
-    first_seen_date AS release_date,
-    last_seen_date AS last_date,
+    release_date,
+    last_date,
+    expires,
     CASE
-      when expires = "never" then NULL
-      when REGEXP_CONTAINS(expires, r'[0-9]{4}-[0-9]{2}-[0-9]{2}') THEN CAST(expires AS DATE)
-      else NULL
-    END AS expiry_date,
-    expires
-  FROM `leli-sandbox.telemetry_dev_cycle.glean_metrics_external_v1` #todo change that
-),
-firefox_releases AS (
-  SELECT
-    CAST(REGEXP_EXTRACT (build.target.version, r"^\d+")AS INT64) AS version,
-    build.target.channel,
-    DATE(MIN(build.download.date)) AS publish_date,
+      WHEN expiry_date IS NULL
+        THEN last_date
+      ELSE IF(expiry_date < last_date, expiry_date, last_date)
+    END AS expired_date
   FROM
-    mozdata.telemetry.buildhub2
-  WHERE
-    build.target.channel in ("release", "beta", "nightly")
-  GROUP BY
-    version,
-    channel
-),
-
-final AS (
-  SELECT 1
+    glean_app_with_parsed_expiry_date
 )
-
-SELECT * FROM final
+SELECT
+  *
+FROM
+  final

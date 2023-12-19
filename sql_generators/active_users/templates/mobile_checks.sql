@@ -17,15 +17,15 @@ WITH dau_sum AS (
     `{{ project_id }}.{{ dataset_id }}.{{ table_name }}` {%- endraw %}
   WHERE
     submission_date = @submission_date
+    {% if app_name == "focus_android" -%}
+    AND app_name IN ('Focus Android Glean', 'Focus Android Glean BrowserStack')
+    {% endif -%}
 ),
 distinct_client_count_base AS (
   {%- for channel in channels %}
   {%- if not loop.first -%}
   UNION ALL
     {%- endif %}
-    {% if channel.name -%}
-  -- {{ channel.name }} channel
-    {% endif -%}
   SELECT
     COUNT(DISTINCT client_info.client_id) AS distinct_client_count,
   FROM
@@ -46,7 +46,7 @@ SELECT
     ABS((SELECT * FROM dau_sum) - (SELECT * FROM distinct_client_count)) > 10,
     ERROR(
       CONCAT(
-        "DAU mismatch between the {{ app_name }} live across all channels ({%- for channel in channels %}{{ channel.table }},{% endfor -%}) and active_users_aggregates ({%- raw %}`{{ dataset_id }}.{{ table_name }}`{%- endraw %}) tables is greated than 10.",
+        "DAU mismatch between the {{ app_name }} live across all channels ({%- for channel in channels %}{{ channel.table }},{% endfor -%}) and active_users_aggregates ({%- raw %}`{{ dataset_id }}.{{ table_name }}`{%- endraw %}) tables is greater than 10.",
         " Live table count: ",
         (SELECT * FROM distinct_client_count),
         " | active_users_aggregates (DAU): ",

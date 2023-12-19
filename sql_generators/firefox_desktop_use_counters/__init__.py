@@ -33,16 +33,16 @@ def generate_query(project, dataset, destination_table, write_dir):
 
 def generate_view(project, dataset, destination_table, write_dir):
     """Generate feature usage table view."""
-    view_name = destination_table.split("_v")[0]
-    view_dataset = dataset.split("_derived")[0]
+    view_name = "firefox_desktop_use_counters_v2"
+    view_dataset = "firefox_desktop"
 
     sql = reformat(
         f"""
-        CREATE OR REPLACE VIEW `moz-fx-data-shared-prod.firefox_desktop.firefox_desktop_use_counters_v2` AS
+        CREATE OR REPLACE VIEW `{project}.{view_dataset}.{view_name}` AS
         SELECT
             *
         FROM
-            `moz-fx-data-shared-prod.firefox_desktop_derived.firefox_desktop_use_counters_v2`
+            `{project}.{dataset}.{destination_table}`
     """
     )
 
@@ -69,13 +69,13 @@ def generate_metadata(project, dataset, destination_table, write_dir):
 @click.option(
     "--dataset",
     help="Which dataset the queries should be written to.",
-    default="telemetry_derived",
+    default="firefox_desktop_derived",
 )
 @click.option(
     "--destination_table",
     "--destination-table",
     help="Name of the destination table.",
-    default="feature_usage_v2",
+    default="firefox_desktop_use_counters_v2",
 )
 @click.option(
     "--output-dir",

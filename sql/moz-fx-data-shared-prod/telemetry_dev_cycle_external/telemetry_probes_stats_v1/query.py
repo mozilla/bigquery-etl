@@ -17,8 +17,8 @@ SCHEMA = [
     bigquery.SchemaField("first_added_date", "DATE"),
 ]
 DEFAULT_PROJECT_ID = "moz-fx-data-shared-prod"
-DEFAULT_DATASET_ID = "telemetry_dev_cycle_derived"
-DEFAULT_TABLE_NAME = "telemetry_probes_external_v1"
+DEFAULT_DATASET_ID = "telemetry_dev_cycle_external"
+DEFAULT_TABLE_NAME = "telemetry_probes_stats_v1"
 CHANNELS = ["release", "beta", "nightly"]
 
 

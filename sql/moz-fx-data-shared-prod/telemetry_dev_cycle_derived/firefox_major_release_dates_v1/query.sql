@@ -2,7 +2,7 @@ WITH firefox_releases AS (
   SELECT
     CAST(REGEXP_EXTRACT(build.target.version, r"^\d+") AS INT64) AS version,
     build.target.channel,
-    DATE(MIN(build.download.date)) as publish_date
+    DATE(MIN(build.download.date)) AS publish_date
   FROM
     `mozdata.telemetry.buildhub2`
   WHERE

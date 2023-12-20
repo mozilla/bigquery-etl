@@ -19,7 +19,11 @@ WITH glean_app_with_parsed_expiry_date AS (
     `telemetry_dev_cycle_derived.firefox_major_releases_dates_v1` AS releases
   ON
     glean.expires = CAST(releases.version AS STRING)
-    AND COALESCE(REGEXP_EXTRACT(glean.glean_app, r"beta"), REGEXP_EXTRACT(glean.glean_app, r"nightly"), "release") = releases.channel
+    AND COALESCE(
+      REGEXP_EXTRACT(glean.glean_app, r"beta"),
+      REGEXP_EXTRACT(glean.glean_app, r"nightly"),
+      "release"
+    ) = releases.channel
 ),
 final AS (
   SELECT

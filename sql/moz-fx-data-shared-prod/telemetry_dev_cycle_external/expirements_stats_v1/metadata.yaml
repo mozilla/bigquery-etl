@@ -1,0 +1,19 @@
+friendly_name: Experiments Metrics External
+description: |-
+  This table represents data downloaded from https://experimenter.services.mozilla.com/api/{version}/experiments
+  compared with config files downloaded from https://github.com/mozilla/metric-hub/tree/main/jetstream
+  The downloaded data is cleaned and only data relevant for the telemetry dev cycle dashboard is stored here.
+owners:
+- leli@mozilla.com
+labels:
+  owner1: leli
+  dag: bqetl_telemetry_dev_cycle
+scheduling:
+  dag_name: bqetl_telemetry_dev_cycle
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

@@ -3,19 +3,14 @@ fields:
 - name: version
   type: INT64
   mode: NULLABLE
-  description: Major release version for firefox.
+  description: Major release version for Firefox.
 
-- name: publish_date_release
+- name: channel
+  type: STRING
+  mode: NULLABLE
+  description: Channel for the Firefox release.
+
+- name: publish_date
   type: DATE
   mode: NULLABLE
-  description: Publish date for Firefox release version
-
-- name: publish_date_beta
-  type: DATE
-  mode: NULLABLE
-  description: Publish date for Firefox beta version
-
-- name: publish_date_nightly
-  type: DATE
-  mode: NULLABLE
-  description: Publish date for Firefox nightly version
+  description: Publish date for Firefox version

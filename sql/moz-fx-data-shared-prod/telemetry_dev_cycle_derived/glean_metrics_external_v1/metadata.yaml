@@ -9,5 +9,3 @@ labels:
   owner1: leli@mozilla.com
 scheduling:
   dag_name: bqetl_telemetry_dev_cycle
-bigquery: null
-references: {}

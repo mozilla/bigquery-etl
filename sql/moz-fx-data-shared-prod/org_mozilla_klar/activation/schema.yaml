@@ -308,8 +308,7 @@ fields:
     - name: legacy_ids_client_id
       type: STRING
       mode: NULLABLE
-      description: 'Sets the legacy client ID as part of the deletion-reqest and other
-        pings.
+      description: 'Sets the legacy client ID as part of the deletion-request ping.
 
         '
   - name: string

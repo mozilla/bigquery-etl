@@ -26,7 +26,7 @@ WITH final_probe_extract AS (
     channel = @channel
     AND app_version IS NOT NULL
     AND total_users > 375
-    AND CHAR_LEN(KEY) <= 200
+    AND CHAR_LENGTH(KEY) <= 200
   GROUP BY
     channel,
     app_version,

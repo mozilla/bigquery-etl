@@ -20,6 +20,11 @@ Import of data from Pocket's Snowflake warehouse.
 Originally created for [Bug 1695336](
 https://bugzilla.mozilla.org/show_bug.cgi?id=1695336).
 
+*Triage notes*
+
+As long as the most recent DAG run is successful this job can be considered healthy.
+In such case, past DAG failures can be ignored.
+
 #### Owner
 
 kik@mozilla.com

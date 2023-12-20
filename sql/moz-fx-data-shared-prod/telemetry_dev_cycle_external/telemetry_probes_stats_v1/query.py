@@ -1,25 +1,24 @@
 """Telemetry probes data - download from API, clean and upload to BigQuery."""
 
 import logging
+from pathlib import Path
 
 import click
 import requests
+import yaml
 from google.cloud import bigquery
 
 API_BASE_URL = "https://probeinfo.telemetry.mozilla.org"
-SCHEMA = [
-    bigquery.SchemaField("channel", "STRING"),
-    bigquery.SchemaField("probe", "STRING"),
-    bigquery.SchemaField("type", "STRING"),
-    bigquery.SchemaField("release_version", "INT64"),
-    bigquery.SchemaField("last_version", "INT64"),
-    bigquery.SchemaField("expiry_version", "STRING"),
-    bigquery.SchemaField("first_added_date", "DATE"),
-]
-DEFAULT_PROJECT_ID = "moz-fx-data-shared-prod"
-DEFAULT_DATASET_ID = "telemetry_dev_cycle_external"
-DEFAULT_TABLE_NAME = "telemetry_probes_stats_v1"
+
+DEFAULT_PROJECT_ID = Path(__file__).parent.parent.parent.name
+DEFAULT_DATASET_ID = Path(__file__).parent.parent.name
+DEFAULT_TABLE_NAME = Path(__file__).parent.name
 CHANNELS = ["release", "beta", "nightly"]
+
+SCHEMA_FILE = Path(__file__).parent / "schema.yaml"
+SCHEMA = bigquery.SchemaField.from_api_repr(
+    {"name": "root", "type": "RECORD", **yaml.safe_load(SCHEMA_FILE.read_text())}
+).fields
 
 
 def get_api_response(url):

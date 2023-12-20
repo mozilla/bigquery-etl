@@ -1,24 +1,24 @@
 """Glean metric data - download from API, clean and upload to BigQuery."""
 
 import logging
+from pathlib import Path
 
 import click
 import requests
+import yaml
 from google.cloud import bigquery
 
 API_BASE_URL = "https://probeinfo.telemetry.mozilla.org"
-SCHEMA = [
-    bigquery.SchemaField("glean_app", "STRING"),
-    bigquery.SchemaField("metric", "STRING"),
-    bigquery.SchemaField("type", "STRING"),
-    bigquery.SchemaField("first_seen_date", "DATE"),
-    bigquery.SchemaField("last_seen_date", "DATE"),
-    bigquery.SchemaField("expires", "STRING"),
-]
-DEFAULT_PROJECT_ID = "moz-fx-data-shared-prod"
-DEFAULT_DATASET_ID = "telemetry_dev_cycle_external"
-DEFAULT_TABLE_NAME = "glean_metrics_stats_v1"
+
+DEFAULT_PROJECT_ID = Path(__file__).parent.parent.parent.name
+DEFAULT_DATASET_ID = Path(__file__).parent.parent.name
+DEFAULT_TABLE_NAME = Path(__file__).parent.name
 DEFAULT_BAD_REQUEST_THRESHOLD = 5
+
+SCHEMA_FILE = Path(__file__).parent / "schema.yaml"
+SCHEMA = bigquery.SchemaField.from_api_repr(
+    {"name": "root", "type": "RECORD", **yaml.safe_load(SCHEMA_FILE.read_text())}
+).fields
 
 
 def get_api_response(url):
@@ -47,7 +47,7 @@ def store_data_in_bigquery(data, schema, destination_project, destination_table_
     logging.info(f"Loaded {stored_table.num_rows} rows into {destination_table_id}.")
 
 
-def download_glean_metrics(url: str, threshold):
+def download_glean_metrics(url, threshold):
     """Download metrics for glean products and parse the data."""
     # get a list of all glean apps
     glean_apps_response = get_api_response(f"{url}/glean/repositories")

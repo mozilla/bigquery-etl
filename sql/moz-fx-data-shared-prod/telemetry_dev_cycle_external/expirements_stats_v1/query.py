@@ -17,8 +17,8 @@ SCHEMA = [
     bigquery.SchemaField("has_config", "BOOLEAN"),
 ]
 DEFAULT_PROJECT_ID = "moz-fx-data-shared-prod"
-DEFAULT_DATASET_ID = "telemetry_dev_cycle_derived"
-DEFAULT_TABLE_NAME = "experiments_metrics_external_v1"
+DEFAULT_DATASET_ID = "telemetry_dev_cycle_external"
+DEFAULT_TABLE_NAME = "experiments_stats_v1"
 
 
 def parse_unix_datetime_to_string(unix_string):

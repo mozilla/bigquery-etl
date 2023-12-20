@@ -2,23 +2,24 @@
 
 import datetime
 import logging
+from pathlib import Path
 
 import click
 import requests
+import yaml
 from google.cloud import bigquery
 
 API_BASE_URL_EXPERIMENTS = "https://experimenter.services.mozilla.com"
 API_BASE_URL_METRIC_HUB = "https://github.com/mozilla/metric-hub/tree/main/jetstream"
-SCHEMA = [
-    bigquery.SchemaField("slug", "STRING"),
-    bigquery.SchemaField("start_date", "DATE"),
-    bigquery.SchemaField("enrollment_end_date", "DATE"),
-    bigquery.SchemaField("end_date", "DATE"),
-    bigquery.SchemaField("has_config", "BOOLEAN"),
-]
-DEFAULT_PROJECT_ID = "moz-fx-data-shared-prod"
-DEFAULT_DATASET_ID = "telemetry_dev_cycle_external"
-DEFAULT_TABLE_NAME = "experiments_stats_v1"
+
+DEFAULT_PROJECT_ID = Path(__file__).parent.parent.parent.name
+DEFAULT_DATASET_ID = Path(__file__).parent.parent.name
+DEFAULT_TABLE_NAME = Path(__file__).parent.name
+
+SCHEMA_FILE = Path(__file__).parent / "schema.yaml"
+SCHEMA = bigquery.SchemaField.from_api_repr(
+    {"name": "root", "type": "RECORD", **yaml.safe_load(SCHEMA_FILE.read_text())}
+).fields
 
 
 def parse_unix_datetime_to_string(unix_string):
@@ -71,6 +72,9 @@ def download_experiments_v1(url):
                 "end_date": parse_unix_datetime_to_string(experiment["end_date"]),
             }
         )
+    logging.info(
+        f"Downloaded {len(experiments_v1)} records from the experiments v1 API"
+    )
     return experiments_v1
 
 
@@ -87,6 +91,9 @@ def download_experiments_v6(url):
                 "end_date": experiment["endDate"],
             }
         )
+    logging.info(
+        f"Downloaded {len(experiments_v6)} records from the experiments v6 API"
+    )
     return experiments_v6
 
 
@@ -97,8 +104,9 @@ def download_metric_hub_files(url):
     for file in files["payload"]["tree"]["items"]:
         if file["contentType"] != "file":
             continue
-        slug = file["name"].replace(".toml", "")
+        slug = file["name"].removesuffix(".toml")
         metric_files[slug] = True
+    logging.info(f"Downloaded {len(metric_files)} records from the API {url}")
     return metric_files
 
 
@@ -106,14 +114,14 @@ def compare_experiments_with_metric_hub_configs():
     """Download experiments from v1 and v6 API and compare them with config files in metric_hub."""
     experiments_v1 = download_experiments_v1(API_BASE_URL_EXPERIMENTS)
     experiments_v6 = download_experiments_v6(API_BASE_URL_EXPERIMENTS)
-    experiments = experiments_v1 + experiments_v6
     metric_files = download_metric_hub_files(API_BASE_URL_METRIC_HUB)
 
-    for experiment in experiments:
-        if experiment["slug"] in metric_files:
-            experiment["has_config"] = True
-        else:
-            experiment["has_config"] = False
+    experiments = [
+        {**experiment, "has_config": True}
+        if experiment["slug"] in metric_files
+        else {**experiment, "has_config": False}
+        for experiment in (experiments_v1 + experiments_v6)
+    ]
     return experiments
 
 

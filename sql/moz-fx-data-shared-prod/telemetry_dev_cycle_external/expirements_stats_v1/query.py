@@ -114,7 +114,7 @@ def compare_experiments_with_metric_hub_configs():
             experiment["has_config"] = True
         else:
             experiment["has_config"] = False
-    return experiment
+    return experiments
 
 
 @click.command
@@ -136,9 +136,9 @@ def compare_experiments_with_metric_hub_configs():
     show_default=True,
     help="Bigquery table the data is written to.",
 )
-def run_experiments_metrics(bq_project_id, bq_dataset_id, bq_table_name):
+def run_experiments_stats(bq_project_id, bq_dataset_id, bq_table_name):
     """Download experiments from the APIs and store it in BigQuery."""
-    experiments = compare_experiments_with_metric_hub_configs
+    experiments = compare_experiments_with_metric_hub_configs()
     destination_table_id = f"{bq_project_id}.{bq_dataset_id}.{bq_table_name}"
     store_data_in_bigquery(
         data=experiments,
@@ -150,4 +150,4 @@ def run_experiments_metrics(bq_project_id, bq_dataset_id, bq_table_name):
 
 if __name__ == "__main__":
     logging.getLogger().setLevel(logging.INFO)
-    run_experiments_metrics()
+    run_experiments_stats()

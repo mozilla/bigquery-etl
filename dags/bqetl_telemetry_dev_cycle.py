@@ -54,3 +54,15 @@ with DAG(
         owner="leli@mozilla.com",
         email=["leli@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
+
+    telemetry_dev_cycle_external__telemetry_probes_stats__v1 = gke_command(
+        task_id="telemetry_dev_cycle_external__telemetry_probes_stats__v1",
+        command=[
+            "python",
+            "sql/moz-fx-data-shared-prod/telemetry_dev_cycle_external/telemetry_probes_stats_v1/query.py",
+        ]
+        + [],
+        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        owner="leli@mozilla.com",
+        email=["leli@mozilla.com", "telemetry-alerts@mozilla.com"],
+    )

@@ -16,7 +16,7 @@ WITH glean_app_with_parsed_expiry_date AS (
   FROM
     `telemetry_dev_cycle_external.glean_metrics_stats_v1` AS glean
   LEFT JOIN
-    `telemetry_dev_cycle_derived.firefox_major_releases_dates_v1` AS releases
+    `telemetry_dev_cycle_derived.firefox_major_release_dates_v1` AS releases
   ON
     glean.expires = CAST(releases.version AS STRING)
     AND COALESCE(
@@ -35,6 +35,9 @@ final AS (
     expires,
     CASE
       WHEN expiry_date IS NULL
+        AND DATE_DIFF(CURRENT_DATE(), last_date, day) < 2
+        THEN NULL
+      WHEN expiry_date IS NULL
         THEN last_date
       ELSE IF(expiry_date < last_date, expiry_date, last_date)
     END AS expired_date
@@ -45,3 +48,5 @@ SELECT
   *
 FROM
   final
+WHERE
+  expired_date IS NULL

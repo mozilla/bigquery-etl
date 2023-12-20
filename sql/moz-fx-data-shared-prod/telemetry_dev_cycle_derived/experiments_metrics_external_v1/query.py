@@ -5,7 +5,6 @@ import logging
 
 import click
 import requests
-from google.api_core.exceptions import BadRequest
 from google.cloud import bigquery
 
 API_BASE_URL_EXPERIMENTS = "https://experimenter.services.mozilla.com"
@@ -17,9 +16,9 @@ SCHEMA = [
     bigquery.SchemaField("end_date", "DATE"),
     bigquery.SchemaField("has_config", "BOOLEAN"),
 ]
-PROJECT_ID = "moz-fx-data-shared-prod"
-DATASET_ID = "telemetry_dev_cycle_derived"
-TABLE_NAME = "experiments_metrics_external_v1"
+DEFAULT_PROJECT_ID = "moz-fx-data-shared-prod"
+DEFAULT_DATASET_ID = "telemetry_dev_cycle_derived"
+DEFAULT_TABLE_NAME = "experiments_metrics_external_v1"
 
 
 def parse_unix_datetime_to_string(unix_string):
@@ -34,13 +33,7 @@ def parse_unix_datetime_to_string(unix_string):
 def get_api_response(url):
     """Get json of response if the requests to the API was successful."""
     response = requests.get(url)
-
-    if response.status_code != 200:
-        logging.error(
-            f"Failed to download data from {url}. \nResponse status code {response.status_code}."
-        )
-        return
-
+    response.raise_for_status()
     return response.json()
 
 
@@ -58,13 +51,7 @@ def store_data_in_bigquery(data, schema, destination_project, destination_table_
     load_job = client.load_table_from_json(
         data, destination_table_id, location="US", job_config=job_config
     )
-
-    try:
-        load_job.result()
-    except BadRequest as ex:
-        for e in load_job.errors:
-            logging.error(f"Error: {e['message']}")
-        raise ex
+    load_job.result()
     stored_table = client.get_table(destination_table_id)
     logging.info(f"Loaded {stored_table.num_rows} rows into {destination_table_id}.")
 
@@ -72,48 +59,46 @@ def store_data_in_bigquery(data, schema, destination_project, destination_table_
 def download_experiments_v1(url):
     """Download experiment data from API v1 and parse it."""
     experiments_v1 = []
-    if experiments := get_api_response(f"{url}/api/v1/experiments"):
-        for experiment in experiments:
-            if experiment["status"] == "Draft":
-                continue
-            experiments_v1.append(
-                {
-                    "slug": experiment["slug"],
-                    "start_date": parse_unix_datetime_to_string(
-                        experiment["start_date"]
-                    ),
-                    "enrollment_end_date": None,
-                    "end_date": parse_unix_datetime_to_string(experiment["end_date"]),
-                }
-            )
+    experiments = get_api_response(f"{url}/api/v1/experiments")
+    for experiment in experiments:
+        if experiment["status"] == "Draft":
+            continue
+        experiments_v1.append(
+            {
+                "slug": experiment["slug"],
+                "start_date": parse_unix_datetime_to_string(experiment["start_date"]),
+                "enrollment_end_date": None,
+                "end_date": parse_unix_datetime_to_string(experiment["end_date"]),
+            }
+        )
     return experiments_v1
 
 
 def download_experiments_v6(url):
     """Download experiment data from API v6 and parse it."""
     experiments_v6 = []
-    if experiments := get_api_response(f"{url}/api/v6/experiments"):
-        for experiment in experiments:
-            experiments_v6.append(
-                {
-                    "slug": experiment["slug"],
-                    "start_date": experiment["startDate"],
-                    "enrollment_end_date": experiment["enrollmentEndDate"],
-                    "end_date": experiment["endDate"],
-                }
-            )
+    experiments = get_api_response(f"{url}/api/v6/experiments")
+    for experiment in experiments:
+        experiments_v6.append(
+            {
+                "slug": experiment["slug"],
+                "start_date": experiment["startDate"],
+                "enrollment_end_date": experiment["enrollmentEndDate"],
+                "end_date": experiment["endDate"],
+            }
+        )
     return experiments_v6
 
 
 def download_metric_hub_files(url):
     """Download metric hub files from github."""
     metric_files = {}
-    if files := get_api_response(url):
-        for file in files["payload"]["tree"]["items"]:
-            if file["contentType"] != "file":
-                continue
-            slug = file["name"].replace(".toml", "")
-            metric_files[slug] = True
+    files = get_api_response(url)
+    for file in files["payload"]["tree"]["items"]:
+        if file["contentType"] != "file":
+            continue
+        slug = file["name"].replace(".toml", "")
+        metric_files[slug] = True
     return metric_files
 
 
@@ -135,19 +120,19 @@ def compare_experiments_with_metric_hub_configs():
 @click.command
 @click.option(
     "--bq_project_id",
-    default=PROJECT_ID,
+    default=DEFAULT_PROJECT_ID,
     show_default=True,
     help="BigQuery project the data is written to.",
 )
 @click.option(
     "--bq_dataset_id",
-    default=DATASET_ID,
+    default=DEFAULT_DATASET_ID,
     show_default=True,
     help="BigQuery dataset the data is written to.",
 )
 @click.option(
     "--bq_table_name",
-    default=TABLE_NAME,
+    default=DEFAULT_TABLE_NAME,
     show_default=True,
     help="Bigquery table the data is written to.",
 )

@@ -14,7 +14,7 @@ WITH glean_app_with_parsed_expiry_date AS (
       ELSE releases.publish_date
     END AS expiry_date,
   FROM
-    `telemetry_dev_cycle_derived.glean_metrics_external_v1` AS glean
+    `telemetry_dev_cycle_external.glean_metrics_stats_v1` AS glean
   LEFT JOIN
     `telemetry_dev_cycle_derived.firefox_major_releases_dates_v1` AS releases
   ON

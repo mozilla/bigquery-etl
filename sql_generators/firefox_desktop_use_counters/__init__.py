@@ -58,6 +58,17 @@ def generate_metadata(project, dataset, destination_table, write_dir):
         write_dir / project / dataset / destination_table / "metadata.yaml",
     )
 
+def generate_schema(project, dataset, destination_table, write_dir):
+    """Generate the table schema."""
+    # get schema
+    table_schema = Schema.for_table(project, dataset, destination_table)
+    query_schema = Schema.from_query_file(
+        write_dir / project / dataset / destination_table / "query.sql",
+        use_cloud_function=True,
+    )
+    query_schema.merge(table_schema)
+    schema_path = write_dir / project / dataset / destination_table / SCHEMA_FILE
+    query_schema.to_yaml_file(schema_path)
 
 @click.command("generate")
 @click.option(
@@ -94,3 +105,4 @@ def generate(
     generate_query(target_project, dataset, destination_table, output_dir)
     generate_view(target_project, dataset, destination_table, output_dir)
     generate_metadata(target_project, dataset, destination_table, output_dir)
+    generate_schema(target_project, dataset, destination_table, output_dir)

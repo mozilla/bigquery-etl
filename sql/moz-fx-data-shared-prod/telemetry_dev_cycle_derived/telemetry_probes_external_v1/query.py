@@ -4,7 +4,6 @@ import logging
 
 import click
 import requests
-from google.api_core.exceptions import BadRequest
 from google.cloud import bigquery
 
 API_BASE_URL = "https://probeinfo.telemetry.mozilla.org"
@@ -17,22 +16,16 @@ SCHEMA = [
     bigquery.SchemaField("expiry_version", "STRING"),
     bigquery.SchemaField("first_added_date", "DATE"),
 ]
-PROJECT_ID = "moz-fx-data-shared-prod"
-DATASET_ID = "telemetry_dev_cycle_derived"
-TABLE_NAME = "telemetry_probes_external_v1"
+DEFAULT_PROJECT_ID = "moz-fx-data-shared-prod"
+DEFAULT_DATASET_ID = "telemetry_dev_cycle_derived"
+DEFAULT_TABLE_NAME = "telemetry_probes_external_v1"
 CHANNELS = ["release", "beta", "nightly"]
 
 
 def get_api_response(url):
     """Get json of response if the requests to the API was successful."""
     response = requests.get(url)
-
-    if response.status_code != 200:
-        logging.error(
-            f"Failed to download data from {url}. \nResponse status code {response.status_code}."
-        )
-        return
-
+    response.raise_for_status()
     return response.json()
 
 
@@ -50,13 +43,7 @@ def store_data_in_bigquery(data, schema, destination_project, destination_table_
     load_job = client.load_table_from_json(
         data, destination_table_id, location="US", job_config=job_config
     )
-
-    try:
-        load_job.result()
-    except BadRequest as ex:
-        for e in load_job.errors:
-            logging.error(f"Error: {e['message']}")
-        raise ex
+    load_job.result()
     stored_table = client.get_table(destination_table_id)
     logging.info(f"Loaded {stored_table.num_rows} rows into {destination_table_id}.")
 
@@ -65,45 +52,43 @@ def download_telemetry_probes(url: str):
     """Download probes for telemetry and parse the data."""
     firefox_metrics = []
     for channel in CHANNELS:
-        if probes := get_api_response(f"{url}/firefox/{channel}/main/all_probes"):
-            for probe in probes.values():
-                release_version = int(
-                    probe["history"][channel][-1]["versions"]["first"]
-                )
-                last_version = int(probe["history"][channel][0]["versions"]["last"])
-                expiry_version = probe["history"][channel][0]["expiry_version"]
-                first_added_date = probe["first_added"][channel][:10]
+        probes = get_api_response(f"{url}/firefox/{channel}/main/all_probes")
+        for probe in probes.values():
+            release_version = int(probe["history"][channel][-1]["versions"]["first"])
+            last_version = int(probe["history"][channel][0]["versions"]["last"])
+            expiry_version = probe["history"][channel][0]["expiry_version"]
+            first_added_date = probe["first_added"][channel][:10]
 
-                firefox_metrics.append(
-                    {
-                        "channel": channel,
-                        "probe": probe["name"],
-                        "type": probe["type"],
-                        "release_version": release_version,
-                        "last_version": last_version,
-                        "expiry_version": expiry_version,
-                        "first_added_date": first_added_date,
-                    }
-                )
+            firefox_metrics.append(
+                {
+                    "channel": channel,
+                    "probe": probe["name"],
+                    "type": probe["type"],
+                    "release_version": release_version,
+                    "last_version": last_version,
+                    "expiry_version": expiry_version,
+                    "first_added_date": first_added_date,
+                }
+            )
     return firefox_metrics
 
 
 @click.command
 @click.option(
     "--bq_project_id",
-    default=PROJECT_ID,
+    default=DEFAULT_PROJECT_ID,
     show_default=True,
     help="BigQuery project the data is written to.",
 )
 @click.option(
     "--bq_dataset_id",
-    default=DATASET_ID,
+    default=DEFAULT_DATASET_ID,
     show_default=True,
     help="BigQuery dataset the data is written to.",
 )
 @click.option(
     "--bq_table_name",
-    default=TABLE_NAME,
+    default=DEFAULT_TABLE_NAME,
     show_default=True,
     help="Bigquery table the data is written to.",
 )

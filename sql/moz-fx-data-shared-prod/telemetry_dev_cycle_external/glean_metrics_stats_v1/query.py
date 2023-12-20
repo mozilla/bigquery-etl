@@ -16,8 +16,8 @@ SCHEMA = [
     bigquery.SchemaField("expires", "STRING"),
 ]
 DEFAULT_PROJECT_ID = "moz-fx-data-shared-prod"
-DEFAULT_DATASET_ID = "telemetry_dev_cycle_derived"
-DEFAULT_TABLE_NAME = "glean_metrics_external_v1"
+DEFAULT_DATASET_ID = "telemetry_dev_cycle_external"
+DEFAULT_TABLE_NAME = "glean_metrics_stats_v1"
 DEFAULT_BAD_REQUEST_THRESHOLD = 5
 
 

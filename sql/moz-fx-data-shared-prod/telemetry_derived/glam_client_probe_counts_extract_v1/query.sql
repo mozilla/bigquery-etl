@@ -5,7 +5,7 @@ WITH final_probe_extract AS (
     COALESCE(app_build_id, "*") AS app_build_id,
     process,
     metric,
-    SUBSTR(REPLACE(KEY, r"\x00", ""), 0, 200) AS KEY,
+    REPLACE(KEY, r"\x00", "") AS KEY,
     client_agg_type,
     metric_type,
     total_users,
@@ -26,6 +26,7 @@ WITH final_probe_extract AS (
     channel = @channel
     AND app_version IS NOT NULL
     AND total_users > 375
+    AND CHAR_LEN(KEY) <= 200
   GROUP BY
     channel,
     app_version,

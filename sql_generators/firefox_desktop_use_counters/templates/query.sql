@@ -32,7 +32,7 @@ firefox_desktop_pivoted_raw AS (
     firefox_desktop_use_counts_by_day_version_and_country_stg a UNPIVOT(
       cnt FOR metric IN (
         {% for use_counter in firefox_desktop_use_counters %}
-          SUM(metrics.counter.{{use_counter.name}}) AS {{use_counter.name}},
+         {{use_counter.name}},
         {% endfor %}
       )
     )

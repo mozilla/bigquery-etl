@@ -1,0 +1,16 @@
+friendly_name: Telemetry Dev Cycle Derived
+description: |-
+  External data for the Telemetry Dev Cycle Dashboard.
+  The data in this dataset is coming from external source like API requests.
+dataset_base_acl: derived
+user_facing: false
+labels: {}
+default_table_workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+syndication: {}

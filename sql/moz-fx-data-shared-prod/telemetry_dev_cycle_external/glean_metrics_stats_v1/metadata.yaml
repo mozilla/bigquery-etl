@@ -1,0 +1,18 @@
+friendly_name: Glean Metrics External
+description: |-
+  This table represents data downloaded from https://probeinfo.telemetry.mozilla.org/glean/{glean_app}/metric.
+  The downloaded data is cleaned and only relevant fields are shown.
+owners:
+- leli@mozilla.com
+labels:
+  owner1: leli
+  dag: bqetl_telemetry_dev_cycle
+scheduling:
+  dag_name: bqetl_telemetry_dev_cycle
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

@@ -1,15 +1,11 @@
 friendly_name: Telemetry Dev Cycle
-description: |-
-  Please provide a description for the dataset
+description: >
+  Data for the Telemetry Dev Cycle Dashboard.
+  For different parts of the Telemetry dev cycle metrics are collected here.
 dataset_base_acl: view
 user_facing: true
 labels: {}
-default_table_workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:mozilla-confidential
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-syndication: {}

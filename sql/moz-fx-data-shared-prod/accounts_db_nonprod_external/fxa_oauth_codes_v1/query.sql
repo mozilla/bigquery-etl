@@ -1,6 +1,6 @@
 SELECT
-  clientId,
-  userId,
+  TO_HEX(clientId) AS clientId,
+  TO_HEX(userId) AS userId,
   scope,
   createdAt,
   SAFE.TIMESTAMP_MILLIS(SAFE_CAST(authAt AS INT)) AS authAt,
@@ -9,7 +9,7 @@ SELECT
   SAFE_CAST(offline AS BOOL) AS offline,
   codeChallengeMethod,
   SAFE.TIMESTAMP_MILLIS(SAFE_CAST(profileChangedAt AS INT)) AS profileChangedAt,
-  sessionTokenId,
+  TO_HEX(sessionTokenId) AS sessionTokenId,
 FROM
   EXTERNAL_QUERY(
     "moz-fx-fxa-nonprod.us.fxa-oauth-nonprod-stage-fxa-oauth",

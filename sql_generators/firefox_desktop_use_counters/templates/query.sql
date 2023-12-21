@@ -33,6 +33,7 @@ firefox_desktop_pivoted_raw AS (
       cnt FOR metric IN (
         {% for use_counter in firefox_desktop_use_counters %}
           {{use_counter.name}}
+
           {% if not loop.last %},
           {% endif %}
         {% endfor %}

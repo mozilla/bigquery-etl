@@ -30,6 +30,7 @@ fenix_pivoted_raw AS (
       cnt FOR metric IN (
         {% for use_counter in fenix_use_counters %}
           {{use_counter.name}}
+
           {% if not loop.last %},
           {% endif %}
         {% endfor %}

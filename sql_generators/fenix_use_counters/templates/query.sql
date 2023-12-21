@@ -29,7 +29,9 @@ fenix_pivoted_raw AS (
     fenix_firefox_use_counts_by_day_version_and_country_stg a UNPIVOT(
       cnt FOR metric IN (
         {% for use_counter in fenix_use_counters %}
-          {{use_counter.name}} {% if not loop.last %},{% endif %} 
+          {{use_counter.name}}
+          {% if not loop.last %},
+          {% endif %}
         {% endfor %}
       )
     )

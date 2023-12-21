@@ -2302,3 +2302,4 @@ fenix_use_counters:
   - name: use_counter_worker_shared_pushmanager_subscribe
   - name: use_counter_worker_shared_pushsubscription_unsubscribe
   - name: use_counter_worker_shared_scheduler_posttask
+  

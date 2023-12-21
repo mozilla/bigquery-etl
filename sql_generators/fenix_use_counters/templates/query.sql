@@ -15,10 +15,10 @@ WITH fenix_firefox_use_counts_by_day_version_and_country_stg AS (
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
-    1,
-    2,
-    3,
-    4
+    submission_date,
+    version_major,
+    country,
+    platform
   HAVING
     COUNT(DISTINCT(client_info.client_id)) >= 5000
 ),

@@ -48,5 +48,3 @@ SELECT
   *
 FROM
   final
-WHERE
-  expired_date IS NULL

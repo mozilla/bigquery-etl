@@ -1,6 +1,6 @@
 SELECT
-  clientId,
-  userId,
+  TO_HEX(clientId) AS clientId,
+  TO_HEX(userId) AS userId,
   scope,
   createdAt,
   lastUsedAt,

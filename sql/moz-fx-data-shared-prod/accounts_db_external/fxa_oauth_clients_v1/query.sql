@@ -1,5 +1,5 @@
 SELECT
-  id,
+  TO_HEX(id) AS id,
   name,
   imageUri,
   redirectUri,

@@ -1,4 +1,4 @@
--- Query for telemetry_derived.firefox_use_counters_v1
+-- Query for telemetry_derived.firefox_use_counters_v2
             -- For more information on writing queries see:
             -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
 WITH firefox_desktop_use_counts_by_day_version_and_country_stg AS (

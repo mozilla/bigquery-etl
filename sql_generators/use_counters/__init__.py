@@ -25,11 +25,11 @@ def generate_query(prjct, dataset, destination_table, write_dir, tmplt_fpath):
     """Generate query and write to directory"""
     with open(tmplt_fpath, mode="r", encoding="UTF-8") as f:
         render_kwargs = yaml.safe_load(f) or {}
-    env = Environment(loader=FileSystemLoader(tmplt_fpath))
+    env = Environment(loader=FileSystemLoader(fpath))
     template = env.get_template("query.sql")
 
     write_sql(
-        write_dir / project,
+        write_dir + "/" + project,
         f"{prjct}.{dataset}.{destination_table}",
         "query.sql",
         reformat(template.render(**render_kwargs)),

@@ -1,7 +1,7 @@
 SELECT
-  id,
+  TO_HEX(id) AS id,
   url,
-  userId,
+  TO_HEX(userId) AS userId,
   providerId,
 FROM
   EXTERNAL_QUERY(

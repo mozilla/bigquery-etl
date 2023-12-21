@@ -1,0 +1,11 @@
+friendly_name: Glean Metrics External
+description: |-
+  This table represents data downloaded from https://probeinfo.telemetry.mozilla.org/glean/{glean_app}/metric.
+  The downloaded data is cleaned and only data relevant for the telemetry dev cycle dashboard is stored here.
+owners:
+- leli@mozilla.com
+labels:
+  incremental: false
+  owner1: leli@mozilla.com
+scheduling:
+  dag_name: bqetl_telemetry_dev_cycle

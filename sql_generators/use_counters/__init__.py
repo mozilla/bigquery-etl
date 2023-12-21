@@ -104,7 +104,7 @@ for key, value in config["objects"].items():
     generate(prjct = project, 
              dataset = table_dataset_name, 
              destination_table = table_name, 
-             write_dir = "", #, #FIX THIS STILL  
+             write_dir = "sql", 
              tmplt_fpath = template_fpath)
     
-    
+

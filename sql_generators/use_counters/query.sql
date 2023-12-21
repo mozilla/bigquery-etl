@@ -3,7 +3,7 @@ WITH use_counts_by_day_version_and_country_stg AS (
     DATE(submission_timestamp) AS submission_date,
     mozfun.norm.truncate_version(client_info.app_display_version, 'major') AS version_major,
     metadata.geo.country AS country,
-    {platform} AS platform, --should be normalized_app_name for firefox, hardcoded to 'Fenix' for fenix
+    {platform} AS platform, 
     {% for use_counter_denom in use_counter_denominators %}
       SUM(metrics.counter.{{use_counter_denom.name}}) AS {{use_counter_denom.name}},
     {% endfor %}

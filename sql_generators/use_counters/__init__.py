@@ -95,7 +95,6 @@ project = config["project"]
 #For each table we want to create listed in config
 for key, value in config["objects"].items():
     #Get the configs for this table/view combo
-    platform = value["platform"]
     friendly_name = value["friendly_name"]
     table_dataset_name = value["table_dataset_name"]
     view_dataset_name = value["view_dataset_name"]

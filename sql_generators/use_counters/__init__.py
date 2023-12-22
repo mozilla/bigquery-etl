@@ -79,7 +79,7 @@ def generate_schema(schema_filepath, prjct, dataset, destination_table, write_di
 
 
 def generate(prjct, dataset, destination_table, write_dir, tmplt_fpath, query_fname, vw_dataset, view_nm, schema_filepath):
-    """Generate the feature usage table."""
+    """Generate the use counter tables."""
     generate_query(prjct, dataset, destination_table, write_dir, tmplt_fpath, query_fname) 
     generate_view(prjct, vw_dataset, dataset, view_nm, destination_table, write_dir)
     generate_metadata(prjct, dataset, destination_table, write_dir)

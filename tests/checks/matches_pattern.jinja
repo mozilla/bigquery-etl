@@ -1,6 +1,6 @@
 {% macro matches_pattern(column, pattern, where, threshold_fail_percentage, message) %}
   {% set threshold_fail_percentage = threshold_fail_percentage|default(0) %}
-  {% set message = message|default('The rate of fields that failed to match the pattern for column: `' ~ column ~ '` is greated than the `threshold_fail_percentage` (set to: ' ~ threshold_fail_percentage ~ '). Expected pattern: `' ~ pattern ~ '`.') %}
+  {% set message = message|default('The rate of fields that failed to match the pattern for column: `' ~ column ~ '` is greater than the `threshold_fail_percentage` (set to: ' ~ threshold_fail_percentage ~ '). Expected pattern: `' ~ pattern ~ '`.') %}
 
   SELECT
     IF(

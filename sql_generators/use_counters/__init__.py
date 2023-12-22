@@ -12,12 +12,12 @@ from bigquery_etl.util.common import write_sql
 import json
 
 # Define needed filepaths
-fpath = Path(os.path.dirname(__file__))
-template_fpath = fpath / "templating.yaml"
-query_fpath = fpath / "query.sql"
-config_fpath = fpath / "config.json"
-metadata_fpath = fpath / "metadata.yaml"
-schema_fpath = fpath / "schema.yaml"
+fpath = Path(os.path.dirname(__file__)) 
+template_fpath = fpath / "templates/templating.yaml"
+#query_fpath = fpath / "templates/query.sql"
+config_fpath = fpath / "templates/config.json"
+metadata_fpath = fpath / "templates/metadata.yaml"
+schema_fpath = fpath / "templates/schema.yaml"
 
 ########Define functions for later use########
 #Generate query
@@ -58,7 +58,7 @@ def generate_metadata(prjct, dataset, destination_table, write_dir):
     """Copy metadata.yaml file to destination directory."""
     #Render the metadata yaml file with parameters
     env = Environment(loader=FileSystemLoader(fpath))
-    metadata_template = env.get_template("metadata.yaml")
+    metadata_template = env.get_template("templates/metadata.yaml")
     #metadata_template.render(tbl_friendly_name= friendly_name)
 
     write_sql(
@@ -99,7 +99,7 @@ for key, value in config["objects"].items():
     table_dataset_name = value["table_dataset_name"]
     view_dataset_name = value["view_dataset_name"]
     table_name = value["table_name"]
-    query_filename = value["query"]
+    query_filename = "templates/"+value["query"]
 
     #Run the generate for this object
     generate(prjct = project,

@@ -3,7 +3,7 @@ WITH use_counts_by_day_version_and_country_stg AS (
     DATE(submission_timestamp) AS submission_date,
     mozfun.norm.truncate_version(client_info.app_display_version, 'major') AS version_major,
     metadata.geo.country AS country,
-    {platform} AS platform, 
+    normalized_app_name AS platform, 
     {% for use_counter_denom in use_counter_denominators %}
       SUM(metrics.counter.{{use_counter_denom.name}}) AS {{use_counter_denom.name}},
     {% endfor %}
@@ -11,7 +11,7 @@ WITH use_counts_by_day_version_and_country_stg AS (
       SUM(metrics.counter.{{use_counter.name}}) AS {{use_counter.name}},
     {% endfor %}
   FROM
-    `moz-fx-data-shared-prod.{dataset}.{tablename}` 
+    `moz-fx-data-shared-prod.firefox_desktop.use_counters` 
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY

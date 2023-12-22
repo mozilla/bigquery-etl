@@ -18,7 +18,7 @@ WITH dau_sum AS (
   WHERE
     submission_date = @submission_date
     {% if app_name == "focus_android" -%}
-    AND app_name IN ('Focus Android Glean', 'Focus Android Glean BrowserStack')
+      AND app_name IN ('Focus Android Glean', 'Focus Android Glean BrowserStack')
     {% endif -%}
 ),
 distinct_client_count_base AS (

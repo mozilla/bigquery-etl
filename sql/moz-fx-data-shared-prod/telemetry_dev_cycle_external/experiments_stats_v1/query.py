@@ -2,9 +2,10 @@
 
 import datetime
 import logging
+from pathlib import Path
+
 import click
 import requests
-from pathlib import Path
 import yaml
 from google.cloud import bigquery
 

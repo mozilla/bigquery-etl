@@ -76,11 +76,11 @@ with DAG(
         depends_on_past=False,
     )
 
-    telemetry_dev_cycle_external__expirements_stats__v1 = gke_command(
-        task_id="telemetry_dev_cycle_external__expirements_stats__v1",
+    telemetry_dev_cycle_external__experiments_stats__v1 = gke_command(
+        task_id="telemetry_dev_cycle_external__experiments_stats__v1",
         command=[
             "python",
-            "sql/moz-fx-data-shared-prod/telemetry_dev_cycle_external/expirements_stats_v1/query.py",
+            "sql/moz-fx-data-shared-prod/telemetry_dev_cycle_external/experiments_stats_v1/query.py",
         ]
         + [],
         docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",

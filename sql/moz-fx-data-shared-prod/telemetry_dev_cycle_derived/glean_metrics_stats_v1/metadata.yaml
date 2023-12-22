@@ -1,6 +1,6 @@
-friendly_name: Firefox Major Release Dates
+friendly_name: Glean Metrics Dates
 description: |-
-  Dates for major firefox releases in release, beta and nightly
+  Dates for glean metrics to be released and expired for Telemetry Dev Cycle Dashboard.
 owners:
 - leli@mozilla.com
 labels:

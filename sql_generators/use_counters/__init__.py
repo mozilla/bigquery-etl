@@ -49,7 +49,7 @@ def generate_view(prjct, vw_dataset, dataset, view_nm, destination_table, write_
     )
 
     write_sql(
-        write_dir / project, f"{prjct}.{vw_dataset}.{view_nm}", "view.sql", sql
+        write_dir + "/" + project, f"{prjct}.{vw_dataset}.{view_nm}", "view.sql", sql
     )
 
 # #Generate metadata

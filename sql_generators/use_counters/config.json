@@ -2,6 +2,7 @@
     "project": "moz-fx-data-shared-prod",
     "objects": {
         "fenix": {
+            "query": "fenix_query.sql",
             "platform": "'Fenix'",
             "friendly_name": "Fenix Use Counters V2",
             "table_dataset_name": "fenix_derived",
@@ -10,6 +11,7 @@
         } ,
 
         "firefox_desktop": {
+            "query": "firefox_desktop_query.sql",
             "platform": "normalized_app_name",
             "friendly_name": "Firefox Desktop Use Counters V2",
             "table_dataset_name": "firefox_desktop_derived",

@@ -21,12 +21,12 @@ schema_fpath = fpath / "schema.yaml"
 
 ########Define functions for later use########
 #Generate query 
-def generate_query(prjct, dataset, destination_table, write_dir, tmplt_fpath):
+def generate_query(prjct, dataset, destination_table, write_dir, tmplt_fpath, query_fname):
     """Generate query and write to directory"""
     with open(tmplt_fpath, mode="r", encoding="UTF-8") as f:
         render_kwargs = yaml.safe_load(f) or {}
     env = Environment(loader=FileSystemLoader(fpath))
-    template = env.get_template("query.sql")
+    template = env.get_template(query_fname)
 
     write_sql(
         write_dir + "/" + project,
@@ -77,9 +77,9 @@ def generate_query(prjct, dataset, destination_table, write_dir, tmplt_fpath):
 #     query_schema.to_yaml_file(schema_path)
 
 
-def generate(prjct, dataset, destination_table, write_dir, tmplt_fpath):
+def generate(prjct, dataset, destination_table, write_dir, tmplt_fpath, query_fname):
     """Generate the feature usage table."""
-    generate_query(prjct, dataset, destination_table, write_dir, tmplt_fpath) 
+    generate_query(prjct, dataset, destination_table, write_dir, tmplt_fpath, query_fname) 
     #generate_view(target_project, dataset, destination_table, output_dir)
     #generate_metadata(target_project, dataset, destination_table, output_dir)
     #generate_schema(target_project, dataset, destination_table, output_dir)
@@ -99,12 +99,14 @@ for key, value in config["objects"].items():
     table_dataset_name = value["table_dataset_name"]
     view_dataset_name = value["view_dataset_name"]
     table_name = value["table_name"]
+    query_filename = value["query"]
 
     #Run the generate for this object 
     generate(prjct = project, 
              dataset = table_dataset_name, 
              destination_table = table_name, 
              write_dir = "sql", 
-             tmplt_fpath = template_fpath)
+             tmplt_fpath = template_fpath,
+             query_fname = query_filename)
     
 

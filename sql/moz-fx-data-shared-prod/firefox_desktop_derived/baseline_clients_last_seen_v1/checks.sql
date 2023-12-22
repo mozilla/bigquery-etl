@@ -98,7 +98,7 @@ SELECT
   IF(
     ROUND((COUNTIF(NOT REGEXP_CONTAINS(country, r"^[A-Z]{2}$"))) / COUNT(*) * 100, 2) > 0,
     ERROR(
-      "The rate of fields that failed to match the pattern for column: `country` is greated than the `threshold_fail_percentage` (set to: 0). Expected pattern: `^[A-Z]{2}$`."
+      "The rate of fields that failed to match the pattern for column: `country` is greater than the `threshold_fail_percentage` (set to: 0). Expected pattern: `^[A-Z]{2}$`."
     ),
     NULL
   )

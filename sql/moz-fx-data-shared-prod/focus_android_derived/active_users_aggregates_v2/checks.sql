@@ -7,9 +7,9 @@ WITH dau_sum AS (
     `moz-fx-data-shared-prod.focus_android_derived.active_users_aggregates_v2`
   WHERE
     submission_date = @submission_date
+    AND app_name IN ('Focus Android Glean', 'Focus Android Glean BrowserStack')
 ),
 distinct_client_count_base AS (
-    -- release channel
   SELECT
     COUNT(DISTINCT client_info.client_id) AS distinct_client_count,
   FROM
@@ -17,7 +17,6 @@ distinct_client_count_base AS (
   WHERE
     DATE(submission_timestamp) = @submission_date
   UNION ALL
-    -- beta channel
   SELECT
     COUNT(DISTINCT client_info.client_id) AS distinct_client_count,
   FROM
@@ -25,7 +24,6 @@ distinct_client_count_base AS (
   WHERE
     DATE(submission_timestamp) = @submission_date
   UNION ALL
-    -- nightly channel
   SELECT
     COUNT(DISTINCT client_info.client_id) AS distinct_client_count,
   FROM
@@ -44,7 +42,7 @@ SELECT
     ABS((SELECT * FROM dau_sum) - (SELECT * FROM distinct_client_count)) > 10,
     ERROR(
       CONCAT(
-        "DAU mismatch between the focus_android live across all channels (`moz-fx-data-shared-prod.org_mozilla_focus_live.baseline_v1`,`moz-fx-data-shared-prod.org_mozilla_focus_beta_live.baseline_v1`,`moz-fx-data-shared-prod.org_mozilla_focus_nightly_live.baseline_v1`,) and active_users_aggregates (`focus_android_derived.active_users_aggregates_v2`) tables is greated than 10.",
+        "DAU mismatch between the focus_android live across all channels (`moz-fx-data-shared-prod.org_mozilla_focus_live.baseline_v1`,`moz-fx-data-shared-prod.org_mozilla_focus_beta_live.baseline_v1`,`moz-fx-data-shared-prod.org_mozilla_focus_nightly_live.baseline_v1`,) and active_users_aggregates (`focus_android_derived.active_users_aggregates_v2`) tables is greater than 10.",
         " Live table count: ",
         (SELECT * FROM distinct_client_count),
         " | active_users_aggregates (DAU): ",

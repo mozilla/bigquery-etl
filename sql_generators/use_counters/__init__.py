@@ -52,11 +52,11 @@ def generate_view(prjct, vw_dataset, dataset, view_nm, destination_table, write_
         write_dir + "/" + prjct, f"{prjct}.{vw_dataset}.{view_nm}", "view.sql", sql
     )
 
+
 #Generate metadata
 def generate_metadata(prjct, dataset, destination_table, write_dir):
     """Copy metadata.yaml file to destination directory."""
     #Render the metadata yaml file with parameters
-    render_kwargs = {'friendly_name': friendly_name }
     env = Environment(loader=FileSystemLoader(fpath))
     metadata_template = env.get_template("metadata.yaml")
     #metadata_template.render(tbl_friendly_name= friendly_name)
@@ -68,32 +68,22 @@ def generate_metadata(prjct, dataset, destination_table, write_dir):
         metadata_template.render(tbl_friendly_name= friendly_name),
     )
 
-    #Copy to the desired path
-    # shutil.copyfile(
-    #     fpath / "templates" / "metadata.yaml",
-    #     write_dir / prjct / dataset / destination_table / "metadata.yaml",
-    # )
 
-# #Generate schema
-# def generate_schema(prjct, dataset, destination_table, write_dir):
-#     """Generate the table schema."""
-#     # get schema
-#     table_schema = Schema.for_table(prjct, dataset, destination_table)
-#     query_schema = Schema.from_query_file(
-#         write_dir / prjct / dataset / destination_table / "query.sql",
-#         use_cloud_function=True,
-#     )
-#     query_schema.merge(table_schema)
-#     schema_path = write_dir / project / dataset / destination_table / SCHEMA_FILE
-#     query_schema.to_yaml_file(schema_path)
+#Generate schema
+def generate_schema(schema_filepath, prjct, dataset, destination_table, write_dir):
+    """Generate the table schema."""
+    shutil.copyfile(
+        schema_filepath, 
+        write_dir / prjct / dataset / destination_table / "schema.yaml",
+    )
 
 
-def generate(prjct, dataset, destination_table, write_dir, tmplt_fpath, query_fname, vw_dataset, view_nm):
+def generate(prjct, dataset, destination_table, write_dir, tmplt_fpath, query_fname, vw_dataset, view_nm, schema_filepath):
     """Generate the feature usage table."""
     generate_query(prjct, dataset, destination_table, write_dir, tmplt_fpath, query_fname) 
     generate_view(prjct, vw_dataset, dataset, view_nm, destination_table, write_dir)
     generate_metadata(prjct, dataset, destination_table, write_dir)
-    #generate_schema(target_project, dataset, destination_table, output_dir)
+    generate_schema(schema_filepath, prjct, dataset, destination_table, write_dir)
 
 ######Load the configs
 with open(config_fpath, mode="r", encoding = "UTF-8") as jsonfile:
@@ -120,5 +110,5 @@ for key, value in config["objects"].items():
              tmplt_fpath = template_fpath,
              query_fname = query_filename, 
              vw_dataset = view_dataset_name,
-             view_nm = table_name)
-    
+             view_nm = table_name,
+             schema_filepath = schema_fpath)

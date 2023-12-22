@@ -20,7 +20,7 @@ metadata_fpath = fpath / "metadata.yaml"
 schema_fpath = fpath / "schema.yaml"
 
 ########Define functions for later use########
-#Generate query 
+#Generate query
 def generate_query(prjct, dataset, destination_table, write_dir, tmplt_fpath, query_fname):
     """Generate query and write to directory"""
     with open(tmplt_fpath, mode="r", encoding="UTF-8") as f:
@@ -36,24 +36,21 @@ def generate_query(prjct, dataset, destination_table, write_dir, tmplt_fpath, qu
     )
 
 #Generate view
-# def generate_view(prjct, dataset, destination_table, write_dir):
-#     """Generate feature usage table view."""
-#     view_name = destination_table.split("_v")[0]
-#     view_dataset = dataset.split("_derived")[0]
+def generate_view(prjct, vw_dataset, dataset, view_nm, destination_table, write_dir):
+    """Generate use counters V2 views"""
+    sql = reformat(
+        f"""
+        CREATE OR REPLACE VIEW `{prjct}.{vw_dataset}.{view_nm}` AS
+        SELECT
+            *
+        FROM
+            `{prjct}.{dataset}.{destination_table}`
+    """
+    )
 
-#     sql = reformat(
-#         f"""
-#         CREATE OR REPLACE VIEW `{prjct}.{view_dataset}.{view_name}` AS
-#         SELECT
-#             *
-#         FROM
-#             `{prjct}.{dataset}.{destination_table}`
-#     """
-#     )
-
-#     write_sql(
-#         write_dir / project, f"{prjct}.{view_dataset}.{view_name}", "view.sql", sql
-#     )
+    write_sql(
+        write_dir / project, f"{prjct}.{vw_dataset}.{view_nm}", "view.sql", sql
+    )
 
 # #Generate metadata
 # def generate_metadata(prjct, dataset, destination_table, write_dir):
@@ -77,10 +74,10 @@ def generate_query(prjct, dataset, destination_table, write_dir, tmplt_fpath, qu
 #     query_schema.to_yaml_file(schema_path)
 
 
-def generate(prjct, dataset, destination_table, write_dir, tmplt_fpath, query_fname):
+def generate(prjct, dataset, destination_table, write_dir, tmplt_fpath, query_fname, vw_dataset, view_nm):
     """Generate the feature usage table."""
     generate_query(prjct, dataset, destination_table, write_dir, tmplt_fpath, query_fname) 
-    #generate_view(target_project, dataset, destination_table, output_dir)
+    generate_view(prjct, vw_dataset, dataset, view_nm, destination_table, write_dir)
     #generate_metadata(target_project, dataset, destination_table, output_dir)
     #generate_schema(target_project, dataset, destination_table, output_dir)
 
@@ -107,6 +104,7 @@ for key, value in config["objects"].items():
              destination_table = table_name, 
              write_dir = "sql", 
              tmplt_fpath = template_fpath,
-             query_fname = query_filename)
+             query_fname = query_filename, 
+             vw_dataset = view_dataset_name,
+             view_nm = table_name)
     
-

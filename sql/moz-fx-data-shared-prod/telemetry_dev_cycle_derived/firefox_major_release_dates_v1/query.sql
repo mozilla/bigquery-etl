@@ -4,7 +4,7 @@ WITH firefox_releases AS (
     build.target.channel,
     DATE(MIN(build.download.date)) AS publish_date
   FROM
-    `mozdata.telemetry.buildhub2`
+    `telemetry.buildhub2`
   WHERE
     build.target.channel IN ("release", "beta", "nightly")
   GROUP BY

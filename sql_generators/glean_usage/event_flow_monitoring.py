@@ -66,6 +66,8 @@ class EventFlowMonitoring(GleanTable):
             f"{project_id}.{TARGET_DATASET_CROSS_APP}_derived.{AGGREGATE_TABLE_NAME}"
         )
 
+        # todo: schema and SQL comments
+
         if output_dir:
             artifacts = [
                 Artifact(table, "metadata.yaml", metadata),

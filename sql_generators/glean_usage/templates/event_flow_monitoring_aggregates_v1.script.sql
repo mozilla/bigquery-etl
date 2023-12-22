@@ -30,7 +30,7 @@ CREATE TEMP TABLE
         -- limit event.timestamp, otherwise this will cause an overflow
             INTERVAL LEAST(event_timestamp, 20000000000000) MILLISECOND
           ) AS timestamp,
-          normalized_app_name AS normalized_app_name,
+          normalized_app_id AS normalized_app_name,
           normalized_channel AS channel
         FROM
           `moz-fx-data-shared-prod.{{ app }}.events_unnested`,
@@ -94,7 +94,18 @@ CREATE TEMP TABLE
       flow_id,
       normalized_app_name,
       channel,
-      ARRAY_AGG(event ORDER BY event.source.timestamp) AS events
+      ARRAY_AGG(event ORDER BY event.source.timestamp) AS events,
+      ARRAY_TO_STRING(
+        ARRAY_AGG(
+          CONCAT(
+            event.source.category,
+            "#",
+            event.source.name, 
+            " - "
+          ) ORDER BY event.source.timestamp
+        ), 
+        " -> "
+      ) AS flow_hash
     FROM
       (
         SELECT
@@ -130,9 +141,9 @@ ON
 WHEN NOT MATCHED
 THEN
   INSERT
-    (submission_date, flow_id, events)
+    (submission_date, flow_id, events, normalized_app_name, channel, flow_hash)
   VALUES
-    (f.submission_date, f.flow_id, f.events)
+    (f.submission_date, f.flow_id, f.events, f.normalized_app_name, f.channel, f.flow_hash)
   WHEN NOT MATCHED BY SOURCE
     AND r.submission_date < DATE_SUB(@submission_date, INTERVAL 3 DAYS)
 THEN

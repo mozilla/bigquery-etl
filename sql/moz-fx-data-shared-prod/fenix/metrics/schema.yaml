@@ -2684,6 +2684,16 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
+    - name: gpu_process_crash_fallbacks
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
   - name: quantity
     type: RECORD
     mode: NULLABLE
@@ -2743,6 +2753,12 @@ fields:
       type: INTEGER
       mode: NULLABLE
     - name: extensions_startup_cache_write_bytelength
+      type: INTEGER
+      mode: NULLABLE
+    - name: gpu_process_total_launch_attempts
+      type: INTEGER
+      mode: NULLABLE
+    - name: gpu_process_unstable_launch_attempts
       type: INTEGER
       mode: NULLABLE
   - name: string
@@ -2876,6 +2892,9 @@ fields:
       type: STRING
       mode: NULLABLE
     - name: glean_database_rkv_load_error
+      type: STRING
+      mode: NULLABLE
+    - name: gpu_process_feature_status
       type: STRING
       mode: NULLABLE
   - name: string_list

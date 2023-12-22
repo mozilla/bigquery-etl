@@ -1939,6 +1939,19 @@ fields:
         preferred video codec.
 
         '
+    - name: gpu_process_crash_fallbacks
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'How often we use different fallbacks when the GPU process crashes
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -2161,6 +2174,18 @@ fields:
       description: 'The amount of bytes written to the extensions StartupCache file.
 
         '
+    - name: gpu_process_total_launch_attempts
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of total GPU process launch attempts.
+
+        '
+    - name: gpu_process_unstable_launch_attempts
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of consecutive unstable launch attempts.
+
+        '
   - name: string
     type: RECORD
     mode: NULLABLE
@@ -2260,6 +2285,12 @@ fields:
       type: STRING
       mode: NULLABLE
       description: 'If there was an error loading the RKV database, record it.
+
+        '
+    - name: gpu_process_feature_status
+      type: STRING
+      mode: NULLABLE
+      description: 'Current status of the GPU process feature
 
         '
   - name: custom_distribution

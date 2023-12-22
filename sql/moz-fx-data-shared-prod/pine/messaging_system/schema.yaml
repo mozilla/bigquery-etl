@@ -576,6 +576,31 @@ fields:
       description: 'A string identifier of the message in Activity Stream Router.
 
         '
+    - name: messaging_system_event_screen_family
+      type: STRING
+      mode: NULLABLE
+      description: 'A string identifier of the message family derived from the message
+        id
+
+        (e.g. MR_WELCOME_DEFAULT).
+
+        '
+    - name: messaging_system_event_screen_id
+      type: STRING
+      mode: NULLABLE
+      description: 'A string identifier of the message screen id
+
+        (e.g. AW_MOBILE_DOWNLOAD).
+
+        '
+    - name: messaging_system_event_screen_initials
+      type: STRING
+      mode: NULLABLE
+      description: 'A string identifier of the message screen initials
+
+        (e.g. ''EMAG'' for EASY_SETUP, MOBILE_DOWNLOADS, AMO, GRATITUDE).
+
+        '
   - name: uuid
     type: RECORD
     mode: NULLABLE
@@ -616,6 +641,18 @@ fields:
       description: 'The unique impression identifier for a specific client.
 
         '
+  - name: quantity
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: messaging_system_event_screen_index
+      type: INTEGER
+      mode: NULLABLE
+      description: 'A number identifier of the screen index in a sequence of screens
+
+        (e.g. 0 for first message).
+
+        '
   - name: text
     type: RECORD
     mode: NULLABLE
@@ -627,6 +664,15 @@ fields:
       type: STRING
       mode: NULLABLE
     - name: messaging_system_message_id
+      type: STRING
+      mode: NULLABLE
+    - name: messaging_system_event_screen_family
+      type: STRING
+      mode: NULLABLE
+    - name: messaging_system_event_screen_id
+      type: STRING
+      mode: NULLABLE
+    - name: messaging_system_event_screen_initials
       type: STRING
       mode: NULLABLE
 - name: normalized_app_name

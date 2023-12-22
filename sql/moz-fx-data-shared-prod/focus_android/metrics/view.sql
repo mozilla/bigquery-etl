@@ -169,7 +169,8 @@ SELECT
       metrics.labeled_counter.codec_stats_audio_preferred_codec,
       metrics.labeled_counter.codec_stats_other_fec_signaled,
       metrics.labeled_counter.codec_stats_ulpfec_negotiated,
-      metrics.labeled_counter.codec_stats_video_preferred_codec
+      metrics.labeled_counter.codec_stats_video_preferred_codec,
+      metrics.labeled_counter.gpu_process_crash_fallbacks
     ) AS `labeled_counter`,
     metrics.memory_distribution,
     STRUCT(
@@ -184,7 +185,8 @@ SELECT
       metrics.string.extensions_quarantined_domains_listhash,
       metrics.string.extensions_quarantined_domains_remotehash,
       metrics.string.glean_client_annotation_experimentation_id,
-      metrics.string.glean_database_rkv_load_error
+      metrics.string.glean_database_rkv_load_error,
+      metrics.string.gpu_process_feature_status
     ) AS `string`,
     metrics.quantity,
     metrics.custom_distribution,
@@ -352,7 +354,8 @@ SELECT
       metrics.labeled_counter.codec_stats_audio_preferred_codec,
       metrics.labeled_counter.codec_stats_other_fec_signaled,
       metrics.labeled_counter.codec_stats_ulpfec_negotiated,
-      metrics.labeled_counter.codec_stats_video_preferred_codec
+      metrics.labeled_counter.codec_stats_video_preferred_codec,
+      metrics.labeled_counter.gpu_process_crash_fallbacks
     ) AS `labeled_counter`,
     metrics.memory_distribution,
     STRUCT(
@@ -367,7 +370,8 @@ SELECT
       metrics.string.extensions_quarantined_domains_listhash,
       metrics.string.extensions_quarantined_domains_remotehash,
       metrics.string.glean_client_annotation_experimentation_id,
-      metrics.string.glean_database_rkv_load_error
+      metrics.string.glean_database_rkv_load_error,
+      metrics.string.gpu_process_feature_status
     ) AS `string`,
     metrics.quantity,
     metrics.custom_distribution,

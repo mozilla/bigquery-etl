@@ -1,0 +1,16 @@
+fields:
+
+- name: version
+  type: INT64
+  mode: NULLABLE
+  description: Major release version for Firefox.
+
+- name: channel
+  type: STRING
+  mode: NULLABLE
+  description: Channel for the Firefox release.
+
+- name: publish_date
+  type: DATE
+  mode: NULLABLE
+  description: Publish date for Firefox version

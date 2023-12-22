@@ -1,0 +1,10 @@
+friendly_name: Glean Metrics Dates
+description: |-
+  Dates for glean metrics to be released and expired for Telemetry Dev Cycle Dashboard.
+owners:
+- leli@mozilla.com
+labels:
+  incremental: false
+  owner1: leli@mozilla.com
+scheduling:
+  dag_name: bqetl_telemetry_dev_cycle

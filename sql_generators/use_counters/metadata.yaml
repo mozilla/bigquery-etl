@@ -1,4 +1,4 @@
-friendly_name: {friendly_name}
+friendly_name: {{tbl_friendly_name}}
 description: |-
   Contains use counter rates by day, country, version, and platform; only shows data for those with at least 5000 clients reporting that day.
 owners:

@@ -57,14 +57,15 @@ def generate_metadata(prjct, dataset, destination_table, write_dir):
     """Copy metadata.yaml file to destination directory."""
     #Render the metadata yaml file with parameters
     render_kwargs = {'friendly_name': friendly_name }
-    env = Environment(loader=FileSystemLoader(fpath)) 
-    template = env.get_template(metadata_fpath)  
-    #FIX BELOW
+    env = Environment(loader=FileSystemLoader(fpath))
+    metadata_template = env.get_template("metadata.yaml")
+    #metadata_template.render(tbl_friendly_name= friendly_name)
+
     write_sql(
         write_dir + "/" + prjct,
         f"{prjct}.{dataset}.{destination_table}",
         "metadata.yaml",
-        reformat(template.render(**render_kwargs)),
+        metadata_template.render(tbl_friendly_name= friendly_name),
     )
 
     #Copy to the desired path
@@ -111,11 +112,11 @@ for key, value in config["objects"].items():
     table_name = value["table_name"]
     query_filename = value["query"]
 
-    #Run the generate for this object 
-    generate(prjct = project, 
+    #Run the generate for this object
+    generate(prjct = project,
              dataset = table_dataset_name, 
              destination_table = table_name, 
-             write_dir = "sql", 
+             write_dir = "sql",
              tmplt_fpath = template_fpath,
              query_fname = query_filename, 
              vw_dataset = view_dataset_name,

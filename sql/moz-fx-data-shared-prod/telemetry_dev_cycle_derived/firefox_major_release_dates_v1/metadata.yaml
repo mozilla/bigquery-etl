@@ -1,0 +1,19 @@
+friendly_name: Firefox Major Release Dates
+description: |-
+  Dates for major firefox releases in release, beta and nightly
+owners:
+- leli@mozilla.com
+labels:
+  owner1: leli
+  dag: bqetl_telemetry_dev_cycle
+scheduling:
+  dag_name: bqetl_telemetry_dev_cycle
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  query.sql:
+  - telemetry.buildhub2
+deprecated: false

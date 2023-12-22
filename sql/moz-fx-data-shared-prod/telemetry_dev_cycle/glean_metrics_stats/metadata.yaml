@@ -1,0 +1,14 @@
+friendly_name: Glean Metrics Stats
+description: |-
+  Please provide a description for the query
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_dev_cycle_derived.glean_metrics_stats_v1
+deprecated: false

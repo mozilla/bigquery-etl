@@ -1,0 +1,20 @@
+friendly_name: Glean Metrics Dates
+description: |-
+  Dates for glean metrics to be released and expired for Telemetry Dev Cycle Dashboard.
+owners:
+- leli@mozilla.com
+labels:
+  owner1: leli
+  dag: bqetl_telemetry_dev_cycle
+scheduling:
+  dag_name: bqetl_telemetry_dev_cycle
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  query.sql:
+  - telemetry_dev_cycle_derived.firefox_major_release_dates_v1
+  - telemetry_dev_cycle_external.glean_metrics_stats_v1
+deprecated: false

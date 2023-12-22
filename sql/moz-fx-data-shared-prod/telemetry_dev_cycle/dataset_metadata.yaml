@@ -1,8 +1,8 @@
-friendly_name: Telemetry Dev Cycle Derived
-description: |-
-  Data for the Telemetry Dev Cycle Dashboard.
-dataset_base_acl: derived
-user_facing: false
+friendly_name: Telemetry Dev Cycle
+description: |
+  Data for the Telemetry Dev Cycle Dashboard. For different parts of the Telemetry dev cycle metrics are collected here.
+dataset_base_acl: view
+user_facing: true
 labels: {}
 default_table_workgroup_access:
 - role: roles/bigquery.dataViewer

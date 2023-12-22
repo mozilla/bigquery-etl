@@ -65,6 +65,17 @@ with DAG(
         depends_on_past=False,
     )
 
+    telemetry_dev_cycle_derived__telemetry_probes_stats__v1 = bigquery_etl_query(
+        task_id="telemetry_dev_cycle_derived__telemetry_probes_stats__v1",
+        destination_table="telemetry_probes_stats_v1",
+        dataset_id="telemetry_dev_cycle_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="leli@mozilla.com",
+        email=["leli@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     telemetry_dev_cycle_external__expirements_stats__v1 = gke_command(
         task_id="telemetry_dev_cycle_external__expirements_stats__v1",
         command=[
@@ -107,4 +118,12 @@ with DAG(
 
     telemetry_dev_cycle_derived__glean_metrics_stats__v1.set_upstream(
         telemetry_dev_cycle_external__glean_metrics_stats__v1
+    )
+
+    telemetry_dev_cycle_derived__telemetry_probes_stats__v1.set_upstream(
+        telemetry_dev_cycle_derived__firefox_major_release_dates__v1
+    )
+
+    telemetry_dev_cycle_derived__telemetry_probes_stats__v1.set_upstream(
+        telemetry_dev_cycle_external__telemetry_probes_stats__v1
     )

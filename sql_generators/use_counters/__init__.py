@@ -74,7 +74,7 @@ def generate_schema(schema_filepath, prjct, dataset, destination_table, write_di
     """Generate the table schema."""
     shutil.copyfile(
         schema_filepath, 
-        write_dir / prjct / dataset / destination_table / "schema.yaml",
+        write_dir + "/" + prjct + "/"+ dataset +"/"+ destination_table + "/" "schema.yaml",
     )
 
 

@@ -50,8 +50,9 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="leli@mozilla.com",
         email=["leli@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
+        date_partition_parameter=None,
         depends_on_past=False,
+        task_concurrency=1,
     )
 
     telemetry_dev_cycle_derived__glean_metrics_stats__v1 = bigquery_etl_query(
@@ -61,8 +62,9 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="leli@mozilla.com",
         email=["leli@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
+        date_partition_parameter=None,
         depends_on_past=False,
+        task_concurrency=1,
     )
 
     telemetry_dev_cycle_derived__telemetry_probes_stats__v1 = bigquery_etl_query(
@@ -72,8 +74,9 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="leli@mozilla.com",
         email=["leli@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
+        date_partition_parameter=None,
         depends_on_past=False,
+        task_concurrency=1,
     )
 
     telemetry_dev_cycle_external__experiments_stats__v1 = gke_command(

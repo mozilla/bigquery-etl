@@ -29,7 +29,7 @@ def generate_query(prjct, dataset, destination_table, write_dir, tmplt_fpath, qu
     template = env.get_template(query_fname)
 
     write_sql(
-        write_dir + "/" + project,
+        write_dir + "/" + prjct,
         f"{prjct}.{dataset}.{destination_table}",
         "query.sql",
         reformat(template.render(**render_kwargs)),
@@ -49,16 +49,29 @@ def generate_view(prjct, vw_dataset, dataset, view_nm, destination_table, write_
     )
 
     write_sql(
-        write_dir + "/" + project, f"{prjct}.{vw_dataset}.{view_nm}", "view.sql", sql
+        write_dir + "/" + prjct, f"{prjct}.{vw_dataset}.{view_nm}", "view.sql", sql
     )
 
-# #Generate metadata
-# def generate_metadata(prjct, dataset, destination_table, write_dir):
-#     """Copy metadata.yaml file to destination directory."""
-#     shutil.copyfile(
-#         fpath / "templates" / "metadata.yaml",
-#         write_dir / prjct / dataset / destination_table / "metadata.yaml",
-#     )
+#Generate metadata
+def generate_metadata(prjct, dataset, destination_table, write_dir):
+    """Copy metadata.yaml file to destination directory."""
+    #Render the metadata yaml file with parameters
+    render_kwargs = {'friendly_name': friendly_name }
+    env = Environment(loader=FileSystemLoader(fpath)) 
+    template = env.get_template(metadata_fpath)  
+    #FIX BELOW
+    write_sql(
+        write_dir + "/" + prjct,
+        f"{prjct}.{dataset}.{destination_table}",
+        "metadata.yaml",
+        reformat(template.render(**render_kwargs)),
+    )
+
+    #Copy to the desired path
+    # shutil.copyfile(
+    #     fpath / "templates" / "metadata.yaml",
+    #     write_dir / prjct / dataset / destination_table / "metadata.yaml",
+    # )
 
 # #Generate schema
 # def generate_schema(prjct, dataset, destination_table, write_dir):
@@ -78,7 +91,7 @@ def generate(prjct, dataset, destination_table, write_dir, tmplt_fpath, query_fn
     """Generate the feature usage table."""
     generate_query(prjct, dataset, destination_table, write_dir, tmplt_fpath, query_fname) 
     generate_view(prjct, vw_dataset, dataset, view_nm, destination_table, write_dir)
-    #generate_metadata(target_project, dataset, destination_table, output_dir)
+    generate_metadata(prjct, dataset, destination_table, write_dir)
     #generate_schema(target_project, dataset, destination_table, output_dir)
 
 ######Load the configs

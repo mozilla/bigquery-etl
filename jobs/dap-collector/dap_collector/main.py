@@ -1,6 +1,7 @@
-from google.cloud import bigquery
+import asyncio
 import click
 import datetime
+import json
 import math
 import os
 import re
@@ -8,31 +9,48 @@ import subprocess
 import time
 import typing
 
-HPKE_CONFIG = "MgAgAAEAAQAgjsCwHpkLTLxj1Y01O8FiidMmU1gGRd2Vnwv8ctXLRH8"
-CMD = f"AUTH_TOKEN={{auth_token}} HPKE_PRIVATE_KEY={{hpke_private_key}} ./collect --task-id {{task_id}} --leader https://janus-leader-test.dev.mozaws.net/ --vdaf {{vdaf}} {{vdaf_args}} --hpke-config {HPKE_CONFIG} --batch-interval-start {{timestamp}} --batch-interval-duration {{duration}}"
-INTLEN = 300
-TASKS = [
-    {
-        "task_id": "DSZGMFh26hBYXNaKvhL_N4AHA3P5lDn19on1vFPBxJM",
-        "vdaf": "countvec",
-        "vdaf_args_structured": {"length": 1024},
-        "vdaf_args": "--length 1024",
-        "metric_type": "vector",
-    },
-    {
-        "task_id": "QjMD4n8l_MHBoLrbCfLTFi8hC264fC59SKHPviPF0q8",
-        "vdaf": "sum",
-        "vdaf_args": "--bits 2",
-        "metric_type": "integer",
-    },
-]
+from google.cloud import bigquery
+import requests
+
+LEADER = "https://dap-07-1.api.divviup.org"
+CMD = f"./collect --task-id {{task_id}} --leader {LEADER} --vdaf {{vdaf}} {{vdaf_args}} --authorization-bearer-token {{auth_token}} --batch-interval-start {{timestamp}} --batch-interval-duration {{duration}} --hpke-config {{hpke_config}} --hpke-private-key {{hpke_private_key}}"
+INTERVAL_LENGTH = 300
+
+
+def read_tasks(task_config_url):
+    """Read task configuration from Google Cloud bucket."""
+
+    resp = requests.get(task_config_url)
+    tasks = resp.json()
+    return tasks
 
 
 def toh(timestamp):
+    """Turn a timestamp into a datetime object which prints human readably."""
     return datetime.datetime.fromtimestamp(timestamp, datetime.timezone.utc)
 
 
-def collect_once(task, timestamp, duration, hpke_private_key, auth_token):
+async def collect_once(task, timestamp, duration, hpke_private_key, auth_token):
+    """Runs collection for a single time interval.
+
+    This uses the Janus collect binary. The result is formatted to fit the BQ table.
+    """
+    collection_time = str(datetime.datetime.now(datetime.timezone.utc).timestamp())
+    print(f"{collection_time} Collecting {toh(timestamp)} - {toh(timestamp+duration)}")
+
+    # Prepare output
+    res = {}
+    res["metric_type"] = task["metric_type"]
+    res["task_id"] = task["task_id"]
+
+    res["collection_time"] = collection_time
+    res["slot_start"] = timestamp
+
+    # Convert VDAF description to string for command line use
+    vdaf_args = ""
+    for k, v in task["vdaf_args_structured"].items():
+        vdaf_args += f" --{k} {v}"
+
     cmd = CMD.format(
         timestamp=timestamp,
         duration=duration,
@@ -40,85 +58,118 @@ def collect_once(task, timestamp, duration, hpke_private_key, auth_token):
         auth_token=auth_token,
         task_id=task["task_id"],
         vdaf=task["vdaf"],
-        vdaf_args=task["vdaf_args"],
+        vdaf_args=vdaf_args,
+        hpke_config=task["hpke_config"],
     )
-    timeout = 60
-    res = [None, None]
+
+    # How long an individual collection can take before it is killed.
+    timeout = 100
+    start_counter = time.perf_counter()
     try:
-        completed_proc = subprocess.run(
-            cmd, shell=True, capture_output=True, timeout=timeout
+        proc = await asyncio.wait_for(
+            asyncio.create_subprocess_shell(
+                cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
+            ),
+            timeout,
         )
-        returncodes = [
-            0,  # all good
-            1,  # not enough reports?
-        ]
-        if completed_proc.returncode not in returncodes:
-            print(cmd)
-            print(f"Calling collector failed with {completed_proc.returncode}")
-            print(completed_proc.stderr)
-            print(completed_proc.stdout)
-            raise RuntimeError(
-                f"Calling collector failed with {completed_proc.returncode}"
-            )
-        output = completed_proc.stdout.decode(encoding="utf-8")
-        for line in output.splitlines():
+        stdout, stderr = await asyncio.wait_for(proc.communicate(), timeout)
+        stdout = stdout.decode()
+        stderr = stderr.decode()
+    except asyncio.exceptions.TimeoutError:
+        res["collection_duration"] = time.perf_counter() - start_counter
+        res["error"] = f"TIMEOUT"
+        return res
+    res["collection_duration"] = time.perf_counter() - start_counter
+
+    # Parse the output of the collect binary
+    if proc.returncode == 1:
+        if (
+            stderr
+            == "Error: HTTP response status 400 Bad Request - The number of reports included in the batch is invalid.\n"
+        ):
+            res["error"] = "BATCH TOO SMALL"
+        else:
+            res["error"] = f"UNHANDLED ERROR: {stderr }"
+    else:
+        for line in stdout.splitlines():
             if line.startswith("Aggregation result:"):
-                if task["vdaf"] == "countvec":
+                if task["vdaf"] in ["countvec", "sumvec"]:
                     entries = line[21:-1]
                     entries = list(map(int, entries.split(",")))
-                    res[0] = entries
+                    res["value"] = entries
                 elif task["vdaf"] == "sum":
                     s = int(line[20:])
-                    res[0] = s
+                    res["value"] = [s]
                 else:
-                    raise NotImplemented
-            if line.startswith("Number of reports:"):
-                res[1] = int(line.split()[-1].strip())
-            if "ERROR" in line:
-                if re.search(
-                    "number of reports included in the batch is invalid", line
-                ):
-                    res = "BATCH TOO SMALL"
-                else:
-                    # some other error
-                    res = line
-    except subprocess.TimeoutExpired:
-        res = f"TIMEOUT"
+                    raise RuntimeError(f"Unknown VDAF: {task['vdaf']}")
+            elif line.startswith("Number of reports:"):
+                res["report_count"] = int(line.split()[-1].strip())
+            elif (
+                line.startswith("Interval start:")
+                or line.startswith("Interval end:")
+                or line.startswith("Interval length:")
+            ):
+                # irrelevant since we are using time interval queries
+                continue
+            else:
+                print(f"UNHANDLED OUTPUT LINE: {line}")
+                raise NotImplementedError
 
     return res
 
 
-def collect_many(
+async def process_queue(q: asyncio.Queue, results: list):
+    """Worker for parallelism. Processes items from the qeueu until it is empty."""
+    while not q.empty():
+        job = q.get_nowait()
+        res = await collect_once(*job)
+        results.append(res)
+
+
+async def collect_many(
     task, time_from, time_until, interval_length, hpke_private_key, auth_token
 ):
-    """Collects data for a given time interval."""
+    """Collects data for a given time interval.
+
+    Creates a configurable amount of workers which process jobs from a queue
+    for parallelism.
+    """
     time_from = int(time_from.timestamp())
     time_until = int(time_until.timestamp())
     start = math.ceil(time_from // interval_length) * interval_length
-    results = {}
+    jobs = asyncio.Queue(288)
+    results = []
     while start + interval_length <= time_until:
-        print(f"Collecting {toh(start)} - {toh(start+interval_length)}")
-        results[toh(start)] = collect_once(
-            task, start, interval_length, hpke_private_key, auth_token
-        )
+        await jobs.put((task, start, interval_length, hpke_private_key, auth_token))
         start += interval_length
+    workers = []
+    for _ in range(10):
+        workers.append(process_queue(jobs, results))
+    await asyncio.gather(*workers)
+
     return results
 
 
-def collect_task(task, auth_token, hpke_private_key, date):
+async def collect_task(task, auth_token, hpke_private_key, date):
     """Collects data for the given task and the given day."""
     start = datetime.datetime.fromisoformat(date)
     start = start.replace(tzinfo=datetime.timezone.utc)
     end = start + datetime.timedelta(days=1)
 
-    results = collect_many(task, start, end, INTLEN, hpke_private_key, auth_token)
+    results = await collect_many(
+        task, start, end, INTERVAL_LENGTH, hpke_private_key, auth_token
+    )
 
     return results
 
 
 def ensure_table(bqclient, table_id):
+    """Checks if the table exists in BQ and creates it otherwise.
+    Fails if the table exists but has the wrong schema.
+    """
     schema = [
         bigquery.SchemaField("collection_time", "TIMESTAMP", mode="REQUIRED"),
+        bigquery.SchemaField("collection_duration", "FLOAT", mode="REQUIRED"),
         bigquery.SchemaField("task_id", "STRING", mode="REQUIRED"),
         bigquery.SchemaField("metric_type", "STRING", mode="REQUIRED"),
         bigquery.SchemaField("slot_start", "TIMESTAMP", mode="REQUIRED"),
@@ -132,35 +183,12 @@ def ensure_table(bqclient, table_id):
     table = bqclient.create_table(table, exists_ok=True)
 
 
-def store_data(task, data, bqclient, table_id):
-    rows = []
-    for ts, retrieved in data.items():
-        row = {
-            "slot_start": str(ts),
-            "collection_time": str(
-                datetime.datetime.now(datetime.timezone.utc).timestamp()
-            ),
-            "task_id": task["task_id"],
-            "metric_type": task["metric_type"],
-        }
-        if isinstance(retrieved, typing.List):
-            n_reports = retrieved[1]
-            row["report_count"] = n_reports
-            if task["vdaf"] == "countvec":
-                row["value"] = retrieved[0]
-            elif task["vdaf"] == "sum":
-                row["value"] = [retrieved[0]]
-            else:
-                raise NotImplemented
-        else:
-            row["error"] = retrieved
-
-        rows.append(row)
-
-    print("Inserting data into BQ.")
-    insert_res = bqclient.insert_rows_json(table=table_id, json_rows=rows)
-
-    assert len(insert_res) == 0, insert_res
+def store_data(results, bqclient, table_id):
+    """Inserts the results into BQ. Assumes that they are already in the right format"""
+    insert_res = bqclient.insert_rows_json(table=table_id, json_rows=results)
+    if len(insert_res) != 0:
+        print(insert_res)
+        assert len(insert_res) == 0
 
 
 @click.command()
@@ -185,14 +213,19 @@ def store_data(task, data, bqclient, table_id):
     help="Date at which the backfill will start, going backwards (YYYY-MM-DD)",
     required=True,
 )
-def main(project, table_id, auth_token, hpke_private_key, date):
+@click.option(
+    "--task-config-url",
+    help="URL where a JSON definition of the tasks to be collected can be found.",
+    required=True,
+)
+def main(project, table_id, auth_token, hpke_private_key, date, task_config_url):
     table_id = project + "." + table_id
     bqclient = bigquery.Client(project=project)
     ensure_table(bqclient, table_id)
-    for task in TASKS:
+    for task in read_tasks(task_config_url):
         print(f"Now processing task: {task['task_id']}")
-        results = collect_task(task, auth_token, hpke_private_key, date)
-        store_data(task, results, bqclient, table_id)
+        results = asyncio.run(collect_task(task, auth_token, hpke_private_key, date))
+        store_data(results, bqclient, table_id)
 
 
 if __name__ == "__main__":

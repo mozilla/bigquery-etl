@@ -6,19 +6,19 @@ fields:
 - mode: NULLABLE
   name: installer_type
   type: STRING
-  description: 
+  description: Which type of installer generated this ping (full or stub)
 - mode: NULLABLE
   name: version
   type: STRING
-  description: 
+  description: Version of the installed product.  May be different from installer_version for a stub install.  Absent for a failed stub installation.
 - mode: NULLABLE
   name: from_msi
   type: BOOLEAN
-  description: 
+  description: True if the install was launched from an MSI wrapper
 - mode: NULLABLE
   name: funnelcake
   type: STRING
-  description: 
+  description: Funnelcake ID
 - mode: NULLABLE
   name: experiment
   type: STRING
@@ -38,7 +38,7 @@ fields:
 - mode: NULLABLE
   name: ping_version
   type: STRING
-  description: 
+  description: Only set for stub installer pings
 - mode: NULLABLE
   name: campaign
   type: STRING
@@ -82,7 +82,7 @@ fields:
 - mode: NULLABLE
   name: normalized_country_code
   type: STRING
-  description: 
+  description: An ISO 3166-1 alpha-2 country code
 - mode: NULLABLE
   name: locale
   type: STRING
@@ -90,31 +90,31 @@ fields:
 - mode: NULLABLE
   name: os_version
   type: STRING
-  description: 
+  description: Windows version number in major.minor build format
 - mode: NULLABLE
   name: build_channel
   type: STRING
-  description: 
+  description: Channel the installer was built with branding for
 - mode: NULLABLE
   name: build_id
   type: STRING
-  description: 
+  description: Build ID of the installed product.  Absent for a failed stub installation.
 - mode: NULLABLE
   name: update_channel
   type: STRING
-  description: 
+  description: Value of MOZ_UPDATE_CHANNEL the installer was built with.  Generally the same as build_channel
 - mode: NULLABLE
   name: has_old_install
   type: BOOLEAN
-  description: 
+  description: True if at least one existing installation of Firefox was found on the system prior to this installation
 - mode: NULLABLE
   name: old_default
   type: BOOLEAN
-  description: 
+  description: True if an existing Firefox installation was already set as the default browser
 - mode: NULLABLE
   name: old_version
   type: STRING
-  description: 
+  description: Version of the previously installed Firefox, if any
 - mode: NULLABLE
   name: manual_download
   type: BOOLEAN
@@ -122,19 +122,19 @@ fields:
 - mode: NULLABLE
   name: silent
   type: BOOLEAN
-  description: 
+  description: True if the installer was run in silent mode (either from an MSI or with command-line parameters)
 - mode: NULLABLE
   name: user_cancelled
   type: BOOLEAN
-  description: 
+  description: True if the installation failed because the user cancelled it or closed the window
 - mode: NULLABLE
   name: suceeded
   type: BOOLEAN
-  description: 
+  description: True if the new installation was successfully created.  If false, check the error status fields for the failure reason.
 - mode: NULLABLE
   name: profile_cleanup_prompt
   type: STRING
-  description: 
+  description: Which type of profile cleanup prompt was shown (reinstall or paveover)
 - mode: NULLABLE
   name: profile_cleanup_requested
   type: BOOLEAN

@@ -5,157 +5,157 @@ fields:
   description: The date when the ingestion edge server accepted this message
 - mode: NULLABLE
   name: installer_type
-  type: DATE
-  description: The date when the ingestion edge server accepted this message
+  type: STRING
+  description: 
 - mode: NULLABLE
   name: version
-  type: DATE
-  description: The date when the ingestion edge server accepted this message
+  type: STRING
+  description: 
 - mode: NULLABLE
   name: from_msi
-  type: DATE
-  description: The date when the ingestion edge server accepted this message
+  type: BOOLEAN
+  description: 
 - mode: NULLABLE
   name: funnelcake
-  type: DATE
-  description: The date when the ingestion edge server accepted this message
+  type: STRING
+  description: 
 - mode: NULLABLE
   name: experiment
-  type: DATE
-  description: The date when the ingestion edge server accepted this message
+  type: STRING
+  description: 
 - mode: NULLABLE
   name: variation
-  type: DATE
-  description: The date when the ingestion edge server accepted this message
+  type: STRING
+  description: 
 - mode: NULLABLE
   name: name
-  type: DATE
-  description: The date when the ingestion edge server accepted this message
+  type: STRING
+  description: 
 - mode: NULLABLE
   name: organization
-  type: DATE
-  description: The date when the ingestion edge server accepted this message
+  type: STRING
+  description: 
 - mode: NULLABLE
   name: ping_version
-  type: DATE
-  description: The date when the ingestion edge server accepted this message
+  type: STRING
+  description: 
 - mode: NULLABLE
   name: campaign
-  type: DATE
-  description: The date when the ingestion edge server accepted this message
+  type: STRING
+  description: 
 - mode: NULLABLE
   name: content
-  type: DATE
-  description: The date when the ingestion edge server accepted this message
+  type: STRING
+  description: 
 - mode: NULLABLE
   name: dlsource
-  type: DATE
-  description: The date when the ingestion edge server accepted this message
+  type: STRING
+  description: 
 - mode: NULLABLE
   name: dltoken
-  type: DATE
-  description: The date when the ingestion edge server accepted this message
+  type: STRING
+  description: Unique token generated for the Firefox download
 - mode: NULLABLE
   name: medium
-  type: DATE
-  description: The date when the ingestion edge server accepted this message
+  type: STRING
+  description: 
 - mode: NULLABLE
   name: source
-  type: DATE
-  description: The date when the ingestion edge server accepted this message
+  type: STRING
+  description: 
 - mode: NULLABLE
   name: ua
-  type: DATE
-  description: The date when the ingestion edge server accepted this message
+  type: STRING
+  description: 
 - mode: NULLABLE
   name: city
-  type: DATE
-  description: The date when the ingestion edge server accepted this message
+  type: STRING
+  description: 
 - mode: NULLABLE
   name: country
-  type: DATE
-  description: The date when the ingestion edge server accepted this message
+  type: STRING
+  description: 
 - mode: NULLABLE
   name: subdivision1
-  type: DATE
-  description: The date when the ingestion edge server accepted this message
+  type: STRING
+  description: 
 - mode: NULLABLE
   name: normalized_country_code
-  type: DATE
-  description: The date when the ingestion edge server accepted this message
+  type: STRING
+  description: 
 - mode: NULLABLE
   name: locale
-  type: DATE
-  description: The date when the ingestion edge server accepted this message
+  type: STRING
+  description: 
 - mode: NULLABLE
   name: os_version
-  type: DATE
-  description: The date when the ingestion edge server accepted this message
+  type: STRING
+  description: 
 - mode: NULLABLE
   name: build_channel
-  type: DATE
-  description: The date when the ingestion edge server accepted this message
+  type: STRING
+  description: 
 - mode: NULLABLE
   name: build_id
-  type: DATE
-  description: The date when the ingestion edge server accepted this message
+  type: STRING
+  description: 
 - mode: NULLABLE
   name: update_channel
-  type: DATE
-  description: The date when the ingestion edge server accepted this message
+  type: STRING
+  description: 
 - mode: NULLABLE
   name: has_old_install
-  type: DATE
-  description: The date when the ingestion edge server accepted this message
+  type: BOOLEAN
+  description: 
 - mode: NULLABLE
   name: old_default
-  type: DATE
-  description: The date when the ingestion edge server accepted this message
+  type: BOOLEAN
+  description: 
 - mode: NULLABLE
   name: old_version
-  type: DATE
-  description: The date when the ingestion edge server accepted this message
+  type: STRING
+  description: 
 - mode: NULLABLE
   name: manual_download
-  type: DATE
-  description: The date when the ingestion edge server accepted this message
+  type: BOOLEAN
+  description: 
 - mode: NULLABLE
   name: silent
-  type: DATE
-  description: The date when the ingestion edge server accepted this message
+  type: BOOLEAN
+  description: 
 - mode: NULLABLE
   name: user_cancelled
-  type: DATE
-  description: The date when the ingestion edge server accepted this message
+  type: BOOLEAN
+  description: 
 - mode: NULLABLE
   name: suceeded
-  type: DATE
-  description: The date when the ingestion edge server accepted this message
+  type: BOOLEAN
+  description: 
 - mode: NULLABLE
   name: profile_cleanup_prompt
-  type: DATE
-  description: The date when the ingestion edge server accepted this message
+  type: STRING
+  description: 
 - mode: NULLABLE
   name: profile_cleanup_requested
-  type: DATE
-  description: The date when the ingestion edge server accepted this message
+  type: BOOLEAN
+  description: 
 - mode: NULLABLE
   name: new_default
-  type: DATE
-  description: The date when the ingestion edge server accepted this message
+  type: BOOLEAN
+  description: 
 - mode: NULLABLE
   name: new_launched
-  type: DATE
-  description: The date when the ingestion edge server accepted this message
+  type: BOOLEAN
+  description: 
 - mode: NULLABLE
   name: sample_id
-  type: DATE
-  description: The date when the ingestion edge server accepted this message
+  type: INT64
+  description: 
 - mode: NULLABLE
   name: install_attempts
-  type: DATE
-  description: The date when the ingestion edge server accepted this message
+  type: INT64
+  description: 
 - mode: NULLABLE
   name: download_date
   type: DATE
-  description: The date when the ingestion edge server accepted this message
+  description: The date of download, sourced from download logs.

@@ -104,7 +104,7 @@ fields:
   type: STRING
   description: Value of MOZ_UPDATE_CHANNEL the installer was built with.  Generally the same as build_channel
 - mode: NULLABLE
-  name: has_old_install
+  name: had_old_install
   type: BOOL
   description: True if at least one existing installation of Firefox was found on the system prior to this installation
 - mode: NULLABLE

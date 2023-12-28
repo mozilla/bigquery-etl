@@ -13,7 +13,7 @@ fields:
   description: Version of the installed product.  May be different from installer_version for a stub install.  Absent for a failed stub installation.
 - mode: NULLABLE
   name: from_msi
-  type: BOOLEAN
+  type: BOOL
   description: True if the install was launched from an MSI wrapper
 - mode: NULLABLE
   name: funnelcake
@@ -105,11 +105,11 @@ fields:
   description: Value of MOZ_UPDATE_CHANNEL the installer was built with.  Generally the same as build_channel
 - mode: NULLABLE
   name: has_old_install
-  type: BOOLEAN
+  type: BOOL
   description: True if at least one existing installation of Firefox was found on the system prior to this installation
 - mode: NULLABLE
   name: old_default
-  type: BOOLEAN
+  type: BOOL
   description: True if an existing Firefox installation was already set as the default browser
 - mode: NULLABLE
   name: old_version
@@ -117,19 +117,19 @@ fields:
   description: Version of the previously installed Firefox, if any
 - mode: NULLABLE
   name: manual_download
-  type: BOOLEAN
+  type: BOOL
   description:
 - mode: NULLABLE
   name: silent
-  type: BOOLEAN
+  type: BOOL
   description: True if the installer was run in silent mode (either from an MSI or with command-line parameters)
 - mode: NULLABLE
   name: user_cancelled
-  type: BOOLEAN
+  type: BOOL
   description: True if the installation failed because the user cancelled it or closed the window
 - mode: NULLABLE
   name: suceeded
-  type: BOOLEAN
+  type: BOOL
   description: True if the new installation was successfully created.  If false, check the error status fields for the failure reason.
 - mode: NULLABLE
   name: profile_cleanup_prompt
@@ -137,15 +137,15 @@ fields:
   description: Which type of profile cleanup prompt was shown (reinstall or paveover)
 - mode: NULLABLE
   name: profile_cleanup_requested
-  type: BOOLEAN
+  type: BOOL
   description: True if profile cleanup prompt was shown and the user accepted the prompt
 - mode: NULLABLE
   name: new_default
-  type: BOOLEAN
+  type: BOOL
   description: True if the installation was successfully set as the default browser
 - mode: NULLABLE
   name: new_launched
-  type: BOOLEAN
+  type: BOOL
   description: True if the installation succeeded and we were able to launch the newly installed application
 - mode: NULLABLE
   name: sample_id

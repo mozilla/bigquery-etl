@@ -2,7 +2,7 @@ friendly_name: Desktop Installs
 description: |-
   Please provide a description for the query
 owners:
-- example@mozilla.com
+- kwindau@mozilla.com
 labels:
   incremental: true
   owner1: example

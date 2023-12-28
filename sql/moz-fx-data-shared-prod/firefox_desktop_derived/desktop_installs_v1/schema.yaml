@@ -86,7 +86,7 @@ fields:
 - mode: NULLABLE
   name: locale
   type: STRING
-  description:
+  description: Locale of the installer and the installed product, in AB_CD format
 - mode: NULLABLE
   name: os_version
   type: STRING

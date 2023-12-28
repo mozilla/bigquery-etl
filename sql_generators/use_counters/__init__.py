@@ -17,7 +17,7 @@ BASE_DIR = Path(FILE_PATH).parent.parent
 TEMPLATE_CONFIG = FILE_PATH / "templates/templating.yaml"
 
 
-def generate_query(project, dataset, destination_table, write_dir, query_fpath):
+def generate_query(project, dataset, destination_table, write_dir):
     """Generate use counter table query."""
     if dataset == "fenix_derived":
         query_fpath = "query_fenix.sql"

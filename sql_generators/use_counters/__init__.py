@@ -14,15 +14,19 @@ from bigquery_etl.util.common import write_sql
 
 FILE_PATH = Path(os.path.dirname(__file__))
 BASE_DIR = Path(FILE_PATH).parent.parent
-TEMPLATE_CONFIG = FILE_PATH / "templating.yaml"
+TEMPLATE_CONFIG = FILE_PATH / "templates/templating.yaml"
 
 
-def generate_query(project, dataset, destination_table, write_dir):
+def generate_query(project, dataset, destination_table, write_dir, query_fpath):
     """Generate use counter table query."""
+    if dataset == "fenix_derived":
+        query_fpath = "query_fenix.sql"
+    if destination_table == "firefox_desktop_derived": 
+        query_fpath = "query_ff_desktop.sql"
     with open(TEMPLATE_CONFIG, "r") as f:
         render_kwargs = yaml.safe_load(f) or {}
     env = Environment(loader=FileSystemLoader(str(FILE_PATH / "templates")))
-    template = env.get_template("query.sql")
+    template = env.get_template(query_fpath)
 
     write_sql(
         write_dir / project,
@@ -54,8 +58,12 @@ def generate_view(project, dataset, destination_table, write_dir):
 
 def generate_metadata(project, dataset, destination_table, write_dir):
     """Copy metadata.yaml file to destination directory."""
+    if dataset == "fenix_derived":
+        metadata_fpath = "metadata_fenix.yaml"
+    if dataset == "firefox_desktop_derived":
+        metadata_fpath = "metadata_ff_desktop.yaml"
     shutil.copyfile(
-        FILE_PATH / "templates" / "metadata.yaml",
+        FILE_PATH / "templates" / metadata_fpath,
         write_dir / project / dataset / destination_table / "metadata.yaml",
     )
 

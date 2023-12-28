@@ -1,102 +1,98 @@
 -- Query for firefox_desktop_derived.desktop_installs_v1
             -- For more information on writing queries see:
             -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
-WITH download_token_info
-AS
-  (
-    SELECT
-      dltoken,
-      download_date
-    FROM
-      `moz-fx-data-marketing-prod.ga_derived.downloads_with_attribution_v1`
-  ),
-  install_ping
-AS
-  (
-    SELECT
-      DATE(submission_timestamp) AS submission_date,
-      installer_type,
-      version,
-      from_msi,
-      funnelcake,
-      attribution.experiment,
-      attribution.variation,
-      metadata.isp.name AS nm,
-      metadata.isp.organization,
-      ping_version,
-      attribution.campaign,
-      attribution.content,
-      attribution.dlsource,
-      attribution.dltoken,
-      attribution.medium,
-      attribution.source,
-      attribution.ua,
-      metadata.geo.city,
-      metadata.geo.country,
-      metadata.geo.subdivision1,
-      normalized_country_code,
-      locale,
-      os_version,
-      build_channel,
-      build_id,
-      update_channel,
-      had_old_install,
-      old_default,
-      old_version,
-      manual_download,
-      silent,
-      user_cancelled,
-      succeeded,
-      profile_cleanup_prompt,
-      profile_cleanup_requested,
-      new_default,
-      new_launched,
-      sample_id,
-      COUNT(*) AS install_attempts
-    FROM
-      `moz-fx-data-shared-prod.telemetry.install`
-    WHERE
-      DATE(submission_timestamp) = @submission_date
-    GROUP BY
-      submission_date,
-      installer_type,
-      version,
-      from_msi,
-      funnelcake,
-      attribution.experiment,
-      attribution.variation,
-      metadata.isp.name,
-      metadata.isp.organization,
-      ping_version,
-      attribution.campaign,
-      attribution.content,
-      attribution.dlsource,
-      attribution.dltoken,
-      attribution.medium,
-      attribution.source,
-      attribution.ua,
-      metadata.geo.city,
-      metadata.geo.country,
-      metadata.geo.subdivision1,
-      normalized_country_code,
-      locale,
-      os_version,
-      build_channel,
-      build_id,
-      update_channel,
-      had_old_install,
-      old_default,
-      old_version,
-      manual_download,
-      silent,
-      user_cancelled,
-      succeeded,
-      profile_cleanup_prompt,
-      profile_cleanup_requested,
-      new_default,
-      new_launched,
-      sample_id
-  )
+WITH download_token_info AS (
+  SELECT
+    dltoken,
+    download_date
+  FROM
+    `moz-fx-data-marketing-prod.ga_derived.downloads_with_attribution_v1`
+),
+install_ping AS (
+  SELECT
+    DATE(submission_timestamp) AS submission_date,
+    installer_type,
+    version,
+    from_msi,
+    funnelcake,
+    attribution.experiment,
+    attribution.variation,
+    metadata.isp.name AS nm,
+    metadata.isp.organization,
+    ping_version,
+    attribution.campaign,
+    attribution.content,
+    attribution.dlsource,
+    attribution.dltoken,
+    attribution.medium,
+    attribution.source,
+    attribution.ua,
+    metadata.geo.city,
+    metadata.geo.country,
+    metadata.geo.subdivision1,
+    normalized_country_code,
+    locale,
+    os_version,
+    build_channel,
+    build_id,
+    update_channel,
+    had_old_install,
+    old_default,
+    old_version,
+    manual_download,
+    silent,
+    user_cancelled,
+    succeeded,
+    profile_cleanup_prompt,
+    profile_cleanup_requested,
+    new_default,
+    new_launched,
+    sample_id,
+    COUNT(*) AS install_attempts
+  FROM
+    `moz-fx-data-shared-prod.telemetry.install`
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+  GROUP BY
+    submission_date,
+    installer_type,
+    version,
+    from_msi,
+    funnelcake,
+    attribution.experiment,
+    attribution.variation,
+    metadata.isp.name,
+    metadata.isp.organization,
+    ping_version,
+    attribution.campaign,
+    attribution.content,
+    attribution.dlsource,
+    attribution.dltoken,
+    attribution.medium,
+    attribution.source,
+    attribution.ua,
+    metadata.geo.city,
+    metadata.geo.country,
+    metadata.geo.subdivision1,
+    normalized_country_code,
+    locale,
+    os_version,
+    build_channel,
+    build_id,
+    update_channel,
+    had_old_install,
+    old_default,
+    old_version,
+    manual_download,
+    silent,
+    user_cancelled,
+    succeeded,
+    profile_cleanup_prompt,
+    profile_cleanup_requested,
+    new_default,
+    new_launched,
+    sample_id
+)
 SELECT
   install_ping.submission_date,
   install_ping.installer_type,

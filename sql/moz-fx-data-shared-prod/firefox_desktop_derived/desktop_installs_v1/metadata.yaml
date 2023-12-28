@@ -7,14 +7,14 @@ labels:
   incremental: true
   owner1: example
 scheduling:
-  dag_name: bqetl_default
+  dag_name: bqetl_desktop_installs_v1
 bigquery:
   time_partitioning:
     type: day
-    field: ''
+    field: submission_date
     require_partition_filter: true
     expiration_days: null
   clustering:
-    fields: []
-references: {}
+    fields:
+    - version
 deprecated: false

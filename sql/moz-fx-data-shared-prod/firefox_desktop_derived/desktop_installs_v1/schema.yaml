@@ -22,19 +22,19 @@ fields:
 - mode: NULLABLE
   name: experiment
   type: STRING
-  description: 
+  description: Experiment
 - mode: NULLABLE
   name: variation
   type: STRING
-  description: 
+  description: Variation
 - mode: NULLABLE
   name: name
   type: STRING
-  description: 
+  description: Name
 - mode: NULLABLE
   name: organization
   type: STRING
-  description: 
+  description: Organization
 - mode: NULLABLE
   name: ping_version
   type: STRING
@@ -42,43 +42,43 @@ fields:
 - mode: NULLABLE
   name: campaign
   type: STRING
-  description: 
+  description: Campaign
 - mode: NULLABLE
   name: content
   type: STRING
-  description: 
+  description: Content
 - mode: NULLABLE
   name: dlsource
   type: STRING
-  description: 
+  description: Download Source
 - mode: NULLABLE
   name: dltoken
   type: STRING
-  description: Unique token generated for the Firefox download
+  description: Download Token - Unique token generated for the Firefox download
 - mode: NULLABLE
   name: medium
   type: STRING
-  description: 
+  description: Medium
 - mode: NULLABLE
   name: source
   type: STRING
-  description: 
+  description: Source
 - mode: NULLABLE
   name: ua
   type: STRING
-  description: 
+  description: UA
 - mode: NULLABLE
   name: city
   type: STRING
-  description: 
+  description: City
 - mode: NULLABLE
   name: country
   type: STRING
-  description: 
+  description: Country
 - mode: NULLABLE
   name: subdivision1
   type: STRING
-  description: 
+  description: First major country subdivision, typically a state, province, or country
 - mode: NULLABLE
   name: normalized_country_code
   type: STRING
@@ -86,7 +86,7 @@ fields:
 - mode: NULLABLE
   name: locale
   type: STRING
-  description: 
+  description:
 - mode: NULLABLE
   name: os_version
   type: STRING
@@ -118,7 +118,7 @@ fields:
 - mode: NULLABLE
   name: manual_download
   type: BOOLEAN
-  description: 
+  description:
 - mode: NULLABLE
   name: silent
   type: BOOLEAN
@@ -154,7 +154,7 @@ fields:
 - mode: NULLABLE
   name: install_attempts
   type: INT64
-  description: 
+  description:
 - mode: NULLABLE
   name: download_date
   type: DATE

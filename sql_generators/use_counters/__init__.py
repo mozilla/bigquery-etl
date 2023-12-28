@@ -21,7 +21,7 @@ def generate_query(project, dataset, destination_table, write_dir):
     """Generate use counter table query."""
     if dataset == "fenix_derived":
         query_fpath = "query_fenix.sql"
-    if destination_table == "firefox_desktop_derived": 
+    if destination_table == "firefox_desktop_derived":
         query_fpath = "query_ff_desktop.sql"
     with open(TEMPLATE_CONFIG, "r") as f:
         render_kwargs = yaml.safe_load(f) or {}

@@ -1,6 +1,6 @@
 friendly_name: Desktop Installs
 description: |-
-  Please provide a description for the query
+  This is a derived table that makes it easier to track desktop installs and tie them to the installs metric for the desktop acquisition funnel
 owners:
 - kwindau@mozilla.com
 labels:

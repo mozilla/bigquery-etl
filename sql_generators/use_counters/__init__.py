@@ -21,7 +21,7 @@ def generate_query(project, dataset, destination_table, write_dir):
     """Generate use counter table query."""
     if dataset == "fenix_derived":
         query_fpath = "query_fenix.sql"
-    if destination_table == "firefox_desktop_derived":
+    if dataset == "firefox_desktop_derived":
         query_fpath = "query_ff_desktop.sql"
     with open(TEMPLATE_CONFIG, "r") as f:
         render_kwargs = yaml.safe_load(f) or {}
@@ -69,16 +69,10 @@ def generate_metadata(project, dataset, destination_table, write_dir):
 
 
 def generate_schema(project, dataset, destination_table, write_dir):
-    """Generate the table schema."""
-    # get schema
-    table_schema = Schema.for_table(project, dataset, destination_table)
-    query_schema = Schema.from_query_file(
-        write_dir / project / dataset / destination_table / "query.sql",
-        use_cloud_function=True,
+    shutil.copyfile(
+        FILE_PATH / "templates" / "schema.yaml",
+        write_dir / project / dataset / destination_table / "metadata.yaml",
     )
-    query_schema.merge(table_schema)
-    schema_path = write_dir / project / dataset / destination_table / SCHEMA_FILE
-    query_schema.to_yaml_file(schema_path)
 
 
 @click.command("generate")
@@ -119,7 +113,7 @@ def generate(
     generate_metadata(target_project, dataset, destination_table, output_dir)
     generate_schema(target_project, dataset, destination_table, output_dir)
     #NEXT - generate firefox desktop one
-    generate_query(target_project, "firefox_desktop_derived", "firefox_desktop_use_counters_v2", output_dir)
-    generate_view(target_project, "firefox_desktop_derived", "firefox_desktop_use_counters_v2", output_dir)
-    generate_metadata(target_project, "firefox_desktop_derived", "firefox_desktop_use_counters_v2", output_dir)
-    generate_schema(target_project, "firefox_desktop_derived", "firefox_desktop_use_counters_v2", output_dir)
+    generate_query(project=target_project, dataset="firefox_desktop_derived", destination_table="firefox_desktop_use_counters_v2", write_dir = output_dir)
+    generate_view(project=target_project, dataset="firefox_desktop_derived", destination_table="firefox_desktop_use_counters_v2", write_dir = output_dir)
+    generate_metadata(project=target_project, dataset="firefox_desktop_derived", destination_table="firefox_desktop_use_counters_v2", write_dir = output_dir)
+    generate_schema(project=target_project, dataset="firefox_desktop_derived", destination_table="firefox_desktop_use_counters_v2", write_dir = output_dir)

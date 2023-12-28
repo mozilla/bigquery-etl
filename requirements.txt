@@ -161,9 +161,9 @@ cachetools==5.3.0 \
     --hash=sha256:13dfddc7b8df938c21a940dfa6557ce6e94a2f1cdfa58eb90c805721d58f2c14 \
     --hash=sha256:429e1a1e845c008ea6c85aa35d4b98b65d6a9763eeef3e37e92728a12d1de9d4
     # via google-auth
-cattrs==23.1.2 \
-    --hash=sha256:b2bb14311ac17bed0d58785e5a60f022e5431aca3932e3fc5cc8ed8639de50a4 \
-    --hash=sha256:db1c821b8c537382b2c7c66678c3790091ca0275ac486c76f3c8f3920e83c657
+cattrs==23.2.3 \
+    --hash=sha256:0341994d94971052e9ee70662542699a3162ea1e0c62f7ce1b4a57f563685108 \
+    --hash=sha256:a934090d95abaa9e911dac357e3a8699e0b4b14f8529bcc7d2b1ad9d51672b9f
     # via
     #   -r requirements.in
     #   mozilla-metric-config-parser

@@ -39,7 +39,7 @@ tags = ["impact/tier_2", "repo/bigquery-etl"]
 with DAG(
     "bqetl_desktop_installs_v1",
     default_args=default_args,
-    schedule_interval="0 8 * * *",
+    schedule_interval="30 18 * * *",
     doc_md=docs,
     tags=tags,
 ) as dag:
@@ -58,7 +58,7 @@ with DAG(
         task_id="wait_for_copy_deduplicate_all",
         external_dag_id="copy_deduplicate",
         external_task_id="copy_deduplicate_all",
-        execution_delta=datetime.timedelta(seconds=25200),
+        execution_delta=datetime.timedelta(seconds=63000),
         check_existence=True,
         mode="reschedule",
         allowed_states=ALLOWED_STATES,
@@ -73,7 +73,7 @@ with DAG(
         task_id="wait_for_ga_derived__downloads_with_attribution__v1",
         external_dag_id="bqetl_google_analytics_derived",
         external_task_id="ga_derived__downloads_with_attribution__v1",
-        execution_delta=datetime.timedelta(days=-1, seconds=32400),
+        execution_delta=datetime.timedelta(days=-1, seconds=70200),
         check_existence=True,
         mode="reschedule",
         allowed_states=ALLOWED_STATES,

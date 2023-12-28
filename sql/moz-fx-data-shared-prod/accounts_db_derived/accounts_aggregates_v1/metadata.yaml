@@ -1,0 +1,27 @@
+friendly_name: Accounts Aggregates
+description: |-
+  Aggregate counts of accounts from the FxA backend services databases grouped by a number of dimensions.
+
+  This table can be used to get a total number of accounts, including those inactive that aren't captured
+  in the telemetry data.
+owners:
+- akomar@mozilla.com
+labels:
+  incremental: true
+  owner1: akomar
+  dag: bqetl_accounts_backend_external
+scheduling:
+  dag_name: bqetl_accounts_backend_external
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

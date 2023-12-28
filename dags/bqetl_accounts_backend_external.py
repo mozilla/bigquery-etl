@@ -94,6 +94,17 @@ with DAG(
         task_concurrency=1,
     )
 
+    accounts_db_derived__accounts_aggregates__v1 = bigquery_etl_query(
+        task_id="accounts_db_derived__accounts_aggregates__v1",
+        destination_table="accounts_aggregates_v1",
+        dataset_id="accounts_db_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="akomar@mozilla.com",
+        email=["akomar@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     accounts_db_external__fxa_account_customers__v1 = bigquery_etl_query(
         task_id="accounts_db_external__fxa_account_customers__v1",
         destination_table="fxa_account_customers_v1",
@@ -982,4 +993,16 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
+    )
+
+    accounts_db_derived__accounts_aggregates__v1.set_upstream(
+        accounts_db_external__fxa_accounts__v1
+    )
+
+    accounts_db_derived__accounts_aggregates__v1.set_upstream(
+        accounts_db_external__fxa_recovery_keys__v1
+    )
+
+    accounts_db_derived__accounts_aggregates__v1.set_upstream(
+        accounts_db_external__fxa_totp__v1
     )

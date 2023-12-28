@@ -138,19 +138,19 @@ fields:
 - mode: NULLABLE
   name: profile_cleanup_requested
   type: BOOLEAN
-  description: 
+  description: True if profile cleanup prompt was shown and the user accepted the prompt
 - mode: NULLABLE
   name: new_default
   type: BOOLEAN
-  description: 
+  description: True if the installation was successfully set as the default browser
 - mode: NULLABLE
   name: new_launched
   type: BOOLEAN
-  description: 
+  description: True if the installation succeeded and we were able to launch the newly installed application
 - mode: NULLABLE
   name: sample_id
   type: INT64
-  description: 
+  description: Hashed version of client ID (if present), useful for partitioning; ranges from 0 - 99
 - mode: NULLABLE
   name: install_attempts
   type: INT64

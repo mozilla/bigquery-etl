@@ -105,7 +105,7 @@ SELECT
   install_ping.funnelcake,
   install_ping.experiment,
   install_ping.variation,
-  install_ping.name,
+  install_ping.nm,
   install_ping.organization,
   install_ping.ping_version,
   install_ping.campaign,

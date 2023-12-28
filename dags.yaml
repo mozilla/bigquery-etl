@@ -1419,3 +1419,20 @@ bqetl_telemetry_dev_cycle:
   tags:
     - impact/tier_3
     - repo/bigquery-etl
+
+bqetl_desktop_installs_v1:
+  schedule_interval: 0 8 * * *
+  default_args:
+    depends_on_past: false
+    email:
+      - kwindau@mozilla.com
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    owner: kwindau@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: "2023-12-27"
+  tags:
+    - impact/tier_2
+  description: DAG to build mozdata-fx-data-shared-prod.firefox_desktop_derived.desktop_installs_v1 table

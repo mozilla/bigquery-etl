@@ -1,7 +1,7 @@
 attrs==23.1.0
 authlib==1.2.1
 black==23.10.1
-cattrs==23.1.2
+cattrs==23.2.3
 click==8.1.7
 exceptiongroup==1.2.0 # for backwards compatibility with python < 3.11
 flake8<5 # pytest-flake8 does not support flake8 5+
@@ -23,7 +23,7 @@ mozilla-schema-generator==0.5.1
 pandas==2.1.0
 pathos==0.3.1
 pip-tools==7.3.0
-pre-commit==3.5.0
+pre-commit==3.6.0
 pyarrow==14.0.2
 pytest-black==0.3.12
 pytest-flake8==1.1.1

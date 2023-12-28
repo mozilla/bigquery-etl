@@ -128,7 +128,7 @@ fields:
   type: BOOL
   description: True if the installation failed because the user cancelled it or closed the window
 - mode: NULLABLE
-  name: suceeded
+  name: succeeded
   type: BOOL
   description: True if the new installation was successfully created.  If false, check the error status fields for the failure reason.
 - mode: NULLABLE

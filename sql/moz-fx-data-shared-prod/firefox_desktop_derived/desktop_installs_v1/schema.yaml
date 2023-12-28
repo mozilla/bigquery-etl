@@ -28,7 +28,7 @@ fields:
   type: STRING
   description: Variation
 - mode: NULLABLE
-  name: name
+  name: nm
   type: STRING
   description: Name
 - mode: NULLABLE

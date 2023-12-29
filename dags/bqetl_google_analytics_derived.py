@@ -126,7 +126,7 @@ with DAG(
             task_id="bqetl_desktop_installs_v1__wait_for_ga_derived__downloads_with_attribution__v1",
             external_dag_id="bqetl_desktop_installs_v1",
             external_task_id="wait_for_ga_derived__downloads_with_attribution__v1",
-            execution_date="{{ (execution_date - macros.timedelta(seconds=16200)).isoformat() }}",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=83100)).isoformat() }}",
         )
 
         ga_derived__downloads_with_attribution__v1_external.set_upstream(

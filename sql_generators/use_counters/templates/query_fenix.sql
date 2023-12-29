@@ -100,7 +100,7 @@ SELECT
                   'use_counter_css_page_',
                   'use.counter.css.page.'
                 ),
-                'use_counter_worker_dedicated',
+                'use_counter_worker_dedicated_',
                 'use.counter.worker.dedicated.'
               ),
               'use_counter_worker_shared_',

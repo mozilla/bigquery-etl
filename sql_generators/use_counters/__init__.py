@@ -56,22 +56,24 @@ def generate_view(project, dataset, destination_table, write_dir):
     )
 
 
-def generate_metadata(project, dataset, destination_table, write_dir):
+def generate_metadata(project, dataset, destination_table, write_dir:Path):
     """Copy metadata.yaml file to destination directory."""
     if dataset == "fenix_derived":
-        metadata_fpath = "metadata_fenix.yaml"
+        friendly_table_name = "Fenix Use Counters V2"
     if dataset == "firefox_desktop_derived":
-        metadata_fpath = "metadata_ff_desktop.yaml"
-    shutil.copyfile(
-        FILE_PATH / "templates" / metadata_fpath,
-        write_dir / project / dataset / destination_table / "metadata.yaml",
-    )
+        friendly_table_name = "Firefox Desktop Use Counters V2"
+
+    env = Environment(loader=FileSystemLoader(str(FILE_PATH / "templates")))
+    template = env.get_template("metadata.yaml")
+
+    path_to_write_metadata = write_dir / project / dataset / destination_table / "metadata.yaml"
+    path_to_write_metadata.write_text(template.render({'friendly_table_name': friendly_table_name}))
 
 
 def generate_schema(project, dataset, destination_table, write_dir):
     shutil.copyfile(
         FILE_PATH / "templates" / "schema.yaml",
-        write_dir / project / dataset / destination_table / "metadata.yaml",
+        write_dir / project / dataset / destination_table / "schema.yaml",
     )
 
 

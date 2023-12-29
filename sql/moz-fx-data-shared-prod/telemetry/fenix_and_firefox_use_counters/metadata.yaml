@@ -11,6 +11,6 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   view.sql:
-  - moz-fx-data-shared-prod.fenix_derived.fenix_use_counters_v1
-  - moz-fx-data-shared-prod.firefox_desktop_derived.firefox_desktop_use_counters_v1
+  - moz-fx-data-shared-prod.fenix_derived.fenix_use_counters_v2
+  - moz-fx-data-shared-prod.firefox_desktop_derived.firefox_desktop_use_counters_v2
 deprecated: false

@@ -1,0 +1,28 @@
+friendly_name: Firefox Desktop Use Counters V2
+description: |-
+  Contains use counter rates by day, country, version, and platform; only shows data for those with at least 5000 clients reporting that day.
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau
+  dag: bqetl_use_counter_analysis
+scheduling:
+  dag_name: bqetl_use_counter_analysis
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+    - metric
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.firefox_desktop.use_counters
+deprecated: false

@@ -152,26 +152,26 @@ def generate(ctx, target_project, output_dir, use_cloud_function):
     generate_query(
         project=target_project,
         dataset=config["firefox"]["dataset"],
-        destination_table="firefox_desktop_use_counters_v2",
+        destination_table=config["firefox"]["dst_tbl"],
         write_dir=output_dir,
         query_fpath=config["firefox"]["query_fpath"],
     )
     generate_view(
         project=target_project,
         dataset=config["firefox"]["dataset"],
-        destination_table="firefox_desktop_use_counters_v2",
+        destination_table=config["firefox"]["dst_tbl"],
         write_dir=output_dir,
     )
     generate_metadata(
         project=target_project,
         dataset=config["firefox"]["dataset"],
-        destination_table="firefox_desktop_use_counters_v2",
+        destination_table=config["firefox"]["dst_tbl"],
         write_dir=output_dir,
         friendly_table_name=config["firefox"]["friendly_nm"],
     )
     generate_schema(
         project=target_project,
         dataset=config["firefox"]["dataset"],
-        destination_table="firefox_desktop_use_counters_v2",
+        destination_table=config["firefox"]["dst_tbl"],
         write_dir=output_dir,
     )

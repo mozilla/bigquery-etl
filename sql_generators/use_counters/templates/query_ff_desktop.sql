@@ -56,7 +56,7 @@ staging AS (
       ELSE NULL
     END AS doc_rate,
     CASE
-      WHEN metric LIKE 'use_counter_css_page_%'
+      WHEN metric LIKE 'use_counter_css_page_%' OR metric LIKE 'use_counter_page_%'
         THEN SAFE_DIVIDE(cnt, use_counter_top_level_content_documents_destroyed)
       ELSE NULL
     END AS page_rate,

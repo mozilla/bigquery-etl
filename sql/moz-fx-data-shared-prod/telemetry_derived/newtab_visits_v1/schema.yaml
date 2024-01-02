@@ -163,6 +163,15 @@ fields:
   - mode: NULLABLE
     name: organic_topsite_tile_impressions
     type: INTEGER
+  - mode: NULLABLE
+    name: topsite_tile_dismissals
+    type: INTEGER
+  - mode: NULLABLE
+    name: sponsored_topsite_tile_dismissals
+    type: INTEGER
+  - mode: NULLABLE
+    name: organic_topsite_tile_dismissals
+    type: INTEGER
   mode: REPEATED
   name: topsite_tile_interactions
   type: RECORD

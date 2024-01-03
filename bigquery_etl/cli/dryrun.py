@@ -9,7 +9,7 @@ from functools import partial
 from multiprocessing.pool import Pool
 from typing import List, Set
 
-import click
+import rich_click as click
 from google.cloud import bigquery
 
 from ..cli.utils import is_authenticated

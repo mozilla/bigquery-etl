@@ -7,7 +7,7 @@ from pathlib import Path
 from subprocess import CalledProcessError
 from typing import Dict, Iterator, List, Tuple
 
-import click
+import rich_click as click
 import sqlglot
 import yaml
 

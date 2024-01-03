@@ -8,7 +8,7 @@ from graphlib import TopologicalSorter
 from multiprocessing.pool import Pool, ThreadPool
 from traceback import print_exc
 
-import click
+import rich_click as click
 
 from ..cli.utils import (
     no_dryrun_option,

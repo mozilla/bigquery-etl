@@ -14,7 +14,7 @@ WITH site_data AS (
     --? AS campaign,
     --? AS ad_content,
     sum(CASE WHEN event_name = 'session_start' THEN 1 ELSE 0 END) AS sessions,
-    sum(CASE WHEN event_name = 'session_start' AND NOT `moz-fx-data-shared-prod.udf.ga_is_mozilla_browser`(device.web_info.browser) AS non_fx_sessions
+    sum(CASE WHEN event_name = 'session_start' AND NOT `moz-fx-data-shared-prod.udf.ga_is_mozilla_browser`(device.web_info.browser) THEN 1 ELSE 0 END) AS non_fx_sessions
     --downloads
     --non_fx_downloads
   FROM

@@ -1,20 +1,24 @@
-friendly_name: Www Site Metrics Summary
+friendly_name: WWW Site Metrics Summary V2
 description: |-
-  Please provide a description for the query
+  Summary of site metrics from Google Analytics (specifically Google Analytics 4)
 owners:
-- example@mozilla.com
+- kwindau@mozilla.com
 labels:
   incremental: true
   owner1: example
 scheduling:
-  dag_name: bqetl_default
+  dag_name: bqetl_google_analytics_derived_ga4
 bigquery:
   time_partitioning:
     type: day
-    field: ''
+    field: date
     require_partition_filter: true
     expiration_days: null
   clustering:
-    fields: []
+    fields:
+    - country
+    - browser
+    - source
+    - medium
 references: {}
 deprecated: false

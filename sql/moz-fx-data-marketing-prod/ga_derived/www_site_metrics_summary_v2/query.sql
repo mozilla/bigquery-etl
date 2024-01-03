@@ -1,9 +1,44 @@
 -- Query for ga_derived.www_site_metrics_summary_v2
             -- For more information on writing queries see:
             -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
+WITH site_data AS (
+  SELECT
+    event_date as date,
+    device.category AS device_category,
+    device.operating_system AS operating_system,
+    device.web_info.browser AS browser,
+    device.language AS language,
+    geo.country AS country,
+    traffic_source.source AS source,
+    traffic_source.medium AS medium,
+    --? AS campaign,
+    --? AS ad_content
+    sum(CASE WHEN event_name = 'session_start' THEN 1 ELSE 0 END) AS sessions,
+    ? AS non_fx_sessions
+  FROM
+    `moz-fx-data-marketing-prod.analytics_313696158.events_*`
+  where
+    event_date = FORMAT_DATE('%Y%m%d', @submission_date)
+  GROUP BY
+    1,2,3,4,5,6,7,8
+)
+
 SELECT
-  *
+  s.date,
+  s.device_category,
+  s.operating_system,
+  s.browser,
+  s.language,
+  s.country,
+  std_cntry_nms.standardized_country AS standardized_country_name,
+  s.source,
+  s.medium,
+  --s.campaign,
+  --s.ad_content
+  s.sessions,
+  s.non_fx_sessions
 FROM
-  table
-WHERE
-  submission_date = @submission_date
+  site_data s
+LEFT JOIN
+  `moz-fx-data-shared-prod.static.third_party_standardized_country_names` std_cntry_nms
+ON s.country = std_cntry_nms.raw_country

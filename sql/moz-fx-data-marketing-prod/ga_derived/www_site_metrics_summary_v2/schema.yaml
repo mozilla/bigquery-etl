@@ -1,0 +1,65 @@
+fields:
+- mode: NULLABLE
+  name: date
+  type: DATE
+  description: The date of the visit
+- mode: NULLABLE
+  name: device_category
+  type: DATE
+  description: The device category the visitor used to visit the site
+- mode: NULLABLE
+  name: operating_system
+  type: DATE
+  description: The operating system the visitor used to visit the site
+- mode: NULLABLE
+  name: browser
+  type: DATE
+  description: The browser the visitor used to visit the site
+- mode: NULLABLE
+  name: language
+  type: DATE
+  description: The language used by the visitor during the visit
+- mode: NULLABLE
+  name: country
+  type: DATE
+  description: The country the visitor was from during the visit
+- mode: NULLABLE
+  name: standardized_country_name
+  type: DATE
+  description: The standardized name of the country the visitor was from during this visit
+- mode: NULLABLE
+  name: source
+  type: DATE
+  description: Source
+- mode: NULLABLE
+  name: medium
+  type: DATE
+  description: Medium
+- mode: NULLABLE
+  name: campaign
+  type: DATE
+  description: Campaign
+- mode: NULLABLE
+  name: ad_content
+  type: DATE
+  description: Advertising Content
+- mode: NULLABLE
+  name: sessions
+  type: DATE
+  description: Number of Sessions
+- mode: NULLABLE
+  name: sessions
+  type: DATE
+  description: Sessions
+- mode: NULLABLE
+  name: non_fx_sessions
+  type: INT64
+  description: Non Firefox Sessions
+- mode: NULLABLE
+  name: downloads
+  type: INT64
+  description: Downloads
+- mode: NULLABLE
+  name: non_fx_downloads
+  type: INT64
+  description: Non Firefox Downloads

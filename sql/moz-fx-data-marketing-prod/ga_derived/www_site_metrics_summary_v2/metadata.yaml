@@ -5,7 +5,7 @@ owners:
 - kwindau@mozilla.com
 labels:
   incremental: true
-  owner1: example
+  owner1: kwindau@mozilla.com
 scheduling:
   dag_name: bqetl_google_analytics_derived_ga4
 bigquery:

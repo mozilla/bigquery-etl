@@ -61,8 +61,8 @@ SELECT
   s.downloads,
   s.non_fx_downloads
 FROM
-  site_data s
+  site_data AS s
 LEFT JOIN
-  `moz-fx-data-shared-prod.static.third_party_standardized_country_names` std_cntry_nms
+  `moz-fx-data-shared-prod.static.third_party_standardized_country_names` AS std_cntry_nms
 ON
   s.country = std_cntry_nms.raw_country

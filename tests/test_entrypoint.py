@@ -137,4 +137,4 @@ class TestEntrypoint:
                 check=True,
                 capture_output=True,
             )
-        assert b"No queries matching" in e.value.stderr
+            assert b"No queries matching" in e.value.stderr

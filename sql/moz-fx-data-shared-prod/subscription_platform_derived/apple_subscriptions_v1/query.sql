@@ -131,18 +131,43 @@ apple_iap_enhanced_period_aggregates AS (
   FROM
     apple_iap_period_aggregates
 ),
-apple_iap_trial_periods AS (
+apple_iap_trial_events AS (
   SELECT
     original_transaction_id,
     user_id,
-    purchase_date AS start_time,
-    expires_date AS end_time,
+    purchase_date,
+    expires_date,
+    verified_at,
   FROM
     apple_iap_events
   WHERE
     offer_type = 1
+),
+apple_iap_trial_periods AS (
+  SELECT
+    periods.original_transaction_id,
+    periods.user_id,
+    periods.period_offset,
+    trial_events.purchase_date AS start_time,
+    trial_events.expires_date AS end_time,
+  FROM
+    apple_iap_trial_events AS trial_events
+  JOIN
+    apple_iap_periods AS periods
+  ON
+    trial_events.original_transaction_id = periods.original_transaction_id
+    AND trial_events.user_id = periods.user_id
+    AND trial_events.purchase_date >= periods.start_time
+    AND trial_events.purchase_date < periods.end_time
   QUALIFY
-    1 = ROW_NUMBER() OVER (PARTITION BY original_transaction_id, user_id ORDER BY expires_date DESC)
+    1 = ROW_NUMBER() OVER (
+      PARTITION BY
+        original_transaction_id,
+        user_id,
+        period_offset
+      ORDER BY
+        trial_events.verified_at DESC
+    )
 )
 SELECT
   periods.user_id AS customer_id,
@@ -213,4 +238,4 @@ FROM
 LEFT JOIN
   apple_iap_trial_periods AS trial_periods
 USING
-  (original_transaction_id, user_id)
+  (original_transaction_id, user_id, period_offset)

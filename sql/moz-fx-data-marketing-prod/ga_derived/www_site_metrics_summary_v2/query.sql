@@ -15,8 +15,8 @@ WITH site_data AS (
     collected_traffic_source.manual_content AS ad_content,
     sum(CASE WHEN event_name = 'session_start' THEN 1 ELSE 0 END) AS sessions,
     sum(CASE WHEN event_name = 'session_start' AND NOT `moz-fx-data-shared-prod.udf.ga_is_mozilla_browser`(device.web_info.browser) THEN 1 ELSE 0 END) AS non_fx_sessions,
-    sum(CASE WHEN event_name = 'product_download' THEN 1 ELSE 0 END) AS downloads
-    --non_fx_downloads
+    sum(CASE WHEN event_name = 'product_download' THEN 1 ELSE 0 END) AS downloads,
+    sum(CASE WHEN event_name = 'product_download' AND NOT `moz-fx-data-shared-prod.udf.ga_is_mozilla_browser`(device.web_info.browser) THEN 1 ELSE 0 END) AS non_fx_downloads
   FROM
     `moz-fx-data-marketing-prod.analytics_313696158.events_*`
   where
@@ -49,7 +49,7 @@ SELECT
   s.sessions,
   s.non_fx_sessions,
   s.downloads,
-  --s.non_fx_downloads
+  s.non_fx_downloads
 FROM
   site_data s
 LEFT JOIN

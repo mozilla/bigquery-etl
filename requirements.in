@@ -37,7 +37,7 @@ rich-click==1.7.2
 smart_open==6.4.0
 sqlglot==20.4.0
 sqlparse==0.4.4
-stripe==6.4.0
+stripe==7.10.0
 symbolic==12.4.1
 siggen==2.0.20231009
 tomli==2.0.1 # for backwards compatibility with python < 3.11

@@ -10,7 +10,7 @@ WITH site_data AS (
     traffic_source.medium AS medium,
     collected_traffic_source.manual_campaign_name AS campaign,
     collected_traffic_source.manual_content AS ad_content,
-    SUM(CASE WHEN event_name = 'session_start' THEN 1 ELSE 0 END) AS sessions,
+    COUNTIF(event_name = 'session_start') AS sessions,
     SUM(
       CASE
         WHEN event_name = 'session_start'

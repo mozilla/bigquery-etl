@@ -12,9 +12,11 @@ WITH site_data AS (
     traffic_source.source AS source,
     traffic_source.medium AS medium,
     --? AS campaign,
-    --? AS ad_content
+    --? AS ad_content,
     sum(CASE WHEN event_name = 'session_start' THEN 1 ELSE 0 END) AS sessions,
-    ? AS non_fx_sessions
+    --? AS non_fx_sessions
+    --downloads
+    --non_fx_downloads
   FROM
     `moz-fx-data-marketing-prod.analytics_313696158.events_*`
   where
@@ -36,7 +38,9 @@ SELECT
   --s.campaign,
   --s.ad_content
   s.sessions,
-  s.non_fx_sessions
+  s.non_fx_sessions,
+  --s.downloads,
+  --s.non_fx_downloads
 FROM
   site_data s
 LEFT JOIN

@@ -58,7 +58,8 @@ SELECT
   s.source,
   s.medium,
   s.campaign,
-  s.ad_content s.sessions,
+  s.ad_content, 
+  s.sessions,
   s.non_fx_sessions,
   s.downloads,
   s.non_fx_downloads

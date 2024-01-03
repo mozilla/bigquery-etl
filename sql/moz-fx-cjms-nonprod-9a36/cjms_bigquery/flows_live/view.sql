@@ -3,26 +3,28 @@ CREATE OR REPLACE VIEW
 AS
 WITH fxa_content_auth_stdout_events_live AS (
   SELECT
-    PARSE_DATE('%y%m%d', _TABLE_SUFFIX) AS submission_date,
+    DATE(_PARTITIONTIME) AS submission_date,
     JSON_VALUE(jsonPayload.fields.user_properties, '$.flow_id') AS flow_id,
     `timestamp`,
     TO_HEX(SHA256(jsonPayload.fields.user_id)) AS fxa_uid,
   FROM
-    `moz-fx-fxa-nonprod-375e.fxa_stage_logs.docker_fxa_auth_20*`
+    `moz-fx-fxa-nonprod.gke_fxa_stage_log.stderr`
   WHERE
-    jsonPayload.type = 'amplitudeEvent'
+    jsonPayload.logger = 'fxa-auth-server'
+    AND jsonPayload.type = 'amplitudeEvent'
     AND jsonPayload.fields.event_type IS NOT NULL
     AND jsonPayload.fields.user_id IS NOT NULL
   UNION ALL
   SELECT
-    PARSE_DATE('%y%m%d', _TABLE_SUFFIX) AS submission_date,
+    DATE(_PARTITIONTIME) AS submission_date,
     JSON_VALUE(jsonPayload.fields.user_properties, '$.flow_id') AS flow_id,
     `timestamp`,
     TO_HEX(SHA256(jsonPayload.fields.user_id)) AS fxa_uid,
   FROM
-    `moz-fx-fxa-nonprod-375e.fxa_stage_logs.docker_fxa_content_20*`
+    `moz-fx-fxa-nonprod.gke_fxa_stage_log.stdout`
   WHERE
-    jsonPayload.type = 'amplitudeEvent'
+    jsonPayload.logger = 'fxa-content-server'
+    AND jsonPayload.type = 'amplitudeEvent'
     AND jsonPayload.fields.event_type IS NOT NULL
   UNION ALL
   SELECT

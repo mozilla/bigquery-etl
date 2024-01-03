@@ -7,13 +7,7 @@ labels:
   application: fxa
   incremental: true
   schedule: daily
-  dag: bqetl_fxa_events
   owner1: kik
-scheduling:
-  dag_name: bqetl_fxa_events
-  arguments:
-  - --schema_update_option=ALLOW_FIELD_ADDITION
-  referenced_tables: []
 bigquery:
   time_partitioning:
     type: day

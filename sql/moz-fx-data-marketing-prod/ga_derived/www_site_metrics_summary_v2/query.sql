@@ -3,7 +3,7 @@
             -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
 WITH site_data AS (
   SELECT
-    event_date AS date,
+    PARSE_DATE('%Y%m%d', event_date) AS date,
     device.category AS device_category,
     device.operating_system AS operating_system,
     device.web_info.browser AS browser,

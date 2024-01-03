@@ -12,7 +12,7 @@ WITH site_data AS (
     traffic_source.source AS source,
     traffic_source.medium AS medium,
     collected_traffic_source.manual_campaign_name AS campaign,
-    --? AS ad_content,
+    collected_traffic_source.manual_content AS ad_content,
     sum(CASE WHEN event_name = 'session_start' THEN 1 ELSE 0 END) AS sessions,
     sum(CASE WHEN event_name = 'session_start' AND NOT `moz-fx-data-shared-prod.udf.ga_is_mozilla_browser`(device.web_info.browser) THEN 1 ELSE 0 END) AS non_fx_sessions
     --downloads
@@ -30,7 +30,8 @@ WITH site_data AS (
     geo.country,
     traffic_source.source,
     traffic_source.medium,
-    collected_traffic_source.manual_campaign_name
+    collected_traffic_source.manual_campaign_name,
+    collected_traffic_source.manual_content
 )
 
 SELECT
@@ -44,7 +45,7 @@ SELECT
   s.source,
   s.medium,
   s.campaign,
-  --s.ad_content
+  s.ad_content
   s.sessions,
   s.non_fx_sessions,
   --s.downloads,

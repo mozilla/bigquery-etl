@@ -150,7 +150,7 @@ class View:
             )
         }
 
-    def is_valid(self):
+    def is_valid(self) -> bool:
         """Validate the SQL view definition."""
         if any(str(self.path).endswith(p) for p in self.skip_validation()):
             print(f"Skipped validation for {self.path}")

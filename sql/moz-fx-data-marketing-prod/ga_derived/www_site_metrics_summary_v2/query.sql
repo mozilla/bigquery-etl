@@ -11,7 +11,7 @@ WITH site_data AS (
     geo.country AS country,
     traffic_source.source AS source,
     traffic_source.medium AS medium,
-    --? AS campaign,
+    collected_traffic_source.manual_campaign_name AS campaign,
     --? AS ad_content,
     sum(CASE WHEN event_name = 'session_start' THEN 1 ELSE 0 END) AS sessions,
     sum(CASE WHEN event_name = 'session_start' AND NOT `moz-fx-data-shared-prod.udf.ga_is_mozilla_browser`(device.web_info.browser) THEN 1 ELSE 0 END) AS non_fx_sessions
@@ -42,7 +42,7 @@ SELECT
   std_cntry_nms.standardized_country AS standardized_country_name,
   s.source,
   s.medium,
-  --s.campaign,
+  s.campaign,
   --s.ad_content
   s.sessions,
   s.non_fx_sessions,

@@ -29,7 +29,8 @@ WITH site_data AS (
     device.language,
     geo.country,
     traffic_source.source,
-    traffic_source.medium
+    traffic_source.medium,
+    collected_traffic_source.manual_campaign_name
 )
 
 SELECT

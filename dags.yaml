@@ -1446,8 +1446,8 @@ bqetl_google_analytics_derived_ga4:
     email:
       - kwindau@mozilla.com
       - telemetry-alerts@mozilla.com
-    start_date: "2024-01-05"
+    start_date: "2024-01-03"
     retries: 2
     retry_delay: 30m
   tags:
-    - impact/tier_1
+    - impact/tier_2

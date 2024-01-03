@@ -1442,7 +1442,7 @@ bqetl_google_analytics_derived_ga4:
   description: |
     Daily aggregations of data exported from Google Analytics 4
   default_args:
-    owner: ascholtz@mozilla.com
+    owner: kwindau@mozilla.com
     email:
       - kwindau@mozilla.com
       - telemetry-alerts@mozilla.com

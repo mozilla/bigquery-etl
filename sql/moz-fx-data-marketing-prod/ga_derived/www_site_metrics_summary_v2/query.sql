@@ -22,7 +22,14 @@ WITH site_data AS (
   where
     event_date = FORMAT_DATE('%Y%m%d', @submission_date)
   GROUP BY
-    1,2,3,4,5,6,7,8
+    event_date,
+    device.category,
+    device.operating_system,
+    device.web_info.browser,
+    device.language,
+    geo.country,
+    traffic_source.source,
+    traffic_source.medium
 )
 
 SELECT

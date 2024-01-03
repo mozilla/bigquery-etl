@@ -12,7 +12,7 @@ bigquery:
   time_partitioning:
     type: day
     field: date
-    require_partition_filter: true
+    require_partition_filter: false
     expiration_days: null
   clustering:
     fields:

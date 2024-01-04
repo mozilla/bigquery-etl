@@ -16,7 +16,6 @@ Built from bigquery-etl repo, [`dags/bqetl_google_analytics_derived_ga4.py`](htt
 #### Description
 
 Daily aggregations of data exported from Google Analytics 4
-
 #### Owner
 
 kwindau@mozilla.com
@@ -36,7 +35,7 @@ default_args = {
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),
     "email_on_failure": True,
-    "email_on_retry": True,
+    "email_on_retry": False,
     "retries": 2,
 }
 

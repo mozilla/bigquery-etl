@@ -21,7 +21,7 @@ from utils.callbacks import retry_tasks_callback
 docs = """
 ### {{ name }}
 
-Built from {{ repo }} repo, [`dags/{{ name }}.py`](https://github.com/mozilla/{{ repo }}/blob/main/dags/{{ name }}.py)
+Built from {{ repo }} repo, [`dags/{{ name }}.py`](https://github.com/mozilla/{{ repo }}/blob/generated-sql/dags/{{ name }}.py)
 
 {% if description != "" -%}
 #### Description
@@ -32,6 +32,11 @@ Built from {{ repo }} repo, [`dags/{{ name }}.py`](https://github.com/mozilla/{{
 #### Owner
 
 {{ default_args.owner }}
+
+#### Tags
+{% for tag in tags %}
+* {{ tag }}
+{%- endfor %}
 """
 
 

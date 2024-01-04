@@ -11,11 +11,15 @@ from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 docs = """
 ### bqetl_test_dag
 
-Built from bigquery-etl repo, [`dags/bqetl_test_dag.py`](https://github.com/mozilla/bigquery-etl/blob/main/dags/bqetl_test_dag.py)
+Built from bigquery-etl repo, [`dags/bqetl_test_dag.py`](https://github.com/mozilla/bigquery-etl/blob/generated-sql/dags/bqetl_test_dag.py)
 
 #### Owner
 
 test@example.org
+
+#### Tags
+
+* repo/bigquery-etl
 """
 
 

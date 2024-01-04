@@ -11,7 +11,7 @@ from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 docs = """
 ### bqetl_analytics_tables
 
-Built from bigquery-etl repo, [`dags/bqetl_analytics_tables.py`](https://github.com/mozilla/bigquery-etl/blob/main/dags/bqetl_analytics_tables.py)
+Built from bigquery-etl repo, [`dags/bqetl_analytics_tables.py`](https://github.com/mozilla/bigquery-etl/blob/generated-sql/dags/bqetl_analytics_tables.py)
 
 #### Description
 
@@ -19,6 +19,11 @@ Scheduled queries for analytics tables. engineering.
 #### Owner
 
 lvargas@mozilla.com
+
+#### Tags
+
+* impact/tier_1
+* repo/bigquery-etl
 """
 
 

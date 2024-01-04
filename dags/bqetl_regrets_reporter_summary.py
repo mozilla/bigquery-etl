@@ -11,7 +11,7 @@ from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 docs = """
 ### bqetl_regrets_reporter_summary
 
-Built from bigquery-etl repo, [`dags/bqetl_regrets_reporter_summary.py`](https://github.com/mozilla/bigquery-etl/blob/main/dags/bqetl_regrets_reporter_summary.py)
+Built from bigquery-etl repo, [`dags/bqetl_regrets_reporter_summary.py`](https://github.com/mozilla/bigquery-etl/blob/generated-sql/dags/bqetl_regrets_reporter_summary.py)
 
 #### Description
 
@@ -19,6 +19,11 @@ Measure usage of the regrets reporter addon
 #### Owner
 
 kik@mozilla.com
+
+#### Tags
+
+* impact/tier_1
+* repo/bigquery-etl
 """
 
 

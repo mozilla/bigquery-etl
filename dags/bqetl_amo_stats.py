@@ -11,7 +11,7 @@ from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 docs = """
 ### bqetl_amo_stats
 
-Built from bigquery-etl repo, [`dags/bqetl_amo_stats.py`](https://github.com/mozilla/bigquery-etl/blob/main/dags/bqetl_amo_stats.py)
+Built from bigquery-etl repo, [`dags/bqetl_amo_stats.py`](https://github.com/mozilla/bigquery-etl/blob/generated-sql/dags/bqetl_amo_stats.py)
 
 #### Description
 
@@ -23,6 +23,11 @@ See the [post on the Add-Ons Blog](https://blog.mozilla.org/addons/2020/06/10/im
 #### Owner
 
 kik@mozilla.com
+
+#### Tags
+
+* impact/tier_1
+* repo/bigquery-etl
 """
 
 

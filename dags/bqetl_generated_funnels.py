@@ -11,7 +11,7 @@ from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 docs = """
 ### bqetl_generated_funnels
 
-Built from bigquery-etl repo, [`dags/bqetl_generated_funnels.py`](https://github.com/mozilla/bigquery-etl/blob/main/dags/bqetl_generated_funnels.py)
+Built from bigquery-etl repo, [`dags/bqetl_generated_funnels.py`](https://github.com/mozilla/bigquery-etl/blob/generated-sql/dags/bqetl_generated_funnels.py)
 
 #### Description
 
@@ -19,6 +19,12 @@ DAG scheduling funnels defined in sql_generators/funnels
 #### Owner
 
 ascholtz@mozilla.com
+
+#### Tags
+
+* impact/tier_3
+* repo/bigquery-etl
+* triage/no_triage
 """
 
 

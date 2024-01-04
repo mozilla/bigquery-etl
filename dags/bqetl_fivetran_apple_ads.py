@@ -11,7 +11,7 @@ from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 docs = """
 ### bqetl_fivetran_apple_ads
 
-Built from bigquery-etl repo, [`dags/bqetl_fivetran_apple_ads.py`](https://github.com/mozilla/bigquery-etl/blob/main/dags/bqetl_fivetran_apple_ads.py)
+Built from bigquery-etl repo, [`dags/bqetl_fivetran_apple_ads.py`](https://github.com/mozilla/bigquery-etl/blob/generated-sql/dags/bqetl_fivetran_apple_ads.py)
 
 #### Description
 
@@ -22,6 +22,11 @@ every hour. We copy the data every 3 hours to our project.
 #### Owner
 
 kik@mozilla.com
+
+#### Tags
+
+* impact/tier_2
+* repo/bigquery-etl
 """
 
 

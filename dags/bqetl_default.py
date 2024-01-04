@@ -11,7 +11,7 @@ from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 docs = """
 ### bqetl_default
 
-Built from bigquery-etl repo, [`dags/bqetl_default.py`](https://github.com/mozilla/bigquery-etl/blob/main/dags/bqetl_default.py)
+Built from bigquery-etl repo, [`dags/bqetl_default.py`](https://github.com/mozilla/bigquery-etl/blob/generated-sql/dags/bqetl_default.py)
 
 #### Description
 
@@ -19,6 +19,12 @@ This is a default DAG to schedule tasks with lower business impact or that don't
 #### Owner
 
 telemetry-alerts@mozilla.com
+
+#### Tags
+
+* impact/tier_3
+* repo/bigquery-etl
+* triage/no_triage
 """
 
 

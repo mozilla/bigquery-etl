@@ -11,7 +11,7 @@ from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 docs = """
 ### bqetl_main_summary
 
-Built from bigquery-etl repo, [`dags/bqetl_main_summary.py`](https://github.com/mozilla/bigquery-etl/blob/main/dags/bqetl_main_summary.py)
+Built from bigquery-etl repo, [`dags/bqetl_main_summary.py`](https://github.com/mozilla/bigquery-etl/blob/generated-sql/dags/bqetl_main_summary.py)
 
 #### Description
 
@@ -21,6 +21,11 @@ This is one of our highest-impact DAGs and should be handled carefully.
 #### Owner
 
 ascholtz@mozilla.com
+
+#### Tags
+
+* impact/tier_1
+* repo/bigquery-etl
 """
 
 

@@ -11,7 +11,7 @@ from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 docs = """
 ### bqetl_gud
 
-Built from bigquery-etl repo, [`dags/bqetl_gud.py`](https://github.com/mozilla/bigquery-etl/blob/main/dags/bqetl_gud.py)
+Built from bigquery-etl repo, [`dags/bqetl_gud.py`](https://github.com/mozilla/bigquery-etl/blob/generated-sql/dags/bqetl_gud.py)
 
 #### Description
 
@@ -19,6 +19,11 @@ Optimized tables that power the [Mozilla Growth and Usage Dashboard](https://gud
 #### Owner
 
 jklukas@mozilla.com
+
+#### Tags
+
+* impact/tier_1
+* repo/bigquery-etl
 """
 
 

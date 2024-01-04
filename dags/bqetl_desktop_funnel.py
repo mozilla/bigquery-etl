@@ -11,7 +11,7 @@ from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 docs = """
 ### bqetl_desktop_funnel
 
-Built from bigquery-etl repo, [`dags/bqetl_desktop_funnel.py`](https://github.com/mozilla/bigquery-etl/blob/main/dags/bqetl_desktop_funnel.py)
+Built from bigquery-etl repo, [`dags/bqetl_desktop_funnel.py`](https://github.com/mozilla/bigquery-etl/blob/generated-sql/dags/bqetl_desktop_funnel.py)
 
 #### Description
 
@@ -21,6 +21,11 @@ This DAG schedules desktop funnel queries used to power the
 #### Owner
 
 ascholtz@mozilla.com
+
+#### Tags
+
+* impact/tier_1
+* repo/bigquery-etl
 """
 
 

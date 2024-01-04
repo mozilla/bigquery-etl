@@ -11,7 +11,7 @@ from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 docs = """
 ### bqetl_review_checker
 
-Built from bigquery-etl repo, [`dags/bqetl_review_checker.py`](https://github.com/mozilla/bigquery-etl/blob/main/dags/bqetl_review_checker.py)
+Built from bigquery-etl repo, [`dags/bqetl_review_checker.py`](https://github.com/mozilla/bigquery-etl/blob/generated-sql/dags/bqetl_review_checker.py)
 
 #### Description
 
@@ -19,6 +19,11 @@ DAG to build review checker data
 #### Owner
 
 akommasani@mozilla.com
+
+#### Tags
+
+* impact/tier_1
+* repo/bigquery-etl
 """
 
 

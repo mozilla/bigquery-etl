@@ -11,7 +11,7 @@ from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 docs = """
 ### bqetl_accounts_backend_external
 
-Built from bigquery-etl repo, [`dags/bqetl_accounts_backend_external.py`](https://github.com/mozilla/bigquery-etl/blob/main/dags/bqetl_accounts_backend_external.py)
+Built from bigquery-etl repo, [`dags/bqetl_accounts_backend_external.py`](https://github.com/mozilla/bigquery-etl/blob/generated-sql/dags/bqetl_accounts_backend_external.py)
 
 #### Description
 
@@ -22,6 +22,11 @@ This DAG is under active development.
 #### Owner
 
 akomar@mozilla.com
+
+#### Tags
+
+* impact/tier_3
+* repo/bigquery-etl
 """
 
 

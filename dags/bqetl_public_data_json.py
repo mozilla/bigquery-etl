@@ -11,7 +11,7 @@ from utils.gcp import gke_command
 docs = """
 ### bqetl_public_data_json
 
-Built from bigquery-etl repo, [`dags/bqetl_public_data_json.py`](https://github.com/mozilla/bigquery-etl/blob/main/dags/bqetl_public_data_json.py)
+Built from bigquery-etl repo, [`dags/bqetl_public_data_json.py`](https://github.com/mozilla/bigquery-etl/blob/generated-sql/dags/bqetl_public_data_json.py)
 
 #### Description
 
@@ -23,6 +23,11 @@ runs at 04:00 UTC.
 #### Owner
 
 ascholtz@mozilla.com
+
+#### Tags
+
+* impact/tier_3
+* repo/bigquery-etl
 """
 
 

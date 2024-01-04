@@ -11,7 +11,7 @@ from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 docs = """
 ### bqetl_devtools
 
-Built from bigquery-etl repo, [`dags/bqetl_devtools.py`](https://github.com/mozilla/bigquery-etl/blob/main/dags/bqetl_devtools.py)
+Built from bigquery-etl repo, [`dags/bqetl_devtools.py`](https://github.com/mozilla/bigquery-etl/blob/generated-sql/dags/bqetl_devtools.py)
 
 #### Description
 
@@ -20,6 +20,11 @@ Summarizes usage of the Dev Tools component of desktop Firefox.
 #### Owner
 
 ascholtz@mozilla.com
+
+#### Tags
+
+* impact/tier_3
+* repo/bigquery-etl
 """
 
 

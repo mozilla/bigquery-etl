@@ -11,7 +11,7 @@ from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 docs = """
 ### bqetl_desktop_mobile_search_monthly
 
-Built from bigquery-etl repo, [`dags/bqetl_desktop_mobile_search_monthly.py`](https://github.com/mozilla/bigquery-etl/blob/main/dags/bqetl_desktop_mobile_search_monthly.py)
+Built from bigquery-etl repo, [`dags/bqetl_desktop_mobile_search_monthly.py`](https://github.com/mozilla/bigquery-etl/blob/generated-sql/dags/bqetl_desktop_mobile_search_monthly.py)
 
 #### Description
 
@@ -19,6 +19,11 @@ Generate mnthly client data from daily search table
 #### Owner
 
 akommasani@mozilla.com
+
+#### Tags
+
+* impact/tier_1
+* repo/bigquery-etl
 """
 
 

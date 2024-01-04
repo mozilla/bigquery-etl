@@ -11,7 +11,7 @@ from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 docs = """
 ### bqetl_fxa_events
 
-Built from bigquery-etl repo, [`dags/bqetl_fxa_events.py`](https://github.com/mozilla/bigquery-etl/blob/main/dags/bqetl_fxa_events.py)
+Built from bigquery-etl repo, [`dags/bqetl_fxa_events.py`](https://github.com/mozilla/bigquery-etl/blob/generated-sql/dags/bqetl_fxa_events.py)
 
 #### Description
 
@@ -30,6 +30,11 @@ mitigation.
 #### Owner
 
 kik@mozilla.com
+
+#### Tags
+
+* impact/tier_1
+* repo/bigquery-etl
 """
 
 

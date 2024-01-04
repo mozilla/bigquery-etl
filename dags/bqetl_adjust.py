@@ -11,7 +11,7 @@ from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 docs = """
 ### bqetl_adjust
 
-Built from bigquery-etl repo, [`dags/bqetl_adjust.py`](https://github.com/mozilla/bigquery-etl/blob/main/dags/bqetl_adjust.py)
+Built from bigquery-etl repo, [`dags/bqetl_adjust.py`](https://github.com/mozilla/bigquery-etl/blob/generated-sql/dags/bqetl_adjust.py)
 
 #### Description
 
@@ -21,6 +21,11 @@ Using mhirose's API token - no Adjust API token for service accounts, just users
 #### Owner
 
 mhirose@mozilla.com
+
+#### Tags
+
+* impact/tier_2
+* repo/bigquery-etl
 """
 
 

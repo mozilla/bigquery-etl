@@ -11,7 +11,7 @@ from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 docs = """
 ### bqetl_download_funnel_attribution
 
-Built from bigquery-etl repo, [`dags/bqetl_download_funnel_attribution.py`](https://github.com/mozilla/bigquery-etl/blob/main/dags/bqetl_download_funnel_attribution.py)
+Built from bigquery-etl repo, [`dags/bqetl_download_funnel_attribution.py`](https://github.com/mozilla/bigquery-etl/blob/generated-sql/dags/bqetl_download_funnel_attribution.py)
 
 #### Description
 
@@ -19,6 +19,11 @@ Daily aggregations of data exported from Google Analytics joined with Firefox do
 #### Owner
 
 gleonard@mozilla.com
+
+#### Tags
+
+* impact/tier_1
+* repo/bigquery-etl
 """
 
 

@@ -11,7 +11,7 @@ from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 docs = """
 ### bqetl_internal_tooling
 
-Built from bigquery-etl repo, [`dags/bqetl_internal_tooling.py`](https://github.com/mozilla/bigquery-etl/blob/main/dags/bqetl_internal_tooling.py)
+Built from bigquery-etl repo, [`dags/bqetl_internal_tooling.py`](https://github.com/mozilla/bigquery-etl/blob/generated-sql/dags/bqetl_internal_tooling.py)
 
 #### Description
 
@@ -21,6 +21,11 @@ internal developer tooling (e.g. mozregression).
 #### Owner
 
 wlachance@mozilla.com
+
+#### Tags
+
+* impact/tier_3
+* repo/bigquery-etl
 """
 
 

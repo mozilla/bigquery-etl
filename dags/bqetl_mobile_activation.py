@@ -11,7 +11,7 @@ from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 docs = """
 ### bqetl_mobile_activation
 
-Built from bigquery-etl repo, [`dags/bqetl_mobile_activation.py`](https://github.com/mozilla/bigquery-etl/blob/main/dags/bqetl_mobile_activation.py)
+Built from bigquery-etl repo, [`dags/bqetl_mobile_activation.py`](https://github.com/mozilla/bigquery-etl/blob/generated-sql/dags/bqetl_mobile_activation.py)
 
 #### Description
 
@@ -19,6 +19,11 @@ Queries related to the mobile activation metric used by Marketing
 #### Owner
 
 vsabino@mozilla.com
+
+#### Tags
+
+* impact/tier_1
+* repo/bigquery-etl
 """
 
 

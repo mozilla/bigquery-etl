@@ -11,7 +11,7 @@ from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 docs = """
 ### bqetl_mozilla_vpn_site_metrics
 
-Built from bigquery-etl repo, [`dags/bqetl_mozilla_vpn_site_metrics.py`](https://github.com/mozilla/bigquery-etl/blob/main/dags/bqetl_mozilla_vpn_site_metrics.py)
+Built from bigquery-etl repo, [`dags/bqetl_mozilla_vpn_site_metrics.py`](https://github.com/mozilla/bigquery-etl/blob/generated-sql/dags/bqetl_mozilla_vpn_site_metrics.py)
 
 #### Description
 
@@ -25,6 +25,11 @@ minutes to wait for data to be available.
 #### Owner
 
 srose@mozilla.com
+
+#### Tags
+
+* impact/tier_2
+* repo/bigquery-etl
 """
 
 

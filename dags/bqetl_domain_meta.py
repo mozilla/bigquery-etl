@@ -11,7 +11,7 @@ from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 docs = """
 ### bqetl_domain_meta
 
-Built from bigquery-etl repo, [`dags/bqetl_domain_meta.py`](https://github.com/mozilla/bigquery-etl/blob/main/dags/bqetl_domain_meta.py)
+Built from bigquery-etl repo, [`dags/bqetl_domain_meta.py`](https://github.com/mozilla/bigquery-etl/blob/generated-sql/dags/bqetl_domain_meta.py)
 
 #### Description
 
@@ -19,6 +19,12 @@ Domain metadata
 #### Owner
 
 wstuckey@mozilla.com
+
+#### Tags
+
+* impact/tier_3
+* repo/bigquery-etl
+* triage/no_triage
 """
 
 

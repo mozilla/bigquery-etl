@@ -11,11 +11,16 @@ from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 docs = """
 ### bqetl_release_criteria
 
-Built from bigquery-etl repo, [`dags/bqetl_release_criteria.py`](https://github.com/mozilla/bigquery-etl/blob/main/dags/bqetl_release_criteria.py)
+Built from bigquery-etl repo, [`dags/bqetl_release_criteria.py`](https://github.com/mozilla/bigquery-etl/blob/generated-sql/dags/bqetl_release_criteria.py)
 
 #### Owner
 
 perf-pmo@mozilla.com
+
+#### Tags
+
+* impact/tier_1
+* repo/bigquery-etl
 """
 
 

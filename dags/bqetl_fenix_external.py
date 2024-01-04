@@ -11,11 +11,16 @@ from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 docs = """
 ### bqetl_fenix_external
 
-Built from bigquery-etl repo, [`dags/bqetl_fenix_external.py`](https://github.com/mozilla/bigquery-etl/blob/main/dags/bqetl_fenix_external.py)
+Built from bigquery-etl repo, [`dags/bqetl_fenix_external.py`](https://github.com/mozilla/bigquery-etl/blob/generated-sql/dags/bqetl_fenix_external.py)
 
 #### Owner
 
 frank@mozilla.com
+
+#### Tags
+
+* impact/tier_1
+* repo/bigquery-etl
 """
 
 

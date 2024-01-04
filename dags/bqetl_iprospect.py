@@ -11,7 +11,7 @@ from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 docs = """
 ### bqetl_iprospect
 
-Built from bigquery-etl repo, [`dags/bqetl_iprospect.py`](https://github.com/mozilla/bigquery-etl/blob/main/dags/bqetl_iprospect.py)
+Built from bigquery-etl repo, [`dags/bqetl_iprospect.py`](https://github.com/mozilla/bigquery-etl/blob/generated-sql/dags/bqetl_iprospect.py)
 
 #### Description
 
@@ -20,6 +20,11 @@ This DAG imports iProspect data from moz-fx-data-marketing-prod-iprospect.
 #### Owner
 
 ascholtz@mozilla.com
+
+#### Tags
+
+* impact/tier_1
+* repo/bigquery-etl
 """
 
 

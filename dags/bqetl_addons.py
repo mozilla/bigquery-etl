@@ -11,7 +11,7 @@ from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 docs = """
 ### bqetl_addons
 
-Built from bigquery-etl repo, [`dags/bqetl_addons.py`](https://github.com/mozilla/bigquery-etl/blob/main/dags/bqetl_addons.py)
+Built from bigquery-etl repo, [`dags/bqetl_addons.py`](https://github.com/mozilla/bigquery-etl/blob/generated-sql/dags/bqetl_addons.py)
 
 #### Description
 
@@ -22,6 +22,11 @@ Depends on `bqetl_search`, so is scheduled after that DAG.
 #### Owner
 
 kik@mozilla.com
+
+#### Tags
+
+* impact/tier_2
+* repo/bigquery-etl
 """
 
 

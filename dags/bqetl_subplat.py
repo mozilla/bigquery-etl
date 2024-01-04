@@ -15,7 +15,7 @@ from utils.callbacks import retry_tasks_callback
 docs = """
 ### bqetl_subplat
 
-Built from bigquery-etl repo, [`dags/bqetl_subplat.py`](https://github.com/mozilla/bigquery-etl/blob/main/dags/bqetl_subplat.py)
+Built from bigquery-etl repo, [`dags/bqetl_subplat.py`](https://github.com/mozilla/bigquery-etl/blob/generated-sql/dags/bqetl_subplat.py)
 
 #### Description
 
@@ -38,6 +38,11 @@ different then it should be reported using the Airflow triage process.
 #### Owner
 
 srose@mozilla.com
+
+#### Tags
+
+* impact/tier_1
+* repo/bigquery-etl
 """
 
 

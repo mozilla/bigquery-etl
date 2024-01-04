@@ -11,7 +11,7 @@ from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 docs = """
 ### bqetl_urlbar
 
-Built from bigquery-etl repo, [`dags/bqetl_urlbar.py`](https://github.com/mozilla/bigquery-etl/blob/main/dags/bqetl_urlbar.py)
+Built from bigquery-etl repo, [`dags/bqetl_urlbar.py`](https://github.com/mozilla/bigquery-etl/blob/generated-sql/dags/bqetl_urlbar.py)
 
 #### Description
 
@@ -20,6 +20,11 @@ Daily aggregation of metrics related to urlbar usage.
 #### Owner
 
 anicholson@mozilla.com
+
+#### Tags
+
+* impact/tier_2
+* repo/bigquery-etl
 """
 
 

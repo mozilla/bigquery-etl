@@ -11,7 +11,7 @@ from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 docs = """
 ### bqetl_fog_decision_support
 
-Built from bigquery-etl repo, [`dags/bqetl_fog_decision_support.py`](https://github.com/mozilla/bigquery-etl/blob/main/dags/bqetl_fog_decision_support.py)
+Built from bigquery-etl repo, [`dags/bqetl_fog_decision_support.py`](https://github.com/mozilla/bigquery-etl/blob/generated-sql/dags/bqetl_fog_decision_support.py)
 
 #### Description
 
@@ -19,6 +19,11 @@ This DAG schedules queries for calculating FOG decision support metrics
 #### Owner
 
 pmcmanis@mozilla.com
+
+#### Tags
+
+* impact/tier_3
+* repo/bigquery-etl
 """
 
 

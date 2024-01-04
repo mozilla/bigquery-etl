@@ -11,7 +11,7 @@ from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 docs = """
 ### bqetl_unified
 
-Built from bigquery-etl repo, [`dags/bqetl_unified.py`](https://github.com/mozilla/bigquery-etl/blob/main/dags/bqetl_unified.py)
+Built from bigquery-etl repo, [`dags/bqetl_unified.py`](https://github.com/mozilla/bigquery-etl/blob/generated-sql/dags/bqetl_unified.py)
 
 #### Description
 
@@ -20,6 +20,11 @@ Schedule queries that unify metrics across all products.
 #### Owner
 
 ascholtz@mozilla.com
+
+#### Tags
+
+* impact/tier_1
+* repo/bigquery-etl
 """
 
 

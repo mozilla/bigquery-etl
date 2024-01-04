@@ -15,7 +15,7 @@ from utils.callbacks import retry_tasks_callback
 docs = """
 ### bqetl_fivetran_costs
 
-Built from bigquery-etl repo, [`dags/bqetl_fivetran_costs.py`](https://github.com/mozilla/bigquery-etl/blob/main/dags/bqetl_fivetran_costs.py)
+Built from bigquery-etl repo, [`dags/bqetl_fivetran_costs.py`](https://github.com/mozilla/bigquery-etl/blob/generated-sql/dags/bqetl_fivetran_costs.py)
 
 #### Description
 
@@ -24,6 +24,11 @@ Derived tables for analyzing the Fivetran Costs. Data coming from Fivetran.
 #### Owner
 
 lschiestl@mozilla.com
+
+#### Tags
+
+* impact/tier_3
+* repo/bigquery-etl
 """
 
 

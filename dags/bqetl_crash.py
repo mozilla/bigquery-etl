@@ -11,11 +11,16 @@ from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 docs = """
 ### bqetl_crash
 
-Built from bigquery-etl repo, [`dags/bqetl_crash.py`](https://github.com/mozilla/bigquery-etl/blob/main/dags/bqetl_crash.py)
+Built from bigquery-etl repo, [`dags/bqetl_crash.py`](https://github.com/mozilla/bigquery-etl/blob/generated-sql/dags/bqetl_crash.py)
 
 #### Owner
 
 dthorn@mozilla.com
+
+#### Tags
+
+* impact/tier_2
+* repo/bigquery-etl
 """
 
 

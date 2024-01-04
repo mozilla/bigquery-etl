@@ -11,7 +11,7 @@ from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 docs = """
 ### bqetl_experiments_daily
 
-Built from bigquery-etl repo, [`dags/bqetl_experiments_daily.py`](https://github.com/mozilla/bigquery-etl/blob/main/dags/bqetl_experiments_daily.py)
+Built from bigquery-etl repo, [`dags/bqetl_experiments_daily.py`](https://github.com/mozilla/bigquery-etl/blob/generated-sql/dags/bqetl_experiments_daily.py)
 
 #### Description
 
@@ -22,6 +22,11 @@ numbers of experiment monitoring datasets for a specific date.
 #### Owner
 
 ascholtz@mozilla.com
+
+#### Tags
+
+* impact/tier_1
+* repo/bigquery-etl
 """
 
 

@@ -15,7 +15,7 @@ from utils.callbacks import retry_tasks_callback
 docs = """
 ### bqetl_cjms_nonprod
 
-Built from bigquery-etl repo, [`dags/bqetl_cjms_nonprod.py`](https://github.com/mozilla/bigquery-etl/blob/main/dags/bqetl_cjms_nonprod.py)
+Built from bigquery-etl repo, [`dags/bqetl_cjms_nonprod.py`](https://github.com/mozilla/bigquery-etl/blob/generated-sql/dags/bqetl_cjms_nonprod.py)
 
 #### Description
 
@@ -24,6 +24,11 @@ Hourly ETL for cjms nonprod.
 #### Owner
 
 srose@mozilla.com
+
+#### Tags
+
+* impact/tier_3
+* repo/bigquery-etl
 """
 
 

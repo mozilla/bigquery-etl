@@ -11,7 +11,7 @@ from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 docs = """
 ### bqetl_feature_usage
 
-Built from bigquery-etl repo, [`dags/bqetl_feature_usage.py`](https://github.com/mozilla/bigquery-etl/blob/main/dags/bqetl_feature_usage.py)
+Built from bigquery-etl repo, [`dags/bqetl_feature_usage.py`](https://github.com/mozilla/bigquery-etl/blob/generated-sql/dags/bqetl_feature_usage.py)
 
 #### Description
 
@@ -23,6 +23,11 @@ Depends on `bqetl_addons` and `bqetl_main_summary`, so is scheduled after.
 #### Owner
 
 ascholtz@mozilla.com
+
+#### Tags
+
+* impact/tier_1
+* repo/bigquery-etl
 """
 
 

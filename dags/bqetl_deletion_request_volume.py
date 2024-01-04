@@ -11,11 +11,16 @@ from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 docs = """
 ### bqetl_deletion_request_volume
 
-Built from bigquery-etl repo, [`dags/bqetl_deletion_request_volume.py`](https://github.com/mozilla/bigquery-etl/blob/main/dags/bqetl_deletion_request_volume.py)
+Built from bigquery-etl repo, [`dags/bqetl_deletion_request_volume.py`](https://github.com/mozilla/bigquery-etl/blob/generated-sql/dags/bqetl_deletion_request_volume.py)
 
 #### Owner
 
 akomar@mozilla.com
+
+#### Tags
+
+* impact/tier_3
+* repo/bigquery-etl
 """
 
 

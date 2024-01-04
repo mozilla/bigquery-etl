@@ -11,7 +11,7 @@ from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 docs = """
 ### bqetl_kpis_shredder
 
-Built from bigquery-etl repo, [`dags/bqetl_kpis_shredder.py`](https://github.com/mozilla/bigquery-etl/blob/main/dags/bqetl_kpis_shredder.py)
+Built from bigquery-etl repo, [`dags/bqetl_kpis_shredder.py`](https://github.com/mozilla/bigquery-etl/blob/generated-sql/dags/bqetl_kpis_shredder.py)
 
 #### Description
 
@@ -20,6 +20,11 @@ This DAG calculates KPIs for shredder client_ids
 #### Owner
 
 lvargas@mozilla.com
+
+#### Tags
+
+* impact/tier_3
+* repo/bigquery-etl
 """
 
 

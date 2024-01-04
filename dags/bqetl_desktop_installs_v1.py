@@ -11,7 +11,7 @@ from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
 docs = """
 ### bqetl_desktop_installs_v1
 
-Built from bigquery-etl repo, [`dags/bqetl_desktop_installs_v1.py`](https://github.com/mozilla/bigquery-etl/blob/main/dags/bqetl_desktop_installs_v1.py)
+Built from bigquery-etl repo, [`dags/bqetl_desktop_installs_v1.py`](https://github.com/mozilla/bigquery-etl/blob/generated-sql/dags/bqetl_desktop_installs_v1.py)
 
 #### Description
 
@@ -19,6 +19,11 @@ DAG to build mozdata-fx-data-shared-prod.firefox_desktop_derived.desktop_install
 #### Owner
 
 kwindau@mozilla.com
+
+#### Tags
+
+* impact/tier_2
+* repo/bigquery-etl
 """
 
 

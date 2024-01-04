@@ -21,7 +21,7 @@ from utils.callbacks import retry_tasks_callback
 docs = """
 ### {{ name }}
 
-Built from {{ repo }} repo, [`dags/{{ name }}.py`](https://github.com/mozilla/{{ repo }}/blob/generated-sql/dags/{{ name }}.py)
+Built from {{ repo }} repo, [`dags/{{ name }}.py`](https://github.com/mozilla/{{ repo }}/blob/{% if repo == "private-bigquery-etl" %}private-{% endif %}generated-sql/dags/{{ name }}.py)
 
 {% if description != "" -%}
 #### Description

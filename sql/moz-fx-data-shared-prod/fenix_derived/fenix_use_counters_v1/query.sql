@@ -8261,6 +8261,7 @@ fenix_staging AS (
     END AS doc_rate,
     CASE
       WHEN metric LIKE 'use_counter_css_page_%'
+        OR metric LIKE 'use_counter_page_%'
         THEN SAFE_DIVIDE(cnt, use_counter_top_level_content_documents_destroyed)
       ELSE NULL
     END AS page_rate,
@@ -8326,6 +8327,6 @@ SELECT
     'use.counter.deprecated_ops.page.'
   ) AS metric,
   cnt,
-  CAST(COALESCE(doc_rate, page_rate, service_rate, shared_rate, dedicated_rate) as numeric) AS rate
+  CAST(COALESCE(doc_rate, page_rate, service_rate, shared_rate, dedicated_rate) AS numeric) AS rate
 FROM
   fenix_staging

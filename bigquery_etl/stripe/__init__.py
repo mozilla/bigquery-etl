@@ -9,8 +9,8 @@ from tempfile import TemporaryFile
 from time import sleep
 from typing import Any, Dict, List, Optional
 
-import click
 import requests
+import rich_click as click
 import stripe
 import ujson
 from dateutil.relativedelta import relativedelta

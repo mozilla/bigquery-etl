@@ -5,7 +5,6 @@ CREATE TEMP TABLE
   event_flows(
     submission_date DATE,
     flow_id STRING,
-    document_type STRING,
     normalized_app_name STRING,
     channel STRING,
     events ARRAY<
@@ -13,8 +12,10 @@ CREATE TEMP TABLE
         source STRUCT<category STRING, name STRING, timestamp TIMESTAMP>,
         target STRUCT<category STRING, name STRING, timestamp TIMESTAMP>
       >
-    >
+    >,
+    flow_hash STRING
   ) AS (
+    -- get events from all apps that are related to some flow (have 'flow_id' in event_extras)
     WITH all_app_events AS (
       {% for app in apps -%}
         {% if not loop.first -%}
@@ -26,7 +27,7 @@ CREATE TEMP TABLE
           event_category AS category,
           event_name AS name,
           TIMESTAMP_ADD(
-            SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.start_time),
+            submission_timestamp,
         -- limit event.timestamp, otherwise this will cause an overflow
             INTERVAL LEAST(event_timestamp, 20000000000000) MILLISECOND
           ) AS timestamp,
@@ -40,6 +41,7 @@ CREATE TEMP TABLE
           AND ext.key = "flow_id"
       {% endfor %}
     ),
+    -- determine events that belong to the same flow
     new_event_flows AS (
       SELECT
         @submission_date AS submission_date,
@@ -68,6 +70,7 @@ CREATE TEMP TABLE
         UNNEST(events) AS event
         WITH OFFSET AS event_offset
     ),
+    -- create source -> target event pairs based on the order of when the events were seen
     source_target_events AS (
       SELECT
         prev_event.flow_id,
@@ -80,7 +83,7 @@ CREATE TEMP TABLE
         ) AS events
       FROM
         unnested_events AS prev_event
-      LEFT JOIN
+      INNER JOIN
         unnested_events AS cur_event
       ON
         prev_event.flow_id = cur_event.flow_id
@@ -91,19 +94,30 @@ CREATE TEMP TABLE
         channel
     )
     SELECT
+      @submission_date AS submission_date,
       flow_id,
       normalized_app_name,
       channel,
       ARRAY_AGG(event ORDER BY event.source.timestamp) AS events,
+      -- create a flow hash that concats all the events that are part of the flow
+      -- <event_category>#<event_name> -> <event_category>#<event_name> -> ...
       ARRAY_TO_STRING(
-        ARRAY_AGG(
-          CONCAT(
-            event.source.category,
-            "#",
-            event.source.name, 
-            " - "
-          ) ORDER BY event.source.timestamp
-        ), 
+        ARRAY_CONCAT(
+          ARRAY_AGG(
+            CONCAT(event.source.category, "#", event.source.name)
+            ORDER BY
+              event.source.timestamp
+          ),
+          [
+            ARRAY_REVERSE(
+              ARRAY_AGG(
+                CONCAT(event.target.category, "#", event.target.name)
+                ORDER BY
+                  event.source.timestamp
+              )
+            )[SAFE_OFFSET(0)]
+          ]
+        ),
         " -> "
       ) AS flow_hash
     FROM
@@ -117,6 +131,8 @@ CREATE TEMP TABLE
           source_target_events,
           UNNEST(events) AS event
         UNION ALL
+        -- some flows might go over multiple days;
+        -- use previously seen flows and combine with new flows
         SELECT
           flow_id,
           normalized_app_name,
@@ -125,6 +141,8 @@ CREATE TEMP TABLE
         FROM
           `{{ project_id }}.{{ target_table }}`,
           UNNEST(events) AS event
+        WHERE
+          submission_date > DATE_SUB(@submission_date, INTERVAL 3 DAY)
       )
     GROUP BY
       flow_id,
@@ -137,7 +155,9 @@ MERGE
 USING
   event_flows f
 ON
-  r.flow_id = e.flow_id
+  r.flow_id = f.flow_id
+  -- look back up to 3 days to see if a flow has seen new events and needs to be replaced
+  AND r.submission_date > DATE_SUB(@submission_date, INTERVAL 3 DAY)
 WHEN NOT MATCHED
 THEN
   INSERT
@@ -145,6 +165,7 @@ THEN
   VALUES
     (f.submission_date, f.flow_id, f.events, f.normalized_app_name, f.channel, f.flow_hash)
   WHEN NOT MATCHED BY SOURCE
-    AND r.submission_date < DATE_SUB(@submission_date, INTERVAL 3 DAYS)
+    -- look back up to 3 days to see if a flow has seen new events and needs to be replaced
+    AND r.submission_date > DATE_SUB(@submission_date, INTERVAL 3 DAY)
 THEN
   DELETE;

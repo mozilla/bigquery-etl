@@ -62,16 +62,21 @@ class EventFlowMonitoring(GleanTable):
             format=False,
             **render_kwargs,
         )
+        schema = render(
+            f"{AGGREGATE_TABLE_NAME}.schema.yaml",
+            template_folder=PATH / "templates",
+            format=False,
+            **render_kwargs,
+        )
         table = (
             f"{project_id}.{TARGET_DATASET_CROSS_APP}_derived.{AGGREGATE_TABLE_NAME}"
         )
-
-        # todo: schema and SQL comments
 
         if output_dir:
             artifacts = [
                 Artifact(table, "metadata.yaml", metadata),
                 Artifact(table, "script.sql", script_sql),
+                Artifact(table, "schema.yaml", schema)
             ]
 
             for artifact in artifacts:

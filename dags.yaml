@@ -1439,13 +1439,15 @@ bqetl_desktop_installs_v1:
 
 bqetl_google_analytics_derived_ga4:
   schedule_interval: 0 12 * * *
-  description: |
-    Daily aggregations of data exported from Google Analytics 4
+  description: Daily aggregations of data exported from Google Analytics 4
   default_args:
+    depends_on_past: false
     owner: kwindau@mozilla.com
     email:
       - kwindau@mozilla.com
       - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
     start_date: "2024-01-03"
     retries: 2
     retry_delay: 30m

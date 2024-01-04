@@ -11,22 +11,14 @@ WITH site_data AS (
     collected_traffic_source.manual_campaign_name AS campaign,
     collected_traffic_source.manual_content AS ad_content,
     COUNTIF(event_name = 'session_start') AS sessions,
-    SUM(
-      CASE
-        WHEN event_name = 'session_start'
-          AND NOT `moz-fx-data-shared-prod.udf.ga_is_mozilla_browser`(device.web_info.browser)
-          THEN 1
-        ELSE 0
-      END
+    COUNTIF(
+      event_name = 'session_start'
+      AND NOT `moz-fx-data-shared-prod.udf.ga_is_mozilla_browser`(device.web_info.browser)
     ) AS non_fx_sessions,
-    SUM(CASE WHEN event_name = 'product_download' THEN 1 ELSE 0 END) AS downloads,
-    SUM(
-      CASE
-        WHEN event_name = 'product_download'
-          AND NOT `moz-fx-data-shared-prod.udf.ga_is_mozilla_browser`(device.web_info.browser)
-          THEN 1
-        ELSE 0
-      END
+    COUNTIF(event_name = 'product_download') AS downloads,
+    COUNTIF(
+      event_name = 'product_download'
+      AND NOT `moz-fx-data-shared-prod.udf.ga_is_mozilla_browser`(device.web_info.browser)
     ) AS non_fx_downloads
   FROM
     `moz-fx-data-marketing-prod.analytics_313696158.events_*`
@@ -55,7 +47,7 @@ SELECT
   s.source,
   s.medium,
   s.campaign,
-  s.ad_content, 
+  s.ad_content,
   s.sessions,
   s.non_fx_sessions,
   s.downloads,

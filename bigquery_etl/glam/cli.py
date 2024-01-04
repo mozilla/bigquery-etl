@@ -2,7 +2,7 @@
 import os
 from pathlib import Path
 
-import click
+import rich_click as click
 import yaml
 from google.cloud import bigquery
 

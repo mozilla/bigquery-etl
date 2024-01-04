@@ -61,6 +61,11 @@ fields:
     The type of source of a client installation.
 
 - mode: NULLABLE
+  name: install_source
+  type: STRING
+  description:
+
+- mode: NULLABLE
   name: retained_week_2
   type: BOOLEAN
   description: |

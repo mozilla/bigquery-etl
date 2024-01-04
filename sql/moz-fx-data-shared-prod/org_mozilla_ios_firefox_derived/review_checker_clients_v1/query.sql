@@ -18,7 +18,7 @@ WITH ranked_data AS (
         submission_timestamp
     ) AS row_num
   FROM
-    `moz-fx-data-shared-prod.org_mozilla_ios_firefox_stable.metrics_v1`
+    `moz-fx-data-shared-prod.firefox_ios.metrics`
   WHERE
     DATE(submission_timestamp) = @submission_date
 ),
@@ -123,7 +123,7 @@ search AS (
   WHERE
     submission_date = @submission_date
     AND os = "iOS"
-    AND normalized_app_name = "Fennec"
+    AND normalized_app_name = "Firefox"
   GROUP BY
     client_id,
     submission_date

@@ -18,7 +18,7 @@ WITH ranked_data AS (
         submission_timestamp
     ) AS row_num
   FROM
-    `moz-fx-data-shared-prod.org_mozilla_fenix_stable.metrics_v1`
+    `moz-fx-data-shared-prod.fenix.metrics`
   WHERE
     DATE(submission_timestamp) = @submission_date
 ),
@@ -122,7 +122,7 @@ search AS (
     `moz-fx-data-shared-prod.search.mobile_search_clients_engines_sources_daily`
   WHERE
     submission_date = @submission_date
-    AND normalized_app_name = "Fenix"
+    AND normalized_app_name_os IN ('Firefox Android', 'Firefox Preview')
   GROUP BY
     client_id,
     submission_date

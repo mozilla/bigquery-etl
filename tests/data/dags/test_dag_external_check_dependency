@@ -54,7 +54,7 @@ with DAG(
     )
 
     with TaskGroup(
-        "checks__fail_test__external_table__v1_external"
+        "checks__fail_test__external_table__v1_external",
     ) as checks__fail_test__external_table__v1_external:
         ExternalTaskMarker(
             task_id="bqetl_test_dag__wait_for_checks__fail_test__external_table__v1",

@@ -9,8 +9,8 @@ import sys
 from fnmatch import fnmatchcase
 from pathlib import Path
 
-import click
 import pytest
+import rich_click as click
 import yaml
 
 from ..cli.format import format

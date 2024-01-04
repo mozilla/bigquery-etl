@@ -1,0 +1,23 @@
+---
+fields:
+- name: submission_timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: document_id
+  type: STRING
+  mode: NULLABLE
+- name: thread_offset
+  type: INTEGER
+  mode: NULLABLE
+- name: frame_offset
+  type: INTEGER
+  mode: NULLABLE
+- name: debug_file
+  type: STRING
+  mode: NULLABLE
+- name: debug_id
+  type: STRING
+  mode: NULLABLE
+- name: module_offset
+  type: INTEGER
+  mode: NULLABLE

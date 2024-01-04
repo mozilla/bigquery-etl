@@ -1,0 +1,15 @@
+fields:
+- name: id
+  type: STRING
+  mode: NULLABLE
+  description: id in hexadecimal format.
+- name: url
+  type: STRING
+  mode: NULLABLE
+- name: userId
+  type: STRING
+  mode: NULLABLE
+  description: userId in hexadecimal format.
+- name: providerId
+  type: INTEGER
+  mode: NULLABLE

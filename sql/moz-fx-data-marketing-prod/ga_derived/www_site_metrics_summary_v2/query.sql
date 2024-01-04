@@ -39,8 +39,8 @@ WITH site_data AS (
     device.web_info.browser,
     device.language,
     geo.country,
-    traffic_source.source,
-    traffic_source.medium,
+    collected_traffic_source.manual_source,
+    collected_traffic_source.manual_medium,
     collected_traffic_source.manual_campaign_name,
     collected_traffic_source.manual_content
 )

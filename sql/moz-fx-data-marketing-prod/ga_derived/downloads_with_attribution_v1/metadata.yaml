@@ -32,6 +32,7 @@ labels:
   incremental: true
   schedule: daily
   owner1: gleonard
+  dag: bqetl_google_analytics_derived
 scheduling:
   dag_name: bqetl_google_analytics_derived
   referenced_tables:
@@ -45,4 +46,9 @@ bigquery:
     require_partition_filter: false
     expiration_days: null
   clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
 references: {}
+deprecated: false

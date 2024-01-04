@@ -1,0 +1,14 @@
+friendly_name: Www Site Metrics Summary
+description: |-
+  Please provide a description for the query
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  view.sql:
+  - moz-fx-data-marketing-prod.ga_derived.www_site_metrics_summary_v2
+deprecated: false

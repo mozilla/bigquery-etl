@@ -47,6 +47,7 @@ labels:
   incremental: true
   schedule: daily
   owner1: gleonard
+  dag: bqetl_download_funnel_attribution
 scheduling:
   dag_name: bqetl_download_funnel_attribution
   task_name: ga_derived__downloads_with_attribution__v2
@@ -63,4 +64,9 @@ bigquery:
     require_partition_filter: false
     expiration_days: null
   clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
 references: {}
+deprecated: false

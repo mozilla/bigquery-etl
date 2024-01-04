@@ -11,7 +11,7 @@ from utils.gcp import gke_command
 docs = """
 ### {{ name }}
 
-Built from bigquery-etl repo, [`dags/{{ name }}.py`](https://github.com/mozilla/bigquery-etl/blob/main/dags/{{ name }}.py)
+Built from bigquery-etl repo, [`dags/{{ name }}.py`](https://github.com/mozilla/bigquery-etl/blob/generated-sql/dags/{{ name }}.py)
 
 {% if description != "" -%}
 #### Description
@@ -22,6 +22,11 @@ Built from bigquery-etl repo, [`dags/{{ name }}.py`](https://github.com/mozilla/
 #### Owner
 
 {{ default_args.owner }}
+
+#### Tags
+{% for tag in tags %}
+* {{ tag }}
+{%- endfor %}
 """
 
 

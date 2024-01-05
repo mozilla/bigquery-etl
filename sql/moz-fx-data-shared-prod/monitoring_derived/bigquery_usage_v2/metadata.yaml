@@ -12,16 +12,6 @@ labels:
   owner2: mhirose
 scheduling:
   dag_name: bqetl_monitoring
-  referenced_tables:
-  - - moz-fx-data-shared-prod
-    - monitoring_derived
-    - job_by_organization_v1
-  depends_on:
-  - task_id: monitoring_derived__jobs_by_organization__v1
-    dag_name: bqetl_monitoring
-  arguments:
-  - --date
-  - '{{ ds }}'
 bigquery:
   time_partitioning:
     type: day
@@ -33,5 +23,10 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references: {}
+references:
+  query.sql:
+  - moz-fx-data-marketing-prod.region-us.INFORMATION_SCHEMA.JOBS_BY_PROJECT
+  - moz-fx-data-shared-prod.monitoring_derived.jobs_by_organization_v1
+  - moz-fx-data-shared-prod.region-us.INFORMATION_SCHEMA.JOBS_BY_PROJECT
+  - mozdata.region-us.INFORMATION_SCHEMA.JOBS_BY_PROJECT
 deprecated: false

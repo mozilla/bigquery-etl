@@ -146,16 +146,15 @@ with DAG(
         email=["ascholtz@mozilla.com", "wichan@mozilla.com"],
     )
 
-    monitoring_derived__bigquery_usage__v2 = gke_command(
+    monitoring_derived__bigquery_usage__v2 = bigquery_etl_query(
         task_id="monitoring_derived__bigquery_usage__v2",
-        command=[
-            "python",
-            "sql/moz-fx-data-shared-prod/monitoring_derived/bigquery_usage_v2/query.py",
-        ]
-        + ["--date", "{{ ds }}"],
-        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        destination_table="bigquery_usage_v2",
+        dataset_id="monitoring_derived",
+        project_id="moz-fx-data-shared-prod",
         owner="wichan@mozilla.com",
         email=["ascholtz@mozilla.com", "mhirose@mozilla.com", "wichan@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
     )
 
     monitoring_derived__column_size__v1 = gke_command(

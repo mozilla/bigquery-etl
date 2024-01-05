@@ -1,0 +1,11 @@
+friendly_name: DAP Collector
+description: |-
+  Aggregated measurements from the DAP Collector.
+  See https://mozilla-hub.atlassian.net/browse/FXCTO-13
+dataset_base_acl: derived
+user_facing: false
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

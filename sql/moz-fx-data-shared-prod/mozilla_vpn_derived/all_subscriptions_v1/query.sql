@@ -83,6 +83,7 @@ stripe_subscriptions AS (
     fxa_uid,
     country,
     country_name,
+    state,
     user_registration_date,
     entrypoint_experiment,
     entrypoint_variation,
@@ -111,6 +112,9 @@ stripe_subscriptions AS (
     ) AS pricing_plan,
     -- Stripe billing grace period is 7 day and Paypal is billed by Stripe
     INTERVAL 7 DAY AS billing_grace_period,
+    has_refunds,
+    has_fraudulent_charges,
+    has_fraudulent_charge_refunds,
     promotion_codes,
     promotion_discounts_amount,
   FROM
@@ -160,6 +164,7 @@ apple_iap_subscriptions AS (
     subplat.fxa_uid,
     CAST(NULL AS STRING) AS country,
     CAST(NULL AS STRING) AS country_name,
+    CAST(NULL AS STRING) AS state,
     users.user_registration_date,
     attribution.entrypoint_experiment,
     attribution.entrypoint_variation,
@@ -179,6 +184,9 @@ apple_iap_subscriptions AS (
     "Mozilla VPN" AS product_name,
     CONCAT(subplat.plan_interval_count, "-", subplat.plan_interval, "-", "apple") AS pricing_plan,
     subplat.billing_grace_period,
+    CAST(NULL AS BOOL) AS has_refunds,
+    CAST(NULL AS BOOL) AS has_fraudulent_charges,
+    CAST(NULL AS BOOL) AS has_fraudulent_charge_refunds,
     subplat.promotion_codes,
     CAST(NULL AS INT64) AS promotion_discounts_amount,
   FROM
@@ -229,6 +237,7 @@ google_iap_subscriptions AS (
     subscriptions.fxa_uid,
     subscriptions.country,
     standardized_country.country_name,
+    CAST(NULL AS STRING) AS state,
     users.user_registration_date,
     attribution.entrypoint_experiment,
     attribution.entrypoint_variation,
@@ -256,6 +265,9 @@ google_iap_subscriptions AS (
       (subscriptions.plan_amount / 100)
     ) AS pricing_plan,
     subscriptions.billing_grace_period,
+    CAST(NULL AS BOOL) AS has_refunds,
+    CAST(NULL AS BOOL) AS has_fraudulent_charges,
+    CAST(NULL AS BOOL) AS has_fraudulent_charge_refunds,
     CAST(NULL AS ARRAY<STRING>) AS promotion_codes,
     CAST(NULL AS INT64) AS promotion_discounts_amount,
   FROM

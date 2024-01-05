@@ -4,7 +4,7 @@ import os
 import sys
 from pathlib import Path
 
-import click
+import rich_click as click
 import yaml
 
 from ..cli.utils import is_valid_dir, is_valid_file, sql_dir_option

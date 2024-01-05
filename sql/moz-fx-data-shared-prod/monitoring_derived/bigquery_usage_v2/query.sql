@@ -34,7 +34,7 @@ WITH jobs_by_org AS (
   FROM
     `moz-fx-data-shared-prod.monitoring_derived.jobs_by_organization_v1` AS t1
   LEFT JOIN
-    UNNEST(referenced_tables) AS referenced_tables
+    UNNEST(referenced_tables) AS referenced_table
   ),
   {#- format off #}
   jobs_by_project AS (

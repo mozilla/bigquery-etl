@@ -36,7 +36,6 @@ WITH jobs_by_org AS (
   LEFT JOIN
     UNNEST(referenced_tables) AS referenced_table
   ),
-  {#- format off #}
   jobs_by_project AS (
   {%- for project in DEFAULT_PROJECTS %}
       SELECT
@@ -59,7 +58,6 @@ WITH jobs_by_org AS (
     UNION ALL
   {%- endif %}
   {%- endfor %}
-      {#- format on #}
       )
 
       SELECT DISTINCT

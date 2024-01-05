@@ -89,8 +89,8 @@ WITH jobs_by_org AS (
         jo.error_message,
         jo.resource_warning,
         @submission_date AS submission_date,
-      FROM jobs_by_org jo
-      LEFT JOIN jobs_by_project jp
+      FROM jobs_by_org AS jo
+      LEFT JOIN jobs_by_project AS jp
       USING(source_project,
           creation_date,
           job_id,

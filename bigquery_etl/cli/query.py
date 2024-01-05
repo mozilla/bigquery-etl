@@ -495,7 +495,8 @@ def info(ctx, name, sql_dir, project_id, cost, last_updated):
 
 def _parse_parameter(parameter: str, param_date: str) -> str:
     # TODO: Parse more complex parameters such as macro_ds_add
-    if "{{ds}}" not in parameter:
+    param_name, param_type, param_value = parameter.split(":")
+    if param_type == "DATE" and param_value != "{{ds}}":
         raise ValueError(f"Unable to parse parameter {parameter}")
 
     return f"--parameter={parameter.replace('{{ds}}', param_date)}"
@@ -519,22 +520,22 @@ def _backfill_query(
     """Run a query backfill for a specific date."""
     backfill_date_str = backfill_date.strftime("%Y-%m-%d")
     if backfill_date_str in exclude:
-        click.echo(
-            f"Skipping {query_file_path} backfill for run date {backfill_date_str}"
-        )
+        click.echo(f"Skipping {query_file_path} backfill for run {backfill_date_str}")
         return True
 
     project, dataset, table = extract_from_query_path(query_file_path)
     if destination_table is None:
         destination_table = f"{project}.{dataset}.{table}"
 
-    partition = _get_partition(
-        backfill_date,
-        date_partition_parameter,
-        date_partition_offset,
-        partitioning_type,
-    )
-    if partition is not None:
+    # For partitioned tables, get the partition to write to the correct destination:
+    if (
+        partition := _get_partition(
+            backfill_date,
+            date_partition_parameter,
+            date_partition_offset,
+            partitioning_type,
+        )
+    ) is not None:
         destination_table = f"{destination_table}${partition}"
 
     if not QUALIFIED_TABLE_NAME_RE.match(destination_table):

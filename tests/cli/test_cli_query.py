@@ -543,7 +543,7 @@ class TestQuery:
                 assert len(submission_date_params) == 1
                 assert submission_date_params[0] in expected_submission_date_params
 
-    def test_query_backfill_unpartitioned(self, runner):
+    def test_query_backfill_unpartitioned_with_parameters(self, runner):
         with (
             runner.isolated_filesystem(),
             # Mock client to avoid NotFound
@@ -566,7 +566,10 @@ class TestQuery:
                 "scheduling": {
                     "dag_name": "bqetl_test",
                     "date_partition_parameter": None,
-                    "parameters": ["submission_date:DATE:{{ds}}"],
+                    "parameters": [
+                        "submission_date:DATE:{{ds}}",
+                        "conversion_window:INT64:30",
+                    ],
                 },
             }
 
@@ -610,3 +613,11 @@ class TestQuery:
                 ]
                 assert len(submission_date_params) == 1
                 assert submission_date_params[0] in expected_submission_date_params
+
+                conversion_params = [
+                    arg
+                    for arg in call.args[0]
+                    if "--parameter=conversion_window" in arg
+                ]
+                assert len(conversion_params) == 1
+                assert conversion_params[0] == "--parameter=conversion_window:INT64:30"

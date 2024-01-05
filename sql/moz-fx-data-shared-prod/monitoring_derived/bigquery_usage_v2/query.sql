@@ -88,7 +88,7 @@ WITH jobs_by_org AS (
         jo.error_reason,
         jo.error_message,
         jo.resource_warning,
-        DATE('{date}') AS submission_date,
+        @submission_date AS submission_date,
       FROM jobs_by_org jo
       LEFT JOIN jobs_by_project jp
       USING(source_project,

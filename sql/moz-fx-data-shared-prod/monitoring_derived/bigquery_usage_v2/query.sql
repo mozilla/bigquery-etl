@@ -33,8 +33,8 @@ WITH jobs_by_org AS (
   LEFT JOIN
     UNNEST(referenced_tables) AS referenced_table
 ),
-jobs_by_project AS (
-  {%- for project in DEFAULT_PROJECTS %}
+jobs_by_project AS ({#- format off #}
+{%- for project in DEFAULT_PROJECTS %}
   SELECT
     jp.project_id AS source_project,
     DATE(creation_time) AS creation_date,
@@ -50,10 +50,12 @@ jobs_by_project AS (
   LEFT JOIN
     UNNEST(referenced_tables) AS referenced_table
   WHERE
-    DATE(creation_time) = @submission_date {%- if not loop.last %}
-  UNION ALL
-    {%- endif %}
-    {%- endfor %}
+    DATE(creation_time) = @submission_date
+  {%- if not loop.last %}
+    UNION ALL
+  {%- endif %}
+  {%- endfor %}
+  {#- format on #}
 )
 SELECT DISTINCT
   jo.source_project,

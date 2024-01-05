@@ -54,7 +54,7 @@ WITH jobs_by_org AS (
       LEFT JOIN
         UNNEST(referenced_tables) AS referenced_tables
       WHERE
-        DATE(creation_time) = '{date}'
+        DATE(creation_time) = @submission_date
   {%- if not loop.last %}
     UNION ALL
   {%- endif %}

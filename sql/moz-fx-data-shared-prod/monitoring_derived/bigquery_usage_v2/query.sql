@@ -97,4 +97,4 @@ WITH jobs_by_org AS (
           reference_project_id,
           reference_dataset_id,
           reference_table_id)
-      WHERE creation_date = DATE('{date}')
+      WHERE creation_date = @submission_date

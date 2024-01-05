@@ -30,6 +30,9 @@
       topsite_tile_impressions: 0
       sponsored_topsite_tile_impressions: 0
       organic_topsite_tile_impressions: 0
+      topsite_tile_dismissals: 0
+      sponsored_topsite_tile_dismissals: 0
+      organic_topsite_tile_dismissals: 0
   pocket_interactions:
     - pocket_story_position: 1
       pocket_impressions: 1

@@ -645,7 +645,7 @@ SELECT
   experiment_branch,
   total_events
 FROM
-  `moz-fx-data-shared-prod.mozillavpn_cirrus_derived.event_monitoring_live_v1`
+  `moz-fx-data-shared-prod.mozillavpn_backend_cirrus_derived.event_monitoring_live_v1`
 WHERE
   submission_date > DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY)
 UNION ALL

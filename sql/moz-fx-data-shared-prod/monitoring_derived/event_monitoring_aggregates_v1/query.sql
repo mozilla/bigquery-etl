@@ -2171,7 +2171,7 @@ SELECT
   END AS experiment_branch,
   COUNT(*) AS total_events
 FROM
-  `moz-fx-data-shared-prod.mozillavpn_cirrus_stable.events_v1`
+  `moz-fx-data-shared-prod.mozillavpn_backend_cirrus_stable.events_v1`
 CROSS JOIN
   UNNEST(events) AS event,
     -- Iterator for accessing experiments.

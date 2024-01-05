@@ -276,6 +276,9 @@ fields:
     - name: shopping_settings_user_has_onboarded
       type: BOOLEAN
       mode: NULLABLE
+    - name: shopping_settings_disabled_ads
+      type: BOOLEAN
+      mode: NULLABLE
   - name: counter
     type: RECORD
     mode: NULLABLE

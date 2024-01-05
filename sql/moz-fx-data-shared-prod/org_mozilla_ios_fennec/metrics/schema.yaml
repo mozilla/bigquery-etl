@@ -439,6 +439,15 @@ fields:
         experience. Set in BrowserViewController and updated when changed by user.
 
         '
+    - name: shopping_settings_disabled_ads
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Indicates if the user has opted out of being shown ads in the
+        Fakespot screen
+
+        experience. Set in BrowserViewController and updated when changed by user.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE

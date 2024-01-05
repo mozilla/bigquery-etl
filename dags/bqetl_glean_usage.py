@@ -95,7 +95,7 @@ with DAG(
 
     task_group_mozilla_vpn = TaskGroup("mozilla_vpn")
 
-    task_group_mozillavpn_cirrus = TaskGroup("mozillavpn_cirrus")
+    task_group_mozillavpn_backend_cirrus = TaskGroup("mozillavpn_backend_cirrus")
 
     task_group_mozphab = TaskGroup("mozphab")
 
@@ -281,6 +281,20 @@ with DAG(
         parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
         task_group=task_group_firefox_desktop,
+    )
+
+    checks__warn_mozillavpn_backend_cirrus_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
+        task_id="checks__warn_mozillavpn_backend_cirrus_derived__baseline_clients_last_seen__v1",
+        source_table="baseline_clients_last_seen_v1",
+        dataset_id="mozillavpn_backend_cirrus_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=False,
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+        task_group=task_group_mozillavpn_backend_cirrus,
     )
 
     checks__warn_org_mozilla_connect_firefox_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
@@ -1601,53 +1615,43 @@ with DAG(
         task_group=task_group_mozilla_vpn,
     )
 
-    mozillavpn_cirrus_derived__baseline_clients_daily__v1 = bigquery_etl_query(
-        task_id="mozillavpn_cirrus_derived__baseline_clients_daily__v1",
+    mozillavpn_backend_cirrus_derived__baseline_clients_daily__v1 = bigquery_etl_query(
+        task_id="mozillavpn_backend_cirrus_derived__baseline_clients_daily__v1",
         destination_table="baseline_clients_daily_v1",
-        dataset_id="mozillavpn_cirrus_derived",
+        dataset_id="mozillavpn_backend_cirrus_derived",
         project_id="moz-fx-data-shared-prod",
         owner="ascholtz@mozilla.com",
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        task_group=task_group_mozillavpn_cirrus,
+        task_group=task_group_mozillavpn_backend_cirrus,
     )
 
-    mozillavpn_cirrus_derived__baseline_clients_first_seen__v1 = bigquery_etl_query(
-        task_id="mozillavpn_cirrus_derived__baseline_clients_first_seen__v1",
+    mozillavpn_backend_cirrus_derived__baseline_clients_first_seen__v1 = bigquery_etl_query(
+        task_id="mozillavpn_backend_cirrus_derived__baseline_clients_first_seen__v1",
         destination_table="baseline_clients_first_seen_v1",
-        dataset_id="mozillavpn_cirrus_derived",
+        dataset_id="mozillavpn_backend_cirrus_derived",
         project_id="moz-fx-data-shared-prod",
         owner="ascholtz@mozilla.com",
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=True,
         parameters=["submission_date:DATE:{{ds}}"],
-        task_group=task_group_mozillavpn_cirrus,
+        task_group=task_group_mozillavpn_backend_cirrus,
     )
 
-    mozillavpn_cirrus_derived__baseline_clients_last_seen__v1 = bigquery_etl_query(
-        task_id="mozillavpn_cirrus_derived__baseline_clients_last_seen__v1",
-        destination_table="baseline_clients_last_seen_v1",
-        dataset_id="mozillavpn_cirrus_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=True,
-        task_group=task_group_mozillavpn_cirrus,
-    )
-
-    mozillavpn_cirrus_derived__metrics_clients_daily__v1 = bigquery_etl_query(
-        task_id="mozillavpn_cirrus_derived__metrics_clients_daily__v1",
-        destination_table="metrics_clients_daily_v1",
-        dataset_id="mozillavpn_cirrus_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        task_group=task_group_mozillavpn_cirrus,
+    mozillavpn_backend_cirrus_derived__baseline_clients_last_seen__v1 = (
+        bigquery_etl_query(
+            task_id="mozillavpn_backend_cirrus_derived__baseline_clients_last_seen__v1",
+            destination_table="baseline_clients_last_seen_v1",
+            dataset_id="mozillavpn_backend_cirrus_derived",
+            project_id="moz-fx-data-shared-prod",
+            owner="ascholtz@mozilla.com",
+            email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+            date_partition_parameter="submission_date",
+            depends_on_past=True,
+            task_group=task_group_mozillavpn_backend_cirrus,
+        )
     )
 
     mozillavpn_derived__baseline_clients_daily__v1 = bigquery_etl_query(
@@ -3463,6 +3467,10 @@ with DAG(
         firefox_desktop_derived__baseline_clients_last_seen__v1
     )
 
+    checks__warn_mozillavpn_backend_cirrus_derived__baseline_clients_last_seen__v1.set_upstream(
+        mozillavpn_backend_cirrus_derived__baseline_clients_last_seen__v1
+    )
+
     checks__warn_org_mozilla_connect_firefox_derived__baseline_clients_last_seen__v1.set_upstream(
         org_mozilla_connect_firefox_derived__baseline_clients_last_seen__v1
     )
@@ -3979,27 +3987,23 @@ with DAG(
         wait_for_copy_deduplicate_all
     )
 
-    mozillavpn_cirrus_derived__baseline_clients_daily__v1.set_upstream(
+    mozillavpn_backend_cirrus_derived__baseline_clients_daily__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
 
-    mozillavpn_cirrus_derived__baseline_clients_daily__v1.set_upstream(
-        mozillavpn_cirrus_derived__baseline_clients_first_seen__v1
+    mozillavpn_backend_cirrus_derived__baseline_clients_daily__v1.set_upstream(
+        mozillavpn_backend_cirrus_derived__baseline_clients_first_seen__v1
     )
 
-    mozillavpn_cirrus_derived__baseline_clients_first_seen__v1.set_upstream(
+    mozillavpn_backend_cirrus_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
-    mozillavpn_cirrus_derived__baseline_clients_first_seen__v1.set_upstream(
+    mozillavpn_backend_cirrus_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_telemetry_derived__core_clients_first_seen__v1
     )
 
-    mozillavpn_cirrus_derived__baseline_clients_last_seen__v1.set_upstream(
-        mozillavpn_cirrus_derived__baseline_clients_daily__v1
-    )
-
-    mozillavpn_cirrus_derived__metrics_clients_daily__v1.set_upstream(
-        wait_for_copy_deduplicate_all
+    mozillavpn_backend_cirrus_derived__baseline_clients_last_seen__v1.set_upstream(
+        mozillavpn_backend_cirrus_derived__baseline_clients_daily__v1
     )
 
     mozillavpn_derived__baseline_clients_daily__v1.set_upstream(

@@ -52,7 +52,7 @@ WITH jobs_by_org AS (
       FROM
         `{{project}}.region-us.INFORMATION_SCHEMA.JOBS_BY_PROJECT` jp
       LEFT JOIN
-        UNNEST(referenced_tables) AS referenced_tables
+        UNNEST(referenced_tables) AS referenced_table
       WHERE
         DATE(creation_time) = @submission_date
   {%- if not loop.last %}

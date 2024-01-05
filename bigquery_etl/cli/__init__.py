@@ -4,7 +4,7 @@ import logging
 import warnings
 from pathlib import Path
 
-import click
+import rich_click as click
 
 from .._version import __version__
 

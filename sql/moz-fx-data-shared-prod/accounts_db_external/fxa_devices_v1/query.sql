@@ -1,6 +1,6 @@
 SELECT
   TO_HEX(uid) AS uid,
-  id,
+  TO_HEX(id) AS id,
   name,
   nameUtf8,
   type,

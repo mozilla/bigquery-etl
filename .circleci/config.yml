@@ -40,7 +40,7 @@ jobs:
           name: Build
           command: |
             python3 -m venv venv/
-            venv/bin/pip install pip-tools --constraint requirements.in
+            venv/bin/pip install --no-deps -r requirements.txt
             venv/bin/pip-sync --pip-args=--no-deps
       - run:
           name: Yamllint Test
@@ -84,15 +84,13 @@ jobs:
     docker: *docker
     steps:
       - checkout
+      - *restore_venv_cache
+      - *build
       - run:
           name: Verify that requirements.txt contains the right dependencies for
             this python version
-          # use `--constraint` with `requirements.in` not `requirements.txt`
-          # because for pip>=20.3 "Constraints are only allowed to take the form
-          # of a package name and a version specifier"
           command: |
-            pip install pip-tools --constraint requirements.in
-            pip-compile --allow-unsafe --generate-hashes --quiet
+            venv/bin/pip-compile --allow-unsafe --generate-hashes --quiet
             git diff --exit-code -G '^ *[^# ]' -- requirements.txt
   test-sql:
     docker: *docker
@@ -490,12 +488,6 @@ jobs:
           command: |
             mkdir -p /tmp/workspace/private-generated-sql
 
-            mkdir -p /tmp/workspace/private-generated-sql/dags
-            PATH="venv/bin:$PATH" script/bqetl dag generate \
-              --dags-config dags.yaml \
-              --sql-dir ~/private-bigquery-etl/sql/ \
-              --output-dir /tmp/workspace/private-generated-sql/dags/
-
             cp -r sql/ /tmp/workspace/private-generated-sql/sql
             # Don't depend on dry run for PRs
             PATH="venv/bin:$PATH" script/bqetl generate all \
@@ -511,6 +503,15 @@ jobs:
             PATH="venv/bin:$PATH" script/bqetl metadata update \
               --sql-dir /tmp/workspace/private-generated-sql/sql/ \
               /tmp/workspace/private-generated-sql/sql/
+
+            # Change directory to generate DAGs so `sql_file_path` values are relative to the repo root.
+            export PATH="$PWD/venv/bin:$PATH"
+            export PYTHONPATH="$PWD:$PYTHONPATH"
+            bqetl_script="$PWD/script/bqetl"
+            cd ~/private-bigquery-etl
+            mkdir -p /tmp/workspace/private-generated-sql/dags
+            $bqetl_script dag generate \
+              --output-dir /tmp/workspace/private-generated-sql/dags/
       - persist_to_workspace:
           root: /tmp/workspace
           paths:

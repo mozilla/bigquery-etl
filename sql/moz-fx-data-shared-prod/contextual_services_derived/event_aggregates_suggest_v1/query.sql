@@ -1,5 +1,34 @@
 WITH combined AS (
   SELECT
+    metrics.uuid.quick_suggest_context_id AS context_id,
+    DATE(submission_timestamp) AS submission_date,
+    'desktop' AS form_factor,
+    normalized_country_code AS country,
+    LOWER(metrics.string.quick_suggest_advertiser) AS advertiser,
+    SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
+    client_info.app_channel AS release_channel,
+    metrics.quantity.quick_suggest_position AS position,
+    IF(
+      NULLIF(metrics.string.quick_suggest_request_id, "") IS NULL,
+      'remote settings',
+      'merino'
+    ) AS provider,
+    metrics.string.quick_suggest_match_type AS match_type,
+    COALESCE(
+      metrics.boolean.quick_suggest_improve_suggest_experience,
+      FALSE
+    ) AS suggest_data_sharing_enabled,
+    IF(
+      metrics.string.quick_suggest_ping_type = "quicksuggest-click",
+      "click",
+      "impression"
+    ) AS event_type,
+  FROM
+    `moz-fx-data-shared-prod.firefox_desktop.quick_suggest`
+  WHERE
+    metrics.string.quick_suggest_ping_type IN ("quicksuggest-click", "quicksuggest-impression")
+  UNION ALL
+  SELECT
     context_id,
     DATE(submission_timestamp) AS submission_date,
     'desktop' AS form_factor,
@@ -20,6 +49,10 @@ WITH combined AS (
     'impression' AS event_type,
   FROM
     `moz-fx-data-shared-prod.contextual_services.quicksuggest_impression`
+  WHERE
+    -- For firefox 116+ use firefox_desktop.quick_suggest instead
+    -- https://bugzilla.mozilla.org/show_bug.cgi?id=1836283
+    SAFE_CAST(metadata.user_agent.version AS INT64) < 116
   UNION ALL
   SELECT
     context_id,
@@ -42,6 +75,10 @@ WITH combined AS (
     'click' AS event_type,
   FROM
     `moz-fx-data-shared-prod.contextual_services.quicksuggest_click`
+  WHERE
+    -- For firefox 116+ use firefox_desktop.quick_suggest instead
+    -- https://bugzilla.mozilla.org/show_bug.cgi?id=1836283
+    SAFE_CAST(metadata.user_agent.version AS INT64) < 116
 ),
 with_event_count AS (
   SELECT

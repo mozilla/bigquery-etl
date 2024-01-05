@@ -10,7 +10,7 @@ description: |-
 labels:
   application: firefox
 owners:
-  - dthorn@mozilla.com
+  - ascholtz@mozilla.com
 workgroup_access:
   - role: roles/bigquery.dataViewer
     members:

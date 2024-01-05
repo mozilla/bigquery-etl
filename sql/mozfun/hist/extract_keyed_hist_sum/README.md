@@ -1,4 +1,4 @@
-# Extract Keyed Histogram Sum
+### Extract Keyed Histogram Sum
 
 Takes a keyed histogram and returns a single number:
 the sum of all keys it contains. The expected input

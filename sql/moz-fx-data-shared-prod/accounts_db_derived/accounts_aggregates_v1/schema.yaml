@@ -1,0 +1,22 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Date of aggregation
+- name: active
+  type: BOOLEAN
+  mode: NULLABLE
+  description: |
+    Whether the account is active. Account is considered active if it is not
+    disabled and has a verified email address.
+- name: two_factor_auth_enabled
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether the account has 2FA enabled
+- name: recovery_keys_enabled
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether the account has a recovery key
+- name: total_accounts
+  type: INTEGER
+  mode: NULLABLE

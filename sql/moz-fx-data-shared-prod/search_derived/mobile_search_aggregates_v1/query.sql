@@ -21,6 +21,7 @@ SELECT
   SUM(ad_click_organic) AS ad_click_organic,
   SUM(search_with_ads) AS search_with_ads,
   SUM(unknown) AS unknown,
+  CAST(NULL AS string) normalized_engine,
 FROM
   mobile_search_clients_daily_v1
 WHERE

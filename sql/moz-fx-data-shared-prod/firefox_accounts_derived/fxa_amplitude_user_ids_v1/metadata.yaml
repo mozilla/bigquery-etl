@@ -6,7 +6,7 @@ description: >
   for sync pings which contain a truncated 32-character version of the same
   hash.
 owners:
-  - dthorn@mozilla.com
+  - kik@mozilla.com
 labels:
   application: fxa
   incremental: true

@@ -2,15 +2,17 @@
 friendly_name: FxA Content Events
 description: Selected Amplitude events extracted from FxA content server logs
 owners:
-  - dthorn@mozilla.com
+  - kik@mozilla.com
 labels:
   application: fxa
   incremental: true
   schedule: daily
-scheduling:
-  dag_name: bqetl_fxa_events
-  arguments: ['--schema_update_option=ALLOW_FIELD_ADDITION']
-  referenced_tables: []
+# This is no longer scheduled because the underlying FxA tables have been removed.
+# FxA content server events are now included in the fxa_gcp_stdout_events_v1 ETL.
+#scheduling:
+#  dag_name: bqetl_fxa_events
+#  arguments: ['--schema_update_option=ALLOW_FIELD_ADDITION']
+#  referenced_tables: []
 bigquery:
   time_partitioning:
     type: day

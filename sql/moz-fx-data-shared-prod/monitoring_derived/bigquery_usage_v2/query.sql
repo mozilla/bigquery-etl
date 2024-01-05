@@ -13,9 +13,9 @@ WITH jobs_by_org AS (
     cache_hit,
     state,
     statement_type,
-    referenced_tables.project_id AS reference_project_id,
-    referenced_tables.dataset_id AS reference_dataset_id,
-    referenced_tables.table_id AS reference_table_id,
+    referenced_table.project_id AS reference_project_id,
+    referenced_table.dataset_id AS reference_dataset_id,
+    referenced_table.table_id AS reference_table_id,
     destination_table.project_id AS destination_project_id,
     destination_table.dataset_id AS destination_dataset_id,
     destination_table.table_id AS destination_table_id,
@@ -48,7 +48,7 @@ jobs_by_project AS (
   FROM
     `{{project}}.region-us.INFORMATION_SCHEMA.JOBS_BY_PROJECT` AS jp
   LEFT JOIN
-    UNNEST(referenced_table) AS referenced_table
+    UNNEST(referenced_tables) AS referenced_table
   WHERE
     DATE(creation_time) = @submission_date {%- if not loop.last %}
   UNION ALL

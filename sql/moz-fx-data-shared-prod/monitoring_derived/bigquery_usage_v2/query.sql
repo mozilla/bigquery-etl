@@ -6,7 +6,7 @@
 
 WITH jobs_by_org AS (
   SELECT
-    t1.project_id AS source_project,
+    jobs.project_id AS source_project,
     creation_date,
     job_id,
     job_type,
@@ -32,7 +32,7 @@ WITH jobs_by_org AS (
     error_result.message AS error_message,
     query_info_resource_warning AS resource_warning,
   FROM
-    `moz-fx-data-shared-prod.monitoring_derived.jobs_by_organization_v1` AS t1
+    `moz-fx-data-shared-prod.monitoring_derived.jobs_by_organization_v1` AS jobs
   LEFT JOIN
     UNNEST(referenced_tables) AS referenced_table
   ),

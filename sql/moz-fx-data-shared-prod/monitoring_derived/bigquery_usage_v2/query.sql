@@ -50,7 +50,7 @@ WITH jobs_by_org AS (
         REGEXP_EXTRACT(query, r'Username: (.*?),') AS username,
         REGEXP_EXTRACT(query, r'Query ID: (\\w+), ') AS query_id,
       FROM
-        `{{project}}.region-us.INFORMATION_SCHEMA.JOBS_BY_PROJECT` jp
+        `{{project}}.region-us.INFORMATION_SCHEMA.JOBS_BY_PROJECT` AS jp
       LEFT JOIN
         UNNEST(referenced_tables) AS referenced_table
       WHERE

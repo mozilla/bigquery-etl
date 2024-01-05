@@ -48,7 +48,7 @@ WITH jobs_by_org AS (
         referenced_tables.table_id AS reference_table_id,
         user_email,
         REGEXP_EXTRACT(query, r'Username: (.*?),') AS username,
-        REGEXP_EXTRACT(query, r'Query ID: (\\w+), ') AS query_id,
+        REGEXP_EXTRACT(query, r'Query ID: (\w+), ') AS query_id,
       FROM
         `{{project}}.region-us.INFORMATION_SCHEMA.JOBS_BY_PROJECT` AS jp
       LEFT JOIN

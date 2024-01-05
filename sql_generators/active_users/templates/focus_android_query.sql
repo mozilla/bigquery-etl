@@ -157,7 +157,7 @@ unioned_with_searches AS (
     search.organic_search_count,
     search.search_count,
     search.search_with_ads,
-    NULL AS active_hours_sum
+    CAST(NULL AS FLOAT64) AS active_hours_sum
   FROM
     unioned
   LEFT JOIN

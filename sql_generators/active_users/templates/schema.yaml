@@ -90,5 +90,5 @@ fields:
   type: INTEGER
   mode: NULLABLE
 - name: active_hours
-  type: INTEGER
+  type: FLOAT64
   mode: NULLABLE

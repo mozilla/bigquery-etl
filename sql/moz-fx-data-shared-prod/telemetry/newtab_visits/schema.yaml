@@ -166,6 +166,15 @@ fields:
   - name: topsite_tile_displayed_sov_branch
     type: STRING
     mode: NULLABLE
+  - name: topsite_tile_dismissals
+    type: INTEGER
+    mode: NULLABLE
+  - name: sponsored_topsite_tile_dismissals
+    type: INTEGER
+    mode: NULLABLE
+  - name: organic_topsite_tile_dismissals
+    type: INTEGER
+    mode: NULLABLE
 - name: pocket_interactions
   type: RECORD
   mode: REPEATED

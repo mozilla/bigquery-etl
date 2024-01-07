@@ -399,6 +399,13 @@ fields:
         two values will be the same.
 
         '
+    - name: do_task_implementation
+      type: STRING
+      mode: NULLABLE
+      description: 'Which implementation of `do-task` was used: "JavaScript" by default
+        or "C++" if a Nimbus rollback was acted upon.
+
+        '
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

@@ -4487,6 +4487,18 @@ fields:
       description: 'The number of consecutive unstable launch attempts.
 
         '
+    - name: data_storage_alternate_services
+      type: INTEGER
+      mode: NULLABLE
+      description: The number of entries stored in the AlternateServices nsIDataStorage
+    - name: data_storage_client_auth_remember_list
+      type: INTEGER
+      mode: NULLABLE
+      description: The number of entries stored in the ClientAuthRememberList nsIDataStorage
+    - name: data_storage_site_security_service_state
+      type: INTEGER
+      mode: NULLABLE
+      description: The number of entries stored in the SiteSecurityServiceState nsIDataStorage
   - name: labeled_boolean
     type: RECORD
     mode: NULLABLE

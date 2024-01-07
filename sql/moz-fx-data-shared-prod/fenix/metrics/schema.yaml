@@ -2761,6 +2761,15 @@ fields:
     - name: gpu_process_unstable_launch_attempts
       type: INTEGER
       mode: NULLABLE
+    - name: data_storage_alternate_services
+      type: INTEGER
+      mode: NULLABLE
+    - name: data_storage_client_auth_remember_list
+      type: INTEGER
+      mode: NULLABLE
+    - name: data_storage_site_security_service_state
+      type: INTEGER
+      mode: NULLABLE
   - name: string
     type: RECORD
     mode: NULLABLE

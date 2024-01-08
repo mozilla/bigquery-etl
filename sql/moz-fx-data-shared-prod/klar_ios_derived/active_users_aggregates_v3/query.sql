@@ -122,7 +122,7 @@ baseline_with_searches AS (
       SAFE_CAST(NULLIF(SPLIT(baseline.normalized_os_version, ".")[SAFE_OFFSET(2)], "") AS INTEGER),
       0
     ) AS os_version_patch,
-    baseline.durations,
+    baseline.durations AS durations,
     baseline.submission_date,
     baseline.uri_count,
     baseline.is_default_browser,
@@ -178,6 +178,7 @@ todays_metrics AS (
     normalized_os_version AS os_version,
     os_version_major,
     os_version_minor,
+    durations,
     submission_date,
     days_since_seen,
     client_id,
@@ -219,9 +220,11 @@ SELECT
     search_with_ads,
     uri_count,
     active_hours_sum,
-    first_seen_date
+    first_seen_date,
+    durations
   ),
-  COUNT(DISTINCT IF(days_since_seen = 0, client_id, NULL)) AS dau,
+  COUNT(DISTINCT IF(days_since_seen = 0 AND durations > 0, client_id, NULL)) AS dau,
+  COUNT(DISTINCT IF(days_since_seen = 0, client_id, NULL)) AS daily_users,
   COUNT(DISTINCT IF(days_since_seen < 7, client_id, NULL)) AS wau,
   COUNT(DISTINCT client_id) AS mau,
   COUNT(DISTINCT IF(submission_date = first_seen_date, client_id, NULL)) AS new_profiles,

@@ -4,7 +4,7 @@ WITH dau_sum AS (
   SELECT
     SUM(dau),
   FROM
-    `moz-fx-data-shared-prod.fenix_derived.active_users_aggregates_v2`
+    `moz-fx-data-shared-prod.fenix_derived.active_users_aggregates_v3`
   WHERE
     submission_date = @submission_date
 ),

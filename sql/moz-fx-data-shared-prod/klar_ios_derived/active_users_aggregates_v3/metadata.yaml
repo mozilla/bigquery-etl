@@ -1,13 +1,15 @@
-friendly_name: Focus iOS Active Users Aggregates
+friendly_name: Klar iOS Active Users Aggregates
 description: |-
   This table contains daily/weekly/montly active users,
-  new profiles, searches and ad_clicks for Focus iOS,
+  new profiles, searches and ad_clicks for Klar iOS,
   aggregated by submission_date, attribution, channel,
   country, city, device model, distribution_id, os details
   and activity segment.
 
-  For Firefox Desktop, qualified daily active users QDAU
-  are calculated. For mobile apps QDAU = DAU.
+  - dau is counting the users who reported a ping on the date and
+  are qualified as active users.
+  - daily_users counts all the users who reported a ping on the date.
+  Only dau is exposed in the view telemetry.active_users_aggregates.
 
   The table is labeled as "change_controlled", which implies
   that changes require the approval of at least one owner.
@@ -24,7 +26,7 @@ labels:
   owner1: lvargas
 scheduling:
   dag_name: bqetl_analytics_aggregations
-  task_name: focus_ios_active_users_aggregates
+  task_name: klar_ios_active_users_aggregates
 bigquery:
   time_partitioning:
     type: day
@@ -43,12 +45,12 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   checks.sql:
-  - moz-fx-data-shared-prod.focus_ios_derived.active_users_aggregates_v2
-  - moz-fx-data-shared-prod.org_mozilla_ios_focus_live.baseline_v1
+  - moz-fx-data-shared-prod.klar_ios_derived.active_users_aggregates_v3
+  - moz-fx-data-shared-prod.org_mozilla_ios_klar_live.baseline_v1
   query.sql:
   - fenix.firefox_android_clients
   - firefox_ios.firefox_ios_clients
-  - moz-fx-data-shared-prod.focus_ios.clients_last_seen_joined
+  - moz-fx-data-shared-prod.klar_ios.clients_last_seen_joined
   - moz-fx-data-shared-prod.search_derived.mobile_search_clients_daily_v1
   - mozdata.static.csa_gblmkt_languages
 deprecated: false

@@ -128,9 +128,9 @@ with DAG(
         retries=0,
     )
 
-    checks__warn_fenix_derived__active_users_aggregates__v2 = bigquery_dq_check(
-        task_id="checks__warn_fenix_derived__active_users_aggregates__v2",
-        source_table="active_users_aggregates_v2",
+    checks__warn_fenix_derived__active_users_aggregates__v3 = bigquery_dq_check(
+        task_id="checks__warn_fenix_derived__active_users_aggregates__v3",
+        source_table="active_users_aggregates_v3",
         dataset_id="fenix_derived",
         project_id="moz-fx-data-shared-prod",
         is_dq_check_fail=False,
@@ -164,9 +164,9 @@ with DAG(
         )
     )
 
-    checks__warn_firefox_ios_derived__active_users_aggregates__v2 = bigquery_dq_check(
-        task_id="checks__warn_firefox_ios_derived__active_users_aggregates__v2",
-        source_table="active_users_aggregates_v2",
+    checks__warn_firefox_ios_derived__active_users_aggregates__v3 = bigquery_dq_check(
+        task_id="checks__warn_firefox_ios_derived__active_users_aggregates__v3",
+        source_table="active_users_aggregates_v3",
         dataset_id="firefox_ios_derived",
         project_id="moz-fx-data-shared-prod",
         is_dq_check_fail=False,
@@ -181,9 +181,9 @@ with DAG(
         retries=0,
     )
 
-    checks__warn_focus_android_derived__active_users_aggregates__v2 = bigquery_dq_check(
-        task_id="checks__warn_focus_android_derived__active_users_aggregates__v2",
-        source_table="active_users_aggregates_v2",
+    checks__warn_focus_android_derived__active_users_aggregates__v3 = bigquery_dq_check(
+        task_id="checks__warn_focus_android_derived__active_users_aggregates__v3",
+        source_table="active_users_aggregates_v3",
         dataset_id="focus_android_derived",
         project_id="moz-fx-data-shared-prod",
         is_dq_check_fail=False,
@@ -198,9 +198,9 @@ with DAG(
         retries=0,
     )
 
-    checks__warn_focus_ios_derived__active_users_aggregates__v2 = bigquery_dq_check(
-        task_id="checks__warn_focus_ios_derived__active_users_aggregates__v2",
-        source_table="active_users_aggregates_v2",
+    checks__warn_focus_ios_derived__active_users_aggregates__v3 = bigquery_dq_check(
+        task_id="checks__warn_focus_ios_derived__active_users_aggregates__v3",
+        source_table="active_users_aggregates_v3",
         dataset_id="focus_ios_derived",
         project_id="moz-fx-data-shared-prod",
         is_dq_check_fail=False,
@@ -215,9 +215,9 @@ with DAG(
         retries=0,
     )
 
-    checks__warn_klar_ios_derived__active_users_aggregates__v2 = bigquery_dq_check(
-        task_id="checks__warn_klar_ios_derived__active_users_aggregates__v2",
-        source_table="active_users_aggregates_v2",
+    checks__warn_klar_ios_derived__active_users_aggregates__v3 = bigquery_dq_check(
+        task_id="checks__warn_klar_ios_derived__active_users_aggregates__v3",
+        source_table="active_users_aggregates_v3",
         dataset_id="klar_ios_derived",
         project_id="moz-fx-data-shared-prod",
         is_dq_check_fail=False,
@@ -234,7 +234,7 @@ with DAG(
 
     fenix_active_users_aggregates = bigquery_etl_query(
         task_id="fenix_active_users_aggregates",
-        destination_table="active_users_aggregates_v2",
+        destination_table="active_users_aggregates_v3",
         dataset_id="fenix_derived",
         project_id="moz-fx-data-shared-prod",
         owner="lvargas@mozilla.com",
@@ -264,7 +264,7 @@ with DAG(
 
     firefox_ios_active_users_aggregates = bigquery_etl_query(
         task_id="firefox_ios_active_users_aggregates",
-        destination_table="active_users_aggregates_v2",
+        destination_table="active_users_aggregates_v3",
         dataset_id="firefox_ios_derived",
         project_id="moz-fx-data-shared-prod",
         owner="lvargas@mozilla.com",
@@ -279,7 +279,7 @@ with DAG(
 
     focus_android_active_users_aggregates = bigquery_etl_query(
         task_id="focus_android_active_users_aggregates",
-        destination_table="active_users_aggregates_v2",
+        destination_table="active_users_aggregates_v3",
         dataset_id="focus_android_derived",
         project_id="moz-fx-data-shared-prod",
         owner="lvargas@mozilla.com",
@@ -294,7 +294,7 @@ with DAG(
 
     focus_ios_active_users_aggregates = bigquery_etl_query(
         task_id="focus_ios_active_users_aggregates",
-        destination_table="active_users_aggregates_v2",
+        destination_table="active_users_aggregates_v3",
         dataset_id="focus_ios_derived",
         project_id="moz-fx-data-shared-prod",
         owner="lvargas@mozilla.com",
@@ -309,7 +309,7 @@ with DAG(
 
     klar_ios_active_users_aggregates = bigquery_etl_query(
         task_id="klar_ios_active_users_aggregates",
-        destination_table="active_users_aggregates_v2",
+        destination_table="active_users_aggregates_v3",
         dataset_id="klar_ios_derived",
         project_id="moz-fx-data-shared-prod",
         owner="lvargas@mozilla.com",
@@ -399,7 +399,7 @@ with DAG(
         active_users_aggregates_v1
     )
 
-    checks__warn_fenix_derived__active_users_aggregates__v2.set_upstream(
+    checks__warn_fenix_derived__active_users_aggregates__v3.set_upstream(
         fenix_active_users_aggregates
     )
 
@@ -407,19 +407,19 @@ with DAG(
         firefox_desktop_active_users_aggregates
     )
 
-    checks__warn_firefox_ios_derived__active_users_aggregates__v2.set_upstream(
+    checks__warn_firefox_ios_derived__active_users_aggregates__v3.set_upstream(
         firefox_ios_active_users_aggregates
     )
 
-    checks__warn_focus_android_derived__active_users_aggregates__v2.set_upstream(
+    checks__warn_focus_android_derived__active_users_aggregates__v3.set_upstream(
         focus_android_active_users_aggregates
     )
 
-    checks__warn_focus_ios_derived__active_users_aggregates__v2.set_upstream(
+    checks__warn_focus_ios_derived__active_users_aggregates__v3.set_upstream(
         focus_ios_active_users_aggregates
     )
 
-    checks__warn_klar_ios_derived__active_users_aggregates__v2.set_upstream(
+    checks__warn_klar_ios_derived__active_users_aggregates__v3.set_upstream(
         klar_ios_active_users_aggregates
     )
 

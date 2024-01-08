@@ -1,0 +1,21 @@
+fields:
+- description: Date corresponding to the unique client count
+  mode: NULLABLE
+  name: date_attributed
+  type: DATE
+- description: A string representing the app the client activity occurred on
+  mode: NULLABLE
+  name: meta_attribution_app
+  type: INTEGER
+- description: Attributable channel
+  mode: NULLABLE
+  name: normalized_channel
+  type: INTEGER
+- description: Country corresponding to the unique client
+  mode: NULLABLE
+  name: country
+  type: DATE
+- description: The number of clients provided by meta attributable data
+  mode: NULLABLE
+  name: client_count
+  type: DATE

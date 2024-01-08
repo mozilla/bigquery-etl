@@ -1,0 +1,28 @@
+friendly_name: Meta Attribution Country Counts
+description: |-
+  Aggregated daily country counts of Meta attribution data.
+
+  This table should be accessed through the user-facing view
+  `fenix.meta_attribution_country_counts`.
+
+owners:
+- rvasquez@mozilla.com
+labels:
+  application: firefox_android
+  incremental: true
+  schedule: daily
+  owner1: rvasquez@mozilla.com
+scheduling:
+  dag_name: bqetl_org_mozilla_firefox_derived
+bigquery:
+  time_partitioning:
+    type: day
+    field: date_attributed
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+  fields:
+  - meta_attribution_app
+  - normalized_channel
+  - country
+references: {}

@@ -8253,12 +8253,14 @@ staging AS (
     cnt,
     CASE
       WHEN metric LIKE 'use_counter_css_doc_%'
+        OR metric LIKE 'use_counter_deprecated_ops_doc_%'
         THEN SAFE_DIVIDE(cnt, use_counter_content_documents_destroyed)
       ELSE NULL
     END AS doc_rate,
     CASE
       WHEN metric LIKE 'use_counter_css_page_%'
         OR metric LIKE 'use_counter_page_%'
+        OR metric LIKE 'use_counter_deprecated_ops_page_%'
         THEN SAFE_DIVIDE(cnt, use_counter_top_level_content_documents_destroyed)
       ELSE NULL
     END AS page_rate,

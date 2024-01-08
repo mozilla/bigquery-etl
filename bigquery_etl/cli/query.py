@@ -1321,11 +1321,17 @@ def _initialize_in_parallel(
     help="Dry run the initialization",
 )
 @parallelism_option(default=DEFAULT_INIT_PARALLELISM)
+@click.option(
+    "--skip-existing",
+    "--skip_existing",
+    help="Skip initialization for existing artifacts. "
+    + "This ensures that artifacts, like materialized views only get initialized if they don't already exist.",
+    default=False,
+    is_flag=True,
+)
 @click.pass_context
-def initialize(ctx, name, sql_dir, project_id, dry_run, parallelism):
+def initialize(ctx, name, sql_dir, project_id, dry_run, parallelism, skip_existing):
     """Create the destination table for the provided query."""
-    client = bigquery.Client()
-
     if not is_authenticated():
         click.echo("Authentication required for creating tables.", err=True)
         sys.exit(1)
@@ -1349,7 +1355,11 @@ def initialize(ctx, name, sql_dir, project_id, dry_run, parallelism):
         )
         sys.exit(1)
 
-    for query_file in query_files:
+    def _initialize(query_file):
+        client = bigquery.Client()
+        project, dataset, destination_table = extract_from_query_path(query_file)
+        full_table_id = f"{project}.{dataset}.{destination_table}"
+
         sql_content = query_file.read_text()
 
         # Enable initialization from query.sql files
@@ -1357,14 +1367,11 @@ def initialize(ctx, name, sql_dir, project_id, dry_run, parallelism):
         # This does not currently verify the accuracy of the schema or that it
         # matches the query.
         if "is_init()" in sql_content:
-            project = query_file.parent.parent.parent.name
-            dataset = query_file.parent.parent.name
-            destination_table = query_file.parent.name
-            full_table_id = f"{project}.{dataset}.{destination_table}"
-
             try:
                 table = client.get_table(full_table_id)
-                if table.num_rows > 0:
+                if skip_existing:
+                    return
+                elif table.num_rows > 0:
                     raise click.ClickException(
                         f"Table {full_table_id} already exists and contains data. The initialization process is terminated."
                     )
@@ -1412,12 +1419,19 @@ def initialize(ctx, name, sql_dir, project_id, dry_run, parallelism):
             init_files = Path(query_file.parent).rglob("init.sql")
 
             for init_file in init_files:
-                project = init_file.parent.parent.parent.name
                 client = bigquery.Client(project=project)
+
+                if skip_existing:
+                    try:
+                        client.get_table(full_table_id)
+                        # table exists; skip initialization
+                        continue
+                    except NotFound:
+                        # continue with creating the table
+                        pass
 
                 with open(init_file) as init_file_stream:
                     init_sql = init_file_stream.read()
-                    dataset = Path(init_file).parent.parent.name
                     job_config = bigquery.QueryJobConfig(
                         dry_run=dry_run,
                         default_dataset=f"{project}.{dataset}",
@@ -1437,6 +1451,15 @@ def initialize(ctx, name, sql_dir, project_id, dry_run, parallelism):
 
                     if not dry_run:
                         job.result()
+
+    with ThreadPool(parallelism) as pool:
+        failed_initializations = [r for r in pool.map(_initialize, query_files) if r]
+
+    if len(failed_initializations) > 0:
+        click.echo("The following tables could not be deployed:")
+        for failed_deploy in failed_initializations:
+            click.echo(failed_deploy)
+        sys.exit(1)
 
 
 @query.command(

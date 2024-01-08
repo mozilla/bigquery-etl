@@ -18,5 +18,7 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references: {}
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.mozillavpn_backend_cirrus_derived.baseline_clients_daily_v1
 deprecated: false

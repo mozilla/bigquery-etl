@@ -5,14 +5,7 @@ owners:
 - wichan@mozilla.com
 labels:
   incremental: true
-  schedule: daily
-  dag: bqetl_monitoring
   owner1: wichan
-scheduling:
-  dag_name: bqetl_monitoring
-  arguments:
-  - --date
-  - '{{ ds }}'
 bigquery:
   time_partitioning:
     type: day
@@ -20,9 +13,6 @@ bigquery:
     require_partition_filter: true
     expiration_days: null
   clustering: null
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:mozilla-confidential
+workgroup_access: []
 references: {}
-deprecated: false
+deprecated: true

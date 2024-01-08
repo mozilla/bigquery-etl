@@ -97,7 +97,8 @@ def generate(target_project, output_dir, use_cloud_function):
     # metadata template
     metadata_template = "metadata.yaml"
     # schema template
-    schema_template = "schema.yaml"
+    desktop_schema_template = "desktop_schema.yaml"
+    mobile_schema_template = "mobile_schema.yaml"
     # checks templates
     desktop_checks_template = env.get_template("desktop_checks.sql")
     fenix_checks_template = env.get_template("fenix_checks.sql")
@@ -112,6 +113,7 @@ def generate(target_project, output_dir, use_cloud_function):
                     app_name=browser.name,
                 )
             )
+            schema_template = desktop_schema_template
         elif browser.name == "focus_android":
             query_sql = reformat(
                 focus_android_query_template.render(
@@ -120,6 +122,7 @@ def generate(target_project, output_dir, use_cloud_function):
                     app_name=browser.name,
                 )
             )
+            schema_template = mobile_schema_template
         else:
             query_sql = reformat(
                 mobile_query_template.render(
@@ -128,6 +131,7 @@ def generate(target_project, output_dir, use_cloud_function):
                     app_name=browser.name,
                 )
             )
+            schema_template = mobile_schema_template
         # create checks_sql
         if browser.name == "firefox_desktop":
             checks_sql = desktop_checks_template.render(

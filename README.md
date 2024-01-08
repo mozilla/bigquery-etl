@@ -12,11 +12,6 @@ For more information, see [https://mozilla.github.io/bigquery-etl/](https://mozi
 
 ## Quick Start
 
-> :exclamation: Apple Silicon (M1) user requirement
->
-> Enable [Rosetta mode](https://support.apple.com/en-ca/HT211861) for your terminal _**BEFORE**_ installing below tools using your terminal. See our [M1 Mac
-> Setup Guide](M1_MAC_SETUP.md) for more information
-
 ### Pre-requisites
 - **Pyenv** (optional) Recommended if you want to install different versions of python, see instructions [here](https://github.com/pyenv/pyenv#basic-github-checkout). After the installation of pyenv, make sure that your terminal app is [configured to run the shell as a login shell](https://github.com/pyenv/pyenv/wiki/MacOS-login-shell).
 - **Homebrew** (not required, but useful for Mac) - Follow the instructions [here](https://brew.sh/) to install homebrew on your Mac.

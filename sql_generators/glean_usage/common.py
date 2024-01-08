@@ -24,7 +24,7 @@ PATH = Path(os.path.dirname(__file__))
 # need to be omitted. For more info see: bug-1868848
 NO_BASELINE_PING_APPS = (
     "mozilla_vpn",
-    "mozillavpn_cirrus",
+    "mozillavpn_backend_cirrus",
     "accounts_backend",
     "burnham",
     "firefox_reality_pc",

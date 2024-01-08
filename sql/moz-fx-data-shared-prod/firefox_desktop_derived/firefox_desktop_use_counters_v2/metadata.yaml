@@ -5,7 +5,10 @@ owners:
 - kwindau@mozilla.com
 labels:
   incremental: true
+  public_bigquery: true
   owner1: kwindau
+  review_bugs:
+  - '1866834'
   dag: bqetl_use_counter_analysis
 scheduling:
   dag_name: bqetl_use_counter_analysis

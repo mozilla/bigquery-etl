@@ -21,24 +21,40 @@ CREATE TEMP TABLE
         {% if not loop.first -%}
           UNION ALL
         {% endif %}
-        SELECT DISTINCT
-          @submission_date AS submission_date,
-          ext.value AS flow_id,
-          event_category AS category,
-          event_name AS name,
-          TIMESTAMP_ADD(
-            submission_timestamp,
-        -- limit event.timestamp, otherwise this will cause an overflow
-            INTERVAL LEAST(event_timestamp, 20000000000000) MILLISECOND
-          ) AS timestamp,
-          normalized_app_id AS normalized_app_name,
-          normalized_channel AS channel
-        FROM
-          `moz-fx-data-shared-prod.{{ app }}.events_unnested`,
-          UNNEST(event_extra) AS ext
-        WHERE
-          DATE(submission_timestamp) = @submission_date
-          AND ext.key = "flow_id"
+        {% if dataset_id not in ["telemetry", "accounts_frontend", "accounts_backend"] %}
+          SELECT DISTINCT
+            @submission_date AS submission_date,
+            ext.value AS flow_id,
+            event_category AS category,
+            event_name AS name,
+            TIMESTAMP_ADD(
+              submission_timestamp,
+          -- limit event.timestamp, otherwise this will cause an overflow
+              INTERVAL LEAST(event_timestamp, 20000000000000) MILLISECOND
+            ) AS timestamp,
+            "{{ app }}" AS normalized_app_name,
+            client_info.app_channel AS channel
+          FROM
+            `moz-fx-data-shared-prod.{{ app }}.events_unnested`,
+            UNNEST(event_extra) AS ext
+          WHERE
+            DATE(submission_timestamp) = @submission_date
+            AND ext.key = "flow_id"
+        {% elif dataset_id in ["accounts_frontend", "accounts_backend"] %}
+          SELECT DISTINCT
+            @submission_date AS submission_date,
+            metrics.string.session_flow_id AS flow_id,
+            NULL AS category,
+            metrics.string.event_name AS name,
+            submission_timestamp AS timestamp,
+            "{{ app }}" AS normalized_app_name,
+            client_info.app_channel AS channel
+          FROM
+            `moz-fx-data-shared-prod.{{ app }}.accounts_events`
+          WHERE
+            DATE(submission_timestamp) = @submission_date
+            AND metrics.string.session_flow_id != ""
+        {% endif %}
       {% endfor %}
     ),
     -- determine events that belong to the same flow
@@ -100,18 +116,18 @@ CREATE TEMP TABLE
       channel,
       ARRAY_AGG(event ORDER BY event.source.timestamp) AS events,
       -- create a flow hash that concats all the events that are part of the flow
-      -- <event_category>#<event_name> -> <event_category>#<event_name> -> ...
+      -- <event_category>.<event_name> -> <event_category>.<event_name> -> ...
       ARRAY_TO_STRING(
         ARRAY_CONCAT(
           ARRAY_AGG(
-            CONCAT(event.source.category, "#", event.source.name)
+            CONCAT(event.source.category, ".", event.source.name)
             ORDER BY
               event.source.timestamp
           ),
           [
             ARRAY_REVERSE(
               ARRAY_AGG(
-                CONCAT(event.target.category, "#", event.target.name)
+                CONCAT(event.target.category, ".", event.target.name)
                 ORDER BY
                   event.source.timestamp
               )

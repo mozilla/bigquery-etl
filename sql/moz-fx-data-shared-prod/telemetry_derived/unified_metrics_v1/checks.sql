@@ -11,8 +11,6 @@
 {{ value_length(column="client_id", expected_length=36, where="submission_date = @submission_date") }}
 
 #warn
--- The following field is sometimes NULL
--- "normalized_os_version"
 {{ not_null(columns=[
   "activity_segment",
   "normalized_app_name",

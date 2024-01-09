@@ -1451,10 +1451,7 @@ def initialize(
                         if "CREATE MATERIALIZED VIEW" in init_sql:
                             click.echo(f"Create materialized view for {init_file}")
                             # existing materialized view have to be deleted before re-creation
-                            view_name = query_file.parent.name
-                            client.delete_table(
-                                f"{project}.{dataset}.{view_name}", not_found_ok=True
-                            )
+                            client.delete_table(full_table_id, not_found_ok=True)
                         else:
                             click.echo(f"Create destination table for {init_file}")
 

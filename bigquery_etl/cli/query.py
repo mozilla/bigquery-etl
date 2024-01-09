@@ -1395,11 +1395,7 @@ def initialize(
             # This does not currently verify the accuracy of the schema or that it
             # matches the query.
             if "is_init()" in sql_content:
-                if table and table.num_rows > 0:
-                    raise click.ClickException(
-                        f"Table {full_table_id} already exists and contains data. The initialization process is terminated."
-                    )
-                else:
+                if not table:
                     ctx.invoke(deploy, name=full_table_id, force=True)
 
                 arguments = [

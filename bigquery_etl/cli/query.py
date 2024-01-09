@@ -1470,9 +1470,9 @@ def initialize(
         failed_initializations = [r for r in pool.map(_initialize, query_files) if r]
 
     if len(failed_initializations) > 0:
-        click.echo("The following tables could not be deployed:")
+        click.echo("The following tables could not be deployed:", err=True)
         for failed_deploy in failed_initializations:
-            click.echo(failed_deploy)
+            click.echo(failed_deploy, err=True)
         sys.exit(1)
 
 

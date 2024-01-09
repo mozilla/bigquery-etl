@@ -1381,7 +1381,7 @@ def initialize(
                 if not force and table.num_rows > 0:
                     raise click.ClickException(
                         f"Table {full_table_id} already exists and contains data. The initialization process is terminated."
-                        + "Use --force to overwrite the existing destination table."
+                        " Use --force to overwrite the existing destination table."
                     )
             except NotFound:
                 # continue with creating the table

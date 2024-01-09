@@ -1,6 +1,6 @@
 -- Generated via ./bqetl generate glean_usage
 -- This table aggregates event flows across Glean applications.
-DECLARE dummy INT64; -- dummy variable to indicate to bigquery-etl that this is a script
+DECLARE dummy INT64; -- dummy variable to indicate to BigQuery this is a script
 CREATE TEMP TABLE
   event_flows(
     submission_date DATE,
@@ -64,11 +64,11 @@ CREATE TEMP TABLE
         flow_id,
         normalized_app_name,
         channel,
-        ARRAY_AGG(
-          STRUCT(category AS category, name AS name, timestamp AS timestamp)
-          ORDER BY
-            timestamp
-        ) AS events
+        ARRAY_AGG((
+          SELECT AS
+          STRUCT category AS category, name AS name, timestamp AS timestamp
+          LIMIT 100 -- limit number of events considered
+        ) ORDER BY timestamp) AS events
       FROM
         all_app_events
       GROUP BY

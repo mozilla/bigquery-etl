@@ -49,7 +49,7 @@ def create_last_modified_tmp_table(date, project, tmp_table_name):
                 project_id,
                 dataset_id,
                 table_id,
-                DATE(TIMESTAMP_MILLIS(creation_time)) AS creation_date,
+                DATE(TIMESTAMP_MILLIS(creation_time)) AS table_creation_date,
                 DATE(TIMESTAMP_MILLIS(last_modified_time)) AS last_modified_date
                 FROM `{project}.{dataset.dataset_id}.__TABLES__`
                 WHERE DATE(TIMESTAMP_MILLIS(creation_time)) <= DATE('{date}')
@@ -88,13 +88,12 @@ def create_query(date, source_project, tmp_table_name):
             GROUP BY table_catalog, table_schema, table_name
         ),
         max_job_creation_date AS (
-            SELECT max(creation_date) as last_used_date,
+            SELECT max(submission_date) as last_used_date,
                 reference_project_id AS project_id,
                 reference_dataset_id AS dataset_id,
                 reference_table_id AS table_id
             FROM `moz-fx-data-shared-prod.monitoring_derived.bigquery_usage_v2`
-            WHERE creation_date >= "2023-01-01"
-            AND submission_date >= "2023-01-01"
+            WHERE submission_date >= "2023-01-01"
             GROUP BY project_id, dataset_id, table_id
         ),
         table_info AS (
@@ -102,7 +101,7 @@ def create_query(date, source_project, tmp_table_name):
             FROM
                 (SELECT
                     DATE('{date}') AS submission_date,
-                    DATE(creation_time) AS creation_date,
+                    DATE(creation_time) AS table_creation_date,
                     table_catalog AS project_id,
                     table_schema AS dataset_id,
                     table_name AS table_id,
@@ -113,10 +112,10 @@ def create_query(date, source_project, tmp_table_name):
                     USING (table_catalog, table_schema, table_name)
                     WHERE DATE(creation_time) <= DATE('{date}'))
             LEFT JOIN {tmp_table_name}
-            USING (project_id, dataset_id, table_id, creation_date)
+            USING (project_id, dataset_id, table_id, table_creation_date)
         )
         SELECT submission_date,
-            creation_date,
+            table_creation_date,
             project_id,
             dataset_id,
             table_id,

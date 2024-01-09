@@ -32,8 +32,6 @@ plugins:
   - awesome-pages
 nav:
   - index.md
-  - Datasets:
-      - ... | mozdata/**.md
   - UDFs:
       - ... | mozfun/**.md
       - ... | moz-fx-data-shared-prod/**.md

@@ -1,7 +1,7 @@
 """bigquery-etl CLI alchemer command."""
 from datetime import date, datetime, timedelta
 
-import click
+import rich_click as click
 
 from bigquery_etl.alchemer.survey import get_survey_data, insert_to_bq
 

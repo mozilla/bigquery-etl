@@ -1,5 +1,5 @@
 SELECT
-  userId,
+  TO_HEX(userId) AS userId,
   displayName,
 FROM
   EXTERNAL_QUERY(

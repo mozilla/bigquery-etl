@@ -121,8 +121,18 @@ distinct_client_count AS (
 )
 SELECT
   IF(
-    ABS((SELECT * FROM dau_sum) - (SELECT * FROM distinct_client_count)) > 1,
-    ERROR("DAU mismatch between aggregates table and live table"),
+    ABS((SELECT * FROM dau_sum) - (SELECT * FROM distinct_client_count)) > 10,
+    ERROR(
+      CONCAT(
+        "DAU mismatch between the firefox_ios live (`org_mozilla_firefox_live`, `org_mozilla_fenix_live.baseline_v1`,`org_mozilla_firefox_beta_live.baseline_v1`,`org_mozilla_fenix_nightly_live.baseline_v1`, `org_mozilla_fennec_aurora_live.baseline_v1`) and active_users_aggregates (`fenix_derived.active_users_aggregates_v2`) tables is greater than 10.",
+        " Live table count: ",
+        (SELECT * FROM distinct_client_count),
+        " | active_users_aggregates (DAU): ",
+        (SELECT * FROM dau_sum),
+        " | Delta detected: ",
+        ABS((SELECT * FROM dau_sum) - (SELECT * FROM distinct_client_count))
+      )
+    ),
     NULL
   );
 

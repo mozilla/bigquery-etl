@@ -3,7 +3,7 @@ friendly_name: FxA Users Services Last Seen
 description: Usage aggregations per FxA user per FxA service
  per day over a 28-day window
 owners:
-  - dthorn@mozilla.com
+  - kik@mozilla.com
 labels:
   application: fxa
   incremental: true

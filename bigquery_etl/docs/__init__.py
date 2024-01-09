@@ -7,12 +7,9 @@ import sys
 import tempfile
 from pathlib import Path
 
-import click
+import rich_click as click
 
 from bigquery_etl.config import ConfigLoader
-from bigquery_etl.docs.derived_datasets.generate_derived_dataset_docs import (
-    generate_derived_dataset_docs,
-)
 from bigquery_etl.dryrun import DryRun
 
 EXAMPLE_DIR = "examples"
@@ -89,8 +86,6 @@ def generate(project_dirs, docs_dir, output_dir, log_level):
     # generate docs
     for project_dir in project_dirs:
         generate_udf_docs(out_dir, project_dir)
-        if "mozfun" not in project_dir:
-            generate_derived_dataset_docs(out_dir, project_dir)
 
 
 @docs_.command("validate", help="Validate the project docs.")

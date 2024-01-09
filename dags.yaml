@@ -1453,3 +1453,22 @@ bqetl_google_analytics_derived_ga4:
     retry_delay: 30m
   tags:
     - impact/tier_2
+
+bqetl_glam_refresh_live:
+  default_args:
+    depends_on_past: false
+    email:
+    - efilho@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    owner: efilho@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2024-01-10'
+  description: Refresh GLAM tables serving live data.
+  repo: bigquery-etl
+  schedule_interval: 0 8 * * *
+  tags:
+  - impact/tier_2
+  - repo/bigquery-etl
+

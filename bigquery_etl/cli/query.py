@@ -1331,7 +1331,7 @@ def _initialize_in_parallel(
 )
 @click.option(
     "--force/--noforce",
-    help="Run the initialization event if the destination table contains data.",
+    help="Run the initialization even if the destination table contains data.",
     default=False,
 )
 @click.pass_context

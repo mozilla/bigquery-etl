@@ -18,11 +18,8 @@ bigquery:
   clustering:
     fields:
     - metric
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:mozilla-confidential
+workgroup_access: []
 references:
   query.sql:
   - moz-fx-data-shared-prod.fenix.use_counters
-deprecated: false
+deprecated: true

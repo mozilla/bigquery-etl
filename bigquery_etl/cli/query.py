@@ -1356,8 +1356,8 @@ def initialize(ctx, name, sql_dir, project_id, dry_run, parallelism, skip_existi
         sys.exit(1)
 
     def _initialize(query_file):
-        client = bigquery.Client()
         project, dataset, destination_table = extract_from_query_path(query_file)
+        client = bigquery.Client(project=project)
         full_table_id = f"{project}.{dataset}.{destination_table}"
         table = None
 
@@ -1377,11 +1377,11 @@ def initialize(ctx, name, sql_dir, project_id, dry_run, parallelism, skip_existi
         else:
             return
 
-        # Enable initialization from query.sql files
-        # Create the table by deploying the schema and metadata, then run the init.
-        # This does not currently verify the accuracy of the schema or that it
-        # matches the query.
         try:
+            # Enable initialization from query.sql files
+            # Create the table by deploying the schema and metadata, then run the init.
+            # This does not currently verify the accuracy of the schema or that it
+            # matches the query.
             if "is_init()" in sql_content:
                 if table and table.num_rows > 0:
                     raise click.ClickException(

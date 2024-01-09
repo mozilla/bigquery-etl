@@ -1,15 +1,15 @@
-friendly_name: Live Fog Release
+friendly_name: Serve Fenix Release
 description: |-
-  Refresh live_fog_release table, which contains data served by GLAM
+  Refresh serve_fenix_release table, which contains data served by GLAM
 owners:
 - efilho@mozilla.com
 labels:
   incremental: false
   owner1: efilho@mozilla.com
 scheduling:
-  dag_name: bqetl_glam_refresh_live
+  dag_name: bqetl_glam_refresh_serve
   date_partition_parameter: null
   depends_on:
   - task_id: pre_import
-    dag_name: glam_fog
+    dag_name: glam_fenix
     execution_delta: 6h

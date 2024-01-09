@@ -1,8 +1,8 @@
--- Query for glam_etl.live_fog_release_v1
+-- Query for glam_etl.serve_fog_release_v1
             -- For more information on writing queries see:
             -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
 MERGE INTO
-  `moz-fx-data-glam-prod-fca7.glam_etl.live_fog_release_v1` T
+  `moz-fx-data-glam-prod-fca7.glam_etl.serve_fog_release_v1` T
 USING
   (
     SELECT

@@ -1,14 +1,14 @@
--- Query for glam_etl.live_fenix_release_v1
+-- Query for glam_etl.serve_fog_beta_v1
             -- For more information on writing queries see:
             -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
 MERGE INTO
-  `moz-fx-data-glam-prod-fca7.glam_etl.live_fenix_release_v1` T
+  `moz-fx-data-glam-prod-fca7.glam_etl.serve_fog_beta_v1` T
 USING
   (
     SELECT
       *
     FROM
-      `moz-fx-data-glam-prod-fca7.glam_etl.org_mozilla_fenix_glam_release__extract_probe_counts_v1`
+      `moz-fx-data-glam-prod-fca7.glam_etl.firefox_desktop_glam_beta__extract_probe_counts_v1`
   ) S
 ON
   T.version = S.version

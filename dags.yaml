@@ -1454,7 +1454,7 @@ bqetl_google_analytics_derived_ga4:
   tags:
     - impact/tier_2
 
-bqetl_glam_refresh_live:
+bqetl_glam_refresh_serve:
   default_args:
     depends_on_past: false
     email:
@@ -1465,7 +1465,7 @@ bqetl_glam_refresh_live:
     retries: 2
     retry_delay: 30m
     start_date: '2024-01-10'
-  description: Refresh GLAM tables serving live data.
+  description: Refresh GLAM tables that are serving data.
   repo: bigquery-etl
   schedule_interval: 0 8 * * *
   tags:

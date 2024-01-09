@@ -1,13 +1,13 @@
-friendly_name: Live Desktop Release
+friendly_name: Serve Desktop Nightly
 description: |-
-  Refresh live_desktop_release table, which contains data served by GLAM
+  Refresh serve_desktop_nightly table, which contains data served by GLAM
 owners:
 - efilho@mozilla.com
 labels:
   incremental: false
   owner1: efilho@mozilla.com
 scheduling:
-  dag_name: bqetl_glam_refresh_live
+  dag_name: bqetl_glam_refresh_serve
   date_partition_parameter: null
   depends_on:
   - task_id: extracts

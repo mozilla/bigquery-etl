@@ -120,14 +120,14 @@ CREATE TEMP TABLE
       ARRAY_TO_STRING(
         ARRAY_CONCAT(
           ARRAY_AGG(
-            CONCAT(event.source.category, ".", event.source.name)
+            CONCAT(IF(event.source.category IS NOT NULL, CONCAT(event.source.category, "."), ""), event.source.name)
             ORDER BY
               event.source.timestamp
           ),
           [
             ARRAY_REVERSE(
               ARRAY_AGG(
-                CONCAT(event.target.category, ".", event.target.name)
+                CONCAT(IF(event.target.category IS NOT NULL, CONCAT(event.target.category, "."), ""), event.target.name)
                 ORDER BY
                   event.source.timestamp
               )

@@ -12,6 +12,7 @@ owners:
 - lvargas@mozilla.com
 labels:
   incremental: true
+  deprecated: true
   dag: bqetl_analytics_aggregations
   owner1: lvargas
 scheduling:

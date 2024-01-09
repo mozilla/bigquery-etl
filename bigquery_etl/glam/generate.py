@@ -66,16 +66,6 @@ def from_template(
     return TemplateResult(table_id, query_type, query_text)
 
 
-def prefix_to_product(prefix: str) -> str:
-    """Return a product (fenix, fog) for the given prefix."""
-    if prefix.startswith("firefox_desktop"):
-        return "fog"
-    elif prefix.startswith("org_mozilla_fenix"):
-        return "fenix"
-    else:
-        raise ValueError(f"Invalid prefix {prefix}")
-
-
 def main():
     """Generate GLAM ETL queries."""
     parser = ArgumentParser(description=main.__doc__)
@@ -315,11 +305,6 @@ def main():
         ),
         table("extract_user_counts_v1", **config[args.prefix]),
         table("extract_probe_counts_v1", **config[args.prefix]),
-        table(
-            "live_v1",
-            channel=channel_prefixes[args.prefix],
-            product=prefix_to_product(args.prefix),
-        ),
     ]
 
 

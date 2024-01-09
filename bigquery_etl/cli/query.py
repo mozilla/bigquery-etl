@@ -1329,8 +1329,15 @@ def _initialize_in_parallel(
     default=False,
     is_flag=True,
 )
+@click.option(
+    "--force/--noforce",
+    help="Run the initialization event if the destination table contains data.",
+    default=False,
+)
 @click.pass_context
-def initialize(ctx, name, sql_dir, project_id, dry_run, parallelism, skip_existing):
+def initialize(
+    ctx, name, sql_dir, project_id, dry_run, parallelism, skip_existing, force
+):
     """Create the destination table for the provided query."""
     if not is_authenticated():
         click.echo("Authentication required for creating tables.", err=True)
@@ -1366,14 +1373,19 @@ def initialize(ctx, name, sql_dir, project_id, dry_run, parallelism, skip_existi
 
         # check if the provided file can be initialized and whether existing ones should be skipped
         if "is_init()" in sql_content or len(init_files) > 0:
-            if skip_existing:
-                try:
-                    table = client.get_table(full_table_id)
+            try:
+                table = client.get_table(full_table_id)
+                if skip_existing:
                     # table exists; skip initialization
                     return
-                except NotFound:
-                    # continue with creating the table
-                    pass
+                if not force and table.num_rows > 0:
+                    raise click.ClickException(
+                        f"Table {full_table_id} already exists and contains data. The initialization process is terminated."
+                        + "Use --force to overwrite the existing destination table."
+                    )
+            except NotFound:
+                # continue with creating the table
+                pass
         else:
             return
 

@@ -157,7 +157,7 @@ unioned_with_searches AS (
     search.organic_search_count,
     search.search_count,
     search.search_with_ads,
-    NULL AS active_hours_sum
+    CAST(NULL AS FLOAT64) AS active_hours_sum
   FROM
     unioned
   LEFT JOIN
@@ -231,10 +231,10 @@ SELECT
     first_seen_date,
     durations
   ),
-  COUNT(DISTINCT IF(days_since_seen = 0 AND durations > 0, client_id, NULL)) AS dau,
   COUNT(DISTINCT IF(days_since_seen = 0, client_id, NULL)) AS daily_users,
-  COUNT(DISTINCT IF(days_since_seen < 7, client_id, NULL)) AS wau,
-  COUNT(DISTINCT client_id) AS mau,
+  COUNT(DISTINCT IF(days_since_seen < 7, client_id, NULL)) AS weekly_users,
+  COUNT(DISTINCT client_id) AS monthly_users,
+  COUNT(DISTINCT IF(days_since_seen = 0 AND durations > 0, client_id, NULL)) AS dau,
   COUNT(DISTINCT IF(submission_date = first_seen_date, client_id, NULL)) AS new_profiles,
   SUM(ad_clicks) AS ad_clicks,
   SUM(organic_search_count) AS organic_search_count,

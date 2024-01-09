@@ -19,7 +19,7 @@ IF
     event.name AS event_name,
     event_extra.key AS event_extra_key,
     normalized_country_code AS country,
-    'Mozilla.Social Mastodon Backend' AS normalized_app_name,
+    'Mozilla Social Mastodon Backend' AS normalized_app_name,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
       -- Access experiment information.
@@ -50,7 +50,7 @@ IF
   LEFT JOIN
     UNNEST(event.extra) AS event_extra
   WHERE
-    DATE(submission_timestamp) >= "2024-01-08"
+    DATE(submission_timestamp) >= "2024-01-09"
   GROUP BY
     submission_date,
     window_start,

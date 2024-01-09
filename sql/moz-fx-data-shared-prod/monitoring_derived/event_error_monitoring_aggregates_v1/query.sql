@@ -2221,7 +2221,7 @@ UNION ALL
     WITH event_counters AS (
       SELECT
         DATE(submission_timestamp) AS submission_date,
-        "Mozilla.Social Mastodon Backend" AS normalized_app_name,
+        "Mozilla Social Mastodon Backend" AS normalized_app_name,
         client_info.app_channel AS channel,
         metrics.labeled_counter
       FROM

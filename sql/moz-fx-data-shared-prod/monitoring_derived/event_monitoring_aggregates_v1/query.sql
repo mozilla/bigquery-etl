@@ -2875,7 +2875,7 @@ SELECT
   event.name AS event_name,
   event_extra.key AS event_extra_key,
   normalized_country_code AS country,
-  "Mozilla.Social Mastodon Backend" AS normalized_app_name,
+  "Mozilla Social Mastodon Backend" AS normalized_app_name,
   client_info.app_channel AS channel,
   client_info.app_display_version AS version,
     -- Access experiment information.

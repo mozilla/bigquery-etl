@@ -33,29 +33,28 @@ WITH jobs_by_org AS (
   LEFT JOIN
     UNNEST(referenced_tables) AS referenced_table
 ),
-jobs_by_project AS ({#- format off #}
-{%- for project in DEFAULT_PROJECTS %}
-  SELECT
-    jp.project_id AS source_project,
-    DATE(creation_time) AS creation_date,
-    job_id,
-    referenced_table.project_id AS reference_project_id,
-    referenced_table.dataset_id AS reference_dataset_id,
-    referenced_table.table_id AS reference_table_id,
-    user_email,
-    REGEXP_EXTRACT(query, r'Username: (.*?),') AS username,
-    REGEXP_EXTRACT(query, r'Query ID: (\w+), ') AS query_id,
-  FROM
-    `{{project}}.region-us.INFORMATION_SCHEMA.JOBS_BY_PROJECT` AS jp
-  LEFT JOIN
-    UNNEST(referenced_tables) AS referenced_table
-  WHERE
-    DATE(creation_time) = @submission_date
-  {%- if not loop.last %}
-    UNION ALL
-  {%- endif %}
+jobs_by_project AS (
+  {%- for project in DEFAULT_PROJECTS %}
+    {%- if not loop.first %}
+      UNION ALL
+    {%- endif %}
+    SELECT
+      jp.project_id AS source_project,
+      DATE(creation_time) AS creation_date,
+      job_id,
+      referenced_table.project_id AS reference_project_id,
+      referenced_table.dataset_id AS reference_dataset_id,
+      referenced_table.table_id AS reference_table_id,
+      user_email,
+      REGEXP_EXTRACT(query, r'Username: (.*?),') AS username,
+      REGEXP_EXTRACT(query, r'Query ID: (\w+), ') AS query_id,
+    FROM
+      `{{project}}.region-us.INFORMATION_SCHEMA.JOBS_BY_PROJECT` AS jp
+    LEFT JOIN
+      UNNEST(referenced_tables) AS referenced_table
+    WHERE
+      DATE(creation_time) = @submission_date
   {%- endfor %}
-  {#- format on #}
 )
 SELECT DISTINCT
   jo.source_project,

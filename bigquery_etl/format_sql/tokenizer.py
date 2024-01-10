@@ -768,19 +768,21 @@ class JinjaBlockStatement(JinjaStatement):
 class JinjaBlockStart(JinjaBlockStatement):
     """Jinja block starts get their own line followed by increased indent."""
 
-    pattern = re.compile(r"{% *(block|call|filter|for|if|macro)\b.*?%}", re.DOTALL)
+    pattern = re.compile(r"{%[-+]? *(block|call|filter|for|if|macro)\b.*?%}", re.DOTALL)
 
 
 class JinjaBlockEnd(JinjaBlockStatement):
     """Jinja block ends get their own line preceded by decreased indent."""
 
-    pattern = re.compile(r"{% *end(block|call|filter|for|if|macro)\b.*?%}", re.DOTALL)
+    pattern = re.compile(
+        r"{%[-+]? *end(block|call|filter|for|if|macro)\b.*?%}", re.DOTALL
+    )
 
 
 class JinjaBlockMiddle(JinjaBlockEnd, JinjaBlockStart):
     """Ends one indented Jinja block and starts another."""
 
-    pattern = re.compile(r"{% *(elif|else)\b.*?%}", re.DOTALL)
+    pattern = re.compile(r"{%[-+]? *(elif|else)\b.*?%}", re.DOTALL)
 
 
 class JinjaComment(Comment):

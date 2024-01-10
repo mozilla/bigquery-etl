@@ -1458,7 +1458,7 @@ bqetl_glam_refresh_aggregates:
   default_args:
     depends_on_past: false
     email:
-    - efilho@mozilla.com
+      - efilho@mozilla.com
     email_on_failure: true
     email_on_retry: false
     owner: efilho@mozilla.com
@@ -1469,6 +1469,5 @@ bqetl_glam_refresh_aggregates:
   repo: bigquery-etl
   schedule_interval: 0 8 * * *
   tags:
-  - impact/tier_2
-  - repo/bigquery-etl
-
+    - impact/tier_2
+    - repo/bigquery-etl

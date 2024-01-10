@@ -45,10 +45,10 @@ def list_daily(project, dataset):
             FROM
                 `{project}`.{dataset}.INFORMATION_SCHEMA.TABLES
             WHERE
-                table_name LIKE "%clients_daily%" )
+                table_name LIKE r"%clients\_daily%" )
         SELECT
             app_id,
-            (app_id LIKE "%_glam_%") AS is_logical
+            (app_id LIKE r"%\_glam\_%") AS is_logical
         FROM
             extracted
         ORDER BY

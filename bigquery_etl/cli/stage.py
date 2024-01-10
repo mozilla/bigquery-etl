@@ -7,7 +7,7 @@ from datetime import datetime
 from multiprocessing.pool import ThreadPool
 from pathlib import Path
 
-import click
+import rich_click as click
 from google.cloud import bigquery
 
 from ..cli.query import deploy as deploy_query_schema

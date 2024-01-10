@@ -14,7 +14,7 @@ THIS_PATH = Path(os.path.dirname(__file__))
 TABLE_NAME = "active_users_aggregates"
 DATASET_FOR_UNIONED_VIEWS = "telemetry"
 DESKTOP_TABLE_VERSION = "v1"
-MOBILE_TABLE_VERSION = "v2"
+MOBILE_TABLE_VERSION = "v3"
 CHECKS_TEMPLATE_CHANNELS = {
     "firefox_ios": [
         {
@@ -96,6 +96,9 @@ def generate(target_project, output_dir, use_cloud_function):
     view_template = env.get_template("view.sql")
     # metadata template
     metadata_template = "metadata.yaml"
+    # schema template
+    desktop_schema_template = "desktop_schema.yaml"
+    mobile_schema_template = "mobile_schema.yaml"
     # checks templates
     desktop_checks_template = env.get_template("desktop_checks.sql")
     fenix_checks_template = env.get_template("fenix_checks.sql")
@@ -110,6 +113,7 @@ def generate(target_project, output_dir, use_cloud_function):
                     app_name=browser.name,
                 )
             )
+            schema_template = desktop_schema_template
         elif browser.name == "focus_android":
             query_sql = reformat(
                 focus_android_query_template.render(
@@ -118,6 +122,7 @@ def generate(target_project, output_dir, use_cloud_function):
                     app_name=browser.name,
                 )
             )
+            schema_template = mobile_schema_template
         else:
             query_sql = reformat(
                 mobile_query_template.render(
@@ -126,6 +131,7 @@ def generate(target_project, output_dir, use_cloud_function):
                     app_name=browser.name,
                 )
             )
+            schema_template = mobile_schema_template
         # create checks_sql
         if browser.name == "firefox_desktop":
             checks_sql = desktop_checks_template.render(
@@ -169,6 +175,18 @@ def generate(target_project, output_dir, use_cloud_function):
                 template_folder=THIS_PATH / "templates",
                 app_value=browser.value,
                 app_name=browser.name,
+                format=False,
+            ),
+            skip_existing=False,
+        )
+
+        write_sql(
+            output_dir=output_dir,
+            full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}_{current_version}",
+            basename="schema.yaml",
+            sql=render(
+                schema_template,
+                template_folder=THIS_PATH / "templates",
                 format=False,
             ),
             skip_existing=False,

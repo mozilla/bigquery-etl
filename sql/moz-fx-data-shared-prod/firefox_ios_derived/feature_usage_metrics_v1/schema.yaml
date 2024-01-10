@@ -41,6 +41,30 @@ fields:
 - name: credit_card_sync_enabled
   type: INTEGER
   mode: NULLABLE
+- name: credit_card_deleted_users
+  type: INTEGER
+  mode: NULLABLE
+- name: credit_card_deleted
+  type: INTEGER
+  mode: NULLABLE
+- name: credit_card_modified_users
+  type: INTEGER
+  mode: NULLABLE
+- name: credit_card_modified
+  type: INTEGER
+  mode: NULLABLE
+- name: credit_card_saved_users
+  type: INTEGER
+  mode: NULLABLE
+- name: credit_card_saved
+  type: INTEGER
+  mode: NULLABLE
+- name: credit_card_saved_all_users
+  type: INTEGER
+  mode: NULLABLE
+- name: credit_card_saved_all
+  type: INTEGER
+  mode: NULLABLE
 - name: bookmarks_add_users
   type: INTEGER
   mode: NULLABLE

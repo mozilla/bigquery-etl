@@ -59,16 +59,58 @@ fields:
 - name: cc_form_detected_users
   type: INTEGER
   mode: NULLABLE
+- name: cc_sync_toggle
+  type: INTEGER
+  mode: NULLABLE
+- name: cc_sync_toggle_users
+  type: INTEGER
+  mode: NULLABLE
+- name: cc_autofill_prompt_dismissed
+  type: INTEGER
+  mode: NULLABLE
+- name: cc_autofill_prompt_dismissed_users
+  type: INTEGER
+  mode: NULLABLE
+- name: cc_autofill_prompt_expanded
+  type: INTEGER
+  mode: NULLABLE
+- name: cc_autofill_prompt_expanded_users
+  type: INTEGER
+  mode: NULLABLE
+- name: cc_autofill_prompt_shown
+  type: INTEGER
+  mode: NULLABLE
+- name: cc_autofill_prompt_shown_users
+  type: INTEGER
+  mode: NULLABLE
+- name: cc_management_add_tapped
+  type: INTEGER
+  mode: NULLABLE
+- name: cc_management_add_tapped_users
+  type: INTEGER
+  mode: NULLABLE
+- name: cc_management_card_tapped
+  type: INTEGER
+  mode: NULLABLE
+- name: cc_management_card_tapped_users
+  type: INTEGER
+  mode: NULLABLE
 - name: cc_save_prompt_create
   type: INTEGER
   mode: NULLABLE
 - name: cc_save_prompt_create_users
   type: INTEGER
   mode: NULLABLE
-- name: cc_sync_toggle
+- name: cc_save_prompt_shown
   type: INTEGER
   mode: NULLABLE
-- name: cc_sync_toggle_users
+- name: cc_save_prompt_shown_users
+  type: INTEGER
+  mode: NULLABLE
+- name: cc_save_prompt_update
+  type: INTEGER
+  mode: NULLABLE
+- name: cc_save_prompt_update_users
   type: INTEGER
   mode: NULLABLE
 - name: history_delete_tap
@@ -111,6 +153,12 @@ fields:
   type: INTEGER
   mode: NULLABLE
 - name: history_search_tap_users
+  type: INTEGER
+  mode: NULLABLE
+- name: history_opened_item
+  type: INTEGER
+  mode: NULLABLE
+- name: history_opened_item_users
   type: INTEGER
   mode: NULLABLE
 - name: fxa_disconnect
@@ -197,6 +245,24 @@ fields:
 - name: tabs_tray_new_private_tab_tapped_users
   type: INTEGER
   mode: NULLABLE
+- name: private_browsing_button_tapped_add
+  type: INTEGER
+  mode: NULLABLE
+- name: private_browsing_button_tapped_add_users
+  type: INTEGER
+  mode: NULLABLE
+- name: private_browsing_button_tapped_close_all_tabs
+  type: INTEGER
+  mode: NULLABLE
+- name: private_browsing_button_tapped_close_all_tabs_users
+  type: INTEGER
+  mode: NULLABLE
+- name: private_browsing_button_tapped_done
+  type: INTEGER
+  mode: NULLABLE
+- name: private_browsing_button_tapped_done_users
+  type: INTEGER
+  mode: NULLABLE
 - name: drag_location_bar
   type: INTEGER
   mode: NULLABLE
@@ -224,15 +290,30 @@ fields:
 - name: notification_status_notDetermined
   type: INTEGER
   mode: NULLABLE
+- name: notification_status_notDetermined_users
+  type: INTEGER
+  mode: NULLABLE
 - name: notification_status_denied
+  type: INTEGER
+  mode: NULLABLE
+- name: notification_status_denied_users
   type: INTEGER
   mode: NULLABLE
 - name: notification_alert_setting_not_supported
   type: INTEGER
   mode: NULLABLE
+- name: notification_alert_setting_not_supported_users
+  type: INTEGER
+  mode: NULLABLE
 - name: notification_alert_setting_disabled
   type: INTEGER
   mode: NULLABLE
+- name: notification_alert_setting_disabled_users
+  type: INTEGER
+  mode: NULLABLE
 - name: notification_alert_setting_enabled
+  type: INTEGER
+  mode: NULLABLE
+- name: notification_alert_setting_enabled_users
   type: INTEGER
   mode: NULLABLE

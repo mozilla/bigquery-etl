@@ -5,6 +5,24 @@ fields:
 - name: metrics_ping_distinct_client_count
   type: INTEGER
   mode: NULLABLE
+- name: awesomebar_top_users
+  type: INTEGER
+  mode: NULLABLE
+- name: awesomebar_top
+  type: INTEGER
+  mode: NULLABLE
+- name: awesomebar_bottom_users
+  type: INTEGER
+  mode: NULLABLE
+- name: awesomebar_bottom
+  type: INTEGER
+  mode: NULLABLE
+- name: awesomebar_null_users
+  type: INTEGER
+  mode: NULLABLE
+- name: awesomebar_null
+  type: INTEGER
+  mode: NULLABLE
 - name: logins_deleted_users
   type: INTEGER
   mode: NULLABLE

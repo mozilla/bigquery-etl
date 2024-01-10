@@ -18,7 +18,7 @@ from pathlib import Path
 from tempfile import NamedTemporaryFile
 from traceback import print_exc
 
-import click
+import rich_click as click
 import yaml
 from dateutil.rrule import MONTHLY, rrule
 from google.cloud import bigquery

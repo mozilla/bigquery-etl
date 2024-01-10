@@ -3,7 +3,7 @@ import importlib.util
 from inspect import getmembers
 from pathlib import Path
 
-import click
+import rich_click as click
 
 from bigquery_etl.cli.utils import is_valid_project, use_cloud_function_option
 from bigquery_etl.config import ConfigLoader

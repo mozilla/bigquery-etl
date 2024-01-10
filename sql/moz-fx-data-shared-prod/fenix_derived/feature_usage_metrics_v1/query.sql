@@ -378,6 +378,13 @@ product_features_agg AS (
 SELECT
   submission_date,
   metrics_ping_distinct_client_count,
+/*Awesomebar*/
+  awesomebar_top_users,
+  awesomebar_top,
+  awesomebar_bottom_users,
+  awesomebar_bottom,
+  awesomebar_null_users,
+  awesomebar_null,
 /*logins*/
   logins_deleted_users,
   logins_deleted,

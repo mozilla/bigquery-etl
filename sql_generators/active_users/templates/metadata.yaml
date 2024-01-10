@@ -1,13 +1,15 @@
 friendly_name: {{ app_value }} Active Users Aggregates
 description: |-
-  This table contains daily/weekly/montly active users,
+  This table contains daily/weekly/monthly active users,
   new profiles, searches and ad_clicks for {{ app_value }},
   aggregated by submission_date, attribution, channel,
   country, city, device model, distribution_id, os details
   and activity segment.
 
-  For Firefox Desktop, qualified daily active users QDAU
-  are calculated. For mobile apps QDAU = DAU.
+  - dau is counting the users who reported a ping on the date and
+  are qualified as active users.
+  - daily_users counts all the users who reported a ping on the date.
+  Only dau is exposed in the view telemetry.active_users_aggregates.
 
   The table is labeled as "change_controlled", which implies
   that changes require the approval of at least one owner.

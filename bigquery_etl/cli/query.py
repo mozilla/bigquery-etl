@@ -1348,11 +1348,24 @@ def _initialize_in_parallel(
     help="Dry run the initialization",
 )
 @parallelism_option(default=DEFAULT_INIT_PARALLELISM)
+@click.option(
+    "--skip-existing",
+    "--skip_existing",
+    help="Skip initialization for existing artifacts. "
+    + "This ensures that artifacts, like materialized views only get initialized if they don't already exist.",
+    default=False,
+    is_flag=True,
+)
+@click.option(
+    "--force/--noforce",
+    help="Run the initialization even if the destination table contains data.",
+    default=False,
+)
 @click.pass_context
-def initialize(ctx, name, sql_dir, project_id, dry_run, parallelism):
+def initialize(
+    ctx, name, sql_dir, project_id, dry_run, parallelism, skip_existing, force
+):
     """Create the destination table for the provided query."""
-    client = bigquery.Client()
-
     if not is_authenticated():
         click.echo("Authentication required for creating tables.", err=True)
         sys.exit(1)
@@ -1376,94 +1389,111 @@ def initialize(ctx, name, sql_dir, project_id, dry_run, parallelism):
         )
         sys.exit(1)
 
-    for query_file in query_files:
+    def _initialize(query_file):
+        project, dataset, destination_table = extract_from_query_path(query_file)
+        client = bigquery.Client(project=project)
+        full_table_id = f"{project}.{dataset}.{destination_table}"
+        table = None
+
         sql_content = query_file.read_text()
+        init_files = list(Path(query_file.parent).rglob("init.sql"))
 
-        # Enable initialization from query.sql files
-        # Create the table by deploying the schema and metadata, then run the init.
-        # This does not currently verify the accuracy of the schema or that it
-        # matches the query.
-        if "is_init()" in sql_content:
-            project = query_file.parent.parent.parent.name
-            dataset = query_file.parent.parent.name
-            destination_table = query_file.parent.name
-            full_table_id = f"{project}.{dataset}.{destination_table}"
-
+        # check if the provided file can be initialized and whether existing ones should be skipped
+        if "is_init()" in sql_content or len(init_files) > 0:
             try:
                 table = client.get_table(full_table_id)
-                if table.num_rows > 0:
+                if skip_existing:
+                    # table exists; skip initialization
+                    return
+                if not force and table.num_rows > 0:
                     raise click.ClickException(
                         f"Table {full_table_id} already exists and contains data. The initialization process is terminated."
+                        " Use --force to overwrite the existing destination table."
                     )
             except NotFound:
-                ctx.invoke(deploy, name=full_table_id, force=True)
-
-            arguments = [
-                "query",
-                "--use_legacy_sql=false",
-                "--format=none",
-                "--append_table",
-                "--noreplace",
-            ]
-            if dry_run:
-                arguments += ["--dry_run"]
-
-            if "@sample_id" in sql_content:
-                sample_ids = list(range(0, 100))
-
-                _initialize_in_parallel(
-                    project=project,
-                    table=destination_table,
-                    dataset=dataset,
-                    query_file=query_file,
-                    arguments=arguments,
-                    parallelism=parallelism,
-                    sample_ids=sample_ids,
-                    addl_templates={
-                        "is_init": lambda: True,
-                    },
-                )
-            else:
-                _run_query(
-                    query_files=[query_file],
-                    project_id=project,
-                    public_project_id=None,
-                    destination_table=destination_table,
-                    dataset_id=dataset,
-                    query_arguments=arguments,
-                    addl_templates={
-                        "is_init": lambda: True,
-                    },
-                )
+                # continue with creating the table
+                pass
         else:
-            init_files = Path(query_file.parent).rglob("init.sql")
+            return
 
-            for init_file in init_files:
-                project = init_file.parent.parent.parent.name
-                client = bigquery.Client(project=project)
+        try:
+            # Enable initialization from query.sql files
+            # Create the table by deploying the schema and metadata, then run the init.
+            # This does not currently verify the accuracy of the schema or that it
+            # matches the query.
+            if "is_init()" in sql_content:
+                if not table:
+                    ctx.invoke(deploy, name=full_table_id, force=True)
 
-                with open(init_file) as init_file_stream:
-                    init_sql = init_file_stream.read()
-                    dataset = Path(init_file).parent.parent.name
-                    job_config = bigquery.QueryJobConfig(
-                        dry_run=dry_run,
-                        default_dataset=f"{project}.{dataset}",
+                arguments = [
+                    "query",
+                    "--use_legacy_sql=false",
+                    "--format=none",
+                    "--append_table",
+                    "--noreplace",
+                ]
+                if dry_run:
+                    arguments += ["--dry_run"]
+
+                if "@sample_id" in sql_content:
+                    sample_ids = list(range(0, 100))
+
+                    _initialize_in_parallel(
+                        project=project,
+                        table=destination_table,
+                        dataset=dataset,
+                        query_file=query_file,
+                        arguments=arguments,
+                        parallelism=parallelism,
+                        sample_ids=sample_ids,
+                        addl_templates={
+                            "is_init": lambda: True,
+                        },
                     )
-
-                    if "CREATE MATERIALIZED VIEW" in init_sql:
-                        click.echo(f"Create materialized view for {init_file}")
-                        # existing materialized view have to be deleted before re-creation
-                        view_name = query_file.parent.name
-                        client.delete_table(
-                            f"{project}.{dataset}.{view_name}", not_found_ok=True
+                else:
+                    _run_query(
+                        query_files=[query_file],
+                        project_id=project,
+                        public_project_id=None,
+                        destination_table=destination_table,
+                        dataset_id=dataset,
+                        query_arguments=arguments,
+                        addl_templates={
+                            "is_init": lambda: True,
+                        },
+                    )
+            else:
+                for init_file in init_files:
+                    with open(init_file) as init_file_stream:
+                        init_sql = init_file_stream.read()
+                        job_config = bigquery.QueryJobConfig(
+                            dry_run=dry_run,
+                            default_dataset=f"{project}.{dataset}",
                         )
-                    else:
-                        click.echo(f"Create destination table for {init_file}")
 
-                    job = client.query(init_sql, job_config=job_config)
+                        if "CREATE MATERIALIZED VIEW" in init_sql:
+                            click.echo(f"Create materialized view for {init_file}")
+                            # existing materialized view have to be deleted before re-creation
+                            client.delete_table(full_table_id, not_found_ok=True)
+                        else:
+                            click.echo(f"Create destination table for {init_file}")
 
-                    if not dry_run:
-                        job.result()
+                        job = client.query(init_sql, job_config=job_config)
+
+                        if not dry_run:
+                            job.result()
+        except Exception:
+            print_exc()
+            return query_file
+
+    with ThreadPool(parallelism) as pool:
+        failed_initializations = [r for r in pool.map(_initialize, query_files) if r]
+
+    if len(failed_initializations) > 0:
+        click.echo("The following tables could not be deployed:", err=True)
+        for failed_deploy in failed_initializations:
+            click.echo(failed_deploy, err=True)
+        sys.exit(1)
 
 
 @query.command(

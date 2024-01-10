@@ -23,17 +23,17 @@ WITH dau_sum AS (
 ),
 distinct_client_count_base AS (
   {%- for channel in channels %}
-  {%- if not loop.first -%}
-  UNION ALL
+    {%- if not loop.first -%}
+      UNION ALL
     {%- endif %}
-  SELECT
-    COUNT(DISTINCT client_info.client_id) AS distinct_client_count,
-  FROM
-    {{ channel.table }}
+    SELECT
+      COUNT(DISTINCT client_info.client_id) AS distinct_client_count,
+    FROM
+      {{ channel.table }}
 
-  WHERE
-    DATE(submission_timestamp) = @submission_date
-{% endfor -%}
+    WHERE
+      DATE(submission_timestamp) = @submission_date
+  {% endfor -%}
 ),
 distinct_client_count AS (
   SELECT

@@ -55,9 +55,11 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_ios_focus_derived.event_monitoring_live_v1
   - moz-fx-data-shared-prod.org_mozilla_ios_klar_derived.event_monitoring_live_v1
   - moz-fx-data-shared-prod.org_mozilla_ios_lockbox_derived.event_monitoring_live_v1
+  - moz-fx-data-shared-prod.org_mozilla_ios_tiktok_reporter_derived.event_monitoring_live_v1
   - moz-fx-data-shared-prod.org_mozilla_klar_derived.event_monitoring_live_v1
   - moz-fx-data-shared-prod.org_mozilla_mozregression_derived.event_monitoring_live_v1
   - moz-fx-data-shared-prod.org_mozilla_reference_browser_derived.event_monitoring_live_v1
+  - moz-fx-data-shared-prod.org_mozilla_tiktokreporter_derived.event_monitoring_live_v1
   - moz-fx-data-shared-prod.org_mozilla_tv_firefox_derived.event_monitoring_live_v1
   - moz-fx-data-shared-prod.org_mozilla_vrbrowser_derived.event_monitoring_live_v1
   - moz-fx-data-shared-prod.pine_derived.event_monitoring_live_v1

@@ -17,7 +17,7 @@ labels:
   owner1: ascholtz
 scheduling:
   dag_name: bqetl_glean_usage
-  task_group: org_mozilla_ios_tiktok_reporter
+  task_group: tiktokreporter_ios
   depends_on_past: true
   date_partition_parameter: null
   parameters:

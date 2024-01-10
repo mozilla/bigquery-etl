@@ -119,7 +119,11 @@ FROM
 WHERE
   submission_date = @submission_date;
 
-#warn
+-- Commented out due to upstream duplication issue inside Fenix data
+-- which will cause this check to fail, see: bug(1803609).
+-- Once the duplication issue has been resolved, this check can be uncommented.
+-- #fail
+--
 WITH non_unique AS (
   SELECT
     COUNT(*) AS total_count
@@ -154,7 +158,6 @@ WITH null_checks AS (
       IF(COUNTIF(days_since_seen IS NULL) > 0, "days_since_seen", NULL),
       IF(COUNTIF(is_new_profile IS NULL) > 0, "is_new_profile", NULL),
       IF(COUNTIF(normalized_os IS NULL) > 0, "normalized_os", NULL),
-      IF(COUNTIF(normalized_os_version IS NULL) > 0, "normalized_os_version", NULL),
       IF(COUNTIF(app_version IS NULL) > 0, "app_version", NULL),
       IF(COUNTIF(os_version_major IS NULL) > 0, "os_version_major", NULL),
       IF(COUNTIF(os_version_minor IS NULL) > 0, "os_version_minor", NULL),

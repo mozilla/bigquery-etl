@@ -897,6 +897,42 @@ SELECT
   experiment_branch,
   total_events
 FROM
+  `moz-fx-data-shared-prod.org_mozilla_ios_tiktok_reporter_derived.event_monitoring_live_v1`
+WHERE
+  submission_date > DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY)
+UNION ALL
+SELECT
+  window_start,
+  window_end,
+  event_category,
+  event_name,
+  event_extra_key,
+  country,
+  normalized_app_name,
+  channel,
+  version,
+  experiment,
+  experiment_branch,
+  total_events
+FROM
+  `moz-fx-data-shared-prod.org_mozilla_tiktokreporter_derived.event_monitoring_live_v1`
+WHERE
+  submission_date > DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY)
+UNION ALL
+SELECT
+  window_start,
+  window_end,
+  event_category,
+  event_name,
+  event_extra_key,
+  country,
+  normalized_app_name,
+  channel,
+  version,
+  experiment,
+  experiment_branch,
+  total_events
+FROM
   `moz-fx-data-shared-prod.monitoring_derived.event_monitoring_aggregates_v1`
 WHERE
   submission_date <= DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY)

@@ -69,9 +69,11 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_ios_focus_stable.events_v1
   - moz-fx-data-shared-prod.org_mozilla_ios_klar_stable.events_v1
   - moz-fx-data-shared-prod.org_mozilla_ios_lockbox_stable.events_v1
+  - moz-fx-data-shared-prod.org_mozilla_ios_tiktok_reporter_stable.events_v1
   - moz-fx-data-shared-prod.org_mozilla_klar_stable.events_v1
   - moz-fx-data-shared-prod.org_mozilla_mozregression_stable.events_v1
   - moz-fx-data-shared-prod.org_mozilla_reference_browser_stable.events_v1
+  - moz-fx-data-shared-prod.org_mozilla_tiktokreporter_stable.events_v1
   - moz-fx-data-shared-prod.org_mozilla_tv_firefox_stable.events_v1
   - moz-fx-data-shared-prod.org_mozilla_vrbrowser_stable.events_v1
   - moz-fx-data-shared-prod.pine_stable.events_v1

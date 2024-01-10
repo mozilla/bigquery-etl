@@ -14,7 +14,7 @@ labels:
   owner1: ascholtz
 scheduling:
   dag_name: bqetl_glean_usage
-  task_group: org_mozilla_tiktokreporter
+  task_group: tiktokreporter_android
 bigquery:
   time_partitioning:
     type: day

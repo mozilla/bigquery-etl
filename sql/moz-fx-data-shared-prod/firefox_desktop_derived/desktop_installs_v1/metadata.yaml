@@ -1,0 +1,20 @@
+friendly_name: Desktop Installs
+description: |-
+  This is a derived table that makes it easier to track desktop installs and tie them to the installs metric for the desktop acquisition funnel
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: example
+scheduling:
+  dag_name: bqetl_desktop_installs_v1
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+    - version
+deprecated: false

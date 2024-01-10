@@ -1,0 +1,11 @@
+---
+fields:
+- name: submission_timestamp
+  type: TIMESTAMP
+  mode: REQUIRED
+- name: document_id
+  type: STRING
+  mode: REQUIRED
+- name: signature
+  type: STRING
+  mode: NULLABLE

@@ -2,7 +2,7 @@
 friendly_name: FxA Auth Events
 description: Selected Amplitude events extracted from FxA auth server logs
 owners:
-  - dthorn@mozilla.com
+  - kik@mozilla.com
 labels:
   application: fxa
   incremental: true

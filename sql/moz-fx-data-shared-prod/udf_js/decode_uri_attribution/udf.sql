@@ -30,6 +30,7 @@ const columns = [
   'ua',
   'variation',
 ];
+try { 
 return decodeURIComponent(decodeURIComponent(attribution))
   .split('&')
   .map((kv) => kv.split(/=(.*)/s))
@@ -40,7 +41,10 @@ return decodeURIComponent(decodeURIComponent(attribution))
     }
     return acc;
   }, {});
-
+} 
+catch {
+  return {};
+}
 """;
 
 -- Tests

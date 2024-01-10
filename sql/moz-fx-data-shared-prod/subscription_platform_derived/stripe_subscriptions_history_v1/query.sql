@@ -200,43 +200,6 @@ plans AS (
   USING
     (product_id)
 ),
-us_zip_codes AS (
-  SELECT
-    zip_code,
-    state_code,
-  FROM
-    -- https://console.cloud.google.com/marketplace/product/united-states-census-bureau/us-geographic-boundaries
-    `bigquery-public-data.geo_us_boundaries.zip_codes`
-),
-ca_postal_districts AS (
-  SELECT
-    *
-  FROM
-    -- https://en.wikipedia.org/wiki/Postal_codes_in_Canada#Components_of_a_postal_code
-    UNNEST(
-      ARRAY<STRUCT<district STRING, province_code STRING>>[
-        ("A", "NL"),
-        ("B", "NS"),
-        ("C", "PE"),
-        ("E", "NB"),
-        ("G", "QC"),
-        ("H", "QC"),
-        ("J", "QC"),
-        ("K", "ON"),
-        ("L", "ON"),
-        ("M", "ON"),
-        ("N", "ON"),
-        ("P", "ON"),
-        ("R", "MB"),
-        ("S", "SK"),
-        ("T", "AB"),
-        ("V", "BC"),
-        -- District X covers both NT and NU, so we can't tell which one.
-        ("X", NULL),
-        ("Y", "YT")
-      ]
-    )
-),
 customers AS (
   SELECT
     id AS customer_id,
@@ -255,7 +218,7 @@ customers AS (
     NULLIF(customers.shipping_address_country, "") AS shipping_address_country,
     COALESCE(
       NULLIF(customers.shipping_address_state, ""),
-      us_shipping_zip_codes.state_code,
+      us_shipping_zip_code_prefixes.state_code,
       ca_shipping_postal_districts.province_code
     ) AS shipping_address_state,
   FROM
@@ -266,15 +229,20 @@ customers AS (
   USING
     (id)
   LEFT JOIN
-    us_zip_codes AS us_shipping_zip_codes
+    `moz-fx-data-shared-prod.static.us_zip_code_prefixes_v1` AS us_shipping_zip_code_prefixes
   ON
     customers.shipping_address_country = "US"
-    AND LEFT(customers.shipping_address_postal_code, 5) = us_shipping_zip_codes.zip_code
+    AND LEFT(
+      customers.shipping_address_postal_code,
+      3
+    ) = us_shipping_zip_code_prefixes.zip_code_prefix
   LEFT JOIN
-    ca_postal_districts AS ca_shipping_postal_districts
+    `moz-fx-data-shared-prod.static.ca_postal_districts_v1` AS ca_shipping_postal_districts
   ON
     customers.shipping_address_country = "CA"
-    AND LEFT(customers.shipping_address_postal_code, 1) = ca_shipping_postal_districts.district
+    AND UPPER(
+      LEFT(customers.shipping_address_postal_code, 1)
+    ) = ca_shipping_postal_districts.postal_district_code
 ),
 charges AS (
   SELECT
@@ -282,7 +250,7 @@ charges AS (
     COALESCE(NULLIF(charges.billing_detail_address_country, ""), cards.country) AS country,
     COALESCE(
       NULLIF(charges.billing_detail_address_state, ""),
-      us_zip_codes.state_code,
+      us_zip_code_prefixes.state_code,
       ca_postal_districts.province_code
     ) AS state,
   FROM
@@ -292,15 +260,17 @@ charges AS (
   ON
     charges.card_id = cards.id
   LEFT JOIN
-    us_zip_codes
+    `moz-fx-data-shared-prod.static.us_zip_code_prefixes_v1` AS us_zip_code_prefixes
   ON
     COALESCE(NULLIF(charges.billing_detail_address_country, ""), cards.country) = "US"
-    AND LEFT(charges.billing_detail_address_postal_code, 5) = us_zip_codes.zip_code
+    AND LEFT(charges.billing_detail_address_postal_code, 3) = us_zip_code_prefixes.zip_code_prefix
   LEFT JOIN
-    ca_postal_districts
+    `moz-fx-data-shared-prod.static.ca_postal_districts_v1` AS ca_postal_districts
   ON
     COALESCE(NULLIF(charges.billing_detail_address_country, ""), cards.country) = "CA"
-    AND UPPER(LEFT(charges.billing_detail_address_postal_code, 1)) = ca_postal_districts.district
+    AND UPPER(
+      LEFT(charges.billing_detail_address_postal_code, 1)
+    ) = ca_postal_districts.postal_district_code
   WHERE
     charges.status = "succeeded"
 ),
@@ -331,7 +301,7 @@ invoices_provider_location AS (
   WHERE
     invoices.status = "paid"
 ),
-subscriptions_history_invoice_provider_location AS (
+subscriptions_history_provider_location AS (
   SELECT
     subscriptions_history.subscription_id,
     subscriptions_history.valid_from,
@@ -358,6 +328,59 @@ subscriptions_history_invoice_provider_location AS (
       invoices_provider_location.created < subscriptions_history.valid_to
       OR subscriptions_history.valid_to IS NULL
     )
+  GROUP BY
+    subscription_id,
+    valid_from
+),
+subscriptions_history_fraud_refunds AS (
+  SELECT
+    subscriptions_history.subscription_id,
+    subscriptions_history.valid_from,
+    LOGICAL_OR(
+      refunds.status = 'succeeded'
+      OR JSON_VALUE(invoices.metadata, '$.paypalRefundTransactionId') IS NOT NULL
+    ) AS has_refunds,
+    LOGICAL_OR(
+      charges.fraud_details_user_report = 'fraudulent'
+      OR (
+        charges.fraud_details_stripe_report = 'fraudulent'
+        AND charges.fraud_details_user_report IS DISTINCT FROM 'safe'
+      )
+      OR (refunds.reason = 'fraudulent' AND refunds.status = 'succeeded')
+    ) AS has_fraudulent_charges,
+    LOGICAL_OR(
+      refunds.status = 'succeeded'
+      AND (
+        charges.fraud_details_user_report = 'fraudulent'
+        OR (
+          charges.fraud_details_stripe_report = 'fraudulent'
+          AND charges.fraud_details_user_report IS DISTINCT FROM 'safe'
+        )
+        OR refunds.reason = 'fraudulent'
+      )
+    ) AS has_fraudulent_charge_refunds
+  FROM
+    subscriptions_history
+  JOIN
+    `moz-fx-data-shared-prod.stripe_external.invoice_v1` AS invoices
+  ON
+    subscriptions_history.subscription_id = invoices.subscription_id
+    AND (
+      invoices.created < subscriptions_history.valid_to
+      OR subscriptions_history.valid_to IS NULL
+    )
+  LEFT JOIN
+    `moz-fx-data-shared-prod.stripe_external.charge_v1` AS charges
+  ON
+    invoices.id = charges.invoice_id
+  LEFT JOIN
+    `moz-fx-data-shared-prod.stripe_external.card_v1` AS cards
+  ON
+    charges.card_id = cards.id
+  LEFT JOIN
+    `moz-fx-data-shared-prod.stripe_external.refund_v1` AS refunds
+  ON
+    charges.id = refunds.charge_id
   GROUP BY
     subscription_id,
     valid_from
@@ -433,7 +456,7 @@ SELECT
   plans.plan_interval,
   plans.plan_interval_count,
   "Etc/UTC" AS plan_interval_timezone,
-  subscriptions_history_invoice_provider_location.provider,
+  subscriptions_history_provider_location.provider,
   -- Use the same address hierarchy as Stripe Tax after we enabled Stripe Tax (FXA-5457).
   -- https://stripe.com/docs/tax/customer-locations#address-hierarchy
   IF(
@@ -451,15 +474,24 @@ SELECT
       WHEN customers.address_country IS NOT NULL
         THEN STRUCT(LOWER(customers.address_country) AS country, customers.address_state AS state)
       ELSE STRUCT(
-          LOWER(subscriptions_history_invoice_provider_location.country) AS country,
-          subscriptions_history_invoice_provider_location.state
+          LOWER(subscriptions_history_provider_location.country) AS country,
+          subscriptions_history_provider_location.state
         )
     END,
     STRUCT(
-      LOWER(subscriptions_history_invoice_provider_location.country) AS country,
-      subscriptions_history_invoice_provider_location.state
+      LOWER(subscriptions_history_provider_location.country) AS country,
+      subscriptions_history_provider_location.state
     )
   ).*,
+  COALESCE(subscriptions_history_fraud_refunds.has_refunds, FALSE) AS has_refunds,
+  COALESCE(
+    subscriptions_history_fraud_refunds.has_fraudulent_charges,
+    FALSE
+  ) AS has_fraudulent_charges,
+  COALESCE(
+    subscriptions_history_fraud_refunds.has_fraudulent_charge_refunds,
+    FALSE
+  ) AS has_fraudulent_charge_refunds,
   subscriptions_history_promotions.promotion_codes,
   subscriptions_history_promotions.promotion_discounts_amount,
 FROM
@@ -473,7 +505,11 @@ LEFT JOIN
 USING
   (customer_id)
 LEFT JOIN
-  subscriptions_history_invoice_provider_location
+  subscriptions_history_provider_location
+USING
+  (subscription_id, valid_from)
+LEFT JOIN
+  subscriptions_history_fraud_refunds
 USING
   (subscription_id, valid_from)
 LEFT JOIN

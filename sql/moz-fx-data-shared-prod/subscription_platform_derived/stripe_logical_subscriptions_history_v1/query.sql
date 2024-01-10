@@ -4,7 +4,6 @@ WITH subscriptions_history AS (
     valid_from,
     valid_to,
     subscription,
-    customer,
     -- This should be kept in agreement with what SubPlat considers an active Stripe subscription.
     -- https://github.com/mozilla/fxa/blob/56026cd08e60525823c60c4f4116f705e79d6124/packages/fxa-shared/subscriptions/stripe.ts#L19-L24
     subscription.status IN ('active', 'past_due', 'trialing') AS subscription_is_active
@@ -127,9 +126,9 @@ SELECT
     history.subscription.id AS provider_subscription_id,
     subscription_item.id AS provider_subscription_item_id,
     history.subscription.created AS provider_subscription_created_at,
-    history.subscription.customer_id AS provider_customer_id,
-    history.customer.metadata.userid AS mozilla_account_id,
-    history.customer.metadata.userid_sha256 AS mozilla_account_id_sha256,
+    history.subscription.customer.id AS provider_customer_id,
+    history.subscription.customer.metadata.userid AS mozilla_account_id,
+    history.subscription.customer.metadata.userid_sha256 AS mozilla_account_id_sha256,
     CASE
       -- Use the same address hierarchy as Stripe Tax after we enabled Stripe Tax (FXA-5457).
       -- https://stripe.com/docs/tax/customer-locations#address-hierarchy
@@ -139,13 +138,13 @@ SELECT
           OR history.subscription.ended_at IS NULL
         )
         THEN COALESCE(
-            NULLIF(history.customer.shipping.address.country, ''),
-            NULLIF(history.customer.address.country, ''),
+            NULLIF(history.subscription.customer.shipping.address.country, ''),
+            NULLIF(history.subscription.customer.address.country, ''),
             charge_summaries.latest_card_country
           )
       -- SubPlat copies the PayPal billing agreement country to the customer's address.
       WHEN paypal_subscriptions.subscription_id IS NOT NULL
-        THEN NULLIF(history.customer.address.country, '')
+        THEN NULLIF(history.subscription.customer.address.country, '')
       ELSE charge_summaries.latest_card_country
     END AS country_code,
     plan_services.services,

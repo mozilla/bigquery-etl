@@ -8,17 +8,13 @@
 {{ row_count_within_past_partitions_avg(number_of_days=7, threshold_percentage=5) }}
 
 #fail
-SELECT IF(
-  COUNTIF(LENGTH(client_id) <> 36) > 0,
-  ERROR("client_id is expected to be 36 characters in length."),
-  null
-)
-FROM `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`
-WHERE submission_date = @submission_date;
+{{ value_length(column="client_id", expected_length=36, where="submission_date = @submission_date") }}
 
-#warn
-{{ is_unique(columns=["client_id"], where="submission_date = @submission_date") }}
-
+-- Commented out due to upstream duplication issue inside Fenix data
+-- which will cause this check to fail, see: bug(1803609).
+-- Once the duplication issue has been resolved, this check can be uncommented.
+-- #fail
+-- {{ is_unique(columns=["client_id"], where="submission_date = @submission_date") }}
 #warn
 {{ not_null(columns=[
   "activity_segment",
@@ -30,7 +26,6 @@ WHERE submission_date = @submission_date;
   "days_since_seen",
   "is_new_profile",
   "normalized_os",
-  "normalized_os_version",
   "app_version",
   "os_version_major",
   "os_version_minor",
@@ -38,13 +33,7 @@ WHERE submission_date = @submission_date;
 ], where="submission_date = @submission_date") }}
 
 #warn
-SELECT IF(
-  COUNTIF(LENGTH(country) <> 2) > 0,
-  ERROR("Some values in this field do not adhere to the ISO 3166-1 specification (2 character country code)."),
-  null
-)
-FROM `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`
-WHERE submission_date = @submission_date;
+{{ value_length(column="country", expected_length=2, where="submission_date = @submission_date") }}
 
 #warn
 SELECT IF(
@@ -99,10 +88,4 @@ FROM `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`
 WHERE submission_date = @submission_date;
 
 #warn
-SELECT IF(
-  COUNTIF(NOT REGEXP_CONTAINS(CAST(country AS STRING), r"^[A-Z]{2}|\?\?$")) > 0,
-  ERROR("Unexpected values for field normalized_channel detected."),
-  null
-)
-FROM `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`
-WHERE submission_date = @submission_date;
+{{ matches_pattern(column="country", pattern="^[A-Z]{2}$", where="submission_date = @submission_date", message="Some values in this field do not adhere to the ISO 3166-1 specification (2 character country code, for example: DE).") }}

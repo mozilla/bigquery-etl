@@ -1,0 +1,31 @@
+fields:
+
+- name: glean_app
+  type: STRING
+  mode: NULLABLE
+  description: App name of the glean app.
+
+- name: metric
+  type: STRING
+  mode: NULLABLE
+  description: Name of the glean metric.
+
+- name: type
+  type: STRING
+  mode: NULLABLE
+  description: Type of the glean metric.
+
+- name: first_seen_date
+  type: DATE
+  mode: NULLABLE
+  description: First seen date according to the probe scraper API.
+
+- name: last_seen_date
+  type: DATE
+  mode: NULLABLE
+  description: Last seen date according to the probe scraper API.
+
+- name: expires
+  type: STRING
+  mode: NULLABLE
+  description: When this metric will expire. Can be "never" or a date or a version number.

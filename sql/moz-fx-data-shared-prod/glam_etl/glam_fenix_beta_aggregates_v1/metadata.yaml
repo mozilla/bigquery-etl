@@ -1,13 +1,13 @@
-friendly_name: Serve Fenix Nightly
+friendly_name: Glam Fenix Beta Aggregates
 description: |-
-  Refresh serve_fenix_nightly table, which contains data served by GLAM
+  Refresh glam_fenix_beta_aggregates which contains data served by GLAM
 owners:
 - efilho@mozilla.com
 labels:
   incremental: false
   owner1: efilho@mozilla.com
 scheduling:
-  dag_name: bqetl_glam_refresh_serve
+  dag_name: bqetl_glam_refresh_aggregates
   date_partition_parameter: null
   depends_on:
   - task_id: pre_import

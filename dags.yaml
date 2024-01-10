@@ -1454,7 +1454,7 @@ bqetl_google_analytics_derived_ga4:
   tags:
     - impact/tier_2
 
-bqetl_glam_refresh_serve:
+bqetl_glam_refresh_aggregates:
   default_args:
     depends_on_past: false
     email:

@@ -1,8 +1,8 @@
--- Query for glam_etl.serve_desktop_release_v1
+-- Script for glam_etl.glam_desktop_release_aggregates_v1
             -- For more information on writing queries see:
             -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
 MERGE INTO
-  `moz-fx-data-glam-prod-fca7.glam_etl.serve_desktop_release_v1` T
+  `moz-fx-data-glam-prod-fca7.glam_etl.glam_desktop_release_aggregates_v1` T
 USING
   (SELECT * FROM `moz-fx-data-shared-prod.telemetry_derived.glam_extract_firefox_release_v1`) S
 ON

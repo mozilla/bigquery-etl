@@ -10,13 +10,13 @@ import string
 import subprocess
 import sys
 import tempfile
-import typing
 from datetime import date, timedelta
 from functools import partial
 from multiprocessing.pool import Pool, ThreadPool
 from pathlib import Path
 from tempfile import NamedTemporaryFile
 from traceback import print_exc
+from typing import Optional
 
 import rich_click as click
 import yaml
@@ -493,6 +493,15 @@ def info(ctx, name, sql_dir, project_id, cost, last_updated):
         click.echo("")
 
 
+def _parse_parameter(parameter: str, param_date: str) -> str:
+    # TODO: Parse more complex parameters such as macro_ds_add
+    param_name, param_type, param_value = parameter.split(":")
+    if param_type == "DATE" and param_value != "{{ds}}":
+        raise ValueError(f"Unable to parse parameter {parameter}")
+
+    return f"--parameter={parameter.replace('{{ds}}', param_date)}"
+
+
 def _backfill_query(
     query_file_path,
     project_id,
@@ -501,7 +510,7 @@ def _backfill_query(
     exclude,
     max_rows,
     dry_run,
-    no_partition,
+    scheduling_parameters,
     args,
     partitioning_type,
     backfill_date,
@@ -511,44 +520,37 @@ def _backfill_query(
     """Run a query backfill for a specific date."""
     backfill_date_str = backfill_date.strftime("%Y-%m-%d")
     if backfill_date_str in exclude:
-        click.echo(
-            f"Skipping {query_file_path} backfill for run date {backfill_date_str}"
-        )
+        click.echo(f"Skipping {query_file_path} backfill for run {backfill_date_str}")
         return True
 
     project, dataset, table = extract_from_query_path(query_file_path)
-
-    match partitioning_type:
-        case PartitionType.DAY:
-            partition_date = backfill_date + timedelta(days=date_partition_offset)
-            partition = partition_date.strftime("%Y%m%d")
-        case PartitionType.MONTH:
-            if date_partition_offset != 0:
-                # TODO: Support offsets here e.g. desktop_mobile_search_clients_monthly_v1
-                raise ValueError(
-                    "Offsets are unsupported for non-daily partitions (found date_partition_offset={date_partition_offset})."
-                )
-            partition = backfill_date.strftime("%Y%m")
-        case _:
-            raise ValueError(f"Unsupported partitioning type: {partitioning_type}")
-
     if destination_table is None:
         destination_table = f"{project}.{dataset}.{table}"
 
-    if not no_partition:
+    # For partitioned tables, get the partition to write to the correct destination:
+    if (
+        partition := _get_partition(
+            backfill_date,
+            date_partition_parameter,
+            date_partition_offset,
+            partitioning_type,
+        )
+    ) is not None:
         destination_table = f"{destination_table}${partition}"
 
     if not QUALIFIED_TABLE_NAME_RE.match(destination_table):
         click.echo("Destination table must be named like: <project>.<dataset>.<table>")
         sys.exit(1)
 
-    scheduling_params = []
+    query_parameters = [
+        _parse_parameter(param, backfill_date_str) for param in scheduling_parameters
+    ]
+
     if date_partition_parameter is not None:
-        # TODO: Support non date_partition_parameter scheduling.parameters e.g. clients_first_seen_28_days_later_v1
         offset_param = backfill_date + timedelta(days=date_partition_offset)
-        scheduling_params += [
+        query_parameters.append(
             f"--parameter={date_partition_parameter}:DATE:{offset_param.strftime('%Y-%m-%d')}"
-        ]
+        )
 
     arguments = (
         [
@@ -560,7 +562,7 @@ def _backfill_query(
             "--format=none",
         ]
         + args
-        + scheduling_params
+        + query_parameters
     )
     if dry_run:
         arguments += ["--dry_run"]
@@ -568,7 +570,7 @@ def _backfill_query(
     click.echo(
         f"Backfill run: {backfill_date_str} "
         f"Destination_table: {destination_table} "
-        f"Scheduling Parameters: {scheduling_params}"
+        f"Scheduling Parameters: {query_parameters}"
     )
 
     _run_query(
@@ -599,6 +601,34 @@ def _backfill_query(
         )
 
     return True
+
+
+def _get_partition(
+    backfill_date: datetime.datetime,
+    date_partition_parameter: Optional[str],
+    date_partition_offset: int,
+    partitioning_type: Optional[PartitionType],
+) -> Optional[str]:
+    if date_partition_parameter is None and date_partition_offset == 0:
+        return None
+
+    match partitioning_type:
+        case None:
+            partition = None
+        case PartitionType.DAY:
+            partition_date = backfill_date + timedelta(days=date_partition_offset)
+            partition = partition_date.strftime("%Y%m%d")
+        case PartitionType.MONTH:
+            if date_partition_offset != 0:
+                # TODO: Support offsets here e.g. desktop_mobile_search_clients_monthly_v1
+                raise ValueError(
+                    f"Offsets are unsupported for non-daily partitions (found date_partition_offset={date_partition_offset})."
+                )
+            partition = backfill_date.strftime("%Y%m")
+        case _:
+            raise ValueError(f"Unsupported partitioning type: {partitioning_type}")
+
+    return partition
 
 
 @query.command(
@@ -740,17 +770,14 @@ def backfill(
             "date_partition_parameter", "submission_date"
         )
         date_partition_offset = metadata.scheduling.get("date_partition_offset", 0)
+        scheduling_parameters = metadata.scheduling.get("parameters", [])
 
-        # For backwards compatibility assume partitioning type is day
-        # in case metadata is missing
-        if metadata.bigquery:
+        partitioning_type = None
+        if metadata.bigquery and metadata.bigquery.time_partitioning:
             partitioning_type = metadata.bigquery.time_partitioning.type
-        else:
-            partitioning_type = PartitionType.DAY
-            click.echo("Bigquery partitioning type not set. Using PartitionType.DAY")
 
         match partitioning_type:
-            case PartitionType.DAY:
+            case None | PartitionType.DAY:
                 dates = [
                     start_date + timedelta(i)
                     for i in range((end_date - start_date).days + 1)
@@ -793,7 +820,7 @@ def backfill(
             exclude,
             max_rows,
             dry_run,
-            no_partition,
+            scheduling_parameters,
             ctx.args,
             partitioning_type,
             destination_table=destination_table,
@@ -919,7 +946,7 @@ def _run_query(
     destination_table,
     dataset_id,
     query_arguments,
-    addl_templates: typing.Optional[dict] = None,
+    addl_templates: Optional[dict] = None,
 ):
     """Run a query."""
     if dataset_id is not None:

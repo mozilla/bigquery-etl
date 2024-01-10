@@ -6,6 +6,7 @@ WITH glean_app_with_parsed_expiry_date AS (
     glean.first_seen_date AS release_date,
     glean.last_seen_date AS last_date,
     glean.expires,
+    glean.in_source,
     CASE
       WHEN glean.expires = "never"
         THEN NULL
@@ -34,12 +35,15 @@ final AS (
     last_date,
     expires,
     CASE
-      WHEN expiry_date IS NULL
-        AND DATE_DIFF(CURRENT_DATE(), last_date, day) < 2
-        THEN NULL
-      WHEN expiry_date IS NULL
+      WHEN NOT in_source
+        AND expiry_date IS NULL
         THEN last_date
-      ELSE IF(expiry_date < last_date, expiry_date, last_date)
+      WHEN NOT in_source
+        THEN IF(expiry_date < last_date, expiry_date, last_date)
+      WHEN expiry_date IS NULL
+        OR expiry_date > CURRENT_DATE()
+        THEN NULL
+      ELSE expiry_date
     END AS expired_date
   FROM
     glean_app_with_parsed_expiry_date

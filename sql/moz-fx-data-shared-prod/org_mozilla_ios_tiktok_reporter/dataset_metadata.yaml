@@ -1,0 +1,15 @@
+friendly_name: org-mozilla-ios-tiktok-reporter
+description: |-
+  User-facing views related to document namespace org-mozilla-ios-tiktok-reporter; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/org-mozilla-ios-tiktok-reporter
+dataset_base_acl: view
+user_facing: true
+labels: {}
+default_table_workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+syndication: {}

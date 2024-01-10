@@ -150,8 +150,26 @@ def get_reports_since_last_run(client, last_run_time):
                 comments as body,
                 url as title
             FROM `moz-fx-data-shared-prod.org_mozilla_broken_site_report.user_reports`
-            WHERE comments != "" AND reported_at > "{last_run_time}"
+            WHERE reported_at >= "{last_run_time}" AND comments != ""
             ORDER BY reported_at
+        """
+    query_job = client.query(query)
+    return list(query_job.result())
+
+
+def get_missed_reports(client, last_run_time, bq_dataset_id):
+    query = f"""
+            SELECT
+                reports.uuid,
+                reports.comments as body,
+                reports.url as title
+            FROM
+            `moz-fx-data-shared-prod.org_mozilla_broken_site_report.user_reports`
+            AS reports
+            LEFT JOIN `{bq_dataset_id}.labels` AS labels
+            ON reports.uuid = labels.report_uuid
+            WHERE labels.report_uuid IS NULL AND reported_at < "{last_run_time}"
+            AND reports.comments != ""
         """
     query_job = client.query(query)
     return list(query_job.result())
@@ -166,22 +184,26 @@ def main(bq_project_id, bq_dataset_id):
     # Get datetime of the last classification run
     last_run_time = get_last_classification_datetime(client, bq_dataset_id)
 
-    # Only get reports that were filed since last classification run
-    # and have non-empty descriptions
-    rows = get_reports_since_last_run(client, last_run_time)
+    # Get reports that were filed since last classification run
+    # and have non-empty descriptions as well as reports that were missed
+    new_reports = get_reports_since_last_run(client, last_run_time)
+    missed_reports = get_missed_reports(client, last_run_time, bq_dataset_id)
 
-    if not rows:
+    combined = new_reports + missed_reports
+
+    if not combined:
         logging.info(
             f"No new reports with filled descriptions were found since {last_run_time}"
         )
         return
 
     objects_dict = {
-        row["uuid"]: {field: value for field, value in row.items()} for row in rows
+        row["uuid"]: {field: value for field, value in row.items()} for row in combined
     }
 
     is_ok = True
     result_count = 0
+
     try:
         logging.info("Getting classification results from bugbug.")
         result = get_reports_classification("invalidcompatibilityreport", objects_dict)

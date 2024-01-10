@@ -1,0 +1,15 @@
+friendly_name: Tiktokreporter Android Derived
+description: |-
+  Derived data for tiktokreporter_android_derived
+dataset_base_acl: derived
+user_facing: false
+labels: {}
+default_table_workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+syndication: {}

@@ -168,6 +168,19 @@ with DAG(
         depends_on_past=False,
     )
 
+    monitoring_derived__event_flow_monitoring_aggregates__v1 = bigquery_etl_query(
+        task_id="monitoring_derived__event_flow_monitoring_aggregates__v1",
+        destination_table=None,
+        dataset_id="monitoring_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="akomar@mozilla.com",
+        email=["akomar@mozilla.com", "ascholtz@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        parameters=["submission_date:DATE:"],
+        sql_file_path="sql/moz-fx-data-shared-prod/monitoring_derived/event_flow_monitoring_aggregates_v1/script.sql",
+    )
+
     monitoring_derived__event_monitoring_aggregates__v1 = bigquery_etl_query(
         task_id="monitoring_derived__event_monitoring_aggregates__v1",
         destination_table="event_monitoring_aggregates_v1",
@@ -332,6 +345,10 @@ with DAG(
     )
 
     monitoring_derived__event_error_monitoring_aggregates__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    monitoring_derived__event_flow_monitoring_aggregates__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
 

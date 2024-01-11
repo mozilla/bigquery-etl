@@ -1,0 +1,36 @@
+friendly_name: Event Flow Monitoring Aggregates
+description: |-
+  Aggregates of event flows (funnels based on flow_id) in event pings coming from all Glean apps.
+owners:
+- akomar@mozilla.com
+- ascholtz@mozilla.com
+labels:
+  incremental: true
+  dag: bqetl_monitoring
+  owner1: akomar
+  owner2: ascholtz
+scheduling:
+  dag_name: bqetl_monitoring
+  referenced_tables:
+  - - moz-fx-data-shared-prod
+    - '*_stable'
+    - events_v1
+  date_partition_parameter: null
+  parameters:
+  - 'submission_date:DATE:'
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+    - normalized_app_name
+    - channel
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

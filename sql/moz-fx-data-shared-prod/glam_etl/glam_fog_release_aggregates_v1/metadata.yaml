@@ -1,0 +1,15 @@
+friendly_name: Glam Fog Release Aggregates
+description: |-
+  Refresh glam_fog_release_aggregates which contains data served by GLAM
+owners:
+- efilho@mozilla.com
+labels:
+  incremental: false
+  owner1: efilho@mozilla.com
+scheduling:
+  dag_name: bqetl_glam_refresh_aggregates
+  date_partition_parameter: null
+  depends_on:
+  - task_id: pre_import
+    dag_name: glam_fog
+    execution_delta: 6h

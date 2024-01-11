@@ -278,23 +278,6 @@ jobs:
           command: docker build -t app:build jobs/search-alert/
 
 
-  build-job-search-term-data-validation:
-    docker:
-      - image: << pipeline.parameters.git-image >>
-    steps:
-      - checkout
-      - compare-branch:
-          pattern: ^jobs/search-term-data-validation/
-      - setup_remote_docker:
-          version: << pipeline.parameters.docker-version >>
-      - run:
-          name: Build Docker image
-          command: docker build -t app:build jobs/search-term-data-validation/
-      - run:
-            name: Test Code
-            command: docker run app:build pytest
-
-
   build-job-search-term-data-validation-v2:
     docker:
       - image: << pipeline.parameters.git-image >>
@@ -523,21 +506,6 @@ workflows:
           filters:
             branches:
               only: main
-
-  job-search-term-data-validation:
-    jobs:
-      - build-job-search-term-data-validation
-      - gcp-gcr/build-and-push-image:
-          context: data-eng-airflow-gcr
-          docker-context: jobs/search-term-data-validation/
-          path: jobs/search-term-data-validation/
-          image: search-term-data-validation_docker_etl
-          requires:
-            - build-job-search-term-data-validation
-          filters:
-            branches:
-              only: main
-
 
   job-search-term-data-validation-v2:
     jobs:

@@ -8,6 +8,7 @@ labels:
   owner1: efilho@mozilla.com
 scheduling:
   dag_name: bqetl_glam_refresh_aggregates
+  task_group: refresh_desktop
   date_partition_parameter: null
   depends_on:
   - task_id: extracts

@@ -27,9 +27,9 @@ distinct_client_count_nightly_base AS (
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND mozfun.norm.fenix_app_info("org_mozilla_fenix", client_info.app_build).channel = "nightly"
-    -- NOTE: the below two tables are marked as deprecated inside the GLEAN dictionary.
-    -- However, they are still considered when generating active_users_aggregates metrics,
-    -- which is why they are being considered here.
+    -- NOTE: The next two tables `org_mozilla_fenix_nightly_live.baseline_v1` and `org_mozilla_fennec_aurora_live.baseline_v1`
+    -- are not used as application IDs in Glean, but are also not yet marked as deprecated because they still count for KPIs:
+    -- Related PR https://github.com/mozilla/probe-scraper/pull/640.
   UNION ALL
   SELECT
     client_info.client_id,

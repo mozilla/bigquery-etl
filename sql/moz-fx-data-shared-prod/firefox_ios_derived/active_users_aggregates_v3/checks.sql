@@ -1,8 +1,8 @@
 
 #warn
-WITH dau_sum AS (
+WITH daily_users_sum AS (
   SELECT
-    SUM(dau),
+    SUM(daily_users),
   FROM
     `moz-fx-data-shared-prod.firefox_ios_derived.active_users_aggregates_v3`
   WHERE
@@ -38,16 +38,16 @@ distinct_client_count AS (
 )
 SELECT
   IF(
-    ABS((SELECT * FROM dau_sum) - (SELECT * FROM distinct_client_count)) > 10,
+    ABS((SELECT * FROM daily_users_sum) - (SELECT * FROM distinct_client_count)) > 10,
     ERROR(
       CONCAT(
-        "DAU mismatch between the firefox_ios live across all channels (`moz-fx-data-shared-prod.org_mozilla_ios_firefox_live.baseline_v1`,`moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta_live.baseline_v1`,`moz-fx-data-shared-prod.org_mozilla_ios_fennec_live.baseline_v1`,) and active_users_aggregates (`firefox_ios_derived.active_users_aggregates_v3`) tables is greater than 10.",
+        "Daily users mismatch between the firefox_ios live across all channels (`moz-fx-data-shared-prod.org_mozilla_ios_firefox_live.baseline_v1`,`moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta_live.baseline_v1`,`moz-fx-data-shared-prod.org_mozilla_ios_fennec_live.baseline_v1`,) and active_users_aggregates (`firefox_ios_derived.active_users_aggregates_v3`) tables is greater than 10.",
         " Live table count: ",
         (SELECT * FROM distinct_client_count),
-        " | active_users_aggregates (DAU): ",
-        (SELECT * FROM dau_sum),
+        " | active_users_aggregates (daily_users): ",
+        (SELECT * FROM daily_users_sum),
         " | Delta detected: ",
-        ABS((SELECT * FROM dau_sum) - (SELECT * FROM distinct_client_count))
+        ABS((SELECT * FROM daily_users_sum) - (SELECT * FROM distinct_client_count))
       )
     ),
     NULL

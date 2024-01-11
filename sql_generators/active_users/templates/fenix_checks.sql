@@ -1,6 +1,6 @@
 {#
    We use raw here b/c the first pass is rendered to create the checks.sql
-   files, and the second pass is rendering of the checks themselves.
+   files, and the second pass is the rendering of the checks themselves.
    Without/outside the {% raw %} the macros would be rendered for every
    check file when we create the checks file, when `bqetl generate active_users`
    is called.
@@ -10,9 +10,9 @@
 #}
 {% raw -%}
 #warn
-WITH dau_sum AS (
+WITH daily_users_sum AS (
   SELECT
-    SUM(dau),
+    SUM(daily_users),
   FROM
     `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`
   WHERE
@@ -27,9 +27,9 @@ distinct_client_count_nightly_base AS (
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND mozfun.norm.fenix_app_info("org_mozilla_fenix", client_info.app_build).channel = "nightly"
-    -- NOTE: the below two tables are marked as depricated inside the GLEAN dictionary
-    -- however, they are still considered when generating active_users_aggregates metrics
-    -- this is why they are being considered here.
+    -- NOTE: The next two tables `org_mozilla_fenix_nightly_live.baseline_v1` and `org_mozilla_fennec_aurora_live.baseline_v1`
+    -- are not used as application IDs in Glean, but are also not yet marked as deprecated because they still count for KPIs:
+    -- Related PR https://github.com/mozilla/probe-scraper/pull/640.
   UNION ALL
   SELECT
     client_info.client_id,
@@ -121,16 +121,16 @@ distinct_client_count AS (
 )
 SELECT
   IF(
-    ABS((SELECT * FROM dau_sum) - (SELECT * FROM distinct_client_count)) > 10,
+    ABS((SELECT * FROM daily_users_sum) - (SELECT * FROM distinct_client_count)) > 10,
     ERROR(
       CONCAT(
-        "DAU mismatch between the firefox_ios live (`org_mozilla_firefox_live`, `org_mozilla_fenix_live.baseline_v1`,`org_mozilla_firefox_beta_live.baseline_v1`,`org_mozilla_fenix_nightly_live.baseline_v1`, `org_mozilla_fennec_aurora_live.baseline_v1`) and active_users_aggregates (`fenix_derived.active_users_aggregates_v2`) tables is greater than 10.",
+        "Daily_users mismatch between the firefox_ios live (`org_mozilla_firefox_live`, `org_mozilla_fenix_live.baseline_v1`,`org_mozilla_firefox_beta_live.baseline_v1`,`org_mozilla_fenix_nightly_live.baseline_v1`, `org_mozilla_fennec_aurora_live.baseline_v1`) and active_users_aggregates (`{{ dataset_id }}.{{ table_name }}`) tables is greater than 10.",
         " Live table count: ",
         (SELECT * FROM distinct_client_count),
         " | active_users_aggregates (DAU): ",
-        (SELECT * FROM dau_sum),
+        (SELECT * FROM daily_users_sum),
         " | Delta detected: ",
-        ABS((SELECT * FROM dau_sum) - (SELECT * FROM distinct_client_count))
+        ABS((SELECT * FROM daily_users_sum) - (SELECT * FROM distinct_client_count))
       )
     ),
     NULL

@@ -4,7 +4,7 @@ desktop_data_google AS (
   SELECT
     submission_date,
     IF(LOWER(channel) LIKE '%esr%', 'esr', 'personal') AS channel,
-    IF(country = 'US', 'US', 'RoW') AS country,
+    country,
     COUNT(DISTINCT client_id) AS dau,
     COUNT(
       DISTINCT IF(default_search_engine LIKE '%google%', client_id, NULL)
@@ -45,7 +45,7 @@ desktop_data_google AS (
 desktop_data_bing AS (
   SELECT
     submission_date,
-    IF(country = 'US', 'US', 'RoW') AS country,
+    country,
     COUNT(DISTINCT client_id) AS dau,
     COUNT(
       DISTINCT IF(default_search_engine LIKE '%bing%', client_id, NULL)
@@ -85,7 +85,7 @@ desktop_data_bing AS (
 desktop_data_ddg AS (
   SELECT
     submission_date,
-    IF(country = 'US', 'US', 'RoW') AS country,
+    country,
     COUNT(DISTINCT client_id) AS dau,
     COUNT(
       DISTINCT IF(
@@ -161,19 +161,17 @@ desktop_data_ddg AS (
 mobile_dau_data AS (
   SELECT
     submission_date,
-    SUM(
-      IF(country NOT IN ('US', 'RU', 'UA', 'BY', 'TR', 'KZ', 'CN'), dau, 0)
-    ) AS row_dau_eligible_google,
-    SUM(IF(country = 'US', dau, 0)) AS us_dau,
-    SUM(IF(country != 'US', dau, 0)) AS row_dau,
+    country,
     SUM(dau) AS dau
   FROM
     `moz-fx-data-shared-prod.telemetry.active_users_aggregates_device`
   WHERE
     submission_date = @submission_date
     AND app_name IN ('Fenix', 'Firefox iOS', 'Focus Android', 'Focus iOS')
+    AND country NOT IN ('RU', 'UA', 'BY', 'TR', 'KZ', 'CN')
   GROUP BY
-    submission_date
+    submission_date,
+    country
 ),
 -- Google Mobile (search only - as mobile search metrics is based on metrics
 -- ping, while DAU should be based on main ping on Mobile, see also
@@ -181,8 +179,8 @@ mobile_dau_data AS (
 mobile_data_google AS (
   SELECT
     submission_date,
-    IF(country = 'US', 'US', 'RoW') AS country,
-    IF(country = 'US', dau.us_dau, dau.row_dau_eligible_google) AS dau,
+    country,
+    dau,
     COUNT(
       DISTINCT IF(default_search_engine LIKE '%google%', client_id, NULL)
     ) AS dau_w_engine_as_default,
@@ -208,9 +206,9 @@ mobile_data_google AS (
   FROM
     `moz-fx-data-shared-prod.search.mobile_search_clients_engines_sources_daily`
   INNER JOIN
-    mobile_dau_data dau
+    mobile_dau_data
   USING
-    (submission_date)
+    (submission_date, country)
   WHERE
     submission_date = @submission_date
     AND country NOT IN ('RU', 'UA', 'BY', 'TR', 'KZ', 'CN')
@@ -233,8 +231,8 @@ mobile_data_google AS (
 mobile_data_bing_ddg AS (
   SELECT
     submission_date,
-    IF(country = 'US', 'US', 'RoW') AS country,
-    IF(country = 'US', dau.us_dau, dau.row_dau) AS dau,
+    country,
+    dau,
     COUNT(
       DISTINCT IF(default_search_engine LIKE '%bing%', client_id, NULL)
     ) AS bing_dau_w_engine_as_default,
@@ -287,9 +285,9 @@ mobile_data_bing_ddg AS (
   FROM
     `moz-fx-data-shared-prod.search.mobile_search_clients_engines_sources_daily`
   INNER JOIN
-    mobile_dau_data dau
+    mobile_dau_data
   USING
-    (submission_date)
+    (submission_date, country)
   WHERE
     submission_date = @submission_date
     AND (

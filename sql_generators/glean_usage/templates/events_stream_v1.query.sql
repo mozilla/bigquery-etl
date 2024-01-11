@@ -7,7 +7,7 @@ PARTITION BY
   submission_date
 CLUSTER BY
   sample_id,
-  submission_date
+  event_category
   AS
 {% endif %}
 WITH base AS (

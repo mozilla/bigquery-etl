@@ -98,8 +98,7 @@ distinct_client_count_base AS (
     distinct_client_count_nightly_base
   LEFT JOIN
     `moz-fx-data-shared-prod.fenix.baseline_clients_last_seen` AS baseline_clients_last_seen
-  USING
-    (client_id)
+    USING (client_id)
   WHERE
     baseline_clients_last_seen.submission_date = @submission_date
     AND baseline_clients_last_seen.days_since_seen = 0

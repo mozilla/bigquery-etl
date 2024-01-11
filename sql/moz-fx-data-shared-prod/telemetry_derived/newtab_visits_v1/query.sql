@@ -163,8 +163,7 @@ topsites_events AS (
     events_unnested
   LEFT JOIN
     UNNEST(metrics.string_list.newtab_sov_allocation) sov
-  ON
-    SAFE_CAST(mozfun.map.get_key(event_details, "position") AS INT64) = SAFE_CAST(
+    ON SAFE_CAST(mozfun.map.get_key(event_details, "position") AS INT64) = SAFE_CAST(
       JSON_EXTRACT(sov, "$.pos") AS INT64
     )
   WHERE
@@ -271,16 +270,13 @@ combined_newtab_activity AS (
     visit_metadata
   LEFT JOIN
     search_summary
-  USING
-    (newtab_visit_id)
+    USING (newtab_visit_id)
   LEFT JOIN
     topsites_summary
-  USING
-    (newtab_visit_id)
+    USING (newtab_visit_id)
   LEFT JOIN
     pocket_summary
-  USING
-    (newtab_visit_id)
+    USING (newtab_visit_id)
   WHERE
    -- Keep only rows with interactions, unless we receive a valid newtab.opened event.
    -- This is meant to drop only interactions that only have a newtab.closed event on the same partition
@@ -308,5 +304,4 @@ FROM
   combined_newtab_activity
 LEFT JOIN
   client_profile_info
-USING
-  (legacy_telemetry_client_id)
+  USING (legacy_telemetry_client_id)

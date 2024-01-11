@@ -79,8 +79,7 @@ site_data AS (
     sessions_table
   LEFT JOIN
     download_aggregates
-  ON
-    sessions_table.date = download_aggregates.date
+    ON sessions_table.date = download_aggregates.date
     AND sessions_table.device_category = download_aggregates.device_category
     AND sessions_table.operating_system = download_aggregates.operating_system
     AND sessions_table.browser = download_aggregates.browser
@@ -122,5 +121,4 @@ FROM
   site_data
 LEFT JOIN
   `moz-fx-data-shared-prod.static.third_party_standardized_country_names` AS standardized_country_list
-ON
-  site_data.country = standardized_country_list.raw_country
+  ON site_data.country = standardized_country_list.raw_country

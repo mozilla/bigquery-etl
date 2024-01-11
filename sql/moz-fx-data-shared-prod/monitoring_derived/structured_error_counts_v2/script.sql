@@ -84,15 +84,12 @@ FROM
   ping_counts
 FULL OUTER JOIN
   errors
-USING
-  (submission_date, document_namespace, document_type, document_version);
+  USING (submission_date, document_namespace, document_type, document_version);
 
 MERGE
   `moz-fx-data-shared-prod.monitoring_derived.structured_error_counts_v2` r
-USING
-  error_counts d
-ON
-  d.submission_date = r.submission_date
+  USING error_counts d
+  ON d.submission_date = r.submission_date
   AND r.document_namespace = d.document_namespace
   AND r.document_type = d.document_type
   AND r.document_version = d.document_version

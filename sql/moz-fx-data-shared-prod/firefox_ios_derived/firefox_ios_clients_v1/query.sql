@@ -148,12 +148,10 @@ _current AS (
     first_seen
   FULL OUTER JOIN
     first_session_ping AS first_session
-  USING
-    (client_id, sample_id)
+    USING (client_id, sample_id)
   FULL OUTER JOIN
     metrics_ping AS metrics
-  USING
-    (client_id, sample_id)
+    USING (client_id, sample_id)
   WHERE
     client_id IS NOT NULL
 ),
@@ -215,9 +213,7 @@ FROM
   _current
 FULL OUTER JOIN
   _previous
-USING
-  (client_id, sample_id)
+  USING (client_id, sample_id)
 LEFT JOIN
   activations
-USING
-  (client_id)
+  USING (client_id)

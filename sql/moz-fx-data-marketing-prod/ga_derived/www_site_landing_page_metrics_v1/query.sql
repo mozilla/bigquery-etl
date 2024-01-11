@@ -115,16 +115,13 @@ joined_table AS (
     sessions_table
   FULL JOIN
     `moz-fx-data-marketing-prod.ga_derived.www_site_downloads_v1` AS downloads_table
-  USING
-    (date, visit_identifier)
+    USING (date, visit_identifier)
   FULL JOIN
     pageviews_table
-  USING
-    (date, visit_identifier)
+    USING (date, visit_identifier)
   FULL JOIN
     bounces_table
-  USING
-    (date, visit_identifier)
+    USING (date, visit_identifier)
   WHERE
     -- To minimize table size, filtering for sessions != 0
     sessions_table.sessions != 0

@@ -138,5 +138,4 @@ FROM
   install_ping
 LEFT JOIN
   download_token_info
-USING
-  (dltoken)
+  USING (dltoken)

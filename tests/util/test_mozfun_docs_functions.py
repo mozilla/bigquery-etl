@@ -320,8 +320,7 @@ LANGUAGE js AS r\"\"\"
                     UNNEST(buckets) AS key
                     LEFT JOIN
                     UNNEST(input_map) AS e
-                    ON
-                    key = e.key
+                    ON key = e.key
                     ORDER BY
                     SAFE_CAST(key AS FLOAT64)
                 )

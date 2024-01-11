@@ -52,8 +52,7 @@ version_filtered_new AS (
     filtered_aggregates AS hist_aggs
   LEFT JOIN
     latest_versions
-  ON
-    latest_versions.channel = hist_aggs.channel
+    ON latest_versions.channel = hist_aggs.channel
   WHERE
     CAST(app_version AS INT64) >= (latest_version - 2)
 ),

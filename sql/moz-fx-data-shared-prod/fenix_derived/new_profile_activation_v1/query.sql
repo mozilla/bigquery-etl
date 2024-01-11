@@ -32,8 +32,7 @@ client_search AS (
     `moz-fx-data-shared-prod.search_derived.mobile_search_clients_daily_v1`
   JOIN
     client_first_seen
-  USING
-    (client_id)
+    USING (client_id)
   WHERE
     (submission_date BETWEEN DATE_SUB(@submission_date, INTERVAL 3 DAY) AND @submission_date)
     AND normalized_app_name = 'Fenix'
@@ -99,13 +98,10 @@ FROM
   dou
 INNER JOIN
   client_first_seen
-USING
-  (client_id)
+  USING (client_id)
 LEFT JOIN
   client_search
-USING
-  (client_id)
+  USING (client_id)
 LEFT JOIN
   adjust_client
-USING
-  (client_id)
+  USING (client_id)

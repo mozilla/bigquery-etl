@@ -8,9 +8,8 @@ labels:
   owner1: efilho@mozilla.com
 scheduling:
   dag_name: bqetl_glam_refresh_aggregates
-  task_group: refresh_fog
   date_partition_parameter: null
   depends_on:
-  - task_id: pre_import
+  - task_id: export_firefox_desktop_glam_beta
     dag_name: glam_fog
     execution_delta: 6h

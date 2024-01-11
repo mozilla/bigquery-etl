@@ -336,6 +336,36 @@ fields:
         \ HTTP header. May not always be available. For example, `https://www.google.com`.\n\
         data_taxonomy:\n  data_categories: []\n  data_uses: [analytics.reporting]\n\
         \  data_subjects: [customer, visitor]\n  data_qualifier: [n/a]\n"
+  - name: url2
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: web_page_url
+      type: STRING
+      mode: NULLABLE
+      description: "The full URL of the page that was visited, along with URL query\
+        \ parameters. For example, `https://mozilla.social/home?utm_source=test`.\n\
+        data_taxonomy:\n  data_categories: [user.behavior.browsing_history]\n  data_uses:\
+        \ [analytics.reporting]\n  data_subjects: [customer, visitor]\n  data_qualifier:\
+        \ [n/a]\n"
+    - name: web_referrer_url
+      type: STRING
+      mode: NULLABLE
+      description: "The full URL of the previous web page from which a link was followed\
+        \ in order to trigger the page view. Comes from the `referrer` field of the\
+        \ HTTP header. May not always be available. For example, `https://www.google.com`.\n\
+        data_taxonomy:\n  data_categories: []\n  data_uses: [analytics.reporting]\n\
+        \  data_subjects: [customer, visitor]\n  data_qualifier: [n/a]\n"
+  - name: url
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: web_page_url
+      type: STRING
+      mode: NULLABLE
+    - name: web_referrer_url
+      type: STRING
+      mode: NULLABLE
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

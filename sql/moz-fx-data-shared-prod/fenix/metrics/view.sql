@@ -153,7 +153,8 @@ SELECT
       metrics.labeled_counter.codec_stats_ulpfec_negotiated,
       metrics.labeled_counter.codec_stats_video_preferred_codec,
       metrics.labeled_counter.fog_validation_gvsv_audio_stream_init_gvst,
-      metrics.labeled_counter.gpu_process_crash_fallbacks
+      metrics.labeled_counter.gpu_process_crash_fallbacks,
+      metrics.labeled_counter.avif_aom_decode_error
     ) AS `labeled_counter`,
     metrics.quantity,
     metrics.string,
@@ -506,7 +507,8 @@ SELECT
       metrics.labeled_counter.codec_stats_ulpfec_negotiated,
       metrics.labeled_counter.codec_stats_video_preferred_codec,
       metrics.labeled_counter.fog_validation_gvsv_audio_stream_init_gvst,
-      metrics.labeled_counter.gpu_process_crash_fallbacks
+      metrics.labeled_counter.gpu_process_crash_fallbacks,
+      metrics.labeled_counter.avif_aom_decode_error
     ) AS `labeled_counter`,
     metrics.quantity,
     STRUCT(
@@ -553,7 +555,8 @@ SELECT
       metrics.string.extensions_quarantined_domains_remotehash,
       metrics.string.glean_client_annotation_experimentation_id,
       metrics.string.glean_database_rkv_load_error,
-      metrics.string.gpu_process_feature_status
+      metrics.string.gpu_process_feature_status,
+      metrics.string.preferences_open_links_in_app_enabled
     ) AS `string`,
     metrics.string_list,
     STRUCT(
@@ -1067,7 +1070,8 @@ SELECT
       metrics.labeled_counter.codec_stats_ulpfec_negotiated,
       metrics.labeled_counter.codec_stats_video_preferred_codec,
       metrics.labeled_counter.fog_validation_gvsv_audio_stream_init_gvst,
-      metrics.labeled_counter.gpu_process_crash_fallbacks
+      metrics.labeled_counter.gpu_process_crash_fallbacks,
+      metrics.labeled_counter.avif_aom_decode_error
     ) AS `labeled_counter`,
     metrics.quantity,
     STRUCT(
@@ -1114,7 +1118,8 @@ SELECT
       metrics.string.extensions_quarantined_domains_remotehash,
       metrics.string.glean_client_annotation_experimentation_id,
       metrics.string.glean_database_rkv_load_error,
-      metrics.string.gpu_process_feature_status
+      metrics.string.gpu_process_feature_status,
+      metrics.string.preferences_open_links_in_app_enabled
     ) AS `string`,
     metrics.string_list,
     STRUCT(
@@ -1429,7 +1434,8 @@ SELECT
       metrics.labeled_counter.codec_stats_ulpfec_negotiated,
       metrics.labeled_counter.codec_stats_video_preferred_codec,
       metrics.labeled_counter.fog_validation_gvsv_audio_stream_init_gvst,
-      metrics.labeled_counter.gpu_process_crash_fallbacks
+      metrics.labeled_counter.gpu_process_crash_fallbacks,
+      metrics.labeled_counter.avif_aom_decode_error
     ) AS `labeled_counter`,
     metrics.quantity,
     metrics.string,

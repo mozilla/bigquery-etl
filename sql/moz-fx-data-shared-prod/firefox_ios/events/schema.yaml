@@ -243,6 +243,9 @@ fields:
     - name: firefox_home_page_history_highlights_item_opened
       type: INTEGER
       mode: NULLABLE
+    - name: tabs_grouped_tab_closed
+      type: INTEGER
+      mode: NULLABLE
   - name: string
     type: RECORD
     mode: NULLABLE

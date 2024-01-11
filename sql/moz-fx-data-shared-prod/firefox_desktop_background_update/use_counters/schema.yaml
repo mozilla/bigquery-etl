@@ -17462,6 +17462,20 @@ fields:
         against `use.counter.shared_workers_destroyed` to calculate the rate.
 
         '
+    - name: use_counter_deprecated_ops_doc_idbobject_store_create_index_locale
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document used IDBObjectStoreCreateIndexLocale. Compare
+        against `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_deprecated_ops_page_idbobject_store_create_index_locale
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page used IDBObjectStoreCreateIndexLocale. Compare against
+        `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

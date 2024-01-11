@@ -2694,6 +2694,16 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
+    - name: avif_aom_decode_error
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
   - name: quantity
     type: RECORD
     mode: NULLABLE
@@ -2904,6 +2914,9 @@ fields:
       type: STRING
       mode: NULLABLE
     - name: gpu_process_feature_status
+      type: STRING
+      mode: NULLABLE
+    - name: preferences_open_links_in_app_enabled
       type: STRING
       mode: NULLABLE
   - name: string_list

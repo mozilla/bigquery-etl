@@ -522,6 +522,24 @@ fields:
         were visible in the viewport at the time of "translation button pressed".
 
         '
+    - name: metadata_cpu_family
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Telemetry Environment `system.cpu.family` metric
+
+        '
+    - name: metadata_cpu_model
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Telemetry Environment `system.cpu.model` metric
+
+        '
+    - name: metadata_cpu_stepping
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Telemetry Environment `system.cpu.stepping` metric
+
+        '
   - name: timespan
     type: RECORD
     mode: NULLABLE

@@ -1412,6 +1412,12 @@ fields:
         the user.
 
         '
+    - name: tabs_grouped_tab_closed
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Recorded when a user closes the tab in a group
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

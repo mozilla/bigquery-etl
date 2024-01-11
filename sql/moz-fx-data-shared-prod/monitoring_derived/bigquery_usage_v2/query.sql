@@ -42,7 +42,23 @@ jobs_by_project AS (
   FROM
     `mozdata.region-us.INFORMATION_SCHEMA.JOBS_BY_PROJECT` AS jp
   LEFT JOIN
-    UNNEST(referenced_tables) AS referenced_table
+    UNNEST(
+      ARRAY_CONCAT(
+        referenced_tables,
+        (
+          SELECT
+            ARRAY_AGG(
+              STRUCT(
+                materialized_view.table_reference.project_id AS project_id,
+                materialized_view.table_reference.dataset_id AS dataset_id,
+                materialized_view.table_reference.table_id AS table_id
+              )
+            )
+          FROM
+            UNNEST(materialized_view_statistics.materialized_view) AS materialized_view
+        )
+      )
+    ) AS referenced_table
   WHERE
     DATE(creation_time) = @submission_date
   UNION ALL
@@ -59,7 +75,23 @@ jobs_by_project AS (
   FROM
     `moz-fx-data-shared-prod.region-us.INFORMATION_SCHEMA.JOBS_BY_PROJECT` AS jp
   LEFT JOIN
-    UNNEST(referenced_tables) AS referenced_table
+    UNNEST(
+      ARRAY_CONCAT(
+        referenced_tables,
+        (
+          SELECT
+            ARRAY_AGG(
+              STRUCT(
+                materialized_view.table_reference.project_id AS project_id,
+                materialized_view.table_reference.dataset_id AS dataset_id,
+                materialized_view.table_reference.table_id AS table_id
+              )
+            )
+          FROM
+            UNNEST(materialized_view_statistics.materialized_view) AS materialized_view
+        )
+      )
+    ) AS referenced_table
   WHERE
     DATE(creation_time) = @submission_date
   UNION ALL
@@ -76,7 +108,23 @@ jobs_by_project AS (
   FROM
     `moz-fx-data-marketing-prod.region-us.INFORMATION_SCHEMA.JOBS_BY_PROJECT` AS jp
   LEFT JOIN
-    UNNEST(referenced_tables) AS referenced_table
+    UNNEST(
+      ARRAY_CONCAT(
+        referenced_tables,
+        (
+          SELECT
+            ARRAY_AGG(
+              STRUCT(
+                materialized_view.table_reference.project_id AS project_id,
+                materialized_view.table_reference.dataset_id AS dataset_id,
+                materialized_view.table_reference.table_id AS table_id
+              )
+            )
+          FROM
+            UNNEST(materialized_view_statistics.materialized_view) AS materialized_view
+        )
+      )
+    ) AS referenced_table
   WHERE
     DATE(creation_time) = @submission_date
 )

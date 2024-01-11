@@ -10929,6 +10929,14 @@ fields:
       mode: NULLABLE
       description: Whether a page parses a Date with day of week in an unexpected
         position
+    - name: use_counter2_deprecated_idb_object_store_create_index_locale_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document used IDBObjectStoreCreateIndexLocale
+    - name: use_counter2_deprecated_idb_object_store_create_index_locale_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page used IDBObjectStoreCreateIndexLocale
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -21710,6 +21718,14 @@ fields:
           mode: NULLABLE
           description: Whether a page parses a Date with day of week in an unexpected
             position
+        - name: use_counter2_deprecated_idb_object_store_create_index_locale_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document used IDBObjectStoreCreateIndexLocale
+        - name: use_counter2_deprecated_idb_object_store_create_index_locale_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page used IDBObjectStoreCreateIndexLocale
 - name: sample_id
   type: INTEGER
   mode: NULLABLE

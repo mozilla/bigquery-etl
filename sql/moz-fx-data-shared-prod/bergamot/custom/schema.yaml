@@ -343,6 +343,15 @@ fields:
     - name: performance_word_count_visible_in_viewport
       type: INTEGER
       mode: NULLABLE
+    - name: metadata_cpu_family
+      type: INTEGER
+      mode: NULLABLE
+    - name: metadata_cpu_model
+      type: INTEGER
+      mode: NULLABLE
+    - name: metadata_cpu_stepping
+      type: INTEGER
+      mode: NULLABLE
   - name: timespan
     type: RECORD
     mode: NULLABLE

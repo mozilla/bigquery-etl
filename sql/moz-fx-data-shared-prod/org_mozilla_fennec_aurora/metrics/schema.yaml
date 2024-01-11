@@ -4339,6 +4339,19 @@ fields:
       description: 'How often we use different fallbacks when the GPU process crashes
 
         '
+    - name: avif_aom_decode_error
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Image-decode Error from AOM decoder
+
+        '
   - name: quantity
     type: RECORD
     mode: NULLABLE
@@ -4876,6 +4889,16 @@ fields:
       type: STRING
       mode: NULLABLE
       description: 'Current status of the GPU process feature
+
+        '
+    - name: preferences_open_links_in_app_enabled
+      type: STRING
+      mode: NULLABLE
+      description: 'The user has the open links in apps feature enabled.
+
+        "ask_before_opening", "always" or "never".
+
+        default: "never"
 
         '
   - name: string_list

@@ -7092,6 +7092,12 @@ fields:
     - name: use_counter_worker_shared_scheduler_posttask
       type: INTEGER
       mode: NULLABLE
+    - name: use_counter_deprecated_ops_doc_idbobject_store_create_index_locale
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_deprecated_ops_page_idbobject_store_create_index_locale
+      type: INTEGER
+      mode: NULLABLE
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

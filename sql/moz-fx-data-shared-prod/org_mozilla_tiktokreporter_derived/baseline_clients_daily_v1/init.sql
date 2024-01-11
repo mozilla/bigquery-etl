@@ -4,7 +4,6 @@ CREATE TABLE IF NOT EXISTS
 PARTITION BY
   submission_date
 CLUSTER BY
-  is_new_profile,
   normalized_channel,
   sample_id
 OPTIONS

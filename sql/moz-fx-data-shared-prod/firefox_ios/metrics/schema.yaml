@@ -646,6 +646,9 @@ fields:
     - name: credit_card_saved
       type: INTEGER
       mode: NULLABLE
+    - name: tabs_grouped_tab_closed
+      type: INTEGER
+      mode: NULLABLE
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

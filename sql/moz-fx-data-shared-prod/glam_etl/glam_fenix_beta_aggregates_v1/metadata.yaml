@@ -1,0 +1,25 @@
+friendly_name: Glam Fenix Beta Aggregates
+description: |-
+  Refresh glam_fenix_beta_aggregates which contains data served by GLAM
+owners:
+- efilho@mozilla.com
+labels:
+  owner1: efilho
+  dag: bqetl_glam_refresh_aggregates
+scheduling:
+  dag_name: bqetl_glam_refresh_aggregates
+  date_partition_parameter: null
+  depends_on:
+  - task_id: export_org_mozila_fenix_glam_beta
+    dag_name: glam_fenix
+    execution_delta: 6h
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  script.sql:
+  - moz-fx-data-glam-prod-fca7.glam_etl.glam_fenix_beta_aggregates_v1
+  - moz-fx-data-glam-prod-fca7.glam_etl.org_mozilla_fenix_glam_beta__extract_probe_counts_v1
+deprecated: false

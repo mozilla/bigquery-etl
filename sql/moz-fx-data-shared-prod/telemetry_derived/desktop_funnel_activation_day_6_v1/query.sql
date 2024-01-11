@@ -1,37 +1,31 @@
 WITH pop AS (
   SELECT
-    ROW_NUMBER() OVER (PARTITION BY client_id) AS rn,
     client_id,
-    normalized_country_code AS country_code,
+    country AS country_code,
     normalized_channel AS channel,
-    application.build_id AS build_id,
+    app_build_id AS build_id,
     normalized_os AS os,
     mozfun.norm.truncate_version(normalized_os_version, "minor") AS os_version,
-    environment.settings.attribution.source AS attribution_source,
-    environment.partner.distribution_id AS distribution_id,
-    COALESCE(environment.settings.attribution.ua, '') AS attribution_ua,
-    DATE(submission_timestamp) AS date
+    attribution_source,
+    distribution_id,
+    attribution_ua,
+    first_seen_date AS date
   FROM
-    telemetry.new_profile
+    telemetry.clients_first_seen_v2
   WHERE
-    DATE(submission_timestamp) = DATE_SUB(@submission_date, INTERVAL 6 day)
-    AND payload.processes.parent.scalars.startup_profile_selection_reason = 'firstrun-created-default'
+    first_seen_date = DATE_SUB(@submission_date, INTERVAL 27 day)
+    -- we will need to wait till startup_profile_selection_reason is backfilled to clients_daily before uncommenting the following line
+    -- AND startup_profile_selection_reason = 'firstrun-created-default'
 ),
-dist_pop AS (
-  -- make sure that we only get one entry per client
-  SELECT
-    * EXCEPT (rn)
-  FROM
-    pop
-  WHERE
-    rn = 1
-),
+
 dist_pop_with_days_seen AS (
   SELECT
     a.*,
-    b.days_seen_bits
+    b.days_seen_bits,
+    b.days_visited_1_uri_bits,
+    b.days_interacted_bits,
   FROM
-    dist_pop a
+    pop a
   LEFT JOIN
     telemetry.clients_last_seen b
   ON
@@ -51,7 +45,16 @@ client_conditions AS (
     attribution_source,
     distribution_id,
     attribution_ua,
-    COALESCE(udf.bitcount_lowest_7(days_seen_bits), 0) >= 5 AS activated
+    -- did the profile send a main ping in at least 5 of their first 7 days?
+    COALESCE(BIT_COUNT(mozfun.bits28.from_string('1111111000000000000000000000') & days_seen_bits) >= 5, FALSE) AS activated,
+    -- did the profile send a main ping on any day after their first day during their first 28 days?
+    COALESCE(BIT_COUNT(mozfun.bits28.from_string('0111111111111111111111111111') & days_seen_bits) > 0, FALSE) AS returned_second_day,
+    -- did the profile qualify as DAU on any day after their first day during their first 28 days?
+    COALESCE(BIT_COUNT(mozfun.bits28.from_string('0111111111111111111111111111') & days_visited_1_uri_bits & days_interacted_bits) > 0, FALSE) AS qualified_second_day,
+    -- did the profile send a main ping on any day in their 4th week?
+    COALESCE(BIT_COUNT(mozfun.bits28.from_string('0000000000000000000001111111') & days_seen_bits) > 0, FALSE) AS retained_week4,
+    -- did the profile qualify as DAU on any day in their 4th week?
+    COALESCE(BIT_COUNT(mozfun.bits28.from_string('0000000000000000000001111111') & days_visited_1_uri_bits & days_interacted_bits) > 0, FALSE) AS qualified_week4
   FROM
     dist_pop_with_days_seen
 )
@@ -65,15 +68,17 @@ SELECT
   attribution_source,
   distribution_id,
   attribution_ua,
-  COUNT(*) AS num_activated
+  COUNTIF(activated) AS num_activated,
+  COUNTIF(returned_second_day) AS returned_second_day,
+  COUNTIF(qualified_second_day) AS qualified_second_day,
+  COUNTIF(retained_week4) AS retained_week4,
+  COUNTIF(qualified_week4) AS qualified_week4,
 FROM
   client_conditions
 LEFT JOIN
   `moz-fx-data-shared-prod`.static.country_codes_v1 country_codes
 ON
   (country_codes.code = country_code)
-WHERE
-  activated = TRUE
 GROUP BY
   submission_date,
   country_name,

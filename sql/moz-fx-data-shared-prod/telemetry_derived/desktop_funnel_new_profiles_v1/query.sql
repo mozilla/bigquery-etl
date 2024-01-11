@@ -1,26 +1,28 @@
 WITH pop AS (
   SELECT
-    ROW_NUMBER() OVER (PARTITION BY client_id) AS rn,
     client_id,
-    normalized_country_code AS country_code,
+    country AS country_code,
     normalized_channel AS channel,
-    application.build_id AS build_id,
+    app_build_id AS build_id,
     normalized_os AS os,
-    environment.settings.attribution.source AS attribution_source,
-    environment.partner.distribution_id AS distribution_id,
-    COALESCE(environment.settings.attribution.ua, '') AS attribution_ua,
-    DATE(submission_timestamp) AS date
+    mozfun.norm.truncate_version(normalized_os_version, "minor") AS os_version,
+    attribution_source,
+    distribution_id,
+    attribution_ua,
+    first_seen_date AS date
   FROM
-    telemetry.new_profile
+    telemetry.clients_first_seen_v2
   WHERE
-    DATE(submission_timestamp) = @submission_date
-    AND payload.processes.parent.scalars.startup_profile_selection_reason = 'firstrun-created-default'
+    first_seen_date = @submission_date
+    -- we will need to wait till startup_profile_selection_reason is backfilled to clients_daily before uncommenting the following line
+    -- AND startup_profile_selection_reason = 'firstrun-created-default'
 )
 SELECT
   date,
   channel,
   build_id,
   os,
+  os_version,
   attribution_source,
   distribution_id,
   attribution_ua,
@@ -32,14 +34,13 @@ LEFT JOIN
   `moz-fx-data-shared-prod`.static.country_codes_v1 country_codes
 ON
   (country_codes.code = country_code)
-WHERE
-  rn = 1
 GROUP BY
   date,
   country_name,
   channel,
   build_id,
   os,
+  os_version,
   attribution_source,
   distribution_id,
   attribution_ua

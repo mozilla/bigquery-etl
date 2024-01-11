@@ -29,3 +29,15 @@ fields:
 - mode: NULLABLE
   name: num_activated
   type: INTEGER
+- mode: NULLABLE
+  name: returned_second_day
+  type: INTEGER
+- mode: NULLABLE
+  name: qualified_second_day
+  type: INTEGER
+- mode: NULLABLE
+  name: retained_week4
+  type: INTEGER
+- mode: NULLABLE
+  name: qualified_week4
+  type: INTEGER

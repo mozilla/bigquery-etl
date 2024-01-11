@@ -15,6 +15,9 @@ fields:
   name: os
   type: STRING
 - mode: NULLABLE
+  name: os_version
+  type: STRING
+- mode: NULLABLE
   name: attribution_source
   type: STRING
 - mode: NULLABLE

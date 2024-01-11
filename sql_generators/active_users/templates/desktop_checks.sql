@@ -10,15 +10,15 @@
 #}
 {% raw -%}
 #warn
-WITH qdau_sum AS (
+WITH dau_sum AS (
   SELECT
-    SUM(qdau),
+    SUM(dau),
   FROM
     `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`
   WHERE
     submission_date = @submission_date
 ),
-live_table_qdau_count_base AS (
+live_table_dau_count_base AS (
   SELECT
     client_id,
     SUM(
@@ -46,7 +46,7 @@ overactive AS (
   SELECT
     client_id
   FROM
-    live_table_qdau_count_base
+    live_table_dau_count_base
   GROUP BY
     client_id
   HAVING
@@ -63,7 +63,7 @@ client_summary AS (
     ) AS total_uri_count,
     SUM(active_ticks / (3600 / 5)) AS active_hours_sum,
   FROM
-    live_table_qdau_count_base
+    live_table_dau_count_base
   LEFT JOIN
     overactive
     USING (client_id)
@@ -81,7 +81,7 @@ last_seen AS (
   WHERE
     submission_date = @submission_date
 ),
-live_table_qdau_count AS (
+live_table_dau_count AS (
   SELECT
     COUNTIF(active_hours_sum > 0 AND total_uri_count > 0 AND days_since_seen = 0)
   FROM
@@ -92,25 +92,25 @@ live_table_qdau_count AS (
 )
 SELECT
   IF(
-    ABS((SELECT * FROM qdau_sum) - (SELECT * FROM live_table_qdau_count)) > 10,
+    ABS((SELECT * FROM dau_sum) - (SELECT * FROM live_table_dau_count)) > 10,
     ERROR(
       CONCAT(
-        "QDAU mismatch between the live (`telemetry_live.main_v5`) and active_users_aggregates (`{{ dataset_id }}.{{ table_name }}`) tables is greater than 10.",
+        "DAU mismatch between the live (`telemetry_live.main_v5`) and active_users_aggregates (`{{ dataset_id }}.{{ table_name }}`) tables is greater than 10.",
         " Live table count: ",
-        (SELECT * FROM live_table_qdau_count),
-        " | active_users_aggregates (QDAU): ",
-        (SELECT * FROM qdau_sum),
+        (SELECT * FROM live_table_dau_count),
+        " | active_users_aggregates (DAU): ",
+        (SELECT * FROM dau_sum),
         " | Delta detected: ",
-        ABS((SELECT * FROM qdau_sum) - (SELECT * FROM live_table_qdau_count))
+        ABS((SELECT * FROM dau_sum) - (SELECT * FROM live_table_dau_count))
       )
     ),
     NULL
   );
 
 #warn
-WITH dau_sum AS (
+WITH daily_users_sum AS (
   SELECT
-    SUM(dau),
+    SUM(daily_users),
   FROM
     `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`
   WHERE
@@ -149,16 +149,16 @@ distinct_client_count AS (
 )
 SELECT
   IF(
-    ABS((SELECT * FROM dau_sum) - (SELECT * FROM distinct_client_count)) > 10,
+    ABS((SELECT * FROM daily_users_sum) - (SELECT * FROM distinct_client_count)) > 10,
     ERROR(
       CONCAT(
-        "DAU mismatch between the live (`telemetry_live.main_v5`) and active_users_aggregates (`{{ dataset_id }}.{{ table_name }}`) tables is greater than 10.",
+        "Daily_users mismatch between the live (`telemetry_live.main_v5`) and active_users_aggregates (`{{ dataset_id }}.{{ table_name }}`) tables is greater than 10.",
         " Live table count: ",
         (SELECT * FROM distinct_client_count),
-        " | active_users_aggregates (DAU): ",
-        (SELECT * FROM dau_sum),
+        " | active_users_aggregates (daily_users): ",
+        (SELECT * FROM daily_users_sum),
         " | Delta detected: ",
-        ABS((SELECT * FROM dau_sum) - (SELECT * FROM distinct_client_count))
+        ABS((SELECT * FROM daily_users_sum) - (SELECT * FROM distinct_client_count))
       )
     ),
     NULL

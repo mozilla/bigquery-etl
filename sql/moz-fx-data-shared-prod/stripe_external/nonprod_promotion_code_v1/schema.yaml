@@ -31,7 +31,7 @@ fields:
   type: INTEGER
 - mode: NULLABLE
   name: metadata
-  type: STRING
+  type: JSON
 - mode: NULLABLE
   name: minimum_amount
   type: INTEGER

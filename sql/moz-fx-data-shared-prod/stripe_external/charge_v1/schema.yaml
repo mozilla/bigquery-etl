@@ -82,7 +82,7 @@ fields:
   type: STRING
 - mode: NULLABLE
   name: metadata
-  type: STRING
+  type: JSON
 - mode: NULLABLE
   name: on_behalf_of
   type: STRING

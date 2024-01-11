@@ -5,7 +5,7 @@ SELECT
   is_deleted,
   active,
   description,
-  PARSE_JSON(metadata) AS metadata,
+  metadata,
   name,
   statement_descriptor,
 FROM

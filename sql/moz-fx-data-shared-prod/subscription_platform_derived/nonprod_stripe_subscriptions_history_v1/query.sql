@@ -145,7 +145,7 @@ product_capabilities AS (
   FROM
     `moz-fx-data-shared-prod`.stripe_external.nonprod_product_v1 AS products
   JOIN
-    UNNEST(mozfun.json.js_extract_string_map(metadata)) AS metadata_items
+    UNNEST(mozfun.json.js_extract_string_map(TO_JSON_STRING(metadata))) AS metadata_items
   ON
     metadata_items.key LIKE 'capabilities%'
   JOIN
@@ -162,7 +162,7 @@ plan_capabilities AS (
   FROM
     `moz-fx-data-shared-prod`.stripe_external.nonprod_plan_v1 AS plans
   JOIN
-    UNNEST(mozfun.json.js_extract_string_map(metadata)) AS metadata_items
+    UNNEST(mozfun.json.js_extract_string_map(TO_JSON_STRING(metadata))) AS metadata_items
   ON
     metadata_items.key LIKE 'capabilities%'
   JOIN

@@ -24,7 +24,7 @@ fields:
   type: STRING
   mode: NULLABLE
 - name: metadata
-  type: STRING
+  type: JSON
   mode: NULLABLE
 - name: period_end
   type: TIMESTAMP

@@ -20,6 +20,8 @@ from ..cli.utils import (
 )
 from ..util.common import render as render_template
 
+DEFAULT_MARKER = "fail"
+
 
 def _build_jinja_parameters(query_args):
     """Convert the bqetl parameters to a dictionary for use by the Jinja template."""
@@ -53,7 +55,7 @@ def _render_result_split_by_marker(marker, rendered_result):
 
     for sql_statement in rendered_result:
         sql_statement = sql_statement.strip()
-        if re.search(f"^#{marker}", sql_statement, re.IGNORECASE):
+        if re.search(f"#{marker}", sql_statement, re.IGNORECASE):
             extracted_result.append(sql_statement)
     return " ".join(extracted_result)
 
@@ -68,17 +70,7 @@ def _parse_check_output(output: str) -> str:
 @click.group(
     help="""
         Commands for managing and running bqetl data checks.
-
-        ––––––––––––––––––––––––––––––––––––––––––––––
-
-        IN ACTIVE DEVELOPMENT
-
-        The current progress can be found under:
-
-        \thttps://mozilla-hub.atlassian.net/browse/DENG-919
-
-        ––––––––––––––––––––––––––––––––––––––––––––––
-        """
+    """
 )
 @click.pass_context
 def check(ctx):
@@ -112,19 +104,18 @@ def render(
     ctx: click.Context, dataset: str, project_id: Optional[str], sql_dir: Optional[str]
 ) -> None:
     """Render a check's Jinja template."""
-    checks_file, project_id, dataset_id, table = paths_matching_checks_pattern(
+    for checks_file, project_id, dataset_id, table in paths_matching_checks_pattern(
         dataset, sql_dir, project_id=project_id
-    )
-
-    click.echo(
-        _render(
-            checks_file,
-            dataset_id,
-            table,
-            project_id=project_id,
-            query_arguments=ctx.args[:],
+    ):
+        click.echo(
+            _render(
+                checks_file,
+                dataset_id,
+                table,
+                project_id=project_id,
+                query_arguments=ctx.args[:],
+            )
         )
-    )
 
     return None
 
@@ -194,7 +185,7 @@ def _render(
 @click.argument("dataset")
 @project_id_option()
 @sql_dir_option
-@click.option("--marker", default="fail", help="Marker to filter checks.")
+@click.option("--marker", default=DEFAULT_MARKER, help="Marker to filter checks.")
 @click.option(
     "--dry_run",
     "--dry-run",
@@ -212,19 +203,18 @@ def run(ctx, dataset, project_id, sql_dir, marker, dry_run):
         )
         sys.exit(1)
 
-    checks_file, project_id, dataset_id, table = paths_matching_checks_pattern(
+    for checks_file, project_id, dataset_id, table in paths_matching_checks_pattern(
         dataset, sql_dir, project_id=project_id
-    )
-
-    _run_check(
-        checks_file,
-        project_id,
-        dataset_id,
-        table,
-        ctx.args,
-        dry_run=dry_run,
-        marker=marker,
-    )
+    ):
+        _run_check(
+            checks_file,
+            project_id,
+            dataset_id,
+            table,
+            ctx.args,
+            dry_run=dry_run,
+            marker=marker,
+        )
 
 
 def _run_check(
@@ -233,7 +223,7 @@ def _run_check(
     dataset_id,
     table,
     query_arguments,
-    marker,
+    marker=DEFAULT_MARKER,
     dry_run=False,
 ):
     """Run the check."""
@@ -256,12 +246,13 @@ def _run_check(
         **{"dataset_id": dataset_id, "table_name": table},
         **parameters,
     }
+    if "format" not in jinja_params:
+        jinja_params["format"] = False
 
     rendered_result = render_template(
         checks_file.name,
         template_folder=str(checks_file.parent),
         templates_dir="",
-        format=False,
         **jinja_params,
     )
     result_split_by_marker = _render_result_split_by_marker(marker, rendered_result)

@@ -98,6 +98,18 @@ fields:
 - mode: NULLABLE
   name: country
   type: STRING
+- mode: NULLABLE
+  name: state
+  type: STRING
+- mode: NULLABLE
+  name: has_refunds
+  type: BOOLEAN
+- mode: NULLABLE
+  name: has_fraudulent_charges
+  type: BOOLEAN
+- mode: NULLABLE
+  name: has_fraudulent_charge_refunds
+  type: BOOLEAN
 - mode: REPEATED
   name: promotion_codes
   type: STRING

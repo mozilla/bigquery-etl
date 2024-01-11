@@ -381,7 +381,7 @@ expected AS (
     )
 )
 SELECT
-  assert.array_equals(
+  mozfun.assert.array_equals(
     exp,
     CASE
       WHEN res_type = "total_searches"

@@ -18,7 +18,12 @@ class BaselineClientsFirstSeenTable(GleanTable):
         self.custom_render_kwargs = {}
 
     def generate_per_app_id(
-        self, project_id, baseline_table, output_dir=None, use_cloud_function=True
+        self,
+        project_id,
+        baseline_table,
+        output_dir=None,
+        use_cloud_function=True,
+        app_info=[],
     ):
         """Generate per-app_id datasets."""
         self.custom_render_kwargs = dict(
@@ -36,8 +41,5 @@ class BaselineClientsFirstSeenTable(GleanTable):
         )
 
         GleanTable.generate_per_app_id(
-            self,
-            project_id,
-            baseline_table,
-            output_dir=output_dir,
+            self, project_id, baseline_table, output_dir=output_dir, app_info=app_info
         )

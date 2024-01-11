@@ -15,9 +15,61 @@ try {
 }
 """;
 
-WITH per_client AS (
+WITH filtered_main AS (
+  SELECT
+    submission_timestamp,
+    client_id,
+    sample_id,
+    payload.info.addons,
+    application.version,
+    normalized_country_code,
+    environment.settings.locale,
+    normalized_os
+  FROM
+    telemetry.main
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+    AND client_id IS NOT NULL
+),
+per_clients_without_addons AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
+    client_id,
+    sample_id,
+    -- We always want to take the most recent seen version per
+    -- https://bugzilla.mozilla.org/show_bug.cgi?id=1693308
+    ARRAY_AGG(version ORDER BY mozfun.norm.truncate_version(version, "minor") DESC)[
+      SAFE_OFFSET(0)
+    ] AS app_version,
+    mozfun.stats.mode_last(
+      ARRAY_AGG(normalized_country_code ORDER BY submission_timestamp)
+    ) AS country,
+    mozfun.stats.mode_last(ARRAY_AGG(locale ORDER BY submission_timestamp)) AS locale,
+    mozfun.stats.mode_last(ARRAY_AGG(normalized_os ORDER BY submission_timestamp)) AS app_os,
+  FROM
+    filtered_main
+  GROUP BY
+    submission_date,
+    sample_id,
+    client_id
+),
+per_clients_just_addons_base AS (
+  SELECT
+    DATE(submission_timestamp) AS submission_date,
+    client_id,
+    sample_id,
+    addons
+  FROM
+    filtered_main
+  GROUP BY
+    submission_date,
+    client_id,
+    sample_id,
+    addons
+),
+per_clients_just_addons AS (
+  SELECT
+    submission_date,
     client_id,
     sample_id,
     ARRAY_CONCAT_AGG(
@@ -30,34 +82,31 @@ WITH per_client AS (
           decode_uri_component(REGEXP_EXTRACT(TRIM(addon), "(.+):")) AS id,
           REGEXP_EXTRACT(TRIM(addon), ":(.+)") AS version
         FROM
-          UNNEST(SPLIT(payload.info.addons, ",")) AS addon
+          UNNEST(SPLIT(addons, ",")) AS addon
       )
-      ORDER BY
-        submission_timestamp
-    ) AS addons,
-    -- We always want to take the most recent seen version per
-    -- https://bugzilla.mozilla.org/show_bug.cgi?id=1693308
-    ARRAY_AGG(
-      application.version
-      ORDER BY
-        mozfun.norm.truncate_version(application.version, "minor") DESC
-    )[SAFE_OFFSET(0)] AS app_version,
-    mozfun.stats.mode_last(
-      ARRAY_AGG(normalized_country_code ORDER BY submission_timestamp)
-    ) AS country,
-    mozfun.stats.mode_last(
-      ARRAY_AGG(environment.settings.locale ORDER BY submission_timestamp)
-    ) AS locale,
-    mozfun.stats.mode_last(ARRAY_AGG(normalized_os ORDER BY submission_timestamp)) AS app_os,
+    ) AS addons
   FROM
-    telemetry.main
-  WHERE
-    DATE(submission_timestamp) = @submission_date
-    AND client_id IS NOT NULL
+    per_clients_just_addons_base
   GROUP BY
     submission_date,
     sample_id,
     client_id
+),
+per_client AS (
+  SELECT
+    submission_date,
+    client_id,
+    sample_id,
+    addons,
+    app_version,
+    country,
+    locale,
+    app_os,
+  FROM
+    per_clients_without_addons
+  INNER JOIN
+    per_clients_just_addons
+    USING (submission_date, client_id, sample_id)
 )
 SELECT
   * EXCEPT (addons),

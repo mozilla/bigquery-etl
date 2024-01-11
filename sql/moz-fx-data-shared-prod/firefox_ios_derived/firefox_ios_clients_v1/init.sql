@@ -141,7 +141,9 @@ _current AS (
           THEN "metrics"
         ELSE NULL
       END AS adjust_info__source_ping
-    ) AS metadata
+    ) AS metadata,
+    -- field to help us identify suspicious devices on iOS, for more info see: bug-1846554
+    (app_version = '107.2' AND submission_date >= '2023-02-01') AS is_suspicious_device_client,
   FROM
     first_seen
   FULL OUTER JOIN
@@ -167,6 +169,7 @@ SELECT
   adjust_info.*,
   metadata,
   activations.is_activated,
+  is_suspicious_device_client,
 FROM
   _current
 LEFT JOIN

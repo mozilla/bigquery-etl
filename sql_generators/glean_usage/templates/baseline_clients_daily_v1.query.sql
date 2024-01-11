@@ -6,7 +6,6 @@
   PARTITION BY
     submission_date
   CLUSTER BY
-    is_new_profile,
     normalized_channel,
     sample_id
   OPTIONS
@@ -20,7 +19,7 @@ WITH base AS (
     LOWER(client_info.client_id) AS client_id,
     sample_id,
     SAFE.PARSE_DATE('%F', SUBSTR(client_info.first_run_date, 1, 10)) AS first_run_date,
-    SAFE.PARSE_TIMESTAMP('%FT%H:%M%Ez', ping_info.end_time) AS parsed_end_time,
+    mozfun.glean.parse_datetime(ping_info.end_time) AS parsed_end_time,
     udf.glean_timespan_seconds(metrics.timespan.glean_baseline_duration) AS duration,
     client_info.android_sdk_version,
     client_info.app_build,

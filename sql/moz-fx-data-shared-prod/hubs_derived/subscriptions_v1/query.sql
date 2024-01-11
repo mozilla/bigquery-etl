@@ -81,6 +81,9 @@ hubs_subscriptions AS (
     ) AS pricing_plan,
     -- Stripe billing grace period is 7 day and Paypal is billed by Stripe
     INTERVAL 7 DAY AS billing_grace_period,
+    has_refunds,
+    has_fraudulent_charges,
+    has_fraudulent_charge_refunds,
     promotion_codes,
     promotion_discounts_amount,
   FROM

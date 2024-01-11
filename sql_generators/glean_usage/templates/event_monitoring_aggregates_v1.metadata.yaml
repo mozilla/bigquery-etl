@@ -1,0 +1,21 @@
+friendly_name: Event Monitoring Aggregates
+description: |-
+  Materialized view of experimentation related events
+  coming from all Glean apps.
+owners:
+- ascholtz@mozilla.com
+- akomar@mozilla.com
+labels:
+  incremental: true 
+scheduling:
+  dag_name: bqetl_monitoring
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partitions_filter: false
+  clustering:
+    fields:
+      - event_name
+      - channel
+      - normalized_app_name

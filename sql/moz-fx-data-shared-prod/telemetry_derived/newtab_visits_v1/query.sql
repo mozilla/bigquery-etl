@@ -20,7 +20,7 @@ WITH events_unnested AS (
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND category IN ('newtab', 'topsites', 'newtab.search', 'newtab.search.ad', 'pocket')
-    AND name IN ('closed', 'opened', 'impression', 'issued', 'click', 'save', 'topic_click')
+    AND name IN ('closed', 'opened', 'impression', 'issued', 'click', 'save', 'topic_click', 'dismiss')
 ),
 visit_metadata AS (
   SELECT
@@ -150,6 +150,15 @@ topsites_events AS (
       event_name = 'click'
       AND mozfun.map.get_key(event_details, "is_sponsored") = "false"
     ) AS organic_topsite_tile_clicks,
+    COUNTIF(event_name = 'dismiss') AS topsite_tile_dismissals,
+    COUNTIF(
+      event_name = 'dismiss'
+      AND mozfun.map.get_key(event_details, "is_sponsored") = "true"
+    ) AS sponsored_topsite_tile_dismissals,
+    COUNTIF(
+      event_name = 'dismiss'
+      AND mozfun.map.get_key(event_details, "is_sponsored") = "false"
+    ) AS organic_topsite_tile_dismissals,
   FROM
     events_unnested
   LEFT JOIN
@@ -182,7 +191,10 @@ topsites_summary AS (
         organic_topsite_tile_clicks,
         topsite_tile_impressions,
         sponsored_topsite_tile_impressions,
-        organic_topsite_tile_impressions
+        organic_topsite_tile_impressions,
+        topsite_tile_dismissals,
+        sponsored_topsite_tile_dismissals,
+        organic_topsite_tile_dismissals
       )
     ) AS topsite_tile_interactions
   FROM

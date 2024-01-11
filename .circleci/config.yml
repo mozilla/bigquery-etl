@@ -40,7 +40,7 @@ jobs:
           name: Build
           command: |
             python3 -m venv venv/
-            venv/bin/pip install pip-tools --constraint requirements.in
+            venv/bin/pip install --no-deps -r requirements.txt
             venv/bin/pip-sync --pip-args=--no-deps
       - run:
           name: Yamllint Test
@@ -84,15 +84,13 @@ jobs:
     docker: *docker
     steps:
       - checkout
+      - *restore_venv_cache
+      - *build
       - run:
           name: Verify that requirements.txt contains the right dependencies for
             this python version
-          # use `--constraint` with `requirements.in` not `requirements.txt`
-          # because for pip>=20.3 "Constraints are only allowed to take the form
-          # of a package name and a version specifier"
           command: |
-            pip install pip-tools --constraint requirements.in
-            pip-compile --allow-unsafe --generate-hashes --quiet
+            venv/bin/pip-compile --allow-unsafe --generate-hashes --quiet
             git diff --exit-code -G '^ *[^# ]' -- requirements.txt
   test-sql:
     docker: *docker
@@ -197,6 +195,8 @@ jobs:
           # yamllint disable rule:line-length
           command: |
             PATH="venv/bin:$PATH" script/entrypoint -m 'integration' -n 8
+          # workaround for job failing with `Too long with no output (exceeded 10m0s): context deadline exceeded` error
+          no_output_timeout: 30m
   generate-dags:
     docker: *docker
     steps:
@@ -208,13 +208,8 @@ jobs:
       - run:
           name: Generate DAGs
           command: |
-            PATH="venv/bin:$PATH" script/bqetl dag generate
-            cp -R dags /tmp/workspace/generated-sql
-      - run:
-          name: Verify that DAGs were correctly generated and are up-to-date
-          command: |
-            git diff --exit-code dags/
-            diff <(git ls-files dags/*.py) <(ls dags/*.py)
+            mkdir -p /tmp/workspace/generated-sql/dags
+            PATH="venv/bin:$PATH" script/bqetl dag generate --output-dir=/tmp/workspace/generated-sql/dags
       # this task is overwriting the content produced by generate-sql;
       # the behaviour here is additive, generated DAGs are just added to
       # the generated-sql output
@@ -248,13 +243,13 @@ jobs:
           name: Pull telemetry-airflow
           command: |
             git clone https://github.com/mozilla/telemetry-airflow.git ~/telemetry-airflow
+      - *attach_generated_sql
+      - *copy_generated_sql
       - run:
           name: Replace telemetry-airflow DAGs with BigQuery ETL DAGs
           command: |
             rm ~/telemetry-airflow/dags/* -f || true
-            cp -a dags/. ~/telemetry-airflow/dags/
-      - *attach_generated_sql
-      - *copy_generated_sql
+            cp -a /tmp/workspace/generated-sql/dags/. ~/telemetry-airflow/dags/
       - run:
           name: Install telemetry-airflow dependencies
           command: |
@@ -302,7 +297,8 @@ jobs:
       - *build
       - *attach_generated_sql
       - add_ssh_keys:
-          fingerprints: "22:b9:3c:1b:82:ab:3f:e4:b5:79:70:d1:7b:b9:28:d2"
+          fingerprints:
+            - "22:b9:3c:1b:82:ab:3f:e4:b5:79:70:d1:7b:b9:28:d2"
       - run:
           name: Build and deploy docs
           command: |
@@ -351,7 +347,8 @@ jobs:
       - *attach_generated_sql
       - *copy_generated_sql
       - add_ssh_keys:
-          fingerprints: "22:b9:3c:1b:82:ab:3f:e4:b5:79:70:d1:7b:b9:28:d2"
+          fingerprints:
+            - "22:b9:3c:1b:82:ab:3f:e4:b5:79:70:d1:7b:b9:28:d2"
       - run:
           name: Pull in generated-sql branch from remote
           command: |
@@ -371,6 +368,8 @@ jobs:
               --dataset-suffix=$CIRCLE_SHA1 \
               --remove-updated-artifacts \
               $PATHS
+          # workaround for job failing with `Too long with no output (exceeded 10m0s): context deadline exceeded` error
+          no_output_timeout: 30m
       - run:
           name: Copy generated SQL to temporary stage directory
           command: |
@@ -386,7 +385,8 @@ jobs:
     steps:
       - *attach_generated_sql
       - add_ssh_keys:
-          fingerprints: "22:b9:3c:1b:82:ab:3f:e4:b5:79:70:d1:7b:b9:28:d2"
+          fingerprints:
+            - "22:b9:3c:1b:82:ab:3f:e4:b5:79:70:d1:7b:b9:28:d2"
       - run:
           name: Push to generated-sql branch
           command: |
@@ -407,24 +407,42 @@ jobs:
               || echo "Skipping push since it looks like there were no changes"
   sync-dags-repo:
     executor: docker/machine
+    parameters:
+      repo-to-sync:
+        type: string
+      target-branch:
+        type: string
     steps:
       - checkout
       - add_ssh_keys:
           fingerprints:
+            - "9d:1e:af:52:78:2c:e8:ec:33:4c:db:cd:5a:ff:70:0a"
             - "e4:30:50:41:53:f0:d6:3a:bb:c9:38:54:2d:ca:56:41"
       - run:
           name: 🤖 Update DAGs repository
+          # ~/.ssh/config needs to be manually configured to support cloning a private
+          # repository through submodules and writing to another repository.
           command: |
+            cat \<<'EOT' > ~/.ssh/config
+            Host github.com
+              IdentitiesOnly yes
+              IdentityFile /home/circleci/.ssh/id_rsa_9d1eaf52782ce8ec334cdbcd5aff700a
+            Host git-telemetry-airflow-dags
+              HostName github.com
+              User git
+              IdentitiesOnly yes
+              IdentityFile /home/circleci/.ssh/id_rsa_e430504153f0d63abbc938542dca5641
+            EOT
             ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
             git config --global user.email "dataops@mozilla.com"
             git config --global user.name "CircleCI Job"
-            git clone --branch main git@github.com:mozilla/telemetry-airflow-dags.git
+            git clone --branch main git@git-telemetry-airflow-dags:mozilla/telemetry-airflow-dags.git
             cd ~/project/telemetry-airflow-dags
             git submodule update --init --recursive --depth 1
-            cd ${CIRCLE_PROJECT_REPONAME}
-            git pull origin generated-sql
+            cd << parameters.repo-to-sync >>
+            git pull origin << parameters.target-branch >>
             cd ..
-            git add ${CIRCLE_PROJECT_REPONAME}
+            git add << parameters.repo-to-sync >>
             git commit --allow-empty -m "Automatic commit from ${CIRCLE_PROJECT_REPONAME} commit ${CIRCLE_SHA1:0:9} build ${CIRCLE_BUILD_NUM} [skip ci]"
             git push origin main
   deploy:
@@ -449,7 +467,8 @@ jobs:
       - *build
       - add_ssh_keys:
           # deploy key to private-bigquery-etl
-          fingerprints: "9d:1e:af:52:78:2c:e8:ec:33:4c:db:cd:5a:ff:70:0a"
+          fingerprints:
+            - "9d:1e:af:52:78:2c:e8:ec:33:4c:db:cd:5a:ff:70:0a"
       - run:
           name: Install rsync
           command: |
@@ -469,12 +488,6 @@ jobs:
           command: |
             mkdir -p /tmp/workspace/private-generated-sql
 
-            mkdir -p /tmp/workspace/private-generated-sql/dags
-            PATH="venv/bin:$PATH" script/bqetl dag generate \
-              --dags-config dags.yaml \
-              --sql-dir ~/private-bigquery-etl/sql/ \
-              --output-dir /tmp/workspace/private-generated-sql/dags/
-
             cp -r sql/ /tmp/workspace/private-generated-sql/sql
             # Don't depend on dry run for PRs
             PATH="venv/bin:$PATH" script/bqetl generate all \
@@ -490,6 +503,15 @@ jobs:
             PATH="venv/bin:$PATH" script/bqetl metadata update \
               --sql-dir /tmp/workspace/private-generated-sql/sql/ \
               /tmp/workspace/private-generated-sql/sql/
+
+            # Change directory to generate DAGs so `sql_file_path` values are relative to the repo root.
+            export PATH="$PWD/venv/bin:$PATH"
+            export PYTHONPATH="$PWD:$PYTHONPATH"
+            bqetl_script="$PWD/script/bqetl"
+            cd ~/private-bigquery-etl
+            mkdir -p /tmp/workspace/private-generated-sql/dags
+            $bqetl_script dag generate \
+              --output-dir /tmp/workspace/private-generated-sql/dags/
       - persist_to_workspace:
           root: /tmp/workspace
           paths:
@@ -499,7 +521,8 @@ jobs:
     steps:
       - *attach_generated_sql
       - add_ssh_keys:
-          fingerprints: "9d:1e:af:52:78:2c:e8:ec:33:4c:db:cd:5a:ff:70:0a"
+          fingerprints:
+            - "9d:1e:af:52:78:2c:e8:ec:33:4c:db:cd:5a:ff:70:0a"
       - run:
           name: Push to private-generated-sql branch
           # yamllint disable rule:line-length
@@ -563,11 +586,11 @@ jobs:
               "sql/"
             ./script/bqetl metadata update \
               sql/
-            ./script/bqetl dag generate
 
             mkdir -p /tmp/workspace/main-generated-sql
             cp -r sql/ /tmp/workspace/main-generated-sql/sql
-            cp -r dags/ /tmp/workspace/main-generated-sql/dags
+            mkdir -p /tmp/workspace/main-generated-sql/dags
+            ./script/bqetl dag generate --output-dir /tmp/workspace/main-generated-sql/dags
       - persist_to_workspace:
           root: /tmp/workspace
           paths:
@@ -580,28 +603,36 @@ jobs:
       - run:
           name: Generate diff
           command: |
-            diff -bur --no-dereference \
+            diff -qr --no-dereference \
               /tmp/workspace/main-generated-sql/dags/ /tmp/workspace/generated-sql/dags/ \
+              | grep '^Only in' \
               > /tmp/workspace/generated-sql/sql.diff || true
-            diff -bur --no-dereference \
+            diff -bur --no-dereference --new-file \
+              /tmp/workspace/main-generated-sql/dags/ /tmp/workspace/generated-sql/dags/ \
+              >> /tmp/workspace/generated-sql/sql.diff || true
+            diff -qr --no-dereference \
+              /tmp/workspace/main-generated-sql/sql/ /tmp/workspace/generated-sql/sql/ \
+              | grep '^Only in' \
+              >> /tmp/workspace/generated-sql/sql.diff || true
+            diff -bur --no-dereference --new-file \
               /tmp/workspace/main-generated-sql/sql/ /tmp/workspace/generated-sql/sql/ \
               >> /tmp/workspace/generated-sql/sql.diff || true
       - persist_to_workspace:
           root: /tmp/workspace
           paths:
             - generated-sql
+      - store_artifacts:
+          path: /tmp/workspace/generated-sql/sql.diff
+          destination: sql.diff
   post-diff:
     docker:
-      - image: circleci/node:8.10.0
+      - image: cimg/node:21.2.0
     steps:
       - checkout
       - attach_workspace:
           at: /tmp/workspace
-      - run: npm i circle-github-bot
+      - run: npm i circle-github-bot@2.1.0 @octokit/graphql@7.0.2
       - run: .circleci/post-diff.js
-      - store_artifacts:
-          path: /tmp/integration
-          destination: /app/integration
   reset-stage-env:
     docker: *docker
     steps:
@@ -720,7 +751,9 @@ workflows:
               only:
                 - main
       - sync-dags-repo:
-          name: 🔃 Synchronize DAGs repository
+          name: 🔃 Synchronize bigquery-etl submodule
+          repo-to-sync: ${CIRCLE_PROJECT_REPONAME}
+          target-branch: generated-sql
           requires:
             - push-generated-sql
           filters:
@@ -759,6 +792,16 @@ workflows:
       - push-private-generated-sql:
           requires:
             - private-generate-sql
+          filters:
+            branches:
+              only:
+                - main
+      - sync-dags-repo:
+          name: 🔃 Synchronize private-bigquery-etl submodule
+          repo-to-sync: private-bigquery-etl
+          target-branch: private-generated-sql
+          requires:
+            - push-private-generated-sql
           filters:
             branches:
               only:

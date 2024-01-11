@@ -1,6 +1,6 @@
 """Represents an Airflow DAG."""
 
-from typing import List, Optional
+from typing import List, Optional, Set
 
 import attr
 import cattrs
@@ -20,6 +20,8 @@ from bigquery_etl.query_scheduling.utils import (
 AIRFLOW_DAG_TEMPLATE = "airflow_dag.j2"
 PUBLIC_DATA_JSON_DAG_TEMPLATE = "public_data_json_airflow_dag.j2"
 PUBLIC_DATA_JSON_DAG = "bqetl_public_data_json"
+
+CONFIDENTIAL_TAG = "triage/confidential"
 
 
 class DagParseException(Exception):
@@ -175,6 +177,15 @@ class Dag:
 
         return {name: d}
 
+    @property
+    def task_groups(self) -> Set[str]:
+        """
+        Return list of task groups in this DAG.
+
+        Task groups are specified as part of the task configurations.
+        """
+        return {task.task_group for task in self.tasks if task.task_group is not None}
+
     @classmethod
     def from_dict(cls: type, d: dict):
         """
@@ -197,6 +208,12 @@ class Dag:
             tags: set[str] = set(d[name].get("tags", []))
             if not any(tag.startswith("repo/") for tag in tags):
                 tags.add("repo/" + d[name].get("repo", "bigquery-etl"))
+
+            if name.startswith("private_") and CONFIDENTIAL_TAG not in tags:
+                tags.add(
+                    CONFIDENTIAL_TAG,
+                )
+
             d[name]["tags"] = sorted(tags)
 
             if name == PUBLIC_DATA_JSON_DAG:
@@ -234,6 +251,7 @@ class Dag:
         env = self._jinja_env()
         dag_template = env.get_template(AIRFLOW_DAG_TEMPLATE)
         args = self.__dict__
+        args["task_groups"] = self.task_groups
 
         return dag_template.render(args)
 

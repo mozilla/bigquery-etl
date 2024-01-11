@@ -10,21 +10,22 @@ import string
 import subprocess
 import sys
 import tempfile
-import typing
 from datetime import date, timedelta
 from functools import partial
 from multiprocessing.pool import Pool, ThreadPool
 from pathlib import Path
 from tempfile import NamedTemporaryFile
 from traceback import print_exc
+from typing import Optional
 
-import click
+import rich_click as click
 import yaml
 from dateutil.rrule import MONTHLY, rrule
 from google.cloud import bigquery
 from google.cloud.exceptions import NotFound
 
 from ..backfill.utils import QUALIFIED_TABLE_NAME_RE, qualified_table_name_matching
+from ..cli import check
 from ..cli.format import format
 from ..cli.utils import (
     is_authenticated,
@@ -69,6 +70,7 @@ QUERY_NAME_RE = re.compile(r"(?P<dataset>[a-zA-z0-9_]+)\.(?P<name>[a-zA-z0-9_]+)
 VERSION_RE = re.compile(r"_v[0-9]+")
 DESTINATION_TABLE_RE = re.compile(r"^[a-zA-Z0-9_$]{0,1024}$")
 DEFAULT_DAG_NAME = "bqetl_default"
+DEFAULT_INIT_PARALLELISM = 10
 
 
 @click.group(help="Commands for managing queries.")
@@ -338,8 +340,6 @@ def schedule(name, sql_dir, project_id, dag, depends_on_past, task_name):
 
     dags = DagCollection.from_file(sql_dir.parent / "dags.yaml")
 
-    dags_to_be_generated = set()
-
     for query_file in query_files:
         try:
             metadata = Metadata.of_query_file(query_file)
@@ -380,21 +380,11 @@ def schedule(name, sql_dir, project_id, dag, depends_on_past, task_name):
 
             # update dags since new task has been added
             dags = get_dags(None, sql_dir.parent / "dags.yaml", sql_dir=sql_dir)
-            dags_to_be_generated.add(dag)
         else:
             dags = get_dags(None, sql_dir.parent / "dags.yaml", sql_dir=sql_dir)
             if metadata.scheduling == {}:
                 click.echo(f"No scheduling information for: {query_file}", err=True)
                 sys.exit(1)
-            else:
-                dags_to_be_generated.add(metadata.scheduling["dag_name"])
-
-    # re-run DAG generation for the affected DAG
-    for d in dags_to_be_generated:
-        existing_dag = dags.dag_by_name(d)
-        logging.info(f"Running DAG generation for {existing_dag.name}")
-        output_dir = sql_dir.parent / "dags"
-        dags.dag_to_airflow(output_dir, existing_dag)
 
 
 @query.command(
@@ -436,6 +426,8 @@ def info(ctx, name, sql_dir, project_id, cost, last_updated):
             ignore=["derived_view_schemas", "stable_views"],
         )
         query_files = paths_matching_name_pattern(name, ctx.obj["TMP_DIR"], project_id)
+        if query_files == []:
+            raise click.ClickException(f"No queries matching `{name}` were found.")
 
     for query_file in query_files:
         query_file_path = Path(query_file)
@@ -501,78 +493,142 @@ def info(ctx, name, sql_dir, project_id, cost, last_updated):
         click.echo("")
 
 
+def _parse_parameter(parameter: str, param_date: str) -> str:
+    # TODO: Parse more complex parameters such as macro_ds_add
+    param_name, param_type, param_value = parameter.split(":")
+    if param_type == "DATE" and param_value != "{{ds}}":
+        raise ValueError(f"Unable to parse parameter {parameter}")
+
+    return f"--parameter={parameter.replace('{{ds}}', param_date)}"
+
+
 def _backfill_query(
     query_file_path,
     project_id,
     date_partition_parameter,
+    date_partition_offset,
     exclude,
     max_rows,
     dry_run,
-    no_partition,
+    scheduling_parameters,
     args,
     partitioning_type,
     backfill_date,
     destination_table,
+    run_checks,
 ):
     """Run a query backfill for a specific date."""
+    backfill_date_str = backfill_date.strftime("%Y-%m-%d")
+    if backfill_date_str in exclude:
+        click.echo(f"Skipping {query_file_path} backfill for run {backfill_date_str}")
+        return True
+
     project, dataset, table = extract_from_query_path(query_file_path)
+    if destination_table is None:
+        destination_table = f"{project}.{dataset}.{table}"
 
-    match partitioning_type:
-        case PartitionType.DAY:
-            partition = backfill_date.strftime("%Y%m%d")
-        case PartitionType.MONTH:
-            partition = backfill_date.strftime("%Y%m")
-        case _:
-            raise ValueError(f"Unsupported partitioning type: {partitioning_type}")
+    # For partitioned tables, get the partition to write to the correct destination:
+    if (
+        partition := _get_partition(
+            backfill_date,
+            date_partition_parameter,
+            date_partition_offset,
+            partitioning_type,
+        )
+    ) is not None:
+        destination_table = f"{destination_table}${partition}"
 
-    backfill_date = backfill_date.strftime("%Y-%m-%d")
-    if backfill_date not in exclude:
-        if destination_table is None:
-            destination_table = f"{project}.{dataset}.{table}"
+    if not QUALIFIED_TABLE_NAME_RE.match(destination_table):
+        click.echo("Destination table must be named like: <project>.<dataset>.<table>")
+        sys.exit(1)
 
-        if not no_partition:
-            destination_table = f"{destination_table}${partition}"
+    query_parameters = [
+        _parse_parameter(param, backfill_date_str) for param in scheduling_parameters
+    ]
 
-        if not QUALIFIED_TABLE_NAME_RE.match(destination_table):
-            click.echo(
-                "Destination table must be named like:" + " <project>.<dataset>.<table>"
-            )
-            sys.exit(1)
-
-        click.echo(
-            f"Run backfill for {destination_table} "
-            f"with @{date_partition_parameter}={backfill_date}"
+    if date_partition_parameter is not None:
+        offset_param = backfill_date + timedelta(days=date_partition_offset)
+        query_parameters.append(
+            f"--parameter={date_partition_parameter}:DATE:{offset_param.strftime('%Y-%m-%d')}"
         )
 
-        arguments = [
+    arguments = (
+        [
             "query",
-            f"--parameter={date_partition_parameter}:DATE:{backfill_date}",
             "--use_legacy_sql=false",
             "--replace",
             f"--max_rows={max_rows}",
             f"--project_id={project_id}",
             "--format=none",
-        ] + args
-        if dry_run:
-            arguments += ["--dry_run"]
+        ]
+        + args
+        + query_parameters
+    )
+    if dry_run:
+        arguments += ["--dry_run"]
 
-        _run_query(
-            [query_file_path],
+    click.echo(
+        f"Backfill run: {backfill_date_str} "
+        f"Destination_table: {destination_table} "
+        f"Scheduling Parameters: {query_parameters}"
+    )
+
+    _run_query(
+        [query_file_path],
+        project_id=project_id,
+        dataset_id=dataset,
+        destination_table=destination_table,
+        public_project_id=ConfigLoader.get(
+            "default", "public_project", fallback="mozilla-public-data"
+        ),
+        query_arguments=arguments,
+    )
+
+    # Run checks on the query
+    checks_file = query_file_path.parent / "checks.sql"
+    if run_checks and checks_file.exists():
+        table_name = checks_file.parent.name
+        # query_args have things like format, which we don't want to push
+        # to the check; so we just take the query parameters
+        check_args = [qa for qa in arguments if qa.startswith("--parameter")]
+        check._run_check(
+            checks_file=checks_file,
             project_id=project_id,
             dataset_id=dataset,
-            destination_table=destination_table,
-            public_project_id=ConfigLoader.get(
-                "default", "public_project", fallback="mozilla-public-data"
-            ),
-            query_arguments=arguments,
-        )
-
-    else:
-        click.echo(
-            f"Skip {query_file_path} with @{date_partition_parameter}={backfill_date}"
+            table=table_name,
+            query_arguments=check_args,
+            dry_run=dry_run,
         )
 
     return True
+
+
+def _get_partition(
+    backfill_date: datetime.datetime,
+    date_partition_parameter: Optional[str],
+    date_partition_offset: int,
+    partitioning_type: Optional[PartitionType],
+) -> Optional[str]:
+    if date_partition_parameter is None and date_partition_offset == 0:
+        return None
+
+    match partitioning_type:
+        case None:
+            partition = None
+        case PartitionType.DAY:
+            partition_date = backfill_date + timedelta(days=date_partition_offset)
+            partition = partition_date.strftime("%Y%m%d")
+        case PartitionType.MONTH:
+            if date_partition_offset != 0:
+                # TODO: Support offsets here e.g. desktop_mobile_search_clients_monthly_v1
+                raise ValueError(
+                    f"Offsets are unsupported for non-daily partitions (found date_partition_offset={date_partition_offset})."
+                )
+            partition = backfill_date.strftime("%Y%m")
+        case _:
+            raise ValueError(f"Unsupported partitioning type: {partitioning_type}")
+
+    return partition
 
 
 @query.command(
@@ -659,6 +715,9 @@ def _backfill_query(
         + "If not set, determines destination table based on query."
     ),
 )
+@click.option(
+    "--checks/--no-checks", help="Whether to run checks during backfill", default=False
+)
 @click.pass_context
 def backfill(
     ctx,
@@ -673,6 +732,7 @@ def backfill(
     parallelism,
     no_partition,
     destination_table,
+    checks,
 ):
     """Run a backfill."""
     if not is_authenticated():
@@ -691,62 +751,54 @@ def backfill(
             ignore=["derived_view_schemas", "stable_views", "country_code_lookup"],
         )
         query_files = paths_matching_name_pattern(name, ctx.obj["TMP_DIR"], project_id)
-
-    dates = [start_date + timedelta(i) for i in range((end_date - start_date).days + 1)]
+        if query_files == []:
+            raise click.ClickException(f"No queries matching `{name}` were found.")
 
     for query_file in query_files:
         query_file_path = Path(query_file)
 
-        depends_on_past = False
-        date_partition_parameter = "submission_date"
-
         try:
             metadata = Metadata.of_query_file(str(query_file_path))
-            depends_on_past = metadata.scheduling.get(
-                "depends_on_past", depends_on_past
-            )
-            date_partition_parameter = metadata.scheduling.get(
-                "date_partition_parameter", date_partition_parameter
-            )
-
-            # For backwards compatibility assume partitioning type is day
-            # in case metadata is missing
-            if metadata.bigquery:
-                partitioning_type = metadata.bigquery.time_partitioning.type
-            else:
-                partitioning_type = PartitionType.DAY
-                click.echo(
-                    "Bigquery partitioning type not set. Using PartitionType.DAY"
-                )
-
-            match partitioning_type:
-                case PartitionType.DAY:
-                    dates = [
-                        start_date + timedelta(i)
-                        for i in range((end_date - start_date).days + 1)
-                    ]
-                case PartitionType.MONTH:
-                    dates = list(
-                        rrule(
-                            freq=MONTHLY,
-                            dtstart=start_date.replace(day=1),
-                            until=end_date,
-                        )
-                    )
-                    # Dates in excluded must be the first day of the month to match `dates`
-                    exclude = [
-                        date.fromisoformat(day).replace(day=1).strftime("%Y-%m-%d")
-                        for day in exclude
-                    ]
-                case _:
-                    raise ValueError(
-                        f"Unsupported partitioning type: {partitioning_type}"
-                    )
-
         except FileNotFoundError:
-            click.echo(f"No metadata defined for {query_file_path}")
+            click.echo(f"Can't run backfill without metadata for {query_file_path}.")
+            continue
 
-        if depends_on_past and exclude != []:
+        depends_on_past = metadata.scheduling.get("depends_on_past", False)
+        # If date_partition_parameter isn't set it's assumed to be submission_date:
+        # https://github.com/mozilla/telemetry-airflow/blob/dbc2782fa23a34ae8268e7788f9621089ac71def/utils/gcp.py#L194C48-L194C48
+        date_partition_parameter = metadata.scheduling.get(
+            "date_partition_parameter", "submission_date"
+        )
+        date_partition_offset = metadata.scheduling.get("date_partition_offset", 0)
+        scheduling_parameters = metadata.scheduling.get("parameters", [])
+
+        partitioning_type = None
+        if metadata.bigquery and metadata.bigquery.time_partitioning:
+            partitioning_type = metadata.bigquery.time_partitioning.type
+
+        match partitioning_type:
+            case None | PartitionType.DAY:
+                dates = [
+                    start_date + timedelta(i)
+                    for i in range((end_date - start_date).days + 1)
+                ]
+            case PartitionType.MONTH:
+                dates = list(
+                    rrule(
+                        freq=MONTHLY,
+                        dtstart=start_date.replace(day=1),
+                        until=end_date,
+                    )
+                )
+                # Dates in excluded must be the first day of the month to match `dates`
+                exclude = [
+                    date.fromisoformat(day).replace(day=1).strftime("%Y-%m-%d")
+                    for day in exclude
+                ]
+            case _:
+                raise ValueError(f"Unsupported partitioning type: {partitioning_type}")
+
+        if depends_on_past and exclude:
             click.echo(
                 f"Warning: depends_on_past = True for {query_file_path} but the"
                 f"following dates will be excluded from the backfill: {exclude}"
@@ -764,16 +816,18 @@ def backfill(
             query_file_path,
             project_id,
             date_partition_parameter,
+            date_partition_offset,
             exclude,
             max_rows,
             dry_run,
-            no_partition,
+            scheduling_parameters,
             ctx.args,
             partitioning_type,
             destination_table=destination_table,
+            run_checks=checks,
         )
 
-        if not depends_on_past:
+        if not depends_on_past and parallelism > 0:
             # run backfill for dates in parallel if depends_on_past is false
             with Pool(parallelism) as p:
                 result = p.map(backfill_query, dates, chunksize=1)
@@ -872,6 +926,8 @@ def run(
             ignore=["derived_view_schemas", "stable_views", "country_code_lookup"],
         )
         query_files = paths_matching_name_pattern(name, ctx.obj["TMP_DIR"], project_id)
+        if query_files == []:
+            raise click.ClickException(f"No queries matching `{name}` were found.")
 
     _run_query(
         query_files,
@@ -890,7 +946,7 @@ def _run_query(
     destination_table,
     dataset_id,
     query_arguments,
-    addl_templates: typing.Optional[dict] = None,
+    addl_templates: Optional[dict] = None,
 ):
     """Run a query."""
     if dataset_id is not None:
@@ -1243,14 +1299,45 @@ def validate(
         validate_metadata.validate_datasets(dataset_dir)
 
 
+def _initialize_in_parallel(
+    project,
+    table,
+    dataset,
+    query_file,
+    arguments,
+    parallelism,
+    sample_ids,
+    addl_templates,
+):
+    with ThreadPool(parallelism) as pool:
+        # Process all sample_ids in parallel.
+        pool.map(
+            partial(
+                _run_query,
+                [query_file],
+                project,
+                None,
+                table,
+                dataset,
+                addl_templates=addl_templates,
+            ),
+            [arguments + [f"--parameter=sample_id:INT64:{i}"] for i in sample_ids],
+        )
+
+
 @query.command(
-    help="""Create and initialize the destination table for the query.
-    Only for queries that have an `init.sql` file.
+    help="""Run a full backfill on the destination table for the query.
+       Using this command will:
+        - Create the table if it doesn't exist and run a full backfill.
+        - Run a full backfill if the table exists and is empty.
+        - Raise an exception if the table exists and has data, or if the table exists and the schema doesn't match the query.
+       It supports `query.sql` files that use the is_init() pattern, and `init.sql` files.
+       To run in parallel per sample_id, include a @sample_id parameter in the query.
 
-    Examples:
-
-    ./bqetl query initialize telemetry_derived.ssl_ratios_v1
-    """,
+       Examples:
+       - For init.sql files: ./bqetl query initialize telemetry_derived.ssl_ratios_v1
+       - For query.sql files and parallel run: ./bqetl query initialize sql/moz-fx-data-shared-prod/telemetry_derived/clients_first_seen_v2/query.sql
+       """,
 )
 @click.argument("name")
 @sql_dir_option
@@ -1260,7 +1347,24 @@ def validate(
     "--dry-run/--no-dry-run",
     help="Dry run the initialization",
 )
-def initialize(name, sql_dir, project_id, dry_run):
+@parallelism_option(default=DEFAULT_INIT_PARALLELISM)
+@click.option(
+    "--skip-existing",
+    "--skip_existing",
+    help="Skip initialization for existing artifacts. "
+    + "This ensures that artifacts, like materialized views only get initialized if they don't already exist.",
+    default=False,
+    is_flag=True,
+)
+@click.option(
+    "--force/--noforce",
+    help="Run the initialization even if the destination table contains data.",
+    default=False,
+)
+@click.pass_context
+def initialize(
+    ctx, name, sql_dir, project_id, dry_run, parallelism, skip_existing, force
+):
     """Create the destination table for the provided query."""
     if not is_authenticated():
         click.echo("Authentication required for creating tables.", err=True)
@@ -1270,7 +1374,13 @@ def initialize(name, sql_dir, project_id, dry_run):
         # allow name to be a path
         query_files = [Path(name)]
     else:
-        query_files = paths_matching_name_pattern(name, sql_dir, project_id)
+        file_regex = re.compile(
+            r"^.*/([a-zA-Z0-9-]+)/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+(_v[0-9]+)?)/"
+            r"(?:query\.sql|init\.sql)$"
+        )
+        query_files = paths_matching_name_pattern(
+            name, sql_dir, project_id, file_regex=file_regex
+        )
 
     if not query_files:
         click.echo(
@@ -1279,67 +1389,111 @@ def initialize(name, sql_dir, project_id, dry_run):
         )
         sys.exit(1)
 
-    for query_file in query_files:
+    def _initialize(query_file):
+        project, dataset, destination_table = extract_from_query_path(query_file)
+        client = bigquery.Client(project=project)
+        full_table_id = f"{project}.{dataset}.{destination_table}"
+        table = None
+
         sql_content = query_file.read_text()
+        init_files = list(Path(query_file.parent).rglob("init.sql"))
 
-        # Enable init from query.sql files
-        # First deploys the schema, then runs the init
-        # This does not currently verify the accuracy of the schema
-        if "is_init()" in sql_content:
-            project = query_file.parent.parent.parent.name
-            dataset = query_file.parent.parent.name
-            destination_table = query_file.parent.name
-            Schema.from_schema_file(query_file.parent / SCHEMA_FILE).deploy(
-                f"{project}.{dataset}.{destination_table}"
-            )
-            arguments = [
-                "query",
-                "--use_legacy_sql=false",
-                "--replace",
-                "--format=none",
-            ]
-            _run_query(
-                query_files=[query_file],
-                project_id=project,
-                public_project_id=None,
-                destination_table=destination_table,
-                dataset_id=dataset,
-                query_arguments=arguments,
-                addl_templates={
-                    "is_init": lambda: True,
-                },
-            )
-        else:
-            init_files = Path(query_file.parent).rglob("init.sql")
-            client = bigquery.Client()
-
-            for init_file in init_files:
-                project = init_file.parent.parent.parent.name
-
-                with open(init_file) as init_file_stream:
-                    init_sql = init_file_stream.read()
-                    dataset = Path(init_file).parent.parent.name
-                    destination_table = query_file.parent.name
-                    job_config = bigquery.QueryJobConfig(
-                        dry_run=dry_run,
-                        default_dataset=f"{project}.{dataset}",
-                        destination=f"{project}.{dataset}.{destination_table}",
+        # check if the provided file can be initialized and whether existing ones should be skipped
+        if "is_init()" in sql_content or len(init_files) > 0:
+            try:
+                table = client.get_table(full_table_id)
+                if skip_existing:
+                    # table exists; skip initialization
+                    return
+                if not force and table.num_rows > 0:
+                    raise click.ClickException(
+                        f"Table {full_table_id} already exists and contains data. The initialization process is terminated."
+                        " Use --force to overwrite the existing destination table."
                     )
+            except NotFound:
+                # continue with creating the table
+                pass
+        else:
+            return
 
-                    if "CREATE MATERIALIZED VIEW" in init_sql:
-                        click.echo(f"Create materialized view for {init_file}")
-                        # existing materialized view have to be deleted before re-creation
-                        view_name = query_file.parent.name
-                        client.delete_table(
-                            f"{project}.{dataset}.{view_name}", not_found_ok=True
+        try:
+            # Enable initialization from query.sql files
+            # Create the table by deploying the schema and metadata, then run the init.
+            # This does not currently verify the accuracy of the schema or that it
+            # matches the query.
+            if "is_init()" in sql_content:
+                if not table:
+                    ctx.invoke(deploy, name=full_table_id, force=True)
+
+                arguments = [
+                    "query",
+                    "--use_legacy_sql=false",
+                    "--format=none",
+                    "--append_table",
+                    "--noreplace",
+                ]
+                if dry_run:
+                    arguments += ["--dry_run"]
+
+                if "@sample_id" in sql_content:
+                    sample_ids = list(range(0, 100))
+
+                    _initialize_in_parallel(
+                        project=project,
+                        table=destination_table,
+                        dataset=dataset,
+                        query_file=query_file,
+                        arguments=arguments,
+                        parallelism=parallelism,
+                        sample_ids=sample_ids,
+                        addl_templates={
+                            "is_init": lambda: True,
+                        },
+                    )
+                else:
+                    _run_query(
+                        query_files=[query_file],
+                        project_id=project,
+                        public_project_id=None,
+                        destination_table=destination_table,
+                        dataset_id=dataset,
+                        query_arguments=arguments,
+                        addl_templates={
+                            "is_init": lambda: True,
+                        },
+                    )
+            else:
+                for init_file in init_files:
+                    with open(init_file) as init_file_stream:
+                        init_sql = init_file_stream.read()
+                        job_config = bigquery.QueryJobConfig(
+                            dry_run=dry_run,
+                            default_dataset=f"{project}.{dataset}",
                         )
-                    else:
-                        click.echo(f"Create destination table for {init_file}")
 
-                    job = client.query(init_sql, job_config=job_config)
+                        if "CREATE MATERIALIZED VIEW" in init_sql:
+                            click.echo(f"Create materialized view for {init_file}")
+                            # existing materialized view have to be deleted before re-creation
+                            client.delete_table(full_table_id, not_found_ok=True)
+                        else:
+                            click.echo(f"Create destination table for {init_file}")
 
-                    if not dry_run:
-                        job.result()
+                        job = client.query(init_sql, job_config=job_config)
+
+                        if not dry_run:
+                            job.result()
+        except Exception:
+            print_exc()
+            return query_file
+
+    with ThreadPool(parallelism) as pool:
+        failed_initializations = [r for r in pool.map(_initialize, query_files) if r]
+
+    if len(failed_initializations) > 0:
+        click.echo("The following tables could not be deployed:", err=True)
+        for failed_deploy in failed_initializations:
+            click.echo(failed_deploy, err=True)
+        sys.exit(1)
 
 
 @query.command(
@@ -1487,7 +1641,7 @@ def schema():
 )
 @use_cloud_function_option
 @respect_dryrun_skip_option(default=True)
-@parallelism_option
+@parallelism_option()
 def update(
     name,
     sql_dir,
@@ -1719,6 +1873,7 @@ def _update_query_schema(
             content=sql_content,
             use_cloud_function=use_cloud_function,
             respect_skip=respect_dryrun_skip,
+            sql_dir=sql_dir,
         )
     except Exception:
         if not existing_schema_path.exists():
@@ -1865,7 +2020,7 @@ def _update_query_schema(
         + "Must be fully qualified (project.dataset.table)."
     ),
 )
-@parallelism_option
+@parallelism_option()
 @click.pass_context
 def deploy(
     ctx,
@@ -1900,6 +2055,8 @@ def deploy(
         query_files = paths_matching_name_pattern(
             name, ctx.obj["TMP_DIR"], project_id, ["query.*"]
         )
+        if not query_files:
+            raise click.ClickException(f"No queries matching `{name}` were found.")
 
     def _deploy(query_file):
         if respect_dryrun_skip and str(query_file) in DryRun.skipped_files():
@@ -1930,6 +2087,7 @@ def deploy(
                     query_file_path,
                     use_cloud_function=use_cloud_function,
                     respect_skip=respect_dryrun_skip,
+                    sql_dir=sql_dir,
                 )
                 if not existing_schema.equal(query_schema):
                     click.echo(
@@ -2160,6 +2318,8 @@ def validate_schema(
             ignore=["derived_view_schemas", "stable_views"],
         )
         query_files = paths_matching_name_pattern(name, ctx.obj["TMP_DIR"], project_id)
+        if query_files == []:
+            raise click.ClickException(f"No queries matching `{name}` were found.")
 
     _validate_schema = partial(
         _validate_schema_from_path,

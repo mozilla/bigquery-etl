@@ -59,6 +59,13 @@ WITH services AS (
             STRUCT('8c3e3e6de4ee9731' AS id, 'mozilla-hubs' AS name),
             STRUCT('34bc0d0a6add7329' AS id, 'mozilla-hubs-dev' AS name)
           ] AS subplat_oauth_clients
+        ),
+        STRUCT(
+          'Monitor' AS id,
+          'Mozilla Monitor Plus' AS name,
+          ARRAY<STRUCT<name STRING, subplat_capabilities ARRAY<STRING>>>[] AS tiers,
+          ['monitor'] AS subplat_capabilities,
+          [STRUCT('802d56ef2a9af9fa' AS id, 'fx-monitor' AS name)] AS subplat_oauth_clients
         )
       ]
     )

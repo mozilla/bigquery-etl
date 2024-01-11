@@ -7,7 +7,7 @@ import re
 from enum import Enum
 from fnmatch import fnmatchcase
 from pathlib import Path
-from typing import List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple
 
 import attr
 import cattrs
@@ -90,6 +90,7 @@ class TaskRef:
     execution_delta: Optional[str] = attr.ib(None)
     schedule_interval: Optional[str] = attr.ib(None)
     date_partition_offset: Optional[int] = attr.ib(None)
+    task_group: Optional[str] = attr.ib(None)
 
     @property
     def task_key(self):
@@ -131,14 +132,36 @@ class FivetranTask:
     task_id: str = attr.ib()
 
 
-# Know tasks in telemetry-airflow, like stable table tasks
+# Known tasks in telemetry-airflow, like stable table tasks
 # https://github.com/mozilla/telemetry-airflow/blob/main/dags/copy_deduplicate.py
 EXTERNAL_TASKS = {
     TaskRef(
         dag_name="copy_deduplicate",
         task_id="copy_deduplicate_main_ping",
         schedule_interval="0 1 * * *",
-    ): ["telemetry_stable.main_v4"],
+    ): [
+        "telemetry_stable.main_v4",
+        "telemetry_stable.main_v5",
+        "telemetry_stable.main_use_counter_v4",
+    ],
+    TaskRef(
+        dag_name="copy_deduplicate",
+        task_id="copy_deduplicate_first_shutdown_ping",
+        schedule_interval="0 1 * * *",
+    ): [
+        "telemetry_stable.first_shutdown_v4",
+        "telemetry_stable.first_shutdown_v5",
+        "telemetry_stable.first_shutdown_use_counter_v4",
+    ],
+    TaskRef(
+        dag_name="copy_deduplicate",
+        task_id="copy_deduplicate_saved_session_ping",
+        schedule_interval="0 1 * * *",
+    ): [
+        "telemetry_stable.saved_session_v4",
+        "telemetry_stable.saved_session_v5",
+        "telemetry_stable.saved_session_use_counter_v4",
+    ],
     TaskRef(
         dag_name="copy_deduplicate",
         task_id="bq_main_events",
@@ -154,20 +177,6 @@ EXTERNAL_TASKS = {
         task_id="telemetry_derived__core_clients_first_seen__v1",
         schedule_interval="0 1 * * *",
     ): ["*.core_clients_first_seen*"],
-    TaskRef(
-        dag_name="copy_deduplicate",
-        task_id="baseline_clients_last_seen",
-        schedule_interval="0 1 * * *",
-    ): ["*.baseline_clients_last_seen*"],
-    TaskRef(
-        dag_name="copy_deduplicate",
-        task_id="clients_last_seen_joined",
-        schedule_interval="0 1 * * *",
-        date_partition_offset=-1,
-    ): ["*.clients_last_seen_joined*"],
-    # *_stable.* should be matched last since all
-    # pattern before are downstream dependencies of
-    # copy_deduplicate_all.
     TaskRef(
         dag_name="copy_deduplicate",
         task_id="copy_deduplicate_all",
@@ -232,6 +241,10 @@ class Task:
     gke_location: Optional[str] = attr.ib(None)
     gke_cluster_name: Optional[str] = attr.ib(None)
     query_project: Optional[str] = attr.ib(None)
+    task_group: Optional[str] = attr.ib(None)
+    container_resources: Optional[Dict[str, str]] = attr.ib(None)
+    node_selector: Optional[Dict[str, str]] = attr.ib(None)
+    startup_timeout_seconds: Optional[int] = attr.ib(None)
 
     @property
     def task_key(self):
@@ -296,6 +309,14 @@ class Task:
             raise ValueError(
                 f"Invalid timedelta definition for {attribute}: {value}."
                 "Timedeltas should be specified like: 1h, 30m, 1h15m, 1d4h45m, ..."
+            )
+
+    @task_group.validator
+    def validate_task_group(self, attribute, value):
+        """Check that the task group name is valid."""
+        if value is not None and not re.match(r"[a-zA-Z0-9_]+", value):
+            raise ValueError(
+                "Invalid task group identifier. Group name must match pattern [a-zA-Z0-9_]+"
             )
 
     def __attrs_post_init__(self):
@@ -466,6 +487,8 @@ class Task:
         task.query_file_path = query_file
         task.is_dq_check = True
         task.is_dq_check_fail = is_check_fail
+        task.depends_on_past = False
+        task.retries = 0
         task.depends_on_fivetran = []
         if task.is_dq_check_fail:
             task.task_name = (
@@ -492,6 +515,7 @@ class Task:
             schedule_interval=dag_collection.dag_by_name(
                 self.dag_name
             ).schedule_interval,
+            task_group=self.task_group,
         )
 
     def _get_referenced_tables(self):

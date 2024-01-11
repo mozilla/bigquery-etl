@@ -1,0 +1,15 @@
+friendly_name: Glam Desktop Beta Aggregates
+description: |-
+  Refresh glam_desktop_beta_aggregates which contains data served by GLAM
+owners:
+- efilho@mozilla.com
+labels:
+  incremental: false
+  owner1: efilho@mozilla.com
+scheduling:
+  dag_name: bqetl_glam_refresh_aggregates
+  date_partition_parameter: null
+  depends_on:
+  - task_id: extracts
+    dag_name: glam
+    execution_delta: 6h

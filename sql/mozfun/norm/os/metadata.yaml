@@ -1,10 +1,10 @@
 ---
 friendly_name: Normalize OS
+# yamllint disable rule:line-length
 description: |
   Normalize an operating system string to one of the three major desktop
   platforms, one of the two major mobile platforms, or "Other".
 
   This is a reimplementation of
-  [logic used in the data pipeline](
-    https://github.com/mozilla/gcp-ingestion/blob/a6928fb089f1652856147c4605df715f327edfcd/ingestion-beam/src/main/java/com/mozilla/telemetry/transforms/NormalizeAttributes.java#L52-L74)
+  [logic used in the data pipeline](https://github.com/mozilla/gcp-ingestion/blob/a6928fb089f1652856147c4605df715f327edfcd/ingestion-beam/src/main/java/com/mozilla/telemetry/transforms/NormalizeAttributes.java#L52-L74)
     to populate `normalized_os`.

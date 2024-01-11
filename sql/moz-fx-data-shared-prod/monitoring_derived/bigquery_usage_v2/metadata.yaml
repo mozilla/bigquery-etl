@@ -2,14 +2,14 @@ friendly_name: BigQuery Query Usage
 description: BigQuery usage, partitioned by day.
 owners:
 - wichan@mozilla.com
+- mhirose@mozilla.com
 labels:
   incremental: true
   schedule: daily
 scheduling:
   dag_name: bqetl_monitoring
-  arguments: ["--date", "{{ ds }}"]
 bigquery:
   time_partitioning:
     type: day
-    field: creation_date
+    field: submission_date
     require_partition_filter: true

@@ -1,0 +1,14 @@
+friendly_name: Stub Attribution Service
+description: |-
+  Stub attribution service data, usually from the logs.
+dataset_base_acl: view_restricted
+user_facing: true
+labels: {}
+default_table_workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:data-science/duet
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:data-science/duet

@@ -29,16 +29,17 @@ scheduling:
   dag_name: bqetl_firefox_ios
   depends_on_past: true
   date_partition_parameter: null
-  depends_on:
-  - task_id: baseline_clients_daily
-    dag_name: copy_deduplicate
-    execution_delta: 3h
   parameters:
   - submission_date:DATE:{{ds}}
 bigquery:
+  time_partitioning:
+    field: first_seen_date
+    type: day
+    require_partition_filter: false
+    expiration_days: null
   clustering:
     fields:
-    - channel
     - sample_id
-    - first_reported_isp
+    - channel
+    - first_reported_country
 references: {}

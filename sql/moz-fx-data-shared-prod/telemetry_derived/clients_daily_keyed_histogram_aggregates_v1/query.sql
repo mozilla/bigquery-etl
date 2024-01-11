@@ -31,7 +31,7 @@ filtered AS (
     application.build_id AS app_build_id,
     normalized_channel AS channel
   FROM
-    `moz-fx-data-shared-prod.telemetry_stable.main_v4`
+    `moz-fx-data-shared-prod.telemetry_stable.main_v5`
   INNER JOIN
     valid_build_ids
     ON (application.build_id = build_id)

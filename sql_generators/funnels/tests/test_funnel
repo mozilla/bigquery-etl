@@ -1,0 +1,235 @@
+-- extract the relevant fields for each funnel step and segment if necessary
+WITH subscription_funnel_signup AS (
+  SELECT
+    normalized_os AS os,
+    DATE(submission_timestamp) AS submission_date,
+    client_info.client_id AS client_id,
+    client_info.client_id AS column
+  FROM
+    (
+      SELECT
+        *
+      FROM
+        mozdata.mozilla_vpn.events_unnested
+      WHERE
+        client_info.app_channel = 'production'
+        AND client_info.os = 'iOS'
+    )
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+),
+subscription_funnel_verify AS (
+  SELECT
+    normalized_os AS os,
+    DATE(submission_timestamp) AS submission_date,
+    client_info.client_id AS client_id,
+    client_info.client_id AS column
+  FROM
+    (
+      SELECT
+        *
+      FROM
+        mozdata.mozilla_vpn.events_unnested
+      WHERE
+        client_info.app_channel = 'production'
+        AND client_info.os = 'iOS'
+    )
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+    AND event_name = 'authentication_inapp_step'
+    AND `mozfun.map.get_key`(event_extra, 'state') = 'StateVerifyingSessionEmailCode'
+),
+subscription_funnel_start_subscription AS (
+  SELECT
+    normalized_os AS os,
+    DATE(submission_timestamp) AS submission_date,
+    client_info.client_id AS client_id,
+    client_info.client_id AS column
+  FROM
+    (
+      SELECT
+        *
+      FROM
+        mozdata.mozilla_vpn.events_unnested
+      WHERE
+        client_info.app_channel = 'production'
+        AND client_info.os = 'iOS'
+    )
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+    AND event_name = 'iap_subscription_started'
+),
+subscription_error_funnel_signup AS (
+  SELECT
+    DATE(submission_timestamp) AS submission_date,
+    client_info.client_id AS client_id,
+    client_info.client_id AS column
+  FROM
+    (
+      SELECT
+        *
+      FROM
+        mozdata.mozilla_vpn.events_unnested
+      WHERE
+        client_info.app_channel = 'production'
+        AND client_info.os = 'iOS'
+    )
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+),
+subscription_error_funnel_verify AS (
+  SELECT
+    DATE(submission_timestamp) AS submission_date,
+    client_info.client_id AS client_id,
+    client_info.client_id AS column
+  FROM
+    (
+      SELECT
+        *
+      FROM
+        mozdata.mozilla_vpn.events_unnested
+      WHERE
+        client_info.app_channel = 'production'
+        AND client_info.os = 'iOS'
+    )
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+    AND event_name = 'authentication_inapp_step'
+    AND `mozfun.map.get_key`(event_extra, 'state') = 'StateVerifyingSessionEmailCode'
+),
+subscription_error_funnel_error_subscription AS (
+  SELECT
+    DATE(submission_timestamp) AS submission_date,
+    client_info.client_id AS client_id,
+    client_info.client_id AS column
+  FROM
+    (
+      SELECT
+        *
+      FROM
+        mozdata.mozilla_vpn.events_unnested
+      WHERE
+        client_info.app_channel = 'production'
+        AND client_info.os = 'iOS'
+    )
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+    AND event_name = 'error_alert_shown'
+),
+-- aggregate each funnel step value
+subscription_funnel_signup_aggregated AS (
+  SELECT
+    submission_date,
+    "subscription_funnel" AS funnel,
+    os,
+    COUNT(DISTINCT column) AS aggregated
+  FROM
+    subscription_funnel_signup
+  GROUP BY
+    os,
+    submission_date,
+    funnel
+),
+subscription_funnel_verify_aggregated AS (
+  SELECT
+    submission_date,
+    "subscription_funnel" AS funnel,
+    os,
+    COUNT(DISTINCT column) AS aggregated
+  FROM
+    subscription_funnel_verify
+  GROUP BY
+    os,
+    submission_date,
+    funnel
+),
+subscription_funnel_start_subscription_aggregated AS (
+  SELECT
+    submission_date,
+    "subscription_funnel" AS funnel,
+    os,
+    COUNT(DISTINCT column) AS aggregated
+  FROM
+    subscription_funnel_start_subscription
+  GROUP BY
+    os,
+    submission_date,
+    funnel
+),
+subscription_error_funnel_signup_aggregated AS (
+  SELECT
+    submission_date,
+    "subscription_error_funnel" AS funnel,
+    COUNT(DISTINCT column) AS aggregated
+  FROM
+    subscription_error_funnel_signup
+  GROUP BY
+    submission_date,
+    funnel
+),
+subscription_error_funnel_verify_aggregated AS (
+  SELECT
+    submission_date,
+    "subscription_error_funnel" AS funnel,
+    COUNT(DISTINCT column) AS aggregated
+  FROM
+    subscription_error_funnel_verify
+  GROUP BY
+    submission_date,
+    funnel
+),
+subscription_error_funnel_error_subscription_aggregated AS (
+  SELECT
+    submission_date,
+    "subscription_error_funnel" AS funnel,
+    COUNT(column) AS aggregated
+  FROM
+    subscription_error_funnel_error_subscription
+  GROUP BY
+    submission_date,
+    funnel
+),
+-- merge all funnels so results can be written into one table
+merged_funnels AS (
+  SELECT
+    COALESCE(subscription_funnel_signup_aggregated.os, NULL) AS os,
+    submission_date,
+    funnel,
+    COALESCE(
+      subscription_funnel_signup_aggregated.aggregated,
+      subscription_error_funnel_signup_aggregated.aggregated
+    ) AS signup,
+    COALESCE(
+      subscription_funnel_verify_aggregated.aggregated,
+      subscription_error_funnel_verify_aggregated.aggregated
+    ) AS verify,
+    COALESCE(
+      subscription_funnel_start_subscription_aggregated.aggregated,
+      NULL
+    ) AS start_subscription,
+    COALESCE(
+      NULL,
+      subscription_error_funnel_error_subscription_aggregated.aggregated
+    ) AS error_subscription,
+  FROM
+    subscription_funnel_signup_aggregated
+  FULL OUTER JOIN
+    subscription_funnel_verify_aggregated
+    USING (submission_date, funnel)
+  FULL OUTER JOIN
+    subscription_funnel_start_subscription_aggregated
+    USING (submission_date, funnel)
+  FULL OUTER JOIN
+    subscription_error_funnel_signup_aggregated
+    USING (submission_date, funnel)
+  FULL OUTER JOIN
+    subscription_error_funnel_verify_aggregated
+    USING (submission_date, funnel)
+  FULL OUTER JOIN
+    subscription_error_funnel_error_subscription_aggregated
+    USING (submission_date, funnel)
+)
+SELECT
+  *
+FROM
+  merged_funnels

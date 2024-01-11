@@ -52,7 +52,7 @@ CREATE OR REPLACE FUNCTION udf.combine_experiment_days(
 
 -- Tests
 SELECT
-  assert.array_equals(
+  mozfun.assert.array_equals(
     udf.combine_experiment_days(
       [
         STRUCT("exp1" AS experiment, "1a" AS branch, 1 AS bits),

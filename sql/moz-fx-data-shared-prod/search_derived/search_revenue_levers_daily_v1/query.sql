@@ -45,6 +45,7 @@ desktop_data_google AS (
 desktop_data_bing AS (
   SELECT
     submission_date,
+    IF(country = 'US', 'US', 'RoW') AS country,
     COUNT(DISTINCT client_id) AS dau,
     COUNT(
       DISTINCT IF(default_search_engine LIKE '%bing%', client_id, NULL)
@@ -74,14 +75,17 @@ desktop_data_bing AS (
     AND (distribution_id IS NULL OR distribution_id NOT LIKE '%acer%')
     AND client_id NOT IN (SELECT client_id FROM `moz-fx-data-shared-prod.search.acer_cohort`)
   GROUP BY
-    submission_date
+    submission_date,
+    country
   ORDER BY
-    submission_date
+    submission_date,
+    country
 ),
 -- DDG Desktop + Extension
 desktop_data_ddg AS (
   SELECT
     submission_date,
+    IF(country = 'US', 'US', 'RoW') AS country,
     COUNT(DISTINCT client_id) AS dau,
     COUNT(
       DISTINCT IF(
@@ -147,9 +151,11 @@ desktop_data_ddg AS (
   WHERE
     submission_date = @submission_date
   GROUP BY
-    submission_date
+    submission_date,
+    country
   ORDER BY
-    submission_date
+    submission_date,
+    country
 ),
 -- Grab Mobile Eligible DAU
 mobile_dau_data AS (
@@ -157,8 +163,9 @@ mobile_dau_data AS (
     submission_date,
     SUM(
       IF(country NOT IN ('US', 'RU', 'UA', 'BY', 'TR', 'KZ', 'CN'), dau, 0)
-    ) AS RoW_dau_eligible_google,
-    SUM(IF(country = 'US', dau, 0)) AS US_dau_eligible_google,
+    ) AS row_dau_eligible_google,
+    SUM(IF(country = 'US', dau, 0)) AS us_dau,
+    SUM(IF(country != 'US', dau, 0)) AS row_dau,
     SUM(dau) AS dau
   FROM
     `moz-fx-data-shared-prod.telemetry.active_users_aggregates_device`
@@ -175,7 +182,7 @@ mobile_data_google AS (
   SELECT
     submission_date,
     IF(country = 'US', 'US', 'RoW') AS country,
-    IF(country = 'US', dau.US_dau_eligible_google, dau.RoW_dau_eligible_google) AS dau,
+    IF(country = 'US', dau.us_dau, dau.row_dau_eligible_google) AS dau,
     COUNT(
       DISTINCT IF(default_search_engine LIKE '%google%', client_id, NULL)
     ) AS dau_w_engine_as_default,
@@ -207,7 +214,7 @@ mobile_data_google AS (
     submission_date = @submission_date
     AND country NOT IN ('RU', 'UA', 'BY', 'TR', 'KZ', 'CN')
     AND (
-      app_name IN ('Fenix', 'Firefox Preview', 'Focus Android Glean', 'Focus iOS Glean')
+      app_name IN ('Fenix', 'Firefox Preview', 'Focus', 'Focus Android Glean', 'Focus iOS Glean')
       OR (app_name = 'Fennec' AND os = 'iOS')
     )
   GROUP BY
@@ -225,7 +232,8 @@ mobile_data_google AS (
 mobile_data_bing_ddg AS (
   SELECT
     submission_date,
-    dau.dau,
+    IF(country = 'US', 'US', 'RoW') AS country,
+    IF(country = 'US', dau.us_dau, dau.row_dau) AS dau,
     COUNT(
       DISTINCT IF(default_search_engine LIKE '%bing%', client_id, NULL)
     ) AS bing_dau_w_engine_as_default,
@@ -283,14 +291,16 @@ mobile_data_bing_ddg AS (
   WHERE
     submission_date = @submission_date
     AND (
-      app_name IN ('Fenix', 'Firefox Preview', 'Focus Android Glean', 'Focus iOS Glean')
+      app_name IN ('Fenix', 'Firefox Preview', 'Focus', 'Focus Android Glean', 'Focus iOS Glean')
       OR (app_name = 'Fennec' AND os = 'iOS')
     )
   GROUP BY
     submission_date,
+    country,
     dau
   ORDER BY
     submission_date,
+    country,
     dau
 )
 -- combine all desktop and mobile together
@@ -320,7 +330,7 @@ SELECT
   'Bing' AS partner,
   'desktop' AS device,
   NULL AS channel,
-  'global' AS country,
+  country,
   dau,
   dau_engaged_w_sap,
   sap,
@@ -341,7 +351,7 @@ SELECT
   'DuckDuckGo' AS partner,
   'desktop' AS device,
   NULL AS channel,
-  'global' AS country,
+  country,
   dau,
   ddg_dau_engaged_w_sap AS dau_engaged_w_sap,
   ddg_sap AS sap,
@@ -362,7 +372,7 @@ SELECT
   'DuckDuckGo' AS partner,
   'extension' AS device,
   NULL AS channel,
-  'global' AS country,
+  country,
   dau,
   ddgaddon_dau_engaged_w_sap AS dau_engaged_w_sap,
   ddgaddon_sap AS sap,
@@ -404,7 +414,7 @@ SELECT
   'Bing' AS partner,
   'mobile' AS device,
   NULL AS channel,
-  'global' AS country,
+  country,
   dau,
   bing_dau_engaged_w_sap,
   bing_sap,
@@ -425,7 +435,7 @@ SELECT
   'DuckDuckGo' AS partner,
   'mobile' AS device,
   NULL AS channel,
-  'global' AS country,
+  country,
   dau,
   ddg_dau_engaged_w_sap,
   ddg_sap,

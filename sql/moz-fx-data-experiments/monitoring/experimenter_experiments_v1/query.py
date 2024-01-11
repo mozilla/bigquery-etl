@@ -7,7 +7,7 @@ import json
 import sys
 import time
 from argparse import ArgumentParser
-from typing import Any, Dict, List, Optional, Union
+from typing import List, Optional
 
 import attr
 import cattrs
@@ -38,7 +38,7 @@ class Branch:
 
     slug: str
     ratio: int
-    value: Union[str, Dict[Any, Any]]
+    features: Optional[dict]
 
 
 @attr.s(auto_attribs=True)
@@ -62,6 +62,7 @@ class Experiment:
     targeting: str
     targeted_percent: float
     namespace: Optional[str]
+    feature_ids: List[str]
 
 
 def _coerce_none_to_zero(x: Optional[int]) -> int:
@@ -114,7 +115,7 @@ class ExperimentV1:
     def to_experiment(self) -> "Experiment":
         """Convert to Experiment."""
         branches = [
-            Branch(slug=variant.slug, ratio=variant.ratio, value=variant.value)
+            Branch(slug=variant.slug, ratio=variant.ratio, features=None)
             for variant in self.variants
         ]
         control_slug = None
@@ -143,6 +144,7 @@ class ExperimentV1:
             targeting="",
             targeted_percent=float(self.population_percent) / 100.0,
             namespace=None,
+            feature_ids=[],
         )
 
 
@@ -162,6 +164,7 @@ class ExperimentV6:
     channel: str
     targeting: str
     bucketConfig: dict
+    featureIds: list[str]
 
     @classmethod
     def from_dict(cls, d) -> "ExperimentV6":
@@ -176,7 +179,7 @@ class ExperimentV6:
         converter.register_structure_hook(
             Branch,
             lambda b, _: Branch(
-                slug=b["slug"], ratio=b["ratio"], value=b["feature"]["value"]
+                slug=b["slug"], ratio=b["ratio"], features=b["features"]
             ),
         )
         return converter.structure(d, cls)
@@ -209,6 +212,7 @@ class ExperimentV6:
             targeting=self.targeting,
             targeted_percent=self.bucketConfig["count"] / self.bucketConfig["total"],
             namespace=self.bucketConfig["namespace"],
+            feature_ids=self.featureIds,
         )
 
 
@@ -282,7 +286,7 @@ def main():
             fields=[
                 bigquery.SchemaField("slug", "STRING"),
                 bigquery.SchemaField("ratio", "INTEGER"),
-                bigquery.SchemaField("value", "JSON"),
+                bigquery.SchemaField("features", "JSON"),
             ],
         ),
         bigquery.SchemaField("app_id", "STRING"),
@@ -291,6 +295,7 @@ def main():
         bigquery.SchemaField("targeting", "STRING"),
         bigquery.SchemaField("targeted_percent", "FLOAT"),
         bigquery.SchemaField("namespace", "STRING"),
+        bigquery.SchemaField("feature_ids", "STRING", mode="REPEATED"),
     )
 
     job_config = bigquery.LoadJobConfig(

@@ -1,0 +1,91 @@
+fields:
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+- name: sample_id
+  type: INTEGER
+  mode: NULLABLE
+- name: first_seen_date
+  type: DATE
+  mode: NULLABLE
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+- name: country_code
+  type: STRING
+  mode: NULLABLE
+- name: channel
+  type: STRING
+  mode: NULLABLE
+- name: build_id
+  type: STRING
+  mode: NULLABLE
+- name: os
+  type: STRING
+  mode: NULLABLE
+- name: os_version
+  type: NUMERIC
+  mode: NULLABLE
+- name: distribution_id
+  type: STRING
+  mode: NULLABLE
+- name: attribution_source
+  type: STRING
+  mode: NULLABLE
+- name: attribution_ua
+  type: STRING
+  mode: NULLABLE
+- name: attribution_medium
+  type: STRING
+  mode: NULLABLE
+- name: attribution_campaign
+  type: STRING
+  mode: NULLABLE
+- name: attribution_content
+  type: STRING
+  mode: NULLABLE
+- name: attribution_experiment
+  type: STRING
+  mode: NULLABLE
+- name: attribution_dltoken
+  type: STRING
+  mode: NULLABLE
+- name: attribution_dlsource
+  type: STRING
+  mode: NULLABLE
+- name: activated
+  description: Whether the profile sent a main ping in at least 5 of their first 7
+    days.
+  type: BOOLEAN
+  mode: NULLABLE
+- name: returned_second_day
+  description: Whether the profile sent a main ping on any day after their first day
+    during their first 28 days.
+  type: BOOLEAN
+  mode: NULLABLE
+- name: qualified_second_day
+  description: Whether the profile qualified as DAU on any day after their first day
+    during their first 28 days.
+  type: BOOLEAN
+  mode: NULLABLE
+- name: retained_week4
+  description: Whether the profile sent a main ping on any day in their 4th week.
+  type: BOOLEAN
+  mode: NULLABLE
+- name: qualified_week4
+  description: Whether the profile qualified as DAU on any day in their 4th week.
+  type: BOOLEAN
+  mode: NULLABLE
+- name: days_seen_bits
+  type: INTEGER
+  mode: NULLABLE
+- name: days_visited_1_uri_bits
+  type: INTEGER
+  mode: NULLABLE
+- name: days_interacted_bits
+  type: INTEGER
+  mode: NULLABLE
+- name: startup_profile_selection_reason
+  type: STRING
+  mode: NULLABLE
+  description: How the profile was selected during startup, as reported by the first ping received.

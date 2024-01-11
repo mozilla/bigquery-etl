@@ -5,18 +5,16 @@ WITH standardized_country AS (
   FROM
     `moz-fx-data-shared-prod`.static.third_party_standardized_country_names
 ),
-attribution AS (
+fxa_attributions AS (
   SELECT
     fxa_uid,
-    ARRAY_AGG(attribution ORDER BY attribution.timestamp LIMIT 1)[OFFSET(0)].*,
+    attribution
   FROM
     `moz-fx-data-shared-prod`.mozilla_vpn_derived.fxa_attribution_v1
   CROSS JOIN
     UNNEST(fxa_uids) AS fxa_uid
   WHERE
     attribution IS NOT NULL
-  GROUP BY
-    fxa_uid
 ),
 users AS (
   SELECT
@@ -83,14 +81,8 @@ stripe_subscriptions AS (
     fxa_uid,
     country,
     country_name,
+    state,
     user_registration_date,
-    entrypoint_experiment,
-    entrypoint_variation,
-    utm_campaign,
-    utm_content,
-    utm_medium,
-    utm_source,
-    utm_term,
     provider,
     plan_amount,
     billing_scheme,
@@ -111,6 +103,9 @@ stripe_subscriptions AS (
     ) AS pricing_plan,
     -- Stripe billing grace period is 7 day and Paypal is billed by Stripe
     INTERVAL 7 DAY AS billing_grace_period,
+    has_refunds,
+    has_fraudulent_charges,
+    has_fraudulent_charge_refunds,
     promotion_codes,
     promotion_discounts_amount,
   FROM
@@ -120,9 +115,6 @@ stripe_subscriptions AS (
     USING (country)
   LEFT JOIN
     users
-    USING (fxa_uid)
-  LEFT JOIN
-    attribution
     USING (fxa_uid)
   WHERE
     "guardian_vpn_1" IN UNNEST(stripe_subscriptions_history.product_capabilities)
@@ -157,14 +149,8 @@ apple_iap_subscriptions AS (
     subplat.fxa_uid,
     CAST(NULL AS STRING) AS country,
     CAST(NULL AS STRING) AS country_name,
+    CAST(NULL AS STRING) AS state,
     users.user_registration_date,
-    attribution.entrypoint_experiment,
-    attribution.entrypoint_variation,
-    attribution.utm_campaign,
-    attribution.utm_content,
-    attribution.utm_medium,
-    attribution.utm_source,
-    attribution.utm_term,
     subplat.provider,
     CAST(NULL AS INT64) AS plan_amount,
     CAST(NULL AS STRING) AS billing_scheme,
@@ -176,15 +162,15 @@ apple_iap_subscriptions AS (
     "Mozilla VPN" AS product_name,
     CONCAT(subplat.plan_interval_count, "-", subplat.plan_interval, "-", "apple") AS pricing_plan,
     subplat.billing_grace_period,
+    CAST(NULL AS BOOL) AS has_refunds,
+    CAST(NULL AS BOOL) AS has_fraudulent_charges,
+    CAST(NULL AS BOOL) AS has_fraudulent_charge_refunds,
     subplat.promotion_codes,
     CAST(NULL AS INT64) AS promotion_discounts_amount,
   FROM
     `moz-fx-data-shared-prod`.subscription_platform_derived.apple_subscriptions_v1 AS subplat
   LEFT JOIN
     users
-    USING (fxa_uid)
-  LEFT JOIN
-    attribution
     USING (fxa_uid)
   WHERE
     subplat.product_id = "org.mozilla.ios.FirefoxVPN"
@@ -224,14 +210,8 @@ google_iap_subscriptions AS (
     subscriptions.fxa_uid,
     subscriptions.country,
     standardized_country.country_name,
+    CAST(NULL AS STRING) AS state,
     users.user_registration_date,
-    attribution.entrypoint_experiment,
-    attribution.entrypoint_variation,
-    attribution.utm_campaign,
-    attribution.utm_content,
-    attribution.utm_medium,
-    attribution.utm_source,
-    attribution.utm_term,
     subscriptions.provider,
     subscriptions.plan_amount,
     CAST(NULL AS STRING) AS billing_scheme,
@@ -251,6 +231,9 @@ google_iap_subscriptions AS (
       (subscriptions.plan_amount / 100)
     ) AS pricing_plan,
     subscriptions.billing_grace_period,
+    CAST(NULL AS BOOL) AS has_refunds,
+    CAST(NULL AS BOOL) AS has_fraudulent_charges,
+    CAST(NULL AS BOOL) AS has_fraudulent_charge_refunds,
     CAST(NULL AS ARRAY<STRING>) AS promotion_codes,
     CAST(NULL AS INT64) AS promotion_discounts_amount,
   FROM
@@ -261,13 +244,10 @@ google_iap_subscriptions AS (
   LEFT JOIN
     users
     USING (fxa_uid)
-  LEFT JOIN
-    attribution
-    USING (fxa_uid)
   WHERE
     subscriptions.product_id = "org.mozilla.firefox.vpn"
 ),
-vpn_subscriptions AS (
+all_subscriptions AS (
   SELECT
     *
   FROM
@@ -283,7 +263,54 @@ vpn_subscriptions AS (
   FROM
     google_iap_subscriptions
 ),
-vpn_subscriptions_with_end_date AS (
+subscription_last_touch_attributions AS (
+  -- Select the latest attribution before the subscription originally started.
+  SELECT
+    subscriptions.subscription_id,
+    ARRAY_AGG(
+      fxa_attributions.attribution
+      ORDER BY
+        fxa_attributions.attribution.timestamp DESC
+      LIMIT
+        1
+    )[ORDINAL(1)].*
+  FROM
+    all_subscriptions AS subscriptions
+  JOIN
+    fxa_attributions
+    ON subscriptions.fxa_uid = fxa_attributions.fxa_uid
+    AND COALESCE(
+      subscriptions.original_subscription_start_date,
+      subscriptions.subscription_start_date,
+      subscriptions.trial_start
+    ) >= fxa_attributions.attribution.timestamp
+  GROUP BY
+    subscription_id
+),
+all_subscriptions_with_attribution AS (
+  SELECT
+    subscriptions.*,
+    attributions.timestamp AS attribution_timestamp,
+    attributions.entrypoint_experiment,
+    attributions.entrypoint_variation,
+    attributions.utm_campaign,
+    attributions.utm_content,
+    attributions.utm_medium,
+    attributions.utm_source,
+    attributions.utm_term,
+    mozfun.norm.vpn_attribution(
+      utm_campaign => attributions.utm_campaign,
+      utm_content => attributions.utm_content,
+      utm_medium => attributions.utm_medium,
+      utm_source => attributions.utm_source
+    ).*
+  FROM
+    all_subscriptions AS subscriptions
+  LEFT JOIN
+    subscription_last_touch_attributions AS attributions
+    ON subscriptions.subscription_id = attributions.subscription_id
+),
+all_subscriptions_with_end_date AS (
   SELECT
     *,
     IF(
@@ -293,7 +320,7 @@ vpn_subscriptions_with_end_date AS (
     ) AS customer_start_date,
     COALESCE(ended_at, TIMESTAMP(CURRENT_DATE)) AS end_date,
   FROM
-    vpn_subscriptions
+    all_subscriptions_with_attribution
 )
 SELECT
   * REPLACE (
@@ -321,12 +348,6 @@ SELECT
       ELSE "Payment Failed"
     END AS ended_reason
   ),
-  mozfun.norm.vpn_attribution(
-    utm_campaign => utm_campaign,
-    utm_content => utm_content,
-    utm_medium => utm_medium,
-    utm_source => utm_source
-  ).*,
   mozfun.norm.diff_months(
     start => DATETIME(subscription_start_date, plan_interval_timezone),
     `end` => DATETIME(end_date, plan_interval_timezone),
@@ -358,4 +379,4 @@ SELECT
     inclusive => FALSE
   ) AS current_months_since_original_subscription_start,
 FROM
-  vpn_subscriptions_with_end_date
+  all_subscriptions_with_end_date

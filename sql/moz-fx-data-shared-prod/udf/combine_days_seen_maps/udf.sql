@@ -50,7 +50,7 @@ CREATE OR REPLACE FUNCTION udf.combine_days_seen_maps(
 
 -- Tests
 SELECT
-  assert.array_equals(
+  mozfun.assert.array_equals(
     [
       STRUCT("key1" AS key, 3 AS value),
       STRUCT("key2" AS key, 6 AS value),

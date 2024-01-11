@@ -97,6 +97,9 @@ CONTEXTUAL_SERVICES_SRC = DeleteSource(
     field="payload.scalars.parent.deletion_request_context_id",
 )
 FENIX_SRC = DeleteSource(table="fenix.deletion_request", field=GLEAN_CLIENT_ID)
+FIREFOX_IOS_SRC = DeleteSource(
+    table="firefox_ios.deletion_request", field=GLEAN_CLIENT_ID
+)
 FXA_HMAC_SRC = DeleteSource(
     table="firefox_accounts_derived.fxa_delete_events_v1", field="hmac_user_id"
 )
@@ -159,6 +162,9 @@ DELETE_TARGETS: DeleteIndex = {
     client_id_target(table="fenix_derived.firefox_android_clients_v1"): FENIX_SRC,
     client_id_target(table="search_derived.acer_cohort_v1"): DESKTOP_SRC,
     client_id_target(
+        table="firefox_ios_derived.clients_activation_v1"
+    ): FIREFOX_IOS_SRC,
+    client_id_target(
         table="search_derived.mobile_search_clients_daily_v1"
     ): DESKTOP_SRC,
     client_id_target(table="search_derived.search_clients_daily_v8"): DESKTOP_SRC,
@@ -195,21 +201,31 @@ DELETE_TARGETS: DeleteIndex = {
     client_id_target(table="telemetry_derived.event_events_v1"): DESKTOP_SRC,
     client_id_target(table="telemetry_derived.experiments_v1"): DESKTOP_SRC,
     client_id_target(table="telemetry_derived.main_events_v1"): DESKTOP_SRC,
-    client_id_target(table="telemetry_derived.main_summary_v4"): DESKTOP_SRC,
     client_id_target(table="telemetry_derived.main_1pct_v1"): DESKTOP_SRC,
+    client_id_target(table="telemetry_derived.main_remainder_1pct_v1"): DESKTOP_SRC,
+    client_id_target(table="telemetry_derived.main_use_counter_1pct_v1"): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.block_autoplay_v1"): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.crash_v4"): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.downgrade_v4"): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.event_v4"): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.first_shutdown_v4"): DESKTOP_SRC,
+    client_id_target(table="telemetry_stable.first_shutdown_v5"): DESKTOP_SRC,
+    client_id_target(
+        table="telemetry_stable.first_shutdown_use_counter_v4"
+    ): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.focus_event_v1"): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.frecency_update_v4"): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.health_v4"): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.heartbeat_v4"): DESKTOP_SRC,
-    client_id_target(table="telemetry_stable.main_v4"): DESKTOP_SRC,
+    client_id_target(table="telemetry_stable.main_v5"): DESKTOP_SRC,
+    client_id_target(table="telemetry_stable.main_use_counter_v4"): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.modules_v4"): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.new_profile_v4"): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.saved_session_v4"): DESKTOP_SRC,
+    client_id_target(table="telemetry_stable.saved_session_v5"): DESKTOP_SRC,
+    client_id_target(
+        table="telemetry_stable.saved_session_use_counter_v4"
+    ): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.shield_icq_v1_v4"): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.shield_study_addon_v3"): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.shield_study_error_v3"): DESKTOP_SRC,
@@ -261,6 +277,8 @@ DELETE_TARGETS: DeleteIndex = {
     DeleteTarget(table="telemetry_stable.sync_v4", field=SYNC_IDS): SYNC_SOURCES,
     DeleteTarget(table="telemetry_stable.sync_v5", field=SYNC_IDS): SYNC_SOURCES,
     # fxa
+    client_id_target(table="firefox_accounts_derived.events_daily_v1"): FXA_SRC,
+    client_id_target(table="firefox_accounts_derived.funnel_events_source_v1"): FXA_SRC,
     user_id_target(
         table="firefox_accounts_derived.fxa_amplitude_export_v1"
     ): FXA_HMAC_SRC,
@@ -272,6 +290,18 @@ DELETE_TARGETS: DeleteIndex = {
     ): FXA_SRC,
     fxa_user_id_target(table="firefox_accounts_derived.fxa_auth_events_v1"): FXA_SRC,
     fxa_user_id_target(table="firefox_accounts_derived.fxa_content_events_v1"): FXA_SRC,
+    fxa_user_id_target(
+        table="firefox_accounts_derived.fxa_gcp_stderr_events_v1"
+    ): FXA_SRC,
+    fxa_user_id_target(
+        table="firefox_accounts_derived.fxa_gcp_stdout_events_v1"
+    ): FXA_SRC,
+    user_id_target(
+        table="firefox_accounts_derived.fxa_log_device_command_events_v1"
+    ): FXA_HMAC_SRC,
+    user_id_target(
+        table="firefox_accounts_derived.fxa_log_device_command_events_v2"
+    ): FXA_HMAC_SRC,
     fxa_user_id_target(table="firefox_accounts_derived.fxa_oauth_events_v1"): FXA_SRC,
     fxa_user_id_target(table="firefox_accounts_derived.fxa_stdout_events_v1"): FXA_SRC,
     user_id_target(table="firefox_accounts_derived.fxa_users_daily_v1"): FXA_SRC,

@@ -11,7 +11,7 @@ from utils.gcp import gke_command
 docs = """
 ### {{ name }}
 
-Built from bigquery-etl repo, [`dags/{{ name }}.py`](https://github.com/mozilla/bigquery-etl/blob/main/dags/{{ name }}.py)
+Built from bigquery-etl repo, [`dags/{{ name }}.py`](https://github.com/mozilla/bigquery-etl/blob/{% if repo == "private-bigquery-etl" %}private-{% endif %}generated-sql/dags/{{ name }}.py)
 
 {% if description != "" -%}
 #### Description
@@ -22,6 +22,11 @@ Built from bigquery-etl repo, [`dags/{{ name }}.py`](https://github.com/mozilla/
 #### Owner
 
 {{ default_args.owner }}
+
+#### Tags
+{% for tag in tags %}
+* {{ tag }}
+{%- endfor %}
 """
 
 
@@ -36,6 +41,10 @@ tags = {{ tags }}
 
 with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None -%}, schedule_interval={{ schedule_interval | format_timedelta | format_schedule_interval }}{%+ endif -%}, doc_md = docs, tags = tags) as dag:
     docker_image = "gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest"
+{% for task_group in task_groups | sort %}
+    task_group_{{ task_group }} = TaskGroup('{{ task_group }}')
+{% endfor %}
+
 {% for task in tasks | sort(attribute='task_name') %}
     {{ task.task_name }} = GKEPodOperator(
         task_id="{{ task.task_name }}",
@@ -48,6 +57,9 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
         {% if task.date_partition_parameter -%}
         + ["--parameter={{ task.date_partition_parameter }}:DATE:{% raw %}{{ds}}{% endraw -%}"]
         {%- endif -%},
+        {%+ if task.task_group != None -%}
+        task_group=task_group_{{ task.task_group}},
+        {%+ endif -%}
         image=docker_image,
     )
 {% endfor -%}
@@ -60,7 +72,11 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
     wait_for_{{ dependency.task_id }} = ExternalTaskSensor(
         task_id='wait_for_{{ dependency.task_id }}',
         external_dag_id='{{ dependency.dag_name }}',
+        {% if dependency.task_group -%}
+        external_task_id='{{dependency.task_group}}.{{ dependency.task_id }}',
+        {% else -%}
         external_task_id='{{ dependency.task_id }}',
+        {% endif -%}
         {% if dependency.get_execution_delta(schedule_interval) -%}
         execution_delta={{ dependency.get_execution_delta(schedule_interval) | format_timedelta | format_repr }},
         {% endif -%}
@@ -77,7 +93,12 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
 
     {% if (task.downstream_dependencies + task.external_downstream_tasks)|length > 0 -%}
     {% set seenDownstreamDags = [] %}
-    with TaskGroup('{{ task.task_name }}_external') as {{ task.task_name }}_external:
+    with TaskGroup(
+        '{{ task.task_name }}_external',
+        {%+ if task.task_group != None -%}
+        parent_group=task_group_{{ task.task_group }}
+        {%+ endif -%}
+    ) as {{ task.task_name }}_external:
         {% for downstream_task in task.downstream_dependencies | sort(attribute='task_id') -%}
         {% if downstream_task.dag_name not in seenDownstreamDags -%}
         ExternalTaskMarker(

@@ -37,7 +37,7 @@ def list_daily(project, dataset):
     _check_root()
     client = bigquery.Client()
     app_df = client.query(
-        f"""
+        rf"""
         WITH
         extracted AS (
             SELECT

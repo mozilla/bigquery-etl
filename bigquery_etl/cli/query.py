@@ -470,34 +470,34 @@ def info(ctx, name, sql_dir, project_id, cost, last_updated):
                     "accessing cost and last_updated."
                 )
             else:
-                with bigquery.Client() as client:
-                    end_date = date.today().strftime("%Y-%m-%d")
-                    start_date = (date.today() - timedelta(7)).strftime("%Y-%m-%d")
-                    result = client.query(
-                        f"""
-                        SELECT
-                            SUM(cost_usd) AS cost,
-                            MAX(creation_time) AS last_updated
-                        FROM `moz-fx-data-shared-prod.monitoring_derived.bigquery_etl_scheduled_queries_cost_v1`
-                        WHERE submission_date BETWEEN '{start_date}' AND '{end_date}'
-                            AND dataset = '{dataset}'
-                            AND table = '{table}'
-                    """  # noqa E501
-                    ).result()
+                client = bigquery.Client()
+                end_date = date.today().strftime("%Y-%m-%d")
+                start_date = (date.today() - timedelta(7)).strftime("%Y-%m-%d")
+                result = client.query(
+                    f"""
+                    SELECT
+                        SUM(cost_usd) AS cost,
+                        MAX(creation_time) AS last_updated
+                    FROM `moz-fx-data-shared-prod.monitoring_derived.bigquery_etl_scheduled_queries_cost_v1`
+                    WHERE submission_date BETWEEN '{start_date}' AND '{end_date}'
+                        AND dataset = '{dataset}'
+                        AND table = '{table}'
+                """  # noqa E501
+                ).result()
 
-                    if result.total_rows == 0:
-                        if last_updated:
-                            click.echo("last_updated: never")
-                        if cost:
-                            click.echo("Cost over the last 7 days: none")
+                if result.total_rows == 0:
+                    if last_updated:
+                        click.echo("last_updated: never")
+                    if cost:
+                        click.echo("Cost over the last 7 days: none")
 
-                    for row in result:
-                        if last_updated:
-                            click.echo(f"  last_updated: {row.last_updated}")
-                        if cost:
-                            click.echo(
-                                f"  Cost over the last 7 days: {round(row.cost, 2)} USD"
-                            )
+                for row in result:
+                    if last_updated:
+                        click.echo(f"  last_updated: {row.last_updated}")
+                    if cost:
+                        click.echo(
+                            f"  Cost over the last 7 days: {round(row.cost, 2)} USD"
+                        )
         click.echo("")
 
 
@@ -1311,34 +1311,35 @@ def initialize(name, sql_dir, project_id, dry_run):
             )
         else:
             init_files = Path(query_file.parent).rglob("init.sql")
-            with bigquery.Client() as client:
-                for init_file in init_files:
-                    project = init_file.parent.parent.parent.name
+            client = bigquery.Client()
 
-                    with open(init_file) as init_file_stream:
-                        init_sql = init_file_stream.read()
-                        dataset = Path(init_file).parent.parent.name
-                        destination_table = query_file.parent.name
-                        job_config = bigquery.QueryJobConfig(
-                            dry_run=dry_run,
-                            default_dataset=f"{project}.{dataset}",
-                            destination=f"{project}.{dataset}.{destination_table}",
+            for init_file in init_files:
+                project = init_file.parent.parent.parent.name
+
+                with open(init_file) as init_file_stream:
+                    init_sql = init_file_stream.read()
+                    dataset = Path(init_file).parent.parent.name
+                    destination_table = query_file.parent.name
+                    job_config = bigquery.QueryJobConfig(
+                        dry_run=dry_run,
+                        default_dataset=f"{project}.{dataset}",
+                        destination=f"{project}.{dataset}.{destination_table}",
+                    )
+
+                    if "CREATE MATERIALIZED VIEW" in init_sql:
+                        click.echo(f"Create materialized view for {init_file}")
+                        # existing materialized view have to be deleted before re-creation
+                        view_name = query_file.parent.name
+                        client.delete_table(
+                            f"{project}.{dataset}.{view_name}", not_found_ok=True
                         )
+                    else:
+                        click.echo(f"Create destination table for {init_file}")
 
-                        if "CREATE MATERIALIZED VIEW" in init_sql:
-                            click.echo(f"Create materialized view for {init_file}")
-                            # existing materialized view have to be deleted before re-creation
-                            view_name = query_file.parent.name
-                            client.delete_table(
-                                f"{project}.{dataset}.{view_name}", not_found_ok=True
-                            )
-                        else:
-                            click.echo(f"Create destination table for {init_file}")
+                    job = client.query(init_sql, job_config=job_config)
 
-                        job = client.query(init_sql, job_config=job_config)
-
-                        if not dry_run:
-                            job.result()
+                    if not dry_run:
+                        job.result()
 
 
 @query.command(
@@ -1550,10 +1551,10 @@ def update(
     )
 
     if len(tmp_tables) > 0:
-        with bigquery.Client() as client:
-            # delete temporary tables
-            for _, table in tmp_tables.items():
-                client.delete_table(table, not_found_ok=True)
+        client = bigquery.Client()
+        # delete temporary tables
+        for _, table in tmp_tables.items():
+            client.delete_table(table, not_found_ok=True)
 
 
 def _update_query_schema_with_downstream(
@@ -1733,38 +1734,37 @@ def _update_query_schema(
 
     # update bigquery metadata
     try:
-        with bigquery.Client() as client:
-            table = client.get_table(f"{project_name}.{dataset_name}.{table_name}")
-            metadata_file_path = query_file_path.parent / METADATA_FILE
+        client = bigquery.Client()
+        table = client.get_table(f"{project_name}.{dataset_name}.{table_name}")
+        metadata_file_path = query_file_path.parent / METADATA_FILE
 
-            if (
-                table.time_partitioning
-                and metadata
-                and (
-                    metadata.bigquery is None
-                    or metadata.bigquery.time_partitioning is None
-                )
-            ):
-                metadata.set_bigquery_partitioning(
-                    field=table.time_partitioning.field,
-                    partition_type=table.time_partitioning.type_.lower(),
-                    required=table.time_partitioning.require_partition_filter,
-                    expiration_days=table.time_partitioning.expiration_ms / 86400000.0
-                    if table.time_partitioning.expiration_ms
-                    else None,
-                )
-                click.echo(f"Partitioning metadata added to {metadata_file_path}")
+        if (
+            table.time_partitioning
+            and metadata
+            and (
+                metadata.bigquery is None or metadata.bigquery.time_partitioning is None
+            )
+        ):
+            metadata.set_bigquery_partitioning(
+                field=table.time_partitioning.field,
+                partition_type=table.time_partitioning.type_.lower(),
+                required=table.time_partitioning.require_partition_filter,
+                expiration_days=table.time_partitioning.expiration_ms / 86400000.0
+                if table.time_partitioning.expiration_ms
+                else None,
+            )
+            click.echo(f"Partitioning metadata added to {metadata_file_path}")
 
-            if (
-                table.clustering_fields
-                and metadata
-                and (metadata.bigquery is None or metadata.bigquery.clustering is None)
-            ):
-                metadata.set_bigquery_clustering(table.clustering_fields)
-                click.echo(f"Clustering metadata added to {metadata_file_path}")
+        if (
+            table.clustering_fields
+            and metadata
+            and (metadata.bigquery is None or metadata.bigquery.clustering is None)
+        ):
+            metadata.set_bigquery_clustering(table.clustering_fields)
+            click.echo(f"Clustering metadata added to {metadata_file_path}")
 
-            if metadata:
-                metadata.write(metadata_file_path)
+        if metadata:
+            metadata.write(metadata_file_path)
     except NotFound:
         click.echo(
             f"Destination table {project_name}.{dataset_name}.{table_name} "
@@ -1887,6 +1887,8 @@ def deploy(
             "and check that the project is set correctly."
         )
         sys.exit(1)
+    client = bigquery.Client()
+
     query_files = paths_matching_name_pattern(name, sql_dir, project_id, ["query.*"])
     if not query_files:
         # run SQL generators if no matching query has been found
@@ -1940,35 +1942,34 @@ def deploy(
                     )
                     sys.exit(1)
 
-            with bigquery.Client() as client:
-                with NamedTemporaryFile(suffix=".json") as tmp_schema_file:
-                    existing_schema.to_json_file(Path(tmp_schema_file.name))
-                    bigquery_schema = client.schema_from_json(tmp_schema_file.name)
+            with NamedTemporaryFile(suffix=".json") as tmp_schema_file:
+                existing_schema.to_json_file(Path(tmp_schema_file.name))
+                bigquery_schema = client.schema_from_json(tmp_schema_file.name)
 
-                try:
-                    table = client.get_table(full_table_id)
-                except NotFound:
-                    table = bigquery.Table(full_table_id)
+            try:
+                table = client.get_table(full_table_id)
+            except NotFound:
+                table = bigquery.Table(full_table_id)
 
-                table.schema = bigquery_schema
-                _attach_metadata(query_file_path, table)
+            table.schema = bigquery_schema
+            _attach_metadata(query_file_path, table)
 
-                if not table.created:
-                    client.create_table(table)
-                    click.echo(f"Destination table {full_table_id} created.")
-                elif not skip_existing:
-                    client.update_table(
-                        table,
-                        [
-                            "schema",
-                            "friendly_name",
-                            "description",
-                            "time_partitioning",
-                            "clustering_fields",
-                            "labels",
-                        ],
-                    )
-                    click.echo(f"Schema (and metadata) updated for {full_table_id}.")
+            if not table.created:
+                client.create_table(table)
+                click.echo(f"Destination table {full_table_id} created.")
+            elif not skip_existing:
+                client.update_table(
+                    table,
+                    [
+                        "schema",
+                        "friendly_name",
+                        "description",
+                        "time_partitioning",
+                        "clustering_fields",
+                        "labels",
+                    ],
+                )
+                click.echo(f"Schema (and metadata) updated for {full_table_id}.")
         except Exception:
             print_exc()
             return query_file
@@ -2035,78 +2036,78 @@ def _deploy_external_data(
     metadata_files = paths_matching_name_pattern(
         name, sql_dir, project_id, ["metadata.yaml"]
     )
-    with bigquery.Client() as client:
-        failed_deploys = []
-        for metadata_file_path in metadata_files:
-            metadata = Metadata.from_file(metadata_file_path)
-            if not metadata.external_data:
-                # skip all tables that are not created from external data
-                continue
+    client = bigquery.Client()
+    failed_deploys = []
+    for metadata_file_path in metadata_files:
+        metadata = Metadata.from_file(metadata_file_path)
+        if not metadata.external_data:
+            # skip all tables that are not created from external data
+            continue
 
-            existing_schema_path = metadata_file_path.parent / SCHEMA_FILE
+        existing_schema_path = metadata_file_path.parent / SCHEMA_FILE
 
-            if not existing_schema_path.is_file():
-                # tables created from external data must specify a schema
-                click.echo(f"No schema file found for {metadata_file_path}")
-                continue
+        if not existing_schema_path.is_file():
+            # tables created from external data must specify a schema
+            click.echo(f"No schema file found for {metadata_file_path}")
+            continue
+
+        try:
+            table_name = metadata_file_path.parent.name
+            dataset_name = metadata_file_path.parent.parent.name
+            project_name = metadata_file_path.parent.parent.parent.name
+            full_table_id = f"{project_name}.{dataset_name}.{table_name}"
+
+            existing_schema = Schema.from_schema_file(existing_schema_path)
 
             try:
-                table_name = metadata_file_path.parent.name
-                dataset_name = metadata_file_path.parent.parent.name
-                project_name = metadata_file_path.parent.parent.parent.name
-                full_table_id = f"{project_name}.{dataset_name}.{table_name}"
+                table = client.get_table(full_table_id)
+            except NotFound:
+                table = bigquery.Table(full_table_id)
 
-                existing_schema = Schema.from_schema_file(existing_schema_path)
+            with NamedTemporaryFile(suffix=".json") as tmp_schema_file:
+                existing_schema.to_json_file(Path(tmp_schema_file.name))
+                bigquery_schema = client.schema_from_json(tmp_schema_file.name)
 
-                try:
-                    table = client.get_table(full_table_id)
-                except NotFound:
-                    table = bigquery.Table(full_table_id)
+            table.schema = bigquery_schema
+            _attach_metadata(metadata_file_path, table)
 
-                with NamedTemporaryFile(suffix=".json") as tmp_schema_file:
-                    existing_schema.to_json_file(Path(tmp_schema_file.name))
-                    bigquery_schema = client.schema_from_json(tmp_schema_file.name)
-
-                table.schema = bigquery_schema
-                _attach_metadata(metadata_file_path, table)
-
-                if not table.created:
-                    if metadata.external_data.format in (
-                        ExternalDataFormat.GOOGLE_SHEETS,
-                        ExternalDataFormat.CSV,
-                    ):
-                        external_config = bigquery.ExternalConfig(
-                            metadata.external_data.format.value.upper()
-                        )
-                        external_config.source_uris = metadata.external_data.source_uris
-                        external_config.ignore_unknown_values = True
-                        external_config.autodetect = False
-
-                        for key, v in metadata.external_data.options.items():
-                            setattr(external_config.options, key, v)
-
-                        table.external_data_configuration = external_config
-                        table = client.create_table(table)
-                        click.echo(f"Destination table {full_table_id} created.")
-
-                    else:
-                        click.echo(
-                            f"External data format {metadata.external_data.format} unsupported."
-                        )
-                elif not skip_existing:
-                    client.update_table(
-                        table,
-                        [
-                            "schema",
-                            "friendly_name",
-                            "description",
-                            "labels",
-                        ],
+            if not table.created:
+                if metadata.external_data.format in (
+                    ExternalDataFormat.GOOGLE_SHEETS,
+                    ExternalDataFormat.CSV,
+                ):
+                    external_config = bigquery.ExternalConfig(
+                        metadata.external_data.format.value.upper()
                     )
-                    click.echo(f"Schema (and metadata) updated for {full_table_id}.")
-            except Exception:
-                print_exc()
-                failed_deploys.append(metadata_file_path)
+                    external_config.source_uris = metadata.external_data.source_uris
+                    external_config.ignore_unknown_values = True
+                    external_config.autodetect = False
+
+                    for key, v in metadata.external_data.options.items():
+                        setattr(external_config.options, key, v)
+
+                    table.external_data_configuration = external_config
+                    table = client.create_table(table)
+                    click.echo(f"Destination table {full_table_id} created.")
+
+                else:
+                    click.echo(
+                        f"External data format {metadata.external_data.format} unsupported."
+                    )
+            elif not skip_existing:
+                client.update_table(
+                    table,
+                    [
+                        "schema",
+                        "friendly_name",
+                        "description",
+                        "labels",
+                    ],
+                )
+                click.echo(f"Schema (and metadata) updated for {full_table_id}.")
+        except Exception:
+            print_exc()
+            failed_deploys.append(metadata_file_path)
 
     return failed_deploys
 

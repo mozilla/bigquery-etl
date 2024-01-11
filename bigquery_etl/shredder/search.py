@@ -87,20 +87,20 @@ def find_id_fields(fields, prefix=""):
 
 def find_target_tables(project, table_filter):
     """Search for potential new ids and new tables with ids."""
-    with bigquery.Client() as client:
-        for dataset in client.list_datasets(project):
-            if not DATASET_PATTERN.match(dataset.dataset_id):
+    client = bigquery.Client()
+    for dataset in client.list_datasets(project):
+        if not DATASET_PATTERN.match(dataset.dataset_id):
+            continue
+        for table_ref in client.list_tables(dataset.reference):
+            if table_ref.table_type != "TABLE":
                 continue
-            for table_ref in client.list_tables(dataset.reference):
-                if table_ref.table_type != "TABLE":
-                    continue
-                table = f"{table_ref.dataset_id}.{table_ref.table_id}"
-                if not table_filter(table) or table in SEARCH_IGNORE_TABLES:
-                    continue
-                for field in find_id_fields(client.get_table(table_ref).schema):
-                    result = table, field
-                    if result not in SEARCH_IGNORE_FIELDS:
-                        yield result
+            table = f"{table_ref.dataset_id}.{table_ref.table_id}"
+            if not table_filter(table) or table in SEARCH_IGNORE_TABLES:
+                continue
+            for field in find_id_fields(client.get_table(table_ref).schema):
+                result = table, field
+                if result not in SEARCH_IGNORE_FIELDS:
+                    yield result
 
 
 def main():

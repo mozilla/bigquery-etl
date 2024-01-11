@@ -79,19 +79,19 @@ class Schema:
 
     def deploy(self, destination_table: str):
         """Deploy the schema to BigQuery named after destination_table."""
-        with bigquery.Client() as client:
-            tmp_schema_file = NamedTemporaryFile()
-            self.to_json_file(Path(tmp_schema_file.name))
-            bigquery_schema = client.schema_from_json(tmp_schema_file.name)
+        client = bigquery.Client()
+        tmp_schema_file = NamedTemporaryFile()
+        self.to_json_file(Path(tmp_schema_file.name))
+        bigquery_schema = client.schema_from_json(tmp_schema_file.name)
 
-            try:
-                # destination table already exists, update schema
-                table = client.get_table(destination_table)
-                table.schema = bigquery_schema
-                client.update_table(table, ["schema"])
-            except NotFound:
-                table = bigquery.Table(destination_table, schema=bigquery_schema)
-                client.create_table(table)
+        try:
+            # destination table already exists, update schema
+            table = client.get_table(destination_table)
+            table.schema = bigquery_schema
+            client.update_table(table, ["schema"])
+        except NotFound:
+            table = bigquery.Table(destination_table, schema=bigquery_schema)
+            client.create_table(table)
 
     def merge(
         self,

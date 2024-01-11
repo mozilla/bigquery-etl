@@ -153,37 +153,32 @@ def apple_import(
             if file_obj.writable():
                 file_obj.seek(0)
             warnings.filterwarnings("ignore", module="google.auth._default")
-            with bigquery.Client() as bq:
-                job = bq.load_table_from_file(
-                    file_obj=file_obj,
-                    destination=table,
-                    job_config=bigquery.LoadJobConfig(
-                        allow_jagged_rows=False,
-                        field_delimiter="\t",
-                        ignore_unknown_values=False,
-                        schema=SUBSCRIBER_SCHEMA,  # only report type supported
-                        schema_update_options=[
-                            bigquery.SchemaUpdateOption.ALLOW_FIELD_ADDITION
-                        ],
-                        skip_leading_rows=1,
-                        source_format=bigquery.SourceFormat.CSV,
-                        time_partitioning=bigquery.TimePartitioning(
-                            field="report_date"
-                        ),
-                        write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
-                    ),
-                )
-                try:
-                    click.echo(f"Waiting for {job.job_id}", file=sys.stderr)
-                    job.result()
-                except Exception as e:
-                    message = f"{job.job_id} failed: {e}"
-                    for error in job.errors or ():
-                        error_message = error.get("message")
-                        if error_message and error_message != getattr(
-                            e, "message", None
-                        ):
-                            message += f"\n{error_message}"
-                    raise click.ClickException(message)
-                else:
-                    click.echo(f"{job.job_id} succeeded", file=sys.stderr)
+            job = bigquery.Client().load_table_from_file(
+                file_obj=file_obj,
+                destination=table,
+                job_config=bigquery.LoadJobConfig(
+                    allow_jagged_rows=False,
+                    field_delimiter="\t",
+                    ignore_unknown_values=False,
+                    schema=SUBSCRIBER_SCHEMA,  # only report type supported
+                    schema_update_options=[
+                        bigquery.SchemaUpdateOption.ALLOW_FIELD_ADDITION
+                    ],
+                    skip_leading_rows=1,
+                    source_format=bigquery.SourceFormat.CSV,
+                    time_partitioning=bigquery.TimePartitioning(field="report_date"),
+                    write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
+                ),
+            )
+            try:
+                click.echo(f"Waiting for {job.job_id}", file=sys.stderr)
+                job.result()
+            except Exception as e:
+                message = f"{job.job_id} failed: {e}"
+                for error in job.errors or ():
+                    error_message = error.get("message")
+                    if error_message and error_message != getattr(e, "message", None):
+                        message += f"\n{error_message}"
+                raise click.ClickException(message)
+            else:
+                click.echo(f"{job.job_id} succeeded", file=sys.stderr)

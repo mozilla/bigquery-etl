@@ -343,7 +343,6 @@ jobs:
             - generated-sql
   deploy-changes-to-stage:
     docker: *docker
-    resource_class: xlarge
     steps:
       - checkout
       - *skip_forked_pr

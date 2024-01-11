@@ -116,20 +116,20 @@ def insert_to_bq(
     data, table, date, write_disposition=bigquery.job.WriteDisposition.WRITE_TRUNCATE
 ):
     """Insert data into a bigquery table."""
-    with bigquery.Client() as client:
-        print(f"Inserting {len(data)} rows into bigquery")
-        job_config = bigquery.LoadJobConfig(
-            # We may also infer the schema by setting `autodetect=True`
-            schema=response_schema(),
-            schema_update_options=bigquery.SchemaUpdateOption.ALLOW_FIELD_ADDITION,
-            write_disposition=write_disposition,
-            time_partitioning=bigquery.table.TimePartitioning(field="submission_date"),
-        )
-        partition = f"{table}${date.replace('-', '')}"
-        job = client.load_table_from_json(data, partition, job_config=job_config)
-        print(f"Running job {job.job_id}")
-        # job.result() returns a LoadJob object if successful, or raises an exception if not
-        job.result()
+    client = bigquery.Client()
+    print(f"Inserting {len(data)} rows into bigquery")
+    job_config = bigquery.LoadJobConfig(
+        # We may also infer the schema by setting `autodetect=True`
+        schema=response_schema(),
+        schema_update_options=bigquery.SchemaUpdateOption.ALLOW_FIELD_ADDITION,
+        write_disposition=write_disposition,
+        time_partitioning=bigquery.table.TimePartitioning(field="submission_date"),
+    )
+    partition = f"{table}${date.replace('-', '')}"
+    job = client.load_table_from_json(data, partition, job_config=job_config)
+    print(f"Running job {job.job_id}")
+    # job.result() returns a LoadJob object if successful, or raises an exception if not
+    job.result()
 
 
 @click.command()

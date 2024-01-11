@@ -91,16 +91,16 @@ class RoutineTest(pytest.Item):
 
     def runtest(self):
         """Run Test."""
-        with bigquery.Client() as bq:
-            dataset_id = self.safe_name()
-            if "CIRCLE_BUILD_NUM" in os.environ:
-                dataset_id += f"_{os.environ['CIRCLE_BUILD_NUM']}"
-            with dataset(bq, dataset_id) as default_dataset:
-                job_config = bigquery.QueryJobConfig(
-                    use_legacy_sql=False, default_dataset=default_dataset
-                )
-                job = bq.query(
-                    self.query.replace(GENERIC_DATASET, default_dataset.dataset_id),
-                    job_config=job_config,
-                )
-                job.result()
+        bq = bigquery.Client()
+        dataset_id = self.safe_name()
+        if "CIRCLE_BUILD_NUM" in os.environ:
+            dataset_id += f"_{os.environ['CIRCLE_BUILD_NUM']}"
+        with dataset(bq, dataset_id) as default_dataset:
+            job_config = bigquery.QueryJobConfig(
+                use_legacy_sql=False, default_dataset=default_dataset
+            )
+            job = bq.query(
+                self.query.replace(GENERIC_DATASET, default_dataset.dataset_id),
+                job_config=job_config,
+            )
+            job.result()

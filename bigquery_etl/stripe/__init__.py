@@ -195,21 +195,20 @@ def stripe_import(
                 job_config.schema_update_options = [
                     bigquery.SchemaUpdateOption.ALLOW_FIELD_ADDITION
                 ]
-            with bigquery.Client() as bq:
-                job = bq.load_table_from_file(
-                    file_obj=file_obj,
-                    destination=table,
-                    job_config=job_config,
-                )
-                try:
-                    click.echo(f"Waiting for {job.job_id}", file=sys.stderr)
-                    job.result()
-                except Exception as e:
-                    full_message = f"{job.job_id} failed: {e}"
-                    for error in job.errors or ():
-                        message = error.get("message")
-                        if message and message != getattr(e, "message", None):
-                            full_message += "\n" + message
-                    raise click.ClickException(full_message)
-                else:
-                    click.echo(f"{job.job_id} succeeded", file=sys.stderr)
+            job = bigquery.Client().load_table_from_file(
+                file_obj=file_obj,
+                destination=table,
+                job_config=job_config,
+            )
+            try:
+                click.echo(f"Waiting for {job.job_id}", file=sys.stderr)
+                job.result()
+            except Exception as e:
+                full_message = f"{job.job_id} failed: {e}"
+                for error in job.errors or ():
+                    message = error.get("message")
+                    if message and message != getattr(e, "message", None):
+                        full_message += "\n" + message
+                raise click.ClickException(full_message)
+            else:
+                click.echo(f"{job.job_id} succeeded", file=sys.stderr)

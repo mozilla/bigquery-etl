@@ -2,19 +2,11 @@
 
 import re
 
+from bigquery_etl.config import ConfigLoader
 from sql_generators.glean_usage.common import GleanTable
 
 TARGET_TABLE_ID = "events_stream_v1"
 PREFIX = "events_stream"
-# Only generate it for Fenix for now
-APP_ID_ALLOW = {
-    "org_mozilla_firefox",
-    "org_mozilla_fenix",
-    "org_mozilla_fenix_beta",
-}
-DATASET_ALLOW = {
-    "fenix",
-}
 
 
 class EventsStreamTable(GleanTable):
@@ -46,7 +38,9 @@ class EventsStreamTable(GleanTable):
         app_id = ".".join(app_id.split(".")[1:])
 
         # Skip any not-allowed app.
-        if app_id not in APP_ID_ALLOW:
+        if app_id not in ConfigLoader.get(
+            "generate", "glean_usage", "events_stream", "app_ids", fallback=[]
+        ):
             return
 
         super().generate_per_app_id(
@@ -58,5 +52,7 @@ class EventsStreamTable(GleanTable):
     ):
         """Generate the events_stream table query per app_name."""
         target_dataset = app_info[0]["app_name"]
-        if target_dataset in DATASET_ALLOW:
+        if target_dataset in ConfigLoader.get(
+            "generate", "glean_usage", "events_stream", "datasets", fallback=[]
+        ):
             super().generate_per_app(project_id, app_info, output_dir)

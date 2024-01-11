@@ -423,3 +423,10 @@ generate:
     - mlhackweek_search
     - regrets_reporter
     - regrets_reporter_ucs
+    events_stream:
+      datasets:
+      - fenix
+      app_ids:
+      - org_mozilla_firefox
+      - org_mozilla_fenix
+      - org_mozilla_fenix_beta

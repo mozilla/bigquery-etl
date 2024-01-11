@@ -46,10 +46,10 @@ SELECT
     ABS((SELECT * FROM daily_users_sum) - (SELECT * FROM distinct_client_count)) > 10,
     ERROR(
       CONCAT(
-        "DAU mismatch between the {{ app_name }} live across all channels ({%- for channel in channels %}{{ channel.table }},{% endfor -%}) and active_users_aggregates ({%- raw %}`{{ dataset_id }}.{{ table_name }}`{%- endraw %}) tables is greater than 10.",
+        "Daily users mismatch between the {{ app_name }} live across all channels ({%- for channel in channels %}{{ channel.table }},{% endfor -%}) and active_users_aggregates ({%- raw %}`{{ dataset_id }}.{{ table_name }}`{%- endraw %}) tables is greater than 10.",
         " Live table count: ",
         (SELECT * FROM distinct_client_count),
-        " | active_users_aggregates (DAU): ",
+        " | active_users_aggregates (daily_users): ",
         (SELECT * FROM daily_users_sum),
         " | Delta detected: ",
         ABS((SELECT * FROM daily_users_sum) - (SELECT * FROM distinct_client_count))

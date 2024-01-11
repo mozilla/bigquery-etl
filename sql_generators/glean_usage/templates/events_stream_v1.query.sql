@@ -46,7 +46,7 @@ WITH base AS (
     ) AS event_timestamp,
     event.category as event_category,
     event.name as event_name,
-    (event.category || '.' || event.name) AS event,
+    ARRAY_TO_STRING([event.category, event.name], ',') AS event, -- handles NULL values better
     `mozfun.json.from_map`(event.extra) AS event_extra,
   FROM
     `{{ events_view }}` AS e

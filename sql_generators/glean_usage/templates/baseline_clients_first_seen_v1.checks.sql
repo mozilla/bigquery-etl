@@ -14,6 +14,6 @@
 #}
 {% raw -%}
 #warn
-{{ is_unique(["client_id"], where="submission_date = @submission_date") }}
+{{ is_unique(["client_id"]) }}
 {% endraw %}
 

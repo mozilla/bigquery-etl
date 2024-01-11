@@ -44,6 +44,8 @@ WITH base AS (
       ping_info.parsed_start_time,
       INTERVAL event.timestamp MILLISECOND
     ) AS event_timestamp,
+    event.category as event_category,
+    event.name as event_name,
     (event.category || '.' || event.name) AS event,
     `mozfun.json.from_map`(event.extra) AS event_extra,
   FROM

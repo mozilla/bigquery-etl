@@ -488,9 +488,9 @@ google-cloud-bigquery==3.14.1 \
     --hash=sha256:a8ded18455da71508db222b7c06197bc12b6dbc6ed5b0b64e7007b76d7016957 \
     --hash=sha256:aa15bd86f79ea76824c7d710f5ae532323c4b3ba01ef4abff42d4ee7a2e9b142
     # via -r requirements.in
-google-cloud-bigquery-storage[fastavro]==2.23.0 \
-    --hash=sha256:371ff0a86d6166d7a935d6839474e5b5ab04ebd6598ea4b6c12b920719f2e0cb \
-    --hash=sha256:8496c6d30575efb224c18940566f9ac006d3b120ae759002918697c3407997e6
+google-cloud-bigquery-storage[fastavro]==2.24.0 \
+    --hash=sha256:7981eb2758cba56603058d11bb1eeeebf2e1c18097a7118a894510a16e02be52 \
+    --hash=sha256:b4af5b9aacd8396b8407d1b877601a376d8eea6d192823a8a7881bd2fdc076ce
     # via
     #   -r requirements.in
     #   google-cloud-bigquery-storage

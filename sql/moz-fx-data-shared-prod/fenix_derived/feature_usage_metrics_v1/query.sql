@@ -289,13 +289,10 @@ product_features_agg AS (
     /*Awesomebar Location*/
     --awesomebar_top
     COUNT(DISTINCT CASE WHEN awesomebar_top > 0 THEN client_id END) AS awesomebar_top_users,
-    SUM(awesomebar_top) AS awesomebar_top,
     --awesomebar_bottom
     COUNT(DISTINCT CASE WHEN awesomebar_bottom > 0 THEN client_id END) AS awesomebar_bottom_users,
-    SUM(awesomebar_bottom) AS awesomebar_bottom,
     --awesomebar_null
     COUNT(DISTINCT CASE WHEN awesomebar_null > 0 THEN client_id END) AS awesomebar_null_users,
-    SUM(awesomebar_null) AS awesomebar_null,
     /*Notificaion*/
     --metrics_notifications_allowed
     COUNT(
@@ -380,11 +377,8 @@ SELECT
   metrics_ping_distinct_client_count,
 /*Awesomebar*/
   awesomebar_top_users,
-  awesomebar_top,
   awesomebar_bottom_users,
-  awesomebar_bottom,
   awesomebar_null_users,
-  awesomebar_null,
 /*logins*/
   logins_deleted_users,
   logins_deleted,

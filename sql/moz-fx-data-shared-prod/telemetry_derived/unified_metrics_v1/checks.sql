@@ -119,32 +119,6 @@ FROM
 WHERE
   submission_date = @submission_date;
 
--- Commented out due to upstream duplication issue inside Fenix data
--- which will cause this check to fail, see: bug(1803609).
--- Once the duplication issue has been resolved, this check can be uncommented.
--- #fail
---
-WITH non_unique AS (
-  SELECT
-    COUNT(*) AS total_count
-  FROM
-    `moz-fx-data-shared-prod.telemetry_derived.unified_metrics_v1`
-  WHERE
-    submission_date = @submission_date
-  GROUP BY
-    client_id
-  HAVING
-    total_count > 1
-)
-SELECT
-  IF(
-    (SELECT COUNT(*) FROM non_unique) > 0,
-    ERROR(
-      "Duplicates detected (Expected combined set of values for columns ['client_id'] to be unique.)"
-    ),
-    NULL
-  );
-
 #warn
 WITH null_checks AS (
   SELECT

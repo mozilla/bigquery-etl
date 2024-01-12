@@ -4,4 +4,4 @@ AS
 SELECT
   *
 FROM
-  `moz-fx-data-shared-prod.firefox_desktop_derived.firefox_desktop_use_counters_v2`
+  `mozilla-public-data.firefox_desktop_derived.firefox_desktop_use_counters_v2`

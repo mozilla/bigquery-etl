@@ -10,5 +10,5 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   view.sql:
-  - moz-fx-data-shared-prod.fenix_derived.fenix_use_counters_v2
+  - mozilla-public-data.fenix_derived.fenix_use_counters_v2
 deprecated: false

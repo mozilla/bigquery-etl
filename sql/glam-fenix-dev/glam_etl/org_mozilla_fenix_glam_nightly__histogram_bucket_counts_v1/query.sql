@@ -84,8 +84,7 @@ unnested AS (
     UNNEST(aggregates) AS aggregates
   INNER JOIN
     build_ids
-  USING
-    (app_build_id, channel)
+    USING (app_build_id, channel)
 ),
 -- Find information that can be used to construct the bucket range. Most of the
 -- distributions follow a bucketing rule of 8*log2(n). This doesn't apply to the
@@ -274,5 +273,4 @@ FROM
   records
 LEFT OUTER JOIN
   distribution_metadata
-USING
-  (metric_type, metric)
+  USING (metric_type, metric)

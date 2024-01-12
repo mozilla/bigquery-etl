@@ -71,8 +71,7 @@ event_property_indices AS (
     UNNEST(
       CAST([{% for property in skipped_properties %}'{{ property }}'{% if not loop.last %},{% endif %}{% endfor %}] AS ARRAY<STRING>)
     ) skipped_property
-  ON
-    skipped_property = event_property.key
+    ON skipped_property = event_property.key
   WHERE
     skipped_property IS NULL
   GROUP BY
@@ -124,8 +123,7 @@ per_event_property AS (
     event_property_value_indices
   INNER JOIN
     event_property_indices
-  USING
-    (category, event, event_property)
+    USING (category, event, event_property)
   WHERE
     event_property_value_index <= {{ max_property_values }}
   GROUP BY
@@ -154,8 +152,7 @@ per_event AS (
     primary_event_types
   LEFT JOIN
     per_event_property
-  USING
-    (category, event)
+    USING (category, event)
   GROUP BY
     category,
     event,

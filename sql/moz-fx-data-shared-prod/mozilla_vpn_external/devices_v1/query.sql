@@ -11,5 +11,4 @@ FROM
   ) AS _update
 FULL JOIN
   devices_v1
-USING
-  (id)
+  USING (id)

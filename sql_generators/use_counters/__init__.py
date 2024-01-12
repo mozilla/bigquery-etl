@@ -9,7 +9,6 @@ from jinja2 import Environment, FileSystemLoader
 
 from bigquery_etl.cli.utils import use_cloud_function_option
 from bigquery_etl.format_sql.formatter import reformat
-from bigquery_etl.schema import SCHEMA_FILE, Schema
 from bigquery_etl.util.common import write_sql
 
 FILE_PATH = Path(os.path.dirname(__file__))
@@ -49,7 +48,7 @@ def generate_view(project: str, dataset: str, destination_table: str, write_dir:
         SELECT
             *
         FROM
-            `{project}.{dataset}.{destination_table}`
+            `mozilla-public-data.{dataset}.{destination_table}`
     """
     )
 
@@ -80,6 +79,7 @@ def generate_metadata(
 def generate_schema(
     project: str, dataset: str, destination_table: str, write_dir: Path
 ):
+    """Generate schema"""
     shutil.copyfile(
         FILE_PATH / "templates" / "schema.yaml",
         write_dir / project / dataset / destination_table / "schema.yaml",

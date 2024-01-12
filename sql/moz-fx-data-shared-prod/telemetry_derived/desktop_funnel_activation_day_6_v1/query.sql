@@ -34,8 +34,7 @@ dist_pop_with_days_seen AS (
     dist_pop a
   LEFT JOIN
     telemetry.clients_last_seen b
-  ON
-    (a.client_id = b.client_id)
+    ON (a.client_id = b.client_id)
   WHERE
     b.submission_date = @submission_date
 ),
@@ -70,8 +69,7 @@ FROM
   client_conditions
 LEFT JOIN
   `moz-fx-data-shared-prod`.static.country_codes_v1 country_codes
-ON
-  (country_codes.code = country_code)
+  ON (country_codes.code = country_code)
 WHERE
   activated = TRUE
 GROUP BY

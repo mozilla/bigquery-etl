@@ -47,5 +47,4 @@ FROM
   with_build_hour
 JOIN
   with_geckoview_version_renamed
-USING
-  (build_hour)
+  USING (build_hour)

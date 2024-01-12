@@ -63,7 +63,7 @@ flows AS (
       OR service = "guardian-vpn"
       OR (
         (service IS NULL OR service = "undefined_oauth")
-        AND (event_type = "fxa_rp_button - view" OR event_type LIKE "fxa_pay_%")
+        AND (event_type = "fxa_rp_button - view" OR event_type LIKE r"fxa\_pay\_%")
       )
     )
   GROUP BY

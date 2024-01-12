@@ -35,8 +35,7 @@ WHERE
 JOIN_TEMPLATE = """
 FULL JOIN
   {table}
-USING
-  ({fields})
+  USING ({fields})
 """
 
 

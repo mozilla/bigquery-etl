@@ -3,15 +3,13 @@
             -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
 MERGE INTO
   `moz-fx-data-glam-prod-fca7.glam_etl.glam_fog_beta_aggregates_v1` T
-USING
-  (
+  USING (
     SELECT
       *
     FROM
       `moz-fx-data-glam-prod-fca7.glam_etl.firefox_desktop_glam_beta__extract_probe_counts_v1`
   ) S
-ON
-  T.version = S.version
+  ON T.version = S.version
   AND T.ping_type = S.ping_type
   AND T.os = S.os
   AND T.build_id = S.build_id

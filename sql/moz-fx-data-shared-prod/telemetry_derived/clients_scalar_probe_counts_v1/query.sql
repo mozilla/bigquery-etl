@@ -242,8 +242,7 @@ bucketed_scalars AS (
     UNNEST(scalar_aggregates)
   LEFT JOIN
     buckets_by_metric
-  USING
-    (metric, key)
+    USING (metric, key)
   WHERE
     metric_type = 'scalar'
     OR metric_type = 'keyed-scalar'
@@ -266,8 +265,7 @@ valid_booleans_scalars AS (
   FROM booleans_and_scalars
   INNER JOIN
     build_ids
-  USING
-    (app_build_id, channel)
+    USING (app_build_id, channel)
 ),
 clients_scalar_bucket_counts AS (
   SELECT
@@ -332,8 +330,7 @@ aggregated AS (
     clients_scalar_bucket_counts
   LEFT JOIN
     buckets_by_metric
-  USING
-    (metric, key)
+    USING (metric, key)
   GROUP BY
     os,
     app_version,

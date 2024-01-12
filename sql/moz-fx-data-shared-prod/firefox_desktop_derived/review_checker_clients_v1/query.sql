@@ -104,13 +104,11 @@ joined_data AS (
     shopping_metrics sm
   LEFT JOIN
     active_agg
-  ON
-    active_agg.client_id = sm.legacy_client_id
+    ON active_agg.client_id = sm.legacy_client_id
     AND active_agg.submission_date = sm.submission_date
   LEFT JOIN
     search AS s
-  ON
-    s.client_id = sm.legacy_client_id
+    ON s.client_id = sm.legacy_client_id
     AND s.submission_date = sm.submission_date
 )
 SELECT

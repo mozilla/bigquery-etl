@@ -110,8 +110,7 @@ estimated_version AS (
     top_build_hours
   RIGHT JOIN
     enumerated_build_hours
-  USING
-    (build_hour)
+    USING (build_hour)
 )
 SELECT
   build_hour,

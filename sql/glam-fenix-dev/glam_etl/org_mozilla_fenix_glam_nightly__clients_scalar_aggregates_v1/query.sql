@@ -132,8 +132,7 @@ version_filtered_new AS (
     filtered_aggregates AS scalar_aggs
   LEFT JOIN
     glam_etl.org_mozilla_fenix_glam_nightly__latest_versions_v1
-  USING
-    (channel)
+    USING (channel)
   WHERE
       -- allow for builds to be slighly ahead of the current submission date, to
       -- account for a reasonable amount of clock skew
@@ -216,8 +215,7 @@ filtered_old AS (
     glam_etl.org_mozilla_fenix_glam_nightly__clients_scalar_aggregates_v1 AS scalar_aggs
   LEFT JOIN
     glam_etl.org_mozilla_fenix_glam_nightly__latest_versions_v1
-  USING
-    (channel)
+    USING (channel)
   WHERE
       -- allow for builds to be slighly ahead of the current submission date, to
       -- account for a reasonable amount of clock skew
@@ -243,8 +241,7 @@ joined_new_old AS (
     filtered_new AS new_data
   FULL OUTER JOIN
     filtered_old AS old_data
-  USING
-    (client_id, ping_type, os, app_version, app_build_id, channel)
+    USING (client_id, ping_type, os, app_version, app_build_id, channel)
 )
 SELECT
   client_id,

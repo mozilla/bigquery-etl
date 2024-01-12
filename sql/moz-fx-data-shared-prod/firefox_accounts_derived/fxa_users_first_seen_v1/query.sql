@@ -40,5 +40,4 @@ FROM
   _previous
 FULL OUTER JOIN
   _current
-USING
-  (user_id)
+  USING (user_id)

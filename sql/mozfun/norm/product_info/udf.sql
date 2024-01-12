@@ -103,7 +103,7 @@ RETURNS STRUCT<
           TRUE AS contributes_to_2020_kpi,
           FALSE AS contributes_to_2021_kpi
         )
-    WHEN legacy_app_name LIKE "Zerda_cn"
+    WHEN legacy_app_name LIKE r"Zerda\_cn"
       AND normalized_os LIKE "Android"
       THEN STRUCT(
           "firefox_lite_cn" AS app_name,

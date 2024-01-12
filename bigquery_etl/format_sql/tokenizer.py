@@ -791,7 +791,7 @@ class JinjaComment(Comment):
     May be followed by no whitespace or a new line and increased indent.
     """
 
-    pattern = re.compile(r"{#.*?#}", re.DOTALL)
+    pattern = re.compile(r"\n?[^\S\n]*{#.*?#}", re.DOTALL)
 
 
 class OpeningBracket(Token):
@@ -871,8 +871,8 @@ class FieldAccessOperator(Operator):
 BIGQUERY_TOKEN_PRIORITY = [
     LineComment,
     BlockComment,
-    Whitespace,
     JinjaComment,
+    Whitespace,
     JinjaExpression,
     JinjaBlockStart,
     JinjaBlockMiddle,

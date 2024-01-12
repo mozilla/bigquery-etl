@@ -39,7 +39,7 @@ class EventFlowMonitoring(GleanTable):
         if not self.across_apps_enabled:
             return
 
-        apps = [app[0]["app_name"] for app in apps]
+        apps = [app[0] for app in apps]
 
         render_kwargs = dict(
             project_id=project_id,

@@ -512,17 +512,18 @@ _previous AS (
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v2`
 )
-SELECT
-  {% if is_init() %}
+{% if is_init() %}
+  SELECT
     *
-    FROM
-      _current
-  {% else %}
-    -- For the daily update:
-    -- The reported ping status in the metadata is updated when it's NULL.
-    -- The second_seen_date is updated when it's NULL and only if there is a
-    -- main ping reported on the submission_date.
-    -- Every other attribute remains as reported on the first_seen_date.
+  FROM
+    _current
+{% else %}
+  -- For the daily update:
+  -- The reported ping status in the metadata is updated when it's NULL.
+  -- The second_seen_date is updated when it's NULL and only if there is a
+  -- main ping reported on the submission_date.
+  -- Every other attribute remains as reported on the first_seen_date.
+  SELECT
     IF(_previous.client_id IS NULL, _current, _previous).* REPLACE (
       IF(
         _previous.first_seen_date IS NOT NULL
@@ -559,9 +560,9 @@ SELECT
           )
       ) AS metadata
     )
-    FROM
-      _previous
-    FULL JOIN
-      _current
-      USING (client_id)
-  {% endif %}
+  FROM
+    _previous
+  FULL JOIN
+    _current
+    USING (client_id)
+{% endif %}

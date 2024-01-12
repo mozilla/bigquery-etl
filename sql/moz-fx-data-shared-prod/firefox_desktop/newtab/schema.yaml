@@ -452,6 +452,12 @@ fields:
         tiles per row, the actual number of rows may be different.
 
         '
+    - name: topsites_sponsored_tiles_configured
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of topsite tiles configured to be shown on newtab.
+
+        '
   - name: string_list
     type: RECORD
     mode: NULLABLE
@@ -462,6 +468,25 @@ fields:
     - name: newtab_sov_allocation
       type: STRING
       mode: REPEATED
+  - name: text2
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: topsites_sponsored_tiles_received
+      type: STRING
+      mode: NULLABLE
+      description: 'The stringified JSON of tiles processed for display (array of
+        objects). Includes tiles not displayed and reason for not displaying. Fields
+        included: advertiser, provider, display_position, display_fail_reason.
+
+        '
+  - name: text
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: topsites_sponsored_tiles_received
+      type: STRING
+      mode: NULLABLE
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

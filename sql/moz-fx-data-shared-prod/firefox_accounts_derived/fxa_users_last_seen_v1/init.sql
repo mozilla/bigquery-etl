@@ -19,7 +19,7 @@ SELECT
   * EXCEPT (submission_date, seen_in_tier1_country, registered),
   0 AS days_seen_no_monitor_bits,
 FROM
-  fxa_users_daily_v1
+  `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_users_daily_v1`
 WHERE
   -- Output empty table and read no input rows
   FALSE

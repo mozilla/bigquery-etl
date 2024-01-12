@@ -106,7 +106,7 @@ CREATE TEMP TABLE
         "Firefox for Android" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
-        `moz-fx-data-shared-prod.org_mozilla_firefox.events_unnested`,
+        `moz-fx-data-shared-prod.fenix.events_unnested`,
         UNNEST(event_extra) AS ext
       WHERE
         DATE(submission_timestamp) = @submission_date
@@ -125,7 +125,7 @@ CREATE TEMP TABLE
         "Firefox for iOS" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
-        `moz-fx-data-shared-prod.org_mozilla_ios_firefox.events_unnested`,
+        `moz-fx-data-shared-prod.firefox_ios.events_unnested`,
         UNNEST(event_extra) AS ext
       WHERE
         DATE(submission_timestamp) = @submission_date
@@ -144,7 +144,7 @@ CREATE TEMP TABLE
         "Reference Browser" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
-        `moz-fx-data-shared-prod.org_mozilla_reference_browser.events_unnested`,
+        `moz-fx-data-shared-prod.reference_browser.events_unnested`,
         UNNEST(event_extra) AS ext
       WHERE
         DATE(submission_timestamp) = @submission_date
@@ -163,7 +163,7 @@ CREATE TEMP TABLE
         "Firefox for Fire TV" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
-        `moz-fx-data-shared-prod.org_mozilla_tv_firefox.events_unnested`,
+        `moz-fx-data-shared-prod.firefox_fire_tv.events_unnested`,
         UNNEST(event_extra) AS ext
       WHERE
         DATE(submission_timestamp) = @submission_date
@@ -182,7 +182,7 @@ CREATE TEMP TABLE
         "Firefox Reality" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
-        `moz-fx-data-shared-prod.org_mozilla_vrbrowser.events_unnested`,
+        `moz-fx-data-shared-prod.firefox_reality.events_unnested`,
         UNNEST(event_extra) AS ext
       WHERE
         DATE(submission_timestamp) = @submission_date
@@ -201,7 +201,7 @@ CREATE TEMP TABLE
         "Lockwise for Android" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
-        `moz-fx-data-shared-prod.mozilla_lockbox.events_unnested`,
+        `moz-fx-data-shared-prod.lockwise_android.events_unnested`,
         UNNEST(event_extra) AS ext
       WHERE
         DATE(submission_timestamp) = @submission_date
@@ -220,7 +220,7 @@ CREATE TEMP TABLE
         "Lockwise for iOS" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
-        `moz-fx-data-shared-prod.org_mozilla_ios_lockbox.events_unnested`,
+        `moz-fx-data-shared-prod.lockwise_ios.events_unnested`,
         UNNEST(event_extra) AS ext
       WHERE
         DATE(submission_timestamp) = @submission_date
@@ -239,7 +239,7 @@ CREATE TEMP TABLE
         "mozregression" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
-        `moz-fx-data-shared-prod.org_mozilla_mozregression.events_unnested`,
+        `moz-fx-data-shared-prod.mozregression.events_unnested`,
         UNNEST(event_extra) AS ext
       WHERE
         DATE(submission_timestamp) = @submission_date
@@ -296,7 +296,7 @@ CREATE TEMP TABLE
         "Firefox for Echo Show" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
-        `moz-fx-data-shared-prod.org_mozilla_connect_firefox.events_unnested`,
+        `moz-fx-data-shared-prod.firefox_echo_show.events_unnested`,
         UNNEST(event_extra) AS ext
       WHERE
         DATE(submission_timestamp) = @submission_date
@@ -315,7 +315,7 @@ CREATE TEMP TABLE
         "Firefox Reality for PC-connected VR platforms" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
-        `moz-fx-data-shared-prod.org_mozilla_firefoxreality.events_unnested`,
+        `moz-fx-data-shared-prod.firefox_reality_pc.events_unnested`,
         UNNEST(event_extra) AS ext
       WHERE
         DATE(submission_timestamp) = @submission_date
@@ -334,7 +334,7 @@ CREATE TEMP TABLE
         "mach" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
-        `moz-fx-data-shared-prod.mozilla_mach.events_unnested`,
+        `moz-fx-data-shared-prod.mach.events_unnested`,
         UNNEST(event_extra) AS ext
       WHERE
         DATE(submission_timestamp) = @submission_date
@@ -353,7 +353,7 @@ CREATE TEMP TABLE
         "Firefox Focus for iOS" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
-        `moz-fx-data-shared-prod.org_mozilla_ios_focus.events_unnested`,
+        `moz-fx-data-shared-prod.focus_ios.events_unnested`,
         UNNEST(event_extra) AS ext
       WHERE
         DATE(submission_timestamp) = @submission_date
@@ -372,7 +372,7 @@ CREATE TEMP TABLE
         "Firefox Klar for iOS" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
-        `moz-fx-data-shared-prod.org_mozilla_ios_klar.events_unnested`,
+        `moz-fx-data-shared-prod.klar_ios.events_unnested`,
         UNNEST(event_extra) AS ext
       WHERE
         DATE(submission_timestamp) = @submission_date
@@ -391,7 +391,7 @@ CREATE TEMP TABLE
         "Firefox Focus for Android" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
-        `moz-fx-data-shared-prod.org_mozilla_focus.events_unnested`,
+        `moz-fx-data-shared-prod.focus_android.events_unnested`,
         UNNEST(event_extra) AS ext
       WHERE
         DATE(submission_timestamp) = @submission_date
@@ -410,7 +410,7 @@ CREATE TEMP TABLE
         "Firefox Klar for Android" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
-        `moz-fx-data-shared-prod.org_mozilla_klar.events_unnested`,
+        `moz-fx-data-shared-prod.klar_android.events_unnested`,
         UNNEST(event_extra) AS ext
       WHERE
         DATE(submission_timestamp) = @submission_date
@@ -429,7 +429,7 @@ CREATE TEMP TABLE
         "Bergamot Translator" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
-        `moz-fx-data-shared-prod.org_mozilla_bergamot.events_unnested`,
+        `moz-fx-data-shared-prod.bergamot.events_unnested`,
         UNNEST(event_extra) AS ext
       WHERE
         DATE(submission_timestamp) = @submission_date
@@ -467,7 +467,7 @@ CREATE TEMP TABLE
         "Mozilla VPN" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
-        `moz-fx-data-shared-prod.mozillavpn.events_unnested`,
+        `moz-fx-data-shared-prod.mozilla_vpn.events_unnested`,
         UNNEST(event_extra) AS ext
       WHERE
         DATE(submission_timestamp) = @submission_date
@@ -609,7 +609,7 @@ CREATE TEMP TABLE
       SELECT DISTINCT
         @submission_date AS submission_date,
         metrics.string.session_flow_id AS flow_id,
-        NULL AS category,
+        CAST(NULL AS STRING) AS category,
         metrics.string.event_name AS name,
         submission_timestamp AS timestamp,
         "Firefox Accounts Frontend" AS normalized_app_name,
@@ -623,7 +623,7 @@ CREATE TEMP TABLE
       SELECT DISTINCT
         @submission_date AS submission_date,
         metrics.string.session_flow_id AS flow_id,
-        NULL AS category,
+        CAST(NULL AS STRING) AS category,
         metrics.string.event_name AS name,
         submission_timestamp AS timestamp,
         "Firefox Accounts Backend" AS normalized_app_name,
@@ -742,7 +742,7 @@ CREATE TEMP TABLE
         "TikTok Reporter (iOS)" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
-        `moz-fx-data-shared-prod.org_mozilla_ios_tiktok_reporter.events_unnested`,
+        `moz-fx-data-shared-prod.tiktokreporter_ios.events_unnested`,
         UNNEST(event_extra) AS ext
       WHERE
         DATE(submission_timestamp) = @submission_date
@@ -761,7 +761,7 @@ CREATE TEMP TABLE
         "TikTok Reporter (Android)" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
-        `moz-fx-data-shared-prod.org_mozilla_tiktokreporter.events_unnested`,
+        `moz-fx-data-shared-prod.tiktokreporter_android.events_unnested`,
         UNNEST(event_extra) AS ext
       WHERE
         DATE(submission_timestamp) = @submission_date

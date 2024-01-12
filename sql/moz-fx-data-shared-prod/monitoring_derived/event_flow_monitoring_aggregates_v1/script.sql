@@ -27,7 +27,7 @@ CREATE TEMP TABLE
           -- limit event.timestamp, otherwise this will cause an overflow
           INTERVAL LEAST(event_timestamp, 20000000000000) MILLISECOND
         ) AS timestamp,
-        "firefox_desktop" AS normalized_app_name,
+        "Firefox for Desktop" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
         `moz-fx-data-shared-prod.firefox_desktop.events_unnested`,
@@ -46,7 +46,7 @@ CREATE TEMP TABLE
           -- limit event.timestamp, otherwise this will cause an overflow
           INTERVAL LEAST(event_timestamp, 20000000000000) MILLISECOND
         ) AS timestamp,
-        "firefox_desktop_background_update" AS normalized_app_name,
+        "Firefox for Desktop Background Update Task" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
         `moz-fx-data-shared-prod.firefox_desktop_background_update.events_unnested`,
@@ -65,7 +65,7 @@ CREATE TEMP TABLE
           -- limit event.timestamp, otherwise this will cause an overflow
           INTERVAL LEAST(event_timestamp, 20000000000000) MILLISECOND
         ) AS timestamp,
-        "firefox_desktop_background_defaultagent" AS normalized_app_name,
+        "Firefox Desktop Default Agent Task" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
         `moz-fx-data-shared-prod.firefox_desktop_background_defaultagent.events_unnested`,
@@ -84,7 +84,7 @@ CREATE TEMP TABLE
           -- limit event.timestamp, otherwise this will cause an overflow
           INTERVAL LEAST(event_timestamp, 20000000000000) MILLISECOND
         ) AS timestamp,
-        "pine" AS normalized_app_name,
+        "Pinebuild" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
         `moz-fx-data-shared-prod.pine.events_unnested`,
@@ -103,10 +103,10 @@ CREATE TEMP TABLE
           -- limit event.timestamp, otherwise this will cause an overflow
           INTERVAL LEAST(event_timestamp, 20000000000000) MILLISECOND
         ) AS timestamp,
-        "fenix" AS normalized_app_name,
+        "Firefox for Android" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
-        `moz-fx-data-shared-prod.fenix.events_unnested`,
+        `moz-fx-data-shared-prod.org_mozilla_firefox.events_unnested`,
         UNNEST(event_extra) AS ext
       WHERE
         DATE(submission_timestamp) = @submission_date
@@ -122,10 +122,10 @@ CREATE TEMP TABLE
           -- limit event.timestamp, otherwise this will cause an overflow
           INTERVAL LEAST(event_timestamp, 20000000000000) MILLISECOND
         ) AS timestamp,
-        "firefox_ios" AS normalized_app_name,
+        "Firefox for iOS" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
-        `moz-fx-data-shared-prod.firefox_ios.events_unnested`,
+        `moz-fx-data-shared-prod.org_mozilla_ios_firefox.events_unnested`,
         UNNEST(event_extra) AS ext
       WHERE
         DATE(submission_timestamp) = @submission_date
@@ -141,10 +141,10 @@ CREATE TEMP TABLE
           -- limit event.timestamp, otherwise this will cause an overflow
           INTERVAL LEAST(event_timestamp, 20000000000000) MILLISECOND
         ) AS timestamp,
-        "reference_browser" AS normalized_app_name,
+        "Reference Browser" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
-        `moz-fx-data-shared-prod.reference_browser.events_unnested`,
+        `moz-fx-data-shared-prod.org_mozilla_reference_browser.events_unnested`,
         UNNEST(event_extra) AS ext
       WHERE
         DATE(submission_timestamp) = @submission_date
@@ -160,10 +160,10 @@ CREATE TEMP TABLE
           -- limit event.timestamp, otherwise this will cause an overflow
           INTERVAL LEAST(event_timestamp, 20000000000000) MILLISECOND
         ) AS timestamp,
-        "firefox_fire_tv" AS normalized_app_name,
+        "Firefox for Fire TV" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
-        `moz-fx-data-shared-prod.firefox_fire_tv.events_unnested`,
+        `moz-fx-data-shared-prod.org_mozilla_tv_firefox.events_unnested`,
         UNNEST(event_extra) AS ext
       WHERE
         DATE(submission_timestamp) = @submission_date
@@ -179,10 +179,10 @@ CREATE TEMP TABLE
           -- limit event.timestamp, otherwise this will cause an overflow
           INTERVAL LEAST(event_timestamp, 20000000000000) MILLISECOND
         ) AS timestamp,
-        "firefox_reality" AS normalized_app_name,
+        "Firefox Reality" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
-        `moz-fx-data-shared-prod.firefox_reality.events_unnested`,
+        `moz-fx-data-shared-prod.org_mozilla_vrbrowser.events_unnested`,
         UNNEST(event_extra) AS ext
       WHERE
         DATE(submission_timestamp) = @submission_date
@@ -198,10 +198,10 @@ CREATE TEMP TABLE
           -- limit event.timestamp, otherwise this will cause an overflow
           INTERVAL LEAST(event_timestamp, 20000000000000) MILLISECOND
         ) AS timestamp,
-        "lockwise_android" AS normalized_app_name,
+        "Lockwise for Android" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
-        `moz-fx-data-shared-prod.lockwise_android.events_unnested`,
+        `moz-fx-data-shared-prod.mozilla_lockbox.events_unnested`,
         UNNEST(event_extra) AS ext
       WHERE
         DATE(submission_timestamp) = @submission_date
@@ -217,10 +217,10 @@ CREATE TEMP TABLE
           -- limit event.timestamp, otherwise this will cause an overflow
           INTERVAL LEAST(event_timestamp, 20000000000000) MILLISECOND
         ) AS timestamp,
-        "lockwise_ios" AS normalized_app_name,
+        "Lockwise for iOS" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
-        `moz-fx-data-shared-prod.lockwise_ios.events_unnested`,
+        `moz-fx-data-shared-prod.org_mozilla_ios_lockbox.events_unnested`,
         UNNEST(event_extra) AS ext
       WHERE
         DATE(submission_timestamp) = @submission_date
@@ -239,7 +239,7 @@ CREATE TEMP TABLE
         "mozregression" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
-        `moz-fx-data-shared-prod.mozregression.events_unnested`,
+        `moz-fx-data-shared-prod.org_mozilla_mozregression.events_unnested`,
         UNNEST(event_extra) AS ext
       WHERE
         DATE(submission_timestamp) = @submission_date
@@ -255,7 +255,7 @@ CREATE TEMP TABLE
           -- limit event.timestamp, otherwise this will cause an overflow
           INTERVAL LEAST(event_timestamp, 20000000000000) MILLISECOND
         ) AS timestamp,
-        "burnham" AS normalized_app_name,
+        "Burnham" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
         `moz-fx-data-shared-prod.burnham.events_unnested`,
@@ -293,10 +293,10 @@ CREATE TEMP TABLE
           -- limit event.timestamp, otherwise this will cause an overflow
           INTERVAL LEAST(event_timestamp, 20000000000000) MILLISECOND
         ) AS timestamp,
-        "firefox_echo_show" AS normalized_app_name,
+        "Firefox for Echo Show" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
-        `moz-fx-data-shared-prod.firefox_echo_show.events_unnested`,
+        `moz-fx-data-shared-prod.org_mozilla_connect_firefox.events_unnested`,
         UNNEST(event_extra) AS ext
       WHERE
         DATE(submission_timestamp) = @submission_date
@@ -312,10 +312,10 @@ CREATE TEMP TABLE
           -- limit event.timestamp, otherwise this will cause an overflow
           INTERVAL LEAST(event_timestamp, 20000000000000) MILLISECOND
         ) AS timestamp,
-        "firefox_reality_pc" AS normalized_app_name,
+        "Firefox Reality for PC-connected VR platforms" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
-        `moz-fx-data-shared-prod.firefox_reality_pc.events_unnested`,
+        `moz-fx-data-shared-prod.org_mozilla_firefoxreality.events_unnested`,
         UNNEST(event_extra) AS ext
       WHERE
         DATE(submission_timestamp) = @submission_date
@@ -334,7 +334,7 @@ CREATE TEMP TABLE
         "mach" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
-        `moz-fx-data-shared-prod.mach.events_unnested`,
+        `moz-fx-data-shared-prod.mozilla_mach.events_unnested`,
         UNNEST(event_extra) AS ext
       WHERE
         DATE(submission_timestamp) = @submission_date
@@ -350,10 +350,10 @@ CREATE TEMP TABLE
           -- limit event.timestamp, otherwise this will cause an overflow
           INTERVAL LEAST(event_timestamp, 20000000000000) MILLISECOND
         ) AS timestamp,
-        "focus_ios" AS normalized_app_name,
+        "Firefox Focus for iOS" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
-        `moz-fx-data-shared-prod.focus_ios.events_unnested`,
+        `moz-fx-data-shared-prod.org_mozilla_ios_focus.events_unnested`,
         UNNEST(event_extra) AS ext
       WHERE
         DATE(submission_timestamp) = @submission_date
@@ -369,10 +369,10 @@ CREATE TEMP TABLE
           -- limit event.timestamp, otherwise this will cause an overflow
           INTERVAL LEAST(event_timestamp, 20000000000000) MILLISECOND
         ) AS timestamp,
-        "klar_ios" AS normalized_app_name,
+        "Firefox Klar for iOS" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
-        `moz-fx-data-shared-prod.klar_ios.events_unnested`,
+        `moz-fx-data-shared-prod.org_mozilla_ios_klar.events_unnested`,
         UNNEST(event_extra) AS ext
       WHERE
         DATE(submission_timestamp) = @submission_date
@@ -388,10 +388,10 @@ CREATE TEMP TABLE
           -- limit event.timestamp, otherwise this will cause an overflow
           INTERVAL LEAST(event_timestamp, 20000000000000) MILLISECOND
         ) AS timestamp,
-        "focus_android" AS normalized_app_name,
+        "Firefox Focus for Android" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
-        `moz-fx-data-shared-prod.focus_android.events_unnested`,
+        `moz-fx-data-shared-prod.org_mozilla_focus.events_unnested`,
         UNNEST(event_extra) AS ext
       WHERE
         DATE(submission_timestamp) = @submission_date
@@ -407,10 +407,10 @@ CREATE TEMP TABLE
           -- limit event.timestamp, otherwise this will cause an overflow
           INTERVAL LEAST(event_timestamp, 20000000000000) MILLISECOND
         ) AS timestamp,
-        "klar_android" AS normalized_app_name,
+        "Firefox Klar for Android" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
-        `moz-fx-data-shared-prod.klar_android.events_unnested`,
+        `moz-fx-data-shared-prod.org_mozilla_klar.events_unnested`,
         UNNEST(event_extra) AS ext
       WHERE
         DATE(submission_timestamp) = @submission_date
@@ -426,10 +426,10 @@ CREATE TEMP TABLE
           -- limit event.timestamp, otherwise this will cause an overflow
           INTERVAL LEAST(event_timestamp, 20000000000000) MILLISECOND
         ) AS timestamp,
-        "bergamot" AS normalized_app_name,
+        "Bergamot Translator" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
-        `moz-fx-data-shared-prod.bergamot.events_unnested`,
+        `moz-fx-data-shared-prod.org_mozilla_bergamot.events_unnested`,
         UNNEST(event_extra) AS ext
       WHERE
         DATE(submission_timestamp) = @submission_date
@@ -445,7 +445,7 @@ CREATE TEMP TABLE
           -- limit event.timestamp, otherwise this will cause an overflow
           INTERVAL LEAST(event_timestamp, 20000000000000) MILLISECOND
         ) AS timestamp,
-        "firefox_translations" AS normalized_app_name,
+        "Firefox Translations" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
         `moz-fx-data-shared-prod.firefox_translations.events_unnested`,
@@ -464,10 +464,10 @@ CREATE TEMP TABLE
           -- limit event.timestamp, otherwise this will cause an overflow
           INTERVAL LEAST(event_timestamp, 20000000000000) MILLISECOND
         ) AS timestamp,
-        "mozilla_vpn" AS normalized_app_name,
+        "Mozilla VPN" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
-        `moz-fx-data-shared-prod.mozilla_vpn.events_unnested`,
+        `moz-fx-data-shared-prod.mozillavpn.events_unnested`,
         UNNEST(event_extra) AS ext
       WHERE
         DATE(submission_timestamp) = @submission_date
@@ -483,7 +483,7 @@ CREATE TEMP TABLE
           -- limit event.timestamp, otherwise this will cause an overflow
           INTERVAL LEAST(event_timestamp, 20000000000000) MILLISECOND
         ) AS timestamp,
-        "mozillavpn_backend_cirrus" AS normalized_app_name,
+        "Mozilla VPN Cirrus Sidecar" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
         `moz-fx-data-shared-prod.mozillavpn_backend_cirrus.events_unnested`,
@@ -502,7 +502,7 @@ CREATE TEMP TABLE
           -- limit event.timestamp, otherwise this will cause an overflow
           INTERVAL LEAST(event_timestamp, 20000000000000) MILLISECOND
         ) AS timestamp,
-        "glean_dictionary" AS normalized_app_name,
+        "Glean Dictionary" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
         `moz-fx-data-shared-prod.glean_dictionary.events_unnested`,
@@ -521,7 +521,7 @@ CREATE TEMP TABLE
           -- limit event.timestamp, otherwise this will cause an overflow
           INTERVAL LEAST(event_timestamp, 20000000000000) MILLISECOND
         ) AS timestamp,
-        "mdn_yari" AS normalized_app_name,
+        "Mozilla Developer Network" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
         `moz-fx-data-shared-prod.mdn_yari.events_unnested`,
@@ -540,7 +540,7 @@ CREATE TEMP TABLE
           -- limit event.timestamp, otherwise this will cause an overflow
           INTERVAL LEAST(event_timestamp, 20000000000000) MILLISECOND
         ) AS timestamp,
-        "bedrock" AS normalized_app_name,
+        "www.mozilla.org" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
         `moz-fx-data-shared-prod.bedrock.events_unnested`,
@@ -559,7 +559,7 @@ CREATE TEMP TABLE
           -- limit event.timestamp, otherwise this will cause an overflow
           INTERVAL LEAST(event_timestamp, 20000000000000) MILLISECOND
         ) AS timestamp,
-        "viu_politica" AS normalized_app_name,
+        "Viu Politica" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
         `moz-fx-data-shared-prod.viu_politica.events_unnested`,
@@ -578,7 +578,7 @@ CREATE TEMP TABLE
           -- limit event.timestamp, otherwise this will cause an overflow
           INTERVAL LEAST(event_timestamp, 20000000000000) MILLISECOND
         ) AS timestamp,
-        "treeherder" AS normalized_app_name,
+        "Treeherder" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
         `moz-fx-data-shared-prod.treeherder.events_unnested`,
@@ -597,7 +597,7 @@ CREATE TEMP TABLE
           -- limit event.timestamp, otherwise this will cause an overflow
           INTERVAL LEAST(event_timestamp, 20000000000000) MILLISECOND
         ) AS timestamp,
-        "firefox_desktop_background_tasks" AS normalized_app_name,
+        "Firefox Desktop background tasks" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
         `moz-fx-data-shared-prod.firefox_desktop_background_tasks.events_unnested`,
@@ -608,22 +608,31 @@ CREATE TEMP TABLE
       UNION ALL
       SELECT DISTINCT
         @submission_date AS submission_date,
-        ext.value AS flow_id,
-        event_category AS category,
-        event_name AS name,
-        TIMESTAMP_ADD(
-          submission_timestamp,
-          -- limit event.timestamp, otherwise this will cause an overflow
-          INTERVAL LEAST(event_timestamp, 20000000000000) MILLISECOND
-        ) AS timestamp,
-        "accounts_frontend" AS normalized_app_name,
+        metrics.string.session_flow_id AS flow_id,
+        NULL AS category,
+        metrics.string.event_name AS name,
+        submission_timestamp AS timestamp,
+        "Firefox Accounts Frontend" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
-        `moz-fx-data-shared-prod.accounts_frontend.events_unnested`,
-        UNNEST(event_extra) AS ext
+        `moz-fx-data-shared-prod.accounts_frontend.accounts_events`
       WHERE
         DATE(submission_timestamp) = @submission_date
-        AND ext.key = "flow_id"
+        AND metrics.string.session_flow_id != ""
+      UNION ALL
+      SELECT DISTINCT
+        @submission_date AS submission_date,
+        metrics.string.session_flow_id AS flow_id,
+        NULL AS category,
+        metrics.string.event_name AS name,
+        submission_timestamp AS timestamp,
+        "Firefox Accounts Backend" AS normalized_app_name,
+        client_info.app_channel AS channel
+      FROM
+        `moz-fx-data-shared-prod.accounts_backend.accounts_events`
+      WHERE
+        DATE(submission_timestamp) = @submission_date
+        AND metrics.string.session_flow_id != ""
       UNION ALL
       SELECT DISTINCT
         @submission_date AS submission_date,
@@ -635,26 +644,7 @@ CREATE TEMP TABLE
           -- limit event.timestamp, otherwise this will cause an overflow
           INTERVAL LEAST(event_timestamp, 20000000000000) MILLISECOND
         ) AS timestamp,
-        "accounts_backend" AS normalized_app_name,
-        client_info.app_channel AS channel
-      FROM
-        `moz-fx-data-shared-prod.accounts_backend.events_unnested`,
-        UNNEST(event_extra) AS ext
-      WHERE
-        DATE(submission_timestamp) = @submission_date
-        AND ext.key = "flow_id"
-      UNION ALL
-      SELECT DISTINCT
-        @submission_date AS submission_date,
-        ext.value AS flow_id,
-        event_category AS category,
-        event_name AS name,
-        TIMESTAMP_ADD(
-          submission_timestamp,
-          -- limit event.timestamp, otherwise this will cause an overflow
-          INTERVAL LEAST(event_timestamp, 20000000000000) MILLISECOND
-        ) AS timestamp,
-        "monitor_cirrus" AS normalized_app_name,
+        "Firefox Monitor (Cirrus)" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
         `moz-fx-data-shared-prod.monitor_cirrus.events_unnested`,
@@ -673,7 +663,7 @@ CREATE TEMP TABLE
           -- limit event.timestamp, otherwise this will cause an overflow
           INTERVAL LEAST(event_timestamp, 20000000000000) MILLISECOND
         ) AS timestamp,
-        "debug_ping_view" AS normalized_app_name,
+        "Glean Debug Ping Viewer" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
         `moz-fx-data-shared-prod.debug_ping_view.events_unnested`,
@@ -692,7 +682,7 @@ CREATE TEMP TABLE
           -- limit event.timestamp, otherwise this will cause an overflow
           INTERVAL LEAST(event_timestamp, 20000000000000) MILLISECOND
         ) AS timestamp,
-        "monitor_frontend" AS normalized_app_name,
+        "Firefox Monitor (Frontend)" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
         `moz-fx-data-shared-prod.monitor_frontend.events_unnested`,
@@ -711,7 +701,7 @@ CREATE TEMP TABLE
           -- limit event.timestamp, otherwise this will cause an overflow
           INTERVAL LEAST(event_timestamp, 20000000000000) MILLISECOND
         ) AS timestamp,
-        "moso_mastodon_backend" AS normalized_app_name,
+        "Mozilla Social Mastodon Backend" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
         `moz-fx-data-shared-prod.moso_mastodon_backend.events_unnested`,
@@ -730,7 +720,7 @@ CREATE TEMP TABLE
           -- limit event.timestamp, otherwise this will cause an overflow
           INTERVAL LEAST(event_timestamp, 20000000000000) MILLISECOND
         ) AS timestamp,
-        "moso_mastodon_web" AS normalized_app_name,
+        "Mozilla Social Web App" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
         `moz-fx-data-shared-prod.moso_mastodon_web.events_unnested`,
@@ -749,10 +739,10 @@ CREATE TEMP TABLE
           -- limit event.timestamp, otherwise this will cause an overflow
           INTERVAL LEAST(event_timestamp, 20000000000000) MILLISECOND
         ) AS timestamp,
-        "tiktokreporter_ios" AS normalized_app_name,
+        "TikTok Reporter (iOS)" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
-        `moz-fx-data-shared-prod.tiktokreporter_ios.events_unnested`,
+        `moz-fx-data-shared-prod.org_mozilla_ios_tiktok_reporter.events_unnested`,
         UNNEST(event_extra) AS ext
       WHERE
         DATE(submission_timestamp) = @submission_date
@@ -768,10 +758,10 @@ CREATE TEMP TABLE
           -- limit event.timestamp, otherwise this will cause an overflow
           INTERVAL LEAST(event_timestamp, 20000000000000) MILLISECOND
         ) AS timestamp,
-        "tiktokreporter_android" AS normalized_app_name,
+        "TikTok Reporter (Android)" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
-        `moz-fx-data-shared-prod.tiktokreporter_android.events_unnested`,
+        `moz-fx-data-shared-prod.org_mozilla_tiktokreporter.events_unnested`,
         UNNEST(event_extra) AS ext
       WHERE
         DATE(submission_timestamp) = @submission_date

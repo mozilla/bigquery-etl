@@ -785,11 +785,8 @@ class JinjaBlockMiddle(JinjaBlockEnd, JinjaBlockStart):
     pattern = re.compile(r"{%[-+]? *(elif|else)\b.*?%}", re.DOTALL)
 
 
-class JinjaComment(Comment):
-    """Jinja comment delimiters {# #}.
-
-    May be followed by no whitespace or a new line and increased indent.
-    """
+class JinjaComment(BlockComment):
+    """Jinja comment that may span multiple lines."""
 
     pattern = re.compile(r"\n?[^\S\n]*{#.*?#}", re.DOTALL)
 

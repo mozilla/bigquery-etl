@@ -97,7 +97,7 @@ def simple_format(tokens, indent="  "):
             # no space before statement separator
             # no space before first token
             pass
-        elif isinstance(token, (Comment, JinjaComment)):
+        elif isinstance(token, Comment):
             # blank line before comments only if they start on their own line
             # and come after a statement separator
             if token.value.startswith("\n") and prev_was_statement_separator:
@@ -146,7 +146,6 @@ def simple_format(tokens, indent="  "):
                 ExpressionSeparator,
                 StatementSeparator,
                 JinjaStatement,
-                JinjaComment,
             ),
         )
         allow_space_before_next_token = not isinstance(token, FieldAccessOperator)

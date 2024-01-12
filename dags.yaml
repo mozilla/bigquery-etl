@@ -556,6 +556,11 @@ bqetl_pocket:
 
     Originally created for [Bug 1695336](
     https://bugzilla.mozilla.org/show_bug.cgi?id=1695336).
+
+    *Triage notes*
+
+    As long as the most recent DAG run is successful this job can be considered healthy.
+    In such case, past DAG failures can be ignored.
   schedule_interval: 0 12 * * *
   tags:
     - impact/tier_2
@@ -1394,3 +1399,75 @@ bqetl_mobile_feature_usage:
   schedule_interval: 0 6 * * *
   tags:
     - impact/tier_3
+
+bqetl_telemetry_dev_cycle:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - leli@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    owner: leli@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2023-12-19'
+  description: DAG for Telemetry Dev Cycle Dashboard
+  repo: bigquery-etl
+  schedule_interval: 0 18 * * *
+  tags:
+    - impact/tier_3
+    - repo/bigquery-etl
+
+bqetl_desktop_installs_v1:
+  schedule_interval: 55 23 * * *
+  default_args:
+    depends_on_past: false
+    email:
+      - kwindau@mozilla.com
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    owner: kwindau@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: "2023-12-28"
+  tags:
+    - impact/tier_2
+  description: DAG to build mozdata-fx-data-shared-prod.firefox_desktop_derived.desktop_installs_v1 table
+
+bqetl_google_analytics_derived_ga4:
+  schedule_interval: 0 12 * * *
+  description: Daily aggregations of data exported from Google Analytics 4
+  default_args:
+    depends_on_past: false
+    owner: kwindau@mozilla.com
+    email:
+      - kwindau@mozilla.com
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    start_date: "2024-01-03"
+    retries: 2
+    retry_delay: 30m
+  tags:
+    - impact/tier_2
+
+bqetl_glam_refresh_aggregates:
+  default_args:
+    depends_on_past: false
+    email:
+      - efilho@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    owner: efilho@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2024-01-10'
+  description: Refresh GLAM tables that are serving data.
+  repo: bigquery-etl
+  schedule_interval: 0 8 * * *
+  tags:
+    - impact/tier_2
+    - repo/bigquery-etl

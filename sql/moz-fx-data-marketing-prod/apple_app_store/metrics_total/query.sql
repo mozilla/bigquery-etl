@@ -19,59 +19,45 @@ FROM
   `moz-fx-data-marketing-prod.apple_app_store_exported.active_devices_last_30_days_total`
 FULL JOIN
   `moz-fx-data-marketing-prod.apple_app_store_exported.active_devices_total`
-USING
-  (date, app_name)
+  USING (date, app_name)
 FULL JOIN
   `moz-fx-data-marketing-prod.apple_app_store_exported.app_units_total`
-USING
-  (date, app_name)
+  USING (date, app_name)
 FULL JOIN
   `moz-fx-data-marketing-prod.apple_app_store_exported.crashes_total`
-USING
-  (date, app_name)
+  USING (date, app_name)
 FULL JOIN
   `moz-fx-data-marketing-prod.apple_app_store_exported.deletions_total`
-USING
-  (date, app_name)
+  USING (date, app_name)
 FULL JOIN
   `moz-fx-data-marketing-prod.apple_app_store_exported.iap_total`
-USING
-  (date, app_name)
+  USING (date, app_name)
 FULL JOIN
   `moz-fx-data-marketing-prod.apple_app_store_exported.impressions_total`
-USING
-  (date, app_name)
+  USING (date, app_name)
 FULL JOIN
   `moz-fx-data-marketing-prod.apple_app_store_exported.impressions_unique_device_total`
-USING
-  (date, app_name)
+  USING (date, app_name)
 FULL JOIN
   `moz-fx-data-marketing-prod.apple_app_store_exported.installations_total`
-USING
-  (date, app_name)
+  USING (date, app_name)
 FULL JOIN
   `moz-fx-data-marketing-prod.apple_app_store_exported.paying_users_total`
-USING
-  (date, app_name)
+  USING (date, app_name)
 FULL JOIN
   `moz-fx-data-marketing-prod.apple_app_store_exported.product_page_views_total`
-USING
-  (date, app_name)
+  USING (date, app_name)
 FULL JOIN
   `moz-fx-data-marketing-prod.apple_app_store_exported.product_page_views_unique_device_total`
-USING
-  (date, app_name)
+  USING (date, app_name)
 FULL JOIN
   `moz-fx-data-marketing-prod.apple_app_store_exported.rate_total`
-USING
-  (date, app_name)
+  USING (date, app_name)
 FULL JOIN
   `moz-fx-data-marketing-prod.apple_app_store_exported.sales_total`
-USING
-  (date, app_name)
+  USING (date, app_name)
 FULL JOIN
   `moz-fx-data-marketing-prod.apple_app_store_exported.sessions_total`
-USING
-  (date, app_name)
+  USING (date, app_name)
 WHERE
   date = @submission_date

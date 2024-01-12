@@ -10,9 +10,13 @@
 #fail
 {{ value_length(column="client_id", expected_length=36, where="submission_date = @submission_date") }}
 
-#warn
-{{ is_unique(columns=["client_id"], where="submission_date = @submission_date") }}
-
+{#
+-- Commented out due to upstream duplication issue inside Fenix data
+-- which will cause this check to fail, see: bug(1803609).
+-- Once the duplication issue has been resolved, this check can be uncommented.
+-- #fail
+-- {{ is_unique(columns=["client_id"], where="submission_date = @submission_date") }}
+#}
 #warn
 {{ not_null(columns=[
   "activity_segment",
@@ -24,7 +28,6 @@
   "days_since_seen",
   "is_new_profile",
   "normalized_os",
-  "normalized_os_version",
   "app_version",
   "os_version_major",
   "os_version_minor",

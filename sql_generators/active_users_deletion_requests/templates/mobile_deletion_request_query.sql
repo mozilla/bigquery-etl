@@ -29,8 +29,7 @@ WITH baseline AS (
     `{{ project_id }}.{{ app_name }}.clients_last_seen_joined` AS joined
   INNER JOIN
     `{{ app_name }}.deletion_request` AS request
-  ON
-    client_info.client_id = client_id
+    ON client_info.client_id = client_id
   WHERE
     joined.submission_date <= @end_date
     AND DATE(request.submission_timestamp)
@@ -49,8 +48,7 @@ search_clients AS (
     `moz-fx-data-shared-prod.search_derived.mobile_search_clients_daily_v1` search
   INNER JOIN
     `{{ app_name }}.deletion_request` AS request
-  ON
-    client_info.client_id = client_id
+    ON client_info.client_id = client_id
   WHERE
     search.submission_date <= @end_date
     AND DATE(request.submission_timestamp)
@@ -69,8 +67,7 @@ search_metrics AS (
     baseline
   LEFT JOIN
     search_clients s
-  ON
-    baseline.client_id = s.client_id
+    ON baseline.client_id = s.client_id
     AND baseline.submission_date = s.submission_date
   GROUP BY
     client_id,
@@ -144,8 +141,7 @@ baseline_with_searches AS (
     baseline
   LEFT JOIN
     search_metrics search
-  ON
-    search.client_id = baseline.client_id
+    ON search.client_id = baseline.client_id
     AND search.submission_date = baseline.submission_date
 ),
 today_metrics AS (
@@ -168,6 +164,7 @@ today_metrics AS (
     normalized_os_version AS os_version,
     os_version_major,
     os_version_minor,
+    durations,
     submission_date,
     days_since_seen,
     client_id,
@@ -194,8 +191,7 @@ today_metrics_enriched AS (
     today_metrics
   LEFT JOIN
     `mozdata.static.csa_gblmkt_languages` AS languages
-  ON
-    today_metrics.locale = languages.code
+    ON today_metrics.locale = languages.code
 )
 SELECT
   today_metrics_enriched.* EXCEPT (
@@ -207,11 +203,13 @@ SELECT
     search_with_ads,
     uri_count,
     active_hours_sum,
-    first_seen_date
+    first_seen_date,
+    durations
   ),
-  COUNT(DISTINCT IF(days_since_seen = 0, client_id, NULL)) AS dau,
-  COUNT(DISTINCT IF(days_since_seen < 7, client_id, NULL)) AS wau,
-  COUNT(DISTINCT client_id) AS mau,
+  COUNT(DISTINCT IF(days_since_seen = 0, client_id, NULL)) AS daily_users,
+  COUNT(DISTINCT IF(days_since_seen < 7, client_id, NULL)) AS weekly_users,
+  COUNT(DISTINCT client_id) AS montly_users,
+  COUNT(DISTINCT IF(days_since_seen = 0 AND durations > 0, client_id, NULL)) AS dau,
   COUNT(DISTINCT IF(submission_date = first_seen_date, client_id, NULL)) AS new_profiles,
   SUM(ad_clicks) AS ad_clicks,
   SUM(organic_search_count) AS organic_search_count,

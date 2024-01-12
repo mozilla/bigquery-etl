@@ -15,8 +15,7 @@ FROM
   messaging_system.cfr_users_last_seen AS culs
 LEFT JOIN
   static.country_codes_v1 AS cc
-ON
-  (culs.country = cc.code)
+  ON (culs.country = cc.code)
 WHERE
   (client_id IS NOT NULL OR impression_id IS NOT NULL)
   -- Reprocess all dates by running this query with --parameter=submission_date:DATE:NULL

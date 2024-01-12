@@ -9,7 +9,7 @@ SELECT
   metric,
   rate
 FROM
-  `moz-fx-data-shared-prod.firefox_desktop_derived.firefox_desktop_use_counters_v1`
+  `mozilla-public-data.firefox_desktop_derived.firefox_desktop_use_counters_v2`
 UNION ALL
 SELECT
   submission_date,
@@ -19,4 +19,4 @@ SELECT
   metric,
   rate
 FROM
-  `moz-fx-data-shared-prod.fenix_derived.fenix_use_counters_v1`
+  `mozilla-public-data.fenix_derived.fenix_use_counters_v2`

@@ -7,7 +7,7 @@ import sys
 import tempfile
 from pathlib import Path
 
-import click
+import rich_click as click
 
 from bigquery_etl.config import ConfigLoader
 from bigquery_etl.dryrun import DryRun

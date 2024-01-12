@@ -30,6 +30,7 @@ dry_run:
   - sql/moz-fx-data-shared-prod/activity_stream/tile_id_types/view.sql
   - sql/moz-fx-data-shared-prod/app_store_external/**/*.sql
   - sql/moz-fx-data-shared-prod/app_store/**/*.sql
+  - sql/moz-fx-data-shared-prod/monitoring_derived/bigquery_usage_v2/query.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/deletion_request_volume_v1/query.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/schema_error_counts_v1/view.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/schema_error_counts_v2/query.sql
@@ -54,7 +55,8 @@ dry_run:
   - sql/moz-fx-data-shared-prod/accounts_backend/accounts/view.sql
   - sql/moz-fx-data-shared-prod/accounts_db_external/**/*.sql
   - sql/moz-fx-data-shared-prod/accounts_db_nonprod_external/**/*.sql
-  - sql/moz-fx-data-shared-prod/accounts_db/fxa_oauth_clients/view.sql
+  - sql/moz-fx-data-shared-prod/accounts_db/**/*view.sql
+  - sql/moz-fx-data-shared-prod/accounts_db_derived/**/*.sql
   - sql/moz-fx-data-shared-prod/ads/fakespot_daily_events_rollup/view.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_content_events_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_auth_bounce_events_v1/query.sql
@@ -376,25 +378,6 @@ view:
     skip:
     # tests
     - sql/moz-fx-data-test-project/test/simple_view/view.sql
-    # Access Denied
-    - sql/moz-fx-data-shared-prod/ads/nt_visits_to_sessions_conversion_factors_daily/view.sql
-    - sql/moz-fx-data-shared-prod/telemetry/experiment_enrollment_cumulative_population_estimate/view.sql
-    - sql/moz-fx-data-shared-prod/mlhackweek_search/events/view.sql
-    - sql/moz-fx-data-shared-prod/regrets_reporter_ucs/deletion_request/view.sql
-    - sql/moz-fx-data-shared-prod/mlhackweek_search/custom/view.sql
-    - sql/moz-fx-data-shared-prod/regrets_reporter_ucs/regret_details/view.sql
-    - sql/moz-fx-data-shared-prod/regrets_reporter_ucs/video_data/view.sql
-    - sql/moz-fx-data-shared-prod/mlhackweek_search/deletion_request/view.sql
-    - sql/moz-fx-data-shared-prod/mlhackweek_search/baseline/view.sql
-    - sql/moz-fx-data-shared-prod/telemetry/regrets_reporter_update/view.sql
-    - sql/moz-fx-data-shared-prod/regrets_reporter_ucs/video_index/view.sql
-    - sql/moz-fx-data-shared-prod/telemetry/xfocsp_error_report/view.sql
-    - sql/moz-fx-data-shared-prod/mlhackweek_search/metrics/view.sql
-    - sql/moz-fx-data-shared-prod/regrets_reporter_ucs/main_events/view.sql
-    - sql/moz-fx-data-shared-prod/mlhackweek_search/action/view.sql
-    - sql/moz-fx-data-shared-prod/**/client_deduplication/view.sql
-    - sql/moz-fx-data-shared-prod/stripe/itemized_tax_transactions/view.sql
-    - sql/moz-fx-data-shared-prod/accounts_db/fxa_oauth_clients/view.sql
   publish:
     skip:
     - sql/moz-fx-data-shared-prod/activity_stream/tile_id_types/view.sql
@@ -434,12 +417,8 @@ render:
 generate:
   glean_usage:
     skip_existing: # Skip automatically updating the following artifacts
-    - sql/moz-fx-data-shared-prod/mozilla_vpn/deletion_request/**
-    - sql/moz-fx-data-shared-prod/mozilla_vpn/events/**
-    - sql/moz-fx-data-shared-prod/mozilla_vpn/main/**
     - sql/moz-fx-data-shared-prod/fenix/client_deduplication/**
     - sql/moz-fx-data-shared-prod/org_mozilla_tv_firefox_derived/baseline_clients_last_seen_v1/checks.sql
-  event_monitoring:
     skip_apps:
     - mlhackweek_search
     - regrets_reporter

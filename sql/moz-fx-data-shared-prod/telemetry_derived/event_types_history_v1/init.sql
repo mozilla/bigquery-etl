@@ -52,8 +52,7 @@ event_property_indices AS (
     UNNEST(extra) AS event_property
   LEFT JOIN
     UNNEST(CAST([] AS ARRAY<STRING>)) skipped_property
-  ON
-    skipped_property = event_property.key
+    ON skipped_property = event_property.key
   WHERE
     skipped_property IS NULL
   GROUP BY
@@ -105,8 +104,7 @@ per_event_property AS (
     event_property_value_indices
   INNER JOIN
     event_property_indices
-  USING
-    (category, event, event_property)
+    USING (category, event, event_property)
   WHERE
     event_property_value_index <= 5000
   GROUP BY
@@ -135,8 +133,7 @@ per_event AS (
     primary_event_types
   LEFT JOIN
     per_event_property
-  USING
-    (category, event)
+    USING (category, event)
   GROUP BY
     category,
     event,

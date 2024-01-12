@@ -37,9 +37,7 @@ FROM
   `moz-fx-data-shared-prod`.fenix_derived.attributable_clients_v2
 JOIN
   `moz-fx-data-shared-prod`.fenix.firefox_android_clients
-USING
-  (client_id)
+  USING (client_id)
 JOIN
   unfiltered_activations
-USING
-  (client_id)
+  USING (client_id)

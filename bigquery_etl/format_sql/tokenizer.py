@@ -55,7 +55,6 @@ TOP_LEVEL_KEYWORDS = [
     "LEFT JOIN",
     "LEFT OUTER JOIN",
     "LIMIT",
-    "ON",
     "ORDER BY",
     "OUTER JOIN",
     "PARTITION BY",
@@ -76,7 +75,6 @@ TOP_LEVEL_KEYWORDS = [
     "UNION ALL",
     "UNION DISTINCT",
     "UNION",
-    "USING",
     "VALUES",
     "WHERE",
     "WITH(?! OFFSET)",
@@ -84,6 +82,8 @@ TOP_LEVEL_KEYWORDS = [
 ]
 # These words start a new line at the current indent
 NEWLINE_KEYWORDS = [
+    "ON",
+    "USING",
     "WITH OFFSET",
     # UDF
     "CREATE OR REPLACE",
@@ -768,19 +768,21 @@ class JinjaBlockStatement(JinjaStatement):
 class JinjaBlockStart(JinjaBlockStatement):
     """Jinja block starts get their own line followed by increased indent."""
 
-    pattern = re.compile(r"{% *(block|call|filter|for|if|macro)\b.*?%}", re.DOTALL)
+    pattern = re.compile(r"{%[-+]? *(block|call|filter|for|if|macro)\b.*?%}", re.DOTALL)
 
 
 class JinjaBlockEnd(JinjaBlockStatement):
     """Jinja block ends get their own line preceded by decreased indent."""
 
-    pattern = re.compile(r"{% *end(block|call|filter|for|if|macro)\b.*?%}", re.DOTALL)
+    pattern = re.compile(
+        r"{%[-+]? *end(block|call|filter|for|if|macro)\b.*?%}", re.DOTALL
+    )
 
 
 class JinjaBlockMiddle(JinjaBlockEnd, JinjaBlockStart):
     """Ends one indented Jinja block and starts another."""
 
-    pattern = re.compile(r"{% *(elif|else)\b.*?%}", re.DOTALL)
+    pattern = re.compile(r"{%[-+]? *(elif|else)\b.*?%}", re.DOTALL)
 
 
 class JinjaComment(Comment):

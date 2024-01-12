@@ -79,8 +79,7 @@ filtered_accumulated AS (
     extracted_accumulated
   LEFT JOIN
     glam_etl.org_mozilla_fenix_glam_nightly__latest_versions_v1
-  USING
-    (channel)
+    USING (channel)
   WHERE
       -- allow for builds to be slighly ahead of the current submission date, to
       -- account for a reasonable amount of clock skew
@@ -120,8 +119,7 @@ filtered_daily AS (
     extracted_daily
   LEFT JOIN
     glam_etl.org_mozilla_fenix_glam_nightly__latest_versions_v1
-  USING
-    (channel)
+    USING (channel)
   WHERE
       -- allow for builds to be slighly ahead of the current submission date, to
       -- account for a reasonable amount of clock skew
@@ -208,5 +206,4 @@ FROM
   filtered_accumulated AS accumulated
 FULL OUTER JOIN
   transformed_daily AS daily
-USING
-  (sample_id, client_id, ping_type, os, app_version, app_build_id, channel)
+  USING (sample_id, client_id, ping_type, os, app_version, app_build_id, channel)

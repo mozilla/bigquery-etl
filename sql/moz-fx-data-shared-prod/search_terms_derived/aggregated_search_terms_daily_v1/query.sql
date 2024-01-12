@@ -30,5 +30,4 @@ FROM
   aggregated_search_terms
 LEFT JOIN
   suggest_attributes
-USING
-  (search_terms)
+  USING (search_terms)

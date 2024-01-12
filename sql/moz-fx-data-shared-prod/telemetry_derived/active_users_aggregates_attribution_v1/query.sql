@@ -30,8 +30,7 @@ WITH baseline AS (
     `moz-fx-data-shared-prod.telemetry.unified_metrics` AS unified_metrics
   LEFT JOIN
     fenix.firefox_android_clients AS att
-  ON
-    unified_metrics.client_id = att.client_id
+    ON unified_metrics.client_id = att.client_id
   WHERE
     unified_metrics.submission_date = @submission_date
 )

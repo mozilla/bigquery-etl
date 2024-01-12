@@ -8,7 +8,7 @@ FOR record IN (
   FROM
     `moz-fx-data-shared-prod.INFORMATION_SCHEMA.SCHEMATA`
   WHERE
-    schema_name LIKE "%_live%"
+    schema_name LIKE r"%\_live%"
 )
 DO
   EXECUTE IMMEDIATE CONCAT(
@@ -30,10 +30,8 @@ FOR;
 
 MERGE
   `moz-fx-data-shared-prod.monitoring_derived.deletion_request_volume_v2` r
-USING
-  deletion_counts d
-ON
-  d.submission_date = r.submission_date
+  USING deletion_counts d
+  ON d.submission_date = r.submission_date
   AND r.dataset_id = d.dataset_id
 WHEN NOT MATCHED
 THEN

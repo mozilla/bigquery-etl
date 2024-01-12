@@ -103,8 +103,7 @@ apple_iap_period_aggregates AS (
     apple_iap_periods AS periods
   JOIN
     apple_iap_events AS events
-  ON
-    periods.original_transaction_id = events.original_transaction_id
+    ON periods.original_transaction_id = events.original_transaction_id
     AND periods.user_id = events.user_id
     AND periods.start_time <= events.purchase_date
     AND periods.end_time > events.purchase_date
@@ -154,8 +153,7 @@ apple_iap_trial_periods AS (
     apple_iap_trial_events AS trial_events
   JOIN
     apple_iap_periods AS periods
-  ON
-    trial_events.original_transaction_id = periods.original_transaction_id
+    ON trial_events.original_transaction_id = periods.original_transaction_id
     AND trial_events.user_id = periods.user_id
     AND trial_events.purchase_date >= periods.start_time
     AND trial_events.purchase_date < periods.end_time
@@ -237,5 +235,4 @@ FROM
   apple_iap_enhanced_period_aggregates AS periods
 LEFT JOIN
   apple_iap_trial_periods AS trial_periods
-USING
-  (original_transaction_id, user_id, period_offset)
+  USING (original_transaction_id, user_id, period_offset)

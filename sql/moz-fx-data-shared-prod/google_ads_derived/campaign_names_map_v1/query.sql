@@ -17,7 +17,6 @@ FROM
   campaign_names
 JOIN
   google_ads_derived.accounts_v1 AS accounts
-ON
-  accounts.account_id = campaign_names.customer_id
+  ON accounts.account_id = campaign_names.customer_id
 WHERE
   campaign_names.is_most_recent_record

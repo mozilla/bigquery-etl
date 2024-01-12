@@ -32,12 +32,10 @@ new_data AS (
     `moz-fx-data-shared-prod.accounts_db_external.fxa_accounts_v1` a
   LEFT JOIN
     `moz-fx-data-shared-prod.accounts_db_external.fxa_totp_v1` t
-  USING
-    (uid)
+    USING (uid)
   LEFT JOIN
     `moz-fx-data-shared-prod.accounts_db_external.fxa_recovery_keys_v1` r
-  USING
-    (uid)
+    USING (uid)
   GROUP BY
     submission_date,
     active,

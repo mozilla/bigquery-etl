@@ -8,7 +8,7 @@ FOR record IN (
   FROM
     `moz-fx-data-shared-prod.INFORMATION_SCHEMA.SCHEMATA`
   WHERE
-    schema_name LIKE "%_live%"
+    schema_name LIKE r"%\_live%"
 )
 DO
   EXECUTE IMMEDIATE CONCAT(

@@ -8255,28 +8255,28 @@ fenix_staging AS (
     metric,
     cnt,
     CASE
-      WHEN metric LIKE 'use_counter_css_doc_%'
+      WHEN metric LIKE r'use\_counter\_css\_doc\_%'
         THEN SAFE_DIVIDE(cnt, use_counter_content_documents_destroyed)
       ELSE NULL
     END AS doc_rate,
     CASE
-      WHEN metric LIKE 'use_counter_css_page_%'
-        OR metric LIKE 'use_counter_page_%'
+      WHEN metric LIKE r'use\_counter\_css\_page\_%'
+        OR metric LIKE r'use\_counter\_page\_%'
         THEN SAFE_DIVIDE(cnt, use_counter_top_level_content_documents_destroyed)
       ELSE NULL
     END AS page_rate,
     CASE
-      WHEN metric LIKE 'use_counter_worker_service_%'
+      WHEN metric LIKE r'use\_counter\_worker\_service\_%'
         THEN SAFE_DIVIDE(cnt, use_counter_service_workers_destroyed)
       ELSE NULL
     END AS service_rate,
     CASE
-      WHEN metric LIKE 'use_counter_worker_shared_%'
+      WHEN metric LIKE r'use\_counter\_worker\_shared\_%'
         THEN SAFE_DIVIDE(cnt, use_counter_shared_workers_destroyed)
       ELSE NULL
     END AS shared_rate,
     CASE
-      WHEN metric LIKE 'use_counter_worker_dedicated_%'
+      WHEN metric LIKE r'use\_counter\_worker\_dedicated\_%'
         THEN SAFE_DIVIDE(cnt, use_counter_dedicated_workers_destroyed)
       ELSE NULL
     END AS dedicated_rate

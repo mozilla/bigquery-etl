@@ -62,6 +62,7 @@ def download_glean_metrics(url, threshold):
                 first_seen = metric["history"][0]["dates"]["first"][:10]
                 last_seen = metric["history"][-1]["dates"]["last"][:10]
                 expires = metric["history"][-1]["expires"]
+                in_source = metric["in-source"]
                 glean_metrics.append(
                     {
                         "glean_app": glean_app,
@@ -70,6 +71,7 @@ def download_glean_metrics(url, threshold):
                         "first_seen_date": first_seen,
                         "last_seen_date": last_seen,
                         "expires": expires,
+                        "in_source": in_source,
                     }
                 )
         except requests.exceptions.HTTPError as err:

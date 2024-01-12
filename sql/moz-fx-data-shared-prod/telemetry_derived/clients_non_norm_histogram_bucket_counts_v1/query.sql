@@ -74,8 +74,7 @@ all_combos as (
     filtered_data table
   INNER JOIN
     build_ids
-  USING
-    (app_build_id, channel)
+    USING (app_build_id, channel)
   CROSS JOIN
     static_combos combo
 ),

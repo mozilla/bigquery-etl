@@ -561,24 +561,19 @@ all_features AS (
     user_type
   LEFT JOIN
     main
-  USING
-    (client_id, submission_date)
+    USING (client_id, submission_date)
   LEFT JOIN
     events
-  USING
-    (client_id, submission_date)
+    USING (client_id, submission_date)
   LEFT JOIN
     activity_stream_events
-  USING
-    (client_id, submission_date)
+    USING (client_id, submission_date)
   LEFT JOIN
     activity_stream_sessions
-  USING
-    (client_id, submission_date)
+    USING (client_id, submission_date)
   LEFT JOIN
     addons
-  USING
-    (client_id, submission_date)
+    USING (client_id, submission_date)
 )
 SELECT
   client_id,

@@ -3,10 +3,13 @@
             -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
 MERGE INTO
   `moz-fx-data-glam-prod-fca7.glam_etl.glam_desktop_nightly_aggregates_v1` T
-USING
-  (SELECT * FROM `moz-fx-data-shared-prod.telemetry_derived.glam_extract_firefox_nightly_v1`) S
-ON
-  T.version = S.app_version
+  USING (
+    SELECT
+      *
+    FROM
+      `moz-fx-data-shared-prod.telemetry_derived.glam_extract_firefox_nightly_v1`
+  ) S
+  ON T.version = S.app_version
   AND T.os = S.os
   AND T.build_id = S.app_build_id
   AND T.process = S.process

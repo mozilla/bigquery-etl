@@ -9,9 +9,9 @@
    (you can also run them locally with `bqetl check run`).
 #}
 #warn
-WITH dau_sum AS (
+WITH daily_users_sum AS (
   SELECT
-    SUM(dau),
+    SUM(daily_users),
   FROM
     {%- raw %}
     `{{ project_id }}.{{ dataset_id }}.{{ table_name }}` {%- endraw %}
@@ -43,16 +43,16 @@ distinct_client_count AS (
 )
 SELECT
   IF(
-    ABS((SELECT * FROM dau_sum) - (SELECT * FROM distinct_client_count)) > 10,
+    ABS((SELECT * FROM daily_users_sum) - (SELECT * FROM distinct_client_count)) > 10,
     ERROR(
       CONCAT(
-        "DAU mismatch between the {{ app_name }} live across all channels ({%- for channel in channels %}{{ channel.table }},{% endfor -%}) and active_users_aggregates ({%- raw %}`{{ dataset_id }}.{{ table_name }}`{%- endraw %}) tables is greater than 10.",
+        "Daily users mismatch between the {{ app_name }} live across all channels ({%- for channel in channels %}{{ channel.table }},{% endfor -%}) and active_users_aggregates ({%- raw %}`{{ dataset_id }}.{{ table_name }}`{%- endraw %}) tables is greater than 10.",
         " Live table count: ",
         (SELECT * FROM distinct_client_count),
-        " | active_users_aggregates (DAU): ",
-        (SELECT * FROM dau_sum),
+        " | active_users_aggregates (daily_users): ",
+        (SELECT * FROM daily_users_sum),
         " | Delta detected: ",
-        ABS((SELECT * FROM dau_sum) - (SELECT * FROM distinct_client_count))
+        ABS((SELECT * FROM daily_users_sum) - (SELECT * FROM distinct_client_count))
       )
     ),
     NULL

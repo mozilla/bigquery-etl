@@ -239,8 +239,7 @@ def delete_from_partition(
                 + " AND ".join((source_condition, *source.conditions))
                 + f"""
                   )
-                ON
-                  {field} = _source_{index}
+                  ON {field} = _source_{index}
                 """
                 for index, (field, source) in enumerate(zip(target.fields, sources))
             )

@@ -33,5 +33,4 @@ FROM
   historical_triplets AS _previous
 FULL OUTER JOIN
   new_downloads AS _current
-USING
-  (dl_token, ga_client_id, stub_session_id)
+  USING (dl_token, ga_client_id, stub_session_id)

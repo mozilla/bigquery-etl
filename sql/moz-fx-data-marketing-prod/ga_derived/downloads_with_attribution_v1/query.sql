@@ -101,12 +101,10 @@ ga_sessions_with_hits AS (
     ga_sessions ga
   LEFT JOIN
     pageviews p
-  USING
-    (client_id, visit_id)
+    USING (client_id, visit_id)
   JOIN
     dl_events
-  USING
-    (client_id, visit_id)
+    USING (client_id, visit_id)
 ),
 stub_dl AS (
   SELECT
@@ -151,8 +149,7 @@ stub AS (
     stub_dl
   JOIN
     stub_other_dl
-  USING
-    (stub_visit_id)
+    USING (stub_visit_id)
 ),
 -- This will drop all the ga_sessions w/o a DLtoken but keep DLtoken without a GA session.
 -- This will also result in multiple rows as the ga.client_id is not unique for the day
@@ -189,8 +186,7 @@ downloads_and_ga_session AS (
     ga_sessions_with_hits gs
   RIGHT JOIN
     stub s
-  ON
-    gs.client_id = s.stub_visit_id
+    ON gs.client_id = s.stub_visit_id
   GROUP BY
     gs.client_id,
     dltoken,
@@ -341,5 +337,4 @@ FROM
   downloads_and_ga_session
 LEFT JOIN
   `moz-fx-data-shared-prod.static.country_names_v1` AS cn
-ON
-  cn.name = country
+  ON cn.name = country

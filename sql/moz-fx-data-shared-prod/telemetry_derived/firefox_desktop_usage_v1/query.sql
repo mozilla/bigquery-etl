@@ -78,8 +78,7 @@ nested_counts_by_slice_year_dense AS (
             WHERE
               submission_year = nested_counts_by_slice_year_sparse.submission_year
           )
-        USING
-          (submission_date)
+          USING (submission_date)
       ) AS counts_array
     )
   FROM
@@ -109,8 +108,7 @@ FROM
   exploded
 LEFT JOIN
   `moz-fx-data-shared-prod.static.country_codes_v1` AS cc
-ON
-  (exploded.country = cc.code)
+  ON (exploded.country = cc.code)
 WINDOW
   year_slice AS (
     PARTITION BY

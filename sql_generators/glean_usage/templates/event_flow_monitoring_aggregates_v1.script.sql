@@ -35,7 +35,7 @@ CREATE TEMP TABLE
             "{{ app['canonical_app_name'] }}" AS normalized_app_name,
             client_info.app_channel AS channel
           FROM
-            `moz-fx-data-shared-prod.{{ app['bq_dataset_family'] }}.events_unnested`,
+            `moz-fx-data-shared-prod.{{ app['app_name'] }}.events_unnested`,
             UNNEST(event_extra) AS ext
           WHERE
             DATE(submission_timestamp) = @submission_date
@@ -44,13 +44,13 @@ CREATE TEMP TABLE
           SELECT DISTINCT
             @submission_date AS submission_date,
             metrics.string.session_flow_id AS flow_id,
-            NULL AS category,
+            CAST(NULL AS STRING) AS category,
             metrics.string.event_name AS name,
             submission_timestamp AS timestamp,
             "{{ app['canonical_app_name'] }}" AS normalized_app_name,
             client_info.app_channel AS channel
           FROM
-            `moz-fx-data-shared-prod.{{ app['bq_dataset_family'] }}.accounts_events`
+            `moz-fx-data-shared-prod.{{ app['app_name'] }}.accounts_events`
           WHERE
             DATE(submission_timestamp) = @submission_date
             AND metrics.string.session_flow_id != ""

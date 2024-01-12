@@ -61,13 +61,13 @@ def download_glean_metrics(url, threshold):
             for name, metric in metrics.items():
                 first_seen = metric["history"][0]["dates"]["first"][:10]
                 last_seen = metric["history"][-1]["dates"]["last"][:10]
-                expires = metric["history"][0]["expires"]
+                expires = metric["history"][-1]["expires"]
                 in_source = metric["in-source"]
                 glean_metrics.append(
                     {
                         "glean_app": glean_app,
                         "metric": name,
-                        "type": metric["history"][0]["type"],
+                        "type": metric["history"][-1]["type"],
                         "first_seen_date": first_seen,
                         "last_seen_date": last_seen,
                         "expires": expires,

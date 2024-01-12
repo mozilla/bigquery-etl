@@ -69,102 +69,30 @@ WITH base AS (
               payload.keyed_histograms.subprocess_crashes_with_dump AS histogram,
               'pluginhang' AS key
             ), -- 0
-            STRUCT(
-              payload.keyed_histograms.subprocess_abnormal_abort,
-              'plugin'
-            ), -- 1
-            STRUCT(
-              payload.keyed_histograms.subprocess_abnormal_abort,
-              'content'
-            ), -- 2
-            STRUCT(
-              payload.keyed_histograms.subprocess_abnormal_abort,
-              'gmplugin'
-            ), -- 3
-            STRUCT(
-              payload.keyed_histograms.subprocess_crashes_with_dump,
-              'plugin'
-            ), -- 4
-            STRUCT(
-              payload.keyed_histograms.subprocess_crashes_with_dump,
-              'content'
-            ), -- 5
-            STRUCT(
-              payload.keyed_histograms.subprocess_crashes_with_dump,
-              'gmplugin'
-            ), -- 6
-            STRUCT(
-              payload.keyed_histograms.process_crash_submit_attempt,
-              'main-crash'
-            ), -- 7
-            STRUCT(
-              payload.keyed_histograms.process_crash_submit_attempt,
-              'content-crash'
-            ), -- 8
-            STRUCT(
-              payload.keyed_histograms.process_crash_submit_attempt,
-              'plugin-crash'
-            ), -- 9
-            STRUCT(
-              payload.keyed_histograms.process_crash_submit_success,
-              'main-crash'
-            ), -- 10
-            STRUCT(
-              payload.keyed_histograms.process_crash_submit_success,
-              'content-crash'
-            ), -- 11
-            STRUCT(
-              payload.keyed_histograms.process_crash_submit_success,
-              'plugin-crash'
-            ), -- 12
-            STRUCT(
-              payload.keyed_histograms.subprocess_kill_hard,
-              'ShutDownKill'
-            ), -- 13
-            STRUCT(
-              payload.keyed_histograms.fx_migration_bookmarks_quantity,
-              "chrome"
-            ), -- 14
-            STRUCT(
-              payload.keyed_histograms.fx_migration_bookmarks_quantity,
-              "chromium-edge"
-            ), -- 15
-            STRUCT(
-              payload.keyed_histograms.fx_migration_bookmarks_quantity,
-              "safari"
-            ), -- 16
-            STRUCT(
-              payload.keyed_histograms.fx_migration_history_quantity,
-              "chrome"
-            ), -- 17
-            STRUCT(
-              payload.keyed_histograms.fx_migration_history_quantity,
-              "chromium-edge"
-            ), -- 18
-            STRUCT(
-              payload.keyed_histograms.fx_migration_history_quantity,
-              "safari"
-            ), -- 19
-            STRUCT(
-              payload.keyed_histograms.fx_migration_logins_quantity,
-              "chrome"
-            ), -- 20
-            STRUCT(
-              payload.keyed_histograms.fx_migration_logins_quantity,
-              "chromium-edge"
-            ), -- 21
-            STRUCT(
-              payload.keyed_histograms.fx_migration_logins_quantity,
-              "safari"
-            ), -- 22
-            STRUCT(
-              payload.keyed_histograms.media_play_time_ms,
-              'A'
-            ), -- 23
-            STRUCT(
-              payload.keyed_histograms.media_play_time_ms,
-              'V'
-            ) -- 24
+            STRUCT(payload.keyed_histograms.subprocess_abnormal_abort, 'plugin'), -- 1
+            STRUCT(payload.keyed_histograms.subprocess_abnormal_abort, 'content'), -- 2
+            STRUCT(payload.keyed_histograms.subprocess_abnormal_abort, 'gmplugin'), -- 3
+            STRUCT(payload.keyed_histograms.subprocess_crashes_with_dump, 'plugin'), -- 4
+            STRUCT(payload.keyed_histograms.subprocess_crashes_with_dump, 'content'), -- 5
+            STRUCT(payload.keyed_histograms.subprocess_crashes_with_dump, 'gmplugin'), -- 6
+            STRUCT(payload.keyed_histograms.process_crash_submit_attempt, 'main-crash'), -- 7
+            STRUCT(payload.keyed_histograms.process_crash_submit_attempt, 'content-crash'), -- 8
+            STRUCT(payload.keyed_histograms.process_crash_submit_attempt, 'plugin-crash'), -- 9
+            STRUCT(payload.keyed_histograms.process_crash_submit_success, 'main-crash'), -- 10
+            STRUCT(payload.keyed_histograms.process_crash_submit_success, 'content-crash'), -- 11
+            STRUCT(payload.keyed_histograms.process_crash_submit_success, 'plugin-crash'), -- 12
+            STRUCT(payload.keyed_histograms.subprocess_kill_hard, 'ShutDownKill'), -- 13
+            STRUCT(payload.keyed_histograms.fx_migration_bookmarks_quantity, "chrome"), -- 14
+            STRUCT(payload.keyed_histograms.fx_migration_bookmarks_quantity, "chromium-edge"), -- 15
+            STRUCT(payload.keyed_histograms.fx_migration_bookmarks_quantity, "safari"), -- 16
+            STRUCT(payload.keyed_histograms.fx_migration_history_quantity, "chrome"), -- 17
+            STRUCT(payload.keyed_histograms.fx_migration_history_quantity, "chromium-edge"), -- 18
+            STRUCT(payload.keyed_histograms.fx_migration_history_quantity, "safari"), -- 19
+            STRUCT(payload.keyed_histograms.fx_migration_logins_quantity, "chrome"), -- 20
+            STRUCT(payload.keyed_histograms.fx_migration_logins_quantity, "chromium-edge"), -- 21
+            STRUCT(payload.keyed_histograms.fx_migration_logins_quantity, "safari"), -- 22
+            STRUCT(payload.keyed_histograms.media_play_time_ms, 'A'), -- 23
+            STRUCT(payload.keyed_histograms.media_play_time_ms, 'V') -- 24
           ]
         )
     ) AS hist_key_sums,
@@ -222,12 +150,8 @@ WITH base AS (
             STRUCT(
               payload.keyed_histograms.fx_migration_bookmarks_quantity AS keyed_histogram
             ), -- 0
-            STRUCT(
-              payload.keyed_histograms.fx_migration_history_quantity AS keyed_histogram
-            ), -- 1
-            STRUCT(
-              payload.keyed_histograms.fx_migration_logins_quantity AS keyed_histogram
-            ) -- 2
+            STRUCT(payload.keyed_histograms.fx_migration_history_quantity AS keyed_histogram), -- 1
+            STRUCT(payload.keyed_histograms.fx_migration_logins_quantity AS keyed_histogram) -- 2
           ]
         ) AS value
     ) AS keyed_hist_sums,
@@ -781,12 +705,8 @@ aggregates AS (
     udf.aggregate_active_addons(
       ARRAY_CONCAT_AGG(active_addons ORDER BY submission_timestamp)
     ) AS active_addons,
-    CAST(
-      NULL AS STRING
-    ) AS active_experiment_branch, -- deprecated
-    CAST(
-      NULL AS STRING
-    ) AS active_experiment_id, -- deprecated
+    CAST(NULL AS STRING) AS active_experiment_branch, -- deprecated
+    CAST(NULL AS STRING) AS active_experiment_id, -- deprecated
     SUM(active_ticks / (3600 / 5)) AS active_hours_sum,
     mozfun.stats.mode_last(
       ARRAY_AGG(addon_compatibility_check_enabled ORDER BY submission_timestamp)
@@ -1365,351 +1285,125 @@ aggregates AS (
     -- complexity down; order of fields here is important, as we pull these out
     -- by numerical offset later.
     [
-      STRUCT(
-        ARRAY_CONCAT_AGG(scalar_parent_telemetry_event_counts) AS agg
-      ), -- 0
-      STRUCT(
-        ARRAY_CONCAT_AGG(scalar_content_telemetry_event_counts)
-      ), -- 1
-      STRUCT(
-        ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_bookmarkmenu)
-      ), -- 2
-      STRUCT(
-        ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_handoff)
-      ), -- 3
-      STRUCT(
-        ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_keywordoffer)
-      ), -- 4
-      STRUCT(
-        ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_oneoff)
-      ), -- 5
-      STRUCT(
-        ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_other)
-      ), -- 6
-      STRUCT(
-        ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_shortcut)
-      ), -- 7
-      STRUCT(
-        ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_tabmenu)
-      ), -- 8
-      STRUCT(
-        ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_tabtosearch)
-      ), -- 9
-      STRUCT(
-        ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_tabtosearch_onboard)
-      ), -- 10
-      STRUCT(
-        ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_topsites_newtab)
-      ), -- 11
-      STRUCT(
-        ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_topsites_urlbar)
-      ), -- 12
-      STRUCT(
-        ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_touchbar)
-      ), -- 13
-      STRUCT(
-        ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_typed)
-      ), -- 14
-      STRUCT(
-        ARRAY_CONCAT_AGG(scalar_parent_browser_ui_interaction_preferences_pane_home)
-      ), -- 15
-      STRUCT(
-        ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_autofill)
-      ), -- 16
-      STRUCT(
-        ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_autofill_about)
-      ), -- 17
-      STRUCT(
-        ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_autofill_adaptive)
-      ), -- 18
-      STRUCT(
-        ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_autofill_origin)
-      ), -- 19
-      STRUCT(
-        ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_autofill_other)
-      ), -- 20
-      STRUCT(
-        ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_autofill_preloaded)
-      ), -- 21
-      STRUCT(
-        ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_autofill_url)
-      ), -- 22
-      STRUCT(
-        ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_bookmark)
-      ), -- 23
-      STRUCT(
-        ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_dynamic)
-      ), -- 24
-      STRUCT(
-        ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_extension)
-      ), -- 25
-      STRUCT(
-        ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_formhistory)
-      ), -- 26
-      STRUCT(
-        ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_history)
-      ), -- 27
-      STRUCT(
-        ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_keyword)
-      ), -- 28
-      STRUCT(
-        ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_remotetab)
-      ), -- 29
-      STRUCT(
-        ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_searchengine)
-      ), -- 30
-      STRUCT(
-        ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_searchsuggestion)
-      ), -- 31
-      STRUCT(
-        ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_switchtab)
-      ), -- 32
-      STRUCT(
-        ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_tabtosearch)
-      ), -- 33
-      STRUCT(
-        ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_tip)
-      ), -- 34
-      STRUCT(
-        ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_topsite)
-      ), -- 35
-      STRUCT(
-        ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_unknown)
-      ), -- 36
-      STRUCT(
-        ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_visiturl)
-      ), -- 37
-      STRUCT(
-        ARRAY_CONCAT_AGG(scalar_parent_browser_search_with_ads)
-      ), -- 38
-      STRUCT(
-        ARRAY_CONCAT_AGG(scalar_parent_browser_search_ad_clicks)
-      ), -- 39
-      STRUCT(
-        ARRAY_CONCAT_AGG(browser_search_content_urlbar)
-      ), -- 40
-      STRUCT(
-        ARRAY_CONCAT_AGG(browser_search_content_urlbar_searchmode)
-      ), -- 41
-      STRUCT(
-        ARRAY_CONCAT_AGG(browser_search_content_contextmenu)
-      ), -- 42
-      STRUCT(
-        ARRAY_CONCAT_AGG(browser_search_content_about_home)
-      ), -- 43
-      STRUCT(
-        ARRAY_CONCAT_AGG(browser_search_content_about_newtab)
-      ), -- 44
-      STRUCT(
-        ARRAY_CONCAT_AGG(browser_search_content_searchbar)
-      ), -- 45
-      STRUCT(
-        ARRAY_CONCAT_AGG(browser_search_content_system)
-      ), -- 46
-      STRUCT(
-        ARRAY_CONCAT_AGG(browser_search_content_webextension)
-      ), -- 47
-      STRUCT(
-        ARRAY_CONCAT_AGG(browser_search_content_tabhistory)
-      ), -- 48
-      STRUCT(
-        ARRAY_CONCAT_AGG(browser_search_content_reload)
-      ), -- 49
-      STRUCT(
-        ARRAY_CONCAT_AGG(browser_search_content_unknown)
-      ), -- 50
-      STRUCT(
-        ARRAY_CONCAT_AGG(browser_search_withads_urlbar)
-      ), -- 51
-      STRUCT(
-        ARRAY_CONCAT_AGG(browser_search_withads_urlbar_searchmode)
-      ), -- 52
-      STRUCT(
-        ARRAY_CONCAT_AGG(browser_search_withads_contextmenu)
-      ), -- 53
-      STRUCT(
-        ARRAY_CONCAT_AGG(browser_search_withads_about_home)
-      ), -- 54
-      STRUCT(
-        ARRAY_CONCAT_AGG(browser_search_withads_about_newtab)
-      ), -- 55
-      STRUCT(
-        ARRAY_CONCAT_AGG(browser_search_withads_searchbar)
-      ), -- 56
-      STRUCT(
-        ARRAY_CONCAT_AGG(browser_search_withads_system)
-      ), -- 57
-      STRUCT(
-        ARRAY_CONCAT_AGG(browser_search_withads_webextension)
-      ), -- 58
-      STRUCT(
-        ARRAY_CONCAT_AGG(browser_search_withads_tabhistory)
-      ), -- 59
-      STRUCT(
-        ARRAY_CONCAT_AGG(browser_search_withads_reload)
-      ), -- 60
-      STRUCT(
-        ARRAY_CONCAT_AGG(browser_search_withads_unknown)
-      ), -- 61
-      STRUCT(
-        ARRAY_CONCAT_AGG(browser_search_adclicks_urlbar)
-      ), -- 62
-      STRUCT(
-        ARRAY_CONCAT_AGG(browser_search_adclicks_urlbar_searchmode)
-      ), -- 63
-      STRUCT(
-        ARRAY_CONCAT_AGG(browser_search_adclicks_contextmenu)
-      ), -- 64
-      STRUCT(
-        ARRAY_CONCAT_AGG(browser_search_adclicks_about_home)
-      ), -- 65
-      STRUCT(
-        ARRAY_CONCAT_AGG(browser_search_adclicks_about_newtab)
-      ), -- 66
-      STRUCT(
-        ARRAY_CONCAT_AGG(browser_search_adclicks_searchbar)
-      ), -- 67
-      STRUCT(
-        ARRAY_CONCAT_AGG(browser_search_adclicks_system)
-      ), -- 68
-      STRUCT(
-        ARRAY_CONCAT_AGG(browser_search_adclicks_webextension)
-      ), -- 69
-      STRUCT(
-        ARRAY_CONCAT_AGG(browser_search_adclicks_tabhistory)
-      ), -- 70
-      STRUCT(
-        ARRAY_CONCAT_AGG(browser_search_adclicks_reload)
-      ), -- 71
-      STRUCT(
-        ARRAY_CONCAT_AGG(browser_search_adclicks_unknown)
-      ), -- 72
-      STRUCT(
-        ARRAY_CONCAT_AGG(browser_search_content_urlbar_handoff)
-      ), -- 73
-      STRUCT(
-        ARRAY_CONCAT_AGG(browser_search_withads_urlbar_handoff)
-      ), -- 74
-      STRUCT(
-        ARRAY_CONCAT_AGG(browser_search_adclicks_urlbar_handoff)
-      ), -- 75
-      STRUCT(
-        ARRAY_CONCAT_AGG(contextual_services_quicksuggest_block_dynamic_wikipedia)
-      ), -- 76
-      STRUCT(
-        ARRAY_CONCAT_AGG(contextual_services_quicksuggest_block_nonsponsored)
-      ), -- 77
-      STRUCT(
-        ARRAY_CONCAT_AGG(contextual_services_quicksuggest_block_nonsponsored_bestmatch)
-      ), -- 78
-      STRUCT(
-        ARRAY_CONCAT_AGG(contextual_services_quicksuggest_block_sponsored)
-      ), -- 79
-      STRUCT(
-        ARRAY_CONCAT_AGG(contextual_services_quicksuggest_block_sponsored_bestmatch)
-      ), -- 80
-      STRUCT(
-        ARRAY_CONCAT_AGG(contextual_services_quicksuggest_block_weather)
-      ), -- 81
-      STRUCT(
-        ARRAY_CONCAT_AGG(contextual_services_quicksuggest_click)
-      ), -- 82
-      STRUCT(
-        ARRAY_CONCAT_AGG(contextual_services_quicksuggest_click_dynamic_wikipedia)
-      ), -- 83
-      STRUCT(
-        ARRAY_CONCAT_AGG(contextual_services_quicksuggest_click_nonsponsored)
-      ), -- 84
-      STRUCT(
-        ARRAY_CONCAT_AGG(contextual_services_quicksuggest_click_nonsponsored_bestmatch)
-      ), -- 85
-      STRUCT(
-        ARRAY_CONCAT_AGG(contextual_services_quicksuggest_click_sponsored)
-      ), -- 86
-      STRUCT(
-        ARRAY_CONCAT_AGG(contextual_services_quicksuggest_click_sponsored_bestmatch)
-      ), -- 87
-      STRUCT(
-        ARRAY_CONCAT_AGG(contextual_services_quicksuggest_click_weather)
-      ), -- 88
-      STRUCT(
-        ARRAY_CONCAT_AGG(contextual_services_quicksuggest_help)
-      ), -- 89
-      STRUCT(
-        ARRAY_CONCAT_AGG(contextual_services_quicksuggest_help_dynamic_wikipedia)
-      ), -- 90
-      STRUCT(
-        ARRAY_CONCAT_AGG(contextual_services_quicksuggest_help_nonsponsored)
-      ), -- 91
-      STRUCT(
-        ARRAY_CONCAT_AGG(contextual_services_quicksuggest_help_nonsponsored_bestmatch)
-      ), -- 92
-      STRUCT(
-        ARRAY_CONCAT_AGG(contextual_services_quicksuggest_help_sponsored)
-      ), -- 93
-      STRUCT(
-        ARRAY_CONCAT_AGG(contextual_services_quicksuggest_help_sponsored_bestmatch)
-      ), -- 94
-      STRUCT(
-        ARRAY_CONCAT_AGG(contextual_services_quicksuggest_help_weather)
-      ), -- 95
-      STRUCT(
-        ARRAY_CONCAT_AGG(contextual_services_quicksuggest_impression)
-      ), -- 96
-      STRUCT(
-        ARRAY_CONCAT_AGG(contextual_services_quicksuggest_impression_dynamic_wikipedia)
-      ), -- 97
-      STRUCT(
-        ARRAY_CONCAT_AGG(contextual_services_quicksuggest_impression_nonsponsored)
-      ), -- 98
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_telemetry_event_counts) AS agg), -- 0
+      STRUCT(ARRAY_CONCAT_AGG(scalar_content_telemetry_event_counts)), -- 1
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_bookmarkmenu)), -- 2
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_handoff)), -- 3
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_keywordoffer)), -- 4
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_oneoff)), -- 5
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_other)), -- 6
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_shortcut)), -- 7
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_tabmenu)), -- 8
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_tabtosearch)), -- 9
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_tabtosearch_onboard)), -- 10
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_topsites_newtab)), -- 11
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_topsites_urlbar)), -- 12
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_touchbar)), -- 13
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_typed)), -- 14
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_browser_ui_interaction_preferences_pane_home)), -- 15
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_autofill)), -- 16
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_autofill_about)), -- 17
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_autofill_adaptive)), -- 18
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_autofill_origin)), -- 19
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_autofill_other)), -- 20
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_autofill_preloaded)), -- 21
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_autofill_url)), -- 22
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_bookmark)), -- 23
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_dynamic)), -- 24
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_extension)), -- 25
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_formhistory)), -- 26
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_history)), -- 27
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_keyword)), -- 28
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_remotetab)), -- 29
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_searchengine)), -- 30
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_searchsuggestion)), -- 31
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_switchtab)), -- 32
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_tabtosearch)), -- 33
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_tip)), -- 34
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_topsite)), -- 35
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_unknown)), -- 36
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_visiturl)), -- 37
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_browser_search_with_ads)), -- 38
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_browser_search_ad_clicks)), -- 39
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_content_urlbar)), -- 40
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_content_urlbar_searchmode)), -- 41
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_content_contextmenu)), -- 42
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_content_about_home)), -- 43
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_content_about_newtab)), -- 44
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_content_searchbar)), -- 45
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_content_system)), -- 46
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_content_webextension)), -- 47
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_content_tabhistory)), -- 48
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_content_reload)), -- 49
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_content_unknown)), -- 50
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_withads_urlbar)), -- 51
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_withads_urlbar_searchmode)), -- 52
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_withads_contextmenu)), -- 53
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_withads_about_home)), -- 54
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_withads_about_newtab)), -- 55
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_withads_searchbar)), -- 56
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_withads_system)), -- 57
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_withads_webextension)), -- 58
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_withads_tabhistory)), -- 59
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_withads_reload)), -- 60
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_withads_unknown)), -- 61
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_adclicks_urlbar)), -- 62
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_adclicks_urlbar_searchmode)), -- 63
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_adclicks_contextmenu)), -- 64
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_adclicks_about_home)), -- 65
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_adclicks_about_newtab)), -- 66
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_adclicks_searchbar)), -- 67
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_adclicks_system)), -- 68
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_adclicks_webextension)), -- 69
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_adclicks_tabhistory)), -- 70
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_adclicks_reload)), -- 71
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_adclicks_unknown)), -- 72
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_content_urlbar_handoff)), -- 73
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_withads_urlbar_handoff)), -- 74
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_adclicks_urlbar_handoff)), -- 75
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_block_dynamic_wikipedia)), -- 76
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_block_nonsponsored)), -- 77
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_block_nonsponsored_bestmatch)), -- 78
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_block_sponsored)), -- 79
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_block_sponsored_bestmatch)), -- 80
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_block_weather)), -- 81
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_click)), -- 82
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_click_dynamic_wikipedia)), -- 83
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_click_nonsponsored)), -- 84
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_click_nonsponsored_bestmatch)), -- 85
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_click_sponsored)), -- 86
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_click_sponsored_bestmatch)), -- 87
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_click_weather)), -- 88
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_help)), -- 89
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_help_dynamic_wikipedia)), -- 90
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_help_nonsponsored)), -- 91
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_help_nonsponsored_bestmatch)), -- 92
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_help_sponsored)), -- 93
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_help_sponsored_bestmatch)), -- 94
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_help_weather)), -- 95
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_impression)), -- 96
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_impression_dynamic_wikipedia)), -- 97
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_impression_nonsponsored)), -- 98
       STRUCT(
         ARRAY_CONCAT_AGG(contextual_services_quicksuggest_impression_nonsponsored_bestmatch)
       ), -- 99
-      STRUCT(
-        ARRAY_CONCAT_AGG(contextual_services_quicksuggest_impression_sponsored)
-      ), -- 100
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_impression_sponsored)), -- 100
       STRUCT(
         ARRAY_CONCAT_AGG(contextual_services_quicksuggest_impression_sponsored_bestmatch)
       ), -- 101
-      STRUCT(
-        ARRAY_CONCAT_AGG(contextual_services_quicksuggest_impression_weather)
-      ), -- 102
-      STRUCT(
-        ARRAY_CONCAT_AGG(contextual_services_topsites_click)
-      ), -- 103
-      STRUCT(
-        ARRAY_CONCAT_AGG(contextual_services_topsites_impression)
-      ), -- 104
-      STRUCT(
-        ARRAY_CONCAT_AGG(scalar_parent_browser_ui_interaction_content_context)
-      ), -- 105
-      STRUCT(
-        ARRAY_CONCAT_AGG(browser_search_content_urlbar_persisted)
-      ), -- 106
-      STRUCT(
-        ARRAY_CONCAT_AGG(browser_search_withads_urlbar_persisted)
-      ), -- 107
-      STRUCT(
-        ARRAY_CONCAT_AGG(browser_search_adclicks_urlbar_persisted)
-      ), -- 108
-      STRUCT(
-        ARRAY_CONCAT_AGG(scalar_parent_sidebar_opened)
-      ), -- 109
-      STRUCT(
-        ARRAY_CONCAT_AGG(scalar_parent_sidebar_search)
-      ), -- 110
-      STRUCT(
-        ARRAY_CONCAT_AGG(scalar_parent_sidebar_link)
-      ), -- 111
-      STRUCT(
-        ARRAY_CONCAT_AGG(scalar_parent_library_link)
-      ), -- 112
-      STRUCT(
-        ARRAY_CONCAT_AGG(scalar_parent_library_opened)
-      ), -- 113
-      STRUCT(
-        ARRAY_CONCAT_AGG(scalar_parent_library_search)
-      ) -- 114
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_impression_weather)), -- 102
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_topsites_click)), -- 103
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_topsites_impression)), -- 104
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_browser_ui_interaction_content_context)), -- 105
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_content_urlbar_persisted)), -- 106
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_withads_urlbar_persisted)), -- 107
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_adclicks_urlbar_persisted)), -- 108
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_sidebar_opened)), -- 109
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_sidebar_search)), -- 110
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_sidebar_link)), -- 111
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_library_link)), -- 112
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_library_opened)), -- 113
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_library_search)) -- 114
     ] AS map_sum_aggregates,
     udf.search_counts_map_sum(ARRAY_CONCAT_AGG(search_counts)) AS search_counts,
     mozfun.stats.mode_last(

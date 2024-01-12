@@ -21,6 +21,7 @@ from .tokenizer import (
     JinjaComment,
     JinjaExpression,
     JinjaStatement,
+    LineComment,
     Literal,
     NewlineKeyword,
     OpeningBracket,
@@ -188,7 +189,7 @@ class Line:
     def __init__(self, indent_token=None, can_format=True):
         """Initialize."""
         self.indent_token = indent_token
-        self.can_format = can_format
+        self.can_format = can_format and not isinstance(indent_token, Comment)
         if indent_token is None:
             self.indent_level = 0
         else:
@@ -197,17 +198,11 @@ class Line:
                 self.indent_level -= 1
         self.inline_tokens = []
         self.inline_length = 0
-        self.can_format = can_format and not isinstance(
-            indent_token, (Comment, JinjaComment)
-        )
 
     def add(self, token):
         """Add a token to this line."""
         self.inline_length += len(token.value)
         self.inline_tokens.append(token)
-        self.can_format = self.can_format and not isinstance(
-            token, (Comment, JinjaComment)
-        )
 
     @property
     def tokens(self):
@@ -307,8 +302,12 @@ def inline_block_format(tokens, max_line_length=100):
             last_token_was_opening_bracket = line.ends_with_opening_bracket
             open_brackets = 1
             index += 1  # start on the next line
+            previous_line = line
             for line in lines[index:]:
                 if not line.can_format:
+                    break
+                # Line comments can't be moved into the middle of a line.
+                if isinstance(previous_line.inline_tokens[-1], LineComment):
                     break
                 if (
                     not last_token_was_opening_bracket
@@ -335,6 +334,7 @@ def inline_block_format(tokens, max_line_length=100):
                 if line.ends_with_opening_bracket:
                     open_brackets += 1
                 last_token_was_opening_bracket = line.ends_with_opening_bracket
+                previous_line = line
 
 
 def reformat(query, format_=inline_block_format, trailing_newline=False):

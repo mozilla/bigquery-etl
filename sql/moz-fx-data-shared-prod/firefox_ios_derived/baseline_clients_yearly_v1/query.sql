@@ -14,22 +14,22 @@
     {% for usage_type, _ in usage_types %}
       CAST(NULL AS BYTES) AS `days_{{ usage_type }}_bytes`,
     {% endfor %}
-  -- We make sure to delay * until the end so that as new columns are added
-  -- to the daily table we can add those columns in the same order to the end
-  -- of this schema, which may be necessary for the daily join query between
-  -- the two tables to validate.
+    -- We make sure to delay * until the end so that as new columns are added
+    -- to the daily table we can add those columns in the same order to the end
+    -- of this schema, which may be necessary for the daily join query between
+    -- the two tables to validate.
     *
   FROM
     `moz-fx-data-shared-prod`.firefox_ios.baseline_clients_daily
   WHERE
-  -- Output empty table and read no input rows
+    -- Output empty table and read no input rows
     FALSE
 {% else %}
   WITH _current AS (
     SELECT
-    -- In this raw table, we capture the history of activity over the past
-    -- 365 days for each usage criterion as an array of bytes. The
-    -- rightmost bit represents whether the user was active in the current day.
+      -- In this raw table, we capture the history of activity over the past
+      -- 365 days for each usage criterion as an array of bytes. The
+      -- rightmost bit represents whether the user was active in the current day.
       {% for usage_type, criterion in usage_types %}
         udf.bool_to_365_bits({{ criterion }}) AS `days_{{ usage_type }}_bytes`,
       {% endfor %}

@@ -53,6 +53,6 @@ RETURNS STRING AS (
   END
 );
 
-                -- Tests
+-- Tests
 SELECT
   assert.equals("other", norm.result_type_to_product_name("not a valid type"))

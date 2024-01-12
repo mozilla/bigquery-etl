@@ -3,7 +3,7 @@ WITH
 desktop_data_google AS (
   SELECT
     submission_date,
-    IF(LOWER(channel) LIKE '%esr%', 'esr', 'personal') AS channel,
+    IF(LOWER(channel) LIKE '%esr%', 'ESR', 'personal') AS channel,
     country,
     COUNT(DISTINCT client_id) AS dau,
     COUNT(
@@ -392,7 +392,7 @@ SELECT
   submission_date,
   'Google' AS partner,
   'mobile' AS device,
-  NULL AS channel,
+  'n/a' AS channel,
   country,
   dau,
   dau_engaged_w_sap,

@@ -3,15 +3,15 @@ RETURNS STRUCT<app_name STRING, channel STRING, app_id STRING> AS (
   CASE
     -- Note that order is important here; we move from more specific names to more general
     -- so that we can properly ignore dataset suffixes like _stable or _live or _derived.
-    WHEN app_id LIKE 'org_mozilla_fennec_aurora%'
+    WHEN app_id LIKE r'org\_mozilla\_fennec\_aurora%'
       THEN STRUCT('Fenix', 'nightly', 'org.mozilla.fennec_aurora')
-    WHEN app_id LIKE 'org_mozilla_firefox_beta%'
+    WHEN app_id LIKE r'org\_mozilla\_firefox\_beta%'
       THEN STRUCT('Fenix', 'beta', 'org.mozilla.firefox_beta')
-    WHEN app_id LIKE 'org_mozilla_firefox%'
+    WHEN app_id LIKE r'org\_mozilla\_firefox%'
       THEN STRUCT('Fenix', 'release', 'org.mozilla.firefox')
-    WHEN app_id LIKE 'org_mozilla_fenix_nightly%'
+    WHEN app_id LIKE r'org\_mozilla\_fenix\_nightly%'
       THEN STRUCT('Firefox Preview', 'nightly', 'org.mozilla.fenix.nightly')
-    WHEN app_id LIKE 'org_mozilla_fenix%'
+    WHEN app_id LIKE r'org\_mozilla\_fenix%'
       THEN IF(
           -- See udf.fenix_build_to_datetime for info on build_id format;
           -- the build_id constant here corresponds to 2020-07-03;

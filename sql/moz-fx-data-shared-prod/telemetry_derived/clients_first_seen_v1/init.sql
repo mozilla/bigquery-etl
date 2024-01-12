@@ -62,8 +62,7 @@ LOOP
     telemetry_derived.clients_daily_v6 AS cd
   LEFT JOIN
     clients_first_seen_dates AS cfsd
-  ON
-    (cd.submission_date = cfsd.first_seen_date AND cd.client_id = cfsd.client_id)
+    ON (cd.submission_date = cfsd.first_seen_date AND cd.client_id = cfsd.client_id)
   WHERE
     cfsd.client_id IS NOT NULL
     AND cd.submission_date >= DATE('2010-01-01')

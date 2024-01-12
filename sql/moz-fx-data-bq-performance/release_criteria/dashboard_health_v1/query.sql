@@ -52,8 +52,7 @@ FROM
   distinct_rc
 FULL OUTER JOIN
   recent_tests
-USING
-  (framework, platform, test_name, test_type, test_extra_options, subtest_name)
+  USING (framework, platform, test_name, test_type, test_extra_options, subtest_name)
 WHERE
   distinct_rc.rc_test_name IS NULL
   OR distinct_rc.defined_criteria > 1

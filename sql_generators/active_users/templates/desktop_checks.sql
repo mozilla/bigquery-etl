@@ -66,8 +66,7 @@ client_summary AS (
     live_table_dau_count_base
   LEFT JOIN
     overactive
-  USING
-    (client_id)
+    USING (client_id)
   WHERE
     overactive.client_id IS NULL
   GROUP BY
@@ -89,8 +88,7 @@ live_table_dau_count AS (
     client_summary
   LEFT JOIN
     last_seen
-  USING
-    (client_id)
+    USING (client_id)
 )
 SELECT
   IF(
@@ -145,8 +143,7 @@ distinct_client_count AS (
     distinct_client_count_base
   FULL OUTER JOIN
     overactive
-  USING
-    (client_id)
+    USING (client_id)
   WHERE
     overactive.client_id IS NULL
 )

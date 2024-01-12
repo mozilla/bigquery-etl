@@ -211,8 +211,7 @@ search_metrics AS (
     unioned
   LEFT JOIN
     search_clients s
-  ON
-    unioned.client_id = s.client_id
+    ON unioned.client_id = s.client_id
     AND unioned.submission_date = s.submission_date
   GROUP BY
     client_id,
@@ -287,8 +286,7 @@ mobile_with_searches AS (
     unioned
   LEFT JOIN
     search_metrics search
-  ON
-    search.client_id = unioned.client_id
+    ON search.client_id = unioned.client_id
     AND search.submission_date = unioned.submission_date
 ),
 desktop AS (

@@ -110,5 +110,4 @@ FROM
     records
 LEFT OUTER JOIN
     distribution_metadata
-USING
-    (metric_type, metric)
+    USING (metric_type, metric)

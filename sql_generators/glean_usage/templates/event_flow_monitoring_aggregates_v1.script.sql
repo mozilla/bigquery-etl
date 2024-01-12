@@ -101,8 +101,7 @@ CREATE TEMP TABLE
         unnested_events AS prev_event
       INNER JOIN
         unnested_events AS cur_event
-      ON
-        prev_event.flow_id = cur_event.flow_id
+        ON prev_event.flow_id = cur_event.flow_id
         AND prev_event.event_offset = cur_event.event_offset - 1
       GROUP BY
         flow_id,
@@ -168,10 +167,8 @@ CREATE TEMP TABLE
 
 MERGE
   `{{ project_id }}.{{ target_table }}` r
-USING
-  event_flows f
-ON
-  r.flow_id = f.flow_id
+  USING event_flows f
+  ON r.flow_id = f.flow_id
   -- look back up to 3 days to see if a flow has seen new events and needs to be replaced
   AND r.submission_date > DATE_SUB(@submission_date, INTERVAL 3 DAY)
 WHEN NOT MATCHED

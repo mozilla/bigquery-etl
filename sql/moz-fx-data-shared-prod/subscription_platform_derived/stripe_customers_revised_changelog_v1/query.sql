@@ -140,8 +140,7 @@ augmented_original_changelog AS (
     original_changelog AS changelog
   LEFT JOIN
     customer_subscription_dates
-  ON
-    changelog.customer.id = customer_subscription_dates.customer_id
+    ON changelog.customer.id = customer_subscription_dates.customer_id
   UNION ALL
   SELECT
     'pre_fivetran' AS type,
@@ -242,8 +241,7 @@ synthetic_customer_deletion_changelog AS (
     questionable_initial_changelog AS changelog
   LEFT JOIN
     customer_subscription_dates
-  ON
-    changelog.customer.id = customer_subscription_dates.customer_id
+    ON changelog.customer.id = customer_subscription_dates.customer_id
   WHERE
     changelog.customer.is_deleted
     AND customer_subscription_dates.last_subscription_ended_at IS NOT NULL

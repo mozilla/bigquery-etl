@@ -3,6 +3,8 @@ CREATE OR REPLACE VIEW
 AS
 SELECT
   *,
-  CAST(submission_date AS TIMESTAMP) AS hour -- for backwards compatibility
+  CAST(
+    submission_date AS TIMESTAMP
+  ) AS hour -- for backwards compatibility
 FROM
   `moz-fx-data-shared-prod.monitoring_derived.structured_error_counts_v2`

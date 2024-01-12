@@ -476,7 +476,14 @@ _current AS (
     unioned.sample_id AS sample_id,
     fsd.first_seen_date AS first_seen_date,
     ssd.second_seen_date AS second_seen_date,
-    unioned.* EXCEPT (client_id, sample_id, first_seen_timestamp, all_dates, source_ping, source_ping_priority),
+    unioned.* EXCEPT (
+      client_id,
+      sample_id,
+      first_seen_timestamp,
+      all_dates,
+      source_ping,
+      source_ping_priority
+    ),
     STRUCT(
       fsd.first_seen_source_ping AS first_seen_date_source_ping,
       pings.reported_main_ping AS reported_main_ping,
@@ -506,11 +513,11 @@ _previous AS (
     `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v2`
 )
 SELECT
-{% if is_init() %}
+  {% if is_init() %}
     *
-FROM
-    _current
-{% else %}
+    FROM
+      _current
+  {% else %}
 -- For the daily update:
 -- The reported ping status in the metadata is updated when it's NULL.
 -- The second_seen_date is updated when it's NULL and only if there is a
@@ -552,9 +559,9 @@ FROM
           )
       ) AS metadata
     )
-FROM
-  _previous
-FULL JOIN
-  _current
-  USING (client_id)
-{% endif %}
+    FROM
+      _previous
+    FULL JOIN
+      _current
+      USING (client_id)
+  {% endif %}

@@ -208,7 +208,10 @@ SELECT
       _current.metadata.adjust_info__source_ping
     ) AS adjust_info__source_ping
   ) AS metadata,
-  COALESCE(_previous.is_suspicious_device_client, _current.is_suspicious_device_client) AS is_suspicious_device_client,
+  COALESCE(
+    _previous.is_suspicious_device_client,
+    _current.is_suspicious_device_client
+  ) AS is_suspicious_device_client,
 FROM
   _current
 FULL OUTER JOIN

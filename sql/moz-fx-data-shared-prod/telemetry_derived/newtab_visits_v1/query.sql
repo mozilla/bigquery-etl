@@ -20,7 +20,16 @@ WITH events_unnested AS (
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND category IN ('newtab', 'topsites', 'newtab.search', 'newtab.search.ad', 'pocket')
-    AND name IN ('closed', 'opened', 'impression', 'issued', 'click', 'save', 'topic_click', 'dismiss')
+    AND name IN (
+      'closed',
+      'opened',
+      'impression',
+      'issued',
+      'click',
+      'save',
+      'topic_click',
+      'dismiss'
+    )
 ),
 visit_metadata AS (
   SELECT

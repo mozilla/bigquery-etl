@@ -42,7 +42,7 @@ SELECT
       'nightly' AS channel,
       'org.mozilla.fenix.nightly' AS app_id
     ),
-    norm.fenix_app_info('org.mozilla.fenix.nightly', '2015718419')
+    norm.fenix_app_info('org_mozilla_fenix_nightly', '2015718419')
   );
 
 WITH build_id AS (

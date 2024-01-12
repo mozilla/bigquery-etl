@@ -132,12 +132,10 @@ ga_sessions_with_hits_fields AS (
     ga_session_dimensions ga
   LEFT JOIN
     page_hits p
-  USING
-    (client_id, visit_id)
+    USING (client_id, visit_id)
   JOIN
     event_hits
-  USING
-    (client_id, visit_id)
+    USING (client_id, visit_id)
 ),
 -- Extract all the download rows, de-duping and tracking number of duplicates per download token.
 stub_downloads AS (
@@ -180,8 +178,7 @@ stub_downloads_with_download_tracking AS (
     stub_downloads s1
   JOIN
     multiple_downloads_in_session s2
-  ON
-    (
+    ON (
       s1.stub_visit_id = s2.stub_visit_id
       AND IFNULL(s1.stub_download_session_id, "null") = IFNULL(s2.stub_download_session_id, "null")
     )
@@ -221,8 +218,7 @@ downloads_with_ga_session AS (
     ga_sessions_with_hits_fields gs
   RIGHT JOIN
     stub_downloads_with_download_tracking s
-  ON
-    (gs.client_id = s.stub_visit_id AND gs.download_session_id = s.stub_download_session_id)
+    ON (gs.client_id = s.stub_visit_id AND gs.download_session_id = s.stub_download_session_id)
   GROUP BY
     gs.client_id,
     dltoken,
@@ -285,8 +281,7 @@ v2_table AS (
     downloads_with_ga_session
   LEFT JOIN
     `moz-fx-data-shared-prod.static.country_names_v1` AS cn
-  ON
-    cn.name = country
+    ON cn.name = country
 ),
 -- Some of the joins for v2_table as not successful due to the GA data not including
 -- the download_session_id.  The downloads which are unable to match to a GA session
@@ -303,8 +298,7 @@ extract_dltoken_missing_ga_client AS (
     v2_table v2
   JOIN
     stub_downloads_with_download_tracking s
-  ON
-    (s.dltoken = v2.dltoken)
+    ON (s.dltoken = v2.dltoken)
   WHERE
     join_result_v2 = 'MISSING_GA_CLIENT_OR_SESSION_ID'
 ),
@@ -338,8 +332,7 @@ v1_downloads_with_ga_session AS (
     ga_sessions_with_hits_fields gs
   RIGHT JOIN
     extract_dltoken_missing_ga_client s
-  ON
-    gs.client_id = s.stub_visit_id
+    ON gs.client_id = s.stub_visit_id
   GROUP BY
     gs.client_id,
     stub_visit_id,
@@ -387,8 +380,7 @@ v1_table AS (
     v1_downloads_with_ga_session
   LEFT JOIN
     `moz-fx-data-shared-prod.static.country_names_v1` AS cn
-  ON
-    cn.name = country
+    ON cn.name = country
 )
 SELECT
   * EXCEPT (join_result_v1),

@@ -24,8 +24,7 @@ sample AS (
     UNNEST([country, 'Worldwide']) AS country_group
   LEFT JOIN
     countries AS cn
-  ON
-    cn.code = country_group
+    ON cn.code = country_group
   WHERE
     COALESCE(cn.name, country_group) IN (
       'Worldwide',
@@ -185,8 +184,7 @@ active_clients_with_latest_releases AS (
     active_clients_weekly
   JOIN
     latest_releases
-  ON
-    latest_releases.day <= active_clients_weekly.last_day_seen
+    ON latest_releases.day <= active_clients_weekly.last_day_seen
   WHERE
     client_id IS NOT NULL
   GROUP BY
@@ -250,8 +248,7 @@ addon_ratios AS (
     addon_counts
   JOIN
     mau_wau
-  USING
-    (week_start, country_name)
+    USING (week_start, country_name)
 ),
 top_addons AS (
   SELECT
@@ -320,8 +317,7 @@ locale_ratios AS (
     locale_counts
   JOIN
     mau_wau
-  USING
-    (week_start, country_name)
+    USING (week_start, country_name)
 ),
 top_locales AS (
   SELECT
@@ -349,29 +345,22 @@ FROM
   mau_wau
 JOIN
   daily_usage
-USING
-  (week_start, country_name)
+  USING (week_start, country_name)
 JOIN
   intensity
-USING
-  (week_start, country_name)
+  USING (week_start, country_name)
 JOIN
   new_profile_rate
-USING
-  (week_start, country_name)
+  USING (week_start, country_name)
 JOIN
   latest_version_ratio
-USING
-  (week_start, country_name)
+  USING (week_start, country_name)
 JOIN
   top_addons
-USING
-  (week_start, country_name)
+  USING (week_start, country_name)
 JOIN
   top_locales
-USING
-  (week_start, country_name)
+  USING (week_start, country_name)
 JOIN
   has_addon
-USING
-  (week_start, country_name)
+  USING (week_start, country_name)

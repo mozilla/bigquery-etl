@@ -41,8 +41,7 @@ serp_events AS (
     raw_serp_events
   INNER JOIN
     filtered_impression_ids
-  USING
-    (impression_id)
+    USING (impression_id)
 ),
 impressions AS (
   -- pull top-level fields from the impression event
@@ -178,8 +177,7 @@ component_counts AS (
     engagement_counts
   FULL JOIN
     ad_impression_counts
-  USING
-    (impression_id, component)
+    USING (impression_id, component)
 )
 SELECT
   impression_id,
@@ -243,20 +241,16 @@ FROM
 LEFT JOIN
   -- 1 row per impression_id with nonzero engagements
   engaged_sessions
-USING
-  (impression_id)
+  USING (impression_id)
 LEFT JOIN
   -- 1 row per impression_id with nonzero ad impressions
   ad_sessions
-USING
-  (impression_id)
+  USING (impression_id)
 LEFT JOIN
   -- 1 row per impression_id with an abandonment
   abandonments
-USING
-  (impression_id)
+  USING (impression_id)
 LEFT JOIN
   -- expands to 1 row per impression_id per component that had either an engagement or an ad impression
   component_counts
-USING
-  (impression_id)
+  USING (impression_id)

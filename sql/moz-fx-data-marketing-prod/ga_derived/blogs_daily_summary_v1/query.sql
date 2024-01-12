@@ -20,12 +20,10 @@ FROM
   `moz-fx-data-marketing-prod.ga_derived.blogs_sessions_v1` AS sessions_table
 LEFT JOIN
   `moz-fx-data-marketing-prod.ga_derived.blogs_goals_v1`
-USING
-  (date, visit_identifier)
+  USING (date, visit_identifier)
 LEFT JOIN
   `moz-fx-data-shared-prod.static.third_party_standardized_country_names` AS standardized_country_list
-ON
-  sessions_table.country = standardized_country_list.raw_country
+  ON sessions_table.country = standardized_country_list.raw_country
 WHERE
   date = @submission_date
 GROUP BY

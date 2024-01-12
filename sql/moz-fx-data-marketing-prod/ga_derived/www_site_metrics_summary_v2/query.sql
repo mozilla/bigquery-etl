@@ -56,5 +56,4 @@ FROM
   site_data AS s
 LEFT JOIN
   `moz-fx-data-shared-prod.static.third_party_standardized_country_names` AS std_cntry_nms
-ON
-  s.country = std_cntry_nms.raw_country
+  ON s.country = std_cntry_nms.raw_country

@@ -144,8 +144,7 @@ joined as (
     windowed AS cd
   LEFT JOIN
     `{{ first_seen_table }}` AS cfs
-  USING
-    (client_id)
+    USING (client_id)
   WHERE
     _n = 1
 )

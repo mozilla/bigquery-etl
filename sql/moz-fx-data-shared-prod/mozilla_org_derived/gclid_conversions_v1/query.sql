@@ -59,16 +59,13 @@ FROM
   gclids_to_ga_ids
 INNER JOIN
   ga_ids_to_dl_token
-USING
-  (ga_client_id, stub_session_id)
+  USING (ga_client_id, stub_session_id)
 INNER JOIN
   dl_token_to_telemetry_id
-USING
-  (dl_token)
+  USING (dl_token)
 INNER JOIN
   telemetry_id_to_activity
-USING
-  (telemetry_client_id)
+  USING (telemetry_client_id)
 GROUP BY
   activity_date,
   gclid

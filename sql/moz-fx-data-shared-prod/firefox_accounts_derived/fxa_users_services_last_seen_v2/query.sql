@@ -81,5 +81,4 @@ FROM
   _current
 FULL JOIN
   _previous
-USING
-  (user_id, service)
+  USING (user_id, service)

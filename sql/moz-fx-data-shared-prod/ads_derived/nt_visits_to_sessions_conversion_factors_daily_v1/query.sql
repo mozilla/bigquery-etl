@@ -83,8 +83,7 @@ FROM
   newtab_visits n_s
 INNER JOIN
   activity_stream a_s
-USING
-  (submission_date, country)
+  USING (submission_date, country)
 ORDER BY
   country,
   submission_date

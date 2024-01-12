@@ -47,5 +47,5 @@ types-PyYAML==6.0.12.11
 types-requests==2.31.0.10
 types-ujson==5.8.0.1
 typing==3.7.4.3
-ujson==5.8.0
+ujson==5.9.0
 yamllint==1.32.0

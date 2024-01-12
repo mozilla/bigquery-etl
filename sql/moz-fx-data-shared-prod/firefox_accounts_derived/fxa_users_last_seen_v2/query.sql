@@ -53,5 +53,4 @@ FROM
   _current
 FULL JOIN
   _previous
-USING
-  (user_id)
+  USING (user_id)

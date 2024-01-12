@@ -60,8 +60,7 @@ WITH
       `moz-fx-data-shared-prod.telemetry_derived.glam_sample_counts_v1` fsc1
     INNER JOIN
       `moz-fx-data-shared-prod.telemetry_derived.glam_sample_counts_v1` fsc2
-    ON
-      fsc1.os = fsc2.os
+      ON fsc1.os = fsc2.os
       AND fsc1.app_build_id = fsc2.app_build_id
       AND fsc1.app_version = fsc2.app_version
       AND fsc1.metric = fsc2.metric
@@ -94,16 +93,14 @@ FROM
   final_probe_extract cp
 LEFT JOIN
   glam_sample_counts sc
-ON
-  sc.os = cp.os
+  ON sc.os = cp.os
   AND sc.app_build_id = cp.app_build_id
   AND sc.app_version = cp.app_version
   AND sc.metric = cp.metric
   AND sc.key = cp.key
   AND sc.process = cp.process
   AND total_sample IS NOT NULL
-  AND (sc.agg_type = cp.client_agg_type
-    OR cp.client_agg_type = '')
+  AND (sc.agg_type = cp.client_agg_type OR cp.client_agg_type = '')
 GROUP BY
   cp.app_version,
   cp.os,

@@ -135,5 +135,4 @@ FROM
   website
 FULL JOIN
   subscriptions
-USING
-  (`date`, normalized_medium, normalized_source, normalized_campaign, normalized_content)
+  USING (`date`, normalized_medium, normalized_source, normalized_campaign, normalized_content)

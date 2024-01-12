@@ -113,17 +113,13 @@ FROM
   adjust_client
 JOIN
   client_day
-USING
-  (client_id)
+  USING (client_id)
 FULL OUTER JOIN
   searches AS metrics_searches
-USING
-  (client_id, submission_date)
+  USING (client_id, submission_date)
 JOIN
   first_seen
-USING
-  (client_id)
+  USING (client_id)
 LEFT JOIN
   activations
-USING
-  (client_id, submission_date)
+  USING (client_id, submission_date)

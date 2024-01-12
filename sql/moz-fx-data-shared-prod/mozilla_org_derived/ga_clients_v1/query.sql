@@ -74,5 +74,4 @@ FROM
   historical_clients AS _previous
 FULL OUTER JOIN
   new_clients AS _current
-USING
-  (ga_client_id)
+  USING (ga_client_id)

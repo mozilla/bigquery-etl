@@ -27,12 +27,10 @@ WITH onboarding_funnel_first_card AS (
     fenix.events_unnested eu
   LEFT JOIN
     `moz-fx-data-shared-prod`.fenix_derived.funnel_retention_clients_week_4_v1 r
-  ON
-    eu.client_info.client_id = r.client_id
+    ON eu.client_info.client_id = r.client_id
   LEFT JOIN
     fenix.firefox_android_clients ac
-  ON
-    eu.client_info.client_id = ac.client_id
+    ON eu.client_info.client_id = ac.client_id
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND `mozfun.map.get_key`(event_extra, 'sequence_position') = '1'
@@ -67,16 +65,13 @@ onboarding_funnel_second_card AS (
     fenix.events_unnested eu
   LEFT JOIN
     `moz-fx-data-shared-prod`.fenix_derived.funnel_retention_clients_week_4_v1 r
-  ON
-    eu.client_info.client_id = r.client_id
+    ON eu.client_info.client_id = r.client_id
   LEFT JOIN
     fenix.firefox_android_clients ac
-  ON
-    eu.client_info.client_id = ac.client_id
+    ON eu.client_info.client_id = ac.client_id
   INNER JOIN
     onboarding_funnel_first_card AS prev
-  ON
-    prev.submission_date = DATE(submission_timestamp)
+    ON prev.submission_date = DATE(submission_timestamp)
     AND prev.join_key = client_info.client_id
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -112,16 +107,13 @@ onboarding_funnel_third_card AS (
     fenix.events_unnested eu
   LEFT JOIN
     `moz-fx-data-shared-prod`.fenix_derived.funnel_retention_clients_week_4_v1 r
-  ON
-    eu.client_info.client_id = r.client_id
+    ON eu.client_info.client_id = r.client_id
   LEFT JOIN
     fenix.firefox_android_clients ac
-  ON
-    eu.client_info.client_id = ac.client_id
+    ON eu.client_info.client_id = ac.client_id
   INNER JOIN
     onboarding_funnel_second_card AS prev
-  ON
-    prev.submission_date = DATE(submission_timestamp)
+    ON prev.submission_date = DATE(submission_timestamp)
     AND prev.join_key = client_info.client_id
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -157,16 +149,13 @@ onboarding_funnel_onboarding_completed AS (
     fenix.events_unnested eu
   LEFT JOIN
     `moz-fx-data-shared-prod`.fenix_derived.funnel_retention_clients_week_4_v1 r
-  ON
-    eu.client_info.client_id = r.client_id
+    ON eu.client_info.client_id = r.client_id
   LEFT JOIN
     fenix.firefox_android_clients ac
-  ON
-    eu.client_info.client_id = ac.client_id
+    ON eu.client_info.client_id = ac.client_id
   INNER JOIN
     onboarding_funnel_third_card AS prev
-  ON
-    prev.submission_date = DATE(submission_timestamp)
+    ON prev.submission_date = DATE(submission_timestamp)
     AND prev.join_key = client_info.client_id
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -395,8 +384,7 @@ merged_funnels AS (
     onboarding_funnel_first_card_aggregated
   FULL OUTER JOIN
     onboarding_funnel_second_card_aggregated
-  USING
-    (
+    USING (
       submission_date,
       action,
       funnel_id,
@@ -420,8 +408,7 @@ merged_funnels AS (
     )
   FULL OUTER JOIN
     onboarding_funnel_third_card_aggregated
-  USING
-    (
+    USING (
       submission_date,
       action,
       funnel_id,
@@ -445,8 +432,7 @@ merged_funnels AS (
     )
   FULL OUTER JOIN
     onboarding_funnel_onboarding_completed_aggregated
-  USING
-    (
+    USING (
       submission_date,
       action,
       funnel_id,

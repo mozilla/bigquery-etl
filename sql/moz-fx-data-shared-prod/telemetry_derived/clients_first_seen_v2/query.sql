@@ -434,8 +434,7 @@ second_seen_date AS (
     UNNEST(all_dates) AS seen_dates
   LEFT JOIN
     first_seen_date fs
-  USING
-    (client_id)
+    USING (client_id)
   WHERE
     seen_dates > fs.first_seen_date
   GROUP BY
@@ -480,20 +479,17 @@ _current AS (
     unioned
   INNER JOIN
     first_seen_date AS fsd
-  ON
-    (
+    ON (
       unioned.client_id = fsd.client_id
       AND unioned.first_seen_timestamp = fsd.first_seen_source_ping_timestamp
       AND unioned.source_ping = fsd.first_seen_source_ping
     )
   LEFT JOIN
     second_seen_date AS ssd
-  ON
-    unioned.client_id = ssd.client_id
+    ON unioned.client_id = ssd.client_id
   LEFT JOIN
     reported_pings AS pings
-  ON
-    unioned.client_id = pings.client_id
+    ON unioned.client_id = pings.client_id
 ),
 _previous AS (
   SELECT
@@ -547,5 +543,4 @@ FROM
   _previous
 FULL JOIN
   _current
-USING
-  (client_id)
+  USING (client_id)

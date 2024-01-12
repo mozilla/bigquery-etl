@@ -33,8 +33,7 @@ new_service_flow_events AS (
   -- If multiple services match this join it can cause fan-outs, but the way we aggregate things this doesn't matter.
   LEFT JOIN
     services
-  ON
-    events.oauth_client_id IN UNNEST(services.subplat_oauth_client_ids)
+    ON events.oauth_client_id IN UNNEST(services.subplat_oauth_client_ids)
     OR events.oauth_client_name IN UNNEST(services.subplat_oauth_client_names)
     -- For a while Bedrock incorrectly passed VPN's OAuth client name as the OAuth client ID.
     OR events.oauth_client_id IN UNNEST(services.subplat_oauth_client_names)

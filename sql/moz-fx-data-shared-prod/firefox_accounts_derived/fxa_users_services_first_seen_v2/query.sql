@@ -50,8 +50,7 @@ FROM
   fxa_users_services_daily_new_entries AS new_entries
 FULL OUTER JOIN
   existing_entries
-USING
-  (user_id, service)
+  USING (user_id, service)
 WHERE
   existing_entries.user_id IS NULL
   AND existing_entries.service IS NULL

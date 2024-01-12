@@ -153,5 +153,4 @@ FROM
   events
 INNER JOIN
   clients
-USING
-  (submission_date, client_id)
+  USING (submission_date, client_id)

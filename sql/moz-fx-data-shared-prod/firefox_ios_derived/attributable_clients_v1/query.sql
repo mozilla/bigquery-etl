@@ -91,9 +91,7 @@ FROM
   client_days
 FULL OUTER JOIN
   metrics_searches
-USING
-  (client_id, sample_id, submission_date)
+  USING (client_id, sample_id, submission_date)
 INNER JOIN
   adjust_client_info
-USING
-  (client_id, sample_id)
+  USING (client_id, sample_id)

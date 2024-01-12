@@ -187,16 +187,13 @@ FROM
   (SELECT * FROM unified_metrics WHERE normalized_os NOT IN ("Android", "iOS")) desktop_unified
 LEFT JOIN
   clicks_main
-USING
-  (client_id, submission_date)
+  USING (client_id, submission_date)
 LEFT JOIN
   impressions_main
-USING
-  (client_id, submission_date)
+  USING (client_id, submission_date)
 LEFT JOIN
   desktop_activity_stream_events
-USING
-  (client_id, submission_date)
+  USING (client_id, submission_date)
 -- add experiments data
 LEFT JOIN
   (
@@ -209,8 +206,7 @@ LEFT JOIN
     WHERE
       submission_date = @submission_date
   )
-USING
-  (submission_date, client_id)
+  USING (submission_date, client_id)
 UNION ALL
   --- iOS
 SELECT
@@ -233,8 +229,7 @@ FROM
   (SELECT * FROM unified_metrics WHERE normalized_os = "iOS") ios_unified
 LEFT JOIN
   ios_data
-USING
-  (submission_date, client_id)
+  USING (submission_date, client_id)
 -- add experiments data
 LEFT JOIN
   (
@@ -257,8 +252,7 @@ LEFT JOIN
     GROUP BY
       client_info.client_id
   ) experiments_info
-USING
-  (submission_date, client_id)
+  USING (submission_date, client_id)
 UNION ALL
 --- Android
 SELECT
@@ -288,8 +282,7 @@ FROM
   ) android_unified
 LEFT JOIN
   android_events
-USING
-  (submission_date, client_id)
+  USING (submission_date, client_id)
 -- add experiments data
 LEFT JOIN
   (
@@ -312,5 +305,4 @@ LEFT JOIN
     GROUP BY
       client_info.client_id
   )
-USING
-  (submission_date, client_id)
+  USING (submission_date, client_id)

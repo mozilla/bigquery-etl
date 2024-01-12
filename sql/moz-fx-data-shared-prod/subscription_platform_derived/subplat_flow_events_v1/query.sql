@@ -60,8 +60,7 @@ CROSS JOIN
   services_metadata
 LEFT JOIN
   existing_flow_ids
-ON
-  new_flow_events.flow_id = existing_flow_ids.flow_id
+  ON new_flow_events.flow_id = existing_flow_ids.flow_id
 QUALIFY
   LOGICAL_OR(
     new_flow_events.oauth_client_id IN UNNEST(services_metadata.subplat_oauth_client_ids)

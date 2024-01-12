@@ -67,8 +67,7 @@ search_metrics AS (
     baseline
   LEFT JOIN
     search_clients s
-  ON
-    baseline.client_id = s.client_id
+    ON baseline.client_id = s.client_id
     AND baseline.submission_date = s.submission_date
   GROUP BY
     client_id,
@@ -142,8 +141,7 @@ baseline_with_searches AS (
     baseline
   LEFT JOIN
     search_metrics search
-  ON
-    search.client_id = baseline.client_id
+    ON search.client_id = baseline.client_id
     AND search.submission_date = baseline.submission_date
 ),
 baseline_with_searches_and_attribution AS (
@@ -155,8 +153,7 @@ baseline_with_searches_and_attribution AS (
     baseline_with_searches baseline
   LEFT JOIN
     attribution_data
-  USING
-    (client_id)
+    USING (client_id)
 ),
 todays_metrics AS (
   SELECT
@@ -207,8 +204,7 @@ todays_metrics_enriched AS (
     todays_metrics
   LEFT JOIN
     `mozdata.static.csa_gblmkt_languages` AS languages
-  ON
-    todays_metrics.locale = languages.code
+    ON todays_metrics.locale = languages.code
 )
 SELECT
   todays_metrics_enriched.* EXCEPT (

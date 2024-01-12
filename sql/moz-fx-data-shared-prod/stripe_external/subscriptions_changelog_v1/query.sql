@@ -108,8 +108,7 @@ subscriptions_history_with_end_plan_ids AS (
     subscriptions_history_with_plan_metadata AS subscriptions_history
   JOIN
     subscription_items
-  ON
-    subscriptions_history.subscription_id = subscription_items.subscription_id
+    ON subscriptions_history.subscription_id = subscription_items.subscription_id
 ),
 subscriptions_history_with_plan_ids AS (
   -- Fill in `plan_id` by getting the next `end_plan_id`.
@@ -148,12 +147,10 @@ subscriptions_history_tax_rates AS (
     subscriptions_history
   JOIN
     `moz-fx-data-shared-prod`.stripe_external.subscription_tax_rate_v1 AS subscription_tax_rates
-  ON
-    subscriptions_history.subscription_id = subscription_tax_rates.subscription_id
+    ON subscriptions_history.subscription_id = subscription_tax_rates.subscription_id
   JOIN
     `moz-fx-data-shared-prod`.stripe_external.tax_rate_v1 AS tax_rates
-  ON
-    subscription_tax_rates.tax_rate_id = tax_rates.id
+    ON subscription_tax_rates.tax_rate_id = tax_rates.id
     AND subscriptions_history._fivetran_start >= tax_rates.created
   GROUP BY
     subscriptions_history.id
@@ -191,13 +188,11 @@ subscriptions_history_latest_discounts AS (
     subscriptions_history
   JOIN
     `moz-fx-data-shared-prod`.stripe_external.subscription_discount_v1 AS subscription_discounts
-  ON
-    subscriptions_history.subscription_id = subscription_discounts.subscription_id
+    ON subscriptions_history.subscription_id = subscription_discounts.subscription_id
     AND subscriptions_history._fivetran_start >= subscription_discounts.start
   JOIN
     `moz-fx-data-shared-prod`.stripe_external.coupon_v1 AS coupons
-  ON
-    subscription_discounts.coupon_id = coupons.id
+    ON subscription_discounts.coupon_id = coupons.id
   GROUP BY
     subscriptions_history.id
 )
@@ -268,23 +263,18 @@ FROM
   subscriptions_history_with_plan_ids AS subscriptions_history
 JOIN
   subscription_items
-ON
-  subscriptions_history.subscription_id = subscription_items.subscription_id
+  ON subscriptions_history.subscription_id = subscription_items.subscription_id
 LEFT JOIN
   plans
-ON
-  subscriptions_history.plan_id = plans.id
+  ON subscriptions_history.plan_id = plans.id
 LEFT JOIN
   products
-ON
-  plans.product_id = products.id
+  ON plans.product_id = products.id
 LEFT JOIN
   subscriptions_history_tax_rates
-ON
-  subscriptions_history.id = subscriptions_history_tax_rates.subscription_history_id
+  ON subscriptions_history.id = subscriptions_history_tax_rates.subscription_history_id
 LEFT JOIN
   subscriptions_history_latest_discounts
-ON
-  subscriptions_history.id = subscriptions_history_latest_discounts.subscription_history_id
+  ON subscriptions_history.id = subscriptions_history_latest_discounts.subscription_history_id
 WHERE
   DATE(subscriptions_history._fivetran_start) = @date

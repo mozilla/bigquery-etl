@@ -1105,5 +1105,4 @@ FROM
   _events_ping_distinct_client_count
 LEFT JOIN
   product_features_agg
-USING
-  (submission_date)
+  USING (submission_date)

@@ -195,9 +195,7 @@ FROM
   searches_grouped
 JOIN
   rest_grouped
-USING
-  (submission_date, client_id)
+  USING (submission_date, client_id)
 JOIN
   meta
-USING
-  (submission_date, client_id)
+  USING (submission_date, client_id)

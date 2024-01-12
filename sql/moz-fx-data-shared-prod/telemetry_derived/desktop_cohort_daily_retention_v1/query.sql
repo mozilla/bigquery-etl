@@ -78,8 +78,7 @@ activity_cohort_match AS (
     cohorts_in_range
   LEFT JOIN
     submission_date_activity
-  USING
-    (client_id, submission_date)
+    USING (client_id, submission_date)
 )
 SELECT
   first_seen_date,

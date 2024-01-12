@@ -136,8 +136,7 @@ joined AS (
     windowed AS cd
   LEFT JOIN
     `org_mozilla_firefoxreality_derived.baseline_clients_first_seen_v1` AS cfs
-  USING
-    (client_id)
+    USING (client_id)
   WHERE
     _n = 1
 )

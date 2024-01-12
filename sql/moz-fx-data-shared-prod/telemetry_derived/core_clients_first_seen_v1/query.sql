@@ -23,7 +23,6 @@ FROM
   _current
 LEFT JOIN
   _previous
-USING
-  (client_id)
+  USING (client_id)
 WHERE
   _previous.client_id IS NULL

@@ -21,8 +21,7 @@ login_overall_success_login_success AS (
     mozdata.firefox_accounts.fxa_all_events
   INNER JOIN
     login_overall_success_login_view AS prev
-  ON
-    prev.submission_date = DATE(timestamp)
+    ON prev.submission_date = DATE(timestamp)
     AND prev.join_key = flow_id
   WHERE
     DATE(timestamp) = @submission_date
@@ -50,8 +49,7 @@ login_email_confirmation_confirm_email AS (
     mozdata.firefox_accounts.fxa_all_events
   INNER JOIN
     login_email_confirmation_login_view AS prev
-  ON
-    prev.submission_date = DATE(timestamp)
+    ON prev.submission_date = DATE(timestamp)
     AND prev.join_key = flow_id
   WHERE
     DATE(timestamp) = @submission_date
@@ -68,8 +66,7 @@ login_email_confirmation_login_success AS (
     mozdata.firefox_accounts.fxa_all_events
   INNER JOIN
     login_email_confirmation_confirm_email AS prev
-  ON
-    prev.submission_date = DATE(timestamp)
+    ON prev.submission_date = DATE(timestamp)
     AND prev.join_key = flow_id
   WHERE
     DATE(timestamp) = @submission_date
@@ -97,8 +94,7 @@ login_2fa_login_confirm_2fa AS (
     mozdata.firefox_accounts.fxa_all_events
   INNER JOIN
     login_2fa_login_view AS prev
-  ON
-    prev.submission_date = DATE(timestamp)
+    ON prev.submission_date = DATE(timestamp)
     AND prev.join_key = flow_id
   WHERE
     DATE(timestamp) = @submission_date
@@ -114,8 +110,7 @@ login_2fa_login_success AS (
     mozdata.firefox_accounts.fxa_all_events
   INNER JOIN
     login_2fa_login_confirm_2fa AS prev
-  ON
-    prev.submission_date = DATE(timestamp)
+    ON prev.submission_date = DATE(timestamp)
     AND prev.join_key = flow_id
   WHERE
     DATE(timestamp) = @submission_date
@@ -235,32 +230,25 @@ merged_funnels AS (
     login_overall_success_login_view_aggregated
   FULL OUTER JOIN
     login_overall_success_login_success_aggregated
-  USING
-    (submission_date, funnel)
+    USING (submission_date, funnel)
   FULL OUTER JOIN
     login_email_confirmation_login_view_aggregated
-  USING
-    (submission_date, funnel)
+    USING (submission_date, funnel)
   FULL OUTER JOIN
     login_email_confirmation_confirm_email_aggregated
-  USING
-    (submission_date, funnel)
+    USING (submission_date, funnel)
   FULL OUTER JOIN
     login_email_confirmation_login_success_aggregated
-  USING
-    (submission_date, funnel)
+    USING (submission_date, funnel)
   FULL OUTER JOIN
     login_2fa_login_view_aggregated
-  USING
-    (submission_date, funnel)
+    USING (submission_date, funnel)
   FULL OUTER JOIN
     login_2fa_login_confirm_2fa_aggregated
-  USING
-    (submission_date, funnel)
+    USING (submission_date, funnel)
   FULL OUTER JOIN
     login_2fa_login_success_aggregated
-  USING
-    (submission_date, funnel)
+    USING (submission_date, funnel)
 )
 SELECT
   *

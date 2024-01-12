@@ -292,8 +292,7 @@ side_filled AS (
     aggregated_newtab_activity
   LEFT JOIN
     client_profile_info
-  USING
-    (legacy_telemetry_client_id)
+    USING (legacy_telemetry_client_id)
 )
 SELECT
   * EXCEPT (visit_had_any_interaction)

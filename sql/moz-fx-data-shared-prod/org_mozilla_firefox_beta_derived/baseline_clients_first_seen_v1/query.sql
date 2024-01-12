@@ -29,8 +29,7 @@ _core_clients_first_seen AS (
     _fennec_id_lookup
   JOIN
     _core
-  ON
-    _fennec_id_lookup.fennec_client_id = _core.client_id
+    ON _fennec_id_lookup.fennec_client_id = _core.client_id
   GROUP BY
     _fennec_id_lookup.client_id
 ),
@@ -56,8 +55,7 @@ _current AS (
     _baseline
   LEFT JOIN
     _core_clients_first_seen
-  USING
-    (client_id)
+    USING (client_id)
 ),
 _previous AS (
   SELECT
@@ -74,8 +72,7 @@ _previous AS (
     `org_mozilla_firefox_beta_derived.baseline_clients_first_seen_v1` fs
   LEFT JOIN
     _core_clients_first_seen core
-  USING
-    (client_id)
+    USING (client_id)
   WHERE
     fs.first_seen_date > "2010-01-01"
     AND fs.first_seen_date < @submission_date
@@ -92,8 +89,7 @@ _joined AS (
     _current
   FULL JOIN
     _previous
-  USING
-    (client_id)
+    USING (client_id)
 )
 -- added this as the result of bug#1788650
 SELECT

@@ -54,8 +54,7 @@ combined AS (
     _current
   FULL JOIN
     _previous
-  USING
-    (user_id, service)
+    USING (user_id, service)
 ),
   --
 previously_seen AS (
@@ -85,9 +84,7 @@ FROM
   combined
 LEFT JOIN
   previously_seen AS same_service
-USING
-  (user_id, service)
+  USING (user_id, service)
 LEFT JOIN
   previously_seen_users AS any_service
-USING
-  (user_id)
+  USING (user_id)

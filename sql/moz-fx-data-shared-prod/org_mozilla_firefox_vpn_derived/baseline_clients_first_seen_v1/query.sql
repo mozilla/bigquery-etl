@@ -36,8 +36,7 @@ _joined AS (
     _current
   FULL JOIN
     _previous
-  USING
-    (client_id)
+    USING (client_id)
 )
 -- added this as the result of bug#1788650
 SELECT

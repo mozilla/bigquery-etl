@@ -159,8 +159,7 @@ FROM
   jobs_by_org AS jo
 LEFT JOIN
   jobs_by_project AS jp
-USING
-  (
+  USING (
     source_project,
     creation_date,
     job_id,

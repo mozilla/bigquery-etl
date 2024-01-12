@@ -46,8 +46,7 @@ version_filtered_new AS (
     filtered_aggregates AS scalar_aggs
   LEFT JOIN
     latest_versions
-  USING
-    (channel)
+    USING (channel)
   WHERE
     app_version >= (latest_version - 2)
 ),
@@ -116,8 +115,7 @@ filtered_old AS (
     telemetry_derived.clients_scalar_aggregates_v1 AS scalar_aggs
   LEFT JOIN
     latest_versions
-  USING
-    (channel)
+    USING (channel)
   WHERE
     app_version >= (latest_version - 2)
     AND submission_date = DATE_SUB(@submission_date, INTERVAL 1 DAY)
@@ -135,8 +133,7 @@ joined_new_old AS (
     filtered_new AS new_data
   FULL OUTER JOIN
     filtered_old AS old_data
-  USING
-    (client_id, os, app_version, app_build_id, channel)
+    USING (client_id, os, app_version, app_build_id, channel)
 )
 SELECT
   @submission_date AS submission_date,

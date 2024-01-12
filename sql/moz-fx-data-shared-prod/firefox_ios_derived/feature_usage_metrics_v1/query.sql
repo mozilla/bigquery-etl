@@ -474,5 +474,4 @@ FROM
   _metrics_ping_distinct_client_count
 JOIN
   product_features_agg
-USING
-  (submission_date)
+  USING (submission_date)

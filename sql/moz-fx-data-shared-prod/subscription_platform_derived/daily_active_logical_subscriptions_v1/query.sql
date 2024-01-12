@@ -16,8 +16,7 @@ daily_active_subscriptions_history AS (
     dates
   JOIN
     `moz-fx-data-shared-prod.subscription_platform_derived.logical_subscriptions_history_v1` AS subscriptions_history
-  ON
-    TIMESTAMP(dates.next_date) > subscriptions_history.valid_from
+    ON TIMESTAMP(dates.next_date) > subscriptions_history.valid_from
     AND TIMESTAMP(dates.date) < subscriptions_history.valid_to
     AND (
       TIMESTAMP(dates.date) < subscriptions_history.subscription.ended_at

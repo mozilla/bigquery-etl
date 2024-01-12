@@ -765,8 +765,7 @@ clients_summary AS (
     base
   LEFT JOIN
     overactive
-  USING
-    (client_id)
+    USING (client_id)
   WHERE
     overactive.client_id IS NULL
 ),

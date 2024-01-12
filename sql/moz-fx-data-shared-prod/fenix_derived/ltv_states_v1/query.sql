@@ -46,12 +46,10 @@ FROM
   clients_yearly
 JOIN
   fenix.firefox_android_clients
-USING
-  (sample_id, client_id)
+  USING (sample_id, client_id)
 LEFT JOIN
   fenix.client_adclicks_history
-USING
-  (sample_id, client_id)
+  USING (sample_id, client_id)
 WHERE
     -- BrowserStack clients are bots, we don't want to accidentally report on them
   first_reported_isp != "BrowserStack"

@@ -26,8 +26,7 @@ FROM
   baseline
 LEFT JOIN
   metrics
-ON
-  baseline.client_id = metrics.client_id
+  ON baseline.client_id = metrics.client_id
   AND baseline.sample_id = metrics.sample_id
   AND (
     baseline.normalized_channel = metrics.normalized_channel

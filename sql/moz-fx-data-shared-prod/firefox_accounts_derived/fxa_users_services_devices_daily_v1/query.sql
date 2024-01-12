@@ -123,12 +123,10 @@ FROM
   device_service_users_entries
 LEFT JOIN
   entrypoints
-USING
-  (flow_id)
+  USING (flow_id)
 LEFT JOIN
   utms
-USING
-  (flow_id)
+  USING (flow_id)
 WHERE
   -- making sure the user is registered
   user_id IS NOT NULL

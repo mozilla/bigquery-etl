@@ -72,11 +72,11 @@ ios_data AS (
     DATE(submission_timestamp) AS submission_date,
     client_info.client_id,
     COUNTIF(
-      event_category LIKE 'top_site%'
+      event_category LIKE r'top\_site%'
       AND event_name = 'contile_click'
     ) AS sponsored_tiles_click_count,
     COUNTIF(
-      event_category LIKE 'top_site%'
+      event_category LIKE r'top\_site%'
       AND event_name = 'contile_impression'
     ) AS sponsored_tiles_impression_count,
     COUNTIF(

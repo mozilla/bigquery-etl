@@ -32,7 +32,7 @@ first_services AS (
   WHERE
     (
       (event_type IN ('fxa_login - complete', 'fxa_reg - complete') AND service IS NOT NULL)
-      OR (event_type LIKE 'fxa_activity%')
+      OR (event_type LIKE r'fxa\_activity%')
     )
     AND DATE(`timestamp`) >= '2019-03-01'
     AND user_id IS NOT NULL

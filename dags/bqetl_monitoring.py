@@ -189,7 +189,7 @@ with DAG(
         email=["akomar@mozilla.com", "ascholtz@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
-        parameters=["submission_date:DATE:"],
+        parameters=["submission_date:DATE:{{ds}}"],
         sql_file_path="sql/moz-fx-data-shared-prod/monitoring_derived/event_flow_monitoring_aggregates_v1/script.sql",
     )
 

@@ -17,7 +17,7 @@ scheduling:
     - events_v1
   date_partition_parameter: null
   parameters:
-  - 'submission_date:DATE:'
+  - submission_date:DATE:{{ds}}
 bigquery:
   time_partitioning:
     type: day

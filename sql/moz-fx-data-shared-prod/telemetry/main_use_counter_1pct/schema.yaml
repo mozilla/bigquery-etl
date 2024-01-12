@@ -8072,6 +8072,12 @@ fields:
     - name: use_counter2_js_late_weekday_page
       type: STRING
       mode: NULLABLE
+    - name: use_counter2_deprecated_idb_object_store_create_index_locale_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_deprecated_idb_object_store_create_index_locale_page
+      type: STRING
+      mode: NULLABLE
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -16011,6 +16017,12 @@ fields:
           type: STRING
           mode: NULLABLE
         - name: use_counter2_js_late_weekday_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_deprecated_idb_object_store_create_index_locale_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_deprecated_idb_object_store_create_index_locale_page
           type: STRING
           mode: NULLABLE
 - name: sample_id

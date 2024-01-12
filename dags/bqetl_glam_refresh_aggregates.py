@@ -174,10 +174,10 @@ with DAG(
 
     glam_etl__glam_desktop_release_aggregates__v1.set_upstream(wait_for_extracts)
 
-    wait_for_export_org_mozila_fenix_glam_beta = ExternalTaskSensor(
-        task_id="wait_for_export_org_mozila_fenix_glam_beta",
+    wait_for_export_org_mozilla_fenix_glam_beta = ExternalTaskSensor(
+        task_id="wait_for_export_org_mozilla_fenix_glam_beta",
         external_dag_id="glam_fenix",
-        external_task_id="export_org_mozila_fenix_glam_beta",
+        external_task_id="export_org_mozilla_fenix_glam_beta",
         execution_delta=datetime.timedelta(seconds=21600),
         check_existence=True,
         mode="reschedule",
@@ -187,13 +187,13 @@ with DAG(
     )
 
     glam_etl__glam_fenix_beta_aggregates__v1.set_upstream(
-        wait_for_export_org_mozila_fenix_glam_beta
+        wait_for_export_org_mozilla_fenix_glam_beta
     )
 
-    wait_for_export_org_mozila_fenix_glam_nightly = ExternalTaskSensor(
-        task_id="wait_for_export_org_mozila_fenix_glam_nightly",
+    wait_for_export_org_mozilla_fenix_glam_nightly = ExternalTaskSensor(
+        task_id="wait_for_export_org_mozilla_fenix_glam_nightly",
         external_dag_id="glam_fenix",
-        external_task_id="export_org_mozila_fenix_glam_nightly",
+        external_task_id="export_org_mozilla_fenix_glam_nightly",
         execution_delta=datetime.timedelta(seconds=21600),
         check_existence=True,
         mode="reschedule",
@@ -203,13 +203,13 @@ with DAG(
     )
 
     glam_etl__glam_fenix_nightly_aggregates__v1.set_upstream(
-        wait_for_export_org_mozila_fenix_glam_nightly
+        wait_for_export_org_mozilla_fenix_glam_nightly
     )
 
-    wait_for_export_org_mozila_fenix_glam_release = ExternalTaskSensor(
-        task_id="wait_for_export_org_mozila_fenix_glam_release",
+    wait_for_export_org_mozilla_fenix_glam_release = ExternalTaskSensor(
+        task_id="wait_for_export_org_mozilla_fenix_glam_release",
         external_dag_id="glam_fenix",
-        external_task_id="export_org_mozila_fenix_glam_release",
+        external_task_id="export_org_mozilla_fenix_glam_release",
         execution_delta=datetime.timedelta(seconds=21600),
         check_existence=True,
         mode="reschedule",
@@ -219,7 +219,7 @@ with DAG(
     )
 
     glam_etl__glam_fenix_release_aggregates__v1.set_upstream(
-        wait_for_export_org_mozila_fenix_glam_release
+        wait_for_export_org_mozilla_fenix_glam_release
     )
 
     wait_for_export_firefox_desktop_glam_beta = ExternalTaskSensor(

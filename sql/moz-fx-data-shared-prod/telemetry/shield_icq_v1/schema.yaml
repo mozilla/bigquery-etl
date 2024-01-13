@@ -963,6 +963,16 @@ fields:
         description: Whether or not the OS-based superfetch application start-up optimization
           service is running and using the default settings. This is Windows-only.
           `null` on failure.
+      - name: distro
+        type: STRING
+        mode: NULLABLE
+        description: The name of the Linux distribution. This is Linux only. `null`
+          on failure.
+      - name: distro_version
+        type: STRING
+        mode: NULLABLE
+        description: The version of the Linux distribution. This is Linux only. `null`
+          on failure.
     - name: sec
       type: RECORD
       mode: NULLABLE

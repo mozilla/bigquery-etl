@@ -1004,6 +1004,16 @@ fields:
         type: FLOAT
         mode: NULLABLE
         description: The Windows UBR. This is Windows 10 only. `null` on failure.
+      - name: distro
+        type: STRING
+        mode: NULLABLE
+        description: The name of the Linux distribution. This is Linux only. `null`
+          on failure.
+      - name: distro_version
+        type: STRING
+        mode: NULLABLE
+        description: The version of the Linux distribution. This is Linux only. `null`
+          on failure.
     - name: sec
       type: RECORD
       mode: NULLABLE

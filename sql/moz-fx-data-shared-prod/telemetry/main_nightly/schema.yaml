@@ -823,6 +823,12 @@ fields:
       - name: windows_ubr
         type: FLOAT
         mode: NULLABLE
+      - name: distro
+        type: STRING
+        mode: NULLABLE
+      - name: distro_version
+        type: STRING
+        mode: NULLABLE
     - name: sec
       type: RECORD
       mode: NULLABLE

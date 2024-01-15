@@ -556,6 +556,19 @@ class Task:
                 d.task_key == task_ref.task_key for d in self.depends_on + dependencies
             )
 
+        parent_task = None
+        if self.is_dq_check:
+            parent_task = Task.of_query(
+                self.query_file_path, dag_collection=dag_collection
+            )
+            parent_task_ref = TaskRef(
+                dag_name=parent_task.dag_name,
+                task_id=parent_task.task_name,
+                task_group=parent_task.task_group,
+            )
+            if not _duplicate_dependency(parent_task_ref):
+                dependencies.append(parent_task_ref)
+
         for table in self._get_referenced_tables():
             # check if upstream task is accompanied by a check
             # the task running the check will be set as the upstream task instead
@@ -567,12 +580,17 @@ class Task:
             if upstream_task is not None:
                 if upstream_task != self:
                     if checks_upstream_task is not None:
-                        upstream_task = checks_upstream_task
+                        if (
+                            not parent_task
+                            or parent_task.task_name != upstream_task.task_name
+                        ):
+                            upstream_task = checks_upstream_task
                     task_ref = upstream_task.to_ref(dag_collection)
                     if not _duplicate_dependency(task_ref):
                         # Get its upstream dependencies so its date_partition_offset gets set.
-                        upstream_task.with_upstream_dependencies(dag_collection)
-                        task_ref = upstream_task.to_ref(dag_collection)
+                        if not checks_upstream_task:
+                            upstream_task.with_upstream_dependencies(dag_collection)
+                            task_ref = upstream_task.to_ref(dag_collection)
                         dependencies.append(task_ref)
             else:
                 # see if there are some static dependencies

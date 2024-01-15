@@ -17,4 +17,3 @@ labels:
 #  dag_name: bqetl_event_rollup
 #  date_partition_parameter: null
 #  parameters: ["submission_date:DATE:{{ds}}"]
-

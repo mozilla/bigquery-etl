@@ -64,7 +64,7 @@ fields:
   name: is_activated
   type: BOOLEAN
   description: |
-    Determines if a client is activated based on the activation metric and a 7 day lag.
+    !!! INVALID !!! Please use firefox_ios.clients_activation instead.
 
 - mode: NULLABLE
   name: submission_timestamp

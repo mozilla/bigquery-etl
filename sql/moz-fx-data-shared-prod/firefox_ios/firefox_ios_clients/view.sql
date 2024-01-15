@@ -1,3 +1,6 @@
+CREATE OR REPLACE VIEW
+  `moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients`
+AS
 SELECT
   clients.* EXCEPT(is_activated) REPLACE (
     CASE

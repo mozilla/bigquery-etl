@@ -11,9 +11,9 @@ SELECT
   e.*
   REPLACE(
     {% if app_name == "fenix" -%}
-    mozfun.norm.fenix_app_info("{{ dataset }}", client_info.app_build).channel AS normalized_channel,
+    mozfun.norm.fenix_app_info("{{ dataset }}", client_info.app_build).channel AS normalized_channel
     {% elif datasets|length > 1 -%}
-    "{{ channel }}" AS normalized_channel,
+    "{{ channel }}" AS normalized_channel
     {% endif -%}
   ),
 FROM `{{ project_id }}.{{ dataset }}_derived.events_stream` AS e

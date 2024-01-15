@@ -426,6 +426,23 @@ with DAG(
     fenix_active_users_aggregates.set_upstream(
         wait_for_checks__fail_fenix_derived__firefox_android_clients__v1
     )
+    wait_for_checks__fail_firefox_ios_derived__clients_activation__v1 = (
+        ExternalTaskSensor(
+            task_id="wait_for_checks__fail_firefox_ios_derived__clients_activation__v1",
+            external_dag_id="bqetl_firefox_ios",
+            external_task_id="checks__fail_firefox_ios_derived__clients_activation__v1",
+            execution_delta=datetime.timedelta(seconds=900),
+            check_existence=True,
+            mode="reschedule",
+            allowed_states=ALLOWED_STATES,
+            failed_states=FAILED_STATES,
+            pool="DATA_ENG_EXTERNALTASKSENSOR",
+        )
+    )
+
+    fenix_active_users_aggregates.set_upstream(
+        wait_for_checks__fail_firefox_ios_derived__clients_activation__v1
+    )
     wait_for_checks__fail_firefox_ios_derived__firefox_ios_clients__v1 = ExternalTaskSensor(
         task_id="wait_for_checks__fail_firefox_ios_derived__firefox_ios_clients__v1",
         external_dag_id="bqetl_firefox_ios",
@@ -492,6 +509,9 @@ with DAG(
         wait_for_checks__fail_fenix_derived__firefox_android_clients__v1
     )
     firefox_ios_active_users_aggregates.set_upstream(
+        wait_for_checks__fail_firefox_ios_derived__clients_activation__v1
+    )
+    firefox_ios_active_users_aggregates.set_upstream(
         wait_for_checks__fail_firefox_ios_derived__firefox_ios_clients__v1
     )
     wait_for_firefox_ios_derived__clients_last_seen_joined__v1 = ExternalTaskSensor(
@@ -551,6 +571,9 @@ with DAG(
         wait_for_checks__fail_fenix_derived__firefox_android_clients__v1
     )
     focus_ios_active_users_aggregates.set_upstream(
+        wait_for_checks__fail_firefox_ios_derived__clients_activation__v1
+    )
+    focus_ios_active_users_aggregates.set_upstream(
         wait_for_checks__fail_firefox_ios_derived__firefox_ios_clients__v1
     )
     wait_for_focus_ios_derived__clients_last_seen_joined__v1 = ExternalTaskSensor(
@@ -574,6 +597,9 @@ with DAG(
 
     klar_ios_active_users_aggregates.set_upstream(
         wait_for_checks__fail_fenix_derived__firefox_android_clients__v1
+    )
+    klar_ios_active_users_aggregates.set_upstream(
+        wait_for_checks__fail_firefox_ios_derived__clients_activation__v1
     )
     klar_ios_active_users_aggregates.set_upstream(
         wait_for_checks__fail_firefox_ios_derived__firefox_ios_clients__v1

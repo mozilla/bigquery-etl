@@ -2,100 +2,51 @@ fields:
 - name: client_id
   type: STRING
   mode: NULLABLE
-  description: 'Unique ID for the client installation.
-
-    '
 - name: sample_id
   type: INTEGER
   mode: NULLABLE
-  description: 'Sample ID to limit query results during an analysis.
-
-    '
 - name: first_seen_date
   type: DATE
   mode: NULLABLE
-  description: 'Date when the app first reported a baseline ping for the client.
-
-    '
 - name: first_reported_country
   type: STRING
   mode: NULLABLE
-  description: 'First reported country for the client installation.
-
-    '
 - name: first_reported_isp
   type: STRING
   mode: NULLABLE
-  description: 'Name of the first reported isp (Internet Service Provider).
-
-    '
 - name: channel
   type: STRING
   mode: NULLABLE
-  description: 'Channel where the browser is released.
-
-    '
 - name: device_manufacturer
   type: STRING
   mode: NULLABLE
-  description: 'Manufacturer of the device where the client is installed.
-
-    '
 - name: device_model
   type: STRING
   mode: NULLABLE
-  description: 'Model of the device where the client is installed.
-
-    '
 - name: os_version
   type: STRING
   mode: NULLABLE
-  description: 'Version of the Operating System where the client is originally installed.
-
-    '
 - name: app_version
   type: STRING
   mode: NULLABLE
-  description: 'App display version for this client installation.
-
-    '
 - name: is_activated
   type: BOOLEAN
   mode: NULLABLE
-  description: 'Determines if a client is activated based on the activation metric
-    and a 7 day lag.
-
-    '
 - name: submission_timestamp
   type: TIMESTAMP
   mode: NULLABLE
-  description: 'Timestamp of the ping which contained the adjust information.
-
-    '
 - name: adjust_ad_group
   type: STRING
   mode: NULLABLE
-  description: 'Structure parameter for the the ad group of a campaign.
-
-    '
 - name: adjust_campaign
   type: STRING
   mode: NULLABLE
-  description: 'Structure parameter for the campaign name.
-
-    '
 - name: adjust_creative
   type: STRING
   mode: NULLABLE
-  description: 'Structure parameter for the creative content of a campaign.
-
-    '
 - name: adjust_network
   type: STRING
   mode: NULLABLE
-  description: 'The type of source of a client installation.
-
-    '
 - name: metadata
   type: RECORD
   mode: NULLABLE
@@ -103,28 +54,12 @@ fields:
   - name: is_reported_first_session_ping
     type: BOOLEAN
     mode: NULLABLE
-    description: 'True if the client ever reported a first_session ping.
-
-      '
   - name: is_reported_metrics_ping
     type: BOOLEAN
     mode: NULLABLE
-    description: 'True if the client ever reported a metrics ping.
-
-      '
   - name: adjust_info__source_ping
     type: STRING
     mode: NULLABLE
-    description: 'Ping from which the adjust_info values originate.
-
-      '
-  description: 'Additional context around the source of this record.
-
-    '
 - name: is_suspicious_device_client
   type: BOOLEAN
   mode: NULLABLE
-  description: 'Flag to identify suspicious device users, see bug-1846554 for more
-    info.
-
-    '

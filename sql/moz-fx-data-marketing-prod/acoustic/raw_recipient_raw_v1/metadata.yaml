@@ -24,12 +24,6 @@ owners:
 scheduling:
   dag_name: bqetl_acoustic_raw_recipient_export
   date_partition_parameter: submission_date
-  referenced_tables:
-    - [
-      'moz-fx-data-bq-fivetran',
-      'acoustic_sftp',
-      'raw_recipient_export_v1'
-    ]
   depends_on:
     - task_id: fivetran_load_completed
       dag_name: fivetran_acoustic_raw_recipient_export

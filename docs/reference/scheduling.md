@@ -32,7 +32,7 @@
     - `date_partition_parameter` - by default set to `submission_date`; can be set to `null` if query doesn't write to a partitioned table
     - `parameters` specifies a list of query parameters, e.g. `["n_clients:INT64:500"]`
     - `arguments` - a list of arguments passed when running the query, for example: `["--append_table"]`
-    - `referenced_tables` - manually curated list of tables the query depends on; used to speed up the DAG generation process or to specify tables that the dry run doesn't have permissions to access, e. g. `[['telemetry_stable', 'main_v4']]`
+    - `referenced_tables` - manually curated list of tables a Python or BigQuery script depends on; for `query.sql` as dependencies will get determined automatically and should only be overwritten manually if really necessary
     - `multipart` indicates whether a query is split over multiple files `part1.sql`, `part2.sql`, ...
     - `depends_on` defines external dependencies in telemetry-airflow that are not detected automatically:
     ```yaml

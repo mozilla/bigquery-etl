@@ -11,10 +11,6 @@ scheduling:
   start_date: '2023-12-10'
   retry_delay: 5m
   arguments: ["--submission-date", "{{ ds }}"]
-  referenced_tables:
-  - - 'moz-fx-data-shared-prod'
-    - 'telemetry_derived'
-    - 'crash_symbolicated_v1'
 bigquery:
   time_partitioning:
     type: day

@@ -10,10 +10,6 @@ scheduling:
   # GA data arrives hours later than the rest, so this has a separate DAG
   dag_name: bqetl_mozilla_vpn_site_metrics
   date_partition_parameter: date
-  referenced_tables:
-    - - moz-fx-data-shared-prod
-      - mozilla_vpn_derived
-      - site_metrics_empty_check_v1
 bigquery:
   time_partitioning:
     type: day

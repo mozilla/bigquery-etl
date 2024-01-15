@@ -8,8 +8,6 @@ labels:
   incremental: true
 scheduling:
   dag_name: bqetl_monitoring
-  referenced_tables:
-    - ['moz-fx-data-shared-prod', '*_stable', 'events_v1']
   date_partition_parameter: null
   parameters: ["submission_date:DATE:{% raw %}{{ds}}{% endraw %}"]
 bigquery:

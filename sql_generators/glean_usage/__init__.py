@@ -19,6 +19,7 @@ from sql_generators.glean_usage import (
     event_error_monitoring,
     event_flow_monitoring,
     event_monitoring_live,
+    events_stream,
     events_unnested,
     glean_app_ping_views,
     metrics_clients_daily,
@@ -39,6 +40,7 @@ GLEAN_TABLES = [
     event_monitoring_live.EventMonitoringLive(),
     event_error_monitoring.EventErrorMonitoring(),
     event_flow_monitoring.EventFlowMonitoring(),
+    events_stream.EventsStreamTable(),
 ]
 
 

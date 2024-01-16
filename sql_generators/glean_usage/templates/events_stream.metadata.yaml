@@ -1,0 +1,8 @@
+{{ header_yaml }}
+friendly_name: Events Stream
+description: |-
+  An events stream table, with one row per event.
+
+owners:
+  - jrediger@mozilla.com
+  - wstuckey@mozilla.com

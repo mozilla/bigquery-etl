@@ -21,4 +21,5 @@ bigquery:
     fields:
     - normalized_channel
     - sample_id
+    - event_category
 

@@ -29,9 +29,6 @@ fields:
 - name: app_version
   type: STRING
   mode: NULLABLE
-- name: is_activated
-  type: BOOLEAN
-  mode: NULLABLE
 - name: submission_timestamp
   type: TIMESTAMP
   mode: NULLABLE
@@ -61,5 +58,8 @@ fields:
     type: STRING
     mode: NULLABLE
 - name: is_suspicious_device_client
+  type: BOOLEAN
+  mode: NULLABLE
+- name: is_activated
   type: BOOLEAN
   mode: NULLABLE

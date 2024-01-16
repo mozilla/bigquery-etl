@@ -33,7 +33,7 @@ WITH base AS (
         ping_info.parsed_start_time,
         ping_info.end_time,
         ping_info.parsed_end_time,
-        ping_info.ping_type,
+        ping_info.ping_type
       ) AS ping_info
     ),
     DATE(submission_timestamp) AS submission_date,

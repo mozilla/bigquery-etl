@@ -20,7 +20,7 @@ class EventsStreamTable(GleanTable):
         self.no_init = True
         self.per_app_enabled = True
         self.per_app_id_enabled = True
-        self.across_apps_enabled = False
+        self.across_apps_enabled = True
         self.cross_channel_template = "cross_channel_events_stream.query.sql"
         self.base_table_name = "events_v1"
 

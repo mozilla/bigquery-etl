@@ -1,15 +1,5 @@
 {{ header }}
 
-{% if init %}
-CREATE TABLE IF NOT EXISTS
-  `{{ events_stream_table }}`
-PARTITION BY
-  submission_date
-CLUSTER BY
-  sample_id,
-  event_category
-  AS
-{% endif %}
 WITH base AS (
   SELECT
     * EXCEPT (metrics, events, name, category, extra, timestamp) REPLACE (

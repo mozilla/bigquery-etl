@@ -39,8 +39,7 @@ WITH base AS (
       [event.category, event.name],
       '.'
     ) AS event, -- handles NULL values better
-    `mozfun.json.from_map`(event.extra) AS event_extra,
-    sample_id
+    `mozfun.json.from_map`(event.extra) AS event_extra
   FROM
     `org_mozilla_firefox.events` AS e
   CROSS JOIN

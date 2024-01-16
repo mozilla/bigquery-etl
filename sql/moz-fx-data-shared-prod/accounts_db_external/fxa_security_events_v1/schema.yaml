@@ -1,0 +1,25 @@
+fields:
+- name: id
+  type: NUMERIC
+  mode: NULLABLE
+- name: uid
+  type: STRING
+  mode: NULLABLE
+  description: Account ID in hexadecimal format.
+- name: nameId
+  type: INTEGER
+  mode: NULLABLE
+- name: verified
+  type: BOOLEAN
+  mode: NULLABLE
+- name: ipAddrHmac
+  type: STRING
+  mode: NULLABLE
+  description: ipAddrHmac in hexadecimal format.
+- name: createdAt
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: tokenVerificationId
+  type: STRING
+  mode: NULLABLE
+  description: tokenVerificationId in hexadecimal format.

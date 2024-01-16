@@ -17,7 +17,7 @@ import re
 from enum import Enum
 from os.path import basename, dirname, exists
 from pathlib import Path
-from typing import Set
+from typing import Optional, Set
 from urllib.request import Request, urlopen
 
 import click
@@ -352,29 +352,30 @@ class DryRun:
             return []
         return self.dry_run_result.get("errors", [])
 
-    def get_error(self):
+    def get_error(self) -> Optional[Errors]:
         """Get specific errors for edge case handling."""
-        errors = self.dry_run_result.get("errors", None)
-        if errors and len(errors) == 1:
-            error = errors[0]
-        else:
-            error = None
-        if error and error.get("code", None) in [400, 403]:
+        errors = self.errors()
+        if len(errors) != 1:
+            return None
+
+        error = errors[0]
+        if error and error.get("code") in [400, 403]:
+            error_message = error.get("message", "")
             if (
                 "does not have bigquery.tables.create permission for dataset"
-                in error.get("message", "")
-                or "Permission bigquery.tables.create denied"
-                in error.get("message", "")
+                in error_message
+                or "Permission bigquery.tables.create denied" in error_message
+                or "Permission bigquery.datasets.update denied" in error_message
             ):
                 return Errors.READ_ONLY
-            if "without a filter over column(s)" in error.get("message", ""):
+            if "without a filter over column(s)" in error_message:
                 return Errors.DATE_FILTER_NEEDED
             if (
                 "Syntax error: Expected end of input but got keyword WHERE"
-                in error.get("message", "")
+                in error_message
             ):
                 return Errors.DATE_FILTER_NEEDED_AND_SYNTAX
-        return error
+        return None
 
     def validate_schema(self):
         """Check whether schema is valid."""
@@ -436,7 +437,7 @@ class DryRun:
             if not existing_schema.equal(query_schema):
                 click.echo(
                     click.style(
-                        f"Schema defined in {existing_schema_path} "
+                        f"ERROR: Schema defined in {existing_schema_path} "
                         f"incompatible with query {query_file_path}",
                         fg="red",
                     ),

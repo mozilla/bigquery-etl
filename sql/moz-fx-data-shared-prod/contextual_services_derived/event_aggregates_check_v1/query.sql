@@ -37,8 +37,7 @@ partition_info AS (
         OR (table_name = 'event_aggregates_spons_tiles_v1' AND total_rows > 0)
         OR (table_name = 'event_aggregates_suggest_v1' AND total_rows > 0)
     ) AS p
-  ON
-    date = PARSE_DATE('%Y%m%d', p.partition_id)
+    ON date = PARSE_DATE('%Y%m%d', p.partition_id)
     AND dates.table_name = p.table_name
   WHERE
     p.total_rows IS NULL

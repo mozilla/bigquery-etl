@@ -20,7 +20,7 @@ WITH events_unnested AS (
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND category IN ('newtab', 'topsites', 'newtab.search', 'newtab.search.ad', 'pocket')
-    AND name IN ('closed', 'opened', 'impression', 'issued', 'click', 'save', 'topic_click')
+    AND name IN ('closed', 'opened', 'impression', 'issued', 'click', 'save', 'topic_click', 'dismiss')
 ),
 categorized_events AS (
   SELECT
@@ -71,6 +71,14 @@ categorized_events AS (
     event_category = 'topsites'
     AND event_name = 'click'
     AND mozfun.map.get_key(event_details, "is_sponsored") = "false" AS is_organic_topsite_click,
+    event_category = 'topsites'
+    AND event_name = 'dismiss' AS is_topsite_dismiss,
+    event_category = 'topsites'
+    AND event_name = 'dismiss'
+    AND mozfun.map.get_key(event_details, "is_sponsored") = "true" AS is_sponsored_topsite_dismiss,
+    event_category = 'topsites'
+    AND event_name = 'dismiss'
+    AND mozfun.map.get_key(event_details, "is_sponsored") = "false" AS is_organic_topsite_dismiss,
         -- Pocket
     event_category = 'pocket'
     AND event_name = 'click' AS is_pocket_click,
@@ -179,6 +187,9 @@ aggregated_newtab_activity AS (
     COUNTIF(is_topsite_impression) AS topsite_impressions,
     COUNTIF(is_sponsored_topsite_impression) AS sponsored_topsite_impressions,
     COUNTIF(is_organic_topsite_impression) AS organic_topsite_impressions,
+    COUNTIF(is_topsite_dismiss) AS topsite_dismissals,
+    COUNTIF(is_sponsored_topsite_dismiss) AS sponsored_topsite_dismissals,
+    COUNTIF(is_organic_topsite_dismiss) AS organic_topsite_dismissals,
           -- Search
     COUNTIF(is_search_issued) AS searches,
     COUNTIF(is_tagged_search_ad_click) AS tagged_search_ad_clicks,
@@ -260,6 +271,7 @@ side_filled AS (
       OR follow_on_search_ad_impressions > 0
       OR topsite_impressions > 0
       OR topsite_clicks > 0
+      OR topsite_dismissals > 0
       OR pocket_impressions > 0
       OR pocket_clicks > 0
       OR pocket_saves > 0
@@ -271,8 +283,7 @@ side_filled AS (
     aggregated_newtab_activity
   LEFT JOIN
     client_profile_info
-  USING
-    (legacy_telemetry_client_id)
+    USING (legacy_telemetry_client_id)
 )
 SELECT
   * EXCEPT (visit_had_any_interaction)

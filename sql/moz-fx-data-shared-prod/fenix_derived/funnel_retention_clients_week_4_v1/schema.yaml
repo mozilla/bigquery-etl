@@ -61,6 +61,11 @@ fields:
     The type of source of a client installation.
 
 - mode: NULLABLE
+  name: install_source
+  type: STRING
+  description:
+
+- mode: NULLABLE
   name: days_seen_in_first_28_days
   type: INTEGER
   description: |

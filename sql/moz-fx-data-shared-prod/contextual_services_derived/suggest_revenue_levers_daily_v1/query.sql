@@ -153,20 +153,16 @@ FROM
   desktop_population
 LEFT JOIN
   client_shares
-USING
-  (country, submission_date)
+  USING (country, submission_date)
 LEFT JOIN
   suggest_clients
-USING
-  (submission_date, country)
+  USING (submission_date, country)
 LEFT JOIN
   urlbar_clients
-USING
-  (submission_date, country)
+  USING (submission_date, country)
 LEFT JOIN
   grand_total
-USING
-  (submission_date)
+  USING (submission_date)
 WHERE
   submission_date = @submission_date
 ORDER BY

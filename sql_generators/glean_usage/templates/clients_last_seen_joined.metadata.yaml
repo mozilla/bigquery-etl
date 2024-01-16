@@ -8,6 +8,13 @@ description: |-
   it is only represented in the metrics-based table.
 owners:
   - ascholtz@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_glean_usage
+  task_group: {{ app_name }}
+  depends_on_past: true
 bigquery:
   time_partitioning:
     type: day

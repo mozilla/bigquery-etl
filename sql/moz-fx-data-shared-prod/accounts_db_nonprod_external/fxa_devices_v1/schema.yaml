@@ -1,0 +1,27 @@
+fields:
+- name: uid
+  type: STRING
+  mode: NULLABLE
+  description: Account ID in hexadecimal format.
+- name: id
+  type: STRING
+  mode: NULLABLE
+  description: id in hexadecimal format.
+- name: name
+  type: STRING
+  mode: NULLABLE
+- name: nameUtf8
+  type: STRING
+  mode: NULLABLE
+- name: type
+  type: STRING
+  mode: NULLABLE
+- name: createdAt
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: callbackPublicKey
+  type: STRING
+  mode: NULLABLE
+- name: callbackIsExpired
+  type: BOOLEAN
+  mode: NULLABLE

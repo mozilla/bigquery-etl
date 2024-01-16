@@ -33,8 +33,7 @@ validated_impressions AS (
     sanitized_impressions_count
   LEFT JOIN
     sanitized_impressions
-  ON
-    TRUE
+    ON TRUE
   WHERE
     IF(
       _n < 1,

@@ -40,12 +40,10 @@ store_stats AS (
     views_data
   FULL OUTER JOIN
     downloads_data
-  USING
-    (`date`, country_name)
+    USING (`date`, country_name)
   LEFT JOIN
     static.country_names_v1 AS country_names
-  ON
-    country_names.name = views_data.country_name
+    ON country_names.name = views_data.country_name
 ),
 _new_profiles AS (
   SELECT
@@ -74,5 +72,4 @@ FROM
   store_stats
 FULL OUTER JOIN
   _new_profiles
-USING
-  (`date`, country)
+  USING (`date`, country)

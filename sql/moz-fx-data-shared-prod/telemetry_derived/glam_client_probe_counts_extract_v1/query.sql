@@ -6,7 +6,7 @@ WITH
       COALESCE(app_build_id, "*") AS app_build_id,
       process,
       metric,
-      SUBSTR(REPLACE(KEY, r"\x00", ""), 0, 200) AS KEY,
+      REPLACE(KEY, r"\x00", "") AS KEY,
       client_agg_type,
       metric_type,
       total_users,
@@ -29,6 +29,7 @@ WITH
       channel = @channel
       AND app_version IS NOT NULL
       AND total_users > 375
+      AND CHAR_LENGTH(KEY) <= 200
     GROUP BY
       channel,
       app_version,
@@ -59,8 +60,7 @@ WITH
       `moz-fx-data-shared-prod.telemetry_derived.glam_sample_counts_v1` fsc1
     INNER JOIN
       `moz-fx-data-shared-prod.telemetry_derived.glam_sample_counts_v1` fsc2
-    ON
-      fsc1.os = fsc2.os
+      ON fsc1.os = fsc2.os
       AND fsc1.app_build_id = fsc2.app_build_id
       AND fsc1.app_version = fsc2.app_version
       AND fsc1.metric = fsc2.metric
@@ -84,7 +84,7 @@ SELECT
   CASE
     WHEN client_agg_type = '' THEN 0
   ELSE
-    total_sample
+    CAST(total_sample as BIGNUMERIC)
   END
   AS total_sample,
   non_norm_histogram,
@@ -93,16 +93,14 @@ FROM
   final_probe_extract cp
 LEFT JOIN
   glam_sample_counts sc
-ON
-  sc.os = cp.os
+  ON sc.os = cp.os
   AND sc.app_build_id = cp.app_build_id
   AND sc.app_version = cp.app_version
   AND sc.metric = cp.metric
   AND sc.key = cp.key
   AND sc.process = cp.process
   AND total_sample IS NOT NULL
-  AND (sc.agg_type = cp.client_agg_type
-    OR cp.client_agg_type = '')
+  AND (sc.agg_type = cp.client_agg_type OR cp.client_agg_type = '')
 GROUP BY
   cp.app_version,
   cp.os,

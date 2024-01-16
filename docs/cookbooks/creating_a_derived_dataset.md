@@ -263,7 +263,7 @@ bqetl query backfill <dataset>.<table> --project_id=moz-fx-data-shared-prod -s <
 
 For our example:
 ```bash
-./bqetl query backfill org_mozilla_mozregression_derived.mozregression_aggregates_v1 --s 2020-04-01 --e 2021-02-01
+./bqetl query backfill org_mozilla_mozregression_derived.mozregression_aggregates_v1 --project_id=moz-fx-data-shared-prod -s 2020-04-01 -e 2021-02-01
 ```
 
 **Note**. Alternatively, you can trigger the Airflow DAG to backfill the data. In this case, it is recommended to talk to someone in in Data Engineering or Data SRE to trigger the DAG.

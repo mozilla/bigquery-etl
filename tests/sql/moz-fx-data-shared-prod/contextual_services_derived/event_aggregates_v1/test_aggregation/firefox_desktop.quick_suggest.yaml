@@ -1,0 +1,29 @@
+---
+- &click
+  submission_timestamp: "2030-01-01 01:00:00"
+  client_info:
+    app_channel: release
+  metadata:
+    geo:
+      subdivision1: AZ
+    user_agent:
+      os: "Windows 11"
+  metrics: &click_metrics
+    boolean:
+      quick_suggest_improve_suggest_experience: true
+    quantity:
+      quick_suggest_position: 1
+    string: &click_strings
+      quick_suggest_advertiser: ad1
+      quick_suggest_match_type: firefox-suggest
+      quick_suggest_ping_type: quicksuggest-click
+      quick_suggest_request_id: HASH123
+    uuid:
+      quick_suggest_context_id: a
+  normalized_country_code: US
+- <<: *click
+  metrics:
+    <<: *click_metrics
+    string:
+      <<: *click_strings
+      quick_suggest_ping_type: quicksuggest-impression

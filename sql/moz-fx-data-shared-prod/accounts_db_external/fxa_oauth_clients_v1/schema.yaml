@@ -1,0 +1,32 @@
+fields:
+- name: id
+  type: STRING
+  mode: NULLABLE
+  description: id in hexadecimal format.
+- name: name
+  type: STRING
+  mode: NULLABLE
+- name: imageUri
+  type: STRING
+  mode: NULLABLE
+- name: redirectUri
+  type: STRING
+  mode: NULLABLE
+- name: canGrant
+  type: BOOLEAN
+  mode: NULLABLE
+- name: publicClient
+  type: BOOLEAN
+  mode: NULLABLE
+- name: createdAt
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: trusted
+  type: BOOLEAN
+  mode: NULLABLE
+- name: allowedScopes
+  type: STRING
+  mode: NULLABLE
+- name: notes
+  type: STRING
+  mode: NULLABLE

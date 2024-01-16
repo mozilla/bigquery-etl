@@ -3,6 +3,8 @@
 import enum
 import os
 import re
+import string
+from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 import attr
@@ -230,9 +232,14 @@ class Metadata:
         with open(metadata_file, "r") as yaml_stream:
             try:
                 metadata = yaml.safe_load(yaml_stream)
-
-                friendly_name = metadata.get("friendly_name", None)
-                description = metadata.get("description", None)
+                table_name = str(Path(metadata_file).parent.name)
+                friendly_name = metadata.get(
+                    "friendly_name", string.capwords(table_name.replace("_", " "))
+                )
+                description = metadata.get(
+                    "description",
+                    "Please provide a description for the query",
+                )
 
                 if "labels" in metadata:
                     for key, label in metadata["labels"].items():
@@ -413,6 +420,7 @@ class DatasetMetadata:
     labels: Dict = attr.ib({})
     default_table_workgroup_access: Optional[List[Dict[str, Any]]] = attr.ib(None)
     workgroup_access: list = attr.ib(DEFAULT_WORKGROUP_ACCESS)
+    syndication: Dict = attr.ib({})
 
     def __attrs_post_init__(self):
         """Set default table workgroup access to workgroup access."""

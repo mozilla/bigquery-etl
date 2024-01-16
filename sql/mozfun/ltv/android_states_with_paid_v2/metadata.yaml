@@ -1,0 +1,5 @@
+description: |
+  Get the state of a user on a day, with paid/organic cohorts included.
+  Compared to V1, these states have a "dead" state, determined by "dead_time".
+  The model can use this state as a sink, where the client will never return if they are dead.
+friendly_name: Android States With Paid V2

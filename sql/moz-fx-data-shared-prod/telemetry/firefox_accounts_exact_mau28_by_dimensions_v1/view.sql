@@ -12,5 +12,4 @@ FROM
   `moz-fx-data-shared-prod.firefox_accounts_derived.exact_mau28_v1` AS raw
 LEFT JOIN
   `moz-fx-data-shared-prod.static.country_names_v1` cn
-ON
-  (raw.country = cn.name)
+  ON (raw.country = cn.name)

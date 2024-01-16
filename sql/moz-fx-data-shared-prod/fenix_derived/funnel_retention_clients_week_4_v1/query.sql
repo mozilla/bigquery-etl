@@ -21,9 +21,9 @@ clients_first_seen AS (
     adjust_campaign,
     adjust_creative,
     adjust_network,
+    install_source,
   FROM
-    -- TODO: once the view is updated, this should be updated to point to the viev rather than the table directly.
-    fenix_derived.firefox_android_clients_v2
+    fenix.firefox_android_clients
   WHERE
     -- 28 days need to elapse before calculating the week 4 and day 28 retention metrics
     first_seen_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
@@ -38,8 +38,7 @@ retention_calculation AS (
     clients_retention
   INNER JOIN
     clients_first_seen
-  USING
-    (client_id, sample_id)
+    USING (client_id, sample_id)
 )
 SELECT
   @submission_date AS submission_date,

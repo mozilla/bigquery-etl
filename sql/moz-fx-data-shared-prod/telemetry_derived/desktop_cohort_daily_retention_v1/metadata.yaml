@@ -1,0 +1,31 @@
+friendly_name: Desktop Cohort Daily Retention V1
+description: |-
+  Desktop Cohort Daily Retention consists of one row per first_seen_date
+  per activity date (up to 112 days after the first seen date - 112 is
+  4 period of 28 days)
+  It's a summary of a cohort's activity in that day.
+
+  Note that the values for client attributes are based on the
+  attributes at the time the cohort started (rather than the
+  values at activity time or submission_date)
+
+  Note that data is pulled from clients_last_seen_v1 and more
+  importantly clients_first_seen_v2
+owners:
+- mhirose@mozilla.com
+labels:
+  incremental: true
+scheduling:
+  dag_name: bqetl_analytics_aggregations
+  date_partition_parameter: submission_date
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+  clustering:
+    fields:
+    - attribution_medium
+    - normalized_channel
+    - country
+    - normalized_app_name

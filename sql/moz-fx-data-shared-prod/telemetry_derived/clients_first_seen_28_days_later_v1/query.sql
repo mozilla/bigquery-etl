@@ -16,7 +16,7 @@ WITH clients_first_seen_28_days_ago AS (
     attribution_experiment,
     attribution_dltoken,
     attribution_dlsource,
-    -- startup_profile_selection_reason, when startup_profile_selection_reason is available
+    startup_profile_selection_reason,
     first_seen_date,
   FROM
     telemetry_derived.clients_first_seen_v2
@@ -33,29 +33,24 @@ clients_first_seen_28_days_ago_with_days_seen AS (
     clients_first_seen_28_days_ago
   LEFT JOIN
     telemetry.clients_last_seen cls
-  ON
-    clients_first_seen_28_days_ago.client_id = cls.client_id
+    ON clients_first_seen_28_days_ago.client_id = cls.client_id
     AND cls.submission_date = @submission_date
 )
 SELECT
-  client_id,
-  sample_id,
-  first_seen_date,
-  @submission_date AS submission_date,
-  country_code,
-  channel,
-  build_id,
-  os,
-  os_version,
-  distribution_id,
-  attribution_source,
-  attribution_ua,
-  attribution_medium,
-  attribution_campaign,
-  attribution_content,
-  attribution_experiment,
-  attribution_dltoken,
-  attribution_dlsource,
+  * REPLACE (
+    COALESCE(
+      days_seen_bits,
+      mozfun.bits28.from_string('0000000000000000000000000000')
+    ) AS days_seen_bits,
+    COALESCE(
+      days_visited_1_uri_bits,
+      mozfun.bits28.from_string('0000000000000000000000000000')
+    ) AS days_visited_1_uri_bits,
+    COALESCE(
+      days_interacted_bits,
+      mozfun.bits28.from_string('0000000000000000000000000000')
+    ) AS days_interacted_bits
+  ),
   COALESCE(
     BIT_COUNT(mozfun.bits28.from_string('1111111000000000000000000000') & days_seen_bits) >= 5,
     FALSE
@@ -84,17 +79,6 @@ SELECT
     ) > 0,
     FALSE
   ) AS qualified_week4,
-  COALESCE(
-    days_seen_bits,
-    mozfun.bits28.from_string('0000000000000000000000000000')
-  ) AS days_seen_bits,
-  COALESCE(
-    days_visited_1_uri_bits,
-    mozfun.bits28.from_string('0000000000000000000000000000')
-  ) AS days_visited_1_uri_bits,
-  COALESCE(
-    days_interacted_bits,
-    mozfun.bits28.from_string('0000000000000000000000000000')
-  ) AS days_interacted_bits,
+  @submission_date AS submission_date,
 FROM
   clients_first_seen_28_days_ago_with_days_seen

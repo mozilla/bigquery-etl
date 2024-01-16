@@ -1,0 +1,35 @@
+- jsonPayload:
+    fields:
+      visit_id: ga_client_id_1
+      dltoken: dltoken_1
+      session_id: stub_session_id_1
+      log_type: download_started
+  timestamp: '2023-03-31 01:16:43.101135 UTC'
+- jsonPayload:
+    fields:
+      visit_id: ga_client_id_1
+      dltoken: dltoken_1
+      session_id: stub_session_id_1
+      log_type: download_started
+  timestamp: '2023-03-31 01:16:43.101135 UTC'
+- jsonPayload:
+    fields:
+      visit_id: also_present_today
+      dltoken: dltoken_2
+      session_id: stub_session_id_2
+      log_type: download_started
+  timestamp: '2023-03-31 01:16:43.101135 UTC'
+- jsonPayload:
+    fields:
+      visit_id: NULL
+      dltoken: testNullJoins
+      session_id: NULL
+      log_type: download_started
+  timestamp: '2023-03-31 01:16:43.101135 UTC'
+- jsonPayload:
+    fields:
+      visit_id: NULL
+      dltoken: testEmptyStringWithNullJoins
+      session_id: NULL
+      log_type: download_started
+  timestamp: '2023-03-31 01:16:43.101135 UTC'

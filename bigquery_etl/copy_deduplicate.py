@@ -57,9 +57,8 @@ WITH
     `{live_table}`
   JOIN
     distinct_document_ids
-  USING
     -- Retain only the first seen documents for each ID, according to timestamp.
-    (document_id, submission_timestamp)
+    USING (document_id, submission_timestamp)
   WHERE
     submission_timestamp >= @start_time
     AND submission_timestamp < @end_time),
@@ -255,7 +254,7 @@ def _list_live_tables(client, pool, project_id, only_tables, table_filter):
     type=lambda d: datetime.strptime(d, "%Y-%m-%d").date(),
     help="One or more days of data to copy, in format 2019-01-01",
 )
-@parallelism_option
+@parallelism_option()
 @click.option(
     "--dry_run",
     "--dry-run",

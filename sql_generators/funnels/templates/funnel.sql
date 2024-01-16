@@ -2,6 +2,7 @@
 {% for funnel_name, funnel in funnels.items() %}
   {% if loop.first %}WITH{% endif %}
   {% for step_name in funnel.steps %}
+  {% set outer_loop = loop %}
   {{ funnel_name }}_{{ step_name }} AS (
     SELECT
       {% if steps[step_name].join_previous_step_on %}
@@ -9,8 +10,8 @@
       {% endif %}
       {% if funnel.dimensions %}
         {% for dimension_name in funnel.dimensions %}
-          {% if not loop.first and steps[step_name].join_previous_step_on %}
-            {{ funnel_name }}_{{ loop.previtem }}.{{ dimension_name }} AS {{ dimension_name }},
+          {% if not outer_loop.first and steps[step_name].join_previous_step_on %}
+            prev.{{ dimension_name }} AS {{ dimension_name }},
           {% elif dimensions[dimension_name].data_source == steps[step_name].data_source %}
             {{ dimensions[dimension_name].select_expression }} AS {{ dimension_name }},
           {% else %}
@@ -25,14 +26,13 @@
       {{ data_sources[steps[step_name].data_source].from_expression }}
     {% if not loop.first and steps[step_name].join_previous_step_on %}
       INNER JOIN {{ funnel_name }}_{{ loop.previtem }} AS prev
-      ON 
-        prev.submission_date = {{ data_sources[steps[step_name].data_source].submission_date_column }}  AND
-        prev.join_key = {{ steps[step_name].join_previous_step_on }}
+        ON prev.submission_date = {{ data_sources[steps[step_name].data_source].submission_date_column }}
+        AND prev.join_key = {{ steps[step_name].join_previous_step_on }}
     {% endif %}
     {% if funnel.dimensions %}
       {% for dimension_name in funnel.dimensions %}
-        {% if dimensions[dimension_name].data_source != steps[step_name].data_source or 
-          (not loop.first and steps[step_name].join_previous_step_on) %}
+        {% if dimensions[dimension_name].data_source != steps[step_name].data_source and 
+          (outer_loop.first or not steps[step_name].join_previous_step_on) %}
         LEFT JOIN (
           SELECT
             {{ data_sources[dimensions[dimension_name].data_source].submission_date_column }} AS submission_date,
@@ -42,7 +42,7 @@
             {{ data_sources[dimensions[dimension_name].data_source].from_expression }}
           WHERE {{ data_sources[dimensions[dimension_name].data_source].submission_date_column }} = @submission_date
         ) AS dimension_source_{{ dimension_name }}
-        ON dimension_source_{{ dimension_name }}.client_id = client_id
+          ON dimension_source_{{ dimension_name }}.client_id = {{ data_sources[steps[step_name].data_source].client_id_column }}
         {% endif %}
       {% endfor %}
     {% endif %}
@@ -135,15 +135,13 @@ merged_funnels AS (
         {{ funnel_name }}_{{ step_name }}_aggregated
       {% else %}
         FULL OUTER JOIN {{ funnel_name }}_{{ step_name }}_aggregated
-        USING (
-          submission_date, 
-          {% if steps[step_name].join_previous_step_on == False %}
+          USING (
+            submission_date, 
             {% for dimension_name in dimensions.keys() %}
               {{ dimension_name }},
             {% endfor %}
-          {% endif %}
-          funnel
-        ) 
+            funnel
+          )
       {% endif %}
     {% endfor %}
   {% endfor %}

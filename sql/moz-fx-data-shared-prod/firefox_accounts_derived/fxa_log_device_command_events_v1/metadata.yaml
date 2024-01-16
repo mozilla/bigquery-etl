@@ -8,7 +8,7 @@ description: |-
   All new events come from GCP deployment of FxA and are available in the v2 of this table.
   The migration started on 2023-09-07 and was concluded by 2023-09-15.
 owners:
-  - dthorn@mozilla.com
+  - kik@mozilla.com
 labels:
   application: fxa
   incremental: true

@@ -11,7 +11,7 @@ description: |-
   we received a main ping from that client on that day or in the preceding
   27 days.
 owners:
-- jklukas@mozilla.com
+- ascholtzs@mozilla.com
 labels:
   application: firefox
   schedule: daily

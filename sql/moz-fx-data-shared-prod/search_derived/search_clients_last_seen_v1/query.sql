@@ -144,7 +144,6 @@ FROM
   _current
 FULL OUTER JOIN
   _previous
-USING
   -- Include sample_id to match the clustering of the tables, which may improve
   -- join performance.
-  (sample_id, client_id)
+  USING (sample_id, client_id)

@@ -45,17 +45,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-    monitoring_derived__deletion_request_volume__v1 = bigquery_etl_query(
-        task_id="monitoring_derived__deletion_request_volume__v1",
-        destination_table="deletion_request_volume_v1",
-        dataset_id="monitoring_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="akomar@mozilla.com",
-        email=["akomar@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-    )
-
     monitoring_derived__deletion_request_volume__v2 = bigquery_etl_query(
         task_id="monitoring_derived__deletion_request_volume__v2",
         destination_table=None,

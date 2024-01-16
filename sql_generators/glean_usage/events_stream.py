@@ -17,7 +17,7 @@ class EventsStreamTable(GleanTable):
         GleanTable.__init__(self)
         self.target_table_id = TARGET_TABLE_ID
         self.prefix = PREFIX
-        self.no_init = False
+        self.no_init = True
         self.per_app_enabled = True
         self.per_app_id_enabled = True
         self.across_apps_enabled = False

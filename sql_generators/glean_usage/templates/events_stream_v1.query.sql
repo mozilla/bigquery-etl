@@ -43,7 +43,7 @@ WITH base AS (
   CROSS JOIN
     UNNEST(events) AS event
   WHERE
-    {% if init %}
+    {% if is_init() %}
       DATE(submission_timestamp) >= '2023-11-01'
     {% else %}
       DATE(submission_timestamp) = @submission_date

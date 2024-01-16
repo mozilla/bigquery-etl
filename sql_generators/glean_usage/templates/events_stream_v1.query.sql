@@ -49,6 +49,7 @@ WITH base AS (
     {% else %}
       DATE(submission_timestamp) = @submission_date
     {% endif %}
+    {% endraw %}
 )
 --
 SELECT

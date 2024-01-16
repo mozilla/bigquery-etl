@@ -37,7 +37,7 @@ WITH base AS (
     event.name AS event_name,
     ARRAY_TO_STRING(
       [event.category, event.name],
-      ','
+      '.'
     ) AS event, -- handles NULL values better
     `mozfun.json.from_map`(event.extra) AS event_extra,
   FROM

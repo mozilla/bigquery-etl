@@ -241,6 +241,11 @@ class Line:
         """Determine if this line starts with a ClosingBracket."""
         return self.inline_tokens and isinstance(self.inline_tokens[0], ClosingBracket)
 
+    @property
+    def ends_with_line_comment(self):
+        """Determine if this line ends with a line comment."""
+        return self.inline_tokens and isinstance(self.inline_tokens[-1], LineComment)
+
 
 def inline_block_format(tokens, max_line_length=100):
     """Extend simple_format to inline each bracket block if possible.
@@ -298,7 +303,6 @@ def inline_block_format(tokens, max_line_length=100):
             line_length = indent_level + line.inline_length
             pending_lines = 0
             pending = []
-            last_token_was_opening_bracket = line.ends_with_opening_bracket
             open_brackets = 1
             index += 1  # start on the next line
             previous_line = line
@@ -306,10 +310,10 @@ def inline_block_format(tokens, max_line_length=100):
                 if not line.can_format:
                     break
                 # Line comments can't be moved into the middle of a line.
-                if isinstance(previous_line.inline_tokens[-1], LineComment):
+                if previous_line.ends_with_line_comment:
                     break
                 if (
-                    not last_token_was_opening_bracket
+                    not previous_line.ends_with_opening_bracket
                     and not line.starts_with_closing_bracket
                 ):
                     pending.append(Whitespace(" "))
@@ -332,7 +336,6 @@ def inline_block_format(tokens, max_line_length=100):
                         break
                 if line.ends_with_opening_bracket:
                     open_brackets += 1
-                last_token_was_opening_bracket = line.ends_with_opening_bracket
                 previous_line = line
 
 

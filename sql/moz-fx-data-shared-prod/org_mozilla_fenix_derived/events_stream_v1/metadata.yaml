@@ -1,0 +1,34 @@
+friendly_name: Events Stream
+description: |-
+  An events stream table, with one row per event.
+owners:
+- jrediger@mozilla.com
+- wstuckey@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  dag: bqetl_glean_usage
+  owner1: jrediger
+  owner2: wstuckey
+scheduling:
+  dag_name: bqetl_glean_usage
+  task_group: fenix
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+    - normalized_channel
+    - sample_id
+    - event_category
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  query.sql:
+  - org_mozilla_fenix.events
+deprecated: false

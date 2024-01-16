@@ -34,6 +34,10 @@ product_features AS (
     /*Credit Card*/
     SUM(CASE WHEN metrics.boolean.credit_card_autofill_enabled THEN 1 ELSE 0 END) AS credit_card_autofill_enabled,
     SUM(CASE WHEN metrics.boolean.credit_card_sync_enabled THEN 1 ELSE 0 END) AS credit_card_sync_enabled,
+    COALESCE(SUM(metrics.counter.credit_card_deleted), 0) AS credit_card_deleted,
+    COALESCE(SUM(metrics.counter.credit_card_modified), 0) AS credit_card_modified,
+    COALESCE(SUM(metrics.counter.credit_card_saved), 0) AS credit_card_saved,
+    COALESCE(SUM(metrics.quantity.credit_card_saved_all), 0) AS credit_card_saved_all,
     /*Bookmark*/
     COALESCE(SUM(bookmarks_add_table.value), 0) AS bookmarks_add,
     COALESCE(
@@ -160,6 +164,42 @@ product_features_agg AS (
       END
     ) AS credit_card_sync_enabled_users,
     SUM(credit_card_sync_enabled) AS credit_card_sync_enabled,
+    --credit_card_deleted
+    COUNT(
+      DISTINCT
+      CASE
+        WHEN credit_card_deleted > 0
+          THEN client_id
+      END
+    ) AS credit_card_deleted_users,
+    SUM(credit_card_deleted) AS credit_card_deleted,
+    --credit_card_modified
+    COUNT(
+      DISTINCT
+      CASE
+        WHEN credit_card_modified > 0
+          THEN client_id
+      END
+    ) AS credit_card_modified_users,
+    SUM(credit_card_modified) AS credit_card_modified,
+    --credit_card_saved
+    COUNT(
+      DISTINCT
+      CASE
+        WHEN credit_card_saved > 0
+          THEN client_id
+      END
+    ) AS credit_card_saved_users,
+    SUM(credit_card_saved) AS credit_card_saved,
+    --credit_card_saved_all
+    COUNT(
+      DISTINCT
+      CASE
+        WHEN credit_card_saved_all > 0
+          THEN client_id
+      END
+    ) AS credit_card_saved_all_users,
+    SUM(credit_card_saved_all) AS credit_card_saved_all,
     /*Bookmark*/
     --bookmarks_add
     COUNT(DISTINCT CASE WHEN bookmarks_add > 0 THEN client_id END) AS bookmarks_add_users,
@@ -445,9 +485,19 @@ SELECT
   app_menu_customize_homepage_users,
   app_menu_customize_homepage,
   firefox_home_page_customize_homepage_button_users,
-  firefox_home_page_customize_homepage_button
+  firefox_home_page_customize_homepage_button,
+/*new credit card probes*/
+  credit_card_deleted_users,
+  credit_card_deleted,
+  credit_card_modified_users,
+  credit_card_modified,
+  credit_card_saved_users,
+  credit_card_saved,
+  credit_card_saved_all_users
+  credit_card_saved_all
 FROM
   _metrics_ping_distinct_client_count
 JOIN
   product_features_agg
-  USING (submission_date)
+USING
+  (submission_date)

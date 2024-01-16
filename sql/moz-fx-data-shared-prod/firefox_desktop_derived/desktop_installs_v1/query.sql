@@ -15,18 +15,18 @@ install_ping AS (
     version,
     from_msi,
     funnelcake,
-    attribution.experiment,
-    attribution.variation,
-    metadata.isp.name AS nm,
-    metadata.isp.organization,
+    attribution.experiment AS attribution_experiment,
+    attribution.variation AS attribution_variation,
+    metadata.isp.name AS isp_name,
+    metadata.isp.organization AS isp_organization,
     ping_version,
-    attribution.campaign,
-    attribution.content,
-    attribution.dlsource,
+    attribution.campaign AS attribution_campaign,
+    attribution.content AS attribution_content,
+    attribution.dlsource AS attribution_dlsource,
     attribution.dltoken,
-    attribution.medium,
-    attribution.source,
-    attribution.ua,
+    attribution.medium AS attribution_medium,
+    attribution.source AS attribution_source,
+    attribution.ua AS attribution_ua,
     metadata.geo.city,
     metadata.geo.country,
     metadata.geo.subdivision1,
@@ -133,7 +133,7 @@ SELECT
   install_ping.new_launched,
   install_ping.sample_id,
   install_ping.install_attempts,
-  download_token_info.download_date
+  download_token_info.download_date AS attribution_dltoken_date
 FROM
   install_ping
 LEFT JOIN

@@ -156,6 +156,14 @@ fields:
   type: INT64
   description:
 - mode: NULLABLE
+  name: installs
+  type: INTT64
+  description: Successful Installs
+- mode: NULLABLE
+  name: unsuccessful_installs
+  type: INT64
+  description: Unsuccessful Installs
+- mode: NULLABLE
   name: attribution_dltoken_date
   type: DATE
   description: Attribution Download Token Date

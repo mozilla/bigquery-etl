@@ -48,32 +48,10 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-    fenix_derived__fenix_use_counters__v1 = bigquery_etl_query(
-        task_id="fenix_derived__fenix_use_counters__v1",
-        destination_table="fenix_use_counters_v1",
-        dataset_id="fenix_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-    )
-
     fenix_derived__fenix_use_counters__v2 = bigquery_etl_query(
         task_id="fenix_derived__fenix_use_counters__v2",
         destination_table="fenix_use_counters_v2",
         dataset_id="fenix_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-    )
-
-    firefox_desktop_derived__firefox_desktop_use_counters__v1 = bigquery_etl_query(
-        task_id="firefox_desktop_derived__firefox_desktop_use_counters__v1",
-        destination_table="firefox_desktop_use_counters_v1",
-        dataset_id="firefox_desktop_derived",
         project_id="moz-fx-data-shared-prod",
         owner="kwindau@mozilla.com",
         email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
@@ -104,13 +82,7 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    fenix_derived__fenix_use_counters__v1.set_upstream(wait_for_copy_deduplicate_all)
-
     fenix_derived__fenix_use_counters__v2.set_upstream(wait_for_copy_deduplicate_all)
-
-    firefox_desktop_derived__firefox_desktop_use_counters__v1.set_upstream(
-        wait_for_copy_deduplicate_all
-    )
 
     firefox_desktop_derived__firefox_desktop_use_counters__v2.set_upstream(
         wait_for_copy_deduplicate_all

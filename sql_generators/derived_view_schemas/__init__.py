@@ -9,22 +9,14 @@ from pathos.multiprocessing import ProcessingPool
 
 from bigquery_etl.cli.utils import use_cloud_function_option
 
-NON_USER_FACING_DATASET_SUBSTRINGS = (
-    "_derived",
-    "_external",
-    "_bi",
-    "_restricted",
-    "udf",
-)
-
 
 def _generate_view_schema(sql_dir: Path, view_directory: Path) -> None:
     import logging
 
-    from view import View
-
+    from bigquery_etl.format_sql.formatter import reformat
     from bigquery_etl.metadata.parse_metadata import Metadata
     from bigquery_etl.schema import Schema
+    from bigquery_etl.view import View
 
     logging.basicConfig(format="%(levelname)s (%(filename)s:%(lineno)d) - %(message)s")
 
@@ -32,24 +24,43 @@ def _generate_view_schema(sql_dir: Path, view_directory: Path) -> None:
     METADATA_FILE = "metadata.yaml"
     SCHEMA_FILE = "schema.yaml"
 
-    # If the view references only one table, we can:
-    # 1. Get the reference table partition key if it exists.
-    #   (to dry run views to partitioned tables).
-    # 2. Get the reference table schema and use it to enrich the
-    #   view schema we get from dry-running.
+    if (view_schema_path := view_directory / SCHEMA_FILE).exists():
+        return None
 
     view = View.from_file(view_directory / VIEW_FILE)
-    if len(view.table_references) != 1:
+
+    if "-- Generated via" in view.content:
         return None
 
-    ref_project, ref_dataset, ref_table = view.table_references[0].split(".")
-    ref_dir = sql_dir / ref_project / ref_dataset / ref_table
+    ref_dir, ref_schema = None, None
+    if len(view.table_references) == 1:
+        ref_project, ref_dataset, ref_table = view.table_references[0].split(".")
+        ref_dir = sql_dir / ref_project / ref_dataset / ref_table
 
-    non_user_facing = any(s in ref_dataset for s in NON_USER_FACING_DATASET_SUBSTRINGS)
-    if not ref_dir.exists() or non_user_facing or ref_dataset.name.endswith("_stable"):
-        return None
+        if ref_dataset.endswith("_stable"):
+            return None
 
-    def _get_reference_partition_key(ref_path: Path) -> Optional[str]:
+        if (ref_schema_path := ref_dir / SCHEMA_FILE).exists():
+            ref_schema = Schema.from_schema_file(ref_schema_path)
+
+        # If it's a "simple view", copy the upstream schema verbatim:
+        if (
+            reformat(
+                f"""
+                   CREATE OR REPLACE VIEW `{view.project}.{view.dataset}.{view.name}` AS
+                   SELECT * FROM `{ref_project}.{ref_dataset}.{ref_table}`
+                   """
+            ).strip()
+            in view.content.strip()
+            and ref_schema is not None
+        ):
+            ref_schema.to_yaml_file(view_schema_path)
+            return None
+
+    def _get_reference_partition_key(ref_path: Optional[Path]) -> Optional[str]:
+        if ref_path is None:
+            return None
+
         try:
             reference_metadata = Metadata.from_file(ref_path / METADATA_FILE)
         except Exception as metadata_exception:
@@ -74,21 +85,27 @@ def _generate_view_schema(sql_dir: Path, view_directory: Path) -> None:
         view.project, view.dataset, view.name, partitioned_by=reference_partition_key
     )
 
-    if len(view_schema.get("fields")) == 0:
+    if len(view_schema.schema.get("fields")) == 0:
         logging.warning(
             f"Got empty schema for {view.path} potentially "
             f"due to dry-run error. Won't write yaml."
         )
         return None
 
-    # Optionally enrich the view schema if we have a valid table reference
-    try:
-        reference_schema = Schema.from_schema_file(ref_dir / SCHEMA_FILE)
-        view_schema.merge(reference_schema, add_missing_fields=False)
-    except Exception as e:
-        logging.info(f"Unable to open reference schema; unable to enrich schema: {e}")
-
-    view_schema.to_yaml_file(view_directory / SCHEMA_FILE)
+    if ref_schema is not None:
+        # Optionally enrich the view schema if we have a valid table reference
+        try:
+            view_schema.merge(
+                ref_schema,
+                attributes=["description"],
+                ignore_missing_fields=True,
+                add_missing_fields=False,
+            )
+        except Exception as e:
+            # This is a broad exception raised upstream
+            # TODO: Update this and upstream to raise more specific exception
+            logging.warning(f"Failed to merge schemas {ref_dir} and {view.path}: {e}")
+    view_schema.to_yaml_file(view_schema_path)
 
 
 @click.command("generate")
@@ -122,6 +139,8 @@ def generate(target_project, output_dir, parallelism, use_cloud_function):
     We dry-run to get the schema data and where possible we enrich the
     view schemas with underlying table descriptions.
     """
+    print("Generating schemas for derived views")
+
     project_path = Path(f"{output_dir}/{target_project}")
     view_files = project_path.glob("*/*/view.sql")
 

@@ -276,7 +276,6 @@ DELETE_TARGETS: DeleteIndex = {
     DeleteTarget(table="telemetry_stable.sync_v5", field=SYNC_IDS): SYNC_SOURCES,
     # fxa
     client_id_target(table="firefox_accounts_derived.events_daily_v1"): FXA_SRC,
-    client_id_target(table="firefox_accounts_derived.users_first_seen_v1"): FXA_SRC,
     client_id_target(table="firefox_accounts_derived.funnel_events_source_v1"): FXA_SRC,
     user_id_target(
         table="firefox_accounts_derived.fxa_amplitude_export_v1"
@@ -315,7 +314,6 @@ DELETE_TARGETS: DeleteIndex = {
     ): FXA_HMAC_SRC,
     fxa_user_id_target(table="firefox_accounts_derived.fxa_oauth_events_v1"): FXA_SRC,
     fxa_user_id_target(table="firefox_accounts_derived.fxa_stdout_events_v1"): FXA_SRC,
-    fxa_user_id_target(table="firefox_accounts_derived.fxa_server_events_v1"): FXA_SRC,
     user_id_target(table="firefox_accounts_derived.fxa_users_daily_v1"): FXA_SRC,
     user_id_target(table="firefox_accounts_derived.fxa_users_daily_v2"): FXA_SRC,
     user_id_target(table="firefox_accounts_derived.fxa_users_first_seen_v1"): FXA_SRC,

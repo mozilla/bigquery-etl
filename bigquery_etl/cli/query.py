@@ -700,13 +700,6 @@ def _get_partition(
     help="How many threads to run backfill in parallel",
 )
 @click.option(
-    "--no_partition",
-    "--no-partition",
-    is_flag=True,
-    default=False,
-    help="Disable writing results to a partition. Overwrites entire destination table.",
-)
-@click.option(
     "--destination_table",
     "--destination-table",
     required=False,
@@ -730,7 +723,6 @@ def backfill(
     dry_run,
     max_rows,
     parallelism,
-    no_partition,
     destination_table,
     checks,
 ):

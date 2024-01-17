@@ -12,8 +12,8 @@ description: |-
   effectively appeared on that date. The submission_date indicates
   when the server received the data.
 
-  The query for this table overwrites the whole table instead of writing to
-  a single partition, so manual backfills must use parameter --no_partition.
+  Note that the query for this table overwrites the whole table instead of writing to
+  a single partition.
 
   Proposal:
   https://docs.google.com/document/d/12bj4DhCybelqHVgOVq8KJlzgtbbUw3f68palNrv-gaM/.

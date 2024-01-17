@@ -104,9 +104,7 @@ FROM
   client_days
 FULL OUTER JOIN
   searches AS metrics_searches
-USING
-  (client_id, sample_id, submission_date)
+  USING (client_id, sample_id, submission_date)
 FULL OUTER JOIN
   new_activations
-USING
-  (client_id, sample_id, submission_date)
+  USING (client_id, sample_id, submission_date)

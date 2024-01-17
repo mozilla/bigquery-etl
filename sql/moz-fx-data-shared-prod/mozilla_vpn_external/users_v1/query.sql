@@ -16,5 +16,4 @@ FROM
   ) AS _current
 FULL JOIN
   users_v1 AS _previous
-USING
-  (id)
+  USING (id)

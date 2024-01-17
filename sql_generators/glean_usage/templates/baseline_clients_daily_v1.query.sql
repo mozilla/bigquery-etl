@@ -6,7 +6,6 @@
   PARTITION BY
     submission_date
   CLUSTER BY
-    is_new_profile,
     normalized_channel,
     sample_id
   OPTIONS
@@ -145,8 +144,7 @@ joined as (
     windowed AS cd
   LEFT JOIN
     `{{ first_seen_table }}` AS cfs
-  USING
-    (client_id)
+    USING (client_id)
   WHERE
     _n = 1
 )

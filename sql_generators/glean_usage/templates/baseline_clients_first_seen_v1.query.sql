@@ -26,8 +26,7 @@ _current AS (
     _baseline
   LEFT JOIN
     _core_clients_first_seen
-  USING
-    (client_id)
+    USING (client_id)
 ),
 _previous AS (
   SELECT
@@ -43,8 +42,7 @@ _previous AS (
     `{{ first_seen_table }}` fs
   LEFT JOIN
     _core_clients_first_seen core
-  USING
-    (client_id)
+    USING (client_id)
   WHERE
     fs.first_seen_date > "2010-01-01"
     AND fs.first_seen_date < @submission_date
@@ -89,8 +87,7 @@ _previous AS (
     _current
   FULL JOIN
     _previous
-  USING
-    (client_id)
+    USING (client_id)
 )
 
 -- added this as the result of bug#1788650

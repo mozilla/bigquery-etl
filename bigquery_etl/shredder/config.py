@@ -101,11 +101,9 @@ FIREFOX_IOS_SRC = DeleteSource(
     table="firefox_ios.deletion_request", field=GLEAN_CLIENT_ID
 )
 FXA_HMAC_SRC = DeleteSource(
-    table="firefox_accounts_derived.fxa_delete_events_v1", field="hmac_user_id"
+    table="firefox_accounts.fxa_delete_events", field="hmac_user_id"
 )
-FXA_SRC = DeleteSource(
-    table="firefox_accounts_derived.fxa_delete_events_v1", field=USER_ID
-)
+FXA_SRC = DeleteSource(table="firefox_accounts.fxa_delete_events", field=USER_ID)
 REGRETS_SRC = DeleteSource(
     table="regrets_reporter_stable.regrets_reporter_update_v1",
     field="data_deletion_request.extension_installation_uuid",
@@ -118,7 +116,7 @@ SYNC_SOURCES = (
         field="payload.scalars.parent.deletion_request_sync_device_id",
     ),
     DeleteSource(
-        table="firefox_accounts_derived.fxa_delete_events_v1",
+        table="firefox_accounts.fxa_delete_events",
         field="SUBSTR(hmac_user_id, 0, 32)",
     ),
 )

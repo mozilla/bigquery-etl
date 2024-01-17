@@ -8,8 +8,7 @@ FROM
   `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_users_services_daily_v1` AS fxa
 LEFT JOIN
   `moz-fx-data-shared-prod.static.country_names_v1` AS cn
-ON
-  cn.name = fxa.country
+  ON cn.name = fxa.country
 -- Once we move over to using v2 the below code should enable us
 -- to remain compatible with any downstream dependencies
 -- until downstream processes are updated

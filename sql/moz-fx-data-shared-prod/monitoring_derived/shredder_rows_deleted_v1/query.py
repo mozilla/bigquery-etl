@@ -54,8 +54,7 @@ FROM
   shredder
 JOIN
   successful_jobs
-USING
-  (project_id, job_id)
+  USING (project_id, job_id)
 """
 
 parser = ArgumentParser()

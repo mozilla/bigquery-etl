@@ -65,8 +65,7 @@ new_primary_event_types AS (
     current_events
   LEFT JOIN
     event_types
-  USING
-    (category, event)
+    USING (category, event)
   WHERE
     event_types.event IS NULL
   GROUP BY
@@ -114,16 +113,13 @@ new_event_property_indices AS (
     UNNEST(extra) AS event_property
   LEFT JOIN
     (SELECT * FROM event_types, UNNEST(event_properties)) event_types
-  USING
-    (category, event, key)
+    USING (category, event, key)
   JOIN
     all_primary_event_types
-  USING
-    (event, category)
+    USING (event, category)
   LEFT JOIN
     UNNEST(CAST(['time_ms'] AS ARRAY<STRING>)) skipped_property
-  ON
-    skipped_property = event_property.key
+    ON skipped_property = event_property.key
   WHERE
     skipped_property IS NULL
     AND event_types.event IS NULL
@@ -186,15 +182,13 @@ new_event_property_value_indices AS (
         UNNEST(event_properties) AS existing_event_property,
         UNNEST(value) AS `values`
     ) AS existing_event_type_values
-  ON
-    current_events.category = existing_event_type_values.category
+    ON current_events.category = existing_event_type_values.category
     AND current_events.event = existing_event_type_values.event
     AND event_property.key = existing_event_type_values.existing_event_property.key
     AND event_property.value = existing_event_type_values.`values`.key
   JOIN
     all_event_property_indices
-  ON
-    all_event_property_indices.category = current_events.category
+    ON all_event_property_indices.category = current_events.category
     AND all_event_property_indices.event = current_events.event
     AND all_event_property_indices.event_property = event_property.key
   WHERE
@@ -244,8 +238,7 @@ per_event_property AS (
     all_event_property_value_indices
   INNER JOIN
     all_event_property_indices
-  USING
-    (category, event, event_property)
+    USING (category, event, event_property)
   GROUP BY
     category,
     event,
@@ -272,8 +265,7 @@ per_event AS (
     all_primary_event_types
   LEFT JOIN
     per_event_property
-  USING
-    (category, event)
+    USING (category, event)
   GROUP BY
     category,
     event,

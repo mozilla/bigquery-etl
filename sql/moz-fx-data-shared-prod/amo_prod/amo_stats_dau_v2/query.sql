@@ -196,25 +196,19 @@ FROM
   total_dau
 LEFT JOIN
   per_addon_version
-USING
-  (submission_date, addon_id)
+  USING (submission_date, addon_id)
 LEFT JOIN
   per_app_version
-USING
-  (submission_date, addon_id)
+  USING (submission_date, addon_id)
 LEFT JOIN
   per_fenix_build
-USING
-  (submission_date, addon_id)
+  USING (submission_date, addon_id)
 LEFT JOIN
   per_locale
-USING
-  (submission_date, addon_id)
+  USING (submission_date, addon_id)
 LEFT JOIN
   per_country
-USING
-  (submission_date, addon_id)
+  USING (submission_date, addon_id)
 LEFT JOIN
   per_app_os
-USING
-  (submission_date, addon_id)
+  USING (submission_date, addon_id)

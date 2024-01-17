@@ -157,7 +157,7 @@ fields:
   description:
 - mode: NULLABLE
   name: installs
-  type: INTT64
+  type: INT64
   description: Successful Installs
 - mode: NULLABLE
   name: unsuccessful_installs

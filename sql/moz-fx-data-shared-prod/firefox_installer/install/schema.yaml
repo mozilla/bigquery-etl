@@ -379,3 +379,11 @@ fields:
   mode: NULLABLE
   description: True if the installer was run in silent mode (either from an MSI or
     with command-line parameters)
+- name: distribution_id
+  type: STRING
+  mode: NULLABLE
+  description: ID of partner distribution, defaulting to 0 for Mozilla distributions
+- name: distribution_version
+  type: STRING
+  mode: NULLABLE
+  description: Version of partner distribution, defaulting to 0 for Mozilla distributions

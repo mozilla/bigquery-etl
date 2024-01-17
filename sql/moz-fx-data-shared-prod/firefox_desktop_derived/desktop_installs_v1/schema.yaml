@@ -20,53 +20,53 @@ fields:
   type: STRING
   description: Funnelcake ID
 - mode: NULLABLE
-  name: experiment
+  name: attribution_experiment
   type: STRING
-  description: Experiment
+  description: Attribution Experiment
 - mode: NULLABLE
-  name: variation
+  name: attribution_variation
   type: STRING
-  description: Variation
+  description: Attribution Variation
 - mode: NULLABLE
-  name: nm
+  name: isp_name
   type: STRING
-  description: Name
+  description: ISP Name
 - mode: NULLABLE
-  name: organization
+  name: isp_organization
   type: STRING
-  description: Organization
+  description: ISP Organization
 - mode: NULLABLE
   name: ping_version
   type: STRING
   description: Only set for stub installer pings
 - mode: NULLABLE
-  name: campaign
+  name: attribution_campaign
   type: STRING
-  description: Campaign
+  description: Attribution Campaign
 - mode: NULLABLE
-  name: content
+  name: attribution_content
   type: STRING
-  description: Content
+  description: Attribution Content
 - mode: NULLABLE
-  name: dlsource
+  name: attribution_dlsource
   type: STRING
-  description: Download Source
+  description: Attribution Download Source
 - mode: NULLABLE
-  name: dltoken
+  name: attribution_dltoken
   type: STRING
-  description: Download Token - Unique token generated for the Firefox download
+  description: Attribution Download Token - Unique token generated for the Firefox download
 - mode: NULLABLE
-  name: medium
+  name: attribution_medium
   type: STRING
-  description: Medium
+  description: Attribution Medium
 - mode: NULLABLE
-  name: source
+  name: attribution_source
   type: STRING
-  description: Source
+  description: Attribution Source
 - mode: NULLABLE
-  name: ua
+  name: attribution_ua
   type: STRING
-  description: UA
+  description: Attribution UA
 - mode: NULLABLE
   name: city
   type: STRING
@@ -156,6 +156,14 @@ fields:
   type: INT64
   description:
 - mode: NULLABLE
-  name: download_date
+  name: installs
+  type: INT64
+  description: Successful Installs
+- mode: NULLABLE
+  name: unsuccessful_installs
+  type: INT64
+  description: Unsuccessful Installs
+- mode: NULLABLE
+  name: attribution_dltoken_date
   type: DATE
-  description: The date of download, sourced from download logs.
+  description: Attribution Download Token Date

@@ -3,7 +3,7 @@
             -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
 WITH download_token_info AS (
   SELECT
-    dltoken,
+    dltoken AS attribution_dltoken,
     download_date
   FROM
     `moz-fx-data-marketing-prod.ga_derived.downloads_with_attribution_v1`
@@ -15,18 +15,18 @@ install_ping AS (
     version,
     from_msi,
     funnelcake,
-    attribution.experiment,
-    attribution.variation,
-    metadata.isp.name AS nm,
-    metadata.isp.organization,
+    attribution.experiment AS attribution_experiment,
+    attribution.variation AS attribution_variation,
+    metadata.isp.name AS isp_name,
+    metadata.isp.organization AS isp_organization,
     ping_version,
-    attribution.campaign,
-    attribution.content,
-    attribution.dlsource,
-    attribution.dltoken,
-    attribution.medium,
-    attribution.source,
-    attribution.ua,
+    attribution.campaign AS attribution_campaign,
+    attribution.content AS attribution_content,
+    attribution.dlsource AS attribution_dlsource,
+    attribution.dltoken AS attribution_dltoken,
+    attribution.medium AS attribution_medium,
+    attribution.source AS attribution_source,
+    attribution.ua AS attribution_ua,
     metadata.geo.city,
     metadata.geo.country,
     metadata.geo.subdivision1,
@@ -99,18 +99,18 @@ SELECT
   install_ping.version,
   install_ping.from_msi,
   install_ping.funnelcake,
-  install_ping.experiment,
-  install_ping.variation,
-  install_ping.nm,
-  install_ping.organization,
+  install_ping.attribution_experiment,
+  install_ping.attribution_variation,
+  install_ping.isp_name,
+  install_ping.isp_organization,
   install_ping.ping_version,
-  install_ping.campaign,
-  install_ping.content,
-  install_ping.dlsource,
-  install_ping.dltoken,
-  install_ping.medium,
-  install_ping.source,
-  install_ping.ua,
+  install_ping.attribution_campaign,
+  install_ping.attribution_content,
+  install_ping.attribution_dlsource,
+  install_ping.attribution_dltoken,
+  install_ping.attribution_medium,
+  install_ping.attribution_source,
+  install_ping.attribution_ua,
   install_ping.city,
   install_ping.country,
   install_ping.subdivision1,
@@ -133,9 +133,11 @@ SELECT
   install_ping.new_launched,
   install_ping.sample_id,
   install_ping.install_attempts,
-  download_token_info.download_date
+  CASE WHEN succeeded is true then install_ping.install_attempts else 0 end AS installs,
+  CASE WHEN succeeded is false then install_ping.install_attempts else 0 end as unsuccessful_installs,
+  download_token_info.download_date AS attribution_dltoken_date
 FROM
   install_ping
 LEFT JOIN
   download_token_info
-  USING (dltoken)
+  USING (attribution_dltoken)

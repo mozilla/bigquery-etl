@@ -23,149 +23,105 @@ fields:
 - name: experiment
   type: STRING
   mode: NULLABLE
-  description: Experiment
 - name: variation
   type: STRING
   mode: NULLABLE
-  description: Variation
 - name: nm
   type: STRING
   mode: NULLABLE
-  description: Name
 - name: organization
   type: STRING
   mode: NULLABLE
-  description: Organization
 - name: ping_version
   type: STRING
   mode: NULLABLE
-  description: Only set for stub installer pings
 - name: campaign
   type: STRING
   mode: NULLABLE
-  description: Campaign
 - name: content
   type: STRING
   mode: NULLABLE
-  description: Content
 - name: dlsource
   type: STRING
   mode: NULLABLE
-  description: Download Source
 - name: dltoken
   type: STRING
   mode: NULLABLE
-  description: Download Token - Unique token generated for the Firefox download
 - name: medium
   type: STRING
   mode: NULLABLE
-  description: Medium
 - name: source
   type: STRING
   mode: NULLABLE
-  description: Source
 - name: ua
   type: STRING
   mode: NULLABLE
-  description: UA
 - name: city
   type: STRING
   mode: NULLABLE
-  description: City
 - name: country
   type: STRING
   mode: NULLABLE
-  description: Country
 - name: subdivision1
   type: STRING
   mode: NULLABLE
-  description: First major country subdivision, typically a state, province, or country
 - name: normalized_country_code
   type: STRING
   mode: NULLABLE
-  description: An ISO 3166-1 alpha-2 country code
 - name: locale
   type: STRING
   mode: NULLABLE
-  description: Locale of the installer and the installed product, in AB_CD format
 - name: os_version
   type: STRING
   mode: NULLABLE
-  description: Windows version number in major.minor build format
 - name: build_channel
   type: STRING
   mode: NULLABLE
-  description: Channel the installer was built with branding for
 - name: build_id
   type: STRING
   mode: NULLABLE
-  description: Build ID of the installed product.  Absent for a failed stub installation.
 - name: update_channel
   type: STRING
   mode: NULLABLE
-  description: Value of MOZ_UPDATE_CHANNEL the installer was built with.  Generally
-    the same as build_channel
 - name: had_old_install
   type: BOOLEAN
   mode: NULLABLE
-  description: True if at least one existing installation of Firefox was found on
-    the system prior to this installation
 - name: old_default
   type: BOOLEAN
   mode: NULLABLE
-  description: True if an existing Firefox installation was already set as the default
-    browser
 - name: old_version
   type: STRING
   mode: NULLABLE
-  description: Version of the previously installed Firefox, if any
 - name: manual_download
   type: BOOLEAN
   mode: NULLABLE
-  description: null
 - name: silent
   type: BOOLEAN
   mode: NULLABLE
-  description: True if the installer was run in silent mode (either from an MSI or
-    with command-line parameters)
 - name: user_cancelled
   type: BOOLEAN
   mode: NULLABLE
-  description: True if the installation failed because the user cancelled it or closed
-    the window
 - name: succeeded
   type: BOOLEAN
   mode: NULLABLE
-  description: True if the new installation was successfully created.  If false, check
-    the error status fields for the failure reason.
 - name: profile_cleanup_prompt
   type: STRING
   mode: NULLABLE
-  description: Which type of profile cleanup prompt was shown (reinstall or paveover)
 - name: profile_cleanup_requested
   type: BOOLEAN
   mode: NULLABLE
-  description: True if profile cleanup prompt was shown and the user accepted the
-    prompt
 - name: new_default
   type: BOOLEAN
   mode: NULLABLE
-  description: True if the installation was successfully set as the default browser
 - name: new_launched
   type: BOOLEAN
   mode: NULLABLE
-  description: True if the installation succeeded and we were able to launch the newly
-    installed application
 - name: sample_id
   type: INTEGER
   mode: NULLABLE
-  description: Hashed version of client ID (if present), useful for partitioning;
-    ranges from 0 - 99
 - name: install_attempts
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: download_date
   type: DATE
   mode: NULLABLE
-  description: The date of download, sourced from download logs.

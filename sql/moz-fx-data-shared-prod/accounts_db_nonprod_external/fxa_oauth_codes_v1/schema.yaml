@@ -1,10 +1,12 @@
 fields:
 - name: clientId
-  type: BYTES
+  type: STRING
   mode: NULLABLE
+  description: clientId in hexadecimal format.
 - name: userId
-  type: BYTES
+  type: STRING
   mode: NULLABLE
+  description: userId in hexadecimal format.
 - name: scope
   type: STRING
   mode: NULLABLE
@@ -30,5 +32,6 @@ fields:
   type: TIMESTAMP
   mode: NULLABLE
 - name: sessionTokenId
-  type: BYTES
+  type: STRING
   mode: NULLABLE
+  description: sessionTokenId in hexadecimal format.

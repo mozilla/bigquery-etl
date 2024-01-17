@@ -5,6 +5,15 @@
 {{ is_unique(columns=["datetime", "city", "country"], where="DATE(`datetime`) = @submission_date") }}
 
 #fail
+/*
+  This statement used to contain the following fields,
+  but these are sometimes missing from country/city combinations
+  See https://sql.telemetry.mozilla.org/queries/96541/source
+  and bug 1868674
+
+  "avg_tls_handshake_time"
+  "count_dns_failure"
+*/
 {{ not_null(columns=[
   "datetime",
   "city",
@@ -19,17 +28,9 @@
   "missing_dns_success",
   "avg_dns_failure_time",
   "missing_dns_failure",
-  "count_dns_failure",
   "ssl_error_prop",
-  "avg_tls_handshake_time"
 
 ], where="DATE(`datetime`) = @submission_date") }}
 
-#fail
-SELECT IF(
-  COUNTIF(LENGTH(country) <> 2) > 0,
-  ERROR("Some values in this field do not adhere to the ISO 3166-1 specification (2 character country code)."),
-  null
-)
-FROM `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`
-WHERE DATE(`datetime`) = @submission_date;
+#warn
+{{ value_length(column="country", expected_length=2, where="DATE(`datetime`) = @submission_date") }}

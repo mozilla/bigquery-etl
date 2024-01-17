@@ -1,6 +1,6 @@
 SELECT
   TO_HEX(uid) AS uid,
-  deviceId,
+  TO_HEX(deviceId) AS deviceId,
   commandId,
 FROM
   EXTERNAL_QUERY(

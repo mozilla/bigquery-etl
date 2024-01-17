@@ -1,0 +1,68 @@
+---
+fields:
+- name: submission_timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: document_id
+  type: STRING
+  mode: NULLABLE
+- name: os
+  type: STRING
+  mode: NULLABLE
+- name: async_shutdown_timeout
+  type: STRING
+  mode: NULLABLE
+- name: ipc_channel_error
+  type: STRING
+  mode: NULLABLE
+- name: oom_allocation_size
+  type: STRING
+  mode: NULLABLE
+- name: moz_crash_reason
+  type: STRING
+  mode: NULLABLE
+- name: reason
+  type: STRING
+  mode: NULLABLE
+- name: crashing_thread
+  type: INTEGER
+  mode: NULLABLE
+- name: threads
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: frames
+    type: RECORD
+    mode: REPEATED
+    fields:
+    - name: module_offset
+      type: STRING
+      mode: NULLABLE
+    - name: module
+      type: STRING
+      mode: NULLABLE
+    - name: function
+      type: STRING
+      mode: NULLABLE
+    - name: function_offset
+      type: STRING
+      mode: NULLABLE
+    - name: file
+      type: STRING
+      mode: NULLABLE
+    - name: line
+      type: INTEGER
+      mode: NULLABLE
+    - name: inlines
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: function
+        type: STRING
+        mode: NULLABLE
+      - name: file
+        type: STRING
+        mode: NULLABLE
+      - name: line
+        type: INTEGER
+        mode: NULLABLE

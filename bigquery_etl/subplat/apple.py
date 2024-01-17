@@ -9,8 +9,8 @@ from io import BytesIO
 from tempfile import TemporaryFile
 from typing import Optional
 
-import click
 import requests
+import rich_click as click
 from authlib.jose import jwt
 from google.cloud import bigquery
 

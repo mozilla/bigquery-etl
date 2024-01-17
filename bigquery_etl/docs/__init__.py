@@ -7,12 +7,9 @@ import sys
 import tempfile
 from pathlib import Path
 
-import click
+import rich_click as click
 
 from bigquery_etl.config import ConfigLoader
-from bigquery_etl.docs.derived_datasets.generate_derived_dataset_docs import (
-    generate_derived_dataset_docs,
-)
 from bigquery_etl.dryrun import DryRun
 
 EXAMPLE_DIR = "examples"
@@ -63,7 +60,7 @@ log_level_option = click.option(
 def generate(project_dirs, docs_dir, output_dir, log_level):
     """Generate documentation for project."""
     from bigquery_etl.docs.bqetl.generate_bqetl_docs import generate_bqetl_docs
-    from bigquery_etl.docs.mozfun.generate_mozfun_docs import generate_mozfun_docs
+    from bigquery_etl.docs.mozfun.generate_mozfun_docs import generate_udf_docs
 
     out_dir = os.path.join(output_dir, "docs")
 
@@ -86,15 +83,9 @@ def generate(project_dirs, docs_dir, output_dir, log_level):
     # generate bqetl command docs
     generate_bqetl_docs(Path(out_dir) / "bqetl.md")
 
-    # move files to docs/
+    # generate docs
     for project_dir in project_dirs:
-        if not os.path.isdir(project_dir):
-            continue
-
-        if "mozfun" in project_dir:
-            generate_mozfun_docs(out_dir, project_dir)
-        else:
-            generate_derived_dataset_docs(out_dir, project_dir)
+        generate_udf_docs(out_dir, project_dir)
 
 
 @docs_.command("validate", help="Validate the project docs.")

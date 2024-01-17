@@ -1,0 +1,17 @@
+friendly_name: mdn_rumba
+dataset_base_acl: syndicate
+description: mdn_rumba syndicate views
+user_facing: true
+labels: {}
+syndication:
+  stage:
+    syndicated_project: "moz-fx-mdn-nonprod"
+    syndicated_dataset: "mdn_rumba"
+  prod:
+    syndicated_project: "moz-fx-mdn-prod"
+    syndicated_dataset: "mdn_rumba"
+  administer_views: false
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

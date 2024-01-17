@@ -191,3 +191,12 @@ fields:
 - name: customize_home_recently_visited
   type: INTEGER
   mode: NULLABLE
+- name: awesomebar_top_users
+  type: INTEGER
+  mode: NULLABLE
+- name: awesomebar_bottom_users
+  type: INTEGER
+  mode: NULLABLE
+- name: awesomebar_null_users
+  type: INTEGER
+  mode: NULLABLE

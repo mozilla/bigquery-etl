@@ -18,14 +18,6 @@ WITH first_seen AS (
     submission_date = @submission_date
     AND client_id IS NOT NULL
 ),
--- Find the most recent activation record per client_id.
-activations AS (
-  SELECT
-    client_id,
-    is_activated,
-  FROM
-    firefox_ios_derived.new_profile_activation_v2
-),
 -- Find earliest data per client from the first_session ping.
 first_session_ping_base AS (
   SELECT
@@ -175,7 +167,6 @@ SELECT
   COALESCE(_previous.device_model, _current.device_model) AS device_model,
   COALESCE(_previous.os_version, _current.os_version) AS os_version,
   COALESCE(_previous.app_version, _current.app_version) AS app_version,
-  activations.is_activated,
   -- below is to avoid mix and matching different adjust attributes
   -- from different records. This way we always treat them as a single "unit"
   IF(
@@ -217,6 +208,3 @@ FROM
 FULL OUTER JOIN
   _previous
   USING (client_id, sample_id)
-LEFT JOIN
-  activations
-  USING (client_id)

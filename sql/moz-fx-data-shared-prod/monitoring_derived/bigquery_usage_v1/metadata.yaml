@@ -13,3 +13,4 @@ bigquery:
     type: day
     field: creation_date
     require_partition_filter: true
+deprecated: true

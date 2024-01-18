@@ -61,12 +61,6 @@ fields:
     App display version for this client installation.
 
 - mode: NULLABLE
-  name: is_activated
-  type: BOOLEAN
-  description: |
-    !!! INVALID !!! Please use firefox_ios.clients_activation instead.
-
-- mode: NULLABLE
   name: submission_timestamp
   type: TIMESTAMP
   description: |

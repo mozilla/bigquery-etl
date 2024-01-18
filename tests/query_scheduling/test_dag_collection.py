@@ -674,3 +674,84 @@ class TestDagCollection:
 
         assert dag_with_upstream_dependencies == expected_dag_with_upstream_dependencies
         assert dag_external_dependency == expected_dag_external_dependency
+
+    def test_to_airflow_with_check_table_dependencies(self, tmp_path):
+        metadata = Metadata(
+            "test",
+            "test",
+            ["test@example.org"],
+            {},
+            {
+                "dag_name": "bqetl_test_dag",
+                "default_args": {"owner": "test@example.org"},
+            },
+        )
+
+        table_task1 = Task.of_query(
+            tmp_path / "test-project" / "test" / "table1_v1" / "query.sql",
+            metadata,
+        )
+        table_task1_ref = TaskRef(
+            dag_name=table_task1.dag_name, task_id=table_task1.task_name
+        )
+
+        os.makedirs(tmp_path / "test-project" / "test" / "table1_v1")
+        query_file = tmp_path / "test-project" / "test" / "table1_v1" / "query.sql"
+        query_file.write_text("SELECT 1")
+
+        checks_task1 = Task.of_dq_check(
+            tmp_path / "test-project" / "test" / "table1_v1" / "checks.sql",
+            is_check_fail=True,
+            metadata=metadata,
+        )
+
+        checks_task1.upstream_dependencies.append(table_task1_ref)
+
+        check_file1 = tmp_path / "test-project" / "test" / "table1_v1" / "checks.sql"
+        check_file1.write_text("SELECT * FROM `test-project`.test.table2_v1")
+
+        table_task2 = Task.of_query(
+            tmp_path / "test-project" / "test" / "table2_v1" / "query.sql",
+            metadata,
+        )
+        table_task2_ref = TaskRef(
+            dag_name=table_task2.dag_name, task_id=table_task2.task_name
+        )
+
+        checks_task1.upstream_dependencies.append(table_task2_ref)
+
+        os.makedirs(tmp_path / "test-project" / "test" / "table2_v1")
+        query_file = tmp_path / "test-project" / "test" / "table2_v1" / "query.sql"
+        query_file.write_text("SELECT 2")
+
+        dags = DagCollection.from_dict(
+            {
+                "bqetl_test_dag": {
+                    "schedule_interval": "daily",
+                    "default_args": {
+                        "owner": "test@example.org",
+                        "start_date": "2020-05-25",
+                    },
+                }
+            }
+        ).with_tasks(
+            [
+                table_task1,
+                table_task2,
+                checks_task1,
+            ]
+        )
+
+        dags.to_airflow_dags(tmp_path)
+
+        expected_dag_with_upstream_dependencies = (
+            (TEST_DIR / "data" / "dags" / "test_dag_with_check_table_dependencies")
+            .read_text()
+            .strip()
+        )
+
+        dag_with_upstream_dependencies = (
+            (tmp_path / "bqetl_test_dag.py").read_text().strip()
+        )
+
+        assert dag_with_upstream_dependencies == expected_dag_with_upstream_dependencies

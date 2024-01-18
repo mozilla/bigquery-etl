@@ -26,14 +26,6 @@ WITH first_seen AS (
     submission_date < CURRENT_DATE
     AND client_id IS NOT NULL
 ),
--- Find the most recent activation record per client_id.
-activations AS (
-  SELECT
-    client_id,
-    is_activated,
-  FROM
-    firefox_ios_derived.new_profile_activation_v2
-),
 -- Find earliest data per client from the first_session ping.
 first_session_ping_base AS (
   SELECT
@@ -168,10 +160,6 @@ SELECT
   app_version,
   adjust_info.*,
   metadata,
-  activations.is_activated,
   is_suspicious_device_client,
 FROM
   _current
-LEFT JOIN
-  activations
-  USING (client_id)

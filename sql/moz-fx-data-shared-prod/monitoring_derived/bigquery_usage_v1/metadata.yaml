@@ -4,6 +4,10 @@ owners:
 - wichan@mozilla.com
 labels:
   incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_monitoring
+  arguments: ["--date", "{{ ds }}"]
 bigquery:
   time_partitioning:
     type: day

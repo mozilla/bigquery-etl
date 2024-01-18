@@ -641,8 +641,7 @@ fenix_metrics_with_locale AS (
     fenix_metrics
   LEFT JOIN
     fenix_client_locales
-  USING
-    (client_id)
+    USING (client_id)
 ),
 glean_metrics AS (
   SELECT

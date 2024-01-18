@@ -61,12 +61,6 @@ fields:
     App display version for this client installation.
 
 - mode: NULLABLE
-  name: is_activated
-  type: BOOLEAN
-  description: |
-    Determines if a client is activated based on the activation metric and a 7 day lag.
-
-- mode: NULLABLE
   name: submission_timestamp
   type: TIMESTAMP
   description: |

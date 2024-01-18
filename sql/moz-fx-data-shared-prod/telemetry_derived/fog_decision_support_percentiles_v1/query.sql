@@ -292,8 +292,7 @@ FROM
   metrics_grouped
 FULL JOIN
   metrics_windowed
-USING
-  (channel, metric_name)
+  USING (channel, metric_name)
 UNION ALL
 SELECT
   @submission_date AS submission_date,
@@ -303,8 +302,7 @@ FROM
   baseline_grouped
 FULL JOIN
   baseline_windowed
-USING
-  (channel, metric_name)
+  USING (channel, metric_name)
 UNION ALL
 SELECT
   @submission_date AS submission_date,
@@ -314,8 +312,7 @@ FROM
   grouped
 FULL JOIN
   windowed
-USING
-  (channel, metric_name)
+  USING (channel, metric_name)
 ORDER BY
   metric_name,
   channel

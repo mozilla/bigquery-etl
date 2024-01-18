@@ -112,12 +112,10 @@ stripe_subscriptions AS (
     stripe_subscriptions_history
   LEFT JOIN
     standardized_country
-  USING
-    (country)
+    USING (country)
   LEFT JOIN
     users
-  USING
-    (fxa_uid)
+    USING (fxa_uid)
   WHERE
     "guardian_vpn_1" IN UNNEST(stripe_subscriptions_history.product_capabilities)
     OR "guardian_vpn_1" IN UNNEST(stripe_subscriptions_history.plan_capabilities)
@@ -173,8 +171,7 @@ apple_iap_subscriptions AS (
     `moz-fx-data-shared-prod`.subscription_platform_derived.apple_subscriptions_v1 AS subplat
   LEFT JOIN
     users
-  USING
-    (fxa_uid)
+    USING (fxa_uid)
   WHERE
     subplat.product_id = "org.mozilla.ios.FirefoxVPN"
     AND subplat.fxa_uid IS NOT NULL
@@ -243,12 +240,10 @@ google_iap_subscriptions AS (
     `moz-fx-data-shared-prod`.subscription_platform_derived.google_subscriptions_v1 AS subscriptions
   LEFT JOIN
     standardized_country
-  USING
-    (country)
+    USING (country)
   LEFT JOIN
     users
-  USING
-    (fxa_uid)
+    USING (fxa_uid)
   WHERE
     subscriptions.product_id = "org.mozilla.firefox.vpn"
 ),
@@ -283,8 +278,7 @@ subscription_last_touch_attributions AS (
     all_subscriptions AS subscriptions
   JOIN
     fxa_attributions
-  ON
-    subscriptions.fxa_uid = fxa_attributions.fxa_uid
+    ON subscriptions.fxa_uid = fxa_attributions.fxa_uid
     AND COALESCE(
       subscriptions.original_subscription_start_date,
       subscriptions.subscription_start_date,
@@ -314,8 +308,7 @@ all_subscriptions_with_attribution AS (
     all_subscriptions AS subscriptions
   LEFT JOIN
     subscription_last_touch_attributions AS attributions
-  ON
-    subscriptions.subscription_id = attributions.subscription_id
+    ON subscriptions.subscription_id = attributions.subscription_id
 ),
 all_subscriptions_with_end_date AS (
   SELECT

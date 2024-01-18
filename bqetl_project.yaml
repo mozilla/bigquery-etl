@@ -31,7 +31,6 @@ dry_run:
   - sql/moz-fx-data-shared-prod/app_store_external/**/*.sql
   - sql/moz-fx-data-shared-prod/app_store/**/*.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/bigquery_usage_v2/query.sql
-  - sql/moz-fx-data-shared-prod/monitoring_derived/deletion_request_volume_v1/query.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/schema_error_counts_v1/view.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/schema_error_counts_v2/query.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/suggest_impression_rate_v1/init.sql
@@ -63,6 +62,7 @@ dry_run:
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_auth_events_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_delete_events_v1/init.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_delete_events_v1/query.sql
+  - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_delete_events_v2/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_oauth_events_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_log_auth_events_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_log_content_events_v1/query.sql
@@ -423,3 +423,10 @@ generate:
     - mlhackweek_search
     - regrets_reporter
     - regrets_reporter_ucs
+    events_stream:
+      datasets:
+      - fenix
+      app_ids:
+      - org_mozilla_firefox
+      - org_mozilla_fenix
+      - org_mozilla_fenix_beta

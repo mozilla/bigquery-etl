@@ -37,8 +37,7 @@ final AS (
     telemetry_probes_with_expiration AS probes
   LEFT JOIN
     `telemetry_dev_cycle_derived.firefox_major_release_dates_v1` AS release_dates
-  ON
-    probes.channel = release_dates.channel
+    ON probes.channel = release_dates.channel
     AND probes.expired_version_helper = release_dates.version
 )
 SELECT

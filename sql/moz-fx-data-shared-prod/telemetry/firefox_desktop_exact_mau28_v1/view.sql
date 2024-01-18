@@ -48,11 +48,9 @@ FROM
   base
 FULL JOIN
   imputed_global
-USING
-  (submission_date)
+  USING (submission_date)
 FULL JOIN
   imputed_tier1
-USING
-  (submission_date)
+  USING (submission_date)
 ORDER BY
   submission_date

@@ -61,11 +61,10 @@ fennec_client_info AS (
     telemetry_derived.core_clients_last_seen_v1 clients_last_seen
   LEFT JOIN
     org_mozilla_firefox.migrated_clients migrated_clients
-  ON
     -- For Fennec, we only want to look at historical migration pings
     -- to see if this client has migrated. We use this to check if they
     -- were migrated today as well.
-    clients_last_seen.client_id = migrated_clients.fennec_client_id
+    ON clients_last_seen.client_id = migrated_clients.fennec_client_id
     AND clients_last_seen.submission_date >= migrated_clients.submission_date
   WHERE
     clients_last_seen.submission_date IN (
@@ -100,10 +99,9 @@ fenix_client_info AS (
     fenix_clients_last_seen clients_last_seen
   LEFT JOIN
     org_mozilla_firefox.migrated_clients migrated_clients
-  ON
     -- For Fenix, we don't care if there's a delay in the migration ping, we know they
     -- have been migrated the entire time
-    clients_last_seen.client_id = migrated_clients.fenix_client_id
+    ON clients_last_seen.client_id = migrated_clients.fenix_client_id
   WHERE
     clients_last_seen.submission_date = @submission_date
 ),
@@ -235,8 +233,7 @@ last_year AS (
     with_retention a
   INNER JOIN
     with_retention b
-  ON
-    DATE_SUB(a.date, INTERVAL 1 WEEK) = b.date
+    ON DATE_SUB(a.date, INTERVAL 1 WEEK) = b.date
     AND a.is_migrated = b.is_migrated
     AND a.app_name = b.app_name
     AND a.channel = b.channel
@@ -280,13 +277,10 @@ FROM
   _current
 LEFT JOIN
   last_week
-USING
-  (is_migrated, app_name, channel, manufacturer, country)
+  USING (is_migrated, app_name, channel, manufacturer, country)
 LEFT JOIN
   last_year
-USING
-  (is_migrated, app_name, channel, manufacturer, country)
+  USING (is_migrated, app_name, channel, manufacturer, country)
 LEFT JOIN
   all_migrated_clients
-USING
-  (app_name, channel, manufacturer, country)
+  USING (app_name, channel, manufacturer, country)

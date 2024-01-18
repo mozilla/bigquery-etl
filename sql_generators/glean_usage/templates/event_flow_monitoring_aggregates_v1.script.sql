@@ -21,7 +21,7 @@ CREATE TEMP TABLE
         {% if not loop.first -%}
           UNION ALL
         {% endif %}
-        {% if dataset_id not in ["telemetry", "accounts_frontend", "accounts_backend"] %}
+        {% if app['bq_dataset_family'] not in ["telemetry", "accounts_frontend", "accounts_backend"] %}
           SELECT DISTINCT
             @submission_date AS submission_date,
             ext.value AS flow_id,
@@ -32,25 +32,25 @@ CREATE TEMP TABLE
           -- limit event.timestamp, otherwise this will cause an overflow
               INTERVAL LEAST(event_timestamp, 20000000000000) MILLISECOND
             ) AS timestamp,
-            "{{ app }}" AS normalized_app_name,
+            "{{ app['canonical_app_name'] }}" AS normalized_app_name,
             client_info.app_channel AS channel
           FROM
-            `moz-fx-data-shared-prod.{{ app }}.events_unnested`,
+            `moz-fx-data-shared-prod.{{ app['app_name'] }}.events_unnested`,
             UNNEST(event_extra) AS ext
           WHERE
             DATE(submission_timestamp) = @submission_date
             AND ext.key = "flow_id"
-        {% elif dataset_id in ["accounts_frontend", "accounts_backend"] %}
+        {% elif app['bq_dataset_family'] in ["accounts_frontend", "accounts_backend"] %}
           SELECT DISTINCT
             @submission_date AS submission_date,
             metrics.string.session_flow_id AS flow_id,
-            NULL AS category,
+            CAST(NULL AS STRING) AS category,
             metrics.string.event_name AS name,
             submission_timestamp AS timestamp,
-            "{{ app }}" AS normalized_app_name,
+            "{{ app['canonical_app_name'] }}" AS normalized_app_name,
             client_info.app_channel AS channel
           FROM
-            `moz-fx-data-shared-prod.{{ app }}.accounts_events`
+            `moz-fx-data-shared-prod.{{ app['app_name'] }}.accounts_events`
           WHERE
             DATE(submission_timestamp) = @submission_date
             AND metrics.string.session_flow_id != ""
@@ -101,8 +101,7 @@ CREATE TEMP TABLE
         unnested_events AS prev_event
       INNER JOIN
         unnested_events AS cur_event
-      ON
-        prev_event.flow_id = cur_event.flow_id
+        ON prev_event.flow_id = cur_event.flow_id
         AND prev_event.event_offset = cur_event.event_offset - 1
       GROUP BY
         flow_id,
@@ -168,10 +167,8 @@ CREATE TEMP TABLE
 
 MERGE
   `{{ project_id }}.{{ target_table }}` r
-USING
-  event_flows f
-ON
-  r.flow_id = f.flow_id
+  USING event_flows f
+  ON r.flow_id = f.flow_id
   -- look back up to 3 days to see if a flow has seen new events and needs to be replaced
   AND r.submission_date > DATE_SUB(@submission_date, INTERVAL 3 DAY)
 WHEN NOT MATCHED

@@ -15,8 +15,7 @@ WITH campaigns_with_persisted_ids AS (
     `moz-fx-data-bq-fivetran`.google_ads.campaign_conversions_by_date
   JOIN
     `moz-fx-data-shared-prod`.google_ads_derived.campaign_names_map_v1
-  USING
-    (campaign_id)
+    USING (campaign_id)
   GROUP BY
     date,
     campaign_name,
@@ -105,12 +104,10 @@ FROM
   stats
 JOIN
   campaigns_with_persisted_ids
-USING
-  (date, id)
+  USING (date, id)
 JOIN
   install_dou_metrics
-ON
-  (stats.date = install_dou_metrics.date)
+  ON (stats.date = install_dou_metrics.date)
   AND (
     campaigns_with_persisted_ids.fenix_compatible_campaign_name = install_dou_metrics.fenix_marketing_metrics_adjust_campaign
   )

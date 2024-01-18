@@ -25,8 +25,7 @@ joined AS (
     events
   INNER JOIN
     messaging_system.event_types event_types
-  USING
-    (category, event)
+    USING (category, event)
 )
 SELECT
   submission_date,

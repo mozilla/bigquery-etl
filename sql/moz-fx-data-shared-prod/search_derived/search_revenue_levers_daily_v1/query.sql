@@ -209,8 +209,7 @@ mobile_data_google AS (
     `moz-fx-data-shared-prod.search.mobile_search_clients_engines_sources_daily`
   INNER JOIN
     mobile_dau_data dau
-  USING
-    (submission_date)
+    USING (submission_date)
   WHERE
     submission_date = @submission_date
     AND country NOT IN ('RU', 'UA', 'BY', 'TR', 'KZ', 'CN')
@@ -288,8 +287,7 @@ mobile_data_bing_ddg AS (
     `moz-fx-data-shared-prod.search.mobile_search_clients_engines_sources_daily`
   INNER JOIN
     mobile_dau_data dau
-  USING
-    (submission_date)
+    USING (submission_date)
   WHERE
     submission_date = @submission_date
     AND (

@@ -1,0 +1,12 @@
+---
+# yamllint disable rule:line-length
+friendly_name: Live Pings for `activity_stream_live.impression_stats_v1`
+description: |-
+  A live view of pings sent to the
+  `activity_stream_live.impression_stats_v1` table.
+  
+  Clustering fields: `submission_timestamp`
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:mozsocial/prefect

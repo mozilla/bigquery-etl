@@ -156,12 +156,21 @@ user_id_target = partial(DeleteTarget, field=USER_ID)
 context_id_target = partial(DeleteTarget, field=CONTEXT_ID)
 
 DELETE_TARGETS: DeleteIndex = {
-    client_id_target(table="fenix_derived.new_profile_activation_v1"): FENIX_SRC,
     client_id_target(table="fenix_derived.firefox_android_clients_v1"): FENIX_SRC,
-    client_id_target(table="search_derived.acer_cohort_v1"): DESKTOP_SRC,
+    client_id_target(table="fenix_derived.new_profile_activation_v1"): FENIX_SRC,
+    client_id_target(
+        table="firefox_ios_derived.firefox_ios_clients_v1"
+    ): FIREFOX_IOS_SRC,
     client_id_target(
         table="firefox_ios_derived.clients_activation_v1"
     ): FIREFOX_IOS_SRC,
+    client_id_target(
+        table="fenix_derived.funnel_retention_clients_week_2_v1"
+    ): FENIX_SRC,
+    client_id_target(
+        table="fenix_derived.funnel_retention_clients_week_4_v1"
+    ): FENIX_SRC,
+    client_id_target(table="search_derived.acer_cohort_v1"): DESKTOP_SRC,
     client_id_target(
         table="search_derived.mobile_search_clients_daily_v1"
     ): DESKTOP_SRC,

@@ -303,18 +303,6 @@ DELETE_TARGETS: DeleteIndex = {
     fxa_user_id_target(
         table="firefox_accounts_derived.fxa_gcp_stdout_events_v1"
     ): FXA_SRC,
-    fxa_user_id_target(
-        table="firefox_accounts_derived.docker_fxa_customs_sanitized_v1"
-    ): FXA_SRC,
-    fxa_user_id_target(
-        table="firefox_accounts_derived.docker_fxa_customs_sanitized_v2"
-    ): FXA_SRC,
-    fxa_user_id_target(
-        table="firefox_accounts_derived.docker_fxa_admin_server_sanitized_v1"
-    ): FXA_SRC,
-    fxa_user_id_target(
-        table="firefox_accounts_derived.docker_fxa_admin_server_sanitized_v2"
-    ): FXA_SRC,
     user_id_target(
         table="firefox_accounts_derived.fxa_log_device_command_events_v1"
     ): FXA_HMAC_SRC,

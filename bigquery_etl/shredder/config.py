@@ -159,6 +159,9 @@ DELETE_TARGETS: DeleteIndex = {
     client_id_target(table="fenix_derived.firefox_android_clients_v1"): FENIX_SRC,
     client_id_target(table="fenix_derived.new_profile_activation_v1"): FENIX_SRC,
     client_id_target(
+        table="firefox_ios_derived.firefox_ios_clients_v1"
+    ): FIREFOX_IOS_SRC,
+    client_id_target(
         table="firefox_ios_derived.clients_activation_v1"
     ): FIREFOX_IOS_SRC,
     client_id_target(

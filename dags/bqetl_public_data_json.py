@@ -67,6 +67,34 @@ with DAG(
         image=docker_image,
     )
 
+    export_public_data_json_fenix_derived__fenix_use_counters__v2 = GKEPodOperator(
+        task_id="export_public_data_json_fenix_derived__fenix_use_counters__v2",
+        name="export_public_data_json_fenix_derived__fenix_use_counters__v2",
+        arguments=["script/publish_public_data_json"]
+        + [
+            "--query_file=sql/moz-fx-data-shared-prod/fenix_derived/fenix_use_counters_v2/query.sql"
+        ]
+        + ["--destination_table=fenix_use_counters${{ds_nodash}}"]
+        + ["--dataset_id=fenix_derived"]
+        + ["--project_id=moz-fx-data-shared-prod"]
+        + ["--parameter=submission_date:DATE:{{ds}}"],
+        image=docker_image,
+    )
+
+    export_public_data_json_firefox_desktop_derived__firefox_desktop_use_counters__v2 = GKEPodOperator(
+        task_id="export_public_data_json_firefox_desktop_derived__firefox_desktop_use_counters__v2",
+        name="export_public_data_json_firefox_desktop_derived__firefox_desktop_use_counters__v2",
+        arguments=["script/publish_public_data_json"]
+        + [
+            "--query_file=sql/moz-fx-data-shared-prod/firefox_desktop_derived/firefox_desktop_use_counters_v2/query.sql"
+        ]
+        + ["--destination_table=firefox_desktop_use_counters${{ds_nodash}}"]
+        + ["--dataset_id=firefox_desktop_derived"]
+        + ["--project_id=moz-fx-data-shared-prod"]
+        + ["--parameter=submission_date:DATE:{{ds}}"],
+        image=docker_image,
+    )
+
     export_public_data_json_glam_derived__client_probe_counts_firefox_desktop_beta__v1 = GKEPodOperator(
         task_id="export_public_data_json_glam_derived__client_probe_counts_firefox_desktop_beta__v1",
         name="export_public_data_json_glam_derived__client_probe_counts_firefox_desktop_beta__v1",
@@ -133,6 +161,14 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    export_public_data_json_fenix_derived__fenix_use_counters__v2.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    export_public_data_json_firefox_desktop_derived__firefox_desktop_use_counters__v2.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
     export_public_data_json_mozregression_aggregates__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
@@ -162,6 +198,8 @@ with DAG(
     public_data_gcs_metadata.set_upstream(
         [
             export_public_data_json_client_probe_processes__v1,
+            export_public_data_json_fenix_derived__fenix_use_counters__v2,
+            export_public_data_json_firefox_desktop_derived__firefox_desktop_use_counters__v2,
             export_public_data_json_glam_derived__client_probe_counts_firefox_desktop_beta__v1,
             export_public_data_json_glam_derived__client_probe_counts_firefox_desktop_nightly__v1,
             export_public_data_json_mozregression_aggregates__v1,

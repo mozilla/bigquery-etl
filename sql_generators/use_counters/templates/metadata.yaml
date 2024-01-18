@@ -6,6 +6,7 @@ owners:
 labels:
   incremental: true
   public_bigquery: true
+  public_json: true
   owner1: kwindau@mozilla.com
   review_bugs:
   - 1866834 

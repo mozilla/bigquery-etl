@@ -1,5 +1,5 @@
 CREATE OR REPLACE PROCEDURE
-  analysis.diff_query_schemas(
+  utils.diff_query_schemas(
     query_a STRING,
     query_b STRING,
     OUT res ARRAY<STRUCT<i INT64, a_col STRING, b_col STRING>>
@@ -10,8 +10,8 @@ BEGIN
   DECLARE table_a STRING DEFAULT "diff_queries_a_" || id;
   DECLARE table_b STRING DEFAULT "diff_queries_b_" || id;
 
-  DECLARE table_a_id STRING DEFAULT "moz-fx-data-shared-prod.tmp." || table_a;
-  DECLARE table_b_id STRING DEFAULT "moz-fx-data-shared-prod.tmp." || table_b;
+  DECLARE table_a_id STRING DEFAULT "mozdata.tmp." || table_a;
+  DECLARE table_b_id STRING DEFAULT "mozdata.tmp." || table_b;
 
   DECLARE create_table_a STRING DEFAULT "CREATE OR REPLACE TABLE " || table_a_id || " AS " || query_a;
   DECLARE create_table_b STRING DEFAULT "CREATE OR REPLACE TABLE " || table_b_id || " AS " || query_b;
@@ -22,8 +22,8 @@ BEGIN
   EXECUTE IMMEDIATE create_table_a;
   EXECUTE IMMEDIATE create_table_b;
 
-  EXECUTE IMMEDIATE "SELECT ARRAY_AGG(STRUCT(COLUMN_NAME, ORDINAL_POSITION)) FROM moz-fx-data-shared-prod.tmp.INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'tmp' AND TABLE_NAME = '" || table_a || "'" INTO query_a_schema;
-  EXECUTE IMMEDIATE "SELECT ARRAY_AGG(STRUCT(COLUMN_NAME, ORDINAL_POSITION)) FROM moz-fx-data-shared-prod.tmp.INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'tmp' AND TABLE_NAME = '" || table_b || "'" INTO query_b_schema;
+  EXECUTE IMMEDIATE "SELECT ARRAY_AGG(STRUCT(COLUMN_NAME, ORDINAL_POSITION)) FROM mozdata.tmp.INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'tmp' AND TABLE_NAME = '" || table_a || "'" INTO query_a_schema;
+  EXECUTE IMMEDIATE "SELECT ARRAY_AGG(STRUCT(COLUMN_NAME, ORDINAL_POSITION)) FROM mozdata.tmp.INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'tmp' AND TABLE_NAME = '" || table_b || "'" INTO query_b_schema;
 
   SET res = (
     SELECT ARRAY_AGG(STRUCT(ORDINAL_POSITION AS i, a.COLUMN_NAME AS a_col, b.COLUMN_NAME AS b_col) ORDER BY ORDINAL_POSITION)

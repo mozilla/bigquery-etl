@@ -4,7 +4,7 @@ is truncated, and the schemas of e.g. a UNION don't match.
 Use it like:
 ```
 DECLARE res ARRAY<STRUCT<i INT64, a_col STRING, b_col STRING>>;
-CALL analysis.diff_query_schemas("""SELECT * FROM a""", """SELECT * FROM b""", res);
+CALL mozfun.utils.diff_query_schemas("""SELECT * FROM a""", """SELECT * FROM b""", res);
 SELECT res;
 ```
 

@@ -1,7 +1,0 @@
-fields:
-- name: zip_code_prefix
-  type: STRING
-  mode: NULLABLE
-- name: state_code
-  type: STRING
-  mode: NULLABLE

@@ -9,9 +9,12 @@ fields:
 - name: created_on
   type: DATETIME
   mode: NULLABLE
+  description: Datetime when a user was created
 - name: changed_on
   type: DATETIME
   mode: NULLABLE
+  description: Datetime when a user was last modified
 - name: last_login
   type: DATETIME
   mode: NULLABLE
+  description: Datetime when a user last logged in

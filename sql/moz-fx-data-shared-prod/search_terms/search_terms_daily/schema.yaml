@@ -3,8 +3,8 @@ fields:
   name: submission_date
   type: DATE
 - mode: NULLABLE
-  name: tool
+  name: query
   type: STRING
 - mode: NULLABLE
-  name: dau
+  name: search_sessions
   type: INTEGER

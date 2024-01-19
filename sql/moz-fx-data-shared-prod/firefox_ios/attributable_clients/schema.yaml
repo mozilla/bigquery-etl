@@ -1,75 +1,75 @@
 fields:
-- name: submission_date
+- mode: NULLABLE
+  name: submission_date
   type: DATE
-  mode: NULLABLE
   description: 'Processing date, this indicates which date partiion was used
 
     when generating this record.
 
     '
-- name: first_seen_date
+- mode: NULLABLE
+  name: first_seen_date
   type: DATE
-  mode: NULLABLE
   description: 'Date when we observed the user for the first time.
 
     '
-- name: sample_id
-  type: INTEGER
-  mode: NULLABLE
-  description: 'Sample ID to limit query results during an analysis.
-
-    '
-- name: client_id
+- mode: NULLABLE
+  name: client_id
   type: STRING
-  mode: NULLABLE
   description: 'Unique ID for the client installation.
 
     '
-- name: adjust_network
-  type: STRING
-  mode: NULLABLE
-  description: 'The type of source of a client installation.
+- mode: NULLABLE
+  name: sample_id
+  type: INTEGER
+  description: 'Sample ID to limit query results during an analysis.
 
     '
-- name: adjust_adgroup
+- mode: NULLABLE
+  name: adjust_adgroup
   type: STRING
-  mode: NULLABLE
   description: 'Structure parameter for the the ad group of a campaign.
 
     '
-- name: adjust_campaign
+- mode: NULLABLE
+  name: adjust_campaign
   type: STRING
-  mode: NULLABLE
   description: 'Structure parameter for the campaign name.
 
     '
-- name: adjust_creative
+- mode: NULLABLE
+  name: adjust_creative
   type: STRING
-  mode: NULLABLE
   description: 'Structure parameter for the creative content of a campaign.
 
     '
-- name: is_new_profile
-  type: BOOLEAN
-  mode: NULLABLE
-  description: 'Determines if a client is a new profile.
+- mode: NULLABLE
+  name: adjust_network
+  type: STRING
+  description: 'The type of source of a client installation.
 
     '
-- name: searches
+- mode: NULLABLE
+  name: searches
   type: INTEGER
-  mode: NULLABLE
   description: 'The number of search interactions the user had on SERP pages.
 
     '
-- name: searches_with_ads
+- mode: NULLABLE
+  name: searches_with_ads
   type: INTEGER
-  mode: NULLABLE
   description: 'The number of SERP pages with ads shown to the user.
 
     '
-- name: ad_clicks
+- mode: NULLABLE
+  name: ad_clicks
   type: INTEGER
-  mode: NULLABLE
   description: 'The number of times a user clicked on an ad on SERP pages.
+
+    '
+- mode: NULLABLE
+  name: is_new_profile
+  type: BOOLEAN
+  description: 'Determines if a client is a new profile.
 
     '

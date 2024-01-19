@@ -1,9 +1,9 @@
 fields:
-- name: measured_at
+- mode: NULLABLE
+  name: measured_at
   type: DATE
-  mode: NULLABLE
   description: Activity date represented by this row
-- name: user_count
+- mode: NULLABLE
+  name: user_count
   type: INTEGER
-  mode: NULLABLE
   description: Number of Pocket monthly active users on this measured_at date

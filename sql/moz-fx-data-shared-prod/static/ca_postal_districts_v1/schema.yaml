@@ -1,7 +1,0 @@
-fields:
-- name: postal_district_code
-  type: STRING
-  mode: NULLABLE
-- name: province_code
-  type: STRING
-  mode: NULLABLE

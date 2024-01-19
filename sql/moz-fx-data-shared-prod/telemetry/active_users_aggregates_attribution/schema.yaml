@@ -1,83 +1,83 @@
 fields:
-- name: attribution_campaign
+- mode: NULLABLE
+  name: attribution_campaign
   type: STRING
-  mode: NULLABLE
-- name: attribution_content
+- mode: NULLABLE
+  name: attribution_content
   type: STRING
-  mode: NULLABLE
-- name: attribution_experiment
+- mode: NULLABLE
+  name: attribution_experiment
   type: STRING
-  mode: NULLABLE
-- name: attribution_medium
+- mode: NULLABLE
+  name: attribution_medium
   type: STRING
-  mode: NULLABLE
-- name: attribution_source
+- mode: NULLABLE
+  name: attribution_source
   type: STRING
-  mode: NULLABLE
-- name: attribution_variation
+- mode: NULLABLE
+  name: attribution_variation
   type: STRING
+- description: The type of source of a client installation
   mode: NULLABLE
-- name: city
+  name: adjust_network
   type: STRING
+- description: The source of a client installation
   mode: NULLABLE
-- name: country
+  name: install_source
   type: STRING
-  mode: NULLABLE
-- name: first_seen_year
+- mode: NULLABLE
+  name: city
+  type: STRING
+- mode: NULLABLE
+  name: country
+  type: STRING
+- mode: NULLABLE
+  name: first_seen_year
   type: INTEGER
-  mode: NULLABLE
-- name: is_default_browser
+- mode: NULLABLE
+  name: is_default_browser
   type: BOOLEAN
-  mode: NULLABLE
-- name: app_name
+- mode: NULLABLE
+  name: app_name
   type: STRING
-  mode: NULLABLE
-- name: submission_date
+- mode: NULLABLE
+  name: submission_date
   type: DATE
-  mode: NULLABLE
-- name: dau
+- mode: NULLABLE
+  name: dau
   type: INTEGER
-  mode: NULLABLE
-- name: wau
+- mode: NULLABLE
+  name: wau
   type: INTEGER
-  mode: NULLABLE
-- name: mau
+- mode: NULLABLE
+  name: mau
   type: INTEGER
-  mode: NULLABLE
-- name: new_profiles
+- mode: NULLABLE
+  name: new_profiles
   type: INTEGER
-  mode: NULLABLE
-- name: ad_clicks
+- mode: NULLABLE
+  name: ad_clicks
   type: INTEGER
-  mode: NULLABLE
-- name: organic_search_count
+- mode: NULLABLE
+  name: organic_search_count
   type: INTEGER
-  mode: NULLABLE
-- name: search_count
+- mode: NULLABLE
+  name: search_count
   type: INTEGER
-  mode: NULLABLE
-- name: search_with_ads
+- mode: NULLABLE
+  name: search_with_ads
   type: INTEGER
-  mode: NULLABLE
-- name: uri_count
+- mode: NULLABLE
+  name: uri_count
   type: INTEGER
-  mode: NULLABLE
-- name: active_hours
+- mode: NULLABLE
+  name: active_hours
   type: FLOAT
-  mode: NULLABLE
-- name: attributed
+- mode: NULLABLE
+  name: attributed
   type: BOOLEAN
-  mode: NULLABLE
-- name: adjust_network
-  type: STRING
-  mode: NULLABLE
-  description: The type of source of a client installation
-- name: install_source
-  type: STRING
-  mode: NULLABLE
-  description: The source of a client installation
-- name: qdau_desktop
-  type: INTEGER
-  mode: NULLABLE
-  description: Count of distinct, qualified Desktop clients that we received a main
+- description: Count of distinct, qualified Desktop clients that we received a main
     ping from on a given day. In mobile DAU = QDAU.
+  mode: NULLABLE
+  name: qdau_desktop
+  type: INTEGER

@@ -1,97 +1,97 @@
 fields:
-- name: date_day
+- description: 'Date of the report.
+
+    '
+  mode: NULLABLE
+  name: date_day
   type: DATE
-  mode: NULLABLE
-  description: 'Date of the report.
+- description: 'Organization ID associated with this record.
 
     '
-- name: organization_id
+  mode: NULLABLE
+  name: organization_id
   type: INTEGER
-  mode: NULLABLE
-  description: 'Organization ID associated with this record.
+- description: 'Organization name associated with this record.
 
     '
-- name: organization_name
+  mode: NULLABLE
+  name: organization_name
   type: STRING
-  mode: NULLABLE
-  description: 'Organization name associated with this record.
+- description: 'Campaign ID associated with this record.
 
     '
-- name: campaign_id
+  mode: NULLABLE
+  name: campaign_id
   type: INTEGER
-  mode: NULLABLE
-  description: 'Campaign ID associated with this record.
+- description: 'Campaign name associated with this record.
 
     '
-- name: campaign_name
-  type: STRING
   mode: NULLABLE
-  description: 'Campaign name associated with this record.
-
-    '
-- name: currency
+  name: campaign_name
   type: STRING
-  mode: NULLABLE
-  description: 'This currency value should match the respective organization''s currency
+- description: 'This currency value should match the respective organization''s currency
     value.
 
     '
-- name: campaign_status
+  mode: NULLABLE
+  name: currency
   type: STRING
-  mode: NULLABLE
-  description: 'The status of the campaign associted with this record.
+- description: 'The status of the campaign associted with this record.
 
     '
-- name: start_at
+  mode: NULLABLE
+  name: campaign_status
+  type: STRING
+- description: 'The start timestamp for this ad group.
+
+    '
+  mode: NULLABLE
+  name: start_at
   type: TIMESTAMP
-  mode: NULLABLE
-  description: 'The start timestamp for this ad group.
+- description: 'The end timestamp for this ad group.
 
     '
-- name: end_at
+  mode: NULLABLE
+  name: end_at
   type: TIMESTAMP
-  mode: NULLABLE
-  description: 'The end timestamp for this ad group.
+- description: 'Number of taps on ad group on given day.
 
     '
-- name: taps
-  type: INTEGER
   mode: NULLABLE
-  description: 'Number of taps on ad group on given day.
-
-    '
-- name: new_downloads
+  name: taps
   type: INTEGER
-  mode: NULLABLE
-  description: 'App downloads from new users who have never before installed app of
+- description: 'App downloads from new users who have never before installed app of
     ad group in a given day.
 
     '
-- name: redownloads
-  type: INTEGER
   mode: NULLABLE
-  description: 'Number of user downloads where user deletes app and downloads the
+  name: new_downloads
+  type: INTEGER
+- description: 'Number of user downloads where user deletes app and downloads the
     same app again following
 
     a tap on an ad on the App Store, or downloads the same app to an additional device
     of ad group in a given day.
 
     '
-- name: total_downloads
-  type: INTEGER
   mode: NULLABLE
-  description: 'The sum of new_downloads and redownloads.
+  name: redownloads
+  type: INTEGER
+- description: 'The sum of new_downloads and redownloads.
 
     '
-- name: impressions
-  type: INTEGER
   mode: NULLABLE
-  description: 'The number of impressions of ad group in a given day.
+  name: total_downloads
+  type: INTEGER
+- description: 'The number of impressions of ad group in a given day.
 
     '
-- name: spend
+  mode: NULLABLE
+  name: impressions
+  type: INTEGER
+- description: 'The spend on ad group in the given day.
+
+    '
+  mode: NULLABLE
+  name: spend
   type: BIGNUMERIC
-  mode: NULLABLE
-  description: 'The spend on ad group in the given day.
-
-    '

@@ -1,61 +1,61 @@
 fields:
-- name: client_id
+- mode: NULLABLE
+  name: client_id
   type: STRING
-  mode: NULLABLE
-- name: sample_id
+- mode: NULLABLE
+  name: sample_id
   type: INTEGER
-  mode: NULLABLE
-- name: normalized_channel
+- mode: NULLABLE
+  name: normalized_channel
   type: STRING
-  mode: NULLABLE
-- name: app_build
+- mode: NULLABLE
+  name: app_build
   type: STRING
-  mode: NULLABLE
-- name: app_channel
+- mode: NULLABLE
+  name: app_channel
   type: STRING
-  mode: NULLABLE
-- name: app_display_version
+- mode: NULLABLE
+  name: app_display_version
   type: STRING
-  mode: NULLABLE
-- name: device_manufacturer
+- mode: NULLABLE
+  name: device_manufacturer
   type: STRING
-  mode: NULLABLE
-- name: device_model
+- mode: NULLABLE
+  name: device_model
   type: STRING
-  mode: NULLABLE
-- name: isp
+- mode: NULLABLE
+  name: isp
   type: STRING
-  mode: NULLABLE
-- name: locale
+- mode: NULLABLE
+  name: locale
   type: STRING
-  mode: NULLABLE
-- name: city
+- mode: NULLABLE
+  name: city
   type: STRING
-  mode: NULLABLE
-- name: country
+- mode: NULLABLE
+  name: country
   type: STRING
-  mode: NULLABLE
-- name: adjust_network
+- mode: NULLABLE
+  name: adjust_network
   type: STRING
-  mode: NULLABLE
-- name: adjust_adgroup
+- mode: NULLABLE
+  name: adjust_adgroup
   type: STRING
-  mode: NULLABLE
-- name: adjust_campaign
+- mode: NULLABLE
+  name: adjust_campaign
   type: STRING
-  mode: NULLABLE
-- name: adjust_creative
+- mode: NULLABLE
+  name: adjust_creative
   type: STRING
-  mode: NULLABLE
-- name: first_seen_date
+- mode: NULLABLE
+  name: first_seen_date
   type: DATE
-  mode: NULLABLE
-- name: submission_date
+- mode: NULLABLE
+  name: submission_date
   type: DATE
-  mode: NULLABLE
-- name: new_profile
+- mode: NULLABLE
+  name: new_profile
   type: INTEGER
-  mode: NULLABLE
-- name: activated
+- mode: NULLABLE
+  name: activated
   type: INTEGER
-  mode: NULLABLE

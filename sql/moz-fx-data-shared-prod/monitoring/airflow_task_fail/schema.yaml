@@ -10,9 +10,12 @@ fields:
 - name: duration
   type: INTEGER
   mode: NULLABLE
+  description: Time elapsed since start until end of task's exeuction (seconds)
 - name: start_date
   type: TIMESTAMP
   mode: NULLABLE
+  description: null
 - name: end_date
   type: TIMESTAMP
   mode: NULLABLE
+  description: null

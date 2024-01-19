@@ -1,67 +1,67 @@
 fields:
-- name: date_day
+- description: 'Date of the report.
+
+    '
+  mode: NULLABLE
+  name: date_day
   type: DATE
-  mode: NULLABLE
-  description: 'Date of the report.
+- description: 'Organization ID associated with this record.
 
     '
-- name: organization_id
+  mode: NULLABLE
+  name: organization_id
   type: INTEGER
-  mode: NULLABLE
-  description: 'Organization ID associated with this record.
+- description: 'Organization name associated with this record.
 
     '
-- name: organization_name
-  type: STRING
   mode: NULLABLE
-  description: 'Organization name associated with this record.
-
-    '
-- name: currency
+  name: organization_name
   type: STRING
-  mode: NULLABLE
-  description: 'This currency value should match the respective organization''s currency
+- description: 'This currency value should match the respective organization''s currency
     value.
 
     '
-- name: taps
-  type: INTEGER
   mode: NULLABLE
-  description: 'Number of taps on organization on given day.
+  name: currency
+  type: STRING
+- description: 'Number of taps on organization on given day.
 
     '
-- name: new_downloads
-  type: INTEGER
   mode: NULLABLE
-  description: 'App downloads from new users who have never before installed app of
+  name: taps
+  type: INTEGER
+- description: 'App downloads from new users who have never before installed app of
     organization in a given day.
 
     '
-- name: redownloads
-  type: INTEGER
   mode: NULLABLE
-  description: 'Number of user downloads where user deletes app and downloads the
+  name: new_downloads
+  type: INTEGER
+- description: 'Number of user downloads where user deletes app and downloads the
     same app again following
 
     a tap on an ad on the App Store, or downloads the same app to an additional device
     of organization in a given day.
 
     '
-- name: total_downloads
-  type: INTEGER
   mode: NULLABLE
-  description: 'The sum of new_downloads and redownloads.
+  name: redownloads
+  type: INTEGER
+- description: 'The sum of new_downloads and redownloads.
 
     '
-- name: impressions
-  type: INTEGER
   mode: NULLABLE
-  description: 'The number of impressions of organization in a given day.
+  name: total_downloads
+  type: INTEGER
+- description: 'The number of impressions of organization in a given day.
 
     '
-- name: spend
+  mode: NULLABLE
+  name: impressions
+  type: INTEGER
+- description: 'The spend on organization in the given day.
+
+    '
+  mode: NULLABLE
+  name: spend
   type: BIGNUMERIC
-  mode: NULLABLE
-  description: 'The spend on organization in the given day.
-
-    '

@@ -26,9 +26,6 @@ fields:
 - name: adjust_network
   type: STRING
   mode: NULLABLE
-- name: install_source
-  type: STRING
-  mode: NULLABLE
 - name: retained_week_2
   type: BOOLEAN
   mode: NULLABLE

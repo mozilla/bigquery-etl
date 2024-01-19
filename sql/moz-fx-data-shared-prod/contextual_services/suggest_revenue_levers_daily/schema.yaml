@@ -1,40 +1,34 @@
 fields:
 - mode: NULLABLE
-  name: client_id
+  name: country
   type: STRING
 - mode: NULLABLE
-  name: submission_month
+  name: submission_date
   type: DATE
 - mode: NULLABLE
   name: device
   type: STRING
 - mode: NULLABLE
-  name: normalized_engine
-  type: STRING
+  name: eligible_share_country
+  type: FLOAT
 - mode: NULLABLE
-  name: normalized_app_name
-  type: STRING
-- mode: NULLABLE
-  name: os
-  type: STRING
-- mode: NULLABLE
-  name: country
-  type: STRING
-- mode: NULLABLE
-  name: days_of_use
+  name: live_market_dau
   type: INTEGER
 - mode: NULLABLE
-  name: searches
+  name: urlbar_search_dau
   type: INTEGER
 - mode: NULLABLE
-  name: search_with_ads
+  name: suggest_exposed_clients
   type: INTEGER
 - mode: NULLABLE
-  name: ad_click
+  name: urlbar_search
   type: INTEGER
 - mode: NULLABLE
-  name: tagged_follow_on
+  name: total_impressions
   type: INTEGER
 - mode: NULLABLE
-  name: tagged_sap
+  name: spons_impressions
+  type: INTEGER
+- mode: NULLABLE
+  name: spons_clicks
   type: INTEGER

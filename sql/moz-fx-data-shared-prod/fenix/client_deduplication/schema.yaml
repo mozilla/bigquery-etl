@@ -1,13 +1,12 @@
 fields:
-- name: client_id
+- name: normalized_app_id
+  mode: NULLABLE
   type: STRING
+  description: App ID of the channel data was received from
+- name: normalized_channel
   mode: NULLABLE
-- name: hashed_ad_id
   type: STRING
-  mode: NULLABLE
-- name: valid_advertising_id
-  type: BOOLEAN
-  mode: NULLABLE
+  description: Normalized channel name
 - name: submission_date
   type: DATE
   mode: NULLABLE
@@ -313,9 +312,6 @@ fields:
       type: STRING
       mode: NULLABLE
 - name: normalized_app_name
-  type: STRING
-  mode: NULLABLE
-- name: normalized_channel
   type: STRING
   mode: NULLABLE
 - name: normalized_country_code

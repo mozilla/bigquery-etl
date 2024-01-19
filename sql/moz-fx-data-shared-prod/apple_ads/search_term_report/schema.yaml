@@ -1,109 +1,103 @@
 fields:
-- name: date_day
+- description: 'Date of the report.
+
+    '
+  mode: NULLABLE
+  name: date_day
   type: DATE
-  mode: NULLABLE
-  description: 'Date of the report.
+- description: 'Organization ID associated with this record.
 
     '
-- name: organization_id
+  mode: NULLABLE
+  name: organization_id
   type: INTEGER
-  mode: NULLABLE
-  description: 'Organization ID associated with this record.
+- description: 'Organization name associated with this record.
 
     '
-- name: organization_name
+  mode: NULLABLE
+  name: organization_name
   type: STRING
-  mode: NULLABLE
-  description: 'Organization name associated with this record.
+- description: 'Campaign ID associated with this record.
 
     '
-- name: campaign_id
+  mode: NULLABLE
+  name: campaign_id
   type: INTEGER
-  mode: NULLABLE
-  description: 'Campaign ID associated with this record.
+- description: 'Campaign name associated with this record.
 
     '
-- name: campaign_name
+  mode: NULLABLE
+  name: campaign_name
   type: STRING
-  mode: NULLABLE
-  description: 'Campaign name associated with this record.
+- description: 'Ad group ID associated with this record.
 
     '
-- name: ad_group_id
+  mode: NULLABLE
+  name: ad_group_id
   type: INTEGER
-  mode: NULLABLE
-  description: 'Ad group ID associated with this record.
+- description: 'Ad group name associated with this record.
 
     '
-- name: ad_group_name
-  type: STRING
   mode: NULLABLE
-  description: 'Ad group name associated with this record.
+  name: ad_group_name
+  type: STRING
+- description: 'Search term text.
 
     '
-- name: keyword_id
-  type: INTEGER
   mode: NULLABLE
-- name: keyword_text
+  name: search_term_text
   type: STRING
-  mode: NULLABLE
-- name: search_term_text
-  type: STRING
-  mode: NULLABLE
-  description: 'Search term text.
+- description: 'Controls how ads are matched to user searches; EXACT or BROAD.
 
     '
-- name: match_type
-  type: STRING
   mode: NULLABLE
-  description: 'Controls how ads are matched to user searches; EXACT or BROAD.
-
-    '
-- name: currency
+  name: match_type
   type: STRING
-  mode: NULLABLE
-  description: 'This currency value should match the respective organization''s currency
+- description: 'This currency value should match the respective organization''s currency
     value.
 
     '
-- name: taps
-  type: INTEGER
   mode: NULLABLE
-  description: 'Number of taps on organization on given day.
+  name: currency
+  type: STRING
+- description: 'Number of taps on organization on given day.
 
     '
-- name: new_downloads
-  type: INTEGER
   mode: NULLABLE
-  description: 'App downloads from new users who have never before installed app of
+  name: taps
+  type: INTEGER
+- description: 'App downloads from new users who have never before installed app of
     organization in a given day.
 
     '
-- name: redownloads
-  type: INTEGER
   mode: NULLABLE
-  description: 'Number of user downloads where user deletes app and downloads the
+  name: new_downloads
+  type: INTEGER
+- description: 'Number of user downloads where user deletes app and downloads the
     same app again following
 
     a tap on an ad on the App Store, or downloads the same app to an additional device
     of organization in a given day.
 
     '
-- name: total_downloads
-  type: INTEGER
   mode: NULLABLE
-  description: 'The sum of new_downloads and redownloads.
+  name: redownloads
+  type: INTEGER
+- description: 'The sum of new_downloads and redownloads.
 
     '
-- name: impressions
-  type: INTEGER
   mode: NULLABLE
-  description: 'The number of impressions of organization in a given day.
+  name: total_downloads
+  type: INTEGER
+- description: 'The number of impressions of organization in a given day.
 
     '
-- name: spend
+  mode: NULLABLE
+  name: impressions
+  type: INTEGER
+- description: 'The spend on organization in the given day.
+
+    '
+  mode: NULLABLE
+  name: spend
   type: BIGNUMERIC
-  mode: NULLABLE
-  description: 'The spend on organization in the given day.
-
-    '

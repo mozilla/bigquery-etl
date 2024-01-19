@@ -35,10 +35,10 @@ fields:
       type: RECORD
       mode: NULLABLE
       fields:
-      - name: type
+      - name: enrollment_id
         type: STRING
         mode: NULLABLE
-      - name: enrollment_id
+      - name: type
         type: STRING
         mode: NULLABLE
 - name: normalized_channel

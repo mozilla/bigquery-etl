@@ -1,102 +1,102 @@
 fields:
-- name: submission_date
+- mode: NULLABLE
+  name: submission_date
   type: DATE
-  mode: NULLABLE
-- name: client_id
+- mode: NULLABLE
+  name: client_id
   type: STRING
-  mode: NULLABLE
-- name: default_search_engine
+- mode: NULLABLE
+  name: default_search_engine
   type: STRING
-  mode: NULLABLE
-- name: app_version
+- mode: NULLABLE
+  name: app_version
   type: STRING
-  mode: NULLABLE
-- name: normalized_channel
+- mode: NULLABLE
+  name: normalized_channel
   type: STRING
-  mode: NULLABLE
-- name: locale
+- mode: NULLABLE
+  name: country
   type: STRING
-  mode: NULLABLE
-- name: search_region
+- mode: NULLABLE
+  name: locale
   type: STRING
-  mode: NULLABLE
-- name: suggest_enabled
+- mode: NULLABLE
+  name: search_region
+  type: STRING
+- mode: NULLABLE
+  name: suggest_enabled
   type: BOOLEAN
-  mode: NULLABLE
-- name: in_navbar
+- mode: NULLABLE
+  name: in_navbar
   type: BOOLEAN
-  mode: NULLABLE
-- name: suggest_searches
+- mode: NULLABLE
+  name: suggest_searches
   type: BOOLEAN
-  mode: NULLABLE
-- name: show_search_suggestions_first
+- mode: NULLABLE
+  name: show_search_suggestions_first
   type: BOOLEAN
-  mode: NULLABLE
-- name: suggest_quicksuggest
+- mode: NULLABLE
+  name: suggest_quicksuggest
   type: BOOLEAN
-  mode: NULLABLE
-- name: suggest_quicksuggest_sponsored
+- mode: NULLABLE
+  name: suggest_quicksuggest_sponsored
   type: BOOLEAN
-  mode: NULLABLE
-- name: quicksuggest_onboarding_dialog_choice
+- mode: NULLABLE
+  name: quicksuggest_onboarding_dialog_choice
   type: STRING
-  mode: NULLABLE
-- name: count_picked_total
+- mode: NULLABLE
+  name: count_picked_total
   type: INTEGER
-  mode: NULLABLE
-- name: count_picked_by_type
-  type: RECORD
-  mode: REPEATED
-  fields:
-  - name: key
+- fields:
+  - mode: NULLABLE
+    name: key
     type: STRING
-    mode: NULLABLE
-  - name: value
+  - mode: NULLABLE
+    name: value
     type: INTEGER
-    mode: NULLABLE
-- name: count_picked_by_position
-  type: RECORD
   mode: REPEATED
-  fields:
-  - name: key
-    type: INTEGER
-    mode: NULLABLE
-  - name: value
-    type: INTEGER
-    mode: NULLABLE
-- name: urlbar_picked_by_type_by_position
+  name: count_picked_by_type
   type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: INTEGER
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
-  fields:
-  - name: type
+  name: count_picked_by_position
+  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: type
     type: STRING
-    mode: NULLABLE
-  - name: position
-    type: RECORD
+  - fields:
+    - mode: NULLABLE
+      name: key
+      type: INTEGER
+    - mode: NULLABLE
+      name: value
+      type: INTEGER
     mode: REPEATED
-    fields:
-    - name: key
-      type: INTEGER
-      mode: NULLABLE
-    - name: value
-      type: INTEGER
-      mode: NULLABLE
-- name: suggest_quicksuggest_nonsponsored
-  type: BOOLEAN
-  mode: NULLABLE
-- name: quicksuggest_data_collection_enabled
-  type: STRING
-  mode: NULLABLE
-- name: experiments
-  type: RECORD
+    name: position
+    type: RECORD
   mode: REPEATED
-  fields:
-  - name: key
-    type: STRING
-    mode: NULLABLE
-  - name: value
-    type: STRING
-    mode: NULLABLE
-- name: country
+  name: urlbar_picked_by_type_by_position
+  type: RECORD
+- mode: NULLABLE
+  name: suggest_quicksuggest_nonsponsored
+  type: BOOLEAN
+- mode: NULLABLE
+  name: quicksuggest_data_collection_enabled
   type: STRING
-  mode: NULLABLE
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: STRING
+  mode: REPEATED
+  name: experiments
+  type: RECORD

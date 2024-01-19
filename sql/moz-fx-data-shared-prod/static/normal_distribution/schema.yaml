@@ -1,7 +1,0 @@
-fields:
-- name: score
-  type: NUMERIC
-  mode: NULLABLE
-- name: value
-  type: NUMERIC
-  mode: NULLABLE

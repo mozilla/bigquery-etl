@@ -1,49 +1,49 @@
 fields:
-- name: country
+- mode: NULLABLE
+  name: country
   type: STRING
-  mode: NULLABLE
-- name: city
+- mode: NULLABLE
+  name: city
   type: STRING
-  mode: NULLABLE
-- name: datetime
+- mode: NULLABLE
+  name: datetime
   type: TIMESTAMP
-  mode: NULLABLE
-- name: proportion_undefined
+- mode: NULLABLE
+  name: proportion_undefined
   type: FLOAT
-  mode: NULLABLE
-- name: proportion_timeout
+- mode: NULLABLE
+  name: proportion_timeout
   type: FLOAT
-  mode: NULLABLE
-- name: proportion_abort
+- mode: NULLABLE
+  name: proportion_abort
   type: FLOAT
-  mode: NULLABLE
-- name: proportion_unreachable
+- mode: NULLABLE
+  name: proportion_unreachable
   type: FLOAT
-  mode: NULLABLE
-- name: proportion_terminated
+- mode: NULLABLE
+  name: proportion_terminated
   type: FLOAT
-  mode: NULLABLE
-- name: proportion_channel_open
+- mode: NULLABLE
+  name: proportion_channel_open
   type: FLOAT
-  mode: NULLABLE
-- name: avg_dns_success_time
+- mode: NULLABLE
+  name: avg_dns_success_time
   type: FLOAT
-  mode: NULLABLE
-- name: missing_dns_success
+- mode: NULLABLE
+  name: missing_dns_success
   type: FLOAT
-  mode: NULLABLE
-- name: avg_dns_failure_time
+- mode: NULLABLE
+  name: avg_dns_failure_time
   type: FLOAT
-  mode: NULLABLE
-- name: missing_dns_failure
+- mode: NULLABLE
+  name: missing_dns_failure
   type: FLOAT
-  mode: NULLABLE
-- name: count_dns_failure
+- mode: NULLABLE
+  name: count_dns_failure
   type: FLOAT
-  mode: NULLABLE
-- name: ssl_error_prop
+- mode: NULLABLE
+  name: ssl_error_prop
   type: FLOAT
-  mode: NULLABLE
-- name: avg_tls_handshake_time
+- mode: NULLABLE
+  name: avg_tls_handshake_time
   type: FLOAT
-  mode: NULLABLE

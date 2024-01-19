@@ -1,7 +1,0 @@
-fields:
-- name: active_date
-  type: DATE
-  mode: NULLABLE
-- name: subscription_id
-  type: STRING
-  mode: NULLABLE

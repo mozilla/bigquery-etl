@@ -1,4 +1,4 @@
 fields:
-- name: client_id
+- mode: NULLABLE
+  name: client_id
   type: STRING
-  mode: NULLABLE

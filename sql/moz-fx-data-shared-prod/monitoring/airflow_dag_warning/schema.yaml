@@ -1,17 +1,17 @@
 fields:
-- name: timestamp
+- description: null
+  mode: NULLABLE
+  name: timestamp
   type: TIMESTAMP
+- description: null
   mode: NULLABLE
-  description: null
-- name: dag_id
+  name: dag_id
   type: STRING
+- description: null
   mode: NULLABLE
-  description: null
-- name: warning_type
+  name: warning_type
   type: STRING
+- description: null
   mode: NULLABLE
-  description: null
-- name: message
+  name: message
   type: STRING
-  mode: NULLABLE
-  description: null

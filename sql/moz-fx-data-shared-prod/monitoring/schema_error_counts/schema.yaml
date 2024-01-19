@@ -1,29 +1,29 @@
 fields:
-- name: submission_date
+- mode: NULLABLE
+  name: submission_date
   type: DATE
-  mode: NULLABLE
-- name: document_namespace
+- mode: NULLABLE
+  name: document_namespace
   type: STRING
-  mode: NULLABLE
-- name: document_type
+- mode: NULLABLE
+  name: document_type
   type: STRING
-  mode: NULLABLE
-- name: document_version
+- mode: NULLABLE
+  name: document_version
   type: STRING
-  mode: NULLABLE
-- name: hour
+- mode: NULLABLE
+  name: hour
   type: TIMESTAMP
-  mode: NULLABLE
-- name: job_name
+- mode: NULLABLE
+  name: job_name
   type: STRING
-  mode: NULLABLE
-- name: path
+- mode: NULLABLE
+  name: path
   type: STRING
-  mode: NULLABLE
-- name: error_count
+- mode: NULLABLE
+  name: error_count
   type: INTEGER
-  mode: NULLABLE
-- name: sample_error_messages
+- mode: NULLABLE
+  name: sample_error_messages
   type: STRING
-  mode: NULLABLE
   description: concatenated error messages, limited to 300 characters

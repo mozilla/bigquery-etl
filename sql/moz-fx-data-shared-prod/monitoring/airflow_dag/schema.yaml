@@ -1,69 +1,69 @@
 fields:
-- name: dag_id
-  type: STRING
+- description: Airflow DAG id (<root_dag_id>.<subdag_id>)
   mode: NULLABLE
-  description: Airflow DAG id (<root_dag_id>.<subdag_id>)
-- name: root_dag_id
+  name: dag_id
   type: STRING
+- description: Airflow Root DAG id
   mode: NULLABLE
-  description: Airflow Root DAG id
-- name: subdag_id
+  name: root_dag_id
   type: STRING
+- description: Airflow subdag id
   mode: NULLABLE
-  description: Airflow subdag id
-- name: is_subdag
+  name: subdag_id
+  type: STRING
+- description: Indicates if this DAG is a subdag
+  mode: NULLABLE
+  name: is_subdag
   type: BOOLEAN
+- description: DAG's description
   mode: NULLABLE
-  description: Indicates if this DAG is a subdag
-- name: description
+  name: description
   type: STRING
+- description: DAG's scheduling settings
   mode: NULLABLE
-  description: DAG's description
-- name: schedule_interval
+  name: schedule_interval
   type: STRING
+- description: DAG owners (comma separated)
   mode: NULLABLE
-  description: DAG's scheduling settings
-- name: owners
+  name: owners
   type: STRING
+- description: Indicates if the DAG is active
   mode: NULLABLE
-  description: DAG owners (comma separated)
-- name: is_active
+  name: is_active
   type: BOOLEAN
+- description: Indicates if the DAG is currently paused
   mode: NULLABLE
-  description: Indicates if the DAG is active
-- name: is_paused
+  name: is_paused
   type: BOOLEAN
+- description: Indicates if DAG has concurrency limit set
   mode: NULLABLE
-  description: Indicates if the DAG is currently paused
-- name: has_task_concurrency_limits
+  name: has_task_concurrency_limits
   type: BOOLEAN
+- description: Max number of active DAG runs allowed
   mode: NULLABLE
-  description: Indicates if DAG has concurrency limit set
-- name: max_active_runs
+  name: max_active_runs
   type: INTEGER
+- description: Max number of active task instances in the DAG allowed
   mode: NULLABLE
-  description: Max number of active DAG runs allowed
-- name: max_active_tasks
+  name: max_active_tasks
   type: INTEGER
+- description: null
   mode: NULLABLE
-  description: Max number of active task instances in the DAG allowed
-- name: next_dagrun
+  name: next_dagrun
   type: TIMESTAMP
+- description: null
   mode: NULLABLE
-  description: null
-- name: next_dagrun_create_after
+  name: next_dagrun_create_after
   type: TIMESTAMP
+- description: null
   mode: NULLABLE
-  description: null
-- name: next_dagrun_data_interval_start
+  name: next_dagrun_data_interval_start
   type: TIMESTAMP
+- description: null
   mode: NULLABLE
-  description: null
-- name: next_dagrun_data_interval_end
+  name: next_dagrun_data_interval_end
   type: TIMESTAMP
+- description: The last time the DAG was parsed
   mode: NULLABLE
-  description: null
-- name: last_parsed_time
+  name: last_parsed_time
   type: TIMESTAMP
-  mode: NULLABLE
-  description: The last time the DAG was parsed

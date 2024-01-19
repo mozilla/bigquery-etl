@@ -1,107 +1,107 @@
 fields:
-- name: source_project
+- mode: NULLABLE
+  name: source_project
   type: STRING
-  mode: NULLABLE
   description: Project used for executing job
-- name: creation_date
+- mode: NULLABLE
+  name: creation_date
   type: DATE
-  mode: NULLABLE
   description: Job creation date
-- name: job_id
+- mode: NULLABLE
+  name: job_id
   type: STRING
-  mode: NULLABLE
   description: ID of job
-- name: job_type
+- mode: NULLABLE
+  name: job_type
   type: STRING
-  mode: NULLABLE
   description: The type of the job
-- name: reservation_id
+- mode: NULLABLE
+  name: reservation_id
   type: STRING
-  mode: NULLABLE
   description: Name of the primary reservation (slots for distributing resources)
     assigned to this job
-- name: cache_hit
+- mode: NULLABLE
+  name: cache_hit
   type: BOOLEAN
-  mode: NULLABLE
   description: Whether the query results of this job were from a cache
-- name: state
+- mode: NULLABLE
+  name: state
   type: STRING
-  mode: NULLABLE
   description: Running state of the job
-- name: statement_type
+- mode: NULLABLE
+  name: statement_type
   type: STRING
-  mode: NULLABLE
   description: The type of query statement
-- name: query_id
+- mode: NULLABLE
+  name: query_id
   type: STRING
-  mode: NULLABLE
   description: The id of the query
-- name: reference_project_id
+- mode: NULLABLE
+  name: reference_project_id
   type: STRING
-  mode: NULLABLE
   description: The ID of the project referenced by the job
-- name: reference_dataset_id
+- mode: NULLABLE
+  name: reference_dataset_id
   type: STRING
-  mode: NULLABLE
   description: The ID of the dataset referenced by the job
-- name: reference_table_id
+- mode: NULLABLE
+  name: reference_table_id
   type: STRING
-  mode: NULLABLE
   description: The ID of the table referenced by the job
-- name: destination_project_id
+- mode: NULLABLE
+  name: destination_project_id
   type: STRING
-  mode: NULLABLE
   description: The ID of the project containing the destination table
-- name: destination_dataset_id
+- mode: NULLABLE
+  name: destination_dataset_id
   type: STRING
-  mode: NULLABLE
   description: The ID of the dataset containing the destination table
-- name: destination_table_id
+- mode: NULLABLE
+  name: destination_table_id
   type: STRING
-  mode: NULLABLE
   description: The ID of the destination table
-- name: user_email
+- mode: NULLABLE
+  name: user_email
   type: STRING
-  mode: NULLABLE
   description: Email address or service account of the user who ran the job
-- name: username
+- mode: NULLABLE
+  name: username
   type: STRING
-  mode: NULLABLE
   description: The name of the user who ran the job
-- name: task_duration
+- mode: NULLABLE
+  name: task_duration
   type: INTERVAL
-  mode: NULLABLE
   description: The time it took to run the job
-- name: total_terabytes_processed
+- mode: NULLABLE
+  name: total_terabytes_processed
   type: FLOAT
-  mode: NULLABLE
   description: Total terabytes processed by the job
-- name: total_terabytes_billed
+- mode: NULLABLE
+  name: total_terabytes_billed
   type: FLOAT
-  mode: NULLABLE
   description: Total terabytes billed by the job if on-demand pricing is used
-- name: total_slot_ms
+- mode: NULLABLE
+  name: total_slot_ms
   type: INTEGER
-  mode: NULLABLE
   description: Slot milliseconds for the job over its entire duration
-- name: error_location
+- mode: NULLABLE
+  name: error_location
   type: STRING
-  mode: NULLABLE
   description: Specifies where the error occurred, if present
-- name: error_reason
+- mode: NULLABLE
+  name: error_reason
   type: STRING
-  mode: NULLABLE
   description: A short error code that summarizes the error
-- name: error_message
+- mode: NULLABLE
+  name: error_message
   type: STRING
-  mode: NULLABLE
   description: A human-readable description of the error
-- name: resource_warning
+- mode: NULLABLE
+  name: resource_warning
   type: STRING
-  mode: NULLABLE
   description: The warning message that appears if the resource usage is above the
     internal threshold of the system
-- name: submission_date
+- mode: NULLABLE
+  name: submission_date
   type: DATE
-  mode: NULLABLE
   description: Date Airflow DAG is executed, and partition date

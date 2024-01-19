@@ -43,10 +43,10 @@ fields:
       type: RECORD
       mode: NULLABLE
       fields:
-      - name: type
+      - name: enrollment_id
         type: STRING
         mode: NULLABLE
-      - name: enrollment_id
+      - name: type
         type: STRING
         mode: NULLABLE
 - name: seq
@@ -105,6 +105,7 @@ fields:
 - name: results
   type: RECORD
   mode: REPEATED
+  description: Array listing info about each result displayed.
   fields:
   - name: position
     type: INTEGER
@@ -122,7 +123,6 @@ fields:
     type: STRING
     mode: NULLABLE
     description: Result group this result belongs to. Eg. 'heuristic', 'suggest'.
-  description: Array listing info about each result displayed.
 - name: product_selected_result
   type: STRING
   mode: NULLABLE

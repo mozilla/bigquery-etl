@@ -13,14 +13,14 @@ labels:
   application: fxa
   incremental: true
   schedule: daily
-scheduling:
-  # descheduled due to source table change. v2 of the query retrieves the data from the new source.
-  # dag_name: bqetl_fxa_events
-  # This query references secret keys that are not available for dry runs,
-  # so we must explicitly write out dependencies. In this case, the query
-  # depends only on fxa logs produced via Stackdriver integration, so no other
-  # scheduled tasks are involved and the referenced_tables list is empty.
-  referenced_tables: []
+# descheduled due to source table change. v2 of the query retrieves the data from the new source.
+# scheduling:
+#   dag_name: bqetl_fxa_events
+#   # This query references secret keys that are not available for dry runs,
+#   # so we must explicitly write out dependencies. In this case, the query
+#   # depends only on fxa logs produced via Stackdriver integration, so no other
+#   # scheduled tasks are involved and the referenced_tables list is empty.
+#   referenced_tables: []
 bigquery:
   time_partitioning:
     type: day

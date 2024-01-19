@@ -31,8 +31,10 @@ desktop_data_google AS (
     `moz-fx-data-shared-prod.search.search_clients_engines_sources_daily`
   WHERE
     submission_date = @submission_date
-     AND ((submission_date < "2023-12-01" AND country NOT IN ('RU', 'UA', 'TR', 'BY', 'KZ', 'CN'))
-      OR (submission_date >= "2023-12-01" AND country NOT IN ('RU', 'UA', 'BY', 'CN')))
+    AND (
+      (submission_date < "2023-12-01" AND country NOT IN ('RU', 'UA', 'TR', 'BY', 'KZ', 'CN'))
+      OR (submission_date >= "2023-12-01" AND country NOT IN ('RU', 'UA', 'BY', 'CN'))
+    )
   GROUP BY
     submission_date,
     channel,
@@ -169,8 +171,10 @@ mobile_dau_data AS (
   WHERE
     submission_date = @submission_date
     AND app_name IN ('Fenix', 'Firefox iOS', 'Focus Android', 'Focus iOS')
-     AND ((submission_date < "2023-12-01" AND country NOT IN ('RU', 'UA', 'TR', 'BY', 'KZ', 'CN'))
-      OR (submission_date >= "2023-12-01" AND country NOT IN ('RU', 'UA', 'BY', 'CN')))
+    AND (
+      (submission_date < "2023-12-01" AND country NOT IN ('RU', 'UA', 'TR', 'BY', 'KZ', 'CN'))
+      OR (submission_date >= "2023-12-01" AND country NOT IN ('RU', 'UA', 'BY', 'CN'))
+    )
   GROUP BY
     submission_date,
     country
@@ -213,8 +217,10 @@ mobile_data_google AS (
     (submission_date, country)
   WHERE
     submission_date = @submission_date
-     AND ((submission_date < "2023-12-01" AND country NOT IN ('RU', 'UA', 'TR', 'BY', 'KZ', 'CN'))
-      OR (submission_date >= "2023-12-01" AND country NOT IN ('RU', 'UA', 'BY', 'CN')))
+    AND (
+      (submission_date < "2023-12-01" AND country NOT IN ('RU', 'UA', 'TR', 'BY', 'KZ', 'CN'))
+      OR (submission_date >= "2023-12-01" AND country NOT IN ('RU', 'UA', 'BY', 'CN'))
+    )
     AND (
       app_name IN ('Fenix', 'Firefox Preview', 'Focus', 'Focus Android Glean', 'Focus iOS Glean')
       OR (app_name = 'Fennec' AND os = 'iOS')

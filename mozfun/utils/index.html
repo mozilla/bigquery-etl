@@ -13,21 +13,25 @@
       
       
       
+        <link rel="prev" href="../stats/">
       
       
-      <link rel="icon" href="/favicon.png">
+        <link rel="next" href="../vpn/">
+      
+      
+      <link rel="icon" href="../../favicon.png">
       <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.3">
     
     
       
-        <title>BigQuery ETL</title>
+        <title>Utils - BigQuery ETL</title>
       
     
     
-      <link rel="stylesheet" href="/assets/stylesheets/main.50c56a3b.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.50c56a3b.min.css">
       
         
-        <link rel="stylesheet" href="/assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -46,7 +50,7 @@
       
     
     
-    <script>__md_scope=new URL("/",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -69,6 +73,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#diff_query_schemas-stored-procedure" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -79,7 +88,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="/." title="BigQuery ETL" class="md-header__button md-logo" aria-label="BigQuery ETL" data-md-component="logo">
+    <a href="../.." title="BigQuery ETL" class="md-header__button md-logo" aria-label="BigQuery ETL" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
@@ -99,7 +108,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              
+              Utils
             
           </span>
         </div>
@@ -180,7 +189,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="/." class="md-tabs__link">
+      <a href="../.." class="md-tabs__link">
         
   
     
@@ -195,17 +204,21 @@
         
   
   
+    
+  
   
     
     
       
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="/mozfun/about/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../about/" class="md-tabs__link">
           
   
   UDFs
@@ -226,7 +239,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="/cookbooks/common_workflows/" class="md-tabs__link">
+        <a href="../../cookbooks/common_workflows/" class="md-tabs__link">
           
   
   Cookbooks
@@ -244,7 +257,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="/bqetl/" class="md-tabs__link">
+        <a href="../../bqetl/" class="md-tabs__link">
           
   
   Reference
@@ -277,7 +290,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="/." title="BigQuery ETL" class="md-nav__button md-logo" aria-label="BigQuery ETL" data-md-component="logo">
+    <a href="../.." title="BigQuery ETL" class="md-nav__button md-logo" aria-label="BigQuery ETL" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
@@ -307,7 +320,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/." class="md-nav__link">
+      <a href="../.." class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -324,8 +337,10 @@
       
   
   
+    
   
   
+  
     
     
     
@@ -334,12 +349,12 @@
       
       
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
         
           
           <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
@@ -353,7 +368,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             UDFs
@@ -364,19 +379,21 @@
                 
   
   
+    
   
   
+  
     
     
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_1" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_1" checked>
         
           
           <label class="md-nav__link" for="__nav_2_1" id="__nav_2_1_label" tabindex="0">
@@ -390,7 +407,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_1_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_1_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_2_1">
             <span class="md-nav__icon md-icon"></span>
             Mozfun
@@ -404,7 +421,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozfun/about/" class="md-nav__link">
+      <a href="../about/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -425,7 +442,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozfun/addons/" class="md-nav__link">
+      <a href="../addons/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -446,7 +463,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozfun/assert/" class="md-nav__link">
+      <a href="../assert/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -467,7 +484,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozfun/bits28/" class="md-nav__link">
+      <a href="../bits28/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -488,7 +505,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozfun/bytes/" class="md-nav__link">
+      <a href="../bytes/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -509,7 +526,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozfun/datetime_util/" class="md-nav__link">
+      <a href="../datetime_util/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -530,7 +547,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozfun/event_analysis/" class="md-nav__link">
+      <a href="../event_analysis/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -551,7 +568,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozfun/ga/" class="md-nav__link">
+      <a href="../ga/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -572,7 +589,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozfun/glam/" class="md-nav__link">
+      <a href="../glam/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -593,7 +610,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozfun/glean/" class="md-nav__link">
+      <a href="../glean/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -614,7 +631,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozfun/hist/" class="md-nav__link">
+      <a href="../hist/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -635,7 +652,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozfun/iap/" class="md-nav__link">
+      <a href="../iap/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -656,7 +673,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozfun/json/" class="md-nav__link">
+      <a href="../json/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -677,7 +694,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozfun/ltv/" class="md-nav__link">
+      <a href="../ltv/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -698,7 +715,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozfun/map/" class="md-nav__link">
+      <a href="../map/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -719,7 +736,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozfun/mobile_search/" class="md-nav__link">
+      <a href="../mobile_search/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -740,7 +757,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozfun/norm/" class="md-nav__link">
+      <a href="../norm/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -761,7 +778,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozfun/stats/" class="md-nav__link">
+      <a href="../stats/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -779,10 +796,28 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="/mozfun/utils/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Utils
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -791,6 +826,48 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#diff_query_schemas-stored-procedure" class="md-nav__link">
+    <span class="md-ellipsis">
+      diff_query_schemas (Stored Procedure)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="diff_query_schemas (Stored Procedure)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameters
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -803,7 +880,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozfun/vpn/" class="md-nav__link">
+      <a href="../vpn/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -869,7 +946,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/moz-fx-data-shared-prod/udf/" class="md-nav__link">
+      <a href="../../moz-fx-data-shared-prod/udf/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -890,7 +967,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/moz-fx-data-shared-prod/udf_js/" class="md-nav__link">
+      <a href="../../moz-fx-data-shared-prod/udf_js/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -966,7 +1043,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/cookbooks/common_workflows/" class="md-nav__link">
+      <a href="../../cookbooks/common_workflows/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -987,7 +1064,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/cookbooks/creating_a_derived_dataset/" class="md-nav__link">
+      <a href="../../cookbooks/creating_a_derived_dataset/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1008,7 +1085,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/cookbooks/testing/" class="md-nav__link">
+      <a href="../../cookbooks/testing/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1076,7 +1153,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/bqetl/" class="md-nav__link">
+      <a href="../../bqetl/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1097,7 +1174,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/reference/recommended_practices/" class="md-nav__link">
+      <a href="../../reference/recommended_practices/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1118,7 +1195,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/reference/incremental/" class="md-nav__link">
+      <a href="../../reference/incremental/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1139,7 +1216,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/reference/scheduling/" class="md-nav__link">
+      <a href="../../reference/scheduling/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1160,7 +1237,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/reference/public_data/" class="md-nav__link">
+      <a href="../../reference/public_data/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1181,7 +1258,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/reference/airflow_tags/" class="md-nav__link">
+      <a href="../../reference/airflow_tags/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1202,7 +1279,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/reference/data_checks/" class="md-nav__link">
+      <a href="../../reference/data_checks/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1241,6 +1318,38 @@
   
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#diff_query_schemas-stored-procedure" class="md-nav__link">
+    <span class="md-ellipsis">
+      diff_query_schemas (Stored Procedure)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="diff_query_schemas (Stored Procedure)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameters
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -1251,8 +1360,45 @@
             <div class="md-content" data-md-component="content">
               <article class="md-content__inner md-typeset">
                 
-  <h1>404 - Not found</h1>
+                  
 
+
+  <h1>Utils</h1>
+
+<h2 id="diff_query_schemas-stored-procedure">diff_query_schemas (Stored Procedure)</h2>
+<p>Diff the schemas of two queries. Especially useful when the BigQuery error is truncated, and the schemas of e.g. a UNION don't match.</p>
+<p>Diff the schemas of two queries. Especially useful when the BigQuery error
+is truncated, and the schemas of e.g. a UNION don't match.</p>
+<p>Use it like:
+<div class="highlight"><pre><span></span><code>DECLARE res ARRAY&lt;STRUCT&lt;i INT64, differs BOOL, a_col STRING, a_data_type STRING, b_col STRING, b_data_type STRING&gt;&gt;;
+CALL mozfun.utils.diff_query_schemas(&quot;&quot;&quot;SELECT * FROM a&quot;&quot;&quot;, &quot;&quot;&quot;SELECT * FROM b&quot;&quot;&quot;, res);
+-- See entire schema entries, if you need context
+SELECT res;
+-- See just the elements that differ
+SELECT * FROM UNNEST(res) WHERE differs;
+</code></pre></div></p>
+<p>You'll be able to view the results of "res" to compare the schemas of the two queries, and hopefully find what doesn't match.</p>
+<h3 id="parameters">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>query_a STRING, query_b STRING
+</code></pre></div>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>res ARRAY&lt;STRUCT&lt;i INT64, differs BOOL, a_col STRING, a_data_type STRING, b_col STRING, b_data_type STRING&gt;&gt;
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/utils/diff_query_schemas">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/utils/diff_query_schemas/metadata.yaml">Edit</a></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
               </article>
             </div>
           
@@ -1286,10 +1432,10 @@
     </div>
     
     
-    <script id="__config" type="application/json">{"base": "/", "features": ["navigation.tabs"], "search": "/assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs"], "search": "../../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="/assets/javascripts/bundle.d7c377c4.min.js"></script>
+      <script src="../../assets/javascripts/bundle.d7c377c4.min.js"></script>
       
     
   </body>

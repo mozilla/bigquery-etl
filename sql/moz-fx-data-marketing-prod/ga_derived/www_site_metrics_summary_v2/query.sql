@@ -23,7 +23,7 @@ WITH site_data AS (
   FROM
     `moz-fx-data-marketing-prod.analytics_313696158.events_*`
   WHERE
-    event_date = FORMAT_DATE('%Y%m%d', @submission_date)
+    _table_suffix = FORMAT_DATE('%Y%m%d', @submission_date)
   GROUP BY
     event_date,
     device.category,

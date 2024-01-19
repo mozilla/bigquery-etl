@@ -8,7 +8,7 @@ CALL mozfun.utils.diff_query_schemas("""SELECT * FROM a""", """SELECT * FROM b""
 -- See entire schema entries, if you need context
 SELECT res;
 -- See just the elements that differ
-SELECT res WHERE differs;
+SELECT * FROM UNNEST(res) WHERE differs;
 ```
 
 You'll be able to view the results of "res" to compare the schemas of the two queries, and hopefully find what doesn't match.

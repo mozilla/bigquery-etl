@@ -13,8 +13,6 @@ labels:
   incremental: true
   schedule: daily
   owner1: kik
-scheduling:
-  referenced_tables: []
 bigquery:
   time_partitioning:
     type: day

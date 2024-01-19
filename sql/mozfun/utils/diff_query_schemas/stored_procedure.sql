@@ -1,0 +1,34 @@
+CREATE OR REPLACE PROCEDURE
+  analysis.diff_query_schemas(
+    query_a STRING,
+    query_b STRING,
+    OUT res ARRAY<STRUCT<i INT64, a_col STRING, b_col STRING>>
+  )
+BEGIN
+  DECLARE id STRING DEFAULT CAST(CAST(FLOOR(POW(10,10) * RAND()) AS INT64) AS STRING);
+
+  DECLARE table_a STRING DEFAULT "diff_queries_a_" || id;
+  DECLARE table_b STRING DEFAULT "diff_queries_b_" || id;
+
+  DECLARE table_a_id STRING DEFAULT "moz-fx-data-shared-prod.tmp." || table_a;
+  DECLARE table_b_id STRING DEFAULT "moz-fx-data-shared-prod.tmp." || table_b;
+
+  DECLARE create_table_a STRING DEFAULT "CREATE OR REPLACE TABLE " || table_a_id || " AS " || query_a;
+  DECLARE create_table_b STRING DEFAULT "CREATE OR REPLACE TABLE " || table_b_id || " AS " || query_b;
+
+  DECLARE query_a_schema ARRAY<STRUCT<COLUMN_NAME STRING, ORDINAL_POSITION INT64>>;
+  DECLARE query_b_schema ARRAY<STRUCT<COLUMN_NAME STRING, ORDINAL_POSITION INT64>>;
+
+  EXECUTE IMMEDIATE create_table_a;
+  EXECUTE IMMEDIATE create_table_b;
+
+  EXECUTE IMMEDIATE "SELECT ARRAY_AGG(STRUCT(COLUMN_NAME, ORDINAL_POSITION)) FROM moz-fx-data-shared-prod.tmp.INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'tmp' AND TABLE_NAME = '" || table_a || "'" INTO query_a_schema;
+  EXECUTE IMMEDIATE "SELECT ARRAY_AGG(STRUCT(COLUMN_NAME, ORDINAL_POSITION)) FROM moz-fx-data-shared-prod.tmp.INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'tmp' AND TABLE_NAME = '" || table_b || "'" INTO query_b_schema;
+
+  SET res = (
+    SELECT ARRAY_AGG(STRUCT(ORDINAL_POSITION AS i, a.COLUMN_NAME AS a_col, b.COLUMN_NAME AS b_col) ORDER BY ORDINAL_POSITION)
+    FROM UNNEST(query_a_schema) AS a
+    FULL OUTER JOIN (SELECT * FROM UNNEST(query_b_schema)) AS b
+      USING (ORDINAL_POSITION)
+  );
+END;

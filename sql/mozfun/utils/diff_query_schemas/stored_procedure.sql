@@ -31,4 +31,8 @@ BEGIN
     FULL OUTER JOIN (SELECT * FROM UNNEST(query_b_schema)) AS b
       USING (ORDINAL_POSITION)
   );
+
+  -- Cleanup
+  EXECUTE IMMEDIATE "DROP TABLE " || table_a_id;
+  EXECUTE IMMEDIATE "DROP TABLE " || table_b_id;
 END;

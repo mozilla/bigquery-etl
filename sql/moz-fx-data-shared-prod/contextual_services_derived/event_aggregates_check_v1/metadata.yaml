@@ -19,3 +19,9 @@ scheduling:
   query_file_path:
     sql/moz-fx-data-shared-prod/contextual_services_derived/event_aggregates_check_v1/query.sql
   parameters: ['submission_date:DATE:{{ds}}']
+  referenced_tables:
+  - [
+    'moz-fx-data-shared-prod',
+    'contextual_services_derived',
+    'event_aggregates_v1'
+  ]

@@ -490,6 +490,8 @@ class Task:
         task.depends_on_past = False
         task.retries = 0
         task.depends_on_fivetran = []
+        task.referenced_tables = None
+        task.depends_on = []
         if task.is_dq_check_fail:
             task.task_name = (
                 f"checks__fail_{task.dataset}__{task.table}__{task.version}"[
@@ -558,14 +560,10 @@ class Task:
 
         parent_task = None
         if self.is_dq_check:
-            parent_task = Task.of_query(
-                self.query_file_path, dag_collection=dag_collection
+            parent_task = dag_collection.task_for_table(
+                self.project, self.dataset, f"{self.table}_{self.version}"
             )
-            parent_task_ref = TaskRef(
-                dag_name=parent_task.dag_name,
-                task_id=parent_task.task_name,
-                task_group=parent_task.task_group,
-            )
+            parent_task_ref = parent_task.to_ref(dag_collection)
             if not _duplicate_dependency(parent_task_ref):
                 dependencies.append(parent_task_ref)
 
@@ -578,19 +576,14 @@ class Task:
             upstream_task = dag_collection.task_for_table(table[0], table[1], table[2])
 
             if upstream_task is not None:
-                if upstream_task != self:
+                if upstream_task != self and upstream_task != parent_task:
                     if checks_upstream_task is not None:
-                        if (
-                            not parent_task
-                            or parent_task.task_name != upstream_task.task_name
-                        ):
-                            upstream_task = checks_upstream_task
+                        upstream_task = checks_upstream_task
                     task_ref = upstream_task.to_ref(dag_collection)
                     if not _duplicate_dependency(task_ref):
                         # Get its upstream dependencies so its date_partition_offset gets set.
-                        if not checks_upstream_task:
-                            upstream_task.with_upstream_dependencies(dag_collection)
-                            task_ref = upstream_task.to_ref(dag_collection)
+                        upstream_task.with_upstream_dependencies(dag_collection)
+                        task_ref = upstream_task.to_ref(dag_collection)
                         dependencies.append(task_ref)
             else:
                 # see if there are some static dependencies

@@ -1,0 +1,4 @@
+description: >
+  Diff the schemas of two queries. Especially useful when the BigQuery error
+  is truncated, and the schemas of e.g. a UNION don't match.
+friendly_name: Diff Query Schemas

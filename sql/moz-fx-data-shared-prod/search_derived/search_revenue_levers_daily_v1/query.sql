@@ -5,15 +5,23 @@ desktop_data_google AS (
     submission_date,
     IF(LOWER(channel) LIKE '%esr%', 'ESR', 'personal') AS channel,
     country,
-    COUNT(DISTINCT client_id) AS dau,
+    COUNT(DISTINCT IF(active_hours_sum > 0 AND total_uri_count > 0, client_id, NULL)) AS dau,
     COUNT(
-      DISTINCT IF(default_search_engine LIKE '%google%', client_id, NULL)
+      DISTINCT IF(
+        default_search_engine LIKE '%google%'
+        AND active_hours_sum > 0
+        AND total_uri_count > 0,
+        client_id,
+        NULL
+      )
     ) AS dau_w_engine_as_default,
     COUNT(
       DISTINCT IF(
         sap > 0
         AND normalized_engine = 'Google'
-        AND default_search_engine LIKE '%google%',
+        AND default_search_engine LIKE '%google%'
+        AND active_hours_sum > 0
+        AND total_uri_count > 0,
         client_id,
         NULL
       )
@@ -49,15 +57,23 @@ desktop_data_bing AS (
   SELECT
     submission_date,
     country,
-    COUNT(DISTINCT client_id) AS dau,
+    COUNT(DISTINCT IF(active_hours_sum > 0 AND total_uri_count > 0, client_id, NULL)) AS dau,
     COUNT(
-      DISTINCT IF(default_search_engine LIKE '%bing%', client_id, NULL)
+      DISTINCT IF(
+        default_search_engine LIKE '%bing%'
+        AND active_hours_sum > 0
+        AND total_uri_count > 0,
+        client_id,
+        NULL
+      )
     ) AS dau_w_engine_as_default,
     COUNT(
       DISTINCT IF(
         sap > 0
         AND normalized_engine = 'Bing'
-        AND default_search_engine LIKE '%bing%',
+        AND default_search_engine LIKE '%bing%'
+        AND active_hours_sum > 0
+        AND total_uri_count > 0,
         client_id,
         NULL
       )
@@ -89,14 +105,16 @@ desktop_data_ddg AS (
   SELECT
     submission_date,
     country,
-    COUNT(DISTINCT client_id) AS dau,
+    COUNT(DISTINCT IF(active_hours_sum > 0 AND total_uri_count > 0, client_id, NULL)) AS dau,
     COUNT(
       DISTINCT IF(
         (
           default_search_engine LIKE('%ddg%')
           OR default_search_engine LIKE('%duckduckgo%')
           AND NOT default_search_engine LIKE('%addon%')
-        ),
+        )
+        AND active_hours_sum > 0
+        AND total_uri_count > 0,
         client_id,
         NULL
       )
@@ -109,7 +127,9 @@ desktop_data_ddg AS (
           default_search_engine LIKE('%ddg%')
           OR default_search_engine LIKE('%duckduckgo%')
           AND NOT default_search_engine LIKE('%addon%')
-        ),
+        )
+        AND active_hours_sum > 0
+        AND total_uri_count > 0,
         client_id,
         NULL
       )
@@ -127,13 +147,21 @@ desktop_data_ddg AS (
     SUM(IF(engine IN ('ddg', 'duckduckgo') AND is_sap_monetizable, sap, 0)) AS ddg_monetizable_sap,
     -- in-content probes not available for addon so these metrics although being here will be zero
     COUNT(
-      DISTINCT IF(default_search_engine LIKE('ddg%addon'), client_id, NULL)
+      DISTINCT IF(
+        default_search_engine LIKE('ddg%addon')
+        AND active_hours_sum > 0
+        AND total_uri_count > 0,
+        client_id,
+        NULL
+      )
     ) AS ddgaddon_dau_w_engine_as_default,
     COUNT(
       DISTINCT IF(
         engine = 'ddg-addon'
         AND sap > 0
-        AND default_search_engine LIKE('ddg%addon'),
+        AND default_search_engine LIKE('ddg%addon')
+        AND active_hours_sum > 0
+        AND total_uri_count > 0,
         client_id,
         NULL
       )
@@ -167,7 +195,7 @@ mobile_dau_data AS (
     country,
     SUM(dau) AS dau
   FROM
-    `moz-fx-data-shared-prod.telemetry.active_users_aggregates_device`
+    `moz-fx-data-shared-prod.telemetry.active_users_aggregates`
   WHERE
     submission_date = @submission_date
     AND app_name IN ('Fenix', 'Firefox iOS', 'Focus Android', 'Focus iOS')

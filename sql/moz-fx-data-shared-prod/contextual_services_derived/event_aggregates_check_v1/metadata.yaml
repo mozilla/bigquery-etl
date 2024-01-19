@@ -19,9 +19,10 @@ scheduling:
   query_file_path:
     sql/moz-fx-data-shared-prod/contextual_services_derived/event_aggregates_check_v1/query.sql
   parameters: ['submission_date:DATE:{{ds}}']
-  referenced_tables:
-  - [
-    'moz-fx-data-shared-prod',
-    'contextual_services_derived',
-    'event_aggregates_v1'
-  ]
+  depends_on:
+  - task_id: contextual_services_derived__event_aggregates__v1
+    dag_name: bqetl_ctxsvc_derived
+  - task_id: contextual_services_derived__event_aggregates_spons_tiles__v1
+    dag_name: bqetl_ctxsvc_derived
+  - task_id: contextual_services_derived__event_aggregates_suggest__v1
+    dag_name: bqetl_ctxsvc_derived

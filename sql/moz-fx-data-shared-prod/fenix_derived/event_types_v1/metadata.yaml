@@ -14,3 +14,4 @@ labels:
 scheduling:
   dag_name: bqetl_fenix_event_rollup
   date_partition_parameter: null
+  parameters: ["submission_date:DATE:{{ds}}"]

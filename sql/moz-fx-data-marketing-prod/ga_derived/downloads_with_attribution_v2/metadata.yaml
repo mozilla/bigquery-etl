@@ -55,6 +55,7 @@ scheduling:
   depends_on:
   - task_id: ga_derived__www_site_empty_check__v1
     dag_name: bqetl_google_analytics_derived
+    execution_delta: 24h
 bigquery:
   time_partitioning:
     type: day

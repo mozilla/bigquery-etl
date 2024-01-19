@@ -4,4 +4,4 @@ AS
 SELECT
   *
 FROM
-  `moz-fx-data-shared-prod.monitoring_derived.bigquery_usage_v2`
+  `moz-fx-data-shared-prod.monitoring_derived.bigquery_usage_v1`

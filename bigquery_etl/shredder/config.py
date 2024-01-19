@@ -316,6 +316,7 @@ DELETE_TARGETS: DeleteIndex = {
     user_id_target(table="firefox_accounts_derived.fxa_users_first_seen_v1"): FXA_SRC,
     user_id_target(table="firefox_accounts_derived.fxa_users_first_seen_v2"): FXA_SRC,
     user_id_target(table="firefox_accounts_derived.fxa_users_last_seen_v1"): FXA_SRC,
+    user_id_target(table="firefox_accounts_derived.fxa_users_last_seen_v2"): FXA_SRC,
     user_id_target(
         table="firefox_accounts_derived.fxa_users_services_daily_v1"
     ): FXA_SRC,
@@ -330,6 +331,9 @@ DELETE_TARGETS: DeleteIndex = {
     ): FXA_SRC,
     user_id_target(
         table="firefox_accounts_derived.fxa_users_services_last_seen_v1"
+    ): FXA_SRC,
+    user_id_target(
+        table="firefox_accounts_derived.fxa_users_services_last_seen_v2"
     ): FXA_SRC,
     user_id_target(
         table="firefox_accounts_derived.fxa_users_services_devices_daily_v1"

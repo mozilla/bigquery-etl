@@ -13,7 +13,6 @@ from bigquery_etl.cli.utils import use_cloud_function_option
 def _generate_view_schema(sql_dir: Path, view_directory: Path) -> None:
     import logging
 
-    from bigquery_etl.format_sql.formatter import reformat
     from bigquery_etl.metadata.parse_metadata import Metadata
     from bigquery_etl.schema import Schema
     from bigquery_etl.view import View
@@ -29,33 +28,26 @@ def _generate_view_schema(sql_dir: Path, view_directory: Path) -> None:
 
     view = View.from_file(view_directory / VIEW_FILE)
 
-    if "-- Generated via" in view.content:
+    # View schemas are only used for descriptions. If we have multiple
+    # upstream references, it's unclear which one to copy/reference.
+    if len(view.table_references) != 1:
         return None
 
-    ref_dir, ref_schema = None, None
-    if len(view.table_references) == 1:
-        ref_project, ref_dataset, ref_table = view.table_references[0].split(".")
-        ref_dir = sql_dir / ref_project / ref_dataset / ref_table
+    ref_project, ref_dataset, ref_table = view.table_references[0].split(".")
+    ref_dir = sql_dir / ref_project / ref_dataset / ref_table
 
-        if ref_dataset.endswith("_stable"):
-            return None
+    # Stable view schemas are generated in the stable_view generator.
+    if ref_dataset.endswith("_stable"):
+        return None
 
-        if (ref_schema_path := ref_dir / SCHEMA_FILE).exists():
-            ref_schema = Schema.from_schema_file(ref_schema_path)
+    # If there's no upstream schema, there's no descriptions to copy.
+    if not (ref_schema_path := ref_dir / SCHEMA_FILE).exists():
+        return None
+    ref_schema = Schema.from_schema_file(ref_schema_path)
 
-        # If it's a "simple view", copy the upstream schema verbatim:
-        if (
-            reformat(
-                f"""
-                   CREATE OR REPLACE VIEW `{view.project}.{view.dataset}.{view.name}` AS
-                   SELECT * FROM `{ref_project}.{ref_dataset}.{ref_table}`
-                   """
-            ).strip()
-            in view.content.strip()
-            and ref_schema is not None
-        ):
-            ref_schema.to_yaml_file(view_schema_path)
-            return None
+    if view.is_default_view:
+        ref_schema.to_yaml_file(view_schema_path)
+        return None
 
     def _get_reference_partition_key(ref_path: Optional[Path]) -> Optional[str]:
         if ref_path is None:
@@ -92,19 +84,19 @@ def _generate_view_schema(sql_dir: Path, view_directory: Path) -> None:
         )
         return None
 
-    if ref_schema is not None:
-        # Optionally enrich the view schema if we have a valid table reference
-        try:
-            view_schema.merge(
-                ref_schema,
-                attributes=["description"],
-                ignore_missing_fields=True,
-                add_missing_fields=False,
-            )
-        except Exception as e:
-            # This is a broad exception raised upstream
-            # TODO: Update this and upstream to raise more specific exception
-            logging.warning(f"Failed to merge schemas {ref_dir} and {view.path}: {e}")
+    # Enrich the view schema if possible:
+    try:
+        view_schema.merge(
+            ref_schema,
+            attributes=["description"],
+            ignore_missing_fields=True,
+            add_missing_fields=False,
+        )
+    except Exception as e:
+        # This is a broad exception raised upstream
+        # TODO: Update this and upstream to raise more specific exception
+        logging.warning(f"Failed to merge schemas {ref_dir} and {view.path}: {e}")
+
     view_schema.to_yaml_file(view_schema_path)
 
 

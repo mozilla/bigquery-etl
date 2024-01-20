@@ -2,7 +2,7 @@
 version: 2.1
 
 orbs:
-  gcp-gcr: circleci/gcp-gcr@0.13.0
+  gcp-gcr: circleci/gcp-gcr@0.16.0
   docker: circleci/docker@2.2
   python: circleci/python@2.1.1
 
@@ -553,7 +553,8 @@ jobs:
           command: |
             rm -rf sql/
             cp -r /tmp/workspace/private-generated-sql/sql sql
-      - gcp-gcr/gcr-auth
+      - gcp-gcr/gcr-auth:
+          use_oidc: true
       - gcp-gcr/build-image: &private-image
           image: bigquery-etl
           tag: ${CIRCLE_TAG:-latest}
@@ -768,18 +769,6 @@ workflows:
             - validate-docs
             - validate-metadata
             - dry-run-sql
-      - deploy:
-          context: data-eng-bigquery-etl-dockerhub
-          requires:
-            - generate-sql
-            # Public image must be pushed after the private one because of
-            # webhooks used in Ops logic. For details, see:
-            # https://bugzilla.mozilla.org/show_bug.cgi?id=1715628#c0
-            - deploy-to-private-gcr
-          filters:
-            branches:
-              only:
-                - main
       # The following "private" jobs are basically clones of the public jobs
       # for generate-sql, deploy, and push-generated-sql, except that they pull
       # in some additional content from an internal Mozilla repository for
@@ -807,7 +796,6 @@ workflows:
               only:
                 - main
       - deploy-to-private-gcr:
-          context: data-eng-airflow-gcr
           requires:
             - private-generate-sql
             # can't run in parallel because CIRCLE_BUILD_NUM is same

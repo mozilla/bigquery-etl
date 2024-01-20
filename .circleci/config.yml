@@ -685,8 +685,7 @@ workflows:
   build:
     jobs: &build_jobs
       - manual-trigger-required-for-fork
-      - build:
-          context: data-eng-circleci-tests
+      - build
       - verify-format-sql:
           requires:
             - generate-sql
@@ -695,7 +694,6 @@ workflows:
             - generate-sql
       - verify-requirements
       - test-sql:
-          context: data-eng-circleci-tests
           requires:
             - deploy-changes-to-stage
       - dry-run-sql:

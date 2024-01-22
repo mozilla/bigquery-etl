@@ -73,3 +73,53 @@ get_all_events_in_each_session AS (
   WHERE
     _TABLE_SUFFIX = FORMAT_DATE('%Y%m%d', @submission_date)
 )
+
+SELECT
+a.date,
+a.visit_identifier,
+a.full_visitor_id,
+a.visit_start_time,
+/*
+? AS page_path,
+? AS page_path_level1,
+? AS hit_type,
+? AS is_exit,
+*/
+b.is_entrance,
+/*
+? AS hit_number,
+? AS event_category,
+*/
+b.event_label,
+b.device_category,
+b.operating_system,
+b.language,
+b.browser,
+b.browser_version,
+b.country,
+b.source,
+b.medium,
+b.campaign,
+b.ad_content,
+/*
+? AS visits,
+? AS bounces,
+? AS hit_time,
+? AS first_interaction,
+? AS last_interaction,
+? AS entrances,
+? AS exits,
+? AS event_id,
+? AS page_level_1,
+? AS page_level_2,
+? AS page_level_3,
+? AS page_level_4,
+? AS page_level_5,
+? AS page_name
+*/
+FROM get_session_start_time a
+LEFT OUTER JOIN
+get_all_events_in_each_session b
+ON a.date = b.date
+AND a.visit_identifier = b.visit_identifier
+AND a.full_visitor_id = b.full_visitor_id

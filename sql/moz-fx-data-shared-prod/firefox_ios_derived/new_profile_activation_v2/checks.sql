@@ -9,8 +9,11 @@ SELECT
     ERROR("Number of is_new_profile TRUE values should be the same as the row count."),
     NULL
   )
-FROM `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`
-WHERE `date` = @submission_date;
+FROM
+  `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`
+WHERE
+  `date` = @submission_date;
+
 #fail
 SELECT
   IF(
@@ -18,5 +21,7 @@ SELECT
     ERROR("Day difference between values inside `date` and submission_date fields should be 6."),
     NULL
   )
-FROM `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`
-WHERE `date` = @submission_date;
+FROM
+  `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`
+WHERE
+  `date` = @submission_date;

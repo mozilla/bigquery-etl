@@ -66,15 +66,6 @@ jobs:
       - checkout
       - *restore_venv_cache
       - *build
-      - &attach_generated_sql
-        attach_workspace:
-          at: /tmp/workspace
-      - &copy_generated_sql
-        run:
-          name: Move generated-sql into place
-          command: |
-            rm -rf sql/
-            cp -r /tmp/workspace/generated-sql/sql sql
       - run:
           name: Verify that SQL is correctly formatted
           command: |
@@ -98,7 +89,9 @@ jobs:
       - checkout
       - *restore_venv_cache
       - *build
-      - *attach_generated_sql
+      - &attach_generated_sql
+        attach_workspace:
+          at: /tmp/workspace
       - &copy_staged_sql
         run:
           name: Move sql deployed on stage into place
@@ -204,7 +197,12 @@ jobs:
       - *restore_venv_cache
       - *build
       - *attach_generated_sql
-      - *copy_generated_sql
+      - &copy_generated_sql
+        run:
+          name: Move generated-sql into place
+          command: |
+            rm -rf sql/
+            cp -r /tmp/workspace/generated-sql/sql sql
       - run:
           name: Generate DAGs
           command: |
@@ -686,9 +684,7 @@ workflows:
       - manual-trigger-required-for-fork
       - build:
           context: data-eng-circleci-tests
-      - verify-format-sql:
-          requires:
-            - generate-sql
+      - verify-format-sql
       - deploy-changes-to-stage:
           requires:
             - generate-sql

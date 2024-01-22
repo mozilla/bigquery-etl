@@ -8,9 +8,7 @@ WITH historical_reports AS (
   FROM
     `moz-fx-data-shared-prod.firefox_desktop_stable.broken_site_report_v1`
   WHERE
-    DATE(
-      submission_timestamp
-    ) > "2023-11-01"
+    DATE(submission_timestamp) > "2023-11-01"
 ),
 live_reports AS (
   SELECT
@@ -38,7 +36,7 @@ all_reports AS (
     historical_reports
 )
 SELECT
-  document_id as uuid,
+  document_id AS uuid,
   CAST(submission_timestamp AS DATETIME) AS reported_at,
   metrics.text2.broken_site_report_description AS comments,
   metrics.url2.broken_site_report_url AS url,

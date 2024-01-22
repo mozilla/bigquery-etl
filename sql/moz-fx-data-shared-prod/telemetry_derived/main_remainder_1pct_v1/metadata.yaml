@@ -31,10 +31,6 @@ scheduling:
   start_date: '2023-07-01'
   arguments:
   - --schema_update_option=ALLOW_FIELD_ADDITION
-  referenced_tables:
-  - - moz-fx-data-shared-prod
-    - telemetry_stable
-    - main_v5
 bigquery:
   time_partitioning:
     type: day

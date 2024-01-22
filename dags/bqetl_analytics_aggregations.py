@@ -402,9 +402,99 @@ with DAG(
     checks__warn_fenix_derived__active_users_aggregates__v3.set_upstream(
         fenix_active_users_aggregates
     )
+    wait_for_org_mozilla_fenix_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_org_mozilla_fenix_derived__baseline_clients_last_seen__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="fenix.org_mozilla_fenix_derived__baseline_clients_last_seen__v1",
+        execution_delta=datetime.timedelta(seconds=8100),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    checks__warn_fenix_derived__active_users_aggregates__v3.set_upstream(
+        wait_for_org_mozilla_fenix_derived__baseline_clients_last_seen__v1
+    )
+    wait_for_org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="fenix.org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1",
+        execution_delta=datetime.timedelta(seconds=8100),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    checks__warn_fenix_derived__active_users_aggregates__v3.set_upstream(
+        wait_for_org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1
+    )
+    wait_for_org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="fenix.org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1",
+        execution_delta=datetime.timedelta(seconds=8100),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    checks__warn_fenix_derived__active_users_aggregates__v3.set_upstream(
+        wait_for_org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1
+    )
+    wait_for_org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="fenix.org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1",
+        execution_delta=datetime.timedelta(seconds=8100),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    checks__warn_fenix_derived__active_users_aggregates__v3.set_upstream(
+        wait_for_org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1
+    )
+    wait_for_org_mozilla_firefox_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_org_mozilla_firefox_derived__baseline_clients_last_seen__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="fenix.org_mozilla_firefox_derived__baseline_clients_last_seen__v1",
+        execution_delta=datetime.timedelta(seconds=8100),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    checks__warn_fenix_derived__active_users_aggregates__v3.set_upstream(
+        wait_for_org_mozilla_firefox_derived__baseline_clients_last_seen__v1
+    )
 
     checks__warn_firefox_desktop_derived__active_users_aggregates__v1.set_upstream(
         firefox_desktop_active_users_aggregates
+    )
+    wait_for_telemetry_derived__clients_last_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_telemetry_derived__clients_last_seen__v1",
+        external_dag_id="bqetl_main_summary",
+        external_task_id="telemetry_derived__clients_last_seen__v1",
+        execution_delta=datetime.timedelta(seconds=8100),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    checks__warn_firefox_desktop_derived__active_users_aggregates__v1.set_upstream(
+        wait_for_telemetry_derived__clients_last_seen__v1
     )
 
     checks__warn_firefox_ios_derived__active_users_aggregates__v3.set_upstream(
@@ -487,18 +577,6 @@ with DAG(
 
     fenix_active_users_aggregates.set_upstream(
         wait_for_search_derived__mobile_search_clients_daily__v1
-    )
-
-    wait_for_telemetry_derived__clients_last_seen__v1 = ExternalTaskSensor(
-        task_id="wait_for_telemetry_derived__clients_last_seen__v1",
-        external_dag_id="bqetl_main_summary",
-        external_task_id="telemetry_derived__clients_last_seen__v1",
-        execution_delta=datetime.timedelta(seconds=8100),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     firefox_desktop_active_users_aggregates.set_upstream(

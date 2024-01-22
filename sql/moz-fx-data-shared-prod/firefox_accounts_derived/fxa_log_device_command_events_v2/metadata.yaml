@@ -17,7 +17,6 @@ labels:
 scheduling:
   dag_name: bqetl_fxa_events
   start_date: '2023-09-07'
-  referenced_tables: []
 bigquery:
   time_partitioning:
     type: day

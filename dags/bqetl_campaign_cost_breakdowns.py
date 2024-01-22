@@ -81,3 +81,18 @@ with DAG(
     fenix_derived__google_ads_campaign_cost_breakdowns__v1.set_upstream(
         wait_for_fenix_derived__attributable_clients__v1
     )
+    wait_for_google_ads_derived__campaign_names_map__v1 = ExternalTaskSensor(
+        task_id="wait_for_google_ads_derived__campaign_names_map__v1",
+        external_dag_id="bqetl_fivetran_google_ads",
+        external_task_id="google_ads_derived__campaign_names_map__v1",
+        execution_delta=datetime.timedelta(seconds=3600),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    fenix_derived__google_ads_campaign_cost_breakdowns__v1.set_upstream(
+        wait_for_google_ads_derived__campaign_names_map__v1
+    )

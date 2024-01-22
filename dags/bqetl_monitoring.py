@@ -299,8 +299,8 @@ with DAG(
         destination_table="telemetry_missing_columns_v3",
         dataset_id="monitoring_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="amiyaguchi@mozilla.com",
-        email=["amiyaguchi@mozilla.com", "ascholtz@mozilla.com"],
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )

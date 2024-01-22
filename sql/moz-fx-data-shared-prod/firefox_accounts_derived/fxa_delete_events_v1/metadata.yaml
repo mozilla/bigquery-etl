@@ -11,7 +11,6 @@ labels:
   owner1: kik
 scheduling:
   dag_name: bqetl_fxa_events
-  referenced_tables: []
 bigquery:
   time_partitioning:
     type: day

@@ -10,19 +10,6 @@ labels:
 scheduling:
   dag_name: bqetl_mobile_activation
   date_partition_parameter: submission_date
-  referenced_tables:
-  - - moz-fx-data-shared-prod
-    - org_mozilla_firefox_stable
-    - first_session_v1
-  - - moz-fx-data-shared-prod
-    - search_derived
-    - mobile_search_clients_daily_v1
-  - - moz-fx-data-shared-prod
-    - fenix
-    - baseline_clients_first_seen
-  - - moz-fx-data-shared-prod
-    - fenix
-    - baseline_clients_last_seen
 bigquery:
   time_partitioning:
     type: day

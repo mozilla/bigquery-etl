@@ -252,8 +252,28 @@ with DAG(
         parameters=["submission_date:DATE:{{ds}}"],
     )
 
+    wait_for_fenix_derived__new_profile_activation__v1 = ExternalTaskSensor(
+        task_id="wait_for_fenix_derived__new_profile_activation__v1",
+        external_dag_id="bqetl_mobile_activation",
+        external_task_id="fenix_derived__new_profile_activation__v1",
+        execution_delta=datetime.timedelta(seconds=7200),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    checks__fail_fenix_derived__firefox_android_clients__v1.set_upstream(
+        wait_for_fenix_derived__new_profile_activation__v1
+    )
+
     checks__fail_fenix_derived__firefox_android_clients__v1.set_upstream(
         firefox_android_clients
+    )
+
+    checks__warn_fenix_derived__firefox_android_clients__v1.set_upstream(
+        wait_for_fenix_derived__new_profile_activation__v1
     )
 
     checks__warn_fenix_derived__firefox_android_clients__v1.set_upstream(
@@ -397,18 +417,6 @@ with DAG(
     )
 
     firefox_android_clients.set_upstream(wait_for_copy_deduplicate_all)
-    wait_for_fenix_derived__new_profile_activation__v1 = ExternalTaskSensor(
-        task_id="wait_for_fenix_derived__new_profile_activation__v1",
-        external_dag_id="bqetl_mobile_activation",
-        external_task_id="fenix_derived__new_profile_activation__v1",
-        execution_delta=datetime.timedelta(seconds=7200),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
     firefox_android_clients.set_upstream(
         wait_for_fenix_derived__new_profile_activation__v1
     )

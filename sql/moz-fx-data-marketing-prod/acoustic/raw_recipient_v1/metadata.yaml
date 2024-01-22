@@ -19,8 +19,6 @@ owners:
 scheduling:
   dag_name: bqetl_acoustic_raw_recipient_export
   date_partition_parameter: submission_date
-  referenced_tables:
-    - ['moz-fx-data-marketing-prod', 'acoustic', 'raw_recipient_raw_v1']
 
 bigquery:
   time_partitioning:

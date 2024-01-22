@@ -9,13 +9,6 @@ labels:
 scheduling:
   dag_name: bqetl_monitoring_airflow
   date_partition_parameter: null
-  referenced_tables:
-  - - moz-fx-data-bq-fivetran
-    - airflow_metadata_airflow_db
-    - dag_run
-  - - moz-fx-data-bq-fivetran
-    - telemetry_airflow_metadata_public
-    - dag_run
   depends_on_fivetran:
   - task_id: fivetran_airflow_metadata_import
 bigquery: null

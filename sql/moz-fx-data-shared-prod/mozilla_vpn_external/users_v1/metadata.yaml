@@ -16,7 +16,6 @@ scheduling:
   - "external_database_query:STRING: SELECT\n  id,\n  email,\n  fxa_uid,\n  fxa_profile_json,\n\
     \  created_at,\n  updated_at,\n  display_name,\n  avatar\nFROM users WHERE DATE(updated_at)\
     \ = DATE '{{ds}}'"
-  referenced_tables: []
 bigquery:
   time_partitioning:
     type: day

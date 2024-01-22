@@ -16,8 +16,6 @@ labels:
 scheduling:
   dag_name: bqetl_acoustic_contact_export
   date_partition_parameter: null
-  referenced_tables:
-    - ['moz-fx-data-marketing-prod', 'acoustic', 'contact_v1']
 
 bigquery:
   time_partitioning:

@@ -154,6 +154,19 @@ with DAG(
     checks__fail_mozilla_org_derived__ga_sessions__v1.set_upstream(
         mozilla_org_derived__ga_sessions__v1
     )
+
+    checks__fail_mozilla_org_derived__gclid_conversions__v1.set_upstream(
+        mozilla_org_derived__gclid_conversions__v1
+    )
+
+    checks__fail_stub_attribution_service_derived__dl_token_ga_attribution_lookup__v1.set_upstream(
+        stub_attribution_service_derived__dl_token_ga_attribution_lookup__v1
+    )
+
+    mozilla_org_derived__ga_clients__v1.set_upstream(
+        checks__fail_mozilla_org_derived__ga_sessions__v1
+    )
+
     wait_for_mozilla_org_derived__ga_sessions__v1__backfill__1 = ExternalTaskSensor(
         task_id="wait_for_mozilla_org_derived__ga_sessions__v1__backfill_-1",
         external_dag_id="ga_sessions_backfill",
@@ -166,7 +179,7 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    checks__fail_mozilla_org_derived__ga_sessions__v1.set_upstream(
+    mozilla_org_derived__ga_sessions__v1.set_upstream(
         wait_for_mozilla_org_derived__ga_sessions__v1__backfill__1
     )
     wait_for_mozilla_org_derived__ga_sessions__v1__backfill__2 = ExternalTaskSensor(
@@ -181,7 +194,7 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    checks__fail_mozilla_org_derived__ga_sessions__v1.set_upstream(
+    mozilla_org_derived__ga_sessions__v1.set_upstream(
         wait_for_mozilla_org_derived__ga_sessions__v1__backfill__2
     )
     wait_for_mozilla_org_derived__ga_sessions__v1__backfill__3 = ExternalTaskSensor(
@@ -196,28 +209,6 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    checks__fail_mozilla_org_derived__ga_sessions__v1.set_upstream(
-        wait_for_mozilla_org_derived__ga_sessions__v1__backfill__3
-    )
-
-    checks__fail_mozilla_org_derived__gclid_conversions__v1.set_upstream(
-        mozilla_org_derived__gclid_conversions__v1
-    )
-
-    checks__fail_stub_attribution_service_derived__dl_token_ga_attribution_lookup__v1.set_upstream(
-        stub_attribution_service_derived__dl_token_ga_attribution_lookup__v1
-    )
-
-    mozilla_org_derived__ga_clients__v1.set_upstream(
-        checks__fail_mozilla_org_derived__ga_sessions__v1
-    )
-
-    mozilla_org_derived__ga_sessions__v1.set_upstream(
-        wait_for_mozilla_org_derived__ga_sessions__v1__backfill__1
-    )
-    mozilla_org_derived__ga_sessions__v1.set_upstream(
-        wait_for_mozilla_org_derived__ga_sessions__v1__backfill__2
-    )
     mozilla_org_derived__ga_sessions__v1.set_upstream(
         wait_for_mozilla_org_derived__ga_sessions__v1__backfill__3
     )

@@ -2,17 +2,13 @@ friendly_name: Telemetry Missing Columns
 description: |
   Enumerated paths in additional properties for the Telemetry namespace. This excludes the main ping and its variants for the sake of efficiency.
 owners:
-- amiyaguchi@mozilla.com
+- ascholtz@mozilla.com
 labels:
   schedule: daily
   dag: bqetl_monitoring
-  owner1: amiyaguchi
+  owner1: ascholtz
 scheduling:
   dag_name: bqetl_monitoring
-  referenced_tables:
-  - - moz-fx-data-shared-prod
-    - '*_stable'
-    - '*'
 bigquery:
   time_partitioning:
     type: day

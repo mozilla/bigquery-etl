@@ -11,7 +11,6 @@ labels:
   owner1: akommasani
 scheduling:
   dag_name: bqetl_desktop_mobile_search_monthly
-  referenced_tables: []
   date_partition_parameter: null
   destination_table: desktop_mobile_search_clients_monthly_v1${{ (execution_date +
     macros.dateutil.relativedelta.relativedelta(months=-1, day=1)).strftime("%Y%m")

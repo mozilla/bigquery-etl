@@ -81,6 +81,7 @@ with DAG(
         task_id="wait_for_ga_derived__www_site_empty_check__v1",
         external_dag_id="bqetl_google_analytics_derived",
         external_task_id="ga_derived__www_site_empty_check__v1",
+        execution_delta=datetime.timedelta(days=1),
         check_existence=True,
         mode="reschedule",
         allowed_states=ALLOWED_STATES,

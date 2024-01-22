@@ -88,6 +88,20 @@ with DAG(
         task_concurrency=1,
     )
 
+    with TaskGroup(
+        "google_ads_derived__campaign_names_map__v1_external",
+    ) as google_ads_derived__campaign_names_map__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_campaign_cost_breakdowns__wait_for_google_ads_derived__campaign_names_map__v1",
+            external_dag_id="bqetl_campaign_cost_breakdowns",
+            external_task_id="wait_for_google_ads_derived__campaign_names_map__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
+        )
+
+        google_ads_derived__campaign_names_map__v1_external.set_upstream(
+            google_ads_derived__campaign_names_map__v1
+        )
+
     google_ads_derived__daily_ad_group_stats__v1 = bigquery_etl_query(
         task_id="google_ads_derived__daily_ad_group_stats__v1",
         destination_table="daily_ad_group_stats_v1",

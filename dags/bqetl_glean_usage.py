@@ -1892,6 +1892,13 @@ with DAG(
         )
 
         ExternalTaskMarker(
+            task_id="bqetl_mobile_activation__wait_for_org_mozilla_fenix_derived__baseline_clients_daily__v1",
+            external_dag_id="bqetl_mobile_activation",
+            external_task_id="wait_for_org_mozilla_fenix_derived__baseline_clients_daily__v1",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=7200)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_analytics_tables__wait_for_org_mozilla_fenix_derived__baseline_clients_daily__v1",
             external_dag_id="bqetl_analytics_tables",
             external_task_id="wait_for_org_mozilla_fenix_derived__baseline_clients_daily__v1",
@@ -1931,9 +1938,23 @@ with DAG(
         parent_group=task_group_fenix,
     ) as org_mozilla_fenix_derived__baseline_clients_last_seen__v1_external:
         ExternalTaskMarker(
+            task_id="bqetl_analytics_aggregations__wait_for_org_mozilla_fenix_derived__baseline_clients_last_seen__v1",
+            external_dag_id="bqetl_analytics_aggregations",
+            external_task_id="wait_for_org_mozilla_fenix_derived__baseline_clients_last_seen__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=78300)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_analytics_tables__wait_for_org_mozilla_fenix_derived__baseline_clients_last_seen__v1",
             external_dag_id="bqetl_analytics_tables",
             external_task_id="wait_for_org_mozilla_fenix_derived__baseline_clients_last_seen__v1",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_mobile_activation__wait_for_org_mozilla_fenix_derived__baseline_clients_last_seen__v1",
+            external_dag_id="bqetl_mobile_activation",
+            external_task_id="wait_for_org_mozilla_fenix_derived__baseline_clients_last_seen__v1",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=7200)).isoformat() }}",
         )
 
         ExternalTaskMarker(
@@ -1994,6 +2015,13 @@ with DAG(
         )
 
         ExternalTaskMarker(
+            task_id="bqetl_mobile_activation__wait_for_org_mozilla_fenix_nightly_derived__baseline_clients_daily__v1",
+            external_dag_id="bqetl_mobile_activation",
+            external_task_id="wait_for_org_mozilla_fenix_nightly_derived__baseline_clients_daily__v1",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=7200)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_analytics_tables__wait_for_org_mozilla_fenix_nightly_derived__baseline_clients_daily__v1",
             external_dag_id="bqetl_analytics_tables",
             external_task_id="wait_for_org_mozilla_fenix_nightly_derived__baseline_clients_daily__v1",
@@ -2035,9 +2063,23 @@ with DAG(
         parent_group=task_group_fenix,
     ) as org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1_external:
         ExternalTaskMarker(
+            task_id="bqetl_analytics_aggregations__wait_for_org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1",
+            external_dag_id="bqetl_analytics_aggregations",
+            external_task_id="wait_for_org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=78300)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_analytics_tables__wait_for_org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1",
             external_dag_id="bqetl_analytics_tables",
             external_task_id="wait_for_org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_mobile_activation__wait_for_org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1",
+            external_dag_id="bqetl_mobile_activation",
+            external_task_id="wait_for_org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=7200)).isoformat() }}",
         )
 
         ExternalTaskMarker(
@@ -2078,6 +2120,13 @@ with DAG(
             task_id="bqetl_org_mozilla_firefox_derived__wait_for_org_mozilla_fennec_aurora_derived__baseline_clients_daily__v1",
             external_dag_id="bqetl_org_mozilla_firefox_derived",
             external_task_id="wait_for_org_mozilla_fennec_aurora_derived__baseline_clients_daily__v1",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_mobile_activation__wait_for_org_mozilla_fennec_aurora_derived__baseline_clients_daily__v1",
+            external_dag_id="bqetl_mobile_activation",
+            external_task_id="wait_for_org_mozilla_fennec_aurora_derived__baseline_clients_daily__v1",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=7200)).isoformat() }}",
         )
 
         ExternalTaskMarker(
@@ -2122,9 +2171,23 @@ with DAG(
         parent_group=task_group_fenix,
     ) as org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1_external:
         ExternalTaskMarker(
+            task_id="bqetl_analytics_aggregations__wait_for_org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1",
+            external_dag_id="bqetl_analytics_aggregations",
+            external_task_id="wait_for_org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=78300)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_analytics_tables__wait_for_org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1",
             external_dag_id="bqetl_analytics_tables",
             external_task_id="wait_for_org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_mobile_activation__wait_for_org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1",
+            external_dag_id="bqetl_mobile_activation",
+            external_task_id="wait_for_org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=7200)).isoformat() }}",
         )
 
         ExternalTaskMarker(
@@ -2165,6 +2228,13 @@ with DAG(
             task_id="bqetl_org_mozilla_firefox_derived__wait_for_org_mozilla_firefox_beta_derived__baseline_clients_daily__v1",
             external_dag_id="bqetl_org_mozilla_firefox_derived",
             external_task_id="wait_for_org_mozilla_firefox_beta_derived__baseline_clients_daily__v1",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_mobile_activation__wait_for_org_mozilla_firefox_beta_derived__baseline_clients_daily__v1",
+            external_dag_id="bqetl_mobile_activation",
+            external_task_id="wait_for_org_mozilla_firefox_beta_derived__baseline_clients_daily__v1",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=7200)).isoformat() }}",
         )
 
         ExternalTaskMarker(
@@ -2211,9 +2281,23 @@ with DAG(
         parent_group=task_group_fenix,
     ) as org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1_external:
         ExternalTaskMarker(
+            task_id="bqetl_analytics_aggregations__wait_for_org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1",
+            external_dag_id="bqetl_analytics_aggregations",
+            external_task_id="wait_for_org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=78300)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_analytics_tables__wait_for_org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1",
             external_dag_id="bqetl_analytics_tables",
             external_task_id="wait_for_org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_mobile_activation__wait_for_org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1",
+            external_dag_id="bqetl_mobile_activation",
+            external_task_id="wait_for_org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=7200)).isoformat() }}",
         )
 
         ExternalTaskMarker(
@@ -2257,6 +2341,13 @@ with DAG(
         )
 
         ExternalTaskMarker(
+            task_id="bqetl_mobile_activation__wait_for_org_mozilla_firefox_derived__baseline_clients_daily__v1",
+            external_dag_id="bqetl_mobile_activation",
+            external_task_id="wait_for_org_mozilla_firefox_derived__baseline_clients_daily__v1",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=7200)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_analytics_tables__wait_for_org_mozilla_firefox_derived__baseline_clients_daily__v1",
             external_dag_id="bqetl_analytics_tables",
             external_task_id="wait_for_org_mozilla_firefox_derived__baseline_clients_daily__v1",
@@ -2296,9 +2387,23 @@ with DAG(
         parent_group=task_group_fenix,
     ) as org_mozilla_firefox_derived__baseline_clients_last_seen__v1_external:
         ExternalTaskMarker(
+            task_id="bqetl_analytics_aggregations__wait_for_org_mozilla_firefox_derived__baseline_clients_last_seen__v1",
+            external_dag_id="bqetl_analytics_aggregations",
+            external_task_id="wait_for_org_mozilla_firefox_derived__baseline_clients_last_seen__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=78300)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_analytics_tables__wait_for_org_mozilla_firefox_derived__baseline_clients_last_seen__v1",
             external_dag_id="bqetl_analytics_tables",
             external_task_id="wait_for_org_mozilla_firefox_derived__baseline_clients_last_seen__v1",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_mobile_activation__wait_for_org_mozilla_firefox_derived__baseline_clients_last_seen__v1",
+            external_dag_id="bqetl_mobile_activation",
+            external_task_id="wait_for_org_mozilla_firefox_derived__baseline_clients_last_seen__v1",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=7200)).isoformat() }}",
         )
 
         ExternalTaskMarker(

@@ -17,7 +17,6 @@ scheduling:
     \  mullvad_account_created_at,\n  mullvad_account_expiration_date,\n  ended_at,\n\
     \  created_at,\n  updated_at,\n  type,\n  fxa_last_changed_at,\n  fxa_migration_note\n\
     FROM subscriptions WHERE DATE(updated_at) = DATE '{{ds}}'"
-  referenced_tables: []
 bigquery:
   time_partitioning:
     type: day

@@ -19,10 +19,6 @@ scheduling:
   dag_name: bqetl_fxa_events
   depends_on_past: true
   start_date: '2019-04-23'
-  referenced_tables:
-  - - moz-fx-data-shared-prod
-    - firefox_accounts_derived
-    - fxa_users_daily_v1
 bigquery:
   time_partitioning:
     type: day

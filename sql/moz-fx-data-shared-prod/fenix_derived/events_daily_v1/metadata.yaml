@@ -13,10 +13,6 @@ labels:
   owner2: akomar
 scheduling:
   dag_name: bqetl_fenix_event_rollup
-  referenced_tables:
-  - - moz-fx-data-shared-prod
-    - fenix_derived
-    - event_types_v1
 bigquery:
   time_partitioning:
     type: day

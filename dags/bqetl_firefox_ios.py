@@ -368,6 +368,14 @@ with DAG(
     )
 
     checks__fail_firefox_ios_derived__app_store_funnel__v1.set_upstream(
+        checks__fail_firefox_ios_derived__clients_activation__v1
+    )
+
+    checks__fail_firefox_ios_derived__app_store_funnel__v1.set_upstream(
+        checks__fail_firefox_ios_derived__firefox_ios_clients__v1
+    )
+
+    checks__fail_firefox_ios_derived__app_store_funnel__v1.set_upstream(
         firefox_ios_derived__app_store_funnel__v1
     )
 
@@ -377,6 +385,10 @@ with DAG(
 
     checks__fail_firefox_ios_derived__client_adclicks_history__v1.set_upstream(
         firefox_ios_derived__client_adclicks_history__v1
+    )
+
+    checks__fail_firefox_ios_derived__clients_activation__v1.set_upstream(
+        checks__fail_firefox_ios_derived__firefox_ios_clients__v1
     )
 
     checks__fail_firefox_ios_derived__clients_activation__v1.set_upstream(
@@ -392,7 +404,15 @@ with DAG(
     )
 
     checks__fail_firefox_ios_derived__funnel_retention_clients_week_4__v1.set_upstream(
+        checks__fail_firefox_ios_derived__funnel_retention_clients_week_2__v1
+    )
+
+    checks__fail_firefox_ios_derived__funnel_retention_clients_week_4__v1.set_upstream(
         firefox_ios_derived__funnel_retention_clients_week_4__v1
+    )
+
+    checks__fail_firefox_ios_derived__funnel_retention_week_4__v1.set_upstream(
+        checks__fail_firefox_ios_derived__funnel_retention_clients_week_4__v1
     )
 
     checks__fail_firefox_ios_derived__funnel_retention_week_4__v1.set_upstream(
@@ -401,6 +421,14 @@ with DAG(
 
     checks__fail_firefox_ios_derived__new_profile_activation__v2.set_upstream(
         firefox_ios_derived__new_profile_activation__v2
+    )
+
+    checks__warn_firefox_ios_derived__app_store_funnel__v1.set_upstream(
+        checks__fail_firefox_ios_derived__clients_activation__v1
+    )
+
+    checks__warn_firefox_ios_derived__app_store_funnel__v1.set_upstream(
+        checks__fail_firefox_ios_derived__firefox_ios_clients__v1
     )
 
     checks__warn_firefox_ios_derived__app_store_funnel__v1.set_upstream(

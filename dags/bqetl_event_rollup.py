@@ -179,6 +179,8 @@ with DAG(
         firefox_accounts_derived__event_types__v1
     )
 
+    firefox_accounts_derived__events_daily__v1.set_upstream(funnel_events_source__v1)
+
     wait_for_firefox_accounts_derived__fxa_gcp_stderr_events__v1 = ExternalTaskSensor(
         task_id="wait_for_firefox_accounts_derived__fxa_gcp_stderr_events__v1",
         external_dag_id="bqetl_fxa_events",
@@ -246,6 +248,10 @@ with DAG(
     )
 
     messaging_system_derived__events_daily__v1.set_upstream(
+        wait_for_firefox_desktop_derived__onboarding__v2
+    )
+
+    messaging_system_derived__events_daily__v1.set_upstream(
         messaging_system_derived__event_types__v1
     )
 
@@ -268,6 +274,8 @@ with DAG(
     mozilla_vpn_derived__event_types_history__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
+
+    mozilla_vpn_derived__events_daily__v1.set_upstream(wait_for_copy_deduplicate_all)
 
     mozilla_vpn_derived__events_daily__v1.set_upstream(
         mozilla_vpn_derived__event_types__v1

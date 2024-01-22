@@ -59,3 +59,34 @@ with DAG(
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
     )
+
+    wait_for_search_derived__mobile_search_clients_daily__v1 = ExternalTaskSensor(
+        task_id="wait_for_search_derived__mobile_search_clients_daily__v1",
+        external_dag_id="bqetl_mobile_search",
+        external_task_id="search_derived__mobile_search_clients_daily__v1",
+        execution_delta=datetime.timedelta(days=2, seconds=10800),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    search_derived__desktop_mobile_search_clients_monthly__v1.set_upstream(
+        wait_for_search_derived__mobile_search_clients_daily__v1
+    )
+    wait_for_search_derived__search_clients_daily__v8 = ExternalTaskSensor(
+        task_id="wait_for_search_derived__search_clients_daily__v8",
+        external_dag_id="bqetl_search",
+        external_task_id="search_derived__search_clients_daily__v8",
+        execution_delta=datetime.timedelta(days=2, seconds=7200),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    search_derived__desktop_mobile_search_clients_monthly__v1.set_upstream(
+        wait_for_search_derived__search_clients_daily__v8
+    )

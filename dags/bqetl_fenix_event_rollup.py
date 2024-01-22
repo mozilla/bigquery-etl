@@ -96,4 +96,6 @@ with DAG(
 
     fenix_derived__event_types_history__v1.set_upstream(wait_for_copy_deduplicate_all)
 
+    fenix_derived__events_daily__v1.set_upstream(wait_for_copy_deduplicate_all)
+
     fenix_derived__events_daily__v1.set_upstream(fenix_derived__event_types__v1)

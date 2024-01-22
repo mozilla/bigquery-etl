@@ -187,104 +187,6 @@ with DAG(
         fenix_derived__ltv_states__v1
     )
 
-    wait_for_search_derived__mobile_search_clients_daily__v1 = ExternalTaskSensor(
-        task_id="wait_for_search_derived__mobile_search_clients_daily__v1",
-        external_dag_id="bqetl_mobile_search",
-        external_task_id="search_derived__mobile_search_clients_daily__v1",
-        execution_delta=datetime.timedelta(0),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    fenix_derived__attributable_clients__v1.set_upstream(
-        wait_for_search_derived__mobile_search_clients_daily__v1
-    )
-
-    fenix_derived__attributable_clients__v2.set_upstream(
-        wait_for_search_derived__mobile_search_clients_daily__v1
-    )
-
-    fenix_derived__client_adclicks_history__v1.set_upstream(
-        fenix_derived__attributable_clients__v2
-    )
-
-    wait_for_org_mozilla_fenix_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
-        task_id="wait_for_org_mozilla_fenix_derived__baseline_clients_daily__v1",
-        external_dag_id="bqetl_glean_usage",
-        external_task_id="fenix.org_mozilla_fenix_derived__baseline_clients_daily__v1",
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    fenix_derived__clients_yearly__v1.set_upstream(
-        wait_for_org_mozilla_fenix_derived__baseline_clients_daily__v1
-    )
-    wait_for_org_mozilla_fenix_nightly_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
-        task_id="wait_for_org_mozilla_fenix_nightly_derived__baseline_clients_daily__v1",
-        external_dag_id="bqetl_glean_usage",
-        external_task_id="fenix.org_mozilla_fenix_nightly_derived__baseline_clients_daily__v1",
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    fenix_derived__clients_yearly__v1.set_upstream(
-        wait_for_org_mozilla_fenix_nightly_derived__baseline_clients_daily__v1
-    )
-    wait_for_org_mozilla_fennec_aurora_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
-        task_id="wait_for_org_mozilla_fennec_aurora_derived__baseline_clients_daily__v1",
-        external_dag_id="bqetl_glean_usage",
-        external_task_id="fenix.org_mozilla_fennec_aurora_derived__baseline_clients_daily__v1",
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    fenix_derived__clients_yearly__v1.set_upstream(
-        wait_for_org_mozilla_fennec_aurora_derived__baseline_clients_daily__v1
-    )
-    wait_for_org_mozilla_firefox_beta_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
-        task_id="wait_for_org_mozilla_firefox_beta_derived__baseline_clients_daily__v1",
-        external_dag_id="bqetl_glean_usage",
-        external_task_id="fenix.org_mozilla_firefox_beta_derived__baseline_clients_daily__v1",
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    fenix_derived__clients_yearly__v1.set_upstream(
-        wait_for_org_mozilla_firefox_beta_derived__baseline_clients_daily__v1
-    )
-    wait_for_org_mozilla_firefox_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
-        task_id="wait_for_org_mozilla_firefox_derived__baseline_clients_daily__v1",
-        external_dag_id="bqetl_glean_usage",
-        external_task_id="fenix.org_mozilla_firefox_derived__baseline_clients_daily__v1",
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    fenix_derived__clients_yearly__v1.set_upstream(
-        wait_for_org_mozilla_firefox_derived__baseline_clients_daily__v1
-    )
-
-    fenix_derived__ltv_states__v1.set_upstream(
-        checks__fail_fenix_derived__client_adclicks_history__v1
-    )
     wait_for_checks__fail_fenix_derived__firefox_android_clients__v1 = (
         ExternalTaskSensor(
             task_id="wait_for_checks__fail_fenix_derived__firefox_android_clients__v1",
@@ -298,12 +200,9 @@ with DAG(
         )
     )
 
-    fenix_derived__ltv_states__v1.set_upstream(
+    fenix_derived__attributable_clients__v1.set_upstream(
         wait_for_checks__fail_fenix_derived__firefox_android_clients__v1
     )
-
-    fenix_derived__ltv_states__v1.set_upstream(fenix_derived__clients_yearly__v1)
-
     wait_for_copy_deduplicate_all = ExternalTaskSensor(
         task_id="wait_for_copy_deduplicate_all",
         external_dag_id="copy_deduplicate",
@@ -315,6 +214,144 @@ with DAG(
         failed_states=FAILED_STATES,
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
+
+    fenix_derived__attributable_clients__v1.set_upstream(wait_for_copy_deduplicate_all)
+    wait_for_fenix_derived__new_profile_activation__v1 = ExternalTaskSensor(
+        task_id="wait_for_fenix_derived__new_profile_activation__v1",
+        external_dag_id="bqetl_mobile_activation",
+        external_task_id="fenix_derived__new_profile_activation__v1",
+        execution_delta=datetime.timedelta(seconds=7200),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    fenix_derived__attributable_clients__v1.set_upstream(
+        wait_for_fenix_derived__new_profile_activation__v1
+    )
+    wait_for_org_mozilla_fenix_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
+        task_id="wait_for_org_mozilla_fenix_derived__baseline_clients_daily__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="fenix.org_mozilla_fenix_derived__baseline_clients_daily__v1",
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    fenix_derived__attributable_clients__v1.set_upstream(
+        wait_for_org_mozilla_fenix_derived__baseline_clients_daily__v1
+    )
+    wait_for_org_mozilla_fenix_nightly_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
+        task_id="wait_for_org_mozilla_fenix_nightly_derived__baseline_clients_daily__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="fenix.org_mozilla_fenix_nightly_derived__baseline_clients_daily__v1",
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    fenix_derived__attributable_clients__v1.set_upstream(
+        wait_for_org_mozilla_fenix_nightly_derived__baseline_clients_daily__v1
+    )
+    wait_for_org_mozilla_fennec_aurora_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
+        task_id="wait_for_org_mozilla_fennec_aurora_derived__baseline_clients_daily__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="fenix.org_mozilla_fennec_aurora_derived__baseline_clients_daily__v1",
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    fenix_derived__attributable_clients__v1.set_upstream(
+        wait_for_org_mozilla_fennec_aurora_derived__baseline_clients_daily__v1
+    )
+    wait_for_org_mozilla_firefox_beta_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
+        task_id="wait_for_org_mozilla_firefox_beta_derived__baseline_clients_daily__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="fenix.org_mozilla_firefox_beta_derived__baseline_clients_daily__v1",
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    fenix_derived__attributable_clients__v1.set_upstream(
+        wait_for_org_mozilla_firefox_beta_derived__baseline_clients_daily__v1
+    )
+    wait_for_org_mozilla_firefox_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
+        task_id="wait_for_org_mozilla_firefox_derived__baseline_clients_daily__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="fenix.org_mozilla_firefox_derived__baseline_clients_daily__v1",
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    fenix_derived__attributable_clients__v1.set_upstream(
+        wait_for_org_mozilla_firefox_derived__baseline_clients_daily__v1
+    )
+    wait_for_search_derived__mobile_search_clients_daily__v1 = ExternalTaskSensor(
+        task_id="wait_for_search_derived__mobile_search_clients_daily__v1",
+        external_dag_id="bqetl_mobile_search",
+        external_task_id="search_derived__mobile_search_clients_daily__v1",
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    fenix_derived__attributable_clients__v1.set_upstream(
+        wait_for_search_derived__mobile_search_clients_daily__v1
+    )
+
+    fenix_derived__attributable_clients__v2.set_upstream(wait_for_copy_deduplicate_all)
+    fenix_derived__attributable_clients__v2.set_upstream(
+        wait_for_fenix_derived__new_profile_activation__v1
+    )
+    fenix_derived__attributable_clients__v2.set_upstream(
+        wait_for_search_derived__mobile_search_clients_daily__v1
+    )
+
+    fenix_derived__client_adclicks_history__v1.set_upstream(
+        fenix_derived__attributable_clients__v2
+    )
+
+    fenix_derived__clients_yearly__v1.set_upstream(
+        wait_for_org_mozilla_fenix_derived__baseline_clients_daily__v1
+    )
+    fenix_derived__clients_yearly__v1.set_upstream(
+        wait_for_org_mozilla_fenix_nightly_derived__baseline_clients_daily__v1
+    )
+    fenix_derived__clients_yearly__v1.set_upstream(
+        wait_for_org_mozilla_fennec_aurora_derived__baseline_clients_daily__v1
+    )
+    fenix_derived__clients_yearly__v1.set_upstream(
+        wait_for_org_mozilla_firefox_beta_derived__baseline_clients_daily__v1
+    )
+    fenix_derived__clients_yearly__v1.set_upstream(
+        wait_for_org_mozilla_firefox_derived__baseline_clients_daily__v1
+    )
+
+    fenix_derived__ltv_states__v1.set_upstream(
+        checks__fail_fenix_derived__client_adclicks_history__v1
+    )
+    fenix_derived__ltv_states__v1.set_upstream(
+        wait_for_checks__fail_fenix_derived__firefox_android_clients__v1
+    )
+
+    fenix_derived__ltv_states__v1.set_upstream(fenix_derived__clients_yearly__v1)
 
     org_mozilla_fenix_derived__client_deduplication__v1.set_upstream(
         wait_for_copy_deduplicate_all

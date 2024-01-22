@@ -16,7 +16,6 @@ labels:
 scheduling:
   dag_name: bqetl_accounts_backend_external
   date_partition_parameter: null
-  referenced_tables: []
 bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer

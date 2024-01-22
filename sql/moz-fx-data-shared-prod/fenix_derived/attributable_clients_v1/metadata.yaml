@@ -12,17 +12,6 @@ labels:
 scheduling:
   dag_name: bqetl_org_mozilla_firefox_derived
   depends_on_past: false
-  referenced_tables:
-  - - moz-fx-data-shared-prod
-    - org_mozilla_firefox
-    - baseline_clients_daily_v1
-  - - moz-fx-data-shared-prod
-    - search_derived
-    - mobile_search_clients_daily_v1
-  depends_on:
-  - task_id: search_derived__mobile_search_clients_daily__v1
-    dag_name: bqetl_mobile_search
-    execution_delta: 0h
 bigquery:
   time_partitioning:
     type: day

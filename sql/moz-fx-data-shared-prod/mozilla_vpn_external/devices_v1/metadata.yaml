@@ -17,7 +17,6 @@ scheduling:
     \  pubkey,\n  ipv4_address,\n  ipv6_address,\n  created_at,\n  updated_at,\n \
     \ uid,\n  platform,\n  useragent,\n  unique_id\nFROM devices WHERE DATE(updated_at)\
     \ = DATE '{{ds}}'"
-  referenced_tables: []
 bigquery:
   time_partitioning:
     type: day

@@ -238,6 +238,14 @@ with DAG(
         contextual_services_derived__event_aggregates__v1
     )
 
+    contextual_services_derived__event_aggregates_check__v1.set_upstream(
+        contextual_services_derived__event_aggregates_spons_tiles__v1
+    )
+
+    contextual_services_derived__event_aggregates_check__v1.set_upstream(
+        contextual_services_derived__event_aggregates_suggest__v1
+    )
+
     contextual_services_derived__event_aggregates_spons_tiles__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )

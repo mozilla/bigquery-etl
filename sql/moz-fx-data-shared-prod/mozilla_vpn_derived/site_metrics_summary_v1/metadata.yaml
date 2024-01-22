@@ -11,10 +11,9 @@ labels:
 scheduling:
   dag_name: bqetl_mozilla_vpn_site_metrics
   date_partition_parameter: date
-  referenced_tables:
-  - - moz-fx-data-shared-prod
-    - mozilla_vpn_derived
-    - site_metrics_empty_check_v1
+  depends_on:
+  - task_id: mozilla_vpn_derived__site_metrics_empty_check__v1
+    dag_name: bqetl_mozilla_vpn_site_metrics
 bigquery:
   time_partitioning:
     type: day

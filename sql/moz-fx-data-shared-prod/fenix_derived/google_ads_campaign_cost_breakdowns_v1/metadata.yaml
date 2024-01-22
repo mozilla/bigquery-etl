@@ -12,17 +12,6 @@ scheduling:
   dag_name: bqetl_campaign_cost_breakdowns
   date_partition_parameter: null
   depends_on_past: false
-  referenced_tables:
-  - - moz-fx-data-bq-fivetran
-    - google_ads
-    - campaign_history
-  - - moz-fx-data-shared-prod
-    - fenix
-    - marketing_attributable_metrics
-  depends_on:
-  - task_id: fenix_derived__attributable_clients__v1
-    dag_name: bqetl_org_mozilla_firefox_derived
-    execution_delta: 1h
 bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer

@@ -27,7 +27,7 @@ WITH get_session_start_time AS (
     2,
     3
 ),
-get_all_events_in_each_session AS (
+get_all_events_in_each_session_staging AS (
   SELECT
     PARSE_DATE('%Y%m%d', a.event_date) AS date,
     a.user_pseudo_id || '-' || CAST(
@@ -72,6 +72,16 @@ get_all_events_in_each_session AS (
     `moz-fx-data-marketing-prod.analytics_313696158.events_*` a
   WHERE
     _TABLE_SUFFIX = FORMAT_DATE('%Y%m%d', @submission_date)
+) ,
+
+get_all_events_in_each_session AS (
+  SELECT a.*,
+  --fix below still
+  --Because you can have 2 events trigger for the same action at the same time -
+  --if the page location is different, I want a different hit number
+  -- if it's the same page location and same timestamp, I think I want the same hit number
+  rank() over(partition by visit_identifier order by event_timestamp asc) AS hit_number
+  FROM get_all_events_in_each_session_staging a
 )
 
 SELECT
@@ -86,8 +96,8 @@ a.visit_start_time,
 ? AS is_exit,
 */
 b.is_entrance,
+b.hit_number,
 /*
-? AS hit_number,
 ? AS event_category,
 */
 b.event_label,

@@ -620,6 +620,10 @@ with DAG(
         wait_for_org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1
     )
 
+    firefox_ios_derived__funnel_retention_clients_week_4__v1.set_upstream(
+        checks__fail_firefox_ios_derived__funnel_retention_clients_week_2__v1
+    )
+
     firefox_ios_derived__funnel_retention_week_4__v1.set_upstream(
         checks__fail_firefox_ios_derived__funnel_retention_clients_week_4__v1
     )

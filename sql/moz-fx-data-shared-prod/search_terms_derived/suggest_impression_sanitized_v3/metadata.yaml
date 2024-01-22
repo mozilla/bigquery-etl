@@ -23,7 +23,6 @@ bigquery:
 
 scheduling:
   dag_name: bqetl_search_terms_daily
-  referenced_tables: []
   arguments: ['--schema_update_option=ALLOW_FIELD_ADDITION']
 
 workgroup_access:

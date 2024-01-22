@@ -13,7 +13,4 @@ scheduling:
   dag_name: {{ dag_name }}
   date_partition_parameter: null
   parameters: ["submission_date:DATE:{% raw %}{{ds}}{% endraw %}"]
-  referenced_tables: [['moz-fx-data-shared-prod',
-                       '{{ dataset }}_derived',
-                       'event_types_history_v1']]
 

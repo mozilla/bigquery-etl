@@ -7,9 +7,6 @@ owners:
   - ascholtz@mozilla.com
 scheduling:
   dag_name: bqetl_google_analytics_derived
-  referenced_tables:
-    - ['moz-fx-data-marketing-prod', 'ga_derived', 'blogs_goals_v1']
-    - ['moz-fx-data-marketing-prod', 'ga_derived', 'blogs_sessions_v1']
 bigquery:
   time_partitioning:
     type: day

@@ -11,13 +11,6 @@ labels:
   incremental: true
 scheduling:
   dag_name: {{ dag_name }}
-  referenced_tables: [
-    [
-      'moz-fx-data-shared-prod',
-      '{{ dataset }}_derived',
-      'event_types_v1'
-    ],
-  ]
 bigquery:
   time_partitioning:
     type: day

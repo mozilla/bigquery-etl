@@ -1315,7 +1315,7 @@
 <li><code>date_partition_parameter</code> - by default set to <code>submission_date</code>; can be set to <code>null</code> if query doesn't write to a partitioned table</li>
 <li><code>parameters</code> specifies a list of query parameters, e.g. <code>["n_clients:INT64:500"]</code></li>
 <li><code>arguments</code> - a list of arguments passed when running the query, for example: <code>["--append_table"]</code></li>
-<li><code>referenced_tables</code> - manually curated list of tables the query depends on; used to speed up the DAG generation process or to specify tables that the dry run doesn't have permissions to access, e. g. <code>[['telemetry_stable', 'main_v4']]</code></li>
+<li><code>referenced_tables</code> - manually curated list of tables a Python or BigQuery script depends on; for <code>query.sql</code> files dependencies will get determined automatically and should only be overwritten manually if really necessary</li>
 <li><code>multipart</code> indicates whether a query is split over multiple files <code>part1.sql</code>, <code>part2.sql</code>, ...</li>
 <li><code>depends_on</code> defines external dependencies in telemetry-airflow that are not detected automatically:
 <div class="highlight"><pre><span></span><code><span class="nt">depends_on</span><span class="p">:</span>

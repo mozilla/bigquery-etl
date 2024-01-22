@@ -4,7 +4,8 @@ description: |-
 dataset_base_acl: derived
 user_facing: false
 labels: {}
-workgroup_access:
+workgroup_access: []
+default_table_workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential

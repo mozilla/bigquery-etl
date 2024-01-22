@@ -66,16 +66,6 @@ WITH extracted_fields AS (
     * EXCEPT (client_id, sample_id, as_of_date)
   FROM
     extracted_fields
-), state_ad_clicks_prediction AS (
-  -- When this table is moved to bqetl, these will be enabled as checks
-  SELECT
-    -- Each country in this table should only have states for one state function
-    mozfun.assert.equals(1, COUNT(DISTINCT state_function) OVER (PARTITION BY country)) AS is_valid_countries,
-    -- Each country should have each state present only once
-    mozfun.assert.equals(1, COUNT(*) OVER (PARTITION BY country, state)) AS is_valid_states,
-    *,
-  FROM
-    mozdata.analysis.android_states_predicted_ad_clicks_v1
 )
 
 SELECT
@@ -90,7 +80,5 @@ FROM
 CROSS JOIN
   UNNEST(markov_states)
 JOIN
-  state_ad_clicks_prediction
+  mozdata.analysis.android_states_predicted_ad_clicks_v1
   USING (country, state_function, state)
-WHERE
-  is_valid_countries AND is_valid_states

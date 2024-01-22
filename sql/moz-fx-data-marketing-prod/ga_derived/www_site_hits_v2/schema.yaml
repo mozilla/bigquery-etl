@@ -1,0 +1,149 @@
+fields:
+- mode: NULLABLE
+  name: date
+  type: DATE
+  description: Date of the visit
+- mode: NULLABLE
+  name: visit_identifier
+  type: STRING
+  description: Visit Identifier
+- mode: NULLABLE
+  name: full_visitor_id
+  type: STRING
+  description: Full Visitor ID
+- mode: NULLABLE
+  name: visit_start_time
+  type: INT64
+  description: Visit Start Time
+- mode: NULLABLE
+  name: page_path
+  type: STRING
+  description: Page Path
+- mode: NULLABLE
+  name: page_path_level1
+  type: STRING
+  description: Page Path Level 1
+- mode: NULLABLE
+  name: hit_type
+  type: STRING
+  description: Hit Type
+- mode: NULLABLE
+  name: is_exit
+  type: BOOLEAN
+  description: Is Exit
+- mode: NULLABLE
+  name: is_entrance
+  type: BOOLEAN
+  description: Is Entrance
+- mode: NULLABLE
+  name: hit_number
+  type: INT64
+  description: Hit Number
+- mode: NULLABLE
+  name: event_category
+  type: STRING
+  description: Event Category
+- mode: NULLABLE
+  name: event_label
+  type: STRING
+  description: Event Label
+- mode: NULLABLE
+  name: event_action
+  type: STRING
+  description: Event Action
+- mode: NULLABLE
+  name: device_category
+  type: STRING
+  description: Device Category - The device category the visitor used to visit the site
+- mode: NULLABLE
+  name: operating_system
+  type: STRING
+  description: Operating System - The operating system the visitor used to visit the site
+- mode: NULLABLE
+  name: language
+  type: STRING
+  description: Language
+- mode: NULLABLE
+  name: browser
+  type: STRING
+  description: Browser
+- mode: NULLABLE
+  name: browser_version
+  type: STRING
+  description: Browser Version
+- mode: NULLABLE
+  name: country
+  type: STRING
+  description: Country
+- mode: NULLABLE
+  name: source
+  type: STRING
+  description: Source
+- mode: NULLABLE
+  name: medium
+  type: STRING
+  description: Medium
+- mode: NULLABLE
+  name: campaign
+  type: STRING
+  description: Campaign
+- mode: NULLABLE
+  name: ad_content
+  type: STRING
+  description: Ad Content
+- mode: NULLABLE
+  name: visits
+  type: INT64
+  description: Visits
+- mode: NULLABLE
+  name: bounces
+  type: INT64
+  description: Bounces
+- mode: NULLABLE
+  name: hit_time
+  type: FLOAT
+  description: Hit Time
+- mode: NULLABLE
+  name: first_interaction
+  type: INT64
+  description: First Interaction
+- mode: NULLABLE
+  name: last_interaction
+  type: FLOAT
+  description: Last Interaction
+- mode: NULLABLE
+  name: entrances
+  type: INT64
+  description: Entrances
+- mode: NULLABLE
+  name: exits
+  type: INT64
+  description: Exits
+- mode: NULLABLE
+  name: event_id
+  type: STRING
+  description: Event ID
+- mode: NULLABLE
+  name: page_level_1
+  type: STRING
+  description: Page Level 1
+- mode: NULLABLE
+  name: page_level_2
+  type: STRING
+  description: Page Level 2
+- mode: NULLABLE
+  name: page_level_3
+  type: STRING
+  description: Page Level 3
+- mode: NULLABLE
+  name: page_level_4
+  type: STRING
+  description: Page Level 4
+- mode: NULLABLE
+  name: page_level_5
+  type: STRING
+  description: Page Level 5
+- mode: NULLABLE
+  name: page_name
+  type: STRING
+  description: Page Name

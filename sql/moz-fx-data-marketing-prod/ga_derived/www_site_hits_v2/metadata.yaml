@@ -1,0 +1,22 @@
+friendly_name: Www Site Hits V2
+description: Normalized individual hits for www.mozilla.org
+owners:
+- kwindau@mozilla.com
+- mhirose@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau@mozilla.com
+scheduling:
+  dag_name: bqetl_google_analytics_derived_ga4
+bigquery:
+  time_partitioning:
+    type: day
+    field: date
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+    - country
+    - language
+references: {}
+deprecated: false

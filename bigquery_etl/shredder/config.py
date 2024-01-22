@@ -101,11 +101,9 @@ FIREFOX_IOS_SRC = DeleteSource(
     table="firefox_ios.deletion_request", field=GLEAN_CLIENT_ID
 )
 FXA_HMAC_SRC = DeleteSource(
-    table="firefox_accounts_derived.fxa_delete_events_v1", field="hmac_user_id"
+    table="firefox_accounts.fxa_delete_events", field="hmac_user_id"
 )
-FXA_SRC = DeleteSource(
-    table="firefox_accounts_derived.fxa_delete_events_v1", field=USER_ID
-)
+FXA_SRC = DeleteSource(table="firefox_accounts.fxa_delete_events", field=USER_ID)
 REGRETS_SRC = DeleteSource(
     table="regrets_reporter_stable.regrets_reporter_update_v1",
     field="data_deletion_request.extension_installation_uuid",
@@ -118,7 +116,7 @@ SYNC_SOURCES = (
         field="payload.scalars.parent.deletion_request_sync_device_id",
     ),
     DeleteSource(
-        table="firefox_accounts_derived.fxa_delete_events_v1",
+        table="firefox_accounts.fxa_delete_events",
         field="SUBSTR(hmac_user_id, 0, 32)",
     ),
 )
@@ -158,12 +156,21 @@ user_id_target = partial(DeleteTarget, field=USER_ID)
 context_id_target = partial(DeleteTarget, field=CONTEXT_ID)
 
 DELETE_TARGETS: DeleteIndex = {
-    client_id_target(table="fenix_derived.new_profile_activation_v1"): FENIX_SRC,
     client_id_target(table="fenix_derived.firefox_android_clients_v1"): FENIX_SRC,
-    client_id_target(table="search_derived.acer_cohort_v1"): DESKTOP_SRC,
+    client_id_target(table="fenix_derived.new_profile_activation_v1"): FENIX_SRC,
+    client_id_target(
+        table="firefox_ios_derived.firefox_ios_clients_v1"
+    ): FIREFOX_IOS_SRC,
     client_id_target(
         table="firefox_ios_derived.clients_activation_v1"
     ): FIREFOX_IOS_SRC,
+    client_id_target(
+        table="fenix_derived.funnel_retention_clients_week_2_v1"
+    ): FENIX_SRC,
+    client_id_target(
+        table="fenix_derived.funnel_retention_clients_week_4_v1"
+    ): FENIX_SRC,
+    client_id_target(table="search_derived.acer_cohort_v1"): DESKTOP_SRC,
     client_id_target(
         table="search_derived.mobile_search_clients_daily_v1"
     ): DESKTOP_SRC,
@@ -309,6 +316,7 @@ DELETE_TARGETS: DeleteIndex = {
     user_id_target(table="firefox_accounts_derived.fxa_users_first_seen_v1"): FXA_SRC,
     user_id_target(table="firefox_accounts_derived.fxa_users_first_seen_v2"): FXA_SRC,
     user_id_target(table="firefox_accounts_derived.fxa_users_last_seen_v1"): FXA_SRC,
+    user_id_target(table="firefox_accounts_derived.fxa_users_last_seen_v2"): FXA_SRC,
     user_id_target(
         table="firefox_accounts_derived.fxa_users_services_daily_v1"
     ): FXA_SRC,
@@ -323,6 +331,9 @@ DELETE_TARGETS: DeleteIndex = {
     ): FXA_SRC,
     user_id_target(
         table="firefox_accounts_derived.fxa_users_services_last_seen_v1"
+    ): FXA_SRC,
+    user_id_target(
+        table="firefox_accounts_derived.fxa_users_services_last_seen_v2"
     ): FXA_SRC,
     user_id_target(
         table="firefox_accounts_derived.fxa_users_services_devices_daily_v1"

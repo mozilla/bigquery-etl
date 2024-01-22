@@ -17,6 +17,7 @@ from ..cli.utils import paths_matching_name_pattern, sql_dir_option
 from ..cli.view import publish as publish_view
 from ..dryrun import DryRun
 from ..routine.parse_routine import (
+    ROUTINE_FILES,
     UDF_FILE,
     RawRoutine,
     accumulate_dependencies,
@@ -341,11 +342,11 @@ def _update_references(artifact_files, project_id, dataset_suffix, sql_dir):
 
 
 def _deploy_artifacts(ctx, artifact_files, project_id, dataset_suffix, sql_dir):
-    """Deploy UDFs, tables and views."""
-    # deploy UDFs
-    udf_files = [file for file in artifact_files if file.name == UDF_FILE]
-    for udf_file in udf_files:
-        dataset = udf_file.parent.parent.name
+    """Deploy routines, tables and views."""
+    # deploy routines
+    routine_files = [file for file in artifact_files if file.name in ROUTINE_FILES]
+    for routine_file in routine_files:
+        dataset = routine_file.parent.parent.name
         create_dataset_if_not_exists(
             project_id=project_id, dataset=dataset, suffix=dataset_suffix
         )

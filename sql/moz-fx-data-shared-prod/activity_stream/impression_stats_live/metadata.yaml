@@ -6,7 +6,10 @@ description: |-
   `activity_stream_live.impression_stats_v1` table.
   
   Clustering fields: `submission_timestamp`
+labels:
+  authorized: true
 workgroup_access:
   - role: roles/bigquery.dataViewer
     members:
+      - workgroup:pocket/prefect
       - workgroup:mozsocial/prefect

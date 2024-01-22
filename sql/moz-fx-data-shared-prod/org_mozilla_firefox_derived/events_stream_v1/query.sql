@@ -35,10 +35,7 @@ WITH base AS (
     ) AS event_timestamp,
     event.category AS event_category,
     event.name AS event_name,
-    ARRAY_TO_STRING(
-      [event.category, event.name],
-      '.'
-    ) AS event, -- handles NULL values better
+    ARRAY_TO_STRING([event.category, event.name], '.') AS event, -- handles NULL values better
     `mozfun.json.from_map`(event.extra) AS event_extra
   FROM
     `org_mozilla_firefox.events` AS e

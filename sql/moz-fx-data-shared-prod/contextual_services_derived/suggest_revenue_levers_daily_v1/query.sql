@@ -11,10 +11,10 @@ WITH client_shares AS (
     COUNT(*) AS global_total,
     COUNT(
       CASE
-  -- SUGGEST DESKTOP ELIGIBILITY REQUIREMENTS
+        -- SUGGEST DESKTOP ELIGIBILITY REQUIREMENTS
         WHEN normalized_app_name = "Firefox Desktop"
           AND
-            -- desktop Suggest experiment start -- 12.5% exposure until 2022-09-21
+          -- desktop Suggest experiment start -- 12.5% exposure until 2022-09-21
           (
             submission_date >= "2022-06-07"
             AND browser_version_info.major_version >= 92

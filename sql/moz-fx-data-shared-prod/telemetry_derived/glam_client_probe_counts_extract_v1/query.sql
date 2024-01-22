@@ -9,7 +9,7 @@ WITH final_probe_extract AS (
     client_agg_type,
     metric_type,
     total_users,
-      -- Using MAX instead of COALESCE since this is not in the GROUP BY.
+    -- Using MAX instead of COALESCE since this is not in the GROUP BY.
     MAX(IF(agg_type = "histogram", mozfun.glam.histogram_cast_json(aggregates), NULL)) AS histogram,
     MAX(
       IF(agg_type = "histogram", mozfun.glam.histogram_cast_json(non_norm_aggregates), NULL)

@@ -172,9 +172,7 @@ downloads_and_ga_session AS (
     mozfun.stats.mode_last_retain_nulls(ARRAY_AGG(landing_page)) AS landing_page,
     mozfun.stats.mode_last_retain_nulls(ARRAY_AGG(pageviews)) AS pageviews,
     mozfun.stats.mode_last_retain_nulls(ARRAY_AGG(unique_pageviews)) AS unique_pageviews,
-    LOGICAL_OR(
-      has_ga_download_event
-    ) AS has_ga_download_event,  -- this will be ignored if nrows >1
+    LOGICAL_OR(has_ga_download_event) AS has_ga_download_event,  -- this will be ignored if nrows >1
     mozfun.stats.mode_last_retain_nulls(
       ARRAY_AGG(count_dltoken_duplicates)
     ) AS count_dltoken_duplicates,

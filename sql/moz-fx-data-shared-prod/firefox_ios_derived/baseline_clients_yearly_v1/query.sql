@@ -1,10 +1,10 @@
 WITH _current AS (
   SELECT
-    -- In this raw table, we capture the history of activity over the past
-    -- 365 days for each usage criterion as an array of bytes. The
-    -- rightmost bit represents whether the user was active in the current day.
-    udf.bool_to_365_bits(TRUE) AS days_seen_bytes,
-    udf.bool_to_365_bits(durations > 0) AS days_active_bytes,
+      -- In this raw table, we capture the history of activity over the past
+      -- 365 days for each usage criterion as an array of bytes. The
+      -- rightmost bit represents whether the user was active in the current day.
+    udf.bool_to_365_bits(TRUE) AS `days_seen_bytes`,
+    udf.bool_to_365_bits(durations > 0) AS `days_active_bytes`,
     * EXCEPT (submission_date),
   FROM
     `moz-fx-data-shared-prod`.firefox_ios.baseline_clients_daily
@@ -29,13 +29,13 @@ SELECT
   @submission_date AS submission_date,
   IF(_current.client_id IS NOT NULL, _current, _previous).* REPLACE (
     udf.combine_adjacent_days_365_bits(
-      _previous.days_seen_bytes,
-      _current.days_seen_bytes
-    ) AS days_seen_bytes,
+      _previous.`days_seen_bytes`,
+      _current.`days_seen_bytes`
+    ) AS `days_seen_bytes`,
     udf.combine_adjacent_days_365_bits(
-      _previous.days_active_bytes,
-      _current.days_active_bytes
-    ) AS days_active_bytes
+      _previous.`days_active_bytes`,
+      _current.`days_active_bytes`
+    ) AS `days_active_bytes`
   )
 FROM
   _current

@@ -38,7 +38,7 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   init.sql:
-  - fxa_users_daily_v1
+  - moz-fx-data-shared-prod.firefox_accounts_derived.fxa_users_daily_v1
   query.sql:
   - moz-fx-data-shared-prod.firefox_accounts.fxa_users_daily
   - moz-fx-data-shared-prod.firefox_accounts_derived.fxa_users_last_seen_v1

@@ -11,5 +11,7 @@ SELECT
     ),
     NULL
   )
-FROM `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`
-WHERE submission_date = @submission_date;
+FROM
+  `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`
+WHERE
+  submission_date = @submission_date;

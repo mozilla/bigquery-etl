@@ -1,5 +1,4 @@
 #fail
-
 ASSERT(
   (
     SELECT

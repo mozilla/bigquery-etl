@@ -9,88 +9,213 @@ WITH _events_ping_distinct_client_count AS (
   GROUP BY
     submission_date
 ),
-
 client_product_feature_usage AS (
   SELECT
     client_info.client_id,
     DATE(submission_timestamp) AS submission_date,
     /*Logins*/
     --autofill
-    COUNTIF(event_category = 'logins' AND event_name = 'password_detected') AS autofill_password_detected_logins,
-    COUNTIF(event_category = 'logins' AND event_name = 'autofill_prompt_shown') AS autofill_prompt_shown_logins,
-    COUNTIF(event_category = 'logins' AND event_name = 'autofill_prompt_dismissed') AS autofill_prompt_dismissed_logins,
+    COUNTIF(
+      event_category = 'logins'
+      AND event_name = 'password_detected'
+    ) AS autofill_password_detected_logins,
+    COUNTIF(
+      event_category = 'logins'
+      AND event_name = 'autofill_prompt_shown'
+    ) AS autofill_prompt_shown_logins,
+    COUNTIF(
+      event_category = 'logins'
+      AND event_name = 'autofill_prompt_dismissed'
+    ) AS autofill_prompt_dismissed_logins,
     COUNTIF(event_category = 'logins' AND event_name = 'autofilled') AS autofilled_logins,
     --management
-    COUNTIF(event_category = 'logins' AND event_name = 'management_add_tapped') AS management_add_tapped_logins,
-    COUNTIF(event_category = 'logins' AND event_name = 'management_logins_tapped') AS management_tapped_logins,
+    COUNTIF(
+      event_category = 'logins'
+      AND event_name = 'management_add_tapped'
+    ) AS management_add_tapped_logins,
+    COUNTIF(
+      event_category = 'logins'
+      AND event_name = 'management_logins_tapped'
+    ) AS management_tapped_logins,
     /*Credit Card*/
     --autofill
     COUNTIF(event_category = 'credit_cards' AND event_name = 'form_detected') AS form_detected_cc,
-    COUNTIF(event_category = 'credit_cards' AND event_name = 'autofill_prompt_shown') AS autofill_prompt_shown_cc,
-    COUNTIF(event_category = 'credit_cards' AND event_name = 'autofill_prompt_expanded') AS autofill_prompt_expanded_cc,
-    COUNTIF(event_category = 'credit_cards' AND event_name = 'autofill_prompt_dismissed') AS autofill_prompt_dismissed_cc,
+    COUNTIF(
+      event_category = 'credit_cards'
+      AND event_name = 'autofill_prompt_shown'
+    ) AS autofill_prompt_shown_cc,
+    COUNTIF(
+      event_category = 'credit_cards'
+      AND event_name = 'autofill_prompt_expanded'
+    ) AS autofill_prompt_expanded_cc,
+    COUNTIF(
+      event_category = 'credit_cards'
+      AND event_name = 'autofill_prompt_dismissed'
+    ) AS autofill_prompt_dismissed_cc,
     COUNTIF(event_category = 'credit_cards' AND event_name = 'autofilled') AS autofilled_cc,
     --save prompt
-    COUNTIF(event_category = 'credit_cards' AND event_name = 'save_prompt_shown') AS save_prompt_shown_cc,
-    COUNTIF(event_category = 'credit_cards' AND event_name = 'save_prompt_create') AS save_prompt_create_cc,
-    COUNTIF(event_category = 'credit_cards' AND event_name = 'save_prompt_update') AS save_prompt_update_cc,
+    COUNTIF(
+      event_category = 'credit_cards'
+      AND event_name = 'save_prompt_shown'
+    ) AS save_prompt_shown_cc,
+    COUNTIF(
+      event_category = 'credit_cards'
+      AND event_name = 'save_prompt_create'
+    ) AS save_prompt_create_cc,
+    COUNTIF(
+      event_category = 'credit_cards'
+      AND event_name = 'save_prompt_update'
+    ) AS save_prompt_update_cc,
     --management
-    COUNTIF(event_category = 'credit_cards' AND event_name = 'management_add_tapped') AS management_add_tapped_cc,
-    COUNTIF(event_category = 'credit_cards' AND event_name = 'management_card_tapped') AS management_tapped_cc,
+    COUNTIF(
+      event_category = 'credit_cards'
+      AND event_name = 'management_add_tapped'
+    ) AS management_add_tapped_cc,
+    COUNTIF(
+      event_category = 'credit_cards'
+      AND event_name = 'management_card_tapped'
+    ) AS management_tapped_cc,
     COUNTIF(event_category = 'credit_cards' AND event_name = 'modified') AS modified_cc,
     /*Addresses*/
     --autofill
     COUNTIF(event_category = 'addresses' AND event_name = 'form_detected') AS form_detected_address,
-    COUNTIF(event_category = 'addresses' AND event_name = 'autofill_prompt_shown') AS autofill_prompt_shown_address,
-    COUNTIF(event_category = 'addresses' AND event_name = 'autofill_prompt_expanded') AS autofill_prompt_expanded_address,
-    COUNTIF(event_category = 'addresses' AND event_name = 'autofill_prompt_dismissed') AS autofill_prompt_dismissed_address,
+    COUNTIF(
+      event_category = 'addresses'
+      AND event_name = 'autofill_prompt_shown'
+    ) AS autofill_prompt_shown_address,
+    COUNTIF(
+      event_category = 'addresses'
+      AND event_name = 'autofill_prompt_expanded'
+    ) AS autofill_prompt_expanded_address,
+    COUNTIF(
+      event_category = 'addresses'
+      AND event_name = 'autofill_prompt_dismissed'
+    ) AS autofill_prompt_dismissed_address,
     COUNTIF(event_category = 'addresses' AND event_name = 'autofilled') AS autofilled_address,
     --management
-    COUNTIF(event_category = 'addresses' AND event_name = 'management_add_tapped') AS management_add_tapped_address,
-    COUNTIF(event_category = 'addresses' AND event_name = 'management_address_tapped') AS management_tapped_address,
+    COUNTIF(
+      event_category = 'addresses'
+      AND event_name = 'management_add_tapped'
+    ) AS management_add_tapped_address,
+    COUNTIF(
+      event_category = 'addresses'
+      AND event_name = 'management_address_tapped'
+    ) AS management_tapped_address,
     /*Bookmark*/
     COUNTIF(event_category = 'bookmarks_management' AND event_name = 'copied') AS bookmark_copied,
     COUNTIF(event_category = 'bookmarks_management' AND event_name = 'edited') AS bookmark_edited,
-    COUNTIF(event_category = 'bookmarks_management' AND event_name = 'folder_add') AS bookmark_folder_add,
+    COUNTIF(
+      event_category = 'bookmarks_management'
+      AND event_name = 'folder_add'
+    ) AS bookmark_folder_add,
     COUNTIF(event_category = 'bookmarks_management' AND event_name = 'open') AS bookmark_open,
-    COUNTIF(event_category = 'bookmarks_management' AND event_name = 'open_all_in_new_tabs') AS bookmark_open_all_in_new_tabs,
-    COUNTIF(event_category = 'bookmarks_management' AND event_name = 'open_all_in_private_tabs') AS bookmark_open_all_in_private_tabs,
-    COUNTIF(event_category = 'bookmarks_management' AND event_name = 'open_in_new_tab') AS bookmark_open_in_new_tab,
-    COUNTIF(event_category = 'bookmarks_management' AND event_name = 'open_in_new_tabs') AS bookmark_open_in_new_tabs,
-    COUNTIF(event_category = 'bookmarks_management' AND event_name = 'open_in_private_tab') AS bookmark_open_in_private_tab,
-    COUNTIF(event_category = 'bookmarks_management' AND event_name = 'open_in_private_tabs') AS bookmark_open_in_private_tabs,
+    COUNTIF(
+      event_category = 'bookmarks_management'
+      AND event_name = 'open_all_in_new_tabs'
+    ) AS bookmark_open_all_in_new_tabs,
+    COUNTIF(
+      event_category = 'bookmarks_management'
+      AND event_name = 'open_all_in_private_tabs'
+    ) AS bookmark_open_all_in_private_tabs,
+    COUNTIF(
+      event_category = 'bookmarks_management'
+      AND event_name = 'open_in_new_tab'
+    ) AS bookmark_open_in_new_tab,
+    COUNTIF(
+      event_category = 'bookmarks_management'
+      AND event_name = 'open_in_new_tabs'
+    ) AS bookmark_open_in_new_tabs,
+    COUNTIF(
+      event_category = 'bookmarks_management'
+      AND event_name = 'open_in_private_tab'
+    ) AS bookmark_open_in_private_tab,
+    COUNTIF(
+      event_category = 'bookmarks_management'
+      AND event_name = 'open_in_private_tabs'
+    ) AS bookmark_open_in_private_tabs,
     COUNTIF(event_category = 'bookmarks_management' AND event_name = 'removed') AS bookmark_removed,
-    COUNTIF(event_category = 'bookmarks_management' AND event_name = 'search_icon_tapped') AS bookmark_search_icon_tapped,
-    COUNTIF(event_category = 'bookmarks_management' AND event_name = 'search_result_tapped') AS bookmark_search_result_tapped,
+    COUNTIF(
+      event_category = 'bookmarks_management'
+      AND event_name = 'search_icon_tapped'
+    ) AS bookmark_search_icon_tapped,
+    COUNTIF(
+      event_category = 'bookmarks_management'
+      AND event_name = 'search_result_tapped'
+    ) AS bookmark_search_result_tapped,
     COUNTIF(event_category = 'bookmarks_management' AND event_name = 'shared') AS bookmark_shared,
     /*History*/
     COUNTIF(event_category = 'history' AND event_name = 'opened') AS history_opened,
     COUNTIF(event_category = 'history' AND event_name = 'opened_item') AS history_opened_item,
-    COUNTIF(event_category = 'history' AND event_name = 'opened_items_in_new_tabs') AS history_opened_items_in_new_tabs,
-    COUNTIF(event_category = 'history' AND event_name = 'opened_items_in_private_tabs') AS history_opened_items_in_private_tabs,
-    COUNTIF(event_category = 'history' AND event_name = 'recent_searches_tapped') AS history_recent_searches_tapped,
-    COUNTIF(event_category = 'history' AND event_name = 'remove_prompt_cancelled') AS history_remove_prompt_cancelled,
-    COUNTIF(event_category = 'history' AND event_name = 'remove_prompt_opened') AS history_remove_prompt_opened,
+    COUNTIF(
+      event_category = 'history'
+      AND event_name = 'opened_items_in_new_tabs'
+    ) AS history_opened_items_in_new_tabs,
+    COUNTIF(
+      event_category = 'history'
+      AND event_name = 'opened_items_in_private_tabs'
+    ) AS history_opened_items_in_private_tabs,
+    COUNTIF(
+      event_category = 'history'
+      AND event_name = 'recent_searches_tapped'
+    ) AS history_recent_searches_tapped,
+    COUNTIF(
+      event_category = 'history'
+      AND event_name = 'remove_prompt_cancelled'
+    ) AS history_remove_prompt_cancelled,
+    COUNTIF(
+      event_category = 'history'
+      AND event_name = 'remove_prompt_opened'
+    ) AS history_remove_prompt_opened,
     COUNTIF(event_category = 'history' AND event_name = 'removed') AS history_removed,
     COUNTIF(event_category = 'history' AND event_name = 'removed_all') AS history_removed_all,
-    COUNTIF(event_category = 'history' AND event_name = 'removed_last_hour') AS history_removed_last_hour,
-    COUNTIF(event_category = 'history' AND event_name = 'removed_today_and_yesterday') AS history_removed_today_and_yesterday,
-    COUNTIF(event_category = 'history' AND event_name = 'search_icon_tapped') AS history_search_icon_tapped,
-    COUNTIF(event_category = 'history' AND event_name = 'search_result_tapped') AS history_search_result_tapped,
-    COUNTIF(event_category = 'history' AND event_name = 'search_term_group_open_tab') AS history_search_term_group_open_tab,
-    COUNTIF(event_category = 'history' AND event_name = 'search_term_group_remove_all') AS history_search_term_group_remove_all,
-    COUNTIF(event_category = 'history' AND event_name = 'search_term_group_remove_tab') AS history_search_term_group_remove_tab,
-    COUNTIF(event_category = 'history' AND event_name = 'search_term_group_tapped') AS history_search_term_group_tapped,
+    COUNTIF(
+      event_category = 'history'
+      AND event_name = 'removed_last_hour'
+    ) AS history_removed_last_hour,
+    COUNTIF(
+      event_category = 'history'
+      AND event_name = 'removed_today_and_yesterday'
+    ) AS history_removed_today_and_yesterday,
+    COUNTIF(
+      event_category = 'history'
+      AND event_name = 'search_icon_tapped'
+    ) AS history_search_icon_tapped,
+    COUNTIF(
+      event_category = 'history'
+      AND event_name = 'search_result_tapped'
+    ) AS history_search_result_tapped,
+    COUNTIF(
+      event_category = 'history'
+      AND event_name = 'search_term_group_open_tab'
+    ) AS history_search_term_group_open_tab,
+    COUNTIF(
+      event_category = 'history'
+      AND event_name = 'search_term_group_remove_all'
+    ) AS history_search_term_group_remove_all,
+    COUNTIF(
+      event_category = 'history'
+      AND event_name = 'search_term_group_remove_tab'
+    ) AS history_search_term_group_remove_tab,
+    COUNTIF(
+      event_category = 'history'
+      AND event_name = 'search_term_group_tapped'
+    ) AS history_search_term_group_tapped,
     COUNTIF(event_category = 'history' AND event_name = 'shared') AS history_shared,
     /*FxA*/
     COUNTIF(event_category = 'sync' AND event_name = 'failed') AS sync_failed,
     COUNTIF(event_category = 'sync_account' AND event_name = 'opened') AS sync_account_opened,
     COUNTIF(event_category = 'sync_account' AND event_name = 'send_tab') AS sync_account_send_tab,
-    COUNTIF(event_category = 'sync_account' AND event_name = 'sign_in_to_send_tab') AS sync_account_sign_in_to_send_tab,
+    COUNTIF(
+      event_category = 'sync_account'
+      AND event_name = 'sign_in_to_send_tab'
+    ) AS sync_account_sign_in_to_send_tab,
     COUNTIF(event_category = 'sync_account' AND event_name = 'sync_now') AS sync_account_sync_now,
     COUNTIF(event_category = 'sync_auth' AND event_name = 'closed') AS sync_auth_closed,
     COUNTIF(event_category = 'sync_auth' AND event_name = 'opened') AS sync_auth_opened,
-    COUNTIF(event_category = 'sync_auth' AND event_name = 'other_external') AS sync_auth_other_external,
+    COUNTIF(
+      event_category = 'sync_auth'
+      AND event_name = 'other_external'
+    ) AS sync_auth_other_external,
     COUNTIF(event_category = 'sync_auth' AND event_name = 'paired') AS sync_auth_paired,
     COUNTIF(event_category = 'sync_auth' AND event_name = 'recovered') AS sync_auth_recovered,
     COUNTIF(event_category = 'sync_auth' AND event_name = 'scan_pairing') AS sync_auth_scan_pairing,
@@ -98,25 +223,61 @@ client_product_feature_usage AS (
     COUNTIF(event_category = 'sync_auth' AND event_name = 'sign_out') AS sync_auth_sign_out,
     COUNTIF(event_category = 'sync_auth' AND event_name = 'sign_up') AS sync_auth_sign_up,
     COUNTIF(event_category = 'sync_auth' AND event_name = 'use_email') AS sync_auth_use_email,
-    COUNTIF(event_category = 'sync_auth' AND event_name = 'use_email_problem') AS sync_auth_use_email_problem,
+    COUNTIF(
+      event_category = 'sync_auth'
+      AND event_name = 'use_email_problem'
+    ) AS sync_auth_use_email_problem,
     /*Privacy*/
-    COUNTIF(event_category = 'homepage' AND event_name = 'private_mode_icon_tapped') AS hp_private_mode_tapped,
-    COUNTIF(event_category = 'tabs_tray' AND event_name = 'private_mode_tapped') AS tab_tray_private_mode_switched,
-    COUNTIF(event_category = 'app_icon' AND event_name = 'new_private_tab_tapped') AS app_icon_private_tab_tapped,
-    COUNTIF(event_category = 'tabs_tray' AND event_name = 'new_private_tab_tapped') AS tab_tray_private_mode_tapped,
+    COUNTIF(
+      event_category = 'homepage'
+      AND event_name = 'private_mode_icon_tapped'
+    ) AS hp_private_mode_tapped,
+    COUNTIF(
+      event_category = 'tabs_tray'
+      AND event_name = 'private_mode_tapped'
+    ) AS tab_tray_private_mode_switched,
+    COUNTIF(
+      event_category = 'app_icon'
+      AND event_name = 'new_private_tab_tapped'
+    ) AS app_icon_private_tab_tapped,
+    COUNTIF(
+      event_category = 'tabs_tray'
+      AND event_name = 'new_private_tab_tapped'
+    ) AS tab_tray_private_mode_tapped,
     --etp
-    COUNTIF(event_category = 'tracking_protection' AND event_name = 'etp_setting_changed') AS etp_setting_changed,
+    COUNTIF(
+      event_category = 'tracking_protection'
+      AND event_name = 'etp_setting_changed'
+    ) AS etp_setting_changed,
     COUNTIF(event_category = 'tracking_protection' AND event_name = 'etp_settings') AS etp_settings,
     COUNTIF(event_category = 'tracking_protection' AND event_name = 'etp_shield') AS etp_shield,
-    COUNTIF(event_category = 'tracking_protection' AND event_name = 'etp_tracker_list') AS etp_tracker_list,
+    COUNTIF(
+      event_category = 'tracking_protection'
+      AND event_name = 'etp_tracker_list'
+    ) AS etp_tracker_list,
     /*Default browser*/
-    COUNTIF(event_category = 'events' AND event_name = 'default_browser_changed') AS default_browser_changed,
+    COUNTIF(
+      event_category = 'events'
+      AND event_name = 'default_browser_changed'
+    ) AS default_browser_changed,
     /*Notification*/
-    COUNTIF(event_category = 'events' AND event_name = 're_engagement_notif_shown') AS re_engagement_notif_shown,
-    COUNTIF(event_category = 'events' AND event_name = 're_engagement_notif_tapped') AS re_engagement_notif_tapped,
+    COUNTIF(
+      event_category = 'events'
+      AND event_name = 're_engagement_notif_shown'
+    ) AS re_engagement_notif_shown,
+    COUNTIF(
+      event_category = 'events'
+      AND event_name = 're_engagement_notif_tapped'
+    ) AS re_engagement_notif_tapped,
     /*Customize Home*/
-    COUNTIF(event_category = 'app_menu' AND event_name = 'customize_homepage') AS app_menu_customize_homepage,
-    COUNTIF(event_category = 'home_screen' AND event_name = 'customize_home_clicked') AS home_page_customize_home_clicked
+    COUNTIF(
+      event_category = 'app_menu'
+      AND event_name = 'customize_homepage'
+    ) AS app_menu_customize_homepage,
+    COUNTIF(
+      event_category = 'home_screen'
+      AND event_name = 'customize_home_clicked'
+    ) AS home_page_customize_home_clicked
   FROM
     fenix.events_unnested
   WHERE

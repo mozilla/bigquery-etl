@@ -133,8 +133,16 @@ SELECT
   install_ping.new_launched,
   install_ping.sample_id,
   install_ping.install_attempts,
-  CASE WHEN succeeded is true then install_ping.install_attempts else 0 end AS installs,
-  CASE WHEN succeeded is false then install_ping.install_attempts else 0 end as unsuccessful_installs,
+  CASE
+    WHEN succeeded IS TRUE
+      THEN install_ping.install_attempts
+    ELSE 0
+  END AS installs,
+  CASE
+    WHEN succeeded IS FALSE
+      THEN install_ping.install_attempts
+    ELSE 0
+  END AS unsuccessful_installs,
   download_token_info.download_date AS attribution_dltoken_date
 FROM
   install_ping

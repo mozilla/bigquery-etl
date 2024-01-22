@@ -1,6 +1,4 @@
-CREATE TEMP FUNCTION udf_contains_tier1_country(
-  x ANY TYPE
-) AS ( --
+CREATE TEMP FUNCTION udf_contains_tier1_country(x ANY TYPE) AS ( --
   EXISTS(
     SELECT
       country
@@ -19,9 +17,7 @@ CREATE TEMP FUNCTION udf_contains_tier1_country(
 
   --
   -- This UDF is also only applicable in the context of this query.
-CREATE TEMP FUNCTION udf_contains_registration(
-  x ANY TYPE
-) AS ( --
+CREATE TEMP FUNCTION udf_contains_registration(x ANY TYPE) AS ( --
   EXISTS(
     SELECT
       event_type

@@ -21,6 +21,7 @@ from .tokenizer import (
     JinjaComment,
     JinjaExpression,
     JinjaStatement,
+    LineComment,
     Literal,
     NewlineKeyword,
     OpeningBracket,
@@ -96,7 +97,7 @@ def simple_format(tokens, indent="  "):
             # no space before statement separator
             # no space before first token
             pass
-        elif isinstance(token, (Comment, JinjaComment)):
+        elif isinstance(token, Comment):
             # blank line before comments only if they start on their own line
             # and come after a statement separator
             if token.value.startswith("\n") and prev_was_statement_separator:
@@ -145,7 +146,6 @@ def simple_format(tokens, indent="  "):
                 ExpressionSeparator,
                 StatementSeparator,
                 JinjaStatement,
-                JinjaComment,
             ),
         )
         allow_space_before_next_token = not isinstance(token, FieldAccessOperator)
@@ -188,7 +188,7 @@ class Line:
     def __init__(self, indent_token=None, can_format=True):
         """Initialize."""
         self.indent_token = indent_token
-        self.can_format = can_format
+        self.can_format = can_format and not isinstance(indent_token, Comment)
         if indent_token is None:
             self.indent_level = 0
         else:
@@ -197,17 +197,11 @@ class Line:
                 self.indent_level -= 1
         self.inline_tokens = []
         self.inline_length = 0
-        self.can_format = can_format and not isinstance(
-            indent_token, (Comment, JinjaComment)
-        )
 
     def add(self, token):
         """Add a token to this line."""
         self.inline_length += len(token.value)
         self.inline_tokens.append(token)
-        self.can_format = self.can_format and not isinstance(
-            token, (Comment, JinjaComment)
-        )
 
     @property
     def tokens(self):
@@ -246,6 +240,11 @@ class Line:
     def starts_with_closing_bracket(self):
         """Determine if this line starts with a ClosingBracket."""
         return self.inline_tokens and isinstance(self.inline_tokens[0], ClosingBracket)
+
+    @property
+    def ends_with_line_comment(self):
+        """Determine if this line ends with a line comment."""
+        return self.inline_tokens and isinstance(self.inline_tokens[-1], LineComment)
 
 
 def inline_block_format(tokens, max_line_length=100):
@@ -304,14 +303,17 @@ def inline_block_format(tokens, max_line_length=100):
             line_length = indent_level + line.inline_length
             pending_lines = 0
             pending = []
-            last_token_was_opening_bracket = line.ends_with_opening_bracket
             open_brackets = 1
             index += 1  # start on the next line
+            previous_line = line
             for line in lines[index:]:
                 if not line.can_format:
                     break
+                # Line comments can't be moved into the middle of a line.
+                if previous_line.ends_with_line_comment:
+                    break
                 if (
-                    not last_token_was_opening_bracket
+                    not previous_line.ends_with_opening_bracket
                     and not line.starts_with_closing_bracket
                 ):
                     pending.append(Whitespace(" "))
@@ -334,7 +336,7 @@ def inline_block_format(tokens, max_line_length=100):
                         break
                 if line.ends_with_opening_bracket:
                     open_brackets += 1
-                last_token_was_opening_bracket = line.ends_with_opening_bracket
+                previous_line = line
 
 
 def reformat(query, format_=inline_block_format, trailing_newline=False):

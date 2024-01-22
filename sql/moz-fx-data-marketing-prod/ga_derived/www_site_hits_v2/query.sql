@@ -43,7 +43,7 @@ get_all_events_in_each_session AS (
       ).int_value AS string
     ) AS visit_identifier,
     a.user_pseudo_id AS full_visitor_id,
-    a.event_name,
+    a.event_name AS event_label,
     a.event_timestamp,
     device.category AS category,
     device.operating_system AS operating_system,

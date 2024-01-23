@@ -13,7 +13,7 @@ WITH extracted_fields AS (
     ) AS activity_pattern,
     BIT_COUNT(`mozfun`.bytes.extract_bits(days_seen_bytes, -1, 1)) AS active_on_this_date,
   FROM
-    `frank-sandbox.fenix_derived.client_ltv_v1`
+    `moz-fx-data-shared-prod.fenix_derived.client_ltv_v1`
 ),
 with_states AS (
   SELECT
@@ -83,5 +83,5 @@ FROM
 CROSS JOIN
   UNNEST(markov_states)
 JOIN
-  mozdata.analysis.android_states_predicted_ad_clicks_v1
+  `moz-fx-data-shared-prod`.fenix_derived.android_states_predicted_ad_clicks_v1
   USING (country, state_function, state)

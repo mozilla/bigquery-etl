@@ -12,14 +12,14 @@ SELECT
   0 AS days_seen_bits,
   0 AS days_seen_in_tier1_country_bits,
   0 AS days_registered_bits,
-  0 AS days_seen_no_monitor_bits,
   -- We make sure to delay * until the end so that as new columns are added
   -- to fxa_users_daily, we can add those columns in the same order to the end
   -- of this schema, which may be necessary for the daily join query between
   -- the two tables to validate.
-  * EXCEPT (submission_date, seen_in_tier1_country, registered)
+  * EXCEPT (submission_date, seen_in_tier1_country, registered),
+  0 AS days_seen_no_monitor_bits,
 FROM
-  fxa_users_daily_v1
+  `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_users_daily_v1`
 WHERE
   -- Output empty table and read no input rows
   FALSE

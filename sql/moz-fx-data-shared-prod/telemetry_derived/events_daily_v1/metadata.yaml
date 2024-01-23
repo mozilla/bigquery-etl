@@ -15,13 +15,6 @@ labels:
 # see https://bugzilla.mozilla.org/show_bug.cgi?id=1805722#c10
 # Scheduling:
 #  dag_name: bqetl_event_rollup
-#  referenced_tables: [
-#    [
-#      'moz-fx-data-shared-prod',
-#      'telemetry_derived',
-#      'event_types_v1'
-#    ],
-#  ]
 bigquery:
   time_partitioning:
     type: day

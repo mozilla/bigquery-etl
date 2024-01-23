@@ -7,6 +7,10 @@ labels:
   application: fxa
   incremental: true
   schedule: daily
+# This table is still being populated with data from the payments server
+# due to the fact that it was deployed in GCP prior to the AWS -> GCP migration
+# and was set up to route its data to the fxa_prod_logs.stdout inside the old FxA GCP project.
+# Until this routing is updated, we need to keep this task running.
 scheduling:
   dag_name: bqetl_fxa_events
   arguments: ['--schema_update_option=ALLOW_FIELD_ADDITION']

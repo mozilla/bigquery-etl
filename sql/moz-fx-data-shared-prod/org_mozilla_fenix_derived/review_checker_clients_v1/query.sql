@@ -11,12 +11,7 @@ WITH ranked_data AS (
     normalized_country_code,
     sample_id,
     ping_info.experiments AS experiments,
-    ROW_NUMBER() OVER (
-      PARTITION BY 
-        client_info.client_id
-      ORDER BY
-        submission_timestamp
-    ) AS row_num
+    ROW_NUMBER() OVER (PARTITION BY client_info.client_id ORDER BY submission_timestamp) AS row_num
   FROM
     `moz-fx-data-shared-prod.fenix.metrics`
   WHERE

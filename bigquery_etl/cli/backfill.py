@@ -5,7 +5,7 @@ import tempfile
 from datetime import date, datetime, timedelta
 from pathlib import Path
 
-import click
+import rich_click as click
 import yaml
 from google.cloud import bigquery
 from google.cloud.exceptions import Conflict, NotFound

@@ -1,13 +1,6 @@
 fields:
 
 - mode: NULLABLE
-  name: user_id
-  type: STRING
-  description: |
-    A 36 char long hash value representing
-    User ID (registered user).
-
-- mode: NULLABLE
   name: submission_date
   type: DATE
   description: |
@@ -33,10 +26,11 @@ fields:
     No. of days since registration event.
 
 - mode: NULLABLE
-  name: days_seen_no_monitor_bits
-  type: INTEGER
+  name: user_id
+  type: STRING
   description: |
-    No. of days since monitor flag was last True.
+    A 36 char long hash value representing
+    User ID (registered user).
 
 - mode: NULLABLE
   name: country
@@ -71,3 +65,9 @@ fields:
   type: STRING
   description: |
     Version of the OS the device was most recently using.
+
+- mode: NULLABLE
+  name: days_seen_no_monitor_bits
+  type: INTEGER
+  description: |
+    No. of days since monitor flag was last True.

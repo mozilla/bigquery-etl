@@ -9,3 +9,4 @@
 
 #fail
 {{ in_range(["non_ssl_loads", "ssl_loads", "reporting_ratio"], 0, none, "submission_date = @submission_date") }}
+

@@ -17,6 +17,7 @@ workgroup_access:
   members:
   - workgroup:mozilla-confidential
   - workgroup:pocket/prefect
+  - workgroup:mozsocial/prefect
 references:
   view.sql:
   - moz-fx-data-shared-prod.activity_stream_stable.on_save_recs_v1

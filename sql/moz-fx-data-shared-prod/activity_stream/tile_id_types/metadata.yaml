@@ -9,6 +9,7 @@ workgroup_access:
   members:
   - workgroup:mozilla-confidential
   - workgroup:pocket/prefect
+  - workgroup:mozsocial/prefect
 references:
   view.sql:
   - pocket-tiles.pocket_tiles_data.tile_id_types

@@ -1,8 +1,7 @@
-friendly_name: Live Pings for `firefox-desktop/newtab`
+friendly_name: Live Pings for `activity_stream_live.impression_stats_v1`
 description: |-
-  A live view of pings sent for the
-  `firefox-desktop/newtab`
-  document type.
+  A live view of pings sent to the
+  `activity_stream_live.impression_stats_v1` table.
 
   Clustering fields: `submission_timestamp`
 owners: []
@@ -11,9 +10,10 @@ bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
+  - workgroup:mozilla-confidential
   - workgroup:pocket/prefect
   - workgroup:mozsocial/prefect
 references:
   view.sql:
-  - moz-fx-data-shared-prod.firefox_desktop_live.newtab_v1
+  - moz-fx-data-shared-prod.activity_stream_live.impression_stats_v1
 deprecated: false

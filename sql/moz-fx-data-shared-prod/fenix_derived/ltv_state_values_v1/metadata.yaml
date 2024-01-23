@@ -8,7 +8,7 @@ labels:
   incremental: false
   owner1: frank@mozilla.com
 scheduling:
-  dag_name: bqetl_org_mozilla_firefox
+  dag_name: bqetl_org_mozilla_firefox_derived
   depends_on_past: false
   date_partition_parameter: null
 bigquery:

@@ -38,11 +38,11 @@ fields:
 - mode: NULLABLE
   name: hit_number
   type: INT64
-  description: Hit Number
+  description: Hit Number - Densely ranked, since there can be multiple events at the same time for a user
 - mode: NULLABLE
   name: hit_timestamp
   type: INT64
-  description: Hit Timestamp
+  description: Hit Timestamp - Same as the "Event Timestamp"
 - mode: NULLABLE
   name: event_category
   type: STRING
@@ -110,7 +110,7 @@ fields:
 - mode: NULLABLE
   name: hit_time
   type: FLOAT
-  description: Hit Time
+  description: Hit Time - Engagement Time in Seconds
 - mode: NULLABLE
   name: first_interaction
   type: INT64

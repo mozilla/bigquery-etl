@@ -55,8 +55,7 @@ data_with_enough_wau AS (
     filtered_data table
   INNER JOIN
     build_ids
-  USING
-    (app_build_id, channel)
+    USING (app_build_id, channel)
 ),
 normalized_histograms AS (
   SELECT

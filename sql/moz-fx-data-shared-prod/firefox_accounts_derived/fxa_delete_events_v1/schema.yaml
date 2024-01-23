@@ -1,0 +1,10 @@
+fields:
+- name: submission_timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: user_id
+  type: STRING
+  mode: NULLABLE
+- name: hmac_user_id
+  type: STRING
+  mode: NULLABLE

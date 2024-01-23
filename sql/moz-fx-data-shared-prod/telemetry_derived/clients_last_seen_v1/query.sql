@@ -156,9 +156,7 @@ FROM
   _current
 FULL JOIN
   _previous
-USING
-  (client_id)
+  USING (client_id)
 LEFT JOIN
   clients_first_seen_v1 AS cfs
-USING
-  (client_id)
+  USING (client_id)

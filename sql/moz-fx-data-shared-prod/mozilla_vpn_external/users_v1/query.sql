@@ -1,8 +1,6 @@
 SELECT
   IF(_current.id IS NULL, _previous, _current).* REPLACE (
-    CAST(
-      NULL AS STRING
-    ) AS fxa_profile_json, -- contains unhashed fxa_uid
+    CAST(NULL AS STRING) AS fxa_profile_json, -- contains unhashed fxa_uid
     IF(_current.id IS NULL, _previous.fxa_uid, TO_HEX(SHA256(_current.fxa_uid))) AS fxa_uid
   )
 FROM
@@ -16,5 +14,4 @@ FROM
   ) AS _current
 FULL JOIN
   users_v1 AS _previous
-USING
-  (id)
+  USING (id)

@@ -23,7 +23,7 @@ WITH site_data AS (
   FROM
     `moz-fx-data-marketing-prod.analytics_313696158.events_*`
   WHERE
-    event_date = FORMAT_DATE('%Y%m%d', @submission_date)
+    _TABLE_SUFFIX = FORMAT_DATE('%Y%m%d', @submission_date)
   GROUP BY
     event_date,
     device.category,
@@ -56,5 +56,4 @@ FROM
   site_data AS s
 LEFT JOIN
   `moz-fx-data-shared-prod.static.third_party_standardized_country_names` AS std_cntry_nms
-ON
-  s.country = std_cntry_nms.raw_country
+  ON s.country = std_cntry_nms.raw_country

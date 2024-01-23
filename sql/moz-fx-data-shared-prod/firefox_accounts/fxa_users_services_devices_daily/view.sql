@@ -8,5 +8,4 @@ FROM
   `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_users_services_devices_daily_v1` AS fxa
 LEFT JOIN
   `moz-fx-data-shared-prod.static.country_names_v1` AS cn
-ON
-  cn.name = fxa.country
+  ON cn.name = fxa.country

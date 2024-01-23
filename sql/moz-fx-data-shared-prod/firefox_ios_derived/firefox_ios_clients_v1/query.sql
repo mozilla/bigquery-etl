@@ -18,14 +18,6 @@ WITH first_seen AS (
     submission_date = @submission_date
     AND client_id IS NOT NULL
 ),
--- Find the most recent activation record per client_id.
-activations AS (
-  SELECT
-    client_id,
-    is_activated,
-  FROM
-    firefox_ios_derived.new_profile_activation_v2
-),
 -- Find earliest data per client from the first_session ping.
 first_session_ping_base AS (
   SELECT
@@ -148,12 +140,10 @@ _current AS (
     first_seen
   FULL OUTER JOIN
     first_session_ping AS first_session
-  USING
-    (client_id, sample_id)
+    USING (client_id, sample_id)
   FULL OUTER JOIN
     metrics_ping AS metrics
-  USING
-    (client_id, sample_id)
+    USING (client_id, sample_id)
   WHERE
     client_id IS NOT NULL
 ),
@@ -177,7 +167,6 @@ SELECT
   COALESCE(_previous.device_model, _current.device_model) AS device_model,
   COALESCE(_previous.os_version, _current.os_version) AS os_version,
   COALESCE(_previous.app_version, _current.app_version) AS app_version,
-  activations.is_activated,
   -- below is to avoid mix and matching different adjust attributes
   -- from different records. This way we always treat them as a single "unit"
   IF(
@@ -210,14 +199,12 @@ SELECT
       _current.metadata.adjust_info__source_ping
     ) AS adjust_info__source_ping
   ) AS metadata,
-  COALESCE(_previous.is_suspicious_device_client, _current.is_suspicious_device_client) AS is_suspicious_device_client,
+  COALESCE(
+    _previous.is_suspicious_device_client,
+    _current.is_suspicious_device_client
+  ) AS is_suspicious_device_client,
 FROM
   _current
 FULL OUTER JOIN
   _previous
-USING
-  (client_id, sample_id)
-LEFT JOIN
-  activations
-USING
-  (client_id)
+  USING (client_id, sample_id)

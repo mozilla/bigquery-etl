@@ -34,3 +34,4 @@
 
 #warn
 {{ value_length(column="country", expected_length=2, where="DATE(`datetime`) = @submission_date") }}
+

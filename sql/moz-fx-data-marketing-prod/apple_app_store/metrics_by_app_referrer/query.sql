@@ -9,51 +9,39 @@ FROM
   `moz-fx-data-marketing-prod.apple_app_store_exported.active_devices_by_opt_in_app_referrer`
 FULL JOIN
   `moz-fx-data-marketing-prod.apple_app_store_exported.active_devices_last_30_days_by_opt_in_app_referrer`
-USING
-  (date, app_name, app_referrer)
+  USING (date, app_name, app_referrer)
 FULL JOIN
   `moz-fx-data-marketing-prod.apple_app_store_exported.app_units_by_app_referrer`
-USING
-  (date, app_name, app_referrer)
+  USING (date, app_name, app_referrer)
 FULL JOIN
   `moz-fx-data-marketing-prod.apple_app_store_exported.deletions_by_opt_in_app_referrer`
-USING
-  (date, app_name, app_referrer)
+  USING (date, app_name, app_referrer)
 FULL JOIN
   `moz-fx-data-marketing-prod.apple_app_store_exported.iap_by_app_referrer`
-USING
-  (date, app_name, app_referrer)
+  USING (date, app_name, app_referrer)
 FULL JOIN
   `moz-fx-data-marketing-prod.apple_app_store_exported.impressions_by_app_referrer`
-USING
-  (date, app_name, app_referrer)
+  USING (date, app_name, app_referrer)
 FULL JOIN
   `moz-fx-data-marketing-prod.apple_app_store_exported.impressions_unique_device_by_app_referrer`
-USING
-  (date, app_name, app_referrer)
+  USING (date, app_name, app_referrer)
 FULL JOIN
   `moz-fx-data-marketing-prod.apple_app_store_exported.installations_by_opt_in_app_referrer`
-USING
-  (date, app_name, app_referrer)
+  USING (date, app_name, app_referrer)
 FULL JOIN
   `moz-fx-data-marketing-prod.apple_app_store_exported.paying_users_by_app_referrer`
-USING
-  (date, app_name, app_referrer)
+  USING (date, app_name, app_referrer)
 FULL JOIN
   `moz-fx-data-marketing-prod.apple_app_store_exported.product_page_views_by_app_referrer`
-USING
-  (date, app_name, app_referrer)
+  USING (date, app_name, app_referrer)
 FULL JOIN
   `moz-fx-data-marketing-prod.apple_app_store_exported.product_page_views_unique_device_by_app_referrer`
-USING
-  (date, app_name, app_referrer)
+  USING (date, app_name, app_referrer)
 FULL JOIN
   `moz-fx-data-marketing-prod.apple_app_store_exported.sales_by_app_referrer`
-USING
-  (date, app_name, app_referrer)
+  USING (date, app_name, app_referrer)
 FULL JOIN
   `moz-fx-data-marketing-prod.apple_app_store_exported.sessions_by_opt_in_app_referrer`
-USING
-  (date, app_name, app_referrer)
+  USING (date, app_name, app_referrer)
 WHERE
   date = @submission_date

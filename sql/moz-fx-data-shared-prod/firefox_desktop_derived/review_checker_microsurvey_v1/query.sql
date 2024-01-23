@@ -71,8 +71,7 @@ filter_ms_microsurvey AS (
     `moz-fx-data-shared-prod.firefox_desktop.messaging_system` msg
   LEFT JOIN
     `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v2` cfs
-  ON
-    cfs.client_id = msg.metrics.uuid.messaging_system_client_id
+    ON cfs.client_id = msg.metrics.uuid.messaging_system_client_id
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND metrics.string.messaging_system_ping_type IS NULL

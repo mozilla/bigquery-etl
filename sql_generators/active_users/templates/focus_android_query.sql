@@ -87,8 +87,7 @@ search_metrics AS (
     unioned
   LEFT JOIN
     search_clients s
-  ON
-    unioned.client_id = s.client_id
+    ON unioned.client_id = s.client_id
     AND unioned.submission_date = s.submission_date
   GROUP BY
     client_id,
@@ -157,13 +156,12 @@ unioned_with_searches AS (
     search.organic_search_count,
     search.search_count,
     search.search_with_ads,
-    NULL AS active_hours_sum
+    CAST(NULL AS FLOAT64) AS active_hours_sum
   FROM
     unioned
   LEFT JOIN
     search_metrics search
-  ON
-    search.client_id = unioned.client_id
+    ON search.client_id = unioned.client_id
     AND search.submission_date = unioned.submission_date
 ),
 todays_metrics AS (
@@ -215,8 +213,7 @@ todays_metrics_enriched AS (
     todays_metrics
   LEFT JOIN
     `mozdata.static.csa_gblmkt_languages` AS languages
-  ON
-    todays_metrics.locale = languages.code
+    ON todays_metrics.locale = languages.code
 )
 SELECT
   todays_metrics_enriched.* EXCEPT (
@@ -231,10 +228,10 @@ SELECT
     first_seen_date,
     durations
   ),
-  COUNT(DISTINCT IF(days_since_seen = 0 AND durations > 0, client_id, NULL)) AS dau,
   COUNT(DISTINCT IF(days_since_seen = 0, client_id, NULL)) AS daily_users,
-  COUNT(DISTINCT IF(days_since_seen < 7, client_id, NULL)) AS wau,
-  COUNT(DISTINCT client_id) AS mau,
+  COUNT(DISTINCT IF(days_since_seen < 7, client_id, NULL)) AS weekly_users,
+  COUNT(DISTINCT client_id) AS monthly_users,
+  COUNT(DISTINCT IF(days_since_seen = 0 AND durations > 0, client_id, NULL)) AS dau,
   COUNT(DISTINCT IF(submission_date = first_seen_date, client_id, NULL)) AS new_profiles,
   SUM(ad_clicks) AS ad_clicks,
   SUM(organic_search_count) AS organic_search_count,

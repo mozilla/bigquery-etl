@@ -39,11 +39,7 @@ _previous AS (
 )
 SELECT
   @submission_date AS submission_date,
-  IF(
-    _current.user_id IS NOT NULL,
-    _current,
-    _previous
-  ).* REPLACE ( --
+  IF(_current.user_id IS NOT NULL, _current, _previous).* REPLACE ( --
     udf.combine_adjacent_days_28_bits(
       _previous.days_seen_bits,
       _current.days_seen_bits
@@ -65,5 +61,4 @@ FROM
   _current
 FULL JOIN
   _previous
-USING
-  (user_id)
+  USING (user_id)

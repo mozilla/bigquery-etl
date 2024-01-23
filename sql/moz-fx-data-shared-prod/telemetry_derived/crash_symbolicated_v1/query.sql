@@ -61,8 +61,7 @@ symbolicated_frames AS (
     crash_frames
   LEFT JOIN
     crash_symbols
-  USING
-    (debug_file, debug_id, module_offset)
+    USING (debug_file, debug_id, module_offset)
   GROUP BY
     submission_timestamp,
     document_id,
@@ -96,5 +95,4 @@ FROM
   crash
 LEFT JOIN
   symbolicated_threads
-USING
-  (submission_timestamp, document_id)
+  USING (submission_timestamp, document_id)

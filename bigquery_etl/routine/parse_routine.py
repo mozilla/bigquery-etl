@@ -21,7 +21,7 @@ from bigquery_etl.util.common import render
 UDF_CHAR = "[a-zA-Z0-9_]"
 UDF_FILE = "udf.sql"
 PROCEDURE_FILE = "stored_procedure.sql"
-ROUTINE_FILE = (UDF_FILE, PROCEDURE_FILE)
+ROUTINE_FILES = (UDF_FILE, PROCEDURE_FILE)
 TEMP_UDF_RE = re.compile(f"(?:udf|assert)_{UDF_CHAR}+")
 PERSISTENT_UDF_PREFIX_RE_STR = (
     r"CREATE\s+(?:OR\s+REPLACE\s+)?(?:FUNCTION|PROCEDURE)(?:\s+IF\s+NOT\s+EXISTS)?"
@@ -47,7 +47,7 @@ def get_routines_from_dir(project_dir):
         }
         for root, dirs, files in os.walk(project_dir)
         for filename in files
-        if filename in ROUTINE_FILE
+        if filename in ROUTINE_FILES
     ]
 
 
@@ -237,7 +237,7 @@ def read_routine_dir(*project_dirs):
             for root, dirs, files in os.walk(project_dir)
             if os.path.basename(root) != ConfigLoader.get("routine", "example_dir")
             for filename in files
-            if filename in ROUTINE_FILE
+            if filename in ROUTINE_FILES
             for raw_routine in (RawRoutine.from_file(os.path.join(root, filename)),)
         }
 

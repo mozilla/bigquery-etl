@@ -9,7 +9,6 @@ WITH _metrics_ping_distinct_client_count AS (
   GROUP BY
     submission_date
 ),
-
 client_product_feature_usage AS (
   SELECT
     client_info.client_id,
@@ -26,22 +25,10 @@ client_product_feature_usage AS (
     COALESCE(SUM(metrics.counter.addresses_updated), 0) AS addresses_modified,
     COALESCE(SUM(metrics.quantity.addresses_saved_all), 0) AS currently_stored_addresses,
     --Bookmark
-    COALESCE(
-      SUM(metrics_bookmarks_add_table.value),
-      0
-    ) AS bookmarks_add,
-    COALESCE(
-      SUM(metrics_bookmarks_delete_table.value),
-      0
-    ) AS bookmarks_delete,
-    COALESCE(
-      SUM(metrics_bookmarks_edit_table.value),
-      0
-    ) AS bookmarks_edit,
-    COALESCE(
-      SUM(metrics_bookmarks_open_table.value),
-      0
-    ) AS bookmarks_open,
+    COALESCE(SUM(metrics_bookmarks_add_table.value), 0) AS bookmarks_add,
+    COALESCE(SUM(metrics_bookmarks_delete_table.value), 0) AS bookmarks_delete,
+    COALESCE(SUM(metrics_bookmarks_edit_table.value), 0) AS bookmarks_edit,
+    COALESCE(SUM(metrics_bookmarks_open_table.value), 0) AS bookmarks_open,
     COALESCE(
       SUM(metrics.counter.metrics_desktop_bookmarks_count),
       0
@@ -50,41 +37,53 @@ client_product_feature_usage AS (
       SUM(metrics.counter.metrics_mobile_bookmarks_count),
       0
     ) AS metrics_mobile_bookmarks_count,
-    SUM(CASE WHEN metrics.boolean.metrics_has_desktop_bookmarks IS TRUE THEN 1 ELSE 0 END) AS metrics_has_desktop_bookmarks,
-    SUM(CASE WHEN metrics.boolean.metrics_has_mobile_bookmarks IS TRUE THEN 1 ELSE 0 END) AS metrics_has_mobile_bookmarks,
+    SUM(
+      CASE
+        WHEN metrics.boolean.metrics_has_desktop_bookmarks IS TRUE
+          THEN 1
+        ELSE 0
+      END
+    ) AS metrics_has_desktop_bookmarks,
+    SUM(
+      CASE
+        WHEN metrics.boolean.metrics_has_mobile_bookmarks IS TRUE
+          THEN 1
+        ELSE 0
+      END
+    ) AS metrics_has_mobile_bookmarks,
     --Privacy
     SUM(
-        CASE
-          WHEN metrics.string.preferences_enhanced_tracking_protection = 'standard'
-            THEN 1
-          ELSE 0
-        END
-      ) AS etp_standard,
+      CASE
+        WHEN metrics.string.preferences_enhanced_tracking_protection = 'standard'
+          THEN 1
+        ELSE 0
+      END
+    ) AS etp_standard,
     SUM(
-        CASE
-          WHEN metrics.string.preferences_enhanced_tracking_protection = 'strict'
-            THEN 1
-          ELSE 0
-        END
-      ) AS etp_strict,
+      CASE
+        WHEN metrics.string.preferences_enhanced_tracking_protection = 'strict'
+          THEN 1
+        ELSE 0
+      END
+    ) AS etp_strict,
     SUM(
-        CASE
-          WHEN metrics.string.preferences_enhanced_tracking_protection = 'custom'
-            THEN 1
-          ELSE 0
-        END
-      ) AS etp_custom,
+      CASE
+        WHEN metrics.string.preferences_enhanced_tracking_protection = 'custom'
+          THEN 1
+        ELSE 0
+      END
+    ) AS etp_custom,
     SUM(
-        CASE
-          WHEN metrics.string.preferences_enhanced_tracking_protection NOT IN (
-              'custom',
-              'standard',
-              'strict'
-            )
-            THEN 1
-          ELSE 0
-        END
-      ) AS etp_disabled,
+      CASE
+        WHEN metrics.string.preferences_enhanced_tracking_protection NOT IN (
+            'custom',
+            'standard',
+            'strict'
+          )
+          THEN 1
+        ELSE 0
+      END
+    ) AS etp_disabled,
     --Tab count
     COALESCE(
       SUM(metrics.counter.metrics_private_tabs_open_count),
@@ -92,49 +91,101 @@ client_product_feature_usage AS (
     ) AS metrics_private_tabs_open_count,
     COALESCE(SUM(metrics.counter.metrics_tabs_open_count), 0) AS metrics_tabs_open_count,
     --Default browser
-    SUM(CASE WHEN metrics.boolean.metrics_default_browser THEN 1 ELSE 0 END) AS metrics_default_browser,
+    SUM(
+      CASE
+        WHEN metrics.boolean.metrics_default_browser
+          THEN 1
+        ELSE 0
+      END
+    ) AS metrics_default_browser,
     --Awesomebar Location
     SUM(
-        CASE
-          WHEN metrics.string.preferences_toolbar_position_setting IN ('top', 'fixed_top')
-            THEN 1
-          ELSE 0
-        END
-      ) AS awesomebar_top,
+      CASE
+        WHEN metrics.string.preferences_toolbar_position_setting IN ('top', 'fixed_top')
+          THEN 1
+        ELSE 0
+      END
+    ) AS awesomebar_top,
     SUM(
-        CASE
-          WHEN metrics.string.preferences_toolbar_position_setting = 'bottom'
-            THEN 1
-          ELSE 0
-        END
-      ) AS awesomebar_bottom,
+      CASE
+        WHEN metrics.string.preferences_toolbar_position_setting = 'bottom'
+          THEN 1
+        ELSE 0
+      END
+    ) AS awesomebar_bottom,
     SUM(
-        CASE
-          WHEN metrics.string.preferences_toolbar_position_setting NOT IN (
-              'top',
-              'fixed_top',
-              'bottom'
-            )
-            THEN 1
-          ELSE 0
-        END
-      ) AS awesomebar_null,
+      CASE
+        WHEN metrics.string.preferences_toolbar_position_setting NOT IN (
+            'top',
+            'fixed_top',
+            'bottom'
+          )
+          THEN 1
+        ELSE 0
+      END
+    ) AS awesomebar_null,
     --Notification
-    SUM(CASE WHEN metrics.boolean.metrics_notifications_allowed THEN 1 ELSE 0 END) AS metrics_notifications_allowed,
-    SUM(CASE WHEN metrics.boolean.events_marketing_notification_allowed THEN 1 ELSE 0 END) AS events_marketing_notification_allowed,
+    SUM(
+      CASE
+        WHEN metrics.boolean.metrics_notifications_allowed
+          THEN 1
+        ELSE 0
+      END
+    ) AS metrics_notifications_allowed,
+    SUM(
+      CASE
+        WHEN metrics.boolean.events_marketing_notification_allowed
+          THEN 1
+        ELSE 0
+      END
+    ) AS events_marketing_notification_allowed,
     --Customize Homepage
-    SUM(CASE WHEN metrics.boolean.customize_home_contile THEN 1 ELSE 0 END) AS customize_home_contile,
-    SUM(CASE WHEN metrics.boolean.customize_home_jump_back_in THEN 1 ELSE 0 END) AS customize_home_jump_back_in,
-    SUM(CASE WHEN metrics.boolean.customize_home_most_visited_sites THEN 1 ELSE 0 END) AS customize_home_most_visited_sites,
+    SUM(
+      CASE
+        WHEN metrics.boolean.customize_home_contile
+          THEN 1
+        ELSE 0
+      END
+    ) AS customize_home_contile,
+    SUM(
+      CASE
+        WHEN metrics.boolean.customize_home_jump_back_in
+          THEN 1
+        ELSE 0
+      END
+    ) AS customize_home_jump_back_in,
+    SUM(
+      CASE
+        WHEN metrics.boolean.customize_home_most_visited_sites
+          THEN 1
+        ELSE 0
+      END
+    ) AS customize_home_most_visited_sites,
     SUM(CASE WHEN metrics.boolean.customize_home_pocket THEN 1 ELSE 0 END) AS customize_home_pocket,
-    SUM(CASE WHEN metrics.boolean.customize_home_recently_saved THEN 1 ELSE 0 END) AS customize_home_recently_saved,
-    SUM(CASE WHEN metrics.boolean.customize_home_recently_visited THEN 1 ELSE 0 END) AS customize_home_recently_visited
+    SUM(
+      CASE
+        WHEN metrics.boolean.customize_home_recently_saved
+          THEN 1
+        ELSE 0
+      END
+    ) AS customize_home_recently_saved,
+    SUM(
+      CASE
+        WHEN metrics.boolean.customize_home_recently_visited
+          THEN 1
+        ELSE 0
+      END
+    ) AS customize_home_recently_visited
   FROM
     fenix.metrics AS metric
-    LEFT JOIN UNNEST(metrics.labeled_counter.metrics_bookmarks_add) AS metrics_bookmarks_add_table
-    LEFT JOIN UNNEST(metrics.labeled_counter.metrics_bookmarks_delete) AS metrics_bookmarks_delete_table
-    LEFT JOIN UNNEST(metrics.labeled_counter.metrics_bookmarks_edit) AS metrics_bookmarks_edit_table
-    LEFT JOIN UNNEST(metrics.labeled_counter.metrics_bookmarks_open) AS metrics_bookmarks_open_table
+  LEFT JOIN
+    UNNEST(metrics.labeled_counter.metrics_bookmarks_add) AS metrics_bookmarks_add_table
+  LEFT JOIN
+    UNNEST(metrics.labeled_counter.metrics_bookmarks_delete) AS metrics_bookmarks_delete_table
+  LEFT JOIN
+    UNNEST(metrics.labeled_counter.metrics_bookmarks_edit) AS metrics_bookmarks_edit_table
+  LEFT JOIN
+    UNNEST(metrics.labeled_counter.metrics_bookmarks_open) AS metrics_bookmarks_open_table
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -198,7 +249,7 @@ product_features_agg AS (
     /*Bookmark*/
     --bookmarks_add
     COUNT(DISTINCT CASE WHEN bookmarks_add > 0 THEN client_id END) AS bookmarks_add_users,
-    SUM(bookmarks_add)AS bookmarks_add,
+    SUM(bookmarks_add) AS bookmarks_add,
     --bookmarks_delete
     COUNT(DISTINCT CASE WHEN bookmarks_delete > 0 THEN client_id END) AS bookmarks_delete_users,
     SUM(bookmarks_delete) AS bookmarks_delete,
@@ -453,5 +504,4 @@ FROM
   _metrics_ping_distinct_client_count
 LEFT JOIN
   product_features_agg
-USING
-  (submission_date)
+  USING (submission_date)

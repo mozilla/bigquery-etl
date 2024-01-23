@@ -379,3 +379,22 @@ class View:
             return False
 
         return True
+
+    @property
+    def is_default_view(self) -> bool:
+        """Determine whether view just SELECTS * FROM its (one) upstream reference."""
+        if len(self.table_references) != 1:
+            return False
+
+        default_view_content = reformat(
+            f"""
+           CREATE OR REPLACE VIEW `{self.project}.{self.dataset}.{self.name}` AS
+           SELECT * FROM `{self.table_references[0]}`
+           """
+        )
+
+        formatted_content = sqlparse.format(self.content, strip_comments=True).strip(
+            ";" + string.whitespace
+        )
+
+        return formatted_content == default_view_content

@@ -641,8 +641,7 @@ fenix_metrics_with_locale AS (
     fenix_metrics
   LEFT JOIN
     fenix_client_locales
-  USING
-    (client_id)
+    USING (client_id)
 ),
 glean_metrics AS (
   SELECT
@@ -778,10 +777,7 @@ combined_search_clients AS (
       WHEN REGEXP_CONTAINS(source, '^in-content.*-follow-on')
         THEN 'tagged-follow-on'
       WHEN STARTS_WITH(source, 'in-content.organic')
-        OR STARTS_WITH(
-          source,
-          'organic.'
-        )  -- for ios
+        OR STARTS_WITH(source, 'organic.')  -- for ios
         THEN 'organic'
       WHEN search_type = 'ad-click'
         OR search_type = 'search-with-ads'

@@ -9,7 +9,7 @@ WITH retention_week_2 AS (
   SELECT
     COUNTIF(retained_week_2)
   FROM
-    `{{ project_id }}.{{ dataset_id }}.funnel_retention_clients_week_2_v1`
+    `moz-fx-data-shared-prod.firefox_ios_derived.funnel_retention_clients_week_2_v1`
   WHERE
     first_seen_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
 ),
@@ -35,12 +35,17 @@ SELECT
     ),
     NULL
   );
+
 #fail
 SELECT
   IF(
     DATE_DIFF(submission_date, first_seen_date, DAY) <> 27,
-    ERROR("Day difference between submission_date and first_seen_date is not equal to 27 as expected"),
+    ERROR(
+      "Day difference between submission_date and first_seen_date is not equal to 27 as expected"
+    ),
     NULL
   )
-FROM `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`
-WHERE submission_date = @submission_date;
+FROM
+  `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`
+WHERE
+  submission_date = @submission_date;

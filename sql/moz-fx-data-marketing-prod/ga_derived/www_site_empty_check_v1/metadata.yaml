@@ -9,5 +9,4 @@ scheduling:
   dag_name: bqetl_google_analytics_derived
   destination_table: null
   query_file_path: sql/moz-fx-data-marketing-prod/ga_derived/www_site_empty_check_v1/query.sql
-  referenced_tables: []
   parameters: ['submission_date:DATE:{{ds}}']

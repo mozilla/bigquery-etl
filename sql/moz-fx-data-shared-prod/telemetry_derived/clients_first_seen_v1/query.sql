@@ -41,5 +41,4 @@ FROM
   previous
 FULL JOIN
   today
-USING
-  (client_id)
+  USING (client_id)

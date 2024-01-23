@@ -22,8 +22,7 @@ RETURNS ARRAY<STRUCT<percentile FLOAT64, value INT64>> AS (
       )
     INNER JOIN
       UNNEST(percentiles) AS percentile
-    ON
-      cumulative_fraction >= percentile
+      ON cumulative_fraction >= percentile
     GROUP BY
       percentile
     ORDER BY

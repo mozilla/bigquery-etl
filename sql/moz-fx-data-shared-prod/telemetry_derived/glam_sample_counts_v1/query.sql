@@ -9,8 +9,7 @@ WITH histogram_data AS (
     key,
     h1.agg_type,
     h1.aggregates,
-    IF(os = 'Windows'
-    AND channel = 'release', 10, 1) AS sample_mult
+    IF(os = 'Windows' AND channel = 'release', 10, 1) AS sample_mult
   FROM
     clients_histogram_aggregates_v2,
     UNNEST(histogram_aggregates) h1
@@ -24,8 +23,7 @@ scalars_data AS (
     app_build_id,
     channel,
     scalar_aggregates,
-    IF(os = 'Windows'
-    AND channel = 'release', 10, 1) AS sample_mult
+    IF(os = 'Windows' AND channel = 'release', 10, 1) AS sample_mult
   FROM
     clients_scalar_aggregates_v1
   WHERE

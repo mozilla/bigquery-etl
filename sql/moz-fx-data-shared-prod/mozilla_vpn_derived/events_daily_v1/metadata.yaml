@@ -5,7 +5,6 @@ friendly_name: 'Mozilla VPN Events Daily'
 description: >
   Packed event representation with one-row per-client
 owners:
-  - wlachance@mozilla.com
   - akomar@mozilla.com
 labels:
   application: mozilla_vpn
@@ -13,13 +12,6 @@ labels:
   incremental: true
 scheduling:
   dag_name: bqetl_event_rollup
-  referenced_tables: [
-    [
-      'moz-fx-data-shared-prod',
-      'mozilla_vpn_derived',
-      'event_types_v1'
-    ],
-  ]
 bigquery:
   time_partitioning:
     type: day

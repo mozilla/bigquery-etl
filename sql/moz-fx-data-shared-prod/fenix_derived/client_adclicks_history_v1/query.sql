@@ -25,5 +25,4 @@ FROM
   existing_data
 FULL OUTER JOIN
   new_data
-USING
-  (sample_id, client_id)
+  USING (sample_id, client_id)

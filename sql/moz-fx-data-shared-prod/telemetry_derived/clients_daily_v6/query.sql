@@ -147,7 +147,9 @@ WITH base AS (
         UNNEST(
           [
             -- We add a struct layer here b/c BQ doesn't allow nested arrays
-            STRUCT(payload.keyed_histograms.fx_migration_bookmarks_quantity AS keyed_histogram), -- 0
+            STRUCT(
+              payload.keyed_histograms.fx_migration_bookmarks_quantity AS keyed_histogram
+            ), -- 0
             STRUCT(payload.keyed_histograms.fx_migration_history_quantity AS keyed_histogram), -- 1
             STRUCT(payload.keyed_histograms.fx_migration_logins_quantity AS keyed_histogram) -- 2
           ]
@@ -687,8 +689,7 @@ clients_summary AS (
     base
   LEFT JOIN
     overactive
-  USING
-    (client_id)
+    USING (client_id)
   WHERE
     overactive.client_id IS NULL
 ),
@@ -704,12 +705,8 @@ aggregates AS (
     udf.aggregate_active_addons(
       ARRAY_CONCAT_AGG(active_addons ORDER BY submission_timestamp)
     ) AS active_addons,
-    CAST(
-      NULL AS STRING
-    ) AS active_experiment_branch, -- deprecated
-    CAST(
-      NULL AS STRING
-    ) AS active_experiment_id, -- deprecated
+    CAST(NULL AS STRING) AS active_experiment_branch, -- deprecated
+    CAST(NULL AS STRING) AS active_experiment_id, -- deprecated
     SUM(active_ticks / (3600 / 5)) AS active_hours_sum,
     mozfun.stats.mode_last(
       ARRAY_AGG(addon_compatibility_check_enabled ORDER BY submission_timestamp)
@@ -784,9 +781,13 @@ aggregates AS (
       ARRAY_AGG(distribution_id ORDER BY submission_timestamp)
     ) AS distribution_id,
     mozfun.stats.mode_last(ARRAY_AGG(partner_id ORDER BY submission_timestamp)) AS partner_id,
-    mozfun.stats.mode_last(ARRAY_AGG(distribution_version ORDER BY submission_timestamp)) AS distribution_version,
+    mozfun.stats.mode_last(
+      ARRAY_AGG(distribution_version ORDER BY submission_timestamp)
+    ) AS distribution_version,
     mozfun.stats.mode_last(ARRAY_AGG(distributor ORDER BY submission_timestamp)) AS distributor,
-    mozfun.stats.mode_last(ARRAY_AGG(distributor_channel ORDER BY submission_timestamp)) AS distributor_channel,
+    mozfun.stats.mode_last(
+      ARRAY_AGG(distributor_channel ORDER BY submission_timestamp)
+    ) AS distributor_channel,
     mozfun.stats.mode_last(ARRAY_AGG(e10s_enabled ORDER BY submission_timestamp)) AS e10s_enabled,
     mozfun.stats.mode_last(
       ARRAY_AGG(env_build_arch ORDER BY submission_timestamp)
@@ -879,7 +880,9 @@ aggregates AS (
           submission_timestamp
       )
     ).*,
-    mozfun.stats.mode_last(ARRAY_AGG(geo_db_version ORDER BY submission_timestamp)) AS geo_db_version,
+    mozfun.stats.mode_last(
+      ARRAY_AGG(geo_db_version ORDER BY submission_timestamp)
+    ) AS geo_db_version,
     mozfun.json.mode_last(
       ARRAY_AGG(
         IF(
@@ -1000,7 +1003,9 @@ aggregates AS (
       ARRAY_AGG(is_default_browser ORDER BY submission_timestamp)
     ) AS is_default_browser,
     mozfun.stats.mode_last(ARRAY_AGG(is_wow64 ORDER BY submission_timestamp)) AS is_wow64,
-    mozfun.stats.mode_last(ARRAY_AGG(apple_model_id ORDER BY submission_timestamp)) AS apple_model_id,
+    mozfun.stats.mode_last(
+      ARRAY_AGG(apple_model_id ORDER BY submission_timestamp)
+    ) AS apple_model_id,
     mozfun.stats.mode_last(ARRAY_AGG(locale ORDER BY submission_timestamp)) AS locale,
     mozfun.stats.mode_last(ARRAY_AGG(memory_mb ORDER BY submission_timestamp)) AS memory_mb,
     mozfun.stats.mode_last(
@@ -1158,8 +1163,8 @@ aggregates AS (
     udf.aggregate_search_counts(ARRAY_CONCAT_AGG(search_counts ORDER BY submission_timestamp)).*,
     AVG(session_restored) AS session_restored_mean,
     COUNTIF(subsession_counter = 1) AS sessions_started_on_this_day,
-    MAX(subsession_counter)AS max_subsession_counter,
-    MIN(subsession_counter)AS min_subsession_counter,
+    MAX(subsession_counter) AS max_subsession_counter,
+    MIN(subsession_counter) AS min_subsession_counter,
     SUM(shutdown_kill) AS shutdown_kill_sum,
     SUM(subsession_length / NUMERIC '3600') AS subsession_hours_sum,
     SUM(ssl_handshake_result_failure) AS ssl_handshake_result_failure_sum,
@@ -1379,9 +1384,13 @@ aggregates AS (
       STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_impression)), -- 96
       STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_impression_dynamic_wikipedia)), -- 97
       STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_impression_nonsponsored)), -- 98
-      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_impression_nonsponsored_bestmatch)), -- 99
+      STRUCT(
+        ARRAY_CONCAT_AGG(contextual_services_quicksuggest_impression_nonsponsored_bestmatch)
+      ), -- 99
       STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_impression_sponsored)), -- 100
-      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_impression_sponsored_bestmatch)), -- 101
+      STRUCT(
+        ARRAY_CONCAT_AGG(contextual_services_quicksuggest_impression_sponsored_bestmatch)
+      ), -- 101
       STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_impression_weather)), -- 102
       STRUCT(ARRAY_CONCAT_AGG(contextual_services_topsites_click)), -- 103
       STRUCT(ARRAY_CONCAT_AGG(contextual_services_topsites_impression)), -- 104
@@ -1454,8 +1463,12 @@ aggregates AS (
       OFFSET(0)
     ] AS startup_profile_selection_reason_first,
     mozfun.stats.mode_last(
-        ARRAY_AGG(IF(subsession_counter = 1, startup_profile_selection_reason, NULL) ORDER BY submission_timestamp ASC)
-    ) as startup_profile_selection_first_ping_only,
+      ARRAY_AGG(
+        IF(subsession_counter = 1, startup_profile_selection_reason, NULL)
+        ORDER BY
+          submission_timestamp ASC
+      )
+    ) AS startup_profile_selection_first_ping_only,
     SUM(
       scalar_parent_browser_ui_interaction_textrecognition_error
     ) AS scalar_parent_browser_ui_interaction_textrecognition_error_sum,

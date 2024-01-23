@@ -490,6 +490,8 @@ class Task:
         task.depends_on_past = False
         task.retries = 0
         task.depends_on_fivetran = []
+        task.referenced_tables = None
+        task.depends_on = []
         if task.is_dq_check_fail:
             task.task_name = (
                 f"checks__fail_{task.dataset}__{task.table}__{task.version}"[
@@ -556,6 +558,15 @@ class Task:
                 d.task_key == task_ref.task_key for d in self.depends_on + dependencies
             )
 
+        parent_task = None
+        if self.is_dq_check:
+            parent_task = dag_collection.task_for_table(
+                self.project, self.dataset, f"{self.table}_{self.version}"
+            )
+            parent_task_ref = parent_task.to_ref(dag_collection)
+            if not _duplicate_dependency(parent_task_ref):
+                dependencies.append(parent_task_ref)
+
         for table in self._get_referenced_tables():
             # check if upstream task is accompanied by a check
             # the task running the check will be set as the upstream task instead
@@ -565,7 +576,7 @@ class Task:
             upstream_task = dag_collection.task_for_table(table[0], table[1], table[2])
 
             if upstream_task is not None:
-                if upstream_task != self:
+                if upstream_task != self and upstream_task != parent_task:
                     if checks_upstream_task is not None:
                         upstream_task = checks_upstream_task
                     task_ref = upstream_task.to_ref(dag_collection)

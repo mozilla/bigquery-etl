@@ -55,7 +55,6 @@ TOP_LEVEL_KEYWORDS = [
     "LEFT JOIN",
     "LEFT OUTER JOIN",
     "LIMIT",
-    "ON",
     "ORDER BY",
     "OUTER JOIN",
     "PARTITION BY",
@@ -76,7 +75,6 @@ TOP_LEVEL_KEYWORDS = [
     "UNION ALL",
     "UNION DISTINCT",
     "UNION",
-    "USING",
     "VALUES",
     "WHERE",
     "WITH(?! OFFSET)",
@@ -84,6 +82,8 @@ TOP_LEVEL_KEYWORDS = [
 ]
 # These words start a new line at the current indent
 NEWLINE_KEYWORDS = [
+    "ON",
+    "USING",
     "WITH OFFSET",
     # UDF
     "CREATE OR REPLACE",
@@ -785,13 +785,10 @@ class JinjaBlockMiddle(JinjaBlockEnd, JinjaBlockStart):
     pattern = re.compile(r"{%[-+]? *(elif|else)\b.*?%}", re.DOTALL)
 
 
-class JinjaComment(Comment):
-    """Jinja comment delimiters {# #}.
+class JinjaComment(BlockComment):
+    """Jinja comment that may span multiple lines."""
 
-    May be followed by no whitespace or a new line and increased indent.
-    """
-
-    pattern = re.compile(r"{#.*?#}", re.DOTALL)
+    pattern = re.compile(r"\n?[^\S\n]*{#.*?#}", re.DOTALL)
 
 
 class OpeningBracket(Token):
@@ -871,8 +868,8 @@ class FieldAccessOperator(Operator):
 BIGQUERY_TOKEN_PRIORITY = [
     LineComment,
     BlockComment,
-    Whitespace,
     JinjaComment,
+    Whitespace,
     JinjaExpression,
     JinjaBlockStart,
     JinjaBlockMiddle,

@@ -14,55 +14,66 @@ product_features AS (
     client_info.client_id,
     DATE(submission_timestamp) AS submission_date,
     /*Logins*/
-    COALESCE(
-      SUM(metrics.counter.logins_deleted),
-      0
-    ) AS logins_deleted,
-    COALESCE(
-      SUM(metrics.counter.logins_modified),
-      0
-    ) AS logins_modified,
-    COALESCE(
-      SUM(metrics.counter.logins_saved),
-      0
-    ) AS logins_saved,
-    COALESCE(
-      SUM(metrics.quantity.logins_saved_all),
-      0
-    ) AS logins_saved_all,
-
+    COALESCE(SUM(metrics.counter.logins_deleted), 0) AS logins_deleted,
+    COALESCE(SUM(metrics.counter.logins_modified), 0) AS logins_modified,
+    COALESCE(SUM(metrics.counter.logins_saved), 0) AS logins_saved,
+    COALESCE(SUM(metrics.quantity.logins_saved_all), 0) AS logins_saved_all,
     /*Credit Card*/
-    SUM(CASE WHEN metrics.boolean.credit_card_autofill_enabled THEN 1 ELSE 0 END) AS credit_card_autofill_enabled,
-    SUM(CASE WHEN metrics.boolean.credit_card_sync_enabled THEN 1 ELSE 0 END) AS credit_card_sync_enabled,
+    SUM(
+      CASE
+        WHEN metrics.boolean.credit_card_autofill_enabled
+          THEN 1
+        ELSE 0
+      END
+    ) AS credit_card_autofill_enabled,
+    SUM(
+      CASE
+        WHEN metrics.boolean.credit_card_sync_enabled
+          THEN 1
+        ELSE 0
+      END
+    ) AS credit_card_sync_enabled,
     /*Bookmark*/
     COALESCE(SUM(bookmarks_add_table.value), 0) AS bookmarks_add,
-    COALESCE(
-      SUM(bookmarks_delete_table.value),
-      0
-    ) AS bookmarks_delete,
-    COALESCE(
-      SUM(bookmarks_edit_table.value),
-      0
-    ) AS bookmarks_edit,
-    SUM(CASE WHEN metrics.boolean.bookmarks_has_mobile_bookmarks THEN 1 ELSE 0 END) AS has_mobile_bookmarks,
+    COALESCE(SUM(bookmarks_delete_table.value), 0) AS bookmarks_delete,
+    COALESCE(SUM(bookmarks_edit_table.value), 0) AS bookmarks_edit,
+    SUM(
+      CASE
+        WHEN metrics.boolean.bookmarks_has_mobile_bookmarks
+          THEN 1
+        ELSE 0
+      END
+    ) AS has_mobile_bookmarks,
     COALESCE(SUM(metrics.quantity.bookmarks_mobile_bookmarks_count), 0) AS mobile_bookmarks_count,
-    COALESCE(
-      SUM(bookmarks_open_table.value),
-      0
-    ) AS bookmarks_open,
-    COALESCE(
-      SUM(bookmarks_view_list_table.value),
-      0
-    ) AS bookmarks_view_list,
+    COALESCE(SUM(bookmarks_open_table.value), 0) AS bookmarks_open,
+    COALESCE(SUM(bookmarks_view_list_table.value), 0) AS bookmarks_view_list,
     /*FxA*/
     COALESCE(SUM(metrics.counter.sync_create_account_pressed), 0) AS sync_create_account_pressed,
     COALESCE(SUM(metrics.counter.sync_open_tab), 0) AS sync_open_tab,
     COALESCE(SUM(metrics.counter.sync_sign_in_sync_pressed), 0) AS sync_sign_in_sync_pressed,
     /*Privacy*/
     COALESCE(SUM(metrics.quantity.tabs_private_tabs_quantity), 0) AS tabs_private_tabs_quantity,
-    SUM(CASE WHEN metrics.boolean.preferences_close_private_tabs THEN 1 ELSE 0 END) AS preferences_close_private_tabs,
-    SUM(CASE WHEN metrics.boolean.tracking_protection_enabled THEN 1 ELSE 0 END) AS tracking_protection_enabled,
-    SUM(CASE WHEN metrics.string.tracking_protection_strength = 'strict' THEN 1 ELSE 0 END) AS tracking_protection_strict,
+    SUM(
+      CASE
+        WHEN metrics.boolean.preferences_close_private_tabs
+          THEN 1
+        ELSE 0
+      END
+    ) AS preferences_close_private_tabs,
+    SUM(
+      CASE
+        WHEN metrics.boolean.tracking_protection_enabled
+          THEN 1
+        ELSE 0
+      END
+    ) AS tracking_protection_enabled,
+    SUM(
+      CASE
+        WHEN metrics.string.tracking_protection_strength = 'strict'
+          THEN 1
+        ELSE 0
+      END
+    ) AS tracking_protection_strict,
     /*Tab Count*/
     COALESCE(SUM(metrics.quantity.tabs_normal_tabs_quantity), 0) AS tabs_normal_tabs_quantity,
     COALESCE(SUM(metrics.quantity.tabs_inactive_tabs_count), 0) AS tabs_inactive_tabs_count,
@@ -76,12 +87,42 @@ product_features AS (
       0
     ) AS settings_menu_set_as_default_browser_pressed,
     /*Notification*/
-    SUM(CASE WHEN metrics.boolean.preferences_sync_notifs THEN 1 ELSE 0 END) AS preferences_sync_notifs,
-    SUM(CASE WHEN metrics.boolean.preferences_tips_and_features_notifs THEN 1 ELSE 0 END) AS preferences_tips_and_features_notifs,
+    SUM(
+      CASE
+        WHEN metrics.boolean.preferences_sync_notifs
+          THEN 1
+        ELSE 0
+      END
+    ) AS preferences_sync_notifs,
+    SUM(
+      CASE
+        WHEN metrics.boolean.preferences_tips_and_features_notifs
+          THEN 1
+        ELSE 0
+      END
+    ) AS preferences_tips_and_features_notifs,
     /*Customize Home*/
-    SUM(CASE WHEN metrics.boolean.preferences_jump_back_in THEN 1 ELSE 0 END) AS preferences_jump_back_in,
-    SUM(CASE WHEN metrics.boolean.preferences_recently_visited THEN 1 ELSE 0 END) AS preferences_recently_visited,
-    SUM(CASE WHEN metrics.boolean.preferences_recently_saved THEN 1 ELSE 0 END) AS preferences_recently_saved,
+    SUM(
+      CASE
+        WHEN metrics.boolean.preferences_jump_back_in
+          THEN 1
+        ELSE 0
+      END
+    ) AS preferences_jump_back_in,
+    SUM(
+      CASE
+        WHEN metrics.boolean.preferences_recently_visited
+          THEN 1
+        ELSE 0
+      END
+    ) AS preferences_recently_visited,
+    SUM(
+      CASE
+        WHEN metrics.boolean.preferences_recently_saved
+          THEN 1
+        ELSE 0
+      END
+    ) AS preferences_recently_saved,
     SUM(CASE WHEN metrics.boolean.preferences_pocket THEN 1 ELSE 0 END) AS preferences_pocket,
     COALESCE(SUM(metrics.counter.app_menu_customize_homepage), 0) AS app_menu_customize_homepage,
     COALESCE(
@@ -90,11 +131,16 @@ product_features AS (
     ) AS firefox_home_page_customize_homepage_button
   FROM
     firefox_ios.metrics AS metric
-    LEFT JOIN UNNEST(metric.metrics.labeled_counter.bookmarks_add) AS bookmarks_add_table
-    LEFT JOIN UNNEST(metric.metrics.labeled_counter.bookmarks_delete) AS bookmarks_delete_table
-    LEFT JOIN UNNEST(metric.metrics.labeled_counter.bookmarks_edit) AS bookmarks_edit_table
-    LEFT JOIN UNNEST(metric.metrics.labeled_counter.bookmarks_open) AS bookmarks_open_table
-    LEFT JOIN UNNEST(metric.metrics.labeled_counter.bookmarks_view_list) AS bookmarks_view_list_table
+  LEFT JOIN
+    UNNEST(metric.metrics.labeled_counter.bookmarks_add) AS bookmarks_add_table
+  LEFT JOIN
+    UNNEST(metric.metrics.labeled_counter.bookmarks_delete) AS bookmarks_delete_table
+  LEFT JOIN
+    UNNEST(metric.metrics.labeled_counter.bookmarks_edit) AS bookmarks_edit_table
+  LEFT JOIN
+    UNNEST(metric.metrics.labeled_counter.bookmarks_open) AS bookmarks_open_table
+  LEFT JOIN
+    UNNEST(metric.metrics.labeled_counter.bookmarks_view_list) AS bookmarks_view_list_table
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -106,40 +152,16 @@ product_features_agg AS (
     submission_date,
     /*Logins*/
     --logins_deleted
-    COUNT(
-      DISTINCT
-      CASE
-        WHEN logins_deleted > 0
-          THEN client_id
-      END
-    ) AS logins_deleted_users,
+    COUNT(DISTINCT CASE WHEN logins_deleted > 0 THEN client_id END) AS logins_deleted_users,
     SUM(logins_deleted) AS logins_deleted,
     --logins_modified
-    COUNT(
-      DISTINCT
-      CASE
-        WHEN logins_modified > 0
-          THEN client_id
-      END
-    ) AS logins_modified_users,
+    COUNT(DISTINCT CASE WHEN logins_modified > 0 THEN client_id END) AS logins_modified_users,
     SUM(logins_modified) AS logins_modified,
     --logins_saved
-    COUNT(
-      DISTINCT
-      CASE
-        WHEN logins_saved > 0
-          THEN client_id
-      END
-    ) AS logins_saved_users,
+    COUNT(DISTINCT CASE WHEN logins_saved > 0 THEN client_id END) AS logins_saved_users,
     SUM(logins_saved) AS logins_saved,
     --logins_saved_all
-    COUNT(
-      DISTINCT
-      CASE
-        WHEN logins_saved_all > 0
-          THEN client_id
-      END
-    ) AS logins_saved_all_users,
+    COUNT(DISTINCT CASE WHEN logins_saved_all > 0 THEN client_id END) AS logins_saved_all_users,
     SUM(logins_saved_all) AS logins_saved_all,
     /*Credit Card*/
     --credit card autofill enabled
@@ -296,7 +318,9 @@ product_features_agg AS (
           THEN client_id
       END
     ) AS settings_menu_set_as_default_browser_pressed_users,
-    SUM(settings_menu_set_as_default_browser_pressed) AS settings_menu_set_as_default_browser_pressed,
+    SUM(
+      settings_menu_set_as_default_browser_pressed
+    ) AS settings_menu_set_as_default_browser_pressed,
     /*Notification*/
     --preferences_sync_notifs
     COUNT(
@@ -450,5 +474,4 @@ FROM
   _metrics_ping_distinct_client_count
 JOIN
   product_features_agg
-USING
-  (submission_date)
+  USING (submission_date)

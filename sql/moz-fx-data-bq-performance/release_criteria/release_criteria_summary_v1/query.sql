@@ -84,8 +84,14 @@ stage_2 AS (
       WHERE
         STARTS_WITH(app_name, 'target')
     ) AS b
-  USING
-    (task_group_id, project, normalized_device_name, normalized_device_os, rc_tier, rc_test_name)
+    USING (
+      task_group_id,
+      project,
+      normalized_device_name,
+      normalized_device_os,
+      rc_tier,
+      rc_test_name
+    )
   WHERE
     NOT STARTS_WITH(app_name, 'target')
 ),

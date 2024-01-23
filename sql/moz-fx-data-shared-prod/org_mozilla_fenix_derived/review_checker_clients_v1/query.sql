@@ -11,12 +11,7 @@ WITH ranked_data AS (
     normalized_country_code,
     sample_id,
     ping_info.experiments AS experiments,
-    ROW_NUMBER() OVER (
-      PARTITION BY 
-        client_info.client_id
-      ORDER BY
-        submission_timestamp
-    ) AS row_num
+    ROW_NUMBER() OVER (PARTITION BY client_info.client_id ORDER BY submission_timestamp) AS row_num
   FROM
     `moz-fx-data-shared-prod.fenix.metrics`
   WHERE
@@ -148,18 +143,15 @@ joined_data AS (
     shopping_metrics sm
   LEFT JOIN
     active
-  ON
-    active.client_id = sm.client_id
+    ON active.client_id = sm.client_id
     AND active.submission_date = sm.submission_date
   LEFT JOIN
     search AS s
-  ON
-    s.client_id = sm.client_id
+    ON s.client_id = sm.client_id
     AND s.submission_date = sm.submission_date
   LEFT JOIN
     fx_dau
-  ON
-    fx_dau.client_id = sm.client_id
+    ON fx_dau.client_id = sm.client_id
     AND fx_dau.submission_date = sm.submission_date
 )
 SELECT

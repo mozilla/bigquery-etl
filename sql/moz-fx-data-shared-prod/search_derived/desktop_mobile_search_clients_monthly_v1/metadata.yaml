@@ -9,7 +9,6 @@ labels:
   schedule: monthly
 scheduling:
   dag_name: bqetl_desktop_mobile_search_monthly
-  referenced_tables: []
   date_partition_parameter: null
   destination_table:
     >-

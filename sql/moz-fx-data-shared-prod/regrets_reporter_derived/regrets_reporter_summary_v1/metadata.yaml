@@ -17,9 +17,6 @@ scheduling:
   schedule: daily
   date_partition_parameter: null
   parameters: ["submission_date:DATE:{{ds}}"]
-  referenced_tables: [['moz-fx-data-shared-prod',
-                       'regrets_reporter_ucs_stable',
-                       'main_events_v1']]
 bigquery:
   time_partitioning:
     type: day

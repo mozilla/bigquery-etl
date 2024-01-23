@@ -20,7 +20,16 @@ WITH events_unnested AS (
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND category IN ('newtab', 'topsites', 'newtab.search', 'newtab.search.ad', 'pocket')
-    AND name IN ('closed', 'opened', 'impression', 'issued', 'click', 'save', 'topic_click', 'dismiss')
+    AND name IN (
+      'closed',
+      'opened',
+      'impression',
+      'issued',
+      'click',
+      'save',
+      'topic_click',
+      'dismiss'
+    )
 ),
 categorized_events AS (
   SELECT
@@ -283,8 +292,7 @@ side_filled AS (
     aggregated_newtab_activity
   LEFT JOIN
     client_profile_info
-  USING
-    (legacy_telemetry_client_id)
+    USING (legacy_telemetry_client_id)
 )
 SELECT
   * EXCEPT (visit_had_any_interaction)

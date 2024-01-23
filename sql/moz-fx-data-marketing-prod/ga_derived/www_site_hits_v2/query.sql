@@ -117,13 +117,10 @@ SELECT
   b.is_entrance,
   b.hit_number,
   b.event_timestamp AS hit_timestamp,
-/*
-? AS event_category,
-*/
+  NULL AS event_category, --GA4 has no notion of event_label, unlike GA3 (UA360)
   b.event_name,
-/*
-b.event_label,
-*/
+  NULL AS b.event_label, --GA4 has no notion of event_label, unlike GA3 (UA360)
+  NULL AS event_action, --GA4 has no notion of event_action, unlike GA3 (UA360)
   b.device_category,
   b.operating_system,
   b.language,

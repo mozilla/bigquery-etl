@@ -55,6 +55,18 @@ get_all_events_in_each_session_staging AS (
     collected_traffic_source.manual_medium AS medium,
     collected_traffic_source.manual_campaign_name AS campaign,
     collected_traffic_source.manual_content AS ad_content,
+    --below is new
+    (
+      SELECT
+        `value`
+      FROM
+        UNNEST(event_params)
+      WHERE
+        key = 'engagement_time_msec'
+      LIMIT
+        1
+    ).int_value AS engagement_time_msec,
+    --above is new
     (
       SELECT
         `value`
@@ -73,53 +85,61 @@ get_all_events_in_each_session_staging AS (
     `moz-fx-data-marketing-prod.analytics_313696158.events_*` a
   WHERE
     _TABLE_SUFFIX = FORMAT_DATE('%Y%m%d', @submission_date)
-) ,
-
+),
 get_all_events_in_each_session AS (
-  SELECT a.*,
+  SELECT
+    a.*,
   --fix below still
   --Because you can have 2 events trigger for the same action at the same time -
   --if the page location is different, I want a different hit number
   -- if it's the same page location and same timestamp, I think I want the same hit number
-  dense_rank() over(partition by visit_identifier order by event_timestamp asc) AS hit_number
-  FROM get_all_events_in_each_session_staging a
+    DENSE_RANK() OVER (PARTITION BY visit_identifier ORDER BY event_timestamp ASC) AS hit_number
+  FROM
+    get_all_events_in_each_session_staging a
 )
-
 SELECT
-a.date,
-a.visit_identifier,
-a.full_visitor_id,
-a.visit_start_time,
-b.page_location AS page_path,
-split(regexp_replace(b.page_location, 'https://www.mozilla.org', ''), '/')[offset(1)] AS page_path_level1,
-CASE WHEN event_name = 'page_view' THEN 'PAGE' ELSE 'EVENT' END AS hit_type,
+  a.date,
+  a.visit_identifier,
+  a.full_visitor_id,
+  a.visit_start_time,
+  b.page_location AS page_path,
+  SPLIT(REGEXP_REPLACE(b.page_location, 'https://www.mozilla.org', ''), '/')[
+    OFFSET(1)
+  ] AS page_path_level1,
+  CASE
+    WHEN event_name = 'page_view'
+      THEN 'PAGE'
+    ELSE 'EVENT'
+  END AS hit_type,
 /*
 ? AS is_exit,
 */
-b.is_entrance,
-b.hit_number,
-b.event_timestamp AS hit_timestamp,
+  b.is_entrance,
+  b.hit_number,
+  b.event_timestamp AS hit_timestamp,
 /*
 ? AS event_category,
 */
-b.event_name,
+  b.event_name,
 /*
 b.event_label,
 */
-b.device_category,
-b.operating_system,
-b.language,
-b.browser,
-b.browser_version,
-b.country,
-b.source,
-b.medium,
-b.campaign,
-b.ad_content,
+  b.device_category,
+  b.operating_system,
+  b.language,
+  b.browser,
+  b.browser_version,
+  b.country,
+  b.source,
+  b.medium,
+  b.campaign,
+  b.ad_content,
 /*
 ? AS visits,
 ? AS bounces,
-? AS hit_time,
+*/
+  SAFE_DIVIDE(engagement_time_msec, 1000) AS hit_time,
+/*
 ? AS first_interaction,
 ? AS last_interaction,
 ? AS entrances,
@@ -132,9 +152,10 @@ b.ad_content,
 ? AS page_level_5,
 ? AS page_name
 */
-FROM get_session_start_time a
+FROM
+  get_session_start_time a
 LEFT OUTER JOIN
-get_all_events_in_each_session b
-ON a.date = b.date
-AND a.visit_identifier = b.visit_identifier
-AND a.full_visitor_id = b.full_visitor_id
+  get_all_events_in_each_session b
+  ON a.date = b.date
+  AND a.visit_identifier = b.visit_identifier
+  AND a.full_visitor_id = b.full_visitor_id

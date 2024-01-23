@@ -92,7 +92,7 @@ a.full_visitor_id,
 a.visit_start_time,
 b.page_location AS page_path,
 split(regexp_replace(b.page_location, 'https://www.mozilla.org', ''), '/')[offset(1)] AS page_path_level1,
-CASE WHEN event_label = 'page_view' THEN 'PAGE' ELSE 'EVENT' END AS hit_type,
+CASE WHEN event_name = 'page_view' THEN 'PAGE' ELSE 'EVENT' END AS hit_type,
 /*
 ? AS is_exit,
 */

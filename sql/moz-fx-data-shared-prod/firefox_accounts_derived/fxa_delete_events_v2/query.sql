@@ -11,7 +11,7 @@ WITH hmac_key AS (
     key_id = 'fxa_hmac_prod'
 )
 SELECT
-  `timestamp` AS submission_timestamp,
+  MIN(`timestamp`) AS submission_timestamp,
   TO_HEX(SHA256(jsonPayload.fields.uid)) AS user_id,
   TO_HEX(
     udf.hmac_sha256((SELECT * FROM hmac_key), CAST(jsonPayload.fields.uid AS BYTES))
@@ -25,6 +25,10 @@ WHERE
     AND DATE_ADD(@submission_date, INTERVAL 1 DAY)
   )
   AND DATE(`timestamp`) = @submission_date
-  AND jsonPayload.type = 'activityEvent'
-  AND jsonPayload.fields.event = 'account.deleted'
+  AND (
+    jsonPayload.type IN ('accountDeleted', 'accountDeleted.byRequest', 'DB.deleteAccount')
+    OR (jsonPayload.type = 'activityEvent' AND jsonPayload.fields.event = 'account.deleted')
+  )
   AND jsonPayload.fields.uid IS NOT NULL
+GROUP BY
+  jsonPayload.fields.uid

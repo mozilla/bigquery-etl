@@ -11,10 +11,10 @@ SELECT
 FROM
   fenix_derived.ltv_state_values_v1
 GROUP BY
-  country
+  country;
 # fail
 -- There should be more than 2 countries present
 SELECT
-  mozfun.assert.true(COUNT(DISTINCT country) > 2)
+  `mozfun.assert.true`(COUNT(DISTINCT country) > 2)
 FROM
-  fenix_derived.ltv_state_values_v1
+  fenix_derived.ltv_state_values_v1;

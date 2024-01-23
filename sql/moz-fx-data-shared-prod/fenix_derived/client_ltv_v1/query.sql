@@ -5,7 +5,7 @@ WITH new_data AS (
     MAX(submission_date) AS as_of_date,
     MAX_BY(ltv_states_v1, submission_date).* EXCEPT (client_id, sample_id, submission_date),
   FROM
-    moz - fx - data - shared - prod.fenix_derived.ltv_states_v1
+    `moz-fx-data-shared-prod`.fenix_derived.ltv_states_v1
   WHERE
     {% if is_init() %}
       submission_date >= "2020-01-01"

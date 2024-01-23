@@ -45,8 +45,9 @@ get_all_events_in_each_session_staging AS (
     a.user_pseudo_id AS full_visitor_id,
     a.event_name AS event_label,
     a.event_timestamp,
-    device.category AS category,
+    device.category AS device_category,
     device.operating_system AS operating_system,
+    device.language AS language,
     device.web_info.browser AS browser,
     device.web_info.browser_version AS browser_version,
     geo.country AS country,
@@ -80,7 +81,7 @@ get_all_events_in_each_session AS (
   --Because you can have 2 events trigger for the same action at the same time -
   --if the page location is different, I want a different hit number
   -- if it's the same page location and same timestamp, I think I want the same hit number
-  rank() over(partition by visit_identifier order by event_timestamp asc) AS hit_number
+  dense_rank() over(partition by visit_identifier order by event_timestamp asc) AS hit_number
   FROM get_all_events_in_each_session_staging a
 )
 
@@ -89,14 +90,15 @@ a.date,
 a.visit_identifier,
 a.full_visitor_id,
 a.visit_start_time,
+b.page_location AS page_path,
+split(regexp_replace(b.page_location, 'https://www.mozilla.org', ''), '/')[offset(1)] AS page_path_level1,
+CASE WHEN event_label = 'page_view' THEN 'PAGE' ELSE 'EVENT' END AS hit_type,
 /*
-? AS page_path,
-? AS page_path_level1,
-? AS hit_type,
 ? AS is_exit,
 */
 b.is_entrance,
 b.hit_number,
+b.event_timestamp AS hit_timestamp,
 /*
 ? AS event_category,
 */

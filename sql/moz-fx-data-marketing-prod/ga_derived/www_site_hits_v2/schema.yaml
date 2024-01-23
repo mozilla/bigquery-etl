@@ -40,6 +40,10 @@ fields:
   type: INT64
   description: Hit Number
 - mode: NULLABLE
+  name: hit_timestamp
+  type: INT64
+  description: Hit Timestamp
+- mode: NULLABLE
   name: event_category
   type: STRING
   description: Event Category

@@ -14,7 +14,8 @@ WITH extracted_fields AS (
     BIT_COUNT(`mozfun`.bytes.extract_bits(days_seen_bytes, -1, 1)) AS active_on_this_date,
   FROM
     `frank-sandbox.fenix_derived.client_ltv_v1`
-), with_states AS (
+),
+with_states AS (
   SELECT
     client_id,
     sample_id,
@@ -67,14 +68,16 @@ WITH extracted_fields AS (
   FROM
     extracted_fields
 )
-
 SELECT
   client_id,
   sample_id,
   country,
   COALESCE(total_historic_ad_clicks, 0) AS total_historic_ad_clicks,
   COALESCE(predicted_ad_clicks, 0) AS total_future_ad_clicks,
-  COALESCE(total_historic_ad_clicks, 0) + COALESCE(predicted_ad_clicks, 0) AS total_predicted_ad_clicks,
+  COALESCE(total_historic_ad_clicks, 0) + COALESCE(
+    predicted_ad_clicks,
+    0
+  ) AS total_predicted_ad_clicks,
 FROM
   with_states
 CROSS JOIN

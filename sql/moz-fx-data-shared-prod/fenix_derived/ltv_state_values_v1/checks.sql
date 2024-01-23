@@ -12,7 +12,6 @@ FROM
   fenix_derived.ltv_state_values_v1
 GROUP BY
   country
-
 # fail
 -- There should be more than 2 countries present
 SELECT

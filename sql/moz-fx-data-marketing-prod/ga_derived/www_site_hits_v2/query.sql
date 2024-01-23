@@ -104,7 +104,7 @@ SELECT
   a.visit_start_time,
   b.page_location AS page_path,
   SPLIT(REGEXP_REPLACE(b.page_location, 'https://www.mozilla.org', ''), '/')[
-    OFFSET(1)
+    SAFE_OFFSET(1)
   ] AS page_path_level1,
   CASE
     WHEN event_name = 'page_view'
@@ -142,11 +142,24 @@ SELECT
 ? AS entrances,
 ? AS exits,
 ? AS event_id,
-? AS page_level_1,
-? AS page_level_2,
-? AS page_level_3,
-? AS page_level_4,
-? AS page_level_5,
+*/
+SPLIT(REGEXP_REPLACE(b.page_location, 'https://www.mozilla.org', ''), '/')[
+    SAFE_OFFSET(1)
+  ] AS page_level_1,
+SPLIT(REGEXP_REPLACE(b.page_location, 'https://www.mozilla.org', ''), '/')[
+    SAFE_OFFSET(2)
+  ] AS page_level_2,
+SPLIT(REGEXP_REPLACE(b.page_location, 'https://www.mozilla.org', ''), '/')[
+    SAFE_OFFSET(3)
+  ] AS page_level_3,
+SPLIT(REGEXP_REPLACE(b.page_location, 'https://www.mozilla.org', ''), '/')[
+    SAFE_OFFSET(4)
+  ] AS page_level_4,
+SPLIT(REGEXP_REPLACE(b.page_location, 'https://www.mozilla.org', ''), '/')[
+    SAFE_OFFSET(5)
+  ] AS page_level_5,
+  /*
+  --try to remove query string from full page path
 ? AS page_name
 */
 FROM

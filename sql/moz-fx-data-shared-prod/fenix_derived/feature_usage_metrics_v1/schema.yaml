@@ -1,9 +1,6 @@
 fields:
-- name: submission_date
+- name: metrics_ping_date
   type: DATE
-  mode: NULLABLE
-- name: metrics_ping_distinct_client_count
-  type: INTEGER
   mode: NULLABLE
 - name: logins_deleted_users
   type: INTEGER
@@ -189,5 +186,14 @@ fields:
   type: INTEGER
   mode: NULLABLE
 - name: customize_home_recently_visited
+  type: INTEGER
+  mode: NULLABLE
+- name: awesomebar_top_users
+  type: INTEGER
+  mode: NULLABLE
+- name: awesomebar_bottom_users
+  type: INTEGER
+  mode: NULLABLE
+- name: awesomebar_null_users
   type: INTEGER
   mode: NULLABLE

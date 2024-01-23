@@ -1,7 +1,7 @@
 ---
 friendly_name: Normalize Windows OS Version
 description: |
-  Given an unnormalized set off Windows identifiers, return a friendly version
+  Given an unnormalized set of Windows identifiers, return a friendly version
   of the operating system name.
 
   Requires os, os_version and windows_build_number.

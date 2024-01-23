@@ -1,5 +1,5 @@
 friendly_name: Www Site Hits V2
-description: Normalized individual hits for www.mozilla.org
+description: Normalized individual hits for www.mozilla.org based on GA4 data
 owners:
 - kwindau@mozilla.com
 - mhirose@mozilla.com

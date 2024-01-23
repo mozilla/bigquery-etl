@@ -15,7 +15,7 @@ SELECT
   END AS meta_attribution_app,
   normalized_channel,
   metadata.geo.country AS country,
-  COUNT(*) AS client_count
+  COUNT(*) AS ping_count
 FROM
   fenix.first_session
 WHERE

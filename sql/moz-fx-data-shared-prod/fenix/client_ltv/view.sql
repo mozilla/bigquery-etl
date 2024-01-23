@@ -83,5 +83,5 @@ FROM
 CROSS JOIN
   UNNEST(markov_states)
 JOIN
-  `moz-fx-data-shared-prod`.fenix_derived.android_states_predicted_ad_clicks_v1
+  `moz-fx-data-shared-prod`.fenix_derived.ltv_state_values_v1
   USING (country, state_function, state)

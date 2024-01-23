@@ -43,7 +43,7 @@ get_all_events_in_each_session_staging AS (
       ).int_value AS string
     ) AS visit_identifier,
     a.user_pseudo_id AS full_visitor_id,
-    a.event_name AS event_label,
+    a.event_name,
     a.event_timestamp,
     device.category AS device_category,
     device.operating_system AS operating_system,
@@ -102,7 +102,10 @@ b.event_timestamp AS hit_timestamp,
 /*
 ? AS event_category,
 */
+b.event_name,
+/*
 b.event_label,
+*/
 b.device_category,
 b.operating_system,
 b.language,

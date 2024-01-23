@@ -48,6 +48,10 @@ fields:
   type: STRING
   description: Event Category
 - mode: NULLABLE
+  name: event_name
+  type: STRING
+  description: Event Name
+- mode: NULLABLE
   name: event_label
   type: STRING
   description: Event Label

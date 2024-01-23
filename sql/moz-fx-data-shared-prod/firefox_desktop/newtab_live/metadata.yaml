@@ -7,3 +7,8 @@ description: |-
   document type.
 
   Clustering fields: `submission_timestamp`
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:pocket/prefect
+  - workgroup:mozsocial/prefect

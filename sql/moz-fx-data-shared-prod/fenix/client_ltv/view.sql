@@ -36,6 +36,21 @@ with_states AS (
         'android_states_v1' AS state_function
       ),
       STRUCT(
+        mozfun.ltv.android_states_v2(
+          adjust_network,
+          days_since_first_seen,
+          days_since_seen,
+          {{ death_time }},
+          submission_date,
+          first_seen_date,
+          activity_pattern,
+          active_on_this_date,
+          {{ max_weeks }},
+          first_reported_country
+        ) AS state,
+        'android_states_v2' AS state_function
+      ),
+      STRUCT(
         mozfun.ltv.android_states_with_paid_v1(
           adjust_network,
           days_since_first_seen,

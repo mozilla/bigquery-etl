@@ -1,0 +1,6 @@
+friendly_name: |-
+  KPI Automated Forecast Confidences
+description: |-
+  Populated via https://github.com/mozilla/docker-etl/tree/main/jobs/kpi-forecasting
+owners:
+- bochocki@mozilla.com

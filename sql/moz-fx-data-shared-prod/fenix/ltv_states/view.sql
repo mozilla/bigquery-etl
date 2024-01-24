@@ -1,3 +1,4 @@
+-- Params Note: Set these same values in fenix.client_ltv
 {% set max_weeks = 32 %}
 {% set death_time = 168 %}
 {% set lookback = 28 %}

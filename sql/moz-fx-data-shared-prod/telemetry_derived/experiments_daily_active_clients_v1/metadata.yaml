@@ -25,8 +25,6 @@ workgroup_access:
   members:
   - workgroup:mozilla-confidential
 references:
-  init.sql:
-  - moz-fx-data-shared-prod.telemetry_derived.experiments_daily_active_clients_v1
   query.sql:
   - moz-fx-data-shared-prod.monitor_cirrus.enrollment
   - moz-fx-data-shared-prod.org_mozilla_fenix.baseline

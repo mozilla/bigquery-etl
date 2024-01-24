@@ -760,6 +760,30 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#android_states_v2-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      android_states_v2 (UDF)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="android_states_v2 (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameters
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#android_states_with_paid_v1-udf" class="md-nav__link">
     <span class="md-ellipsis">
       android_states_with_paid_v1 (UDF)
@@ -770,7 +794,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#parameters_1" class="md-nav__link">
+  <a href="#parameters_2" class="md-nav__link">
     <span class="md-ellipsis">
       Parameters
     </span>
@@ -794,7 +818,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#parameters_2" class="md-nav__link">
+  <a href="#parameters_3" class="md-nav__link">
     <span class="md-ellipsis">
       Parameters
     </span>
@@ -1397,6 +1421,30 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#android_states_v2-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      android_states_v2 (UDF)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="android_states_v2 (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameters
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#android_states_with_paid_v1-udf" class="md-nav__link">
     <span class="md-ellipsis">
       android_states_with_paid_v1 (UDF)
@@ -1407,7 +1455,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#parameters_1" class="md-nav__link">
+  <a href="#parameters_2" class="md-nav__link">
     <span class="md-ellipsis">
       Parameters
     </span>
@@ -1431,7 +1479,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#parameters_2" class="md-nav__link">
+  <a href="#parameters_3" class="md-nav__link">
     <span class="md-ellipsis">
       Parameters
     </span>
@@ -1469,11 +1517,22 @@
 <div class="highlight"><pre><span></span><code>adjust_network STRING, days_since_first_seen INT64, submission_date DATE, first_seen_date DATE, pattern INT64, active INT64, max_weeks INT64, country STRING
 </code></pre></div>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/ltv/android_states_v1">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/ltv/android_states_v1/metadata.yaml">Edit</a></p>
+<h2 id="android_states_v2-udf">android_states_v2 (UDF)</h2>
+<p>LTV states for Android. Results in strings like:
+"1_dow3_2_1" and "0_dow1_1_1"</p>
+<h3 id="parameters_1">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>adjust_network STRING, days_since_first_seen INT64, days_since_seen INT64, death_time INT64, submission_date DATE, first_seen_date DATE, pattern INT64, active INT64, max_weeks INT64, country STRING
+</code></pre></div>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>STRING
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/ltv/android_states_v2">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/ltv/android_states_v2/metadata.yaml">Edit</a></p>
 <h2 id="android_states_with_paid_v1-udf">android_states_with_paid_v1 (UDF)</h2>
 <p>LTV states for Android. Results in strings like:
 "1_dow3_organic_2_1" and "0_dow1_paid_1_1"</p>
 <p>These states include whether a client was paid or organic.</p>
-<h3 id="parameters_1">Parameters</h3>
+<h3 id="parameters_2">Parameters</h3>
 <p><strong>INPUTS</strong></p>
 <div class="highlight"><pre><span></span><code>adjust_network STRING, days_since_first_seen INT64, submission_date DATE, first_seen_date DATE, pattern INT64, active INT64, max_weeks INT64, country STRING
 </code></pre></div>
@@ -1485,7 +1544,7 @@
 <p>Get the state of a user on a day, with paid/organic cohorts included.
 Compared to V1, these states have a "dead" state, determined by "dead_time".
 The model can use this state as a sink, where the client will never return if they are dead.</p>
-<h3 id="parameters_2">Parameters</h3>
+<h3 id="parameters_3">Parameters</h3>
 <p><strong>INPUTS</strong></p>
 <div class="highlight"><pre><span></span><code>adjust_network STRING, days_since_first_seen INT64, days_since_seen INT64, death_time INT64, submission_date DATE, first_seen_date DATE, pattern INT64, active INT64, max_weeks INT64, country STRING
 </code></pre></div>

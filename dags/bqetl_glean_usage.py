@@ -49,6 +49,8 @@ with DAG(
 
     task_group_burnham = TaskGroup("burnham")
 
+    task_group_debug_ping_view = TaskGroup("debug_ping_view")
+
     task_group_fenix = TaskGroup("fenix")
 
     task_group_firefox_desktop = TaskGroup("firefox_desktop")
@@ -78,6 +80,8 @@ with DAG(
     task_group_focus_android = TaskGroup("focus_android")
 
     task_group_focus_ios = TaskGroup("focus_ios")
+
+    task_group_glean_dictionary = TaskGroup("glean_dictionary")
 
     task_group_klar_android = TaskGroup("klar_android")
 
@@ -579,6 +583,23 @@ with DAG(
         parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
         task_group=task_group_pine,
+    )
+
+    debug_ping_view_derived__events_stream__v1 = bigquery_etl_query(
+        task_id="debug_ping_view_derived__events_stream__v1",
+        destination_table="events_stream_v1",
+        dataset_id="debug_ping_view_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="jrediger@mozilla.com",
+        email=[
+            "ascholtz@mozilla.com",
+            "jrediger@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+            "wstuckey@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        task_group=task_group_debug_ping_view,
     )
 
     fenix_derived__clients_last_seen_joined__v1 = bigquery_etl_query(
@@ -1217,6 +1238,23 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
         task_group=task_group_focus_ios,
+    )
+
+    glean_dictionary_derived__events_stream__v1 = bigquery_etl_query(
+        task_id="glean_dictionary_derived__events_stream__v1",
+        destination_table="events_stream_v1",
+        dataset_id="glean_dictionary_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="jrediger@mozilla.com",
+        email=[
+            "ascholtz@mozilla.com",
+            "jrediger@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+            "wstuckey@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        task_group=task_group_glean_dictionary,
     )
 
     klar_android_derived__clients_last_seen_joined__v1 = bigquery_etl_query(
@@ -3818,6 +3856,10 @@ with DAG(
         pine_derived__baseline_clients_last_seen__v1
     )
 
+    debug_ping_view_derived__events_stream__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
     fenix_derived__clients_last_seen_joined__v1.set_upstream(
         fenix_derived__metrics_clients_last_seen__v1
     )
@@ -4090,6 +4132,10 @@ with DAG(
 
     focus_ios_derived__metrics_clients_last_seen__v1.set_upstream(
         focus_ios_derived__metrics_clients_daily__v1
+    )
+
+    glean_dictionary_derived__events_stream__v1.set_upstream(
+        wait_for_copy_deduplicate_all
     )
 
     klar_android_derived__clients_last_seen_joined__v1.set_upstream(

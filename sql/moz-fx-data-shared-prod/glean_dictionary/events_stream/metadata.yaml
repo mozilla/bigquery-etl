@@ -1,0 +1,16 @@
+friendly_name: Events Stream
+description: |-
+  An events stream table, with one row per event.
+owners:
+- jrediger@mozilla.com
+- wstuckey@mozilla.com
+labels:
+  owner1: jrediger
+  owner2: wstuckey
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

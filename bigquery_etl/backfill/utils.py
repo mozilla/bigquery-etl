@@ -2,6 +2,7 @@
 
 import re
 import sys
+from glob import glob
 from pathlib import Path
 from typing import Dict, List, Tuple
 
@@ -60,7 +61,9 @@ def get_qualified_table_name_to_entries_map_by_project(
     backfills_dict: dict = {}
 
     search_path = Path(sql_dir) / project_id
-    backfill_files = Path(search_path).rglob(BACKFILL_FILE)
+    backfill_files = map(
+        Path, glob(f"{search_path}/**/{BACKFILL_FILE}", recursive=True)
+    )
 
     for backfill_file in backfill_files:
         project, dataset, table = extract_from_query_path(backfill_file)

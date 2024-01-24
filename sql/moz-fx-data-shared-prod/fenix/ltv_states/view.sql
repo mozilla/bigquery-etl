@@ -1,3 +1,4 @@
+-- Params Note: Set these same values in fenix.client_ltv
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.fenix.ltv_states`
 AS

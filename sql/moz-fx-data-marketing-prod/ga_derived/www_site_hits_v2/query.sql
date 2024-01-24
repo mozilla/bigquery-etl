@@ -86,12 +86,7 @@ get_all_events_in_each_session AS (
   SELECT
     a.*,
     DENSE_RANK() OVER (PARTITION BY visit_identifier ORDER BY event_timestamp ASC) AS hit_number,
-    ROW_NUMBER() OVER (
-      PARTITION BY
-        visit_identifier
-      ORDER BY
-        event_timestamp
-    ) AS row_nbr
+    ROW_NUMBER() OVER (PARTITION BY visit_identifier ORDER BY event_timestamp) AS row_nbr
   FROM
     get_all_events_in_each_session_staging a
 ),
@@ -143,7 +138,7 @@ SELECT
       THEN 'PAGE'
     ELSE 'EVENT'
   END AS hit_type,
-  coalesce(c.is_exit,0) AS is_exit,
+  COALESCE(c.is_exit, 0) AS is_exit,
   b.is_entrance,
   b.hit_number,
   b.event_timestamp AS hit_timestamp,
@@ -170,11 +165,9 @@ SELECT
 ? AS first_interaction,
 ? AS last_interaction,
 */
-b.is_entrance AS entrances,
-coalesce(c.is_exit,0) AS exits,
-/*
-? AS event_id,
-*/
+  b.is_entrance AS entrances,
+  COALESCE(c.is_exit, 0) AS exits,
+  NULL AS event_id, --old table defined this from event category, action, and label, which no longer exist in GA4
   SPLIT(REGEXP_REPLACE(b.page_location, 'https://www.mozilla.org', ''), '/')[
     SAFE_OFFSET(1)
   ] AS page_level_1,

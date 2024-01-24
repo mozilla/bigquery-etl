@@ -56,7 +56,7 @@ def get_dags(project_id, dags_config, sql_dir=None):
     for project_dir in project_dirs(project_id, sql_dir=sql_dir):
         # parse metadata.yaml to retrieve scheduling information
         if os.path.isdir(project_dir):
-            for root, dirs, files in os.walk(project_dir):
+            for root, dirs, files in os.walk(project_dir, followlinks=True):
                 try:
                     if QUERY_FILE in files:
                         query_file = os.path.join(root, QUERY_FILE)

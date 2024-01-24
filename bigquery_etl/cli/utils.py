@@ -110,7 +110,7 @@ def paths_matching_name_pattern(
         pattern = "*.*"
 
     if os.path.isdir(pattern):
-        for root, _, _ in os.walk(pattern):
+        for root, _, _ in os.walk(pattern, followlinks=True):
             for file in files:
                 matching_files.extend(
                     map(Path, glob(f"{root}/**/{file}", recursive=True))

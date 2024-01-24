@@ -113,7 +113,7 @@ class TemplatedDir:
 
 def get_query_dirs(path):
     """Walk a path to get all templated query dirs."""
-    for directory, sub_dirs, files in os.walk(path):
+    for directory, sub_dirs, files in os.walk(path, followlinks=True):
         non_hidden = {f for f in files if not f.startswith(".")}
         if non_hidden and non_hidden.issubset(ALLOWED_FILES):
             dir_path = Path(directory)

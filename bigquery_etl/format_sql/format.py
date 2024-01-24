@@ -34,7 +34,7 @@ def format(paths, check=False):
             if os.path.isdir(path):
                 sql_files.extend(
                     filepath
-                    for dirpath, _, filenames in os.walk(path)
+                    for dirpath, _, filenames in os.walk(path, followlinks=True)
                     for filename in filenames
                     if filename.endswith(".sql")
                     # skip tests/**/input.sql

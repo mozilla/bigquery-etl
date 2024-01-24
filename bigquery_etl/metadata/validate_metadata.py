@@ -103,7 +103,7 @@ def validate(target):
     failed = False
 
     if os.path.isdir(target):
-        for root, dirs, files in os.walk(target):
+        for root, dirs, files in os.walk(target, followlinks=True):
             for file in files:
                 if Metadata.is_metadata_file(file):
                     path = os.path.join(root, file)
@@ -134,7 +134,7 @@ def validate_datasets(target):
     failed = False
 
     if os.path.isdir(target):
-        for root, dirs, files in os.walk(target):
+        for root, dirs, files in os.walk(target, followlinks=True):
             for file in files:
                 if DatasetMetadata.is_dataset_metadata_file(file):
                     path = os.path.join(root, file)

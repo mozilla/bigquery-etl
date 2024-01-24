@@ -146,9 +146,7 @@ SELECT
       THEN 'PAGE'
     ELSE 'EVENT'
   END AS hit_type,
-/*
-? AS is_exit,
-*/
+  c.is_exit,
   b.is_entrance,
   b.hit_number,
   b.event_timestamp AS hit_timestamp,
@@ -192,8 +190,7 @@ SELECT
   ] AS page_level_4,
   SPLIT(REGEXP_REPLACE(b.page_location, 'https://www.mozilla.org', ''), '/')[
     SAFE_OFFSET(5)
-  ] AS page_level_5,
-  c.is_exit
+  ] AS page_level_5
   /*
   --try to remove query string from full page path
 ? AS page_name

@@ -7,6 +7,7 @@ import shutil
 import string
 import sys
 from fnmatch import fnmatchcase
+from glob import glob
 from pathlib import Path
 
 import pytest
@@ -41,7 +42,7 @@ def _routines_matching_name_pattern(pattern, sql_path, project_id):
     if project_id is not None:
         sql_path = sql_path / project_id
 
-    all_sql_files = Path(sql_path).rglob("*.sql")
+    all_sql_files = map(Path, glob(f"{sql_path}/**/*.sql", recursive=True))
     routine_files = []
 
     for sql_file in all_sql_files:
@@ -294,7 +295,9 @@ def info(ctx, name, sql_dir, project_id, usages):
             # find routine usages in SQL files
             click.echo("usages: ")
             sql_files = [
-                p for project in project_dirs() for p in Path(project).rglob("*.sql")
+                p
+                for project in project_dirs()
+                for p in map(Path, glob(f"{project}/**/*.sql", recursive=True))
             ]
             for sql_file in sql_files:
                 if f"{routine_dataset}.{routine_name}" in sql_file.read_text():
@@ -518,9 +521,11 @@ def rename(ctx, name, new_name, sql_dir, project_id):
             shutil.move(source, destination)
 
         # replace usages
-        all_sql_files = list(
-            [p for project in project_dirs() for p in Path(project).rglob("*.sql")]
-        )
+        all_sql_files = [
+            p
+            for project in project_dirs()
+            for p in map(Path, glob(f"{project}/**/*.sql", recursive=True))
+        ]
 
         for sql_file in all_sql_files:
             sql = sql_file.read_text()

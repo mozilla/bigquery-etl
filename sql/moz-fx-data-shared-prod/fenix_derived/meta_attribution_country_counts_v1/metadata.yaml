@@ -17,7 +17,7 @@ scheduling:
 bigquery:
   time_partitioning:
     type: day
-    field: submission_date
+    field: date_attributed
     require_partition_filter: false
     expiration_days: null
   clustering:

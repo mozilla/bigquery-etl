@@ -1415,7 +1415,13 @@ def initialize(
             # matches the query.
             if "is_init()" in sql_content:
                 if not table:
-                    ctx.invoke(deploy, name=full_table_id, force=True)
+                    ctx.invoke(
+                        deploy,
+                        name=full_table_id,
+                        sql_dir=sql_dir,
+                        project_id=project,
+                        force=True,
+                    )
 
                 arguments = [
                     "query",

@@ -55,7 +55,6 @@ get_all_events_in_each_session_staging AS (
     collected_traffic_source.manual_medium AS medium,
     collected_traffic_source.manual_campaign_name AS campaign,
     collected_traffic_source.manual_content AS ad_content,
-    --below is new
     (
       SELECT
         `value`
@@ -65,8 +64,7 @@ get_all_events_in_each_session_staging AS (
         key = 'engagement_time_msec'
       LIMIT
         1
-    ).int_value AS engagement_time_msec,
-    --above is new
+    ).int_value AS engagement_time_msec, --not sure if this is the same as hit time yet or not
     (
       SELECT
         `value`
@@ -86,16 +84,53 @@ get_all_events_in_each_session_staging AS (
   WHERE
     _TABLE_SUFFIX = FORMAT_DATE('%Y%m%d', @submission_date)
 ),
+--if there are multiple events at the same timestamp in the same session, assign them all the same hit number
 get_all_events_in_each_session AS (
   SELECT
     a.*,
-  --fix below still
-  --Because you can have 2 events trigger for the same action at the same time -
-  --if the page location is different, I want a different hit number
-  -- if it's the same page location and same timestamp, I think I want the same hit number
-    DENSE_RANK() OVER (PARTITION BY visit_identifier ORDER BY event_timestamp ASC) AS hit_number
+    DENSE_RANK() OVER (PARTITION BY visit_identifier ORDER BY event_timestamp ASC) AS hit_number,
+    ROW_NUMBER() OVER (
+      PARTITION BY
+        visit_identifier
+      ORDER BY
+        event_timestamp,
+        RAND() ASC
+    ) AS row_number
   FROM
     get_all_events_in_each_session_staging a
+),
+--get the hit number associated with the last page view in each session
+hit_nbr_of_last_page_view_in_each_session AS (
+  SELECT
+    visit_identifier,
+    MAX(hit_number) AS max_hit_number
+  FROM
+    get_all_events_in_each_session
+  WHERE
+    event_name = 'page_view'
+  GROUP BY
+    1
+),
+--because sometimes there are multiple page views with the same event timestamp,
+--choose only 1 to represent the exit, so as not to double count exits
+session_exits AS (
+  SELECT
+    a.visit_identifier,
+    b.max_hit_number,
+    1 AS is_exit,
+    MAX(a.row_number) AS row_nbr_to_count_as_exit
+  FROM
+    get_all_events_in_each_session a
+  JOIN
+    hit_nbr_of_last_page_view_in_each_session b
+    ON a.visit_identifier = b.visit_identifier
+    AND a.hit_number = b.max_hit_number
+  WHERE
+    a.event_name = 'page_view'
+  GROUP BY
+    1,
+    2,
+    3
 )
 SELECT
   a.date,
@@ -119,7 +154,7 @@ SELECT
   b.event_timestamp AS hit_timestamp,
   NULL AS event_category, --GA4 has no notion of event_label, unlike GA3 (UA360)
   b.event_name,
-  NULL AS b.event_label, --GA4 has no notion of event_label, unlike GA3 (UA360)
+  NULL AS event_label, --GA4 has no notion of event_label, unlike GA3 (UA360)
   NULL AS event_action, --GA4 has no notion of event_action, unlike GA3 (UA360)
   b.device_category,
   b.operating_system,
@@ -143,21 +178,22 @@ SELECT
 ? AS exits,
 ? AS event_id,
 */
-SPLIT(REGEXP_REPLACE(b.page_location, 'https://www.mozilla.org', ''), '/')[
+  SPLIT(REGEXP_REPLACE(b.page_location, 'https://www.mozilla.org', ''), '/')[
     SAFE_OFFSET(1)
   ] AS page_level_1,
-SPLIT(REGEXP_REPLACE(b.page_location, 'https://www.mozilla.org', ''), '/')[
+  SPLIT(REGEXP_REPLACE(b.page_location, 'https://www.mozilla.org', ''), '/')[
     SAFE_OFFSET(2)
   ] AS page_level_2,
-SPLIT(REGEXP_REPLACE(b.page_location, 'https://www.mozilla.org', ''), '/')[
+  SPLIT(REGEXP_REPLACE(b.page_location, 'https://www.mozilla.org', ''), '/')[
     SAFE_OFFSET(3)
   ] AS page_level_3,
-SPLIT(REGEXP_REPLACE(b.page_location, 'https://www.mozilla.org', ''), '/')[
+  SPLIT(REGEXP_REPLACE(b.page_location, 'https://www.mozilla.org', ''), '/')[
     SAFE_OFFSET(4)
   ] AS page_level_4,
-SPLIT(REGEXP_REPLACE(b.page_location, 'https://www.mozilla.org', ''), '/')[
+  SPLIT(REGEXP_REPLACE(b.page_location, 'https://www.mozilla.org', ''), '/')[
     SAFE_OFFSET(5)
   ] AS page_level_5,
+  c.is_exit
   /*
   --try to remove query string from full page path
 ? AS page_name
@@ -169,3 +205,8 @@ LEFT OUTER JOIN
   ON a.date = b.date
   AND a.visit_identifier = b.visit_identifier
   AND a.full_visitor_id = b.full_visitor_id
+LEFT OUTER JOIN
+  session_exits c
+  ON b.visit_identifier = c.visit_identifier
+  AND b.row_number = c.row_nbr_to_count_as_exit
+  AND b.hit_number = max_hit_number

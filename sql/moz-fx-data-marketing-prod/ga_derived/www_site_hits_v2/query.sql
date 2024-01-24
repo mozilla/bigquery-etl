@@ -169,8 +169,10 @@ SELECT
 /*
 ? AS first_interaction,
 ? AS last_interaction,
-? AS entrances,
-? AS exits,
+*/
+b.is_entrance AS entrances,
+coalesce(c.is_exit,0) AS exits,
+/*
 ? AS event_id,
 */
   SPLIT(REGEXP_REPLACE(b.page_location, 'https://www.mozilla.org', ''), '/')[

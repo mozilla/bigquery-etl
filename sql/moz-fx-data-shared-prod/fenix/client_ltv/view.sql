@@ -41,7 +41,7 @@ with_states AS (
           days_since_first_seen,
           days_since_seen,
           {{ death_time }},
-          submission_date,
+          as_of_date,
           first_seen_date,
           activity_pattern,
           active_on_this_date,

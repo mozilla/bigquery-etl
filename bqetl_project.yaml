@@ -337,9 +337,7 @@ format:
   - sql/moz-fx-data-shared-prod/telemetry_derived/event_events_v1/init.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/event_events_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/events_live/view.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/experiment_enrollment_aggregates_v1/init.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/experiment_enrollment_aggregates_v1/query.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/experiments_daily_active_clients_v1/init.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/firefox_desktop_exact_mau28_by_client_count_dimensions_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/fxa_users_services_daily_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/fxa_users_services_last_seen_v1/query.sql

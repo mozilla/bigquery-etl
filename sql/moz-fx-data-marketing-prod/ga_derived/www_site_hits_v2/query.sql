@@ -1,6 +1,3 @@
--- Query for ga_derived.www_site_hits_v2
-            -- For more information on writing queries see:
-            -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
 WITH get_session_start_time AS (
   SELECT
     PARSE_DATE('%Y%m%d', a.event_date) AS date,
@@ -93,9 +90,8 @@ get_all_events_in_each_session AS (
       PARTITION BY
         visit_identifier
       ORDER BY
-        event_timestamp,
-        RAND() ASC
-    ) AS row_number
+        event_timestamp
+    ) AS row_nbr
   FROM
     get_all_events_in_each_session_staging a
 ),
@@ -118,19 +114,20 @@ session_exits AS (
     a.visit_identifier,
     b.max_hit_number,
     1 AS is_exit,
-    MAX(a.row_number) AS row_nbr_to_count_as_exit
+    a.event_name,
+    MAX(a.row_nbr) AS row_nbr_to_count_as_exit
   FROM
     get_all_events_in_each_session a
   JOIN
     hit_nbr_of_last_page_view_in_each_session b
     ON a.visit_identifier = b.visit_identifier
     AND a.hit_number = b.max_hit_number
-  WHERE
-    a.event_name = 'page_view'
+    AND a.event_name = 'page_view'
   GROUP BY
     1,
     2,
-    3
+    3,
+    4
 )
 SELECT
   a.date,
@@ -142,11 +139,11 @@ SELECT
     SAFE_OFFSET(1)
   ] AS page_path_level1,
   CASE
-    WHEN event_name = 'page_view'
+    WHEN b.event_name = 'page_view'
       THEN 'PAGE'
     ELSE 'EVENT'
   END AS hit_type,
-  c.is_exit,
+  coalesce(c.is_exit,0) AS is_exit,
   b.is_entrance,
   b.hit_number,
   b.event_timestamp AS hit_timestamp,
@@ -205,5 +202,4 @@ LEFT OUTER JOIN
 LEFT OUTER JOIN
   session_exits c
   ON b.visit_identifier = c.visit_identifier
-  AND b.row_number = c.row_nbr_to_count_as_exit
-  AND b.hit_number = max_hit_number
+  AND b.row_nbr = c.row_nbr_to_count_as_exit

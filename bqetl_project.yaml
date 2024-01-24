@@ -423,8 +423,8 @@ generate:
       datasets:
       - fenix
       app_ids:
-      - debug-ping-view
-      - glean-dictionary
+      - debug_ping_view
+      - glean_dictionary
       - org_mozilla_firefox
       - org_mozilla_fenix
       - org_mozilla_fenix_beta

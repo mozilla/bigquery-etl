@@ -8,6 +8,7 @@ import json
 import shutil
 import warnings
 from collections import namedtuple
+from glob import glob
 from multiprocessing import Pool
 from pathlib import Path
 
@@ -88,7 +89,11 @@ def deps(output):
     """Create a dependency file with all links between queries and tables."""
     path = Path(output)
     deps = calculate_dependencies(
-        [p for p in SQL_ROOT.glob("**/*.sql") if "__clients_daily" not in p.name]
+        [
+            p
+            for p in map(Path, glob(f"{SQL_ROOT}/**/*.sql", recursive=True))
+            if "__clients_daily" not in p.name
+        ]
     )
     path.write_text(
         json.dumps([dict(zip(["from", "to"], dep)) for dep in deps], indent=2)

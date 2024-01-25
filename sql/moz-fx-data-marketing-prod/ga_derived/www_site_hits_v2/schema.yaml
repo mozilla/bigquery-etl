@@ -1,0 +1,157 @@
+fields:
+- mode: NULLABLE
+  name: date
+  type: DATE
+  description: Date of the visit
+- mode: NULLABLE
+  name: visit_identifier
+  type: STRING
+  description: Visit Identifier - Uniquely identifies a visit; concatenation of user_pseudo_id and ga_session_id
+- mode: NULLABLE
+  name: full_visitor_id
+  type: STRING
+  description: Full Visitor ID - Uniquely identifies a visitor - this is the same as GA4 user_pseudo_id
+- mode: NULLABLE
+  name: visit_start_time
+  type: INT64
+  description: Visit Start Time - The event timestamp from the first event in the visit
+- mode: NULLABLE
+  name: page_path
+  type: STRING
+  description: Page Path
+- mode: NULLABLE
+  name: page_path_level1
+  type: STRING
+  description: Page Path Level 1
+- mode: NULLABLE
+  name: hit_type
+  type: STRING
+  description: Hit Type - PAGE if event_name is a page view, EVENT for all other event types
+- mode: NULLABLE
+  name: is_exit
+  type: BOOLEAN
+  description: Is Exit - The specific page view event that is considered the exit to the visit
+- mode: NULLABLE
+  name: is_entrance
+  type: BOOLEAN
+  description: Is Entrance - The specific page view event that is considered the entrance to the visit
+- mode: NULLABLE
+  name: hit_number
+  type: INT64
+  description: Hit Number - Densely ranked, since there can be multiple events at the same time for a user
+- mode: NULLABLE
+  name: hit_timestamp
+  type: INT64
+  description: Hit Timestamp - Same as the "Event Timestamp"
+- mode: NULLABLE
+  name: event_category
+  type: STRING
+  description: Event Category
+- mode: NULLABLE
+  name: event_name
+  type: STRING
+  description: Event Name
+- mode: NULLABLE
+  name: event_label
+  type: STRING
+  description: Event Label
+- mode: NULLABLE
+  name: event_action
+  type: STRING
+  description: Event Action
+- mode: NULLABLE
+  name: device_category
+  type: STRING
+  description: Device Category - The device category the visitor used to visit the site
+- mode: NULLABLE
+  name: operating_system
+  type: STRING
+  description: Operating System - The operating system the visitor used to visit the site
+- mode: NULLABLE
+  name: language
+  type: STRING
+  description: Language - The language the visiting device was using when it visited the site
+- mode: NULLABLE
+  name: browser
+  type: STRING
+  description: Browser - The browser the visiting device was using when it visited the site
+- mode: NULLABLE
+  name: browser_version
+  type: STRING
+  description: Browser Version - The version that the visiting device's browser was using when it visited the site
+- mode: NULLABLE
+  name: country
+  type: STRING
+  description: Country - The country from which events were reported, based on IP address
+- mode: NULLABLE
+  name: source
+  type: STRING
+  description: Source
+- mode: NULLABLE
+  name: medium
+  type: STRING
+  description: Medium
+- mode: NULLABLE
+  name: campaign
+  type: STRING
+  description: Campaign
+- mode: NULLABLE
+  name: ad_content
+  type: STRING
+  description: Ad Content
+- mode: NULLABLE
+  name: visits
+  type: INT64
+  description: Visits - A flag that indicates if the hit belongs to a visit that had 1 or more engaged event during the visit
+- mode: NULLABLE
+  name: bounces
+  type: INT64
+  description: Bounces
+- mode: NULLABLE
+  name: hit_time
+  type: FLOAT
+  description: Hit Time - Engagement Time in Seconds
+- mode: NULLABLE
+  name: first_interaction
+  type: INT64
+  description: First Interaction - The first hit number in the visit associated with an engaged session event
+- mode: NULLABLE
+  name: last_interaction
+  type: FLOAT
+  description: Last Interaction - The last hit number in the visit associated with an engaged session event
+- mode: NULLABLE
+  name: entrances
+  type: INT64
+  description: Entrances
+- mode: NULLABLE
+  name: exits
+  type: INT64
+  description: Exits
+- mode: NULLABLE
+  name: event_id
+  type: STRING
+  description: Event ID
+- mode: NULLABLE
+  name: page_level_1
+  type: STRING
+  description: Page Level 1
+- mode: NULLABLE
+  name: page_level_2
+  type: STRING
+  description: Page Level 2
+- mode: NULLABLE
+  name: page_level_3
+  type: STRING
+  description: Page Level 3
+- mode: NULLABLE
+  name: page_level_4
+  type: STRING
+  description: Page Level 4
+- mode: NULLABLE
+  name: page_level_5
+  type: STRING
+  description: Page Level 5
+- mode: NULLABLE
+  name: page_name
+  type: STRING
+  description: Page Name

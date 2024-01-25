@@ -29,7 +29,7 @@ WITH get_session_start_time AS (
 ),
 get_all_events_in_each_session_staging AS (
   SELECT
-    PARSE_DATE('%Y%m%d', a.event_date) AS date,
+    SAFE.PARSE_DATE('%Y%m%d', a.event_date) AS event_date,
     a.user_pseudo_id || '-' || CAST(
       (
         SELECT

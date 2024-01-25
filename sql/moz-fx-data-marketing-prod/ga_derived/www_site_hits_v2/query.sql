@@ -94,7 +94,25 @@ get_all_events_in_each_session_staging AS (
 --if there are multiple events at the same timestamp in the same session, assign them all the same hit number
 get_all_events_in_each_session AS (
   SELECT
-    a.*,
+  a.date,
+  a.visit_identifier,
+  a.full_visitor_id,
+  a.event_name,
+  a.event_timestamp,
+  a.device_category,
+  a.operating_system,
+  a.language,
+  a.browser,
+  a.browser_version,
+  a.country,
+  a.source,
+  a.medium,
+  a.campaign,
+  a.ad_content,
+  a.engagement_time_msec, 
+  a.engaged_session_event,
+  SPLIT(a.page_location, '?')[OFFSET(0)] AS page_location,
+  a.is_entrance,
     DENSE_RANK() OVER (PARTITION BY visit_identifier ORDER BY event_timestamp ASC) AS hit_number,
     ROW_NUMBER() OVER (PARTITION BY visit_identifier ORDER BY event_timestamp) AS row_nbr
   FROM

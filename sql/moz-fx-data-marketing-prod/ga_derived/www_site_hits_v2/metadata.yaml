@@ -1,5 +1,5 @@
 friendly_name: Www Site Hits V2
-description: Normalized individual hits for www.mozilla.org based on GA4 data
+description: Normalized individual hits for www.mozilla.org based on GA4 data; contains 1 row for each event; since events can trigger at the same time, events triggered at the same time have the same hit number.
 owners:
 - kwindau@mozilla.com
 - mhirose@mozilla.com

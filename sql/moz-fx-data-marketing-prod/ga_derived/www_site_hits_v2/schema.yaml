@@ -6,15 +6,15 @@ fields:
 - mode: NULLABLE
   name: visit_identifier
   type: STRING
-  description: Visit Identifier
+  description: Visit Identifier - Uniquely identifies a visit; concatenation of user_pseudo_id and ga_session_id
 - mode: NULLABLE
   name: full_visitor_id
   type: STRING
-  description: Full Visitor ID
+  description: Full Visitor ID - Uniquely identifies a visitor - this is the same as GA4 user_pseudo_id
 - mode: NULLABLE
   name: visit_start_time
   type: INT64
-  description: Visit Start Time
+  description: Visit Start Time - The event timestamp from the first event in the visit
 - mode: NULLABLE
   name: page_path
   type: STRING
@@ -26,15 +26,15 @@ fields:
 - mode: NULLABLE
   name: hit_type
   type: STRING
-  description: Hit Type
+  description: Hit Type - PAGE if event_name is a page view, EVENT for all other event types
 - mode: NULLABLE
   name: is_exit
   type: BOOLEAN
-  description: Is Exit
+  description: Is Exit - The specific page view event that is considered the exit to the visit
 - mode: NULLABLE
   name: is_entrance
   type: BOOLEAN
-  description: Is Entrance
+  description: Is Entrance - The specific page view event that is considered the entrance to the visit 
 - mode: NULLABLE
   name: hit_number
   type: INT64
@@ -70,19 +70,19 @@ fields:
 - mode: NULLABLE
   name: language
   type: STRING
-  description: Language
+  description: Language - The language the visiting device was using when it visited the site
 - mode: NULLABLE
   name: browser
   type: STRING
-  description: Browser
+  description: Browser - The browser the visiting device was using when it visited the site
 - mode: NULLABLE
   name: browser_version
   type: STRING
-  description: Browser Version
+  description: Browser Version - The version that the visiting device's browser was using when it visited the site
 - mode: NULLABLE
   name: country
   type: STRING
-  description: Country
+  description: Country - The country from which events were reported, based on IP address
 - mode: NULLABLE
   name: source
   type: STRING
@@ -102,7 +102,7 @@ fields:
 - mode: NULLABLE
   name: visits
   type: INT64
-  description: Visits
+  description: Visits - A flag that indicates if the hit belongs to a visit that had 1 or more engaged event during the visit
 - mode: NULLABLE
   name: bounces
   type: INT64
@@ -114,11 +114,11 @@ fields:
 - mode: NULLABLE
   name: first_interaction
   type: INT64
-  description: First Interaction
+  description: First Interaction - The first hit number in the visit associated with an engaged session event
 - mode: NULLABLE
   name: last_interaction
   type: FLOAT
-  description: Last Interaction
+  description: Last Interaction - The last hit number in the visit associated with an engaged session event
 - mode: NULLABLE
   name: entrances
   type: INT64

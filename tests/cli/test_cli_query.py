@@ -55,6 +55,8 @@ class TestQuery:
         with runner.isolated_filesystem():
             os.makedirs("sql/moz-fx-data-shared-prod")
             result = runner.invoke(create, ["test.test_query", "--no_schedule"])
+            print(result.exc_info)
+            print(result.exception)
             assert result.exit_code == 0
             assert os.listdir("sql/moz-fx-data-shared-prod") == ["test"]
             assert sorted(os.listdir("sql/moz-fx-data-shared-prod/test")) == [

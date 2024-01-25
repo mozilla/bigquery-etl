@@ -195,8 +195,7 @@ def create(ctx, name, sql_dir, project_id, owner, init, dag, no_schedule):
 
     click.echo(f"Created query in {derived_path}")
 
-    view_file = view_path / "view.sql"
-    if view_path and not view_file.exists():
+    if view_path and not (view_file := view_path / "view.sql").exists():
         # Don't overwrite the view_file if it already exists
         click.echo(f"Created corresponding view in {view_path}")
         view_dataset = dataset.replace("_derived", "")

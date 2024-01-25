@@ -20,7 +20,7 @@ with_states AS (
     client_id,
     sample_id,
     as_of_date,
-    first_reported_country AS country,
+    COALESCE(countries.country, "ROW") AS country,
     [
       STRUCT(
         mozfun.ltv.android_states_v1(
@@ -79,9 +79,12 @@ with_states AS (
         'android_states_with_paid_v2' AS state_function
       )
     ] AS markov_states,
-    * EXCEPT (client_id, sample_id, as_of_date)
+    extracted_fields.* EXCEPT (client_id, sample_id, as_of_date)
   FROM
     extracted_fields
+  LEFT JOIN
+    (SELECT DISTINCT country FROM fenix.ltv_state_values) AS countries
+    ON extracted_fields.first_reported_country = countries.country
 )
 SELECT
   client_id,

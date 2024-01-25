@@ -4,10 +4,6 @@ fields:
   type: STRING
   description: Project used for executing job
 - mode: NULLABLE
-  name: creation_date
-  type: DATE
-  description: Job creation date
-- mode: NULLABLE
   name: job_id
   type: STRING
   description: ID of job

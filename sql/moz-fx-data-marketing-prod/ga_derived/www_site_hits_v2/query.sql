@@ -185,10 +185,10 @@ final_staging AS (
     CAST(b.is_entrance AS bool) AS is_entrance,
     b.hit_number,
     b.event_timestamp AS hit_timestamp,
-    CAST(NULL as string) AS event_category, --GA4 has no notion of event_label, unlike GA3 (UA360)
+    CAST(NULL AS string) AS event_category, --GA4 has no notion of event_label, unlike GA3 (UA360)
     b.event_name,
-    CAST(NULL as string) AS event_label, --GA4 has no notion of event_label, unlike GA3 (UA360)
-    CAST(NULL as string) AS event_action, --GA4 has no notion of event_action, unlike GA3 (UA360)
+    CAST(NULL AS string) AS event_label, --GA4 has no notion of event_label, unlike GA3 (UA360)
+    CAST(NULL AS string) AS event_action, --GA4 has no notion of event_action, unlike GA3 (UA360)
     b.device_category,
     b.operating_system,
     b.language,
@@ -207,10 +207,12 @@ final_staging AS (
     END AS bounces, --this is the equivalent logic to totals.bounces in UA
     SAFE_DIVIDE(engagement_time_msec, 1000) AS hit_time,
     d.first_interaction,
-    CAST(d.last_interaction as float) AS last_interaction,
+    CAST(d.last_interaction AS float) AS last_interaction,
     b.is_entrance AS entrances,
     COALESCE(c.is_exit, 0) AS exits,
-    CAST(NULL as string) AS event_id, --old table defined this from event category, action, and label, which no longer exist in GA4
+    CAST(
+      NULL AS string
+    ) AS event_id, --old table defined this from event category, action, and label, which no longer exist in GA4
     SPLIT(REGEXP_REPLACE(b.page_location, '^https://www.mozilla.org', ''), '/')[
       SAFE_OFFSET(1)
     ] AS page_level_1,

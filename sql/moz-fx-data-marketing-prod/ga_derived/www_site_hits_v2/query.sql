@@ -181,7 +181,7 @@ SELECT
   b.campaign,
   b.ad_content,
   d.session_had_an_engaged_event AS visits, --this is the equivalent logic to totals.visits in UA
-  CASE WHEN c.nbr_page_view_events = 1 THEN 1 ELSE 0 END AS bounces,
+  CASE WHEN c.nbr_page_view_events = 1 THEN 1 ELSE 0 END AS bounces, --this is the equivalent logic to totals.bounces in UA
   SAFE_DIVIDE(engagement_time_msec, 1000) AS hit_time,
   d.first_interaction,
   d.last_interaction,

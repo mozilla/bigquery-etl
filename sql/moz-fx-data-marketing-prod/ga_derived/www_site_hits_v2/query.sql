@@ -181,14 +181,14 @@ final_staging AS (
         THEN 'PAGE'
       ELSE 'EVENT'
     END AS hit_type,
-    COALESCE(c.is_exit, 0) AS is_exit,
-    b.is_entrance,
+    CAST(COALESCE(c.is_exit, 0) AS bool) AS is_exit,
+    CAST(b.is_entrance AS bool) AS is_entrance,
     b.hit_number,
     b.event_timestamp AS hit_timestamp,
-    NULL AS event_category, --GA4 has no notion of event_label, unlike GA3 (UA360)
+    CAST(NULL as string) AS event_category, --GA4 has no notion of event_label, unlike GA3 (UA360)
     b.event_name,
-    NULL AS event_label, --GA4 has no notion of event_label, unlike GA3 (UA360)
-    NULL AS event_action, --GA4 has no notion of event_action, unlike GA3 (UA360)
+    CAST(NULL as string) AS event_label, --GA4 has no notion of event_label, unlike GA3 (UA360)
+    CAST(NULL as string) AS event_action, --GA4 has no notion of event_action, unlike GA3 (UA360)
     b.device_category,
     b.operating_system,
     b.language,

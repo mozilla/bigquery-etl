@@ -23,9 +23,9 @@ WITH get_session_start_time AS (
   WHERE
     _TABLE_SUFFIX = FORMAT_DATE('%Y%m%d', @submission_date)
   GROUP BY
-    1,
-    2,
-    3
+    date,
+    visit_identifier,
+    full_visitor_id
 ),
 get_all_events_in_each_session_staging AS (
   SELECT

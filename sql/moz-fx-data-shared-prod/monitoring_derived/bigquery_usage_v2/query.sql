@@ -74,7 +74,6 @@ jobs_by_project AS (
 )
 SELECT DISTINCT
   jo.source_project,
-  jo.creation_date,
   jo.job_id,
   jo.job_type,
   jo.reservation_id,

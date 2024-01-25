@@ -1,6 +1,6 @@
 -- Query for ga_derived.www_site_hits_v2
-            -- For more information on writing queries see:
-            -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
+-- For more information on writing queries see:
+-- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
 WITH get_session_start_time AS (
   SELECT
     PARSE_DATE('%Y%m%d', a.event_date) AS date,

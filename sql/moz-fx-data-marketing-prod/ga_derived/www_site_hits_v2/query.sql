@@ -104,7 +104,7 @@ get_all_events_in_each_session AS (
 hit_nbr_of_last_page_view_in_each_session AS (
   SELECT
     visit_identifier,
-    count(1) AS nbr_page_view_events,
+    COUNT(1) AS nbr_page_view_events,
     MAX(hit_number) AS max_hit_number
   FROM
     get_all_events_in_each_session
@@ -181,7 +181,11 @@ SELECT
   b.campaign,
   b.ad_content,
   d.session_had_an_engaged_event AS visits, --this is the equivalent logic to totals.visits in UA
-  CASE WHEN c.nbr_page_view_events = 1 THEN 1 ELSE 0 END AS bounces, --this is the equivalent logic to totals.bounces in UA
+  CASE
+    WHEN c.nbr_page_view_events = 1
+      THEN 1
+    ELSE 0
+  END AS bounces, --this is the equivalent logic to totals.bounces in UA
   SAFE_DIVIDE(engagement_time_msec, 1000) AS hit_time,
   d.first_interaction,
   d.last_interaction,

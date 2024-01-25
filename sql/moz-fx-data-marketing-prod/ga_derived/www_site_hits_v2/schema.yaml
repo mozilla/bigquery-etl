@@ -86,19 +86,19 @@ fields:
 - mode: NULLABLE
   name: source
   type: STRING
-  description: Source
+  description: Source - Referring partner domain
 - mode: NULLABLE
   name: medium
   type: STRING
-  description: Medium
+  description: Medium - Category of the source, such as 'organic' for a search engine
 - mode: NULLABLE
   name: campaign
   type: STRING
-  description: Campaign
+  description: Campaign - Identifier for the marketing campaign
 - mode: NULLABLE
   name: ad_content
   type: STRING
-  description: Ad Content
+  description: Ad Content - Indicates the particular link within a campaign
 - mode: NULLABLE
   name: visits
   type: INT64

@@ -136,10 +136,7 @@ session_exits AS (
     3,
     4,
     5
-)
---to do - add below
---calculate first and last interaction by getting min and max hit number
---where engaged session event = 1
+),
 first_and_last_interaction AS (
   SELECT
     visit_identifier,

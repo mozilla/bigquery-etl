@@ -83,7 +83,7 @@ with_states AS (
   FROM
     extracted_fields
   LEFT JOIN
-    (SELECT DISTINCT country FROM fenix.ltv_state_values) AS countries
+    (SELECT DISTINCT country FROM `moz-fx-data-shared-prod`.fenix.ltv_state_values) AS countries
     ON extracted_fields.first_reported_country = countries.country
 )
 SELECT
@@ -101,5 +101,5 @@ FROM
 CROSS JOIN
   UNNEST(markov_states)
 JOIN
-  fenix.ltv_state_values
+  `moz-fx-data-shared-prod`.fenix.ltv_state_values
   USING (country, state_function, state)

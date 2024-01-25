@@ -18,5 +18,6 @@ bigquery:
     fields:
     - country
     - language
+    - event_name
 references: {}
 deprecated: false

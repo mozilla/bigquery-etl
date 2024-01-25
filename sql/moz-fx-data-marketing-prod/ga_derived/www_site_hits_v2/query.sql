@@ -165,81 +165,124 @@ first_and_last_interaction AS (
     get_all_events_in_each_session
   GROUP BY
     visit_identifier
-)
-SELECT
-  a.date,
-  a.visit_identifier,
-  a.full_visitor_id,
-  a.visit_start_time,
-  b.page_location AS page_path,
-  SPLIT(REGEXP_REPLACE(b.page_location, 'https://www.mozilla.org', ''), '/')[
-    SAFE_OFFSET(1)
-  ] AS page_path_level1,
-  CASE
-    WHEN b.event_name = 'page_view'
-      THEN 'PAGE'
-    ELSE 'EVENT'
-  END AS hit_type,
-  COALESCE(c.is_exit, 0) AS is_exit,
-  b.is_entrance,
-  b.hit_number,
-  b.event_timestamp AS hit_timestamp,
-  NULL AS event_category, --GA4 has no notion of event_label, unlike GA3 (UA360)
-  b.event_name,
-  NULL AS event_label, --GA4 has no notion of event_label, unlike GA3 (UA360)
-  NULL AS event_action, --GA4 has no notion of event_action, unlike GA3 (UA360)
-  b.device_category,
-  b.operating_system,
-  b.language,
-  b.browser,
-  b.browser_version,
-  b.country,
-  b.source,
-  b.medium,
-  b.campaign,
-  b.ad_content,
-  d.session_had_an_engaged_event AS visits, --this is the equivalent logic to totals.visits in UA
-  CASE
-    WHEN c.nbr_page_view_events = 1
-      THEN 1
-    ELSE 0
-  END AS bounces, --this is the equivalent logic to totals.bounces in UA
-  SAFE_DIVIDE(engagement_time_msec, 1000) AS hit_time,
-  d.first_interaction,
-  d.last_interaction,
-  b.is_entrance AS entrances,
-  COALESCE(c.is_exit, 0) AS exits,
-  NULL AS event_id, --old table defined this from event category, action, and label, which no longer exist in GA4
-  SPLIT(REGEXP_REPLACE(b.page_location, 'https://www.mozilla.org', ''), '/')[
-    SAFE_OFFSET(1)
-  ] AS page_level_1,
-  SPLIT(REGEXP_REPLACE(b.page_location, 'https://www.mozilla.org', ''), '/')[
-    SAFE_OFFSET(2)
-  ] AS page_level_2,
-  SPLIT(REGEXP_REPLACE(b.page_location, 'https://www.mozilla.org', ''), '/')[
-    SAFE_OFFSET(3)
-  ] AS page_level_3,
-  SPLIT(REGEXP_REPLACE(b.page_location, 'https://www.mozilla.org', ''), '/')[
-    SAFE_OFFSET(4)
-  ] AS page_level_4,
-  SPLIT(REGEXP_REPLACE(b.page_location, 'https://www.mozilla.org', ''), '/')[
-    SAFE_OFFSET(5)
-  ] AS page_level_5
-  /*
-  --try to remove query string from full page path
-? AS page_name
-*/
-FROM
-  get_session_start_time a
-LEFT OUTER JOIN
-  get_all_events_in_each_session b
-  ON a.date = b.date
-  AND a.visit_identifier = b.visit_identifier
-  AND a.full_visitor_id = b.full_visitor_id
-LEFT OUTER JOIN
-  session_exits c
-  ON b.visit_identifier = c.visit_identifier
-  AND b.row_nbr = c.row_nbr_to_count_as_exit
-LEFT OUTER JOIN
-  first_and_last_interaction d
-  ON a.visit_identifier = d.visit_identifier
+),
+final_staging AS (
+  SELECT
+    a.date,
+    a.visit_identifier,
+    a.full_visitor_id,
+    a.visit_start_time,
+    REGEXP_REPLACE(b.page_location, '^https://www.mozilla.org', '') AS page_path,
+    SPLIT(REGEXP_REPLACE(b.page_location, '^https://www.mozilla.org', ''), '/')[
+      SAFE_OFFSET(1)
+    ] AS page_path_level1,
+    CASE
+      WHEN b.event_name = 'page_view'
+        THEN 'PAGE'
+      ELSE 'EVENT'
+    END AS hit_type,
+    COALESCE(c.is_exit, 0) AS is_exit,
+    b.is_entrance,
+    b.hit_number,
+    b.event_timestamp AS hit_timestamp,
+    NULL AS event_category, --GA4 has no notion of event_label, unlike GA3 (UA360)
+    b.event_name,
+    NULL AS event_label, --GA4 has no notion of event_label, unlike GA3 (UA360)
+    NULL AS event_action, --GA4 has no notion of event_action, unlike GA3 (UA360)
+    b.device_category,
+    b.operating_system,
+    b.language,
+    b.browser,
+    b.browser_version,
+    b.country,
+    b.source,
+    b.medium,
+    b.campaign,
+    b.ad_content,
+    d.session_had_an_engaged_event AS visits, --this is the equivalent logic to totals.visits in UA
+    CASE
+      WHEN c.nbr_page_view_events = 1
+        THEN 1
+      ELSE 0
+    END AS bounces, --this is the equivalent logic to totals.bounces in UA
+    SAFE_DIVIDE(engagement_time_msec, 1000) AS hit_time,
+    d.first_interaction,
+    d.last_interaction,
+    b.is_entrance AS entrances,
+    COALESCE(c.is_exit, 0) AS exits,
+    NULL AS event_id, --old table defined this from event category, action, and label, which no longer exist in GA4
+    SPLIT(REGEXP_REPLACE(b.page_location, '^https://www.mozilla.org', ''), '/')[
+      SAFE_OFFSET(1)
+    ] AS page_level_1,
+    SPLIT(REGEXP_REPLACE(b.page_location, '^https://www.mozilla.org', ''), '/')[
+      SAFE_OFFSET(2)
+    ] AS page_level_2,
+    SPLIT(REGEXP_REPLACE(b.page_location, '^https://www.mozilla.org', ''), '/')[
+      SAFE_OFFSET(3)
+    ] AS page_level_3,
+    SPLIT(REGEXP_REPLACE(b.page_location, '^https://www.mozilla.org', ''), '/')[
+      SAFE_OFFSET(4)
+    ] AS page_level_4,
+    SPLIT(REGEXP_REPLACE(b.page_location, '^https://www.mozilla.org', ''), '/')[
+      SAFE_OFFSET(5)
+    ] AS page_level_5
+  FROM
+    get_session_start_time a
+  LEFT OUTER JOIN
+    get_all_events_in_each_session b
+    ON a.date = b.date
+    AND a.visit_identifier = b.visit_identifier
+    AND a.full_visitor_id = b.full_visitor_id
+  LEFT OUTER JOIN
+    session_exits c
+    ON b.visit_identifier = c.visit_identifier
+    AND b.row_nbr = c.row_nbr_to_count_as_exit
+  LEFT OUTER JOIN
+    first_and_last_interaction d
+    ON a.visit_identifier = d.visit_identifier
+) 
+
+SELECT 
+a.date,
+a.visit_identifier,
+a.full_visitor_id,
+a.visit_start_time,
+a.page_path_level1,
+a.hit_type,
+a.is_exit,
+a.is_entrance,
+a.hit_number,
+a.hit_timestamp,
+a.event_category, 
+a.event_name,
+a.event_label, 
+a.event_action, 
+a.device_category,
+a.operating_system,
+a.language,
+a.browser,
+a.browser_version,
+a.country,
+a.source,
+a.medium,
+a.campaign,
+a.ad_content,
+a.visits, 
+a.bounces, 
+a.hit_time,
+a.first_interaction,
+a.last_interaction,
+a.entrances,
+a.exits,
+a.event_id, 
+a.page_level_1,
+a.page_level_2,
+a.page_level_3,
+a.page_level_4,
+a.page_level_5,
+  IF(
+    page_level_2 IS NULL,
+    CONCAT('/', page_level_1, '/'),
+    ARRAY_TO_STRING(['', page_level_1, page_level_2, page_level_3, page_level_4, page_level_5], '/')
+  ) AS page_name,
+FROM final_staging a

@@ -98,5 +98,5 @@ FROM
 CROSS JOIN
   UNNEST(markov_states)
 JOIN
-  `moz-fx-data-shared-prod`.fenix_derived.ltv_state_values_v1
+  fenix.ltv_state_values
   USING (country, state_function, state)

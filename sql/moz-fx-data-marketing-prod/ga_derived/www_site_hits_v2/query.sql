@@ -246,6 +246,7 @@ SELECT
   a.visit_identifier,
   a.full_visitor_id,
   a.visit_start_time,
+  a.page_path,
   a.page_path_level1,
   a.hit_type,
   a.is_exit,

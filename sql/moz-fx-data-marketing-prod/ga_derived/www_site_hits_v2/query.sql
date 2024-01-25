@@ -20,7 +20,10 @@ WITH get_session_start_time AS (
     MIN(event_timestamp) AS visit_start_time
   FROM
     `moz-fx-data-marketing-prod.analytics_313696158.events_*` a
-  WHERE
+  JOIN 
+  UNNEST(event_params) e 
+  WHERE e.key = 'ga_session_id'
+  AND
     _TABLE_SUFFIX = SAFE.FORMAT_DATE('%Y%m%d', @submission_date)
   GROUP BY
     date,

@@ -1,6 +1,6 @@
 friendly_name: WWW Site Hits V2
 description: |-
-  GA4 normalized events for www.mozilla.org; events triggered at the same time are given the same hit number.
+  Normalized events from Google Analytics 4 (GA4) for www.mozilla.org. The events triggered at the same timestamp are given the same hit number.
 owners:
 - kwindau@mozilla.com
 labels:

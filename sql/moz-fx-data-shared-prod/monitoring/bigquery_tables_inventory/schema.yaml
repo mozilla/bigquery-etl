@@ -4,7 +4,7 @@ fields:
   type: DATE
   description: The date when data was captured
 - mode: NULLABLE
-  name: table_creation_date
+  name: creation_date
   type: DATE
   description: The table's creation date
 - mode: NULLABLE

@@ -11,11 +11,6 @@ labels:
   schedule: daily
 scheduling:
   dag_name: bqetl_fxa_events
-  # This query references secret keys that are not available for dry runs,
-  # so we must explicitly write out dependencies. In this case, the query
-  # depends only on fxa logs produced via Cloud Monitoring integration, so no other
-  # scheduled tasks are involved and the referenced_tables list is empty.
-  referenced_tables: []
 bigquery:
   time_partitioning:
     type: day

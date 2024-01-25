@@ -221,7 +221,7 @@ def push_dependencies_to_gcs(bucket, path, dependency_dir, project_id):
     client = storage.Client(project_id)
     bucket = client.get_bucket(bucket)
 
-    for root, dirs, files in os.walk(dependency_dir):
+    for root, dirs, files in os.walk(dependency_dir, followlinks=True):
         for filename in files:
             blob = bucket.blob(path + filename)
             blob.upload_from_filename(os.path.join(root, filename))

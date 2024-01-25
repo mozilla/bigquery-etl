@@ -7,7 +7,7 @@ from argparse import ArgumentParser
 from pathlib import Path
 
 from bigquery_etl.query_scheduling.dag_collection import DagCollection
-from bigquery_etl.query_scheduling.task import Task, TaskRef, UnscheduledTask
+from bigquery_etl.query_scheduling.task import Task, UnscheduledTask
 from bigquery_etl.util import standard_args
 from bigquery_etl.util.common import project_dirs
 
@@ -56,7 +56,7 @@ def get_dags(project_id, dags_config, sql_dir=None):
     for project_dir in project_dirs(project_id, sql_dir=sql_dir):
         # parse metadata.yaml to retrieve scheduling information
         if os.path.isdir(project_dir):
-            for root, dirs, files in os.walk(project_dir):
+            for root, dirs, files in os.walk(project_dir, followlinks=True):
                 try:
                     if QUERY_FILE in files:
                         query_file = os.path.join(root, QUERY_FILE)
@@ -99,8 +99,6 @@ def get_dags(project_id, dags_config, sql_dir=None):
 
                         with open(checks_file, "r") as file:
                             file_contents = file.read()
-                            # check if file contains fail and warn and create checks task accordingly
-                            checks_tasks = []
 
                             if "#fail" in file_contents:
                                 checks_task = copy.deepcopy(
@@ -110,7 +108,7 @@ def get_dags(project_id, dags_config, sql_dir=None):
                                         dag_collection=dag_collection,
                                     )
                                 )
-                                checks_tasks.append(checks_task)
+                                tasks.append(checks_task)
 
                             if "#warn" in file_contents:
                                 checks_task = copy.deepcopy(
@@ -120,18 +118,7 @@ def get_dags(project_id, dags_config, sql_dir=None):
                                         dag_collection=dag_collection,
                                     )
                                 )
-                                checks_tasks.append(checks_task)
-
-                            for checks_task in checks_tasks:
                                 tasks.append(checks_task)
-                                upstream_task_ref = TaskRef(
-                                    dag_name=task.dag_name,
-                                    task_id=task.task_name,
-                                    task_group=task.task_group,
-                                )
-                                checks_task.upstream_dependencies.append(
-                                    upstream_task_ref
-                                )
 
                     tasks.append(task)
         else:

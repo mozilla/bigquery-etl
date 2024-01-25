@@ -67,6 +67,7 @@ SELECT
   )
 FROM
   base;
+
 #fail
 SELECT
   IF(
@@ -78,4 +79,5 @@ FROM
   `moz-fx-data-shared-prod.firefox_ios_derived.app_store_funnel_v1`
 WHERE
   submission_date = @submission_date;
+
 -- TODO: for this query it'd be useful to compare sum variance between each day to improve our confidence the data was complete at the execution time.

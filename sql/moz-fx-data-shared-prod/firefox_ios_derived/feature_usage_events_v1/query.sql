@@ -16,15 +16,33 @@ client_product_feature_usage AS (
     /*Logins*/
     COUNTIF(event_category = 'logins' AND event_name = 'autofill_failed') AS logins_autofill_failed,
     COUNTIF(event_category = 'logins' AND event_name = 'autofilled') AS logins_autofilled,
-    COUNTIF(event_category = 'logins' AND event_name = 'management_add_tapped') AS logins_management_add_tapped,
-    COUNTIF(event_category = 'logins' AND event_name = 'management_logins_tapped') AS logins_management_logins_tapped,
+    COUNTIF(
+      event_category = 'logins'
+      AND event_name = 'management_add_tapped'
+    ) AS logins_management_add_tapped,
+    COUNTIF(
+      event_category = 'logins'
+      AND event_name = 'management_logins_tapped'
+    ) AS logins_management_logins_tapped,
     /*Credit Card*/
-    COUNTIF(event_category = 'credit_card' AND event_name = 'autofill_failed') AS cc_autofill_failed,
-    COUNTIF(event_category = 'credit_card' AND event_name = 'autofill_settings_tapped') AS cc_autofill_settings_tapped,
-    COUNTIF(event_category = 'credit_card' AND event_name = 'autofill_toggle') AS cc_autofill_toggle,
+    COUNTIF(
+      event_category = 'credit_card'
+      AND event_name = 'autofill_failed'
+    ) AS cc_autofill_failed,
+    COUNTIF(
+      event_category = 'credit_card'
+      AND event_name = 'autofill_settings_tapped'
+    ) AS cc_autofill_settings_tapped,
+    COUNTIF(
+      event_category = 'credit_card'
+      AND event_name = 'autofill_toggle'
+    ) AS cc_autofill_toggle,
     COUNTIF(event_category = 'credit_card' AND event_name = 'autofilled') AS cc_autofilled,
     COUNTIF(event_category = 'credit_card' AND event_name = 'form_detected') AS cc_form_detected,
-    COUNTIF(event_category = 'credit_card' AND event_name = 'save_prompt_create') AS cc_save_prompt_create,
+    COUNTIF(
+      event_category = 'credit_card'
+      AND event_name = 'save_prompt_create'
+    ) AS cc_save_prompt_create,
     COUNTIF(event_category = 'credit_card' AND event_name = 'sync_toggle') AS cc_sync_toggle,
     /*Histroy*/
     COUNTIF(event_category = 'history' AND event_name = 'delete_tap') AS history_delete_tap,
@@ -32,35 +50,105 @@ client_product_feature_usage AS (
     COUNTIF(event_category = 'history' AND event_name = 'removed') AS history_removed,
     COUNTIF(event_category = 'history' AND event_name = 'removed_all') AS history_removed_all,
     COUNTIF(event_category = 'history' AND event_name = 'removed_today') AS history_removed_today,
-    COUNTIF(event_category = 'history' AND event_name = 'removed_today_and_yesterday') AS history_removed_today_and_yesterday,
+    COUNTIF(
+      event_category = 'history'
+      AND event_name = 'removed_today_and_yesterday'
+    ) AS history_removed_today_and_yesterday,
     COUNTIF(event_category = 'history' AND event_name = 'search_tap') AS history_search_tap,
     /*FxA*/
     COUNTIF(event_category = 'sync' AND event_name = 'disconnect') AS fxa_disconnect,
-    COUNTIF(event_category = 'sync' AND event_name = 'login_completed_view') AS fxa_login_completed_view,
+    COUNTIF(
+      event_category = 'sync'
+      AND event_name = 'login_completed_view'
+    ) AS fxa_login_completed_view,
     COUNTIF(event_category = 'sync' AND event_name = 'login_token_view') AS fxa_login_token_view,
     COUNTIF(event_category = 'sync' AND event_name = 'login_view') AS fxa_login_view,
     COUNTIF(event_category = 'sync' AND event_name = 'paired') AS fxa_paired,
-    COUNTIF(event_category = 'sync' AND event_name = 'registration_code_view') AS fxa_registration_code_view,
-    COUNTIF(event_category = 'sync' AND event_name = 'registration_completed_view') AS fxa_registration_completed_view,
+    COUNTIF(
+      event_category = 'sync'
+      AND event_name = 'registration_code_view'
+    ) AS fxa_registration_code_view,
+    COUNTIF(
+      event_category = 'sync'
+      AND event_name = 'registration_completed_view'
+    ) AS fxa_registration_completed_view,
     COUNTIF(event_category = 'sync' AND event_name = 'registration_view') AS fxa_registration_view,
     COUNTIF(event_category = 'sync' AND event_name = 'use_email') AS fxa_use_email,
     /*Privacy*/
-    COUNTIF(event_category = 'preferences' AND event_name = 'private_browsing_button_tapped' AND extra.key = 'is_private' AND extra.value = 'true') AS private_browsing_button_tapped_enter_private_mode,
-    COUNTIF(event_category = 'preferences' AND event_name = 'private_browsing_button_tapped') AS private_browsing_button_tapped,
-    COUNTIF(event_category = 'tabs_tray' AND event_name = 'private_browsing_icon_tapped') AS private_browsing_icon_tapped,
-    COUNTIF(event_category = 'app_icon' AND event_name = 'new_private_tab_tapped') AS app_icon_new_private_tab_tapped,
-    COUNTIF(event_category = 'tabs_tray' AND event_name = 'new_private_tab_tapped') AS tabs_tray_new_private_tab_tapped,
+    COUNTIF(
+      event_category = 'preferences'
+      AND event_name = 'private_browsing_button_tapped'
+      AND extra.key = 'is_private'
+      AND extra.value = 'true'
+    ) AS private_browsing_button_tapped_enter_private_mode,
+    COUNTIF(
+      event_category = 'preferences'
+      AND event_name = 'private_browsing_button_tapped'
+    ) AS private_browsing_button_tapped,
+    COUNTIF(
+      event_category = 'tabs_tray'
+      AND event_name = 'private_browsing_icon_tapped'
+    ) AS private_browsing_icon_tapped,
+    COUNTIF(
+      event_category = 'app_icon'
+      AND event_name = 'new_private_tab_tapped'
+    ) AS app_icon_new_private_tab_tapped,
+    COUNTIF(
+      event_category = 'tabs_tray'
+      AND event_name = 'new_private_tab_tapped'
+    ) AS tabs_tray_new_private_tab_tapped,
     /*Awesomebar Location*/
-    COUNTIF(event_category = 'awesomebar' AND event_name = 'drag_location_bar') AS drag_location_bar,
-    COUNTIF(event_category = 'awesomebar' AND event_name = 'location' AND extra.value = 'top') AS location_top,
-    COUNTIF(event_category = 'awesomebar' AND event_name = 'location' AND extra.value = 'bottom') AS location_bottom,
+    COUNTIF(
+      event_category = 'awesomebar'
+      AND event_name = 'drag_location_bar'
+    ) AS drag_location_bar,
+    COUNTIF(
+      event_category = 'awesomebar'
+      AND event_name = 'location'
+      AND extra.value = 'top'
+    ) AS location_top,
+    COUNTIF(
+      event_category = 'awesomebar'
+      AND event_name = 'location'
+      AND extra.value = 'bottom'
+    ) AS location_bottom,
     /*Notification*/
-    COUNTIF(event_category = 'app' AND event_name = 'notification_permission' AND extra.key = 'status' AND extra.value = 'authorized') AS notification_status_authorized,
-    COUNTIF(event_category = 'app' AND event_name = 'notification_permission' AND extra.key = 'status' AND extra.value = 'notDetermined') AS notification_status_notDetermined,
-    COUNTIF(event_category = 'app' AND event_name = 'notification_permission' AND extra.key = 'status' AND extra.value = 'denied') AS notification_status_denied,
-    COUNTIF(event_category = 'app' AND event_name = 'notification_permission' AND extra.key = 'alert_setting' AND extra.value = 'notSupported') AS notification_alert_setting_not_supported,
-    COUNTIF(event_category = 'app' AND event_name = 'notification_permission' AND extra.key = 'alert_setting' AND extra.value = 'disabled') AS notification_alert_setting_disabled,
-    COUNTIF(event_category = 'app' AND event_name = 'notification_permission' AND extra.key = 'alert_setting' AND extra.value = 'enabled') AS notification_alert_setting_enabled
+    COUNTIF(
+      event_category = 'app'
+      AND event_name = 'notification_permission'
+      AND extra.key = 'status'
+      AND extra.value = 'authorized'
+    ) AS notification_status_authorized,
+    COUNTIF(
+      event_category = 'app'
+      AND event_name = 'notification_permission'
+      AND extra.key = 'status'
+      AND extra.value = 'notDetermined'
+    ) AS notification_status_notDetermined,
+    COUNTIF(
+      event_category = 'app'
+      AND event_name = 'notification_permission'
+      AND extra.key = 'status'
+      AND extra.value = 'denied'
+    ) AS notification_status_denied,
+    COUNTIF(
+      event_category = 'app'
+      AND event_name = 'notification_permission'
+      AND extra.key = 'alert_setting'
+      AND extra.value = 'notSupported'
+    ) AS notification_alert_setting_not_supported,
+    COUNTIF(
+      event_category = 'app'
+      AND event_name = 'notification_permission'
+      AND extra.key = 'alert_setting'
+      AND extra.value = 'disabled'
+    ) AS notification_alert_setting_disabled,
+    COUNTIF(
+      event_category = 'app'
+      AND event_name = 'notification_permission'
+      AND extra.key = 'alert_setting'
+      AND extra.value = 'enabled'
+    ) AS notification_alert_setting_enabled
   FROM
     firefox_ios.events_unnested
   LEFT JOIN
@@ -77,16 +165,34 @@ product_features_agg AS (
 /*Logins*/
 --autofill_failed
     SUM(logins_autofill_failed) AS logins_autofill_failed,
-    COUNT(DISTINCT CASE WHEN logins_autofill_failed > 0 THEN client_id END) AS logins_autofill_failed_users,
+    COUNT(
+      DISTINCT
+      CASE
+        WHEN logins_autofill_failed > 0
+          THEN client_id
+      END
+    ) AS logins_autofill_failed_users,
 --logins_autofilled
     SUM(logins_autofilled) AS logins_autofilled,
     COUNT(DISTINCT CASE WHEN logins_autofilled > 0 THEN client_id END) AS logins_autofilled_users,
 --logins_management_add_tapped
     SUM(logins_management_add_tapped) AS logins_management_add_tapped,
-    COUNT(DISTINCT CASE WHEN logins_management_add_tapped > 0 THEN client_id END) AS logins_management_add_tapped_users,
+    COUNT(
+      DISTINCT
+      CASE
+        WHEN logins_management_add_tapped > 0
+          THEN client_id
+      END
+    ) AS logins_management_add_tapped_users,
 --logins_management_logins_tapped
     SUM(logins_management_logins_tapped) AS logins_management_logins_tapped,
-    COUNT(DISTINCT CASE WHEN logins_management_logins_tapped > 0 THEN client_id END) AS logins_management_logins_tapped_users,
+    COUNT(
+      DISTINCT
+      CASE
+        WHEN logins_management_logins_tapped > 0
+          THEN client_id
+      END
+    ) AS logins_management_logins_tapped_users,
 /*Credit Card*/
 --autofill_failed
     SUM(cc_autofill_failed) AS cc_autofill_failed,

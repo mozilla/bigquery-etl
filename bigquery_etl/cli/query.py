@@ -12,6 +12,7 @@ import sys
 import tempfile
 from datetime import date, timedelta
 from functools import partial
+from glob import glob
 from multiprocessing.pool import Pool, ThreadPool
 from pathlib import Path
 from tempfile import NamedTemporaryFile
@@ -1388,7 +1389,9 @@ def initialize(
         table = None
 
         sql_content = query_file.read_text()
-        init_files = list(Path(query_file.parent).rglob("init.sql"))
+        init_files = list(
+            map(Path, glob(f"{query_file.parent}/**/init.sql", recursive=True))
+        )
 
         # check if the provided file can be initialized and whether existing ones should be skipped
         if "is_init()" in sql_content or len(init_files) > 0:
@@ -1415,7 +1418,13 @@ def initialize(
             # matches the query.
             if "is_init()" in sql_content:
                 if not table:
-                    ctx.invoke(deploy, name=full_table_id, force=True)
+                    ctx.invoke(
+                        deploy,
+                        name=full_table_id,
+                        sql_dir=sql_dir,
+                        project_id=project,
+                        force=True,
+                    )
 
                 arguments = [
                     "query",

@@ -36,7 +36,6 @@ scheduling:
         avatar
       FROM users
       WHERE DATE(updated_at) = DATE '{{ds}}'
-  referenced_tables: []
 bigquery:
   time_partitioning:
     type: day

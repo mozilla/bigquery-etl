@@ -68,6 +68,16 @@ get_all_events_in_each_session_staging AS (
       FROM
         UNNEST(event_params)
       WHERE
+        key = 'engaged_session_event'
+      LIMIT
+        1
+    ).int_value AS engaged_session_event,
+    (
+      SELECT
+        `value`
+      FROM
+        UNNEST(event_params)
+      WHERE
         key = 'page_location'
       LIMIT
         1
@@ -124,6 +134,19 @@ session_exits AS (
     3,
     4
 )
+--to do - add below
+--calculate first and last interaction by getting min and max hit number
+--where engaged session event = 1
+first_and_last_interaction AS (
+  SELECT
+    visit_identifier,
+    MIN(CASE WHEN engaged_session_event = 1 THEN hit_number ELSE NULL END) AS first_interaction,
+    MAX(CASE WHEN engaged_session_event = 1 THEN hit_number ELSE NULL END) AS last_interaction
+  FROM
+    get_all_events_in_each_session
+  GROUP BY
+    visit_identifier
+)
 SELECT
   a.date,
   a.visit_identifier,
@@ -161,10 +184,8 @@ SELECT
 ? AS bounces,
 */
   SAFE_DIVIDE(engagement_time_msec, 1000) AS hit_time,
-/*
-? AS first_interaction,
-? AS last_interaction,
-*/
+  d.first_interaction,
+  d.last_interaction,
   b.is_entrance AS entrances,
   COALESCE(c.is_exit, 0) AS exits,
   NULL AS event_id, --old table defined this from event category, action, and label, which no longer exist in GA4
@@ -198,3 +219,6 @@ LEFT OUTER JOIN
   session_exits c
   ON b.visit_identifier = c.visit_identifier
   AND b.row_nbr = c.row_nbr_to_count_as_exit
+LEFT OUTER JOIN
+  first_and_last_interaction d
+  ON a.visit_identifier = d.visit_identifier

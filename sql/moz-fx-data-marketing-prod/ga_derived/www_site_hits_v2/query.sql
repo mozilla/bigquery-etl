@@ -14,7 +14,7 @@ WITH get_session_start_time AS (
           key = 'ga_session_id'
         LIMIT
           1
-      ).int_value AS string
+      ).int_value AS STRING
     ) AS visit_identifier,
     a.user_pseudo_id AS full_visitor_id,
     MIN(event_timestamp) AS visit_start_time

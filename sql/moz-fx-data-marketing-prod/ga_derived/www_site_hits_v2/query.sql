@@ -207,7 +207,7 @@ final_staging AS (
     END AS bounces, --this is the equivalent logic to totals.bounces in UA
     SAFE_DIVIDE(engagement_time_msec, 1000) AS hit_time,
     d.first_interaction,
-    CAST(d.last_interaction AS float) AS last_interaction,
+    CAST(d.last_interaction AS float64) AS last_interaction,
     b.is_entrance AS entrances,
     COALESCE(c.is_exit, 0) AS exits,
     CAST(

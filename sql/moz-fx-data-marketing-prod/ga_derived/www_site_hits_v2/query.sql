@@ -20,11 +20,11 @@ WITH get_session_start_time AS (
     MIN(event_timestamp) AS visit_start_time
   FROM
     `moz-fx-data-marketing-prod.analytics_313696158.events_*` a
-  JOIN 
-  UNNEST(event_params) e 
-  WHERE e.key = 'ga_session_id'
-  AND
-    _TABLE_SUFFIX = SAFE.FORMAT_DATE('%Y%m%d', @submission_date)
+  JOIN
+    UNNEST(event_params) e
+  WHERE
+    e.key = 'ga_session_id'
+    AND _TABLE_SUFFIX = SAFE.FORMAT_DATE('%Y%m%d', @submission_date)
   GROUP BY
     date,
     visit_identifier,
@@ -135,7 +135,7 @@ hit_nbr_of_last_page_view_in_each_session AS (
   WHERE
     event_name = 'page_view'
   GROUP BY
-    1
+    visit_identifier
 ),
 --because sometimes there are multiple page views with the same event timestamp,
 --choose only 1 to represent the exit, so as not to double count exits

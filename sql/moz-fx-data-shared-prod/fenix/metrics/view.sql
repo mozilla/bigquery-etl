@@ -154,7 +154,11 @@ SELECT
       metrics.labeled_counter.codec_stats_video_preferred_codec,
       metrics.labeled_counter.fog_validation_gvsv_audio_stream_init_gvst,
       metrics.labeled_counter.gpu_process_crash_fallbacks,
-      metrics.labeled_counter.avif_aom_decode_error
+      metrics.labeled_counter.avif_aom_decode_error,
+      metrics.labeled_counter.formautofill_form_submission_heuristic,
+      metrics.labeled_counter.networking_http_channel_onstart_success_https_rr,
+      metrics.labeled_counter.networking_https_rr_presented,
+      metrics.labeled_counter.networking_https_upgrade_with_https_rr
     ) AS `labeled_counter`,
     metrics.quantity,
     metrics.string,
@@ -508,7 +512,11 @@ SELECT
       metrics.labeled_counter.codec_stats_video_preferred_codec,
       metrics.labeled_counter.fog_validation_gvsv_audio_stream_init_gvst,
       metrics.labeled_counter.gpu_process_crash_fallbacks,
-      metrics.labeled_counter.avif_aom_decode_error
+      metrics.labeled_counter.avif_aom_decode_error,
+      metrics.labeled_counter.formautofill_form_submission_heuristic,
+      metrics.labeled_counter.networking_http_channel_onstart_success_https_rr,
+      metrics.labeled_counter.networking_https_rr_presented,
+      metrics.labeled_counter.networking_https_upgrade_with_https_rr
     ) AS `labeled_counter`,
     metrics.quantity,
     STRUCT(
@@ -712,7 +720,14 @@ SELECT
       metrics.timing_distribution.extensions_timing_storage_local_get_json,
       metrics.timing_distribution.extensions_timing_storage_local_set_idb,
       metrics.timing_distribution.extensions_timing_storage_local_set_json,
-      metrics.timing_distribution.cookie_banners_cmp_handle_duration
+      metrics.timing_distribution.cookie_banners_cmp_handle_duration,
+      metrics.timing_distribution.networking_http_channel_page_open_to_first_sent,
+      metrics.timing_distribution.networking_http_channel_page_open_to_first_sent_https_rr,
+      metrics.timing_distribution.networking_http_channel_sub_open_to_first_sent,
+      metrics.timing_distribution.networking_http_channel_sub_open_to_first_sent_https_rr,
+      metrics.timing_distribution.networking_transaction_wait_time,
+      metrics.timing_distribution.networking_transaction_wait_time_https_rr,
+      metrics.timing_distribution.privacy_sanitize_load_time
     ) AS `timing_distribution`,
     metrics.memory_distribution,
     metrics.datetime,
@@ -1071,7 +1086,11 @@ SELECT
       metrics.labeled_counter.codec_stats_video_preferred_codec,
       metrics.labeled_counter.fog_validation_gvsv_audio_stream_init_gvst,
       metrics.labeled_counter.gpu_process_crash_fallbacks,
-      metrics.labeled_counter.avif_aom_decode_error
+      metrics.labeled_counter.avif_aom_decode_error,
+      metrics.labeled_counter.formautofill_form_submission_heuristic,
+      metrics.labeled_counter.networking_http_channel_onstart_success_https_rr,
+      metrics.labeled_counter.networking_https_rr_presented,
+      metrics.labeled_counter.networking_https_upgrade_with_https_rr
     ) AS `labeled_counter`,
     metrics.quantity,
     STRUCT(
@@ -1275,7 +1294,14 @@ SELECT
       metrics.timing_distribution.extensions_timing_storage_local_get_json,
       metrics.timing_distribution.extensions_timing_storage_local_set_idb,
       metrics.timing_distribution.extensions_timing_storage_local_set_json,
-      metrics.timing_distribution.cookie_banners_cmp_handle_duration
+      metrics.timing_distribution.cookie_banners_cmp_handle_duration,
+      metrics.timing_distribution.networking_http_channel_page_open_to_first_sent,
+      metrics.timing_distribution.networking_http_channel_page_open_to_first_sent_https_rr,
+      metrics.timing_distribution.networking_http_channel_sub_open_to_first_sent,
+      metrics.timing_distribution.networking_http_channel_sub_open_to_first_sent_https_rr,
+      metrics.timing_distribution.networking_transaction_wait_time,
+      metrics.timing_distribution.networking_transaction_wait_time_https_rr,
+      metrics.timing_distribution.privacy_sanitize_load_time
     ) AS `timing_distribution`,
     metrics.memory_distribution,
     metrics.datetime,
@@ -1435,7 +1461,11 @@ SELECT
       metrics.labeled_counter.codec_stats_video_preferred_codec,
       metrics.labeled_counter.fog_validation_gvsv_audio_stream_init_gvst,
       metrics.labeled_counter.gpu_process_crash_fallbacks,
-      metrics.labeled_counter.avif_aom_decode_error
+      metrics.labeled_counter.avif_aom_decode_error,
+      metrics.labeled_counter.formautofill_form_submission_heuristic,
+      metrics.labeled_counter.networking_http_channel_onstart_success_https_rr,
+      metrics.labeled_counter.networking_https_rr_presented,
+      metrics.labeled_counter.networking_https_upgrade_with_https_rr
     ) AS `labeled_counter`,
     metrics.quantity,
     metrics.string,

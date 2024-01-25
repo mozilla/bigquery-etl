@@ -170,7 +170,11 @@ SELECT
       metrics.labeled_counter.codec_stats_other_fec_signaled,
       metrics.labeled_counter.codec_stats_ulpfec_negotiated,
       metrics.labeled_counter.codec_stats_video_preferred_codec,
-      metrics.labeled_counter.gpu_process_crash_fallbacks
+      metrics.labeled_counter.gpu_process_crash_fallbacks,
+      metrics.labeled_counter.formautofill_form_submission_heuristic,
+      metrics.labeled_counter.networking_http_channel_onstart_success_https_rr,
+      metrics.labeled_counter.networking_https_rr_presented,
+      metrics.labeled_counter.networking_https_upgrade_with_https_rr
     ) AS `labeled_counter`,
     metrics.memory_distribution,
     STRUCT(
@@ -355,7 +359,11 @@ SELECT
       metrics.labeled_counter.codec_stats_other_fec_signaled,
       metrics.labeled_counter.codec_stats_ulpfec_negotiated,
       metrics.labeled_counter.codec_stats_video_preferred_codec,
-      metrics.labeled_counter.gpu_process_crash_fallbacks
+      metrics.labeled_counter.gpu_process_crash_fallbacks,
+      metrics.labeled_counter.formautofill_form_submission_heuristic,
+      metrics.labeled_counter.networking_http_channel_onstart_success_https_rr,
+      metrics.labeled_counter.networking_https_rr_presented,
+      metrics.labeled_counter.networking_https_upgrade_with_https_rr
     ) AS `labeled_counter`,
     metrics.memory_distribution,
     STRUCT(

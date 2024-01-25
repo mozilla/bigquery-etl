@@ -367,6 +367,14 @@ fields:
         ip.
 
         '
+    - name: glean_client_annotation_experimentation_id
+      type: STRING
+      mode: NULLABLE
+      description: 'An experimentation identifier derived and provided by the application
+
+        for the purpose of experimentation enrollment.
+
+        '
   - name: quantity
     type: RECORD
     mode: NULLABLE

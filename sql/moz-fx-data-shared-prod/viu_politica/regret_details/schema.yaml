@@ -308,6 +308,14 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Regret Id (matches the regret id in the regret action event)
+    - name: glean_client_annotation_experimentation_id
+      type: STRING
+      mode: NULLABLE
+      description: 'An experimentation identifier derived and provided by the application
+
+        for the purpose of experimentation enrollment.
+
+        '
   - name: text2
     type: RECORD
     mode: NULLABLE

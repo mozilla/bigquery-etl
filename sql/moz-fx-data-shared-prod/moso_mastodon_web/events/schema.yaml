@@ -336,6 +336,14 @@ fields:
         \ HTTP header. May not always be available. For example, `https://www.google.com`.\n\
         data_taxonomy:\n  data_categories: []\n  data_uses: [analytics.reporting]\n\
         \  data_subjects: [customer, visitor]\n  data_qualifier: [n/a]\n"
+    - name: glean_client_annotation_experimentation_id
+      type: STRING
+      mode: NULLABLE
+      description: 'An experimentation identifier derived and provided by the application
+
+        for the purpose of experimentation enrollment.
+
+        '
   - name: url2
     type: RECORD
     mode: NULLABLE

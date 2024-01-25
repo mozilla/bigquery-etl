@@ -1,0 +1,49 @@
+fields:
+- name: date
+  type: DATE
+  mode: NULLABLE
+  description: The day on which the search occurred (Pacific Time).
+- name: site_url
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    For domain properties, this will be `sc-domain:` followed by the domain name.
+    For URL-prefix properties, it will be the full URL of the property definition.
+- name: site_domain_name
+  type: STRING
+  mode: NULLABLE
+  description: Domain name of the site.
+- name: query
+  type: STRING
+  mode: NULLABLE
+  description: The search query.
+- name: search_type
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Which Google Search results tab contained the link seen by the user:
+      * Web: Link appeared in the "All" tab (this includes any image or video links shown in the "All" tab).
+      * Image: Link appeared in the "Images" tab.
+      * Video: Link appeared in the "Videos" tab.
+      * News: Link appeared in the "News" tab.
+- name: country_code
+  type: STRING
+  mode: NULLABLE
+  description: Country from which the search was made, in ISO-3166-1-Alpha-3 format.
+- name: device_type
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    The type of device on which the user was searching: Desktop, Mobile, or Tablet.
+- name: impressions
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of times that search results with at least one link to the site were shown to a user.
+- name: clicks
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of times a user clicked at least one search result link to the site.
+- name: average_top_position
+  type: FLOAT
+  mode: NULLABLE
+  description: The average top position of the site in the search results, where `1` is the topmost position.

@@ -176,6 +176,8 @@ dry_run:
   - sql/moz-fx-data-shared-prod/**/client_deduplication*/*.sql
   - sql/moz-fx-data-marketing-prod/ga_derived/downloads_with_attribution_v1/query.sql
   - sql/moz-fx-data-marketing-prod/ga_derived/downloads_with_attribution_v2/query.sql
+  - sql/moz-fx-data-marketing-prod/google_search_console_derived/search_impressions_by_page_v1/query.sql
+  - sql/moz-fx-data-marketing-prod/google_search_console_derived/search_impressions_by_site_v1/query.sql
   - sql/moz-fx-data-shared-prod/fenix_external/installs_by_country_v1/query.sql
   - sql/moz-fx-data-shared-prod/fenix/installs_by_country/view.sql
   - sql/moz-fx-data-shared-prod/firefox_desktop/top_sites/view.sql

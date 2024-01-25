@@ -1,0 +1,29 @@
+friendly_name: Search Impressions By Page
+description: |-
+  Google Search impressions aggregated by page, synced by Fivetran to BigQuery for the following domains:
+    * addons.mozilla.org
+    * blog.mozilla.org
+    * getpocket.com
+    * support.mozilla.org
+    * www.mozilla.org
+
+  Anonymized search queries aren't included.
+
+  We stopped syncing Google Search Console data with Fivetran in August 2023.
+  See https://bugzilla.mozilla.org/show_bug.cgi?id=1764960#c44.
+owners:
+- srose@mozilla.com
+labels:
+  incremental: true
+  owner1: srose
+scheduling:
+  date_partition_parameter: date
+bigquery:
+  time_partitioning:
+    type: day
+    field: date
+    require_partition_filter: false
+    expiration_days: null
+  clustering:
+    fields:
+    - site_domain_name

@@ -3,7 +3,7 @@
 -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
 WITH get_session_start_time AS (
   SELECT
-    SAFE.PARSE_DATE('%Y%m%d', a.event_date) AS event_date,
+    SAFE.PARSE_DATE('%Y%m%d', a.event_date) AS date,
     a.user_pseudo_id || '-' || CAST(
       (
         SELECT

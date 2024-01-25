@@ -21,7 +21,7 @@ WITH get_session_start_time AS (
   FROM
     `moz-fx-data-marketing-prod.analytics_313696158.events_*` a
   WHERE
-    _TABLE_SUFFIX = FORMAT_DATE('%Y%m%d', @submission_date)
+    _TABLE_SUFFIX = SAFE.FORMAT_DATE('%Y%m%d', @submission_date)
   GROUP BY
     date,
     visit_identifier,

@@ -92,7 +92,7 @@ get_all_events_in_each_session_staging AS (
   FROM
     `moz-fx-data-marketing-prod.analytics_313696158.events_*` a
   WHERE
-    _TABLE_SUFFIX = FORMAT_DATE('%Y%m%d', @submission_date)
+    _TABLE_SUFFIX = SAFE.FORMAT_DATE('%Y%m%d', @submission_date)
 ),
 --if there are multiple events at the same timestamp in the same session, assign them all the same hit number
 get_all_events_in_each_session AS (

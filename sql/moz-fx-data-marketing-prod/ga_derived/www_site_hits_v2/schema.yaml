@@ -34,7 +34,7 @@ fields:
 - mode: NULLABLE
   name: is_entrance
   type: BOOLEAN
-  description: Is Entrance - The specific page view event that is considered the entrance to the visit 
+  description: Is Entrance - The specific page view event that is considered the entrance to the visit
 - mode: NULLABLE
   name: hit_number
   type: INT64

@@ -1,5 +1,6 @@
 import os
 import types
+from pathlib import Path
 from unittest.mock import patch
 
 import pytest
@@ -55,8 +56,6 @@ class TestQuery:
         with runner.isolated_filesystem():
             os.makedirs("sql/moz-fx-data-shared-prod")
             result = runner.invoke(create, ["test.test_query", "--no_schedule"])
-            print(result.exc_info)
-            print(result.exception)
             assert result.exit_code == 0
             assert os.listdir("sql/moz-fx-data-shared-prod") == ["test"]
             assert sorted(os.listdir("sql/moz-fx-data-shared-prod/test")) == [
@@ -144,6 +143,39 @@ class TestQuery:
             assert os.listdir("sql/moz-fx-data-shared-prod/test/test_query") == [
                 "view.sql"
             ]
+
+    def test_create_derived_query_with_existing_view(self, runner):
+        with runner.isolated_filesystem():
+            project_dir = Path("sql/moz-fx-data-shared-prod")
+            existing_query = (
+                project_dir / "test_derived" / "test_query_v1" / "query.sql"
+            )
+            existing_query.parent.mkdir(parents=True)
+            existing_query.touch()
+
+            existing_view = project_dir / "test" / "test_query" / "view.sql"
+            existing_view.parent.mkdir(parents=True)
+            existing_view.touch()
+
+            result = runner.invoke(
+                create, ["test_derived.test_query_v2", "--no_schedule"]
+            )
+            assert result.exit_code == 0
+            assert "test_derived" in os.listdir("sql/moz-fx-data-shared-prod")
+            assert "test" in os.listdir("sql/moz-fx-data-shared-prod")
+            assert sorted(os.listdir("sql/moz-fx-data-shared-prod/test_derived")) == [
+                "dataset_metadata.yaml",
+                "test_query_v1",
+                "test_query_v2",
+            ]
+            assert sorted(os.listdir("sql/moz-fx-data-shared-prod/test")) == [
+                "dataset_metadata.yaml",
+                "test_query",
+            ]
+            assert os.listdir("sql/moz-fx-data-shared-prod/test/test_query") == [
+                "view.sql"
+            ]
+            assert existing_view.read_text() == ""
 
     def test_create_query_as_derived(self, runner):
         with runner.isolated_filesystem():

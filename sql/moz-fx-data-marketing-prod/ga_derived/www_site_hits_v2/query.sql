@@ -152,11 +152,11 @@ session_exits AS (
     AND a.hit_number = b.max_hit_number
     AND a.event_name = 'page_view'
   GROUP BY
-    1,
-    2,
-    3,
-    4,
-    5
+    a.visit_identifier,
+    b.max_hit_number,
+    b.nbr_page_view_events,
+    is_exit,
+    a.event_name
 ),
 first_and_last_interaction AS (
   SELECT

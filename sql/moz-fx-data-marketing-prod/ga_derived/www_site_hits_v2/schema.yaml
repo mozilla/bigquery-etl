@@ -106,7 +106,7 @@ fields:
 - mode: NULLABLE
   name: bounces
   type: INT64
-  description: Bounces
+  description: Bounces - A session is considered a bounce if it contains only 1 page view
 - mode: NULLABLE
   name: hit_time
   type: FLOAT
@@ -122,11 +122,11 @@ fields:
 - mode: NULLABLE
   name: entrances
   type: INT64
-  description: Entrances
+  description: Entrances - Denotes which pageview was the first in the session
 - mode: NULLABLE
   name: exits
   type: INT64
-  description: Exits
+  description: Exits - Denotes which page view was the last in the session
 - mode: NULLABLE
   name: event_id
   type: STRING
@@ -154,4 +154,4 @@ fields:
 - mode: NULLABLE
   name: page_name
   type: STRING
-  description: Page Name
+  description: Page Name - Consists of page levels 1 to 5 concatenated together

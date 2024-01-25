@@ -207,10 +207,10 @@ final_staging AS (
     END AS bounces, --this is the equivalent logic to totals.bounces in UA
     SAFE_DIVIDE(engagement_time_msec, 1000) AS hit_time,
     d.first_interaction,
-    d.last_interaction,
+    CAST(d.last_interaction as float) AS last_interaction,
     b.is_entrance AS entrances,
     COALESCE(c.is_exit, 0) AS exits,
-    NULL AS event_id, --old table defined this from event category, action, and label, which no longer exist in GA4
+    CAST(NULL as string) AS event_id, --old table defined this from event category, action, and label, which no longer exist in GA4
     SPLIT(REGEXP_REPLACE(b.page_location, '^https://www.mozilla.org', ''), '/')[
       SAFE_OFFSET(1)
     ] AS page_level_1,

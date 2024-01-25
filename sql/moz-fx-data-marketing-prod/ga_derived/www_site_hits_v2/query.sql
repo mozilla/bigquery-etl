@@ -140,6 +140,7 @@ session_exits AS (
 first_and_last_interaction AS (
   SELECT
     visit_identifier,
+    MAX(CASE WHEN engaged_session_event = 1 THEN 1 ELSE 0 END) AS session_had_an_engaged_event,
     MIN(CASE WHEN engaged_session_event = 1 THEN hit_number ELSE NULL END) AS first_interaction,
     MAX(CASE WHEN engaged_session_event = 1 THEN hit_number ELSE NULL END) AS last_interaction
   FROM
@@ -179,8 +180,8 @@ SELECT
   b.medium,
   b.campaign,
   b.ad_content,
+  d.session_had_an_engaged_event AS visits, --this is the equivalent logic to totals.visits in UA
 /*
-? AS visits,
 ? AS bounces,
 */
   SAFE_DIVIDE(engagement_time_msec, 1000) AS hit_time,

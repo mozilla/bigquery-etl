@@ -2082,6 +2082,18 @@ def deploy(
             return
 
         try:
+            metadata = Metadata.of_query_file(query_file_path)
+            if (
+                metadata.scheduling
+                and "destination_table" in metadata.scheduling
+                and metadata.scheduling["destination_table"] is None
+            ):
+                click.echo(f"No destination table defined for {query_file}")
+                return
+        except FileNotFoundError:
+            pass
+
+        try:
             table_name = query_file_path.parent.name
             dataset_name = query_file_path.parent.parent.name
             project_name = query_file_path.parent.parent.parent.name

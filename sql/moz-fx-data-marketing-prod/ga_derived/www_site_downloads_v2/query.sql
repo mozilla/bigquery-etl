@@ -35,7 +35,7 @@ JOIN
 WHERE
   _TABLE_SUFFIX = FORMAT_DATE('%Y%m%d', @submission_date)
   AND e.key = 'ga_session_id'
-  AND e.event_name = 'product_download'
+  AND a.event_name = 'product_download'
 GROUP BY
   date,
   visit_identifier,

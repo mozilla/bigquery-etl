@@ -1,7 +1,6 @@
 -- Query for ga_derived.www_site_downloads_v2
-            -- For more information on writing queries see:
-            -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
---get  visit ids with ga_session_id in it ,then later on left join from this
+-- For more information on writing queries see:
+-- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
 SELECT
   PARSE_DATE('%Y%m%d', event_date) AS date,
   a.user_pseudo_id || '-' || CAST(

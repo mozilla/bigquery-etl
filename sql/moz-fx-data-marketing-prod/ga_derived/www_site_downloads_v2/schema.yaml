@@ -10,35 +10,35 @@ fields:
 - mode: NULLABLE
   name: device_category
   type: STRING
-  description: Device Category
+  description: Device Category - The device category the visitor used to visit the site
 - mode: NULLABLE
   name: operating_system
   type: STRING
-  description: Operating System
+  description: Operating System - The operating system the visitor used to visit the site
 - mode: NULLABLE
   name: language
   type: STRING
-  description: Language
+  description: Language - Language of visitor's device
 - mode: NULLABLE
   name: country
   type: STRING
-  description: Country
+  description: Country - The country from which events were reported, based on IP address
 - mode: NULLABLE
   name: source
   type: STRING
-  description: Source
+  description: Source - Referring partner domain
 - mode: NULLABLE
   name: medium
   type: STRING
-  description: Medium
+  description: Medium - Category of the source, such as 'organic' for a search engine
 - mode: NULLABLE
   name: campaign
   type: STRING
-  description: Campaign
+  description: Campaign - Identifier for the marketing campaign
 - mode: NULLABLE
   name: ad_content
   type: STRING
-  description: Ad Content
+  description: Ad Content - Indicates the particular link within a campaign
 - mode: NULLABLE
   name: browser
   type: STRING

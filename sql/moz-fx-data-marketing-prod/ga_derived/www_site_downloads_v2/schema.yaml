@@ -50,7 +50,7 @@ fields:
 - mode: NULLABLE
   name: downloads
   type: INT64
-  description: Downloads
+  description: Downloads - Same as download events (in GA3, if someone downloaded multiple times in 1 session, it only counted 1x towards a conversion, but in GA4, all downloads in a session count)
 - mode: NULLABLE
   name: non_fx_downloads
   type: INT64

@@ -31,9 +31,12 @@ WITH base AS (
     client_info.client_id AS client_id,
     ping_info.reason AS reason,
     `mozfun.json.from_map`(ping_info.experiments) AS experiments,
-    SAFE.TIMESTAMP_ADD(
-      ping_info.parsed_start_time,
-      INTERVAL event.timestamp MILLISECOND
+    COALESCE(
+      SAFE.TIMESTAMP_MILLIS(SAFE_CAST(mozfun.map.get_key(event.extra, 'glean_timestamp') AS INT64)),
+      SAFE.TIMESTAMP_ADD(
+        ping_info.parsed_start_time,
+        INTERVAL event.timestamp MILLISECOND
+      )
     ) AS event_timestamp,
     event.category as event_category,
     event.name as event_name,

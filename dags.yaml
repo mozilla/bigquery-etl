@@ -1471,3 +1471,21 @@ bqetl_glam_refresh_aggregates:
   tags:
     - impact/tier_2
     - repo/bigquery-etl
+
+bqetl_google_search_console:
+  schedule_interval: 0 8 * * *
+  description: |
+    ETLs using data exported from Google Search Console.
+
+    The Google Search Console exports for a date typically complete by 08:00 UTC two days after that date,
+    so these ETLs should generally specify `date_partition_offset: -1` in their scheduling metadata.
+  default_args:
+    owner: srose@mozilla.com
+    email:
+      - srose@mozilla.com
+      - telemetry-alerts@mozilla.com
+    start_date: '2024-01-26'
+    retries: 2
+    retry_delay: 30m
+  tags:
+    - impact/tier_1

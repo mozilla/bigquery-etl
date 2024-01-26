@@ -1,0 +1,35 @@
+friendly_name: Search Impressions By Page
+description: |-
+  Google Search impressions aggregated by page, exported directly to BigQuery for the following domains:
+    * addons.mozilla.org
+    * blog.mozilla.org
+    * getpocket.com
+    * support.mozilla.org
+    * www.mozilla.org
+
+  Anonymized search queries are included.
+
+  We started exporting Google Search Console data directly to BigQuery in July 2023.
+  See https://bugzilla.mozilla.org/show_bug.cgi?id=1764960#c34.
+owners:
+- srose@mozilla.com
+labels:
+  incremental: true
+  owner1: srose
+scheduling:
+  dag_name: bqetl_google_search_console
+  date_partition_parameter: date
+  # Google Search Console exports typically happen two days after the data date in UTC.
+  date_partition_offset: -1
+  depends_on:
+  - task_id: google_search_console_derived__url_impression_exports_empty_check__v1
+    dag_name: bqetl_google_search_console
+bigquery:
+  time_partitioning:
+    type: day
+    field: date
+    require_partition_filter: false
+    expiration_days: null
+  clustering:
+    fields:
+    - site_domain_name

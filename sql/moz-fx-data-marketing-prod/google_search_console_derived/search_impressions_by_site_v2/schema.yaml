@@ -17,6 +17,12 @@ fields:
   type: STRING
   mode: NULLABLE
   description: The search query.
+- name: is_anonymized
+  type: BOOLEAN
+  mode: NULLABLE
+  description: |-
+    Whether Google has anonymized the search impression to protect the users' privacy.
+    The `query` field will be null for anonymized search impressions.
 - name: search_type
   type: STRING
   mode: NULLABLE

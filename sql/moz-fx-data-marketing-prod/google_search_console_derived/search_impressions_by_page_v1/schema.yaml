@@ -37,11 +37,11 @@ fields:
   type: STRING
   mode: NULLABLE
   description: |-
-    Which Google Search results tab contained the link seen by the user:
-      * Web: Link appeared in the "All" tab (this includes any image or video links shown in the "All" tab).
-      * Image: Link appeared in the "Images" tab.
-      * Video: Link appeared in the "Videos" tab.
-      * News: Link appeared in the "News" tab.
+    Where the link was seen by the user:
+      * Web: In Google Search's default "All" tab.
+      * Image: In Google Search's "Images" tab.
+      * Video: In Google Search's "Videos" tab.
+      * News: In Google Search's "News" tab.
 - name: country_code
   type: STRING
   mode: NULLABLE

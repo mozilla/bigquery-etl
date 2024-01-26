@@ -1,0 +1,6 @@
+friendly_name: |-
+  Clients Profile Per Install Affected
+description: |-
+  Client profiles affected by shredder. Populated by shredder.
+owners:
+- ascholtz@mozilla.com

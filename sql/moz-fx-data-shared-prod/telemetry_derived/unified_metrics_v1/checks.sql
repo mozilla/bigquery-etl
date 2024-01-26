@@ -1,9 +1,12 @@
 #fail
 {{ min_row_count(1000, where="submission_date = @submission_date") }}
+
 #fail
 {{ not_null(columns=["submission_date", "client_id", "first_seen_date"], where="submission_date = @submission_date") }}
+
 #fail
 {{ row_count_within_past_partitions_avg(number_of_days=7, threshold_percentage=5) }}
+
 #fail
 {{ value_length(column="client_id", expected_length=36, where="submission_date = @submission_date") }}
 {#
@@ -13,6 +16,7 @@
 -- #fail
 -- {{ is_unique(columns=["client_id"], where="submission_date = @submission_date") }}
 #}
+
 #warn
 {{ not_null(columns=[
   "activity_segment",
@@ -29,8 +33,10 @@
   "os_version_minor",
   "os_version_patch"
 ], where="submission_date = @submission_date") }}
+
 #warn
 {{ value_length(column="country", expected_length=2, where="submission_date = @submission_date") }}
+
 #warn
 SELECT
   IF(

@@ -8,6 +8,7 @@
    during `bqetl query backfill`.
    (you can also run them locally with `bqetl check run`).
 #}
+
 #warn
 WITH daily_users_sum AS (
   SELECT

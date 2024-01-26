@@ -1,9 +1,12 @@
 #fail
 {{ is_unique(columns=["client_id"]) }}
+
 #fail
 {{ not_null(columns=["client_id"], where="first_seen_date = @submission_date") }}
+
 #fail
 {{ min_row_count(1, where="first_seen_date = @submission_date") }}
+
 #warn
 SELECT
   IF(

@@ -1,7 +1,9 @@
 #fail
 {{ min_row_count(1000, where="DATE(datetime) = @submission_date") }}
+
 #fail
 {{ is_unique(columns=["datetime", "city", "country"], where="DATE(`datetime`) = @submission_date") }}
+
 #fail
 /*
   This statement used to contain the following fields,
@@ -29,5 +31,6 @@
   "ssl_error_prop",
 
 ], where="DATE(`datetime`) = @submission_date") }}
+
 #warn
 {{ value_length(column="country", expected_length=2, where="DATE(`datetime`) = @submission_date") }}

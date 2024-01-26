@@ -1,0 +1,14 @@
+friendly_name: Clients Profile Per Install Affected
+description: |-
+  Client profiles affected by shredder. Populated by shredder.
+owners:
+- ascholtz@mozilla.com
+labels:
+  owner1: ascholtz
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

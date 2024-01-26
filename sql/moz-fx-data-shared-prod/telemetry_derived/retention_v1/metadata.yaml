@@ -1,0 +1,9 @@
+friendly_name: Retention
+description: |-
+  Please provide a description for the query
+owners: []
+labels: {}
+bigquery: null
+workgroup_access: []
+references: {}
+deprecated: true

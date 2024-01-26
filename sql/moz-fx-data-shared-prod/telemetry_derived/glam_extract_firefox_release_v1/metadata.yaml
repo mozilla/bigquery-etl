@@ -1,0 +1,15 @@
+friendly_name: GLAM Firefox Release Extracts
+description: |-
+  Holds the data that is surfaced on the GLAM frontend for Firefox Release
+  Populated via: https://github.com/mozilla/telemetry-airflow/blob/4050697bd2e283864a9013bd48d439eb66f6d581/utils/glam_subdags/extract.py#L40
+owners:
+- efilho@mozilla.com
+labels:
+  owner1: efilho
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

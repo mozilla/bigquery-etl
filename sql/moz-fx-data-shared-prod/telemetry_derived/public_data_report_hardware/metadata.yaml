@@ -1,0 +1,17 @@
+friendly_name: Firefox Public Data Report
+description: |-
+  Powers the public https://data.firefox.com/ dashboard.
+
+  Source code is in the [firefox-public-data-report-etl repository]
+  (https://github.com/mozilla/firefox-public-data-report-etl).
+owners:
+- akomar@mozilla.com
+labels:
+  owner1: akomar
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

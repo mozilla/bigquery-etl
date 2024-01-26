@@ -1,0 +1,14 @@
+friendly_name: KPI Automated Forecast Confidences
+description: |-
+  Populated via https://github.com/mozilla/docker-etl/tree/main/jobs/kpi-forecasting
+owners:
+- bochocki@mozilla.com
+labels:
+  owner1: bochocki
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

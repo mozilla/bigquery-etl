@@ -1,9 +1,7 @@
 # fail
 {{ is_unique(["country", "state"]) }}
-
 # fail
 {{ min_row_count(1000) }}
-
 # fail
 -- Each country should have a single state function
 SELECT

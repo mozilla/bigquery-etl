@@ -30,7 +30,6 @@ distinct_client_count_base AS (
       COUNT(DISTINCT client_info.client_id) AS distinct_client_count,
     FROM
       {{ channel.table }}
-
     WHERE
       DATE(submission_timestamp) = @submission_date
   {% endfor -%}

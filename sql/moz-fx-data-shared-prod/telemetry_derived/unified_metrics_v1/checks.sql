@@ -1,12 +1,9 @@
 #fail
 {{ min_row_count(1000, where="submission_date = @submission_date") }}
-
 #fail
 {{ not_null(columns=["submission_date", "client_id", "first_seen_date"], where="submission_date = @submission_date") }}
-
 #fail
 {{ row_count_within_past_partitions_avg(number_of_days=7, threshold_percentage=5) }}
-
 #fail
 {{ value_length(column="client_id", expected_length=36, where="submission_date = @submission_date") }}
 {#
@@ -32,10 +29,8 @@
   "os_version_minor",
   "os_version_patch"
 ], where="submission_date = @submission_date") }}
-
 #warn
 {{ value_length(column="country", expected_length=2, where="submission_date = @submission_date") }}
-
 #warn
 SELECT
   IF(
@@ -96,4 +91,3 @@ WHERE
 
 #warn
 {{ matches_pattern(column="country", pattern="^[A-Z]{2}$", where="submission_date = @submission_date", message="Some values in this field do not adhere to the ISO 3166-1 specification (2 character country code, for example: DE).") }}
-

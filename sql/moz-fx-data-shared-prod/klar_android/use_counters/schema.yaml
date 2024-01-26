@@ -7098,6 +7098,12 @@ fields:
     - name: use_counter_deprecated_ops_page_idbobject_store_create_index_locale
       type: INTEGER
       mode: NULLABLE
+    - name: use_counter_doc_htmldialogelement_show
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_page_htmldialogelement_show
+      type: INTEGER
+      mode: NULLABLE
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

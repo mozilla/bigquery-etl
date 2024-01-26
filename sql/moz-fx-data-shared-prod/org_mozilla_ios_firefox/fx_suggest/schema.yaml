@@ -367,6 +367,18 @@ fields:
         pings.
 
         '
+  - name: boolean
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: fx_suggest_is_clicked
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'If `ping_type` is "fxsuggest-impression", indicates whether this
+        impression is for a clicked suggestion. If `ping_type` is "fxsuggest-click",
+        always `true`.
+
+        '
   - name: url
     type: RECORD
     mode: NULLABLE

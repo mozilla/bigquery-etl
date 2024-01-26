@@ -266,6 +266,13 @@ fields:
     - name: fx_suggest_context_id
       type: STRING
       mode: NULLABLE
+  - name: boolean
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: fx_suggest_is_clicked
+      type: BOOLEAN
+      mode: NULLABLE
   - name: url
     type: RECORD
     mode: NULLABLE

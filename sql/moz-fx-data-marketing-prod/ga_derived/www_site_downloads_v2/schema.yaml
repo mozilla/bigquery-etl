@@ -1,0 +1,57 @@
+fields:
+- mode: NULLABLE
+  name: date
+  type: DATE
+  description: Date of the visit
+- mode: NULLABLE
+  name: visit_identifier
+  type: STRING
+  description: Visit Identifier - Uniquely identifies a visit; concatenation of user_pseudo_id and ga_session_id
+- mode: NULLABLE
+  name: device_category
+  type: STRING
+  description: Device Category
+- mode: NULLABLE
+  name: operating_system
+  type: STRING
+  description: Operating System
+- mode: NULLABLE
+  name: language
+  type: STRING
+  description: Language
+- mode: NULLABLE
+  name: country
+  type: STRING
+  description: Country
+- mode: NULLABLE
+  name: source
+  type: STRING
+  description: Source
+- mode: NULLABLE
+  name: medium
+  type: STRING
+  description: Medium
+- mode: NULLABLE
+  name: campaign
+  type: STRING
+  description: Campaign
+- mode: NULLABLE
+  name: ad_content
+  type: STRING
+  description: Ad Content
+- mode: NULLABLE
+  name: browser
+  type: STRING
+  description: Browser
+- mode: NULLABLE
+  name: download_events
+  type: INT64
+  description: Download Events
+- mode: NULLABLE
+  name: downloads
+  type: INT64
+  description: Downloads
+- mode: NULLABLE
+  name: non_fx_downloads
+  type: INT64
+  description: Non Firefox Downloads

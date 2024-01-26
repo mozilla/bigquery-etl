@@ -1,0 +1,23 @@
+friendly_name: WWW Site Downloads V2
+description: |-
+  Please provide a description for the query
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau@mozilla.com
+scheduling:
+  dag_name: bqetl_google_analytics_derived_ga4
+bigquery:
+  time_partitioning:
+    type: day
+    field: date
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+    - country
+    - device_category
+    - operating_system
+references: {}
+deprecated: false

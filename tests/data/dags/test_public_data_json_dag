@@ -6,7 +6,6 @@ import datetime
 from operators.gcp_container_operator import GKEPodOperator
 from airflow.sensors.external_task import ExternalTaskSensor
 from utils.constants import ALLOWED_STATES, FAILED_STATES
-from utils.gcp import gke_command
 
 docs = """
 ### bqetl_public_data_json
@@ -60,10 +59,10 @@ with DAG(
         image=docker_image,
     )
 
-    public_data_gcs_metadata = gke_command(
+    public_data_gcs_metadata = GKEPodOperator(
         task_id="public_data_gcs_metadata",
-        command=["script/publish_public_data_gcs_metadata"],
-        docker_image=docker_image,
+        arguments=["script/publish_public_data_gcs_metadata"],
+        image=docker_image,
     )
 
     public_data_gcs_metadata.set_upstream(

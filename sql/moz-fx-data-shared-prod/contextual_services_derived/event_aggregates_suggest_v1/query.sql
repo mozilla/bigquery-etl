@@ -28,8 +28,7 @@ WITH combined AS (
     `moz-fx-data-shared-prod.firefox_desktop.quick_suggest` qs
   LEFT JOIN
     `moz-fx-ads-prod.???.???` suggestions  -- TODO
-  ON
-    CAST(qs.metrics.string.quick_suggest_block_id AS INT) = suggestions.block_id
+    ON CAST(qs.metrics.string.quick_suggest_block_id AS INT) = suggestions.block_id
   WHERE
     metrics.string.quick_suggest_ping_type IN ("quicksuggest-click", "quicksuggest-impression")
   UNION ALL

@@ -1419,6 +1419,14 @@ def initialize(
             if "is_init()" in sql_content:
                 if not table:
                     ctx.invoke(
+                        update,
+                        name=full_table_id,
+                        sql_dir=sql_dir,
+                        project_id=project,
+                        update_downstream=False,
+                    )
+
+                    ctx.invoke(
                         deploy,
                         name=full_table_id,
                         sql_dir=sql_dir,

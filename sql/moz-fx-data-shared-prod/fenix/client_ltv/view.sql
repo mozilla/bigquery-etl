@@ -15,7 +15,7 @@ with_states AS (
     client_id,
     sample_id,
     as_of_date,
-    first_reported_country AS country,
+    COALESCE(countries.country, "ROW") AS country,
     [
       STRUCT(
         mozfun.ltv.android_states_v1(
@@ -74,9 +74,12 @@ with_states AS (
         'android_states_with_paid_v2' AS state_function
       )
     ] AS markov_states,
-    * EXCEPT (client_id, sample_id, as_of_date)
+    extracted_fields.* EXCEPT (client_id, sample_id, as_of_date)
   FROM
     extracted_fields
+  LEFT JOIN
+    (SELECT DISTINCT country FROM `moz-fx-data-shared-prod`.fenix.ltv_state_values) AS countries
+    ON extracted_fields.first_reported_country = countries.country
 )
 SELECT
   client_id,
@@ -93,5 +96,5 @@ FROM
 CROSS JOIN
   UNNEST(markov_states)
 JOIN
-  `moz-fx-data-shared-prod`.fenix_derived.ltv_state_values_v1
+  `moz-fx-data-shared-prod`.fenix.ltv_state_values
   USING (country, state_function, state)

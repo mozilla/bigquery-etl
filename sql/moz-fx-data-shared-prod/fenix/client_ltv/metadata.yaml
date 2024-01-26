@@ -10,6 +10,6 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   view.sql:
+  - moz-fx-data-shared-prod.fenix.ltv_state_values
   - moz-fx-data-shared-prod.fenix_derived.client_ltv_v1
-  - moz-fx-data-shared-prod.fenix_derived.ltv_state_values_v1
 deprecated: false

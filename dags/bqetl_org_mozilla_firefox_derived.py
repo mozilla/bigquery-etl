@@ -170,6 +170,18 @@ with DAG(
         task_concurrency=1,
     )
 
+    fenix_derived__ltv_state_values__v2 = bigquery_etl_query(
+        task_id="fenix_derived__ltv_state_values__v2",
+        destination_table="ltv_state_values_v2",
+        dataset_id="fenix_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="frank@mozilla.com",
+        email=["frank@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
     fenix_derived__ltv_states__v1 = bigquery_etl_query(
         task_id="fenix_derived__ltv_states__v1",
         destination_table="ltv_states_v1",

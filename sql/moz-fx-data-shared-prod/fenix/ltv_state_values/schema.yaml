@@ -14,7 +14,10 @@ fields:
 - name: country
   type: STRING
   mode: NULLABLE
-  description: The country that this prediction is specified for.
+  description: 'The country that this prediction is specified for. Countries not explicitly
+    present are bucketed into "ROW".
+
+    '
 - name: state_function
   type: STRING
   mode: NULLABLE

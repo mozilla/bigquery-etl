@@ -1,6 +1,6 @@
 friendly_name: WWW Site Downloads V2
 description: |-
-  Please provide a description for the query
+  Aggregated download counts for www.mozilla.org from Google Analytics 4 (GA4)
 owners:
 - kwindau@mozilla.com
 labels:

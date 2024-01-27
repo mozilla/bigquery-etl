@@ -25,11 +25,11 @@ WHERE
   )
   AND DATE(`timestamp`) = @submission_date
   AND jsonPayload.type = 'amplitudeEvent'
-  -- We expect to only see events from fxa-auth-server and fxa-content-server here
+  -- We expect to only see events from fxa-auth-server, fxa-content-server, and fxa-payments-server here.
   -- Although at time of writing they are split across `stdout` and `stderr` logs, there is an open issue to standardize
   -- this: https://mozilla-hub.atlassian.net/browse/FXA-8315
-  -- Filtering for both here will ensure we don't miss any events if logger output is changed in the future
-  AND jsonPayload.logger IN ("fxa-auth-server", "fxa-content-server")
+  -- Filtering for all here will ensure we don't miss any events if logger output is changed in the future
+  AND jsonPayload.logger IN ("fxa-auth-server", "fxa-content-server", "fxa-payments-server")
   AND jsonPayload.fields.event_type IS NOT NULL
   -- The following condition lets through all non-auth-server events, and auth-server events that are not
   -- coming from high-volume oauth client IDs that are redundant. It is copied for compatibility from:

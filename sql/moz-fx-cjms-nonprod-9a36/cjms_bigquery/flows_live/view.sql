@@ -10,7 +10,7 @@ WITH fxa_content_auth_stdout_events_live AS (
   FROM
     `moz-fx-fxa-nonprod.gke_fxa_stage_log.stderr`
   WHERE
-    jsonPayload.logger = 'fxa-auth-server'
+    jsonPayload.logger IN ('fxa-auth-server', 'fxa-content-server', 'fxa-payments-server')
     AND jsonPayload.type = 'amplitudeEvent'
     AND jsonPayload.fields.event_type IS NOT NULL
     AND jsonPayload.fields.user_id IS NOT NULL
@@ -23,7 +23,7 @@ WITH fxa_content_auth_stdout_events_live AS (
   FROM
     `moz-fx-fxa-nonprod.gke_fxa_stage_log.stdout`
   WHERE
-    jsonPayload.logger = 'fxa-content-server'
+    jsonPayload.logger IN ('fxa-auth-server', 'fxa-content-server', 'fxa-payments-server')
     AND jsonPayload.type = 'amplitudeEvent'
     AND jsonPayload.fields.event_type IS NOT NULL
   UNION ALL

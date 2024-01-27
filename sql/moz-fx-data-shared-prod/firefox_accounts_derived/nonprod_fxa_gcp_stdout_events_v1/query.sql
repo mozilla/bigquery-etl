@@ -25,5 +25,5 @@ WHERE
   )
   AND DATE(`timestamp`) = @submission_date
   AND jsonPayload.type = 'amplitudeEvent'
-  AND jsonPayload.logger IN ("fxa-auth-server", "fxa-content-server")
+  AND jsonPayload.logger IN ("fxa-auth-server", "fxa-content-server", "fxa-payments-server")
   AND jsonPayload.fields.event_type IS NOT NULL

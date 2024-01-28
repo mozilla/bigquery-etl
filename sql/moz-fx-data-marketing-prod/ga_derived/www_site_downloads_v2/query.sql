@@ -30,7 +30,7 @@ GROUP BY
   visit_identifier,
   device_category,
   operating_system,
-  `LANGUAGE`,
+  `language`,
   country,
   source,
   medium,

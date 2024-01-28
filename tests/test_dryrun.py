@@ -7,7 +7,7 @@ from bigquery_etl.dryrun import DryRun, Errors
 
 @pytest.fixture
 def tmp_query_path(tmp_path):
-    p = tmp_path / "telemetry_derived" / "mytable"
+    p = tmp_path / "moz-fx-data-shared-prod" / "telemetry_derived" / "mytable"
     p.mkdir(parents=True)
     return p
 

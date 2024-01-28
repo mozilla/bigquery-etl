@@ -1,6 +1,6 @@
 SELECT
   PARSE_DATE('%Y%m%d', event_date) AS date,
-  a.user_pseudo_id || '-' || CAST(e.value.int_value as string) AS visit_identifier,
+  a.user_pseudo_id || '-' || CAST(e.value.int_value AS string) AS visit_identifier,
   device.category AS device_category,
   device.operating_system AS operating_system,
   device.language AS `language`,

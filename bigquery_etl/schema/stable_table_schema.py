@@ -53,7 +53,9 @@ def prod_schemas_uri():
     to read dataset labels, which contains the commit hash associated
     with the most recent production schemas deploy.
     """
-    dryrun = DryRun("telemetry_derived/foo/query.sql", content="SELECT 1")
+    dryrun = DryRun(
+        "moz-fx-data-shared-prod/telemetry_derived/foo/query.sql", content="SELECT 1"
+    )
     build_id = dryrun.get_dataset_labels()["schemas_build_id"]
     commit_hash = build_id.split("_")[-1]
     mps_uri = ConfigLoader.get("schema", "mozilla_pipeline_schemas_uri")

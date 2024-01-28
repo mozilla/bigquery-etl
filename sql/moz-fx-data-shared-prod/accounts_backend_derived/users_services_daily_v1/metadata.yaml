@@ -1,0 +1,20 @@
+friendly_name: Users Services Daily
+description: |-
+  Activity aggregates per Mozilla Account per service per day
+owners:
+- ksiegler@mozilla.com
+labels:
+  incremental: true
+  owner1: example
+scheduling:
+  dag_name: bqetl_fxa_events
+bigquery:
+  time_partitioning:
+    type: day
+    field: ''
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields: []
+references: {}
+deprecated: false

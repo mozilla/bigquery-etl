@@ -1,0 +1,113 @@
+fields:
+- mode: NULLABLE
+  name: date
+  type: DATE
+  description: Date of the visit
+- mode: NULLABLE
+  name: site
+  type: STRING
+  description: Site
+- mode: NULLABLE
+  name: device_category
+  type: STRING
+  description: Device Category
+- mode: NULLABLE
+  name: operating_system
+  type: STRING
+  description: Operating System
+- mode: NULLABLE
+  name: language
+  type: STRING
+  description: Language
+- mode: NULLABLE
+  name: landing_page
+  type: STRING
+  description: Landing Page
+- mode: NULLABLE
+  name: locale
+  type: STRING
+  description: Locale
+- mode: NULLABLE
+  name: page_name
+  type: STRING
+  description: Page Name
+- mode: NULLABLE
+  name: page_level_1
+  type: STRING
+  description: Page Level 1
+- mode: NULLABLE
+  name: page_level_2
+  type: STRING
+  description: Page Level 2
+- mode: NULLABLE
+  name: page_level_3
+  type: STRING
+  description: Page Level 3
+- mode: NULLABLE
+  name: page_level_4
+  type: STRING
+  description: Page Level 4
+- mode: NULLABLE
+  name: page_level_5
+  type: STRING
+  description: Page Level 5
+- mode: NULLABLE
+  name: country
+  type: STRING
+  description: Country
+- mode: NULLABLE
+  name: source
+  type: STRING
+  description: Source
+- mode: NULLABLE
+  name: medium
+  type: STRING
+  description: Medium
+- mode: NULLABLE
+  name: campaign
+  type: STRING
+  description: Campaign
+- mode: NULLABLE
+  name: ad_content
+  type: STRING
+  description: Ad Content
+- mode: NULLABLE
+  name: browser
+  type: STRING
+  description: Browser
+- mode: NULLABLE
+  name: sessions
+  type: INT64
+  description: Sessions
+- mode: NULLABLE
+  name: non_fx_sessions
+  type: INT64
+  description: Non Firefox Sessions
+- mode: NULLABLE
+  name: downloads
+  type: INT64
+  description: Downloads
+- mode: NULLABLE
+  name: non_fx_downloads
+  type: INT64
+  description: Non Firefox Downloads
+- mode: NULLABLE
+  name: pageviews
+  type: INT64
+  description: Page Views
+- mode: NULLABLE
+  name: unique_pageviews
+  type: INT64
+  description: Unique Page Views
+- mode: NULLABLE
+  name: single_page_sessions
+  type: INT64
+  description: Single Page Sessions
+- mode: NULLABLE
+  name: bounces
+  type: INT64
+  description: Bounces
+- mode: NULLABLE
+  name: exits
+  type: INT64
+  description: Exits

@@ -7104,6 +7104,12 @@ fields:
     - name: use_counter_page_htmldialogelement_show
       type: INTEGER
       mode: NULLABLE
+    - name: use_counter_doc_js_wasm_legacy_exceptions
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_page_js_wasm_legacy_exceptions
+      type: INTEGER
+      mode: NULLABLE
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

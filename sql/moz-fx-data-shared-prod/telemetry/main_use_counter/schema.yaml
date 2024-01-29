@@ -10945,6 +10945,14 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Whether a page called HTMLDialogElement.show
+    - name: use_counter2_js_wasm_legacy_exceptions_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document uses WebAssembly legacy exception-handling
+    - name: use_counter2_js_wasm_legacy_exceptions_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page uses WebAssembly legacy exception-handling
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -21742,6 +21750,14 @@ fields:
           type: STRING
           mode: NULLABLE
           description: Whether a page called HTMLDialogElement.show
+        - name: use_counter2_js_wasm_legacy_exceptions_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document uses WebAssembly legacy exception-handling
+        - name: use_counter2_js_wasm_legacy_exceptions_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page uses WebAssembly legacy exception-handling
 - name: sample_id
   type: INTEGER
   mode: NULLABLE

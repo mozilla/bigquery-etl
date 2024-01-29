@@ -22,7 +22,7 @@ fields:
 - mode: NULLABLE
   name: locale
   type: STRING
-  description: Locale
+  description: Locale - Based on page path level 1 (i.e. en-US, ru, de, etc)
 - mode: NULLABLE
   name: page_level_1
   type: STRING
@@ -54,7 +54,7 @@ fields:
 - mode: NULLABLE
   name: language
   type: STRING
-  description: Language
+  description: Language - The language the visiting device was using when it visited the site
 - mode: NULLABLE
   name: browser
   type: STRING

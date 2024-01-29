@@ -18,5 +18,7 @@ bigquery:
     fields:
     - country
     - device_category
+    - event_category
+    - browser
 references: {}
 deprecated: false

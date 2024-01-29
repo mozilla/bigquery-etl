@@ -66,7 +66,7 @@ fields:
 - mode: NULLABLE
   name: source
   type: STRING
-  description:  Source - Referring partner domain
+  description: Source - Referring partner domain
 - mode: NULLABLE
   name: medium
   type: STRING

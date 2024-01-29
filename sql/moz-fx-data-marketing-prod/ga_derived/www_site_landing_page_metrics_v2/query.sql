@@ -25,7 +25,7 @@ WITH sessions_table AS (
       IF(NOT `moz-fx-data-shared-prod.udf.ga_is_mozilla_browser`(browser), entrances, 0)
     ) AS non_fx_sessions,
   FROM
-    `moz-fx-data-marketing-prod.ga_derived.www_site_hits_v1`
+    `moz-fx-data-marketing-prod.ga_derived.www_site_hits_v2`
   WHERE
     date = @submission_date
   GROUP BY
@@ -69,8 +69,8 @@ bounces_table AS (
   SELECT
     date,
     visit_identifier,
-    SUM(IF(hit_number = first_interaction, visits, 0)) AS single_page_sessions, --fix/double check this logic
-    SUM(IF(hit_number = first_interaction, bounces, 0)) AS bounces, --fix/double check this logic 
+    SUM(IF(hit_number = first_interaction, visits, 0)) AS single_page_sessions,
+    SUM(IF(hit_number = first_interaction, bounces, 0)) AS bounces,
     SUM(exits) AS exits,
   FROM
     `moz-fx-data-marketing-prod.ga_derived.www_site_hits_v2`

@@ -1,6 +1,3 @@
--- Query for ga_derived.www_site_events_metrics_v2
-            -- For more information on writing queries see:
-            -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
 SELECT
   date,
   event_name AS event_category,

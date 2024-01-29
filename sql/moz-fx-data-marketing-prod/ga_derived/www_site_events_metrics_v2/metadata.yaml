@@ -1,0 +1,22 @@
+friendly_name: WWW Site Events Metrics V2
+description: |-
+  Aggregated metrics about events on www.mozilla.org, sourced from Google Analytics 4 data
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau@mozilla.com
+scheduling:
+  dag_name: bqetl_google_analytics_derived_ga4
+bigquery:
+  time_partitioning:
+    type: day
+    field: date
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+    - country
+    - device_category
+references: {}
+deprecated: false

@@ -1,0 +1,55 @@
+-- Query for ga_derived.www_site_events_metrics_v2
+            -- For more information on writing queries see:
+            -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
+SELECT
+  date,
+  event_name AS event_category,
+  event_action,
+  event_label,
+  page_path,
+  page_path_level1 AS locale,
+  page_level_1,
+  page_level_2,
+  page_level_3,
+  page_level_4,
+  page_level_5,
+  page_name,
+  device_category,
+  operating_system,
+  `language`,
+  browser,
+  country,
+  source,
+  medium,
+  campaign,
+  ad_content,
+  COUNT(*) AS total_events,
+  COUNT(DISTINCT visit_identifier) AS unique_events,
+FROM
+  `moz-fx-data-marketing-prod.ga_derived.www_site_hits_v2`
+WHERE
+  date = @submission_date
+  AND hit_type = 'EVENT'
+  AND visits = 1
+GROUP BY
+  date,
+  event_category,
+  event_action,
+  event_label,
+  page_path,
+  locale,
+  page_level_1,
+  page_level_2,
+  page_level_3,
+  page_level_4,
+  page_level_5,
+  device_category,
+  operating_system,
+  `language`,
+  browser,
+  country,
+  source,
+  medium,
+  campaign,
+  ad_content,
+  page_name

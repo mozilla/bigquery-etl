@@ -1,6 +1,3 @@
--- Query for ga_derived.www_site_hits_v2
--- For more information on writing queries see:
--- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
 WITH get_session_start_time AS (
   SELECT
     SAFE.PARSE_DATE('%Y%m%d', a.event_date) AS date,
@@ -120,46 +117,22 @@ get_all_events_in_each_session AS (
     SPLIT(a.page_location, '?')[OFFSET(0)] AS page_location,
     a.is_entrance,
     DENSE_RANK() OVER (PARTITION BY visit_identifier ORDER BY event_timestamp ASC) AS hit_number,
-    ROW_NUMBER() OVER (PARTITION BY visit_identifier ORDER BY event_timestamp) AS row_nbr
+    ROW_NUMBER() OVER (PARTITION BY visit_identifier ORDER BY event_timestamp ASC) AS row_nbr
   FROM
     get_all_events_in_each_session_staging a
 ),
 --get the hit number associated with the last page view in each session
-hit_nbr_of_last_page_view_in_each_session AS (
+row_nbr_of_last_page_view_in_each_session AS (
   SELECT
     visit_identifier,
     COUNT(1) AS nbr_page_view_events,
-    MAX(hit_number) AS max_hit_number
+    MAX(row_nbr) AS max_row_number
   FROM
     get_all_events_in_each_session
   WHERE
     event_name = 'page_view'
   GROUP BY
     visit_identifier
-),
---because sometimes there are multiple page views with the same event timestamp,
---choose only 1 to represent the exit, so as not to double count exits
-session_exits AS (
-  SELECT
-    a.visit_identifier,
-    b.max_hit_number,
-    b.nbr_page_view_events,
-    1 AS is_exit,
-    a.event_name,
-    MAX(a.row_nbr) AS row_nbr_to_count_as_exit
-  FROM
-    get_all_events_in_each_session a
-  JOIN
-    hit_nbr_of_last_page_view_in_each_session b
-    ON a.visit_identifier = b.visit_identifier
-    AND a.hit_number = b.max_hit_number
-    AND a.event_name = 'page_view'
-  GROUP BY
-    a.visit_identifier,
-    b.max_hit_number,
-    b.nbr_page_view_events,
-    is_exit,
-    a.event_name
 ),
 first_and_last_interaction AS (
   SELECT
@@ -187,7 +160,7 @@ final_staging AS (
         THEN 'PAGE'
       ELSE 'EVENT'
     END AS hit_type,
-    CAST(COALESCE(exits.is_exit, 0) AS bool) AS is_exit,
+    CAST(CASE WHEN exits.max_row_number = all_events.row_nbr THEN 1 ELSE 0 END AS bool) AS is_exit,
     CAST(all_events.is_entrance AS bool) AS is_entrance,
     all_events.hit_number,
     all_events.event_timestamp AS hit_timestamp,
@@ -215,7 +188,7 @@ final_staging AS (
     engmgt.first_interaction,
     CAST(engmgt.last_interaction AS float64) AS last_interaction,
     all_events.is_entrance AS entrances,
-    COALESCE(exits.is_exit, 0) AS exits,
+    COALESCE(CASE WHEN exits.max_row_number = all_events.row_nbr THEN 1 ELSE 0 END, 0) AS exits,
     CAST(
       NULL AS string
     ) AS event_id, --old table defined this from event category, action, and label, which no longer exist in GA4
@@ -242,9 +215,8 @@ final_staging AS (
     AND all_sessions.visit_identifier = all_events.visit_identifier
     AND all_sessions.full_visitor_id = all_events.full_visitor_id
   LEFT OUTER JOIN
-    session_exits exits
-    ON all_events.visit_identifier = exits.visit_identifier
-    AND all_events.row_nbr = exits.row_nbr_to_count_as_exit
+    row_nbr_of_last_page_view_in_each_session exits
+    ON all_sessions.visit_identifier = exits.visit_identifier
   LEFT OUTER JOIN
     first_and_last_interaction engmgt
     ON all_sessions.visit_identifier = engmgt.visit_identifier

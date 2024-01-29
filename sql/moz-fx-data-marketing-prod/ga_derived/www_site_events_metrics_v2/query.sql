@@ -4,8 +4,8 @@
 SELECT
   date,
   event_name AS event_category,
-  event_action,
-  event_label,
+  event_name AS event_action,
+  event_name AS event_label,
   page_path,
   page_path_level1 AS locale,
   page_level_1,

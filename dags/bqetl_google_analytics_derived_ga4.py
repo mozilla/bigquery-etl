@@ -59,6 +59,17 @@ with DAG(
         depends_on_past=False,
     )
 
+    ga_derived__www_site_events_metrics__v2 = bigquery_etl_query(
+        task_id="ga_derived__www_site_events_metrics__v2",
+        destination_table="www_site_events_metrics_v2",
+        dataset_id="ga_derived",
+        project_id="moz-fx-data-marketing-prod",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     ga_derived__www_site_hits__v2 = bigquery_etl_query(
         task_id="ga_derived__www_site_hits__v2",
         destination_table="www_site_hits_v2",
@@ -80,3 +91,5 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
+
+    ga_derived__www_site_events_metrics__v2.set_upstream(ga_derived__www_site_hits__v2)

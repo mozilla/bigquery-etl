@@ -4,6 +4,9 @@ description: |-
 owners: []
 labels: {}
 bigquery: null
-workgroup_access: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
 references: {}
-deprecated: true
+deprecated: false

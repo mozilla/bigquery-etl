@@ -42,7 +42,7 @@ def update(name: str, sql_dir: Optional[str], project_id: Optional[str]) -> None
     table_metadata_files = paths_matching_name_pattern(
         name, sql_dir, project_id=project_id, files=["metadata.yaml"]
     )
-    dataset_metadata_path = None
+
     # create and populate the dataset metadata yaml file if it does not exist
     for table_metadata_file in table_metadata_files:
         dataset_metadata_path = (
@@ -72,5 +72,4 @@ def update(name: str, sql_dir: Optional[str], project_id: Optional[str]) -> None
 
         dataset_metadata.write(dataset_metadata_path)
         table_metadata.write(table_metadata_file)
-        click.echo(f"Updated {table_metadata_file}")
     return None

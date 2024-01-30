@@ -185,6 +185,7 @@ class GleanTable:
         self.across_apps_enabled = True
         self.cross_channel_template = "cross_channel.view.sql"
         self.base_table_name = "baseline_v1"
+        self.parallelism = 8
 
     def skip_existing(self, output_dir="sql/", project_id="moz-fx-data-shared-prod"):
         """Existing files configured not to be overridden during generation."""

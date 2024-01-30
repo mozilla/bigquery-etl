@@ -4,8 +4,6 @@ import os
 from collections import namedtuple
 from pathlib import Path
 
-from bigquery_etl.schema.stable_table_schema import get_stable_table_schemas
-from bigquery_etl.config import ConfigLoader
 from sql_generators.glean_usage.common import (
     GleanTable,
     get_table_dir,
@@ -76,7 +74,7 @@ class EventFlowMonitoring(GleanTable):
             artifacts = [
                 Artifact(table, "metadata.yaml", metadata),
                 Artifact(table, "script.sql", script_sql),
-                Artifact(table, "schema.yaml", schema)
+                Artifact(table, "schema.yaml", schema),
             ]
 
             for artifact in artifacts:

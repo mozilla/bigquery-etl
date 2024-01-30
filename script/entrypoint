@@ -8,7 +8,10 @@ if [ -n "$GCLOUD_SERVICE_KEY" ]; then
     # Google's client libraries will check for GOOGLE_APPLICATION_CREDENTIALS
     # and use a file in that location for credentials if present;
     # See https://cloud.google.com/docs/authentication/production
-    export GOOGLE_APPLICATION_CREDENTIALS="${GOOGLE_APPLICATION_CREDENTIALS:-/tmp/gcp.json}"
+    if [ -z "$GOOGLE_APPLICATION_CREDENTIALS" ]; then
+        # Create a unique credentials file since this script can be called in parallel by multiple tests.
+        export GOOGLE_APPLICATION_CREDENTIALS=$(mktemp /tmp/gcp.json.XXXXXXXXXX)
+    fi
     echo "$GCLOUD_SERVICE_KEY" > "$GOOGLE_APPLICATION_CREDENTIALS"
 fi
 

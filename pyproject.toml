@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mozilla-bigquery-etl"
-version = "0.0.1"
+version = "0.0.2"
 authors = [
   { name="Mozilla Corporation", email="fx-data-dev@mozilla.org" },
 ]
@@ -21,7 +21,7 @@ Issues = "https://github.com/mozilla/bigquery-etl/issues"
 dependencies = {file = ["requirements.in"]}
 
 [tool.setuptools.packages.find]
-where = ["bigquery_etl"]
+include = ["bigquery_etl", "bigquery_etl.*"]
 
 [project.scripts]
 bqetl = "bigquery_etl.cli:cli"

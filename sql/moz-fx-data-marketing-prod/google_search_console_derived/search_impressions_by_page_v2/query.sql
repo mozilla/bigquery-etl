@@ -72,7 +72,7 @@ SELECT
   INITCAP(REPLACE(search_type, '_', ' ')) AS search_type,
   CASE
     {% for search_appearance_flag_column, search_appearance_label in search_appearance_flag_columns.items() %}
-      WHEN `{{ search_appearance_flag_column }}`
+      WHEN {{ search_appearance_flag_column }}
         THEN '{{ search_appearance_label }}'
     {% endfor %}
     ELSE 'Normal result'

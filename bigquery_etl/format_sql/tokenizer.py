@@ -748,12 +748,9 @@ class Literal(Token):
 
 
 class JinjaExpression(Token):
-    """Jinja expression delimiters {{ }}.
+    """Jinja expression delimiters {{ }}."""
 
-    May be followed by no whitespace or a new line and increased indent.
-    """
-
-    pattern = re.compile(r"{{.*?}}\n?", re.DOTALL)
+    pattern = re.compile(r"{{.*?}}", re.DOTALL)
 
 
 class JinjaStatement(Token):

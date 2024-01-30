@@ -98,9 +98,11 @@ def simple_format(tokens, indent="  "):
             # no space before first token
             pass
         elif isinstance(token, Comment):
-            # blank line before comments only if they start on their own line
-            # and come after a statement separator
+            # blank line before comments if they start on their own line
+            # and come after a statement separator, and before #fail and #warn
             if token.value.startswith("\n") and prev_was_statement_separator:
+                yield Whitespace("\n")
+            elif re.fullmatch(r"\s*#(fail|warn)", token.value):
                 yield Whitespace("\n")
         elif (
             require_newline_before_next_token

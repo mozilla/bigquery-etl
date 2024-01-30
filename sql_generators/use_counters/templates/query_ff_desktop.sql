@@ -30,7 +30,6 @@ pivoted_raw AS (
       cnt FOR metric IN (
         {% for use_counter in use_counters %}
           {{use_counter.name}}
-
           {% if not loop.last %},
           {% endif %}
         {% endfor %}

@@ -1,0 +1,19 @@
+friendly_name: Ltv State Values
+description: |-
+  Android state values, in terms of Ad Clicks.
+  Each country has their own ad click LTV for each state.
+owners:
+- frank@mozilla.com
+labels:
+  incremental: false
+  owner1: frank@mozilla.com
+scheduling:
+  dag_name: bqetl_org_mozilla_firefox_derived
+  depends_on_past: false
+  date_partition_parameter: null
+bigquery:
+  time_partitioning: null
+  clustering:
+    fields: [country]
+references: {}
+deprecated: false

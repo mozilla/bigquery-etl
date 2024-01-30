@@ -22,7 +22,7 @@ def generate_group():
         if "__pycache__" in path.parts:
             # Ignore pycache subdirectories
             continue
-        if path.is_dir():
+        if path.is_dir() and (path / "__init__.py").exists():
             # get Python modules for generators
             spec = importlib.util.spec_from_file_location(
                 path.name, (path / "__init__.py").absolute()

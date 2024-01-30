@@ -61,7 +61,6 @@
           _previous.`days_{{ usage_type }}_bytes`,
           _current.`days_{{ usage_type }}_bytes`
         ) AS `days_{{ usage_type }}_bytes` {{ "," if not loop.last }}
-
       {% endfor %}
     )
   FROM

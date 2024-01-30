@@ -170,12 +170,14 @@ def create(ctx, name, sql_dir, project_id, owner, init, dag, no_schedule):
     path = Path(sql_dir)
 
     if dataset.endswith("_derived"):
-        # create a directory for the corresponding view
+        # create directory for this table
         derived_path = path / project_id / dataset / (name + version)
         derived_path.mkdir(parents=True)
 
+        # create a directory for the corresponding view
         view_path = path / project_id / dataset.replace("_derived", "") / name
-        view_path.mkdir(parents=True)
+        # new versions of existing tables may already have a view
+        view_path.mkdir(parents=True, exist_ok=True)
     else:
         # check if there is a corresponding derived dataset
         if (path / project_id / (dataset + "_derived")).exists():
@@ -193,9 +195,9 @@ def create(ctx, name, sql_dir, project_id, owner, init, dag, no_schedule):
 
     click.echo(f"Created query in {derived_path}")
 
-    if view_path:
+    if view_path and not (view_file := view_path / "view.sql").exists():
+        # Don't overwrite the view_file if it already exists
         click.echo(f"Created corresponding view in {view_path}")
-        view_file = view_path / "view.sql"
         view_dataset = dataset.replace("_derived", "")
         view_file.write_text(
             reformat(
@@ -2078,6 +2080,18 @@ def deploy(
         if not existing_schema_path.is_file():
             click.echo(f"No schema file found for {query_file}")
             return
+
+        try:
+            metadata = Metadata.of_query_file(query_file_path)
+            if (
+                metadata.scheduling
+                and "destination_table" in metadata.scheduling
+                and metadata.scheduling["destination_table"] is None
+            ):
+                click.echo(f"No destination table defined for {query_file}")
+                return
+        except FileNotFoundError:
+            pass
 
         try:
             table_name = query_file_path.parent.name

@@ -19,7 +19,7 @@
 #warn
 {{ min_row_count(1, where="submission_date = @submission_date") }}
 
-# warn
+#warn
 {{ not_null([
   "submission_date",
   "client_id",

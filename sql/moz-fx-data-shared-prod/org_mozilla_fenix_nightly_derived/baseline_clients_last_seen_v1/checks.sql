@@ -44,7 +44,7 @@ SELECT
     NULL
   );
 
-# warn
+#warn
 WITH null_checks AS (
   SELECT
     [

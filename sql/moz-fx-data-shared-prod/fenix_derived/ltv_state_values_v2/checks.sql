@@ -1,5 +1,5 @@
 
-# fail
+#fail
 WITH non_unique AS (
   SELECT
     COUNT(*) AS total_count
@@ -20,7 +20,7 @@ SELECT
     NULL
   );
 
-# fail
+#fail
 WITH min_row_count AS (
   SELECT
     COUNT(*) AS total_rows
@@ -40,7 +40,7 @@ SELECT
     NULL
   );
 
-# fail
+#fail
 -- Each country should have a single state function
 SELECT
   mozfun.assert.equals(1, COUNT(DISTINCT state_function))
@@ -49,7 +49,7 @@ FROM
 GROUP BY
   country;
 
-# fail
+#fail
 -- There should be more than 2 countries present
 SELECT
   `mozfun.assert.true`(COUNT(DISTINCT country) > 2)

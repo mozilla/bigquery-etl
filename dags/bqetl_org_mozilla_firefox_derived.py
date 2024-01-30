@@ -73,6 +73,32 @@ with DAG(
         retries=0,
     )
 
+    checks__fail_fenix_derived__ltv_state_values__v1 = bigquery_dq_check(
+        task_id="checks__fail_fenix_derived__ltv_state_values__v1",
+        source_table="ltv_state_values_v1",
+        dataset_id="fenix_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=True,
+        owner="frank@mozilla.com",
+        email=["frank@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        task_concurrency=1,
+        retries=0,
+    )
+
+    checks__fail_fenix_derived__ltv_state_values__v2 = bigquery_dq_check(
+        task_id="checks__fail_fenix_derived__ltv_state_values__v2",
+        source_table="ltv_state_values_v2",
+        dataset_id="fenix_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=True,
+        owner="frank@mozilla.com",
+        email=["frank@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        task_concurrency=1,
+        retries=0,
+    )
+
     checks__fail_fenix_derived__ltv_states__v1 = bigquery_dq_check(
         task_id="checks__fail_fenix_derived__ltv_states__v1",
         source_table="ltv_states_v1",
@@ -235,6 +261,18 @@ with DAG(
 
     checks__fail_fenix_derived__client_ltv__v1.set_upstream(
         fenix_derived__client_ltv__v1
+    )
+
+    checks__fail_fenix_derived__ltv_state_values__v1.set_upstream(
+        fenix_derived__ltv_state_values__v1
+    )
+
+    checks__fail_fenix_derived__ltv_state_values__v2.set_upstream(
+        checks__fail_fenix_derived__ltv_state_values__v1
+    )
+
+    checks__fail_fenix_derived__ltv_state_values__v2.set_upstream(
+        fenix_derived__ltv_state_values__v2
     )
 
     checks__fail_fenix_derived__ltv_states__v1.set_upstream(

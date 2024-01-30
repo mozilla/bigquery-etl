@@ -117,7 +117,7 @@ get_all_events_in_each_session AS (
     SPLIT(a.page_location, '?')[OFFSET(0)] AS page_location,
     a.is_entrance,
     DENSE_RANK() OVER (PARTITION BY visit_identifier ORDER BY event_timestamp ASC) AS hit_number,
-    ROW_NUMBER() OVER (PARTITION BY visit_identifier ORDER BY event_timestamp ASC) AS row_nbr
+    ROW_NUMBER() OVER (PARTITION BY visit_identifier ORDER BY event_timestamp, event_name ASC) AS row_nbr
   FROM
     get_all_events_in_each_session_staging a
 ),

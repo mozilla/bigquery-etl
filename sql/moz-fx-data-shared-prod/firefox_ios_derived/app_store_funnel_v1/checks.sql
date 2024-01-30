@@ -24,6 +24,7 @@ SELECT
 
 -- min_row_count helps us detect if we're seeing delays in the data arriving
 -- could also be an indicator of an upstream issue.
+
 #fail
 WITH min_row_count AS (
   SELECT

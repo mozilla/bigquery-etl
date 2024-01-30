@@ -1,5 +1,6 @@
 
 -- Generated via bigquery_etl.glean_usage
+
 #warn
 WITH non_unique AS (
   SELECT

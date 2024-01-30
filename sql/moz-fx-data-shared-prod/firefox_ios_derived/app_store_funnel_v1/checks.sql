@@ -2,8 +2,10 @@
 {{ is_unique(["submission_date", "country"], "country IS NOT NULL") }}
 -- min_row_count helps us detect if we're seeing delays in the data arriving
 -- could also be an indicator of an upstream issue.
+
 #fail
 {{ min_row_count(1, "submission_date = @submission_date") }}
+
 #fail
 WITH fx_ios_count AS (
   SELECT

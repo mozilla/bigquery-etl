@@ -3,4 +3,3 @@
 
 #fail
 {{ min_row_count(10000, "as_of_date = @submission_date") }}
-

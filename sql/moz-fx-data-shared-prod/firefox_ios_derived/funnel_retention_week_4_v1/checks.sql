@@ -3,10 +3,13 @@
   "first_seen_date", "first_reported_country", "first_reported_isp",
   "adjust_ad_group", "adjust_campaign", "adjust_creative", "adjust_network"
 ]) }}
+
 #fail
 {{ not_null(["first_seen_date", "adjust_network"], "submission_date = @submission_date") }}
+
 #fail
 {{ min_row_count(1, "submission_date = @submission_date") }}
+
 #fail
 WITH new_profile_count AS (
   SELECT

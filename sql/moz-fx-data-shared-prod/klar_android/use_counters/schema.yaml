@@ -7110,6 +7110,24 @@ fields:
     - name: use_counter_page_js_wasm_legacy_exceptions
       type: INTEGER
       mode: NULLABLE
+    - name: use_counter_css_doc_css_text_wrap_mode
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_css_doc_css_text_wrap_style
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_css_doc_css_white_space_collapse
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_css_page_css_text_wrap_mode
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_css_page_css_text_wrap_style
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_css_page_css_white_space_collapse
+      type: INTEGER
+      mode: NULLABLE
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

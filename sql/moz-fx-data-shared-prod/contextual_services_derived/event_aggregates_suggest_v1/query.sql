@@ -23,12 +23,12 @@ WITH combined AS (
       "click",
       "impression"
     ) AS event_type,
-    suggestions.query_type
+    blocks.query_type
   FROM
     `moz-fx-data-shared-prod.firefox_desktop.quick_suggest` qs
   LEFT JOIN
-    `moz-fx-ads-prod.???.???` suggestions  -- TODO
-    ON CAST(qs.metrics.string.quick_suggest_block_id AS INT) = suggestions.block_id
+    `moz-fx-data-bq-fivetran.admarketplace_suggest.blocks` blocks
+    ON SAFE_CAST(qs.metrics.string.quick_suggest_block_id AS INT) = blocks.block_id
   WHERE
     metrics.string.quick_suggest_ping_type IN ("quicksuggest-click", "quicksuggest-impression")
   UNION ALL

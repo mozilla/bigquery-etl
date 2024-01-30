@@ -13,9 +13,11 @@ if [ -n "$GCLOUD_SERVICE_KEY" ]; then
         export GOOGLE_APPLICATION_CREDENTIALS=$(mktemp /tmp/gcp.json.XXXXXXXXXX)
     fi
     echo "$GCLOUD_SERVICE_KEY" > "$GOOGLE_APPLICATION_CREDENTIALS"
+    echo "DEBUG: Wrote $(echo "$GCLOUD_SERVICE_KEY" | wc -c) bytes to '$GOOGLE_APPLICATION_CREDENTIALS'."
 fi
 
 if [ -n "$GOOGLE_APPLICATION_CREDENTIALS" ] && which gcloud > /dev/null; then
+    echo "DEBUG: Authenticating with GCP key file '$GOOGLE_APPLICATION_CREDENTIALS' containing $(cat $GOOGLE_APPLICATION_CREDENTIALS | wc -c) bytes."
     gcloud --verbosity=debug --quiet auth activate-service-account --key-file "$GOOGLE_APPLICATION_CREDENTIALS"
     python -W ignore -c 'import google.auth; print("project = ", google.auth.default()[1])' >> ~/.config/gcloud/configurations/config_default
     sed "1i--project_id=$(gcloud config get-value project)" -i ~/.bigqueryrc

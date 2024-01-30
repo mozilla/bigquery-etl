@@ -27,7 +27,7 @@ FROM
 WHERE
   date = @submission_date
   AND hit_type = 'EVENT'
-  AND visits = 1
+  AND visits = 1 --this indicates that the session had 1 or more "engaged_session_event"
 GROUP BY
   date,
   event_category,

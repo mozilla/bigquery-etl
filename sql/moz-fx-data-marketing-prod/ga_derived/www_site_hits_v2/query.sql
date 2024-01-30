@@ -121,7 +121,7 @@ get_all_events_in_each_session AS (
   FROM
     get_all_events_in_each_session_staging a
 ),
---get the hit number associated with the last page view in each session
+--get the row number associated with the last page view in each session
 row_nbr_of_last_page_view_in_each_session AS (
   SELECT
     visit_identifier,

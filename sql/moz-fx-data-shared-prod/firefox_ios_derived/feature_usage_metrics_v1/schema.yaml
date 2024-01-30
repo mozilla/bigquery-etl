@@ -1,9 +1,18 @@
 fields:
-- name: submission_date
+- name: metric_date
   type: DATE
   mode: NULLABLE
-- name: metrics_ping_distinct_client_count
-  type: INTEGER
+- name: channel
+  type: STRING
+  mode: NULLABLE
+- name: country
+  type: STRING
+  mode: NULLABLE
+- name: adjust_network
+  type: STRING
+  mode: NULLABLE
+- name: is_default_browser
+  type: BOOLEAN
   mode: NULLABLE
 - name: logins_deleted_users
   type: INTEGER

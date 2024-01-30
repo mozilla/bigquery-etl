@@ -10,5 +10,5 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   view.sql:
-  - moz-fx-data-shared-prod.monitoring_derived.bigquery_usage_v1
+  - moz-fx-data-shared-prod.monitoring_derived.bigquery_usage_v2
 deprecated: false

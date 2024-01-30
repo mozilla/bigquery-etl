@@ -19,7 +19,7 @@ fields:
   name: reservation_id
   type: STRING
   description: Name of the primary reservation (slots for distributing resources)
-    assigned to this job.
+    assigned to this job
 - mode: NULLABLE
   name: cache_hit
   type: BOOLEAN
@@ -28,6 +28,14 @@ fields:
   name: state
   type: STRING
   description: Running state of the job
+- mode: NULLABLE
+  name: statement_type
+  type: STRING
+  description: The type of query statement
+- mode: NULLABLE
+  name: query_id
+  type: STRING
+  description: The id of the query
 - mode: NULLABLE
   name: reference_project_id
   type: STRING
@@ -59,11 +67,7 @@ fields:
 - mode: NULLABLE
   name: username
   type: STRING
-  description: Email address of the user who ran the query
-- mode: NULLABLE
-  name: query_id
-  type: STRING
-  description: query id of the job
+  description: The name of the user who ran the job
 - mode: NULLABLE
   name: task_duration
   type: INTERVAL
@@ -72,6 +76,14 @@ fields:
   name: total_terabytes_processed
   type: FLOAT
   description: Total terabytes processed by the job
+- mode: NULLABLE
+  name: total_terabytes_billed
+  type: FLOAT
+  description: Total terabytes billed by the job if on-demand pricing is used
+- mode: NULLABLE
+  name: total_slot_ms
+  type: INTEGER
+  description: Slot milliseconds for the job over its entire duration
 - mode: NULLABLE
   name: error_location
   type: STRING
@@ -84,3 +96,12 @@ fields:
   name: error_message
   type: STRING
   description: A human-readable description of the error
+- mode: NULLABLE
+  name: resource_warning
+  type: STRING
+  description: The warning message that appears if the resource usage is above the
+    internal threshold of the system
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: Date Airflow DAG is executed, and partition date

@@ -12,6 +12,8 @@ SELECT
   default_search_engine,
   os,
   os_version,
+  os_version_major,
+  os_version_minor,
   COUNT(*) AS client_count,
   SUM(search_count) AS search_count,
   SUM(organic) AS organic,
@@ -41,3 +43,5 @@ GROUP BY
   default_search_engine,
   os,
   os_version
+  os_version_major,
+  os_version_minor

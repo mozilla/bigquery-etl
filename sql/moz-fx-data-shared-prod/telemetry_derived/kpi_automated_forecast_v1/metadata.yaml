@@ -1,0 +1,7 @@
+friendly_name: |-
+  KPI Automated Forecasts
+description: |-
+  Automated KPI Forecasts for mobile and desktop.
+  Populated via https://github.com/mozilla/docker-etl/tree/main/jobs/kpi-forecasting/kpi_forecasting
+owners:
+- bochocki@mozilla.com

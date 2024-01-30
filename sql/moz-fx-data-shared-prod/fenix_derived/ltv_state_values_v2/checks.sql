@@ -1,8 +1,10 @@
-# fail
+#fail
 {{ is_unique(["country", "state"]) }}
-# fail
+
+#fail
 {{ min_row_count(1000) }}
-# fail
+
+#fail
 -- Each country should have a single state function
 SELECT
   mozfun.assert.equals(1, COUNT(DISTINCT state_function))
@@ -11,7 +13,7 @@ FROM
 GROUP BY
   country;
 
-# fail
+#fail
 -- There should be more than 2 countries present
 SELECT
   `mozfun.assert.true`(COUNT(DISTINCT country) > 2)

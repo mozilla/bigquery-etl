@@ -1,4 +1,15 @@
-WITH combined AS (
+WITH blocks AS (
+  SELECT
+    b.id,
+    b.query_type,
+  FROM
+    `moz-fx-data-bq-fivetran.admarketplace_suggest.blocks` b
+  WHERE
+    b.date <= @submission_date
+  QUALIFY
+    1 = ROW_NUMBER() OVER (PARTITION BY b.id ORDER BY b.date DESC)
+),
+combined AS (
   SELECT
     metrics.uuid.quick_suggest_context_id AS context_id,
     DATE(submission_timestamp) AS submission_date,
@@ -22,8 +33,12 @@ WITH combined AS (
     metrics.string.quick_suggest_match_type AS match_type,
     SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
     (metrics.boolean.quick_suggest_improve_suggest_experience) AS suggest_data_sharing_enabled,
+    blocks.query_type,
   FROM
-    firefox_desktop.quick_suggest
+    firefox_desktop.quick_suggest qs
+  LEFT JOIN
+    blocks
+    ON SAFE_CAST(qs.metrics.string.quick_suggest_block_id AS INT) = blocks.id
   WHERE
     metrics.string.quick_suggest_ping_type IN ("quicksuggest-click", "quicksuggest-impression")
   UNION ALL
@@ -51,6 +66,7 @@ WITH combined AS (
       OR request_id IS NOT NULL
       OR scenario = 'online'
     ) AS suggest_data_sharing_enabled,
+    CAST(NULL AS STRING) AS query_type,
   FROM
     contextual_services.quicksuggest_impression
   WHERE
@@ -82,6 +98,7 @@ WITH combined AS (
       OR request_id IS NOT NULL
       OR scenario = 'online'
     ) AS suggest_data_sharing_enabled,
+    CAST(NULL AS STRING) AS query_type,
   FROM
     contextual_services.quicksuggest_click
   WHERE
@@ -110,6 +127,7 @@ WITH combined AS (
     SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
     -- 'suggest_data_sharing_enabled' is only available for `quicksuggest_*` tables
     NULL AS suggest_data_sharing_enabled,
+    CAST(NULL AS STRING) AS query_type,
   FROM
     firefox_desktop.top_sites
   WHERE
@@ -136,6 +154,7 @@ WITH combined AS (
     SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
     -- 'suggest_data_sharing_enabled' is only available for `quicksuggest_*` tables
     NULL AS suggest_data_sharing_enabled,
+    CAST(NULL AS STRING) AS query_type,
   FROM
     contextual_services.topsites_impression
   WHERE
@@ -164,6 +183,7 @@ WITH combined AS (
     SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
     -- 'suggest_data_sharing_enabled' is only available for `quicksuggest_*` tables
     NULL AS suggest_data_sharing_enabled,
+    CAST(NULL AS STRING) AS query_type,
   FROM
     contextual_services.topsites_click
   WHERE
@@ -193,6 +213,7 @@ WITH combined AS (
     normalized_os,
     -- 'suggest_data_sharing_enabled' is only available for `quicksuggest_*` tables
     NULL AS suggest_data_sharing_enabled,
+    CAST(NULL AS STRING) AS query_type,
   FROM
     org_mozilla_firefox.topsites_impression
   UNION ALL
@@ -216,6 +237,7 @@ WITH combined AS (
     normalized_os,
     -- 'suggest_data_sharing_enabled' is only available for `quicksuggest_*` tables
     NULL AS suggest_data_sharing_enabled,
+    CAST(NULL AS STRING) AS query_type,
   FROM
     org_mozilla_firefox_beta.topsites_impression
   UNION ALL
@@ -239,6 +261,7 @@ WITH combined AS (
     normalized_os,
     -- 'suggest_data_sharing_enabled' is only available for `quicksuggest_*` tables
     NULL AS suggest_data_sharing_enabled,
+    CAST(NULL AS STRING) AS query_type,
   FROM
     org_mozilla_fenix.topsites_impression
   UNION ALL
@@ -271,6 +294,7 @@ WITH combined AS (
     'iOS' AS normalized_os,
     -- 'suggest_data_sharing_enabled' is only available for `quicksuggest_*` tables
     NULL AS suggest_data_sharing_enabled,
+    CAST(NULL AS STRING) AS query_type,
   FROM
     org_mozilla_ios_firefox.topsites_impression
   UNION ALL
@@ -303,6 +327,7 @@ WITH combined AS (
     'iOS' AS normalized_os,
     -- 'suggest_data_sharing_enabled' is only available for `quicksuggest_*` tables
     NULL AS suggest_data_sharing_enabled,
+    CAST(NULL AS STRING) AS query_type,
   FROM
     org_mozilla_ios_firefoxbeta.topsites_impression
 ),
@@ -323,9 +348,10 @@ with_event_count AS (
     context_id
 )
 SELECT
-  * EXCEPT (context_id, user_event_count),
+  * EXCEPT (context_id, user_event_count, query_type),
   COUNT(*) AS event_count,
   COUNT(DISTINCT(context_id)) AS user_count,
+  query_type,
 FROM
   with_event_count
 WHERE
@@ -350,4 +376,5 @@ GROUP BY
   provider,
   match_type,
   normalized_os,
-  suggest_data_sharing_enabled
+  suggest_data_sharing_enabled,
+  query_type

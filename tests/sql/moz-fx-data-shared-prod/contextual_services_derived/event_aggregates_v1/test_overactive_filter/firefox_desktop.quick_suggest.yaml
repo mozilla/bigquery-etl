@@ -15,6 +15,7 @@
       quick_suggest_position: 1
     string: &click_strings
       quick_suggest_advertiser: ad1
+      quick_suggest_block_id: "123"
       quick_suggest_match_type: firefox-suggest
       quick_suggest_ping_type: quicksuggest-click
       quick_suggest_request_id: HASH123

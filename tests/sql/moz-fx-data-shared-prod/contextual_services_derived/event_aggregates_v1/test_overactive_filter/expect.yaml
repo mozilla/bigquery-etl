@@ -15,6 +15,7 @@
   position: 1
   event_count: 52
   user_count: 2
+  query_type: branded
 - <<: *suggest_base
   event_type: click
   event_count: 1

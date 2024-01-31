@@ -8,7 +8,8 @@ WITH blocks AS (
     b.date <= @submission_date
   QUALIFY
     1 = ROW_NUMBER() OVER (PARTITION BY b.id ORDER BY b.date DESC)
-), combined AS (
+),
+combined AS (
   SELECT
     metrics.uuid.quick_suggest_context_id AS context_id,
     DATE(submission_timestamp) AS submission_date,

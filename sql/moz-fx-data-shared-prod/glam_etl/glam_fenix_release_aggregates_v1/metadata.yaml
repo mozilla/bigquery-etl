@@ -13,3 +13,7 @@ scheduling:
   - task_id: export_org_mozilla_fenix_glam_release
     dag_name: glam_fenix
     execution_delta: 6h
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:dataops-managed/glam

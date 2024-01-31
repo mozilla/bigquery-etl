@@ -13,3 +13,7 @@ scheduling:
   - task_id: export_firefox_desktop_glam_nightly
     dag_name: glam_fog
     execution_delta: 6h
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:dataops-managed/glam

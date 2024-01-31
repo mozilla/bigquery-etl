@@ -17,5 +17,4 @@ SELECT
   CAST(NULL AS STRING) AS match_type,
   CAST(NULL AS BOOL) AS suggest_data_sharing_enabled,
   CAST(NULL AS INT64) AS impression_count,
-  CAST(NULL AS INT64) AS click_count,
-  CAST(NULL AS STRING) AS query_type
+  CAST(NULL AS INT64) AS click_count

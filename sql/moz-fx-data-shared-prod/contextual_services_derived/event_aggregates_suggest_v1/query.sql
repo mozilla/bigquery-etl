@@ -23,12 +23,8 @@ WITH combined AS (
       "click",
       "impression"
     ) AS event_type,
-    blocks.query_type
   FROM
-    `moz-fx-data-shared-prod.firefox_desktop.quick_suggest` qs
-  LEFT JOIN
-    `moz-fx-data-bq-fivetran.admarketplace_suggest.blocks` blocks
-    ON SAFE_CAST(qs.metrics.string.quick_suggest_block_id AS INT) = blocks.block_id
+    `moz-fx-data-shared-prod.firefox_desktop.quick_suggest`
   WHERE
     metrics.string.quick_suggest_ping_type IN ("quicksuggest-click", "quicksuggest-impression")
   UNION ALL
@@ -51,7 +47,6 @@ WITH combined AS (
       FALSE
     ) AS suggest_data_sharing_enabled,
     'impression' AS event_type,
-    CAST(NULL AS STRING) AS query_type
   FROM
     `moz-fx-data-shared-prod.contextual_services.quicksuggest_impression`
   WHERE
@@ -78,7 +73,6 @@ WITH combined AS (
       FALSE
     ) AS suggest_data_sharing_enabled,
     'click' AS event_type,
-    CAST(NULL AS STRING) AS query_type
   FROM
     `moz-fx-data-shared-prod.contextual_services.quicksuggest_click`
   WHERE
@@ -126,5 +120,4 @@ GROUP BY
   position,
   provider,
   match_type,
-  suggest_data_sharing_enabled,
-  query_type
+  suggest_data_sharing_enabled

@@ -23,6 +23,7 @@ JOIN
 WHERE
   _TABLE_SUFFIX = FORMAT_DATE('%Y%m%d', @submission_date)
   AND e.key = 'ga_session_id'
+  AND e.value.int_value IS NOT NULL
   AND a.event_name = 'product_download'
 GROUP BY
   date,

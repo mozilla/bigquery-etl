@@ -21,6 +21,7 @@ WITH get_session_start_time AS (
     UNNEST(event_params) e
   WHERE
     e.key = 'ga_session_id'
+    AND e.value.int_value IS NOT NULL
     AND _TABLE_SUFFIX = SAFE.FORMAT_DATE('%Y%m%d', @submission_date)
   GROUP BY
     date,

@@ -34,6 +34,7 @@ references:
   - contextual_services.topsites_impression
   - firefox_desktop.quick_suggest
   - firefox_desktop.top_sites
+  - moz-fx-data-bq-fivetran.admarketplace_suggest.blocks
   - org_mozilla_fenix.topsites_impression
   - org_mozilla_firefox.topsites_impression
   - org_mozilla_firefox_beta.topsites_impression

@@ -68,13 +68,18 @@ pageviews_staging AS (
     visit_identifier
 ),
 pageviews_table AS (
-  SELECT 
-  date, 
-  visit_identifier, 
-  unique_pageviews,
-  pageviews,
-  CASE WHEN pageviews = 1 THEN 1 ELSE 0 END AS single_page_session
-  FROM pageviews_staging 
+  SELECT
+    date,
+    visit_identifier,
+    unique_pageviews,
+    pageviews,
+    CASE
+      WHEN pageviews = 1
+        THEN 1
+      ELSE 0
+    END AS single_page_session
+  FROM
+    pageviews_staging
 ),
 bounces_table AS (
   SELECT

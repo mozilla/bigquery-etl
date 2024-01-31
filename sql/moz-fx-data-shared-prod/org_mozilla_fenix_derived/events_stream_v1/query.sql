@@ -36,7 +36,11 @@ WITH base AS (
     event.category AS event_category,
     event.name AS event_name,
     ARRAY_TO_STRING([event.category, event.name], '.') AS event, -- handles NULL values better
-    `mozfun.json.from_map`(event.extra) AS event_extra
+    `mozfun.json.from_map`(event.extra) AS event_extra,
+    JSON_STRIP_NULLS(
+      TO_JSON(metrics),  -- expose as easy to access JSON column
+      remove_empty => TRUE -- no reason to keep empty objects around
+    ) AS metrics
   FROM
     `org_mozilla_fenix.events` AS e
   CROSS JOIN

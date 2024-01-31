@@ -787,7 +787,11 @@ workflows:
       # from the internal repository and pushing generated results back to
       # a branch on that internal repository, which may be initially
       # surprising.
-      - private-generate-sql
+      - private-generate-sql:
+          filters:
+            branches:
+              only:
+                - main
       - push-private-generated-sql:
           requires:
             - private-generate-sql

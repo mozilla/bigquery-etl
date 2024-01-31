@@ -91,7 +91,8 @@ SELECT
       metrics.counter.bloburl_resolve_stopped,
       metrics.counter.networking_residual_cache_folder_count,
       metrics.counter.cookie_banners_cookie_injection_fail,
-      metrics.counter.networking_set_cookie
+      metrics.counter.networking_set_cookie,
+      metrics.counter.tls_certificate_verifications
     ) AS `counter`,
     metrics.datetime,
     STRUCT(
@@ -280,7 +281,8 @@ SELECT
       metrics.counter.bloburl_resolve_stopped,
       metrics.counter.networking_residual_cache_folder_count,
       metrics.counter.cookie_banners_cookie_injection_fail,
-      metrics.counter.networking_set_cookie
+      metrics.counter.networking_set_cookie,
+      metrics.counter.tls_certificate_verifications
     ) AS `counter`,
     metrics.datetime,
     STRUCT(

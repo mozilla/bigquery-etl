@@ -268,7 +268,8 @@ SELECT
       metrics.boolean.shopping_settings_component_opted_out,
       metrics.boolean.shopping_settings_nimbus_disabled_shopping,
       metrics.boolean.shopping_settings_user_has_onboarded,
-      metrics.boolean.shopping_settings_disabled_ads
+      metrics.boolean.shopping_settings_disabled_ads,
+      metrics.boolean.debug_drawer_debug_drawer_enabled
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -345,7 +346,8 @@ SELECT
       metrics.counter.fxa_client_operation_count,
       metrics.counter.networking_residual_cache_folder_count,
       metrics.counter.cookie_banners_cookie_injection_fail,
-      metrics.counter.networking_set_cookie
+      metrics.counter.networking_set_cookie,
+      metrics.counter.tls_certificate_verifications
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -842,7 +844,8 @@ SELECT
       metrics.boolean.shopping_settings_component_opted_out,
       metrics.boolean.shopping_settings_nimbus_disabled_shopping,
       metrics.boolean.shopping_settings_user_has_onboarded,
-      metrics.boolean.shopping_settings_disabled_ads
+      metrics.boolean.shopping_settings_disabled_ads,
+      metrics.boolean.debug_drawer_debug_drawer_enabled
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -919,7 +922,8 @@ SELECT
       metrics.counter.fxa_client_operation_count,
       metrics.counter.networking_residual_cache_folder_count,
       metrics.counter.cookie_banners_cookie_injection_fail,
-      metrics.counter.networking_set_cookie
+      metrics.counter.networking_set_cookie,
+      metrics.counter.tls_certificate_verifications
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,

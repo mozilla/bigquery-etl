@@ -582,6 +582,12 @@ fields:
         a denomenator for measuring CHIPS adoption.
 
         '
+    - name: tls_certificate_verifications
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The total number of successful TLS server certificate verifications.
+
+        '
   - name: custom_distribution
     type: RECORD
     mode: NULLABLE
@@ -5994,6 +6000,76 @@ fields:
         mode: NULLABLE
       description: 'This counts the number of times we set a cookie that has the Partitioned
         attribute. This tracks the adoption of CHIPS.
+
+        '
+    - name: verification_used_cert_from_built_in_roots_module
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: denominator
+        type: INTEGER
+        mode: NULLABLE
+      - name: numerator
+        type: INTEGER
+        mode: NULLABLE
+      description: 'How many successfully-built certificate chains used a certificate
+        from the built-in roots module.
+
+        '
+    - name: verification_used_cert_from_nss_cert_db
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: denominator
+        type: INTEGER
+        mode: NULLABLE
+      - name: numerator
+        type: INTEGER
+        mode: NULLABLE
+      description: 'How many successfully-built certificate chains used a certificate
+        from the NSS cert DB.
+
+        '
+    - name: verification_used_cert_from_preloaded_intermediates
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: denominator
+        type: INTEGER
+        mode: NULLABLE
+      - name: numerator
+        type: INTEGER
+        mode: NULLABLE
+      description: 'How many successfully-built certificate chains used a certificate
+        from preloaded intermediates.
+
+        '
+    - name: verification_used_cert_from_third_party_certificates
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: denominator
+        type: INTEGER
+        mode: NULLABLE
+      - name: numerator
+        type: INTEGER
+        mode: NULLABLE
+      description: 'How many successfully-built certificate chains used a third-party
+        certificate from the OS.
+
+        '
+    - name: verification_used_cert_from_tls_handshake
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: denominator
+        type: INTEGER
+        mode: NULLABLE
+      - name: numerator
+        type: INTEGER
+        mode: NULLABLE
+      description: 'How many successfully-built certificate chains used a certificate
+        from the TLS handshake.
 
         '
   - name: string_list

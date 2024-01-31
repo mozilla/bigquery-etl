@@ -367,6 +367,9 @@ fields:
     - name: networking_set_cookie
       type: INTEGER
       mode: NULLABLE
+    - name: tls_certificate_verifications
+      type: INTEGER
+      mode: NULLABLE
   - name: datetime
     type: RECORD
     mode: NULLABLE
@@ -4522,6 +4525,56 @@ fields:
         type: INTEGER
         mode: NULLABLE
     - name: networking_set_cookie_partitioned
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: denominator
+        type: INTEGER
+        mode: NULLABLE
+      - name: numerator
+        type: INTEGER
+        mode: NULLABLE
+    - name: verification_used_cert_from_built_in_roots_module
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: denominator
+        type: INTEGER
+        mode: NULLABLE
+      - name: numerator
+        type: INTEGER
+        mode: NULLABLE
+    - name: verification_used_cert_from_nss_cert_db
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: denominator
+        type: INTEGER
+        mode: NULLABLE
+      - name: numerator
+        type: INTEGER
+        mode: NULLABLE
+    - name: verification_used_cert_from_preloaded_intermediates
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: denominator
+        type: INTEGER
+        mode: NULLABLE
+      - name: numerator
+        type: INTEGER
+        mode: NULLABLE
+    - name: verification_used_cert_from_third_party_certificates
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: denominator
+        type: INTEGER
+        mode: NULLABLE
+      - name: numerator
+        type: INTEGER
+        mode: NULLABLE
+    - name: verification_used_cert_from_tls_handshake
       type: RECORD
       mode: NULLABLE
       fields:

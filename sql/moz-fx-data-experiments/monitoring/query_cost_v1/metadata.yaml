@@ -6,6 +6,10 @@ owners:
 - ascholtz@mozilla.com
 scheduling:
   dag_name: bqetl_experiments_daily
+  depends_on:
+  - task_id: jetstream_run_config_changed
+    dag_name: jetstream
+    execution_delta: 3h
 bigquery:
   time_partitioning:
     type: day

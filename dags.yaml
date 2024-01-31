@@ -278,7 +278,7 @@ bqetl_main_summary:
     - impact/tier_1
 
 bqetl_experiments_daily:
-  schedule_interval: 0 3 * * *
+  schedule_interval: 0 7 * * *
   description: |
     The DAG schedules queries that query experimentation related
     metrics (enrollments, search, ...) from stable tables to finalize

@@ -82,11 +82,11 @@ fields:
 - mode: NULLABLE
   name: total_events
   type: INT64
-  description: Total Events - The total number of non-page view events belonging to sessions with 1 or more engaged_session_event
+  description: Total Events - The total number of non-page view events
 - mode: NULLABLE
   name: unique_events
   type: INT64
-  description: Unique Events - The number of unique sessions with 1 or more engaged_session_event
+  description: Unique Events - The number of unique sessions
 - mode: NULLABLE
   name: page_name
   type: STRING

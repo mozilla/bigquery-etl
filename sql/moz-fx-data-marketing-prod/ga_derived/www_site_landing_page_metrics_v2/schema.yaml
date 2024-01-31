@@ -102,12 +102,12 @@ fields:
 - mode: NULLABLE
   name: single_page_sessions
   type: INT64
-  description: Single Page Sessions
+  description: Single Page Sessions - The number of sessions with a single page view
 - mode: NULLABLE
   name: bounces
   type: INT64
-  description: Bounces
+  description: Bounces - The number of sessions with a single page view
 - mode: NULLABLE
   name: exits
   type: INT64
-  description: Exits
+  description: Exits - The number of sessions where this page was the last page viewed

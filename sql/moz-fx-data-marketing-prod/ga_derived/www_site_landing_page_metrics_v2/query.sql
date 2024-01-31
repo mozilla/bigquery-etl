@@ -1,7 +1,6 @@
 SELECT
   date,
   'mozilla.org' AS site,
-  visit_identifier,
   device_category,
   operating_system,
   `language`,

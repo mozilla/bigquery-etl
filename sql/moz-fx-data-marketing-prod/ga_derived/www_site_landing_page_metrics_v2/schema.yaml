@@ -98,7 +98,7 @@ fields:
 - mode: NULLABLE
   name: unique_pageviews
   type: INT64
-  description: Unique Page Views - The number of unique page paths visited 
+  description: Unique Page Views - The number of unique page paths visited
 - mode: NULLABLE
   name: single_page_sessions
   type: INT64

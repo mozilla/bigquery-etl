@@ -308,6 +308,7 @@ jobs:
               -m "[ci skip] Deployed {sha} with MkDocs version: {version}"
   generate-sql:
     docker: *docker
+    resource_class: large
     steps:
       - checkout
       - *restore_venv_cache
@@ -458,6 +459,7 @@ jobs:
       - docker/push: *public-image
   private-generate-sql:
     docker: *docker
+    resource_class: large
     steps:
       - checkout
       - *skip_forked_pr
@@ -558,6 +560,7 @@ jobs:
       - gcp-gcr/push-image: *private-image
   main-generate-sql-and-dags:
     docker: *docker
+    resource_class: large
     steps:
       - checkout
       - run:

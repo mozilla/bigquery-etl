@@ -13,6 +13,7 @@ from pathlib import Path
 
 from jinja2 import Environment, FileSystemLoader
 from mozilla_schema_generator.glean_ping import GleanPing
+from pathos.multiprocessing import ThreadingPool
 
 from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.schema import Schema
@@ -50,7 +51,12 @@ class GleanAppPingViews(GleanTable):
         self.per_app_enabled = True
 
     def generate_per_app(
-        self, project_id, app_info, output_dir=None, use_cloud_function=True
+        self,
+        project_id,
+        app_info,
+        output_dir=None,
+        use_cloud_function=True,
+        parallelism=8,
     ):
         """
         Generate per-app ping views across channels.
@@ -81,7 +87,8 @@ class GleanAppPingViews(GleanTable):
 
         p = GleanPing(repo)
         # generate views for all available pings
-        for ping_name in p.get_pings():
+
+        def _process_ping(ping_name):
             view_name = ping_name.replace("-", "_")
             full_view_id = f"moz-fx-data-shared-prod.{target_dataset}.{view_name}"
 
@@ -149,7 +156,7 @@ class GleanAppPingViews(GleanTable):
 
             if queries == []:
                 # nothing to render
-                continue
+                return
 
             # render view SQL
             render_kwargs = dict(
@@ -217,6 +224,14 @@ class GleanAppPingViews(GleanTable):
                 ] + unioned_schema.schema["fields"]
 
                 unioned_schema.to_yaml_file(schema_dir / "schema.yaml")
+
+        # Using ThreadingPool instead of ProcessingPool here, due to issues with pickling the GleanAppPingViews class (self references),
+        # and ProcessingPools cannot be nested - glean_usage is using ProcessingPool to kick off generating the different tables per app
+        with ThreadingPool(parallelism) as pool:
+            pool.map(
+                _process_ping,
+                p.get_pings(),
+            )
 
     def _generate_select_expression(
         self, unioned_schema_nodes, app_schema_nodes, path=[]

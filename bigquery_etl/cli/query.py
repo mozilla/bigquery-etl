@@ -1530,49 +1530,51 @@ def initialize(
     type=click.Path(file_okay=False),
     required=False,
 )
-def render(name, sql_dir, output_dir):
+@parallelism_option()
+def render(name, sql_dir, output_dir, parallelism):
     """Render a query Jinja template."""
     if name is None:
         name = "*.*"
 
     query_files = paths_matching_name_pattern(name, sql_dir, project_id=None)
     resolved_sql_dir = Path(sql_dir).resolve()
-    for query_file in query_files:
-        table_name = query_file.parent.name
-        dataset_id = query_file.parent.parent.name
-        project_id = query_file.parent.parent.parent.name
 
-        jinja_params = {
-            **{
-                "project_id": project_id,
-                "dataset_id": dataset_id,
-                "table_name": table_name,
-            },
-        }
+    with Pool(parallelism) as p:
+        p.map(partial(_render_query, output_dir, resolved_sql_dir), query_files)
 
-        rendered_sql = (
-            render_template(
-                query_file.name,
-                template_folder=query_file.parent,
-                templates_dir="",
-                format=False,
-                **jinja_params,
-            )
-            + "\n"
+
+def _render_query(output_dir, resolved_sql_dir, query_file):
+    table_name = query_file.parent.name
+    dataset_id = query_file.parent.parent.name
+    project_id = query_file.parent.parent.parent.name
+
+    jinja_params = {
+        "project_id": project_id,
+        "dataset_id": dataset_id,
+        "table_name": table_name,
+    }
+
+    rendered_sql = (
+        render_template(
+            query_file.name,
+            template_folder=query_file.parent,
+            templates_dir="",
+            format=False,
+            **jinja_params,
         )
+        + "\n"
+    )
 
-        if not any(s in str(query_file) for s in skip_format()):
-            rendered_sql = reformat(rendered_sql, trailing_newline=True)
+    if not any(s in str(query_file) for s in skip_format()):
+        rendered_sql = reformat(rendered_sql, trailing_newline=True)
 
-        if output_dir:
-            output_file = output_dir / query_file.resolve().relative_to(
-                resolved_sql_dir
-            )
-            output_file.parent.mkdir(parents=True, exist_ok=True)
-            output_file.write_text(rendered_sql)
-        else:
-            click.echo(query_file)
-            click.echo(rendered_sql)
+    if output_dir:
+        output_file = output_dir / query_file.resolve().relative_to(resolved_sql_dir)
+        output_file.parent.mkdir(parents=True, exist_ok=True)
+        output_file.write_text(rendered_sql)
+    else:
+        click.echo(query_file)
+        click.echo(rendered_sql)
 
 
 def _parse_partition_setting(partition_date):

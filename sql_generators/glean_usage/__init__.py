@@ -146,6 +146,7 @@ def generate(
                 output_dir=output_dir,
                 use_cloud_function=use_cloud_function,
                 app_info=app_info,
+                parallelism=parallelism,
             ),
             baseline_table,
         )
@@ -162,6 +163,7 @@ def generate(
                 target_project,
                 output_dir=output_dir,
                 use_cloud_function=use_cloud_function,
+                parallelism=parallelism,
             ),
             info,
         )
@@ -177,6 +179,7 @@ def generate(
                 target_project,
                 output_dir=output_dir,
                 use_cloud_function=use_cloud_function,
+                parallelism=parallelism,
             ),
             app_info,
         )

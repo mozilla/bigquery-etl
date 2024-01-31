@@ -560,6 +560,7 @@ jobs:
       - gcp-gcr/push-image: *private-image
   main-generate-sql-and-dags:
     docker: *docker
+    resource_class: large
     steps:
       - checkout
       - run:

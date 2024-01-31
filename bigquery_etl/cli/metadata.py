@@ -53,23 +53,35 @@ def update(name: str, sql_dir: Optional[str], project_id: Optional[str]) -> None
         dataset_metadata = DatasetMetadata.from_file(dataset_metadata_path)
         table_metadata = Metadata.from_file(table_metadata_file)
 
+        dataset_metadata_updated = False
+        table_metadata_updated = False
+
         # set dataset metadata default_table_workgroup_access to table_workgroup_access if not set
         if not dataset_metadata.default_table_workgroup_access:
             dataset_metadata.default_table_workgroup_access = (
                 dataset_metadata.workgroup_access
             )
+            dataset_metadata_updated = True
 
         if table_metadata.deprecated:
             # set workgroup: [] if table has been tagged as deprecated
             # this overwrites existing workgroups
             table_metadata.workgroup_access = []
+            table_metadata_updated = True
             dataset_metadata.workgroup_access = []
+            dataset_metadata_updated = True
         else:
             if table_metadata.workgroup_access is None:
                 table_metadata.workgroup_access = (
                     dataset_metadata.default_table_workgroup_access
                 )
+                table_metadata_updated = True
 
-        dataset_metadata.write(dataset_metadata_path)
-        table_metadata.write(table_metadata_file)
+        if dataset_metadata_updated:
+            dataset_metadata.write(dataset_metadata_path)
+            click.echo(f"Updated {dataset_metadata_path}")
+        if table_metadata_updated:
+            table_metadata.write(table_metadata_file)
+            click.echo(f"Updated {table_metadata_file}")
+
     return None

@@ -185,7 +185,6 @@ class GleanTable:
         self.across_apps_enabled = True
         self.cross_channel_template = "cross_channel.view.sql"
         self.base_table_name = "baseline_v1"
-        self.parallelism = 8
 
     def skip_existing(self, output_dir="sql/", project_id="moz-fx-data-shared-prod"):
         """Existing files configured not to be overridden during generation."""
@@ -207,6 +206,7 @@ class GleanTable:
         output_dir=None,
         use_cloud_function=True,
         app_info=[],
+        parallelism=8,
     ):
         """Generate the baseline table query per app_id."""
         if not self.per_app_id_enabled:
@@ -330,7 +330,12 @@ class GleanTable:
             write_dataset_metadata(output_dir, view)
 
     def generate_per_app(
-        self, project_id, app_info, output_dir=None, use_cloud_function=True
+        self,
+        project_id,
+        app_info,
+        output_dir=None,
+        use_cloud_function=True,
+        parallelism=8,
     ):
         """Generate the baseline table query per app_name."""
         if not self.per_app_enabled:
@@ -442,7 +447,7 @@ class GleanTable:
                 write_dataset_metadata(output_dir, table, derived_dataset_metadata=True)
 
     def generate_across_apps(
-        self, project_id, apps, output_dir=None, use_cloud_function=True
+        self, project_id, apps, output_dir=None, use_cloud_function=True, parallelism=8
     ):
         """Generate a query across all apps."""
         # logic for implementing cross-app queries needs to be implemented in the

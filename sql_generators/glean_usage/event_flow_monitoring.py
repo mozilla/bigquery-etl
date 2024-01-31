@@ -31,7 +31,7 @@ class EventFlowMonitoring(GleanTable):
         self.base_table_name = "events_unnested"
 
     def generate_across_apps(
-        self, project_id, apps, output_dir=None, use_cloud_function=True
+        self, project_id, apps, output_dir=None, use_cloud_function=True, parallelism=8
     ):
         """Generate a query across all apps."""
         if not self.across_apps_enabled:

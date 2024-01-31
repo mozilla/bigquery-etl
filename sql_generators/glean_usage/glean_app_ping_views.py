@@ -51,7 +51,12 @@ class GleanAppPingViews(GleanTable):
         self.per_app_enabled = True
 
     def generate_per_app(
-        self, project_id, app_info, output_dir=None, use_cloud_function=True
+        self,
+        project_id,
+        app_info,
+        output_dir=None,
+        use_cloud_function=True,
+        parallelism=8,
     ):
         """
         Generate per-app ping views across channels.
@@ -220,7 +225,9 @@ class GleanAppPingViews(GleanTable):
 
                 unioned_schema.to_yaml_file(schema_dir / "schema.yaml")
 
-        with ThreadingPool(self.parallelism) as pool:
+        # Using ThreadingPool instead of ProcessingPool here, due to issues with pickling the GleanAppPingViews class (self references),
+        # and ProcessingPools cannot be nested - glean_usage is using ProcessingPool to kick off generating the different tables per app
+        with ThreadingPool(parallelism) as pool:
             pool.map(
                 _process_ping,
                 p.get_pings(),

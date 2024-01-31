@@ -1549,11 +1549,9 @@ def _render_query(output_dir, resolved_sql_dir, query_file):
     project_id = query_file.parent.parent.parent.name
 
     jinja_params = {
-        **{
-            "project_id": project_id,
-            "dataset_id": dataset_id,
-            "table_name": table_name,
-        },
+        "project_id": project_id,
+        "dataset_id": dataset_id,
+        "table_name": table_name,
     }
 
     rendered_sql = (

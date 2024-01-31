@@ -17,6 +17,6 @@ SELECT
 FROM
   `moz-fx-data-experiments.region-us.INFORMATION_SCHEMA.JOBS_BY_PROJECT`
 WHERE
-  DATE(creation_time) = '2024-01-31'
+  DATE(creation_time) = @submission_date
   AND destination_table.dataset_id = "mozanalysis"
   AND total_slot_ms > 3600 -- only costs > 0.001 USD

@@ -1,15 +1,11 @@
 friendly_name: mlhackweek-search
+# yamllint disable rule:line-length
 description: |-
   User-facing views related to document namespace mlhackweek-search; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/mlhackweek-search
 dataset_base_acl: view_restricted
 user_facing: true
 labels: {}
-default_table_workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:mlhackweek-search
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mlhackweek-search
-syndication: {}

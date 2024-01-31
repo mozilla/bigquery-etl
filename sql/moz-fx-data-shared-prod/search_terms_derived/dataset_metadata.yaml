@@ -1,15 +1,13 @@
 friendly_name: Search Terms Derived
+# yamllint disable rule:line-length
 description: |-
   Derived tables on top of search terms data
 dataset_base_acl: derived_restricted
 user_facing: false
 labels: {}
-default_table_workgroup_access:
-- role: roles/bigquery.metadataViewer
-  members:
-  - workgroup:search-terms/sanitized-writer
+# legacy streaming insert API requires bigquery.datasets.get access, which is
+# easiest to apply via metadataViewer
 workgroup_access:
 - role: roles/bigquery.metadataViewer
   members:
   - workgroup:search-terms/sanitized-writer
-syndication: {}

@@ -47,4 +47,3 @@ workgroup_access:
   - workgroup:mozilla-confidential
   - workgroup:dataops-managed/taar
 references: {}
-deprecated: false

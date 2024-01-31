@@ -1,19 +1,19 @@
+---
 friendly_name: Remote Settings Suggestions
-description: |
-  A table containing the suggestions imported from Remote Settings, from the same list powering Firefox Suggest.
+description: >
+  A table containing the suggestions imported from Remote Settings,
+  from the same list powering Firefox Suggest.
+
   Populated by the `quicksuggest2bq` scheduled task in telemetry-airflow.
-  Note that this table is non-sensitive and accessible to all Mozilla. It is located in a restricted dataset only because it is conceptually related to search terms data and used as input in search terms sanitization processes.
+
+  Note that this table is non-sensitive and accessible to all Mozilla.
+  It is located in a restricted dataset only because it is conceptually related
+  to search terms data and used as input in search terms sanitization processes.
 owners:
-- wstuckey@mozilla.com
-- ctroy@mozilla.com
-labels:
-  owner1: wstuckey
-  owner2: ctroy
-bigquery: null
+  - wstuckey@mozilla.com
+  - ctroy@mozilla.com
 workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:mozilla-confidential
-  - workgroup:search-terms/sanitized-writer
-references: {}
-deprecated: false
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:mozilla-confidential
+      - workgroup:search-terms/sanitized-writer

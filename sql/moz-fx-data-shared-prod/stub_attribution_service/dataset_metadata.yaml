@@ -12,4 +12,3 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:data-science/duet
-syndication: {}

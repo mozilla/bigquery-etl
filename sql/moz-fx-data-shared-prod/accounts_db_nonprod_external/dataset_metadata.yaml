@@ -1,3 +1,4 @@
+---
 friendly_name: Firefox Accounts Databases nonprod (stage) External
 description: |-
   Data extracted from the nonprod (stage) FxA backend services databases.
@@ -7,12 +8,7 @@ description: |-
 dataset_base_acl: restricted
 user_facing: false
 labels: {}
-default_table_workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:accounts-confidential
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:accounts-confidential
-syndication: {}

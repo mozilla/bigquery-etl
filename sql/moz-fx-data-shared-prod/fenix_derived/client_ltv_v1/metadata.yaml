@@ -7,14 +7,13 @@ owners:
 - frank@mozilla.com
 labels:
   incremental: true
-  owner1: frank
-  dag: bqetl_org_mozilla_firefox_derived
+  owner1: frank@mozilla.com
 scheduling:
   depends_on_past: true
   dag_name: bqetl_org_mozilla_firefox_derived
   date_partition_parameter: null
   parameters:
-  - submission_date:DATE:{{ds}}
+  - "submission_date:DATE:{{ds}}"
 bigquery:
   time_partitioning: null
   clustering:

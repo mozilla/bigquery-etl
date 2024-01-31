@@ -1,15 +1,11 @@
 friendly_name: contextual-services
+# yamllint disable rule:line-length
 description: |-
   User-facing views related to document namespace contextual-services; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/contextual-services
 dataset_base_acl: view_restricted
 user_facing: true
 labels: {}
-default_table_workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:contextual-services
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:contextual-services
-syndication: {}

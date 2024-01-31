@@ -45,4 +45,3 @@ workgroup_access:
   - workgroup:mozilla-confidential
   - workgroup:cloudops-managed/poucave
 references: {}
-deprecated: false

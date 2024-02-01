@@ -53,7 +53,7 @@ fields:
 - name: credit_card_deleted_users
   type: INTEGER
   mode: NULLABLE
-- name: credit_card_deleted_users
+- name: credit_card_deleted
   type: INTEGER
   mode: NULLABLE
 - name: credit_card_modified_users

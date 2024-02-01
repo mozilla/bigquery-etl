@@ -188,10 +188,10 @@ final_staging AS (
     all_events.ad_content,
     engmgt.session_had_an_engaged_event AS visits, --this is the equivalent logic to totals.visits in UA
     CASE
-      WHEN exits.nbr_page_view_events = 1
+      WHEN engmgt.session_had_an_engaged_event = 0
         THEN 1
       ELSE 0
-    END AS bounces, --this is the equivalent logic to totals.bounces in UA
+    END AS bounces, --if the session did not have an engaged event, then the session is considered a bounce, else it is not
     SAFE_DIVIDE(engagement_time_msec, 1000) AS hit_time,
     engmgt.first_interaction,
     CAST(engmgt.last_interaction AS float64) AS last_interaction,

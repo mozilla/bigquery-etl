@@ -1,0 +1,67 @@
+fields:
+- name: date
+  type: DATE
+  mode: NULLABLE
+- name: experiment_branch
+  type: STRING
+  mode: NULLABLE
+- name: subgroup
+  type: STRING
+  mode: NULLABLE
+- name: n
+  type: INTEGER
+  mode: NULLABLE
+- name: metric_name
+  type: STRING
+  mode: NULLABLE
+- name: metric_type
+  type: STRING
+  mode: NULLABLE
+- name: histogram
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: key
+    type: INTEGER
+    mode: NULLABLE
+  - name: value
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: pdf
+      type: FLOAT
+      mode: NULLABLE
+    - name: count
+      type: FLOAT
+      mode: NULLABLE
+    - name: label
+      type: STRING
+      mode: NULLABLE
+- name: statistics
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: comparison_branch
+    type: STRING
+    mode: NULLABLE
+  - name: name
+    type: STRING
+    mode: NULLABLE
+  - name: value
+    type: FLOAT
+    mode: NULLABLE
+  - name: confidence_low
+    type: FLOAT
+    mode: NULLABLE
+  - name: confidence_high
+    type: FLOAT
+    mode: NULLABLE
+  - name: confidence_level
+    type: FLOAT
+    mode: NULLABLE
+  - name: p_value
+    type: FLOAT
+    mode: NULLABLE
+- name: experiment_id
+  type: STRING
+  mode: NULLABLE

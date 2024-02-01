@@ -1,17 +1,17 @@
 fields:
-- description: Pool id
-  mode: NULLABLE
-  name: id
+- name: id
   type: INTEGER
-- description: Pool name
   mode: NULLABLE
-  name: pool
+  description: Pool id
+- name: pool
   type: STRING
-- description: Pool description
   mode: NULLABLE
-  name: description
+  description: Pool name
+- name: description
   type: STRING
-- description: Number of slots available in the pool
   mode: NULLABLE
-  name: slots
+  description: Pool description
+- name: slots
   type: INTEGER
+  mode: NULLABLE
+  description: Number of slots available in the pool

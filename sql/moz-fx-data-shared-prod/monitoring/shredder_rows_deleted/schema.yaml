@@ -1,22 +1,22 @@
 fields:
 - name: end_time
   type: TIMESTAMP
-  mode: REQUIRED
+  mode: NULLABLE
 - name: job_id
   type: STRING
-  mode: REQUIRED
+  mode: NULLABLE
 - name: project_id
   type: STRING
-  mode: REQUIRED
+  mode: NULLABLE
 - name: dataset_id
   type: STRING
-  mode: REQUIRED
+  mode: NULLABLE
 - name: table_id
   type: STRING
-  mode: REQUIRED
+  mode: NULLABLE
 - name: partition_id
   type: STRING
   mode: NULLABLE
 - name: deleted_row_count
-  type: INT64
-  mode: REQUIRED
+  type: INTEGER
+  mode: NULLABLE

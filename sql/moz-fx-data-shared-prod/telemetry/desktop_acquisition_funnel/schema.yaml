@@ -41,31 +41,21 @@ fields:
 - name: startup_profile_selection_reason
   type: STRING
   mode: NULLABLE
-  description: How the profile was selected during startup, as reported by the first
-    ping received.
 - name: cohort
   type: INTEGER
   mode: NULLABLE
 - name: activated
   type: INTEGER
   mode: NULLABLE
-  description: Whether the profile sent a main ping in at least 5 of their first 7
-    days.
 - name: returned_second_day
   type: INTEGER
   mode: NULLABLE
-  description: Whether the profile sent a main ping on any day after their first day
-    during their first 28 days.
 - name: qualified_second_day
   type: INTEGER
   mode: NULLABLE
-  description: Whether the profile qualified as DAU on any day after their first day
-    during their first 28 days.
 - name: retained_week4
   type: INTEGER
   mode: NULLABLE
-  description: Whether the profile sent a main ping on any day in their 4th week.
 - name: qualified_week4
   type: INTEGER
   mode: NULLABLE
-  description: Whether the profile qualified as DAU on any day in their 4th week.

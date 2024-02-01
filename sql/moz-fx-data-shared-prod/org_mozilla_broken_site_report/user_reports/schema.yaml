@@ -1,0 +1,19 @@
+fields:
+- name: uuid
+  type: STRING
+  mode: NULLABLE
+- name: reported_at
+  type: DATETIME
+  mode: NULLABLE
+- name: comments
+  type: STRING
+  mode: NULLABLE
+- name: url
+  type: STRING
+  mode: NULLABLE
+- name: breakage_category
+  type: STRING
+  mode: NULLABLE
+- name: details
+  type: STRING
+  mode: NULLABLE

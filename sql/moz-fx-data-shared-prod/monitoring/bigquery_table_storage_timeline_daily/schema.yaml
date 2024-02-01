@@ -1,65 +1,65 @@
 fields:
-- mode: NULLABLE
-  name: change_date
+- name: change_date
   type: DATE
+  mode: NULLABLE
   description: Date of change to the data in the table.
-- mode: NULLABLE
-  name: project_id
+- name: project_id
   type: STRING
+  mode: NULLABLE
   description: The ID of the project that contains the dataset
-- mode: NULLABLE
-  name: dataset_id
+- name: dataset_id
   type: STRING
+  mode: NULLABLE
   description: The name of the dataset that contains the table
-- mode: NULLABLE
-  name: table_id
+- name: table_id
   type: STRING
+  mode: NULLABLE
   description: The name of the table
-- mode: NULLABLE
-  name: deleted
+- name: deleted
   type: BOOLEAN
+  mode: NULLABLE
   description: Indicates whether or not the table is deleted
-- mode: NULLABLE
-  name: creation_date
+- name: creation_date
   type: DATE
+  mode: NULLABLE
   description: The table's creation date
-- mode: NULLABLE
-  name: change_count
+- name: change_count
   type: INTEGER
+  mode: NULLABLE
   description: The total number of changes to a table in one day
-- mode: NULLABLE
-  name: avg_total_rows
+- name: avg_total_rows
   type: FLOAT
+  mode: NULLABLE
   description: Average total number of rows in the table
-- mode: NULLABLE
-  name: avg_total_partitions
+- name: avg_total_partitions
   type: FLOAT
+  mode: NULLABLE
   description: Average total number of partitions in the table
-- mode: NULLABLE
-  name: avg_total_logical_bytes
+- name: avg_total_logical_bytes
   type: FLOAT
+  mode: NULLABLE
   description: Average total number of uncompressed bytes in the table
-- mode: NULLABLE
-  name: avg_active_logical_bytes
+- name: avg_active_logical_bytes
   type: FLOAT
+  mode: NULLABLE
   description: Average number of uncompressed bytes less than 90 days old
-- mode: NULLABLE
-  name: avg_long_term_logical_bytes
+- name: avg_long_term_logical_bytes
   type: FLOAT
+  mode: NULLABLE
   description: Average number of uncompressed bytes more than 90 days old
-- mode: NULLABLE
-  name: avg_total_physical_bytes
+- name: avg_total_physical_bytes
   type: FLOAT
+  mode: NULLABLE
   description: Average total number of compressed  bytes used for storage
-- mode: NULLABLE
-  name: avg_active_physical_bytes
+- name: avg_active_physical_bytes
   type: FLOAT
+  mode: NULLABLE
   description: Average number of compressed bytes less than 90 days old
-- mode: NULLABLE
-  name: avg_long_term_physical_bytes
+- name: avg_long_term_physical_bytes
   type: FLOAT
+  mode: NULLABLE
   description: Average number of compressed bytes more than 90 days old
-- mode: NULLABLE
-  name: avg_time_travel_physical_bytes
+- name: avg_time_travel_physical_bytes
   type: FLOAT
+  mode: NULLABLE
   description: Average number of compressed bytes for deleted or changed data

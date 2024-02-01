@@ -1,58 +1,58 @@
 fields:
-- mode: NULLABLE
-  name: submission_date
+- name: submission_date
   type: DATE
-- mode: NULLABLE
-  name: mau
+  mode: NULLABLE
+- name: mau
   type: INTEGER
-- mode: NULLABLE
-  name: wau
+  mode: NULLABLE
+- name: wau
   type: INTEGER
-- mode: NULLABLE
-  name: dau
+  mode: NULLABLE
+- name: dau
   type: INTEGER
-- mode: NULLABLE
-  name: visited_5_uri_mau
+  mode: NULLABLE
+- name: visited_5_uri_mau
   type: INTEGER
-- mode: NULLABLE
-  name: visited_5_uri_wau
+  mode: NULLABLE
+- name: visited_5_uri_wau
   type: INTEGER
-- mode: NULLABLE
-  name: visited_5_uri_dau
+  mode: NULLABLE
+- name: visited_5_uri_dau
   type: INTEGER
-- mode: NULLABLE
-  name: dev_tools_mau
+  mode: NULLABLE
+- name: dev_tools_mau
   type: INTEGER
-- mode: NULLABLE
-  name: dev_tools_wau
+  mode: NULLABLE
+- name: dev_tools_wau
   type: INTEGER
-- mode: NULLABLE
-  name: dev_tools_dau
+  mode: NULLABLE
+- name: dev_tools_dau
   type: INTEGER
-- mode: NULLABLE
-  name: app_name
+  mode: NULLABLE
+- name: app_name
   type: STRING
-- mode: NULLABLE
-  name: app_version
+  mode: NULLABLE
+- name: app_version
   type: STRING
-- mode: NULLABLE
-  name: country
+  mode: NULLABLE
+- name: country
   type: STRING
-- mode: NULLABLE
-  name: locale
+  mode: NULLABLE
+- name: locale
   type: STRING
-- mode: NULLABLE
-  name: normalized_channel
+  mode: NULLABLE
+- name: normalized_channel
   type: STRING
-- mode: NULLABLE
-  name: os
+  mode: NULLABLE
+- name: os
   type: STRING
-- mode: NULLABLE
-  name: os_version
+  mode: NULLABLE
+- name: os_version
   type: STRING
-- mode: NULLABLE
-  name: distribution_id
+  mode: NULLABLE
+- name: distribution_id
   type: STRING
-- mode: NULLABLE
-  name: country_name
+  mode: NULLABLE
+- name: country_name
   type: STRING
+  mode: NULLABLE

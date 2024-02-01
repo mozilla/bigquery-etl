@@ -1,0 +1,25 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+- name: sample_id
+  type: INTEGER
+  mode: NULLABLE
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+- name: n_metrics_ping
+  type: INTEGER
+  mode: NULLABLE
+- name: days_sent_metrics_ping_bits
+  type: INTEGER
+  mode: NULLABLE
+- name: uri_count
+  type: INTEGER
+  mode: NULLABLE
+- name: is_default_browser
+  type: BOOLEAN
+  mode: NULLABLE

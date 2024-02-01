@@ -1,0 +1,13 @@
+fields:
+- name: metric
+  type: STRING
+  mode: NULLABLE
+- name: os
+  type: STRING
+  mode: NULLABLE
+- name: channel
+  type: STRING
+  mode: NULLABLE
+- name: processes
+  type: STRING
+  mode: REPEATED

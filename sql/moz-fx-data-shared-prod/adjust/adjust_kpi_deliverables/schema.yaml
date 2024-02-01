@@ -10,79 +10,60 @@ fields:
 - name: network
   type: STRING
   mode: NULLABLE
-  description: network name ex. Organic, Facebook Installs
 - name: network_token
   type: STRING
   mode: NULLABLE
-  description: unique token for the app
 - name: campaign
   type: STRING
   mode: NULLABLE
-  description: campaign name ex. firefox, QR, Anonymous IPs
 - name: campaign_token
   type: STRING
   mode: NULLABLE
-  description: unique token for the campaign
 - name: adgroup
   type: STRING
   mode: NULLABLE
-  description: adgroup name ex. mr2022-control, app-store-banner, Search
 - name: adgroup_token
   type: STRING
   mode: NULLABLE
-  description: unique token for adgroup
 - name: creative
   type: STRING
   mode: NULLABLE
-  description: creative name ex. Search GoogleSearch, Display
 - name: creative_token
   type: STRING
   mode: NULLABLE
-  description: unique token for creative
 - name: country
   type: STRING
   mode: NULLABLE
-  description: country name - two letter abbreviation
 - name: os
   type: STRING
   mode: NULLABLE
-  description: os name ex. ios, android
 - name: device
   type: STRING
   mode: NULLABLE
-  description: device type ex. tablet, phone,
 - name: clicks
   type: INTEGER
   mode: NULLABLE
-  description: number of clicks
 - name: installs
   type: INTEGER
   mode: NULLABLE
-  description: number of installs
 - name: limit_ad_tracking_install_rate
   type: FLOAT
   mode: NULLABLE
-  description: rate of limit ad tracking installs
 - name: click_conversion_rate
   type: FLOAT
   mode: NULLABLE
-  description: conversion rate for clicks
 - name: impression_conversion_rate
   type: FLOAT
   mode: NULLABLE
 - name: sessions
   type: INTEGER
   mode: NULLABLE
-  description: number of sessions
 - name: daus
   type: INTEGER
   mode: NULLABLE
-  description: daily active users
 - name: waus
   type: INTEGER
   mode: NULLABLE
-  description: weekly active users
 - name: maus
   type: INTEGER
   mode: NULLABLE
-  description: monthly active users

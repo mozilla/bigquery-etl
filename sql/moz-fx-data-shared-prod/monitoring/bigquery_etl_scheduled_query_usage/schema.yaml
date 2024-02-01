@@ -1,0 +1,13 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+- name: project_id
+  type: STRING
+  mode: NULLABLE
+- name: table
+  type: STRING
+  mode: NULLABLE
+- name: number_of_accesses
+  type: INTEGER
+  mode: NULLABLE

@@ -1,0 +1,39 @@
+fields:
+- name: category
+  type: STRING
+  mode: NULLABLE
+- name: event
+  type: STRING
+  mode: NULLABLE
+- name: first_timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: numeric_index
+  type: INTEGER
+  mode: NULLABLE
+- name: index
+  type: STRING
+  mode: NULLABLE
+- name: event_properties
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: key
+    type: STRING
+    mode: NULLABLE
+  - name: value
+    type: RECORD
+    mode: REPEATED
+    fields:
+    - name: key
+      type: STRING
+      mode: NULLABLE
+    - name: value
+      type: STRING
+      mode: NULLABLE
+    - name: index
+      type: INTEGER
+      mode: NULLABLE
+  - name: index
+    type: INTEGER
+    mode: NULLABLE

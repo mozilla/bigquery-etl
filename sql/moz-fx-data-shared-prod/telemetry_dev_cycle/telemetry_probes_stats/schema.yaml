@@ -16,12 +16,12 @@ fields:
   mode: NULLABLE
   description: When this probe will expire. Can be "never" or a version number.
 - name: release_version
-  type: INT64
+  type: INTEGER
   mode: NULLABLE
   description: Major version number for the release that first included this probe
     in the channel.
 - name: expired_version
-  type: INT64
+  type: INTEGER
   mode: NULLABLE
   description: Version with which the probe actually expired. Calculated from the
     last seen and expired version. Null if it is not yet expired.

@@ -1,7 +1,7 @@
 fields:
-- mode: NULLABLE
-  name: submission_date
+- name: submission_date
   type: DATE
+  mode: NULLABLE
 - name: days_seen_bits
   type: INTEGER
   mode: NULLABLE

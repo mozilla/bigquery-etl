@@ -1,0 +1,13 @@
+fields:
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+- name: build_group
+  type: STRING
+  mode: NULLABLE
+- name: frequency
+  type: FLOAT
+  mode: NULLABLE
+- name: count
+  type: INTEGER
+  mode: NULLABLE

@@ -1,108 +1,108 @@
 fields:
-- mode: NULLABLE
-  name: submission_date
+- name: submission_date
   type: DATE
-- mode: NULLABLE
-  name: client_id
-  type: STRING
-- mode: NULLABLE
-  name: block_nonsponsored_count
-  type: INTEGER
-- mode: NULLABLE
-  name: block_sponsored_count
-  type: INTEGER
-- mode: NULLABLE
-  name: block_nonsponsored_bestmatch_count
-  type: INTEGER
-- mode: NULLABLE
-  name: block_sponsored_bestmatch_count
-  type: INTEGER
-- mode: NULLABLE
-  name: click_nonsponsored_count
-  type: INTEGER
-- mode: NULLABLE
-  name: click_sponsored_count
-  type: INTEGER
-- mode: NULLABLE
-  name: click_nonsponsored_bestmatch_count
-  type: INTEGER
-- mode: NULLABLE
-  name: click_sponsored_bestmatch_count
-  type: INTEGER
-- mode: NULLABLE
-  name: help_nonsponsored_count
-  type: INTEGER
-- mode: NULLABLE
-  name: help_sponsored_count
-  type: INTEGER
-- mode: NULLABLE
-  name: help_nonsponsored_bestmatch_count
-  type: INTEGER
-- mode: NULLABLE
-  name: help_sponsored_bestmatch_count
-  type: INTEGER
-- mode: NULLABLE
-  name: impression_nonsponsored_count
-  type: INTEGER
-- mode: NULLABLE
-  name: impression_sponsored_count
-  type: INTEGER
-- mode: NULLABLE
-  name: impression_nonsponsored_bestmatch_count
-  type: INTEGER
-- mode: NULLABLE
-  name: impression_sponsored_bestmatch_count
-  type: INTEGER
-- mode: NULLABLE
-  name: user_pref_data_collection_enabled
-  type: BOOLEAN
-- mode: NULLABLE
-  name: user_pref_sponsored_suggestions_enabled
-  type: BOOLEAN
-- mode: NULLABLE
-  name: user_pref_firefox_suggest_enabled
-  type: BOOLEAN
-- fields:
-  - mode: NULLABLE
-    name: version
-    type: STRING
-  - mode: NULLABLE
-    name: major_version
-    type: NUMERIC
-  - mode: NULLABLE
-    name: minor_version
-    type: NUMERIC
-  - mode: NULLABLE
-    name: patch_revision
-    type: NUMERIC
-  - mode: NULLABLE
-    name: is_major_release
-    type: BOOLEAN
   mode: NULLABLE
-  name: browser_version_info
-  type: RECORD
-- fields:
-  - mode: NULLABLE
-    name: key
-    type: STRING
-  - mode: NULLABLE
-    name: value
-    type: STRING
-  mode: REPEATED
-  name: experiments
-  type: RECORD
-- mode: NULLABLE
-  name: locale
+- name: client_id
   type: STRING
-- mode: NULLABLE
-  name: normalized_channel
-  type: STRING
-- mode: NULLABLE
-  name: normalized_os_version
-  type: STRING
-- mode: NULLABLE
-  name: sample_id
+  mode: NULLABLE
+- name: block_nonsponsored_count
   type: INTEGER
-- mode: NULLABLE
-  name: country
+  mode: NULLABLE
+- name: block_sponsored_count
+  type: INTEGER
+  mode: NULLABLE
+- name: block_nonsponsored_bestmatch_count
+  type: INTEGER
+  mode: NULLABLE
+- name: block_sponsored_bestmatch_count
+  type: INTEGER
+  mode: NULLABLE
+- name: click_nonsponsored_count
+  type: INTEGER
+  mode: NULLABLE
+- name: click_sponsored_count
+  type: INTEGER
+  mode: NULLABLE
+- name: click_nonsponsored_bestmatch_count
+  type: INTEGER
+  mode: NULLABLE
+- name: click_sponsored_bestmatch_count
+  type: INTEGER
+  mode: NULLABLE
+- name: help_nonsponsored_count
+  type: INTEGER
+  mode: NULLABLE
+- name: help_sponsored_count
+  type: INTEGER
+  mode: NULLABLE
+- name: help_nonsponsored_bestmatch_count
+  type: INTEGER
+  mode: NULLABLE
+- name: help_sponsored_bestmatch_count
+  type: INTEGER
+  mode: NULLABLE
+- name: impression_nonsponsored_count
+  type: INTEGER
+  mode: NULLABLE
+- name: impression_sponsored_count
+  type: INTEGER
+  mode: NULLABLE
+- name: impression_nonsponsored_bestmatch_count
+  type: INTEGER
+  mode: NULLABLE
+- name: impression_sponsored_bestmatch_count
+  type: INTEGER
+  mode: NULLABLE
+- name: user_pref_data_collection_enabled
+  type: BOOLEAN
+  mode: NULLABLE
+- name: user_pref_sponsored_suggestions_enabled
+  type: BOOLEAN
+  mode: NULLABLE
+- name: user_pref_firefox_suggest_enabled
+  type: BOOLEAN
+  mode: NULLABLE
+- name: browser_version_info
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: version
+    type: STRING
+    mode: NULLABLE
+  - name: major_version
+    type: NUMERIC
+    mode: NULLABLE
+  - name: minor_version
+    type: NUMERIC
+    mode: NULLABLE
+  - name: patch_revision
+    type: NUMERIC
+    mode: NULLABLE
+  - name: is_major_release
+    type: BOOLEAN
+    mode: NULLABLE
+- name: experiments
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: key
+    type: STRING
+    mode: NULLABLE
+  - name: value
+    type: STRING
+    mode: NULLABLE
+- name: locale
   type: STRING
+  mode: NULLABLE
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+- name: normalized_os_version
+  type: STRING
+  mode: NULLABLE
+- name: sample_id
+  type: INTEGER
+  mode: NULLABLE
+- name: country
+  type: STRING
+  mode: NULLABLE

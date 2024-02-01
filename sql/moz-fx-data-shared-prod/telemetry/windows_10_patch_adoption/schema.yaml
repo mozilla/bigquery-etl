@@ -1,0 +1,13 @@
+fields:
+- name: numeric_windows_ubr
+  type: INTEGER
+  mode: NULLABLE
+- name: build_number
+  type: INTEGER
+  mode: NULLABLE
+- name: label
+  type: STRING
+  mode: NULLABLE
+- name: frequency
+  type: INTEGER
+  mode: NULLABLE

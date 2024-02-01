@@ -216,27 +216,21 @@ fields:
 - name: active_hours_sum
   type: FLOAT
   mode: NULLABLE
-  description: null
 - name: addon_compatibility_check_enabled
   type: BOOLEAN
   mode: NULLABLE
-  description: null
 - name: app_build_id
   type: STRING
   mode: NULLABLE
-  description: null
 - name: app_display_version
   type: STRING
   mode: NULLABLE
-  description: null
 - name: app_name
   type: STRING
   mode: NULLABLE
-  description: null
 - name: app_version
   type: STRING
   mode: NULLABLE
-  description: null
 - name: attribution
   type: RECORD
   mode: NULLABLE
@@ -244,19 +238,15 @@ fields:
   - name: source
     type: STRING
     mode: NULLABLE
-    description: null
   - name: medium
     type: STRING
     mode: NULLABLE
-    description: null
   - name: campaign
     type: STRING
     mode: NULLABLE
-    description: null
   - name: content
     type: STRING
     mode: NULLABLE
-    description: null
   - name: experiment
     type: STRING
     mode: NULLABLE
@@ -272,163 +262,123 @@ fields:
   - name: ua
     type: STRING
     mode: NULLABLE
-  description: null
 - name: blocklist_enabled
   type: BOOLEAN
   mode: NULLABLE
-  description: null
 - name: channel
   type: STRING
   mode: NULLABLE
-  description: null
 - name: client_clock_skew_mean
   type: FLOAT
   mode: NULLABLE
-  description: null
 - name: client_submission_latency_mean
   type: FLOAT
   mode: NULLABLE
-  description: null
 - name: cpu_cores
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: cpu_count
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: cpu_family
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: cpu_l2_cache_kb
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: cpu_l3_cache_kb
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: cpu_model
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: cpu_speed_mhz
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: cpu_stepping
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: cpu_vendor
   type: STRING
   mode: NULLABLE
-  description: null
 - name: crashes_detected_content_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: crashes_detected_gmplugin_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: crashes_detected_plugin_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: crash_submit_attempt_content_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: crash_submit_attempt_main_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: crash_submit_attempt_plugin_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: crash_submit_success_content_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: crash_submit_success_main_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: crash_submit_success_plugin_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: default_search_engine
   type: STRING
   mode: NULLABLE
-  description: null
 - name: default_search_engine_data_load_path
   type: STRING
   mode: NULLABLE
-  description: null
 - name: default_search_engine_data_name
   type: STRING
   mode: NULLABLE
-  description: null
 - name: default_search_engine_data_origin
   type: STRING
   mode: NULLABLE
-  description: null
 - name: default_search_engine_data_submission_url
   type: STRING
   mode: NULLABLE
-  description: null
 - name: devtools_toolbox_opened_count_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: distribution_id
   type: STRING
   mode: NULLABLE
-  description: null
 - name: e10s_enabled
   type: BOOLEAN
   mode: NULLABLE
-  description: null
 - name: env_build_arch
   type: STRING
   mode: NULLABLE
-  description: null
 - name: env_build_id
   type: STRING
   mode: NULLABLE
-  description: null
 - name: env_build_version
   type: STRING
   mode: NULLABLE
-  description: null
 - name: environment_settings_intl_accept_languages
   type: STRING
   mode: REPEATED
-  description: null
 - name: environment_settings_intl_app_locales
   type: STRING
   mode: REPEATED
-  description: null
 - name: environment_settings_intl_available_locales
   type: STRING
   mode: REPEATED
-  description: null
 - name: environment_settings_intl_requested_locales
   type: STRING
   mode: REPEATED
-  description: null
 - name: environment_settings_intl_system_locales
   type: STRING
   mode: REPEATED
-  description: null
 - name: environment_settings_intl_regional_prefs_locales
   type: STRING
   mode: REPEATED
-  description: null
 - name: experiments
   type: RECORD
   mode: REPEATED
@@ -436,352 +386,264 @@ fields:
   - name: key
     type: STRING
     mode: NULLABLE
-    description: null
   - name: value
     type: STRING
     mode: NULLABLE
-    description: null
-  description: null
 - name: first_paint_mean
   type: FLOAT
   mode: NULLABLE
-  description: null
 - name: flash_version
   type: STRING
   mode: NULLABLE
-  description: null
 - name: country
   type: STRING
   mode: NULLABLE
-  description: null
 - name: city
   type: STRING
   mode: NULLABLE
-  description: null
 - name: geo_subdivision1
   type: STRING
   mode: NULLABLE
-  description: null
 - name: geo_subdivision2
   type: STRING
   mode: NULLABLE
-  description: null
 - name: isp_name
   type: STRING
   mode: NULLABLE
-  description: null
 - name: isp_organization
   type: STRING
   mode: NULLABLE
-  description: null
 - name: gfx_features_advanced_layers_status
   type: STRING
   mode: NULLABLE
-  description: null
 - name: gfx_features_d2d_status
   type: STRING
   mode: NULLABLE
-  description: null
 - name: gfx_features_d3d11_status
   type: STRING
   mode: NULLABLE
-  description: null
 - name: gfx_features_gpu_process_status
   type: STRING
   mode: NULLABLE
-  description: null
 - name: histogram_parent_devtools_aboutdebugging_opened_count_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: histogram_parent_devtools_animationinspector_opened_count_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: histogram_parent_devtools_browserconsole_opened_count_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: histogram_parent_devtools_canvasdebugger_opened_count_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: histogram_parent_devtools_computedview_opened_count_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: histogram_parent_devtools_custom_opened_count_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: histogram_parent_devtools_dom_opened_count_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: histogram_parent_devtools_eyedropper_opened_count_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: histogram_parent_devtools_fontinspector_opened_count_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: histogram_parent_devtools_inspector_opened_count_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: histogram_parent_devtools_jsbrowserdebugger_opened_count_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: histogram_parent_devtools_jsdebugger_opened_count_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: histogram_parent_devtools_jsprofiler_opened_count_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: histogram_parent_devtools_layoutview_opened_count_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: histogram_parent_devtools_memory_opened_count_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: histogram_parent_devtools_menu_eyedropper_opened_count_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: histogram_parent_devtools_netmonitor_opened_count_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: histogram_parent_devtools_options_opened_count_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: histogram_parent_devtools_paintflashing_opened_count_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: histogram_parent_devtools_picker_eyedropper_opened_count_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: histogram_parent_devtools_responsive_opened_count_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: histogram_parent_devtools_ruleview_opened_count_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: histogram_parent_devtools_scratchpad_opened_count_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: histogram_parent_devtools_scratchpad_window_opened_count_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: histogram_parent_devtools_shadereditor_opened_count_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: histogram_parent_devtools_storage_opened_count_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: histogram_parent_devtools_styleeditor_opened_count_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: histogram_parent_devtools_webaudioeditor_opened_count_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: histogram_parent_devtools_webconsole_opened_count_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: histogram_parent_devtools_webide_opened_count_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: install_year
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: is_default_browser
   type: BOOLEAN
   mode: NULLABLE
-  description: null
 - name: is_wow64
   type: BOOLEAN
   mode: NULLABLE
-  description: null
 - name: locale
   type: STRING
   mode: NULLABLE
-  description: null
 - name: memory_mb
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
-  description: null
 - name: normalized_os_version
   type: STRING
   mode: NULLABLE
-  description: null
 - name: os
   type: STRING
   mode: NULLABLE
-  description: null
 - name: os_service_pack_major
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: os_service_pack_minor
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: os_version
   type: STRING
   mode: NULLABLE
-  description: null
 - name: pings_aggregated_by_this_row
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: places_bookmarks_count_mean
   type: FLOAT
   mode: NULLABLE
-  description: null
 - name: places_pages_count_mean
   type: FLOAT
   mode: NULLABLE
-  description: null
 - name: plugin_hangs_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: plugins_infobar_allow_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: plugins_infobar_block_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: plugins_infobar_shown_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: plugins_notification_shown_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: previous_build_id
   type: STRING
   mode: NULLABLE
-  description: null
 - name: profile_age_in_days
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: profile_creation_date
   type: STRING
   mode: NULLABLE
-  description: null
 - name: push_api_notify_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: sample_id
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: sandbox_effective_content_process_level
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: scalar_combined_webrtc_nicer_stun_retransmits_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: scalar_combined_webrtc_nicer_turn_401s_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: scalar_combined_webrtc_nicer_turn_403s_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: scalar_combined_webrtc_nicer_turn_438s_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: scalar_content_navigator_storage_estimate_count_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: scalar_content_navigator_storage_persist_count_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: scalar_parent_aushelper_websense_reg_version
   type: STRING
   mode: NULLABLE
-  description: null
 - name: scalar_parent_browser_engagement_max_concurrent_tab_count_max
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: scalar_parent_browser_engagement_max_concurrent_window_count_max
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: scalar_parent_browser_engagement_tab_open_event_count_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: scalar_parent_browser_engagement_total_uri_count_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: scalar_parent_browser_engagement_unfiltered_uri_count_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: scalar_parent_browser_engagement_unique_domains_count_max
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: scalar_parent_browser_engagement_unique_domains_count_mean
   type: FLOAT
   mode: NULLABLE
-  description: null
 - name: scalar_parent_browser_engagement_window_open_event_count_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: scalar_parent_devtools_accessibility_node_inspected_count_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: scalar_parent_devtools_accessibility_opened_count_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: scalar_parent_devtools_accessibility_picker_used_count_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: scalar_parent_devtools_accessibility_select_accessible_for_node_sum
   type: RECORD
   mode: REPEATED
@@ -789,211 +651,159 @@ fields:
   - name: key
     type: STRING
     mode: NULLABLE
-    description: null
   - name: value
     type: INTEGER
     mode: NULLABLE
-    description: null
-  description: null
 - name: scalar_parent_devtools_accessibility_service_enabled_count_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: scalar_parent_devtools_copy_full_css_selector_opened_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: scalar_parent_devtools_copy_unique_css_selector_opened_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: scalar_parent_devtools_toolbar_eyedropper_opened_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: scalar_parent_navigator_storage_estimate_count_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: scalar_parent_navigator_storage_persist_count_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: scalar_parent_storage_sync_api_usage_extensions_using_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: search_cohort
   type: STRING
   mode: NULLABLE
-  description: null
 - name: search_count_abouthome
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: search_count_contextmenu
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: search_count_newtab
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: search_count_searchbar
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: search_count_system
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: search_count_urlbar
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: search_count_all
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: search_count_tagged_sap
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: search_count_tagged_follow_on
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: search_count_organic
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: search_count_urlbar_handoff
   type: INTEGER
   mode: NULLABLE
 - name: session_restored_mean
   type: FLOAT
   mode: NULLABLE
-  description: null
 - name: sessions_started_on_this_day
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: shutdown_kill_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: subsession_hours_sum
   type: NUMERIC
   mode: NULLABLE
-  description: null
 - name: ssl_handshake_result_failure_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: ssl_handshake_result_success_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: sync_configured
   type: BOOLEAN
   mode: NULLABLE
-  description: null
 - name: sync_count_desktop_mean
   type: FLOAT
   mode: NULLABLE
-  description: null
 - name: sync_count_mobile_mean
   type: FLOAT
   mode: NULLABLE
-  description: null
 - name: sync_count_desktop_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: sync_count_mobile_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: telemetry_enabled
   type: BOOLEAN
   mode: NULLABLE
-  description: null
 - name: timezone_offset
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: update_auto_download
   type: BOOLEAN
   mode: NULLABLE
-  description: null
 - name: update_channel
   type: STRING
   mode: NULLABLE
-  description: null
 - name: update_enabled
   type: BOOLEAN
   mode: NULLABLE
-  description: null
 - name: vendor
   type: STRING
   mode: NULLABLE
-  description: null
 - name: web_notification_shown_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: windows_build_number
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: windows_ubr
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: fxa_configured
   type: BOOLEAN
   mode: NULLABLE
-  description: null
 - name: trackers_blocked_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: submission_timestamp_min
   type: TIMESTAMP
   mode: NULLABLE
-  description: null
 - name: ad_clicks_count_all
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: search_with_ads_count_all
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: scalar_parent_urlbar_impression_autofill_about_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: scalar_parent_urlbar_impression_autofill_adaptive_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: scalar_parent_urlbar_impression_autofill_origin_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: scalar_parent_urlbar_impression_autofill_other_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: scalar_parent_urlbar_impression_autofill_preloaded_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: scalar_parent_urlbar_impression_autofill_url_sum
   type: INTEGER
   mode: NULLABLE
-  description: null
 - name: scalar_parent_telemetry_event_counts_sum
   type: RECORD
   mode: REPEATED
@@ -1001,12 +811,9 @@ fields:
   - name: key
     type: STRING
     mode: NULLABLE
-    description: null
   - name: value
     type: INTEGER
     mode: NULLABLE
-    description: null
-  description: null
 - name: scalar_content_telemetry_event_counts_sum
   type: RECORD
   mode: REPEATED
@@ -1014,12 +821,9 @@ fields:
   - name: key
     type: STRING
     mode: NULLABLE
-    description: null
   - name: value
     type: INTEGER
     mode: NULLABLE
-    description: null
-  description: null
 - name: scalar_parent_urlbar_searchmode_bookmarkmenu_sum
   type: RECORD
   mode: REPEATED
@@ -1027,12 +831,9 @@ fields:
   - name: key
     type: STRING
     mode: NULLABLE
-    description: null
   - name: value
     type: INTEGER
     mode: NULLABLE
-    description: null
-  description: null
 - name: scalar_parent_urlbar_searchmode_handoff_sum
   type: RECORD
   mode: REPEATED
@@ -1040,12 +841,9 @@ fields:
   - name: key
     type: STRING
     mode: NULLABLE
-    description: null
   - name: value
     type: INTEGER
     mode: NULLABLE
-    description: null
-  description: null
 - name: scalar_parent_urlbar_searchmode_keywordoffer_sum
   type: RECORD
   mode: REPEATED
@@ -1053,12 +851,9 @@ fields:
   - name: key
     type: STRING
     mode: NULLABLE
-    description: null
   - name: value
     type: INTEGER
     mode: NULLABLE
-    description: null
-  description: null
 - name: scalar_parent_urlbar_searchmode_oneoff_sum
   type: RECORD
   mode: REPEATED
@@ -1066,12 +861,9 @@ fields:
   - name: key
     type: STRING
     mode: NULLABLE
-    description: null
   - name: value
     type: INTEGER
     mode: NULLABLE
-    description: null
-  description: null
 - name: scalar_parent_urlbar_searchmode_other_sum
   type: RECORD
   mode: REPEATED
@@ -1079,12 +871,9 @@ fields:
   - name: key
     type: STRING
     mode: NULLABLE
-    description: null
   - name: value
     type: INTEGER
     mode: NULLABLE
-    description: null
-  description: null
 - name: scalar_parent_urlbar_searchmode_shortcut_sum
   type: RECORD
   mode: REPEATED
@@ -1092,12 +881,9 @@ fields:
   - name: key
     type: STRING
     mode: NULLABLE
-    description: null
   - name: value
     type: INTEGER
     mode: NULLABLE
-    description: null
-  description: null
 - name: scalar_parent_urlbar_searchmode_tabmenu_sum
   type: RECORD
   mode: REPEATED
@@ -1105,12 +891,9 @@ fields:
   - name: key
     type: STRING
     mode: NULLABLE
-    description: null
   - name: value
     type: INTEGER
     mode: NULLABLE
-    description: null
-  description: null
 - name: scalar_parent_urlbar_searchmode_tabtosearch_sum
   type: RECORD
   mode: REPEATED
@@ -1118,12 +901,9 @@ fields:
   - name: key
     type: STRING
     mode: NULLABLE
-    description: null
   - name: value
     type: INTEGER
     mode: NULLABLE
-    description: null
-  description: null
 - name: scalar_parent_urlbar_searchmode_tabtosearch_onboard_sum
   type: RECORD
   mode: REPEATED
@@ -1131,12 +911,9 @@ fields:
   - name: key
     type: STRING
     mode: NULLABLE
-    description: null
   - name: value
     type: INTEGER
     mode: NULLABLE
-    description: null
-  description: null
 - name: scalar_parent_urlbar_searchmode_topsites_newtab_sum
   type: RECORD
   mode: REPEATED
@@ -1144,12 +921,9 @@ fields:
   - name: key
     type: STRING
     mode: NULLABLE
-    description: null
   - name: value
     type: INTEGER
     mode: NULLABLE
-    description: null
-  description: null
 - name: scalar_parent_urlbar_searchmode_topsites_urlbar_sum
   type: RECORD
   mode: REPEATED
@@ -1157,12 +931,9 @@ fields:
   - name: key
     type: STRING
     mode: NULLABLE
-    description: null
   - name: value
     type: INTEGER
     mode: NULLABLE
-    description: null
-  description: null
 - name: scalar_parent_urlbar_searchmode_touchbar_sum
   type: RECORD
   mode: REPEATED
@@ -1170,12 +941,9 @@ fields:
   - name: key
     type: STRING
     mode: NULLABLE
-    description: null
   - name: value
     type: INTEGER
     mode: NULLABLE
-    description: null
-  description: null
 - name: scalar_parent_urlbar_searchmode_typed_sum
   type: RECORD
   mode: REPEATED
@@ -1183,12 +951,9 @@ fields:
   - name: key
     type: STRING
     mode: NULLABLE
-    description: null
   - name: value
     type: INTEGER
     mode: NULLABLE
-    description: null
-  description: null
 - name: scalar_parent_os_environment_is_taskbar_pinned
   type: BOOLEAN
   mode: NULLABLE

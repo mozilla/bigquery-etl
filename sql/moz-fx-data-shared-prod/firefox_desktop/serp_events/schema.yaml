@@ -1,0 +1,128 @@
+fields:
+- name: impression_id
+  type: STRING
+  mode: NULLABLE
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+- name: glean_client_id
+  type: STRING
+  mode: NULLABLE
+- name: legacy_telemetry_client_id
+  type: STRING
+  mode: NULLABLE
+- name: event_timestamp
+  type: INTEGER
+  mode: NULLABLE
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+- name: normalized_country_code
+  type: STRING
+  mode: NULLABLE
+- name: os
+  type: STRING
+  mode: NULLABLE
+- name: browser_version_info
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: version
+    type: STRING
+    mode: NULLABLE
+  - name: major_version
+    type: NUMERIC
+    mode: NULLABLE
+  - name: minor_version
+    type: NUMERIC
+    mode: NULLABLE
+  - name: patch_revision
+    type: NUMERIC
+    mode: NULLABLE
+  - name: is_major_release
+    type: BOOLEAN
+    mode: NULLABLE
+- name: sample_id
+  type: INTEGER
+  mode: NULLABLE
+- name: is_shopping_page
+  type: BOOLEAN
+  mode: NULLABLE
+- name: search_engine
+  type: STRING
+  mode: NULLABLE
+- name: sap_source
+  type: STRING
+  mode: NULLABLE
+- name: is_tagged
+  type: BOOLEAN
+  mode: NULLABLE
+- name: is_engaged
+  type: BOOLEAN
+  mode: NULLABLE
+- name: abandon_reason
+  type: STRING
+  mode: NULLABLE
+- name: ping_seq
+  type: INTEGER
+  mode: NULLABLE
+- name: experiments
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: key
+    type: STRING
+    mode: NULLABLE
+  - name: value
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: branch
+      type: STRING
+      mode: NULLABLE
+    - name: extra
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: type
+        type: STRING
+        mode: NULLABLE
+      - name: enrollment_id
+        type: STRING
+        mode: NULLABLE
+- name: has_ads_loaded
+  type: BOOLEAN
+  mode: NULLABLE
+- name: component
+  type: STRING
+  mode: NULLABLE
+- name: is_ad_component
+  type: BOOLEAN
+  mode: NULLABLE
+- name: num_clicks
+  type: INTEGER
+  mode: NULLABLE
+- name: num_expands
+  type: INTEGER
+  mode: NULLABLE
+- name: num_submits
+  type: INTEGER
+  mode: NULLABLE
+- name: num_ads_loaded_reported
+  type: INTEGER
+  mode: NULLABLE
+- name: num_ads_visible_reported
+  type: INTEGER
+  mode: NULLABLE
+- name: num_ads_hidden_reported
+  type: INTEGER
+  mode: NULLABLE
+- name: ad_blocker_inferred
+  type: BOOLEAN
+  mode: NULLABLE
+- name: num_ads_showing
+  type: INTEGER
+  mode: NULLABLE
+- name: num_ads_notshowing
+  type: INTEGER
+  mode: NULLABLE

@@ -19,53 +19,39 @@ fields:
 - name: network
   type: STRING
   mode: NULLABLE
-  description: name of network ex. Google Ads ACI
 - name: network_token
   type: STRING
   mode: NULLABLE
-  description: unique token for the network
 - name: country
   type: STRING
   mode: NULLABLE
-  description: country 2 letter abbreviation
 - name: os
   type: STRING
   mode: NULLABLE
-  description: name of os ex. android, iOS
 - name: cohort_size
   type: INTEGER
   mode: NULLABLE
-  description: number of member in the cohort
 - name: retained_users
   type: INTEGER
   mode: NULLABLE
-  description: number of users retained
 - name: retention_rate
   type: FLOAT
   mode: NULLABLE
-  description: number of retained users/total number of users in cohort
 - name: time_spent_per_user
   type: INTEGER
   mode: NULLABLE
-  description: how much time each user in cohort spends
 - name: time_spent_per_session
   type: INTEGER
   mode: NULLABLE
-  description: how much time is spent per session by cohort
 - name: time_spent
   type: INTEGER
   mode: NULLABLE
-  description: amount of time spent by the cohort
 - name: sessions_per_user
   type: FLOAT
   mode: NULLABLE
-  description: number of sessions divided by number of users in cohort
 - name: sessions
   type: INTEGER
   mode: NULLABLE
-  description: number of sessions
 - name: date
   type: DATE
   mode: NULLABLE
-  description: date when the data is recorded, also the field the table is partioned
-    by

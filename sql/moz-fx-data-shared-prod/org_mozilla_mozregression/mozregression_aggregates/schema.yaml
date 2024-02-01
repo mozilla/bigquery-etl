@@ -1,0 +1,25 @@
+fields:
+- name: date
+  type: DATE
+  mode: NULLABLE
+- name: mozregression_version
+  type: STRING
+  mode: NULLABLE
+- name: mozregression_variant
+  type: STRING
+  mode: NULLABLE
+- name: app_used
+  type: STRING
+  mode: NULLABLE
+- name: os
+  type: STRING
+  mode: NULLABLE
+- name: os_version
+  type: NUMERIC
+  mode: NULLABLE
+- name: distinct_clients
+  type: INTEGER
+  mode: NULLABLE
+- name: total_uses
+  type: INTEGER
+  mode: NULLABLE

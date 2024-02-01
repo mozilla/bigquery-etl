@@ -1,0 +1,16 @@
+fields:
+- name: account_name
+  type: STRING
+  mode: NULLABLE
+- name: account_id
+  type: INTEGER
+  mode: NULLABLE
+- name: campaign_id
+  type: INTEGER
+  mode: NULLABLE
+- name: campaign_name
+  type: STRING
+  mode: NULLABLE
+- name: is_most_recent_record
+  type: BOOLEAN
+  mode: NULLABLE

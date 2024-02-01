@@ -1,0 +1,7 @@
+fields:
+- name: date
+  type: DATE
+  mode: NULLABLE
+- name: mau
+  type: NUMERIC
+  mode: NULLABLE

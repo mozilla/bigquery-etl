@@ -1,0 +1,25 @@
+fields:
+- name: name
+  type: STRING
+  mode: NULLABLE
+- name: code
+  type: STRING
+  mode: NULLABLE
+- name: code_3
+  type: STRING
+  mode: NULLABLE
+- name: region_name
+  type: STRING
+  mode: NULLABLE
+- name: subregion_name
+  type: STRING
+  mode: NULLABLE
+- name: intermediate_region_name
+  type: STRING
+  mode: NULLABLE
+- name: pocket_available_on_newtab
+  type: BOOLEAN
+  mode: NULLABLE
+- name: mozilla_vpn_available
+  type: BOOLEAN
+  mode: NULLABLE

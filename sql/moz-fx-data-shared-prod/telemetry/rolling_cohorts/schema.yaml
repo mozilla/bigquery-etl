@@ -1,67 +1,67 @@
 fields:
-- mode: NULLABLE
-  name: client_id
+- name: client_id
   type: STRING
-- mode: NULLABLE
-  name: cohort_date
+  mode: NULLABLE
+- name: cohort_date
   type: DATE
-- mode: NULLABLE
-  name: activity_segment
+  mode: NULLABLE
+- name: activity_segment
   type: STRING
-- mode: NULLABLE
-  name: app_version
+  mode: NULLABLE
+- name: app_version
   type: STRING
-- mode: NULLABLE
-  name: attribution_campaign
+  mode: NULLABLE
+- name: attribution_campaign
   type: STRING
-- mode: NULLABLE
-  name: attribution_content
+  mode: NULLABLE
+- name: attribution_content
   type: STRING
-- mode: NULLABLE
-  name: attribution_experiment
+  mode: NULLABLE
+- name: attribution_experiment
   type: STRING
-- mode: NULLABLE
-  name: attribution_medium
+  mode: NULLABLE
+- name: attribution_medium
   type: STRING
-- mode: NULLABLE
-  name: attribution_source
+  mode: NULLABLE
+- name: attribution_source
   type: STRING
-- mode: NULLABLE
-  name: attribution_variation
+  mode: NULLABLE
+- name: attribution_variation
   type: STRING
-- mode: NULLABLE
-  name: city
+  mode: NULLABLE
+- name: city
   type: STRING
-- mode: NULLABLE
-  name: country
+  mode: NULLABLE
+- name: country
   type: STRING
-- mode: NULLABLE
-  name: device_model
+  mode: NULLABLE
+- name: device_model
   type: STRING
-- mode: NULLABLE
-  name: distribution_id
+  mode: NULLABLE
+- name: distribution_id
   type: STRING
-- mode: NULLABLE
-  name: is_default_browser
+  mode: NULLABLE
+- name: is_default_browser
   type: BOOLEAN
-- mode: NULLABLE
-  name: locale
+  mode: NULLABLE
+- name: locale
   type: STRING
-- mode: NULLABLE
-  name: normalized_app_name
+  mode: NULLABLE
+- name: normalized_app_name
   type: STRING
-- mode: NULLABLE
-  name: normalized_channel
+  mode: NULLABLE
+- name: normalized_channel
   type: STRING
-- mode: NULLABLE
-  name: normalized_os
+  mode: NULLABLE
+- name: normalized_os
   type: STRING
-- mode: NULLABLE
-  name: normalized_os_version
+  mode: NULLABLE
+- name: normalized_os_version
   type: STRING
-- mode: NULLABLE
-  name: os_version_major
+  mode: NULLABLE
+- name: os_version_major
   type: INTEGER
-- mode: NULLABLE
-  name: os_version_minor
+  mode: NULLABLE
+- name: os_version_minor
   type: INTEGER
+  mode: NULLABLE

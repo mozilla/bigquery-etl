@@ -1,0 +1,7 @@
+fields:
+- name: raw_country
+  type: STRING
+  mode: NULLABLE
+- name: standardized_country
+  type: STRING
+  mode: NULLABLE

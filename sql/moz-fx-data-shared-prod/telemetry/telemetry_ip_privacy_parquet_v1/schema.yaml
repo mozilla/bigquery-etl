@@ -1,0 +1,23 @@
+fields:
+- name: submission_date_s3
+  type: DATE
+  mode: NULLABLE
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+- name: timestamp
+  type: INTEGER
+  mode: NULLABLE
+- name: fields
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: geo_country
+    type: STRING
+    mode: NULLABLE
+  - name: client_id
+    type: STRING
+    mode: NULLABLE
+  - name: ip
+    type: STRING
+    mode: NULLABLE

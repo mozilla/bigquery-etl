@@ -1,65 +1,65 @@
 fields:
-- mode: NULLABLE
-  name: submission_timestamp
+- name: submission_timestamp
   type: TIMESTAMP
-- mode: NULLABLE
-  name: normalized_app_id
+  mode: NULLABLE
+- name: normalized_app_id
   type: STRING
-- mode: NULLABLE
-  name: metadata
+  mode: NULLABLE
+- name: metadata
   type: RECORD
+  mode: NULLABLE
   fields:
-  - mode: NULLABLE
-    name: geo
+  - name: geo
     type: RECORD
+    mode: NULLABLE
     fields:
-    - mode: NULLABLE
-      name: city
+    - name: city
       type: STRING
-    - mode: NULLABLE
-      name: country
+      mode: NULLABLE
+    - name: country
       type: STRING
-  - mode: NULLABLE
-    name: user_agent
+      mode: NULLABLE
+  - name: user_agent
     type: RECORD
+    mode: NULLABLE
     fields:
-    - mode: NULLABLE
-      name: browser
+    - name: browser
       type: STRING
-    - mode: NULLABLE
-      name: os
+      mode: NULLABLE
+    - name: os
       type: STRING
-    - mode: NULLABLE
-      name: version
+      mode: NULLABLE
+    - name: version
       type: STRING
-- mode: NULLABLE
-  name: client_info
+      mode: NULLABLE
+- name: client_info
   type: RECORD
+  mode: NULLABLE
   fields:
-  - mode: NULLABLE
-    name: client_id
+  - name: client_id
     type: STRING
-  - mode: NULLABLE
-    name: user_id
+    mode: NULLABLE
+  - name: user_id
     type: STRING
-  - mode: NULLABLE
-    name: app_build
+    mode: NULLABLE
+  - name: app_build
     type: STRING
-  - mode: NULLABLE
-    name: locale
+    mode: NULLABLE
+  - name: locale
     type: STRING
-  - mode: NULLABLE
-    name: os
+    mode: NULLABLE
+  - name: os
     type: STRING
-  - mode: NULLABLE
-    name: os_version
+    mode: NULLABLE
+  - name: os_version
     type: STRING
-- mode: NULLABLE
-  name: event
+    mode: NULLABLE
+- name: event
   type: STRING
-- mode: NULLABLE
-  name: event_timestamp
+  mode: NULLABLE
+- name: event_timestamp
   type: TIMESTAMP
-- mode: NULLABLE
-  name: event_extra
+  mode: NULLABLE
+- name: event_extra
   type: JSON
+  mode: NULLABLE

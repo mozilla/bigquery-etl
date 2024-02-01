@@ -1,0 +1,19 @@
+fields:
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+- name: sample_id
+  type: INTEGER
+  mode: NULLABLE
+- name: country
+  type: STRING
+  mode: NULLABLE
+- name: total_historic_ad_clicks
+  type: INTEGER
+  mode: NULLABLE
+- name: total_future_ad_clicks
+  type: FLOAT
+  mode: NULLABLE
+- name: total_predicted_ad_clicks
+  type: FLOAT
+  mode: NULLABLE

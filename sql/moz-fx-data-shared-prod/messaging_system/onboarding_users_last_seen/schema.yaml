@@ -1,0 +1,25 @@
+fields:
+- name: days_since_seen
+  type: INTEGER
+  mode: NULLABLE
+- name: days_seen_bits
+  type: INTEGER
+  mode: NULLABLE
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+- name: release_channel
+  type: STRING
+  mode: NULLABLE
+- name: locale
+  type: STRING
+  mode: NULLABLE
+- name: country
+  type: STRING
+  mode: NULLABLE
+- name: version
+  type: STRING
+  mode: NULLABLE

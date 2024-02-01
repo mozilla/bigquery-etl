@@ -1,13 +1,13 @@
 fields:
-- description: null
-  mode: NULLABLE
-  name: dag_id
+- name: dag_id
   type: STRING
-- description: null
   mode: NULLABLE
-  name: owner
+  description: null
+- name: owner
   type: STRING
-- description: null
   mode: NULLABLE
-  name: link
+  description: null
+- name: link
   type: STRING
+  mode: NULLABLE
+  description: null

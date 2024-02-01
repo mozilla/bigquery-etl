@@ -1,115 +1,115 @@
 fields:
-- mode: NULLABLE
-  name: first_seen_date
+- name: first_seen_date
   type: DATE
-- mode: NULLABLE
-  name: submission_date
+  mode: NULLABLE
+- name: submission_date
   type: DATE
-- mode: NULLABLE
-  name: app_version
+  mode: NULLABLE
+- name: app_version
   type: STRING
-- mode: NULLABLE
-  name: architecture
+  mode: NULLABLE
+- name: architecture
   type: STRING
-- mode: NULLABLE
-  name: attribution_campaign
+  mode: NULLABLE
+- name: attribution_campaign
   type: STRING
-- mode: NULLABLE
-  name: attribution_content
+  mode: NULLABLE
+- name: attribution_content
   type: STRING
-- mode: NULLABLE
-  name: attribution_experiment
+  mode: NULLABLE
+- name: attribution_experiment
   type: STRING
-- mode: NULLABLE
-  name: attribution_medium
+  mode: NULLABLE
+- name: attribution_medium
   type: STRING
-- mode: NULLABLE
-  name: attribution_source
+  mode: NULLABLE
+- name: attribution_source
   type: STRING
-- mode: NULLABLE
-  name: attribution_ua
+  mode: NULLABLE
+- name: attribution_ua
   type: STRING
-- mode: NULLABLE
-  name: partner_distribution_version
+  mode: NULLABLE
+- name: partner_distribution_version
   type: STRING
-- mode: NULLABLE
-  name: partner_distributor
+  mode: NULLABLE
+- name: partner_distributor
   type: STRING
-- mode: NULLABLE
-  name: partner_distributor_channel
+  mode: NULLABLE
+- name: partner_distributor_channel
   type: STRING
-- mode: NULLABLE
-  name: partner_id
+  mode: NULLABLE
+- name: partner_id
   type: STRING
-- mode: NULLABLE
-  name: platform_version
+  mode: NULLABLE
+- name: platform_version
   type: STRING
-- mode: NULLABLE
-  name: city
+  mode: NULLABLE
+- name: city
   type: STRING
-- mode: NULLABLE
-  name: subdivision1
+  mode: NULLABLE
+- name: subdivision1
   type: STRING
-- mode: NULLABLE
-  name: country
+  mode: NULLABLE
+- name: country
   type: STRING
-- mode: NULLABLE
-  name: db_version
+  mode: NULLABLE
+- name: db_version
   type: STRING
-- mode: NULLABLE
-  name: distribution_id
+  mode: NULLABLE
+- name: distribution_id
   type: STRING
-- mode: NULLABLE
-  name: locale
+  mode: NULLABLE
+- name: locale
   type: STRING
-- mode: NULLABLE
-  name: normalized_app_name
+  mode: NULLABLE
+- name: normalized_app_name
   type: STRING
-- mode: NULLABLE
-  name: normalized_channel
+  mode: NULLABLE
+- name: normalized_channel
   type: STRING
-- mode: NULLABLE
-  name: normalized_os
+  mode: NULLABLE
+- name: normalized_os
   type: STRING
-- mode: NULLABLE
-  name: normalized_os_version
+  mode: NULLABLE
+- name: normalized_os_version
   type: STRING
-- mode: NULLABLE
-  name: startup_profile_selection_reason
+  mode: NULLABLE
+- name: startup_profile_selection_reason
   type: STRING
-- mode: NULLABLE
-  name: vendor
+  mode: NULLABLE
+- name: vendor
   type: STRING
-- mode: NULLABLE
-  name: os_version_major
+  mode: NULLABLE
+- name: os_version_major
   type: INTEGER
-- mode: NULLABLE
-  name: os_version_minor
+  mode: NULLABLE
+- name: os_version_minor
   type: INTEGER
-- mode: NULLABLE
-  name: num_clients_in_cohort
+  mode: NULLABLE
+- name: num_clients_in_cohort
   type: INTEGER
-- mode: NULLABLE
-  name: num_clients_active_on_day
+  mode: NULLABLE
+- name: num_clients_active_on_day
   type: INTEGER
-- mode: NULLABLE
-  name: num_clients_dau_on_day
+  mode: NULLABLE
+- name: num_clients_active_atleastonce_in_last_7_days
   type: INTEGER
-- mode: NULLABLE
-  name: num_clients_active_atleastonce_in_last_7_days
+  mode: NULLABLE
+- name: num_clients_active_atleastonce_in_last_28_days
   type: INTEGER
-- mode: NULLABLE
-  name: num_clients_active_atleastonce_in_last_28_days
+  mode: NULLABLE
+- name: num_clients_repeat_first_month_users
   type: INTEGER
-- mode: NULLABLE
-  name: num_clients_repeat_first_month_users
+  mode: NULLABLE
+- name: num_clients_dau_active_atleastonce_in_last_7_days
   type: INTEGER
-- mode: NULLABLE
-  name: num_clients_dau_active_atleastonce_in_last_7_days
+  mode: NULLABLE
+- name: num_clients_dau_active_atleastonce_in_last_28_days
   type: INTEGER
-- mode: NULLABLE
-  name: num_clients_dau_active_atleastonce_in_last_28_days
+  mode: NULLABLE
+- name: num_clients_dau_repeat_first_month_users
   type: INTEGER
-- mode: NULLABLE
-  name: num_clients_dau_repeat_first_month_users
+  mode: NULLABLE
+- name: num_clients_dau_on_day
   type: INTEGER
+  mode: NULLABLE

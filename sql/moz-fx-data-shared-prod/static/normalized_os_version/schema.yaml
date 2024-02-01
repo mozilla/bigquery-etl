@@ -1,0 +1,16 @@
+fields:
+- name: os_name
+  type: STRING
+  mode: NULLABLE
+- name: os_version_regexp
+  type: STRING
+  mode: NULLABLE
+- name: normalized_os_name
+  type: STRING
+  mode: NULLABLE
+- name: normalized_os_version
+  type: STRING
+  mode: NULLABLE
+- name: release_date
+  type: STRING
+  mode: NULLABLE

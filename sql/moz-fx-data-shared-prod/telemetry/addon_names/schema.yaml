@@ -1,0 +1,10 @@
+fields:
+- name: addon_id
+  type: STRING
+  mode: NULLABLE
+- name: addon_name
+  type: STRING
+  mode: NULLABLE
+- name: occurrences
+  type: INTEGER
+  mode: NULLABLE

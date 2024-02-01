@@ -1,0 +1,44 @@
+fields:
+- name: os
+  type: STRING
+  mode: NULLABLE
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+- name: submission_date_s3
+  type: DATE
+  mode: NULLABLE
+- name: submission_timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: device
+  type: STRING
+  mode: NULLABLE
+- name: app_build_id
+  type: STRING
+  mode: NULLABLE
+- name: timestamp
+  type: INTEGER
+  mode: NULLABLE
+- name: category
+  type: STRING
+  mode: NULLABLE
+- name: method
+  type: STRING
+  mode: NULLABLE
+- name: object
+  type: STRING
+  mode: NULLABLE
+- name: value
+  type: STRING
+  mode: NULLABLE
+- name: extra
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: key
+    type: STRING
+    mode: NULLABLE
+  - name: value
+    type: STRING
+    mode: NULLABLE

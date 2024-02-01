@@ -4,7 +4,7 @@ fields:
   mode: NULLABLE
   description: The markov state, as determined by the state function.
 - name: predicted_ad_clicks
-  type: FLOAT64
+  type: FLOAT
   mode: NULLABLE
   description: Number of predicted ad clicks for the specified time horizon.
 - name: time_horizon

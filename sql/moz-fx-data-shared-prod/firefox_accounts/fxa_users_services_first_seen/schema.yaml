@@ -97,69 +97,24 @@ fields:
 - name: first_service_flow_timestamp
   type: TIMESTAMP
   mode: NULLABLE
-  description: 'The flow identifier is a hash value representing
-
-    the very first registration or login session
-
-    for the specific user_id/service combination.
-
-    '
 - name: first_service_flow_entrypoint
   type: STRING
   mode: NULLABLE
-  description: 'The entrypoint of the flow session.
-
-    Typically a UI touchpoint like "preferences".
-
-    '
 - name: first_service_flow_utm_term
   type: STRING
   mode: NULLABLE
-  description: 'Marketing campaign search term
-
-    for the the first flow session.
-
-    Not stored if the DNT request header was 1.
-
-    '
 - name: first_service_flow_utm_medium
   type: STRING
   mode: NULLABLE
-  description: 'Marketing campaign medium for the the first flow session.
-
-    Not stored if the DNT request header was 1.
-
-    '
 - name: first_service_flow_utm_source
   type: STRING
   mode: NULLABLE
-  description: 'Marketing campaign source for
-
-    the flow session.
-
-    Not stored if the DNT request header was 1.
-
-    '
 - name: first_service_flow_utm_campaign
   type: STRING
   mode: NULLABLE
-  description: 'Marketing campaign identifier
-
-    for the the first flow session.
-
-    Not stored if the DNT request header was 1.
-
-    '
 - name: first_service_flow_utm_content
   type: STRING
   mode: NULLABLE
-  description: 'Marketing campaign content identifier
-
-    for the the first flow session.
-
-    Not stored if the DNT request header was 1.
-
-    '
 - name: first_service_flow_id
   type: STRING
   mode: NULLABLE

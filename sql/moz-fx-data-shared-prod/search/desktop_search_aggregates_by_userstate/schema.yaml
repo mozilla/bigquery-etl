@@ -1,34 +1,34 @@
 fields:
-- mode: NULLABLE
-  name: submission_date
+- name: submission_date
   type: DATE
-- mode: NULLABLE
-  name: geo
+  mode: NULLABLE
+- name: geo
   type: STRING
-- mode: NULLABLE
-  name: user_state
+  mode: NULLABLE
+- name: user_state
   type: STRING
-- mode: NULLABLE
-  name: client_count
+  mode: NULLABLE
+- name: client_count
   type: INTEGER
-- mode: NULLABLE
-  name: search_client_count
+  mode: NULLABLE
+- name: search_client_count
   type: INTEGER
-- mode: NULLABLE
-  name: sap
+  mode: NULLABLE
+- name: sap
   type: INTEGER
-- mode: NULLABLE
-  name: search_with_ads
+  mode: NULLABLE
+- name: search_with_ads
   type: INTEGER
-- mode: NULLABLE
-  name: ad_clicks
+  mode: NULLABLE
+- name: ad_clicks
   type: INTEGER
-- mode: NULLABLE
-  name: tagged_follow_on
+  mode: NULLABLE
+- name: tagged_follow_on
   type: INTEGER
-- mode: NULLABLE
-  name: tagged_sap
+  mode: NULLABLE
+- name: tagged_sap
   type: INTEGER
-- mode: NULLABLE
-  name: organic
+  mode: NULLABLE
+- name: organic
   type: INTEGER
+  mode: NULLABLE

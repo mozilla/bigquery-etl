@@ -1,0 +1,19 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+- name: os
+  type: STRING
+  mode: NULLABLE
+- name: country
+  type: STRING
+  mode: NULLABLE
+- name: reporting_ratio
+  type: FLOAT
+  mode: NULLABLE
+- name: normalized_pageloads
+  type: FLOAT
+  mode: NULLABLE
+- name: ratio
+  type: FLOAT
+  mode: NULLABLE

@@ -140,19 +140,7 @@ fields:
 - name: search_count_urlbar
   type: INTEGER
   mode: NULLABLE
-- name: search_count_urlbar_handoff
-  type: INTEGER
-  mode: NULLABLE
 - name: search_with_ads_count_all
-  type: INTEGER
-  mode: NULLABLE
-- name: newtabpage_disabled
-  type: BOOLEAN
-  mode: NULLABLE
-- name: num_topsites_new_tab_impressions_sponsored
-  type: INTEGER
-  mode: NULLABLE
-- name: num_new_tab_topsites_clicks_sponsored
   type: INTEGER
   mode: NULLABLE
 - name: subsample_id
@@ -371,18 +359,6 @@ fields:
 - name: activitystream_pocket_clicks
   type: INTEGER
   mode: NULLABLE
-- name: activitystream_sponsored_pocket_clicks
-  type: INTEGER
-  mode: NULLABLE
-- name: activitystream_sponsored_topsite_clicks
-  type: INTEGER
-  mode: NULLABLE
-- name: activitystream_organic_pocket_clicks
-  type: INTEGER
-  mode: NULLABLE
-- name: activitystream_organic_topsite_clicks
-  type: INTEGER
-  mode: NULLABLE
 - name: activitystream_reported_newtab_search_off
   type: BOOLEAN
   mode: NULLABLE
@@ -393,9 +369,6 @@ fields:
   type: BOOLEAN
   mode: NULLABLE
 - name: activitystream_reported_highlights_off
-  type: BOOLEAN
-  mode: NULLABLE
-- name: activitystream_reported_sponsored_topstories_off
   type: BOOLEAN
   mode: NULLABLE
 - name: activitystream_reported_sponsored_topsites_off
@@ -424,4 +397,31 @@ fields:
   mode: NULLABLE
 - name: has_private_relay_extension
   type: BOOLEAN
+  mode: NULLABLE
+- name: newtabpage_disabled
+  type: BOOLEAN
+  mode: NULLABLE
+- name: num_topsites_new_tab_impressions_sponsored
+  type: INTEGER
+  mode: NULLABLE
+- name: num_new_tab_topsites_clicks_sponsored
+  type: INTEGER
+  mode: NULLABLE
+- name: activitystream_sponsored_pocket_clicks
+  type: INTEGER
+  mode: NULLABLE
+- name: activitystream_sponsored_topsite_clicks
+  type: INTEGER
+  mode: NULLABLE
+- name: activitystream_organic_pocket_clicks
+  type: INTEGER
+  mode: NULLABLE
+- name: activitystream_organic_topsite_clicks
+  type: INTEGER
+  mode: NULLABLE
+- name: activitystream_reported_sponsored_topstories_off
+  type: BOOLEAN
+  mode: NULLABLE
+- name: search_count_urlbar_handoff
+  type: INTEGER
   mode: NULLABLE

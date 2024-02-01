@@ -1,37 +1,37 @@
 fields:
-- mode: NULLABLE
-  name: submission_date
+- name: submission_date
   type: DATE
+  mode: NULLABLE
   description: The date when data was captured
-- mode: NULLABLE
-  name: creation_date
+- name: creation_date
   type: DATE
+  mode: NULLABLE
   description: The table's creation date
-- mode: NULLABLE
-  name: project_id
+- name: project_id
   type: STRING
+  mode: NULLABLE
   description: The ID of the project that contains the dataset
-- mode: NULLABLE
-  name: dataset_id
+- name: dataset_id
   type: STRING
+  mode: NULLABLE
   description: The name of the dataset that contains the table or view
-- mode: NULLABLE
-  name: table_id
+- name: table_id
   type: STRING
+  mode: NULLABLE
   description: The name of the table or view
-- mode: NULLABLE
-  name: table_type
+- name: table_type
   type: STRING
+  mode: NULLABLE
   description: The table type
-- mode: NULLABLE
-  name: last_modified_date
+- name: last_modified_date
   type: DATE
+  mode: NULLABLE
   description: The table's last modified date
-- mode: REPEATED
-  name: owners
+- name: owners
   type: STRING
+  mode: REPEATED
   description: The owner of the table listed in metadata yaml file
-- mode: NULLABLE
-  name: last_used_date
+- name: last_used_date
   type: DATE
+  mode: NULLABLE
   description: The date when the tables was last queried

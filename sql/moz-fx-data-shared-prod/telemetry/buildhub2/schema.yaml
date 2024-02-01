@@ -1,0 +1,118 @@
+fields:
+- name: build_hash
+  type: STRING
+  mode: NULLABLE
+- name: build
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: build
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: as
+      type: STRING
+      mode: NULLABLE
+    - name: cc
+      type: STRING
+      mode: NULLABLE
+    - name: cxx
+      type: STRING
+      mode: NULLABLE
+    - name: date
+      type: TIMESTAMP
+      mode: NULLABLE
+    - name: host
+      type: STRING
+      mode: NULLABLE
+    - name: id
+      type: STRING
+      mode: NULLABLE
+    - name: ld
+      type: STRING
+      mode: NULLABLE
+    - name: number
+      type: INTEGER
+      mode: NULLABLE
+    - name: target
+      type: STRING
+      mode: NULLABLE
+  - name: download
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: date
+      type: TIMESTAMP
+      mode: NULLABLE
+    - name: mimetype
+      type: STRING
+      mode: NULLABLE
+    - name: size
+      type: INTEGER
+      mode: NULLABLE
+    - name: url
+      type: STRING
+      mode: NULLABLE
+  - name: source
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: product
+      type: STRING
+      mode: NULLABLE
+    - name: repository
+      type: STRING
+      mode: NULLABLE
+    - name: revision
+      type: STRING
+      mode: NULLABLE
+    - name: tree
+      type: STRING
+      mode: NULLABLE
+  - name: target
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: channel
+      type: STRING
+      mode: NULLABLE
+    - name: locale
+      type: STRING
+      mode: NULLABLE
+    - name: os
+      type: STRING
+      mode: NULLABLE
+    - name: platform
+      type: STRING
+      mode: NULLABLE
+    - name: version
+      type: STRING
+      mode: NULLABLE
+- name: metadata
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: commit
+    type: STRING
+    mode: NULLABLE
+  - name: version
+    type: STRING
+    mode: NULLABLE
+  - name: source
+    type: STRING
+    mode: NULLABLE
+  - name: build
+    type: STRING
+    mode: NULLABLE
+- name: created_at
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: s3_object_key
+  type: STRING
+  mode: NULLABLE
+- name: s3_object_etag
+  type: STRING
+  mode: NULLABLE
+- name: submission_timestamp
+  type: TIMESTAMP
+  mode: NULLABLE

@@ -1,41 +1,41 @@
 fields:
-- description: null
-  mode: NULLABLE
-  name: id
+- name: id
   type: INTEGER
-- description: null
   mode: NULLABLE
-  name: dag_id
+  description: null
+- name: dag_id
   type: STRING
-- description: null
   mode: NULLABLE
-  name: executor_class
-  type: STRING
-- description: null
-  mode: NULLABLE
-  name: hostname
-  type: STRING
-- description: null
-  mode: NULLABLE
-  name: job_type
-  type: STRING
-- description: null
-  mode: NULLABLE
-  name: state
-  type: STRING
-- description: null
-  mode: NULLABLE
-  name: unixname
-  type: STRING
-- description: null
-  mode: NULLABLE
-  name: start_date
+  description: null
+- name: end_date
   type: TIMESTAMP
-- description: null
   mode: NULLABLE
-  name: end_date
-  type: TIMESTAMP
-- description: null
+  description: null
+- name: executor_class
+  type: STRING
   mode: NULLABLE
-  name: latest_heartbeat
+  description: null
+- name: hostname
+  type: STRING
+  mode: NULLABLE
+  description: null
+- name: job_type
+  type: STRING
+  mode: NULLABLE
+  description: null
+- name: latest_heartbeat
   type: TIMESTAMP
+  mode: NULLABLE
+  description: null
+- name: start_date
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: null
+- name: state
+  type: STRING
+  mode: NULLABLE
+  description: null
+- name: unixname
+  type: STRING
+  mode: NULLABLE
+  description: null

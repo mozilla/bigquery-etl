@@ -1,0 +1,7 @@
+fields:
+- name: fxa_uid
+  type: STRING
+  mode: NULLABLE
+- name: first_protected
+  type: TIMESTAMP
+  mode: NULLABLE

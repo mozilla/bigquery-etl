@@ -1,37 +1,40 @@
 fields:
-- mode: NULLABLE
-  name: date
+- name: date
   type: DATE
-- mode: NULLABLE
-  name: account_name
+  mode: NULLABLE
+- name: account_name
   type: STRING
-- mode: NULLABLE
-  name: account_id
+  mode: NULLABLE
+- name: account_id
   type: INTEGER
-- mode: NULLABLE
-  name: campaign_name
+  mode: NULLABLE
+- name: currency_code
   type: STRING
-- mode: NULLABLE
-  name: campaign_id
+  mode: NULLABLE
+- name: campaign_name
+  type: STRING
+  mode: NULLABLE
+- name: campaign_id
   type: INTEGER
-- mode: NULLABLE
-  name: ad_group_name
+  mode: NULLABLE
+- name: ad_group_name
   type: STRING
-- mode: NULLABLE
-  name: ad_group_id
+  mode: NULLABLE
+- name: ad_group_id
   type: STRING
-- mode: NULLABLE
-  name: ad_group_status
+  mode: NULLABLE
+- name: ad_group_status
   type: STRING
-- mode: NULLABLE
-  name: ad_group_type
+  mode: NULLABLE
+- name: ad_group_type
   type: STRING
-- mode: NULLABLE
-  name: spend
+  mode: NULLABLE
+- name: spend
   type: FLOAT
-- mode: NULLABLE
-  name: clicks
+  mode: NULLABLE
+- name: clicks
   type: INTEGER
-- mode: NULLABLE
-  name: impressions
+  mode: NULLABLE
+- name: impressions
   type: INTEGER
+  mode: NULLABLE

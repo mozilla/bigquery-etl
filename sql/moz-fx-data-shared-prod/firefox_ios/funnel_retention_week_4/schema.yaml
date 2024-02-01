@@ -1,69 +1,69 @@
 fields:
-- mode: NULLABLE
-  name: submission_date
+- name: submission_date
   type: DATE
+  mode: NULLABLE
   description: 'Partition field, also corresponds to internal execution date of the
     job (first_seen_date + 28 days).
 
     '
-- mode: NULLABLE
-  name: first_seen_date
+- name: first_seen_date
   type: DATE
+  mode: NULLABLE
   description: 'Date of when the client was first seen.
 
     '
-- mode: NULLABLE
-  name: first_reported_country
+- name: first_reported_country
   type: STRING
+  mode: NULLABLE
   description: 'First reported country for the client installation.
 
     '
-- mode: NULLABLE
-  name: first_reported_isp
+- name: first_reported_isp
   type: STRING
+  mode: NULLABLE
   description: 'Name of the first reported isp (Internet Service Provider).
 
     '
-- mode: NULLABLE
-  name: adjust_ad_group
+- name: adjust_ad_group
   type: STRING
+  mode: NULLABLE
   description: 'Structure parameter for the the ad group of a campaign.
 
     '
-- mode: NULLABLE
-  name: adjust_campaign
+- name: adjust_campaign
   type: STRING
+  mode: NULLABLE
   description: 'Structure parameter for the campaign name.
 
     '
-- mode: NULLABLE
-  name: adjust_creative
+- name: adjust_creative
   type: STRING
+  mode: NULLABLE
   description: 'Structure parameter for the creative content of a campaign.
 
     '
-- mode: NULLABLE
-  name: adjust_network
+- name: adjust_network
   type: STRING
+  mode: NULLABLE
   description: 'The type of source of a client installation.
 
     '
-- mode: NULLABLE
-  name: new_profiles
+- name: new_profiles
   type: INTEGER
+  mode: NULLABLE
   description: 'Count of new_profiles for the given grouping.
 
     '
-- mode: NULLABLE
-  name: repeat_user
+- name: repeat_user
   type: INTEGER
+  mode: NULLABLE
   description: 'Count of clients categorised as "repeat_first_month_user" for the
     grouping.
 
     '
-- mode: NULLABLE
-  name: retained_week_4
+- name: retained_week_4
   type: INTEGER
+  mode: NULLABLE
   description: 'Count of clients categorised as "retained_week_4" for the grouping.
 
     '

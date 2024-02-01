@@ -12,6 +12,10 @@ fields:
   type: STRING
   description: Locale
 - mode: NULLABLE
+  name: page_name
+  type: STRING
+  description: Page Name
+- mode: NULLABLE
   name: page_level_1
   type: STRING
   description: Page Level 1
@@ -111,7 +115,3 @@ fields:
   name: bounces
   type: INT64
   description: Bounces
-- mode: NULLABLE
-  name: page_name
-  type: STRING
-  description: Page Name

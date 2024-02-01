@@ -8,6 +8,7 @@ SELECT
 a.date,
 a.page_path AS page,
 a.page_path_level1 AS locale,
+a.page_name,
 a.page_level_1, 
 a.page_level_2, 
 a.page_level_3, 
@@ -32,14 +33,14 @@ sum(a.exits) AS exits,
 ? AS total_events, 
 ? AS unique_events,
 ? AS single_page_sessions,
-? AS bounces,
-? AS page_name 
+? AS bounces
 FROM `moz-fx-data-marketing-prod.ga_derived.www_site_hits_v2` AS a
 WHERE date = @submission_date 
 GROUP BY 
 a.date,
 a.page_path,
 a.page_path_level1,
+a.page_name,
 a.page_level_1, 
 a.page_level_2, 
 a.page_level_3, 

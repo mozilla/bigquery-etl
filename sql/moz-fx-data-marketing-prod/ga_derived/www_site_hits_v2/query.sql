@@ -197,7 +197,7 @@ final_staging AS (
         THEN 1
       ELSE 0
     END AS bounces, --if the session did not have an engaged event, then the session is considered a bounce, else it is not
-    ( hit_timestamp - visit_start_time) / 1000000 AS hit_time,
+    (hit_timestamp - visit_start_time) / 1000000 AS hit_time,
     SAFE_DIVIDE(engagement_time_msec, 1000) AS engagement_time,
     engmgt.first_interaction,
     CAST(engmgt.last_interaction AS float64) AS last_interaction,

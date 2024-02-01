@@ -357,16 +357,17 @@ fields:
       description: 'The content on which the user acted.  For example, if the user
         clicked on the
 
-        "Get started here" link in "Looking for Firefox Sync? Get started here", then
+        (previously available) "Get started here" link in "Looking for Firefox Sync?
+        Get
 
-        the value for this metric would be ''fx-sync-get-started''.  The value has
-        a max
+        started here", then the value for this metric would be ''fx-sync-get-started''.
 
-        length of 128 characters with the alphanumeric characters, _ (underscore),
+        The value has a max length of 128 characters with the alphanumeric characters,
 
-        forward slash (/), . (period), % (percentage sign), and - (hyphen) in the
+        _ (underscore), forward slash (/), . (period), % (percentage sign), and -
+        (hyphen)
 
-        allowed set of characters.
+        in the allowed set of characters.
 
         '
     - name: utm_medium

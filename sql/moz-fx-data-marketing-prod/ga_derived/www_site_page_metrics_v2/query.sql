@@ -24,8 +24,8 @@ sum(a.entrances) AS entrances,
 sum(a.exits) AS exits, 
 ? AS non_exit_pageviews,
 ? AS total_time_on_page, 
-? AS total_events, 
-? AS unique_events,
+countif(hit_type = 'EVENT') AS total_events, 
+count(distinct(CASE WHEN hit_type = 'EVENT' THEN visit_identifier ELSE NULL END)) AS unique_events,
 count(distinct(CASE WHEN single_page_session is true THEN visit_identifier ELSE NULL END)) AS single_page_sessions,
 count(distinct(CASE WHEN bounces = 1 AND event_name = 'page_view' THEN visit_identifier ELSE NULL END)) AS bounces
 FROM `moz-fx-data-marketing-prod.ga_derived.www_site_hits_v2` AS a

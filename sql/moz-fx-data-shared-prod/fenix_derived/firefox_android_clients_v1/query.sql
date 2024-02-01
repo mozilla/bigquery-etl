@@ -23,7 +23,7 @@ WITH baseline_clients AS (
     `moz-fx-data-shared-prod.fenix.baseline_clients_daily`
   WHERE
     {% if is_init() %}
-      submission_date >= "2020-01-21"
+      submission_date >= "2020-08-01"
     {% else %}
       submission_date = @submission_date
     {% endif %}
@@ -58,7 +58,7 @@ activations AS (
     `moz-fx-data-shared-prod.fenix.new_profile_activation`
   WHERE
     {% if is_init() %}
-      submission_date >= "2020-01-21"
+      submission_date >= "2020-08-01"
     {% else %}
       submission_date = @submission_date
     {% endif %}
@@ -91,7 +91,7 @@ first_session_ping_min_seq AS (
         ping_info.seq IS NOT NULL
         AND
         {% if is_init() %}
-          DATE(submission_timestamp) >= "2019-06-21"
+          DATE(submission_timestamp) >= "2020-08-01"
         {% else %}
           DATE(submission_timestamp) = @submission_date
         {% endif %}
@@ -165,7 +165,7 @@ first_session_ping AS (
     )
   WHERE
     {% if is_init() %}
-      DATE(submission_timestamp) >= "2019-06-21"
+      DATE(submission_timestamp) >= "2020-08-01"
     {% else %}
       DATE(submission_timestamp) = @submission_date
     {% endif %}
@@ -227,7 +227,7 @@ metrics_ping AS (
     fenix.metrics AS fenix_metrics
   WHERE
     {% if is_init() %}
-      DATE(submission_timestamp) >= "2019-06-21"
+      DATE(submission_timestamp) >= "2020-08-01"
     {% else %}
       DATE(submission_timestamp) = @submission_date
     {% endif %}
@@ -555,34 +555,6 @@ SELECT
       _previous.metadata.adjust_network__source_ping_datetime,
       _current.metadata.adjust_network__source_ping_datetime
     ) AS adjust_network__source_ping_datetime,
-    COALESCE(
-      _previous.metadata.install_source__source_ping_datetime,
-      _current.metadata.install_source__source_ping_datetime
-    ) AS install_source__source_ping_datetime,
-    COALESCE(
-      _previous.metadata.install_source__source_ping_datetime,
-      _current.metadata.install_source__source_ping_datetime
-    ) AS install_source__source_ping_datetime,
-    COALESCE(
-      _previous.metadata.install_source__source_ping_datetime,
-      _current.metadata.install_source__source_ping_datetime
-    ) AS install_source__source_ping_datetime,
-    COALESCE(
-      _previous.metadata.install_source__source_ping_datetime,
-      _current.metadata.install_source__source_ping_datetime
-    ) AS install_source__source_ping_datetime,
-    COALESCE(
-      _previous.metadata.install_source__source_ping_datetime,
-      _current.metadata.install_source__source_ping_datetime
-    ) AS install_source__source_ping_datetime,
-    COALESCE(
-      _previous.metadata.install_source__source_ping_datetime,
-      _current.metadata.install_source__source_ping_datetime
-    ) AS install_source__source_ping_datetime,
-    COALESCE(
-      _previous.metadata.install_source__source_ping_datetime,
-      _current.metadata.install_source__source_ping_datetime
-    ) AS install_source__source_ping_datetime,
     COALESCE(
       _previous.metadata.install_source__source_ping_datetime,
       _current.metadata.install_source__source_ping_datetime

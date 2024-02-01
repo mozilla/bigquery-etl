@@ -76,23 +76,23 @@ fields:
   mode: NULLABLE
   name: install_source
   type: STRING
-- description: The name of the utm_campaign that is responsible for this installation.
+- description: The utm_campaign this install is attributed to. Reported by the install referrer service, not Adjust.
   mode: NULLABLE
   name: play_store_attribution_campaign
   type: STRING
-- description: The name of the utm_content that is responsible for this installation.
+- description: The utm_content this install is attributed to. Reported by the install referrer service, not Adjust.
   mode: NULLABLE
   name: play_store_attribution_content
   type: STRING
-- description: The name of the utm_medium that is responsible for this installation.
+- description: The utm_medium this install is attributed to. Reported by the install referrer service, not Adjust.
   mode: NULLABLE
   name: play_store_attribution_medium
   type: STRING
-- description: The name of the utm_source that is responsible for this installation.
+- description: The utm_source this install is attributed to. Reported by the install referrer service, not Adjust.
   mode: NULLABLE
   name: play_store_attribution_source
   type: STRING
-- description: The name of the utm_term that is responsible for this installation.
+- description: The utm_term this install is attributed to. Reported by the install referrer service, not Adjust.
   mode: NULLABLE
   name: play_store_attribution_term
   type: STRING

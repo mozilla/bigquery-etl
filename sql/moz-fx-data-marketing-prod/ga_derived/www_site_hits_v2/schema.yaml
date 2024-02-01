@@ -110,7 +110,11 @@ fields:
 - mode: NULLABLE
   name: hit_time
   type: FLOAT
-  description: Hit Time - Engagement Time in Seconds
+  description: Hit Time - The number of seconds after the visitStartTime that the hit was registered
+- mode: NULLABLE
+  name: engagement_time
+  type: FLOAT
+  description: Engagement Time - Engagement Time in Seconds
 - mode: NULLABLE
   name: first_interaction
   type: INT64

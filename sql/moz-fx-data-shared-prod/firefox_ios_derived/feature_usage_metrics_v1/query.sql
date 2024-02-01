@@ -1,37 +1,54 @@
-WITH baseline_clients AS 
-(SELECT ping_date,
-client_id,
-channel,
-country
-FROM
-(SELECT
-    DATE(DATETIME(LEAST(ping_info.parsed_start_time, ping_info.parsed_end_time), 'UTC')) AS ping_date,
-    client_info.client_id,
-    normalized_channel AS channel,
-    normalized_country_code AS country,
-    ROW_NUMBER() OVER (PARTITION BY client_info.client_id ORDER BY DATE(DATETIME(LEAST(ping_info.parsed_start_time, ping_info.parsed_end_time), 'UTC'))) AS rn
-  FROM firefox_ios.baseline
+WITH baseline_clients AS (
+  SELECT
+    ping_date,
+    client_id,
+    channel,
+    country
+  FROM
+    (
+      SELECT
+        DATE(
+          DATETIME(LEAST(ping_info.parsed_start_time, ping_info.parsed_end_time), 'UTC')
+        ) AS ping_date,
+        client_info.client_id,
+        normalized_channel AS channel,
+        normalized_country_code AS country,
+        ROW_NUMBER() OVER (
+          PARTITION BY
+            client_info.client_id
+          ORDER BY
+            DATE(DATETIME(LEAST(ping_info.parsed_start_time, ping_info.parsed_end_time), 'UTC'))
+        ) AS rn
+      FROM
+        firefox_ios.baseline
+      WHERE
+        metrics.timespan.glean_baseline_duration.value > 0
+        AND LOWER(metadata.isp.name) <> "browserstack"
+        AND DATE(submission_timestamp)
+        BETWEEN DATE_SUB(@submission_date, INTERVAL 4 DAY)
+        AND @submission_date
+        AND DATE(
+          DATETIME(LEAST(ping_info.parsed_start_time, ping_info.parsed_end_time), 'UTC')
+        ) = DATE_SUB(@submission_date, INTERVAL 4 DAY)
+    ) AS baseline_raw
   WHERE
-    metrics.timespan.glean_baseline_duration.value > 0
-    AND LOWER(metadata.isp.name) <> "browserstack"
-    AND DATE(submission_timestamp) BETWEEN DATE_SUB(@submission_date, INTERVAL 4 DAY) AND @submission_date
-    AND DATE(DATETIME(LEAST(ping_info.parsed_start_time, ping_info.parsed_end_time), 'UTC')) = DATE_SUB(@submission_date, INTERVAL 4 DAY)
-) AS baseline_raw
-WHERE rn = 1),
-
+    rn = 1
+),
 client_attribution AS (
   SELECT
     client_id,
     channel,
     adjust_network,
-  FROM firefox_ios.firefox_ios_clients
+  FROM
+    firefox_ios.firefox_ios_clients
 ),
-
 metric_ping_clients_feature_usage AS (
   SELECT
     -- In rare cases we can have an end_time that is earlier than the start_time, we made the decision
     -- to attribute the metrics to the earlier date of the two.
-    DATE(DATETIME(LEAST(ping_info.parsed_start_time, ping_info.parsed_end_time), 'UTC')) AS ping_date,
+    DATE(
+      DATETIME(LEAST(ping_info.parsed_start_time, ping_info.parsed_end_time), 'UTC')
+    ) AS ping_date,
     client_info.client_id,
     normalized_channel AS channel,
     normalized_country_code AS country,
@@ -64,35 +81,59 @@ metric_ping_clients_feature_usage AS (
     SUM(COALESCE(metrics.quantity.tabs_private_tabs_quantity, 0)) AS tabs_private_tabs_quantity,
     COUNTIF(metrics.boolean.preferences_close_private_tabs) AS preferences_close_private_tabs,
     COUNTIF(metrics.boolean.tracking_protection_enabled) AS tracking_protection_enabled,
-    COUNTIF(LOWER(metrics.string.tracking_protection_strength) = "strict") AS tracking_protection_strict_enabled,
+    COUNTIF(
+      LOWER(metrics.string.tracking_protection_strength) = "strict"
+    ) AS tracking_protection_strict_enabled,
     --Tab Count
     SUM(COALESCE(metrics.quantity.tabs_normal_tabs_quantity, 0)) AS tabs_normal_tabs_quantity,
     SUM(COALESCE(metrics.quantity.tabs_inactive_tabs_count, 0)) AS tabs_inactive_tabs_count,
     --Default Browser
-    SUM(COALESCE(metrics.counter.app_opened_as_default_browser, 0)) AS app_opened_as_default_browser,
-    SUM(COALESCE(metrics.counter.settings_menu_set_as_default_browser_pressed, 0)) AS settings_menu_set_as_default_browser_pressed,
+    SUM(
+      COALESCE(metrics.counter.app_opened_as_default_browser, 0)
+    ) AS app_opened_as_default_browser,
+    SUM(
+      COALESCE(metrics.counter.settings_menu_set_as_default_browser_pressed, 0)
+    ) AS settings_menu_set_as_default_browser_pressed,
     --Notification
     COUNTIF(metrics.boolean.preferences_sync_notifs) AS preferences_sync_notifs,
-    COUNTIF(metrics.boolean.preferences_tips_and_features_notifs) AS preferences_tips_and_features_notifs,
+    COUNTIF(
+      metrics.boolean.preferences_tips_and_features_notifs
+    ) AS preferences_tips_and_features_notifs,
     --Customize Home
     COUNTIF(metrics.boolean.preferences_jump_back_in) AS preferences_jump_back_in,
     COUNTIF(metrics.boolean.preferences_recently_visited) AS preferences_recently_visited,
     COUNTIF(metrics.boolean.preferences_recently_saved) AS preferences_recently_saved,
     COUNTIF(metrics.boolean.preferences_pocket) AS preferences_pocket,
     SUM(COALESCE(metrics.counter.app_menu_customize_homepage, 0)) AS app_menu_customize_homepage,
-    SUM(COALESCE(metrics.counter.firefox_home_page_customize_homepage_button, 0)) AS firefox_home_page_customize_homepage_button,
-  FROM firefox_ios.metrics AS metric_ping
-  LEFT JOIN UNNEST(metrics.labeled_counter.bookmarks_add) AS bookmarks_add_table
-  LEFT JOIN UNNEST(metrics.labeled_counter.bookmarks_delete) AS bookmarks_delete_table
-  LEFT JOIN UNNEST(metrics.labeled_counter.bookmarks_edit) AS bookmarks_edit_table
-  LEFT JOIN UNNEST(metrics.labeled_counter.bookmarks_open) AS bookmarks_open_table
-  LEFT JOIN UNNEST(metrics.labeled_counter.bookmarks_view_list) AS bookmarks_view_list_table
+    SUM(
+      COALESCE(metrics.counter.firefox_home_page_customize_homepage_button, 0)
+    ) AS firefox_home_page_customize_homepage_button,
+  FROM
+    firefox_ios.metrics AS metric_ping
+  LEFT JOIN
+    UNNEST(metrics.labeled_counter.bookmarks_add) AS bookmarks_add_table
+  LEFT JOIN
+    UNNEST(metrics.labeled_counter.bookmarks_delete) AS bookmarks_delete_table
+  LEFT JOIN
+    UNNEST(metrics.labeled_counter.bookmarks_edit) AS bookmarks_edit_table
+  LEFT JOIN
+    UNNEST(metrics.labeled_counter.bookmarks_open) AS bookmarks_open_table
+  LEFT JOIN
+    UNNEST(metrics.labeled_counter.bookmarks_view_list) AS bookmarks_view_list_table
   WHERE
     LOWER(metadata.isp.name) <> "browserstack"
     -- we need to work with a larger time window as some metrics ping arrive with a multi day delay
-    AND DATE(submission_timestamp) BETWEEN DATE_SUB(@submission_date, INTERVAL 4 DAY) AND @submission_date
-    AND DATE(DATETIME(LEAST(ping_info.parsed_start_time, ping_info.parsed_end_time), 'UTC')) = DATE_SUB(@submission_date, INTERVAL 4 DAY)
-GROUP BY ping_date, client_id, channel, country
+    AND DATE(submission_timestamp)
+    BETWEEN DATE_SUB(@submission_date, INTERVAL 4 DAY)
+    AND @submission_date
+    AND DATE(
+      DATETIME(LEAST(ping_info.parsed_start_time, ping_info.parsed_end_time), 'UTC')
+    ) = DATE_SUB(@submission_date, INTERVAL 4 DAY)
+  GROUP BY
+    ping_date,
+    client_id,
+    channel,
+    country
 )
 -- Aggregated feature usage
 SELECT
@@ -116,10 +157,14 @@ SELECT
   SUM(logins_saved_all) AS logins_saved_all,
   /*Credit Card*/
   --credit card autofill enabled
-  COUNT(DISTINCT IF(credit_card_autofill_enabled > 0, client_id, NULL)) AS credit_card_autofill_enabled_users,
+  COUNT(
+    DISTINCT IF(credit_card_autofill_enabled > 0, client_id, NULL)
+  ) AS credit_card_autofill_enabled_users,
   SUM(credit_card_autofill_enabled) AS credit_card_autofill_enabled,
   --credit_card_sync_enabled
-  COUNT(DISTINCT IF(credit_card_sync_enabled > 0, client_id, NULL)) AS credit_card_sync_enabled_users,
+  COUNT(
+    DISTINCT IF(credit_card_sync_enabled > 0, client_id, NULL)
+  ) AS credit_card_sync_enabled_users,
   SUM(credit_card_sync_enabled) AS credit_card_sync_enabled,
   --credit_card_deleted
   COUNT(DISTINCT IF(credit_card_deleted > 0, client_id, NULL)) AS credit_card_deleted_users,
@@ -157,75 +202,109 @@ SELECT
   SUM(bookmarks_view_list) AS bookmarks_view_list,
   /*FxA*/
   --sync_create_account_pressed
-  COUNT(DISTINCT IF(sync_create_account_pressed > 0, client_id, NULL)) AS sync_create_account_pressed_users,
+  COUNT(
+    DISTINCT IF(sync_create_account_pressed > 0, client_id, NULL)
+  ) AS sync_create_account_pressed_users,
   SUM(sync_create_account_pressed) AS sync_create_account_pressed,
   --sync_open_tab
   COUNT(DISTINCT IF(sync_open_tab > 0, client_id, NULL)) AS sync_open_tab_users,
   SUM(sync_open_tab) AS sync_open_tab,
   --sync_sign_in_sync_pressed
-  COUNT(DISTINCT IF(sync_sign_in_sync_pressed > 0, client_id, NULL)) AS sync_sign_in_sync_pressed_users,
+  COUNT(
+    DISTINCT IF(sync_sign_in_sync_pressed > 0, client_id, NULL)
+  ) AS sync_sign_in_sync_pressed_users,
   SUM(sync_sign_in_sync_pressed) AS sync_sign_in_sync_pressed,
   /*Privacy*/
   --tabs_private_tabs_quantity
-  COUNT(DISTINCT IF(tabs_private_tabs_quantity > 0, client_id, NULL)) AS tabs_private_tabs_quantity_users,
+  COUNT(
+    DISTINCT IF(tabs_private_tabs_quantity > 0, client_id, NULL)
+  ) AS tabs_private_tabs_quantity_users,
   SUM(tabs_private_tabs_quantity) AS tabs_private_tabs_quantity,
   -- Preferences Close Private Tabs
-  COUNT(DISTINCT IF(preferences_close_private_tabs > 0, client_id, NULL)) AS preferences_close_private_tabs_users,
+  COUNT(
+    DISTINCT IF(preferences_close_private_tabs > 0, client_id, NULL)
+  ) AS preferences_close_private_tabs_users,
   SUM(preferences_close_private_tabs) AS preferences_close_private_tabs,
   -- Tracking Protection Enabled
-  COUNT(DISTINCT IF(tracking_protection_enabled > 0, client_id, NULL)) AS tracking_protection_enabled_users,
+  COUNT(
+    DISTINCT IF(tracking_protection_enabled > 0, client_id, NULL)
+  ) AS tracking_protection_enabled_users,
   SUM(tracking_protection_enabled) AS tracking_protection_enabled,
   -- Tracking Protection Strict
-  COUNT(DISTINCT IF(tracking_protection_strict_enabled > 0, client_id, NULL)) AS tracking_protection_strict_users,
+  COUNT(
+    DISTINCT IF(tracking_protection_strict_enabled > 0, client_id, NULL)
+  ) AS tracking_protection_strict_users,
   SUM(tracking_protection_strict_enabled) AS tracking_protection_strict,
   /*Tab Count*/
   --tabs_normal_tabs_quantity
-  COUNT(DISTINCT IF(tabs_normal_tabs_quantity > 0, client_id, NULL)) AS tabs_normal_tabs_quantity_users,
+  COUNT(
+    DISTINCT IF(tabs_normal_tabs_quantity > 0, client_id, NULL)
+  ) AS tabs_normal_tabs_quantity_users,
   SUM(tabs_normal_tabs_quantity) AS tabs_normal_tabs_quantity,
   --tabs_inactive_tabs_count
-  COUNT(DISTINCT IF(tabs_inactive_tabs_count > 0, client_id, NULL)) AS tabs_inactive_tabs_count_users,
+  COUNT(
+    DISTINCT IF(tabs_inactive_tabs_count > 0, client_id, NULL)
+  ) AS tabs_inactive_tabs_count_users,
   SUM(tabs_inactive_tabs_count) AS tabs_inactive_tabs_count,
   /*Default Browser*/
   --app_opened_as_default_browser
-  COUNT(DISTINCT IF(app_opened_as_default_browser > 0, client_id, NULL)) AS app_opened_as_default_browser_users,
+  COUNT(
+    DISTINCT IF(app_opened_as_default_browser > 0, client_id, NULL)
+  ) AS app_opened_as_default_browser_users,
   SUM(app_opened_as_default_browser) AS app_opened_as_default_browser,
   -- settings_menu_set_as_default_browser_pressed
-  COUNT(DISTINCT IF(settings_menu_set_as_default_browser_pressed > 0, client_id, NULL)) AS settings_menu_set_as_default_browser_pressed_users,
+  COUNT(
+    DISTINCT IF(settings_menu_set_as_default_browser_pressed > 0, client_id, NULL)
+  ) AS settings_menu_set_as_default_browser_pressed_users,
   SUM(settings_menu_set_as_default_browser_pressed) AS settings_menu_set_as_default_browser_pressed,
   /*Notification*/
   --preferences_sync_notifs
   COUNT(DISTINCT IF(preferences_sync_notifs > 0, client_id, NULL)) AS preferences_sync_notifs_users,
   SUM(preferences_sync_notifs) AS preferences_sync_notifs,
   -- preferences_tips_and_features_notifs
-  COUNT(DISTINCT IF(preferences_tips_and_features_notifs > 0, client_id, NULL)) AS preferences_tips_and_features_notifs_users,
+  COUNT(
+    DISTINCT IF(preferences_tips_and_features_notifs > 0, client_id, NULL)
+  ) AS preferences_tips_and_features_notifs_users,
   SUM(preferences_tips_and_features_notifs) AS preferences_tips_and_features_notifs,
   /*Customize Home*/
   --preferences_jump_back_in
-  COUNT(DISTINCT IF(preferences_jump_back_in > 0, client_id, NULL)) AS preferences_jump_back_in_users,
+  COUNT(
+    DISTINCT IF(preferences_jump_back_in > 0, client_id, NULL)
+  ) AS preferences_jump_back_in_users,
   SUM(preferences_jump_back_in) AS preferences_jump_back_in,
   -- Preferences Recently Visited
-  COUNT(DISTINCT IF(preferences_recently_visited > 0, client_id, NULL)) AS preferences_recently_visited_users,
+  COUNT(
+    DISTINCT IF(preferences_recently_visited > 0, client_id, NULL)
+  ) AS preferences_recently_visited_users,
   SUM(preferences_recently_visited) AS preferences_recently_visited,
   -- Preferences Recently Saved
-  COUNT(DISTINCT IF(preferences_recently_saved > 0, client_id, NULL)) AS preferences_recently_saved_users,
+  COUNT(
+    DISTINCT IF(preferences_recently_saved > 0, client_id, NULL)
+  ) AS preferences_recently_saved_users,
   SUM(preferences_recently_saved) AS preferences_recently_saved,
   -- Preferences Pocket
   COUNT(DISTINCT IF(preferences_pocket > 0, client_id, NULL)) AS preferences_pocket_users,
   SUM(preferences_pocket) AS preferences_pocket,
   -- App Menu Customize Homepage
-  COUNT(DISTINCT IF(app_menu_customize_homepage > 0, client_id, NULL)) AS app_menu_customize_homepage_users,
+  COUNT(
+    DISTINCT IF(app_menu_customize_homepage > 0, client_id, NULL)
+  ) AS app_menu_customize_homepage_users,
   SUM(app_menu_customize_homepage) AS app_menu_customize_homepage,
   -- Firefox Home Page Customize Homepage Button
-  COUNT(DISTINCT IF(firefox_home_page_customize_homepage_button > 0, client_id, NULL)) AS firefox_home_page_customize_homepage_button_users,
+  COUNT(
+    DISTINCT IF(firefox_home_page_customize_homepage_button > 0, client_id, NULL)
+  ) AS firefox_home_page_customize_homepage_button_users,
   SUM(firefox_home_page_customize_homepage_button) AS firefox_home_page_customize_homepage_button,
 FROM
   metric_ping_clients_feature_usage
 -- Note: baseline_clients is necessary to restrict which clients are used in this aggregation
 -- to avoid situation where client count based feature usage is greater than DAU.
 INNER JOIN
-  baseline_clients USING(ping_date, client_id, channel, country)
+  baseline_clients
+  USING (ping_date, client_id, channel, country)
 LEFT JOIN
-  client_attribution USING(client_id, channel)
+  client_attribution
+  USING (client_id, channel)
 GROUP BY
   ping_date,
   channel,

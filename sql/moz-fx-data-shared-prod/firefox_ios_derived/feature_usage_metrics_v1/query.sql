@@ -1,16 +1,24 @@
-WITH baseline_clients AS (
-  SELECT DISTINCT
-    DATE(DATETIME(LEAST(ping_info.parsed_start_time, ping_info.parsed_end_time), 'UTC')) AS `date`,
+WITH baseline_clients AS 
+(SELECT ping_date,
+client_id,
+channel,
+country
+FROM
+(SELECT
+    DATE(DATETIME(LEAST(ping_info.parsed_start_time, ping_info.parsed_end_time), 'UTC')) AS ping_date,
     client_info.client_id,
     normalized_channel AS channel,
     normalized_country_code AS country,
+    ROW_NUMBER() OVER (PARTITION BY client_info.client_id ORDER BY DATE(DATETIME(LEAST(ping_info.parsed_start_time, ping_info.parsed_end_time), 'UTC'))) AS rn
   FROM firefox_ios.baseline
   WHERE
     metrics.timespan.glean_baseline_duration.value > 0
     AND LOWER(metadata.isp.name) <> "browserstack"
     AND DATE(submission_timestamp) BETWEEN DATE_SUB(@submission_date, INTERVAL 4 DAY) AND @submission_date
     AND DATE(DATETIME(LEAST(ping_info.parsed_start_time, ping_info.parsed_end_time), 'UTC')) = DATE_SUB(@submission_date, INTERVAL 4 DAY)
-),
+) AS baseline_raw
+WHERE rn = 1),
+
 client_attribution AS (
   SELECT
     client_id,
@@ -18,11 +26,12 @@ client_attribution AS (
     adjust_network,
   FROM firefox_ios.firefox_ios_clients
 ),
+
 metric_ping_clients_feature_usage AS (
   SELECT
     -- In rare cases we can have an end_time that is earlier than the start_time, we made the decision
     -- to attribute the metrics to the earlier date of the two.
-    DATE(DATETIME(LEAST(ping_info.parsed_start_time, ping_info.parsed_end_time), 'UTC')) AS `date`,
+    DATE(DATETIME(LEAST(ping_info.parsed_start_time, ping_info.parsed_end_time), 'UTC')) AS ping_date,
     client_info.client_id,
     normalized_channel AS channel,
     normalized_country_code AS country,
@@ -83,11 +92,11 @@ metric_ping_clients_feature_usage AS (
     -- we need to work with a larger time window as some metrics ping arrive with a multi day delay
     AND DATE(submission_timestamp) BETWEEN DATE_SUB(@submission_date, INTERVAL 4 DAY) AND @submission_date
     AND DATE(DATETIME(LEAST(ping_info.parsed_start_time, ping_info.parsed_end_time), 'UTC')) = DATE_SUB(@submission_date, INTERVAL 4 DAY)
-GROUP BY `date`, client_id, channel, country
+GROUP BY ping_date, client_id, channel, country
 )
 -- Aggregated feature usage
 SELECT
-  `date` AS metric_date,
+  ping_date,
   channel,
   country,
   adjust_network,
@@ -214,11 +223,11 @@ FROM
 -- Note: baseline_clients is necessary to restrict which clients are used in this aggregation
 -- to avoid situation where client count based feature usage is greater than DAU.
 INNER JOIN
-  baseline_clients USING(`date`, client_id, channel, country)
+  baseline_clients USING(ping_date, client_id, channel, country)
 LEFT JOIN
   client_attribution USING(client_id, channel)
 GROUP BY
-  `date`,
+  ping_date,
   channel,
   country,
   adjust_network,

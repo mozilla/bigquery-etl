@@ -106,7 +106,7 @@ fields:
 - mode: NULLABLE
   name: bounces
   type: INT64
-  description: Bounces - The number of sessions with a single page view
+  description: Bounces - The number of "bounce" sessions, sessions that had no engaged session event
 - mode: NULLABLE
   name: exits
   type: INT64

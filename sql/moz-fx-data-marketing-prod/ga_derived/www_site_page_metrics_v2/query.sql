@@ -1,9 +1,3 @@
-
-
-
-
-
-
 SELECT 
 a.date,
 a.page_path AS page,
@@ -32,8 +26,8 @@ sum(a.exits) AS exits,
 ? AS total_time_on_page, 
 ? AS total_events, 
 ? AS unique_events,
-? AS single_page_sessions,
-? AS bounces
+count(distinct(CASE WHEN single_page_session is true THEN visit_identifier ELSE NULL END)) AS single_page_sessions,
+count(distinct(CASE WHEN bounces = 1 AND event_name = 'page_view' THEN visit_identifier ELSE NULL END)) AS bounces
 FROM `moz-fx-data-marketing-prod.ga_derived.www_site_hits_v2` AS a
 WHERE date = @submission_date 
 GROUP BY 

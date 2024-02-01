@@ -148,12 +148,6 @@ with DAG(
         )
 
         ExternalTaskMarker(
-            task_id="bqetl_main_summary__wait_for_clients_first_seen_v2",
-            external_dag_id="bqetl_main_summary",
-            external_task_id="wait_for_clients_first_seen_v2",
-        )
-
-        ExternalTaskMarker(
             task_id="bqetl_analytics_aggregations__wait_for_clients_first_seen_v2",
             external_dag_id="bqetl_analytics_aggregations",
             external_task_id="wait_for_clients_first_seen_v2",

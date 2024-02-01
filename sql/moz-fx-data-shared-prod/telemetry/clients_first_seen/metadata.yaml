@@ -24,5 +24,5 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   view.sql:
-  - moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v2
+  - moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v1
 deprecated: false

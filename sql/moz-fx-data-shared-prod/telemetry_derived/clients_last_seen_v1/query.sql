@@ -158,5 +158,5 @@ FULL JOIN
   _previous
   USING (client_id)
 LEFT JOIN
-  clients_first_seen_v2 AS cfs
+  clients_first_seen_v1 AS cfs
   USING (client_id)

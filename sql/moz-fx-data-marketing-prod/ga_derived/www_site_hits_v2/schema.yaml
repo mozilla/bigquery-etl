@@ -106,7 +106,7 @@ fields:
 - mode: NULLABLE
   name: bounces
   type: INT64
-  description: Bounces - A session is considered a bounce if it contains only 1 page view
+  description: Bounces - Indicator that displays a 1 for each hit in a bounce session (a session with only 1 page view)
 - mode: NULLABLE
   name: hit_time
   type: FLOAT

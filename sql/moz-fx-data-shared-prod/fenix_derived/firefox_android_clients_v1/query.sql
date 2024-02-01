@@ -391,25 +391,7 @@ _current AS (
 --existing clients in firefox_android_clients_v1
 _previous AS (
   SELECT
-    -- TODO: remove the REPLACE() after testing
-    * REPLACE (
-      (
-        SELECT AS STRUCT
-          metadata.*,
-          CAST(NULL AS DATETIME) AS play_store_attribution_campaign__ping_datetime,
-          CAST(NULL AS DATETIME) AS play_store_attribution_content__ping_datetime,
-          CAST(NULL AS DATETIME) AS play_store_attribution_medium__ping_datetime,
-          CAST(NULL AS DATETIME) AS play_store_attribution_source__ping_datetime,
-          CAST(NULL AS DATETIME) AS play_store_attribution_term__ping_datetime,
-          CAST(NULL AS DATETIME) AS play_store_attribution_install_referrer_response__ping_datetime
-      ) AS metadata
-    ),
-    CAST(NULL AS STRING) AS play_store_attribution_campaign,
-    CAST(NULL AS STRING) AS play_store_attribution_content,
-    CAST(NULL AS STRING) AS play_store_attribution_medium,
-    CAST(NULL AS STRING) AS play_store_attribution_source,
-    CAST(NULL AS STRING) AS play_store_attribution_term,
-    CAST(NULL AS STRING) AS play_store_attribution_install_referrer_response,
+    *
   FROM
     `moz-fx-data-shared-prod.fenix_derived.firefox_android_clients_v1`
 )

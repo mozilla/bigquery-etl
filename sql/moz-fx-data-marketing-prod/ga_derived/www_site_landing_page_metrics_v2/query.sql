@@ -32,7 +32,7 @@ SELECT
     DISTINCT(CASE WHEN event_name = 'page_view' THEN page_path ELSE NULL END)
   ) AS unique_pageviews,
   COUNT(
-    DISTINCT(CASE WHEN bounces = 1 THEN visit_identifier ELSE NULL END)
+    DISTINCT(CASE WHEN single_page_session IS TRUE THEN visit_identifier ELSE NULL END)
   ) AS single_page_sessions,
   COUNT(DISTINCT(CASE WHEN bounces = 1 THEN visit_identifier ELSE NULL END)) AS bounces,
   SUM(exits) AS exits,

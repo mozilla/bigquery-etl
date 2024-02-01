@@ -155,3 +155,7 @@ fields:
   name: page_name
   type: STRING
   description: Page Name - Consists of page levels 1 to 5 concatenated together
+- mode: NULLABLE
+  name: single_page_session
+  type: BOOLEAN
+  description: Single Page Session - Indicator if the hit belongs to a single page session

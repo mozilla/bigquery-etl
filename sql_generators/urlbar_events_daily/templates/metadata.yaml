@@ -1,0 +1,20 @@
+friendly_name: Urlbar Events Daily
+description: |-
+  Each row in this table represents summary statistics per [urlbar result product type](https://github.com/mozilla/bigquery-etl/blob/main/sql/mozfun/norm/result_type_to_product_name/udf.sql) per country per channel per day.
+owners:
+- akommasani@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_urlbar
+  task_name: {{ app_name }}_urlbar_events_daily__v1
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+  clustering:
+    fields:
+      - normalized_channel
+      - sample_id

@@ -1,9 +1,18 @@
 fields:
-- name: submission_date
+- name: ping_date
   type: DATE
   mode: NULLABLE
-- name: metrics_ping_distinct_client_count
-  type: INTEGER
+- name: channel
+  type: STRING
+  mode: NULLABLE
+- name: country
+  type: STRING
+  mode: NULLABLE
+- name: adjust_network
+  type: STRING
+  mode: NULLABLE
+- name: is_default_browser
+  type: BOOLEAN
   mode: NULLABLE
 - name: logins_deleted_users
   type: INTEGER
@@ -39,6 +48,30 @@ fields:
   type: INTEGER
   mode: NULLABLE
 - name: credit_card_sync_enabled
+  type: INTEGER
+  mode: NULLABLE
+- name: credit_card_deleted_users
+  type: INTEGER
+  mode: NULLABLE
+- name: credit_card_deleted
+  type: INTEGER
+  mode: NULLABLE
+- name: credit_card_modified_users
+  type: INTEGER
+  mode: NULLABLE
+- name: credit_card_modified
+  type: INTEGER
+  mode: NULLABLE
+- name: credit_card_saved_users
+  type: INTEGER
+  mode: NULLABLE
+- name: credit_card_saved
+  type: INTEGER
+  mode: NULLABLE
+- name: credit_card_saved_all_users
+  type: INTEGER
+  mode: NULLABLE
+- name: credit_card_saved_all
   type: INTEGER
   mode: NULLABLE
 - name: bookmarks_add_users

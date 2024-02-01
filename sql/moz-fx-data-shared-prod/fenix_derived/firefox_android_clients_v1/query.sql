@@ -22,7 +22,11 @@ WITH baseline_clients AS (
   FROM
     `moz-fx-data-shared-prod.fenix.baseline_clients_daily`
   WHERE
-    submission_date = @submission_date
+    {% if is_init() %}
+      submission_date >= "2020-01-21"
+    {% else %}
+      submission_date = @submission_date
+    {% endif %}
     AND client_id IS NOT NULL
 ),
 first_seen AS (
@@ -53,7 +57,11 @@ activations AS (
   FROM
     `moz-fx-data-shared-prod.fenix.new_profile_activation`
   WHERE
-    submission_date = @submission_date
+    {% if is_init() %}
+      submission_date >= "2020-01-21"
+    {% else %}
+      submission_date = @submission_date
+    {% endif %}
   GROUP BY
     client_id
 ),
@@ -81,7 +89,12 @@ first_session_ping_min_seq AS (
         fenix.first_session AS fenix_first_session
       WHERE
         ping_info.seq IS NOT NULL
-        AND DATE(submission_timestamp) = @submission_date
+        AND
+        {% if is_init() %}
+          DATE(submission_timestamp) >= "2019-06-21"
+        {% else %}
+          DATE(submission_timestamp) = @submission_date
+        {% endif %}
     )
   WHERE
     RANK = 1 -- Pings are sent in sequence, this guarantees that the first one is returned.
@@ -151,7 +164,11 @@ first_session_ping AS (
       AND fenix_first_session.sample_id = first_session_ping_min_seq.sample_id
     )
   WHERE
-    DATE(submission_timestamp) = @submission_date
+    {% if is_init() %}
+      DATE(submission_timestamp) >= "2019-06-21"
+    {% else %}
+      DATE(submission_timestamp) = @submission_date
+    {% endif %}
     AND (first_session_ping_min_seq.client_id IS NOT NULL OR ping_info.seq IS NULL)
   GROUP BY
     client_id
@@ -209,7 +226,11 @@ metrics_ping AS (
   FROM
     fenix.metrics AS fenix_metrics
   WHERE
-    DATE(submission_timestamp) = @submission_date
+    {% if is_init() %}
+      DATE(submission_timestamp) >= "2019-06-21"
+    {% else %}
+      DATE(submission_timestamp) = @submission_date
+    {% endif %}
   GROUP BY
     client_id
 ),

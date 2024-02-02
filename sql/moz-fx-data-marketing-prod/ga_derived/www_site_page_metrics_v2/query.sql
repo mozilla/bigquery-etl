@@ -39,7 +39,7 @@ page_views_only AS (
     a.ad_content,
     SUM(a.next_pageview - a.hit_time) AS total_time_on_page
   FROM
-    page_view_staging
+    page_view_staging AS a
   GROUP BY
     a.date,
     a.page_path,

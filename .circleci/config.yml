@@ -314,24 +314,72 @@ jobs:
       - *restore_venv_cache
       - *build
       - run:
+          name: Switch to main branch
+          command: |
+            git clone -b generated-sql git@github.com:mozilla/bigquery-etl ~/generated-sql
+            cd ~/generated-sql
+            export LATEST_TAG_GENERATED_SQL=`git describe --tags --abbrev=0`
+
+            echo "Latest tag on generated-sql branch: $LATEST_TAG_GENERATED_SQL"
+
+            cd ~
+            git clone -b main git@github.com:mozilla/bigquery-etl ~/bigquery-etl-main
+            cd ~/bigquery-etl-main
+            export LATEST_COMMIT_ON_MAIN=`git rev-parse --short HEAD`
+            git checkout $LATEST_TAG_GENERATED_SQL
+
+            echo "Latest commit on main: $LATEST_COMMIT_ON_MAIN"
+
+            cd ~
+      - run: 
+          name: Check if SQL needs to be re-generated
+          command: |
+            export GENERATED_SQL_CHANGED=false
+
+            if [ "$CIRCLE_BRANCH" = main ]; then
+              GENERATED_SQL_CHANGED=true
+            fi
+
+            if [ "$LATEST_TAG_GENERATED_SQL" == "$LATEST_COMMIT_ON_MAIN" ]; then
+              if [[ $(diff -qr --no-dereference sql_generators/ ~/bigquery-etl-main/sql_generators/) ]]; then
+                GENERATED_SQL_CHANGED=true
+              fi
+            else
+              cd bigquery-etl-main
+              git checkout $LATEST_TAG_GENERATED_SQL
+              if [[ $(diff -qr --no-dereference sql_generators/ ~/bigquery-etl-main/sql_generators/) ]]; then
+                GENERATED_SQL_CHANGED=true
+              fi
+            fi
+      - run:
           name: Generate SQL content
           command: |
             mkdir -p /tmp/workspace/generated-sql
-            cp -r sql/ /tmp/workspace/generated-sql/sql
-            # Don't depend on dry run for PRs
-            PATH="venv/bin:$PATH" script/bqetl generate all \
-              --output-dir /tmp/workspace/generated-sql/sql/ \
-              --target-project moz-fx-data-shared-prod
-            PATH="venv/bin:$PATH" script/bqetl query render \
-              --sql-dir /tmp/workspace/generated-sql/sql/ \
-              --output-dir /tmp/workspace/generated-sql/sql/ \
-              /tmp/workspace/generated-sql/sql/
-            PATH="venv/bin:$PATH" script/bqetl dependency record \
-              --skip-existing \
-              "/tmp/workspace/generated-sql/sql/"
-            PATH="venv/bin:$PATH" script/bqetl metadata update \
-              --sql-dir /tmp/workspace/generated-sql/sql/ \
-              /tmp/workspace/generated-sql/sql/
+
+            if [ $GENERATED_SQL_CHANGED ]; then
+              echo "Changes made will affect generated SQL. Run SQL generator."
+
+              cp -r sql/ /tmp/workspace/generated-sql/sql
+              # Don't depend on dry run for PRs
+              PATH="venv/bin:$PATH" script/bqetl generate all \
+                --output-dir /tmp/workspace/generated-sql/sql/ \
+                --target-project moz-fx-data-shared-prod
+              PATH="venv/bin:$PATH" script/bqetl query render \
+                --sql-dir /tmp/workspace/generated-sql/sql/ \
+                --output-dir /tmp/workspace/generated-sql/sql/ \
+                /tmp/workspace/generated-sql/sql/
+              PATH="venv/bin:$PATH" script/bqetl dependency record \
+                --skip-existing \
+                "/tmp/workspace/generated-sql/sql/"
+              PATH="venv/bin:$PATH" script/bqetl metadata update \
+                --sql-dir /tmp/workspace/generated-sql/sql/ \
+                /tmp/workspace/generated-sql/sql/
+            else
+              echo "Changes made don't affect generated SQL. Use content from `generated-sql`"
+
+              cp -r ~/generated-sql/sql/ /tmp/workspace/generated-sql/sql
+              cp -fr sql/ /tmp/workspace/generated-sql/sql
+            fi
       - persist_to_workspace:
           root: /tmp/workspace
           paths:
@@ -402,6 +450,7 @@ jobs:
             cp -r /tmp/workspace/generated-sql/dags dags
             git add .
             git commit -m "Auto-push due to change on main branch [ci skip]" \
+              && git tag ${CIRCLE_SHA1:0:10}
               && git push \
               || echo "Skipping push since it looks like there were no changes"
   sync-dags-repo:

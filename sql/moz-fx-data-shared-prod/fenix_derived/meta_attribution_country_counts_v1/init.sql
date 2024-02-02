@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS
 AS
 -- Initialization query first observations for Meta Attribution Country Counts
 SELECT
-  DATE(submission_timestamp) AS date_attributed,
+  DATE(submission_timestamp) AS submission_date,
   CASE
     WHEN (metrics.string.meta_attribution_app = '382348575493443')
       THEN 'Firefox Focus for Android'
@@ -22,7 +22,7 @@ WHERE
   DATE(submission_timestamp) >= '2023-11-01'
   AND client_info.client_id IS NOT NULL
 GROUP BY
-  date_attributed,
+  submission_date,
   meta_attribution_app,
   normalized_channel,
   country;

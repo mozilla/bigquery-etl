@@ -1,7 +1,7 @@
 fields:
 - description: Date corresponding to the unique client count
   mode: NULLABLE
-  name: date_attributed
+  name: submission_date
   type: DATE
 - description: A string representing the app the client activity occurred on
   mode: NULLABLE

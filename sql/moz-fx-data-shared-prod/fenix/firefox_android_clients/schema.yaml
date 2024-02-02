@@ -153,6 +153,65 @@ fields:
     type: DATETIME
     mode: NULLABLE
     description: Datetime of the ping that reported the first install_source value.
+  - name: play_store_attribution_campaign__ping_datetime
+    type: DATETIME
+    mode: NULLABLE
+    description: Datetime of the ping that reported the first play_store_attribution_campaign__ping_datetime
+      value.
+  - name: play_store_attribution_content__ping_datetime
+    type: DATETIME
+    mode: NULLABLE
+    description: Datetime of the ping that reported the first play_store_attribution_content__ping_datetime
+      value.
+  - name: play_store_attribution_medium__ping_datetime
+    type: DATETIME
+    mode: NULLABLE
+    description: Datetime of the ping that reported the first play_store_attribution_medium__ping_datetime
+      value.
+  - name: play_store_attribution_source__ping_datetime
+    type: DATETIME
+    mode: NULLABLE
+    description: Datetime of the ping that reported the first play_store_attribution_source__ping_datetime
+      value.
+  - name: play_store_attribution_term__ping_datetime
+    type: DATETIME
+    mode: NULLABLE
+    description: Datetime of the ping that reported the first play_store_attribution_term__ping_datetime
+      value.
+  - name: play_store_attribution_install_referrer_response__ping_datetime
+    type: DATETIME
+    mode: NULLABLE
+    description: Datetime of the ping that reported the first play_store_attribution_install_referrer_response__ping_datetime
+      value.
+- name: play_store_attribution_campaign
+  type: STRING
+  mode: NULLABLE
+  description: The utm_campaign this install is attributed to. Reported by the install
+    referrer service, not Adjust.
+- name: play_store_attribution_content
+  type: STRING
+  mode: NULLABLE
+  description: The utm_content this install is attributed to. Reported by the install
+    referrer service, not Adjust.
+- name: play_store_attribution_medium
+  type: STRING
+  mode: NULLABLE
+  description: The utm_medium this install is attributed to. Reported by the install
+    referrer service, not Adjust.
+- name: play_store_attribution_source
+  type: STRING
+  mode: NULLABLE
+  description: The utm_source this install is attributed to. Reported by the install
+    referrer service, not Adjust.
+- name: play_store_attribution_term
+  type: STRING
+  mode: NULLABLE
+  description: The utm_term this install is attributed to. Reported by the install
+    referrer service, not Adjust.
+- name: play_store_attribution_install_referrer_response
+  type: STRING
+  mode: NULLABLE
+  description: The full install referrer response.
 - name: adjust_network
   type: STRING
   mode: NULLABLE

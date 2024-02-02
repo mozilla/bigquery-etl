@@ -110,7 +110,37 @@ first_session_ping AS (
     ] AS adjust_ad_group,
     ARRAY_AGG(metrics.string.first_session_creative IGNORE NULLS ORDER BY submission_timestamp ASC)[
       SAFE_OFFSET(0)
-    ] AS adjust_creative
+    ] AS adjust_creative,
+    ARRAY_AGG(
+      metrics.string.play_store_attribution_campaign IGNORE NULLS
+      ORDER BY
+        submission_timestamp ASC
+    )[SAFE_OFFSET(0)] AS play_store_attribution_campaign,
+    ARRAY_AGG(
+      metrics.string.play_store_attribution_content IGNORE NULLS
+      ORDER BY
+        submission_timestamp ASC
+    )[SAFE_OFFSET(0)] AS play_store_attribution_content,
+    ARRAY_AGG(
+      metrics.string.play_store_attribution_medium IGNORE NULLS
+      ORDER BY
+        submission_timestamp ASC
+    )[SAFE_OFFSET(0)] AS play_store_attribution_medium,
+    ARRAY_AGG(
+      metrics.string.play_store_attribution_source IGNORE NULLS
+      ORDER BY
+        submission_timestamp ASC
+    )[SAFE_OFFSET(0)] AS play_store_attribution_source,
+    ARRAY_AGG(
+      metrics.string.play_store_attribution_term IGNORE NULLS
+      ORDER BY
+        submission_timestamp ASC
+    )[SAFE_OFFSET(0)] AS play_store_attribution_term,
+    ARRAY_AGG(
+      metrics.text2.play_store_attribution_install_referrer_response IGNORE NULLS
+      ORDER BY
+        submission_timestamp ASC
+    )[SAFE_OFFSET(0)] AS play_store_attribution_install_referrer_response,
   FROM
     fenix.first_session AS fenix_first_session
   LEFT JOIN
@@ -229,6 +259,12 @@ _current AS (
     COALESCE(first_session.adjust_creative, metrics.adjust_creative) AS adjust_creative,
     COALESCE(first_session.adjust_network, metrics.adjust_network) AS adjust_network,
     metrics.install_source AS install_source,
+    first_session.play_store_attribution_campaign,
+    first_session.play_store_attribution_content,
+    first_session.play_store_attribution_medium,
+    first_session.play_store_attribution_source,
+    first_session.play_store_attribution_term,
+    first_session.play_store_attribution_install_referrer_response,
     metrics.last_reported_adjust_campaign AS last_reported_adjust_campaign,
     metrics.last_reported_adjust_ad_group AS last_reported_adjust_ad_group,
     metrics.last_reported_adjust_creative AS last_reported_adjust_creative,
@@ -303,12 +339,42 @@ _current AS (
         WHEN metrics.install_source IS NOT NULL
           THEN metrics.min_submission_datetime
         ELSE NULL
-      END AS install_source__source_ping_datetime
+      END AS install_source__source_ping_datetime,
+      IF(
+        play_store_attribution_campaign IS NOT NULL,
+        first_session.min_submission_datetime,
+        NULL
+      ) AS play_store_attribution_campaign__ping_datetime,
+      IF(
+        play_store_attribution_content IS NOT NULL,
+        first_session.min_submission_datetime,
+        NULL
+      ) AS play_store_attribution_content__ping_datetime,
+      IF(
+        play_store_attribution_medium IS NOT NULL,
+        first_session.min_submission_datetime,
+        NULL
+      ) AS play_store_attribution_medium__ping_datetime,
+      IF(
+        play_store_attribution_source IS NOT NULL,
+        first_session.min_submission_datetime,
+        NULL
+      ) AS play_store_attribution_source__ping_datetime,
+      IF(
+        play_store_attribution_term IS NOT NULL,
+        first_session.min_submission_datetime,
+        NULL
+      ) AS play_store_attribution_term__ping_datetime,
+      IF(
+        play_store_attribution_install_referrer_response IS NOT NULL,
+        first_session.min_submission_datetime,
+        NULL
+      ) AS play_store_attribution_install_referrer_response__ping_datetime
     ) AS metadata
   FROM
     first_seen
   FULL OUTER JOIN
-    first_session_ping first_session
+    first_session_ping AS first_session
     USING (client_id)
   FULL OUTER JOIN
     metrics_ping AS metrics
@@ -352,6 +418,30 @@ SELECT
   COALESCE(_previous.adjust_creative, _current.adjust_creative) AS adjust_creative,
   COALESCE(_previous.adjust_network, _current.adjust_network) AS adjust_network,
   COALESCE(_previous.install_source, _current.install_source) AS install_source,
+  COALESCE(
+    _previous.play_store_attribution_campaign,
+    _current.play_store_attribution_campaign
+  ) AS play_store_attribution_campaign,
+  COALESCE(
+    _previous.play_store_attribution_content,
+    _current.play_store_attribution_content
+  ) AS play_store_attribution_content,
+  COALESCE(
+    _previous.play_store_attribution_medium,
+    _current.play_store_attribution_medium
+  ) AS play_store_attribution_medium,
+  COALESCE(
+    _previous.play_store_attribution_source,
+    _current.play_store_attribution_source
+  ) AS play_store_attribution_source,
+  COALESCE(
+    _previous.play_store_attribution_term,
+    _current.play_store_attribution_term
+  ) AS play_store_attribution_term,
+  COALESCE(
+    _previous.play_store_attribution_install_referrer_response,
+    _current.play_store_attribution_install_referrer_response
+  ) AS play_store_attribution_install_referrer_response,
   COALESCE(
     _current.last_reported_adjust_campaign,
     _previous.last_reported_adjust_campaign
@@ -447,7 +537,31 @@ SELECT
     COALESCE(
       _previous.metadata.install_source__source_ping_datetime,
       _current.metadata.install_source__source_ping_datetime
-    ) AS install_source__source_ping_datetime
+    ) AS install_source__source_ping_datetime,
+    COALESCE(
+      _previous.metadata.play_store_attribution_campaign__ping_datetime,
+      _current.metadata.play_store_attribution_campaign__ping_datetime
+    ) AS play_store_attribution_campaign__ping_datetime,
+    COALESCE(
+      _previous.metadata.play_store_attribution_content__ping_datetime,
+      _current.metadata.play_store_attribution_content__ping_datetime
+    ) AS play_store_attribution_content__ping_datetime,
+    COALESCE(
+      _previous.metadata.play_store_attribution_medium__ping_datetime,
+      _current.metadata.play_store_attribution_medium__ping_datetime
+    ) AS play_store_attribution_medium__ping_datetime,
+    COALESCE(
+      _previous.metadata.play_store_attribution_source__ping_datetime,
+      _current.metadata.play_store_attribution_source__ping_datetime
+    ) AS play_store_attribution_source__ping_datetime,
+    COALESCE(
+      _previous.metadata.play_store_attribution_term__ping_datetime,
+      _current.metadata.play_store_attribution_term__ping_datetime
+    ) AS play_store_attribution_term__ping_datetime,
+    COALESCE(
+      _previous.metadata.play_store_attribution_install_referrer_response__ping_datetime,
+      _current.metadata.play_store_attribution_install_referrer_response__ping_datetime
+    ) AS play_store_attribution_install_referrer_response__ping_datetime
   ) AS metadata
 FROM
   _current

@@ -338,7 +338,7 @@ jobs:
               GENERATED_SQL_CHANGED=true
             fi
 
-            if [[ $(git diff --no-index --name-only --diff-filter=D sql ~/bigquery-etl-main/sql) ]]; then 
+            if [[ $(git diff --no-index --name-only --diff-filter=D ~/bigquery-etl-main/sql sql) ]]; then 
               echo "SQL file was removed; re-generate SQL"
               GENERATED_SQL_CHANGED=true
             fi
@@ -627,12 +627,12 @@ jobs:
             
             export GENERATED_SQL_CHANGED=false
 
-            if [[ $(git diff HEAD...$LATEST_TAG_GENERATED_SQL -- sql_generators --no-index --name-only --diff-filter=d) ]]; then 
+            if [[ $(git diff $LATEST_TAG_GENERATED_SQL...HEAD -- sql_generators --no-index --name-only --diff-filter=d) ]]; then 
               echo "SQL file was removed; re-generate SQL"
               GENERATED_SQL_CHANGED=true
             fi
 
-            if [[ $(git diff HEAD...$LATEST_TAG_GENERATED_SQL -- sql --no-index --name-only --diff-filter=D) ]]; then 
+            if [[ $(git diff $LATEST_TAG_GENERATED_SQL...HEAD -- sql --no-index --name-only --diff-filter=D) ]]; then 
               echo "SQL file was removed; re-generate SQL"
               GENERATED_SQL_CHANGED=true
             fi

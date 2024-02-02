@@ -13,7 +13,7 @@ scheduling:
 bigquery:
   time_partitioning:
     type: day
-    field: submission_date
+    field: ping_date
     require_partition_filter: true
     expiration_days: null
   clustering: null
@@ -23,5 +23,7 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
+  - firefox_ios.baseline
+  - firefox_ios.firefox_ios_clients
   - firefox_ios.metrics
 deprecated: false

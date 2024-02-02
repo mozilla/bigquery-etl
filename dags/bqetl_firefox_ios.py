@@ -116,6 +116,13 @@ with DAG(
             execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=85500)).isoformat() }}",
         )
 
+        ExternalTaskMarker(
+            task_id="bqetl_mobile_feature_usage__wait_for_checks__fail_firefox_ios_derived__clients_activation__v1",
+            external_dag_id="bqetl_mobile_feature_usage",
+            external_task_id="wait_for_checks__fail_firefox_ios_derived__clients_activation__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=79200)).isoformat() }}",
+        )
+
         checks__fail_firefox_ios_derived__clients_activation__v1_external.set_upstream(
             checks__fail_firefox_ios_derived__clients_activation__v1
         )
@@ -142,6 +149,13 @@ with DAG(
             external_dag_id="bqetl_analytics_aggregations",
             external_task_id="wait_for_checks__fail_firefox_ios_derived__firefox_ios_clients__v1",
             execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=85500)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_mobile_feature_usage__wait_for_checks__fail_firefox_ios_derived__firefox_ios_clients__v1",
+            external_dag_id="bqetl_mobile_feature_usage",
+            external_task_id="wait_for_checks__fail_firefox_ios_derived__firefox_ios_clients__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=79200)).isoformat() }}",
         )
 
         checks__fail_firefox_ios_derived__firefox_ios_clients__v1_external.set_upstream(

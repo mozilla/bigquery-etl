@@ -1,0 +1,18 @@
+friendly_name: App-specific view for Glean ping "download-data"
+description: |-
+  This a view that UNIONs the stable ping tables
+  across all channels of the Glean application "TikTok Reporter (iOS)"
+  (org_mozilla_ios_tiktok_reporter.download_data).
+
+  It is used by Looker.
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.org_mozilla_ios_tiktok_reporter.download_data
+deprecated: false

@@ -18,7 +18,12 @@ WITH baseline_clients AS (
       DATETIME(LEAST(ping_info.parsed_start_time, ping_info.parsed_end_time), 'UTC')
     ) = DATE_SUB(@submission_date, INTERVAL 4 DAY)
   QUALIFY
-    ROW_NUMBER() OVER (PARTITION BY client_info.client_id ORDER BY DATE(DATETIME(LEAST(ping_info.parsed_start_time, ping_info.parsed_end_time), 'UTC')))=1
+    ROW_NUMBER() OVER (
+      PARTITION BY
+        client_info.client_id
+      ORDER BY
+        DATE(DATETIME(LEAST(ping_info.parsed_start_time, ping_info.parsed_end_time), 'UTC'))
+    ) = 1
 ),
 client_attribution AS (
   SELECT

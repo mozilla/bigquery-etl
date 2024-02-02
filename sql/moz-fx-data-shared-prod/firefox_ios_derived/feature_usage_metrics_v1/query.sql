@@ -1,38 +1,24 @@
 WITH baseline_clients AS (
   SELECT
-    ping_date,
-    client_id,
-    channel,
-    country
+    DATE(
+      DATETIME(LEAST(ping_info.parsed_start_time, ping_info.parsed_end_time), 'UTC')
+    ) AS ping_date,
+    client_info.client_id,
+    normalized_channel AS channel,
+    normalized_country_code AS country
   FROM
-    (
-      SELECT
-        DATE(
-          DATETIME(LEAST(ping_info.parsed_start_time, ping_info.parsed_end_time), 'UTC')
-        ) AS ping_date,
-        client_info.client_id,
-        normalized_channel AS channel,
-        normalized_country_code AS country,
-        ROW_NUMBER() OVER (
-          PARTITION BY
-            client_info.client_id
-          ORDER BY
-            DATE(DATETIME(LEAST(ping_info.parsed_start_time, ping_info.parsed_end_time), 'UTC'))
-        ) AS rn
-      FROM
-        firefox_ios.baseline
-      WHERE
-        metrics.timespan.glean_baseline_duration.value > 0
-        AND LOWER(metadata.isp.name) <> "browserstack"
-        AND DATE(submission_timestamp)
-        BETWEEN DATE_SUB(@submission_date, INTERVAL 4 DAY)
-        AND @submission_date
-        AND DATE(
-          DATETIME(LEAST(ping_info.parsed_start_time, ping_info.parsed_end_time), 'UTC')
-        ) = DATE_SUB(@submission_date, INTERVAL 4 DAY)
-    ) AS baseline_raw
+    firefox_ios.baseline
   WHERE
-    rn = 1
+    metrics.timespan.glean_baseline_duration.value > 0
+    AND LOWER(metadata.isp.name) <> "browserstack"
+    AND DATE(submission_timestamp)
+    BETWEEN DATE_SUB(@submission_date, INTERVAL 4 DAY)
+    AND @submission_date
+    AND DATE(
+      DATETIME(LEAST(ping_info.parsed_start_time, ping_info.parsed_end_time), 'UTC')
+    ) = DATE_SUB(@submission_date, INTERVAL 4 DAY)
+  QUALIFY
+    ROW_NUMBER() OVER (PARTITION BY client_info.client_id ORDER BY DATE(DATETIME(LEAST(ping_info.parsed_start_time, ping_info.parsed_end_time), 'UTC')))=1
 ),
 client_attribution AS (
   SELECT

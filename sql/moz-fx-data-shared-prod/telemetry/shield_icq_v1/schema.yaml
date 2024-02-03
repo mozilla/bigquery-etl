@@ -128,6 +128,14 @@ fields:
           mode: NULLABLE
           description: Whether or not the add-on is a compatible with e10s. Since
             Firefox 61, this is always true. This field is available at startup.
+        - name: quarantine_ignored_by_app
+          type: BOOLEAN
+          mode: NULLABLE
+          description: Whether or not the add-on has quarantine ignored by the app.
+        - name: quarantine_ignored_by_user
+          type: BOOLEAN
+          mode: NULLABLE
+          description: Whether or not the add-on has quarantine ignored by the user.
     - name: active_experiment
       type: RECORD
       mode: NULLABLE

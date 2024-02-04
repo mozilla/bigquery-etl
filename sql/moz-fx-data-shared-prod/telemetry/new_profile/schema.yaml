@@ -1308,6 +1308,20 @@ fields:
             sent if attribution.provenance.zone_id.ads_exists is true.
 
             '
+        - name: startup_profile_count
+          type: INTEGER
+          mode: NULLABLE
+          description: 'This records the number of known profiles after startup completes.
+            This includes any profiles that were created during startup.
+
+            '
+        - name: startup_profile_database_version
+          type: STRING
+          mode: NULLABLE
+          description: 'The version of the profiles.ini database loaded during startup.
+            A value of "0" is used to indicate that no file was present during startup.
+
+            '
 - name: sample_id
   type: INTEGER
   mode: NULLABLE

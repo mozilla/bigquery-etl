@@ -109,6 +109,12 @@ fields:
         - name: version
           type: STRING
           mode: NULLABLE
+        - name: quarantine_ignored_by_app
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: quarantine_ignored_by_user
+          type: BOOLEAN
+          mode: NULLABLE
     - name: active_experiment
       type: RECORD
       mode: NULLABLE

@@ -33,7 +33,9 @@ CREATE OR REPLACE FUNCTION udf_js.main_summary_active_addons(
         type STRING,
         update_day INT64,
         user_disabled INT64,
-        version STRING
+        version STRING,
+        quarantine_ignored_by_app BOOL,
+        quarantine_ignored_by_user BOOL
       >
     >
   >,
@@ -113,21 +115,21 @@ WITH result AS (
   SELECT AS VALUE
     ARRAY_CONCAT(
       udf_js.main_summary_active_addons(
-        ARRAY<STRUCT<STRING,STRUCT<BOOL,BOOL,STRING,INT64,BOOL,INT64,BOOL,BOOL,BOOL,STRING,INT64,INT64,STRING,INT64,INT64,STRING>>>[
+        ARRAY<STRUCT<STRING,STRUCT<BOOL,BOOL,STRING,INT64,BOOL,INT64,BOOL,BOOL,BOOL,STRING,INT64,INT64,STRING,INT64,INT64,STRING,BOOL,BOOL>>>[
           -- truthy columns and additional_properties
-          ('a', (TRUE, TRUE, 'description', NULL, TRUE, 2, TRUE, TRUE, TRUE, 'name', 1, 4, 'type', 3, NULL, NULL)),
+          ('a', (TRUE, TRUE, 'description', NULL, TRUE, 2, TRUE, TRUE, TRUE, 'name', 1, 4, 'type', 3, NULL, NULL, NULL, NULL)),
           -- falsey columns and truthy additional_properties
-          ('b', (FALSE, FALSE, '', NULL, FALSE, 0, FALSE, FALSE, FALSE, '', 0, 0, '', 0, NULL, NULL)),
+          ('b', (FALSE, FALSE, '', NULL, FALSE, 0, FALSE, FALSE, FALSE, '', 0, 0, '', 0, NULL, NULL, NULL, NULL)),
           -- falsey columns and additional_properties
-          ('c', (FALSE, FALSE, '', NULL, FALSE, 0, FALSE, FALSE, FALSE, '', 0, 0, '', 0, NULL, NULL)),
+          ('c', (FALSE, FALSE, '', NULL, FALSE, 0, FALSE, FALSE, FALSE, '', 0, 0, '', 0, NULL, NULL, NULL, NULL)),
           -- truthy columns and falsey additional_properties
-          ('d', (TRUE, TRUE, 'description', NULL, TRUE, 2, TRUE, TRUE, TRUE, 'name', 1, 4, 'type', 3, NULL, NULL)),
+          ('d', (TRUE, TRUE, 'description', NULL, TRUE, 2, TRUE, TRUE, TRUE, 'name', 1, 4, 'type', 3, NULL, NULL, NULL, NULL)),
           -- truthy columns and missing additional_properties
-          ('e', (TRUE, TRUE, 'description', 1, TRUE, 2, TRUE, TRUE, TRUE, 'name', 1, 4, 'type', 3, 1, "version")),
+          ('e', (TRUE, TRUE, 'description', 1, TRUE, 2, TRUE, TRUE, TRUE, 'name', 1, 4, 'type', 3, 1, "version", NULL, NULL)),
           -- falsey columns and missing additional_properties
-          ('f', (FALSE, FALSE, '', 0, FALSE, 0, FALSE, FALSE, FALSE, '', 0, 0, '', 0, 0, "")),
+          ('f', (FALSE, FALSE, '', 0, FALSE, 0, FALSE, FALSE, FALSE, '', 0, 0, '', 0, 0, "", NULL, NULL)),
           -- null columns and missing additional_properties
-          ('g', (NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)),
+          ('g', (NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)),
           -- null value and ignore additional_properties
           ('h', NULL),
           -- null value and truthy additional_properties
@@ -149,11 +151,11 @@ WITH result AS (
       ),
       -- null additional properties
       udf_js.main_summary_active_addons(
-        ARRAY<STRUCT<STRING,STRUCT<BOOL,BOOL,STRING,INT64,BOOL,INT64,BOOL,BOOL,BOOL,STRING,INT64,INT64,STRING,INT64,INT64,STRING>>>[
+        ARRAY<STRUCT<STRING,STRUCT<BOOL,BOOL,STRING,INT64,BOOL,INT64,BOOL,BOOL,BOOL,STRING,INT64,INT64,STRING,INT64,INT64,STRING,BOOL,BOOL>>>[
           -- truthy columns and null additional_properties
-          ('l', (TRUE, TRUE, 'description', 1, TRUE, 2, TRUE, TRUE, TRUE, 'name', 1, 4, 'type', 3, 1, "version")),
+          ('l', (TRUE, TRUE, 'description', 1, TRUE, 2, TRUE, TRUE, TRUE, 'name', 1, 4, 'type', 3, 1, "version", FALSE, FALSE)),
           -- falsey columns and null additional_properties
-          ('m', (FALSE, FALSE, '', 0, FALSE, 0, FALSE, FALSE, FALSE, '', 0, 0, '', 0, 0, "")),
+          ('m', (FALSE, FALSE, '', 0, FALSE, 0, FALSE, FALSE, FALSE, '', 0, 0, '', 0, 0, "", TRUE, TRUE)),
           -- null columns and additional_properties
           ('n', NULL)
         ],

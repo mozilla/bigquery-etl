@@ -133,6 +133,29 @@ class ExternalDataMetadata:
     options: Optional[Dict[str, Any]] = attr.ib(None)
 
 
+class CheckStatus(enum.Enum):
+    """ETL Check status for which to send slack notification."""
+
+    FAIL = "fail"
+    WARN = "warn"
+    SUCCESS = "success"
+
+
+@attr.s(auto_attribs=True)
+class SlackNotificationMetadata:
+    """Metadata for configuring slack notifications for checks."""
+
+    status: List[CheckStatus]
+    channel: str
+
+
+@attr.s(auto_attribs=True)
+class ChecksMetadata:
+    """Metadata for configuring ETL checks."""
+
+    slack_notification: SlackNotificationMetadata
+
+
 @attr.s(auto_attribs=True)
 class Metadata:
     """
@@ -153,6 +176,7 @@ class Metadata:
     references: Dict = attr.ib({})
     external_data: Optional[ExternalDataMetadata] = attr.ib(None)
     deprecated: bool = attr.ib(False)
+    checks: Optional[ChecksMetadata] = attr.ib(None)
 
     @owners.validator
     def validate_owners(self, attribute, value):
@@ -228,6 +252,7 @@ class Metadata:
         references = {}
         external_data = None
         deprecated = False
+        checks = None
 
         with open(metadata_file, "r") as yaml_stream:
             try:
@@ -296,6 +321,10 @@ class Metadata:
                 if "deprecated" in metadata:
                     deprecated = metadata["deprecated"]
 
+                if "checks" in metadata:
+                    converter = cattrs.BaseConverter()
+                    checks = converter.structure(metadata["checks"], ChecksMetadata)
+
                 return cls(
                     friendly_name,
                     description,
@@ -308,6 +337,7 @@ class Metadata:
                     references,
                     external_data,
                     deprecated,
+                    checks,
                 )
             except yaml.YAMLError as e:
                 raise e
@@ -345,6 +375,9 @@ class Metadata:
 
         if metadata_dict["external_data"] is None:
             del metadata_dict["external_data"]
+
+        if metadata_dict["checks"] is None:
+            del metadata_dict["checks"]
 
         file.write_text(
             yaml.dump(

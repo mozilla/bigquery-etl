@@ -47,3 +47,7 @@ bigquery:
     - first_reported_country
     - device_model
 references: {}
+checks:
+  slack_notification:
+    status: ["fail", "warn"]
+    channel: kpi-monitoring-dim

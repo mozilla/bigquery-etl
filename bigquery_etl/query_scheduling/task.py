@@ -242,6 +242,7 @@ class Task:
     gke_cluster_name: Optional[str] = attr.ib(None)
     query_project: Optional[str] = attr.ib(None)
     task_group: Optional[str] = attr.ib(None)
+    slack_notification: Optional[Dict] = attr.ib(None)
     container_resources: Optional[Dict[str, str]] = attr.ib(None)
     node_selector: Optional[Dict[str, str]] = attr.ib(None)
     startup_timeout_seconds: Optional[int] = attr.ib(None)
@@ -506,6 +507,16 @@ class Task:
                 ]
             )
             task.validate_task_name(None, task.task_name)
+
+        if metadata is None:
+            metadata = Metadata.of_query_file(query_file)
+
+        if metadata.checks and metadata.checks.slack_notification:
+            task.slack_notification = {
+                "channel": metadata.checks.slack_notification.channel,
+                "status": [s.value for s in metadata.checks.slack_notification.status],
+            }
+
         return task
 
     def to_ref(self, dag_collection):

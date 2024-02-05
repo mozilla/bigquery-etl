@@ -298,6 +298,7 @@ LEFT JOIN
   client_attribution
   USING (client_id, channel)
 GROUP BY
+  submission_date,
   ping_date,
   channel,
   country,

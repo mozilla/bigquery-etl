@@ -128,6 +128,7 @@ metric_ping_clients_feature_usage AS (
 )
 -- Aggregated feature usage
 SELECT
+  @submission_date AS submission_date,
   ping_date,
   channel,
   country,

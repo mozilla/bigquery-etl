@@ -93,7 +93,7 @@ MERGE INTO
               1
           ).int_value AS string
         ) AS ga_session_id,
-        e.value.int_value AS stub_session_id
+        CAST(e.value.int_value as string) AS stub_session_id
       FROM
         `moz-fx-data-marketing-prod.analytics_313696158.events_*`
       JOIN

@@ -378,6 +378,33 @@ with DAG(
             telemetry_derived__clients_last_seen__v1
         )
 
+    telemetry_derived__clients_last_seen__v2 = bigquery_etl_query(
+        task_id="telemetry_derived__clients_last_seen__v2",
+        destination_table="clients_last_seen_v2",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="anicholson@mozilla.com",
+        email=["anicholson@mozilla.com"],
+        start_date=datetime.datetime(2023, 9, 15, 0, 0),
+        date_partition_parameter="submission_date",
+        depends_on_past=True,
+        priority_weight=85,
+    )
+
+    with TaskGroup(
+        "telemetry_derived__clients_last_seen__v2_external",
+    ) as telemetry_derived__clients_last_seen__v2_external:
+        ExternalTaskMarker(
+            task_id="taar_daily__wait_for_clients_last_seen",
+            external_dag_id="taar_daily",
+            external_task_id="wait_for_clients_last_seen",
+            execution_date="{{ (execution_date + macros.timedelta(seconds=7200)).isoformat() }}",
+        )
+
+        telemetry_derived__clients_last_seen__v2_external.set_upstream(
+            telemetry_derived__clients_last_seen__v2
+        )
+
     telemetry_derived__clients_last_seen_event__v1 = bigquery_etl_query(
         task_id="telemetry_derived__clients_last_seen_event__v1",
         destination_table="clients_last_seen_event_v1",
@@ -641,6 +668,25 @@ with DAG(
 
     telemetry_derived__clients_last_seen__v1.set_upstream(
         telemetry_derived__clients_first_seen__v1
+    )
+
+    wait_for_clients_first_seen_v2 = ExternalTaskSensor(
+        task_id="wait_for_clients_first_seen_v2",
+        external_dag_id="bqetl_analytics_tables",
+        external_task_id="clients_first_seen_v2",
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    telemetry_derived__clients_last_seen__v2.set_upstream(
+        wait_for_clients_first_seen_v2
+    )
+
+    telemetry_derived__clients_last_seen__v2.set_upstream(
+        telemetry_derived__clients_daily__v6
     )
 
     telemetry_derived__clients_last_seen_event__v1.set_upstream(

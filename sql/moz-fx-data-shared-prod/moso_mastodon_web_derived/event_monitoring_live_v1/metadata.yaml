@@ -14,6 +14,7 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
+  - workgroup:mozsocial/dbt
 references:
   init.sql:
   - moz-fx-data-shared-prod.moso_mastodon_web_live.events_v1

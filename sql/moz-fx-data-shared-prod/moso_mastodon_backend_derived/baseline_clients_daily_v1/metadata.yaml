@@ -29,6 +29,7 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
+  - workgroup:mozsocial/dbt
 references:
   init.sql:
   - moso_mastodon_backend_derived.baseline_clients_first_seen_v1

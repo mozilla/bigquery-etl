@@ -13,18 +13,18 @@ description: |-
   which merges in fields based on the `event` ping.
   See https://github.com/mozilla/bigquery-etl/issues/1761
 owners:
-- ascholtz@mozilla.com
+- anicholson@mozilla.com
 labels:
   application: firefox
   schedule: daily
   dag: bqetl_main_summary
-  owner1: ascholtz
+  owner1: anicholson
 scheduling:
   dag_name: bqetl_main_summary
   priority: 85
   start_date: '2023-09-15'
   email:
-  - ascholtz@mozilla.com
+  - anicholson@mozilla.com
   depends_on_past: true
   external_downstream_tasks:
   - task_id: wait_for_clients_last_seen

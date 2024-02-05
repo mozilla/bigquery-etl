@@ -1,0 +1,25 @@
+friendly_name: GA Sessions V2
+description: |-
+  Contains 1 row for each Google Analytics 4 session
+owners:
+- kwindau@mozilla.com
+labels:
+  owner1: kwindau
+  dag: bqetl_google_analytics_derived_ga4
+scheduling:
+  dag_name: bqetl_google_analytics_derived_ga4
+bigquery:
+  time_partitioning:
+    type: day
+    field: session_date
+    require_partition_filter: false
+    expiration_days: null
+  clustering:
+    fields:
+    - country
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

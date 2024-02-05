@@ -62,7 +62,7 @@ MERGE INTO
         COUNTIF(event_name = 'page_view') AS pageviews,
         MIN(event_timestamp) AS min_event_timestamp,
         MAX(event_timestamp) AS max_event_timestamp,
-        MAX(CASE WHEN event_name = 'product_download' THEN 1 ELSE 0 END) AS had_download_event
+        CAST(MAX(CASE WHEN event_name = 'product_download' THEN 1 ELSE 0 END) as boolean) AS had_download_event
       FROM
         `moz-fx-data-marketing-prod.analytics_313696158.events_*` a
       JOIN

@@ -5,7 +5,7 @@ from datetime import datetime
 from google.cloud import bigquery
 from mozanalysis.config import ConfigLoader
 from textwrap import dedent
-from typing import Optional
+from typing import Dict
 
 
 @dataclass
@@ -19,6 +19,11 @@ class MetricHub:
         slug (str): The Metric Hub slug for the metric.
         start_date (str): A 'YYYY-MM-DD' formatted-string that specifies the first
             date the metric should be queried.
+        segments (Dict): A dictionary of segments to use to group metric values.
+            The keys of the dictionary are aliases for the segment, and the
+            value is a SQL snippet that defines the segment.
+        where (str): A string specifying a condition to inject into a SQL WHERE clause,
+            to filter the data source.
         end_date (str): A 'YYYY-MM-DD' formatted-string that specifies the last
             date the metric should be queried.
         alias (str): An alias for the metric. For example, 'DAU' instead of
@@ -30,6 +35,8 @@ class MetricHub:
     app_name: str
     slug: str
     start_date: str
+    segments: Dict[str, str] = None
+    where: str = None
     end_date: str = None
     alias: str = None
     project: str = "mozdata"
@@ -52,17 +59,36 @@ class MetricHub:
             "\n", "\n" + " " * 19
         )
 
+        # Add query snippets for segments
+        self.segment_select_query = ""
+        self.segment_groupby_query = ""
+
+        if self.segments:
+            segment_select_query = []
+            for alias, sql in self.segments.items():
+                segment_select_query.append(f"  {sql} AS {alias},")
+            self.segment_select_query = "," + "\n              ".join(
+                segment_select_query
+            )
+            self.segment_groupby_query = "," + "\n             ,".join(
+                self.segments.keys()
+            )
+
+        self.where = f"AND {self.where}" if self.where else ""
+
     def query(self) -> str:
         """Build a string to query the relevant metric values from Big Query."""
-
         return dedent(
             f"""
             SELECT {self.submission_date_column} AS submission_date,
-                   {self.metric.select_expr} AS value
-              FROM {self.from_expression}
-             WHERE {self.submission_date_column} BETWEEN '{self.start_date}' AND '{self.end_date}'
-             GROUP BY {self.submission_date_column}
-            """
+                {self.metric.select_expr} AS value
+                    {self.segment_select_query}
+            FROM {self.from_expression}
+            WHERE {self.submission_date_column} BETWEEN '{self.start_date}' AND '{self.end_date}'
+                {self.where}
+            GROUP BY {self.submission_date_column}
+                    {self.segment_groupby_query}
+        """
         )
 
     def fetch(self) -> pd.DataFrame:

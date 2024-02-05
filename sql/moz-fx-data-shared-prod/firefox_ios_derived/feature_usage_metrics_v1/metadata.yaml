@@ -13,7 +13,7 @@ scheduling:
 bigquery:
   time_partitioning:
     type: day
-    field: ping_date
+    field: submission_date
     require_partition_filter: true
     expiration_days: null
   clustering: null

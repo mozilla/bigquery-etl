@@ -5,8 +5,9 @@ from airflow.sensors.external_task import ExternalTaskMarker
 from airflow.sensors.external_task import ExternalTaskSensor
 from airflow.utils.task_group import TaskGroup
 import datetime
+from operators.gcp_container_operator import GKEPodOperator
 from utils.constants import ALLOWED_STATES, FAILED_STATES
-from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
+from utils.gcp import bigquery_etl_query, bigquery_dq_check
 
 docs = """
 ### bqetl_monitoring
@@ -62,86 +63,86 @@ with DAG(
         task_concurrency=1,
     )
 
-    monitoring_derived__average_ping_sizes__v1 = gke_command(
+    monitoring_derived__average_ping_sizes__v1 = GKEPodOperator(
         task_id="monitoring_derived__average_ping_sizes__v1",
-        command=[
+        arguments=[
             "python",
             "sql/moz-fx-data-shared-prod/monitoring_derived/average_ping_sizes_v1/query.py",
         ]
         + ["--date", "{{ ds }}"],
-        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="ascholtz@mozilla.com",
         email=["ascholtz@mozilla.com"],
     )
 
-    monitoring_derived__bigquery_etl_scheduled_queries_cost__v1 = gke_command(
+    monitoring_derived__bigquery_etl_scheduled_queries_cost__v1 = GKEPodOperator(
         task_id="monitoring_derived__bigquery_etl_scheduled_queries_cost__v1",
-        command=[
+        arguments=[
             "python",
             "sql/moz-fx-data-shared-prod/monitoring_derived/bigquery_etl_scheduled_queries_cost_v1/query.py",
         ]
         + ["--date", "{{ ds }}"],
-        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="ascholtz@mozilla.com",
         email=["ascholtz@mozilla.com"],
     )
 
-    monitoring_derived__bigquery_etl_scheduled_query_usage__v1 = gke_command(
+    monitoring_derived__bigquery_etl_scheduled_query_usage__v1 = GKEPodOperator(
         task_id="monitoring_derived__bigquery_etl_scheduled_query_usage__v1",
-        command=[
+        arguments=[
             "python",
             "sql/moz-fx-data-shared-prod/monitoring_derived/bigquery_etl_scheduled_query_usage_v1/query.py",
         ]
         + ["--date", "{{ ds }}"],
-        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="ascholtz@mozilla.com",
         email=["ascholtz@mozilla.com"],
     )
 
-    monitoring_derived__bigquery_table_storage__v1 = gke_command(
+    monitoring_derived__bigquery_table_storage__v1 = GKEPodOperator(
         task_id="monitoring_derived__bigquery_table_storage__v1",
-        command=[
+        arguments=[
             "python",
             "sql/moz-fx-data-shared-prod/monitoring_derived/bigquery_table_storage_v1/query.py",
         ]
         + [],
-        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="wichan@mozilla.com",
         email=["ascholtz@mozilla.com", "wichan@mozilla.com"],
     )
 
-    monitoring_derived__bigquery_table_storage_timeline_daily__v1 = gke_command(
+    monitoring_derived__bigquery_table_storage_timeline_daily__v1 = GKEPodOperator(
         task_id="monitoring_derived__bigquery_table_storage_timeline_daily__v1",
-        command=[
+        arguments=[
             "python",
             "sql/moz-fx-data-shared-prod/monitoring_derived/bigquery_table_storage_timeline_daily_v1/query.py",
         ]
         + ["--date", "{{ ds }}"],
-        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="wichan@mozilla.com",
         email=["ascholtz@mozilla.com", "wichan@mozilla.com"],
     )
 
-    monitoring_derived__bigquery_tables_inventory__v1 = gke_command(
+    monitoring_derived__bigquery_tables_inventory__v1 = GKEPodOperator(
         task_id="monitoring_derived__bigquery_tables_inventory__v1",
-        command=[
+        arguments=[
             "python",
             "sql/moz-fx-data-shared-prod/monitoring_derived/bigquery_tables_inventory_v1/query.py",
         ]
         + ["--date", "{{ ds }}"],
-        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="wichan@mozilla.com",
         email=["ascholtz@mozilla.com", "wichan@mozilla.com"],
     )
 
-    monitoring_derived__bigquery_usage__v1 = gke_command(
+    monitoring_derived__bigquery_usage__v1 = GKEPodOperator(
         task_id="monitoring_derived__bigquery_usage__v1",
-        command=[
+        arguments=[
             "python",
             "sql/moz-fx-data-shared-prod/monitoring_derived/bigquery_usage_v1/query.py",
         ]
         + ["--date", "{{ ds }}"],
-        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="wichan@mozilla.com",
         email=["ascholtz@mozilla.com", "wichan@mozilla.com"],
     )
@@ -157,14 +158,14 @@ with DAG(
         depends_on_past=False,
     )
 
-    monitoring_derived__column_size__v1 = gke_command(
+    monitoring_derived__column_size__v1 = GKEPodOperator(
         task_id="monitoring_derived__column_size__v1",
-        command=[
+        arguments=[
             "python",
             "sql/moz-fx-data-shared-prod/monitoring_derived/column_size_v1/query.py",
         ]
         + ["--date", "{{ ds }}"],
-        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="ascholtz@mozilla.com",
         email=["ascholtz@mozilla.com"],
     )
@@ -204,14 +205,14 @@ with DAG(
         depends_on_past=False,
     )
 
-    monitoring_derived__jobs_by_organization__v1 = gke_command(
+    monitoring_derived__jobs_by_organization__v1 = GKEPodOperator(
         task_id="monitoring_derived__jobs_by_organization__v1",
-        command=[
+        arguments=[
             "python",
             "sql/moz-fx-data-shared-prod/monitoring_derived/jobs_by_organization_v1/query.py",
         ]
         + ["--date", "{{ ds }}"],
-        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="mhirose@mozilla.com",
         email=["ascholtz@mozilla.com", "mhirose@mozilla.com"],
     )
@@ -227,9 +228,9 @@ with DAG(
         depends_on_past=False,
     )
 
-    monitoring_derived__shredder_rows_deleted__v1 = gke_command(
+    monitoring_derived__shredder_rows_deleted__v1 = GKEPodOperator(
         task_id="monitoring_derived__shredder_rows_deleted__v1",
-        command=[
+        arguments=[
             "python",
             "sql/moz-fx-data-shared-prod/monitoring_derived/shredder_rows_deleted_v1/query.py",
         ]
@@ -239,19 +240,19 @@ with DAG(
             "--destination_table",
             "moz-fx-data-shared-prod.monitoring_derived.shredder_rows_deleted_v1${{ds_nodash}}",
         ],
-        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="akomar@mozilla.com",
         email=["akomar@mozilla.com", "ascholtz@mozilla.com"],
     )
 
-    monitoring_derived__stable_and_derived_table_sizes__v1 = gke_command(
+    monitoring_derived__stable_and_derived_table_sizes__v1 = GKEPodOperator(
         task_id="monitoring_derived__stable_and_derived_table_sizes__v1",
-        command=[
+        arguments=[
             "python",
             "sql/moz-fx-data-shared-prod/monitoring_derived/stable_and_derived_table_sizes_v1/query.py",
         ]
         + ["--date", "{{ macros.ds_add(ds, -1) }}"],
-        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="ascholtz@mozilla.com",
         email=["ascholtz@mozilla.com"],
     )
@@ -282,14 +283,14 @@ with DAG(
         sql_file_path="sql/moz-fx-data-shared-prod/monitoring_derived/structured_error_counts_v2/script.sql",
     )
 
-    monitoring_derived__structured_missing_columns__v1 = gke_command(
+    monitoring_derived__structured_missing_columns__v1 = GKEPodOperator(
         task_id="monitoring_derived__structured_missing_columns__v1",
-        command=[
+        arguments=[
             "python",
             "sql/moz-fx-data-shared-prod/monitoring_derived/structured_missing_columns_v1/query.py",
         ]
         + ["--date", "{{ ds }}"],
-        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="amiyaguchi@mozilla.com",
         email=["amiyaguchi@mozilla.com", "ascholtz@mozilla.com"],
     )

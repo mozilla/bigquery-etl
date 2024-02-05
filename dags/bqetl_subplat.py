@@ -5,8 +5,9 @@ from airflow.sensors.external_task import ExternalTaskMarker
 from airflow.sensors.external_task import ExternalTaskSensor
 from airflow.utils.task_group import TaskGroup
 import datetime
+from operators.gcp_container_operator import GKEPodOperator
 from utils.constants import ALLOWED_STATES, FAILED_STATES
-from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
+from utils.gcp import bigquery_etl_query, bigquery_dq_check
 
 from fivetran_provider.operators.fivetran import FivetranOperator
 from fivetran_provider.sensors.fivetran import FivetranSensor
@@ -238,9 +239,9 @@ with DAG(
         task_concurrency=1,
     )
 
-    mozilla_vpn_derived__exchange_rates__v1 = gke_command(
+    mozilla_vpn_derived__exchange_rates__v1 = GKEPodOperator(
         task_id="mozilla_vpn_derived__exchange_rates__v1",
-        command=[
+        arguments=[
             "python",
             "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/exchange_rates_v1/query.py",
         ]
@@ -282,13 +283,10 @@ with DAG(
             "PLN",
             "RON",
         ],
-        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         gcp_conn_id="google_cloud_airflow_gke",
-        gke_project_id="moz-fx-data-airflow-gke-prod",
-        gke_location="us-west1",
-        gke_cluster_name="workloads-prod-v1",
         retry_delay=datetime.timedelta(seconds=300),
     )
 
@@ -390,9 +388,9 @@ with DAG(
         task_concurrency=1,
     )
 
-    mozilla_vpn_derived__survey_cancellation_of_service__v1 = gke_command(
+    mozilla_vpn_derived__survey_cancellation_of_service__v1 = GKEPodOperator(
         task_id="mozilla_vpn_derived__survey_cancellation_of_service__v1",
-        command=[
+        arguments=[
             "python",
             "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/survey_cancellation_of_service_v1/query.py",
         ]
@@ -408,7 +406,7 @@ with DAG(
             "--destination_table",
             "moz-fx-data-shared-prod.mozilla_vpn_derived.survey_cancellation_of_service_v1",
         ],
-        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="amiyaguchi@mozilla.com",
         email=[
             "amiyaguchi@mozilla.com",
@@ -417,9 +415,9 @@ with DAG(
         ],
     )
 
-    mozilla_vpn_derived__survey_intercept_q3__v1 = gke_command(
+    mozilla_vpn_derived__survey_intercept_q3__v1 = GKEPodOperator(
         task_id="mozilla_vpn_derived__survey_intercept_q3__v1",
-        command=[
+        arguments=[
             "python",
             "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/survey_intercept_q3_v1/query.py",
         ]
@@ -435,14 +433,14 @@ with DAG(
             "--destination_table",
             "moz-fx-data-shared-prod.mozilla_vpn_derived.survey_intercept_q3_v1",
         ],
-        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
 
-    mozilla_vpn_derived__survey_lifecycle_28d_desktop__v1 = gke_command(
+    mozilla_vpn_derived__survey_lifecycle_28d_desktop__v1 = GKEPodOperator(
         task_id="mozilla_vpn_derived__survey_lifecycle_28d_desktop__v1",
-        command=[
+        arguments=[
             "python",
             "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/survey_lifecycle_28d_desktop_v1/query.py",
         ]
@@ -458,14 +456,14 @@ with DAG(
             "--destination_table",
             "moz-fx-data-shared-prod.mozilla_vpn_derived.survey_lifecycle_28d_desktop_v1",
         ],
-        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
 
-    mozilla_vpn_derived__survey_lifecycle_28d_mobile__v1 = gke_command(
+    mozilla_vpn_derived__survey_lifecycle_28d_mobile__v1 = GKEPodOperator(
         task_id="mozilla_vpn_derived__survey_lifecycle_28d_mobile__v1",
-        command=[
+        arguments=[
             "python",
             "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/survey_lifecycle_28d_mobile_v1/query.py",
         ]
@@ -481,14 +479,14 @@ with DAG(
             "--destination_table",
             "moz-fx-data-shared-prod.mozilla_vpn_derived.survey_lifecycle_28d_mobile_v1",
         ],
-        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
 
-    mozilla_vpn_derived__survey_market_fit__v1 = gke_command(
+    mozilla_vpn_derived__survey_market_fit__v1 = GKEPodOperator(
         task_id="mozilla_vpn_derived__survey_market_fit__v1",
-        command=[
+        arguments=[
             "python",
             "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/survey_market_fit_v1/query.py",
         ]
@@ -504,14 +502,14 @@ with DAG(
             "--destination_table",
             "moz-fx-data-shared-prod.mozilla_vpn_derived.survey_market_fit_v1",
         ],
-        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
 
-    mozilla_vpn_derived__survey_product_quality__v1 = gke_command(
+    mozilla_vpn_derived__survey_product_quality__v1 = GKEPodOperator(
         task_id="mozilla_vpn_derived__survey_product_quality__v1",
-        command=[
+        arguments=[
             "python",
             "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/survey_product_quality_v1/query.py",
         ]
@@ -527,14 +525,14 @@ with DAG(
             "--destination_table",
             "moz-fx-data-shared-prod.mozilla_vpn_derived.survey_product_quality_v1",
         ],
-        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
 
-    mozilla_vpn_derived__survey_recommend__v1 = gke_command(
+    mozilla_vpn_derived__survey_recommend__v1 = GKEPodOperator(
         task_id="mozilla_vpn_derived__survey_recommend__v1",
-        command=[
+        arguments=[
             "python",
             "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/survey_recommend_v1/query.py",
         ]
@@ -550,7 +548,7 @@ with DAG(
             "--destination_table",
             "moz-fx-data-shared-prod.mozilla_vpn_derived.survey_recommend_v1",
         ],
-        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
@@ -567,20 +565,17 @@ with DAG(
         task_concurrency=1,
     )
 
-    mozilla_vpn_derived__vat_rates__v1 = gke_command(
+    mozilla_vpn_derived__vat_rates__v1 = GKEPodOperator(
         task_id="mozilla_vpn_derived__vat_rates__v1",
-        command=[
+        arguments=[
             "python",
             "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/vat_rates_v1/query.py",
         ]
         + [],
-        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         gcp_conn_id="google_cloud_airflow_gke",
-        gke_project_id="moz-fx-data-airflow-gke-prod",
-        gke_location="us-west1",
-        gke_cluster_name="workloads-prod-v1",
         retry_delay=datetime.timedelta(seconds=300),
     )
 
@@ -783,9 +778,9 @@ with DAG(
         task_concurrency=1,
     )
 
-    stripe_external__itemized_payout_reconciliation__v5 = gke_command(
+    stripe_external__itemized_payout_reconciliation__v5 = GKEPodOperator(
         task_id="stripe_external__itemized_payout_reconciliation__v5",
-        command=[
+        arguments=[
             "python",
             "sql/moz-fx-data-shared-prod/stripe_external/itemized_payout_reconciliation_v5/query.py",
         ]
@@ -796,7 +791,7 @@ with DAG(
             "--table=moz-fx-data-shared-prod.stripe_external.itemized_payout_reconciliation_v5",
             "--time-partitioning-field=automatic_payout_effective_at",
         ],
-        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         retry_delay=datetime.timedelta(seconds=1800),
@@ -804,9 +799,9 @@ with DAG(
         email_on_retry=False,
     )
 
-    stripe_external__itemized_tax_transactions__v1 = gke_command(
+    stripe_external__itemized_tax_transactions__v1 = GKEPodOperator(
         task_id="stripe_external__itemized_tax_transactions__v1",
-        command=[
+        arguments=[
             "python",
             "sql/moz-fx-data-shared-prod/stripe_external/itemized_tax_transactions_v1/query.py",
         ]
@@ -817,7 +812,7 @@ with DAG(
             "--table=moz-fx-data-shared-prod.stripe_external.itemized_tax_transactions_v1",
             "--time-partitioning-field=transaction_date_utc",
         ],
-        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         retry_delay=datetime.timedelta(seconds=1800),

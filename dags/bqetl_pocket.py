@@ -5,8 +5,9 @@ from airflow.sensors.external_task import ExternalTaskMarker
 from airflow.sensors.external_task import ExternalTaskSensor
 from airflow.utils.task_group import TaskGroup
 import datetime
+from operators.gcp_container_operator import GKEPodOperator
 from utils.constants import ALLOWED_STATES, FAILED_STATES
-from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
+from utils.gcp import bigquery_etl_query, bigquery_dq_check
 
 docs = """
 ### bqetl_pocket
@@ -57,14 +58,14 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-    pocket_derived__events__v1 = gke_command(
+    pocket_derived__events__v1 = GKEPodOperator(
         task_id="pocket_derived__events__v1",
-        command=[
+        arguments=[
             "python",
             "sql/moz-fx-data-shared-prod/pocket_derived/events_v1/query.py",
         ]
         + ["--date", "{{ ds }}"],
-        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="jrediger@mozilla.com",
         email=[
             "efixler@mozilla.com",
@@ -87,14 +88,14 @@ with DAG(
         parameters=["submission_date:DATE:{{ds}}"],
     )
 
-    pocket_derived__rolling_monthly_active_user_counts_history__v1 = gke_command(
+    pocket_derived__rolling_monthly_active_user_counts_history__v1 = GKEPodOperator(
         task_id="pocket_derived__rolling_monthly_active_user_counts_history__v1",
-        command=[
+        arguments=[
             "python",
             "sql/moz-fx-data-shared-prod/pocket_derived/rolling_monthly_active_user_counts_history_v1/query.py",
         ]
         + ["--date", "{{ ds }}"],
-        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="kik@mozilla.com",
         email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
@@ -112,14 +113,14 @@ with DAG(
         parameters=["submission_date:DATE:{{ds}}"],
     )
 
-    pocket_derived__spoc_tile_ids_history__v1 = gke_command(
+    pocket_derived__spoc_tile_ids_history__v1 = GKEPodOperator(
         task_id="pocket_derived__spoc_tile_ids_history__v1",
-        command=[
+        arguments=[
             "python",
             "sql/moz-fx-data-shared-prod/pocket_derived/spoc_tile_ids_history_v1/query.py",
         ]
         + ["--date", "{{ ds }}"],
-        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="kik@mozilla.com",
         email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
@@ -137,14 +138,14 @@ with DAG(
         parameters=["submission_date:DATE:{{ds}}"],
     )
 
-    pocket_derived__twice_weekly_active_user_counts_history__v1 = gke_command(
+    pocket_derived__twice_weekly_active_user_counts_history__v1 = GKEPodOperator(
         task_id="pocket_derived__twice_weekly_active_user_counts_history__v1",
-        command=[
+        arguments=[
             "python",
             "sql/moz-fx-data-shared-prod/pocket_derived/twice_weekly_active_user_counts_history_v1/query.py",
         ]
         + ["--date", "{{ ds }}"],
-        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="kik@mozilla.com",
         email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
     )

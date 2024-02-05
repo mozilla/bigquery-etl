@@ -5,8 +5,9 @@ from airflow.sensors.external_task import ExternalTaskMarker
 from airflow.sensors.external_task import ExternalTaskSensor
 from airflow.utils.task_group import TaskGroup
 import datetime
+from operators.gcp_container_operator import GKEPodOperator
 from utils.constants import ALLOWED_STATES, FAILED_STATES
-from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
+from utils.gcp import bigquery_etl_query, bigquery_dq_check
 
 docs = """
 ### bqetl_reference
@@ -48,14 +49,14 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-    reference_derived__macroeconomic_indices__v1 = gke_command(
+    reference_derived__macroeconomic_indices__v1 = GKEPodOperator(
         task_id="reference_derived__macroeconomic_indices__v1",
-        command=[
+        arguments=[
             "python",
             "sql/moz-fx-data-shared-prod/reference_derived/macroeconomic_indices_v1/query.py",
         ]
         + ["--market-date={{ ds }}", "--api-key={{ var.value.fmp_api_key }}"],
-        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="cmorales@mozilla.com",
         email=[
             "cmorales@mozilla.com",

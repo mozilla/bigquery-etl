@@ -5,8 +5,9 @@ from airflow.sensors.external_task import ExternalTaskMarker
 from airflow.sensors.external_task import ExternalTaskSensor
 from airflow.utils.task_group import TaskGroup
 import datetime
+from operators.gcp_container_operator import GKEPodOperator
 from utils.constants import ALLOWED_STATES, FAILED_STATES
-from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
+from utils.gcp import bigquery_etl_query, bigquery_dq_check
 
 docs = """
 ### bqetl_crash
@@ -57,14 +58,14 @@ with DAG(
         depends_on_past=False,
     )
 
-    telemetry_derived__crash_signatures__v1 = gke_command(
+    telemetry_derived__crash_signatures__v1 = GKEPodOperator(
         task_id="telemetry_derived__crash_signatures__v1",
-        command=[
+        arguments=[
             "python",
             "sql/moz-fx-data-shared-prod/telemetry_derived/crash_signatures_v1/query.py",
         ]
         + ["--submission-date", "{{ ds }}"],
-        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="dthorn@mozilla.com",
         email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
         retry_delay=datetime.timedelta(seconds=300),
@@ -82,14 +83,14 @@ with DAG(
         depends_on_past=False,
     )
 
-    telemetry_derived__crash_symbols__v1 = gke_command(
+    telemetry_derived__crash_symbols__v1 = GKEPodOperator(
         task_id="telemetry_derived__crash_symbols__v1",
-        command=[
+        arguments=[
             "python",
             "sql/moz-fx-data-shared-prod/telemetry_derived/crash_symbols_v1/query.py",
         ]
         + ["--submission-date", "{{ ds }}"],
-        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="dthorn@mozilla.com",
         email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
         retry_delay=datetime.timedelta(seconds=300),

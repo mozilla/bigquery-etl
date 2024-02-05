@@ -5,8 +5,9 @@ from airflow.sensors.external_task import ExternalTaskMarker
 from airflow.sensors.external_task import ExternalTaskSensor
 from airflow.utils.task_group import TaskGroup
 import datetime
+from operators.gcp_container_operator import GKEPodOperator
 from utils.constants import ALLOWED_STATES, FAILED_STATES
-from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
+from utils.gcp import bigquery_etl_query, bigquery_dq_check
 
 docs = """
 ### bqetl_iprospect
@@ -49,14 +50,14 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-    iprospect__adspend__v1 = gke_command(
+    iprospect__adspend__v1 = GKEPodOperator(
         task_id="iprospect__adspend__v1",
-        command=[
+        arguments=[
             "python",
             "sql/moz-fx-data-marketing-prod/iprospect/adspend_v1/query.py",
         ]
         + ["--date", "{{ ds }}"],
-        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="ascholtz@mozilla.com",
         email=["ascholtz@mozilla.com", "echo@mozilla.com", "shong@mozilla.com"],
     )
@@ -72,14 +73,14 @@ with DAG(
         depends_on_past=True,
     )
 
-    iprospect__adspend_raw__v1 = gke_command(
+    iprospect__adspend_raw__v1 = GKEPodOperator(
         task_id="iprospect__adspend_raw__v1",
-        command=[
+        arguments=[
             "python",
             "sql/moz-fx-data-marketing-prod/iprospect/adspend_raw_v1/query.py",
         ]
         + ["--date", "{{ ds }}"],
-        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="ascholtz@mozilla.com",
         email=["ascholtz@mozilla.com", "echo@mozilla.com", "shong@mozilla.com"],
     )

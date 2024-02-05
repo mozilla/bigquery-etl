@@ -1,5 +1,5 @@
 WITH device_properties_at_session_start_event AS (
-      --get all sessions starting the day before the session date
+  --get all sessions starting on the submission date
   SELECT
     a.user_pseudo_id AS ga_client_id,
     CAST(e.value.int_value AS string) AS ga_session_id,
@@ -44,14 +44,14 @@ WITH device_properties_at_session_start_event AS (
   JOIN
     UNNEST(event_params) e
   WHERE
-    _table_suffix = FORMAT_DATE('%Y%m%d', DATE_SUB(@submission_date, INTERVAL 1 DAY))
+    _table_suffix = FORMAT_DATE('%Y%m%d', @submission_date)
     AND e.key = 'ga_session_id'
     AND e.value.int_value IS NOT NULL
     AND a.event_name = 'session_start'
   QUALIFY
     rnk = 1
 ),
-    --get all the details for that session from the day before the session date and the session date itself
+--get all the details for that session from the session date and the next day
 event_aggregates AS (
   SELECT
     a.user_pseudo_id AS ga_client_id,
@@ -68,8 +68,8 @@ event_aggregates AS (
     UNNEST(event_params) e
   WHERE
     _table_suffix
-    BETWEEN FORMAT_DATE('%Y%m%d', DATE_SUB(@submission_date, INTERVAL 1 DAY))
-    AND FORMAT_DATE('%Y%m%d', @submission_date)
+    BETWEEN FORMAT_DATE('%Y%m%d', @submission_date)
+    AND FORMAT_DATE('%Y%m%d', DATE_ADD(@submission_date, INTERVAL 1 DAY))
     AND e.key = 'ga_session_id'
     AND e.value.int_value IS NOT NULL
   GROUP BY
@@ -99,8 +99,8 @@ stub_session_ids_staging AS (
     UNNEST(event_params) e
   WHERE
     _TABLE_SUFFIX
-    BETWEEN FORMAT_DATE('%Y%m%d', DATE_SUB(@submission_date, INTERVAL 1 DAY))
-    AND FORMAT_DATE('%Y%m%d', @submission_date)
+    BETWEEN FORMAT_DATE('%Y%m%d', @submission_date)
+    AND FORMAT_DATE('%Y%m%d', DATE_ADD(@submission_date, INTERVAL 1 DAY))
     AND event_name = 'stub_session_set'
     AND e.key = 'id'
     AND e.value.int_value IS NOT NULL
@@ -160,8 +160,8 @@ landing_page_by_session_staging AS (
     UNNEST(event_params) e
   WHERE
     _TABLE_SUFFIX
-    BETWEEN FORMAT_DATE('%Y%m%d', DATE_SUB(@submission_date, INTERVAL 1 DAY))
-    AND FORMAT_DATE('%Y%m%d', @submission_date)
+    BETWEEN FORMAT_DATE('%Y%m%d', @submission_date)
+    AND FORMAT_DATE('%Y%m%d', DATE_ADD(@submission_date, INTERVAL 1 DAY))
     AND e.key = 'entrances'
     AND e.value.int_value = 1
 ),
@@ -195,8 +195,8 @@ install_targets_staging AS (
     UNNEST(event_params) e
   WHERE
     _table_suffix
-    BETWEEN FORMAT_DATE('%Y%m%d', DATE_SUB(@submission_date, INTERVAL 1 DAY))
-    AND FORMAT_DATE('%Y%m%d', @submission_date)
+    BETWEEN FORMAT_DATE('%Y%m%d', @submission_date)
+    AND FORMAT_DATE('%Y%m%d', DATE_ADD(@submission_date, INTERVAL 1 DAY))
     AND e.key = 'ga_session_id'
     AND e.value.int_value IS NOT NULL
     AND a.event_name IN (

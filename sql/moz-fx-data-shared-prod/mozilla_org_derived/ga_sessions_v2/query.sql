@@ -229,10 +229,8 @@ MERGE INTO
       a.session_date,
       CASE
         WHEN a.ga_session_number = 1
-          THEN 1
-        WHEN a.ga_session_number > 1
-          THEN 0
-        ELSE NULL
+          THEN TRUE
+        ELSE FALSE
       END AS is_first_session,
       a.ga_session_number AS session_number,
       b.max_event_timestamp - b.min_event_timestamp AS time_on_site,

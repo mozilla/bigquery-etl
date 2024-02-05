@@ -62,7 +62,7 @@ MERGE INTO
         COUNTIF(event_name = 'page_view') AS pageviews,
         MIN(event_timestamp) AS min_event_timestamp,
         MAX(event_timestamp) AS max_event_timestamp,
-        MAX(CASE WHEN event_name = 'product_download' THEN 1 ELSE 0 END) AS has_download_event
+        MAX(CASE WHEN event_name = 'product_download' THEN 1 ELSE 0 END) AS had_download_event
       FROM
         `moz-fx-data-marketing-prod.analytics_313696158.events_*` a
       JOIN
@@ -255,7 +255,7 @@ MERGE INTO
       a.language,
       a.browser,
       a.browser_version,
-      b.has_download_event,
+      b.had_download_event,
       f.install_event_name AS last_reported_install_target,
       g.all_reported_install_targets,
       c.stub_session_id AS last_reported_stub_session_id,
@@ -319,7 +319,7 @@ THEN
       LANGUAGE,
       browser,
       browser_version,
-      has_download_event,
+      had_download_event,
       last_reported_install_target,
       all_reported_install_targets,
       last_reported_stub_session_id,
@@ -353,7 +353,7 @@ THEN
       S.language,
       S.browser,
       S.browser_version,
-      S.has_download_event,
+      S.had_download_event,
       S.last_reported_install_target,
       S.all_reported_install_targets,
       S.last_reported_stub_session_id,
@@ -388,7 +388,7 @@ THEN
     T.language = S.language,
     T.browser = S.browser,
     T.browser_version = S.browser_version,
-    T.has_download_event = S.has_download_event,
+    T.had_download_event = S.had_download_event,
     T.last_reported_install_target = S.last_reported_install_target,
     T.all_reported_install_targets = S.all_reported_install_targets,
     T.last_reported_stub_session_id = S.last_reported_stub_session_id,

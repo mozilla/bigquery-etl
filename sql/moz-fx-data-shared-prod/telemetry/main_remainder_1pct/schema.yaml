@@ -22795,6 +22795,12 @@ fields:
         - name: networking_captive_portal_banner_displayed
           type: INTEGER
           mode: NULLABLE
+        - name: startup_profile_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: startup_profile_database_version
+          type: STRING
+          mode: NULLABLE
     - name: socket
       type: RECORD
       mode: NULLABLE

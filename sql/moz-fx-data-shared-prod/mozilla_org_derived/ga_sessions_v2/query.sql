@@ -2,6 +2,7 @@ MERGE INTO
   `moz-fx-data-shared-prod.mozilla_org_derived.ga_sessions_v2` T
   USING (
     WITH device_properties_at_session_start_event AS (
+      --get all sessions starting the day before the session date
       SELECT
         a.user_pseudo_id AS ga_client_id,
         CAST(e.value.int_value AS string) AS ga_session_id,
@@ -46,13 +47,14 @@ MERGE INTO
       JOIN
         UNNEST(event_params) e
       WHERE
-        _table_suffix = FORMAT_DATE('%Y%m%d', @submission_date)
+        _table_suffix = FORMAT_DATE('%Y%m%d', DATE_SUB(@submission_date, INTERVAL 1 DAY))
         AND e.key = 'ga_session_id'
         AND e.value.int_value IS NOT NULL
         AND a.event_name = 'session_start'
       QUALIFY
         rnk = 1
     ),
+    --get all the details for that session from the day before the session date and the session date itself
     event_aggregates AS (
       SELECT
         a.user_pseudo_id AS ga_client_id,
@@ -66,7 +68,7 @@ MERGE INTO
       JOIN
         UNNEST(event_params) e
       WHERE
-        _table_suffix = FORMAT_DATE('%Y%m%d', @submission_date)
+        _table_suffix BETWEEN FORMAT_DATE('%Y%m%d', DATE_SUB(@submission_date, INTERVAL 1 DAY)) AND FORMAT_DATE('%Y%m%d', @submission_date)
         AND e.key = 'ga_session_id'
         AND e.value.int_value IS NOT NULL
       GROUP BY
@@ -95,7 +97,7 @@ MERGE INTO
       JOIN
         UNNEST(event_params) e
       WHERE
-        _TABLE_SUFFIX = FORMAT_DATE('%Y%m%d', @submission_date)
+        _TABLE_SUFFIX BETWEEN FORMAT_DATE('%Y%m%d', DATE_SUB(@submission_date, INTERVAL 1 DAY)) AND FORMAT_DATE('%Y%m%d', @submission_date)
         AND event_name = 'stub_session_set'
         AND e.key = 'id'
         AND e.value.int_value IS NOT NULL
@@ -162,7 +164,7 @@ MERGE INTO
       JOIN
         UNNEST(event_params) e
       WHERE
-        _TABLE_SUFFIX = FORMAT_DATE('%Y%m%d', @submission_date)
+        _TABLE_SUFFIX BETWEEN FORMAT_DATE('%Y%m%d', DATE_SUB(@submission_date, INTERVAL 1 DAY)) AND FORMAT_DATE('%Y%m%d', @submission_date)
         AND e.key = 'entrances'
         AND e.value.int_value = 1
     ),
@@ -177,7 +179,7 @@ MERGE INTO
       JOIN
         UNNEST(event_params) e
       WHERE
-        _table_suffix = FORMAT_DATE('%Y%m%d', @submission_date)
+        _table_suffix BETWEEN FORMAT_DATE('%Y%m%d', DATE_SUB(@submission_date, INTERVAL 1 DAY)) AND FORMAT_DATE('%Y%m%d', @submission_date)
         AND e.key = 'ga_session_id'
         AND e.value.int_value IS NOT NULL
         AND a.event_name IN (

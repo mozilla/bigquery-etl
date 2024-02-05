@@ -679,6 +679,25 @@ jobs:
 
             exit 1
           # yamllint enable rule:line-length
+  deploy-to-pypi:
+    docker: *docker
+    steps:
+      - checkout
+      - run:
+          name: Install deployment tools
+          command: |
+            pip install --upgrade setuptools wheel twine
+      - run:
+          name: Create the distribution files
+          command: |
+            python -m build --sdist --wheel
+      - run:
+          name: Upload to PyPI
+          command: |
+            # Relies on the TWINE_USERNAME and TWINE_PASSWORD environment variables
+            # For more on twine, see:
+            #   https://twine.readthedocs.io/en/latest/
+            twine upload --skip-existing dist/*
 
 workflows:
   version: 2
@@ -820,6 +839,15 @@ workflows:
             branches:
               only:
                 - main
+  tagged-deploy:
+    jobs:
+      - deploy-to-pypi:
+          filters:
+            tags:
+              only: /[0-9]{4}.[0-9]{1,2}.[0-9]+/  # Calver: YYYY.M.MINOR
+            branches:
+              # Ignore all branches; this workflow should only run for tags.
+              ignore: /.*/
   nightly:
     # Run after schema-generator to ensure we are up-to-date
     triggers:

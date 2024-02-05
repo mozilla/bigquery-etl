@@ -1,6 +1,7 @@
 default:
   project: moz-fx-data-shared-prod
   sql_dir: sql/
+  sql_generators_dir: sql_generators/
   test_project: bigquery-etl-integration-test
   non_user_facing_dataset_suffixes: # suffixes of datasets with non-user-facing views
   - _derived

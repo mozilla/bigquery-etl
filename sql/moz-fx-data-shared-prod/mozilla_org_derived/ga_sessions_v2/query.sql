@@ -62,7 +62,9 @@ MERGE INTO
         COUNTIF(event_name = 'page_view') AS pageviews,
         MIN(event_timestamp) AS min_event_timestamp,
         MAX(event_timestamp) AS max_event_timestamp,
-        CAST(MAX(CASE WHEN event_name = 'product_download' THEN 1 ELSE 0 END) as boolean) AS had_download_event
+        CAST(
+          MAX(CASE WHEN event_name = 'product_download' THEN 1 ELSE 0 END) AS boolean
+        ) AS had_download_event
       FROM
         `moz-fx-data-marketing-prod.analytics_313696158.events_*` a
       JOIN
@@ -93,7 +95,7 @@ MERGE INTO
               1
           ).int_value AS string
         ) AS ga_session_id,
-        CAST(e.value.int_value as string) AS stub_session_id
+        CAST(e.value.int_value AS string) AS stub_session_id
       FROM
         `moz-fx-data-marketing-prod.analytics_313696158.events_*`
       JOIN
@@ -135,7 +137,7 @@ MERGE INTO
         ga_client_id,
         ga_session_id
     ),
-    landing_page_by_session AS (
+    landing_page_by_session_staging AS (
       SELECT
         user_pseudo_id AS ga_client_id,
         CAST(
@@ -163,6 +165,7 @@ MERGE INTO
           ).string_value,
           '?'
         )[OFFSET(0)] AS page_location,
+        event_timestamp
       FROM
         `moz-fx-data-marketing-prod.analytics_313696158.events_*` a
       JOIN
@@ -173,6 +176,24 @@ MERGE INTO
         AND FORMAT_DATE('%Y%m%d', @submission_date)
         AND e.key = 'entrances'
         AND e.value.int_value = 1
+    ),
+    landing_page_by_session AS (
+      SELECT
+        ga_client_id,
+        ga_session_id,
+        page_location,
+        event_timestamp,
+        ROW_NUMBER() OVER (
+          PARTITION BY
+            ga_client_id,
+            ga_session_id
+          ORDER BY
+            event_timestamp ASC
+        ) AS lp_rnk
+      FROM
+        landing_page_by_session_staging
+      QUALIFY
+        lp_rnk = 1
     ),
     install_targets_staging AS (
       SELECT

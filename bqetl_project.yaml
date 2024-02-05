@@ -228,6 +228,7 @@ dry_run:
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_first_seen_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_first_seen_v2/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_last_seen_v1/query.sql
+  - sql/moz-fx-data-shared-prod/telemetry_derived/clients_last_seen_v2/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/latest_versions/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/italy_covid19_outage_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/main_nightly_v1/init.sql

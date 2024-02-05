@@ -10,6 +10,9 @@ parameters:
   python-version:
     type: string
     default: '3.10'
+  trigger-sql-generation:
+    type: boolean
+    default: false
 
 executors:
   ubuntu-machine-executor:
@@ -316,63 +319,80 @@ jobs:
       - run:
           name: Generate SQL content
           command: |
-            git clone -b generated-sql git@github.com:mozilla/bigquery-etl ~/generated-sql
-            cd ~/generated-sql
+            # Check if the generated-sql branch can simply be re-used and SQL generation can be skipped.
+            git clone -b generated-sql git@github.com:mozilla/bigquery-etl ~/remote-generated-sql
+            cd ~/remote-generated-sql
+
+            # Commits on generated-sql are tagged with the sha1 hash of the commit on main that triggered the SQL generation
             export LATEST_TAG_GENERATED_SQL=`git describe --tags --abbrev=0`
             LATEST_TAG_GENERATED_SQL=${LATEST_TAG_GENERATED_SQL/c-/""}
-
             echo "Latest tag on generated-sql branch: c-$LATEST_TAG_GENERATED_SQL"
 
+            # Get the state in which main was in when the generated-sql branch was created and pushed
             cd ~
-            git clone -b main git@github.com:mozilla/bigquery-etl ~/bigquery-etl-main
-            cd ~/bigquery-etl-main
+            git clone -b main git@github.com:mozilla/bigquery-etl ~/remote-bigquery-etl-main
+            cd ~/remote-bigquery-etl-main
             export LATEST_COMMIT_ON_MAIN=`git rev-parse --short HEAD`
             git checkout $LATEST_TAG_GENERATED_SQL
-
             echo "Latest commit on main: $LATEST_COMMIT_ON_MAIN"
 
             cd ~/project
             export GENERATED_SQL_CHANGED=false
 
-            if [ "$CIRCLE_BRANCH" = main ]; then
+            # Manually trigger SQL generation via a pipeline parameter
+            if [ "<< pipeline.parameters.trigger-sql-generation >>" = "true" ]; then
+              echo "trigger-sql-generation was set to true; run SQL generation"
               GENERATED_SQL_CHANGED=true
             fi
 
-            if [[ $(git diff --no-index --name-only --diff-filter=D ~/bigquery-etl-main/sql sql) ]]; then 
+            # If this task runs when merging into main, then always run the SQL generation
+            if [ "$CIRCLE_BRANCH" = main ]; then
+              echo "On main branch; generate SQL"
+              GENERATED_SQL_CHANGED=true
+            fi
+
+            # Check if this PR removes a file. SQL generation needs to be re-run because
+            # simply merging the changes with the generated-sql branch would result in files being part of generated DAGs
+            # and other artifacts that were actually removed
+            if [[ $(git diff --no-index --name-only --diff-filter=D ~/remote-bigquery-etl-main/sql sql) ]]; then
               echo "SQL file was removed; re-generate SQL"
               GENERATED_SQL_CHANGED=true
             fi
 
-            if [[ $(diff -qr --no-dereference sql_generators ~/bigquery-etl-main/sql_generators) ]]; then
+            # Check if this PR changes SQL generators
+            if [[ $(diff -qr --no-dereference sql_generators ~/remote-bigquery-etl-main/sql_generators) ]]; then
+              echo "SQL generators changed; re-generate SQL"
               GENERATED_SQL_CHANGED=true
             fi
 
             mkdir -p /tmp/workspace/generated-sql
 
             if [ "$GENERATED_SQL_CHANGED" = "true" ]; then
-              echo "Changes made will affect generated SQL. Run SQL generator."
+              echo "Changes made will affect generated SQL. Run SQL generators."
 
               cp -r sql/ /tmp/workspace/generated-sql/sql
               # Don't depend on dry run for PRs
               PATH="venv/bin:$PATH" script/bqetl generate all \
                 --output-dir /tmp/workspace/generated-sql/sql/ \
                 --target-project moz-fx-data-shared-prod
-              PATH="venv/bin:$PATH" script/bqetl query render \
-                --sql-dir /tmp/workspace/generated-sql/sql/ \
-                --output-dir /tmp/workspace/generated-sql/sql/ \
-                /tmp/workspace/generated-sql/sql/
-              PATH="venv/bin:$PATH" script/bqetl dependency record \
-                --skip-existing \
-                "/tmp/workspace/generated-sql/sql/"
-              PATH="venv/bin:$PATH" script/bqetl metadata update \
-                --sql-dir /tmp/workspace/generated-sql/sql/ \
-                /tmp/workspace/generated-sql/sql/
             else
               echo "Changes made don't affect generated SQL. Use content from generated-sql"
 
-              cp -r ~/generated-sql/sql/ /tmp/workspace/generated-sql/sql
+              # merge files that changed in this PR with the generated-sql branch
+              cp -r ~/remote-generated-sql/sql/ /tmp/workspace/generated-sql/sql
               cp -a sql/. /tmp/workspace/generated-sql/sql
             fi
+
+            PATH="venv/bin:$PATH" script/bqetl query render \
+              --sql-dir /tmp/workspace/generated-sql/sql/ \
+              --output-dir /tmp/workspace/generated-sql/sql/ \
+              /tmp/workspace/generated-sql/sql/
+            PATH="venv/bin:$PATH" script/bqetl dependency record \
+              --skip-existing \
+              "/tmp/workspace/generated-sql/sql/"
+            PATH="venv/bin:$PATH" script/bqetl metadata update \
+              --sql-dir /tmp/workspace/generated-sql/sql/ \
+              /tmp/workspace/generated-sql/sql/
       - persist_to_workspace:
           root: /tmp/workspace
           paths:
@@ -620,19 +640,35 @@ jobs:
           command: |
             export PATH="venv/bin:$PATH"
 
-            git clone -b generated-sql git@github.com:mozilla/bigquery-etl ~/generated-sql
-            cd ~/generated-sql
+            # Check if the generated-sql branch can simply be re-used and SQL generation can be skipped.
+            # There is a delay between pushing changes to main and pushing a new generated-sql branch,
+            # so we need to account for possible changes that happen during this time
+            git clone -b generated-sql git@github.com:mozilla/bigquery-etl ~/remote-generated-sql
+            cd ~/remote-generated-sql
+
+            # Commits on generated-sql are tagged with the sha1 hash of the commit on main that triggered the SQL generation
             export LATEST_TAG_GENERATED_SQL=`git describe --tags --abbrev=0`
             LATEST_TAG_GENERATED_SQL=${LATEST_TAG_GENERATED_SQL/c-/""}
-            
+
+            cd ~/project
             export GENERATED_SQL_CHANGED=false
 
-            if [[ $(git diff $LATEST_TAG_GENERATED_SQL...HEAD -- sql_generators --no-index --name-only --diff-filter=d) ]]; then 
-              echo "SQL file was removed; re-generate SQL"
+            # Manually trigger SQL generation via a pipeline parameter
+            if [ "<< pipeline.parameters.trigger-sql-generation >>" = "true" ]; then
+              echo "trigger-sql-generation was set to true; run SQL generation"
               GENERATED_SQL_CHANGED=true
             fi
 
-            if [[ $(git diff $LATEST_TAG_GENERATED_SQL...HEAD -- sql --no-index --name-only --diff-filter=D) ]]; then 
+            # If the between main the generated-sql branch SQL generators have changed, then re-run the SQL generation
+            if [[ $(git diff --name-only --diff-filter=d $LATEST_TAG_GENERATED_SQL...HEAD -- sql_generators) ]]; then
+              echo "SQL generator changed; re-generate SQL"
+              GENERATED_SQL_CHANGED=true
+            fi
+
+            # If a SQL was removed from main re-run SQL generation
+            # simply merging the changes with the generated-sql branch would result in files being part of generated DAGs
+            # and other artifacts that were removed
+            if [[ $(git diff --name-only --diff-filter=D $LATEST_TAG_GENERATED_SQL...HEAD -- sql) ]]; then
               echo "SQL file was removed; re-generate SQL"
               GENERATED_SQL_CHANGED=true
             fi
@@ -641,28 +677,37 @@ jobs:
             mkdir -p /tmp/workspace/main-generated-sql/dags
 
             if [ "$GENERATED_SQL_CHANGED" = "true" ]; then
+              # re-run SQL generation and re-generate DAGs
               ./script/bqetl generate all \
                 --target-project moz-fx-data-shared-prod
-              ./script/bqetl query render \
-                --output-dir sql/ \
-                sql/
-              ./script/bqetl dependency record \
-                --skip-existing \
-                "sql/"
-              ./script/bqetl metadata update \
-                sql/
 
               cp -r sql/ /tmp/workspace/main-generated-sql/sql
-              ./script/bqetl dag generate --output-dir /tmp/workspace/main-generated-sql/dags
             else
               echo "Changes made don't affect generated SQL. Use content from generated-sql"
 
-              cp -r ~/generated-sql/sql/. /tmp/workspace/main-generated-sql/sql
+              # merge files that changed in this PR with the generated-sql branch
+              cp -r ~/remote-generated-sql/sql/. /tmp/workspace/main-generated-sql/sql
               cp -a sql/. /tmp/workspace/main-generated-sql/sql
-
-              cp -r ~/generated-sql/dags/. /tmp/workspace/main-generated-sql/dags
-              cp -a dags/. /tmp/workspace/main-generated-sql/dags
             fi
+
+            ./script/bqetl query render \
+              --sql-dir /tmp/workspace/main-generated-sql/sql/ \
+              --output-dir /tmp/workspace/main-generated-sql/sql/ \
+              /tmp/workspace/main-generated-sql/sql/
+            ./script/bqetl dependency record \
+              --skip-existing \
+              "/tmp/workspace/main-generated-sql/sql/"
+            ./script/bqetl metadata update \
+              --sql-dir /tmp/workspace/main-generated-sql/sql/ \
+              /tmp/workspace/main-generated-sql/sql/
+            # re-generate DAGs
+
+            ./script/bqetl dag generate \
+              --sql-dir /tmp/workspace/main-generated-sql/sql/ \
+              --output-dir /tmp/workspace/main-generated-sql/dags
+
+            find /tmp/workspace/main-generated-sql/dags -name '*.py' \
+              -exec sed -i -e 's/\/tmp\/workspace\/main-generated-sql\/sql/sql/g' {} \;
       - persist_to_workspace:
           root: /tmp/workspace
           paths:
@@ -774,142 +819,142 @@ workflows:
   version: 2
   build:
     jobs: &build_jobs
-#       - manual-trigger-required-for-fork
-#       - build:
-#           context: data-eng-circleci-tests
-#       - verify-format-sql
-#       - deploy-changes-to-stage:
-#           requires:
-#             - generate-sql
-#       - verify-requirements
-#       - test-sql:
-#           context: data-eng-circleci-tests
-#           requires:
-#             - deploy-changes-to-stage
-#       - dry-run-sql:
-#           requires:
-#             - deploy-changes-to-stage
-#       - validate-metadata:
-#           requires:
-#             - deploy-changes-to-stage
-#       - integration
-# #      - validate-backfills:
-# #          requires:
-# #            - deploy-changes-to-stage
-#       - validate-dags:
-#           requires:
-#             - generate-dags
-#       - validate-docs:
-#           requires:
-#             - generate-sql
-#       - validate-views:
-#           requires:
-#             - deploy-changes-to-stage
+      - manual-trigger-required-for-fork
+      - build:
+          context: data-eng-circleci-tests
+      - verify-format-sql
+      - deploy-changes-to-stage:
+          requires:
+            - generate-sql
+      - verify-requirements
+      - test-sql:
+          context: data-eng-circleci-tests
+          requires:
+            - deploy-changes-to-stage
+      - dry-run-sql:
+          requires:
+            - deploy-changes-to-stage
+      - validate-metadata:
+          requires:
+            - deploy-changes-to-stage
+      - integration
+#      - validate-backfills:
+#          requires:
+#            - deploy-changes-to-stage
+      - validate-dags:
+          requires:
+            - generate-dags
+      - validate-docs:
+          requires:
+            - generate-sql
+      - validate-views:
+          requires:
+            - deploy-changes-to-stage
       - generate-sql
-  #     - main-generate-sql-and-dags:
-  #         filters:
-  #           branches:
-  #             ignore: main
-  #     - generate-diff:
-  #         requires:
-  #           - generate-dags
-  #           - main-generate-sql-and-dags
-  #         filters:
-  #           branches:
-  #             ignore: main
-  #     - post-diff:
-  #         requires:
-  #           - generate-diff
-  #         filters:
-  #           branches:
-  #             ignore: main
-  #     - generate-dags:
-  #         requires:
-  #           - generate-sql
-  #     - docs:
-  #         requires:
-  #           - generate-sql
-  #         filters:
-  #           branches:
-  #             only: main
-  #     - push-generated-sql:
-  #         requires:
-  #           - validate-dags
-  #         filters:
-  #           branches:
-  #             only:
-  #               - main
-  #     - sync-dags-repo:
-  #         name: 🔃 Synchronize bigquery-etl submodule
-  #         repo-to-sync: ${CIRCLE_PROJECT_REPONAME}
-  #         target-branch: generated-sql
-  #         requires:
-  #           - push-generated-sql
-  #         filters:
-  #           branches:
-  #             only:
-  #               - main
-  #     - reset-stage-env:
-  #         requires:
-  #           - push-generated-sql
-  #           - test-sql
-  #           - validate-views
-  #           - validate-docs
-  #           - validate-metadata
-  #           - dry-run-sql
-  #     - deploy:
-  #         context: data-eng-bigquery-etl-dockerhub
-  #         requires:
-  #           - generate-sql
-  #           # Public image must be pushed after the private one because of
-  #           # webhooks used in Ops logic. For details, see:
-  #           # https://bugzilla.mozilla.org/show_bug.cgi?id=1715628#c0
-  #           - deploy-to-private-gcr
-  #         filters:
-  #           branches:
-  #             only:
-  #               - main
-  #     # The following "private" jobs are basically clones of the public jobs
-  #     # for generate-sql, deploy, and push-generated-sql, except that they pull
-  #     # in some additional content from an internal Mozilla repository for
-  #     # cases where ETL code cannot be public. Although the CI logic is
-  #     # consolidated in this public repository, note that we are both pulling
-  #     # from the internal repository and pushing generated results back to
-  #     # a branch on that internal repository, which may be initially
-  #     # surprising.
-  #     - private-generate-sql:
-  #         filters:
-  #           branches:
-  #             only:
-  #               - main
-  #     - push-private-generated-sql:
-  #         requires:
-  #           - private-generate-sql
-  #         filters:
-  #           branches:
-  #             only:
-  #               - main
-  #     - sync-dags-repo:
-  #         name: 🔃 Synchronize private-bigquery-etl submodule
-  #         repo-to-sync: private-bigquery-etl
-  #         target-branch: private-generated-sql
-  #         requires:
-  #           - push-private-generated-sql
-  #         filters:
-  #           branches:
-  #             only:
-  #               - main
-  #     - deploy-to-private-gcr:
-  #         context: data-eng-airflow-gcr
-  #         requires:
-  #           - private-generate-sql
-  #           # can't run in parallel because CIRCLE_BUILD_NUM is same
-  #           - build
-  #           - generate-sql
-  #         filters:
-  #           branches:
-  #             only:
-  #               - main
+      - main-generate-sql-and-dags:
+          filters:
+            branches:
+              ignore: main
+      - generate-diff:
+          requires:
+            - generate-dags
+            - main-generate-sql-and-dags
+          filters:
+            branches:
+              ignore: main
+      - post-diff:
+          requires:
+            - generate-diff
+          filters:
+            branches:
+              ignore: main
+      - generate-dags:
+          requires:
+            - generate-sql
+      - docs:
+          requires:
+            - generate-sql
+          filters:
+            branches:
+              only: main
+      - push-generated-sql:
+          requires:
+            - validate-dags
+          filters:
+            branches:
+              only:
+                - main
+      - sync-dags-repo:
+          name: 🔃 Synchronize bigquery-etl submodule
+          repo-to-sync: ${CIRCLE_PROJECT_REPONAME}
+          target-branch: generated-sql
+          requires:
+            - push-generated-sql
+          filters:
+            branches:
+              only:
+                - main
+      - reset-stage-env:
+          requires:
+            - push-generated-sql
+            - test-sql
+            - validate-views
+            - validate-docs
+            - validate-metadata
+            - dry-run-sql
+      - deploy:
+          context: data-eng-bigquery-etl-dockerhub
+          requires:
+            - generate-sql
+            # Public image must be pushed after the private one because of
+            # webhooks used in Ops logic. For details, see:
+            # https://bugzilla.mozilla.org/show_bug.cgi?id=1715628#c0
+            - deploy-to-private-gcr
+          filters:
+            branches:
+              only:
+                - main
+      # The following "private" jobs are basically clones of the public jobs
+      # for generate-sql, deploy, and push-generated-sql, except that they pull
+      # in some additional content from an internal Mozilla repository for
+      # cases where ETL code cannot be public. Although the CI logic is
+      # consolidated in this public repository, note that we are both pulling
+      # from the internal repository and pushing generated results back to
+      # a branch on that internal repository, which may be initially
+      # surprising.
+      - private-generate-sql:
+          filters:
+            branches:
+              only:
+                - main
+      - push-private-generated-sql:
+          requires:
+            - private-generate-sql
+          filters:
+            branches:
+              only:
+                - main
+      - sync-dags-repo:
+          name: 🔃 Synchronize private-bigquery-etl submodule
+          repo-to-sync: private-bigquery-etl
+          target-branch: private-generated-sql
+          requires:
+            - push-private-generated-sql
+          filters:
+            branches:
+              only:
+                - main
+      - deploy-to-private-gcr:
+          context: data-eng-airflow-gcr
+          requires:
+            - private-generate-sql
+            # can't run in parallel because CIRCLE_BUILD_NUM is same
+            - build
+            - generate-sql
+          filters:
+            branches:
+              only:
+                - main
   tagged-deploy:
     jobs:
       - deploy-to-pypi:
@@ -919,13 +964,13 @@ workflows:
             branches:
               # Ignore all branches; this workflow should only run for tags.
               ignore: /.*/
-  # nightly:
-  #   # Run after schema-generator to ensure we are up-to-date
-  #   triggers:
-  #     - schedule:
-  #         cron: "0 5 * * *"
-  #         filters:
-  #           branches:
-  #             only:
-  #               - main
-  #   jobs: *build_jobs
+  nightly:
+    # Run after schema-generator to ensure we are up-to-date
+    triggers:
+      - schedule:
+          cron: "0 5 * * *"
+          filters:
+            branches:
+              only:
+                - main
+    jobs: *build_jobs

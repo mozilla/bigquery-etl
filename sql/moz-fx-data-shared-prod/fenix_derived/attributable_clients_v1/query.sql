@@ -123,3 +123,5 @@ JOIN
 LEFT JOIN
   activations
   USING (client_id, submission_date)
+
+-- change

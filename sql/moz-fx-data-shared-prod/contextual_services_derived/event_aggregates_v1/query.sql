@@ -1,9 +1,9 @@
 WITH blocks AS (
   SELECT
     b.id,
-    b.query_type,
+    b.queryType AS query_type,
   FROM
-    `moz-fx-data-bq-fivetran.admarketplace_suggest.blocks` b
+    `moz-fx-ads-prod.adm.blocks` b
   WHERE
     b.date <= @submission_date
   QUALIFY

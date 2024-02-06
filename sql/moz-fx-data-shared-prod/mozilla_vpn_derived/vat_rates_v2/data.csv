@@ -1,5 +1,6 @@
 country_code,country,vat,effective_date
 AT,Austria,0.2,2021-01-01
+BE,Belgium,0.21,2021-01-01
 CA,Canada,0.1,2021-01-01
 CH,Switzerland,0.077,2021-01-01
 CY,Cyprus,0.19,2022-05-10

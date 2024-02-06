@@ -5,7 +5,7 @@ WITH
     submission_date,
     normalized_channel,
     normalized_country_code,
-    res.product_result_type AS type,
+    res.product_result_type AS product_result_type,
     CASE
       WHEN product_selected_result = res.product_result_type THEN 1
     ELSE
@@ -27,7 +27,7 @@ WITH
       submission_date,
       normalized_channel,
       normalized_country_code,
-      type,
+      product_result_type,
       COUNTIF(is_clicked) AS is_clicked
       COUNT(*) as n_impressions,
     FROM temp_unnested
@@ -40,7 +40,7 @@ SELECT
   COUNTIF(is_clicked) AS n_clicks,
   normalized_channel,
   normalized_country_code,
-  type
+  product_result_type
 FROM
   temp_session
 GROUP BY
@@ -54,4 +54,3 @@ ORDER BY
   n_impressions DESC,
   type ASC,
   normalized_channel
-  

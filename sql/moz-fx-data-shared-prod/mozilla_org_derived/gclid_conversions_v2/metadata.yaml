@@ -6,10 +6,11 @@ description: |-
   if they perform different conversion actions
   on different days.
 owners:
-- frank@mozilla.com
+- mhirose@mozilla.com
+- kwindau@mozilla.com
 labels:
   incremental: true
-  owner1: frank@mozilla.com
+  owner1: mhirose@mozilla.com
 scheduling:
   dag_name: bqetl_mozilla_org_derived
   date_partition_parameter: activity_date

@@ -22,7 +22,7 @@ fields:
 - name: time_on_site
   mode: NULLABLE
   type: INTEGER
-  description: "Amount of time the user was on the site for this session."
+  description: "The time in seconds between the first and last event of the session"
 - name: pageviews
   mode: NULLABLE
   type: INTEGER

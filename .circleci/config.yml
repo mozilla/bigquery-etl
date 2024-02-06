@@ -708,6 +708,7 @@ jobs:
 
             find /tmp/workspace/main-generated-sql/dags -name '*.py' \
               -exec sed -i -e 's/\/tmp\/workspace\/main-generated-sql\/sql/sql/g' {} \;
+            
       - persist_to_workspace:
           root: /tmp/workspace
           paths:

@@ -242,7 +242,7 @@ SELECT
     ELSE FALSE
   END AS is_first_session,
   a.ga_session_number AS session_number,
-  (b.max_event_timestamp - b.min_event_timestamp) / 1000000 AS time_on_site,
+  CAST((b.max_event_timestamp - b.min_event_timestamp) / 1000000 as int64) AS time_on_site,
   b.pageviews,
   a.country,
   a.region,

@@ -46,10 +46,10 @@ WITH device_properties_at_session_start_event AS (
   WHERE
     _table_suffix = FORMAT_DATE('%Y%m%d', @submission_date)
     AND e.key = 'ga_session_id'
-    AND e.value.int_value IS NOT NULL
+    AND e.value.int_value IS NOT NULL --only keep rows where GA session ID is not null
     AND a.event_name = 'session_start'
   QUALIFY
-    rnk = 1
+    rnk = 1 --if a ga_session_id / user_pseudo_id / session_date has more than 1 session_start, only keep 1 since a unique session should only have 1 session start
 ),
 --get all the details for that session from the session date and the next day
 event_aggregates AS (
@@ -71,7 +71,7 @@ event_aggregates AS (
     BETWEEN FORMAT_DATE('%Y%m%d', @submission_date)
     AND FORMAT_DATE('%Y%m%d', DATE_ADD(@submission_date, INTERVAL 1 DAY))
     AND e.key = 'ga_session_id'
-    AND e.value.int_value IS NOT NULL
+    AND e.value.int_value IS NOT NULL  --only keep rows where GA session ID is not null
   GROUP BY
     a.user_pseudo_id,
     CAST(e.value.int_value AS string)
@@ -163,7 +163,7 @@ landing_page_by_session_staging AS (
     BETWEEN FORMAT_DATE('%Y%m%d', @submission_date)
     AND FORMAT_DATE('%Y%m%d', DATE_ADD(@submission_date, INTERVAL 1 DAY))
     AND e.key = 'entrances'
-    AND e.value.int_value = 1
+    AND e.value.int_value = 1 --filter to the entrance page view of the session (key = entrances, int_value = 1 to get the landing page of the session)
 ),
 landing_page_by_session AS (
   SELECT
@@ -181,7 +181,7 @@ landing_page_by_session AS (
   FROM
     landing_page_by_session_staging
   QUALIFY
-    lp_rnk = 1
+    lp_rnk = 1 --if there are ever multiple entrances in the same session, pick only 1 (rare but occasionally happens)
 ),
 install_targets_staging AS (
   SELECT
@@ -242,7 +242,7 @@ SELECT
     ELSE FALSE
   END AS is_first_session,
   a.ga_session_number AS session_number,
-  b.max_event_timestamp - b.min_event_timestamp AS time_on_site,
+  CAST((b.max_event_timestamp - b.min_event_timestamp) / 1000000 AS int64) AS time_on_site,
   b.pageviews,
   a.country,
   a.region,

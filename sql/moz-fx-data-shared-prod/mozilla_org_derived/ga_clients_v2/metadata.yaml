@@ -10,7 +10,7 @@ labels:
   owner1: mhirose@mozilla.com
 scheduling:
   depends_on_past: true
-  dag_name: bqetl_mozilla_org_derived
+  dag_name: bqetl_google_analytics_derived_ga4
   date_partition_parameter: null
   parameters: ["session_date:DATE:{{ds}}"]
 bigquery:

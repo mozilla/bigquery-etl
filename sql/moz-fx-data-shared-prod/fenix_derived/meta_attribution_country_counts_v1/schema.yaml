@@ -15,10 +15,6 @@ fields:
   mode: NULLABLE
   name: country
   type: STRING
-- description: The number of clients provided by meta attributable data
-  mode: NULLABLE
-  name: client_count
-  type: INTEGER
 - name: ping_count
   type: INTEGER
   mode: NULLABLE

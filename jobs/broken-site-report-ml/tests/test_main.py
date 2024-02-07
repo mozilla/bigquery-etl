@@ -31,7 +31,7 @@ class TestMain(TestCase):
         add_classification_results(mock_client, bq_dataset_id, results)
 
         mock_client.load_table_from_json.assert_called_once()
-        mock_client.get_table.assert_called_with(f"{bq_dataset_id}.labels")
+        mock_client.get_table.assert_called_with(f"{bq_dataset_id}.bugbug_predictions")
 
     @patch("broken_site_report_ml.main.bigquery.Client")
     def test_record_classification_run(self, mock_bq_client):

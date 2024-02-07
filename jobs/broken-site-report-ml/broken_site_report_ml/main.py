@@ -75,7 +75,6 @@ def add_classification_results(client, bq_dataset_id, results):
             "label": CLASSIFICATION_LABELS[result["class"]],
             "created_at": datetime.datetime.utcnow().isoformat(),
             "probability": result["prob"][result["class"]],
-            "is_ml": True,
         }
         res.append(bq_result)
 
@@ -86,20 +85,19 @@ def add_classification_results(client, bq_dataset_id, results):
             bigquery.SchemaField("label", "STRING", mode="REQUIRED"),
             bigquery.SchemaField("created_at", "DATETIME", mode="REQUIRED"),
             bigquery.SchemaField("probability", "FLOAT"),
-            bigquery.SchemaField("is_ml", "BOOLEAN", mode="REQUIRED"),
         ],
         write_disposition="WRITE_APPEND",
     )
 
-    labels_table = f"{bq_dataset_id}.labels"
+    predictions_table = f"{bq_dataset_id}.bugbug_predictions"
 
     job = client.load_table_from_json(
         res,
-        labels_table,
+        predictions_table,
         job_config=job_config,
     )
 
-    logging.info("Writing to `labels` table")
+    logging.info("Writing to `bugbug_predictions` table")
 
     try:
         job.result()
@@ -109,7 +107,7 @@ def add_classification_results(client, bq_dataset_id, results):
             for error in job.errors:
                 logging.error(error)
 
-    table = client.get_table(labels_table)
+    table = client.get_table(predictions_table)
     logging.info(f"Loaded {len(res)} rows into {table}")
 
 
@@ -166,9 +164,9 @@ def get_missed_reports(client, last_run_time, bq_dataset_id):
             FROM
             `moz-fx-data-shared-prod.org_mozilla_broken_site_report.user_reports`
             AS reports
-            LEFT JOIN `{bq_dataset_id}.labels` AS labels
-            ON reports.uuid = labels.report_uuid
-            WHERE labels.report_uuid IS NULL AND reported_at < "{last_run_time}"
+            LEFT JOIN `{bq_dataset_id}.bugbug_predictions` AS predictions
+            ON reports.uuid = predictions.report_uuid
+            WHERE predictions.report_uuid IS NULL AND reported_at < "{last_run_time}"
             AND reports.comments != ""
         """
     query_job = client.query(query)

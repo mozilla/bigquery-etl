@@ -6,9 +6,9 @@ ASSERT NOT EXISTS(
   SELECT
     daily.client_id
   FROM
-    telemetry_derived.clients_daily_v6 daily
+    `{{ project_id }}.{{ dataset_id }}.clients_daily_v6` daily
   LEFT JOIN
-    telemetry_derived.clients_first_seen_v2 first_seen
+    `{{ project_id }}.{{ dataset_id }}.{{ table_name }}` first_seen
     USING (client_id)
   WHERE
     submission_date = @submission_date
@@ -20,9 +20,9 @@ ASSERT NOT EXISTS(
   SELECT
     new_profile.client_id
   FROM
-    telemetry.new_profile
+    `{{ project_id }}.telemetry.new_profile`
   LEFT JOIN
-    telemetry_derived.clients_first_seen_v2 first_seen
+    `{{ project_id }}.{{ dataset_id }}.{{ table_name }}` first_seen
     USING (client_id)
   WHERE
     DATE(submission_timestamp) = '2023-01-01'

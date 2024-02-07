@@ -19,9 +19,6 @@ parameters:
   validate-routines:
     type: boolean
     default: false
-  validate-all:
-    type: boolean
-    default: false
   trigger-sql-generation:
     type: boolean
     default: false
@@ -289,16 +286,25 @@ jobs:
       - run:
           name: Run routine tests
           command: |
-            if [ -n "$CIRCLE_PR_NUMBER" ]; then
-              echo "Cannot pass creds to forked PRs," \
-                "so skipping routine tests"
+            if [ << pipeline.parameters.validate-routines >> = "true" ]; then 
+              if [ -n "$CIRCLE_PR_NUMBER" ]; then
+                echo "Cannot pass creds to forked PRs," \
+                  "so skipping routine tests"
+              else
+                PATH="venv/bin:$PATH" script/entrypoint -m routine -n 8
+              fi
+
             else
-              PATH="venv/bin:$PATH" script/entrypoint -m routine -n 8
+              echo "No changes to UDFs; Skip checks."  
             fi
       - run:
           name: Validate doc examples
           command: |
-            PATH="venv/bin:$PATH" script/bqetl routine validate --docs-only
+            if [ <<pipeline.parameters.validate-routines >> = "true" ]; then 
+              PATH="venv/bin:$PATH" script/bqetl routine validate --docs-only
+            else
+              echo "No changes to UDFs; Skip checks."
+            fi
   validate-views:
     docker: *docker
     steps:
@@ -922,6 +928,7 @@ workflows:
             - validate-views
             - validate-metadata
             - dry-run-sql
+      - validate-routine
 
   ### Validate bqetl tooling
   validate-bqetl:
@@ -929,101 +936,6 @@ workflows:
       or: 
         - << pipeline.parameters.validate-bqetl >>
     jobs:
-      - test-bqetl:
-          context: data-eng-circleci-tests
-      - integration
-      - deploy-to-pypi:
-          name: Deploy bqetl to PyPI
-          requires: 
-            - build
-          filters:
-            tags:
-              only: /[0-9]{4}.[0-9]{1,2}.[0-9]+/  # Calver: YYYY.M.MINOR
-            branches:
-              # Ignore all branches; this workflow should only run for tags.
-              ignore: /.*/
-
-  ### Run all checks and deployment tasks
-  validate-all:
-    when: 
-      or: 
-        - << pipeline.parameters.validate-all >>
-    jobs:
-      - manual-trigger-required-for-fork
-      - build
-      - verify-requirements
-      - verify-format-yaml
-      - verify-format-sql
-      - deploy-changes-to-stage:
-          requires:
-            - generate-sql
-      - dry-run-sql:
-          requires:
-            - deploy-changes-to-stage
-      - test-sql:
-          context: data-eng-circleci-tests
-          requires:
-            - deploy-changes-to-stage
-      - validate-metadata:
-          requires:
-            - deploy-changes-to-stage
-      - validate-dags:
-          requires:
-            - generate-dags
-      - validate-views:
-          requires:
-            - deploy-changes-to-stage
-      - generate-sql
-      - main-generate-sql-and-dags:
-          filters:
-            branches:
-              ignore: main
-      - generate-diff:
-          requires:
-            - generate-dags
-            - main-generate-sql-and-dags
-          filters:
-            branches:
-              ignore: main
-      - post-diff:
-          requires:
-            - generate-diff
-          filters:
-            branches:
-              ignore: main
-      - generate-dags:
-          requires:
-            - generate-sql
-      - docs:
-          requires:
-            - generate-sql
-          filters:
-            branches:
-              only: main
-      - push-generated-sql:
-          requires:
-            - validate-dags
-          filters:
-            branches:
-              only:
-                - main
-      - sync-dags-repo:
-          name: 🔃 Synchronize bigquery-etl submodule
-          repo-to-sync: ${CIRCLE_PROJECT_REPONAME}
-          target-branch: generated-sql
-          requires:
-            - push-generated-sql
-          filters:
-            branches:
-              only:
-                - main
-      - reset-stage-env:
-          requires:
-            - push-generated-sql
-            - test-sql
-            - validate-views
-            - validate-metadata
-            - dry-run-sql
       - test-bqetl:
           context: data-eng-circleci-tests
       - integration

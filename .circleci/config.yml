@@ -466,6 +466,7 @@ jobs:
             git commit -m "Auto-push due to change on main branch [ci skip]" \
               && git tag c-${CIRCLE_SHA1:0:9} \
               && git push \
+              && git push --tags \
               || echo "Skipping push since it looks like there were no changes"
   sync-dags-repo:
     executor: docker/machine

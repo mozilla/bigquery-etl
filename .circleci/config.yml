@@ -13,6 +13,9 @@ parameters:
   trigger-sql-generation:
     type: boolean
     default: false
+  base-revision:
+    type: string
+    default: << pipeline.git.base_revision >>
 
 executors:
   ubuntu-machine-executor:
@@ -311,6 +314,9 @@ jobs:
               -m "[ci skip] Deployed {sha} with MkDocs version: {version}"
   generate-sql:
     docker: *docker
+    environment:
+      BASE_COMMIT: << pipeline.parameters.base-revision >>
+      REVISION_COMMIT: << pipeline.git.revision >>
     resource_class: large
     steps:
       - checkout
@@ -328,15 +334,11 @@ jobs:
             LATEST_TAG_GENERATED_SQL=${LATEST_TAG_GENERATED_SQL/c-/""}
             echo "Latest tag on generated-sql branch: c-$LATEST_TAG_GENERATED_SQL"
 
-            # Get the state in which main was in when the generated-sql branch was created and pushed
-            cd ~
-            git clone -b main git@github.com:mozilla/bigquery-etl ~/remote-bigquery-etl-main
-            cd ~/remote-bigquery-etl-main
+            cd ~/project
             export LATEST_COMMIT_ON_MAIN=`git rev-parse --short HEAD`
             git checkout $LATEST_TAG_GENERATED_SQL
-            echo "Latest commit on main: $LATEST_COMMIT_ON_MAIN"
+            echo "Latest main commit in PR: $LATEST_COMMIT_ON_MAIN"
 
-            cd ~/project
             export GENERATED_SQL_CHANGED=false
 
             # Manually trigger SQL generation via a pipeline parameter
@@ -354,13 +356,13 @@ jobs:
             # Check if this PR removes a file. SQL generation needs to be re-run because
             # simply merging the changes with the generated-sql branch would result in files being part of generated DAGs
             # and other artifacts that were actually removed
-            if [[ $(git diff --no-index --name-only --diff-filter=D ~/remote-bigquery-etl-main/sql sql) ]]; then
+            if [[ $(git diff --name-only --diff-filter=D $BASE_COMMIT..$REVISION_COMMIT -- sql) ]]; then
               echo "SQL file was removed; re-generate SQL"
               GENERATED_SQL_CHANGED=true
             fi
 
             # Check if this PR changes SQL generators
-            if [[ $(diff -qr --no-dereference sql_generators ~/remote-bigquery-etl-main/sql_generators) ]]; then
+            if [[ $(git diff --name-only --diff-filter=d $BASE_COMMIT..$REVISION_COMMIT -- sql_generators) ]]; then
               echo "SQL generators changed; re-generate SQL"
               GENERATED_SQL_CHANGED=true
             fi

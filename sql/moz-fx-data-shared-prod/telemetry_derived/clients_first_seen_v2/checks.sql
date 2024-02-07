@@ -2,9 +2,9 @@
 {{ is_unique(columns=["client_id"]) }}
 
 #fail
-ASSERT NOT EXISTS(
+ASSERT(
   SELECT
-    daily.client_id
+    COUNTIF(first_seen.client_id IS NULL)
   FROM
     `{{ project_id }}.{{ dataset_id }}.clients_daily_v6` daily
   LEFT JOIN
@@ -12,22 +12,20 @@ ASSERT NOT EXISTS(
     USING (client_id)
   WHERE
     submission_date = @submission_date
-    AND first_seen.client_id IS NULL
-);
+) = 0;
 
 #fail
-ASSERT NOT EXISTS(
+ASSERT(
   SELECT
-    new_profile.client_id
+    COUNTIF(first_seen.client_id IS NULL)
   FROM
     `{{ project_id }}.telemetry.new_profile`
   LEFT JOIN
     `{{ project_id }}.{{ dataset_id }}.{{ table_name }}` first_seen
     USING (client_id)
   WHERE
-    DATE(submission_timestamp) = '2023-01-01'
-    AND first_seen.client_id IS NULL
-);
+    DATE(submission_timestamp) = @submission_date
+) = 0;
 
 -- TODO: from https://mozilla-hub.atlassian.net/browse/DS-3102:
 -- ratio of new profiles reporting NPP, FSP, MP as the first ping (we if this ratio diverges wildly,

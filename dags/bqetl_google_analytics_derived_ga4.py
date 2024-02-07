@@ -126,6 +126,20 @@ with DAG(
         depends_on_past=False,
     )
 
+    with TaskGroup(
+        "mozilla_org_derived__ga_sessions__v2_external",
+    ) as mozilla_org_derived__ga_sessions__v2_external:
+        ExternalTaskMarker(
+            task_id="bqetl_mozilla_org_derived__wait_for_mozilla_org_derived__ga_sessions__v2",
+            external_dag_id="bqetl_mozilla_org_derived",
+            external_task_id="wait_for_mozilla_org_derived__ga_sessions__v2",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=36000)).isoformat() }}",
+        )
+
+        mozilla_org_derived__ga_sessions__v2_external.set_upstream(
+            mozilla_org_derived__ga_sessions__v2
+        )
+
     ga_derived__www_site_events_metrics__v2.set_upstream(ga_derived__www_site_hits__v2)
 
     ga_derived__www_site_landing_page_metrics__v2.set_upstream(

@@ -5,6 +5,24 @@ setup: true
 orbs:
   path-filtering: circleci/path-filtering@0.1.3
 
+parameters:
+  python-version:
+    type: string
+    default: '3.10'
+  validate-bqetl:
+    type: boolean
+    default: false
+  validate-sql:
+    type: boolean
+    default: false
+  validate-routines:
+    type: boolean
+    default: false
+  trigger-sql-generation:
+    type: boolean
+    default: false
+
+
 workflows:
   filter-paths-main:
     when:
@@ -31,7 +49,7 @@ workflows:
             bigquery_etl/.* validate-bqetl true
             tests/.* validate-bqetl true
             bigquery_etl/query_scheduling/.* validate-sql true
-            sql/.* validate-sql true 
+            sql/.* validate-sql true
             sql_generators/.* validate-sql true
             tests/sql/.* validate-sql true
             biquery_etl/routine/.* validate-routines true

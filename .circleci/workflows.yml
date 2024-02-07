@@ -275,7 +275,7 @@ jobs:
             python -m pytest tests/dags/test_dag_validity.py --junitxml=~/telemetry-airflow/test-results/junit.xml
       - store_test_results:
           path: ~/telemetry-airflow/test-results/junit.xml
-  validate-routine:
+  test-routines:
     docker: *docker
     steps:
       - checkout
@@ -286,7 +286,7 @@ jobs:
       - run:
           name: Run routine tests
           command: |
-            if [ << pipeline.parameters.validate-routines >> = "true" ]; then 
+            if [ << pipeline.parameters.validate-routines >> = "true" ]; then
               if [ -n "$CIRCLE_PR_NUMBER" ]; then
                 echo "Cannot pass creds to forked PRs," \
                   "so skipping routine tests"
@@ -295,12 +295,12 @@ jobs:
               fi
 
             else
-              echo "No changes to UDFs; Skip checks."  
+              echo "No changes to UDFs; Skip checks."
             fi
       - run:
           name: Validate doc examples
           command: |
-            if [ <<pipeline.parameters.validate-routines >> = "true" ]; then 
+            if [ <<pipeline.parameters.validate-routines >> = "true" ]; then
               PATH="venv/bin:$PATH" script/bqetl routine validate --docs-only
             else
               echo "No changes to UDFs; Skip checks."
@@ -850,12 +850,23 @@ workflows:
       - build
       - verify-requirements
       - verify-format-yaml
+      - deploy-to-pypi:
+          name: Deploy bqetl to PyPI
+          requires:
+            - build
+          filters:
+            tags:
+              only: /[0-9]{4}.[0-9]{1,2}.[0-9]+/  # Calver: YYYY.M.MINOR
+            branches:
+              # Ignore all branches; this workflow should only run for tags.
+              ignore: /.*/
 
-  ### Validate SQL 
+  ### Validate SQL
   validate-sql:
-    when: 
-      or: 
+    when:
+      or:
         - << pipeline.parameters.validate-sql >>
+        - << pipeline.parameters.validate-routines >>
     jobs:
       - verify-format-sql
       - deploy-changes-to-stage:
@@ -865,7 +876,6 @@ workflows:
           requires:
             - deploy-changes-to-stage
       - test-sql:
-          context: data-eng-circleci-tests
           requires:
             - deploy-changes-to-stage
       - validate-metadata:
@@ -928,24 +938,15 @@ workflows:
             - validate-views
             - validate-metadata
             - dry-run-sql
-      - validate-routine
+      - test-routines:
+          requires:
+            - deploy-changes-to-stage
 
   ### Validate bqetl tooling
   validate-bqetl:
-    when: 
-      or: 
+    when:
+      or:
         - << pipeline.parameters.validate-bqetl >>
     jobs:
-      - test-bqetl:
-          context: data-eng-circleci-tests
+      - test-bqetl
       - integration
-      - deploy-to-pypi:
-          name: Deploy bqetl to PyPI
-          requires: 
-            - build
-          filters:
-            tags:
-              only: /[0-9]{4}.[0-9]{1,2}.[0-9]+/  # Calver: YYYY.M.MINOR
-            branches:
-              # Ignore all branches; this workflow should only run for tags.
-              ignore: /.*/

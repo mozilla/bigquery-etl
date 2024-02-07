@@ -1,16 +1,16 @@
 """Generate active users aggregates per app."""
 import os
+import shutil
 from enum import Enum
 from pathlib import Path
-import shutil
 
 import click
 from jinja2 import Environment, FileSystemLoader
 
 from bigquery_etl.cli.utils import use_cloud_function_option
 from bigquery_etl.format_sql.formatter import reformat
-from bigquery_etl.util.common import render, write_sql
 from bigquery_etl.schema import SCHEMA_FILE, Schema
+from bigquery_etl.util.common import render, write_sql
 
 THIS_PATH = Path(os.path.dirname(__file__))
 TABLE_NAME = "urlbar_events"

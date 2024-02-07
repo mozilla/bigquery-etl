@@ -1,0 +1,11 @@
+friendly_name: moso-mastodon-backend
+# yamllint disable rule:line-length
+description: |-
+  User-facing views related to document namespace moso-mastodon-backend; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/moso-mastodon-backend
+dataset_base_acl: view
+user_facing: true
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+  - workgroup:mozsocial/dbt

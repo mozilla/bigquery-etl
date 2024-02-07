@@ -1,5 +1,6 @@
 """bigquery-etl CLI generate command."""
 import importlib.util
+import sys
 from inspect import getmembers
 from pathlib import Path
 
@@ -13,12 +14,18 @@ GENERATE_COMMAND = "generate"
 ROOT = Path(__file__).parent.parent.parent
 
 
-def generate_group():
+def generate_group(sql_generators_dir):
     """Create the CLI group for the generate command."""
     commands = []
-    generator_path = ROOT / SQL_GENERATORS_DIR
 
-    for path in generator_path.iterdir():
+    # import sql_generators module
+    spec = importlib.util.spec_from_file_location(
+        sql_generators_dir.name, (sql_generators_dir / "__init__.py").absolute()
+    )
+    module = importlib.util.module_from_spec(spec)
+    sys.modules["sql_generators"] = module
+
+    for path in sql_generators_dir.iterdir():
         if "__pycache__" in path.parts:
             # Ignore pycache subdirectories
             continue
@@ -50,7 +57,17 @@ def generate_group():
 
 
 # expose click command group
-generate = generate_group()
+generate = generate_group(
+    Path(
+        ConfigLoader.get(
+            "default",
+            "sql_generators_dir",
+            fallback=ConfigLoader.get(
+                "default", "sql_generators_dir", fallback=ROOT / SQL_GENERATORS_DIR
+            ),
+        )
+    )
+)
 
 
 @generate.command(help="Run all query generators", name="all")
@@ -80,6 +97,7 @@ generate = generate_group()
 def generate_all(ctx, output_dir, target_project, ignore, use_cloud_function):
     """Run all SQL generators."""
     click.echo(f"Generating SQL content in {output_dir}.")
+    click.echo(ROOT / SQL_GENERATORS_DIR)
     for _, cmd in reversed(generate.commands.items()):
         if cmd.name != "all" and cmd.name not in ignore:
             ctx.invoke(

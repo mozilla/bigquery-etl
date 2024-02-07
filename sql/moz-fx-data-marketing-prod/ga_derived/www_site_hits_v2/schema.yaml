@@ -106,11 +106,15 @@ fields:
 - mode: NULLABLE
   name: bounces
   type: INT64
-  description: Bounces - A session is considered a bounce if it contains only 1 page view
+  description: Bounces - Indicator that displays a 1 for each hit in a bounce session (a session with only 1 page view)
 - mode: NULLABLE
   name: hit_time
   type: FLOAT
-  description: Hit Time - Engagement Time in Seconds
+  description: Hit Time - The number of seconds after the visitStartTime that the hit was registered
+- mode: NULLABLE
+  name: engagement_time
+  type: FLOAT
+  description: Engagement Time - Engagement Time in Seconds
 - mode: NULLABLE
   name: first_interaction
   type: INT64
@@ -155,3 +159,7 @@ fields:
   name: page_name
   type: STRING
   description: Page Name - Consists of page levels 1 to 5 concatenated together
+- mode: NULLABLE
+  name: single_page_session
+  type: BOOLEAN
+  description: Single Page Session - Indicator if the hit belongs to a single page session

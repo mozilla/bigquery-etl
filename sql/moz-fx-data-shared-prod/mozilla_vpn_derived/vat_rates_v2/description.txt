@@ -1,0 +1,1 @@
+VAT rates for countries where Mozilla VPN is available.

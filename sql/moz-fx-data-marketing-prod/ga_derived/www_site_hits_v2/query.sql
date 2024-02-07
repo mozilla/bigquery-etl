@@ -21,6 +21,7 @@ WITH get_session_start_time AS (
     UNNEST(event_params) e
   WHERE
     e.key = 'ga_session_id'
+    AND e.value.int_value IS NOT NULL
     AND _TABLE_SUFFIX = SAFE.FORMAT_DATE('%Y%m%d', @submission_date)
   GROUP BY
     date,
@@ -188,10 +189,16 @@ final_staging AS (
     engmgt.session_had_an_engaged_event AS visits, --this is the equivalent logic to totals.visits in UA
     CASE
       WHEN exits.nbr_page_view_events = 1
+        THEN TRUE
+      ELSE FALSE
+    END AS single_page_session,
+    CASE
+      WHEN engmgt.session_had_an_engaged_event = 0
         THEN 1
       ELSE 0
-    END AS bounces, --this is the equivalent logic to totals.bounces in UA
-    SAFE_DIVIDE(engagement_time_msec, 1000) AS hit_time,
+    END AS bounces, --if the session did not have an engaged event, then the session is considered a bounce, else it is not
+    (all_events.event_timestamp - all_sessions.visit_start_time) / 1000000 AS hit_time,
+    SAFE_DIVIDE(engagement_time_msec, 1000) AS engagement_time,
     engmgt.first_interaction,
     CAST(engmgt.last_interaction AS float64) AS last_interaction,
     all_events.is_entrance AS entrances,
@@ -257,6 +264,7 @@ SELECT
   final.visits,
   final.bounces,
   final.hit_time,
+  final.engagement_time,
   final.first_interaction,
   final.last_interaction,
   final.entrances,
@@ -272,5 +280,6 @@ SELECT
     CONCAT('/', page_level_1, '/'),
     ARRAY_TO_STRING(['', page_level_1, page_level_2, page_level_3, page_level_4, page_level_5], '/')
   ) AS page_name,
+  final.single_page_session
 FROM
   final_staging final

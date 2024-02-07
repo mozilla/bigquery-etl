@@ -1,4 +1,15 @@
-WITH combined AS (
+WITH blocks AS (
+  SELECT
+    b.id,
+    b.queryType AS query_type,
+  FROM
+    `moz-fx-ads-prod.adm.blocks` b
+  WHERE
+    b.date <= @submission_date
+  QUALIFY
+    1 = ROW_NUMBER() OVER (PARTITION BY b.id ORDER BY b.date DESC)
+),
+combined AS (
   SELECT
     metrics.uuid.quick_suggest_context_id AS context_id,
     DATE(submission_timestamp) AS submission_date,
@@ -23,12 +34,12 @@ WITH combined AS (
       "click",
       "impression"
     ) AS event_type,
-    blocks.query_type
+    blocks.query_type,
   FROM
     `moz-fx-data-shared-prod.firefox_desktop.quick_suggest` qs
   LEFT JOIN
-    `moz-fx-data-bq-fivetran.admarketplace_suggest.blocks` blocks
-    ON SAFE_CAST(qs.metrics.string.quick_suggest_block_id AS INT) = blocks.block_id
+    blocks
+    ON SAFE_CAST(qs.metrics.string.quick_suggest_block_id AS INT) = blocks.id
   WHERE
     metrics.string.quick_suggest_ping_type IN ("quicksuggest-click", "quicksuggest-impression")
   UNION ALL
@@ -51,7 +62,7 @@ WITH combined AS (
       FALSE
     ) AS suggest_data_sharing_enabled,
     'impression' AS event_type,
-    CAST(NULL AS STRING) AS query_type
+    CAST(NULL AS STRING) AS query_type,
   FROM
     `moz-fx-data-shared-prod.contextual_services.quicksuggest_impression`
   WHERE
@@ -78,7 +89,7 @@ WITH combined AS (
       FALSE
     ) AS suggest_data_sharing_enabled,
     'click' AS event_type,
-    CAST(NULL AS STRING) AS query_type
+    CAST(NULL AS STRING) AS query_type,
   FROM
     `moz-fx-data-shared-prod.contextual_services.quicksuggest_click`
   WHERE
@@ -102,9 +113,10 @@ with_event_count AS (
     context_id
 )
 SELECT
-  * EXCEPT (context_id, user_event_count, event_type),
+  * EXCEPT (context_id, user_event_count, event_type, query_type),
   COUNTIF(event_type = "impression") AS impression_count,
   COUNTIF(event_type = "click") AS click_count,
+  query_type,
 FROM
   with_event_count
 WHERE

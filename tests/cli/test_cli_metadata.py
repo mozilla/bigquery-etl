@@ -251,4 +251,4 @@ class TestMetadata:
                 print(metadata)
         assert metadata["workgroup_access"][0]["role"] == "roles/bigquery.dataViewer"
         assert metadata["workgroup_access"][0]["members"] == ["workgroup:revenue/cat4"]
-        assert not metadata["deprecated"]
+        assert "deprecated" not in metadata

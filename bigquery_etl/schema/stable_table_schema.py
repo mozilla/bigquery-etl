@@ -3,6 +3,7 @@ import json
 import tarfile
 import urllib.request
 from dataclasses import dataclass
+from functools import cache
 from io import BytesIO
 from itertools import groupby
 from typing import List
@@ -60,6 +61,7 @@ def prod_schemas_uri():
     return f"{mps_uri}/archive/{commit_hash}.tar.gz"
 
 
+@cache
 def get_stable_table_schemas() -> List[SchemaFile]:
     """Fetch last schema metadata per doctype by version."""
     schemas_uri = prod_schemas_uri()

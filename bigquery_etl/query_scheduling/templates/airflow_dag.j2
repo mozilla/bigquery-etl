@@ -5,8 +5,9 @@ from airflow.sensors.external_task import ExternalTaskMarker
 from airflow.sensors.external_task import ExternalTaskSensor
 from airflow.utils.task_group import TaskGroup
 import datetime
+from operators.gcp_container_operator import GKEPodOperator
 from utils.constants import ALLOWED_STATES, FAILED_STATES
-from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
+from utils.gcp import bigquery_etl_query, bigquery_dq_check
 
 {% set ns = namespace(uses_fivetran=False) -%}
 {% for task in tasks -%}
@@ -56,13 +57,13 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
 
 {% for task in tasks | sort(attribute='task_name') %}
     {% if task.is_python_script -%}
-        {{ task.task_name }} = gke_command(
+        {{ task.task_name }} = GKEPodOperator(
             task_id='{{ task.task_name }}',
-            command=[
+            arguments=[
                 'python',
                 'sql/{{ task.project }}/{{ task.dataset }}/{{ task.table }}_{{ task.version }}/query.py',
             ] + {{ task.arguments }},
-            docker_image='gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest',
+            image='gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest',
             owner='{{ task.owner }}',
             email={{ task.email | sort }},
     {% elif task.is_dq_check -%}
@@ -121,6 +122,15 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
             {%+ endif -%}
             {%+ if task.startup_timeout_seconds -%}
             startup_timeout_seconds={{ task.startup_timeout_seconds }},
+            {%+ endif -%}
+            {%+ if task.gke_project_id != None -%}
+            project_id={{ task.gke_project_id | format_repr }},
+            {%+ endif -%}
+            {%+ if task.gke_location != None -%}
+            location={{ task.gke_location | format_repr }},
+            {%+ endif -%}
+            {%+ if task.gke_cluster_name != None -%}
+            cluster_name={{ task.gke_cluster_name | format_repr }},
             {%+ endif -%}
     {%+ else -%}
         {{ task.task_name }} = bigquery_etl_query(
@@ -189,10 +199,6 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
             {%+ if task.priority -%}
             priority_weight={{ task.priority }},
             {%+ endif -%}
-    {% endif -%}
-            {%+ if task.gcp_conn_id != None -%}
-            gcp_conn_id={{ task.gcp_conn_id | format_repr }},
-            {%+ endif -%}
             {%+ if task.gke_project_id != None -%}
             gke_project_id={{ task.gke_project_id | format_repr }},
             {%+ endif -%}
@@ -201,6 +207,10 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
             {%+ endif -%}
             {%+ if task.gke_cluster_name != None -%}
             gke_cluster_name={{ task.gke_cluster_name | format_repr }},
+            {%+ endif -%}
+    {% endif -%}
+            {%+ if task.gcp_conn_id != None -%}
+            gcp_conn_id={{ task.gcp_conn_id | format_repr }},
             {%+ endif -%}
             {%+ if task.task_concurrency -%}
             task_concurrency={{ task.task_concurrency }},

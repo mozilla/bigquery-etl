@@ -37,7 +37,11 @@ WITH base AS (
     event.category as event_category,
     event.name as event_name,
     ARRAY_TO_STRING([event.category, event.name], '.') AS event, -- handles NULL values better
-    `mozfun.json.from_map`(event.extra) AS event_extra
+    `mozfun.json.from_map`(event.extra) AS event_extra,
+    JSON_STRIP_NULLS(
+      TO_JSON(metrics),  -- expose as easy to access JSON column
+      remove_empty => true -- no reason to keep empty objects around
+    ) AS metrics
   FROM
     `{{ events_view }}` AS e
   CROSS JOIN

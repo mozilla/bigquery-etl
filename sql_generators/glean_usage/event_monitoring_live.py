@@ -42,6 +42,7 @@ class EventMonitoringLive(GleanTable):
         output_dir=None,
         use_cloud_function=True,
         app_info=[],
+        parallelism=8,
     ):
         tables = table_names_from_baseline(baseline_table, include_project_id=False)
 
@@ -106,7 +107,7 @@ class EventMonitoringLive(GleanTable):
                 )
 
     def generate_across_apps(
-        self, project_id, apps, output_dir=None, use_cloud_function=True
+        self, project_id, apps, output_dir=None, use_cloud_function=True, parallelism=8
     ):
         """Generate a query across all apps."""
         if not self.across_apps_enabled:

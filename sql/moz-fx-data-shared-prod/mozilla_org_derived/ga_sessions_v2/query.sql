@@ -1,5 +1,29 @@
-WITH device_properties_at_session_start_event AS (
-  --get all sessions starting on the submission date
+WITH sessions_with_no_event_yesterday AS (
+  --looking at events on submission date or day before, get the GA Client ID / GA Session ID with no events on day before but events on date itself
+  SELECT
+    a.user_pseudo_id AS ga_client_id,
+    CAST(e.value.int_value AS string) AS ga_session_id,
+    MIN(PARSE_DATE('%Y%m%d', event_date)) AS min_session_date,
+  FROM
+    `moz-fx-data-marketing-prod.analytics_313696158.events_*` a
+  JOIN
+    UNNEST(event_params) e
+  WHERE
+    _table_suffix
+    BETWEEN FORMAT_DATE('%Y%m%d', DATE_SUB(@submission_date, INTERVAL 1 DAY))
+    AND FORMAT_DATE('%Y%m%d', @submission_date)
+    AND e.key = 'ga_session_id'
+    AND e.value.int_value IS NOT NULL --only keep rows where GA session ID is not null
+  GROUP BY
+    1,
+    2
+  HAVING
+    min_session_date = @submission_date
+),
+device_properties_at_session_start_event_or_first_event AS (
+  --get the device properties for each client ID / session ID with events on the submission date
+  --use the properties on the session start event if available
+  --else, use the properties on the first event based on timestamp
   SELECT
     a.user_pseudo_id AS ga_client_id,
     CAST(e.value.int_value AS string) AS ga_session_id,
@@ -32,11 +56,18 @@ WITH device_properties_at_session_start_event AS (
     device.web_info.browser AS browser,
     device.web_info.browser_version AS browser_version,
     PARSE_DATE('%Y%m%d', event_date) AS session_date,
+    --if there is a session start event, use properties at the time that event fires; if not, use the first event's properties
     ROW_NUMBER() OVER (
       PARTITION BY
         a.user_pseudo_id,
         e.value.int_value
       ORDER BY
+        CASE
+          WHEN a.event_name = 'session_start'
+            THEN 0
+          ELSE 1
+        END
+        ASC,
         a.event_timestamp ASC
     ) AS rnk
   FROM
@@ -47,9 +78,19 @@ WITH device_properties_at_session_start_event AS (
     _table_suffix = FORMAT_DATE('%Y%m%d', @submission_date)
     AND e.key = 'ga_session_id'
     AND e.value.int_value IS NOT NULL --only keep rows where GA session ID is not null
-    AND a.event_name = 'session_start'
   QUALIFY
     rnk = 1 --if a ga_session_id / user_pseudo_id / session_date has more than 1 session_start, only keep 1 since a unique session should only have 1 session start
+),
+session_device_properties AS (
+  --only look at sessions that had no events the day before
+  SELECT
+    a.*
+  FROM
+    device_properties_at_session_start_event_or_first_event a
+  JOIN
+    sessions_with_no_event_yesterday b
+    ON a.ga_client_id = b.ga_client_id
+    AND a.ga_session_id = b.ga_session_id
 ),
 --get all the details for that session from the session date and the next day
 event_aggregates AS (
@@ -269,7 +310,7 @@ SELECT
   d.all_reported_stub_session_ids,
   e.page_location AS landing_screen
 FROM
-  device_properties_at_session_start_event a
+  session_device_properties a
 LEFT JOIN
   event_aggregates b
   ON a.ga_client_id = b.ga_client_id

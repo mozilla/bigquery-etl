@@ -98,6 +98,57 @@ with DAG(
             checks__fail_fenix_derived__firefox_android_clients__v1
         )
 
+    checks__fail_telemetry_derived__clients_first_seen__v2 = bigquery_dq_check(
+        task_id="checks__fail_telemetry_derived__clients_first_seen__v2",
+        source_table="clients_first_seen_v2",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=True,
+        owner="lvargas@mozilla.com",
+        email=[
+            "gkaberere@mozilla.com",
+            "lvargas@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        depends_on_past=False,
+        task_concurrency=1,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+    )
+
+    with TaskGroup(
+        "checks__fail_telemetry_derived__clients_first_seen__v2_external",
+    ) as checks__fail_telemetry_derived__clients_first_seen__v2_external:
+        ExternalTaskMarker(
+            task_id="bqetl_review_checker__wait_for_checks__fail_telemetry_derived__clients_first_seen__v2",
+            external_dag_id="bqetl_review_checker",
+            external_task_id="wait_for_checks__fail_telemetry_derived__clients_first_seen__v2",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=7200)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_mozilla_org_derived__wait_for_checks__fail_telemetry_derived__clients_first_seen__v2",
+            external_dag_id="bqetl_mozilla_org_derived",
+            external_task_id="wait_for_checks__fail_telemetry_derived__clients_first_seen__v2",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_main_summary__wait_for_checks__fail_telemetry_derived__clients_first_seen__v2",
+            external_dag_id="bqetl_main_summary",
+            external_task_id="wait_for_checks__fail_telemetry_derived__clients_first_seen__v2",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_analytics_aggregations__wait_for_checks__fail_telemetry_derived__clients_first_seen__v2",
+            external_dag_id="bqetl_analytics_aggregations",
+            external_task_id="wait_for_checks__fail_telemetry_derived__clients_first_seen__v2",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=78300)).isoformat() }}",
+        )
+
+        checks__fail_telemetry_derived__clients_first_seen__v2_external.set_upstream(
+            checks__fail_telemetry_derived__clients_first_seen__v2
+        )
+
     checks__warn_fenix_derived__firefox_android_clients__v1 = bigquery_dq_check(
         task_id="checks__warn_fenix_derived__firefox_android_clients__v1",
         source_table="firefox_android_clients_v1",
@@ -131,37 +182,6 @@ with DAG(
         depends_on_past=True,
         parameters=["submission_date:DATE:{{ds}}"],
     )
-
-    with TaskGroup(
-        "clients_first_seen_v2_external",
-    ) as clients_first_seen_v2_external:
-        ExternalTaskMarker(
-            task_id="bqetl_review_checker__wait_for_clients_first_seen_v2",
-            external_dag_id="bqetl_review_checker",
-            external_task_id="wait_for_clients_first_seen_v2",
-            execution_date="{{ (execution_date - macros.timedelta(seconds=7200)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
-            task_id="bqetl_mozilla_org_derived__wait_for_clients_first_seen_v2",
-            external_dag_id="bqetl_mozilla_org_derived",
-            external_task_id="wait_for_clients_first_seen_v2",
-        )
-
-        ExternalTaskMarker(
-            task_id="bqetl_main_summary__wait_for_clients_first_seen_v2",
-            external_dag_id="bqetl_main_summary",
-            external_task_id="wait_for_clients_first_seen_v2",
-        )
-
-        ExternalTaskMarker(
-            task_id="bqetl_analytics_aggregations__wait_for_clients_first_seen_v2",
-            external_dag_id="bqetl_analytics_aggregations",
-            external_task_id="wait_for_clients_first_seen_v2",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=78300)).isoformat() }}",
-        )
-
-        clients_first_seen_v2_external.set_upstream(clients_first_seen_v2)
 
     fenix_derived__funnel_retention_clients_week_2__v1 = bigquery_etl_query(
         task_id="fenix_derived__funnel_retention_clients_week_2__v1",
@@ -279,14 +299,9 @@ with DAG(
         firefox_android_clients
     )
 
-    checks__warn_fenix_derived__firefox_android_clients__v1.set_upstream(
-        wait_for_fenix_derived__new_profile_activation__v1
+    checks__fail_telemetry_derived__clients_first_seen__v2.set_upstream(
+        clients_first_seen_v2
     )
-
-    checks__warn_fenix_derived__firefox_android_clients__v1.set_upstream(
-        firefox_android_clients
-    )
-
     wait_for_copy_deduplicate_all = ExternalTaskSensor(
         task_id="wait_for_copy_deduplicate_all",
         external_dag_id="copy_deduplicate",
@@ -297,6 +312,32 @@ with DAG(
         allowed_states=ALLOWED_STATES,
         failed_states=FAILED_STATES,
         pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    checks__fail_telemetry_derived__clients_first_seen__v2.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+    wait_for_telemetry_derived__clients_daily__v6 = ExternalTaskSensor(
+        task_id="wait_for_telemetry_derived__clients_daily__v6",
+        external_dag_id="bqetl_main_summary",
+        external_task_id="telemetry_derived__clients_daily__v6",
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    checks__fail_telemetry_derived__clients_first_seen__v2.set_upstream(
+        wait_for_telemetry_derived__clients_daily__v6
+    )
+
+    checks__warn_fenix_derived__firefox_android_clients__v1.set_upstream(
+        wait_for_fenix_derived__new_profile_activation__v1
+    )
+
+    checks__warn_fenix_derived__firefox_android_clients__v1.set_upstream(
+        firefox_android_clients
     )
 
     clients_first_seen_v2.set_upstream(wait_for_copy_deduplicate_all)
@@ -313,17 +354,6 @@ with DAG(
     )
 
     clients_first_seen_v2.set_upstream(wait_for_copy_deduplicate_first_shutdown_ping)
-    wait_for_telemetry_derived__clients_daily__v6 = ExternalTaskSensor(
-        task_id="wait_for_telemetry_derived__clients_daily__v6",
-        external_dag_id="bqetl_main_summary",
-        external_task_id="telemetry_derived__clients_daily__v6",
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
     clients_first_seen_v2.set_upstream(wait_for_telemetry_derived__clients_daily__v6)
 
     fenix_derived__funnel_retention_clients_week_2__v1.set_upstream(
@@ -499,7 +529,7 @@ with DAG(
     )
 
     telemetry_derived__clients_first_seen_28_days_later__v1.set_upstream(
-        clients_first_seen_v2
+        checks__fail_telemetry_derived__clients_first_seen__v2
     )
     wait_for_telemetry_derived__clients_last_seen__v1 = ExternalTaskSensor(
         task_id="wait_for_telemetry_derived__clients_last_seen__v1",

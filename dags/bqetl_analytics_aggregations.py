@@ -700,20 +700,22 @@ with DAG(
         wait_for_telemetry_derived__rolling_cohorts__v1
     )
 
-    wait_for_clients_first_seen_v2 = ExternalTaskSensor(
-        task_id="wait_for_clients_first_seen_v2",
-        external_dag_id="bqetl_analytics_tables",
-        external_task_id="clients_first_seen_v2",
-        execution_delta=datetime.timedelta(seconds=8100),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    wait_for_checks__fail_telemetry_derived__clients_first_seen__v2 = (
+        ExternalTaskSensor(
+            task_id="wait_for_checks__fail_telemetry_derived__clients_first_seen__v2",
+            external_dag_id="bqetl_analytics_tables",
+            external_task_id="checks__fail_telemetry_derived__clients_first_seen__v2",
+            execution_delta=datetime.timedelta(seconds=8100),
+            check_existence=True,
+            mode="reschedule",
+            allowed_states=ALLOWED_STATES,
+            failed_states=FAILED_STATES,
+            pool="DATA_ENG_EXTERNALTASKSENSOR",
+        )
     )
 
     telemetry_derived__desktop_cohort_daily_retention__v1.set_upstream(
-        wait_for_clients_first_seen_v2
+        wait_for_checks__fail_telemetry_derived__clients_first_seen__v2
     )
     telemetry_derived__desktop_cohort_daily_retention__v1.set_upstream(
         wait_for_telemetry_derived__clients_last_seen__v1

@@ -62,7 +62,7 @@ MERGE INTO
         MIN(event_timestamp) AS min_event_timestamp,
         MAX(event_timestamp) AS max_event_timestamp,
         CAST(
-          MAX(CASE WHEN event_name = 'product_download' THEN 1 ELSE 0 END) AS boolean
+          MAX(CASE WHEN event_name IN ('firefox_download', 'firefox_mobile_download', 'focus_download', 'klar_download') THEN 1 ELSE 0 END) AS boolean
         ) AS had_download_event
       FROM
         `moz-fx-data-marketing-prod.analytics_313696158.events_2*` a
@@ -185,15 +185,15 @@ MERGE INTO
         AND e.key = 'ga_session_id'
         AND e.value.int_value IS NOT NULL
         AND a.event_name IN (
-          'product_download'
-        ) --using a list so when Stephanie creates more types, we can add here firefox_download, firefox_mobile_download, focus_download, klar_download
+          'firefox_download', 'firefox_mobile_download', 'focus_download', 'klar_download'
+        )
     ),
     all_install_targets AS (
       SELECT
         ga_client_id,
         ga_session_id,
         ARRAY_AGG(install_event_name) AS all_reported_install_targets,
-        ARRAY_AGG(stub_session_id ORDER BY event_timestamp DESC)[0] AS last_reported_install_target
+        ARRAY_AGG(install_event_name ORDER BY event_timestamp DESC)[0] AS last_reported_install_target
       FROM
         install_targets_staging
       GROUP BY

@@ -82,7 +82,7 @@ def simple_format(tokens, indent="  "):
         elif isinstance(token, CaseSubclause):
             if token.value.upper() in ("WHEN", "ELSE"):
                 # Have WHEN and ELSE clauses indented one level more than CASE.
-                while indent_types and indent_types[-1] is not BlockKeyword:
+                while indent_types and indent_types[-1] is CaseSubclause:
                     indent_types.pop()
         elif isinstance(
             token, (AliasSeparator, ExpressionSeparator, FieldAccessOperator)

@@ -97,7 +97,7 @@ MERGE INTO
       JOIN
         UNNEST(event_params) e
       WHERE
-        AND event_name = 'stub_session_set'
+        event_name = 'stub_session_set'
         AND e.key = 'id'
         AND e.value.int_value IS NOT NULL
     ),
@@ -147,8 +147,7 @@ MERGE INTO
       JOIN
         UNNEST(event_params) e
       WHERE
-        _TABLE_SUFFIX
-        AND e.key = 'entrances'
+        e.key = 'entrances'
         AND e.value.int_value = 1
     ),
     landing_page_by_session AS (

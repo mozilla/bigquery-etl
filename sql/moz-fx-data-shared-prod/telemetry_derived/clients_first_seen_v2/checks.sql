@@ -6,9 +6,9 @@ ASSERT(
   SELECT
     COUNTIF(first_seen.client_id IS NULL)
   FROM
-    `{{ project_id }}.{{ dataset_id }}.clients_daily_v6` daily
+    `{{ project_id }}.{{ dataset_id }}.clients_daily_v6` AS daily
   LEFT JOIN
-    `{{ project_id }}.{{ dataset_id }}.{{ table_name }}` first_seen
+    `{{ project_id }}.{{ dataset_id }}.{{ table_name }}` AS first_seen
     USING (client_id)
   WHERE
     submission_date = @submission_date
@@ -19,9 +19,9 @@ ASSERT(
   SELECT
     COUNTIF(first_seen.client_id IS NULL)
   FROM
-    `{{ project_id }}.telemetry.new_profile`
+    `{{ project_id }}.telemetry.new_profile` AS new_profile
   LEFT JOIN
-    `{{ project_id }}.{{ dataset_id }}.{{ table_name }}` first_seen
+    `{{ project_id }}.{{ dataset_id }}.{{ table_name }}` AS first_seen
     USING (client_id)
   WHERE
     DATE(submission_timestamp) = @submission_date

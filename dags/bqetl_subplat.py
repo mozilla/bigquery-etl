@@ -565,20 +565,6 @@ with DAG(
         task_concurrency=1,
     )
 
-    mozilla_vpn_derived__vat_rates__v1 = GKEPodOperator(
-        task_id="mozilla_vpn_derived__vat_rates__v1",
-        arguments=[
-            "python",
-            "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/vat_rates_v1/query.py",
-        ]
-        + [],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="srose@mozilla.com",
-        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
-        gcp_conn_id="google_cloud_airflow_gke",
-        retry_delay=datetime.timedelta(seconds=300),
-    )
-
     mozilla_vpn_external__devices__v1 = bigquery_etl_query(
         task_id="mozilla_vpn_external__devices__v1",
         destination_table="devices_v1",

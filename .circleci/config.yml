@@ -360,6 +360,7 @@ jobs:
           command: |
             export GOOGLE_APPLICATION_CREDENTIALS="/tmp/gcp.json"
             echo "$GCLOUD_SERVICE_KEY" > "$GOOGLE_APPLICATION_CREDENTIALS"
+            echo "DEBUG: Wrote $(echo "$GCLOUD_SERVICE_KEY" | wc -c) bytes to '$GOOGLE_APPLICATION_CREDENTIALS'."
 
             PATHS="$(git diff --no-index --name-only --diff-filter=d generated-sql/sql sql)" || true
             echo $PATHS
@@ -645,6 +646,7 @@ jobs:
           command: |
             export GOOGLE_APPLICATION_CREDENTIALS="/tmp/gcp.json"
             echo "$GCLOUD_SERVICE_KEY" > "$GOOGLE_APPLICATION_CREDENTIALS"
+            echo "DEBUG: Wrote $(echo "$GCLOUD_SERVICE_KEY" | wc -c) bytes to '$GOOGLE_APPLICATION_CREDENTIALS'."
 
             PATH="venv/bin:$PATH" script/bqetl stage clean --dataset-suffix=$CIRCLE_SHA1 --delete-expired
   manual-trigger-required-for-fork:

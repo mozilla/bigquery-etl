@@ -16,8 +16,10 @@ owners:
 labels:
   incremental: true
   owner1: srose
-scheduling:
-  date_partition_parameter: date
+# Not scheduled because we stopped syncing Google Search Console data with Fivetran in August 2023.
+# See https://bugzilla.mozilla.org/show_bug.cgi?id=1764960#c44.
+#scheduling:
+#  date_partition_parameter: date
 bigquery:
   time_partitioning:
     type: day

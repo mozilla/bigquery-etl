@@ -8,7 +8,7 @@ SELECT
       THEN 'Firefox Browser for Android'
     WHEN (metrics.string.meta_attribution_app = '697946762208244')
       THEN 'Firefox Nightly for Android'
-    ELSE NULL
+    ELSE CAST(NULL AS STRING)
   END AS meta_attribution_app,
   normalized_channel,
   metadata.geo.country AS country,

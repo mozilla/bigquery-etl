@@ -1,38 +1,29 @@
 WITH baseline_clients AS (
   SELECT
-    ping_date,
-    client_id,
-    channel,
-    country
+    DATE(
+      DATETIME(LEAST(ping_info.parsed_start_time, ping_info.parsed_end_time), 'UTC')
+    ) AS ping_date,
+    client_info.client_id,
+    normalized_channel AS channel,
+    normalized_country_code AS country
   FROM
-    (
-      SELECT
-        DATE(
-          DATETIME(LEAST(ping_info.parsed_start_time, ping_info.parsed_end_time), 'UTC')
-        ) AS ping_date,
-        client_info.client_id,
-        normalized_channel AS channel,
-        normalized_country_code AS country,
-        ROW_NUMBER() OVER (
-          PARTITION BY
-            client_info.client_id
-          ORDER BY
-            DATE(DATETIME(LEAST(ping_info.parsed_start_time, ping_info.parsed_end_time), 'UTC'))
-        ) AS rn
-      FROM
-        firefox_ios.baseline
-      WHERE
-        metrics.timespan.glean_baseline_duration.value > 0
-        AND LOWER(metadata.isp.name) <> "browserstack"
-        AND DATE(submission_timestamp)
-        BETWEEN DATE_SUB(@submission_date, INTERVAL 4 DAY)
-        AND @submission_date
-        AND DATE(
-          DATETIME(LEAST(ping_info.parsed_start_time, ping_info.parsed_end_time), 'UTC')
-        ) = DATE_SUB(@submission_date, INTERVAL 4 DAY)
-    ) AS baseline_raw
+    firefox_ios.baseline
   WHERE
-    rn = 1
+    metrics.timespan.glean_baseline_duration.value > 0
+    AND LOWER(metadata.isp.name) <> "browserstack"
+    AND DATE(submission_timestamp)
+    BETWEEN DATE_SUB(@submission_date, INTERVAL 4 DAY)
+    AND @submission_date
+    AND DATE(
+      DATETIME(LEAST(ping_info.parsed_start_time, ping_info.parsed_end_time), 'UTC')
+    ) = DATE_SUB(@submission_date, INTERVAL 4 DAY)
+  QUALIFY
+    ROW_NUMBER() OVER (
+      PARTITION BY
+        client_info.client_id
+      ORDER BY
+        DATE(DATETIME(LEAST(ping_info.parsed_start_time, ping_info.parsed_end_time), 'UTC'))
+    ) = 1
 ),
 client_attribution AS (
   SELECT
@@ -72,9 +63,9 @@ default_browser AS (
 ),
 event_ping_clients_feature_usage AS (
   SELECT
-    -- TODO: do we want to group by ping_date or event_date?
-    DATE(DATETIME(ping_info.parsed_start_time, 'UTC')) AS ping_date,
-    -- DATE(DATETIME(TIMESTAMP_MILLIS(UNIX_MILLIS(ping_info.parsed_start_time) + event_timestamp), 'UTC')) AS event_date,
+    DATE(
+      DATETIME(LEAST(ping_info.parsed_start_time, ping_info.parsed_end_time), 'UTC')
+    ) AS ping_date,
     client_info.client_id,
     normalized_channel AS channel,
     normalized_country_code AS country,
@@ -276,8 +267,8 @@ event_ping_clients_feature_usage AS (
     country
 )
 SELECT
+  @submission_date AS submission_date,
   ping_date,
-    -- event_date,
   channel,
   country,
   adjust_network,
@@ -513,6 +504,7 @@ LEFT JOIN
   default_browser
   USING (ping_date, client_id, channel, country)
 GROUP BY
+  submission_date,
   ping_date,
   channel,
   country,

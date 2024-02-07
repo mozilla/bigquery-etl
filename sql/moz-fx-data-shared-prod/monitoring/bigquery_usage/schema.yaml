@@ -105,3 +105,12 @@ fields:
   type: DATE
   mode: NULLABLE
   description: Date Airflow DAG is executed, and partition date
+- name: user_type
+  type: STRING
+  mode: NULLABLE
+- name: query_url
+  type: STRING
+  mode: NULLABLE
+- name: is_scheduled
+  type: BOOLEAN
+  mode: NULLABLE

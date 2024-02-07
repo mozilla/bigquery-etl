@@ -113,6 +113,23 @@ with DAG(
         retries=0,
     )
 
+    checks__fail_fenix_derived__meta_attribution_country_counts__v1 = bigquery_dq_check(
+        task_id="checks__fail_fenix_derived__meta_attribution_country_counts__v1",
+        source_table="meta_attribution_country_counts_v1",
+        dataset_id="fenix_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=True,
+        owner="rvasquez@mozilla.com",
+        email=[
+            "frank@mozilla.com",
+            "rvasquez@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+    )
+
     fenix_derived__attributable_clients__v1 = bigquery_etl_query(
         task_id="fenix_derived__attributable_clients__v1",
         destination_table="attributable_clients_v1",
@@ -220,6 +237,21 @@ with DAG(
         depends_on_past=False,
     )
 
+    fenix_derived__meta_attribution_country_counts__v1 = bigquery_etl_query(
+        task_id="fenix_derived__meta_attribution_country_counts__v1",
+        destination_table="meta_attribution_country_counts_v1",
+        dataset_id="fenix_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="rvasquez@mozilla.com",
+        email=[
+            "frank@mozilla.com",
+            "rvasquez@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     org_mozilla_fenix_derived__client_deduplication__v1 = bigquery_etl_query(
         task_id="org_mozilla_fenix_derived__client_deduplication__v1",
         destination_table="client_deduplication_v1",
@@ -278,6 +310,10 @@ with DAG(
 
     checks__fail_fenix_derived__ltv_states__v1.set_upstream(
         fenix_derived__ltv_states__v1
+    )
+
+    checks__fail_fenix_derived__meta_attribution_country_counts__v1.set_upstream(
+        fenix_derived__meta_attribution_country_counts__v1
     )
 
     wait_for_checks__fail_fenix_derived__firefox_android_clients__v1 = (
@@ -449,6 +485,10 @@ with DAG(
     )
 
     fenix_derived__ltv_states__v1.set_upstream(fenix_derived__clients_yearly__v1)
+
+    fenix_derived__meta_attribution_country_counts__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
 
     org_mozilla_fenix_derived__client_deduplication__v1.set_upstream(
         wait_for_copy_deduplicate_all

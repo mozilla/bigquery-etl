@@ -66,7 +66,8 @@ device_properties_at_session_start_event_or_first_event AS (
           WHEN a.event_name = 'session_start'
             THEN 0
           ELSE 1
-        END,
+        END
+        ASC,
         a.event_timestamp ASC
     ) AS rnk
   FROM

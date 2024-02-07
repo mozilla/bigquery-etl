@@ -1,4 +1,7 @@
 fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
 - name: ping_date
   type: DATE
   mode: NULLABLE

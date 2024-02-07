@@ -13,7 +13,7 @@ ASSERT NOT EXISTS(
   WHERE
     submission_date = @submission_date
     AND first_seen.client_id IS NULL
-)
+);
 
 #fail
 ASSERT NOT EXISTS(
@@ -27,7 +27,7 @@ ASSERT NOT EXISTS(
   WHERE
     DATE(submission_timestamp) = '2023-01-01'
     AND first_seen.client_id IS NULL
-)
+);
 
 -- TODO: from https://mozilla-hub.atlassian.net/browse/DS-3102:
 -- ratio of new profiles reporting NPP, FSP, MP as the first ping (we if this ratio diverges wildly,

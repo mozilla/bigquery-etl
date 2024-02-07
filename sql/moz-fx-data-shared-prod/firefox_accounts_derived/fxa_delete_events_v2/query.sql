@@ -26,7 +26,9 @@ WHERE
   )
   AND DATE(`timestamp`) = @submission_date
   AND (
-    jsonPayload.type IN ('accountDeleted', 'accountDeleted.byRequest', 'DB.deleteAccount')
+    jsonPayload.type = 'DB.deleteAccount'
+    -- 'accountDeleted', 'accountDeleted.byRequest', 'accountDeleted.unverifiedSecondaryEmail', etc.
+    OR jsonPayload.type LIKE 'accountDeleted%'
     OR (jsonPayload.type = 'activityEvent' AND jsonPayload.fields.event = 'account.deleted')
   )
   AND jsonPayload.fields.uid IS NOT NULL

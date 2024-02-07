@@ -8,6 +8,7 @@
    during `bqetl query backfill`.
    (you can also run them locally with `bqetl check run`).
 #}
+
 #warn
 WITH daily_users_sum AS (
   SELECT
@@ -30,7 +31,6 @@ distinct_client_count_base AS (
       COUNT(DISTINCT client_info.client_id) AS distinct_client_count,
     FROM
       {{ channel.table }}
-
     WHERE
       DATE(submission_timestamp) = @submission_date
   {% endfor -%}

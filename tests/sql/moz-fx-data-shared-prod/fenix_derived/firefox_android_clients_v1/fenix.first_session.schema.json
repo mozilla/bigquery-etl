@@ -56,6 +56,36 @@
           {
             "type": "STRING",
             "name": "first_session_creative"
+          },
+          {
+            "type": "STRING",
+            "name": "play_store_attribution_campaign"
+          },
+          {
+            "type": "STRING",
+            "name": "play_store_attribution_content"
+          },
+          {
+            "type": "STRING",
+            "name": "play_store_attribution_medium"
+          },
+          {
+            "type": "STRING",
+            "name": "play_store_attribution_source"
+          },
+          {
+            "type": "STRING",
+            "name": "play_store_attribution_term"
+          }
+        ]
+      },
+      {
+        "type": "RECORD",
+        "name": "text2",
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "play_store_attribution_install_referrer_response"
           }
         ]
       }

@@ -4,6 +4,7 @@
 
 from argparse import ArgumentParser
 from fnmatch import fnmatchcase
+from glob import glob
 from pathlib import Path
 
 from google.cloud import bigquery
@@ -43,9 +44,13 @@ def main():
     args = parser.parse_args()
     client = bigquery.Client(args.project)
 
-    sql_queries = list(Path(args.sql_dir).rglob("query.sql"))
-    python_queries = list(Path(args.sql_dir).rglob("query.py"))
-    multipart_queries = list(Path(args.sql_dir).rglob("part1.sql"))
+    sql_queries = list(map(Path, glob(f"{args.sql_dir}/**/query.sql", recursive=True)))
+    python_queries = list(
+        map(Path, glob(f"{args.sql_dir}/**/query.py", recursive=True))
+    )
+    multipart_queries = list(
+        map(Path, glob(f"{args.sql_dir}/**/part1.sql", recursive=True))
+    )
     query_paths = sql_queries + python_queries + multipart_queries
 
     query = create_query(query_paths, args.date)

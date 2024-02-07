@@ -1,0 +1,7 @@
+friendly_name: |-
+  Socorro Crash
+description: |-
+  Crash reports imported via socorro.
+  See https://github.com/mozilla/telemetry-airflow/blob/4050697bd2e283864a9013bd48d439eb66f6d581/dags/socorro_import.py#L105
+owners:
+- srose@mozilla.com

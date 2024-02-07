@@ -4,6 +4,7 @@ import re
 import shutil
 import tempfile
 from datetime import datetime
+from glob import glob
 from multiprocessing.pool import ThreadPool
 from pathlib import Path
 
@@ -160,7 +161,9 @@ def deploy(
                 shutil.rmtree(test_path)
 
             # rename test files
-            for test_file_path in test_destination.glob("**/*"):
+            for test_file_path in map(
+                Path, glob(f"{test_destination}/**/*", recursive=True)
+            ):
                 for test_dep_file in artifact_files:
                     test_project = test_dep_file.parent.parent.parent.name
                     test_dataset = test_dep_file.parent.parent.name
@@ -330,7 +333,7 @@ def _update_references(artifact_files, project_id, dataset_suffix, sql_dir):
             ),
         ]
 
-    for path in Path(sql_dir).rglob("*.sql"):
+    for path in map(Path, glob(f"{sql_dir}/**/*.sql", recursive=True)):
         # apply substitutions
         if path.is_file():
             sql = render(path.name, template_folder=path.parent, format=False)

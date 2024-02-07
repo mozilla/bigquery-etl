@@ -76,6 +76,10 @@ TOP_LEVEL_KEYWORDS = [
     "UNION DISTINCT",
     "UNION",
     "VALUES",
+    "WHEN MATCHED",
+    "WHEN NOT MATCHED BY SOURCE",
+    "WHEN NOT MATCHED BY TARGET",
+    "WHEN NOT MATCHED",
     "WHERE",
     "WITH(?! OFFSET)",
     "WINDOW",
@@ -744,12 +748,9 @@ class Literal(Token):
 
 
 class JinjaExpression(Token):
-    """Jinja expression delimiters {{ }}.
+    """Jinja expression delimiters {{ }}."""
 
-    May be followed by no whitespace or a new line and increased indent.
-    """
-
-    pattern = re.compile(r"{{.*?}}\n?", re.DOTALL)
+    pattern = re.compile(r"{{.*?}}", re.DOTALL)
 
 
 class JinjaStatement(Token):
@@ -875,13 +876,13 @@ BIGQUERY_TOKEN_PRIORITY = [
     JinjaBlockMiddle,
     JinjaBlockEnd,
     JinjaStatement,
-    MaybeCaseSubclause,
-    CaseSubclause,
     BlockMiddleKeyword,
     BlockStartKeyword,
     BlockEndKeyword,
     AliasSeparator,
     TopLevelKeyword,
+    MaybeCaseSubclause,
+    CaseSubclause,
     NewlineKeyword,
     AngleBracketKeyword,
     SpaceBeforeBracketKeyword,

@@ -3,6 +3,7 @@
 """Determine cost of previously scheduled bigquery-etl queries."""
 
 from argparse import ArgumentParser
+from glob import glob
 from pathlib import Path
 
 from google.cloud import bigquery
@@ -57,9 +58,13 @@ def create_query(query_paths, date, project):
 def main():
     args = parser.parse_args()
 
-    sql_queries = list(Path(args.sql_dir).rglob("query.sql"))
-    python_queries = list(Path(args.sql_dir).rglob("query.py"))
-    multipart_queries = list(Path(args.sql_dir).rglob("part1.sql"))
+    sql_queries = list(map(Path, glob(f"{args.sql_dir}/**/query.sql", recursive=True)))
+    python_queries = list(
+        map(Path, glob(f"{args.sql_dir}/**/query.py", recursive=True))
+    )
+    multipart_queries = list(
+        map(Path, glob(f"{args.sql_dir}/**/part1.sql", recursive=True))
+    )
     query_paths = sql_queries + python_queries + multipart_queries
     partition = args.date.replace("-", "")
     destination_table = f"{args.project}.{args.destination_dataset}.{args.destination_table}${partition}"

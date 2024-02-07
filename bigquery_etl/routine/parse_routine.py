@@ -45,7 +45,7 @@ def get_routines_from_dir(project_dir):
             "project": root.split("/")[-3],
             "is_udf": filename == UDF_FILE,
         }
-        for root, dirs, files in os.walk(project_dir)
+        for root, dirs, files in os.walk(project_dir, followlinks=True)
         for filename in files
         if filename in ROUTINE_FILES
     ]
@@ -234,7 +234,7 @@ def read_routine_dir(*project_dirs):
         raw_routines[project_dirs] = {
             raw_routine.name: raw_routine
             for project_dir in project_dirs
-            for root, dirs, files in os.walk(project_dir)
+            for root, dirs, files in os.walk(project_dir, followlinks=True)
             if os.path.basename(root) != ConfigLoader.get("routine", "example_dir")
             for filename in files
             if filename in ROUTINE_FILES

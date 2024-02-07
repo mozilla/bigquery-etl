@@ -2,6 +2,7 @@
 
 import re
 import sys
+from glob import glob
 from itertools import groupby
 from pathlib import Path
 from subprocess import CalledProcessError
@@ -145,7 +146,11 @@ def _get_references(
     file_paths = {
         path
         for parent in map(Path, paths or ["sql"])
-        for path in (parent.glob("**/*.sql") if parent.is_dir() else [parent])
+        for path in (
+            map(Path, glob(f"{parent}/**/*.sql", recursive=True))
+            if parent.is_dir()
+            else [parent]
+        )
         if not path.name.endswith(".template.sql")  # skip templates
     }
     fail = False

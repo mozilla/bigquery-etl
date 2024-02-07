@@ -216,8 +216,23 @@ class TestMetadata:
                 "r",
             ) as stream:
                 metadata = yaml.safe_load(stream)
+
+            with open(
+                tmpdirname
+                + "/sql/moz-fx-data-shared-prod/telemetry_derived/dataset_metadata.yaml",
+                "r",
+            ) as stream:
+                dataset_metadata = yaml.safe_load(stream)
+
         assert metadata["workgroup_access"] == []
         assert metadata["deprecated"]
+        assert dataset_metadata["workgroup_access"] == []
+        assert dataset_metadata["default_table_workgroup_access"] == [
+            {
+                "members": ["workgroup:mozilla-confidential"],
+                "role": "roles/bigquery.dataViewer",
+            }
+        ]
 
     def test_metadata_update_do_not_update(self, runner):
         with tempfile.TemporaryDirectory() as tmpdirname:
@@ -236,4 +251,4 @@ class TestMetadata:
                 print(metadata)
         assert metadata["workgroup_access"][0]["role"] == "roles/bigquery.dataViewer"
         assert metadata["workgroup_access"][0]["members"] == ["workgroup:revenue/cat4"]
-        assert not metadata["deprecated"]
+        assert "deprecated" not in metadata

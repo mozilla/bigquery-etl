@@ -23,3 +23,4 @@ SELECT
   CAST(NULL AS STRING) AS match_type,
   CAST(NULL AS STRING) AS normalized_os,
   CAST(NULL AS BOOL) AS suggest_data_sharing_enabled,
+  CAST(NULL AS STRING) AS query_type,

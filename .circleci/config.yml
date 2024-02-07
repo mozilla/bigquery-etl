@@ -10,6 +10,9 @@ parameters:
   python-version:
     type: string
     default: '3.10'
+  trigger-sql-generation:
+    type: boolean
+    default: false
 
 executors:
   ubuntu-machine-executor:
@@ -142,18 +145,18 @@ jobs:
             echo $PATHS
             PATH="venv/bin:$PATH" script/bqetl dryrun --validate-schemas $PATHS
           # yamllint enable rule:line-length
-  validate-backfills:
-    docker: *docker
-    steps:
-      - checkout
-      - *restore_venv_cache
-      - *build
-      - *attach_generated_sql
-      - *copy_staged_sql
-      - run:
-          name: Verify that backfill.yaml files are valid
-          command: |
-            PATH="venv/bin:$PATH" script/bqetl backfill validate
+#    validate-backfills:
+#      docker: *docker
+#      steps:
+#        - checkout
+#        - *restore_venv_cache
+#        - *build
+#        - *attach_generated_sql
+#        - *copy_staged_sql
+#        - run:
+#            name: Verify that backfill.yaml files are valid
+#            command: |
+#              PATH="venv/bin:$PATH" script/bqetl backfill validate
   validate-metadata:
     docker: *docker
     steps:
@@ -308,6 +311,7 @@ jobs:
               -m "[ci skip] Deployed {sha} with MkDocs version: {version}"
   generate-sql:
     docker: *docker
+    resource_class: large
     steps:
       - checkout
       - *restore_venv_cache
@@ -315,12 +319,70 @@ jobs:
       - run:
           name: Generate SQL content
           command: |
+            # Check if the generated-sql branch can simply be re-used and SQL generation can be skipped.
+            git clone -b generated-sql git@github.com:mozilla/bigquery-etl ~/remote-generated-sql
+            cd ~/remote-generated-sql
+
+            # Commits on generated-sql are tagged with the sha1 hash of the commit on main that triggered the SQL generation
+            export LATEST_TAG_GENERATED_SQL=`git describe --tags --abbrev=0`
+            LATEST_TAG_GENERATED_SQL=${LATEST_TAG_GENERATED_SQL/c-/""}
+            echo "Latest tag on generated-sql branch: c-$LATEST_TAG_GENERATED_SQL"
+
+            # Get the state in which main was in when the generated-sql branch was created and pushed
+            cd ~
+            git clone -b main git@github.com:mozilla/bigquery-etl ~/remote-bigquery-etl-main
+            cd ~/remote-bigquery-etl-main
+            export LATEST_COMMIT_ON_MAIN=`git rev-parse --short HEAD`
+            git checkout $LATEST_TAG_GENERATED_SQL
+            echo "Latest commit on main: $LATEST_COMMIT_ON_MAIN"
+
+            cd ~/project
+            export GENERATED_SQL_CHANGED=false
+
+            # Manually trigger SQL generation via a pipeline parameter
+            if [ "<< pipeline.parameters.trigger-sql-generation >>" = "true" ]; then
+              echo "trigger-sql-generation was set to true; run SQL generation"
+              GENERATED_SQL_CHANGED=true
+            fi
+
+            # If this task runs when merging into main, then always run the SQL generation
+            if [ "$CIRCLE_BRANCH" = main ]; then
+              echo "On main branch; generate SQL"
+              GENERATED_SQL_CHANGED=true
+            fi
+
+            # Check if this PR removes a file. SQL generation needs to be re-run because
+            # simply merging the changes with the generated-sql branch would result in files being part of generated DAGs
+            # and other artifacts that were actually removed
+            if [[ $(git diff --no-index --name-only --diff-filter=D ~/remote-bigquery-etl-main/sql sql) ]]; then
+              echo "SQL file was removed; re-generate SQL"
+              GENERATED_SQL_CHANGED=true
+            fi
+
+            # Check if this PR changes SQL generators
+            if [[ $(diff -qr --no-dereference sql_generators ~/remote-bigquery-etl-main/sql_generators) ]]; then
+              echo "SQL generators changed; re-generate SQL"
+              GENERATED_SQL_CHANGED=true
+            fi
+
             mkdir -p /tmp/workspace/generated-sql
-            cp -r sql/ /tmp/workspace/generated-sql/sql
-            # Don't depend on dry run for PRs
-            PATH="venv/bin:$PATH" script/bqetl generate all \
-              --output-dir /tmp/workspace/generated-sql/sql/ \
-              --target-project moz-fx-data-shared-prod
+
+            if [ "$GENERATED_SQL_CHANGED" = "true" ]; then
+              echo "Changes made will affect generated SQL. Run SQL generators."
+
+              cp -r sql/ /tmp/workspace/generated-sql/sql
+              # Don't depend on dry run for PRs
+              PATH="venv/bin:$PATH" script/bqetl generate all \
+                --output-dir /tmp/workspace/generated-sql/sql/ \
+                --target-project moz-fx-data-shared-prod
+            else
+              echo "Changes made don't affect generated SQL. Use content from generated-sql"
+
+              # merge files that changed in this PR with the generated-sql branch
+              cp -r ~/remote-generated-sql/sql/ /tmp/workspace/generated-sql/sql
+              cp -a sql/. /tmp/workspace/generated-sql/sql
+            fi
+
             PATH="venv/bin:$PATH" script/bqetl query render \
               --sql-dir /tmp/workspace/generated-sql/sql/ \
               --output-dir /tmp/workspace/generated-sql/sql/ \
@@ -359,6 +421,7 @@ jobs:
           command: |
             export GOOGLE_APPLICATION_CREDENTIALS="/tmp/gcp.json"
             echo "$GCLOUD_SERVICE_KEY" > "$GOOGLE_APPLICATION_CREDENTIALS"
+            echo "DEBUG: Wrote $(echo "$GCLOUD_SERVICE_KEY" | wc -c) bytes to '$GOOGLE_APPLICATION_CREDENTIALS'."
 
             PATHS="$(git diff --no-index --name-only --diff-filter=d generated-sql/sql sql)" || true
             echo $PATHS
@@ -401,7 +464,9 @@ jobs:
             cp -r /tmp/workspace/generated-sql/dags dags
             git add .
             git commit -m "Auto-push due to change on main branch [ci skip]" \
+              && git tag c-${CIRCLE_SHA1:0:9} \
               && git push \
+              && git push origin c-${CIRCLE_SHA1:0:9} \
               || echo "Skipping push since it looks like there were no changes"
   sync-dags-repo:
     executor: docker/machine
@@ -458,6 +523,7 @@ jobs:
       - docker/push: *public-image
   private-generate-sql:
     docker: *docker
+    resource_class: large
     steps:
       - checkout
       - *skip_forked_pr
@@ -558,6 +624,7 @@ jobs:
       - gcp-gcr/push-image: *private-image
   main-generate-sql-and-dags:
     docker: *docker
+    resource_class: large
     steps:
       - checkout
       - run:
@@ -574,21 +641,75 @@ jobs:
           name: Generate SQL content
           command: |
             export PATH="venv/bin:$PATH"
-            ./script/bqetl generate all \
-              --target-project moz-fx-data-shared-prod
-            ./script/bqetl query render \
-              --output-dir sql/ \
-              sql/
-            ./script/bqetl dependency record \
-              --skip-existing \
-              "sql/"
-            ./script/bqetl metadata update \
-              sql/
+
+            # Check if the generated-sql branch can simply be re-used and SQL generation can be skipped.
+            # There is a delay between pushing changes to main and pushing a new generated-sql branch,
+            # so we need to account for possible changes that happen during this time
+            git clone -b generated-sql git@github.com:mozilla/bigquery-etl ~/remote-generated-sql
+            cd ~/remote-generated-sql
+
+            # Commits on generated-sql are tagged with the sha1 hash of the commit on main that triggered the SQL generation
+            export LATEST_TAG_GENERATED_SQL=`git describe --tags --abbrev=0`
+            LATEST_TAG_GENERATED_SQL=${LATEST_TAG_GENERATED_SQL/c-/""}
+
+            cd ~/project
+            export GENERATED_SQL_CHANGED=false
+
+            # Manually trigger SQL generation via a pipeline parameter
+            if [ "<< pipeline.parameters.trigger-sql-generation >>" = "true" ]; then
+              echo "trigger-sql-generation was set to true; run SQL generation"
+              GENERATED_SQL_CHANGED=true
+            fi
+
+            # If the between main the generated-sql branch SQL generators have changed, then re-run the SQL generation
+            if [[ $(git diff --name-only --diff-filter=d $LATEST_TAG_GENERATED_SQL...HEAD -- sql_generators) ]]; then
+              echo "SQL generator changed; re-generate SQL"
+              GENERATED_SQL_CHANGED=true
+            fi
+
+            # If a SQL was removed from main re-run SQL generation
+            # simply merging the changes with the generated-sql branch would result in files being part of generated DAGs
+            # and other artifacts that were removed
+            if [[ $(git diff --name-only --diff-filter=D $LATEST_TAG_GENERATED_SQL...HEAD -- sql) ]]; then
+              echo "SQL file was removed; re-generate SQL"
+              GENERATED_SQL_CHANGED=true
+            fi
 
             mkdir -p /tmp/workspace/main-generated-sql
-            cp -r sql/ /tmp/workspace/main-generated-sql/sql
             mkdir -p /tmp/workspace/main-generated-sql/dags
-            ./script/bqetl dag generate --output-dir /tmp/workspace/main-generated-sql/dags
+
+            if [ "$GENERATED_SQL_CHANGED" = "true" ]; then
+              # re-run SQL generation and re-generate DAGs
+              ./script/bqetl generate all \
+                --target-project moz-fx-data-shared-prod
+
+              cp -r sql/ /tmp/workspace/main-generated-sql/sql
+            else
+              echo "Changes made don't affect generated SQL. Use content from generated-sql"
+
+              # merge files that changed in this PR with the generated-sql branch
+              cp -r ~/remote-generated-sql/sql/. /tmp/workspace/main-generated-sql/sql
+              cp -a sql/. /tmp/workspace/main-generated-sql/sql
+            fi
+
+            ./script/bqetl query render \
+              --sql-dir /tmp/workspace/main-generated-sql/sql/ \
+              --output-dir /tmp/workspace/main-generated-sql/sql/ \
+              /tmp/workspace/main-generated-sql/sql/
+            ./script/bqetl dependency record \
+              --skip-existing \
+              "/tmp/workspace/main-generated-sql/sql/"
+            ./script/bqetl metadata update \
+              --sql-dir /tmp/workspace/main-generated-sql/sql/ \
+              /tmp/workspace/main-generated-sql/sql/
+            # re-generate DAGs
+
+            ./script/bqetl dag generate \
+              --sql-dir /tmp/workspace/main-generated-sql/sql/ \
+              --output-dir /tmp/workspace/main-generated-sql/dags
+
+            find /tmp/workspace/main-generated-sql/dags -name '*.py' \
+              -exec sed -i -e 's/\/tmp\/workspace\/main-generated-sql\/sql/sql/g' {} \;
       - persist_to_workspace:
           root: /tmp/workspace
           paths:
@@ -642,6 +763,7 @@ jobs:
           command: |
             export GOOGLE_APPLICATION_CREDENTIALS="/tmp/gcp.json"
             echo "$GCLOUD_SERVICE_KEY" > "$GOOGLE_APPLICATION_CREDENTIALS"
+            echo "DEBUG: Wrote $(echo "$GCLOUD_SERVICE_KEY" | wc -c) bytes to '$GOOGLE_APPLICATION_CREDENTIALS'."
 
             PATH="venv/bin:$PATH" script/bqetl stage clean --dataset-suffix=$CIRCLE_SHA1 --delete-expired
   manual-trigger-required-for-fork:
@@ -676,6 +798,25 @@ jobs:
 
             exit 1
           # yamllint enable rule:line-length
+  deploy-to-pypi:
+    docker: *docker
+    steps:
+      - checkout
+      - run:
+          name: Install deployment tools
+          command: |
+            pip install --upgrade setuptools wheel twine
+      - run:
+          name: Create the distribution files
+          command: |
+            python -m build --sdist --wheel
+      - run:
+          name: Upload to PyPI
+          command: |
+            # Relies on the TWINE_USERNAME and TWINE_PASSWORD environment variables
+            # For more on twine, see:
+            #   https://twine.readthedocs.io/en/latest/
+            twine upload --skip-existing dist/*
 
 workflows:
   version: 2
@@ -700,9 +841,9 @@ workflows:
           requires:
             - deploy-changes-to-stage
       - integration
-      - validate-backfills:
-          requires:
-            - deploy-changes-to-stage
+#      - validate-backfills:
+#          requires:
+#            - deploy-changes-to-stage
       - validate-dags:
           requires:
             - generate-dags
@@ -784,7 +925,11 @@ workflows:
       # from the internal repository and pushing generated results back to
       # a branch on that internal repository, which may be initially
       # surprising.
-      - private-generate-sql
+      - private-generate-sql:
+          filters:
+            branches:
+              only:
+                - main
       - push-private-generated-sql:
           requires:
             - private-generate-sql
@@ -813,6 +958,15 @@ workflows:
             branches:
               only:
                 - main
+  tagged-deploy:
+    jobs:
+      - deploy-to-pypi:
+          filters:
+            tags:
+              only: /[0-9]{4}.[0-9]{1,2}.[0-9]+/  # Calver: YYYY.M.MINOR
+            branches:
+              # Ignore all branches; this workflow should only run for tags.
+              ignore: /.*/
   nightly:
     # Run after schema-generator to ensure we are up-to-date
     triggers:

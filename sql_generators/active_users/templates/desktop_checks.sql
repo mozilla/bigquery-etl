@@ -9,6 +9,7 @@
    (you can also run them locally with `bqetl check run`).
 #}
 {% raw -%}
+
 #warn
 WITH dau_sum AS (
   SELECT

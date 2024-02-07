@@ -4,6 +4,7 @@ import fnmatch
 import os
 import re
 from fnmatch import fnmatchcase
+from glob import glob
 from pathlib import Path
 from typing import Iterator, List, Optional, Tuple
 
@@ -109,9 +110,11 @@ def paths_matching_name_pattern(
         pattern = "*.*"
 
     if os.path.isdir(pattern):
-        for root, _, _ in os.walk(pattern):
+        for root, _, _ in os.walk(pattern, followlinks=True):
             for file in files:
-                matching_files.extend(Path(root).rglob(file))
+                matching_files.extend(
+                    map(Path, glob(f"{root}/**/{file}", recursive=True))
+                )
     elif os.path.isfile(pattern):
         matching_files.append(Path(pattern))
     else:
@@ -122,7 +125,9 @@ def paths_matching_name_pattern(
         all_matching_files: List[Path] = []
 
         for file in files:
-            all_matching_files.extend(Path(sql_path).rglob(file))
+            all_matching_files.extend(
+                map(Path, glob(f"{sql_path}/**/{file}", recursive=True))
+            )
 
         for query_file in all_matching_files:
             match = file_regex.match(str(query_file))

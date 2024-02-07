@@ -3,4 +3,3 @@
 
 #fail
 {{ is_unique(["submission_date", "meta_attribution_app", "normalized_channel", "country"]) }}
-

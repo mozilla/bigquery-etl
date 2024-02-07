@@ -4,8 +4,10 @@ import logging
 import os
 import sys
 from argparse import ArgumentParser
+from pathlib import Path
 
 import click
+from google.cloud import bigquery
 
 from bigquery_etl.config import ConfigLoader
 
@@ -95,6 +97,37 @@ def validate_change_control(
                     )
                 )
                 return False
+    return True
+
+
+def validate_deprecation(table_metadata, dataset_metadata, dataset_path):
+    """
+    Check for  missing metadata.yaml files in a dataset when deprecating a table.
+
+    Every dataset for which a deprecated table is being added for the first time will need this check.
+    """
+    if table_metadata.deprecated:
+        # if this is not the first time a deprecated table is added to this dataset, workgroup access in dataset_metadata.yaml should be []
+        if dataset_metadata.workgroup_access:
+            client = bigquery.Client()
+            tables = list(client.list_tables(dataset_path.name))
+
+            missing_metadata_files = []
+
+            for table in tables:
+                table_path = dataset_path / table.table_id
+                table_metadata_path = table_path / "metadata.yaml"
+
+                if not Path(table_metadata_path).exists():
+                    missing_metadata_files.append(str(table_metadata_path))
+
+            if missing_metadata_files:
+                logging.error(
+                    "The following metadata files are missing: \n"
+                    + "\n".join({missing_metadata_files})
+                )
+                return False
+
     return True
 
 

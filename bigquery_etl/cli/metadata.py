@@ -1,4 +1,5 @@
 """bigquery-etl CLI metadata command."""
+import sys
 from pathlib import Path
 from typing import Optional
 
@@ -7,6 +8,7 @@ import click
 from bigquery_etl.metadata.parse_metadata import DatasetMetadata, Metadata
 
 from ..cli.utils import paths_matching_name_pattern, project_id_option, sql_dir_option
+from ..metadata.validate_metadata import validate_deprecation
 
 
 @click.group(
@@ -45,9 +47,8 @@ def update(name: str, sql_dir: Optional[str], project_id: Optional[str]) -> None
 
     # create and populate the dataset metadata yaml file if it does not exist
     for table_metadata_file in table_metadata_files:
-        dataset_metadata_path = (
-            Path(table_metadata_file).parent.parent / "dataset_metadata.yaml"
-        )
+        dataset_path = Path(table_metadata_file).parent.parent
+        dataset_metadata_path = dataset_path / "dataset_metadata.yaml"
         if not dataset_metadata_path.exists():
             continue
         dataset_metadata = DatasetMetadata.from_file(dataset_metadata_path)
@@ -64,6 +65,13 @@ def update(name: str, sql_dir: Optional[str], project_id: Optional[str]) -> None
             dataset_metadata_updated = True
 
         if table_metadata.deprecated:
+            if not validate_deprecation(
+                table_metadata,
+                dataset_metadata,
+                dataset_path,
+            ):
+                sys.exit(1)
+
             # set workgroup: [] if table has been tagged as deprecated
             # this overwrites existing workgroups
             table_metadata.workgroup_access = []

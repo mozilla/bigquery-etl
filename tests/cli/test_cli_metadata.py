@@ -2,6 +2,7 @@ import distutils
 import os
 import tempfile
 from pathlib import Path
+from unittest.mock import patch
 
 import pytest
 import yaml
@@ -202,7 +203,8 @@ class TestMetadata:
         ]
         assert not metadata["deprecated"]
 
-    def test_metadata_update_with_deprecation(self, runner):
+    @patch("google.cloud.bigquery.Client")
+    def test_metadata_update_with_deprecation(self, mock_bigquery, runner):
         with tempfile.TemporaryDirectory() as tmpdirname:
             distutils.dir_util.copy_tree(str(TEST_DIR), str(tmpdirname))
             name = [
@@ -223,6 +225,10 @@ class TestMetadata:
                 "r",
             ) as stream:
                 dataset_metadata = yaml.safe_load(stream)
+
+        missing_table = mock_bigquery.Table()
+        missing_table.table_id = "test_table"
+        mock_bigquery().list_tables.return_value = []
 
         assert metadata["workgroup_access"] == []
         assert metadata["deprecated"]
@@ -252,3 +258,132 @@ class TestMetadata:
         assert metadata["workgroup_access"][0]["role"] == "roles/bigquery.dataViewer"
         assert metadata["workgroup_access"][0]["members"] == ["workgroup:revenue/cat4"]
         assert "deprecated" not in metadata
+
+    @patch("google.cloud.bigquery.Client")
+    def test_validate_metadata_with_deprecation_missing_table(
+        self, mock_bigquery, runner
+    ):
+        with tempfile.TemporaryDirectory() as tmpdirname:
+            distutils.dir_util.copy_tree(str(TEST_DIR), str(tmpdirname))
+            name = [
+                str(tmpdirname)
+                + "/sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_scalar_aggregates_v1/"
+            ]
+
+            missing_table = mock_bigquery.Table()
+            missing_table.table_id = "test_table"
+            mock_bigquery().list_tables.return_value = [missing_table]
+
+            runner.invoke(update, name, "--sql_dir=" + str(tmpdirname) + "/sql")
+
+            with open(
+                tmpdirname
+                + "/sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_scalar_aggregates_v1/metadata.yaml",
+                "r",
+            ) as stream:
+                metadata = yaml.safe_load(stream)
+
+            with open(
+                tmpdirname
+                + "/sql/moz-fx-data-shared-prod/telemetry_derived/dataset_metadata.yaml",
+                "r",
+            ) as stream:
+                dataset_metadata = yaml.safe_load(stream)
+
+            assert metadata["deprecated"]
+            assert dataset_metadata["workgroup_access"] == [
+                {
+                    "members": ["workgroup:mozilla-confidential"],
+                    "role": "roles/bigquery.metadataViewer",
+                }
+            ]
+            assert dataset_metadata["default_table_workgroup_access"] == [
+                {
+                    "members": ["workgroup:mozilla-confidential"],
+                    "role": "roles/bigquery.dataViewer",
+                }
+            ]
+
+    @patch("google.cloud.bigquery.Client")
+    def test_validate_metadata_with_deprecation_missing_metadata(
+        self, mock_bigquery, runner
+    ):
+        with tempfile.TemporaryDirectory() as tmpdirname:
+            distutils.dir_util.copy_tree(str(TEST_DIR), str(tmpdirname))
+            name = [
+                str(tmpdirname)
+                + "/sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_scalar_aggregates_v1/"
+            ]
+
+            table_with_missing_metadata = mock_bigquery.Table()
+            table_with_missing_metadata.table_id = "clients_daily_scalar_aggregates_v2"
+            mock_bigquery().list_tables.return_value = [table_with_missing_metadata]
+
+            runner.invoke(update, name, "--sql_dir=" + str(tmpdirname) + "/sql")
+
+            with open(
+                tmpdirname
+                + "/sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_scalar_aggregates_v1/metadata.yaml",
+                "r",
+            ) as stream:
+                metadata = yaml.safe_load(stream)
+
+            with open(
+                tmpdirname
+                + "/sql/moz-fx-data-shared-prod/telemetry_derived/dataset_metadata.yaml",
+                "r",
+            ) as stream:
+                dataset_metadata = yaml.safe_load(stream)
+
+            assert metadata["deprecated"]
+            assert dataset_metadata["workgroup_access"] == [
+                {
+                    "members": ["workgroup:mozilla-confidential"],
+                    "role": "roles/bigquery.metadataViewer",
+                }
+            ]
+            assert dataset_metadata["default_table_workgroup_access"] == [
+                {
+                    "members": ["workgroup:mozilla-confidential"],
+                    "role": "roles/bigquery.dataViewer",
+                }
+            ]
+
+    @patch("google.cloud.bigquery.Client")
+    def test_validate_metadata_with_deprecation_pass(self, mock_bigquery, runner):
+        with tempfile.TemporaryDirectory() as tmpdirname:
+            distutils.dir_util.copy_tree(str(TEST_DIR), str(tmpdirname))
+            name = [
+                str(tmpdirname)
+                + "/sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_scalar_aggregates_v1/"
+            ]
+
+            table_with_metadata = mock_bigquery.Table()
+            table_with_metadata.table_id = "clients_daily_scalar_aggregates_v3"
+            mock_bigquery().list_tables.return_value = [table_with_metadata]
+
+            runner.invoke(update, name, "--sql_dir=" + str(tmpdirname) + "/sql")
+
+            with open(
+                tmpdirname
+                + "/sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_scalar_aggregates_v1/metadata.yaml",
+                "r",
+            ) as stream:
+                metadata = yaml.safe_load(stream)
+
+            with open(
+                tmpdirname
+                + "/sql/moz-fx-data-shared-prod/telemetry_derived/dataset_metadata.yaml",
+                "r",
+            ) as stream:
+                dataset_metadata = yaml.safe_load(stream)
+
+            assert metadata["deprecated"]
+            assert metadata["workgroup_access"] == []
+            assert dataset_metadata["workgroup_access"] == []
+            assert dataset_metadata["default_table_workgroup_access"] == [
+                {
+                    "members": ["workgroup:mozilla-confidential"],
+                    "role": "roles/bigquery.dataViewer",
+                }
+            ]

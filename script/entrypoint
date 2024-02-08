@@ -10,7 +10,7 @@ if [ -n "$GCLOUD_SERVICE_KEY" ]; then
     # See https://cloud.google.com/docs/authentication/production
     export GOOGLE_APPLICATION_CREDENTIALS="${GOOGLE_APPLICATION_CREDENTIALS:-/tmp/gcp.json}"
     # Only write the credentials file if it doesn't exist yet or doesn't match the current credentials.
-    if [ ! -e "$GOOGLE_APPLICATION_CREDENTIALS" -o "$(cat "$GOOGLE_APPLICATION_CREDENTIALS")" != "$GCLOUD_SERVICE_KEY" ]; then
+    if [ ! -e "$GOOGLE_APPLICATION_CREDENTIALS" -o "$(cat "$GOOGLE_APPLICATION_CREDENTIALS" | md5sum)" != "$(echo "$GCLOUD_SERVICE_KEY" | md5sum)" ]; then
         echo "$GCLOUD_SERVICE_KEY" > "$GOOGLE_APPLICATION_CREDENTIALS"
         echo "DEBUG: Wrote $(echo "$GCLOUD_SERVICE_KEY" | wc -c) bytes to '$GOOGLE_APPLICATION_CREDENTIALS'."
     fi

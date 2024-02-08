@@ -3,9 +3,11 @@ WITH
   SELECT
     submission_date,
     event_id,
+    res.product_result_type AS product_result_type,
     normalized_channel,
     normalized_country_code,
-    res.product_result_type AS product_result_type,
+    pref_fx_suggestions,
+    pref_sponsored_suggestions,
     CASE
       WHEN product_selected_result = res.product_result_type THEN 1
     ELSE
@@ -28,6 +30,8 @@ WITH
       product_result_type,
       mozdata.udf.mode_last(ARRAY_AGG(normalized_channel)) AS normalized_channel,
       mozdata.udf.mode_last(ARRAY_AGG(normalized_country_code)) AS normalized_country_code,
+      mozdata.udf.mode_last(ARRAY_AGG(pref_fx_suggestions)) AS pref_fx_suggestions,
+      mozdata.udf.mode_last(ARRAY_AGG(pref_sponsored_suggestions)) AS pref_sponsored_suggestions,
       COUNTIF(is_clicked > 0) AS is_clicked,
       COUNT(*) as n_impressions,
     FROM temp_unnested
@@ -40,6 +44,8 @@ SELECT
   submission_date,
   normalized_country_code,
   normalized_channel,
+  pref_fx_suggestions,
+  pref_sponsored_suggestions,
   product_result_type,
   SUM(n_impressions) AS n_impressions,
   COUNTIF(is_clicked > 0) AS n_clicks
@@ -48,9 +54,14 @@ FROM
 GROUP BY
   submission_date,
   normalized_country_code,
+  pref_fx_suggestions,
+  pref_sponsored_suggestions,
   product_result_type,
   normalized_channel
 ORDER BY
   submission_date DESC,
   normalized_country_code DESC,
+  pref_fx_suggestions DESC,
+  pref_sponsored_suggestions DESC,
+  normalized_channel DESC,
   n_impressions DESC

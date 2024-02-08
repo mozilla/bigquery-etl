@@ -41,7 +41,7 @@ MERGE INTO
             e.value.int_value
           ORDER BY
             a.event_timestamp ASC
-        ) AS rnk
+        ) AS row_num
       FROM
         `moz-fx-data-marketing-prod.analytics_313696158.events_2*` AS a
       JOIN
@@ -51,7 +51,7 @@ MERGE INTO
         AND e.value.int_value IS NOT NULL
         AND a.event_name = 'session_start'
       QUALIFY
-        rnk = 1
+        row_num = 1
     ),
     --get all the page views and min/max event timestamp and whether there was a product download
     event_aggregates AS (
@@ -173,11 +173,11 @@ MERGE INTO
             ga_session_id
           ORDER BY
             event_timestamp ASC
-        ) AS lp_rnk
+        ) AS lp_row_num
       FROM
         landing_page_by_session_staging
       QUALIFY
-        lp_rnk = 1
+        lp_row_num = 1
     ),
     install_targets_staging AS (
       SELECT

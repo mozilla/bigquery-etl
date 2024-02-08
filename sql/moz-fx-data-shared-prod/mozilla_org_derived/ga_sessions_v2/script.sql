@@ -45,7 +45,7 @@ MERGE INTO
       FROM
         `moz-fx-data-marketing-prod.analytics_313696158.events_2*` AS a
       JOIN
-        UNNEST(event_params) e
+        UNNEST(event_params) AS e
       WHERE
         e.key = 'ga_session_id'
         AND e.value.int_value IS NOT NULL
@@ -78,7 +78,7 @@ MERGE INTO
       FROM
         `moz-fx-data-marketing-prod.analytics_313696158.events_2*` AS a
       JOIN
-        UNNEST(event_params) e
+        UNNEST(event_params) AS e
       WHERE
         e.key = 'ga_session_id'
         AND e.value.int_value IS NOT NULL
@@ -106,7 +106,7 @@ MERGE INTO
       FROM
         `moz-fx-data-marketing-prod.analytics_313696158.events_2*`
       JOIN
-        UNNEST(event_params) e
+        UNNEST(event_params) AS e
       WHERE
         event_name = 'stub_session_set'
         AND e.key = 'id'
@@ -156,7 +156,7 @@ MERGE INTO
       FROM
         `moz-fx-data-marketing-prod.analytics_313696158.events_2*` AS a
       JOIN
-        UNNEST(event_params) e
+        UNNEST(event_params) AS e
       WHERE
         e.key = 'entrances'
         AND e.value.int_value = 1
@@ -188,7 +188,7 @@ MERGE INTO
       FROM
         `moz-fx-data-marketing-prod.analytics_313696158.events_2*` AS a
       JOIN
-        UNNEST(event_params) e
+        UNNEST(event_params) AS e
       WHERE
         e.key = 'ga_session_id'
         AND e.value.int_value IS NOT NULL

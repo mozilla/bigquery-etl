@@ -335,6 +335,13 @@ fields:
         component init and updated when changed in browser.
 
         '
+    - name: gfx_status_headless
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Boolean indicated whether graphics is running in headless (no
+        display) mode (Migrated from the geckoview metric of the same name).
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -1814,6 +1821,21 @@ fields:
         RR
 
         '
+    - name: gfx_content_frame_time_reason
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The reason that `gfx.content.frame_time.from_paint` recorded a
+        slow (>200ms) result, if any. (Migrated from the geckoview metric of the same
+        name).
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -2162,6 +2184,89 @@ fields:
       type: STRING
       mode: NULLABLE
       description: 'Current status of the GPU process feature
+
+        '
+    - name: gfx_adapter_primary_description
+      type: STRING
+      mode: NULLABLE
+      description: 'Long form description of the Graphics adapter (Migrated from the
+        geckoview metric of the same name).
+
+        '
+    - name: gfx_adapter_primary_device_id
+      type: STRING
+      mode: NULLABLE
+      description: 'Graphics adapter device identification (Migrated from the geckoview
+        metric of the same name).
+
+        '
+    - name: gfx_adapter_primary_driver_date
+      type: STRING
+      mode: NULLABLE
+      description: 'Graphics adapter driver date (Migrated from the geckoview metric
+        of the same name).
+
+        '
+    - name: gfx_adapter_primary_driver_files
+      type: STRING
+      mode: NULLABLE
+      description: 'List of graphics adapter driver files (Migrated from the geckoview
+        metric of the same name).
+
+        '
+    - name: gfx_adapter_primary_driver_vendor
+      type: STRING
+      mode: NULLABLE
+      description: 'Graphics adapter driver vendor identification (Migrated from the
+        geckoview metric of the same name).
+
+        '
+    - name: gfx_adapter_primary_driver_version
+      type: STRING
+      mode: NULLABLE
+      description: 'Graphics adapter driver version (Migrated from the geckoview metric
+        of the same name).
+
+        '
+    - name: gfx_adapter_primary_subsystem_id
+      type: STRING
+      mode: NULLABLE
+      description: 'Graphics adapter subsystem identification (Migrated from the geckoview
+        metric of the same name).
+
+        '
+    - name: gfx_adapter_primary_vendor_id
+      type: STRING
+      mode: NULLABLE
+      description: 'Graphics adapter vendor identification (Migrated from the geckoview
+        metric of the same name).
+
+        '
+    - name: gfx_feature_webrender
+      type: STRING
+      mode: NULLABLE
+      description: 'Whether webrender is enabled or disabled, and why. (Migrated from
+        the geckoview metric of the same name).
+
+        '
+    - name: gfx_status_compositor
+      type: STRING
+      mode: NULLABLE
+      description: 'Name of the graphics compositor in use. Possible values are "opengl,
+        d3d11, client, webrender or basic" (Migrated from the geckoview metric of
+        the same name).
+
+        '
+    - name: gfx_status_last_compositor_gecko_version
+      type: STRING
+      mode: NULLABLE
+      description: 'The gecko version at the last time a compositor was initialized,
+        and therefore when gfx_status_compositor was last updated. Due to gfx_status_compositor''s
+        user lifetime we see lots of unexpected values for the current gecko version.
+        We believe this is because the user has not opened a tab since they were updated
+        to a version where webrender should be enabled on their device. This can be
+        used to verify that theory. (Migrated from the geckoview metric of the same
+        name).
 
         '
   - name: timespan
@@ -4763,6 +4868,290 @@ fields:
         data sizes
 
         '
+    - name: gfx_checkerboard_duration
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The duration of a checkerboard event. Checkerboarding is when
+        painting has not kept up with asynchronous panning and zooming so the compositor
+        has to display a "checkerboard pattern" (or in practice, the background color)
+        rather than the actual page content. (Migrated from the geckoview metric of
+        the same name).
+
+        '
+    - name: gfx_checkerboard_potential_duration
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The total amount of time that we could reasonably be checkerboarding.
+        This is the union of two possibly-intersecting sets of time periods: The first
+        set is that in which checkerboarding was actually happening, since by definition
+        it could potentially be happening. The second set is that in which the APZC
+        is actively transforming content in the compositor, since it could potentially
+        transform it so as to display checkerboarding to the user. Combined with other
+        information, this allows us to meaningfully say how frequently users actually
+        enncounters checkerboarding. (Migrated from the geckoview metric of the same
+        name).
+
+        '
+    - name: gfx_composite_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The time taken to composite a frame. On non-webrender this is
+        the time taken in `CompositorBridgeParent::CompositeToTarget()`. On webrender,
+        this is the time taken from the start of `WebRenderBridgeParent::CompositeToTarget()`,
+        until the render thread has rendered the frame (in `RenderThread::HandleFrameOneDoc()`).
+        (Migrated from the geckoview metric of the same name).
+
+        '
+    - name: gfx_content_full_paint_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time spent in the full paint pipeline for content until it''s
+        ready for composition. For non-webrender this includes `paint_time`, plus
+        rasterization if OMTP is enabled. For webrender, this includes `paint_time`,
+        plus scene building time. (Migrated from the geckoview metric of the same
+        name).
+
+        '
+    - name: gfx_content_paint_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time spent in the main-thread paint pipeline for content. For
+        non-webrender, this includes display list building, layer building, and when
+        OMTP is disabled, rasterization. For webrender, this includes display list
+        building, and webrender display list building. (Migrated from the geckoview
+        metric of the same name).
+
+        '
+    - name: gfx_scroll_present_latency
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time between receiving a scroll event on the event loop and compositing
+        its result onto the screen (ms). (Migrated from the geckoview metric of the
+        same name).
+
+        '
   - name: quantity
     type: RECORD
     mode: NULLABLE
@@ -4864,6 +5253,34 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: The number of entries stored in the SiteSecurityServiceState nsIDataStorage
+    - name: gfx_adapter_primary_ram
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Graphics adapter dedicated memory (Migrated from the geckoview
+        metric of the same name).
+
+        '
+    - name: gfx_display_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Amount of displays connected to the device (Migrated from the
+        geckoview metric of the same name).
+
+        '
+    - name: gfx_display_primary_height
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Height of the primary display, takes device rotation into account.
+        (Migrated from the geckoview metric of the same name).
+
+        '
+    - name: gfx_display_primary_width
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Width of the primary display, takes device rotation into account.
+        (Migrated from the geckoview metric of the same name).
+
+        '
   - name: labeled_boolean
     type: RECORD
     mode: NULLABLE
@@ -5814,6 +6231,201 @@ fields:
           mode: NULLABLE
       description: 'The upload throughput for http/3 request size between 50MB and
         100MB. Measured in megabits per second, Mbps.
+
+        '
+    - name: gfx_checkerboard_peak_pixel_count
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The peak number of CSS pixels that checkerboarded during a checkerboard
+        event. The minimum value of the largest histogram bucket is the size of a
+        4k display with maximum APZ zooming. (Migrated from the geckoview metric of
+        the same name).
+
+        '
+    - name: gfx_checkerboard_severity
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'An opaque measurement of the severity of a checkerboard event.
+        This doesn''t have units, it''s just useful for comparing two checkerboard
+        events to see which one is worse, for some implementation-specific definition
+        of "worse". The larger the value, the worse the checkerboarding. (Migrated
+        from the geckoview metric of the same name).
+
+        '
+    - name: gfx_content_frame_time_from_paint
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The time, in percentage of a vsync interval, spent from beginning
+        a paint in the content process until that frame is presented in the compositor.
+        (Migrated from the geckoview metric of the same name).
+
+        '
+    - name: gfx_content_frame_time_from_vsync
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The time, in percentage of a vsync interval, spent from the vsync
+        that started a paint in the content process until that frame is presented
+        in the compositor. (Migrated from the geckoview metric of the same name).
+
+        '
+    - name: gfx_content_frame_time_with_svg
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The time, in percentage of a vsync interval, spent from beginning
+        a paint in the content process until that frame is presented in the compositor,
+        for frames that contained an SVG to be drawn by webrender. (Migrated from
+        the geckoview metric of the same name).
+
+        '
+    - name: gfx_content_frame_time_without_resource_upload
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The time, in percentage of a vsync interval, spent from beginning
+        a paint in the content process until that frame is presented in the compositor
+        by webrender, excluding time spent uploading resources. (Migrated from the
+        geckoview metric of the same name).
+
+        '
+    - name: gfx_content_frame_time_without_upload
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The time, in percentage of a vsync interval, spent from beginning
+        a paint in the content process until that frame is presented in the compositor
+        by webrender, excluding time spent uploading any content. (Migrated from the
+        geckoview metric of the same name).
 
         '
   - name: url2

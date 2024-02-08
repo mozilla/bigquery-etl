@@ -50,7 +50,8 @@ SELECT
       metrics.boolean.notifications_permission_granted,
       metrics.boolean.cookie_banners_service_detect_only,
       metrics.boolean.extensions_use_remote_policy,
-      metrics.boolean.extensions_use_remote_pref
+      metrics.boolean.extensions_use_remote_pref,
+      metrics.boolean.gfx_status_headless
     ) AS `boolean`,
     STRUCT(
       metrics.counter.glean_error_io,
@@ -175,7 +176,8 @@ SELECT
       metrics.labeled_counter.formautofill_form_submission_heuristic,
       metrics.labeled_counter.networking_http_channel_onstart_success_https_rr,
       metrics.labeled_counter.networking_https_rr_presented,
-      metrics.labeled_counter.networking_https_upgrade_with_https_rr
+      metrics.labeled_counter.networking_https_upgrade_with_https_rr,
+      metrics.labeled_counter.gfx_content_frame_time_reason
     ) AS `labeled_counter`,
     metrics.memory_distribution,
     STRUCT(
@@ -191,7 +193,18 @@ SELECT
       metrics.string.extensions_quarantined_domains_remotehash,
       metrics.string.glean_client_annotation_experimentation_id,
       metrics.string.glean_database_rkv_load_error,
-      metrics.string.gpu_process_feature_status
+      metrics.string.gpu_process_feature_status,
+      metrics.string.gfx_adapter_primary_description,
+      metrics.string.gfx_adapter_primary_device_id,
+      metrics.string.gfx_adapter_primary_driver_date,
+      metrics.string.gfx_adapter_primary_driver_files,
+      metrics.string.gfx_adapter_primary_driver_vendor,
+      metrics.string.gfx_adapter_primary_driver_version,
+      metrics.string.gfx_adapter_primary_subsystem_id,
+      metrics.string.gfx_adapter_primary_vendor_id,
+      metrics.string.gfx_feature_webrender,
+      metrics.string.gfx_status_compositor,
+      metrics.string.gfx_status_last_compositor_gecko_version
     ) AS `string`,
     metrics.quantity,
     metrics.custom_distribution,
@@ -240,7 +253,8 @@ SELECT
       metrics.boolean.notifications_permission_granted,
       metrics.boolean.cookie_banners_service_detect_only,
       metrics.boolean.extensions_use_remote_policy,
-      metrics.boolean.extensions_use_remote_pref
+      metrics.boolean.extensions_use_remote_pref,
+      metrics.boolean.gfx_status_headless
     ) AS `boolean`,
     STRUCT(
       metrics.counter.glean_error_io,
@@ -365,7 +379,8 @@ SELECT
       metrics.labeled_counter.formautofill_form_submission_heuristic,
       metrics.labeled_counter.networking_http_channel_onstart_success_https_rr,
       metrics.labeled_counter.networking_https_rr_presented,
-      metrics.labeled_counter.networking_https_upgrade_with_https_rr
+      metrics.labeled_counter.networking_https_upgrade_with_https_rr,
+      metrics.labeled_counter.gfx_content_frame_time_reason
     ) AS `labeled_counter`,
     metrics.memory_distribution,
     STRUCT(
@@ -381,7 +396,18 @@ SELECT
       metrics.string.extensions_quarantined_domains_remotehash,
       metrics.string.glean_client_annotation_experimentation_id,
       metrics.string.glean_database_rkv_load_error,
-      metrics.string.gpu_process_feature_status
+      metrics.string.gpu_process_feature_status,
+      metrics.string.gfx_adapter_primary_description,
+      metrics.string.gfx_adapter_primary_device_id,
+      metrics.string.gfx_adapter_primary_driver_date,
+      metrics.string.gfx_adapter_primary_driver_files,
+      metrics.string.gfx_adapter_primary_driver_vendor,
+      metrics.string.gfx_adapter_primary_driver_version,
+      metrics.string.gfx_adapter_primary_subsystem_id,
+      metrics.string.gfx_adapter_primary_vendor_id,
+      metrics.string.gfx_feature_webrender,
+      metrics.string.gfx_status_compositor,
+      metrics.string.gfx_status_last_compositor_gecko_version
     ) AS `string`,
     metrics.quantity,
     metrics.custom_distribution,

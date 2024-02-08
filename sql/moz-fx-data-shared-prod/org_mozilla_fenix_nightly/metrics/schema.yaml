@@ -252,7 +252,7 @@ fields:
       type: BOOLEAN
       mode: NULLABLE
       description: 'Boolean indicated whether graphics is running in headless (no
-        display) mode
+        display) mode (Migrated from the geckoview metric of the same name).
 
         '
     - name: addons_has_enabled_addons
@@ -1432,7 +1432,8 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'The reason that `gfx.content.frame_time.from_paint` recorded a
-        slow (>200ms) result, if any.
+        slow (>200ms) result, if any. (Migrated from the geckoview metric of the same
+        name).
 
         '
     - name: glean_error_invalid_state
@@ -3221,56 +3222,65 @@ fields:
     - name: gfx_adapter_primary_description
       type: STRING
       mode: NULLABLE
-      description: 'Long form description of the Graphics adapter
+      description: 'Long form description of the Graphics adapter (Migrated from the
+        geckoview metric of the same name).
 
         '
     - name: gfx_adapter_primary_device_id
       type: STRING
       mode: NULLABLE
-      description: 'Graphics adapter device identification
+      description: 'Graphics adapter device identification (Migrated from the geckoview
+        metric of the same name).
 
         '
     - name: gfx_adapter_primary_driver_date
       type: STRING
       mode: NULLABLE
-      description: 'Graphics adapter driver date
+      description: 'Graphics adapter driver date (Migrated from the geckoview metric
+        of the same name).
 
         '
     - name: gfx_adapter_primary_driver_files
       type: STRING
       mode: NULLABLE
-      description: 'List of graphics adapter driver files
+      description: 'List of graphics adapter driver files (Migrated from the geckoview
+        metric of the same name).
 
         '
     - name: gfx_adapter_primary_driver_vendor
       type: STRING
       mode: NULLABLE
-      description: 'Graphics adapter driver vendor identification
+      description: 'Graphics adapter driver vendor identification (Migrated from the
+        geckoview metric of the same name).
 
         '
     - name: gfx_adapter_primary_driver_version
       type: STRING
       mode: NULLABLE
-      description: 'Graphics adapter driver version
+      description: 'Graphics adapter driver version (Migrated from the geckoview metric
+        of the same name).
 
         '
     - name: gfx_adapter_primary_subsystem_id
       type: STRING
       mode: NULLABLE
-      description: 'Graphics adapter subsystem identification
+      description: 'Graphics adapter subsystem identification (Migrated from the geckoview
+        metric of the same name).
 
         '
     - name: gfx_adapter_primary_vendor_id
       type: STRING
       mode: NULLABLE
-      description: 'Graphics adapter vendor identification
+      description: 'Graphics adapter vendor identification (Migrated from the geckoview
+        metric of the same name).
 
         '
     - name: gfx_status_compositor
       type: STRING
       mode: NULLABLE
       description: 'Name of the graphics compositor in use. Possible values are "opengl,
-        d3d11, client, webrender or basic"
+        d3d11, client, webrender or basic" (Migrated from the geckoview metric of
+        the same name).
 
         '
     - name: metrics_toolbar_position
@@ -3379,7 +3389,10 @@ fields:
     - name: gfx_feature_webrender
       type: STRING
       mode: NULLABLE
-      description: Whether webrender is enabled or disabled, and why.
+      description: 'Whether webrender is enabled or disabled, and why. (Migrated from
+        the geckoview metric of the same name).
+
+        '
     - name: gfx_status_last_compositor_gecko_version
       type: STRING
       mode: NULLABLE
@@ -3388,7 +3401,8 @@ fields:
         user lifetime we see lots of unexpected values for the current gecko version.
         We believe this is because the user has not opened a tab since they were updated
         to a version where webrender should be enabled on their device. This can be
-        used to verify that theory.
+        used to verify that theory. (Migrated from the geckoview metric of the same
+        name).
 
         '
     - name: preferences_enhanced_tracking_protection
@@ -3641,6 +3655,7 @@ fields:
         the time taken in `CompositorBridgeParent::CompositeToTarget()`. On webrender,
         this is the time taken from the start of `WebRenderBridgeParent::CompositeToTarget()`,
         until the render thread has rendered the frame (in `RenderThread::HandleFrameOneDoc()`).
+        (Migrated from the geckoview metric of the same name).
 
         '
     - name: geckoview_page_load_time
@@ -3775,7 +3790,8 @@ fields:
       description: 'The duration of a checkerboard event. Checkerboarding is when
         painting has not kept up with asynchronous panning and zooming so the compositor
         has to display a "checkerboard pattern" (or in practice, the background color)
-        rather than the actual page content.
+        rather than the actual page content. (Migrated from the geckoview metric of
+        the same name).
 
         '
     - name: gfx_checkerboard_potential_duration
@@ -3825,7 +3841,8 @@ fields:
         is actively transforming content in the compositor, since it could potentially
         transform it so as to display checkerboarding to the user. Combined with other
         information, this allows us to meaningfully say how frequently users actually
-        enncounters checkerboarding.
+        enncounters checkerboarding. (Migrated from the geckoview metric of the same
+        name).
 
         '
     - name: gfx_content_full_paint_time
@@ -3871,7 +3888,8 @@ fields:
       description: 'Time spent in the full paint pipeline for content until it''s
         ready for composition. For non-webrender this includes `paint_time`, plus
         rasterization if OMTP is enabled. For webrender, this includes `paint_time`,
-        plus scene building time.
+        plus scene building time. (Migrated from the geckoview metric of the same
+        name).
 
         '
     - name: gfx_content_paint_time
@@ -3917,7 +3935,8 @@ fields:
       description: 'Time spent in the main-thread paint pipeline for content. For
         non-webrender, this includes display list building, layer building, and when
         OMTP is disabled, rasterization. For webrender, this includes display list
-        building, and webrender display list building.
+        building, and webrender display list building. (Migrated from the geckoview
+        metric of the same name).
 
         '
     - name: gfx_webrender_render_time
@@ -5109,7 +5128,8 @@ fields:
         description: This was accidentally sent in the past and is now deprecated.
           See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Time between receiving a scroll event on the event loop and compositing
-        its result onto the screen (ms).
+        its result onto the screen (ms). (Migrated from the geckoview metric of the
+        same name).
 
         '
     - name: logins_store_read_query_time
@@ -10768,7 +10788,8 @@ fields:
           See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The peak number of CSS pixels that checkerboarded during a checkerboard
         event. The minimum value of the largest histogram bucket is the size of a
-        4k display with maximum APZ zooming.
+        4k display with maximum APZ zooming. (Migrated from the geckoview metric of
+        the same name).
 
         '
     - name: gfx_checkerboard_severity
@@ -10796,7 +10817,8 @@ fields:
       description: 'An opaque measurement of the severity of a checkerboard event.
         This doesn''t have units, it''s just useful for comparing two checkerboard
         events to see which one is worse, for some implementation-specific definition
-        of "worse". The larger the value, the worse the checkerboarding.
+        of "worse". The larger the value, the worse the checkerboarding. (Migrated
+        from the geckoview metric of the same name).
 
         '
     - name: gfx_content_frame_time_from_paint
@@ -10823,6 +10845,7 @@ fields:
           See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The time, in percentage of a vsync interval, spent from beginning
         a paint in the content process until that frame is presented in the compositor.
+        (Migrated from the geckoview metric of the same name).
 
         '
     - name: gfx_content_frame_time_from_vsync
@@ -10849,7 +10872,7 @@ fields:
           See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The time, in percentage of a vsync interval, spent from the vsync
         that started a paint in the content process until that frame is presented
-        in the compositor.
+        in the compositor. (Migrated from the geckoview metric of the same name).
 
         '
     - name: gfx_content_frame_time_with_svg
@@ -10876,7 +10899,8 @@ fields:
           See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The time, in percentage of a vsync interval, spent from beginning
         a paint in the content process until that frame is presented in the compositor,
-        for frames that contained an SVG to be drawn by webrender.
+        for frames that contained an SVG to be drawn by webrender. (Migrated from
+        the geckoview metric of the same name).
 
         '
     - name: gfx_content_frame_time_without_resource_upload
@@ -10903,7 +10927,8 @@ fields:
           See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The time, in percentage of a vsync interval, spent from beginning
         a paint in the content process until that frame is presented in the compositor
-        by webrender, excluding time spent uploading resources.
+        by webrender, excluding time spent uploading resources. (Migrated from the
+        geckoview metric of the same name).
 
         '
     - name: gfx_content_frame_time_without_upload
@@ -10930,7 +10955,8 @@ fields:
           See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'The time, in percentage of a vsync interval, spent from beginning
         a paint in the content process until that frame is presented in the compositor
-        by webrender, excluding time spent uploading any content.
+        by webrender, excluding time spent uploading any content. (Migrated from the
+        geckoview metric of the same name).
 
         '
     - name: geckoview_document_site_origins
@@ -12026,25 +12052,29 @@ fields:
     - name: gfx_adapter_primary_ram
       type: INTEGER
       mode: NULLABLE
-      description: 'Graphics adapter dedicated memory
+      description: 'Graphics adapter dedicated memory (Migrated from the geckoview
+        metric of the same name).
 
         '
     - name: gfx_display_count
       type: INTEGER
       mode: NULLABLE
-      description: 'Amount of displays connected to the device
+      description: 'Amount of displays connected to the device (Migrated from the
+        geckoview metric of the same name).
 
         '
     - name: gfx_display_primary_height
       type: INTEGER
       mode: NULLABLE
       description: 'Height of the primary display, takes device rotation into account.
+        (Migrated from the geckoview metric of the same name).
 
         '
     - name: gfx_display_primary_width
       type: INTEGER
       mode: NULLABLE
       description: 'Width of the primary display, takes device rotation into account.
+        (Migrated from the geckoview metric of the same name).
 
         '
     - name: avif_aom_decode_error

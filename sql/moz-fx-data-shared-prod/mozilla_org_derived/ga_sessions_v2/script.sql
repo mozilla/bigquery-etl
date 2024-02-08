@@ -4,7 +4,7 @@ MERGE INTO
     WITH device_properties_at_session_start_event AS (
       --get all session starts, from any date
       SELECT
-        a.user_pseudo_id AS ga_client_id,
+        user_pseudo_id AS ga_client_id,
         CAST(e.value.int_value AS string) AS ga_session_id,
         (
           SELECT
@@ -36,26 +36,26 @@ MERGE INTO
         device.web_info.browser_version AS browser_version,
         PARSE_DATE('%Y%m%d', event_date) AS session_date
       FROM
-        `moz-fx-data-marketing-prod.analytics_313696158.events_2*` AS a
+        `moz-fx-data-marketing-prod.analytics_313696158.events_2*`
       JOIN
         UNNEST(event_params) AS e
       WHERE
         e.key = 'ga_session_id'
         AND e.value.int_value IS NOT NULL
-        AND a.event_name = 'session_start'
+        AND event_name = 'session_start'
       QUALIFY
         ROW_NUMBER() OVER (
           PARTITION BY
-            a.user_pseudo_id,
+            user_pseudo_id,
             e.value.int_value
           ORDER BY
-            a.event_timestamp ASC
+            event_timestamp ASC
         ) = 1
     ),
     --get all the page views and min/max event timestamp and whether there was a product download
     event_aggregates AS (
       SELECT
-        a.user_pseudo_id AS ga_client_id,
+        user_pseudo_id AS ga_client_id,
         CAST(e.value.int_value AS string) AS ga_session_id,
         COUNTIF(event_name = 'page_view') AS pageviews,
         MIN(event_timestamp) AS min_event_timestamp,
@@ -75,14 +75,14 @@ MERGE INTO
           ) AS boolean
         ) AS had_download_event
       FROM
-        `moz-fx-data-marketing-prod.analytics_313696158.events_2*` AS a
+        `moz-fx-data-marketing-prod.analytics_313696158.events_2*`
       JOIN
         UNNEST(event_params) AS e
       WHERE
         e.key = 'ga_session_id'
         AND e.value.int_value IS NOT NULL
       GROUP BY
-        a.user_pseudo_id,
+        user_pseudo_id,
         CAST(e.value.int_value AS string)
     ),
     stub_session_ids_staging AS (
@@ -153,7 +153,7 @@ MERGE INTO
         )[OFFSET(0)] AS page_location,
         event_timestamp
       FROM
-        `moz-fx-data-marketing-prod.analytics_313696158.events_2*` AS a
+        `moz-fx-data-marketing-prod.analytics_313696158.events_2*`
       JOIN
         UNNEST(event_params) AS e
       WHERE
@@ -179,18 +179,18 @@ MERGE INTO
     ),
     install_targets_staging AS (
       SELECT
-        a.user_pseudo_id AS ga_client_id,
+        user_pseudo_id AS ga_client_id,
         CAST(e.value.int_value AS string) AS ga_session_id,
         event_timestamp,
         event_name AS install_event_name
       FROM
-        `moz-fx-data-marketing-prod.analytics_313696158.events_2*` AS a
+        `moz-fx-data-marketing-prod.analytics_313696158.events_2*`
       JOIN
         UNNEST(event_params) AS e
       WHERE
         e.key = 'ga_session_id'
         AND e.value.int_value IS NOT NULL
-        AND a.event_name IN (
+        AND event_name IN (
           'firefox_download',
           'firefox_mobile_download',
           'focus_download',

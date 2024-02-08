@@ -1,5 +1,11 @@
 CREATE TABLE IF NOT EXISTS
   `moz-fx-data-shared-prod`.fenix_derived.meta_attribution_country_counts_v1
+PARTITION BY
+  submission_date
+CLUSTER BY
+  meta_attribution_app,
+  normalized_channel,
+  country
 AS
 -- Initialization query first observations for Meta Attribution Country Counts
 SELECT

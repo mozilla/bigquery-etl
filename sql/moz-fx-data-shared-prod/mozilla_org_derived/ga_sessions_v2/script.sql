@@ -34,14 +34,7 @@ MERGE INTO
         device.language AS `language`,
         device.web_info.browser AS browser,
         device.web_info.browser_version AS browser_version,
-        PARSE_DATE('%Y%m%d', event_date) AS session_date,
-        ROW_NUMBER() OVER (
-          PARTITION BY
-            a.user_pseudo_id,
-            e.value.int_value
-          ORDER BY
-            a.event_timestamp ASC
-        ) AS row_num
+        PARSE_DATE('%Y%m%d', event_date) AS session_date
       FROM
         `moz-fx-data-marketing-prod.analytics_313696158.events_2*` AS a
       JOIN
@@ -51,7 +44,13 @@ MERGE INTO
         AND e.value.int_value IS NOT NULL
         AND a.event_name = 'session_start'
       QUALIFY
-        row_num = 1
+        ROW_NUMBER() OVER (
+          PARTITION BY
+            a.user_pseudo_id,
+            e.value.int_value
+          ORDER BY
+            a.event_timestamp ASC
+        ) = 1
     ),
     --get all the page views and min/max event timestamp and whether there was a product download
     event_aggregates AS (
@@ -166,18 +165,17 @@ MERGE INTO
         ga_client_id,
         ga_session_id,
         page_location,
-        event_timestamp,
+        event_timestamp
+      FROM
+        landing_page_by_session_staging
+      QUALIFY
         ROW_NUMBER() OVER (
           PARTITION BY
             ga_client_id,
             ga_session_id
           ORDER BY
             event_timestamp ASC
-        ) AS lp_row_num
-      FROM
-        landing_page_by_session_staging
-      QUALIFY
-        lp_row_num = 1
+        ) = 1
     ),
     install_targets_staging AS (
       SELECT

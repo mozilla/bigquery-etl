@@ -221,7 +221,9 @@ MERGE INTO
         ELSE FALSE
       END AS is_first_session,
       sess_strt.ga_session_number AS session_number,
-      CAST((evnt.max_event_timestamp - evnt.min_event_timestamp) / 1000000 AS int64) AS time_on_site,
+      CAST(
+        (evnt.max_event_timestamp - evnt.min_event_timestamp) / 1000000 AS int64
+      ) AS time_on_site,
       evnt.pageviews,
       sess_strt.country,
       sess_strt.region,

@@ -16,6 +16,7 @@ bigquery:
     expiration_days: null
   clustering:
     fields:
+    - ga_client_id
     - country
 references: {}
 deprecated: false

@@ -64,6 +64,7 @@ MERGE INTO
           MAX(
             CASE
               WHEN event_name IN (
+                  'product_download',
                   'firefox_download',
                   'firefox_mobile_download',
                   'focus_download',
@@ -191,6 +192,7 @@ MERGE INTO
         e.key = 'ga_session_id'
         AND e.value.int_value IS NOT NULL
         AND event_name IN (
+          'product_download',
           'firefox_download',
           'firefox_mobile_download',
           'focus_download',

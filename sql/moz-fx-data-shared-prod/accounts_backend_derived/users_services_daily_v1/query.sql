@@ -30,7 +30,7 @@ WITH fxa_events AS (
     metrics.string.session_flow_id AS flow_id,
     metrics.string.session_entrypoint AS entrypoint,
     metrics.string.event_name AS event_name,
-    metadata.geo.country AS country,
+    IF(metrics.string.event_name != 'access_token_checked', metadata.geo.country, NULL) AS country,
     client_info.locale AS language,
     metadata.user_agent.version AS ua_version,
     metadata.user_agent.browser AS ua_browser,

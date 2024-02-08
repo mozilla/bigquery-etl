@@ -32,5 +32,8 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references: {}
+references:
+  query.sql:
+  - telemetry.unified_metrics
+  - telemetry_derived.rolling_cohorts_v1
 deprecated: false

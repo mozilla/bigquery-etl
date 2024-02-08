@@ -253,20 +253,16 @@ MERGE INTO
       device_properties_at_session_start_event sess_strt
     LEFT JOIN
       event_aggregates evnt
-      ON sess_strt.ga_client_id = evnt.ga_client_id
-      AND sess_strt.ga_session_id = evnt.ga_session_id
+      USING (ga_client_id, ga_session_id)
     LEFT JOIN
       all_stub_session_ids stub_sessn_ids
-      ON sess_strt.ga_client_id = stub_sessn_ids.ga_client_id
-      AND sess_strt.ga_session_id = stub_sessn_ids.ga_session_id
+      USING (ga_client_id, ga_session_id)
     LEFT JOIN
       landing_page_by_session lndg_pg
-      ON sess_strt.ga_client_id = lndg_pg.ga_client_id
-      AND sess_strt.ga_session_id = lndg_pg.ga_session_id
+      USING (ga_client_id, ga_session_id)
     LEFT JOIN
       all_install_targets installs
-      ON sess_strt.ga_client_id = installs.ga_client_id
-      AND sess_strt.ga_session_id = installs.ga_session_id
+      USING (ga_client_id, ga_session_id)
   ) S
   ON T.ga_client_id = S.ga_client_id
   AND T.ga_session_id = S.ga_session_id

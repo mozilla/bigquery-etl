@@ -43,7 +43,7 @@ MERGE INTO
             a.event_timestamp ASC
         ) AS rnk
       FROM
-        `moz-fx-data-marketing-prod.analytics_313696158.events_2*` a
+        `moz-fx-data-marketing-prod.analytics_313696158.events_2*` AS a
       JOIN
         UNNEST(event_params) e
       WHERE
@@ -76,7 +76,7 @@ MERGE INTO
           ) AS boolean
         ) AS had_download_event
       FROM
-        `moz-fx-data-marketing-prod.analytics_313696158.events_2*` a
+        `moz-fx-data-marketing-prod.analytics_313696158.events_2*` AS a
       JOIN
         UNNEST(event_params) e
       WHERE
@@ -154,7 +154,7 @@ MERGE INTO
         )[OFFSET(0)] AS page_location,
         event_timestamp
       FROM
-        `moz-fx-data-marketing-prod.analytics_313696158.events_2*` a
+        `moz-fx-data-marketing-prod.analytics_313696158.events_2*` AS a
       JOIN
         UNNEST(event_params) e
       WHERE
@@ -186,7 +186,7 @@ MERGE INTO
         event_timestamp,
         event_name AS install_event_name
       FROM
-        `moz-fx-data-marketing-prod.analytics_313696158.events_2*` a
+        `moz-fx-data-marketing-prod.analytics_313696158.events_2*` AS a
       JOIN
         UNNEST(event_params) e
       WHERE
@@ -214,59 +214,59 @@ MERGE INTO
         ga_session_id
     )
     SELECT
-      a.ga_client_id,
-      a.ga_session_id,
-      a.session_date,
+      sess_strt.ga_client_id,
+      sess_strt.ga_session_id,
+      sess_strt.session_date,
       CASE
-        WHEN a.ga_session_number = 1
+        WHEN sess_strt.ga_session_number = 1
           THEN TRUE
         ELSE FALSE
       END AS is_first_session,
-      a.ga_session_number AS session_number,
-      b.max_event_timestamp - b.min_event_timestamp AS time_on_site,
-      b.pageviews,
-      a.country,
-      a.region,
-      a.city,
-      a.campaign_id,
-      a.campaign,
-      a.source,
-      a.medium,
-      a.term,
-      a.content,
-      a.gclid,
-      a.device_category,
-      a.mobile_device_model,
-      a.mobile_device_string,
-      a.os,
-      a.os_version,
-      a.language,
-      a.browser,
-      a.browser_version,
-      b.had_download_event,
-      g.last_reported_install_target,
-      g.all_reported_install_targets,
-      d.last_reported_stub_session_id,
-      d.all_reported_stub_session_ids,
-      e.page_location AS landing_screen
+      sess_strt.ga_session_number AS session_number,
+      evnt.max_event_timestamp - evnt.min_event_timestamp AS time_on_site,
+      evnt.pageviews,
+      sess_strt.country,
+      sess_strt.region,
+      sess_strt.city,
+      sess_strt.campaign_id,
+      sess_strt.campaign,
+      sess_strt.source,
+      sess_strt.medium,
+      sess_strt.term,
+      sess_strt.content,
+      sess_strt.gclid,
+      sess_strt.device_category,
+      sess_strt.mobile_device_model,
+      sess_strt.mobile_device_string,
+      sess_strt.os,
+      sess_strt.os_version,
+      sess_strt.language,
+      sess_strt.browser,
+      sess_strt.browser_version,
+      evnt.had_download_event,
+      installs.last_reported_install_target,
+      installs.all_reported_install_targets,
+      stub_sessn_ids.last_reported_stub_session_id,
+      stub_sessn_ids.all_reported_stub_session_ids,
+      lndg_pg.page_location AS landing_screen
     FROM
-      device_properties_at_session_start_event a
+      device_properties_at_session_start_event sess_strt
     LEFT JOIN
-      event_aggregates b
-      ON a.ga_client_id = b.ga_client_id
-      AND a.ga_session_id = b.ga_session_id
+      event_aggregates evnt
+      ON sess_strt.ga_client_id = evnt.ga_client_id
+      AND sess_strt.ga_session_id = evnt.ga_session_id
     LEFT JOIN
-      all_stub_session_ids d
-      ON a.ga_client_id = d.ga_client_id
-      AND a.ga_session_id = d.ga_session_id
+      all_stub_session_ids stub_sessn_ids
+      ON sess_strt.ga_client_id = stub_sessn_ids.ga_client_id
+      AND sess_strt.ga_session_id = stub_sessn_ids.ga_session_id
     LEFT JOIN
-      landing_page_by_session e
-      ON a.ga_client_id = e.ga_client_id
-      AND a.ga_session_id = e.ga_session_id
+      landing_page_by_session lndg_pg
+      ON sess_strt.ga_client_id = lndg_pg.ga_client_id
+      AND sess_strt.ga_session_id = lndg_pg.ga_session_id
     LEFT JOIN
-      all_install_targets g
-      ON a.ga_client_id = g.ga_client_id
-      AND a.ga_session_id = g.ga_session_id
+      all_install_targets installs
+      ON sess_strt.ga_client_id = installs.ga_client_id
+      AND sess_strt.ga_session_id = installs.ga_session_id
   ) S
   ON T.ga_client_id = S.ga_client_id
   AND T.ga_session_id = S.ga_session_id

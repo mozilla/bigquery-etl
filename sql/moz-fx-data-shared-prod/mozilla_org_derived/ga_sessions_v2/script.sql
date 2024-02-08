@@ -186,14 +186,11 @@ MERGE INTO
         event_timestamp,
         event_name AS install_event_name
       FROM
-        `moz-fx-data-marketing-prod.analytics_313696158.events_*` a
+        `moz-fx-data-marketing-prod.analytics_313696158.events_2*` a
       JOIN
         UNNEST(event_params) e
       WHERE
-        _table_suffix
-        BETWEEN FORMAT_DATE('%Y%m%d', DATE_SUB(@submission_date, INTERVAL 1 DAY))
-        AND FORMAT_DATE('%Y%m%d', @submission_date)
-        AND e.key = 'ga_session_id'
+        e.key = 'ga_session_id'
         AND e.value.int_value IS NOT NULL
         AND a.event_name IN (
           'firefox_download',

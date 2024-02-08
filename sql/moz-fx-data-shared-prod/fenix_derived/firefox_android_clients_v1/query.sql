@@ -435,6 +435,12 @@ _previous AS (
     *
   FROM
     `moz-fx-data-shared-prod.fenix_derived.firefox_android_clients_v1`
+  WHERE
+    {% if is_init() %}
+      FALSE
+    {% else %}
+      submission_date < @submission_date
+    {% endif %}
 )
 SELECT
   client_id,

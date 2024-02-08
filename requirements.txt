@@ -461,9 +461,9 @@ gitdb==4.0.10 \
     --hash=sha256:6eb990b69df4e15bad899ea868dc46572c3f75339735663b81de79b06f17eb9a \
     --hash=sha256:c286cf298426064079ed96a9e4a9d39e7f3e9bf15ba60701e95f5492f28415c7
     # via gitpython
-gitpython==3.1.40 \
-    --hash=sha256:22b126e9ffb671fdd0c129796343a02bf67bf2994b35449ffc9321aa755e18a4 \
-    --hash=sha256:cf14627d5a8049ffbf49915732e5eddbe8134c3bdb9d476e6182b676fc573f8a
+gitpython==3.1.41 \
+    --hash=sha256:c36b6634d069b3f719610175020a9aed919421c87552185b085e04fbbdb10b7c \
+    --hash=sha256:ed66e624884f76df22c8e16066d567aaa5a37d5b5fa19db2c6df6f7156db9048
     # via
     #   -r requirements.in
     #   mozilla-metric-config-parser
@@ -497,9 +497,9 @@ google-cloud-bigquery==3.14.1 \
     --hash=sha256:a8ded18455da71508db222b7c06197bc12b6dbc6ed5b0b64e7007b76d7016957 \
     --hash=sha256:aa15bd86f79ea76824c7d710f5ae532323c4b3ba01ef4abff42d4ee7a2e9b142
     # via -r requirements.in
-google-cloud-bigquery-storage[fastavro]==2.23.0 \
-    --hash=sha256:371ff0a86d6166d7a935d6839474e5b5ab04ebd6598ea4b6c12b920719f2e0cb \
-    --hash=sha256:8496c6d30575efb224c18940566f9ac006d3b120ae759002918697c3407997e6
+google-cloud-bigquery-storage[fastavro]==2.24.0 \
+    --hash=sha256:7981eb2758cba56603058d11bb1eeeebf2e1c18097a7118a894510a16e02be52 \
+    --hash=sha256:b4af5b9aacd8396b8407d1b877601a376d8eea6d192823a8a7881bd2fdc076ce
     # via
     #   -r requirements.in
     #   google-cloud-bigquery-storage
@@ -1448,9 +1448,9 @@ rich==13.7.0 \
     --hash=sha256:5cb5123b5cf9ee70584244246816e9114227e0b98ad9176eede6ad54bf5403fa \
     --hash=sha256:6da14c108c4866ee9520bbffa71f6fe3962e193b7da68720583850cd4548e235
     # via rich-click
-rich-click==1.7.2 \
-    --hash=sha256:22f93439a3d65f4a04e07cd584f4d01d132d96899766af92ed287618156abbe2 \
-    --hash=sha256:a42bcdcb8696c4ca7a3b1a39e1aba3d2cb64ad00690b4c022fdcb2cbccebc3fc
+rich-click==1.7.3 \
+    --hash=sha256:bc4163d4e2a3361e21c4d72d300eca6eb8896dfc978667923cb1d4937b8769a3 \
+    --hash=sha256:bced1594c497dc007ab49508ff198bb437c576d01291c13a61658999066481f4
     # via -r requirements.in
 rpds-py==0.8.10 \
     --hash=sha256:08166467258fd0240a1256fce272f689f2360227ee41c72aeea103e9e4f63d2b \
@@ -1595,12 +1595,12 @@ stripe==6.4.0 \
     --hash=sha256:d1ab2739aa6511f34ba77f66fca9f86cffe2dbb17df84bd224a38e7254efe61b \
     --hash=sha256:d99e97e6d3f6dbaf9361ebd07b3024ec6f9d7b1f77724c8127338e0754314e9d
     # via -r requirements.in
-symbolic==12.4.1 \
-    --hash=sha256:027297fa2d94cd4420d3e2175e37913191d5055b8ceed382f5b7c03334bc2588 \
-    --hash=sha256:2592a8bd2e56b92a94fab46a917523ff8fe6dcdc4b263d7479012f88e4ef5b13 \
-    --hash=sha256:4a4dff6b322831e78cc01a71a5303b5fe4f0352a4d932e87bcfad15fda0a1efd \
-    --hash=sha256:60d5e0557688cc87c8857c011459ec9a203cf6fa131c981fa56c41295c9c46c2 \
-    --hash=sha256:63c58db1644e940cf5c93b2827b8779225b66ea529236f5dbae87bf63b0a4f5c
+symbolic==12.8.0 \
+    --hash=sha256:190872de48f9eacf2c5d61253108aa9dd17a2d4991a8c044ad4579bb6db99b07 \
+    --hash=sha256:1aa8d0149716dea0c7253b1411f4ac727bc1ffec7dc06bbb50cba73c732d92c5 \
+    --hash=sha256:7112f50647109c6d6e70482feb229aa1de98af814ff55c374e042c87d5fddb40 \
+    --hash=sha256:7719d73124ae0536959232b4ab9f0ff1598893dc9121bb86aff3bbd9882ffed6 \
+    --hash=sha256:bcba681c844ce246a8ba265653d1ef6faa37145ddb2eeb963bef08cc4b4c387d
     # via -r requirements.in
 toml==0.10.2 \
     --hash=sha256:806143ae5bfb6a3c6e736a764057db0e6a0e05e338b5630894a5f779cabb4f9b \

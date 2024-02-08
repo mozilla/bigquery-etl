@@ -1,5 +1,8 @@
 friendly_name: Firefox Android Clients
 description: |-
+  This table should be accessed through the user-facing view
+  `fenix.firefox_android_clients`.
+
   Contains a list of Firefox Android clients along with their first attributes
   retrieved from baseline, first_session and metrics pings.
 
@@ -22,8 +25,8 @@ owners:
 labels:
   application: firefox_android
   # This query results in the table being rebuilt on each run
-  # by combining mix of all old and new records, in some cases combining them together.
-  incremental: true
+  # by merging the existing and new records to update changes and insert new records.
+  incremental: false
   schedule: daily
   owner1: lvargas
 scheduling:
@@ -34,9 +37,14 @@ scheduling:
   parameters:
   - submission_date:DATE:{{ds}}
 bigquery:
+  time_partitioning:
+    type: day
+    field: first_seen_date
+    require_partition_filter: false
   clustering:
     fields:
-    - first_seen_date
-    - sample_id
     - channel
     - first_reported_country
+    - distribution_id
+    - sample_id
+references: {}

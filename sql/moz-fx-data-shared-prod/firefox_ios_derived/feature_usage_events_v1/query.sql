@@ -61,12 +61,7 @@ default_browser AS (
     channel,
     country
   QUALIFY
-    ROW_NUMBER() OVER (
-      PARTITION BY
-        client_id
-      ORDER BY
-        ping_date
-    ) = 1
+    ROW_NUMBER() OVER (PARTITION BY client_id ORDER BY ping_date) = 1
 ),
 event_ping_clients_feature_usage AS (
   SELECT

@@ -1448,9 +1448,9 @@ rich==13.7.0 \
     --hash=sha256:5cb5123b5cf9ee70584244246816e9114227e0b98ad9176eede6ad54bf5403fa \
     --hash=sha256:6da14c108c4866ee9520bbffa71f6fe3962e193b7da68720583850cd4548e235
     # via rich-click
-rich-click==1.7.2 \
-    --hash=sha256:22f93439a3d65f4a04e07cd584f4d01d132d96899766af92ed287618156abbe2 \
-    --hash=sha256:a42bcdcb8696c4ca7a3b1a39e1aba3d2cb64ad00690b4c022fdcb2cbccebc3fc
+rich-click==1.7.3 \
+    --hash=sha256:bc4163d4e2a3361e21c4d72d300eca6eb8896dfc978667923cb1d4937b8769a3 \
+    --hash=sha256:bced1594c497dc007ab49508ff198bb437c576d01291c13a61658999066481f4
     # via -r requirements.in
 rpds-py==0.8.10 \
     --hash=sha256:08166467258fd0240a1256fce272f689f2360227ee41c72aeea103e9e4f63d2b \

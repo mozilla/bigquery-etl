@@ -117,13 +117,14 @@ with DAG(
 
     mozilla_org_derived__ga_sessions__v2 = bigquery_etl_query(
         task_id="mozilla_org_derived__ga_sessions__v2",
-        destination_table="ga_sessions_v2",
+        destination_table=None,
         dataset_id="mozilla_org_derived",
         project_id="moz-fx-data-shared-prod",
         owner="kwindau@mozilla.com",
         email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        sql_file_path="sql/moz-fx-data-shared-prod/mozilla_org_derived/ga_sessions_v2/script.sql",
     )
 
     with TaskGroup(

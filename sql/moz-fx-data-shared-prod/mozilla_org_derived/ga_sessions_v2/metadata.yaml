@@ -4,7 +4,6 @@ description: |-
 owners:
 - kwindau@mozilla.com
 labels:
-  incremental: true
   owner1: kwindau
   dag: bqetl_google_analytics_derived_ga4
 scheduling:

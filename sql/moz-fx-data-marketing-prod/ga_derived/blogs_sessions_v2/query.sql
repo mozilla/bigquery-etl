@@ -65,7 +65,6 @@ entrance_page_views_only AS (
     medium,
     campaign,
     content,
-    --need to check below yet, not sure if I have this correct yet
     REGEXP_REPLACE(
       SPLIT(page_location, '?')[SAFE_OFFSET(0)],
       '^https://blog.mozilla.org',

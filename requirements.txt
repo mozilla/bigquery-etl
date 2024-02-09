@@ -807,9 +807,9 @@ mkdocs-material-extensions==1.3 \
     --hash=sha256:0297cc48ba68a9fdd1ef3780a3b41b534b0d0df1d1181a44676fda5f464eeadc \
     --hash=sha256:f0446091503acb110a7cab9349cbc90eeac51b58d1caa92a704a81ca1e24ddbd
     # via mkdocs-material
-mozilla-metric-config-parser==2023.10.2 \
-    --hash=sha256:17ccf8b93e7c531acebb627467f3c481e55d2f68024bc83ae36d058ae1108520 \
-    --hash=sha256:d862aac45c9cd1336d84fe77408b126cf143fbb101ccc577038d262ab9a75342
+mozilla-metric-config-parser==2023.11.1 \
+    --hash=sha256:6a77b1ad0b1024bfa0a21febccc344b6aae17a0314726a5c07a190ee21100e29 \
+    --hash=sha256:e926b30862eb626494a15f94e6c1aaa3e770f09c30bc91979b51f6b3ddca99c5
     # via -r requirements.in
 mozilla-nimbus-schemas==2023.9.2 \
     --hash=sha256:aa23d024bf01e67564d4dfb288397cbea8046961dc246f687a2dff05280dd4d0 \

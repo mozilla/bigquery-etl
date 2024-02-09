@@ -34,8 +34,8 @@ fields:
 - mode: NULLABLE
   name: visits
   type: INT64
-  description: Visits - The number of unique visits - combo of user_pseudo_id (cookie ID) and Google Analytics session ID
+  description: Visits - The number of unique visits, where a unique visit is the user_pseudo_id plus session ID
 - mode: NULLABLE
   name: bounces
   type: INT64
-  description: Bounces - Counts the number of unique visits where the session was considered a bounce
+  description: Bounces - The number of unique visits where the session was considered a bounce

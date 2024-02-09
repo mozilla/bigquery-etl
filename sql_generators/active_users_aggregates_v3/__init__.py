@@ -11,10 +11,9 @@ from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.util.common import render, write_sql
 
 THIS_PATH = Path(os.path.dirname(__file__))
-TABLE_NAME = "active_users_aggregates"
+TABLE_NAME = os.path.basename(os.path.normpath(THIS_PATH))
+BASE_NAME = "_".join(TABLE_NAME.split("_")[:-1])
 DATASET_FOR_UNIONED_VIEWS = "telemetry"
-DESKTOP_TABLE_VERSION = "v1"
-MOBILE_TABLE_VERSION = "v3"
 CHECKS_TEMPLATE_CHANNELS = {
     "firefox_ios": [
         {
@@ -108,9 +107,7 @@ def generate(target_project, output_dir, use_cloud_function):
         if browser.name == "firefox_desktop":
             query_sql = reformat(
                 desktop_query_template.render(
-                    project_id=target_project,
                     app_value=browser.value,
-                    app_name=browser.name,
                 )
             )
             schema_template = desktop_schema_template
@@ -118,7 +115,6 @@ def generate(target_project, output_dir, use_cloud_function):
             query_sql = reformat(
                 focus_android_query_template.render(
                     project_id=target_project,
-                    app_value=browser.value,
                     app_name=browser.name,
                 )
             )
@@ -153,14 +149,9 @@ def generate(target_project, output_dir, use_cloud_function):
                 channels=CHECKS_TEMPLATE_CHANNELS[browser.name],
             )
 
-        if browser.name == "firefox_desktop":
-            current_version = DESKTOP_TABLE_VERSION
-        else:
-            current_version = MOBILE_TABLE_VERSION
-
         write_sql(
             output_dir=output_dir,
-            full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}_{current_version}",
+            full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}",
             basename="query.sql",
             sql=query_sql,
             skip_existing=False,
@@ -168,7 +159,7 @@ def generate(target_project, output_dir, use_cloud_function):
 
         write_sql(
             output_dir=output_dir,
-            full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}_{current_version}",
+            full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}",
             basename="metadata.yaml",
             sql=render(
                 metadata_template,
@@ -182,7 +173,7 @@ def generate(target_project, output_dir, use_cloud_function):
 
         write_sql(
             output_dir=output_dir,
-            full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}_{current_version}",
+            full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}",
             basename="schema.yaml",
             sql=render(
                 schema_template,
@@ -194,7 +185,7 @@ def generate(target_project, output_dir, use_cloud_function):
 
         write_sql(
             output_dir=output_dir,
-            full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}_{current_version}",
+            full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}",
             basename="checks.sql",
             sql=checks_sql,
             skip_existing=False,
@@ -203,13 +194,13 @@ def generate(target_project, output_dir, use_cloud_function):
         if browser.name == "focus_android":
             write_sql(
                 output_dir=output_dir,
-                full_table_id=f"{target_project}.{browser.name}.{TABLE_NAME}",
+                full_table_id=f"{target_project}.{browser.name}.{BASE_NAME}",
                 basename="view.sql",
                 sql=reformat(
                     focus_android_view_template.render(
                         project_id=target_project,
                         app_name=browser.name,
-                        table_version=MOBILE_TABLE_VERSION,
+                        table_name=TABLE_NAME,
                     )
                 ),
                 skip_existing=False,
@@ -217,13 +208,13 @@ def generate(target_project, output_dir, use_cloud_function):
         elif browser.name == "firefox_desktop":
             write_sql(
                 output_dir=output_dir,
-                full_table_id=f"{target_project}.{browser.name}.{TABLE_NAME}",
+                full_table_id=f"{target_project}.{browser.name}.{BASE_NAME}",
                 basename="view.sql",
                 sql=reformat(
                     view_template.render(
                         project_id=target_project,
                         app_name=browser.name,
-                        table_version=DESKTOP_TABLE_VERSION,
+                        table_name=TABLE_NAME,
                     )
                 ),
                 skip_existing=False,
@@ -231,13 +222,13 @@ def generate(target_project, output_dir, use_cloud_function):
         else:
             write_sql(
                 output_dir=output_dir,
-                full_table_id=f"{target_project}.{browser.name}.{TABLE_NAME}",
+                full_table_id=f"{target_project}.{browser.name}.{BASE_NAME}",
                 basename="view.sql",
                 sql=reformat(
                     view_template.render(
                         project_id=target_project,
                         app_name=browser.name,
-                        table_version=MOBILE_TABLE_VERSION,
+                        table_name=TABLE_NAME,
                     )
                 ),
                 skip_existing=False,
@@ -245,7 +236,7 @@ def generate(target_project, output_dir, use_cloud_function):
 
     write_sql(
         output_dir=output_dir,
-        full_table_id=f"{target_project}.{DATASET_FOR_UNIONED_VIEWS}.{TABLE_NAME}_mobile",
+        full_table_id=f"{target_project}.{DATASET_FOR_UNIONED_VIEWS}.{BASE_NAME}_mobile",
         basename="view.sql",
         sql=reformat(
             mobile_view_template.render(

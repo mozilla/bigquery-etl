@@ -2057,7 +2057,9 @@ def deploy(
         sys.exit(1)
     client = bigquery.Client()
 
-    query_files = paths_matching_name_pattern(name, sql_dir, project_id, ["query.*"])
+    query_files = paths_matching_name_pattern(
+        name, sql_dir, project_id, ["query.*", "script.sql"]
+    )
     if not query_files:
         # run SQL generators if no matching query has been found
         ctx.invoke(
@@ -2066,7 +2068,7 @@ def deploy(
             ignore=["derived_view_schemas", "stable_views"],
         )
         query_files = paths_matching_name_pattern(
-            name, ctx.obj["TMP_DIR"], project_id, ["query.*"]
+            name, ctx.obj["TMP_DIR"], project_id, ["query.*", "script.sql"]
         )
         if not query_files:
             raise click.ClickException(f"No queries matching `{name}` were found.")

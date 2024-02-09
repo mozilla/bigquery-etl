@@ -109,10 +109,6 @@ with DAG(
 
     fenix_derived__feature_usage_metrics__v1.set_upstream(wait_for_copy_deduplicate_all)
 
-    firefox_ios_derived__feature_usage_events__v1.set_upstream(
-        wait_for_copy_deduplicate_all
-    )
-
     wait_for_checks__fail_firefox_ios_derived__clients_activation__v1 = (
         ExternalTaskSensor(
             task_id="wait_for_checks__fail_firefox_ios_derived__clients_activation__v1",
@@ -127,7 +123,7 @@ with DAG(
         )
     )
 
-    firefox_ios_derived__feature_usage_metrics__v1.set_upstream(
+    firefox_ios_derived__feature_usage_events__v1.set_upstream(
         wait_for_checks__fail_firefox_ios_derived__clients_activation__v1
     )
     wait_for_checks__fail_firefox_ios_derived__firefox_ios_clients__v1 = ExternalTaskSensor(
@@ -142,6 +138,16 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    firefox_ios_derived__feature_usage_events__v1.set_upstream(
+        wait_for_checks__fail_firefox_ios_derived__firefox_ios_clients__v1
+    )
+    firefox_ios_derived__feature_usage_events__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    firefox_ios_derived__feature_usage_metrics__v1.set_upstream(
+        wait_for_checks__fail_firefox_ios_derived__clients_activation__v1
+    )
     firefox_ios_derived__feature_usage_metrics__v1.set_upstream(
         wait_for_checks__fail_firefox_ios_derived__firefox_ios_clients__v1
     )

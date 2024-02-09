@@ -1,4 +1,4 @@
---Get all page views, the session they belong to, the page location, and a flag for whether it was an entrance or not to the session
+--Get all page views with the page location, and a flag for whether it was an entrance or not to the session
 WITH all_page_views AS (
   SELECT
     PARSE_DATE('%Y%m%d', event_date) AS date,
@@ -50,63 +50,157 @@ WITH all_page_views AS (
     _TABLE_SUFFIX = FORMAT_DATE('%Y%m%d', @submission_date)
     AND event_name = 'page_view'
 ),
---filter down to entrance pages only, and then filter to only 1 entrance page per session (there should only be 1, but in case for some reason, there is ever more than 1, just pick 1)
+--Filter to entrance pages only, and then filter to ensure only 1 entrance page per session
+--Theoretically Google should always only send 1 per session, but in case there is ever more than 1, which happens occasionally
 entrance_page_views_only AS (
   SELECT
-    pg_vws.date,
-    pg_vws.visit_identifier,
-    pg_vws.device_category,
-    pg_vws.operating_system,
-    pg_vws.browser,
-    pg_vws.language AS `language`,
-    pg_vws.country,
-    pg_vws.source,
-    pg_vws.medium,
-    pg_vws.campaign,
-    pg_vws.content,
+    date,
+    visit_identifier,
+    device_category,
+    operating_system,
+    browser,
+    LANGUAGE AS `language`,
+    country,
+    source,
+    medium,
+    campaign,
+    content,
     --need to check below yet, not sure if I have this correct yet
     REGEXP_REPLACE(
-      SPLIT(stg.page_location, '?')[SAFE_OFFSET(0)],
+      SPLIT(page_location, '?')[SAFE_OFFSET(0)],
       '^https://blog.mozilla.org',
       ''
     ) AS page_path,
     SPLIT(
-      REGEXP_REPLACE(
-        SPLIT(stg.page_location, '?')[SAFE_OFFSET(0)],
-        '^https://blog.mozilla.org',
-        ''
-      ),
+      REGEXP_REPLACE(SPLIT(page_location, '?')[SAFE_OFFSET(0)], '^https://blog.mozilla.org', ''),
       '/'
     )[SAFE_OFFSET(1)] AS blog,
     SPLIT(
-      REGEXP_REPLACE(
-        SPLIT(stg.page_location, '?')[SAFE_OFFSET(0)],
-        '^https://blog.mozilla.org',
-        ''
-      ),
+      REGEXP_REPLACE(SPLIT(page_location, '?')[SAFE_OFFSET(0)], '^https://blog.mozilla.org', ''),
       '/'
     )[SAFE_OFFSET(2)] AS subblog
   FROM
-    all_page_views pg_vws
+    all_page_views
   WHERE
-    pg_vws.is_entrance = 1
+    is_entrance = 1
   QUALIFY
     ROW_NUMBER() OVER (PARTITION BY visit_identifier ORDER BY event_timestamp ASC) = 1
+),
+staging AS (
+  SELECT
+    epvo.date,
+    epvo.visit_identifier,
+    epvo.device_category,
+    epvo.operating_system,
+    epvo.browser,
+    epvo.language,
+    epvo.country,
+    epvo.source,
+    epvo.medium,
+    epvo.campaign,
+    epvo.content,
+    epvo.blog,
+    epvo.subblog,
+    COUNT(DISTINCT(visit_identifier)) AS sessions
+  FROM
+    entrance_page_views_only epvo
+  GROUP BY
+    epvo.date,
+    epvo.visit_identifier,
+    epvo.device_category,
+    epvo.operating_system,
+    epvo.browser,
+    epvo.language,
+    epvo.country,
+    epvo.source,
+    epvo.medium,
+    epvo.campaign,
+    epvo.content,
+    epvo.blog,
+    epvo.subblog
 )
 SELECT
-  epvo.date,
-  epvo.visit_identifier,
-  epvo.device_category,
-  epvo.operating_system,
-  epvo.browser,
-  epvo.language,
-  epvo.country,
-  epvo.source,
-  epvo.medium,
-  epvo.campaign,
-  epvo.content,
---blog,
---subblog,
---sessions
+  date,
+  visit_identifier,
+  device_category,
+  operating_system,
+  browser,
+  `language`,
+  country,
+  source,
+  medium,
+  campaign,
+  content,
+  CASE
+    WHEN blog LIKE "press%"
+      THEN "press"
+    WHEN blog = 'firefox'
+      THEN 'The Firefox Frontier'
+    WHEN blog = 'netPolicy'
+      THEN 'Open Policy & Advocacy'
+    WHEN LOWER(blog) = 'internetcitizen'
+      THEN 'Internet Citizen'
+    WHEN blog = 'futurereleases'
+      THEN 'Future Releases'
+    WHEN blog = 'careers'
+      THEN 'Careers'
+    WHEN blog = 'opendesign'
+      THEN 'Open Design'
+    WHEN blog = ""
+      THEN "Blog Home Page"
+    WHEN LOWER(blog) IN (
+        'blog',
+        'addons',
+        'security',
+        'opendesign',
+        'nnethercote',
+        'thunderbird',
+        'community',
+        'l10n',
+        'theden',
+        'webrtc',
+        'berlin',
+        'webdev',
+        'services',
+        'tanvi',
+        'laguaridadefirefox',
+        'ux',
+        'fxtesteng',
+        'foundation-archive',
+        'nfroyd',
+        'sumo',
+        'javascript',
+        'page',
+        'data'
+      )
+      THEN LOWER(blog)
+    ELSE 'other'
+  END AS blog,
+  CASE
+    WHEN blog = "firefox"
+      AND subblog IN ('ru', 'pt-br', 'pl', 'it', 'id', 'fr', 'es', 'de')
+      THEN subblog
+    WHEN blog = "firefox"
+      THEN "Main"
+    WHEN blog LIKE "press-%"
+      AND blog IN (
+        'press-de',
+        'press-fr',
+        'press-es',
+        'press-uk',
+        'press-pl',
+        'press-it',
+        'press-br',
+        'press-nl'
+      )
+      THEN blog
+    WHEN blog LIKE "press%"
+      THEN "Main"
+    WHEN blog = 'internetcitizen'
+      AND subblog IN ('de', 'fr')
+      THEN subblog
+    ELSE "Main"
+  END AS subblog,
+  `sessions`
 FROM
-  entrance_page_views_only epvo
+  staging

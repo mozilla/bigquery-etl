@@ -6,11 +6,11 @@ WITH wnp_visits AS (
     page_level_2 AS version,
     mozfun.norm.browser_version_info(page_level_2) AS version_info,
     country,
-    IF(hit_number = first_interaction AND bounces = 1, TRUE, FALSE) AS is_bounce
+    CAST(bounces as boolean) AS is_bounce
   FROM
-    `moz-fx-data-marketing-prod.ga_derived.www_site_hits_v1`
+    `moz-fx-data-marketing-prod.ga_derived.www_site_hits_v2`
   WHERE
-    date = '2024-01-30' --@submission_date
+    date = @submission_date
     AND hit_type = 'PAGE'
     -- Match page paths like "/{locale}/firefox/{version}/whatsnew/..."
     -- Version regular expression is adapted from https://github.com/mozilla/bedrock/blob/main/bedrock/releasenotes/__init__.py

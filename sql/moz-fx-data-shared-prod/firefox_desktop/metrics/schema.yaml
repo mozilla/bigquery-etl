@@ -342,6 +342,15 @@ fields:
         display) mode (Migrated from the geckoview metric of the same name).
 
         '
+    - name: shopping_settings_auto_open_user_disabled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Indicates if the user has manually disabled the auto open sidebar
+        feature.
+
+        Set during shopping component init and updated when changed in browser.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE

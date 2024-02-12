@@ -3,10 +3,14 @@ from pathlib import Path
 from typing import Optional
 
 import click
+from google.cloud import bigquery
 
 from bigquery_etl.metadata.parse_metadata import DatasetMetadata, Metadata
+from bigquery_etl.metadata.publish_metadata import publish_metadata
 
 from ..cli.utils import paths_matching_name_pattern, project_id_option, sql_dir_option
+from ..config import ConfigLoader
+from ..util import extract_from_query_path
 
 
 @click.group(
@@ -83,5 +87,41 @@ def update(name: str, sql_dir: Optional[str], project_id: Optional[str]) -> None
         if table_metadata_updated:
             table_metadata.write(table_metadata_file)
             click.echo(f"Updated {table_metadata_file}")
+
+    return None
+
+
+@metadata.command(
+    help="""
+    Publish all metadata based on metadata.yaml file.
+
+    Example:
+     ./bqetl metadata publish ga_derived.downloads_with_attribution_v2
+    """,
+    context_settings=dict(
+        ignore_unknown_options=True,
+        allow_extra_args=True,
+    ),
+)
+@click.argument("name")
+@project_id_option(
+    ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod")
+)
+@sql_dir_option
+def publish(name: str, sql_dir: Optional[str], project_id: Optional[str]) -> None:
+    """Publish Bigquery metadata."""
+    client = bigquery.Client(project_id)
+
+    table_metadata_files = paths_matching_name_pattern(
+        name, sql_dir, project_id=project_id, files=["metadata.yaml"]
+    )
+
+    for metadata_file in table_metadata_files:
+        project, dataset, table = extract_from_query_path(metadata_file)
+        try:
+            metadata = Metadata.from_file(metadata_file)
+            publish_metadata(client, project, dataset, table, metadata)
+        except FileNotFoundError:
+            print("No metadata file for: {}.{}.{}".format(project, dataset, table))
 
     return None

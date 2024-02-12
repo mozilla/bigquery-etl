@@ -33,7 +33,7 @@ WITH
       mozdata.udf.mode_last(ARRAY_AGG(pref_fx_suggestions)) AS pref_fx_suggestions,
       mozdata.udf.mode_last(ARRAY_AGG(pref_sponsored_suggestions)) AS pref_sponsored_suggestions,
       LOGICAL_OR(event_action = 'engaged' AND is_clicked > 0) AS is_clicked,
-      COUNT(*) as n_impressions,
+      1 as n_impressions,
     FROM temp_unnested
     GROUP BY
     submission_date,

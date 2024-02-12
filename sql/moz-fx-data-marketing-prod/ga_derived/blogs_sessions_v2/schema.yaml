@@ -44,14 +44,6 @@ fields:
   type: STRING
   description: Content - Indicates the particular link within a campaign
 - mode: NULLABLE
-  name: blog_hostname
-  type: STRING
-  description: Blog Host Name - for example, blog.mozilla.org, or blog.thunderbird.net
-- mode: NULLABLE
-  name: page_location
-  type: STRING
-  description: Page Location - The page location without any query parameters
-- mode: NULLABLE
   name: blog
   type: STRING
   description: Blog

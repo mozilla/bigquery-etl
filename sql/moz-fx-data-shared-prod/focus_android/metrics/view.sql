@@ -177,7 +177,12 @@ SELECT
       metrics.labeled_counter.networking_http_channel_onstart_success_https_rr,
       metrics.labeled_counter.networking_https_rr_presented,
       metrics.labeled_counter.networking_https_upgrade_with_https_rr,
-      metrics.labeled_counter.gfx_content_frame_time_reason
+      metrics.labeled_counter.gfx_content_frame_time_reason,
+      metrics.labeled_counter.networking_dns_native_count,
+      metrics.labeled_counter.networking_http_response_version,
+      metrics.labeled_counter.tls_xyber_intolerance_reason,
+      metrics.labeled_counter.media_audio_backend,
+      metrics.labeled_counter.media_audio_init_failure
     ) AS `labeled_counter`,
     metrics.memory_distribution,
     STRUCT(
@@ -380,7 +385,12 @@ SELECT
       metrics.labeled_counter.networking_http_channel_onstart_success_https_rr,
       metrics.labeled_counter.networking_https_rr_presented,
       metrics.labeled_counter.networking_https_upgrade_with_https_rr,
-      metrics.labeled_counter.gfx_content_frame_time_reason
+      metrics.labeled_counter.gfx_content_frame_time_reason,
+      metrics.labeled_counter.networking_dns_native_count,
+      metrics.labeled_counter.networking_http_response_version,
+      metrics.labeled_counter.tls_xyber_intolerance_reason,
+      metrics.labeled_counter.media_audio_backend,
+      metrics.labeled_counter.media_audio_init_failure
     ) AS `labeled_counter`,
     metrics.memory_distribution,
     STRUCT(

@@ -38446,6 +38446,9 @@ fields:
         - name: startup_profile_database_version
           type: STRING
           mode: NULLABLE
+        - name: shopping_auto_open_user_disabled
+          type: BOOLEAN
+          mode: NULLABLE
     - name: socket
       type: RECORD
       mode: NULLABLE

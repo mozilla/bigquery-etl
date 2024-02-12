@@ -158,7 +158,10 @@ SELECT
       metrics.labeled_counter.formautofill_form_submission_heuristic,
       metrics.labeled_counter.networking_http_channel_onstart_success_https_rr,
       metrics.labeled_counter.networking_https_rr_presented,
-      metrics.labeled_counter.networking_https_upgrade_with_https_rr
+      metrics.labeled_counter.networking_https_upgrade_with_https_rr,
+      metrics.labeled_counter.networking_dns_native_count,
+      metrics.labeled_counter.networking_http_response_version,
+      metrics.labeled_counter.tls_xyber_intolerance_reason
     ) AS `labeled_counter`,
     metrics.quantity,
     metrics.string,
@@ -518,7 +521,10 @@ SELECT
       metrics.labeled_counter.formautofill_form_submission_heuristic,
       metrics.labeled_counter.networking_http_channel_onstart_success_https_rr,
       metrics.labeled_counter.networking_https_rr_presented,
-      metrics.labeled_counter.networking_https_upgrade_with_https_rr
+      metrics.labeled_counter.networking_https_upgrade_with_https_rr,
+      metrics.labeled_counter.networking_dns_native_count,
+      metrics.labeled_counter.networking_http_response_version,
+      metrics.labeled_counter.tls_xyber_intolerance_reason
     ) AS `labeled_counter`,
     metrics.quantity,
     STRUCT(
@@ -1094,7 +1100,10 @@ SELECT
       metrics.labeled_counter.formautofill_form_submission_heuristic,
       metrics.labeled_counter.networking_http_channel_onstart_success_https_rr,
       metrics.labeled_counter.networking_https_rr_presented,
-      metrics.labeled_counter.networking_https_upgrade_with_https_rr
+      metrics.labeled_counter.networking_https_upgrade_with_https_rr,
+      metrics.labeled_counter.networking_dns_native_count,
+      metrics.labeled_counter.networking_http_response_version,
+      metrics.labeled_counter.tls_xyber_intolerance_reason
     ) AS `labeled_counter`,
     metrics.quantity,
     STRUCT(
@@ -1469,7 +1478,10 @@ SELECT
       metrics.labeled_counter.formautofill_form_submission_heuristic,
       metrics.labeled_counter.networking_http_channel_onstart_success_https_rr,
       metrics.labeled_counter.networking_https_rr_presented,
-      metrics.labeled_counter.networking_https_upgrade_with_https_rr
+      metrics.labeled_counter.networking_https_upgrade_with_https_rr,
+      metrics.labeled_counter.networking_dns_native_count,
+      metrics.labeled_counter.networking_http_response_version,
+      metrics.labeled_counter.tls_xyber_intolerance_reason
     ) AS `labeled_counter`,
     metrics.quantity,
     metrics.string,

@@ -1,7 +1,7 @@
 --Get all page views with the page location, and a flag for whether it was an entrance or not to the session
 WITH all_page_views AS (
   SELECT
-    PARSE_DATE('%Y%m%d', event_date) AS date,
+    PARSE_DATE('%Y%m%d', event_date) AS `date`,
     event_timestamp,
     user_pseudo_id || '-' || CAST(
       (
@@ -54,12 +54,12 @@ WITH all_page_views AS (
 --Theoretically Google should always only send 1 per session, but in case there is ever more than 1, which happens occasionally
 entrance_page_views_only AS (
   SELECT
-    date,
+    `date`,
     visit_identifier,
     device_category,
     operating_system,
     browser,
-    LANGUAGE AS `language`,
+    `language`,
     country,
     source,
     medium,
@@ -119,7 +119,7 @@ staging AS (
     epvo.subblog
 )
 SELECT
-  date,
+  `date`,
   visit_identifier,
   device_category,
   operating_system,

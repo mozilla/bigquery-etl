@@ -65,19 +65,15 @@ entrance_page_views_only AS (
     medium,
     campaign,
     content,
-    REGEXP_REPLACE(
-      SPLIT(page_location, '?')[SAFE_OFFSET(0)],
-      '^https://blog.mozilla.org',
-      ''
-    ) AS page_path,
-    SPLIT(
-      REGEXP_REPLACE(SPLIT(page_location, '?')[SAFE_OFFSET(0)], '^https://blog.mozilla.org', ''),
-      '/'
-    )[SAFE_OFFSET(1)] AS blog,
-    SPLIT(
-      REGEXP_REPLACE(SPLIT(page_location, '?')[SAFE_OFFSET(0)], '^https://blog.mozilla.org', ''),
-      '/'
-    )[SAFE_OFFSET(2)] AS subblog
+    SPLIT(REGEXP_REPLACE(SPLIT(page_location, '?')[SAFE_OFFSET(0)], 'https://', ''), '/')[
+      SAFE_OFFSET(0)
+    ] AS blog_hostname,
+    SPLIT(REGEXP_REPLACE(SPLIT(page_location, '?')[SAFE_OFFSET(0)], '^https://', ''), '/')[
+      SAFE_OFFSET(1)
+    ] AS level_1,
+    SPLIT(REGEXP_REPLACE(SPLIT(page_location, '?')[SAFE_OFFSET(0)], '^https://', ''), '/')[
+      SAFE_OFFSET(2)
+    ] AS level_2
   FROM
     all_page_views
   WHERE
@@ -98,11 +94,13 @@ staging AS (
     epvo.medium,
     epvo.campaign,
     epvo.content,
-    epvo.blog,
-    epvo.subblog,
+    epvo.level_1,
+    epvo.level_2,
     COUNT(DISTINCT(visit_identifier)) AS sessions
   FROM
     entrance_page_views_only epvo
+  WHERE
+    epvo.blog_hostname = 'blog.mozilla.org'
   GROUP BY
     epvo.date,
     epvo.visit_identifier,
@@ -115,8 +113,8 @@ staging AS (
     epvo.medium,
     epvo.campaign,
     epvo.content,
-    epvo.blog,
-    epvo.subblog
+    epvo.level_1,
+    epvo.level_2
 )
 SELECT
   `date`,
@@ -131,23 +129,23 @@ SELECT
   campaign,
   content,
   CASE
-    WHEN blog LIKE "press%"
+    WHEN LOWER(level_1) LIKE "press%"
       THEN "press"
-    WHEN blog = 'firefox'
+    WHEN LOWER(level_1) = 'firefox'
       THEN 'The Firefox Frontier'
-    WHEN blog = 'netPolicy'
+    WHEN level_1 = 'netPolicy'
       THEN 'Open Policy & Advocacy'
-    WHEN LOWER(blog) = 'internetcitizen'
+    WHEN LOWER(level_1) = 'internetcitizen'
       THEN 'Internet Citizen'
-    WHEN blog = 'futurereleases'
+    WHEN LOWER(level_1) = 'futurereleases'
       THEN 'Future Releases'
-    WHEN blog = 'careers'
+    WHEN LOWER(level_1) = 'careers'
       THEN 'Careers'
-    WHEN blog = 'opendesign'
+    WHEN LOWER(level_1) = 'opendesign'
       THEN 'Open Design'
-    WHEN blog = ""
+    WHEN level_1 = ""
       THEN "Blog Home Page"
-    WHEN LOWER(blog) IN (
+    WHEN LOWER(level_1) IN (
         'blog',
         'addons',
         'security',
@@ -172,17 +170,17 @@ SELECT
         'page',
         'data'
       )
-      THEN LOWER(blog)
+      THEN LOWER(level_1)
     ELSE 'other'
   END AS blog,
   CASE
-    WHEN blog = "firefox"
-      AND subblog IN ('ru', 'pt-br', 'pl', 'it', 'id', 'fr', 'es', 'de')
-      THEN subblog
-    WHEN blog = "firefox"
+    WHEN LOWER(level_1) = "firefox"
+      AND LOWER(level_2) IN ('ru', 'pt-br', 'pl', 'it', 'id', 'fr', 'es', 'de')
+      THEN LOWER(level_2)
+    WHEN LOWER(level_1) = "firefox"
       THEN "Main"
-    WHEN blog LIKE "press-%"
-      AND blog IN (
+    WHEN LOWER(level_1) LIKE "press-%"
+      AND LOWER(level_1) IN (
         'press-de',
         'press-fr',
         'press-es',
@@ -192,12 +190,12 @@ SELECT
         'press-br',
         'press-nl'
       )
-      THEN blog
-    WHEN blog LIKE "press%"
+      THEN LOWER(level_1)
+    WHEN LOWER(level_1) LIKE "press%"
       THEN "Main"
-    WHEN blog = 'internetcitizen'
-      AND subblog IN ('de', 'fr')
-      THEN subblog
+    WHEN LOWER(level_1) = 'internetcitizen'
+      AND LOWER(level_2) IN ('de', 'fr')
+      THEN LOWER(level_2)
     ELSE "Main"
   END AS subblog,
   `sessions`

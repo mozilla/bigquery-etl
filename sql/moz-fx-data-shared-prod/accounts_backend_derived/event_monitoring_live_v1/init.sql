@@ -41,7 +41,7 @@ IF
     END AS experiment_branch,
     COUNT(*) AS total_events
   FROM
-    `moz-fx-data-shared-prod.accounts_backend_live.events_v1`
+    `moz-fx-data-shared-prod.accounts_backend_live.accounts_events_v1`
   CROSS JOIN
     UNNEST(events) AS event,
       -- Iterator for accessing experiments.

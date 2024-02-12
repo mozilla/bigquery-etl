@@ -262,6 +262,18 @@ with DAG(
         depends_on_past=False,
     )
 
+    firefox_accounts_derived__fxa_users_daily__v2 = bigquery_etl_query(
+        task_id="firefox_accounts_derived__fxa_users_daily__v2",
+        destination_table="fxa_users_daily_v2",
+        dataset_id="firefox_accounts_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        start_date=datetime.datetime(2024, 2, 11, 0, 0),
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     firefox_accounts_derived__fxa_users_first_seen__v1 = bigquery_etl_query(
         task_id="firefox_accounts_derived__fxa_users_first_seen__v1",
         destination_table="fxa_users_first_seen_v1",
@@ -274,6 +286,19 @@ with DAG(
         depends_on_past=True,
         parameters=["submission_date:DATE:{{ds}}"],
         priority_weight=80,
+    )
+
+    firefox_accounts_derived__fxa_users_first_seen__v2 = bigquery_etl_query(
+        task_id="firefox_accounts_derived__fxa_users_first_seen__v2",
+        destination_table="fxa_users_first_seen_v2",
+        dataset_id="firefox_accounts_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        start_date=datetime.datetime(2024, 2, 11, 0, 0),
+        date_partition_parameter=None,
+        depends_on_past=True,
+        parameters=["submission_date:DATE:{{ds}}"],
     )
 
     firefox_accounts_derived__fxa_users_last_seen__v1 = bigquery_etl_query(
@@ -301,6 +326,18 @@ with DAG(
         firefox_accounts_derived__fxa_users_last_seen__v1_external.set_upstream(
             firefox_accounts_derived__fxa_users_last_seen__v1
         )
+
+    firefox_accounts_derived__fxa_users_last_seen__v2 = bigquery_etl_query(
+        task_id="firefox_accounts_derived__fxa_users_last_seen__v2",
+        destination_table="fxa_users_last_seen_v2",
+        dataset_id="firefox_accounts_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        start_date=datetime.datetime(2024, 2, 11, 0, 0),
+        date_partition_parameter="submission_date",
+        depends_on_past=True,
+    )
 
     firefox_accounts_derived__fxa_users_services_daily__v1 = bigquery_etl_query(
         task_id="firefox_accounts_derived__fxa_users_services_daily__v1",
@@ -422,6 +459,10 @@ with DAG(
         firefox_accounts_derived__fxa_stdout_events__v1
     )
 
+    firefox_accounts_derived__fxa_users_daily__v2.set_upstream(
+        firefox_accounts_derived__fxa_users_services_daily__v2
+    )
+
     firefox_accounts_derived__fxa_users_first_seen__v1.set_upstream(
         firefox_accounts_derived__fxa_gcp_stderr_events__v1
     )
@@ -434,8 +475,16 @@ with DAG(
         firefox_accounts_derived__fxa_stdout_events__v1
     )
 
+    firefox_accounts_derived__fxa_users_first_seen__v2.set_upstream(
+        firefox_accounts_derived__fxa_users_daily__v2
+    )
+
     firefox_accounts_derived__fxa_users_last_seen__v1.set_upstream(
         firefox_accounts_derived__fxa_users_daily__v1
+    )
+
+    firefox_accounts_derived__fxa_users_last_seen__v2.set_upstream(
+        firefox_accounts_derived__fxa_users_daily__v2
     )
 
     firefox_accounts_derived__fxa_users_services_daily__v1.set_upstream(

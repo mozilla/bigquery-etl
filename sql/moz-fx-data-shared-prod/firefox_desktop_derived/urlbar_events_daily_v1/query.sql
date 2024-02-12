@@ -20,7 +20,6 @@ WITH
     UNNEST (results) AS res
   WHERE
     submission_date = @submission_date
-    AND event_action = 'engaged'
     AND is_terminal = TRUE
   ),
   temp_session AS (
@@ -44,24 +43,24 @@ SELECT
   submission_date,
   normalized_country_code,
   normalized_channel,
-  pref_fx_suggestions,
-  pref_sponsored_suggestions,
+  pref_fx_suggestions as firefox_suggest_enabled,
+  pref_sponsored_suggestions as sponsored_suggestions_enabled,
   product_result_type,
-  SUM(n_impressions) AS n_impressions,
-  COUNTIF(is_clicked > 0) AS n_clicks
+  SUM(n_impressions) AS urlbar_impressions,
+  COUNTIF(is_clicked > 0) AS urlbar_clicks
 FROM
   temp_session
 GROUP BY
   submission_date,
   normalized_country_code,
-  pref_fx_suggestions,
-  pref_sponsored_suggestions,
+  firefox_suggest_enabled,
+  sponsored_suggestions_enabled,
   product_result_type,
   normalized_channel
 ORDER BY
   submission_date DESC,
   normalized_country_code DESC,
-  pref_fx_suggestions DESC,
-  pref_sponsored_suggestions DESC,
+  firefox_suggest_enabled DESC,
+  sponsored_suggestions_enabled DESC,
   normalized_channel DESC,
   n_impressions DESC

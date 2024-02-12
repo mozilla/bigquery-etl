@@ -3,10 +3,10 @@ fields:
   - name: submission_date
     type: DATE
     mode: NULLABLE
-  - name: n_impressions
+  - name: urlbar_impressions
     type: INTEGER
     mode: NULLABLE
-  - name: n_clicks
+  - name: urlbar_clicks
     type: INTEGER
     mode: NULLABLE
   - name: normalized_channel

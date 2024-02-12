@@ -59,7 +59,7 @@ IF
       END AS experiment_branch,
       COUNT(*) AS total_events
     FROM
-      `{{ project_id }}.{{ dataset }}_live.events_v1`
+      `{{ project_id }}.{{ dataset }}_live.{{ events_table }}`
     CROSS JOIN
       UNNEST(events) AS event,
       -- Iterator for accessing experiments.
@@ -124,7 +124,7 @@ IF
       END AS experiment_branch,
       COUNT(*) AS total_events
     FROM
-      `{{ project_id }}.{{ dataset }}_live.accounts_events_v1`
+      `{{ project_id }}.{{ dataset }}_live.{{ events_table }}`
     CROSS JOIN
       -- Iterator for accessing experiments.
       -- Add one more for aggregating events across all experiments

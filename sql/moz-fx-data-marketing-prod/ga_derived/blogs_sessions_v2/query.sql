@@ -129,19 +129,19 @@ SELECT
   campaign,
   content,
   CASE
-    WHEN level_1 LIKE "press%"
+    WHEN LOWER(level_1) LIKE "press%"
       THEN "press"
-    WHEN level_1 = 'firefox'
+    WHEN LOWER(level_1) = 'firefox'
       THEN 'The Firefox Frontier'
     WHEN level_1 = 'netPolicy'
       THEN 'Open Policy & Advocacy'
     WHEN LOWER(level_1) = 'internetcitizen'
       THEN 'Internet Citizen'
-    WHEN level_1 = 'futurereleases'
+    WHEN LOWER(level_1) = 'futurereleases'
       THEN 'Future Releases'
-    WHEN level_1 = 'careers'
+    WHEN LOWER(level_1) = 'careers'
       THEN 'Careers'
-    WHEN level_1 = 'opendesign'
+    WHEN LOWER(level_1) = 'opendesign'
       THEN 'Open Design'
     WHEN level_1 = ""
       THEN "Blog Home Page"
@@ -174,13 +174,13 @@ SELECT
     ELSE 'other'
   END AS blog,
   CASE
-    WHEN level_1 = "firefox"
-      AND level_2 IN ('ru', 'pt-br', 'pl', 'it', 'id', 'fr', 'es', 'de')
-      THEN level_2
-    WHEN level_1 = "firefox"
+    WHEN LOWER(level_1) = "firefox"
+      AND LOWER(level_2) IN ('ru', 'pt-br', 'pl', 'it', 'id', 'fr', 'es', 'de')
+      THEN LOWER(level_2)
+    WHEN LOWER(level_1) = "firefox"
       THEN "Main"
-    WHEN level_1 LIKE "press-%"
-      AND level_1 IN (
+    WHEN LOWER(level_1) LIKE "press-%"
+      AND LOWER(level_1) IN (
         'press-de',
         'press-fr',
         'press-es',
@@ -190,12 +190,12 @@ SELECT
         'press-br',
         'press-nl'
       )
-      THEN level_1
-    WHEN level_1 LIKE "press%"
+      THEN LOWER(level_1)
+    WHEN LOWER(level_1) LIKE "press%"
       THEN "Main"
-    WHEN level_1 = 'internetcitizen'
-      AND level_2 IN ('de', 'fr')
-      THEN level_2
+    WHEN LOWER(level_1) = 'internetcitizen'
+      AND LOWER(level_2) IN ('de', 'fr')
+      THEN LOWER(level_2)
     ELSE "Main"
   END AS subblog,
   `sessions`

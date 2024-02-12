@@ -1,0 +1,26 @@
+friendly_name: Blogs Sessions V2
+description: |-
+  Intermediate table containing normalized sessions for blog.mozilla.org, sourced from Google Analytics 4 (GA4)
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau
+  dag: bqetl_google_analytics_derived_ga4
+scheduling:
+  dag_name: bqetl_google_analytics_derived_ga4
+bigquery:
+  time_partitioning:
+    type: day
+    field: date
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+    - country
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

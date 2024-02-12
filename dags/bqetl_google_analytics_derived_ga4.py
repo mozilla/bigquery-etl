@@ -49,6 +49,17 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
+    ga_derived__blogs_sessions__v2 = bigquery_etl_query(
+        task_id="ga_derived__blogs_sessions__v2",
+        destination_table="blogs_sessions_v2",
+        dataset_id="ga_derived",
+        project_id="moz-fx-data-marketing-prod",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     ga_derived__firefox_whatsnew_summary__v2 = bigquery_etl_query(
         task_id="ga_derived__firefox_whatsnew_summary__v2",
         destination_table="firefox_whatsnew_summary_v2",

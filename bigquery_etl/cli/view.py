@@ -1,4 +1,5 @@
 """bigquery-etl CLI view command."""
+
 import logging
 import re
 import string

@@ -1,4 +1,5 @@
 """Methods for working with stable table schemas."""
+
 import json
 import tarfile
 import urllib.request

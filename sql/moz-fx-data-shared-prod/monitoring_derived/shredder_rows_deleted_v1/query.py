@@ -1,4 +1,5 @@
 """Monitor the number of rows deleted by shredder."""
+
 import datetime
 from argparse import ArgumentParser
 from multiprocessing.pool import ThreadPool

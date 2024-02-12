@@ -7,6 +7,7 @@ the stable tables are possible.
 For views that have incomaptible schemas (e.g due to fields having mismatching
 types), the view is only generated for the release channel.
 """
+
 import os
 from copy import deepcopy
 from pathlib import Path

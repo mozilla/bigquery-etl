@@ -1,4 +1,5 @@
 """bigquery-etl CLI metadata command."""
+
 from pathlib import Path
 from typing import Optional
 

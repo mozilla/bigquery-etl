@@ -10,6 +10,7 @@ import attr
 import yaml
 from google.api_core.exceptions import NotFound
 from google.cloud import bigquery
+from google.cloud.bigquery import SchemaField
 
 from .. import dryrun
 
@@ -282,3 +283,14 @@ class Schema:
     def to_json(self):
         """Return the schema data as JSON."""
         return json.dumps(self.schema)
+
+    def to_bigquery_schema(self) -> List[SchemaField]:
+        """Get the BigQuery representation of the schema."""
+        with NamedTemporaryFile(suffix=".json") as f:
+            self.to_json_file(Path(f.name))
+            return [SchemaField.from_api_repr(field) for field in json.load(f)]
+
+    @classmethod
+    def from_bigquery_schema(cls, fields: List[SchemaField]) -> "Schema":
+        """Construct a Schema from the BigQuery representation."""
+        return cls({"fields": [field.to_api_repr() for field in fields]})

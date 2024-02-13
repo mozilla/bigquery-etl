@@ -9,7 +9,7 @@ from pathlib import Path
 
 import attr
 import sqlparse
-from google.api_core.exceptions import BadRequest, NotFound
+from google.api_core.exceptions import BadRequest, NotFound, Forbidden
 from google.cloud import bigquery
 
 from bigquery_etl.config import ConfigLoader
@@ -266,17 +266,6 @@ class View:
             print(f"view {target_view_id} will change: query does not match")
             return True
 
-        # check schema
-        schema_file = Path(self.path).parent / "schema.yaml"
-        if schema_file.is_file():
-            view_schema = Schema.from_schema_file(schema_file)
-            table_schema = Schema.from_json(
-                {"fields": [f.to_api_repr() for f in table.schema]}
-            )
-            if not view_schema.equal(table_schema):
-                print(f"view {target_view_id} will change: schema does not match")
-                return True
-
         # check metadata
         if self.metadata is not None:
             if self.metadata.description != table.description:
@@ -290,6 +279,30 @@ class View:
             if self.labels != table.labels:
                 print(f"view {target_view_id} will change: labels do not match")
                 return True
+
+        schema_file = Path(self.path).parent / "schema.yaml"
+        table_schema = Schema.from_bigquery_schema(table.schema)
+        # check schema based on schema file
+        if schema_file.is_file():
+            view_schema = Schema.from_schema_file(schema_file)
+        else:  # check schema based on dry run results
+            try:
+                query_job = client.query(
+                    query=self.content,
+                    job_config=bigquery.QueryJobConfig(
+                        dry_run=True, use_legacy_sql=False
+                    ),
+                )
+                view_schema = Schema.from_bigquery_schema(query_job.schema)
+            except Forbidden:
+                print(
+                    f"Missing permission to dry run view {target_view_id} to get schema"
+                )
+                view_schema = None
+
+        if view_schema is not None and not view_schema.equal(table_schema):
+            print(f"view {target_view_id} will change: schema does not match")
+            return True
 
         return False
 

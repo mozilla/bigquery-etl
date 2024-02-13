@@ -79,10 +79,14 @@ def get_stable_table_schemas() -> List[SchemaFile]:
                 schema = json.load(tar.extractfile(tarinfo.name))  # type: ignore
                 bq_schema = {}
 
-                # Schemas without pipeline metadata (like glean/glean)
+                # Schemas without `bq_dataset_family` and `bq_table` metadata (like glean/glean)
                 # do not have corresponding BQ tables, so we skip them here.
                 pipeline_meta = schema.get("mozPipelineMetadata", None)
-                if pipeline_meta is None:
+                if (
+                    pipeline_meta is None
+                    or "bq_dataset_family" not in pipeline_meta
+                    or "bq_table" not in pipeline_meta
+                ):
                     continue
 
                 try:

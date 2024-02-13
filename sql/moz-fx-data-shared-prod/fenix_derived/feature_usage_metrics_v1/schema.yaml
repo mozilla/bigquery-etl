@@ -2,7 +2,6 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: Airflow's internal execution_date.
 - name: ping_date
   type: DATE
   mode: NULLABLE

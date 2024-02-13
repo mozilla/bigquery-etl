@@ -49,7 +49,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     firefox_desktop_review_checker_clients__v1 = bigquery_etl_query(
         task_id="firefox_desktop_review_checker_clients__v1",
         destination_table="review_checker_clients_v1",

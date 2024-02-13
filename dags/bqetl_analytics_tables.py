@@ -53,7 +53,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     checks__fail_fenix_derived__firefox_android_clients__v1 = bigquery_dq_check(
         task_id="checks__fail_fenix_derived__firefox_android_clients__v1",
         source_table="firefox_android_clients_v1",

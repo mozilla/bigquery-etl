@@ -46,7 +46,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     fenix_external__gplay_installs_by_country__v1 = bigquery_etl_query(
         task_id="fenix_external__gplay_installs_by_country__v1",
         destination_table="gplay_installs_by_country_v1",

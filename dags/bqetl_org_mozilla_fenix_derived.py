@@ -46,7 +46,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     org_mozilla_fenix_derived__geckoview_version__v1 = bigquery_etl_query(
         task_id="org_mozilla_fenix_derived__geckoview_version__v1",
         destination_table="geckoview_version_v1",

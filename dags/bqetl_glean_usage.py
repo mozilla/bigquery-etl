@@ -46,7 +46,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     task_group_accounts_backend = TaskGroup("accounts_backend")
 
     task_group_bedrock = TaskGroup("bedrock")

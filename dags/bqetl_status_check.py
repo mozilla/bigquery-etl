@@ -57,7 +57,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     monitoring_derived__bigquery_etl_python_run_check__v1 = GKEPodOperator(
         task_id="monitoring_derived__bigquery_etl_python_run_check__v1",
         arguments=[

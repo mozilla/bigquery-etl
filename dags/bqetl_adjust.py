@@ -51,7 +51,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     adjust_derived__adjust_cohort__v1 = GKEPodOperator(
         task_id="adjust_derived__adjust_cohort__v1",
         arguments=[

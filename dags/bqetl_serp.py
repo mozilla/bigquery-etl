@@ -49,7 +49,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     firefox_desktop_serp_events__v1 = bigquery_etl_query(
         task_id="firefox_desktop_serp_events__v1",
         destination_table='serp_events_v1${{ (execution_date - macros.timedelta(hours=24)).strftime("%Y%m%d") }}',

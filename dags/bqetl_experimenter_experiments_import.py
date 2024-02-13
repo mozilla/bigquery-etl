@@ -53,7 +53,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     monitoring__experimenter_experiments__v1 = GKEPodOperator(
         task_id="monitoring__experimenter_experiments__v1",
         arguments=[

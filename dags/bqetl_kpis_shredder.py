@@ -50,7 +50,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     fenix_active_users_aggregates_for_deletion_requests = bigquery_etl_query(
         task_id="fenix_active_users_aggregates_for_deletion_requests",
         destination_table="active_users_aggregates_deletion_request_v1",

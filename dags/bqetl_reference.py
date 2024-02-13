@@ -49,7 +49,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     reference_derived__macroeconomic_indices__v1 = GKEPodOperator(
         task_id="reference_derived__macroeconomic_indices__v1",
         arguments=[

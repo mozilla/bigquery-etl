@@ -52,7 +52,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     apple_ads_external__ad_group_report__v1 = bigquery_etl_query(
         task_id="apple_ads_external__ad_group_report__v1",
         destination_table="ad_group_report_v1",

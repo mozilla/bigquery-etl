@@ -50,7 +50,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     analysis__bqetl_default_task__v1 = bigquery_etl_query(
         #### WARNING: This task has been scheduled in the default DAG. It can be moved to a more suitable DAG using `bqetl query schedule`.
         task_id="analysis__bqetl_default_task__v1",

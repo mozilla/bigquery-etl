@@ -51,7 +51,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     checks__fail_internet_outages__global_outages__v1 = bigquery_dq_check(
         task_id="checks__fail_internet_outages__global_outages__v1",
         source_table="global_outages_v1",

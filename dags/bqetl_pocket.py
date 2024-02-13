@@ -58,7 +58,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     pocket_derived__events__v1 = GKEPodOperator(
         task_id="pocket_derived__events__v1",
         arguments=[

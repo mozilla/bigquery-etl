@@ -52,7 +52,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     accounts_backend_external__accounts__v1 = bigquery_etl_query(
         task_id="accounts_backend_external__accounts__v1",
         destination_table="accounts_v1",

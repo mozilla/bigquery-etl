@@ -5,7 +5,7 @@ cattrs==23.2.3
 click==8.1.7
 exceptiongroup==1.2.0 # for backwards compatibility with python < 3.11
 flake8<5 # pytest-flake8 does not support flake8 5+
-gcsfs==2023.10.0
+gcsfs==2024.2.0
 gcloud==0.18.3
 gitpython==3.1.41
 google-cloud-bigquery==3.14.1

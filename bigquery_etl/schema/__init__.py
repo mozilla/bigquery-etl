@@ -286,9 +286,7 @@ class Schema:
 
     def to_bigquery_schema(self) -> List[SchemaField]:
         """Get the BigQuery representation of the schema."""
-        with NamedTemporaryFile(suffix=".json") as f:
-            self.to_json_file(Path(f.name))
-            return [SchemaField.from_api_repr(field) for field in json.load(f)]
+        return [SchemaField.from_api_repr(field) for field in self.schema["fields"]]
 
     @classmethod
     def from_bigquery_schema(cls, fields: List[SchemaField]) -> "Schema":

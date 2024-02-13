@@ -446,16 +446,16 @@ frozenlist==1.3.3 \
     # via
     #   aiohttp
     #   aiosignal
-fsspec==2023.10.0 \
-    --hash=sha256:330c66757591df346ad3091a53bd907e15348c2ba17d63fd54f5c39c4457d2a5 \
-    --hash=sha256:346a8f024efeb749d2a5fca7ba8854474b1ff9af7c3faaf636a4548781136529
+fsspec==2024.2.0 \
+    --hash=sha256:817f969556fa5916bc682e02ca2045f96ff7f586d45110fcb76022063ad2c7d8 \
+    --hash=sha256:b6ad1a679f760dda52b1168c859d01b7b80648ea6f7f7c7f5a8a91dc3f3ecb84
     # via gcsfs
 gcloud==0.18.3 \
     --hash=sha256:0af2dec59fce20561752f86e42d981c6a255e306a6c5e5d1fa3d358a8857e4fb
     # via -r requirements.in
-gcsfs==2023.10.0 \
-    --hash=sha256:1915e6d766faad9a295e815b13c59966b925a274108b8a56f673623bf4aef83f \
-    --hash=sha256:f3ad41652a596ca56e44778e041f428d022add3eff62b97a47302014affd270f
+gcsfs==2024.2.0 \
+    --hash=sha256:20bf70cc81d580474dd299d55e1ffcf8b3e81721aeb562e148ca0a3c900d0421 \
+    --hash=sha256:f7cffd7cae2fb50c56ef883f8aef9792be045b5059f06c1902c3a6151509f506
     # via -r requirements.in
 ghp-import==2.1.0 \
     --hash=sha256:8337dd7b50877f163d4c0289bc1f1c7f127550241988d568c1db512c4324a619 \
@@ -484,9 +484,9 @@ google-api-core[grpc]==2.11.0 \
     #   google-cloud-bigquery-storage
     #   google-cloud-core
     #   google-cloud-storage
-google-auth==2.16.0 \
-    --hash=sha256:5045648c821fb72384cdc0e82cc326df195f113a33049d9b62b74589243d2acc \
-    --hash=sha256:ed7057a101af1146f0554a769930ac9de506aeca4fd5af6543ebe791851a9fbd
+google-auth==2.27.0 \
+    --hash=sha256:8e4bad367015430ff253fe49d500fdc3396c1a434db5740828c728e45bcce245 \
+    --hash=sha256:e863a56ccc2d8efa83df7a80272601e43487fa9a728a376205c86c26aaefa821
     # via
     #   gcsfs
     #   google-api-core
@@ -513,9 +513,9 @@ google-cloud-core==2.3.2 \
     # via
     #   google-cloud-bigquery
     #   google-cloud-storage
-google-cloud-storage==2.10.0 \
-    --hash=sha256:934b31ead5f3994e5360f9ff5750982c5b6b11604dc072bc452c25965e076dc7 \
-    --hash=sha256:9433cf28801671de1c80434238fb1e7e4a1ba3087470e90f70c928ea77c2b9d7
+google-cloud-storage==2.14.0 \
+    --hash=sha256:2d23fcf59b55e7b45336729c148bb1c464468c69d5efbaee30f7201dd90eb97e \
+    --hash=sha256:8641243bbf2a2042c16a6399551fbb13f062cbc9a2de38d6c0bb5426962e9dbd
     # via
     #   -r requirements.in
     #   gcsfs
@@ -588,10 +588,12 @@ google-crc32c==1.5.0 \
     --hash=sha256:f583edb943cf2e09c60441b910d6a20b4d9d626c75a36c8fcac01a6c96c01183 \
     --hash=sha256:fd8536e902db7e365f49e7d9029283403974ccf29b13fc7028b97e2295b33556 \
     --hash=sha256:fe70e325aa68fa4b5edf7d1a4b6f691eb04bbccac0ace68e34820d283b5f80d4
-    # via google-resumable-media
-google-resumable-media==2.4.1 \
-    --hash=sha256:15b8a2e75df42dc6502d1306db0bce2647ba6013f9cd03b6e17368c0886ee90a \
-    --hash=sha256:831e86fd78d302c1a034730a0c6e5369dd11d37bad73fa69ca8998460d5bae8d
+    # via
+    #   google-cloud-storage
+    #   google-resumable-media
+google-resumable-media==2.7.0 \
+    --hash=sha256:5f18f5fa9836f4b083162064a1c2c98c17239bfda9ca50ad970ccf905f3e625b \
+    --hash=sha256:79543cfe433b63fd81c0844b7803aba1bb8950b47bedf7d980c38fa123937e08
     # via
     #   google-cloud-bigquery
     #   google-cloud-storage
@@ -1572,7 +1574,6 @@ six==1.16.0 \
     --hash=sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254
     # via
     #   gcloud
-    #   google-auth
     #   oauth2client
     #   python-dateutil
 smart-open==6.4.0 \
@@ -1587,9 +1588,9 @@ snowballstemmer==2.2.0 \
     --hash=sha256:09b16deb8547d3412ad7b590689584cd0fe25ec8db3be37788be3810cbf19cb1 \
     --hash=sha256:c8e1716e83cc398ae16824e5572ae04e0d9fc2c6b985fb0f900f5f0c96ecba1a
     # via pydocstyle
-sqlglot==20.4.0 \
-    --hash=sha256:401a2933298cf66901704cf2029272d8243ee72ac47b9fd8784254401b43ee43 \
-    --hash=sha256:9a42135d0530de8150a2c5106e0c52abd3396d92501ebe97df7b371d20de5dc9
+sqlglot==21.1.0 \
+    --hash=sha256:11240a508b66d4955ccd518c30bf8402d8b79776b7d11940bf1584919fa4cfb9 \
+    --hash=sha256:c72dbe8a5d78b5038400880f7d1d10e62256da1df57c778ebe64924794d4fff0
     # via -r requirements.in
 sqlparse==0.4.4 \
     --hash=sha256:5430a4fe2ac7d0f93e66f1efc6e1338a41884b7ddf2a350cedd20ccc4d9d28f3 \

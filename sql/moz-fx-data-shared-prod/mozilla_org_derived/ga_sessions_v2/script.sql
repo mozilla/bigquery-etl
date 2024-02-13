@@ -133,7 +133,7 @@ MERGE INTO
         ) AS ga_session_id,
         CAST(e.value.int_value AS string) AS stub_session_id
       FROM
-        `moz-fx-data-marketing-prod.analytics_313696158.events_2*`
+        `moz-fx-data-marketing-prod.analytics_313696158.events_2*` a
       JOIN
         UNNEST(event_params) AS e
       JOIN

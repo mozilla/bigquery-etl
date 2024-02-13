@@ -7,6 +7,8 @@ from mozanalysis.config import ConfigLoader
 from textwrap import dedent
 from typing import Dict
 
+from kpi_forecasting.utils import parse_end_date
+
 
 @dataclass
 class MetricHub:
@@ -43,7 +45,7 @@ class MetricHub:
 
     def __post_init__(self) -> None:
         self.start_date = pd.to_datetime(self.start_date).date()
-        self.end_date = pd.to_datetime(self.end_date or datetime.utcnow()).date()
+        self.end_date = pd.to_datetime(parse_end_date(self.end_date)).date()
 
         # Set useful attributes based on the Metric Hub definition
         metric = ConfigLoader.get_metric(

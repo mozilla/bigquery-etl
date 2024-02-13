@@ -1,0 +1,26 @@
+---
+post_esr_migration:
+  description: "Dates following migration of clients on old OS versions from release to ESR"
+  start_date: "2023-07-29"
+  prior_scale: 1
+  mode: "additive"
+
+addcode_topsite:
+  description: "Period that covers early impact of Covid"
+  start_date: "2020-03-14"
+  end_date: "2021-07-31"
+  prior_scale: 1
+  mode: "multiplicative"
+
+after_fenix:
+  description: "Dates following migration of fenix clients"
+  start_date: "2020-08-15"
+  prior_scale: 1
+  mode: "additive"
+
+in_covid:
+  description: "Dates following migration of fenix clients"
+  start_date: "2020-03-14"
+  end_date: "2021-07-31"
+  prior_scale: 1
+  mode: "additive"

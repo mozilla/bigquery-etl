@@ -1,0 +1,51 @@
+---
+metric_hub:
+  app_name: "multi_product"
+  slug: "search_forecasting_ad_clicks"
+  alias: "search_forecasting_ad_clicks"
+  start_date: "2018-01-01"
+  end_date: "last complete month"
+
+forecast_model:
+  model_type: "funnel"
+  segment_settings:
+    desktop:
+      start_date: "2018-01-01"
+      end_date: NULL
+      holidays: ["easter", "covid_sip11"]
+      regressors: ["post_esr_migration", "in_covid"]
+      parameters:
+        changepoint_prior_scale: [0.001, 0.01, 0.1, 0.2, 0.5]
+        changepoint_range: [0.8, 0.9]
+        weekly_seasonality: True
+        yearly_seasonality: True
+        cv_settings:
+          initial: "1296 days"
+          period: "30 days"
+          horizon: "30 days"
+          parallel: "processes"
+    mobile:
+      start_date: "2019-03-01"
+      end_date: NULL
+      holidays: ["easter"]
+      regressors: ["after_fenix", "addcode_topsite", "in_covid"]
+      parameters:
+        changepoint_prior_scale: [0.001, 0.005, 0.05]
+        weekly_seasonality: True
+        yearly_seasonality: True
+        growth: "logistic"
+        cv_settings:
+          initial: "1196 days"
+          period: "30 days"
+          horizon: "30 days"
+          parallel: "processes"
+
+summarize:
+  periods: ["day", "month"]
+  numpy_aggregations: ["mean"]
+  percentiles: [5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 95]
+
+write_results:
+  project: "moz-fx-data-shared-prod"
+  dataset: "telemetry_derived"
+  table: "kpi_forecasts_v0"

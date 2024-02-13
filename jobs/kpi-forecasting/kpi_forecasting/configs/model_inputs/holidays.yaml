@@ -1,0 +1,57 @@
+---
+easter:
+  ds:
+    [
+      "2016-03-27",
+      "2017-04-16",
+      "2018-04-01",
+      "2019-04-21",
+      "2020-04-12",
+      "2021-04-04",
+      "2022-04-17",
+      "2023-04-09",
+      "2024-03-31",
+      "2025-04-20",
+    ]
+  lower_window: -2
+  upper_window: 1
+
+covid_sip1:
+  ds: ["2020-03-14"]
+  lower_window: 0
+  upper_window: 45
+
+covid_sip11:
+  ds: ["2020-03-14"]
+  lower_window: -14
+  upper_window: 30
+
+covid_sip12:
+  ds: ["2020-09-15"]
+  lower_window: -28
+  upper_window: 30
+
+covid_esr:
+  ds: ["2020-03-14"]
+  lower_window: 0
+  upper_window: 120
+
+covid_esr_rev:
+  ds: ["2020-03-14"]
+  lower_window: -14
+  upper_window: 105
+
+covid_esr_row_rev:
+  ds: ["2020-04-15"]
+  lower_window: -45
+  upper_window: 75
+
+covid_mobile_row_rev:
+  ds: ["2020-04-01"]
+  lower_window: -31
+  upper_window: 60
+
+fenix_migration:
+  ds: ["2020-09-15"]
+  lower_window: -28
+  upper_window: 30

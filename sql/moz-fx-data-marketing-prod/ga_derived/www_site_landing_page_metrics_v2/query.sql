@@ -22,9 +22,31 @@ SELECT
   SUM(
     IF(NOT `moz-fx-data-shared-prod.udf.ga_is_mozilla_browser`(browser), entrances, 0)
   ) AS non_fx_sessions,
-  COUNTIF(event_name = 'product_download') AS downloads,
   COUNTIF(
-    event_name = 'product_download'
+    (date <= '2024-02-16' AND event_name = 'product_download')
+    OR (
+      date > '2024-02-16'
+      AND event_name IN (
+        'firefox_download',
+        'focus_download',
+        'klar_download',
+        'firefox_mobile_download'
+      )
+    )
+  ) AS downloads,
+  COUNTIF(
+    (
+      (date <= '2024-02-16' AND event_name = 'product_download')
+      OR (
+        date > '2024-02-16'
+        AND event_name IN (
+          'firefox_download',
+          'focus_download',
+          'klar_download',
+          'firefox_mobile_download'
+        )
+      )
+    )
     AND NOT `moz-fx-data-shared-prod.udf.ga_is_mozilla_browser`(browser)
   ) AS non_fx_downloads,
   COUNTIF(event_name = 'page_view') AS pageviews,

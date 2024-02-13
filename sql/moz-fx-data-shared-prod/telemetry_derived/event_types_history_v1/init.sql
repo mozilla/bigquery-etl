@@ -124,7 +124,7 @@ per_event AS (
       IF(
         event_property IS NULL,
         NULL,
-        STRUCT(event_property AS key, VALUES AS value, event_property_index AS index)
+        STRUCT(event_property AS key, `values` AS value, event_property_index AS index)
       ) IGNORE NULLS
       ORDER BY
         event_property_index ASC

@@ -7,21 +7,14 @@ WITH
     res.product_result_type AS product_result_type,
     normalized_channel,
     normalized_country_code,
-    pref_fx_suggestions,
-    pref_sponsored_suggestions,
+    pref_fx_suggestions AS firefox_suggest_enabled,
+    pref_sponsored_suggestions AS sponsored_suggestions_enabled,
     is_terminal,
-    CASE
-      WHEN (product_selected_result = res.product_result_type AND event_action = 'engaged' AND is_terminal = TRUE) THEN 1
-    ELSE
-    0
-  END
-    AS is_clicked,
-    CASE
-      WHEN (product_selected_result = res.product_result_type AND event_action = 'annoyance') THEN 1
-    ELSE
-    0
-  END
-    AS is_annoyed,
+    (product_selected_result = res.product_result_type
+      AND event_action = 'engaged'
+      AND is_terminal) AS is_clicked,
+    (product_selected_result = res.product_result_type
+      AND event_action = 'annoyance') AS is_annoyed
   FROM
     `mozdata.firefox_desktop.urlbar_events`
   CROSS JOIN
@@ -34,13 +27,13 @@ WITH
     event_id,
     product_result_type,
     is_terminal,
-    mozdata.udf.mode_last(ARRAY_AGG(normalized_channel)) AS normalized_channel,
-    mozdata.udf.mode_last(ARRAY_AGG(normalized_country_code)) AS normalized_country_code,
-    mozdata.udf.mode_last(ARRAY_AGG(pref_fx_suggestions)) AS pref_fx_suggestions,
-    mozdata.udf.mode_last(ARRAY_AGG(pref_sponsored_suggestions)) AS pref_sponsored_suggestions,
-    LOGICAL_OR(is_clicked > 0) AS is_clicked,
-    LOGICAL_OR(is_annoyed > 0) AS is_annoyed,
-    LOGICAL_OR(is_terminal = TRUE) AS n_impressions,
+    ANY_VALUE(normalized_channel) AS normalized_channel,
+    ANY_VALUE(normalized_country_code) AS normalized_country_code,
+    ANY_VALUE(firefox_suggest_enabled) AS firefox_suggest_enabled,
+    ANY_VALUE(sponsored_suggestions_enabled) AS sponsored_suggestions_enabled,
+    LOGICAL_OR(is_clicked) AS is_clicked,
+    LOGICAL_OR(is_annoyed) AS is_annoyed,
+    LOGICAL_OR(is_terminal = TRUE) AS is_impression,
   FROM
     temp_unnested
   GROUP BY
@@ -53,6 +46,8 @@ WITH
     submission_date,
     normalized_country_code,
     normalized_channel,
+    firefox_suggest_enabled,
+    sponsored_suggestions_enabled,
     COUNT(DISTINCT event_id) AS urlbar_sessions
   FROM
     temp_session
@@ -61,16 +56,18 @@ WITH
   GROUP BY
     submission_date,
     normalized_country_code,
-    normalized_channel ),
+    normalized_channel,
+    firefox_suggest_enabled,
+    sponsored_suggestions_enabled ),
   daily_counts AS (
   SELECT
     submission_date,
     normalized_country_code,
     normalized_channel,
-    pref_fx_suggestions AS firefox_suggest_enabled,
-    pref_sponsored_suggestions AS sponsored_suggestions_enabled,
+    firefox_suggest_enabled,
+    sponsored_suggestions_enabled,
     product_result_type,
-    COUNTIF(n_impressions) AS urlbar_impressions,
+    COUNTIF(is_impression) AS urlbar_impressions,
     COUNTIF(is_clicked) AS urlbar_clicks,
     COUNTIF(is_annoyed) AS urlbar_annoyances,
   FROM
@@ -78,10 +75,10 @@ WITH
   GROUP BY
     submission_date,
     normalized_country_code,
+    normalized_channel,
     firefox_suggest_enabled,
     sponsored_suggestions_enabled,
-    product_result_type,
-    normalized_channel)
+    product_result_type)
 SELECT
   submission_date,
   normalized_country_code,
@@ -100,11 +97,6 @@ LEFT JOIN
 USING
   ( submission_date,
     normalized_country_code,
-    normalized_channel)
-ORDER BY
-  submission_date DESC,
-  normalized_country_code DESC,
-  normalized_channel DESC,
-  firefox_suggest_enabled DESC,
-  sponsored_suggestions_enabled DESC,
-  urlbar_impressions DESC
+    normalized_channel,
+    firefox_suggest_enabled,
+    sponsored_suggestions_enabled)

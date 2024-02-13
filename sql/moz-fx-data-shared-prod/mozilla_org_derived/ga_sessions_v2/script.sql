@@ -16,6 +16,12 @@ MERGE INTO
         BETWEEN FORMAT_DATE('%Y%m%d', DATE_SUB(@submission_date, INTERVAL 3 DAY))
         AND FORMAT_DATE('%Y%m%d', @submission_date)
     ),
+    distinct_ga_client_ids AS (
+      SELECT DISTINCT
+        ga_client_id
+      FROM
+        all_ga_client_id_ga_session_ids_with_new_events_in_last_3_days
+    ),
     device_properties_at_session_start_event AS (
       --get all session starts, from any date
       SELECT
@@ -51,9 +57,13 @@ MERGE INTO
         device.web_info.browser_version AS browser_version,
         PARSE_DATE('%Y%m%d', event_date) AS session_date
       FROM
-        `moz-fx-data-marketing-prod.analytics_313696158.events_2*`
+        `moz-fx-data-marketing-prod.analytics_313696158.events_2*` a
       JOIN
         UNNEST(event_params) AS e
+      JOIN
+        all_ga_client_id_ga_session_ids_with_new_events_in_last_3_days c
+        ON a.user_pseudo_id = c.ga_client_id
+        AND CAST(e.value.int_value AS string) = c.ga_session_id
       WHERE
         e.key = 'ga_session_id'
         AND e.value.int_value IS NOT NULL
@@ -91,9 +101,13 @@ MERGE INTO
           ) AS boolean
         ) AS had_download_event
       FROM
-        `moz-fx-data-marketing-prod.analytics_313696158.events_2*`
+        `moz-fx-data-marketing-prod.analytics_313696158.events_2*` a
       JOIN
         UNNEST(event_params) AS e
+      JOIN
+        all_ga_client_id_ga_session_ids_with_new_events_in_last_3_days c
+        ON a.user_pseudo_id = c.ga_client_id
+        AND CAST(e.value.int_value AS string) = c.ga_session_id
       WHERE
         e.key = 'ga_session_id'
         AND e.value.int_value IS NOT NULL
@@ -122,6 +136,9 @@ MERGE INTO
         `moz-fx-data-marketing-prod.analytics_313696158.events_2*`
       JOIN
         UNNEST(event_params) AS e
+      JOIN
+        distinct_ga_client_ids c
+        ON a.user_pseudo_id = c.ga_client_id
       WHERE
         event_name = 'stub_session_set'
         AND e.key = 'id'
@@ -169,9 +186,12 @@ MERGE INTO
         )[OFFSET(0)] AS page_location,
         event_timestamp
       FROM
-        `moz-fx-data-marketing-prod.analytics_313696158.events_2*`
+        `moz-fx-data-marketing-prod.analytics_313696158.events_2*` a
       JOIN
         UNNEST(event_params) AS e
+      JOIN
+        distinct_ga_client_ids c
+        ON a.user_pseudo_id = c.ga_client_id
       WHERE
         e.key = 'entrances'
         AND e.value.int_value = 1
@@ -200,9 +220,13 @@ MERGE INTO
         event_timestamp,
         event_name AS install_event_name
       FROM
-        `moz-fx-data-marketing-prod.analytics_313696158.events_2*`
+        `moz-fx-data-marketing-prod.analytics_313696158.events_2*` a
       JOIN
         UNNEST(event_params) AS e
+      JOIN
+        all_ga_client_id_ga_session_ids_with_new_events_in_last_3_days c
+        ON a.user_pseudo_id = c.ga_client_id
+        AND CAST(e.value.int_value AS string) = c.ga_session_id
       WHERE
         e.key = 'ga_session_id'
         AND e.value.int_value IS NOT NULL

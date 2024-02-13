@@ -46,6 +46,7 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
+
     org_mozilla_focus_beta_derived__additional_deletion_requests__v1 = (
         bigquery_etl_query(
             task_id="org_mozilla_focus_beta_derived__additional_deletion_requests__v1",

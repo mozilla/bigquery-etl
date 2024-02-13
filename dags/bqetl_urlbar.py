@@ -54,6 +54,7 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
+
     firefox_desktop_urlbar_events__v2 = bigquery_etl_query(
         task_id="firefox_desktop_urlbar_events__v2",
         destination_table="urlbar_events_v2",

@@ -49,6 +49,7 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
+
     ga_derived__blogs_sessions__v2 = bigquery_etl_query(
         task_id="ga_derived__blogs_sessions__v2",
         destination_table="blogs_sessions_v2",

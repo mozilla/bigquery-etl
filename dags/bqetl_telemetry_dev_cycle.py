@@ -49,6 +49,7 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
+
     telemetry_dev_cycle_derived__firefox_major_release_dates__v1 = bigquery_etl_query(
         task_id="telemetry_dev_cycle_derived__firefox_major_release_dates__v1",
         destination_table="firefox_major_release_dates_v1",

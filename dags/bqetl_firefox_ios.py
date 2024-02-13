@@ -49,6 +49,7 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
+
     checks__fail_firefox_ios_derived__app_store_funnel__v1 = bigquery_dq_check(
         task_id="checks__fail_firefox_ios_derived__app_store_funnel__v1",
         source_table="app_store_funnel_v1",

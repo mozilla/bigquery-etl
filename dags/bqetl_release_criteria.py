@@ -46,6 +46,7 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
+
     release_criteria__dashboard_health__v1 = bigquery_etl_query(
         task_id="release_criteria__dashboard_health__v1",
         destination_table="dashboard_health_v1",

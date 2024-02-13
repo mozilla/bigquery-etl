@@ -1,0 +1,10 @@
+friendly_name: Moso Mastodon Android Derived
+description: |-
+  Derived data for moso_mastodon_android_derived
+dataset_base_acl: derived
+user_facing: false
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

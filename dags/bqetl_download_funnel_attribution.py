@@ -49,6 +49,7 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
+
     checks__fail_ga_derived__downloads_with_attribution__v2 = bigquery_dq_check(
         task_id="checks__fail_ga_derived__downloads_with_attribution__v2",
         source_table='downloads_with_attribution_v2${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',

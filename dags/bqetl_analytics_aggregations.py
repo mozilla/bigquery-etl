@@ -53,6 +53,7 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
+
     active_users_aggregates_attribution_v1 = bigquery_etl_query(
         task_id="active_users_aggregates_attribution_v1",
         destination_table="active_users_aggregates_attribution_v1",

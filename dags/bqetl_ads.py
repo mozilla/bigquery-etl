@@ -49,6 +49,7 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
+
     ads_derived__nt_visits_to_sessions_conversion_factors_daily__v1 = (
         bigquery_etl_query(
             task_id="ads_derived__nt_visits_to_sessions_conversion_factors_daily__v1",

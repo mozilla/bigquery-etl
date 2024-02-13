@@ -1,6 +1,7 @@
 # Generated via https://github.com/mozilla/bigquery-etl/blob/main/bigquery_etl/query_scheduling/generate_airflow_dags.py
 
 from airflow import DAG
+from airflow.providers.google.cloud.sensors.bigquery import BigQueryTableExistenceSensor, BigQueryTablePartitionExistenceSensor
 from airflow.sensors.external_task import ExternalTaskMarker
 from airflow.sensors.external_task import ExternalTaskSensor
 from airflow.utils.task_group import TaskGroup
@@ -302,6 +303,57 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
 
     {{ task.task_name }}.set_upstream(wait_for_{{ dependency.task_id | replace('-', '_') }})
     {% endif -%}
+    {% endfor -%}
+
+    {% for table_sensor_task in task.depends_on_tables -%}
+    {% set project_id, dataset_name, table_name = table_sensor_task.table_id.split('.') -%}
+    {{ table_sensor_task.task_id }} = BigQueryTableExistenceSensor(
+        task_id={{ table_sensor_task.task_id | format_repr }},
+        project_id={{ project_id | format_repr }},
+        dataset_id={{ dataset_name | format_repr }},
+        table_id={{ table_name | format_repr }},
+        gcp_conn_id='google_cloud_shared_prod',
+        deferrable=True,
+        {% if table_sensor_task.poke_interval -%}
+        poke_interval={{ table_sensor_task.poke_interval | format_timedelta | format_repr }},
+        {% else -%}
+        poke_interval=datetime.timedelta(minutes=10),
+        {% endif -%}
+        {% if table_sensor_task.timeout -%}
+        timeout={{ table_sensor_task.timeout | format_timedelta | format_repr }},
+        {% else -%}
+        timeout=datetime.timedelta(hours=24),
+        {% endif -%}
+    )
+
+    {{ task.task_name }}.set_upstream({{ table_sensor_task.task_id }})
+
+    {% endfor -%}
+
+    {% for table_partition_sensor_task in task.depends_on_table_partitions -%}
+    {% set project_id, dataset_name, table_name = table_partition_sensor_task.table_id.split('.') -%}
+    {{ table_partition_sensor_task.task_id }} = BigQueryTablePartitionExistenceSensor(
+        task_id={{ table_partition_sensor_task.task_id | format_repr }},
+        project_id={{ project_id | format_repr }},
+        dataset_id={{ dataset_name | format_repr }},
+        table_id={{ table_name | format_repr }},
+        partition_id={{ table_partition_sensor_task.partition_id | format_repr }},
+        gcp_conn_id='google_cloud_shared_prod',
+        deferrable=True,
+        {% if table_partition_sensor_task.poke_interval -%}
+        poke_interval={{ table_partition_sensor_task.poke_interval | format_timedelta | format_repr }},
+        {% else -%}
+        poke_interval=datetime.timedelta(minutes=10),
+        {% endif -%}
+        {% if table_partition_sensor_task.timeout -%}
+        timeout={{ table_partition_sensor_task.timeout | format_timedelta | format_repr }},
+        {% else -%}
+        timeout=datetime.timedelta(hours=24),
+        {% endif -%}
+    )
+
+    {{ task.task_name }}.set_upstream({{ table_partition_sensor_task.task_id }})
+
     {% endfor -%}
 
     {% if task.depends_on_fivetran != None -%}

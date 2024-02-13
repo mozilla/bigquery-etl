@@ -126,6 +126,64 @@ class TaskRef:
 
 
 @attr.s(auto_attribs=True, frozen=True)
+class TableSensorTask:
+    """Representation of a sensor task to wait for a table to exist."""
+
+    task_id: str = attr.ib()
+    table_id: str = attr.ib()
+    poke_interval: Optional[str] = attr.ib(None, kw_only=True)
+    timeout: Optional[str] = attr.ib(None, kw_only=True)
+
+    @task_id.validator
+    def validate_task_id(self, attribute, value):
+        """Validate the task ID."""
+        if len(value) < 1 or len(value) > MAX_TASK_NAME_LENGTH:
+            raise ValueError(
+                f"Invalid task ID '{value}'."
+                f" The task ID has to be 1 to {MAX_TASK_NAME_LENGTH} characters long."
+            )
+        if not re.fullmatch(r"\w+", value):
+            raise ValueError(
+                f"Invalid task ID '{value}'."
+                f" The task ID may only contain alphanumerics and underscores."
+            )
+
+    @table_id.validator
+    def validate_table_id(self, attribute, value):
+        """Check that `table_id` is a fully qualified table ID."""
+        if value.count(".") != 2:
+            raise ValueError(
+                f"Invalid table ID '{value}'."
+                " Table IDs must be fully qualified with the project and dataset."
+            )
+
+    @poke_interval.validator
+    def validate_poke_interval(self, attribute, value):
+        """Check that `poke_interval` is a valid timedelta string."""
+        if value is not None and not is_timedelta_string(value):
+            raise ValueError(
+                f"Invalid timedelta value '{value}'."
+                " Timedeltas should be specified like '1h', '45m', '10s', '1h30m', etc."
+            )
+
+    @timeout.validator
+    def validate_timeout(self, attribute, value):
+        """Check that `timeout` is a valid timedelta string."""
+        if value is not None and not is_timedelta_string(value):
+            raise ValueError(
+                f"Invalid timedelta value '{value}'."
+                " Timedeltas should be specified like '1h', '45m', '10s', '1h30m', etc."
+            )
+
+
+@attr.s(auto_attribs=True, frozen=True)
+class TablePartitionSensorTask(TableSensorTask):
+    """Representation of a sensor task to wait for a table partition to exist."""
+
+    partition_id: str = attr.ib()
+
+
+@attr.s(auto_attribs=True, frozen=True)
 class FivetranTask:
     """Representation of a Fivetran data import task."""
 
@@ -213,6 +271,8 @@ class Task:
     public_json: bool = attr.ib(False)
     # manually specified upstream dependencies
     depends_on: List[TaskRef] = attr.ib([])
+    depends_on_tables: List[TableSensorTask] = attr.ib([])
+    depends_on_table_partitions: List[TablePartitionSensorTask] = attr.ib([])
     depends_on_fivetran: List[FivetranTask] = attr.ib([])
     # task trigger rule, used to override default of "all_success"
     trigger_rule: Optional[str] = attr.ib(None)

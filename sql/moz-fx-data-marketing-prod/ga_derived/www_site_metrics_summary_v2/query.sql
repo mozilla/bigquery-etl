@@ -29,20 +29,18 @@ WITH site_data AS (
     ) AS downloads,
     COUNTIF(
       (
-        event_date > '20240216'
-        AND event_name IN (
-          'firefox_download',
-          'focus_download',
-          'klar_download',
-          'firefox_mobile_download'
+        (event_date <= '20240216' AND event_name = 'product_download')
+        OR (
+          event_date > '20240216'
+          AND event_name IN (
+            'firefox_download',
+            'focus_download',
+            'klar_download',
+            'firefox_mobile_download'
+          )
         )
-        AND NOT `moz-fx-data-shared-prod.udf.ga_is_mozilla_browser`(device.web_info.browser)
       )
-      OR (
-        event_date <= '20240216'
-        AND event_name = 'product_download'
-        AND NOT `moz-fx-data-shared-prod.udf.ga_is_mozilla_browser`(device.web_info.browser)
-      )
+      AND NOT `moz-fx-data-shared-prod.udf.ga_is_mozilla_browser`(device.web_info.browser)
     ) AS non_fx_downloads
   FROM
     `moz-fx-data-marketing-prod.analytics_313696158.events_*`

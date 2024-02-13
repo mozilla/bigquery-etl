@@ -1,7 +1,22 @@
 MERGE INTO
   `moz-fx-data-shared-prod.mozilla_org_derived.ga_sessions_v2` T
   USING (
-    WITH device_properties_at_session_start_event AS (
+    WITH all_ga_client_id_ga_session_ids_with_new_events_in_last_3_days AS (
+      SELECT DISTINCT
+        user_pseudo_id AS ga_client_id,
+        CAST(e.value.int_value AS string) AS ga_session_id
+      FROM
+        `moz-fx-data-marketing-prod.analytics_313696158.events_*` a
+      JOIN
+        UNNEST(event_params) e
+      WHERE
+        e.key = 'ga_session_id'
+        AND e.value.int_value IS NOT NULL
+        AND _TABLE_SUFFIX
+        BETWEEN FORMAT_DATE('%Y%m%d', DATE_SUB(@submission_date, INTERVAL 3 DAY))
+        AND FORMAT_DATE('%Y%m%d', @submission_date)
+    ),
+    device_properties_at_session_start_event AS (
       --get all session starts, from any date
       SELECT
         user_pseudo_id AS ga_client_id,
@@ -253,6 +268,9 @@ MERGE INTO
       lndg_pg.page_location AS landing_screen
     FROM
       device_properties_at_session_start_event sess_strt
+    JOIN
+      all_ga_client_id_ga_session_ids_with_new_events_in_last_3_days sessions_to_update
+      USING (ga_client_id, ga_session_id)
     LEFT JOIN
       event_aggregates evnt
       USING (ga_client_id, ga_session_id)

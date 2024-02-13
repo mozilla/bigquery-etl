@@ -20,9 +20,9 @@ from bigquery_etl.query_scheduling.utils import (
     is_email,
     is_email_or_github_identity,
     is_schedule_interval,
-    is_timedelta_string,
     is_valid_dag_name,
     schedule_interval_delta,
+    validate_timedelta_string,
 )
 
 AIRFLOW_TASK_TEMPLATE = "airflow_task.j2"
@@ -100,11 +100,8 @@ class TaskRef:
     @execution_delta.validator
     def validate_execution_delta(self, attribute, value):
         """Check that execution_delta is in a valid timedelta format."""
-        if value is not None and not is_timedelta_string(value):
-            raise ValueError(
-                f"Invalid timedelta definition for {attribute}: {value}."
-                "Timedeltas should be specified like: 1h, 30m, 1h15m, 1d4h45m, ..."
-            )
+        if value is not None:
+            validate_timedelta_string(value)
 
     @schedule_interval.validator
     def validate_schedule_interval(self, attribute, value):
@@ -160,20 +157,14 @@ class TableSensorTask:
     @poke_interval.validator
     def validate_poke_interval(self, attribute, value):
         """Check that `poke_interval` is a valid timedelta string."""
-        if value is not None and not is_timedelta_string(value):
-            raise ValueError(
-                f"Invalid timedelta value '{value}'."
-                " Timedeltas should be specified like '1h', '45m', '10s', '1h30m', etc."
-            )
+        if value is not None:
+            validate_timedelta_string(value)
 
     @timeout.validator
     def validate_timeout(self, attribute, value):
         """Check that `timeout` is a valid timedelta string."""
-        if value is not None and not is_timedelta_string(value):
-            raise ValueError(
-                f"Invalid timedelta value '{value}'."
-                " Timedeltas should be specified like '1h', '45m', '10s', '1h30m', etc."
-            )
+        if value is not None:
+            validate_timedelta_string(value)
 
 
 @attr.s(auto_attribs=True, frozen=True)
@@ -365,11 +356,8 @@ class Task:
     @retry_delay.validator
     def validate_retry_delay(self, attribute, value):
         """Check that retry_delay is in a valid timedelta format."""
-        if value is not None and not is_timedelta_string(value):
-            raise ValueError(
-                f"Invalid timedelta definition for {attribute}: {value}."
-                "Timedeltas should be specified like: 1h, 30m, 1h15m, 1d4h45m, ..."
-            )
+        if value is not None:
+            validate_timedelta_string(value)
 
     @task_group.validator
     def validate_task_group(self, attribute, value):

@@ -436,3 +436,9 @@ generate:
       - org_mozilla_fenix
       - org_mozilla_fenix_beta
       - org_mozilla_firefox
+    events_monitoring:
+      default_event_table: events_v1
+      event_table:
+        mozillavpn: main_v1
+        accounts_frontend: accounts_events_v1
+        accounts_backend: accounts_events_v1

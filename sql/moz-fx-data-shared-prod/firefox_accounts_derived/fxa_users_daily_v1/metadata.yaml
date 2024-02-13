@@ -11,6 +11,8 @@ labels:
   application: fxa
   incremental: true
   schedule: daily
+# TODO: Once fxa_users_daily_v2 backfill is completed and data confirmed to be heatlhy
+# this query should be descheduled, description and the corresponding view updated.
 scheduling:
   dag_name: bqetl_fxa_events
 bigquery:

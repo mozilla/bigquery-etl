@@ -207,19 +207,19 @@ final_staging AS (
       NULL AS string
     ) AS event_id, --old table defined this from event category, action, and label, which no longer exist in GA4
     SPLIT(REGEXP_REPLACE(all_events.page_location, '^https://www.mozilla.org', ''), '/')[
-      SAFE_OFFSET(1)
+      SAFE_OFFSET(2)
     ] AS page_level_1,
     SPLIT(REGEXP_REPLACE(all_events.page_location, '^https://www.mozilla.org', ''), '/')[
-      SAFE_OFFSET(2)
+      SAFE_OFFSET(3)
     ] AS page_level_2,
     SPLIT(REGEXP_REPLACE(all_events.page_location, '^https://www.mozilla.org', ''), '/')[
-      SAFE_OFFSET(3)
+      SAFE_OFFSET(4)
     ] AS page_level_3,
     SPLIT(REGEXP_REPLACE(all_events.page_location, '^https://www.mozilla.org', ''), '/')[
-      SAFE_OFFSET(4)
+      SAFE_OFFSET(5)
     ] AS page_level_4,
     SPLIT(REGEXP_REPLACE(all_events.page_location, '^https://www.mozilla.org', ''), '/')[
-      SAFE_OFFSET(5)
+      SAFE_OFFSET(6)
     ] AS page_level_5
   FROM
     get_session_start_time all_sessions

@@ -31,7 +31,7 @@
       {% for col in columns %}
         IF(
           SAFE_DIVIDE(
-            {{ col }} - LAG({{ col }})
+            ABS({{ col }} - LAG({{ col }})
               OVER(
                 {% if dimensions %}
                   PARTITION BY
@@ -41,8 +41,8 @@
                   {% endfor %}
                 {% endif %}
                 ORDER BY {{ period_column }} ASC
-              ),
-            LAG({{ col }})
+              )),
+            ABS(LAG({{ col }})
               OVER(
                 {% if dimensions %}
                   PARTITION BY
@@ -53,7 +53,7 @@
                 {% endif %}
                 ORDER BY {{ period_column }} ASC
               )
-            ) > {{ threshold }},
+            )) > {{ threshold }},
           "{{ col }}",
           NULL
         ){% if not loop.last -%},{% endif -%}

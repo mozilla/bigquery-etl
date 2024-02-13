@@ -53,108 +53,108 @@ with DAG(
         task_id="glam_etl__glam_desktop_beta_aggregates__v1",
         destination_table=None,
         dataset_id="glam_etl",
-        project_id="moz-fx-data-shared-prod",
+        project_id="moz-fx-data-glam-prod-fca7",
         owner="efilho@mozilla.com",
         email=["efilho@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
-        sql_file_path="sql/moz-fx-data-shared-prod/glam_etl/glam_desktop_beta_aggregates_v1/script.sql",
+        sql_file_path="sql/moz-fx-data-glam-prod-fca7/glam_etl/glam_desktop_beta_aggregates_v1/script.sql",
     )
 
     glam_etl__glam_desktop_nightly_aggregates__v1 = bigquery_etl_query(
         task_id="glam_etl__glam_desktop_nightly_aggregates__v1",
         destination_table=None,
         dataset_id="glam_etl",
-        project_id="moz-fx-data-shared-prod",
+        project_id="moz-fx-data-glam-prod-fca7",
         owner="efilho@mozilla.com",
         email=["efilho@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
-        sql_file_path="sql/moz-fx-data-shared-prod/glam_etl/glam_desktop_nightly_aggregates_v1/script.sql",
+        sql_file_path="sql/moz-fx-data-glam-prod-fca7/glam_etl/glam_desktop_nightly_aggregates_v1/script.sql",
     )
 
     glam_etl__glam_desktop_release_aggregates__v1 = bigquery_etl_query(
         task_id="glam_etl__glam_desktop_release_aggregates__v1",
         destination_table=None,
         dataset_id="glam_etl",
-        project_id="moz-fx-data-shared-prod",
+        project_id="moz-fx-data-glam-prod-fca7",
         owner="efilho@mozilla.com",
         email=["efilho@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
-        sql_file_path="sql/moz-fx-data-shared-prod/glam_etl/glam_desktop_release_aggregates_v1/script.sql",
+        sql_file_path="sql/moz-fx-data-glam-prod-fca7/glam_etl/glam_desktop_release_aggregates_v1/script.sql",
     )
 
     glam_etl__glam_fenix_beta_aggregates__v1 = bigquery_etl_query(
         task_id="glam_etl__glam_fenix_beta_aggregates__v1",
         destination_table=None,
         dataset_id="glam_etl",
-        project_id="moz-fx-data-shared-prod",
+        project_id="moz-fx-data-glam-prod-fca7",
         owner="efilho@mozilla.com",
         email=["efilho@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
-        sql_file_path="sql/moz-fx-data-shared-prod/glam_etl/glam_fenix_beta_aggregates_v1/script.sql",
+        sql_file_path="sql/moz-fx-data-glam-prod-fca7/glam_etl/glam_fenix_beta_aggregates_v1/script.sql",
     )
 
     glam_etl__glam_fenix_nightly_aggregates__v1 = bigquery_etl_query(
         task_id="glam_etl__glam_fenix_nightly_aggregates__v1",
         destination_table=None,
         dataset_id="glam_etl",
-        project_id="moz-fx-data-shared-prod",
+        project_id="moz-fx-data-glam-prod-fca7",
         owner="efilho@mozilla.com",
         email=["efilho@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
-        sql_file_path="sql/moz-fx-data-shared-prod/glam_etl/glam_fenix_nightly_aggregates_v1/script.sql",
+        sql_file_path="sql/moz-fx-data-glam-prod-fca7/glam_etl/glam_fenix_nightly_aggregates_v1/script.sql",
     )
 
     glam_etl__glam_fenix_release_aggregates__v1 = bigquery_etl_query(
         task_id="glam_etl__glam_fenix_release_aggregates__v1",
         destination_table=None,
         dataset_id="glam_etl",
-        project_id="moz-fx-data-shared-prod",
+        project_id="moz-fx-data-glam-prod-fca7",
         owner="efilho@mozilla.com",
         email=["efilho@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
-        sql_file_path="sql/moz-fx-data-shared-prod/glam_etl/glam_fenix_release_aggregates_v1/script.sql",
+        sql_file_path="sql/moz-fx-data-glam-prod-fca7/glam_etl/glam_fenix_release_aggregates_v1/script.sql",
     )
 
     glam_etl__glam_fog_beta_aggregates__v1 = bigquery_etl_query(
         task_id="glam_etl__glam_fog_beta_aggregates__v1",
         destination_table=None,
         dataset_id="glam_etl",
-        project_id="moz-fx-data-shared-prod",
+        project_id="moz-fx-data-glam-prod-fca7",
         owner="efilho@mozilla.com",
         email=["efilho@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
-        sql_file_path="sql/moz-fx-data-shared-prod/glam_etl/glam_fog_beta_aggregates_v1/script.sql",
+        sql_file_path="sql/moz-fx-data-glam-prod-fca7/glam_etl/glam_fog_beta_aggregates_v1/script.sql",
     )
 
     glam_etl__glam_fog_nightly_aggregates__v1 = bigquery_etl_query(
         task_id="glam_etl__glam_fog_nightly_aggregates__v1",
         destination_table=None,
         dataset_id="glam_etl",
-        project_id="moz-fx-data-shared-prod",
+        project_id="moz-fx-data-glam-prod-fca7",
         owner="efilho@mozilla.com",
         email=["efilho@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
-        sql_file_path="sql/moz-fx-data-shared-prod/glam_etl/glam_fog_nightly_aggregates_v1/script.sql",
+        sql_file_path="sql/moz-fx-data-glam-prod-fca7/glam_etl/glam_fog_nightly_aggregates_v1/script.sql",
     )
 
     glam_etl__glam_fog_release_aggregates__v1 = bigquery_etl_query(
         task_id="glam_etl__glam_fog_release_aggregates__v1",
         destination_table=None,
         dataset_id="glam_etl",
-        project_id="moz-fx-data-shared-prod",
+        project_id="moz-fx-data-glam-prod-fca7",
         owner="efilho@mozilla.com",
         email=["efilho@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
-        sql_file_path="sql/moz-fx-data-shared-prod/glam_etl/glam_fog_release_aggregates_v1/script.sql",
+        sql_file_path="sql/moz-fx-data-glam-prod-fca7/glam_etl/glam_fog_release_aggregates_v1/script.sql",
     )
 
     wait_for_extracts = ExternalTaskSensor(

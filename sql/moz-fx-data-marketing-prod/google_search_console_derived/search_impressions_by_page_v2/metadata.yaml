@@ -21,9 +21,22 @@ scheduling:
   date_partition_parameter: date
   # Google Search Console exports typically happen two days after the data date in UTC.
   date_partition_offset: -1
-  depends_on:
-  - task_id: google_search_console_derived__url_impression_exports_empty_check__v1
-    dag_name: bqetl_google_search_console
+  depends_on_table_partitions:
+  - task_id: wait_for_google_search_console_addons_url_impressions
+    table_id: moz-fx-data-marketing-prod.searchconsole_addons.searchdata_url_impression
+    partition_id: '{{ macros.ds_add(ds, -1) | ds_nodash }}'
+  - task_id: wait_for_google_search_console_blog_url_impressions
+    table_id: moz-fx-data-marketing-prod.searchconsole_blog.searchdata_url_impression
+    partition_id: '{{ macros.ds_add(ds, -1) | ds_nodash }}'
+  - task_id: wait_for_google_search_console_getpocket_url_impressions
+    table_id: moz-fx-data-marketing-prod.searchconsole_getpocket.searchdata_url_impression
+    partition_id: '{{ macros.ds_add(ds, -1) | ds_nodash }}'
+  - task_id: wait_for_google_search_console_support_url_impressions
+    table_id: moz-fx-data-marketing-prod.searchconsole_support.searchdata_url_impression
+    partition_id: '{{ macros.ds_add(ds, -1) | ds_nodash }}'
+  - task_id: wait_for_google_search_console_www_url_impressions
+    table_id: moz-fx-data-marketing-prod.searchconsole_www.searchdata_url_impression
+    partition_id: '{{ macros.ds_add(ds, -1) | ds_nodash }}'
 bigquery:
   time_partitioning:
     type: day

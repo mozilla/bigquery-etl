@@ -130,6 +130,8 @@ class TableSensorTask:
     table_id: str = attr.ib()
     poke_interval: Optional[str] = attr.ib(None, kw_only=True)
     timeout: Optional[str] = attr.ib(None, kw_only=True)
+    retries: Optional[int] = attr.ib(None, kw_only=True)
+    retry_delay: Optional[str] = attr.ib(None, kw_only=True)
 
     @task_id.validator
     def validate_task_id(self, attribute, value):
@@ -163,6 +165,12 @@ class TableSensorTask:
     @timeout.validator
     def validate_timeout(self, attribute, value):
         """Check that `timeout` is a valid timedelta string."""
+        if value is not None:
+            validate_timedelta_string(value)
+
+    @retry_delay.validator
+    def validate_retry_delay(self, attribute, value):
+        """Check that `retry_delay` is a valid timedelta string."""
         if value is not None:
             validate_timedelta_string(value)
 

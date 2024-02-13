@@ -24,7 +24,18 @@ WHERE
   _TABLE_SUFFIX = FORMAT_DATE('%Y%m%d', @submission_date)
   AND e.key = 'ga_session_id'
   AND e.value.int_value IS NOT NULL
-  AND a.event_name = 'product_download'
+  AND (
+    (a.event_name = 'product_download' AND a.event_date <= '20240216')
+    OR (
+      a.event_name IN (
+        'firefox_download',
+        'focus_download',
+        'klar_download',
+        'firefox_mobile_download'
+      )
+      AND a.event_date > '20240216'
+    )
+  )
 GROUP BY
   date,
   visit_identifier,

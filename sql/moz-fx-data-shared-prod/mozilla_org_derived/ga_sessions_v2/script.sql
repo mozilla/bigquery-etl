@@ -1,8 +1,31 @@
 MERGE INTO
   `moz-fx-data-shared-prod.mozilla_org_derived.ga_sessions_v2` T
   USING (
-    WITH device_properties_at_session_start_event AS (
-      --get all session starts, from any date
+    --get all the unique "GA Client ID", "GA Session ID" combinations with events between 3 days prior to the submission date and the submission date
+    WITH all_ga_client_id_ga_session_ids_with_new_events_in_last_3_days AS (
+      SELECT DISTINCT
+        user_pseudo_id AS ga_client_id,
+        CAST(e.value.int_value AS string) AS ga_session_id
+      FROM
+        `moz-fx-data-marketing-prod.analytics_313696158.events_*` a
+      JOIN
+        UNNEST(event_params) e
+      WHERE
+        e.key = 'ga_session_id'
+        AND e.value.int_value IS NOT NULL
+        AND _TABLE_SUFFIX
+        BETWEEN FORMAT_DATE('%Y%m%d', DATE_SUB(@submission_date, INTERVAL 3 DAY))
+        AND FORMAT_DATE('%Y%m%d', @submission_date)
+    ),
+    --get the unique client IDs from the prior table
+    distinct_ga_client_ids AS (
+      SELECT DISTINCT
+        ga_client_id
+      FROM
+        all_ga_client_id_ga_session_ids_with_new_events_in_last_3_days
+    ),
+    device_properties_at_session_start_event AS (
+      --get all session starts, from any date, associated with these client ID / session IDs from the last 3 days
       SELECT
         user_pseudo_id AS ga_client_id,
         CAST(e.value.int_value AS string) AS ga_session_id,
@@ -36,9 +59,13 @@ MERGE INTO
         device.web_info.browser_version AS browser_version,
         PARSE_DATE('%Y%m%d', event_date) AS session_date
       FROM
-        `moz-fx-data-marketing-prod.analytics_313696158.events_2*`
+        `moz-fx-data-marketing-prod.analytics_313696158.events_2*` a
       JOIN
         UNNEST(event_params) AS e
+      JOIN
+        all_ga_client_id_ga_session_ids_with_new_events_in_last_3_days c
+        ON a.user_pseudo_id = c.ga_client_id
+        AND CAST(e.value.int_value AS string) = c.ga_session_id
       WHERE
         e.key = 'ga_session_id'
         AND e.value.int_value IS NOT NULL
@@ -52,7 +79,7 @@ MERGE INTO
             event_timestamp ASC
         ) = 1
     ),
-    --get all the page views and min/max event timestamp and whether there was a product download
+    --get all the page views and min/max event timestamp and whether there was a product download for these session/clients of interest
     event_aggregates AS (
       SELECT
         user_pseudo_id AS ga_client_id,
@@ -76,9 +103,13 @@ MERGE INTO
           ) AS boolean
         ) AS had_download_event
       FROM
-        `moz-fx-data-marketing-prod.analytics_313696158.events_2*`
+        `moz-fx-data-marketing-prod.analytics_313696158.events_2*` a
       JOIN
         UNNEST(event_params) AS e
+      JOIN
+        all_ga_client_id_ga_session_ids_with_new_events_in_last_3_days c
+        ON a.user_pseudo_id = c.ga_client_id
+        AND CAST(e.value.int_value AS string) = c.ga_session_id
       WHERE
         e.key = 'ga_session_id'
         AND e.value.int_value IS NOT NULL
@@ -86,6 +117,7 @@ MERGE INTO
         user_pseudo_id,
         CAST(e.value.int_value AS string)
     ),
+    --get all the stub session IDs for the clients of interest
     stub_session_ids_staging AS (
       SELECT
         user_pseudo_id AS ga_client_id,
@@ -104,14 +136,18 @@ MERGE INTO
         ) AS ga_session_id,
         CAST(e.value.int_value AS string) AS stub_session_id
       FROM
-        `moz-fx-data-marketing-prod.analytics_313696158.events_2*`
+        `moz-fx-data-marketing-prod.analytics_313696158.events_2*` a
       JOIN
         UNNEST(event_params) AS e
+      JOIN
+        distinct_ga_client_ids c
+        ON a.user_pseudo_id = c.ga_client_id
       WHERE
         event_name = 'stub_session_set'
         AND e.key = 'id'
         AND e.value.int_value IS NOT NULL
     ),
+    --put the stub session IDs into an array
     all_stub_session_ids AS (
       SELECT
         ga_client_id,
@@ -124,6 +160,7 @@ MERGE INTO
         ga_client_id,
         ga_session_id
     ),
+    --for each session, get the entrance page location
     landing_page_by_session_staging AS (
       SELECT
         user_pseudo_id AS ga_client_id,
@@ -154,13 +191,17 @@ MERGE INTO
         )[OFFSET(0)] AS page_location,
         event_timestamp
       FROM
-        `moz-fx-data-marketing-prod.analytics_313696158.events_2*`
+        `moz-fx-data-marketing-prod.analytics_313696158.events_2*` a
       JOIN
         UNNEST(event_params) AS e
+      JOIN
+        distinct_ga_client_ids c
+        ON a.user_pseudo_id = c.ga_client_id
       WHERE
         e.key = 'entrances'
         AND e.value.int_value = 1
     ),
+    --if there is ever for some reason more than 1 entrance in 1 session, just select the first one
     landing_page_by_session AS (
       SELECT
         ga_client_id,
@@ -178,6 +219,7 @@ MERGE INTO
             event_timestamp ASC
         ) = 1
     ),
+    --search for any download events (used to be called product download, but then was broken out into the 4 more detailed options)
     install_targets_staging AS (
       SELECT
         user_pseudo_id AS ga_client_id,
@@ -185,9 +227,13 @@ MERGE INTO
         event_timestamp,
         event_name AS install_event_name
       FROM
-        `moz-fx-data-marketing-prod.analytics_313696158.events_2*`
+        `moz-fx-data-marketing-prod.analytics_313696158.events_2*` a
       JOIN
         UNNEST(event_params) AS e
+      JOIN
+        all_ga_client_id_ga_session_ids_with_new_events_in_last_3_days c
+        ON a.user_pseudo_id = c.ga_client_id
+        AND CAST(e.value.int_value AS string) = c.ga_session_id
       WHERE
         e.key = 'ga_session_id'
         AND e.value.int_value IS NOT NULL
@@ -199,6 +245,7 @@ MERGE INTO
           'klar_download'
         )
     ),
+    --put these into an array for the session
     all_install_targets AS (
       SELECT
         ga_client_id,
@@ -253,6 +300,9 @@ MERGE INTO
       lndg_pg.page_location AS landing_screen
     FROM
       device_properties_at_session_start_event sess_strt
+    JOIN
+      all_ga_client_id_ga_session_ids_with_new_events_in_last_3_days sessions_to_update
+      USING (ga_client_id, ga_session_id)
     LEFT JOIN
       event_aggregates evnt
       USING (ga_client_id, ga_session_id)

@@ -1,7 +1,22 @@
 # Generated via https://github.com/mozilla/bigquery-etl/blob/main/bigquery_etl/query_scheduling/generate_airflow_dags.py
 
+{% set ns = namespace(uses_bq_sensors=False, uses_fivetran=False) -%}
+{% for task in tasks -%}
+  {% if task.depends_on_tables or task.depends_on_table_partitions -%}
+    {% set ns.uses_bq_sensors = True -%}
+  {% endif -%}
+  {% if task.depends_on_fivetran -%}
+    {% set ns.uses_fivetran = True -%}
+  {% endif -%}
+{% endfor -%}
+
 from airflow import DAG
-from airflow.providers.google.cloud.sensors.bigquery import BigQueryTableExistenceSensor, BigQueryTablePartitionExistenceSensor
+{% if ns.uses_bq_sensors -%}
+from airflow.providers.google.cloud.sensors.bigquery import (
+    BigQueryTableExistenceSensor,
+    BigQueryTablePartitionExistenceSensor,
+)
+{% endif -%}
 from airflow.sensors.external_task import ExternalTaskMarker
 from airflow.sensors.external_task import ExternalTaskSensor
 from airflow.utils.task_group import TaskGroup
@@ -10,15 +25,11 @@ from operators.gcp_container_operator import GKEPodOperator
 from utils.constants import ALLOWED_STATES, FAILED_STATES
 from utils.gcp import bigquery_etl_query, bigquery_dq_check
 
-{% set ns = namespace(uses_fivetran=False) -%}
-{% for task in tasks -%}
-{% if task.depends_on_fivetran != None and task.depends_on_fivetran|length > 0 and ns.uses_fivetran == False -%}
-{% set ns.uses_fivetran = True -%}
+{% if ns.uses_fivetran -%}
 from fivetran_provider.operators.fivetran import FivetranOperator
 from fivetran_provider.sensors.fivetran import FivetranSensor
 from utils.callbacks import retry_tasks_callback
 {% endif -%}
-{% endfor -%}
 
 docs = """
 ### {{ name }}

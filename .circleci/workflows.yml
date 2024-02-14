@@ -22,6 +22,9 @@ parameters:
   trigger-sql-generation:
     type: boolean
     default: false
+  skip-stage-deploys:
+    type: boolean
+    default: false
 
 executors:
   ubuntu-machine-executor:
@@ -446,15 +449,17 @@ jobs:
       - run:
           name: Deploy changes to stage
           command: |
-            export GOOGLE_APPLICATION_CREDENTIALS="/tmp/gcp.json"
-            echo "$GCLOUD_SERVICE_KEY" > "$GOOGLE_APPLICATION_CREDENTIALS"
+            if [ "<< pipeline.parameters.skip-stage-deploys >>" = "false" ]; then
+              export GOOGLE_APPLICATION_CREDENTIALS="/tmp/gcp.json"
+              echo "$GCLOUD_SERVICE_KEY" > "$GOOGLE_APPLICATION_CREDENTIALS"
 
-            PATHS="$(git diff --no-index --name-only --diff-filter=d generated-sql/sql sql)" || true
-            echo $PATHS
-            PATH="venv/bin:$PATH" script/bqetl stage deploy \
-              --dataset-suffix=$CIRCLE_SHA1 \
-              --remove-updated-artifacts \
-              $PATHS
+              PATHS="$(git diff --no-index --name-only --diff-filter=d generated-sql/sql sql)" || true
+              echo $PATHS
+              PATH="venv/bin:$PATH" script/bqetl stage deploy \
+                --dataset-suffix=$CIRCLE_SHA1 \
+                --remove-updated-artifacts \
+                $PATHS
+            fi
           # workaround for job failing with `Too long with no output (exceeded 10m0s): context deadline exceeded` error
           no_output_timeout: 30m
       - run:

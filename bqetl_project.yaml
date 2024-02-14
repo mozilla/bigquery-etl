@@ -14,6 +14,7 @@ default:
   additional_projects: # additional valid projects managed outside of bigquery-etl
   - moz-fx-data-pioneer-nonprod
   - moz-fx-data-pioneer-prod
+  - moz-fx-data-glam-prod-fca7
   public_project: mozilla-public-data
 
 

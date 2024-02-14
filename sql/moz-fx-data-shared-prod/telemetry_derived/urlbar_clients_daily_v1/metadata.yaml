@@ -22,11 +22,8 @@ bigquery:
   clustering:
     fields:
     - normalized_channel
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:mozilla-confidential
+workgroup_access: []
 references:
   query.sql:
   - telemetry_derived.clients_daily_joined_v1
-deprecated: false
+deprecated: true

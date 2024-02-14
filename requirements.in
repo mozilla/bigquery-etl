@@ -48,4 +48,4 @@ types-requests==2.31.0.20240125
 types-ujson==5.8.0.1
 typing==3.7.4.3
 ujson==5.9.0
-yamllint==1.32.0
+yamllint==1.34.0

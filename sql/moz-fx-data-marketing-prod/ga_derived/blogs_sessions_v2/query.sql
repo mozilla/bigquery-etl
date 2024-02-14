@@ -65,9 +65,6 @@ entrance_page_views_only AS (
     medium,
     campaign,
     content,
-    SPLIT(REGEXP_REPLACE(SPLIT(page_location, '?')[SAFE_OFFSET(0)], 'https://', ''), '/')[
-      SAFE_OFFSET(0)
-    ] AS blog_hostname,
     SPLIT(REGEXP_REPLACE(SPLIT(page_location, '?')[SAFE_OFFSET(0)], '^https://', ''), '/')[
       SAFE_OFFSET(1)
     ] AS level_1,
@@ -99,8 +96,6 @@ staging AS (
     COUNT(DISTINCT(visit_identifier)) AS sessions
   FROM
     entrance_page_views_only epvo
-  WHERE
-    epvo.blog_hostname = 'blog.mozilla.org'
   GROUP BY
     epvo.date,
     epvo.visit_identifier,

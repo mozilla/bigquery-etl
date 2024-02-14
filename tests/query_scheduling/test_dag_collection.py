@@ -777,7 +777,7 @@ class TestDagCollection:
                 "depends_on_past": True,
                 "param": "test_param",
                 "arguments": ["--append_table"],
-                "depends_on_tables": [
+                "depends_on_tables_existing": [
                     {
                         "task_id": "wait_for_foo_bar_baz",
                         "table_id": "foo.bar.baz_{{ ds_nodash }}",
@@ -787,7 +787,7 @@ class TestDagCollection:
                         "retry_delay": "10m",
                     },
                 ],
-                "depends_on_table_partitions": [
+                "depends_on_table_partitions_existing": [
                     {
                         "task_id": "wait_for_foo_bar_baz_partition",
                         "table_id": "foo.bar.baz",

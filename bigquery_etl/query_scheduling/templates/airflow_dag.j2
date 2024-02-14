@@ -2,7 +2,7 @@
 
 {% set ns = namespace(uses_bq_sensors=False, uses_fivetran=False) -%}
 {% for task in tasks -%}
-  {% if task.depends_on_tables or task.depends_on_table_partitions -%}
+  {% if task.depends_on_tables_existing or task.depends_on_table_partitions_existing -%}
     {% set ns.uses_bq_sensors = True -%}
   {% endif -%}
   {% if task.depends_on_fivetran -%}
@@ -316,7 +316,7 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
     {% endif -%}
     {% endfor -%}
 
-    {% for table_sensor_task in task.depends_on_tables -%}
+    {% for table_sensor_task in task.depends_on_tables_existing -%}
     {% set project_id, dataset_name, table_name = table_sensor_task.table_id.split('.') -%}
     {{ table_sensor_task.task_id }} = BigQueryTableExistenceSensor(
         task_id={{ table_sensor_task.task_id | format_repr }},
@@ -347,7 +347,7 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
 
     {% endfor -%}
 
-    {% for table_partition_sensor_task in task.depends_on_table_partitions -%}
+    {% for table_partition_sensor_task in task.depends_on_table_partitions_existing -%}
     {% set project_id, dataset_name, table_name = table_partition_sensor_task.table_id.split('.') -%}
     {{ table_partition_sensor_task.task_id }} = BigQueryTablePartitionExistenceSensor(
         task_id={{ table_partition_sensor_task.task_id | format_repr }},

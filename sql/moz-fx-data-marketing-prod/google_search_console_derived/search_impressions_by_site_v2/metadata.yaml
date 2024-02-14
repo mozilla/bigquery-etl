@@ -21,7 +21,7 @@ scheduling:
   date_partition_parameter: date
   # Google Search Console exports typically happen two days after the data date in UTC.
   date_partition_offset: -1
-  depends_on_table_partitions:
+  depends_on_table_partitions_existing:
   - task_id: wait_for_google_search_console_addons_site_impressions
     table_id: moz-fx-data-marketing-prod.searchconsole_addons.searchdata_site_impression
     partition_id: '{{ macros.ds_add(ds, -1) | ds_nodash }}'

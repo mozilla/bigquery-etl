@@ -270,8 +270,8 @@ class Task:
     public_json: bool = attr.ib(False)
     # manually specified upstream dependencies
     depends_on: List[TaskRef] = attr.ib([])
-    depends_on_tables: List[TableSensorTask] = attr.ib([])
-    depends_on_table_partitions: List[TablePartitionSensorTask] = attr.ib([])
+    depends_on_tables_existing: List[TableSensorTask] = attr.ib([])
+    depends_on_table_partitions_existing: List[TablePartitionSensorTask] = attr.ib([])
     depends_on_fivetran: List[FivetranTask] = attr.ib([])
     # task trigger rule, used to override default of "all_success"
     trigger_rule: Optional[str] = attr.ib(None)

@@ -44,13 +44,15 @@
       - `task_id`: name of task query depends on
       - `dag_name`: name of the DAG the external task is part of
       - `execution_delta`: time difference between the `schedule_intervals` of the external DAG and the DAG the query is part of
-    - `depends_on_tables` defines external tables that the ETL will await the existence of via an Airflow sensor before running:
+    - `depends_on_tables_existing` defines tables that the ETL will await the existence of via an Airflow sensor before running:
       ```yaml
-      depends_on_tables:
+      depends_on_tables_existing:
         - task_id: wait_for_foo_bar_baz
           table_id: 'foo.bar.baz_{{ ds_nodash }}'
           poke_interval: 30m
           timeout: 12h
+          retries: 1
+          retry_delay: 10m
       ```
       - `task_id`: ID to use for the generated Airflow sensor task.
       - `table_id`: Fully qualified ID of the table to wait for, including the project and dataset.
@@ -62,14 +64,16 @@
         This parameter is optional (the default depends on how the DAG is configured).
       - `retry_delay`: Time delay between retries, formatted as a timedelta string like "2h" or "30m".
         This parameter is optional (the default depends on how the DAG is configured).
-    - `depends_on_table_partitions` defines external table partitions that the ETL will await the existence of via an Airflow sensor before running:
+    - `depends_on_table_partitions_existing` defines table partitions that the ETL will await the existence of via an Airflow sensor before running:
       ```yaml
-      depends_on_table_partitions:
+      depends_on_table_partitions_existing:
         - task_id: wait_for_foo_bar_baz
           table_id: foo.bar.baz
           partition_id: '{{ ds_nodash }}'
           poke_interval: 30m
           timeout: 12h
+          retries: 1
+          retry_delay: 10m
       ```
       - `task_id`: ID to use for the generated Airflow sensor task.
       - `table_id`: Fully qualified ID of the table to check, including the project and dataset.

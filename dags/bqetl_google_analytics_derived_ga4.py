@@ -49,6 +49,24 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
+    checks__fail_mozilla_org_derived__ga_clients__v2 = bigquery_dq_check(
+        task_id="checks__fail_mozilla_org_derived__ga_clients__v2",
+        source_table="ga_clients_v2",
+        dataset_id="mozilla_org_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=True,
+        owner="mhirose@mozilla.com",
+        email=[
+            "kwindau@mozilla.com",
+            "mhirose@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        depends_on_past=False,
+        task_concurrency=1,
+        parameters=["session_date:DATE:{{ds}}"],
+        retries=0,
+    )
+
     ga_derived__blogs_sessions__v2 = bigquery_etl_query(
         task_id="ga_derived__blogs_sessions__v2",
         destination_table="blogs_sessions_v2",
@@ -137,6 +155,22 @@ with DAG(
         depends_on_past=False,
     )
 
+    mozilla_org_derived__ga_clients__v2 = bigquery_etl_query(
+        task_id="mozilla_org_derived__ga_clients__v2",
+        destination_table="ga_clients_v2",
+        dataset_id="mozilla_org_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="mhirose@mozilla.com",
+        email=[
+            "kwindau@mozilla.com",
+            "mhirose@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter=None,
+        depends_on_past=True,
+        parameters=["session_date:DATE:{{ds}}"],
+    )
+
     mozilla_org_derived__ga_sessions__v2 = bigquery_etl_query(
         task_id="mozilla_org_derived__ga_sessions__v2",
         destination_table=None,
@@ -163,6 +197,10 @@ with DAG(
             mozilla_org_derived__ga_sessions__v2
         )
 
+    checks__fail_mozilla_org_derived__ga_clients__v2.set_upstream(
+        mozilla_org_derived__ga_clients__v2
+    )
+
     ga_derived__firefox_whatsnew_summary__v2.set_upstream(ga_derived__www_site_hits__v2)
 
     ga_derived__www_site_events_metrics__v2.set_upstream(ga_derived__www_site_hits__v2)
@@ -172,3 +210,7 @@ with DAG(
     )
 
     ga_derived__www_site_page_metrics__v2.set_upstream(ga_derived__www_site_hits__v2)
+
+    mozilla_org_derived__ga_clients__v2.set_upstream(
+        mozilla_org_derived__ga_sessions__v2
+    )

@@ -21,9 +21,6 @@ parameters:
   trigger-sql-generation:
     type: boolean
     default: false
-  skip-stage-deploys:
-    type: boolean
-    default: false
 
 
 workflows:

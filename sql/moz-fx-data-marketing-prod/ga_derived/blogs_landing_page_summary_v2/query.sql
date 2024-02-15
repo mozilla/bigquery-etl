@@ -14,13 +14,46 @@ WITH landing_page_staging AS (
           1
       ).int_value AS STRING
     ) AS visit_identifier,
-    ? AS landing_page,
-    ? AS cleaned_landing_page,
-    ? AS page_sessions,
+    (
+      SELECT
+        `value`
+      FROM
+        UNNEST(event_params)
+      WHERE
+        key = 'page_location'
+      LIMIT
+        1
+    ).string_value AS landing_page,
+  SELECT
+    `value`
   FROM
-    `moz-fx-data-marketing-prod.analytics_314399816.events_*`
+    UNNEST(event_params)
   WHERE
-    _TABLE_SUFFIX = FORMAT_DATE('%Y%m%d', @submission_date)
+    key = 'entrances'
+  LIMIT
+    1
+).int_value AS is_entrance
+FROM
+  `moz-fx-data-marketing-prod.analytics_314399816.events_*`
+WHERE
+  _TABLE_SUFFIX = FORMAT_DATE('%Y%m%d', @submission_date)
+QUALIFY
+  ROW_NUMBER() OVER (
+    PARTITION BY
+      visit_identifier
+    ORDER BY
+      event_timestamp ASC
+  ) = 1 --should it be date/visit_identifier or just visit_identifier?
+),
+landing_page AS (
+  SELECT
+    `date`,
+    visit_identifier,
+    landing_page,
+    ? AS cleaned_landing_page,
+    SUM(is_entrance) AS page_sessions
+  FROM
+    landing_page_staging
   GROUP BY
     `date`,
     visit_identifier,

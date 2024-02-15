@@ -178,8 +178,9 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="kwindau@mozilla.com",
         email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
+        date_partition_parameter=None,
         depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
         sql_file_path="sql/moz-fx-data-shared-prod/mozilla_org_derived/ga_sessions_v2/script.sql",
     )
 

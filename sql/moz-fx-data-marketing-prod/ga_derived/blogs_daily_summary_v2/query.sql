@@ -14,8 +14,8 @@ with staging AS (
     --? AS blog, 
     --? AS subblog,
     --? AS sessions,
-    --? AS downloads,
-    --? AS social_share
+    COUNTIF(event_name = 'download_click') AS downloads,
+    COUNTIF(event_name = 'social_share') AS social_share
   FROM
     `moz-fx-data-marketing-prod.analytics_314399816.events_*` 
   WHERE

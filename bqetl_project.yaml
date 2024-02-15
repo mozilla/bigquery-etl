@@ -14,6 +14,7 @@ default:
   additional_projects: # additional valid projects managed outside of bigquery-etl
   - moz-fx-data-pioneer-nonprod
   - moz-fx-data-pioneer-prod
+  - moz-fx-data-glam-prod-fca7
   public_project: mozilla-public-data
 
 
@@ -268,6 +269,7 @@ dry_run:
   - sql/moz-fx-data-shared-prod/monitoring_derived/bigquery_etl_sql_run_check_v1/query.sql
   # Dataset sql/glam-fenix-dev:glam_etl was not found
   - sql/glam-fenix-dev/glam_etl/**/*.sql
+  - sql/moz-fx-data-glam-prod-fca7/glam_etl/**/*.sql
   # Query templates
   - sql/moz-fx-data-shared-prod/search_derived/mobile_search_clients_daily_v1/fenix_metrics.template.sql
   - sql/moz-fx-data-shared-prod/search_derived/mobile_search_clients_daily_v1/mobile_search_clients_daily.template.sql
@@ -436,3 +438,9 @@ generate:
       - org_mozilla_fenix
       - org_mozilla_fenix_beta
       - org_mozilla_firefox
+    events_monitoring:
+      default_event_table: events_v1
+      event_table:
+        mozillavpn: main_v1
+        accounts_frontend: accounts_events_v1
+        accounts_backend: accounts_events_v1

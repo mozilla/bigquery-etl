@@ -1,61 +1,42 @@
-WITH staging AS (
-  SELECT
-    PARSE_DATE('%Y%m%d', a.event_date) AS date,
-    device.category AS device_category,
-    device.operating_system AS operating_system,
-    device.web_info.browser AS browser,
-    device.language AS `language`,
-    geo.country AS country,
-    device.web_info.browser_version AS browser_version,
-    collected_traffic_source.manual_source AS source,
-    collected_traffic_source.manual_medium AS medium,
-    collected_traffic_source.manual_campaign_name AS campaign,
-    collected_traffic_source.manual_content AS content,
-    --? AS blog,
-    --? AS subblog,
-    --? AS sessions,
-    COUNTIF(event_name = 'download_click') AS downloads,
-    COUNTIF(event_name = 'social_share') AS social_share
-  FROM
-    `moz-fx-data-marketing-prod.analytics_314399816.events_*`
-  WHERE
-    _TABLE_SUFFIX = FORMAT_DATE('%Y%m%d', @submission_date)
-  GROUP BY
-    date,
-    device_category,
-    operating_system,
-    browser,
-    `language`,
-    country,
-    browser_version,
-    source,
-    medium,
-    campaign,
-    content,
-    blog,
-    subblog
-)
 SELECT
-  stg.date,
-  stg.device_category,
-  stg.operating_system,
-  stg.browser,
-  stg.language,
-  stg.country,
-  standardized_country_list.standardized_country_name,
-  stg.browser_version,
-  stg.source,
-  stg.medium,
-  stg.campaign,
-  stg.content,
-  stg.blog,
-  stg.subblog,
-  stg.sessions,
-  stg.downloads,
-  stg.social_share,
-  stg.newsletter_subscription
+  date,
+  device_category,
+  operating_system,
+  browser,
+  `language`,
+  country,
+  standardized_country_list.standardized_country AS standardized_country_name,
+  source,
+  medium,
+  campaign,
+  content,
+  blog,
+  subblog,
+  SUM(sessions) AS sessions,
+  SUM(downloads) AS downloads,
+  SUM(social_share) AS social_share,
+  SUM(newsletter_subscription) AS newsletter_subscription,
 FROM
-  staging stg
+  `moz-fx-data-marketing-prod.ga_derived.blogs_sessions_v2` AS sessions_table
+LEFT JOIN
+  `moz-fx-data-marketing-prod.ga_derived.blogs_goals_v2`
+  USING (date, visit_identifier)
 LEFT JOIN
   `moz-fx-data-shared-prod.static.third_party_standardized_country_names` AS standardized_country_list
-  ON stg.country = standardized_country_list.raw_country
+  ON sessions_table.country = standardized_country_list.raw_country
+WHERE
+  date = @submission_date
+GROUP BY
+  date,
+  device_category,
+  operating_system,
+  browser,
+  `language`,
+  country,
+  standardized_country_name,
+  source,
+  medium,
+  campaign,
+  content,
+  blog,
+  subblog

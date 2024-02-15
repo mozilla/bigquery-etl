@@ -135,7 +135,7 @@ bqetl_accounts_derived:
     This DAG is under active development.
   default_args:
     owner: akomar@mozilla.com
-    start_date: "2024-02-01"
+    start_date: "2024-01-01"
     email: ["akomar@mozilla.com", "ksiegler@mozilla.com"]
     retries: 1
     retry_delay: 10m

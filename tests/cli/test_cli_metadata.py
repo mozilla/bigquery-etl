@@ -2,12 +2,13 @@ import distutils
 import os
 import tempfile
 from pathlib import Path
+from unittest.mock import patch
 
 import pytest
 import yaml
 from click.testing import CliRunner
 
-from bigquery_etl.cli.metadata import update
+from bigquery_etl.cli.metadata import publish, update
 from bigquery_etl.metadata.parse_metadata import Metadata
 from bigquery_etl.metadata.validate_metadata import validate_change_control
 
@@ -216,8 +217,23 @@ class TestMetadata:
                 "r",
             ) as stream:
                 metadata = yaml.safe_load(stream)
+
+            with open(
+                tmpdirname
+                + "/sql/moz-fx-data-shared-prod/telemetry_derived/dataset_metadata.yaml",
+                "r",
+            ) as stream:
+                dataset_metadata = yaml.safe_load(stream)
+
         assert metadata["workgroup_access"] == []
         assert metadata["deprecated"]
+        assert dataset_metadata["workgroup_access"] == []
+        assert dataset_metadata["default_table_workgroup_access"] == [
+            {
+                "members": ["workgroup:mozilla-confidential"],
+                "role": "roles/bigquery.dataViewer",
+            }
+        ]
 
     def test_metadata_update_do_not_update(self, runner):
         with tempfile.TemporaryDirectory() as tmpdirname:
@@ -233,7 +249,65 @@ class TestMetadata:
                 "r",
             ) as stream:
                 metadata = yaml.safe_load(stream)
-                print(metadata)
+
         assert metadata["workgroup_access"][0]["role"] == "roles/bigquery.dataViewer"
         assert metadata["workgroup_access"][0]["members"] == ["workgroup:revenue/cat4"]
-        assert not metadata["deprecated"]
+        assert "deprecated" not in metadata
+
+    @patch("google.cloud.bigquery.Client")
+    @patch("google.cloud.bigquery.Table")
+    def test_metadata_publish(self, mock_bigquery_table, mock_bigquery_client, runner):
+        mock_bigquery_client().get_table.return_value = mock_bigquery_table()
+
+        with tempfile.TemporaryDirectory() as tmpdirname:
+            distutils.dir_util.copy_tree(str(TEST_DIR), str(tmpdirname))
+            name = [
+                str(tmpdirname)
+                + "/sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_scalar_aggregates_v1/"
+            ]
+            runner.invoke(publish, name, "--sql_dir=" + str(tmpdirname) + "/sql")
+
+        assert mock_bigquery_client().update_table.call_count == 1
+        assert (
+            mock_bigquery_client().update_table.call_args[0][0].friendly_name
+            == "Test metadata.yaml"
+        )
+        assert (
+            mock_bigquery_client().update_table.call_args[0][0].description
+            == "Clustering fields: `column1`"
+        )
+        assert mock_bigquery_client().update_table.call_args[0][0].labels == {
+            "deprecated": "true",
+            "owner1": "test",
+        }
+        assert (
+            mock_bigquery_client()
+            .get_table(
+                "moz-fx-data-shared-prod.telemetry_derived.clients_daily_scalar_aggregates_v1"
+            )
+            .friendly_name
+            == "Test metadata.yaml"
+        )
+        assert mock_bigquery_table().friendly_name == "Test metadata.yaml"
+        assert mock_bigquery_table().description == "Clustering fields: `column1`"
+        assert mock_bigquery_table().labels == {
+            "deprecated": "true",
+            "owner1": "test",
+        }
+
+    @patch("google.cloud.bigquery.Client")
+    @patch("google.cloud.bigquery.Table")
+    def test_metadata_publish_with_no_metadata_file(
+        self, mock_bigquery_table, mock_bigquery_client, runner
+    ):
+        mock_bigquery_client().get_table.return_value = mock_bigquery_table()
+
+        with tempfile.TemporaryDirectory() as tmpdirname:
+            distutils.dir_util.copy_tree(str(TEST_DIR), str(tmpdirname))
+            name = [
+                str(tmpdirname)
+                + "/sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_scalar_aggregates_v2/"
+            ]
+            runner.invoke(publish, name, "--sql_dir=" + str(tmpdirname) + "/sql")
+
+        assert mock_bigquery_client().update_table.call_count == 0

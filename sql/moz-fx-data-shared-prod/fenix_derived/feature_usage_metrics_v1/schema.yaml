@@ -2,8 +2,20 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-- name: metrics_ping_distinct_client_count
-  type: INTEGER
+- name: ping_date
+  type: DATE
+  mode: NULLABLE
+- name: channel
+  type: STRING
+  mode: NULLABLE
+- name: country
+  type: STRING
+  mode: NULLABLE
+- name: adjust_network
+  type: STRING
+  mode: NULLABLE
+- name: is_default_browser
+  type: BOOLEAN
   mode: NULLABLE
 - name: logins_deleted_users
   type: INTEGER
@@ -141,6 +153,15 @@ fields:
   type: INTEGER
   mode: NULLABLE
 - name: metrics_default_browser
+  type: INTEGER
+  mode: NULLABLE
+- name: awesomebar_top_users
+  type: INTEGER
+  mode: NULLABLE
+- name: awesomebar_bottom_users
+  type: INTEGER
+  mode: NULLABLE
+- name: awesomebar_null_users
   type: INTEGER
   mode: NULLABLE
 - name: metrics_notifications_allowed_users

@@ -1,4 +1,4 @@
-Mapping of ISO 3166 alpha-2 country codes to ISO 3166 and UNSD country data; country codes are unique.
+Mapping of ISO 3166 alpha-2 and alpha-3 country codes to ISO 3166 and UNSD country data; country codes are unique.
 
-Includes XK for Kosovo, which is not in the ISO 3166 standard, but is recognized
+Includes XK/XKK for Kosovo, which is not in the ISO 3166 standard, but is recognized
 by some governing bodies and is present in MaxMind's GeoIP2 database.

@@ -1,6 +1,3 @@
--- Query for ga_derived.www_site_hits_v2
--- For more information on writing queries see:
--- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
 WITH get_session_start_time AS (
   SELECT
     SAFE.PARSE_DATE('%Y%m%d', a.event_date) AS date,
@@ -24,6 +21,7 @@ WITH get_session_start_time AS (
     UNNEST(event_params) e
   WHERE
     e.key = 'ga_session_id'
+    AND e.value.int_value IS NOT NULL
     AND _TABLE_SUFFIX = SAFE.FORMAT_DATE('%Y%m%d', @submission_date)
   GROUP BY
     date,
@@ -120,46 +118,29 @@ get_all_events_in_each_session AS (
     SPLIT(a.page_location, '?')[OFFSET(0)] AS page_location,
     a.is_entrance,
     DENSE_RANK() OVER (PARTITION BY visit_identifier ORDER BY event_timestamp ASC) AS hit_number,
-    ROW_NUMBER() OVER (PARTITION BY visit_identifier ORDER BY event_timestamp) AS row_nbr
+    ROW_NUMBER() OVER (
+      PARTITION BY
+        visit_identifier
+      ORDER BY
+        event_timestamp,
+        event_name,
+        page_location ASC
+    ) AS row_nbr
   FROM
     get_all_events_in_each_session_staging a
 ),
---get the hit number associated with the last page view in each session
-hit_nbr_of_last_page_view_in_each_session AS (
+--get the row number associated with the last page view in each session
+row_nbr_of_last_page_view_in_each_session AS (
   SELECT
     visit_identifier,
     COUNT(1) AS nbr_page_view_events,
-    MAX(hit_number) AS max_hit_number
+    MAX(row_nbr) AS max_row_number
   FROM
     get_all_events_in_each_session
   WHERE
     event_name = 'page_view'
   GROUP BY
     visit_identifier
-),
---because sometimes there are multiple page views with the same event timestamp,
---choose only 1 to represent the exit, so as not to double count exits
-session_exits AS (
-  SELECT
-    a.visit_identifier,
-    b.max_hit_number,
-    b.nbr_page_view_events,
-    1 AS is_exit,
-    a.event_name,
-    MAX(a.row_nbr) AS row_nbr_to_count_as_exit
-  FROM
-    get_all_events_in_each_session a
-  JOIN
-    hit_nbr_of_last_page_view_in_each_session b
-    ON a.visit_identifier = b.visit_identifier
-    AND a.hit_number = b.max_hit_number
-    AND a.event_name = 'page_view'
-  GROUP BY
-    a.visit_identifier,
-    b.max_hit_number,
-    b.nbr_page_view_events,
-    is_exit,
-    a.event_name
 ),
 first_and_last_interaction AS (
   SELECT
@@ -187,7 +168,7 @@ final_staging AS (
         THEN 'PAGE'
       ELSE 'EVENT'
     END AS hit_type,
-    CAST(COALESCE(exits.is_exit, 0) AS bool) AS is_exit,
+    CAST(CASE WHEN exits.max_row_number = all_events.row_nbr THEN 1 ELSE 0 END AS bool) AS is_exit,
     CAST(all_events.is_entrance AS bool) AS is_entrance,
     all_events.hit_number,
     all_events.event_timestamp AS hit_timestamp,
@@ -208,31 +189,37 @@ final_staging AS (
     engmgt.session_had_an_engaged_event AS visits, --this is the equivalent logic to totals.visits in UA
     CASE
       WHEN exits.nbr_page_view_events = 1
+        THEN TRUE
+      ELSE FALSE
+    END AS single_page_session,
+    CASE
+      WHEN engmgt.session_had_an_engaged_event = 0
         THEN 1
       ELSE 0
-    END AS bounces, --this is the equivalent logic to totals.bounces in UA
-    SAFE_DIVIDE(engagement_time_msec, 1000) AS hit_time,
+    END AS bounces, --if the session did not have an engaged event, then the session is considered a bounce, else it is not
+    (all_events.event_timestamp - all_sessions.visit_start_time) / 1000000 AS hit_time,
+    SAFE_DIVIDE(engagement_time_msec, 1000) AS engagement_time,
     engmgt.first_interaction,
     CAST(engmgt.last_interaction AS float64) AS last_interaction,
     all_events.is_entrance AS entrances,
-    COALESCE(exits.is_exit, 0) AS exits,
+    COALESCE(CASE WHEN exits.max_row_number = all_events.row_nbr THEN 1 ELSE 0 END, 0) AS exits,
     CAST(
       NULL AS string
     ) AS event_id, --old table defined this from event category, action, and label, which no longer exist in GA4
     SPLIT(REGEXP_REPLACE(all_events.page_location, '^https://www.mozilla.org', ''), '/')[
-      SAFE_OFFSET(1)
+      SAFE_OFFSET(2)
     ] AS page_level_1,
     SPLIT(REGEXP_REPLACE(all_events.page_location, '^https://www.mozilla.org', ''), '/')[
-      SAFE_OFFSET(2)
+      SAFE_OFFSET(3)
     ] AS page_level_2,
     SPLIT(REGEXP_REPLACE(all_events.page_location, '^https://www.mozilla.org', ''), '/')[
-      SAFE_OFFSET(3)
+      SAFE_OFFSET(4)
     ] AS page_level_3,
     SPLIT(REGEXP_REPLACE(all_events.page_location, '^https://www.mozilla.org', ''), '/')[
-      SAFE_OFFSET(4)
+      SAFE_OFFSET(5)
     ] AS page_level_4,
     SPLIT(REGEXP_REPLACE(all_events.page_location, '^https://www.mozilla.org', ''), '/')[
-      SAFE_OFFSET(5)
+      SAFE_OFFSET(6)
     ] AS page_level_5
   FROM
     get_session_start_time all_sessions
@@ -242,9 +229,8 @@ final_staging AS (
     AND all_sessions.visit_identifier = all_events.visit_identifier
     AND all_sessions.full_visitor_id = all_events.full_visitor_id
   LEFT OUTER JOIN
-    session_exits exits
-    ON all_events.visit_identifier = exits.visit_identifier
-    AND all_events.row_nbr = exits.row_nbr_to_count_as_exit
+    row_nbr_of_last_page_view_in_each_session exits
+    ON all_sessions.visit_identifier = exits.visit_identifier
   LEFT OUTER JOIN
     first_and_last_interaction engmgt
     ON all_sessions.visit_identifier = engmgt.visit_identifier
@@ -278,6 +264,7 @@ SELECT
   final.visits,
   final.bounces,
   final.hit_time,
+  final.engagement_time,
   final.first_interaction,
   final.last_interaction,
   final.entrances,
@@ -293,5 +280,6 @@ SELECT
     CONCAT('/', page_level_1, '/'),
     ARRAY_TO_STRING(['', page_level_1, page_level_2, page_level_3, page_level_4, page_level_5], '/')
   ) AS page_name,
+  final.single_page_session
 FROM
   final_staging final

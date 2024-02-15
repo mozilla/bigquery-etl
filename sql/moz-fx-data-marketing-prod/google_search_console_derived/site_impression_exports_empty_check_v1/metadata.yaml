@@ -1,0 +1,16 @@
+friendly_name: Site Impression Exports Empty Check
+description: |-
+  Raises an error if any of the Google Search Console site impression exports are missing data for the given date.
+owners:
+- srose@mozilla.com
+scheduling:
+  dag_name: bqetl_google_search_console
+  destination_table: null
+  query_file_path: sql/moz-fx-data-marketing-prod/google_search_console_derived/site_impression_exports_empty_check_v1/query.sql
+  # Google Search Console exports typically happen two days after the data date in UTC.
+  parameters:
+  - date:DATE:{{macros.ds_add(ds, -1)}}
+  # We're not in control of when Google Search Console exports happen, so keep trying for one day.
+  retry_delay: 1h
+  retries: 23
+  email_on_retry: false

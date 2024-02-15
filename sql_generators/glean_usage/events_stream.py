@@ -31,6 +31,7 @@ class EventsStreamTable(GleanTable):
         output_dir=None,
         use_cloud_function=True,
         app_info=[],
+        parallelism=8,
     ):
         # Get the app ID from the baseline_table name.
         # This is what `common.py` also does.
@@ -48,7 +49,12 @@ class EventsStreamTable(GleanTable):
         )
 
     def generate_per_app(
-        self, project_id, app_info, output_dir=None, use_cloud_function=True
+        self,
+        project_id,
+        app_info,
+        output_dir=None,
+        use_cloud_function=True,
+        parallelism=8,
     ):
         """Generate the events_stream table query per app_name."""
         target_dataset = app_info[0]["app_name"]

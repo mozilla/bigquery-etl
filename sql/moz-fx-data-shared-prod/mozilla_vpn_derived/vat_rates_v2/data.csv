@@ -1,0 +1,35 @@
+country_code,country,vat,effective_date
+AT,Austria,0.2,2021-01-01
+BE,Belgium,0.21,2021-01-01
+BG,Bulgaria,0.2,2022-05-10
+CA,Canada,0.1,2021-01-01
+CH,Switzerland,0.077,2021-01-01
+CY,Cyprus,0.19,2022-05-10
+CZ,Czech Republic,0.21,2022-05-10
+DE,Germany,0.19,2021-01-01
+DK,Denmark,0.25,2022-05-10
+EE,Estonia,0.2,2022-05-10
+ES,Spain,0.21,2021-01-01
+FI,Finland,0.24,2022-01-01
+FR,France,0.2,2021-01-01
+GB,United Kingdom,0.2,2021-01-01
+GR,Greece,0.24,2022-05-10
+HR,Croatia,0.25,2022-05-10
+HU,Hungary,0.27,2022-05-10
+IE,Ireland,0.23,2021-01-01
+IT,Italy,0.22,2021-01-01
+LT,Lithuania,0.21,2022-05-10
+LU,Luxembourg,0.17,2022-05-10
+LV,Latvia,0.21,2022-05-10
+MT,Malta,0.18,2022-05-10
+MY,Malaysia,0.05,2021-01-01
+NL,Netherlands,0.21,2021-01-01
+NZ,New Zealand,0.15,2021-01-01
+PL,Poland,0.23,2022-05-10
+PT,Portugal,0.23,2022-05-10
+RO,Romania,0.19,2022-05-10
+SE,Sweden,0.25,2022-01-01
+SG,Singapore,0.07,2021-01-01
+SI,Slovenia,0.22,2022-05-10
+SK,Slovakia,0.2,2022-05-10
+US,United States,0,2021-01-01

@@ -1,0 +1,20 @@
+fields:
+- description: Date corresponding to the unique client count
+  mode: NULLABLE
+  name: submission_date
+  type: DATE
+- description: A string representing the app the client activity occurred on
+  mode: NULLABLE
+  name: meta_attribution_app
+  type: STRING
+- description: Attributable channel
+  mode: NULLABLE
+  name: normalized_channel
+  type: STRING
+- description: Country corresponding to the unique client
+  mode: NULLABLE
+  name: country
+  type: STRING
+- name: ping_count
+  type: INTEGER
+  mode: NULLABLE

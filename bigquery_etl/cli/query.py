@@ -15,7 +15,6 @@ from functools import partial
 from glob import glob
 from multiprocessing.pool import Pool, ThreadPool
 from pathlib import Path
-from tempfile import NamedTemporaryFile
 from traceback import print_exc
 from typing import Optional
 
@@ -170,12 +169,14 @@ def create(ctx, name, sql_dir, project_id, owner, init, dag, no_schedule):
     path = Path(sql_dir)
 
     if dataset.endswith("_derived"):
-        # create a directory for the corresponding view
+        # create directory for this table
         derived_path = path / project_id / dataset / (name + version)
         derived_path.mkdir(parents=True)
 
+        # create a directory for the corresponding view
         view_path = path / project_id / dataset.replace("_derived", "") / name
-        view_path.mkdir(parents=True)
+        # new versions of existing tables may already have a view
+        view_path.mkdir(parents=True, exist_ok=True)
     else:
         # check if there is a corresponding derived dataset
         if (path / project_id / (dataset + "_derived")).exists():
@@ -193,9 +194,9 @@ def create(ctx, name, sql_dir, project_id, owner, init, dag, no_schedule):
 
     click.echo(f"Created query in {derived_path}")
 
-    if view_path:
+    if view_path and not (view_file := view_path / "view.sql").exists():
+        # Don't overwrite the view_file if it already exists
         click.echo(f"Created corresponding view in {view_path}")
-        view_file = view_path / "view.sql"
         view_dataset = dataset.replace("_derived", "")
         view_file.write_text(
             reformat(
@@ -1528,49 +1529,51 @@ def initialize(
     type=click.Path(file_okay=False),
     required=False,
 )
-def render(name, sql_dir, output_dir):
+@parallelism_option()
+def render(name, sql_dir, output_dir, parallelism):
     """Render a query Jinja template."""
     if name is None:
         name = "*.*"
 
     query_files = paths_matching_name_pattern(name, sql_dir, project_id=None)
     resolved_sql_dir = Path(sql_dir).resolve()
-    for query_file in query_files:
-        table_name = query_file.parent.name
-        dataset_id = query_file.parent.parent.name
-        project_id = query_file.parent.parent.parent.name
 
-        jinja_params = {
-            **{
-                "project_id": project_id,
-                "dataset_id": dataset_id,
-                "table_name": table_name,
-            },
-        }
+    with Pool(parallelism) as p:
+        p.map(partial(_render_query, output_dir, resolved_sql_dir), query_files)
 
-        rendered_sql = (
-            render_template(
-                query_file.name,
-                template_folder=query_file.parent,
-                templates_dir="",
-                format=False,
-                **jinja_params,
-            )
-            + "\n"
+
+def _render_query(output_dir, resolved_sql_dir, query_file):
+    table_name = query_file.parent.name
+    dataset_id = query_file.parent.parent.name
+    project_id = query_file.parent.parent.parent.name
+
+    jinja_params = {
+        "project_id": project_id,
+        "dataset_id": dataset_id,
+        "table_name": table_name,
+    }
+
+    rendered_sql = (
+        render_template(
+            query_file.name,
+            template_folder=query_file.parent,
+            templates_dir="",
+            format=False,
+            **jinja_params,
         )
+        + "\n"
+    )
 
-        if not any(s in str(query_file) for s in skip_format()):
-            rendered_sql = reformat(rendered_sql, trailing_newline=True)
+    if not any(s in str(query_file) for s in skip_format()):
+        rendered_sql = reformat(rendered_sql, trailing_newline=True)
 
-        if output_dir:
-            output_file = output_dir / query_file.resolve().relative_to(
-                resolved_sql_dir
-            )
-            output_file.parent.mkdir(parents=True, exist_ok=True)
-            output_file.write_text(rendered_sql)
-        else:
-            click.echo(query_file)
-            click.echo(rendered_sql)
+    if output_dir:
+        output_file = output_dir / query_file.resolve().relative_to(resolved_sql_dir)
+        output_file.parent.mkdir(parents=True, exist_ok=True)
+        output_file.write_text(rendered_sql)
+    else:
+        click.echo(query_file)
+        click.echo(rendered_sql)
 
 
 def _parse_partition_setting(partition_date):
@@ -2053,7 +2056,9 @@ def deploy(
         sys.exit(1)
     client = bigquery.Client()
 
-    query_files = paths_matching_name_pattern(name, sql_dir, project_id, ["query.*"])
+    query_files = paths_matching_name_pattern(
+        name, sql_dir, project_id, ["query.*", "script.sql"]
+    )
     if not query_files:
         # run SQL generators if no matching query has been found
         ctx.invoke(
@@ -2062,7 +2067,7 @@ def deploy(
             ignore=["derived_view_schemas", "stable_views"],
         )
         query_files = paths_matching_name_pattern(
-            name, ctx.obj["TMP_DIR"], project_id, ["query.*"]
+            name, ctx.obj["TMP_DIR"], project_id, ["query.*", "script.sql"]
         )
         if not query_files:
             raise click.ClickException(f"No queries matching `{name}` were found.")
@@ -2078,6 +2083,18 @@ def deploy(
         if not existing_schema_path.is_file():
             click.echo(f"No schema file found for {query_file}")
             return
+
+        try:
+            metadata = Metadata.of_query_file(query_file_path)
+            if (
+                metadata.scheduling
+                and "destination_table" in metadata.scheduling
+                and metadata.scheduling["destination_table"] is None
+            ):
+                click.echo(f"No destination table defined for {query_file}")
+                return
+        except FileNotFoundError:
+            pass
 
         try:
             table_name = query_file_path.parent.name
@@ -2109,10 +2126,7 @@ def deploy(
                     )
                     sys.exit(1)
 
-            with NamedTemporaryFile(suffix=".json") as tmp_schema_file:
-                existing_schema.to_json_file(Path(tmp_schema_file.name))
-                bigquery_schema = client.schema_from_json(tmp_schema_file.name)
-
+            bigquery_schema = existing_schema.to_bigquery_schema()
             try:
                 table = client.get_table(full_table_id)
             except NotFound:
@@ -2231,10 +2245,7 @@ def _deploy_external_data(
             except NotFound:
                 table = bigquery.Table(full_table_id)
 
-            with NamedTemporaryFile(suffix=".json") as tmp_schema_file:
-                existing_schema.to_json_file(Path(tmp_schema_file.name))
-                bigquery_schema = client.schema_from_json(tmp_schema_file.name)
-
+            bigquery_schema = existing_schema.to_bigquery_schema()
             table.schema = bigquery_schema
             _attach_metadata(metadata_file_path, table)
 

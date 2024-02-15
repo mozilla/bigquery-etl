@@ -16,6 +16,7 @@
 -- #fail
 -- {{ is_unique(columns=["client_id"], where="submission_date = @submission_date") }}
 #}
+
 #warn
 {{ not_null(columns=[
   "activity_segment",
@@ -96,4 +97,3 @@ WHERE
 
 #warn
 {{ matches_pattern(column="country", pattern="^[A-Z]{2}$", where="submission_date = @submission_date", message="Some values in this field do not adhere to the ISO 3166-1 specification (2 character country code, for example: DE).") }}
-

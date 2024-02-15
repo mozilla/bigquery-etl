@@ -4,4 +4,4 @@ AS
 SELECT
   *
 FROM
-  `moz-fx-data-shared-prod.fenix_derived.ltv_state_values_v1`
+  `moz-fx-data-shared-prod.fenix_derived.ltv_state_values_v2`

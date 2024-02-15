@@ -539,6 +539,21 @@ jobs:
             git add << parameters.repo-to-sync >>
             git commit --allow-empty -m "Automatic commit from ${CIRCLE_PROJECT_REPONAME} commit ${CIRCLE_SHA1:0:9} build ${CIRCLE_BUILD_NUM} [skip ci]"
             git push origin main
+  deploy-to-private-gcr:
+    executor: ubuntu-machine-executor
+    steps:
+      - checkout
+      - *attach_generated_sql
+      - run:
+          name: Move generated-sql into place
+          command: |
+            rm -rf sql/
+            cp -r /tmp/workspace/private-generated-sql/sql sql
+      - gcp-gcr/gcr-auth
+      - gcp-gcr/build-image: &private-image
+          image: bigquery-etl
+          tag: ${CIRCLE_TAG:-latest}
+      - gcp-gcr/push-image: *private-image
   deploy:
     executor: ubuntu-machine-executor
     steps:
@@ -637,21 +652,6 @@ jobs:
               && git push \
               || echo "Skipping push since it looks like there were no changes"
           # yamllint enable rule:line-length
-  deploy-to-private-gcr:
-    executor: ubuntu-machine-executor
-    steps:
-      - checkout
-      - *attach_generated_sql
-      - run:
-          name: Move generated-sql into place
-          command: |
-            rm -rf sql/
-            cp -r /tmp/workspace/private-generated-sql/sql sql
-      - gcp-gcr/gcr-auth
-      - gcp-gcr/build-image: &private-image
-          image: bigquery-etl
-          tag: ${CIRCLE_TAG:-latest}
-      - gcp-gcr/push-image: *private-image
   main-generate-sql-and-dags:
     docker: *docker
     resource_class: large

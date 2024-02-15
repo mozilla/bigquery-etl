@@ -15,6 +15,10 @@ bigquery:
     require_partition_filter: true
     expiration_days: null
   clustering:
-    fields: []
+    fields:
+    - cleaned_landing_page
+    - browser
+    - blog
+    - subblog
 references: {}
 deprecated: false

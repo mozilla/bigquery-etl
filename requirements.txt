@@ -801,9 +801,9 @@ mkdocs-awesome-pages-plugin==2.9.2 \
     --hash=sha256:9c795587695bd1ee85a8b7e43293005418df5a8b9ef296a3e628be427b693b4d \
     --hash=sha256:c3f7d366ecfe99b64524c49a84d8e13c576c19a918ea2e6f59bb486a259313af
     # via -r requirements.in
-mkdocs-material==9.5.3 \
-    --hash=sha256:5899219f422f0a6de784232d9d40374416302ffae3c160cacc72969fcc1ee372 \
-    --hash=sha256:76c93a8525cceb0b395b9cedab3428bf518cf6439adef2b940f1c1574b775d89
+mkdocs-material==9.5.9 \
+    --hash=sha256:635df543c01c25c412d6c22991872267723737d5a2f062490f33b2da1c013c6d \
+    --hash=sha256:a5d62b73b3b74349e45472bfadc129c871dd2d4add68d84819580597b2f50d5d
     # via -r requirements.in
 mkdocs-material-extensions==1.3 \
     --hash=sha256:0297cc48ba68a9fdd1ef3780a3b41b534b0d0df1d1181a44676fda5f464eeadc \
@@ -1252,9 +1252,9 @@ pytest-mypy==0.10.3 \
 pytest-pydocstyle==2.3.2 \
     --hash=sha256:a30b28d49607b2fcd7b24678ab6c4e27a288710a34b3a0f1f90f3497e88771c3
     # via -r requirements.in
-pytest-xdist==3.3.1 \
-    --hash=sha256:d5ee0520eb1b7bcca50a60a518ab7a7707992812c578198f8b44fdfac78e8c93 \
-    --hash=sha256:ff9daa7793569e6a68544850fd3927cd257cc03a7ef76c95e86915355e82b5f2
+pytest-xdist==3.5.0 \
+    --hash=sha256:cbb36f3d67e0c478baa57fa4edc8843887e0f6cfc42d677530a36d7472b32d8a \
+    --hash=sha256:d075629c7e00b611df89f490a5063944bee7a4362a5ff11c7cc7824a03dfce24
     # via -r requirements.in
 python-dateutil==2.8.2 \
     --hash=sha256:0123cacc1627ae19ddf3c27a5de5bd67ee4586fbdd6440d9748f8abb483d3e86 \

@@ -13,7 +13,7 @@ SELECT
     ).int_value AS STRING
   ) AS visit_identifier,
   COUNTIF(event_name = 'download_click') AS downloads,
-  COUNTIF(event_name = 'social_share') AS share,
+  COUNTIF(event_name = 'social_share') AS social_share,
   COUNTIF(event_name = 'newsletter_subscribe') AS newsletter_subscription
 FROM
   `moz-fx-data-marketing-prod.analytics_314399816.events_*`

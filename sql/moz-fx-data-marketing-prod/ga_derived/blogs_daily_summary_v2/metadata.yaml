@@ -15,7 +15,7 @@ bigquery:
     require_partition_filter: false
     expiration_days: null
   clustering:
-    fields: 
+    fields:
     - country
     - browser
     - blog

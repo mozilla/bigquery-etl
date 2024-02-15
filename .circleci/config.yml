@@ -5,6 +5,7 @@ orbs:
   gcp-gcr: circleci/gcp-gcr@0.13.0
   docker: circleci/docker@2.2
   python: circleci/python@2.1.1
+  queue: eddiewebb/queue@2.2.1
 
 parameters:
   python-version:
@@ -292,6 +293,8 @@ jobs:
   docs:
     docker: *docker
     steps:
+      - queue/until_front_of_line:
+          only-on-branch: main
       - checkout
       - *skip_forked_pr
       - *restore_venv_cache
@@ -444,6 +447,8 @@ jobs:
   push-generated-sql:
     docker: *docker
     steps:
+      - queue/until_front_of_line:
+          only-on-branch: main
       - *attach_generated_sql
       - add_ssh_keys:
           fingerprints:
@@ -476,6 +481,8 @@ jobs:
       target-branch:
         type: string
     steps:
+      - queue/until_front_of_line:
+          only-on-branch: main
       - checkout
       - add_ssh_keys:
           fingerprints:
@@ -511,6 +518,8 @@ jobs:
   deploy:
     executor: ubuntu-machine-executor
     steps:
+      - queue/until_front_of_line:
+          only-on-branch: main
       - checkout
       - *attach_generated_sql
       - *copy_generated_sql
@@ -583,6 +592,8 @@ jobs:
   push-private-generated-sql:
     docker: *docker
     steps:
+      - queue/until_front_of_line:
+          only-on-branch: main
       - *attach_generated_sql
       - add_ssh_keys:
           fingerprints:
@@ -610,6 +621,8 @@ jobs:
   deploy-to-private-gcr:
     executor: ubuntu-machine-executor
     steps:
+      - queue/until_front_of_line:
+          only-on-branch: main
       - checkout
       - *attach_generated_sql
       - run:
@@ -801,6 +814,8 @@ jobs:
   deploy-to-pypi:
     docker: *docker
     steps:
+      - queue/until_front_of_line:
+          only-on-branch: main
       - checkout
       - run:
           name: Install deployment tools

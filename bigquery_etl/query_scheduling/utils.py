@@ -14,6 +14,15 @@ def is_timedelta_string(s):
     return timedelta_regex.match(s)
 
 
+def validate_timedelta_string(s):
+    """Raise an error if the provided string is not in a valid timedelta format."""
+    if not is_timedelta_string(s):
+        raise ValueError(
+            f"Invalid timedelta value '{s}'."
+            " Timedeltas should be specified like '1h', '45m', '10s', '1h30m', etc."
+        )
+
+
 def is_date_string(s):
     """Check whether a string is a valid date string formatted like YYYY-MM-DD."""
     try:

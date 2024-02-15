@@ -1,0 +1,20 @@
+friendly_name: Dummy 0
+description: |-
+  testing bigquery access and such
+owners:
+- jsnyder@mozilla.com
+labels:
+  incremental: true
+  owner1: jsnyder@mozilla.com
+scheduling:
+  dag_name: bqetl_default
+bigquery:
+  time_partitioning:
+    type: day
+    field: date
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields: []
+references: {}
+deprecated: false

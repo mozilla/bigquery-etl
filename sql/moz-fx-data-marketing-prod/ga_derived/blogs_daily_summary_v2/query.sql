@@ -1,5 +1,5 @@
 SELECT
-  date,
+  `date`,
   device_category,
   operating_system,
   browser,
@@ -20,14 +20,14 @@ FROM
   `moz-fx-data-marketing-prod.ga_derived.blogs_sessions_v2` AS sessions_table
 LEFT JOIN
   `moz-fx-data-marketing-prod.ga_derived.blogs_goals_v2`
-  USING (date, visit_identifier)
+  USING (`date`, visit_identifier)
 LEFT JOIN
   `moz-fx-data-shared-prod.static.third_party_standardized_country_names` AS standardized_country_list
   ON sessions_table.country = standardized_country_list.raw_country
 WHERE
   date = @submission_date
 GROUP BY
-  date,
+  `date`,
   device_category,
   operating_system,
   browser,

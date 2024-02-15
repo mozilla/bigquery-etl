@@ -1,13 +1,8 @@
 """
 Generate mobile search clients_daily query.
 
-Creates a combined CTE for metrics and baseline for Android and iOS Glean
-apps, then print query to stdout
-
-To update query file:
-python -m bigquery_etl.search.mobile_search_clients_daily \
-> sql/moz-fx-data-shared-prod/\
-search_derived/mobile_search_clients_daily_v1/query.sql
+Create a combined CTE for metrics and baseline for Android and iOS Glean apps,
+then print the query to a file in the output directory.
 """
 from pathlib import Path
 from typing import List
@@ -17,6 +12,8 @@ from jinja2 import Environment, FileSystemLoader
 
 from bigquery_etl.cli.utils import use_cloud_function_option
 from bigquery_etl.format_sql.formatter import reformat
+from bigquery_etl.util.common import write_sql
+
 
 # fmt: off
 FIREFOX_ANDROID_TUPLES = [
@@ -26,6 +23,10 @@ FIREFOX_ANDROID_TUPLES = [
     ("org_mozilla_firefox_beta",    "Fenix",            "beta"),  # noqa E241 E501
     ("org_mozilla_firefox",         "Fenix",            "release"),  # noqa E241 E501
 ]
+
+DATASET = "search_derived"
+
+TABLE_NAME = "mobile_search_clients_daily_v1"
 
 FIREFOX_IOS_TUPLES = [
     ("org_mozilla_ios_firefox",     "Fennec", "release"),  # noqa E241 E501
@@ -76,6 +77,8 @@ def union_statements(statements: List[str]):
 def generate(output_dir, target_project, use_cloud_function):
     """Generate mobile search clients daily query and print to stdout."""
     base_dir = Path(__file__).parent
+
+    output_dir = Path(output_dir) / target_project
 
     env = Environment(loader=FileSystemLoader(base_dir / "templates"))
 
@@ -185,4 +188,10 @@ def generate(output_dir, target_project, use_cloud_function):
         ios_klar_metrics=ios_klar_combined_metrics,
     )
 
-    print(reformat(search_query))
+    write_sql(
+        output_dir=output_dir,
+        full_table_id=f"{target_project}.{DATASET}.{TABLE_NAME}",
+        basename="query.sql",
+        sql=reformat(search_query),
+        skip_existing=False,
+    )

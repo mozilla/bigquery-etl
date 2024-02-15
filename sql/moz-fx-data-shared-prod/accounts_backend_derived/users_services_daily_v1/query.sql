@@ -116,5 +116,5 @@ JOIN
   `accounts_db.fxa_oauth_clients` AS oa
   ON windowed.service = oa.id
 WHERE
-  user_id != ''
-  AND service != ''
+  user_id IS NOT NULL
+  AND service IS NOT NULL

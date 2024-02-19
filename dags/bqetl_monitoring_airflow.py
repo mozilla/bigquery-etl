@@ -55,6 +55,7 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
+
     monitoring_derived__airflow_dag__v1 = bigquery_etl_query(
         task_id="monitoring_derived__airflow_dag__v1",
         destination_table="airflow_dag_v1",

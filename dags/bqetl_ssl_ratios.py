@@ -49,6 +49,7 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
+
     checks__fail_telemetry_derived__ssl_ratios__v1 = bigquery_dq_check(
         task_id="checks__fail_telemetry_derived__ssl_ratios__v1",
         source_table="ssl_ratios_v1",

@@ -46,6 +46,7 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
+
     checks__fail_fenix_derived__client_adclicks_history__v1 = bigquery_dq_check(
         task_id="checks__fail_fenix_derived__client_adclicks_history__v1",
         source_table="client_adclicks_history_v1",

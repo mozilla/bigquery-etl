@@ -49,6 +49,7 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
+
     fenix_derived__fenix_use_counters__v2 = bigquery_etl_query(
         task_id="fenix_derived__fenix_use_counters__v2",
         destination_table="fenix_use_counters_v2",

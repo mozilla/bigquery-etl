@@ -49,6 +49,7 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
+
     glam_derived__client_probe_counts_firefox_desktop_beta__v1 = bigquery_etl_query(
         task_id="glam_derived__client_probe_counts_firefox_desktop_beta__v1",
         destination_table="client_probe_counts_firefox_desktop_beta_v1",

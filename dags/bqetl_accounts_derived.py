@@ -53,6 +53,7 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
+
     accounts_backend_derived__users_services_daily__v1 = bigquery_etl_query(
         task_id="accounts_backend_derived__users_services_daily__v1",
         destination_table="users_services_daily_v1",

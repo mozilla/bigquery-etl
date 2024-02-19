@@ -52,6 +52,7 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
+
     acoustic__contact__v1 = bigquery_etl_query(
         task_id="acoustic__contact__v1",
         destination_table="contact_v1",

@@ -51,6 +51,7 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
+
     glean_server_knob_experiments__v1 = bigquery_etl_query(
         task_id="glean_server_knob_experiments__v1",
         destination_table="glean_server_knob_experiments_v1",

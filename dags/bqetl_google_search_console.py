@@ -57,6 +57,7 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
+
     google_search_console_derived__search_impressions_by_page__v2 = bigquery_etl_query(
         task_id="google_search_console_derived__search_impressions_by_page__v2",
         destination_table='search_impressions_by_page_v2${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',

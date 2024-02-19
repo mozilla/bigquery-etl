@@ -50,6 +50,7 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
+
     app_store_external__firefox_app_store_territory_source_type_report__v1 = bigquery_etl_query(
         task_id="app_store_external__firefox_app_store_territory_source_type_report__v1",
         destination_table="firefox_app_store_territory_source_type_report_v1",

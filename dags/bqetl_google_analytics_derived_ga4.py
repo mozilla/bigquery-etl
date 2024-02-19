@@ -49,6 +49,7 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
+
     checks__fail_mozilla_org_derived__ga_clients__v2 = bigquery_dq_check(
         task_id="checks__fail_mozilla_org_derived__ga_clients__v2",
         source_table="ga_clients_v2",

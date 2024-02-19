@@ -54,6 +54,7 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
+
     checks__fail_fivetran_costs_derived__daily_connector_costs__v1 = bigquery_dq_check(
         task_id="checks__fail_fivetran_costs_derived__daily_connector_costs__v1",
         source_table="daily_connector_costs_v1",

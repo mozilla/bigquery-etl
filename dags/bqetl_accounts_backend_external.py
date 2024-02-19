@@ -267,6 +267,20 @@ with DAG(
         task_concurrency=1,
     )
 
+    with TaskGroup(
+        "accounts_db_external__fxa_oauth_clients__v1_external",
+    ) as accounts_db_external__fxa_oauth_clients__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_accounts_derived__wait_for_accounts_db_external__fxa_oauth_clients__v1",
+            external_dag_id="bqetl_accounts_derived",
+            external_task_id="wait_for_accounts_db_external__fxa_oauth_clients__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
+        )
+
+        accounts_db_external__fxa_oauth_clients__v1_external.set_upstream(
+            accounts_db_external__fxa_oauth_clients__v1
+        )
+
     accounts_db_external__fxa_oauth_codes__v1 = bigquery_etl_query(
         task_id="accounts_db_external__fxa_oauth_codes__v1",
         destination_table="fxa_oauth_codes_v1",

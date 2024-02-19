@@ -4,6 +4,7 @@ Generate mobile search clients_daily query.
 Create a combined CTE for metrics and baseline for Android and iOS Glean apps,
 then print the query to a file in the output directory.
 """
+
 from pathlib import Path
 from typing import List
 

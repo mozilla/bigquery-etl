@@ -8,11 +8,7 @@ from pathlib import Path
 
 from google.cloud import bigquery
 
-DEFAULT_PROJECTS = [
-    "moz-fx-data-shared-prod",
-    "moz-fx-data-experiments",
-    "mozdata"
-]
+DEFAULT_PROJECTS = ["moz-fx-data-shared-prod", "moz-fx-data-experiments", "mozdata"]
 
 parser = ArgumentParser(description=__doc__)
 parser.add_argument("--date", required=True)  # expect string with format yyyy-mm-dd

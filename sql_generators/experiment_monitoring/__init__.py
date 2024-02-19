@@ -1,4 +1,5 @@
 """Experiment monitoring materialized view generation."""
+
 import os
 from pathlib import Path
 

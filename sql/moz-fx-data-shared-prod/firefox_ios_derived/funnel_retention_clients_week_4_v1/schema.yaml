@@ -73,12 +73,6 @@ fields:
     Indicates if the client qualified as a repeat first month user (observed more than once within their first 28 days).
 
 - mode: NULLABLE
-  name: retained_week_2
-  type: BOOLEAN
-  description: |
-    True if the client was seen in the second week (days 8 - 14) since they were first seen.
-
-- mode: NULLABLE
   name: retained_week_4
   type: BOOLEAN
   description: |

@@ -15,7 +15,7 @@ fields:
   type: STRING
   mode: NULLABLE
 - name: is_default_browser
-  type: INTEGER
+  type: BOOLEAN
   mode: NULLABLE
 - name: autofill_password_detected_logins
   type: INTEGER

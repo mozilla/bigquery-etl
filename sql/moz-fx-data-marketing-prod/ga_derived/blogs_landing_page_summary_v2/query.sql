@@ -83,7 +83,7 @@ LEFT JOIN
   `moz-fx-data-marketing-prod.ga_derived.blogs_goals_v2` AS goals_table
   USING (date, visit_identifier)
 LEFT JOIN
-  landing_page_table
+  landing_page
   USING (date, visit_identifier)
 LEFT JOIN
   `moz-fx-data-shared-prod.static.third_party_standardized_country_names` AS standardized_country_list

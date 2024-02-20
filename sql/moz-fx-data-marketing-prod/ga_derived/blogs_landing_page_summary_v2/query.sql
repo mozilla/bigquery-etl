@@ -45,7 +45,7 @@ landing_page AS (
     `date`,
     visit_identifier,
     landing_page,
-    ? AS cleaned_landing_page,
+    SPLIT(landing_page, '?')[OFFSET(0)] AS cleaned_landing_page,
     SUM(is_entrance) AS page_sessions
   FROM
     landing_page_staging

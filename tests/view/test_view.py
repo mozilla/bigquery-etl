@@ -1,12 +1,12 @@
 from pathlib import Path
-from unittest.mock import patch, Mock
+from unittest.mock import Mock, patch
 
 import pytest
 from click.testing import CliRunner
 from google.api_core.exceptions import NotFound
 from google.cloud.bigquery import SchemaField
 
-from bigquery_etl.view import View, CREATE_VIEW_PATTERN
+from bigquery_etl.view import CREATE_VIEW_PATTERN, View
 
 TEST_DIR = Path(__file__).parent.parent
 

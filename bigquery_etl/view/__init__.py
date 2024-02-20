@@ -9,7 +9,7 @@ from pathlib import Path
 
 import attr
 import sqlparse
-from google.api_core.exceptions import BadRequest, NotFound, Forbidden
+from google.api_core.exceptions import BadRequest, Forbidden, NotFound
 from google.cloud import bigquery
 
 from bigquery_etl.config import ConfigLoader

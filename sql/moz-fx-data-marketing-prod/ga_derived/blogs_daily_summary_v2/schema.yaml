@@ -6,43 +6,43 @@ fields:
 - mode: NULLABLE
   name: device_category
   type: STRING
-  description: Device Category
+  description: Device Category - The device category the visitor used to visit the site
 - mode: NULLABLE
   name: operating_system
   type: STRING
-  description: Operating System
+  description: Operating System - The operating system the visitor used to visit the site
 - mode: NULLABLE
   name: browser
   type: STRING
-  description: Browser
+  description: Browser - The browser the visiting device was using when it visited the site
 - mode: NULLABLE
   name: language
   type: STRING
-  description: Language
+  description: Language - The language the visiting device was using when it visited the site
 - mode: NULLABLE
   name: country
   type: STRING
-  description: Country
+  description: Country - The country from which events were reported, based on IP address
 - mode: NULLABLE
   name: standardized_country_name
   type: STRING
-  description: Standardized Country Name
+  description: Standardized Country Name - The standardized name of the country from which events were reported, based on IP address
 - mode: NULLABLE
   name: source
   type: STRING
-  description: Source
+  description: Source - Referring partner domain
 - mode: NULLABLE
   name: medium
   type: STRING
-  description: Medium
+  description: Medium - Category of the source, such as 'organic' for a search engine
 - mode: NULLABLE
   name: campaign
   type: STRING
-  description: Campaign
+  description: Campaign - Identifier for the marketing campaign
 - mode: NULLABLE
   name: content
   type: STRING
-  description: Content
+  description: Content - Indicates the particular link within a campaign
 - mode: NULLABLE
   name: blog
   type: STRING
@@ -54,16 +54,16 @@ fields:
 - mode: NULLABLE
   name: sessions
   type: INT64
-  description: Sessions
+  description: Sessions - The number of sessions
 - mode: NULLABLE
   name: downloads
   type: INT64
-  description: Downloads
+  description: Downloads - The number of downloads
 - mode: NULLABLE
   name: social_share
   type: INT64
-  description: Social Share
+  description: Social Share - The number of social shares
 - mode: NULLABLE
   name: newsletter_subscription
   type: INT64
-  description: Newsletter Subscription
+  description: Newsletter Subscription - The number of newsletter subscriptions

@@ -1,5 +1,4 @@
 WITH landing_page_staging AS (
-  --note to self - should check it's always only 1 row per date/visit identifier, so that the other things don't get double counted once joined to them
   SELECT
     PARSE_DATE('%Y%m%d', event_date) AS `date`,
     user_pseudo_id || '-' || CAST(
@@ -38,12 +37,7 @@ FROM
 WHERE
   _TABLE_SUFFIX = FORMAT_DATE('%Y%m%d', @submission_date)
 QUALIFY
-  ROW_NUMBER() OVER (
-    PARTITION BY
-      visit_identifier
-    ORDER BY
-      event_timestamp ASC
-  ) = 1 --should it be date/visit_identifier or just visit_identifier?
+  ROW_NUMBER() OVER (PARTITION BY visit_identifier ORDER BY event_timestamp ASC) = 1
 ),
 landing_page AS (
   SELECT

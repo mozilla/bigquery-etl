@@ -36,9 +36,7 @@ workflows:
           base-revision: << pipeline.git.base_revision >>
           config-path: .circleci/workflows.yml
           mapping: |
-            .* validate-bqetl true
-            .* validate-sql true
-            .* validate-routines true
+            .* run-all true
   filter-paths-pr:
     when:
       and:

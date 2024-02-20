@@ -19,6 +19,9 @@ parameters:
   validate-routines:
     type: boolean
     default: false
+  run-all:
+    type: boolean
+    default: false
   trigger-sql-generation:
     type: boolean
     default: false
@@ -955,3 +958,138 @@ workflows:
     jobs:
       - test-bqetl
       - integration
+
+  ### Run all checks and deployments
+  run-all:
+    when:
+      or:
+        - << pipeline.parameters.run-all >>
+    jobs:
+      - verify-format-sql
+      - deploy-changes-to-stage:
+          requires:
+            - generate-sql
+      - dry-run-sql:
+          requires:
+            - deploy-changes-to-stage
+      - test-sql:
+          requires:
+            - deploy-changes-to-stage
+      - validate-metadata:
+          requires:
+            - deploy-changes-to-stage
+      - validate-dags:
+          requires:
+            - generate-dags
+      - validate-views:
+          requires:
+            - deploy-changes-to-stage
+      - generate-sql
+      - main-generate-sql-and-dags:
+          filters:
+            branches:
+              ignore: main
+      - generate-diff:
+          requires:
+            - generate-dags
+            - main-generate-sql-and-dags
+          filters:
+            branches:
+              ignore: main
+      - post-diff:
+          requires:
+            - generate-diff
+          filters:
+            branches:
+              ignore: main
+      - generate-dags:
+          requires:
+            - generate-sql
+      - docs:
+          requires:
+            - generate-sql
+          filters:
+            branches:
+              only: main
+      - push-generated-sql:
+          requires:
+            - validate-dags
+          filters:
+            branches:
+              only:
+                - main
+      - reset-stage-env:
+          requires:
+            - push-generated-sql
+            - test-sql
+            - validate-views
+            - validate-metadata
+            - dry-run-sql
+      - test-routines:
+          requires:
+            - deploy-changes-to-stage
+      - test-bqetl
+      - integration
+      # The following "private" jobs are basically clones of the public jobs
+      # for generate-sql, deploy, and push-generated-sql, except that they pull
+      # in some additional content from an internal Mozilla repository for
+      # cases where ETL code cannot be public. Although the CI logic is
+      # consolidated in this public repository, note that we are both pulling
+      # from the internal repository and pushing generated results back to
+      # a branch on that internal repository, which may be initially
+      # surprising.
+      - private-generate-sql:
+          filters:
+            branches:
+              only:
+                - main
+      - push-private-generated-sql:
+          requires:
+            - private-generate-sql
+          filters:
+            branches:
+              only:
+                - main
+      - deploy:
+          context: data-eng-bigquery-etl-dockerhub
+          requires:
+            - generate-sql
+            # Public image must be pushed after the private one because of
+            # webhooks used in Ops logic. For details, see:
+            # https://bugzilla.mozilla.org/show_bug.cgi?id=1715628#c0
+            - deploy-to-private-gcr
+          filters:
+            branches:
+              only:
+                - main
+      - sync-dags-repo:
+          name: 🔃 Synchronize bigquery-etl submodule
+          repo-to-sync: ${CIRCLE_PROJECT_REPONAME}
+          target-branch: generated-sql
+          requires:
+            - push-generated-sql
+          filters:
+            branches:
+              only:
+                - main
+      - sync-dags-repo:
+          name: 🔃 Synchronize private-bigquery-etl submodule
+          repo-to-sync: private-bigquery-etl
+          target-branch: private-generated-sql
+          requires:
+            - push-private-generated-sql
+          filters:
+            branches:
+              only:
+                - main
+      - deploy-to-private-gcr:
+          context: data-eng-airflow-gcr
+          requires:
+            - private-generate-sql
+            # can't run in parallel because CIRCLE_BUILD_NUM is same
+            - build
+            - generate-sql
+          filters:
+            branches:
+              only:
+                - main

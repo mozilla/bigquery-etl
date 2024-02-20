@@ -3,6 +3,7 @@
 from argparse import ArgumentParser
 
 import yaml
+from google.api_core.exceptions import NotFound
 
 from ..config import ConfigLoader
 from ..util import standard_args
@@ -51,4 +52,6 @@ def publish_metadata(client, project, dataset, table, metadata):
         print("Published metadata for: {}.{}.{}".format(project, dataset, table))
 
     except yaml.YAMLError as e:
+        print(e)
+    except NotFound as e:
         print(e)

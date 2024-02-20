@@ -1,10 +1,8 @@
-friendly_name: Telemetry Derived - Clients Daily Histogram Aggregates Content
+friendly_name: Clients Daily Histogram Aggregates Content V1
 description: |-
-  [DESCRIPTION_MISSING]
-owners:
-- data-platform-infra-wg@mozilla.com
-labels:
-  owner1: data-platform-infra-wg
+  Please provide a description for the query
+owners: []
+labels: {}
 bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer

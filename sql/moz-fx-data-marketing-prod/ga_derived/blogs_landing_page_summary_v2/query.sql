@@ -40,7 +40,7 @@ WITH landing_page_staging AS (
   QUALIFY
     ROW_NUMBER() OVER (PARTITION BY visit_identifier ORDER BY event_timestamp ASC) = 1
 ),
-landing_page AS (
+landing_page_stg AS (
   SELECT
     `date`,
     visit_identifier,
@@ -58,32 +58,32 @@ landing_page AS (
     page_sessions > 0
 )
 SELECT
-  `date`,
-  device_category,
-  operating_system,
-  browser,
-  `language`,
-  country,
+  sessions_table.`date`,
+  sessions_table.device_category,
+  sessions_table.operating_system,
+  sessions_table.browser,
+  sessions_table.`language`,
+  sessions_table.country,
   standardized_country_list.standardized_country AS standardized_country_name,
-  source,
-  medium,
-  campaign,
-  content,
-  blog,
-  subblog,
-  landing_page,
-  cleaned_landing_page,
-  SUM(sessions) AS sessions,
-  SUM(downloads) AS downloads,
-  SUM(social_share) AS social_share,
-  SUM(newsletter_subscription) AS newsletter_subscription,
+  sessions_table.source,
+  sessions_table.medium,
+  sessions_table.campaign,
+  sessions_table.content,
+  sessions_table.blog,
+  sessions_table.subblog,
+  lps.landing_page,
+  lps.cleaned_landing_page,
+  SUM(sessions_table.sessions) AS sessions,
+  SUM(goals_table.downloads) AS downloads,
+  SUM(goals_table.social_share) AS social_share,
+  SUM(goals_table.newsletter_subscription) AS newsletter_subscription,
 FROM
   `moz-fx-data-marketing-prod.ga_derived.blogs_sessions_v2` AS sessions_table
 LEFT JOIN
   `moz-fx-data-marketing-prod.ga_derived.blogs_goals_v2` AS goals_table
   USING (date, visit_identifier)
 LEFT JOIN
-  landing_page
+  landing_page_stg AS lps
   USING (date, visit_identifier)
 LEFT JOIN
   `moz-fx-data-shared-prod.static.third_party_standardized_country_names` AS standardized_country_list

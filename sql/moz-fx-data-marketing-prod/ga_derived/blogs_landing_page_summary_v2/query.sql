@@ -23,21 +23,22 @@ WITH landing_page_staging AS (
       LIMIT
         1
     ).string_value AS landing_page,
-  SELECT
-    `value`
+    (
+      SELECT
+        `value`
+      FROM
+        UNNEST(event_params)
+      WHERE
+        key = 'entrances'
+      LIMIT
+        1
+    ).int_value AS is_entrance
   FROM
-    UNNEST(event_params)
+    `moz-fx-data-marketing-prod.analytics_314399816.events_*`
   WHERE
-    key = 'entrances'
-  LIMIT
-    1
-).int_value AS is_entrance
-FROM
-  `moz-fx-data-marketing-prod.analytics_314399816.events_*`
-WHERE
-  _TABLE_SUFFIX = FORMAT_DATE('%Y%m%d', @submission_date)
-QUALIFY
-  ROW_NUMBER() OVER (PARTITION BY visit_identifier ORDER BY event_timestamp ASC) = 1
+    _TABLE_SUFFIX = FORMAT_DATE('%Y%m%d', @submission_date)
+  QUALIFY
+    ROW_NUMBER() OVER (PARTITION BY visit_identifier ORDER BY event_timestamp ASC) = 1
 ),
 landing_page AS (
   SELECT

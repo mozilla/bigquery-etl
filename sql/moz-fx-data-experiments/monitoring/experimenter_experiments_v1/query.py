@@ -190,15 +190,17 @@ class ExperimentV6:
             normandy_slug=self.slug,
             experimenter_slug=None,
             type="v6",
-            status="Live"
-            if (
-                self.endDate is None
-                or (
-                    self.endDate
-                    and self.endDate > pytz.utc.localize(datetime.datetime.now())
+            status=(
+                "Live"
+                if (
+                    self.endDate is None
+                    or (
+                        self.endDate
+                        and self.endDate > pytz.utc.localize(datetime.datetime.now())
+                    )
                 )
-            )
-            else "Complete",
+                else "Complete"
+            ),
             start_date=self.startDate,
             end_date=self.endDate,
             enrollment_end_date=self.enrollmentEndDate,

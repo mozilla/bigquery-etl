@@ -755,3 +755,75 @@ class TestDagCollection:
         )
 
         assert dag_with_upstream_dependencies == expected_dag_with_upstream_dependencies
+
+    def test_to_airflow_with_bigquery_table_sensors(self, tmp_path):
+        query_file = (
+            TEST_DIR
+            / "data"
+            / "test_sql"
+            / "moz-fx-data-test-project"
+            / "test"
+            / "non_incremental_query_v1"
+            / "query.sql"
+        )
+
+        metadata = Metadata(
+            "test",
+            "test",
+            owners=["test@example.com"],
+            labels={},
+            scheduling={
+                "dag_name": "bqetl_test_dag",
+                "depends_on_past": True,
+                "param": "test_param",
+                "arguments": ["--append_table"],
+                "depends_on_tables_existing": [
+                    {
+                        "task_id": "wait_for_foo_bar_baz",
+                        "table_id": "foo.bar.baz_{{ ds_nodash }}",
+                        "poke_interval": "30m",
+                        "timeout": "12h",
+                        "retries": 1,
+                        "retry_delay": "10m",
+                    },
+                ],
+                "depends_on_table_partitions_existing": [
+                    {
+                        "task_id": "wait_for_foo_bar_baz_partition",
+                        "table_id": "foo.bar.baz",
+                        "partition_id": "{{ ds_nodash }}",
+                        "poke_interval": "15m",
+                        "timeout": "6h",
+                        "retries": 3,
+                        "retry_delay": "5m",
+                    },
+                ],
+            },
+        )
+
+        tasks = [Task.of_query(query_file, metadata)]
+
+        default_args = {
+            "depends_on_past": False,
+            "owner": "test@example.org",
+            "email": ["test@example.org"],
+            "start_date": "2020-01-01",
+            "retry_delay": "1h",
+        }
+        dags = DagCollection.from_dict(
+            {
+                "bqetl_test_dag": {
+                    "schedule_interval": "daily",
+                    "default_args": default_args,
+                }
+            }
+        ).with_tasks(tasks)
+
+        dags.to_airflow_dags(tmp_path)
+        result = (tmp_path / "bqetl_test_dag.py").read_text().strip()
+        expected = (
+            (TEST_DIR / "data" / "dags" / "test_dag_with_bigquery_table_sensors")
+            .read_text()
+            .strip()
+        )
+        assert result == expected

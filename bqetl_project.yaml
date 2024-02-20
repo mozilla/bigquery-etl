@@ -426,6 +426,7 @@ generate:
     - sql/moz-fx-data-shared-prod/org_mozilla_tv_firefox_derived/baseline_clients_last_seen_v1/checks.sql
     skip_apps:
     - mlhackweek_search
+    - moso_mastodon_android
     - regrets_reporter
     - regrets_reporter_ucs
     events_stream:

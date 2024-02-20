@@ -1,4 +1,5 @@
 """clients_daily_histogram_aggregates query generator."""
+
 import argparse
 import sys
 from typing import Dict, List

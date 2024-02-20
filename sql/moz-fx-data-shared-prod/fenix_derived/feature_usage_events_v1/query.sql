@@ -55,11 +55,6 @@ default_browser AS (
     AND DATE(
       DATETIME(LEAST(ping_info.parsed_start_time, ping_info.parsed_end_time), 'UTC')
     ) = DATE_SUB(@submission_date, INTERVAL 4 DAY)
-  GROUP BY
-    ping_date,
-    client_id,
-    channel,
-    country
   QUALIFY
     ROW_NUMBER() OVER (PARTITION BY client_id ORDER BY ping_date) = 1
 ),

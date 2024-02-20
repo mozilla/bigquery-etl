@@ -14,7 +14,7 @@ fields:
 - mode: NULLABLE
   name: browser
   type: STRING
-  description: Browser
+  description: Browser - The browser the visitor used to visit the site
 - mode: NULLABLE
   name: language
   type: STRING
@@ -62,16 +62,16 @@ fields:
 - mode: NULLABLE
   name: sessions
   type: INT64
-  description: Sessions
+  description: Sessions - The number of sessions
 - mode: NULLABLE
   name: downloads
   type: INT64
-  description: Downloads
+  description: Downloads - The number of download click events
 - mode: NULLABLE
   name: social_share
   type: INT64
-  description: Social Shares
+  description: Social Shares - The number of social share events
 - mode: NULLABLE
   name: newsletter_subscription
   type: INT64
-  description: Newsletter Subscription
+  description: Newsletter Subscription - The number of newsletter subscribe events

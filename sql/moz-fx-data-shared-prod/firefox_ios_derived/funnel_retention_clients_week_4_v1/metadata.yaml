@@ -12,10 +12,6 @@ labels:
 scheduling:
   dag_name: bqetl_firefox_ios
   depends_on_past: false
-  referenced_tables:
-  - - moz-fx-data-shared-prod
-    - firefox_ios_derived
-    - funnel_retention_clients_week_2_v1
 bigquery:
   time_partitioning:
     type: day
@@ -32,7 +28,6 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   checks.sql:
-  - moz-fx-data-shared-prod.firefox_ios_derived.funnel_retention_clients_week_2_v1
   - moz-fx-data-shared-prod.firefox_ios_derived.funnel_retention_clients_week_4_v1
   query.sql:
   - firefox_ios.baseline_clients_last_seen

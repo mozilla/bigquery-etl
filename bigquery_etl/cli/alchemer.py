@@ -1,4 +1,5 @@
 """bigquery-etl CLI alchemer command."""
+
 from datetime import date, datetime, timedelta
 
 import rich_click as click

@@ -1,4 +1,5 @@
 """Generate active users aggregates per app."""
+
 import os
 import shutil
 from enum import Enum

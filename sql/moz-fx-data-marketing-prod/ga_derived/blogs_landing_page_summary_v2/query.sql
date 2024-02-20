@@ -91,18 +91,18 @@ LEFT JOIN
 WHERE
   sessions_table.date = @submission_date
 GROUP BY
-  `date`,
-  device_category,
-  operating_system,
-  browser,
-  `language`,
-  country,
-  standardized_country_name,
-  source,
-  medium,
-  campaign,
-  content,
-  blog,
-  subblog,
-  landing_page,
-  cleaned_landing_page
+  sessions_table.`date`,
+  sessions_table.device_category,
+  sessions_table.operating_system,
+  sessions_table.browser,
+  sessions_table.`language`,
+  sessions_table.country,
+  standardized_country_list.standardized_country,
+  sessions_table.source,
+  sessions_table.medium,
+  sessions_table.campaign,
+  sessions_table.content,
+  sessions_table.blog,
+  sessions_table.subblog,
+  lps.landing_page,
+  lps.cleaned_landing_page

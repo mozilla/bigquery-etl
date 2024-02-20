@@ -99,8 +99,6 @@ with DAG(
 
     task_group_monitor_cirrus = TaskGroup("monitor_cirrus")
 
-    task_group_moso_mastodon_android = TaskGroup("moso_mastodon_android")
-
     task_group_moso_mastodon_backend = TaskGroup("moso_mastodon_backend")
 
     task_group_mozilla_vpn = TaskGroup("mozilla_vpn")
@@ -110,6 +108,8 @@ with DAG(
     task_group_mozphab = TaskGroup("mozphab")
 
     task_group_mozregression = TaskGroup("mozregression")
+
+    task_group_org_mozilla_social_nightly = TaskGroup("org_mozilla_social_nightly")
 
     task_group_pine = TaskGroup("pine")
 
@@ -577,7 +577,7 @@ with DAG(
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
-        task_group=task_group_moso_mastodon_android,
+        task_group=task_group_org_mozilla_social_nightly,
     )
 
     checks__warn_org_mozilla_tiktokreporter_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
@@ -1549,18 +1549,6 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
         task_group=task_group_monitor_cirrus,
-    )
-
-    moso_mastodon_android_derived__metrics_clients_daily__v1 = bigquery_etl_query(
-        task_id="moso_mastodon_android_derived__metrics_clients_daily__v1",
-        destination_table="metrics_clients_daily_v1",
-        dataset_id="moso_mastodon_android_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        task_group=task_group_moso_mastodon_android,
     )
 
     moso_mastodon_backend_derived__baseline_clients_daily__v1 = bigquery_etl_query(
@@ -3468,7 +3456,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        task_group=task_group_moso_mastodon_android,
+        task_group=task_group_org_mozilla_social_nightly,
     )
 
     org_mozilla_social_nightly_derived__baseline_clients_first_seen__v1 = bigquery_etl_query(
@@ -3481,7 +3469,7 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=True,
         parameters=["submission_date:DATE:{{ds}}"],
-        task_group=task_group_moso_mastodon_android,
+        task_group=task_group_org_mozilla_social_nightly,
     )
 
     org_mozilla_social_nightly_derived__baseline_clients_last_seen__v1 = bigquery_etl_query(
@@ -3493,7 +3481,7 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=True,
-        task_group=task_group_moso_mastodon_android,
+        task_group=task_group_org_mozilla_social_nightly,
     )
 
     org_mozilla_tiktokreporter_derived__baseline_clients_daily__v1 = bigquery_etl_query(
@@ -4328,10 +4316,6 @@ with DAG(
     )
 
     monitor_cirrus_derived__metrics_clients_daily__v1.set_upstream(
-        wait_for_copy_deduplicate_all
-    )
-
-    moso_mastodon_android_derived__metrics_clients_daily__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
 

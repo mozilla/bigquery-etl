@@ -1,4 +1,5 @@
 """GLEAN Usage."""
+
 from functools import cache, partial
 from pathlib import Path
 

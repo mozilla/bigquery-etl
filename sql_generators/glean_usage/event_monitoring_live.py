@@ -77,9 +77,11 @@ class EventMonitoringLive(GleanTable):
                 for app_dataset in app
                 if dataset == app_dataset["bq_dataset_family"]
             ][0],
-            events_table=default_events_table
-            if dataset not in events_table_overwrites
-            else events_table_overwrites[dataset],
+            events_table=(
+                default_events_table
+                if dataset not in events_table_overwrites
+                else events_table_overwrites[dataset]
+            ),
         )
 
         render_kwargs.update(self.custom_render_kwargs)

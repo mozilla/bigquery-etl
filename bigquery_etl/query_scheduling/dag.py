@@ -12,9 +12,9 @@ from bigquery_etl.query_scheduling.utils import (
     is_date_string,
     is_email_or_github_identity,
     is_schedule_interval,
-    is_timedelta_string,
     is_valid_dag_name,
     schedule_interval_delta,
+    validate_timedelta_string,
 )
 
 AIRFLOW_DAG_TEMPLATE = "airflow_dag.j2"
@@ -86,11 +86,7 @@ class DagDefaultArgs:
     @retry_delay.validator
     def validate_retry_delay(self, attribute, value):
         """Check that retry_delay is in a valid timedelta format."""
-        if not is_timedelta_string(value):
-            raise ValueError(
-                f"Invalid timedelta definition for {attribute}: {value}."
-                "Timedeltas should be specified like: 1h, 30m, 1h15m, 1d4h45m, ..."
-            )
+        validate_timedelta_string(value)
 
     @end_date.validator
     @start_date.validator

@@ -1,4 +1,5 @@
 """bigquery-etl CLI generate command."""
+
 import importlib.util
 import sys
 from inspect import getmembers

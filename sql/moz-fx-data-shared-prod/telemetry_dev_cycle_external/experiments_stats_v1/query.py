@@ -117,9 +117,11 @@ def compare_experiments_with_metric_hub_configs():
     metric_files = download_metric_hub_files(API_BASE_URL_METRIC_HUB)
 
     experiments = [
-        {**experiment, "has_config": True}
-        if experiment["slug"] in metric_files
-        else {**experiment, "has_config": False}
+        (
+            {**experiment, "has_config": True}
+            if experiment["slug"] in metric_files
+            else {**experiment, "has_config": False}
+        )
         for experiment in (experiments_v1 + experiments_v6)
     ]
     return experiments

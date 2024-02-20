@@ -1,4 +1,5 @@
 """bigquery-etl CLI check command."""
+
 import re
 import subprocess
 import sys

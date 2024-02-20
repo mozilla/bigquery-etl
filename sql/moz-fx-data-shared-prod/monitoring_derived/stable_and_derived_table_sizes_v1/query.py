@@ -33,7 +33,9 @@ def get_tables(client, project, dataset):
 def get_partition_size_json(client, date, table):
     """Returns the size of a specific date parition of the specified table."""
     job_config = bigquery.QueryJobConfig(dry_run=True, use_query_cache=False)
-    job_config_columns_info = bigquery.QueryJobConfig(dry_run=False, use_query_cache=False)
+    job_config_columns_info = bigquery.QueryJobConfig(
+        dry_run=False, use_query_cache=False
+    )
     dataset_id = table[0]
     table_id = table[1]
 
@@ -42,11 +44,16 @@ def get_partition_size_json(client, date, table):
                             FROM {dataset_id}.INFORMATION_SCHEMA.COLUMNS
                             WHERE table_name = '{table_id}' and is_partitioning_column = 'YES'
                         """
-    partition_column_name_result = client.query(partition_column_sql, job_config=job_config_columns_info)
+    partition_column_name_result = client.query(
+        partition_column_sql, job_config=job_config_columns_info
+    )
 
     partition_column_name = [row[0] for row in partition_column_name_result.result()]
 
-    if len(partition_column_name) > 0 and partition_column_name[0] in ('submission_date', 'submission_timestamp'):
+    if len(partition_column_name) > 0 and partition_column_name[0] in (
+        "submission_date",
+        "submission_timestamp",
+    ):
         sql = f"""
                 SELECT * FROM `{dataset_id}.{table_id}`
                 WHERE DATE({partition_column_name[0]}) = '{date}'
@@ -57,7 +64,7 @@ def get_partition_size_json(client, date, table):
             "submission_date": date,
             "dataset_id": dataset_id,
             "table_id": table_id,
-            "byte_size": size
+            "byte_size": size,
         }
 
 
@@ -90,11 +97,14 @@ def main():
         stable_datasets = [
             dataset.dataset_id
             for dataset in list(client.list_datasets())
-            if fnmatchcase(dataset.dataset_id, arg_dataset) and not fnmatchcase(dataset.dataset_id, 'monitoring_derived')
+            if fnmatchcase(dataset.dataset_id, arg_dataset)
+            and not fnmatchcase(dataset.dataset_id, "monitoring_derived")
         ]
         with ThreadPool(20) as p:
             stable_tables = p.map(
-                partial(get_tables, client, args.project), stable_datasets, chunksize=1,
+                partial(get_tables, client, args.project),
+                stable_datasets,
+                chunksize=1,
             )
             stable_tables = [table for tables in stable_tables for table in tables]
 
@@ -107,12 +117,12 @@ def main():
             stable_derived_partition_sizes.extend(partition_sizes)
 
     save_table_sizes(
-                client,
-                stable_derived_partition_sizes,
-                args.date,
-                args.destination_dataset,
-                args.destination_table,
-            )
+        client,
+        stable_derived_partition_sizes,
+        args.date,
+        args.destination_dataset,
+        args.destination_table,
+    )
 
 
 if __name__ == "__main__":

@@ -1,4 +1,5 @@
 """BigQuery ETL."""
+
 from pathlib import Path
 
 from .config import ConfigLoader

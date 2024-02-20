@@ -54,4 +54,4 @@ fields:
 - mode: NULLABLE
   name: sessions
   type: INT64
-  description: Number of Sessions
+  description: Number of Sessions - The number of sessions with an entrances value of 1

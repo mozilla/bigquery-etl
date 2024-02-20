@@ -43,7 +43,7 @@ default_browser AS (
     client_info.client_id,
     normalized_channel AS channel,
     normalized_country_code AS country,
-    COUNTIF(metrics.boolean.metrics_default_browser) AS is_default_browser
+    metrics.boolean.metrics_default_browser AS is_default_browser,
   FROM
     fenix.metrics AS metric_ping
   WHERE

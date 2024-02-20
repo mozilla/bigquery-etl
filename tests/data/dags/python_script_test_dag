@@ -45,7 +45,6 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
-
     task_group_test_group = TaskGroup("test_group")
 
     test__python_script_query__v1 = GKEPodOperator(

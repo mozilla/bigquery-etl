@@ -79,29 +79,38 @@ MERGE INTO
         ) = 1
     ),
     click_aggregate_stg AS (
-      SELECT DISTINCT 
-      user_pseudo_id AS ga_client_id,
-      event_timestamp,
-      CAST(e.value.int_value AS string) AS ga_session_id,
-      collected_traffic_source.gclid AS gclid
-      FROM `moz-fx-data-marketing-prod.analytics_313696158.events_2*` a
+      SELECT DISTINCT
+        user_pseudo_id AS ga_client_id,
+        event_timestamp,
+        CAST(e.value.int_value AS string) AS ga_session_id,
+        collected_traffic_source.gclid AS gclid
+      FROM
+        `moz-fx-data-marketing-prod.analytics_313696158.events_2*` a
       JOIN
         UNNEST(event_params) AS e
       JOIN
         all_ga_client_id_ga_session_ids_with_new_events_in_last_3_days c
         ON a.user_pseudo_id = c.ga_client_id
         AND CAST(e.value.int_value AS string) = c.ga_session_id
-         WHERE
+      WHERE
         e.key = 'ga_session_id'
         AND e.value.int_value IS NOT NULL
-        AND collected_traffic_source.gclid is not null 
-    ) , 
+        AND collected_traffic_source.gclid IS NOT NULL
+    ),
     click_aggregate AS (
-      SELECT ga_client_id, ga_session_id, ARRAY_AGG(gclid) AS gclid_array,
-      ARRAY_AGG(gclid ORDER BY event_timestamp DESC)[0] AS gclid --this is really just the last reported gclid
-      FROM click_aggregate_stg 
-      GROUP BY ga_client_id, ga_session_id
-    ) ,
+      SELECT
+        ga_client_id,
+        ga_session_id,
+        ARRAY_AGG(gclid) AS gclid_array,
+        ARRAY_AGG(gclid ORDER BY event_timestamp DESC)[
+          0
+        ] AS gclid --this is really just the last reported gclid
+      FROM
+        click_aggregate_stg
+      GROUP BY
+        ga_client_id,
+        ga_session_id
+    ),
     --get all the page views and min/max event timestamp and whether there was a product download for these session/clients of interest
     event_aggregates AS (
       SELECT
@@ -339,7 +348,7 @@ MERGE INTO
     LEFT JOIN
       all_install_targets installs
       USING (ga_client_id, ga_session_id)
-    LEFT JOIN 
+    LEFT JOIN
       click_aggregate clicks
       USING (ga_client_id, ga_session_id)
   ) S

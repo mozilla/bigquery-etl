@@ -48,7 +48,6 @@ MERGE INTO
         collected_traffic_source.manual_medium AS medium,
         collected_traffic_source.manual_term AS term,
         collected_traffic_source.manual_content AS content,
-        --collected_traffic_source.gclid AS gclid,
         device.category AS device_category,
         device.mobile_model_name AS mobile_device_model,
         device.mobile_marketing_name AS mobile_device_string,

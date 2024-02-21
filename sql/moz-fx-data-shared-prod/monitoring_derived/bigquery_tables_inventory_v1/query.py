@@ -82,9 +82,13 @@ def create_query(date, source_project, tmp_table_name):
             SELECT table_catalog,
                  table_schema,
                  table_name,
-                 ARRAY_AGG(value) AS owners
+                 ARRAY_AGG(IF(KEY LIKE 'owner%', value, NULL) IGNORE NULLS) AS owners,
+                 CAST(ARRAY_AGG(
+                    IF(
+                       KEY = 'deprecated', value, NULL) IGNORE NULLS
+                    ORDER BY value)[SAFE_OFFSET(0)] AS BOOLEAN) AS deprecated
             FROM labels, UNNEST(options) AS opt_key
-            WHERE key LIKE 'owner%'
+            WHERE (KEY LIKE 'owner%' OR KEY = 'deprecated')
             GROUP BY table_catalog, table_schema, table_name
         ),
         max_job_creation_date AS (
@@ -108,6 +112,7 @@ def create_query(date, source_project, tmp_table_name):
                     table_name AS table_id,
                     table_type,
                     owners,
+                    deprecated,
                 FROM `{source_project}.region-us.INFORMATION_SCHEMA.TABLES`
                 LEFT JOIN labels_agg
                     USING (table_catalog, table_schema, table_name)
@@ -122,6 +127,7 @@ def create_query(date, source_project, tmp_table_name):
             table_id,
             table_type,
             owners,
+            deprecated,
             last_used_date
         FROM table_info
             LEFT JOIN max_job_creation_date

@@ -383,6 +383,7 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
     {{ fivetran_task.task_id }}_sync_start = FivetranOperator(
         connector_id='{% raw %}{{ var.value.{% endraw %}{{ fivetran_task.task_id }}{% raw %}_connector_id }}{% endraw %}',
         task_id='{{ fivetran_task.task_id }}_task',
+        task_concurrency=1,
     )
 
     {% do fivetran_seen.append(fivetran_task) %}

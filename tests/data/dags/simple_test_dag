@@ -63,6 +63,7 @@ with DAG(
     fivetran_import_1_sync_start = FivetranOperator(
         connector_id="{{ var.value.fivetran_import_1_connector_id }}",
         task_id="fivetran_import_1_task",
+        task_concurrency=1,
     )
 
     test__non_incremental_query__v1.set_upstream(fivetran_import_1_sync_start)
@@ -70,6 +71,7 @@ with DAG(
     fivetran_import_2_sync_start = FivetranOperator(
         connector_id="{{ var.value.fivetran_import_2_connector_id }}",
         task_id="fivetran_import_2_task",
+        task_concurrency=1,
     )
 
     test__non_incremental_query__v1.set_upstream(fivetran_import_2_sync_start)

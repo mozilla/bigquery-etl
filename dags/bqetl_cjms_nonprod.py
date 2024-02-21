@@ -9,8 +9,8 @@ from operators.gcp_container_operator import GKEPodOperator
 from utils.constants import ALLOWED_STATES, FAILED_STATES
 from utils.gcp import bigquery_etl_query, bigquery_dq_check
 
-from fivetran_provider.operators.fivetran import FivetranOperator
-from fivetran_provider.sensors.fivetran import FivetranSensor
+from fivetran_provider_async.operators import FivetranOperator
+from fivetran_provider_async.sensors import FivetranSensor
 from utils.callbacks import retry_tasks_callback
 
 docs = """

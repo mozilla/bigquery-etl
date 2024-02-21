@@ -3788,10 +3788,6 @@ with DAG(
         wait_for_telemetry_derived__core_clients_first_seen__v1
     )
 
-    accounts_backend_derived__baseline_clients_last_seen__v1.set_upstream(
-        accounts_backend_derived__baseline_clients_daily__v1
-    )
-
     accounts_backend_derived__metrics_clients_daily__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )

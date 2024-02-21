@@ -101,7 +101,7 @@ MERGE INTO
       SELECT
         ga_client_id,
         ga_session_id,
-        ARRAY_AGG(distinct gclid) AS gclid_array,
+        ARRAY_AGG(DISTINCT gclid) AS gclid_array,
         ARRAY_AGG(gclid ORDER BY event_timestamp DESC)[
           0
         ] AS gclid --this is really just the last reported gclid

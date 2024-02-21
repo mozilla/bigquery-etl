@@ -167,6 +167,7 @@ with DAG(
     fivetran_log_prod_sync_start = FivetranOperator(
         connector_id="{{ var.value.fivetran_log_prod_connector_id }}",
         task_id="fivetran_log_prod_task",
+        task_concurrency=1,
     )
 
     fivetran_costs_derived__destinations__v1.set_upstream(fivetran_log_prod_sync_start)

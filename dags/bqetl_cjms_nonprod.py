@@ -291,6 +291,7 @@ with DAG(
     fivetran_stripe_nonprod_sync_start = FivetranOperator(
         connector_id="{{ var.value.fivetran_stripe_nonprod_connector_id }}",
         task_id="fivetran_stripe_nonprod_task",
+        task_concurrency=1,
     )
 
     stripe_external__nonprod_card__v1.set_upstream(fivetran_stripe_nonprod_sync_start)

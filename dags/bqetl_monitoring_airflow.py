@@ -237,6 +237,7 @@ with DAG(
     fivetran_airflow_metadata_import_sync_start = FivetranOperator(
         connector_id="{{ var.value.fivetran_airflow_metadata_import_connector_id }}",
         task_id="fivetran_airflow_metadata_import_task",
+        task_concurrency=1,
     )
 
     monitoring_derived__airflow_dag__v1.set_upstream(

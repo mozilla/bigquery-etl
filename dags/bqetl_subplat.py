@@ -1426,6 +1426,7 @@ with DAG(
     fivetran_stripe_sync_start = FivetranOperator(
         connector_id="{{ var.value.fivetran_stripe_connector_id }}",
         task_id="fivetran_stripe_task",
+        task_concurrency=1,
     )
 
     stripe_external__card__v1.set_upstream(fivetran_stripe_sync_start)

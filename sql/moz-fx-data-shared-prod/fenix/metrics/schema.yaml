@@ -2995,6 +2995,12 @@ fields:
     - name: preferences_open_links_in_app_enabled
       type: STRING
       mode: NULLABLE
+    - name: gecko_build_id
+      type: STRING
+      mode: NULLABLE
+    - name: gecko_version
+      type: STRING
+      mode: NULLABLE
   - name: string_list
     type: RECORD
     mode: NULLABLE

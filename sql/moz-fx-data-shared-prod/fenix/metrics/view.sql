@@ -572,7 +572,9 @@ SELECT
       metrics.string.glean_client_annotation_experimentation_id,
       metrics.string.glean_database_rkv_load_error,
       metrics.string.gpu_process_feature_status,
-      metrics.string.preferences_open_links_in_app_enabled
+      metrics.string.preferences_open_links_in_app_enabled,
+      metrics.string.gecko_build_id,
+      metrics.string.gecko_version
     ) AS `string`,
     metrics.string_list,
     STRUCT(
@@ -1151,7 +1153,9 @@ SELECT
       metrics.string.glean_client_annotation_experimentation_id,
       metrics.string.glean_database_rkv_load_error,
       metrics.string.gpu_process_feature_status,
-      metrics.string.preferences_open_links_in_app_enabled
+      metrics.string.preferences_open_links_in_app_enabled,
+      metrics.string.gecko_build_id,
+      metrics.string.gecko_version
     ) AS `string`,
     metrics.string_list,
     STRUCT(

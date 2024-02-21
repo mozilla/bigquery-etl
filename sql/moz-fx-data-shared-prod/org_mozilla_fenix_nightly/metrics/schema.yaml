@@ -1641,7 +1641,8 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Bits per pixel of AVIF image.
+      description: 'Bits per pixel of AVIF image. (Migrated from the geckoview metric
+        of the same name).
 
         '
     - name: avif_decode_result
@@ -1654,7 +1655,8 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Decode result of AVIF image.
+      description: 'Decode result of AVIF image. (Migrated from the geckoview metric
+        of the same name).
 
         '
     - name: avif_decoder
@@ -1667,7 +1669,8 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Decoder of AVIF image.
+      description: 'Decoder of AVIF image. (Migrated from the geckoview metric of
+        the same name).
 
         '
     - name: avif_yuv_color_space
@@ -1680,7 +1683,8 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'YUV color space of AVIF image.
+      description: 'YUV color space of AVIF image. (Migrated from the geckoview metric
+        of the same name).
 
         '
     - name: media_audio_backend
@@ -1707,7 +1711,8 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream.
+      description: 'Failure occurs when initializing the audio stream. (Migrated from
+        the geckoview metric of the same name).
 
         '
     - name: glean_validation_pings_submitted
@@ -1807,7 +1812,8 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'AVIF alpha plane.
+      description: 'AVIF alpha plane. (Migrated from the geckoview metric of the same
+        name).
 
         '
     - name: avif_cicp_cp
@@ -1820,7 +1826,8 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'AVIF CICP colour primaries.
+      description: 'AVIF CICP colour primaries. (Migrated from the geckoview metric
+        of the same name).
 
         '
     - name: avif_cicp_mc
@@ -1833,7 +1840,8 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'AVIF CICP transfer characteristics.
+      description: 'AVIF CICP transfer characteristics. (Migrated from the geckoview
+        metric of the same name).
 
         '
     - name: avif_cicp_tc
@@ -1846,7 +1854,8 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'AVIF CICP transfer characteristics.
+      description: 'AVIF CICP transfer characteristics. (Migrated from the geckoview
+        metric of the same name).
 
         '
     - name: avif_colr
@@ -1859,7 +1868,8 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'AVIF colour information type.
+      description: 'AVIF colour information type. (Migrated from the geckoview metric
+        of the same name).
 
         '
     - name: avif_ispe
@@ -1872,7 +1882,8 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'AVIF spatial extents (image size).
+      description: 'AVIF spatial extents (image size). (Migrated from the geckoview
+        metric of the same name).
 
         '
     - name: avif_pixi
@@ -1885,7 +1896,8 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'AVIF pixel information (bits per channel).
+      description: 'AVIF pixel information (bits per channel). (Migrated from the
+        geckoview metric of the same name).
 
         '
     - name: avif_a1lx
@@ -1898,7 +1910,8 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'AV1LayeredImageIndexingProperty (a1lx).
+      description: 'AV1LayeredImageIndexingProperty (a1lx). (Migrated from the geckoview
+        metric of the same name).
 
         '
     - name: avif_a1op
@@ -1911,7 +1924,8 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'AVIF OperatingPointSelectorProperty (a1op).
+      description: 'AVIF OperatingPointSelectorProperty (a1op). (Migrated from the
+        geckoview metric of the same name).
 
         '
     - name: avif_clap
@@ -1924,7 +1938,8 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'AVIF CleanApertureBox (clap).
+      description: 'AVIF CleanApertureBox (clap). (Migrated from the geckoview metric
+        of the same name).
 
         '
     - name: avif_grid
@@ -1937,7 +1952,8 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'AVIF AVIF grid-based image.
+      description: 'AVIF AVIF grid-based image. (Migrated from the geckoview metric
+        of the same name).
 
         '
     - name: avif_ipro
@@ -1950,7 +1966,8 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'AVIF ItemProtectionBox (ipro).
+      description: 'AVIF ItemProtectionBox (ipro). (Migrated from the geckoview metric
+        of the same name).
 
         '
     - name: avif_lsel
@@ -1963,7 +1980,8 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'AVIF LayerSelectorProperty (lsel).
+      description: 'AVIF LayerSelectorProperty (lsel). (Migrated from the geckoview
+        metric of the same name).
 
         '
     - name: avif_major_brand
@@ -1989,7 +2007,8 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'AVIF pixel aspect ratio.
+      description: 'AVIF pixel aspect ratio. (Migrated from the geckoview metric of
+        the same name).
 
         '
     - name: avif_sequence
@@ -3084,7 +3103,8 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Image-decode Error from AOM decoder
+      description: 'Image-decode Error from AOM decoder (Migrated from the geckoview
+        metric of the same name).
 
         '
     - name: formautofill_form_submission_heuristic
@@ -3579,6 +3599,20 @@ fields:
         default: "never"
 
         '
+    - name: gecko_build_id
+      type: STRING
+      mode: NULLABLE
+      description: 'The Buildid of the Gecko engine, example: 20200205124310 (Migrated
+        from the geckoview metric of the same name).
+
+        '
+    - name: gecko_version
+      type: STRING
+      mode: NULLABLE
+      description: 'The version of the Gecko engine, example: 74.0a1 (Migrated from
+        the geckoview metric of the same name).
+
+        '
   - name: string_list
     type: RECORD
     mode: NULLABLE
@@ -3743,7 +3777,7 @@ fields:
       description: 'The time taken to load a page. This includes all static contents,
         no dynamic content. Loading of about: pages is not counted. Back back navigation
         (sometimes via BFCache) is included which is a source of bimodality due to
-        the <50ms load times.
+        the <50ms load times. (Migrated from the geckoview metric of the same name).
 
         '
     - name: geckoview_startup_runtime
@@ -3786,7 +3820,8 @@ fields:
         mode: NULLABLE
         description: This was accidentally sent in the past and is now deprecated.
           See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
-      description: 'The time taken to initialize GeckoRuntime.
+      description: 'The time taken to initialize GeckoRuntime. (Migrated from the
+        geckoview metric of the same name).
 
         '
     - name: gfx_checkerboard_duration
@@ -4201,6 +4236,7 @@ fields:
         description: This was accidentally sent in the past and is now deprecated.
           See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Time between page load progress starts (0) and completion (100).
+        (Migrated from the geckoview metric of the same name).
 
         '
     - name: geckoview_page_reload_time
@@ -4244,7 +4280,8 @@ fields:
         description: This was accidentally sent in the past and is now deprecated.
           See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Time taken to reload a page. This includes all static contents,
-        no dynamic content. Loading of about: pages is not counted.
+        no dynamic content. Loading of about: pages is not counted. (Migrated from
+        the geckoview metric of the same name).
 
         '
     - name: gfx_status_framebuild_time
@@ -4828,7 +4865,8 @@ fields:
         mode: NULLABLE
         description: This was accidentally sent in the past and is now deprecated.
           See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
-      description: 'Time to load all of a page''s resources and render.
+      description: 'Time to load all of a page''s resources and render. (Migrated
+        from the geckoview metric of the same name.)
 
         '
     - name: performance_time_dom_complete
@@ -5138,7 +5176,7 @@ fields:
         description: This was accidentally sent in the past and is now deprecated.
           See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Time from navigationStart to responseStart as per the W3C Performance
-        Timing API.
+        Timing API. (Migrated from the geckoview metric of the same name.)
 
         '
     - name: gfx_scroll_present_latency
@@ -5358,7 +5396,8 @@ fields:
         mode: NULLABLE
         description: This was accidentally sent in the past and is now deprecated.
           See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
-      description: 'The total time taken by a major collection.
+      description: 'The total time taken by a major collection. (Migrated from the
+        geckoview metric of the same name.)
 
         '
     - name: perf_awesomebar_bookmark_suggestions
@@ -5702,7 +5741,8 @@ fields:
         mode: NULLABLE
         description: This was accidentally sent in the past and is now deprecated.
           See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
-      description: 'The uptime of content processes in ms
+      description: 'The uptime of content processes. (Migrated from the geckoview
+        metric of the same name).
 
         '
     - name: javascript_gc_compact_time
@@ -5745,7 +5785,8 @@ fields:
         mode: NULLABLE
         description: This was accidentally sent in the past and is now deprecated.
           See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
-      description: 'The time spent in the compact phase.
+      description: 'The time spent in the compact phase. (Migrated from the geckoview
+        metric of the same name.)
 
         '
     - name: javascript_gc_mark_roots_time
@@ -5788,7 +5829,8 @@ fields:
         mode: NULLABLE
         description: This was accidentally sent in the past and is now deprecated.
           See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
-      description: 'The time spent marking GC roots.
+      description: 'The time spent marking GC roots. (Migrated from the geckoview
+        metric of the same name.)
 
         '
     - name: javascript_gc_mark_time
@@ -5831,7 +5873,8 @@ fields:
         mode: NULLABLE
         description: This was accidentally sent in the past and is now deprecated.
           See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
-      description: 'The time spent in the mark phase.
+      description: 'The time spent in the mark phase. (Migrated from the geckoview
+        metric of the same name.)
 
         '
     - name: javascript_gc_minor_time
@@ -5874,7 +5917,8 @@ fields:
         mode: NULLABLE
         description: This was accidentally sent in the past and is now deprecated.
           See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
-      description: 'The time taked by a minor (nursery) collection.
+      description: 'The time taked by a minor (nursery) collection. (Migrated from
+        the geckoview metric of the same name.)
 
         '
     - name: javascript_gc_prepare_time
@@ -5917,7 +5961,8 @@ fields:
         mode: NULLABLE
         description: This was accidentally sent in the past and is now deprecated.
           See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
-      description: 'The time spent in the preparation phase.
+      description: 'The time spent in the preparation phase. (Migrated from the geckoview
+        metric of the same name.)
 
         '
     - name: javascript_gc_slice_time
@@ -5960,7 +6005,8 @@ fields:
         mode: NULLABLE
         description: This was accidentally sent in the past and is now deprecated.
           See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
-      description: 'The time spent running a GC slice.
+      description: 'The time spent running a GC slice. (Migrated from the geckoview
+        metric of the same name.)
 
         '
     - name: javascript_gc_sweep_time
@@ -6003,7 +6049,8 @@ fields:
         mode: NULLABLE
         description: This was accidentally sent in the past and is now deprecated.
           See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
-      description: 'The time spent in the sweep phase.
+      description: 'The time spent in the sweep phase. (Migrated from the geckoview
+        metric of the same name.)
 
         '
     - name: places_manager_read_query_time
@@ -6730,7 +6777,8 @@ fields:
         description: This was accidentally sent in the past and is now deprecated.
           See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Time spent in milliseconds calling all request animation frame
-        callbacks for a document before it has reached readystate complete.
+        callbacks for a document before it has reached readystate complete. (Migrated
+        from the geckoview metric of the same name.)
 
         '
     - name: performance_responsiveness_req_anim_frame_callback
@@ -6774,7 +6822,8 @@ fields:
         description: This was accidentally sent in the past and is now deprecated.
           See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'Time spent in milliseconds calling all request animation frame
-        callbacks for a document after it has reached readystate complete.
+        callbacks for a document after it has reached readystate complete. (Migrated
+        from the geckoview metric of the same name.)
 
         '
     - name: perf_startup_application_on_create
@@ -11049,7 +11098,7 @@ fields:
       description: 'When a document is loaded, report the number of [site origins](https://searchfox.org/
         mozilla-central/rev/ 3300072e993ae05d50d5c63d815260367eaf9179/ caps/nsIPrincipal.idl#264)
         of the entire browser if it has been at least 5 minutes since last time we
-        collect this data.
+        collect this data. (Migrated from the geckoview metric of the same name).
 
         '
     - name: geckoview_per_document_site_origins
@@ -11076,7 +11125,8 @@ fields:
           See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
       description: 'When a document is unloaded, report the highest number of [site
         origins](https://searchfox.org/ mozilla-central/rev/ 3300072e993ae05d50d5c63d815260367eaf9179/
-        caps/nsIPrincipal.idl#264) loaded simultaneously in that document.
+        caps/nsIPrincipal.idl#264) loaded simultaneously in that document. (Migrated
+        from the geckoview metric of the same name).
 
         '
     - name: js_baseline_compile_percentage

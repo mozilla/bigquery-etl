@@ -2,6 +2,7 @@ from pathlib import Path
 from textwrap import dedent
 
 import yaml
+from google.cloud.bigquery import SchemaField
 
 from bigquery_etl.schema import Schema
 
@@ -379,3 +380,76 @@ class TestQuerySchema:
         schema_1.merge(schema_2)
 
         assert schema_1.schema["fields"][0]["description"] == "Date of the submission"
+
+    def test_bigquery_conversion(self):
+        bq_schema = [
+            SchemaField(
+                "record_field",
+                "RECORD",
+                "REPEATED",
+                description="Record field",
+                fields=(
+                    SchemaField(
+                        "nested_field_1",
+                        "STRING",
+                        "NULLABLE",
+                        description="Nested Field 1",
+                    ),
+                    SchemaField(
+                        "nested_field_2",
+                        "INTEGER",
+                        "NULLABLE",
+                        description="Nested Field 2",
+                    ),
+                ),
+            ),
+            SchemaField("normal_field", "STRING"),
+        ]
+
+        schema = Schema.from_bigquery_schema(bq_schema)
+        assert schema.schema["fields"][0]["description"] == "Record field"
+        assert schema.schema["fields"][0]["name"] == "record_field"
+        assert (
+            schema.schema["fields"][0]["fields"][0]["description"] == "Nested Field 1"
+        )
+        assert schema.schema["fields"][0]["fields"][0]["type"] == "STRING"
+        assert schema.schema["fields"][1]["name"] == "normal_field"
+
+        schema_yaml = dedent(
+            """
+            fields:
+            - mode: NULLABLE
+              name: submission_date
+              type: DATE
+            - mode: NULLABLE
+              name: client_id
+              type: STRING
+            - fields:
+              - mode: NULLABLE
+                name: campaign
+                type: STRING
+                description: attribution campaign
+              mode: NULLABLE
+              name: attribution
+              type: RECORD
+            """
+        )
+
+        schema = Schema.from_json(yaml.safe_load(schema_yaml))
+        bq_schema = schema.to_bigquery_schema()
+        assert len(bq_schema) == 3
+        assert bq_schema[0] == SchemaField(
+            name="submission_date", field_type="DATE", mode="NULLABLE"
+        )
+        assert bq_schema[2] == SchemaField(
+            name="attribution",
+            field_type="RECORD",
+            mode="NULLABLE",
+            fields=(
+                SchemaField(
+                    name="campaign",
+                    field_type="STRING",
+                    description="attribution campaign",
+                ),
+            ),
+        )

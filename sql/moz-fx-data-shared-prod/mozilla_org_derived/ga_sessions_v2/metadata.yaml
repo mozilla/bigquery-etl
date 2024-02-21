@@ -8,6 +8,8 @@ labels:
   owner1: kwindau@mozilla.com
 scheduling:
   dag_name: bqetl_google_analytics_derived_ga4
+  date_partition_parameter: null
+  parameters: ["submission_date:DATE:{{ds}}"]
 bigquery:
   time_partitioning:
     type: day

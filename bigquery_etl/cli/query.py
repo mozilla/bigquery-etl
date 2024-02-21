@@ -15,7 +15,6 @@ from functools import partial
 from glob import glob
 from multiprocessing.pool import Pool, ThreadPool
 from pathlib import Path
-from tempfile import NamedTemporaryFile
 from traceback import print_exc
 from typing import Optional
 
@@ -1859,9 +1858,9 @@ def _update_query_schema(
                     f"{project_name}.{tmp_dataset}.{table_name}_{random_str(12)}"
                 )
                 existing_schema.deploy(tmp_identifier)
-                tmp_tables[
-                    f"{project_name}.{dataset_name}.{table_name}"
-                ] = tmp_identifier
+                tmp_tables[f"{project_name}.{dataset_name}.{table_name}"] = (
+                    tmp_identifier
+                )
                 existing_schema.to_yaml_file(existing_schema_path)
 
     # replace temporary table references
@@ -1917,9 +1916,11 @@ def _update_query_schema(
                 field=table.time_partitioning.field,
                 partition_type=table.time_partitioning.type_.lower(),
                 required=table.time_partitioning.require_partition_filter,
-                expiration_days=table.time_partitioning.expiration_ms / 86400000.0
-                if table.time_partitioning.expiration_ms
-                else None,
+                expiration_days=(
+                    table.time_partitioning.expiration_ms / 86400000.0
+                    if table.time_partitioning.expiration_ms
+                    else None
+                ),
             )
             click.echo(f"Partitioning metadata added to {metadata_file_path}")
 
@@ -2127,10 +2128,7 @@ def deploy(
                     )
                     sys.exit(1)
 
-            with NamedTemporaryFile(suffix=".json") as tmp_schema_file:
-                existing_schema.to_json_file(Path(tmp_schema_file.name))
-                bigquery_schema = client.schema_from_json(tmp_schema_file.name)
-
+            bigquery_schema = existing_schema.to_bigquery_schema()
             try:
                 table = client.get_table(full_table_id)
             except NotFound:
@@ -2249,10 +2247,7 @@ def _deploy_external_data(
             except NotFound:
                 table = bigquery.Table(full_table_id)
 
-            with NamedTemporaryFile(suffix=".json") as tmp_schema_file:
-                existing_schema.to_json_file(Path(tmp_schema_file.name))
-                bigquery_schema = client.schema_from_json(tmp_schema_file.name)
-
+            bigquery_schema = existing_schema.to_bigquery_schema()
             table.schema = bigquery_schema
             _attach_metadata(metadata_file_path, table)
 

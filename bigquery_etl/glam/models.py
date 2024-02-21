@@ -1,4 +1,5 @@
 """Variables for templated SQL."""
+
 from .utils import compute_datacube_groupings, get_custom_distribution_metadata
 
 

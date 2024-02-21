@@ -10,8 +10,6 @@ from utils.constants import ALLOWED_STATES, FAILED_STATES
 from utils.gcp import bigquery_etl_query, bigquery_dq_check
 
 from fivetran_provider_async.operators import FivetranOperator
-from fivetran_provider_async.sensors import FivetranSensor
-from utils.callbacks import retry_tasks_callback
 
 docs = """
 ### bqetl_fivetran_costs
@@ -171,21 +169,10 @@ with DAG(
         task_id="fivetran_log_prod_task",
     )
 
-    fivetran_log_prod_sync_wait = FivetranSensor(
-        connector_id="{{ var.value.fivetran_log_prod_connector_id }}",
-        task_id="fivetran_log_prod_sensor",
-        poke_interval=30,
-        xcom="{{ task_instance.xcom_pull('fivetran_log_prod_task') }}",
-        on_retry_callback=retry_tasks_callback,
-        params={"retry_tasks": ["fivetran_log_prod_task"]},
-    )
-
-    fivetran_log_prod_sync_wait.set_upstream(fivetran_log_prod_sync_start)
-
-    fivetran_costs_derived__destinations__v1.set_upstream(fivetran_log_prod_sync_wait)
+    fivetran_costs_derived__destinations__v1.set_upstream(fivetran_log_prod_sync_start)
 
     fivetran_costs_derived__incremental_mar__v1.set_upstream(
-        fivetran_log_prod_sync_wait
+        fivetran_log_prod_sync_start
     )
 
-    fivetran_costs_derived__monthly_costs__v1.set_upstream(fivetran_log_prod_sync_wait)
+    fivetran_costs_derived__monthly_costs__v1.set_upstream(fivetran_log_prod_sync_start)

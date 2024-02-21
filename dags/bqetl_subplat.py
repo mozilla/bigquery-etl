@@ -10,8 +10,6 @@ from utils.constants import ALLOWED_STATES, FAILED_STATES
 from utils.gcp import bigquery_etl_query, bigquery_dq_check
 
 from fivetran_provider_async.operators import FivetranOperator
-from fivetran_provider_async.sensors import FivetranSensor
-from utils.callbacks import retry_tasks_callback
 
 docs = """
 ### bqetl_subplat
@@ -1430,26 +1428,15 @@ with DAG(
         task_id="fivetran_stripe_task",
     )
 
-    fivetran_stripe_sync_wait = FivetranSensor(
-        connector_id="{{ var.value.fivetran_stripe_connector_id }}",
-        task_id="fivetran_stripe_sensor",
-        poke_interval=30,
-        xcom="{{ task_instance.xcom_pull('fivetran_stripe_task') }}",
-        on_retry_callback=retry_tasks_callback,
-        params={"retry_tasks": ["fivetran_stripe_task"]},
-    )
+    stripe_external__card__v1.set_upstream(fivetran_stripe_sync_start)
 
-    fivetran_stripe_sync_wait.set_upstream(fivetran_stripe_sync_start)
+    stripe_external__charge__v1.set_upstream(fivetran_stripe_sync_start)
 
-    stripe_external__card__v1.set_upstream(fivetran_stripe_sync_wait)
+    stripe_external__coupon__v1.set_upstream(fivetran_stripe_sync_start)
 
-    stripe_external__charge__v1.set_upstream(fivetran_stripe_sync_wait)
+    stripe_external__customer__v1.set_upstream(fivetran_stripe_sync_start)
 
-    stripe_external__coupon__v1.set_upstream(fivetran_stripe_sync_wait)
-
-    stripe_external__customer__v1.set_upstream(fivetran_stripe_sync_wait)
-
-    stripe_external__customer_discount__v1.set_upstream(fivetran_stripe_sync_wait)
+    stripe_external__customer_discount__v1.set_upstream(fivetran_stripe_sync_start)
 
     stripe_external__customers_changelog__v1.set_upstream(stripe_external__coupon__v1)
 
@@ -1459,27 +1446,27 @@ with DAG(
         stripe_external__customer_discount__v1
     )
 
-    stripe_external__invoice__v1.set_upstream(fivetran_stripe_sync_wait)
+    stripe_external__invoice__v1.set_upstream(fivetran_stripe_sync_start)
 
-    stripe_external__invoice_discount__v1.set_upstream(fivetran_stripe_sync_wait)
+    stripe_external__invoice_discount__v1.set_upstream(fivetran_stripe_sync_start)
 
-    stripe_external__invoice_line_item__v1.set_upstream(fivetran_stripe_sync_wait)
+    stripe_external__invoice_line_item__v1.set_upstream(fivetran_stripe_sync_start)
 
-    stripe_external__plan__v1.set_upstream(fivetran_stripe_sync_wait)
+    stripe_external__plan__v1.set_upstream(fivetran_stripe_sync_start)
 
-    stripe_external__product__v1.set_upstream(fivetran_stripe_sync_wait)
+    stripe_external__product__v1.set_upstream(fivetran_stripe_sync_start)
 
-    stripe_external__promotion_code__v1.set_upstream(fivetran_stripe_sync_wait)
+    stripe_external__promotion_code__v1.set_upstream(fivetran_stripe_sync_start)
 
-    stripe_external__refund__v1.set_upstream(fivetran_stripe_sync_wait)
+    stripe_external__refund__v1.set_upstream(fivetran_stripe_sync_start)
 
-    stripe_external__subscription_discount__v1.set_upstream(fivetran_stripe_sync_wait)
+    stripe_external__subscription_discount__v1.set_upstream(fivetran_stripe_sync_start)
 
-    stripe_external__subscription_history__v1.set_upstream(fivetran_stripe_sync_wait)
+    stripe_external__subscription_history__v1.set_upstream(fivetran_stripe_sync_start)
 
-    stripe_external__subscription_item__v1.set_upstream(fivetran_stripe_sync_wait)
+    stripe_external__subscription_item__v1.set_upstream(fivetran_stripe_sync_start)
 
-    stripe_external__subscription_tax_rate__v1.set_upstream(fivetran_stripe_sync_wait)
+    stripe_external__subscription_tax_rate__v1.set_upstream(fivetran_stripe_sync_start)
 
     stripe_external__subscriptions_changelog__v1.set_upstream(
         stripe_external__coupon__v1
@@ -1511,7 +1498,7 @@ with DAG(
         stripe_external__tax_rate__v1
     )
 
-    stripe_external__tax_rate__v1.set_upstream(fivetran_stripe_sync_wait)
+    stripe_external__tax_rate__v1.set_upstream(fivetran_stripe_sync_start)
 
     subscription_platform_derived__active_subscriptions__v1.set_upstream(
         hubs_derived__active_subscription_ids__v1

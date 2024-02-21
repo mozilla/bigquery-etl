@@ -10,8 +10,6 @@ from utils.constants import ALLOWED_STATES, FAILED_STATES
 from utils.gcp import bigquery_etl_query, bigquery_dq_check
 
 from fivetran_provider_async.operators import FivetranOperator
-from fivetran_provider_async.sensors import FivetranSensor
-from utils.callbacks import retry_tasks_callback
 
 docs = """
 ### bqetl_monitoring_airflow
@@ -241,75 +239,62 @@ with DAG(
         task_id="fivetran_airflow_metadata_import_task",
     )
 
-    fivetran_airflow_metadata_import_sync_wait = FivetranSensor(
-        connector_id="{{ var.value.fivetran_airflow_metadata_import_connector_id }}",
-        task_id="fivetran_airflow_metadata_import_sensor",
-        poke_interval=30,
-        xcom="{{ task_instance.xcom_pull('fivetran_airflow_metadata_import_task') }}",
-        on_retry_callback=retry_tasks_callback,
-        params={"retry_tasks": ["fivetran_airflow_metadata_import_task"]},
-    )
-
-    fivetran_airflow_metadata_import_sync_wait.set_upstream(
+    monitoring_derived__airflow_dag__v1.set_upstream(
         fivetran_airflow_metadata_import_sync_start
     )
 
-    monitoring_derived__airflow_dag__v1.set_upstream(
-        fivetran_airflow_metadata_import_sync_wait
-    )
-
     monitoring_derived__airflow_dag_note__v1.set_upstream(
-        fivetran_airflow_metadata_import_sync_wait
+        fivetran_airflow_metadata_import_sync_start
     )
 
     monitoring_derived__airflow_dag_owner_attributes__v1.set_upstream(
-        fivetran_airflow_metadata_import_sync_wait
+        fivetran_airflow_metadata_import_sync_start
     )
 
     monitoring_derived__airflow_dag_run__v1.set_upstream(
-        fivetran_airflow_metadata_import_sync_wait
+        fivetran_airflow_metadata_import_sync_start
     )
 
     monitoring_derived__airflow_dag_tag__v1.set_upstream(
-        fivetran_airflow_metadata_import_sync_wait
+        fivetran_airflow_metadata_import_sync_start
     )
 
     monitoring_derived__airflow_dag_warning__v1.set_upstream(
-        fivetran_airflow_metadata_import_sync_wait
+        fivetran_airflow_metadata_import_sync_start
     )
 
     monitoring_derived__airflow_import_error__v1.set_upstream(
-        fivetran_airflow_metadata_import_sync_wait
+        fivetran_airflow_metadata_import_sync_start
     )
 
     monitoring_derived__airflow_job__v1.set_upstream(
-        fivetran_airflow_metadata_import_sync_wait
+        fivetran_airflow_metadata_import_sync_start
     )
 
     monitoring_derived__airflow_slot_pool__v1.set_upstream(
-        fivetran_airflow_metadata_import_sync_wait
+        fivetran_airflow_metadata_import_sync_start
     )
 
     monitoring_derived__airflow_task_fail__v1.set_upstream(
-        fivetran_airflow_metadata_import_sync_wait
+        fivetran_airflow_metadata_import_sync_start
     )
 
     monitoring_derived__airflow_task_instance__v1.set_upstream(
-        fivetran_airflow_metadata_import_sync_wait
+        fivetran_airflow_metadata_import_sync_start
     )
 
     monitoring_derived__airflow_task_instance_note__v1.set_upstream(
-        fivetran_airflow_metadata_import_sync_wait
+        fivetran_airflow_metadata_import_sync_start
     )
 
     monitoring_derived__airflow_task_reschedule__v1.set_upstream(
-        fivetran_airflow_metadata_import_sync_wait
+        fivetran_airflow_metadata_import_sync_start
     )
 
     monitoring_derived__airflow_trigger__v1.set_upstream(
-        fivetran_airflow_metadata_import_sync_wait
+        fivetran_airflow_metadata_import_sync_start
     )
 
     monitoring_derived__airflow_user__v1.set_upstream(
-        fivetran_airflow_metadata_import_sync_wait
+        fivetran_airflow_metadata_import_sync_start
     )

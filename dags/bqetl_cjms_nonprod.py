@@ -10,8 +10,6 @@ from utils.constants import ALLOWED_STATES, FAILED_STATES
 from utils.gcp import bigquery_etl_query, bigquery_dq_check
 
 from fivetran_provider_async.operators import FivetranOperator
-from fivetran_provider_async.sensors import FivetranSensor
-from utils.callbacks import retry_tasks_callback
 
 docs = """
 ### bqetl_cjms_nonprod
@@ -295,49 +293,42 @@ with DAG(
         task_id="fivetran_stripe_nonprod_task",
     )
 
-    fivetran_stripe_nonprod_sync_wait = FivetranSensor(
-        connector_id="{{ var.value.fivetran_stripe_nonprod_connector_id }}",
-        task_id="fivetran_stripe_nonprod_sensor",
-        poke_interval=30,
-        xcom="{{ task_instance.xcom_pull('fivetran_stripe_nonprod_task') }}",
-        on_retry_callback=retry_tasks_callback,
-        params={"retry_tasks": ["fivetran_stripe_nonprod_task"]},
-    )
+    stripe_external__nonprod_card__v1.set_upstream(fivetran_stripe_nonprod_sync_start)
 
-    fivetran_stripe_nonprod_sync_wait.set_upstream(fivetran_stripe_nonprod_sync_start)
+    stripe_external__nonprod_charge__v1.set_upstream(fivetran_stripe_nonprod_sync_start)
 
-    stripe_external__nonprod_card__v1.set_upstream(fivetran_stripe_nonprod_sync_wait)
-
-    stripe_external__nonprod_charge__v1.set_upstream(fivetran_stripe_nonprod_sync_wait)
-
-    stripe_external__nonprod_coupon__v1.set_upstream(fivetran_stripe_nonprod_sync_wait)
+    stripe_external__nonprod_coupon__v1.set_upstream(fivetran_stripe_nonprod_sync_start)
 
     stripe_external__nonprod_customer__v1.set_upstream(
-        fivetran_stripe_nonprod_sync_wait
+        fivetran_stripe_nonprod_sync_start
     )
 
-    stripe_external__nonprod_invoice__v1.set_upstream(fivetran_stripe_nonprod_sync_wait)
+    stripe_external__nonprod_invoice__v1.set_upstream(
+        fivetran_stripe_nonprod_sync_start
+    )
 
     stripe_external__nonprod_invoice_discount__v1.set_upstream(
-        fivetran_stripe_nonprod_sync_wait
+        fivetran_stripe_nonprod_sync_start
     )
 
-    stripe_external__nonprod_plan__v1.set_upstream(fivetran_stripe_nonprod_sync_wait)
+    stripe_external__nonprod_plan__v1.set_upstream(fivetran_stripe_nonprod_sync_start)
 
-    stripe_external__nonprod_product__v1.set_upstream(fivetran_stripe_nonprod_sync_wait)
+    stripe_external__nonprod_product__v1.set_upstream(
+        fivetran_stripe_nonprod_sync_start
+    )
 
     stripe_external__nonprod_promotion_code__v1.set_upstream(
-        fivetran_stripe_nonprod_sync_wait
+        fivetran_stripe_nonprod_sync_start
     )
 
-    stripe_external__nonprod_refund__v1.set_upstream(fivetran_stripe_nonprod_sync_wait)
+    stripe_external__nonprod_refund__v1.set_upstream(fivetran_stripe_nonprod_sync_start)
 
     stripe_external__nonprod_subscription_history__v1.set_upstream(
-        fivetran_stripe_nonprod_sync_wait
+        fivetran_stripe_nonprod_sync_start
     )
 
     stripe_external__nonprod_subscription_item__v1.set_upstream(
-        fivetran_stripe_nonprod_sync_wait
+        fivetran_stripe_nonprod_sync_start
     )
 
     subscription_platform_derived__nonprod_stripe_subscriptions__v1.set_upstream(

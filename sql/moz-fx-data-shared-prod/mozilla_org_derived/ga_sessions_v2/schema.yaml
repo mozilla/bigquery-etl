@@ -70,8 +70,8 @@ fields:
   mode: NULLABLE
   description: "The last reported Google Click ID, which uniquely represent an ad click for Google ads."
 - name: gclid_array
-  type: REPEATED
-  mode: NULLABLE
+  type: STRING
+  mode: REPEATED
   description: "All reported Google Click IDs, which uniquely represent an ad click for Google ads."
 - name: device_category
   type: STRING

@@ -284,7 +284,7 @@ MERGE INTO
         ga_session_id,
         ARRAY_AGG(install_event_name) AS all_reported_install_targets,
         ARRAY_AGG(install_event_name ORDER BY event_timestamp DESC)[
-          0
+          SAFE_OFFSET(0)
         ] AS last_reported_install_target
       FROM
         install_targets_staging

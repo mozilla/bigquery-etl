@@ -101,68 +101,71 @@ def get_backfill_staging_qualified_table_name(qualified_table_name, entry_date) 
 
 def validate_metadata_workgroups(sql_dir, qualified_table_name) -> bool:
     """
-    Check if both table and dataset metadata workgroup is valid.
+    Check if either table or dataset metadata workgroup is valid.
 
     The backfill staging dataset currently only support backfilling datasets and tables for workgroup:mozilla-confidential.
     """
     project, dataset, table = qualified_table_name_matching(qualified_table_name)
-    dataset_path = Path(sql_dir) / project / dataset
-
     query_file = Path(sql_dir) / project / dataset / table / "query.sql"
+    dataset_path = Path(sql_dir) / project / dataset
+    dataset_metadata_path = dataset_path / DATASET_METADATA_FILE
+    table_metadata_path = dataset_path / table / METADATA_FILE
 
     if not query_file.exists():
         click.echo("No query.sql file found for {}", qualified_table_name)
         sys.exit(1)
 
+    # check dataset level metadata
     try:
-        # check table level metadata
-        table_metadata_path = query_file.parent / METADATA_FILE
+        dataset_metadata = DatasetMetadata.from_file(dataset_metadata_path)
+        dataset_workgroup_access = dataset_metadata.workgroup_access
+        dataset_default_table_workgroup_access = (
+            dataset_metadata.default_table_workgroup_access
+        )
+
+    except FileNotFoundError:
+        raise FileNotFoundError(
+            "No dataset_metadata.yaml found for {}", qualified_table_name
+        )
+
+        sys.exit(1)
+
+    if _validate_workgroup_members(dataset_workgroup_access, DATASET_METADATA_FILE):
+        return True
+
+    # check table level metadata
+    try:
         table_metadata = Metadata.from_file(table_metadata_path)
         table_workgroup_access = table_metadata.workgroup_access
 
-        if not _validate_workgroup_members(table_workgroup_access, METADATA_FILE):
-            return False
-
-        # check dataset level metadata
-        dataset_metadata_path = dataset_path / DATASET_METADATA_FILE
-        dataset_metadata = DatasetMetadata.from_file(dataset_metadata_path)
-        dataset_workgroup_access = dataset_metadata.workgroup_access
-
-        if not _validate_workgroup_members(
-            dataset_workgroup_access, DATASET_METADATA_FILE
-        ):
-            return False
+        if _validate_workgroup_members(table_workgroup_access, METADATA_FILE):
+            return True
 
     except FileNotFoundError:
-        click.echo("No metadata.yaml found for {}", qualified_table_name)
+        # default table workgroup access is applied to table if metadata.yaml file is missing
+        if _validate_workgroup_members(
+            dataset_default_table_workgroup_access, DATASET_METADATA_FILE
+        ):
+            return True
 
-    return True
+    return False
 
 
 def _validate_workgroup_members(workgroup_access, metadata_filename):
-    """
-    Return True if workgroup members is valid (workgroup:mozilla-confidential or None).
-
-    When workgroup is None, the default (workgroup:mozilla-confidential) will be applied.
-    Empty list should return False.
-    """
+    """Return True if workgroup members is valid (workgroup:mozilla-confidential)."""
     valid_workgroup = ["workgroup:mozilla-confidential"]
 
-    if workgroup_access is not None:
-        # checks if workgroup access is an empty list
-        if not workgroup_access:
-            return False
-
+    if workgroup_access:
         for workgroup in workgroup_access:
             if metadata_filename == METADATA_FILE:
                 members = workgroup.members
             elif metadata_filename == DATASET_METADATA_FILE:
                 members = workgroup["members"]
 
-            if members != valid_workgroup:
-                return False
+            if members == valid_workgroup:
+                return True
 
-    return True
+    return False
 
 
 def qualified_table_name_matching(qualified_table_name) -> Tuple[str, str, str]:

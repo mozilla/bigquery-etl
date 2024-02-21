@@ -2,7 +2,7 @@ fields:
 - mode: NULLABLE
   name: date
   type: DATE
-  description: Date of the visit
+  description: Date of the entrance to the visit
 - mode: NULLABLE
   name: device_category
   type: STRING
@@ -54,7 +54,7 @@ fields:
 - mode: NULLABLE
   name: sessions
   type: INT64
-  description: Sessions - The number of sessions
+  description: Sessions - The number of sessions with an entrances value of 1
 - mode: NULLABLE
   name: downloads
   type: INT64

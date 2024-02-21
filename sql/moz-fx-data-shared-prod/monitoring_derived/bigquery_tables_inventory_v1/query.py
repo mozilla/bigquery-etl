@@ -85,10 +85,10 @@ def create_query(date, source_project, tmp_table_name):
                  ARRAY_AGG(IF(KEY LIKE 'owner%', value, NULL) IGNORE NULLS) AS owners,
                  CAST(ARRAY_AGG(
                     IF(
-                       KEY = 'deprecated', value, NULL) IGNORE NULLS
+                       key = 'deprecated', value, NULL) IGNORE NULLS
                     ORDER BY value)[SAFE_OFFSET(0)] AS BOOLEAN) AS deprecated
             FROM labels, UNNEST(options) AS opt_key
-            WHERE (KEY LIKE 'owner%' OR KEY = 'deprecated')
+            WHERE (key LIKE 'owner%' OR key = 'deprecated')
             GROUP BY table_catalog, table_schema, table_name
         ),
         max_job_creation_date AS (

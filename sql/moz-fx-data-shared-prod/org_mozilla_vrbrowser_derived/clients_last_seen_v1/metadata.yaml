@@ -11,6 +11,7 @@ bigquery:
     require_partition_filter: false
     expiration_days: null
   clustering:
-  - app_name
-  - os
-  - sample_id
+    fields:
+    - app_name
+    - os
+    - sample_id

@@ -7,4 +7,5 @@ bigquery:
     require_partition_filter: false
     expiration_days: null
   clustering:
-  - sample_id
+    fields:
+    - sample_id

@@ -130,10 +130,10 @@ with DAG(
         retries=0,
     )
 
-    checks__warn_firefox_desktop_derived__active_users_aggregates__v1 = (
+    checks__warn_firefox_desktop_derived__active_users_aggregates__v3 = (
         bigquery_dq_check(
-            task_id="checks__warn_firefox_desktop_derived__active_users_aggregates__v1",
-            source_table="active_users_aggregates_v1",
+            task_id="checks__warn_firefox_desktop_derived__active_users_aggregates__v3",
+            source_table="active_users_aggregates_v3",
             dataset_id="firefox_desktop_derived",
             project_id="moz-fx-data-shared-prod",
             is_dq_check_fail=False,
@@ -234,7 +234,7 @@ with DAG(
 
     firefox_desktop_active_users_aggregates = bigquery_etl_query(
         task_id="firefox_desktop_active_users_aggregates",
-        destination_table="active_users_aggregates_v1",
+        destination_table="active_users_aggregates_v3",
         dataset_id="firefox_desktop_derived",
         project_id="moz-fx-data-shared-prod",
         owner="lvargas@mozilla.com",
@@ -459,7 +459,7 @@ with DAG(
         wait_for_org_mozilla_firefox_derived__baseline_clients_last_seen__v1
     )
 
-    checks__warn_firefox_desktop_derived__active_users_aggregates__v1.set_upstream(
+    checks__warn_firefox_desktop_derived__active_users_aggregates__v3.set_upstream(
         firefox_desktop_active_users_aggregates
     )
     wait_for_telemetry_derived__clients_last_seen__v1 = ExternalTaskSensor(
@@ -474,7 +474,7 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    checks__warn_firefox_desktop_derived__active_users_aggregates__v1.set_upstream(
+    checks__warn_firefox_desktop_derived__active_users_aggregates__v3.set_upstream(
         wait_for_telemetry_derived__clients_last_seen__v1
     )
 

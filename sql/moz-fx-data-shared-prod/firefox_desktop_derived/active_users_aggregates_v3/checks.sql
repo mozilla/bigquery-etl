@@ -4,7 +4,7 @@ WITH dau_sum AS (
   SELECT
     SUM(dau),
   FROM
-    `moz-fx-data-shared-prod.firefox_desktop_derived.active_users_aggregates_v1`
+    `moz-fx-data-shared-prod.firefox_desktop_derived.active_users_aggregates_v3`
   WHERE
     submission_date = @submission_date
 ),
@@ -85,7 +85,7 @@ SELECT
     ABS((SELECT * FROM dau_sum) - (SELECT * FROM live_table_dau_count)) > 10,
     ERROR(
       CONCAT(
-        "DAU mismatch between the live (`telemetry_live.main_v5`) and active_users_aggregates (`firefox_desktop_derived.active_users_aggregates_v1`) tables is greater than 10.",
+        "DAU mismatch between the live (`telemetry_live.main_v5`) and active_users_aggregates (`firefox_desktop_derived.active_users_aggregates_v3`) tables is greater than 10.",
         " Live table count: ",
         (SELECT * FROM live_table_dau_count),
         " | active_users_aggregates (DAU): ",
@@ -102,7 +102,7 @@ WITH daily_users_sum AS (
   SELECT
     SUM(daily_users),
   FROM
-    `moz-fx-data-shared-prod.firefox_desktop_derived.active_users_aggregates_v1`
+    `moz-fx-data-shared-prod.firefox_desktop_derived.active_users_aggregates_v3`
   WHERE
     submission_date = @submission_date
 ),
@@ -142,7 +142,7 @@ SELECT
     ABS((SELECT * FROM daily_users_sum) - (SELECT * FROM distinct_client_count)) > 10,
     ERROR(
       CONCAT(
-        "Daily_users mismatch between the live (`telemetry_live.main_v5`) and active_users_aggregates (`firefox_desktop_derived.active_users_aggregates_v1`) tables is greater than 10.",
+        "Daily_users mismatch between the live (`telemetry_live.main_v5`) and active_users_aggregates (`firefox_desktop_derived.active_users_aggregates_v3`) tables is greater than 10.",
         " Live table count: ",
         (SELECT * FROM distinct_client_count),
         " | active_users_aggregates (daily_users): ",

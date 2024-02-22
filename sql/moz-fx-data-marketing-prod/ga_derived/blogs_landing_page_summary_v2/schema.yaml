@@ -14,11 +14,11 @@ fields:
 - mode: NULLABLE
   name: browser
   type: STRING
-  description: Browser - The browser the visiting device was using when it visited the site
+  description: Browser - The browser the visitor used to visit the site
 - mode: NULLABLE
   name: language
   type: STRING
-  description: Language - The language the visiting device was using when it visited the site
+  description: Language - Language of visitor's device
 - mode: NULLABLE
   name: country
   type: STRING
@@ -26,7 +26,7 @@ fields:
 - mode: NULLABLE
   name: standardized_country_name
   type: STRING
-  description: Standardized Country Name - The standardized name of the country from which events were reported, based on IP address
+  description: Standardized Country Name - The country from which events were reported, based on IP address
 - mode: NULLABLE
   name: source
   type: STRING
@@ -50,7 +50,15 @@ fields:
 - mode: NULLABLE
   name: subblog
   type: STRING
-  description: Sub-Blog
+  description: Subblog
+- mode: NULLABLE
+  name: landing_page
+  type: STRING
+  description: Landing Page
+- mode: NULLABLE
+  name: cleaned_landing_page
+  type: STRING
+  description: Cleaned Landing Page - The URL portion prior to any question mark symbol
 - mode: NULLABLE
   name: sessions
   type: INT64
@@ -58,12 +66,12 @@ fields:
 - mode: NULLABLE
   name: downloads
   type: INT64
-  description: Downloads - The number of downloads
+  description: Downloads - The number of download click events
 - mode: NULLABLE
   name: social_share
   type: INT64
-  description: Social Share - The number of social shares
+  description: Social Shares - The number of social share events
 - mode: NULLABLE
   name: newsletter_subscription
   type: INT64
-  description: Newsletter Subscription - The number of newsletter subscriptions
+  description: Newsletter Subscription - The number of newsletter subscribe events

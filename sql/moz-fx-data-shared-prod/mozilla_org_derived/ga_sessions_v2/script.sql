@@ -48,7 +48,6 @@ MERGE INTO
         collected_traffic_source.manual_medium AS medium,
         collected_traffic_source.manual_term AS term,
         collected_traffic_source.manual_content AS content,
-        collected_traffic_source.gclid AS gclid,
         device.category AS device_category,
         device.mobile_model_name AS mobile_device_model,
         device.mobile_marketing_name AS mobile_device_string,
@@ -78,6 +77,39 @@ MERGE INTO
           ORDER BY
             event_timestamp ASC
         ) = 1
+    ),
+    click_aggregate_stg AS (
+      SELECT DISTINCT
+        user_pseudo_id AS ga_client_id,
+        event_timestamp,
+        CAST(e.value.int_value AS string) AS ga_session_id,
+        collected_traffic_source.gclid AS gclid
+      FROM
+        `moz-fx-data-marketing-prod.analytics_313696158.events_2*` a
+      JOIN
+        UNNEST(event_params) AS e
+      JOIN
+        all_ga_client_id_ga_session_ids_with_new_events_in_last_3_days c
+        ON a.user_pseudo_id = c.ga_client_id
+        AND CAST(e.value.int_value AS string) = c.ga_session_id
+      WHERE
+        e.key = 'ga_session_id'
+        AND e.value.int_value IS NOT NULL
+        AND collected_traffic_source.gclid IS NOT NULL
+    ),
+    click_aggregate AS (
+      SELECT
+        ga_client_id,
+        ga_session_id,
+        ARRAY_AGG(DISTINCT gclid) AS gclid_array,
+        ARRAY_AGG(gclid ORDER BY event_timestamp DESC)[
+          0
+        ] AS gclid --this is really just the last reported gclid
+      FROM
+        click_aggregate_stg
+      GROUP BY
+        ga_client_id,
+        ga_session_id
     ),
     --get all the page views and min/max event timestamp and whether there was a product download for these session/clients of interest
     event_aggregates AS (
@@ -252,7 +284,7 @@ MERGE INTO
         ga_session_id,
         ARRAY_AGG(install_event_name) AS all_reported_install_targets,
         ARRAY_AGG(install_event_name ORDER BY event_timestamp DESC)[
-          0
+          SAFE_OFFSET(0)
         ] AS last_reported_install_target
       FROM
         install_targets_staging
@@ -283,7 +315,8 @@ MERGE INTO
       sess_strt.medium,
       sess_strt.term,
       sess_strt.content,
-      sess_strt.gclid,
+      clicks.gclid,
+      clicks.gclid_array,
       sess_strt.device_category,
       sess_strt.mobile_device_model,
       sess_strt.mobile_device_string,
@@ -315,6 +348,9 @@ MERGE INTO
     LEFT JOIN
       all_install_targets installs
       USING (ga_client_id, ga_session_id)
+    LEFT JOIN
+      click_aggregate clicks
+      USING (ga_client_id, ga_session_id)
   ) S
   ON T.ga_client_id = S.ga_client_id
   AND T.ga_session_id = S.ga_session_id
@@ -339,6 +375,7 @@ THEN
       term,
       content,
       gclid,
+      gclid_array,
       device_category,
       mobile_device_model,
       mobile_device_string,
@@ -373,6 +410,7 @@ THEN
       S.term,
       S.content,
       S.gclid,
+      S.gclid_array,
       S.device_category,
       S.mobile_device_model,
       S.mobile_device_string,
@@ -408,6 +446,7 @@ THEN
     T.term = S.term,
     T.content = S.content,
     T.gclid = S.gclid,
+    T.gclid_array = S.gclid_array,
     T.device_category = S.device_category,
     T.mobile_device_model = S.mobile_device_model,
     T.mobile_device_string = S.mobile_device_string,

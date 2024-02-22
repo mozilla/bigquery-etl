@@ -161,7 +161,8 @@ SELECT
       metrics.labeled_counter.networking_https_upgrade_with_https_rr,
       metrics.labeled_counter.networking_dns_native_count,
       metrics.labeled_counter.networking_http_response_version,
-      metrics.labeled_counter.tls_xyber_intolerance_reason
+      metrics.labeled_counter.tls_xyber_intolerance_reason,
+      metrics.labeled_counter.networking_proxy_info_type
     ) AS `labeled_counter`,
     metrics.quantity,
     metrics.string,
@@ -524,7 +525,8 @@ SELECT
       metrics.labeled_counter.networking_https_upgrade_with_https_rr,
       metrics.labeled_counter.networking_dns_native_count,
       metrics.labeled_counter.networking_http_response_version,
-      metrics.labeled_counter.tls_xyber_intolerance_reason
+      metrics.labeled_counter.tls_xyber_intolerance_reason,
+      metrics.labeled_counter.networking_proxy_info_type
     ) AS `labeled_counter`,
     metrics.quantity,
     STRUCT(
@@ -1105,7 +1107,8 @@ SELECT
       metrics.labeled_counter.networking_https_upgrade_with_https_rr,
       metrics.labeled_counter.networking_dns_native_count,
       metrics.labeled_counter.networking_http_response_version,
-      metrics.labeled_counter.tls_xyber_intolerance_reason
+      metrics.labeled_counter.tls_xyber_intolerance_reason,
+      metrics.labeled_counter.networking_proxy_info_type
     ) AS `labeled_counter`,
     metrics.quantity,
     STRUCT(
@@ -1485,7 +1488,8 @@ SELECT
       metrics.labeled_counter.networking_https_upgrade_with_https_rr,
       metrics.labeled_counter.networking_dns_native_count,
       metrics.labeled_counter.networking_http_response_version,
-      metrics.labeled_counter.tls_xyber_intolerance_reason
+      metrics.labeled_counter.tls_xyber_intolerance_reason,
+      metrics.labeled_counter.networking_proxy_info_type
     ) AS `labeled_counter`,
     metrics.quantity,
     metrics.string,

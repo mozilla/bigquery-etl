@@ -201,7 +201,8 @@ SELECT
       metrics.labeled_counter.avif_lsel,
       metrics.labeled_counter.avif_pasp,
       metrics.labeled_counter.avif_pixi,
-      metrics.labeled_counter.avif_yuv_color_space
+      metrics.labeled_counter.avif_yuv_color_space,
+      metrics.labeled_counter.networking_proxy_info_type
     ) AS `labeled_counter`,
     metrics.memory_distribution,
     STRUCT(
@@ -430,7 +431,8 @@ SELECT
       metrics.labeled_counter.avif_lsel,
       metrics.labeled_counter.avif_pasp,
       metrics.labeled_counter.avif_pixi,
-      metrics.labeled_counter.avif_yuv_color_space
+      metrics.labeled_counter.avif_yuv_color_space,
+      metrics.labeled_counter.networking_proxy_info_type
     ) AS `labeled_counter`,
     metrics.memory_distribution,
     STRUCT(

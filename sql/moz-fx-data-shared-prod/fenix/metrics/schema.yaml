@@ -2780,6 +2780,16 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
+    - name: networking_proxy_info_type
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
   - name: quantity
     type: RECORD
     mode: NULLABLE

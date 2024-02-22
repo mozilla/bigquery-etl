@@ -16,6 +16,7 @@ WITH baseline_clients AS (
       DATETIME(LEAST(ping_info.parsed_start_time, ping_info.parsed_end_time), 'UTC')
     ) = DATE_SUB(@submission_date, INTERVAL 4 DAY)
     AND metrics.timespan.glean_baseline_duration.value > 0
+    AND LOWER(metadata.isp.name) <> "browserstack"
   QUALIFY
     ROW_NUMBER() OVER (
       PARTITION BY
@@ -131,8 +132,9 @@ metric_ping_clients_feature_usage AS (
   LEFT JOIN
     UNNEST(metrics.labeled_counter.metrics_bookmarks_open) AS metrics_bookmarks_open_table
   WHERE
+    LOWER(metadata.isp.name) <> "browserstack"
     -- we need to work with a larger time window as some metrics ping arrive with a multi day delay
-    DATE(submission_timestamp)
+    AND DATE(submission_timestamp)
     BETWEEN DATE_SUB(@submission_date, INTERVAL 4 DAY)
     AND @submission_date
     AND DATE(

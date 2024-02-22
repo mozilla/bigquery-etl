@@ -12,12 +12,12 @@ labels:
   incremental: true
   owner1: mhirose@mozilla.com
 scheduling:
-  dag_name: bqetl_mozilla_org_derived
+  dag_name: bqetl_google_analytics_derived_ga4
   date_partition_parameter: activity_date
   parameters: ["conversion_window:INT64:30"]
   depends_on_tables_existing:
   - task_id: wait_for_prod_events_partition
-    table_id: 'moz-fx-data-marketing-prod.analytics_313696158.events_{{ds_nodash}}'
+    table_id: 'moz-fx-data-marketing-prod.analytics_313696158.events_{{ ds_nodash }}'
     poke_interval: 30m
     timeout: 10h
     retries: 1

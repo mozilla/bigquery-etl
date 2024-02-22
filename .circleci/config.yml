@@ -18,6 +18,9 @@ parameters:
   validate-routines:
     type: boolean
     default: false
+  deploy:
+    type: boolean
+    default: false
   trigger-sql-generation:
     type: boolean
     default: false
@@ -36,7 +39,10 @@ workflows:
           base-revision: << pipeline.git.base_revision >>
           config-path: .circleci/workflows.yml
           mapping: |
-            .* run-all true
+            .* validate-bqetl true
+            .* validate-routines true
+            .* validate-sql true
+            .* deploy true
   filter-paths-pr:
     when:
       and:

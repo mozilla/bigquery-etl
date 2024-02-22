@@ -8,13 +8,8 @@ labels:
   owner1: kwindau@mozilla.com
 scheduling:
   dag_name: bqetl_google_analytics_derived_ga4
-  depends_on_tables_existing:
+  depends_on:
   - task_id: wait_for_prod_events_partition
-    table_id: 'moz-fx-data-marketing-prod.analytics_313696158.events_{{ ds_nodash }}'
-    poke_interval: 30m
-    timeout: 10h
-    retries: 1
-    retry_delay: 30m
 bigquery:
   time_partitioning:
     type: day

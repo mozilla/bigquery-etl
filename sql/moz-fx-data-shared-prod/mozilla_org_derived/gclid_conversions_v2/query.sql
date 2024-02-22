@@ -1,24 +1,16 @@
-WITH gclids_to_ga_ids_stg AS (
+WITH gclids_to_ga_ids AS (
   SELECT DISTINCT
-    gclid,
+    unnested_gclid AS gclid,
     ga_client_id,
     stub_session_id,
   FROM
     `moz-fx-data-shared-prod.mozilla_org_derived.ga_sessions_v2`,
-    UNNEST(gclid_array) AS gclid
+    UNNEST(gclid_array) AS unnested_gclid
   CROSS JOIN
     UNNEST(all_reported_stub_session_ids) AS stub_session_id
   WHERE
     session_date >= DATE_SUB(@activity_date, INTERVAL @conversion_window DAY)
     AND gclid IS NOT NULL
-),
-gclids_to_ga_ids AS (
-  SELECT DISTINCT
-    gclid,
-    ga_client_id,
-    stub_session_id,
-  FROM
-    gclids_to_ga_ids_stg
 ),
 ga_ids_to_dl_token AS (
   SELECT

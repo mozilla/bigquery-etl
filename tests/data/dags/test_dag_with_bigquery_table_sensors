@@ -50,18 +50,6 @@ with DAG(
     tags=tags,
 ) as dag:
 
-    test__non_incremental_query__v1 = bigquery_etl_query(
-        task_id="test__non_incremental_query__v1",
-        destination_table="non_incremental_query_v1",
-        dataset_id="test",
-        project_id="moz-fx-data-test-project",
-        owner="test@example.com",
-        email=["test@example.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=True,
-        arguments=["--append_table"],
-    )
-
     wait_for_foo_bar_baz = BigQueryTableExistenceSensor(
         task_id="wait_for_foo_bar_baz",
         project_id="foo",
@@ -74,8 +62,6 @@ with DAG(
         retries=1,
         retry_delay=datetime.timedelta(seconds=600),
     )
-
-    test__non_incremental_query__v1.set_upstream(wait_for_foo_bar_baz)
 
     wait_for_foo_bar_baz_partition = BigQueryTablePartitionExistenceSensor(
         task_id="wait_for_foo_bar_baz_partition",
@@ -90,5 +76,19 @@ with DAG(
         retries=3,
         retry_delay=datetime.timedelta(seconds=300),
     )
+
+    test__non_incremental_query__v1 = bigquery_etl_query(
+        task_id="test__non_incremental_query__v1",
+        destination_table="non_incremental_query_v1",
+        dataset_id="test",
+        project_id="moz-fx-data-test-project",
+        owner="test@example.com",
+        email=["test@example.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=True,
+        arguments=["--append_table"],
+    )
+
+    test__non_incremental_query__v1.set_upstream(wait_for_foo_bar_baz)
 
     test__non_incremental_query__v1.set_upstream(wait_for_foo_bar_baz_partition)

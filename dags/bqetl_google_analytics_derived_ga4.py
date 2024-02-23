@@ -1,6 +1,10 @@
 # Generated via https://github.com/mozilla/bigquery-etl/blob/main/bigquery_etl/query_scheduling/generate_airflow_dags.py
 
 from airflow import DAG
+from airflow.providers.google.cloud.sensors.bigquery import (
+    BigQueryTableExistenceSensor,
+    BigQueryTablePartitionExistenceSensor,
+)
 from airflow.sensors.external_task import ExternalTaskMarker
 from airflow.sensors.external_task import ExternalTaskSensor
 from airflow.utils.task_group import TaskGroup
@@ -49,6 +53,32 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
+
+    wait_for_blogs_events_table = BigQueryTableExistenceSensor(
+        task_id="wait_for_blogs_events_table",
+        project_id="moz-fx-data-marketing-prod",
+        dataset_id="analytics_314399816",
+        table_id="events_{{ ds_nodash }}",
+        gcp_conn_id="google_cloud_shared_prod",
+        deferrable=True,
+        poke_interval=datetime.timedelta(seconds=1800),
+        timeout=datetime.timedelta(seconds=36000),
+        retries=1,
+        retry_delay=datetime.timedelta(seconds=1800),
+    )
+
+    wait_for_wmo_events_table = BigQueryTableExistenceSensor(
+        task_id="wait_for_wmo_events_table",
+        project_id="moz-fx-data-marketing-prod",
+        dataset_id="analytics_313696158",
+        table_id="events_{{ ds_nodash }}",
+        gcp_conn_id="google_cloud_shared_prod",
+        deferrable=True,
+        poke_interval=datetime.timedelta(seconds=1800),
+        timeout=datetime.timedelta(seconds=36000),
+        retries=1,
+        retry_delay=datetime.timedelta(seconds=1800),
+    )
 
     checks__fail_mozilla_org_derived__ga_clients__v2 = bigquery_dq_check(
         task_id="checks__fail_mozilla_org_derived__ga_clients__v2",
@@ -240,22 +270,36 @@ with DAG(
 
     ga_derived__blogs_daily_summary__v2.set_upstream(ga_derived__blogs_sessions__v2)
 
+    ga_derived__blogs_goals__v2.set_upstream(wait_for_blogs_events_table)
+
     ga_derived__blogs_landing_page_summary__v2.set_upstream(ga_derived__blogs_goals__v2)
 
     ga_derived__blogs_landing_page_summary__v2.set_upstream(
         ga_derived__blogs_sessions__v2
     )
 
+    ga_derived__blogs_landing_page_summary__v2.set_upstream(wait_for_blogs_events_table)
+
+    ga_derived__blogs_sessions__v2.set_upstream(wait_for_blogs_events_table)
+
     ga_derived__firefox_whatsnew_summary__v2.set_upstream(ga_derived__www_site_hits__v2)
 
+    ga_derived__www_site_downloads__v2.set_upstream(wait_for_wmo_events_table)
+
     ga_derived__www_site_events_metrics__v2.set_upstream(ga_derived__www_site_hits__v2)
+
+    ga_derived__www_site_hits__v2.set_upstream(wait_for_wmo_events_table)
 
     ga_derived__www_site_landing_page_metrics__v2.set_upstream(
         ga_derived__www_site_hits__v2
     )
+
+    ga_derived__www_site_metrics_summary__v2.set_upstream(wait_for_wmo_events_table)
 
     ga_derived__www_site_page_metrics__v2.set_upstream(ga_derived__www_site_hits__v2)
 
     mozilla_org_derived__ga_clients__v2.set_upstream(
         mozilla_org_derived__ga_sessions__v2
     )
+
+    mozilla_org_derived__ga_sessions__v2.set_upstream(wait_for_wmo_events_table)

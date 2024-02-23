@@ -4,11 +4,9 @@ setup: true
 
 orbs:
   path-filtering: circleci/path-filtering@0.1.3
+  continuation: circleci/continuation@1.0.0
 
 parameters:
-  python-version:
-    type: string
-    default: '3.10'
   validate-bqetl:
     type: boolean
     default: false
@@ -30,20 +28,14 @@ parameters:
 
 
 workflows:
-  filter-paths-main:
+  setup-main:
     when:
-      and:
-        - equal: [main, << pipeline.git.branch >>]
+      equal: [main, << pipeline.git.branch >>]
     jobs:
-      - path-filtering/filter:
-          base-revision: << pipeline.git.base_revision >>
-          config-path: .circleci/workflows.yml
-          mapping: |
-            .* validate-bqetl true
-            .* validate-routines true
-            .* validate-sql true
-            .* deploy true
-  filter-paths-pr:
+      - continuation/continue:
+          configuration_path: .circleci/workflows.yml
+          parameters: '{"deploy": "true"}'
+  setup-pr:
     when:
       and:
         - not:
@@ -66,3 +58,11 @@ workflows:
             sql/mozfun/.* validate-routines true
             sql/moz-fx-data-shared-prod/udf/.* validate-routines true
             sql/moz-fx-data-shared-prod/udf_js/.* validate-routines true
+            bqetl_project.yaml validate-sql true
+            bqetl_project.yaml validate-routines true
+            dags.yaml validate-sql true
+            script/bqetl validate-bqetl true
+            script/entrypoint validate-bqetl true
+            .circleci/.* validate-sql true
+            .circleci/.* validate-bqetl true
+            .circleci/.* validate-routines true

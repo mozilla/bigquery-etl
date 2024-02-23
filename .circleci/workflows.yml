@@ -68,10 +68,11 @@ jobs:
     docker: *docker
     steps:
       - when:
-          condition:
+          condition: &validate-sql-or-routines
             or:
               - << pipeline.parameters.validate-sql >>
               - << pipeline.parameters.validate-routines >>
+              - << pipeline.parameters.deploy >>
           steps:
             - checkout
             - *restore_venv_cache
@@ -81,7 +82,13 @@ jobs:
                 command: |
                   PATH="venv/bin:$PATH" script/bqetl format --check \
                   $(git ls-tree -d HEAD --name-only)
-      - run: exit 0
+      - unless:
+          condition: *validate-sql-or-routines
+          steps:
+            - &skip
+              run:
+                name: Skip
+                command: echo "Skipped due to path filtering"
   verify-format-yaml:
     docker: *docker
     steps:
@@ -107,9 +114,10 @@ jobs:
     docker: *docker
     steps:
       - when:
-          condition:
+          condition: &validate-bqetl
             or:
               - << pipeline.parameters.validate-bqetl >>
+              - << pipeline.parameters.deploy >>
           steps:
             - checkout
             - *restore_venv_cache
@@ -125,15 +133,15 @@ jobs:
                     --isort --mypy-ignore-missing-imports --pydocstyle \
                     -m "not (routine or sql or integration)" \
                     -n 8
-      - run: exit 0
+      - unless:
+          condition: *validate-bqetl
+          steps:
+            - *skip
   test-sql:
     docker: *docker
     steps:
       - when:
-          condition:
-            or:
-              - << pipeline.parameters.validate-sql >>
-              - << pipeline.parameters.validate-routines >>
+          condition: *validate-sql-or-routines
           steps:
             - checkout
             - *restore_venv_cache
@@ -158,15 +166,15 @@ jobs:
                   else
                     PATH="venv/bin:$PATH" script/entrypoint -m sql -n 8
                   fi
-      - run: exit 0
+      - unless:
+          condition: *validate-sql-or-routines
+          steps:
+            - *skip
   dry-run-sql:
     docker: *docker
     steps:
       - when:
-          condition:
-            or:
-              - << pipeline.parameters.validate-sql >>
-              - << pipeline.parameters.validate-routines >>
+          condition: *validate-sql-or-routines
           steps:
             - checkout
             - *restore_venv_cache
@@ -198,15 +206,18 @@ jobs:
                   echo $PATHS
                   PATH="venv/bin:$PATH" script/bqetl dryrun --validate-schemas $PATHS
                 # yamllint enable rule:line-length
-      - run: exit 0
+      - unless:
+          condition: *validate-sql-or-routines
+          steps:
+            - *skip
   validate-metadata:
     docker: *docker
     steps:
       - when:
-          condition:
+          condition: &validate-sql
             or:
               - << pipeline.parameters.validate-sql >>
-              - << pipeline.parameters.validate-routines >>
+              - << pipeline.parameters.deploy >>
           steps:
             - checkout
             - *restore_venv_cache
@@ -219,14 +230,15 @@ jobs:
                   # TODO: Add check here to make sure all queries have metadata.yaml
                   PATH="venv/bin:$PATH" script/bqetl query validate \
                     --respect-dryrun-skip
-      - run: exit 0
+      - unless:
+          condition: *validate-sql
+          steps:
+            - *skip
   integration:
     docker: *docker
     steps:
       - when:
-          condition:
-            or:
-              - << pipeline.parameters.validate-bqetl >>
+          condition: *validate-bqetl
           steps:
             - checkout
             - &skip_forked_pr
@@ -247,15 +259,15 @@ jobs:
                   PATH="venv/bin:$PATH" script/entrypoint -m 'integration' -n 8
                 # workaround for job failing with `Too long with no output (exceeded 10m0s): context deadline exceeded` error
                 no_output_timeout: 30m
-      - run: exit 0
+      - unless:
+          condition: *validate-bqetl
+          steps:
+            - *skip
   generate-dags:
     docker: *docker
     steps:
       - when:
-          condition:
-            or:
-              - << pipeline.parameters.validate-sql >>
-              - << pipeline.parameters.validate-routines >>
+          condition: *validate-sql
           steps:
             - checkout
             - *restore_venv_cache
@@ -279,17 +291,17 @@ jobs:
                 root: /tmp/workspace
                 paths:
                   - generated-sql
-      - run: exit 0
+      - unless:
+          condition: *validate-sql
+          steps:
+            - *skip
   validate-dags:
     executor:
       name: python/default
       tag: 3.10.12
     steps:
       - when:
-          condition:
-            or:
-              - << pipeline.parameters.validate-sql >>
-              - << pipeline.parameters.validate-routines >>
+          condition: *validate-sql
           steps:
             - checkout
             - run:
@@ -334,12 +346,15 @@ jobs:
                   python -m pytest tests/dags/test_dag_validity.py --junitxml=~/telemetry-airflow/test-results/junit.xml
             - store_test_results:
                 path: ~/telemetry-airflow/test-results/junit.xml
-      - run: exit 0
+      - unless:
+          condition: *validate-sql
+          steps:
+            - *skip
   test-routines:
     docker: *docker
     steps:
       - when:
-          condition:
+          condition: &validate-routines
             or:
               - << pipeline.parameters.validate-routines >>
           steps:
@@ -370,15 +385,15 @@ jobs:
                   else
                     echo "No changes to UDFs; Skip checks."
                   fi
-      - run: exit 0
+      - unless:
+          condition: *validate-routines
+          steps:
+            - *skip
   validate-views:
     docker: *docker
     steps:
       - when:
-          condition:
-            or:
-              - << pipeline.parameters.validate-sql >>
-              - << pipeline.parameters.validate-routines >>
+          condition: *validate-sql-or-routines
           steps:
             - checkout
             - *restore_venv_cache
@@ -388,15 +403,15 @@ jobs:
             - run:
                 name: Validate views
                 command: PATH="venv/bin:$PATH" script/bqetl view validate
-      - run: exit 0
+      - unless:
+          condition: *validate-sql-or-routines
+          steps:
+            - *skip
   docs:
     docker: *docker
     steps:
       - when:
-          condition:
-            or:
-              - << pipeline.parameters.validate-sql >>
-              - << pipeline.parameters.validate-routines >>
+          condition: *validate-sql-or-routines
           steps:
             - checkout
             - *skip_forked_pr
@@ -415,16 +430,16 @@ jobs:
                   cd generated_docs/
                   PATH="../venv/bin:$PATH" mkdocs gh-deploy \
                     -m "[ci skip] Deployed {sha} with MkDocs version: {version}"
-      - run: exit 0
+      - unless:
+          condition: *validate-sql-or-routines
+          steps:
+            - *skip
   generate-sql:
     docker: *docker
     resource_class: large
     steps:
       - when:
-          condition:
-            or:
-              - << pipeline.parameters.validate-sql >>
-              - << pipeline.parameters.validate-routines >>
+          condition: *validate-sql-or-routines
           steps:
             - checkout
             - *restore_venv_cache
@@ -510,15 +525,15 @@ jobs:
                 root: /tmp/workspace
                 paths:
                   - generated-sql
-      - run: exit 0
+      - unless:
+          condition: *validate-sql-or-routines
+          steps:
+            - *skip
   deploy-changes-to-stage:
     docker: *docker
     steps:
       - when:
-          condition:
-            or:
-              - << pipeline.parameters.validate-sql >>
-              - << pipeline.parameters.validate-routines >>
+          condition: *validate-sql-or-routines
           steps:
             - checkout
             - *skip_forked_pr
@@ -562,15 +577,17 @@ jobs:
                 root: /tmp/workspace
                 paths:
                   - staged-generated-sql
-      - run: exit 0
+      - unless:
+          condition: *validate-sql-or-routines
+          steps:
+            - *skip
   push-generated-sql:
     docker: *docker
     steps:
       - when:
-          condition:
+          condition: &deploy
             or:
-              - << pipeline.parameters.validate-sql >>
-              - << pipeline.parameters.validate-routines >>
+              - << pipeline.parameters.deploy >>
           steps:
             - *attach_generated_sql
             - add_ssh_keys:
@@ -596,7 +613,10 @@ jobs:
                     && git push \
                     && git push origin c-${CIRCLE_SHA1:0:9} \
                     || echo "Skipping push since it looks like there were no changes"
-      - run: exit 0
+      - unless:
+          condition: *deploy
+          steps:
+            - *skip
   sync-dags-repo:
     executor: docker/machine
     parameters:
@@ -606,9 +626,7 @@ jobs:
         type: string
     steps:
       - when:
-          condition:
-            or:
-              - << pipeline.parameters.deploy >>
+          condition: *deploy
           steps:
             - checkout
             - add_ssh_keys:
@@ -642,14 +660,15 @@ jobs:
                   git add << parameters.repo-to-sync >>
                   git commit --allow-empty -m "Automatic commit from ${CIRCLE_PROJECT_REPONAME} commit ${CIRCLE_SHA1:0:9} build ${CIRCLE_BUILD_NUM} [skip ci]"
                   git push origin main
-      - run: exit 0
+      - unless:
+          condition: *deploy
+          steps:
+            - *skip
   deploy:
     executor: ubuntu-machine-executor
     steps:
       - when:
-          condition:
-            or:
-              - << pipeline.parameters.deploy >>
+          condition: *deploy
           steps:
             - checkout
             - *attach_generated_sql
@@ -661,14 +680,15 @@ jobs:
                 image: ${CIRCLE_PROJECT_USERNAME+$CIRCLE_PROJECT_USERNAME/}${CIRCLE_PROJECT_REPONAME:-bigquery-etl}
                 tag: ${CIRCLE_TAG:-latest}
             - docker/push: *public-image
-      - run: exit 0
+      - unless:
+          condition: *deploy
+          steps:
+            - *skip
   private-generate-sql:
     docker: *docker
     steps:
       - when:
-          condition:
-            or:
-              - << pipeline.parameters.deploy >>
+          condition: *deploy
           steps:
             - checkout
             - *skip_forked_pr
@@ -725,14 +745,15 @@ jobs:
                 root: /tmp/workspace
                 paths:
                   - private-generated-sql
-      - run: exit 0
+      - unless:
+          condition: *deploy
+          steps:
+            - *skip
   push-private-generated-sql:
     docker: *docker
     steps:
       - when:
-          condition:
-            or:
-              - << pipeline.parameters.deploy >>
+          condition: *deploy
           steps:
             - *attach_generated_sql
             - add_ssh_keys:
@@ -758,14 +779,15 @@ jobs:
                     && git push \
                     || echo "Skipping push since it looks like there were no changes"
                 # yamllint enable rule:line-length
-      - run: exit 0
+      - unless:
+          condition: *deploy
+          steps:
+            - *skip
   deploy-to-private-gcr:
     executor: ubuntu-machine-executor
     steps:
       - when:
-          condition:
-            or:
-              - << pipeline.parameters.deploy >>
+          condition: *deploy
           steps:
             - checkout
             - *attach_generated_sql
@@ -779,16 +801,16 @@ jobs:
                 image: bigquery-etl
                 tag: ${CIRCLE_TAG:-latest}
             - gcp-gcr/push-image: *private-image
-      - run: exit 0
+      - unless:
+          condition: *deploy
+          steps:
+            - *skip
   main-generate-sql-and-dags:
     docker: *docker
     resource_class: large
     steps:
       - when:
-          condition:
-            or:
-              - << pipeline.parameters.validate-sql >>
-              - << pipeline.parameters.validate-routines >>
+          condition: *validate-sql-or-routines
           steps:
             - checkout
             - run:
@@ -878,15 +900,15 @@ jobs:
                 root: /tmp/workspace
                 paths:
                   - main-generated-sql
-      - run: exit 0
+      - unless:
+          condition: *validate-sql-or-routines
+          steps:
+            - *skip
   generate-diff:
     docker: *docker
     steps:
       - when:
-          condition:
-            or:
-              - << pipeline.parameters.validate-sql >>
-              - << pipeline.parameters.validate-routines >>
+          condition: *validate-sql-or-routines
           steps:
             - attach_workspace:
                 at: /tmp/workspace
@@ -914,31 +936,31 @@ jobs:
             - store_artifacts:
                 path: /tmp/workspace/generated-sql/sql.diff
                 destination: sql.diff
-      - run: exit 0
+      - unless:
+          condition: *validate-sql-or-routines
+          steps:
+            - *skip
   post-diff:
     docker:
       - image: cimg/node:21.2.0
     steps:
       - when:
-          condition:
-            or:
-              - << pipeline.parameters.validate-sql >>
-              - << pipeline.parameters.validate-routines >>
+          condition: *validate-sql-or-routines
           steps:
             - checkout
             - attach_workspace:
                 at: /tmp/workspace
             - run: npm i circle-github-bot@2.1.0 @octokit/graphql@7.0.2
             - run: .circleci/post-diff.js
-      - run: exit 0
+      - unless:
+          condition: *validate-sql-or-routines
+          steps:
+            - *skip
   reset-stage-env:
     docker: *docker
     steps:
       - when:
-          condition:
-            or:
-              - << pipeline.parameters.validate-sql >>
-              - << pipeline.parameters.validate-routines >>
+          condition: *validate-sql-or-routines
           steps:
             - checkout
             - *skip_forked_pr
@@ -950,7 +972,10 @@ jobs:
                   echo "$GCLOUD_SERVICE_KEY" > "$GOOGLE_APPLICATION_CREDENTIALS"
 
                   PATH="venv/bin:$PATH" script/bqetl stage clean --dataset-suffix=$CIRCLE_SHA1 --delete-expired
-      - run: exit 0
+      - unless:
+          condition: *validate-sql-or-routines
+          steps:
+            - *skip
   manual-trigger-required-for-fork:
     docker: *docker
     steps:

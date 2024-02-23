@@ -41,28 +41,32 @@ workflows:
         - not:
             equal: [main, << pipeline.git.branch >>]
     jobs:
-      - path-filtering/filter:
-          base-revision: main
-          config-path: .circleci/workflows.yml
-          mapping: |
-            requirements.txt validate-bqetl true
-            requirements.txt validate-sql true
-            requirements.txt validate-routines true
-            bigquery_etl/.* validate-bqetl true
-            tests/.* validate-bqetl true
-            bigquery_etl/query_scheduling/.* validate-sql true
-            sql/.* validate-sql true
-            sql_generators/.* validate-sql true
-            tests/sql/.* validate-sql true
-            biquery_etl/routine/.* validate-routines true
-            sql/mozfun/.* validate-routines true
-            sql/moz-fx-data-shared-prod/udf/.* validate-routines true
-            sql/moz-fx-data-shared-prod/udf_js/.* validate-routines true
-            bqetl_project.yaml validate-sql true
-            bqetl_project.yaml validate-routines true
-            dags.yaml validate-sql true
-            script/bqetl validate-bqetl true
-            script/entrypoint validate-bqetl true
-            .circleci/.* validate-sql true
-            .circleci/.* validate-bqetl true
-            .circleci/.* validate-routines true
+      - continuation/continue:
+          configuration_path: .circleci/workflows.yml
+          parameters: '{"validate-bqetl": true}'
+    # jobs:
+    #   - path-filtering/filter:
+    #       base-revision: main
+    #       config-path: .circleci/workflows.yml
+    #       mapping: |
+    #         requirements.txt validate-bqetl true
+    #         requirements.txt validate-sql true
+    #         requirements.txt validate-routines true
+    #         bigquery_etl/.* validate-bqetl true
+    #         tests/.* validate-bqetl true
+    #         bigquery_etl/query_scheduling/.* validate-sql true
+    #         sql/.* validate-sql true
+    #         sql_generators/.* validate-sql true
+    #         tests/sql/.* validate-sql true
+    #         biquery_etl/routine/.* validate-routines true
+    #         sql/mozfun/.* validate-routines true
+    #         sql/moz-fx-data-shared-prod/udf/.* validate-routines true
+    #         sql/moz-fx-data-shared-prod/udf_js/.* validate-routines true
+    #         bqetl_project.yaml validate-sql true
+    #         bqetl_project.yaml validate-routines true
+    #         dags.yaml validate-sql true
+    #         script/bqetl validate-bqetl true
+    #         script/entrypoint validate-bqetl true
+    #         .circleci/.* validate-sql true
+    #         .circleci/.* validate-bqetl true
+    #         .circleci/.* validate-routines true

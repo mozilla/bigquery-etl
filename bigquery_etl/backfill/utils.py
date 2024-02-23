@@ -128,7 +128,6 @@ def validate_metadata_workgroups(sql_dir, qualified_table_name) -> bool:
             "No dataset_metadata.yaml found for {}", qualified_table_name
         )
 
-        sys.exit(1)
 
     if _validate_workgroup_members(dataset_workgroup_access, DATASET_METADATA_FILE):
         return True

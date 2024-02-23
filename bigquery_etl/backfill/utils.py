@@ -123,10 +123,8 @@ def validate_metadata_workgroups(sql_dir, qualified_table_name) -> bool:
             dataset_metadata.default_table_workgroup_access
         )
 
-    except FileNotFoundError:
-        raise FileNotFoundError(
-            "No dataset_metadata.yaml found for {}", qualified_table_name
-        )
+    except FileNotFoundError as e:
+        raise ValueError(f"Unable to validate workgroups for {qualified_table_name}") from e
 
 
     if _validate_workgroup_members(dataset_workgroup_access, DATASET_METADATA_FILE):

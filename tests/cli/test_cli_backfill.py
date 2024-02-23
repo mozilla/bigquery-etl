@@ -1692,7 +1692,7 @@ class TestBackfill:
             assert result
 
     def test_validate_metadata_workgroups_missing_dataset_metadata(self, runner):
-        with pytest.raises(FileNotFoundError) as e:
+        with pytest.raises(ValueError) as e:
             with runner.isolated_filesystem():
                 os.makedirs("sql/moz-fx-data-shared-prod/test/test_query_v1")
                 with open(
@@ -1722,7 +1722,7 @@ class TestBackfill:
 
                 validate_metadata_workgroups("sql", qualified_table_name)
 
-        assert e.type == FileNotFoundError
+        assert e.type == ValueError
 
     def test_validate_metadata_workgroups_empty_workgroups(self, runner):
         with runner.isolated_filesystem():

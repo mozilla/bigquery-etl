@@ -119,6 +119,30 @@ with DAG(
 
     task_group_tiktokreporter_ios = TaskGroup("tiktokreporter_ios")
 
+    wait_for_copy_deduplicate_all = ExternalTaskSensor(
+        task_id="wait_for_copy_deduplicate_all",
+        external_dag_id="copy_deduplicate",
+        external_task_id="copy_deduplicate_all",
+        execution_delta=datetime.timedelta(seconds=3600),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_telemetry_derived__core_clients_first_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_telemetry_derived__core_clients_first_seen__v1",
+        external_dag_id="copy_deduplicate",
+        external_task_id="telemetry_derived__core_clients_first_seen__v1",
+        execution_delta=datetime.timedelta(seconds=3600),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     accounts_backend_derived__baseline_clients_daily__v1 = bigquery_etl_query(
         task_id="accounts_backend_derived__baseline_clients_daily__v1",
         destination_table="baseline_clients_daily_v1",
@@ -3753,17 +3777,6 @@ with DAG(
     accounts_backend_derived__baseline_clients_daily__v1.set_upstream(
         accounts_backend_derived__baseline_clients_first_seen__v1
     )
-    wait_for_copy_deduplicate_all = ExternalTaskSensor(
-        task_id="wait_for_copy_deduplicate_all",
-        external_dag_id="copy_deduplicate",
-        external_task_id="copy_deduplicate_all",
-        execution_delta=datetime.timedelta(seconds=3600),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
 
     accounts_backend_derived__baseline_clients_daily__v1.set_upstream(
         wait_for_copy_deduplicate_all
@@ -3771,17 +3784,6 @@ with DAG(
 
     accounts_backend_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_copy_deduplicate_all
-    )
-    wait_for_telemetry_derived__core_clients_first_seen__v1 = ExternalTaskSensor(
-        task_id="wait_for_telemetry_derived__core_clients_first_seen__v1",
-        external_dag_id="copy_deduplicate",
-        external_task_id="telemetry_derived__core_clients_first_seen__v1",
-        execution_delta=datetime.timedelta(seconds=3600),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     accounts_backend_derived__baseline_clients_first_seen__v1.set_upstream(
@@ -3801,6 +3803,7 @@ with DAG(
     burnham_derived__baseline_clients_daily__v1.set_upstream(
         burnham_derived__baseline_clients_first_seen__v1
     )
+
     burnham_derived__baseline_clients_daily__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
@@ -3808,6 +3811,7 @@ with DAG(
     burnham_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
+
     burnham_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_telemetry_derived__core_clients_first_seen__v1
     )
@@ -3981,6 +3985,7 @@ with DAG(
     firefox_desktop_background_defaultagent_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
+
     firefox_desktop_background_defaultagent_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_telemetry_derived__core_clients_first_seen__v1
     )
@@ -4004,6 +4009,7 @@ with DAG(
     firefox_desktop_background_tasks_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
+
     firefox_desktop_background_tasks_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_telemetry_derived__core_clients_first_seen__v1
     )
@@ -4027,6 +4033,7 @@ with DAG(
     firefox_desktop_background_update_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
+
     firefox_desktop_background_update_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_telemetry_derived__core_clients_first_seen__v1
     )
@@ -4062,6 +4069,7 @@ with DAG(
     firefox_desktop_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
+
     firefox_desktop_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_telemetry_derived__core_clients_first_seen__v1
     )
@@ -4307,6 +4315,7 @@ with DAG(
     monitor_cirrus_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
+
     monitor_cirrus_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_telemetry_derived__core_clients_first_seen__v1
     )
@@ -4330,6 +4339,7 @@ with DAG(
     moso_mastodon_backend_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
+
     moso_mastodon_backend_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_telemetry_derived__core_clients_first_seen__v1
     )
@@ -4353,6 +4363,7 @@ with DAG(
     mozilla_lockbox_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
+
     mozilla_lockbox_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_telemetry_derived__core_clients_first_seen__v1
     )
@@ -4372,6 +4383,7 @@ with DAG(
     mozilla_mach_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
+
     mozilla_mach_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_telemetry_derived__core_clients_first_seen__v1
     )
@@ -4395,6 +4407,7 @@ with DAG(
     mozillavpn_backend_cirrus_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
+
     mozillavpn_backend_cirrus_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_telemetry_derived__core_clients_first_seen__v1
     )
@@ -4418,6 +4431,7 @@ with DAG(
     mozillavpn_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
+
     mozillavpn_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_telemetry_derived__core_clients_first_seen__v1
     )
@@ -4437,6 +4451,7 @@ with DAG(
     mozphab_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
+
     mozphab_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_telemetry_derived__core_clients_first_seen__v1
     )
@@ -4488,6 +4503,7 @@ with DAG(
     org_mozilla_connect_firefox_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
+
     org_mozilla_connect_firefox_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_telemetry_derived__core_clients_first_seen__v1
     )
@@ -4507,6 +4523,7 @@ with DAG(
     org_mozilla_fenix_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
+
     org_mozilla_fenix_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_telemetry_derived__core_clients_first_seen__v1
     )
@@ -4530,6 +4547,7 @@ with DAG(
     org_mozilla_fenix_nightly_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
+
     org_mozilla_fenix_nightly_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_telemetry_derived__core_clients_first_seen__v1
     )
@@ -4549,6 +4567,7 @@ with DAG(
     org_mozilla_fennec_aurora_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
+
     org_mozilla_fennec_aurora_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_telemetry_derived__core_clients_first_seen__v1
     )
@@ -4568,6 +4587,7 @@ with DAG(
     org_mozilla_firefox_beta_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
+
     org_mozilla_firefox_beta_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_telemetry_derived__core_clients_first_seen__v1
     )
@@ -4587,6 +4607,7 @@ with DAG(
     org_mozilla_firefox_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
+
     org_mozilla_firefox_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_telemetry_derived__core_clients_first_seen__v1
     )
@@ -4610,6 +4631,7 @@ with DAG(
     org_mozilla_firefox_vpn_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
+
     org_mozilla_firefox_vpn_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_telemetry_derived__core_clients_first_seen__v1
     )
@@ -4629,6 +4651,7 @@ with DAG(
     org_mozilla_firefoxreality_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
+
     org_mozilla_firefoxreality_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_telemetry_derived__core_clients_first_seen__v1
     )
@@ -4648,6 +4671,7 @@ with DAG(
     org_mozilla_focus_beta_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
+
     org_mozilla_focus_beta_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_telemetry_derived__core_clients_first_seen__v1
     )
@@ -4667,6 +4691,7 @@ with DAG(
     org_mozilla_focus_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
+
     org_mozilla_focus_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_telemetry_derived__core_clients_first_seen__v1
     )
@@ -4686,6 +4711,7 @@ with DAG(
     org_mozilla_focus_nightly_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
+
     org_mozilla_focus_nightly_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_telemetry_derived__core_clients_first_seen__v1
     )
@@ -4705,6 +4731,7 @@ with DAG(
     org_mozilla_ios_fennec_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
+
     org_mozilla_ios_fennec_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_telemetry_derived__core_clients_first_seen__v1
     )
@@ -4724,6 +4751,7 @@ with DAG(
     org_mozilla_ios_firefox_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
+
     org_mozilla_ios_firefox_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_telemetry_derived__core_clients_first_seen__v1
     )
@@ -4743,6 +4771,7 @@ with DAG(
     org_mozilla_ios_firefoxbeta_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
+
     org_mozilla_ios_firefoxbeta_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_telemetry_derived__core_clients_first_seen__v1
     )
@@ -4762,6 +4791,7 @@ with DAG(
     org_mozilla_ios_firefoxvpn_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
+
     org_mozilla_ios_firefoxvpn_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_telemetry_derived__core_clients_first_seen__v1
     )
@@ -4781,6 +4811,7 @@ with DAG(
     org_mozilla_ios_firefoxvpn_network_extension_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
+
     org_mozilla_ios_firefoxvpn_network_extension_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_telemetry_derived__core_clients_first_seen__v1
     )
@@ -4800,6 +4831,7 @@ with DAG(
     org_mozilla_ios_focus_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
+
     org_mozilla_ios_focus_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_telemetry_derived__core_clients_first_seen__v1
     )
@@ -4819,6 +4851,7 @@ with DAG(
     org_mozilla_ios_klar_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
+
     org_mozilla_ios_klar_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_telemetry_derived__core_clients_first_seen__v1
     )
@@ -4838,6 +4871,7 @@ with DAG(
     org_mozilla_ios_lockbox_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
+
     org_mozilla_ios_lockbox_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_telemetry_derived__core_clients_first_seen__v1
     )
@@ -4857,6 +4891,7 @@ with DAG(
     org_mozilla_ios_tiktok_reporter_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
+
     org_mozilla_ios_tiktok_reporter_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_telemetry_derived__core_clients_first_seen__v1
     )
@@ -4876,6 +4911,7 @@ with DAG(
     org_mozilla_klar_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
+
     org_mozilla_klar_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_telemetry_derived__core_clients_first_seen__v1
     )
@@ -4895,6 +4931,7 @@ with DAG(
     org_mozilla_mozregression_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
+
     org_mozilla_mozregression_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_telemetry_derived__core_clients_first_seen__v1
     )
@@ -4914,6 +4951,7 @@ with DAG(
     org_mozilla_reference_browser_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
+
     org_mozilla_reference_browser_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_telemetry_derived__core_clients_first_seen__v1
     )
@@ -4933,6 +4971,7 @@ with DAG(
     org_mozilla_social_nightly_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
+
     org_mozilla_social_nightly_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_telemetry_derived__core_clients_first_seen__v1
     )
@@ -4952,6 +4991,7 @@ with DAG(
     org_mozilla_tiktokreporter_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
+
     org_mozilla_tiktokreporter_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_telemetry_derived__core_clients_first_seen__v1
     )
@@ -4971,6 +5011,7 @@ with DAG(
     org_mozilla_tv_firefox_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
+
     org_mozilla_tv_firefox_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_telemetry_derived__core_clients_first_seen__v1
     )
@@ -4990,6 +5031,7 @@ with DAG(
     org_mozilla_vrbrowser_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
+
     org_mozilla_vrbrowser_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_telemetry_derived__core_clients_first_seen__v1
     )
@@ -5007,6 +5049,7 @@ with DAG(
     pine_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
+
     pine_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_telemetry_derived__core_clients_first_seen__v1
     )

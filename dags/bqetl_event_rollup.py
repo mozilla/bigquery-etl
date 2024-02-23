@@ -52,6 +52,66 @@ with DAG(
     tags=tags,
 ) as dag:
 
+    wait_for_firefox_accounts_derived__fxa_gcp_stderr_events__v1 = ExternalTaskSensor(
+        task_id="wait_for_firefox_accounts_derived__fxa_gcp_stderr_events__v1",
+        external_dag_id="bqetl_fxa_events",
+        external_task_id="firefox_accounts_derived__fxa_gcp_stderr_events__v1",
+        execution_delta=datetime.timedelta(seconds=5400),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_firefox_accounts_derived__fxa_gcp_stdout_events__v1 = ExternalTaskSensor(
+        task_id="wait_for_firefox_accounts_derived__fxa_gcp_stdout_events__v1",
+        external_dag_id="bqetl_fxa_events",
+        external_task_id="firefox_accounts_derived__fxa_gcp_stdout_events__v1",
+        execution_delta=datetime.timedelta(seconds=5400),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_firefox_accounts_derived__fxa_stdout_events__v1 = ExternalTaskSensor(
+        task_id="wait_for_firefox_accounts_derived__fxa_stdout_events__v1",
+        external_dag_id="bqetl_fxa_events",
+        external_task_id="firefox_accounts_derived__fxa_stdout_events__v1",
+        execution_delta=datetime.timedelta(seconds=5400),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_firefox_desktop_derived__onboarding__v2 = ExternalTaskSensor(
+        task_id="wait_for_firefox_desktop_derived__onboarding__v2",
+        external_dag_id="bqetl_messaging_system",
+        external_task_id="firefox_desktop_derived__onboarding__v2",
+        execution_delta=datetime.timedelta(seconds=3600),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_copy_deduplicate_all = ExternalTaskSensor(
+        task_id="wait_for_copy_deduplicate_all",
+        external_dag_id="copy_deduplicate",
+        external_task_id="copy_deduplicate_all",
+        execution_delta=datetime.timedelta(seconds=7200),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     firefox_accounts_derived__event_types__v1 = bigquery_etl_query(
         task_id="firefox_accounts_derived__event_types__v1",
         destination_table="event_types_v1",
@@ -183,46 +243,12 @@ with DAG(
 
     firefox_accounts_derived__events_daily__v1.set_upstream(funnel_events_source__v1)
 
-    wait_for_firefox_accounts_derived__fxa_gcp_stderr_events__v1 = ExternalTaskSensor(
-        task_id="wait_for_firefox_accounts_derived__fxa_gcp_stderr_events__v1",
-        external_dag_id="bqetl_fxa_events",
-        external_task_id="firefox_accounts_derived__fxa_gcp_stderr_events__v1",
-        execution_delta=datetime.timedelta(seconds=5400),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
     funnel_events_source__v1.set_upstream(
         wait_for_firefox_accounts_derived__fxa_gcp_stderr_events__v1
-    )
-    wait_for_firefox_accounts_derived__fxa_gcp_stdout_events__v1 = ExternalTaskSensor(
-        task_id="wait_for_firefox_accounts_derived__fxa_gcp_stdout_events__v1",
-        external_dag_id="bqetl_fxa_events",
-        external_task_id="firefox_accounts_derived__fxa_gcp_stdout_events__v1",
-        execution_delta=datetime.timedelta(seconds=5400),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     funnel_events_source__v1.set_upstream(
         wait_for_firefox_accounts_derived__fxa_gcp_stdout_events__v1
-    )
-    wait_for_firefox_accounts_derived__fxa_stdout_events__v1 = ExternalTaskSensor(
-        task_id="wait_for_firefox_accounts_derived__fxa_stdout_events__v1",
-        external_dag_id="bqetl_fxa_events",
-        external_task_id="firefox_accounts_derived__fxa_stdout_events__v1",
-        execution_delta=datetime.timedelta(seconds=5400),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     funnel_events_source__v1.set_upstream(
@@ -231,18 +257,6 @@ with DAG(
 
     messaging_system_derived__event_types__v1.set_upstream(
         messaging_system_derived__event_types_history__v1
-    )
-
-    wait_for_firefox_desktop_derived__onboarding__v2 = ExternalTaskSensor(
-        task_id="wait_for_firefox_desktop_derived__onboarding__v2",
-        external_dag_id="bqetl_messaging_system",
-        external_task_id="firefox_desktop_derived__onboarding__v2",
-        execution_delta=datetime.timedelta(seconds=3600),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     messaging_system_derived__event_types_history__v1.set_upstream(
@@ -259,18 +273,6 @@ with DAG(
 
     mozilla_vpn_derived__event_types__v1.set_upstream(
         mozilla_vpn_derived__event_types_history__v1
-    )
-
-    wait_for_copy_deduplicate_all = ExternalTaskSensor(
-        task_id="wait_for_copy_deduplicate_all",
-        external_dag_id="copy_deduplicate",
-        external_task_id="copy_deduplicate_all",
-        execution_delta=datetime.timedelta(seconds=7200),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     mozilla_vpn_derived__event_types_history__v1.set_upstream(

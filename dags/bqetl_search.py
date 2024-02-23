@@ -52,6 +52,18 @@ with DAG(
     tags=tags,
 ) as dag:
 
+    wait_for_telemetry_derived__clients_daily_joined__v1 = ExternalTaskSensor(
+        task_id="wait_for_telemetry_derived__clients_daily_joined__v1",
+        external_dag_id="bqetl_main_summary",
+        external_task_id="telemetry_derived__clients_daily_joined__v1",
+        execution_delta=datetime.timedelta(seconds=3600),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     search_derived__search_aggregates__v8 = bigquery_etl_query(
         task_id="search_derived__search_aggregates__v8",
         destination_table="search_aggregates_v8",
@@ -202,18 +214,6 @@ with DAG(
 
     search_derived__search_aggregates__v8.set_upstream(
         search_derived__search_clients_daily__v8
-    )
-
-    wait_for_telemetry_derived__clients_daily_joined__v1 = ExternalTaskSensor(
-        task_id="wait_for_telemetry_derived__clients_daily_joined__v1",
-        external_dag_id="bqetl_main_summary",
-        external_task_id="telemetry_derived__clients_daily_joined__v1",
-        execution_delta=datetime.timedelta(seconds=3600),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     search_derived__search_clients_daily__v8.set_upstream(

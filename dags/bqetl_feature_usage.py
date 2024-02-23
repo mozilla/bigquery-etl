@@ -58,6 +58,78 @@ with DAG(
     tags=tags,
 ) as dag:
 
+    wait_for_bq_main_events = ExternalTaskSensor(
+        task_id="wait_for_bq_main_events",
+        external_dag_id="copy_deduplicate",
+        external_task_id="bq_main_events",
+        execution_delta=datetime.timedelta(seconds=14400),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_copy_deduplicate_all = ExternalTaskSensor(
+        task_id="wait_for_copy_deduplicate_all",
+        external_dag_id="copy_deduplicate",
+        external_task_id="copy_deduplicate_all",
+        execution_delta=datetime.timedelta(seconds=14400),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_event_events = ExternalTaskSensor(
+        task_id="wait_for_event_events",
+        external_dag_id="copy_deduplicate",
+        external_task_id="event_events",
+        execution_delta=datetime.timedelta(seconds=14400),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_telemetry_derived__addons__v2 = ExternalTaskSensor(
+        task_id="wait_for_telemetry_derived__addons__v2",
+        external_dag_id="bqetl_addons",
+        external_task_id="telemetry_derived__addons__v2",
+        execution_delta=datetime.timedelta(seconds=3600),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_telemetry_derived__clients_last_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_telemetry_derived__clients_last_seen__v1",
+        external_dag_id="bqetl_main_summary",
+        external_task_id="telemetry_derived__clients_last_seen__v1",
+        execution_delta=datetime.timedelta(seconds=10800),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_telemetry_derived__main_remainder_1pct__v1 = ExternalTaskSensor(
+        task_id="wait_for_telemetry_derived__main_remainder_1pct__v1",
+        external_dag_id="bqetl_main_summary",
+        external_task_id="telemetry_derived__main_remainder_1pct__v1",
+        execution_delta=datetime.timedelta(seconds=10800),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     telemetry_derived__feature_usage__v2 = bigquery_etl_query(
         task_id="telemetry_derived__feature_usage__v2",
         destination_table="feature_usage_v2",
@@ -75,85 +147,18 @@ with DAG(
         depends_on_past=False,
     )
 
-    wait_for_bq_main_events = ExternalTaskSensor(
-        task_id="wait_for_bq_main_events",
-        external_dag_id="copy_deduplicate",
-        external_task_id="bq_main_events",
-        execution_delta=datetime.timedelta(seconds=14400),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
     telemetry_derived__feature_usage__v2.set_upstream(wait_for_bq_main_events)
-    wait_for_copy_deduplicate_all = ExternalTaskSensor(
-        task_id="wait_for_copy_deduplicate_all",
-        external_dag_id="copy_deduplicate",
-        external_task_id="copy_deduplicate_all",
-        execution_delta=datetime.timedelta(seconds=14400),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
 
     telemetry_derived__feature_usage__v2.set_upstream(wait_for_copy_deduplicate_all)
-    wait_for_event_events = ExternalTaskSensor(
-        task_id="wait_for_event_events",
-        external_dag_id="copy_deduplicate",
-        external_task_id="event_events",
-        execution_delta=datetime.timedelta(seconds=14400),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
 
     telemetry_derived__feature_usage__v2.set_upstream(wait_for_event_events)
-    wait_for_telemetry_derived__addons__v2 = ExternalTaskSensor(
-        task_id="wait_for_telemetry_derived__addons__v2",
-        external_dag_id="bqetl_addons",
-        external_task_id="telemetry_derived__addons__v2",
-        execution_delta=datetime.timedelta(seconds=3600),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
 
     telemetry_derived__feature_usage__v2.set_upstream(
         wait_for_telemetry_derived__addons__v2
     )
-    wait_for_telemetry_derived__clients_last_seen__v1 = ExternalTaskSensor(
-        task_id="wait_for_telemetry_derived__clients_last_seen__v1",
-        external_dag_id="bqetl_main_summary",
-        external_task_id="telemetry_derived__clients_last_seen__v1",
-        execution_delta=datetime.timedelta(seconds=10800),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
 
     telemetry_derived__feature_usage__v2.set_upstream(
         wait_for_telemetry_derived__clients_last_seen__v1
-    )
-    wait_for_telemetry_derived__main_remainder_1pct__v1 = ExternalTaskSensor(
-        task_id="wait_for_telemetry_derived__main_remainder_1pct__v1",
-        external_dag_id="bqetl_main_summary",
-        external_task_id="telemetry_derived__main_remainder_1pct__v1",
-        execution_delta=datetime.timedelta(seconds=10800),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     telemetry_derived__feature_usage__v2.set_upstream(

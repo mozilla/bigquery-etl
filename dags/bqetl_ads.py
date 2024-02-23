@@ -50,6 +50,18 @@ with DAG(
     tags=tags,
 ) as dag:
 
+    wait_for_copy_deduplicate_all = ExternalTaskSensor(
+        task_id="wait_for_copy_deduplicate_all",
+        external_dag_id="copy_deduplicate",
+        external_task_id="copy_deduplicate_all",
+        execution_delta=datetime.timedelta(days=-1, seconds=82800),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     ads_derived__nt_visits_to_sessions_conversion_factors_daily__v1 = (
         bigquery_etl_query(
             task_id="ads_derived__nt_visits_to_sessions_conversion_factors_daily__v1",
@@ -65,18 +77,6 @@ with DAG(
             date_partition_parameter="submission_date",
             depends_on_past=False,
         )
-    )
-
-    wait_for_copy_deduplicate_all = ExternalTaskSensor(
-        task_id="wait_for_copy_deduplicate_all",
-        external_dag_id="copy_deduplicate",
-        external_task_id="copy_deduplicate_all",
-        execution_delta=datetime.timedelta(days=-1, seconds=82800),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     ads_derived__nt_visits_to_sessions_conversion_factors_daily__v1.set_upstream(

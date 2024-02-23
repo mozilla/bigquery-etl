@@ -56,6 +56,18 @@ with DAG(
     tags=tags,
 ) as dag:
 
+    wait_for_mozilla_vpn_derived__all_subscriptions__v1 = ExternalTaskSensor(
+        task_id="wait_for_mozilla_vpn_derived__all_subscriptions__v1",
+        external_dag_id="bqetl_subplat",
+        external_task_id="mozilla_vpn_derived__all_subscriptions__v1",
+        execution_delta=datetime.timedelta(seconds=47700),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     mozilla_vpn_derived__funnel_ga_to_subscriptions__v1 = bigquery_etl_query(
         task_id="mozilla_vpn_derived__funnel_ga_to_subscriptions__v1",
         destination_table="funnel_ga_to_subscriptions_v1",
@@ -92,18 +104,6 @@ with DAG(
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="date",
         depends_on_past=False,
-    )
-
-    wait_for_mozilla_vpn_derived__all_subscriptions__v1 = ExternalTaskSensor(
-        task_id="wait_for_mozilla_vpn_derived__all_subscriptions__v1",
-        external_dag_id="bqetl_subplat",
-        external_task_id="mozilla_vpn_derived__all_subscriptions__v1",
-        execution_delta=datetime.timedelta(seconds=47700),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     mozilla_vpn_derived__funnel_ga_to_subscriptions__v1.set_upstream(

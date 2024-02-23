@@ -67,6 +67,48 @@ with DAG(
     tags=tags,
 ) as dag:
 
+    wait_for_firefox_accounts_derived__fxa_gcp_stderr_events__v1 = ExternalTaskSensor(
+        task_id="wait_for_firefox_accounts_derived__fxa_gcp_stderr_events__v1",
+        external_dag_id="bqetl_fxa_events",
+        external_task_id="firefox_accounts_derived__fxa_gcp_stderr_events__v1",
+        execution_delta=datetime.timedelta(seconds=900),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_firefox_accounts_derived__fxa_gcp_stdout_events__v1 = ExternalTaskSensor(
+        task_id="wait_for_firefox_accounts_derived__fxa_gcp_stdout_events__v1",
+        external_dag_id="bqetl_fxa_events",
+        external_task_id="firefox_accounts_derived__fxa_gcp_stdout_events__v1",
+        execution_delta=datetime.timedelta(seconds=900),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_firefox_accounts_derived__fxa_stdout_events__v1 = ExternalTaskSensor(
+        task_id="wait_for_firefox_accounts_derived__fxa_stdout_events__v1",
+        external_dag_id="bqetl_fxa_events",
+        external_task_id="firefox_accounts_derived__fxa_stdout_events__v1",
+        execution_delta=datetime.timedelta(seconds=900),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    fivetran_stripe_sync_start = FivetranOperator(
+        connector_id="{{ var.value.fivetran_stripe_connector_id }}",
+        task_id="fivetran_stripe_task",
+        task_concurrency=1,
+    )
+
     cjms_bigquery__flows__v1 = bigquery_etl_query(
         task_id="cjms_bigquery__flows__v1",
         destination_table="flows_v1",
@@ -1191,46 +1233,12 @@ with DAG(
         depends_on_past=True,
     )
 
-    wait_for_firefox_accounts_derived__fxa_gcp_stderr_events__v1 = ExternalTaskSensor(
-        task_id="wait_for_firefox_accounts_derived__fxa_gcp_stderr_events__v1",
-        external_dag_id="bqetl_fxa_events",
-        external_task_id="firefox_accounts_derived__fxa_gcp_stderr_events__v1",
-        execution_delta=datetime.timedelta(seconds=900),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
     cjms_bigquery__flows__v1.set_upstream(
         wait_for_firefox_accounts_derived__fxa_gcp_stderr_events__v1
-    )
-    wait_for_firefox_accounts_derived__fxa_gcp_stdout_events__v1 = ExternalTaskSensor(
-        task_id="wait_for_firefox_accounts_derived__fxa_gcp_stdout_events__v1",
-        external_dag_id="bqetl_fxa_events",
-        external_task_id="firefox_accounts_derived__fxa_gcp_stdout_events__v1",
-        execution_delta=datetime.timedelta(seconds=900),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     cjms_bigquery__flows__v1.set_upstream(
         wait_for_firefox_accounts_derived__fxa_gcp_stdout_events__v1
-    )
-    wait_for_firefox_accounts_derived__fxa_stdout_events__v1 = ExternalTaskSensor(
-        task_id="wait_for_firefox_accounts_derived__fxa_stdout_events__v1",
-        external_dag_id="bqetl_fxa_events",
-        external_task_id="firefox_accounts_derived__fxa_stdout_events__v1",
-        execution_delta=datetime.timedelta(seconds=900),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     cjms_bigquery__flows__v1.set_upstream(
@@ -1346,9 +1354,11 @@ with DAG(
     mozilla_vpn_derived__funnel_product_page_to_subscribed__v1.set_upstream(
         wait_for_firefox_accounts_derived__fxa_gcp_stderr_events__v1
     )
+
     mozilla_vpn_derived__funnel_product_page_to_subscribed__v1.set_upstream(
         wait_for_firefox_accounts_derived__fxa_gcp_stdout_events__v1
     )
+
     mozilla_vpn_derived__funnel_product_page_to_subscribed__v1.set_upstream(
         wait_for_firefox_accounts_derived__fxa_stdout_events__v1
     )
@@ -1364,9 +1374,11 @@ with DAG(
     mozilla_vpn_derived__fxa_attribution__v1.set_upstream(
         wait_for_firefox_accounts_derived__fxa_gcp_stderr_events__v1
     )
+
     mozilla_vpn_derived__fxa_attribution__v1.set_upstream(
         wait_for_firefox_accounts_derived__fxa_gcp_stdout_events__v1
     )
+
     mozilla_vpn_derived__fxa_attribution__v1.set_upstream(
         wait_for_firefox_accounts_derived__fxa_stdout_events__v1
     )
@@ -1378,9 +1390,11 @@ with DAG(
     mozilla_vpn_derived__login_flows__v1.set_upstream(
         wait_for_firefox_accounts_derived__fxa_gcp_stderr_events__v1
     )
+
     mozilla_vpn_derived__login_flows__v1.set_upstream(
         wait_for_firefox_accounts_derived__fxa_gcp_stdout_events__v1
     )
+
     mozilla_vpn_derived__login_flows__v1.set_upstream(
         wait_for_firefox_accounts_derived__fxa_stdout_events__v1
     )
@@ -1421,12 +1435,6 @@ with DAG(
 
     relay_derived__subscriptions__v1.set_upstream(
         subscription_platform_derived__stripe_subscriptions_history__v1
-    )
-
-    fivetran_stripe_sync_start = FivetranOperator(
-        connector_id="{{ var.value.fivetran_stripe_connector_id }}",
-        task_id="fivetran_stripe_task",
-        task_concurrency=1,
     )
 
     stripe_external__card__v1.set_upstream(fivetran_stripe_sync_start)
@@ -1712,9 +1720,11 @@ with DAG(
     subscription_platform_derived__subplat_flow_events__v1.set_upstream(
         wait_for_firefox_accounts_derived__fxa_gcp_stderr_events__v1
     )
+
     subscription_platform_derived__subplat_flow_events__v1.set_upstream(
         wait_for_firefox_accounts_derived__fxa_gcp_stdout_events__v1
     )
+
     subscription_platform_derived__subplat_flow_events__v1.set_upstream(
         wait_for_firefox_accounts_derived__fxa_stdout_events__v1
     )

@@ -54,6 +54,174 @@ with DAG(
     tags=tags,
 ) as dag:
 
+    wait_for_fenix_derived__new_profile_activation__v1 = ExternalTaskSensor(
+        task_id="wait_for_fenix_derived__new_profile_activation__v1",
+        external_dag_id="bqetl_mobile_activation",
+        external_task_id="fenix_derived__new_profile_activation__v1",
+        execution_delta=datetime.timedelta(seconds=7200),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_copy_deduplicate_all = ExternalTaskSensor(
+        task_id="wait_for_copy_deduplicate_all",
+        external_dag_id="copy_deduplicate",
+        external_task_id="copy_deduplicate_all",
+        execution_delta=datetime.timedelta(seconds=3600),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_telemetry_derived__clients_daily__v6 = ExternalTaskSensor(
+        task_id="wait_for_telemetry_derived__clients_daily__v6",
+        external_dag_id="bqetl_main_summary",
+        external_task_id="telemetry_derived__clients_daily__v6",
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_copy_deduplicate_first_shutdown_ping = ExternalTaskSensor(
+        task_id="wait_for_copy_deduplicate_first_shutdown_ping",
+        external_dag_id="copy_deduplicate",
+        external_task_id="copy_deduplicate_first_shutdown_ping",
+        execution_delta=datetime.timedelta(seconds=3600),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_org_mozilla_fenix_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_org_mozilla_fenix_derived__baseline_clients_last_seen__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="fenix.org_mozilla_fenix_derived__baseline_clients_last_seen__v1",
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="fenix.org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1",
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="fenix.org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1",
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="fenix.org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1",
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_org_mozilla_firefox_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_org_mozilla_firefox_derived__baseline_clients_last_seen__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="fenix.org_mozilla_firefox_derived__baseline_clients_last_seen__v1",
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_org_mozilla_fenix_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
+        task_id="wait_for_org_mozilla_fenix_derived__baseline_clients_daily__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="fenix.org_mozilla_fenix_derived__baseline_clients_daily__v1",
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_org_mozilla_fenix_nightly_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
+        task_id="wait_for_org_mozilla_fenix_nightly_derived__baseline_clients_daily__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="fenix.org_mozilla_fenix_nightly_derived__baseline_clients_daily__v1",
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_org_mozilla_fennec_aurora_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
+        task_id="wait_for_org_mozilla_fennec_aurora_derived__baseline_clients_daily__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="fenix.org_mozilla_fennec_aurora_derived__baseline_clients_daily__v1",
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_org_mozilla_firefox_beta_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
+        task_id="wait_for_org_mozilla_firefox_beta_derived__baseline_clients_daily__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="fenix.org_mozilla_firefox_beta_derived__baseline_clients_daily__v1",
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_org_mozilla_firefox_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
+        task_id="wait_for_org_mozilla_firefox_derived__baseline_clients_daily__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="fenix.org_mozilla_firefox_derived__baseline_clients_daily__v1",
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_telemetry_derived__clients_last_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_telemetry_derived__clients_last_seen__v1",
+        external_dag_id="bqetl_main_summary",
+        external_task_id="telemetry_derived__clients_last_seen__v1",
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     checks__fail_fenix_derived__firefox_android_clients__v1 = bigquery_dq_check(
         task_id="checks__fail_fenix_derived__firefox_android_clients__v1",
         source_table="firefox_android_clients_v1",
@@ -287,18 +455,6 @@ with DAG(
         parameters=["submission_date:DATE:{{ds}}"],
     )
 
-    wait_for_fenix_derived__new_profile_activation__v1 = ExternalTaskSensor(
-        task_id="wait_for_fenix_derived__new_profile_activation__v1",
-        external_dag_id="bqetl_mobile_activation",
-        external_task_id="fenix_derived__new_profile_activation__v1",
-        execution_delta=datetime.timedelta(seconds=7200),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
     checks__fail_fenix_derived__firefox_android_clients__v1.set_upstream(
         wait_for_fenix_derived__new_profile_activation__v1
     )
@@ -310,30 +466,9 @@ with DAG(
     checks__fail_telemetry_derived__clients_first_seen__v2.set_upstream(
         clients_first_seen_v2
     )
-    wait_for_copy_deduplicate_all = ExternalTaskSensor(
-        task_id="wait_for_copy_deduplicate_all",
-        external_dag_id="copy_deduplicate",
-        external_task_id="copy_deduplicate_all",
-        execution_delta=datetime.timedelta(seconds=3600),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
 
     checks__fail_telemetry_derived__clients_first_seen__v2.set_upstream(
         wait_for_copy_deduplicate_all
-    )
-    wait_for_telemetry_derived__clients_daily__v6 = ExternalTaskSensor(
-        task_id="wait_for_telemetry_derived__clients_daily__v6",
-        external_dag_id="bqetl_main_summary",
-        external_task_id="telemetry_derived__clients_daily__v6",
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     checks__fail_telemetry_derived__clients_first_seen__v2.set_upstream(
@@ -349,89 +484,29 @@ with DAG(
     )
 
     clients_first_seen_v2.set_upstream(wait_for_copy_deduplicate_all)
-    wait_for_copy_deduplicate_first_shutdown_ping = ExternalTaskSensor(
-        task_id="wait_for_copy_deduplicate_first_shutdown_ping",
-        external_dag_id="copy_deduplicate",
-        external_task_id="copy_deduplicate_first_shutdown_ping",
-        execution_delta=datetime.timedelta(seconds=3600),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
 
     clients_first_seen_v2.set_upstream(wait_for_copy_deduplicate_first_shutdown_ping)
+
     clients_first_seen_v2.set_upstream(wait_for_telemetry_derived__clients_daily__v6)
 
     fenix_derived__funnel_retention_clients_week_2__v1.set_upstream(
         checks__fail_fenix_derived__firefox_android_clients__v1
     )
-    wait_for_org_mozilla_fenix_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
-        task_id="wait_for_org_mozilla_fenix_derived__baseline_clients_last_seen__v1",
-        external_dag_id="bqetl_glean_usage",
-        external_task_id="fenix.org_mozilla_fenix_derived__baseline_clients_last_seen__v1",
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
 
     fenix_derived__funnel_retention_clients_week_2__v1.set_upstream(
         wait_for_org_mozilla_fenix_derived__baseline_clients_last_seen__v1
-    )
-    wait_for_org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
-        task_id="wait_for_org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1",
-        external_dag_id="bqetl_glean_usage",
-        external_task_id="fenix.org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1",
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     fenix_derived__funnel_retention_clients_week_2__v1.set_upstream(
         wait_for_org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1
     )
-    wait_for_org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
-        task_id="wait_for_org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1",
-        external_dag_id="bqetl_glean_usage",
-        external_task_id="fenix.org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1",
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
 
     fenix_derived__funnel_retention_clients_week_2__v1.set_upstream(
         wait_for_org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1
     )
-    wait_for_org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
-        task_id="wait_for_org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1",
-        external_dag_id="bqetl_glean_usage",
-        external_task_id="fenix.org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1",
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
 
     fenix_derived__funnel_retention_clients_week_2__v1.set_upstream(
         wait_for_org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1
-    )
-    wait_for_org_mozilla_firefox_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
-        task_id="wait_for_org_mozilla_firefox_derived__baseline_clients_last_seen__v1",
-        external_dag_id="bqetl_glean_usage",
-        external_task_id="fenix.org_mozilla_firefox_derived__baseline_clients_last_seen__v1",
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     fenix_derived__funnel_retention_clients_week_2__v1.set_upstream(
@@ -441,18 +516,23 @@ with DAG(
     fenix_derived__funnel_retention_clients_week_4__v1.set_upstream(
         checks__fail_fenix_derived__firefox_android_clients__v1
     )
+
     fenix_derived__funnel_retention_clients_week_4__v1.set_upstream(
         wait_for_org_mozilla_fenix_derived__baseline_clients_last_seen__v1
     )
+
     fenix_derived__funnel_retention_clients_week_4__v1.set_upstream(
         wait_for_org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1
     )
+
     fenix_derived__funnel_retention_clients_week_4__v1.set_upstream(
         wait_for_org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1
     )
+
     fenix_derived__funnel_retention_clients_week_4__v1.set_upstream(
         wait_for_org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1
     )
+
     fenix_derived__funnel_retention_clients_week_4__v1.set_upstream(
         wait_for_org_mozilla_firefox_derived__baseline_clients_last_seen__v1
     )
@@ -462,74 +542,25 @@ with DAG(
     )
 
     firefox_android_clients.set_upstream(wait_for_copy_deduplicate_all)
+
     firefox_android_clients.set_upstream(
         wait_for_fenix_derived__new_profile_activation__v1
-    )
-    wait_for_org_mozilla_fenix_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
-        task_id="wait_for_org_mozilla_fenix_derived__baseline_clients_daily__v1",
-        external_dag_id="bqetl_glean_usage",
-        external_task_id="fenix.org_mozilla_fenix_derived__baseline_clients_daily__v1",
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     firefox_android_clients.set_upstream(
         wait_for_org_mozilla_fenix_derived__baseline_clients_daily__v1
     )
-    wait_for_org_mozilla_fenix_nightly_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
-        task_id="wait_for_org_mozilla_fenix_nightly_derived__baseline_clients_daily__v1",
-        external_dag_id="bqetl_glean_usage",
-        external_task_id="fenix.org_mozilla_fenix_nightly_derived__baseline_clients_daily__v1",
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
 
     firefox_android_clients.set_upstream(
         wait_for_org_mozilla_fenix_nightly_derived__baseline_clients_daily__v1
-    )
-    wait_for_org_mozilla_fennec_aurora_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
-        task_id="wait_for_org_mozilla_fennec_aurora_derived__baseline_clients_daily__v1",
-        external_dag_id="bqetl_glean_usage",
-        external_task_id="fenix.org_mozilla_fennec_aurora_derived__baseline_clients_daily__v1",
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     firefox_android_clients.set_upstream(
         wait_for_org_mozilla_fennec_aurora_derived__baseline_clients_daily__v1
     )
-    wait_for_org_mozilla_firefox_beta_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
-        task_id="wait_for_org_mozilla_firefox_beta_derived__baseline_clients_daily__v1",
-        external_dag_id="bqetl_glean_usage",
-        external_task_id="fenix.org_mozilla_firefox_beta_derived__baseline_clients_daily__v1",
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
 
     firefox_android_clients.set_upstream(
         wait_for_org_mozilla_firefox_beta_derived__baseline_clients_daily__v1
-    )
-    wait_for_org_mozilla_firefox_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
-        task_id="wait_for_org_mozilla_firefox_derived__baseline_clients_daily__v1",
-        external_dag_id="bqetl_glean_usage",
-        external_task_id="fenix.org_mozilla_firefox_derived__baseline_clients_daily__v1",
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     firefox_android_clients.set_upstream(
@@ -538,16 +569,6 @@ with DAG(
 
     telemetry_derived__clients_first_seen_28_days_later__v1.set_upstream(
         checks__fail_telemetry_derived__clients_first_seen__v2
-    )
-    wait_for_telemetry_derived__clients_last_seen__v1 = ExternalTaskSensor(
-        task_id="wait_for_telemetry_derived__clients_last_seen__v1",
-        external_dag_id="bqetl_main_summary",
-        external_task_id="telemetry_derived__clients_last_seen__v1",
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     telemetry_derived__clients_first_seen_28_days_later__v1.set_upstream(

@@ -50,6 +50,30 @@ with DAG(
     tags=tags,
 ) as dag:
 
+    wait_for_checks__fail_telemetry_derived__unified_metrics__v1 = ExternalTaskSensor(
+        task_id="wait_for_checks__fail_telemetry_derived__unified_metrics__v1",
+        external_dag_id="bqetl_unified",
+        external_task_id="checks__fail_telemetry_derived__unified_metrics__v1",
+        execution_delta=datetime.timedelta(days=-1, seconds=75600),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_copy_deduplicate_all = ExternalTaskSensor(
+        task_id="wait_for_copy_deduplicate_all",
+        external_dag_id="copy_deduplicate",
+        external_task_id="copy_deduplicate_all",
+        execution_delta=datetime.timedelta(days=-1, seconds=82800),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     telemetry_derived__newtab_interactions__v1 = bigquery_etl_query(
         task_id="telemetry_derived__newtab_interactions__v1",
         destination_table="newtab_interactions_v1",
@@ -72,31 +96,8 @@ with DAG(
         depends_on_past=False,
     )
 
-    wait_for_checks__fail_telemetry_derived__unified_metrics__v1 = ExternalTaskSensor(
-        task_id="wait_for_checks__fail_telemetry_derived__unified_metrics__v1",
-        external_dag_id="bqetl_unified",
-        external_task_id="checks__fail_telemetry_derived__unified_metrics__v1",
-        execution_delta=datetime.timedelta(days=-1, seconds=75600),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
     telemetry_derived__newtab_interactions__v1.set_upstream(
         wait_for_checks__fail_telemetry_derived__unified_metrics__v1
-    )
-    wait_for_copy_deduplicate_all = ExternalTaskSensor(
-        task_id="wait_for_copy_deduplicate_all",
-        external_dag_id="copy_deduplicate",
-        external_task_id="copy_deduplicate_all",
-        execution_delta=datetime.timedelta(days=-1, seconds=82800),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     telemetry_derived__newtab_interactions__v1.set_upstream(
@@ -106,4 +107,5 @@ with DAG(
     telemetry_derived__newtab_visits__v1.set_upstream(
         wait_for_checks__fail_telemetry_derived__unified_metrics__v1
     )
+
     telemetry_derived__newtab_visits__v1.set_upstream(wait_for_copy_deduplicate_all)

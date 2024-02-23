@@ -52,6 +52,18 @@ with DAG(
     tags=tags,
 ) as dag:
 
+    wait_for_copy_deduplicate_all = ExternalTaskSensor(
+        task_id="wait_for_copy_deduplicate_all",
+        external_dag_id="copy_deduplicate",
+        external_task_id="copy_deduplicate_all",
+        execution_delta=datetime.timedelta(seconds=3600),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     search_derived__mobile_search_aggregates__v1 = bigquery_etl_query(
         task_id="search_derived__mobile_search_aggregates__v1",
         destination_table="mobile_search_aggregates_v1",
@@ -170,18 +182,6 @@ with DAG(
 
     search_derived__mobile_search_aggregates__v1.set_upstream(
         search_derived__mobile_search_clients_daily__v1
-    )
-
-    wait_for_copy_deduplicate_all = ExternalTaskSensor(
-        task_id="wait_for_copy_deduplicate_all",
-        external_dag_id="copy_deduplicate",
-        external_task_id="copy_deduplicate_all",
-        execution_delta=datetime.timedelta(seconds=3600),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     search_derived__mobile_search_clients_daily__v1.set_upstream(

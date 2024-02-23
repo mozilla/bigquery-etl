@@ -50,6 +50,18 @@ with DAG(
     tags=tags,
 ) as dag:
 
+    wait_for_ga_derived__www_site_empty_check__v1 = ExternalTaskSensor(
+        task_id="wait_for_ga_derived__www_site_empty_check__v1",
+        external_dag_id="bqetl_google_analytics_derived",
+        external_task_id="ga_derived__www_site_empty_check__v1",
+        execution_delta=datetime.timedelta(days=1),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     checks__fail_ga_derived__downloads_with_attribution__v2 = bigquery_dq_check(
         task_id="checks__fail_ga_derived__downloads_with_attribution__v2",
         source_table='downloads_with_attribution_v2${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
@@ -77,18 +89,6 @@ with DAG(
 
     checks__fail_ga_derived__downloads_with_attribution__v2.set_upstream(
         ga_derived__downloads_with_attribution__v2
-    )
-
-    wait_for_ga_derived__www_site_empty_check__v1 = ExternalTaskSensor(
-        task_id="wait_for_ga_derived__www_site_empty_check__v1",
-        external_dag_id="bqetl_google_analytics_derived",
-        external_task_id="ga_derived__www_site_empty_check__v1",
-        execution_delta=datetime.timedelta(days=1),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     ga_derived__downloads_with_attribution__v2.set_upstream(

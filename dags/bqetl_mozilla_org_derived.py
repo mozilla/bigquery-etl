@@ -47,6 +47,78 @@ with DAG(
     tags=tags,
 ) as dag:
 
+    wait_for_mozilla_org_derived__ga_sessions__v1__backfill__1 = ExternalTaskSensor(
+        task_id="wait_for_mozilla_org_derived__ga_sessions__v1__backfill_-1",
+        external_dag_id="ga_sessions_backfill",
+        external_task_id="mozilla_org_derived__ga_sessions__v1__backfill_-1",
+        execution_delta=datetime.timedelta(seconds=3600),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_mozilla_org_derived__ga_sessions__v1__backfill__2 = ExternalTaskSensor(
+        task_id="wait_for_mozilla_org_derived__ga_sessions__v1__backfill_-2",
+        external_dag_id="ga_sessions_backfill",
+        external_task_id="mozilla_org_derived__ga_sessions__v1__backfill_-2",
+        execution_delta=datetime.timedelta(seconds=3600),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_mozilla_org_derived__ga_sessions__v1__backfill__3 = ExternalTaskSensor(
+        task_id="wait_for_mozilla_org_derived__ga_sessions__v1__backfill_-3",
+        external_dag_id="ga_sessions_backfill",
+        external_task_id="mozilla_org_derived__ga_sessions__v1__backfill_-3",
+        execution_delta=datetime.timedelta(seconds=3600),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_checks__fail_telemetry_derived__clients_first_seen__v2 = (
+        ExternalTaskSensor(
+            task_id="wait_for_checks__fail_telemetry_derived__clients_first_seen__v2",
+            external_dag_id="bqetl_analytics_tables",
+            external_task_id="checks__fail_telemetry_derived__clients_first_seen__v2",
+            check_existence=True,
+            mode="reschedule",
+            allowed_states=ALLOWED_STATES,
+            failed_states=FAILED_STATES,
+            pool="DATA_ENG_EXTERNALTASKSENSOR",
+        )
+    )
+
+    wait_for_telemetry_derived__clients_daily__v6 = ExternalTaskSensor(
+        task_id="wait_for_telemetry_derived__clients_daily__v6",
+        external_dag_id="bqetl_main_summary",
+        external_task_id="telemetry_derived__clients_daily__v6",
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_mozilla_org_derived__ga_sessions__v2 = ExternalTaskSensor(
+        task_id="wait_for_mozilla_org_derived__ga_sessions__v2",
+        external_dag_id="bqetl_google_analytics_derived_ga4",
+        external_task_id="mozilla_org_derived__ga_sessions__v2",
+        execution_delta=datetime.timedelta(days=-1, seconds=50400),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     checks__fail_mozilla_org_derived__ga_clients__v1 = bigquery_dq_check(
         task_id="checks__fail_mozilla_org_derived__ga_clients__v1",
         source_table="ga_clients_v1",
@@ -208,46 +280,12 @@ with DAG(
         checks__fail_mozilla_org_derived__ga_sessions__v1
     )
 
-    wait_for_mozilla_org_derived__ga_sessions__v1__backfill__1 = ExternalTaskSensor(
-        task_id="wait_for_mozilla_org_derived__ga_sessions__v1__backfill_-1",
-        external_dag_id="ga_sessions_backfill",
-        external_task_id="mozilla_org_derived__ga_sessions__v1__backfill_-1",
-        execution_delta=datetime.timedelta(seconds=3600),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
     mozilla_org_derived__ga_sessions__v1.set_upstream(
         wait_for_mozilla_org_derived__ga_sessions__v1__backfill__1
-    )
-    wait_for_mozilla_org_derived__ga_sessions__v1__backfill__2 = ExternalTaskSensor(
-        task_id="wait_for_mozilla_org_derived__ga_sessions__v1__backfill_-2",
-        external_dag_id="ga_sessions_backfill",
-        external_task_id="mozilla_org_derived__ga_sessions__v1__backfill_-2",
-        execution_delta=datetime.timedelta(seconds=3600),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     mozilla_org_derived__ga_sessions__v1.set_upstream(
         wait_for_mozilla_org_derived__ga_sessions__v1__backfill__2
-    )
-    wait_for_mozilla_org_derived__ga_sessions__v1__backfill__3 = ExternalTaskSensor(
-        task_id="wait_for_mozilla_org_derived__ga_sessions__v1__backfill_-3",
-        external_dag_id="ga_sessions_backfill",
-        external_task_id="mozilla_org_derived__ga_sessions__v1__backfill_-3",
-        execution_delta=datetime.timedelta(seconds=3600),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     mozilla_org_derived__ga_sessions__v1.set_upstream(
@@ -261,31 +299,9 @@ with DAG(
     mozilla_org_derived__gclid_conversions__v1.set_upstream(
         checks__fail_stub_attribution_service_derived__dl_token_ga_attribution_lookup__v1
     )
-    wait_for_checks__fail_telemetry_derived__clients_first_seen__v2 = (
-        ExternalTaskSensor(
-            task_id="wait_for_checks__fail_telemetry_derived__clients_first_seen__v2",
-            external_dag_id="bqetl_analytics_tables",
-            external_task_id="checks__fail_telemetry_derived__clients_first_seen__v2",
-            check_existence=True,
-            mode="reschedule",
-            allowed_states=ALLOWED_STATES,
-            failed_states=FAILED_STATES,
-            pool="DATA_ENG_EXTERNALTASKSENSOR",
-        )
-    )
 
     mozilla_org_derived__gclid_conversions__v1.set_upstream(
         wait_for_checks__fail_telemetry_derived__clients_first_seen__v2
-    )
-    wait_for_telemetry_derived__clients_daily__v6 = ExternalTaskSensor(
-        task_id="wait_for_telemetry_derived__clients_daily__v6",
-        external_dag_id="bqetl_main_summary",
-        external_task_id="telemetry_derived__clients_daily__v6",
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     mozilla_org_derived__gclid_conversions__v1.set_upstream(
@@ -295,24 +311,15 @@ with DAG(
     mozilla_org_derived__gclid_conversions__v2.set_upstream(
         checks__fail_stub_attribution_service_derived__dl_token_ga_attribution_lookup__v1
     )
+
     mozilla_org_derived__gclid_conversions__v2.set_upstream(
         wait_for_checks__fail_telemetry_derived__clients_first_seen__v2
-    )
-    wait_for_mozilla_org_derived__ga_sessions__v2 = ExternalTaskSensor(
-        task_id="wait_for_mozilla_org_derived__ga_sessions__v2",
-        external_dag_id="bqetl_google_analytics_derived_ga4",
-        external_task_id="mozilla_org_derived__ga_sessions__v2",
-        execution_delta=datetime.timedelta(days=-1, seconds=50400),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     mozilla_org_derived__gclid_conversions__v2.set_upstream(
         wait_for_mozilla_org_derived__ga_sessions__v2
     )
+
     mozilla_org_derived__gclid_conversions__v2.set_upstream(
         wait_for_telemetry_derived__clients_daily__v6
     )

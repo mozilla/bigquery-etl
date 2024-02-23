@@ -53,6 +53,12 @@ with DAG(
     tags=tags,
 ) as dag:
 
+    fivetran_log_prod_sync_start = FivetranOperator(
+        connector_id="{{ var.value.fivetran_log_prod_connector_id }}",
+        task_id="fivetran_log_prod_task",
+        task_concurrency=1,
+    )
+
     checks__fail_fivetran_costs_derived__daily_connector_costs__v1 = bigquery_dq_check(
         task_id="checks__fail_fivetran_costs_derived__daily_connector_costs__v1",
         source_table="daily_connector_costs_v1",
@@ -162,12 +168,6 @@ with DAG(
 
     fivetran_costs_derived__daily_connector_costs__v1.set_upstream(
         fivetran_costs_derived__destinations__v1
-    )
-
-    fivetran_log_prod_sync_start = FivetranOperator(
-        connector_id="{{ var.value.fivetran_log_prod_connector_id }}",
-        task_id="fivetran_log_prod_task",
-        task_concurrency=1,
     )
 
     fivetran_costs_derived__destinations__v1.set_upstream(fivetran_log_prod_sync_start)

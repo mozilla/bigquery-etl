@@ -50,6 +50,80 @@ with DAG(
     tags=tags,
 ) as dag:
 
+    wait_for_copy_deduplicate_all = ExternalTaskSensor(
+        task_id="wait_for_copy_deduplicate_all",
+        external_dag_id="copy_deduplicate",
+        external_task_id="copy_deduplicate_all",
+        execution_delta=datetime.timedelta(days=-1, seconds=82800),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_search_derived__search_clients_daily__v8 = ExternalTaskSensor(
+        task_id="wait_for_search_derived__search_clients_daily__v8",
+        external_dag_id="bqetl_search",
+        external_task_id="search_derived__search_clients_daily__v8",
+        execution_delta=datetime.timedelta(days=-1, seconds=75600),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_telemetry_derived__clients_daily_joined__v1 = ExternalTaskSensor(
+        task_id="wait_for_telemetry_derived__clients_daily_joined__v1",
+        external_dag_id="bqetl_main_summary",
+        external_task_id="telemetry_derived__clients_daily_joined__v1",
+        execution_delta=datetime.timedelta(days=-1, seconds=79200),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_checks__fail_telemetry_derived__clients_first_seen__v2 = (
+        ExternalTaskSensor(
+            task_id="wait_for_checks__fail_telemetry_derived__clients_first_seen__v2",
+            external_dag_id="bqetl_analytics_tables",
+            external_task_id="checks__fail_telemetry_derived__clients_first_seen__v2",
+            execution_delta=datetime.timedelta(days=-1, seconds=79200),
+            check_existence=True,
+            mode="reschedule",
+            allowed_states=ALLOWED_STATES,
+            failed_states=FAILED_STATES,
+            pool="DATA_ENG_EXTERNALTASKSENSOR",
+        )
+    )
+
+    wait_for_firefox_desktop_derived__onboarding__v2 = ExternalTaskSensor(
+        task_id="wait_for_firefox_desktop_derived__onboarding__v2",
+        external_dag_id="bqetl_messaging_system",
+        external_task_id="firefox_desktop_derived__onboarding__v2",
+        execution_delta=datetime.timedelta(days=-1, seconds=79200),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_search_derived__mobile_search_clients_daily__v1 = ExternalTaskSensor(
+        task_id="wait_for_search_derived__mobile_search_clients_daily__v1",
+        external_dag_id="bqetl_mobile_search",
+        external_task_id="search_derived__mobile_search_clients_daily__v1",
+        execution_delta=datetime.timedelta(days=-1, seconds=79200),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     firefox_desktop_review_checker_clients__v1 = bigquery_etl_query(
         task_id="firefox_desktop_review_checker_clients__v1",
         destination_table="review_checker_clients_v1",
@@ -155,46 +229,12 @@ with DAG(
         depends_on_past=False,
     )
 
-    wait_for_copy_deduplicate_all = ExternalTaskSensor(
-        task_id="wait_for_copy_deduplicate_all",
-        external_dag_id="copy_deduplicate",
-        external_task_id="copy_deduplicate_all",
-        execution_delta=datetime.timedelta(days=-1, seconds=82800),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
     firefox_desktop_review_checker_clients__v1.set_upstream(
         wait_for_copy_deduplicate_all
-    )
-    wait_for_search_derived__search_clients_daily__v8 = ExternalTaskSensor(
-        task_id="wait_for_search_derived__search_clients_daily__v8",
-        external_dag_id="bqetl_search",
-        external_task_id="search_derived__search_clients_daily__v8",
-        execution_delta=datetime.timedelta(days=-1, seconds=75600),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     firefox_desktop_review_checker_clients__v1.set_upstream(
         wait_for_search_derived__search_clients_daily__v8
-    )
-    wait_for_telemetry_derived__clients_daily_joined__v1 = ExternalTaskSensor(
-        task_id="wait_for_telemetry_derived__clients_daily_joined__v1",
-        external_dag_id="bqetl_main_summary",
-        external_task_id="telemetry_derived__clients_daily_joined__v1",
-        execution_delta=datetime.timedelta(days=-1, seconds=79200),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     firefox_desktop_review_checker_clients__v1.set_upstream(
@@ -205,36 +245,12 @@ with DAG(
         wait_for_copy_deduplicate_all
     )
 
-    wait_for_checks__fail_telemetry_derived__clients_first_seen__v2 = (
-        ExternalTaskSensor(
-            task_id="wait_for_checks__fail_telemetry_derived__clients_first_seen__v2",
-            external_dag_id="bqetl_analytics_tables",
-            external_task_id="checks__fail_telemetry_derived__clients_first_seen__v2",
-            execution_delta=datetime.timedelta(days=-1, seconds=79200),
-            check_existence=True,
-            mode="reschedule",
-            allowed_states=ALLOWED_STATES,
-            failed_states=FAILED_STATES,
-            pool="DATA_ENG_EXTERNALTASKSENSOR",
-        )
-    )
-
     firefox_desktop_review_checker_microsurvey__v1.set_upstream(
         wait_for_checks__fail_telemetry_derived__clients_first_seen__v2
     )
+
     firefox_desktop_review_checker_microsurvey__v1.set_upstream(
         wait_for_copy_deduplicate_all
-    )
-    wait_for_firefox_desktop_derived__onboarding__v2 = ExternalTaskSensor(
-        task_id="wait_for_firefox_desktop_derived__onboarding__v2",
-        external_dag_id="bqetl_messaging_system",
-        external_task_id="firefox_desktop_derived__onboarding__v2",
-        execution_delta=datetime.timedelta(days=-1, seconds=79200),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     firefox_desktop_review_checker_microsurvey__v1.set_upstream(
@@ -243,17 +259,6 @@ with DAG(
 
     org_mozilla_fenix_review_checker_clients__v1.set_upstream(
         wait_for_copy_deduplicate_all
-    )
-    wait_for_search_derived__mobile_search_clients_daily__v1 = ExternalTaskSensor(
-        task_id="wait_for_search_derived__mobile_search_clients_daily__v1",
-        external_dag_id="bqetl_mobile_search",
-        external_task_id="search_derived__mobile_search_clients_daily__v1",
-        execution_delta=datetime.timedelta(days=-1, seconds=79200),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     org_mozilla_fenix_review_checker_clients__v1.set_upstream(
@@ -267,6 +272,7 @@ with DAG(
     org_mozilla_ios_firefox_review_checker_clients__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
+
     org_mozilla_ios_firefox_review_checker_clients__v1.set_upstream(
         wait_for_search_derived__mobile_search_clients_daily__v1
     )

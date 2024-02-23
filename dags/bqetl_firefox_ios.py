@@ -50,6 +50,126 @@ with DAG(
     tags=tags,
 ) as dag:
 
+    wait_for_app_store_external__firefox_app_store_territory_source_type_report__v1 = ExternalTaskSensor(
+        task_id="wait_for_app_store_external__firefox_app_store_territory_source_type_report__v1",
+        external_dag_id="bqetl_fivetran_copied_tables",
+        external_task_id="app_store_external__firefox_app_store_territory_source_type_report__v1",
+        execution_delta=datetime.timedelta(seconds=3600),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_app_store_external__firefox_downloads_territory_source_type_report__v1 = ExternalTaskSensor(
+        task_id="wait_for_app_store_external__firefox_downloads_territory_source_type_report__v1",
+        external_dag_id="bqetl_fivetran_copied_tables",
+        external_task_id="app_store_external__firefox_downloads_territory_source_type_report__v1",
+        execution_delta=datetime.timedelta(seconds=3600),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_copy_deduplicate_all = ExternalTaskSensor(
+        task_id="wait_for_copy_deduplicate_all",
+        external_dag_id="copy_deduplicate",
+        external_task_id="copy_deduplicate_all",
+        execution_delta=datetime.timedelta(seconds=10800),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_search_derived__mobile_search_clients_daily__v1 = ExternalTaskSensor(
+        task_id="wait_for_search_derived__mobile_search_clients_daily__v1",
+        external_dag_id="bqetl_mobile_search",
+        external_task_id="search_derived__mobile_search_clients_daily__v1",
+        execution_delta=datetime.timedelta(seconds=7200),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_org_mozilla_ios_fennec_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
+        task_id="wait_for_org_mozilla_ios_fennec_derived__baseline_clients_daily__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="firefox_ios.org_mozilla_ios_fennec_derived__baseline_clients_daily__v1",
+        execution_delta=datetime.timedelta(seconds=7200),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_org_mozilla_ios_firefox_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
+        task_id="wait_for_org_mozilla_ios_firefox_derived__baseline_clients_daily__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="firefox_ios.org_mozilla_ios_firefox_derived__baseline_clients_daily__v1",
+        execution_delta=datetime.timedelta(seconds=7200),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_org_mozilla_ios_firefoxbeta_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
+        task_id="wait_for_org_mozilla_ios_firefoxbeta_derived__baseline_clients_daily__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="firefox_ios.org_mozilla_ios_firefoxbeta_derived__baseline_clients_daily__v1",
+        execution_delta=datetime.timedelta(seconds=7200),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="firefox_ios.org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1",
+        execution_delta=datetime.timedelta(seconds=7200),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="firefox_ios.org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1",
+        execution_delta=datetime.timedelta(seconds=7200),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="firefox_ios.org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1",
+        execution_delta=datetime.timedelta(seconds=7200),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     checks__fail_firefox_ios_derived__app_store_funnel__v1 = bigquery_dq_check(
         task_id="checks__fail_firefox_ios_derived__app_store_funnel__v1",
         source_table="app_store_funnel_v1",
@@ -451,31 +571,8 @@ with DAG(
         firefox_ios_derived__firefox_ios_clients__v1
     )
 
-    wait_for_app_store_external__firefox_app_store_territory_source_type_report__v1 = ExternalTaskSensor(
-        task_id="wait_for_app_store_external__firefox_app_store_territory_source_type_report__v1",
-        external_dag_id="bqetl_fivetran_copied_tables",
-        external_task_id="app_store_external__firefox_app_store_territory_source_type_report__v1",
-        execution_delta=datetime.timedelta(seconds=3600),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
     firefox_ios_derived__app_store_funnel__v1.set_upstream(
         wait_for_app_store_external__firefox_app_store_territory_source_type_report__v1
-    )
-    wait_for_app_store_external__firefox_downloads_territory_source_type_report__v1 = ExternalTaskSensor(
-        task_id="wait_for_app_store_external__firefox_downloads_territory_source_type_report__v1",
-        external_dag_id="bqetl_fivetran_copied_tables",
-        external_task_id="app_store_external__firefox_downloads_territory_source_type_report__v1",
-        execution_delta=datetime.timedelta(seconds=3600),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     firefox_ios_derived__app_store_funnel__v1.set_upstream(
@@ -497,77 +594,21 @@ with DAG(
     firefox_ios_derived__attributable_clients__v1.set_upstream(
         checks__fail_firefox_ios_derived__firefox_ios_clients__v1
     )
-    wait_for_copy_deduplicate_all = ExternalTaskSensor(
-        task_id="wait_for_copy_deduplicate_all",
-        external_dag_id="copy_deduplicate",
-        external_task_id="copy_deduplicate_all",
-        execution_delta=datetime.timedelta(seconds=10800),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
 
     firefox_ios_derived__attributable_clients__v1.set_upstream(
         wait_for_copy_deduplicate_all
-    )
-    wait_for_search_derived__mobile_search_clients_daily__v1 = ExternalTaskSensor(
-        task_id="wait_for_search_derived__mobile_search_clients_daily__v1",
-        external_dag_id="bqetl_mobile_search",
-        external_task_id="search_derived__mobile_search_clients_daily__v1",
-        execution_delta=datetime.timedelta(seconds=7200),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     firefox_ios_derived__attributable_clients__v1.set_upstream(
         wait_for_search_derived__mobile_search_clients_daily__v1
     )
 
-    wait_for_org_mozilla_ios_fennec_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
-        task_id="wait_for_org_mozilla_ios_fennec_derived__baseline_clients_daily__v1",
-        external_dag_id="bqetl_glean_usage",
-        external_task_id="firefox_ios.org_mozilla_ios_fennec_derived__baseline_clients_daily__v1",
-        execution_delta=datetime.timedelta(seconds=7200),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
     firefox_ios_derived__baseline_clients_yearly__v1.set_upstream(
         wait_for_org_mozilla_ios_fennec_derived__baseline_clients_daily__v1
-    )
-    wait_for_org_mozilla_ios_firefox_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
-        task_id="wait_for_org_mozilla_ios_firefox_derived__baseline_clients_daily__v1",
-        external_dag_id="bqetl_glean_usage",
-        external_task_id="firefox_ios.org_mozilla_ios_firefox_derived__baseline_clients_daily__v1",
-        execution_delta=datetime.timedelta(seconds=7200),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     firefox_ios_derived__baseline_clients_yearly__v1.set_upstream(
         wait_for_org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
-    )
-    wait_for_org_mozilla_ios_firefoxbeta_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
-        task_id="wait_for_org_mozilla_ios_firefoxbeta_derived__baseline_clients_daily__v1",
-        external_dag_id="bqetl_glean_usage",
-        external_task_id="firefox_ios.org_mozilla_ios_firefoxbeta_derived__baseline_clients_daily__v1",
-        execution_delta=datetime.timedelta(seconds=7200),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     firefox_ios_derived__baseline_clients_yearly__v1.set_upstream(
@@ -581,51 +622,19 @@ with DAG(
     firefox_ios_derived__clients_activation__v1.set_upstream(
         checks__fail_firefox_ios_derived__firefox_ios_clients__v1
     )
-    wait_for_org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
-        task_id="wait_for_org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1",
-        external_dag_id="bqetl_glean_usage",
-        external_task_id="firefox_ios.org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1",
-        execution_delta=datetime.timedelta(seconds=7200),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
 
     firefox_ios_derived__clients_activation__v1.set_upstream(
         wait_for_org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1
-    )
-    wait_for_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
-        task_id="wait_for_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1",
-        external_dag_id="bqetl_glean_usage",
-        external_task_id="firefox_ios.org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1",
-        execution_delta=datetime.timedelta(seconds=7200),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     firefox_ios_derived__clients_activation__v1.set_upstream(
         wait_for_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
     )
-    wait_for_org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
-        task_id="wait_for_org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1",
-        external_dag_id="bqetl_glean_usage",
-        external_task_id="firefox_ios.org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1",
-        execution_delta=datetime.timedelta(seconds=7200),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
 
     firefox_ios_derived__clients_activation__v1.set_upstream(
         wait_for_org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1
     )
+
     firefox_ios_derived__clients_activation__v1.set_upstream(
         wait_for_search_derived__mobile_search_clients_daily__v1
     )
@@ -633,12 +642,15 @@ with DAG(
     firefox_ios_derived__firefox_ios_clients__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
+
     firefox_ios_derived__firefox_ios_clients__v1.set_upstream(
         wait_for_org_mozilla_ios_fennec_derived__baseline_clients_daily__v1
     )
+
     firefox_ios_derived__firefox_ios_clients__v1.set_upstream(
         wait_for_org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
     )
+
     firefox_ios_derived__firefox_ios_clients__v1.set_upstream(
         wait_for_org_mozilla_ios_firefoxbeta_derived__baseline_clients_daily__v1
     )
@@ -650,12 +662,15 @@ with DAG(
     firefox_ios_derived__funnel_retention_clients_week_2__v1.set_upstream(
         checks__fail_firefox_ios_derived__firefox_ios_clients__v1
     )
+
     firefox_ios_derived__funnel_retention_clients_week_2__v1.set_upstream(
         wait_for_org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1
     )
+
     firefox_ios_derived__funnel_retention_clients_week_2__v1.set_upstream(
         wait_for_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
     )
+
     firefox_ios_derived__funnel_retention_clients_week_2__v1.set_upstream(
         wait_for_org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1
     )
@@ -667,12 +682,15 @@ with DAG(
     firefox_ios_derived__funnel_retention_clients_week_4__v1.set_upstream(
         checks__fail_firefox_ios_derived__firefox_ios_clients__v1
     )
+
     firefox_ios_derived__funnel_retention_clients_week_4__v1.set_upstream(
         wait_for_org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1
     )
+
     firefox_ios_derived__funnel_retention_clients_week_4__v1.set_upstream(
         wait_for_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
     )
+
     firefox_ios_derived__funnel_retention_clients_week_4__v1.set_upstream(
         wait_for_org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1
     )
@@ -684,12 +702,15 @@ with DAG(
     firefox_ios_derived__new_profile_activation__v2.set_upstream(
         wait_for_org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1
     )
+
     firefox_ios_derived__new_profile_activation__v2.set_upstream(
         wait_for_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
     )
+
     firefox_ios_derived__new_profile_activation__v2.set_upstream(
         wait_for_org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1
     )
+
     firefox_ios_derived__new_profile_activation__v2.set_upstream(
         wait_for_search_derived__mobile_search_clients_daily__v1
     )

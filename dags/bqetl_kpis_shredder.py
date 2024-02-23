@@ -51,6 +51,85 @@ with DAG(
     tags=tags,
 ) as dag:
 
+    wait_for_copy_deduplicate_all = ExternalTaskSensor(
+        task_id="wait_for_copy_deduplicate_all",
+        external_dag_id="copy_deduplicate",
+        external_task_id="copy_deduplicate_all",
+        execution_delta=datetime.timedelta(seconds=3600),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_fenix_derived__clients_last_seen_joined__v1 = ExternalTaskSensor(
+        task_id="wait_for_fenix_derived__clients_last_seen_joined__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="fenix.fenix_derived__clients_last_seen_joined__v1",
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_search_derived__mobile_search_clients_daily__v1 = ExternalTaskSensor(
+        task_id="wait_for_search_derived__mobile_search_clients_daily__v1",
+        external_dag_id="bqetl_mobile_search",
+        external_task_id="search_derived__mobile_search_clients_daily__v1",
+        execution_delta=datetime.timedelta(0),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_telemetry_derived__clients_last_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_telemetry_derived__clients_last_seen__v1",
+        external_dag_id="bqetl_main_summary",
+        external_task_id="telemetry_derived__clients_last_seen__v1",
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_firefox_ios_derived__clients_last_seen_joined__v1 = ExternalTaskSensor(
+        task_id="wait_for_firefox_ios_derived__clients_last_seen_joined__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="firefox_ios.firefox_ios_derived__clients_last_seen_joined__v1",
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_focus_ios_derived__clients_last_seen_joined__v1 = ExternalTaskSensor(
+        task_id="wait_for_focus_ios_derived__clients_last_seen_joined__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="focus_ios.focus_ios_derived__clients_last_seen_joined__v1",
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_klar_ios_derived__clients_last_seen_joined__v1 = ExternalTaskSensor(
+        task_id="wait_for_klar_ios_derived__clients_last_seen_joined__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="klar_ios.klar_ios_derived__clients_last_seen_joined__v1",
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     fenix_active_users_aggregates_for_deletion_requests = bigquery_etl_query(
         task_id="fenix_active_users_aggregates_for_deletion_requests",
         destination_table="active_users_aggregates_deletion_request_v1",
@@ -126,46 +205,13 @@ with DAG(
         ],
     )
 
-    wait_for_copy_deduplicate_all = ExternalTaskSensor(
-        task_id="wait_for_copy_deduplicate_all",
-        external_dag_id="copy_deduplicate",
-        external_task_id="copy_deduplicate_all",
-        execution_delta=datetime.timedelta(seconds=3600),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
     fenix_active_users_aggregates_for_deletion_requests.set_upstream(
         wait_for_copy_deduplicate_all
-    )
-    wait_for_fenix_derived__clients_last_seen_joined__v1 = ExternalTaskSensor(
-        task_id="wait_for_fenix_derived__clients_last_seen_joined__v1",
-        external_dag_id="bqetl_glean_usage",
-        external_task_id="fenix.fenix_derived__clients_last_seen_joined__v1",
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     fenix_active_users_aggregates_for_deletion_requests.set_upstream(
         wait_for_fenix_derived__clients_last_seen_joined__v1
     )
-    wait_for_search_derived__mobile_search_clients_daily__v1 = ExternalTaskSensor(
-        task_id="wait_for_search_derived__mobile_search_clients_daily__v1",
-        external_dag_id="bqetl_mobile_search",
-        external_task_id="search_derived__mobile_search_clients_daily__v1",
-        execution_delta=datetime.timedelta(0),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
 
     fenix_active_users_aggregates_for_deletion_requests.set_upstream(
         wait_for_search_derived__mobile_search_clients_daily__v1
@@ -174,18 +220,9 @@ with DAG(
     firefox_desktop_active_users_aggregates_for_deletion_requests.set_upstream(
         wait_for_copy_deduplicate_all
     )
+
     firefox_desktop_active_users_aggregates_for_deletion_requests.set_upstream(
         wait_for_search_derived__mobile_search_clients_daily__v1
-    )
-    wait_for_telemetry_derived__clients_last_seen__v1 = ExternalTaskSensor(
-        task_id="wait_for_telemetry_derived__clients_last_seen__v1",
-        external_dag_id="bqetl_main_summary",
-        external_task_id="telemetry_derived__clients_last_seen__v1",
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     firefox_desktop_active_users_aggregates_for_deletion_requests.set_upstream(
@@ -195,41 +232,23 @@ with DAG(
     firefox_ios_active_users_aggregates_for_deletion_requests.set_upstream(
         wait_for_copy_deduplicate_all
     )
-    wait_for_firefox_ios_derived__clients_last_seen_joined__v1 = ExternalTaskSensor(
-        task_id="wait_for_firefox_ios_derived__clients_last_seen_joined__v1",
-        external_dag_id="bqetl_glean_usage",
-        external_task_id="firefox_ios.firefox_ios_derived__clients_last_seen_joined__v1",
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
 
     firefox_ios_active_users_aggregates_for_deletion_requests.set_upstream(
         wait_for_firefox_ios_derived__clients_last_seen_joined__v1
     )
+
     firefox_ios_active_users_aggregates_for_deletion_requests.set_upstream(
         wait_for_search_derived__mobile_search_clients_daily__v1
     )
 
     focus_ios_active_users_aggregates_for_deletion_requests.set_upstream(
         wait_for_copy_deduplicate_all
-    )
-    wait_for_focus_ios_derived__clients_last_seen_joined__v1 = ExternalTaskSensor(
-        task_id="wait_for_focus_ios_derived__clients_last_seen_joined__v1",
-        external_dag_id="bqetl_glean_usage",
-        external_task_id="focus_ios.focus_ios_derived__clients_last_seen_joined__v1",
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     focus_ios_active_users_aggregates_for_deletion_requests.set_upstream(
         wait_for_focus_ios_derived__clients_last_seen_joined__v1
     )
+
     focus_ios_active_users_aggregates_for_deletion_requests.set_upstream(
         wait_for_search_derived__mobile_search_clients_daily__v1
     )
@@ -237,20 +256,11 @@ with DAG(
     klar_ios_active_users_aggregates_for_deletion_requests.set_upstream(
         wait_for_copy_deduplicate_all
     )
-    wait_for_klar_ios_derived__clients_last_seen_joined__v1 = ExternalTaskSensor(
-        task_id="wait_for_klar_ios_derived__clients_last_seen_joined__v1",
-        external_dag_id="bqetl_glean_usage",
-        external_task_id="klar_ios.klar_ios_derived__clients_last_seen_joined__v1",
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
 
     klar_ios_active_users_aggregates_for_deletion_requests.set_upstream(
         wait_for_klar_ios_derived__clients_last_seen_joined__v1
     )
+
     klar_ios_active_users_aggregates_for_deletion_requests.set_upstream(
         wait_for_search_derived__mobile_search_clients_daily__v1
     )

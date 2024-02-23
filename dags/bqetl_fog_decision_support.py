@@ -50,17 +50,6 @@ with DAG(
     tags=tags,
 ) as dag:
 
-    fog_decision_support_v1 = bigquery_etl_query(
-        task_id="fog_decision_support_v1",
-        destination_table="fog_decision_support_percentiles_v1",
-        dataset_id="telemetry_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="pmcmanis@mozilla.com",
-        email=["pmcmanis@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-    )
-
     wait_for_copy_deduplicate_all = ExternalTaskSensor(
         task_id="wait_for_copy_deduplicate_all",
         external_dag_id="copy_deduplicate",
@@ -73,7 +62,6 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    fog_decision_support_v1.set_upstream(wait_for_copy_deduplicate_all)
     wait_for_copy_deduplicate_main_ping = ExternalTaskSensor(
         task_id="wait_for_copy_deduplicate_main_ping",
         external_dag_id="copy_deduplicate",
@@ -85,5 +73,18 @@ with DAG(
         failed_states=FAILED_STATES,
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
+
+    fog_decision_support_v1 = bigquery_etl_query(
+        task_id="fog_decision_support_v1",
+        destination_table="fog_decision_support_percentiles_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="pmcmanis@mozilla.com",
+        email=["pmcmanis@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    fog_decision_support_v1.set_upstream(wait_for_copy_deduplicate_all)
 
     fog_decision_support_v1.set_upstream(wait_for_copy_deduplicate_main_ping)

@@ -53,6 +53,18 @@ with DAG(
     tags=tags,
 ) as dag:
 
+    wait_for_fivetran_load_completed = ExternalTaskSensor(
+        task_id="wait_for_fivetran_load_completed",
+        external_dag_id="fivetran_acoustic_raw_recipient_export",
+        external_task_id="fivetran_load_completed",
+        execution_delta=datetime.timedelta(seconds=3600),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     acoustic__raw_recipient__v1 = bigquery_etl_query(
         task_id="acoustic__raw_recipient__v1",
         destination_table="raw_recipient_v1",
@@ -76,17 +88,5 @@ with DAG(
     )
 
     acoustic__raw_recipient__v1.set_upstream(acoustic__raw_recipient_raw__v1)
-
-    wait_for_fivetran_load_completed = ExternalTaskSensor(
-        task_id="wait_for_fivetran_load_completed",
-        external_dag_id="fivetran_acoustic_raw_recipient_export",
-        external_task_id="fivetran_load_completed",
-        execution_delta=datetime.timedelta(seconds=3600),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
 
     acoustic__raw_recipient_raw__v1.set_upstream(wait_for_fivetran_load_completed)

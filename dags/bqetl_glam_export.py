@@ -50,6 +50,18 @@ with DAG(
     tags=tags,
 ) as dag:
 
+    wait_for_extracts = ExternalTaskSensor(
+        task_id="wait_for_extracts",
+        external_dag_id="glam",
+        external_task_id="extracts",
+        execution_delta=datetime.timedelta(seconds=21600),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     glam_derived__client_probe_counts_firefox_desktop_beta__v1 = bigquery_etl_query(
         task_id="glam_derived__client_probe_counts_firefox_desktop_beta__v1",
         destination_table="client_probe_counts_firefox_desktop_beta_v1",
@@ -72,18 +84,6 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
-    )
-
-    wait_for_extracts = ExternalTaskSensor(
-        task_id="wait_for_extracts",
-        external_dag_id="glam",
-        external_task_id="extracts",
-        execution_delta=datetime.timedelta(seconds=21600),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     glam_derived__client_probe_counts_firefox_desktop_beta__v1.set_upstream(

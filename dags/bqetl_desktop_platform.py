@@ -51,6 +51,18 @@ with DAG(
     tags=tags,
 ) as dag:
 
+    wait_for_copy_deduplicate_main_ping = ExternalTaskSensor(
+        task_id="wait_for_copy_deduplicate_main_ping",
+        external_dag_id="copy_deduplicate",
+        external_task_id="copy_deduplicate_main_ping",
+        execution_delta=datetime.timedelta(seconds=7200),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     telemetry_derived__accessibility_clients__v1 = bigquery_etl_query(
         task_id="telemetry_derived__accessibility_clients__v1",
         destination_table="accessibility_clients_v1",
@@ -65,18 +77,6 @@ with DAG(
         start_date=datetime.datetime(2018, 11, 1, 0, 0),
         date_partition_parameter="submission_date",
         depends_on_past=False,
-    )
-
-    wait_for_copy_deduplicate_main_ping = ExternalTaskSensor(
-        task_id="wait_for_copy_deduplicate_main_ping",
-        external_dag_id="copy_deduplicate",
-        external_task_id="copy_deduplicate_main_ping",
-        execution_delta=datetime.timedelta(seconds=7200),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     telemetry_derived__accessibility_clients__v1.set_upstream(

@@ -52,6 +52,41 @@ with DAG(
     tags=tags,
 ) as dag:
 
+    wait_for_monitoring__experimenter_experiments__v1 = ExternalTaskSensor(
+        task_id="wait_for_monitoring__experimenter_experiments__v1",
+        external_dag_id="bqetl_experimenter_experiments_import",
+        external_task_id="monitoring__experimenter_experiments__v1",
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_copy_deduplicate_all = ExternalTaskSensor(
+        task_id="wait_for_copy_deduplicate_all",
+        external_dag_id="copy_deduplicate",
+        external_task_id="copy_deduplicate_all",
+        execution_delta=datetime.timedelta(seconds=3600),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_copy_deduplicate_main_ping = ExternalTaskSensor(
+        task_id="wait_for_copy_deduplicate_main_ping",
+        external_dag_id="copy_deduplicate",
+        external_task_id="copy_deduplicate_main_ping",
+        execution_delta=datetime.timedelta(seconds=3600),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     glean_server_knob_experiments__v1 = bigquery_etl_query(
         task_id="glean_server_knob_experiments__v1",
         destination_table="glean_server_knob_experiments_v1",
@@ -307,31 +342,8 @@ with DAG(
         depends_on_past=False,
     )
 
-    wait_for_monitoring__experimenter_experiments__v1 = ExternalTaskSensor(
-        task_id="wait_for_monitoring__experimenter_experiments__v1",
-        external_dag_id="bqetl_experimenter_experiments_import",
-        external_task_id="monitoring__experimenter_experiments__v1",
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
     glean_server_knob_experiments__v1.set_upstream(
         wait_for_monitoring__experimenter_experiments__v1
-    )
-
-    wait_for_copy_deduplicate_all = ExternalTaskSensor(
-        task_id="wait_for_copy_deduplicate_all",
-        external_dag_id="copy_deduplicate",
-        external_task_id="copy_deduplicate_all",
-        execution_delta=datetime.timedelta(seconds=3600),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     monitoring_derived__average_ping_sizes__v1.set_upstream(
@@ -340,18 +352,6 @@ with DAG(
 
     monitoring_derived__bigquery_usage__v2.set_upstream(
         monitoring_derived__jobs_by_organization__v1
-    )
-
-    wait_for_copy_deduplicate_main_ping = ExternalTaskSensor(
-        task_id="wait_for_copy_deduplicate_main_ping",
-        external_dag_id="copy_deduplicate",
-        external_task_id="copy_deduplicate_main_ping",
-        execution_delta=datetime.timedelta(seconds=3600),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     monitoring_derived__column_size__v1.set_upstream(
@@ -373,6 +373,7 @@ with DAG(
     monitoring_derived__stable_and_derived_table_sizes__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
+
     monitoring_derived__stable_and_derived_table_sizes__v1.set_upstream(
         wait_for_copy_deduplicate_main_ping
     )
@@ -380,6 +381,7 @@ with DAG(
     monitoring_derived__stable_table_column_counts__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
+
     monitoring_derived__stable_table_column_counts__v1.set_upstream(
         wait_for_copy_deduplicate_main_ping
     )

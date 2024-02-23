@@ -52,17 +52,6 @@ with DAG(
     tags=tags,
 ) as dag:
 
-    mozregression_aggregates__v1 = bigquery_etl_query(
-        task_id="mozregression_aggregates__v1",
-        destination_table="mozregression_aggregates_v1",
-        dataset_id="org_mozilla_mozregression_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="wlachance@mozilla.com",
-        email=["telemetry-alerts@mozilla.com", "wlachance@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-    )
-
     wait_for_copy_deduplicate_all = ExternalTaskSensor(
         task_id="wait_for_copy_deduplicate_all",
         external_dag_id="copy_deduplicate",
@@ -73,6 +62,17 @@ with DAG(
         allowed_states=ALLOWED_STATES,
         failed_states=FAILED_STATES,
         pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    mozregression_aggregates__v1 = bigquery_etl_query(
+        task_id="mozregression_aggregates__v1",
+        destination_table="mozregression_aggregates_v1",
+        dataset_id="org_mozilla_mozregression_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="wlachance@mozilla.com",
+        email=["telemetry-alerts@mozilla.com", "wlachance@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
     )
 
     mozregression_aggregates__v1.set_upstream(wait_for_copy_deduplicate_all)

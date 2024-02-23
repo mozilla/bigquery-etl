@@ -50,17 +50,6 @@ with DAG(
     tags=tags,
 ) as dag:
 
-    firefox_desktop_derived__desktop_installs__v1 = bigquery_etl_query(
-        task_id="firefox_desktop_derived__desktop_installs__v1",
-        destination_table="desktop_installs_v1",
-        dataset_id="firefox_desktop_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-    )
-
     wait_for_copy_deduplicate_all = ExternalTaskSensor(
         task_id="wait_for_copy_deduplicate_all",
         external_dag_id="copy_deduplicate",
@@ -73,9 +62,6 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    firefox_desktop_derived__desktop_installs__v1.set_upstream(
-        wait_for_copy_deduplicate_all
-    )
     wait_for_ga_derived__downloads_with_attribution__v1 = ExternalTaskSensor(
         task_id="wait_for_ga_derived__downloads_with_attribution__v1",
         external_dag_id="bqetl_google_analytics_derived",
@@ -86,6 +72,21 @@ with DAG(
         allowed_states=ALLOWED_STATES,
         failed_states=FAILED_STATES,
         pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    firefox_desktop_derived__desktop_installs__v1 = bigquery_etl_query(
+        task_id="firefox_desktop_derived__desktop_installs__v1",
+        destination_table="desktop_installs_v1",
+        dataset_id="firefox_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    firefox_desktop_derived__desktop_installs__v1.set_upstream(
+        wait_for_copy_deduplicate_all
     )
 
     firefox_desktop_derived__desktop_installs__v1.set_upstream(

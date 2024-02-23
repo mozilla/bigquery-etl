@@ -53,6 +53,12 @@ with DAG(
     tags=tags,
 ) as dag:
 
+    fivetran_stripe_nonprod_sync_start = FivetranOperator(
+        connector_id="{{ var.value.fivetran_stripe_nonprod_connector_id }}",
+        task_id="fivetran_stripe_nonprod_task",
+        task_concurrency=1,
+    )
+
     cjms_bigquery__flows__v1 = bigquery_etl_query(
         task_id="cjms_bigquery__flows__v1",
         destination_table='flows_v1${{ (execution_date - macros.timedelta(hours=2)).strftime("%Y%m%d") }}',
@@ -286,12 +292,6 @@ with DAG(
 
     cjms_bigquery__subscriptions__v1.set_upstream(
         subscription_platform_derived__nonprod_stripe_subscriptions__v1
-    )
-
-    fivetran_stripe_nonprod_sync_start = FivetranOperator(
-        connector_id="{{ var.value.fivetran_stripe_nonprod_connector_id }}",
-        task_id="fivetran_stripe_nonprod_task",
-        task_concurrency=1,
     )
 
     stripe_external__nonprod_card__v1.set_upstream(fivetran_stripe_nonprod_sync_start)

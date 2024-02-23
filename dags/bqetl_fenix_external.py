@@ -47,18 +47,6 @@ with DAG(
     tags=tags,
 ) as dag:
 
-    fenix_external__gplay_installs_by_country__v1 = bigquery_etl_query(
-        task_id="fenix_external__gplay_installs_by_country__v1",
-        destination_table="gplay_installs_by_country_v1",
-        dataset_id="fenix_external",
-        project_id="moz-fx-data-shared-prod",
-        owner="frank@mozilla.com",
-        email=["frank@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=False,
-        task_concurrency=1,
-    )
-
     wait_for_play_store_export = ExternalTaskSensor(
         task_id="wait_for_play_store_export",
         external_dag_id="play_store_export",
@@ -69,6 +57,18 @@ with DAG(
         allowed_states=ALLOWED_STATES,
         failed_states=FAILED_STATES,
         pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    fenix_external__gplay_installs_by_country__v1 = bigquery_etl_query(
+        task_id="fenix_external__gplay_installs_by_country__v1",
+        destination_table="gplay_installs_by_country_v1",
+        dataset_id="fenix_external",
+        project_id="moz-fx-data-shared-prod",
+        owner="frank@mozilla.com",
+        email=["frank@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
     )
 
     fenix_external__gplay_installs_by_country__v1.set_upstream(

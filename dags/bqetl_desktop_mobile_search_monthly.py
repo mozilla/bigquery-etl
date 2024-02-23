@@ -50,18 +50,6 @@ with DAG(
     tags=tags,
 ) as dag:
 
-    search_derived__desktop_mobile_search_clients_monthly__v1 = bigquery_etl_query(
-        task_id="search_derived__desktop_mobile_search_clients_monthly__v1",
-        destination_table='desktop_mobile_search_clients_monthly_v1${{ (execution_date + macros.dateutil.relativedelta.relativedelta(months=-1, day=1)).strftime("%Y%m") }}',
-        dataset_id="search_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="akommasani@mozilla.com",
-        email=["akommasani@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=False,
-        parameters=["submission_date:DATE:{{ds}}"],
-    )
-
     wait_for_search_derived__mobile_search_clients_daily__v1 = ExternalTaskSensor(
         task_id="wait_for_search_derived__mobile_search_clients_daily__v1",
         external_dag_id="bqetl_mobile_search",
@@ -74,9 +62,6 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    search_derived__desktop_mobile_search_clients_monthly__v1.set_upstream(
-        wait_for_search_derived__mobile_search_clients_daily__v1
-    )
     wait_for_search_derived__search_clients_daily__v8 = ExternalTaskSensor(
         task_id="wait_for_search_derived__search_clients_daily__v8",
         external_dag_id="bqetl_search",
@@ -87,6 +72,22 @@ with DAG(
         allowed_states=ALLOWED_STATES,
         failed_states=FAILED_STATES,
         pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    search_derived__desktop_mobile_search_clients_monthly__v1 = bigquery_etl_query(
+        task_id="search_derived__desktop_mobile_search_clients_monthly__v1",
+        destination_table='desktop_mobile_search_clients_monthly_v1${{ (execution_date + macros.dateutil.relativedelta.relativedelta(months=-1, day=1)).strftime("%Y%m") }}',
+        dataset_id="search_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="akommasani@mozilla.com",
+        email=["akommasani@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+    )
+
+    search_derived__desktop_mobile_search_clients_monthly__v1.set_upstream(
+        wait_for_search_derived__mobile_search_clients_daily__v1
     )
 
     search_derived__desktop_mobile_search_clients_monthly__v1.set_upstream(

@@ -54,6 +54,12 @@ with DAG(
     tags=tags,
 ) as dag:
 
+    fivetran_airflow_metadata_import_sync_start = FivetranOperator(
+        connector_id="{{ var.value.fivetran_airflow_metadata_import_connector_id }}",
+        task_id="fivetran_airflow_metadata_import_task",
+        task_concurrency=1,
+    )
+
     monitoring_derived__airflow_dag__v1 = bigquery_etl_query(
         task_id="monitoring_derived__airflow_dag__v1",
         destination_table="airflow_dag_v1",
@@ -231,12 +237,6 @@ with DAG(
         email=["kik@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
-        task_concurrency=1,
-    )
-
-    fivetran_airflow_metadata_import_sync_start = FivetranOperator(
-        connector_id="{{ var.value.fivetran_airflow_metadata_import_connector_id }}",
-        task_id="fivetran_airflow_metadata_import_task",
         task_concurrency=1,
     )
 

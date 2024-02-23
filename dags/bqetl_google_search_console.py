@@ -58,6 +58,146 @@ with DAG(
     tags=tags,
 ) as dag:
 
+    wait_for_google_search_console_addons_url_impressions = (
+        BigQueryTablePartitionExistenceSensor(
+            task_id="wait_for_google_search_console_addons_url_impressions",
+            project_id="moz-fx-data-marketing-prod",
+            dataset_id="searchconsole_addons",
+            table_id="searchdata_url_impression",
+            partition_id="{{ data_interval_start.subtract(days=1) | ds_nodash }}",
+            gcp_conn_id="google_cloud_shared_prod",
+            deferrable=True,
+            poke_interval=datetime.timedelta(minutes=5),
+            timeout=datetime.timedelta(hours=8),
+        )
+    )
+
+    wait_for_google_search_console_blog_url_impressions = (
+        BigQueryTablePartitionExistenceSensor(
+            task_id="wait_for_google_search_console_blog_url_impressions",
+            project_id="moz-fx-data-marketing-prod",
+            dataset_id="searchconsole_blog",
+            table_id="searchdata_url_impression",
+            partition_id="{{ data_interval_start.subtract(days=1) | ds_nodash }}",
+            gcp_conn_id="google_cloud_shared_prod",
+            deferrable=True,
+            poke_interval=datetime.timedelta(minutes=5),
+            timeout=datetime.timedelta(hours=8),
+        )
+    )
+
+    wait_for_google_search_console_getpocket_url_impressions = (
+        BigQueryTablePartitionExistenceSensor(
+            task_id="wait_for_google_search_console_getpocket_url_impressions",
+            project_id="moz-fx-data-marketing-prod",
+            dataset_id="searchconsole_getpocket",
+            table_id="searchdata_url_impression",
+            partition_id="{{ data_interval_start.subtract(days=1) | ds_nodash }}",
+            gcp_conn_id="google_cloud_shared_prod",
+            deferrable=True,
+            poke_interval=datetime.timedelta(minutes=5),
+            timeout=datetime.timedelta(hours=8),
+        )
+    )
+
+    wait_for_google_search_console_support_url_impressions = (
+        BigQueryTablePartitionExistenceSensor(
+            task_id="wait_for_google_search_console_support_url_impressions",
+            project_id="moz-fx-data-marketing-prod",
+            dataset_id="searchconsole_support",
+            table_id="searchdata_url_impression",
+            partition_id="{{ data_interval_start.subtract(days=1) | ds_nodash }}",
+            gcp_conn_id="google_cloud_shared_prod",
+            deferrable=True,
+            poke_interval=datetime.timedelta(minutes=5),
+            timeout=datetime.timedelta(hours=8),
+        )
+    )
+
+    wait_for_google_search_console_www_url_impressions = (
+        BigQueryTablePartitionExistenceSensor(
+            task_id="wait_for_google_search_console_www_url_impressions",
+            project_id="moz-fx-data-marketing-prod",
+            dataset_id="searchconsole_www",
+            table_id="searchdata_url_impression",
+            partition_id="{{ data_interval_start.subtract(days=1) | ds_nodash }}",
+            gcp_conn_id="google_cloud_shared_prod",
+            deferrable=True,
+            poke_interval=datetime.timedelta(minutes=5),
+            timeout=datetime.timedelta(hours=8),
+        )
+    )
+
+    wait_for_google_search_console_addons_site_impressions = (
+        BigQueryTablePartitionExistenceSensor(
+            task_id="wait_for_google_search_console_addons_site_impressions",
+            project_id="moz-fx-data-marketing-prod",
+            dataset_id="searchconsole_addons",
+            table_id="searchdata_site_impression",
+            partition_id="{{ data_interval_start.subtract(days=1) | ds_nodash }}",
+            gcp_conn_id="google_cloud_shared_prod",
+            deferrable=True,
+            poke_interval=datetime.timedelta(minutes=5),
+            timeout=datetime.timedelta(hours=8),
+        )
+    )
+
+    wait_for_google_search_console_blog_site_impressions = (
+        BigQueryTablePartitionExistenceSensor(
+            task_id="wait_for_google_search_console_blog_site_impressions",
+            project_id="moz-fx-data-marketing-prod",
+            dataset_id="searchconsole_blog",
+            table_id="searchdata_site_impression",
+            partition_id="{{ data_interval_start.subtract(days=1) | ds_nodash }}",
+            gcp_conn_id="google_cloud_shared_prod",
+            deferrable=True,
+            poke_interval=datetime.timedelta(minutes=5),
+            timeout=datetime.timedelta(hours=8),
+        )
+    )
+
+    wait_for_google_search_console_getpocket_site_impressions = (
+        BigQueryTablePartitionExistenceSensor(
+            task_id="wait_for_google_search_console_getpocket_site_impressions",
+            project_id="moz-fx-data-marketing-prod",
+            dataset_id="searchconsole_getpocket",
+            table_id="searchdata_site_impression",
+            partition_id="{{ data_interval_start.subtract(days=1) | ds_nodash }}",
+            gcp_conn_id="google_cloud_shared_prod",
+            deferrable=True,
+            poke_interval=datetime.timedelta(minutes=5),
+            timeout=datetime.timedelta(hours=8),
+        )
+    )
+
+    wait_for_google_search_console_support_site_impressions = (
+        BigQueryTablePartitionExistenceSensor(
+            task_id="wait_for_google_search_console_support_site_impressions",
+            project_id="moz-fx-data-marketing-prod",
+            dataset_id="searchconsole_support",
+            table_id="searchdata_site_impression",
+            partition_id="{{ data_interval_start.subtract(days=1) | ds_nodash }}",
+            gcp_conn_id="google_cloud_shared_prod",
+            deferrable=True,
+            poke_interval=datetime.timedelta(minutes=5),
+            timeout=datetime.timedelta(hours=8),
+        )
+    )
+
+    wait_for_google_search_console_www_site_impressions = (
+        BigQueryTablePartitionExistenceSensor(
+            task_id="wait_for_google_search_console_www_site_impressions",
+            project_id="moz-fx-data-marketing-prod",
+            dataset_id="searchconsole_www",
+            table_id="searchdata_site_impression",
+            partition_id="{{ data_interval_start.subtract(days=1) | ds_nodash }}",
+            gcp_conn_id="google_cloud_shared_prod",
+            deferrable=True,
+            poke_interval=datetime.timedelta(minutes=5),
+            timeout=datetime.timedelta(hours=8),
+        )
+    )
+
     google_search_console_derived__search_impressions_by_page__v2 = bigquery_etl_query(
         task_id="google_search_console_derived__search_impressions_by_page__v2",
         destination_table='search_impressions_by_page_v2${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
@@ -82,180 +222,40 @@ with DAG(
         parameters=["date:DATE:{{macros.ds_add(ds, -1)}}"],
     )
 
-    wait_for_google_search_console_addons_url_impressions = (
-        BigQueryTablePartitionExistenceSensor(
-            task_id="wait_for_google_search_console_addons_url_impressions",
-            project_id="moz-fx-data-marketing-prod",
-            dataset_id="searchconsole_addons",
-            table_id="searchdata_url_impression",
-            partition_id="{{ data_interval_start.subtract(days=1) | ds_nodash }}",
-            gcp_conn_id="google_cloud_shared_prod",
-            deferrable=True,
-            poke_interval=datetime.timedelta(minutes=5),
-            timeout=datetime.timedelta(hours=8),
-        )
-    )
-
     google_search_console_derived__search_impressions_by_page__v2.set_upstream(
         wait_for_google_search_console_addons_url_impressions
-    )
-
-    wait_for_google_search_console_blog_url_impressions = (
-        BigQueryTablePartitionExistenceSensor(
-            task_id="wait_for_google_search_console_blog_url_impressions",
-            project_id="moz-fx-data-marketing-prod",
-            dataset_id="searchconsole_blog",
-            table_id="searchdata_url_impression",
-            partition_id="{{ data_interval_start.subtract(days=1) | ds_nodash }}",
-            gcp_conn_id="google_cloud_shared_prod",
-            deferrable=True,
-            poke_interval=datetime.timedelta(minutes=5),
-            timeout=datetime.timedelta(hours=8),
-        )
     )
 
     google_search_console_derived__search_impressions_by_page__v2.set_upstream(
         wait_for_google_search_console_blog_url_impressions
     )
 
-    wait_for_google_search_console_getpocket_url_impressions = (
-        BigQueryTablePartitionExistenceSensor(
-            task_id="wait_for_google_search_console_getpocket_url_impressions",
-            project_id="moz-fx-data-marketing-prod",
-            dataset_id="searchconsole_getpocket",
-            table_id="searchdata_url_impression",
-            partition_id="{{ data_interval_start.subtract(days=1) | ds_nodash }}",
-            gcp_conn_id="google_cloud_shared_prod",
-            deferrable=True,
-            poke_interval=datetime.timedelta(minutes=5),
-            timeout=datetime.timedelta(hours=8),
-        )
-    )
-
     google_search_console_derived__search_impressions_by_page__v2.set_upstream(
         wait_for_google_search_console_getpocket_url_impressions
-    )
-
-    wait_for_google_search_console_support_url_impressions = (
-        BigQueryTablePartitionExistenceSensor(
-            task_id="wait_for_google_search_console_support_url_impressions",
-            project_id="moz-fx-data-marketing-prod",
-            dataset_id="searchconsole_support",
-            table_id="searchdata_url_impression",
-            partition_id="{{ data_interval_start.subtract(days=1) | ds_nodash }}",
-            gcp_conn_id="google_cloud_shared_prod",
-            deferrable=True,
-            poke_interval=datetime.timedelta(minutes=5),
-            timeout=datetime.timedelta(hours=8),
-        )
     )
 
     google_search_console_derived__search_impressions_by_page__v2.set_upstream(
         wait_for_google_search_console_support_url_impressions
     )
 
-    wait_for_google_search_console_www_url_impressions = (
-        BigQueryTablePartitionExistenceSensor(
-            task_id="wait_for_google_search_console_www_url_impressions",
-            project_id="moz-fx-data-marketing-prod",
-            dataset_id="searchconsole_www",
-            table_id="searchdata_url_impression",
-            partition_id="{{ data_interval_start.subtract(days=1) | ds_nodash }}",
-            gcp_conn_id="google_cloud_shared_prod",
-            deferrable=True,
-            poke_interval=datetime.timedelta(minutes=5),
-            timeout=datetime.timedelta(hours=8),
-        )
-    )
-
     google_search_console_derived__search_impressions_by_page__v2.set_upstream(
         wait_for_google_search_console_www_url_impressions
-    )
-
-    wait_for_google_search_console_addons_site_impressions = (
-        BigQueryTablePartitionExistenceSensor(
-            task_id="wait_for_google_search_console_addons_site_impressions",
-            project_id="moz-fx-data-marketing-prod",
-            dataset_id="searchconsole_addons",
-            table_id="searchdata_site_impression",
-            partition_id="{{ data_interval_start.subtract(days=1) | ds_nodash }}",
-            gcp_conn_id="google_cloud_shared_prod",
-            deferrable=True,
-            poke_interval=datetime.timedelta(minutes=5),
-            timeout=datetime.timedelta(hours=8),
-        )
     )
 
     google_search_console_derived__search_impressions_by_site__v2.set_upstream(
         wait_for_google_search_console_addons_site_impressions
     )
 
-    wait_for_google_search_console_blog_site_impressions = (
-        BigQueryTablePartitionExistenceSensor(
-            task_id="wait_for_google_search_console_blog_site_impressions",
-            project_id="moz-fx-data-marketing-prod",
-            dataset_id="searchconsole_blog",
-            table_id="searchdata_site_impression",
-            partition_id="{{ data_interval_start.subtract(days=1) | ds_nodash }}",
-            gcp_conn_id="google_cloud_shared_prod",
-            deferrable=True,
-            poke_interval=datetime.timedelta(minutes=5),
-            timeout=datetime.timedelta(hours=8),
-        )
-    )
-
     google_search_console_derived__search_impressions_by_site__v2.set_upstream(
         wait_for_google_search_console_blog_site_impressions
-    )
-
-    wait_for_google_search_console_getpocket_site_impressions = (
-        BigQueryTablePartitionExistenceSensor(
-            task_id="wait_for_google_search_console_getpocket_site_impressions",
-            project_id="moz-fx-data-marketing-prod",
-            dataset_id="searchconsole_getpocket",
-            table_id="searchdata_site_impression",
-            partition_id="{{ data_interval_start.subtract(days=1) | ds_nodash }}",
-            gcp_conn_id="google_cloud_shared_prod",
-            deferrable=True,
-            poke_interval=datetime.timedelta(minutes=5),
-            timeout=datetime.timedelta(hours=8),
-        )
     )
 
     google_search_console_derived__search_impressions_by_site__v2.set_upstream(
         wait_for_google_search_console_getpocket_site_impressions
     )
 
-    wait_for_google_search_console_support_site_impressions = (
-        BigQueryTablePartitionExistenceSensor(
-            task_id="wait_for_google_search_console_support_site_impressions",
-            project_id="moz-fx-data-marketing-prod",
-            dataset_id="searchconsole_support",
-            table_id="searchdata_site_impression",
-            partition_id="{{ data_interval_start.subtract(days=1) | ds_nodash }}",
-            gcp_conn_id="google_cloud_shared_prod",
-            deferrable=True,
-            poke_interval=datetime.timedelta(minutes=5),
-            timeout=datetime.timedelta(hours=8),
-        )
-    )
-
     google_search_console_derived__search_impressions_by_site__v2.set_upstream(
         wait_for_google_search_console_support_site_impressions
-    )
-
-    wait_for_google_search_console_www_site_impressions = (
-        BigQueryTablePartitionExistenceSensor(
-            task_id="wait_for_google_search_console_www_site_impressions",
-            project_id="moz-fx-data-marketing-prod",
-            dataset_id="searchconsole_www",
-            table_id="searchdata_site_impression",
-            partition_id="{{ data_interval_start.subtract(days=1) | ds_nodash }}",
-            gcp_conn_id="google_cloud_shared_prod",
-            deferrable=True,
-            poke_interval=datetime.timedelta(minutes=5),
-            timeout=datetime.timedelta(hours=8),
-        )
     )
 
     google_search_console_derived__search_impressions_by_site__v2.set_upstream(

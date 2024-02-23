@@ -1,0 +1,24 @@
+friendly_name: VR Browser Clients Last Seen
+description: |
+  Captures history of activity of each Firefox Reality client in 28 day windows for each submission date.
+owners: []
+labels:
+  schedule: daily
+  application: firefox-reality
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: null
+  clustering:
+    fields:
+    - app_name
+    - os
+    - sample_id
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+deprecated: false

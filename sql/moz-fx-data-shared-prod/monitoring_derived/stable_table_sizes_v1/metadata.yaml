@@ -1,0 +1,9 @@
+friendly_name: Stable Table Sizes V1
+description: |-
+  Please provide a description for the query
+owners: []
+labels: {}
+bigquery: null
+workgroup_access: []
+references: {}
+deprecated: true

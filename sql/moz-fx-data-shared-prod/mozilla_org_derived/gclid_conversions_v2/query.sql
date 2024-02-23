@@ -10,6 +10,8 @@ WITH gclids_to_ga_ids AS (
     UNNEST(all_reported_stub_session_ids) AS stub_session_id
   WHERE
     session_date >= DATE_SUB(@activity_date, INTERVAL @conversion_window DAY)
+    -- Next line is needed for backfilling purposes
+    AND session_date <= @activity_date
     AND gclid IS NOT NULL
 ),
 ga_ids_to_dl_token AS (

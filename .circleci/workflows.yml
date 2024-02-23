@@ -210,7 +210,7 @@ jobs:
           condition: *validate-sql-or-routines
           steps:
             - *skip
-  validate-metadata:
+  validate-backfills:
     docker: *docker
     steps:
       - when:
@@ -218,6 +218,25 @@ jobs:
             or:
               - << pipeline.parameters.validate-sql >>
               - << pipeline.parameters.deploy >>
+          steps:
+            - checkout
+            - *restore_venv_cache
+            - *build
+            - *attach_generated_sql
+            - *copy_staged_sql
+            - run:
+                name: Verify that backfill.yaml files are valid
+                command: |
+                  PATH="venv/bin:$PATH" script/bqetl backfill validate
+      - unless:
+          condition: *validate-sql
+          steps:
+            - *skip
+  validate-metadata:
+    docker: *docker
+    steps:
+      - when:
+          condition: *validate-sql
           steps:
             - checkout
             - *restore_venv_cache
@@ -1057,6 +1076,9 @@ workflows:
           requires:
             - deploy-changes-to-stage
       - validate-metadata:
+          requires:
+            - deploy-changes-to-stage
+      - validate-backfills:
           requires:
             - deploy-changes-to-stage
       - validate-dags:

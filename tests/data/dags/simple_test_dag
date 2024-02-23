@@ -48,6 +48,18 @@ with DAG(
     tags=tags,
 ) as dag:
 
+    fivetran_import_1_sync_start = FivetranOperator(
+        connector_id="{{ var.value.fivetran_import_1_connector_id }}",
+        task_id="fivetran_import_1_task",
+        task_concurrency=1,
+    )
+
+    fivetran_import_2_sync_start = FivetranOperator(
+        connector_id="{{ var.value.fivetran_import_2_connector_id }}",
+        task_id="fivetran_import_2_task",
+        task_concurrency=1,
+    )
+
     test__non_incremental_query__v1 = bigquery_etl_query(
         task_id="test__non_incremental_query__v1",
         destination_table="non_incremental_query_v1",
@@ -60,18 +72,6 @@ with DAG(
         arguments=["--append_table"],
     )
 
-    fivetran_import_1_sync_start = FivetranOperator(
-        connector_id="{{ var.value.fivetran_import_1_connector_id }}",
-        task_id="fivetran_import_1_task",
-        task_concurrency=1,
-    )
-
     test__non_incremental_query__v1.set_upstream(fivetran_import_1_sync_start)
-
-    fivetran_import_2_sync_start = FivetranOperator(
-        connector_id="{{ var.value.fivetran_import_2_connector_id }}",
-        task_id="fivetran_import_2_task",
-        task_concurrency=1,
-    )
 
     test__non_incremental_query__v1.set_upstream(fivetran_import_2_sync_start)

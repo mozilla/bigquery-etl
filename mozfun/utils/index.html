@@ -866,6 +866,30 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#extract_utm_from_url-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      extract_utm_from_url (UDF)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="extract_utm_from_url (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameters
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1347,6 +1371,30 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#extract_utm_from_url-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      extract_utm_from_url (UDF)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="extract_utm_from_url (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameters
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1385,6 +1433,18 @@ SELECT * FROM UNNEST(res) WHERE differs;
 <div class="highlight"><pre><span></span><code>res ARRAY&lt;STRUCT&lt;i INT64, differs BOOL, a_col STRING, a_data_type STRING, b_col STRING, b_data_type STRING&gt;&gt;
 </code></pre></div>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/utils/diff_query_schemas">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/utils/diff_query_schemas/metadata.yaml">Edit</a></p>
+<h2 id="extract_utm_from_url-udf">extract_utm_from_url (UDF)</h2>
+<p>Extract UTM parameters from URL. Returns a STRUCT<utm_source STRING, utm_medium STRING, utm_campaign STRING, utm_content STRING, utm_term STRING> UTM (Urchin Tracking Module) parameters are URL parameters used by marketing to track the effectiveness of online marketing campaigns.</p>
+<p>This UDF extracts UTM parameters from a URL string.</p>
+<p>UTM (Urchin Tracking Module) parameters are URL parameters used by marketing to track the effectiveness of online marketing campaigns.</p>
+<h3 id="parameters_1">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>url STRING
+</code></pre></div>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>STRUCT&lt;utm_source STRING, utm_medium STRING, utm_campaign STRING, utm_content STRING, utm_term STRING&gt;
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/utils/extract_utm_from_url">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/utils/extract_utm_from_url/metadata.yaml">Edit</a></p>
 
 
 

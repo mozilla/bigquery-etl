@@ -1,0 +1,3 @@
+friendly_name: Normalized Os Name
+description: |
+  Mapping of OS name from telemetry to normalized OS name

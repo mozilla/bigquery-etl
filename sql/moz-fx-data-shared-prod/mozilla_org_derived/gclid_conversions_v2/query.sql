@@ -1,10 +1,11 @@
 WITH gclids_to_ga_ids AS (
-  SELECT
-    gclid,
+  SELECT DISTINCT
+    unnested_gclid AS gclid,
     ga_client_id,
     stub_session_id,
   FROM
-    mozilla_org_derived.ga_sessions_v2
+    `moz-fx-data-shared-prod.mozilla_org_derived.ga_sessions_v2`,
+    UNNEST(gclid_array) AS unnested_gclid
   CROSS JOIN
     UNNEST(all_reported_stub_session_ids) AS stub_session_id
   WHERE
@@ -17,7 +18,7 @@ ga_ids_to_dl_token AS (
     stub_session_id,
     dl_token,
   FROM
-    stub_attribution_service_derived.dl_token_ga_attribution_lookup_v1
+    `moz-fx-data-shared-prod.stub_attribution_service_derived.dl_token_ga_attribution_lookup_v1`
   WHERE
     ga_client_id IS NOT NULL
     AND stub_session_id IS NOT NULL
@@ -28,7 +29,7 @@ dl_token_to_telemetry_id AS (
     first_seen_date,
     attribution_dltoken AS dl_token,
   FROM
-    telemetry_derived.clients_first_seen_v2
+    `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v2`
 ),
 telemetry_id_to_activity AS (
   SELECT
@@ -38,7 +39,7 @@ telemetry_id_to_activity AS (
     ad_clicks_count_all > 0 AS did_click_ad,
     TRUE AS was_active,
   FROM
-    telemetry_derived.clients_daily_v6
+    `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6`
   WHERE
     submission_date = @activity_date
 )

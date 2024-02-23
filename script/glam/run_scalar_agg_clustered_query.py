@@ -1,4 +1,5 @@
 """Run a query on clients_scalar_aggregates on one app_version at a time."""
+
 import datetime
 import sys
 import time

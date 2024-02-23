@@ -65,10 +65,10 @@ def main():
     table_ref = dataset_ref.table(args.temp_table)
 
     target_file_name = f"{uuid4()}.csv"
-    target_file_path = join(args.destination_path, args.date.strftime('%Y/%m'), target_file_name)
-    mdn_uri = (
-        f"gs://{args.destination_bucket}/{target_file_path}"
+    target_file_path = join(
+        args.destination_path, args.date.strftime("%Y/%m"), target_file_name
     )
+    mdn_uri = f"gs://{args.destination_bucket}/{target_file_path}"
 
     logging.info(
         "Exporting %s to GCS: %s:%s" % (temp_table, args.destination_project, mdn_uri)
@@ -85,11 +85,12 @@ def main():
 
     # Make it available as current.
     current_file_path = join(args.destination_path, CURRENT_FILE_NAME)
-    
+
     storage_client = storage.Client(args.project)
     bucket = storage_client.get_bucket(args.destination_bucket)
     blob = bucket.get_blob(target_file_path)
     bucket.copy_blob(blob, bucket, current_file_path)
+
 
 if __name__ == "__main__":
     main()

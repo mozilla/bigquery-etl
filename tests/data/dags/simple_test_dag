@@ -9,9 +9,7 @@ from operators.gcp_container_operator import GKEPodOperator
 from utils.constants import ALLOWED_STATES, FAILED_STATES
 from utils.gcp import bigquery_etl_query, bigquery_dq_check
 
-from fivetran_provider.operators.fivetran import FivetranOperator
-from fivetran_provider.sensors.fivetran import FivetranSensor
-from utils.callbacks import retry_tasks_callback
+from fivetran_provider_async.operators import FivetranOperator
 
 docs = """
 ### bqetl_test_dag
@@ -49,6 +47,7 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
+
     test__non_incremental_query__v1 = bigquery_etl_query(
         task_id="test__non_incremental_query__v1",
         destination_table="non_incremental_query_v1",
@@ -64,35 +63,15 @@ with DAG(
     fivetran_import_1_sync_start = FivetranOperator(
         connector_id="{{ var.value.fivetran_import_1_connector_id }}",
         task_id="fivetran_import_1_task",
+        task_concurrency=1,
     )
 
-    fivetran_import_1_sync_wait = FivetranSensor(
-        connector_id="{{ var.value.fivetran_import_1_connector_id }}",
-        task_id="fivetran_import_1_sensor",
-        poke_interval=30,
-        xcom="{{ task_instance.xcom_pull('fivetran_import_1_task') }}",
-        on_retry_callback=retry_tasks_callback,
-        params={"retry_tasks": ["fivetran_import_1_task"]},
-    )
-
-    fivetran_import_1_sync_wait.set_upstream(fivetran_import_1_sync_start)
-
-    test__non_incremental_query__v1.set_upstream(fivetran_import_1_sync_wait)
+    test__non_incremental_query__v1.set_upstream(fivetran_import_1_sync_start)
 
     fivetran_import_2_sync_start = FivetranOperator(
         connector_id="{{ var.value.fivetran_import_2_connector_id }}",
         task_id="fivetran_import_2_task",
+        task_concurrency=1,
     )
 
-    fivetran_import_2_sync_wait = FivetranSensor(
-        connector_id="{{ var.value.fivetran_import_2_connector_id }}",
-        task_id="fivetran_import_2_sensor",
-        poke_interval=30,
-        xcom="{{ task_instance.xcom_pull('fivetran_import_2_task') }}",
-        on_retry_callback=retry_tasks_callback,
-        params={"retry_tasks": ["fivetran_import_2_task"]},
-    )
-
-    fivetran_import_2_sync_wait.set_upstream(fivetran_import_2_sync_start)
-
-    test__non_incremental_query__v1.set_upstream(fivetran_import_2_sync_wait)
+    test__non_incremental_query__v1.set_upstream(fivetran_import_2_sync_start)

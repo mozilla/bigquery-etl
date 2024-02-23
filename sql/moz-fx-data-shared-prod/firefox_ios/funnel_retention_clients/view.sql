@@ -13,6 +13,9 @@ SELECT
     retention_week_4.first_reported_isp,
     retention_week_2.first_reported_isp
   ) AS first_reported_isp,
+  -- We prioritize the retention_week_4 values over week 2 because we expect them to be more complete
+  -- due to delays potential delays in attribution data arriving. However, this could potentially mean
+  -- that after two weeks a small number of clients might experience a change in their adjust attributes.
   COALESCE(retention_week_4.adjust_ad_group, retention_week_2.adjust_ad_group) AS adjust_ad_group,
   COALESCE(retention_week_4.adjust_campaign, retention_week_2.adjust_campaign) AS adjust_campaign,
   COALESCE(retention_week_4.adjust_creative, retention_week_2.adjust_creative) AS adjust_creative,

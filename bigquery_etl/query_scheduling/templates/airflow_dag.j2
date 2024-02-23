@@ -1,6 +1,22 @@
 # Generated via https://github.com/mozilla/bigquery-etl/blob/main/bigquery_etl/query_scheduling/generate_airflow_dags.py
 
+{% set ns = namespace(uses_bq_sensors=False, uses_fivetran=False) -%}
+{% for task in tasks -%}
+  {% if task.depends_on_tables_existing or task.depends_on_table_partitions_existing -%}
+    {% set ns.uses_bq_sensors = True -%}
+  {% endif -%}
+  {% if task.depends_on_fivetran -%}
+    {% set ns.uses_fivetran = True -%}
+  {% endif -%}
+{% endfor -%}
+
 from airflow import DAG
+{% if ns.uses_bq_sensors -%}
+from airflow.providers.google.cloud.sensors.bigquery import (
+    BigQueryTableExistenceSensor,
+    BigQueryTablePartitionExistenceSensor,
+)
+{% endif -%}
 from airflow.sensors.external_task import ExternalTaskMarker
 from airflow.sensors.external_task import ExternalTaskSensor
 from airflow.utils.task_group import TaskGroup
@@ -9,15 +25,9 @@ from operators.gcp_container_operator import GKEPodOperator
 from utils.constants import ALLOWED_STATES, FAILED_STATES
 from utils.gcp import bigquery_etl_query, bigquery_dq_check
 
-{% set ns = namespace(uses_fivetran=False) -%}
-{% for task in tasks -%}
-{% if task.depends_on_fivetran != None and task.depends_on_fivetran|length > 0 and ns.uses_fivetran == False -%}
-{% set ns.uses_fivetran = True -%}
-from fivetran_provider.operators.fivetran import FivetranOperator
-from fivetran_provider.sensors.fivetran import FivetranSensor
-from utils.callbacks import retry_tasks_callback
+{% if ns.uses_fivetran -%}
+from fivetran_provider_async.operators import FivetranOperator
 {% endif -%}
-{% endfor -%}
 
 docs = """
 ### {{ name }}
@@ -304,27 +314,81 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
     {% endif -%}
     {% endfor -%}
 
+    {% for table_sensor_task in task.depends_on_tables_existing -%}
+    {% set project_id, dataset_name, table_name = table_sensor_task.table_id.split('.') -%}
+    {{ table_sensor_task.task_id }} = BigQueryTableExistenceSensor(
+        task_id={{ table_sensor_task.task_id | format_repr }},
+        project_id={{ project_id | format_repr }},
+        dataset_id={{ dataset_name | format_repr }},
+        table_id={{ table_name | format_repr }},
+        gcp_conn_id='google_cloud_shared_prod',
+        deferrable=True,
+        {% if table_sensor_task.poke_interval != None -%}
+        poke_interval={{ table_sensor_task.poke_interval | format_timedelta | format_repr }},
+        {% else -%}
+        poke_interval=datetime.timedelta(minutes=5),
+        {% endif -%}
+        {% if table_sensor_task.timeout != None -%}
+        timeout={{ table_sensor_task.timeout | format_timedelta | format_repr }},
+        {% else -%}
+        timeout=datetime.timedelta(hours=8),
+        {% endif -%}
+        {% if table_sensor_task.retries != None -%}
+        retries={{ table_sensor_task.retries }},
+        {% endif -%}
+        {% if table_sensor_task.retry_delay != None -%}
+        retry_delay={{ table_sensor_task.retry_delay | format_timedelta | format_repr }},
+        {% endif -%}
+    )
+
+    {{ task.task_name }}.set_upstream({{ table_sensor_task.task_id }})
+
+    {% endfor -%}
+
+    {% for table_partition_sensor_task in task.depends_on_table_partitions_existing -%}
+    {% set project_id, dataset_name, table_name = table_partition_sensor_task.table_id.split('.') -%}
+    {{ table_partition_sensor_task.task_id }} = BigQueryTablePartitionExistenceSensor(
+        task_id={{ table_partition_sensor_task.task_id | format_repr }},
+        project_id={{ project_id | format_repr }},
+        dataset_id={{ dataset_name | format_repr }},
+        table_id={{ table_name | format_repr }},
+        partition_id={{ table_partition_sensor_task.partition_id | format_repr }},
+        gcp_conn_id='google_cloud_shared_prod',
+        deferrable=True,
+        {% if table_partition_sensor_task.poke_interval != None -%}
+        poke_interval={{ table_partition_sensor_task.poke_interval | format_timedelta | format_repr }},
+        {% else -%}
+        poke_interval=datetime.timedelta(minutes=5),
+        {% endif -%}
+        {% if table_partition_sensor_task.timeout != None -%}
+        timeout={{ table_partition_sensor_task.timeout | format_timedelta | format_repr }},
+        {% else -%}
+        timeout=datetime.timedelta(hours=8),
+        {% endif -%}
+        {% if table_partition_sensor_task.retries != None -%}
+        retries={{ table_partition_sensor_task.retries }},
+        {% endif -%}
+        {% if table_partition_sensor_task.retry_delay != None -%}
+        retry_delay={{ table_partition_sensor_task.retry_delay | format_timedelta | format_repr }},
+        {% endif -%}
+    )
+
+    {{ task.task_name }}.set_upstream({{ table_partition_sensor_task.task_id }})
+
+    {% endfor -%}
+
     {% if task.depends_on_fivetran != None -%}
     {% for fivetran_task in task.depends_on_fivetran -%}
     {% if fivetran_task not in fivetran_seen -%}
     {{ fivetran_task.task_id }}_sync_start = FivetranOperator(
         connector_id='{% raw %}{{ var.value.{% endraw %}{{ fivetran_task.task_id }}{% raw %}_connector_id }}{% endraw %}',
         task_id='{{ fivetran_task.task_id }}_task',
+        task_concurrency=1,
     )
 
-    {{ fivetran_task.task_id }}_sync_wait = FivetranSensor(
-        connector_id='{% raw %}{{ var.value.{% endraw %}{{ fivetran_task.task_id }}{% raw %}_connector_id }}{% endraw %}',
-        task_id='{{ fivetran_task.task_id }}_sensor',
-        poke_interval=30,
-        xcom="{% raw %}{{{% endraw %} task_instance.xcom_pull('{{ fivetran_task.task_id }}_task') {% raw %}}}{% endraw %}",
-        on_retry_callback=retry_tasks_callback,
-        params={'retry_tasks': ['{{ fivetran_task.task_id }}_task']},
-    )
-
-    {{ fivetran_task.task_id }}_sync_wait.set_upstream({{ fivetran_task.task_id }}_sync_start)
     {% do fivetran_seen.append(fivetran_task) %}
     {% endif -%}
-    {{ task.task_name }}.set_upstream({{ fivetran_task.task_id }}_sync_wait)
+    {{ task.task_name }}.set_upstream({{ fivetran_task.task_id }}_sync_start)
 
     {% endfor -%}
     {% endif -%}

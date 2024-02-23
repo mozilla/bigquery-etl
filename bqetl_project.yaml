@@ -14,6 +14,7 @@ default:
   additional_projects: # additional valid projects managed outside of bigquery-etl
   - moz-fx-data-pioneer-nonprod
   - moz-fx-data-pioneer-prod
+  - moz-fx-data-glam-prod-fca7
   public_project: mozilla-public-data
 
 
@@ -268,6 +269,7 @@ dry_run:
   - sql/moz-fx-data-shared-prod/monitoring_derived/bigquery_etl_sql_run_check_v1/query.sql
   # Dataset sql/glam-fenix-dev:glam_etl was not found
   - sql/glam-fenix-dev/glam_etl/**/*.sql
+  - sql/moz-fx-data-glam-prod-fca7/glam_etl/**/*.sql
   # Query templates
   - sql/moz-fx-data-shared-prod/search_derived/mobile_search_clients_daily_v1/fenix_metrics.template.sql
   - sql/moz-fx-data-shared-prod/search_derived/mobile_search_clients_daily_v1/mobile_search_clients_daily.template.sql
@@ -424,6 +426,7 @@ generate:
     - sql/moz-fx-data-shared-prod/org_mozilla_tv_firefox_derived/baseline_clients_last_seen_v1/checks.sql
     skip_apps:
     - mlhackweek_search
+    - moso_mastodon_android
     - regrets_reporter
     - regrets_reporter_ucs
     events_stream:

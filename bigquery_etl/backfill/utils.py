@@ -27,6 +27,9 @@ QUALIFIED_TABLE_NAME_RE = re.compile(
 BACKFILL_DESTINATION_PROJECT = "moz-fx-data-shared-prod"
 BACKFILL_DESTINATION_DATASET = "backfills_staging_derived"
 
+# currently only supporting backfilling tables with workgroup access: mozilla-confidential.
+VALID_WORKGROUP_MEMBER = ["workgroup:mozilla-confidential"]
+
 
 def get_entries_from_qualified_table_name(
     sql_dir, qualified_table_name, status=None
@@ -124,8 +127,9 @@ def validate_metadata_workgroups(sql_dir, qualified_table_name) -> bool:
         )
 
     except FileNotFoundError as e:
-        raise ValueError(f"Unable to validate workgroups for {qualified_table_name}") from e
-
+        raise ValueError(
+            f"Unable to validate workgroups for {qualified_table_name}"
+        ) from e
 
     if _validate_workgroup_members(dataset_workgroup_access, DATASET_METADATA_FILE):
         return True
@@ -150,8 +154,6 @@ def validate_metadata_workgroups(sql_dir, qualified_table_name) -> bool:
 
 def _validate_workgroup_members(workgroup_access, metadata_filename):
     """Return True if workgroup members is valid (workgroup:mozilla-confidential)."""
-    valid_workgroup = ["workgroup:mozilla-confidential"]
-
     if workgroup_access:
         for workgroup in workgroup_access:
             if metadata_filename == METADATA_FILE:
@@ -159,7 +161,7 @@ def _validate_workgroup_members(workgroup_access, metadata_filename):
             elif metadata_filename == DATASET_METADATA_FILE:
                 members = workgroup["members"]
 
-            if members == valid_workgroup:
+            if members == VALID_WORKGROUP_MEMBER:
                 return True
 
     return False

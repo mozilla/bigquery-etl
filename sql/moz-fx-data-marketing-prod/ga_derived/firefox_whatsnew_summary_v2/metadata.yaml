@@ -19,4 +19,3 @@ bigquery:
     - country
     - version
 references: {}
-deprecated: false

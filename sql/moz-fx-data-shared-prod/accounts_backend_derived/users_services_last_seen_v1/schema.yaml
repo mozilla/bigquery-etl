@@ -3,16 +3,13 @@ fields:
   name: submission_date
   type: DATE
 - mode: NULLABLE
-  name: user_id
+  name: user_id_sha256
   type: STRING
 - mode: NULLABLE
   name: service
   type: STRING
 - mode: NULLABLE
   name: country
-  type: STRING
-- mode: NULLABLE
-  name: language
   type: STRING
 - mode: NULLABLE
   name: days_seen_bits

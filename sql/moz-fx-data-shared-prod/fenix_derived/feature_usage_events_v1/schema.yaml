@@ -2,8 +2,20 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-- name: events_ping_distinct_client_count
-  type: INTEGER
+- name: ping_date
+  type: DATE
+  mode: NULLABLE
+- name: channel
+  type: STRING
+  mode: NULLABLE
+- name: country
+  type: STRING
+  mode: NULLABLE
+- name: adjust_network
+  type: STRING
+  mode: NULLABLE
+- name: is_default_browser
+  type: BOOLEAN
   mode: NULLABLE
 - name: autofill_password_detected_logins
   type: INTEGER
@@ -99,6 +111,12 @@ fields:
   type: INTEGER
   mode: NULLABLE
 - name: management_tapped_users_cc
+  type: INTEGER
+  mode: NULLABLE
+- name: modified_sum_cc
+  type: INTEGER
+  mode: NULLABLE
+- name: modified_users_cc
   type: INTEGER
   mode: NULLABLE
 - name: form_detected_sum_address

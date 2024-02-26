@@ -22,7 +22,7 @@ mozilla-metric-config-parser==2023.11.1
 mozilla-schema-generator==0.5.1
 pandas==2.2.0
 pathos==0.3.2
-pip-tools==7.3.0
+pip-tools==7.4.0
 pre-commit==3.6.2
 pyarrow==14.0.2
 pytest-black==0.3.12

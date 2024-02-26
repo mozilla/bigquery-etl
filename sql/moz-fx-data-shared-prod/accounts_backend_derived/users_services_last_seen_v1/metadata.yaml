@@ -1,6 +1,6 @@
-friendly_name: Users Services Daily
+friendly_name: Accounts Backend Users Services Last Seen
 description: |-
-  Activity aggregates per Mozilla Account per service per day
+  Usage aggregations per Mozilla Accounts user per service per day over a 28-day window
 owners:
 - ksiegler@mozilla.com
 labels:

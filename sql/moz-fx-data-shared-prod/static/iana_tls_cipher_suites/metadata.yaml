@@ -1,4 +1,4 @@
-friendly_name: Iana Tls Cipher Suites
+friendly_name: IANA TLS Cipher Suites
 description: |
   TLS cipher information from https://www.iana.org/assignments/tls-parameters/tls-parameters.xhtml#tls-parameters-4,
   via a direct import of https://www.iana.org/assignments/tls-parameters/tls-parameters-4.csv.

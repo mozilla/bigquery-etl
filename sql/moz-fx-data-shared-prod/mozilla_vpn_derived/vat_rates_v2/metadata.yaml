@@ -3,5 +3,3 @@ description: |
   VAT rates for countries where Mozilla VPN is available.
 owners:
   - srose@mozilla.com
-labels:
-  schedule: daily

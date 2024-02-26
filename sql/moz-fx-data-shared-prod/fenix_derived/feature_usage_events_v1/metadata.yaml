@@ -23,5 +23,8 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
+  - fenix.baseline
   - fenix.events_unnested
+  - fenix.firefox_android_clients
+  - fenix.metrics
 deprecated: false

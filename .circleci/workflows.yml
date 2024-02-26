@@ -376,6 +376,7 @@ jobs:
           condition: &validate-routines
             or:
               - << pipeline.parameters.validate-routines >>
+              - << pipeline.parameters.deploy >>
           steps:
             - checkout
             - *restore_venv_cache
@@ -385,25 +386,16 @@ jobs:
             - run:
                 name: Run routine tests
                 command: |
-                  if [ << pipeline.parameters.validate-routines >> = "true" ]; then
-                    if [ -n "$CIRCLE_PR_NUMBER" ]; then
-                      echo "Cannot pass creds to forked PRs," \
-                        "so skipping routine tests"
-                    else
-                      PATH="venv/bin:$PATH" script/entrypoint -m routine -n 8
-                    fi
-
+                  if [ -n "$CIRCLE_PR_NUMBER" ]; then
+                    echo "Cannot pass creds to forked PRs," \
+                      "so skipping routine tests"
                   else
-                    echo "No changes to UDFs; Skip checks."
+                    PATH="venv/bin:$PATH" script/entrypoint -m routine -n 8
                   fi
             - run:
                 name: Validate doc examples
                 command: |
-                  if [ <<pipeline.parameters.validate-routines >> = "true" ]; then
-                    PATH="venv/bin:$PATH" script/bqetl routine validate --docs-only
-                  else
-                    echo "No changes to UDFs; Skip checks."
-                  fi
+                  PATH="venv/bin:$PATH" script/bqetl routine validate --docs-only
       - unless:
           condition: *validate-routines
           steps:

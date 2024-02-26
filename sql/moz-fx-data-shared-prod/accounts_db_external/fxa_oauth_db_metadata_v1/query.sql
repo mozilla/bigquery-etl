@@ -1,13 +1,1 @@
-SELECT
-  name,
-  value,
-FROM
-  EXTERNAL_QUERY(
-    "moz-fx-fxa-prod.us.fxa-oauth-prod-prod-fxa-oauth",
-    """SELECT
-         name,
-         value
-       FROM
-         fxa_oauth.dbMetadata
-    """
-  )
+

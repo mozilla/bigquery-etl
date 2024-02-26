@@ -25,7 +25,6 @@ WITH base AS (
         ping_info.ping_type
       ) AS ping_info
     ),
-    DATE(submission_timestamp) AS submission_date,
     client_info.client_id AS client_id,
     ping_info.reason AS reason,
     `mozfun.json.from_map`(ping_info.experiments) AS experiments,

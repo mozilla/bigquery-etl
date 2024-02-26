@@ -1,3 +1,3 @@
-friendly_name: Pre Fivetran Customers V1
+friendly_name: Pre-Fivetran Stripe customers V1
 description: |-
-  Pre Fivetran customers
+  Stripe customers that were deleted before the initial Fivetran Stripe sync, archived at 2022-03-25 00:02:29.

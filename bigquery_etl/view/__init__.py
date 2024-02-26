@@ -208,10 +208,12 @@ class View:
 
     def _valid_view_naming(self):
         """Validate that the created view naming matches the directory structure."""
-        parsed = sqlparse.parse(self.content)[0]
+        if not (parsed := sqlparse.parse(self.content)):
+            raise ValueError(f"Unable to parse view SQL for {self.name}")
+
         tokens = [
             t
-            for t in parsed.tokens
+            for t in parsed[0].tokens
             if not (t.is_whitespace or isinstance(t, sqlparse.sql.Comment))
         ]
         is_view_statement = (

@@ -562,6 +562,20 @@ with DAG(
         task_group=task_group_tiktokreporter_ios,
     )
 
+    checks__warn_org_mozilla_ios_tiktok_reporter_tiktok_reportershare_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
+        task_id="checks__warn_org_mozilla_ios_tiktok_reporter_tiktok_reportershare_derived__baseline_clients_last_seen__v1",
+        source_table="baseline_clients_last_seen_v1",
+        dataset_id="org_mozilla_ios_tiktok_reporter_tiktok_reportershare_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=False,
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+        task_group=task_group_tiktokreporter_ios,
+    )
+
     checks__warn_org_mozilla_klar_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
         task_id="checks__warn_org_mozilla_klar_derived__baseline_clients_last_seen__v1",
         source_table="baseline_clients_last_seen_v1",
@@ -3312,6 +3326,43 @@ with DAG(
         task_group=task_group_tiktokreporter_ios,
     )
 
+    org_mozilla_ios_tiktok_reporter_tiktok_reportershare_derived__baseline_clients_daily__v1 = bigquery_etl_query(
+        task_id="org_mozilla_ios_tiktok_reporter_tiktok_reportershare_derived__baseline_clients_daily__v1",
+        destination_table="baseline_clients_daily_v1",
+        dataset_id="org_mozilla_ios_tiktok_reporter_tiktok_reportershare_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        task_group=task_group_tiktokreporter_ios,
+    )
+
+    org_mozilla_ios_tiktok_reporter_tiktok_reportershare_derived__baseline_clients_first_seen__v1 = bigquery_etl_query(
+        task_id="org_mozilla_ios_tiktok_reporter_tiktok_reportershare_derived__baseline_clients_first_seen__v1",
+        destination_table="baseline_clients_first_seen_v1",
+        dataset_id="org_mozilla_ios_tiktok_reporter_tiktok_reportershare_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=True,
+        parameters=["submission_date:DATE:{{ds}}"],
+        task_group=task_group_tiktokreporter_ios,
+    )
+
+    org_mozilla_ios_tiktok_reporter_tiktok_reportershare_derived__baseline_clients_last_seen__v1 = bigquery_etl_query(
+        task_id="org_mozilla_ios_tiktok_reporter_tiktok_reportershare_derived__baseline_clients_last_seen__v1",
+        destination_table="baseline_clients_last_seen_v1",
+        dataset_id="org_mozilla_ios_tiktok_reporter_tiktok_reportershare_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=True,
+        task_group=task_group_tiktokreporter_ios,
+    )
+
     org_mozilla_klar_derived__baseline_clients_daily__v1 = bigquery_etl_query(
         task_id="org_mozilla_klar_derived__baseline_clients_daily__v1",
         destination_table="baseline_clients_daily_v1",
@@ -3762,18 +3813,6 @@ with DAG(
         task_group=task_group_tiktokreporter_android,
     )
 
-    tiktokreporter_ios_derived__metrics_clients_daily__v1 = bigquery_etl_query(
-        task_id="tiktokreporter_ios_derived__metrics_clients_daily__v1",
-        destination_table="metrics_clients_daily_v1",
-        dataset_id="tiktokreporter_ios_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        task_group=task_group_tiktokreporter_ios,
-    )
-
     accounts_backend_derived__baseline_clients_daily__v1.set_upstream(
         accounts_backend_derived__baseline_clients_first_seen__v1
     )
@@ -3914,6 +3953,10 @@ with DAG(
 
     checks__warn_org_mozilla_ios_tiktok_reporter_derived__baseline_clients_last_seen__v1.set_upstream(
         org_mozilla_ios_tiktok_reporter_derived__baseline_clients_last_seen__v1
+    )
+
+    checks__warn_org_mozilla_ios_tiktok_reporter_tiktok_reportershare_derived__baseline_clients_last_seen__v1.set_upstream(
+        org_mozilla_ios_tiktok_reporter_tiktok_reportershare_derived__baseline_clients_last_seen__v1
     )
 
     checks__warn_org_mozilla_klar_derived__baseline_clients_last_seen__v1.set_upstream(
@@ -4900,6 +4943,26 @@ with DAG(
         org_mozilla_ios_tiktok_reporter_derived__baseline_clients_daily__v1
     )
 
+    org_mozilla_ios_tiktok_reporter_tiktok_reportershare_derived__baseline_clients_daily__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    org_mozilla_ios_tiktok_reporter_tiktok_reportershare_derived__baseline_clients_daily__v1.set_upstream(
+        org_mozilla_ios_tiktok_reporter_tiktok_reportershare_derived__baseline_clients_first_seen__v1
+    )
+
+    org_mozilla_ios_tiktok_reporter_tiktok_reportershare_derived__baseline_clients_first_seen__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    org_mozilla_ios_tiktok_reporter_tiktok_reportershare_derived__baseline_clients_first_seen__v1.set_upstream(
+        wait_for_telemetry_derived__core_clients_first_seen__v1
+    )
+
+    org_mozilla_ios_tiktok_reporter_tiktok_reportershare_derived__baseline_clients_last_seen__v1.set_upstream(
+        org_mozilla_ios_tiktok_reporter_tiktok_reportershare_derived__baseline_clients_daily__v1
+    )
+
     org_mozilla_klar_derived__baseline_clients_daily__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
@@ -5077,9 +5140,5 @@ with DAG(
     )
 
     tiktokreporter_android_derived__metrics_clients_daily__v1.set_upstream(
-        wait_for_copy_deduplicate_all
-    )
-
-    tiktokreporter_ios_derived__metrics_clients_daily__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )

@@ -89,10 +89,25 @@ with DAG(
         depends_on_past=False,
     )
 
+    accounts_backend_derived__users_services_last_seen__v1 = bigquery_etl_query(
+        task_id="accounts_backend_derived__users_services_last_seen__v1",
+        destination_table="users_services_last_seen_v1",
+        dataset_id="accounts_backend_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="ksiegler@mozilla.com",
+        email=["akomar@mozilla.com", "ksiegler@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     accounts_backend_derived__users_services_daily__v1.set_upstream(
         wait_for_accounts_db_external__fxa_oauth_clients__v1
     )
 
     accounts_backend_derived__users_services_daily__v1.set_upstream(
         wait_for_copy_deduplicate_all
+    )
+
+    accounts_backend_derived__users_services_last_seen__v1.set_upstream(
+        accounts_backend_derived__users_services_daily__v1
     )

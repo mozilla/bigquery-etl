@@ -727,11 +727,3 @@ with DAG(
     telemetry_derived__main_use_counter_1pct__v1.set_upstream(
         wait_for_copy_deduplicate_main_ping
     )
-
-    telemetry_derived__suggest_clients_daily__v1.set_upstream(wait_for_bq_main_events)
-
-    telemetry_derived__suggest_clients_daily__v1.set_upstream(wait_for_event_events)
-
-    telemetry_derived__suggest_clients_daily__v1.set_upstream(
-        telemetry_derived__clients_daily_joined__v1
-    )

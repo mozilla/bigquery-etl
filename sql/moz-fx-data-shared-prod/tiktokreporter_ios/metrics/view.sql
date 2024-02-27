@@ -4,7 +4,7 @@ CREATE OR REPLACE VIEW
 AS
 SELECT
   "org_mozilla_ios_tiktok_reporter" AS normalized_app_id,
-  normalized_channel,
+  "release" AS normalized_channel,
   additional_properties,
   client_info,
   document_id,

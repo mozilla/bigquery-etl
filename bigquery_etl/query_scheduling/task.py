@@ -611,15 +611,16 @@ class Task:
 
         def _duplicate_dependency(task_ref):
             return any(
-                d.task_key == task_ref.task_key for d in self.depends_on + dependencies
+                d.task_key == task_ref.task_key for d in self.depends_on + dependencies #DOES THIS NEED TO GET UPDATED?
             )
 
         parent_task = None
         if self.is_dq_check:
+            ## DOES THIS NEED TO GET UPDATED?
             parent_task = dag_collection.task_for_table(
                 self.project, self.dataset, f"{self.table}_{self.version}"
             )
-            parent_task_ref = parent_task.to_ref(dag_collection)
+            parent_task_ref = parent_task.to_ref(dag_collection) ### IS THIS THE PROBLEM
             if not _duplicate_dependency(parent_task_ref):
                 dependencies.append(parent_task_ref)
 

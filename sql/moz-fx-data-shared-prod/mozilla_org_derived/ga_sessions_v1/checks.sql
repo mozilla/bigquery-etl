@@ -17,7 +17,7 @@ SELECT
   IF(
     (SELECT COUNT(*) FROM non_unique) > 0,
     ERROR(
-      "Duplicates detected (Expected combined set of values for columns ['ga_session_id'] to be unique.)"
+      "Duplicates detected (Expected combined set of values for columns ['ga_session_id'] to be unique where session_date = @session_date.)"
     ),
     NULL
   );

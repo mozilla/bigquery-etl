@@ -40,7 +40,7 @@ SELECT
   IF(
     (SELECT COUNT(*) FROM non_unique) > 0,
     ERROR(
-      "Duplicates detected (Expected combined set of values for columns ['datetime', 'city', 'country'] to be unique.)"
+      "Duplicates detected (Expected combined set of values for columns ['datetime', 'city', 'country'] to be unique where DATE(`datetime`) = @submission_date.)"
     ),
     NULL
   );

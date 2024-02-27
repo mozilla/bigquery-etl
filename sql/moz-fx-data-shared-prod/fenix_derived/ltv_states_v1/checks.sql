@@ -16,7 +16,7 @@ SELECT
   IF(
     (SELECT COUNT(*) FROM non_unique) > 0,
     ERROR(
-      "Duplicates detected (Expected combined set of values for columns ['client_id'] to be unique.)"
+      "Duplicates detected (Expected combined set of values for columns ['client_id'] to be unique where submission_date = @submission_date.)"
     ),
     NULL
   );

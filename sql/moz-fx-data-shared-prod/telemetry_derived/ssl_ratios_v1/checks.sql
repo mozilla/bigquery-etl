@@ -71,7 +71,7 @@ SELECT
   IF(
     (SELECT COUNT(*) FROM non_unique) > 0,
     ERROR(
-      "Duplicates detected (Expected combined set of values for columns ['submission_date', 'os', 'country'] to be unique.)"
+      "Duplicates detected (Expected combined set of values for columns ['submission_date', 'os', 'country'] to be unique where submission_date = @submission_date.)"
     ),
     NULL
   );

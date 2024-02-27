@@ -4,6 +4,11 @@ fields:
 # https://developer.goacoustic.com/acoustic-campaign/reference/rawrecipientdataexport
 
 - mode: NULLABLE
+  name: email
+  type: STRING
+  description: The ID of the contact associated with the event.
+
+- mode: NULLABLE
   name: recipient_id
   type: INTEGER
   description: The ID of the contact associated with the event.

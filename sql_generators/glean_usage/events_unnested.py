@@ -24,7 +24,12 @@ class EventsUnnestedTable(GleanTable):
         self.cross_channel_template = "cross_channel_events_unnested.view.sql"
 
     def generate_per_app(
-        self, project_id, app_info, output_dir=None, use_cloud_function=True
+        self,
+        project_id,
+        app_info,
+        output_dir=None,
+        use_cloud_function=True,
+        parallelism=8,
     ):
         """Generate the events_unnested table query per app_name."""
         target_dataset = app_info[0]["app_name"]

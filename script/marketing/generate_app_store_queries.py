@@ -164,9 +164,11 @@ def main(project, source_dataset, destination_dataset, create_table, backfill, d
                 schema_update_options=schema_update_options,
                 time_partitioning=bigquery.TimePartitioning(field="date"),
                 create_disposition=bigquery.CreateDisposition.CREATE_IF_NEEDED,
-                write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE
-                if backfill
-                else bigquery.WriteDisposition.WRITE_APPEND,
+                write_disposition=(
+                    bigquery.WriteDisposition.WRITE_TRUNCATE
+                    if backfill
+                    else bigquery.WriteDisposition.WRITE_APPEND
+                ),
             )
             print(f"Creating table {table_name}")
             query_job = client.query(query_text, job_config)

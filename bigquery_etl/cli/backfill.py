@@ -1,4 +1,5 @@
 """bigquery-etl CLI backfill command."""
+
 import json
 import sys
 import tempfile

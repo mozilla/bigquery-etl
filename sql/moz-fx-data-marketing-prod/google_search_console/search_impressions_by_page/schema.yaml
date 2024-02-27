@@ -1,0 +1,101 @@
+fields:
+- name: date
+  type: DATE
+  mode: NULLABLE
+  description: The day on which the search occurred (Pacific Time).
+- name: site_url
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    For domain properties, this will be `sc-domain:` followed by the domain name.
+    For URL-prefix properties, it will be the full URL of the property definition.
+- name: site_domain_name
+  type: STRING
+  mode: NULLABLE
+  description: Domain name of the site.
+- name: page_url
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    The final page URL linked by a search result after any skip redirects.
+    This will be null for anonymized Discover impressions.
+- name: page_domain_name
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Domain name of the page URL.
+    This will be null for anonymized Discover impressions.
+- name: page_path
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    The path part of the page URL.
+    This will be null for anonymized Discover impressions.
+- name: page_path_segment_1
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    The first segment of the page URL path, which is often a locale like `en-US` or `de`.
+    This will be null for anonymized Discover impressions.
+- name: query
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    The search query.
+    This will be null for anonymized search impressions, and all Discover and Google News search impressions.
+- name: is_anonymized
+  type: BOOLEAN
+  mode: NULLABLE
+  description: |-
+    Whether Google has anonymized the search impression to protect the users' privacy.
+    The `query` field will be null for anonymized search impressions.
+    The `country_code`, `page_url`, and related fields will be null for anonymized Discover impressions.
+- name: has_good_page_experience
+  type: BOOLEAN
+  mode: NULLABLE
+  description: |-
+    Whether Google Search considers the page to be providing a good page experience.
+    This will be null prior to August 2023.
+- name: search_type
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Where the link was seen by the user:
+      * Web: In Google Search's default "All" tab.
+      * Image: In Google Search's "Images" tab.
+      * Video: In Google Search's "Videos" tab.
+      * News: In Google Search's "News" tab.
+      * Discover: In Google's Discover feed.
+      * Google News: On news.google.com or in the Google News app on Android and iOS.
+- name: search_appearance
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    How the search result appeared (e.g. normal result, translated result, video).
+    This will be null prior to August 2023.
+- name: country_code
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Country from which the search was made, in ISO-3166-1-Alpha-3 format.
+    This will be null for anonymized Discover impressions.
+- name: device_type
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    The type of device on which the user was searching: Desktop, Mobile, or Tablet.
+    This will be null for Discover impressions.
+- name: impressions
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of times that search results with a link to the page were shown to a user.
+- name: clicks
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of times a user clicked a search result link to the page.
+- name: average_position
+  type: FLOAT
+  mode: NULLABLE
+  description: |-
+    The average position of the page in the search results, where `1` is the topmost position.
+    This will be null for Discover and Google News search impressions.

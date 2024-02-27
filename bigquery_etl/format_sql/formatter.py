@@ -82,7 +82,7 @@ def simple_format(tokens, indent="  "):
         elif isinstance(token, CaseSubclause):
             if token.value.upper() in ("WHEN", "ELSE"):
                 # Have WHEN and ELSE clauses indented one level more than CASE.
-                while indent_types and indent_types[-1] is not BlockKeyword:
+                while indent_types and indent_types[-1] is CaseSubclause:
                     indent_types.pop()
         elif isinstance(
             token, (AliasSeparator, ExpressionSeparator, FieldAccessOperator)
@@ -98,9 +98,11 @@ def simple_format(tokens, indent="  "):
             # no space before first token
             pass
         elif isinstance(token, Comment):
-            # blank line before comments only if they start on their own line
-            # and come after a statement separator
+            # blank line before comments if they start on their own line
+            # and come after a statement separator, and before #fail and #warn
             if token.value.startswith("\n") and prev_was_statement_separator:
+                yield Whitespace("\n")
+            elif re.fullmatch(r"\s*#(fail|warn)", token.value):
                 yield Whitespace("\n")
         elif (
             require_newline_before_next_token

@@ -107,7 +107,7 @@ def structured_missing_columns(
                 ),
             )
             job.result()
-            mb_processed[namespace] = round(job.total_bytes_processed / 1024 ** 2, 1)
+            mb_processed[namespace] = round(job.total_bytes_processed / 1024**2, 1)
         except Exception as e:
             if not skip_exceptions:
                 raise

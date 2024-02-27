@@ -151,17 +151,24 @@ def main():
     legacy_core = (
         "moz-fx-data-shared-prod.org_mozilla_ios_firefox_derived.legacy_mobile_core_v2"
     )
-    legacy_event = (
-        "moz-fx-data-shared-prod.org_mozilla_ios_firefox_derived.legacy_mobile_event_counts_v2"
-    )
+    legacy_event = "moz-fx-data-shared-prod.org_mozilla_ios_firefox_derived.legacy_mobile_event_counts_v2"
     update_schema(bq, legacy_core, schema)
     update_schema(bq, legacy_event, schema)
 
     # these columns needs to be excluded due to a change in view generation (metrics)
     # for more details, see: https://github.com/mozilla/bigquery-etl/pull/4029
     # and https://bugzilla.mozilla.org/show_bug.cgi?id=1741487
-    columns_to_exclude = ("root.metrics.text RECORD", "root.metrics.url RECORD", "root.metrics.jwe RECORD", "root.metrics.labeled_rate RECORD",)
-    stripped = [c.split()[0].lstrip("root.") for c in column_summary if c not in columns_to_exclude]
+    columns_to_exclude = (
+        "root.metrics.text RECORD",
+        "root.metrics.url RECORD",
+        "root.metrics.jwe RECORD",
+        "root.metrics.labeled_rate RECORD",
+    )
+    stripped = [
+        c.split()[0].lstrip("root.")
+        for c in column_summary
+        if c not in columns_to_exclude
+    ]
 
     query_glean = generate_query(
         ['"glean" as telemetry_system', *stripped],
@@ -185,7 +192,9 @@ def main():
         replacements=query_legacy_replacements,
     )
 
-    view_body = reformat(" UNION ALL ".join([query_glean, query_legacy_core, query_legacy_events]))
+    view_body = reformat(
+        " UNION ALL ".join([query_glean, query_legacy_core, query_legacy_events])
+    )
     print(view_body)
     view_id = "moz-fx-data-shared-prod.org_mozilla_ios_firefox.unified_metrics"
     try:

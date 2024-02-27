@@ -26,7 +26,7 @@ Benin,BJ,BEN,Africa,Sub-Saharan Africa,Western Africa,FALSE,FALSE
 Bermuda,BM,BMU,Americas,Northern America,Unspecified,FALSE,FALSE
 Bhutan,BT,BTN,Asia,Southern Asia,Unspecified,FALSE,FALSE
 "Bolivia, Plurinational State of",BO,BOL,Americas,Latin America and the Caribbean,South America,FALSE,FALSE
-"Bonaire, Sint Eustatius and Saba",BQ,BES,Americas,Latin America and the Caribbean,Unspecified,FALSE,FALSE
+"Bonaire, Sint Eustatius and Saba",BQ,BES,Americas,Latin America and the Caribbean,Caribbean,FALSE,FALSE
 Bosnia and Herzegovina,BA,BIH,Europe,Southern Europe,Unspecified,FALSE,FALSE
 Botswana,BW,BWA,Africa,Sub-Saharan Africa,Southern Africa,FALSE,FALSE
 Bouvet Island,BV,BVT,Americas,Latin America and the Caribbean,South America,FALSE,FALSE
@@ -90,7 +90,7 @@ Grenada,GD,GRD,Americas,Latin America and the Caribbean,Caribbean,FALSE,FALSE
 Guadeloupe,GP,GLP,Americas,Latin America and the Caribbean,Caribbean,FALSE,FALSE
 Guam,GU,GUM,Oceania,Micronesia,Unspecified,FALSE,FALSE
 Guatemala,GT,GTM,Americas,Latin America and the Caribbean,Central America,FALSE,FALSE
-Guernsey,GG,GGY,Europe,Northern Europe,Channel Islands,FALSE,FALSE
+Guernsey,GG,GGY,Europe,Northern Europe,Unspecified,FALSE,FALSE
 Guinea,GN,GIN,Africa,Sub-Saharan Africa,Western Africa,FALSE,FALSE
 Guinea-Bissau,GW,GNB,Africa,Sub-Saharan Africa,Western Africa,FALSE,FALSE
 Guyana,GY,GUY,Americas,Latin America and the Caribbean,South America,FALSE,FALSE
@@ -111,7 +111,7 @@ Israel,IL,ISR,Asia,Western Asia,Unspecified,FALSE,FALSE
 Italy,IT,ITA,Europe,Southern Europe,Unspecified,TRUE,TRUE
 Jamaica,JM,JAM,Americas,Latin America and the Caribbean,Caribbean,FALSE,FALSE
 Japan,JP,JPN,Asia,Eastern Asia,Unspecified,FALSE,FALSE
-Jersey,JE,JEY,Europe,Northern Europe,Channel Islands,FALSE,FALSE
+Jersey,JE,JEY,Europe,Northern Europe,Unspecified,FALSE,FALSE
 Jordan,JO,JOR,Asia,Western Asia,Unspecified,FALSE,FALSE
 Kazakhstan,KZ,KAZ,Asia,Central Asia,Unspecified,FALSE,FALSE
 Kenya,KE,KEN,Africa,Sub-Saharan Africa,Eastern Africa,FALSE,FALSE
@@ -198,7 +198,7 @@ Senegal,SN,SEN,Africa,Sub-Saharan Africa,Western Africa,FALSE,FALSE
 Serbia,RS,SRB,Europe,Southern Europe,Unspecified,FALSE,FALSE
 Seychelles,SC,SYC,Africa,Sub-Saharan Africa,Eastern Africa,FALSE,FALSE
 Sierra Leone,SL,SLE,Africa,Sub-Saharan Africa,Western Africa,FALSE,FALSE
-Singapore,SG,SGP,Africa,Sub-Saharan Africa,Unspecified,FALSE,TRUE
+Singapore,SG,SGP,Asia,South-eastern Asia,Unspecified,FALSE,TRUE
 Sint Maarten (Dutch part),SX,SXM,Americas,Latin America and the Caribbean,Caribbean,FALSE,FALSE
 Slovakia,SK,SVK,Europe,Eastern Europe,Unspecified,FALSE,TRUE
 Slovenia,SI,SVN,Europe,Southern Europe,Unspecified,FALSE,TRUE
@@ -212,14 +212,14 @@ Sri Lanka,LK,LKA,Asia,Southern Asia,Unspecified,FALSE,FALSE
 Sudan,SD,SDN,Africa,Northern Africa,Unspecified,FALSE,FALSE
 Suriname,SR,SUR,Americas,Latin America and the Caribbean,South America,FALSE,FALSE
 Svalbard and Jan Mayen,SJ,SJM,Europe,Northern Europe,Unspecified,FALSE,FALSE
-Swaziland,SZ,SWZ,Africa,Sub-Saharan Africa,Unspecified,FALSE,FALSE
+Swaziland,SZ,SWZ,Africa,Sub-Saharan Africa,Southern Africa,FALSE,FALSE
 Sweden,SE,SWE,Europe,Northern Europe,Unspecified,FALSE,TRUE
 Switzerland,CH,CHE,Europe,Western Europe,Unspecified,TRUE,TRUE
 Syrian Arab Republic,SY,SYR,Asia,Western Asia,Unspecified,FALSE,FALSE
 "Taiwan, Province of China",TW,TWN,Asia,Eastern Asia,Unspecified,FALSE,FALSE
 Tajikistan,TJ,TJK,Asia,Central Asia,Unspecified,FALSE,FALSE
 "Tanzania, United Republic of",TZ,TZA,Africa,Sub-Saharan Africa,Eastern Africa,FALSE,FALSE
-Thailand,TH,THA,Asia,Southern Asia,Unspecified,FALSE,FALSE
+Thailand,TH,THA,Asia,South-eastern Asia,Unspecified,FALSE,FALSE
 Timor-Leste,TL,TLS,Asia,South-eastern Asia,Unspecified,FALSE,FALSE
 Togo,TG,TGO,Africa,Sub-Saharan Africa,Western Africa,FALSE,FALSE
 Tokelau,TK,TKL,Oceania,Polynesia,Unspecified,FALSE,FALSE

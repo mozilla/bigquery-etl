@@ -76,6 +76,30 @@
     "name": "install_source"
   },
   {
+    "type": "STRING",
+    "name": "play_store_attribution_campaign"
+  },
+  {
+    "type": "STRING",
+    "name": "play_store_attribution_content"
+  },
+  {
+    "type": "STRING",
+    "name": "play_store_attribution_medium"
+  },
+  {
+    "type": "STRING",
+    "name": "play_store_attribution_source"
+  },
+  {
+    "type": "STRING",
+    "name": "play_store_attribution_term"
+  },
+  {
+    "type": "STRING",
+    "name": "play_store_attribution_install_referrer_response"
+  },
+  {
     "fields": [
       {
         "type": "BOOLEAN",
@@ -116,6 +140,30 @@
       {
         "type": "DATETIME",
         "name": "install_source__source_ping_datetime"
+      },
+      {
+        "type": "DATETIME",
+        "name": "play_store_attribution_campaign__ping_datetime"
+      },
+      {
+        "type": "DATETIME",
+        "name": "play_store_attribution_content__ping_datetime"
+      },
+      {
+        "type": "DATETIME",
+        "name": "play_store_attribution_medium__ping_datetime"
+      },
+      {
+        "type": "DATETIME",
+        "name": "play_store_attribution_source__ping_datetime"
+      },
+      {
+        "type": "DATETIME",
+        "name": "play_store_attribution_term__ping_datetime"
+      },
+      {
+        "type": "DATETIME",
+        "name": "play_store_attribution_install_referrer_response__ping_datetime"
       }
     ],
     "name": "metadata",

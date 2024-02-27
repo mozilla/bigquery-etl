@@ -5,8 +5,9 @@ from airflow.sensors.external_task import ExternalTaskMarker
 from airflow.sensors.external_task import ExternalTaskSensor
 from airflow.utils.task_group import TaskGroup
 import datetime
+from operators.gcp_container_operator import GKEPodOperator
 from utils.constants import ALLOWED_STATES, FAILED_STATES
-from utils.gcp import bigquery_etl_query, gke_command, bigquery_dq_check
+from utils.gcp import bigquery_etl_query, bigquery_dq_check
 
 docs = """
 ### bqetl_test_dag
@@ -44,6 +45,18 @@ with DAG(
     doc_md=docs,
     tags=tags,
 ) as dag:
+
+    wait_for_checks__fail_test__external_table__v1 = ExternalTaskSensor(
+        task_id="wait_for_checks__fail_test__external_table__v1",
+        external_dag_id="bqetl_external_test_dag",
+        external_task_id="checks__fail_test__external_table__v1",
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     checks__fail_test__table1__v1 = bigquery_dq_check(
         task_id="checks__fail_test__table1__v1",
         source_table="table1_v1",
@@ -91,17 +104,6 @@ with DAG(
     )
 
     checks__fail_test__table1__v1.set_upstream(test__table1__v1)
-
-    wait_for_checks__fail_test__external_table__v1 = ExternalTaskSensor(
-        task_id="wait_for_checks__fail_test__external_table__v1",
-        external_dag_id="bqetl_external_test_dag",
-        external_task_id="checks__fail_test__external_table__v1",
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
 
     test__query__v1.set_upstream(wait_for_checks__fail_test__external_table__v1)
 

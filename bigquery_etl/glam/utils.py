@@ -1,4 +1,5 @@
 """Utilities for the GLAM module."""
+
 import json
 import subprocess
 from collections import namedtuple

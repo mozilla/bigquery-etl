@@ -26,7 +26,6 @@ WITH base AS (
         ping_info.ping_type
       ) AS ping_info
     ),
-    DATE(submission_timestamp) AS submission_date,
     client_info.client_id AS client_id,
     ping_info.reason AS reason,
     `mozfun.json.from_map`(ping_info.experiments) AS experiments,
@@ -37,7 +36,11 @@ WITH base AS (
     event.category as event_category,
     event.name as event_name,
     ARRAY_TO_STRING([event.category, event.name], '.') AS event, -- handles NULL values better
-    `mozfun.json.from_map`(event.extra) AS event_extra
+    `mozfun.json.from_map`(event.extra) AS event_extra,
+    JSON_STRIP_NULLS(
+      TO_JSON(metrics),  -- expose as easy to access JSON column
+      remove_empty => true -- no reason to keep empty objects around
+    ) AS metrics
   FROM
     `{{ events_view }}` AS e
   CROSS JOIN

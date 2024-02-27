@@ -5,6 +5,7 @@ from collections import namedtuple
 from datetime import datetime
 from pathlib import Path
 
+from bigquery_etl.config import ConfigLoader
 from bigquery_etl.schema.stable_table_schema import get_stable_table_schemas
 from sql_generators.glean_usage.common import (
     GleanTable,
@@ -42,6 +43,7 @@ class EventMonitoringLive(GleanTable):
         output_dir=None,
         use_cloud_function=True,
         app_info=[],
+        parallelism=8,
     ):
         tables = table_names_from_baseline(baseline_table, include_project_id=False)
 
@@ -50,6 +52,17 @@ class EventMonitoringLive(GleanTable):
 
         table = tables[f"{self.prefix}"]
         dataset = tables[self.prefix].split(".")[-2].replace("_derived", "")
+
+        default_events_table = ConfigLoader.get(
+            "generate",
+            "glean_usage",
+            "events_monitoring",
+            "default_event_table",
+            fallback="events_v1",
+        )
+        events_table_overwrites = ConfigLoader.get(
+            "generate", "glean_usage", "events_monitoring", "event_table", fallback={}
+        )
 
         render_kwargs = dict(
             header="-- Generated via bigquery_etl.glean_usage\n",
@@ -64,6 +77,11 @@ class EventMonitoringLive(GleanTable):
                 for app_dataset in app
                 if dataset == app_dataset["bq_dataset_family"]
             ][0],
+            events_table=(
+                default_events_table
+                if dataset not in events_table_overwrites
+                else events_table_overwrites[dataset]
+            ),
         )
 
         render_kwargs.update(self.custom_render_kwargs)
@@ -106,7 +124,7 @@ class EventMonitoringLive(GleanTable):
                 )
 
     def generate_across_apps(
-        self, project_id, apps, output_dir=None, use_cloud_function=True
+        self, project_id, apps, output_dir=None, use_cloud_function=True, parallelism=8
     ):
         """Generate a query across all apps."""
         if not self.across_apps_enabled:
@@ -122,6 +140,17 @@ class EventMonitoringLive(GleanTable):
         aggregate_table = "event_monitoring_aggregates_v1"
         target_view_name = "_".join(self.target_table_id.split("_")[:-1])
 
+        default_events_table = ConfigLoader.get(
+            "generate",
+            "glean_usage",
+            "events_monitoring",
+            "default_event_table",
+            fallback="events_v1",
+        )
+        events_table_overwrites = ConfigLoader.get(
+            "generate", "glean_usage", "events_monitoring", "event_table", fallback={}
+        )
+
         render_kwargs = dict(
             header="-- Generated via bigquery_etl.glean_usage\n",
             header_yaml="---\n# Generated via bigquery_etl.glean_usage\n",
@@ -131,6 +160,8 @@ class EventMonitoringLive(GleanTable):
             target_table=f"{TARGET_DATASET_CROSS_APP}_derived.{aggregate_table}",
             apps=apps,
             prod_datasets=prod_datasets_with_event,
+            default_events_table=default_events_table,
+            events_table_overwrites=events_table_overwrites,
         )
         render_kwargs.update(self.custom_render_kwargs)
 

@@ -1,4 +1,5 @@
 """Generate templated views."""
+
 from argparse import ArgumentParser, Namespace
 from dataclasses import dataclass
 from functools import partial

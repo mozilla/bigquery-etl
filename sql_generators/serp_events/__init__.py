@@ -1,4 +1,5 @@
 """Generate serp events aggregates per app."""
+
 import os
 from enum import Enum
 from pathlib import Path

@@ -1,4 +1,5 @@
 """Tools for GLAM ETL."""
+
 import os
 from pathlib import Path
 

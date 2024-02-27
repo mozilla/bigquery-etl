@@ -96,68 +96,68 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
 
     {% set seen_table_sensor_tasks = [] -%}
     {% for table_sensor_task in task.depends_on_tables_existing -%}
-        {% if table_sensor_task.task_id not in seen_table_sensor_tasks -%}
-            {% set project_id, dataset_name, table_name = table_sensor_task.table_id.split('.') -%}
-            {{ table_sensor_task.task_id }} = BigQueryTableExistenceSensor(
-                task_id={{ table_sensor_task.task_id | format_repr }},
-                project_id={{ project_id | format_repr }},
-                dataset_id={{ dataset_name | format_repr }},
-                table_id={{ table_name | format_repr }},
-                gcp_conn_id='google_cloud_shared_prod',
-                deferrable=True,
-                {% if table_sensor_task.poke_interval != None -%}
-                poke_interval={{ table_sensor_task.poke_interval | format_timedelta | format_repr }},
-                {% else -%}
-                poke_interval=datetime.timedelta(minutes=5),
-                {% endif -%}
-                {% if table_sensor_task.timeout != None -%}
-                timeout={{ table_sensor_task.timeout | format_timedelta | format_repr }},
-                {% else -%}
-                timeout=datetime.timedelta(hours=8),
-                {% endif -%}
-                {% if table_sensor_task.retries != None -%}
-                retries={{ table_sensor_task.retries }},
-                {% endif -%}
-                {% if table_sensor_task.retry_delay != None -%}
-                retry_delay={{ table_sensor_task.retry_delay | format_timedelta | format_repr }},
-                {% endif -%}
-            )
-            {% do seen_table_sensor_tasks.append(table_sensor_task.task_id) -%}
+    {% if table_sensor_task.task_id not in seen_table_sensor_tasks -%}
+    {% set project_id, dataset_name, table_name = table_sensor_task.table_id.split('.') -%}
+    {{ table_sensor_task.task_id }} = BigQueryTableExistenceSensor(
+        task_id={{ table_sensor_task.task_id | format_repr }},
+        project_id={{ project_id | format_repr }},
+        dataset_id={{ dataset_name | format_repr }},
+        table_id={{ table_name | format_repr }},
+        gcp_conn_id='google_cloud_shared_prod',
+        deferrable=True,
+        {% if table_sensor_task.poke_interval != None -%}
+        poke_interval={{ table_sensor_task.poke_interval | format_timedelta | format_repr }},
+        {% else -%}
+        poke_interval=datetime.timedelta(minutes=5),
         {% endif -%}
+        {% if table_sensor_task.timeout != None -%}
+        timeout={{ table_sensor_task.timeout | format_timedelta | format_repr }},
+        {% else -%}
+        timeout=datetime.timedelta(hours=8),
+        {% endif -%}
+        {% if table_sensor_task.retries != None -%}
+        retries={{ table_sensor_task.retries }},
+        {% endif -%}
+        {% if table_sensor_task.retry_delay != None -%}
+        retry_delay={{ table_sensor_task.retry_delay | format_timedelta | format_repr }},
+        {% endif -%}
+    )
+    {% do seen_table_sensor_tasks.append(table_sensor_task.task_id) -%}
+    {% endif -%}
 
     {% endfor -%}
 
     {% set seen_table_partition_sensor_tasks = [] -%}
     {% for table_partition_sensor_task in task.depends_on_table_partitions_existing -%}
-        {% if table_partition_sensor_task.task_id not in seen_table_partition_sensor_tasks -%}
-            {% set project_id, dataset_name, table_name = table_partition_sensor_task.table_id.split('.') -%}
-            {{ table_partition_sensor_task.task_id }} = BigQueryTablePartitionExistenceSensor(
-                task_id={{ table_partition_sensor_task.task_id | format_repr }},
-                project_id={{ project_id | format_repr }},
-                dataset_id={{ dataset_name | format_repr }},
-                table_id={{ table_name | format_repr }},
-                partition_id={{ table_partition_sensor_task.partition_id | format_repr }},
-                gcp_conn_id='google_cloud_shared_prod',
-                deferrable=True,
-                {% if table_partition_sensor_task.poke_interval != None -%}
-                poke_interval={{ table_partition_sensor_task.poke_interval | format_timedelta | format_repr }},
-                {% else -%}
-                poke_interval=datetime.timedelta(minutes=5),
-                {% endif -%}
-                {% if table_partition_sensor_task.timeout != None -%}
-                timeout={{ table_partition_sensor_task.timeout | format_timedelta | format_repr }},
-                {% else -%}
-                timeout=datetime.timedelta(hours=8),
-                {% endif -%}
-                {% if table_partition_sensor_task.retries != None -%}
-                retries={{ table_partition_sensor_task.retries }},
-                {% endif -%}
-                {% if table_partition_sensor_task.retry_delay != None -%}
-                retry_delay={{ table_partition_sensor_task.retry_delay | format_timedelta | format_repr }},
-                {% endif -%}
-            )
-        {% do seen_table_partition_sensor_tasks.append(table_partition_sensor_task.task_id) -%}
+    {% if table_partition_sensor_task.task_id not in seen_table_partition_sensor_tasks -%}
+    {% set project_id, dataset_name, table_name = table_partition_sensor_task.table_id.split('.') -%}
+    {{ table_partition_sensor_task.task_id }} = BigQueryTablePartitionExistenceSensor(
+        task_id={{ table_partition_sensor_task.task_id | format_repr }},
+        project_id={{ project_id | format_repr }},
+        dataset_id={{ dataset_name | format_repr }},
+        table_id={{ table_name | format_repr }},
+        partition_id={{ table_partition_sensor_task.partition_id | format_repr }},
+        gcp_conn_id='google_cloud_shared_prod',
+        deferrable=True,
+        {% if table_partition_sensor_task.poke_interval != None -%}
+        poke_interval={{ table_partition_sensor_task.poke_interval | format_timedelta | format_repr }},
+        {% else -%}
+        poke_interval=datetime.timedelta(minutes=5),
         {% endif -%}
+        {% if table_partition_sensor_task.timeout != None -%}
+        timeout={{ table_partition_sensor_task.timeout | format_timedelta | format_repr }},
+        {% else -%}
+        timeout=datetime.timedelta(hours=8),
+        {% endif -%}
+        {% if table_partition_sensor_task.retries != None -%}
+        retries={{ table_partition_sensor_task.retries }},
+        {% endif -%}
+        {% if table_partition_sensor_task.retry_delay != None -%}
+        retry_delay={{ table_partition_sensor_task.retry_delay | format_timedelta | format_repr }},
+        {% endif -%}
+    )
+    {% do seen_table_partition_sensor_tasks.append(table_partition_sensor_task.task_id) -%}
+    {% endif -%}
     {% endfor -%}
 
     {% if task.depends_on_fivetran != None -%}

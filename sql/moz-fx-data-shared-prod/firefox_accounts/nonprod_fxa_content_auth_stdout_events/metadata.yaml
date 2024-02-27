@@ -11,4 +11,3 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.firefox_accounts.nonprod_fxa_all_events
-deprecated: false

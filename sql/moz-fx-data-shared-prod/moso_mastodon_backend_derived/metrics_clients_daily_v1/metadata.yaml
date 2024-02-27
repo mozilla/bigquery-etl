@@ -29,4 +29,3 @@ workgroup_access:
 references:
   query.sql:
   - moso_mastodon_backend.metrics
-deprecated: false

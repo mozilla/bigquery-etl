@@ -19,4 +19,3 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.org_mozilla_fenix_stable.events_v1
-deprecated: false

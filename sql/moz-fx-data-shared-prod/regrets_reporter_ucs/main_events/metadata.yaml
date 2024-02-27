@@ -19,4 +19,3 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.regrets_reporter_ucs_stable.main_events_v1
-deprecated: false

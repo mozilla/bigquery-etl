@@ -86,4 +86,3 @@ references:
   - telemetry.clients_daily
   - telemetry.health
   - telemetry_stable.main_v5
-deprecated: false

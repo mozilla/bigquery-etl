@@ -44,4 +44,3 @@ references:
   - firefox_desktop.deletion_request
   - mozdata.static.csa_gblmkt_languages
   - telemetry.clients_last_seen
-deprecated: false

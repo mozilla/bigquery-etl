@@ -29,4 +29,3 @@ references:
   query.sql:
   - snippets_users_daily_v1
   - snippets_users_last_seen_v1
-deprecated: false

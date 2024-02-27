@@ -19,4 +19,3 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.firefox_desktop_background_tasks_stable.default_agent_v1
-deprecated: false

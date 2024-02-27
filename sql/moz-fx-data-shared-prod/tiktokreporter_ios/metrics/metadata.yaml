@@ -16,4 +16,3 @@ references:
   view.sql:
   - moz-fx-data-shared-prod.org_mozilla_ios_tiktok_reporter.metrics
   - moz-fx-data-shared-prod.org_mozilla_ios_tiktok_reporter_tiktok_reportershare.metrics
-deprecated: false

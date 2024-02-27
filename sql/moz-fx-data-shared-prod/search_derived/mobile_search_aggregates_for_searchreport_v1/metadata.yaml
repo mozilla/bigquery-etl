@@ -37,4 +37,3 @@ references:
   - moz-fx-data-shared-prod.search_derived.mobile_search_aggregates_for_searchreport_v1
   query.sql:
   - search.mobile_search_clients_engines_sources_daily
-deprecated: false

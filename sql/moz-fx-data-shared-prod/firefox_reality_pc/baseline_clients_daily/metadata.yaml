@@ -11,4 +11,3 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.org_mozilla_firefoxreality.baseline_clients_daily
-deprecated: false

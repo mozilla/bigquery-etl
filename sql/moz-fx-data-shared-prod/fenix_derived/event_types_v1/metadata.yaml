@@ -25,4 +25,3 @@ references:
   - fenix_derived.event_types_history_v1
   query.sql:
   - fenix_derived.event_types_history_v1
-deprecated: false

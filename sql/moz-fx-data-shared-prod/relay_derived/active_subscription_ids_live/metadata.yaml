@@ -11,4 +11,3 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.relay.subscriptions
-deprecated: false

@@ -31,4 +31,3 @@ references:
   - search.search_clients_engines_sources_daily
   - telemetry.suggest_clients_daily
   - telemetry.unified_metrics
-deprecated: false

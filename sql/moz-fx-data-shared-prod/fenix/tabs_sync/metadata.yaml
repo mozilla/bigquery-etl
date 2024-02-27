@@ -19,4 +19,3 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_fennec_aurora.tabs_sync
   - moz-fx-data-shared-prod.org_mozilla_firefox.tabs_sync
   - moz-fx-data-shared-prod.org_mozilla_firefox_beta.tabs_sync
-deprecated: false

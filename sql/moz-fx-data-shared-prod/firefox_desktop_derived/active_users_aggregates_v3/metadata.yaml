@@ -51,4 +51,3 @@ references:
   query.sql:
   - mozdata.static.csa_gblmkt_languages
   - telemetry.clients_last_seen
-deprecated: false

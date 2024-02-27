@@ -28,4 +28,3 @@ workgroup_access:
 references:
   query.sql:
   - telemetry.clients_last_seen
-deprecated: false

@@ -29,4 +29,3 @@ references:
   query.sql:
   - onboarding_users_daily_v1
   - onboarding_users_last_seen_v1
-deprecated: false

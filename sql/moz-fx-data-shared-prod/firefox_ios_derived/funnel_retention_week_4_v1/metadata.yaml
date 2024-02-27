@@ -31,4 +31,3 @@ references:
   - moz-fx-data-shared-prod.firefox_ios_derived.funnel_retention_week_4_v1
   query.sql:
   - firefox_ios_derived.funnel_retention_clients_week_4_v1
-deprecated: false

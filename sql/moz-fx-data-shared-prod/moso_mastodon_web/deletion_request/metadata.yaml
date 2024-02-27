@@ -20,4 +20,3 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.moso_mastodon_web_stable.deletion_request_v1
-deprecated: false

@@ -12,4 +12,3 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.telemetry.firefox_nondesktop_exact_mau28_by_product_v1
-deprecated: false

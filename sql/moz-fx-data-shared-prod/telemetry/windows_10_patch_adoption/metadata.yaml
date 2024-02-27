@@ -12,4 +12,3 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.telemetry.windows_10_aggregate
-deprecated: false

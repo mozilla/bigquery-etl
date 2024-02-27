@@ -34,4 +34,3 @@ references:
   query.sql:
   - messaging_system_derived.event_types_history_v1
   - messaging_system_derived.normalized_onboarding_events
-deprecated: false

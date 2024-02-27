@@ -28,4 +28,3 @@ references:
   - firefox_ios.baseline
   - firefox_ios.firefox_ios_clients
   - search_derived.mobile_search_clients_daily_v1
-deprecated: false

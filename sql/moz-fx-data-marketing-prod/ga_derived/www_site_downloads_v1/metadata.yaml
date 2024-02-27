@@ -26,4 +26,3 @@ references:
   - moz-fx-data-marketing-prod.ga_derived.www_site_downloads_v1
   query.sql:
   - moz-fx-data-marketing-prod.ga_derived.www_site_hits_v1
-deprecated: false

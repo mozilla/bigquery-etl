@@ -14,4 +14,3 @@ references:
   query.sql:
   - clients_histogram_aggregates_v2
   - clients_scalar_aggregates_v1
-deprecated: false

@@ -35,4 +35,3 @@ references:
   - app_store.firefox_downloads_territory_source_type_report
   - firefox_ios.firefox_ios_clients
   - static.country_names_v1
-deprecated: false

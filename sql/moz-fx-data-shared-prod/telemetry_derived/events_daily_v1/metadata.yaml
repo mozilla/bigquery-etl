@@ -27,4 +27,3 @@ references:
   query.sql:
   - telemetry.event_types
   - telemetry_derived.deanonymized_events
-deprecated: false

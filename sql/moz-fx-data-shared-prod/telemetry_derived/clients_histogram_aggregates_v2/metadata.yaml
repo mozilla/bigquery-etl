@@ -15,4 +15,3 @@ references:
   - latest_versions
   - telemetry_derived.clients_histogram_aggregates_new_v1
   - telemetry_derived.clients_histogram_aggregates_v2
-deprecated: false

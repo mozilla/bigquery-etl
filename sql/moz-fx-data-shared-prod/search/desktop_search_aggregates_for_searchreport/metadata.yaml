@@ -11,4 +11,3 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.search_derived.desktop_search_aggregates_for_searchreport_v1
-deprecated: false

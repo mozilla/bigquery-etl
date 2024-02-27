@@ -25,4 +25,3 @@ workgroup_access:
 references:
   query.sql:
   - messaging_system.cfr
-deprecated: false

@@ -16,4 +16,3 @@ references:
   query.sql:
   - telemetry.core
   - telemetry_derived.core_clients_first_seen_v1
-deprecated: false

@@ -30,4 +30,3 @@ references:
   - org_mozilla_focus.metrics
   - org_mozilla_focus_beta.metrics
   - org_mozilla_focus_nightly.metrics
-deprecated: false

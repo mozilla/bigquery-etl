@@ -13,4 +13,3 @@ workgroup_access:
 references:
   query.sql:
   - clients_scalar_aggregates_v1
-deprecated: false

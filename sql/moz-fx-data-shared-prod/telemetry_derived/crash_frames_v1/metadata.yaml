@@ -25,4 +25,3 @@ workgroup_access:
 references:
   query.sql:
   - moz-fx-data-shared-prod.telemetry_stable.crash_v4
-deprecated: false

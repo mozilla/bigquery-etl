@@ -34,4 +34,3 @@ references:
   query.sql:
   - EXTERNAL_QUERY('moz-fx-guardian-prod-bfc7.us.guardian-sql-prod', @external_database_query)
   - users_v1
-deprecated: false

@@ -35,4 +35,3 @@ references:
   - telemetry.events
   query.sql:
   - telemetry.events
-deprecated: false

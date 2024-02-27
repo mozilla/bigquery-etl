@@ -28,4 +28,3 @@ workgroup_access:
 references:
   query.sql:
   - monitor_cirrus.metrics
-deprecated: false

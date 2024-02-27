@@ -17,4 +17,3 @@ references:
   - clients_histogram_aggregates_new_v1
   - clients_histogram_aggregates_v1
   - latest_versions
-deprecated: false

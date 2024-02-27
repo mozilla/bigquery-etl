@@ -30,4 +30,3 @@ references:
   query.sql:
   - telemetry_derived.deanonymized_events
   - telemetry_derived.event_types_history_v1
-deprecated: false

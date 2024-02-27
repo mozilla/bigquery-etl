@@ -13,4 +13,3 @@ workgroup_access:
 references:
   query.sql:
   - fxa_amplitude_export_event_date
-deprecated: false

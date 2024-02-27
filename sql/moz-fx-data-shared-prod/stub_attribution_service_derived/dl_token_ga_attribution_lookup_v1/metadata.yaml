@@ -28,4 +28,3 @@ workgroup_access:
   members:
   - workgroup:data-science/duet
 references: {}
-deprecated: false

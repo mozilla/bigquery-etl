@@ -41,4 +41,3 @@ workgroup_access:
 references:
   query.sql:
   - telemetry_derived.firefox_nondesktop_exact_mau28_v1
-deprecated: false

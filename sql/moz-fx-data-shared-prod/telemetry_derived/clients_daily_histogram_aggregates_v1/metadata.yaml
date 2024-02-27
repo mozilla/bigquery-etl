@@ -11,4 +11,3 @@ workgroup_access:
 references:
   init.sql:
   - moz-fx-data-shared-prod.telemetry_derived.clients_daily_histogram_aggregates_v1
-deprecated: false

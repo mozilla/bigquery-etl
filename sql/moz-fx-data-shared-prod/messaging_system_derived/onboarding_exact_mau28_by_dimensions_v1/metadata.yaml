@@ -25,4 +25,3 @@ references:
   query.sql:
   - messaging_system.onboarding_users_last_seen
   - static.country_codes_v1
-deprecated: false

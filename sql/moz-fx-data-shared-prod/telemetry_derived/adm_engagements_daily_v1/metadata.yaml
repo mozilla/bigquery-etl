@@ -29,4 +29,3 @@ references:
   query.sql:
   - search.search_clients_engines_sources_daily
   - telemetry.events
-deprecated: false

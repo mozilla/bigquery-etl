@@ -17,4 +17,3 @@ external_data:
   - https://docs.google.com/spreadsheets/d/16Cyx_KBieRdQkSBKolivqpBaK2H-VceN9LEZcL0snHg
   options:
     skip_leading_rows: 1
-deprecated: false

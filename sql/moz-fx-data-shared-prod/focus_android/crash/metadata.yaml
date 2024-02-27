@@ -17,4 +17,3 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_focus.crash
   - moz-fx-data-shared-prod.org_mozilla_focus_beta.crash
   - moz-fx-data-shared-prod.org_mozilla_focus_nightly.crash
-deprecated: false

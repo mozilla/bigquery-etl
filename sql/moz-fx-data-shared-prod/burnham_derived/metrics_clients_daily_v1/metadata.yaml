@@ -28,4 +28,3 @@ workgroup_access:
 references:
   query.sql:
   - burnham.metrics
-deprecated: false

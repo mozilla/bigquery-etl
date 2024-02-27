@@ -46,4 +46,3 @@ references:
   query.sql:
   - org_mozilla_connect_firefox_derived.baseline_clients_first_seen_v1
   - org_mozilla_connect_firefox_stable.baseline_v1
-deprecated: false

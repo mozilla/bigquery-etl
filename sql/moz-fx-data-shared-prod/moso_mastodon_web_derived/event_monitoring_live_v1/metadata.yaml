@@ -18,4 +18,3 @@ workgroup_access:
 references:
   init.sql:
   - moz-fx-data-shared-prod.moso_mastodon_web_live.events_v1
-deprecated: false

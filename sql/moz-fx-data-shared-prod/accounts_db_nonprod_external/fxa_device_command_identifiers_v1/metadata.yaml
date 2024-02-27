@@ -20,4 +20,3 @@ workgroup_access:
 references:
   query.sql:
   - EXTERNAL_QUERY('moz-fx-fxa-nonprod.us.fxa-rds-nonprod-stage-fxa', 'SELECT\n         commandId,\n         commandName\n       FROM\n         fxa.deviceCommandIdentifiers\n    ')
-deprecated: false

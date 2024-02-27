@@ -11,4 +11,3 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.mozilla_vpn.all_subscriptions
-deprecated: false

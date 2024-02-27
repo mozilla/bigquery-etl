@@ -11,4 +11,3 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-marketing-prod.ga_derived.www_site_page_metrics_v2
-deprecated: false

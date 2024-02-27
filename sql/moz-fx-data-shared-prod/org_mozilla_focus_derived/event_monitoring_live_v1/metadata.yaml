@@ -17,4 +17,3 @@ workgroup_access:
 references:
   init.sql:
   - moz-fx-data-shared-prod.org_mozilla_focus_live.events_v1
-deprecated: false

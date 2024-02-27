@@ -28,4 +28,3 @@ workgroup_access:
 references:
   query.sql:
   - smoot_usage_nondesktop_v2
-deprecated: false

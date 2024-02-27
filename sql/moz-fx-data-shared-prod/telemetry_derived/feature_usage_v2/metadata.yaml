@@ -39,4 +39,3 @@ references:
   - telemetry.clients_last_seen
   - telemetry.events
   - telemetry.main_remainder_1pct
-deprecated: false

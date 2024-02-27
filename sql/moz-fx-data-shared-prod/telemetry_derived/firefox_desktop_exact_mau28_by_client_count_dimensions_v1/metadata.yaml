@@ -27,4 +27,3 @@ references:
   query.sql:
   - static.country_codes_v1
   - telemetry.clients_last_seen
-deprecated: false

@@ -20,4 +20,3 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.telemetry_stable.deletion_v4
-deprecated: false

@@ -15,4 +15,3 @@ workgroup_access:
 references:
   init.sql:
   - moz-fx-data-shared-prod.org_mozilla_focus_beta_live.metrics_v1
-deprecated: false

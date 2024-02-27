@@ -33,4 +33,3 @@ workgroup_access:
 references:
   query.sql:
   - glean_dictionary.events
-deprecated: false

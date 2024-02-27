@@ -28,4 +28,3 @@ workgroup_access:
 references:
   query.sql:
   - accounts_backend.metrics
-deprecated: false

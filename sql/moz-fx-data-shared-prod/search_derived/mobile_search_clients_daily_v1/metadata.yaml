@@ -50,4 +50,3 @@ references:
   - org_mozilla_ios_klar.metrics
   - org_mozilla_klar.metrics
   - telemetry.core
-deprecated: false

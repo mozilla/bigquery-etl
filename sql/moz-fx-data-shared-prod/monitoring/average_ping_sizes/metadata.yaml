@@ -11,4 +11,3 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.monitoring_derived.average_ping_sizes_v1
-deprecated: false

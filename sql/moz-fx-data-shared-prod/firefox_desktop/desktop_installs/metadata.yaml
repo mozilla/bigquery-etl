@@ -11,4 +11,3 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.firefox_desktop_derived.desktop_installs_v1
-deprecated: false

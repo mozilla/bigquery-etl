@@ -33,4 +33,3 @@ references:
   query.sql:
   - firefox_accounts_derived.fxa_users_services_devices_daily_v1
   - firefox_accounts_derived.fxa_users_services_devices_last_seen_v1
-deprecated: false

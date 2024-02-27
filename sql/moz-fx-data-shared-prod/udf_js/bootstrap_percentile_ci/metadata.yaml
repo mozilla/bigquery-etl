@@ -11,4 +11,3 @@ workgroup_access:
 references:
   udf.sql:
   - test_data
-deprecated: false

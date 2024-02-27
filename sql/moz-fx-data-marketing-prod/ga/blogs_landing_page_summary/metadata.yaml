@@ -11,4 +11,3 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-marketing-prod.ga_derived.blogs_landing_page_summary_v2
-deprecated: false

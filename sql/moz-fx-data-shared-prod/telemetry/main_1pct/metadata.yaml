@@ -37,4 +37,3 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.telemetry.main_remainder_1pct
-deprecated: false

@@ -12,4 +12,3 @@ references:
   view.sql:
   - moz-fx-data-shared-prod.firefox_accounts_derived.fxa_delete_events_v1
   - moz-fx-data-shared-prod.firefox_accounts_derived.fxa_delete_events_v2
-deprecated: false

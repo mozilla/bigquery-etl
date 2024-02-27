@@ -15,4 +15,3 @@ workgroup_access:
 references:
   init.sql:
   - moz-fx-data-shared-prod.org_mozilla_firefox.migration
-deprecated: false

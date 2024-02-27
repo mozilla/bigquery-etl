@@ -28,4 +28,3 @@ workgroup_access:
 references:
   query.sql:
   - pine.metrics
-deprecated: false

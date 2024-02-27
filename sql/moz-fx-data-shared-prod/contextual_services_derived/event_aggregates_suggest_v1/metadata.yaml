@@ -22,4 +22,3 @@ workgroup_access:
   members:
   - workgroup:contextual-services
 references: {}
-deprecated: false

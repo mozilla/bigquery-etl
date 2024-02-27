@@ -26,4 +26,3 @@ references:
   query.sql:
   - firefox_accounts.fxa_users_last_seen
   - static.fxa_amplitude_export_users_last_seen
-deprecated: false

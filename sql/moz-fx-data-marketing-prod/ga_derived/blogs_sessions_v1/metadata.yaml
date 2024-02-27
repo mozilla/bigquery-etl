@@ -29,4 +29,3 @@ references:
   - moz-fx-data-marketing-prod.ga_derived.blogs_sessions_v1
   query.sql:
   - moz-fx-data-marketing-prod.66602784.ga_sessions_*
-deprecated: false

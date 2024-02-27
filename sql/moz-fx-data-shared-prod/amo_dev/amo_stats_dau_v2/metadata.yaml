@@ -28,4 +28,3 @@ workgroup_access:
 references:
   query.sql:
   - amo_prod.amo_stats_dau_v2
-deprecated: false

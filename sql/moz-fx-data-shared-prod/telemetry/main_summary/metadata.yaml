@@ -12,4 +12,3 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.telemetry.main_summary_v4
-deprecated: false

@@ -25,4 +25,3 @@ references:
   - fenix.events_unnested
   - fenix.firefox_android_clients
   - moz-fx-data-shared-prod.fenix_derived.funnel_retention_clients_week_4_v1
-deprecated: false

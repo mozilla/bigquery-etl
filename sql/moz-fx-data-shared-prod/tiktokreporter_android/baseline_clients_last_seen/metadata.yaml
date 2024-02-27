@@ -11,4 +11,3 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.org_mozilla_tiktokreporter.baseline_clients_last_seen
-deprecated: false

@@ -44,4 +44,3 @@ references:
   query.sql:
   - mozilla_mach_derived.baseline_clients_daily_v1
   - mozilla_mach_derived.baseline_clients_last_seen_v1
-deprecated: false

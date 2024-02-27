@@ -23,4 +23,3 @@ workgroup_access:
 references:
   query.sql:
   - mozdata.firefox_accounts.fxa_all_events
-deprecated: false

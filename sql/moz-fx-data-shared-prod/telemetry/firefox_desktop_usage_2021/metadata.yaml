@@ -45,4 +45,3 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.telemetry_derived.firefox_desktop_usage_v1
-deprecated: false

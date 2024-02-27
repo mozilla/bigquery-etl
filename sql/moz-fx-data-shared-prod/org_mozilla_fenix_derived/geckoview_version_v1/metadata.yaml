@@ -28,4 +28,3 @@ references:
   - org_mozilla_fenix.metrics
   - org_mozilla_fenix_nightly.metrics
   - org_mozilla_fennec_aurora.metrics
-deprecated: false

@@ -14,4 +14,3 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_firefox_vpn.baseline_clients_daily
   - moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn.baseline_clients_daily
   - moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_network_extension.baseline_clients_daily
-deprecated: false

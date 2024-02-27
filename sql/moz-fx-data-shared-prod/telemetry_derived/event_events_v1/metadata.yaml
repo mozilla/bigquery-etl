@@ -15,4 +15,3 @@ references:
   - moz-fx-data-shared-prod.telemetry_derived.event_events_v1
   query.sql:
   - telemetry.event
-deprecated: false

@@ -33,4 +33,3 @@ workgroup_access:
 references:
   query.sql:
   - bedrock.events
-deprecated: false

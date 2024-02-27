@@ -26,4 +26,3 @@ references:
   - firefox_ios.baseline
   - firefox_ios.firefox_ios_clients
   - firefox_ios.metrics
-deprecated: false

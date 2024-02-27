@@ -24,4 +24,3 @@ workgroup_access:
   members:
   - workgroup:mozilla-confidential
 references: {}
-deprecated: false

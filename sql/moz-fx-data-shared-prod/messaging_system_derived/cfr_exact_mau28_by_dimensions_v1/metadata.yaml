@@ -24,4 +24,3 @@ references:
   query.sql:
   - messaging_system.cfr_users_last_seen
   - static.country_codes_v1
-deprecated: false

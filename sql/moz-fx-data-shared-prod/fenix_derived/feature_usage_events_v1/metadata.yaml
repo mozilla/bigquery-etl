@@ -27,4 +27,3 @@ references:
   - fenix.events_unnested
   - fenix.firefox_android_clients
   - fenix.metrics
-deprecated: false

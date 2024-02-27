@@ -19,4 +19,3 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.eng_workflow_stable.hgpush_v1
-deprecated: false

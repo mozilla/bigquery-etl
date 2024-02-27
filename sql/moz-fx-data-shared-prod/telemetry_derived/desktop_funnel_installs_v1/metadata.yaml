@@ -24,4 +24,3 @@ references:
   query.sql:
   - firefox_installer.install
   - moz-fx-data-shared-prod.static.country_codes_v1
-deprecated: false

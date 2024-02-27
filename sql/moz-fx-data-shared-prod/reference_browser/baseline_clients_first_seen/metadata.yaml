@@ -11,4 +11,3 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.org_mozilla_reference_browser.baseline_clients_first_seen
-deprecated: false

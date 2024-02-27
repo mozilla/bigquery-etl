@@ -54,4 +54,3 @@ references:
   - moz-fx-data-shared-prod.search_derived.mobile_search_clients_daily_v1
   - moz-fx-data-shared-prod.telemetry.core_clients_last_seen
   - mozdata.static.csa_gblmkt_languages
-deprecated: false

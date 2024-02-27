@@ -28,4 +28,3 @@ workgroup_access:
 references:
   query.sql:
   - firefox_desktop_background_tasks.metrics
-deprecated: false

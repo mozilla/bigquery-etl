@@ -51,4 +51,3 @@ references:
   - telemetry_stable.main_v5
   query.sql:
   - telemetry_stable.main_v5
-deprecated: false

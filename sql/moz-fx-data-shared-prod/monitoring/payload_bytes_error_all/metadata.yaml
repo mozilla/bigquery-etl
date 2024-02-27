@@ -18,4 +18,3 @@ references:
   - moz-fx-data-shared-prod.monitoring.payload_bytes_error_structured
   - moz-fx-data-shared-prod.payload_bytes_error.stub_installer
   - moz-fx-data-shared-prod.payload_bytes_error.telemetry
-deprecated: false

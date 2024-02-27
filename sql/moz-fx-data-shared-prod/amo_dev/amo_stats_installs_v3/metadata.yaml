@@ -29,4 +29,3 @@ references:
   query.sql:
   - amo_dev.amo_stats_dau_v2
   - amo_prod.amo_stats_installs_v3
-deprecated: false

@@ -25,4 +25,3 @@ references:
   - moz-fx-data-shared-prod.telemetry_derived.ssl_ratios_v1
   query.sql:
   - moz-fx-data-shared-prod.telemetry_stable.main_v5
-deprecated: false

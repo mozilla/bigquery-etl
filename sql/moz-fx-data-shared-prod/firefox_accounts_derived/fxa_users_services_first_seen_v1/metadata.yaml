@@ -27,4 +27,3 @@ references:
   - moz-fx-data-shared-prod.firefox_accounts.fxa_all_events
   query.sql:
   - moz-fx-data-shared-prod.firefox_accounts.fxa_all_events
-deprecated: false

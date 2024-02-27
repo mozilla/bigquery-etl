@@ -32,4 +32,3 @@ references:
   - org_mozilla_fennec_aurora.metrics
   - org_mozilla_firefox.metrics
   - org_mozilla_firefox_beta.metrics
-deprecated: false

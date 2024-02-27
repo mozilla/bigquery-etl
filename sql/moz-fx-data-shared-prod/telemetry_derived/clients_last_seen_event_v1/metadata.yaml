@@ -36,4 +36,3 @@ references:
   query.sql:
   - clients_daily_event_v1
   - clients_last_seen_event_v1
-deprecated: false

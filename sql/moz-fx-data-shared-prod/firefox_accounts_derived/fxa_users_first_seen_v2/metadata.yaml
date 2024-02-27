@@ -39,4 +39,3 @@ references:
   query.sql:
   - firefox_accounts_derived.fxa_users_daily_v2
   - firefox_accounts_derived.fxa_users_first_seen_v2
-deprecated: false

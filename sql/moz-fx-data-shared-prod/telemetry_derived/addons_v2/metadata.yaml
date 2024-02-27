@@ -27,4 +27,3 @@ workgroup_access:
 references:
   query.sql:
   - telemetry.main
-deprecated: false

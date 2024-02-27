@@ -25,4 +25,3 @@ references:
   - moz-fx-data-shared-prod.static.country_codes_v1
   - telemetry.clients_last_seen
   - telemetry.new_profile
-deprecated: false

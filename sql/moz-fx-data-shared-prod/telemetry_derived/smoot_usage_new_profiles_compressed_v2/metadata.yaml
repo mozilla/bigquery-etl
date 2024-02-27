@@ -26,4 +26,3 @@ workgroup_access:
 references:
   query.sql:
   - smoot_usage_new_profiles_v2
-deprecated: false

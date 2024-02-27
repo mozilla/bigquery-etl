@@ -27,4 +27,3 @@ workgroup_access:
 references:
   query.sql:
   - moz-fx-data-shared-prod.relay_derived.active_subscription_ids_live
-deprecated: false

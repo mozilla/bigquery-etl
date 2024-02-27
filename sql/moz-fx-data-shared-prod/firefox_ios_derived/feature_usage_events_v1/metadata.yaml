@@ -27,4 +27,3 @@ references:
   - firefox_ios.events_unnested
   - firefox_ios.firefox_ios_clients
   - firefox_ios.metrics
-deprecated: false

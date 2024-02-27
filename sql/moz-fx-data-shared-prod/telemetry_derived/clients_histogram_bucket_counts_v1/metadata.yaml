@@ -13,4 +13,3 @@ workgroup_access:
 references:
   query.sql:
   - clients_histogram_aggregates_v2
-deprecated: false

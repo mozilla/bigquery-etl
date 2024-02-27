@@ -25,4 +25,3 @@ references:
   - mozilla_vpn_derived.event_types_history_v1
   query.sql:
   - mozilla_vpn_derived.event_types_history_v1
-deprecated: false

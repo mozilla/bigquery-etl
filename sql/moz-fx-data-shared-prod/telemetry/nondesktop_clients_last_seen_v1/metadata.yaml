@@ -23,4 +23,3 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_vrbrowser.baseline_clients_last_seen
   - moz-fx-data-shared-prod.telemetry.core_clients_last_seen
   - moz-fx-data-shared-prod.telemetry.fenix_clients_last_seen
-deprecated: false

@@ -32,4 +32,3 @@ references:
   - telemetry_live.main_v5
   - telemetry_stable.crash_v4
   - telemetry_stable.main_v5
-deprecated: false

@@ -30,4 +30,3 @@ references:
   query.sql:
   - telemetry.clients_last_seen
   - telemetry_derived.clients_first_seen_v2
-deprecated: false

@@ -42,4 +42,3 @@ workgroup_access:
 references:
   query.sql:
   - moz-fx-data-shared-prod.firefox_accounts_derived.fxa_users_services_daily_v2
-deprecated: false

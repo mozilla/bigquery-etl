@@ -34,4 +34,3 @@ references:
   query.sql:
   - amo_prod.desktop_addons_by_client_v1
   - amo_prod.fenix_addons_by_client_v1
-deprecated: false

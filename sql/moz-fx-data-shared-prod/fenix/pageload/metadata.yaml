@@ -19,4 +19,3 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_fennec_aurora.pageload
   - moz-fx-data-shared-prod.org_mozilla_firefox.pageload
   - moz-fx-data-shared-prod.org_mozilla_firefox_beta.pageload
-deprecated: false

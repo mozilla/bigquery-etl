@@ -32,4 +32,3 @@ references:
   query.sql:
   - search.mobile_search_clients_engines_sources_daily
   - search.search_clients_engines_sources_daily
-deprecated: false

@@ -26,4 +26,3 @@ references:
   - moz-fx-data-shared-prod.hubs.active_subscriptions
   - moz-fx-data-shared-prod.mozilla_vpn.active_subscriptions
   - moz-fx-data-shared-prod.relay.active_subscriptions
-deprecated: false

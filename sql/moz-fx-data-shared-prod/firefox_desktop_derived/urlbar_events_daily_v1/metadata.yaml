@@ -29,4 +29,3 @@ workgroup_access:
 references:
   query.sql:
   - mozdata.firefox_desktop.urlbar_events
-deprecated: false

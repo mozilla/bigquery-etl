@@ -33,4 +33,3 @@ workgroup_access:
 references:
   query.sql:
   - debug_ping_view.events
-deprecated: false

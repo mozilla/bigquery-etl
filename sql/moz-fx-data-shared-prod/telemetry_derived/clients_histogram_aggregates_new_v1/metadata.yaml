@@ -16,4 +16,3 @@ references:
   query.sql:
   - clients_daily_histogram_aggregates_v1
   - latest_versions
-deprecated: false

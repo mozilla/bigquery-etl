@@ -14,4 +14,3 @@ references:
   query.sql:
   - clients_histogram_bucket_counts_v1
   - clients_non_norm_histogram_bucket_counts_v1
-deprecated: false

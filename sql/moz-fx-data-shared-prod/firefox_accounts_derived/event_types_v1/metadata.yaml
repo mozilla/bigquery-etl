@@ -25,4 +25,3 @@ references:
   - firefox_accounts_derived.event_types_history_v1
   query.sql:
   - firefox_accounts_derived.event_types_history_v1
-deprecated: false

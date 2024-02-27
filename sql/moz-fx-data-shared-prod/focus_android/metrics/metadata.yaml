@@ -17,4 +17,3 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_focus.metrics
   - moz-fx-data-shared-prod.org_mozilla_focus_beta.metrics
   - moz-fx-data-shared-prod.org_mozilla_focus_nightly.metrics
-deprecated: false

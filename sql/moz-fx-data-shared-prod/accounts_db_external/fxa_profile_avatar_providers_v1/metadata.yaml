@@ -20,4 +20,3 @@ workgroup_access:
 references:
   query.sql:
   - EXTERNAL_QUERY('moz-fx-fxa-prod.us.fxa-rds-prod-prod-fxa-profile', 'SELECT\n         id,\n         name\n       FROM\n         fxa_profile.avatar_providers\n    ')
-deprecated: false

@@ -17,4 +17,3 @@ workgroup_access:
   members:
   - workgroup:platform-infra/internal
 references: {}
-deprecated: false

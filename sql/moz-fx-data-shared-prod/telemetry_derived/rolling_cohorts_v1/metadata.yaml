@@ -37,4 +37,3 @@ workgroup_access:
 references:
   query.sql:
   - telemetry.unified_metrics
-deprecated: false

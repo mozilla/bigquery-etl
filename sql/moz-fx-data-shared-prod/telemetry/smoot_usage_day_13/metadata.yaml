@@ -14,4 +14,3 @@ references:
   - moz-fx-data-shared-prod.telemetry_derived.smoot_usage_desktop_v2
   - moz-fx-data-shared-prod.telemetry_derived.smoot_usage_fxa_v2
   - moz-fx-data-shared-prod.telemetry_derived.smoot_usage_nondesktop_v2
-deprecated: false

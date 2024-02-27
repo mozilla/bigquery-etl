@@ -29,4 +29,3 @@ references:
   query.sql:
   - cfr_users_daily_v1
   - cfr_users_last_seen_v1
-deprecated: false

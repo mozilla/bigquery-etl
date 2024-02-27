@@ -19,4 +19,3 @@ workgroup_access:
 references:
   query.sql:
   - mozilla_vpn_external.users_v1
-deprecated: false

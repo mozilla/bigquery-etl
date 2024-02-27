@@ -15,4 +15,3 @@ workgroup_access:
 references:
   init.sql:
   - moz-fx-data-shared-prod.telemetry_live.main_v5
-deprecated: false

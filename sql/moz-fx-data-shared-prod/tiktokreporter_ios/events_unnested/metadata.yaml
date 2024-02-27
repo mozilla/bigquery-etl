@@ -1,10 +1,6 @@
-friendly_name: App-specific view for Glean ping "events"
+friendly_name: Events Unnested
 description: |-
-  This a view that UNIONs the stable ping tables
-  across all channels of the Glean application "TikTok Reporter (iOS)"
-  (org_mozilla_ios_tiktok_reporter.events, org_mozilla_ios_tiktok_reporter_tiktok_reportershare.events).
-
-  It is used by Looker.
+  Please provide a description for the query
 owners: []
 labels: {}
 bigquery: null

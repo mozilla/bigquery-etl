@@ -21,4 +21,3 @@ bigquery:
     fields:
     - visit_identifier
 references: {}
-deprecated: false

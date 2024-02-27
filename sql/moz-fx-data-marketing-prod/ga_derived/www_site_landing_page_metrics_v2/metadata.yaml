@@ -20,4 +20,3 @@ bigquery:
     - country
     - operating_system
 references: {}
-deprecated: false

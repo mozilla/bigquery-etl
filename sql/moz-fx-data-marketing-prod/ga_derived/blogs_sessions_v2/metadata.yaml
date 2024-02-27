@@ -25,4 +25,3 @@ bigquery:
     fields:
     - country
 references: {}
-deprecated: false

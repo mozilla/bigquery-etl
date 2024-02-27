@@ -29,4 +29,3 @@ bigquery:
     expiration_days: null
     require_partition_filter: true
 references: {}
-deprecated: false

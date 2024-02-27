@@ -122,9 +122,9 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
         retry_delay={{ table_sensor_task.retry_delay | format_timedelta | format_repr }},
         {% endif -%}
     )
+
     {% do seen_table_sensor_tasks.append(table_sensor_task.task_id) -%}
     {% endif -%}
-
     {% endfor -%}
 
     {% set seen_table_partition_sensor_tasks = [] -%}
@@ -156,6 +156,7 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
         retry_delay={{ table_partition_sensor_task.retry_delay | format_timedelta | format_repr }},
         {% endif -%}
     )
+    
     {% do seen_table_partition_sensor_tasks.append(table_partition_sensor_task.task_id) -%}
     {% endif -%}
     {% endfor -%}

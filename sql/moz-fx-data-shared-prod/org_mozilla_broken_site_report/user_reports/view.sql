@@ -41,6 +41,10 @@ SELECT
   metrics.text2.broken_site_report_description AS comments,
   metrics.url2.broken_site_report_url AS url,
   metrics.string.broken_site_report_breakage_category AS breakage_category,
+  "Firefox" AS app_name,
+  client_info.app_display_version as app_version,
+  normalized_channel as app_channel,
+  normalized_os as os,
   TO_JSON_STRING(
     STRUCT(
       STRUCT(

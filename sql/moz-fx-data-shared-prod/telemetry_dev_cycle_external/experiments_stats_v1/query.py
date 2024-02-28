@@ -60,7 +60,7 @@ def store_data_in_bigquery(data, schema, destination_project, destination_table_
 def download_experiments_v1(url):
     """Download experiment data from API v1 and parse it."""
     experiments_v1 = []
-    experiments = get_api_response(f"{url}/api/v1/experiments")
+    experiments = get_api_response(f"{url}/api/v1/experiments/")
     for experiment in experiments:
         if experiment["status"] == "Draft":
             continue
@@ -81,7 +81,7 @@ def download_experiments_v1(url):
 def download_experiments_v6(url):
     """Download experiment data from API v6 and parse it."""
     experiments_v6 = []
-    experiments = get_api_response(f"{url}/api/v6/experiments")
+    experiments = get_api_response(f"{url}/api/v6/experiments/")
     for experiment in experiments:
         experiments_v6.append(
             {

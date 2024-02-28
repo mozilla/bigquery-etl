@@ -1175,9 +1175,8 @@ workflows:
           name: Trigger bqetl_artifact_deployment Airflow DAG
           context:
             - data-eng-circleci-deployment
-# TODO uncomment after testing
-#          requires:
-#            - deploy
+          requires:
+            - deploy
       - sync-dags-repo:
           name: 🔃 Synchronize bigquery-etl submodule
           repo-to-sync: ${CIRCLE_PROJECT_REPONAME}

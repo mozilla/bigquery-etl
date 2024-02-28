@@ -19,5 +19,4 @@ description: |-
 owners:
 - lvargas@mozilla.com
 - mozilla/kpi_table_reviewers
-labels:
-  deprecated: true
+deprecated: true

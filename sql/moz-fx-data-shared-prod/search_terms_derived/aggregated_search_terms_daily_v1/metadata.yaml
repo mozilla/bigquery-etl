@@ -22,3 +22,4 @@ references:
   query.sql:
   - search_terms_derived.remotesettings_suggestions_v1
   - search_terms_derived.suggest_impression_sanitized_v2
+  - t.keywords

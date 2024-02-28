@@ -703,12 +703,12 @@ jobs:
           name: Trigger bqetl-artifact-deployment in Airflow
           command: >
             curl --location "https://workflow.telemetry.mozilla.org/api/v1/dags/bqetl_artifact_deployment/dagRuns"
-                 --header "Content-Type: application/json"
-                 --header "Accept: application/json"
-                 --header "Authorization: Basic ${AIRFLOW_BQETL_CI_USER_BASIC_AUTH}"
-                 --data "{
-                   \"note\": \"DAG Triggered by **${CIRCLE_USERNAME}** from ${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME} CI build [${CIRCLE_BUILD_NUM}](${CIRCLE_BUILD_URL}).\"
-                 }"
+            --header "Content-Type: application/json"
+            --header "Accept: application/json"
+            --header "Authorization: Basic ${AIRFLOW_BQETL_CI_USER_BASIC_AUTH}"
+            --data "{
+              \"note\": \"DAG Triggered by **${CIRCLE_USERNAME}** from ${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME} CI build [${CIRCLE_BUILD_NUM}](${CIRCLE_BUILD_URL}).\"
+            }"
   private-generate-sql:
     docker: *docker
     steps:

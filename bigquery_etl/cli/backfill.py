@@ -338,13 +338,8 @@ def scheduled(ctx, qualified_table_name, sql_dir, project_id, json_path=None):
 @project_id_option(
     ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod")
 )
-@click.option(
-    "--dry_run/--no_dry_run",
-    "--dry-run/--no-dry-run",
-    help="Dry run the backfill.  Note that staging table(s) will be deployed during dry run",
-)
 @click.pass_context
-def process(ctx, qualified_table_name, sql_dir, project_id, dry_run):
+def process(ctx, qualified_table_name, sql_dir, project_id):
     """Process backfill entry with drafting status in backfill.yaml file(s)."""
     click.echo("Backfill processing initiated....")
 
@@ -355,40 +350,46 @@ def process(ctx, qualified_table_name, sql_dir, project_id, dry_run):
     if backfills_to_process_dict:
         entry_to_process = backfills_to_process_dict[qualified_table_name]
 
-        backfill_staging_qualified_table_name = (
-            get_backfill_staging_qualified_table_name(
-                qualified_table_name, entry_to_process.entry_date
-            )
-        )
+        click.echo(f"\nProcessing backfills dry runs for {qualified_table_name}:")
+        _process_backfill(ctx, qualified_table_name, entry_to_process, dry_run=True)
 
-        project, dataset, table = qualified_table_name_matching(qualified_table_name)
+        click.echo(f"\nProcessing backfills for {qualified_table_name}:")
+        _process_backfill(ctx, qualified_table_name, entry_to_process)
 
-        click.echo(f"Processing backfills for {qualified_table_name}:")
+        click.echo(f"Backfill processing completed for {qualified_table_name}.")
 
-        # todo: send notification to watcher(s) that backill for file been initiated
 
-        ctx.invoke(
-            deploy,
-            name=f"{dataset}.{table}",
-            project_id=project,
-            destination_table=backfill_staging_qualified_table_name,
-        )
+def _process_backfill(ctx, qualified_table_name, entry_to_process, dry_run=None):
+    backfill_staging_qualified_table_name = get_backfill_staging_qualified_table_name(
+        qualified_table_name, entry_to_process.entry_date
+    )
 
-        # in the long-run we should remove the query backfill command and require a backfill entry for all backfills
-        ctx.invoke(
-            query_backfill,
-            name=f"{dataset}.{table}",
-            project_id=project,
-            start_date=entry_to_process.start_date,
-            end_date=entry_to_process.end_date,
-            exclude=entry_to_process.excluded_dates,
-            destination_table=backfill_staging_qualified_table_name,
-            dry_run=dry_run,
-        )
+    project, dataset, table = qualified_table_name_matching(qualified_table_name)
 
-        # todo: send notification to watcher(s) that backill for file has been completed
+    # deploy table
+    ctx.invoke(
+        deploy,
+        name=f"{dataset}.{table}",
+        project_id=project,
+        destination_table=backfill_staging_qualified_table_name,
+    )
 
-        click.echo("Backfill processing completed.")
+    # backfill table
+    # in the long-run we should remove the query backfill command and require a backfill entry for all backfills
+    ctx.invoke(
+        query_backfill,
+        name=f"{dataset}.{table}",
+        project_id=project,
+        start_date=entry_to_process.start_date,
+        end_date=entry_to_process.end_date,
+        exclude=entry_to_process.excluded_dates,
+        destination_table=backfill_staging_qualified_table_name,
+        dry_run=dry_run,
+    )
+
+    if dry_run:
+        client = bigquery.Client(project=project)
+        client.delete_table(backfill_staging_qualified_table_name)
 
 
 @backfill.command(

@@ -350,7 +350,7 @@ def process(ctx, qualified_table_name, sql_dir, project_id):
     if backfills_to_process_dict:
         entry_to_process = backfills_to_process_dict[qualified_table_name]
 
-        click.echo(f"\nProcessing backfills dry runs for {qualified_table_name}:")
+        click.echo(f"\nValidating backfill for {qualified_table_name} via dry run:")
         _process_backfill(ctx, qualified_table_name, entry_to_process, dry_run=True)
 
         click.echo(f"\nProcessing backfills for {qualified_table_name}:")

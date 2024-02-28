@@ -15,6 +15,10 @@ CREATE TEMP FUNCTION udf_contains_tier1_country(x ANY TYPE) AS ( --
   )
 );
 
+CREATE TEMP FUNCTION count_distinct(arr ANY TYPE) AS (
+  (SELECT COUNT(DISTINCT x) FROM UNNEST(arr) AS x)
+);
+
 WITH fxa_events AS (
   SELECT
     submission_timestamp,
@@ -34,6 +38,7 @@ WITH fxa_events AS (
     metrics.string.utm_source AS utm_source,
     metrics.string.utm_campaign AS utm_campaign,
     metrics.string.utm_content AS utm_content,
+    metadata.user_agent,
   FROM
     `accounts_backend.accounts_events`
   WHERE
@@ -56,6 +61,16 @@ windowed AS (
     udf.mode_last(ARRAY_AGG(country) OVER w1) AS country,
     udf_contains_tier1_country(ARRAY_AGG(country) OVER w1) AS seen_in_tier1_country,
     LOGICAL_OR(event_name = 'reg_complete') OVER w1 AS registered,
+    -- we cannot count distinct here because the window is ordered by submission_timestamp
+    ARRAY_AGG(
+      CONCAT(
+        COALESCE(user_agent.browser, ''),
+        '_',
+        COALESCE(user_agent.os, ''),
+        '_',
+        COALESCE(user_agent.version, '')
+      )
+    ) OVER w1 AS user_agent_devices,
   FROM
     fxa_events
   WHERE
@@ -89,5 +104,6 @@ SELECT
   windowed.country,
   windowed.seen_in_tier1_country,
   windowed.registered,
+  count_distinct(windowed.user_agent_devices) AS user_agent_device_count,
 FROM
   windowed

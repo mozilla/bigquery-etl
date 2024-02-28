@@ -360,19 +360,24 @@ def process(ctx, qualified_table_name, sql_dir, project_id):
 
 
 def _process_backfill(ctx, qualified_table_name, entry_to_process, dry_run=None):
-    backfill_staging_qualified_table_name = get_backfill_staging_qualified_table_name(
-        qualified_table_name, entry_to_process.entry_date
-    )
-
     project, dataset, table = qualified_table_name_matching(qualified_table_name)
 
-    # deploy table
-    ctx.invoke(
-        deploy,
-        name=f"{dataset}.{table}",
-        project_id=project,
-        destination_table=backfill_staging_qualified_table_name,
-    )
+    backfill_staging_qualified_table_name = None
+
+    if not dry_run:
+        backfill_staging_qualified_table_name = (
+            get_backfill_staging_qualified_table_name(
+                qualified_table_name, entry_to_process.entry_date
+            )
+        )
+
+        # deploy table
+        ctx.invoke(
+            deploy,
+            name=f"{dataset}.{table}",
+            project_id=project,
+            destination_table=backfill_staging_qualified_table_name,
+        )
 
     # backfill table
     # in the long-run we should remove the query backfill command and require a backfill entry for all backfills
@@ -386,10 +391,6 @@ def _process_backfill(ctx, qualified_table_name, entry_to_process, dry_run=None)
         destination_table=backfill_staging_qualified_table_name,
         dry_run=dry_run,
     )
-
-    if dry_run:
-        client = bigquery.Client(project=project)
-        client.delete_table(backfill_staging_qualified_table_name)
 
 
 @backfill.command(

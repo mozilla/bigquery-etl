@@ -23,4 +23,3 @@ bigquery:
     - device_category
     - operating_system
 references: {}
-deprecated: false

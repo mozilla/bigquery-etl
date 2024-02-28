@@ -28,4 +28,3 @@ bigquery:
     - source
     - medium
 references: {}
-deprecated: false

@@ -17,6 +17,3 @@ fields:
 - name: registered
   type: BOOLEAN
   mode: NULLABLE
-- name: service_events
-  type: STRING
-  mode: REPEATED

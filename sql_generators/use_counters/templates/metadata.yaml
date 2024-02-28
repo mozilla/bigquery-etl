@@ -21,4 +21,3 @@ bigquery:
   clustering:
     fields:
     - metric
-deprecated: false

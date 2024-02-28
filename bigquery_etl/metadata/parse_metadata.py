@@ -346,6 +346,9 @@ class Metadata:
         if metadata_dict["external_data"] is None:
             del metadata_dict["external_data"]
 
+        if not metadata_dict["deprecated"]:
+            del metadata_dict["deprecated"]
+
         file.write_text(
             yaml.dump(
                 converter.unstructure(metadata_dict),

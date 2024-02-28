@@ -21,4 +21,3 @@ bigquery:
     - country
     - medium
 references: {}
-deprecated: false

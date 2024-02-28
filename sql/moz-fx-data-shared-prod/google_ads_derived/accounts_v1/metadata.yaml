@@ -11,4 +11,3 @@ scheduling:
   date_partition_parameter: null
 bigquery: null
 references: {}
-deprecated: false

@@ -21,4 +21,3 @@ bigquery:
     - blog
     - subblog
 references: {}
-deprecated: false

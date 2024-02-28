@@ -1,18 +1,6 @@
-CREATE TEMP FUNCTION contains_qualified_fxa_activity_event(events ANY TYPE) AS (
-  EXISTS(
-    SELECT
-      event_type
-    FROM
-      UNNEST(events) AS event_type
-    WHERE
-      event_type IN ('login_complete', 'reg_complete')
-      OR (event_type LIKE r'access\_token%')
-  )
-);
-
 WITH _current AS (
   SELECT
-    * EXCEPT (submission_date, registered, seen_in_tier1_country, service_events),
+    * EXCEPT (submission_date, registered, seen_in_tier1_country),
     -- In this raw table, we capture the history of activity over the past
     -- 28 days for each usage criterion as a single 64-bit integer. The
     -- rightmost bit represents whether the user was active in the current day.
@@ -27,7 +15,6 @@ WITH _current AS (
     accounts_backend_derived.users_services_daily_v1
   WHERE
     submission_date = @submission_date
-    AND contains_qualified_fxa_activity_event(service_events)
 ),
 _previous AS (
   SELECT

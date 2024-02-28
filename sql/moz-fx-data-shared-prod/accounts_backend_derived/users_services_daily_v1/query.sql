@@ -56,13 +56,10 @@ windowed AS (
     udf.mode_last(ARRAY_AGG(country) OVER w1) AS country,
     udf_contains_tier1_country(ARRAY_AGG(country) OVER w1) AS seen_in_tier1_country,
     LOGICAL_OR(event_name = 'reg_complete') OVER w1 AS registered,
-    ARRAY_AGG(event_name) OVER w1 AS service_events,
   FROM
     fxa_events
   WHERE
     DATE(submission_timestamp) = @submission_date
-    AND user_id_sha256 != ''
-    AND service != ''
   QUALIFY
     ROW_NUMBER() OVER (
       PARTITION BY
@@ -88,16 +85,9 @@ windowed AS (
 SELECT
   DATE(@submission_date) AS submission_date,
   windowed.user_id_sha256,
-  oa.name AS service,
+  windowed.service,
   windowed.country,
   windowed.seen_in_tier1_country,
   windowed.registered,
-  windowed.service_events,
 FROM
   windowed
-JOIN
-  `accounts_db.fxa_oauth_clients` AS oa
-  ON windowed.service = oa.id
-WHERE
-  user_id_sha256 IS NOT NULL
-  AND service IS NOT NULL

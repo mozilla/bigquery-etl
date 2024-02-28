@@ -25,7 +25,7 @@ WHERE
   )
   AND DATE(`timestamp`) = @submission_date
   AND jsonPayload.type = 'amplitudeEvent'
-  -- We expect to only see events from fxa-auth-server, fxa-content-server, and fxa-payments-server here.
+  -- We might see events from fxa-auth-server, fxa-content-server, or fxa-payments-server here.
   -- Although at time of writing they are split across `stdout` and `stderr` logs, there is an open issue to standardize
   -- this: https://mozilla-hub.atlassian.net/browse/FXA-8315
   -- Filtering for all here will ensure we don't miss any events if logger output is changed in the future

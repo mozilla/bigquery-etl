@@ -1,11 +1,11 @@
 WITH firefox_desktop_downloads AS (
   --use this logic on or before 2024-02-16
   SELECT
-    PARSE_DATE('%Y%m%d', event_date) AS date,
+    PARSE_DATE('%Y%m%d', event_date) AS `date`,
     device.category AS device_category,
     device.operating_system AS operating_system,
     device.web_info.browser AS browser,
-    device.language AS language,
+    device.language AS `language`,
     geo.country AS country,
     collected_traffic_source.manual_source AS source,
     collected_traffic_source.manual_medium AS medium,
@@ -39,11 +39,11 @@ WITH firefox_desktop_downloads AS (
   UNION ALL
     --use this logic on & after 2024-02-17
   SELECT
-    PARSE_DATE('%Y%m%d', event_date) AS date,
+    PARSE_DATE('%Y%m%d', event_date) AS `date`,
     device.category AS device_category,
     device.operating_system AS operating_system,
     device.web_info.browser AS browser,
-    device.language AS language,
+    device.language AS `language`,
     geo.country AS country,
     collected_traffic_source.manual_source AS source,
     collected_traffic_source.manual_medium AS medium,
@@ -73,11 +73,11 @@ WITH firefox_desktop_downloads AS (
 ),
 sessions_data AS (
   SELECT
-    PARSE_DATE('%Y%m%d', event_date) AS date,
+    PARSE_DATE('%Y%m%d', event_date) AS `date`,
     device.category AS device_category,
     device.operating_system AS operating_system,
     device.web_info.browser AS browser,
-    device.language AS language,
+    device.language AS `language`,
     geo.country AS country,
     collected_traffic_source.manual_source AS source,
     collected_traffic_source.manual_medium AS medium,

@@ -18,3 +18,4 @@ SELECT
   ),
   mozfun.assert.equals("/", utils.get_url_path("https://some-url.com")),
   mozfun.assert.equals("/", utils.get_url_path("https://some-url.com/")),
+  mozfun.assert.equals("/path", utils.get_url_path("some-url.com/path"))

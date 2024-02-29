@@ -7,10 +7,11 @@ version: 2.1
 parameters:
   docker-version:
     type: string
-    default: 20.10.18
+    # `default` is recommended by CircleCI: https://discuss.circleci.com/t/remote-docker-image-deprecations-and-eol-for-2024/50176#what-do-i-need-to-do-2
+    default: default
   git-image:
     type: string
-    default: docker:24.0.2-git
+    default: docker:25.0.3-git
 
 orbs:
   gcp-gcr: circleci/gcp-gcr@0.15.1

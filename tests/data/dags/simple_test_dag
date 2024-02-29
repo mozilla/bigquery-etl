@@ -51,12 +51,14 @@ with DAG(
     fivetran_import_1_sync_start = FivetranOperator(
         connector_id="{{ var.value.fivetran_import_1_connector_id }}",
         task_id="fivetran_import_1_task",
+        deferrable=False,
         task_concurrency=1,
     )
 
     fivetran_import_2_sync_start = FivetranOperator(
         connector_id="{{ var.value.fivetran_import_2_connector_id }}",
         task_id="fivetran_import_2_task",
+        deferrable=False,
         task_concurrency=1,
     )
 

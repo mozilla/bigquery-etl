@@ -1,5 +1,4 @@
-WITH firefox_desktop_downloads AS (
-  --use this logic on or before 2024-02-16
+WITH firefox_desktop_downloads_stg AS (
   SELECT
     PARSE_DATE('%Y%m%d', event_date) AS `date`,
     device.category AS device_category,
@@ -11,31 +10,74 @@ WITH firefox_desktop_downloads AS (
     collected_traffic_source.manual_medium AS medium,
     collected_traffic_source.manual_campaign_name AS campaign,
     collected_traffic_source.manual_content AS ad_content,
-    COUNTIF(
-      NOT `moz-fx-data-shared-prod.udf.ga_is_mozilla_browser`(device.web_info.browser)
-    ) AS non_fx_downloads,
-    COUNT(1) AS downloads
+    event_name,
+    (
+      SELECT
+        `value`
+      FROM
+        UNNEST(event_params)
+      WHERE
+        key = 'product'
+      LIMIT
+        1
+    ).string_value AS product_type,
+    (
+      SELECT
+        `value`
+      FROM
+        UNNEST(event_params)
+      WHERE
+        key = 'platform'
+      LIMIT
+        1
+    ).string_value AS platform_type
   FROM
     `moz-fx-data-marketing-prod.analytics_313696158.events_*`
-  JOIN
-    UNNEST(event_params) e
   WHERE
     _TABLE_SUFFIX = FORMAT_DATE('%Y%m%d', @submission_date)
     AND _TABLE_SUFFIX <= '20240216'
     AND event_name = 'product_download'
-    AND e.key = 'product'
-    AND e.value.string_value = 'firefox'
+),
+firefox_desktop_downloads AS (
+  --use this logic on or before 2024-02-16
+  SELECT
+    `date`,
+    device_category,
+    operating_system,
+    browser,
+    `language`,
+    country,
+    source,
+    medium,
+    campaign,
+    ad_content,
+    COUNTIF(NOT `moz-fx-data-shared-prod.udf.ga_is_mozilla_browser`(browser)) AS non_fx_downloads,
+    COUNT(1) AS downloads
+  FROM
+    firefox_desktop_downloads_stg
+  WHERE
+    product_type = 'firefox'
+    AND platform_type IN (
+      'win',
+      'win64',
+      'macos',
+      'linux64',
+      'win64-msi',
+      'linux',
+      'win-msi',
+      'win64-aarch64'
+    )
   GROUP BY
-    event_date,
-    device.category,
-    device.operating_system,
-    device.web_info.browser,
-    device.language,
-    geo.country,
-    collected_traffic_source.manual_source,
-    collected_traffic_source.manual_medium,
-    collected_traffic_source.manual_campaign_name,
-    collected_traffic_source.manual_content
+    `date`,
+    device_category,
+    operating_system,
+    browser,
+    `language`,
+    country,
+    source,
+    medium,
+    campaign,
+    ad_content
   UNION ALL
     --use this logic on & after 2024-02-17
   SELECT

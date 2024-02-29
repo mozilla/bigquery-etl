@@ -56,6 +56,7 @@ with DAG(
     fivetran_log_prod_sync_start = FivetranOperator(
         connector_id="{{ var.value.fivetran_log_prod_connector_id }}",
         task_id="fivetran_log_prod_task",
+        deferrable=False,
         task_concurrency=1,
     )
 

@@ -56,6 +56,7 @@ with DAG(
     fivetran_stripe_nonprod_sync_start = FivetranOperator(
         connector_id="{{ var.value.fivetran_stripe_nonprod_connector_id }}",
         task_id="fivetran_stripe_nonprod_task",
+        deferrable=False,
         task_concurrency=1,
     )
 

@@ -1,16 +1,16 @@
 WITH _current AS (
   SELECT
-    * EXCEPT (submission_date, registered, seen_in_tier1_country),
     -- In this raw table, we capture the history of activity over the past
-    -- 28 days for each usage criterion as a single 64-bit integer. The
-    -- rightmost bit represents whether the user was active in the current day.
+        -- 28 days for each usage criterion as a single 64-bit integer. The
+        -- rightmost bit represents whether the user was active in the current day.
     CAST(TRUE AS INT64) AS days_seen_bits,
-    -- Record days on which the user was in a "Tier 1" country;
-    -- this allows a variant of country-segmented MAU where we can still count
-    -- a user that appeared in one of the target countries in the previous
-    -- 28 days even if the most recent "country" value is not in this set.
+        -- Record days on which the user was in a "Tier 1" country;
+        -- this allows a variant of country-segmented MAU where we can still count
+        -- a user that appeared in one of the target countries in the previous
+        -- 28 days even if the most recent "country" value is not in this set.
     CAST(seen_in_tier1_country AS INT64) AS days_seen_in_tier1_country_bits,
     CAST(registered AS INT64) AS days_registered_bits,
+    * EXCEPT (submission_date, registered, seen_in_tier1_country),
   FROM
     accounts_backend_derived.users_services_daily_v1
   WHERE
@@ -18,7 +18,15 @@ WITH _current AS (
 ),
 _previous AS (
   SELECT
-    * EXCEPT (submission_date)
+    days_seen_bits,
+    days_seen_in_tier1_country_bits,
+    days_registered_bits,
+    * EXCEPT (
+      days_seen_bits,
+      days_seen_in_tier1_country_bits,
+      days_registered_bits,
+      submission_date
+    )
   FROM
     accounts_backend_derived.users_services_last_seen_v1
   WHERE

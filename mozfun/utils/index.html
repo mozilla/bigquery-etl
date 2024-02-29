@@ -890,6 +890,30 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#get_url_path-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_url_path (UDF)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="get_url_path (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameters
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1395,6 +1419,30 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#get_url_path-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_url_path (UDF)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="get_url_path (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameters
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1445,6 +1493,19 @@ SELECT * FROM UNNEST(res) WHERE differs;
 <div class="highlight"><pre><span></span><code>STRUCT&lt;utm_source STRING, utm_medium STRING, utm_campaign STRING, utm_content STRING, utm_term STRING&gt;
 </code></pre></div>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/utils/extract_utm_from_url">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/utils/extract_utm_from_url/metadata.yaml">Edit</a></p>
+<h2 id="get_url_path-udf">get_url_path (UDF)</h2>
+<p>Extract the Path from a URL</p>
+<p>This UDF extracts path from a URL string.</p>
+<p>The path is everything after the host and before parameters.
+This function returns "/" if there is no path.</p>
+<h3 id="parameters_2">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>url STRING
+</code></pre></div>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>STRING
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/utils/get_url_path">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/utils/get_url_path/metadata.yaml">Edit</a></p>
 
 
 

@@ -1,0 +1,10 @@
+friendly_name: org-mozilla-ios-tiktok-reporter-tiktok-reportershare Derived
+# yamllint disable rule:line-length
+description: |-
+  Derived tables related to document namespace org-mozilla-ios-tiktok-reporter-tiktok-reportershare, usually populated via queries defined in https://github.com/mozilla/bigquery-etl and managed by Airflow
+dataset_base_acl: derived_restricted
+user_facing: false
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:regrets-reporter

@@ -86,11 +86,11 @@ fields:
 - mode: NULLABLE
   name: downloads
   type: INT64
-  description: Downloads - The number of product_download events
+  description: Downloads - The number of Firefox Desktop downloads
 - mode: NULLABLE
   name: non_fx_downloads
   type: INT64
-  description: Non Firefox Downloads - The number of product_download events on a non-Firefox browser
+  description: Non Firefox Downloads - The number of Firefox Desktop downloads from a non-Firefox browser
 - mode: NULLABLE
   name: pageviews
   type: INT64

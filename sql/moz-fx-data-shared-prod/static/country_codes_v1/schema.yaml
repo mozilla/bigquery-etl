@@ -23,3 +23,6 @@ fields:
 - name: mozilla_vpn_available
   type: BOOLEAN
   mode: NULLABLE
+- name: sponsored_tiles_available_on_newtab
+  type: BOOLEAN
+  mode: NULLABLE

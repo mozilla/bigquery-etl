@@ -131,7 +131,6 @@ WITH null_checks AS (
       IF(COUNTIF(days_since_first_seen IS NULL) > 0, "days_since_first_seen", NULL),
       IF(COUNTIF(days_since_seen IS NULL) > 0, "days_since_seen", NULL),
       IF(COUNTIF(is_new_profile IS NULL) > 0, "is_new_profile", NULL),
-      IF(COUNTIF(normalized_os IS NULL) > 0, "normalized_os", NULL),
       IF(COUNTIF(app_version IS NULL) > 0, "app_version", NULL),
       IF(COUNTIF(os_version_major IS NULL) > 0, "os_version_major", NULL),
       IF(COUNTIF(os_version_minor IS NULL) > 0, "os_version_minor", NULL),

@@ -1,5 +1,5 @@
 CREATE TABLE
-  onboarding_users_last_seen_v1
+  `moz-fx-data-shared-prod.messaging_system_derived.onboarding_users_last_seen_v1`
 PARTITION BY
   submission_date
 CLUSTER BY

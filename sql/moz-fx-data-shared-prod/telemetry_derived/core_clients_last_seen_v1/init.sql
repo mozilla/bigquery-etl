@@ -1,5 +1,5 @@
 CREATE TABLE
-  core_clients_last_seen_v1
+  `moz-fx-data-shared-prod.telemetry_derived.core_clients_last_seen_v1`
 PARTITION BY
   submission_date
 CLUSTER BY

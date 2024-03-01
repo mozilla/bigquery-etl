@@ -1,6 +1,6 @@
 -- Don't OR REPLACE because this table has longer retention than its source
 CREATE TABLE IF NOT EXISTS
-  protected_v1
+  `moz-fx-data-shared-prod.mozilla_vpn_derived.protected_v1`
 AS
 -- WARNING: on mobile this is undercounted and may not be measurable
 SELECT

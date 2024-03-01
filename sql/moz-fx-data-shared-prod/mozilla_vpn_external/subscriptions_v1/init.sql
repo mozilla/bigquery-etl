@@ -1,5 +1,5 @@
 CREATE OR REPLACE TABLE
-  subscriptions_v1
+  `moz-fx-data-shared-prod.mozilla_vpn_external.subscriptions_v1`
 PARTITION BY
   DATE(updated_at)
 AS

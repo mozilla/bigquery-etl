@@ -23,4 +23,3 @@ bigquery:
     - language
     - event_name
 references: {}
-deprecated: false

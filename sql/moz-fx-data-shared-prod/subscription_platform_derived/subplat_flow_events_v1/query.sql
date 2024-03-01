@@ -33,7 +33,7 @@ WITH new_flow_events AS (
   FROM
     `moz-fx-data-shared-prod.firefox_accounts.fxa_all_events`
   WHERE
-    fxa_log IN ('content', 'auth', 'stdout')
+    fxa_log IN ('content', 'auth', 'stdout', 'payments')
     AND flow_id IS NOT NULL
     {% if is_init() %}
       AND DATE(`timestamp`) < CURRENT_DATE()

@@ -22,4 +22,3 @@ bigquery:
     - event_category
     - browser
 references: {}
-deprecated: false

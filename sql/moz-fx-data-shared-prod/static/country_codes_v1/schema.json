@@ -41,9 +41,15 @@
     "type": "BOOL",
     "mode": "REQUIRED"
   },
-    {
+  {
     "name": "mozilla_vpn_available",
     "description": "Whether Mozilla VPN is available in this country.",
+    "type": "BOOL",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "sponsored_tiles_available_on_newtab",
+    "description": "Whether sponsored tiles are available on the newtab page in this country. Note that Pocket might only be available in certain locales/languages within a country.",
     "type": "BOOL",
     "mode": "REQUIRED"
   }

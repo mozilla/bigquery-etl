@@ -1,0 +1,32 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+- mode: NULLABLE
+  name: user_id_sha256
+  type: STRING
+- mode: NULLABLE
+  name: service
+  type: STRING
+- mode: NULLABLE
+  name: country
+  type: STRING
+- mode: NULLABLE
+  name: days_seen_bits
+  type: INTEGER
+  description: |
+    No. of days since the user had activity event.
+- mode: NULLABLE
+  name: days_seen_in_tier1_country_bits
+  type: INTEGER
+  description: |
+    No. of days since seen_in_tier1_country was last True.
+- mode: NULLABLE
+  name: days_registered_bits
+  type: INTEGER
+  description: |
+    No. of days since registration event.
+- name: user_agent_device_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of devices associated with the user, per service, per day. Estimated from the number of unique user agent strings.

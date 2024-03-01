@@ -5,7 +5,7 @@ owners:
 - ksiegler@mozilla.com
 labels:
   incremental: true
-  owner1: example
+  owner1: ksiegler@mozilla.com
 scheduling:
   dag_name: bqetl_accounts_derived
 bigquery:
@@ -17,4 +17,3 @@ bigquery:
   clustering:
     fields: [service, country]
 references: {}
-deprecated: false

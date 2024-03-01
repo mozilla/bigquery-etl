@@ -201,7 +201,7 @@ class TestMetadata:
         assert metadata["workgroup_access"][0]["members"] == [
             "workgroup:mozilla-confidential"
         ]
-        assert not metadata["deprecated"]
+        assert "deprecated" not in metadata
 
     def test_metadata_update_with_deprecation(self, runner):
         with tempfile.TemporaryDirectory() as tmpdirname:

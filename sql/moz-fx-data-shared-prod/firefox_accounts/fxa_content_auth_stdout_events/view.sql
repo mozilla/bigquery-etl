@@ -18,7 +18,8 @@
 --- WHERE fxa_log IN (
 ---  'content',
 ---  'auth',
---   'stdout'
+---  'stdout',
+---  'payments'
 --- )
 --------
 -- In the meantime, this view points to the fxa_all_events view
@@ -83,4 +84,4 @@ SELECT
 FROM
   `moz-fx-data-shared-prod.firefox_accounts.fxa_all_events`
 WHERE
-  fxa_log IN ("content", "auth", "stdout")
+  fxa_log IN ("content", "auth", "stdout", "payments")

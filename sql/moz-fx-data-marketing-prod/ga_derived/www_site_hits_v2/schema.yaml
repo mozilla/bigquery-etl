@@ -163,3 +163,11 @@ fields:
   name: single_page_session
   type: BOOLEAN
   description: Single Page Session - Indicator if the hit belongs to a single page session
+- mode: NULLABLE
+  name: product_type
+  type: STRING
+  description: Product Type - For product download events, what product type was downloaded
+- mode: NULLABLE
+  name: platform_type
+  type: STRING
+  description: Platform Type - For product download events, what platform type was the download requested from

@@ -104,10 +104,10 @@ SELECT
   browser,
   download_events,
   download_events AS downloads,
-  CASE
-    WHEN NOT `moz-fx-data-shared-prod.udf.ga_is_mozilla_browser`(browser)
-      THEN download_events
-    ELSE 0
-  END AS non_fx_downloads
+  IF(
+    NOT `moz-fx-data-shared-prod.udf.ga_is_mozilla_browser`(browser),
+    download_events,
+    0
+  ) AS non_fx_downloads
 FROM
   staging

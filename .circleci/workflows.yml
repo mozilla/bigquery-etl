@@ -675,26 +675,6 @@ jobs:
           condition: *deploy
           steps:
             - *skip
-  deploy:
-    executor: ubuntu-machine-executor
-    steps:
-      - when:
-          condition: *deploy
-          steps:
-            - checkout
-            - *attach_generated_sql
-            - *copy_generated_sql
-            - docker/check:
-                docker-password: DOCKER_PASS
-                docker-username: DOCKER_USER
-            - docker/build: &public-image
-                image: ${CIRCLE_PROJECT_USERNAME+$CIRCLE_PROJECT_USERNAME/}${CIRCLE_PROJECT_REPONAME:-bigquery-etl}
-                tag: ${CIRCLE_TAG:-latest}
-            - docker/push: *public-image
-      - unless:
-          condition: *deploy
-          steps:
-            - *skip
   artifact-deployment:
     docker:
       - image: cimg/base:2024.01
@@ -1159,24 +1139,12 @@ workflows:
             branches:
               only:
                 - main
-      - deploy:
-          context: data-eng-bigquery-etl-dockerhub
-          requires:
-            - generate-sql
-            # Public image must be pushed after the private one because of
-            # webhooks used in Ops logic. For details, see:
-            # https://bugzilla.mozilla.org/show_bug.cgi?id=1715628#c0
-            - deploy-to-private-gcr
-          filters:
-            branches:
-              only:
-                - main
       - artifact-deployment:
           name: Trigger bqetl_artifact_deployment Airflow DAG
           context:
             - data-eng-circleci-deployment
           requires:
-            - deploy
+            - deploy-to-private-gcr
       - sync-dags-repo:
           name: 🔃 Synchronize bigquery-etl submodule
           repo-to-sync: ${CIRCLE_PROJECT_REPONAME}

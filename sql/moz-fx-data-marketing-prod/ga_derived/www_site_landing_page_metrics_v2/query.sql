@@ -24,7 +24,7 @@ SELECT
   ) AS non_fx_sessions,
   COUNTIF(
     (
-      date <= '2024-02-16'
+      `date` <= '2024-02-16'
       AND event_name = 'product_download'
       AND product_type = 'firefox'
       AND platform_type IN (
@@ -38,12 +38,12 @@ SELECT
         'win64-aarch64'
       )
     )
-    OR (date > '2024-02-16' AND event_name = 'firefox_download')
+    OR (`date` > '2024-02-16' AND event_name = 'firefox_download')
   ) AS downloads,
   COUNTIF(
     (
       (
-        date <= '2024-02-16'
+        `date` <= '2024-02-16'
         AND event_name = 'product_download'
         AND product_type = 'firefox'
         AND platform_type IN (
@@ -57,7 +57,7 @@ SELECT
           'win64-aarch64'
         )
       )
-      OR (date > '2024-02-16' AND event_name = 'firefox_download')
+      OR (`date` > '2024-02-16' AND event_name = 'firefox_download')
     )
     AND NOT `moz-fx-data-shared-prod.udf.ga_is_mozilla_browser`(browser)
   ) AS non_fx_downloads,

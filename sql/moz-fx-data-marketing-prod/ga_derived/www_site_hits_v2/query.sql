@@ -56,6 +56,16 @@ get_all_events_in_each_session_staging AS (
     collected_traffic_source.manual_medium AS medium,
     collected_traffic_source.manual_campaign_name AS campaign,
     collected_traffic_source.manual_content AS ad_content,
+    CASE
+      WHEN event_name = 'product_download'
+        THEN (SELECT `value` FROM UNNEST(event_params) WHERE key = 'product' LIMIT 1).string_value
+      ELSE NULL
+    END AS product_type,
+    CASE
+      WHEN event_name = 'product_download'
+        THEN (SELECT `value` FROM UNNEST(event_params) WHERE key = 'platform' LIMIT 1).string_value
+      ELSE NULL
+    END AS platform_type,
     (
       SELECT
         `value`
@@ -113,6 +123,8 @@ get_all_events_in_each_session AS (
     a.medium,
     a.campaign,
     a.ad_content,
+    a.product_type,
+    a.platform_type,
     a.engagement_time_msec,
     a.engaged_session_event,
     SPLIT(a.page_location, '?')[OFFSET(0)] AS page_location,
@@ -186,6 +198,8 @@ final_staging AS (
     all_events.medium,
     all_events.campaign,
     all_events.ad_content,
+    all_events.product_type,
+    all_events.platform_type,
     engmgt.session_had_an_engaged_event AS visits, --this is the equivalent logic to totals.visits in UA
     CASE
       WHEN exits.nbr_page_view_events = 1
@@ -280,6 +294,8 @@ SELECT
     CONCAT('/', page_level_1, '/'),
     ARRAY_TO_STRING(['', page_level_1, page_level_2, page_level_3, page_level_4, page_level_5], '/')
   ) AS page_name,
-  final.single_page_session
+  final.single_page_session,
+  final.product_type,
+  final.platform_type
 FROM
   final_staging final

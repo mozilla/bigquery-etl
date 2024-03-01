@@ -373,6 +373,27 @@ fields:
     - name: tls_certificate_verifications
       type: INTEGER
       mode: NULLABLE
+    - name: pdfjs_editing_highlight_color_changed
+      type: INTEGER
+      mode: NULLABLE
+    - name: pdfjs_editing_highlight_deleted
+      type: INTEGER
+      mode: NULLABLE
+    - name: pdfjs_editing_highlight_edited
+      type: INTEGER
+      mode: NULLABLE
+    - name: pdfjs_editing_highlight_print
+      type: INTEGER
+      mode: NULLABLE
+    - name: pdfjs_editing_highlight_save
+      type: INTEGER
+      mode: NULLABLE
+    - name: pdfjs_editing_highlight_thickness_changed
+      type: INTEGER
+      mode: NULLABLE
+    - name: pdfjs_editing_highlight_toggle_visibility
+      type: INTEGER
+      mode: NULLABLE
   - name: datetime
     type: RECORD
     mode: NULLABLE
@@ -1462,6 +1483,46 @@ fields:
         type: INTEGER
         mode: NULLABLE
     - name: networking_proxy_info_type
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: pdfjs_editing_highlight_color
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: pdfjs_editing_highlight_kind
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: pdfjs_editing_highlight_method
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: pdfjs_editing_highlight_number_of_colors
       type: RECORD
       mode: REPEATED
       fields:
@@ -2617,6 +2678,26 @@ fields:
           type: INTEGER
           mode: NULLABLE
     - name: performance_clone_deserialize_items
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+    - name: pdfjs_editing_highlight_thickness
       type: RECORD
       mode: NULLABLE
       fields:

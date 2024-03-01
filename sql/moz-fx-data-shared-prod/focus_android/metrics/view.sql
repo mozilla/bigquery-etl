@@ -93,7 +93,14 @@ SELECT
       metrics.counter.networking_residual_cache_folder_count,
       metrics.counter.cookie_banners_cookie_injection_fail,
       metrics.counter.networking_set_cookie,
-      metrics.counter.tls_certificate_verifications
+      metrics.counter.tls_certificate_verifications,
+      metrics.counter.pdfjs_editing_highlight_color_changed,
+      metrics.counter.pdfjs_editing_highlight_deleted,
+      metrics.counter.pdfjs_editing_highlight_edited,
+      metrics.counter.pdfjs_editing_highlight_print,
+      metrics.counter.pdfjs_editing_highlight_save,
+      metrics.counter.pdfjs_editing_highlight_thickness_changed,
+      metrics.counter.pdfjs_editing_highlight_toggle_visibility
     ) AS `counter`,
     metrics.datetime,
     STRUCT(
@@ -202,7 +209,11 @@ SELECT
       metrics.labeled_counter.avif_pasp,
       metrics.labeled_counter.avif_pixi,
       metrics.labeled_counter.avif_yuv_color_space,
-      metrics.labeled_counter.networking_proxy_info_type
+      metrics.labeled_counter.networking_proxy_info_type,
+      metrics.labeled_counter.pdfjs_editing_highlight_color,
+      metrics.labeled_counter.pdfjs_editing_highlight_kind,
+      metrics.labeled_counter.pdfjs_editing_highlight_method,
+      metrics.labeled_counter.pdfjs_editing_highlight_number_of_colors
     ) AS `labeled_counter`,
     metrics.memory_distribution,
     STRUCT(
@@ -323,7 +334,14 @@ SELECT
       metrics.counter.networking_residual_cache_folder_count,
       metrics.counter.cookie_banners_cookie_injection_fail,
       metrics.counter.networking_set_cookie,
-      metrics.counter.tls_certificate_verifications
+      metrics.counter.tls_certificate_verifications,
+      metrics.counter.pdfjs_editing_highlight_color_changed,
+      metrics.counter.pdfjs_editing_highlight_deleted,
+      metrics.counter.pdfjs_editing_highlight_edited,
+      metrics.counter.pdfjs_editing_highlight_print,
+      metrics.counter.pdfjs_editing_highlight_save,
+      metrics.counter.pdfjs_editing_highlight_thickness_changed,
+      metrics.counter.pdfjs_editing_highlight_toggle_visibility
     ) AS `counter`,
     metrics.datetime,
     STRUCT(
@@ -432,7 +450,11 @@ SELECT
       metrics.labeled_counter.avif_pasp,
       metrics.labeled_counter.avif_pixi,
       metrics.labeled_counter.avif_yuv_color_space,
-      metrics.labeled_counter.networking_proxy_info_type
+      metrics.labeled_counter.networking_proxy_info_type,
+      metrics.labeled_counter.pdfjs_editing_highlight_color,
+      metrics.labeled_counter.pdfjs_editing_highlight_kind,
+      metrics.labeled_counter.pdfjs_editing_highlight_method,
+      metrics.labeled_counter.pdfjs_editing_highlight_number_of_colors
     ) AS `labeled_counter`,
     metrics.memory_distribution,
     STRUCT(

@@ -1339,6 +1339,50 @@ fields:
       description: 'The total number of successful TLS server certificate verifications.
 
         '
+    - name: pdfjs_editing_highlight_color_changed
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counts the number of times the user changes the color of a highlight.
+
+        '
+    - name: pdfjs_editing_highlight_deleted
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counts the number of times the user deletes highlights.
+
+        '
+    - name: pdfjs_editing_highlight_edited
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counts the number of times the user edits highlights.
+
+        '
+    - name: pdfjs_editing_highlight_print
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counts the number of times the user prints a PDF with highlights.
+
+        '
+    - name: pdfjs_editing_highlight_save
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counts the number of times the user saves a PDF with highlights.
+
+        '
+    - name: pdfjs_editing_highlight_thickness_changed
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counts the number of times the user changes the thickness of a
+        free highlight.
+
+        '
+    - name: pdfjs_editing_highlight_toggle_visibility
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counts the number of times the user toggles the visibility of
+        highlights.
+
+        '
   - name: custom_distribution
     type: RECORD
     mode: NULLABLE
@@ -2625,6 +2669,31 @@ fields:
         100MB. Measured in megabits per second, Mbps.
 
         '
+    - name: pdfjs_editing_highlight_thickness
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The thickness used to draw a free highlight.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -2997,8 +3066,7 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream. (Migrated from
-        the geckoview metric of the same name).
+      description: 'Failure occurs when initializing the audio stream.
 
         '
     - name: glean_validation_pings_submitted
@@ -4497,6 +4565,58 @@ fields:
         mode: NULLABLE
       description: 'The proxies configurations created in the browser session (SOCKSv4,
         SOCKSv5, HTTP, HTTPS)
+
+        '
+    - name: pdfjs_editing_highlight_color
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the number of times a given color is used to highlight.
+
+        '
+    - name: pdfjs_editing_highlight_kind
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the number of times a given kind is used to highlight.
+
+        '
+    - name: pdfjs_editing_highlight_method
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the number of times a given method is used to highlight.
+
+        '
+    - name: pdfjs_editing_highlight_number_of_colors
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the number of different colors used to highlight.
 
         '
   - name: quantity

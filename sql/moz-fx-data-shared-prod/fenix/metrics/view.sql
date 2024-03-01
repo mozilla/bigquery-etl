@@ -162,7 +162,11 @@ SELECT
       metrics.labeled_counter.networking_dns_native_count,
       metrics.labeled_counter.networking_http_response_version,
       metrics.labeled_counter.tls_xyber_intolerance_reason,
-      metrics.labeled_counter.networking_proxy_info_type
+      metrics.labeled_counter.networking_proxy_info_type,
+      metrics.labeled_counter.pdfjs_editing_highlight_color,
+      metrics.labeled_counter.pdfjs_editing_highlight_kind,
+      metrics.labeled_counter.pdfjs_editing_highlight_method,
+      metrics.labeled_counter.pdfjs_editing_highlight_number_of_colors
     ) AS `labeled_counter`,
     metrics.quantity,
     metrics.string,
@@ -351,7 +355,14 @@ SELECT
       metrics.counter.networking_residual_cache_folder_count,
       metrics.counter.cookie_banners_cookie_injection_fail,
       metrics.counter.networking_set_cookie,
-      metrics.counter.tls_certificate_verifications
+      metrics.counter.tls_certificate_verifications,
+      metrics.counter.pdfjs_editing_highlight_color_changed,
+      metrics.counter.pdfjs_editing_highlight_deleted,
+      metrics.counter.pdfjs_editing_highlight_edited,
+      metrics.counter.pdfjs_editing_highlight_print,
+      metrics.counter.pdfjs_editing_highlight_save,
+      metrics.counter.pdfjs_editing_highlight_thickness_changed,
+      metrics.counter.pdfjs_editing_highlight_toggle_visibility
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -401,7 +412,8 @@ SELECT
       metrics.custom_distribution.networking_http_2_upload_throughput_50_100,
       metrics.custom_distribution.networking_http_3_upload_throughput_100,
       metrics.custom_distribution.networking_http_3_upload_throughput_10_50,
-      metrics.custom_distribution.networking_http_3_upload_throughput_50_100
+      metrics.custom_distribution.networking_http_3_upload_throughput_50_100,
+      metrics.custom_distribution.pdfjs_editing_highlight_thickness
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -526,7 +538,11 @@ SELECT
       metrics.labeled_counter.networking_dns_native_count,
       metrics.labeled_counter.networking_http_response_version,
       metrics.labeled_counter.tls_xyber_intolerance_reason,
-      metrics.labeled_counter.networking_proxy_info_type
+      metrics.labeled_counter.networking_proxy_info_type,
+      metrics.labeled_counter.pdfjs_editing_highlight_color,
+      metrics.labeled_counter.pdfjs_editing_highlight_kind,
+      metrics.labeled_counter.pdfjs_editing_highlight_method,
+      metrics.labeled_counter.pdfjs_editing_highlight_number_of_colors
     ) AS `labeled_counter`,
     metrics.quantity,
     STRUCT(
@@ -933,7 +949,14 @@ SELECT
       metrics.counter.networking_residual_cache_folder_count,
       metrics.counter.cookie_banners_cookie_injection_fail,
       metrics.counter.networking_set_cookie,
-      metrics.counter.tls_certificate_verifications
+      metrics.counter.tls_certificate_verifications,
+      metrics.counter.pdfjs_editing_highlight_color_changed,
+      metrics.counter.pdfjs_editing_highlight_deleted,
+      metrics.counter.pdfjs_editing_highlight_edited,
+      metrics.counter.pdfjs_editing_highlight_print,
+      metrics.counter.pdfjs_editing_highlight_save,
+      metrics.counter.pdfjs_editing_highlight_thickness_changed,
+      metrics.counter.pdfjs_editing_highlight_toggle_visibility
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -983,7 +1006,8 @@ SELECT
       metrics.custom_distribution.networking_http_2_upload_throughput_50_100,
       metrics.custom_distribution.networking_http_3_upload_throughput_100,
       metrics.custom_distribution.networking_http_3_upload_throughput_10_50,
-      metrics.custom_distribution.networking_http_3_upload_throughput_50_100
+      metrics.custom_distribution.networking_http_3_upload_throughput_50_100,
+      metrics.custom_distribution.pdfjs_editing_highlight_thickness
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -1108,7 +1132,11 @@ SELECT
       metrics.labeled_counter.networking_dns_native_count,
       metrics.labeled_counter.networking_http_response_version,
       metrics.labeled_counter.tls_xyber_intolerance_reason,
-      metrics.labeled_counter.networking_proxy_info_type
+      metrics.labeled_counter.networking_proxy_info_type,
+      metrics.labeled_counter.pdfjs_editing_highlight_color,
+      metrics.labeled_counter.pdfjs_editing_highlight_kind,
+      metrics.labeled_counter.pdfjs_editing_highlight_method,
+      metrics.labeled_counter.pdfjs_editing_highlight_number_of_colors
     ) AS `labeled_counter`,
     metrics.quantity,
     STRUCT(
@@ -1489,7 +1517,11 @@ SELECT
       metrics.labeled_counter.networking_dns_native_count,
       metrics.labeled_counter.networking_http_response_version,
       metrics.labeled_counter.tls_xyber_intolerance_reason,
-      metrics.labeled_counter.networking_proxy_info_type
+      metrics.labeled_counter.networking_proxy_info_type,
+      metrics.labeled_counter.pdfjs_editing_highlight_color,
+      metrics.labeled_counter.pdfjs_editing_highlight_kind,
+      metrics.labeled_counter.pdfjs_editing_highlight_method,
+      metrics.labeled_counter.pdfjs_editing_highlight_number_of_colors
     ) AS `labeled_counter`,
     metrics.quantity,
     metrics.string,

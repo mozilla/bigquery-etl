@@ -16,7 +16,6 @@ from bigquery_etl.util.common import project_dirs
 
 DATA_FILENAME = "data.csv"
 SCHEMA_FILENAME = "schema.json"
-DESCRIPTION_FILENAME = "description.txt"
 
 
 @click.group("static", help="Commands for working with static CSV files.")
@@ -58,21 +57,14 @@ def publish(project_id):
             if not os.path.exists(schema_file_path):
                 schema_file_path = None
 
-            description_file_path = os.path.join(table_dir, DESCRIPTION_FILENAME)
-            if not os.path.exists(description_file_path):
-                description_file_path = None
-
             _load_table(
                 data_file_path,
                 schema_file_path,
-                description_file_path,
                 target_project,
             )
 
 
-def _load_table(
-    data_file_path, schema_file_path=None, description_file_path=None, project=None
-):
+def _load_table(data_file_path, schema_file_path=None, project=None):
     # Assume path is ...project/dataset/table/data.csv
     path_split = os.path.normcase(data_file_path).split(os.path.sep)
     dataset_id = path_split[-3]
@@ -117,13 +109,6 @@ def _load_table(
         job = client.load_table_from_file(data_file, table_ref, job_config=job_config)
 
     job.result()
-
-    if description_file_path is not None:
-        with open(description_file_path) as description_file:
-            description = description_file.read()
-            table = client.get_table(table_ref)
-            table.description = description
-            client.update_table(table, ["description"])
 
 
 @functools.lru_cache

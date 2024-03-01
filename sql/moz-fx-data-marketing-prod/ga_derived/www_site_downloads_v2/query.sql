@@ -76,7 +76,7 @@ WITH staging AS (
         _TABLE_SUFFIX = FORMAT_DATE('%Y%m%d', @submission_date)
         AND e.key = 'ga_session_id'
         AND e.value.int_value IS NOT NULL
-    ) staging
+    ) stg
   GROUP BY
     `date`,
     visit_identifier,

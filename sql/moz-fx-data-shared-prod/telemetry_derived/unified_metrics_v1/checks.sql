@@ -27,7 +27,6 @@
   "days_since_first_seen",
   "days_since_seen",
   "is_new_profile",
-  "normalized_os",
   "app_version",
   "os_version_major",
   "os_version_minor",

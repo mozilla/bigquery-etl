@@ -99,7 +99,7 @@ SELECT
 FROM
   staging
 GROUP BY
-  date,
+  `date`,
   visit_identifier,
   device_category,
   operating_system,

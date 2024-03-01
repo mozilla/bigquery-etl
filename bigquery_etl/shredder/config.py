@@ -7,14 +7,19 @@ import re
 from collections import defaultdict
 from dataclasses import dataclass
 from functools import partial
+from itertools import chain
 from multiprocessing.pool import ThreadPool
+from typing import List, Dict
 
+import requests
 from google.cloud import bigquery
+from google.cloud.exceptions import NotFound
 
 from ..util.bigquery_id import qualified_table_id
 
 SHARED_PROD = "moz-fx-data-shared-prod"
 GLEAN_SCHEMA_ID = "glean_ping_1"
+GLEAN_APP_LISTINGS_URL = "https://probeinfo.telemetry.mozilla.org/v2/glean/app-listings"
 
 
 @dataclass(frozen=True)
@@ -472,6 +477,7 @@ def find_glean_targets(
     and other iterable types, e.g. list[DeleteSource] are not allowed or supported.
     """
     datasets = {dataset.dataset_id for dataset in client.list_datasets(project)}
+
     glean_stable_tables = [
         table
         for tables in pool.map(
@@ -486,35 +492,45 @@ def find_glean_targets(
         for table in tables
         if table.labels.get("schema_id") == GLEAN_SCHEMA_ID
     ]
+
+    channel_to_app_name = get_glean_channel_to_app_name_mapping()
+
     # construct values as tuples because that is what they must be in the return type
     sources: dict[str, tuple[DeleteSource, ...]] = defaultdict(tuple)
+    app_names = set()  # TODO: for testing
     source_doctype = "deletion_request"
     for table in glean_stable_tables:
         if table.table_id.startswith(source_doctype):
             source = DeleteSource(qualified_table_id(table), GLEAN_CLIENT_ID, project)
-            derived_dataset = re.sub("_stable$", "_derived", table.dataset_id)
+
+            base_name = re.sub("_stable$", "", table.dataset_id)
+            derived_dataset = base_name + "_derived"
+            app_dataset = channel_to_app_name.get(base_name, "") + "_derived"
+
             # append to tuple to use every version of deletion request tables
             sources[table.dataset_id] += (source,)
             sources[derived_dataset] += (source,)
+            if app_dataset != "_derived" and derived_dataset != app_dataset:
+                sources[app_dataset] += (source,)
+                # TODO: Use deletion request view
+                app_names.add(app_dataset)  # TODO: for testing
+
     glean_derived_tables = list(
-        pool.map(
-            client.get_table,
-            [
-                table
-                for tables in pool.map(
-                    client.list_tables,
-                    [
-                        bigquery.DatasetReference(project, dataset_id)
-                        for dataset_id in sources
-                        if dataset_id.endswith("_derived")
-                    ],
-                    chunksize=1,
-                )
-                for table in tables
-            ],
-            chunksize=1,
-        )
+       pool.map(
+           client.get_table,
+           chain(*pool.starmap(
+               _list_tables,
+               [
+                   (bigquery.DatasetReference(project, dataset_id), client)
+                   for dataset_id in sources
+                   if dataset_id.endswith("_derived")
+               ],
+               chunksize=1,
+           )),
+           chunksize=1,
+       )
     )
+
     # handle additional source for deletion requests for things like
     # https://bugzilla.mozilla.org/show_bug.cgi?id=1810236
     # table must contain client_id at the top level and be partitioned on
@@ -552,6 +568,43 @@ def find_glean_targets(
             and not table.table_id.startswith(derived_source_prefix)
         },
     }
+
+
+def get_glean_channel_to_app_name_mapping() -> Dict[str, str]:
+    """Return a dict where key is the channel app id and the value is the shared app name.
+
+    e.g. {
+        "org_mozilla_firefox": "fenix",
+        "org_mozilla_firefox_beta": "fenix",
+        "org_mozilla_ios_firefox": "firefox_ios",
+        "org_mozilla_ios_firefoxbeta": "firefox_ios",
+    }
+    """
+    response = requests.get(GLEAN_APP_LISTINGS_URL)
+    response.raise_for_status()
+
+    app_listings = response.json()
+
+    return {
+        app["bq_dataset_family"]: app["app_name"]
+        for app in app_listings
+        if "bq_dataset_family" in app and "app_name" in app
+    }
+
+
+def _list_tables(
+    dataset_ref: bigquery.DatasetReference,
+    client: bigquery.Client,
+) -> List:
+    """Wrapper for bigquery list_tables that returns an empty list for non-existent datasets.
+
+    Intended to be used with thread pool map function. Some glean apps do not have
+    derived datasets so this wrapper handle exceptions when listing them.
+    """
+    try:
+        return list(client.list_tables(dataset_ref))
+    except NotFound:
+        return []
 
 
 EXPERIMENT_ANALYSIS = "moz-fx-data-experiments"

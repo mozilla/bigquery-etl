@@ -61,7 +61,7 @@ customer_latest_discounts AS (
   FROM
     customers
   JOIN
-    `moz-fx-data-shared-prod`.stripe_external.customer_discount_v1 AS customer_discounts
+    `moz-fx-data-shared-prod`.stripe_external.customer_discount_v2 AS customer_discounts
     ON customers.id = customer_discounts.customer_id
     AND customers._fivetran_synced >= customer_discounts.start
     AND (customers._fivetran_synced < customer_discounts.`end` OR customer_discounts.`end` IS NULL)

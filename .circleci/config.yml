@@ -14,7 +14,7 @@ parameters:
     default: docker:25.0.3-git
 
 orbs:
-  gcp-gcr: circleci/gcp-gcr@0.15.1
+  gcp-gcr: circleci/gcp-gcr@0.16.2
 
 commands:
   compare-branch:

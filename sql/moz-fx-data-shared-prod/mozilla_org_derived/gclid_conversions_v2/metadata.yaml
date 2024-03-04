@@ -12,7 +12,7 @@ labels:
   incremental: true
   owner1: mhirose@mozilla.com
 scheduling:
-  dag_name: bqetl_mozilla_org_derived
+  dag_name: bqetl_google_analytics_derived_ga4
   date_partition_parameter: activity_date
   parameters: ["conversion_window:INT64:30"]
 bigquery:

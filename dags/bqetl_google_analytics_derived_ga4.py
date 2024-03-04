@@ -98,6 +98,46 @@ with DAG(
         retries=0,
     )
 
+    checks__warn_ga_derived__blogs_goals__v2 = bigquery_dq_check(
+        task_id="checks__warn_ga_derived__blogs_goals__v2",
+        source_table="blogs_goals_v2",
+        dataset_id="ga_derived",
+        project_id="moz-fx-data-marketing-prod",
+        is_dq_check_fail=False,
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+    )
+
+    checks__warn_ga_derived__www_site_hits__v2 = bigquery_dq_check(
+        task_id="checks__warn_ga_derived__www_site_hits__v2",
+        source_table="www_site_hits_v2",
+        dataset_id="ga_derived",
+        project_id="moz-fx-data-marketing-prod",
+        is_dq_check_fail=False,
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+    )
+
+    checks__warn_mozilla_org_derived__ga_sessions__v2 = bigquery_dq_check(
+        task_id="checks__warn_mozilla_org_derived__ga_sessions__v2",
+        source_table="ga_sessions_v2",
+        dataset_id="mozilla_org_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=False,
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        task_concurrency=1,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+    )
+
     ga_derived__blogs_daily_summary__v2 = bigquery_etl_query(
         task_id="ga_derived__blogs_daily_summary__v2",
         destination_table="blogs_daily_summary_v2",
@@ -264,6 +304,16 @@ with DAG(
 
     checks__fail_mozilla_org_derived__ga_clients__v2.set_upstream(
         mozilla_org_derived__ga_clients__v2
+    )
+
+    checks__warn_ga_derived__blogs_goals__v2.set_upstream(ga_derived__blogs_goals__v2)
+
+    checks__warn_ga_derived__www_site_hits__v2.set_upstream(
+        ga_derived__www_site_hits__v2
+    )
+
+    checks__warn_mozilla_org_derived__ga_sessions__v2.set_upstream(
+        mozilla_org_derived__ga_sessions__v2
     )
 
     ga_derived__blogs_daily_summary__v2.set_upstream(ga_derived__blogs_goals__v2)

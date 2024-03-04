@@ -430,6 +430,8 @@ generate:
     - moso_mastodon_android
     - regrets_reporter
     - regrets_reporter_ucs
+    - tiktokreporter_android
+    - tiktokreporter_ios
     events_stream:
       datasets:
       - fenix

@@ -101,10 +101,6 @@ CONTEXTUAL_SERVICES_SRC = DeleteSource(
     table="telemetry_stable.deletion_request_v4",
     field="payload.scalars.parent.deletion_request_context_id",
 )
-FENIX_SRC = DeleteSource(table="fenix.deletion_request", field=GLEAN_CLIENT_ID)
-FIREFOX_IOS_SRC = DeleteSource(
-    table="firefox_ios.deletion_request", field=GLEAN_CLIENT_ID
-)
 FXA_HMAC_SRC = DeleteSource(
     table="firefox_accounts.fxa_delete_events", field="hmac_user_id"
 )
@@ -161,28 +157,6 @@ user_id_target = partial(DeleteTarget, field=USER_ID)
 context_id_target = partial(DeleteTarget, field=CONTEXT_ID)
 
 DELETE_TARGETS: DeleteIndex = {
-    # Fenix
-    client_id_target(table="fenix_derived.firefox_android_clients_v1"): FENIX_SRC,
-    client_id_target(table="fenix_derived.new_profile_activation_v1"): FENIX_SRC,
-    client_id_target(
-        table="fenix_derived.funnel_retention_clients_week_2_v1"
-    ): FENIX_SRC,
-    client_id_target(
-        table="fenix_derived.funnel_retention_clients_week_4_v1"
-    ): FENIX_SRC,
-    # Firefox iOS
-    client_id_target(
-        table="firefox_ios_derived.firefox_ios_clients_v1"
-    ): FIREFOX_IOS_SRC,
-    client_id_target(
-        table="firefox_ios_derived.clients_activation_v1"
-    ): FIREFOX_IOS_SRC,
-    client_id_target(
-        table="firefox_ios_derived.funnel_retention_clients_week_2_v1"
-    ): FIREFOX_IOS_SRC,
-    client_id_target(
-        table="firefox_ios_derived.funnel_retention_clients_week_4_v1"
-    ): FIREFOX_IOS_SRC,
     # Other
     client_id_target(table="search_derived.acer_cohort_v1"): DESKTOP_SRC,
     client_id_target(
@@ -497,38 +471,50 @@ def find_glean_targets(
 
     # construct values as tuples because that is what they must be in the return type
     sources: dict[str, tuple[DeleteSource, ...]] = defaultdict(tuple)
-    app_names = set()  # TODO: for testing
+    app_names = set()
     source_doctype = "deletion_request"
     for table in glean_stable_tables:
         if table.table_id.startswith(source_doctype):
             source = DeleteSource(qualified_table_id(table), GLEAN_CLIENT_ID, project)
 
-            base_name = re.sub("_stable$", "", table.dataset_id)
-            derived_dataset = base_name + "_derived"
-            app_dataset = channel_to_app_name.get(base_name, "") + "_derived"
+            channel_name = re.sub("_stable$", "", table.dataset_id)
+            derived_dataset = channel_name + "_derived"
+            app_name = channel_to_app_name.get(channel_name)
 
             # append to tuple to use every version of deletion request tables
             sources[table.dataset_id] += (source,)
             sources[derived_dataset] += (source,)
-            if app_dataset != "_derived" and derived_dataset != app_dataset:
-                sources[app_dataset] += (source,)
-                # TODO: Use deletion request view
-                app_names.add(app_dataset)  # TODO: for testing
 
-    glean_derived_tables = list(
-       pool.map(
-           client.get_table,
-           chain(*pool.starmap(
-               _list_tables,
-               [
-                   (bigquery.DatasetReference(project, dataset_id), client)
-                   for dataset_id in sources
-                   if dataset_id.endswith("_derived")
-               ],
-               chunksize=1,
-           )),
-           chunksize=1,
-       )
+            if app_name is not None and app_name != channel_name:
+                app_names.add(app_name)
+                sources[app_name + "_derived"] += (source,)
+
+    # use deletion request view for app datasets, if found
+    for app_name in app_names:
+        try:
+            source_view = client.get_table(f"{project}.{app_name}.{source_doctype}")
+        except NotFound:
+            pass
+        else:
+            if len(sources[app_name + "_derived"]) > 1:
+                pass
+            source = DeleteSource(qualified_table_id(source_view), GLEAN_CLIENT_ID, project)
+            sources[app_name + "_derived"] = (source,)
+
+    glean_derived_tables = pool.map(
+        client.get_table,
+        chain(
+            *pool.starmap(
+                _list_tables,
+                [
+                    (bigquery.DatasetReference(project, dataset_id), client)
+                    for dataset_id in sources
+                    if dataset_id.endswith("_derived")
+                ],
+                chunksize=1,
+            )
+        ),
+        chunksize=1,
     )
 
     # handle additional source for deletion requests for things like

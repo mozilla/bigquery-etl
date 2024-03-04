@@ -26,11 +26,11 @@ SELECT
   scd.default_search_engine,
   scd.default_search_engine_data_load_path,
   scd.default_search_engine_data_submission_url,
+  CAST(NULL AS INT64) AS days_since_first_seen,
   scd.active_addons_count_mean,
   scd.user_pref_browser_search_region,
   scd.os_version,
   cfs.country AS first_reported_country,
-  CAST(NULL AS INT64) AS days_since_first_seen,
     -- User activity data
   scd.max_concurrent_tab_count_max,
   scd.tab_open_event_count_sum,

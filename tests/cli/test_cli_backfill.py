@@ -1824,8 +1824,5 @@ class TestBackfill:
             )
 
             assert result.exit_code == 0
-            assert (
-                "There are a total of 1 backfill(s) that require processing."
-                in result.output
-            )
+            assert "1 backfill(s) require processing." in result.output
             assert Path("tmp.json").exists()

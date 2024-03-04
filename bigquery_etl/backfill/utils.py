@@ -181,7 +181,7 @@ def qualified_table_name_matching(qualified_table_name) -> Tuple[str, str, str]:
     return project_id, dataset_id, table_id
 
 
-def get_backfill_entries_to_process_dict(
+def get_backfill_entries_to_process(
     sql_dir, project, qualified_table_name=None
 ) -> Dict[str, Backfill]:
     """Return backfill entries that require processing."""

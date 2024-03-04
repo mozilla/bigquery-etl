@@ -21,7 +21,7 @@ from ..backfill.parse import (
 from ..backfill.utils import (
     BACKFILL_DESTINATION_DATASET,
     BACKFILL_DESTINATION_PROJECT,
-    get_backfill_entries_to_process_dict,
+    get_backfill_entries_to_process,
     get_backfill_file_from_qualified_table_name,
     get_backfill_staging_qualified_table_name,
     get_entries_from_qualified_table_name,
@@ -296,27 +296,26 @@ def info(ctx, qualified_table_name, sql_dir, project_id, status):
 @click.pass_context
 def scheduled(ctx, qualified_table_name, sql_dir, project_id, json_path=None):
     """Return list of backfill(s) that require processing."""
-    total_backfills_count = 0
-
-    backfills_to_process_dict = get_backfill_entries_to_process_dict(
+    backfills_to_process = get_backfill_entries_to_process(
         sql_dir, project_id, qualified_table_name
     )
 
-    for qualified_table_name, entry_to_process in backfills_to_process_dict.items():
-        total_backfills_count += 1
+    for qualified_table_name, entry in backfills_to_process.items():
+        click.echo(f"Backfill scheduled for {qualified_table_name}:\n{entry}")
 
-        click.echo(f"Backfill entry scheduled for {qualified_table_name}:")
+    click.echo(f"{len(backfills_to_process)} backfill(s) require processing.")
 
-        # For future us: this will probably end up being a write to something machine-readable for automation to pick up
-        click.echo(str(entry_to_process))
+    if backfills_to_process and json_path is not None:
+        formatted_backfills = [
+            {
+                "qualified_table_name": qualified_table_name,
+                "entry_date": entry.entry_date.strftime("%Y-%m-%d"),
+                "watchers": entry.watchers,
+            }
+            for qualified_table_name, entry in backfills_to_process.items()
+        ]
 
-    click.echo(
-        f"\nThere are a total of {total_backfills_count} backfill(s) that require processing."
-    )
-
-    if backfills_to_process_dict and json_path is not None:
-        scheduled_backfills_json = json.dumps(list(backfills_to_process_dict.keys()))
-        Path(json_path).write_text(scheduled_backfills_json)
+        Path(json_path).write_text(json.dumps(formatted_backfills))
 
 
 @backfill.command(
@@ -348,7 +347,7 @@ def process(ctx, qualified_table_name, sql_dir, project_id, dry_run):
     """Process backfill entry with drafting status in backfill.yaml file(s)."""
     click.echo("Backfill processing initiated....")
 
-    backfills_to_process_dict = get_backfill_entries_to_process_dict(
+    backfills_to_process_dict = get_backfill_entries_to_process(
         sql_dir, project_id, qualified_table_name
     )
 

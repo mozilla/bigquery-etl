@@ -107,18 +107,6 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_mozilla_org_derived__ga_sessions__v2 = ExternalTaskSensor(
-        task_id="wait_for_mozilla_org_derived__ga_sessions__v2",
-        external_dag_id="bqetl_google_analytics_derived_ga4",
-        external_task_id="mozilla_org_derived__ga_sessions__v2",
-        execution_delta=datetime.timedelta(days=-1, seconds=50400),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
     checks__fail_mozilla_org_derived__ga_clients__v1 = bigquery_dq_check(
         task_id="checks__fail_mozilla_org_derived__ga_clients__v1",
         source_table="ga_clients_v1",
@@ -159,24 +147,6 @@ with DAG(
         retries=0,
     )
 
-    checks__fail_mozilla_org_derived__gclid_conversions__v2 = bigquery_dq_check(
-        task_id="checks__fail_mozilla_org_derived__gclid_conversions__v2",
-        source_table="gclid_conversions_v2",
-        dataset_id="mozilla_org_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=True,
-        owner="mhirose@mozilla.com",
-        email=[
-            "frank@mozilla.com",
-            "kwindau@mozilla.com",
-            "mhirose@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        depends_on_past=False,
-        parameters=["conversion_window:INT64:30"] + ["activity_date:DATE:{{ds}}"],
-        retries=0,
-    )
-
     checks__fail_stub_attribution_service_derived__dl_token_ga_attribution_lookup__v1 = bigquery_dq_check(
         task_id="checks__fail_stub_attribution_service_derived__dl_token_ga_attribution_lookup__v1",
         source_table="dl_token_ga_attribution_lookup_v1",
@@ -190,6 +160,20 @@ with DAG(
         parameters=["download_date:DATE:{{ds}}"],
         retries=0,
     )
+
+    with TaskGroup(
+        "checks__fail_stub_attribution_service_derived__dl_token_ga_attribution_lookup__v1_external",
+    ) as checks__fail_stub_attribution_service_derived__dl_token_ga_attribution_lookup__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_google_analytics_derived_ga4__wait_for_checks__fail_stub_attribution_service_derived__dl_token_ga_attribution_lookup__v1",
+            external_dag_id="bqetl_google_analytics_derived_ga4",
+            external_task_id="wait_for_checks__fail_stub_attribution_service_derived__dl_token_ga_attribution_lookup__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=50400)).isoformat() }}",
+        )
+
+        checks__fail_stub_attribution_service_derived__dl_token_ga_attribution_lookup__v1_external.set_upstream(
+            checks__fail_stub_attribution_service_derived__dl_token_ga_attribution_lookup__v1
+        )
 
     mozilla_org_derived__ga_clients__v1 = bigquery_etl_query(
         task_id="mozilla_org_derived__ga_clients__v1",
@@ -226,23 +210,6 @@ with DAG(
         parameters=["conversion_window:INT64:30"],
     )
 
-    mozilla_org_derived__gclid_conversions__v2 = bigquery_etl_query(
-        task_id="mozilla_org_derived__gclid_conversions__v2",
-        destination_table="gclid_conversions_v2",
-        dataset_id="mozilla_org_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="mhirose@mozilla.com",
-        email=[
-            "frank@mozilla.com",
-            "kwindau@mozilla.com",
-            "mhirose@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="activity_date",
-        depends_on_past=False,
-        parameters=["conversion_window:INT64:30"],
-    )
-
     stub_attribution_service_derived__dl_token_ga_attribution_lookup__v1 = bigquery_etl_query(
         task_id="stub_attribution_service_derived__dl_token_ga_attribution_lookup__v1",
         destination_table="dl_token_ga_attribution_lookup_v1",
@@ -266,10 +233,6 @@ with DAG(
 
     checks__fail_mozilla_org_derived__gclid_conversions__v1.set_upstream(
         mozilla_org_derived__gclid_conversions__v1
-    )
-
-    checks__fail_mozilla_org_derived__gclid_conversions__v2.set_upstream(
-        mozilla_org_derived__gclid_conversions__v2
     )
 
     checks__fail_stub_attribution_service_derived__dl_token_ga_attribution_lookup__v1.set_upstream(
@@ -305,21 +268,5 @@ with DAG(
     )
 
     mozilla_org_derived__gclid_conversions__v1.set_upstream(
-        wait_for_telemetry_derived__clients_daily__v6
-    )
-
-    mozilla_org_derived__gclid_conversions__v2.set_upstream(
-        checks__fail_stub_attribution_service_derived__dl_token_ga_attribution_lookup__v1
-    )
-
-    mozilla_org_derived__gclid_conversions__v2.set_upstream(
-        wait_for_checks__fail_telemetry_derived__clients_first_seen__v2
-    )
-
-    mozilla_org_derived__gclid_conversions__v2.set_upstream(
-        wait_for_mozilla_org_derived__ga_sessions__v2
-    )
-
-    mozilla_org_derived__gclid_conversions__v2.set_upstream(
         wait_for_telemetry_derived__clients_daily__v6
     )

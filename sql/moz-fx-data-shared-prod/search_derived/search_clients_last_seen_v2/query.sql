@@ -107,7 +107,7 @@ _previous AS (
   SELECT
     * EXCEPT (submission_date)
   FROM
-    search_clients_last_seen_v2
+    `moz-fx-data-shared-prod.search_derived.search_clients_last_seen_v2`
   WHERE
     submission_date = DATE_SUB(@submission_date, INTERVAL 1 DAY)
       -- Filter out rows from yesterday that have now fallen outside the 365-day window.

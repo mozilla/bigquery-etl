@@ -9,7 +9,7 @@ from dataclasses import dataclass
 from functools import partial
 from itertools import chain
 from multiprocessing.pool import ThreadPool
-from typing import List, Dict
+from typing import Dict, List
 
 import requests
 from google.cloud import bigquery
@@ -469,6 +469,7 @@ def find_glean_targets(
 
     channel_to_app_name = get_glean_channel_to_app_name_mapping()
 
+    # create mapping of dataset -> (tables containing associated deletion requests)
     # construct values as tuples because that is what they must be in the return type
     sources: dict[str, tuple[DeleteSource, ...]] = defaultdict(tuple)
     app_names = set()
@@ -489,33 +490,38 @@ def find_glean_targets(
                 app_names.add(app_name)
                 sources[app_name + "_derived"] += (source,)
 
-    # use deletion request view for app datasets, if found
+    # use deletion request view containing all channels if found
+    # otherwise use per-channel tables as delete sources
     for app_name in app_names:
         try:
             source_view = client.get_table(f"{project}.{app_name}.{source_doctype}")
         except NotFound:
             pass
         else:
-            if len(sources[app_name + "_derived"]) > 1:
-                pass
-            source = DeleteSource(qualified_table_id(source_view), GLEAN_CLIENT_ID, project)
+            source = DeleteSource(
+                qualified_table_id(source_view), GLEAN_CLIENT_ID, project
+            )
             sources[app_name + "_derived"] = (source,)
 
-    glean_derived_tables = pool.map(
-        client.get_table,
-        chain(
-            *pool.starmap(
-                _list_tables,
-                [
-                    (bigquery.DatasetReference(project, dataset_id), client)
-                    for dataset_id in sources
-                    if dataset_id.endswith("_derived")
-                ],
-                chunksize=1,
-            )
-        ),
-        chunksize=1,
-    )
+    glean_derived_tables = [
+        table
+        for table in pool.map(
+            client.get_table,
+            chain(
+                *pool.starmap(
+                    _list_tables,
+                    [
+                        (bigquery.DatasetReference(project, dataset_id), client)
+                        for dataset_id in sources
+                        if dataset_id.endswith("_derived")
+                    ],
+                    chunksize=1,
+                )
+            ),
+            chunksize=1,
+        )
+        if table.table_type == "TABLE"
+    ]
 
     # handle additional source for deletion requests for things like
     # https://bugzilla.mozilla.org/show_bug.cgi?id=1810236
@@ -525,9 +531,15 @@ def find_glean_targets(
     for table in glean_derived_tables:
         if table.table_id.startswith(derived_source_prefix):
             source = DeleteSource(qualified_table_id(table), CLIENT_ID, project)
-            stable_dataset = re.sub("_derived$", "_stable", table.dataset_id)
-            sources[stable_dataset] += (source,)
+            channel_name = re.sub("_derived$", "", table.dataset_id)
+            app_name = channel_to_app_name.get(channel_name)
+
+            sources[channel_name + "_stable"] += (source,)
             sources[table.dataset_id] += (source,)
+
+            if app_name is not None and app_name != channel_name:
+                sources[app_name + "_derived"] += (source,)
+
     return {
         **{
             # glean stable tables that have a source
@@ -582,7 +594,7 @@ def _list_tables(
     dataset_ref: bigquery.DatasetReference,
     client: bigquery.Client,
 ) -> List:
-    """Wrapper for bigquery list_tables that returns an empty list for non-existent datasets.
+    """Wrap bigquery list_tables and return an empty list for non-existent datasets.
 
     Intended to be used with thread pool map function. Some glean apps do not have
     derived datasets so this wrapper handle exceptions when listing them.

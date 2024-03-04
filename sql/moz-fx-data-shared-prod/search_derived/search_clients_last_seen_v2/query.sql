@@ -13,9 +13,9 @@ WITH _derived_search_cols AS (
     cfs.country AS first_reported_country,
     DATE_DIFF(@submission_date, first_seen_date, DAY) AS days_since_first_seen
   FROM
-    search_clients_daily_v8 scd
+    `moz-fx-data-shared-prod.search_derived.search_clients_daily_v8` scd
   LEFT JOIN
-    telemetry.clients_first_seen cfs
+    `moz-fx-data-shared-prod.telemetry.clients_first_seen` cfs
     USING (client_id)
   WHERE
     scd.submission_date = @submission_date

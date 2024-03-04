@@ -61,7 +61,6 @@ _grouped AS (
     udf.mode_last(ARRAY_AGG(user_pref_browser_search_region)) AS user_pref_browser_search_region,
     udf.mode_last(ARRAY_AGG(os_version)) AS os_version,
     udf.mode_last(ARRAY_AGG(first_reported_country)) AS first_reported_country,
-    udf.mode_last(ARRAY_AGG(days_since_first_seen)) AS days_since_first_seen,
       -- User activity data
     MAX(max_concurrent_tab_count_max) AS max_concurrent_tab_count_max,
     SUM(tab_open_event_count_sum) AS tab_open_event_count_sum,

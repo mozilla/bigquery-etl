@@ -37,7 +37,7 @@ SELECT
   scd.active_hours_sum,
   scd.subsession_hours_sum,
   scd.sessions_started_on_this_day,
-  scd.total_uri_count,
+  scd.total_uri_count AS total_uri_count_sum,
     -- Search data
   scd.organic,
   scd.sap,

@@ -181,10 +181,10 @@ def qualified_table_name_matching(qualified_table_name) -> Tuple[str, str, str]:
     return project_id, dataset_id, table_id
 
 
-def get_backfill_entries_to_process(
+def get_backfill_entries_to_initiate(
     sql_dir, project, qualified_table_name=None
 ) -> Dict[str, Backfill]:
-    """Return backfill entries that require processing."""
+    """Return backfill entries to initiate."""
     try:
         bigquery.Client(project="")
     except DefaultCredentialsError:
@@ -198,12 +198,12 @@ def get_backfill_entries_to_process(
     if qualified_table_name:
         backfills_dict = {
             qualified_table_name: get_entries_from_qualified_table_name(
-                sql_dir, qualified_table_name, BackfillStatus.DRAFTING.value
+                sql_dir, qualified_table_name, BackfillStatus.INITIATE.value
             )
         }
     else:
         backfills_dict = get_qualified_table_name_to_entries_map_by_project(
-            sql_dir, project, BackfillStatus.DRAFTING.value
+            sql_dir, project, BackfillStatus.INITIATE.value
         )
 
     backfills_to_process_dict = {}
@@ -221,7 +221,7 @@ def get_backfill_entries_to_process(
             sys.exit(1)
         elif (len(entries)) > 1:
             click.echo(
-                f"There should not be more than one entry in backfill.yaml file with status: {BackfillStatus.DRAFTING} "
+                f"There should not be more than one entry in backfill.yaml file with status: {BackfillStatus.INITIATE} "
             )
             sys.exit(1)
 

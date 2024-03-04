@@ -21,7 +21,7 @@ from ..backfill.parse import (
 from ..backfill.utils import (
     BACKFILL_DESTINATION_DATASET,
     BACKFILL_DESTINATION_PROJECT,
-    get_backfill_entries_to_process,
+    get_backfill_entries_to_initiate,
     get_backfill_file_from_qualified_table_name,
     get_backfill_staging_qualified_table_name,
     get_entries_from_qualified_table_name,
@@ -124,12 +124,12 @@ def create(
         excluded_dates=[e.date() for e in list(exclude)],
         reason=DEFAULT_REASON,
         watchers=[watcher],
-        status=BackfillStatus.DRAFTING,
+        status=BackfillStatus.INITIATE,
     )
 
     for existing_entry in existing_backfills:
         validate_duplicate_entry_dates(new_entry, existing_entry)
-        if existing_entry.status == BackfillStatus.DRAFTING:
+        if existing_entry.status == BackfillStatus.INITIATE:
             validate_overlap_dates(new_entry, existing_entry)
 
     existing_backfills.insert(0, new_entry)
@@ -228,7 +228,7 @@ def validate(
 
     \b
     # Get info from all tables with specific status.
-    ./bqetl backfill info --status=Drafting
+    ./bqetl backfill info --status=Initiate
     """,
 )
 @click.argument("qualified_table_name", required=False)
@@ -292,27 +292,39 @@ def info(ctx, qualified_table_name, sql_dir, project_id, status):
 @project_id_option(
     ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod")
 )
+@click.option(
+    "--status",
+    type=click.Choice([s.value for s in BackfillStatus]),
+    default=BackfillStatus.INITIATE.value,
+    help="Whether to get backfills to process or to complete.",
+)
 @click.option("--json_path", type=click.Path())
 @click.pass_context
-def scheduled(ctx, qualified_table_name, sql_dir, project_id, json_path=None):
+def scheduled(ctx, qualified_table_name, sql_dir, project_id, status, json_path=None):
     """Return list of backfill(s) that require processing."""
-    backfills_to_process = get_backfill_entries_to_process(
-        sql_dir, project_id, qualified_table_name
-    )
+    match status:
+        case BackfillStatus.INITIATE.value:
+            backfills = get_backfill_entries_to_initiate(
+                sql_dir, project_id, qualified_table_name
+            )
+        case BackfillStatus.COMPLETE.value:
+            raise NotImplementedError("Placeholder - TODO")
+        case _:
+            raise ValueError(f"Invalid status status {status}.")
 
-    for qualified_table_name, entry in backfills_to_process.items():
+    for qualified_table_name, entry in backfills.items():
         click.echo(f"Backfill scheduled for {qualified_table_name}:\n{entry}")
 
-    click.echo(f"{len(backfills_to_process)} backfill(s) require processing.")
+    click.echo(f"{len(backfills)} backfill(s) require processing.")
 
-    if backfills_to_process and json_path is not None:
+    if backfills and json_path is not None:
         formatted_backfills = [
             {
                 "qualified_table_name": qualified_table_name,
                 "entry_date": entry.entry_date.strftime("%Y-%m-%d"),
                 "watchers": entry.watchers,
             }
-            for qualified_table_name, entry in backfills_to_process.items()
+            for qualified_table_name, entry in backfills.items()
         ]
 
         Path(json_path).write_text(json.dumps(formatted_backfills))
@@ -347,7 +359,7 @@ def process(ctx, qualified_table_name, sql_dir, project_id, dry_run):
     """Process backfill entry with drafting status in backfill.yaml file(s)."""
     click.echo("Backfill processing initiated....")
 
-    backfills_to_process_dict = get_backfill_entries_to_process(
+    backfills_to_process_dict = get_backfill_entries_to_initiate(
         sql_dir, project_id, qualified_table_name
     )
 

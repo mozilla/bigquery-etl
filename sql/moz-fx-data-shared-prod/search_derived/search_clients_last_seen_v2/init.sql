@@ -58,13 +58,11 @@ SELECT
   CAST(NULL AS BYTES) AS days_tagged_searched_bytes,
   CAST(NULL AS BYTES) AS days_searched_with_ads_bytes,
   CAST(NULL AS BYTES) AS days_clicked_ads_bytes,
-  CAST(NULL AS BYTES) AS days_first_seen_bytes
-  CAST(NULL AS BYTES) AS days_dau_bytes,
+  CAST(NULL AS BYTES) AS days_first_seen_bytes CAST(NULL AS BYTES) AS days_dau_bytes,
 FROM
   search_clients_daily_v8 scd
 LEFT JOIN
   telemetry.clients_first_seen cfs
-USING
-  (client_id)
+  USING (client_id)
 WHERE
   FALSE

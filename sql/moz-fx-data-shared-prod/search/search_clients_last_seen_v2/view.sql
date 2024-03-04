@@ -14,8 +14,6 @@ SELECT
   `moz-fx-data-shared-prod`.udf.bits_to_days_since_seen(
     days_clicked_ads_bytes
   ) AS days_since_clicked_ad,
-  `moz-fx-data-shared-prod`.udf.bits_to_days_since_seen(
-    days_dau_bytes
-  ) AS days_since_dau,
+  `moz-fx-data-shared-prod`.udf.bits_to_days_since_seen(days_dau_bytes) AS days_since_dau,
 FROM
   `moz-fx-data-shared-prod.search_derived.search_clients_last_seen_v2`

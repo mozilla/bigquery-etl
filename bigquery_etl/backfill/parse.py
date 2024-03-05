@@ -49,7 +49,7 @@ yaml.add_representer(Literal, literal_presenter)
 class BackfillStatus(enum.Enum):
     """Represents backfill status types."""
 
-    DRAFTING = "Drafting"
+    INITIATE = "Initiate"
     VALIDATED = "Validated"
     COMPLETE = "Complete"
 

@@ -13,7 +13,7 @@ bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:mozilla-confidential
+  - workgroup:regrets-reporter
 references:
   init.sql:
   - moz-fx-data-shared-prod.org_mozilla_ios_tiktok_reporter_live.events_v1

@@ -28,7 +28,7 @@ bigquery:
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:mozilla-confidential
+  - workgroup:regrets-reporter
 references:
   init.sql:
   - org_mozilla_tiktokreporter_derived.baseline_clients_first_seen_v1

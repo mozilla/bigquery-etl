@@ -21,7 +21,10 @@ from typing import Optional, Set
 from urllib.request import Request, urlopen
 
 import click
+import google.auth
+from google.auth.transport.requests import Request as GoogleAuthRequest
 from google.cloud import bigquery
+from google.oauth2.id_token import fetch_id_token
 
 from .config import ConfigLoader
 from .metadata.parse_metadata import Metadata
@@ -68,6 +71,11 @@ class DryRun:
             self.metadata = Metadata.of_query_file(self.sqlfile)
         except FileNotFoundError:
             self.metadata = None
+
+        from bigquery_etl.cli.utils import is_authenticated
+
+        if not is_authenticated():
+            print("Authentication to GCP required for dry runs.")
 
     @staticmethod
     def skipped_files(sql_dir=ConfigLoader.get("default", "sql_dir")) -> Set[str]:
@@ -160,10 +168,23 @@ class DryRun:
         dataset = basename(dirname(dirname(self.sqlfile)))
         try:
             if self.use_cloud_function:
+                auth_req = GoogleAuthRequest()
+                creds, _ = google.auth.default(
+                    scopes=["https://www.googleapis.com/auth/cloud-platform"]
+                )
+                creds.refresh(auth_req)
+                if hasattr(creds, "id_token"):
+                    id_token = creds.id_token
+                else:
+                    id_token = fetch_id_token(auth_req, self.dry_run_url)
+
                 r = urlopen(
                     Request(
                         self.dry_run_url,
-                        headers={"Content-Type": "application/json"},
+                        headers={
+                            "Content-Type": "application/json",
+                            "Authorization": f"Bearer {id_token}",
+                        },
                         data=json.dumps(
                             {
                                 "dataset": dataset,

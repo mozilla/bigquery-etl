@@ -1054,7 +1054,7 @@ class TestBackfill:
                 "  reason: test_reason\n"
                 "  watchers:\n"
                 "  - test@example.org\n"
-                "  status: Validated\n"
+                "  status: Complete\n"
             )
 
             assert BACKFILL_FILE in os.listdir(SQL_DIR)
@@ -1099,12 +1099,11 @@ class TestBackfill:
             assert result.exit_code == 0
             assert qualified_table_name_1 in result.output
             assert BackfillStatus.INITIATE.value in result.output
-            assert BackfillStatus.VALIDATED.value in result.output
             assert "total of 2 backfill(s)" in result.output
             assert qualified_table_name_2 not in result.output
-            assert BackfillStatus.COMPLETE.value not in result.output
+            assert BackfillStatus.COMPLETE.value in result.output
 
-    def test_backfill_info_one_table_drafting_status(self, runner):
+    def test_backfill_info_one_table_initiate_status(self, runner):
         with runner.isolated_filesystem():
             SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v1"
             os.makedirs(SQL_DIR)
@@ -1119,21 +1118,20 @@ class TestBackfill:
                 "  reason: test_reason\n"
                 "  watchers:\n"
                 "  - test@example.org\n"
-                "  status: Validated\n"
+                "  status: Initiate\n"
             )
 
             assert BACKFILL_FILE in os.listdir(SQL_DIR)
 
             result = runner.invoke(
                 info,
-                [qualified_table_name, "--status=initiate"],
+                [qualified_table_name, "--status=Initiate"],
             )
 
             assert result.exit_code == 0
             assert qualified_table_name in result.output
             assert BackfillStatus.INITIATE.value in result.output
-            assert "total of 1 backfill(s)" in result.output
-            assert BackfillStatus.VALIDATED.value not in result.output
+            assert "total of 2 backfill(s)" in result.output
             assert BackfillStatus.COMPLETE.value not in result.output
 
     def test_backfill_info_all_tables_all_status(self, runner):
@@ -1168,7 +1166,7 @@ class TestBackfill:
                 "  reason: test_reason\n"
                 "  watchers:\n"
                 "  - test@example.org\n"
-                "  status: Validated\n"
+                "  status: Complete\n"
             )
 
             assert BACKFILL_FILE in os.listdir(SQL_DIR)
@@ -1214,11 +1212,10 @@ class TestBackfill:
             assert qualified_table_name_1 in result.output
             assert qualified_table_name_2 in result.output
             assert BackfillStatus.INITIATE.value in result.output
-            assert BackfillStatus.VALIDATED.value in result.output
             assert "total of 3 backfill(s)" in result.output
-            assert BackfillStatus.COMPLETE.value not in result.output
+            assert BackfillStatus.COMPLETE.value in result.output
 
-    def test_backfill_info_all_tables_with_validating_status(self, runner):
+    def test_backfill_info_all_tables_with_initiate_status(self, runner):
         with runner.isolated_filesystem():
             SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v1"
             qualified_table_name_1 = "moz-fx-data-shared-prod.test.test_query_v1"
@@ -1233,7 +1230,7 @@ class TestBackfill:
                 "  reason: test_reason\n"
                 "  watchers:\n"
                 "  - test@example.org\n"
-                "  status: Validated\n"
+                "  status: Initiate\n"
             )
 
             assert BACKFILL_FILE in os.listdir(SQL_DIR)
@@ -1251,7 +1248,7 @@ class TestBackfill:
                 "  reason: test_reason\n"
                 "  watchers:\n"
                 "  - test@example.org\n"
-                "  status: Validated\n"
+                "  status: Initiate\n"
             )
 
             assert BACKFILL_FILE in os.listdir(SQL_DIR)
@@ -1259,16 +1256,15 @@ class TestBackfill:
             result = runner.invoke(
                 info,
                 [
-                    "--status=validated",
+                    "--status=Initiate",
                 ],
             )
 
             assert result.exit_code == 0
             assert qualified_table_name_1 in result.output
             assert qualified_table_name_2 in result.output
-            assert BackfillStatus.VALIDATED.value in result.output
-            assert "total of 2 backfill(s)" in result.output
-            assert BackfillStatus.INITIATE.value not in result.output
+            assert BackfillStatus.INITIATE.value in result.output
+            assert "total of 4 backfill(s)" in result.output
             assert BackfillStatus.COMPLETE.value not in result.output
 
     def test_backfill_info_with_invalid_path(self, runner):
@@ -1305,7 +1301,7 @@ class TestBackfill:
                 "  reason: test_reason\n"
                 "  watchers:\n"
                 "  - test@example.org\n"
-                "  status: Validated\n"
+                "  status: Complete\n"
             )
 
             assert BACKFILL_FILE in os.listdir(SQL_DIR)
@@ -1779,10 +1775,17 @@ class TestBackfill:
 
     @patch("google.cloud.bigquery.Client.get_table")
     def test_backfill_scheduled(self, get_table, runner):
-        get_table.side_effect = NotFound(
-            "moz-fx-data-shared-prod:backfills_staging_derived.test_query_v1_2021_05_04 "
-            "not found"
-        )
+        get_table.side_effect = [
+            None,  # Check that staging data exists
+            NotFound(  # Check that clone does not exist
+                "moz-fx-data-shared-prod.backfills_staging_derived.test_query_v1_backup_2021_05_03"
+                "not found"
+            ),
+            NotFound(  # Check that staging data does not exist
+                "moz-fx-data-shared-prod.backfills_staging_derived.test_query_v1_2021_05_04"
+                "not found"
+            ),
+        ]
         with runner.isolated_filesystem():
             SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v1"
             os.makedirs(SQL_DIR)
@@ -1813,16 +1816,28 @@ class TestBackfill:
   reason: test_reason
   watchers:
   - test@example.org
-  status: Validated"""
+  status: Complete"""
             )
 
             result = runner.invoke(
                 scheduled,
                 [
                     "--json_path=tmp.json",
+                    "--status=Complete",
                 ],
             )
 
             assert result.exit_code == 0
             assert "1 backfill(s) require processing." in result.output
             assert Path("tmp.json").exists()
+
+            result = runner.invoke(
+                scheduled,
+                [
+                    "--json_path=tmp.json",
+                    "--status=Initiate",
+                ],
+            )
+
+            assert result.exit_code == 0
+            assert "1 backfill(s) require processing." in result.output

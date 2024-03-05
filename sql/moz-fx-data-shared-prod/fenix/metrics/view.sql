@@ -213,7 +213,9 @@ SELECT
     client_info.os_version,
     client_info.telemetry_sdk_build,
     client_info.build_date,
-    client_info.windows_build_number
+    client_info.windows_build_number,
+    client_info.session_count,
+    client_info.session_id
   ) AS `client_info`,
   document_id,
   events,
@@ -807,7 +809,9 @@ SELECT
     client_info.os_version,
     client_info.telemetry_sdk_build,
     client_info.build_date,
-    client_info.windows_build_number
+    client_info.windows_build_number,
+    client_info.session_count,
+    client_info.session_id
   ) AS `client_info`,
   document_id,
   events,

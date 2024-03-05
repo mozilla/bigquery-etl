@@ -62,6 +62,12 @@ fields:
   - name: windows_build_number
     type: INTEGER
     mode: NULLABLE
+  - name: session_count
+    type: INTEGER
+    mode: NULLABLE
+  - name: session_id
+    type: STRING
+    mode: NULLABLE
 - name: document_id
   type: STRING
   mode: NULLABLE

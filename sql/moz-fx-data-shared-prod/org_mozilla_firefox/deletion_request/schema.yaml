@@ -83,6 +83,14 @@ fields:
     mode: NULLABLE
     description: The optional Windows build number, reported by Windows (e.g. 22000)
       and not set for other platforms
+  - name: session_count
+    type: INTEGER
+    mode: NULLABLE
+    description: An optional running counter of the number of sessions for a client.
+  - name: session_id
+    type: STRING
+    mode: NULLABLE
+    description: An optional UUID uniquely identifying the client's current session.
 - name: document_id
   type: STRING
   mode: NULLABLE
@@ -302,6 +310,18 @@ fields:
       description: 'An experimentation identifier derived and provided by the application
 
         for the purpose of experimentation enrollment.
+
+        '
+  - name: uuid
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: characteristics_client_identifier
+      type: STRING
+      mode: NULLABLE
+      description: 'A unique identifier for a user, not the same as the normal Telemetry
+        client_id, but needed so we can deduplicate reports and only take the most
+        recent one per user.
 
         '
 - name: normalized_app_name

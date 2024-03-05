@@ -59,6 +59,12 @@ fields:
   - name: windows_build_number
     type: INTEGER
     mode: NULLABLE
+  - name: session_count
+    type: INTEGER
+    mode: NULLABLE
+  - name: session_id
+    type: STRING
+    mode: NULLABLE
 - name: document_id
   type: STRING
   mode: NULLABLE
@@ -231,6 +237,13 @@ fields:
     mode: NULLABLE
     fields:
     - name: glean_client_annotation_experimentation_id
+      type: STRING
+      mode: NULLABLE
+  - name: uuid
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: characteristics_client_identifier
       type: STRING
       mode: NULLABLE
 - name: normalized_app_name

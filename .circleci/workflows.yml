@@ -159,6 +159,7 @@ jobs:
       - when:
           condition: *validate-sql-or-routines
           steps:
+            - *skip_forked_pr
             - checkout
             - *restore_venv_cache
             - *build
@@ -176,12 +177,7 @@ jobs:
             - run:
                 name: Run SQL tests
                 command: |
-                  if [ -n "$CIRCLE_PR_NUMBER" ]; then
-                    echo "Cannot pass creds to forked PRs," \
-                      "so skipping routine and SQL tests"
-                  else
                     PATH="venv/bin:$PATH" script/entrypoint -m sql -n 8
-                  fi
       - unless:
           condition: *validate-sql-or-routines
           steps:
@@ -392,6 +388,7 @@ jobs:
               - << pipeline.parameters.validate-routines >>
               - << pipeline.parameters.deploy >>
           steps:
+            - *skip_forked_pr
             - checkout
             - *restore_venv_cache
             - *build
@@ -400,12 +397,7 @@ jobs:
             - run:
                 name: Run routine tests
                 command: |
-                  if [ -n "$CIRCLE_PR_NUMBER" ]; then
-                    echo "Cannot pass creds to forked PRs," \
-                      "so skipping routine tests"
-                  else
-                    PATH="venv/bin:$PATH" script/entrypoint -m routine -n 8
-                  fi
+                  PATH="venv/bin:$PATH" script/entrypoint -m routine -n 8
             - run:
                 name: Validate doc examples
                 command: |
@@ -722,6 +714,7 @@ jobs:
             - checkout
             - *restore_venv_cache
             - *build
+            - *authenticate
             - add_ssh_keys:
                 # deploy key to private-bigquery-etl
                 fingerprints:

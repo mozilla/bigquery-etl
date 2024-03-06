@@ -77,7 +77,7 @@ class DryRun:
 
         if not is_authenticated():
             print(
-                "Authentication to GCP required. Run `gcloud auth login` "
+                "Authentication to GCP required. Run `gcloud auth login  --update-adc` "
                 "and check that the project is set correctly."
             )
             sys.exit(1)

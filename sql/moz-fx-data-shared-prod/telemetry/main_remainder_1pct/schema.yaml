@@ -7052,6 +7052,9 @@ fields:
     - name: fx_urlbar_provider_clipboard_read_time_ms
       type: STRING
       mode: NULLABLE
+    - name: insecure_downloads
+      type: STRING
+      mode: NULLABLE
   - name: info
     type: RECORD
     mode: NULLABLE
@@ -15258,6 +15261,9 @@ fields:
           type: STRING
           mode: NULLABLE
         - name: top_level_content_documents_destroyed
+          type: STRING
+          mode: NULLABLE
+        - name: insecure_downloads
           type: STRING
           mode: NULLABLE
       - name: keyed_histograms

@@ -366,10 +366,6 @@ with DAG(
         wait_for_firefox_accounts_derived__fxa_users_last_seen__v1
     )
 
-    telemetry_derived__smoot_usage_fxa_compressed__v2.set_upstream(
-        telemetry_derived__smoot_usage_fxa__v2
-    )
-
     telemetry_derived__smoot_usage_new_profiles__v2.set_upstream(
         telemetry_derived__smoot_usage_desktop__v2
     )

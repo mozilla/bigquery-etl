@@ -25,6 +25,4 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references:
-  query.sql:
-  - smoot_usage_fxa_v2
+references: {}

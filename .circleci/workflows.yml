@@ -119,7 +119,6 @@ jobs:
               - << pipeline.parameters.validate-bqetl >>
               - << pipeline.parameters.deploy >>
           steps:
-            - checkout
             - &skip_forked_pr
               run:
                 name: Early return if this build is from a forked PR
@@ -129,8 +128,16 @@ jobs:
                       "so marking this step successful"
                     circleci-agent step halt
                   fi
+            - checkout
             - *restore_venv_cache
             - *build
+            - &authenticate
+              run:
+                name: Authenticate to GCP
+                command: |
+                  export GOOGLE_APPLICATION_CREDENTIALS="/tmp/gcp.json"
+                  echo 'export GOOGLE_APPLICATION_CREDENTIALS="/tmp/gcp.json"' >> "$BASH_ENV"
+                  echo "$GCLOUD_SERVICE_KEY" > "$GOOGLE_APPLICATION_CREDENTIALS"
             - run:
                 name: PyTest with linters
                 # integration tests are run in a separate `integration` step;
@@ -138,9 +145,6 @@ jobs:
                 # since those tests take the longest to run and running those tests
                 # in parallel speeds up CI
                 command: |
-                  export GOOGLE_APPLICATION_CREDENTIALS="/tmp/gcp.json"
-                  echo "$GCLOUD_SERVICE_KEY" > "$GOOGLE_APPLICATION_CREDENTIALS"
-
                   PATH="venv/bin:$PATH" script/entrypoint --black --flake8 \
                     --isort --mypy-ignore-missing-imports --pydocstyle \
                     -m "not (routine or sql or integration)" \
@@ -188,12 +192,13 @@ jobs:
       - when:
           condition: *validate-sql-or-routines
           steps:
-            - checkout
             - *skip_forked_pr
+            - checkout
             - *restore_venv_cache
             - *build
             - *attach_generated_sql
             - *copy_staged_sql
+            - *authenticate
             - run:
                 name: Dry run queries
                 # yamllint disable rule:line-length
@@ -216,9 +221,6 @@ jobs:
                   else
                     PATHS="sql/bigquery-etl-integration-test"
                   fi
-                  export GOOGLE_APPLICATION_CREDENTIALS="/tmp/gcp.json"
-                  echo "$GCLOUD_SERVICE_KEY" > "$GOOGLE_APPLICATION_CREDENTIALS"
-
                   echo $PATHS
                   PATH="venv/bin:$PATH" script/bqetl dryrun --validate-schemas $PATHS
                 # yamllint enable rule:line-length
@@ -254,18 +256,16 @@ jobs:
       - when:
           condition: *validate-sql
           steps:
-            - checkout
             - *skip_forked_pr
+            - checkout
             - *restore_venv_cache
             - *build
             - *attach_generated_sql
             - *copy_staged_sql
+            - *authenticate
             - run:
                 name: Verify that metadata files are valid
                 command: |
-                  export GOOGLE_APPLICATION_CREDENTIALS="/tmp/gcp.json"
-                  echo "$GCLOUD_SERVICE_KEY" > "$GOOGLE_APPLICATION_CREDENTIALS"
-
                   # TODO: Add check here to make sure all queries have metadata.yaml
                   PATH="venv/bin:$PATH" script/bqetl query validate \
                     --respect-dryrun-skip
@@ -279,8 +279,8 @@ jobs:
       - when:
           condition: *validate-bqetl
           steps:
-            - checkout
             - *skip_forked_pr
+            - checkout
             - *restore_venv_cache
             - *build
             - run:
@@ -300,8 +300,8 @@ jobs:
       - when:
           condition: *validate-sql
           steps:
-            - checkout
             - *skip_forked_pr
+            - checkout
             - *restore_venv_cache
             - *build
             - *attach_generated_sql
@@ -311,12 +311,10 @@ jobs:
                 command: |
                   rm -rf sql/
                   cp -r /tmp/workspace/generated-sql/sql sql
+            - *authenticate
             - run:
                 name: Generate DAGs
                 command: |
-                  export GOOGLE_APPLICATION_CREDENTIALS="/tmp/gcp.json"
-                  echo "$GCLOUD_SERVICE_KEY" > "$GOOGLE_APPLICATION_CREDENTIALS"
-
                   mkdir -p /tmp/workspace/generated-sql/dags
                   PATH="venv/bin:$PATH" script/bqetl dag generate --output-dir=/tmp/workspace/generated-sql/dags
             # this task is overwriting the content produced by generate-sql;
@@ -422,17 +420,16 @@ jobs:
       - when:
           condition: *validate-sql-or-routines
           steps:
-            - checkout
             - *skip_forked_pr
+            - checkout
             - *restore_venv_cache
             - *build
             - *attach_generated_sql
             - *copy_staged_sql
+            - *authenticate
             - run:
                 name: Validate views
                 command: |
-                  export GOOGLE_APPLICATION_CREDENTIALS="/tmp/gcp.json"
-                  echo "$GCLOUD_SERVICE_KEY" > "$GOOGLE_APPLICATION_CREDENTIALS"
                   PATH="venv/bin:$PATH" script/bqetl view validate
       - unless:
           condition: *validate-sql-or-routines
@@ -444,8 +441,8 @@ jobs:
       - when:
           condition: *validate-sql-or-routines
           steps:
-            - checkout
             - *skip_forked_pr
+            - checkout
             - *restore_venv_cache
             - *build
             - *attach_generated_sql
@@ -472,16 +469,14 @@ jobs:
       - when:
           condition: *validate-sql-or-routines
           steps:
-            - checkout
             - *skip_forked_pr
+            - checkout
             - *restore_venv_cache
             - *build
+            - *authenticate
             - run:
                 name: Generate SQL content
                 command: |
-                  export GOOGLE_APPLICATION_CREDENTIALS="/tmp/gcp.json"
-                  echo "$GCLOUD_SERVICE_KEY" > "$GOOGLE_APPLICATION_CREDENTIALS"
-
                   # Check if the generated-sql branch can simply be re-used and SQL generation can be skipped.
                   git clone -b generated-sql git@github.com:mozilla/bigquery-etl ~/remote-generated-sql
                   cd ~/remote-generated-sql
@@ -570,8 +565,8 @@ jobs:
       - when:
           condition: *validate-sql-or-routines
           steps:
-            - checkout
             - *skip_forked_pr
+            - checkout
             - *restore_venv_cache
             - *build
             - *attach_generated_sql
@@ -586,13 +581,11 @@ jobs:
                   git clone --single-branch --branch generated-sql \
                     git@github.com:mozilla/bigquery-etl \
                     generated-sql
+            - *authenticate
             - run:
                 name: Deploy changes to stage
                 command: |
                   if [ "<< pipeline.parameters.skip-stage-deploys >>" = "false" ]; then
-                    export GOOGLE_APPLICATION_CREDENTIALS="/tmp/gcp.json"
-                    echo "$GCLOUD_SERVICE_KEY" > "$GOOGLE_APPLICATION_CREDENTIALS"
-
                     PATHS="$(git diff --no-index --name-only --diff-filter=d generated-sql/sql sql)" || true
                     echo $PATHS
                     PATH="venv/bin:$PATH" script/bqetl stage deploy \
@@ -725,8 +718,8 @@ jobs:
       - when:
           condition: *deploy
           steps:
-            - checkout
             - *skip_forked_pr
+            - checkout
             - *restore_venv_cache
             - *build
             - add_ssh_keys:
@@ -847,8 +840,8 @@ jobs:
       - when:
           condition: *validate-sql-or-routines
           steps:
-            - checkout
             - *skip_forked_pr
+            - checkout
             - run:
                 name: Switch to main branch
                 command: |
@@ -859,12 +852,11 @@ jobs:
                 at: /tmp/workspace
             - *restore_venv_cache
             - *build
+            - *authenticate
             - run:
                 name: Generate SQL content
                 command: |
                   export PATH="venv/bin:$PATH"
-                  export GOOGLE_APPLICATION_CREDENTIALS="/tmp/gcp.json"
-                  echo "$GCLOUD_SERVICE_KEY" > "$GOOGLE_APPLICATION_CREDENTIALS"
 
                   # Check if the generated-sql branch can simply be re-used and SQL generation can be skipped.
                   # There is a delay between pushing changes to main and pushing a new generated-sql branch,
@@ -1000,15 +992,13 @@ jobs:
       - when:
           condition: *validate-sql-or-routines
           steps:
-            - checkout
             - *skip_forked_pr
+            - checkout
             - *build
+            - *authenticate
             - run:
                 name: "Delete stage datasets"
                 command: |
-                  export GOOGLE_APPLICATION_CREDENTIALS="/tmp/gcp.json"
-                  echo "$GCLOUD_SERVICE_KEY" > "$GOOGLE_APPLICATION_CREDENTIALS"
-
                   PATH="venv/bin:$PATH" script/bqetl stage clean --dataset-suffix=$CIRCLE_SHA1 --delete-expired
       - unless:
           condition: *validate-sql-or-routines

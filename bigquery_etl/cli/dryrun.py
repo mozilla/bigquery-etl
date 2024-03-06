@@ -12,6 +12,7 @@ from typing import List, Set
 import rich_click as click
 from google.cloud import bigquery
 
+from ..cli.utils import is_authenticated
 from ..config import ConfigLoader
 from ..dryrun import DryRun
 
@@ -94,6 +95,10 @@ def dryrun(
     if not sql_files:
         print("Skipping dry run because no queries matched")
         sys.exit(0)
+
+    if not use_cloud_function and not is_authenticated():
+        click.echo("Not authenticated to GCP. Run `gcloud auth login` to login.")
+        sys.exit(1)
 
     sql_file_valid = partial(
         _sql_file_valid, use_cloud_function, project, respect_skip, validate_schemas

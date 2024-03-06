@@ -3,7 +3,6 @@
 import fnmatch
 import os
 import re
-import subprocess
 from fnmatch import fnmatchcase
 from glob import glob
 from pathlib import Path
@@ -45,11 +44,7 @@ def is_authenticated():
     try:
         bigquery.Client(project="")
     except DefaultCredentialsError:
-        try:
-            subprocess.run(["gcloud", "auth", "application-default", "login"])
-        except Exception as e:
-            print(f"Could not log in to GCP: {e}")
-            return False
+        return False
     return True
 
 

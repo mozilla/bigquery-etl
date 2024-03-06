@@ -14,6 +14,7 @@ proxy the queries through the dry run service endpoint.
 import glob
 import json
 import re
+import sys
 from enum import Enum
 from os.path import basename, dirname, exists
 from pathlib import Path
@@ -75,7 +76,11 @@ class DryRun:
         from bigquery_etl.cli.utils import is_authenticated
 
         if not is_authenticated():
-            print("Authentication to GCP required for dry runs.")
+            print(
+                "Authentication to GCP required. Run `gcloud auth login` "
+                "and check that the project is set correctly."
+            )
+            sys.exit(1)
 
     @staticmethod
     def skipped_files(sql_dir=ConfigLoader.get("default", "sql_dir")) -> Set[str]:
@@ -174,8 +179,11 @@ class DryRun:
                 )
                 creds.refresh(auth_req)
                 if hasattr(creds, "id_token"):
+                    # Get token from default credentials for the current environment created via Cloud SDK run
                     id_token = creds.id_token
                 else:
+                    # If the environment variable GOOGLE_APPLICATION_CREDENTIALS is set to service account JSON file,
+                    # then ID token is acquired using this service account credentials.
                     id_token = fetch_id_token(auth_req, self.dry_run_url)
 
                 r = urlopen(

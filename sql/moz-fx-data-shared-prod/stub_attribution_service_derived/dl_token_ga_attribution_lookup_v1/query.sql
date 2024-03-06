@@ -10,7 +10,7 @@ WITH historical_triplets AS (
 new_downloads AS (
   SELECT DISTINCT
     IFNULL(mozfun.ga.nullify_string(jsonPayload.fields.dltoken), "") AS dl_token,
-    IFNULL(mozfun.ga.nullify_string(jsonPayload.fields.visit_id), "") AS ga_client_id,
+    IFNULL(mozfun.ga.nullify_string(jsonPayload.fields.client_id_ga4), "") AS ga_client_id,
     IFNULL(mozfun.ga.nullify_string(jsonPayload.fields.session_id), "") AS stub_session_id,
     @download_date AS first_seen_date,
   FROM

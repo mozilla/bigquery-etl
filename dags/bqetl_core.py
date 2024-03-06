@@ -140,3 +140,7 @@ with DAG(
     telemetry_derived__core_clients_daily__v1.set_upstream(
         wait_for_telemetry_derived__core_clients_first_seen__v1
     )
+
+    telemetry_derived__core_clients_last_seen__v1.set_upstream(
+        telemetry_derived__core_clients_daily__v1
+    )

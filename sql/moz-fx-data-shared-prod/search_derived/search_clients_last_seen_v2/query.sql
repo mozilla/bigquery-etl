@@ -88,7 +88,7 @@ _grouped AS (
 ),
 _current AS (
   SELECT
-    *,
+    * EXCEPT(days_since_first_seen),
       -- In this raw table, we capture the history of activity over the past
       -- 365 days for each usage criterion as an array of bytes. The
       -- rightmost bit represents whether the user was active in the current day.
@@ -114,10 +114,7 @@ _previous AS (
 )
 SELECT
   @submission_date AS submission_date,
-  IF(_current.client_id IS NOT NULL, _current, _previous).* EXCEPT (
-    days_since_first_seen
-  ) --this column has calculation issues so excluding it for now
-  REPLACE(
+  IF(_current.client_id IS NOT NULL, _current, _previous).* REPLACE (
     udf.combine_adjacent_days_365_bits(
       _previous.days_seen_bytes,
       _current.days_seen_bytes

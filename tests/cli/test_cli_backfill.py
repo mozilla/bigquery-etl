@@ -27,7 +27,7 @@ from bigquery_etl.backfill.utils import (
 )
 from bigquery_etl.cli.backfill import create, info, scheduled, validate
 
-DEFAULT_STATUS = BackfillStatus.DRAFTING
+DEFAULT_STATUS = BackfillStatus.INITIATE
 VALID_REASON = "test_reason"
 VALID_WATCHER = "test@example.org"
 VALID_BACKFILL = Backfill(
@@ -48,7 +48,7 @@ BACKFILL_YAML_TEMPLATE = (
     "  reason: test_reason\n"
     "  watchers:\n"
     "  - test@example.org\n"
-    "  status: Drafting\n"
+    "  status: Initiate\n"
 )
 
 VALID_WORKGROUP_ACCESS = [
@@ -830,7 +830,7 @@ class TestBackfill:
                     + "  reason: test_reason\n"
                     "  watchers:\n"
                     "  - test@example.org\n"
-                    "  status: Drafting\n"
+                    "  status: Initiate\n"
                 )
             )
 
@@ -877,7 +877,7 @@ class TestBackfill:
                 + "  reason: test_reason\n"
                 "  watchers:\n"
                 "  - test@example.org\n"
-                "  status: Drafting\n"
+                "  status: Initiate\n"
             )
 
             assert BACKFILL_FILE in os.listdir(SQL_DIR)
@@ -921,7 +921,7 @@ class TestBackfill:
                 "  reason: test_reason\n"
                 "  watchers:\n"
                 "  - test@example.org\n"
-                "  status: Drafting\n"
+                "  status: Initiate\n"
             )
 
             assert BACKFILL_FILE in os.listdir(SQL_DIR)
@@ -965,7 +965,7 @@ class TestBackfill:
                 "  reason: test_reason\n"
                 "  watchers:\n"
                 "  - test@example.org\n"
-                "  status: Drafting\n"
+                "  status: Initiate\n"
             )
 
             assert BACKFILL_FILE in os.listdir(SQL_DIR)
@@ -1098,7 +1098,7 @@ class TestBackfill:
 
             assert result.exit_code == 0
             assert qualified_table_name_1 in result.output
-            assert BackfillStatus.DRAFTING.value in result.output
+            assert BackfillStatus.INITIATE.value in result.output
             assert BackfillStatus.VALIDATED.value in result.output
             assert "total of 2 backfill(s)" in result.output
             assert qualified_table_name_2 not in result.output
@@ -1126,12 +1126,12 @@ class TestBackfill:
 
             result = runner.invoke(
                 info,
-                [qualified_table_name, "--status=drafting"],
+                [qualified_table_name, "--status=initiate"],
             )
 
             assert result.exit_code == 0
             assert qualified_table_name in result.output
-            assert BackfillStatus.DRAFTING.value in result.output
+            assert BackfillStatus.INITIATE.value in result.output
             assert "total of 1 backfill(s)" in result.output
             assert BackfillStatus.VALIDATED.value not in result.output
             assert BackfillStatus.COMPLETE.value not in result.output
@@ -1213,7 +1213,7 @@ class TestBackfill:
             assert result.exit_code == 0
             assert qualified_table_name_1 in result.output
             assert qualified_table_name_2 in result.output
-            assert BackfillStatus.DRAFTING.value in result.output
+            assert BackfillStatus.INITIATE.value in result.output
             assert BackfillStatus.VALIDATED.value in result.output
             assert "total of 3 backfill(s)" in result.output
             assert BackfillStatus.COMPLETE.value not in result.output
@@ -1268,7 +1268,7 @@ class TestBackfill:
             assert qualified_table_name_2 in result.output
             assert BackfillStatus.VALIDATED.value in result.output
             assert "total of 2 backfill(s)" in result.output
-            assert BackfillStatus.DRAFTING.value not in result.output
+            assert BackfillStatus.INITIATE.value not in result.output
             assert BackfillStatus.COMPLETE.value not in result.output
 
     def test_backfill_info_with_invalid_path(self, runner):
@@ -1824,8 +1824,5 @@ class TestBackfill:
             )
 
             assert result.exit_code == 0
-            assert (
-                "There are a total of 1 backfill(s) that require processing."
-                in result.output
-            )
+            assert "1 backfill(s) require processing." in result.output
             assert Path("tmp.json").exists()

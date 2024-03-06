@@ -45,9 +45,6 @@ fields:
   name: default_search_engine_data_submission_url
   type: STRING
 - mode: NULLABLE
-  name: days_since_first_seen
-  type: INTEGER
-- mode: NULLABLE
   name: active_addons_count_mean
   type: FLOAT
 - mode: NULLABLE

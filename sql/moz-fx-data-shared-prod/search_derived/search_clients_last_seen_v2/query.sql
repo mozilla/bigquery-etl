@@ -114,7 +114,10 @@ _previous AS (
 )
 SELECT
   @submission_date AS submission_date,
-  IF(_current.client_id IS NOT NULL, _current, _previous).* REPLACE (
+  IF(_current.client_id IS NOT NULL, _current, _previous).* EXCEPT (
+    days_since_first_seen
+  ) --this column has calculation issues so excluding it for now
+  REPLACE(
     udf.combine_adjacent_days_365_bits(
       _previous.days_seen_bytes,
       _current.days_seen_bytes

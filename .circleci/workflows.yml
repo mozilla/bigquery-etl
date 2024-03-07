@@ -119,9 +119,25 @@ jobs:
               - << pipeline.parameters.validate-bqetl >>
               - << pipeline.parameters.deploy >>
           steps:
+            - &skip_forked_pr
+              run:
+                name: Early return if this build is from a forked PR
+                command: |
+                  if [ -n "$CIRCLE_PR_NUMBER" ]; then
+                    echo "Cannot pass creds to forked PRs," \
+                      "so marking this step successful"
+                    circleci-agent step halt
+                  fi
             - checkout
             - *restore_venv_cache
             - *build
+            - &authenticate
+              run:
+                name: Authenticate to GCP
+                command: |
+                  export GOOGLE_APPLICATION_CREDENTIALS="/tmp/gcp.json"
+                  echo 'export GOOGLE_APPLICATION_CREDENTIALS="/tmp/gcp.json"' >> "$BASH_ENV"
+                  echo "$GCLOUD_SERVICE_KEY" > "$GOOGLE_APPLICATION_CREDENTIALS"
             - run:
                 name: PyTest with linters
                 # integration tests are run in a separate `integration` step;
@@ -143,6 +159,7 @@ jobs:
       - when:
           condition: *validate-sql-or-routines
           steps:
+            - *skip_forked_pr
             - checkout
             - *restore_venv_cache
             - *build
@@ -160,12 +177,7 @@ jobs:
             - run:
                 name: Run SQL tests
                 command: |
-                  if [ -n "$CIRCLE_PR_NUMBER" ]; then
-                    echo "Cannot pass creds to forked PRs," \
-                      "so skipping routine and SQL tests"
-                  else
                     PATH="venv/bin:$PATH" script/entrypoint -m sql -n 8
-                  fi
       - unless:
           condition: *validate-sql-or-routines
           steps:
@@ -176,11 +188,13 @@ jobs:
       - when:
           condition: *validate-sql-or-routines
           steps:
+            - *skip_forked_pr
             - checkout
             - *restore_venv_cache
             - *build
             - *attach_generated_sql
             - *copy_staged_sql
+            - *authenticate
             - run:
                 name: Dry run queries
                 # yamllint disable rule:line-length
@@ -238,11 +252,13 @@ jobs:
       - when:
           condition: *validate-sql
           steps:
+            - *skip_forked_pr
             - checkout
             - *restore_venv_cache
             - *build
             - *attach_generated_sql
             - *copy_staged_sql
+            - *authenticate
             - run:
                 name: Verify that metadata files are valid
                 command: |
@@ -259,16 +275,8 @@ jobs:
       - when:
           condition: *validate-bqetl
           steps:
+            - *skip_forked_pr
             - checkout
-            - &skip_forked_pr
-              run:
-                name: Early return if this build is from a forked PR
-                command: |
-                  if [ -n "$CIRCLE_PR_NUMBER" ]; then
-                    echo "Cannot pass creds to forked PRs," \
-                      "so marking this step successful"
-                    circleci-agent step halt
-                  fi
             - *restore_venv_cache
             - *build
             - run:
@@ -288,6 +296,7 @@ jobs:
       - when:
           condition: *validate-sql
           steps:
+            - *skip_forked_pr
             - checkout
             - *restore_venv_cache
             - *build
@@ -298,6 +307,7 @@ jobs:
                 command: |
                   rm -rf sql/
                   cp -r /tmp/workspace/generated-sql/sql sql
+            - *authenticate
             - run:
                 name: Generate DAGs
                 command: |
@@ -378,6 +388,7 @@ jobs:
               - << pipeline.parameters.validate-routines >>
               - << pipeline.parameters.deploy >>
           steps:
+            - *skip_forked_pr
             - checkout
             - *restore_venv_cache
             - *build
@@ -386,12 +397,7 @@ jobs:
             - run:
                 name: Run routine tests
                 command: |
-                  if [ -n "$CIRCLE_PR_NUMBER" ]; then
-                    echo "Cannot pass creds to forked PRs," \
-                      "so skipping routine tests"
-                  else
-                    PATH="venv/bin:$PATH" script/entrypoint -m routine -n 8
-                  fi
+                  PATH="venv/bin:$PATH" script/entrypoint -m routine -n 8
             - run:
                 name: Validate doc examples
                 command: |
@@ -406,14 +412,17 @@ jobs:
       - when:
           condition: *validate-sql-or-routines
           steps:
+            - *skip_forked_pr
             - checkout
             - *restore_venv_cache
             - *build
             - *attach_generated_sql
             - *copy_staged_sql
+            - *authenticate
             - run:
                 name: Validate views
-                command: PATH="venv/bin:$PATH" script/bqetl view validate
+                command: |
+                  PATH="venv/bin:$PATH" script/bqetl view validate
       - unless:
           condition: *validate-sql-or-routines
           steps:
@@ -424,8 +433,8 @@ jobs:
       - when:
           condition: *validate-sql-or-routines
           steps:
-            - checkout
             - *skip_forked_pr
+            - checkout
             - *restore_venv_cache
             - *build
             - *attach_generated_sql
@@ -452,9 +461,11 @@ jobs:
       - when:
           condition: *validate-sql-or-routines
           steps:
+            - *skip_forked_pr
             - checkout
             - *restore_venv_cache
             - *build
+            - *authenticate
             - run:
                 name: Generate SQL content
                 command: |
@@ -546,8 +557,8 @@ jobs:
       - when:
           condition: *validate-sql-or-routines
           steps:
-            - checkout
             - *skip_forked_pr
+            - checkout
             - *restore_venv_cache
             - *build
             - *attach_generated_sql
@@ -562,13 +573,11 @@ jobs:
                   git clone --single-branch --branch generated-sql \
                     git@github.com:mozilla/bigquery-etl \
                     generated-sql
+            - *authenticate
             - run:
                 name: Deploy changes to stage
                 command: |
                   if [ "<< pipeline.parameters.skip-stage-deploys >>" = "false" ]; then
-                    export GOOGLE_APPLICATION_CREDENTIALS="/tmp/gcp.json"
-                    echo "$GCLOUD_SERVICE_KEY" > "$GOOGLE_APPLICATION_CREDENTIALS"
-
                     PATHS="$(git diff --no-index --name-only --diff-filter=d generated-sql/sql sql)" || true
                     echo $PATHS
                     PATH="venv/bin:$PATH" script/bqetl stage deploy \
@@ -701,10 +710,11 @@ jobs:
       - when:
           condition: *deploy
           steps:
-            - checkout
             - *skip_forked_pr
+            - checkout
             - *restore_venv_cache
             - *build
+            - *authenticate
             - add_ssh_keys:
                 # deploy key to private-bigquery-etl
                 fingerprints:
@@ -823,6 +833,7 @@ jobs:
       - when:
           condition: *validate-sql-or-routines
           steps:
+            - *skip_forked_pr
             - checkout
             - run:
                 name: Switch to main branch
@@ -834,6 +845,7 @@ jobs:
                 at: /tmp/workspace
             - *restore_venv_cache
             - *build
+            - *authenticate
             - run:
                 name: Generate SQL content
                 command: |
@@ -973,15 +985,13 @@ jobs:
       - when:
           condition: *validate-sql-or-routines
           steps:
-            - checkout
             - *skip_forked_pr
+            - checkout
             - *build
+            - *authenticate
             - run:
                 name: "Delete stage datasets"
                 command: |
-                  export GOOGLE_APPLICATION_CREDENTIALS="/tmp/gcp.json"
-                  echo "$GCLOUD_SERVICE_KEY" > "$GOOGLE_APPLICATION_CREDENTIALS"
-
                   PATH="venv/bin:$PATH" script/bqetl stage clean --dataset-suffix=$CIRCLE_SHA1 --delete-expired
       - unless:
           condition: *validate-sql-or-routines

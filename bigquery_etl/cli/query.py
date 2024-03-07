@@ -731,7 +731,7 @@ def backfill(
     """Run a backfill."""
     if not is_authenticated():
         click.echo(
-            "Authentication to GCP required. Run `gcloud auth login` "
+            "Authentication to GCP required. Run `gcloud auth login  --update-adc` "
             "and check that the project is set correctly."
         )
         sys.exit(1)
@@ -906,7 +906,7 @@ def run(
     """Run a query."""
     if not is_authenticated():
         click.echo(
-            "Authentication to GCP required. Run `gcloud auth login` "
+            "Authentication to GCP required. Run `gcloud auth login  --update-adc` "
             "and check that the project is set correctly."
         )
         sys.exit(1)
@@ -1667,7 +1667,7 @@ def update(
     """CLI command for generating the query schema."""
     if not is_authenticated():
         click.echo(
-            "Authentication to GCP required. Run `gcloud auth login` "
+            "Authentication to GCP required. Run `gcloud auth login  --update-adc` "
             "and check that the project is set correctly."
         )
         sys.exit(1)
@@ -1752,7 +1752,7 @@ def _update_query_schema_with_downstream(
                 if not is_authenticated():
                     click.echo(
                         "Cannot update downstream dependencies."
-                        "Authentication to GCP required. Run `gcloud auth login` "
+                        "Authentication to GCP required. Run `gcloud auth login  --update-adc` "
                         "and check that the project is set correctly."
                     )
                     sys.exit(1)
@@ -2052,7 +2052,7 @@ def deploy(
     """CLI command for deploying destination table schemas."""
     if not is_authenticated():
         click.echo(
-            "Authentication to GCP required. Run `gcloud auth login` "
+            "Authentication to GCP required. Run `gcloud auth login  --update-adc` "
             "and check that the project is set correctly."
         )
         sys.exit(1)

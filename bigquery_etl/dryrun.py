@@ -170,6 +170,7 @@ class DryRun:
                     + ")(?![a-zA-Z0-9_])"
                 )
                 sql = pattern.sub("@submission_date", sql)
+        project = basename(dirname(dirname(dirname(self.sqlfile))))
         dataset = basename(dirname(dirname(self.sqlfile)))
         try:
             if self.use_cloud_function:
@@ -195,6 +196,7 @@ class DryRun:
                         },
                         data=json.dumps(
                             {
+                                "project": project,
                                 "dataset": dataset,
                                 "query": sql,
                             }
@@ -204,7 +206,6 @@ class DryRun:
                 )
                 return json.load(r)
             else:
-                project = basename(dirname(dirname(dirname(self.sqlfile))))
                 self.client.project = project
                 job_config = bigquery.QueryJobConfig(
                     dry_run=True,

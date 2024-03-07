@@ -20,15 +20,18 @@ AS
 -- Tests
 SELECT
   assert.null(json.from_nested_map(NULL)),
-  assert.json_equal(JSON '{ "metric": [] }', json.from_nested_map(JSON '{ "metric": [] }')),
-  assert.json_equal(JSON '{ "metric": {} }', json.from_nested_map(JSON '{ "metric": {} }')),
-  assert.json_equal(
+  assert.json_equals(JSON '{ "metric": [] }', json.from_nested_map(JSON '{ "metric": [] }')),
+  assert.json_equals(JSON '{ "metric": {} }', json.from_nested_map(JSON '{ "metric": {} }')),
+  assert.json_equals(
     JSON '{ "metric": { "extra": 2 } }',
     json.from_nested_map(JSON '{ "metric": [ {"key": "extra", "value": 2 } ] }')
   ),
-  assert.json_equal(JSON '{ "metric": {}}', json.from_nested_map(JSON '{ "metric": [1, 2, 3]}')),
-  assert.json_equal(JSON '{ "metric": "value"}', json.from_nested_map(JSON '{ "metric": "value"}')),
-  assert.json_equal(
+  assert.json_equals(JSON '{ "metric": {}}', json.from_nested_map(JSON '{ "metric": [1, 2, 3]}')),
+  assert.json_equals(
+    JSON '{ "metric": "value"}',
+    json.from_nested_map(JSON '{ "metric": "value"}')
+  ),
+  assert.json_equals(
     JSON '{ "metric": {}}',
     json.from_nested_map(JSON '{ "metric": [{"key": "value"}]}')
-  ),
+  )

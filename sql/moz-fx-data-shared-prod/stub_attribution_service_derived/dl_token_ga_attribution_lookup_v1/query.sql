@@ -9,7 +9,7 @@ WITH historical_triplets AS (
   FROM
     `moz-fx-data-shared-prod.stub_attribution_service_derived.dl_token_ga_attribution_lookup_v1`
 ),
-new_downloads AS (
+new_downloads_stg AS (
   -- Prior to GA4, use visit_id as the GA3 client ID
   SELECT DISTINCT
     IFNULL(mozfun.ga.nullify_string(jsonPayload.fields.dltoken), "") AS dl_token,
@@ -33,6 +33,19 @@ new_downloads AS (
   WHERE
     DATE(timestamp) = @download_date
     AND timestamp >= '2024-03-05 21:49:42.355439 UTC' --when the GA4 client ID column started getting data
+),
+new_downloads AS (
+  SELECT
+    dl_token,
+    ga_client_id,
+    stub_session_id,
+    MIN(first_seen_date) AS first_seen_date
+  FROM
+    new_downloads_stg
+  GROUP BY
+    dl_token,
+    ga_client_id,
+    stub_session_id
 )
 SELECT
   -- We can't store these as NULL, since joins on NULL keys don't match.

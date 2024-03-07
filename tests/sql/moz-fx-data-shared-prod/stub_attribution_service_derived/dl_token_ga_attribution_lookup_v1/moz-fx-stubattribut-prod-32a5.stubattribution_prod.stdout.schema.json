@@ -10,7 +10,7 @@
           },
           {
             "mode": "NULLABLE",
-            "name": "client_id_ga4",
+            "name": "visit_id",
             "type": "STRING"
           },
           {

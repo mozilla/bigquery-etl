@@ -97,7 +97,9 @@ def dryrun(
         sys.exit(0)
 
     if not use_cloud_function and not is_authenticated():
-        click.echo("Not authenticated to GCP. Run `gcloud auth login` to login.")
+        click.echo(
+            "Not authenticated to GCP. Run `gcloud auth login  --update-adc` to login."
+        )
         sys.exit(1)
 
     sql_file_valid = partial(

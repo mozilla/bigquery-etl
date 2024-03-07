@@ -424,7 +424,7 @@ def complete(ctx, qualified_table_name, sql_dir, project_id):
     """Complete backfill entry in backfill.yaml file(s)."""
     if not is_authenticated():
         click.echo(
-            "Authentication to GCP required. Run `gcloud auth login` "
+            "Authentication to GCP required. Run `gcloud auth login  --update-adc` "
             "and check that the project is set correctly."
         )
         sys.exit(1)

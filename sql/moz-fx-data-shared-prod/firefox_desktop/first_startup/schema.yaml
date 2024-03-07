@@ -343,6 +343,18 @@ fields:
         for the purpose of experimentation enrollment.
 
         '
+  - name: boolean
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: first_startup_new_profile
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'True if FirstStartup was initted after a new profile was just
+        created. If false, this means that FirstStartup was initted with a pre-existing
+        profile, which is a no-op.
+
+        '
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

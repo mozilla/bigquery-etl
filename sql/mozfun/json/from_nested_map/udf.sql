@@ -6,7 +6,7 @@ AS
   """
   if (input && Object.keys(input).length) {
     for (const k in input) {
-      if (input[k] && input[k].length) {
+      if (input[k] && Array.isArray(input[k]) && input[k].length) {
         input[k] = input[k].reduce((acc, {key, value}) => {
           acc[key] = value;
           return acc;

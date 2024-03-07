@@ -21,8 +21,7 @@ new_downloads AS (
   WHERE
     DATE(timestamp) = @download_date
     AND timestamp < '2024-03-05 21:49:42.355439 UTC' --when the GA4 client ID column started getting data
-
-  UNION ALL 
+  UNION ALL
   --Post GA4 launch, use client_id_ga4 as the GA4 client ID
   SELECT DISTINCT
     IFNULL(mozfun.ga.nullify_string(jsonPayload.fields.dltoken), "") AS dl_token,
@@ -34,7 +33,6 @@ new_downloads AS (
   WHERE
     DATE(timestamp) = @download_date
     AND timestamp >= '2024-03-05 21:49:42.355439 UTC' --when the GA4 client ID column started getting data
-
 )
 SELECT
   -- We can't store these as NULL, since joins on NULL keys don't match.

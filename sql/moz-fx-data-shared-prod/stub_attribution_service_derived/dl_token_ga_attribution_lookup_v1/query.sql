@@ -1,6 +1,14 @@
 --Note: This table `moz-fx-stubattribut-prod-32a5`.stubattribution_prod.stdout did not always save full history
 --Backfills should NOT be done on this table prior to 2023-08-24
-WITH historical_triplets AS (
+WITH check_download_date AS (
+  SELECT
+    IF(
+      @download_date < "2023-08-25",
+      ERROR("Cannot backfill date before 2023-08-25"),
+      CAST(@download_date AS string)
+    ) AS download_date
+),
+historical_triplets AS (
   SELECT
     IFNULL(dl_token, "") AS dl_token,
     IFNULL(ga_client_id, "") AS ga_client_id,
@@ -15,11 +23,11 @@ new_downloads_stg AS (
     IFNULL(mozfun.ga.nullify_string(jsonPayload.fields.dltoken), "") AS dl_token,
     IFNULL(mozfun.ga.nullify_string(jsonPayload.fields.visit_id), "") AS ga_client_id,
     IFNULL(mozfun.ga.nullify_string(jsonPayload.fields.session_id), "") AS stub_session_id,
-    @download_date AS first_seen_date,
+    CAST(@download_date AS date) AS first_seen_date,
   FROM
     `moz-fx-stubattribut-prod-32a5.stubattribution_prod.stdout`
   WHERE
-    DATE(timestamp) = @download_date
+    DATE(timestamp) = (SELECT CAST(download_date AS date) FROM check_download_date)
     AND timestamp < '2024-03-05 21:49:42.355439 UTC' --when the GA4 client ID column started getting data
   UNION ALL
   --Post GA4 launch, use client_id_ga4 as the GA4 client ID
@@ -27,11 +35,11 @@ new_downloads_stg AS (
     IFNULL(mozfun.ga.nullify_string(jsonPayload.fields.dltoken), "") AS dl_token,
     IFNULL(mozfun.ga.nullify_string(jsonPayload.fields.client_id_ga4), "") AS ga_client_id,
     IFNULL(mozfun.ga.nullify_string(jsonPayload.fields.session_id), "") AS stub_session_id,
-    @download_date AS first_seen_date,
+    CAST(@download_date AS date) AS first_seen_date,
   FROM
     `moz-fx-stubattribut-prod-32a5.stubattribution_prod.stdout`
   WHERE
-    DATE(timestamp) = @download_date
+    DATE(timestamp) = (SELECT CAST(download_date AS date) FROM check_download_date)
     AND timestamp >= '2024-03-05 21:49:42.355439 UTC' --when the GA4 client ID column started getting data
 ),
 new_downloads AS (

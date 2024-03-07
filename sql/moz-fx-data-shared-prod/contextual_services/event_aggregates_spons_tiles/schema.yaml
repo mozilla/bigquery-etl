@@ -23,18 +23,9 @@ fields:
 - name: provider
   type: STRING
   mode: NULLABLE
-- name: match_type
-  type: STRING
-  mode: NULLABLE
-- name: suggest_data_sharing_enabled
-  type: BOOLEAN
-  mode: NULLABLE
 - name: impression_count
   type: INTEGER
   mode: NULLABLE
 - name: click_count
   type: INTEGER
-  mode: NULLABLE
-- name: query_type
-  type: STRING
   mode: NULLABLE

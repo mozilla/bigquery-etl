@@ -1,0 +1,2 @@
+friendly_name: To JSON from nested map
+description: Converts a nested JSON object with repeated key/value pairs into a nested JSON object.

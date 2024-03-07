@@ -20,9 +20,9 @@ from bigquery_etl.query_scheduling.utils import (
     is_email,
     is_email_or_github_identity,
     is_schedule_interval,
-    is_timedelta_string,
     is_valid_dag_name,
     schedule_interval_delta,
+    validate_timedelta_string,
 )
 
 AIRFLOW_TASK_TEMPLATE = "airflow_task.j2"
@@ -100,11 +100,8 @@ class TaskRef:
     @execution_delta.validator
     def validate_execution_delta(self, attribute, value):
         """Check that execution_delta is in a valid timedelta format."""
-        if value is not None and not is_timedelta_string(value):
-            raise ValueError(
-                f"Invalid timedelta definition for {attribute}: {value}."
-                "Timedeltas should be specified like: 1h, 30m, 1h15m, 1d4h45m, ..."
-            )
+        if value is not None:
+            validate_timedelta_string(value)
 
     @schedule_interval.validator
     def validate_schedule_interval(self, attribute, value):
@@ -123,6 +120,66 @@ class TaskRef:
             if execution_delta != "0s":
                 return execution_delta
         return None
+
+
+@attr.s(auto_attribs=True, frozen=True)
+class TableSensorTask:
+    """Representation of a sensor task to wait for a table to exist."""
+
+    task_id: str = attr.ib()
+    table_id: str = attr.ib()
+    poke_interval: Optional[str] = attr.ib(None, kw_only=True)
+    timeout: Optional[str] = attr.ib(None, kw_only=True)
+    retries: Optional[int] = attr.ib(None, kw_only=True)
+    retry_delay: Optional[str] = attr.ib(None, kw_only=True)
+
+    @task_id.validator
+    def validate_task_id(self, attribute, value):
+        """Validate the task ID."""
+        if len(value) < 1 or len(value) > MAX_TASK_NAME_LENGTH:
+            raise ValueError(
+                f"Invalid task ID '{value}'."
+                f" The task ID has to be 1 to {MAX_TASK_NAME_LENGTH} characters long."
+            )
+        if not re.fullmatch(r"\w+", value):
+            raise ValueError(
+                f"Invalid task ID '{value}'."
+                f" The task ID may only contain alphanumerics and underscores."
+            )
+
+    @table_id.validator
+    def validate_table_id(self, attribute, value):
+        """Check that `table_id` is a fully qualified table ID."""
+        if value.count(".") != 2:
+            raise ValueError(
+                f"Invalid table ID '{value}'."
+                " Table IDs must be fully qualified with the project and dataset."
+            )
+
+    @poke_interval.validator
+    def validate_poke_interval(self, attribute, value):
+        """Check that `poke_interval` is a valid timedelta string."""
+        if value is not None:
+            validate_timedelta_string(value)
+
+    @timeout.validator
+    def validate_timeout(self, attribute, value):
+        """Check that `timeout` is a valid timedelta string."""
+        if value is not None:
+            validate_timedelta_string(value)
+
+    @retry_delay.validator
+    def validate_retry_delay(self, attribute, value):
+        """Check that `retry_delay` is a valid timedelta string."""
+        if value is not None:
+            validate_timedelta_string(value)
+
+
+@attr.s(auto_attribs=True, frozen=True)
+class TablePartitionSensorTask(TableSensorTask):
+    """Representation of a sensor task to wait for a table partition to exist."""
+
+    partition_id: str = attr.ib()
 
 
 @attr.s(auto_attribs=True, frozen=True)
@@ -213,6 +270,8 @@ class Task:
     public_json: bool = attr.ib(False)
     # manually specified upstream dependencies
     depends_on: List[TaskRef] = attr.ib([])
+    depends_on_tables_existing: List[TableSensorTask] = attr.ib([])
+    depends_on_table_partitions_existing: List[TablePartitionSensorTask] = attr.ib([])
     depends_on_fivetran: List[FivetranTask] = attr.ib([])
     # task trigger rule, used to override default of "all_success"
     trigger_rule: Optional[str] = attr.ib(None)
@@ -305,11 +364,8 @@ class Task:
     @retry_delay.validator
     def validate_retry_delay(self, attribute, value):
         """Check that retry_delay is in a valid timedelta format."""
-        if value is not None and not is_timedelta_string(value):
-            raise ValueError(
-                f"Invalid timedelta definition for {attribute}: {value}."
-                "Timedeltas should be specified like: 1h, 30m, 1h15m, 1d4h45m, ..."
-            )
+        if value is not None:
+            validate_timedelta_string(value)
 
     @task_group.validator
     def validate_task_group(self, attribute, value):

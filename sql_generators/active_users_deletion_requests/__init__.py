@@ -1,4 +1,5 @@
 """Generate active users aggregates per app."""
+
 import os
 from enum import Enum
 from pathlib import Path

@@ -4,8 +4,6 @@ import os
 from collections import namedtuple
 from pathlib import Path
 
-from bigquery_etl.schema.stable_table_schema import get_stable_table_schemas
-from bigquery_etl.config import ConfigLoader
 from sql_generators.glean_usage.common import (
     GleanTable,
     get_table_dir,
@@ -33,7 +31,7 @@ class EventFlowMonitoring(GleanTable):
         self.base_table_name = "events_unnested"
 
     def generate_across_apps(
-        self, project_id, apps, output_dir=None, use_cloud_function=True
+        self, project_id, apps, output_dir=None, use_cloud_function=True, parallelism=8
     ):
         """Generate a query across all apps."""
         if not self.across_apps_enabled:
@@ -76,7 +74,7 @@ class EventFlowMonitoring(GleanTable):
             artifacts = [
                 Artifact(table, "metadata.yaml", metadata),
                 Artifact(table, "script.sql", script_sql),
-                Artifact(table, "schema.yaml", schema)
+                Artifact(table, "schema.yaml", schema),
             ]
 
             for artifact in artifacts:

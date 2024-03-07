@@ -17,4 +17,3 @@ bigquery:
   clustering:
     fields: [first_reported_country, first_seen_date]
 references: {}
-deprecated: false

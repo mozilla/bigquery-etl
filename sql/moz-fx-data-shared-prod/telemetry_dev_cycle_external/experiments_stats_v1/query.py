@@ -60,7 +60,7 @@ def store_data_in_bigquery(data, schema, destination_project, destination_table_
 def download_experiments_v1(url):
     """Download experiment data from API v1 and parse it."""
     experiments_v1 = []
-    experiments = get_api_response(f"{url}/api/v1/experiments")
+    experiments = get_api_response(f"{url}/api/v1/experiments/")
     for experiment in experiments:
         if experiment["status"] == "Draft":
             continue
@@ -81,7 +81,7 @@ def download_experiments_v1(url):
 def download_experiments_v6(url):
     """Download experiment data from API v6 and parse it."""
     experiments_v6 = []
-    experiments = get_api_response(f"{url}/api/v6/experiments")
+    experiments = get_api_response(f"{url}/api/v6/experiments/")
     for experiment in experiments:
         experiments_v6.append(
             {
@@ -117,9 +117,11 @@ def compare_experiments_with_metric_hub_configs():
     metric_files = download_metric_hub_files(API_BASE_URL_METRIC_HUB)
 
     experiments = [
-        {**experiment, "has_config": True}
-        if experiment["slug"] in metric_files
-        else {**experiment, "has_config": False}
+        (
+            {**experiment, "has_config": True}
+            if experiment["slug"] in metric_files
+            else {**experiment, "has_config": False}
+        )
         for experiment in (experiments_v1 + experiments_v6)
     ]
     return experiments

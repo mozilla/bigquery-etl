@@ -1,4 +1,5 @@
 """Adjust data - download deliverables, clean and upload to BigQuery."""
+
 import csv
 import json
 import tempfile

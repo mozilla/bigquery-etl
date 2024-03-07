@@ -17,7 +17,7 @@ WITH fxa_content_auth_stdout_events AS (
   FROM
     `moz-fx-data-shared-prod.firefox_accounts.fxa_all_events`
   WHERE
-    fxa_log IN ('content', 'auth', 'stdout')
+    fxa_log IN ('content', 'auth', 'stdout', 'payments')
 ),
 flows AS (
   SELECT

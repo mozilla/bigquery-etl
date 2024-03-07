@@ -6,4 +6,3 @@
 
 #fail
 {{ min_row_count(1) }}
-

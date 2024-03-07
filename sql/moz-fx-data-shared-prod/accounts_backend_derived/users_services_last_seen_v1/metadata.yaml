@@ -1,0 +1,20 @@
+friendly_name: Accounts Backend Users Services Last Seen
+description: |-
+  Usage aggregations per Mozilla Accounts user per service per day over a 28-day window
+owners:
+- ksiegler@mozilla.com
+labels:
+  incremental: true
+  owner1: ksiegler@mozilla.com
+scheduling:
+  dag_name: bqetl_accounts_derived
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields: [service, country]
+references: {}
+deprecated: false

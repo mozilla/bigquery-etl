@@ -1,0 +1,23 @@
+friendly_name: Blogs Daily Summary V2
+description: |-
+  Daily summary Google analytics data for blog.mozilla.org
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau@mozilla.com
+scheduling:
+  dag_name: bqetl_google_analytics_derived_ga4
+bigquery:
+  time_partitioning:
+    type: day
+    field: date
+    require_partition_filter: false
+    expiration_days: null
+  clustering:
+    fields:
+    - country
+    - browser
+    - blog
+    - subblog
+references: {}

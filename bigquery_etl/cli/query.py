@@ -15,7 +15,6 @@ from functools import partial
 from glob import glob
 from multiprocessing.pool import Pool, ThreadPool
 from pathlib import Path
-from tempfile import NamedTemporaryFile
 from traceback import print_exc
 from typing import Optional
 
@@ -732,7 +731,7 @@ def backfill(
     """Run a backfill."""
     if not is_authenticated():
         click.echo(
-            "Authentication to GCP required. Run `gcloud auth login` "
+            "Authentication to GCP required. Run `gcloud auth login  --update-adc` "
             "and check that the project is set correctly."
         )
         sys.exit(1)
@@ -907,7 +906,7 @@ def run(
     """Run a query."""
     if not is_authenticated():
         click.echo(
-            "Authentication to GCP required. Run `gcloud auth login` "
+            "Authentication to GCP required. Run `gcloud auth login  --update-adc` "
             "and check that the project is set correctly."
         )
         sys.exit(1)
@@ -1530,49 +1529,51 @@ def initialize(
     type=click.Path(file_okay=False),
     required=False,
 )
-def render(name, sql_dir, output_dir):
+@parallelism_option()
+def render(name, sql_dir, output_dir, parallelism):
     """Render a query Jinja template."""
     if name is None:
         name = "*.*"
 
     query_files = paths_matching_name_pattern(name, sql_dir, project_id=None)
     resolved_sql_dir = Path(sql_dir).resolve()
-    for query_file in query_files:
-        table_name = query_file.parent.name
-        dataset_id = query_file.parent.parent.name
-        project_id = query_file.parent.parent.parent.name
 
-        jinja_params = {
-            **{
-                "project_id": project_id,
-                "dataset_id": dataset_id,
-                "table_name": table_name,
-            },
-        }
+    with Pool(parallelism) as p:
+        p.map(partial(_render_query, output_dir, resolved_sql_dir), query_files)
 
-        rendered_sql = (
-            render_template(
-                query_file.name,
-                template_folder=query_file.parent,
-                templates_dir="",
-                format=False,
-                **jinja_params,
-            )
-            + "\n"
+
+def _render_query(output_dir, resolved_sql_dir, query_file):
+    table_name = query_file.parent.name
+    dataset_id = query_file.parent.parent.name
+    project_id = query_file.parent.parent.parent.name
+
+    jinja_params = {
+        "project_id": project_id,
+        "dataset_id": dataset_id,
+        "table_name": table_name,
+    }
+
+    rendered_sql = (
+        render_template(
+            query_file.name,
+            template_folder=query_file.parent,
+            templates_dir="",
+            format=False,
+            **jinja_params,
         )
+        + "\n"
+    )
 
-        if not any(s in str(query_file) for s in skip_format()):
-            rendered_sql = reformat(rendered_sql, trailing_newline=True)
+    if not any(s in str(query_file) for s in skip_format()):
+        rendered_sql = reformat(rendered_sql, trailing_newline=True)
 
-        if output_dir:
-            output_file = output_dir / query_file.resolve().relative_to(
-                resolved_sql_dir
-            )
-            output_file.parent.mkdir(parents=True, exist_ok=True)
-            output_file.write_text(rendered_sql)
-        else:
-            click.echo(query_file)
-            click.echo(rendered_sql)
+    if output_dir:
+        output_file = output_dir / query_file.resolve().relative_to(resolved_sql_dir)
+        output_file.parent.mkdir(parents=True, exist_ok=True)
+        output_file.write_text(rendered_sql)
+    else:
+        click.echo(query_file)
+        click.echo(rendered_sql)
 
 
 def _parse_partition_setting(partition_date):
@@ -1666,7 +1667,7 @@ def update(
     """CLI command for generating the query schema."""
     if not is_authenticated():
         click.echo(
-            "Authentication to GCP required. Run `gcloud auth login` "
+            "Authentication to GCP required. Run `gcloud auth login  --update-adc` "
             "and check that the project is set correctly."
         )
         sys.exit(1)
@@ -1751,7 +1752,7 @@ def _update_query_schema_with_downstream(
                 if not is_authenticated():
                     click.echo(
                         "Cannot update downstream dependencies."
-                        "Authentication to GCP required. Run `gcloud auth login` "
+                        "Authentication to GCP required. Run `gcloud auth login  --update-adc` "
                         "and check that the project is set correctly."
                     )
                     sys.exit(1)
@@ -1857,9 +1858,9 @@ def _update_query_schema(
                     f"{project_name}.{tmp_dataset}.{table_name}_{random_str(12)}"
                 )
                 existing_schema.deploy(tmp_identifier)
-                tmp_tables[
-                    f"{project_name}.{dataset_name}.{table_name}"
-                ] = tmp_identifier
+                tmp_tables[f"{project_name}.{dataset_name}.{table_name}"] = (
+                    tmp_identifier
+                )
                 existing_schema.to_yaml_file(existing_schema_path)
 
     # replace temporary table references
@@ -1915,9 +1916,11 @@ def _update_query_schema(
                 field=table.time_partitioning.field,
                 partition_type=table.time_partitioning.type_.lower(),
                 required=table.time_partitioning.require_partition_filter,
-                expiration_days=table.time_partitioning.expiration_ms / 86400000.0
-                if table.time_partitioning.expiration_ms
-                else None,
+                expiration_days=(
+                    table.time_partitioning.expiration_ms / 86400000.0
+                    if table.time_partitioning.expiration_ms
+                    else None
+                ),
             )
             click.echo(f"Partitioning metadata added to {metadata_file_path}")
 
@@ -2049,13 +2052,15 @@ def deploy(
     """CLI command for deploying destination table schemas."""
     if not is_authenticated():
         click.echo(
-            "Authentication to GCP required. Run `gcloud auth login` "
+            "Authentication to GCP required. Run `gcloud auth login  --update-adc` "
             "and check that the project is set correctly."
         )
         sys.exit(1)
     client = bigquery.Client()
 
-    query_files = paths_matching_name_pattern(name, sql_dir, project_id, ["query.*"])
+    query_files = paths_matching_name_pattern(
+        name, sql_dir, project_id, ["query.*", "script.sql"]
+    )
     if not query_files:
         # run SQL generators if no matching query has been found
         ctx.invoke(
@@ -2064,7 +2069,7 @@ def deploy(
             ignore=["derived_view_schemas", "stable_views"],
         )
         query_files = paths_matching_name_pattern(
-            name, ctx.obj["TMP_DIR"], project_id, ["query.*"]
+            name, ctx.obj["TMP_DIR"], project_id, ["query.*", "script.sql"]
         )
         if not query_files:
             raise click.ClickException(f"No queries matching `{name}` were found.")
@@ -2123,10 +2128,7 @@ def deploy(
                     )
                     sys.exit(1)
 
-            with NamedTemporaryFile(suffix=".json") as tmp_schema_file:
-                existing_schema.to_json_file(Path(tmp_schema_file.name))
-                bigquery_schema = client.schema_from_json(tmp_schema_file.name)
-
+            bigquery_schema = existing_schema.to_bigquery_schema()
             try:
                 table = client.get_table(full_table_id)
             except NotFound:
@@ -2245,10 +2247,7 @@ def _deploy_external_data(
             except NotFound:
                 table = bigquery.Table(full_table_id)
 
-            with NamedTemporaryFile(suffix=".json") as tmp_schema_file:
-                existing_schema.to_json_file(Path(tmp_schema_file.name))
-                bigquery_schema = client.schema_from_json(tmp_schema_file.name)
-
+            bigquery_schema = existing_schema.to_bigquery_schema()
             table.schema = bigquery_schema
             _attach_metadata(metadata_file_path, table)
 

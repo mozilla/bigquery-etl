@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=61.0", "setuptools_scm>=8"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mozilla-bigquery-etl"
+authors = [
+  { name="Mozilla Corporation", email="fx-data-dev@mozilla.org" },
+]
+description = "Tooling for building derived datasets in BigQuery"
+readme = "README.md"
+requires-python = ">=3.10"
+dynamic = ["dependencies", "version"]
+
+[project.urls]
+Homepage = "https://github.com/mozilla/bigquery-etl"
+Issues = "https://github.com/mozilla/bigquery-etl/issues"
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.in"]}
+
+[tool.setuptools_scm]
+
+[tool.setuptools.packages.find]
+include = ["bigquery_etl", "bigquery_etl.*"]
+
+[project.scripts]
+bqetl = "bigquery_etl.cli:cli"

@@ -4,4 +4,3 @@
 
 #fail
 {{ min_row_count(100, "session_date = @session_date") }}
-

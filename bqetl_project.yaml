@@ -197,6 +197,8 @@ dry_run:
   - sql/moz-fx-data-shared-prod/org_mozilla_tiktokreporter/**/*.sql
   - sql/moz-fx-data-shared-prod/org_mozilla_ios_tiktok_reporter_tiktok_reportershare/**/*.sql
   - sql/moz-fx-data-shared-prod/org_mozilla_ios_tiktok_reporter/**/*.sql
+  - sql/moz-fx-data-shared-prod/fenix_derived/ltv_state_values_v1/query.sql
+  - sql/moz-fx-data-shared-prod/fenix_derived/ltv_state_values_v2/query.sql
   # Materialized views
   - sql/moz-fx-data-shared-prod/telemetry_derived/experiment_search_events_live_v1/init.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/experiment_events_live_v1/init.sql

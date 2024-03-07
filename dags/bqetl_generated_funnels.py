@@ -51,6 +51,18 @@ with DAG(
     tags=tags,
 ) as dag:
 
+    wait_for_copy_deduplicate_all = ExternalTaskSensor(
+        task_id="wait_for_copy_deduplicate_all",
+        external_dag_id="copy_deduplicate",
+        external_task_id="copy_deduplicate_all",
+        execution_delta=datetime.timedelta(seconds=14400),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     wait_for_checks__fail_fenix_derived__firefox_android_clients__v1 = (
         ExternalTaskSensor(
             task_id="wait_for_checks__fail_fenix_derived__firefox_android_clients__v1",
@@ -70,18 +82,6 @@ with DAG(
         external_dag_id="bqetl_analytics_tables",
         external_task_id="checks__fail_fenix_derived__funnel_retention_clients_week_4__v1",
         execution_delta=datetime.timedelta(seconds=10800),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    wait_for_copy_deduplicate_all = ExternalTaskSensor(
-        task_id="wait_for_copy_deduplicate_all",
-        external_dag_id="copy_deduplicate",
-        external_task_id="copy_deduplicate_all",
-        execution_delta=datetime.timedelta(seconds=14400),
         check_existence=True,
         mode="reschedule",
         allowed_states=ALLOWED_STATES,
@@ -125,6 +125,23 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    accounts_frontend_derived__monitor_mozilla_accounts_funnels__v1 = (
+        bigquery_etl_query(
+            task_id="accounts_frontend_derived__monitor_mozilla_accounts_funnels__v1",
+            destination_table="monitor_mozilla_accounts_funnels_v1",
+            dataset_id="accounts_frontend_derived",
+            project_id="moz-fx-data-shared-prod",
+            owner="ksiegler@mozilla.org",
+            email=[
+                "ascholtz@mozilla.com",
+                "ksiegler@mozilla.org",
+                "telemetry-alerts@mozilla.com",
+            ],
+            date_partition_parameter="submission_date",
+            depends_on_past=False,
+        )
+    )
+
     fenix_derived__android_onboarding__v1 = bigquery_etl_query(
         task_id="fenix_derived__android_onboarding__v1",
         destination_table="android_onboarding_v1",
@@ -153,6 +170,10 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+    )
+
+    accounts_frontend_derived__monitor_mozilla_accounts_funnels__v1.set_upstream(
+        wait_for_copy_deduplicate_all
     )
 
     fenix_derived__android_onboarding__v1.set_upstream(

@@ -64,6 +64,20 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    wait_for_checks__fail_telemetry_derived__clients_first_seen__v2 = (
+        ExternalTaskSensor(
+            task_id="wait_for_checks__fail_telemetry_derived__clients_first_seen__v2",
+            external_dag_id="bqetl_analytics_tables",
+            external_task_id="checks__fail_telemetry_derived__clients_first_seen__v2",
+            execution_delta=datetime.timedelta(seconds=3600),
+            check_existence=True,
+            mode="reschedule",
+            allowed_states=ALLOWED_STATES,
+            failed_states=FAILED_STATES,
+            pool="DATA_ENG_EXTERNALTASKSENSOR",
+        )
+    )
+
     search_derived__search_aggregates__v8 = bigquery_etl_query(
         task_id="search_derived__search_aggregates__v8",
         destination_table="search_aggregates_v8",
@@ -195,6 +209,37 @@ with DAG(
             search_derived__search_clients_last_seen__v1
         )
 
+    search_derived__search_clients_last_seen__v2 = bigquery_etl_query(
+        task_id="search_derived__search_clients_last_seen__v2",
+        destination_table="search_clients_last_seen_v2",
+        dataset_id="search_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="loines@mozilla.com",
+        email=[
+            "akomar@mozilla.com",
+            "anicholson@mozilla.com",
+            "cmorales@mozilla.com",
+            "loines@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=True,
+    )
+
+    with TaskGroup(
+        "search_derived__search_clients_last_seen__v2_external",
+    ) as search_derived__search_clients_last_seen__v2_external:
+        ExternalTaskMarker(
+            task_id="ltv_daily__wait_for_search_clients_last_seen",
+            external_dag_id="ltv_daily",
+            external_task_id="wait_for_search_clients_last_seen",
+            execution_date="{{ (execution_date + macros.timedelta(seconds=3600)).isoformat() }}",
+        )
+
+        search_derived__search_clients_last_seen__v2_external.set_upstream(
+            search_derived__search_clients_last_seen__v2
+        )
+
     search_derived__search_metric_contribution__v1 = bigquery_etl_query(
         task_id="search_derived__search_metric_contribution__v1",
         destination_table="search_metric_contribution_v1",
@@ -221,6 +266,14 @@ with DAG(
     )
 
     search_derived__search_clients_last_seen__v1.set_upstream(
+        search_derived__search_clients_daily__v8
+    )
+
+    search_derived__search_clients_last_seen__v2.set_upstream(
+        wait_for_checks__fail_telemetry_derived__clients_first_seen__v2
+    )
+
+    search_derived__search_clients_last_seen__v2.set_upstream(
         search_derived__search_clients_daily__v8
     )
 

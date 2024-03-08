@@ -59,10 +59,10 @@ impressions AS (
     sample_id,
     ping_info.experiments,
     -- SERP session characteristics
-    CAST(mozfun.map.get_key(event.extra, 'is_shopping_page') AS bool) AS is_shopping_page,
+    SAFE_CAST(mozfun.map.get_key(event.extra, 'is_shopping_page') AS bool) AS is_shopping_page,
     mozfun.map.get_key(event.extra, 'provider') AS search_engine,
     mozfun.map.get_key(event.extra, 'source') AS sap_source,
-    CAST(mozfun.map.get_key(event.extra, 'tagged') AS bool) AS is_tagged
+    SAFE_CAST(mozfun.map.get_key(event.extra, 'tagged') AS bool) AS is_tagged
   FROM
     serp_events
   WHERE

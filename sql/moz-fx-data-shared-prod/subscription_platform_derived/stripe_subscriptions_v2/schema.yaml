@@ -546,6 +546,10 @@ fields:
     type: STRING
     mode: NULLABLE
     description: Promotion code applied to the subscription (if any).
+  - name: cancellation_reason
+    type: STRING
+    mode: NULLABLE
+    description: Reason the subscription was canceled (if any).
   - name: cancelled_for_customer_at
     type: TIMESTAMP
     mode: NULLABLE

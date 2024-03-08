@@ -61,6 +61,7 @@ CREATE TEMP FUNCTION synthesize_subscription(
         ) AS latest_invoice_id,
         STRUCT(
           subscription.metadata.appliedPromotionCode,
+          CAST(NULL AS STRING) AS cancellation_reason,
           IF(
             subscription.metadata.cancelled_for_customer_at <= effective_at,
             subscription.metadata.cancelled_for_customer_at,
@@ -97,6 +98,7 @@ WITH original_changelog AS (
         subscription.* REPLACE (
           STRUCT(
             JSON_VALUE(subscription.metadata.appliedPromotionCode) AS appliedPromotionCode,
+            JSON_VALUE(subscription.metadata.cancellation_reason) AS cancellation_reason,
             TIMESTAMP_SECONDS(
               CAST(JSON_VALUE(subscription.metadata.cancelled_for_customer_at) AS INT64)
             ) AS cancelled_for_customer_at,

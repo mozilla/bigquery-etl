@@ -1183,6 +1183,7 @@ workflows:
           target-branch: private-generated-sql
           requires:
             - push-private-generated-sql
+            - 🔃 Synchronize bigquery-etl submodule
           filters:
             branches:
               only:

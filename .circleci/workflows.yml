@@ -1187,6 +1187,10 @@ workflows:
             - data-eng-circleci-deployment
           requires:
             - deploy
+          filters:
+            branches:
+              only:
+                - main
       - sync-dags-repo:
           name: 🔃 Synchronize bigquery-etl submodule
           repo-to-sync: ${CIRCLE_PROJECT_REPONAME}

@@ -313,6 +313,40 @@ fields:
         data may or may not be present.
 
         '
+    - name: characteristics_color_depth
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The Color Depth reported by CSS
+
+        '
+    - name: characteristics_color_gamut
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The Color Gamut reported by CSS
+
+        '
+    - name: characteristics_color_scheme
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The Color Scheme used for Content, from ContentPrefs() Preference
+        Sheet.
+
+        '
+    - name: characteristics_max_touch_points
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of touch points we will report to the web. On Android,
+        this is based on Android''s FEATURE_TOUCHSCREEN* constants - Mozilla caps
+        this at 5 as Android stops distinguishing between numbers greater than 5.  On
+        Windows this comes from the SM_MAXIMUMTOUCHES System Metric.
+
+        '
+    - name: characteristics_prefers_contrast
+      type: INTEGER
+      mode: NULLABLE
+      description: 'What Gecko_MediaFeatures_PrefersContrast reports for a ContentDocument
+
+        '
   - name: string
     type: RECORD
     mode: NULLABLE
@@ -335,6 +369,35 @@ fields:
       description: 'A unique identifier for a user, not the same as the normal Telemetry
         client_id, but needed so we can deduplicate reports and only take the most
         recent one per user.
+
+        '
+  - name: boolean
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: characteristics_inverted_colors
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'What LookAndFeel(InvertedColors) reports.
+
+        '
+    - name: characteristics_prefers_reduced_motion
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'What LookAndFeel(PrefersReducedMotion) reports.
+
+        '
+    - name: characteristics_prefers_reduced_transparency
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'What LookAndFeel(PrefersReducedTransparency) reports.
+
+        '
+    - name: characteristics_video_dynamic_range
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'What LookAndFeel(VideoDynamicRange) reports. Note that CSSVideoDynamicRange
+        has an additional dependency on Color Depth.
 
         '
 - name: normalized_app_name

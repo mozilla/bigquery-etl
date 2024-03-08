@@ -124,9 +124,9 @@ ad_impression_counts AS (
       SELECT
         impression_id,
         mozfun.map.get_key(event.extra, 'component') AS component,
-        CAST(mozfun.map.get_key(event.extra, 'ads_loaded') AS int) AS ads_loaded,
-        CAST(mozfun.map.get_key(event.extra, 'ads_visible') AS int) AS ads_visible,
-        CAST(mozfun.map.get_key(event.extra, 'ads_hidden') AS int) AS ads_hidden,
+        SAFE_CAST(mozfun.map.get_key(event.extra, 'ads_loaded') AS int) AS ads_loaded,
+        SAFE_CAST(mozfun.map.get_key(event.extra, 'ads_visible') AS int) AS ads_visible,
+        SAFE_CAST(mozfun.map.get_key(event.extra, 'ads_hidden') AS int) AS ads_hidden,
       -- there should be at most 1 ad_impression event per component
       -- if there are multiple, it would be an edge case where events got duplicated
       -- enforce 1 row per session/component for data cleanliness

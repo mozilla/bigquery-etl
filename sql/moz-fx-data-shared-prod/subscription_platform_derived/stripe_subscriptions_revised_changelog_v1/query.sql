@@ -97,6 +97,7 @@ WITH original_changelog AS (
         subscription.* REPLACE (
           STRUCT(
             JSON_VALUE(subscription.metadata.appliedPromotionCode) AS appliedPromotionCode,
+            JSON_VALUE(subscription.metadata.cancellation_reason) AS cancellation_reason,
             TIMESTAMP_SECONDS(
               CAST(JSON_VALUE(subscription.metadata.cancelled_for_customer_at) AS INT64)
             ) AS cancelled_for_customer_at,

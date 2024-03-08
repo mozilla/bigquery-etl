@@ -21,7 +21,7 @@ from ..backfill.parse import (
 from ..backfill.utils import (
     BACKFILL_DESTINATION_DATASET,
     BACKFILL_DESTINATION_PROJECT,
-    get_backfill_entries_to_process_dict,
+    get_backfill_entries_to_initiate,
     get_backfill_file_from_qualified_table_name,
     get_backfill_staging_qualified_table_name,
     get_entries_from_qualified_table_name,
@@ -124,12 +124,12 @@ def create(
         excluded_dates=[e.date() for e in list(exclude)],
         reason=DEFAULT_REASON,
         watchers=[watcher],
-        status=BackfillStatus.DRAFTING,
+        status=BackfillStatus.INITIATE,
     )
 
     for existing_entry in existing_backfills:
         validate_duplicate_entry_dates(new_entry, existing_entry)
-        if existing_entry.status == BackfillStatus.DRAFTING:
+        if existing_entry.status == BackfillStatus.INITIATE:
             validate_overlap_dates(new_entry, existing_entry)
 
     existing_backfills.insert(0, new_entry)
@@ -228,7 +228,7 @@ def validate(
 
     \b
     # Get info from all tables with specific status.
-    ./bqetl backfill info --status=Drafting
+    ./bqetl backfill info --status=Initiate
     """,
 )
 @click.argument("qualified_table_name", required=False)
@@ -292,31 +292,42 @@ def info(ctx, qualified_table_name, sql_dir, project_id, status):
 @project_id_option(
     ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod")
 )
+@click.option(
+    "--status",
+    type=click.Choice([s.value for s in BackfillStatus]),
+    default=BackfillStatus.INITIATE.value,
+    help="Whether to get backfills to process or to complete.",
+)
 @click.option("--json_path", type=click.Path())
 @click.pass_context
-def scheduled(ctx, qualified_table_name, sql_dir, project_id, json_path=None):
+def scheduled(ctx, qualified_table_name, sql_dir, project_id, status, json_path=None):
     """Return list of backfill(s) that require processing."""
-    total_backfills_count = 0
+    match status:
+        case BackfillStatus.INITIATE.value:
+            backfills = get_backfill_entries_to_initiate(
+                sql_dir, project_id, qualified_table_name
+            )
+        case BackfillStatus.COMPLETE.value:
+            raise NotImplementedError("Placeholder - TODO")
+        case _:
+            raise ValueError(f"Invalid status status {status}.")
 
-    backfills_to_process_dict = get_backfill_entries_to_process_dict(
-        sql_dir, project_id, qualified_table_name
-    )
+    for qualified_table_name, entry in backfills.items():
+        click.echo(f"Backfill scheduled for {qualified_table_name}:\n{entry}")
 
-    for qualified_table_name, entry_to_process in backfills_to_process_dict.items():
-        total_backfills_count += 1
+    click.echo(f"{len(backfills)} backfill(s) require processing.")
 
-        click.echo(f"Backfill entry scheduled for {qualified_table_name}:")
+    if backfills and json_path is not None:
+        formatted_backfills = [
+            {
+                "qualified_table_name": qualified_table_name,
+                "entry_date": entry.entry_date.strftime("%Y-%m-%d"),
+                "watchers": entry.watchers,
+            }
+            for qualified_table_name, entry in backfills.items()
+        ]
 
-        # For future us: this will probably end up being a write to something machine-readable for automation to pick up
-        click.echo(str(entry_to_process))
-
-    click.echo(
-        f"\nThere are a total of {total_backfills_count} backfill(s) that require processing."
-    )
-
-    if backfills_to_process_dict and json_path is not None:
-        scheduled_backfills_json = json.dumps(list(backfills_to_process_dict.keys()))
-        Path(json_path).write_text(scheduled_backfills_json)
+        Path(json_path).write_text(json.dumps(formatted_backfills))
 
 
 @backfill.command(
@@ -343,7 +354,7 @@ def process(ctx, qualified_table_name, sql_dir, project_id):
     """Process backfill entry with drafting status in backfill.yaml file(s)."""
     click.echo("Backfill processing initiated....")
 
-    backfills_to_process_dict = get_backfill_entries_to_process_dict(
+    backfills_to_process_dict = get_backfill_entries_to_initiate(
         sql_dir, project_id, qualified_table_name
     )
 
@@ -415,7 +426,7 @@ def complete(ctx, qualified_table_name, sql_dir, project_id):
     """Complete backfill entry in backfill.yaml file(s)."""
     if not is_authenticated():
         click.echo(
-            "Authentication to GCP required. Run `gcloud auth login` "
+            "Authentication to GCP required. Run `gcloud auth login  --update-adc` "
             "and check that the project is set correctly."
         )
         sys.exit(1)

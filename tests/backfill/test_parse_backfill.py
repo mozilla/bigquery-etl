@@ -11,7 +11,7 @@ from bigquery_etl.backfill.parse import (
     BackfillStatus,
 )
 
-DEFAULT_STATUS = BackfillStatus.DRAFTING
+DEFAULT_STATUS = BackfillStatus.INITIATE
 
 TEST_DIR = Path(__file__).parent.parent
 
@@ -333,7 +333,7 @@ class TestParseBackfill(object):
             "    or jira tickets\n"
             "  watchers:\n"
             "  - nobody@mozilla.com\n"
-            "  status: Drafting\n"
+            "  status: Initiate\n"
         )
 
         results = TEST_BACKFILL_1.to_yaml()
@@ -349,7 +349,7 @@ class TestParseBackfill(object):
             excluded_dates = [2021-02-03]
             reason = Please provide a reason for the backfill and links to any related bugzilla or jira tickets
             watcher(s) = [nobody@mozilla.com]
-            status = Drafting
+            status = Initiate
             """
 
         assert actual_backfill_str == expected_backfill_str
@@ -364,7 +364,7 @@ class TestParseBackfill(object):
             "    or jira tickets\n"
             "  watchers:\n"
             "  - nobody@mozilla.com\n"
-            "  status: Drafting\n"
+            "  status: Initiate\n"
         )
 
         TEST_BACKFILL_1.excluded_dates = []

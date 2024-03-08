@@ -37,10 +37,7 @@ WITH base AS (
     event.name as event_name,
     ARRAY_TO_STRING([event.category, event.name], '.') AS event, -- handles NULL values better
     `mozfun.json.from_map`(event.extra) AS event_extra,
-    JSON_STRIP_NULLS(
-      TO_JSON(metrics),  -- expose as easy to access JSON column
-      remove_empty => true -- no reason to keep empty objects around
-    ) AS metrics
+    TO_JSON(metrics) AS metrics
   FROM
     `{{ events_view }}` AS e
   CROSS JOIN
@@ -56,6 +53,34 @@ WITH base AS (
 )
 --
 SELECT
-  *
+  * REPLACE (
+    -- expose as easy to access JSON column,
+    -- strip nulls,
+    -- translate nested array records into a JSON object,
+    -- rename url2 -> url
+    JSON_STRIP_NULLS(
+      JSON_REMOVE(
+        -- labeled_* are the only ones that SHOULD show up as context for events pings,
+        -- thus we special-case them
+        --
+        -- The JSON_SET/JSON_EXTRACT shenanigans are needed
+        -- because those subfields might not exist, so accessing the columns would fail.
+        -- but accessing non-existent fields in a JSON object simply gives us NULL.
+        JSON_SET(
+          metrics,
+          '$.labeled_counter',
+          mozfun.json.from_nested_map(metrics.labeled_counter),
+          '$.labeled_string',
+          mozfun.json.from_nested_map(metrics.labeled_string),
+          '$.labeled_boolean',
+          mozfun.json.from_nested_map(metrics.labeled_boolean),
+          '$.url',
+          metrics.url2
+        ),
+        '$.url2'
+      ),
+      remove_empty => TRUE
+    ) AS metrics
+  )
 FROM
   base

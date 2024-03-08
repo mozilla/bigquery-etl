@@ -476,9 +476,9 @@ glom==23.5.0 \
     --hash=sha256:06af5e3486aacc59382ba34e53ebeabd7a9345d78f7dbcbee26f03baa4b83bac \
     --hash=sha256:fe4e9be4dc93c11a99f8277042e4bee95419c02cda4b969f504508b0a1aa6a66
     # via siggen
-google-api-core[grpc]==2.11.0 \
-    --hash=sha256:4b9bb5d5a380a0befa0573b302651b8a9a89262c1730e37bf423cec511804c22 \
-    --hash=sha256:ce222e27b0de0d7bc63eb043b956996d6dccab14cc3b690aaea91c9cc99dc16e
+google-api-core[grpc]==2.17.1 \
+    --hash=sha256:610c5b90092c360736baccf17bd3efbcb30dd380e7a6dc28a71059edb8bd0d8e \
+    --hash=sha256:9df18a1f87ee0df0bc4eea2770ebc4228392d8cc4066655b320e2cfccb15db95
     # via
     #   google-cloud-bigquery
     #   google-cloud-bigquery-storage
@@ -497,9 +497,9 @@ google-auth-oauthlib==0.8.0 \
     --hash=sha256:40cc612a13c3336d5433e94e2adb42a0c88f6feb6c55769e44500fc70043a576 \
     --hash=sha256:81056a310fb1c4a3e5a7e1a443e1eb96593c6bbc55b26c0261e4d3295d3e6593
     # via gcsfs
-google-cloud-bigquery==3.17.2 \
-    --hash=sha256:6e1cf669a40e567ab3289c7b5f2056363da9fcb85d9a4736ee90240d4a7d84ea \
-    --hash=sha256:cdadf5283dca55a1a350bacf8c8a7466169d3cf46c5a0a3abc5e9aa0b0a51dee
+google-cloud-bigquery==3.18.0 \
+    --hash=sha256:3520552075502c69710d37b1e9600c84e6974ad271914677d16bfafa502857fb \
+    --hash=sha256:74f0fc6f0ba9477f808d25924dc8a052c55f7ca91064e83e16d3ee5fb7ca77ab
     # via -r requirements.in
 google-cloud-bigquery-storage[fastavro]==2.24.0 \
     --hash=sha256:7981eb2758cba56603058d11bb1eeeebf2e1c18097a7118a894510a16e02be52 \
@@ -513,9 +513,9 @@ google-cloud-core==2.3.2 \
     # via
     #   google-cloud-bigquery
     #   google-cloud-storage
-google-cloud-storage==2.14.0 \
-    --hash=sha256:2d23fcf59b55e7b45336729c148bb1c464468c69d5efbaee30f7201dd90eb97e \
-    --hash=sha256:8641243bbf2a2042c16a6399551fbb13f062cbc9a2de38d6c0bb5426962e9dbd
+google-cloud-storage==2.15.0 \
+    --hash=sha256:5d9237f88b648e1d724a0f20b5cde65996a37fe51d75d17660b1404097327dd2 \
+    --hash=sha256:7560a3c48a03d66c553dc55215d35883c680fe0ab44c23aa4832800ccc855c74
     # via
     #   -r requirements.in
     #   gcsfs
@@ -805,17 +805,17 @@ mkdocs-awesome-pages-plugin==2.9.2 \
     --hash=sha256:9c795587695bd1ee85a8b7e43293005418df5a8b9ef296a3e628be427b693b4d \
     --hash=sha256:c3f7d366ecfe99b64524c49a84d8e13c576c19a918ea2e6f59bb486a259313af
     # via -r requirements.in
-mkdocs-material==9.5.9 \
-    --hash=sha256:635df543c01c25c412d6c22991872267723737d5a2f062490f33b2da1c013c6d \
-    --hash=sha256:a5d62b73b3b74349e45472bfadc129c871dd2d4add68d84819580597b2f50d5d
+mkdocs-material==9.5.12 \
+    --hash=sha256:5f69cef6a8aaa4050b812f72b1094fda3d079b9a51cf27a247244c03ec455e97 \
+    --hash=sha256:d6f0c269f015e48c76291cdc79efb70f7b33bbbf42d649cfe475522ebee61b1f
     # via -r requirements.in
 mkdocs-material-extensions==1.3 \
     --hash=sha256:0297cc48ba68a9fdd1ef3780a3b41b534b0d0df1d1181a44676fda5f464eeadc \
     --hash=sha256:f0446091503acb110a7cab9349cbc90eeac51b58d1caa92a704a81ca1e24ddbd
     # via mkdocs-material
-mozilla-metric-config-parser==2023.11.1 \
-    --hash=sha256:6a77b1ad0b1024bfa0a21febccc344b6aae17a0314726a5c07a190ee21100e29 \
-    --hash=sha256:e926b30862eb626494a15f94e6c1aaa3e770f09c30bc91979b51f6b3ddca99c5
+mozilla-metric-config-parser==2024.3.1 \
+    --hash=sha256:b2a34750531766494b0f5e48baa6a738cfe6b55ea8799135daee8a92d0ae3bc6 \
+    --hash=sha256:ecaf44bf891aff9e4ec11a8aab2e39d965ed76bbad91920f5833e2982840bfbc
     # via -r requirements.in
 mozilla-nimbus-schemas==2023.9.2 \
     --hash=sha256:aa23d024bf01e67564d4dfb288397cbea8046961dc246f687a2dff05280dd4d0 \
@@ -1057,9 +1057,9 @@ pathspec==0.11.2 \
     #   black
     #   mkdocs
     #   yamllint
-pip-tools==7.4.0 \
-    --hash=sha256:a92a6ddfa86ff389fe6ace381d463bc436e2c705bd71d52117c25af5ce867bb7 \
-    --hash=sha256:b67432fd0759ed834c5367f9e0ce8c95441acecfec9c8e24b41aca166757adf0
+pip-tools==7.4.1 \
+    --hash=sha256:4c690e5fbae2f21e87843e89c26191f0d9454f362d8acdbd695716493ec8b3a9 \
+    --hash=sha256:864826f5073864450e24dbeeb85ce3920cdfb09848a3d69ebf537b521f14bcc9
     # via -r requirements.in
 platformdirs==2.6.2 \
     --hash=sha256:83c8f6d04389165de7c9b6f0c682439697887bca0aa2f1c87ef1826be3584490 \
@@ -1257,9 +1257,9 @@ pytest-flake8==1.1.1 \
     --hash=sha256:ba4f243de3cb4c2486ed9e70752c80dd4b636f7ccb27d4eba763c35ed0cd316e \
     --hash=sha256:e0661a786f8cbf976c185f706fdaf5d6df0b1667c3bcff8e823ba263618627e7
     # via -r requirements.in
-pytest-isort==3.1.0 \
-    --hash=sha256:067801dc5e54a474330d074d521c815948ff6d5cf0ed3b9d057b78216851186c \
-    --hash=sha256:13e68d84b35d4f79d20d3d165f491bffc9e4b9509f420381a4186118c4454bd3
+pytest-isort==4.0.0 \
+    --hash=sha256:00e99642e282b00b849cf9b49d9102a02ab8c4ec549ace57d7868b723713aaa9 \
+    --hash=sha256:14bb3281bab587d6beb53129481e8885232249ec5cfeaf5d903a561ff0589620
     # via -r requirements.in
 pytest-mypy==0.10.3 \
     --hash=sha256:7638d0d3906848fc1810cb2f5cc7fceb4cc5c98524aafcac58f28620e3102053 \
@@ -1600,9 +1600,9 @@ snowballstemmer==2.2.0 \
     --hash=sha256:09b16deb8547d3412ad7b590689584cd0fe25ec8db3be37788be3810cbf19cb1 \
     --hash=sha256:c8e1716e83cc398ae16824e5572ae04e0d9fc2c6b985fb0f900f5f0c96ecba1a
     # via pydocstyle
-sqlglot==21.2.0 \
-    --hash=sha256:a4d2848975b0b08a256625d2967776f91acf09eb4ce70b0b14b63128a0d1167f \
-    --hash=sha256:e3959fa3ece756b025379561ee9f72fe13a17066909fa47342c0c508df88fd79
+sqlglot==22.1.0 \
+    --hash=sha256:4b881b39431883980b83bee6435bf08b62824bac790c9f860c537da1548c1912 \
+    --hash=sha256:f9b9915c5e5fd6998cfe301ea89a176bdd67db17809b76f78fe6976cae8c1710
     # via -r requirements.in
 sqlparse==0.4.4 \
     --hash=sha256:5430a4fe2ac7d0f93e66f1efc6e1338a41884b7ddf2a350cedd20ccc4d9d28f3 \

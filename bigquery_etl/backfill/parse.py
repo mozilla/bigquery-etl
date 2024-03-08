@@ -50,7 +50,6 @@ class BackfillStatus(enum.Enum):
     """Represents backfill status types."""
 
     INITIATE = "Initiate"
-    VALIDATED = "Validated"
     COMPLETE = "Complete"
 
 
@@ -157,7 +156,7 @@ class Backfill:
                 backfills = yaml.load(yaml_stream, Loader=UniqueKeyLoader) or {}
 
                 for entry_date, entry in backfills.items():
-                    if status is not None and entry["status"].lower() != status.lower():
+                    if status is not None and entry["status"] != status:
                         continue
 
                     excluded_dates = []

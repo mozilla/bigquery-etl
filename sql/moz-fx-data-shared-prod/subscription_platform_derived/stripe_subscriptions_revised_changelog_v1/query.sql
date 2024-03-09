@@ -110,6 +110,7 @@ WITH original_changelog AS (
         )
     ) AS subscription,
     ROW_NUMBER() OVER subscription_changes_asc AS subscription_change_number,
+    LAG(`timestamp`) OVER subscription_changes_asc AS previous_subscription_change_at,
     LEAD(`timestamp`) OVER subscription_changes_asc AS next_subscription_change_at,
     LAG(subscription.ended_at) OVER subscription_changes_asc AS previous_subscription_ended_at
   FROM
@@ -136,6 +137,7 @@ adjusted_original_changelog AS (
           AND previous_subscription_ended_at IS NULL
           AND subscription_change_number > 1
           AND subscription.ended_at < `timestamp`
+          AND subscription.ended_at > previous_subscription_change_at
           THEN STRUCT(subscription.ended_at AS `timestamp`, 'adjusted_subscription_end' AS type)
         ELSE STRUCT(`timestamp`, 'original' AS type)
       END

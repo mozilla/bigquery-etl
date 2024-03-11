@@ -109,6 +109,10 @@ fields:
   type: BOOLEAN
   mode: NULLABLE
   description: "Whether this session had a download event for Firefox."
+- name: firefox_desktop_downloads
+  type: INT64
+  mode: NULLABLE
+  description: "The number of firefox desktop downloads during this session."
 - name: last_reported_install_target
   type: STRING
   mode: NULLABLE

@@ -410,7 +410,7 @@ def _deploy_artifacts(ctx, artifact_files, project_id, dataset_suffix, sql_dir):
         sql_dir=sql_dir,
         project_id=project_id,
         dry_run=False,
-        skip_authorized=True,
+        authorized_views="skip",
         force=True,
         respect_dryrun_skip=True,
     )

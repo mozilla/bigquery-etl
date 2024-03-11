@@ -157,10 +157,15 @@ def _view_is_valid(v: View) -> bool:
     ),
 )
 @click.option(
-    "--skip-authorized",
-    "--skip_authorized",
-    is_flag=True,
-    help="Don't publish views with labels: {authorized: true} in metadata.yaml",
+    "--authorized-views",
+    "--authorized_views",
+    type=click.Choice(["publish", "skip", "only"]),
+    default="publish",
+    help="""
+    Whether to publish views with labels: {authorized: true} in metadata.yaml;
+    "skip" to skip authorized views deployment and "only" to only publish
+    authorized views.
+    """,
 )
 @click.option(
     "--force",
@@ -186,7 +191,7 @@ def publish(
     parallelism,
     dry_run,
     user_facing_only,
-    skip_authorized,
+    authorized_views,
     force,
     add_managed_label,
     respect_dryrun_skip,
@@ -198,7 +203,9 @@ def publish(
     except ValueError as e:
         raise click.ClickException(f"argument --log-level: {e}")
 
-    views = _collect_views(name, sql_dir, project_id, user_facing_only, skip_authorized)
+    views = _collect_views(
+        name, sql_dir, project_id, user_facing_only, authorized_views
+    )
     if respect_dryrun_skip:
         views = [view for view in views if view.path not in DryRun.skipped_files()]
     if add_managed_label:
@@ -235,7 +242,7 @@ def publish(
     click.echo("All have been published.")
 
 
-def _collect_views(name, sql_dir, project_id, user_facing_only, skip_authorized):
+def _collect_views(name, sql_dir, project_id, user_facing_only, authorized_views):
     view_files = paths_matching_name_pattern(
         name, sql_dir, project_id, files=("view.sql",)
     )
@@ -243,11 +250,12 @@ def _collect_views(name, sql_dir, project_id, user_facing_only, skip_authorized)
     views = [View.from_file(f) for f in view_files]
     if user_facing_only:
         views = [v for v in views if v.is_user_facing]
-    if skip_authorized:
+
+    if authorized_views != "publish":
         views = [
             v
             for v in views
-            if not (
+            if (
                 v.metadata
                 and v.metadata.labels
                 # labels with boolean true are translated to ""
@@ -262,10 +270,10 @@ def _collect_views(name, sql_dir, project_id, user_facing_only, skip_authorized)
     Examples:
 
     # Clean managed views in shared prod
-    ./bqetl view clean --target-project=moz-fx-data-shared-prod --skip-authorized
+    ./bqetl view clean --target-project=moz-fx-data-shared-prod --authorized-views=skip
 
     # Clean managed user facing views in mozdata
-    ./bqetl view clean --target-project=mozdata --user-facing-only --skip-authorized
+    ./bqetl view clean --target-project=mozdata --user-facing-only --authorized-views=skip
     """
 )
 @click.argument("name", required=False)
@@ -298,10 +306,15 @@ def _collect_views(name, sql_dir, project_id, user_facing_only, skip_authorized)
     ),
 )
 @click.option(
-    "--skip-authorized",
-    "--skip_authorized",
-    is_flag=True,
-    help="Don't publish views with labels: {authorized: true} in metadata.yaml",
+    "--authorized-views",
+    "--authorized_views",
+    type=click.Choice(["clean", "skip", "only"]),
+    default="publish",
+    help="""
+    Whether to process views with labels: {authorized: true} in metadata.yaml;
+    "skip" to skip authorized views and "only" to only process authorized
+    views. Default "clean" processes both authorized and authorized views.
+    """,
 )
 def clean(
     name,
@@ -312,7 +325,7 @@ def clean(
     parallelism,
     dry_run,
     user_facing_only,
-    skip_authorized,
+    authorized_views,
 ):
     """Clean managed views."""
     # set log level
@@ -327,7 +340,7 @@ def clean(
     expected_view_ids = {
         view.target_view_identifier(target_project)
         for view in _collect_views(
-            name, sql_dir, project_id, user_facing_only, skip_authorized
+            name, sql_dir, project_id, user_facing_only, authorized_views
         )
     }
 
@@ -354,7 +367,17 @@ def clean(
                 chunksize=1,
             )
             for view in views
-            if not skip_authorized or "authorized" not in view.labels
+            if authorized_views == "clean"
+            or (
+                authorized_views == "only"
+                and "authorized" in view.labels
+                and view.labels.get("authorized") == ""
+            )
+            or (
+                authorized_views == "skip"
+                and "authorized" not in view.labels
+                or view.labels.get("authorized") != ""
+            )
         }
 
         remove_view_ids = sorted(managed_view_ids - expected_view_ids)

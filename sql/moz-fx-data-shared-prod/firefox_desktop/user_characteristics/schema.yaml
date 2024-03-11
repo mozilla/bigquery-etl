@@ -347,6 +347,30 @@ fields:
       description: 'What Gecko_MediaFeatures_PrefersContrast reports for a ContentDocument
 
         '
+    - name: characteristics_processor_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of processors.
+
+        '
+    - name: characteristics_screen_height
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Height of the primary screen in pixels.
+
+        '
+    - name: characteristics_screen_width
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Width of the primary screen in pixels.
+
+        '
+    - name: characteristics_target_frame_rate
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The target frame rate in frames-per-second.
+
+        '
   - name: string
     type: RECORD
     mode: NULLABLE
@@ -357,6 +381,18 @@ fields:
       description: 'An experimentation identifier derived and provided by the application
 
         for the purpose of experimentation enrollment.
+
+        '
+    - name: characteristics_prefs_intl_accept_languages
+      type: STRING
+      mode: NULLABLE
+      description: 'Value of the intl.accept_languages pref.
+
+        '
+    - name: characteristics_timezone
+      type: STRING
+      mode: NULLABLE
+      description: 'The the current timezone of the system
 
         '
   - name: uuid
@@ -400,6 +436,36 @@ fields:
         has an additional dependency on Color Depth.
 
         '
+    - name: characteristics_prefs_media_eme_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Value of the media.eme.enabled pref.
+
+        '
+    - name: characteristics_prefs_zoom_text_only
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Text-only zoom enabled (vs. full-zoom)
+
+        '
+  - name: text2
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: characteristics_missing_fonts
+      type: STRING
+      mode: NULLABLE
+      description: 'If a Font List is available for the user''s platform, this string_list
+        contains the fonts that are missing from the user''s computer.
+
+        '
+  - name: text
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: characteristics_missing_fonts
+      type: STRING
+      mode: NULLABLE
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

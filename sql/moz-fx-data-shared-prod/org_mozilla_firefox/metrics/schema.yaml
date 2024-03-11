@@ -1391,6 +1391,35 @@ fields:
         highlights.
 
         '
+    - name: httpsfirst_downgraded
+      type: INTEGER
+      mode: NULLABLE
+      description: 'How many regular HTTPS-First (`dom.security.https_first` enabled)
+        upgrades get downgraded again.
+
+        '
+    - name: httpsfirst_downgraded_schemeless
+      type: INTEGER
+      mode: NULLABLE
+      description: 'How many schemeless HTTPS-First (`dom.security.https_first` disabled,
+        but load marked as schemeless) upgrades get downgraded again.
+
+        '
+    - name: httpsfirst_upgraded
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counts how often a load is marked to be upgraded to HTTPS because
+        of HTTPS-First (`dom.security.https_first` enabled).
+
+        '
+    - name: httpsfirst_upgraded_schemeless
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counts how often a load is marked to be upgraded to HTTPS because
+        of schemeless HTTPS-First (`dom.security.https_first` disabled, but load marked
+        as schemeless).
+
+        '
   - name: custom_distribution
     type: RECORD
     mode: NULLABLE
@@ -3074,8 +3103,7 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream. (Migrated from
-        the geckoview metric of the same name).
+      description: 'Failure occurs when initializing the audio stream.
 
         '
     - name: glean_validation_pings_submitted
@@ -12469,6 +12497,142 @@ fields:
         data sizes
 
         '
+    - name: httpsfirst_downgrade_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'If a HTTPS-First (`dom.security.https_first` enabled) upgrade
+        isn''t successful, measures the timespan between the navigation start and
+        the downgrade. This is essentially the overhead caused by HTTPS-First if a
+        site does not support HTTPS.
+
+        '
+    - name: httpsfirst_downgrade_time_schemeless
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'If a schemeless HTTPS-First (`dom.security.https_first` disabled,
+        but load marked as schemeless) upgrade isn''t successful, measures the timespan
+        between the navigation start and the downgrade. This is essentially the overhead
+        caused by HTTPS-First if a site does not support HTTPS.
+
+        '
+    - name: networking_http_content_cssloader_ondatafinished_to_onstop_delay
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The time between processing OnDataFinished and processing OnStopRequest
+        for CSSLoader in the content process
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -13342,6 +13506,36 @@ fields:
         from the TLS handshake.
 
         '
+    - name: httpsfirst_downgraded_on_timer
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: denominator
+        type: INTEGER
+        mode: NULLABLE
+      - name: numerator
+        type: INTEGER
+        mode: NULLABLE
+      description: 'How many HTTPS-First (`dom.security.https_first` enabled) upgrades
+        get downgraded again because the HTTP request fired after 3s received a answer
+        faster than the HTTPS request.
+
+        '
+    - name: httpsfirst_downgraded_on_timer_schemeless
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: denominator
+        type: INTEGER
+        mode: NULLABLE
+      - name: numerator
+        type: INTEGER
+        mode: NULLABLE
+      description: 'How many of schemeless HTTPS-First (`dom.security.https_first`
+        disabled, but load marked as schemeless) upgrades get downgraded again because
+        the HTTP request fired after 3s received a answer faster than the HTTPS request
+
+        '
   - name: uuid
     type: RECORD
     mode: NULLABLE
@@ -13355,6 +13549,16 @@ fields:
         between storage mechanisms in Android, specifically the Glean DB and
 
         Shared Preferences.
+
+        '
+  - name: object
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: fog_validation_some_object
+      type: JSON
+      mode: NULLABLE
+      description: 'Static data recorded to verify the new object metric type end-to-end.
 
         '
   - name: url

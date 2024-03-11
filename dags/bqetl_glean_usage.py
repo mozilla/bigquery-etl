@@ -2385,6 +2385,23 @@ with DAG(
             org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1
         )
 
+    org_mozilla_firefox_beta_derived__events_stream__v1 = bigquery_etl_query(
+        task_id="org_mozilla_firefox_beta_derived__events_stream__v1",
+        destination_table="events_stream_v1",
+        dataset_id="org_mozilla_firefox_beta_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="jrediger@mozilla.com",
+        email=[
+            "ascholtz@mozilla.com",
+            "jrediger@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+            "wstuckey@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        task_group=task_group_fenix,
+    )
+
     org_mozilla_firefox_derived__baseline_clients_daily__v1 = bigquery_etl_query(
         task_id="org_mozilla_firefox_derived__baseline_clients_daily__v1",
         destination_table="baseline_clients_daily_v1",
@@ -4456,6 +4473,10 @@ with DAG(
 
     org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1.set_upstream(
         org_mozilla_firefox_beta_derived__baseline_clients_daily__v1
+    )
+
+    org_mozilla_firefox_beta_derived__events_stream__v1.set_upstream(
+        wait_for_copy_deduplicate_all
     )
 
     org_mozilla_firefox_derived__baseline_clients_daily__v1.set_upstream(

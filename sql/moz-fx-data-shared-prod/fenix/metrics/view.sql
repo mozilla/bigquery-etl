@@ -179,6 +179,7 @@ SELECT
     metrics.labeled_boolean,
     metrics.rate,
     metrics.uuid,
+    metrics.object,
     metrics.url
   ) AS `metrics`,
   normalized_app_name,
@@ -364,7 +365,11 @@ SELECT
       metrics.counter.pdfjs_editing_highlight_print,
       metrics.counter.pdfjs_editing_highlight_save,
       metrics.counter.pdfjs_editing_highlight_thickness_changed,
-      metrics.counter.pdfjs_editing_highlight_toggle_visibility
+      metrics.counter.pdfjs_editing_highlight_toggle_visibility,
+      metrics.counter.httpsfirst_downgraded,
+      metrics.counter.httpsfirst_downgraded_schemeless,
+      metrics.counter.httpsfirst_upgraded,
+      metrics.counter.httpsfirst_upgraded_schemeless
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -757,7 +762,10 @@ SELECT
       metrics.timing_distribution.networking_http_channel_sub_open_to_first_sent_https_rr,
       metrics.timing_distribution.networking_transaction_wait_time,
       metrics.timing_distribution.networking_transaction_wait_time_https_rr,
-      metrics.timing_distribution.privacy_sanitize_load_time
+      metrics.timing_distribution.privacy_sanitize_load_time,
+      metrics.timing_distribution.httpsfirst_downgrade_time,
+      metrics.timing_distribution.httpsfirst_downgrade_time_schemeless,
+      metrics.timing_distribution.networking_http_content_cssloader_ondatafinished_to_onstop_delay
     ) AS `timing_distribution`,
     metrics.memory_distribution,
     metrics.datetime,
@@ -766,6 +774,7 @@ SELECT
     metrics.labeled_boolean,
     metrics.rate,
     metrics.uuid,
+    metrics.object,
     metrics.url
   ) AS `metrics`,
   normalized_app_name,
@@ -960,7 +969,11 @@ SELECT
       metrics.counter.pdfjs_editing_highlight_print,
       metrics.counter.pdfjs_editing_highlight_save,
       metrics.counter.pdfjs_editing_highlight_thickness_changed,
-      metrics.counter.pdfjs_editing_highlight_toggle_visibility
+      metrics.counter.pdfjs_editing_highlight_toggle_visibility,
+      metrics.counter.httpsfirst_downgraded,
+      metrics.counter.httpsfirst_downgraded_schemeless,
+      metrics.counter.httpsfirst_upgraded,
+      metrics.counter.httpsfirst_upgraded_schemeless
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -1353,7 +1366,10 @@ SELECT
       metrics.timing_distribution.networking_http_channel_sub_open_to_first_sent_https_rr,
       metrics.timing_distribution.networking_transaction_wait_time,
       metrics.timing_distribution.networking_transaction_wait_time_https_rr,
-      metrics.timing_distribution.privacy_sanitize_load_time
+      metrics.timing_distribution.privacy_sanitize_load_time,
+      metrics.timing_distribution.httpsfirst_downgrade_time,
+      metrics.timing_distribution.httpsfirst_downgrade_time_schemeless,
+      metrics.timing_distribution.networking_http_content_cssloader_ondatafinished_to_onstop_delay
     ) AS `timing_distribution`,
     metrics.memory_distribution,
     metrics.datetime,
@@ -1362,6 +1378,7 @@ SELECT
     metrics.labeled_boolean,
     metrics.rate,
     metrics.uuid,
+    metrics.object,
     metrics.url
   ) AS `metrics`,
   normalized_app_name,
@@ -1538,6 +1555,7 @@ SELECT
     metrics.labeled_boolean,
     metrics.rate,
     metrics.uuid,
+    metrics.object,
     metrics.url
   ) AS `metrics`,
   normalized_app_name,

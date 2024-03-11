@@ -100,7 +100,11 @@ SELECT
       metrics.counter.pdfjs_editing_highlight_print,
       metrics.counter.pdfjs_editing_highlight_save,
       metrics.counter.pdfjs_editing_highlight_thickness_changed,
-      metrics.counter.pdfjs_editing_highlight_toggle_visibility
+      metrics.counter.pdfjs_editing_highlight_toggle_visibility,
+      metrics.counter.httpsfirst_downgraded,
+      metrics.counter.httpsfirst_downgraded_schemeless,
+      metrics.counter.httpsfirst_upgraded,
+      metrics.counter.httpsfirst_upgraded_schemeless
     ) AS `counter`,
     metrics.datetime,
     STRUCT(
@@ -250,7 +254,8 @@ SELECT
     metrics.timing_distribution,
     metrics.labeled_boolean,
     metrics.rate,
-    metrics.uuid
+    metrics.uuid,
+    metrics.object
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -341,7 +346,11 @@ SELECT
       metrics.counter.pdfjs_editing_highlight_print,
       metrics.counter.pdfjs_editing_highlight_save,
       metrics.counter.pdfjs_editing_highlight_thickness_changed,
-      metrics.counter.pdfjs_editing_highlight_toggle_visibility
+      metrics.counter.pdfjs_editing_highlight_toggle_visibility,
+      metrics.counter.httpsfirst_downgraded,
+      metrics.counter.httpsfirst_downgraded_schemeless,
+      metrics.counter.httpsfirst_upgraded,
+      metrics.counter.httpsfirst_upgraded_schemeless
     ) AS `counter`,
     metrics.datetime,
     STRUCT(
@@ -491,7 +500,8 @@ SELECT
     metrics.timing_distribution,
     metrics.labeled_boolean,
     metrics.rate,
-    metrics.uuid
+    metrics.uuid,
+    metrics.object
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,

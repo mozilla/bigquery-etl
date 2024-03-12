@@ -90,19 +90,19 @@ fields:
   name: num_clients_in_cohort
   type: INTEGER
 - mode: NULLABLE
-  name: num_clients_active_on_day
+  name: num_clients_sent_ping_on_day
   type: INTEGER
 - mode: NULLABLE
   name: num_clients_dau_on_day
   type: INTEGER
 - mode: NULLABLE
-  name: num_clients_active_atleastonce_in_last_7_days
+  name: num_clients_sent_ping_atleastonce_in_last_7_days
   type: INTEGER
 - mode: NULLABLE
-  name: num_clients_active_atleastonce_in_last_28_days
+  name: num_clients_sent_ping_atleastonce_in_last_28_days
   type: INTEGER
 - mode: NULLABLE
-  name: num_clients_repeat_first_month_users
+  name: num_clients_sent_ping_repeat_first_month_users
   type: INTEGER
 - mode: NULLABLE
   name: num_clients_dau_active_atleastonce_in_last_7_days

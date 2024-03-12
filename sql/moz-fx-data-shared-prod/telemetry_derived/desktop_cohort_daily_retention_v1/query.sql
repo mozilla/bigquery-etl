@@ -114,7 +114,7 @@ SELECT
   COUNTIF(
     (active_client_id IS NOT NULL)
     AND (active_clients_days_since_seen = 0)
-  ) AS num_clients_active_on_day,
+  ) AS num_clients_sent_ping_on_day,
   COUNTIF(
     (active_client_id IS NOT NULL)
     AND (dau_clients_days_since_seen = 0)
@@ -129,11 +129,11 @@ SELECT
         FALSE
       )
     )
-  ) AS num_clients_active_atleastonce_in_last_7_days,
+  ) AS num_clients_sent_ping_atleastonce_in_last_7_days,
   COUNTIF(
     (active_client_id IS NOT NULL)
     AND (COALESCE(BIT_COUNT(active_client_days_seen_bits) > 0, FALSE))
-  ) AS num_clients_active_atleastonce_in_last_28_days,
+  ) AS num_clients_sent_ping_atleastonce_in_last_28_days,
   COUNTIF(
     (active_client_id IS NOT NULL)
     AND DATE_DIFF(submission_date, first_seen_date, DAY) = 27
@@ -145,7 +145,7 @@ SELECT
         FALSE
       )
     )
-  ) AS num_clients_repeat_first_month_users,
+  ) AS num_clients_sent_ping_repeat_first_month_users,
   COUNTIF(
     (active_client_id IS NOT NULL)
     AND (

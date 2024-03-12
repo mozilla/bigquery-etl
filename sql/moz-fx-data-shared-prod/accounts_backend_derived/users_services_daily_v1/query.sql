@@ -24,9 +24,32 @@ WITH fxa_events AS (
     submission_timestamp,
     metrics.string.account_user_id_sha256 AS user_id_sha256,
     IF(
-      metrics.string.relying_party_oauth_client_id = '',
-      metrics.string.relying_party_service,
-      metrics.string.relying_party_oauth_client_id
+      IF(
+          COALESCE -- replace empty strings in oauth ID with NULL and coalesce with rp service field if nothing present
+            ( 
+              IF(metrics.string.relying_party_oauth_client_id = '', NULL, metrics.string.relying_party_oauth_client_id),
+              metrics.string.relying_party_service
+            ) = '',
+            NULL,
+            COALESCE
+            (
+              IF(metrics.string.relying_party_oauth_client_id = '', NULL, metrics.string.relying_party_oauth_client_id),
+              metrics.string.relying_party_service
+            )
+        ) = 'sync', '5882386c6d801776', -- some oauth client ID fields
+        IF(
+          COALESCE
+            (
+              IF(metrics.string.relying_party_oauth_client_id = '', NULL, metrics.string.relying_party_oauth_client_id),
+              metrics.string.relying_party_service
+            ) = '',
+            NULL,
+            COALESCE
+            (
+              IF(metrics.string.relying_party_oauth_client_id = '', NULL, metrics.string.relying_party_oauth_client_id),
+              metrics.string.relying_party_service
+            )
+        )
     ) AS service,
     metrics.string.session_flow_id AS flow_id,
     metrics.string.session_entrypoint AS entrypoint,

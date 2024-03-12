@@ -437,6 +437,9 @@ generate:
     - regrets_reporter_ucs
     - tiktokreporter_android
     - tiktokreporter_ios
+    - org_mozilla_ios_tiktok_reporter
+    - org_mozilla_ios_tiktok_reporter_tiktok_reportershare
+    - org_mozilla_tiktokreporter
     events_stream:
       datasets:
       - fenix
@@ -445,7 +448,7 @@ generate:
       - debug_ping_view
       - glean_dictionary
       - org_mozilla_fenix
-      - org_mozilla_fenix_beta
+      - org_mozilla_firefox_beta
       - org_mozilla_firefox
     events_monitoring:
       default_event_table: events_v1

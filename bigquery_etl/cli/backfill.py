@@ -19,13 +19,12 @@ from ..backfill.parse import (
     BackfillStatus,
 )
 from ..backfill.utils import (
-    BACKFILL_DESTINATION_DATASET,
-    BACKFILL_DESTINATION_PROJECT,
-    get_backfill_entries_to_initiate,
+    get_backfill_backup_table_name,
     get_backfill_file_from_qualified_table_name,
     get_backfill_staging_qualified_table_name,
     get_entries_from_qualified_table_name,
     get_qualified_table_name_to_entries_map_by_project,
+    get_scheduled_backfills,
     qualified_table_name_matching,
     validate_metadata_workgroups,
 )
@@ -238,7 +237,7 @@ def validate(
 )
 @click.option(
     "--status",
-    type=click.Choice([s.value.lower() for s in BackfillStatus]),
+    type=click.Choice([s.value for s in BackfillStatus]),
     help="Filter backfills with this status.",
 )
 @click.pass_context
@@ -302,15 +301,9 @@ def info(ctx, qualified_table_name, sql_dir, project_id, status):
 @click.pass_context
 def scheduled(ctx, qualified_table_name, sql_dir, project_id, status, json_path=None):
     """Return list of backfill(s) that require processing."""
-    match status:
-        case BackfillStatus.INITIATE.value:
-            backfills = get_backfill_entries_to_initiate(
-                sql_dir, project_id, qualified_table_name
-            )
-        case BackfillStatus.COMPLETE.value:
-            raise NotImplementedError("Placeholder - TODO")
-        case _:
-            raise ValueError(f"Invalid status status {status}.")
+    backfills = get_scheduled_backfills(
+        sql_dir, project_id, qualified_table_name, status=status
+    )
 
     for qualified_table_name, entry in backfills.items():
         click.echo(f"Backfill scheduled for {qualified_table_name}:\n{entry}")
@@ -349,35 +342,40 @@ def scheduled(ctx, qualified_table_name, sql_dir, project_id, status, json_path=
 @project_id_option(
     ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod")
 )
-@click.option(
-    "--dry_run/--no_dry_run",
-    "--dry-run/--no-dry-run",
-    help="Dry run the backfill.  Note that staging table(s) will be deployed during dry run",
-)
 @click.pass_context
-def process(ctx, qualified_table_name, sql_dir, project_id, dry_run):
+def process(ctx, qualified_table_name, sql_dir, project_id):
     """Process backfill entry with drafting status in backfill.yaml file(s)."""
     click.echo("Backfill processing initiated....")
 
-    backfills_to_process_dict = get_backfill_entries_to_initiate(
+    backfills_to_process_dict = get_scheduled_backfills(
         sql_dir, project_id, qualified_table_name
     )
 
     if backfills_to_process_dict:
         entry_to_process = backfills_to_process_dict[qualified_table_name]
 
+        click.echo(f"\nValidating backfill for {qualified_table_name} via dry run:")
+        _process_backfill(ctx, qualified_table_name, entry_to_process, dry_run=True)
+
+        click.echo(f"\nProcessing backfills for {qualified_table_name}:")
+        _process_backfill(ctx, qualified_table_name, entry_to_process)
+
+        click.echo(f"Backfill processing completed for {qualified_table_name}.")
+
+
+def _process_backfill(ctx, qualified_table_name, entry_to_process, dry_run=None):
+    project, dataset, table = qualified_table_name_matching(qualified_table_name)
+
+    backfill_staging_qualified_table_name = None
+
+    if not dry_run:
         backfill_staging_qualified_table_name = (
             get_backfill_staging_qualified_table_name(
                 qualified_table_name, entry_to_process.entry_date
             )
         )
 
-        project, dataset, table = qualified_table_name_matching(qualified_table_name)
-
-        click.echo(f"Processing backfills for {qualified_table_name}:")
-
-        # todo: send notification to watcher(s) that backill for file been initiated
-
+        # deploy table
         ctx.invoke(
             deploy,
             name=f"{dataset}.{table}",
@@ -385,25 +383,22 @@ def process(ctx, qualified_table_name, sql_dir, project_id, dry_run):
             destination_table=backfill_staging_qualified_table_name,
         )
 
-        # in the long-run we should remove the query backfill command and require a backfill entry for all backfills
-        ctx.invoke(
-            query_backfill,
-            name=f"{dataset}.{table}",
-            project_id=project,
-            start_date=entry_to_process.start_date,
-            end_date=entry_to_process.end_date,
-            exclude=entry_to_process.excluded_dates,
-            destination_table=backfill_staging_qualified_table_name,
-            dry_run=dry_run,
-        )
-
-        # todo: send notification to watcher(s) that backill for file has been completed
-
-        click.echo("Backfill processing completed.")
+    # backfill table
+    # in the long-run we should remove the query backfill command and require a backfill entry for all backfills
+    ctx.invoke(
+        query_backfill,
+        name=f"{dataset}.{table}",
+        project_id=project,
+        start_date=entry_to_process.start_date,
+        end_date=entry_to_process.end_date,
+        exclude=entry_to_process.excluded_dates,
+        destination_table=backfill_staging_qualified_table_name,
+        dry_run=dry_run,
+    )
 
 
 @backfill.command(
-    help="""Complete entry in backfill.yaml with Validated status.
+    help="""Complete entry in backfill.yaml with Complete status.
 
     Examples:
 
@@ -431,7 +426,7 @@ def complete(ctx, qualified_table_name, sql_dir, project_id):
     client = bigquery.Client(project=project_id)
 
     entries = get_entries_from_qualified_table_name(
-        sql_dir, qualified_table_name, BackfillStatus.VALIDATED.value
+        sql_dir, qualified_table_name, BackfillStatus.COMPLETE.value
     )
 
     if not entries:
@@ -464,11 +459,10 @@ def complete(ctx, qualified_table_name, sql_dir, project_id):
         )
         sys.exit(1)
 
-    project, dataset, table = qualified_table_name_matching(qualified_table_name)
-
     # clone production table
-    cloned_table_id = f"{table}_backup_{entry_to_complete.entry_date}".replace("-", "_")
-    cloned_table_full_name = f"{BACKFILL_DESTINATION_PROJECT}.{BACKFILL_DESTINATION_DATASET}.{cloned_table_id}"
+    cloned_table_full_name = get_backfill_backup_table_name(
+        qualified_table_name, entry_to_complete.entry_date
+    )
     _copy_table(qualified_table_name, cloned_table_full_name, client, clone=True)
 
     # copy backfill data to production data

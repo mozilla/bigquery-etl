@@ -24,33 +24,15 @@ WITH fxa_events AS (
     submission_timestamp,
     metrics.string.account_user_id_sha256 AS user_id_sha256,
     IF(
-      IF(
-          COALESCE -- replace empty strings in oauth ID with NULL and coalesce with rp service field if nothing present
-            ( 
-              IF(metrics.string.relying_party_oauth_client_id = '', NULL, metrics.string.relying_party_oauth_client_id),
-              metrics.string.relying_party_service
-            ) = '',
-            NULL,
-            COALESCE
-            (
-              IF(metrics.string.relying_party_oauth_client_id = '', NULL, metrics.string.relying_party_oauth_client_id),
-              metrics.string.relying_party_service
-            )
-        ) = 'sync', '5882386c6d801776', -- some oauth client ID fields
-        IF(
-          COALESCE
-            (
-              IF(metrics.string.relying_party_oauth_client_id = '', NULL, metrics.string.relying_party_oauth_client_id),
-              metrics.string.relying_party_service
-            ) = '',
-            NULL,
-            COALESCE
-            (
-              IF(metrics.string.relying_party_oauth_client_id = '', NULL, metrics.string.relying_party_oauth_client_id),
-              metrics.string.relying_party_service
-            )
-        )
-    ) AS service,
+      metrics.string.relying_party_oauth_client_id = '',
+      NULL,
+      metrics.string.relying_party_oauth_client_id
+    ) AS relying_party_oauth_client_id,
+    IF(
+      metrics.string.relying_party_service = '',
+      NULL,
+      metrics.string.relying_party_service
+    ) AS relying_party_service,
     metrics.string.session_flow_id AS flow_id,
     metrics.string.session_entrypoint AS entrypoint,
     metrics.string.event_name AS event_name,
@@ -76,6 +58,17 @@ WITH fxa_events AS (
       'login_complete'
     )
 ),
+transform_service_field AS (
+  SELECT
+    *,
+    IF(
+      COALESCE(relying_party_oauth_client_id, relying_party_service) = 'sync',
+      '5882386c6d801776',
+      COALESCE(relying_party_oauth_client_id, relying_party_service)
+    ) AS service
+  FROM
+    fxa_events
+),
 windowed AS (
   SELECT
     submission_timestamp,
@@ -95,7 +88,7 @@ windowed AS (
       )
     ) OVER w1 AS user_agent_devices,
   FROM
-    fxa_events
+    transform_service_field
   WHERE
     DATE(submission_timestamp) = @submission_date
   QUALIFY

@@ -1,0 +1,11 @@
+friendly_name: Telemetry Derived
+description: |-
+  Derived data based on pings from legacy Firefox telemetry, plus many other
+  general-purpose derived tables
+dataset_base_acl: derived
+user_facing: false
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

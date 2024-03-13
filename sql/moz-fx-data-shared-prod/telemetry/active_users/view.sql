@@ -13,24 +13,57 @@
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.fenix.active_users_view`
 AS
-WITH active_user_definition AS
+-- DECLARE period INT64 DEFAULT 6;
+
+-- TODO: Function to UDF
+CREATE TEMP FUNCTION get_active_user_bits(arr ARRAY<STRUCT< submission_date DATE, active_user BOOL>>)
+RETURNS ARRAY<STRUCT< submission_date DATE, active_user BOOL, bit_string STRING, days_active_user_bits INT64>>
+LANGUAGE js
+  OPTIONS ()
+AS r"""
+function datediff(first, second) {
+    return Math.round((second - first) / (1000 * 60 * 60 * 24));
+}
+const size = 5;
+arr.sort((a, b) => b.submission_date - a.submission_date);
+
+for (let i = arr.length-1; i >= 0; i--) {
+    active_user_bit = arr[i].active_user === true ? 1 : 0;
+    if (i === arr.length - 1) {
+        arr[i].bit_string = "0".repeat(size-1).concat(active_user_bit);
+    } else {
+        padding = "0".repeat(Math.min(size, datediff(arr[i+1].submission_date, arr[i].submission_date)) - 1);
+        arr[i].bit_string = arr[i+1].bit_string.concat(padding).concat(active_user_bit).slice(-size);
+    }
+    arr[i].days_active_user_bits = parseInt(arr[i].bit_string, 2)
+}
+return arr;
+"""
+;
+
+WITH active_users AS
 (
-  SELECT
-    submission_date,
-    app_name,
-    -- TODO: UDF to calculate this bit pattern + tests.
-    --   This is where the definition of active user would live.
-    active_user_bits(submission_date, durations > 0 AND isp != 'Fenix BrowserStack') AS days_active_user_bits,
-  FROM
+   SELECT
+        DATE(submission_date) AS submission_date,
+        client_id,
+        normalized_app_id,
+        CAST((durations > 0 AND isp != 'BrowserStack') AS INTEGER) AS is_dau -- TODO: This is where the definition of active would live.
+    FROM
       `moz-fx-data-shared-prod.fenix.baseline_clients_daily`
-  --  TODO: UNION ALL the apps.
+    WHERE
+        DATE(submission_date) BETWEEN '2023-01-01' AND '2023-12-31'
 )
-SELECT
-    days_active_user_bits,
-    udf.pos_of_trailing_set_bit(days_active_user_bits) = 1 AS is_dau,
-    udf.pos_of_trailing_set_bit(days_active_user_bits) <= 7 AS is_wau,
-    udf.pos_of_trailing_set_bit(days_active_user_bits) <= 28 AS is_mau,
-    IF(app_name='Firefox Desktop', True, False) AS is_desktop,
-    IF(app_name!='Firefox Desktop', True, False) AS is_mobile
-FROM
-  active_user_definition
+,bits AS (
+  SELECT client_id,
+        get_active_user_bits(ARRAY_AGG(STRUCT(submission_date, is_dau = 1))) AS x
+  FROM active_users
+  GROUP BY client_id
+)
+SELECT client_id,
+       submission_date,
+       days_active_user_bits,
+       mozfun.bits28.days_since_seen(days_active_user_bits) AS days_since_active,
+       mozfun.bits28.days_since_seen(days_active_user_bits) = 0 AS is_dau,
+       mozfun.bits28.days_since_seen(days_active_user_bits) < 7 AS is_wau,
+       mozfun.bits28.days_since_seen(days_active_user_bits) < 28 AS is_mau
+  FROM bits, UNNEST(x)

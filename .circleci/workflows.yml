@@ -1054,6 +1054,7 @@ jobs:
       - run:
           name: Create the distribution files
           command: |
+            python -m pip install build
             python -m build --sdist --wheel
       - run:
           name: Upload to PyPI
@@ -1071,16 +1072,6 @@ workflows:
       - build
       - verify-requirements
       - verify-format-yaml
-      - deploy-to-pypi:
-          name: Deploy bqetl to PyPI
-          requires:
-            - build
-          filters:
-            tags:
-              only: /[0-9]{4}.[0-9]{1,2}.[0-9]+/  # Calver: YYYY.M.MINOR
-            branches:
-              # Ignore all branches; this workflow should only run for tags.
-              ignore: /.*/
       - verify-format-sql
       - deploy-changes-to-stage:
           requires:
@@ -1223,3 +1214,12 @@ workflows:
             branches:
               only:
                 - main
+  tagged-deploy:
+    jobs:
+      - deploy-to-pypi:
+          filters:
+            tags:
+              only: /[0-9]{4}.[0-9]{1,2}.[0-9]+/  # Calver: YYYY.M.MINOR
+            branches:
+              # Ignore all branches; this workflow should only run for tags.
+              ignore: /.*/

@@ -330,7 +330,7 @@ def scheduled(ctx, qualified_table_name, sql_dir, project_id, status, json_path=
 
     \b
 
-    # Process backfill entry for specific table
+    # Initiate backfill entry for specific table
     ./bqetl backfill initiate moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6
 
     Use the `--project_id` option to change the project;
@@ -345,10 +345,10 @@ def scheduled(ctx, qualified_table_name, sql_dir, project_id, status, json_path=
 @click.pass_context
 def initiate(ctx, qualified_table_name, sql_dir, project_id):
     """Process backfill entry with initiate status in backfill.yaml file(s)."""
-    click.echo("Backfill initiate processing started....")
+    click.echo("Backfill processing (initiate) started....")
 
     backfills_to_process_dict = get_scheduled_backfills(
-        sql_dir, project_id, qualified_table_name, status=BackfillStatus.INITIATE
+        sql_dir, project_id, qualified_table_name, status="Initiate"
     )
 
     if backfills_to_process_dict:
@@ -365,11 +365,13 @@ def initiate(ctx, qualified_table_name, sql_dir, project_id):
         _initiate_backfill(ctx, qualified_table_name, entry_to_initiate)
 
         click.echo(
-            f"Initiated backfill for {qualified_table_name} with entry date {entry_to_initiate.entry_date}"
+            f"Processed backfill for {qualified_table_name} with entry date {entry_to_initiate.entry_date}"
         )
+    else:
+        click.echo(f"No backfill processed for {qualified_table_name}")
 
 
-def _initiate_backfill(ctx, qualified_table_name, entry_to_process, dry_run=None):
+def _initiate_backfill(ctx, qualified_table_name, entry_to_initiate, dry_run=None):
     project, dataset, table = qualified_table_name_matching(qualified_table_name)
 
     backfill_staging_qualified_table_name = None
@@ -377,7 +379,7 @@ def _initiate_backfill(ctx, qualified_table_name, entry_to_process, dry_run=None
     if not dry_run:
         backfill_staging_qualified_table_name = (
             get_backfill_staging_qualified_table_name(
-                qualified_table_name, entry_to_process.entry_date
+                qualified_table_name, entry_to_initiate.entry_date
             )
         )
 
@@ -395,9 +397,9 @@ def _initiate_backfill(ctx, qualified_table_name, entry_to_process, dry_run=None
         query_backfill,
         name=f"{dataset}.{table}",
         project_id=project,
-        start_date=entry_to_process.start_date,
-        end_date=entry_to_process.end_date,
-        exclude=entry_to_process.excluded_dates,
+        start_date=entry_to_initiate.start_date,
+        end_date=entry_to_initiate.end_date,
+        exclude=entry_to_initiate.excluded_dates,
         destination_table=backfill_staging_qualified_table_name,
         dry_run=dry_run,
     )
@@ -431,10 +433,10 @@ def complete(ctx, qualified_table_name, sql_dir, project_id):
         sys.exit(1)
     client = bigquery.Client(project=project_id)
 
-    click.echo("Backfill complete processing started....")
+    click.echo("Backfill processing (complete) started....")
 
     backfills_to_process_dict = get_scheduled_backfills(
-        sql_dir, project_id, qualified_table_name, status=BackfillStatus.COMPLETE
+        sql_dir, project_id, qualified_table_name, status="Complete"
     )
 
     if backfills_to_process_dict:
@@ -481,8 +483,10 @@ def complete(ctx, qualified_table_name, sql_dir, project_id):
         )
 
         click.echo(
-            f"Completed backfill for {qualified_table_name} with entry date {entry_to_complete.entry_date}"
+            f"Processed backfill for {qualified_table_name} with entry date {entry_to_complete.entry_date}"
         )
+    else:
+        click.echo(f"No backfill processed for {qualified_table_name}")
 
 
 def _copy_table(

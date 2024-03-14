@@ -1,6 +1,9 @@
 friendly_name: |-
-  Telemetry Derived - Public Data Report User Activity
+  Firefox Public Data Report User Activity
 description: |-
-  [DESCRIPTION_MISSING]
+  Data used to populate https://data.firefox.com/dashboard/user-activity.
+
+  Code to parse and format this data is in the
+  [firefox-public-data-report-etl repository](https://github.com/mozilla/firefox-public-data-report-etl/tree/main/public_data_report/user_activity).
 owners:
-- data-platform-infra-wg@mozilla.com
+- bewu@mozilla.com

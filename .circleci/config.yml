@@ -66,3 +66,11 @@ workflows:
             .circleci/.* validate-sql true
             .circleci/.* validate-bqetl true
             .circleci/.* validate-routines true
+  setup-tag:
+    when:
+      when:
+        matches: { pattern: '^[0-9]{4}.[0-9]{1,2}.[0-9]+$', value: << pipeline.git.tag >> }
+    jobs:
+      - continuation/continue:
+          configuration_path: .circleci/workflows.yml
+

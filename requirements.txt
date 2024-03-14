@@ -1457,9 +1457,9 @@ rich==13.7.0 \
     --hash=sha256:5cb5123b5cf9ee70584244246816e9114227e0b98ad9176eede6ad54bf5403fa \
     --hash=sha256:6da14c108c4866ee9520bbffa71f6fe3962e193b7da68720583850cd4548e235
     # via rich-click
-rich-click==1.7.3 \
-    --hash=sha256:bc4163d4e2a3361e21c4d72d300eca6eb8896dfc978667923cb1d4937b8769a3 \
-    --hash=sha256:bced1594c497dc007ab49508ff198bb437c576d01291c13a61658999066481f4
+rich-click==1.7.4 \
+    --hash=sha256:7ce5de8e4dc0333aec946113529b3eeb349f2e5d2fafee96b9edf8ee36a01395 \
+    --hash=sha256:e363655475c60fec5a3e16a1eb618118ed79e666c365a36006b107c17c93ac4e
     # via -r requirements.in
 rpds-py==0.8.10 \
     --hash=sha256:08166467258fd0240a1256fce272f689f2360227ee41c72aeea103e9e4f63d2b \
@@ -1619,14 +1619,7 @@ toml==0.10.2 \
 tomli==2.0.1 \
     --hash=sha256:939de3e7a6161af0c887ef91b7d41a53e7c5a1ca976325f429cb46ea9bc30ecc \
     --hash=sha256:de526c12914f0c550d15924c62d72abc48d6fe7364aa87328337a31007fe8a4f
-    # via
-    #   -r requirements.in
-    #   black
-    #   build
-    #   mypy
-    #   pip-tools
-    #   pyproject-hooks
-    #   pytest
+    # via -r requirements.in
 types-python-dateutil==2.8.19.20240311 \
     --hash=sha256:51178227bbd4cbec35dc9adffbf59d832f20e09842d7dcb8c73b169b8780b7cb \
     --hash=sha256:ef813da0809aca76472ca88807addbeea98b19339aebe56159ae2f4b4f70857a

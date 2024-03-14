@@ -1,4 +1,4 @@
-ARG PYTHON_VERSION=3.10
+ARG PYTHON_VERSION=3.11
 # pin Google Cloud SDK to old version due to https://stackoverflow.com/questions/76159439/job-failing-with-error-gcloud-crashed-attributeerror-bool-object-has-no-at
 ARG GOOGLE_CLOUD_SDK_VERSION=417.0.0
 

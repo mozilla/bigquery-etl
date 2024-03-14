@@ -9,7 +9,7 @@ orbs:
 parameters:
   python-version:
     type: string
-    default: '3.10'
+    default: '3.11'
   validate-bqetl:
     type: boolean
     default: false

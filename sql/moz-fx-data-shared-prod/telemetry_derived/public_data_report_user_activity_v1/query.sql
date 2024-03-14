@@ -29,6 +29,7 @@ sample AS (
     COALESCE(cn.name, country_group) IN (
       'Worldwide',
       'Brazil',
+      'Canada',
       'China',
       'France',
       'Germany',
@@ -37,6 +38,7 @@ sample AS (
       'Italy',
       'Poland',
       'Russia',
+      'Spain',
       'United States'
     )
     -- we need the whole week for daily_usage metric
@@ -63,7 +65,7 @@ sample_addons AS (
       IF(
         ARRAY_LENGTH(active_addons) > 0,
         active_addons,
-            -- include a null addon if there were none (either null or an empty list)
+        -- include a null addon if there were none (either null or an empty list)
         [active_addons[SAFE_OFFSET(0)]]
       )
     ) AS addons

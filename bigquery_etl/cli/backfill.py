@@ -310,7 +310,7 @@ def scheduled(ctx, qualified_table_name, sql_dir, project_id, status, json_path=
 
     click.echo(f"{len(backfills)} backfill(s) require processing.")
 
-    if backfills and json_path is not None:
+    if json_path is not None:
         formatted_backfills = [
             {
                 "qualified_table_name": qualified_table_name,

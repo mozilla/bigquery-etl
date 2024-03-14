@@ -1414,24 +1414,12 @@ with DAG(
 
     mozilla_vpn_derived__users__v1.set_upstream(mozilla_vpn_external__users__v1)
 
-    relay_derived__active_subscription_ids__v1.set_upstream(
-        relay_derived__subscriptions__v1
-    )
-
     relay_derived__active_subscriptions__v1.set_upstream(
         relay_derived__active_subscription_ids__v1
     )
 
-    relay_derived__active_subscriptions__v1.set_upstream(
-        relay_derived__subscriptions__v1
-    )
-
     relay_derived__subscription_events__v1.set_upstream(
         relay_derived__active_subscription_ids__v1
-    )
-
-    relay_derived__subscription_events__v1.set_upstream(
-        relay_derived__subscriptions__v1
     )
 
     relay_derived__subscriptions__v1.set_upstream(
@@ -1540,10 +1528,6 @@ with DAG(
 
     subscription_platform_derived__active_subscriptions__v1.set_upstream(
         relay_derived__active_subscriptions__v1
-    )
-
-    subscription_platform_derived__active_subscriptions__v1.set_upstream(
-        relay_derived__subscriptions__v1
     )
 
     subscription_platform_derived__apple_subscriptions__v1.set_upstream(

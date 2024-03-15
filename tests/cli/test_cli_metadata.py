@@ -279,6 +279,7 @@ class TestMetadata:
             == "Clustering fields: `column1`"
         )
         assert mock_bigquery_client().update_table.call_args[0][0].labels == {
+            "deletion_date": "2024-03-02",
             "deprecated": "true",
             "owner1": "test",
         }
@@ -293,6 +294,7 @@ class TestMetadata:
         assert mock_bigquery_table().friendly_name == "Test metadata.yaml"
         assert mock_bigquery_table().description == "Clustering fields: `column1`"
         assert mock_bigquery_table().labels == {
+            "deletion_date": "2024-03-02",
             "deprecated": "true",
             "owner1": "test",
         }

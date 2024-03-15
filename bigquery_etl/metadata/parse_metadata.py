@@ -298,6 +298,7 @@ class Metadata:
                     )
                 if "deprecated" in metadata:
                     deprecated = metadata["deprecated"]
+                if "deletion_date" in metadata:
                     deletion_date = metadata["deletion_date"]
 
                 return cls(
@@ -353,6 +354,8 @@ class Metadata:
 
         if not metadata_dict["deprecated"]:
             del metadata_dict["deprecated"]
+
+        if not metadata_dict["deletion_date"]:
             del metadata_dict["deletion_date"]
 
         file.write_text(

@@ -348,7 +348,7 @@ def initiate(ctx, qualified_table_name, sql_dir, project_id):
     click.echo("Backfill processing (initiate) started....")
 
     backfills_to_process_dict = get_scheduled_backfills(
-        sql_dir, project_id, qualified_table_name, status="Initiate"
+        sql_dir, project_id, qualified_table_name, status=BackfillStatus.INITIATE.value
     )
 
     if backfills_to_process_dict:

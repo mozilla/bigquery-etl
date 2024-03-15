@@ -7,10 +7,3 @@ description: |-
 
   and here:
   https://github.com/mozilla/bigquery-etl/tree/main/sql/moz-fx-data-marketing-prod/acoustic
-
-labels:
-  authorized: true
-workgroup_access:
-  - role: roles/bigquery.dataViewer
-    members:
-      - workgroup:mozilla-confidential

@@ -436,7 +436,7 @@ def complete(ctx, qualified_table_name, sql_dir, project_id):
     click.echo("Backfill processing (complete) started....")
 
     backfills_to_process_dict = get_scheduled_backfills(
-        sql_dir, project_id, qualified_table_name, status="Complete"
+        sql_dir, project_id, qualified_table_name, status=BackfillStatus.COMPLETE.value
     )
 
     if backfills_to_process_dict:

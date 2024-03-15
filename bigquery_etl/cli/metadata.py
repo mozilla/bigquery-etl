@@ -132,7 +132,7 @@ def publish(name: str, sql_dir: Optional[str], project_id: Optional[str]) -> Non
 
 @metadata.command(
     help="""
-    Deprecate big query table by updating metadata.yaml file.
+    Deprecate BigQuery table by updating metadata.yaml file.
     Deletion date is by default 3 months from current date if not provided.
 
     Example:

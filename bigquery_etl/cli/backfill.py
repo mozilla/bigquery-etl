@@ -358,12 +358,12 @@ def initiate(ctx, qualified_table_name, sql_dir, project_id):
     entry_to_initiate = backfills_to_process_dict[qualified_table_name]
 
     click.echo(
-        f"\nInitiating backfill(s) for {qualified_table_name} with entry date {entry_to_initiate.entry_date} via dry run:"
+        f"\nInitiating backfill for {qualified_table_name} with entry date {entry_to_initiate.entry_date} via dry run:"
     )
     _initiate_backfill(ctx, qualified_table_name, entry_to_initiate, dry_run=True)
 
     click.echo(
-        f"\nInitiating backfill(s) for {qualified_table_name} with entry date {entry_to_initiate.entry_date}:"
+        f"\nInitiating backfill for {qualified_table_name} with entry date {entry_to_initiate.entry_date}:"
     )
     _initiate_backfill(ctx, qualified_table_name, entry_to_initiate)
 
@@ -447,7 +447,7 @@ def complete(ctx, qualified_table_name, sql_dir, project_id):
     entry_to_complete = backfills_to_process_dict[qualified_table_name]
 
     click.echo(
-        f"Completing backfill(s) for {qualified_table_name} with entry date {entry_to_complete.entry_date}:"
+        f"Completing backfill for {qualified_table_name} with entry date {entry_to_complete.entry_date}:"
     )
 
     backfill_staging_qualified_table_name = get_backfill_staging_qualified_table_name(

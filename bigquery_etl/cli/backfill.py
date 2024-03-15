@@ -351,27 +351,28 @@ def initiate(ctx, qualified_table_name, sql_dir, project_id):
         sql_dir, project_id, qualified_table_name, status=BackfillStatus.INITIATE.value
     )
 
-    if backfills_to_process_dict:
-        entry_to_initiate = backfills_to_process_dict[qualified_table_name]
-
-        click.echo(
-            f"\nInitiating backfill(s) for {qualified_table_name} with entry date {entry_to_initiate.entry_date} via dry run:"
-        )
-        _initiate_backfill(ctx, qualified_table_name, entry_to_initiate, dry_run=True)
-
-        click.echo(
-            f"\nInitiating backfill(s) for {qualified_table_name} with entry date {entry_to_initiate.entry_date}:"
-        )
-        _initiate_backfill(ctx, qualified_table_name, entry_to_initiate)
-
-        click.echo(
-            f"Processed backfill for {qualified_table_name} with entry date {entry_to_initiate.entry_date}"
-        )
-    else:
+    if not backfills_to_process_dict:
         click.echo(f"No backfill processed for {qualified_table_name}")
+        return
+
+    entry_to_initiate = backfills_to_process_dict[qualified_table_name]
+
+    click.echo(
+        f"\nInitiating backfill(s) for {qualified_table_name} with entry date {entry_to_initiate.entry_date} via dry run:"
+    )
+    _initiate_backfill(ctx, qualified_table_name, entry_to_initiate, dry_run=True)
+
+    click.echo(
+        f"\nInitiating backfill(s) for {qualified_table_name} with entry date {entry_to_initiate.entry_date}:"
+    )
+    _initiate_backfill(ctx, qualified_table_name, entry_to_initiate)
+
+    click.echo(
+        f"Processed backfill for {qualified_table_name} with entry date {entry_to_initiate.entry_date}"
+    )
 
 
-def _initiate_backfill(ctx, qualified_table_name, entry_to_initiate, dry_run=None):
+def _initiate_backfill(ctx, qualified_table_name, entry: Backfill, dry_run=None):
     project, dataset, table = qualified_table_name_matching(qualified_table_name)
 
     backfill_staging_qualified_table_name = None
@@ -379,7 +380,7 @@ def _initiate_backfill(ctx, qualified_table_name, entry_to_initiate, dry_run=Non
     if not dry_run:
         backfill_staging_qualified_table_name = (
             get_backfill_staging_qualified_table_name(
-                qualified_table_name, entry_to_initiate.entry_date
+                qualified_table_name, entry.entry_date
             )
         )
 
@@ -397,9 +398,9 @@ def _initiate_backfill(ctx, qualified_table_name, entry_to_initiate, dry_run=Non
         query_backfill,
         name=f"{dataset}.{table}",
         project_id=project,
-        start_date=entry_to_initiate.start_date,
-        end_date=entry_to_initiate.end_date,
-        exclude=entry_to_initiate.excluded_dates,
+        start_date=entry.start_date,
+        end_date=entry.end_date,
+        exclude=entry.excluded_dates,
         destination_table=backfill_staging_qualified_table_name,
         dry_run=dry_run,
     )
@@ -439,54 +440,52 @@ def complete(ctx, qualified_table_name, sql_dir, project_id):
         sql_dir, project_id, qualified_table_name, status=BackfillStatus.COMPLETE.value
     )
 
-    if backfills_to_process_dict:
-        entry_to_complete = backfills_to_process_dict[qualified_table_name]
-
-        click.echo(
-            f"Completing backfill(s) for {qualified_table_name} with entry date {entry_to_complete.entry_date}:"
-        )
-
-        backfill_staging_qualified_table_name = (
-            get_backfill_staging_qualified_table_name(
-                qualified_table_name, entry_to_complete.entry_date
-            )
-        )
-
-        # clone production table
-        cloned_table_full_name = get_backfill_backup_table_name(
-            qualified_table_name, entry_to_complete.entry_date
-        )
-        _copy_table(qualified_table_name, cloned_table_full_name, client, clone=True)
-
-        # copy backfill data to production data
-        start_date = entry_to_complete.start_date
-        end_date = entry_to_complete.end_date
-        dates = [
-            start_date + timedelta(i) for i in range((end_date - start_date).days + 1)
-        ]
-
-        # replace partitions in production table that have been backfilled
-        for backfill_date in dates:
-            if backfill_date in entry_to_complete.excluded_dates:
-                click.echo(f"Skipping excluded date: {backfill_date}")
-                continue
-
-            partition = backfill_date.strftime("%Y%m%d")
-            production_table = f"{qualified_table_name}${partition}"
-            backfill_table = f"{backfill_staging_qualified_table_name}${partition}"
-            _copy_table(backfill_table, production_table, client)
-
-        # delete backfill staging table
-        client.delete_table(backfill_staging_qualified_table_name)
-        click.echo(
-            f"Backfill staging table deleted: {backfill_staging_qualified_table_name}"
-        )
-
-        click.echo(
-            f"Processed backfill for {qualified_table_name} with entry date {entry_to_complete.entry_date}"
-        )
-    else:
+    if not backfills_to_process_dict:
         click.echo(f"No backfill processed for {qualified_table_name}")
+        return
+
+    entry_to_complete = backfills_to_process_dict[qualified_table_name]
+
+    click.echo(
+        f"Completing backfill(s) for {qualified_table_name} with entry date {entry_to_complete.entry_date}:"
+    )
+
+    backfill_staging_qualified_table_name = get_backfill_staging_qualified_table_name(
+        qualified_table_name, entry_to_complete.entry_date
+    )
+
+    # clone production table
+    cloned_table_full_name = get_backfill_backup_table_name(
+        qualified_table_name, entry_to_complete.entry_date
+    )
+    _copy_table(qualified_table_name, cloned_table_full_name, client, clone=True)
+
+    # copy backfill data to production data
+    start_date = entry_to_complete.start_date
+    end_date = entry_to_complete.end_date
+    dates = [start_date + timedelta(i) for i in range((end_date - start_date).days + 1)]
+
+    # TODO: This should be one copy operation if the table is unpartitioned
+    # replace partitions in production table that have been backfilled
+    for backfill_date in dates:
+        if backfill_date in entry_to_complete.excluded_dates:
+            click.echo(f"Skipping excluded date: {backfill_date}")
+            continue
+
+        partition = backfill_date.strftime("%Y%m%d")
+        production_table = f"{qualified_table_name}${partition}"
+        backfill_table = f"{backfill_staging_qualified_table_name}${partition}"
+        _copy_table(backfill_table, production_table, client)
+
+    # delete backfill staging table
+    client.delete_table(backfill_staging_qualified_table_name)
+    click.echo(
+        f"Backfill staging table deleted: {backfill_staging_qualified_table_name}"
+    )
+
+    click.echo(
+        f"Processed backfill for {qualified_table_name} with entry date {entry_to_complete.entry_date}"
+    )
 
 
 def _copy_table(

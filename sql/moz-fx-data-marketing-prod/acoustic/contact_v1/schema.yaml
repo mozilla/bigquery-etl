@@ -183,6 +183,11 @@ fields:
   description: Relay waitlist country location
 
 - mode: NULLABLE
+  name: recipient_id
+  type: INTEGER
+  description: Recipient's ID
+
+- mode: NULLABLE
   name: date_created
   type: DATE
   description: Date when the contact was created

@@ -484,15 +484,16 @@ google-auth==2.27.0 \
     #   gcsfs
     #   google-api-core
     #   google-auth-oauthlib
+    #   google-cloud-bigquery
     #   google-cloud-core
     #   google-cloud-storage
 google-auth-oauthlib==0.8.0 \
     --hash=sha256:40cc612a13c3336d5433e94e2adb42a0c88f6feb6c55769e44500fc70043a576 \
     --hash=sha256:81056a310fb1c4a3e5a7e1a443e1eb96593c6bbc55b26c0261e4d3295d3e6593
     # via gcsfs
-google-cloud-bigquery==3.18.0 \
-    --hash=sha256:3520552075502c69710d37b1e9600c84e6974ad271914677d16bfafa502857fb \
-    --hash=sha256:74f0fc6f0ba9477f808d25924dc8a052c55f7ca91064e83e16d3ee5fb7ca77ab
+google-cloud-bigquery==3.19.0 \
+    --hash=sha256:8e311dae49768e1501fcdc5e916bff4b7e169471e5707919f4a6f78a02b3b5a6 \
+    --hash=sha256:c6b8850247a4b132066e49f6e45f850c22824482838688d744a4398eea1120ed
     # via -r requirements.in
 google-cloud-bigquery-storage[fastavro]==2.24.0 \
     --hash=sha256:7981eb2758cba56603058d11bb1eeeebf2e1c18097a7118a894510a16e02be52 \

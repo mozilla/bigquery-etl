@@ -21,15 +21,13 @@ description: |-
   For more details about attribution and campaign structure see:
   https://help.adjust.com/en/article/tracker-urls#campaign-structure-parameters.
 owners:
-- lvargas@mozilla.com
+- kik@mozilla.com
 labels:
   application: firefox_android
   incremental: false
   schedule: daily
-  owner1: lvargas
 scheduling:
-  dag_name: bqetl_analytics_tables
-  task_name: firefox_android_clients
+  dag_name: bqetl_data_observability_test_data_copy
   depends_on_past: true
   date_partition_parameter: null
   parameters:

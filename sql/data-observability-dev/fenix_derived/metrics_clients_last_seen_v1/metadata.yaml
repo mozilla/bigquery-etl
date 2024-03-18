@@ -7,15 +7,12 @@ description: |-
   - Counter sums are not carried over; they will be null for days with no
     metrics pings
 owners:
-- ascholtz@mozilla.com
+- kik@mozilla.com
 labels:
   incremental: true
   schedule: daily
-  dag: bqetl_glean_usage
-  owner1: ascholtz
 scheduling:
-  dag_name: bqetl_glean_usage
-  task_group: fenix
+  dag_name: bqetl_data_observability_test_data_copy
 bigquery:
   time_partitioning:
     type: day
@@ -26,7 +23,3 @@ bigquery:
     fields:
     - normalized_channel
     - sample_id
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:mozilla-confidential

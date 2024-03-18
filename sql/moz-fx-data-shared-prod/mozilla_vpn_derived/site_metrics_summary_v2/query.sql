@@ -123,9 +123,7 @@ vpn_subscribe_goals_stg AS (
         )
       ),
       0
-    ) AS non_fx_subscribe_intent_goal,
-    NULL AS join_waitlist_intent_goal, --there is no wait list option in GA4 that I can see
-    NULL AS join_waitlist_success_goal,--there is no wait list option in GA4 that I can see
+    ) AS non_fx_subscribe_intent_goal
   FROM
     `moz-fx-data-marketing-prod.analytics_313696158.events_*`
   LEFT JOIN
@@ -249,8 +247,8 @@ SELECT
   ssns.non_fx_sessions,
   vpn_sub_gls.subscribe_intent_goal,
   vpn_sub_gls.non_fx_subscribe_intent_goal,
-  gls.join_waitlist_intent_goal,
-  gls.join_waitlist_success_goal,
+  NULL AS join_waitlist_intent_goal, --don't see any waitlist option in GA4 for VPN
+  NULL AS join_waitlist_success_goal,  --don't see any waitlist option in GA4 for VPN
   NULL AS sign_in_intent_goal, --not sure how to add this yet
   vpn_dl_gls.download_intent_goal,
   vpn_dl_gls.download_installer_intent_goal,

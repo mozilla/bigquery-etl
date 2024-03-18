@@ -232,17 +232,23 @@ vpn_dl_goals AS (
     `site`
 )
 SELECT
-  COALESCE(ssns.`date`, vpn_sub_gls.`date`) AS `date`,
-  COALESCE(ssns.device_category, vpn_sub_gls.device_category) AS device_category,
-  COALESCE(ssns.operating_system, vpn_sub_gls.operating_system) AS operating_system,
-  COALESCE(ssns.browser, vpn_sub_gls.browser) AS browser,
-  COALESCE(ssns.`language`, vpn_sub_gls.`language`) AS `language`,
-  COALESCE(ssns.country, vpn_sub_gls.country) AS country,
-  COALESCE(ssns.source, vpn_sub_gls.source) AS source,
-  COALESCE(ssns.medium, vpn_sub_gls.medium) AS medium,
-  COALESCE(ssns.campaign, vpn_sub_gls.campaign) AS campaign,
-  COALESCE(ssns.content, vpn_sub_gls.content) AS content,
-  COALESCE(ssns.`site`, vpn_sub_gls.`site`) AS `site`,
+  COALESCE(COALESCE(ssns.`date`, vpn_sub_gls.`date`), vpn_dl_gls.`date`) AS `date`,
+  COALESCE(
+    COALESCE(ssns.device_category, vpn_sub_gls.device_category),
+    vpn_dl_gls.device_category
+  ) AS device_category,
+  COALESCE(
+    COALESCE(ssns.operating_system, vpn_sub_gls.operating_system),
+    vpn_dl_gls.operating_system
+  ) AS operating_system,
+  COALESCE(COALESCE(ssns.browser, vpn_sub_gls.browser), vpn_dl_gls.browser) AS browser,
+  COALESCE(COALESCE(ssns.`language`, vpn_sub_gls.`language`), vpn_dl_gls.`language`) AS `language`,
+  COALESCE(COALESCE(ssns.country, vpn_sub_gls.country), vpn_dl_gls.country) AS country,
+  COALESCE(COALESCE(ssns.source, vpn_sub_gls.source), vpn_dl_gls.source) AS source,
+  COALESCE(COALESCE(ssns.medium, vpn_sub_gls.medium), vpn_dl_gls.medium) AS medium,
+  COALESCE(COALESCE(ssns.campaign, vpn_sub_gls.campaign), vpn_dl_gls.campaign) AS campaign,
+  COALESCE(COALESCE(ssns.content, vpn_sub_gls.content), vpn_dl_gls.content) AS content,
+  COALESCE(COALESCE(ssns.`site`, vpn_sub_gls.`site`), vpn_dl_gls.`site`) AS `site`,
   ssns.sessions,
   ssns.non_fx_sessions,
   vpn_sub_gls.subscribe_intent_goal,

@@ -264,29 +264,47 @@ FROM
 FULL OUTER JOIN
   vpn_subscribe_goals_stg AS vpn_sub_gls
   ON ssns.`date` = vpn_sub_gls.`date`
-  AND ssns.device_category = vpn_sub_gls.device_category
-  AND ssns.operating_system = vpn_sub_gls.operating_system
-  AND ssns.browser = vpn_sub_gls.browser
-  AND ssns.`language` = vpn_sub_gls.`language`
-  AND ssns.country = vpn_sub_gls.country
-  AND ssns.source = vpn_sub_gls.source
-  AND ssns.medium = vpn_sub_gls.medium
-  AND ssns.campaign = vpn_sub_gls.campaign
-  AND ssns.content = vpn_sub_gls.content
-  AND ssns.`site` = vpn_sub_gls.`site`
+  AND COALESCE(ssns.device_category, 'Unknown') = COALESCE(vpn_sub_gls.device_category, 'Unknown')
+  AND COALESCE(ssns.operating_system, 'Unknown') = COALESCE(vpn_sub_gls.operating_system, 'Unknown')
+  AND COALESCE(ssns.browser, 'Unknown') = COALESCE(vpn_sub_gls.browser, 'Unknown')
+  AND COALESCE(ssns.`language`, 'Unknown') = COALESCE(vpn_sub_gls.`language`, 'Unknown')
+  AND COALESCE(ssns.country, 'Unknown') = COALESCE(vpn_sub_gls.country, 'Unknown')
+  AND COALESCE(ssns.source, '') = COALESCE(vpn_sub_gls.source, '')
+  AND COALESCE(ssns.medium, '') = COALESCE(vpn_sub_gls.medium, '')
+  AND COALESCE(ssns.campaign, '') = COALESCE(vpn_sub_gls.campaign, '')
+  AND COALESCE(ssns.content, '') = COALESCE(vpn_sub_gls.content, '')
+  AND COALESCE(ssns.`site`, '') = COALESCE(vpn_sub_gls.`site`, '')
 FULL OUTER JOIN
   vpn_dl_goals AS vpn_dl_gls
   ON COALESCE(ssns.`date`, vpn_sub_gls.`date`) = vpn_dl_gls.`date`
-  AND COALESCE(ssns.device_category, vpn_sub_gls.device_category) = vpn_dl_gls.device_category
-  AND COALESCE(ssns.operating_system, vpn_sub_gls.operating_system) = vpn_dl_gls.operating_system
-  AND COALESCE(ssns.browser, vpn_sub_gls.browser) = vpn_dl_gls.browser
-  AND COALESCE(ssns.`language`, vpn_sub_gls.`language`) = vpn_dl_gls.`language`
-  AND COALESCE(ssns.country, vpn_sub_gls.country) = vpn_dl_gls.country
-  AND COALESCE(ssns.source, vpn_sub_gls.source) = vpn_dl_gls.source
-  AND COALESCE(ssns.medium, vpn_sub_gls.medium) = vpn_dl_gls.medium
-  AND COALESCE(ssns.campaign, vpn_sub_gls.campaign) = vpn_dl_gls.campaign
-  AND COALESCE(ssns.content, vpn_sub_gls.content) = vpn_dl_gls.content
-  AND COALESCE(ssns.`site`, vpn_sub_gls.`site`) = vpn_dl_gls.`site`
+  AND COALESCE(COALESCE(ssns.device_category, vpn_sub_gls.device_category), 'Unknown') = COALESCE(
+    vpn_dl_gls.device_category,
+    'Unknown'
+  )
+  AND COALESCE(COALESCE(ssns.operating_system, vpn_sub_gls.operating_system), 'Unknown') = COALESCE(
+    vpn_dl_gls.operating_system,
+    'Unknown'
+  )
+  AND COALESCE(COALESCE(ssns.browser, vpn_sub_gls.browser), 'Unknown') = COALESCE(
+    vpn_dl_gls.browser,
+    'Unknown'
+  )
+  AND COALESCE(COALESCE(ssns.`language`, vpn_sub_gls.`language`), 'Unknown') = COALESCE(
+    vpn_dl_gls.`language`,
+    'Unknown'
+  )
+  AND COALESCE(COALESCE(ssns.country, vpn_sub_gls.country), 'Unknown') = COALESCE(
+    vpn_dl_gls.country,
+    'Unknown'
+  )
+  AND COALESCE(COALESCE(ssns.source, vpn_sub_gls.source), '') = COALESCE(vpn_dl_gls.source, '')
+  AND COALESCE(COALESCE(ssns.medium, vpn_sub_gls.medium), '') = COALESCE(vpn_dl_gls.medium, '')
+  AND COALESCE(COALESCE(ssns.campaign, vpn_sub_gls.campaign), '') = COALESCE(
+    vpn_dl_gls.campaign,
+    ''
+  )
+  AND COALESCE(COALESCE(ssns.content, vpn_sub_gls.content), '') = COALESCE(vpn_dl_gls.content, '')
+  AND COALESCE(COALESCE(ssns.`site`, vpn_sub_gls.`site`), '') = COALESCE(vpn_dl_gls.`site`, '')
 LEFT OUTER JOIN
   `moz-fx-data-shared-prod.static.third_party_standardized_country_names` AS std_cntry
   ON COALESCE(

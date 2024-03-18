@@ -38455,6 +38455,9 @@ fields:
         - name: shopping_auto_open_user_disabled
           type: BOOLEAN
           mode: NULLABLE
+        - name: browser_backup_prof_d_disk_space
+          type: INTEGER
+          mode: NULLABLE
     - name: socket
       type: RECORD
       mode: NULLABLE

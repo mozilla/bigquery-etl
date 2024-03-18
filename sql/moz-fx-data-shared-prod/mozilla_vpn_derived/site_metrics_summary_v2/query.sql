@@ -160,10 +160,51 @@ vpn_dl_goals AS (
     collected_traffic_source.manual_campaign_name AS campaign,
     collected_traffic_source.manual_content AS content,
     'mozilla.org' AS `site`,
-    --fix below here
-    download_intent_goal,
-    download_installer_intent_goal
-    --fix above here
+    COUNT(
+      DISTINCT(
+        user_pseudo_id || '-' || CAST(
+          (
+            SELECT
+              `value`
+            FROM
+              UNNEST(event_params)
+            WHERE
+              key = 'ga_session_id'
+            LIMIT
+              1
+          ).int_value AS STRING
+        )
+      )
+    ) AS download_intent_goal,
+    COUNT(
+      DISTINCT(
+        CASE
+          WHEN (
+              SELECT
+                `value`
+              FROM
+                UNNEST(event_params)
+              WHERE
+                key = 'page_location'
+              LIMIT
+                1
+            ).string_value LIKE "%/products/vpn/download/windows/thanks%"
+            THEN user_pseudo_id || '-' || CAST(
+                (
+                  SELECT
+                    `value`
+                  FROM
+                    UNNEST(event_params)
+                  WHERE
+                    key = 'ga_session_id'
+                  LIMIT
+                    1
+                ).int_value AS STRING
+              )
+          ELSE NULL
+        END
+      )
+    ) AS download_installer_intent_goal
   FROM
     `moz-fx-data-marketing-prod.analytics_313696158.events_*`
   WHERE
@@ -208,7 +249,6 @@ SELECT
   ssns.non_fx_sessions,
   vpn_sub_gls.subscribe_intent_goal,
   vpn_sub_gls.non_fx_subscribe_intent_goal,
-  --fix below
   gls.join_waitlist_intent_goal,
   gls.join_waitlist_success_goal,
   NULL AS gls.sign_in_intent_goal, --not sure how to add this yet

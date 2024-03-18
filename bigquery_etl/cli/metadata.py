@@ -127,6 +127,8 @@ def publish(name: str, sql_dir: Optional[str], project_id: Optional[str]) -> Non
         except FileNotFoundError:
             print("No metadata file for: {}.{}.{}".format(project, dataset, table))
 
+    return None
+
 
 @metadata.command(
     help="""
@@ -171,5 +173,3 @@ def deprecate(
 
     if not table_metadata_files:
         raise FileNotFoundError(f"No metadata file(s) were found for: {name}")
-
-    return None

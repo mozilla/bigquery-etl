@@ -193,17 +193,17 @@ vpn_dl_goals AS (
     `site`
 )
 SELECT
-  ssns.`date`,
-  ssns.device_category,
-  ssns.operating_system,
-  ssns.browser,
-  ssns.`language`,
-  ssns.country,
-  ssns.source,
-  ssns.medium,
-  ssns.campaign,
-  ssns.content,
-  ssns.`site`,
+  COALESCE(ssns.`date`, vpn_sub_gls.`date`) AS `date`,
+  COALESCE(ssns.device_category, vpn_sub_gls.device_category) AS device_category,
+  COALESCE(ssns.operating_system, vpn_sub_gls.operating_system) AS operating_system,
+  COALESCE(ssns.browser, vpn_sub_gls.browser) AS browser,
+  COALESCE(ssns.`language`, vpn_sub_gls.`language`) AS `language`,
+  COALESCE(ssns.country, vpn_sub_gls.country) AS country,
+  COALESCE(ssns.source, vpn_sub_gls.source) AS source,
+  COALESCE(ssns.medium, vpn_sub_gls.medium) AS medium,
+  COALESCE(ssns.campaign, vpn_sub_gls.campaign) AS campaign,
+  COALESCE(ssns.content, vpn_sub_gls.content) AS content,
+  COALESCE(ssns.`site`, vpn_sub_gls.`site`) AS `site`,
   ssns.sessions,
   ssns.non_fx_sessions,
   vpn_sub_gls.subscribe_intent_goal,
@@ -212,41 +212,39 @@ SELECT
   gls.join_waitlist_intent_goal,
   gls.join_waitlist_success_goal,
   NULL AS gls.sign_in_intent_goal, --not sure how to add this yet
-  gls.download_intent_goal,
-  gls.download_installer_intent_goal,
+  vpn_dl_gls.download_intent_goal,
+  vpn_dl_gls.download_installer_intent_goal,
   std_cntry.standardized_country AS standardized_country_name
 FROM
   sessions_stg AS ssns
-LEFT JOIN
+FULL OUTER JOIN
   vpn_subscribe_goals_stg AS vpn_sub_gls
-  USING (
-    `date`,
-    device_category,
-    operating_system,
-    browser,
-    `language`,
-    country,
-    source,
-    medium,
-    campaign,
-    content,
-    `site`
-  )
-LEFT OUTER JOIN
+  ON ssns.`date` = vpn_sub_gls.`date`
+  AND ssns.device_category = vpn_sub_gls.device_category
+  AND ssns.operating_system = vpn_sub_gls.operating_system
+  AND ssns.browser = vpn_sub_gls.browser
+  AND ssns.`language` = vpn_sub_gls.`language`
+  AND ssns.country = vpn_sub_gls.country
+  AND ssns.source = vpn_sub_gls.source
+  AND ssns.medium = vpn_sub_gls.medium
+  AND ssns.campaign = vpn_sub_gls.campaign
+  AND ssns.content = vpn_sub_gls.content
+  AND ssns.`site` = vpn_sub_gls.`site`
+FULL OUTER JOIN
   vpn_dl_goals AS vpn_dl_gls
-  USING (
-    `date`,
-    device_category,
-    operating_system,
-    browser,
-    `language`,
-    country,
-    source,
-    medium,
-    campaign,
-    content,
-    `site`
-  )
+  ON COALESCE(ssns.`date`, vpn_sub_gls.`date`) = vpn_dl_gls.`date`
+  AND COALESCE(ssns.device_category, vpn_sub_gls.device_category) = vpn_dl_gls.device_category
+  AND COALESCE(ssns.operating_system, vpn_sub_gls.operating_system) = vpn_dl_gls.operating_system
+  AND COALESCE(ssns.browser, vpn_sub_gls.browser) = vpn_dl_gls.browser
+  AND COALESCE(ssns.`language`, vpn_sub_gls.`language`) = vpn_dl_gls.`language`
+  AND COALESCE(ssns.country, vpn_sub_gls.country) = vpn_dl_gls.country
+  AND COALESCE(ssns.source, vpn_sub_gls.source) = vpn_dl_gls.source
+  AND COALESCE(ssns.medium, vpn_sub_gls.medium) = vpn_dl_gls.medium
+  AND COALESCE(ssns.campaign, vpn_sub_gls.campaign) = vpn_dl_gls.campaign
+  AND COALESCE(ssns.content, vpn_sub_gls.content) = vpn_dl_gls.content
+  AND COALESCE(ssns.`site`, vpn_sub_gls.`site`) = vpn_dl_gls.`site`
 LEFT OUTER JOIN
   `moz-fx-data-shared-prod.static.third_party_standardized_country_names` AS std_cntry
-  ON stg.country = std_cntry.raw_country
+  ON COALESCE(
+    COALESCE(ssns.country, vpn_sub_gls.country) vpn_dl_gls.country
+  ) = std_cntry.raw_country

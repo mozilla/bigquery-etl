@@ -2346,3 +2346,6 @@ fields:
   - name: value
     type: INTEGER
     mode: NULLABLE
+- name: days_active_bits
+  type: INTEGER
+  mode: NULLABLE

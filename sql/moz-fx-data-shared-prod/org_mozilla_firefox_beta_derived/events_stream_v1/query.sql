@@ -14,7 +14,9 @@ WITH base AS (
         client_info.os AS os,
         client_info.os_version AS os_version,
         client_info.telemetry_sdk_build AS telemetry_sdk_build,
-        client_info.build_date AS build_date
+        client_info.build_date AS build_date,
+        client_info.session_id AS session_id,
+        client_info.session_count AS session_count
       ) AS client_info,
       STRUCT(
         ping_info.seq,

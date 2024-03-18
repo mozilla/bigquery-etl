@@ -251,7 +251,7 @@ SELECT
   vpn_sub_gls.non_fx_subscribe_intent_goal,
   gls.join_waitlist_intent_goal,
   gls.join_waitlist_success_goal,
-  NULL AS gls.sign_in_intent_goal, --not sure how to add this yet
+  NULL AS sign_in_intent_goal, --not sure how to add this yet
   vpn_dl_gls.download_intent_goal,
   vpn_dl_gls.download_installer_intent_goal,
   std_cntry.standardized_country AS standardized_country_name
@@ -286,5 +286,6 @@ FULL OUTER JOIN
 LEFT OUTER JOIN
   `moz-fx-data-shared-prod.static.third_party_standardized_country_names` AS std_cntry
   ON COALESCE(
-    COALESCE(ssns.country, vpn_sub_gls.country) vpn_dl_gls.country
+    COALESCE(ssns.country, vpn_sub_gls.country),
+    vpn_dl_gls.country
   ) = std_cntry.raw_country

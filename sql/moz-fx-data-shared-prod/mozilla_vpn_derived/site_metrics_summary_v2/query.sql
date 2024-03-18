@@ -75,7 +75,7 @@ WITH sessions_stg AS (
     collected_traffic_source.manual_content,
     `site`
 ),
-goals_stg AS (
+vpn_subscribe_goals_stg AS (
   SELECT
     PARSE_DATE('%Y%m%d', event_date) AS `date`,
     device.category AS device_category,
@@ -124,13 +124,8 @@ goals_stg AS (
       ),
       0
     ) AS non_fx_subscribe_intent_goal,
-    --fix below here
-    join_waitlist_intent_goal,
-    join_waitlist_success_goal,
-    sign_in_intent_goal,
-    download_intent_goal,
-    download_installer_intent_goal
-    --fix above here
+    NULL AS join_waitlist_intent_goal, --there is no wait list option in GA4 that I can see
+    NULL AS join_waitlist_success_goal,--there is no wait list option in GA4 that I can see
   FROM
     `moz-fx-data-marketing-prod.analytics_313696158.events_*`
   LEFT JOIN
@@ -139,6 +134,63 @@ goals_stg AS (
     _TABLE_SUFFIX = FORMAT_DATE('%Y%m%d', @submission_date)
     AND event_name = 'begin_checkout'
     AND i.item_name = 'vpn'
+  GROUP BY
+    PARSE_DATE('%Y%m%d', event_date) AS `date`,
+    device.category,
+    device.operating_system,
+    device.web_info.browser,
+    device.language,
+    geo.country,
+    collected_traffic_source.manual_source,
+    collected_traffic_source.manual_medium,
+    collected_traffic_source.manual_campaign_name,
+    collected_traffic_source.manual_content,
+    `site`
+),
+vpn_dl_goals AS (
+  SELECT
+    PARSE_DATE('%Y%m%d', event_date) AS `date`,
+    device.category AS device_category,
+    device.operating_system AS operating_system,
+    device.web_info.browser AS browser,
+    device.language AS `language`,
+    geo.country AS country,
+    collected_traffic_source.manual_source AS source,
+    collected_traffic_source.manual_medium AS medium,
+    collected_traffic_source.manual_campaign_name AS campaign,
+    collected_traffic_source.manual_content AS content,
+    'mozilla.org' AS `site`,
+    --fix below here
+    download_intent_goal,
+    download_installer_intent_goal
+    --fix above here
+  FROM
+    `moz-fx-data-marketing-prod.analytics_313696158.events_*`
+  WHERE
+    _TABLE_SUFFIX = FORMAT_DATE('%Y%m%d', @submission_date)
+    --page is the VPN download page
+    AND (
+      SELECT
+        `value`
+      FROM
+        UNNEST(event_params)
+      WHERE
+        key = 'page_location'
+      LIMIT
+        1
+    ).string_value LIKE "%/products/vpn/download/%"
+  GROUP BY
+    PARSE_DATE('%Y%m%d', event_date) AS `date`,
+    device.category,
+    device.operating_system,
+    device.web_info.browser,
+    device.language,
+    geo.country,
+    collected_traffic_source.manual_source,
+    collected_traffic_source.manual_medium,
+    collected_traffic_source.manual_campaign_name,
+    collected_traffic_source.manual_content,
+    `site`
 )
 SELECT
   ssns.`date`,
@@ -152,20 +204,21 @@ SELECT
   ssns.campaign,
   ssns.content,
   ssns.`site`,
-  stg.sessions,
+  ssns.sessions,
   ssns.non_fx_sessions,
-  gls.subscribe_intent_goal,
-  gls.non_fx_subscribe_intent_goal,
+  vpn_sub_gls.subscribe_intent_goal,
+  vpn_sub_gls.non_fx_subscribe_intent_goal,
+  --fix below
   gls.join_waitlist_intent_goal,
   gls.join_waitlist_success_goal,
-  gls.sign_in_intent_goal,
+  NULL AS gls.sign_in_intent_goal, --not sure how to add this yet
   gls.download_intent_goal,
   gls.download_installer_intent_goal,
   std_cntry.standardized_country AS standardized_country_name
 FROM
-  sessions_stg ssns
+  sessions_stg AS ssns
 LEFT JOIN
-  goals_stg gls
+  vpn_subscribe_goals_stg AS vpn_sub_gls
   USING (
     `date`,
     device_category,
@@ -180,5 +233,20 @@ LEFT JOIN
     `site`
   )
 LEFT OUTER JOIN
-  `moz-fx-data-shared-prod.static.third_party_standardized_country_names` std_cntry
+  vpn_dl_goals AS vpn_dl_gls
+  USING (
+    `date`,
+    device_category,
+    operating_system,
+    browser,
+    `language`,
+    country,
+    source,
+    medium,
+    campaign,
+    content,
+    `site`
+  )
+LEFT OUTER JOIN
+  `moz-fx-data-shared-prod.static.third_party_standardized_country_names` AS std_cntry
   ON stg.country = std_cntry.raw_country

@@ -63,7 +63,7 @@ WITH sessions_stg AS (
         1
     ).string_value LIKE "%/products/vpn/%"
   GROUP BY
-    PARSE_DATE('%Y%m%d', event_date) AS `date`,
+    PARSE_DATE('%Y%m%d', event_date),
     device.category,
     device.operating_system,
     device.web_info.browser,
@@ -135,7 +135,7 @@ vpn_subscribe_goals_stg AS (
     AND event_name = 'begin_checkout'
     AND i.item_name = 'vpn'
   GROUP BY
-    PARSE_DATE('%Y%m%d', event_date) AS `date`,
+    PARSE_DATE('%Y%m%d', event_date),
     device.category,
     device.operating_system,
     device.web_info.browser,
@@ -221,7 +221,7 @@ vpn_dl_goals AS (
         1
     ).string_value LIKE "%/products/vpn/download/%"
   GROUP BY
-    PARSE_DATE('%Y%m%d', event_date) AS `date`,
+    PARSE_DATE('%Y%m%d', event_date),
     device.category,
     device.operating_system,
     device.web_info.browser,

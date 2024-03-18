@@ -154,7 +154,7 @@ class Metadata:
     references: Dict = attr.ib({})
     external_data: Optional[ExternalDataMetadata] = attr.ib(None)
     deprecated: bool = attr.ib(False)
-    deletion_date: date = attr.ib(None)
+    deletion_date: Optional[date] = attr.ib(None)
 
     @owners.validator
     def validate_owners(self, attribute, value):

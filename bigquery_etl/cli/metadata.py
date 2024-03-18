@@ -151,8 +151,8 @@ def publish(name: str, sql_dir: Optional[str], project_id: Optional[str]) -> Non
 )
 def deprecate(
     name: str,
-    sql_dir: Optional[str],
-    project_id: Optional[str],
+    sql_dir: str,
+    project_id: str,
     deletion_date: datetime,
 ) -> None:
     """Deprecate Bigquery table by updating metadata yaml file(s)."""

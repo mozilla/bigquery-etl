@@ -127,8 +127,6 @@ def publish(name: str, sql_dir: Optional[str], project_id: Optional[str]) -> Non
         except FileNotFoundError:
             print("No metadata file for: {}.{}.{}".format(project, dataset, table))
 
-    return None
-
 
 @metadata.command(
     help="""
@@ -147,7 +145,6 @@ def publish(name: str, sql_dir: Optional[str], project_id: Optional[str]) -> Non
 @click.option(
     "--deletion_date",
     "--deletion-date",
-    "-d",
     help="Date when table is scheduled for deletion. Date format: yyyy-mm-dd",
     type=click.DateTime(formats=["%Y-%m-%d"]),
     default=datetime.today() + relativedelta(months=+3),
@@ -156,7 +153,7 @@ def deprecate(
     name: str,
     sql_dir: Optional[str],
     project_id: Optional[str],
-    deletion_date,
+    deletion_date: datetime,
 ) -> None:
     """Deprecate Bigquery table by updating metadata yaml file(s)."""
     table_metadata_files = paths_matching_name_pattern(

@@ -60,13 +60,13 @@ function write_clients_daily_aggregates {
 
     # e.g. baseline_v1
     local tables;
-    # GLAM only supports tables with glean_ping_1 schema.
+    # GLAM only supports tables with glean_ping_* schema.
     # Also excluding use_counters because they are not supported
     # and their generated query is too big to run
     tables=$(
         bq ls "$qualified" \
         | grep TABLE \
-        | grep glean_ping_1 \
+        | grep 'glean_ping_\d\+' \
         | grep -v use_counters \
         | awk '{print $1}'
     )

@@ -366,6 +366,33 @@ class TestMetadata:
         assert metadata["deprecated"]
         assert metadata["deletion_date"] == datetime(2024, 3, 2).date()
 
+    def test_metadata_deprecate_set_invalid_deletion_date_should_fail(self, runner):
+        with tempfile.TemporaryDirectory() as tmpdirname:
+            distutils.dir_util.copy_tree(str(TEST_DIR), str(tmpdirname))
+
+            qualified_table_name = (
+                "moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6"
+            )
+            result = runner.invoke(
+                deprecate,
+                [
+                    qualified_table_name,
+                    "--deletion_date=2024-02",
+                    "--sql_dir=" + str(tmpdirname) + "/sql",
+                ],
+            )
+            with open(
+                tmpdirname
+                + "/sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_v6/metadata.yaml",
+                "r",
+            ) as stream:
+                metadata = yaml.safe_load(stream)
+
+        assert result.exit_code == 2
+        assert "deprecated" not in metadata
+        assert "deletion_date" not in metadata
+        assert "Invalid value for '--deletion_date'" in result.output
+
     def test_metadata_deprecate_no_metadata(self, runner):
         with tempfile.TemporaryDirectory() as tmpdirname:
             distutils.dir_util.copy_tree(str(TEST_DIR), str(tmpdirname))

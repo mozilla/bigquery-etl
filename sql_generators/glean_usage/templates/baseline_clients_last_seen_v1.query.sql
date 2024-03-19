@@ -34,8 +34,8 @@ WITH _current AS (
     -- In this raw table, we capture the history of activity over the past
     -- 28 days for each usage criterion as a single 64-bit integer. The
     -- rightmost bit in 'days_since_seen' represents whether the user sent a
-    -- baseline ping in the submission_date and the similarly in days_active_bits
-    -- it represents whether the user was active on the same date.
+    -- baseline ping in the submission_date and similarly, the rightmost bit in
+    -- days_active_bits represents whether the user counts as active on that date.
     CAST(TRUE AS INT64) AS days_seen_bits,
     CAST(TRUE AS INT64) & CAST(durations > 0  AS INT64) AS days_active_bits,
     udf.days_since_created_profile_as_28_bits(

@@ -312,6 +312,73 @@ fields:
         Collected only on mobile apps.
 
         '
+    - name: connection_health_no_signal_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Count of times that the connection health check results
+
+        in no signal.
+
+
+        The health check counters must not be considered as markers of time. There
+        is a possible
+
+        situation in the health check (which calls the telemetry) which frequently
+        results in more
+
+        than one count per second. The situation: A health check is conducted because
+        a network
+
+        check did not return, and milliseconds later that network check returns and
+        another health
+
+        check is started because of the return.
+
+        '
+    - name: connection_health_stable_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Count of times that the connection health check succeeds.
+
+
+        The health check counters must not be considered as markers of time. There
+        is a possible
+
+        situation in the health check (which calls the telemetry) which frequently
+        results in more
+
+        than one count per second. The situation: A health check is conducted because
+        a network
+
+        check did not return, and milliseconds later that network check returns and
+        another health
+
+        check is started because of the return.
+
+        '
+    - name: connection_health_unstable_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Count of times that the connection health check results
+
+        in unstable.
+
+
+        The health check counters must not be considered as markers of time. There
+        is a possible
+
+        situation in the health check (which calls the telemetry) which frequently
+        results in more
+
+        than one count per second. The situation: A health check is conducted because
+        a network
+
+        check did not return, and milliseconds later that network check returns and
+        another health
+
+        check is started because of the return.
+
+        '
   - name: datetime
     type: RECORD
     mode: NULLABLE
@@ -380,6 +447,166 @@ fields:
       type: STRING
       mode: NULLABLE
       description: 'A unique identifier to connect the app and daemon Glean instances.
+
+        '
+  - name: timing_distribution
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: connection_health_no_signal_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time spent in no signal state.
+
+
+        Only collected on desktop for vpnsession, as mobile apps
+
+        frequently are relaunched during VPN sessions. It is
+
+        collected in daemonsession, currently only on Android.
+
+        To be done on iOS: https://mozilla-hub.atlassian.net/browse/VPN-4979
+
+        '
+    - name: connection_health_stable_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time spent in stable state.
+
+
+        Only collected on desktop for vpnsession, as mobile apps
+
+        frequently are relaunched during VPN sessions. It is
+
+        collected in daemonsession, currently only on Android.
+
+        To be done on iOS: https://mozilla-hub.atlassian.net/browse/VPN-4979
+
+        '
+    - name: connection_health_unstable_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time spent in unstable state.
+
+
+        Only collected on desktop for vpnsession, as mobile apps
+
+        frequently are relaunched during VPN sessions. It is
+
+        collected in daemonsession, currently only on Android.
+
+        To be done on iOS: https://mozilla-hub.atlassian.net/browse/VPN-4979
 
         '
 - name: normalized_app_name

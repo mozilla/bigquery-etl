@@ -215,3 +215,9 @@ fields:
 - name: activity_segment
   type: STRING
   mode: NULLABLE
+- name: locale
+  type: STRING
+  mode: NULLABLE
+- name: had_non_search_engagement
+  type: BOOLEAN
+  mode: NULLABLE

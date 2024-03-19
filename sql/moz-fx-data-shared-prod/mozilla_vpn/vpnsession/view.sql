@@ -76,7 +76,8 @@ SELECT
       metrics.string.glean_client_annotation_experimentation_id
     ) AS `string`,
     STRUCT(metrics.uuid.session_session_id, metrics.uuid.session_installation_id) AS `uuid`,
-    metrics.counter
+    metrics.counter,
+    metrics.timing_distribution
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,

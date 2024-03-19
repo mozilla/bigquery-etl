@@ -75,7 +75,8 @@ SELECT
       metrics.string.session_daemon_session_source,
       metrics.string.glean_client_annotation_experimentation_id
     ) AS `string`,
-    metrics.uuid
+    metrics.uuid,
+    metrics.timing_distribution
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,

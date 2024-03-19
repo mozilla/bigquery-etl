@@ -10,7 +10,7 @@ WITH _current AS (
       COALESCE(
         scalar_parent_browser_engagement_total_uri_count_normal_and_private_mode_sum,
         scalar_parent_browser_engagement_total_uri_count_sum
-      ) AS INT64
+      ) > 0 AS INT64
     ) AS days_active_bits,
     -- For measuring Active MAU, where this is the days since this
     -- client_id was an Active User as defined by

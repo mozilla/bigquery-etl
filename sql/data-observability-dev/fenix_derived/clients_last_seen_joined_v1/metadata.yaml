@@ -1,0 +1,23 @@
+friendly_name: Clients Last Seen Joined
+description: |-
+  Join on baseline and metrics views, but uses a LEFT JOIN
+  such that a given client will not appear in the result if
+  it is only represented in the metrics-based table.
+owners:
+- kik@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_data_observability_test_data_copy
+  depends_on_past: true
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+    - normalized_channel
+    - sample_id

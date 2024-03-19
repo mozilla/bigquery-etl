@@ -214,6 +214,8 @@ jobs:
                     echo "Check dry run for all queries because [run-tests] in" \
                       "commit message"
                     PATHS=sql
+                  elif [ "<< pipeline.parameters.skip-stage-deploys >>" = "true" ]; then
+                    PATHS=sql
                   else
                     PATHS="sql/bigquery-etl-integration-test"
                   fi

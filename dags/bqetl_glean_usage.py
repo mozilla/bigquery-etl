@@ -661,6 +661,13 @@ with DAG(
         )
 
         ExternalTaskMarker(
+            task_id="bqetl_data_observability_test_data_copy__wait_for_fenix_derived__clients_last_seen_joined__v1",
+            external_dag_id="bqetl_data_observability_test_data_copy",
+            external_task_id="wait_for_fenix_derived__clients_last_seen_joined__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=64800)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_unified__wait_for_fenix_derived__clients_last_seen_joined__v1",
             external_dag_id="bqetl_unified",
             external_task_id="wait_for_fenix_derived__clients_last_seen_joined__v1",
@@ -694,6 +701,21 @@ with DAG(
         depends_on_past=False,
         task_group=task_group_fenix,
     )
+
+    with TaskGroup(
+        "fenix_derived__metrics_clients_last_seen__v1_external",
+        parent_group=task_group_fenix,
+    ) as fenix_derived__metrics_clients_last_seen__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_data_observability_test_data_copy__wait_for_fenix_derived__metrics_clients_last_seen__v1",
+            external_dag_id="bqetl_data_observability_test_data_copy",
+            external_task_id="wait_for_fenix_derived__metrics_clients_last_seen__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=64800)).isoformat() }}",
+        )
+
+        fenix_derived__metrics_clients_last_seen__v1_external.set_upstream(
+            fenix_derived__metrics_clients_last_seen__v1
+        )
 
     firefox_desktop_background_defaultagent_derived__baseline_clients_daily__v1 = bigquery_etl_query(
         task_id="firefox_desktop_background_defaultagent_derived__baseline_clients_daily__v1",

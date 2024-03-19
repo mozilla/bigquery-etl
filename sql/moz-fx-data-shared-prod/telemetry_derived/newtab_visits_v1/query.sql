@@ -41,6 +41,7 @@ visit_metadata AS (
     ANY_VALUE(normalized_os_version) AS normalized_os_version,
     ANY_VALUE(normalized_country_code) AS country_code,
     ANY_VALUE(normalized_channel) AS channel,
+    ANY_VALUE(client_info.locale) AS locale,
     ANY_VALUE(client_info.app_display_version) AS browser_version,
     "Firefox Desktop" AS browser_name,
     ANY_VALUE(metrics.string.search_engine_default_engine_id) AS default_search_engine,
@@ -60,7 +61,8 @@ visit_metadata AS (
     ANY_VALUE(
       IF(event_name = "opened", mozfun.map.get_key(event_details, "source"), NULL)
     ) AS newtab_open_source,
-    LOGICAL_OR(event_name IN ("click", "issued", "save")) AS had_non_impression_engagement
+    LOGICAL_OR(event_name IN ("click", "issued", "save")) AS had_non_impression_engagement,
+    LOGICAL_OR(event_name IN ("click", "save")) AS had_non_search_engagement
   FROM
     events_unnested
   GROUP BY

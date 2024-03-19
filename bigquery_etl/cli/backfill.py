@@ -324,14 +324,14 @@ def scheduled(ctx, qualified_table_name, sql_dir, project_id, status, json_path=
 
 
 @backfill.command(
-    help="""Process entry in backfill.yaml with Drafting status that has not yet been processed.
+    help="""Process entry in backfill.yaml with Initiate status that has not yet been processed.
 
     Examples:
 
     \b
 
-    # Process backfill entry for specific table
-    ./bqetl backfill process moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6
+    # Initiate backfill entry for specific table
+    ./bqetl backfill initiate moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6
 
     Use the `--project_id` option to change the project;
     default project_id is `moz-fx-data-shared-prod`.
@@ -343,27 +343,36 @@ def scheduled(ctx, qualified_table_name, sql_dir, project_id, status, json_path=
     ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod")
 )
 @click.pass_context
-def process(ctx, qualified_table_name, sql_dir, project_id):
-    """Process backfill entry with drafting status in backfill.yaml file(s)."""
-    click.echo("Backfill processing initiated....")
+def initiate(ctx, qualified_table_name, sql_dir, project_id):
+    """Process backfill entry with initiate status in backfill.yaml file(s)."""
+    click.echo("Backfill processing (initiate) started....")
 
     backfills_to_process_dict = get_scheduled_backfills(
-        sql_dir, project_id, qualified_table_name
+        sql_dir, project_id, qualified_table_name, status=BackfillStatus.INITIATE.value
     )
 
-    if backfills_to_process_dict:
-        entry_to_process = backfills_to_process_dict[qualified_table_name]
+    if not backfills_to_process_dict:
+        click.echo(f"No backfill processed for {qualified_table_name}")
+        return
 
-        click.echo(f"\nValidating backfill for {qualified_table_name} via dry run:")
-        _process_backfill(ctx, qualified_table_name, entry_to_process, dry_run=True)
+    entry_to_initiate = backfills_to_process_dict[qualified_table_name]
 
-        click.echo(f"\nProcessing backfills for {qualified_table_name}:")
-        _process_backfill(ctx, qualified_table_name, entry_to_process)
+    click.echo(
+        f"\nInitiating backfill for {qualified_table_name} with entry date {entry_to_initiate.entry_date} via dry run:"
+    )
+    _initiate_backfill(ctx, qualified_table_name, entry_to_initiate, dry_run=True)
 
-        click.echo(f"Backfill processing completed for {qualified_table_name}.")
+    click.echo(
+        f"\nInitiating backfill for {qualified_table_name} with entry date {entry_to_initiate.entry_date}:"
+    )
+    _initiate_backfill(ctx, qualified_table_name, entry_to_initiate)
+
+    click.echo(
+        f"Processed backfill for {qualified_table_name} with entry date {entry_to_initiate.entry_date}"
+    )
 
 
-def _process_backfill(ctx, qualified_table_name, entry_to_process, dry_run=None):
+def _initiate_backfill(ctx, qualified_table_name, entry: Backfill, dry_run=None):
     project, dataset, table = qualified_table_name_matching(qualified_table_name)
 
     backfill_staging_qualified_table_name = None
@@ -371,7 +380,7 @@ def _process_backfill(ctx, qualified_table_name, entry_to_process, dry_run=None)
     if not dry_run:
         backfill_staging_qualified_table_name = (
             get_backfill_staging_qualified_table_name(
-                qualified_table_name, entry_to_process.entry_date
+                qualified_table_name, entry.entry_date
             )
         )
 
@@ -389,16 +398,16 @@ def _process_backfill(ctx, qualified_table_name, entry_to_process, dry_run=None)
         query_backfill,
         name=f"{dataset}.{table}",
         project_id=project,
-        start_date=entry_to_process.start_date,
-        end_date=entry_to_process.end_date,
-        exclude=entry_to_process.excluded_dates,
+        start_date=entry.start_date,
+        end_date=entry.end_date,
+        exclude=entry.excluded_dates,
         destination_table=backfill_staging_qualified_table_name,
         dry_run=dry_run,
     )
 
 
 @backfill.command(
-    help="""Complete entry in backfill.yaml with Complete status.
+    help="""Complete entry in backfill.yaml with Complete status that has not yet been processed..
 
     Examples:
 
@@ -416,7 +425,7 @@ def _process_backfill(ctx, qualified_table_name, entry_to_process, dry_run=None)
 @project_id_option("moz-fx-data-shared-prod")
 @click.pass_context
 def complete(ctx, qualified_table_name, sql_dir, project_id):
-    """Complete backfill entry in backfill.yaml file(s)."""
+    """Process backfill entry with complete status in backfill.yaml file(s)."""
     if not is_authenticated():
         click.echo(
             "Authentication to GCP required. Run `gcloud auth login  --update-adc` "
@@ -425,20 +434,18 @@ def complete(ctx, qualified_table_name, sql_dir, project_id):
         sys.exit(1)
     client = bigquery.Client(project=project_id)
 
-    entries = get_entries_from_qualified_table_name(
-        sql_dir, qualified_table_name, BackfillStatus.COMPLETE.value
+    click.echo("Backfill processing (complete) started....")
+
+    backfills_to_process_dict = get_scheduled_backfills(
+        sql_dir, project_id, qualified_table_name, status=BackfillStatus.COMPLETE.value
     )
 
-    if not entries:
-        click.echo(f"No backfill to complete for table: {qualified_table_name} ")
-        sys.exit(1)
-    elif len(entries) > 1:
-        click.echo(
-            f"There should not be more than one entry in backfill.yaml file with status: {BackfillStatus.VALIDATED} "
-        )
-        sys.exit(1)
+    if not backfills_to_process_dict:
+        click.echo(f"No backfill processed for {qualified_table_name}")
+        return
 
-    entry_to_complete = entries[0]
+    entry_to_complete = backfills_to_process_dict[qualified_table_name]
+
     click.echo(
         f"Completing backfill for {qualified_table_name} with entry date {entry_to_complete.entry_date}:"
     )
@@ -446,18 +453,6 @@ def complete(ctx, qualified_table_name, sql_dir, project_id):
     backfill_staging_qualified_table_name = get_backfill_staging_qualified_table_name(
         qualified_table_name, entry_to_complete.entry_date
     )
-
-    # do not complete backfill when staging table does not exist
-    try:
-        client.get_table(backfill_staging_qualified_table_name)
-    except NotFound:
-        click.echo(
-            f"""
-            Backfill staging table does not exists for {qualified_table_name}:
-            {backfill_staging_qualified_table_name}
-            """
-        )
-        sys.exit(1)
 
     # clone production table
     cloned_table_full_name = get_backfill_backup_table_name(
@@ -470,6 +465,7 @@ def complete(ctx, qualified_table_name, sql_dir, project_id):
     end_date = entry_to_complete.end_date
     dates = [start_date + timedelta(i) for i in range((end_date - start_date).days + 1)]
 
+    # TODO: This should be one copy operation if the table is unpartitioned
     # replace partitions in production table that have been backfilled
     for backfill_date in dates:
         if backfill_date in entry_to_complete.excluded_dates:
@@ -488,7 +484,7 @@ def complete(ctx, qualified_table_name, sql_dir, project_id):
     )
 
     click.echo(
-        f"Completed backfill for {qualified_table_name} with entry date {entry_to_complete.entry_date}"
+        f"Processed backfill for {qualified_table_name} with entry date {entry_to_complete.entry_date}"
     )
 
 

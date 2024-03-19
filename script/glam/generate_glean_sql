@@ -60,11 +60,13 @@ function write_clients_daily_aggregates {
 
     # e.g. baseline_v1
     local tables;
-    # we're excluding use_counters because they are not supported in GLAM
+    # we're excluding glean-min schema as well as
+    # use_counters because they are not supported in GLAM
     # and generated query is too big to run
     tables=$(
         bq ls "$qualified" \
         | grep TABLE \
+        | grep -v glean-min \
         | grep -v use_counters \
         | awk '{print $1}'
     )

@@ -209,7 +209,7 @@ class View:
     def _valid_view_naming(self):
         """Validate that the created view naming matches the directory structure."""
         if not (parsed := sqlparse.parse(self.content)):
-            raise ValueError(f"Unable to parse view SQL for {self.name}")
+            raise ValueError(f"Unable to parse view SQL for {self.path}")
 
         tokens = [
             t

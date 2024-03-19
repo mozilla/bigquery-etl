@@ -6,6 +6,12 @@ WITH _current AS (
     -- 28 days for each usage criterion as a single 64-bit integer. The
     -- rightmost bit represents whether the user was active in the current day.
     CAST(TRUE AS INT64) AS days_seen_bits,
+    CAST(active_hours_sum > 0 AS INT64) & CAST(
+      COALESCE(
+        scalar_parent_browser_engagement_total_uri_count_normal_and_private_mode_sum,
+        scalar_parent_browser_engagement_total_uri_count_sum
+      ) > 0 AS INT64
+    ) AS days_active_bits,
     -- For measuring Active MAU, where this is the days since this
     -- client_id was an Active User as defined by
     -- https://docs.telemetry.mozilla.org/cookbooks/active_dau.html
@@ -68,6 +74,7 @@ WITH _current AS (
 _previous AS (
   SELECT
     days_seen_bits,
+    days_active_bits,
     days_visited_1_uri_bits,
     days_visited_5_uri_bits,
     days_visited_10_uri_bits,
@@ -80,6 +87,7 @@ _previous AS (
     days_seen_in_experiment,
     * EXCEPT (
       days_seen_bits,
+      days_active_bits,
       days_visited_1_uri_bits,
       days_visited_5_uri_bits,
       days_visited_10_uri_bits,
@@ -111,6 +119,10 @@ SELECT
       _previous.days_seen_bits,
       _current.days_seen_bits
     ) AS days_seen_bits,
+    udf.combine_adjacent_days_28_bits(
+      _previous.days_active_bits,
+      _current.days_active_bits
+    ) AS days_active_bits,
     udf.combine_adjacent_days_28_bits(
       _previous.days_visited_1_uri_bits,
       _current.days_visited_1_uri_bits

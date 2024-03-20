@@ -40,7 +40,12 @@ SELECT
   CAST(mozfun.bits28.days_since_seen(days_seen_bits) = 0 AS BOOLEAN) AS is_daily_user,
   CAST(mozfun.bits28.days_since_seen(days_active_bits) < 7 AS BOOLEAN) AS is_weekly_user,
   CAST(mozfun.bits28.days_since_seen(days_seen_bits) AS BOOLEAN) AS is_monthly_user,
-  IF(LOWER(isp) <> "browserstack" AND LOWER(distribution_id) <> "mozillaonline", TRUE, FALSE) AS is_desktop,
+  IF(
+    LOWER(isp) <> "browserstack"
+    AND LOWER(distribution_id) <> "mozillaonline",
+    TRUE,
+    FALSE
+  ) AS is_desktop,
   FALSE AS is_mobile
 FROM
   `moz-fx-data-shared-prod.telemetry_derived.clients_last_seen_v2`
@@ -66,7 +71,12 @@ SELECT
   CAST(mozfun.bits28.days_since_seen(days_seen_bits) < 7 AS BOOLEAN) AS is_weekly_user,
   CAST(mozfun.bits28.days_since_seen(days_seen_bits) AS BOOLEAN) AS is_monthly_user,
   FALSE AS is_desktop,
-  IF(LOWER(isp) <> "browserstack" AND LOWER(distribution_id) <> "mozillaonline", TRUE, FALSE) AS is_mobile
+  IF(
+    LOWER(isp) <> "browserstack"
+    AND LOWER(distribution_id) <> "mozillaonline",
+    TRUE,
+    FALSE
+  ) AS is_mobile
 FROM
   `moz-fx-data-shared-prod.fenix.baseline_clients_last_seen`
 LEFT JOIN

@@ -1,0 +1,20 @@
+friendly_name: Suppression List
+description: |
+  Suppression List from Acoustic Combination of a one-time upload 2024-03-20_main_suppression_list, the ongoing fivetran updates for the suppression list combined with the contact list in order to get the Acoustic email_id.
+owners:
+- leli@mozilla.com
+labels:
+  dag: bqetl_acoustic_suppression_list
+  owner1: leli
+scheduling:
+  dag_name: bqetl_acoustic_suppression_list
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:braze
+references:
+  query.sql:
+  - moz-fx-data-bq-fivetran.acoustic_sftp.suppression_export_v_1
+  - moz-fx-data-marketing-prod.acoustic.2024-03-20_main_suppression_list
+  - moz-fx-data-marketing-prod.acoustic.contact_raw_v1

@@ -99,6 +99,17 @@ with DAG(
         depends_on_past=False,
     )
 
+    with TaskGroup(
+        "acoustic__contact_raw__v1_external",
+    ) as acoustic__contact_raw__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_acoustic_suppression_list__wait_for_acoustic__contact_raw__v1",
+            external_dag_id="bqetl_acoustic_suppression_list",
+            external_task_id="wait_for_acoustic__contact_raw__v1",
+        )
+
+        acoustic__contact_raw__v1_external.set_upstream(acoustic__contact_raw__v1)
+
     acoustic__contact__v1.set_upstream(acoustic__contact_raw__v1)
 
     acoustic__contact_current_snapshot__v1.set_upstream(acoustic__contact__v1)

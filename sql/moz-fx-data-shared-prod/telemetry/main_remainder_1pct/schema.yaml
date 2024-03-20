@@ -22813,6 +22813,12 @@ fields:
         - name: browser_backup_prof_d_disk_space
           type: INTEGER
           mode: NULLABLE
+        - name: browser_backup_favicons_size
+          type: INTEGER
+          mode: NULLABLE
+        - name: browser_backup_places_size
+          type: INTEGER
+          mode: NULLABLE
     - name: socket
       type: RECORD
       mode: NULLABLE

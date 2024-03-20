@@ -364,6 +364,8 @@ generate:
     skip_apps:
     - mlhackweek_search
     - moso_mastodon_android
+    - moso_mastodon_web
+    - moso_mastodon_backend
     - regrets_reporter
     - regrets_reporter_ucs
     - tiktokreporter_android

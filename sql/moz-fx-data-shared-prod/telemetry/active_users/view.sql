@@ -1,7 +1,8 @@
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.telemetry.active_users`
 AS
--- Distribution_id is only collected for Fenix as of Q1/2024. See e.g. Firefox iOs https://dictionary.telemetry.mozilla.org/apps/firefox_ios?page=1&search=distribution_id
+-- Distribution_id is only collected for Desktop and Fenix as of Q1/2024.
+-- See e.g. Firefox iOs https://dictionary.telemetry.mozilla.org/apps/firefox_ios?page=1&search=distribution_id
 -- TODO: Integrate distribution_id in fenix.firefox_android_clients & backfill to use it here.
 WITH fenix_distribution_id AS (
   SELECT

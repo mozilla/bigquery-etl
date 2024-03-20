@@ -11,6 +11,7 @@ OPTIONS
 AS
 SELECT
   CAST(NULL AS INT64) AS days_seen_bits,
+  CAST(NULL AS INT64) AS days_active_bits,
   CAST(NULL AS INT64) AS days_created_profile_bits,
   -- We make sure to delay * until the end so that as new columns are added
   -- to the daily table we can add those columns in the same order to the end

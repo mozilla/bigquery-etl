@@ -54,6 +54,7 @@ WITH null_checks AS (
       IF(COUNTIF(sample_id IS NULL) > 0, "sample_id", NULL),
       IF(COUNTIF(first_seen_date IS NULL) > 0, "first_seen_date", NULL),
       IF(COUNTIF(days_seen_bits IS NULL) > 0, "days_seen_bits", NULL),
+      IF(COUNTIF(days_active_bits IS NULL) > 0, "days_active_bits", NULL),
       IF(COUNTIF(days_created_profile_bits IS NULL) > 0, "days_created_profile_bits", NULL),
       IF(COUNTIF(days_seen_session_start_bits IS NULL) > 0, "days_seen_session_start_bits", NULL),
       IF(COUNTIF(days_seen_session_end_bits IS NULL) > 0, "days_seen_session_end_bits", NULL)

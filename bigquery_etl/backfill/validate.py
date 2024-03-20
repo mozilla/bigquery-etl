@@ -6,6 +6,15 @@ from typing import List
 from ..backfill.parse import DEFAULT_REASON, DEFAULT_WATCHER, Backfill, BackfillStatus
 
 
+def validate_duplicate_entry_dates(backfill_entry: Backfill, backfills: list) -> None:
+    """Check if backfill entries have the same entry dates."""
+    for backfill_entry_1 in backfills:
+        if backfill_entry.entry_date == backfill_entry_1.entry_date:
+            raise ValueError(
+                f"Duplicate backfill with entry date: {backfill_entry.entry_date}."
+            )
+
+
 def validate_excluded_dates(entry: Backfill) -> None:
     """Check if backfill excluded dates are sorted and have no duplicates."""
     if not entry.excluded_dates == sorted(entry.excluded_dates):
@@ -45,7 +54,7 @@ def validate_file(file: Path) -> None:
 
 def validate_duplicate_entry_with_initiate_status(
     backfill_entry: Backfill, backfills: list
-):
+) -> None:
     """Check if list of backfill entries have more than one entry with Initiate Status."""
     if backfill_entry.status == BackfillStatus.INITIATE:
         for backfill_entry_1 in backfills:
@@ -60,6 +69,7 @@ def validate_entries(backfills: list) -> None:
     for i, backfill_entry in enumerate(backfills):
         validate_default_watchers(backfill_entry)
         validate_default_reason(backfill_entry)
+        validate_duplicate_entry_dates(backfill_entry, backfills[i + 1 :])
         validate_excluded_dates(backfill_entry)
         validate_duplicate_entry_with_initiate_status(
             backfill_entry, backfills[i + 1 :]

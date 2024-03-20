@@ -12,6 +12,7 @@ from bigquery_etl.backfill.parse import (
 from bigquery_etl.backfill.validate import (
     validate_default_reason,
     validate_default_watchers,
+    validate_duplicate_entry_dates,
     validate_entries,
     validate_entries_are_sorted,
     validate_file,
@@ -25,6 +26,13 @@ VALID_WATCHER = "test@example.org"
 
 
 class TestValidateBackfill(object):
+
+    def test_entries_duplicate_entry_dates_should_fail(self):
+        backfills = [TEST_BACKFILL_1, TEST_BACKFILL_1]
+        with pytest.raises(ValueError) as e:
+            validate_duplicate_entry_dates(TEST_BACKFILL_1, backfills)
+
+        assert "Duplicate backfill with entry date" in str(e.value)
 
     def test_valid_reason(self):
         valid_backfill = Backfill(

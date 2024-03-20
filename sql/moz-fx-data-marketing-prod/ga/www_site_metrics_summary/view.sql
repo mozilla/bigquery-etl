@@ -5,3 +5,5 @@ SELECT
   *
 FROM
   `moz-fx-data-marketing-prod.ga_derived.www_site_metrics_summary_v2`
+WHERE
+  `date` >= '2023-10-01'

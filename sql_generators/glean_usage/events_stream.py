@@ -39,8 +39,8 @@ class EventsStreamTable(GleanTable):
         app_id = ".".join(app_id.split(".")[1:])
 
         # Skip any not-allowed app.
-        if app_id not in ConfigLoader.get(
-            "generate", "glean_usage", "events_stream", "app_ids", fallback=[]
+        if app_id in ConfigLoader.get(
+            "generate", "glean_usage", "events_stream", "skip_apps", fallback=[]
         ):
             return
 
@@ -59,6 +59,8 @@ class EventsStreamTable(GleanTable):
         """Generate the events_stream table query per app_name."""
         target_dataset = app_info[0]["app_name"]
         if target_dataset in ConfigLoader.get(
-            "generate", "glean_usage", "events_stream", "datasets", fallback=[]
+            "generate", "glean_usage", "events_stream", "skip_datasets", fallback=[]
         ):
-            super().generate_per_app(project_id, app_info, output_dir)
+            return
+
+        super().generate_per_app(project_id, app_info, output_dir)

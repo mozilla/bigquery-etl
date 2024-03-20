@@ -96,6 +96,21 @@ class TestParseBackfill(object):
         assert "Invalid" in str(e.value)
         assert "watchers" in str(e.value)
 
+    def test_empty_reason_should_fail(self):
+        with pytest.raises(ValueError) as e:
+            invalid_reason = None
+            Backfill(
+                TEST_BACKFILL_1.entry_date,
+                TEST_BACKFILL_1.start_date,
+                TEST_BACKFILL_1.end_date,
+                TEST_BACKFILL_1.excluded_dates,
+                invalid_reason,
+                TEST_BACKFILL_1.watchers,
+                TEST_BACKFILL_1.status,
+            )
+
+        assert "Reason in backfill entry should not be empty" in str(e.value)
+
     def test_multiple_watchers(self):
         valid_watchers = TEST_BACKFILL_1.watchers + [
             "test2@example.org",

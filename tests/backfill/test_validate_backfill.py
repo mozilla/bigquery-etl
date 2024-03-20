@@ -34,7 +34,7 @@ class TestValidateBackfill(object):
 
         assert "Duplicate backfill with entry date" in str(e.value)
 
-    def test_valid_reason(self):
+    def test_valid_reason_should_pass(self):
         valid_backfill = Backfill(
             TEST_BACKFILL_1.entry_date,
             TEST_BACKFILL_1.start_date,

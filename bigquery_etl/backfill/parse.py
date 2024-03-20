@@ -105,7 +105,7 @@ class Backfill:
 
     @end_date.validator
     def validate_end_date(self, attribute, value):
-        """Check that provided end date is after start date and entry date."""
+        """Check that provided end date is after start date and before entry date."""
         if value < self.start_date or value > self.entry_date:
             raise ValueError(f"Invalid end date: {value}.")
 

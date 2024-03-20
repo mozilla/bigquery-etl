@@ -372,15 +372,10 @@ generate:
     - org_mozilla_ios_tiktok_reporter_tiktok_reportershare
     - org_mozilla_tiktokreporter
     events_stream:
-      datasets:
-      - fenix
-      app_ids:
-      - bedrock
-      - debug_ping_view
-      - glean_dictionary
-      - org_mozilla_fenix
-      - org_mozilla_firefox_beta
-      - org_mozilla_firefox
+      skip_apps:
+      - org_mozilla_ios_tiktok_reporter
+      - org_mozilla_ios_tiktok_reporter_tiktok_reportershare
+      - org_mozilla_tiktokreporter
     events_monitoring:
       default_event_table: events_v1
       event_table:

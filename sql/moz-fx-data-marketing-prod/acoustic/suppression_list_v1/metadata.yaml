@@ -1,0 +1,10 @@
+friendly_name: Suppression List
+description: >
+  Suppression List from Acoustic
+  Combination of a one-time upload 2024-03-20_main_suppression_list,
+  the ongoing fivetran updates for the suppression list combined with the
+  contact list in order to get the Acoustic email_id.
+owners:
+  - leli@mozilla.com
+scheduling:
+  dag_name: bqetl_acoustic_suppression_list

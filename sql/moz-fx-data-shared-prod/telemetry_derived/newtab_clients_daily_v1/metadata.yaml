@@ -1,19 +1,25 @@
 friendly_name: Newtab Clients Daily
 description: |-
-  Please provide a description for the query
+  A daily aggregation of `newtab_visits` for each
+  Firefox desktop client, partitioned by day.
 owners:
-- example@mozilla.com
+- mbowerman@mozilla.com
 labels:
+  application: firefox
   incremental: true
-  owner1: example
+  schedule: daily
+  dag: bqetl_newtab
+  owner1: mbowerman
 scheduling:
-  dag_name: bqetl_default
+  dag_name: bqetl_newtab
 bigquery:
   time_partitioning:
     type: day
-    field: ''
+    field: submission_date
     require_partition_filter: true
     expiration_days: null
   clustering:
-    fields: []
+    fields:
+    - channel
+    - country_code
 references: {}

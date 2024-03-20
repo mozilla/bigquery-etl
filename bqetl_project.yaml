@@ -21,7 +21,11 @@ default:
 dry_run:
   function: https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/bigquery-etl-dryrun
   skip:
+  ## skip all data-observability-dev queries due to CI lacking permissions in that project.
+  # TODO: once data observability platform assessment concludes this should be removed.
+  - sql/data-observability-dev/**/**/*.sql
   # Access Denied
+  - sql/moz-fx-data-experiments/monitoring/query_cost_v1/query.sql
   - sql/moz-fx-data-shared-prod/app_store_external/**/*.sql
   - sql/moz-fx-data-shared-prod/app_store/**/*.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/bigquery_usage_v2/query.sql
@@ -145,6 +149,7 @@ dry_run:
   - sql/moz-fx-data-shared-prod/stub_attribution_service_derived/dl_token_ga_attribution_lookup_v1/query.sql
   - sql/moz-fx-data-shared-prod/mozilla_org_derived/gclid_conversions_v2/query.sql
   - sql/moz-fx-data-shared-prod/search_derived/search_clients_daily_v8/query.sql
+  - sql/moz-fx-data-shared-prod/monitoring_derived/telemetry_missing_columns_v1/view.sql
   # Materialized views
   - sql/moz-fx-data-shared-prod/telemetry_derived/experiment_search_events_live_v1/init.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/experiment_events_live_v1/init.sql

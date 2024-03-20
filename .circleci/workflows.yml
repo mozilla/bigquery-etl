@@ -336,22 +336,6 @@ jobs:
           steps:
             - checkout
             - run:
-                name: Early return when job not modified
-                command: |
-                  if [ "$CIRCLE_BRANCH" = main ]; then
-                    echo "Run job because branch is $CIRCLE_BRANCH"
-                  elif git log --format=%B --no-merges -n 1 |
-                      grep -qF '[run-tests]'; then
-                    echo "Run job because [run-tests] in commit message"
-                  elif ! git diff --quiet origin/main... \
-                      -- "$(git rev-parse --show-toplevel)"/{.circleci,dags}; then
-                    echo "Run job because .circleci/ and/or dags/ were modified" \
-                      "since branching off main"
-                  else
-                    echo "Skipping job because .circleci/ and dags/ were not modified"
-                    circleci-agent step halt
-                  fi
-            - run:
                 name: Pull telemetry-airflow
                 command: |
                   git clone https://github.com/mozilla/telemetry-airflow.git ~/telemetry-airflow
@@ -369,6 +353,7 @@ jobs:
                   virtualenv .venv
                   source .venv/bin/activate
                   pip install -r requirements.txt
+                  pip install -r requirements-dev.txt
             - run:
                 name: 🧪 Test valid DAGs
                 command: |

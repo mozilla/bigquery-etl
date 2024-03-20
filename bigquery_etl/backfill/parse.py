@@ -93,35 +93,53 @@ class Backfill:
 
     @entry_date.validator
     def validate_entry_date(self, attribute, value):
-        """Check that provided entry date is valid."""
+        """Check that provided entry date is not in the future."""
         if date.today() < value:
             raise ValueError(f"Backfill entry {value} can't be in the future.")
 
     @start_date.validator
     def validate_start_date(self, attribute, value):
-        """Check that provided start date is valid."""
+        """Check that provided start date is before end date and entry date."""
         if self.end_date < value or self.entry_date < value:
             raise ValueError(f"Invalid start date: {value}.")
 
     @end_date.validator
     def validate_end_date(self, attribute, value):
-        """Check that provided end date is valid."""
-        if value < self.start_date or self.entry_date < self.end_date:
+        """Check that provided end date is after start date and entry date."""
+        if value < self.start_date or value > self.entry_date:
             raise ValueError(f"Invalid end date: {value}.")
 
     @excluded_dates.validator
     def validate_excluded_dates(self, attribute, value):
-        """Check that provided excluded dates are valid."""
+        """Check that provided excluded dates are between start and end dates, are sorted and contain no duplicates."""
         if not all(map(lambda e: self.start_date < e < self.end_date, value)):
             raise ValueError(f"Invalid excluded dates: {value}.")
 
+        if not value == sorted(value):
+            raise ValueError(
+                f"Existing backfill entry with excluded dates not sorted: {value}."
+            )
+        if not len(value) == len(set(value)):
+            raise ValueError(
+                f"Existing backfill entry with duplicate excluded dates: {value}."
+            )
+
     @watchers.validator
     def validate_watchers(self, attribute, value):
-        """Check that provided watchers are valid."""
+        """Check that provided watchers are valid emails or Github identity with no duplicates."""
         if not value or not all(
             map(lambda e: e and is_email_or_github_identity(e), value)
         ):
             raise ValueError(f"Invalid email or Github identity for watchers: {value}.")
+
+        if len(value) != len(set(value)):
+            raise ValueError(f"Duplicate watcher in ({value}).")
+
+    @reason.validator
+    def validate_reason(self, attribute, value):
+        """Check that provided status is not empty."""
+        if not value:
+            raise ValueError("Reason in backfill entry should not be empty.")
 
     @status.validator
     def validate_status(self, attribute, value):

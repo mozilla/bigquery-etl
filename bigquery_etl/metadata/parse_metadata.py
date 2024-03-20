@@ -4,6 +4,7 @@ import enum
 import os
 import re
 import string
+from datetime import date
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -153,6 +154,7 @@ class Metadata:
     references: Dict = attr.ib({})
     external_data: Optional[ExternalDataMetadata] = attr.ib(None)
     deprecated: bool = attr.ib(False)
+    deletion_date: Optional[date] = attr.ib(None)
 
     @owners.validator
     def validate_owners(self, attribute, value):
@@ -228,6 +230,7 @@ class Metadata:
         references = {}
         external_data = None
         deprecated = False
+        deletion_date = None
 
         with open(metadata_file, "r") as yaml_stream:
             try:
@@ -295,6 +298,8 @@ class Metadata:
                     )
                 if "deprecated" in metadata:
                     deprecated = metadata["deprecated"]
+                if "deletion_date" in metadata:
+                    deletion_date = metadata["deletion_date"]
 
                 return cls(
                     friendly_name,
@@ -308,6 +313,7 @@ class Metadata:
                     references,
                     external_data,
                     deprecated,
+                    deletion_date,
                 )
             except yaml.YAMLError as e:
                 raise e
@@ -348,6 +354,9 @@ class Metadata:
 
         if not metadata_dict["deprecated"]:
             del metadata_dict["deprecated"]
+
+        if not metadata_dict["deletion_date"]:
+            del metadata_dict["deletion_date"]
 
         file.write_text(
             yaml.dump(

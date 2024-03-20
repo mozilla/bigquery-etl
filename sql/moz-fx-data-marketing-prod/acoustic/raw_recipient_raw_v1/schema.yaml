@@ -35,7 +35,7 @@ fields:
 
 - mode: NULLABLE
   name: event_timestamp
-  type: DATETIME
+  type: STRING
   description: The date and time of the event in the API user’s time zone.
 
 - mode: NULLABLE

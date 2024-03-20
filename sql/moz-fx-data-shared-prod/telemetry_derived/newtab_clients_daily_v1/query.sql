@@ -99,8 +99,11 @@ SELECT
 FROM
   visits_data
 LEFT JOIN
-  search_data USING(client_id)
+  search_data
+  USING (client_id)
 LEFT JOIN
-  tiles_data USING(client_id)
+  tiles_data
+  USING (client_id)
 LEFT JOIN
-  pocket_data USING(client_id)
+  pocket_data
+  USING (client_id)

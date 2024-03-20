@@ -21,6 +21,9 @@ default:
 dry_run:
   function: https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/bigquery-etl-dryrun
   skip:
+  ## skip all data-observability-dev queries due to CI lacking permissions in that project.
+  # TODO: once data observability platform assessment concludes this should be removed.
+  - sql/data-observability-dev/**/**/*.sql
   # Access Denied
   - sql/moz-fx-data-experiments/monitoring/query_cost_v1/query.sql
   - sql/moz-fx-data-shared-prod/app_store_external/**/*.sql

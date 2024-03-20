@@ -8006,6 +8006,20 @@ fields:
         the nearest 10 megabytes and return the result in kilobytes.
 
         '
+    - name: browser_backup_favicons_size
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The total file size of the favicons.sqlite db located in the current
+        profile directory, in kilobytes.
+
+        '
+    - name: browser_backup_places_size
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The total file size of the places.sqlite db located in the current
+        profile directory, in kilobytes.
+
+        '
   - name: labeled_boolean
     type: RECORD
     mode: NULLABLE

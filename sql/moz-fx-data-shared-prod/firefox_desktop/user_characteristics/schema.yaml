@@ -395,6 +395,12 @@ fields:
       description: 'The the current timezone of the system
 
         '
+    - name: characteristics_system_locale
+      type: STRING
+      mode: NULLABLE
+      description: 'The locale used by the host OS for localization.
+
+        '
   - name: uuid
     type: RECORD
     mode: NULLABLE

@@ -1,0 +1,20 @@
+friendly_name: Firefox for Android Events Daily
+description: |
+  Packed event representation with one-row per-client
+owners:
+- kik@mozilla.com
+labels:
+  application: fenix
+  schedule: daily
+  incremental: true
+scheduling:
+  dag_name: bqetl_data_observability_test_data_copy
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+    - sample_id

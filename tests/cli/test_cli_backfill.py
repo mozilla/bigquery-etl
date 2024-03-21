@@ -1,3 +1,4 @@
+import json
 import os
 from datetime import date, timedelta
 from pathlib import Path
@@ -1830,6 +1831,7 @@ class TestBackfill:
             assert result.exit_code == 0
             assert "1 backfill(s) require processing." in result.output
             assert Path("tmp.json").exists()
+            assert len(json.loads(Path("tmp.json").read_text())) == 1
 
             result = runner.invoke(
                 scheduled,

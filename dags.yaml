@@ -1506,3 +1506,35 @@ bqetl_google_search_console:
     retry_delay: 30m
   tags:
     - impact/tier_1
+
+bqetl_data_observability_test_data_copy:
+  schedule_interval: 0 8 * * *
+  description: |
+    ETL used to copy over data to data-observability-dev BQ project used
+    for testing out different data observability platforms.
+  default_args:
+    owner: kik@mozilla.com
+    email:
+      - kik@mozilla.com
+      - akommasani@mozilla.com
+      - ascholtz@mozilla.com
+    start_date: '2024-03-20'
+    retries: 2
+    retry_delay: 30m
+  tags:
+    - triage/no_triage
+    - impact/tier_3
+
+bqetl_acoustic_suppression_list:
+  schedule_interval: 0 9 * * *
+  description: |
+    ETL for Acoustic suppression list.
+  default_args:
+    owner: leli@mozilla.com
+    email:
+      - leli@mozilla.com
+    start_date: '2024-03-20'
+    retries: 1
+    retry_delay: 30m
+  tags:
+    - impact/tier_3

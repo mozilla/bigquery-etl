@@ -36,13 +36,13 @@ WITH visits_data AS (
 search_data AS (
   SELECT
     client_id,
-    SUM(searches, 0) AS searches,
-    SUM(tagged_search_ad_clicks, 0) AS tagged_search_ad_clicks,
-    SUM(tagged_search_ad_impressions, 0) AS tagged_search_ad_impressions,
-    SUM(follow_on_search_ad_clicks, 0) AS follow_on_search_ad_clicks,
-    SUM(follow_on_search_ad_impressions, 0) AS follow_on_search_ad_impressions,
-    SUM(tagged_follow_on_search_ad_clicks, 0) AS tagged_follow_on_search_ad_clicks,
-    SUM(tagged_follow_on_search_ad_impressions, 0) AS tagged_follow_on_search_ad_impressions,
+    SUM(searches) AS searches,
+    SUM(tagged_search_ad_clicks) AS tagged_search_ad_clicks,
+    SUM(tagged_search_ad_impressions) AS tagged_search_ad_impressions,
+    SUM(follow_on_search_ad_clicks) AS follow_on_search_ad_clicks,
+    SUM(follow_on_search_ad_impressions) AS follow_on_search_ad_impressions,
+    SUM(tagged_follow_on_search_ad_clicks) AS tagged_follow_on_search_ad_clicks,
+    SUM(tagged_follow_on_search_ad_impressions) AS tagged_follow_on_search_ad_impressions,
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.newtab_visits_v1`
   CROSS JOIN
@@ -55,15 +55,15 @@ search_data AS (
 tiles_data AS (
   SELECT
     client_id,
-    SUM(topsite_tile_clicks, 0) AS topsite_tile_clicks,
-    SUM(sponsored_topsite_tile_clicks, 0) AS sponsored_topsite_tile_clicks,
-    SUM(organic_topsite_tile_clicks, 0) AS organic_topsite_tile_clicks,
-    SUM(topsite_tile_impressions, 0) AS topsite_tile_impressions,
-    SUM(sponsored_topsite_tile_impressions, 0) AS sponsored_topsite_tile_impressions,
-    SUM(organic_topsite_tile_impressions, 0) AS organic_topsite_tile_impressions,
-    SUM(topsite_tile_dismissals, 0) AS topsite_tile_dismissals,
-    SUM(sponsored_topsite_tile_dismissals, 0) AS sponsored_topsite_tile_dismissals,
-    SUM(organic_topsite_tile_dismissals, 0) AS organic_topsite_tile_dismissals,
+    SUM(topsite_tile_clicks) AS topsite_tile_clicks,
+    SUM(sponsored_topsite_tile_clicks) AS sponsored_topsite_tile_clicks,
+    SUM(organic_topsite_tile_clicks) AS organic_topsite_tile_clicks,
+    SUM(topsite_tile_impressions) AS topsite_tile_impressions,
+    SUM(sponsored_topsite_tile_impressions) AS sponsored_topsite_tile_impressions,
+    SUM(organic_topsite_tile_impressions) AS organic_topsite_tile_impressions,
+    SUM(topsite_tile_dismissals) AS topsite_tile_dismissals,
+    SUM(sponsored_topsite_tile_dismissals) AS sponsored_topsite_tile_dismissals,
+    SUM(organic_topsite_tile_dismissals) AS organic_topsite_tile_dismissals,
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.newtab_visits_v1`
   CROSS JOIN
@@ -76,15 +76,15 @@ tiles_data AS (
 pocket_data AS (
   SELECT
     client_id,
-    SUM(pocket_impressions, 0) AS pocket_impressions,
-    SUM(sponsored_pocket_impressions, 0) AS sponsored_pocket_impressions,
-    SUM(organic_pocket_impressions, 0) AS organic_pocket_impressions,
-    SUM(pocket_clicks, 0) AS pocket_clicks,
-    SUM(sponsored_pocket_clicks, 0) AS sponsored_pocket_clicks,
-    SUM(organic_pocket_clicks, 0) AS organic_pocket_clicks,
-    SUM(pocket_saves, 0) AS pocket_saves,
-    SUM(sponsored_pocket_saves, 0) AS sponsored_pocket_saves,
-    SUM(organic_pocket_saves, 0) AS organic_pocket_saves,
+    SUM(pocket_impressions) AS pocket_impressions,
+    SUM(sponsored_pocket_impressions) AS sponsored_pocket_impressions,
+    SUM(organic_pocket_impressions) AS organic_pocket_impressions,
+    SUM(pocket_clicks) AS pocket_clicks,
+    SUM(sponsored_pocket_clicks) AS sponsored_pocket_clicks,
+    SUM(organic_pocket_clicks) AS organic_pocket_clicks,
+    SUM(pocket_saves) AS pocket_saves,
+    SUM(sponsored_pocket_saves) AS sponsored_pocket_saves,
+    SUM(organic_pocket_saves) AS organic_pocket_saves,
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.newtab_visits_v1`
   CROSS JOIN

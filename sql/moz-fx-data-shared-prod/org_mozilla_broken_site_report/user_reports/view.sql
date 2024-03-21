@@ -65,8 +65,8 @@ SELECT
     )
   ) AS details
 FROM
-    `moz-fx-data-shared-prod.firefox_desktop.broken_site_report`
+  `moz-fx-data-shared-prod.firefox_desktop.broken_site_report`
 WHERE
-    DATE(submission_timestamp) > "2023-11-01"
+  DATE(submission_timestamp) > "2023-11-01"
 ORDER BY
   submission_timestamp ASC

@@ -10,5 +10,4 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   view.sql:
-  - moz-fx-data-shared-prod.firefox_desktop_live.broken_site_report_v1
-  - moz-fx-data-shared-prod.firefox_desktop_stable.broken_site_report_v1
+  - moz-fx-data-shared-prod.firefox_desktop.broken_site_report

@@ -98,3 +98,6 @@ fields:
 - name: days_active_bits
   type: INTEGER
   mode: NULLABLE
+- name: days_since_active
+  type: INTEGER
+  mode: NULLABLE

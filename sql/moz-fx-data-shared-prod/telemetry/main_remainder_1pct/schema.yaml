@@ -17140,6 +17140,16 @@ fields:
           - name: value
             type: STRING
             mode: NULLABLE
+        - name: http_child_omt_stats_2
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: STRING
+            mode: NULLABLE
       - name: keyed_scalars
         type: RECORD
         mode: NULLABLE

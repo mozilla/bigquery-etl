@@ -2,6 +2,9 @@ fields:
 - name: days_since_seen
   type: INTEGER
   mode: NULLABLE
+- name: days_since_active
+  type: INTEGER
+  mode: NULLABLE
 - name: days_since_created_profile
   type: INTEGER
   mode: NULLABLE

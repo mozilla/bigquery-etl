@@ -98,3 +98,6 @@ fields:
 - name: normalized_app_id
   type: STRING
   mode: NULLABLE
+- name: days_active_bits
+  type: INTEGER
+  mode: NULLABLE

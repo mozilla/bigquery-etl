@@ -95,3 +95,6 @@ fields:
 - name: isp
   type: STRING
   mode: NULLABLE
+- name: days_active_bits
+  type: INTEGER
+  mode: NULLABLE

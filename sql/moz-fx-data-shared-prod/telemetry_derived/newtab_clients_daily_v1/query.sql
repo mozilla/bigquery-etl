@@ -1,4 +1,39 @@
-WITH visits_data AS (
+WITH cte AS (
+  SELECT
+    client_id,
+    submission_date,
+    legacy_telemetry_client_id,
+    newtab_visit_id,
+    normalized_os,
+    normalized_os_version,
+    country_code,
+    locale,
+    channel,
+    browser_version,
+    browser_name,
+    default_search_engine,
+    default_private_search_engine,
+    pocket_is_signed_in,
+    pocket_enabled,
+    pocket_sponsored_stories_enabled,
+    topsites_enabled,
+    newtab_homepage_category,
+    newtab_newtab_category,
+    topsites_rows,
+    experiments,
+    had_non_impression_engagement,
+    had_non_search_engagement,
+    is_new_profile,
+    activity_segment,
+    search_interactions,
+    topsite_tile_interactions,
+    pocket_interactions
+  FROM
+    `moz-fx-data-shared-prod.telemetry_derived.newtab_visits_v1`
+  WHERE
+    submission_date = @submission_date
+),
+visits_data AS (
   SELECT
     client_id,
     submission_date,
@@ -13,22 +48,26 @@ WITH visits_data AS (
     ANY_VALUE(browser_name) AS browser_name,
     ANY_VALUE(default_search_engine) AS default_search_engine,
     ANY_VALUE(default_private_search_engine) AS default_private_search_engine,
-    MAX(pocket_is_signed_in) AS pocket_is_signed_in,
-    MIN(pocket_enabled) AS pocket_enabled,
-    MIN(pocket_sponsored_stories_enabled) AS pocket_sponsored_stories_enabled,
-    MIN(topsites_enabled) AS topsites_enabled,
+    LOGICAL_OR(pocket_is_signed_in) AS pocket_is_signed_in,
+    LOGICAL_AND(pocket_enabled) AS pocket_enabled,
+    LOGICAL_AND(pocket_sponsored_stories_enabled) AS pocket_sponsored_stories_enabled,
+    LOGICAL_AND(topsites_enabled) AS topsites_enabled,
     ANY_VALUE(newtab_homepage_category) AS newtab_homepage_category,
     ANY_VALUE(newtab_newtab_category) AS newtab_newtab_category,
     ANY_VALUE(topsites_rows) AS topsites_rows,
     ANY_VALUE(experiments) AS experiments,
-    SUM(CASE WHEN had_non_impression_engagement THEN 1 ELSE 0 END) AS had_non_impression_engagement,
-    SUM(CASE WHEN had_non_search_engagement THEN 1 ELSE 0 END) AS had_non_search_engagement,
-    MAX(is_new_profile) AS is_new_profile,
+    SUM(
+      CASE
+        WHEN had_non_impression_engagement
+          THEN 1
+        ELSE 0
+      END
+    ) AS visits_with_non_impression_engagement,
+    SUM(CASE WHEN had_non_search_engagement THEN 1 ELSE 0 END) AS visits_with_non_search_engagement,
+    LOGICAL_OR(is_new_profile) AS is_new_profile,
     ANY_VALUE(activity_segment) AS activity_segment
   FROM
-    `moz-fx-data-shared-prod.telemetry_derived.newtab_visits_v1`
-  WHERE
-    submission_date = @submission_date
+    cte
   GROUP BY
     client_id,
     submission_date
@@ -44,11 +83,9 @@ search_data AS (
     SUM(tagged_follow_on_search_ad_clicks) AS tagged_follow_on_search_ad_clicks,
     SUM(tagged_follow_on_search_ad_impressions) AS tagged_follow_on_search_ad_impressions,
   FROM
-    `moz-fx-data-shared-prod.telemetry_derived.newtab_visits_v1`
+    cte
   CROSS JOIN
     UNNEST(search_interactions)
-  WHERE
-    submission_date = @submission_date
   GROUP BY
     client_id
 ),
@@ -65,11 +102,9 @@ tiles_data AS (
     SUM(sponsored_topsite_tile_dismissals) AS sponsored_topsite_tile_dismissals,
     SUM(organic_topsite_tile_dismissals) AS organic_topsite_tile_dismissals,
   FROM
-    `moz-fx-data-shared-prod.telemetry_derived.newtab_visits_v1`
+    cte
   CROSS JOIN
     UNNEST(topsite_tile_interactions)
-  WHERE
-    submission_date = @submission_date
   GROUP BY
     client_id
 ),
@@ -86,11 +121,9 @@ pocket_data AS (
     SUM(sponsored_pocket_saves) AS sponsored_pocket_saves,
     SUM(organic_pocket_saves) AS organic_pocket_saves,
   FROM
-    `moz-fx-data-shared-prod.telemetry_derived.newtab_visits_v1`
+    cte
   CROSS JOIN
     UNNEST(pocket_interactions)
-  WHERE
-    submission_date = @submission_date
   GROUP BY
     client_id
 )

@@ -83,10 +83,10 @@ fields:
       - name: enrollment_id
         type: STRING
         mode: NULLABLE
-- name: had_non_impression_engagement
+- name: visits_with_non_impression_engagement
   type: INTEGER
   mode: NULLABLE
-- name: had_non_search_engagement
+- name: visits_with_non_search_engagement
   type: INTEGER
   mode: NULLABLE
 - name: is_new_profile

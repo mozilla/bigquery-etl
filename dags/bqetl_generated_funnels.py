@@ -89,42 +89,6 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_firefox_accounts_derived__fxa_gcp_stderr_events__v1 = ExternalTaskSensor(
-        task_id="wait_for_firefox_accounts_derived__fxa_gcp_stderr_events__v1",
-        external_dag_id="bqetl_fxa_events",
-        external_task_id="firefox_accounts_derived__fxa_gcp_stderr_events__v1",
-        execution_delta=datetime.timedelta(seconds=12600),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    wait_for_firefox_accounts_derived__fxa_gcp_stdout_events__v1 = ExternalTaskSensor(
-        task_id="wait_for_firefox_accounts_derived__fxa_gcp_stdout_events__v1",
-        external_dag_id="bqetl_fxa_events",
-        external_task_id="firefox_accounts_derived__fxa_gcp_stdout_events__v1",
-        execution_delta=datetime.timedelta(seconds=12600),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    wait_for_firefox_accounts_derived__fxa_stdout_events__v1 = ExternalTaskSensor(
-        task_id="wait_for_firefox_accounts_derived__fxa_stdout_events__v1",
-        external_dag_id="bqetl_fxa_events",
-        external_task_id="firefox_accounts_derived__fxa_stdout_events__v1",
-        execution_delta=datetime.timedelta(seconds=12600),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
     accounts_frontend_derived__monitor_mozilla_accounts_funnels__v1 = (
         bigquery_etl_query(
             task_id="accounts_frontend_derived__monitor_mozilla_accounts_funnels__v1",
@@ -187,13 +151,5 @@ with DAG(
     fenix_derived__android_onboarding__v1.set_upstream(wait_for_copy_deduplicate_all)
 
     firefox_accounts_derived__login_funnels__v1.set_upstream(
-        wait_for_firefox_accounts_derived__fxa_gcp_stderr_events__v1
-    )
-
-    firefox_accounts_derived__login_funnels__v1.set_upstream(
-        wait_for_firefox_accounts_derived__fxa_gcp_stdout_events__v1
-    )
-
-    firefox_accounts_derived__login_funnels__v1.set_upstream(
-        wait_for_firefox_accounts_derived__fxa_stdout_events__v1
+        wait_for_copy_deduplicate_all
     )

@@ -1759,6 +1759,9 @@ fields:
     - name: credit_card_saved_all
       type: INTEGER
       mode: NULLABLE
+    - name: addresses_saved_all
+      type: INTEGER
+      mode: NULLABLE
   - name: rate
     type: RECORD
     mode: NULLABLE

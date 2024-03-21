@@ -3064,6 +3064,13 @@ fields:
         stored by the user.
 
         '
+    - name: addresses_saved_all
+      type: INTEGER
+      mode: NULLABLE
+      description: 'A counter of the number of all addresses that are currently saved
+        by the user.
+
+        '
   - name: rate
     type: RECORD
     mode: NULLABLE

@@ -89,3 +89,6 @@ fields:
 - name: is_new_profile
   type: BOOLEAN
   mode: NULLABLE
+- name: days_active_bits
+  type: INTEGER
+  mode: NULLABLE

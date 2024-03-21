@@ -69,8 +69,9 @@ with DAG(
         project_id="moz-fx-data-marketing-prod",
         owner="leli@mozilla.com",
         email=["leli@mozilla.com"],
-        date_partition_parameter="submission_date",
+        date_partition_parameter=None,
         depends_on_past=False,
+        task_concurrency=1,
     )
 
     acoustic__suppression_list__v1.set_upstream(wait_for_acoustic__contact_raw__v1)

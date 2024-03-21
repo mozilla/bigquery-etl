@@ -106,6 +106,21 @@ with DAG(
         )
     )
 
+    accounts_frontend_derived__pwd_reset_funnels__v1 = bigquery_etl_query(
+        task_id="accounts_frontend_derived__pwd_reset_funnels__v1",
+        destination_table="pwd_reset_funnels_v1",
+        dataset_id="accounts_frontend_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="ksiegler@mozilla.org",
+        email=[
+            "ascholtz@mozilla.com",
+            "ksiegler@mozilla.org",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     fenix_derived__android_onboarding__v1 = bigquery_etl_query(
         task_id="fenix_derived__android_onboarding__v1",
         destination_table="android_onboarding_v1",
@@ -137,6 +152,10 @@ with DAG(
     )
 
     accounts_frontend_derived__monitor_mozilla_accounts_funnels__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    accounts_frontend_derived__pwd_reset_funnels__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
 

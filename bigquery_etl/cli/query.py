@@ -2019,6 +2019,7 @@ def deploy(
     query_files = paths_matching_name_pattern(
         name, sql_dir, project_id, ["query.*", "script.sql"]
     )
+
     if not query_files:
         # run SQL generators if no matching query has been found
         ctx.invoke(

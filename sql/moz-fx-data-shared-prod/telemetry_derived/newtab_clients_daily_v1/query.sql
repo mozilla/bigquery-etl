@@ -36,13 +36,13 @@ WITH visits_data AS (
 search_data AS (
   SELECT
     client_id,
-    COALESCE(SUM(searches), 0) AS searches,
-    COALESCE(SUM(tagged_search_ad_clicks), 0) AS tagged_search_ad_clicks,
-    COALESCE(SUM(tagged_search_ad_impressions), 0) AS tagged_search_ad_impressions,
-    COALESCE(SUM(follow_on_search_ad_clicks), 0) AS follow_on_search_ad_clicks,
-    COALESCE(SUM(follow_on_search_ad_impressions), 0) AS follow_on_search_ad_impressions,
-    COALESCE(SUM(tagged_follow_on_search_ad_clicks), 0) AS tagged_follow_on_search_ad_clicks,
-    COALESCE(SUM(tagged_follow_on_search_ad_impressions), 0) AS tagged_search_ad_impressions,
+    SUM(searches, 0) AS searches,
+    SUM(tagged_search_ad_clicks, 0) AS tagged_search_ad_clicks,
+    SUM(tagged_search_ad_impressions, 0) AS tagged_search_ad_impressions,
+    SUM(follow_on_search_ad_clicks, 0) AS follow_on_search_ad_clicks,
+    SUM(follow_on_search_ad_impressions, 0) AS follow_on_search_ad_impressions,
+    SUM(tagged_follow_on_search_ad_clicks, 0) AS tagged_follow_on_search_ad_clicks,
+    SUM(tagged_follow_on_search_ad_impressions, 0) AS tagged_follow_on_search_ad_impressions,
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.newtab_visits_v1`
   CROSS JOIN
@@ -55,15 +55,15 @@ search_data AS (
 tiles_data AS (
   SELECT
     client_id,
-    COALESCE(SUM(topsite_tile_clicks), 0) AS topsite_tile_clicks,
-    COALESCE(SUM(sponsored_topsite_tile_clicks), 0) AS sponsored_topsite_tile_clicks,
-    COALESCE(SUM(organic_topsite_tile_clicks), 0) AS organic_topsite_tile_clicks,
-    COALESCE(SUM(topsite_tile_impressions), 0) AS topsite_tile_impressions,
-    COALESCE(SUM(sponsored_topsite_tile_impressions), 0) AS sponsored_topsite_tile_impressions,
-    COALESCE(SUM(organic_topsite_tile_impressions), 0) AS organic_topsite_tile_impressions,
-    COALESCE(SUM(topsite_tile_dismissals), 0) AS topsite_tile_dismissals,
-    COALESCE(SUM(sponsored_topsite_tile_dismissals), 0) AS sponsored_topsite_tile_dismissals,
-    COALESCE(SUM(organic_topsite_tile_dismissals), 0) AS organic_topsite_tile_dismissals,
+    SUM(topsite_tile_clicks, 0) AS topsite_tile_clicks,
+    SUM(sponsored_topsite_tile_clicks, 0) AS sponsored_topsite_tile_clicks,
+    SUM(organic_topsite_tile_clicks, 0) AS organic_topsite_tile_clicks,
+    SUM(topsite_tile_impressions, 0) AS topsite_tile_impressions,
+    SUM(sponsored_topsite_tile_impressions, 0) AS sponsored_topsite_tile_impressions,
+    SUM(organic_topsite_tile_impressions, 0) AS organic_topsite_tile_impressions,
+    SUM(topsite_tile_dismissals, 0) AS topsite_tile_dismissals,
+    SUM(sponsored_topsite_tile_dismissals, 0) AS sponsored_topsite_tile_dismissals,
+    SUM(organic_topsite_tile_dismissals, 0) AS organic_topsite_tile_dismissals,
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.newtab_visits_v1`
   CROSS JOIN
@@ -76,15 +76,15 @@ tiles_data AS (
 pocket_data AS (
   SELECT
     client_id,
-    COALESCE(SUM(pocket_impressions), 0) AS pocket_impressions,
-    COALESCE(SUM(sponsored_pocket_impressions), 0) AS sponsored_pocket_impressions,
-    COALESCE(SUM(organic_pocket_impressions), 0) AS organic_pocket_impressions,
-    COALESCE(SUM(pocket_clicks), 0) AS pocket_clicks,
-    COALESCE(SUM(sponsored_pocket_clicks), 0) AS sponsored_pocket_clicks,
-    COALESCE(SUM(organic_pocket_clicks), 0) AS organic_pocket_clicks,
-    COALESCE(SUM(pocket_saves), 0) AS pocket_saves,
-    COALESCE(SUM(sponsored_pocket_saves), 0) AS sponsored_pocket_saves,
-    COALESCE(SUM(organic_pocket_saves), 0) AS organic_pocket_saves,
+    SUM(pocket_impressions, 0) AS pocket_impressions,
+    SUM(sponsored_pocket_impressions, 0) AS sponsored_pocket_impressions,
+    SUM(organic_pocket_impressions, 0) AS organic_pocket_impressions,
+    SUM(pocket_clicks, 0) AS pocket_clicks,
+    SUM(sponsored_pocket_clicks, 0) AS sponsored_pocket_clicks,
+    SUM(organic_pocket_clicks, 0) AS organic_pocket_clicks,
+    SUM(pocket_saves, 0) AS pocket_saves,
+    SUM(sponsored_pocket_saves, 0) AS sponsored_pocket_saves,
+    SUM(organic_pocket_saves, 0) AS organic_pocket_saves,
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.newtab_visits_v1`
   CROSS JOIN
@@ -95,7 +95,34 @@ pocket_data AS (
     client_id
 )
 SELECT
-  *
+  visits_data.*,
+  -- COALESCE calls for visits where no interactions with a surface were performed and are all Null
+  COALESCE(searches, 0) AS searches,
+  COALESCE(tagged_search_ad_clicks, 0) AS tagged_search_ad_clicks,
+  COALESCE(tagged_search_ad_impressions, 0) AS tagged_search_ad_impressions,
+  COALESCE(follow_on_search_ad_clicks, 0) AS follow_on_search_ad_clicks,
+  COALESCE(follow_on_search_ad_impressions, 0) AS follow_on_search_ad_impressions,
+  COALESCE(tagged_follow_on_search_ad_clicks, 0) AS tagged_follow_on_search_ad_clicks,
+  COALESCE(tagged_follow_on_search_ad_impressions, 0) AS tagged_follow_on_search_ad_impressions,
+  COALESCE(topsite_tile_clicks, 0) AS topsite_tile_clicks,
+  COALESCE(sponsored_topsite_tile_clicks, 0) AS sponsored_topsite_tile_clicks,
+  COALESCE(organic_topsite_tile_clicks, 0) AS organic_topsite_tile_clicks,
+  COALESCE(topsite_tile_impressions, 0) AS topsite_tile_impressions,
+  COALESCE(sponsored_topsite_tile_impressions, 0) AS sponsored_topsite_tile_impressions,
+  COALESCE(organic_topsite_tile_impressions, 0) AS organic_topsite_tile_impressions,
+  COALESCE(topsite_tile_dismissals, 0) AS topsite_tile_dismissals,
+  COALESCE(sponsored_topsite_tile_dismissals, 0) AS sponsored_topsite_tile_dismissals,
+  COALESCE(organic_topsite_tile_dismissals, 0) AS organic_topsite_tile_dismissals,
+  COALESCE(pocket_impressions, 0) AS pocket_impressions,
+  COALESCE(sponsored_pocket_impressions, 0) AS sponsored_pocket_impressions,
+  COALESCE(organic_pocket_impressions, 0) AS organic_pocket_impressions,
+  COALESCE(pocket_clicks, 0) AS pocket_clicks,
+  COALESCE(sponsored_pocket_clicks, 0) AS sponsored_pocket_clicks,
+  COALESCE(organic_pocket_clicks, 0) AS organic_pocket_clicks,
+  COALESCE(pocket_saves, 0) AS pocket_saves,
+  COALESCE(sponsored_pocket_saves, 0) AS sponsored_pocket_saves,
+  COALESCE(organic_pocket_saves, 0) AS organic_pocket_saves,
+
 FROM
   visits_data
 LEFT JOIN

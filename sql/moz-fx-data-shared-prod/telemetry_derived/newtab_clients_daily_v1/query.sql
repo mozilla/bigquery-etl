@@ -122,7 +122,6 @@ SELECT
   COALESCE(pocket_saves, 0) AS pocket_saves,
   COALESCE(sponsored_pocket_saves, 0) AS sponsored_pocket_saves,
   COALESCE(organic_pocket_saves, 0) AS organic_pocket_saves,
-
 FROM
   visits_data
 LEFT JOIN

@@ -24,6 +24,9 @@ fields:
   name: channel
   type: STRING
 - mode: NULLABLE
+  name: locale
+  type: STRING
+- mode: NULLABLE
   name: browser_version
   type: STRING
 - mode: NULLABLE
@@ -97,6 +100,9 @@ fields:
   type: STRING
 - mode: NULLABLE
   name: had_non_impression_engagement
+  type: BOOLEAN
+- mode: NULLABLE
+  name: had_non_search_engagement
   type: BOOLEAN
 - fields:
   - mode: NULLABLE

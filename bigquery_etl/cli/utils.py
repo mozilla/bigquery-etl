@@ -109,7 +109,12 @@ def paths_matching_name_pattern(
     if pattern is None:
         pattern = "*.*"
 
-    if os.path.isdir(pattern):
+    if isinstance(pattern, list):
+        for p in pattern:
+            matching_files += paths_matching_name_pattern(
+                str(p), sql_path, project_id, files, file_regex
+            )
+    elif os.path.isdir(pattern):
         for root, _, _ in os.walk(pattern, followlinks=True):
             for file in files:
                 matching_files.extend(

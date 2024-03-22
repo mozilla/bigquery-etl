@@ -30,9 +30,8 @@ from ..backfill.utils import (
     validate_metadata_workgroups,
 )
 from ..backfill.validate import (
-    validate_duplicate_entry_dates,
+    validate_duplicate_entry_with_initiate_status,
     validate_file,
-    validate_overlap_dates,
 )
 from ..cli.query import backfill as query_backfill
 from ..cli.query import deploy
@@ -127,10 +126,7 @@ def create(
         status=BackfillStatus.INITIATE,
     )
 
-    for existing_entry in existing_backfills:
-        validate_duplicate_entry_dates(new_entry, existing_entry)
-        if existing_entry.status == BackfillStatus.INITIATE:
-            validate_overlap_dates(new_entry, existing_entry)
+    validate_duplicate_entry_with_initiate_status(new_entry, existing_backfills)
 
     existing_backfills.insert(0, new_entry)
 

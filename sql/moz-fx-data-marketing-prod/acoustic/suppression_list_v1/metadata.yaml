@@ -8,3 +8,6 @@ owners:
   - leli@mozilla.com
 scheduling:
   dag_name: bqetl_acoustic_suppression_list
+  date_partition_parameter: null
+bigquery: null
+references: {}

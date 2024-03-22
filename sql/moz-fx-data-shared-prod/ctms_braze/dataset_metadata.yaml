@@ -1,0 +1,17 @@
+friendly_name: ctms_braze
+description: ctms_braze syndicate views
+dataset_base_acl: syndicate
+user_facing: true
+labels: {}
+syndication:
+  stage:
+    syndicated_project: "moz-fx-ctms-nonprod"
+    syndicated_dataset: "braze"
+  prod:
+    syndicated_project: "moz-fx-ctms-prod"
+    syndicated_dataset: "braze"
+  administer_views: false
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:braze

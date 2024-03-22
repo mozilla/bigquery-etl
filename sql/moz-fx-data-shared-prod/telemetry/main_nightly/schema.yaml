@@ -115,6 +115,9 @@ fields:
         - name: quarantine_ignored_by_user
           type: BOOLEAN
           mode: NULLABLE
+        - name: signed_types
+          type: STRING
+          mode: NULLABLE
     - name: active_experiment
       type: RECORD
       mode: NULLABLE
@@ -38472,6 +38475,12 @@ fields:
           type: INTEGER
           mode: NULLABLE
         - name: browser_backup_places_size
+          type: INTEGER
+          mode: NULLABLE
+        - name: browser_backup_credentials_data_size
+          type: INTEGER
+          mode: NULLABLE
+        - name: browser_backup_security_data_size
           type: INTEGER
           mode: NULLABLE
     - name: socket

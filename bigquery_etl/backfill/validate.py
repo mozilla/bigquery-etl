@@ -6,10 +6,12 @@ from typing import List
 from ..backfill.parse import DEFAULT_REASON, DEFAULT_WATCHER, Backfill, BackfillStatus
 
 
-def validate_duplicate_entry_dates(backfill_entry: Backfill, backfills: list[Backfill]) -> None:
+def validate_duplicate_entry_dates(
+    backfill_entry: Backfill, backfills: list[Backfill]
+) -> None:
     """Check if backfill entries have the same entry dates."""
-    for backfill_entry_1 in backfills:
-        if backfill_entry.entry_date == backfill_entry_1.entry_date:
+    for b in backfills:
+        if backfill_entry.entry_date == b.entry_date:
             raise ValueError(
                 f"Duplicate backfill with entry date: {backfill_entry.entry_date}."
             )
@@ -41,7 +43,7 @@ def validate_default_watchers(entry: Backfill) -> None:
 
 def validate_entries_are_sorted(backfills: List[Backfill]) -> None:
     """Check if list of backfill entries are sorted by entry dates."""
-    entry_dates = [backfill.entry_date for backfill in backfills]
+    entry_dates = [b.entry_date for b in backfills]
     if not entry_dates == sorted(entry_dates, reverse=True):
         raise ValueError("Backfill entries are not sorted by entry dates")
 
@@ -57,8 +59,8 @@ def validate_duplicate_entry_with_initiate_status(
 ) -> None:
     """Check if list of backfill entries have more than one entry with Initiate Status."""
     if backfill_entry.status == BackfillStatus.INITIATE:
-        for backfill_entry_1 in backfills:
-            if backfill_entry_1.status == BackfillStatus.INITIATE:
+        for b in backfills:
+            if b.status == BackfillStatus.INITIATE:
                 raise ValueError(
                     "Backfill entries cannot contain more than one entry with Initiate status"
                 )

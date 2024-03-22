@@ -1629,7 +1629,7 @@ def schema():
     ./bqetl query schema update telemetry_derived.clients_daily_v6 --update-downstream
     """,
 )
-@click.argument("name")
+@click.argument("name", nargs=-1)
 @sql_dir_option
 @click.option(
     "--project-id",
@@ -1993,7 +1993,7 @@ def _update_query_schema(
     ./bqetl query schema deploy telemetry_derived.clients_daily_v6
     """,
 )
-@click.argument("name")
+@click.argument("name", nargs=-1)
 @sql_dir_option
 @click.option(
     "--project-id",

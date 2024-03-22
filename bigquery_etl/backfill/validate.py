@@ -6,7 +6,7 @@ from typing import List
 from ..backfill.parse import DEFAULT_REASON, DEFAULT_WATCHER, Backfill, BackfillStatus
 
 
-def validate_duplicate_entry_dates(backfill_entry: Backfill, backfills: list) -> None:
+def validate_duplicate_entry_dates(backfill_entry: Backfill, backfills: list[Backfill]) -> None:
     """Check if backfill entries have the same entry dates."""
     for backfill_entry_1 in backfills:
         if backfill_entry.entry_date == backfill_entry_1.entry_date:

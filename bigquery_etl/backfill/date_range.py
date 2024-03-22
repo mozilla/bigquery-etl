@@ -30,8 +30,6 @@ class BackfillDateRange:
         if self.range_type not in (PartitionType.DAY, PartitionType.MONTH):
             raise ValueError(f"Unsupported partitioning type: {self.range_type}")
 
-        self._date_index = 0
-
         match self.range_type:
             case PartitionType.DAY:
                 self._dates = [
@@ -54,6 +52,7 @@ class BackfillDateRange:
 
     def __iter__(self):
         """Make iterator object."""
+        self._date_index = 0
         return self
 
     def __next__(self):

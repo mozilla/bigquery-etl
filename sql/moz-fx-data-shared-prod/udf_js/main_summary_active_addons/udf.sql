@@ -35,7 +35,8 @@ CREATE OR REPLACE FUNCTION udf_js.main_summary_active_addons(
         user_disabled INT64,
         version STRING,
         quarantine_ignored_by_app BOOL,
-        quarantine_ignored_by_user BOOL
+        quarantine_ignored_by_user BOOL,
+        signed_types STRING
       >
     >
   >,

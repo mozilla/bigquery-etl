@@ -1,6 +1,7 @@
 """bigquery-etl CLI backfill command."""
 
 import json
+import subprocess
 import sys
 import tempfile
 from datetime import date, datetime, timedelta
@@ -357,53 +358,86 @@ def initiate(ctx, qualified_table_name, sql_dir, project_id):
 
     entry_to_initiate = backfills_to_process_dict[qualified_table_name]
 
+    project, dataset, table = qualified_table_name_matching(qualified_table_name)
+
+    backfill_staging_qualified_table_name = get_backfill_staging_qualified_table_name(
+        qualified_table_name, entry_to_initiate.entry_date
+    )
+
+    # deploy backfill staging table
+    ctx.invoke(
+        deploy,
+        name=f"{dataset}.{table}",
+        project_id=project,
+        destination_table=backfill_staging_qualified_table_name,
+    )
+
     click.echo(
         f"\nInitiating backfill for {qualified_table_name} with entry date {entry_to_initiate.entry_date} via dry run:"
     )
-    _initiate_backfill(ctx, qualified_table_name, entry_to_initiate, dry_run=True)
+    _initiate_backfill(
+        ctx,
+        qualified_table_name,
+        backfill_staging_qualified_table_name,
+        entry_to_initiate,
+        dry_run=True,
+    )
 
     click.echo(
         f"\nInitiating backfill for {qualified_table_name} with entry date {entry_to_initiate.entry_date}:"
     )
-    _initiate_backfill(ctx, qualified_table_name, entry_to_initiate)
+    _initiate_backfill(
+        ctx,
+        qualified_table_name,
+        backfill_staging_qualified_table_name,
+        entry_to_initiate,
+    )
 
     click.echo(
         f"Processed backfill for {qualified_table_name} with entry date {entry_to_initiate.entry_date}"
     )
 
 
-def _initiate_backfill(ctx, qualified_table_name, entry: Backfill, dry_run=None):
+def _initiate_backfill(
+    ctx,
+    qualified_table_name: str,
+    backfill_staging_qualified_table_name: str,
+    entry: Backfill,
+    dry_run=None,
+):
+    if not is_authenticated():
+        click.echo(
+            "Authentication to GCP required. Run `gcloud auth login  --update-adc` "
+            "and check that the project is set correctly."
+        )
+        sys.exit(1)
+
     project, dataset, table = qualified_table_name_matching(qualified_table_name)
-
-    backfill_staging_qualified_table_name = None
-
-    if not dry_run:
-        backfill_staging_qualified_table_name = (
-            get_backfill_staging_qualified_table_name(
-                qualified_table_name, entry.entry_date
-            )
-        )
-
-        # deploy table
-        ctx.invoke(
-            deploy,
-            name=f"{dataset}.{table}",
-            project_id=project,
-            destination_table=backfill_staging_qualified_table_name,
-        )
 
     # backfill table
     # in the long-run we should remove the query backfill command and require a backfill entry for all backfills
-    ctx.invoke(
-        query_backfill,
-        name=f"{dataset}.{table}",
-        project_id=project,
-        start_date=entry.start_date,
-        end_date=entry.end_date,
-        exclude=entry.excluded_dates,
-        destination_table=backfill_staging_qualified_table_name,
-        dry_run=dry_run,
-    )
+    try:
+        ctx.invoke(
+            query_backfill,
+            name=f"{dataset}.{table}",
+            project_id=project,
+            start_date=entry.start_date,
+            end_date=entry.end_date,
+            exclude=entry.excluded_dates,
+            destination_table=backfill_staging_qualified_table_name,
+            dry_run=dry_run,
+        )
+    except subprocess.CalledProcessError as e:
+        client = bigquery.Client(project=project)
+        if dry_run:
+            client.delete_table(backfill_staging_qualified_table_name)
+            click.echo(
+                f"Backfill staging table deleted: {backfill_staging_qualified_table_name}"
+            )
+
+        raise ValueError(
+            f"Backfill initiate resulted in error for {qualified_table_name}"
+        ) from e
 
 
 @backfill.command(

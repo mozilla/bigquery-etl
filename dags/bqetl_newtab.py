@@ -74,6 +74,21 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    telemetry_derived__newtab_clients_daily__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__newtab_clients_daily__v1",
+        destination_table="newtab_clients_daily_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="mbowerman@mozilla.com",
+        email=[
+            "anicholson@mozilla.com",
+            "mbowerman@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     telemetry_derived__newtab_interactions__v1 = bigquery_etl_query(
         task_id="telemetry_derived__newtab_interactions__v1",
         destination_table="newtab_interactions_v1",
@@ -94,6 +109,10 @@ with DAG(
         email=["anicholson@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+    )
+
+    telemetry_derived__newtab_clients_daily__v1.set_upstream(
+        telemetry_derived__newtab_visits__v1
     )
 
     telemetry_derived__newtab_interactions__v1.set_upstream(

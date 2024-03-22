@@ -8020,6 +8020,20 @@ fields:
         profile directory, in kilobytes.
 
         '
+    - name: browser_backup_credentials_data_size
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The total size of logins, payment method, and form autofill related
+        files in the current profile directory, in kilobytes.
+
+        '
+    - name: browser_backup_security_data_size
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The total size of files needed for NSS initialization parameters
+        and security certificate settings in the current profile directory, in kilobytes.
+
+        '
   - name: labeled_boolean
     type: RECORD
     mode: NULLABLE

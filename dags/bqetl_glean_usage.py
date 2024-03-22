@@ -49,6 +49,8 @@ with DAG(
 
     task_group_accounts_backend = TaskGroup("accounts_backend")
 
+    task_group_accounts_cirrus = TaskGroup("accounts_cirrus")
+
     task_group_bedrock = TaskGroup("bedrock")
 
     task_group_burnham = TaskGroup("burnham")
@@ -188,6 +190,43 @@ with DAG(
         task_group=task_group_accounts_backend,
     )
 
+    accounts_cirrus_derived__baseline_clients_daily__v1 = bigquery_etl_query(
+        task_id="accounts_cirrus_derived__baseline_clients_daily__v1",
+        destination_table="baseline_clients_daily_v1",
+        dataset_id="accounts_cirrus_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        task_group=task_group_accounts_cirrus,
+    )
+
+    accounts_cirrus_derived__baseline_clients_first_seen__v1 = bigquery_etl_query(
+        task_id="accounts_cirrus_derived__baseline_clients_first_seen__v1",
+        destination_table="baseline_clients_first_seen_v1",
+        dataset_id="accounts_cirrus_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=True,
+        parameters=["submission_date:DATE:{{ds}}"],
+        task_group=task_group_accounts_cirrus,
+    )
+
+    accounts_cirrus_derived__baseline_clients_last_seen__v1 = bigquery_etl_query(
+        task_id="accounts_cirrus_derived__baseline_clients_last_seen__v1",
+        destination_table="baseline_clients_last_seen_v1",
+        dataset_id="accounts_cirrus_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=True,
+        task_group=task_group_accounts_cirrus,
+    )
+
     bedrock_derived__events_stream__v1 = bigquery_etl_query(
         task_id="bedrock_derived__events_stream__v1",
         destination_table="events_stream_v1",
@@ -276,6 +315,20 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
         task_group=task_group_burnham,
+    )
+
+    checks__warn_accounts_cirrus_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
+        task_id="checks__warn_accounts_cirrus_derived__baseline_clients_last_seen__v1",
+        source_table="baseline_clients_last_seen_v1",
+        dataset_id="accounts_cirrus_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=False,
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+        task_group=task_group_accounts_cirrus,
     )
 
     checks__warn_firefox_desktop_background_defaultagent_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
@@ -3707,6 +3760,26 @@ with DAG(
         wait_for_copy_deduplicate_all
     )
 
+    accounts_cirrus_derived__baseline_clients_daily__v1.set_upstream(
+        accounts_cirrus_derived__baseline_clients_first_seen__v1
+    )
+
+    accounts_cirrus_derived__baseline_clients_daily__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    accounts_cirrus_derived__baseline_clients_first_seen__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    accounts_cirrus_derived__baseline_clients_first_seen__v1.set_upstream(
+        wait_for_telemetry_derived__core_clients_first_seen__v1
+    )
+
+    accounts_cirrus_derived__baseline_clients_last_seen__v1.set_upstream(
+        accounts_cirrus_derived__baseline_clients_daily__v1
+    )
+
     bedrock_derived__events_stream__v1.set_upstream(wait_for_copy_deduplicate_all)
 
     burnham_derived__baseline_clients_daily__v1.set_upstream(
@@ -3743,6 +3816,10 @@ with DAG(
 
     burnham_derived__metrics_clients_last_seen__v1.set_upstream(
         burnham_derived__metrics_clients_daily__v1
+    )
+
+    checks__warn_accounts_cirrus_derived__baseline_clients_last_seen__v1.set_upstream(
+        accounts_cirrus_derived__baseline_clients_last_seen__v1
     )
 
     checks__warn_firefox_desktop_background_defaultagent_derived__baseline_clients_last_seen__v1.set_upstream(

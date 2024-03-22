@@ -147,7 +147,7 @@ def get_reports_since_last_run(client, last_run_time):
                 uuid,
                 comments as body,
                 url as title
-            FROM `moz-fx-data-shared-prod.org_mozilla_broken_site_report.user_reports`
+            FROM `moz-fx-data-shared-prod.org_mozilla_broken_site_report.user_reports_live`
             WHERE reported_at >= "{last_run_time}" AND comments != ""
             ORDER BY reported_at
         """
@@ -162,7 +162,7 @@ def get_missed_reports(client, last_run_time, bq_dataset_id):
                 reports.comments as body,
                 reports.url as title
             FROM
-            `moz-fx-data-shared-prod.org_mozilla_broken_site_report.user_reports`
+            `moz-fx-data-shared-prod.org_mozilla_broken_site_report.user_reports_live`
             AS reports
             LEFT JOIN `{bq_dataset_id}.bugbug_predictions` AS predictions
             ON reports.uuid = predictions.report_uuid

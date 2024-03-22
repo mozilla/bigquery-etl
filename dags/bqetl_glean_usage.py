@@ -227,6 +227,18 @@ with DAG(
         task_group=task_group_accounts_cirrus,
     )
 
+    accounts_cirrus_derived__metrics_clients_daily__v1 = bigquery_etl_query(
+        task_id="accounts_cirrus_derived__metrics_clients_daily__v1",
+        destination_table="metrics_clients_daily_v1",
+        dataset_id="accounts_cirrus_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        task_group=task_group_accounts_cirrus,
+    )
+
     bedrock_derived__events_stream__v1 = bigquery_etl_query(
         task_id="bedrock_derived__events_stream__v1",
         destination_table="events_stream_v1",
@@ -3778,6 +3790,10 @@ with DAG(
 
     accounts_cirrus_derived__baseline_clients_last_seen__v1.set_upstream(
         accounts_cirrus_derived__baseline_clients_daily__v1
+    )
+
+    accounts_cirrus_derived__metrics_clients_daily__v1.set_upstream(
+        wait_for_copy_deduplicate_all
     )
 
     bedrock_derived__events_stream__v1.set_upstream(wait_for_copy_deduplicate_all)

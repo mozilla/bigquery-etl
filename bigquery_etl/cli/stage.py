@@ -363,29 +363,30 @@ def _deploy_artifacts(ctx, artifact_files, project_id, dataset_suffix, sql_dir):
         and "*" not in file.parent.name and file.parent.name != "INFORMATION_SCHEMA"
     ]
 
-    # checking and creating datasets needs to happen sequentially
-    for query_file in query_files:
-        dataset = query_file.parent.parent.name
-        create_dataset_if_not_exists(
-            project_id=project_id, dataset=dataset, suffix=dataset_suffix
-        )
+    if len(query_files) > 0:
+        # checking and creating datasets needs to happen sequentially
+        for query_file in query_files:
+            dataset = query_file.parent.parent.name
+            create_dataset_if_not_exists(
+                project_id=project_id, dataset=dataset, suffix=dataset_suffix
+            )
 
-    ctx.invoke(
-        update_query_schema,
-        name=query_files,
-        sql_dir=sql_dir,
-        project_id=project_id,
-        respect_dryrun_skip=True,
-    )
-    ctx.invoke(
-        deploy_query_schema,
-        name=query_files,
-        sql_dir=sql_dir,
-        project_id=project_id,
-        force=True,
-        respect_dryrun_skip=False,
-        skip_external_data=True,
-    )
+        ctx.invoke(
+            update_query_schema,
+            name=query_files,
+            sql_dir=sql_dir,
+            project_id=project_id,
+            respect_dryrun_skip=True,
+        )
+        ctx.invoke(
+            deploy_query_schema,
+            name=query_files,
+            sql_dir=sql_dir,
+            project_id=project_id,
+            force=True,
+            respect_dryrun_skip=False,
+            skip_external_data=True,
+        )
 
     # deploy views
     view_files = [

@@ -109,7 +109,8 @@ def paths_matching_name_pattern(
     if pattern is None:
         pattern = "*.*"
 
-    if isinstance(pattern, list):
+    # click nargs are passed in as a tuple
+    if isinstance(pattern, tuple) or isinstance(pattern, list):
         for p in pattern:
             matching_files += paths_matching_name_pattern(
                 str(p), sql_path, project_id, files, file_regex

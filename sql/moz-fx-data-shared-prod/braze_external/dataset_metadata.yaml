@@ -1,0 +1,11 @@
+friendly_name: Braze External
+description: |-
+  Dataset with tables that sync to Braze.
+  These tables are ingested into Braze via currents.
+dataset_base_acl: restricted
+user_facing: false
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:braze

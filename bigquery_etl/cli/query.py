@@ -1345,6 +1345,9 @@ def initialize(
         init_files = list(
             map(Path, glob(f"{query_file.parent}/**/init.sql", recursive=True))
         )
+        materialized_views = list(
+            map(Path, glob(f"{query_file.parent}/**/materialized_view.sql", recursive=True))
+        )
 
         # check if the provided file can be initialized and whether existing ones should be skipped
         if "is_init()" in sql_content or len(init_files) > 0:

@@ -5,17 +5,25 @@ WITH users_services_daily_new_entries AS (
     seen_in_tier1_country,
     registered
   FROM
-    `accounts_backend_derived.users_services_daily_v1`
+    accounts_backend.users_services_daily
   WHERE
-    submission_date = @submission_date
+  {% if is_init() %}
+    DATE(submission_date) < CURRENT_DATE
+  {% else %}
+    DATE(submission_date) = @submission_date
+  {% endif %}
 ),
 existing_entries AS (
   SELECT
     user_id_sha256
   FROM
-    `accounts_backend_derived.users_first_seen_v1`
+    accounts_backend_derived.users_first_seen_v1
   WHERE
+{% if is_init() %}
+    FALSE
+  {% else %}
     DATE(submission_date) < @submission_date
+  {% endif %}
 )
 SELECT
   new_entries.*,
@@ -27,3 +35,7 @@ FULL OUTER JOIN
   USING (user_id_sha256)
 WHERE
   existing_entries.user_id_sha256 IS NULL
+{% if is_init() %}
+  QUALIFY
+    ROW_NUMBER() OVER (PARTITION BY user_id_sha256 ORDER BY submission_date ASC) = 1
+{% endif %}

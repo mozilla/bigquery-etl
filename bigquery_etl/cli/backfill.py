@@ -11,6 +11,7 @@ import yaml
 from google.cloud import bigquery
 from google.cloud.exceptions import Conflict, NotFound
 
+from ..backfill.date_range import BackfillDateRange, get_backfill_partition
 from ..backfill.parse import (
     BACKFILL_FILE,
     DEFAULT_REASON,
@@ -29,14 +30,14 @@ from ..backfill.utils import (
     validate_metadata_workgroups,
 )
 from ..backfill.validate import (
-    validate_duplicate_entry_dates,
+    validate_duplicate_entry_with_initiate_status,
     validate_file,
-    validate_overlap_dates,
 )
 from ..cli.query import backfill as query_backfill
 from ..cli.query import deploy
 from ..cli.utils import is_authenticated, project_id_option, sql_dir_option
 from ..config import ConfigLoader
+from ..metadata.parse_metadata import METADATA_FILE, Metadata
 
 
 @click.group(help="Commands for managing backfills.")
@@ -126,10 +127,7 @@ def create(
         status=BackfillStatus.INITIATE,
     )
 
-    for existing_entry in existing_backfills:
-        validate_duplicate_entry_dates(new_entry, existing_entry)
-        if existing_entry.status == BackfillStatus.INITIATE:
-            validate_overlap_dates(new_entry, existing_entry)
+    validate_duplicate_entry_with_initiate_status(new_entry, existing_backfills)
 
     existing_backfills.insert(0, new_entry)
 
@@ -460,22 +458,18 @@ def complete(ctx, qualified_table_name, sql_dir, project_id):
     )
     _copy_table(qualified_table_name, cloned_table_full_name, client, clone=True)
 
-    # copy backfill data to production data
-    start_date = entry_to_complete.start_date
-    end_date = entry_to_complete.end_date
-    dates = [start_date + timedelta(i) for i in range((end_date - start_date).days + 1)]
+    project, dataset, table = qualified_table_name_matching(qualified_table_name)
+    table_metadata = Metadata.from_file(
+        Path(sql_dir / project / dataset / table / METADATA_FILE)
+    )
 
-    # TODO: This should be one copy operation if the table is unpartitioned
-    # replace partitions in production table that have been backfilled
-    for backfill_date in dates:
-        if backfill_date in entry_to_complete.excluded_dates:
-            click.echo(f"Skipping excluded date: {backfill_date}")
-            continue
-
-        partition = backfill_date.strftime("%Y%m%d")
-        production_table = f"{qualified_table_name}${partition}"
-        backfill_table = f"{backfill_staging_qualified_table_name}${partition}"
-        _copy_table(backfill_table, production_table, client)
+    _copy_backfill_staging_to_prod(
+        backfill_staging_qualified_table_name,
+        qualified_table_name,
+        client,
+        entry_to_complete,
+        table_metadata,
+    )
 
     # delete backfill staging table
     client.delete_table(backfill_staging_qualified_table_name)
@@ -486,6 +480,60 @@ def complete(ctx, qualified_table_name, sql_dir, project_id):
     click.echo(
         f"Processed backfill for {qualified_table_name} with entry date {entry_to_complete.entry_date}"
     )
+
+
+def _copy_backfill_staging_to_prod(
+    backfill_staging_table: str,
+    qualified_table_name: str,
+    client: bigquery.Client,
+    entry: Backfill,
+    table_metadata: Metadata,
+):
+    """Copy backfill staging table to prod based on table metadata and backfill config.
+
+    If table is
+       un-partitioned: copy the entire staging table to production.
+       partitioned: determine and copy each partition from staging to production.
+    """
+    partitioning_type = None
+    if table_metadata.bigquery and table_metadata.bigquery.time_partitioning:
+        partitioning_type = table_metadata.bigquery.time_partitioning.type
+
+    if partitioning_type is None:
+        _copy_table(backfill_staging_table, qualified_table_name, client)
+    else:
+        backfill_date_range = BackfillDateRange(
+            entry.start_date,
+            entry.end_date,
+            excludes=entry.excluded_dates,
+            range_type=partitioning_type,
+        )
+        # If date_partition_parameter isn't set it's assumed to be submission_date:
+        # https://github.com/mozilla/telemetry-airflow/blob/dbc2782fa23a34ae8268e7788f9621089ac71def/utils/gcp.py#L194C48-L194C48
+        partition_param, offset = "submission_date", 0
+        if table_metadata.scheduling:
+            partition_param = table_metadata.scheduling.get(
+                "date_partition_parameter", partition_param
+            )
+            offset = table_metadata.scheduling.get("date_partition_offset", offset)
+
+        for backfill_date in backfill_date_range:
+            if (
+                partition := get_backfill_partition(
+                    backfill_date,
+                    partition_param,
+                    offset,
+                    partitioning_type,
+                )
+                is None
+            ):
+                raise ValueError(
+                    f"Null partition found completing backfill {entry} for {qualified_table_name}."
+                )
+
+            production_table = f"{qualified_table_name}${partition}"
+            backfill_table = f"{backfill_staging_table}${partition}"
+            _copy_table(backfill_table, production_table, client)
 
 
 def _copy_table(

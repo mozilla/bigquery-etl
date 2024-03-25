@@ -22838,6 +22838,9 @@ fields:
         - name: browser_backup_security_data_size
           type: INTEGER
           mode: NULLABLE
+        - name: browser_backup_preferences_size
+          type: INTEGER
+          mode: NULLABLE
     - name: socket
       type: RECORD
       mode: NULLABLE

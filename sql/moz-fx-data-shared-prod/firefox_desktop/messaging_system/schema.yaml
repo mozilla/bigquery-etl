@@ -543,8 +543,7 @@ fields:
     - name: messaging_system_ping_type
       type: STRING
       mode: NULLABLE
-      description: 'Type of event the ping is capturing. e.g. "cfr", "whats-new-panel",
-        "onboarding"
+      description: 'Type of event the ping is capturing. e.g. "cfr", "onboarding"
 
         '
     - name: messaging_system_source

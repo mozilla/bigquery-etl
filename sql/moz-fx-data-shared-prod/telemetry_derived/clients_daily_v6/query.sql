@@ -374,6 +374,7 @@ clients_summary AS (
         SELECT AS STRUCT
           addons.key,
           STRUCT(
+            addons.value.app_disabled,
             addons.value.blocklisted,
             addons.value.description,
             addons.value.foreign_install,
@@ -392,7 +393,8 @@ clients_summary AS (
           ) AS value
         FROM
           UNNEST(environment.addons.active_addons) AS addons
-      )
+      ),
+      NULL
     ) AS active_addons,
     ARRAY_LENGTH(environment.addons.active_addons) AS active_addons_count,
     environment.settings.blocklist_enabled,

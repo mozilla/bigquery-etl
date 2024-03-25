@@ -51,7 +51,8 @@ WITH _current AS (
   --
 _previous AS (
   SELECT
-    * EXCEPT (submission_date)
+    days_seen_bits, days_active_bits, days_created_profile_bits,
+    * EXCEPT (submission_date, days_seen_bits, days_active_bits, days_created_profile_bits),
   FROM
     `{{ last_seen_table }}`
   WHERE

@@ -11,60 +11,62 @@ friendly_name = "Login Funnel Conversion"
 description = "Overall login funnel conversion rate"
 steps = ["login_view", "login_success"]
 
-[funnels.login_email_confirmation]
-
-friendly_name = "Login Funnel Conversion with Email Confirmation"
-description = "Funnel steps from Login View through Email Confirmation steps"
-steps = ["login_view", "confirm_email", "login_success"]
-
 [funnels.login_2fa]
 
 friendly_name = "Login Funnel Conversion through 2FA"
 description = "Funnel steps from Login View through 2FA (no backup codes)"
-steps = ["login_view", "login_confirm_2fa", "login_success"]
+steps = ["login_view", "login_2fa_view", "login_2fa_success"]
 
 [steps]
 
 [steps.login_view]
 friendly_name = "Login View Form"
 description = "View of the top of the login funnel"
-data_source = "all_events"
-where_expression = "event_type = 'fxa_login - view'"
-join_previous_step_on = "flow_id"
-select_expression = "flow_id"
+data_source = "monitor_frontend"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "metrics.string.event_name = 'login_view'"
 aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
 
 [steps.confirm_email]
 friendly_name = "Email confirmation sent"
 description = "Confirm email"
-data_source = "all_events"
-select_expression = "flow_id"
-where_expression = "event_type = 'fxa_email - sent' AND JSON_VALUE(event_properties, '$.email_type')  = 'login'"
+data_source = "monitor_frontend"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "metrics.string.event_name = 'login_email_confirmation_view'"
 aggregation = "count distinct"
-join_previous_step_on = "flow_id"
+join_previous_step_on = "metrics.string.session_flow_id"
 
-[steps.login_confirm_2fa]
+[steps.login_2fa_view]
 friendly_name = "Login 2FA Form"
-description = "Login step requiring two factor authentication"
-data_source = "all_events"
-where_expression = "event_type = 'fxa_login - totp_code_view'"
-join_previous_step_on = "flow_id"
-select_expression = "flow_id"
+description = "View of the login 2FA form"
+data_source = "monitor_frontend"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "metrics.string.event_name = 'login_totp_form_view'"
 aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
 
 [steps.login_success]
 friendly_name = "Successful Login Completion"
 description = "The login flow was completed successfully"
-data_source = "all_events"
-select_expression = "flow_id"
-where_expression = "event_type = 'fxa_login - complete'"
+data_source = "monitor_frontend"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "metrics.string.event_name = 'login_submit_success'"
 aggregation = "count distinct"
-join_previous_step_on = "flow_id"
+join_previous_step_on = "metrics.string.session_flow_id"
 
+[steps.login_2fa_success]
+friendly_name = "Successful Login Completion Step after 2FA"
+description = "The login flow was completed successfully"
+data_source = "monitor_frontend"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "metrics.string.event_name = 'login_totp_code_success_view'"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
 
 [data_sources]
 
-[data_sources.all_events]
-from_expression = "mozdata.firefox_accounts.fxa_all_events"
-submission_date_column = "DATE(timestamp)"
-client_id_column = "user_id"
+[data_sources.monitor_frontend]
+from_expression = "mozdata.accounts_frontend.accounts_events"
+submission_date_column = "DATE(submission_timestamp)"
+client_id_column = "client_info.client_id"

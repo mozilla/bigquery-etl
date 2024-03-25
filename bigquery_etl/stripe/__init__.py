@@ -165,7 +165,7 @@ def stripe_import(
     elif quiet:
         handle = open(os.devnull, "w+b")
     else:
-        handle = sys.stdout.buffer
+        handle = sys.stdout.buffer  # type: ignore
     with handle as file_obj:
         path = Path(__file__).parent / f"{report_type}.schema.json"
         root = bigquery.SchemaField.from_api_repr(

@@ -20,10 +20,10 @@ from typing import Optional
 
 import rich_click as click
 import yaml
-from dateutil.rrule import MONTHLY, rrule
 from google.cloud import bigquery
 from google.cloud.exceptions import NotFound
 
+from ..backfill.date_range import BackfillDateRange, get_backfill_partition
 from ..backfill.utils import QUALIFIED_TABLE_NAME_RE, qualified_table_name_matching
 from ..cli import check
 from ..cli.format import format
@@ -509,7 +509,6 @@ def _backfill_query(
     project_id,
     date_partition_parameter,
     date_partition_offset,
-    exclude,
     max_rows,
     dry_run,
     scheduling_parameters,
@@ -520,30 +519,27 @@ def _backfill_query(
     run_checks,
 ):
     """Run a query backfill for a specific date."""
-    backfill_date_str = backfill_date.strftime("%Y-%m-%d")
-    if backfill_date_str in exclude:
-        click.echo(f"Skipping {query_file_path} backfill for run {backfill_date_str}")
-        return True
-
     project, dataset, table = extract_from_query_path(query_file_path)
     if destination_table is None:
         destination_table = f"{project}.{dataset}.{table}"
 
     # For partitioned tables, get the partition to write to the correct destination:
-    if (
-        partition := _get_partition(
-            backfill_date,
-            date_partition_parameter,
-            date_partition_offset,
-            partitioning_type,
-        )
-    ) is not None:
-        destination_table = f"{destination_table}${partition}"
+    if partitioning_type is not None:
+        if (
+            partition := get_backfill_partition(
+                backfill_date,
+                date_partition_parameter,
+                date_partition_offset,
+                partitioning_type,
+            )
+        ) is not None:
+            destination_table = f"{destination_table}${partition}"
 
     if not QUALIFIED_TABLE_NAME_RE.match(destination_table):
         click.echo("Destination table must be named like: <project>.<dataset>.<table>")
         sys.exit(1)
 
+    backfill_date_str = backfill_date.strftime("%Y-%m-%d")
     query_parameters = [
         _parse_parameter(param, backfill_date_str) for param in scheduling_parameters
     ]
@@ -603,34 +599,6 @@ def _backfill_query(
         )
 
     return True
-
-
-def _get_partition(
-    backfill_date: datetime.datetime,
-    date_partition_parameter: Optional[str],
-    date_partition_offset: int,
-    partitioning_type: Optional[PartitionType],
-) -> Optional[str]:
-    if date_partition_parameter is None and date_partition_offset == 0:
-        return None
-
-    match partitioning_type:
-        case None:
-            partition = None
-        case PartitionType.DAY:
-            partition_date = backfill_date + timedelta(days=date_partition_offset)
-            partition = partition_date.strftime("%Y%m%d")
-        case PartitionType.MONTH:
-            if date_partition_offset != 0:
-                # TODO: Support offsets here e.g. desktop_mobile_search_clients_monthly_v1
-                raise ValueError(
-                    f"Offsets are unsupported for non-daily partitions (found date_partition_offset={date_partition_offset})."
-                )
-            partition = backfill_date.strftime("%Y%m")
-        case _:
-            raise ValueError(f"Unsupported partitioning type: {partitioning_type}")
-
-    return partition
 
 
 @query.command(
@@ -770,27 +738,12 @@ def backfill(
         if metadata.bigquery and metadata.bigquery.time_partitioning:
             partitioning_type = metadata.bigquery.time_partitioning.type
 
-        match partitioning_type:
-            case None | PartitionType.DAY:
-                dates = [
-                    start_date + timedelta(i)
-                    for i in range((end_date - start_date).days + 1)
-                ]
-            case PartitionType.MONTH:
-                dates = list(
-                    rrule(
-                        freq=MONTHLY,
-                        dtstart=start_date.replace(day=1),
-                        until=end_date,
-                    )
-                )
-                # Dates in excluded must be the first day of the month to match `dates`
-                exclude = [
-                    date.fromisoformat(day).replace(day=1).strftime("%Y-%m-%d")
-                    for day in exclude
-                ]
-            case _:
-                raise ValueError(f"Unsupported partitioning type: {partitioning_type}")
+        date_range = BackfillDateRange(
+            start_date,
+            end_date,
+            excludes=[date.fromisoformat(x) for x in exclude],
+            range_type=partitioning_type or PartitionType.DAY,
+        )
 
         if depends_on_past and exclude:
             click.echo(
@@ -811,7 +764,6 @@ def backfill(
             project_id,
             date_partition_parameter,
             date_partition_offset,
-            exclude,
             max_rows,
             dry_run,
             scheduling_parameters,
@@ -824,12 +776,12 @@ def backfill(
         if not depends_on_past and parallelism > 0:
             # run backfill for dates in parallel if depends_on_past is false
             with Pool(parallelism) as p:
-                result = p.map(backfill_query, dates, chunksize=1)
+                result = p.map(backfill_query, date_range, chunksize=1)
             if not all(result):
                 sys.exit(1)
         else:
             # if data depends on previous runs, then execute backfill sequentially
-            for backfill_date in dates:
+            for backfill_date in date_range:
                 backfill_query(backfill_date)
 
 
@@ -1629,7 +1581,7 @@ def schema():
     ./bqetl query schema update telemetry_derived.clients_daily_v6 --update-downstream
     """,
 )
-@click.argument("name")
+@click.argument("name", nargs=-1)
 @sql_dir_option
 @click.option(
     "--project-id",
@@ -1993,7 +1945,7 @@ def _update_query_schema(
     ./bqetl query schema deploy telemetry_derived.clients_daily_v6
     """,
 )
-@click.argument("name")
+@click.argument("name", nargs=-1)
 @sql_dir_option
 @click.option(
     "--project-id",

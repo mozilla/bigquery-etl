@@ -51,6 +51,8 @@ RETURNS STRING AS (
       THEN 'quick_action'
     WHEN res IN ('rs_pocket', 'rust_pocket')
       THEN 'pocket_collection'
+    WHEN res IN ('rs_mdn', 'rust_mdn')
+      THEN 'mdn'
     ELSE 'other'
   END
 );

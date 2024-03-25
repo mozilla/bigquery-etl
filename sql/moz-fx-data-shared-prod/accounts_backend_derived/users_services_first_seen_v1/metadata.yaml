@@ -15,5 +15,7 @@ bigquery:
     require_partition_filter: true
     expiration_days: null
   clustering:
-    fields: [country, service]
+    fields:
+    - service
+    - country
 references: {}

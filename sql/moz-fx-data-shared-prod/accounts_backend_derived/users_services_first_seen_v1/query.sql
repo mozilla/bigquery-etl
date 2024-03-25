@@ -3,11 +3,15 @@ WITH users_services_daily_new_entries AS (
     user_id_sha256,
     service,
     country,
-    registered
+    registered,
   FROM
-    `moz-fx-data-shared-prod.accounts_backend_derived.users_services_daily_v1`
+    `moz-fx-data-shared-prod.accounts_backend.users_services_daily`
   WHERE
-    submission_date = @submission_date
+  {% if is_init() %}
+    DATE(submission_date) < CURRENT_DATE
+  {% else %}
+    DATE(submission_date) = @submission_date
+  {% endif %}
 ),
 existing_entries AS (
   SELECT
@@ -16,10 +20,14 @@ existing_entries AS (
   FROM
     `accounts_backend_derived.users_services_first_seen_v1`
   WHERE
+  {% if is_init() %}
+    FALSE
+  {% else %}
     DATE(submission_date) < @submission_date
+  {% endif %}
 )
 SELECT
-  DATE(@submission_date) AS submission_date,
+  @submission_date AS submission_date,
   new_entries.user_id_sha256,
   new_entries.service,
   new_entries.registered,
@@ -32,3 +40,7 @@ FULL OUTER JOIN
 WHERE
   existing_entries.user_id_sha256 IS NULL
   AND existing_entries.service IS NULL
+{% if is_init() %}
+  QUALIFY
+    ROW_NUMBER() OVER (PARTITION BY user_id_sha256, service ORDER BY submission_date ASC) = 1
+{% endif %}

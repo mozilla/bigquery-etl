@@ -263,7 +263,7 @@ def _should_complete(
         qualified_table_name, backfill.entry_date
     )
     if not _table_exists(client, staging_table):
-        click.echo(f"Backfill staging table does not exist: {qualified_table_name}")
+        click.echo(f"Backfill staging table does not exist: {staging_table}")
         return False
 
     backup_table_name = get_backfill_backup_table_name(

@@ -11,10 +11,10 @@ fields:
 - name: country
   type: STRING
   mode: NULLABLE
-- name: seen_in_tier1_country
+- name: registered
   type: BOOLEAN
   mode: NULLABLE
-- name: registered
+- name: seen_in_tier1_country
   type: BOOLEAN
   mode: NULLABLE
 - name: user_agent_device_count

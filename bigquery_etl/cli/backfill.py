@@ -399,7 +399,7 @@ def _initiate_backfill(
     qualified_table_name: str,
     backfill_staging_qualified_table_name: str,
     entry: Backfill,
-    dry_run=None,
+    dry_run: bool = False,
 ):
     if not is_authenticated():
         click.echo(

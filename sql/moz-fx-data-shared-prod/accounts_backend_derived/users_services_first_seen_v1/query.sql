@@ -22,7 +22,7 @@ SELECT
   DATE(@submission_date) AS submission_date,
   new_entries.user_id_sha256,
   new_entries.service,
-  new_entries.registered AS did_register,
+  new_entries.registered,
   new_entries.country AS first_service_country
 FROM
   users_services_daily_new_entries AS new_entries

@@ -5,7 +5,7 @@ fields:
 - name: service
   type: STRING
   mode: NULLABLE
-- name: country
+- name: first_service_country
   type: STRING
   mode: NULLABLE
 - name: registered

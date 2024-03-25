@@ -21,7 +21,6 @@ class BackfillDateRange:
     end_date: date
     excludes: Optional[list[date]] = None
     range_type: PartitionType = PartitionType.DAY
-    include_all_dates: bool = False
     _dates: list[date] = field(init=False)
     _date_index: int = field(init=False)
 
@@ -46,7 +45,7 @@ class BackfillDateRange:
                     )
                 ]
                 # Dates in excluded must be the first day of the month to match `dates`
-                # log.info("Converting excludes to first day of the month due to monthly partition.")
+                log.info("Converting excludes to first day of the month.")
                 if self.excludes is not None:
                     self.excludes = [day.replace(day=1) for day in self.excludes]
 
@@ -60,7 +59,7 @@ class BackfillDateRange:
         if self._date_index < len(self._dates):
             _date = self._dates[self._date_index]
             self._date_index += 1
-            if not self.include_all_dates and self._is_date_excluded(_date):
+            if self._is_date_excluded(_date):
                 log.info(f"Skipping excluded date: {_date}")
                 return self.__next__()
             else:

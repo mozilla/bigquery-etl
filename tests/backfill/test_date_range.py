@@ -53,26 +53,6 @@ class TestBackfillDateRange:
             date.fromisoformat("2020-03-01"),
         ]
 
-    def test_include_all(self):
-        date_range = BackfillDateRange(
-            start_date=date.fromisoformat("2020-01-01"),
-            end_date=date.fromisoformat("2020-01-05"),
-            excludes=[
-                date.fromisoformat("2020-01-02"),
-                date.fromisoformat("2020-01-03"),
-            ],
-            include_all_dates=True,
-        )
-        dates = list(date_range)
-
-        assert dates == [
-            date.fromisoformat("2020-01-01"),
-            date.fromisoformat("2020-01-02"),
-            date.fromisoformat("2020-01-03"),
-            date.fromisoformat("2020-01-04"),
-            date.fromisoformat("2020-01-05"),
-        ]
-
 
 def test_get_backfill_partition():
 

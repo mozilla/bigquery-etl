@@ -37,7 +37,7 @@ from ..cli.query import backfill as query_backfill
 from ..cli.query import deploy
 from ..cli.utils import is_authenticated, project_id_option, sql_dir_option
 from ..config import ConfigLoader
-from ..metadata.parse_metadata import Metadata
+from ..metadata.parse_metadata import METADATA_FILE, Metadata
 
 
 @click.group(help="Commands for managing backfills.")
@@ -458,9 +458,9 @@ def complete(ctx, qualified_table_name, sql_dir, project_id):
     )
     _copy_table(qualified_table_name, cloned_table_full_name, client, clone=True)
 
-    project, dataset, table = qualified_table_name.split(".")
+    project, dataset, table = qualified_table_name_matching(qualified_table_name)
     table_metadata = Metadata.from_file(
-        Path(sql_dir / project / dataset / table / "metadata.yaml")
+        Path(sql_dir / project / dataset / table / METADATA_FILE)
     )
 
     _copy_backfill_staging_to_prod(

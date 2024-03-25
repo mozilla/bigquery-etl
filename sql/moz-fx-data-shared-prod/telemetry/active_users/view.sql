@@ -36,10 +36,10 @@ SELECT
   days_active_bits,
   CAST(mozfun.bits28.days_since_seen(days_active_bits) = 0 AS BOOLEAN) AS is_dau,
   CAST(mozfun.bits28.days_since_seen(days_active_bits) < 7 AS BOOLEAN) AS is_wau,
-  CAST(mozfun.bits28.days_since_seen(days_active_bits) AS BOOLEAN) AS is_mau,
+  CAST(mozfun.bits28.days_since_seen(days_active_bits) < 28 AS BOOLEAN) AS is_mau,
   CAST(mozfun.bits28.days_since_seen(days_seen_bits) = 0 AS BOOLEAN) AS is_daily_user,
   CAST(mozfun.bits28.days_since_seen(days_active_bits) < 7 AS BOOLEAN) AS is_weekly_user,
-  CAST(mozfun.bits28.days_since_seen(days_seen_bits) AS BOOLEAN) AS is_monthly_user,
+  CAST(mozfun.bits28.days_since_seen(days_seen_bits) < 28 AS BOOLEAN) AS is_monthly_user,
   IF(
     LOWER(isp) <> "browserstack"
     AND LOWER(distribution_id) <> "mozillaonline",
@@ -63,13 +63,12 @@ SELECT
   END AS app_name,
   days_seen_bits,
   days_active_bits,
-  CAST(NULL AS INT64) AS days_active_bits,
   CAST(mozfun.bits28.days_since_seen(days_active_bits) = 0 AS BOOLEAN) AS is_dau,
   CAST(mozfun.bits28.days_since_seen(days_active_bits) < 7 AS BOOLEAN) AS is_wau,
-  CAST(mozfun.bits28.days_since_seen(days_active_bits) AS BOOLEAN) AS is_mau,
+  CAST(mozfun.bits28.days_since_seen(days_active_bits) < 28 AS BOOLEAN) AS is_mau,
   CAST(mozfun.bits28.days_since_seen(days_seen_bits) = 0 AS BOOLEAN) AS is_daily_user,
   CAST(mozfun.bits28.days_since_seen(days_seen_bits) < 7 AS BOOLEAN) AS is_weekly_user,
-  CAST(mozfun.bits28.days_since_seen(days_seen_bits) AS BOOLEAN) AS is_monthly_user,
+  CAST(mozfun.bits28.days_since_seen(days_seen_bits) < 28 AS BOOLEAN) AS is_monthly_user,
   FALSE AS is_desktop,
   IF(
     LOWER(isp) <> "browserstack"
@@ -94,13 +93,12 @@ SELECT
   END AS app_name,
   days_seen_bits,
   days_active_bits,
-  CAST(NULL AS INT64) AS days_active_bits,
   CAST(mozfun.bits28.days_since_seen(days_active_bits) = 0 AS BOOLEAN) AS is_dau,
   CAST(mozfun.bits28.days_since_seen(days_active_bits) < 7 AS BOOLEAN) AS is_wau,
-  CAST(mozfun.bits28.days_since_seen(days_active_bits) AS BOOLEAN) AS is_mau,
+  CAST(mozfun.bits28.days_since_seen(days_active_bits) < 28 AS BOOLEAN) AS is_mau,
   CAST(mozfun.bits28.days_since_seen(days_seen_bits) = 0 AS BOOLEAN) AS is_daily_user,
   CAST(mozfun.bits28.days_since_seen(days_seen_bits) < 7 AS BOOLEAN) AS is_weekly_user,
-  CAST(mozfun.bits28.days_since_seen(days_seen_bits) AS BOOLEAN) AS is_monthly_user,
+  CAST(mozfun.bits28.days_since_seen(days_seen_bits) < 28 AS BOOLEAN) AS is_monthly_user,
   FALSE AS is_desktop,
   IF(LOWER(isp) <> "browserstack", TRUE, FALSE) AS is_mobile
 FROM
@@ -117,13 +115,12 @@ SELECT
   END AS app_name,
   days_seen_bits,
   days_active_bits,
-  CAST(NULL AS INT64) AS days_active_bits,
   CAST(mozfun.bits28.days_since_seen(days_active_bits) = 0 AS BOOLEAN) AS is_dau,
   CAST(mozfun.bits28.days_since_seen(days_active_bits) < 7 AS BOOLEAN) AS is_wau,
-  CAST(mozfun.bits28.days_since_seen(days_active_bits) AS BOOLEAN) AS is_mau,
+  CAST(mozfun.bits28.days_since_seen(days_active_bits) < 28 AS BOOLEAN) AS is_mau,
   CAST(mozfun.bits28.days_since_seen(days_seen_bits) = 0 AS BOOLEAN) AS is_daily_user,
   CAST(mozfun.bits28.days_since_seen(days_seen_bits) < 7 AS BOOLEAN) AS is_weekly_user,
-  CAST(mozfun.bits28.days_since_seen(days_seen_bits) AS BOOLEAN) AS is_monthly_user,
+  CAST(mozfun.bits28.days_since_seen(days_seen_bits) < 28 AS BOOLEAN) AS is_monthly_user,
   TRUE AS is_desktop,
   FALSE AS is_mobile
 FROM
@@ -140,15 +137,14 @@ SELECT
   END AS app_name,
   days_seen_bits,
   days_active_bits,
-  CAST(NULL AS INT64) AS days_active_bits,
   CAST(mozfun.bits28.days_since_seen(days_active_bits) = 0 AS BOOLEAN) AS is_dau,
   CAST(mozfun.bits28.days_since_seen(days_active_bits) < 7 AS BOOLEAN) AS is_wau,
-  CAST(mozfun.bits28.days_since_seen(days_active_bits) AS BOOLEAN) AS is_mau,
+  CAST(mozfun.bits28.days_since_seen(days_active_bits) < 28 AS BOOLEAN) AS is_mau,
   CAST(mozfun.bits28.days_since_seen(days_seen_bits) = 0 AS BOOLEAN) AS is_daily_user,
   CAST(mozfun.bits28.days_since_seen(days_seen_bits) < 7 AS BOOLEAN) AS is_weekly_user,
-  CAST(mozfun.bits28.days_since_seen(days_seen_bits) AS BOOLEAN) AS is_monthly_user,
+  CAST(mozfun.bits28.days_since_seen(days_seen_bits) < 28 AS BOOLEAN) AS is_monthly_user,
   FALSE AS is_desktop,
-  IF(LOWER(isp) <> "browserstack", TRUE, FALSE) AS is_mobile
+  FALSE AS is_mobile
 FROM
   `moz-fx-data-shared-prod.klar_ios.baseline_clients_last_seen`
 UNION ALL
@@ -163,13 +159,12 @@ SELECT
   END AS app_name,
   days_seen_bits,
   days_active_bits,
-  CAST(NULL AS INT64) AS days_active_bits,
   CAST(mozfun.bits28.days_since_seen(days_active_bits) = 0 AS BOOLEAN) AS is_dau,
   CAST(mozfun.bits28.days_since_seen(days_active_bits) < 7 AS BOOLEAN) AS is_wau,
-  CAST(mozfun.bits28.days_since_seen(days_active_bits) AS BOOLEAN) AS is_mau,
+  CAST(mozfun.bits28.days_since_seen(days_active_bits) < 28 AS BOOLEAN) AS is_mau,
   CAST(mozfun.bits28.days_since_seen(days_seen_bits) = 0 AS BOOLEAN) AS is_daily_user,
   CAST(mozfun.bits28.days_since_seen(days_seen_bits) < 7 AS BOOLEAN) AS is_weekly_user,
-  CAST(mozfun.bits28.days_since_seen(days_seen_bits) AS BOOLEAN) AS is_monthly_user,
+  CAST(mozfun.bits28.days_since_seen(days_seen_bits) < 28 AS BOOLEAN) AS is_monthly_user,
   FALSE AS is_desktop,
   IF(LOWER(isp) <> "browserstack", TRUE, FALSE) AS is_mobile
 FROM
@@ -186,13 +181,12 @@ SELECT
   END AS app_name,
   days_seen_bits,
   days_active_bits,
-  CAST(NULL AS INT64) AS days_active_bits,
   CAST(mozfun.bits28.days_since_seen(days_active_bits) = 0 AS BOOLEAN) AS is_dau,
   CAST(mozfun.bits28.days_since_seen(days_active_bits) < 7 AS BOOLEAN) AS is_wau,
-  CAST(mozfun.bits28.days_since_seen(days_active_bits) AS BOOLEAN) AS is_mau,
+  CAST(mozfun.bits28.days_since_seen(days_active_bits) < 28 AS BOOLEAN) AS is_mau,
   CAST(mozfun.bits28.days_since_seen(days_seen_bits) = 0 AS BOOLEAN) AS is_daily_user,
   CAST(mozfun.bits28.days_since_seen(days_seen_bits) < 7 AS BOOLEAN) AS is_weekly_user,
-  CAST(mozfun.bits28.days_since_seen(days_seen_bits) AS BOOLEAN) AS is_monthly_user,
+  CAST(mozfun.bits28.days_since_seen(days_seen_bits) < 28 AS BOOLEAN) AS is_monthly_user,
   FALSE AS is_desktop,
   IF(LOWER(isp) <> "browserstack", TRUE, FALSE) AS is_mobile
 FROM

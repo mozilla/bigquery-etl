@@ -163,8 +163,8 @@ WITH base AS (
     AND document_id IS NOT NULL
 ),
 overactive AS (
-  -- Find client_ids with over 150,000 pings in a day, which could errors in the
-  -- next step due to aggregation overflows.
+  -- Find client_ids with over 150 000 pings in a day or over 3 000 000 across all pings,
+  -- which could cause errors in the next step due to aggregation overflows.
   SELECT
     client_id
   FROM
@@ -173,6 +173,7 @@ overactive AS (
     client_id
   HAVING
     COUNT(*) > 150000
+    OR SUM(ARRAY_LENGTH(environment.addons.active_addons)) > 3000000
 ),
 clients_summary AS (
   SELECT

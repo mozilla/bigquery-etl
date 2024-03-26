@@ -426,13 +426,6 @@ def _initiate_backfill(
             dry_run=dry_run,
         )
     except subprocess.CalledProcessError as e:
-        client = bigquery.Client(project=project)
-        if dry_run:
-            client.delete_table(backfill_staging_qualified_table_name)
-            click.echo(
-                f"Backfill staging table deleted: {backfill_staging_qualified_table_name}"
-            )
-
         raise ValueError(
             f"Backfill initiate resulted in error for {qualified_table_name}"
         ) from e

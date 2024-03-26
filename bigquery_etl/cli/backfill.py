@@ -419,9 +419,9 @@ def _initiate_backfill(
             query_backfill,
             name=f"{dataset}.{table}",
             project_id=project,
-            start_date=entry.start_date,
-            end_date=entry.end_date,
-            exclude=entry.excluded_dates,
+            start_date=datetime.fromisoformat(entry.start_date.isoformat()),
+            end_date=datetime.fromisoformat(entry.end_date.isoformat()),
+            exclude=[e.strftime("%Y-%m-%d") for e in entry.excluded_dates],
             destination_table=backfill_staging_qualified_table_name,
             dry_run=dry_run,
         )

@@ -12,7 +12,6 @@ from google.api_core.exceptions import NotFound
 from google.cloud import bigquery
 from google.cloud.bigquery import SchemaField
 
-
 from .. import dryrun
 
 SCHEMA_FILE = "schema.yaml"

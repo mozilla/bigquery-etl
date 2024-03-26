@@ -101,6 +101,7 @@ class DryRun:
         # update skip list to include renamed queries in stage.
         test_project = ConfigLoader.get("default", "test_project", fallback="")
         file_pattern_re = re.compile(r"sql/([^\/]+)/([^/]+)(/?.*|$)")
+
         skip_files.update(
             [
                 file

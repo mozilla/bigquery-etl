@@ -222,10 +222,6 @@ with DAG(
         messaging_system_derived__cfr_users_last_seen__v1
     )
 
-    messaging_system_derived__cfr_users_daily__v1.set_upstream(
-        wait_for_copy_deduplicate_all
-    )
-
     messaging_system_derived__cfr_users_last_seen__v1.set_upstream(
         messaging_system_derived__cfr_users_daily__v1
     )

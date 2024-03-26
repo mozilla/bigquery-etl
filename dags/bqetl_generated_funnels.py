@@ -151,6 +151,21 @@ with DAG(
         depends_on_past=False,
     )
 
+    monitor_frontend_derived__monitor_dashboard_user_journey_funnels__v1 = bigquery_etl_query(
+        task_id="monitor_frontend_derived__monitor_dashboard_user_journey_funnels__v1",
+        destination_table="monitor_dashboard_user_journey_funnels_v1",
+        dataset_id="monitor_frontend_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="ksiegler@mozilla.org",
+        email=[
+            "ascholtz@mozilla.com",
+            "ksiegler@mozilla.org",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     accounts_frontend_derived__monitor_mozilla_accounts_funnels__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
@@ -170,5 +185,9 @@ with DAG(
     fenix_derived__android_onboarding__v1.set_upstream(wait_for_copy_deduplicate_all)
 
     firefox_accounts_derived__login_funnels__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    monitor_frontend_derived__monitor_dashboard_user_journey_funnels__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )

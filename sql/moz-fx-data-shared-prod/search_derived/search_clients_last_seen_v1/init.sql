@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS
-  search_clients_last_seen_v1
+  `moz-fx-data-shared-prod.search_derived.search_clients_last_seen_v1`
 PARTITION BY
   submission_date
 CLUSTER BY

@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS
-  clients_last_seen_event_v1
+  `moz-fx-data-shared-prod.telemetry_derived.clients_last_seen_event_v1`
 PARTITION BY
   submission_date
 CLUSTER BY

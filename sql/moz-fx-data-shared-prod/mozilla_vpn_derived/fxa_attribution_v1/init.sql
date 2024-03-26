@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS
-  fxa_attribution_v1(
+  `moz-fx-data-shared-prod.mozilla_vpn_derived.fxa_attribution_v1`(
     flow_id STRING,
     flow_started TIMESTAMP,
     fxa_uids ARRAY<STRING>,

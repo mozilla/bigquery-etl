@@ -1,5 +1,5 @@
 CREATE TABLE
-  cfr_users_last_seen_v1
+  `moz-fx-data-shared-prod.messaging_system_derived.cfr_users_last_seen_v1`
 PARTITION BY
   submission_date
 CLUSTER BY

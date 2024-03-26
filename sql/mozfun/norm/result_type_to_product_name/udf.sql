@@ -11,6 +11,8 @@ RETURNS STRING AS (
       THEN 'default_partner_search_suggestion'
     WHEN res IN ('search_engine')
       THEN 'search_engine'
+    WHEN res IN ('rust_yelp')
+      THEN 'yelp_suggestion'
     WHEN res IN ('trending_search', 'trending_search_rich')
       THEN 'trending_suggestion'
     WHEN res IN ('history')

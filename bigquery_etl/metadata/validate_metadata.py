@@ -98,6 +98,17 @@ def validate_change_control(
     return True
 
 
+def validate_deprecation(metadata, path):
+    """Check that deprecated is True when deletion date exists."""
+    if metadata.deletion_date and not metadata.deprecated:
+        click.echo(
+            f"Deletion date should only be added when table is deprecated in {path}"
+        )
+        return False
+
+    return True
+
+
 def validate(target):
     """Validate metadata files."""
     failed = False
@@ -117,6 +128,9 @@ def validate(target):
                         metadata=metadata,
                         codeowners_file=CODEOWNERS_FILE,
                     ):
+                        failed = True
+
+                    if not validate_deprecation(metadata, path):
                         failed = True
 
                     # todo more validation

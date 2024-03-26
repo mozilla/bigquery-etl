@@ -1,47 +1,13 @@
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.org_mozilla_broken_site_report.user_reports`
 AS
-WITH historical_reports AS (
-  -- get old reports; already deduplicated
-  SELECT
-    *
-  FROM
-    `moz-fx-data-shared-prod.firefox_desktop_stable.broken_site_report_v1`
-  WHERE
-    DATE(submission_timestamp) > "2023-11-01"
-),
-live_reports AS (
-  SELECT
-    *,
-    ROW_NUMBER() OVER (PARTITION BY document_id ORDER BY submission_timestamp) AS rn
-  FROM
-    `moz-fx-data-shared-prod.firefox_desktop_live.broken_site_report_v1`
-  WHERE
-    -- only get reports from the live tables that haven't gotten materialized in the stable tables
-    DATE(submission_timestamp) > (SELECT DATE(MAX(submission_timestamp)) FROM historical_reports)
-    AND DATE(submission_timestamp) > "2023-11-01"
-),
-all_reports AS (
-  -- merge historical and new reports; deduplicate reports from the live tables
-  SELECT
-    * EXCEPT (rn)
-  FROM
-    live_reports
-  WHERE
-    rn = 1
-  UNION ALL
-  SELECT
-    *
-  FROM
-    historical_reports
-)
 SELECT
   document_id AS uuid,
   CAST(submission_timestamp AS DATETIME) AS reported_at,
   metrics.text2.broken_site_report_description AS comments,
   metrics.url2.broken_site_report_url AS url,
   metrics.string.broken_site_report_breakage_category AS breakage_category,
-  "Firefox" AS app_name,
+  normalized_app_name AS app_name,
   client_info.app_display_version AS app_version,
   normalized_channel AS app_channel,
   normalized_os AS os,
@@ -99,6 +65,8 @@ SELECT
     )
   ) AS details
 FROM
-  all_reports
+  `moz-fx-data-shared-prod.firefox_desktop.broken_site_report`
+WHERE
+  DATE(submission_timestamp) > "2023-11-01"
 ORDER BY
   submission_timestamp ASC

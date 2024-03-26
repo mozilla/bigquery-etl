@@ -15,7 +15,9 @@ WITH base AS (
         client_info.os AS os,
         client_info.os_version AS os_version,
         client_info.telemetry_sdk_build AS telemetry_sdk_build,
-        client_info.build_date AS build_date
+        client_info.build_date AS build_date,
+        client_info.session_id AS session_id,
+        client_info.session_count AS session_count
       ) AS client_info,
       STRUCT(
         ping_info.seq,
@@ -29,9 +31,12 @@ WITH base AS (
     client_info.client_id AS client_id,
     ping_info.reason AS reason,
     `mozfun.json.from_map`(ping_info.experiments) AS experiments,
-    SAFE.TIMESTAMP_ADD(
-      ping_info.parsed_start_time,
-      INTERVAL event.timestamp MILLISECOND
+    COALESCE(
+      SAFE.TIMESTAMP_MILLIS(SAFE_CAST(mozfun.map.get_key(event.extra, 'glean_timestamp') AS INT64)),
+      SAFE.TIMESTAMP_ADD(
+        ping_info.parsed_start_time,
+        INTERVAL event.timestamp MILLISECOND
+      )
     ) AS event_timestamp,
     event.category as event_category,
     event.name as event_name,

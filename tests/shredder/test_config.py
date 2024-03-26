@@ -73,7 +73,6 @@ class FakeClient:
                 "additional_deletion_requests_v1",  # should be ignored
                 "clients_daily_v1",
                 "dau_v1",  # aggregated, no client_id
-                "clients_last_seen_joined_v1",  # should be ignored
             ]
         elif dataset_ref.dataset_id.endswith("derived"):
             table_ids = ["clients_daily_v1"]
@@ -106,7 +105,6 @@ class FakeClient:
         elif table.table_id in {
             "additional_deletion_requests_v1",
             "clients_daily_v1",
-            "clients_last_seen_joined_v1",
         } or table.dataset_id in {
             "fenix",
             "focus_android",

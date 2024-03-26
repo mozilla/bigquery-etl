@@ -441,13 +441,6 @@ SEARCH_IGNORE_FIELDS = {
     ("telemetry_stable.prio_v4", ID),
 }
 
-# names of tables in glean *_derived datasets to ignore
-GLEAN_DERIVED_IGNORE_TABLES = {
-    # to be added in https://mozilla-hub.atlassian.net/browse/DENG-2089
-    "clients_last_seen_joined_v1",
-}
-
-
 def find_glean_targets(
     pool: ThreadPool, client: bigquery.Client, project: str = SHARED_PROD
 ) -> DeleteIndex:
@@ -572,7 +565,6 @@ def find_glean_targets(
             for table in glean_derived_tables
             if any(field.name == CLIENT_ID for field in table.schema)
             and not table.table_id.startswith(derived_source_prefix)
-            and table.table_id not in GLEAN_DERIVED_IGNORE_TABLES
         },
     }
 

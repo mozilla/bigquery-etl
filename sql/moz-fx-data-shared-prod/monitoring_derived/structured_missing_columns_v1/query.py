@@ -41,7 +41,8 @@ WITH extracted AS (
 transformed AS (
   SELECT
     * EXCEPT (additional_properties),
-    COUNT(*) AS path_count
+    COUNT(*) AS path_count,
+    udf_js.convert_path_to_column_name(path) as formatted_path_string
   FROM
     extracted,
     UNNEST(
@@ -58,14 +59,15 @@ transformed AS (
     document_type,
     document_version,
     path
-)
+),
 SELECT
   submission_date,
   document_namespace,
   document_type,
   document_version,
   path,
-  path_count
+  path_count,
+  formatted_path_string
 FROM
   transformed
 """

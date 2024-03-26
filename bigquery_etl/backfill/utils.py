@@ -186,7 +186,7 @@ def get_scheduled_backfills(
     qualified_table_name: Optional[str] = None,
     status: Optional[str] = None,
 ) -> Dict[str, Backfill]:
-    """Return backfill entries to initiate."""
+    """Return backfill entries to initiate or complete."""
     client = bigquery.Client(project=project)
 
     if qualified_table_name:

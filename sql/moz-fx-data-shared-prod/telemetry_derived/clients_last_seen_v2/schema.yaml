@@ -9,7 +9,8 @@ fields:
 - mode: NULLABLE
   name: second_seen_date
   type: DATE
-- mode: NULLABLE
+- description: Bit pattern to identify when the client_id has sent a main ping in the previous 28 days.
+  mode: NULLABLE
   name: days_seen_bits
   type: INTEGER
 - mode: NULLABLE
@@ -2346,3 +2347,7 @@ fields:
   - name: value
     type: INTEGER
     mode: NULLABLE
+- description: Bit pattern to identify when the client_id has sent a main ping & also qualifies as active in the previous 28 days.
+  name: days_active_bits
+  type: INTEGER
+  mode: NULLABLE

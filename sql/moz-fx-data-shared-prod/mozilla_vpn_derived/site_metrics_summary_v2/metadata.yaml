@@ -1,0 +1,23 @@
+friendly_name: Site Metrics Summary V2
+description: |-
+  GA Site Metrics Summary for Mozilla VPN within Mozilla.org
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau@mozilla.com
+scheduling:
+  dag_name: bqetl_google_analytics_derived_ga4
+  depends_on:
+  - task_id: wait_for_wmo_events_table
+    dag_name: bqetl_google_analytics_derived_ga4
+bigquery:
+  time_partitioning:
+    type: day
+    field: date
+    require_partition_filter: false
+    expiration_days: null
+  clustering:
+    fields:
+    - browser
+references: {}

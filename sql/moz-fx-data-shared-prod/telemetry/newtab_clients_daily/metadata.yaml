@@ -1,0 +1,6 @@
+friendly_name: Newtab Clients Daily
+description: |-
+  A daily aggregation of `newtab_visits` for each
+  Firefox desktop client, partitioned by day.
+owners:
+- mbowerman@mozilla.com

@@ -4,3 +4,4 @@ description: |-
 owners:
   - test@mozilla.com
 deprecated: true
+deletion_date: 2024-03-02

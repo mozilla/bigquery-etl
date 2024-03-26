@@ -1,0 +1,52 @@
+destination_dataset = "monitor_frontend_derived"
+platform = "monitor_frontend"
+owners = ["ksiegler@mozilla.org"]
+version = "1"
+
+[funnels]
+
+[funnels.legacy_user_upgrade_intent]
+friendly_name = "Legacy User Upgrade Intent Funnel"
+description = "Funnel for points of intended conversion beginning from dashboard page view for legacy Monitor users"
+steps = ["legacy_dashboard_view", "upgrade_intent"]
+
+[funnels.new_user_upgrade_intent]
+friendly_name = "New User Upgrade Intent Funnel"
+description = "Funnel for points of intended conversion beginning from dashboard page view for new Monitor users"
+steps = ["new_dashboard_view", "upgrade_intent"]
+
+[steps]
+
+[steps.legacy_dashboard_view]
+friendly_name = "Legacy User Dashboard View"
+description = "A page view of the dashboard page from a legacy Monitor user (the page path includes all dashboard page views)"
+data_source = "events_unnested"
+select_expression = "client_info.client_id"
+where_expression = "event_category = 'dashboard' AND event_name = 'view' AND `mozfun.map.get_key`(event_extra, 'path') like '%/user/dashboard%' AND `mozfun.map.get_key`(event_extra, 'legacy_user') = 'true'"
+aggregation = "count distinct"
+join_previous_step_on = "client_info.client_id"
+
+[steps.new_dashboard_view]
+friendly_name = "New User Dashboard View"
+description = "A page view of the dashboard page from a new Monitor user (the page path includes all dashboard page views)"
+data_source = "events_unnested"
+select_expression = "client_info.client_id"
+where_expression = "event_category = 'dashboard' AND event_name = 'view' AND `mozfun.map.get_key`(event_extra, 'path') like '%/user/dashboard%' AND `mozfun.map.get_key`(event_extra, 'legacy_user') = 'false'"
+aggregation = "count distinct"
+join_previous_step_on = "client_info.client_id"
+
+[steps.upgrade_intent]
+friendly_name = "Legacy User Upgrade Intent Click"
+description = "An action within the dashboard that shows the user intends to upgrade by clicking on an upgrade CTA"
+data_source = "events_unnested"
+select_expression = "client_info.client_id"
+where_expression = "event_category = 'upgrade_intent' AND event_name = 'click' AND `mozfun.map.get_key`(event_extra, 'path') like '%/user/dashboard%'"
+aggregation = "count distinct"
+join_previous_step_on = "client_info.client_id"
+
+[data_sources]
+
+[data_sources.events_unnested]
+from_expression = "mozdata.monitor_frontend.events_unnested"
+submission_date_column = "DATE(submission_timestamp)"
+client_id_column = "client_info.client_id"

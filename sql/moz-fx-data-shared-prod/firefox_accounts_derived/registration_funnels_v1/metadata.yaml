@@ -1,27 +1,26 @@
-friendly_name: Messaging System CFR Users Daily
+friendly_name: Registration Funnels
 description: |-
-  Daily users of CFR, partitioned by day
+  Please provide a description for the query
 owners:
-- najiang@mozilla.com
+- ksiegler@mozilla.org
 labels:
   incremental: true
-  dag: bqetl_messaging_system
-  owner1: najiang
+  dag: bqetl_generated_funnels
+  owner1: ksiegler
 scheduling:
-  dag_name: bqetl_messaging_system
+  dag_name: bqetl_generated_funnels
 bigquery:
   time_partitioning:
     type: day
     field: submission_date
     require_partition_filter: false
     expiration_days: null
-  clustering:
-    fields:
-    - release_channel
+  clustering: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - messaging_system.cfr
+  - mozdata.accounts_backend.accounts_events
+  - mozdata.accounts_frontend.accounts_events

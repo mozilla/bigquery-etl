@@ -1,0 +1,14 @@
+friendly_name: |-
+  Burnham Test Results
+description: |-
+  Result reports from running burnham; see https://github.com/mozilla/burnham/issues/39
+owners:
+- data-platform-infra-wg@mozilla.com
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_timestamp
+    require_partition_filter: false
+  clustering:
+    fields:
+    - test_name

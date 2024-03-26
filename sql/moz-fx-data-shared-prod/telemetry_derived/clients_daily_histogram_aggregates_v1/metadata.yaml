@@ -1,5 +1,5 @@
 friendly_name: |-
-  Telemetry Derived - Clients Histogram Aggregates
+  Telemetry Derived - Clients Daily Histogram Aggregates
 description: |-
   [DESCRIPTION_MISSING]
 owners:
@@ -13,5 +13,4 @@ bigquery:
   clustering:
     fields:
     - app_version
-    - sample_id
     - channel

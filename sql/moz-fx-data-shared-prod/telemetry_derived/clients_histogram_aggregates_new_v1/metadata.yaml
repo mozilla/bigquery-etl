@@ -1,6 +1,15 @@
-friendly_name: |-
-  Telemetry Derived - Clients Histogram Aggregates New
+friendly_name: Telemetry Derived - Clients Histogram Aggregates New
 description: |-
   [DESCRIPTION_MISSING]
 owners:
 - data-platform-infra-wg@mozilla.com
+labels:
+  owner1: data-platform-infra-wg
+bigquery:
+  time_partitioning: null
+  clustering:
+    fields:
+    - app_version
+    - channel
+    - client_id
+references: {}

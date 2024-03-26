@@ -26,8 +26,4 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references:
-  init.sql:
-  - moz-fx-data-marketing-prod.ga_derived.www_site_page_metrics_v1
-  query.sql:
-  - moz-fx-data-marketing-prod.ga_derived.www_site_hits_v1
+references: {}

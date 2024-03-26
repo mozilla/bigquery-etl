@@ -5,14 +5,22 @@ owners:
 - data-platform-infra-wg@mozilla.com
 labels:
   owner1: data-platform-infra-wg
-bigquery: null
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: 7.0
+  clustering:
+    fields:
+    - app_version
+    - sample_id
+    - channel
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
 references:
-  init.sql:
-  - moz-fx-data-shared-prod.telemetry_derived.clients_histogram_aggregates_v1
   query.sql:
   - clients_histogram_aggregates_new_v1
   - clients_histogram_aggregates_v1

@@ -30,8 +30,4 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references:
-  init.sql:
-  - moz-fx-data-shared-prod.search_derived.desktop_search_aggregates_by_userstate_v1
-  query.sql:
-  - telemetry.clients_last_seen
+references: {}

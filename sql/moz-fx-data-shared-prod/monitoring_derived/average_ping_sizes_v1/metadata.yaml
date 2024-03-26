@@ -27,7 +27,5 @@ bigquery:
     expiration_days: null
   clustering: null
 workgroup_access: []
-references:
-  init.sql:
-  - moz-fx-data-shared-prod.monitoring_derived.average_ping_sizes_v1
+references: {}
 deprecated: true

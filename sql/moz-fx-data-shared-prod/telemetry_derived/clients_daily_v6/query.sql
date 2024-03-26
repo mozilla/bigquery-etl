@@ -368,7 +368,34 @@ clients_summary AS (
         UNNEST([REPLACE(key, 'in-content.', 'in-content:')]) AS _key,
         UNNEST([LENGTH(REGEXP_EXTRACT(_key, '.+?[.].'))]) AS pos
     ) AS search_counts,
-    udf_js.main_summary_active_addons(environment.addons.active_addons, NULL) AS active_addons,
+    -- A fixed list of fields is selected to maintain compatibility with the udf as fields are added
+    udf_js.main_summary_active_addons(
+      ARRAY(
+        SELECT AS STRUCT
+          addons.key,
+          STRUCT(
+            addons.value.app_disabled,
+            addons.value.blocklisted,
+            addons.value.description,
+            addons.value.foreign_install,
+            addons.value.has_binary_components,
+            addons.value.install_day,
+            addons.value.is_system,
+            addons.value.is_web_extension,
+            addons.value.multiprocess_compatible,
+            addons.value.name,
+            addons.value.scope,
+            addons.value.signed_state,
+            addons.value.type,
+            addons.value.update_day,
+            addons.value.user_disabled,
+            addons.value.version
+          ) AS value
+        FROM
+          UNNEST(environment.addons.active_addons) AS addons
+      ),
+      NULL
+    ) AS active_addons,
     ARRAY_LENGTH(environment.addons.active_addons) AS active_addons_count,
     environment.settings.blocklist_enabled,
     environment.settings.addon_compatibility_check_enabled,

@@ -6,6 +6,8 @@ import tempfile
 from datetime import datetime
 from glob import glob
 from pathlib import Path
+from ..util.common import render as render_template
+import re
 
 import rich_click as click
 from google.cloud import bigquery
@@ -30,6 +32,7 @@ from ..view import View
 VIEW_FILE = "view.sql"
 QUERY_FILE = "query.sql"
 QUERY_SCRIPT = "query.py"
+MATERIALIZED_VIEW = "materialized_view.sql"
 ROOT = Path(__file__).parent.parent.parent
 TEST_DIR = ROOT / "tests" / "sql"
 
@@ -148,6 +151,25 @@ def deploy(
 
         if dataset_suffix:
             dataset = f"{dataset}_{dataset_suffix}"
+
+        if name == MATERIALIZED_VIEW:
+            # map materialized views to normal queries
+            name = QUERY_FILE
+
+            # replace CREATE MATERIALIED VIEW statement
+            sql_content = render_template(
+                artifact_file.name,
+                template_folder=str(artifact_file.parent),
+                templates_dir="",
+                format=False,
+            )
+            sql_content = re.sub(
+                "CREATE MATERIALIZED VIEW.*?AS",
+                "",
+                sql_content,
+                flags=re.DOTALL,
+            )
+            artifact_file.write_text(sql_content)
 
         new_artifact_path = Path(sql_dir) / project_id / dataset / name
         new_artifact_path.mkdir(parents=True, exist_ok=True)

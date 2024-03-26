@@ -141,6 +141,12 @@ class DryRun:
                 sql,
                 flags=re.DOTALL,
             )
+            sql = re.sub(
+                "CREATE MATERIALIZED VIEW.*?AS",
+                "",
+                sql,
+                flags=re.DOTALL,
+            )
 
         return sql
 

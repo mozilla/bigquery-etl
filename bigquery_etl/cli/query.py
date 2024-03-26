@@ -1346,7 +1346,10 @@ def initialize(
             map(Path, glob(f"{query_file.parent}/**/init.sql", recursive=True))
         )
         materialized_views = list(
-            map(Path, glob(f"{query_file.parent}/**/materialized_view.sql", recursive=True))
+            map(
+                Path,
+                glob(f"{query_file.parent}/**/materialized_view.sql", recursive=True),
+            )
         )
 
         # check if the provided file can be initialized and whether existing ones should be skipped
@@ -1428,20 +1431,20 @@ def initialize(
                         },
                     )
             else:
-                for init_file in init_files:
-                    with open(init_file) as init_file_stream:
+                for file in init_files + materialized_views:
+                    with open(file) as init_file_stream:
                         init_sql = init_file_stream.read()
                         job_config = bigquery.QueryJobConfig(
                             dry_run=dry_run,
                             default_dataset=f"{project}.{dataset}",
                         )
 
-                        if "CREATE MATERIALIZED VIEW" in init_sql:
-                            click.echo(f"Create materialized view for {init_file}")
+                        if file in materialized_views:
+                            click.echo(f"Create materialized view for {file}")
                             # existing materialized view have to be deleted before re-creation
                             client.delete_table(full_table_id, not_found_ok=True)
                         else:
-                            click.echo(f"Create destination table for {init_file}")
+                            click.echo(f"Create destination table for {file}")
 
                         job = client.query(init_sql, job_config=job_config)
 

@@ -739,8 +739,8 @@ def backfill(
             partitioning_type = metadata.bigquery.time_partitioning.type
 
         date_range = BackfillDateRange(
-            start_date,
-            end_date,
+            start_date.date(),
+            end_date.date(),
             excludes=[date.fromisoformat(x) for x in exclude],
             range_type=partitioning_type or PartitionType.DAY,
         )

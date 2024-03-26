@@ -9,7 +9,7 @@ orbs:
 parameters:
   python-version:
     type: string
-    default: '3.10'
+    default: '3.11'
   validate-bqetl:
     type: boolean
     default: false
@@ -214,6 +214,8 @@ jobs:
                     echo "Check dry run for all queries because [run-tests] in" \
                       "commit message"
                     PATHS=sql
+                  elif [ "<< pipeline.parameters.skip-stage-deploys >>" = "true" ]; then
+                    PATHS=sql
                   else
                     PATHS="sql/bigquery-etl-integration-test"
                   fi
@@ -327,28 +329,12 @@ jobs:
   validate-dags:
     executor:
       name: python/default
-      tag: 3.10.12
+      tag: 3.11.8
     steps:
       - when:
           condition: *validate-sql
           steps:
             - checkout
-            - run:
-                name: Early return when job not modified
-                command: |
-                  if [ "$CIRCLE_BRANCH" = main ]; then
-                    echo "Run job because branch is $CIRCLE_BRANCH"
-                  elif git log --format=%B --no-merges -n 1 |
-                      grep -qF '[run-tests]'; then
-                    echo "Run job because [run-tests] in commit message"
-                  elif ! git diff --quiet origin/main... \
-                      -- "$(git rev-parse --show-toplevel)"/{.circleci,dags}; then
-                    echo "Run job because .circleci/ and/or dags/ were modified" \
-                      "since branching off main"
-                  else
-                    echo "Skipping job because .circleci/ and dags/ were not modified"
-                    circleci-agent step halt
-                  fi
             - run:
                 name: Pull telemetry-airflow
                 command: |
@@ -367,6 +353,7 @@ jobs:
                   virtualenv .venv
                   source .venv/bin/activate
                   pip install -r requirements.txt
+                  pip install -r requirements-dev.txt
             - run:
                 name: 🧪 Test valid DAGs
                 command: |
@@ -1054,6 +1041,7 @@ jobs:
       - run:
           name: Create the distribution files
           command: |
+            python -m pip install build
             python -m build --sdist --wheel
       - run:
           name: Upload to PyPI
@@ -1071,16 +1059,6 @@ workflows:
       - build
       - verify-requirements
       - verify-format-yaml
-      - deploy-to-pypi:
-          name: Deploy bqetl to PyPI
-          requires:
-            - build
-          filters:
-            tags:
-              only: /[0-9]{4}.[0-9]{1,2}.[0-9]+/  # Calver: YYYY.M.MINOR
-            branches:
-              # Ignore all branches; this workflow should only run for tags.
-              ignore: /.*/
       - verify-format-sql
       - deploy-changes-to-stage:
           requires:
@@ -1223,3 +1201,12 @@ workflows:
             branches:
               only:
                 - main
+  tagged-deploy:
+    jobs:
+      - deploy-to-pypi:
+          filters:
+            tags:
+              only: /[0-9]{4}.[0-9]{1,2}.[0-9]+/  # Calver: YYYY.M.MINOR
+            branches:
+              # Ignore all branches; this workflow should only run for tags.
+              ignore: /.*/

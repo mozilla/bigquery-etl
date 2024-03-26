@@ -352,7 +352,7 @@ class TestBackfill:
                 [date(2021, 2, 3)],
                 VALID_REASON,
                 [VALID_WATCHER],
-                DEFAULT_STATUS,
+                BackfillStatus.COMPLETE,
             )
 
             backfill_entry_2 = Backfill(
@@ -391,6 +391,66 @@ class TestBackfill:
 
             assert backfills[1] == backfill_entry_1
             assert backfills[0] == backfill_entry_2
+
+    def test_create_backfill_with_exsting_entry_with_initiate_status_should_fail(
+        self, runner
+    ):
+        with runner.isolated_filesystem():
+            SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v1"
+            os.makedirs(SQL_DIR)
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/query.sql", "w"
+            ) as f:
+                f.write("SELECT 1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(TABLE_METADATA_CONF))
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
+            ) as f:
+                f.write(yaml.dump(DATASET_METADATA_CONF))
+
+            backfill_entry_1 = Backfill(
+                date(2021, 5, 3),
+                date(2021, 1, 3),
+                date(2021, 5, 3),
+                [date(2021, 2, 3)],
+                VALID_REASON,
+                [VALID_WATCHER],
+                DEFAULT_STATUS,
+            )
+
+            backfill_file = (
+                Path("sql/moz-fx-data-shared-prod/test/test_query_v1") / BACKFILL_FILE
+            )
+            backfill_file.write_text(backfill_entry_1.to_yaml())
+            assert BACKFILL_FILE in os.listdir(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1"
+            )
+
+            backfills = Backfill.entries_from_file(backfill_file)
+            assert backfills[0] == backfill_entry_1
+
+            result = runner.invoke(
+                create,
+                [
+                    "moz-fx-data-shared-prod.test.test_query_v1",
+                    "--start_date=2023-03-01",
+                    "--end_date=2023-03-10",
+                ],
+            )
+
+            assert result.exit_code == 1
+
+            assert (
+                "Backfill entries cannot contain more than one entry with Initiate status"
+                in str(result.exception)
+            )
 
     def test_validate_backfill(self, runner):
         with runner.isolated_filesystem():
@@ -491,7 +551,7 @@ class TestBackfill:
                 ],
             )
             assert result.exit_code == 1
-            assert "Invalid Reason" in result.output
+            assert "Default reason" in result.output
 
     def test_validate_backfill_empty_reason(self, runner):
         with runner.isolated_filesystem():
@@ -529,7 +589,10 @@ class TestBackfill:
                 ],
             )
             assert result.exit_code == 1
-            assert "Invalid Reason" in result.output
+            assert (
+                "Reason in backfill entry should not be empty"
+                in result.exception.args[0]
+            )
 
     def test_validate_backfill_invalid_watcher(self, runner):
         with runner.isolated_filesystem():
@@ -613,7 +676,7 @@ class TestBackfill:
                 ],
             )
             assert result.exit_code == 1
-            assert "Duplicate or default watcher" in result.output
+            assert "Duplicate watcher" in result.exception.args[0]
 
     def test_validate_backfill_invalid_status(self, runner):
         with runner.isolated_filesystem():
@@ -844,7 +907,7 @@ class TestBackfill:
                 ],
             )
             assert result.exit_code == 1
-            assert "duplicate excluded dates" in result.output
+            assert "duplicate excluded dates" in result.exception.args[0]
 
     def test_validate_backfill_invalid_excluded_dates_not_sorted(self, runner):
         with runner.isolated_filesystem():
@@ -890,7 +953,7 @@ class TestBackfill:
                 ],
             )
             assert result.exit_code == 1
-            assert "excluded dates not sorted" in result.output
+            assert "excluded dates not sorted" in result.exception.args[0]
 
     def test_validate_backfill_entries_not_sorted(self, runner):
         with runner.isolated_filesystem():
@@ -922,7 +985,7 @@ class TestBackfill:
                 "  reason: test_reason\n"
                 "  watchers:\n"
                 "  - test@example.org\n"
-                "  status: Initiate\n"
+                "  status: Complete\n"
             )
 
             assert BACKFILL_FILE in os.listdir(SQL_DIR)
@@ -935,93 +998,6 @@ class TestBackfill:
             )
             assert result.exit_code == 1
             assert "entries are not sorted" in result.output
-
-    def test_validate_backfill_overlap_dates(self, runner):
-        with runner.isolated_filesystem():
-            SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v1"
-            os.makedirs(SQL_DIR)
-
-            with open(
-                "sql/moz-fx-data-shared-prod/test/test_query_v1/query.sql", "w"
-            ) as f:
-                f.write("SELECT 1")
-
-            with open(
-                "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
-                "w",
-            ) as f:
-                f.write(yaml.dump(TABLE_METADATA_CONF))
-
-            with open(
-                "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
-            ) as f:
-                f.write(yaml.dump(DATASET_METADATA_CONF))
-
-            backfill_file = Path(SQL_DIR) / BACKFILL_FILE
-            backfill_file.write_text(
-                BACKFILL_YAML_TEMPLATE + "\n"
-                "2021-05-03:\n"
-                "  start_date: 2021-01-03\n"
-                "  end_date: 2021-05-03\n"
-                "  reason: test_reason\n"
-                "  watchers:\n"
-                "  - test@example.org\n"
-                "  status: Initiate\n"
-            )
-
-            assert BACKFILL_FILE in os.listdir(SQL_DIR)
-
-            result = runner.invoke(
-                validate,
-                [
-                    "moz-fx-data-shared-prod.test.test_query_v1",
-                ],
-            )
-            assert result.exit_code == 1
-            assert "overlap dates" in result.output
-
-    def test_validate_backfill_overlap_dates_not_drafting_status(self, runner):
-        with runner.isolated_filesystem():
-            SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v1"
-            os.makedirs(SQL_DIR)
-
-            with open(
-                "sql/moz-fx-data-shared-prod/test/test_query_v1/query.sql", "w"
-            ) as f:
-                f.write("SELECT 1")
-
-            with open(
-                "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
-                "w",
-            ) as f:
-                f.write(yaml.dump(TABLE_METADATA_CONF))
-
-            with open(
-                "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
-            ) as f:
-                f.write(yaml.dump(DATASET_METADATA_CONF))
-
-            backfill_file = Path(SQL_DIR) / BACKFILL_FILE
-            backfill_file.write_text(
-                BACKFILL_YAML_TEMPLATE + "\n"
-                "2021-05-03:\n"
-                "  start_date: 2021-01-03\n"
-                "  end_date: 2021-05-03\n"
-                "  reason: test_reason\n"
-                "  watchers:\n"
-                "  - test@example.org\n"
-                "  status: Complete\n"
-            )
-
-            assert BACKFILL_FILE in os.listdir(SQL_DIR)
-
-            result = runner.invoke(
-                validate,
-                [
-                    "moz-fx-data-shared-prod.test.test_query_v1",
-                ],
-            )
-            assert result.exit_code == 0
 
     def test_backfill_info_one_table_all_status(self, runner):
         with runner.isolated_filesystem():

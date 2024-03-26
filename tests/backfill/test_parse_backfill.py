@@ -80,9 +80,9 @@ class TestParseBackfill(object):
         assert "Invalid" in str(e.value)
         assert "watchers" in str(e.value)
 
-    def test_no_watchers(self):
+    def test_empty_watchers_should_fail(self):
         with pytest.raises(ValueError) as e:
-            invalid_watchers = [""]
+            invalid_watchers = []
             Backfill(
                 TEST_BACKFILL_1.entry_date,
                 TEST_BACKFILL_1.start_date,
@@ -95,6 +95,21 @@ class TestParseBackfill(object):
 
         assert "Invalid" in str(e.value)
         assert "watchers" in str(e.value)
+
+    def test_empty_reason_should_fail(self):
+        with pytest.raises(ValueError) as e:
+            invalid_reason = None
+            Backfill(
+                TEST_BACKFILL_1.entry_date,
+                TEST_BACKFILL_1.start_date,
+                TEST_BACKFILL_1.end_date,
+                TEST_BACKFILL_1.excluded_dates,
+                invalid_reason,
+                TEST_BACKFILL_1.watchers,
+                TEST_BACKFILL_1.status,
+            )
+
+        assert "Reason in backfill entry should not be empty" in str(e.value)
 
     def test_multiple_watchers(self):
         valid_watchers = TEST_BACKFILL_1.watchers + [
@@ -115,6 +130,21 @@ class TestParseBackfill(object):
             "test2@example.org",
             "test3@example.org",
         ]
+
+    def test_duplicate_watchers_should_fail(self):
+        with pytest.raises(ValueError) as e:
+            duplicate_watchers = [DEFAULT_WATCHER, DEFAULT_WATCHER]
+            Backfill(
+                TEST_BACKFILL_1.entry_date,
+                TEST_BACKFILL_1.start_date,
+                TEST_BACKFILL_1.end_date,
+                TEST_BACKFILL_1.excluded_dates,
+                TEST_BACKFILL_1.reason,
+                duplicate_watchers,
+                TEST_BACKFILL_1.status,
+            )
+
+        assert "Duplicate watcher" in str(e.value)
 
     def test_all_status(self):
         valid_status = [status.value for status in BackfillStatus]
@@ -256,6 +286,38 @@ class TestParseBackfill(object):
             )
 
         assert "Invalid excluded dates" in str(e.value)
+
+    def test_excluded_dates_duplicates_should_fail(self):
+        with pytest.raises(ValueError) as e:
+            invalid_excluded_dates = [date(2021, 2, 3), date(2021, 2, 3)]
+
+            Backfill(
+                TEST_BACKFILL_1.entry_date,
+                TEST_BACKFILL_1.start_date,
+                TEST_BACKFILL_1.end_date,
+                invalid_excluded_dates,
+                TEST_BACKFILL_1.reason,
+                TEST_BACKFILL_1.watchers,
+                TEST_BACKFILL_1.status,
+            )
+
+        assert "duplicate excluded dates" in str(e.value)
+
+    def test_excluded_dates_not_sorted_should_fail(self):
+        with pytest.raises(ValueError) as e:
+            invalid_excluded_dates = [date(2021, 2, 4), date(2021, 2, 3)]
+
+            Backfill(
+                TEST_BACKFILL_1.entry_date,
+                TEST_BACKFILL_1.start_date,
+                TEST_BACKFILL_1.end_date,
+                invalid_excluded_dates,
+                TEST_BACKFILL_1.reason,
+                TEST_BACKFILL_1.watchers,
+                TEST_BACKFILL_1.status,
+            )
+
+        assert "excluded dates not sorted" in str(e.value)
 
     def test_invalid_status(self):
         with pytest.raises(AttributeError):

@@ -557,8 +557,8 @@ class TestQuery:
                     "--project_id=moz-fx-data-shared-prod",
                     "--start_date=2021-01-05",
                     "--end_date=2021-01-09",
+                    "--exclude=2021-01-06",
                     "--parallelism=0",
-                    "--no-partition",
                 ],
             )
 
@@ -566,10 +566,10 @@ class TestQuery:
 
             expected_submission_date_params = [
                 f"--parameter=submission_date:DATE:2021-01-0{day}"
-                for day in range(3, 8)
+                for day in (3, 5, 6, 7)
             ]
 
-            assert check_call.call_count == 5
+            assert check_call.call_count == 4
             for call in check_call.call_args_list:
                 submission_date_params = [
                     arg for arg in call.args[0] if "--parameter=submission_date" in arg

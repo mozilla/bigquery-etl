@@ -1,10 +1,13 @@
-description: Aggregated download counts for www.mozilla.org
 friendly_name: WWW Site Downloads
+description: |-
+  Aggregated download counts for www.mozilla.org
+owners:
+- ascholtz@mozilla.com
 labels:
   incremental: true
   schedule: daily
-owners:
-  - ascholtz@mozilla.com
+  dag: bqetl_google_analytics_derived
+  owner1: ascholtz
 scheduling:
   dag_name: bqetl_google_analytics_derived
 bigquery:
@@ -12,3 +15,6 @@ bigquery:
     type: day
     field: date
     require_partition_filter: false
+    expiration_days: null
+  clustering: null
+references: {}

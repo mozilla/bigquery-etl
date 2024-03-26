@@ -1,6 +1,19 @@
-friendly_name: |-
-  Telemetry Derived - Clients Scalar Aggregates
+friendly_name: Telemetry Derived - Clients Scalar Aggregates
 description: |-
   [DESCRIPTION_MISSING]
 owners:
 - data-platform-infra-wg@mozilla.com
+labels:
+  owner1: data-platform-infra-wg
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: 7
+  clustering:
+    fields:
+    - app_version
+    - channel
+    - client_id
+references: {}

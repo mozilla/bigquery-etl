@@ -1,0 +1,29 @@
+fields:
+- mode: NULLABLE
+  description: Time at which this test report was submitted
+  name: submission_timestamp
+  type: TIMESTAMP
+- mode: NULLABLE
+  description: ID of the test run
+  name: test_run
+  type: STRING
+- mode: NULLABLE
+  description: Name of the test scenario
+  name: test_name
+  type: STRING
+- mode: NULLABLE
+  description: Outcome of the test scenario; one of ERROR, FAILED, PASSED, SKIPPED, XFAILED, XPASSED
+  name: test_outcome
+  type: STRING
+- mode: NULLABLE
+  description: Duration of the test scenario
+  name: test_duration_millis
+  type: INTEGER
+- mode: NULLABLE
+  description: URL for viewing logs of this task instance in Airflow
+  name: test_log_url
+  type: STRING
+- mode: NULLABLE
+  description: Markdown-formatted report for error or failed tests
+  name: test_report
+  type: STRING

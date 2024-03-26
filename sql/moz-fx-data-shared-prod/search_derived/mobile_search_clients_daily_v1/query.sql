@@ -77,16 +77,7 @@ WITH core_flattened_searches AS (
 baseline_org_mozilla_fenix AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
-    client_info.client_id,
-    client_info.locale
-  FROM
-    org_mozilla_fenix.baseline
-),
--- metrics for Firefox Preview beta
-metrics_org_mozilla_fenix AS (
-  SELECT
-    DATE(submission_timestamp) AS submission_date,
-    client_info.client_id,
+    client_info.client_id, 
     normalized_country_code AS country,
     'Firefox Preview' AS app_name,
     'Fenix' AS normalized_app_name,
@@ -95,7 +86,7 @@ metrics_org_mozilla_fenix AS (
     normalized_os AS os,
     client_info.android_sdk_version AS os_version,
     metrics.string.search_default_engine_code AS default_search_engine,
-    metrics.string.search_default_engine_submission_url AS default_search_engine_submission_url,
+    CAST(NULL AS STRING) AS default_search_engine_submission_url,
     sample_id,
     metrics.labeled_counter.metrics_search_count AS search_count,
     metrics.labeled_counter.browser_search_ad_clicks AS search_ad_clicks,
@@ -105,23 +96,17 @@ metrics_org_mozilla_fenix AS (
     ping_info.end_time,
     ping_info.experiments,
     metrics.counter.events_total_uri_count AS total_uri_count,
+    client_info.locale,
   FROM
-    org_mozilla_fenix.metrics AS org_mozilla_fenix_metrics
+    org_mozilla_fenix.baseline
+    WHERE DATE(submission_timestamp) = @submission_date
 ),
+
 -- baseline for Firefox Preview nightly
 baseline_org_mozilla_fenix_nightly AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
     client_info.client_id,
-    client_info.locale
-  FROM
-    org_mozilla_fenix_nightly.baseline
-),
--- metrics for Firefox Preview nightly
-metrics_org_mozilla_fenix_nightly AS (
-  SELECT
-    DATE(submission_timestamp) AS submission_date,
-    client_info.client_id,
     normalized_country_code AS country,
     'Firefox Preview' AS app_name,
     'Fenix' AS normalized_app_name,
@@ -130,7 +115,7 @@ metrics_org_mozilla_fenix_nightly AS (
     normalized_os AS os,
     client_info.android_sdk_version AS os_version,
     metrics.string.search_default_engine_code AS default_search_engine,
-    metrics.string.search_default_engine_submission_url AS default_search_engine_submission_url,
+    CAST(NULL AS STRING) AS default_search_engine_submission_url,
     sample_id,
     metrics.labeled_counter.metrics_search_count AS search_count,
     metrics.labeled_counter.browser_search_ad_clicks AS search_ad_clicks,
@@ -140,20 +125,14 @@ metrics_org_mozilla_fenix_nightly AS (
     ping_info.end_time,
     ping_info.experiments,
     metrics.counter.events_total_uri_count AS total_uri_count,
+    client_info.locale,
   FROM
-    org_mozilla_fenix_nightly.metrics AS org_mozilla_fenix_nightly_metrics
+    org_mozilla_fenix_nightly.baseline
+      WHERE DATE(submission_timestamp) = @submission_date
 ),
+
 -- baseline for Fenix nightly
 baseline_org_mozilla_fennec_aurora AS (
-  SELECT
-    DATE(submission_timestamp) AS submission_date,
-    client_info.client_id,
-    client_info.locale
-  FROM
-    org_mozilla_fennec_aurora.baseline
-),
--- metrics for Fenix nightly
-metrics_org_mozilla_fennec_aurora AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
     client_info.client_id,
@@ -165,7 +144,7 @@ metrics_org_mozilla_fennec_aurora AS (
     normalized_os AS os,
     client_info.android_sdk_version AS os_version,
     metrics.string.search_default_engine_code AS default_search_engine,
-    metrics.string.search_default_engine_submission_url AS default_search_engine_submission_url,
+    CAST(NULL AS STRING) AS default_search_engine_submission_url,
     sample_id,
     metrics.labeled_counter.metrics_search_count AS search_count,
     metrics.labeled_counter.browser_search_ad_clicks AS search_ad_clicks,
@@ -175,20 +154,14 @@ metrics_org_mozilla_fennec_aurora AS (
     ping_info.end_time,
     ping_info.experiments,
     metrics.counter.events_total_uri_count AS total_uri_count,
+    client_info.locale,
   FROM
-    org_mozilla_fennec_aurora.metrics AS org_mozilla_fennec_aurora_metrics
+    org_mozilla_fennec_aurora.baseline
+      WHERE DATE(submission_timestamp) = @submission_date
 ),
+
 -- baseline for Fenix beta
 baseline_org_mozilla_firefox_beta AS (
-  SELECT
-    DATE(submission_timestamp) AS submission_date,
-    client_info.client_id,
-    client_info.locale
-  FROM
-    org_mozilla_firefox_beta.baseline
-),
--- metrics for Fenix beta
-metrics_org_mozilla_firefox_beta AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
     client_info.client_id,
@@ -200,7 +173,7 @@ metrics_org_mozilla_firefox_beta AS (
     normalized_os AS os,
     client_info.android_sdk_version AS os_version,
     metrics.string.search_default_engine_code AS default_search_engine,
-    metrics.string.search_default_engine_submission_url AS default_search_engine_submission_url,
+    CAST(NULL AS STRING) AS default_search_engine_submission_url,
     sample_id,
     metrics.labeled_counter.metrics_search_count AS search_count,
     metrics.labeled_counter.browser_search_ad_clicks AS search_ad_clicks,
@@ -210,23 +183,17 @@ metrics_org_mozilla_firefox_beta AS (
     ping_info.end_time,
     ping_info.experiments,
     metrics.counter.events_total_uri_count AS total_uri_count,
+    client_info.locale,
+
   FROM
-    org_mozilla_firefox_beta.metrics AS org_mozilla_firefox_beta_metrics
+    org_mozilla_firefox_beta.baseline
+      WHERE DATE(submission_timestamp) = @submission_date
 ),
 -- baseline for Fenix release
 baseline_org_mozilla_firefox AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
     client_info.client_id,
-    client_info.locale
-  FROM
-    org_mozilla_firefox.baseline
-),
--- metrics for Fenix release
-metrics_org_mozilla_firefox AS (
-  SELECT
-    DATE(submission_timestamp) AS submission_date,
-    client_info.client_id,
     normalized_country_code AS country,
     'Fenix' AS app_name,
     'Fenix' AS normalized_app_name,
@@ -235,7 +202,7 @@ metrics_org_mozilla_firefox AS (
     normalized_os AS os,
     client_info.android_sdk_version AS os_version,
     metrics.string.search_default_engine_code AS default_search_engine,
-    metrics.string.search_default_engine_submission_url AS default_search_engine_submission_url,
+    CAST(NULL AS STRING) AS default_search_engine_submission_url,
     sample_id,
     metrics.labeled_counter.metrics_search_count AS search_count,
     metrics.labeled_counter.browser_search_ad_clicks AS search_ad_clicks,
@@ -245,11 +212,13 @@ metrics_org_mozilla_firefox AS (
     ping_info.end_time,
     ping_info.experiments,
     metrics.counter.events_total_uri_count AS total_uri_count,
+    client_info.locale,
   FROM
-    org_mozilla_firefox.metrics AS org_mozilla_firefox_metrics
+    org_mozilla_firefox.baseline
+  WHERE DATE(submission_timestamp) = @submission_date
 ),
 -- metrics for Firefox iOS release
-metrics_org_mozilla_ios_firefox AS (
+baseline_org_mozilla_ios_firefox AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
     client_info.client_id,
@@ -274,12 +243,13 @@ metrics_org_mozilla_ios_firefox AS (
     NULL AS total_uri_count,
     client_info.locale,
   FROM
-    org_mozilla_ios_firefox.metrics AS org_mozilla_ios_firefox_metrics
+    org_mozilla_ios_firefox.baseline
   WHERE
     mozfun.norm.truncate_version(client_info.app_display_version, 'major') >= 28
+    ANd DATE(submission_timestamp) = @submission_date
 ),
 -- metrics for Firefox iOS beta
-metrics_org_mozilla_ios_firefoxbeta AS (
+baseline_org_mozilla_ios_firefoxbeta AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
     client_info.client_id,
@@ -304,12 +274,13 @@ metrics_org_mozilla_ios_firefoxbeta AS (
     NULL AS total_uri_count,
     client_info.locale,
   FROM
-    org_mozilla_ios_firefoxbeta.metrics AS org_mozilla_ios_firefoxbeta_metrics
+    org_mozilla_ios_firefoxbeta.baseline
   WHERE
     mozfun.norm.truncate_version(client_info.app_display_version, 'major') >= 28
+    AND DATE(submission_timestamp) = @submission_date
 ),
 -- metrics for Firefox iOS nightly
-metrics_org_mozilla_ios_fennec AS (
+baseline_org_mozilla_ios_fennec AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
     client_info.client_id,
@@ -334,12 +305,13 @@ metrics_org_mozilla_ios_fennec AS (
     NULL AS total_uri_count,
     client_info.locale,
   FROM
-    org_mozilla_ios_fennec.metrics AS org_mozilla_ios_fennec_metrics
+    org_mozilla_ios_fennec.baseline AS org_mozilla_ios_fennec_metrics
   WHERE
     mozfun.norm.truncate_version(client_info.app_display_version, 'major') >= 28
+    AND DATE(submission_timestamp) = @submission_date
 ),
 -- metrics for Focus Android Glean release
-metrics_org_mozilla_focus AS (
+baseline_org_mozilla_focus AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
     client_info.client_id,
@@ -356,17 +328,19 @@ metrics_org_mozilla_focus AS (
     metrics.labeled_counter.browser_search_search_count AS search_count,
     metrics.labeled_counter.browser_search_ad_clicks AS search_ad_clicks,
     metrics.labeled_counter.browser_search_in_content AS search_in_content,
-    metrics.labeled_counter.browser_search_with_ads AS search_with_ads,
+    extract_ios_provider([]) AS search_with_ads,
+    -- metrics.labeled_counter.browser_search_with_ads AS search_with_ads,
     client_info.first_run_date,
     ping_info.end_time,
     ping_info.experiments,
     metrics.counter.browser_total_uri_count,
     client_info.locale,
   FROM
-    org_mozilla_focus.metrics AS org_mozilla_focus_metrics
+    org_mozilla_focus.baseline AS org_mozilla_focus_metrics
+    WHERE DATE(submission_timestamp) = @submission_date
 ),
 -- metrics for Focus Android Glean beta
-metrics_org_mozilla_focus_beta AS (
+baseline_org_mozilla_focus_beta AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
     client_info.client_id,
@@ -383,17 +357,19 @@ metrics_org_mozilla_focus_beta AS (
     metrics.labeled_counter.browser_search_search_count AS search_count,
     metrics.labeled_counter.browser_search_ad_clicks AS search_ad_clicks,
     metrics.labeled_counter.browser_search_in_content AS search_in_content,
-    metrics.labeled_counter.browser_search_with_ads AS search_with_ads,
+    extract_ios_provider([]) AS search_with_ads,
+    -- metrics.labeled_counter.browser_search_with_ads AS search_with_ads,
     client_info.first_run_date,
     ping_info.end_time,
     ping_info.experiments,
     metrics.counter.browser_total_uri_count,
     client_info.locale,
   FROM
-    org_mozilla_focus_beta.metrics AS org_mozilla_focus_beta_metrics
+    org_mozilla_focus_beta.baseline AS org_mozilla_focus_beta_metrics
+    WHERE DATE(submission_timestamp) = @submission_date
 ),
 -- metrics for Focus Android Glean nightly
-metrics_org_mozilla_focus_nightly AS (
+baseline_org_mozilla_focus_nightly AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
     client_info.client_id,
@@ -410,17 +386,19 @@ metrics_org_mozilla_focus_nightly AS (
     metrics.labeled_counter.browser_search_search_count AS search_count,
     metrics.labeled_counter.browser_search_ad_clicks AS search_ad_clicks,
     metrics.labeled_counter.browser_search_in_content AS search_in_content,
-    metrics.labeled_counter.browser_search_with_ads AS search_with_ads,
+    extract_ios_provider([]) AS search_with_ads,
+    -- metrics.labeled_counter.browser_search_with_ads AS search_with_ads,
     client_info.first_run_date,
     ping_info.end_time,
     ping_info.experiments,
     metrics.counter.browser_total_uri_count,
     client_info.locale,
   FROM
-    org_mozilla_focus_nightly.metrics AS org_mozilla_focus_nightly_metrics
+    org_mozilla_focus_nightly.baseline AS org_mozilla_focus_nightly_metrics
+    WHERE DATE(submission_timestamp) = @submission_date
 ),
 -- metrics for Klar Android Glean release
-metrics_org_mozilla_klar AS (
+baseline_org_mozilla_klar AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
     client_info.client_id,
@@ -437,17 +415,19 @@ metrics_org_mozilla_klar AS (
     metrics.labeled_counter.browser_search_search_count AS search_count,
     metrics.labeled_counter.browser_search_ad_clicks AS search_ad_clicks,
     metrics.labeled_counter.browser_search_in_content AS search_in_content,
-    metrics.labeled_counter.browser_search_with_ads AS search_with_ads,
+    extract_ios_provider([]) AS search_with_ads,
+    -- metrics.labeled_counter.browser_search_with_ads AS search_with_ads,
     client_info.first_run_date,
     ping_info.end_time,
     ping_info.experiments,
     metrics.counter.browser_total_uri_count,
     client_info.locale,
   FROM
-    org_mozilla_klar.metrics AS org_mozilla_klar_metrics
+    org_mozilla_klar.baseline AS org_mozilla_klar_metrics
+    WHERE DATE(submission_timestamp) = @submission_date
 ),
 -- metrics for Focus iOS Glean release
-metrics_org_mozilla_ios_focus AS (
+baseline_org_mozilla_ios_focus AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
     client_info.client_id,
@@ -464,17 +444,19 @@ metrics_org_mozilla_ios_focus AS (
     metrics.labeled_counter.browser_search_search_count AS search_count,
     metrics.labeled_counter.browser_search_ad_clicks AS search_ad_clicks,
     metrics.labeled_counter.browser_search_in_content AS search_in_content,
-    metrics.labeled_counter.browser_search_with_ads AS search_with_ads,
+    extract_ios_provider([]) AS search_with_ads,
+    -- metrics.labeled_counter.browser_search_with_ads AS search_with_ads,
     client_info.first_run_date,
     ping_info.end_time,
     ping_info.experiments,
     metrics.counter.browser_total_uri_count,
     client_info.locale,
   FROM
-    org_mozilla_ios_focus.metrics AS org_mozilla_ios_focus_metrics
+    org_mozilla_ios_focus.baseline AS org_mozilla_ios_focus_metrics
+    WHERE DATE(submission_timestamp) = @submission_date
 ),
 -- metrics for Klar iOS Glean release
-metrics_org_mozilla_ios_klar AS (
+baseline_org_mozilla_ios_klar AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
     client_info.client_id,
@@ -491,16 +473,18 @@ metrics_org_mozilla_ios_klar AS (
     metrics.labeled_counter.browser_search_search_count AS search_count,
     metrics.labeled_counter.browser_search_ad_clicks AS search_ad_clicks,
     metrics.labeled_counter.browser_search_in_content AS search_in_content,
-    metrics.labeled_counter.browser_search_with_ads AS search_with_ads,
+    extract_ios_provider([]) AS search_with_ads,
+    -- metrics.labeled_counter.browser_search_with_ads AS search_with_ads,
     client_info.first_run_date,
     ping_info.end_time,
     ping_info.experiments,
     metrics.counter.browser_total_uri_count,
     client_info.locale,
   FROM
-    org_mozilla_ios_klar.metrics AS org_mozilla_klar_metrics
+    org_mozilla_ios_klar.baseline AS org_mozilla_klar_metrics
+    WHERE DATE(submission_timestamp) = @submission_date
 ),
-fenix_baseline AS (
+fenix_metrics AS (
   SELECT
     *
   FROM
@@ -526,81 +510,56 @@ fenix_baseline AS (
   FROM
     baseline_org_mozilla_firefox
 ),
-fenix_metrics AS (
-  SELECT
-    *
-  FROM
-    metrics_org_mozilla_fenix
-  UNION ALL
-  SELECT
-    *
-  FROM
-    metrics_org_mozilla_fenix_nightly
-  UNION ALL
-  SELECT
-    *
-  FROM
-    metrics_org_mozilla_fennec_aurora
-  UNION ALL
-  SELECT
-    *
-  FROM
-    metrics_org_mozilla_firefox_beta
-  UNION ALL
-  SELECT
-    *
-  FROM
-    metrics_org_mozilla_firefox
-),
+
 ios_metrics AS (
   SELECT
     *
   FROM
-    metrics_org_mozilla_ios_firefox
+    baseline_org_mozilla_ios_firefox
   UNION ALL
   SELECT
     *
   FROM
-    metrics_org_mozilla_ios_firefoxbeta
+    baseline_org_mozilla_ios_firefoxbeta
   UNION ALL
   SELECT
     *
   FROM
-    metrics_org_mozilla_ios_fennec
+    baseline_org_mozilla_ios_fennec
 ),
 android_focus_metrics AS (
   SELECT
     *
   FROM
-    metrics_org_mozilla_focus
+    baseline_org_mozilla_focus
   UNION ALL
   SELECT
     *
   FROM
-    metrics_org_mozilla_focus_beta
+    baseline_org_mozilla_focus_beta
   UNION ALL
   SELECT
     *
   FROM
-    metrics_org_mozilla_focus_nightly
+    baseline_org_mozilla_focus_nightly
 ),
 android_klar_metrics AS (
   SELECT
     *
   FROM
-    metrics_org_mozilla_klar
+    baseline_org_mozilla_klar
 ),
 ios_focus_metrics AS (
   SELECT
     *
   FROM
-    metrics_org_mozilla_ios_focus
+    baseline_org_mozilla_ios_focus
 ),
 ios_klar_metrics AS (
   SELECT
     *
   FROM
-    metrics_org_mozilla_ios_klar
+    baseline_org_mozilla_ios_klar
 ),
 -- iOS organic counts are incorrect until version 34.0
 -- https://github.com/mozilla-mobile/firefox-ios/issues/8412
@@ -623,33 +582,12 @@ ios_organic_filtered AS (
   FROM
     ios_metrics
 ),
---  older fenix clients don't send locale in the metrics ping
-fenix_client_locales AS (
-  SELECT
-    client_id,
-    udf.mode_last(ARRAY_AGG(locale)) AS locale
-  FROM
-    fenix_baseline
-  WHERE
-    submission_date = @submission_date
-  GROUP BY
-    client_id
-),
-fenix_metrics_with_locale AS (
-  SELECT
-    fenix_metrics.*,
-    locale,
-  FROM
-    fenix_metrics
-  LEFT JOIN
-    fenix_client_locales
-    USING (client_id)
-),
+
 glean_metrics AS (
   SELECT
     *
   FROM
-    fenix_metrics_with_locale
+    fenix_metrics
   UNION ALL
   SELECT
     *
@@ -676,6 +614,7 @@ glean_metrics AS (
   FROM
     ios_klar_metrics
 ),
+
 glean_combined_searches AS (
   SELECT
     * EXCEPT (search_count, search_ad_clicks, search_in_content, search_with_ads),
@@ -878,7 +817,7 @@ unfiltered_search_clients AS (
   FROM
     combined_search_clients
   WHERE
-    submission_date = @submission_date
+    submission_date = '2023-01-01'
   GROUP BY
     submission_date,
     client_id,

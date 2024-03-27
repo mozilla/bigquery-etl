@@ -1,14 +1,11 @@
 CREATE OR REPLACE FUNCTION ltv.get_state_ios_v2(
-  adjust_network STRING,
   days_since_first_seen INT64,
   days_since_seen INT64,
   submission_date DATE,
-  first_seen_date DATE,
   death_time INT64,
   pattern INT64,
   active INT64,
-  max_weeks INT64,
-  country STRING
+  max_weeks INT64
 )
 RETURNS STRING AS (
    -- users age. 0 on their first day (we need this uniquely ID'd) and then number of the week (1-indexed) since they were new.

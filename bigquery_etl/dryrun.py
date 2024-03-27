@@ -106,7 +106,10 @@ class DryRun:
                 file
                 for skip in ConfigLoader.get("dry_run", "skip", fallback=[])
                 for file in glob.glob(
-                    file_pattern_re.sub(f"sql/{test_project}/\\2*\\3", skip),
+                    file_pattern_re.sub(
+                        lambda x: f"sql/{test_project}/{x.group(2)}_{x.group(1).replace('-', '_')}*{x.group(3)}",
+                        skip,
+                    ),
                     recursive=True,
                 )
             ]

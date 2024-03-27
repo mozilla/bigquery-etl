@@ -41,7 +41,7 @@ SELECT
   IFNULL(mozfun.bits28.days_since_seen(days_active_bits) < 7, FALSE) AS is_weekly_user,
   IFNULL(mozfun.bits28.days_since_seen(days_seen_bits), FALSE) AS is_monthly_user,
   IF(
-    LOWER(IFNULL(isp,'')) <> "browserstack"
+    LOWER(IFNULL(isp, '')) <> "browserstack"
     AND LOWER(distribution_id) <> "mozillaonline",
     TRUE,
     FALSE
@@ -71,7 +71,7 @@ SELECT
   IFNULL(mozfun.bits28.days_since_seen(days_seen_bits), FALSE) AS is_monthly_user,
   FALSE AS is_desktop,
   IF(
-    LOWER(IFNULL(isp,'')) <> "browserstack"
+    LOWER(IFNULL(isp, '')) <> "browserstack"
     AND LOWER(distribution_id) <> "mozillaonline",
     TRUE,
     FALSE
@@ -100,7 +100,7 @@ SELECT
   IFNULL(mozfun.bits28.days_since_seen(days_active_bits) < 7, FALSE) AS is_weekly_user,
   IFNULL(mozfun.bits28.days_since_seen(days_seen_bits), FALSE) AS is_monthly_user,
   FALSE AS is_desktop,
-  IF(LOWER(IFNULL(isp,'')) <> "browserstack", TRUE, FALSE) AS is_mobile
+  IF(LOWER(IFNULL(isp, '')) <> "browserstack", TRUE, FALSE) AS is_mobile
 FROM
   `moz-fx-data-shared-prod.firefox_ios.baseline_clients_last_seen`
 UNION ALL
@@ -166,7 +166,7 @@ SELECT
   IFNULL(mozfun.bits28.days_since_seen(days_active_bits) < 7, FALSE) AS is_weekly_user,
   IFNULL(mozfun.bits28.days_since_seen(days_seen_bits), FALSE) AS is_monthly_user,
   FALSE AS is_desktop,
-  IF(LOWER(IFNULL(isp,'')) <> "browserstack", TRUE, FALSE) AS is_mobile
+  IF(LOWER(IFNULL(isp, '')) <> "browserstack", TRUE, FALSE) AS is_mobile
 FROM
   `moz-fx-data-shared-prod.focus_android.baseline_clients_last_seen`
 UNION ALL
@@ -188,6 +188,6 @@ SELECT
   IFNULL(mozfun.bits28.days_since_seen(days_active_bits) < 7, FALSE) AS is_weekly_user,
   IFNULL(mozfun.bits28.days_since_seen(days_seen_bits), FALSE) AS is_monthly_user,
   FALSE AS is_desktop,
-  IF(LOWER(IFNULL(isp,'')) <> "browserstack", TRUE, FALSE) AS is_mobile
+  IF(LOWER(IFNULL(isp, '')) <> "browserstack", TRUE, FALSE) AS is_mobile
 FROM
   `moz-fx-data-shared-prod.focus_ios.baseline_clients_last_seen`

@@ -284,20 +284,6 @@ with DAG(
         task_concurrency=1,
     )
 
-    with TaskGroup(
-        "telemetry_derived__mobile_usage__v1_external",
-    ) as telemetry_derived__mobile_usage__v1_external:
-        ExternalTaskMarker(
-            task_id="kpi_forecasting__wait_for_mobile_usage",
-            external_dag_id="kpi_forecasting",
-            external_task_id="wait_for_mobile_usage",
-            execution_date="{{ (execution_date + macros.timedelta(seconds=3600)).isoformat() }}",
-        )
-
-        telemetry_derived__mobile_usage__v1_external.set_upstream(
-            telemetry_derived__mobile_usage__v1
-        )
-
     firefox_nondesktop_exact_mau28_by_client_count_dimensions.set_upstream(
         wait_for_telemetry_derived__core_clients_last_seen__v1
     )

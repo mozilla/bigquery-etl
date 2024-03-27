@@ -48,3 +48,9 @@ RETURNS STRING AS (
     active
   )
 );
+
+--Tests
+SELECT
+mozfun.assert.equals('2_dow4_2_3', ltv.get_state_ios_v2(10, 2,'2024-03-27', 300, 10, 3, 3)),
+mozfun.assert.equals('54_dow4_00_0', ltv.get_state_ios_v2(500, 436, '2024-03-27', 300, 0, 0, 54)),
+mozfun.assert.equals('4_dow4_1_22', ltv.get_state_ios_v2(28,1, '2024-03-27', 300, 3, 22, 4))

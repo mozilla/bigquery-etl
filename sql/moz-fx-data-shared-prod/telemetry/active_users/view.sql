@@ -36,12 +36,12 @@ SELECT
   days_active_bits,
   IFNULL(mozfun.bits28.days_since_seen(days_active_bits) = 0, FALSE) AS is_dau,
   IFNULL(mozfun.bits28.days_since_seen(days_active_bits) < 7, FALSE) AS is_wau,
-  IFNULL(mozfun.bits28.days_since_seen(days_active_bits) < 28, FALSE) AS is_mau,
+  IFNULL(mozfun.bits28.days_since_seen(days_active_bits), FALSE) AS is_mau,
   IFNULL(mozfun.bits28.days_since_seen(days_seen_bits) = 0, FALSE) AS is_daily_user,
   IFNULL(mozfun.bits28.days_since_seen(days_active_bits) < 7, FALSE) AS is_weekly_user,
-  IFNULL(mozfun.bits28.days_since_seen(days_seen_bits) < 28, FALSE) AS is_monthly_user,
+  IFNULL(mozfun.bits28.days_since_seen(days_seen_bits), FALSE) AS is_monthly_user,
   IF(
-    LOWER(isp) <> "browserstack"
+    LOWER(IFNULL(isp,'')) <> "browserstack"
     AND LOWER(distribution_id) <> "mozillaonline",
     TRUE,
     FALSE
@@ -65,13 +65,13 @@ SELECT
   days_active_bits,
   IFNULL(mozfun.bits28.days_since_seen(days_active_bits) = 0, FALSE) AS is_dau,
   IFNULL(mozfun.bits28.days_since_seen(days_active_bits) < 7, FALSE) AS is_wau,
-  IFNULL(mozfun.bits28.days_since_seen(days_active_bits) < 28, FALSE) AS is_mau,
+  IFNULL(mozfun.bits28.days_since_seen(days_active_bits), FALSE) AS is_mau,
   IFNULL(mozfun.bits28.days_since_seen(days_seen_bits) = 0, FALSE) AS is_daily_user,
   IFNULL(mozfun.bits28.days_since_seen(days_active_bits) < 7, FALSE) AS is_weekly_user,
-  IFNULL(mozfun.bits28.days_since_seen(days_seen_bits) < 28, FALSE) AS is_monthly_user,
+  IFNULL(mozfun.bits28.days_since_seen(days_seen_bits), FALSE) AS is_monthly_user,
   FALSE AS is_desktop,
   IF(
-    LOWER(isp) <> "browserstack"
+    LOWER(IFNULL(isp,'')) <> "browserstack"
     AND LOWER(distribution_id) <> "mozillaonline",
     TRUE,
     FALSE
@@ -95,12 +95,12 @@ SELECT
   days_active_bits,
   IFNULL(mozfun.bits28.days_since_seen(days_active_bits) = 0, FALSE) AS is_dau,
   IFNULL(mozfun.bits28.days_since_seen(days_active_bits) < 7, FALSE) AS is_wau,
-  IFNULL(mozfun.bits28.days_since_seen(days_active_bits) < 28, FALSE) AS is_mau,
+  IFNULL(mozfun.bits28.days_since_seen(days_active_bits), FALSE) AS is_mau,
   IFNULL(mozfun.bits28.days_since_seen(days_seen_bits) = 0, FALSE) AS is_daily_user,
   IFNULL(mozfun.bits28.days_since_seen(days_active_bits) < 7, FALSE) AS is_weekly_user,
-  IFNULL(mozfun.bits28.days_since_seen(days_seen_bits) < 28, FALSE) AS is_monthly_user,
+  IFNULL(mozfun.bits28.days_since_seen(days_seen_bits), FALSE) AS is_monthly_user,
   FALSE AS is_desktop,
-  IF(LOWER(isp) <> "browserstack", TRUE, FALSE) AS is_mobile
+  IF(LOWER(IFNULL(isp,'')) <> "browserstack", TRUE, FALSE) AS is_mobile
 FROM
   `moz-fx-data-shared-prod.firefox_ios.baseline_clients_last_seen`
 UNION ALL
@@ -117,10 +117,10 @@ SELECT
   days_active_bits,
   IFNULL(mozfun.bits28.days_since_seen(days_active_bits) = 0, FALSE) AS is_dau,
   IFNULL(mozfun.bits28.days_since_seen(days_active_bits) < 7, FALSE) AS is_wau,
-  IFNULL(mozfun.bits28.days_since_seen(days_active_bits) < 28, FALSE) AS is_mau,
+  IFNULL(mozfun.bits28.days_since_seen(days_active_bits), FALSE) AS is_mau,
   IFNULL(mozfun.bits28.days_since_seen(days_seen_bits) = 0, FALSE) AS is_daily_user,
   IFNULL(mozfun.bits28.days_since_seen(days_active_bits) < 7, FALSE) AS is_weekly_user,
-  IFNULL(mozfun.bits28.days_since_seen(days_seen_bits) < 28, FALSE) AS is_monthly_user,
+  IFNULL(mozfun.bits28.days_since_seen(days_seen_bits), FALSE) AS is_monthly_user,
   FALSE AS is_desktop,
   FALSE AS is_mobile
 FROM
@@ -139,10 +139,10 @@ SELECT
   days_active_bits,
   IFNULL(mozfun.bits28.days_since_seen(days_active_bits) = 0, FALSE) AS is_dau,
   IFNULL(mozfun.bits28.days_since_seen(days_active_bits) < 7, FALSE) AS is_wau,
-  IFNULL(mozfun.bits28.days_since_seen(days_active_bits) < 28, FALSE) AS is_mau,
+  IFNULL(mozfun.bits28.days_since_seen(days_active_bits), FALSE) AS is_mau,
   IFNULL(mozfun.bits28.days_since_seen(days_seen_bits) = 0, FALSE) AS is_daily_user,
   IFNULL(mozfun.bits28.days_since_seen(days_active_bits) < 7, FALSE) AS is_weekly_user,
-  IFNULL(mozfun.bits28.days_since_seen(days_seen_bits) < 28, FALSE) AS is_monthly_user,
+  IFNULL(mozfun.bits28.days_since_seen(days_seen_bits), FALSE) AS is_monthly_user,
   FALSE AS is_desktop,
   FALSE AS is_mobile
 FROM
@@ -161,12 +161,12 @@ SELECT
   days_active_bits,
   IFNULL(mozfun.bits28.days_since_seen(days_active_bits) = 0, FALSE) AS is_dau,
   IFNULL(mozfun.bits28.days_since_seen(days_active_bits) < 7, FALSE) AS is_wau,
-  IFNULL(mozfun.bits28.days_since_seen(days_active_bits) < 28, FALSE) AS is_mau,
+  IFNULL(mozfun.bits28.days_since_seen(days_active_bits), FALSE) AS is_mau,
   IFNULL(mozfun.bits28.days_since_seen(days_seen_bits) = 0, FALSE) AS is_daily_user,
   IFNULL(mozfun.bits28.days_since_seen(days_active_bits) < 7, FALSE) AS is_weekly_user,
-  IFNULL(mozfun.bits28.days_since_seen(days_seen_bits) < 28, FALSE) AS is_monthly_user,
+  IFNULL(mozfun.bits28.days_since_seen(days_seen_bits), FALSE) AS is_monthly_user,
   FALSE AS is_desktop,
-  IF(LOWER(isp) <> "browserstack", TRUE, FALSE) AS is_mobile
+  IF(LOWER(IFNULL(isp,'')) <> "browserstack", TRUE, FALSE) AS is_mobile
 FROM
   `moz-fx-data-shared-prod.focus_android.baseline_clients_last_seen`
 UNION ALL
@@ -183,11 +183,11 @@ SELECT
   days_active_bits,
   IFNULL(mozfun.bits28.days_since_seen(days_active_bits) = 0, FALSE) AS is_dau,
   IFNULL(mozfun.bits28.days_since_seen(days_active_bits) < 7, FALSE) AS is_wau,
-  IFNULL(mozfun.bits28.days_since_seen(days_active_bits) < 28, FALSE) AS is_mau,
+  IFNULL(mozfun.bits28.days_since_seen(days_active_bits), FALSE) AS is_mau,
   IFNULL(mozfun.bits28.days_since_seen(days_seen_bits) = 0, FALSE) AS is_daily_user,
   IFNULL(mozfun.bits28.days_since_seen(days_active_bits) < 7, FALSE) AS is_weekly_user,
-  IFNULL(mozfun.bits28.days_since_seen(days_seen_bits) < 28, FALSE) AS is_monthly_user,
+  IFNULL(mozfun.bits28.days_since_seen(days_seen_bits), FALSE) AS is_monthly_user,
   FALSE AS is_desktop,
-  IF(LOWER(isp) <> "browserstack", TRUE, FALSE) AS is_mobile
+  IF(LOWER(IFNULL(isp,'')) <> "browserstack", TRUE, FALSE) AS is_mobile
 FROM
   `moz-fx-data-shared-prod.focus_ios.baseline_clients_last_seen`

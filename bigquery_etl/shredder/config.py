@@ -441,6 +441,7 @@ SEARCH_IGNORE_FIELDS = {
     ("telemetry_stable.prio_v4", ID),
 }
 
+
 def find_glean_targets(
     pool: ThreadPool, client: bigquery.Client, project: str = SHARED_PROD
 ) -> DeleteIndex:

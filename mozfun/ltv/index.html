@@ -833,6 +833,30 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#get_state_ios_v2-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_state_ios_v2 (UDF)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="get_state_ios_v2 (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameters
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1491,6 +1515,30 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#get_state_ios_v2-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_state_ios_v2 (UDF)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="get_state_ios_v2 (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameters
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1551,6 +1599,16 @@ The model can use this state as a sink, where the client will never return if th
 <div class="highlight"><pre><span></span><code>STRING
 </code></pre></div>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/ltv/android_states_with_paid_v2">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/ltv/android_states_with_paid_v2/metadata.yaml">Edit</a></p>
+<h2 id="get_state_ios_v2-udf">get_state_ios_v2 (UDF)</h2>
+<p>LTV states for iOS.</p>
+<h3 id="parameters_4">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>days_since_first_seen INT64, days_since_seen INT64, submission_date DATE, death_time INT64, pattern INT64, active INT64, max_weeks INT64
+</code></pre></div>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>STRING
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/ltv/get_state_ios_v2">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/ltv/get_state_ios_v2/metadata.yaml">Edit</a></p>
 
 
 

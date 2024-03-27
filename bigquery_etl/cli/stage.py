@@ -144,6 +144,8 @@ def deploy(
         if dataset == "INFORMATION_SCHEMA" or "INFORMATION_SCHEMA" in name:
             continue
 
+        dataset = f"{dataset}_{project.replace('-', '_')}"
+
         if dataset_suffix:
             dataset = f"{dataset}_{dataset_suffix}"
 
@@ -173,6 +175,8 @@ def deploy(
                         f"{test_dataset}.{test_name}{file_suffix}",
                         f"{test_dataset}.{test_name}.schema{file_suffix}",
                     ):
+                        test_dataset = f"{test_dataset}_{project_id.replace('-', '_')}"
+
                         if dataset_suffix:
                             test_dataset = f"{test_dataset}_{dataset_suffix}"
 
@@ -292,14 +296,18 @@ def _update_references(artifact_files, project_id, dataset_suffix, sql_dir):
         name = artifact_file.parent.name
         name_pattern = name.replace("*", r"\*")  # match literal *
         original_dataset = artifact_file.parent.parent.name
+        original_project = artifact_file.parent.parent.parent.name
+
         deployed_dataset = original_dataset
+        deployed_dataset += f"_{original_project.replace('-', '_')}"
+
         if dataset_suffix and original_dataset not in (
             "INFORMATION_SCHEMA",
             "region-eu",
             "region-us",
         ):
             deployed_dataset += f"_{dataset_suffix}"
-        original_project = artifact_file.parent.parent.parent.name
+
         deployed_project = project_id
 
         # Replace references, preserving fully quoted references.

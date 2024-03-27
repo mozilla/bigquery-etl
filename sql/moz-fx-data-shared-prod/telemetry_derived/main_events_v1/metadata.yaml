@@ -1,6 +1,18 @@
-friendly_name: |-
-  Telemetry Derived - Main Events
+friendly_name: Telemetry Derived - Main Events
 description: |-
   [DESCRIPTION_MISSING]
 owners:
 - data-platform-infra-wg@mozilla.com
+labels:
+  owner1: data-platform-infra-wg
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+    - event_category
+    - sample_id
+references: {}

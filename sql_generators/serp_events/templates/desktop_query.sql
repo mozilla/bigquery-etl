@@ -1,3 +1,18 @@
+-- CREATE TEMP FUNCTION label_ad_components(component_info ARRAY) AS (
+--   ARRAY(
+--     SELECT AS STRUCT
+--       c.*,
+--       COALESCE(
+--         c.component IN ('ad_carousel', 'ad_image_row', 'ad_link', 'ad_sidebar', 'ad_sitelink'),
+--         FALSE
+--       ) AS is_ad_component
+--     FROM UNNEST(component_info) AS c
+--   )
+-- );
+-- TODO:
+-- ad blocker inferred
+--   COALESCE(is_engaged, FALSE) AS is_engaged,
+--   COALESCE(has_ads_loaded, FALSE) AS has_ads_loaded,
 WITH raw_serp_events AS (
   SELECT
     *,
@@ -58,11 +73,15 @@ impressions AS (
     mozfun.norm.browser_version_info(client_info.app_display_version) AS browser_version_info,
     sample_id,
     ping_info.experiments,
-    -- SERP session characteristics
-    CAST(mozfun.map.get_key(event.extra, 'is_shopping_page') AS bool) AS is_shopping_page,
+    -- SERP impression features
+    COALESCE(
+      SAFE_CAST(mozfun.map.get_key(event.extra, 'is_shopping_page') AS bool),
+      FALSE
+    ) AS is_shopping_page,
+    COALESCE(SAFE_CAST(mozfun.map.get_key(event.extra, 'is_private') AS bool), FALSE) AS is_private,
     mozfun.map.get_key(event.extra, 'provider') AS search_engine,
     mozfun.map.get_key(event.extra, 'source') AS sap_source,
-    CAST(mozfun.map.get_key(event.extra, 'tagged') AS bool) AS is_tagged
+    COALESCE(SAFE_CAST(mozfun.map.get_key(event.extra, 'tagged') AS bool), FALSE) AS is_tagged
   FROM
     serp_events
   WHERE
@@ -83,12 +102,11 @@ engagement_counts AS (
   SELECT
     impression_id,
     component,
-    COUNTIF(action = 'clicked') AS num_clicks,
-    COUNTIF(action = 'expanded') AS num_expands,
-    COUNTIF(action = 'submitted') AS num_submits,
+    action,
+    COUNT(*) AS num_engagements
   FROM
     (
-    -- 1 row per engagement event
+      -- 1 row per engagement event
       SELECT
         impression_id,
         mozfun.map.get_key(event.extra, 'action') AS action,
@@ -100,13 +118,13 @@ engagement_counts AS (
     )
   GROUP BY
     impression_id,
-    component
+    component,
+    action
 ),
-engaged_sessions AS (
-  -- indicator for sessions with overall nonzero engagements
-  SELECT DISTINCT
+engagement_array AS (
+  SELECT
     impression_id,
-    TRUE AS is_engaged
+    ARRAY_AGG(STRUCT(component, action, num_engagements)) AS engagements
   FROM
     engagement_counts
   GROUP BY
@@ -116,20 +134,23 @@ ad_impression_counts AS (
   SELECT
     impression_id,
     component,
-    ads_loaded AS num_ads_loaded_reported,
-    ads_visible AS num_ads_visible_reported,
-    ads_hidden AS num_ads_hidden_reported,
+    ads_loaded,
+    ads_visible,
+    ads_hidden,
   FROM
     (
       SELECT
         impression_id,
         mozfun.map.get_key(event.extra, 'component') AS component,
-        CAST(mozfun.map.get_key(event.extra, 'ads_loaded') AS int) AS ads_loaded,
-        CAST(mozfun.map.get_key(event.extra, 'ads_visible') AS int) AS ads_visible,
-        CAST(mozfun.map.get_key(event.extra, 'ads_hidden') AS int) AS ads_hidden,
-      -- there should be at most 1 ad_impression event per component
-      -- if there are multiple, it would be an edge case where events got duplicated
-      -- enforce 1 row per session/component for data cleanliness
+        COALESCE(SAFE_CAST(mozfun.map.get_key(event.extra, 'ads_loaded') AS int), 0) AS ads_loaded,
+        COALESCE(
+          SAFE_CAST(mozfun.map.get_key(event.extra, 'ads_visible') AS int),
+          0
+        ) AS ads_visible,
+        COALESCE(SAFE_CAST(mozfun.map.get_key(event.extra, 'ads_hidden') AS int), 0) AS ads_hidden,
+        -- there should be at most 1 ad_impression event per component
+        -- if there are multiple, it would be an edge case where events got duplicated
+        -- enforce 1 row per impression_id/component for data cleanliness
         RANK() OVER (
           PARTITION BY
             impression_id,
@@ -145,39 +166,26 @@ ad_impression_counts AS (
   WHERE
     i = 1
 ),
-ad_sessions AS (
-  -- indicator for sessions with overall nonzero ad impressions
-  SELECT DISTINCT
+ad_impression_array AS (
+  SELECT
     impression_id,
-    TRUE AS has_ads_loaded
+    ARRAY_AGG(
+      -- change naming from 'ads' to 'elements'
+      -- data reported in 'ad_impression' events but includes non-ad page components
+      STRUCT(
+        component,
+        ads_loaded AS num_elements_loaded,
+        ads_visible AS num_elements_visible,
+        -- elements explicitly hidden using JS/CSS, as by an ad blocker
+        ads_hidden AS num_elements_blocked,
+        -- elements that are not visible but not explicitly blocked, eg. below the fold
+        ads_loaded - ads_visible - ads_hidden AS num_elements_notshowing
+      )
+    ) AS component_impressions
   FROM
     ad_impression_counts
   GROUP BY
     impression_id
-),
-component_counts AS (
-  -- join engagements and ad impressions into a single table
-  -- 1 row for each session/component that had either an impression or an engagement
-  SELECT
-    impression_id,
-    component,
-    COALESCE(num_clicks, 0) AS num_clicks,
-    COALESCE(num_expands, 0) AS num_expands,
-    COALESCE(num_submits, 0) AS num_submits,
-    COALESCE(num_ads_loaded_reported, 0) AS num_ads_loaded_reported,
-    COALESCE(num_ads_visible_reported, 0) AS num_ads_visible_reported,
-    COALESCE(num_ads_hidden_reported, 0) AS num_ads_hidden_reported,
-    -- ad blocker usage is inferred when all ads are hidden
-    COALESCE(
-      num_ads_loaded_reported > 0
-      AND num_ads_hidden_reported = num_ads_loaded_reported,
-      FALSE
-    ) AS ad_blocker_inferred,
-  FROM
-    engagement_counts
-  FULL JOIN
-    ad_impression_counts
-    USING (impression_id, component)
 )
 SELECT
   impression_id,
@@ -193,64 +201,25 @@ SELECT
   sample_id,
   experiments,
   is_shopping_page,
+  is_private,
   search_engine,
   sap_source,
   is_tagged,
-  COALESCE(is_engaged, FALSE) AS is_engaged,
-  COALESCE(has_ads_loaded, FALSE) AS has_ads_loaded,
   abandon_reason,
-  component,
-  -- indicator for components that can have ad impressions
-  -- engagements are recorded for these and other components
-  component IN (
-    'ad_carousel',
-    'ad_image_row',
-    'ad_link',
-    'ad_sidebar',
-    'ad_sitelink',
-    'refined_search_buttons',
-    'shopping_tab'
-  ) AS is_ad_component,
-  COALESCE(num_clicks, 0) AS num_clicks,
-  COALESCE(num_expands, 0) AS num_expands,
-  COALESCE(num_submits, 0) AS num_submits,
-  COALESCE(num_ads_loaded_reported, 0) AS num_ads_loaded_reported,
-  COALESCE(num_ads_visible_reported, 0) AS num_ads_visible_reported,
-  COALESCE(num_ads_hidden_reported, 0) AS num_ads_hidden_reported,
-  COALESCE(ad_blocker_inferred, FALSE) AS ad_blocker_inferred,
-  COALESCE(
-    CASE
-    -- when an ad blocker is active, this should be 0
-      WHEN ad_blocker_inferred
-        THEN num_ads_visible_reported
-      ELSE
-    -- when no ad blocker is active, count ads reported as 'hidden' as visible
-    -- this is an edge case where the hidden count may not be reliable
-        num_ads_visible_reported + num_ads_hidden_reported
-    END,
-    0
-  ) AS num_ads_showing,
-  -- ads that are not visible but not blocked by an ad blocker are considered 'not showing'
-  COALESCE(
-    num_ads_loaded_reported - num_ads_visible_reported - num_ads_hidden_reported,
-    0
-  ) AS num_ads_notshowing,
+  engagements,
+  component_impressions
 FROM
   -- 1 row per impression_id
   impressions
-LEFT JOIN
-  -- 1 row per impression_id with nonzero engagements
-  engaged_sessions
-  USING (impression_id)
-LEFT JOIN
-  -- 1 row per impression_id with nonzero ad impressions
-  ad_sessions
-  USING (impression_id)
 LEFT JOIN
   -- 1 row per impression_id with an abandonment
   abandonments
   USING (impression_id)
 LEFT JOIN
-  -- expands to 1 row per impression_id per component that had either an engagement or an ad impression
-  component_counts
+  -- 1 row per impression_id with an engagement
+  engagement_array
+  USING (impression_id)
+LEFT JOIN
+  -- 1 row per impression_id with a component impression
+  ad_impression_array
   USING (impression_id)

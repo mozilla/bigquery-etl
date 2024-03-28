@@ -55,6 +55,6 @@ SELECT
   os_version_major,
   os_version_minor,
   num_clients_in_cohort,
-  num_clients_active_on_day
+  num_clients_sent_ping_on_day AS num_clients_active_on_day
 FROM
   `moz-fx-data-shared-prod.telemetry_derived.desktop_cohort_daily_retention_v1`

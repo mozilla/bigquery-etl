@@ -101,6 +101,7 @@ class DryRun:
         # update skip list to include renamed queries in stage.
         test_project = ConfigLoader.get("default", "test_project", fallback="")
         file_pattern_re = re.compile(r"sql/([^\/]+)/([^/]+)(/?.*|$)")
+
         skip_files.update(
             [
                 file
@@ -137,6 +138,12 @@ class DryRun:
         if self.strip_dml:
             sql = re.sub(
                 "CREATE OR REPLACE VIEW.*?AS",
+                "",
+                sql,
+                flags=re.DOTALL,
+            )
+            sql = re.sub(
+                "CREATE MATERIALIZED VIEW.*?AS",
                 "",
                 sql,
                 flags=re.DOTALL,

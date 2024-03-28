@@ -698,6 +698,9 @@ jobs:
     steps:
       - gcp-cli/setup:
           use_oidc: true
+          workload_identity_pool_id: GCP_WIP_ID
+          workload_identity_pool_provider_id: GCP_WIP_PROVIDER_ID
+          google_project_number: GCP_PROJECT_ID
       - run:
           name: Trigger bqetl-artifact-deployment in Airflow
           command: >

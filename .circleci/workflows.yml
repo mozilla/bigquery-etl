@@ -696,11 +696,8 @@ jobs:
     docker:
       - image: cimg/base:2024.01
     steps:
-      - gcp-setup:
-          executor: gcp-cli/default
-          steps:
-            - gcp-cli/setup:
-                use_oidc: true
+      - gcp-cli/setup:
+          use_oidc: true
       - run:
           name: Trigger bqetl-artifact-deployment in Airflow
           command: >

@@ -12,7 +12,7 @@
   unknown: 0
   locale: en-US
   app_version: "30.0"
-  app_name: Fennec
+  app_name: Firefox iOS Glean
   normalized_app_name: Fennec
   channel: release
   country: US
@@ -29,6 +29,7 @@
   engine: engine2
   organic: 3
 - <<: *base
+  app_name: Fennec
   client_id: core
   app_version: "27.0"
   source: actionbar

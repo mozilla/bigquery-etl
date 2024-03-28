@@ -236,7 +236,7 @@
   os: iOS
   os_version: "13.0"
   app_version: "35.0"
-  app_name: Fennec
+  app_name: Firefox iOS Glean
   normalized_app_name: Fennec
   channel: release
   country: US

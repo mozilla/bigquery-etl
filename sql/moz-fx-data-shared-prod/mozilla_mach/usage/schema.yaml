@@ -422,6 +422,10 @@ fields:
         for the purpose of experimentation enrollment.
 
         '
+    - name: mozbuild_project
+      type: STRING
+      mode: NULLABLE
+      description: The project being built.
   - name: string_list
     type: RECORD
     mode: NULLABLE

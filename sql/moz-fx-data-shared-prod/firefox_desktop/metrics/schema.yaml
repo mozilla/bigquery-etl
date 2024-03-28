@@ -8034,6 +8034,47 @@ fields:
         and security certificate settings in the current profile directory, in kilobytes.
 
         '
+    - name: browser_backup_cookies_size
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The total file size of the cookies.sqlite db located in the current
+        profile directory, in kilobytes.
+
+        '
+    - name: browser_backup_form_history_size
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The file size of the formhistory.sqlite db located in the current
+        profile directory, in kilobytes.
+
+        '
+    - name: browser_backup_misc_data_size
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The total size of files for telemetry, site storage, media device
+        origin mapping and Mozilla Accounts in the current profile directory, rounded
+        to the nearest tenth kilobyte.
+
+        '
+    - name: browser_backup_preferences_size
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The total size of files relating to user preferences and permissions
+        in the current profile directory, in kilobytes.
+
+        '
+    - name: browser_backup_session_store_backups_directory_size
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The total size of the session store backups directory, in kilobytes.
+
+        '
+    - name: browser_backup_session_store_size
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The size of uncompressed session store json, in kilobytes.
+
+        '
   - name: labeled_boolean
     type: RECORD
     mode: NULLABLE

@@ -454,6 +454,42 @@ fields:
       description: 'Text-only zoom enabled (vs. full-zoom)
 
         '
+    - name: characteristics_prefs_block_popups
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Block pop-up windows (The dom.disable_open_during_load pref)
+
+        '
+    - name: characteristics_prefs_general_autoscroll
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Use autoscrolling
+
+        '
+    - name: characteristics_prefs_general_smoothscroll
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Use smooth scrolling
+
+        '
+    - name: characteristics_prefs_overlay_scrollbars
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Use overlay scrollbars (or otherwise "Always show scrollbars")
+
+        '
+    - name: characteristics_prefs_privacy_donottrackheader_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Sending "do not track" HTTP header
+
+        '
+    - name: characteristics_prefs_privacy_globalprivacycontrol_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Sending "global privacy control" HTTP header
+
+        '
   - name: text2
     type: RECORD
     mode: NULLABLE

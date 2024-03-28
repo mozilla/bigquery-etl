@@ -24,6 +24,7 @@ new_downloads_stg AS (
     IFNULL(mozfun.ga.nullify_string(jsonPayload.fields.visit_id), "") AS ga_client_id,
     IFNULL(mozfun.ga.nullify_string(jsonPayload.fields.session_id), "") AS stub_session_id,
     CAST(@download_date AS date) AS first_seen_date,
+    3 AS ga_src
   FROM
     `moz-fx-stubattribut-prod-32a5.stubattribution_prod.stdout`
   WHERE
@@ -36,6 +37,7 @@ new_downloads_stg AS (
     IFNULL(mozfun.ga.nullify_string(jsonPayload.fields.client_id_ga4), "") AS ga_client_id,
     IFNULL(mozfun.ga.nullify_string(jsonPayload.fields.session_id), "") AS stub_session_id,
     CAST(@download_date AS date) AS first_seen_date,
+    4 AS ga_src
   FROM
     `moz-fx-stubattribut-prod-32a5.stubattribution_prod.stdout`
   WHERE
@@ -47,7 +49,8 @@ new_downloads AS (
     dl_token,
     ga_client_id,
     stub_session_id,
-    MIN(first_seen_date) AS first_seen_date
+    MIN(first_seen_date) AS first_seen_date,
+    MIN(ga_src_int) AS ga_src
   FROM
     new_downloads_stg
   GROUP BY
@@ -66,6 +69,7 @@ SELECT
     COALESCE(_previous.first_seen_date, _current.first_seen_date),
     COALESCE(_current.first_seen_date, _previous.first_seen_date)
   ) AS first_seen_date,
+  ga_src
 FROM
   historical_triplets AS _previous
 FULL OUTER JOIN

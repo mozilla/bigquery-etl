@@ -5,6 +5,7 @@ orbs:
   gcp-gcr: circleci/gcp-gcr@0.13.0
   docker: circleci/docker@2.2
   python: circleci/python@2.1.1
+  gcp-cli: circleci/gcp-cli@3.1.1
 
 parameters:
   python-version:
@@ -695,6 +696,11 @@ jobs:
     docker:
       - image: cimg/base:2024.01
     steps:
+      - gcp-setup:
+          executor: gcp-cli/default
+          steps:
+            - gcp-cli/setup:
+                use_oidc: true
       - run:
           name: Trigger bqetl-artifact-deployment in Airflow
           command: >

@@ -698,13 +698,7 @@ jobs:
       - run:
           name: Trigger bqetl-artifact-deployment in Airflow
           command: >
-            curl --location "https://workflow.telemetry.mozilla.org/api/v1/dags/bqetl_artifact_deployment/dagRuns"
-            --header "Content-Type: application/json"
-            --header "Accept: application/json"
-            --header "Authorization: Basic ${AIRFLOW_BQETL_CI_USER_BASIC_AUTH}"
-            --data "{
-              \"note\": \"DAG Triggered by **[${CIRCLE_USERNAME}](https://github.com/${CIRCLE_USERNAME})** from ${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME} CI build [${CIRCLE_BUILD_NUM}](${CIRCLE_BUILD_URL}).\"
-            }"
+            exit 42
   private-generate-sql:
     docker: *docker
     steps:
@@ -1161,14 +1155,14 @@ workflows:
                 - main
       - artifact-deployment:
           name: Trigger bqetl_artifact_deployment Airflow DAG
-          context:
-            - data-eng-circleci-deployment
-          requires:
-            - deploy
-          filters:
-            branches:
-              only:
-                - main
+#          context:
+#            - data-eng-circleci-deployment
+#          requires:
+#            - deploy
+#          filters:
+#            branches:
+#              only:
+#                - main
       - sync-dags-repo:
           name: 🔃 Synchronize bigquery-etl submodule
           repo-to-sync: ${CIRCLE_PROJECT_REPONAME}

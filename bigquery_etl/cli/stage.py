@@ -25,7 +25,6 @@ from ..routine.parse_routine import (
 )
 from ..schema import SCHEMA_FILE, Schema
 from ..util.common import render
-from ..util.common import render as render_template
 from ..view import View
 
 VIEW_FILE = "view.sql"
@@ -153,10 +152,9 @@ def deploy(
 
         if artifact_file.name == MATERIALIZED_VIEW:
             # replace CREATE MATERIALIED VIEW statement
-            sql_content = render_template(
+            sql_content = render(
                 artifact_file.name,
                 template_folder=str(artifact_file.parent),
-                templates_dir="",
                 format=False,
             )
             sql_content = re.sub(

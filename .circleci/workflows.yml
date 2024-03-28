@@ -693,14 +693,14 @@ jobs:
           steps:
             - *skip
   artifact-deployment:
-    docker:
-      - image: cimg/base:2024.01
+    executor: gcp-cli/google
     steps:
       - gcp-cli/setup:
           use_oidc: true
           workload_identity_pool_id: GCP_WIP_ID
           workload_identity_pool_provider_id: GCP_WIP_PROVIDER_ID
           google_project_number: GCP_PROJECT_ID
+          service_account_email: GCP_SERVICE_ACCOUNT_EMAIL
       - run:
           name: Trigger bqetl-artifact-deployment in Airflow
           command: >

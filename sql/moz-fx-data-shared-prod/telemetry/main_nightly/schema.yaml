@@ -38486,6 +38486,21 @@ fields:
         - name: browser_backup_preferences_size
           type: INTEGER
           mode: NULLABLE
+        - name: browser_backup_cookies_size
+          type: INTEGER
+          mode: NULLABLE
+        - name: browser_backup_form_history_size
+          type: INTEGER
+          mode: NULLABLE
+        - name: browser_backup_misc_data_size
+          type: INTEGER
+          mode: NULLABLE
+        - name: browser_backup_session_store_backups_directory_size
+          type: INTEGER
+          mode: NULLABLE
+        - name: browser_backup_session_store_size
+          type: INTEGER
+          mode: NULLABLE
     - name: socket
       type: RECORD
       mode: NULLABLE

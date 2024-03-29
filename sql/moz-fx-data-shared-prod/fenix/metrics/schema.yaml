@@ -631,6 +631,12 @@ fields:
     - name: httpsfirst_upgraded_schemeless
       type: INTEGER
       mode: NULLABLE
+    - name: hls_canplay_requested
+      type: INTEGER
+      mode: NULLABLE
+    - name: hls_canplay_supported
+      type: INTEGER
+      mode: NULLABLE
   - name: custom_distribution
     type: RECORD
     mode: NULLABLE

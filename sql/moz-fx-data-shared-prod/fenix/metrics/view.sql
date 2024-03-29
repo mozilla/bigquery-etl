@@ -369,7 +369,9 @@ SELECT
       metrics.counter.httpsfirst_downgraded,
       metrics.counter.httpsfirst_downgraded_schemeless,
       metrics.counter.httpsfirst_upgraded,
-      metrics.counter.httpsfirst_upgraded_schemeless
+      metrics.counter.httpsfirst_upgraded_schemeless,
+      metrics.counter.hls_canplay_requested,
+      metrics.counter.hls_canplay_supported
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -973,7 +975,9 @@ SELECT
       metrics.counter.httpsfirst_downgraded,
       metrics.counter.httpsfirst_downgraded_schemeless,
       metrics.counter.httpsfirst_upgraded,
-      metrics.counter.httpsfirst_upgraded_schemeless
+      metrics.counter.httpsfirst_upgraded_schemeless,
+      metrics.counter.hls_canplay_requested,
+      metrics.counter.hls_canplay_supported
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,

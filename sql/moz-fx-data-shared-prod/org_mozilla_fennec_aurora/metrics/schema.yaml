@@ -1420,6 +1420,18 @@ fields:
         as schemeless).
 
         '
+    - name: hls_canplay_requested
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Record when a page requests canPlayType for a HLS media type.
+
+        '
+    - name: hls_canplay_supported
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Record when a canPlayType request supports HLS.
+
+        '
   - name: custom_distribution
     type: RECORD
     mode: NULLABLE

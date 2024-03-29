@@ -22,7 +22,7 @@ fields:
   - name: other_usage_pct
     mode: NULLABLE
     type: DATE
-    description: The percent of usage from other, non mobile, non desktop devices
+    description: The percent of usage from other devices
   - name: aggregation_interval
     mode: NULLABLE
     type: STRING

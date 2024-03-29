@@ -1,3 +1,9 @@
+{% if is_init() %}
+  (SELECT SUM(value) FROM UNNEST(map))
+);
+
+DECLARE first_date DATE DEFAULT "2021-01-01";
+
 CREATE TEMP FUNCTION sum_map_values(map ARRAY<STRUCT<key STRING, value INT64>>)
 RETURNS INT64 AS (
   (SELECT SUM(value) FROM UNNEST(map))

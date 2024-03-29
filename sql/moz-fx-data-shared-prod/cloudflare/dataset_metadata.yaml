@@ -1,0 +1,10 @@
+friendly_name: Cloudflare
+description: |-
+  Views on browser usage, device usage, and OS usage collected from Cloudflare APIs
+dataset_base_acl: view
+user_facing: true
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

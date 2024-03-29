@@ -26,6 +26,7 @@ dry_run:
   - sql/data-observability-dev/**/**/*.sql
   # Access Denied
   - sql/moz-fx-data-experiments/monitoring/query_cost_v1/query.sql
+  - sql/moz-fx-data-shared-prod/telemetry_derived/experiment_enrollment_cumulative_population_estimate_v1/view.sql
   - sql/moz-fx-data-shared-prod/app_store_external/**/*.sql
   - sql/moz-fx-data-shared-prod/app_store/**/*.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/bigquery_usage_v2/query.sql

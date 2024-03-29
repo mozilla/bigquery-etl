@@ -1,18 +1,3 @@
--- CREATE TEMP FUNCTION label_ad_components(component_info ARRAY) AS (
---   ARRAY(
---     SELECT AS STRUCT
---       c.*,
---       COALESCE(
---         c.component IN ('ad_carousel', 'ad_image_row', 'ad_link', 'ad_sidebar', 'ad_sitelink'),
---         FALSE
---       ) AS is_ad_component
---     FROM UNNEST(component_info) AS c
---   )
--- );
--- TODO:
--- ad blocker inferred
---   COALESCE(is_engaged, FALSE) AS is_engaged,
---   COALESCE(has_ads_loaded, FALSE) AS has_ads_loaded,
 WITH raw_serp_events AS (
   SELECT
     *,
@@ -122,6 +107,7 @@ engagement_counts AS (
     action
 ),
 engagement_array AS (
+  -- collect engagement counts for each impression into an array
   SELECT
     impression_id,
     ARRAY_AGG(STRUCT(component, action, num_engagements)) AS engagements
@@ -167,11 +153,12 @@ ad_impression_counts AS (
     i = 1
 ),
 ad_impression_array AS (
+  -- collect component impression counts for each SERP impression into an array
   SELECT
     impression_id,
     ARRAY_AGG(
       -- change naming from 'ads' to 'elements'
-      -- data reported in 'ad_impression' events but includes non-ad page components
+      -- data is reported in 'ad_impression' events but includes non-ad page components
       STRUCT(
         component,
         ads_loaded AS num_elements_loaded,

@@ -13,15 +13,15 @@ fields:
     description: The 2 character country code if the usage is for a specific country; otherwise, if 'all', then it's global usage
   - name: desktop_usage_pct
     mode: NULLABLE
-    type: DATE
+    type: NUMERIC
     description: The percent of usage from desktop devices
   - name: mobile_usage_pct
     mode: NULLABLE
-    type: DATE
+    type: NUMERIC
     description: The percent of usage from mobile devices
   - name: other_usage_pct
     mode: NULLABLE
-    type: DATE
+    type: NUMERIC
     description: The percent of usage from other devices
   - name: aggregation_interval
     mode: NULLABLE

@@ -38,9 +38,12 @@
   WHERE
     fenix_client_id != 'c0ffeec0-ffee-c0ff-eec0-ffeec0ffeec0'
     AND fennec_client_id != 'c0ffeec0-ffee-c0ff-eec0-ffeec0ffeec0'
+<<<<<<< HEAD
 {% else %}
   SELECT
     *
   FROM
     `moz-fx-data-shared-prod.org_mozilla_firefox_derived.migrated_clients_v1`
+=======
+>>>>>>> 4e35cd1827 (Migrated clients init)
 {% endif %}

@@ -17,5 +17,5 @@ bigquery:
   clustering:
     fields:
     - service
-    - country
+    - first_service_country
 references: {}

@@ -77,10 +77,10 @@ with DAG(
         )
     )
 
-    wait_for_checks__fail_fenix_derived__funnel_retention_clients_week_4__v1 = ExternalTaskSensor(
-        task_id="wait_for_checks__fail_fenix_derived__funnel_retention_clients_week_4__v1",
+    wait_for_fenix_derived__funnel_retention_clients_week_4__v1 = ExternalTaskSensor(
+        task_id="wait_for_fenix_derived__funnel_retention_clients_week_4__v1",
         external_dag_id="bqetl_analytics_tables",
-        external_task_id="checks__fail_fenix_derived__funnel_retention_clients_week_4__v1",
+        external_task_id="fenix_derived__funnel_retention_clients_week_4__v1",
         execution_delta=datetime.timedelta(seconds=10800),
         check_existence=True,
         mode="reschedule",
@@ -212,11 +212,11 @@ with DAG(
         wait_for_checks__fail_fenix_derived__firefox_android_clients__v1
     )
 
-    fenix_derived__android_onboarding__v1.set_upstream(
-        wait_for_checks__fail_fenix_derived__funnel_retention_clients_week_4__v1
-    )
-
     fenix_derived__android_onboarding__v1.set_upstream(wait_for_copy_deduplicate_all)
+
+    fenix_derived__android_onboarding__v1.set_upstream(
+        wait_for_fenix_derived__funnel_retention_clients_week_4__v1
+    )
 
     firefox_accounts_derived__login_funnels__v1.set_upstream(
         wait_for_copy_deduplicate_all

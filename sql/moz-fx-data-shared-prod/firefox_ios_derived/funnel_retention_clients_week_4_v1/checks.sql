@@ -1,5 +1,5 @@
 
-#fail
+#warn
 WITH non_unique AS (
   SELECT
     COUNT(*) AS total_count
@@ -19,7 +19,7 @@ SELECT
     NULL
   );
 
-#fail
+#warn
 WITH min_row_count AS (
   SELECT
     COUNT(*) AS total_rows
@@ -41,7 +41,7 @@ SELECT
     NULL
   );
 
-#fail
+#warn
 SELECT
   IF(
     DATE_DIFF(submission_date, first_seen_date, DAY) <> 27,

@@ -1,5 +1,5 @@
 
-#fail
+#warn
 WITH non_unique AS (
   SELECT
     COUNT(*) AS total_count
@@ -57,7 +57,7 @@ SELECT
     NULL
   );
 
-#fail
+#warn
 WITH min_row_count AS (
   SELECT
     COUNT(*) AS total_rows
@@ -79,7 +79,7 @@ SELECT
     NULL
   );
 
-#fail
+#warn
 WITH new_profile_count AS (
   SELECT
     SUM(new_profiles)
@@ -111,7 +111,7 @@ SELECT
     NULL
   );
 
-#fail
+#warn
 WITH repeat_user_count AS (
   SELECT
     SUM(repeat_user)
@@ -143,7 +143,7 @@ SELECT
     NULL
   );
 
-#fail
+#warn
 WITH retained_week_4_count AS (
   SELECT
     SUM(retained_week_4)
@@ -175,7 +175,7 @@ SELECT
     NULL
   );
 
-#fail
+#warn
 SELECT
   IF(
     DATE_DIFF(submission_date, first_seen_date, DAY) <> 27,

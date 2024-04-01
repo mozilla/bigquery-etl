@@ -487,7 +487,7 @@ def complete(ctx, qualified_table_name, sql_dir, project_id):
 
     project, dataset, table = qualified_table_name_matching(qualified_table_name)
     table_metadata = Metadata.from_file(
-        Path(sql_dir / project / dataset / table / METADATA_FILE)
+        Path(sql_dir) / project / dataset / table / METADATA_FILE
     )
 
     _copy_backfill_staging_to_prod(

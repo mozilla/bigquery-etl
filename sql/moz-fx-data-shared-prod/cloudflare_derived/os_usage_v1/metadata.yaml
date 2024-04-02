@@ -9,9 +9,10 @@ labels:
 bigquery:
   time_partitioning:
     type: day
-    field: ''
+    field: dte
     require_partition_filter: true
     expiration_days: null
   clustering:
-    fields: []
-references: {}
+    fields:
+    - os
+    - device_type

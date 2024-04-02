@@ -1,4 +1,4 @@
-#warn
+#fail
 {{ min_row_count(1000, where="submission_date = @submission_date") }}
 
 #warn

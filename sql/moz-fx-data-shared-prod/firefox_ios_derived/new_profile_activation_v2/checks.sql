@@ -1,7 +1,7 @@
 #warn
 {{ is_unique(["client_id"]) }}
 
-#warn
+#fail
 {{ min_row_count(1, "`date` = @submission_date") }}
 
 #warn

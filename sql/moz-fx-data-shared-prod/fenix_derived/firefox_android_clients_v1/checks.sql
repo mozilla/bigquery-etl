@@ -4,7 +4,7 @@
 #warn
 {{ not_null(columns=["client_id", "sample_id"], where="submission_date = @submission_date") }}
 
-#warn
+#fail
 {{ min_row_count(1, "submission_date = @submission_date") }}
 
 #warn

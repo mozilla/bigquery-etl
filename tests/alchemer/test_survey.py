@@ -5,6 +5,7 @@ import pytest
 import requests
 from click.testing import CliRunner
 from google.cloud import bigquery
+from requests import HTTPError
 
 from bigquery_etl.alchemer.survey import (
     construct_data,
@@ -243,20 +244,40 @@ def testing_table_id(testing_dataset):
     yield table_id
 
 
+class MockResponse:
+    @staticmethod
+    def raise_for_status():
+        pass
+
+    @staticmethod
+    def json():
+        return EXAMPLE_RESPONSE
+
+    @property
+    def text(self):
+        return str(EXAMPLE_RESPONSE)
+
+
+class MockErrorResponse(MockResponse):
+    @staticmethod
+    def raise_for_status():
+        raise HTTPError()
+
+
 @pytest.fixture()
 def patch_api_requests(monkeypatch):
     # Note: this does not test iterating over multiple pages
-    class MockResponse:
-        @staticmethod
-        def raise_for_status():
-            pass
-
-        @staticmethod
-        def json():
-            return EXAMPLE_RESPONSE
-
     def mock_get(*args, **kwargs):
         return MockResponse()
+
+    monkeypatch.setattr(requests, "get", mock_get)
+
+
+@pytest.fixture()
+def patch_api_requests_error(monkeypatch):
+    # Note: this does not test iterating over multiple pages
+    def mock_get(*args, **kwargs):
+        return MockErrorResponse()
 
     monkeypatch.setattr(requests, "get", mock_get)
 
@@ -308,6 +329,13 @@ def test_get_survey_data(patch_api_requests):
     assert (
         get_survey_data("555555", SUBMISSION_DATE, "token", "secret")
         == EXAMPLE_RESPONSE_FORMATTED
+    )
+
+
+def test_get_survey_data_error(patch_api_requests_error):
+    """Test that the wrapper correctly reraises the HTTPError."""
+    pytest.raises(
+        HTTPError, get_survey_data, "555555", SUBMISSION_DATE, "token", "secret"
     )
 
 

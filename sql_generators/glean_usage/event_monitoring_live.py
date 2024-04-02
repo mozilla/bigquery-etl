@@ -47,7 +47,7 @@ class EventMonitoringLive(GleanTable):
     ):
         tables = table_names_from_baseline(baseline_table, include_project_id=False)
 
-        init_filename = f"{self.target_table_id}.init.sql"
+        init_filename = f"{self.target_table_id}.materialized_view.sql"
         metadata_filename = f"{self.target_table_id}.metadata.yaml"
 
         table = tables[f"{self.prefix}"]

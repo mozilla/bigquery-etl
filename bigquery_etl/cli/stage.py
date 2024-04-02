@@ -5,7 +5,6 @@ import shutil
 import tempfile
 from datetime import datetime
 from glob import glob
-from multiprocessing.pool import ThreadPool
 from pathlib import Path
 
 import rich_click as click
@@ -31,6 +30,7 @@ from ..view import View
 VIEW_FILE = "view.sql"
 QUERY_FILE = "query.sql"
 QUERY_SCRIPT = "query.py"
+MATERIALIZED_VIEW = "materialized_view.sql"
 ROOT = Path(__file__).parent.parent.parent
 TEST_DIR = ROOT / "tests" / "sql"
 
@@ -145,8 +145,29 @@ def deploy(
         if dataset == "INFORMATION_SCHEMA" or "INFORMATION_SCHEMA" in name:
             continue
 
+        dataset = f"{dataset}_{project.replace('-', '_')}"
+
         if dataset_suffix:
             dataset = f"{dataset}_{dataset_suffix}"
+
+        if artifact_file.name == MATERIALIZED_VIEW:
+            # replace CREATE MATERIALIED VIEW statement
+            sql_content = render(
+                artifact_file.name,
+                template_folder=str(artifact_file.parent),
+                format=False,
+            )
+            sql_content = re.sub(
+                "CREATE MATERIALIZED VIEW.*?AS",
+                "",
+                sql_content,
+                flags=re.DOTALL,
+            )
+            artifact_file.write_text(sql_content)
+            # map materialized views to normal queries
+            query_path = Path(artifact_file.parent, QUERY_FILE)
+            artifact_file.rename(query_path)
+            artifact_file = query_path
 
         new_artifact_path = Path(sql_dir) / project_id / dataset / name
         new_artifact_path.mkdir(parents=True, exist_ok=True)
@@ -161,9 +182,7 @@ def deploy(
                 shutil.rmtree(test_path)
 
             # rename test files
-            for test_file_path in map(
-                Path, glob(f"{test_destination}/**/*", recursive=True)
-            ):
+            for test_file_path in map(Path, glob(f"{TEST_DIR}/**/*", recursive=True)):
                 for test_dep_file in artifact_files:
                     test_project = test_dep_file.parent.parent.parent.name
                     test_dataset = test_dep_file.parent.parent.name
@@ -176,6 +195,8 @@ def deploy(
                         f"{test_dataset}.{test_name}{file_suffix}",
                         f"{test_dataset}.{test_name}.schema{file_suffix}",
                     ):
+                        test_dataset = f"{test_dataset}_{project_id.replace('-', '_')}"
+
                         if dataset_suffix:
                             test_dataset = f"{test_dataset}_{dataset_suffix}"
 
@@ -295,14 +316,18 @@ def _update_references(artifact_files, project_id, dataset_suffix, sql_dir):
         name = artifact_file.parent.name
         name_pattern = name.replace("*", r"\*")  # match literal *
         original_dataset = artifact_file.parent.parent.name
+        original_project = artifact_file.parent.parent.parent.name
+
         deployed_dataset = original_dataset
+        deployed_dataset += f"_{original_project.replace('-', '_')}"
+
         if dataset_suffix and original_dataset not in (
             "INFORMATION_SCHEMA",
             "region-eu",
             "region-us",
         ):
             deployed_dataset += f"_{dataset_suffix}"
-        original_project = artifact_file.parent.parent.parent.name
+
         deployed_project = project_id
 
         # Replace references, preserving fully quoted references.
@@ -364,33 +389,30 @@ def _deploy_artifacts(ctx, artifact_files, project_id, dataset_suffix, sql_dir):
         and "*" not in file.parent.name and file.parent.name != "INFORMATION_SCHEMA"
     ]
 
-    # checking and creating datasets needs to happen sequentially
-    for query_file in query_files:
-        dataset = query_file.parent.parent.name
-        create_dataset_if_not_exists(
-            project_id=project_id, dataset=dataset, suffix=dataset_suffix
-        )
+    if len(query_files) > 0:
+        # checking and creating datasets needs to happen sequentially
+        for query_file in query_files:
+            dataset = query_file.parent.parent.name
+            create_dataset_if_not_exists(
+                project_id=project_id, dataset=dataset, suffix=dataset_suffix
+            )
 
-    def _deploy_schema(query_file):
         ctx.invoke(
             update_query_schema,
-            name=str(query_file),
+            name=query_files,
             sql_dir=sql_dir,
             project_id=project_id,
             respect_dryrun_skip=True,
         )
         ctx.invoke(
             deploy_query_schema,
-            name=str(query_file),
+            name=query_files,
             sql_dir=sql_dir,
             project_id=project_id,
             force=True,
             respect_dryrun_skip=False,
             skip_external_data=True,
         )
-
-    with ThreadPool(8) as p:
-        p.map(_deploy_schema, query_files)
 
     # deploy views
     view_files = [

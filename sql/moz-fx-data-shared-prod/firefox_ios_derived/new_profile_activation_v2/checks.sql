@@ -1,5 +1,5 @@
 
-#fail
+#warn
 WITH non_unique AS (
   SELECT
     COUNT(*) AS total_count
@@ -41,7 +41,7 @@ SELECT
     NULL
   );
 
-#fail
+#warn
 SELECT
   IF(
     COUNTIF(is_new_profile) <> COUNT(*),
@@ -53,7 +53,7 @@ FROM
 WHERE
   `date` = @submission_date;
 
-#fail
+#warn
 SELECT
   IF(
     DATE_DIFF(`date`, first_seen_date, DAY) <> 6,

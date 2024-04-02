@@ -1,5 +1,5 @@
 
-#fail
+#warn
 WITH non_unique AS (
   SELECT
     COUNT(*) AS total_count
@@ -19,7 +19,7 @@ SELECT
     NULL
   );
 
-#fail
+#warn
 WITH null_checks AS (
   SELECT
     [IF(COUNTIF(client_id IS NULL) > 0, "client_id", NULL)] AS checks

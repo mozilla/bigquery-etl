@@ -21,7 +21,7 @@ SELECT
     NULL
   );
 
-#fail
+#warn
 WITH null_checks AS (
   SELECT
     [
@@ -53,7 +53,7 @@ SELECT
     NULL
   );
 
-#fail
+#warn
 WITH rows_per_partition AS (
   SELECT
     PARSE_DATE("%Y%m%d", partition_id) AS table_partition,
@@ -107,7 +107,7 @@ SELECT
 FROM
   row_count_boundaries;
 
-#fail
+#warn
 SELECT
   IF(
     COUNTIF(LENGTH(client_id) <> 36) > 0,

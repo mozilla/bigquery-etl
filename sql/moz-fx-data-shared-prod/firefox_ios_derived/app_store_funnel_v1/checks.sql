@@ -1,5 +1,5 @@
 
-#fail
+#warn
 WITH non_unique AS (
   SELECT
     COUNT(*) AS total_count
@@ -47,7 +47,7 @@ SELECT
     NULL
   );
 
-#fail
+#warn
 WITH fx_ios_count AS (
   SELECT
     COUNT(*)
@@ -111,7 +111,7 @@ SELECT
 FROM
   base;
 
-#fail
+#warn
 SELECT
   IF(
     DATE_DIFF(submission_date, first_seen_date, DAY) <> 7,

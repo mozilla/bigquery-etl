@@ -28,9 +28,4 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references:
-  init.sql:
-  - fenix.baseline_clients_daily
-  query.sql:
-  - fenix.baseline_clients_daily
-  - fenix_derived.clients_yearly_v1
+references: {}

@@ -1,0 +1,22 @@
+fields:
+- name: fenix_client_id
+  type: STRING
+  mode: NULLABLE
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+- name: manufacturer
+  type: STRING
+  mode: NULLABLE
+- name: country
+  type: STRING
+  mode: NULLABLE
+- name: fennec_client_id
+  type: STRING
+  mode: NULLABLE
+- name: migration_ping_count
+  type: INTEGER
+  mode: NULLABLE

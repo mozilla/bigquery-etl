@@ -4,4 +4,4 @@
   reason: This is mostly a test backfill, this table will replace newtab_interactions_v1 eventually
   watchers:
   - anicholson@mozilla.com
-  status: Initiate
+  status: Complete

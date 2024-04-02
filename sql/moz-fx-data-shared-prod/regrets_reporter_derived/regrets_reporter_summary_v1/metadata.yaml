@@ -5,23 +5,21 @@ description: |
 owners:
 - kik@mozilla.com
 labels:
-  # has to be full load, otherwise the query logic does not work
-  # see Github issue for more info:
-  # https://github.com/mozilla/bigquery-etl/issues/2634
-  incremental: false
-  public_bigquery: false
-  public_json: false
+  dag: bqetl_regrets_reporter_summary
+  owner1: kik
 scheduling:
   dag_name: bqetl_regrets_reporter_summary
   task_name: regrets_reporter_summary__v1
   schedule: daily
   date_partition_parameter: null
-  parameters: ["submission_date:DATE:{{ds}}"]
+  parameters:
+  - submission_date:DATE:{{ds}}
 bigquery:
   time_partitioning:
     type: day
     field: date
     require_partition_filter: true
+    expiration_days: null
   clustering:
     fields:
     - country
@@ -30,3 +28,4 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
+references: {}

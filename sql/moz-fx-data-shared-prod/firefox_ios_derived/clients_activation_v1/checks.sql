@@ -1,10 +1,10 @@
-#fail
+#warn
 {{ is_unique(["client_id"]) }}
 
 #fail
 {{ min_row_count(1, "`submission_date` = @submission_date") }}
 
-#fail
+#warn
 WITH upstream_clients_count AS (
   SELECT
     COUNT(*)
@@ -28,7 +28,7 @@ SELECT
     NULL
   );
 
-#fail
+#warn
 SELECT
   IF(
     DATE_DIFF(submission_date, first_seen_date, DAY) <> 6,

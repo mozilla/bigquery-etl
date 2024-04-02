@@ -1383,6 +1383,7 @@ def initialize(
                         sql_dir=sql_dir,
                         project_id=project,
                         update_downstream=False,
+                        is_init=True,
                     )
 
                     ctx.invoke(
@@ -1612,6 +1613,13 @@ def schema():
 @use_cloud_function_option
 @respect_dryrun_skip_option(default=True)
 @parallelism_option()
+@click.option(
+    "--is-init",
+    "--is_init",
+    help="Indicates whether the `is_init()` condition should be set to true of false.",
+    is_flag=True,
+    default=False,
+)
 def update(
     name,
     sql_dir,
@@ -1621,6 +1629,7 @@ def update(
     use_cloud_function,
     respect_dryrun_skip,
     parallelism,
+    is_init,
 ):
     """CLI command for generating the query schema."""
     if not is_authenticated():
@@ -1671,6 +1680,7 @@ def update(
             use_cloud_function,
             respect_dryrun_skip,
             update_downstream,
+            is_init=is_init,
         )
     )
 
@@ -1692,6 +1702,7 @@ def _update_query_schema_with_downstream(
     update_downstream=False,
     query_file=None,
     follow_up_queue=None,
+    is_init=False,
 ):
     try:
         changed = _update_query_schema(
@@ -1702,6 +1713,7 @@ def _update_query_schema_with_downstream(
             tmp_tables,
             use_cloud_function,
             respect_dryrun_skip,
+            is_init,
         )
 
         if update_downstream:
@@ -1751,6 +1763,7 @@ def _update_query_schema(
     tmp_tables={},
     use_cloud_function=True,
     respect_dryrun_skip=True,
+    is_init=False,
 ):
     """
     Update the schema of a specific query file.
@@ -1827,6 +1840,7 @@ def _update_query_schema(
         template_folder=str(query_file_path.parent),
         templates_dir="",
         format=False,
+        **{"is_init": lambda: is_init},
     )
 
     for orig_table, tmp_table in tmp_tables.items():

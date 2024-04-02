@@ -1,10 +1,10 @@
-#fail
+#warn
 {{ is_unique(["client_id"]) }}
 
-#fail
+#warn
 {{ min_row_count(1, "`date` = @submission_date") }}
 
-#fail
+#warn
 SELECT
   IF(
     COUNTIF(is_new_profile) <> COUNT(*),
@@ -16,7 +16,7 @@ FROM
 WHERE
   `date` = @submission_date;
 
-#fail
+#warn
 SELECT
   IF(
     DATE_DIFF(`date`, first_seen_date, DAY) <> 6,

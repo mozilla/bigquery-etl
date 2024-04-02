@@ -1,6 +1,6 @@
 friendly_name: Acoustic External
 description: |-
-  One time data dump of tables from Acoustic.
+  This dataset holds all data coming from Acoustic. Either via Fivetran or one time data dumps of tables from Acoustic.
   As part of the migration to Braze, all the data from Acoustic will be exported and uploaded to BigQuery once.
 dataset_base_acl: restricted
 user_facing: false
@@ -9,3 +9,6 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:braze
+- role: roles/bigquery.dataEditor
+  members:
+  - workgroup:braze/writers

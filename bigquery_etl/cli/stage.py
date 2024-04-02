@@ -195,7 +195,7 @@ def deploy(
                         f"{test_dataset}.{test_name}{file_suffix}",
                         f"{test_dataset}.{test_name}.schema{file_suffix}",
                     ):
-                        test_dataset = f"{test_dataset}_{project_id.replace('-', '_')}"
+                        test_dataset = f"{test_dataset}_{project.replace('-', '_')}"
 
                         if dataset_suffix:
                             test_dataset = f"{test_dataset}_{dataset_suffix}"

@@ -18,7 +18,7 @@ fields:
   - name: os_share
     mode: NULLABLE
     type: NUMERIC
-    description: The percent share for this OS on this device type on this date
+    description: The percent share for this OS for the device type & location & date
   - name: normalization_type
     mode: NULLABLE
     type: STRING

@@ -26,7 +26,7 @@ from bigquery_etl.backfill.utils import (
     qualified_table_name_matching,
     validate_metadata_workgroups,
 )
-from bigquery_etl.cli.backfill import create, info, scheduled, validate
+from bigquery_etl.cli.backfill import complete, create, info, scheduled, validate
 
 DEFAULT_STATUS = BackfillStatus.INITIATE
 VALID_REASON = "test_reason"
@@ -1819,3 +1819,82 @@ class TestBackfill:
 
             assert result.exit_code == 0
             assert "1 backfill(s) require processing." in result.output
+
+    @patch("google.cloud.bigquery.Client.get_table")
+    @patch("google.cloud.bigquery.Client.copy_table")
+    @patch("google.cloud.bigquery.Client.delete_table")
+    def test_complete_partitioned_backfill(
+        self, delete_table, copy_table, get_table, runner
+    ):
+        get_table.side_effect = [
+            None,  # Check that staging data exists
+            NotFound(  # Check that clone does not exist
+                "moz-fx-data-shared-prod.backfills_staging_derived.test_query_v1_backup_2021_05_03"
+                "not found"
+            ),
+        ]
+        copy_table.side_effect = None
+        delete_table.side_effect = None
+
+        partitioned_table_metadata = {
+            "friendly_name": "test",
+            "description": "test",
+            "owners": ["test@example.org"],
+            "workgroup_access": VALID_WORKGROUP_ACCESS,
+            "bigquery": {
+                "time_partitioning": {
+                    "type": "day",
+                    "field": "submission_date",
+                    "require_partition_filter": True,
+                }
+            },
+        }
+
+        with runner.isolated_filesystem():
+            SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v1"
+            os.makedirs(SQL_DIR)
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/query.sql", "w"
+            ) as f:
+                f.write("SELECT 1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(partitioned_table_metadata))
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
+            ) as f:
+                f.write(yaml.dump(DATASET_METADATA_CONF_EMPTY_WORKGROUP))
+
+            backfill_file = Path(SQL_DIR) / BACKFILL_FILE
+            backfill_file.write_text(
+                """
+2021-05-03:
+  start_date: 2021-01-03
+  end_date: 2021-01-13
+  reason: test_reason
+  watchers:
+  - test@example.org
+  status: Complete"""
+            )
+
+            result = runner.invoke(
+                complete,
+                [
+                    "moz-fx-data-shared-prod.test.test_query_v1",
+                ],
+            )
+
+            assert result.exit_code == 0
+            assert copy_table.call_count == 12  # one for backup, 11 for partitions
+            for i, call in enumerate(copy_table.call_args_list[1:]):
+                d = date(2021, 1, 3) + timedelta(days=i)
+                assert call.args == (
+                    f'moz-fx-data-shared-prod.backfills_staging_derived.test_query_v1_2021_05_03${d.strftime("%Y%m%d")}',
+                    f'moz-fx-data-shared-prod.test.test_query_v1${d.strftime("%Y%m%d")}',
+                )
+            assert delete_table.call_count == 1

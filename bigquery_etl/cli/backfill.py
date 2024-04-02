@@ -552,8 +552,7 @@ def _copy_backfill_staging_to_prod(
                     offset,
                     partitioning_type,
                 )
-                is None
-            ):
+            ) is None:
                 raise ValueError(
                     f"Null partition found completing backfill {entry} for {qualified_table_name}."
                 )

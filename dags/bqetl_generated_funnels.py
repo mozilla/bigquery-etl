@@ -104,6 +104,21 @@ with DAG(
         depends_on_past=False,
     )
 
+    accounts_frontend_derived__email_first_reg_login_funnels_by_service__v1 = bigquery_etl_query(
+        task_id="accounts_frontend_derived__email_first_reg_login_funnels_by_service__v1",
+        destination_table="email_first_reg_login_funnels_by_service_v1",
+        dataset_id="accounts_frontend_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="ksiegler@mozilla.org",
+        email=[
+            "ascholtz@mozilla.com",
+            "ksiegler@mozilla.org",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     accounts_frontend_derived__monitor_mozilla_accounts_funnels__v1 = (
         bigquery_etl_query(
             task_id="accounts_frontend_derived__monitor_mozilla_accounts_funnels__v1",
@@ -124,6 +139,21 @@ with DAG(
     accounts_frontend_derived__pwd_reset_funnels__v1 = bigquery_etl_query(
         task_id="accounts_frontend_derived__pwd_reset_funnels__v1",
         destination_table="pwd_reset_funnels_v1",
+        dataset_id="accounts_frontend_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="ksiegler@mozilla.org",
+        email=[
+            "ascholtz@mozilla.com",
+            "ksiegler@mozilla.org",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    accounts_frontend_derived__pwd_reset_funnels_by_service__v1 = bigquery_etl_query(
+        task_id="accounts_frontend_derived__pwd_reset_funnels_by_service__v1",
+        destination_table="pwd_reset_funnels_by_service_v1",
         dataset_id="accounts_frontend_derived",
         project_id="moz-fx-data-shared-prod",
         owner="ksiegler@mozilla.org",
@@ -166,9 +196,39 @@ with DAG(
         depends_on_past=False,
     )
 
+    firefox_accounts_derived__login_funnels_by_service__v1 = bigquery_etl_query(
+        task_id="firefox_accounts_derived__login_funnels_by_service__v1",
+        destination_table="login_funnels_by_service_v1",
+        dataset_id="firefox_accounts_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="ksiegler@mozilla.org",
+        email=[
+            "ascholtz@mozilla.com",
+            "ksiegler@mozilla.org",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     firefox_accounts_derived__registration_funnels__v1 = bigquery_etl_query(
         task_id="firefox_accounts_derived__registration_funnels__v1",
         destination_table="registration_funnels_v1",
+        dataset_id="firefox_accounts_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="ksiegler@mozilla.org",
+        email=[
+            "ascholtz@mozilla.com",
+            "ksiegler@mozilla.org",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    firefox_accounts_derived__registration_funnels_by_service__v1 = bigquery_etl_query(
+        task_id="firefox_accounts_derived__registration_funnels_by_service__v1",
+        destination_table="registration_funnels_by_service_v1",
         dataset_id="firefox_accounts_derived",
         project_id="moz-fx-data-shared-prod",
         owner="ksiegler@mozilla.org",
@@ -200,11 +260,19 @@ with DAG(
         wait_for_copy_deduplicate_all
     )
 
+    accounts_frontend_derived__email_first_reg_login_funnels_by_service__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
     accounts_frontend_derived__monitor_mozilla_accounts_funnels__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
 
     accounts_frontend_derived__pwd_reset_funnels__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    accounts_frontend_derived__pwd_reset_funnels_by_service__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
 
@@ -222,7 +290,15 @@ with DAG(
         wait_for_copy_deduplicate_all
     )
 
+    firefox_accounts_derived__login_funnels_by_service__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
     firefox_accounts_derived__registration_funnels__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    firefox_accounts_derived__registration_funnels_by_service__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
 

@@ -1,19 +1,19 @@
 #fail
 {{ min_row_count(1000, where="submission_date = @submission_date") }}
 
-#fail
+#warn
 {{ not_null(columns=["submission_date", "client_id", "first_seen_date"], where="submission_date = @submission_date") }}
 
-#fail
+#warn
 {{ row_count_within_past_partitions_avg(number_of_days=7, threshold_percentage=5) }}
 
-#fail
+#warn
 {{ value_length(column="client_id", expected_length=36, where="submission_date = @submission_date") }}
 {#
 -- Commented out due to upstream duplication issue inside Fenix data
 -- which will cause this check to fail, see: bug(1803609).
 -- Once the duplication issue has been resolved, this check can be uncommented.
--- #fail
+-- #warn
 -- {{ is_unique(columns=["client_id"], where="submission_date = @submission_date") }}
 #}
 

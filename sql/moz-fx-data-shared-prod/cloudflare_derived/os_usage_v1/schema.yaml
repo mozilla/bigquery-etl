@@ -13,7 +13,7 @@ fields:
     description: The 2 character country code if the usage is for a specific country; otherwise, if 'all', then it's global usage
   - name: device_type
     mode: NULLABLE
-    type: NUMERIC
+    type: STRING
     description: The device type (desktop, mobile, other, or all)
   - name: os_share
     mode: NULLABLE

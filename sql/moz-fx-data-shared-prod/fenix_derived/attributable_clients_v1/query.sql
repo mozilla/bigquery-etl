@@ -57,11 +57,7 @@ first_seen AS (
   FROM
     `moz-fx-data-shared-prod`.fenix.baseline_clients_first_seen
   WHERE
-    {% if is_init() %}
-      submission_date >= DATE("2021-01-01")
-    {% else %}
-      submission_date = @submission_date
-    {% endif %}
+    submission_date >= DATE("2021-01-01")
 ),
 adjust_client AS (
   SELECT

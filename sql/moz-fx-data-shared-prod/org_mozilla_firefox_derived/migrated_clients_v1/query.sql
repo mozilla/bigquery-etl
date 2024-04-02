@@ -38,4 +38,9 @@
   WHERE
     fenix_client_id != 'c0ffeec0-ffee-c0ff-eec0-ffeec0ffeec0'
     AND fennec_client_id != 'c0ffeec0-ffee-c0ff-eec0-ffeec0ffeec0'
+{% else %}
+  SELECT
+    *
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_firefox_derived.migrated_clients_v1`
 {% endif %}

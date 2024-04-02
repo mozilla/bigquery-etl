@@ -1,83 +1,18 @@
+#warn
+{{ is_unique(columns=["client_id"]) }}
 
 #warn
-WITH non_unique AS (
-  SELECT
-    COUNT(*) AS total_count
-  FROM
-    `moz-fx-data-shared-prod.fenix_derived.firefox_android_clients_v1`
-  GROUP BY
-    client_id
-  HAVING
-    total_count > 1
-)
-SELECT
-  IF(
-    (SELECT COUNT(*) FROM non_unique) > 0,
-    ERROR(
-      "Duplicates detected (Expected combined set of values for columns ['client_id'] to be unique.)"
-    ),
-    NULL
-  );
-
-#warn
-WITH null_checks AS (
-  SELECT
-    [
-      IF(COUNTIF(client_id IS NULL) > 0, "client_id", NULL),
-      IF(COUNTIF(sample_id IS NULL) > 0, "sample_id", NULL)
-    ] AS checks
-  FROM
-    `moz-fx-data-shared-prod.fenix_derived.firefox_android_clients_v1`
-  WHERE
-    submission_date = @submission_date
-),
-non_null_checks AS (
-  SELECT
-    ARRAY_AGG(u IGNORE NULLS) AS checks
-  FROM
-    null_checks,
-    UNNEST(checks) AS u
-)
-SELECT
-  IF(
-    (SELECT ARRAY_LENGTH(checks) FROM non_null_checks) > 0,
-    ERROR(
-      CONCAT(
-        "Columns with NULL values: ",
-        (SELECT ARRAY_TO_STRING(checks, ", ") FROM non_null_checks)
-      )
-    ),
-    NULL
-  );
+{{ not_null(columns=["client_id", "sample_id"], where="submission_date = @submission_date") }}
 
 #fail
-WITH min_row_count AS (
-  SELECT
-    COUNT(*) AS total_rows
-  FROM
-    `moz-fx-data-shared-prod.fenix_derived.firefox_android_clients_v1`
-  WHERE
-    submission_date = @submission_date
-)
-SELECT
-  IF(
-    (SELECT COUNTIF(total_rows < 1) FROM min_row_count) > 0,
-    ERROR(
-      CONCAT(
-        "Min Row Count Error: ",
-        (SELECT total_rows FROM min_row_count),
-        " rows found, expected more than 1 rows"
-      )
-    ),
-    NULL
-  );
+{{ min_row_count(1, "submission_date = @submission_date") }}
 
 #warn
 WITH base AS (
   SELECT
     COUNTIF(activated)
   FROM
-    `moz-fx-data-shared-prod.fenix_derived.firefox_android_clients_v1`
+    `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`
   WHERE
     first_seen_date = @submission_date
 ),
@@ -85,7 +20,7 @@ upstream AS (
   SELECT
     COUNTIF(activated = 1)
   FROM
-    `moz-fx-data-shared-prod.fenix_derived.new_profile_activation_v1`
+    `{{ project_id }}.{{ dataset_id }}.new_profile_activation_v1`
   WHERE
     first_seen_date = @submission_date
     AND submission_date = DATE_SUB(@submission_date, INTERVAL 6 DAY)

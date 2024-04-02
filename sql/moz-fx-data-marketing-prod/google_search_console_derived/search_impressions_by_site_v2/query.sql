@@ -1,73 +1,29 @@
+{% set gsc_export_dataset_ids = [
+    'moz-fx-data-marketing-prod.searchconsole_addons',
+    'moz-fx-data-marketing-prod.searchconsole_blog',
+    'moz-fx-data-marketing-prod.searchconsole_getpocket',
+    'moz-fx-data-marketing-prod.searchconsole_support',
+    'moz-fx-data-marketing-prod.searchconsole_www',
+] %}
 WITH searchdata_site_impression_union AS (
-  SELECT
-    data_date,
-    site_url,
-    query,
-    is_anonymized_query,
-    search_type,
-    country,
-    device,
-    impressions,
-    clicks,
-    sum_top_position
-  FROM
-    `moz-fx-data-marketing-prod.searchconsole_addons.searchdata_site_impression`
-  UNION ALL
-  SELECT
-    data_date,
-    site_url,
-    query,
-    is_anonymized_query,
-    search_type,
-    country,
-    device,
-    impressions,
-    clicks,
-    sum_top_position
-  FROM
-    `moz-fx-data-marketing-prod.searchconsole_blog.searchdata_site_impression`
-  UNION ALL
-  SELECT
-    data_date,
-    site_url,
-    query,
-    is_anonymized_query,
-    search_type,
-    country,
-    device,
-    impressions,
-    clicks,
-    sum_top_position
-  FROM
-    `moz-fx-data-marketing-prod.searchconsole_getpocket.searchdata_site_impression`
-  UNION ALL
-  SELECT
-    data_date,
-    site_url,
-    query,
-    is_anonymized_query,
-    search_type,
-    country,
-    device,
-    impressions,
-    clicks,
-    sum_top_position
-  FROM
-    `moz-fx-data-marketing-prod.searchconsole_support.searchdata_site_impression`
-  UNION ALL
-  SELECT
-    data_date,
-    site_url,
-    query,
-    is_anonymized_query,
-    search_type,
-    country,
-    device,
-    impressions,
-    clicks,
-    sum_top_position
-  FROM
-    `moz-fx-data-marketing-prod.searchconsole_www.searchdata_site_impression`
+  {% for gsc_export_dataset_id in gsc_export_dataset_ids %}
+    {% if not loop.first %}
+      UNION ALL
+    {% endif %}
+    SELECT
+      data_date,
+      site_url,
+      query,
+      is_anonymized_query,
+      search_type,
+      country,
+      device,
+      impressions,
+      clicks,
+      sum_top_position
+    FROM
+      `{{ gsc_export_dataset_id }}.searchdata_site_impression`
+  {% endfor %}
 )
 SELECT
   data_date AS `date`,
@@ -84,4 +40,8 @@ SELECT
 FROM
   searchdata_site_impression_union
 WHERE
-  data_date = @date
+  {% if is_init() %}
+    data_date < CURRENT_DATE()
+  {% else %}
+    data_date = @date
+  {% endif %}

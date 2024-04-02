@@ -11,7 +11,11 @@ WITH clients_yearly AS (
   FROM
     fenix.clients_yearly
   WHERE
-    submission_date = @submission_date
+    {% if is_init() %}
+      submission_date >= "2010-01-01"
+    {% else %}
+      submission_date = @submission_date
+    {% endif %}
 )
 SELECT
   client_id,

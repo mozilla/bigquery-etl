@@ -1,49 +1,8 @@
+#fail
+{{ min_row_count(1000, where="DATE(datetime) = @submission_date") }}
 
 #fail
-WITH min_row_count AS (
-  SELECT
-    COUNT(*) AS total_rows
-  FROM
-    `moz-fx-data-shared-prod.internet_outages.global_outages_v1`
-  WHERE
-    DATE(datetime) = @submission_date
-)
-SELECT
-  IF(
-    (SELECT COUNTIF(total_rows < 1000) FROM min_row_count) > 0,
-    ERROR(
-      CONCAT(
-        "Min Row Count Error: ",
-        (SELECT total_rows FROM min_row_count),
-        " rows found, expected more than 1000 rows"
-      )
-    ),
-    NULL
-  );
-
-#fail
-WITH non_unique AS (
-  SELECT
-    COUNT(*) AS total_count
-  FROM
-    `moz-fx-data-shared-prod.internet_outages.global_outages_v1`
-  WHERE
-    DATE(`datetime`) = @submission_date
-  GROUP BY
-    datetime,
-    city,
-    country
-  HAVING
-    total_count > 1
-)
-SELECT
-  IF(
-    (SELECT COUNT(*) FROM non_unique) > 0,
-    ERROR(
-      "Duplicates detected (Expected combined set of values for columns ['datetime', 'city', 'country'] to be unique where DATE(`datetime`) = @submission_date.)"
-    ),
-    NULL
-  );
+{{ is_unique(columns=["datetime", "city", "country"], where="DATE(`datetime`) = @submission_date") }}
 
 #fail
 /*
@@ -55,56 +14,23 @@ SELECT
   "avg_tls_handshake_time"
   "count_dns_failure"
 */
-WITH null_checks AS (
-  SELECT
-    [
-      IF(COUNTIF(datetime IS NULL) > 0, "datetime", NULL),
-      IF(COUNTIF(city IS NULL) > 0, "city", NULL),
-      IF(COUNTIF(country IS NULL) > 0, "country", NULL),
-      IF(COUNTIF(proportion_undefined IS NULL) > 0, "proportion_undefined", NULL),
-      IF(COUNTIF(proportion_timeout IS NULL) > 0, "proportion_timeout", NULL),
-      IF(COUNTIF(proportion_abort IS NULL) > 0, "proportion_abort", NULL),
-      IF(COUNTIF(proportion_unreachable IS NULL) > 0, "proportion_unreachable", NULL),
-      IF(COUNTIF(proportion_terminated IS NULL) > 0, "proportion_terminated", NULL),
-      IF(COUNTIF(proportion_channel_open IS NULL) > 0, "proportion_channel_open", NULL),
-      IF(COUNTIF(avg_dns_success_time IS NULL) > 0, "avg_dns_success_time", NULL),
-      IF(COUNTIF(missing_dns_success IS NULL) > 0, "missing_dns_success", NULL),
-      IF(COUNTIF(avg_dns_failure_time IS NULL) > 0, "avg_dns_failure_time", NULL),
-      IF(COUNTIF(missing_dns_failure IS NULL) > 0, "missing_dns_failure", NULL),
-      IF(COUNTIF(ssl_error_prop IS NULL) > 0, "ssl_error_prop", NULL)
-    ] AS checks
-  FROM
-    `moz-fx-data-shared-prod.internet_outages.global_outages_v1`
-  WHERE
-    DATE(`datetime`) = @submission_date
-),
-non_null_checks AS (
-  SELECT
-    ARRAY_AGG(u IGNORE NULLS) AS checks
-  FROM
-    null_checks,
-    UNNEST(checks) AS u
-)
-SELECT
-  IF(
-    (SELECT ARRAY_LENGTH(checks) FROM non_null_checks) > 0,
-    ERROR(
-      CONCAT(
-        "Columns with NULL values: ",
-        (SELECT ARRAY_TO_STRING(checks, ", ") FROM non_null_checks)
-      )
-    ),
-    NULL
-  );
+{{ not_null(columns=[
+  "datetime",
+  "city",
+  "country",
+  "proportion_undefined",
+  "proportion_timeout",
+  "proportion_abort",
+  "proportion_unreachable",
+  "proportion_terminated",
+  "proportion_channel_open",
+  "avg_dns_success_time",
+  "missing_dns_success",
+  "avg_dns_failure_time",
+  "missing_dns_failure",
+  "ssl_error_prop",
+
+], where="DATE(`datetime`) = @submission_date") }}
 
 #warn
-SELECT
-  IF(
-    COUNTIF(LENGTH(country) <> 2) > 0,
-    ERROR("Column: `country` has values of unexpected length."),
-    NULL
-  )
-FROM
-  `moz-fx-data-shared-prod.internet_outages.global_outages_v1`
-WHERE
-  DATE(`datetime`) = @submission_date;
+{{ value_length(column="country", expected_length=2, where="DATE(`datetime`) = @submission_date") }}

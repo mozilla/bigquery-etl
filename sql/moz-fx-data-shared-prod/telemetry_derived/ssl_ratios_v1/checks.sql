@@ -1,109 +1,11 @@
+#fail
+{{ not_null(["submission_date", "os"], "submission_date = @submission_date") }}
 
 #fail
-WITH null_checks AS (
-  SELECT
-    [
-      IF(COUNTIF(submission_date IS NULL) > 0, "submission_date", NULL),
-      IF(COUNTIF(os IS NULL) > 0, "os", NULL)
-    ] AS checks
-  FROM
-    `moz-fx-data-shared-prod.telemetry_derived.ssl_ratios_v1`
-  WHERE
-    submission_date = @submission_date
-),
-non_null_checks AS (
-  SELECT
-    ARRAY_AGG(u IGNORE NULLS) AS checks
-  FROM
-    null_checks,
-    UNNEST(checks) AS u
-)
-SELECT
-  IF(
-    (SELECT ARRAY_LENGTH(checks) FROM non_null_checks) > 0,
-    ERROR(
-      CONCAT(
-        "Columns with NULL values: ",
-        (SELECT ARRAY_TO_STRING(checks, ", ") FROM non_null_checks)
-      )
-    ),
-    NULL
-  );
+{{ min_row_count(1, "submission_date = @submission_date") }}
 
 #fail
-WITH min_row_count AS (
-  SELECT
-    COUNT(*) AS total_rows
-  FROM
-    `moz-fx-data-shared-prod.telemetry_derived.ssl_ratios_v1`
-  WHERE
-    submission_date = @submission_date
-)
-SELECT
-  IF(
-    (SELECT COUNTIF(total_rows < 1) FROM min_row_count) > 0,
-    ERROR(
-      CONCAT(
-        "Min Row Count Error: ",
-        (SELECT total_rows FROM min_row_count),
-        " rows found, expected more than 1 rows"
-      )
-    ),
-    NULL
-  );
+{{ is_unique(["submission_date", "os", "country"], "submission_date = @submission_date")}}
 
 #fail
-WITH non_unique AS (
-  SELECT
-    COUNT(*) AS total_count
-  FROM
-    `moz-fx-data-shared-prod.telemetry_derived.ssl_ratios_v1`
-  WHERE
-    submission_date = @submission_date
-  GROUP BY
-    submission_date,
-    os,
-    country
-  HAVING
-    total_count > 1
-)
-SELECT
-  IF(
-    (SELECT COUNT(*) FROM non_unique) > 0,
-    ERROR(
-      "Duplicates detected (Expected combined set of values for columns ['submission_date', 'os', 'country'] to be unique where submission_date = @submission_date.)"
-    ),
-    NULL
-  );
-
-#fail
-WITH ranges AS (
-  SELECT
-    [
-      IF(COUNTIF(non_ssl_loads < 0) > 0, "non_ssl_loads", NULL),
-      IF(COUNTIF(ssl_loads < 0) > 0, "ssl_loads", NULL),
-      IF(COUNTIF(reporting_ratio < 0) > 0, "reporting_ratio", NULL)
-    ] AS checks
-  FROM
-    `moz-fx-data-shared-prod.telemetry_derived.ssl_ratios_v1`
-  WHERE
-    submission_date = @submission_date
-),
-range_checks AS (
-  SELECT
-    ARRAY_AGG(u IGNORE NULLS) AS checks
-  FROM
-    ranges,
-    UNNEST(checks) AS u
-)
-SELECT
-  IF(
-    (SELECT ARRAY_LENGTH(checks) FROM range_checks) > 0,
-    ERROR(
-      CONCAT(
-        "Columns with values not within defined range [0, None]: ",
-        (SELECT ARRAY_TO_STRING(checks, ", ") FROM range_checks)
-      )
-    ),
-    NULL
-  );
+{{ in_range(["non_ssl_loads", "ssl_loads", "reporting_ratio"], 0, none, "submission_date = @submission_date") }}

@@ -133,7 +133,12 @@ WITH new_profile_ping AS (
   FROM
     `moz-fx-data-shared-prod.telemetry.new_profile`
   WHERE
-    DATE(submission_timestamp) = @submission_date
+    {% if is_init() %}
+      DATE(submission_timestamp) >= '2010-01-01'
+      AND sample_id = @sample_id
+    {% else %}
+      DATE(submission_timestamp) = @submission_date
+    {% endif %}
   GROUP BY
     client_id,
     sample_id
@@ -268,7 +273,12 @@ shutdown_ping AS (
   FROM
     `moz-fx-data-shared-prod.telemetry.first_shutdown`
   WHERE
-    DATE(submission_timestamp) = @submission_date
+    {% if is_init() %}
+      DATE(submission_timestamp) >= '2010-01-01'
+      AND sample_id = @sample_id
+    {% else %}
+      DATE(submission_timestamp) = @submission_date
+    {% endif %}
   GROUP BY
     client_id,
     sample_id
@@ -376,7 +386,12 @@ main_ping AS (
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6`
   WHERE
-    submission_date = @submission_date
+    {% if is_init() %}
+      submission_date >= '2010-01-01'
+      AND sample_id = @sample_id
+    {% else %}
+      submission_date = @submission_date
+    {% endif %}
   GROUP BY
     client_id,
     sample_id
@@ -497,50 +512,57 @@ _previous AS (
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v2`
 )
+{% if is_init() %}
+  SELECT
+    *
+  FROM
+    _current
+{% else %}
   -- For the daily update:
   -- The reported ping status in the metadata is updated when it's NULL.
   -- The second_seen_date is updated when it's NULL and only if there is a
   -- main ping reported on the submission_date.
   -- Every other attribute remains as reported on the first_seen_date.
-SELECT
-  IF(_previous.client_id IS NULL, _current, _previous).* REPLACE (
-    IF(
-      _previous.first_seen_date IS NOT NULL
-      AND _previous.second_seen_date IS NULL
-      AND _current.client_id IS NOT NULL
-      AND _current.metadata.reported_main_ping,
-      @submission_date,
-      _previous.second_seen_date
-    ) AS second_seen_date,
-    (
-      SELECT AS STRUCT
-        IF(_previous.client_id IS NULL, _current, _previous).metadata.* REPLACE (
-          IF(
-            _previous.client_id IS NULL
-            OR _previous.metadata.reported_main_ping IS FALSE
-            AND _current.metadata.reported_main_ping IS TRUE,
-            _current.metadata.reported_main_ping,
-            _previous.metadata.reported_main_ping
-          ) AS reported_main_ping,
-          IF(
-            _previous.client_id IS NULL
-            OR _previous.metadata.reported_new_profile_ping IS FALSE
-            AND _current.metadata.reported_new_profile_ping IS TRUE,
-            _current.metadata.reported_new_profile_ping,
-            _previous.metadata.reported_new_profile_ping
-          ) AS reported_new_profile_ping,
-          IF(
-            _previous.client_id IS NULL
-            OR _previous.metadata.reported_shutdown_ping IS FALSE
-            AND _current.metadata.reported_shutdown_ping IS TRUE,
-            _current.metadata.reported_shutdown_ping,
-            _previous.metadata.reported_shutdown_ping
-          ) AS reported_shutdown_ping
-        )
-    ) AS metadata
-  )
-FROM
-  _previous
-FULL JOIN
-  _current
-  USING (client_id)
+  SELECT
+    IF(_previous.client_id IS NULL, _current, _previous).* REPLACE (
+      IF(
+        _previous.first_seen_date IS NOT NULL
+        AND _previous.second_seen_date IS NULL
+        AND _current.client_id IS NOT NULL
+        AND _current.metadata.reported_main_ping,
+        @submission_date,
+        _previous.second_seen_date
+      ) AS second_seen_date,
+      (
+        SELECT AS STRUCT
+          IF(_previous.client_id IS NULL, _current, _previous).metadata.* REPLACE (
+            IF(
+              _previous.client_id IS NULL
+              OR _previous.metadata.reported_main_ping IS FALSE
+              AND _current.metadata.reported_main_ping IS TRUE,
+              _current.metadata.reported_main_ping,
+              _previous.metadata.reported_main_ping
+            ) AS reported_main_ping,
+            IF(
+              _previous.client_id IS NULL
+              OR _previous.metadata.reported_new_profile_ping IS FALSE
+              AND _current.metadata.reported_new_profile_ping IS TRUE,
+              _current.metadata.reported_new_profile_ping,
+              _previous.metadata.reported_new_profile_ping
+            ) AS reported_new_profile_ping,
+            IF(
+              _previous.client_id IS NULL
+              OR _previous.metadata.reported_shutdown_ping IS FALSE
+              AND _current.metadata.reported_shutdown_ping IS TRUE,
+              _current.metadata.reported_shutdown_ping,
+              _previous.metadata.reported_shutdown_ping
+            ) AS reported_shutdown_ping
+          )
+      ) AS metadata
+    )
+  FROM
+    _previous
+  FULL JOIN
+    _current
+    USING (client_id)
+{% endif %}

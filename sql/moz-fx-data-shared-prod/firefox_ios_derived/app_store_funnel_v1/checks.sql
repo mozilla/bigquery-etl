@@ -1,51 +1,10 @@
-
 #warn
-WITH non_unique AS (
-  SELECT
-    COUNT(*) AS total_count
-  FROM
-    `moz-fx-data-shared-prod.firefox_ios_derived.app_store_funnel_v1`
-  WHERE
-    country IS NOT NULL
-  GROUP BY
-    submission_date,
-    country
-  HAVING
-    total_count > 1
-)
-SELECT
-  IF(
-    (SELECT COUNT(*) FROM non_unique) > 0,
-    ERROR(
-      "Duplicates detected (Expected combined set of values for columns ['submission_date', 'country'] to be unique where country IS NOT NULL.)"
-    ),
-    NULL
-  );
-
+{{ is_unique(["submission_date", "country"], "country IS NOT NULL") }}
 -- min_row_count helps us detect if we're seeing delays in the data arriving
 -- could also be an indicator of an upstream issue.
 
 #fail
-WITH min_row_count AS (
-  SELECT
-    COUNT(*) AS total_rows
-  FROM
-    `moz-fx-data-shared-prod.firefox_ios_derived.app_store_funnel_v1`
-  WHERE
-    submission_date = @submission_date
-)
-SELECT
-  IF(
-    (SELECT COUNTIF(total_rows < 1) FROM min_row_count) > 0,
-    ERROR(
-      CONCAT(
-        "Min Row Count Error: ",
-        (SELECT total_rows FROM min_row_count),
-        " rows found, expected more than 1 rows"
-      )
-    ),
-    NULL
-  );
+{{ min_row_count(1, "submission_date = @submission_date") }}
 
 #warn
 WITH fx_ios_count AS (
@@ -61,7 +20,7 @@ new_profiles_count AS (
   SELECT
     SUM(new_profiles)
   FROM
-    `moz-fx-data-shared-prod.firefox_ios_derived.app_store_funnel_v1`
+    `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`
   WHERE
     submission_date = @submission_date
 )
@@ -79,7 +38,7 @@ WITH base AS (
     SUM(first_time_downloads) AS first_time_downloads,
     SUM(redownloads) AS redownloads,
   FROM
-    `moz-fx-data-shared-prod.firefox_ios_derived.app_store_funnel_v1`
+    `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`
   WHERE
     submission_date = @submission_date
 )
@@ -98,7 +57,7 @@ WITH base AS (
     SUM(new_profiles) AS new_funnel_new_profiles,
     SUM(total_downloads) AS total_downloads,
   FROM
-    `moz-fx-data-shared-prod.firefox_ios_derived.app_store_funnel_v1`
+    `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`
   WHERE
     submission_date = @submission_date
 )

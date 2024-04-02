@@ -1,89 +1,21 @@
+#warn
+{{ is_unique([
+  "first_seen_date", "first_reported_country", "first_reported_isp",
+  "adjust_ad_group", "adjust_campaign", "adjust_creative", "adjust_network"
+]) }}
 
 #warn
-WITH non_unique AS (
-  SELECT
-    COUNT(*) AS total_count
-  FROM
-    `moz-fx-data-shared-prod.firefox_ios_derived.funnel_retention_week_4_v1`
-  GROUP BY
-    first_seen_date,
-    first_reported_country,
-    first_reported_isp,
-    adjust_ad_group,
-    adjust_campaign,
-    adjust_creative,
-    adjust_network
-  HAVING
-    total_count > 1
-)
-SELECT
-  IF(
-    (SELECT COUNT(*) FROM non_unique) > 0,
-    ERROR(
-      "Duplicates detected (Expected combined set of values for columns ['first_seen_date', 'first_reported_country', 'first_reported_isp', 'adjust_ad_group', 'adjust_campaign', 'adjust_creative', 'adjust_network'] to be unique.)"
-    ),
-    NULL
-  );
+{{ not_null(["first_seen_date", "adjust_network"], "submission_date = @submission_date") }}
 
 #warn
-WITH null_checks AS (
-  SELECT
-    [
-      IF(COUNTIF(first_seen_date IS NULL) > 0, "first_seen_date", NULL),
-      IF(COUNTIF(adjust_network IS NULL) > 0, "adjust_network", NULL)
-    ] AS checks
-  FROM
-    `moz-fx-data-shared-prod.firefox_ios_derived.funnel_retention_week_4_v1`
-  WHERE
-    submission_date = @submission_date
-),
-non_null_checks AS (
-  SELECT
-    ARRAY_AGG(u IGNORE NULLS) AS checks
-  FROM
-    null_checks,
-    UNNEST(checks) AS u
-)
-SELECT
-  IF(
-    (SELECT ARRAY_LENGTH(checks) FROM non_null_checks) > 0,
-    ERROR(
-      CONCAT(
-        "Columns with NULL values: ",
-        (SELECT ARRAY_TO_STRING(checks, ", ") FROM non_null_checks)
-      )
-    ),
-    NULL
-  );
-
-#warn
-WITH min_row_count AS (
-  SELECT
-    COUNT(*) AS total_rows
-  FROM
-    `moz-fx-data-shared-prod.firefox_ios_derived.funnel_retention_week_4_v1`
-  WHERE
-    submission_date = @submission_date
-)
-SELECT
-  IF(
-    (SELECT COUNTIF(total_rows < 1) FROM min_row_count) > 0,
-    ERROR(
-      CONCAT(
-        "Min Row Count Error: ",
-        (SELECT total_rows FROM min_row_count),
-        " rows found, expected more than 1 rows"
-      )
-    ),
-    NULL
-  );
+{{ min_row_count(1, "submission_date = @submission_date") }}
 
 #warn
 WITH new_profile_count AS (
   SELECT
     SUM(new_profiles)
   FROM
-    `moz-fx-data-shared-prod.firefox_ios_derived.funnel_retention_week_4_v1`
+    `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`
   WHERE
     submission_date = @submission_date
 ),
@@ -91,7 +23,7 @@ new_profile_upstream_count AS (
   SELECT
     COUNT(*)
   FROM
-    `moz-fx-data-shared-prod.firefox_ios_derived.funnel_retention_clients_week_4_v1`
+    `{{ project_id }}.{{ dataset_id }}.funnel_retention_clients_week_4_v1`
   WHERE
     submission_date = @submission_date
 )
@@ -115,7 +47,7 @@ WITH repeat_user_count AS (
   SELECT
     SUM(repeat_user)
   FROM
-    `moz-fx-data-shared-prod.firefox_ios_derived.funnel_retention_week_4_v1`
+    `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`
   WHERE
     submission_date = @submission_date
 ),
@@ -123,7 +55,7 @@ repeat_user_upstream_count AS (
   SELECT
     COUNTIF(repeat_first_month_user)
   FROM
-    `moz-fx-data-shared-prod.firefox_ios_derived.funnel_retention_clients_week_4_v1`
+    `{{ project_id }}.{{ dataset_id }}.funnel_retention_clients_week_4_v1`
   WHERE
     submission_date = @submission_date
 )
@@ -147,7 +79,7 @@ WITH retained_week_4_count AS (
   SELECT
     SUM(retained_week_4)
   FROM
-    `moz-fx-data-shared-prod.firefox_ios_derived.funnel_retention_week_4_v1`
+    `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`
   WHERE
     submission_date = @submission_date
 ),
@@ -155,7 +87,7 @@ retained_week_4_upstream_count AS (
   SELECT
     COUNTIF(retained_week_4)
   FROM
-    `moz-fx-data-shared-prod.firefox_ios_derived.funnel_retention_clients_week_4_v1`
+    `{{ project_id }}.{{ dataset_id }}.funnel_retention_clients_week_4_v1`
   WHERE
     submission_date = @submission_date
 )
@@ -184,6 +116,6 @@ SELECT
     NULL
   )
 FROM
-  `moz-fx-data-shared-prod.firefox_ios_derived.funnel_retention_week_4_v1`
+  `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`
 WHERE
   submission_date = @submission_date;

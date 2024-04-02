@@ -1,11 +1,16 @@
 -- Params Note: Set these same values in fenix.ltv_states
+{% set max_weeks = 32 %}
+{% set death_time = 168 %}
+{% set lookback = 28 %}
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.fenix.client_ltv`
 AS
 WITH extracted_fields AS (
   SELECT
     *,
-    BIT_COUNT(`mozfun`.bytes.extract_bits(days_seen_bytes, -1 * 28, 28)) AS activity_pattern,
+    BIT_COUNT(
+      `mozfun`.bytes.extract_bits(days_seen_bytes, -1 * {{ lookback }}, {{ lookback }})
+    ) AS activity_pattern,
     BIT_COUNT(`mozfun`.bytes.extract_bits(days_seen_bytes, -1, 1)) AS active_on_this_date,
   FROM
     `moz-fx-data-shared-prod.fenix_derived.client_ltv_v1`
@@ -25,7 +30,7 @@ with_states AS (
           first_seen_date,
           activity_pattern,
           active_on_this_date,
-          32,
+          {{ max_weeks }},
           first_reported_country
         ) AS state,
         'android_states_v1' AS state_function
@@ -35,12 +40,12 @@ with_states AS (
           adjust_network,
           days_since_first_seen,
           days_since_seen,
-          168,
+          {{ death_time }},
           as_of_date,
           first_seen_date,
           activity_pattern,
           active_on_this_date,
-          32,
+          {{ max_weeks }},
           first_reported_country
         ) AS state,
         'android_states_v2' AS state_function
@@ -53,7 +58,7 @@ with_states AS (
           first_seen_date,
           activity_pattern,
           active_on_this_date,
-          32,
+          {{ max_weeks }},
           first_reported_country
         ) AS state,
         'android_states_with_paid_v1' AS state_function
@@ -63,12 +68,12 @@ with_states AS (
           adjust_network,
           days_since_first_seen,
           days_since_seen,
-          168,
+          {{ death_time }},
           as_of_date,
           first_seen_date,
           activity_pattern,
           active_on_this_date,
-          32,
+          {{ max_weeks }},
           first_reported_country
         ) AS state,
         'android_states_with_paid_v2' AS state_function

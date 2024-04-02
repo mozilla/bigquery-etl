@@ -38,10 +38,14 @@ new_clients AS (
     `moz-fx-data-shared-prod.mozilla_org_derived.ga_sessions_v2`
   WHERE
     ga_client_id IS NOT NULL
+    {% if is_init() %}
+      AND session_date >= "2010-01-01"
+    {% else %}
       -- Re-process three days, to account for late-arriving data
-    AND session_date
-    BETWEEN DATE_SUB(@session_date, INTERVAL 3 DAY)
-    AND @session_date
+      AND session_date
+      BETWEEN DATE_SUB(@session_date, INTERVAL 3 DAY)
+      AND @session_date
+    {% endif %}
   GROUP BY
     ga_client_id
 )

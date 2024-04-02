@@ -1,25 +1,11 @@
+{#
+-- Disabled for now due to known duplication issue in Fenix data, see: DENG-656
+-- #warn
+-- {{ is_unique(["client_id"]) }}
+#}
 
 #warn
-WITH min_row_count AS (
-  SELECT
-    COUNT(*) AS total_rows
-  FROM
-    `moz-fx-data-shared-prod.fenix_derived.funnel_retention_clients_week_4_v1`
-  WHERE
-    submission_date = @submission_date
-)
-SELECT
-  IF(
-    (SELECT COUNTIF(total_rows < 1) FROM min_row_count) > 0,
-    ERROR(
-      CONCAT(
-        "Min Row Count Error: ",
-        (SELECT total_rows FROM min_row_count),
-        " rows found, expected more than 1 rows"
-      )
-    ),
-    NULL
-  );
+{{ min_row_count(1, "submission_date = @submission_date") }}
 
 #warn
 SELECT
@@ -31,6 +17,6 @@ SELECT
     NULL
   )
 FROM
-  `moz-fx-data-shared-prod.fenix_derived.funnel_retention_clients_week_4_v1`
+  `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`
 WHERE
   submission_date = @submission_date;

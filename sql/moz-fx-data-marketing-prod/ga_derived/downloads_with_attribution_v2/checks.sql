@@ -1,14 +1,13 @@
-
 #fail
 ASSERT(
   (
     SELECT
       COUNT(*)
     FROM
-      `moz-fx-data-marketing-prod.ga_derived.downloads_with_attribution_v2`
+      `{{project_id}}.{{dataset_id}}.{{table_name}}`
     WHERE
       download_date = @download_date
   ) > 50000
 )
 AS
-  'ETL Data Check Failed: Table moz-fx-data-marketing-prod.ga_derived.downloads_with_attribution_v2 contains less than 50,000 rows for date: .'
+  'ETL Data Check Failed: Table {{project_id}}.{{dataset_id}}.{{table_name}} contains less than 50,000 rows for date: {{ download_date }}.'

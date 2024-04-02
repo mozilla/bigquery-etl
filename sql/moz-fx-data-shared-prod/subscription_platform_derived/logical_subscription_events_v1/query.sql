@@ -7,8 +7,12 @@ WITH subscription_changes AS (
   FROM
     `moz-fx-data-shared-prod.subscription_platform_derived.logical_subscriptions_history_v1`
   WHERE
-    DATE(valid_from) = @date
-    OR DATE(valid_to) = @date
+    {% if is_init() %}
+      DATE(valid_from) < CURRENT_DATE()
+    {% else %}
+      DATE(valid_from) = @date
+      OR DATE(valid_to) = @date
+    {% endif %}
 ),
 subscription_start_events AS (
   SELECT
@@ -25,7 +29,9 @@ subscription_start_events AS (
     subscription_changes
   QUALIFY
     1 = ROW_NUMBER() OVER (PARTITION BY subscription.id ORDER BY `timestamp`)
-    AND DATE(subscription.started_at) = @date
+    {% if not is_init() %}
+      AND DATE(subscription.started_at) = @date
+    {% endif %}
 ),
 subscription_end_events AS (
   SELECT
@@ -42,7 +48,9 @@ subscription_end_events AS (
     subscription.ended_at IS NOT NULL
   QUALIFY
     1 = ROW_NUMBER() OVER (PARTITION BY subscription.id ORDER BY `timestamp`)
-    AND DATE(subscription.ended_at) = @date
+    {% if not is_init() %}
+      AND DATE(subscription.ended_at) = @date
+    {% endif %}
 ),
 mozilla_account_change_events AS (
   SELECT

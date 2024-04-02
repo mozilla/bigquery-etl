@@ -28,6 +28,7 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   checks.sql:
+  - ..
   - moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients
   - moz-fx-data-shared-prod.firefox_ios_derived.app_store_funnel_v1
   query.sql:

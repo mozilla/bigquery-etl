@@ -1,3 +1,8 @@
+{% set DEFAULT_PROJECTS = [
+    "mozdata",
+    "moz-fx-data-shared-prod",
+    "moz-fx-data-marketing-prod",
+] %}
 WITH jobs_by_org AS (
   SELECT
     jobs.project_id AS source_project,
@@ -29,119 +34,48 @@ WITH jobs_by_org AS (
     UNNEST(referenced_tables) AS referenced_table
 ),
 jobs_by_project AS (
-  SELECT
-    jp.project_id AS source_project,
-    DATE(creation_time) AS creation_date,
-    job_id,
-    referenced_table.project_id AS reference_project_id,
-    referenced_table.dataset_id AS reference_dataset_id,
-    referenced_table.table_id AS reference_table_id,
-    user_email,
-    REGEXP_EXTRACT(query, r'Username: (.*?),') AS username,
-    REGEXP_EXTRACT(query, r'Query ID: (\w+), ') AS query_id,
-  FROM
-    `mozdata.region-us.INFORMATION_SCHEMA.JOBS_BY_PROJECT` AS jp
-  LEFT JOIN
-    UNNEST(
-      ARRAY_CONCAT(
-        referenced_tables,
-        (
-          IFNULL(
-            (
-              SELECT
-                ARRAY_AGG(
-                  STRUCT(
-                    materialized_view.table_reference.project_id AS project_id,
-                    materialized_view.table_reference.dataset_id AS dataset_id,
-                    materialized_view.table_reference.table_id AS table_id
+  {%- for project in DEFAULT_PROJECTS %}
+    {%- if not loop.first %}
+      UNION ALL
+    {%- endif %}
+    SELECT
+      jp.project_id AS source_project,
+      DATE(creation_time) AS creation_date,
+      job_id,
+      referenced_table.project_id AS reference_project_id,
+      referenced_table.dataset_id AS reference_dataset_id,
+      referenced_table.table_id AS reference_table_id,
+      user_email,
+      REGEXP_EXTRACT(query, r'Username: (.*?),') AS username,
+      REGEXP_EXTRACT(query, r'Query ID: (\w+), ') AS query_id,
+    FROM
+      `{{project}}.region-us.INFORMATION_SCHEMA.JOBS_BY_PROJECT` AS jp
+    LEFT JOIN
+      UNNEST(
+        ARRAY_CONCAT(
+          referenced_tables,
+          (
+            IFNULL(
+              (
+                SELECT
+                  ARRAY_AGG(
+                    STRUCT(
+                      materialized_view.table_reference.project_id AS project_id,
+                      materialized_view.table_reference.dataset_id AS dataset_id,
+                      materialized_view.table_reference.table_id AS table_id
+                    )
                   )
-                )
-              FROM
-                UNNEST(materialized_view_statistics.materialized_view) AS materialized_view
-            ),
-            []
+                FROM
+                  UNNEST(materialized_view_statistics.materialized_view) AS materialized_view
+              ),
+              []
+            )
           )
         )
-      )
-    ) AS referenced_table
-  WHERE
-    DATE(creation_time) = @submission_date
-  UNION ALL
-  SELECT
-    jp.project_id AS source_project,
-    DATE(creation_time) AS creation_date,
-    job_id,
-    referenced_table.project_id AS reference_project_id,
-    referenced_table.dataset_id AS reference_dataset_id,
-    referenced_table.table_id AS reference_table_id,
-    user_email,
-    REGEXP_EXTRACT(query, r'Username: (.*?),') AS username,
-    REGEXP_EXTRACT(query, r'Query ID: (\w+), ') AS query_id,
-  FROM
-    `moz-fx-data-shared-prod.region-us.INFORMATION_SCHEMA.JOBS_BY_PROJECT` AS jp
-  LEFT JOIN
-    UNNEST(
-      ARRAY_CONCAT(
-        referenced_tables,
-        (
-          IFNULL(
-            (
-              SELECT
-                ARRAY_AGG(
-                  STRUCT(
-                    materialized_view.table_reference.project_id AS project_id,
-                    materialized_view.table_reference.dataset_id AS dataset_id,
-                    materialized_view.table_reference.table_id AS table_id
-                  )
-                )
-              FROM
-                UNNEST(materialized_view_statistics.materialized_view) AS materialized_view
-            ),
-            []
-          )
-        )
-      )
-    ) AS referenced_table
-  WHERE
-    DATE(creation_time) = @submission_date
-  UNION ALL
-  SELECT
-    jp.project_id AS source_project,
-    DATE(creation_time) AS creation_date,
-    job_id,
-    referenced_table.project_id AS reference_project_id,
-    referenced_table.dataset_id AS reference_dataset_id,
-    referenced_table.table_id AS reference_table_id,
-    user_email,
-    REGEXP_EXTRACT(query, r'Username: (.*?),') AS username,
-    REGEXP_EXTRACT(query, r'Query ID: (\w+), ') AS query_id,
-  FROM
-    `moz-fx-data-marketing-prod.region-us.INFORMATION_SCHEMA.JOBS_BY_PROJECT` AS jp
-  LEFT JOIN
-    UNNEST(
-      ARRAY_CONCAT(
-        referenced_tables,
-        (
-          IFNULL(
-            (
-              SELECT
-                ARRAY_AGG(
-                  STRUCT(
-                    materialized_view.table_reference.project_id AS project_id,
-                    materialized_view.table_reference.dataset_id AS dataset_id,
-                    materialized_view.table_reference.table_id AS table_id
-                  )
-                )
-              FROM
-                UNNEST(materialized_view_statistics.materialized_view) AS materialized_view
-            ),
-            []
-          )
-        )
-      )
-    ) AS referenced_table
-  WHERE
-    DATE(creation_time) = @submission_date
+      ) AS referenced_table
+    WHERE
+      DATE(creation_time) = @submission_date
+  {%- endfor %}
 )
 SELECT DISTINCT
   jo.source_project,

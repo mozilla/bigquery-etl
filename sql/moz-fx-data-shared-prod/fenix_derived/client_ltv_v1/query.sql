@@ -7,7 +7,11 @@ WITH new_data AS (
   FROM
     `moz-fx-data-shared-prod`.fenix_derived.ltv_states_v1
   WHERE
-    submission_date = @submission_date
+    {% if is_init() %}
+      submission_date >= "2020-01-01"
+    {% else %}
+      submission_date = @submission_date
+    {% endif %}
   GROUP BY
     client_id,
     sample_id

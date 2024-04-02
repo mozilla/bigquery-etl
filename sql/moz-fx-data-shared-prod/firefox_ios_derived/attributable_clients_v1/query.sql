@@ -17,7 +17,11 @@ WITH client_days AS (
   FROM
     firefox_ios.baseline
   WHERE
-    DATE(submission_timestamp) = @submission_date
+    {% if is_init() %}
+      DATE(submission_timestamp) >= "2020-05-01"
+    {% else %}
+      DATE(submission_timestamp) = @submission_date
+    {% endif %}
   GROUP BY
     submission_date,
     sample_id,
@@ -35,7 +39,11 @@ metrics_searches AS (
   FROM
     search_derived.mobile_search_clients_daily_v1
   WHERE
-    submission_date = @submission_date
+    {% if is_init() %}
+      submission_date >= "2020-05-01"
+    {% else %}
+      submission_date = @submission_date
+    {% endif %}
     AND normalized_app_name = 'Fennec'
     AND os = 'iOS'
   GROUP BY

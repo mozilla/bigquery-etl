@@ -560,10 +560,6 @@ with DAG(
     )
 
     checks__fail_firefox_ios_derived__clients_activation__v1.set_upstream(
-        checks__fail_firefox_ios_derived__firefox_ios_clients__v1
-    )
-
-    checks__fail_firefox_ios_derived__clients_activation__v1.set_upstream(
         firefox_ios_derived__clients_activation__v1
     )
 
@@ -588,10 +584,6 @@ with DAG(
     )
 
     checks__warn_firefox_ios_derived__clients_activation__v1.set_upstream(
-        checks__fail_firefox_ios_derived__firefox_ios_clients__v1
-    )
-
-    checks__warn_firefox_ios_derived__clients_activation__v1.set_upstream(
         firefox_ios_derived__clients_activation__v1
     )
 
@@ -604,10 +596,6 @@ with DAG(
     )
 
     checks__warn_firefox_ios_derived__funnel_retention_clients_week_4__v1.set_upstream(
-        firefox_ios_derived__funnel_retention_clients_week_4__v1
-    )
-
-    checks__warn_firefox_ios_derived__funnel_retention_week_4__v1.set_upstream(
         firefox_ios_derived__funnel_retention_clients_week_4__v1
     )
 

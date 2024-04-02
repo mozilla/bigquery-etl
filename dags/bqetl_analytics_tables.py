@@ -54,18 +54,6 @@ with DAG(
     tags=tags,
 ) as dag:
 
-    wait_for_fenix_derived__new_profile_activation__v1 = ExternalTaskSensor(
-        task_id="wait_for_fenix_derived__new_profile_activation__v1",
-        external_dag_id="bqetl_mobile_activation",
-        external_task_id="fenix_derived__new_profile_activation__v1",
-        execution_delta=datetime.timedelta(seconds=7200),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
     wait_for_copy_deduplicate_all = ExternalTaskSensor(
         task_id="wait_for_copy_deduplicate_all",
         external_dag_id="copy_deduplicate",
@@ -78,10 +66,11 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_telemetry_derived__clients_daily__v6 = ExternalTaskSensor(
-        task_id="wait_for_telemetry_derived__clients_daily__v6",
-        external_dag_id="bqetl_main_summary",
-        external_task_id="telemetry_derived__clients_daily__v6",
+    wait_for_copy_deduplicate_first_shutdown_ping = ExternalTaskSensor(
+        task_id="wait_for_copy_deduplicate_first_shutdown_ping",
+        external_dag_id="copy_deduplicate",
+        external_task_id="copy_deduplicate_first_shutdown_ping",
+        execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
         allowed_states=ALLOWED_STATES,
@@ -89,11 +78,10 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_copy_deduplicate_first_shutdown_ping = ExternalTaskSensor(
-        task_id="wait_for_copy_deduplicate_first_shutdown_ping",
-        external_dag_id="copy_deduplicate",
-        external_task_id="copy_deduplicate_first_shutdown_ping",
-        execution_delta=datetime.timedelta(seconds=3600),
+    wait_for_telemetry_derived__clients_daily__v6 = ExternalTaskSensor(
+        task_id="wait_for_telemetry_derived__clients_daily__v6",
+        external_dag_id="bqetl_main_summary",
+        external_task_id="telemetry_derived__clients_daily__v6",
         check_existence=True,
         mode="reschedule",
         allowed_states=ALLOWED_STATES,
@@ -149,6 +137,18 @@ with DAG(
         task_id="wait_for_org_mozilla_firefox_derived__baseline_clients_last_seen__v1",
         external_dag_id="bqetl_glean_usage",
         external_task_id="fenix.org_mozilla_firefox_derived__baseline_clients_last_seen__v1",
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_fenix_derived__new_profile_activation__v1 = ExternalTaskSensor(
+        task_id="wait_for_fenix_derived__new_profile_activation__v1",
+        external_dag_id="bqetl_mobile_activation",
+        external_task_id="fenix_derived__new_profile_activation__v1",
+        execution_delta=datetime.timedelta(seconds=7200),
         check_existence=True,
         mode="reschedule",
         allowed_states=ALLOWED_STATES,
@@ -531,27 +531,11 @@ with DAG(
     )
 
     checks__fail_fenix_derived__firefox_android_clients__v1.set_upstream(
-        wait_for_fenix_derived__new_profile_activation__v1
-    )
-
-    checks__fail_fenix_derived__firefox_android_clients__v1.set_upstream(
         firefox_android_clients
     )
 
     checks__fail_telemetry_derived__clients_first_seen__v2.set_upstream(
         clients_first_seen_v2
-    )
-
-    checks__fail_telemetry_derived__clients_first_seen__v2.set_upstream(
-        wait_for_copy_deduplicate_all
-    )
-
-    checks__fail_telemetry_derived__clients_first_seen__v2.set_upstream(
-        wait_for_telemetry_derived__clients_daily__v6
-    )
-
-    checks__warn_fenix_derived__firefox_android_clients__v1.set_upstream(
-        wait_for_fenix_derived__new_profile_activation__v1
     )
 
     checks__warn_fenix_derived__firefox_android_clients__v1.set_upstream(
@@ -563,10 +547,6 @@ with DAG(
     )
 
     checks__warn_fenix_derived__funnel_retention_clients_week_4__v1.set_upstream(
-        fenix_derived__funnel_retention_clients_week_4__v1
-    )
-
-    checks__warn_fenix_derived__funnel_retention_week_4__v1.set_upstream(
         fenix_derived__funnel_retention_clients_week_4__v1
     )
 

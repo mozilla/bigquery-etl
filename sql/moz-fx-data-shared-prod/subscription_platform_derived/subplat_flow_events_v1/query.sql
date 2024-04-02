@@ -35,7 +35,11 @@ WITH new_flow_events AS (
   WHERE
     fxa_log IN ('content', 'auth', 'stdout', 'payments')
     AND flow_id IS NOT NULL
-    AND DATE(`timestamp`) = @date
+    {% if is_init() %}
+      AND DATE(`timestamp`) < CURRENT_DATE()
+    {% else %}
+      AND DATE(`timestamp`) = @date
+    {% endif %}
 ),
 services_metadata AS (
   SELECT
@@ -47,10 +51,15 @@ services_metadata AS (
     UNNEST(subplat_oauth_clients) AS subplat_oauth_client
 ),
 existing_flow_ids AS (
-  SELECT DISTINCT
-    flow_id
-  FROM
-    `moz-fx-data-shared-prod.subscription_platform_derived.subplat_flow_events_v1`
+  {% if is_init() %}
+    SELECT
+      CAST(NULL AS STRING) AS flow_id
+  {% else %}
+    SELECT DISTINCT
+      flow_id
+    FROM
+      `moz-fx-data-shared-prod.subscription_platform_derived.subplat_flow_events_v1`
+  {% endif %}
 )
 SELECT
   new_flow_events.*

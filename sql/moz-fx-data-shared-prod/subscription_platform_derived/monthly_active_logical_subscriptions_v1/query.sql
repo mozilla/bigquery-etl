@@ -1,7 +1,26 @@
 WITH months AS (
-  SELECT
-    DATE_TRUNC(@date, MONTH) AS month_start_date,
-    LAST_DAY(@date, MONTH) AS month_end_date
+  {% if is_init() %}
+    SELECT
+      month_start_date,
+      LAST_DAY(month_start_date, MONTH) AS month_end_date
+    FROM
+      UNNEST(
+        GENERATE_DATE_ARRAY(
+          (
+            SELECT
+              DATE_TRUNC(DATE(MIN(started_at)), MONTH)
+            FROM
+              `moz-fx-data-shared-prod.subscription_platform.logical_subscriptions`
+          ),
+          CURRENT_DATE() - 1,
+          INTERVAL 1 MONTH
+        )
+      ) AS month_start_date
+  {% else %}
+    SELECT
+      DATE_TRUNC(@date, MONTH) AS month_start_date,
+      LAST_DAY(@date, MONTH) AS month_end_date
+  {% endif %}
 ),
 monthly_active_subscriptions AS (
   SELECT

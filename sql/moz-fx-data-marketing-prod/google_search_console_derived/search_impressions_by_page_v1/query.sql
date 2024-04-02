@@ -1,73 +1,29 @@
+{% set fivetran_gsc_dataset_ids = [
+    'moz-fx-data-bq-fivetran.google_search_console_addons',
+    'moz-fx-data-bq-fivetran.google_search_console_blog',
+    'moz-fx-data-bq-fivetran.google_search_console_pocket',
+    'moz-fx-data-bq-fivetran.google_search_console_support',
+    'moz-fx-data-bq-fivetran.google_search_console_www',
+] %}
 WITH keyword_page_report_union AS (
-  SELECT
-    `date`,
-    site,
-    page,
-    keyword,
-    search_type,
-    country,
-    device,
-    impressions,
-    clicks,
-    position
-  FROM
-    `moz-fx-data-bq-fivetran.google_search_console_addons.keyword_page_report`
-  UNION ALL
-  SELECT
-    `date`,
-    site,
-    page,
-    keyword,
-    search_type,
-    country,
-    device,
-    impressions,
-    clicks,
-    position
-  FROM
-    `moz-fx-data-bq-fivetran.google_search_console_blog.keyword_page_report`
-  UNION ALL
-  SELECT
-    `date`,
-    site,
-    page,
-    keyword,
-    search_type,
-    country,
-    device,
-    impressions,
-    clicks,
-    position
-  FROM
-    `moz-fx-data-bq-fivetran.google_search_console_pocket.keyword_page_report`
-  UNION ALL
-  SELECT
-    `date`,
-    site,
-    page,
-    keyword,
-    search_type,
-    country,
-    device,
-    impressions,
-    clicks,
-    position
-  FROM
-    `moz-fx-data-bq-fivetran.google_search_console_support.keyword_page_report`
-  UNION ALL
-  SELECT
-    `date`,
-    site,
-    page,
-    keyword,
-    search_type,
-    country,
-    device,
-    impressions,
-    clicks,
-    position
-  FROM
-    `moz-fx-data-bq-fivetran.google_search_console_www.keyword_page_report`
+  {% for fivetran_gsc_dataset_id in fivetran_gsc_dataset_ids %}
+    {% if not loop.first %}
+      UNION ALL
+    {% endif %}
+    SELECT
+      `date`,
+      site,
+      page,
+      keyword,
+      search_type,
+      country,
+      device,
+      impressions,
+      clicks,
+      position
+    FROM
+      `{{ fivetran_gsc_dataset_id }}.keyword_page_report`
+  {% endfor %}
 )
 SELECT
   `date`,
@@ -87,4 +43,8 @@ SELECT
 FROM
   keyword_page_report_union
 WHERE
-  `date` = @date
+  {% if is_init() %}
+    `date` < CURRENT_DATE()
+  {% else %}
+    `date` = @date
+  {% endif %}

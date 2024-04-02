@@ -1,7 +1,25 @@
 WITH dates AS (
-  SELECT
-    @date AS `date`,
-    (@date + 1) AS next_date
+  {% if is_init() %}
+    SELECT
+      `date`,
+      (`date` + 1) AS next_date
+    FROM
+      UNNEST(
+        GENERATE_DATE_ARRAY(
+          (
+            SELECT
+              DATE(MIN(started_at))
+            FROM
+              `moz-fx-data-shared-prod.subscription_platform.logical_subscriptions`
+          ),
+          CURRENT_DATE() - 1
+        )
+      ) AS `date`
+  {% else %}
+    SELECT
+      @date AS `date`,
+      (@date + 1) AS next_date
+  {% endif %}
 ),
 daily_active_subscriptions_history AS (
   SELECT

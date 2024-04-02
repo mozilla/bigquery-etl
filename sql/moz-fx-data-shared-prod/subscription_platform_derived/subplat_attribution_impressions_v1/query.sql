@@ -40,50 +40,61 @@ new_service_flow_events AS (
     OR events.product_id IN UNNEST(services.stripe_product_ids)
     OR events.plan_id IN UNNEST(services.stripe_plan_ids)
   WHERE
+    {% if is_init() %}
+      DATE(events.log_timestamp) < CURRENT_DATE()
+    {% else %}
       -- Reprocess the previous day's events as well in case a flow spanned multiple days
       -- but wasn't saved here on the initial day due to not having attribution values yet.
-    (DATE(events.log_timestamp) BETWEEN (@date - 1) AND @date)
+      (DATE(events.log_timestamp) BETWEEN (@date - 1) AND @date)
+    {% endif %}
 ),
 service_flow_events AS (
-  SELECT
-    *
-  FROM
-    new_service_flow_events
-  UNION ALL
-  SELECT
-    flow_id,
-    flow_started_at AS flow_min_event_time,
-    impression_at AS event_time,
-    event_type,
-    entrypoint,
-    entrypoint_experiment,
-    entrypoint_variation,
-    utm_campaign,
-    utm_content,
-    utm_medium,
-    utm_source,
-    utm_term,
-    mozilla_account_id_sha256,
-    oauth_client_id,
-    oauth_client_name,
-    product_id,
-    plan_id,
-    service_id
-  FROM
-    `moz-fx-data-shared-prod.subscription_platform_derived.subplat_attribution_impressions_v1`
+  {% if is_init() %}
+    SELECT
+      *
+    FROM
+      new_service_flow_events
+  {% else %}
+    SELECT
+      *
+    FROM
+      new_service_flow_events
+    UNION ALL
+    SELECT
+      flow_id,
+      flow_started_at AS flow_min_event_time,
+      impression_at AS event_time,
+      event_type,
+      entrypoint,
+      entrypoint_experiment,
+      entrypoint_variation,
+      utm_campaign,
+      utm_content,
+      utm_medium,
+      utm_source,
+      utm_term,
+      mozilla_account_id_sha256,
+      oauth_client_id,
+      oauth_client_name,
+      product_id,
+      plan_id,
+      service_id
+    FROM
+      `moz-fx-data-shared-prod.subscription_platform_derived.subplat_attribution_impressions_v1`
     -- Unnesting these arrays can cause fan-outs, but the way we reaggregate things this doesn't matter.
-  LEFT JOIN
-    UNNEST(mozilla_account_ids_sha256) AS mozilla_account_id_sha256
-  LEFT JOIN
-    UNNEST(oauth_client_ids) AS oauth_client_id
-  LEFT JOIN
-    UNNEST(oauth_client_names) AS oauth_client_name
-  LEFT JOIN
-    UNNEST(product_ids) AS product_id
-  LEFT JOIN
-    UNNEST(plan_ids) AS plan_id
-  LEFT JOIN
-    UNNEST(service_ids) AS service_id
+    LEFT JOIN
+      UNNEST(mozilla_account_ids_sha256) AS mozilla_account_id_sha256
+    LEFT JOIN
+      UNNEST(oauth_client_ids) AS oauth_client_id
+    LEFT JOIN
+      UNNEST(oauth_client_names) AS oauth_client_name
+    LEFT JOIN
+      UNNEST(product_ids) AS product_id
+    LEFT JOIN
+      UNNEST(plan_ids) AS plan_id
+    LEFT JOIN
+      UNNEST(service_ids) AS service_id
+  {% endif %}
 )
 SELECT
   flow_id,

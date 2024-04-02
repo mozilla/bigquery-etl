@@ -1,68 +1,28 @@
+{% set fivetran_gsc_dataset_ids = [
+    'moz-fx-data-bq-fivetran.google_search_console_addons',
+    'moz-fx-data-bq-fivetran.google_search_console_blog',
+    'moz-fx-data-bq-fivetran.google_search_console_pocket',
+    'moz-fx-data-bq-fivetran.google_search_console_support',
+    'moz-fx-data-bq-fivetran.google_search_console_www',
+] %}
 WITH keyword_site_report_by_site_union AS (
-  SELECT
-    `date`,
-    site,
-    keyword,
-    search_type,
-    country,
-    device,
-    impressions,
-    clicks,
-    position
-  FROM
-    `moz-fx-data-bq-fivetran.google_search_console_addons.keyword_site_report_by_site`
-  UNION ALL
-  SELECT
-    `date`,
-    site,
-    keyword,
-    search_type,
-    country,
-    device,
-    impressions,
-    clicks,
-    position
-  FROM
-    `moz-fx-data-bq-fivetran.google_search_console_blog.keyword_site_report_by_site`
-  UNION ALL
-  SELECT
-    `date`,
-    site,
-    keyword,
-    search_type,
-    country,
-    device,
-    impressions,
-    clicks,
-    position
-  FROM
-    `moz-fx-data-bq-fivetran.google_search_console_pocket.keyword_site_report_by_site`
-  UNION ALL
-  SELECT
-    `date`,
-    site,
-    keyword,
-    search_type,
-    country,
-    device,
-    impressions,
-    clicks,
-    position
-  FROM
-    `moz-fx-data-bq-fivetran.google_search_console_support.keyword_site_report_by_site`
-  UNION ALL
-  SELECT
-    `date`,
-    site,
-    keyword,
-    search_type,
-    country,
-    device,
-    impressions,
-    clicks,
-    position
-  FROM
-    `moz-fx-data-bq-fivetran.google_search_console_www.keyword_site_report_by_site`
+  {% for fivetran_gsc_dataset_id in fivetran_gsc_dataset_ids %}
+    {% if not loop.first %}
+      UNION ALL
+    {% endif %}
+    SELECT
+      `date`,
+      site,
+      keyword,
+      search_type,
+      country,
+      device,
+      impressions,
+      clicks,
+      position
+    FROM
+      `{{ fivetran_gsc_dataset_id }}.keyword_site_report_by_site`
+  {% endfor %}
 )
 SELECT
   `date`,
@@ -78,4 +38,8 @@ SELECT
 FROM
   keyword_site_report_by_site_union
 WHERE
-  `date` = @date
+  {% if is_init() %}
+    `date` < CURRENT_DATE()
+  {% else %}
+    `date` = @date
+  {% endif %}

@@ -31,7 +31,7 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   checks.sql:
-  - moz-fx-data-shared-prod.firefox_ios_derived.baseline_clients_yearly_v1
+  - ..
   query.sql:
   - moz-fx-data-shared-prod.firefox_ios.baseline_clients_daily
   - moz-fx-data-shared-prod.firefox_ios_derived.baseline_clients_yearly_v1

@@ -4,7 +4,7 @@ WITH daily_users_sum AS (
   SELECT
     SUM(daily_users),
   FROM
-    `moz-fx-data-shared-prod.fenix_derived.active_users_aggregates_v3`
+    `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`
   WHERE
     submission_date = @submission_date
 ),
@@ -113,7 +113,7 @@ SELECT
     ABS((SELECT * FROM daily_users_sum) - (SELECT * FROM distinct_client_count)) > 10,
     ERROR(
       CONCAT(
-        "Daily_users mismatch between the firefox_ios live (`org_mozilla_firefox_live`, `org_mozilla_fenix_live.baseline_v1`,`org_mozilla_firefox_beta_live.baseline_v1`,`org_mozilla_fenix_nightly_live.baseline_v1`, `org_mozilla_fennec_aurora_live.baseline_v1`) and active_users_aggregates (`fenix_derived.active_users_aggregates_v3`) tables is greater than 10.",
+        "Daily_users mismatch between the firefox_ios live (`org_mozilla_firefox_live`, `org_mozilla_fenix_live.baseline_v1`,`org_mozilla_firefox_beta_live.baseline_v1`,`org_mozilla_fenix_nightly_live.baseline_v1`, `org_mozilla_fennec_aurora_live.baseline_v1`) and active_users_aggregates (`{{ dataset_id }}.{{ table_name }}`) tables is greater than 10.",
         " Live table count: ",
         (SELECT * FROM distinct_client_count),
         " | active_users_aggregates (DAU): ",
@@ -124,3 +124,5 @@ SELECT
     ),
     NULL
   );
+
+

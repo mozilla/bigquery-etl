@@ -1,0 +1,83 @@
+destination_dataset = "firefox_accounts_derived"
+platform = "firefox_accounts"
+owners = ["ksiegler@mozilla.org"]  # optional; users getting notification if funnel run fails
+version = "1"  # optional; default is set to 1
+
+[funnels]
+
+[funnels.login_overall_success_by_service]
+
+friendly_name = "Login Funnel Conversion by Service"
+description = "Overall login funnel conversion rates by Service"
+steps = ["login_view", "login_success"]
+dimensions = ["service"]
+
+[funnels.login_2fa_by_service]
+
+friendly_name = "Login Funnel Conversion through 2FA by Service"
+description = "Funnel steps from Login View through 2FA (no backup codes) by Service"
+steps = ["login_view", "login_2fa_view", "login_2fa_success"]
+dimensions = ["service"]
+
+[steps]
+
+[steps.login_view]
+friendly_name = "Login View Form"
+description = "View of the top of the login funnel"
+data_source = "monitor_frontend"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "metrics.string.event_name = 'login_view'"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.confirm_email]
+friendly_name = "Email confirmation sent"
+description = "Confirm email"
+data_source = "monitor_frontend"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "metrics.string.event_name = 'login_email_confirmation_view'"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.login_2fa_view]
+friendly_name = "Login 2FA Form"
+description = "View of the login 2FA form"
+data_source = "monitor_frontend"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "metrics.string.event_name = 'login_totp_form_view'"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.login_success]
+friendly_name = "Successful Login Completion"
+description = "The login flow was completed successfully"
+data_source = "monitor_frontend"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "metrics.string.event_name = 'login_submit_success'"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.login_2fa_success]
+friendly_name = "Successful Login Completion Step after 2FA"
+description = "The login flow was completed successfully"
+data_source = "monitor_frontend"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "metrics.string.event_name = 'login_totp_code_success_view'"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[data_sources]
+
+[data_sources.monitor_frontend]
+from_expression = "mozdata.accounts_frontend.accounts_events"
+submission_date_column = "DATE(submission_timestamp)"
+client_id_column = "client_info.client_id"
+
+[dimensions]
+
+[dimensions.service]
+data_source = "monitor_frontend"
+select_expression = "IF(COALESCE(NULLIF(metrics.string.relying_party_oauth_client_id, ''), NULLIF(metrics.string.relying_party_service, '')) = 'sync', '5882386c6d801776', COALESCE(NULLIF(metrics.string.relying_party_oauth_client_id, ''), NULLIF(metrics.string.relying_party_service, '')))"
+friendly_name = "Service"
+description = "Oauth Client ID is used to map to service name for which service the user logged in through"
+client_id_column = "client_info.client_id"

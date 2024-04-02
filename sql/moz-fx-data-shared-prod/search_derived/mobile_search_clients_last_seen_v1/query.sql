@@ -28,9 +28,9 @@ _derived_engine_searches AS (
 _grouped AS (
   -- Here we get a single row per-client, containing
   -- info from each engine, as well as overall info
-  SELECT
-    client_id,
-    sample_id,
+    SELECT
+      client_id,
+      sample_id,
     -- Dimensional data
     udf.mode_last(ARRAY_AGG(app_name)) AS app_name,
     udf.mode_last(ARRAY_AGG(normalized_app_name)) AS normalized_app_name,

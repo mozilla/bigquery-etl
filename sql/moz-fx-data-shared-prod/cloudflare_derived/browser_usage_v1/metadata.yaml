@@ -1,6 +1,5 @@
 friendly_name: Cloudflare Browser Usage
-description: |-
-  Contains data from Cloudflare on usage by browser by day, device type, & location
+description: Contains data from Cloudflare on browser market share by day, device type, & location
 owners:
 - kwindau@mozilla.com
 labels:

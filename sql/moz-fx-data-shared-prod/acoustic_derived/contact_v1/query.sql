@@ -46,6 +46,6 @@ SELECT
   mozfun.datetime_util.fxa_parse_date(create_timestamp) AS date_created,
   last_modified_date,
 FROM
-  `moz-fx-data-marketing-prod.acoustic.contact_raw_v1`
+  `moz-fx-data-shared-prod.acoustic_external.contact_raw_v1`
 WHERE
   last_modified_date = DATE(@submission_date)

@@ -15,11 +15,10 @@ SELECT
 FROM
   fenix.first_session
 WHERE
-  DATE(submission_timestamp) >=
   {% if is_init() %}
-    '2023-11-01'
+    DATE(submission_timestamp) >= '2023-11-01'
   {% else %}
-    @submission_date
+    DATE(submission_timestamp) = @submission_date
   {% endif %}
   AND client_info.client_id IS NOT NULL
 GROUP BY

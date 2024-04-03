@@ -375,6 +375,13 @@ generate:
     - org_mozilla_tiktokreporter
     events_stream:
       skip_apps:
+      - bergamot
+      - firefox_echo_show
+      - firefox_fire_tv
+      - firefox_reality
+      - firefox_reality_pc
+      - lockwise_android
+      - lockwise_ios
       - org_mozilla_ios_tiktok_reporter
       - org_mozilla_ios_tiktok_reporter_tiktok_reportershare
       - org_mozilla_tiktokreporter

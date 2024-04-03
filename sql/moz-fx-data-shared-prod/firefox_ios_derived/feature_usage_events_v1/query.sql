@@ -250,15 +250,27 @@ event_ping_clients_feature_usage AS (
       AND event_name = 'notification_permission'
       AND extra.key = 'alert_setting'
       AND extra.value = 'enabled'
-    ) AS notification_alert_setting_enabled，
+    ) AS notification_alert_setting_enabled ，
       /*Address*/
-    COUNTIF(event_category = 'addresses' AND event_name = 'autofill_prompt_dismissed') AS address_autofill_prompt_dismissed,
-    COUNTIF(event_category = 'addresses' AND event_name = 'autofill_prompt_expanded') AS address_autofill_prompt_expanded,
-    COUNTIF(event_category = 'addresses' AND event_name = 'autofill_prompt_shown') AS address_autofill_prompt_shown,
+    COUNTIF(
+      event_category = 'addresses'
+      AND event_name = 'autofill_prompt_dismissed'
+    ) AS address_autofill_prompt_dismissed,
+    COUNTIF(
+      event_category = 'addresses'
+      AND event_name = 'autofill_prompt_expanded'
+    ) AS address_autofill_prompt_expanded,
+    COUNTIF(
+      event_category = 'addresses'
+      AND event_name = 'autofill_prompt_shown'
+    ) AS address_autofill_prompt_shown,
     COUNTIF(event_category = 'addresses' AND event_name = 'autofilled') AS address_autofilled,
     COUNTIF(event_category = 'addresses' AND event_name = 'form_detected') AS address_form_detected,
     COUNTIF(event_category = 'addresses' AND event_name = 'modified') AS address_modified,
-    COUNTIF(event_category = 'addresses' AND event_name = 'settings_autofill') AS address_settings_autofill
+    COUNTIF(
+      event_category = 'addresses'
+      AND event_name = 'settings_autofill'
+    ) AS address_settings_autofill
   FROM
     firefox_ios.events_unnested
   LEFT JOIN
@@ -518,19 +530,13 @@ SELECT
   ) AS address_autofill_prompt_shown_users,
   SUM(address_autofill_prompt_shown) AS address_autofill_prompt_shown,
 -- address_autofilled
-  COUNT(
-    DISTINCT IF(address_autofilled > 0, client_id, NULL)
-  ) AS address_autofilled_users,
+  COUNT(DISTINCT IF(address_autofilled > 0, client_id, NULL)) AS address_autofilled_users,
   SUM(address_autofilled) AS address_autofilled,
 -- address_form_detected
-  COUNT(
-    DISTINCT IF(address_form_detected > 0, client_id, NULL)
-  ) AS address_form_detected_users,
+  COUNT(DISTINCT IF(address_form_detected > 0, client_id, NULL)) AS address_form_detected_users,
   SUM(address_form_detected) AS address_form_detected,
 -- address_modified
-  COUNT(
-    DISTINCT IF(address_modified > 0, client_id, NULL)
-  ) AS address_modified_users,
+  COUNT(DISTINCT IF(address_modified > 0, client_id, NULL)) AS address_modified_users,
   SUM(address_modified) AS address_modified,
 -- address_settings_autofill
   COUNT(

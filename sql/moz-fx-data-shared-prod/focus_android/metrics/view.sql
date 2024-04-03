@@ -257,7 +257,8 @@ SELECT
     metrics.labeled_boolean,
     metrics.rate,
     metrics.uuid,
-    metrics.object
+    metrics.object,
+    metrics.labeled_string
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -505,7 +506,8 @@ SELECT
     metrics.labeled_boolean,
     metrics.rate,
     metrics.uuid,
-    metrics.object
+    metrics.object,
+    metrics.labeled_string
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,

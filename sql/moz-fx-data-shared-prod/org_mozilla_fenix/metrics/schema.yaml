@@ -1804,8 +1804,7 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream. (Migrated from
-        the geckoview metric of the same name).
+      description: 'Failure occurs when initializing the audio stream.
 
         '
     - name: glean_validation_pings_submitted
@@ -13572,6 +13571,26 @@ fields:
       type: JSON
       mode: NULLABLE
       description: 'Static data recorded to verify the new object metric type end-to-end.
+
+        '
+  - name: labeled_string
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: cookie_banners_google_gdpr_choice_cookie
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: STRING
+        mode: NULLABLE
+      description: 'Records the GDPR choice on Google Search based on the "SOCS" cookie
+        of the Google Search domains. The value could be "Accept", "Reject" or "Custom".
+        We use the label to record different choices on different Google domains.
+        We only collect this if the default search engine is Google.
 
         '
   - name: url

@@ -10035,6 +10035,20 @@ fields:
     - name: fog_validation_some_object
       type: JSON
       mode: NULLABLE
+  - name: labeled_string
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: cookie_banners_google_gdpr_choice_cookie
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: STRING
+        mode: NULLABLE
   - name: url
     type: RECORD
     mode: NULLABLE

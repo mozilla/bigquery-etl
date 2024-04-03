@@ -349,6 +349,29 @@ fields:
         This shim should not be sent with the client_id.
 
         '
+  - name: datetime
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: pocket_fetch_timestamp
+      type: TIMESTAMP
+      mode: NULLABLE
+      description: 'Timestamp of when the spoc was fetched by the client
+
+        '
+    - name: raw_pocket_fetch_timestamp
+      type: STRING
+      mode: NULLABLE
+    - name: pocket_newtab_creation_timestamp
+      type: TIMESTAMP
+      mode: NULLABLE
+      description: 'Timestamp of when this instance of the newtab was first visible
+        to the user.
+
+        '
+    - name: raw_pocket_newtab_creation_timestamp
+      type: STRING
+      mode: NULLABLE
   - name: text
     type: RECORD
     mode: NULLABLE

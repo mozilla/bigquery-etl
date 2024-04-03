@@ -180,6 +180,7 @@ SELECT
     metrics.rate,
     metrics.uuid,
     metrics.object,
+    metrics.labeled_string,
     metrics.url
   ) AS `metrics`,
   normalized_app_name,
@@ -777,6 +778,7 @@ SELECT
     metrics.rate,
     metrics.uuid,
     metrics.object,
+    metrics.labeled_string,
     metrics.url
   ) AS `metrics`,
   normalized_app_name,
@@ -1383,6 +1385,7 @@ SELECT
     metrics.rate,
     metrics.uuid,
     metrics.object,
+    metrics.labeled_string,
     metrics.url
   ) AS `metrics`,
   normalized_app_name,
@@ -1560,6 +1563,7 @@ SELECT
     metrics.rate,
     metrics.uuid,
     metrics.object,
+    metrics.labeled_string,
     metrics.url
   ) AS `metrics`,
   normalized_app_name,

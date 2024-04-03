@@ -192,8 +192,13 @@ def deploy(
                     if test_file_path.name in (
                         f"{test_project}.{test_dataset}.{test_name}{file_suffix}",
                         f"{test_project}.{test_dataset}.{test_name}.schema{file_suffix}",
-                        f"{test_dataset}.{test_name}{file_suffix}",
-                        f"{test_dataset}.{test_name}.schema{file_suffix}",
+                    ) or (
+                        test_file_path.name
+                        in (
+                            f"{test_dataset}.{test_name}{file_suffix}",
+                            f"{test_dataset}.{test_name}.schema{file_suffix}",
+                        )
+                        and test_project == project
                     ):
                         test_dataset = f"{test_dataset}_{project.replace('-', '_')}"
 

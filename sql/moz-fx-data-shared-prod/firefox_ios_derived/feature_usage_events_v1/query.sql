@@ -250,7 +250,7 @@ event_ping_clients_feature_usage AS (
       AND event_name = 'notification_permission'
       AND extra.key = 'alert_setting'
       AND extra.value = 'enabled'
-    ) AS notification_alert_setting_enabled ，
+    ) AS notification_alert_setting_enabled,
       /*Address*/
     COUNTIF(
       event_category = 'addresses'

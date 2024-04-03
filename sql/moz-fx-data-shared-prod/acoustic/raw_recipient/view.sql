@@ -4,4 +4,4 @@ AS
 SELECT
   *
 FROM
-  `moz-fx-data-marketing-prod.acoustic.raw_recipient_v1`
+  `moz-fx-data-shared-prod.acoustic_derived.raw_recipient_v1`

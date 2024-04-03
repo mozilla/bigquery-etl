@@ -2,13 +2,13 @@ friendly_name: Contact Database (Acoustic data)
 description: |
   Import Contacts file exported from Acoustic (CSV data)
   Each partition represents CSV data extracted from Acoustic each submission_date represents contacts that were last modified on the date corresponding to Airflow's execution date (this means each record corresponds to the latest contact change event)
-  Data source: https://developer.goacoustic.com/acoustic-campaign/reference/export-from-a-database Jira: https://mozilla-hub.atlassian.net/browse/DENG-17
+  Data source: https://developer.goacoustic.com/acoustic-campaign/reference/export-from-a-database Jira: https://mozilla-hub.atlassian.net/browse/DENG-17 Moved from moz-fx-data-marketing-prod to moz-fx-data-shared-prod in https://mozilla-hub.atlassian.net/browse/DENG-3287
 owners:
-- kik@mozilla.com
+- leli@mozilla.com
 labels:
   incremental: true
   dag: bqetl_acoustic_contact_export
-  owner1: kik
+  owner1: leli
 scheduling:
   dag_name: bqetl_acoustic_contact_export
   date_partition_parameter: submission_date
@@ -32,6 +32,9 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:braze
+- role: roles/bigquery.dataEditor
+  members:
+  - workgroup:braze/writers
 references:
   query.sql:
   - moz-fx-data-bq-fivetran.acoustic_sftp.contact_export_v_1

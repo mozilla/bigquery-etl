@@ -31,7 +31,7 @@ leli@mozilla.com
 
 default_args = {
     "owner": "leli@mozilla.com",
-    "start_date": datetime.datetime(2024, 3, 20, 0, 0),
+    "start_date": datetime.datetime(2024, 4, 4, 0, 0),
     "end_date": None,
     "email": ["leli@mozilla.com"],
     "depends_on_past": False,
@@ -51,27 +51,14 @@ with DAG(
     tags=tags,
 ) as dag:
 
-    wait_for_acoustic__contact_raw__v1 = ExternalTaskSensor(
-        task_id="wait_for_acoustic__contact_raw__v1",
-        external_dag_id="bqetl_acoustic_contact_export",
-        external_task_id="acoustic__contact_raw__v1",
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    acoustic__suppression_list__v1 = bigquery_etl_query(
-        task_id="acoustic__suppression_list__v1",
+    acoustic_external__suppression_list__v1 = bigquery_etl_query(
+        task_id="acoustic_external__suppression_list__v1",
         destination_table="suppression_list_v1",
-        dataset_id="acoustic",
-        project_id="moz-fx-data-marketing-prod",
+        dataset_id="acoustic_external",
+        project_id="moz-fx-data-shared-prod",
         owner="leli@mozilla.com",
         email=["leli@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
     )
-
-    acoustic__suppression_list__v1.set_upstream(wait_for_acoustic__contact_raw__v1)

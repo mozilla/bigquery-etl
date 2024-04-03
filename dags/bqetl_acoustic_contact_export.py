@@ -22,7 +22,7 @@ DAG to clean up the data loaded from Acoustic.
 
 #### Owner
 
-kik@mozilla.com
+leli@mozilla.com
 
 #### Tags
 
@@ -32,10 +32,10 @@ kik@mozilla.com
 
 
 default_args = {
-    "owner": "kik@mozilla.com",
-    "start_date": datetime.datetime(2021, 3, 1, 0, 0),
+    "owner": "leli@mozilla.com",
+    "start_date": datetime.datetime(2024, 4, 4, 0, 0),
     "end_date": None,
-    "email": ["telemetry-alerts@mozilla.com", "kik@mozilla.com"],
+    "email": ["telemetry-alerts@mozilla.com", "leli@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=300),
     "email_on_failure": True,
@@ -65,53 +65,44 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    acoustic__contact__v1 = bigquery_etl_query(
-        task_id="acoustic__contact__v1",
+    acoustic_derived__contact__v1 = bigquery_etl_query(
+        task_id="acoustic_derived__contact__v1",
         destination_table="contact_v1",
-        dataset_id="acoustic",
-        project_id="moz-fx-data-marketing-prod",
-        owner="kik@mozilla.com",
-        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        dataset_id="acoustic_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="leli@mozilla.com",
+        email=["leli@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
 
-    acoustic__contact_current_snapshot__v1 = bigquery_etl_query(
-        task_id="acoustic__contact_current_snapshot__v1",
+    acoustic_derived__contact_current_snapshot__v1 = bigquery_etl_query(
+        task_id="acoustic_derived__contact_current_snapshot__v1",
         destination_table="contact_current_snapshot_v1",
-        dataset_id="acoustic",
-        project_id="moz-fx-data-marketing-prod",
-        owner="kik@mozilla.com",
-        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        dataset_id="acoustic_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="leli@mozilla.com",
+        email=["leli@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
     )
 
-    acoustic__contact_raw__v1 = bigquery_etl_query(
-        task_id="acoustic__contact_raw__v1",
+    acoustic_external__contact_raw__v1 = bigquery_etl_query(
+        task_id="acoustic_external__contact_raw__v1",
         destination_table="contact_raw_v1",
-        dataset_id="acoustic",
-        project_id="moz-fx-data-marketing-prod",
-        owner="kik@mozilla.com",
-        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        dataset_id="acoustic_external",
+        project_id="moz-fx-data-shared-prod",
+        owner="leli@mozilla.com",
+        email=["leli@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
 
-    with TaskGroup(
-        "acoustic__contact_raw__v1_external",
-    ) as acoustic__contact_raw__v1_external:
-        ExternalTaskMarker(
-            task_id="bqetl_acoustic_suppression_list__wait_for_acoustic__contact_raw__v1",
-            external_dag_id="bqetl_acoustic_suppression_list",
-            external_task_id="wait_for_acoustic__contact_raw__v1",
-        )
+    acoustic_derived__contact__v1.set_upstream(acoustic_external__contact_raw__v1)
 
-        acoustic__contact_raw__v1_external.set_upstream(acoustic__contact_raw__v1)
+    acoustic_derived__contact_current_snapshot__v1.set_upstream(
+        acoustic_derived__contact__v1
+    )
 
-    acoustic__contact__v1.set_upstream(acoustic__contact_raw__v1)
-
-    acoustic__contact_current_snapshot__v1.set_upstream(acoustic__contact__v1)
-
-    acoustic__contact_raw__v1.set_upstream(wait_for_fivetran_load_completed)
+    acoustic_external__contact_raw__v1.set_upstream(wait_for_fivetran_load_completed)

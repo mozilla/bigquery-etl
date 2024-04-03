@@ -8,7 +8,7 @@ WITH base_suppression_lists AS (
     email
   -- historic upload
   FROM
-    `moz-fx-data-marketing-prod.acoustic.2024-03-20_main_suppression_list`
+    `moz-fx-data-shared-prod.acoustic_external.2024-03-20_main_suppression_list`
 ),
 suppression_list AS (
   SELECT DISTINCT

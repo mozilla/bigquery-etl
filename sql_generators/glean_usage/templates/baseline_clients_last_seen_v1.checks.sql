@@ -54,5 +54,54 @@ WHERE submission_date = @submission_date;
 #warn
 {{ value_length(column="client_id", expected_length=36, where="submission_date = @submission_date") }}
 
+#warn
+WITH daily AS
+(
+ SELECT
+     submission_date,
+     COUNT(DISTINCT client_id) AS client_count,
+     COUNT(DISTINCT is_new_profile) AS new_profile_count
+ FROM
+    `{{ project_id }}.{{ dataset_id }}.baseline_clients_daily_v1`
+ WHERE
+    submission_date = @submission_date
+    AND sample_id IS NOT NULL
+ GROUP BY submission_date
+)
+,last_seen AS
+(
+ SELECT
+  submission_date,
+  COUNT(DISTINCT client_id) AS client_count,
+  COUNT(DISTINCT is_new_profile) AS new_profile_count
+ FROM
+  `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`
+ WHERE
+  submission_date = @submission_date
+  AND mozfun.bits28.days_since_seen(days_seen_bits) = 0
+  GROUP BY submission_date
+)
+,check_results AS
+(
+ SELECT
+   COUNTIF(last_seen.client_count IS DISTINCT FROM daily.client_count) AS client_count_diff,
+   COUNTIF(last_seen.new_profile_count IS DISTINCT FROM daily.new_profile_count) AS new_profile_count_diff
+ FROM daily LEFT JOIN last_seen
+ USING(submission_date)
+)
+SELECT
+ IF(
+ ABS((SELECT client_count_diff FROM check_results)) > 0 OR ABS((SELECT new_profile_count_diff FROM check_results)) > 0,
+ ERROR(
+   CONCAT("Results don't match. Daily table has ",
+   STRING(((SELECT submission_date FROM daily))),
+   ": ",
+   ABS((SELECT client_count FROM daily)),
+   ". baseline_clients_last_seen has ",
+   IFNULL(((SELECT client_count FROM last_seen)), 0)
+   )
+ ),
+ NULL
+ )
 {% endraw %}
 

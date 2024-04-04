@@ -23,9 +23,4 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references:
-  init.sql:
-  - cfr_users_daily_v1
-  query.sql:
-  - cfr_users_daily_v1
-  - cfr_users_last_seen_v1
+references: {}

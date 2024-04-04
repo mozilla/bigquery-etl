@@ -22,10 +22,4 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references:
-  init.sql:
-  - moz-fx-data-shared-prod.firefox_accounts_derived.fxa_users_services_daily_v1
-  query.sql:
-  - fxa_users_services_daily_v1
-  - fxa_users_services_first_seen_v1
-  - fxa_users_services_last_seen_v1
+references: {}

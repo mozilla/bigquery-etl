@@ -236,3 +236,27 @@ RETURNS STRING AS (
     ELSE 'other'
   END
 );
+
+SELECT
+  mozfun.assert.equals(
+    mozfun.norm.funnel_derived_installs(
+      FALSE,
+      'release',
+      "2024-04-02 04:59:54.394479 UTC",
+      "20230629134642",
+      "dlsource%3Dmozillaci",
+      NULL
+    ),
+    'other'
+  ),
+  mozfun.assert.equals(
+    mozfun.norm.funnel_derived_installs(
+      FALSE,
+      'release',
+      "2024-04-02 04:59:54.394479 UTC",
+      "20240329134642",
+      'kw26ua%3Dkw',
+      "mozilla60"
+    ),
+    'mozorg windows funnel'
+  );

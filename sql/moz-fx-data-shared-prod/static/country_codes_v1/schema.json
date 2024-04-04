@@ -52,5 +52,11 @@
     "description": "Whether sponsored tiles are available on the newtab page in this country. Note that Pocket might only be available in certain locales/languages within a country.",
     "type": "BOOL",
     "mode": "REQUIRED"
+  },
+  {
+    "name": "ads_value_tier",
+    "description": "Lowercase label detailing the monetary value tier that Mozilla Ads assign to that region based on market size and our existing products, e.g., tier 1, tier 2, etc.",
+    "type": "STRING",
+    "mode": "REQUIRED"
   }
 ]

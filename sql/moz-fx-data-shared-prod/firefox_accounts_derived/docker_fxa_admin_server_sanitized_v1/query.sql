@@ -1,3 +1,4 @@
+
 -- Query for firefox_accounts_derived.docker_fxa_admin_server_sanitized_v1
 SELECT
   @submission_date AS date,
@@ -18,4 +19,8 @@ SELECT
 FROM
   `moz-fx-fxa-prod-0712.fxa_prod_logs.docker_fxa_admin_server`
 WHERE
-  DATE(`timestamp`) = @submission_date
+  {% if is_init() %}
+    DATE(`timestamp`) >= "2022-08-01"
+  {% else %}
+    DATE(`timestamp`) = @submission_date
+  {% endif %}

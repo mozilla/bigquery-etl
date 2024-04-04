@@ -33,7 +33,7 @@ RETURNS STRING AS (
             'mozilla-win-eol-esr115',
             'mozilla-mac-eol-esr1',
             'mozilla-mac-eol-esr115'
-          )-- exclude ESR migrations
+          )
           OR distribution_id IN (
             'mozilla101',
             'mozilla102',
@@ -126,7 +126,7 @@ RETURNS STRING AS (
             'mozilla18',
             'mozilla40',
             'mozilla-cliqz-006'
-          )-- exclude known funnelcakes
+          )
         )
       )
       THEN 'mozorg windows funnel'
@@ -137,7 +137,7 @@ RETURNS STRING AS (
           'mozilla-win-eol-esr115',
           'mozilla-mac-eol-esr1',
           'mozilla-mac-eol-esr115'
-        )-- exclude ESR migrations
+        )
         AND distribution_id NOT IN (
           'mozilla101',
           'mozilla102',
@@ -231,7 +231,8 @@ RETURNS STRING AS (
           'mozilla40',
           'mozilla-cliqz-006'
         )
-        THEN 'partner'
-        ELSE 'other'
+      )
+      THEN 'partner'
+    ELSE 'other'
   END
 );

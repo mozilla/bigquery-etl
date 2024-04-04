@@ -38,7 +38,7 @@ Burkina Faso,BF,BFA,Africa,Sub-Saharan Africa,Western Africa,FALSE,FALSE,FALSE,n
 Burundi,BI,BDI,Africa,Sub-Saharan Africa,Eastern Africa,FALSE,FALSE,FALSE,null
 Cambodia,KH,KHM,Asia,South-eastern Asia,Unspecified,FALSE,FALSE,FALSE,null
 Cameroon,CM,CMR,Africa,Sub-Saharan Africa,Middle Africa,FALSE,FALSE,FALSE,null
-Canada,CA,CAN,Americas,Northern America,Unspecified,TRUE,TRUE,TRUE,Tier 1
+Canada,CA,CAN,Americas,Northern America,Unspecified,TRUE,TRUE,TRUE,Tier 2
 Cape Verde,CV,CPV,Africa,Sub-Saharan Africa,Western Africa,FALSE,FALSE,FALSE,null
 Cayman Islands,KY,CYM,Americas,Latin America and the Caribbean,Caribbean,FALSE,FALSE,FALSE,null
 Central African Republic,CF,CAF,Africa,Sub-Saharan Africa,Middle Africa,FALSE,FALSE,FALSE,null
@@ -108,7 +108,7 @@ Iraq,IQ,IRQ,Asia,Western Asia,Unspecified,FALSE,FALSE,FALSE,null
 Ireland,IE,IRL,Europe,Northern Europe,Unspecified,TRUE,TRUE,FALSE,null
 Isle of Man,IM,IMN,Europe,Northern Europe,Unspecified,FALSE,FALSE,FALSE,null
 Israel,IL,ISR,Asia,Western Asia,Unspecified,FALSE,FALSE,FALSE,null
-Italy,IT,ITA,Europe,Southern Europe,Unspecified,TRUE,TRUE,TRUE,Tier 1
+Italy,IT,ITA,Europe,Southern Europe,Unspecified,TRUE,TRUE,TRUE,Tier 2
 Jamaica,JM,JAM,Americas,Latin America and the Caribbean,Caribbean,FALSE,FALSE,FALSE,null
 Japan,JP,JPN,Asia,Eastern Asia,Unspecified,FALSE,FALSE,TRUE,Tier 3
 Jersey,JE,JEY,Europe,Northern Europe,Unspecified,FALSE,FALSE,FALSE,null
@@ -142,7 +142,7 @@ Martinique,MQ,MTQ,Americas,Latin America and the Caribbean,Caribbean,FALSE,FALSE
 Mauritania,MR,MRT,Africa,Sub-Saharan Africa,Western Africa,FALSE,FALSE,FALSE,null
 Mauritius,MU,MUS,Africa,Sub-Saharan Africa,Eastern Africa,FALSE,FALSE,FALSE,null
 Mayotte,YT,MYT,Africa,Sub-Saharan Africa,Eastern Africa,FALSE,FALSE,FALSE,null
-Mexico,MX,MEX,Americas,Latin America and the Caribbean,Central America,FALSE,FALSE,TRUE,Tier 2
+Mexico,MX,MEX,Americas,Latin America and the Caribbean,Central America,FALSE,FALSE,TRUE,Tier 3
 "Micronesia, Federated States of",FM,FSM,Oceania,Micronesia,Unspecified,FALSE,FALSE,FALSE,null
 "Moldova, Republic of",MD,MDA,Europe,Eastern Europe,Unspecified,FALSE,FALSE,FALSE,null
 Monaco,MC,MCO,Europe,Western Europe,Unspecified,FALSE,FALSE,FALSE,null
@@ -233,7 +233,7 @@ Tuvalu,TV,TUV,Oceania,Polynesia,Unspecified,FALSE,FALSE,FALSE,null
 Uganda,UG,UGA,Africa,Sub-Saharan Africa,Eastern Africa,FALSE,FALSE,FALSE,null
 Ukraine,UA,UKR,Europe,Eastern Europe,Unspecified,FALSE,FALSE,FALSE,null
 United Arab Emirates,AE,ARE,Asia,Western Asia,Unspecified,FALSE,FALSE,FALSE,null
-United Kingdom,GB,GBR,Europe,Northern Europe,Unspecified,TRUE,TRUE,TRUE,Tier 1
+United Kingdom,GB,GBR,Europe,Northern Europe,Unspecified,TRUE,TRUE,TRUE,Tier 2
 United States,US,USA,Americas,Northern America,Unspecified,TRUE,TRUE,TRUE,Tier 1
 United States Minor Outlying Islands,UM,UMI,Oceania,Micronesia,Unspecified,FALSE,FALSE,FALSE,null
 Uruguay,UY,URY,Americas,Latin America and the Caribbean,South America,FALSE,FALSE,FALSE,null

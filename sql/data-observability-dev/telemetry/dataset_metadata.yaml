@@ -1,0 +1,12 @@
+friendly_name: Telemetry
+description: |-
+  Views on data from legacy Firefox telemetry, plus many other
+  general-purpose datasets
+dataset_base_acl: view
+user_facing: true
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:dataops-managed/taar
+  - workgroup:mozilla-confidential

@@ -192,8 +192,13 @@ def deploy(
                     if test_file_path.name in (
                         f"{test_project}.{test_dataset}.{test_name}{file_suffix}",
                         f"{test_project}.{test_dataset}.{test_name}.schema{file_suffix}",
-                        f"{test_dataset}.{test_name}{file_suffix}",
-                        f"{test_dataset}.{test_name}.schema{file_suffix}",
+                    ) or (
+                        test_file_path.name
+                        in (
+                            f"{test_dataset}.{test_name}{file_suffix}",
+                            f"{test_dataset}.{test_name}.schema{file_suffix}",
+                        )
+                        and test_project == project
                     ):
                         test_dataset = f"{test_dataset}_{project.replace('-', '_')}"
 
@@ -312,6 +317,7 @@ def _view_dependencies(artifact_files, sql_dir):
 
 def _update_references(artifact_files, project_id, dataset_suffix, sql_dir):
     replace_references = []
+    replace_partial_references = []
     for artifact_file in artifact_files:
         name = artifact_file.parent.name
         name_pattern = name.replace("*", r"\*")  # match literal *
@@ -331,30 +337,36 @@ def _update_references(artifact_files, project_id, dataset_suffix, sql_dir):
         deployed_project = project_id
 
         # Replace references, preserving fully quoted references.
-        replace_references += [
+        replace_partial_references += [
             # partially qualified references (like "telemetry.main")
             (
                 re.compile(rf"(?<![\._])`{original_dataset}\.{name_pattern}`"),
                 f"`{deployed_project}.{deployed_dataset}.{name}`",
+                original_project,
             ),
             (
                 re.compile(
                     rf"(?<![\._])`?{original_dataset}`?\.`?{name_pattern}(?![a-zA-Z0-9_])`?"
                 ),
                 f"`{deployed_project}`.`{deployed_dataset}`.`{name}`",
+                original_project,
             ),
+        ]
+        replace_references += [
             # fully qualified references (like "moz-fx-data-shared-prod.telemetry.main")
             (
                 re.compile(
                     rf"`{original_project}\.{original_dataset}\.{name_pattern}`"
                 ),
                 f"`{deployed_project}.{deployed_dataset}.{name}`",
+                original_project,
             ),
             (
                 re.compile(
                     rf"(?<![a-zA-Z0-9_])`?{original_project}`?\.`?{original_dataset}`?\.`?{name_pattern}(?![a-zA-Z0-9_])`?"
                 ),
                 f"`{deployed_project}`.`{deployed_dataset}`.`{name}`",
+                original_project,
             ),
         ]
 
@@ -365,6 +377,11 @@ def _update_references(artifact_files, project_id, dataset_suffix, sql_dir):
 
             for ref in replace_references:
                 sql = re.sub(ref[0], ref[1], sql)
+
+            for ref in replace_partial_references:
+                file_project = path.parent.parent.parent.name
+                if file_project == ref[2]:
+                    sql = re.sub(ref[0], ref[1], sql)
 
             path.write_text(sql)
 

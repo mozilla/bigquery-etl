@@ -9,6 +9,7 @@ import click
 import pytz
 import requests
 from google.cloud import bigquery
+from requests import HTTPError
 
 
 def utc_date_to_eastern_string(date_string):
@@ -86,8 +87,7 @@ def get_survey_data(survey_id, date_string, token, secret):
         f"&filter[operator][1]=<"
         f"&filter[value][1]={end_date}"
     )
-    resp = requests.get(url)
-    resp.raise_for_status()
+    resp = _get_request(url)
     survey = resp.json()
 
     # if the result set is large, we'll have to page through them to get all data
@@ -99,10 +99,20 @@ def get_survey_data(survey_id, date_string, token, secret):
 
     for page in range(2, total_pages + 1):
         print(f"fetching page {page}")
-        resp = requests.get(url + f"&page={page}")
-        resp.raise_for_status()
+        resp = _get_request(url + f"&page={page}")
         ret = ret + construct_data(resp.json(), date_string)
     return ret
+
+
+def _get_request(url):
+    """Make get request and print response if there is an exception."""
+    resp = requests.get(url)
+    try:
+        resp.raise_for_status()
+    except HTTPError:
+        print(f"Error response: {resp.text}")
+        raise
+    return resp
 
 
 def response_schema():

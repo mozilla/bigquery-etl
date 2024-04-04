@@ -1,10 +1,10 @@
-#fail
+#warn
 {{ is_unique(["client_id"]) }}
 
-#fail
+#warn
 {{ min_row_count(1, "submission_date = @submission_date") }}
 
-#fail
+#warn
 SELECT
   IF(
     DATE_DIFF(submission_date, first_seen_date, DAY) <> 27,

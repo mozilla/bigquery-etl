@@ -11,6 +11,10 @@ owners:
 - cmorales@mozilla.com
 labels:
   schedule: daily
+  dag: bqetl_search
+  owner1: akomar
+  owner2: anicholson
+  owner3: cmorales
 scheduling:
   dag_name: bqetl_search
   depends_on_past: true
@@ -23,7 +27,9 @@ bigquery:
     type: day
     field: submission_date
     require_partition_filter: true
+    expiration_days: null
   clustering:
     fields:
     - sample_id
     - client_id
+references: {}

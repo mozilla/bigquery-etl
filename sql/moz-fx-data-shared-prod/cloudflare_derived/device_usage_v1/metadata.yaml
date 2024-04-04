@@ -1,0 +1,18 @@
+friendly_name: Cloudflare Device Usage
+description: |-
+  Contains data from Cloudflare on usage by device type by day
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: false
+  owner1: kwindau@mozilla.com
+bigquery:
+  time_partitioning:
+    type: day
+    field: dte
+    require_partition_filter: false
+    expiration_days: null
+  clustering:
+    fields:
+    - location
+    - user_type

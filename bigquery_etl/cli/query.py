@@ -739,8 +739,8 @@ def backfill(
             partitioning_type = metadata.bigquery.time_partitioning.type
 
         date_range = BackfillDateRange(
-            start_date,
-            end_date,
+            start_date.date(),
+            end_date.date(),
             excludes=[date.fromisoformat(x) for x in exclude],
             range_type=partitioning_type or PartitionType.DAY,
         )
@@ -1345,6 +1345,12 @@ def initialize(
         init_files = list(
             map(Path, glob(f"{query_file.parent}/**/init.sql", recursive=True))
         )
+        materialized_views = list(
+            map(
+                Path,
+                glob(f"{query_file.parent}/**/materialized_view.sql", recursive=True),
+            )
+        )
 
         # check if the provided file can be initialized and whether existing ones should be skipped
         if "is_init()" in sql_content or len(init_files) > 0:
@@ -1377,6 +1383,7 @@ def initialize(
                         sql_dir=sql_dir,
                         project_id=project,
                         update_downstream=False,
+                        is_init=True,
                     )
 
                     ctx.invoke(
@@ -1425,20 +1432,20 @@ def initialize(
                         },
                     )
             else:
-                for init_file in init_files:
-                    with open(init_file) as init_file_stream:
+                for file in init_files + materialized_views:
+                    with open(file) as init_file_stream:
                         init_sql = init_file_stream.read()
                         job_config = bigquery.QueryJobConfig(
                             dry_run=dry_run,
                             default_dataset=f"{project}.{dataset}",
                         )
 
-                        if "CREATE MATERIALIZED VIEW" in init_sql:
-                            click.echo(f"Create materialized view for {init_file}")
+                        if file in materialized_views:
+                            click.echo(f"Create materialized view for {file}")
                             # existing materialized view have to be deleted before re-creation
                             client.delete_table(full_table_id, not_found_ok=True)
                         else:
-                            click.echo(f"Create destination table for {init_file}")
+                            click.echo(f"Create destination table for {file}")
 
                         job = client.query(init_sql, job_config=job_config)
 
@@ -1606,6 +1613,13 @@ def schema():
 @use_cloud_function_option
 @respect_dryrun_skip_option(default=True)
 @parallelism_option()
+@click.option(
+    "--is-init",
+    "--is_init",
+    help="Indicates whether the `is_init()` condition should be set to true of false.",
+    is_flag=True,
+    default=False,
+)
 def update(
     name,
     sql_dir,
@@ -1615,6 +1629,7 @@ def update(
     use_cloud_function,
     respect_dryrun_skip,
     parallelism,
+    is_init,
 ):
     """CLI command for generating the query schema."""
     if not is_authenticated():
@@ -1665,6 +1680,7 @@ def update(
             use_cloud_function,
             respect_dryrun_skip,
             update_downstream,
+            is_init=is_init,
         )
     )
 
@@ -1686,6 +1702,7 @@ def _update_query_schema_with_downstream(
     update_downstream=False,
     query_file=None,
     follow_up_queue=None,
+    is_init=False,
 ):
     try:
         changed = _update_query_schema(
@@ -1696,6 +1713,7 @@ def _update_query_schema_with_downstream(
             tmp_tables,
             use_cloud_function,
             respect_dryrun_skip,
+            is_init,
         )
 
         if update_downstream:
@@ -1745,6 +1763,7 @@ def _update_query_schema(
     tmp_tables={},
     use_cloud_function=True,
     respect_dryrun_skip=True,
+    is_init=False,
 ):
     """
     Update the schema of a specific query file.
@@ -1821,6 +1840,7 @@ def _update_query_schema(
         template_folder=str(query_file_path.parent),
         templates_dir="",
         format=False,
+        **{"is_init": lambda: is_init},
     )
 
     for orig_table, tmp_table in tmp_tables.items():
@@ -2013,6 +2033,7 @@ def deploy(
     query_files = paths_matching_name_pattern(
         name, sql_dir, project_id, ["query.*", "script.sql"]
     )
+
     if not query_files:
         # run SQL generators if no matching query has been found
         ctx.invoke(

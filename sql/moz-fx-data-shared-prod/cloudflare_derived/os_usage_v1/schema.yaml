@@ -1,0 +1,29 @@
+fields:
+  - name: dte
+    mode: NULLABLE
+    type: DATE
+    description: The date of OS usage
+  - name: os
+    mode: NULLABLE
+    type: STRING
+    description: The operating system
+  - name: location
+    mode: NULLABLE
+    type: STRING
+    description: The 2 character country code if the usage is for a specific country; otherwise, if 'all', then it's global usage
+  - name: device_type
+    mode: NULLABLE
+    type: STRING
+    description: The device type (desktop, mobile, other, or all)
+  - name: os_share
+    mode: NULLABLE
+    type: NUMERIC
+    description: The percent share for this OS for the device type & location & date
+  - name: normalization_type
+    mode: NULLABLE
+    type: STRING
+    description: The normalization type of the usage (i.e. percentage)
+  - name: last_updated_ts
+    mode: NULLABLE
+    type: TIMESTAMP
+    description: The timestamp this data was retrieved from the API

@@ -259,4 +259,15 @@ SELECT
       "mozilla60"
     ),
     'mozorg windows funnel'
+  ),
+  mozfun.assert.equals(
+    mozfun.norm.funnel_derived_installs(
+      FALSE,
+      'release',
+      "2024-04-02 04:59:54.394479 UTC",
+      "20240329134642",
+      'kww',
+      "abc"
+    ),
+    'partner'
   );

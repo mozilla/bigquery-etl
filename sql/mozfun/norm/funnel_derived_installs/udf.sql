@@ -230,7 +230,7 @@ RETURNS STRING AS (
           'mozilla18',
           'mozilla40',
           'mozilla-cliqz-006'
-        )-- exclude known funnelcakes)
+        )
         THEN 'partner'
         ELSE 'other'
   END

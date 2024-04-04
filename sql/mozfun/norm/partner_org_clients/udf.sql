@@ -208,3 +208,23 @@ RETURNS STRING AS (
     ELSE 'Uncategorized'
   END
 );
+
+SELECT
+  mozfun.assert.equals(mozfun.norm.partner_org_clients('mozilla18'), 'Mozilla - Funnelcakes'),
+  mozfun.assert.equals(mozfun.norm.partner_org_clients('mozilla22'), 'Mozilla - Funnelcakes'),
+  mozfun.assert.equals(mozfun.norm.partner_org_clients('webde'), 'United Internet'),
+  mozfun.assert.equals(mozfun.norm.partner_org_clients(NULL), 'non-distribution'),
+  mozfun.assert.equals(mozfun.norm.partner_org_clients('abcdefghijkl'), 'Uncategorized'),
+  mozfun.assert.equals(mozfun.norm.partner_org_clients('isltd-001'), 'Ironsource'),
+  mozfun.assert.equals(
+    mozfun.norm.partner_org_clients('mozilla-win-eol-esr115'),
+    'Mozilla - ESR migration'
+  ),
+  mozfun.assert.equals(
+    mozfun.norm.partner_org_clients('mozilla-mac-eol-esr1'),
+    'Mozilla - ESR migration'
+  ),
+  mozfun.assert.equals(
+    mozfun.norm.partner_org_clients('mozilla-mac-eol-esr115'),
+    'Mozilla - ESR migration'
+  );

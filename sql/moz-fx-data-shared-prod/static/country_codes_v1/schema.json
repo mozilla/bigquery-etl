@@ -55,7 +55,7 @@
   },
   {
     "name": "ads_value_tier",
-    "description": "Label detailing the monetary value tier that Mozilla Ads assign to that region based on market size and our existing products, e.g., Tier 1, Tier 2, etc.",
+    "description": "Lowercase label detailing the monetary value tier that Mozilla Ads assign to that region based on market size and our existing products, e.g., tier 1, tier 2, etc.",
     "type": "STRING",
     "mode": "REQUIRED"
   }

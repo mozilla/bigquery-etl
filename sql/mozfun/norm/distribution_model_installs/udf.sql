@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION norm.distribution_model(distribution_id STRING)
+CREATE OR REPLACE FUNCTION norm.distribution_model_installs(distribution_id STRING)
 RETURNS STRING AS (
   CASE
     WHEN distribution_id IN ('1und1', 'gmx', 'gmxcouk', 'gmxes', 'gmxfr', 'mail.com', 'webde')
@@ -205,8 +205,7 @@ RETURNS STRING AS (
         'mozilla-cliqz-006'
       )
       THEN 'mozilla internal accounting'
-    WHEN distribution_id IS NULL
+    WHEN (distribution_id IS NULL OR distribution_id != '0')
       THEN 'non-distribution'
     ELSE 'Uncategorized'
-  END
 );

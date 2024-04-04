@@ -2339,6 +2339,19 @@ fields:
       description: 'Counts the number of different colors used to highlight.
 
         '
+    - name: cert_verifier_crlite_status
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the number of times different CRLite statuses were returned.
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -7881,6 +7894,49 @@ fields:
         for CSSLoader in the content process
 
         '
+    - name: cert_verifier_cert_trust_evaluation_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Measures how long we take to evaluate the trust status of a certificate.
+
+        '
   - name: quantity
     type: RECORD
     mode: NULLABLE
@@ -8064,8 +8120,8 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: 'The total size of files for telemetry, site storage, media device
-        origin mapping and Mozilla Accounts in the current profile directory, rounded
-        to the nearest tenth kilobyte.
+        origin mapping, chrome privileged IndexedDB databases, and Mozilla Accounts
+        in the current profile directory, rounded to the nearest tenth kilobyte.
 
         '
     - name: browser_backup_preferences_size
@@ -8085,6 +8141,48 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: 'The size of uncompressed session store json, in kilobytes.
+
+        '
+    - name: browser_backup_browser_extension_data_size
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The total size of the current profiles storage.local legacy JSON
+        backend in the browser-extension-data directory, rounded to the nearest 10
+        kilobytes.
+
+        '
+    - name: browser_backup_extension_store_permissions_data_size
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The file size of the current profiles extension-store-permissions/data.safe.bin
+        file, rounded to the nearest 10 kilobytes.
+
+        '
+    - name: browser_backup_extensions_json_size
+      type: INTEGER
+      mode: NULLABLE
+      description: "The total file size of the current profiles extensions metadata\
+        \ files, rounded to the nearest 10 kilobytes. Files included are:\n  - extensions.json\n\
+        \  - extension-settings.json\n  - extension-preferences.json\n  - addonStartup.json.lz4\n"
+    - name: browser_backup_extensions_storage_size
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The total size of all extensions storage directories, rounded
+        to the nearest 10 kilobytes.
+
+        '
+    - name: browser_backup_extensions_xpi_directory_size
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The total size of the current profiles extensions directory, rounded
+        to the nearest 10 kilobytes.
+
+        '
+    - name: browser_backup_storage_sync_size
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The file size of the current profiles storage-sync-v2.sqlite db,
+        rounded to the nearest 10 kilobytes.
 
         '
   - name: labeled_boolean

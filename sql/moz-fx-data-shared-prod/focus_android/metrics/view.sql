@@ -219,7 +219,8 @@ SELECT
       metrics.labeled_counter.pdfjs_editing_highlight_color,
       metrics.labeled_counter.pdfjs_editing_highlight_kind,
       metrics.labeled_counter.pdfjs_editing_highlight_method,
-      metrics.labeled_counter.pdfjs_editing_highlight_number_of_colors
+      metrics.labeled_counter.pdfjs_editing_highlight_number_of_colors,
+      metrics.labeled_counter.cert_verifier_crlite_status
     ) AS `labeled_counter`,
     metrics.memory_distribution,
     STRUCT(
@@ -468,7 +469,8 @@ SELECT
       metrics.labeled_counter.pdfjs_editing_highlight_color,
       metrics.labeled_counter.pdfjs_editing_highlight_kind,
       metrics.labeled_counter.pdfjs_editing_highlight_method,
-      metrics.labeled_counter.pdfjs_editing_highlight_number_of_colors
+      metrics.labeled_counter.pdfjs_editing_highlight_number_of_colors,
+      metrics.labeled_counter.cert_verifier_crlite_status
     ) AS `labeled_counter`,
     metrics.memory_distribution,
     STRUCT(

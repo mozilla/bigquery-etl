@@ -166,7 +166,8 @@ SELECT
       metrics.labeled_counter.pdfjs_editing_highlight_color,
       metrics.labeled_counter.pdfjs_editing_highlight_kind,
       metrics.labeled_counter.pdfjs_editing_highlight_method,
-      metrics.labeled_counter.pdfjs_editing_highlight_number_of_colors
+      metrics.labeled_counter.pdfjs_editing_highlight_number_of_colors,
+      metrics.labeled_counter.cert_verifier_crlite_status
     ) AS `labeled_counter`,
     metrics.quantity,
     metrics.string,
@@ -552,7 +553,8 @@ SELECT
       metrics.labeled_counter.pdfjs_editing_highlight_color,
       metrics.labeled_counter.pdfjs_editing_highlight_kind,
       metrics.labeled_counter.pdfjs_editing_highlight_method,
-      metrics.labeled_counter.pdfjs_editing_highlight_number_of_colors
+      metrics.labeled_counter.pdfjs_editing_highlight_number_of_colors,
+      metrics.labeled_counter.cert_verifier_crlite_status
     ) AS `labeled_counter`,
     metrics.quantity,
     STRUCT(
@@ -768,7 +770,8 @@ SELECT
       metrics.timing_distribution.privacy_sanitize_load_time,
       metrics.timing_distribution.httpsfirst_downgrade_time,
       metrics.timing_distribution.httpsfirst_downgrade_time_schemeless,
-      metrics.timing_distribution.networking_http_content_cssloader_ondatafinished_to_onstop_delay
+      metrics.timing_distribution.networking_http_content_cssloader_ondatafinished_to_onstop_delay,
+      metrics.timing_distribution.cert_verifier_cert_trust_evaluation_time
     ) AS `timing_distribution`,
     metrics.memory_distribution,
     metrics.datetime,
@@ -1159,7 +1162,8 @@ SELECT
       metrics.labeled_counter.pdfjs_editing_highlight_color,
       metrics.labeled_counter.pdfjs_editing_highlight_kind,
       metrics.labeled_counter.pdfjs_editing_highlight_method,
-      metrics.labeled_counter.pdfjs_editing_highlight_number_of_colors
+      metrics.labeled_counter.pdfjs_editing_highlight_number_of_colors,
+      metrics.labeled_counter.cert_verifier_crlite_status
     ) AS `labeled_counter`,
     metrics.quantity,
     STRUCT(
@@ -1375,7 +1379,8 @@ SELECT
       metrics.timing_distribution.privacy_sanitize_load_time,
       metrics.timing_distribution.httpsfirst_downgrade_time,
       metrics.timing_distribution.httpsfirst_downgrade_time_schemeless,
-      metrics.timing_distribution.networking_http_content_cssloader_ondatafinished_to_onstop_delay
+      metrics.timing_distribution.networking_http_content_cssloader_ondatafinished_to_onstop_delay,
+      metrics.timing_distribution.cert_verifier_cert_trust_evaluation_time
     ) AS `timing_distribution`,
     metrics.memory_distribution,
     metrics.datetime,
@@ -1549,7 +1554,8 @@ SELECT
       metrics.labeled_counter.pdfjs_editing_highlight_color,
       metrics.labeled_counter.pdfjs_editing_highlight_kind,
       metrics.labeled_counter.pdfjs_editing_highlight_method,
-      metrics.labeled_counter.pdfjs_editing_highlight_number_of_colors
+      metrics.labeled_counter.pdfjs_editing_highlight_number_of_colors,
+      metrics.labeled_counter.cert_verifier_crlite_status
     ) AS `labeled_counter`,
     metrics.quantity,
     metrics.string,

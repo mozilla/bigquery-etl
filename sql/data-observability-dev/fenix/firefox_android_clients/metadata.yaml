@@ -1,0 +1,13 @@
+friendly_name: Firefox Android Clients
+description: |-
+  Please provide a description for the query
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  view.sql:
+  - data-observability-dev.fenix_derived.firefox_android_clients_v1

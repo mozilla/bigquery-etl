@@ -208,4 +208,5 @@ RETURNS STRING AS (
     WHEN (distribution_id IS NULL OR distribution_id != '0')
       THEN 'non-distribution'
     ELSE 'Uncategorized'
+  END
 );

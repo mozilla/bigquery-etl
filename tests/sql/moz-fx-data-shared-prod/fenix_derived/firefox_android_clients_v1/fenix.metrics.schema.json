@@ -44,6 +44,10 @@
           {
             "type": "STRING",
             "name": "metrics_install_source"
+          },
+          {
+            "type": "STRING",
+            "name": "metrics_distribution_id"
           }
         ],
         "name": "string",

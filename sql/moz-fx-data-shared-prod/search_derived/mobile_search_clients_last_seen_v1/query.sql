@@ -9,7 +9,7 @@ WITH _derived_search_cols AS (
     COALESCE(search_with_ads, 0) AS search_with_ads,
     * EXCEPT (ad_click, search_with_ads)
   FROM
-    mobile_search_clients_daily_v1
+    search_derived.mobile_search_clients_daily_v1
   WHERE
     submission_date = @submission_date
 ),
@@ -88,7 +88,7 @@ _previous AS (
   SELECT
     * EXCEPT (submission_date)
   FROM
-    mobile_search_clients_last_seen_v1
+    search_derived.mobile_search_clients_last_seen_v1
   WHERE
     submission_date = DATE_SUB(@submission_date, INTERVAL 1 DAY)
     -- Filter out rows from yesterday that have now fallen outside the 365-day window.

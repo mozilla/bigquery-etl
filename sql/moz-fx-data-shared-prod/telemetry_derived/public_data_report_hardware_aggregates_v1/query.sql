@@ -78,7 +78,8 @@ transformed AS (
     CONCAT(CAST(screen_width AS STRING), 'x', CAST(screen_height AS STRING)) AS resolution,
     cpu_cores,
     cpu_vendor,
-    COALESCE(CAST(ROUND(cpu_speed / 1000, 1) AS STRING), "Other") AS cpu_speed,
+    -- FORMAT with %t instead of cast to retain .0
+    COALESCE(FORMAT('%t', ROUND(cpu_speed / 1000, 1)), "Other") AS cpu_speed,
     has_flash
   FROM
     latest_per_client
@@ -106,4 +107,5 @@ SELECT
   @submission_date AS date_from,
   DATE_ADD(@submission_date, INTERVAL 7 DAY) AS date_to,
   *,
-FROM by_dimensions
+FROM
+  by_dimensions

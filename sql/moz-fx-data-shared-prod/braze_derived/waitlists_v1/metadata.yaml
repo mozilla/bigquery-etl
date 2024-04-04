@@ -1,0 +1,20 @@
+friendly_name: Braze Waitlists
+description: |-
+  Waitlists Data coming from Braze.
+  See https://mozilla-hub.atlassian.net/browse/DENG-3008
+owners:
+- cbeck@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  owner: cbeck
+bigquery:
+  time_partitioning:
+    type: day
+    field: #TODO
+    require_partition_filter: true
+  clustering:
+    fields:
+    - #TODO
+scheduling:
+  dag_name: bqetl_braze

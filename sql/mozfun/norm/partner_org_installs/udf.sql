@@ -208,3 +208,13 @@ RETURNS STRING AS (
     ELSE 'Uncategorized'
   END
 );
+
+SELECT
+  mozfun.assert.equals(mozfun.norm.partner_org_installs('mozilla18'), 'Mozilla - Funnelcakes'),
+  mozfun.assert.equals(mozfun.norm.partner_org_installs('0'), 'non-distribution'),
+  mozfun.assert.equals(mozfun.norm.partner_org_installs(NULL), 'non-distribution'),
+  mozfun.assert.equals(mozfun.norm.partner_org_installs('sweetlabs-oem2'), 'Sweetlabs'),
+  mozfun.assert.equals(mozfun.norm.partner_org_installs('abcdefghijk'), 'Uncategorized'),
+  mozfun.assert.equals(mozfun.norm.partner_org_installs('suse'), 'Linux - Misc.'),
+  mozfun.assert.equals(mozfun.norm.partner_org_installs('openSUSE'), 'Linux - Misc.'),
+  mozfun.assert.equals(mozfun.norm.partner_org_installs('aol'), 'AOL');

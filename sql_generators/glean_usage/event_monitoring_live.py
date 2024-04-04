@@ -107,7 +107,7 @@ class EventMonitoringLive(GleanTable):
 
         if output_dir:
             if not self.no_init:
-                artifacts.append(Artifact(table, "init.sql", init_sql))
+                artifacts.append(Artifact(table, "materialized_view.sql", init_sql))
 
             for artifact in artifacts:
                 destination = (

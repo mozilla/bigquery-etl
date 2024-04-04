@@ -228,4 +228,5 @@ RETURNS STRING AS (
       )
       THEN 'partner'
     ELSE 'other'
+  END
 );

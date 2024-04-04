@@ -210,3 +210,29 @@ RETURNS STRING AS (
     ELSE 'Uncategorized'
   END
 );
+
+SELECT
+  mozfun.assert.equals(mozfun.norm.distribution_model_clients('gmx'), 'partner website'),
+  mozfun.assert.equals(mozfun.norm.distribution_model_clients('mail.com'), 'partner website'),
+  mozfun.assert.equals(mozfun.norm.distribution_model_clients('yandex-uk'), 'partner website'),
+  mozfun.assert.equals(mozfun.norm.distribution_model_clients('yandex-ru'), 'partner website'),
+  mozfun.assert.equals(mozfun.norm.distribution_model_clients('seznam'), 'partner website'),
+  mozfun.assert.equals(mozfun.norm.distribution_model_clients('yahoo'), 'partner website'),
+  mozfun.assert.equals(mozfun.norm.distribution_model_clients('fedora'), 'OS pre-installed'),
+  mozfun.assert.equals(mozfun.norm.distribution_model_clients('redhat'), 'OS pre-installed'),
+  mozfun.assert.equals(mozfun.norm.distribution_model_clients('archlinux'), 'OS pre-installed'),
+  mozfun.assert.equals(mozfun.norm.distribution_model_clients('altlinux'), 'OS pre-installed'),
+  mozfun.assert.equals(mozfun.norm.distribution_model_clients('Debian'), 'secondary store'),
+  mozfun.assert.equals(mozfun.norm.distribution_model_clients('debian'), 'secondary store'),
+  mozfun.assert.equals(
+    mozfun.norm.distribution_model_clients('mozilla18'),
+    'mozilla internal accounting'
+  ),
+  mozfun.assert.equals(
+    mozfun.norm.distribution_model_clients('mozilla40'),
+    'mozilla internal accounting'
+  ),
+  mozfun.assert.equals(
+    mozfun.norm.distribution_model_clients('mozilla25'),
+    'mozilla internal accounting'
+  );

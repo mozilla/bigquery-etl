@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION norm.installs(
+CREATE OR REPLACE FUNCTION norm.funnel_derived_installs(
   silent BOOLEAN,
   update_channel STRING,
   submission_timestamp TIMESTAMP,

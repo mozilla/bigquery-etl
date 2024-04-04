@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION norm.funnel_derived(
+CREATE OR REPLACE FUNCTION norm.funnel_derived_clients(
   channel STRING,
   os STRING,
   first_seen_date DATE,

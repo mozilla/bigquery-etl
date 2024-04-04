@@ -398,13 +398,15 @@ def _deploy_artifacts(ctx, artifact_files, project_id, dataset_suffix, sql_dir):
     ctx.invoke(publish_routine, name=None, project_id=project_id, dry_run=False)
 
     # deploy table schemas
-    query_files = [
-        file
-        for file in artifact_files
-        if file.name in [QUERY_FILE, QUERY_SCRIPT]
-        # don't attempt to deploy wildcard or metadata tables
-        and "*" not in file.parent.name and file.parent.name != "INFORMATION_SCHEMA"
-    ]
+    query_files = list(
+        {
+            file
+            for file in artifact_files
+            if file.name in [QUERY_FILE, QUERY_SCRIPT]
+            # don't attempt to deploy wildcard or metadata tables
+            and "*" not in file.parent.name and file.parent.name != "INFORMATION_SCHEMA"
+        }
+    )
 
     if len(query_files) > 0:
         # checking and creating datasets needs to happen sequentially

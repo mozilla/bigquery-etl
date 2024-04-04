@@ -154,6 +154,11 @@ first_session_ping AS (
       ORDER BY
         submission_timestamp ASC
     )[SAFE_OFFSET(0)] AS play_store_attribution_install_referrer_response,
+    ARRAY_AGG(
+      metrics.string.first_session_distribution_id IGNORE NULLS
+      ORDER BY
+        submission_timestamp ASC
+    )[SAFE_OFFSET(0)] AS distribution_id,
   FROM
     fenix.first_session AS fenix_first_session
   LEFT JOIN
@@ -223,6 +228,11 @@ metrics_ping AS (
       ORDER BY
         submission_timestamp DESC
     )[SAFE_OFFSET(0)] AS last_reported_adjust_campaign,
+    ARRAY_AGG(
+      metrics.string.metrics_distribution_id IGNORE NULLS
+      ORDER BY
+        submission_timestamp ASC
+    )[SAFE_OFFSET(0)] AS distribution_id,
   FROM
     fenix.metrics AS fenix_metrics
   WHERE
@@ -286,6 +296,7 @@ _current AS (
     first_session.play_store_attribution_source,
     first_session.play_store_attribution_term,
     first_session.play_store_attribution_install_referrer_response,
+    COALESCE(first_session.distribution_id, metrics.distribution_id) AS distribution_id,
     metrics.last_reported_adjust_campaign AS last_reported_adjust_campaign,
     metrics.last_reported_adjust_ad_group AS last_reported_adjust_ad_group,
     metrics.last_reported_adjust_creative AS last_reported_adjust_creative,
@@ -439,6 +450,7 @@ SELECT
   COALESCE(_previous.adjust_creative, _current.adjust_creative) AS adjust_creative,
   COALESCE(_previous.adjust_network, _current.adjust_network) AS adjust_network,
   COALESCE(_previous.install_source, _current.install_source) AS install_source,
+  COALESCE(_previous.distribution_id, _current.distribution_id) AS distribution_id,
   COALESCE(
     _previous.play_store_attribution_campaign,
     _current.play_store_attribution_campaign

@@ -76,6 +76,9 @@ fields:
   mode: NULLABLE
   name: install_source
   type: STRING
+- description: The id of the browser distribution made available in installation sources.
+  name: distribution_id
+  type: STRING
 - description: The utm_campaign this install is attributed to. Reported by the install referrer service, not Adjust.
   mode: NULLABLE
   name: play_store_attribution_campaign

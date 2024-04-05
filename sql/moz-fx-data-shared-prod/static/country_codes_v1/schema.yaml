@@ -26,3 +26,6 @@ fields:
 - name: sponsored_tiles_available_on_newtab
   type: BOOLEAN
   mode: NULLABLE
+- name: ads_value_tier
+  type: STRING
+  mode: NULLABLE

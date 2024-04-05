@@ -68,6 +68,10 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Structure parameter for the creative content of a campaign.
+- name: distribution_id
+  type: STRING
+  mode: NULLABLE
+  description: The id of the browser distribution made available in installation sources.
 - name: play_store_attribution_campaign
   type: STRING
   mode: NULLABLE
@@ -212,10 +216,6 @@ fields:
     mode: NULLABLE
     description: Datetime of the ping that reported the first play_store_attribution_install_referrer_response__ping_datetime
       value.
-- name: distribution_id
-  type: STRING
-  mode: NULLABLE
-  description: The id of the browser distribution made available in installation sources.
 - name: adjust_network
   type: STRING
   mode: NULLABLE

@@ -40,14 +40,43 @@
             {{ dimensions[dimension_name].select_expression }} AS {{ dimension_name }}
           FROM
             {{ data_sources[dimensions[dimension_name].data_source].from_expression }}
-          WHERE {{ data_sources[dimensions[dimension_name].data_source].submission_date_column }} = @submission_date
+          WHERE
+          {% if config.start_date %}
+            {% raw %}
+            {% if is_init() %}
+            {% endraw %}
+              {{ data_sources[dimensions[dimension_name].data_source].submission_date_column }} >= DATE("{{ config.start_date }}")
+            {% raw %}
+            {% else %}
+            {% endraw %}
+              {{ data_sources[dimensions[dimension_name].data_source].submission_date_column }} = @submission_date
+            {% raw %}
+            {% endif %}
+            {% endraw %}
+          {% else %}
+            {{ data_sources[dimensions[dimension_name].data_source].submission_date_column }} = @submission_date
+          {% endif %}
         ) AS dimension_source_{{ dimension_name }}
           ON dimension_source_{{ dimension_name }}.client_id = {{ data_sources[steps[step_name].data_source].client_id_column }}
         {% endif %}
       {% endfor %}
     {% endif %}
     WHERE
-      {{ data_sources[steps[step_name].data_source].submission_date_column }} = @submission_date
+      {% if config.start_date %}
+        {% raw %}
+        {% if is_init() %}
+        {% endraw %}
+          {{ data_sources[steps[step_name].data_source].submission_date_column }} >= DATE("{{ config.start_date }}")
+        {% raw %}
+        {% else %}
+        {% endraw %}
+          {{ data_sources[steps[step_name].data_source].submission_date_column }} = @submission_date
+        {% raw %}
+        {% endif %}
+        {% endraw %}
+      {% else %}
+        {{ data_sources[steps[step_name].data_source].submission_date_column }} = @submission_date
+      {% endif %}
       {% if steps[step_name].where_expression %}
         AND {{ steps[step_name].where_expression }}
       {% endif %}

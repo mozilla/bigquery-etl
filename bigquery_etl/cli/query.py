@@ -2111,7 +2111,7 @@ def deploy(
             _attach_metadata(query_file_path, table)
 
             if not table.created:
-                client.create_table(table)
+                client.create_table(table, exists_ok=True)
                 click.echo(f"Destination table {full_table_id} created.")
             elif not skip_existing:
                 client.update_table(

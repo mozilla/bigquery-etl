@@ -7,7 +7,9 @@ WITH base AS (
     `moz-fx-guardian-prod-bfc7`.log_storage.stdout
   WHERE
     jsonPayload.fields.isprotected
-    AND DATE(`timestamp`) = @date
+    {% if not is_init() %}
+      AND DATE(`timestamp`) = @date
+    {% endif %}
   GROUP BY
     fxa_uid
   UNION ALL

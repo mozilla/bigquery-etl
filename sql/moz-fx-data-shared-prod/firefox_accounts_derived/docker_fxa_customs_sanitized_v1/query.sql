@@ -1,4 +1,3 @@
-
 -- Query for firefox_accounts_derived.docker_fxa_customs_sanitized_v1
 SELECT
   @submission_date AS date,

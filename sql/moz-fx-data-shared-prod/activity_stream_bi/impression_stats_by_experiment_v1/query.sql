@@ -15,4 +15,8 @@ FROM
 CROSS JOIN
   UNNEST(experiments) AS experiment
 WHERE
-  DATE(submission_timestamp) = @submission_date
+  {% if is_init() %}
+    DATE(submission_timestamp) >= DATE_SUB(CURRENT_DATE, INTERVAL 180 DAY)
+  {% else %}
+    DATE(submission_timestamp) = @submission_date
+  {% endif %}

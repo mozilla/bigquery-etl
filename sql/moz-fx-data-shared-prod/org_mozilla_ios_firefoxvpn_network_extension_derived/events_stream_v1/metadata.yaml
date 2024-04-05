@@ -1,0 +1,35 @@
+friendly_name: Events Stream
+description: |-
+  An events stream table, with one row per event.
+
+  Clients that don't send events on a particular day
+  won't be included on that day.
+owners:
+- jrediger@mozilla.com
+- wstuckey@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  dag: bqetl_glean_usage
+  owner1: jrediger
+  owner2: wstuckey
+scheduling:
+  dag_name: bqetl_glean_usage
+  task_group: mozilla_vpn
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_timestamp
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+    - sample_id
+    - event_category
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  query.sql:
+  - org_mozilla_ios_firefoxvpn_network_extension.events

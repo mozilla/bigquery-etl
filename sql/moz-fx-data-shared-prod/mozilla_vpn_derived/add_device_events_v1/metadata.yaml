@@ -22,7 +22,5 @@ workgroup_access:
   members:
   - workgroup:mozilla-confidential
 references:
-  init.sql:
-  - moz-fx-guardian-prod-bfc7.log_storage.stdout
   query.sql:
   - moz-fx-guardian-prod-bfc7.log_storage.stdout

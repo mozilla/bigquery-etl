@@ -13,8 +13,8 @@ labels:
   application: fxa
   incremental: true
   schedule: daily
-  dag: bqetl_fxa_events
-  owner1: kik
+# TODO: Once fxa_users_last_seen_v2 backfill is completed and data confirmed to be heatlhy
+# this query should be descheduled, description and the corresponding view updated.
 scheduling:
   dag_name: bqetl_fxa_events
   depends_on_past: true

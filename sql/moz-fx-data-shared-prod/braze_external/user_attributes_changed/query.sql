@@ -1,2 +1,0 @@
--- SQL that compares last snapshot to current state
--- takes only the changed records and appends them as rows with JSON payloads

@@ -10,7 +10,9 @@ import yaml
 from google.cloud import bigquery
 
 API_BASE_URL_EXPERIMENTS = "https://experimenter.services.mozilla.com"
-API_BASE_URL_METRIC_HUB = "https://github.com/mozilla/metric-hub/tree/main/jetstream"
+API_BASE_URL_METRIC_HUB = (
+    "https://api.github.com/repos/mozilla/metric-hub/contents/jetstream"
+)
 
 DEFAULT_PROJECT_ID = Path(__file__).parent.parent.parent.name
 DEFAULT_DATASET_ID = Path(__file__).parent.parent.name
@@ -101,8 +103,8 @@ def download_metric_hub_files(url):
     """Download metric hub files from github."""
     metric_files = {}
     files = get_api_response(url)
-    for file in files["payload"]["tree"]["items"]:
-        if file["contentType"] != "file":
+    for file in files:
+        if file["type"] != "file":
             continue
         slug = file["name"].removesuffix(".toml")
         metric_files[slug] = True

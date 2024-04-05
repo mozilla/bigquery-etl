@@ -59,6 +59,10 @@
           },
           {
             "type": "STRING",
+            "name": "first_session_distribution_id"
+          },
+          {
+            "type": "STRING",
             "name": "play_store_attribution_campaign"
           },
           {

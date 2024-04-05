@@ -15,6 +15,10 @@ fields:
     mode: NULLABLE
     type: STRING
     description: The type of browser
+  - name: operating_system
+    mode: NULLABLE
+    type: STRING
+    description: The type of operating system
   - name: percent_share
     mode: NULLABLE
     type: NUMERIC

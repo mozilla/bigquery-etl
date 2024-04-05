@@ -15,6 +15,7 @@ description: |-
       Added total_search_terms_appearing_in_allow_list column
     - April 5, 2024:
       Added contained_blank to track blank query frequency
+      Added total_search_terms to track all terms inclusive of blank terms
 bigquery:
   {}
 workgroup_access:

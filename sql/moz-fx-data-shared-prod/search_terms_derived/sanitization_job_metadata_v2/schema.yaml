@@ -50,3 +50,6 @@ fields:
 - mode: NULLABLE
   name: contained_blank
   type: INTEGER
+- mode: NULLABLE
+  name: total_search_terms
+  type: INTEGER

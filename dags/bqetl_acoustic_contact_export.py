@@ -33,7 +33,7 @@ leli@mozilla.com
 
 default_args = {
     "owner": "leli@mozilla.com",
-    "start_date": datetime.datetime(2024, 4, 4, 0, 0),
+    "start_date": datetime.datetime(2024, 4, 3, 0, 0),
     "end_date": None,
     "email": ["telemetry-alerts@mozilla.com", "leli@mozilla.com"],
     "depends_on_past": False,

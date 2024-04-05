@@ -77,6 +77,10 @@
   },
   {
     "type": "STRING",
+    "name": "distribution_id"
+  },
+  {
+    "type": "STRING",
     "name": "play_store_attribution_campaign"
   },
   {

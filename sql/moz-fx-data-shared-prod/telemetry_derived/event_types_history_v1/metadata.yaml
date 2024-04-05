@@ -1,6 +1,8 @@
 friendly_name: Firefox Event Types History
 description: |
-  Retrieve the set of [events, event_properties] and record them in a table. This table stores all of history, partitioned by submission_date. Deprecated per https://bugzilla.mozilla.org/show_bug.cgi?id=1805722#c10
+  Retrieve the set of [events, event_properties] and record them in a table.
+  This table stores all of history, partitioned by submission_date.
+  Deprecated per https://bugzilla.mozilla.org/show_bug.cgi?id=1805722#c10
 owners:
 - wlachance@mozilla.com
 - akomar@mozilla.com

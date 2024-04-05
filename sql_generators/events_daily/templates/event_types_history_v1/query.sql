@@ -1,14 +1,6 @@
 {% raw %}
 {% if is_init() %}
 {% endraw%}
-CREATE OR REPLACE TABLE
-  {{ dataset }}_derived.event_types_history_v1
-PARTITION BY
-  submission_date
-CLUSTER BY
-  category,
-  event
-AS
 WITH source AS (
   {% if glean %}
     {% for glean_app_id in glean_app_ids %}

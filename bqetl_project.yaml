@@ -183,9 +183,6 @@ dry_run:
   # Query templates
   - sql/moz-fx-data-shared-prod/search_derived/mobile_search_clients_daily_v1/fenix_metrics.template.sql
   - sql/moz-fx-data-shared-prod/search_derived/mobile_search_clients_daily_v1/mobile_search_clients_daily.template.sql
-  # Temporary table does not exist
-  # TODO: remove this in a follow up PR
-  - sql/moz-fx-data-shared-prod/*/baseline_clients_first_seen_v1/*.sql
   # Query too complex
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/event_types_history_v1/query.sql
   # Tests

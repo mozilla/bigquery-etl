@@ -24,4 +24,3 @@ class BaselineClientsLastSeenTable(GleanTable):
         self.custom_render_kwargs = dict(
             usage_types=USAGE_TYPES,
         )
-        self.no_init = False

@@ -89,6 +89,7 @@ FXA_USER_ID = "jsonPayload.fields.user_id"
 # these must be in the same order as SYNC_SOURCES
 SYNC_IDS = ("SUBSTR(payload.device_id, 0, 32)", "payload.uid")
 CONTEXT_ID = "context_id"
+USER_CHARACTERISTICS_ID = "metrics.uuid.characteristics_client_identifier"
 
 DESKTOP_SRC = DeleteSource(
     table="telemetry_stable.deletion_request_v4", field=CLIENT_ID
@@ -133,6 +134,10 @@ LEGACY_MOBILE_SOURCES = tuple(
         "org_mozilla_tv_firefox",
         "mozilla_lockbox",
     )
+)
+USER_CHARACTERISTICS_SRC = DeleteSource(
+    table="firefox_desktop_stable.deletion_request_v1",
+    field=USER_CHARACTERISTICS_ID,
 )
 SOURCES = (
     [
@@ -393,6 +398,10 @@ DELETE_TARGETS: DeleteIndex = {
         table=REGRETS_SRC.table,
         field="event_metadata.extension_installation_uuid",
     ): REGRETS_SRC,
+    DeleteTarget(
+        table="firefox_desktop_stable.user_characteristics_v1",
+        field=USER_CHARACTERISTICS_ID,
+    ): USER_CHARACTERISTICS_SRC,
 }
 
 SEARCH_IGNORE_TABLES = {source.table for source in SOURCES}

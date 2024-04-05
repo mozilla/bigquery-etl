@@ -1,0 +1,34 @@
+friendly_name: User Profiles
+
+description: >
+  Braze user data
+
+  Contains complete user profile data from Acoustic and CTMS
+  used for Braze ingestion.
+
+  MoCo contacts who are not subscribed to a newsletter
+  or associated with a product or waitlist are filtered out of
+  this data.
+
+  Data sources: CTMS & Acoustic datasets
+  Jira: https://mozilla-hub.atlassian.net/browse/DENG-3008
+
+labels:
+  incremental: true
+
+owners:
+  - cbeck@mozilla.com
+scheduling:
+  dag_name: bqetl_braze
+  date_partition_parameter:
+
+bigquery:
+  time_partitioning:
+    type: day
+    field: #TO DO
+    require_partition_filter: false
+  clustering:
+    fields:
+      - email_lang
+      - mailing_country
+      - email_subscribe

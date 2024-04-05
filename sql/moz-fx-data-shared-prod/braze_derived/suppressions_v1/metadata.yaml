@@ -1,6 +1,6 @@
 friendly_name: Braze Suppressions
 description: |-
-  Suppressions Data coming from Braze.
+  Suppression Data coming from CTMS and Acoustic.
   See https://mozilla-hub.atlassian.net/browse/DENG-3008
 owners:
 - cbeck@mozilla.com
@@ -13,8 +13,5 @@ bigquery:
     type: day
     field: #TODO
     require_partition_filter: true
-  clustering:
-    fields:
-    - #TODO
 scheduling:
   dag_name: bqetl_braze

@@ -13,8 +13,5 @@ bigquery:
     type: day
     field: #TODO
     require_partition_filter: true
-  clustering:
-    fields:
-    - #TODO
 scheduling:
   dag_name: bqetl_braze

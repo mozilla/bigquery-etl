@@ -8,13 +8,16 @@ labels:
   application: firefox_accounts
   incremental: true
   schedule: daily
-  dag: bqetl_fxa_events
-  owner1: frank
+# TODO: Once fxa_users_first_seen_v2 backfill is completed and data confirmed to be heatlhy
+# this query should be descheduled, description and the corresponding view updated.
 scheduling:
   dag_name: bqetl_fxa_events
   start_date: '2021-07-09'
   priority: 80
   depends_on_past: true
+  # This query updates the entire existing table every day rather than appending
+  # a new partition, so we need to disable date_partition_parameter and instead
+  # pass submission_date as a generic param.
   date_partition_parameter: null
   parameters:
   - submission_date:DATE:{{ds}}

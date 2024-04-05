@@ -38,7 +38,7 @@ visits_data AS (
     client_id,
     submission_date,
     ANY_VALUE(legacy_telemetry_client_id) AS legacy_telemetry_client_id,
-    COUNT(newtab_visit_id) AS newtab_visit_count,
+    COUNT(DISTINCT newtab_visit_id) AS newtab_visit_count,
     ANY_VALUE(normalized_os) AS normalized_os,
     ANY_VALUE(normalized_os_version) AS normalized_os_version,
     ANY_VALUE(country_code) AS country_code,

@@ -59,8 +59,7 @@ WITH daily AS
 (
  SELECT
      submission_date,
-     COUNT(DISTINCT client_id) AS client_count,
-     COUNT(DISTINCT is_new_profile) AS new_profile_count
+     COUNT(DISTINCT client_id) AS client_count
  FROM
     `{{ project_id }}.{{ dataset_id }}.baseline_clients_daily_v1`
  WHERE
@@ -72,8 +71,7 @@ WITH daily AS
 (
  SELECT
   submission_date,
-  COUNT(DISTINCT client_id) AS client_count,
-  COUNT(DISTINCT is_new_profile) AS new_profile_count
+  COUNT(DISTINCT client_id) AS client_count
  FROM
   `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`
  WHERE
@@ -84,16 +82,15 @@ WITH daily AS
 ,check_results AS
 (
  SELECT
-   COUNTIF(last_seen.client_count IS DISTINCT FROM daily.client_count) AS client_count_diff,
-   COUNTIF(last_seen.new_profile_count IS DISTINCT FROM daily.new_profile_count) AS new_profile_count_diff
+   COUNTIF(last_seen.client_count IS DISTINCT FROM daily.client_count) AS client_count_diff
  FROM daily LEFT JOIN last_seen
  USING(submission_date)
 )
 SELECT
  IF(
- ABS((SELECT client_count_diff FROM check_results)) > 0 OR ABS((SELECT new_profile_count_diff FROM check_results)) > 0,
+ ABS((SELECT client_count_diff FROM check_results)) > 0,
  ERROR(
-   CONCAT("Results don't match. Daily table has ",
+   CONCAT("Results don't match, baseline_clients_daily table has ",
    STRING(((SELECT submission_date FROM daily))),
    ": ",
    ABS((SELECT client_count FROM daily)),

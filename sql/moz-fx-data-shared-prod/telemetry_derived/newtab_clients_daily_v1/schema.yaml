@@ -50,6 +50,9 @@ fields:
 - name: topsites_enabled
   type: BOOLEAN
   mode: NULLABLE
+- name: topsites_sponsored_enabled
+  type: BOOLEAN
+  mode: NULLABLE
 - name: newtab_homepage_category
   type: STRING
   mode: NULLABLE

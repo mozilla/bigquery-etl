@@ -12,6 +12,7 @@ scheduling:
   depends_on_past: false
 bigquery:
   time_partitioning: null
+  range_partitioning: null
   clustering:
     fields:
     - app_id

@@ -19,6 +19,7 @@ bigquery:
     field: creation_date
     require_partition_filter: true
     expiration_days: null
+  range_partitioning: null
   clustering: null
 workgroup_access: []
 references: {}

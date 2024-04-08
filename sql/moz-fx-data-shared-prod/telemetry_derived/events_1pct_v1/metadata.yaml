@@ -22,6 +22,7 @@ bigquery:
     field: submission_date
     require_partition_filter: true
     expiration_days: 180.0
+  range_partitioning: null
   clustering:
     fields:
     - event_category

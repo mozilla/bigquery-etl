@@ -19,6 +19,7 @@ bigquery:
     field: creation_time
     require_partition_filter: false
     expiration_days: null
+  range_partitioning: null
   clustering:
     fields:
     - project_id

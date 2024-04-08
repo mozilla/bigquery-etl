@@ -18,6 +18,7 @@ bigquery:
     field: last_modified_date
     require_partition_filter: false
     expiration_days: null
+  range_partitioning: null
   clustering:
     fields:
     - has_opted_out_of_email

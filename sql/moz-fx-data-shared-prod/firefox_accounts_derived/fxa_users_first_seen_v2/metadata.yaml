@@ -26,6 +26,7 @@ bigquery:
     field: first_seen_date
     require_partition_filter: false
     expiration_days: null
+  range_partitioning: null
   clustering:
     fields:
     - seen_in_tier1_country

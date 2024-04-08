@@ -25,6 +25,7 @@ bigquery:
     field: automatic_payout_effective_at
     require_partition_filter: false
     expiration_days: null
+  range_partitioning: null
   clustering:
     fields:
     - automatic_payout_effective_at

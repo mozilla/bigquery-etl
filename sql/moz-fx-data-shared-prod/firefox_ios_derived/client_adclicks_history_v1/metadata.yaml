@@ -24,6 +24,7 @@ scheduling:
   - submission_date:DATE:{{ds}}
 bigquery:
   time_partitioning: null
+  range_partitioning: null
   clustering:
     fields:
     - sample_id

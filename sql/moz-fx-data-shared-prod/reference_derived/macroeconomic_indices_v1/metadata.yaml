@@ -31,6 +31,7 @@ bigquery:
     field: market_date
     require_partition_filter: true
     expiration_days: null
+  range_partitioning: null
   clustering: null
 workgroup_access:
 - role: roles/bigquery.dataViewer

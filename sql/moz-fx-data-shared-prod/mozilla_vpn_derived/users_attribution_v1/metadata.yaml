@@ -11,6 +11,7 @@ labels:
   owner1: srose
 bigquery:
   time_partitioning: null
+  range_partitioning: null
   clustering: null
 workgroup_access:
 - role: roles/bigquery.dataViewer

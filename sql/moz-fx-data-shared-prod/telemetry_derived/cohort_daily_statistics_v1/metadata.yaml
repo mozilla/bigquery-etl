@@ -22,6 +22,7 @@ bigquery:
     field: activity_date
     require_partition_filter: true
     expiration_days: null
+  range_partitioning: null
   clustering:
     fields:
     - attribution_medium

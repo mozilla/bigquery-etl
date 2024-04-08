@@ -7,6 +7,7 @@ labels:
   owner1: data-platform-infra-wg
 bigquery:
   time_partitioning: null
+  range_partitioning: null
   clustering:
     fields:
     - app_version

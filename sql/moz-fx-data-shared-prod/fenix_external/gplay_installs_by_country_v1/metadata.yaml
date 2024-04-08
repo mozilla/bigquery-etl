@@ -19,6 +19,7 @@ scheduling:
     execution_delta: 2h
 bigquery:
   time_partitioning: null
+  range_partitioning: null
   clustering:
     fields:
     - channel

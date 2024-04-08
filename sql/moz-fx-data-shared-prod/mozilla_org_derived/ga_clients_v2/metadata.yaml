@@ -18,6 +18,7 @@ scheduling:
   - session_date:DATE:{{ds}}
 bigquery:
   time_partitioning: null
+  range_partitioning: null
   clustering:
     fields:
     - first_seen_date

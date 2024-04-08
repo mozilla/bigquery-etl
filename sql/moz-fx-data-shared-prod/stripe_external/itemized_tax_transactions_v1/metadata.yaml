@@ -25,6 +25,7 @@ bigquery:
     field: transaction_date_utc
     require_partition_filter: false
     expiration_days: null
+  range_partitioning: null
   clustering:
     fields:
     - transaction_date_utc

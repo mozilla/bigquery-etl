@@ -2173,8 +2173,8 @@ def _attach_metadata(query_file_path: Path, table: bigquery.Table) -> None:
             range_=bigquery.PartitionRange(
                 start=metadata.bigquery.range_partitioning.range.start,
                 end=metadata.bigquery.range_partitioning.range.end,
-                interval=metadata.bigquery.range_partitioning.range.interval
-            )
+                interval=metadata.bigquery.range_partitioning.range.interval,
+            ),
         )
 
     if metadata.bigquery and metadata.bigquery.clustering:

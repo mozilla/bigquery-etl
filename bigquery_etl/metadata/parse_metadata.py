@@ -73,19 +73,24 @@ class PartitionMetadata:
             return None
 
         return int(self.expiration_days * 86400000)
-    
+
+
 @attr.s(auto_attribs=True)
 class PartitionRange:
     """Metadata for defining the partition range."""
+
     start: int
     end: int
     interval: int
 
+
 @attr.s(auto_attribs=True)
 class RangePartitionMetadata:
     """Metadata for defining range partitioned tables."""
+
     range: PartitionRange
     field: Optional[str] = attr.ib(None)
+
 
 @attr.s(auto_attribs=True)
 class ClusteringMetadata:

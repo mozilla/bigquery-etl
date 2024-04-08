@@ -13,4 +13,6 @@ WHERE
   normalized_channel = 'nightly'
   {% if not is_init() %}
     AND DATE(submission_timestamp) = @submission_date
+  {% else %}
+    AND FALSE
   {% endif %}

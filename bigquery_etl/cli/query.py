@@ -1321,9 +1321,6 @@ def initialize(
         table = None
 
         sql_content = query_file.read_text()
-        init_files = list(
-            map(Path, glob(f"{query_file.parent}/**/init.sql", recursive=True))
-        )
         materialized_views = list(
             map(
                 Path,
@@ -1332,7 +1329,7 @@ def initialize(
         )
 
         # check if the provided file can be initialized and whether existing ones should be skipped
-        if "is_init()" in sql_content or len(init_files) > 0:
+        if "is_init()" in sql_content:
             try:
                 table = client.get_table(full_table_id)
                 if skip_existing:
@@ -1411,7 +1408,7 @@ def initialize(
                         },
                     )
             else:
-                for file in init_files + materialized_views:
+                for file in materialized_views:
                     with open(file) as init_file_stream:
                         init_sql = init_file_stream.read()
                         job_config = bigquery.QueryJobConfig(

@@ -99,6 +99,8 @@ metric_ping_clients_feature_usage AS (
     SUM(
       COALESCE(metrics.counter.firefox_home_page_customize_homepage_button, 0)
     ) AS firefox_home_page_customize_homepage_button,
+    --Address
+    SUM(COALESCE(metrics.quantity.addresses_saved_all, 0)) AS addresses_saved_all
   FROM
     firefox_ios.metrics AS metric_ping
   LEFT JOIN
@@ -287,6 +289,9 @@ SELECT
     DISTINCT IF(firefox_home_page_customize_homepage_button > 0, client_id, NULL)
   ) AS firefox_home_page_customize_homepage_button_users,
   SUM(firefox_home_page_customize_homepage_button) AS firefox_home_page_customize_homepage_button,
+  -- addresses_saved_all
+  COUNT(DISTINCT IF(addresses_saved_all > 0, client_id, NULL)) AS addresses_saved_all_users,
+  SUM(addresses_saved_all) AS addresses_saved_all
 FROM
   metric_ping_clients_feature_usage
 -- Note: baseline_clients is necessary to restrict which clients are used in this aggregation

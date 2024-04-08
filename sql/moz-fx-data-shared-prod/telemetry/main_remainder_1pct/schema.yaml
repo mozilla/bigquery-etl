@@ -7010,21 +7010,6 @@ fields:
     - name: fx_session_restore_closed_tabs_not_saved
       type: STRING
       mode: NULLABLE
-    - name: content_documents_destroyed
-      type: STRING
-      mode: NULLABLE
-    - name: dedicated_worker_destroyed
-      type: STRING
-      mode: NULLABLE
-    - name: service_worker_destroyed
-      type: STRING
-      mode: NULLABLE
-    - name: shared_worker_destroyed
-      type: STRING
-      mode: NULLABLE
-    - name: top_level_content_documents_destroyed
-      type: STRING
-      mode: NULLABLE
     - name: http_upload_throughput_mbps_http_1_100
       type: STRING
       mode: NULLABLE
@@ -7056,6 +7041,21 @@ fields:
       type: STRING
       mode: NULLABLE
     - name: insecure_downloads
+      type: STRING
+      mode: NULLABLE
+    - name: content_documents_destroyed
+      type: STRING
+      mode: NULLABLE
+    - name: dedicated_worker_destroyed
+      type: STRING
+      mode: NULLABLE
+    - name: service_worker_destroyed
+      type: STRING
+      mode: NULLABLE
+    - name: shared_worker_destroyed
+      type: STRING
+      mode: NULLABLE
+    - name: top_level_content_documents_destroyed
       type: STRING
       mode: NULLABLE
   - name: info
@@ -15251,6 +15251,9 @@ fields:
         - name: screenwakelock_release_battery_level_discharging
           type: STRING
           mode: NULLABLE
+        - name: insecure_downloads
+          type: STRING
+          mode: NULLABLE
         - name: content_documents_destroyed
           type: STRING
           mode: NULLABLE
@@ -15264,9 +15267,6 @@ fields:
           type: STRING
           mode: NULLABLE
         - name: top_level_content_documents_destroyed
-          type: STRING
-          mode: NULLABLE
-        - name: insecure_downloads
           type: STRING
           mode: NULLABLE
       - name: keyed_histograms
@@ -22854,6 +22854,24 @@ fields:
           type: INTEGER
           mode: NULLABLE
         - name: browser_backup_session_store_size
+          type: INTEGER
+          mode: NULLABLE
+        - name: browser_backup_browser_extension_data_size
+          type: INTEGER
+          mode: NULLABLE
+        - name: browser_backup_extension_store_permissions_data_size
+          type: INTEGER
+          mode: NULLABLE
+        - name: browser_backup_extensions_json_size
+          type: INTEGER
+          mode: NULLABLE
+        - name: browser_backup_extensions_storage_size
+          type: INTEGER
+          mode: NULLABLE
+        - name: browser_backup_extensions_xpi_directory_size
+          type: INTEGER
+          mode: NULLABLE
+        - name: browser_backup_storage_sync_size
           type: INTEGER
           mode: NULLABLE
     - name: socket

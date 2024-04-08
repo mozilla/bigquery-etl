@@ -1,0 +1,68 @@
+fields:
+
+- mode: NULLABLE
+  name: first_seen_date
+  type: DATE
+  description: |
+    Date when the app first reported a baseline ping for the client.
+
+- mode: NULLABLE
+  name: client_id
+  type: STRING
+  description: |
+    Unique ID for the client installation.
+
+- mode: NULLABLE
+  name: sample_id
+  type: INTEGER
+  description: |
+    Sample ID to limit query results during an analysis.
+
+- mode: NULLABLE
+  name: channel
+  type: STRING
+  description: |
+    Channel where the browser is released.
+
+- mode: NULLABLE
+  name: adjust_ad_group
+  type: STRING
+  description: |
+    Structure parameter for the the ad group of a campaign.
+
+- mode: NULLABLE
+  name: adjust_campaign
+  type: STRING
+  description: |
+    Structure parameter for the campaign name.
+
+- mode: NULLABLE
+  name: adjust_creative
+  type: STRING
+  description: |
+    Structure parameter for the creative content of a campaign.
+
+- mode: NULLABLE
+  name: adjust_network
+  type: STRING
+  description: |
+    The type of source of a client installation.
+
+- mode: NULLABLE
+  name: metadata
+  type: RECORD
+  description: |
+    Additional context around the source of this record.
+
+  fields:
+  - mode: NULLABLE
+    name: adjust_info__source_ping
+    type: STRING
+    description: |
+      Ping from which the adjust_info values originate.
+
+  - mode: NULLABLE
+    name: adjust_info__source_ping
+    type: STRING
+    description: |
+      Timestamp associated with the ping from where the adjust attributes originate.

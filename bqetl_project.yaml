@@ -26,7 +26,6 @@ dry_run:
   - sql/data-observability-dev/**/**/*.sql
   # Access Denied
   - sql/moz-fx-data-experiments/monitoring/query_cost_v1/query.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/experiment_enrollment_cumulative_population_estimate_v1/view.sql
   - sql/moz-fx-data-shared-prod/app_store_external/**/*.sql
   - sql/moz-fx-data-shared-prod/app_store/**/*.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/bigquery_usage_v2/query.sql
@@ -365,6 +364,8 @@ generate:
     skip_apps:
     - mlhackweek_search
     - moso_mastodon_android
+    - moso_mastodon_web
+    - moso_mastodon_backend
     - regrets_reporter
     - regrets_reporter_ucs
     - tiktokreporter_android
@@ -373,15 +374,17 @@ generate:
     - org_mozilla_ios_tiktok_reporter_tiktok_reportershare
     - org_mozilla_tiktokreporter
     events_stream:
-      datasets:
-      - fenix
-      app_ids:
-      - bedrock
-      - debug_ping_view
-      - glean_dictionary
-      - org_mozilla_fenix
-      - org_mozilla_firefox_beta
-      - org_mozilla_firefox
+      skip_apps:
+      - bergamot
+      - firefox_echo_show
+      - firefox_fire_tv
+      - firefox_reality
+      - firefox_reality_pc
+      - lockwise_android
+      - lockwise_ios
+      - org_mozilla_ios_tiktok_reporter
+      - org_mozilla_ios_tiktok_reporter_tiktok_reportershare
+      - org_mozilla_tiktokreporter
     events_monitoring:
       default_event_table: events_v1
       event_table:

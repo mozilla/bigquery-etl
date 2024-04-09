@@ -17,6 +17,10 @@ Built from bigquery-etl repo, [`dags/bqetl_telemetry_dev_cycle.py`](https://gith
 #### Description
 
 DAG for Telemetry Dev Cycle Dashboard
+
+Airflow Triage Note:
+The tables are build every day so only the last run needs to be successful.
+
 #### Owner
 
 leli@mozilla.com

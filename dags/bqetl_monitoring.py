@@ -63,10 +63,10 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_copy_deduplicate_all = ExternalTaskSensor(
-        task_id="wait_for_copy_deduplicate_all",
+    wait_for_copy_deduplicate_main_ping = ExternalTaskSensor(
+        task_id="wait_for_copy_deduplicate_main_ping",
         external_dag_id="copy_deduplicate",
-        external_task_id="copy_deduplicate_all",
+        external_task_id="copy_deduplicate_main_ping",
         execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
@@ -75,10 +75,10 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_copy_deduplicate_main_ping = ExternalTaskSensor(
-        task_id="wait_for_copy_deduplicate_main_ping",
+    wait_for_copy_deduplicate_all = ExternalTaskSensor(
+        task_id="wait_for_copy_deduplicate_all",
         external_dag_id="copy_deduplicate",
-        external_task_id="copy_deduplicate_main_ping",
+        external_task_id="copy_deduplicate_all",
         execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
@@ -97,18 +97,6 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
-    )
-
-    monitoring_derived__average_ping_sizes__v1 = GKEPodOperator(
-        task_id="monitoring_derived__average_ping_sizes__v1",
-        arguments=[
-            "python",
-            "sql/moz-fx-data-shared-prod/monitoring_derived/average_ping_sizes_v1/query.py",
-        ]
-        + ["--date", "{{ ds }}"],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com"],
     )
 
     monitoring_derived__bigquery_etl_scheduled_queries_cost__v1 = GKEPodOperator(
@@ -344,10 +332,6 @@ with DAG(
 
     glean_server_knob_experiments__v1.set_upstream(
         wait_for_monitoring__experimenter_experiments__v1
-    )
-
-    monitoring_derived__average_ping_sizes__v1.set_upstream(
-        wait_for_copy_deduplicate_all
     )
 
     monitoring_derived__bigquery_usage__v2.set_upstream(

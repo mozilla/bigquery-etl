@@ -3,7 +3,7 @@ CREATE OR REPLACE VIEW
 AS
 SELECT
   a.*,
-  udf.funnel_derived_clients(
+  `moz-fx-data-shared-prod`.udf.funnel_derived_clients(
     normalized_channel,
     normalized_os,
     first_seen_date,
@@ -13,7 +13,7 @@ SELECT
     startup_profile_selection_reason,
     distribution_id
   ) AS funnel_derived,
-  udf.distribution_model_clients(distribution_id) AS distribution_model,
-  udf.partner_org_clients(distribution_id) AS partner_org
+  `moz-fx-data-shared-prod`.udf.distribution_model_clients(distribution_id) AS distribution_model,
+  `moz-fx-data-shared-prod`.udf.partner_org_clients(distribution_id) AS partner_org
 FROM
   `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v2` a

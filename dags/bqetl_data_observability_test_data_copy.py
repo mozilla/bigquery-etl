@@ -117,13 +117,14 @@ with DAG(
 
     fenix_derived__clients_last_seen_joined__v1 = bigquery_etl_query(
         task_id="fenix_derived__clients_last_seen_joined__v1",
-        destination_table="clients_last_seen_joined_v1",
+        destination_table='clients_last_seen_joined_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
         dataset_id="fenix_derived",
         project_id="data-observability-dev",
         owner="kik@mozilla.com",
         email=["akommasani@mozilla.com", "ascholtz@mozilla.com", "kik@mozilla.com"],
-        date_partition_parameter="submission_date",
+        date_partition_parameter=None,
         depends_on_past=True,
+        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
     )
 
     fenix_derived__event_types__v1 = bigquery_etl_query(

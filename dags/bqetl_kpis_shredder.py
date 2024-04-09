@@ -132,14 +132,15 @@ with DAG(
 
     fenix_active_users_aggregates_for_deletion_requests = bigquery_etl_query(
         task_id="fenix_active_users_aggregates_for_deletion_requests",
-        destination_table="active_users_aggregates_deletion_request_v1",
+        destination_table='active_users_aggregates_deletion_request_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
         dataset_id="fenix_derived",
         project_id="moz-fx-data-shared-prod",
         owner="lvargas@mozilla.com",
         email=["lvargas@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="partition_date",
+        date_partition_parameter=None,
         depends_on_past=False,
-        parameters=[
+        parameters=["partition_date:DATE:{{macros.ds_add(ds, -1)}}"]
+        + [
             "end_date:DATE:{{macros.ds_add(ds, 27)}}",
             "start_date:DATE:{{macros.ds_add(ds, 27-28*4)}}",
         ],
@@ -162,14 +163,15 @@ with DAG(
 
     firefox_ios_active_users_aggregates_for_deletion_requests = bigquery_etl_query(
         task_id="firefox_ios_active_users_aggregates_for_deletion_requests",
-        destination_table="active_users_aggregates_deletion_request_v1",
+        destination_table='active_users_aggregates_deletion_request_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
         dataset_id="firefox_ios_derived",
         project_id="moz-fx-data-shared-prod",
         owner="lvargas@mozilla.com",
         email=["lvargas@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="partition_date",
+        date_partition_parameter=None,
         depends_on_past=False,
-        parameters=[
+        parameters=["partition_date:DATE:{{macros.ds_add(ds, -1)}}"]
+        + [
             "end_date:DATE:{{macros.ds_add(ds, 27)}}",
             "start_date:DATE:{{macros.ds_add(ds, 27-28*4)}}",
         ],
@@ -177,14 +179,15 @@ with DAG(
 
     focus_ios_active_users_aggregates_for_deletion_requests = bigquery_etl_query(
         task_id="focus_ios_active_users_aggregates_for_deletion_requests",
-        destination_table="active_users_aggregates_deletion_request_v1",
+        destination_table='active_users_aggregates_deletion_request_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
         dataset_id="focus_ios_derived",
         project_id="moz-fx-data-shared-prod",
         owner="lvargas@mozilla.com",
         email=["lvargas@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="partition_date",
+        date_partition_parameter=None,
         depends_on_past=False,
-        parameters=[
+        parameters=["partition_date:DATE:{{macros.ds_add(ds, -1)}}"]
+        + [
             "end_date:DATE:{{macros.ds_add(ds, 27)}}",
             "start_date:DATE:{{macros.ds_add(ds, 27-28*4)}}",
         ],
@@ -192,14 +195,15 @@ with DAG(
 
     klar_ios_active_users_aggregates_for_deletion_requests = bigquery_etl_query(
         task_id="klar_ios_active_users_aggregates_for_deletion_requests",
-        destination_table="active_users_aggregates_deletion_request_v1",
+        destination_table='active_users_aggregates_deletion_request_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
         dataset_id="klar_ios_derived",
         project_id="moz-fx-data-shared-prod",
         owner="lvargas@mozilla.com",
         email=["lvargas@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="partition_date",
+        date_partition_parameter=None,
         depends_on_past=False,
-        parameters=[
+        parameters=["partition_date:DATE:{{macros.ds_add(ds, -1)}}"]
+        + [
             "end_date:DATE:{{macros.ds_add(ds, 27)}}",
             "start_date:DATE:{{macros.ds_add(ds, 27-28*4)}}",
         ],

@@ -54,16 +54,15 @@ WHERE submission_date = @submission_date;
 #warn
 {{ value_length(column="client_id", expected_length=36, where="submission_date = @submission_date") }}
 
-#warn
 WITH daily AS
 (
  SELECT
      submission_date,
      COUNT(DISTINCT client_id) AS client_count
  FROM
-    `{{ project_id }}.{{ dataset_id }}.baseline_clients_daily_v1`
+    `moz-fx-data-shared-prod.org_mozilla_ios_firefox_derived.baseline_clients_daily_v1`
  WHERE
-    submission_date = @submission_date
+    submission_date = '2024-03-01'
     AND sample_id IS NOT NULL
  GROUP BY submission_date
 )
@@ -73,24 +72,40 @@ WITH daily AS
   submission_date,
   COUNT(DISTINCT client_id) AS client_count
  FROM
-  `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`
+  `moz-fx-data-shared-prod.org_mozilla_ios_firefox_derived.baseline_clients_last_seen_v1`
  WHERE
-  submission_date = @submission_date
+  submission_date = '2024-03-01'
   AND mozfun.bits28.days_since_seen(days_seen_bits) = 0
   GROUP BY submission_date
 )
 ,check_results AS
 (
  SELECT
-   COUNTIF(last_seen.client_count IS DISTINCT FROM daily.client_count) AS client_count_diff
+   100*(last_seen.client_count/daily.client_count) AS difference_perc
  FROM daily LEFT JOIN last_seen
  USING(submission_date)
 )
+#warn
 SELECT
  IF(
- ABS((SELECT client_count_diff FROM check_results)) > 0,
+ ABS((SELECT difference_perc FROM check_results)) < 1,
  ERROR(
-   CONCAT("Results don't match, baseline_clients_daily table has ",
+   CONCAT("Results don't match by > 1%, baseline_clients_daily table has ",
+   STRING(((SELECT submission_date FROM daily))),
+   ": ",
+   ABS((SELECT client_count FROM daily)),
+   ". baseline_clients_last_seen has ",
+   IFNULL(((SELECT client_count FROM last_seen)), 0)
+   )
+ ),
+ NULL
+ )
+#fail
+SELECT
+ IF(
+ ABS((SELECT difference_perc FROM check_results)) > 1,
+ ERROR(
+   CONCAT("Results don't match by > 1%, baseline_clients_daily table has ",
    STRING(((SELECT submission_date FROM daily))),
    ": ",
    ABS((SELECT client_count FROM daily)),

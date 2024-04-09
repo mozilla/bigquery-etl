@@ -4,7 +4,7 @@ Real implementation is in private-bigquery-etl
 */
 CREATE OR REPLACE FUNCTION udf.distribution_model_ga_metrics()
 RETURNS STRING AS (
-  (SELECT 'helloworld' AS distribution_model)
+  'helloworld'
 );
 
 SELECT

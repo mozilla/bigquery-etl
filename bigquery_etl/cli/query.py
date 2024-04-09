@@ -2111,7 +2111,7 @@ def deploy(
             _attach_metadata(query_file_path, table)
 
             if not table.created:
-                client.create_table(table)
+                client.create_table(table, exists_ok=True)
                 click.echo(f"Destination table {full_table_id} created.")
             elif not skip_existing:
                 client.update_table(
@@ -2166,6 +2166,15 @@ def _attach_metadata(query_file_path: Path, table: bigquery.Table) -> None:
                 metadata.bigquery.time_partitioning.require_partition_filter
             ),
             expiration_ms=metadata.bigquery.time_partitioning.expiration_ms,
+        )
+    elif metadata.bigquery and metadata.bigquery.range_paritioning:
+        table.range_partitioning = bigquery.RangePartitioning(
+            field=metadata.bigquery.range_partitioning.field,
+            range_=bigquery.PartitionRange(
+                start=metadata.bigquery.range_partitioning.range.start,
+                end=metadata.bigquery.range_partitioning.range.end,
+                interval=metadata.bigquery.range_partitioning.range.interval,
+            ),
         )
 
     if metadata.bigquery and metadata.bigquery.clustering:

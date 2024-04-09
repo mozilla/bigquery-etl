@@ -1,4 +1,3 @@
----
 friendly_name: FxA Users Last Seen
 description: |
   Usage aggregations per FxA user per day over a 28-day window.
@@ -8,9 +7,8 @@ description: |
   These fields are calculated from `fxa_users_daily_v1` table
   which only looks at the following category of events:
   auth, auth_bounce, content, oauth.
-
 owners:
-  - kik@mozilla.com
+- kik@mozilla.com
 labels:
   application: fxa
   incremental: true
@@ -29,4 +27,5 @@ bigquery:
     expiration_days: null
   clustering:
     fields:
-      - user_id
+    - user_id
+references: {}

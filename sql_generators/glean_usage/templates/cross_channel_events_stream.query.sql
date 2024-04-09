@@ -9,12 +9,10 @@ UNION ALL
 SELECT
   "{{ dataset }}" AS normalized_app_id,
   e.*
-  REPLACE(
-    {% if app_name == "fenix" -%}
-    mozfun.norm.fenix_app_info("{{ dataset }}", client_info.app_build).channel AS normalized_channel
-    {% elif datasets|length > 1 -%}
-    "{{ channel }}" AS normalized_channel
-    {% endif -%}
-  ),
-FROM `{{ project_id }}.{{ dataset }}_derived.events_stream` AS e
+  {% if app_name == "fenix" -%}
+  REPLACE(mozfun.norm.fenix_app_info("{{ dataset }}", client_info.app_build).channel AS normalized_channel),
+  {% elif datasets|length > 1 -%}
+  REPLACE("{{ channel }}" AS normalized_channel),
+  {% endif -%}
+FROM `{{ project_id }}.{{ dataset }}.events_stream` AS e
 {% endfor %}

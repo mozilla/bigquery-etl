@@ -2167,7 +2167,7 @@ def _attach_metadata(query_file_path: Path, table: bigquery.Table) -> None:
             ),
             expiration_ms=metadata.bigquery.time_partitioning.expiration_ms,
         )
-    elif metadata.bigquery and metadata.bigquery.range_paritioning:
+    elif metadata.bigquery and metadata.bigquery.range_partitioning:
         table.range_partitioning = bigquery.RangePartitioning(
             field=metadata.bigquery.range_partitioning.field,
             range_=bigquery.PartitionRange(

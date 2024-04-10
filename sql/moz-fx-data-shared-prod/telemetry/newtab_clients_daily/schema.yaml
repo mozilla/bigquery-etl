@@ -170,3 +170,6 @@ fields:
 - name: organic_pocket_saves
   type: INTEGER
   mode: NULLABLE
+- name: topsites_sponsored_enabled
+  type: BOOLEAN
+  mode: NULLABLE

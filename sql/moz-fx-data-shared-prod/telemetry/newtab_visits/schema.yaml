@@ -221,3 +221,6 @@ fields:
 - name: had_non_search_engagement
   type: BOOLEAN
   mode: NULLABLE
+- name: topsites_sponsored_enabled
+  type: BOOLEAN
+  mode: NULLABLE

@@ -19,14 +19,14 @@ RETURNS STRING AS (
 SELECT
   mozfun.assert.equals(
     udf.funnel_derived_clients(
-      channel,
-      os,
-      first_seen_date,
-      build_id,
-      attribution_source,
-      attribution_ua,
-      startup_profile_selection_reason,
-      distribution_id
+      'channel',
+      'os',
+      '2024-04-01',
+      'build_id',
+      'attribution_source',
+      'attribution_ua',
+      'startup_profile_selection_reason',
+      'distribution_id'
     ),
     'hello_universe'
   );

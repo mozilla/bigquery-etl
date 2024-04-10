@@ -2167,6 +2167,15 @@ def _attach_metadata(query_file_path: Path, table: bigquery.Table) -> None:
             ),
             expiration_ms=metadata.bigquery.time_partitioning.expiration_ms,
         )
+    elif metadata.bigquery and metadata.bigquery.range_partitioning:
+        table.range_partitioning = bigquery.RangePartitioning(
+            field=metadata.bigquery.range_partitioning.field,
+            range_=bigquery.PartitionRange(
+                start=metadata.bigquery.range_partitioning.range.start,
+                end=metadata.bigquery.range_partitioning.range.end,
+                interval=metadata.bigquery.range_partitioning.range.interval,
+            ),
+        )
 
     if metadata.bigquery and metadata.bigquery.clustering:
         table.clustering_fields = metadata.bigquery.clustering.fields

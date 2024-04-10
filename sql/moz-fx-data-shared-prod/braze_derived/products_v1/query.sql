@@ -17,6 +17,6 @@ WHERE
   SELECT
     MAX(last_modified_timestamp)
   FROM
-    `moz-fx-data-shared-prod.braze_external.products_v1` )
+    `moz-fx-data-shared-prod.braze_derived.products_v1` )
 GROUP BY
   fxa_id_sha256;

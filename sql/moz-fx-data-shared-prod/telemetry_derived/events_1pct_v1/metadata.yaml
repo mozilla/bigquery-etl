@@ -31,8 +31,4 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references:
-  init.sql:
-  - telemetry.events
-  query.sql:
-  - telemetry.events
+references: {}

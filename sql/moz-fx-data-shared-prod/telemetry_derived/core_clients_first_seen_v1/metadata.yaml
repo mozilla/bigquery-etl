@@ -5,14 +5,16 @@ owners:
 - data-platform-infra-wg@mozilla.com
 labels:
   owner1: data-platform-infra-wg
-bigquery: null
+bigquery:
+  time_partitioning:
+    type: day
+    field: first_seen_date
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+  clustering: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references:
-  init.sql:
-  - telemetry.core
-  query.sql:
-  - telemetry.core
-  - telemetry_derived.core_clients_first_seen_v1
+references: {}

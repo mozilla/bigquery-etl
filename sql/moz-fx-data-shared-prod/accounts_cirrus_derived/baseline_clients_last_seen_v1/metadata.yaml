@@ -42,8 +42,6 @@ workgroup_access:
 references:
   checks.sql:
   - ..
-  init.sql:
-  - accounts_cirrus_derived.baseline_clients_daily_v1
   query.sql:
   - accounts_cirrus_derived.baseline_clients_daily_v1
   - accounts_cirrus_derived.baseline_clients_last_seen_v1

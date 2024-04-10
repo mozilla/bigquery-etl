@@ -30,10 +30,6 @@ workgroup_access:
   members:
   - workgroup:mozilla-confidential
 references:
-  init.sql:
-  - mozillavpn.main
-  - org_mozilla_firefox_vpn.main
-  - org_mozilla_ios_firefoxvpn.main
   query.sql:
   - mozilla_vpn_derived.event_types_history_v1
   - mozillavpn.main

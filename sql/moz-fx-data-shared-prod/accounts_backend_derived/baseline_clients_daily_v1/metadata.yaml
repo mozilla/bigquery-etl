@@ -31,9 +31,6 @@ workgroup_access:
   members:
   - workgroup:mozilla-confidential
 references:
-  init.sql:
-  - accounts_backend_derived.baseline_clients_first_seen_v1
-  - accounts_backend_stable.baseline_v1
   query.sql:
   - accounts_backend_derived.baseline_clients_first_seen_v1
   - accounts_backend_stable.baseline_v1

@@ -24,7 +24,4 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references:
-  query.sql:
-  - telemetry.event_types
-  - telemetry_derived.deanonymized_events
+references: {}

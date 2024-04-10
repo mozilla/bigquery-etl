@@ -92,7 +92,11 @@ windowed AS (
   FROM
     with_date_offsets
   WHERE
-    submission_date = @submission_date
+    {% if is_init() %}
+      submission_date >= '2018-01-01'
+    {% else %}
+      submission_date = @submission_date
+    {% endif %}
   WINDOW
     w1 AS (
       PARTITION BY

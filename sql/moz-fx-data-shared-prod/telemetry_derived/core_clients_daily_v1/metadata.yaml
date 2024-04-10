@@ -26,7 +26,4 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references:
-  query.sql:
-  - core_clients_first_seen_v1
-  - telemetry.core
+references: {}

@@ -31,9 +31,6 @@ workgroup_access:
   members:
   - workgroup:mozilla-confidential
 references:
-  init.sql:
-  - monitor_cirrus_derived.baseline_clients_first_seen_v1
-  - monitor_cirrus_stable.baseline_v1
   query.sql:
   - monitor_cirrus_derived.baseline_clients_first_seen_v1
   - monitor_cirrus_stable.baseline_v1

@@ -42,8 +42,6 @@ workgroup_access:
   members:
   - workgroup:mozilla-confidential
 references:
-  init.sql:
-  - mozillavpn_backend_cirrus_stable.baseline_v1
   query.sql:
   - mozillavpn_backend_cirrus_derived.baseline_clients_first_seen_v1
   - mozillavpn_backend_cirrus_stable.baseline_v1

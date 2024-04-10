@@ -31,9 +31,6 @@ workgroup_access:
   members:
   - workgroup:mozilla-confidential
 references:
-  init.sql:
-  - mozphab_derived.baseline_clients_first_seen_v1
-  - mozphab_stable.baseline_v1
   query.sql:
   - mozphab_derived.baseline_clients_first_seen_v1
   - mozphab_stable.baseline_v1

@@ -42,8 +42,6 @@ workgroup_access:
 references:
   checks.sql:
   - ..
-  init.sql:
-  - firefox_desktop_background_update_derived.baseline_clients_daily_v1
   query.sql:
   - firefox_desktop_background_update_derived.baseline_clients_daily_v1
   - firefox_desktop_background_update_derived.baseline_clients_last_seen_v1

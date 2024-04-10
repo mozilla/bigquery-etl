@@ -1470,7 +1470,7 @@ dialect prefix</a> in the BigQuery Cloud Console.</p>
    - <code>table</code> must match a directory named like <code>{dataset}/{table}</code>, e.g.
      <code>telemetry_derived/clients_last_seen_v1</code>
    - <code>test_name</code> should start with <code>test_</code>, e.g. <code>test_single_day</code>
-   - If <code>test_name</code> is <code>test_init</code> or <code>test_script</code>, then the query will run <code>init.sql</code>
+   - If <code>test_name</code> is <code>test_init</code> or <code>test_script</code>, then the query with <code>is_init()</code> set to <code>true</code>
      or <code>script.sql</code> respectively; otherwise, the test will run <code>query.sql</code>
 1. Add <code>.yaml</code> files for input tables, e.g. <code>clients_daily_v6.yaml</code>
    - Include the dataset prefix if it's set in the tested query,
@@ -1500,15 +1500,8 @@ dialect prefix</a> in the BigQuery Cloud Console.</p>
 1. Optionally add <code>query_params.yaml</code> to define query parameters
    - <code>query_params</code> must be a list</p>
 <h2 id="init-tests">Init Tests</h2>
-<p>Tests of <code>init.sql</code> statements are supported, similarly to other generated tests.
+<p>Tests of <code>is_init()</code> statements are supported, similarly to other generated tests.
 Simply name the test <code>test_init</code>. The other guidelines still apply.</p>
-<p><em>Note</em>: Init SQL statements must contain a create statement with the dataset
-and table name, like so:</p>
-<div class="highlight"><pre><span></span><code><span class="k">CREATE</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">TABLE</span>
-<span class="w">  </span><span class="n">dataset</span><span class="p">.</span><span class="n">table_v1</span>
-<span class="k">AS</span>
-<span class="p">...</span>
-</code></pre></div>
 <h2 id="additional-guidelines-and-options">Additional Guidelines and Options</h2>
 <ul>
 <li>If the destination table is also an input table then <code>generated_time</code> should

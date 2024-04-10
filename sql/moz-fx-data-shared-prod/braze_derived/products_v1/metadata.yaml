@@ -1,0 +1,17 @@
+friendly_name: Braze Products
+description: |-
+  Products data coming from Stripe Subscriptions.
+  See https://mozilla-hub.atlassian.net/browse/DENG-3008
+owners:
+- cbeck@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  owner: cbeck
+bigquery:
+  time_partitioning:
+    type: day
+    field: last_modified_date
+    require_partition_filter: true
+scheduling:
+  dag_name: bqetl_braze

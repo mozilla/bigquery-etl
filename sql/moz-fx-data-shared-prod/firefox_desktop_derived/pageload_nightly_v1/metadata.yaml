@@ -19,5 +19,4 @@ bigquery:
   clustering:
     fields:
     - normalized_channel
-    - sample_id
 references: {}

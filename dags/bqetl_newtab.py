@@ -76,7 +76,7 @@ with DAG(
 
     telemetry_derived__newtab_clients_daily__v1 = bigquery_etl_query(
         task_id="telemetry_derived__newtab_clients_daily__v1",
-        destination_table="newtab_clients_daily_v1",
+        destination_table='newtab_clients_daily_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         owner="mbowerman@mozilla.com",
@@ -85,30 +85,33 @@ with DAG(
             "mbowerman@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
-        date_partition_parameter="submission_date",
+        date_partition_parameter=None,
         depends_on_past=False,
+        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
     )
 
     telemetry_derived__newtab_interactions__v1 = bigquery_etl_query(
         task_id="telemetry_derived__newtab_interactions__v1",
-        destination_table="newtab_interactions_v1",
+        destination_table='newtab_interactions_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         owner="anicholson@mozilla.com",
         email=["anicholson@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
+        date_partition_parameter=None,
         depends_on_past=False,
+        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
     )
 
     telemetry_derived__newtab_visits__v1 = bigquery_etl_query(
         task_id="telemetry_derived__newtab_visits__v1",
-        destination_table="newtab_visits_v1",
+        destination_table='newtab_visits_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         owner="anicholson@mozilla.com",
         email=["anicholson@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
+        date_partition_parameter=None,
         depends_on_past=False,
+        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
     )
 
     telemetry_derived__newtab_clients_daily__v1.set_upstream(

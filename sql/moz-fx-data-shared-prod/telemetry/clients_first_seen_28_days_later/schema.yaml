@@ -90,3 +90,12 @@ fields:
   mode: NULLABLE
   description: How the profile was selected during startup, as reported by the first
     ping received.
+- name: funnel_derived
+  type: STRING
+  mode: NULLABLE
+- name: distribution_model
+  type: STRING
+  mode: NULLABLE
+- name: partner_org
+  type: STRING
+  mode: NULLABLE

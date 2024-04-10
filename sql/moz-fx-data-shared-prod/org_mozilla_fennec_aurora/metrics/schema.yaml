@@ -673,6 +673,12 @@ fields:
       description: 'Whether or not the user has enabled the Debug Drawer feature.
 
         '
+    - name: tab_strip_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether or not the tab strip feature is enabled
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -3115,8 +3121,7 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream. (Migrated from
-        the geckoview metric of the same name).
+      description: 'Failure occurs when initializing the audio stream.
 
         '
     - name: glean_validation_pings_submitted

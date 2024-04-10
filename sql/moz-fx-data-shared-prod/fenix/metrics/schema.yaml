@@ -366,6 +366,9 @@ fields:
     - name: debug_drawer_debug_drawer_enabled
       type: BOOLEAN
       mode: NULLABLE
+    - name: tab_strip_enabled
+      type: BOOLEAN
+      mode: NULLABLE
   - name: counter
     type: RECORD
     mode: NULLABLE

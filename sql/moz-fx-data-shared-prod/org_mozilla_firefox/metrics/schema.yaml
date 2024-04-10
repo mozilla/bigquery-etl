@@ -673,6 +673,12 @@ fields:
       description: 'Whether or not the user has enabled the Debug Drawer feature.
 
         '
+    - name: tab_strip_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether or not the tab strip feature is enabled
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE

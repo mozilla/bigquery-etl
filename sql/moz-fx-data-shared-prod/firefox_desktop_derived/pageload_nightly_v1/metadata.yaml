@@ -3,9 +3,10 @@ description: |-
   Contains pings from nightly channel only from pageload_v1
 owners:
 - wichan@mozilla.com
+- acreskey@mozilla.com
+- dpalmeiro@mozilla.com
 labels:
   incremental: true
-  owner1: wichan
 scheduling:
   dag_name: bqetl_pageload_v1
   task_name: firefox_desktop_pageload_nightly__v1

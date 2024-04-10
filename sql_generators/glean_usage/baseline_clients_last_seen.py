@@ -4,7 +4,13 @@ from sql_generators.glean_usage.common import GleanTable
 
 TARGET_TABLE_ID = "baseline_clients_last_seen_v1"
 PREFIX = "last_seen"
-USAGE_TYPES = ("seen", "active", "created_profile", "seen_session_start", "seen_session_end")
+USAGE_TYPES = (
+    "seen",
+    "active",
+    "created_profile",
+    "seen_session_start",
+    "seen_session_end",
+)
 
 
 class BaselineClientsLastSeenTable(GleanTable):
@@ -18,4 +24,3 @@ class BaselineClientsLastSeenTable(GleanTable):
         self.custom_render_kwargs = dict(
             usage_types=USAGE_TYPES,
         )
-        self.no_init = False

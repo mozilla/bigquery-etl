@@ -22,8 +22,6 @@
 - Must produce similar results when run multiple times
   - Should produce identical results when run multiple times
 - May depend on the previous partition
-  - If using previous partition, must include an `init.sql` query to initialize the
-    table, e.g. `sql/moz-fx-data-shared-prod/telemetry_derived/clients_last_seen_v1/init.sql`
   - Should be impacted by values from a finite number of preceding partitions
     - This allows for backfilling in chunks instead of serially for all time
       and limiting backfills to a certain number of days following updated data

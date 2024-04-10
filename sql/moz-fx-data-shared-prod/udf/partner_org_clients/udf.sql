@@ -8,4 +8,4 @@ RETURNS STRING AS (
 );
 
 SELECT
-  mozfun.assert.equals(udf.partner_org_clients('abc'), 'hello world');
+  mozfun.assert.equals(udf.partner_org_clients('abc'), 'hello_world');

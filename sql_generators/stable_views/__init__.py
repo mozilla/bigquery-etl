@@ -32,6 +32,30 @@ FROM
   `{target}`
 """
 
+#Still need to figure out how to get the view mozdata.firefox_installer.install 
+#to use this template and not the other one
+MOZDATA_FIREFOX_INSTALLER_INSTALL_VIEW_QUERY_TEMPLATE = """\
+-- Generated via ./bqetl generate stable_views
+CREATE OR REPLACE VIEW
+    `{full_view_id}`
+AS
+SELECT
+  * REPLACE(
+    {replacements}),
+  `moz-fx-data-shared-prod`.udf.funnel_derived_installs(
+        silent, 
+        update_channel,
+        submission_timestamp, 
+        build_id, 
+        attribution, 
+        distribution_id
+    ) AS funnel_derived,
+  `moz-fx-data-shared-prod`.udf.distribution_model_installs(distribution_id) AS distribution_model,
+  `moz-fx-data-shared-prod`.udf.partner_org_installs(distribution_id) AS partner_org
+FROM
+  `{target}`
+"""
+
 VIEW_METADATA_TEMPLATE = """\
 # Generated via ./bqetl generate stable_views
 ---

@@ -47,7 +47,6 @@ class GleanAppPingViews(GleanTable):
     def __init__(self):
         """Initialize Glean ping view."""
         GleanTable.__init__(self)
-        self.no_init = True
         self.per_app_id_enabled = False
         self.per_app_enabled = True
 

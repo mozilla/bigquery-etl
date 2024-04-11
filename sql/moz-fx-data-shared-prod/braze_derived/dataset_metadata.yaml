@@ -1,0 +1,14 @@
+friendly_name: Braze Derived
+description: |-
+  Dataset with tables that combine source data
+  as a source of truth for transformations into the braze_external dataset.
+dataset_base_acl: derived_restricted
+user_facing: false
+labels: {}
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:braze
+  - role: roles/bigquery.dataEditor
+    members:
+      - workgroup:braze/writers

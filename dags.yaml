@@ -1430,7 +1430,11 @@ bqetl_telemetry_dev_cycle:
     retries: 2
     retry_delay: 30m
     start_date: '2023-12-19'
-  description: DAG for Telemetry Dev Cycle Dashboard
+  description: |
+    DAG for Telemetry Dev Cycle Dashboard
+
+    Airflow Triage Note:
+    The tables are build every day so only the last run needs to be successful.
   repo: bigquery-etl
   schedule_interval: 0 18 * * *
   tags:

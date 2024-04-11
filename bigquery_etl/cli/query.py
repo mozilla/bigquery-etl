@@ -114,13 +114,6 @@ def query(ctx):
     default="example@mozilla.com",
 )
 @click.option(
-    "--init",
-    "-i",
-    help="Create an init.sql file to initialize the table",
-    default=False,
-    is_flag=True,
-)
-@click.option(
     "--dag",
     "-d",
     help=(
@@ -144,7 +137,7 @@ def query(ctx):
     is_flag=True,
 )
 @click.pass_context
-def create(ctx, name, sql_dir, project_id, owner, init, dag, no_schedule):
+def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule):
     """CLI command for creating a new query."""
     # create directory structure for query
     try:
@@ -233,20 +226,6 @@ def create(ctx, name, sql_dir, project_id, owner, init, dag, no_schedule):
         ),
     )
     metadata.write(metadata_file)
-
-    # optionally create init.sql
-    if init:
-        init_file = derived_path / "init.sql"
-        init_file.write_text(
-            reformat(
-                f"""
-                -- SQL for initializing the query destination table.
-                CREATE OR REPLACE TABLE
-                  `{ConfigLoader.get('default', 'project', fallback="moz-fx-data-shared-prod")}.{dataset}.{name}{version}`
-                AS SELECT * FROM table"""
-            )
-            + "\n"
-        )
 
     dataset_metadata_file = derived_path.parent / "dataset_metadata.yaml"
     if not dataset_metadata_file.exists():
@@ -1291,7 +1270,7 @@ def _initialize_in_parallel(
         - Create the table if it doesn't exist and run a full backfill.
         - Run a full backfill if the table exists and is empty.
         - Raise an exception if the table exists and has data, or if the table exists and the schema doesn't match the query.
-       It supports `query.sql` files that use the is_init() pattern, and `init.sql` files.
+       It supports `query.sql` files that use the is_init() pattern.
        To run in parallel per sample_id, include a @sample_id parameter in the query.
 
        Examples:
@@ -1356,9 +1335,6 @@ def initialize(
         table = None
 
         sql_content = query_file.read_text()
-        init_files = list(
-            map(Path, glob(f"{query_file.parent}/**/init.sql", recursive=True))
-        )
         materialized_views = list(
             map(
                 Path,
@@ -1367,7 +1343,7 @@ def initialize(
         )
 
         # check if the provided file can be initialized and whether existing ones should be skipped
-        if "is_init()" in sql_content or len(init_files) > 0:
+        if "is_init()" in sql_content:
             try:
                 table = client.get_table(full_table_id)
                 if skip_existing:
@@ -1446,7 +1422,7 @@ def initialize(
                         },
                     )
             else:
-                for file in init_files + materialized_views:
+                for file in materialized_views:
                     with open(file) as init_file_stream:
                         init_sql = init_file_stream.read()
                         job_config = bigquery.QueryJobConfig(
@@ -2180,6 +2156,15 @@ def _attach_metadata(query_file_path: Path, table: bigquery.Table) -> None:
                 metadata.bigquery.time_partitioning.require_partition_filter
             ),
             expiration_ms=metadata.bigquery.time_partitioning.expiration_ms,
+        )
+    elif metadata.bigquery and metadata.bigquery.range_partitioning:
+        table.range_partitioning = bigquery.RangePartitioning(
+            field=metadata.bigquery.range_partitioning.field,
+            range_=bigquery.PartitionRange(
+                start=metadata.bigquery.range_partitioning.range.start,
+                end=metadata.bigquery.range_partitioning.range.end,
+                interval=metadata.bigquery.range_partitioning.range.interval,
+            ),
         )
 
     if metadata.bigquery and metadata.bigquery.clustering:

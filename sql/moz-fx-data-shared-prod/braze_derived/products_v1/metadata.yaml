@@ -1,6 +1,6 @@
 friendly_name: Braze Products
 description: |-
-  Products data coming from Stripe Subscriptions.
+  Product data from Stripe Subscriptions.
   See https://mozilla-hub.atlassian.net/browse/DENG-3008
 owners:
 - cbeck@mozilla.com

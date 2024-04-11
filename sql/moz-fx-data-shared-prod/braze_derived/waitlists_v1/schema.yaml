@@ -35,4 +35,4 @@ fields:
   type: TIMESTAMP
 - mode: NULLABLE
   name: last_modified_date
-  type: TIMESTAMP
+  type: DATE

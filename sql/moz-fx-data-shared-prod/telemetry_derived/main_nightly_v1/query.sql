@@ -11,4 +11,8 @@ FROM
   telemetry_stable.main_v5
 WHERE
   normalized_channel = 'nightly'
-  AND DATE(submission_timestamp) = @submission_date
+  {% if not is_init() %}
+    AND DATE(submission_timestamp) = @submission_date
+  {% else %}
+    AND FALSE
+  {% endif %}

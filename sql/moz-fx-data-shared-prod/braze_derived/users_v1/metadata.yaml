@@ -1,0 +1,23 @@
+friendly_name: Braze Users
+description: |-
+  User Data from the CTMS emails table
+  
+  See https://mozilla-hub.atlassian.net/browse/DENG-3008
+owners:
+- cbeck@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  owner: cbeck
+bigquery:
+  time_partitioning:
+    type: day
+    field: last_modified_date
+    require_partition_filter: true
+  clustering:
+    fields:
+    - email_subscribe
+    - email_lang
+    - mailing_country
+scheduling:
+  dag_name: bqetl_braze

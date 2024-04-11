@@ -1,6 +1,7 @@
-friendly_name: Braze Subscriptions
+friendly_name: Braze Newsletters
 description: |-
-  Newsletter Subscriptions Data from CTMS and Acoustic.
+  Newsletter Subscription Data from CTMS and Acoustic.
+  
   See https://mozilla-hub.atlassian.net/browse/DENG-3008
 owners:
 - cbeck@mozilla.com

@@ -82,14 +82,27 @@ RETURNS ARRAY<
       aggregated_data
   )
 );
-
+WITH preconditions AS (
+  SELECT
+    IF (
+      (
+        SELECT
+          MAX(submission_date)
+        FROM
+          clients_histogram_aggregates_v2
+      ) = DATE_SUB(DATE(@submission_date), INTERVAL 1 DAY), TRUE,
+      ERROR('Pre-condition failed: Current submission_date parameter skips a day or more of data.')
+    ) histogram_aggregates_up_to_date
+)
 WITH clients_histogram_aggregates_new AS (
   SELECT
-    *
+    * EXCEPT(histogram_aggregates_up_to_date)
   FROM
-    telemetry_derived.clients_histogram_aggregates_new_v1
+    telemetry_derived.clients_histogram_aggregates_new_v1,
+    preconditions
   WHERE
-    sample_id >= 0
+    preconditions.histogram_aggregates_up_to_date
+    AND sample_id >= 0
     AND sample_id <= 99
 ),
 clients_histogram_aggregates_partition AS (
@@ -119,7 +132,6 @@ clients_histogram_aggregates_old AS (
 ),
 merged AS (
   SELECT
-    old_data.submission_date AS old_sub_date,
     COALESCE(old_data.sample_id, new_data.sample_id) AS sample_id,
     COALESCE(old_data.client_id, new_data.client_id) AS client_id,
     COALESCE(old_data.os, new_data.os) AS os,
@@ -155,11 +167,6 @@ SELECT
   app_version,
   app_build_id,
   channel,
-  CASE
-    old_sub_date
-    WHEN DATE_SUB(DATE(@submission_date), INTERVAL 1 DAY)
-      THEN udf_merged_user_data(old_aggs, new_aggs)
-    ELSE udf_use_old_data(old_aggs)
-  END AS histogram_aggregates
+  udf_merged_user_data(old_aggs, new_aggs) AS histogram_aggregates
 FROM
   merged

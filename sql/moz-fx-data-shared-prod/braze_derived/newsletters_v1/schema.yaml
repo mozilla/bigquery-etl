@@ -1,0 +1,29 @@
+fields:
+- mode: NULLABLE
+  name: email_id
+  type: STRING
+- fields:
+  - mode: NULLABLE
+    name: newsletter_name
+    type: STRING
+  - mode: NULLABLE
+    name: subscribed
+    type: STRING
+  - mode: NULLABLE
+    name: newsletter_lang
+    type: STRING
+  - mode: NULLABLE
+    name: create_timestamp
+    type: TIMESTAMP
+  - mode: NULLABLE
+    name: update_timestamp
+    type: TIMESTAMP
+  mode: REPEATED
+  name: newsletters
+  type: RECORD
+- mode: NULLABLE
+  name: last_modified_timestamp
+  type: TIMESTAMP
+- mode: NULLABLE
+  name: last_modified_date
+  type: DATE

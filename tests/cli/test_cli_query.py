@@ -610,7 +610,6 @@ class TestQuery:
             ]
 
             assert check_call.call_count == 2
-            print(check_call.call_args_list)
 
             for call in check_call.call_args_list:
                 submission_date_params = [

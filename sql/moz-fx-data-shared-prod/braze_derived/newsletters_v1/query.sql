@@ -1,5 +1,5 @@
 SELECT
-  email_id,
+  email_id AS external_id,
   ARRAY_AGG( STRUCT( name AS newsletter_name,
       subscribed,
       lang AS newsletter_lang,

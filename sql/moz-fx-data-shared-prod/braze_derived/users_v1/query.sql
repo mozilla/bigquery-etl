@@ -27,7 +27,7 @@ WITH
   WHERE
     s.email IS NULL )
 SELECT
-  email_id,
+  email_id AS external_id,
   email,
   mailing_country,
   email_subscribe,

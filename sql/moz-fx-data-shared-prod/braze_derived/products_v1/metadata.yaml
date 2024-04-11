@@ -5,13 +5,11 @@ description: |-
 owners:
 - cbeck@mozilla.com
 labels:
-  incremental: true
+  incremental: false
   schedule: daily
   owner: cbeck
 bigquery:
-  time_partitioning:
-    type: day
-    field: last_modified_date
-    require_partition_filter: true
+  time_partitioning: null 
 scheduling:
   dag_name: bqetl_braze
+  date_partition_parameter: null

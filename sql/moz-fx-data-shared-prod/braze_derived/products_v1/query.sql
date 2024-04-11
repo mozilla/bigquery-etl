@@ -12,11 +12,5 @@ SELECT
   DATE(@submission_date) AS last_modified_date
 FROM
   `moz-fx-data-shared-prod.subscription_platform_derived.stripe_subscriptions_v1`
-WHERE
-  event_timestamp > (
-  SELECT
-    MAX(last_modified_timestamp)
-  FROM
-    `moz-fx-data-shared-prod.braze_derived.products_v1` )
 GROUP BY
   fxa_id_sha256;

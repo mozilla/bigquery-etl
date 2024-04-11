@@ -9,11 +9,5 @@ SELECT
   DATE(@submission_date) AS last_modified_date
 FROM
   `moz-fx-data-shared-prod.ctms_braze.ctms_newsletters`
-WHERE
-  update_timestamp > (
-  SELECT
-    MAX(last_modified_timestamp)
-  FROM
-    `moz-fx-data-shared-prod.braze_derived.newsletters_v1` )
 GROUP BY
   email_id;

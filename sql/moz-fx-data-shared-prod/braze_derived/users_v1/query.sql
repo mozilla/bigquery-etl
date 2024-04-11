@@ -21,16 +21,11 @@ WITH
   FROM
     `moz-fx-data-shared-prod.ctms_braze.ctms_emails` e
   LEFT JOIN
-    `moz-fx-data-shared-prod.braze_derived.suppressions` s
+    `moz-fx-data-shared-prod.braze_derived.suppressions_v1` s
   ON
     LOWER(e.primary_email) = s.email
   WHERE
-    s.email IS NULL
-    AND update_timestamp > (
-    SELECT
-      MAX(last_modified_timestamp)
-    FROM
-      `moz-fx-data-shared-prod.braze_derived.users_v1` ) )
+    s.email IS NULL )
 SELECT
   email_id,
   email,
@@ -44,4 +39,3 @@ SELECT
   DATE(@submission_date) AS last_modified_date
 FROM
   exclusions;
-  

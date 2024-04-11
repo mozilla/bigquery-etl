@@ -8,7 +8,7 @@ fields:
     type: STRING
   - mode: NULLABLE
     name: subscribed
-    type: STRING
+    type: BOOLEAN
   - mode: NULLABLE
     name: newsletter_lang
     type: STRING

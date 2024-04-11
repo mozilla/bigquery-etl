@@ -47,3 +47,9 @@ fields:
 - mode: NULLABLE
   name: total_search_terms_appearing_in_allow_list
   type: INTEGER
+- mode: NULLABLE
+  name: total_search_terms
+  type: INTEGER
+- mode: NULLABLE
+  name: contained_blank
+  type: INTEGER

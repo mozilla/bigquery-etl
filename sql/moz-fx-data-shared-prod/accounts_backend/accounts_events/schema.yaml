@@ -404,7 +404,7 @@ fields:
       description: 'The source from where the user started.  For example, if the user
         clicked on a
 
-        link on the Firefox accounts web site, this value could be ''fx-website''.  The
+        link on the Mozilla accounts web site, this value could be ''fx-website''.  The
 
         value has a max length of 128 characters with the alphanumeric characters,
         _

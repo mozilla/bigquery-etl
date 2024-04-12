@@ -5,6 +5,7 @@
     We discovered a missing field in `newtab_visits_v1`. Added it in https://github.com/mozilla/bigquery-etl/pull/5345.
     Now we need to backfill for its entire history so we can use this field downstream.
   watchers:
+    - sbetancourt@mozilla.com
     - mbowerman@mozilla.com
     - anicholson@mozilla.com
     - wichan@mozilla.com

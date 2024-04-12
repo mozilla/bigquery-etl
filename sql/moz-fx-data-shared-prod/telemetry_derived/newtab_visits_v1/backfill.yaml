@@ -1,9 +1,9 @@
 2024-04-12:
   start_date: 2022-11-01
-  end_date: 2023-02-28
+  end_date: 2024-04-10
   reason:
     We discovered a missing field in `newtab_visits_v1`. Added it in https://github.com/mozilla/bigquery-etl/pull/5345.
-    Now we need to backfill for its entire history so we can use this field downstream. Breaking down backfill to be safe.
+    Now we need to backfill for its entire history so we can use this field downstream.
   watchers:
     - mbowerman@mozilla.com
     - anicholson@mozilla.com

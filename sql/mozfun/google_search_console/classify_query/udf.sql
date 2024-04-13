@@ -15,7 +15,7 @@ RETURNS STRING AS (
               'f5ref6',
               'fair box',
               'fairbox',
-              'faiya-fokkusu',
+              'faiya-fokkusu',  -- fire fox (Japanese)
               'feier',
               'ff browser',
               'ff download',
@@ -29,7 +29,7 @@ RETURNS STRING AS (
               'frefx',
               'frox',
               'furefix',
-              'huohu',  -- firefox
+              'huohu',  -- firefox (Chinese)
               'illa',
               'ireox',
               'm o z i l l a . o r g',
@@ -67,106 +67,106 @@ RETURNS STRING AS (
               'thunderbird',
               'vox',
               'zila',
-              'μοζζιλα',  -- mozilla
-              'μοζζιλλα',  -- mozilla
-              'μοζιλα',  -- mozilla
-              'μοζιλλα',  -- mozilla
-              'μονζιλα',  -- monzilla
-              'ашкуащч',  -- ashkuashtch
-              'лиса',  -- fox
-              'лиса',  -- Fox
-              'мазила',
-              'мазилла',  -- mazilla
-              'мазилу',
-              'мазіла',
-              'мазілу',
-              'моззила',  -- mozilla
-              'мозила',
-              'мозилла',  -- mozilla
-              'мозилла',  -- mozilla
-              'мозилу',
-              'мозилы',
-              'мозіла',  -- mozilla
-              'мозілла',  -- mozilla
-              'мозілу',  -- mozilu
-              'музила',
-              'фаерфокс',  -- firefox
-              'фаєрфокс',  -- firefox
-              'файрфокс',  -- firefox
-              'фокс',  -- fox
-              'фокс',  -- Fox
-              'фох',  -- foh
-              'фоь',  -- fo
-              'ьфяшддф',  -- Fyashddf
-              'ьфяшдф',  -- fyashdf
-              'ьщяшддф',  -- Shsyashddf
-              'ьщяшддфющкп',  -- Shtyashddfyshkp
-              'ьщяшдф',  -- yshchyashdf
-              'כןרקכםס',  -- Yes, Rakhems
-              'מוזילה',  -- Mozilla
-              'פיירפוקס',  -- Firefox
-              'فاكس',  -- fax
-              'فاير فوكس',  -- Firefox
-              'فاير',  -- Fire
-              'فايرفو',  -- Firevo
-              'فایرفاکس',  -- Firefox
-              'فكس',  -- FX
-              'فوكس',  -- Fox
-              'فوكس',  -- Fox
-              'فير فكس',  -- FireFX
-              'فير فوكس',  -- Firefox
-              'فير فوكس',  -- Firefox browser
-              'فير',  -- Ver
-              'فيرفكس',  -- Firefox
-              'فيرفوكس',  -- Firefox
-              'فيرفيكس',  -- Firefox
-              'فيروفكس',  -- Firefox
-              'فيروكس',  -- ferox
-              'موزلا',  -- Mozilla
-              'موزيل',  -- Moselle
-              'موزيلا',  -- Mozilla
-              'موزیلا',  -- Mozilla
-              'موزیلافاير فوكس',  -- Mozilla Firefox
-              'फायरफॉक्स',  -- Firefox
-              'मोजिला फायरफक्स',  -- mozilla firefox
-              'मोज़िला फायरफॉक्स',  -- Mozilla Firefox
-              'मोज़िला फ़ायरफ़ॉक्स',  -- Mozilla Firefox
-              'मोज़िला',  -- Mozilla
-              'মজিলা ফায়ারফক্স',  -- Mozilla Firefox
-              'মোজিলা',  -- Mozilla
-              'ดฟายฟอก',  -- FireFoak
-              'ฟายฟอก',  -- bleach
-              'ฟายฟ๊อก',  -- Firefox
-              'ไฟ ฟอก',  -- fire bleach
-              'ไฟฟ็อก',  -- fire fox
-              'ไฟฟ๊อก',  -- fire fox
-              'ไฟฟ๊อก',  -- Firefox
-              'ไฟฟอก',  -- purifying light
-              'ไฟร์ฟอกซ์',  -- Firefox
-              'ไฟล์ฟอก',  -- bleaching file
-              'ไฟลฟอก',  -- Fire bleach
-              'หมาไฟ',  -- fire dog
-              '인터넷브라우저',  -- internet browser
-              '파이어',  -- fire
-              '파폭',  -- explosion
-              '폭스',  -- fox
-              'ファイアーフォックス ダウンロード',  -- firefox download
-              'ファイアーフォックス',  -- firefox
-              'ふぁいあーふぉっくす',  -- Fireworks
-              'ファイアフォックス',  -- firefox
-              'ふぁいあふぉっくす',  -- Fireworks
-              'ファイヤー フォックス',  -- fire fox
-              'ふぁいやーふぉっくす',  -- Faiya Fox
-              'ファイヤーフォックス',  -- firefox
-              'ファイヤーホックス',  -- fire hox
-              'ファイヤフォックス',  -- firefox
-              'ファイやフォックス',  -- Phi and Fox
-              'ふぃれふぉx',  -- firefox
-              'ふぃれふぉｘ',  -- Firefox
-              'モジラ',  -- Mozilla
-              '火孤',  -- Huo Gu
-              '火狐',  -- Firefox
-              '狐狸'  -- fox
+              'μοζζιλα',  -- mozilla (Greek)
+              'μοζζιλλα',  -- mozilla (Greek)
+              'μοζιλα',  -- mozilla (Greek)
+              'μοζιλλα',  -- mozilla (Greek)
+              'μονζιλα',  -- monzilla (Greek)
+              'ашкуащч',  -- ashkuashtch (Cyrillic)
+              'лиса',  -- fox (Cyrillic)
+              'лиса',  -- fox (Cyrillic)
+              'мазила',  -- mazila (Cyrillic)
+              'мазилла',  -- mazilla (Cyrillic)
+              'мазилу',  -- mazilu (Cyrillic)
+              'мазіла',  -- mazila (Cyrillic)
+              'мазілу',  -- mazilu (Cyrillic)
+              'моззила',  -- mozilla (Cyrillic)
+              'мозила',  -- mozila (Cyrillic)
+              'мозилла',  -- mozilla (Cyrillic)
+              'мозилла',  -- mozilla (Cyrillic)
+              'мозилу',  -- mozilu (Cyrillic)
+              'мозилы',  -- mozily (Cyrillic)
+              'мозіла',  -- mozilla (Cyrillic)
+              'мозілла',  -- mozilla (Cyrillic)
+              'мозілу',  -- mozilu (Cyrillic)
+              'музила',  -- muzila (Cyrillic)
+              'фаерфокс',  -- firefox (Cyrillic)
+              'фаєрфокс',  -- firefox (Cyrillic)
+              'файрфокс',  -- firefox (Cyrillic)
+              'фокс',  -- fox (Cyrillic)
+              'фокс',  -- fox (Cyrillic)
+              'фох',  -- foh (Cyrillic)
+              'фоь',  -- fo (Cyrillic)
+              'ьфяшддф',  -- fyashddf (Cyrillic)
+              'ьфяшдф',  -- fyashdf (Cyrillic)
+              'ьщяшддф',  -- shsyashddf (Cyrillic)
+              'ьщяшддфющкп',  -- shtyashddfyshkp (Cyrillic)
+              'ьщяшдф',  -- yshchyashdf (Cyrillic)
+              'כןרקכםס',  -- yes, rakhems (Hebrew)
+              'מוזילה',  -- mozilla (Hebrew)
+              'פיירפוקס',  -- firefox (Hebrew)
+              'فاكس',  -- fax (Arabic)
+              'فاير فوكس',  -- firefox (Arabic)
+              'فاير',  -- fire (Arabic)
+              'فايرفو',  -- firevo (Arabic)
+              'فایرفاکس',  -- firefox (Arabic)
+              'فكس',  -- fx (Arabic)
+              'فوكس',  -- fox (Arabic)
+              'فوكس',  -- fox (Arabic)
+              'فير فكس',  -- firefx (Arabic)
+              'فير فوكس',  -- firefox (Arabic)
+              'فير فوكس',  -- firefox browser (Arabic)
+              'فير',  -- ver (Arabic)
+              'فيرفكس',  -- firefox (Arabic)
+              'فيرفوكس',  -- firefox (Arabic)
+              'فيرفيكس',  -- firefox (Arabic)
+              'فيروفكس',  -- firefox (Arabic)
+              'فيروكس',  -- ferox (Arabic)
+              'موزلا',  -- mozilla (Arabic)
+              'موزيل',  -- moselle (Arabic)
+              'موزيلا',  -- mozilla (Arabic)
+              'موزیلا',  -- mozilla (Arabic)
+              'موزیلافاير فوكس',  -- mozilla firefox (Arabic)
+              'फायरफॉक्स',  -- firefox (Indic)
+              'मोजिला फायरफक्स',  -- mozilla firefox (Indic)
+              'मोज़िला फायरफॉक्स',  -- mozilla firefox (Indic)
+              'मोज़िला फ़ायरफ़ॉक्स',  -- mozilla firefox (Indic)
+              'मोज़िला',  -- mozilla (Indic)
+              'মজিলা ফায়ারফক্স',  -- mozilla firefox (Indic)
+              'মোজিলা',  -- mozilla (Indic)
+              'ดฟายฟอก',  -- firefoak (Thai)
+              'ฟายฟอก',  -- bleach (Thai)
+              'ฟายฟ๊อก',  -- firefox (Thai)
+              'ไฟ ฟอก',  -- fire bleach (Thai)
+              'ไฟฟ็อก',  -- fire fox (Thai)
+              'ไฟฟ๊อก',  -- fire fox (Thai)
+              'ไฟฟ๊อก',  -- firefox (Thai)
+              'ไฟฟอก',  -- purifying light (Thai)
+              'ไฟร์ฟอกซ์',  -- firefox (Thai)
+              'ไฟล์ฟอก',  -- bleaching file (Thai)
+              'ไฟลฟอก',  -- fire bleach (Thai)
+              'หมาไฟ',  -- fire dog (Thai)
+              '인터넷브라우저',  -- internet browser (Korean)
+              '파이어',  -- fire (Korean)
+              '파폭',  -- explosion (Korean)
+              '폭스',  -- fox (Korean)
+              'ファイアーフォックス ダウンロード',  -- firefox download (Japanese)
+              'ファイアーフォックス',  -- firefox (Japanese)
+              'ふぁいあーふぉっくす',  -- fireworks (Japanese)
+              'ファイアフォックス',  -- firefox (Japanese)
+              'ふぁいあふぉっくす',  -- fireworks (Japanese)
+              'ファイヤー フォックス',  -- fire fox (Japanese)
+              'ふぁいやーふぉっくす',  -- faiya fox (Japanese)
+              'ファイヤーフォックス',  -- firefox (Japanese)
+              'ファイヤーホックス',  -- fire hox (Japanese)
+              'ファイヤフォックス',  -- firefox (Japanese)
+              'ファイやフォックス',  -- phi and fox (Japanese)
+              'ふぃれふぉx',  -- firefox (Japanese)
+              'ふぃれふぉｘ',  -- firefox (Japanese)
+              'モジラ',  -- mozilla (Japanese)
+              '火孤',  -- firefox (Chinese)
+              '火狐',  -- firefox (Chinese)
+              '狐狸'  -- fox (Chinese)
             ],
             r'\E|\Q'
           ),

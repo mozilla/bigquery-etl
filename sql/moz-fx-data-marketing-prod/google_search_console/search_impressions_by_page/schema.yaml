@@ -43,6 +43,15 @@ fields:
   description: |-
     The search query.
     This will be null for anonymized search impressions, and all Discover and Google News search impressions.
+- name: query_type
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Type of search query:
+      * Anonymized: Query was redacted by Google to protect the users' privacy.
+      * Brand: Query contained one or more Mozilla brand keywords.
+      * Non-Brand: Query didn't contain any Mozilla brand keywords.
+    This will be null for all Discover and Google News search impressions.
 - name: is_anonymized
   type: BOOLEAN
   mode: NULLABLE

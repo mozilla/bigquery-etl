@@ -17,6 +17,14 @@ fields:
   type: STRING
   mode: NULLABLE
   description: The search query.
+- name: query_type
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Type of search query:
+      * Anonymized: Query was redacted by Google to protect the users' privacy.
+      * Brand: Query contained one or more Mozilla brand keywords.
+      * Non-Brand: Query didn't contain any Mozilla brand keywords.
 - name: is_anonymized
   type: BOOLEAN
   mode: NULLABLE

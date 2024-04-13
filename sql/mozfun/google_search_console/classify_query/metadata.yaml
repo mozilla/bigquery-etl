@@ -1,0 +1,3 @@
+friendly_name: Classify Query
+description: >-
+  Classify a Google search query as "Anonymized", "Brand", or "Non-Brand".

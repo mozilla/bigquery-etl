@@ -27,7 +27,7 @@ WITH keyword_site_report_by_site_union AS (
 SELECT
   `date`,
   site AS site_url,
-  REGEXP_EXTRACT(site, r'^(?:https?://|sc-domain:)([^/]+)') AS site_domain_name,
+  mozfun.google_search_console.extract_url_domain_name(site) AS site_domain_name,
   keyword AS query,
   INITCAP(search_type) AS search_type,
   UPPER(country) AS country_code,

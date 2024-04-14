@@ -28,7 +28,7 @@ WITH searchdata_site_impression_union AS (
 SELECT
   data_date AS `date`,
   site_url,
-  REGEXP_EXTRACT(site_url, r'^(?:https?://|sc-domain:)([^/]+)') AS site_domain_name,
+  mozfun.google_search_console.extract_url_domain_name(site_url) AS site_domain_name,
   query,
   is_anonymized_query AS is_anonymized,
   INITCAP(REPLACE(search_type, '_', ' ')) AS search_type,

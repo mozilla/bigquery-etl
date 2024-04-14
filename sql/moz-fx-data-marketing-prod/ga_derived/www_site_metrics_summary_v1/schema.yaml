@@ -44,3 +44,12 @@ fields:
 - name: non_fx_downloads
   type: INTEGER
   mode: NULLABLE
+- name: funnel_derived
+  type: STRING
+  mode: NULLABLE
+- name: distribution_model
+  type: STRING
+  mode: NULLABLE
+- name: partner_org
+  type: STRING
+  mode: NULLABLE

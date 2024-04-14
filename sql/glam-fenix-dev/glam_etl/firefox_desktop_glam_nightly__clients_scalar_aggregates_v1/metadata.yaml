@@ -4,3 +4,15 @@ description: |-
   [DESCRIPTION_MISSING]
 owners:
 - efilho@mozilla.com
+bigquery:
+  range_partitioning:
+    field: app_version
+    range:
+      start: 0
+      end: 100
+      interval: 1
+  clustering:
+    fields:
+    - app_version
+    - channel
+    - client_id

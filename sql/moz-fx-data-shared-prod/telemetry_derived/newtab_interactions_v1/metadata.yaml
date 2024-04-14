@@ -11,6 +11,7 @@ labels:
   owner1: anicholson
 scheduling:
   dag_name: bqetl_newtab
+  date_partition_offset: -1
 bigquery:
   time_partitioning:
     type: day

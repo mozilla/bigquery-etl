@@ -10,7 +10,7 @@ WITH fenix_distribution_id AS (
     sample_id,
     distribution_id,
   FROM
-    `moz-fx-data-shared-prod.fenix_derived.firefox_android_clients`
+    `moz-fx-data-shared-prod.fenix.firefox_android_clients`
 )
 -- Firefox Desktop
 SELECT

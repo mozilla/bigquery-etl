@@ -2,7 +2,7 @@ fields:
 - mode: REQUIRED
   name: external_id
   type: STRING
-- mode: REQUIRED 
+- mode: REQUIRED
   name: subscription_name
 - mode: REQUIRED
   name: subscription_group_id

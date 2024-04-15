@@ -24,6 +24,3 @@ fields:
 - mode: REQUIRED
   name: last_modified_timestamp
   type: TIMESTAMP
-- mode: REQUIRED
-  name: last_modified_date
-  type: DATE

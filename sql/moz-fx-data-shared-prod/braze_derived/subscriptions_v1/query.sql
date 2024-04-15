@@ -5,7 +5,6 @@ SELECT
   map.mozilla_subscription_id AS mozilla_subscription_id,
   unified.subscription_state AS subscription_state,
   @submission_date AS last_modified_timestamp,
-  DATE(@submission_date) AS last_modified_date
 FROM
   (
   -- Combine newsletters and waitlists into a single set of records

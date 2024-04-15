@@ -13,7 +13,6 @@ SELECT
     )
   ) AS products,
   @submission_date AS last_modified_timestamp,
-  DATE(@submission_date) AS last_modified_date
 FROM
   `moz-fx-data-shared-prod.subscription_platform_derived.stripe_subscriptions_v1`
 GROUP BY

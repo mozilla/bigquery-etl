@@ -15,7 +15,6 @@ SELECT
   w.waitlists,
   p.products,
   @submission_date AS last_modified_timestamp,
-  DATE(@submission_date) AS last_modified_date
 FROM
   `moz-fx-data-shared-prod.braze_derived.users_v1` u
 LEFT JOIN

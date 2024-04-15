@@ -13,7 +13,6 @@ SELECT
     )
   ) AS waitlists,
   @submission_date AS last_modified_timestamp,
-  DATE(@submission_date) AS last_modified_date
 FROM
   `moz-fx-data-shared-prod.ctms_braze.ctms_waitlists`
 GROUP BY

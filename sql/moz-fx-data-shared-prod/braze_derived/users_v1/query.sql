@@ -84,6 +84,5 @@ SELECT
   create_timestamp,
   update_timestamp,
   @submission_date AS last_modified_timestamp,
-  DATE(@submission_date) AS last_modified_date
 FROM
   exclusions;

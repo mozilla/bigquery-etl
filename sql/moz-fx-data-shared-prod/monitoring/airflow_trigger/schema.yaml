@@ -6,12 +6,22 @@ fields:
 - name: classpath
   type: STRING
   mode: NULLABLE
+  description: null
 - name: created_date
   type: TIMESTAMP
   mode: NULLABLE
 - name: kwargs
   type: STRING
   mode: NULLABLE
+  description: null
 - name: triggerer_id
   type: INTEGER
   mode: NULLABLE
+- name: trigger_id
+  type: INTEGER
+  mode: NULLABLE
+  description: null
+- name: created_at
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: null

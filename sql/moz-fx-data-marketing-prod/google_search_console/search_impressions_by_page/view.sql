@@ -9,7 +9,9 @@ WITH search_impressions_union AS (
     page_url,
     page_domain_name,
     page_path,
-    page_path_segment_1,
+    localized_site_code,
+    localized_site_language_code,
+    localized_site_country_code,
     query,
     FALSE AS is_anonymized,
     CAST(NULL AS BOOLEAN) AS has_good_page_experience,
@@ -32,7 +34,9 @@ WITH search_impressions_union AS (
     page_url,
     page_domain_name,
     page_path,
-    page_path_segment_1,
+    localized_site_code,
+    localized_site_language_code,
+    localized_site_country_code,
     query,
     is_anonymized,
     has_good_page_experience,
@@ -49,23 +53,52 @@ WITH search_impressions_union AS (
     `date` >= '2023-08-01'
 )
 SELECT
-  `date`,
-  site_url,
-  site_domain_name,
-  page_url,
-  page_domain_name,
-  page_path,
-  page_path_segment_1,
-  query,
-  mozfun.google_search_console.classify_query(query, search_type) AS query_type,
-  is_anonymized,
-  has_good_page_experience,
-  search_type,
-  search_appearance,
-  country_code,
-  device_type,
-  impressions,
-  clicks,
-  average_position
+  search_impressions.date,
+  search_impressions.site_url,
+  search_impressions.site_domain_name,
+  search_impressions.page_url,
+  search_impressions.page_domain_name,
+  search_impressions.page_path,
+  search_impressions.localized_site_code,
+  CONCAT(
+    COALESCE(localized_site_language.name, search_impressions.localized_site_language_code),
+    COALESCE(
+      CONCAT(
+        ' - ',
+        COALESCE(localized_site_country.name, search_impressions.localized_site_country_code)
+      ),
+      ''
+    )
+  ) AS localized_site,
+  search_impressions.localized_site_language_code,
+  COALESCE(
+    localized_site_language.name,
+    search_impressions.localized_site_language_code
+  ) AS localized_site_language,
+  search_impressions.localized_site_country_code,
+  COALESCE(
+    localized_site_country.name,
+    search_impressions.localized_site_country_code
+  ) AS localized_site_country,
+  search_impressions.query,
+  mozfun.google_search_console.classify_query(
+    search_impressions.query,
+    search_impressions.search_type
+  ) AS query_type,
+  search_impressions.is_anonymized,
+  search_impressions.has_good_page_experience,
+  search_impressions.search_type,
+  search_impressions.search_appearance,
+  search_impressions.country_code,
+  search_impressions.device_type,
+  search_impressions.impressions,
+  search_impressions.clicks,
+  search_impressions.average_position
 FROM
-  search_impressions_union
+  search_impressions_union AS search_impressions
+LEFT JOIN
+  `moz-fx-data-shared-prod.static.language_codes_v1` AS localized_site_language
+  ON search_impressions.localized_site_language_code = localized_site_language.code_2
+LEFT JOIN
+  `moz-fx-data-shared-prod.static.country_codes_v1` AS localized_site_country
+  ON search_impressions.localized_site_country_code = localized_site_country.code

@@ -31,11 +31,23 @@ fields:
   description: |-
     The path part of the page URL.
     This will be null for anonymized Discover impressions.
-- name: page_path_segment_1
+- name: localized_site_code
   type: STRING
   mode: NULLABLE
   description: |-
-    The first segment of the page URL path, which is often a locale like `en-US` or `de`.
+    Localized site code such as `en-US` or `de` found in the first segment of the page URL path (if any).
+    This will be null for anonymized Discover impressions.
+- name: localized_site_language_code
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Localized site language code in ISO-639-alpha-2 format found in the first segment of the page URL path (if any).
+    This will be null for anonymized Discover impressions.
+- name: localized_site_country_code
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Localized site country code in ISO-3166-1-alpha-2 format found in the first segment of the page URL path (if any).
     This will be null for anonymized Discover impressions.
 - name: query
   type: STRING

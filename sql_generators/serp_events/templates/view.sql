@@ -1,17 +1,3 @@
-CREATE TEMP FUNCTION is_ad_component(component STRING) AS (
-  -- tag components containing monetizable ads
-  COALESCE(
-    component IN ('ad_carousel', 'ad_image_row', 'ad_link', 'ad_sidebar', 'ad_sitelink'),
-    FALSE
-  )
-);
-
-CREATE TEMP FUNCTION ad_blocker_inferred(num_loaded INT, num_blocked INT) AS (
-  -- ad blocker is inferred to be in use if all ads are blocked
-  num_loaded > 0
-  AND num_blocked = num_loaded
-);
-
 CREATE OR REPLACE VIEW
   `{{ project_id }}.{{ app_name }}.serp_events`
 AS
@@ -22,7 +8,7 @@ WITH annotated AS (
     ARRAY(
       SELECT AS STRUCT
         c.*,
-        is_ad_component(c.component) AS is_ad_component
+        mozfun.serp_events.is_ad_component(c.component) AS is_ad_component
       FROM
         UNNEST(engagements) AS c
     ) AS engagements,
@@ -31,8 +17,8 @@ WITH annotated AS (
     ARRAY(
       SELECT AS STRUCT
         c.*,
-        is_ad_component(c.component) AS is_ad_component,
-        ad_blocker_inferred(c.num_elements_loaded, num_elements_blocked) AS blocker_inferred
+        mozfun.serp_events.is_ad_component(c.component) AS is_ad_component,
+        mozfun.serp_events.ad_blocker_inferred(c.num_elements_loaded, num_elements_blocked) AS blocker_inferred
       FROM
         UNNEST(component_impressions) AS c
     ) AS component_impressions,

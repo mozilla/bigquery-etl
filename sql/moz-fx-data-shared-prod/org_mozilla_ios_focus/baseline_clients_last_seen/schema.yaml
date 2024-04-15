@@ -17,6 +17,9 @@ fields:
 - name: days_seen_bits
   type: INTEGER
   mode: NULLABLE
+- name: days_active_bits
+  type: INTEGER
+  mode: NULLABLE
 - name: days_created_profile_bits
   type: INTEGER
   mode: NULLABLE
@@ -91,7 +94,4 @@ fields:
   mode: NULLABLE
 - name: isp
   type: STRING
-  mode: NULLABLE
-- name: days_active_bits
-  type: INTEGER
   mode: NULLABLE

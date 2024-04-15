@@ -173,8 +173,8 @@ gor,,Gorontalo,
 got,,Gothic,
 grb,,Grebo,
 grc,,"Greek, Ancient (to 1453)",
-gre,,"Greek, Modern (1453-)",
-ell,el,"Greek, Modern (1453-)",
+gre,,Greek,"Greek, Modern (1453-)"
+ell,el,Greek,"Greek, Modern (1453-)"
 grn,gn,Guarani,
 gsw,,Swiss German,Alemannic; Alsatian
 guj,gu,Gujarati,
@@ -205,7 +205,7 @@ ijo,,Ijo languages,
 iku,iu,Inuktitut,
 ile,ie,Interlingue,Occidental
 ilo,,Iloko,
-ina,ia,Interlingua (International Auxiliary Language Association),
+ina,ia,Interlingua,Interlingua (International Auxiliary Language Association)
 inc,,Indic languages,
 ind,id,Indonesian,
 ine,,Indo-European languages,
@@ -327,7 +327,7 @@ nia,,Nias,
 nic,,Niger-Kordofanian languages,
 niu,,Niuean,
 nno,nn,Norwegian Nynorsk,"Nynorsk, Norwegian"
-nob,nb,"Bokmål, Norwegian",Norwegian Bokmål
+nob,nb,Norwegian Bokmål,"Bokmål, Norwegian"
 nog,,Nogai,
 non,,"Norse, Old",
 nor,no,Norwegian,
@@ -340,7 +340,7 @@ nym,,Nyamwezi,
 nyn,,Nyankole,
 nyo,,Nyoro,
 nzi,,Nzima,
-oci,oc,Occitan (post 1500),
+oci,oc,Occitan,Occitan (post 1500)
 oji,oj,Ojibwa,
 ori,or,Oriya,
 orm,om,Oromo,

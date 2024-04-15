@@ -1,9 +1,8 @@
-CREATE OR REPLACE FUNCTION google_search_console.classify_query(query STRING, search_type STRING)
+CREATE OR REPLACE FUNCTION google_search_console.classify_query(query STRING)
 RETURNS STRING AS (
   CASE
     WHEN query IS NULL
-      -- Discover and Google News search impressions never have `query` values.
-      THEN IF(search_type IN ('Discover', 'Google News'), NULL, 'Anonymized')
+      THEN 'Anonymized'
     -- Brand keywords source: https://docs.google.com/document/d/1cjUQrPxvUG_A-hFTNUg-3MvRvssieVhk8tkJ8HBrtw4/edit
     -- In the regular expression each keyword is escaped like `\Q...\E` to treat it as literal text.
     WHEN REGEXP_CONTAINS(
@@ -157,9 +156,7 @@ RETURNS STRING AS (
 );
 
 SELECT
-  assert.equals(google_search_console.classify_query(NULL, 'Discover'), CAST(NULL AS STRING)),
-  assert.equals(google_search_console.classify_query(NULL, 'Google News'), CAST(NULL AS STRING)),
-  assert.equals(google_search_console.classify_query(NULL, 'Web'), 'Anonymized'),
-  assert.equals(google_search_console.classify_query('mozilla', 'Web'), 'Brand'),
-  assert.equals(google_search_console.classify_query('firefox', 'Web'), 'Brand'),
-  assert.equals(google_search_console.classify_query('browser', 'Web'), 'Non-Brand'),
+  assert.equals(google_search_console.classify_query(NULL), 'Anonymized'),
+  assert.equals(google_search_console.classify_query('mozilla'), 'Brand'),
+  assert.equals(google_search_console.classify_query('firefox'), 'Brand'),
+  assert.equals(google_search_console.classify_query('browser'), 'Non-Brand'),

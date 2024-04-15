@@ -41,10 +41,7 @@ SELECT
   search_impressions.site_url,
   search_impressions.site_domain_name,
   search_impressions.query,
-  mozfun.google_search_console.classify_query(
-    search_impressions.query,
-    search_impressions.search_type
-  ) AS query_type,
+  mozfun.google_search_console.classify_query(search_impressions.query) AS query_type,
   search_impressions.is_anonymized,
   search_impressions.search_type,
   search_impressions.user_country_code,

@@ -5,6 +5,6 @@ fields:
 - mode: NULLABLE
   name: email_id
   type: STRING
-- mode: NULLABLE
+- mode: REQUIRED
   name: last_modified_timestamp
   type: TIMESTAMP

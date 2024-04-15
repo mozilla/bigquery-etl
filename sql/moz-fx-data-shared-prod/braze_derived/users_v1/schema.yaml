@@ -1,8 +1,8 @@
 fields:
-- mode: NULLABLE
+- mode: REQUIRED
   name: external_id
   type: STRING
-- mode: NULLABLE
+- mode: REQUIRED
   name: email
   type: STRING
 - mode: NULLABLE
@@ -24,8 +24,20 @@ fields:
   name: update_timestamp
   type: TIMESTAMP
 - mode: NULLABLE
+  name: fxa_id_sha256
+  type: STRING
+- mode: NULLABLE
+  name: fxa_primary_email
+  type: STRING
+- mode: NULLABLE
+  name: fxa_lang
+  type: STRING
+- mode: NULLABLE
+  name: first_service
+  type: STRING
+- mode: REQUIRED
   name: last_modified_timestamp
   type: TIMESTAMP
-- mode: NULLABLE
+- mode: REQUIRED
   name: last_modified_date
   type: DATE

@@ -179,7 +179,6 @@ class GleanTable:
         self.target_table_id = ""
         self.prefix = ""
         self.custom_render_kwargs = {}
-        self.no_init = True
         self.per_app_id_enabled = True
         self.per_app_enabled = True
         self.across_apps_enabled = True
@@ -214,12 +213,12 @@ class GleanTable:
 
         tables = table_names_from_baseline(baseline_table, include_project_id=False)
 
-        init_filename = f"{self.target_table_id}.init.sql"
         query_filename = f"{self.target_table_id}.query.sql"
         checks_filename = f"{self.target_table_id}.checks.sql"
         view_filename = f"{self.target_table_id[:-3]}.view.sql"
         view_metadata_filename = f"{self.target_table_id[:-3]}.metadata.yaml"
         table_metadata_filename = f"{self.target_table_id}.metadata.yaml"
+        schema_filename = f"{self.target_table_id}.schema.yaml"
 
         table = tables[f"{self.prefix}_table"]
         view = tables[f"{self.prefix}_view"]
@@ -272,18 +271,13 @@ class GleanTable:
         except TemplateNotFound:
             checks_sql = None
 
-        if not self.no_init:
-            try:
-                init_sql = render(
-                    init_filename, template_folder=PATH / "templates", **render_kwargs
-                )
-            except TemplateNotFound:
-                init_sql = render(
-                    query_filename,
-                    template_folder=PATH / "templates",
-                    init=True,
-                    **render_kwargs,
-                )
+        # Schema files are optional
+        try:
+            schema = render(
+                schema_filename, format=False, template_folder=PATH / "templates", **render_kwargs
+            )
+        except TemplateNotFound:
+            schema = None
 
         # generated files to update
         Artifact = namedtuple("Artifact", "table_id basename sql")
@@ -301,9 +295,6 @@ class GleanTable:
         skip_existing_artifact = self.skip_existing(output_dir, project_id)
 
         if output_dir:
-            if not self.no_init:
-                artifacts.append(Artifact(table, "init.sql", init_sql))
-
             if checks_sql:
                 if "baseline" in table and app_name in NO_BASELINE_PING_APPS:
                     logging.info(
@@ -312,6 +303,9 @@ class GleanTable:
                     )
                 else:
                     artifacts.append(Artifact(table, "checks.sql", checks_sql))
+            
+            if schema:
+                artifacts.append(Artifact(table, "schema.yaml", schema))
 
             for artifact in artifacts:
                 destination = (

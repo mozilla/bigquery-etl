@@ -1,10 +1,14 @@
 SELECT
   email_id AS external_id,
-  ARRAY_AGG( STRUCT( name AS newsletter_name,
+  ARRAY_AGG(
+    STRUCT(
+      name AS newsletter_name,
       subscribed,
       lang AS newsletter_lang,
       create_timestamp,
-      update_timestamp ) ) AS newsletters,
+      update_timestamp
+    )
+  ) AS newsletters,
   @submission_date AS last_modified_timestamp,
   DATE(@submission_date) AS last_modified_date
 FROM

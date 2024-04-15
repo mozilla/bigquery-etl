@@ -13,6 +13,5 @@ class ClientsLastSeenJoined(GleanTable):
         """Initialize clients_last_seen_joined table."""
         GleanTable.__init__(self)
         self.target_table_id = TARGET_TABLE_ID
-        self.no_init = True
         self.per_app_id_enabled = False
         self.cross_channel_template = None

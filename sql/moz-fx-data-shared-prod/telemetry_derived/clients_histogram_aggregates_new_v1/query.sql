@@ -1,18 +1,17 @@
 WITH preconditions AS (
   SELECT
-    IF (
-      (
-        SELECT
-          MAX(submission_date)
-        FROM
-          clients_histogram_aggregates_v2
-      ) = DATE_SUB(DATE(@submission_date), INTERVAL 1 DAY), TRUE,
+    IF(
+      (SELECT MAX(submission_date) FROM clients_histogram_aggregates_v2) = DATE_SUB(
+        DATE(@submission_date),
+        INTERVAL 1 DAY
+      ),
+      TRUE,
       ERROR('Pre-condition failed: table clients_histogram_aggregates_v2 must be up to date')
     ) histogram_aggregates_up_to_date
 ),
 filtered_date_channel AS (
   SELECT
-    * EXCEPT(histogram_aggregates_up_to_date)
+    * EXCEPT (histogram_aggregates_up_to_date)
   FROM
     clients_daily_histogram_aggregates_v1,
     preconditions

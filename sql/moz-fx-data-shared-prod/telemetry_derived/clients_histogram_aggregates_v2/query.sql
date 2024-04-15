@@ -82,21 +82,21 @@ RETURNS ARRAY<
       aggregated_data
   )
 );
+
 WITH preconditions AS (
   SELECT
-    IF (
-      (
-        SELECT
-          MAX(submission_date)
-        FROM
-          clients_histogram_aggregates_v2
-      ) = DATE_SUB(DATE(@submission_date), INTERVAL 1 DAY), TRUE,
+    IF(
+      (SELECT MAX(submission_date) FROM clients_histogram_aggregates_v2) = DATE_SUB(
+        DATE(@submission_date),
+        INTERVAL 1 DAY
+      ),
+      TRUE,
       ERROR('Pre-condition failed: Current submission_date parameter skips a day or more of data.')
     ) histogram_aggregates_up_to_date
 )
 WITH clients_histogram_aggregates_new AS (
   SELECT
-    * EXCEPT(histogram_aggregates_up_to_date)
+    * EXCEPT (histogram_aggregates_up_to_date)
   FROM
     telemetry_derived.clients_histogram_aggregates_new_v1,
     preconditions

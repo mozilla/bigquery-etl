@@ -90,6 +90,7 @@ SELECT
   search_impressions.search_type,
   search_impressions.search_appearance,
   search_impressions.user_country_code,
+  COALESCE(user_country.name, search_impressions.user_country_code) AS user_country,
   search_impressions.device_type,
   search_impressions.impressions,
   search_impressions.clicks,
@@ -102,3 +103,6 @@ LEFT JOIN
 LEFT JOIN
   `moz-fx-data-shared-prod.static.country_codes_v1` AS localized_site_country
   ON search_impressions.localized_site_country_code = localized_site_country.code
+LEFT JOIN
+  `moz-fx-data-shared-prod.static.country_codes_v1` AS user_country
+  ON search_impressions.user_country_code = user_country.code_3

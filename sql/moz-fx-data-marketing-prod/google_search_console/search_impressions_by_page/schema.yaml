@@ -118,6 +118,12 @@ fields:
   description: |-
     Country from which the user was searching, in ISO-3166-1-alpha-3 format.
     This will be null for anonymized Discover impressions.
+- name: user_country
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Country from which the user was searching.
+    This will be null for anonymized Discover impressions.
 - name: device_type
   type: STRING
   mode: NULLABLE

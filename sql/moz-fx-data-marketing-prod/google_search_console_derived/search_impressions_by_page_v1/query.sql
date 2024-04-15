@@ -37,7 +37,7 @@ SELECT
   mozfun.google_search_console.extract_url_country_code(page) AS localized_site_country_code,
   keyword AS query,
   INITCAP(search_type) AS search_type,
-  UPPER(country) AS country_code,
+  UPPER(country) AS user_country_code,
   INITCAP(device) AS device_type,
   CAST(impressions AS INTEGER) AS impressions,
   CAST(clicks AS INTEGER) AS clicks,

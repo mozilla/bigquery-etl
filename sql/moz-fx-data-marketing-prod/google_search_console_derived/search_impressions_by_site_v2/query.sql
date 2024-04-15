@@ -32,7 +32,7 @@ SELECT
   query,
   is_anonymized_query AS is_anonymized,
   INITCAP(REPLACE(search_type, '_', ' ')) AS search_type,
-  UPPER(country) AS country_code,
+  UPPER(country) AS user_country_code,
   INITCAP(device) AS device_type,
   impressions,
   clicks,

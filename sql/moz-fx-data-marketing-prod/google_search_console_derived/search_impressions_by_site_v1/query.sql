@@ -30,7 +30,7 @@ SELECT
   mozfun.google_search_console.extract_url_domain_name(site) AS site_domain_name,
   keyword AS query,
   INITCAP(search_type) AS search_type,
-  UPPER(country) AS country_code,
+  UPPER(country) AS user_country_code,
   INITCAP(device) AS device_type,
   CAST(impressions AS INTEGER) AS impressions,
   CAST(clicks AS INTEGER) AS clicks,

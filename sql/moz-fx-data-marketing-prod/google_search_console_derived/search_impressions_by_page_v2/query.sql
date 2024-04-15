@@ -79,7 +79,7 @@ SELECT
     {% endfor %}
     ELSE 'Normal result'
   END AS search_appearance,
-  UPPER(country) AS country_code,
+  UPPER(country) AS user_country_code,
   INITCAP(device) AS device_type,
   impressions,
   clicks,

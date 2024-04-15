@@ -81,11 +81,11 @@ fields:
   type: STRING
   mode: NULLABLE
   description: How the search result appeared (e.g. normal result, translated result, video).
-- name: country_code
+- name: user_country_code
   type: STRING
   mode: NULLABLE
   description: |-
-    Country from which the search was made, in ISO-3166-1-Alpha-3 format.
+    Country from which the user was searching, in ISO-3166-1-alpha-3 format.
     This will be null for anonymized Discover impressions.
 - name: device_type
   type: STRING

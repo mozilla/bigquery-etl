@@ -50,10 +50,10 @@ fields:
       * Image: In Google Search's "Images" tab.
       * Video: In Google Search's "Videos" tab.
       * News: In Google Search's "News" tab.
-- name: country_code
+- name: user_country_code
   type: STRING
   mode: NULLABLE
-  description: Country from which the search was made, in ISO-3166-1-Alpha-3 format.
+  description: Country from which the user was searching, in ISO-3166-1-alpha-3 format.
 - name: device_type
   type: STRING
   mode: NULLABLE

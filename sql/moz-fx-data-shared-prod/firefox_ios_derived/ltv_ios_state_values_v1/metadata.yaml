@@ -1,0 +1,18 @@
+friendly_name: iOS State Values
+description: |-
+  iOS state values, in terms of Ad Clicks.
+  Each country has their own ad click LTV for each state.
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: false
+  owner1: kwindau@mozilla.com
+scheduling:
+  dag_name: bqetl_org_mozilla_firefox_derived
+  depends_on_past: false
+  date_partition_parameter: null
+bigquery:
+  time_partitioning: null
+  clustering:
+    fields: [country]
+references: {}

@@ -1556,3 +1556,17 @@ bqetl_braze:
     retry_delay: 30m
   tags:
     - impact/tier_2
+
+bqetl_braze_currents:
+  schedule_interval: 0 2 * * *
+  description: |
+    Load Braze current data from GCS into BigQuery
+  default_args:
+    owner: leli@mozilla.com
+    email:
+      - leli@mozilla.com
+    start_date: '2024-04-15'
+    retries: 1
+    retry_delay: 30m
+  tags:
+    - impact/tier_2

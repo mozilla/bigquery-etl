@@ -4,10 +4,13 @@ fields:
   type: STRING
 - mode: REQUIRED
   name: subscription_name
-- mode: REQUIRED
-  name: subscription_group_id
   type: STRING
 - mode: REQUIRED
+  name: firefox_subscription_id
+  type: STRING
+- mode: REQUIRED
+  name: mozilla_subscription_id
+  type: STRING
   name: subscription_state
   type: STRING
 - mode: REQUIRED

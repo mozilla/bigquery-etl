@@ -11,6 +11,7 @@ fields:
 - mode: REQUIRED
   name: mozilla_subscription_id
   type: STRING
+- mode: REQUIRED
   name: subscription_state
   type: STRING
 - mode: REQUIRED

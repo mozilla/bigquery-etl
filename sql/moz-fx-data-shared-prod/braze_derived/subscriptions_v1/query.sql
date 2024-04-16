@@ -4,7 +4,7 @@ SELECT
   map.firefox_subscription_id AS firefox_subscription_id,
   map.mozilla_subscription_id AS mozilla_subscription_id,
   unified.subscription_state AS subscription_state,
-  @submission_date AS last_modified_timestamp,
+  CURRENT_TIMESTAMP() AS last_modified_timestamp,
 FROM
   (
   -- Combine newsletters and waitlists into a single set of records

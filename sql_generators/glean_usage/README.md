@@ -26,7 +26,6 @@ The `GleanTable` class has a few parameters and methods that can be overridden i
 The parameters that are available can and in some cases _need_ to be set in the `__init__` method of the new class definitions:
 * [required] `target_table_id`: name of the target table results are written to by the query
 * [required] `first_seen`: the general prefix of the query to get related derived tables and views
-* `no_init`: default = `False`; If set to `True` the generator will not create a `init.sql` file for the query. Otherwise a `init.sql` will be generated and a template needs to be provided. The init templates will need to be named like `<target_table_id>.init.sql`.
 * `per_app_id_enabled`: default = `True`; If set to `True` the query will be generated for each `app_id`-dataset.
 * `per_app_enabled`: default = `True`; If set to `True` the query will be generated for `app`-datasets
 * `cross_channel_template`: default = `"cross_channel.view.sql"`; File name of the template used to join data from different channels of the same app. Used when generated per-app queries.

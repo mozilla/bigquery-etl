@@ -1,0 +1,117 @@
+fields:
+- name: date_from
+  type: DATE
+  mode: NULLABLE
+- name: date_to
+  type: DATE
+  mode: NULLABLE
+- name: browser_arch
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: value
+    type: FLOAT
+    mode: NULLABLE
+  - name: key
+    type: STRING
+    mode: NULLABLE
+- name: cpu_cores
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: value
+    type: FLOAT
+    mode: NULLABLE
+  - name: key
+    type: STRING
+    mode: NULLABLE
+- name: cpu_speed
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: value
+    type: FLOAT
+    mode: NULLABLE
+  - name: key
+    type: STRING
+    mode: NULLABLE
+- name: cpu_vendor
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: value
+    type: FLOAT
+    mode: NULLABLE
+  - name: key
+    type: STRING
+    mode: NULLABLE
+- name: gfx0_model
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: value
+    type: FLOAT
+    mode: NULLABLE
+  - name: key
+    type: STRING
+    mode: NULLABLE
+- name: gfx0_vendor_name
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: value
+    type: FLOAT
+    mode: NULLABLE
+  - name: key
+    type: STRING
+    mode: NULLABLE
+- name: has_flash
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: value
+    type: FLOAT
+    mode: NULLABLE
+  - name: key
+    type: BOOLEAN
+    mode: NULLABLE
+- name: memory_gb
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: value
+    type: FLOAT
+    mode: NULLABLE
+  - name: key
+    type: STRING
+    mode: NULLABLE
+- name: os
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: value
+    type: FLOAT
+    mode: NULLABLE
+  - name: key
+    type: STRING
+    mode: NULLABLE
+- name: os_arch
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: value
+    type: FLOAT
+    mode: NULLABLE
+  - name: key
+    type: STRING
+    mode: NULLABLE
+- name: resolution
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: value
+    type: FLOAT
+    mode: NULLABLE
+  - name: key
+    type: STRING
+    mode: NULLABLE

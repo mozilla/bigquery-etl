@@ -6,6 +6,7 @@ from pathlib import Path
 import click
 from jinja2 import Environment, FileSystemLoader
 
+from bigquery_etl.cli.backfill import backfill
 from bigquery_etl.cli.dag import dag
 from bigquery_etl.cli.dryrun import dryrun
 from bigquery_etl.cli.format import format
@@ -22,6 +23,7 @@ COMMANDS = {
     "format": format,
     "routine": routine,
     "mozfun": mozfun,
+    "backfill": backfill,
 }
 FILE_PATH = Path(os.path.dirname(__file__))
 BASE_DIR = FILE_PATH.parent.parent

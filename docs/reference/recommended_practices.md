@@ -178,52 +178,36 @@ labels:
 
 [expression subqueries]: https://cloud.google.com/bigquery/docs/reference/standard-sql/expression_subqueries
 
-## Backfills
+## Large Backfills
 
 - Should be documented and reviewed by a peer using a
   [new bug](https://bugzilla.mozilla.org/enter_bug.cgi) that describes
   the context that required the backfill and the command or script used.
-- Should be avoided on large tables
+- Frequent backfills should be avoided
   - Backfills may double storage cost for a table for 90 days by moving
     data from long-term storage to short-term storage
-    - For example regenerating `clients_last_seen_v1` from scratch would cost
-      about $1600 for the query and about $6800 for data moved to short-term
-      storage
   - Should combine multiple backfills happening around the same time
   - Should delay column deletes until the next other backfill
     - Should use `NULL` for new data and `EXCEPT` to exclude from views until
       dropped
-- Should use copy operations in append mode to change column order
-  - Copy operations do not allow changing partitioning, changing clustering, or
-    column deletes
-- Should split backfilling into queries that finish in minutes not hours
-- May use [script/generate_incremental_table] to automate backfilling incremental
-  queries
-- May be performed in a single query for smaller tables that do not depend on history
-  - A useful pattern is to have the only reference to `@submission_date` be a
-    clause `WHERE (@submission_date IS NULL OR @submission_date = submission_date)`
-    which allows recreating all dates by passing `--parameter=submission_date:DATE:NULL`
-- After running the backfill, is important to validate that the job ran without errors
+- After running the backfill, is important to validate that the job(s) ran without errors
   and the execution times and bytes processed are as expected.
-  Errors normally appear in the parent job and may or may not include the dataset and
-  table names, therefore it is important to check for errors in the jobs ran on that date.
   Here is a query you may use for this purpose:
   ```sql
   SELECT
-    job_id,
-    user_email,
-    parent_job_id,
-    creation_time,
-    destination_table.dataset_id,
-    destination_table.table_id,
-    end_time-start_time as task_duration,
-    total_bytes_processed/(1024*1024*1024) as gigabytes_processed,
+    job_type,
     state,
-    error_result.location AS error_location,
-    error_result.reason AS error_reason,
-    error_result.message AS error_message,
-  FROM `moz-fx-data-shared-prod`.`region-us`.INFORMATION_SCHEMA.JOBS_BY_PROJECT
-  WHERE DATE(creation_time) = <'YYYY-MM-DD'>
-    AND user_email = <'user@mozilla.com'>
-  ORDER BY creation_time DESC
+    submission_date,
+    destination_dataset_id,
+    destination_table_id,
+    total_terabytes_billed,
+    total_slot_ms
+  FROM
+    moz-fx-data-shared-prod.monitoring.bigquery_usage
+  WHERE
+    submission_date <= CURRENT_DATE()
+    AND destination_dataset_id LIKE "%backfills_staging_derived%"
+    AND destination_table_id LIKE "%{{ your table name }}%"
+  ORDER BY
+    submission_date DESC
   ```

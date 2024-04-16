@@ -11,6 +11,10 @@ fields:
     mode: NULLABLE
     type: STRING
     description: The 2 character country code if the usage is for a specific country; otherwise, if 'all', then it's global usage
+  - name: user_type
+    mode: NULLABLE
+    type: STRING
+    description: The user type; i.e. human (likely human) or bot (likely automated) or all
   - name: browser
     mode: NULLABLE
     type: STRING

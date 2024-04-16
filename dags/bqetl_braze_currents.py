@@ -62,3 +62,15 @@ with DAG(
         owner="leli@mozilla.com",
         email=["leli@mozilla.com"],
     )
+
+    braze_external__unsubscribes__v1 = GKEPodOperator(
+        task_id="braze_external__unsubscribes__v1",
+        arguments=[
+            "python",
+            "sql/moz-fx-data-shared-prod/braze_external/unsubscribes_v1/query.py",
+        ]
+        + [],
+        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        owner="leli@mozilla.com",
+        email=["leli@mozilla.com"],
+    )

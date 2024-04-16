@@ -1,0 +1,21 @@
+friendly_name: Braze Unsubscribes
+description: |-
+  Braze Unsubscribes.
+  Braze sends data in currents to GCS. These tables are build from those files.
+  The tables are rebuild every day.
+owners:
+- leli@mozilla.com
+labels:
+  owner1: leli
+  dag: bqetl_braze_currents
+scheduling:
+  dag_name: bqetl_braze_currents
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:braze
+- role: roles/bigquery.dataEditor
+  members:
+  - workgroup:braze/writers
+references: {}

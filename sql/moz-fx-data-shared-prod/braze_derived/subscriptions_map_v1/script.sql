@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS
   );
 
 INSERT INTO
-  braze_external.subscriptions_map_v1(
+  braze_derived.subscriptions_map_v1(
     braze_subscription_name,
     description,
     mozilla_subscription_id,

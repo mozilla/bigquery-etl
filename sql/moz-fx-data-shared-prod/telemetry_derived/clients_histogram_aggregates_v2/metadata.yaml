@@ -12,6 +12,7 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
+  - clients_histogram_aggregates_v2
   - latest_versions
   - telemetry_derived.clients_histogram_aggregates_new_v1
   - telemetry_derived.clients_histogram_aggregates_v2

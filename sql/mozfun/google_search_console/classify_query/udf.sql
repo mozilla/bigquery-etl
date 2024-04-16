@@ -7,6 +7,8 @@ RETURNS STRING AS (
         query,
         ARRAY_TO_STRING(
           [
+            r'\bff\b',
+            r'\bm.z',
             r'f.ref.x',
             r'fier',
             r'fire',
@@ -14,11 +16,12 @@ RETURNS STRING AS (
             r'focus',
             r'fokku',
             r'fox',
-            r'il*a$',
-            r'm.z*',
+            r'il+a\b',
             r'nightly',
+            r'pocket',
             r'quantum',
-            r'μοζ*ιλ*α',  -- moz*il*a (Greek)
+            r'thunderbird',
+            r'μοζ+ιλ+α',  -- moz+il+a (Greek)
             r'μοτζιλα',  -- motzila (Greek)
             r'лиса',  -- fox (Cyrillic)
             r'мази',  -- mazi (Cyrillic)
@@ -36,14 +39,14 @@ RETURNS STRING AS (
             r'מוזילה',  -- mozilla (Hebrew)
             r'פיירפוקס',  -- firefox (Hebrew)
             r'فاکس',  -- fax (Arabic)
+            r'فاير',  -- fire (Arabic)
             r'فایر',  -- fire (Arabic)
             r'فكس',  -- fx (Arabic)
             r'فوكس',  -- fox (Arabic)
             r'فير',  -- fir (Arabic)
-            r'لفاير',  -- lafayette (Arabic)
             r'موزلا',  -- mozilla (Arabic)
             r'موزيلا',  -- mozilla (Arabic)
-            r'يروكس',  -- yerox (Arabic)
+            r'موزیلا',  -- mozilla (Arabic)
             r'फायरफक्स',  -- firefox (Indic)
             r'फायरफॉक्स',  -- firefox (Indic)
             r'फ़ायरफ़ॉक्स',  -- firefox (Indic)
@@ -52,8 +55,8 @@ RETURNS STRING AS (
             r'ফায়ারফক্স',  -- firefox (Indic)
             r'মজিলা',  -- mozilla (Indic)
             r'মোজিলা',  -- mozilla (Indic)
-            r'ดาวโหลดไฟฟ๊อก',  -- download firefox (Thai)
             r'ฟายฟอก',  -- bleach (Thai)
+            r'ฟายฟ๊อก',  -- firefox (Thai)
             r'ไฟ ฟอก',  -- fire bleach (Thai)
             r'ไฟฟ็อก',  -- fire fox (Thai)
             r'ไฟฟ๊อก',  -- fire fox (Thai)
@@ -61,7 +64,6 @@ RETURNS STRING AS (
             r'ไฟร์ฟอกซ์',  -- firefox (Thai)
             r'ไฟล์ฟอก',  -- bleaching file (Thai)
             r'ไฟลฟอก',  -- fire bleach (Thai)
-            r'โหลดไฟฟอก',  -- load purifying light (Thai)
             r'모질라',  -- mozilla (Korean)
             r'파이어',  -- fire (Korean)
             r'폭스',  -- fox (Korean)
@@ -75,6 +77,7 @@ RETURNS STRING AS (
             r'ふぉっくす',  -- fox (Japanese)
             r'フォックス',  -- fox (Japanese)
             r'モジラ',  -- mozilla (Japanese)
+            r'火孤',  -- firefox (Chinese)
             r'火狐',  -- firefox (Chinese)
             r'狐狸'  -- fox (Chinese)
           ],

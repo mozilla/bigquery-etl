@@ -1,0 +1,10 @@
+fields:
+- mode: NULLABLE
+  name: email
+  type: STRING
+- mode: NULLABLE
+  name: email_id
+  type: STRING
+- mode: REQUIRED
+  name: last_modified_timestamp
+  type: TIMESTAMP

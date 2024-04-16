@@ -523,9 +523,7 @@ fields:
 
         frequently are relaunched during VPN sessions. It is
 
-        collected in daemonsession, currently only on Android.
-
-        To be done on iOS: https://mozilla-hub.atlassian.net/browse/VPN-4979
+        collected in daemonsession for mobile clients.
 
         '
     - name: connection_health_stable_time
@@ -575,9 +573,7 @@ fields:
 
         frequently are relaunched during VPN sessions. It is
 
-        collected in daemonsession, currently only on Android.
-
-        To be done on iOS: https://mozilla-hub.atlassian.net/browse/VPN-4979
+        collected in daemonsession for mobile clients.
 
         '
     - name: connection_health_unstable_time
@@ -627,9 +623,7 @@ fields:
 
         frequently are relaunched during VPN sessions. It is
 
-        collected in daemonsession, currently only on Android.
-
-        To be done on iOS: https://mozilla-hub.atlassian.net/browse/VPN-4979
+        collected in daemonsession for mobile clients.
 
         '
 - name: normalized_app_name

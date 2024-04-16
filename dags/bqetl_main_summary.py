@@ -113,6 +113,62 @@ with DAG(
         )
     )
 
+    checks__fail_telemetry_derived__clients_last_seen__v2 = bigquery_dq_check(
+        task_id="checks__fail_telemetry_derived__clients_last_seen__v2",
+        source_table="clients_last_seen_v2",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=True,
+        owner="anicholson@mozilla.com",
+        email=["anicholson@mozilla.com"],
+        start_date=datetime.datetime(2023, 9, 15, 0, 0),
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+    )
+
+    with TaskGroup(
+        "checks__fail_telemetry_derived__clients_last_seen__v2_external",
+    ) as checks__fail_telemetry_derived__clients_last_seen__v2_external:
+        ExternalTaskMarker(
+            task_id="taar_daily__wait_for_clients_last_seen",
+            external_dag_id="taar_daily",
+            external_task_id="wait_for_clients_last_seen",
+            execution_date="{{ (execution_date + macros.timedelta(seconds=7200)).isoformat() }}",
+        )
+
+        checks__fail_telemetry_derived__clients_last_seen__v2_external.set_upstream(
+            checks__fail_telemetry_derived__clients_last_seen__v2
+        )
+
+    checks__warn_telemetry_derived__clients_last_seen__v2 = bigquery_dq_check(
+        task_id="checks__warn_telemetry_derived__clients_last_seen__v2",
+        source_table="clients_last_seen_v2",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=False,
+        owner="anicholson@mozilla.com",
+        email=["anicholson@mozilla.com"],
+        start_date=datetime.datetime(2023, 9, 15, 0, 0),
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+    )
+
+    with TaskGroup(
+        "checks__warn_telemetry_derived__clients_last_seen__v2_external",
+    ) as checks__warn_telemetry_derived__clients_last_seen__v2_external:
+        ExternalTaskMarker(
+            task_id="taar_daily__wait_for_clients_last_seen",
+            external_dag_id="taar_daily",
+            external_task_id="wait_for_clients_last_seen",
+            execution_date="{{ (execution_date + macros.timedelta(seconds=7200)).isoformat() }}",
+        )
+
+        checks__warn_telemetry_derived__clients_last_seen__v2_external.set_upstream(
+            checks__warn_telemetry_derived__clients_last_seen__v2
+        )
+
     client_probe_processes__v1 = bigquery_etl_query(
         task_id="client_probe_processes__v1",
         destination_table="client_probe_processes_v1",
@@ -644,6 +700,22 @@ with DAG(
         telemetry_derived__suggest_clients_daily__v1_external.set_upstream(
             telemetry_derived__suggest_clients_daily__v1
         )
+
+    checks__fail_telemetry_derived__clients_last_seen__v2.set_upstream(
+        telemetry_derived__clients_daily__v6
+    )
+
+    checks__fail_telemetry_derived__clients_last_seen__v2.set_upstream(
+        telemetry_derived__clients_last_seen__v2
+    )
+
+    checks__warn_telemetry_derived__clients_last_seen__v2.set_upstream(
+        telemetry_derived__clients_daily__v6
+    )
+
+    checks__warn_telemetry_derived__clients_last_seen__v2.set_upstream(
+        telemetry_derived__clients_last_seen__v2
+    )
 
     crashes_daily_v1.set_upstream(wait_for_copy_deduplicate_all)
 

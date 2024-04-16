@@ -10,7 +10,7 @@ fields:
 - name: time_horizon
   type: INT64
   mode: NULLABLE
-  description: Time horizon - number of days into the future that LTV is being predicted for
+  description: Time horizon - number of days into the future that ad clicks is being predicted for
 - name: country
   type: STRING
   mode: NULLABLE

@@ -1,17 +1,5 @@
 {{ header }}
 
-{% if init %}
-  CREATE TABLE IF NOT EXISTS
-    `{{ daily_table }}`
-  PARTITION BY
-    submission_date
-  CLUSTER BY
-    normalized_channel,
-    sample_id
-  OPTIONS
-    (require_partition_filter = TRUE)
-  AS
-{% endif %}
 WITH base AS (
   SELECT
     submission_timestamp,
@@ -105,11 +93,17 @@ windowed AS (
   FROM
     with_date_offsets
   WHERE
-    {% if init %}
+    {% raw %}
+    {% if is_init() %}
+    {% endraw %}
       submission_date >= '2018-01-01'
+    {% raw %}
     {% else %}
+    {% endraw %}
       submission_date = @submission_date
+    {% raw %}
     {% endif %}
+    {% endraw %}
 
   WINDOW
     w1 AS (

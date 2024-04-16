@@ -1,0 +1,20 @@
+friendly_name: Firefox Public Data Report Hardware Aggregates
+description: |-
+  Intermediate aggregated data that is used to generate data for the
+  hardware report at https://data.firefox.com/.  This table contains weekly
+  client counts for various hardware configurations.
+
+  The code that uses this table is in
+  [firefox-public-data-report-etl repository](https://github.com/mozilla/firefox-public-data-report-etl).
+owners:
+- bewu@mozilla.com
+labels:
+  incremental: true
+  owner1: bewu
+bigquery:
+  time_partitioning:
+    type: day
+    field: 'date_from'
+    require_partition_filter: false
+    expiration_days: null
+references: {}

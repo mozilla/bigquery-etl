@@ -2,7 +2,14 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-marketing-prod.ga.www_site_metrics_summary`
 AS
 SELECT
-  *
+  *,
+  `moz-fx-data-shared-prod`.udf.funnel_derived_ga_metrics(
+    device_category,
+    browser,
+    operating_system
+  ) AS funnel_derived,
+  `moz-fx-data-shared-prod`.udf.distribution_model_ga_metrics() AS distribution_model,
+  `moz-fx-data-shared-prod`.udf.partner_org_ga_metrics() AS partner_org
 FROM
   `moz-fx-data-marketing-prod.ga_derived.www_site_metrics_summary_v2`
 WHERE

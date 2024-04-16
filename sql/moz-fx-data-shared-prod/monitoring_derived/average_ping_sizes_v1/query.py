@@ -46,7 +46,7 @@ def get_average_ping_size_json(client, date, table):
                 SAFE_DIVIDE(byte_size, total) AS average_ping_size,
                 byte_size as total_byte_size,
                 total as row_count
-            FROM total_pings, `moz-fx-data-shared-prod.monitoring.stable_table_sizes`
+            FROM total_pings, `moz-fx-data-shared-prod.monitoring.stable_and_derived_table_sizes`
             WHERE submission_date = '{date}' AND dataset_id = '{dataset_id}' AND table_id = '{table_id}'
         """
 
@@ -114,6 +114,10 @@ def main():
         )
 
         average_ping_sizes = [s for s in average_ping_sizes if s is not None]
+        total_row_count = sum([ping_size["row_count"] for ping_size in average_ping_sizes])
+
+        if total_row_count == 0:
+            raise RuntimeError("No tables with rows found; job may be incorrectly configured.")
 
         save_average_ping_sizes(
             client,

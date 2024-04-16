@@ -198,27 +198,6 @@ class TestQuery:
                 "view.sql"
             ]
 
-    def test_create_query_with_init(self, runner):
-        with runner.isolated_filesystem():
-            os.makedirs("sql/moz-fx-data-shared-prod")
-            result = runner.invoke(
-                create, ["test.test_query", "--init", "--no_schedule"]
-            )
-            assert result.exit_code == 0
-            assert sorted(os.listdir("sql/moz-fx-data-shared-prod/test")) == [
-                "dataset_metadata.yaml",
-                "test_query_v1",
-            ]
-            assert "query.sql" in os.listdir(
-                "sql/moz-fx-data-shared-prod/test/test_query_v1"
-            )
-            assert "metadata.yaml" in os.listdir(
-                "sql/moz-fx-data-shared-prod/test/test_query_v1"
-            )
-            assert "init.sql" in os.listdir(
-                "sql/moz-fx-data-shared-prod/test/test_query_v1"
-            )
-
     def test_schedule_invalid_path(self, runner):
         with runner.isolated_filesystem():
             result = runner.invoke(schedule, ["/test/query_v1"])

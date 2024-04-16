@@ -76,7 +76,7 @@ Queries are tested by running the `query.sql` with test-input tables and compari
    - `table` must match a directory named like `{dataset}/{table}`, e.g.
      `telemetry_derived/clients_last_seen_v1`
    - `test_name` should start with `test_`, e.g. `test_single_day`
-   - If `test_name` is `test_init` or `test_script`, then the query will run `init.sql`
+   - If `test_name` is `test_init` or `test_script`, then the query with `is_init()` set to `true`
      or `script.sql` respectively; otherwise, the test will run `query.sql`
 1. Add `.yaml` files for input tables, e.g. `clients_daily_v6.yaml`
    - Include the dataset prefix if it's set in the tested query,
@@ -108,18 +108,9 @@ Queries are tested by running the `query.sql` with test-input tables and compari
 
 ## Init Tests
 
-Tests of `init.sql` statements are supported, similarly to other generated tests.
+Tests of `is_init()` statements are supported, similarly to other generated tests.
 Simply name the test `test_init`. The other guidelines still apply.
 
-_Note_: Init SQL statements must contain a create statement with the dataset
-and table name, like so:
-
-```sql
-CREATE OR REPLACE TABLE
-  dataset.table_v1
-AS
-...
-```
 
 ## Additional Guidelines and Options
 

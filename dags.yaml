@@ -795,7 +795,7 @@ bqetl_acoustic_contact_export:
     DAG to clean up the data loaded from Acoustic.
   default_args:
     owner: leli@mozilla.com
-    start_date: "2024-04-04"
+    start_date: "2024-04-03"
     email: ["telemetry-alerts@mozilla.com", "leli@mozilla.com"]
     retries: 1
     retry_delay: 5m
@@ -810,7 +810,7 @@ bqetl_acoustic_raw_recipient_export:
     DAG to clean up the data loaded from Acoustic.
   default_args:
     owner: leli@mozilla.com
-    start_date: "2024-04-04"
+    start_date: "2024-04-03"
     email: ["telemetry-alerts@mozilla.com", "leli@mozilla.com"]
     retries: 1
     retry_delay: 5m
@@ -1430,7 +1430,11 @@ bqetl_telemetry_dev_cycle:
     retries: 2
     retry_delay: 30m
     start_date: '2023-12-19'
-  description: DAG for Telemetry Dev Cycle Dashboard
+  description: |
+    DAG for Telemetry Dev Cycle Dashboard
+
+    Airflow Triage Note:
+    The tables are build every day so only the last run needs to be successful.
   repo: bigquery-etl
   schedule_interval: 0 18 * * *
   tags:
@@ -1533,7 +1537,7 @@ bqetl_acoustic_suppression_list:
     owner: leli@mozilla.com
     email:
       - leli@mozilla.com
-    start_date: '2024-04-04'
+    start_date: '2024-04-03'
     retries: 1
     retry_delay: 30m
   tags:

@@ -1,0 +1,19 @@
+friendly_name: Firefox Public Data Report Hardware
+description: |-
+  Final aggregated data that is used in the hardware report at https://data.firefox.com/.
+  This table is exported as a json and uploaded to a GCS bucket to be used by the hardware report.
+
+  The code that loads data into this table and exports it as a json is in
+  [firefox-public-data-report-etl repository](https://github.com/mozilla/firefox-public-data-report-etl).
+owners:
+- bewu@mozilla.com
+labels:
+  incremental: true
+  owner1: bewu
+bigquery:
+  time_partitioning:
+    type: day
+    field: 'date_from'
+    require_partition_filter: false
+    expiration_days: null
+references: {}

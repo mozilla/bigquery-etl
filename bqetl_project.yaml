@@ -26,7 +26,6 @@ dry_run:
   - sql/data-observability-dev/**/**/*.sql
   # Access Denied
   - sql/moz-fx-data-experiments/monitoring/query_cost_v1/query.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/experiment_enrollment_cumulative_population_estimate_v1/view.sql
   - sql/moz-fx-data-shared-prod/app_store_external/**/*.sql
   - sql/moz-fx-data-shared-prod/app_store/**/*.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/bigquery_usage_v2/query.sql
@@ -41,7 +40,6 @@ dry_run:
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_content_events_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_auth_bounce_events_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_auth_events_v1/query.sql
-  - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_delete_events_v1/init.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_delete_events_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_delete_events_v2/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_oauth_events_v1/query.sql
@@ -53,7 +51,6 @@ dry_run:
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_users_services_last_seen_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_amplitude_export_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_amplitude_user_ids_v1/query.sql
-  - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_amplitude_user_ids_v1/init.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_stdout_events_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_gcp_stderr_events_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_gcp_stdout_events_v1/query.sql
@@ -62,10 +59,8 @@ dry_run:
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/nonprod_fxa_stdout_events_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/nonprod_fxa_gcp_stdout_events_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/nonprod_fxa_gcp_stderr_events_v1/query.sql
-  - sql/moz-fx-data-shared-prod/firefox_accounts_derived/docker_fxa_admin_server_sanitized_v1/init.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/docker_fxa_admin_server_sanitized_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/docker_fxa_admin_server_sanitized_v2/query.sql
-  - sql/moz-fx-data-shared-prod/firefox_accounts_derived/docker_fxa_customs_sanitized_v1/init.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/docker_fxa_customs_sanitized_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/docker_fxa_customs_sanitized_v2/query.sql
   - sql/moz-fx-data-shared-prod/fivetran_costs_derived/destinations_v1/query.sql
@@ -110,11 +105,6 @@ dry_run:
   - sql/moz-fx-data-shared-prod/mozilla_vpn_external/subscriptions_v1/query.sql
   - sql/moz-fx-data-shared-prod/mozilla_vpn_external/users_v1/query.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/telemetry_missing_columns_v3/query.sql
-  - sql/moz-fx-data-shared-prod/mozilla_vpn_external/subscriptions_v1/init.sql
-  - sql/moz-fx-data-shared-prod/mozilla_vpn_external/users_v1/init.sql
-  - sql/moz-fx-data-shared-prod/mozilla_vpn_derived/protected_v1/init.sql
-  - sql/moz-fx-data-shared-prod/mozilla_vpn_derived/add_device_events_v1/init.sql
-  - sql/moz-fx-data-shared-prod/mozilla_vpn_external/devices_v1/init.sql
   - sql/moz-fx-data-shared-prod/fenix_derived/google_ads_campaign_cost_breakdowns_v1/query.sql
   - sql/moz-fx-data-shared-prod/search_terms*/**/*.sql
   - sql/moz-fx-data-bq-performance/release_criteria/dashboard_health_v1/query.sql
@@ -125,12 +115,11 @@ dry_run:
   - sql/moz-fx-data-shared-prod/contextual_services/**/*.sql
   - sql/moz-fx-data-shared-prod/contextual_services_derived/**/*.sql
   - sql/moz-fx-data-shared-prod/contextual_services_derived/event_aggregates_v1/query.sql
-  - sql/moz-fx-data-shared-prod/contextual_services_derived/event_aggregates_v1/init.sql
   - sql/moz-fx-data-shared-prod/contextual_services_derived/adm_forecasting_v1/query.sql
   - sql/moz-fx-data-shared-prod/contextual_services_derived/request_payload_suggest_v2/query.sql
   - sql/moz-fx-data-shared-prod/contextual_services_derived/request_payload_tiles_v2/query.sql
   - sql/moz-fx-data-shared-prod/contextual_services_derived/suggest_revenue_levers_daily_v1/query.sql
-  - sql/moz-fx-data-marketing-prod/acoustic/**/*.sql
+  - sql/moz-fx-data-shared-prod/acoustic_external/**/query.sql
   - sql/moz-fx-data-marketing-prod/adjust_derived/**/*.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/airflow_*/*.sql
   - sql/moz-fx-data-shared-prod/google_ads_derived/**/*.sql
@@ -151,25 +140,10 @@ dry_run:
   - sql/moz-fx-data-shared-prod/mozilla_org_derived/gclid_conversions_v2/query.sql
   - sql/moz-fx-data-shared-prod/search_derived/search_clients_daily_v8/query.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/telemetry_missing_columns_v1/view.sql
-  # Already exists (and lacks an "OR REPLACE" clause)
-  - sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/clients_first_seen_v1/init.sql
-  - sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/clients_last_seen_v1/init.sql
-  - sql/moz-fx-data-shared-prod/org_mozilla_fenix_derived/clients_last_seen_v1/init.sql
-  - sql/moz-fx-data-shared-prod/org_mozilla_vrbrowser_derived/clients_last_seen_v1/init.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/core_clients_last_seen_v1/init.sql
-  - sql/moz-fx-data-shared-prod/telemetry/fxa_users_last_seen_raw_v1/init.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/core_clients_first_seen_v1/init.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/fxa_users_services_last_seen_v1/init.sql
-  - sql/moz-fx-data-shared-prod/messaging_system_derived/cfr_users_last_seen_v1/init.sql
-  - sql/moz-fx-data-shared-prod/messaging_system_derived/onboarding_users_last_seen_v1/init.sql
-  - sql/moz-fx-data-shared-prod/messaging_system_derived/snippets_users_last_seen_v1/init.sql
-  - sql/moz-fx-data-shared-prod/messaging_system_derived/whats_new_panel_users_last_seen_v1/init.sql
   # No matching signature for function IF
   - sql/moz-fx-data-shared-prod/static/fxa_amplitude_export_users_last_seen/query.sql
   # Duplicate UDF
   - sql/moz-fx-data-shared-prod/static/fxa_amplitude_export_users_daily/query.sql
-  # Syntax error
-  - sql/moz-fx-data-shared-prod/telemetry_derived/clients_last_seen_v1/init.sql
   # HTTP Error 408: Request Time-out
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_first_seen_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_first_seen_v2/query.sql
@@ -177,9 +151,7 @@ dry_run:
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_last_seen_v2/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/latest_versions/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/italy_covid19_outage_v1/query.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/main_nightly_v1/init.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/main_nightly_v1/query.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/main_1pct_v1/init.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/main_1pct_v1/query.sql
   # Query parameter not found
   - sql/moz-fx-data-shared-prod/telemetry_derived/experiments_v1/query.sql
@@ -211,12 +183,8 @@ dry_run:
   # Query templates
   - sql/moz-fx-data-shared-prod/search_derived/mobile_search_clients_daily_v1/fenix_metrics.template.sql
   - sql/moz-fx-data-shared-prod/search_derived/mobile_search_clients_daily_v1/mobile_search_clients_daily.template.sql
-  # Temporary table does not exist
-  # TODO: remove this in a follow up PR
-  - sql/moz-fx-data-shared-prod/*/baseline_clients_first_seen_v1/*.sql
   # Query too complex
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/event_types_history_v1/query.sql
-  - sql/moz-fx-data-shared-prod/firefox_accounts_derived/event_types_history_v1/init.sql
   # Tests
   - sql/moz-fx-data-test-project/test/simple_view/view.sql
 
@@ -263,14 +231,11 @@ format:
   - sql/moz-fx-data-shared-prod/telemetry/windows_10_aggregate/view.sql
   - sql/moz-fx-data-shared-prod/telemetry/windows_10_build_distribution/view.sql
   - sql/moz-fx-data-shared-prod/telemetry/windows_10_patch_adoption/view.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_histogram_aggregates_v1/init.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_histogram_aggregates_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_keyed_boolean_aggregates_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_keyed_histogram_aggregates_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_keyed_scalar_aggregates_v1/query.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_scalar_aggregates_v1/init.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_scalar_aggregates_v1/query.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/clients_histogram_aggregates_v1/init.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_histogram_aggregates_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_histogram_probe_counts_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_histogram_bucket_counts_v1/query.sql
@@ -278,12 +243,9 @@ format:
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_scalar_probe_counts_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry/client_probe_counts/view.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/core_clients_daily_v1/query.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/core_clients_last_seen_v1/init.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/core_clients_last_seen_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/core_live/view.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/devtools_events_amplitude_v1/view.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/error_aggregates/query.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/event_events_v1/init.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/event_events_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/events_live/view.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/experiment_enrollment_aggregates_v1/query.sql
@@ -292,7 +254,6 @@ format:
   - sql/moz-fx-data-shared-prod/telemetry_derived/fxa_users_services_last_seen_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/glam_user_counts_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/latest_versions/query.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/main_events_v1/init.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/main_events_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/scalar_percentiles_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/smoot_usage_desktop_v2/query.sql
@@ -365,6 +326,8 @@ generate:
     skip_apps:
     - mlhackweek_search
     - moso_mastodon_android
+    - moso_mastodon_web
+    - moso_mastodon_backend
     - regrets_reporter
     - regrets_reporter_ucs
     - tiktokreporter_android
@@ -373,15 +336,17 @@ generate:
     - org_mozilla_ios_tiktok_reporter_tiktok_reportershare
     - org_mozilla_tiktokreporter
     events_stream:
-      datasets:
-      - fenix
-      app_ids:
-      - bedrock
-      - debug_ping_view
-      - glean_dictionary
-      - org_mozilla_fenix
-      - org_mozilla_firefox_beta
-      - org_mozilla_firefox
+      skip_apps:
+      - bergamot
+      - firefox_echo_show
+      - firefox_fire_tv
+      - firefox_reality
+      - firefox_reality_pc
+      - lockwise_android
+      - lockwise_ios
+      - org_mozilla_ios_tiktok_reporter
+      - org_mozilla_ios_tiktok_reporter_tiktok_reportershare
+      - org_mozilla_tiktokreporter
     events_monitoring:
       default_event_table: events_v1
       event_table:

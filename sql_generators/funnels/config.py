@@ -1,7 +1,9 @@
+from datetime import datetime
 from enum import Enum
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 import attr
+import pytz
 
 from bigquery_etl.metrics import MetricHub
 
@@ -64,6 +66,16 @@ class DataSource:
     client_id_column: str = attr.ib("client_id")
 
 
+def parse_date(yyyy_mm_dd: Optional[str]) -> Optional[datetime]:
+    if not yyyy_mm_dd:
+        return None
+    return datetime.strptime(yyyy_mm_dd, "%Y-%m-%d").replace(tzinfo=pytz.utc)
+
+
+def _validate_yyyy_mm_dd(instance: Any, attribute: Any, value: Any) -> None:
+    parse_date(value)
+
+
 @attr.s(auto_attribs=True)
 class FunnelConfig:
     funnels: Dict[str, Funnel]
@@ -74,6 +86,7 @@ class FunnelConfig:
     version: str = attr.ib("1")
     platform: Optional[str] = attr.ib(None)
     owners: Optional[List[str]] = attr.ib(None)
+    start_date: Optional[str] = attr.ib(None, validator=_validate_yyyy_mm_dd)
 
     def __attrs_post_init__(self):
         # check if metric-hub data source was referenced

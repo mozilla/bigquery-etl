@@ -373,7 +373,28 @@ def _update_references(artifact_files, project_id, dataset_suffix, sql_dir):
     for path in map(Path, glob(f"{sql_dir}/**/*.sql", recursive=True)):
         # apply substitutions
         if path.is_file():
-            sql = render(path.name, template_folder=path.parent, format=False)
+            if "is_init()" in path.read_text():
+                init_sql = render(
+                    path.name,
+                    template_folder=path.parent,
+                    format=False,
+                    **{"is_init": lambda: True},
+                )
+                query_sql = render(
+                    path.name,
+                    template_folder=path.parent,
+                    format=False,
+                    **{"is_init": lambda: False},
+                )
+                sql = f"""
+                    {{% if is_init() %}}
+                    {init_sql}
+                    {{% else %}}
+                    {query_sql}
+                    {{% endif %}}
+                """
+            else:
+                sql = render(path.name, template_folder=path.parent, format=False)
 
             for ref in replace_references:
                 sql = re.sub(ref[0], ref[1], sql)
@@ -398,13 +419,15 @@ def _deploy_artifacts(ctx, artifact_files, project_id, dataset_suffix, sql_dir):
     ctx.invoke(publish_routine, name=None, project_id=project_id, dry_run=False)
 
     # deploy table schemas
-    query_files = [
-        file
-        for file in artifact_files
-        if file.name in [QUERY_FILE, QUERY_SCRIPT]
-        # don't attempt to deploy wildcard or metadata tables
-        and "*" not in file.parent.name and file.parent.name != "INFORMATION_SCHEMA"
-    ]
+    query_files = list(
+        {
+            file
+            for file in artifact_files
+            if file.name in [QUERY_FILE, QUERY_SCRIPT]
+            # don't attempt to deploy wildcard or metadata tables
+            and "*" not in file.parent.name and file.parent.name != "INFORMATION_SCHEMA"
+        }
+    )
 
     if len(query_files) > 0:
         # checking and creating datasets needs to happen sequentially
@@ -420,6 +443,7 @@ def _deploy_artifacts(ctx, artifact_files, project_id, dataset_suffix, sql_dir):
             sql_dir=sql_dir,
             project_id=project_id,
             respect_dryrun_skip=True,
+            is_init=True,
         )
         ctx.invoke(
             deploy_query_schema,

@@ -1,0 +1,26 @@
+fields:
+- mode: REQUIRED
+  name: external_id
+  type: STRING
+- fields:
+  - mode: REQUIRED
+    name: newsletter_name
+    type: STRING
+  - mode: REQUIRED
+    name: subscribed
+    type: BOOLEAN
+  - mode: NULLABLE
+    name: newsletter_lang
+    type: STRING
+  - mode: REQUIRED
+    name: create_timestamp
+    type: TIMESTAMP
+  - mode: REQUIRED
+    name: update_timestamp
+    type: TIMESTAMP
+  mode: REPEATED
+  name: newsletters
+  type: RECORD
+- mode: REQUIRED
+  name: last_modified_timestamp
+  type: TIMESTAMP

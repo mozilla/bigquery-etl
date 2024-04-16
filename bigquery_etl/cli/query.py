@@ -660,6 +660,17 @@ def _backfill_query(
 @click.option(
     "--checks/--no-checks", help="Whether to run checks during backfill", default=False
 )
+@click.option(
+    "--scheduling_parameters_override",
+    "--scheduling-parameters-override",
+    "-spo",
+    required=False,
+    multiple=True,
+    default=[],
+    help=(
+        "Pass a list of parameters to override query's existing scheduling parameters. "
+    ),
+)
 @click.pass_context
 def backfill(
     ctx,
@@ -674,6 +685,7 @@ def backfill(
     parallelism,
     destination_table,
     checks,
+    scheduling_parameters_override,
 ):
     """Run a backfill."""
     if not is_authenticated():
@@ -713,6 +725,8 @@ def backfill(
         date_partition_offset = metadata.scheduling.get("date_partition_offset", 0)
         scheduling_parameters = metadata.scheduling.get("parameters", [])
 
+        if scheduling_parameters_override:
+            scheduling_parameters = scheduling_parameters_override
         partitioning_type = None
         if metadata.bigquery and metadata.bigquery.time_partitioning:
             partitioning_type = metadata.bigquery.time_partitioning.type

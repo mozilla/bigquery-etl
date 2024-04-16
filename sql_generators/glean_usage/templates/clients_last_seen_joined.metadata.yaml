@@ -7,7 +7,7 @@ description: |-
   such that a given client will not appear in the result if
   it is only represented in the metrics-based table.
 
-  NOTE FENIX ONLY:
+  NOTE:
   In rare cases the union can result in the same client_id entry from different channels.
   In such cases, the resulting data will only include the entry for the client_id
   with the oldest first_seen_date value.

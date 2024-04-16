@@ -723,6 +723,7 @@ def backfill(
             "date_partition_parameter", "submission_date"
         )
         date_partition_offset = metadata.scheduling.get("date_partition_offset", 0)
+        scheduling_parameters = metadata.scheduling.get("parameters", [])
 
         if scheduling_parameters_override:
             scheduling_parameters = scheduling_parameters_override

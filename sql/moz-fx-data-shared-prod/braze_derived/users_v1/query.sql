@@ -83,6 +83,6 @@ SELECT
   first_service,
   create_timestamp,
   update_timestamp,
-  @submission_date AS last_modified_timestamp,
+  CURRENT_TIMESTAMP() AS last_modified_timestamp,
 FROM
   exclusions;

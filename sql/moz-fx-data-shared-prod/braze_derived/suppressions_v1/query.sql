@@ -23,6 +23,6 @@ WITH suppressions AS (
 )
 SELECT
   *,
-  @submission_date AS last_modified_timestamp
+  CURRENT_TIMESTAMP() AS last_modified_timestamp
 FROM
   suppressions

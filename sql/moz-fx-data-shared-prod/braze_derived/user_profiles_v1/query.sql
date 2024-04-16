@@ -14,7 +14,7 @@ SELECT
   n.newsletters,
   w.waitlists,
   p.products,
-  @submission_date AS last_modified_timestamp,
+  CURRENT_TIMESTAMP() AS last_modified_timestamp,
 FROM
   `moz-fx-data-shared-prod.braze_derived.users_v1` u
 LEFT JOIN

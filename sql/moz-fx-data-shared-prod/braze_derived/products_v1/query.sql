@@ -12,7 +12,7 @@ SELECT
       event_timestamp AS update_timestamp
     )
   ) AS products,
-  @submission_date AS last_modified_timestamp,
+  CURRENT_TIMESTAMP() AS last_modified_timestamp,
 FROM
   `moz-fx-data-shared-prod.subscription_platform_derived.stripe_subscriptions_v1`
 GROUP BY

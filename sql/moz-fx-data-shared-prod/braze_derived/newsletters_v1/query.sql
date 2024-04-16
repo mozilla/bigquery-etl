@@ -9,7 +9,7 @@ SELECT
       update_timestamp
     )
   ) AS newsletters,
-  @submission_date AS last_modified_timestamp,
+  CURRENT_TIMESTAMP() AS last_modified_timestamp,
 FROM
   `moz-fx-data-shared-prod.ctms_braze.ctms_newsletters`
 GROUP BY

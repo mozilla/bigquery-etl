@@ -1,0 +1,29 @@
+friendly_name: Braze Newsletters
+description: |-
+  Newsletter Subscription Data from CTMS and Acoustic.
+
+  See https://mozilla-hub.atlassian.net/browse/DENG-3008
+owners:
+- cbeck@mozilla.com
+labels:
+  schedule: daily
+  owner: cbeck
+  dag: bqetl_braze
+  owner1: cbeck
+scheduling:
+  dag_name: bqetl_braze
+  date_partition_parameter: null
+bigquery:
+  time_partitioning: null
+  range_partitioning: null
+  clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:braze
+- role: roles/bigquery.dataEditor
+  members:
+  - workgroup:braze/writers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.ctms_braze.ctms_newsletters

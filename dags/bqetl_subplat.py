@@ -1160,6 +1160,20 @@ with DAG(
         task_concurrency=1,
     )
 
+    with TaskGroup(
+        "subscription_platform_derived__stripe_subscriptions__v1_external",
+    ) as subscription_platform_derived__stripe_subscriptions__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_braze__wait_for_subscription_platform_derived__stripe_subscriptions__v1",
+            external_dag_id="bqetl_braze",
+            external_task_id="wait_for_subscription_platform_derived__stripe_subscriptions__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=74700)).isoformat() }}",
+        )
+
+        subscription_platform_derived__stripe_subscriptions__v1_external.set_upstream(
+            subscription_platform_derived__stripe_subscriptions__v1
+        )
+
     subscription_platform_derived__stripe_subscriptions__v2 = bigquery_etl_query(
         task_id="subscription_platform_derived__stripe_subscriptions__v2",
         destination_table="stripe_subscriptions_v2",

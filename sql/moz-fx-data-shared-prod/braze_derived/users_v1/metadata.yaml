@@ -30,7 +30,6 @@ references:
   - moz-fx-data-shared-prod.braze_derived.products_v1
   - moz-fx-data-shared-prod.braze_derived.suppressions_v1
   - moz-fx-data-shared-prod.braze_derived.waitlists_v1
-  - moz-fx-data-shared-prod.ctms.ctms_fxa
   - moz-fx-data-shared-prod.ctms_braze.ctms_emails
   - moz-fx-data-shared-prod.ctms_braze.ctms_fxa
   - moz-fx-data-shared-prod.ctms_braze.ctms_mofo

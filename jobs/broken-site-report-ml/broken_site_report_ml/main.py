@@ -146,7 +146,7 @@ def get_reports_since_last_run(client, last_run_time):
             SELECT
                 uuid,
                 comments as body,
-                url as title
+                COALESCE(url, uuid) as title
             FROM `moz-fx-data-shared-prod.org_mozilla_broken_site_report.user_reports_live`
             WHERE reported_at >= "{last_run_time}" AND comments != ""
             ORDER BY reported_at
@@ -160,7 +160,7 @@ def get_missed_reports(client, last_run_time, bq_dataset_id):
             SELECT
                 reports.uuid,
                 reports.comments as body,
-                reports.url as title
+                COALESCE(reports.url, reports.uuid) as title
             FROM
             `moz-fx-data-shared-prod.org_mozilla_broken_site_report.user_reports_live`
             AS reports
@@ -213,8 +213,10 @@ def main(bq_project_id, bq_dataset_id):
     except Exception as e:
         logging.error(e)
         is_ok = False
+        raise
 
-    record_classification_run(client, bq_dataset_id, is_ok, result_count)
+    finally:
+        record_classification_run(client, bq_dataset_id, is_ok, result_count)
 
 
 if __name__ == "__main__":

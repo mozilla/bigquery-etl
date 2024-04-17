@@ -42,16 +42,16 @@ fields:
 - mode: NULLABLE
   name: lifecycle_stage
   type: STRING
-  description: Lifecycle Stage
+  description: Lifecycle Stage - New Profile, Repeat User, or Existing User
 - mode: NULLABLE
   name: dau
   type: INT64
-  description: DAU
+  description: DAU - Daily Active User
 - mode: NULLABLE
   name: wau
   type: INT64
-  description: WAU
+  description: WAU - Weekly Active User
 - mode: NULLABLE
   name: mau
   type: INT64
-  description: MAU
+  description: MAU - Monthly Active User

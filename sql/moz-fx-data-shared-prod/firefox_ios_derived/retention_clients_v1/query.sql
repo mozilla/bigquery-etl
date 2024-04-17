@@ -7,6 +7,7 @@ WITH clients_daily AS (
     country,
     first_seen_date,
     is_new_profile,
+    (app_display_version = '107.2' AND submission_date >= '2023-02-01') AS is_suspicious_device_client,
   FROM firefox_ios.baseline_clients_last_seen
   WHERE
     submission_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
@@ -35,6 +36,7 @@ SELECT
   clients_daily.channel,
   clients_daily.country,
   clients_daily.first_seen_date,
+  clients_daily.is_suspicious_device_client,
   -- clients_daily.is_new_profile AS new_client,
   -- ping sent retention
   active_users.is_daily_user AS day_ping,

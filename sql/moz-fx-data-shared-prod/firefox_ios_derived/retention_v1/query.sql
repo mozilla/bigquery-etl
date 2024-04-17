@@ -7,7 +7,9 @@ SELECT
   COUNTIF(day_active) AS day_active,
   COUNTIF(retained_week_4) AS retained_week_4,
 FROM
-  firefox_ios.client_retention
-WHERE submission_date = @submission_date
+  firefox_ios.retention_clients
+WHERE
+  submission_date = @submission_date
+  AND NOT is_suspicious_device_client
 GROUP BY
   metric_date

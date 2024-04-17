@@ -25,40 +25,10 @@ fields:
     Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99.
 
 - mode: NULLABLE
-  name: first_reported_country
+  name: country
   type: STRING
   description: |
-    First reported country for the client installation.
-
-- mode: NULLABLE
-  name: first_reported_isp
-  type: STRING
-  description: |
-    Name of the first reported isp (Internet Service Provider).
-
-- mode: NULLABLE
-  name: adjust_ad_group
-  type: STRING
-  description: |
-    Structure parameter for the the ad group of a campaign.
-
-- mode: NULLABLE
-  name: adjust_campaign
-  type: STRING
-  description: |
-    Structure parameter for the campaign name.
-
-- mode: NULLABLE
-  name: adjust_creative
-  type: STRING
-  description: |
-    Structure parameter for the creative content of a campaign.
-
-- mode: NULLABLE
-  name: adjust_network
-  type: STRING
-  description: |
-    The type of source of a client installation.
+    The client's country on the metric date.
 
 - mode: NULLABLE
   name: days_seen_in_first_28_days

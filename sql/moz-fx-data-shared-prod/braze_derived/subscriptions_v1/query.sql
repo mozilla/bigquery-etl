@@ -26,4 +26,8 @@ FROM
   ) unified
 JOIN
   `moz-fx-data-shared-prod.braze_derived.subscriptions_map_v1` map
-  ON unified.subscription_name = map.braze_subscription_name;
+  ON unified.subscription_name = map.braze_subscription_name
+-- Ensure users are active/not suppressed
+JOIN
+  `moz-fx-data-shared-prod.braze_derived.users_v1` users
+  ON users.external_id = unified.external_id;

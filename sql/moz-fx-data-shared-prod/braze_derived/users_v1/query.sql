@@ -82,7 +82,6 @@ SELECT
   fxa_lang,
   first_service,
   create_timestamp,
-  update_timestamp,
-  CURRENT_TIMESTAMP() AS last_modified_timestamp,
+  update_timestamp
 FROM
   exclusions;

@@ -413,19 +413,17 @@ fields:
         in no signal.
 
 
-        The health check counters must not be considered as markers of time. There
-        is a possible
+        The health check counters must not be considered as markers of time.
 
-        situation in the health check (which calls the telemetry) which frequently
-        results in more
+        There is a possible situation in the health check (which calls the
 
-        than one count per second. The situation: A health check is conducted because
-        a network
+        telemetry) which frequently results in more than one count per second.
 
-        check did not return, and milliseconds later that network check returns and
-        another health
+        The situation: A health check is conducted because a network check did not
 
-        check is started because of the return.
+        return, and milliseconds later that network check returns and another
+
+        health check is started because of the return.
 
         '
     - name: connection_health_stable_count
@@ -434,19 +432,17 @@ fields:
       description: 'Count of times that the connection health check succeeds.
 
 
-        The health check counters must not be considered as markers of time. There
-        is a possible
+        The health check counters must not be considered as markers of time.
 
-        situation in the health check (which calls the telemetry) which frequently
-        results in more
+        There is a possible situation in the health check (which calls the
 
-        than one count per second. The situation: A health check is conducted because
-        a network
+        telemetry) which frequently results in more than one count per second.
 
-        check did not return, and milliseconds later that network check returns and
-        another health
+        The situation: A health check is conducted because a network check did not
 
-        check is started because of the return.
+        return, and milliseconds later that network check returns and another
+
+        health check is started because of the return.
 
         '
     - name: connection_health_unstable_count
@@ -457,19 +453,17 @@ fields:
         in unstable.
 
 
-        The health check counters must not be considered as markers of time. There
-        is a possible
+        The health check counters must not be considered as markers of time.
 
-        situation in the health check (which calls the telemetry) which frequently
-        results in more
+        There is a possible situation in the health check (which calls the
 
-        than one count per second. The situation: A health check is conducted because
-        a network
+        telemetry) which frequently results in more than one count per second.
 
-        check did not return, and milliseconds later that network check returns and
-        another health
+        The situation: A health check is conducted because a network check did not
 
-        check is started because of the return.
+        return, and milliseconds later that network check returns and another
+
+        health check is started because of the return.
 
         '
   - name: timing_distribution

@@ -106,7 +106,7 @@ with DAG(
             task_id="bqetl_braze__wait_for_acoustic_external__contact_raw__v1",
             external_dag_id="bqetl_braze",
             external_task_id="wait_for_acoustic_external__contact_raw__v1",
-            execution_date="{{ (execution_date - macros.timedelta(seconds=14400)).isoformat() }}",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
         )
 
         acoustic_external__contact_raw__v1_external.set_upstream(

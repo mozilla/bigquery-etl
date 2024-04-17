@@ -46,7 +46,7 @@ tags = ["impact/tier_2", "repo/bigquery-etl"]
 with DAG(
     "bqetl_braze",
     default_args=default_args,
-    schedule_interval="0 5 * * *",
+    schedule_interval="0 10 * * *",
     doc_md=docs,
     tags=tags,
 ) as dag:
@@ -56,7 +56,7 @@ with DAG(
             task_id="wait_for_subscription_platform_derived__stripe_subscriptions__v1",
             external_dag_id="bqetl_subplat",
             external_task_id="subscription_platform_derived__stripe_subscriptions__v1",
-            execution_delta=datetime.timedelta(seconds=11700),
+            execution_delta=datetime.timedelta(seconds=29700),
             check_existence=True,
             mode="reschedule",
             allowed_states=ALLOWED_STATES,
@@ -69,7 +69,7 @@ with DAG(
         task_id="wait_for_acoustic_external__contact_raw__v1",
         external_dag_id="bqetl_acoustic_contact_export",
         external_task_id="acoustic_external__contact_raw__v1",
-        execution_delta=datetime.timedelta(days=-1, seconds=72000),
+        execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
         allowed_states=ALLOWED_STATES,
@@ -81,7 +81,7 @@ with DAG(
         task_id="wait_for_acoustic_external__suppression_list__v1",
         external_dag_id="bqetl_acoustic_suppression_list",
         external_task_id="acoustic_external__suppression_list__v1",
-        execution_delta=datetime.timedelta(days=-1, seconds=72000),
+        execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
         allowed_states=ALLOWED_STATES,
@@ -178,6 +178,8 @@ with DAG(
     )
 
     braze_derived__subscriptions__v1.set_upstream(braze_derived__newsletters__v1)
+
+    braze_derived__subscriptions__v1.set_upstream(braze_derived__users__v1)
 
     braze_derived__subscriptions__v1.set_upstream(braze_derived__waitlists__v1)
 

@@ -86,7 +86,7 @@ def create_query(date, source_project, tmp_table_name):
                  CAST(ARRAY_AGG(
                     IF(
                        key = 'deprecated', value, NULL) IGNORE NULLS
-                    ORDER BY value)[SAFE_OFFSET(0)] AS BOOLEAN) AS deprecated
+                    ORDER BY value)[SAFE_OFFSET(0)] AS BOOLEAN) AS deprecated,
                  CAST(ARRAY_AGG(
                     IF(
                         key = 'deletion_date', value, NULL) IGNORE NULLS
@@ -116,6 +116,7 @@ def create_query(date, source_project, tmp_table_name):
                     table_type,
                     owners,
                     deprecated,
+                    deletion_date
                 FROM `{source_project}.region-us.INFORMATION_SCHEMA.TABLES`
                 LEFT JOIN labels_agg
                     USING (table_catalog, table_schema, table_name)
@@ -131,6 +132,7 @@ def create_query(date, source_project, tmp_table_name):
             table_type,
             owners,
             deprecated,
+            deletion_date,
             last_used_date
         FROM table_info
             LEFT JOIN max_job_creation_date

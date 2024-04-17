@@ -16,10 +16,10 @@ SELECT
 FROM
   `moz-fx-data-shared-prod.telemetry.active_users` au
 LEFT JOIN
-  mozdata.telemetry.clients_first_seen cfs
+  `mozdata.telemetry.clients_first_seen` cfs
   ON au.client_id = cfs.client_id
 LEFT JOIN
-  mozdata.telemetry.clients_daily_v6 cd
+  `mozdata.telemetry.clients_daily_v6` cd
   ON au.client_id = cd.client_id
   AND au.submission_date = cd.submission_date
 WHERE

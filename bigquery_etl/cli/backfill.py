@@ -409,7 +409,7 @@ def _initiate_backfill(
     qualified_table_name: str,
     backfill_staging_qualified_table_name: str,
     entry: Backfill,
-    parallelism: int = 4,
+    parallelism: int = 16,
     dry_run: bool = False,
 ):
     if not is_authenticated():

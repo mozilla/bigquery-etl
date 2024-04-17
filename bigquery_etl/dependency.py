@@ -53,13 +53,6 @@ def extract_table_references(sql: str) -> List[str]:
         sql,
         flags=re.MULTILINE | re.IGNORECASE,
     )
-    # sqlglot doesn't fully support byte strings
-    sql = re.sub(
-        r"""b(["'])""",
-        r"\1",
-        sql,
-        flags=re.IGNORECASE,
-    )
     query = sqlglot.parse(sql, read="bigquery")
     creates = set()
     tables = set()

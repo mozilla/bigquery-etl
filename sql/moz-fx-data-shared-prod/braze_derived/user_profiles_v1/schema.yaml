@@ -1,14 +1,14 @@
 fields:
-- mode: REQUIRED
+- mode: NULLABLE
   name: external_id
   type: STRING
-- mode: REQUIRED
+- mode: NULLABLE
   name: email
   type: STRING
 - mode: NULLABLE
   name: mailing_country
   type: STRING
-- mode: REQUIRED
+- mode: NULLABLE
   name: email_subscribe
   type: STRING
 - mode: NULLABLE
@@ -17,10 +17,10 @@ fields:
 - mode: NULLABLE
   name: email_lang
   type: STRING
-- mode: REQUIRED
+- mode: NULLABLE
   name: create_timestamp
   type: TIMESTAMP
-- mode: REQUIRED
+- mode: NULLABLE
   name: update_timestamp
   type: TIMESTAMP
 - mode: NULLABLE
@@ -110,6 +110,6 @@ fields:
   mode: REPEATED
   name: products
   type: RECORD
-- mode: REQUIRED
+- mode: NULLABLE
   name: last_modified_timestamp
   type: TIMESTAMP

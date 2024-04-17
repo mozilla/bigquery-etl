@@ -21,6 +21,7 @@ active_users AS (
     is_daily_user,
     mozfun.bits28.retention(days_seen_bits, submission_date) AS retention_seen,
     mozfun.bits28.retention(days_seen_bits, submission_date) AS retention_active,
+    app_name,
   FROM backfills_staging_derived.active_users
   WHERE
     submission_date = @submission_date
@@ -31,13 +32,14 @@ SELECT
   @submission_date AS submission_date,
   retention_seen.day_27.metric_date AS metric_date,
   -- clients_daily.submission_date AS metric_date,
+  clients_daily.first_seen_date,
   client_id,
   clients_daily.sample_id,
   clients_daily.channel,
   clients_daily.country,
-  clients_daily.first_seen_date,
   clients_daily.is_suspicious_device_client,
   -- clients_daily.is_new_profile AS new_client,
+  active_users.app_name,
   -- ping sent retention
   active_users.is_daily_user AS day_ping,
   active_users.is_daily_user AND retention_seen.day_27.active_in_week_3 as sent_ping_week_4,

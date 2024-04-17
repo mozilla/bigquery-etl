@@ -3,49 +3,55 @@ TODO:
 fields:
 
 - mode: NULLABLE
-  name: submission_date
+  name: metric_date
   type: DATE
   description: |
-    Partition field, also corresponds to internal execution date of the job (first_seen_date + 28 days).
+    TODO:
 
 - mode: NULLABLE
-  name: first_seen_date
-  type: DATE
-  description: |
-    Date of when the client was first seen.
-
-- mode: NULLABLE
-  name: client_id
+  name: channel
   type: STRING
   description: |
-    36-char long hash randomly assigned when the account is created.
-
-- mode: NULLABLE
-  name: sample_id
-  type: INTEGER
-  description: |
-    Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99.
+    TODO:
 
 - mode: NULLABLE
   name: country
   type: STRING
   description: |
-    The client's country on the metric date.
+    TODO:
 
 - mode: NULLABLE
-  name: days_seen_in_first_28_days
+  name: new_profiles
   type: INTEGER
   description: |
-    Number of days we saw the client within their first 28 days.
+    TODO:
 
 - mode: NULLABLE
-  name: repeat_first_month_user
-  type: BOOLEAN
+  name: new_profiles_retained_week_4
+  type: INTEGER
   description: |
-    Indicates if the client qualified as a repeat first month user (observed more than once within their first 28 days).
+    TODO:
+
+- mode: NULLABLE
+  name: day_ping
+  type: INTEGER
+  description: |
+    TODO:
+
+- mode: NULLABLE
+  name: sent_ping_week_4
+  type: INTEGER
+  description: |
+    TODO:
+
+- mode: NULLABLE
+  name: day_active
+  type: INTEGER
+  description: |
+    TODO:
 
 - mode: NULLABLE
   name: retained_week_4
-  type: BOOLEAN
+  type: INTEGER
   description: |
-    True if the client was seen in the forth week (days 21 - 28) since they were first seen.
+    TODO:

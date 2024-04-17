@@ -7,6 +7,12 @@ fields:
     Partition field, also corresponds to internal execution date of the job (first_seen_date + 28 days).
 
 - mode: NULLABLE
+  name: metric_date
+  type: DATE
+  description: |
+    TODO:
+
+- mode: NULLABLE
   name: first_seen_date
   type: DATE
   description: |
@@ -25,25 +31,61 @@ fields:
     Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99.
 
 - mode: NULLABLE
+  name: channel
+  type: STRING
+  description: |
+    The client's channel.
+
+- mode: NULLABLE
   name: country
   type: STRING
   description: |
     The client's country on the metric date.
 
 - mode: NULLABLE
-  name: days_seen_in_first_28_days
-  type: INTEGER
-  description: |
-    Number of days we saw the client within their first 28 days.
-
-- mode: NULLABLE
-  name: repeat_first_month_user
+  name: is_suspicious_device_client
   type: BOOLEAN
   description: |
-    Indicates if the client qualified as a repeat first month user (observed more than once within their first 28 days).
+    TODO:
+
+- mode: NULLABLE
+  name: app_name
+  type: STRING
+  description: |
+    The client's country on the metric date.
+
+- mode: NULLABLE
+  name: sent_ping_week_4
+  type: BOOLEAN
+  description: |
+    TODO:
+
+- mode: NULLABLE
+  name: day_ping
+  type: BOOLEAN
+  description: |
+    TODO:
+
+- mode: NULLABLE
+  name: day_active
+  type: BOOLEAN
+  description: |
+    TODO:
+
+- mode: NULLABLE
+  name: new_client
+  type: BOOLEAN
+  description: |
+    TODO:
 
 - mode: NULLABLE
   name: retained_week_4
   type: BOOLEAN
   description: |
-    True if the client was seen in the forth week (days 21 - 28) since they were first seen.
+    TODO:
+
+- mode: NULLABLE
+  name: new_profile_retained_week_4
+  type: BOOLEAN
+  description: |
+    TODO:

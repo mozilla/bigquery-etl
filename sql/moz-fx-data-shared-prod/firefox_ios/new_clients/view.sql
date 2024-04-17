@@ -12,7 +12,7 @@ SELECT
   new_clients.normalized_os_version AS os_version,
   new_clients.app_display_version AS app_version,
   new_clients.device_manufacturer,
-  (new_clients.app_version = '107.2' AND new_profiles.submission_date >= '2023-02-01') AS is_suspicious_device_client,
+  (new_clients.app_version = '107.2' AND new_clients.submission_date >= '2023-02-01') AS is_suspicious_device_client,
   attribution.adjust_info.* EXCEPT(submission_timestamp),
 FROM
   `moz-fx-data-shared-prod.firefox_ios.baseline_clients_first_seen` AS new_clients

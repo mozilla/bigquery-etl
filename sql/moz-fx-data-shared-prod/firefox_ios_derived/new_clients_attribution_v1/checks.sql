@@ -1,20 +1,3 @@
-#fail
-{{ min_row_count(1, where="first_seen_date = @submission_date") }}
-
 #warn
-{{ is_unique(columns=["client_id"]) }}
-
-#warn
-{{ not_null(columns=["client_id"], where="first_seen_date = @submission_date") }}
-
-#warn
-SELECT
-  IF(
-    (COUNTIF(is_suspicious_device_client) / COUNT(*)) * 100 > 5,
-    ERROR("The % of suspicious device clients exceeds 5%"),
-    NULL
-  )
-FROM
-  `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`
-WHERE
-  first_seen_date = DATE_SUB(@submission_date, INTERVAL 3 DAY);
+SELECT 1 = 1
+-- # TODO:

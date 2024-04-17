@@ -3,13 +3,13 @@ fields:
   name: fxa_id_sha256
   type: STRING
 - fields:
-  - mode: REQUIRED
+  - mode: NULLABLE
     name: plan_id
     type: STRING
-  - mode: REQUIRED
+  - mode: NULLABLE
     name: product_id
     type: STRING
-  - mode: REQUIRED
+  - mode: NULLABLE
     name: status
     type: STRING
   - mode: NULLABLE
@@ -18,18 +18,18 @@ fields:
   - mode: NULLABLE
     name: plan_ended_at
     type: TIMESTAMP
-  - mode: REQUIRED
+  - mode: NULLABLE
     name: plan_interval
     type: STRING
-  - mode: REQUIRED
+  - mode: NULLABLE
     name: plan_interval_count
     type: INTEGER
-  - mode: REQUIRED
+  - mode: NULLABLE
     name: update_timestamp
     type: TIMESTAMP
   mode: REPEATED
   name: products
   type: RECORD
-- mode: REQUIRED
+- mode: NULLABLE
   name: last_modified_timestamp
   type: TIMESTAMP

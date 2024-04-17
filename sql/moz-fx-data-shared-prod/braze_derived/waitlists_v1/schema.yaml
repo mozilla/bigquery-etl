@@ -3,7 +3,7 @@ fields:
   name: external_id
   type: STRING
 - fields:
-  - mode: REQUIRED
+  - mode: NULLABLE
     name: waitlist_name
     type: STRING
   - mode: NULLABLE
@@ -15,21 +15,21 @@ fields:
   - mode: NULLABLE
     name: waitlist_source
     type: STRING
-  - mode: REQUIRED
+  - mode: NULLABLE
     name: create_timestamp
     type: TIMESTAMP
-  - mode: REQUIRED
+  - mode: NULLABLE
     name: subscribed
     type: BOOLEAN
   - mode: NULLABLE
     name: unsub_reason
     type: STRING
-  - mode: REQUIRED
+  - mode: NULLABLE
     name: update_timestamp
     type: TIMESTAMP
   mode: REPEATED
   name: waitlists
   type: RECORD
-- mode: REQUIRED
+- mode: NULLABLE
   name: last_modified_timestamp
   type: TIMESTAMP

@@ -1,8 +1,8 @@
 fields:
-- mode: REQUIRED
+- mode: NULLABLE
   name: external_id
   type: STRING
-- mode: REQUIRED
+- mode: NULLABLE
   name: email
   type: STRING
 - mode: NULLABLE
@@ -35,6 +35,6 @@ fields:
 - mode: NULLABLE
   name: first_service
   type: STRING
-- mode: REQUIRED
+- mode: NULLABLE
   name: last_modified_timestamp
   type: TIMESTAMP

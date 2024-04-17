@@ -1,0 +1,57 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: Submission Date
+- mode: NULLABLE
+  name: client_id
+  type: STRING
+  description: Client ID
+- mode: NULLABLE
+  name: first_seen_date
+  type: DATE
+  description: First Seen Date
+- mode: NULLABLE
+  name: attribution_campaign
+  type: STRING
+  description: Attribution Campaign
+- mode: NULLABLE
+  name: attribution_content
+  type: STRING
+  description: Attribution Content
+- mode: NULLABLE
+  name: attribution_dlsource
+  type: STRING
+  description: Attribution Download Source
+- mode: NULLABLE
+  name: attribution_medium
+  type: STRING
+  description: Attribution Medium
+- mode: NULLABLE
+  name: attribution_ua
+  type: STRING
+  description: Attribution UA
+- mode: NULLABLE
+  name: normalized_os
+  type: STRING
+  description: Normalized OS
+- mode: NULLABLE
+  name: normalized_os_version
+  type: STRING
+  description: Normalized OS Version
+- mode: NULLABLE
+  name: country
+  type: STRING
+  description: Country
+- mode: NULLABLE
+  name: dau
+  type: BOOLEAN
+  description: DAU
+- mode: NULLABLE
+  name: wau
+  type: BOOLEAN
+  description: WAU
+- mode: NULLABLE
+  name: mau
+  type: BOOLEAN
+  description: MAU

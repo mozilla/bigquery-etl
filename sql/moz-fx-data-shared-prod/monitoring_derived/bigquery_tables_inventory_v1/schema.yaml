@@ -54,8 +54,3 @@ fields:
   name: last_used_date
   type: DATE
   description: The date when the tables was last queried
-
-- mode: NULLABLE
-  name: deletion_date
-  type: DATE
-  description: The date when the tables was scheduled for deletion

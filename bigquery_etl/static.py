@@ -11,7 +11,13 @@ from google.cloud import bigquery
 
 from bigquery_etl.cli.utils import project_id_option
 from bigquery_etl.config import ConfigLoader
-from bigquery_etl.metadata.parse_metadata import DATASET_METADATA_FILE, DatasetMetadata
+from bigquery_etl.metadata.parse_metadata import (
+    DATASET_METADATA_FILE,
+    METADATA_FILE,
+    DatasetMetadata,
+    Metadata,
+)
+from bigquery_etl.metadata.publish_metadata import publish_metadata
 from bigquery_etl.util.common import project_dirs
 
 DATA_FILENAME = "data.csv"
@@ -57,14 +63,21 @@ def publish(project_id):
             if not os.path.exists(schema_file_path):
                 schema_file_path = None
 
+            metadata_file = os.path.join(table_dir, METADATA_FILE)
+            if not os.path.exists(metadata_file):
+                metadata_file = None
+
             _load_table(
                 data_file_path,
                 schema_file_path,
+                metadata_file,
                 target_project,
             )
 
 
-def _load_table(data_file_path, schema_file_path=None, project=None):
+def _load_table(
+    data_file_path, schema_file_path=None, metadata_file=None, project=None
+):
     # Assume path is ...project/dataset/table/data.csv
     path_split = os.path.normcase(data_file_path).split(os.path.sep)
     dataset_id = path_split[-3]
@@ -109,6 +122,10 @@ def _load_table(data_file_path, schema_file_path=None, project=None):
         job = client.load_table_from_file(data_file, table_ref, job_config=job_config)
 
     job.result()
+
+    if metadata_file is not None:
+        metadata = Metadata.from_file(metadata_file)
+        publish_metadata(client, project, dataset_id, table_id, metadata)
 
 
 @functools.lru_cache

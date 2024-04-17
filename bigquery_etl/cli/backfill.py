@@ -339,7 +339,7 @@ def scheduled(ctx, qualified_table_name, sql_dir, project_id, status, json_path=
 @click.argument("qualified_table_name")
 @click.option(
     "--parallelism",
-    default=4,
+    default=16,
     type=int,
     help="Maximum number of queries to execute concurrently",
 )

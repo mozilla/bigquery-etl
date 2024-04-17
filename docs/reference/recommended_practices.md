@@ -184,8 +184,8 @@ labels:
   [new bug](https://bugzilla.mozilla.org/enter_bug.cgi) that describes
   the context that required the backfill and the command or script used.
 - Frequent backfills should be avoided
-  - Backfills may double storage cost for a table for 90 days by moving
-    data from long-term storage to short-term storage
+  - Backfills may increase storage costs for a table for 90 days by moving
+    data from long-term storage to short-term storage and requiring a production snapshot.
   - Should combine multiple backfills happening around the same time
   - Should delay column deletes until the next other backfill
     - Should use `NULL` for new data and `EXCEPT` to exclude from views until

@@ -282,7 +282,7 @@ For our example:
 3. You will be notified when swapping is complete.
 
 
-**Note**. If your backfill is complex (backfill validation fails for e.g.), it is recommended to talk to someone in Data Engineering or Data SRE to process the backfill via the backfill DAG.
+**Note**. If your backfill is complex (backfill validation fails for e.g.), it is recommended to talk to someone in Data Engineering or Data SRE (#data-help) to process the backfill via the backfill DAG.
 
 ## Completing the Pull Request
 

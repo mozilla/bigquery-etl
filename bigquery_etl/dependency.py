@@ -46,13 +46,6 @@ def extract_table_references(sql: str) -> List[str]:
         sql,
         flags=re.IGNORECASE,
     )
-    # sqlglot doesn't suppport OPTIONS on UDFs
-    sql = re.sub(
-        r"""OPTIONS\s*\(("([^"]|\\")*"|'([^']|\\')*'|[^)])*\)""",
-        "",
-        sql,
-        flags=re.MULTILINE | re.IGNORECASE,
-    )
     query = sqlglot.parse(sql, read="bigquery")
     creates = set()
     tables = set()

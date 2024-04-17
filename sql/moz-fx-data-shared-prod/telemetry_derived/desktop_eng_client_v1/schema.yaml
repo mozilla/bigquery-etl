@@ -46,12 +46,12 @@ fields:
 - mode: NULLABLE
   name: dau
   type: BOOLEAN
-  description: DAU
+  description: DAU - Daily Active User
 - mode: NULLABLE
   name: wau
   type: BOOLEAN
-  description: WAU
+  description: WAU - Weekly Active User
 - mode: NULLABLE
   name: mau
   type: BOOLEAN
-  description: MAU
+  description: MAU - Monthly Active User

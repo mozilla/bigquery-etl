@@ -23,7 +23,7 @@ GROUP BY
   attribution_campaign,
   attribution_content,
   attribution_dlsource,
-  aatribution_medium,
+  attribution_medium,
   attribution_ua,
   normalized_os,
   normalized_os_version,

@@ -48,9 +48,9 @@ SELECT
   active_users.is_dau AND active_users.retention_active.day_27.active_in_week_3 AS retained_week_4,
   -- new client retention
   retention_seen.day_27.metric_date = first_seen_date AS new_client,
-  retention_seen.day_27.metric_date = first_seen_date AND retention_active.day_27.active_in_week_3 as new_profile_retained_week_4
+  retention_seen.day_27.metric_date = first_seen_date AND retention_active.day_27.active_in_week_3 as new_client_retained_week_4
   -- clients_daily.is_new_profile AS new_client,
-  -- clients_daily.is_new_profile AND retention_active.day_27.active_in_week_3 as new_profile_retained_week_4
+  -- clients_daily.is_new_profile AND retention_active.day_27.active_in_week_3 as new_client_retained_week_4
   -- active_users.retention_seen,
   -- active_users.retention_active,
 FROM clients_daily

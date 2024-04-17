@@ -8,7 +8,7 @@ SELECT
   cfs.attribution_medium,
   cfs.attribution_ua,
   cd.normalized_os,
-  cd.normalized_os_version,
+  cd.normalized_os_version AS os_version_major,
   cd.country,
   au.is_dau AS dau,
   au.is_wau AS wau,

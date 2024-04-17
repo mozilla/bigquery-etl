@@ -17,7 +17,7 @@ fields:
   description: Attribution Content
 - mode: NULLABLE
   name: attribution_dlsource
-  type: DATE
+  type: STRING
   description: Attribution Download Source
 - mode: NULLABLE
   name: attribution_medium

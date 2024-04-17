@@ -1521,6 +1521,75 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#backfill_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      backfill
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="backfill">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#create_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      create
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#validate_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      validate
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#info_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      info
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scheduled" class="md-nav__link">
+    <span class="md-ellipsis">
+      scheduled
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#initiate" class="md-nav__link">
+    <span class="md-ellipsis">
+      initiate
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#complete" class="md-nav__link">
+    <span class="md-ellipsis">
+      complete
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2072,6 +2141,75 @@
   <a href="#rename_1" class="md-nav__link">
     <span class="md-ellipsis">
       rename
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#backfill_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      backfill
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="backfill">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#create_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      create
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#validate_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      validate
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#info_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      info
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scheduled" class="md-nav__link">
+    <span class="md-ellipsis">
+      scheduled
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#initiate" class="md-nav__link">
+    <span class="md-ellipsis">
+      initiate
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#complete" class="md-nav__link">
+    <span class="md-ellipsis">
+      complete
     </span>
   </a>
   
@@ -2775,6 +2913,125 @@ Options:
 
 <span class="c1"># Rename routine dataset</span>
 ./bqetl<span class="w"> </span>mozfun<span class="w"> </span>rename<span class="w"> </span>hist.*<span class="w"> </span>histogram.*
+</code></pre></div>
+<h3 id="backfill_1"><code>backfill</code></h3>
+<p>Commands for managing backfills.</p>
+<h4 id="create_4"><code>create</code></h4>
+<p>Create a new backfill entry in the backfill.yaml file.  Create
+    a backfill.yaml file if it does not already exist.</p>
+<p><strong>Usage</strong></p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>backfill<span class="w"> </span>create<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>qualified_table_name<span class="o">]</span>
+
+Options:
+
+--sql_dir:<span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>directory<span class="w"> </span>which<span class="w"> </span>contains<span class="w"> </span>queries.
+--start_date:<span class="w"> </span>First<span class="w"> </span>date<span class="w"> </span>to<span class="w"> </span>be<span class="w"> </span>backfilled.<span class="w"> </span>Date<span class="w"> </span>format:<span class="w"> </span>yyyy-mm-dd
+--end_date:<span class="w"> </span>Last<span class="w"> </span>date<span class="w"> </span>to<span class="w"> </span>be<span class="w"> </span>backfilled.<span class="w"> </span>Date<span class="w"> </span>format:<span class="w"> </span>yyyy-mm-dd
+--exclude:<span class="w"> </span>Dates<span class="w"> </span>excluded<span class="w"> </span>from<span class="w"> </span>backfill.<span class="w"> </span>Date<span class="w"> </span>format:<span class="w"> </span>yyyy-mm-dd
+--watcher:<span class="w"> </span>Watcher<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>backfill<span class="w"> </span><span class="o">(</span>email<span class="w"> </span>address<span class="o">)</span>
+</code></pre></div>
+<p><strong>Examples</strong></p>
+<div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>backfill<span class="w"> </span>create<span class="w"> </span>moz-fx-data-shared-prod.telemetry_derived.deviations_v1<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--start_date<span class="o">=</span><span class="m">2021</span>-03-01<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--end_date<span class="o">=</span><span class="m">2021</span>-03-31<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--exclude<span class="o">=</span><span class="m">2021</span>-03-03<span class="w"> </span><span class="se">\</span>
+</code></pre></div>
+<h4 id="validate_4"><code>validate</code></h4>
+<p>Validate backfill.yaml file format and content.</p>
+<p><strong>Usage</strong></p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>backfill<span class="w"> </span>validate<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>qualified_table_name<span class="o">]</span>
+
+Options:
+
+--sql_dir:<span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>directory<span class="w"> </span>which<span class="w"> </span>contains<span class="w"> </span>queries.
+--project_id:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>ID
+</code></pre></div>
+<p><strong>Examples</strong></p>
+<div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>backfill<span class="w"> </span>validate<span class="w"> </span>moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6
+
+
+<span class="c1"># validate all backfill.yaml files if table is not specified</span>
+Use<span class="w"> </span>the<span class="w"> </span><span class="sb">`</span>--project_id<span class="sb">`</span><span class="w"> </span>option<span class="w"> </span>to<span class="w"> </span>change<span class="w"> </span>the<span class="w"> </span>project<span class="w"> </span>to<span class="w"> </span>be<span class="w"> </span>validated<span class="p">;</span>
+default<span class="w"> </span>is<span class="w"> </span><span class="sb">`</span>moz-fx-data-shared-prod<span class="sb">`</span>.
+
+<span class="w">    </span>./bqetl<span class="w"> </span>backfill<span class="w"> </span>validate
+</code></pre></div>
+<h4 id="info_4"><code>info</code></h4>
+<p>Get backfill(s) information from all or specific table(s).</p>
+<p><strong>Usage</strong></p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>backfill<span class="w"> </span>info<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>qualified_table_name<span class="o">]</span>
+
+Options:
+
+--sql_dir:<span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>directory<span class="w"> </span>which<span class="w"> </span>contains<span class="w"> </span>queries.
+--project_id:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>ID
+--status:<span class="w"> </span>Filter<span class="w"> </span>backfills<span class="w"> </span>with<span class="w"> </span>this<span class="w"> </span>status.
+</code></pre></div>
+<p><strong>Examples</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Get info for specific table.</span>
+./bqetl<span class="w"> </span>backfill<span class="w"> </span>info<span class="w"> </span>moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6
+
+
+<span class="c1"># Get info for all tables.</span>
+./bqetl<span class="w"> </span>backfill<span class="w"> </span>info
+
+
+<span class="c1"># Get info from all tables with specific status.</span>
+./bqetl<span class="w"> </span>backfill<span class="w"> </span>info<span class="w"> </span>--status<span class="o">=</span>Initiate
+</code></pre></div>
+<h4 id="scheduled"><code>scheduled</code></h4>
+<p>Get information on backfill(s) that require processing.</p>
+<p><strong>Usage</strong></p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>backfill<span class="w"> </span>scheduled<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>qualified_table_name<span class="o">]</span>
+
+Options:
+
+--sql_dir:<span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>directory<span class="w"> </span>which<span class="w"> </span>contains<span class="w"> </span>queries.
+--project_id:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>ID
+--status:<span class="w"> </span>Whether<span class="w"> </span>to<span class="w"> </span>get<span class="w"> </span>backfills<span class="w"> </span>to<span class="w"> </span>process<span class="w"> </span>or<span class="w"> </span>to<span class="w"> </span>complete.
+--json_path:<span class="w"> </span>None
+</code></pre></div>
+<p><strong>Examples</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Get info for specific table.</span>
+./bqetl<span class="w"> </span>backfill<span class="w"> </span>scheduled<span class="w"> </span>moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6
+
+
+<span class="c1"># Get info for all tables.</span>
+./bqetl<span class="w"> </span>backfill<span class="w"> </span>scheduled
+</code></pre></div>
+<h4 id="initiate"><code>initiate</code></h4>
+<p>Process entry in backfill.yaml with Initiate status that has not yet been processed.</p>
+<p><strong>Usage</strong></p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>backfill<span class="w"> </span>initiate<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>qualified_table_name<span class="o">]</span>
+
+Options:
+
+--sql_dir:<span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>directory<span class="w"> </span>which<span class="w"> </span>contains<span class="w"> </span>queries.
+--project_id:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>ID
+</code></pre></div>
+<p><strong>Examples</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Initiate backfill entry for specific table</span>
+./bqetl<span class="w"> </span>backfill<span class="w"> </span>initiate<span class="w"> </span>moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6
+
+Use<span class="w"> </span>the<span class="w"> </span><span class="sb">`</span>--project_id<span class="sb">`</span><span class="w"> </span>option<span class="w"> </span>to<span class="w"> </span>change<span class="w"> </span>the<span class="w"> </span>project<span class="p">;</span>
+default<span class="w"> </span>project_id<span class="w"> </span>is<span class="w"> </span><span class="sb">`</span>moz-fx-data-shared-prod<span class="sb">`</span>.
+</code></pre></div>
+<h4 id="complete"><code>complete</code></h4>
+<p>Complete entry in backfill.yaml with Complete status that has not yet been processed..</p>
+<p><strong>Usage</strong></p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>backfill<span class="w"> </span><span class="nb">complete</span><span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>qualified_table_name<span class="o">]</span>
+
+Options:
+
+--sql_dir:<span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>directory<span class="w"> </span>which<span class="w"> </span>contains<span class="w"> </span>queries.
+--project_id:<span class="w"> </span>GCP<span class="w"> </span>project<span class="w"> </span>ID
+</code></pre></div>
+<p><strong>Examples</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Complete backfill entry for specific table</span>
+./bqetl<span class="w"> </span>backfill<span class="w"> </span><span class="nb">complete</span><span class="w"> </span>moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6
+
+Use<span class="w"> </span>the<span class="w"> </span><span class="sb">`</span>--project_id<span class="sb">`</span><span class="w"> </span>option<span class="w"> </span>to<span class="w"> </span>change<span class="w"> </span>the<span class="w"> </span>project<span class="p">;</span>
+default<span class="w"> </span>project_id<span class="w"> </span>is<span class="w"> </span><span class="sb">`</span>moz-fx-data-shared-prod<span class="sb">`</span>.
 </code></pre></div>
 
 

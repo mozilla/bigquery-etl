@@ -1170,11 +1170,35 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#backfilling-the-dataset" class="md-nav__link">
+  <a href="#backfilling-a-table" class="md-nav__link">
     <span class="md-ellipsis">
-      Backfilling the dataset
+      Backfilling a table
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Backfilling a table">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#initiating-the-backfill" class="md-nav__link">
+    <span class="md-ellipsis">
+      Initiating the backfill:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#completing-the-backfill" class="md-nav__link">
+    <span class="md-ellipsis">
+      Completing the backfill:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1566,11 +1590,35 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#backfilling-the-dataset" class="md-nav__link">
+  <a href="#backfilling-a-table" class="md-nav__link">
     <span class="md-ellipsis">
-      Backfilling the dataset
+      Backfilling a table
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Backfilling a table">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#initiating-the-backfill" class="md-nav__link">
+    <span class="md-ellipsis">
+      Initiating the backfill:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#completing-the-backfill" class="md-nav__link">
+    <span class="md-ellipsis">
+      Completing the backfill:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1767,14 +1815,42 @@ git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </
 <p>For our example:
 <div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>query<span class="w"> </span>schema<span class="w"> </span>deploy<span class="w"> </span>org_mozilla_mozregression_derived.mozregression_aggregates_v1
 </code></pre></div></p>
-<h2 id="backfilling-the-dataset">Backfilling the dataset</h2>
-<p>It is recommended to use the <a href="https://mozilla.github.io/bigquery-etl/bqetl/#backfill">bqetl backfill command</a> in order to load the data in your new table, and set specific dates for large sets of data, as well as following the <a href="https://mozilla.github.io/bigquery-etl/reference/recommended_practices/#backfills">recommended practices</a>.</p>
-<div class="highlight"><pre><span></span><code>bqetl<span class="w"> </span>query<span class="w"> </span>backfill<span class="w"> </span>&lt;dataset&gt;.&lt;table&gt;<span class="w"> </span>--project_id<span class="o">=</span>moz-fx-data-shared-prod<span class="w"> </span>-s<span class="w"> </span>&lt;YYYY-MM-DD&gt;<span class="w"> </span>-e<span class="w"> </span>&lt;YYYY-MM-DD&gt;<span class="w"> </span>-n<span class="w"> </span><span class="m">0</span>
+<h2 id="backfilling-a-table">Backfilling a table</h2>
+<p><strong>Note</strong> For large sets of data, follow the <a href="https://mozilla.github.io/bigquery-etl/reference/recommended_practices/#backfills">recommended practices</a> for backfills.</p>
+<h3 id="initiating-the-backfill">Initiating the backfill:</h3>
+<ol>
+<li>
+<p>Create a backfill schedule entry to (re)-process data in your table:</p>
+<div class="highlight"><pre><span></span><code>bqetl<span class="w"> </span>backfill<span class="w"> </span>create<span class="w"> </span>&lt;project&gt;.&lt;dataset&gt;.&lt;table&gt;<span class="w"> </span>--start_date<span class="o">=</span>&lt;YYYY-MM-DD&gt;<span class="w"> </span>--end_date<span class="o">=</span>&lt;YYYY-MM-DD&gt;
 </code></pre></div>
-<p>For our example:
-<div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>query<span class="w"> </span>backfill<span class="w"> </span>org_mozilla_mozregression_derived.mozregression_aggregates_v1<span class="w"> </span>--project_id<span class="o">=</span>moz-fx-data-shared-prod<span class="w"> </span>-s<span class="w"> </span><span class="m">2020</span>-04-01<span class="w"> </span>-e<span class="w"> </span><span class="m">2021</span>-02-01
-</code></pre></div></p>
-<p><strong>Note</strong>. Alternatively, you can trigger the Airflow DAG to backfill the data. In this case, it is recommended to talk to someone in in Data Engineering or Data SRE to trigger the DAG.</p>
+</li>
+<li>
+<p>Fill out the missing details:</p>
+<ul>
+<li>Watchers: Mozilla Emails for users that should be notified via Slack about backfill progress.</li>
+<li>Reason: Why are you backfilling this table?</li>
+</ul>
+</li>
+<li>
+<p>Open a Pull Request with the backfill entry, see <a href="https://github.com/mozilla/bigquery-etl/pull/5369">this example</a>. Once merged, you should receive a notification in around an hour that processing has started. Your backfill data will be temporarily placed in a staging location.</p>
+</li>
+<li>
+<p>Watchers will be notified via Slack when processing is complete, and you can validate your backfill data.</p>
+</li>
+</ol>
+<h3 id="completing-the-backfill">Completing the backfill:</h3>
+<ol>
+<li>
+<p>Validate that the backfill data looks like what you expect (calculate important metrics, look for nulls, etc.)</p>
+</li>
+<li>
+<p>If the data is valid, open a Pull Request, setting the backfill status to Complete, see <a href="https://github.com/mozilla/bigquery-etl/pull/5352">this example</a>. Once merged, you should receive a notification in around an hour that swapping has started. Current production data will be backed up and the staging backfill data will be swapped into production.</p>
+</li>
+<li>
+<p>You will be notified when swapping is complete.</p>
+</li>
+</ol>
+<p><strong>Note</strong>. If your backfill is complex (backfill validation fails for e.g.), it is recommended to talk to someone in Data Engineering or Data SRE (#data-help) to process the backfill via the backfill DAG.</p>
 <h2 id="completing-the-pull-request">Completing the Pull Request</h2>
 <p>At this point, the table exists in Bigquery so you are able to:
 - <a href="https://app.circleci.com/pipelines/github/mozilla/bigquery-etl?">Find and re-run the CI</a> of your PR and make sure that all tests pass

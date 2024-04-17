@@ -1206,9 +1206,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#backfills" class="md-nav__link">
+  <a href="#large-backfills" class="md-nav__link">
     <span class="md-ellipsis">
-      Backfills
+      Large Backfills
     </span>
   </a>
   
@@ -1413,9 +1413,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#backfills" class="md-nav__link">
+  <a href="#large-backfills" class="md-nav__link">
     <span class="md-ellipsis">
-      Backfills
+      Large Backfills
     </span>
   </a>
   
@@ -1632,19 +1632,14 @@
 <li>Should use <code>SQL</code> over <code>js</code> for performance</li>
 <li>UDFs are interpreted as <a href="https://jinja.palletsprojects.com/en/3.1.x/">Jinja</a> templates, so it is possible to use Jinja statements and expressions</li>
 </ul>
-<h2 id="backfills">Backfills</h2>
+<h2 id="large-backfills">Large Backfills</h2>
 <ul>
 <li>Should be documented and reviewed by a peer using a
   <a href="https://bugzilla.mozilla.org/enter_bug.cgi">new bug</a> that describes
   the context that required the backfill and the command or script used.</li>
-<li>Should be avoided on large tables<ul>
-<li>Backfills may double storage cost for a table for 90 days by moving
-  data from long-term storage to short-term storage<ul>
-<li>For example regenerating <code>clients_last_seen_v1</code> from scratch would cost
-  about $1600 for the query and about $6800 for data moved to short-term
-  storage</li>
-</ul>
-</li>
+<li>Frequent backfills should be avoided<ul>
+<li>Backfills may increase storage costs for a table for 90 days by moving
+  data from long-term storage to short-term storage and requiring a production snapshot.</li>
 <li>Should combine multiple backfills happening around the same time</li>
 <li>Should delay column deletes until the next other backfill<ul>
 <li>Should use <code>NULL</code> for new data and <code>EXCEPT</code> to exclude from views until
@@ -1653,42 +1648,28 @@
 </li>
 </ul>
 </li>
-<li>Should use copy operations in append mode to change column order<ul>
-<li>Copy operations do not allow changing partitioning, changing clustering, or
-  column deletes</li>
-</ul>
-</li>
-<li>Should split backfilling into queries that finish in minutes not hours</li>
-<li>May use [script/generate_incremental_table] to automate backfilling incremental
-  queries</li>
-<li>May be performed in a single query for smaller tables that do not depend on history<ul>
-<li>A useful pattern is to have the only reference to <code>@submission_date</code> be a
-  clause <code>WHERE (@submission_date IS NULL OR @submission_date = submission_date)</code>
-  which allows recreating all dates by passing <code>--parameter=submission_date:DATE:NULL</code></li>
-</ul>
-</li>
-<li>After running the backfill, is important to validate that the job ran without errors
+<li>After running the backfill, it is important to validate that the job(s) ran without errors
   and the execution times and bytes processed are as expected.
-  Errors normally appear in the parent job and may or may not include the dataset and
-  table names, therefore it is important to check for errors in the jobs ran on that date.
   Here is a query you may use for this purpose:
   <div class="highlight"><pre><span></span><code><span class="k">SELECT</span>
-<span class="w">  </span><span class="n">job_id</span><span class="p">,</span>
-<span class="w">  </span><span class="n">user_email</span><span class="p">,</span>
-<span class="w">  </span><span class="n">parent_job_id</span><span class="p">,</span>
-<span class="w">  </span><span class="n">creation_time</span><span class="p">,</span>
-<span class="w">  </span><span class="n">destination_table</span><span class="p">.</span><span class="n">dataset_id</span><span class="p">,</span>
-<span class="w">  </span><span class="n">destination_table</span><span class="p">.</span><span class="n">table_id</span><span class="p">,</span>
-<span class="w">  </span><span class="n">end_time</span><span class="o">-</span><span class="n">start_time</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">task_duration</span><span class="p">,</span>
-<span class="w">  </span><span class="n">total_bytes_processed</span><span class="o">/</span><span class="p">(</span><span class="mi">1024</span><span class="o">*</span><span class="mi">1024</span><span class="o">*</span><span class="mi">1024</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">gigabytes_processed</span><span class="p">,</span>
+<span class="w">  </span><span class="n">job_type</span><span class="p">,</span>
 <span class="w">  </span><span class="k">state</span><span class="p">,</span>
-<span class="w">  </span><span class="n">error_result</span><span class="p">.</span><span class="k">location</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">error_location</span><span class="p">,</span>
-<span class="w">  </span><span class="n">error_result</span><span class="p">.</span><span class="n">reason</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">error_reason</span><span class="p">,</span>
-<span class="w">  </span><span class="n">error_result</span><span class="p">.</span><span class="n">message</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">error_message</span><span class="p">,</span>
-<span class="k">FROM</span><span class="w"> </span><span class="o">`</span><span class="n">moz</span><span class="o">-</span><span class="n">fx</span><span class="o">-</span><span class="k">data</span><span class="o">-</span><span class="n">shared</span><span class="o">-</span><span class="n">prod</span><span class="o">`</span><span class="p">.</span><span class="o">`</span><span class="n">region</span><span class="o">-</span><span class="n">us</span><span class="o">`</span><span class="p">.</span><span class="n">INFORMATION_SCHEMA</span><span class="p">.</span><span class="n">JOBS_BY_PROJECT</span>
-<span class="k">WHERE</span><span class="w"> </span><span class="nb">DATE</span><span class="p">(</span><span class="n">creation_time</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&lt;</span><span class="s1">&#39;YYYY-MM-DD&#39;</span><span class="o">&gt;</span>
-<span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">user_email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&lt;</span><span class="s1">&#39;user@mozilla.com&#39;</span><span class="o">&gt;</span>
-<span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">creation_time</span><span class="w"> </span><span class="k">DESC</span>
+<span class="w">  </span><span class="n">submission_date</span><span class="p">,</span>
+<span class="w">  </span><span class="n">destination_dataset_id</span><span class="p">,</span>
+<span class="w">  </span><span class="n">destination_table_id</span><span class="p">,</span>
+<span class="w">  </span><span class="n">total_terabytes_billed</span><span class="p">,</span>
+<span class="w">  </span><span class="n">total_slot_ms</span><span class="p">,</span>
+<span class="w">  </span><span class="n">error_location</span><span class="p">,</span>
+<span class="w">  </span><span class="n">error_reason</span><span class="p">,</span>
+<span class="w">  </span><span class="n">error_message</span>
+<span class="k">FROM</span>
+<span class="w">  </span><span class="n">moz</span><span class="o">-</span><span class="n">fx</span><span class="o">-</span><span class="k">data</span><span class="o">-</span><span class="n">shared</span><span class="o">-</span><span class="n">prod</span><span class="p">.</span><span class="n">monitoring</span><span class="p">.</span><span class="n">bigquery_usage</span>
+<span class="k">WHERE</span>
+<span class="w">  </span><span class="n">submission_date</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="k">CURRENT_DATE</span><span class="p">()</span>
+<span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">destination_dataset_id</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="ss">&quot;%backfills_staging_derived%&quot;</span>
+<span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">destination_table_id</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="ss">&quot;%{{ your table name }}%&quot;</span>
+<span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span>
+<span class="w">  </span><span class="n">submission_date</span><span class="w"> </span><span class="k">DESC</span>
 </code></pre></div></li>
 </ul>
 

@@ -7,7 +7,7 @@ SELECT
   cfs.attribution_dlsource,
   cfs.attribution_medium,
   cfs.attribution_ua,
-  cd.normalized_os,
+  mozfun.norm.os(cd.os) AS normalized_os,
   cd.normalized_os_version AS os_version_major,
   cd.country,
   au.is_dau AS dau,
@@ -22,6 +22,7 @@ LEFT JOIN
   `mozdata.telemetry.clients_daily_v6` cd
   ON au.client_id = cd.client_id
   AND au.submission_date = cd.submission_date
+  AND cd.submission_date = @submission_date
 WHERE
   au.app_name = 'Firefox'
   AND au.submission_date = @submission_date

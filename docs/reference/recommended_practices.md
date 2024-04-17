@@ -190,7 +190,7 @@ labels:
   - Should delay column deletes until the next other backfill
     - Should use `NULL` for new data and `EXCEPT` to exclude from views until
       dropped
-- After running the backfill, is important to validate that the job(s) ran without errors
+- After running the backfill, it is important to validate that the job(s) ran without errors
   and the execution times and bytes processed are as expected.
   Here is a query you may use for this purpose:
   ```sql
@@ -201,7 +201,10 @@ labels:
     destination_dataset_id,
     destination_table_id,
     total_terabytes_billed,
-    total_slot_ms
+    total_slot_ms,
+    error_location,
+    error_reason,
+    error_message
   FROM
     moz-fx-data-shared-prod.monitoring.bigquery_usage
   WHERE

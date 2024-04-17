@@ -271,11 +271,11 @@ For our example:
 
 3. Open a Pull Request with the backfill entry, see [this example](https://github.com/mozilla/bigquery-etl/pull/5369). Once merged, you should receive a notification in around an hour that processing has started. Your backfill data will be temporarily placed in a staging location.
 
-4. You will be notified when processing is complete, and you can validate your backfill data.
+4. Watchers will be notified via Slack when processing is complete, and you can validate your backfill data.
 
 ### Completing the backfill:
 
-1. Validate that the backfill date looks like what you expect (calculate important metrics, look for nulls, etc.)
+1. Validate that the backfill data looks like what you expect (calculate important metrics, look for nulls, etc.)
 
 2. If the data is valid, open a Pull Request, setting the backfill status to Complete, see [this example](https://github.com/mozilla/bigquery-etl/pull/5352). Once merged, you should receive a notification in around an hour that swapping has started. Current production data will be backed up and the staging backfill data will be swapped into production.
 

@@ -110,6 +110,3 @@ fields:
   mode: REPEATED
   name: products
   type: RECORD
-- mode: NULLABLE
-  name: last_modified_timestamp
-  type: TIMESTAMP

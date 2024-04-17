@@ -24,3 +24,4 @@ LEFT JOIN
   AND au.submission_date = cd.submission_date
 WHERE
   au.app_name = 'Firefox'
+  AND au.submission_date = @submission_date

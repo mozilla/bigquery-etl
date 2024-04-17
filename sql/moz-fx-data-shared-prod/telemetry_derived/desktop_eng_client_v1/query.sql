@@ -7,9 +7,9 @@ SELECT
   cfs.attribution_dlsource,
   cfs.attribution_medium,
   cfs.attribution_ua,
-  c.normalized_os,
-  c.normalized_os_version,
-  c.country,
+  cd.normalized_os,
+  cd.normalized_os_version,
+  cd.country,
   au.is_dau AS dau,
   au.is_wau AS wau,
   au.is_mau AS mau

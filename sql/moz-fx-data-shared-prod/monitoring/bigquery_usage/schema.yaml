@@ -114,3 +114,6 @@ fields:
 - name: is_scheduled
   type: BOOLEAN
   mode: NULLABLE
+- name: cost
+  type: FLOAT
+  mode: NULLABLE

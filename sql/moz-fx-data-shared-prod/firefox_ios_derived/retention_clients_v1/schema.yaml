@@ -73,7 +73,7 @@ fields:
     TODO:
 
 - mode: NULLABLE
-  name: new_client
+  name: is_new_client
   type: BOOLEAN
   description: |
     TODO:
@@ -85,7 +85,7 @@ fields:
     TODO:
 
 - mode: NULLABLE
-  name: new_profile_retained_week_4
+  name: new_client_retained_week_4
   type: BOOLEAN
   description: |
     TODO:

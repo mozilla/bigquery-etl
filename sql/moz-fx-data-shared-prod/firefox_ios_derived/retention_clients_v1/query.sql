@@ -17,15 +17,17 @@ active_users AS (
   SELECT
     submission_date,
     client_id,
-    is_dau,
-    is_daily_user,
+    -- is_dau,
+    -- is_daily_user,
     mozfun.bits28.retention(days_seen_bits, submission_date) AS retention_seen,
     mozfun.bits28.retention(days_seen_bits, submission_date) AS retention_active,
-    app_name,
-  FROM backfills_staging_derived.active_users
+    isp,
+  FROM firefox_ios.baseline_clients_last_seen
+  -- FROM backfills_staging_derived.active_users -- not using for now because it makes the query way too heavy
+  -- FROM telemetry.active_users
   WHERE
     submission_date = @submission_date
-    AND app_name LIKE "Firefox iOS%"
+    -- AND app_name LIKE "Firefox iOS%"
 )
 
 SELECT
@@ -39,16 +41,22 @@ SELECT
   clients_daily.country,
   clients_daily.is_suspicious_device_client,
   -- clients_daily.is_new_profile AS new_client,
-  active_users.app_name,
+  -- active_users.app_name,
+  -- active_users ATM too heavy to work with, manually tweaking the app_name
+  CASE
+    WHEN isp = 'BrowserStack'
+      THEN CONCAT('Firefox iOS', ' ', isp)
+    ELSE 'Firefox iOS'
+  END AS app_name,
   -- ping sent retention
-  active_users.is_daily_user AS day_ping,
-  active_users.is_daily_user AND retention_seen.day_27.active_in_week_3 as sent_ping_week_4,
+  active_users.retention_seen.day_27.active_on_metric_date AS day_ping,
+  active_users.retention_seen.day_27.active_on_metric_date AND retention_seen.day_27.active_in_week_3 AS sent_ping_week_4,
   -- activity retention
-  active_users.is_dau AS day_active,
-  active_users.is_dau AND active_users.retention_active.day_27.active_in_week_3 AS retained_week_4,
+  active_users.retention_active.day_27.active_on_metric_date AS day_active,
+  active_users.retention_active.day_27.active_on_metric_date AND active_users.retention_active.day_27.active_in_week_3 AS retained_week_4,
   -- new client retention
-  retention_seen.day_27.metric_date = first_seen_date AS new_client,
-  retention_seen.day_27.metric_date = first_seen_date AND retention_active.day_27.active_in_week_3 as new_client_retained_week_4
+  retention_seen.day_27.metric_date = first_seen_date AS is_new_client,
+  retention_seen.day_27.metric_date = first_seen_date AND retention_active.day_27.active_in_week_3 AS new_client_retained_week_4,
   -- clients_daily.is_new_profile AS new_client,
   -- clients_daily.is_new_profile AND retention_active.day_27.active_in_week_3 as new_client_retained_week_4
   -- active_users.retention_seen,

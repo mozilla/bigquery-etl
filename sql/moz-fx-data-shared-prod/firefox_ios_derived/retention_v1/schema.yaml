@@ -21,13 +21,13 @@ fields:
     TODO:
 
 - mode: NULLABLE
-  name: new_profiles
+  name: new_clients
   type: INTEGER
   description: |
     TODO:
 
 - mode: NULLABLE
-  name: new_profiles_retained_week_4
+  name: new_clients_retained_week_4
   type: INTEGER
   description: |
     TODO:

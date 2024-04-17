@@ -62,7 +62,7 @@ fields:
       Ping from which the adjust_info values originate.
 
   - mode: NULLABLE
-    name: adjust_info__source_ping
-    type: STRING
+    name: adjust_info__received_at
+    type: TIMESTAMP
     description: |
       Timestamp associated with the ping from where the adjust attributes originate.

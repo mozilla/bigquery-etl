@@ -33,7 +33,7 @@ fields:
   description: Normalized Operating System
 - mode: NULLABLE
   name: os_version_major
-  type: DATE
+  type: STRING
   description: OS Version Major
 - mode: NULLABLE
   name: country

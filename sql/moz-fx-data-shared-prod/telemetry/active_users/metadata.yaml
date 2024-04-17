@@ -1,0 +1,10 @@
+friendly_name: Base view to calculate growth metrics
+description: |-
+  This view unions the client's activity patterns for all the browsers that enable
+  the calculation of growth metrics.
+  
+  Proposal:
+  https://docs.google.com/document/d/1G_pJs62c8mGOxt1eGdzc_-pwG_ShE3hAb-N4Lmp9A8M/edit?usp=sharing
+owners:
+- lvargas@mozilla.com
+- mozilla/kpi_table_reviewers

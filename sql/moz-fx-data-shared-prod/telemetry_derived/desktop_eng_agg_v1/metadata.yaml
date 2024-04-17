@@ -1,6 +1,6 @@
-friendly_name: Desktop Engagement - Client Level
+friendly_name: Desktop Engagement Aggregate
 description: |-
-  Desktop engagement data at the client level, including attribution information
+  Contains aggregated DAU, WAU, and MAU by different attributes
 owners:
 - kwindau@mozilla.com
 labels:
@@ -19,5 +19,4 @@ bigquery:
     fields:
     - country
     - normalized_os
-    - normalized_os_version
 references: {}

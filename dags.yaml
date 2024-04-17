@@ -1571,7 +1571,7 @@ bqetl_braze_currents:
   tags:
     - impact/tier_2
 
-desktop_engagement_model:
+bqetl_desktop_engagement_model:
   schedule_interval: 0 12 * * *
   description: Loads the desktop engagement model tables
   default_args:

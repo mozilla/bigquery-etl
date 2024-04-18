@@ -1,57 +1,81 @@
-TODO:
-
 fields:
 
 - mode: NULLABLE
   name: metric_date
   type: DATE
-  description: |
-    TODO:
+  description: TODO
+
+- mode: NULLABLE
+  name: first_seen_date
+  type: DATE
+  description: TODO
 
 - mode: NULLABLE
   name: channel
   type: STRING
-  description: |
-    TODO:
+  description: TODO
 
-- mode: NULLABLE
-  name: country
+- name: app_name
   type: STRING
-  description: |
-    TODO:
+  mode: NULLABLE
+  description: TODO
 
-- mode: NULLABLE
-  name: new_clients
-  type: INTEGER
-  description: |
-    TODO:
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: TODO
 
-- mode: NULLABLE
-  name: new_clients_retained_week_4
-  type: INTEGER
-  description: |
-    TODO:
+- name: adjust_ad_group
+  type: STRING
+  mode: NULLABLE
+  description: TODO
 
-- mode: NULLABLE
-  name: day_ping
-  type: INTEGER
-  description: |
-    TODO:
+- name: adjust_campaign
+  type: STRING
+  mode: NULLABLE
+  description: TODO
 
-- mode: NULLABLE
-  name: sent_ping_week_4
-  type: INTEGER
-  description: |
-    TODO:
+- name: adjust_creative
+  type: STRING
+  mode: NULLABLE
+  description: TODO
 
-- mode: NULLABLE
-  name: day_active
-  type: INTEGER
-  description: |
-    TODO:
+- name: adjust_network
+  type: STRING
+  mode: NULLABLE
+  description: TODO
 
-- mode: NULLABLE
-  name: retained_week_4
+- name: ping_sent_metric_date
   type: INTEGER
-  description: |
-    TODO:
+  mode: NULLABLE
+  description: TODO
+
+- name: ping_sent_week_4
+  type: INTEGER
+  mode: NULLABLE
+  description: TODO
+
+- name: active_metric_date
+  type: INTEGER
+  mode: NULLABLE
+  description: TODO
+
+- name: retained_week_4
+  type: INTEGER
+  mode: NULLABLE
+  description: TODO
+
+- name: new_clients_metric_date
+  type: INTEGER
+  mode: NULLABLE
+  description: TODO
+
+- name: retained_week_4_new_clients
+  type: INTEGER
+  mode: NULLABLE
+  description: TODO
+
+- name: repeat_clients
+  type: INTEGER
+  mode: NULLABLE
+  description: TODO

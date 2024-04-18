@@ -17,4 +17,7 @@ bigquery:
     require_partition_filter: false
   clustering:
     fields:
+    - first_seen_date
+    - app_name
     - channel
+    - country

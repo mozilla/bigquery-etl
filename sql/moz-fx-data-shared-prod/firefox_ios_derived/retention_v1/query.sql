@@ -1,5 +1,6 @@
 SELECT
   metric_date,
+  first_seen_date,
   app_name,
   channel,
   country,
@@ -23,6 +24,7 @@ WHERE
   AND NOT is_suspicious_device_client
 GROUP BY
   metric_date,
+  first_seen_date,
   app_name,
   channel,
   country,

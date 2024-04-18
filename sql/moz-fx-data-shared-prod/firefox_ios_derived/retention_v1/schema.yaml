@@ -3,79 +3,79 @@ fields:
 - mode: NULLABLE
   name: metric_date
   type: DATE
-  description: TODO
+  description: This is 28 days before processing.
 
 - mode: NULLABLE
   name: first_seen_date
   type: DATE
-  description: TODO
-
-- mode: NULLABLE
-  name: channel
-  type: STRING
-  description: TODO
+  description: When the client has been seen for the first time.
 
 - name: app_name
   type: STRING
   mode: NULLABLE
-  description: TODO
+  description: App name the client is using.
+
+- mode: NULLABLE
+  name: channel
+  type: STRING
+  description: Release channel of the app the client is using.
 
 - name: country
   type: STRING
   mode: NULLABLE
-  description: TODO
+  description: Client's country on the metric date.
 
 - name: adjust_ad_group
   type: STRING
   mode: NULLABLE
-  description: TODO
+  description: Adjust Ad Group the client is attributed to.
 
 - name: adjust_campaign
   type: STRING
   mode: NULLABLE
-  description: TODO
+  description: Adjust Campaign the client is attributed to.
 
 - name: adjust_creative
   type: STRING
   mode: NULLABLE
-  description: TODO
+  description: Adjust Creative the client is attributed to.
 
 - name: adjust_network
   type: STRING
   mode: NULLABLE
-  description: TODO
+  description: Adjust Network the client is attributed to.
 
 - name: ping_sent_metric_date
   type: INTEGER
   mode: NULLABLE
-  description: TODO
+  description: Number of clients that sent a ping on the metric date.
 
 - name: ping_sent_week_4
   type: INTEGER
   mode: NULLABLE
-  description: TODO
+  description: Number of clients that sent a ping 4 weeks after the metric date.
 
 - name: active_metric_date
   type: INTEGER
   mode: NULLABLE
-  description: TODO
+  description: Number of DAU clients on the metric date.
 
 - name: retained_week_4
   type: INTEGER
   mode: NULLABLE
-  description: TODO
-
-- name: new_clients_metric_date
-  type: INTEGER
-  mode: NULLABLE
-  description: TODO
+  description: Number of clients that were DAU on the metric date and 4 weeks later.
 
 - name: retained_week_4_new_clients
   type: INTEGER
   mode: NULLABLE
-  description: TODO
+  description: Number of new clients on the metrics date that were DAU 4 after the metric date.
+
+- name: new_clients_metric_date
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of new clients on the metrics date.
 
 - name: repeat_clients
   type: INTEGER
   mode: NULLABLE
-  description: TODO
+  description: Number of new clients on the metrics date that were DAU at least twice in the next 4 weeks.

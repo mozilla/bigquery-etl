@@ -1,6 +1,20 @@
-friendly_name: User Retention - Firefox iOS (Aggregated)
+friendly_name: Client Retention - Firefox iOS (Aggregated)
 description: |
-  TODO:
+  Client Retention (Firefox iOS) metrics aggregated on:
+  - metric_date
+  - first_seen_date
+  - app_name
+  - channel
+  - country
+  - adjust_ad_group
+  - adjust_campaign
+  - adjust_creative
+  - adjust_network
+
+  For all clients that sent us a ping on the metric date.
+  Client's attributes are the client's attributes observed on the metric date.
+
+  see: DENG-3183 for more information.
 owners:
 - kik@mozilla.com
 labels:

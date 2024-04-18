@@ -12,8 +12,8 @@ SELECT
   COUNTIF(ping_sent_week_4) AS ping_sent_week_4,
   COUNTIF(active_metric_date) AS active_metric_date,
   COUNTIF(retained_week_4) AS retained_week_4,
-  COUNTIF(new_client_metric_date) AS new_clients_metric_date,
   COUNTIF(retained_week_4_new_client) AS retained_week_4_new_clients,
+  COUNTIF(new_client_metric_date) AS new_clients_metric_date,
   COUNTIF(repeat_client) AS repeat_clients,
 FROM
   tmp.retention_clients

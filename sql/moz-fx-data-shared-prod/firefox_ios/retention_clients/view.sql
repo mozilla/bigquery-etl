@@ -50,7 +50,7 @@ SELECT
   -- new client retention
   clients_daily.is_new_profile AS new_client_metric_date,
   clients_daily.is_new_profile AND retention_active.day_27.active_in_week_3 AS retained_week_4_new_client,
-  clients_daily.is_new_profile AND mozfun.bits28.active_in_range(days_active_bits, -27, 27) AS repeat_client,
+  clients_daily.is_new_profile AND BIT_COUNT(days_active_bits) > 1 AS repeat_client,
   adjust_ad_group,
   adjust_campaign,
   adjust_creative,

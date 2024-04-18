@@ -1,6 +1,7 @@
 SELECT
   au.submission_date,
   au.client_id,
+  au.sample_id,
   cfs.first_seen_date,
   cfs.attribution_campaign,
   cfs.attribution_content,

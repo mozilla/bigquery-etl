@@ -8,6 +8,10 @@ fields:
   type: STRING
   description: Client ID
 - mode: NULLABLE
+  name: sample_id
+  type: INT64
+  description: Sample ID
+- mode: NULLABLE
   name: first_seen_date
   type: DATE
   description: First Seen Date

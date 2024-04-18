@@ -18,15 +18,10 @@ SELECT
     -- Mozilla Firefox UAC account extracts some info from campaign names
     account_id = 2474006105,
     STRUCT(
-      CAST(NULL AS STRING) AS campaign_region,
-      CAST(NULL AS STRING) AS campaign_country_code,
-      CAST(NULL AS STRING) AS campaign_language
-    )
-    /*STRUCT(
       mozfun.google_ads.extract_region_from_campaign_name(campaign_name) AS campaign_region,
       mozfun.google_ads.extract_country_code_from_campaign_name(campaign_name) AS campaign_country_code,
       mozfun.google_ads.extract_language_from_campaign_name(campaign_name) AS campaign_language
-    )*/,
+    ),
     STRUCT(
       CAST(NULL AS STRING) AS campaign_region,
       CAST(NULL AS STRING) AS campaign_country_code,

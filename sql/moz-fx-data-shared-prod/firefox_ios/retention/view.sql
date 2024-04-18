@@ -4,6 +4,8 @@ CREATE OR REPLACE VIEW
 AS
 SELECT
   *,
+  -- not sure what the definition of lifecycle_stage is, so this is a placeholder
+  -- for now just to show where we could place it.
   CASE
     WHEN EXTRACT(YEAR FROM metric_date) = 2024
       THEN "NEW"

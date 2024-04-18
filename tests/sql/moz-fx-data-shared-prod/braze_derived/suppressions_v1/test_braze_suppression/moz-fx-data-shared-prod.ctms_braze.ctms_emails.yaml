@@ -1,0 +1,10 @@
+---
+- primary_email: user_3@mail.com
+  email_id: user_3
+  has_opted_out_of_email: true
+- email: user_4@mail.com
+  email_id: user_on_suppression_list_but_not_opted_out
+  has_opted_out_of_email: false
+- email: user_5@mail.com
+  email_id: user_not_on_suppression_list_not_opted_out
+  has_opted_out_of_email: false

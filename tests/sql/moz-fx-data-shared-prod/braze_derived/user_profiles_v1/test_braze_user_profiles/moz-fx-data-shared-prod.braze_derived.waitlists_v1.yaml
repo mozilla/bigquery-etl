@@ -1,0 +1,9 @@
+---
+- external_id: user_1
+  waitlists:
+    - waitlist_name: waitlist_1
+      subscribed: true
+- external_id: user_3_only_waitlist
+  waitlists:
+    - waitlist_name: waitlist_1
+      subscribed: true

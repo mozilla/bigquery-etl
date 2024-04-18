@@ -1,0 +1,37 @@
+---
+- fxa_uid: fxa_uid_1
+  plan_id: plan_1
+  product_id: prod_1
+  status: active
+  plan_started_at: 2020-01-01 10:00:00+00:00
+  plan_ended_at: 2020-12-31 10:00:00+00:00
+  plan_interval: month
+  plan_interval_count: 3
+  event_timestamp: 2020-12-01 10:00:00+00:00
+- fxa_uid: fxa_uid_1
+  plan_id: plan_2
+  product_id: prod_2
+  status: active
+  plan_started_at: 2021-01-01 10:00:00+00:00
+  plan_ended_at: 2022-12-31 10:00:00+00:00
+  plan_interval: month
+  plan_interval_count: 1
+  event_timestamp: 2022-12-01 10:00:00+00:00
+- fxa_uid: fxa_uid_1
+  plan_id: plan_3
+  product_id: prod_1
+  status: active
+  plan_started_at: 2021-01-01 10:00:00+00:00
+  plan_ended_at: 2021-12-31 10:00:00+00:00
+  plan_interval: month
+  plan_interval_count: 1
+  event_timestamp: 2022-12-01 10:00:00+00:00
+- fxa_uid: fxa_uid_2
+  plan_id: plan_1
+  product_id: prod_1
+  status: active
+  plan_started_at: 2020-01-01 10:00:00+00:00
+  plan_ended_at: 2020-12-31 10:00:00+00:00
+  plan_interval: month
+  plan_interval_count: 3
+  event_timestamp: 2020-12-01 10:00:00+00:00

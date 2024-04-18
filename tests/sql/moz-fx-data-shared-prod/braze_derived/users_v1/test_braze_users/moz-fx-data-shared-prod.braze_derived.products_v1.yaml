@@ -1,0 +1,12 @@
+# products
+---
+# user_1
+- fxa_id_sha256: 580ae7f1aa37c7f54054776aacf14bf56ecc49bcb57db2641635f58b195d23c9 # fxa_user_1
+  products: []
+# user_2_on_suppression_list
+- fxa_id_sha256: a3242e70585407c6d13814b18c317eeb7cf0780e212b4a9a1a9967db70448ada # fxa_user_2
+  products: []
+# user_3_no_newsletters_products_or_waitlists
+- fxa_id_sha256: 21ccf917bd16043e39a842819a531024aae844f6fd642088234fae4522a8b678 # fxa_user_3
+- external_id: user_3_no_newsletters_products_or_waitlists
+  newsletters: []

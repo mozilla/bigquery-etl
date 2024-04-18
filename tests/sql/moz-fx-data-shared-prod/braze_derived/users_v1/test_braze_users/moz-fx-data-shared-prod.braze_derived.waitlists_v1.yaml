@@ -1,0 +1,8 @@
+# waitlist
+---
+# user_1
+- external_id: user_1
+  waitlists: []
+# user_2_on_suppression_list
+- external_id: user_2_on_suppression_list
+  waitlists: []

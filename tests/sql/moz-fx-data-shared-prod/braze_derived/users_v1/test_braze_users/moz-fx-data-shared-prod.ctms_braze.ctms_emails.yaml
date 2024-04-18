@@ -1,0 +1,22 @@
+# ctms_emails
+---
+# user_1
+- email_id: user_1
+  primary_email: user_1@mail.com
+  mailing_country: country_1
+  double_opt_in: true
+  has_opted_out_of_email: false
+  basket_token: token_1
+  email_lang: EN
+  create_timestamp: 2020-01-01 10:00:00+00:00
+  update_timestamp: 2021-01-01 10:00:00+00:00
+# user_2_on_suppression_list
+- external_id: user_2_on_suppression_list
+  primary_email: user_2@mail.com
+  mailing_country: country_2
+  double_opt_in: true
+  has_opted_out_of_email: false
+  basket_token: token_2
+  email_lang: EN
+  create_timestamp: 2020-01-01 10:00:00+00:00
+  update_timestamp: 2021-01-01 10:00:00+00:00

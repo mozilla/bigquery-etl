@@ -1,0 +1,9 @@
+---
+- email: user_2@mail.com
+  external_id: user_2
+- email: user_4@mail.com
+  external_id: user_on_suppression_list_but_not_opted_out
+- email: user_2@mail.com
+  external_id: user_2_with_different_id
+- email: user_2_second_mail@mail.com
+  external_id: user_2

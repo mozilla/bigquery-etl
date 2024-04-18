@@ -1,0 +1,13 @@
+---
+- external_id: user_1
+  email: user_1@mail.com
+  mailing_country: country_1
+  email_subscribe: opted_in
+  basket_token: token_1
+  email_lang: EN
+  fxa_id_sha256: 580ae7f1aa37c7f54054776aacf14bf56ecc49bcb57db2641635f58b195d23c9 # fxa_user_1
+  fxa_primary_email: user_1_primary@mail.com
+  fxa_lang: EN
+  first_service: service_1
+  create_timestamp: 2020-01-01 10:00:00+00:00
+  update_timestamp: 2021-01-01 10:00:00+00:00

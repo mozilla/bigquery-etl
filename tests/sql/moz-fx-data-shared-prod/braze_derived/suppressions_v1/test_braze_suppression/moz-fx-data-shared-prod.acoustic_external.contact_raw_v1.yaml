@@ -1,0 +1,10 @@
+---
+- email: user_1@mail.com
+  email_id: user_1
+  has_opted_out_of_email: 1
+- email: user_4@mail.com
+  email_id: user_on_suppression_list_but_not_opted_out
+  has_opted_out_of_email: 0
+- email: user_5@mail.com
+  email_id: user_not_on_suppression_list_not_opted_out
+  has_opted_out_of_email: 0

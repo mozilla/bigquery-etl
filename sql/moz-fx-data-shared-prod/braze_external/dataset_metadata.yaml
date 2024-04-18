@@ -13,3 +13,6 @@ workgroup_access:
   - role: roles/bigquery.dataEditor
     members:
       - workgroup:braze/writers
+  - role: roles/bigquery.connectionUser
+    members:
+      - workgroup:braze/ingestion-mozilla-dev

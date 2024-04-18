@@ -1,6 +1,5 @@
 CREATE OR REPLACE VIEW
-  -- `moz-fx-data-shared-prod.firefox_ios.retention_clients`
-  `moz-fx-data-shared-prod.tmp.retention_clients`
+  `moz-fx-data-shared-prod.firefox_ios.retention_clients`
 AS
 WITH clients_last_seen AS (
   SELECT
@@ -33,7 +32,7 @@ SELECT
   clients_daily.first_seen_date,
   clients_last_seen.client_id,
   clients_last_seen.sample_id,
-  clients_last_seen.normalized_channel AS channel,
+  clients_last_seen.normalized_channel,
   clients_daily.country,
   (
     clients_daily.app_display_version = '107.2'

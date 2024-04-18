@@ -1,6 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.tmp.retention`
-  -- `moz-fx-data-shared-prod.firefox_ios.retention`
+  `moz-fx-data-shared-prod.firefox_ios.retention`
 AS
 SELECT
   *,
@@ -14,5 +13,4 @@ SELECT
     ELSE "UKNOWN"
   END AS lifecycle_stage,
 FROM
-  `moz-fx-data-shared-prod.tmp.retention_v1`
-  -- `moz-fx-data-shared-prod.firefox_ios_derived.retention_v1`
+  `moz-fx-data-shared-prod.firefox_ios_derived.retention_v1`

@@ -2,7 +2,7 @@ SELECT
   metric_date,
   first_seen_date,
   app_name,
-  channel,
+  normalized_channel,
   country,
   adjust_ad_group,
   adjust_campaign,
@@ -16,8 +16,7 @@ SELECT
   COUNTIF(new_client_metric_date) AS new_clients_metric_date,
   COUNTIF(repeat_client) AS repeat_clients,
 FROM
-  tmp.retention_clients
-  -- firefox_ios.retention_clients
+  firefox_ios.retention_clients
 WHERE
   metric_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
   AND submission_date = @submission_date
@@ -26,7 +25,7 @@ GROUP BY
   metric_date,
   first_seen_date,
   app_name,
-  channel,
+  normalized_channel,
   country,
   adjust_ad_group,
   adjust_campaign,

@@ -3,8 +3,7 @@ SELECT
   unified.subscription_name AS subscription_name,
   map.firefox_subscription_id AS firefox_subscription_id,
   map.mozilla_subscription_id AS mozilla_subscription_id,
-  unified.subscription_state AS subscription_state,
-  CURRENT_TIMESTAMP() AS last_modified_timestamp,
+  unified.subscription_state AS subscription_state
 FROM
   (
   -- Combine newsletters and waitlists into a single set of records
@@ -26,4 +25,8 @@ FROM
   ) unified
 JOIN
   `moz-fx-data-shared-prod.braze_derived.subscriptions_map_v1` map
-  ON unified.subscription_name = map.braze_subscription_name;
+  ON unified.subscription_name = map.braze_subscription_name
+-- Ensure users are active/not suppressed
+JOIN
+  `moz-fx-data-shared-prod.braze_derived.users_v1` users
+  ON users.external_id = unified.external_id;

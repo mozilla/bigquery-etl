@@ -11,8 +11,7 @@ SELECT
       unsub_reason,
       update_timestamp
     )
-  ) AS waitlists,
-  CURRENT_TIMESTAMP() AS last_modified_timestamp,
+  ) AS waitlists
 FROM
   `moz-fx-data-shared-prod.ctms_braze.ctms_waitlists`
 GROUP BY

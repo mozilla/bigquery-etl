@@ -30,6 +30,3 @@ fields:
   mode: REPEATED
   name: waitlists
   type: RECORD
-- mode: NULLABLE
-  name: last_modified_timestamp
-  type: TIMESTAMP

@@ -22,7 +22,6 @@ WITH suppressions AS (
     has_opted_out_of_email = 1
 )
 SELECT
-  *,
-  CURRENT_TIMESTAMP() AS last_modified_timestamp
+  *
 FROM
   suppressions

@@ -13,8 +13,7 @@ SELECT
   u.first_service,
   n.newsletters,
   w.waitlists,
-  p.products,
-  CURRENT_TIMESTAMP() AS last_modified_timestamp,
+  p.products
 FROM
   `moz-fx-data-shared-prod.braze_derived.users_v1` u
 LEFT JOIN

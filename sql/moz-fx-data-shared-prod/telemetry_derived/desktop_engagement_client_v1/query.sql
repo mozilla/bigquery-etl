@@ -8,6 +8,7 @@ SELECT
   cfs.attribution_dlsource,
   cfs.attribution_medium,
   cfs.attribution_ua,
+  cd.normalized_channel,
   mozfun.norm.os(cd.os) AS normalized_os,
   COALESCE(
     mozfun.norm.windows_version_info(cd.os, cd.os_version, cd.windows_build_number),

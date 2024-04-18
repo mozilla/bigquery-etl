@@ -28,6 +28,10 @@ fields:
   type: STRING
   description: Attribution UA
 - mode: NULLABLE
+  name: normalized_channel
+  type: STRING
+  description: Normalized Channel
+- mode: NULLABLE
   name: normalized_os
   type: STRING
   description: Normalized Operating System

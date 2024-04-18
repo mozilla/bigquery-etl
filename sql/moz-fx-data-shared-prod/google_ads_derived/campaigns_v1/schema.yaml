@@ -1,0 +1,29 @@
+fields:
+- mode: NULLABLE
+  name: account_name
+  type: STRING
+  description: The name of the Google Ads account, e.g. Mozilla Firefox.
+- mode: NULLABLE
+  name: account_id
+  type: INTEGER
+  description: The ID associated with the account name.
+- mode: NULLABLE
+  name: campaign_id
+  type: INTEGER
+  description: The ID of the Google Ads campaign.
+- mode: NULLABLE
+  name: campaign_name
+  type: STRING
+  description: The name of the Google Ads campaign. We take the most recently reported name.
+- mode: NULLABLE
+  name: campaign_region
+  type: STRING
+  description: Only for App Campaigns. The region the campaign ran in.
+- mode: NULLABLE
+  name: campaign_country_code
+  type: STRING
+  description: Only for App Campaigns. The country the campaign ran in.
+- mode: NULLABLE
+  name: campaign_language
+  type: STRING
+  description: Only for App Campaigns. The language the campaign ran in.

@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.telemetry.desktop_eng_client`
+  `moz-fx-data-shared-prod.telemetry.desktop_engagement_client`
 AS
 SELECT
   a.*,
@@ -15,4 +15,4 @@ SELECT
     ELSE 'Unknown'
   END AS lifecycle_stage
 FROM
-  `moz-fx-data-shared-prod.telemetry_derived.desktop_eng_client_v1` a
+  `moz-fx-data-shared-prod.telemetry_derived.desktop_engagement_client_v1` a

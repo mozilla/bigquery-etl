@@ -14,7 +14,7 @@ SELECT
   SUM(CASE WHEN wau THEN 1 ELSE 0 END) AS wau,
   SUM(CASE WHEN mau THEN 1 ELSE 0 END) AS mau
 FROM
-  `moz-fx-data-shared-prod.telemetry.desktop_eng_client`
+  `moz-fx-data-shared-prod.telemetry.desktop_engagement_client`
 WHERE
   submission_date = @submission_date
 GROUP BY

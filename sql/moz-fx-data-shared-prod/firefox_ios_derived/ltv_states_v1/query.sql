@@ -5,11 +5,10 @@ SELECT
   first_seen_date,
   days_since_first_seen,
   days_since_seen,
-  --? AS death_time,
-  BIT_COUNT(`mozfun`.bytes.extract_bits(days_seen_bytes , -{{lookback}}, {{lookback}})) AS pattern, --what to use for lookback?
-  IF((durations > 0) AND (BIT_COUNT(`mozfun`.bytes.extract_bits(days_seen_bytes , -1, 1)) = 1), 1, 0) AS active,
-  ? AS death_time,
-  --? AS max_weeks
+  sample_id,
+  isp,
+  days_seen_bytes,
+  IF((durations > 0) AND (BIT_COUNT(`mozfun`.bytes.extract_bits(days_seen_bytes , -1, 1)) = 1), 1, 0) AS active
 FROM
   `mozdata.firefox_ios.baseline_clients_yearly`
 WHERE

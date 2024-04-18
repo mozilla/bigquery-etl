@@ -21,6 +21,7 @@ baseline AS (
     client_id,
     days_since_seen,
     days_seen_bits,
+    days_active_bits,
     days_created_profile_bits,
     durations,
     normalized_os,
@@ -81,19 +82,19 @@ baseline_with_searches AS (
   SELECT
     baseline.client_id,
     CASE
-      WHEN BIT_COUNT(days_seen_bits)
+      WHEN BIT_COUNT(days_active_bits)
         BETWEEN 1
         AND 6
         THEN 'infrequent_user'
-      WHEN BIT_COUNT(days_seen_bits)
+      WHEN BIT_COUNT(days_active_bits)
         BETWEEN 7
         AND 13
         THEN 'casual_user'
-      WHEN BIT_COUNT(days_seen_bits)
+      WHEN BIT_COUNT(days_active_bits)
         BETWEEN 14
         AND 20
         THEN 'regular_user'
-      WHEN BIT_COUNT(days_seen_bits) >= 21
+      WHEN BIT_COUNT(days_active_bits) >= 21
         THEN 'core_user'
       ELSE 'other'
     END AS activity_segment,
@@ -194,24 +195,9 @@ todays_metrics AS (
     install_source
   FROM
     baseline_with_searches_and_attribution
-),
-todays_metrics_enriched AS (
-  SELECT
-    todays_metrics.* EXCEPT (locale),
-    CASE
-      WHEN locale IS NOT NULL
-        AND languages.language_name IS NULL
-        THEN 'Other'
-      ELSE languages.language_name
-    END AS language_name,
-  FROM
-    todays_metrics
-  LEFT JOIN
-    `mozdata.static.csa_gblmkt_languages` AS languages
-    ON todays_metrics.locale = languages.code
 )
 SELECT
-  todays_metrics_enriched.* EXCEPT (
+  todays_metrics.* EXCEPT (
     client_id,
     days_since_seen,
     ad_clicks,
@@ -223,11 +209,12 @@ SELECT
     first_seen_date,
     durations
   ),
-  COUNT(DISTINCT IF(days_since_seen = 0, client_id, NULL)) AS daily_users,
-  COUNT(DISTINCT IF(days_since_seen < 7, client_id, NULL)) AS weekly_users,
-  COUNT(DISTINCT client_id) AS monthly_users,
-  COUNT(DISTINCT IF(days_since_seen = 0 AND durations > 0, client_id, NULL)) AS dau,
-  COUNT(DISTINCT IF(submission_date = first_seen_date, client_id, NULL)) AS new_profiles,
+  COUNTIF(is_daily_user) AS daily_users,
+  COUNTIF(is_weekly_user) AS weekly_users,
+  COUNTIF(is_monthly_user) AS monthly_users,
+  COUNTIF(is_dau) AS dau,
+  COUNTIF(is_wau) AS wau,
+  COUNTIF(is_mau) AS mau,
   SUM(ad_clicks) AS ad_clicks,
   SUM(organic_search_count) AS organic_search_count,
   SUM(search_count) AS search_count,
@@ -235,7 +222,7 @@ SELECT
   SUM(uri_count) AS uri_count,
   SUM(active_hours_sum) AS active_hours,
 FROM
-  todays_metrics_enriched
+  todays_metrics
 GROUP BY
   app_version,
   attribution_medium,
@@ -246,7 +233,7 @@ GROUP BY
   distribution_id,
   first_seen_year,
   is_default_browser,
-  language_name,
+  locale,
   app_name,
   channel,
   os,

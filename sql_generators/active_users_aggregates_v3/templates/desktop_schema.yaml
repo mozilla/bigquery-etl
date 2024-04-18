@@ -50,7 +50,7 @@ fields:
 - name: attributed
   type: BOOLEAN
   mode: NULLABLE
-- name: language_name
+- name: locale
   type: STRING
   mode: NULLABLE
 - name: daily_users

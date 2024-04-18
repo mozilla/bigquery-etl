@@ -56,7 +56,7 @@ fields:
 - name: install_source
   type: STRING
   mode: NULLABLE
-- name: language_name
+- name: locale
   type: STRING
   mode: NULLABLE
 - name: daily_users

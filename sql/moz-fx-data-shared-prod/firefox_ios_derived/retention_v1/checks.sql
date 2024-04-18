@@ -1,3 +1,4 @@
 #warn
-SELECT 1 = 1
+SELECT
+  1 = 1
 -- # TODO:

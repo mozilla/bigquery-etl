@@ -12,7 +12,8 @@ WITH clients_last_seen AS (
     mozfun.bits28.retention(days_active_bits & days_seen_bits, submission_date) AS retention_active,
     days_seen_bits,
     days_active_bits,
-  FROM firefox_ios.baseline_clients_last_seen
+  FROM
+    `moz-fx-data-shared-prod.firefox_ios.baseline_clients_last_seen`
 ),
 attribution AS (
   SELECT
@@ -24,9 +25,8 @@ attribution AS (
     adjust_creative,
     adjust_network,
   FROM
-    firefox_ios.firefox_ios_clients
+    `moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients`
 )
-
 SELECT
   clients_last_seen.submission_date AS submission_date,
   clients_daily.submission_date AS metric_date,
@@ -35,7 +35,10 @@ SELECT
   clients_last_seen.sample_id,
   clients_last_seen.normalized_channel AS channel,
   clients_daily.country,
-  (clients_daily.app_display_version = '107.2' AND clients_daily.submission_date >= '2023-02-01') AS is_suspicious_device_client,
+  (
+    clients_daily.app_display_version = '107.2'
+    AND clients_daily.submission_date >= '2023-02-01'
+  ) AS is_suspicious_device_client,
   CASE
     WHEN clients_daily.isp = 'BrowserStack'
       THEN CONCAT('Firefox iOS', ' ', clients_daily.isp)
@@ -43,14 +46,18 @@ SELECT
   END AS app_name,
   -- ping sent retention
   retention_seen.day_27.active_on_metric_date AS ping_sent_metric_date,
-  retention_seen.day_27.active_on_metric_date AND retention_seen.day_27.active_in_week_3 AS ping_sent_week_4,
+  retention_seen.day_27.active_on_metric_date
+  AND retention_seen.day_27.active_in_week_3 AS ping_sent_week_4,
   -- activity retention
   retention_active.day_27.active_on_metric_date AS active_metric_date,
-  retention_active.day_27.active_on_metric_date AND retention_active.day_27.active_in_week_3 AS retained_week_4,
+  retention_active.day_27.active_on_metric_date
+  AND retention_active.day_27.active_in_week_3 AS retained_week_4,
   -- new client retention
   clients_daily.is_new_profile AS new_client_metric_date,
-  clients_daily.is_new_profile AND retention_active.day_27.active_in_week_3 AS retained_week_4_new_client,
-  clients_daily.is_new_profile AND BIT_COUNT(days_active_bits) > 1 AS repeat_client,
+  clients_daily.is_new_profile
+  AND retention_active.day_27.active_in_week_3 AS retained_week_4_new_client,
+  clients_daily.is_new_profile
+  AND BIT_COUNT(days_active_bits) > 1 AS repeat_client,
   adjust_ad_group,
   adjust_campaign,
   adjust_creative,
@@ -59,15 +66,17 @@ SELECT
   -- days_seen_bits,
   -- days_active_bits,
 FROM
-  firefox_ios.baseline_clients_daily AS clients_daily
-INNER JOIN clients_last_seen
+  `moz-fx-data-shared-prod.firefox_ios.baseline_clients_daily` AS clients_daily
+INNER JOIN
+  clients_last_seen
   ON clients_daily.submission_date = clients_last_seen.retention_seen.day_27.metric_date
-    AND clients_daily.client_id = clients_last_seen.client_id
-    AND clients_daily.sample_id = clients_last_seen.sample_id
-    AND clients_daily.normalized_channel = clients_last_seen.normalized_channel
-LEFT JOIN attribution
+  AND clients_daily.client_id = clients_last_seen.client_id
+  AND clients_daily.sample_id = clients_last_seen.sample_id
+  AND clients_daily.normalized_channel = clients_last_seen.normalized_channel
+LEFT JOIN
+  attribution
   ON clients_daily.client_id = attribution.client_id
-    AND clients_daily.sample_id = attribution.sample_id
-    AND clients_daily.normalized_channel = attribution.channel
+  AND clients_daily.sample_id = attribution.sample_id
+  AND clients_daily.normalized_channel = attribution.channel
 WHERE
   clients_last_seen.retention_seen.day_27.active_on_metric_date

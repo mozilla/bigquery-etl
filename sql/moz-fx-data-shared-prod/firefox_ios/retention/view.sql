@@ -11,8 +11,7 @@ SELECT
       THEN "NEW"
     WHEN EXTRACT(YEAR FROM first_seen_date) < 2024
       THEN "EXISTING"
-  ELSE
-    "UKNOWN"
+    ELSE "UKNOWN"
   END AS lifecycle_stage,
 FROM
   `moz-fx-data-shared-prod.tmp.retention_v1`

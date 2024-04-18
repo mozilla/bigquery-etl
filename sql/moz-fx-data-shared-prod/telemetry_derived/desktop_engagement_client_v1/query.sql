@@ -9,7 +9,10 @@ SELECT
   cfs.attribution_medium,
   cfs.attribution_ua,
   mozfun.norm.os(cd.os) AS normalized_os,
-  cd.normalized_os_version AS os_version_major,
+  COALESCE(
+    mozfun.norm.windows_version_info(os, os_version, windows_build_number),
+    NULLIF(SPLIT(normalized_os_version, ".")[SAFE_OFFSET(0)], "")
+  ) AS normalized_os_version,
   cd.country,
   au.is_dau AS dau,
   au.is_wau AS wau,

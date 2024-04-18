@@ -32,9 +32,9 @@ fields:
   type: STRING
   description: Normalized Operating System
 - mode: NULLABLE
-  name: os_version_major
+  name: normalized_os_version
   type: STRING
-  description: OS Version Major
+  description: Normalized Operating System Version
 - mode: NULLABLE
   name: country
   type: STRING

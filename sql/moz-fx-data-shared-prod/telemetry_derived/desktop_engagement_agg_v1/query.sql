@@ -7,7 +7,7 @@ SELECT
   attribution_medium,
   attribution_ua,
   normalized_os,
-  os_version_major,
+  normalized_os_version,
   country,
   lifecycle_stage,
   SUM(CASE WHEN dau THEN 1 ELSE 0 END) AS dau,
@@ -26,6 +26,6 @@ GROUP BY
   attribution_medium,
   attribution_ua,
   normalized_os,
-  os_version_major,
+  normalized_os_version,
   country,
   lifecycle_stage

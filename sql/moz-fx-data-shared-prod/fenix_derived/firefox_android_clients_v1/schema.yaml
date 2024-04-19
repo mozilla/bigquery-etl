@@ -103,6 +103,10 @@ fields:
   mode: NULLABLE
   name: play_store_attribution_install_referrer_response
   type: STRING
+- description:
+  mode: NULLABLE
+  name: meta_attribution_app
+  type: STRING
 - description: Last reported client locale.
   mode: NULLABLE
   name: last_reported_locale

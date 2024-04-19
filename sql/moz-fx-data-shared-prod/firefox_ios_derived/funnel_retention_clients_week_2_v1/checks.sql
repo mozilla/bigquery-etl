@@ -1,5 +1,8 @@
-#warn
-{{ is_unique(["client_id"]) }}
+{#
+-- Disabled for now due to known duplication issue in Fenix data, see: bug-1887708
+-- #warn
+-- {{ is_unique(["client_id"]) }}
+#}
 
 #warn
 {{ min_row_count(1, "submission_date = @submission_date") }}

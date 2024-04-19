@@ -18,7 +18,6 @@ WITH unified AS (
   CROSS JOIN
     UNNEST(waitlists) AS waitlist
 )
-
 SELECT
   unified.external_id AS external_id,
   unified.subscription_name AS subscription_name,

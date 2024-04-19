@@ -115,7 +115,8 @@ ON sd.stub_download_session_id = ssi.stub_session_id
 
 ga_sessions_time_on_site AS (
   SELECT CONCAT(ga_client_id, "-", ga_session_id) AS visit_identifier,
-    time_on_site
+    time_on_site,
+    had_download_event
   FROM `moz-fx-data-shared-prod.mozilla_org_derived.ga_sessions_v2`
   WHERE session_date = '2024-02-14'
   AND had_download_event IS TRUE
@@ -138,6 +139,7 @@ SELECT
   ph.language,
   ph.page_path,
   gav.time_on_site,
+  gav.had_download_event,
   SUM(CASE WHEN ph.hit_type = 'PAGE' then 1 else 0 end) AS page_hits,
   COUNT(distinct(CASE WHEN ph.hit_type = 'PAGE' THEN ph.page_path ELSE NULL END)) AS unique_page_hits,
   MAX(CASE WHEN ph.is_entrance is true then ph.page_path ELSE NULL END) as landing_page
@@ -160,7 +162,8 @@ WHERE date = "2024-02-14"
   ph.browser_version,
   ph.language,
   ph.page_path,
-  gav.time_on_site
+  gav.time_on_site,
+  gav.had_download_event
 )
 ,
 -- join stub_sessions with ga_sessions using full_visitor_id
@@ -190,12 +193,35 @@ downloads_with_ga_sessions AS (
   ph.time_on_site,
   ph.page_hits,
   ph.unique_page_hits,
-  ph.landing_page
-
+  ph.landing_page,
+  ph.had_download_event
  FROM stub_download_ids_ga_session_ids sd
  LEFT JOIN page_hits ph ON
  ph.full_visitor_id = sd.full_visitor_id
  AND sd.download_date = ph.submission_date
 )
 
-select * from downloads_with_ga_sessions
+SELECT dltoken,
+  time_on_site,
+  ad_content,
+  campaign,
+  medium,
+  source,
+  landing_page,
+  country,
+  -- normalized_country_code,
+  device_category,
+  os,
+  -- normalized_os,
+  browser,
+  -- normalized_browser,
+  browser_version,
+  -- browser_major_version,
+  language,
+  page_hits AS pageviews,
+  unique_page_hits AS unique_pageviews,
+  had_download_event AS has_ga_download_event,
+  count_dltoken_duplicates,
+  additional_download_occurred,
+  download_date
+FROM downloads_with_ga_sessions

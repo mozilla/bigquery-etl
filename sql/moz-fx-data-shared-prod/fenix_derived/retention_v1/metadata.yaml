@@ -1,0 +1,37 @@
+friendly_name: Client Retention - Firefox Android (Aggregated)
+description: |
+  Client Retention (Firefox Android) metrics aggregated on:
+  - metric_date
+  - first_seen_date
+  - app_name
+  - normalized_channel
+  - country
+  - adjust_ad_group
+  - adjust_campaign
+  - adjust_creative
+  - adjust_network
+  - install_source
+
+  For all clients that sent us a ping on the metric date.
+  Client's attributes are the client's attributes observed on the metric date.
+
+  see: DENG-3183 for more information.
+owners:
+- kik@mozilla.com
+labels:
+  schedule: daily
+  incremental: true
+scheduling:
+  dag_name: bqetl_analytics_tables
+  depends_on_past: false
+  date_partition_parameter: submission_date
+bigquery:
+  time_partitioning:
+    type: day
+    field: metric_date
+    require_partition_filter: false
+  clustering:
+    fields:
+    - app_name
+    - country
+    - first_seen_date

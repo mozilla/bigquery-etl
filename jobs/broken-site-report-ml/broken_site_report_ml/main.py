@@ -168,9 +168,20 @@ def get_missed_reports(client, last_run_time, bq_dataset_id):
             ON reports.uuid = predictions.report_uuid
             WHERE predictions.report_uuid IS NULL AND reported_at < "{last_run_time}"
             AND reports.comments != ""
+            ORDER BY reports.reported_at
         """
     query_job = client.query(query)
     return list(query_job.result())
+
+
+def deduplicate_reports(reports):
+    seen = set()
+    return [x for x in reports if not (x["uuid"] in seen or seen.add(x["uuid"]))]
+
+
+def chunk_list(data, size):
+    for i in range(0, len(data), size):
+        yield data[i : i + size]
 
 
 @click.command()
@@ -187,36 +198,43 @@ def main(bq_project_id, bq_dataset_id):
     new_reports = get_reports_since_last_run(client, last_run_time)
     missed_reports = get_missed_reports(client, last_run_time, bq_dataset_id)
 
-    combined = new_reports + missed_reports
+    combined = missed_reports + new_reports
 
-    if not combined:
+    deduplicated_combined = deduplicate_reports(combined)
+
+    if not deduplicated_combined:
         logging.info(
             f"No new reports with filled descriptions were found since {last_run_time}"
         )
         return
 
-    objects_dict = {
-        row["uuid"]: {field: value for field, value in row.items()} for row in combined
-    }
-
-    is_ok = True
     result_count = 0
 
     try:
-        logging.info("Getting classification results from bugbug.")
-        result = get_reports_classification("invalidcompatibilityreport", objects_dict)
-        if result:
-            result_count = len(result)
-            logging.info("Saving classification results to BQ.")
-            add_classification_results(client, bq_dataset_id, result)
+        for chunk in chunk_list(deduplicated_combined, 20):
+            objects_dict = {
+                row["uuid"]: {field: value for field, value in row.items()}
+                for row in chunk
+            }
+            logging.info("Getting classification results from bugbug.")
+            result = get_reports_classification(
+                "invalidcompatibilityreport", objects_dict
+            )
+
+            if result:
+                result_count += len(result)
+                logging.info("Saving classification results to BQ.")
+                add_classification_results(client, bq_dataset_id, result)
+
+            record_classification_run(client, bq_dataset_id, True, len(result))
 
     except Exception as e:
         logging.error(e)
-        is_ok = False
+        record_classification_run(client, bq_dataset_id, False, 0)
         raise
 
     finally:
-        record_classification_run(client, bq_dataset_id, is_ok, result_count)
+        logging.info(f"Total processed reports count: {result_count}")
 
 
 if __name__ == "__main__":

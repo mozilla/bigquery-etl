@@ -21,6 +21,8 @@ SELECT
   ad_clicks,
   adjust_network,
   first_reported_country,
-  first_reported_isp
+  first_reported_isp,
+  {{ death_time }} AS death_time,
+  {{ max_weeks }} AS max_weeks
 FROM
   `moz-fx-data-shared-prod.firefox_ios_derived.ltv_states_v1`

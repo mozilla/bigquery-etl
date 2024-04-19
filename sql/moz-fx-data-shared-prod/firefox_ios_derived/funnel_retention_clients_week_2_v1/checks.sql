@@ -1,5 +1,6 @@
 {#
--- Disabled for now due to known duplication issue in Fenix data, see: bug-1887708
+-- Disabled for now due to known duplication issue in Fenix data, see:
+-- https://bugzilla.mozilla.org/show_bug.cgi?id=1887708
 -- #warn
 -- {{ is_unique(["client_id"]) }}
 #}

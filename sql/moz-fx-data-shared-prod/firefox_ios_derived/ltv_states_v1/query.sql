@@ -6,6 +6,8 @@ WITH base AS (
     first_seen_date,
     days_since_first_seen,
     days_since_seen,
+    days_seen_bytes
+    /*
     BIT_COUNT(
       `mozfun`.bytes.extract_bits(days_seen_bytes, - {{lookback}}, {{lookback}})
     ) AS pattern,
@@ -15,6 +17,7 @@ WITH base AS (
       1,
       0
     ) AS active
+    */
   FROM
     mozdata.firefox_ios.baseline_clients_yearly
   WHERE
@@ -28,8 +31,9 @@ ad_clicks AS (
     b.first_seen_date,
     b.days_since_first_seen,
     b.days_since_seen,
-    b.pattern,
-    b.active,
+    b.days_seen_bytes,
+    --b.pattern,
+    --b.active,
     attr_clients.ad_clicks AS ad_clicks
   FROM
     base b
@@ -45,8 +49,9 @@ SELECT
   ac.first_seen_date,
   ac.days_since_first_seen,
   ac.days_since_seen,
-  ac.pattern,
-  ac.active,
+  ac.days_seen_bytes,
+  --ac.pattern,
+  --ac.active,
   ac.ad_clicks,
   c.adjust_network,
   c.first_reported_country,

@@ -11,7 +11,11 @@ WITH base AS (
   FROM
     mozdata.firefox_ios.baseline_clients_yearly
   WHERE
-    NOT (BIT_COUNT(days_seen_bytes) != 1 AND DATE_DIFF(submission_date, first_seen_date, DAY) = 0)
+    submission_date = @submission_date
+    AND NOT (
+      BIT_COUNT(days_seen_bytes) != 1
+      AND DATE_DIFF(submission_date, first_seen_date, DAY) = 0
+    )
 ),
 ad_clicks AS (
   SELECT

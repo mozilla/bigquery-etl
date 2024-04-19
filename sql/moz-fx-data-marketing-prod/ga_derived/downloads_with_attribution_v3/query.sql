@@ -198,4 +198,4 @@ downloads_with_ga_sessions AS (
  AND sd.download_date = ph.submission_date
 )
 
-select * from downloads_with_ga_sessions where stub_visit_id = "1436287147.1707680916"
+select * from downloads_with_ga_sessions

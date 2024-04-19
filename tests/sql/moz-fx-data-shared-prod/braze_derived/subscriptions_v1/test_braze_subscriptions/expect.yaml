@@ -1,4 +1,6 @@
+# expect braze subscriptions
 ---
+# user 1
 - external_id: user_1
   subscription_name: newsletter_1
   firefox_subscription_id: firefox_newsletter_1
@@ -24,6 +26,7 @@
   firefox_subscription_id: firefox_waitlist_1
   mozilla_subscription_id: mozilla_waitlist_1
   subscription_state: subscribed
+# user 2
 - external_id: user_2
   subscription_name: newsletter_1
   firefox_subscription_id: firefox_newsletter_1
@@ -34,6 +37,7 @@
   firefox_subscription_id: firefox_waitlist_1
   mozilla_subscription_id: mozilla_waitlist_1
   subscription_state: subscribed
+# user 3
 - external_id: user_3
   subscription_name: newsletter_1
   firefox_subscription_id: firefox_newsletter_1
@@ -44,3 +48,4 @@
   firefox_subscription_id: firefox_waitlist_2
   mozilla_subscription_id: mozilla_waitlist_2
   subscription_state: subscribed
+# user 4 not in braze_users

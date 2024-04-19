@@ -1,13 +1,20 @@
+# expect braze suppression
 ---
+# user 1
 - email: user_1@mail.com
   email_id: user_1
+# user 2.0
 - email: user_2@mail.com
   email_id: user_2
-- email: user_3@mail.com
-  email_id: user_3
-- email: user_4@mail.com
-  email_id: user_on_suppression_list_but_not_opted_out
+# user 2.1 with different id - should show up
 - email: user_2@mail.com
   email_id: user_2_with_different_id
+# user 2.2 with different email - should show up
 - email: user_2_second_mail@mail.com
   email_id: user_2
+# user 3
+- email: user_3@mail.com
+  email_id: user_3
+# user 4
+- email: user_4@mail.com
+  email_id: user_on_suppression_list_but_not_opted_out

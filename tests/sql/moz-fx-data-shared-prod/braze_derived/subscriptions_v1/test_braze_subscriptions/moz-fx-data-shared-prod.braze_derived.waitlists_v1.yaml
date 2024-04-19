@@ -1,18 +1,23 @@
+# braze waitlists
 ---
+# user 1
 - external_id: user_1
   waitlists:
     - waitlist_name: waitlist_1
       subscribed: true
+# user 2
 - external_id: user_2
   waitlists:
     - waitlist_name: waitlist_1
       subscribed: true
+# user 3
 - external_id: user_3
   waitlists:
     - waitlist_name: waitlist_2
       subscribed: true
     - waitlist_name: not_a_waitlist
       subscribed: true
+# user 4 not in braze_users
 - external_id: not_a_user
   waitlists:
     - waitlist_name: waitlist_1

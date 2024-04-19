@@ -1,4 +1,6 @@
+# expect braze products
 ---
+# user 1
 - fxa_id_sha256: fxa_uid_1
   products:
     - plan_id: plan_1
@@ -25,6 +27,7 @@
       plan_interval: month
       plan_interval_count: 1
       update_timestamp: 2022-12-01 10:00:00+00:00
+# user 2
 - fxa_id_sha256: fxa_uid_2
   products:
     - plan_id: plan_1

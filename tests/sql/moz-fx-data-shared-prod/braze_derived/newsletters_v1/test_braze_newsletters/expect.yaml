@@ -1,4 +1,6 @@
+# expect newsletters
 ---
+# user 1
 - external_id: email_id_1
   newsletters:
     - newsletter_name: newsletter_1
@@ -11,6 +13,7 @@
       newsletter_lang: EN
       create_timestamp: 2020-02-01 10:00:00+00:00
       update_timestamp: 2021-02-01 11:00:00+00:00
+# user 2
 - external_id: email_id_2
   newsletters:
     - newsletter_name: newsletter_1
@@ -18,6 +21,7 @@
       newsletter_lang: DE
       create_timestamp: 2020-01-01 10:00:00+00:00
       update_timestamp: 2021-01-01 11:00:00+00:00
+# user 3 with multiple entries
 - external_id: email_id_3_sort_multiple_entries
   newsletters:
     - newsletter_name: newsletter_1

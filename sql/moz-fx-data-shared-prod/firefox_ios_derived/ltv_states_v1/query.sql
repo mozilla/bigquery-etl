@@ -6,7 +6,8 @@ WITH base AS (
     first_seen_date,
     days_since_first_seen,
     days_since_seen,
-    days_seen_bytes
+    days_seen_bytes,
+    durations
   FROM
     mozdata.firefox_ios.baseline_clients_yearly
   WHERE
@@ -21,6 +22,7 @@ ad_clicks AS (
     b.days_since_first_seen,
     b.days_since_seen,
     b.days_seen_bytes,
+    b.durations,
     attr_clients.ad_clicks AS ad_clicks
   FROM
     base b
@@ -37,6 +39,7 @@ SELECT
   ac.days_since_first_seen,
   ac.days_since_seen,
   ac.days_seen_bytes,
+  ac.durations,
   ac.ad_clicks,
   c.adjust_network,
   c.first_reported_country,

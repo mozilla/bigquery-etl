@@ -27,6 +27,10 @@ fields:
   mode: NULLABLE
   name: days_seen_bytes
   type: BYTES
+- description: Durations
+  mode: NULLABLE
+  name: durations
+  type: INT64
 - description: Ad Clicks
   mode: NULLABLE
   name: ad_clicks

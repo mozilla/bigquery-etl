@@ -45,6 +45,11 @@ fields:
   mode: NULLABLE
   description: Adjust Network the client is attributed to.
 
+- name: is_suspicious_device_client
+  type: STRING
+  mode: NULLABLE
+  description: Flag to identify suspicious device users, see bug-1846554 for more info.
+
 - name: ping_sent_metric_date
   type: INTEGER
   mode: NULLABLE

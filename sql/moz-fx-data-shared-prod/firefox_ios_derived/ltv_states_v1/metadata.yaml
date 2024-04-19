@@ -1,11 +1,11 @@
-friendly_name: Ltv States
+friendly_name: Firefox iOS LTV States
 description: |-
   Please provide a description for the query
 owners:
-- example@mozilla.com
+- kwindau@mozilla.com
 labels:
   incremental: true
-  owner1: example
+  owner1: kwindau@mozilla.com
 scheduling:
   dag_name: bqetl_default
 bigquery:

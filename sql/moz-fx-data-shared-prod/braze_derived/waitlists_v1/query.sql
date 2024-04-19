@@ -11,7 +11,10 @@ SELECT
       unsub_reason,
       update_timestamp
     )
-    ORDER BY update_timestamp, create_timestamp, name
+    ORDER BY
+      update_timestamp,
+      create_timestamp,
+      name
   ) AS waitlists
 FROM
   `moz-fx-data-shared-prod.ctms_braze.ctms_waitlists`

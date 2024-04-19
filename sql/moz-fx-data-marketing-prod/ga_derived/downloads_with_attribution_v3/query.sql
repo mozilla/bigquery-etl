@@ -225,3 +225,4 @@ SELECT dltoken,
   additional_download_occurred,
   download_date
 FROM downloads_with_ga_sessions
+order by time_on_site desc

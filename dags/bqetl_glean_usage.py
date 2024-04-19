@@ -358,14 +358,13 @@ with DAG(
 
     burnham_derived__clients_last_seen_joined__v1 = bigquery_etl_query(
         task_id="burnham_derived__clients_last_seen_joined__v1",
-        destination_table='clients_last_seen_joined_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
+        destination_table="clients_last_seen_joined_v1",
         dataset_id="burnham_derived",
         project_id="moz-fx-data-shared-prod",
         owner="ascholtz@mozilla.com",
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
+        date_partition_parameter="submission_date",
         depends_on_past=True,
-        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
         task_group=task_group_burnham,
     )
 
@@ -779,14 +778,13 @@ with DAG(
 
     fenix_derived__clients_last_seen_joined__v1 = bigquery_etl_query(
         task_id="fenix_derived__clients_last_seen_joined__v1",
-        destination_table='clients_last_seen_joined_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
+        destination_table="clients_last_seen_joined_v1",
         dataset_id="fenix_derived",
         project_id="moz-fx-data-shared-prod",
         owner="ascholtz@mozilla.com",
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
+        date_partition_parameter="submission_date",
         depends_on_past=True,
-        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
         task_group=task_group_fenix,
     )
 
@@ -1035,14 +1033,13 @@ with DAG(
 
     firefox_desktop_background_update_derived__clients_last_seen_joined__v1 = bigquery_etl_query(
         task_id="firefox_desktop_background_update_derived__clients_last_seen_joined__v1",
-        destination_table='clients_last_seen_joined_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
+        destination_table="clients_last_seen_joined_v1",
         dataset_id="firefox_desktop_background_update_derived",
         project_id="moz-fx-data-shared-prod",
         owner="ascholtz@mozilla.com",
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
+        date_partition_parameter="submission_date",
         depends_on_past=True,
-        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
         task_group=task_group_firefox_desktop_background_update,
     )
 
@@ -1126,14 +1123,13 @@ with DAG(
 
     firefox_desktop_derived__clients_last_seen_joined__v1 = bigquery_etl_query(
         task_id="firefox_desktop_derived__clients_last_seen_joined__v1",
-        destination_table='clients_last_seen_joined_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
+        destination_table="clients_last_seen_joined_v1",
         dataset_id="firefox_desktop_derived",
         project_id="moz-fx-data-shared-prod",
         owner="ascholtz@mozilla.com",
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
+        date_partition_parameter="submission_date",
         depends_on_past=True,
-        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
         task_group=task_group_firefox_desktop,
     )
 
@@ -1180,14 +1176,13 @@ with DAG(
 
     firefox_echo_show_derived__clients_last_seen_joined__v1 = bigquery_etl_query(
         task_id="firefox_echo_show_derived__clients_last_seen_joined__v1",
-        destination_table='clients_last_seen_joined_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
+        destination_table="clients_last_seen_joined_v1",
         dataset_id="firefox_echo_show_derived",
         project_id="moz-fx-data-shared-prod",
         owner="ascholtz@mozilla.com",
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
+        date_partition_parameter="submission_date",
         depends_on_past=True,
-        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
         task_group=task_group_firefox_echo_show,
     )
 
@@ -1217,14 +1212,13 @@ with DAG(
 
     firefox_fire_tv_derived__clients_last_seen_joined__v1 = bigquery_etl_query(
         task_id="firefox_fire_tv_derived__clients_last_seen_joined__v1",
-        destination_table='clients_last_seen_joined_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
+        destination_table="clients_last_seen_joined_v1",
         dataset_id="firefox_fire_tv_derived",
         project_id="moz-fx-data-shared-prod",
         owner="ascholtz@mozilla.com",
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
+        date_partition_parameter="submission_date",
         depends_on_past=True,
-        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
         task_group=task_group_firefox_fire_tv,
     )
 
@@ -1254,14 +1248,13 @@ with DAG(
 
     firefox_ios_derived__clients_last_seen_joined__v1 = bigquery_etl_query(
         task_id="firefox_ios_derived__clients_last_seen_joined__v1",
-        destination_table='clients_last_seen_joined_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
+        destination_table="clients_last_seen_joined_v1",
         dataset_id="firefox_ios_derived",
         project_id="moz-fx-data-shared-prod",
         owner="ascholtz@mozilla.com",
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
+        date_partition_parameter="submission_date",
         depends_on_past=True,
-        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
         task_group=task_group_firefox_ios,
     )
 
@@ -1319,14 +1312,13 @@ with DAG(
 
     firefox_reality_derived__clients_last_seen_joined__v1 = bigquery_etl_query(
         task_id="firefox_reality_derived__clients_last_seen_joined__v1",
-        destination_table='clients_last_seen_joined_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
+        destination_table="clients_last_seen_joined_v1",
         dataset_id="firefox_reality_derived",
         project_id="moz-fx-data-shared-prod",
         owner="ascholtz@mozilla.com",
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
+        date_partition_parameter="submission_date",
         depends_on_past=True,
-        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
         task_group=task_group_firefox_reality,
     )
 
@@ -1356,14 +1348,13 @@ with DAG(
 
     firefox_reality_pc_derived__clients_last_seen_joined__v1 = bigquery_etl_query(
         task_id="firefox_reality_pc_derived__clients_last_seen_joined__v1",
-        destination_table='clients_last_seen_joined_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
+        destination_table="clients_last_seen_joined_v1",
         dataset_id="firefox_reality_pc_derived",
         project_id="moz-fx-data-shared-prod",
         owner="ascholtz@mozilla.com",
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
+        date_partition_parameter="submission_date",
         depends_on_past=True,
-        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
         task_group=task_group_firefox_reality_pc,
     )
 
@@ -1410,14 +1401,13 @@ with DAG(
 
     focus_android_derived__clients_last_seen_joined__v1 = bigquery_etl_query(
         task_id="focus_android_derived__clients_last_seen_joined__v1",
-        destination_table='clients_last_seen_joined_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
+        destination_table="clients_last_seen_joined_v1",
         dataset_id="focus_android_derived",
         project_id="moz-fx-data-shared-prod",
         owner="ascholtz@mozilla.com",
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
+        date_partition_parameter="submission_date",
         depends_on_past=True,
-        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
         task_group=task_group_focus_android,
     )
 
@@ -1469,14 +1459,13 @@ with DAG(
 
     focus_ios_derived__clients_last_seen_joined__v1 = bigquery_etl_query(
         task_id="focus_ios_derived__clients_last_seen_joined__v1",
-        destination_table='clients_last_seen_joined_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
+        destination_table="clients_last_seen_joined_v1",
         dataset_id="focus_ios_derived",
         project_id="moz-fx-data-shared-prod",
         owner="ascholtz@mozilla.com",
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
+        date_partition_parameter="submission_date",
         depends_on_past=True,
-        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
         task_group=task_group_focus_ios,
     )
 
@@ -1551,14 +1540,13 @@ with DAG(
 
     klar_android_derived__clients_last_seen_joined__v1 = bigquery_etl_query(
         task_id="klar_android_derived__clients_last_seen_joined__v1",
-        destination_table='clients_last_seen_joined_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
+        destination_table="clients_last_seen_joined_v1",
         dataset_id="klar_android_derived",
         project_id="moz-fx-data-shared-prod",
         owner="ascholtz@mozilla.com",
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
+        date_partition_parameter="submission_date",
         depends_on_past=True,
-        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
         task_group=task_group_klar_android,
     )
 
@@ -1588,14 +1576,13 @@ with DAG(
 
     klar_ios_derived__clients_last_seen_joined__v1 = bigquery_etl_query(
         task_id="klar_ios_derived__clients_last_seen_joined__v1",
-        destination_table='clients_last_seen_joined_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
+        destination_table="clients_last_seen_joined_v1",
         dataset_id="klar_ios_derived",
         project_id="moz-fx-data-shared-prod",
         owner="ascholtz@mozilla.com",
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
+        date_partition_parameter="submission_date",
         depends_on_past=True,
-        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
         task_group=task_group_klar_ios,
     )
 
@@ -1653,14 +1640,13 @@ with DAG(
 
     lockwise_android_derived__clients_last_seen_joined__v1 = bigquery_etl_query(
         task_id="lockwise_android_derived__clients_last_seen_joined__v1",
-        destination_table='clients_last_seen_joined_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
+        destination_table="clients_last_seen_joined_v1",
         dataset_id="lockwise_android_derived",
         project_id="moz-fx-data-shared-prod",
         owner="ascholtz@mozilla.com",
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
+        date_partition_parameter="submission_date",
         depends_on_past=True,
-        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
         task_group=task_group_lockwise_android,
     )
 
@@ -1690,14 +1676,13 @@ with DAG(
 
     lockwise_ios_derived__clients_last_seen_joined__v1 = bigquery_etl_query(
         task_id="lockwise_ios_derived__clients_last_seen_joined__v1",
-        destination_table='clients_last_seen_joined_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
+        destination_table="clients_last_seen_joined_v1",
         dataset_id="lockwise_ios_derived",
         project_id="moz-fx-data-shared-prod",
         owner="ascholtz@mozilla.com",
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
+        date_partition_parameter="submission_date",
         depends_on_past=True,
-        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
         task_group=task_group_lockwise_ios,
     )
 
@@ -1727,14 +1712,13 @@ with DAG(
 
     mach_derived__clients_last_seen_joined__v1 = bigquery_etl_query(
         task_id="mach_derived__clients_last_seen_joined__v1",
-        destination_table='clients_last_seen_joined_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
+        destination_table="clients_last_seen_joined_v1",
         dataset_id="mach_derived",
         project_id="moz-fx-data-shared-prod",
         owner="ascholtz@mozilla.com",
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
+        date_partition_parameter="submission_date",
         depends_on_past=True,
-        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
         task_group=task_group_mach,
     )
 
@@ -2165,14 +2149,13 @@ with DAG(
 
     mozphab_derived__clients_last_seen_joined__v1 = bigquery_etl_query(
         task_id="mozphab_derived__clients_last_seen_joined__v1",
-        destination_table='clients_last_seen_joined_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
+        destination_table="clients_last_seen_joined_v1",
         dataset_id="mozphab_derived",
         project_id="moz-fx-data-shared-prod",
         owner="ascholtz@mozilla.com",
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
+        date_partition_parameter="submission_date",
         depends_on_past=True,
-        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
         task_group=task_group_mozphab,
     )
 
@@ -2219,14 +2202,13 @@ with DAG(
 
     mozregression_derived__clients_last_seen_joined__v1 = bigquery_etl_query(
         task_id="mozregression_derived__clients_last_seen_joined__v1",
-        destination_table='clients_last_seen_joined_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
+        destination_table="clients_last_seen_joined_v1",
         dataset_id="mozregression_derived",
         project_id="moz-fx-data-shared-prod",
         owner="ascholtz@mozilla.com",
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
+        date_partition_parameter="submission_date",
         depends_on_past=True,
-        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
         task_group=task_group_mozregression,
     )
 
@@ -4392,14 +4374,13 @@ with DAG(
 
     reference_browser_derived__clients_last_seen_joined__v1 = bigquery_etl_query(
         task_id="reference_browser_derived__clients_last_seen_joined__v1",
-        destination_table='clients_last_seen_joined_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
+        destination_table="clients_last_seen_joined_v1",
         dataset_id="reference_browser_derived",
         project_id="moz-fx-data-shared-prod",
         owner="ascholtz@mozilla.com",
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
+        date_partition_parameter="submission_date",
         depends_on_past=True,
-        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
         task_group=task_group_reference_browser,
     )
 

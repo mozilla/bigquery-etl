@@ -14,7 +14,6 @@ scheduling:
   dag_name: bqetl_glean_usage
   task_group: mozphab
   depends_on_past: true
-  date_partition_offset: -1
 bigquery:
   time_partitioning:
     type: day

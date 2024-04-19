@@ -18,7 +18,7 @@ attribution AS (
   SELECT
     client_id,
     sample_id,
-    channel,
+    channel AS normalized_channel,
     adjust_ad_group,
     adjust_campaign,
     adjust_creative,
@@ -30,9 +30,9 @@ SELECT
   clients_last_seen.submission_date AS submission_date,
   clients_daily.submission_date AS metric_date,
   clients_daily.first_seen_date,
-  clients_last_seen.client_id,
-  clients_last_seen.sample_id,
-  clients_last_seen.normalized_channel,
+  clients_daily.client_id,
+  clients_daily.sample_id,
+  clients_daily.normalized_channel,
   clients_daily.country,
   clients_daily.app_display_version,
   clients_daily.locale,
@@ -74,8 +74,6 @@ INNER JOIN
   AND clients_daily.normalized_channel = clients_last_seen.normalized_channel
 LEFT JOIN
   attribution
-  ON clients_daily.client_id = attribution.client_id
-  AND clients_daily.sample_id = attribution.sample_id
-  AND clients_daily.normalized_channel = attribution.channel
+  USING (client_id, normalized_channel)
 WHERE
   clients_last_seen.retention_seen.day_27.active_on_metric_date

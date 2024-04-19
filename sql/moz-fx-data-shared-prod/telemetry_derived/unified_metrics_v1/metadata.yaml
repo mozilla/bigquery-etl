@@ -21,7 +21,6 @@ scheduling:
   - task_id: wait_for_unified_metrics
     dag_name: kpi_forecasting
     execution_delta: 1h
-  date_partition_offset: -1
 bigquery:
   time_partitioning:
     type: day

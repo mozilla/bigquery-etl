@@ -16,7 +16,7 @@ fields:
   description: App name the client is using.
 
 - mode: NULLABLE
-  name: channel
+  name: normalized_channel
   type: STRING
   description: Release channel of the app the client is using.
 
@@ -53,7 +53,7 @@ fields:
 - name: ping_sent_week_4
   type: INTEGER
   mode: NULLABLE
-  description: Number of clients that sent a ping 4 weeks after the metric date.
+  description: Number of clients that sent a ping in week 4 after the metric date.
 
 - name: active_metric_date
   type: INTEGER
@@ -63,19 +63,19 @@ fields:
 - name: retained_week_4
   type: INTEGER
   mode: NULLABLE
-  description: Number of clients that were DAU on the metric date and 4 weeks later.
+  description: Number of clients that were DAU on the metric date and in week 4 after the metric date.
 
 - name: retained_week_4_new_clients
   type: INTEGER
   mode: NULLABLE
-  description: Number of new clients on the metrics date that were DAU 4 after the metric date.
+  description: Number of new clients on the metric date that were DAU in week 4 after the metric date.
 
 - name: new_clients_metric_date
   type: INTEGER
   mode: NULLABLE
-  description: Number of new clients on the metrics date.
+  description: Number of new clients on the metric date.
 
 - name: repeat_clients
   type: INTEGER
   mode: NULLABLE
-  description: Number of new clients on the metrics date that were DAU at least twice in the next 4 weeks.
+  description: Number of new clients on the metric date that were DAU at least twice in the next 4 weeks.

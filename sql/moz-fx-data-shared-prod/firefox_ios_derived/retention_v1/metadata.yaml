@@ -4,12 +4,13 @@ description: |
   - metric_date
   - first_seen_date
   - app_name
-  - channel
+  - normalized_channel
   - country
   - adjust_ad_group
   - adjust_campaign
   - adjust_creative
   - adjust_network
+  - is_suspicious_device_client
 
   For all clients that sent us a ping on the metric date.
   Client's attributes are the client's attributes observed on the metric date.
@@ -31,7 +32,6 @@ bigquery:
     require_partition_filter: false
   clustering:
     fields:
-    - first_seen_date
     - app_name
-    - channel
     - country
+    - first_seen_date

@@ -8,6 +8,7 @@ SELECT
   adjust_campaign,
   adjust_creative,
   adjust_network,
+  is_suspicious_device_client,
   COUNTIF(ping_sent_metric_date) AS ping_sent_metric_date,
   COUNTIF(ping_sent_week_4) AS ping_sent_week_4,
   COUNTIF(active_metric_date) AS active_metric_date,
@@ -20,7 +21,6 @@ FROM
 WHERE
   metric_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
   AND submission_date = @submission_date
-  AND NOT is_suspicious_device_client
 GROUP BY
   metric_date,
   first_seen_date,
@@ -30,4 +30,5 @@ GROUP BY
   adjust_ad_group,
   adjust_campaign,
   adjust_creative,
-  adjust_network
+  adjust_network,
+  is_suspicious_device_client

@@ -61,16 +61,14 @@ SELECT
   adjust_campaign,
   adjust_creative,
   adjust_network,
-  -- TODO: Should we include those fields to make it easy to build on top of / extend this view?
-  -- days_seen_bits,
-  -- days_active_bits,
+  days_seen_bits,
+  days_active_bits,
 FROM
   `moz-fx-data-shared-prod.firefox_ios.baseline_clients_daily` AS clients_daily
 INNER JOIN
   clients_last_seen
   ON clients_daily.submission_date = clients_last_seen.retention_seen.day_27.metric_date
   AND clients_daily.client_id = clients_last_seen.client_id
-  AND clients_daily.sample_id = clients_last_seen.sample_id
   AND clients_daily.normalized_channel = clients_last_seen.normalized_channel
 LEFT JOIN
   attribution

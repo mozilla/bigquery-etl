@@ -3,14 +3,18 @@ CREATE OR REPLACE VIEW
 AS
 SELECT
   *,
-  -- not sure what the definition of lifecycle_stage is, so this is a placeholder
-  -- for now just to show where we could place it.
   CASE
-    WHEN EXTRACT(YEAR FROM first_seen_date) = 2024
-      THEN "NEW"
-    WHEN EXTRACT(YEAR FROM first_seen_date) < 2024
-      THEN "EXISTING"
-    ELSE "UKNOWN"
-  END AS lifecycle_stage,
+    WHEN first_seen_date = metric_date
+      THEN 'new_client'
+    -- TODO: Should we rename "repeat_client" to something different to avoid a mix up
+    -- between this field and the repeat_clients field?
+    WHEN DATE_DIFF(metric_date, first_seen_date, DAY)
+      BETWEEN 1
+      AND 27
+      THEN 'repeat_client'
+    WHEN DATE_DIFF(metric_date, first_seen_date, DAY) >= 28
+      THEN 'existing_client'
+    ELSE 'Unknown'
+  END AS lifecycle_stage
 FROM
   `moz-fx-data-shared-prod.firefox_ios_derived.retention_v1`

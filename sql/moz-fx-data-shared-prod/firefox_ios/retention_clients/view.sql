@@ -34,6 +34,8 @@ SELECT
   clients_last_seen.sample_id,
   clients_last_seen.normalized_channel,
   clients_daily.country,
+  clients_daily.app_display_version,
+  clients_daily.locale,
   (
     clients_daily.app_display_version = '107.2'
     AND clients_daily.submission_date >= '2023-02-01'

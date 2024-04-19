@@ -25,6 +25,16 @@ fields:
   mode: NULLABLE
   description: Client's country on the metric date.
 
+- name: app_display_version
+  type: STRING
+  mode: NULLABLE
+  description: Client's app version on the metric date.
+
+- name: locale
+  type: STRING
+  mode: NULLABLE
+  description: Client's locale on the metric date.
+
 - name: adjust_ad_group
   type: STRING
   mode: NULLABLE

@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS
+CREATE OR REPLACE TABLE
   braze_derived.subscriptions_map_v1(
     braze_subscription_name STRING,
     description STRING,

@@ -4,6 +4,7 @@ CREATE OR REPLACE TABLE
     description STRING,
     mozilla_subscription_id STRING,
     firefox_subscription_id STRING,
+    mozilla_dev_subscription_id STRING,
     basket_slug STRING
   );
 
@@ -13,6 +14,7 @@ INSERT INTO
     description,
     mozilla_subscription_id,
     firefox_subscription_id,
+    mozilla_dev_subscription_id,
     basket_slug
   )
 VALUES

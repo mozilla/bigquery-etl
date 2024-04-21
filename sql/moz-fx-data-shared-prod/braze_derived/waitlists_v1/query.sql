@@ -19,4 +19,6 @@ SELECT
 FROM
   `moz-fx-data-shared-prod.ctms_braze.ctms_waitlists`
 GROUP BY
-  email_id;
+  email_id
+HAVING
+  MAX(subscribed) = TRUE;

@@ -19,7 +19,6 @@ WITH ctms_emails AS (
         AND fxa.account_deleted = FALSE
         THEN TRUE
     END AS has_fxa,
-    TO_HEX(SHA256(fxa.fxa_id)) AS fxa_id_sha256,
     LOWER(fxa.primary_email) AS fxa_primary_email,
     LOWER(fxa.lang) AS fxa_lang,
     LOWER(fxa.first_service) AS first_service,
@@ -39,6 +38,7 @@ active_users AS (
     emails.mailing_country,
     emails.basket_token,
     emails.email_lang,
+    emails.fxa_id_sha256,
     emails.has_fxa,
     emails.fxa_primary_email,
     emails.fxa_lang,
@@ -93,6 +93,7 @@ SELECT
   mailing_country,
   basket_token,
   email_lang,
+  fxa_id_sha256,
   has_fxa,
   fxa_primary_email,
   fxa_lang,

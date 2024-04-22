@@ -10,6 +10,9 @@ description: |-
   adding an option for users to also unsubscribe from newsletters
   to grant agency. 
 
+  Braze Cloud Data Ingestion (CDI) tool documentation for deleting users:
+  https://www.braze.com/docs/user_guide/data_and_analytics/cloud_ingestion/delete_users/
+
   See https://mozilla-hub.atlassian.net/browse/DENG-3182
 owners:
 - cbeck@mozilla.com

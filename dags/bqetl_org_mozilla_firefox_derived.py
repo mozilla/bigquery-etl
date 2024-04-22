@@ -150,6 +150,56 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    wait_for_checks__fail_firefox_ios_derived__baseline_clients_yearly__v1 = ExternalTaskSensor(
+        task_id="wait_for_checks__fail_firefox_ios_derived__baseline_clients_yearly__v1",
+        external_dag_id="bqetl_firefox_ios",
+        external_task_id="checks__fail_firefox_ios_derived__baseline_clients_yearly__v1",
+        execution_delta=datetime.timedelta(days=-1, seconds=79200),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_checks__fail_firefox_ios_derived__clients_activation__v1 = (
+        ExternalTaskSensor(
+            task_id="wait_for_checks__fail_firefox_ios_derived__clients_activation__v1",
+            external_dag_id="bqetl_firefox_ios",
+            external_task_id="checks__fail_firefox_ios_derived__clients_activation__v1",
+            execution_delta=datetime.timedelta(days=-1, seconds=79200),
+            check_existence=True,
+            mode="reschedule",
+            allowed_states=ALLOWED_STATES,
+            failed_states=FAILED_STATES,
+            pool="DATA_ENG_EXTERNALTASKSENSOR",
+        )
+    )
+
+    wait_for_checks__fail_firefox_ios_derived__firefox_ios_clients__v1 = ExternalTaskSensor(
+        task_id="wait_for_checks__fail_firefox_ios_derived__firefox_ios_clients__v1",
+        external_dag_id="bqetl_firefox_ios",
+        external_task_id="checks__fail_firefox_ios_derived__firefox_ios_clients__v1",
+        execution_delta=datetime.timedelta(days=-1, seconds=79200),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_firefox_ios_derived__attributable_clients__v1 = ExternalTaskSensor(
+        task_id="wait_for_firefox_ios_derived__attributable_clients__v1",
+        external_dag_id="bqetl_firefox_ios",
+        external_task_id="firefox_ios_derived__attributable_clients__v1",
+        execution_delta=datetime.timedelta(days=-1, seconds=79200),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     checks__fail_fenix_derived__client_adclicks_history__v1 = bigquery_dq_check(
         task_id="checks__fail_fenix_derived__client_adclicks_history__v1",
         source_table="client_adclicks_history_v1",
@@ -356,6 +406,21 @@ with DAG(
         depends_on_past=False,
     )
 
+    firefox_ios_derived__ltv_states__v1 = bigquery_etl_query(
+        task_id="firefox_ios_derived__ltv_states__v1",
+        destination_table="ltv_states_v1",
+        dataset_id="firefox_ios_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=[
+            "frank@mozilla.com",
+            "kwindau@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     org_mozilla_fenix_derived__client_deduplication__v1 = bigquery_etl_query(
         task_id="org_mozilla_fenix_derived__client_deduplication__v1",
         destination_table="client_deduplication_v1",
@@ -504,6 +569,22 @@ with DAG(
 
     fenix_derived__meta_attribution_country_counts__v1.set_upstream(
         wait_for_copy_deduplicate_all
+    )
+
+    firefox_ios_derived__ltv_states__v1.set_upstream(
+        wait_for_checks__fail_firefox_ios_derived__baseline_clients_yearly__v1
+    )
+
+    firefox_ios_derived__ltv_states__v1.set_upstream(
+        wait_for_checks__fail_firefox_ios_derived__clients_activation__v1
+    )
+
+    firefox_ios_derived__ltv_states__v1.set_upstream(
+        wait_for_checks__fail_firefox_ios_derived__firefox_ios_clients__v1
+    )
+
+    firefox_ios_derived__ltv_states__v1.set_upstream(
+        wait_for_firefox_ios_derived__attributable_clients__v1
     )
 
     org_mozilla_fenix_derived__client_deduplication__v1.set_upstream(

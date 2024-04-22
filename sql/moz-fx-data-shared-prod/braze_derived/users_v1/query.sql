@@ -13,6 +13,7 @@ WITH ctms_emails AS (
     END AS email_subscribe,
     emails.basket_token,
     LOWER(emails.email_lang) AS email_lang,
+    TO_HEX(SHA256(fxa.fxa_id)) AS fxa_id_sha256,
     CASE
       WHEN fxa.fxa_id IS NOT NULL
         AND fxa.account_deleted = FALSE

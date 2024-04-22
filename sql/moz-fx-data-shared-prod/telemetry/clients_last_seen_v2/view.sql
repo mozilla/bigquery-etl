@@ -21,7 +21,6 @@ SELECT
     AND LOWER(cls.distribution_id) <> "mozillaonline",
     TRUE,
     FALSE
-  ) AS is_desktop,
-  FALSE AS is_mobile
+  ) AS is_desktop
 FROM
   `moz-fx-data-shared-prod.telemetry_derived.clients_last_seen_v2` cls

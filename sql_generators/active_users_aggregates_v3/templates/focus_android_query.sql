@@ -16,11 +16,9 @@ WITH baseline AS (
     device AS device_model,
     first_seen_date,
     submission_date = first_seen_date AS is_new_profile,
-    NULL AS uri_count,
-    default_browser AS is_default_browser,
     distribution_id,
     CAST(NULL AS string) AS isp,
-    'Focus Android' AS app_name
+    'Focus Android Legacy' AS app_name
   FROM
     `{{ project_id }}.telemetry.core_clients_last_seen`
   WHERE
@@ -44,21 +42,38 @@ WITH baseline AS (
     device_model,
     first_seen_date,
     submission_date = first_seen_date AS is_new_profile,
-    uri_count,
-    is_default_browser,
     CAST(NULL AS string) AS distribution_id,
     isp,
-    'Focus Android Glean' AS app_name
+    app_name
   FROM
-    `{{ project_id }}.{{ app_name }}.clients_last_seen_joined`
+    `{{ project_id }}.{{ app_name }}.baseline_clients_last_seen`
   WHERE
     submission_date = @submission_date
 ),
+metrics AS
+(
+  SELECT
+    submission_date,
+    client_id,
+    normalized_channel,
+    uri_count,
+    is_default_browser
+  FROM
+    `{{ project_id }}.{{ app_name }}.metrics_clients_last_seen`
+  WHERE
+    submission_date = DATE_ADD(@submission_date, INTERVAL 1 DAY) -- Metrics ping usually arrives 1 day after baseline ping.
+),
 unioned AS (
   SELECT
-    * REPLACE (IF(isp = 'BrowserStack', CONCAT(app_name, ' BrowserStack'), app_name) AS app_name)
+    baseline.*,
+    metrics.is_default_browser,
+    metrics.uri_count
   FROM
     baseline
+  LEFT JOIN
+    metrics
+    ON baseline.client_id = metrics.client_id
+    AND baseline.normalized_channel IS NOT DISTINCT FROM metrics.normalized_channel
 ),
 search_clients AS (
   SELECT

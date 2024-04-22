@@ -1,0 +1,16 @@
+fields:
+- mode: NULLABLE
+  name: external_id
+  type: STRING
+- mode: NULLABLE
+  name: subscription_name
+  type: STRING
+- mode: NULLABLE
+  name: firefox_subscription_id
+  type: STRING
+- mode: NULLABLE
+  name: mozilla_subscription_id
+  type: STRING
+- mode: NULLABLE
+  name: subscription_state
+  type: STRING

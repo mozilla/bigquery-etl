@@ -1,0 +1,112 @@
+fields:
+- mode: NULLABLE
+  name: external_id
+  type: STRING
+- mode: NULLABLE
+  name: email
+  type: STRING
+- mode: NULLABLE
+  name: mailing_country
+  type: STRING
+- mode: NULLABLE
+  name: email_subscribe
+  type: STRING
+- mode: NULLABLE
+  name: basket_token
+  type: STRING
+- mode: NULLABLE
+  name: email_lang
+  type: STRING
+- mode: NULLABLE
+  name: create_timestamp
+  type: TIMESTAMP
+- mode: NULLABLE
+  name: update_timestamp
+  type: TIMESTAMP
+- mode: NULLABLE
+  name: fxa_id_sha256
+  type: STRING
+- mode: NULLABLE
+  name: fxa_primary_email
+  type: STRING
+- mode: NULLABLE
+  name: fxa_lang
+  type: STRING
+- mode: NULLABLE
+  name: first_service
+  type: STRING
+- fields:
+  - mode: NULLABLE
+    name: newsletter_name
+    type: STRING
+  - mode: NULLABLE
+    name: subscribed
+    type: BOOLEAN
+  - mode: NULLABLE
+    name: newsletter_lang
+    type: STRING
+  - mode: NULLABLE
+    name: create_timestamp
+    type: TIMESTAMP
+  - mode: NULLABLE
+    name: update_timestamp
+    type: TIMESTAMP
+  mode: REPEATED
+  name: newsletters
+  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: waitlist_name
+    type: STRING
+  - mode: NULLABLE
+    name: waitlist_geo
+    type: STRING
+  - mode: NULLABLE
+    name: waitlist_platform
+    type: STRING
+  - mode: NULLABLE
+    name: waitlist_source
+    type: STRING
+  - mode: NULLABLE
+    name: create_timestamp
+    type: TIMESTAMP
+  - mode: NULLABLE
+    name: subscribed
+    type: BOOLEAN
+  - mode: NULLABLE
+    name: unsub_reason
+    type: STRING
+  - mode: NULLABLE
+    name: update_timestamp
+    type: TIMESTAMP
+  mode: REPEATED
+  name: waitlists
+  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: plan_id
+    type: STRING
+  - mode: NULLABLE
+    name: product_id
+    type: STRING
+  - mode: NULLABLE
+    name: status
+    type: STRING
+  - mode: NULLABLE
+    name: plan_started_at
+    type: TIMESTAMP
+  - mode: NULLABLE
+    name: plan_ended_at
+    type: TIMESTAMP
+  - mode: NULLABLE
+    name: plan_interval
+    type: STRING
+  - mode: NULLABLE
+    name: plan_interval_count
+    type: INTEGER
+  - mode: NULLABLE
+    name: update_timestamp
+    type: TIMESTAMP
+  mode: REPEATED
+  name: products
+  type: RECORD

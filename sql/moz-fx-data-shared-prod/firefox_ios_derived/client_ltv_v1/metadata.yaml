@@ -1,13 +1,15 @@
-friendly_name: Client Ltv
+friendly_name: Firefox iOS Client LTV
 description: |-
-  Please provide a description for the query
+  LTV States by client, rather than by client-day
+  Uses the most recently seen values for a client
+  LTV here is number of ad-clicks
 owners:
-- example@mozilla.com
+- kwindau@mozilla.com
 labels:
   incremental: true
-  owner1: example
+  owner1: kwindau@mozilla.com
 scheduling:
-  dag_name: bqetl_default
+  dag_name: bqetl_org_mozilla_firefox_derived
 bigquery:
   time_partitioning:
     type: day
@@ -16,5 +18,7 @@ bigquery:
     expiration_days: null
   range_partitioning: null
   clustering:
-    fields: []
+    fields:
+    - sample_id
+    - first_reported_country
 references: {}

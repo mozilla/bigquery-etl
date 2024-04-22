@@ -1,0 +1,56 @@
+fields:
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+  description: Unique ID for the client installation.
+- name: sample_id
+  type: INTEGER
+  mode: NULLABLE
+  description: Sample ID
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Submission Date
+- name: first_seen_date
+  type: DATE
+  mode: NULLABLE
+  description: First Seen Date
+- name: days_since_first_seen
+  type: INTEGER
+  mode: NULLABLE
+  description: Days Since First Seen
+- name: days_since_seen
+  type: INTEGER
+  mode: NULLABLE
+  description: Days Since Seen
+- name: pattern
+  type: INTEGER
+  mode: NULLABLE
+- name: active
+  type: INTEGER
+  mode: NULLABLE
+- name: ad_clicks
+  type: INTEGER
+  mode: NULLABLE
+- name: adjust_network
+  type: STRING
+  mode: NULLABLE
+- name: first_reported_country
+  type: STRING
+  mode: NULLABLE
+- name: first_reported_isp
+  type: STRING
+  mode: NULLABLE
+- name: death_time
+  type: INTEGER
+  mode: NULLABLE
+- name: max_weeks
+  type: INTEGER
+  mode: NULLABLE
+- name: markov_state
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: state_ios_v2
+    type: STRING
+    mode: NULLABLE

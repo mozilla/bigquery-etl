@@ -5,21 +5,25 @@
   subscription_name: newsletter_1
   firefox_subscription_id: firefox_newsletter_1
   mozilla_subscription_id: mozilla_newsletter_1
+  mozilla_dev_subscription_id: mozilla_dev_newsletter_1
   subscription_state: subscribed
 - external_id: user_1
   subscription_name: newsletter_2
   firefox_subscription_id: firefox_newsletter_2
   mozilla_subscription_id: mozilla_newsletter_2
+  mozilla_dev_subscription_id: mozilla_dev_newsletter_2
   subscription_state: subscribed
 - external_id: user_1
   subscription_name: newsletter_3
   firefox_subscription_id: firefox_newsletter_3
   mozilla_subscription_id: mozilla_newsletter_3
+  mozilla_dev_subscription_id: mozilla_dev_newsletter_3
   subscription_state: unsubscribed
 - external_id: user_1
   subscription_name: newsletter_4
   firefox_subscription_id: firefox_newsletter_4
   mozilla_subscription_id: mozilla_newsletter_4
+  mozilla_dev_subscription_id: mozilla_dev_newsletter_4
   subscription_state: unsubscribed
 - external_id: user_1
   subscription_name: waitlist_1-waitlist
@@ -31,21 +35,25 @@
   subscription_name: newsletter_1
   firefox_subscription_id: firefox_newsletter_1
   mozilla_subscription_id: mozilla_newsletter_1
+  mozilla_dev_subscription_id: mozilla_dev_newsletter_1
   subscription_state: subscribed
 - external_id: user_2
   subscription_name: waitlist_1-waitlist
   firefox_subscription_id: firefox_waitlist_1
   mozilla_subscription_id: mozilla_waitlist_1
+  mozilla_dev_subscription_id: mozilla_dev_waitlist_1
   subscription_state: subscribed
 # user 3
 - external_id: user_3
   subscription_name: newsletter_1
   firefox_subscription_id: firefox_newsletter_1
   mozilla_subscription_id: mozilla_newsletter_1
+  mozilla_dev_subscription_id: mozilla_dev_newsletter_1
   subscription_state: subscribed
 - external_id: user_3
   subscription_name: waitlist_2-waitlist
   firefox_subscription_id: firefox_waitlist_2
   mozilla_subscription_id: mozilla_waitlist_2
+  mozilla_dev_subscription_id: mozilla_dev_waitlist_2
   subscription_state: subscribed
 # user 4 not in braze_users

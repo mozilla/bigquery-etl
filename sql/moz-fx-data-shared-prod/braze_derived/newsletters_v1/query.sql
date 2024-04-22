@@ -8,6 +8,10 @@ SELECT
       create_timestamp,
       update_timestamp
     )
+    ORDER BY
+      update_timestamp,
+      create_timestamp,
+      name
   ) AS newsletters
 FROM
   `moz-fx-data-shared-prod.ctms_braze.ctms_newsletters`

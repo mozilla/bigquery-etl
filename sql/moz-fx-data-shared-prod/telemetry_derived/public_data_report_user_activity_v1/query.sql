@@ -26,24 +26,9 @@ sample AS (
     countries AS cn
     ON cn.code = country_group
   WHERE
-    COALESCE(cn.name, country_group) IN (
-      'Worldwide',
-      'Brazil',
-      'Canada',
-      'China',
-      'France',
-      'Germany',
-      'India',
-      'Indonesia',
-      'Italy',
-      'Poland',
-      'Russia',
-      'Spain',
-      'United States'
-    )
     -- we need the whole week for daily_usage metric
     -- others can look at just the last day (Sunday, see `is_last_day_of_week` above)
-    AND submission_date >= @submission_date
+    submission_date >= @submission_date
     AND submission_date < DATE_ADD(@submission_date, INTERVAL 7 DAY)
     AND subsession_hours_sum < 24 --remove outliers
     AND sample_id = 1

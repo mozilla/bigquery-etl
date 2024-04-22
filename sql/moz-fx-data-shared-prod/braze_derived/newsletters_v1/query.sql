@@ -1,5 +1,5 @@
 SELECT
-  email_id AS external_id,
+  newsletters.email_id AS external_id,
   ARRAY_AGG(
     STRUCT(
       newsletters.name AS newsletter_name,
@@ -20,4 +20,4 @@ INNER JOIN
 GROUP BY
   email_id
 HAVING
-  MAX(subscribed) = TRUE;
+  LOGICAL_OR(subscribed) = TRUE;

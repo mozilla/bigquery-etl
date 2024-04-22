@@ -1,0 +1,11 @@
+# ctms_fxa
+---
+# user 1
+- fxa_id: fxa_uid_1
+  email_id: user_1
+# user 2
+- fxa_id: fxa_uid_2
+  email_id: user_2
+# user 3 no active subscriptions
+- fxa_id: fxa_uid_3
+  email_id: user_3

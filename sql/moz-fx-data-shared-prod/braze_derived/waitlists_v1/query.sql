@@ -21,4 +21,4 @@ FROM
 GROUP BY
   email_id
 HAVING
-  MAX(subscribed) = TRUE;
+  LOGICAL_OR(subscribed) = TRUE;

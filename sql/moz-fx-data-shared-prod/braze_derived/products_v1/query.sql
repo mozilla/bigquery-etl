@@ -1,22 +1,22 @@
 SELECT
-  fxa_uid AS fxa_id_sha256,
+  subscriptions.fxa_uid AS fxa_id_sha256,
   ARRAY_AGG(
     STRUCT(
-      plan_id,
-      product_id,
-      status,
-      plan_started_at,
-      plan_ended_at,
-      plan_interval,
-      plan_interval_count,
-      event_timestamp AS update_timestamp
+      subscriptions.plan_id,
+      subscriptions.product_id,
+      subscriptions.status,
+      subscriptions.plan_started_at,
+      subscriptions.plan_ended_at,
+      subscriptions.plan_interval,
+      subscriptions.plan_interval_count,
+      subscriptions.event_timestamp AS update_timestamp
     )
     ORDER BY
-      event_timestamp,
-      plan_started_at,
-      plan_ended_at,
-      plan_id,
-      product_id
+      subscriptions.event_timestamp,
+      subscriptions.plan_started_at,
+      subscriptions.plan_ended_at,
+      subscriptions.plan_id,
+      subscriptions.product_id
   ) AS products
 FROM
   `moz-fx-data-shared-prod.subscription_platform_derived.stripe_subscriptions_v1` AS subscriptions

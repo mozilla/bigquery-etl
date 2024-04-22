@@ -55,3 +55,7 @@ fields:
   mode: NULLABLE
   name: max_weeks
   type: INT64
+- description: LTV State
+  mode: NULLABLE
+  name: ltv_state
+  type: STRING

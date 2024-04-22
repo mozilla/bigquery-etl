@@ -4,4 +4,4 @@
   reason: Backfilling a new table; related to https://mozilla-hub.atlassian.net/browse/GROWTH-147 & https://github.com/mozilla/bigquery-etl/pull/5400
   watchers:
   - kwindau@mozilla.com
-  status: Initiate
+  status: Complete

@@ -2,7 +2,6 @@
 WITH todays_metrics AS (
   SELECT
     client_id,
-    BIT_COUNT(days_visited_1_uri_bits) >= 21 AS is_core_active_v1,
     CASE
     WHEN BIT_COUNT(days_visited_1_uri_bits)
       BETWEEN 1

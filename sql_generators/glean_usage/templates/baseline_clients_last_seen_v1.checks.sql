@@ -32,7 +32,7 @@
   "days_seen_session_end_bits"
   ], where="submission_date = @submission_date") }}
 
-#warn
+#fail
 SELECT IF(
   COUNTIF(normalized_channel NOT IN (
     "nightly",

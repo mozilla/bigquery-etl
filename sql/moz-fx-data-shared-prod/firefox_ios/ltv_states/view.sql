@@ -45,14 +45,16 @@ SELECT
   first_reported_isp,
   death_time,
   max_weeks,
-  mozfun.ltv.get_state_ios_v2(
-    days_since_first_seen,
-    days_since_seen,
-    submission_date,
-    death_time,
-    pattern,
-    active,
-    max_weeks
-  ) AS ltv_state
+  STRUCT(
+    mozfun.ltv.get_state_ios_v2(
+      days_since_first_seen,
+      days_since_seen,
+      submission_date,
+      death_time,
+      pattern,
+      active,
+      max_weeks
+    ) AS state_ios_v2
+  ) AS markov_state
 FROM
   base_layer

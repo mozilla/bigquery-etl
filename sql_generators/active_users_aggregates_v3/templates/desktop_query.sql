@@ -2,8 +2,25 @@
 WITH todays_metrics AS (
   SELECT
     client_id,
-    activity_segments_v1 AS segment,
-    '{{ app_value }}' AS app_name,
+    BIT_COUNT(days_visited_1_uri_bits) >= 21 AS is_core_active_v1,
+    CASE
+    WHEN BIT_COUNT(days_visited_1_uri_bits)
+      BETWEEN 1
+      AND 6
+      THEN 'infrequent_user'
+    WHEN BIT_COUNT(days_visited_1_uri_bits)
+      BETWEEN 7
+      AND 13
+      THEN 'casual_user'
+    WHEN BIT_COUNT(days_visited_1_uri_bits)
+      BETWEEN 14
+      AND 20
+      THEN 'regular_user'
+    WHEN BIT_COUNT(days_visited_1_uri_bits) >= 21
+      THEN 'core_user'
+    ELSE 'other'
+    END AS segment,
+    'Firefox Desktop' AS app_name,
     app_version AS app_version,
     normalized_channel AS channel,
     IFNULL(country, '??') country,
@@ -11,7 +28,6 @@ WITH todays_metrics AS (
     COALESCE(REGEXP_EXTRACT(locale, r'^(.+?)-'), locale, NULL) AS locale,
     first_seen_date,
     EXTRACT(YEAR FROM first_seen_date) AS first_seen_year,
-    days_since_seen,
     os,
     COALESCE(
       `mozfun.norm.windows_version_info`(os, normalized_os_version, windows_build_number),
@@ -42,14 +58,13 @@ WITH todays_metrics AS (
     search_with_ads_count_all AS search_with_ads,
     active_hours_sum
   FROM
-    telemetry.clients_last_seen
+    `moz-fx-data-shared-prod.telemetry.clients_last_seen`
   WHERE
     submission_date = @submission_date
 )
 SELECT
   todays_metrics.* EXCEPT (
     client_id,
-    days_since_seen,
     ad_click,
     organic_search_count,
     search_count,

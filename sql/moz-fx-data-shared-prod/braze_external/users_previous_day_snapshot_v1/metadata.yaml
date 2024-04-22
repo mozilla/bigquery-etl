@@ -1,13 +1,13 @@
 friendly_name: Braze User Profiles Previous Day Snapshot
 description: |-
-  This is a snapshot of the user profiles table at the state it was in before
-  the most recent run. Since the user profiles table updates once a day at
+  This is a snapshot of the users table at the state it was in before
+  the most recent DAG run. Since the user profiles table updates once a day at
   10AM UTC, we can update this snapshot looking 12 hours back (yesterday).
   
   This snapshot allows us to compare changed values in order to generate the 
   JSON payloads for Braze's cloud data ingestion tool.
 
-  See https://mozilla-hub.atlassian.net/browse/DENG-3008
+  See https://mozilla-hub.atlassian.net/browse/DENG-3182
 owners:
 - cbeck@mozilla.com
 labels:

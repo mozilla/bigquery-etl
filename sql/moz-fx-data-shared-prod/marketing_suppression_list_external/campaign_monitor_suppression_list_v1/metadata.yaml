@@ -1,0 +1,24 @@
+friendly_name: Campaign Monitor Suppression List
+description: |-
+  This python script gets the suppression list from Campaign Monitor via their API.
+  The data then gets stored into BigQuery.
+owners:
+- leli@mozilla.com
+labels:
+  owner1: leli
+  dag: bqetl_suppression_list
+scheduling:
+  dag_name: bqetl_suppression_list
+  arguments:
+  - --api_key={{ var.value.campaign_monitor_api_key }}
+  - --client_id={{ var.value.campaign_monitor_client_id }}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:braze
+  - workgroup:braze/ingestion-mozilla-dev
+- role: roles/bigquery.dataEditor
+  members:
+  - workgroup:braze/writers
+references: {}

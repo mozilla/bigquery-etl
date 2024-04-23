@@ -34,7 +34,12 @@ fields:
 - name: last_used_date
   type: DATE
   mode: NULLABLE
+  description: The date when the tables was last queried
 - name: deprecated
   type: BOOLEAN
   mode: NULLABLE
   description: Whether the table has been deprecated and pending deletion
+- name: deletion_date
+  type: DATE
+  mode: NULLABLE
+  description: The date when the tables was scheduled for deletion

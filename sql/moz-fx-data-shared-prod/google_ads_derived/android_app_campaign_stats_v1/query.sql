@@ -16,8 +16,8 @@ WITH daily_stats AS (
 activations AS (
   SELECT
     first_seen_date AS date,
-    campaign_id,
-    ad_group_id,
+    CAST(REGEXP_EXTRACT(adjust_campaign, r' \((\d+)\)$') AS INT64) as campaign_id,
+    CAST(REGEXP_EXTRACT(adjust_ad_group, r' \((\d+)\)$') AS INT64) as ad_group_id,
     COUNTIF(activated) AS activated,
     COUNT(*) AS new_profiles,
     SUM(lifetime_value) AS lifetime_value,

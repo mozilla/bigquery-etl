@@ -1571,6 +1571,20 @@ bqetl_braze_currents:
   tags:
     - impact/tier_2
 
+bqetl_suppression_list:
+  schedule_interval: 0 3 * * *
+  description: |
+    Ingest suppression lists into BigQuery
+  default_args:
+    owner: leli@mozilla.com
+    email:
+      - leli@mozilla.com
+    start_date: '2024-04-21'
+    retries: 1
+    retry_delay: 30m
+  tags:
+    - impact/tier_2
+
 bqetl_pageload_v1:
   default_args:
     depends_on_past: false

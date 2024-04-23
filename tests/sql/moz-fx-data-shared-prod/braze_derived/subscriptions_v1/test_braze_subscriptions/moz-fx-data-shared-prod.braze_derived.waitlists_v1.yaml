@@ -5,20 +5,25 @@
   waitlists:
     - waitlist_name: waitlist_1
       subscribed: true
+      update_timestamp: 2020-01-01 11:00:00+00:00
 # user 2
 - external_id: user_2
   waitlists:
     - waitlist_name: waitlist_1
       subscribed: true
+      update_timestamp: 2020-02-01 11:00:00+00:00
 # user 3
 - external_id: user_3
   waitlists:
     - waitlist_name: waitlist_2
       subscribed: true
+      update_timestamp: 2020-03-02 11:00:00+00:00
     - waitlist_name: not_a_waitlist
       subscribed: true
+      update_timestamp: 2020-03-11 11:00:00+00:00
 # user 4 not in braze_users
 - external_id: not_a_user
   waitlists:
     - waitlist_name: waitlist_1
       subscribed: true
+      update_timestamp: 2020-04-11 11:00:00+00:00

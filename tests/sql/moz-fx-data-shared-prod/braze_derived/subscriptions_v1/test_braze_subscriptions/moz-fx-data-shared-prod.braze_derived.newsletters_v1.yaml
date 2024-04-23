@@ -5,26 +5,34 @@
   newsletters:
     - newsletter_name: newsletter_1
       subscribed: true
+      update_timestamp: 2020-01-01 10:00:00+00:00
     - newsletter_name: newsletter_2
       subscribed: true
+      update_timestamp: 2020-01-02 10:00:00+00:00
     - newsletter_name: newsletter_3
       subscribed: false
+      update_timestamp: 2020-01-03 10:00:00+00:00
     - newsletter_name: newsletter_4
       subscribed: false
+      update_timestamp: 2020-01-04 10:00:00+00:00
 # user 2
 - external_id: user_2
   newsletters:
     - newsletter_name: newsletter_1
       subscribed: true
+      update_timestamp: 2020-02-01 10:00:00+00:00
 # user 3
 - external_id: user_3
   newsletters:
     - newsletter_name: newsletter_1
       subscribed: true
+      update_timestamp: 2020-03-01 10:00:00+00:00
     - newsletter_name: not_a_newsletter
       subscribed: true
+      update_timestamp: 2020-03-10 10:00:00+00:00
 # user 4 not in braze_users
 - external_id: not_a_user
   newsletters:
     - newsletter_name: newsletter_1
       subscribed: true
+      update_timestamp: 2020-04-01 10:00:00+00:00

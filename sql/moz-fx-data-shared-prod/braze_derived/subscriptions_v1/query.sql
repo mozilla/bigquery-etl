@@ -62,7 +62,7 @@ SELECT
       subscriptions_mapped.update_timestamp AS update_timestamp
     )
     ORDER BY
-      subscriptions_mapped.subscription_name ASC
+      subscriptions_mapped.subscription_name
   ) AS subscriptions
 FROM
   subscriptions_mapped

@@ -1,0 +1,26 @@
+friendly_name: Ad Groups
+description: |-
+  Information about Ad Groups.
+  One row per Ad Group ID. If
+  an Ad Group name changes, we take
+  the latest name.
+owners:
+- frank@mozilla.com
+labels:
+  dag: bqetl_fivetran_google_ads
+  owner1: frank
+scheduling:
+  dag_name: bqetl_fivetran_google_ads
+  depends_on_past: false
+  date_partition_parameter: null
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  checks.sql:
+  - ..
+  query.sql:
+  - google_ads_derived.campaigns_v1
+  - moz-fx-data-bq-fivetran.ads_google_mmc.ad_group_history

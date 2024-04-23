@@ -85,7 +85,10 @@ SELECT
   IF(
     search_impressions.search_type IN ('Discover', 'Google News'),
     NULL,
-    mozfun.google_search_console.classify_query(search_impressions.query)
+    mozfun.google_search_console.classify_site_query(
+      search_impressions.site_domain_name,
+      search_impressions.query
+    )
   ) AS query_type,
   search_impressions.is_anonymized,
   search_impressions.has_good_page_experience,

@@ -2,7 +2,7 @@ WITH unified AS (
   -- Combine newsletters and waitlists into a single set of records from user_profiles
   SELECT
     external_id,
-    newsletter.newsletter_name AS subscription_name,  -- No change to name for newsletters
+    newsletter.newsletter_name AS subscription_name,
     newsletter.update_timestamp,
     IF(newsletter.subscribed, 'subscribed', 'unsubscribed') AS subscription_state
   FROM

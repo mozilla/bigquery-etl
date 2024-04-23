@@ -173,15 +173,17 @@ with DAG(
         task_concurrency=1,
     )
 
+    braze_derived__newsletters__v1.set_upstream(braze_derived__users__v1)
+
+    braze_derived__products__v1.set_upstream(braze_derived__users__v1)
+
     braze_derived__products__v1.set_upstream(
         wait_for_subscription_platform_derived__stripe_subscriptions__v1
     )
 
-    braze_derived__subscriptions__v1.set_upstream(braze_derived__newsletters__v1)
+    braze_derived__subscriptions__v1.set_upstream(braze_derived__user_profiles__v1)
 
     braze_derived__subscriptions__v1.set_upstream(braze_derived__users__v1)
-
-    braze_derived__subscriptions__v1.set_upstream(braze_derived__waitlists__v1)
 
     braze_derived__suppressions__v1.set_upstream(
         wait_for_acoustic_external__contact_raw__v1
@@ -199,10 +201,8 @@ with DAG(
 
     braze_derived__user_profiles__v1.set_upstream(braze_derived__waitlists__v1)
 
-    braze_derived__users__v1.set_upstream(braze_derived__newsletters__v1)
-
-    braze_derived__users__v1.set_upstream(braze_derived__products__v1)
-
     braze_derived__users__v1.set_upstream(braze_derived__suppressions__v1)
 
-    braze_derived__users__v1.set_upstream(braze_derived__waitlists__v1)
+    braze_derived__users__v1.set_upstream(
+        wait_for_subscription_platform_derived__stripe_subscriptions__v1
+    )

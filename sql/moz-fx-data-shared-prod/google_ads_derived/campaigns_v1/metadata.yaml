@@ -1,0 +1,15 @@
+friendly_name: Campaigns V1
+description: |-
+  Information about Google Ads campaigns.
+  Grain is per-campaign ID. Note that if
+  campaign names change over time, we will
+  take the name associated with the highest
+  spend.
+owners:
+- frank@mozilla.com
+labels:
+  incremental: false
+scheduling:
+  dag_name: bqetl_fivetran_google_ads
+  depends_on_past: false
+  date_partition_parameter: null

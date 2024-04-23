@@ -2,10 +2,7 @@ WITH unified AS (
   -- Combine newsletters and waitlists into a single set of records from user_profiles
   SELECT
     external_id,
-    CONCAT(
-      newsletter.newsletter_name,
-      IF(newsletter.subscribed, '', '-unsubscribed')
-    ) AS subscription_name,
+    newsletter.newsletter_name AS subscription_name,  -- No change to name for newsletters
     newsletter.update_timestamp,
     IF(newsletter.subscribed, 'subscribed', 'unsubscribed') AS subscription_state
   FROM
@@ -16,9 +13,8 @@ WITH unified AS (
     external_id,
     CONCAT(
       waitlist.waitlist_name,
-      '-waitlist',
-      IF(waitlist.subscribed, '', '-unsubscribed')
-    ) AS subscription_name,
+      '-waitlist'
+    ) AS subscription_name,  -- Add '-waitlist' suffix for clarity
     waitlist.update_timestamp,
     IF(waitlist.subscribed, 'subscribed', 'unsubscribed') AS subscription_state
   FROM
@@ -65,6 +61,8 @@ SELECT
       subscriptions_mapped.subscription_state AS subscription_state,
       subscriptions_mapped.update_timestamp AS update_timestamp
     )
+    ORDER BY
+      subscriptions_mapped.subscription_name ASC
   ) AS subscriptions
 FROM
   subscriptions_mapped

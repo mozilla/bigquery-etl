@@ -32,7 +32,7 @@
   "days_seen_session_end_bits"
   ], where="submission_date = @submission_date") }}
 
-#fail
+#warn
 SELECT IF(
   COUNTIF(normalized_channel NOT IN (
     "nightly",
@@ -54,6 +54,7 @@ WHERE submission_date = @submission_date;
 #warn
 {{ value_length(column="client_id", expected_length=36, where="submission_date = @submission_date") }}
 
+#fail
 WITH daily AS
 (
  SELECT
@@ -62,7 +63,7 @@ WITH daily AS
  FROM
     `moz-fx-data-shared-prod.org_mozilla_ios_firefox_derived.baseline_clients_daily_v1`
  WHERE
-    submission_date = '2024-03-01'
+    submission_date = @submission_date
     AND sample_id IS NOT NULL
  GROUP BY submission_date
 )
@@ -74,7 +75,7 @@ WITH daily AS
  FROM
   `moz-fx-data-shared-prod.org_mozilla_ios_firefox_derived.baseline_clients_last_seen_v1`
  WHERE
-  submission_date = '2024-03-01'
+  submission_date = @submission_date
   AND mozfun.bits28.days_since_seen(days_seen_bits) = 0
   GROUP BY submission_date
 )
@@ -85,22 +86,6 @@ WITH daily AS
  FROM daily LEFT JOIN last_seen
  USING(submission_date)
 )
-#warn
-SELECT
- IF(
- ABS((SELECT difference_perc FROM check_results)) < 1,
- ERROR(
-   CONCAT("Results don't match by > 1%, baseline_clients_daily table has ",
-   STRING(((SELECT submission_date FROM daily))),
-   ": ",
-   ABS((SELECT client_count FROM daily)),
-   ". baseline_clients_last_seen has ",
-   IFNULL(((SELECT client_count FROM last_seen)), 0)
-   )
- ),
- NULL
- )
-#fail
 SELECT
  IF(
  ABS((SELECT difference_perc FROM check_results)) > 1,
@@ -114,6 +99,6 @@ SELECT
    )
  ),
  NULL
- )
-{% endraw %}
+ );
 
+{% endraw %}

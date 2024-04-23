@@ -14,7 +14,7 @@ WITH unified AS (
     CONCAT(
       waitlist.waitlist_name,
       '-waitlist'
-    ) AS subscription_name,  -- Add '-waitlist' suffix for clarity
+    ) AS subscription_name,  -- Add '-waitlist' suffix to match braze naming
     waitlist.update_timestamp,
     IF(waitlist.subscribed, 'subscribed', 'unsubscribed') AS subscription_state
   FROM

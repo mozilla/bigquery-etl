@@ -1,9 +1,11 @@
-CREATE OR REPLACE TABLE braze_derived.subscriptions_v1 AS
 WITH unified AS (
   -- Combine newsletters and waitlists into a single set of records from user_profiles
   SELECT
     external_id,
-    CONCAT(newsletter.newsletter_name, IF(newsletter.subscribed, '', '-unsubscribed')) AS subscription_name,
+    CONCAT(
+      newsletter.newsletter_name,
+      IF(newsletter.subscribed, '', '-unsubscribed')
+    ) AS subscription_name,
     newsletter.update_timestamp,
     IF(newsletter.subscribed, 'subscribed', 'unsubscribed') AS subscription_state
   FROM
@@ -12,7 +14,11 @@ WITH unified AS (
   UNION ALL
   SELECT
     external_id,
-    CONCAT(waitlist.waitlist_name, '-waitlist', IF(waitlist.subscribed, '', '-unsubscribed')) AS subscription_name,
+    CONCAT(
+      waitlist.waitlist_name,
+      '-waitlist',
+      IF(waitlist.subscribed, '', '-unsubscribed')
+    ) AS subscription_name,
     waitlist.update_timestamp,
     IF(waitlist.subscribed, 'subscribed', 'unsubscribed') AS subscription_state
   FROM
@@ -45,8 +51,8 @@ subscriptions_mapped AS (
     all_subscriptions
   LEFT JOIN
     unified
-  ON unified.external_id = all_subscriptions.external_id
-  AND unified.subscription_name = all_subscriptions.subscription_name
+    ON unified.external_id = all_subscriptions.external_id
+    AND unified.subscription_name = all_subscriptions.subscription_name
 )
 SELECT
   subscriptions_mapped.external_id AS external_id,

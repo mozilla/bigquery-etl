@@ -50,9 +50,35 @@ with DAG(
     tags=tags,
 ) as dag:
 
+    wait_for_checks__fail_fenix_derived__firefox_android_clients__v1 = (
+        ExternalTaskSensor(
+            task_id="wait_for_checks__fail_fenix_derived__firefox_android_clients__v1",
+            external_dag_id="bqetl_analytics_tables",
+            external_task_id="checks__fail_fenix_derived__firefox_android_clients__v1",
+            check_existence=True,
+            mode="reschedule",
+            allowed_states=ALLOWED_STATES,
+            failed_states=FAILED_STATES,
+            pool="DATA_ENG_EXTERNALTASKSENSOR",
+        )
+    )
+
     checks__fail_google_ads_derived__ad_groups__v1 = bigquery_dq_check(
         task_id="checks__fail_google_ads_derived__ad_groups__v1",
         source_table="ad_groups_v1",
+        dataset_id="google_ads_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=True,
+        owner="frank@mozilla.com",
+        email=["frank@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        task_concurrency=1,
+        retries=0,
+    )
+
+    checks__fail_google_ads_derived__android_app_campaign_stats__v1 = bigquery_dq_check(
+        task_id="checks__fail_google_ads_derived__android_app_campaign_stats__v1",
+        source_table="android_app_campaign_stats_v1",
         dataset_id="google_ads_derived",
         project_id="moz-fx-data-shared-prod",
         is_dq_check_fail=True,
@@ -95,6 +121,18 @@ with DAG(
     google_ads_derived__ad_groups__v1 = bigquery_etl_query(
         task_id="google_ads_derived__ad_groups__v1",
         destination_table="ad_groups_v1",
+        dataset_id="google_ads_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="frank@mozilla.com",
+        email=["frank@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
+    google_ads_derived__android_app_campaign_stats__v1 = bigquery_etl_query(
+        task_id="google_ads_derived__android_app_campaign_stats__v1",
+        destination_table="android_app_campaign_stats_v1",
         dataset_id="google_ads_derived",
         project_id="moz-fx-data-shared-prod",
         owner="frank@mozilla.com",
@@ -182,12 +220,32 @@ with DAG(
         google_ads_derived__ad_groups__v1
     )
 
+    checks__fail_google_ads_derived__android_app_campaign_stats__v1.set_upstream(
+        google_ads_derived__android_app_campaign_stats__v1
+    )
+
     checks__fail_google_ads_derived__campaigns__v1.set_upstream(
         google_ads_derived__campaigns__v1
     )
 
     google_ads_derived__ad_groups__v1.set_upstream(
         checks__fail_google_ads_derived__campaigns__v1
+    )
+
+    google_ads_derived__android_app_campaign_stats__v1.set_upstream(
+        wait_for_checks__fail_fenix_derived__firefox_android_clients__v1
+    )
+
+    google_ads_derived__android_app_campaign_stats__v1.set_upstream(
+        checks__fail_google_ads_derived__ad_groups__v1
+    )
+
+    google_ads_derived__android_app_campaign_stats__v1.set_upstream(
+        checks__fail_google_ads_derived__campaigns__v1
+    )
+
+    google_ads_derived__android_app_campaign_stats__v1.set_upstream(
+        google_ads_derived__daily_ad_group_stats__v1
     )
 
     google_ads_derived__campaign_conversions_by_date__v1.set_upstream(

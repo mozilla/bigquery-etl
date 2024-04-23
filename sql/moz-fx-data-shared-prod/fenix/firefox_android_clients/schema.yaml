@@ -224,3 +224,9 @@ fields:
   type: STRING
   mode: NULLABLE
   description: The source of a client installation.
+- name: campaign_id
+  type: INTEGER
+  mode: NULLABLE
+- name: ad_group_id
+  type: INTEGER
+  mode: NULLABLE

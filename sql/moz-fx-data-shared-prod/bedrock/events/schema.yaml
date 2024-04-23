@@ -368,6 +368,20 @@ fields:
         for the purpose of experimentation enrollment.
 
         '
+  - name: uuid
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: glean_page_id
+      type: STRING
+      mode: NULLABLE
+      description: 'Uniquely identifies a page_load, not the page itself, for the
+        purpose of associating other events with the specific page load event. This
+        gets
+
+        rotated with each page load and is sent along with each event ping.
+
+        '
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

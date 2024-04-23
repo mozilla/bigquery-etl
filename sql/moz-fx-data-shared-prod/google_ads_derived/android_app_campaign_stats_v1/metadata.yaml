@@ -1,0 +1,32 @@
+friendly_name: Android App Campaign Stats
+description: |-
+  Daily stats for Android Performance campaigns.
+
+  Grain is date, campaign, ad_group. This means that
+  for a single date, a campaign can be present multiple
+  times (onces for each ad group). The metrics in this
+  model can be summed to get information for
+  just that campaign on that date.
+owners:
+- frank@mozilla.com
+labels:
+  owner1: frank
+  dag: bqetl_fivetran_google_ads
+scheduling:
+  dag_name: bqetl_fivetran_google_ads
+  depends_on_past: false
+  date_partition_parameter: null
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  checks.sql:
+  - ..
+  query.sql:
+  - fenix_derived.firefox_android_clients_v1
+  - google_ads_derived.ad_groups_v1
+  - google_ads_derived.campaigns_v1
+  - google_ads_derived.daily_ad_group_stats_v1
+  - mozdata.ltv.fenix_client_ltv

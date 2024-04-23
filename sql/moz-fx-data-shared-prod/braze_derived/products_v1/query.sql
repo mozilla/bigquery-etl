@@ -11,8 +11,13 @@ SELECT
       plan_interval_count,
       event_timestamp AS update_timestamp
     )
-  ) AS products,
-  CURRENT_TIMESTAMP() AS last_modified_timestamp,
+    ORDER BY
+      event_timestamp,
+      plan_started_at,
+      plan_ended_at,
+      plan_id,
+      product_id
+  ) AS products
 FROM
   `moz-fx-data-shared-prod.subscription_platform_derived.stripe_subscriptions_v1`
 GROUP BY

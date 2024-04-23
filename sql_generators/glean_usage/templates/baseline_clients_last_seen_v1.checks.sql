@@ -82,13 +82,13 @@ WITH daily AS
 ,check_results AS
 (
  SELECT
-   100*(last_seen.client_count/daily.client_count) AS difference_perc
+   1-(last_seen.client_count/daily.client_count) AS difference_perc
  FROM daily LEFT JOIN last_seen
  USING(submission_date)
 )
 SELECT
  IF(
- ABS((SELECT difference_perc FROM check_results)) > 1,
+ ABS((SELECT difference_perc FROM check_results)) > 0.01,
  ERROR(
    CONCAT("Results don't match by > 1%, baseline_clients_daily table has ",
    STRING(((SELECT submission_date FROM daily))),

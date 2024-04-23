@@ -5,14 +5,17 @@ SELECT
       name AS waitlist_name,
       JSON_EXTRACT_SCALAR(fields, '$.geo') AS waitlist_geo,
       JSON_EXTRACT_SCALAR(fields, '$.platform') AS waitlist_platform,
-      SOURCE AS waitlist_source,
+      source AS waitlist_source,
       create_timestamp,
       subscribed,
       unsub_reason,
       update_timestamp
     )
-  ) AS waitlists,
-  CURRENT_TIMESTAMP() AS last_modified_timestamp,
+    ORDER BY
+      update_timestamp,
+      create_timestamp,
+      name
+  ) AS waitlists
 FROM
   `moz-fx-data-shared-prod.ctms_braze.ctms_waitlists`
 GROUP BY

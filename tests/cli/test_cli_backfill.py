@@ -26,7 +26,14 @@ from bigquery_etl.backfill.utils import (
     qualified_table_name_matching,
     validate_metadata_workgroups,
 )
-from bigquery_etl.cli.backfill import complete, create, info, scheduled, validate
+from bigquery_etl.cli.backfill import (
+    complete,
+    create,
+    info,
+    initiate,
+    scheduled,
+    validate,
+)
 
 DEFAULT_STATUS = BackfillStatus.INITIATE
 VALID_REASON = "test_reason"
@@ -1898,3 +1905,81 @@ class TestBackfill:
                     f'moz-fx-data-shared-prod.test.test_query_v1${d.strftime("%Y%m%d")}',
                 )
             assert delete_table.call_count == 1
+
+    @patch("google.cloud.bigquery.Client.get_table")
+    @patch("subprocess.check_call")
+    def test_initiate_partitioned_backfill(self, check_call, get_table, runner):
+        get_table.side_effect = [
+            NotFound(  # Check that staging data does not exist
+                "moz-fx-data-shared-prod.backfills_staging_derived.test_query_v1_backup_2021_05_03"
+                "not found"
+            ),
+            None,  # Check that production data exists during dry run
+            None,  # Check that production data exists
+        ]
+
+        partitioned_table_metadata = {
+            "friendly_name": "test",
+            "description": "test",
+            "owners": ["test@example.org"],
+            "workgroup_access": VALID_WORKGROUP_ACCESS,
+            "bigquery": {
+                "time_partitioning": {
+                    "type": "day",
+                    "field": "submission_date",
+                    "require_partition_filter": True,
+                }
+            },
+        }
+
+        with runner.isolated_filesystem():
+            SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v1"
+            os.makedirs(SQL_DIR)
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/query.sql", "w"
+            ) as f:
+                f.write("SELECT 1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(partitioned_table_metadata))
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
+            ) as f:
+                f.write(yaml.dump(DATASET_METADATA_CONF_EMPTY_WORKGROUP))
+
+            backfill_file = Path(SQL_DIR) / BACKFILL_FILE
+            backfill_file.write_text(
+                """
+2021-05-03:
+  start_date: 2021-01-03
+  end_date: 2021-01-08
+  reason: test_reason
+  watchers:
+  - test@example.org
+  status: Initiate"""
+            )
+
+            result = runner.invoke(
+                initiate,
+                ["moz-fx-data-shared-prod.test.test_query_v1", "--parallelism=0"],
+            )
+
+            assert result.exit_code == 0
+
+            expected_submission_date_params = [
+                f"--parameter=submission_date:DATE:2021-01-0{day}"
+                for day in range(3, 9)
+            ]
+
+            assert check_call.call_count == 12  # 6 for dry run, 6 for backfill
+            for call in check_call.call_args_list:
+                submission_date_params = [
+                    arg for arg in call.args[0] if "--parameter=submission_date" in arg
+                ]
+                assert len(submission_date_params) == 1
+                assert submission_date_params[0] in expected_submission_date_params

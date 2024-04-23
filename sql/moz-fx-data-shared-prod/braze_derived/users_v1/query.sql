@@ -13,7 +13,7 @@ WITH ctms_emails AS (
     END AS email_subscribe,
     e.basket_token,
     e.email_lang,
-    COALESCE(TO_HEX(SHA256(f.fxa_id)), TO_HEX(SHA256(fxa.fxa_id))) AS fxa_id_sha256,
+    TO_HEX(SHA256(f.fxa_id)) AS fxa_id_sha256,
     f.primary_email AS fxa_primary_email,
     f.lang AS fxa_lang,
     f.first_service,
@@ -24,9 +24,6 @@ WITH ctms_emails AS (
   LEFT JOIN
     `moz-fx-data-shared-prod.ctms_braze.ctms_fxa` f
     ON e.email_id = f.email_id
-  LEFT JOIN
-    `moz-fx-data-shared-prod.ctms.ctms_fxa` fxa
-    ON e.email_id = fxa.email_id
 ),
 exclusions AS (
   SELECT
@@ -82,7 +79,6 @@ SELECT
   fxa_lang,
   first_service,
   create_timestamp,
-  update_timestamp,
-  CURRENT_TIMESTAMP() AS last_modified_timestamp,
+  update_timestamp
 FROM
   exclusions;

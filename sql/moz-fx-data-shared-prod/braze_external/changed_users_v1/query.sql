@@ -1,0 +1,51 @@
+SELECT
+  COALESCE(current_users.external_id, previous_users.external_id) AS external_id,
+  CASE
+    WHEN current_users.external_id IS NULL
+      THEN 'Deleted'
+    WHEN NOT (
+        current_users.email = previous_users.email
+        AND current_users.mailing_country = previous_users.mailing_country
+        AND current_users.email_subscribe = previous_users.email_subscribe
+        AND current_users.basket_token = previous_users.basket_token
+        AND current_users.email_lang = previous_users.email_lang
+        AND current_users.create_timestamp = previous_users.create_timestamp
+        AND current_users.update_timestamp = previous_users.update_timestamp
+        AND current_users.fxa_id_sha256 = previous_users.fxa_id_sha256
+        AND current_users.fxa_primary_email = previous_users.fxa_primary_email
+        AND current_users.fxa_lang = previous_users.fxa_lang
+        AND current_users.first_service = previous_users.first_service
+      )
+      THEN 'Changed'
+  END AS status,
+  COALESCE(current_users.email, previous_users.email) AS email,
+  COALESCE(current_users.mailing_country, previous_users.mailing_country) AS mailing_country,
+  COALESCE(current_users.email_subscribe, previous_users.email_subscribe) AS email_subscribe,
+  COALESCE(current_users.basket_token, previous_users.basket_token) AS basket_token,
+  COALESCE(current_users.email_lang, previous_users.email_lang) AS email_lang,
+  COALESCE(current_users.create_timestamp, previous_users.create_timestamp) AS create_timestamp,
+  COALESCE(current_users.update_timestamp, previous_users.update_timestamp) AS update_timestamp,
+  COALESCE(current_users.fxa_id_sha256, previous_users.fxa_id_sha256) AS fxa_id_sha256,
+  COALESCE(current_users.fxa_primary_email, previous_users.fxa_primary_email) AS fxa_primary_email,
+  COALESCE(current_users.fxa_lang, previous_users.fxa_lang) AS fxa_lang,
+  COALESCE(current_users.first_service, previous_users.first_service) AS first_service
+FROM
+  `moz-fx-data-shared-prod.braze_derived.users_v1` current_users
+FULL OUTER JOIN
+  `moz-fx-data-shared-prod.braze_external.users_previous_day_snapshot_v2` previous_users
+  ON current_users.external_id = previous_users.external_id
+WHERE
+  current_users.external_id IS NULL  -- deleted rows
+  OR NOT (
+    current_users.email = previous_users.email
+    AND current_users.mailing_country = previous_users.mailing_country
+    AND current_users.email_subscribe = previous_users.email_subscribe
+    AND current_users.basket_token = previous_users.basket_token
+    AND current_users.email_lang = previous_users.email_lang
+    AND current_users.create_timestamp = previous_users.create_timestamp
+    AND current_users.update_timestamp = previous_users.update_timestamp
+    AND current_users.fxa_id_sha256 = previous_users.fxa_id_sha256
+    AND current_users.fxa_primary_email = previous_users.fxa_primary_email
+    AND current_users.fxa_lang = previous_users.fxa_lang
+    AND current_users.first_service = previous_users.first_service
+  ); -- changed rows

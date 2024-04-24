@@ -4,4 +4,4 @@
   reason: Backfilling a new table for the growth program, part of JIRA ticket GROWTH-147, related to https://github.com/mozilla/bigquery-etl/pull/5411
   watchers:
   - kwindau@mozilla.com
-  status: Initiate
+  status: Complete

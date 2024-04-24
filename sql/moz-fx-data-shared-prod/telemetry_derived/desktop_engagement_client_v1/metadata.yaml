@@ -1,0 +1,22 @@
+friendly_name: Desktop Engagement - Client Level
+description: |-
+  Desktop engagement data at the client level, including attribution information
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau@mozilla.com
+scheduling:
+  dag_name: bqetl_desktop_engagement_model
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields:
+    - country
+    - normalized_os
+references: {}

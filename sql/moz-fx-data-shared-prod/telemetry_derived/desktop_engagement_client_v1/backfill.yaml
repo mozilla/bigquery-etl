@@ -1,0 +1,7 @@
+2024-04-24:
+  start_date: 2016-03-12
+  end_date: 2024-04-23
+  reason: New table, part of DENG-3168, that needs to be backfilled now that it has been deployed to production
+  watchers:
+  - kwindau@mozilla.com
+  status: Initiate

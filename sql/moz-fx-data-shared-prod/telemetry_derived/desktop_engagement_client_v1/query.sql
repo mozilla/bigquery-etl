@@ -2,6 +2,7 @@ SELECT
   cls.submission_date,
   cls.client_id,
   cls.sample_id,
+  cls.distribution_id,
   cfs.first_seen_date,
   cfs.attribution_campaign,
   cfs.attribution_content,

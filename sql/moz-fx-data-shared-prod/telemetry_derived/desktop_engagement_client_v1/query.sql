@@ -3,6 +3,7 @@ SELECT
   cls.client_id,
   cls.sample_id,
   cls.distribution_id,
+  cls.locale,
   cfs.first_seen_date,
   cfs.attribution_campaign,
   cfs.attribution_content,

@@ -1,14 +1,15 @@
 """Suppression List downloaded from CampaignMonitor API and uploaded to BigQuery."""
 
-import logging
 from pathlib import Path
 from typing import Any, Dict, List
 
 import requests
 import rich_click as click
-import yaml
 from google.cloud import bigquery
+from requests import HTTPError
 from requests.auth import HTTPBasicAuth
+
+from bigquery_etl.schema import Schema
 
 DEFAULT_PROJECT_ID = Path(__file__).parent.parent.parent.name
 DEFAULT_DATASET_ID = Path(__file__).parent.parent.name
@@ -16,9 +17,7 @@ DEFAULT_TABLE_NAME = Path(__file__).parent.name
 
 BASE_URL = "https://api.createsend.com/api/v3.3/clients"
 SCHEMA_FILE = Path(__file__).parent / "schema.yaml"
-SCHEMA = bigquery.SchemaField.from_api_repr(
-    {"name": "root", "type": "RECORD", **yaml.safe_load(SCHEMA_FILE.read_text())}
-).fields
+SCHEMA = Schema.from_schema_file(SCHEMA_FILE).to_bigquery_schema()
 
 
 def get_api_response(url: str, api_key: str):
@@ -27,7 +26,10 @@ def get_api_response(url: str, api_key: str):
     auth = HTTPBasicAuth(api_key, "")
 
     response = requests.get(url=url, headers=headers, auth=auth)
-    response.raise_for_status()
+    try:
+        response.raise_for_status()
+    except HTTPError as error:
+        raise Exception(f"API request {url} failed: {response.text}") from error
     return response.json()
 
 
@@ -36,10 +38,10 @@ def store_data_in_bigquery(data, schema, destination_project, destination_table_
     client = bigquery.Client(project=destination_project)
 
     job_config = bigquery.LoadJobConfig(
-        create_disposition="CREATE_IF_NEEDED",
+        create_disposition=bigquery.CreateDisposition.CREATE_IF_NEEDED,
         schema=schema,
         source_format=bigquery.SourceFormat.NEWLINE_DELIMITED_JSON,
-        write_disposition="WRITE_TRUNCATE",
+        write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
     )
 
     load_job = client.load_table_from_json(
@@ -47,7 +49,7 @@ def store_data_in_bigquery(data, schema, destination_project, destination_table_
     )
     load_job.result()
     stored_table = client.get_table(destination_table_id)
-    logging.info(f"Loaded {stored_table.num_rows} rows into {destination_table_id}.")
+    click.echo(f"Loaded {stored_table.num_rows} rows into {destination_table_id}.")
 
 
 def download_suppression_list(
@@ -56,7 +58,7 @@ def download_suppression_list(
     api_key: str,
     page_size: int = 1000,
     order_field: str = "date",
-    order_direction: str = "desc",
+    order_direction: str = "asc",
 ) -> List[Dict[str, Any]]:
     """Download suppression list from Campaign Monitor."""
     page = 1

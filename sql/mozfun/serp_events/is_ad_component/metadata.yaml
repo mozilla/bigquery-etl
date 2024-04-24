@@ -1,0 +1,4 @@
+friendly_name: Is Ad Component
+description: |
+  Determine whether a SERP display component referenced in the serp events
+  contains monetizable ads

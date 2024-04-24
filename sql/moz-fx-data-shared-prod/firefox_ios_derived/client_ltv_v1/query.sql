@@ -7,7 +7,7 @@ WITH new_data AS (
   FROM
     `moz-fx-data-shared-prod.firefox_ios_derived.ltv_states_v1` ltv_states_v1
   WHERE
-      submission_date = @submission_date
+    submission_date = @submission_date
   GROUP BY
     client_id,
     sample_id

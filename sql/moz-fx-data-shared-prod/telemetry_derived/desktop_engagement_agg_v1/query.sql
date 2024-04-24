@@ -13,7 +13,6 @@ SELECT
   normalized_os,
   normalized_os_version,
   country,
-  lifecycle_stage,
   SUM(CASE WHEN dau THEN 1 ELSE 0 END) AS dau,
   SUM(CASE WHEN wau THEN 1 ELSE 0 END) AS wau,
   SUM(CASE WHEN mau THEN 1 ELSE 0 END) AS mau
@@ -35,5 +34,4 @@ GROUP BY
   normalized_channel,
   normalized_os,
   normalized_os_version,
-  country,
-  lifecycle_stage
+  country

@@ -56,10 +56,6 @@ fields:
   type: STRING
   description: Country
 - mode: NULLABLE
-  name: lifecycle_stage
-  type: STRING
-  description: Lifecycle Stage - New Profile, Repeat User, or Existing User
-- mode: NULLABLE
   name: dau
   type: INT64
   description: DAU - Daily Active User

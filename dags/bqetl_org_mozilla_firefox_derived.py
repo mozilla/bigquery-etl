@@ -406,6 +406,21 @@ with DAG(
         depends_on_past=False,
     )
 
+    firefox_ios_derived__client_ltv__v1 = bigquery_etl_query(
+        task_id="firefox_ios_derived__client_ltv__v1",
+        destination_table="client_ltv_v1",
+        dataset_id="firefox_ios_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=[
+            "frank@mozilla.com",
+            "kwindau@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     firefox_ios_derived__ltv_states__v1 = bigquery_etl_query(
         task_id="firefox_ios_derived__ltv_states__v1",
         destination_table="ltv_states_v1",
@@ -569,6 +584,10 @@ with DAG(
 
     fenix_derived__meta_attribution_country_counts__v1.set_upstream(
         wait_for_copy_deduplicate_all
+    )
+
+    firefox_ios_derived__client_ltv__v1.set_upstream(
+        firefox_ios_derived__ltv_states__v1
     )
 
     firefox_ios_derived__ltv_states__v1.set_upstream(

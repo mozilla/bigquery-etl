@@ -19,22 +19,12 @@
       subscribed: true
       unsub_reason: for reasons
       update_timestamp: 2021-01-01 13:00:00+00:00
-# user 2 unsubscribed from two waitlists
-- external_id: user_2
-  waitlists:
-    - waitlist_name: waitlist_2
-      waitlist_geo: EN
-      waitlist_platform: platform_2
-      waitlist_source: source_2
-      create_timestamp: 2020-01-01 10:00:00+00:00
-      subscribed: false
-      unsub_reason: because
-      update_timestamp: 2021-01-01 13:00:00+00:00
     - waitlist_name: waitlist_3
-      waitlist_geo: EN
+      waitlist_geo: DE
       waitlist_platform: platform_3
       waitlist_source: source_3
-      create_timestamp: 2020-01-02 10:00:00+00:00
+      create_timestamp: 2020-01-01 10:00:00+00:00
       subscribed: false
-      unsub_reason: because
+      unsub_reason: for reasons
       update_timestamp: 2021-01-01 13:00:00+00:00
+# user 2 unsubscribed from two waitlists

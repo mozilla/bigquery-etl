@@ -1,20 +1,13 @@
 friendly_name: Main Suppression List
 description: |-
-  Please provide a description for the query
+  Main Suppression List for Marketing Suppression List.
+  This is a List of email addresses that should not be sent marketing emails.
 owners:
-- example@mozilla.com
+- leli@mozilla.com
 labels:
-  incremental: true
-  owner1: example
+  incremental: false
+  owner1: leli
 scheduling:
-  dag_name: bqetl_default
-bigquery:
-  time_partitioning:
-    type: day
-    field: ''
-    require_partition_filter: true
-    expiration_days: null
-  range_partitioning: null
-  clustering:
-    fields: []
+  dag_name: bqetl_marketing_suppression_list
+bigquery: null
 references: {}

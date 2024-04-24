@@ -1,7 +1,7 @@
 friendly_name: Braze External
 description: |-
   Dataset with tables that sync with Braze.
-  Data that syncs to Braze via their cloud data ingestion tool (CDI) 
+  Data that syncs to Braze via their cloud data ingestion tool (CDI)
   as well as data collected by Braze Currents (synced to GCS buckets
   and transformed).
 
@@ -10,7 +10,7 @@ description: |-
 
   Buckets holding current data can be found inside of the moz-fx-data-marketing-prod
   project. Each Braze workspace has a corresponding bucket with braze-workspace_name
-  appended. 
+  appended.
 
 dataset_base_acl: restricted
 user_facing: false

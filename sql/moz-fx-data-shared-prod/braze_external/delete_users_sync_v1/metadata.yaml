@@ -6,9 +6,9 @@ description: |-
   - User data deletion request
   - User added to suppression list
   - User requested FxA deletion - this logic is currently under
-  discussion and may change. The FxA/Basket/FxA teams are discussing 
+  discussion and may change. The FxA/Basket/FxA teams are discussing
   adding an option for users to also unsubscribe from newsletters
-  to grant agency. 
+  to grant agency.
 
   Braze Cloud Data Ingestion (CDI) tool documentation for deleting users:
   https://www.braze.com/docs/user_guide/data_and_analytics/cloud_ingestion/delete_users/

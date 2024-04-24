@@ -3,7 +3,6 @@ This is a stub implementation for use with tests in this repo
 Real implementation is in private-bigquery-etl
 */
 CREATE OR REPLACE FUNCTION udf.funnel_derived_clients(
-  channel STRING,
   os STRING,
   first_seen_date DATE,
   build_id STRING,
@@ -19,7 +18,6 @@ RETURNS STRING AS (
 SELECT
   mozfun.assert.equals(
     udf.funnel_derived_clients(
-      'channel',
       'os',
       '2024-04-01',
       'build_id',

@@ -13,10 +13,10 @@
       
       
       
-        <link rel="prev" href="../about/">
+        <link rel="prev" href="../glean/">
       
       
-        <link rel="next" href="../assert/">
+        <link rel="next" href="../hist/">
       
       
       <link rel="icon" href="../../favicon.png">
@@ -24,7 +24,7 @@
     
     
       
-        <title>Addons - BigQuery ETL</title>
+        <title>Google ads - BigQuery ETL</title>
       
     
     
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#is_adblocker-udf" class="md-skip">
+        <a href="#extract_segments_from_campaign_name-udf" class="md-skip">
           Skip to content
         </a>
       
@@ -108,7 +108,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Addons
+              Google ads
             
           </span>
         </div>
@@ -441,28 +441,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    Addons
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../addons/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -471,48 +453,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#is_adblocker-udf" class="md-nav__link">
-    <span class="md-ellipsis">
-      is_adblocker (UDF)
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="is_adblocker (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters" class="md-nav__link">
-    <span class="md-ellipsis">
-      Parameters
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -690,10 +630,28 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../google_ads/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Google ads
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -702,6 +660,48 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#extract_segments_from_campaign_name-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      extract_segments_from_campaign_name (UDF)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="extract_segments_from_campaign_name (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameters
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1345,13 +1345,13 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#is_adblocker-udf" class="md-nav__link">
+  <a href="#extract_segments_from_campaign_name-udf" class="md-nav__link">
     <span class="md-ellipsis">
-      is_adblocker (UDF)
+      extract_segments_from_campaign_name (UDF)
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="is_adblocker (UDF)">
+    <nav class="md-nav" aria-label="extract_segments_from_campaign_name (UDF)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1383,32 +1383,63 @@
                   
 
 
-  <h1>Addons</h1>
+  <h1>Google ads</h1>
 
-<h2 id="is_adblocker-udf">is_adblocker (UDF)</h2>
-<p>Returns whether a given Addon ID is an adblocker.</p>
-<p>Determine if a given Addon ID is for an adblocker.</p>
-<p>As an example, this query will give the number of users who
-have an adblocker installed.
-<div class="highlight"><pre><span></span><code>SELECT
-    submission_date,
-    COUNT(DISTINCT client_id) AS dau,
-FROM
-    mozdata.telemetry.addons
-WHERE
-    mozfun.addons.is_adblocker(addon_id)
-    AND submission_date &gt;= &quot;2023-01-01&quot;
-GROUP BY
-    submission_date
-</code></pre></div></p>
+<h2 id="extract_segments_from_campaign_name-udf">extract_segments_from_campaign_name (UDF)</h2>
+<p>Extract Segments from a campaign name. Includes region, country_code, and language.</p>
+<!--
+This is a short README for your routine, you can add any extra
+documentation or examples that a user might want to see when
+viewing the documentation at https://mozilla.github.io/bigquery-etl
+
+You can embed an SQL file into your README using the following
+syntax:
+
+<div class="highlight"><pre><span></span><code><span class="c1">-- Example of a query over all Fenix builds advertised as &quot;Firefox Beta&quot;</span>
+<span class="k">CREATE</span><span class="w"> </span><span class="n">TEMP</span><span class="w"> </span><span class="k">FUNCTION</span><span class="w"> </span><span class="n">extract_fields</span><span class="p">(</span><span class="n">app_id</span><span class="w"> </span><span class="n">STRING</span><span class="p">,</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="k">ANY</span><span class="w"> </span><span class="k">TYPE</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="p">(</span>
+<span class="w">  </span><span class="p">(</span>
+<span class="w">    </span><span class="k">SELECT</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">STRUCT</span>
+<span class="w">      </span><span class="n">m</span><span class="p">.</span><span class="n">submission_timestamp</span><span class="p">,</span>
+<span class="w">      </span><span class="n">m</span><span class="p">.</span><span class="n">metrics</span><span class="p">.</span><span class="n">string</span><span class="p">.</span><span class="n">geckoview_version</span><span class="p">,</span>
+<span class="w">      </span><span class="n">mozfun</span><span class="p">.</span><span class="n">norm</span><span class="p">.</span><span class="n">fenix_app_info</span><span class="p">(</span><span class="n">app_id</span><span class="p">,</span><span class="w"> </span><span class="n">m</span><span class="p">.</span><span class="n">client_info</span><span class="p">.</span><span class="n">app_build</span><span class="p">).</span><span class="o">*</span>
+<span class="w">  </span><span class="p">)</span>
+<span class="p">);</span>
+
+<span class="k">WITH</span><span class="w"> </span><span class="n">base</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="p">(</span>
+<span class="w">  </span><span class="k">SELECT</span>
+<span class="w">    </span><span class="n">extract_fields</span><span class="p">(</span><span class="s1">&#39;org_mozilla_firefox_beta&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">m</span><span class="p">).</span><span class="o">*</span>
+<span class="w">  </span><span class="k">FROM</span>
+<span class="w">    </span><span class="n">org_mozilla_firefox_beta</span><span class="p">.</span><span class="n">metrics</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">m</span>
+<span class="w">  </span><span class="k">UNION</span><span class="w"> </span><span class="k">ALL</span>
+<span class="w">  </span><span class="k">SELECT</span>
+<span class="w">    </span><span class="n">extract_fields</span><span class="p">(</span><span class="s1">&#39;org_mozilla_fenix&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">m</span><span class="p">).</span><span class="o">*</span>
+<span class="w">  </span><span class="k">FROM</span>
+<span class="w">    </span><span class="n">org_mozilla_fenix</span><span class="p">.</span><span class="n">metrics</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">m</span>
+<span class="p">)</span>
+<span class="k">SELECT</span>
+<span class="w">  </span><span class="nb">DATE</span><span class="p">(</span><span class="n">submission_timestamp</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">submission_date</span><span class="p">,</span>
+<span class="w">  </span><span class="n">geckoview_version</span><span class="p">,</span>
+<span class="w">  </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span>
+<span class="k">FROM</span>
+<span class="w">  </span><span class="n">base</span>
+<span class="k">WHERE</span>
+<span class="w">  </span><span class="n">app_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;Fenix&#39;</span><span class="w">  </span><span class="c1">-- excludes &#39;Firefox Preview&#39;</span>
+<span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">channel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;beta&#39;</span>
+<span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="nb">DATE</span><span class="p">(</span><span class="n">submission_timestamp</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;2020-08-01&#39;</span>
+<span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span>
+<span class="w">  </span><span class="n">submission_date</span><span class="p">,</span>
+<span class="w">  </span><span class="n">geckoview_version</span>
+</code></pre></div>
+-->
+
 <h3 id="parameters">Parameters</h3>
 <p><strong>INPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>addon_id STRING
+<div class="highlight"><pre><span></span><code>campaign_name STRING
 </code></pre></div>
 <p><strong>OUTPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>BOOLEAN
+<div class="highlight"><pre><span></span><code>STRUCT&lt;campaign_region STRING, campaign_country_code STRING, campaign_language STRING&gt;
 </code></pre></div>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/addons/is_adblocker">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/addons/is_adblocker/metadata.yaml">Edit</a></p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/google_ads/extract_segments_from_campaign_name">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/google_ads/extract_segments_from_campaign_name/metadata.yaml">Edit</a></p>
 
 
 

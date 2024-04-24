@@ -11,12 +11,12 @@ SELECT
     STRUCT(
       ARRAY_AGG(
         STRUCT(
-          subscriptions_array.subscription_name,
-          subscriptions_array.firefox_subscription_id,
-          subscriptions_array.mozilla_subscription_id,
-          subscriptions_array.mozilla_dev_subscription_id,
-          subscriptions_array.subscription_state,
-          subscriptions_array.update_timestamp
+          subscriptions_array.subscription_name AS subscription_name,
+          subscriptions_array.firefox_subscription_id AS firefox_subscription_id,
+          subscriptions_array.mozilla_subscription_id AS mozilla_subscription_id,
+          subscriptions_array.mozilla_dev_subscription_id AS mozilla_dev_subscription_id,
+          subscriptions_array.subscription_state AS subscription_state,
+          subscriptions_array.update_timestamp AS update_timestamp
         )
         ORDER BY
           subscriptions_array.update_timestamp DESC

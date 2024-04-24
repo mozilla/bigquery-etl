@@ -14,8 +14,8 @@ SELECT
           newsletters_array.newsletter_name AS newsletter_name,
           newsletters_array.subscribed AS subscribed,
           newsletters_array.newsletter_lang AS newsletter_lang,
-          newsletters_array.create_timestamp,
-          newsletters_array.update_timestamp
+          newsletters_array.create_timestamp AS create_timestamp,
+          newsletters_array.update_timestamp AS update_timestamp
         )
         ORDER BY
           newsletters_array.update_timestamp DESC

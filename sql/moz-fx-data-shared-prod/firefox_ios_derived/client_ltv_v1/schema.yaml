@@ -7,11 +7,11 @@ fields:
   mode: NULLABLE
   name: sample_id
   type: INT64
-- description: The date from which the markov states are pulled from. After a year of inactivity, the markov states will stop updated; similarly, the as_of_date will not update. 
+- description: The date associated with the Markov state; as_of_date will not update after a year of inactivity as the markov states stop updating
   mode: NULLABLE
   name: as_of_date
   type: DATE
-- description: First submission date that this client was seen on. 
+- description: First submission date that this client was seen on
   mode: NULLABLE
   name: first_seen_date
   type: DATE
@@ -47,4 +47,3 @@ fields:
   mode: NULLABLE
   name: first_reported_isp
   type: STRING
-

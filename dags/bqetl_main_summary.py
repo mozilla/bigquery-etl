@@ -131,6 +131,13 @@ with DAG(
         "checks__fail_telemetry_derived__clients_last_seen__v2_external",
     ) as checks__fail_telemetry_derived__clients_last_seen__v2_external:
         ExternalTaskMarker(
+            task_id="bqetl_desktop_engagement_model__wait_for_checks__fail_telemetry_derived__clients_last_seen__v2",
+            external_dag_id="bqetl_desktop_engagement_model",
+            external_task_id="wait_for_checks__fail_telemetry_derived__clients_last_seen__v2",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=50400)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="taar_daily__wait_for_clients_last_seen",
             external_dag_id="taar_daily",
             external_task_id="wait_for_clients_last_seen",

@@ -1,4 +1,5 @@
 import os
+import datetime
 from unittest.mock import patch
 
 import yaml
@@ -22,6 +23,21 @@ class TestRunQuery:
 
         metadata_file = query_file_path / "metadata.yaml"
         metadata_file.write_text(yaml.dump(metadata_conf))
+
+        # Load expected results YAML and handle dynamic values
+        expected_results_path = tmp_path / "test_results.yaml"
+        expected_results_conf = {
+            "result": {
+                "timestamp": "{{ current_timestamp }}"
+            }
+        }
+        expected_results_file = expected_results_path / "expected_results.yaml"
+        expected_results_file.write_text(yaml.dump(expected_results_conf))
+        expected_results = yaml.safe_load(expected_results_file.read_text())
+
+        # Replace dynamic placeholders in expected results
+        if expected_results['result']['timestamp'] == "{{ current_timestamp }}":
+            expected_results['result']['timestamp'] = datetime.datetime.now().isoformat()
 
         runner = CliRunner()
         with patch("subprocess.check_call") as mock_call:
@@ -57,6 +73,21 @@ class TestRunQuery:
 
         metadata_file = query_file_path / "metadata.yaml"
         metadata_file.write_text(yaml.dump(metadata_conf))
+
+        # Load expected results YAML and handle dynamic values
+        expected_results_path = tmp_path / "test_results.yaml"
+        expected_results_conf = {
+            "result": {
+                "timestamp": "{{ current_timestamp }}"
+            }
+        }
+        expected_results_file = expected_results_path / "expected_results.yaml"
+        expected_results_file.write_text(yaml.dump(expected_results_conf))
+        expected_results = yaml.safe_load(expected_results_file.read_text())
+
+        # Replace dynamic placeholders in expected results
+        if expected_results['result']['timestamp'] == "{{ current_timestamp }}":
+            expected_results['result']['timestamp'] = datetime.datetime.now().isoformat()
 
         runner = CliRunner()
         with patch("subprocess.check_call") as mock_call:

@@ -12,7 +12,7 @@ SELECT
         AND current_users.create_timestamp = previous_users.create_timestamp
         AND current_users.update_timestamp = previous_users.update_timestamp
         AND current_users.fxa_id_sha256 = previous_users.fxa_id_sha256
-        AND current_users.has_fxa = previous_users.has_fxa
+        --AND current_users.has_fxa = previous_users.has_fxa
         AND current_users.fxa_primary_email = previous_users.fxa_primary_email
         AND current_users.fxa_lang = previous_users.fxa_lang
         AND current_users.first_service = previous_users.first_service
@@ -27,7 +27,7 @@ SELECT
   COALESCE(current_users.create_timestamp, previous_users.create_timestamp) AS create_timestamp,
   COALESCE(current_users.update_timestamp, previous_users.update_timestamp) AS update_timestamp,
   COALESCE(current_users.fxa_id_sha256, previous_users.fxa_id_sha256) AS fxa_id_sha256,
-  COALESCE(current_users.has_fxa, previous_users.has_fxa) AS has_fxa,
+  --COALESCE(current_users.has_fxa, previous_users.has_fxa) AS has_fxa,
   COALESCE(current_users.fxa_primary_email, previous_users.fxa_primary_email) AS fxa_primary_email,
   COALESCE(current_users.fxa_lang, previous_users.fxa_lang) AS fxa_lang,
   COALESCE(current_users.first_service, previous_users.first_service) AS first_service
@@ -47,7 +47,7 @@ WHERE
     AND current_users.create_timestamp = previous_users.create_timestamp
     AND current_users.update_timestamp = previous_users.update_timestamp
     AND current_users.fxa_id_sha256 = previous_users.fxa_id_sha256
-    AND current_users.has_fxa = previous_users.has_fxa
+    --AND current_users.has_fxa = previous_users.has_fxa
     AND current_users.fxa_primary_email = previous_users.fxa_primary_email
     AND current_users.fxa_lang = previous_users.fxa_lang
     AND current_users.first_service = previous_users.first_service

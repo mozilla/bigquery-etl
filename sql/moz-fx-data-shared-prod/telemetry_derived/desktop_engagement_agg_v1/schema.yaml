@@ -16,6 +16,10 @@ fields:
   type: STRING
   description: Locale
 - mode: NULLABLE
+  name: app_version
+  type: STRING
+  description: App Version
+- mode: NULLABLE
   name: attribution_campaign
   type: STRING
   description: Attribution Campaign

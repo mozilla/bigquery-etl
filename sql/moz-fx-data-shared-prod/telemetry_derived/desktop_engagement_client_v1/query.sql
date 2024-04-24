@@ -4,6 +4,7 @@ SELECT
   cls.sample_id,
   cls.distribution_id,
   cls.locale,
+  cls.app_version,
   cfs.first_seen_date,
   cfs.attribution_campaign,
   cfs.attribution_content,

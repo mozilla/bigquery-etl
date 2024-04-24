@@ -1,6 +1,31 @@
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.telemetry.clients_last_seen_v2`
 AS
+WITH days_since AS (
+  SELECT
+    DATE_DIFF(submission_date, first_seen_date, DAY) AS days_since_first_seen,
+    DATE_DIFF(submission_date, second_seen_date, DAY) AS days_since_second_seen,
+    mozfun.bits28.days_since_seen(days_seen_bits) AS days_since_seen,
+    mozfun.bits28.days_since_seen(days_visited_1_uri_bits) AS days_since_visited_1_uri,
+    mozfun.bits28.days_since_seen(days_visited_5_uri_bits) AS days_since_visited_5_uri,
+    mozfun.bits28.days_since_seen(days_visited_10_uri_bits) AS days_since_visited_10_uri,
+    mozfun.bits28.days_since_seen(days_had_8_active_ticks_bits) AS days_since_had_8_active_ticks,
+    mozfun.bits28.days_since_seen(days_opened_dev_tools_bits) AS days_since_opened_dev_tools,
+    mozfun.bits28.days_since_seen(days_created_profile_bits) AS days_since_created_profile,
+    mozfun.bits28.days_since_seen(days_interacted_bits) AS days_since_interacted,
+    mozfun.bits28.days_since_seen(
+      days_visited_1_uri_bits & days_interacted_bits
+    ) AS days_since_qualified_use_v1,
+    mozfun.bits28.days_since_seen(
+      days_visited_1_uri_normal_mode_bits
+    ) AS days_since_visited_1_uri_normal_mode,
+    mozfun.bits28.days_since_seen(
+      days_visited_1_uri_private_mode_bits
+    ) AS days_since_visited_1_uri_private_mode,
+    *
+  FROM
+    `moz-fx-data-shared-prod.telemetry_derived.clients_last_seen_v2`
+)
 SELECT
   cls.* EXCEPT (app_name),
   CASE
@@ -23,4 +48,4 @@ SELECT
     FALSE
   ) AS is_desktop
 FROM
-  `moz-fx-data-shared-prod.telemetry_derived.clients_last_seen_v2` cls
+  days_since cls

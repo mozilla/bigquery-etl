@@ -5,7 +5,7 @@ import pytest
 import yaml
 from click.testing import CliRunner
 
-from bigquery_etl.static import publish
+from bigquery_etl.cli.static import publish
 
 VALID_WORKGROUP_ACCESS = [
     dict(

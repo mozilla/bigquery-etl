@@ -337,12 +337,18 @@ def scheduled(ctx, qualified_table_name, sql_dir, project_id, status, json_path=
     """
 )
 @click.argument("qualified_table_name")
+@click.option(
+    "--parallelism",
+    default=16,
+    type=int,
+    help="Maximum number of queries to execute concurrently",
+)
 @sql_dir_option
 @project_id_option(
     ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod")
 )
 @click.pass_context
-def initiate(ctx, qualified_table_name, sql_dir, project_id):
+def initiate(ctx, qualified_table_name, parallelism, sql_dir, project_id):
     """Process backfill entry with initiate status in backfill.yaml file(s)."""
     click.echo("Backfill processing (initiate) started....")
 
@@ -378,6 +384,7 @@ def initiate(ctx, qualified_table_name, sql_dir, project_id):
         qualified_table_name,
         backfill_staging_qualified_table_name,
         entry_to_initiate,
+        parallelism,
         dry_run=True,
     )
 
@@ -389,6 +396,7 @@ def initiate(ctx, qualified_table_name, sql_dir, project_id):
         qualified_table_name,
         backfill_staging_qualified_table_name,
         entry_to_initiate,
+        parallelism,
     )
 
     click.echo(
@@ -401,6 +409,7 @@ def _initiate_backfill(
     qualified_table_name: str,
     backfill_staging_qualified_table_name: str,
     entry: Backfill,
+    parallelism: int = 16,
     dry_run: bool = False,
 ):
     if not is_authenticated():
@@ -423,6 +432,7 @@ def _initiate_backfill(
             end_date=datetime.fromisoformat(entry.end_date.isoformat()),
             exclude=[e.strftime("%Y-%m-%d") for e in entry.excluded_dates],
             destination_table=backfill_staging_qualified_table_name,
+            parallelism=parallelism,
             dry_run=dry_run,
         )
     except subprocess.CalledProcessError as e:

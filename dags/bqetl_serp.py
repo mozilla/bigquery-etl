@@ -80,4 +80,24 @@ with DAG(
         sql_file_path="sql/moz-fx-data-shared-prod/firefox_desktop_derived/serp_events_v1/query.sql",
     )
 
+    firefox_desktop_serp_events__v2 = bigquery_etl_query(
+        task_id="firefox_desktop_serp_events__v2",
+        destination_table='serp_events_v2${{ (execution_date - macros.timedelta(hours=24)).strftime("%Y%m%d") }}',
+        dataset_id="firefox_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="akommasani@mozilla.com",
+        email=[
+            "akommasani@mozilla.com",
+            "dzeber@mozilla.com",
+            "pissac@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        sql_file_path="sql/moz-fx-data-shared-prod/firefox_desktop_derived/serp_events_v2/query.sql",
+    )
+
     firefox_desktop_serp_events__v1.set_upstream(wait_for_copy_deduplicate_all)
+
+    firefox_desktop_serp_events__v2.set_upstream(wait_for_copy_deduplicate_all)

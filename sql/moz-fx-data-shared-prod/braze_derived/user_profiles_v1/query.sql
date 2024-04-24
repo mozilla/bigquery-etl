@@ -8,6 +8,7 @@ SELECT
   users.create_timestamp,
   users.update_timestamp,
   users.fxa_id_sha256,
+  users.has_fxa,
   users.fxa_primary_email,
   users.fxa_lang,
   users.first_service,

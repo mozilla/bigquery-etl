@@ -64,7 +64,10 @@ impressions AS (
       FALSE
     ) AS is_shopping_page,
     COALESCE(SAFE_CAST(mozfun.map.get_key(event.extra, 'is_private') AS bool), FALSE) AS is_private,
-    COALESCE(SAFE_CAST(mozfun.map.get_key(event.extra, 'is_signed_in') AS bool), FALSE) AS is_signed_in,
+    COALESCE(
+      SAFE_CAST(mozfun.map.get_key(event.extra, 'is_signed_in') AS bool),
+      FALSE
+    ) AS is_signed_in,
     mozfun.map.get_key(event.extra, 'provider') AS search_engine,
     mozfun.map.get_key(event.extra, 'source') AS sap_source,
     COALESCE(SAFE_CAST(mozfun.map.get_key(event.extra, 'tagged') AS bool), FALSE) AS is_tagged

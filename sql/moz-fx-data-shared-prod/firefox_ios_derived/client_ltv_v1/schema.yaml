@@ -3,7 +3,7 @@ fields:
   mode: NULLABLE
   name: client_id
   type: STRING
-- description: Sample ID, a number,0-99, that samples by client ID
+- description: Sample ID, a number 0-99 inclusive, that samples by client ID
   mode: NULLABLE
   name: sample_id
   type: INT64

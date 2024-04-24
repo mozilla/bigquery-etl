@@ -38,6 +38,8 @@ from ..cli.utils import (
     sql_dir_option,
     temp_dataset_option,
     use_cloud_function_option,
+    qualify_table_references,
+    billing_project_option,
 )
 from ..config import ConfigLoader
 from ..dependency import get_dependency_graph
@@ -457,6 +459,7 @@ def _backfill_query(
     backfill_date,
     destination_table,
     run_checks,
+    billing_project,
 ):
     """Run a query backfill for a specific date."""
     project, dataset, table = extract_from_query_path(query_file_path)
@@ -520,6 +523,7 @@ def _backfill_query(
             "default", "public_project", fallback="mozilla-public-data"
         ),
         query_arguments=arguments,
+        billing_project=billing_project,
     )
 
     # Run checks on the query
@@ -569,6 +573,7 @@ def _backfill_query(
 @click.argument("name")
 @sql_dir_option
 @project_id_option(required=True)
+@billing_project_option()
 @click.option(
     "--start_date",
     "--start-date",
@@ -638,6 +643,7 @@ def backfill(
     name,
     sql_dir,
     project_id,
+    billing_project,
     start_date,
     end_date,
     exclude,
@@ -725,6 +731,7 @@ def backfill(
             partitioning_type,
             destination_table=destination_table,
             run_checks=checks,
+            billing_project=billing_project,
         )
 
         if not depends_on_past and parallelism > 0:
@@ -773,6 +780,7 @@ def backfill(
 @click.argument("name")
 @sql_dir_option
 @project_id_option()
+@billing_project_option()
 @click.option(
     "--public_project_id",
     "--public-project-id",
@@ -805,6 +813,7 @@ def run(
     name,
     sql_dir,
     project_id,
+    billing_project,
     public_project_id,
     destination_table,
     dataset_id,
@@ -836,6 +845,7 @@ def run(
         destination_table,
         dataset_id,
         ctx.args,
+        billing_project=billing_project,
     )
 
 
@@ -847,6 +857,7 @@ def _run_query(
     dataset_id,
     query_arguments,
     addl_templates: Optional[dict] = None,
+    billing_project: Optional[str] = None,
 ):
     """Run a query."""
     if dataset_id is not None:
@@ -854,7 +865,9 @@ def _run_query(
         # when running the query
         query_arguments.append("--dataset_id={}".format(dataset_id))
 
-    if project_id is not None:
+    if billing_project is not None:
+        query_arguments.append(f"--project_id={billing_project}")
+    elif project_id is not None:
         query_arguments.append(f"--project_id={project_id}")
 
     if addl_templates is None:
@@ -918,18 +931,36 @@ def _run_query(
         if "query" not in query_arguments:
             query_arguments = ["query"] + query_arguments
 
+        query_text = render_template(
+            query_file.name,
+            template_folder=str(query_file.parent),
+            templates_dir="",
+            format=False,
+            **addl_templates,
+        )
+
+        # project ids need to be added to table references to allow
+        if billing_project is not None:
+            if dataset_id is not None:
+                default_dataset = dataset_id
+            else:
+                _, default_dataset, _ = extract_from_query_path(query_file)
+
+            try:
+                query_text = qualify_table_references(
+                    query_text, project_id, default_dataset
+                )
+            except NotImplementedError:
+                click.echo(
+                    "--billing-project cannot be used with query scripts, e.g. script.sql",
+                    err=True,
+                )
+                raise
+
         # write rendered query to a temporary file;
         # query string cannot be passed directly to bq as SQL comments will be interpreted as CLI arguments
         with tempfile.NamedTemporaryFile(mode="w+") as query_stream:
-            query_stream.write(
-                render_template(
-                    query_file.name,
-                    template_folder=str(query_file.parent),
-                    templates_dir="",
-                    format=False,
-                    **addl_templates,
-                )
-            )
+            query_stream.write(query_text)
             query_stream.seek(0)
 
             # run the query as shell command so that passed parameters can be used as is
@@ -1208,6 +1239,7 @@ def _initialize_in_parallel(
     parallelism,
     sample_ids,
     addl_templates,
+    billing_project,
 ):
     with ThreadPool(parallelism) as pool:
         # Process all sample_ids in parallel.
@@ -1220,6 +1252,7 @@ def _initialize_in_parallel(
                 table,
                 dataset,
                 addl_templates=addl_templates,
+                billing_project=billing_project,
             ),
             [arguments + [f"--parameter=sample_id:INT64:{i}"] for i in sample_ids],
         )
@@ -1242,6 +1275,7 @@ def _initialize_in_parallel(
 @click.argument("name")
 @sql_dir_option
 @project_id_option()
+@billing_project_option()
 @click.option(
     "--dry_run/--no_dry_run",
     "--dry-run/--no-dry-run",
@@ -1263,7 +1297,15 @@ def _initialize_in_parallel(
 )
 @click.pass_context
 def initialize(
-    ctx, name, sql_dir, project_id, dry_run, parallelism, skip_existing, force
+    ctx,
+    name,
+    sql_dir,
+    project_id,
+    billing_project,
+    dry_run,
+    parallelism,
+    skip_existing,
+    force,
 ):
     """Create the destination table for the provided query."""
     if not is_authenticated():
@@ -1369,6 +1411,7 @@ def initialize(
                         addl_templates={
                             "is_init": lambda: True,
                         },
+                        billing_project=billing_project,
                     )
                 else:
                     _run_query(
@@ -1381,6 +1424,7 @@ def initialize(
                         addl_templates={
                             "is_init": lambda: True,
                         },
+                        billing_project=billing_project,
                     )
             else:
                 for file in materialized_views:

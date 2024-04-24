@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Iterator, List, Optional, Tuple
 
 import click
+import sqlglot
 from google.auth.exceptions import DefaultCredentialsError
 from google.cloud import bigquery
 
@@ -153,6 +154,83 @@ def paths_matching_name_pattern(
     return matching_files
 
 
+def qualify_table_references(
+    query_text: str, target_project: str, default_dataset: str
+) -> str:
+    """Add project id and dataset id to table/view references and persistent udfs in a given query.
+
+    e.g.:
+    `table` -> `target_project.default_dataset.table`
+    `dataset.table` -> `target_project.dataset.table`
+
+    This allows a query to run in a different project than the sql dir it is located in
+    while referencing the same tables.
+    """
+    # sqlglot cannot handle scripts with variables and control statements
+    if re.search(r"^\s*DECLARE\b", query_text, flags=re.MULTILINE):
+        raise NotImplementedError("Cannot qualify table_references of query scripts")
+
+    query = sqlglot.parse(query_text, read="bigquery")
+
+    # tuples of (table identifier, replacement string)
+    table_replacements: List[Tuple[str, str]] = []
+
+    # find all non-fully qualified table/view references including backticks
+    for statement in query:
+        cte_names = {cte.alias_or_name for cte in statement.find_all(sqlglot.exp.CTE)}
+
+        for table_expr in statement.find_all(sqlglot.exp.Table):
+            if table_expr.name in cte_names:
+                continue
+
+            # existing table ref including backticks without alias
+            table_expr.set("alias", "")
+            reference_string = table_expr.sql(dialect="bigquery")
+
+            # project id is parsed as the catalog attribute
+            # but information_schema region may also be parsed as catalog
+            if table_expr.catalog.startswith("region-"):
+                project_name = f"{target_project}.{table_expr.catalog}"
+            elif table_expr.catalog == "":  # no project id
+                project_name = target_project
+            else:  # project id exists
+                continue
+
+            # fully qualified table ref
+            replacement_string = (
+                f"`{project_name}.{table_expr.db or default_dataset}.{table_expr.name}`"
+            )
+
+            table_replacements.append((reference_string, replacement_string))
+
+    updated_query = query_text
+
+    for identifier, replacement in table_replacements:
+        if identifier.count(".") == 0:
+            # if no dataset/project, only replace if it follows a FROM
+            regex = rf"(?P<from>FROM\s+){identifier}(?![a-zA-Z0-9_`.])"
+            replacement = r"\g<from>" + replacement
+        else:
+            # ensure match is against the full identifier and no project id already
+            regex = rf"(?<![a-zA-Z0-9_`.]){identifier}(?![a-zA-Z0-9_`.])"
+
+        updated_query = re.sub(
+            re.compile(regex),
+            replacement,
+            updated_query,
+        )
+
+    # replace udfs from udf/udf_js that do not have a project qualifier
+    regex = r"(?<![a-zA-Z0-9_.])`?(?P<dataset>udf(_js)?)`?\.`?(?P<name>[a-zA-Z0-9_]+)`?"
+    updated_query = re.sub(
+        re.compile(regex),
+        rf"`{target_project}.\g<dataset>.\g<name>`",
+        updated_query,
+    )
+
+    return updated_query
+
+
 sql_dir_option = click.option(
     "--sql_dir",
     "--sql-dir",
@@ -195,6 +273,22 @@ def project_id_option(default=None, required=False):
         help="GCP project ID",
         default=default,
         callback=is_valid_project,
+        required=required,
+    )
+
+
+def billing_project_option(default=None, required=False):
+    """Generate a billing-project option, with optional default."""
+    return click.option(
+        "--billing-project",
+        "--billing_project",
+        help=(
+            "GCP project ID to run the query in. "
+            "This can be used to run a query using a different slot reservation "
+            "than the one used by the query's default project."
+        ),
+        type=str,
+        default=default,
         required=required,
     )
 

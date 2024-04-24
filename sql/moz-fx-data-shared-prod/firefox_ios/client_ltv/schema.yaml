@@ -1,0 +1,50 @@
+fields:
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+  description: Unique ID for the client installation.
+- name: sample_id
+  type: INTEGER
+  mode: NULLABLE
+  description: Sample ID, a number 0-99 inclusive, that samples by client ID
+- name: as_of_date
+  type: DATE
+  mode: NULLABLE
+  description: The date associated with the Markov state; as_of_date will not update
+    after a year of inactivity as the markov states stop updating
+- name: first_seen_date
+  type: DATE
+  mode: NULLABLE
+  description: First submission date that this client was seen on
+- name: days_since_first_seen
+  type: INTEGER
+  mode: NULLABLE
+  description: Days Since First Seen
+- name: days_since_seen
+  type: INTEGER
+  mode: NULLABLE
+  description: Days Since Seen
+- name: days_seen_bytes
+  type: BYTES
+  mode: NULLABLE
+  description: Days Seen Bytes
+- name: durations
+  type: INTEGER
+  mode: NULLABLE
+  description: Durations
+- name: ad_clicks
+  type: INTEGER
+  mode: NULLABLE
+  description: Ad Clicks
+- name: adjust_network
+  type: STRING
+  mode: NULLABLE
+  description: Adjust Network
+- name: first_reported_country
+  type: STRING
+  mode: NULLABLE
+  description: First Reported Country
+- name: first_reported_isp
+  type: STRING
+  mode: NULLABLE
+  description: First Reported ISP

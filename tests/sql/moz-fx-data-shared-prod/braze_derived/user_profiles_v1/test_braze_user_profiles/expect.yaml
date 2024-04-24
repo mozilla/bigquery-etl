@@ -10,6 +10,7 @@
   create_timestamp: 2020-01-01 10:00:00+00:00
   update_timestamp: 2021-01-01 14:00:00+00:00
   fxa_id_sha256: fxa_user_1
+  has_fxa: true
   fxa_primary_email: user_1_primary@mail.com
   fxa_lang: DE
   first_service: service_1
@@ -40,6 +41,7 @@
   email_lang: EN
   create_timestamp: 2020-01-01 10:00:00+00:00
   update_timestamp: 2021-01-01 14:00:00+00:00
+  has_fxa: false
   newsletters:
     - newsletter_name: newsletter_1
       newsletter_lang: EN
@@ -47,6 +49,7 @@
   products: []
 # user 3
 - external_id: user_3_only_waitlist
+  has_fxa: false
   newsletters: []
   waitlists:
     - waitlist_name: waitlist_1
@@ -55,6 +58,7 @@
 # user 4
 - external_id: user_4_only_products
   fxa_id_sha256: fxa_user_4
+  has_fxa: true
   newsletters: []
   waitlists: []
   products:

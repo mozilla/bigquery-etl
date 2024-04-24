@@ -51,6 +51,53 @@ with DAG(
     tags=tags,
 ) as dag:
 
+    wait_for_acoustic_external__suppression_list__v1 = ExternalTaskSensor(
+        task_id="wait_for_acoustic_external__suppression_list__v1",
+        external_dag_id="bqetl_acoustic_suppression_list",
+        external_task_id="acoustic_external__suppression_list__v1",
+        execution_delta=datetime.timedelta(days=-1, seconds=64800),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_braze_external__hard_bounces__v1 = ExternalTaskSensor(
+        task_id="wait_for_braze_external__hard_bounces__v1",
+        external_dag_id="bqetl_braze_currents",
+        external_task_id="braze_external__hard_bounces__v1",
+        execution_delta=datetime.timedelta(seconds=3600),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_braze_external__unsubscribes__v1 = ExternalTaskSensor(
+        task_id="wait_for_braze_external__unsubscribes__v1",
+        external_dag_id="bqetl_braze_currents",
+        external_task_id="braze_external__unsubscribes__v1",
+        execution_delta=datetime.timedelta(seconds=3600),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    marketing_suppression_list_derived__main_suppression_list__v1 = bigquery_etl_query(
+        task_id="marketing_suppression_list_derived__main_suppression_list__v1",
+        destination_table="main_suppression_list_v1",
+        dataset_id="marketing_suppression_list_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="leli@mozilla.com",
+        email=["leli@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     marketing_suppression_list_external__campaign_monitor_suppression_list__v1 = GKEPodOperator(
         task_id="marketing_suppression_list_external__campaign_monitor_suppression_list__v1",
         arguments=[
@@ -64,4 +111,20 @@ with DAG(
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="leli@mozilla.com",
         email=["leli@mozilla.com"],
+    )
+
+    marketing_suppression_list_derived__main_suppression_list__v1.set_upstream(
+        wait_for_acoustic_external__suppression_list__v1
+    )
+
+    marketing_suppression_list_derived__main_suppression_list__v1.set_upstream(
+        wait_for_braze_external__hard_bounces__v1
+    )
+
+    marketing_suppression_list_derived__main_suppression_list__v1.set_upstream(
+        wait_for_braze_external__unsubscribes__v1
+    )
+
+    marketing_suppression_list_derived__main_suppression_list__v1.set_upstream(
+        marketing_suppression_list_external__campaign_monitor_suppression_list__v1
     )

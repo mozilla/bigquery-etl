@@ -88,7 +88,7 @@ WITH daily AS
 )
 SELECT
  IF(
- ABS((SELECT difference_perc FROM check_results)) > 0.01,
+ ABS((SELECT difference_perc FROM check_results)) > 0.001,
  ERROR(
    CONCAT("Results don't match by > 1%, baseline_clients_daily table has ",
    STRING(((SELECT submission_date FROM daily))),

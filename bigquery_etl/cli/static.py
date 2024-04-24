@@ -8,6 +8,7 @@ import os
 
 import rich_click as click
 from google.cloud import bigquery
+from google.cloud.bigquery import DatasetReference
 
 from bigquery_etl.cli.utils import project_id_option
 from bigquery_etl.config import ConfigLoader
@@ -63,20 +64,20 @@ def publish(project_id):
             if not os.path.exists(schema_file_path):
                 schema_file_path = None
 
-            metadata_file = os.path.join(table_dir, METADATA_FILE)
-            if not os.path.exists(metadata_file):
-                metadata_file = None
+            metadata_file_path = os.path.join(table_dir, METADATA_FILE)
+            if not os.path.exists(metadata_file_path):
+                metadata_file_path = None
 
             _load_table(
                 data_file_path,
                 schema_file_path,
-                metadata_file,
+                metadata_file_path,
                 target_project,
             )
 
 
 def _load_table(
-    data_file_path, schema_file_path=None, metadata_file=None, project=None
+    data_file_path, schema_file_path=None, metadata_file_path=None, project=None
 ):
     # Assume path is ...project/dataset/table/data.csv
     path_split = os.path.normcase(data_file_path).split(os.path.sep)
@@ -89,7 +90,7 @@ def _load_table(
     )
 
     client = bigquery.Client(project)
-    dataset_ref = client.dataset(dataset_id, project=project)
+    dataset_ref = DatasetReference(project, dataset_id)
     table_ref = dataset_ref.table(table_id)
 
     job_config = bigquery.LoadJobConfig(
@@ -123,8 +124,8 @@ def _load_table(
 
     job.result()
 
-    if metadata_file is not None:
-        metadata = Metadata.from_file(metadata_file)
+    if metadata_file_path is not None:
+        metadata = Metadata.from_file(metadata_file_path)
         publish_metadata(client, project, dataset_id, table_id, metadata)
 
 

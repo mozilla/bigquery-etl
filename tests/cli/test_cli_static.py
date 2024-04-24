@@ -35,12 +35,8 @@ class TestStatic:
     def runner(self):
         return CliRunner()
 
-    @patch("google.cloud.bigquery.Client.load_table_from_file")
-    @patch("google.cloud.bigquery.Client.get_table")
-    @patch("google.cloud.bigquery.Client.update_table")
-    def test_static_publish(
-        self, update_table, get_table, load_table_from_file, runner
-    ):
+    @patch("google.cloud.bigquery.Client")
+    def test_static_publish(self, mock_client, runner):
         with runner.isolated_filesystem():
             SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_data_v1"
             os.makedirs(SQL_DIR)
@@ -64,6 +60,12 @@ class TestStatic:
             result = runner.invoke(publish)
 
             assert result.exit_code == 0
-            assert load_table_from_file.call_count == 1
-            assert get_table.call_count == 1  # from publish metadata
-            assert update_table.call_count == 1  # from publish metadata
+            assert mock_client.return_value.dataset.call_count == 1
+            assert mock_client.return_value.dataset.call_args.args[0] == "test"
+            assert mock_client.return_value.load_table_from_file.call_count == 1
+            assert (
+                mock_client.return_value.get_table.call_count == 1
+            )  # from publish metadata
+            assert (
+                mock_client.return_value.update_table.call_count == 1
+            )  # from publish metadata

@@ -1,0 +1,13 @@
+fields:
+- name: code_3
+  type: STRING
+  mode: NULLABLE
+- name: code_2
+  type: STRING
+  mode: NULLABLE
+- name: name
+  type: STRING
+  mode: NULLABLE
+- name: other_names
+  type: STRING
+  mode: NULLABLE

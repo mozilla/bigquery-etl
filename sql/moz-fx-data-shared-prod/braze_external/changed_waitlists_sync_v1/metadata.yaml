@@ -1,0 +1,33 @@
+friendly_name: Braze Changed Waitlists Sync
+description: |-
+  Changes in waitlist data from the previous day. In order to consume the least amount
+  of data points, we only want to sync rows changed since the last sync. This table holds
+  all of the changed waitlist data that syncs to braze.
+
+  See https://mozilla-hub.atlassian.net/browse/DENG-3182
+owners:
+- cbeck@mozilla.com
+labels:
+  schedule: daily
+  owner: cbeck
+  dag: bqetl_braze
+  owner1: cbeck
+scheduling:
+  dag_name: bqetl_braze
+  date_partition_parameter: null
+bigquery:
+  time_partitioning: null
+  range_partitioning: null
+  clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:braze
+  - workgroup:braze/ingestion-mozilla-dev
+- role: roles/bigquery.dataEditor
+  members:
+  - workgroup:braze/writers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.braze_derived.waitlists_v1
+  - moz-fx-data-shared-prod.braze_external.changed_waitlists_sync_v1

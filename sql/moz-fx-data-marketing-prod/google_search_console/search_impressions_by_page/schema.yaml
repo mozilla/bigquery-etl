@@ -95,7 +95,7 @@ fields:
   mode: NULLABLE
   description: |-
     Whether Google Search considers the page to be providing a good page experience.
-    This will be null prior to August 2023.
+    This will be null when the source data wasn't exported directly to BigQuery by Google.
 - name: search_type
   type: STRING
   mode: NULLABLE
@@ -112,7 +112,7 @@ fields:
   mode: NULLABLE
   description: |-
     How the search result appeared (e.g. normal result, translated result, video).
-    This will be null prior to August 2023.
+    This will be null when the source data wasn't exported directly to BigQuery by Google.
 - name: user_country_code
   type: STRING
   mode: NULLABLE

@@ -2,6 +2,7 @@
     'moz-fx-data-marketing-prod.searchconsole_addons',
     'moz-fx-data-marketing-prod.searchconsole_blog',
     'moz-fx-data-marketing-prod.searchconsole_getpocket',
+    'moz-fx-data-marketing-prod.searchconsole_mdn',
     'moz-fx-data-marketing-prod.searchconsole_support',
     'moz-fx-data-marketing-prod.searchconsole_www',
 ] %}

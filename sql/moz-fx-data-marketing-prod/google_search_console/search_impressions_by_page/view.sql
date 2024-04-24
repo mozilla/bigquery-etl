@@ -25,7 +25,19 @@ WITH search_impressions_union AS (
   FROM
     `moz-fx-data-marketing-prod.google_search_console_derived.search_impressions_by_page_v1`
   WHERE
-    `date` < '2023-08-01'
+    CASE
+      WHEN site_domain_name IN (
+          'addons.mozilla.org',
+          'blog.mozilla.org',
+          'getpocket.com',
+          'support.mozilla.org',
+          'www.mozilla.org'
+        )
+        THEN `date` < '2023-08-01'
+      WHEN site_domain_name = 'developer.mozilla.org'
+        THEN `date` < '2024-04-10'
+      ELSE FALSE
+    END
   UNION ALL
   SELECT
     `date`,
@@ -50,7 +62,17 @@ WITH search_impressions_union AS (
   FROM
     `moz-fx-data-marketing-prod.google_search_console_derived.search_impressions_by_page_v2`
   WHERE
-    `date` >= '2023-08-01'
+    CASE
+      WHEN site_domain_name IN (
+          'addons.mozilla.org',
+          'blog.mozilla.org',
+          'getpocket.com',
+          'support.mozilla.org',
+          'www.mozilla.org'
+        )
+        THEN `date` >= '2023-08-01'
+      ELSE TRUE
+    END
 )
 SELECT
   search_impressions.date,

@@ -11,12 +11,7 @@ labels:
 scheduling:
   dag_name: bqetl_org_mozilla_firefox_derived
 bigquery:
-  time_partitioning:
-    type: day
-    field: ''
-    require_partition_filter: true
-    expiration_days: null
-  range_partitioning: null
+  time_partitioning: null
   clustering:
     fields:
     - sample_id

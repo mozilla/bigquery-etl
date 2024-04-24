@@ -2837,6 +2837,12 @@ fields:
         (Migrated from the geckoview metric of the same name).
 
         '
+    - name: cert_verifier_trust_obj_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The total number of trust objects in cert9.db
+
+        '
   - name: string
     type: RECORD
     mode: NULLABLE

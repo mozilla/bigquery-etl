@@ -2984,6 +2984,9 @@ fields:
     - name: data_storage_site_security_service_state
       type: INTEGER
       mode: NULLABLE
+    - name: cert_verifier_trust_obj_count
+      type: INTEGER
+      mode: NULLABLE
   - name: string
     type: RECORD
     mode: NULLABLE

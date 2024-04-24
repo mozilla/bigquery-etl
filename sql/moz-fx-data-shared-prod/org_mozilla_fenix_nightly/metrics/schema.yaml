@@ -12751,6 +12751,12 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: The number of entries stored in the SiteSecurityServiceState nsIDataStorage
+    - name: cert_verifier_trust_obj_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The total number of trust objects in cert9.db
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE

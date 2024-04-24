@@ -10,13 +10,13 @@ from utils.constants import ALLOWED_STATES, FAILED_STATES
 from utils.gcp import bigquery_etl_query, bigquery_dq_check
 
 docs = """
-### bqetl_suppression_list
+### bqetl_marketing_suppression_list
 
-Built from bigquery-etl repo, [`dags/bqetl_suppression_list.py`](https://github.com/mozilla/bigquery-etl/blob/generated-sql/dags/bqetl_suppression_list.py)
+Built from bigquery-etl repo, [`dags/bqetl_marketing_suppression_list.py`](https://github.com/mozilla/bigquery-etl/blob/generated-sql/dags/bqetl_marketing_suppression_list.py)
 
 #### Description
 
-Ingest suppression lists into BigQuery
+Ingest marketing suppression lists into BigQuery
 
 #### Owner
 
@@ -44,7 +44,7 @@ default_args = {
 tags = ["impact/tier_2", "repo/bigquery-etl"]
 
 with DAG(
-    "bqetl_suppression_list",
+    "bqetl_marketing_suppression_list",
     default_args=default_args,
     schedule_interval="0 3 * * *",
     doc_md=docs,

@@ -1847,6 +1847,9 @@ fields:
     - name: gfx_display_primary_width
       type: INTEGER
       mode: NULLABLE
+    - name: cert_verifier_trust_obj_count
+      type: INTEGER
+      mode: NULLABLE
   - name: custom_distribution
     type: RECORD
     mode: NULLABLE

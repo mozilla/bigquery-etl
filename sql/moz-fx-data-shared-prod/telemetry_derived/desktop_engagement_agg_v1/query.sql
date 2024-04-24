@@ -1,6 +1,7 @@
 SELECT
   submission_date,
   first_seen_date,
+  distribution_id,
   attribution_campaign,
   attribution_content,
   attribution_dlsource,
@@ -21,6 +22,7 @@ WHERE
 GROUP BY
   submission_date,
   first_seen_date,
+  distribution_id,
   attribution_campaign,
   attribution_content,
   attribution_dlsource,

@@ -8,6 +8,10 @@ fields:
   type: DATE
   description: First Seen Date
 - mode: NULLABLE
+  name: distribution_id
+  type: STRING
+  description: Distribution ID
+- mode: NULLABLE
   name: attribution_campaign
   type: STRING
   description: Attribution Campaign

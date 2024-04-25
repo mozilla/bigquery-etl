@@ -13,10 +13,10 @@
       
       
       
-        <link rel="prev" href="../map/">
+        <link rel="prev" href="../google_ads/">
       
       
-        <link rel="next" href="../norm/">
+        <link rel="next" href="../hist/">
       
       
       <link rel="icon" href="../../favicon.png">
@@ -24,7 +24,7 @@
     
     
       
-        <title>Mobile search - BigQuery ETL</title>
+        <title>google_search_console - BigQuery ETL</title>
       
     
     
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#normalize_app_name-udf" class="md-skip">
+        <a href="#google_search_console" class="md-skip">
           Skip to content
         </a>
       
@@ -108,7 +108,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Mobile search
+              google_search_console
             
           </span>
         </div>
@@ -651,10 +651,30 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../google_search_console/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    google_search_console
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -663,6 +683,194 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#classify_site_query-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      classify_site_query (UDF)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="classify_site_query (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameters
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#extract_url_country_code-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      extract_url_country_code (UDF)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="extract_url_country_code (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameters
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#extract_url_domain_name-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      extract_url_domain_name (UDF)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="extract_url_domain_name (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameters
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#extract_url_language_code-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      extract_url_language_code (UDF)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="extract_url_language_code (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameters
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#extract_url_locale-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      extract_url_locale (UDF)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="extract_url_locale (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameters
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#extract_url_path-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      extract_url_path (UDF)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="extract_url_path (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameters
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#extract_url_path_segment-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      extract_url_path_segment (UDF)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="extract_url_path_segment (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameters
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -777,28 +985,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    Mobile search
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../mobile_search/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -807,57 +997,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#normalize_app_name-udf" class="md-nav__link">
-    <span class="md-ellipsis">
-      normalize_app_name (UDF)
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="normalize_app_name (UDF)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#normalized-app-and-os-name-for-mobile-search-related-tables" class="md-nav__link">
-    <span class="md-ellipsis">
-      Normalized app and os name for mobile search related tables
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#parameters" class="md-nav__link">
-    <span class="md-ellipsis">
-      Parameters
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1367,6 +1506,8 @@
   
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -1375,26 +1516,161 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#normalize_app_name-udf" class="md-nav__link">
+  <a href="#classify_site_query-udf" class="md-nav__link">
     <span class="md-ellipsis">
-      normalize_app_name (UDF)
+      classify_site_query (UDF)
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="normalize_app_name (UDF)">
+    <nav class="md-nav" aria-label="classify_site_query (UDF)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#normalized-app-and-os-name-for-mobile-search-related-tables" class="md-nav__link">
+  <a href="#parameters" class="md-nav__link">
     <span class="md-ellipsis">
-      Normalized app and os name for mobile search related tables
+      Parameters
     </span>
   </a>
   
 </li>
         
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#extract_url_country_code-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      extract_url_country_code (UDF)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="extract_url_country_code (UDF)">
+      <ul class="md-nav__list">
+        
           <li class="md-nav__item">
-  <a href="#parameters" class="md-nav__link">
+  <a href="#parameters_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameters
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#extract_url_domain_name-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      extract_url_domain_name (UDF)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="extract_url_domain_name (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameters
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#extract_url_language_code-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      extract_url_language_code (UDF)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="extract_url_language_code (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameters
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#extract_url_locale-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      extract_url_locale (UDF)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="extract_url_locale (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameters
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#extract_url_path-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      extract_url_path (UDF)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="extract_url_path (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameters
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#extract_url_path_segment-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      extract_url_path_segment (UDF)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="extract_url_path_segment (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_6" class="md-nav__link">
     <span class="md-ellipsis">
       Parameters
     </span>
@@ -1422,21 +1698,78 @@
                   
 
 
-  <h1>Mobile search</h1>
-
-<h2 id="normalize_app_name-udf">normalize_app_name (UDF)</h2>
-<p>Returns normalized_app_name and normalized_app_name_os (for mobile search tables only).</p>
-<h3 id="normalized-app-and-os-name-for-mobile-search-related-tables">Normalized app and os name for mobile search related tables</h3>
-<p>Takes app name and os as input :
-Returns a struct of normalized_app_name and normalized_app_name_os based on <a href="https://mozilla-hub.atlassian.net/browse/RS-805">discussion provided here</a></p>
+<h1 id="google_search_console">google_search_console</h1>
+<p>Functions for use with Google Search Console data.</p>
+<h2 id="classify_site_query-udf">classify_site_query (UDF)</h2>
+<p>Classify a Google search query for a site as "Anonymized", "Brand", "Non-Brand", or "Unknown".</p>
 <h3 id="parameters">Parameters</h3>
 <p><strong>INPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>app_name STRING, os STRING
+<div class="highlight"><pre><span></span><code>site_domain_name STRING, query STRING, search_type STRING
 </code></pre></div>
 <p><strong>OUTPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>STRUCT&lt;normalized_app_name STRING, normalized_app_name_os STRING&gt;
+<div class="highlight"><pre><span></span><code>STRING
 </code></pre></div>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/mobile_search/normalize_app_name">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/mobile_search/normalize_app_name/metadata.yaml">Edit</a></p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/google_search_console/classify_site_query">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/google_search_console/classify_site_query/metadata.yaml">Edit</a></p>
+<h2 id="extract_url_country_code-udf">extract_url_country_code (UDF)</h2>
+<p>Extract the country code from a URL if it's present.</p>
+<h3 id="parameters_1">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>url STRING
+</code></pre></div>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>STRING
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/google_search_console/extract_url_country_code">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/google_search_console/extract_url_country_code/metadata.yaml">Edit</a></p>
+<h2 id="extract_url_domain_name-udf">extract_url_domain_name (UDF)</h2>
+<p>Extract the domain name from a URL.</p>
+<h3 id="parameters_2">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>url STRING
+</code></pre></div>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>STRING
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/google_search_console/extract_url_domain_name">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/google_search_console/extract_url_domain_name/metadata.yaml">Edit</a></p>
+<h2 id="extract_url_language_code-udf">extract_url_language_code (UDF)</h2>
+<p>Extract the language code from a URL if it's present.</p>
+<h3 id="parameters_3">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>url STRING
+</code></pre></div>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>STRING
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/google_search_console/extract_url_language_code">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/google_search_console/extract_url_language_code/metadata.yaml">Edit</a></p>
+<h2 id="extract_url_locale-udf">extract_url_locale (UDF)</h2>
+<p>Extract the locale from a URL if it's present.</p>
+<h3 id="parameters_4">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>url STRING
+</code></pre></div>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>STRING
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/google_search_console/extract_url_locale">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/google_search_console/extract_url_locale/metadata.yaml">Edit</a></p>
+<h2 id="extract_url_path-udf">extract_url_path (UDF)</h2>
+<p>Extract the path from a URL.</p>
+<h3 id="parameters_5">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>url STRING
+</code></pre></div>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>STRING
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/google_search_console/extract_url_path">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/google_search_console/extract_url_path/metadata.yaml">Edit</a></p>
+<h2 id="extract_url_path_segment-udf">extract_url_path_segment (UDF)</h2>
+<p>Extract a particular path segment from a URL.</p>
+<h3 id="parameters_6">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>url STRING, segment_number INTEGER
+</code></pre></div>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>STRING
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/google_search_console/extract_url_path_segment">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/google_search_console/extract_url_path_segment/metadata.yaml">Edit</a></p>
 
 
 

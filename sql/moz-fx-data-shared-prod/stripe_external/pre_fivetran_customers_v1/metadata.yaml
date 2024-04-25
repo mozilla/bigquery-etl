@@ -1,0 +1,15 @@
+friendly_name: Pre-Fivetran Stripe customers V1
+description: |-
+  Stripe customers that were deleted before the initial Fivetran Stripe sync, archived at 2022-03-25 00:02:29.
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:stripe
+  - workgroup:data-science/stripe
+- role: roles/bigquery.dataEditor
+  members:
+  - workgroup:platform-infra/internal
+references: {}

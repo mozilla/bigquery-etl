@@ -1,0 +1,11 @@
+friendly_name: Normal Distribution
+description: |
+  Table of one-tailed p-values for z-test of a normally distributed random variable
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}

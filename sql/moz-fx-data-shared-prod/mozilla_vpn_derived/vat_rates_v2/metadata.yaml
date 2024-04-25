@@ -1,0 +1,13 @@
+friendly_name: VAT Rates V2
+description: |
+  VAT rates for countries where Mozilla VPN is available.
+owners:
+- srose@mozilla.com
+labels:
+  owner1: srose
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}

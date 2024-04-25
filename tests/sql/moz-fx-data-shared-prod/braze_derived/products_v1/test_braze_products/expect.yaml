@@ -1,0 +1,51 @@
+# expect braze products
+---
+# user 1
+- fxa_id_sha256: 627731529c24ee38e55d95a143c89f60c2e824e863a46d5608aba22b239bb3f4 # fxa_uid_1
+  products:
+    - plan_id: plan_1
+      product_id: prod_1
+      status: active
+      plan_started_at: 2020-01-01 10:00:00+00:00
+      plan_ended_at: 2020-12-31 10:00:00+00:00
+      plan_interval: month
+      plan_interval_count: 3
+      update_timestamp: 2020-12-01 10:00:00+00:00
+    - plan_id: plan_3
+      product_id: prod_1
+      status: canceled
+      plan_started_at: 2021-01-01 10:00:00+00:00
+      plan_ended_at: 2021-12-31 10:00:00+00:00
+      plan_interval: month
+      plan_interval_count: 1
+      update_timestamp: 2022-12-01 10:00:00+00:00
+    - plan_id: plan_2
+      product_id: prod_2
+      status: active
+      plan_started_at: 2021-01-01 10:00:00+00:00
+      plan_ended_at: 2022-12-31 10:00:00+00:00
+      plan_interval: month
+      plan_interval_count: 1
+      update_timestamp: 2022-12-01 10:00:00+00:00
+# user 2
+- fxa_id_sha256: 37d10eb12512879af42381783a6a7ae6576dcf3222d74c19ff1a394e0b5111b8 # fxa_uid_2
+  products:
+    - plan_id: plan_1
+      product_id: prod_1
+      status: active
+      plan_started_at: 2020-01-01 10:00:00+00:00
+      plan_ended_at: 2020-12-31 10:00:00+00:00
+      plan_interval: month
+      plan_interval_count: 3
+      update_timestamp: 2020-12-01 10:00:00+00:00
+# user 3 no active subscriptions
+- fxa_id_sha256: b9bcfde76202f5206cc1b4369c1aaacbbe43af1d1635cca33f33dcf3a9a020e9 # fxa_uid_3
+  products:
+    - plan_id: plan_1
+      product_id: prod_1
+      status: canceled
+      plan_started_at: 2020-01-01 10:00:00+00:00
+      plan_ended_at: 2020-12-31 10:00:00+00:00
+      plan_interval: month
+      plan_interval_count: 3
+      update_timestamp: 2020-12-01 10:00:00+00:00

@@ -100,6 +100,23 @@ SELECT
       THEN 'core_user'
     ELSE 'other'
   END AS activity_segments_v1,
+  CASE
+    WHEN BIT_COUNT(days_active_bits)
+      BETWEEN 1
+      AND 6
+      THEN 'infrequent_user'
+    WHEN BIT_COUNT(days_active_bits)
+      BETWEEN 7
+      AND 13
+      THEN 'casual_user'
+    WHEN BIT_COUNT(days_active_bits)
+      BETWEEN 14
+      AND 20
+      THEN 'regular_user'
+    WHEN BIT_COUNT(days_active_bits) >= 21
+      THEN 'core_user'
+    ELSE 'other'
+  END AS segment,
   (
     days_since_first_seen = 6
     -- 0x7F = mozfun.bits28.from_string('0000000000000000000001111111')

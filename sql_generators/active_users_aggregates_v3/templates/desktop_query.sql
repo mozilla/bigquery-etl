@@ -2,23 +2,7 @@
 WITH todays_metrics AS (
   SELECT
     client_id,
-    CASE
-    WHEN BIT_COUNT(days_visited_1_uri_bits)
-      BETWEEN 1
-      AND 6
-      THEN 'infrequent_user'
-    WHEN BIT_COUNT(days_visited_1_uri_bits)
-      BETWEEN 7
-      AND 13
-      THEN 'casual_user'
-    WHEN BIT_COUNT(days_visited_1_uri_bits)
-      BETWEEN 14
-      AND 20
-      THEN 'regular_user'
-    WHEN BIT_COUNT(days_visited_1_uri_bits) >= 21
-      THEN 'core_user'
-    ELSE 'other'
-    END AS segment,
+    activity_segment_v1 AS segment,
     'Firefox Desktop' AS app_name,
     app_version AS app_version,
     normalized_channel AS channel,
@@ -57,7 +41,7 @@ WITH todays_metrics AS (
     search_with_ads_count_all AS search_with_ads,
     active_hours_sum
   FROM
-    `moz-fx-data-shared-prod.telemetry.clients_last_seen`
+    `moz-fx-data-shared-prod.telemetry.clients_last_seen_v2`
   WHERE
     submission_date = @submission_date
 )

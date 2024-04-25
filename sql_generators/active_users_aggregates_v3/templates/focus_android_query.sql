@@ -18,7 +18,24 @@ WITH baseline AS (
     submission_date = first_seen_date AS is_new_profile,
     distribution_id,
     CAST(NULL AS string) AS isp,
-    'Focus Android Legacy' AS app_name
+    'Focus Android Legacy' AS app_name,
+    CASE
+      WHEN BIT_COUNT(days_seen_bits)
+        BETWEEN 1
+        AND 6
+        THEN 'infrequent_user'
+      WHEN BIT_COUNT(days_seen_bits)
+        BETWEEN 7
+        AND 13
+        THEN 'casual_user'
+      WHEN BIT_COUNT(days_seen_bits)
+        BETWEEN 14
+        AND 20
+        THEN 'regular_user'
+      WHEN BIT_COUNT(days_seen_bits) >= 21
+        THEN 'core_user'
+      ELSE 'other'
+    END AS segment
   FROM
     `{{ project_id }}.telemetry.core_clients_last_seen`
   WHERE
@@ -44,7 +61,8 @@ WITH baseline AS (
     submission_date = first_seen_date AS is_new_profile,
     CAST(NULL AS string) AS distribution_id,
     isp,
-    app_name
+    app_name,
+    activity_segment AS segment
   FROM
     `{{ project_id }}.{{ app_name }}.baseline_clients_last_seen`
   WHERE
@@ -109,23 +127,7 @@ search_metrics AS (
 unioned_with_searches AS (
   SELECT
     unioned.client_id,
-    CASE
-      WHEN BIT_COUNT(days_active_bits)
-        BETWEEN 1
-        AND 6
-        THEN 'infrequent_user'
-      WHEN BIT_COUNT(days_active_bits)
-        BETWEEN 7
-        AND 13
-        THEN 'casual_user'
-      WHEN BIT_COUNT(days_active_bits)
-        BETWEEN 14
-        AND 20
-        THEN 'regular_user'
-      WHEN BIT_COUNT(days_active_bits) >= 21
-        THEN 'core_user'
-      ELSE 'other'
-    END AS activity_segment,
+    segment,
     unioned.app_name,
     unioned.app_display_version AS app_version,
     unioned.normalized_channel,
@@ -178,7 +180,7 @@ unioned_with_searches AS (
 ),
 todays_metrics AS (
   SELECT
-    activity_segment AS segment,
+    segment,
     app_version,
     attribution_medium,
     attribution_source,

@@ -1,19 +1,25 @@
 --- Query generated via sql_generators.active_users.
-WITH attribution_data AS (
+WITH
+{% if app_name == "fenix"%}
+attribution_data AS (
   SELECT
     client_id,
     adjust_network,
     install_source
   FROM
     fenix.firefox_android_clients
-  UNION ALL
-  SELECT
+),
+{% endif %}
+{% if app_name == "firefox_ios"%}
+attribution_data AS (
+SELECT
     client_id,
     adjust_network,
     CAST(NULL AS STRING) install_source
   FROM
     firefox_ios.firefox_ios_clients
 ),
+{% endif %}
 baseline AS (
   SELECT
     submission_date,
@@ -34,7 +40,8 @@ baseline AS (
     submission_date = first_seen_date AS is_new_profile,
     CAST(NULL AS string) AS distribution_id,
     isp,
-    app_name
+    app_name,
+    activity_segment AS segment
   FROM
     `{{ project_id }}.{{ app_name }}.baseline_clients_last_seen`
   WHERE
@@ -99,23 +106,7 @@ search_metrics AS (
 unioned_with_searches AS (
   SELECT
     unioned.client_id,
-    CASE
-      WHEN BIT_COUNT(days_active_bits)
-        BETWEEN 1
-        AND 6
-        THEN 'infrequent_user'
-      WHEN BIT_COUNT(days_active_bits)
-        BETWEEN 7
-        AND 13
-        THEN 'casual_user'
-      WHEN BIT_COUNT(days_active_bits)
-        BETWEEN 14
-        AND 20
-        THEN 'regular_user'
-      WHEN BIT_COUNT(days_active_bits) >= 21
-        THEN 'core_user'
-      ELSE 'other'
-    END AS activity_segment,
+    unioned.segment,
     unioned.app_name,
     unioned.app_display_version AS app_version,
     unioned.normalized_channel,
@@ -169,17 +160,24 @@ unioned_with_searches AS (
 unioned_with_searches_and_attribution AS (
   SELECT
     unioned.*,
+    {% if app_name == "fenix" or  app_name == "firefox_ios" %}
     attribution_data.install_source,
     attribution_data.adjust_network
+    {% else %}
+    CAST(NULL AS STRING) AS install_source,
+    CAST(NULL AS STRING) AS adjust_network
+    {% endif %}
   FROM
     unioned_with_searches unioned
+  {% if app_name == "fenix" or  app_name == "firefox_ios" %}
   LEFT JOIN
     attribution_data
     USING (client_id)
+  {% endif %}
 ),
 todays_metrics AS (
   SELECT
-    activity_segment AS segment,
+    segment,
     app_version,
     attribution_medium,
     attribution_source,

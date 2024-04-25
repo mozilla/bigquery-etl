@@ -28,18 +28,18 @@ from ..backfill.utils import QUALIFIED_TABLE_NAME_RE, qualified_table_name_match
 from ..cli import check
 from ..cli.format import format
 from ..cli.utils import (
+    billing_project_option,
     is_authenticated,
     is_valid_project,
     no_dryrun_option,
     parallelism_option,
     paths_matching_name_pattern,
     project_id_option,
+    qualify_table_references,
     respect_dryrun_skip_option,
     sql_dir_option,
     temp_dataset_option,
     use_cloud_function_option,
-    qualify_table_references,
-    billing_project_option,
 )
 from ..config import ConfigLoader
 from ..dependency import get_dependency_graph
@@ -863,7 +863,11 @@ def _run_query(
     if dataset_id is not None:
         # dataset ID was parsed by argparse but needs to be passed as parameter
         # when running the query
-        query_arguments.append("--dataset_id={}".format(dataset_id))
+        if billing_project is not None and project_id is not None:
+            dataset_arg = f"{project_id}:{dataset_id}"
+        else:
+            dataset_arg = dataset_id
+        query_arguments.append("--dataset_id={}".format(dataset_arg))
 
     if billing_project is not None:
         query_arguments.append(f"--project_id={billing_project}")

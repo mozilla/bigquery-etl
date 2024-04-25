@@ -14,6 +14,7 @@ from bigquery_etl.cli.query import (
     info,
     paths_matching_name_pattern,
     schedule,
+    _run_query,
 )
 
 
@@ -537,6 +538,7 @@ class TestQuery:
                     "--end_date=2021-01-09",
                     "--exclude=2021-01-06",
                     "--parallelism=0",
+                    "--billing-project=backfill-project",
                 ],
             )
 
@@ -700,3 +702,53 @@ class TestQuery:
                 ]
                 assert len(conversion_params) == 1
                 assert conversion_params[0] == "--parameter=conversion_window:INT64:30"
+
+    @patch("subprocess.check_call")
+    def test_run_query_billing_project(self, mock_bq_call, runner):
+        """billing_project should change the dataset and project passed into bq."""
+        with runner.isolated_filesystem():
+            query_file = (
+                Path("sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/query.sql")
+            )
+            os.makedirs(query_file.parent)
+            query_file.write_text("SELECT 1")
+
+            _run_query(
+                query_files=[str(query_file)],
+                project_id="default-project",
+                dataset_id="default_dataset",
+                public_project_id=None,
+                destination_table=None,
+                query_arguments=["--dry_run"],
+                billing_project="backfill-project",
+            )
+
+            assert mock_bq_call.call_count == 1
+            bq_call_args = mock_bq_call.call_args[0][0]
+            assert "--dataset_id=default-project:default_dataset" in bq_call_args
+            assert "--project_id=backfill-project" in bq_call_args
+
+    @patch("subprocess.check_call")
+    def test_run_query_without_billing_project(self, mock_bq_call, runner):
+        """dataset and project should be passed into bq as-is if not billing_project is given."""
+        with runner.isolated_filesystem():
+            query_file = (
+                Path("sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/query.sql")
+            )
+            os.makedirs(query_file.parent)
+            query_file.write_text("SELECT 1")
+
+            _run_query(
+                query_files=[str(query_file)],
+                project_id="moz-fx-data-shared-prod",
+                dataset_id="telemetry_derived",
+                public_project_id=None,
+                destination_table=None,
+                query_arguments=["--dry_run"],
+                billing_project=None,
+            )
+
+            assert mock_bq_call.call_count == 1
+            bq_call_args = mock_bq_call.call_args[0][0]
+            assert "--dataset_id=telemetry_derived" in bq_call_args
+            assert "--project_id=moz-fx-data-shared-prod" in bq_call_args

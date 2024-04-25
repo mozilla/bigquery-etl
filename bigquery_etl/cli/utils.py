@@ -14,6 +14,7 @@ from google.auth.exceptions import DefaultCredentialsError
 from google.cloud import bigquery
 
 from bigquery_etl.config import ConfigLoader
+from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.util.common import TempDatasetReference, project_dirs
 
 QUERY_FILE_RE = re.compile(
@@ -170,6 +171,8 @@ def qualify_table_references(
     if re.search(r"^\s*DECLARE\b", query_text, flags=re.MULTILINE):
         raise NotImplementedError("Cannot qualify table_references of query scripts")
 
+    # reformat for more consistent regex if running with locally edited queries
+    query_text = reformat(query_text)
     query = sqlglot.parse(query_text, read="bigquery")
 
     # tuples of (table identifier, replacement string)
@@ -177,15 +180,20 @@ def qualify_table_references(
 
     # find all non-fully qualified table/view references including backticks
     for statement in query:
-        cte_names = {cte.alias_or_name for cte in statement.find_all(sqlglot.exp.CTE)}
+        if statement is None:
+            continue
+
+        cte_names = {
+            cte.alias_or_name.lower() for cte in statement.find_all(sqlglot.exp.CTE)
+        }
 
         for table_expr in statement.find_all(sqlglot.exp.Table):
-            if table_expr.name in cte_names:
-                continue
-
             # existing table ref including backticks without alias
             table_expr.set("alias", "")
             reference_string = table_expr.sql(dialect="bigquery")
+
+            if reference_string.replace("`", "").lower() in cte_names:
+                continue
 
             # project id is parsed as the catalog attribute
             # but information_schema region may also be parsed as catalog
@@ -197,9 +205,7 @@ def qualify_table_references(
                 continue
 
             # fully qualified table ref
-            replacement_string = (
-                f"`{project_name}.{table_expr.db or default_dataset}.{table_expr.name}`"
-            )
+            replacement_string = f"`{project_name}`.`{table_expr.db or default_dataset}`.`{table_expr.name}`"
 
             table_replacements.append((reference_string, replacement_string))
 
@@ -207,10 +213,11 @@ def qualify_table_references(
 
     for identifier, replacement in table_replacements:
         if identifier.count(".") == 0:
-            # if no dataset/project, only replace if it follows a FROM
-            regex = rf"(?P<from>FROM\s+){identifier}(?![a-zA-Z0-9_`.])"
+            # if no dataset/project, only replace if it follows a FROM or JOIN
+            regex = rf"(?P<from>(FROM|JOIN)\s+){identifier}(?![a-zA-Z0-9_`.])"
             replacement = r"\g<from>" + replacement
         else:
+            identifier = identifier.replace(".", r"\.")
             # ensure match is against the full identifier and no project id already
             regex = rf"(?<![a-zA-Z0-9_`.]){identifier}(?![a-zA-Z0-9_`.])"
 

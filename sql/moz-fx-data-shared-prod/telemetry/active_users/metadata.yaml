@@ -1,7 +1,7 @@
-friendly_name: Base view to calculate growth metrics
+friendly_name: Active Users
 description: |-
-  This view contains the bit patterns to monitor client's activity for all browsers
-  and calculate growth metrics.
+  This view contains the boolean values that can be used to monitor client's
+  activity and growth metrics for all browsers.
 
   Proposal:
   https://docs.google.com/document/d/1G_pJs62c8mGOxt1eGdzc_-pwG_ShE3hAb-N4Lmp9A8M/edit?usp=sharing

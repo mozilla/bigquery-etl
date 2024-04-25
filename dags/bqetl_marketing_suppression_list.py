@@ -94,8 +94,9 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="leli@mozilla.com",
         email=["leli@mozilla.com"],
-        date_partition_parameter="submission_date",
+        date_partition_parameter=None,
         depends_on_past=False,
+        task_concurrency=1,
     )
 
     marketing_suppression_list_external__campaign_monitor_suppression_list__v1 = GKEPodOperator(

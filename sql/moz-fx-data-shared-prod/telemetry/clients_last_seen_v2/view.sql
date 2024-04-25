@@ -43,7 +43,7 @@ SELECT
   IFNULL(mozfun.bits28.days_since_seen(cls.days_seen_bits) < 28, FALSE) AS is_monthly_user,
   IF(
     LOWER(IFNULL(cls.isp_name, '')) <> "browserstack"
-    AND LOWER(cls.distribution_id) <> "mozillaonline",
+    AND LOWER(IFNULL(cls.distribution_id, '')) <> "mozillaonline",
     TRUE,
     FALSE
   ) AS is_desktop

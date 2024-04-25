@@ -1,9 +1,13 @@
 CREATE OR REPLACE FUNCTION google_search_console.classify_site_query(
   site_domain_name STRING,
-  query STRING
+  query STRING,
+  search_type STRING
 )
 RETURNS STRING AS (
   CASE
+    -- Discover and Google News search impressions never have `query` values.
+    WHEN search_type IN ('Discover', 'Google News')
+      THEN NULL
     WHEN query IS NULL
       THEN 'Anonymized'
     WHEN site_domain_name = 'www.mozilla.org'
@@ -95,14 +99,39 @@ RETURNS STRING AS (
 );
 
 SELECT
-  assert.equals(google_search_console.classify_site_query('www.mozilla.org', NULL), 'Anonymized'),
-  assert.equals(google_search_console.classify_site_query('www.mozilla.org', 'mozilla'), 'Brand'),
-  assert.equals(google_search_console.classify_site_query('www.mozilla.org', 'firefox'), 'Brand'),
   assert.equals(
-    google_search_console.classify_site_query('www.mozilla.org', 'browser'),
+    google_search_console.classify_site_query('www.mozilla.org', 'mozilla', 'Discover'),
+    CAST(NULL AS STRING)
+  ),
+  assert.equals(
+    google_search_console.classify_site_query('www.mozilla.org', 'mozilla', 'Google News'),
+    CAST(NULL AS STRING)
+  ),
+  assert.equals(
+    google_search_console.classify_site_query('www.mozilla.org', NULL, 'Discover'),
+    CAST(NULL AS STRING)
+  ),
+  assert.equals(
+    google_search_console.classify_site_query('www.mozilla.org', NULL, 'Google News'),
+    CAST(NULL AS STRING)
+  ),
+  assert.equals(
+    google_search_console.classify_site_query('www.mozilla.org', NULL, 'Web'),
+    'Anonymized'
+  ),
+  assert.equals(
+    google_search_console.classify_site_query('www.mozilla.org', 'mozilla', 'Web'),
+    'Brand'
+  ),
+  assert.equals(
+    google_search_console.classify_site_query('www.mozilla.org', 'firefox', 'Web'),
+    'Brand'
+  ),
+  assert.equals(
+    google_search_console.classify_site_query('www.mozilla.org', 'browser', 'Web'),
     'Non-Brand'
   ),
   assert.equals(
-    google_search_console.classify_site_query('addons.mozilla.org', 'mozilla'),
+    google_search_console.classify_site_query('addons.mozilla.org', 'mozilla', 'Web'),
     'Unknown'
   ),

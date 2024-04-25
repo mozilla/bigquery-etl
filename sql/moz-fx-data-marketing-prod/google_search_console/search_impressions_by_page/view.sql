@@ -103,14 +103,10 @@ SELECT
     search_impressions.localized_site_country_code
   ) AS localized_site_country,
   search_impressions.query,
-  -- Discover and Google News search impressions never have `query` values.
-  IF(
-    search_impressions.search_type IN ('Discover', 'Google News'),
-    NULL,
-    mozfun.google_search_console.classify_site_query(
-      search_impressions.site_domain_name,
-      search_impressions.query
-    )
+  mozfun.google_search_console.classify_site_query(
+    search_impressions.site_domain_name,
+    search_impressions.query,
+    search_impressions.search_type
   ) AS query_type,
   search_impressions.is_anonymized,
   search_impressions.has_good_page_experience,

@@ -1,6 +1,17 @@
 WITH baseline AS (
   SELECT
-    *
+    * EXCEPT(
+      -- These were added as part of https://mozilla-hub.atlassian.net/browse/DENG-3462
+      -- to enable KPI metric calculations. This exclusion is to avoid potential compatibility
+      -- issues downstream from this query.
+      activity_segment,
+      is_dau,
+      is_wau,
+      is_mau,
+      is_daily_user,
+      is_weekly_user,
+      is_monthly_user,
+    )
   FROM
     `{{ project_id }}.{{ app_name }}.baseline_clients_last_seen`
   WHERE

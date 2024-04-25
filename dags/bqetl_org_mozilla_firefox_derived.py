@@ -417,8 +417,9 @@ with DAG(
             "kwindau@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
+        date_partition_parameter=None,
+        depends_on_past=True,
+        parameters=["submission_date:DATE:{{ds}}"],
     )
 
     firefox_ios_derived__ltv_states__v1 = bigquery_etl_query(

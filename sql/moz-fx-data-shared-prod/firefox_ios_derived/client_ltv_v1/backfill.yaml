@@ -1,7 +1,0 @@
-2024-04-24:
-  start_date: 2022-01-01
-  end_date: 2024-04-24
-  reason: Backfilling a new table for the growth program, part of JIRA ticket GROWTH-147, related to https://github.com/mozilla/bigquery-etl/pull/5411
-  watchers:
-  - kwindau@mozilla.com
-  status: Complete

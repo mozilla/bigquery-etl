@@ -84,7 +84,7 @@ SELECT
   ) AS is_allweek_regular_v1,
   BIT_COUNT(days_visited_1_uri_bits) >= 21 AS is_core_active_v1,
   CASE
-    WHEN BIT_COUNT(days_visited_1_uri_bits)
+    WHEN BIT_COUNT(days_active_bits)
       BETWEEN 1
       AND 6
       THEN 'infrequent_user'

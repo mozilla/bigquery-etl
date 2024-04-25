@@ -96,7 +96,7 @@ SELECT
       BETWEEN 14
       AND 20
       THEN 'regular_user'
-    WHEN BIT_COUNT(days_visited_1_uri_bits) >= 21
+    WHEN BIT_COUNT(days_active_bits) >= 21
       THEN 'core_user'
     ELSE 'other'
   END AS activity_segments_v1,

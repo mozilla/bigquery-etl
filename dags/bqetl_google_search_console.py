@@ -100,6 +100,20 @@ with DAG(
         )
     )
 
+    wait_for_google_search_console_mdn_url_impressions = (
+        BigQueryTablePartitionExistenceSensor(
+            task_id="wait_for_google_search_console_mdn_url_impressions",
+            project_id="moz-fx-data-marketing-prod",
+            dataset_id="searchconsole_mdn",
+            table_id="searchdata_url_impression",
+            partition_id="{{ data_interval_start.subtract(days=1) | ds_nodash }}",
+            gcp_conn_id="google_cloud_shared_prod",
+            deferrable=True,
+            poke_interval=datetime.timedelta(minutes=5),
+            timeout=datetime.timedelta(hours=8),
+        )
+    )
+
     wait_for_google_search_console_support_url_impressions = (
         BigQueryTablePartitionExistenceSensor(
             task_id="wait_for_google_search_console_support_url_impressions",
@@ -161,6 +175,20 @@ with DAG(
             task_id="wait_for_google_search_console_getpocket_site_impressions",
             project_id="moz-fx-data-marketing-prod",
             dataset_id="searchconsole_getpocket",
+            table_id="searchdata_site_impression",
+            partition_id="{{ data_interval_start.subtract(days=1) | ds_nodash }}",
+            gcp_conn_id="google_cloud_shared_prod",
+            deferrable=True,
+            poke_interval=datetime.timedelta(minutes=5),
+            timeout=datetime.timedelta(hours=8),
+        )
+    )
+
+    wait_for_google_search_console_mdn_site_impressions = (
+        BigQueryTablePartitionExistenceSensor(
+            task_id="wait_for_google_search_console_mdn_site_impressions",
+            project_id="moz-fx-data-marketing-prod",
+            dataset_id="searchconsole_mdn",
             table_id="searchdata_site_impression",
             partition_id="{{ data_interval_start.subtract(days=1) | ds_nodash }}",
             gcp_conn_id="google_cloud_shared_prod",
@@ -235,6 +263,10 @@ with DAG(
     )
 
     google_search_console_derived__search_impressions_by_page__v2.set_upstream(
+        wait_for_google_search_console_mdn_url_impressions
+    )
+
+    google_search_console_derived__search_impressions_by_page__v2.set_upstream(
         wait_for_google_search_console_support_url_impressions
     )
 
@@ -252,6 +284,10 @@ with DAG(
 
     google_search_console_derived__search_impressions_by_site__v2.set_upstream(
         wait_for_google_search_console_getpocket_site_impressions
+    )
+
+    google_search_console_derived__search_impressions_by_site__v2.set_upstream(
+        wait_for_google_search_console_mdn_site_impressions
     )
 
     google_search_console_derived__search_impressions_by_site__v2.set_upstream(

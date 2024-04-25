@@ -3,15 +3,20 @@ description: |-
   Google Search impressions aggregated by page for the following domains:
     * addons.mozilla.org
     * blog.mozilla.org
+    * developer.mozilla.org
     * getpocket.com
     * support.mozilla.org
     * www.mozilla.org
 
-  Anonymized search queries, and Discover and Google News search impressions are included from August 2023 onward.
+  For the developer.mozilla.org domain:
+    * Records from 2024-04-10 onward are from source data exported directly to BigQuery by Google.
+    * Records before 2024-04-10 are from source data synced to BigQuery by Fivetran.
 
-  Source data from before August 2023 was synced to BigQuery by Fivetran.
-  Source data from August 2023 onward was exported directly to BigQuery by Google.
-  See https://bugzilla.mozilla.org/show_bug.cgi?id=1764960#c34.
+  For the other domains:
+    * Records from 2023-08-01 onward are from source data exported directly to BigQuery by Google.
+    * Records before 2023-08-01 are from source data synced to BigQuery by Fivetran.
+
+  Anonymized search queries, and Discover and Google News search impressions are only included if the source data was exported directly to BigQuery by Google.
 owners:
 - srose@mozilla.com
 labels:
@@ -22,3 +27,5 @@ references:
   view.sql:
   - moz-fx-data-marketing-prod.google_search_console_derived.search_impressions_by_page_v1
   - moz-fx-data-marketing-prod.google_search_console_derived.search_impressions_by_page_v2
+  - moz-fx-data-shared-prod.static.country_codes_v1
+  - moz-fx-data-shared-prod.static.language_codes_v1

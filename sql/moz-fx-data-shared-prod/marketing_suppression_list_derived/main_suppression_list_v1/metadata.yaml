@@ -9,5 +9,6 @@ labels:
   owner1: leli
 scheduling:
   dag_name: bqetl_marketing_suppression_list
+  date_partition_parameter: null
 bigquery: null
 references: {}

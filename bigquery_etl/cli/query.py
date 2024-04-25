@@ -935,7 +935,7 @@ def _run_query(
             logging.error(e)
             sys.exit(1)
         except FileNotFoundError:
-            logging.warning("No metadata.yaml found for {}", query_file)
+            logging.warning("No metadata.yaml found for %s", query_file)
 
         if not use_public_table and destination_table is not None:
             # destination table was parsed by argparse, however if it wasn't modified to

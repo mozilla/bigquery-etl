@@ -9,12 +9,12 @@ from click.testing import CliRunner
 
 from bigquery_etl.cli.query import (
     _attach_metadata,
+    _run_query,
     backfill,
     create,
     info,
     paths_matching_name_pattern,
     schedule,
-    _run_query,
 )
 
 
@@ -707,8 +707,8 @@ class TestQuery:
     def test_run_query_billing_project(self, mock_bq_call, runner):
         """billing_project should change the dataset and project passed into bq."""
         with runner.isolated_filesystem():
-            query_file = (
-                Path("sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/query.sql")
+            query_file = Path(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/query.sql"
             )
             os.makedirs(query_file.parent)
             query_file.write_text("SELECT 1")
@@ -732,8 +732,8 @@ class TestQuery:
     def test_run_query_without_billing_project(self, mock_bq_call, runner):
         """dataset and project should be passed into bq as-is if not billing_project is given."""
         with runner.isolated_filesystem():
-            query_file = (
-                Path("sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/query.sql")
+            query_file = Path(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/query.sql"
             )
             os.makedirs(query_file.parent)
             query_file.write_text("SELECT 1")

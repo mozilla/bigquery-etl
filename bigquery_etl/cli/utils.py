@@ -14,7 +14,6 @@ from google.auth.exceptions import DefaultCredentialsError
 from google.cloud import bigquery
 
 from bigquery_etl.config import ConfigLoader
-from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.util.common import TempDatasetReference, project_dirs
 
 QUERY_FILE_RE = re.compile(
@@ -171,8 +170,6 @@ def qualify_table_references(
     if re.search(r"^\s*DECLARE\b", query_text, flags=re.MULTILINE):
         raise NotImplementedError("Cannot qualify table_references of query scripts")
 
-    # reformat for more consistent regex if running with locally edited queries
-    query_text = reformat(query_text)
     query = sqlglot.parse(query_text, read="bigquery")
 
     # tuples of (table identifier, replacement string)
@@ -198,7 +195,7 @@ def qualify_table_references(
             # project id is parsed as the catalog attribute
             # but information_schema region may also be parsed as catalog
             if table_expr.catalog.startswith("region-"):
-                project_name = f"{target_project}.{table_expr.catalog}"
+                project_name = f"{target_project}`.`{table_expr.catalog}"
             elif table_expr.catalog == "":  # no project id
                 project_name = target_project
             else:  # project id exists
@@ -213,9 +210,13 @@ def qualify_table_references(
 
     for identifier, replacement in table_replacements:
         if identifier.count(".") == 0:
-            # if no dataset/project, only replace if it follows a FROM or JOIN
-            regex = rf"(?P<from>(FROM|JOIN)\s+){identifier}(?![a-zA-Z0-9_`.])"
-            replacement = r"\g<from>" + replacement
+            # if no dataset and project, only replace if it follows a FROM, JOIN, or implicit cross join
+            regex = (
+                r"(?P<from>(FROM|JOIN)\s+)"
+                r"(?P<cross_join>[a-zA-Z0-9_`.\-]+\s*,\s*)?"
+                rf"{identifier}(?![a-zA-Z0-9_`.])"
+            )
+            replacement = r"\g<from>\g<cross_join>" + replacement
         else:
             identifier = identifier.replace(".", r"\.")
             # ensure match is against the full identifier and no project id already

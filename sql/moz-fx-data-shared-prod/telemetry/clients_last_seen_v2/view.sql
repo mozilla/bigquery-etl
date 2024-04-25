@@ -92,7 +92,7 @@ SELECT
       BETWEEN 7
       AND 13
       THEN 'casual_user'
-    WHEN BIT_COUNT(days_visited_1_uri_bits)
+    WHEN BIT_COUNT(days_active_bits)
       BETWEEN 14
       AND 20
       THEN 'regular_user'

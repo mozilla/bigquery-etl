@@ -716,7 +716,12 @@ def backfill(
             project, dataset, table = extract_from_query_path(query_file_path)
             client.get_table(f"{project}.{dataset}.{table}")
         except NotFound:
-            ctx.invoke(initialize, name=query_file, dry_run=dry_run)
+            ctx.invoke(
+                initialize,
+                name=query_file,
+                dry_run=dry_run,
+                billing_project=billing_project,
+            )
 
         backfill_query = partial(
             _backfill_query,
@@ -943,7 +948,7 @@ def _run_query(
             **addl_templates,
         )
 
-        # project ids need to be added to table references to allow
+        # project ids need to be added to table references to allow queries to run in a different project
         if billing_project is not None:
             if dataset_id is not None:
                 default_dataset = dataset_id

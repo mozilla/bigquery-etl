@@ -6,6 +6,7 @@ WITH days_since AS (
     DATE_DIFF(submission_date, first_seen_date, DAY) AS days_since_first_seen,
     DATE_DIFF(submission_date, second_seen_date, DAY) AS days_since_second_seen,
     mozfun.bits28.days_since_seen(days_seen_bits) AS days_since_seen,
+    mozfun.bits28.days_since_seen(days_active_bits) AS days_since_active,
     mozfun.bits28.days_since_seen(days_visited_1_uri_bits) AS days_since_visited_1_uri,
     mozfun.bits28.days_since_seen(days_visited_5_uri_bits) AS days_since_visited_5_uri,
     mozfun.bits28.days_since_seen(days_visited_10_uri_bits) AS days_since_visited_10_uri,

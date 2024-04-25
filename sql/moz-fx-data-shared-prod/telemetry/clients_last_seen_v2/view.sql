@@ -88,7 +88,7 @@ SELECT
       BETWEEN 1
       AND 6
       THEN 'infrequent_user'
-    WHEN BIT_COUNT(days_visited_1_uri_bits)
+    WHEN BIT_COUNT(days_active_bits)
       BETWEEN 7
       AND 13
       THEN 'casual_user'

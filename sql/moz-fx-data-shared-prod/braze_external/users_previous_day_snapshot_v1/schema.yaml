@@ -24,6 +24,9 @@ fields:
   name: update_timestamp
   type: TIMESTAMP
 - mode: NULLABLE
+  name: fxa_id_sha256
+  type: TIMESTAMP
+- mode: NULLABLE
   name: has_fxa
   type: BOOLEAN
 - mode: NULLABLE

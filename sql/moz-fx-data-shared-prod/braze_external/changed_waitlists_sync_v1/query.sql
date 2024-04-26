@@ -3,6 +3,8 @@ WITH max_update AS (
     MAX(UPDATED_AT) AS max_update_timestamp
   FROM
     `moz-fx-data-shared-prod.braze_external.changed_waitlists_sync_v1`
+  LIMIT
+    1
 )
 SELECT
   CURRENT_TIMESTAMP() AS UPDATED_AT,
@@ -21,15 +23,15 @@ SELECT
         )
         ORDER BY
           waitlists_array.update_timestamp DESC
-      ) AS newsletters
+      ) AS waitlists
     )
   ) AS PAYLOAD
 FROM
-  `moz-fx-data-shared-prod.braze_derived.waitlists_v1` AS waitlists,
-  -- CROSS JOIN
-  UNNEST(waitlists.waitlists) AS waitlists_array
-  -- max_update
-  -- WHERE
-  --   waitlists_array.update_timestamp > max_update.max_update_timestamp
+  `moz-fx-data-shared-prod.braze_derived.waitlists_v1` AS waitlists
+CROSS JOIN
+  UNNEST(waitlists.waitlists) AS waitlists_array,
+  max_update
+WHERE
+  waitlists_array.update_timestamp > (SELECT max_update_timestamp FROM max_update)
 GROUP BY
   waitlists.external_id;

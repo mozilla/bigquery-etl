@@ -28,3 +28,17 @@
   fxa_primary_email: user_2_primary@mail.com
   fxa_lang: DE
   first_service: service_1
+# user 3
+- external_id: user_3
+  email: user_3@mail.com
+  mailing_country: country_1
+  email_subscribe: subscribed
+  basket_token: token_3
+  email_lang: DE
+  create_timestamp: 2020-01-01 10:00:00+00:00
+  update_timestamp: 2021-01-01 14:00:00+00:00
+  fxa_id_sha256: fxa_user_3
+  has_fxa: true
+  fxa_primary_email: user_3_primary@mail.com
+  fxa_lang: DE
+  first_service: service_1

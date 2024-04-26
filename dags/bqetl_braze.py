@@ -197,9 +197,45 @@ with DAG(
         task_concurrency=1,
     )
 
+    braze_external__changed_users__v1 = bigquery_etl_query(
+        task_id="braze_external__changed_users__v1",
+        destination_table="changed_users_v1",
+        dataset_id="braze_external",
+        project_id="moz-fx-data-shared-prod",
+        owner="cbeck@mozilla.com",
+        email=["cbeck@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
+    braze_external__changed_users_sync__v1 = bigquery_etl_query(
+        task_id="braze_external__changed_users_sync__v1",
+        destination_table="changed_users_sync_v1",
+        dataset_id="braze_external",
+        project_id="moz-fx-data-shared-prod",
+        owner="cbeck@mozilla.com",
+        email=["cbeck@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
     braze_external__changed_waitlists_sync__v1 = bigquery_etl_query(
         task_id="braze_external__changed_waitlists_sync__v1",
         destination_table="changed_waitlists_sync_v1",
+        dataset_id="braze_external",
+        project_id="moz-fx-data-shared-prod",
+        owner="cbeck@mozilla.com",
+        email=["cbeck@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
+    braze_external__delete_users_sync__v1 = bigquery_etl_query(
+        task_id="braze_external__delete_users_sync__v1",
+        destination_table="delete_users_sync_v1",
         dataset_id="braze_external",
         project_id="moz-fx-data-shared-prod",
         owner="cbeck@mozilla.com",
@@ -263,6 +299,20 @@ with DAG(
         braze_derived__subscriptions__v1
     )
 
+    braze_external__changed_users__v1.set_upstream(braze_derived__users__v1)
+
+    braze_external__changed_users__v1.set_upstream(
+        braze_external__users_previous_day_snapshot__v1
+    )
+
+    braze_external__changed_users_sync__v1.set_upstream(
+        braze_external__changed_users__v1
+    )
+
     braze_external__changed_waitlists_sync__v1.set_upstream(
         braze_derived__waitlists__v1
+    )
+
+    braze_external__delete_users_sync__v1.set_upstream(
+        braze_external__changed_users__v1
     )

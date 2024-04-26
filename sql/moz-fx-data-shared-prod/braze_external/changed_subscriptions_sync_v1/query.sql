@@ -26,9 +26,8 @@ SELECT
 FROM
   `moz-fx-data-shared-prod.braze_derived.subscriptions_v1` AS subscriptions
 CROSS JOIN
-  UNNEST(subscriptions.subscriptions) AS subscriptions_array,
-  max_update
+  UNNEST(subscriptions.subscriptions) AS subscriptions_array
 WHERE
-  subscriptions_array.update_timestamp > max_update.max_update_timestamp
+  subscriptions_array.update_timestamp > (SELECT max_update_timestamp FROM max_update)
 GROUP BY
   subscriptions.external_id;

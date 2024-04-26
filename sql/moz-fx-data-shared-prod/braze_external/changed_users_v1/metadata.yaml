@@ -1,0 +1,33 @@
+friendly_name: Braze Changed Users
+description: |-
+  This table represents changes to user profiles from the previous
+  DAG run. It enables us to build the changed users sync and
+  delete users tables.
+
+  See https://mozilla-hub.atlassian.net/browse/DENG-3182
+owners:
+- cbeck@mozilla.com
+labels:
+  schedule: daily
+  owner: cbeck
+  dag: bqetl_braze
+  owner1: cbeck
+scheduling:
+  dag_name: bqetl_braze
+  date_partition_parameter: null
+bigquery:
+  time_partitioning: null
+  range_partitioning: null
+  clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:braze
+  - workgroup:braze/ingestion-mozilla-dev
+- role: roles/bigquery.dataEditor
+  members:
+  - workgroup:braze/writers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.braze_derived.users_v1
+  - moz-fx-data-shared-prod.braze_external.users_previous_day_snapshot_v1

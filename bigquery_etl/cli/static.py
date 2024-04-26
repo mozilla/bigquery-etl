@@ -8,15 +8,21 @@ import os
 
 import rich_click as click
 from google.cloud import bigquery
+from google.cloud.bigquery import DatasetReference
 
 from bigquery_etl.cli.utils import project_id_option
 from bigquery_etl.config import ConfigLoader
-from bigquery_etl.metadata.parse_metadata import DATASET_METADATA_FILE, DatasetMetadata
+from bigquery_etl.metadata.parse_metadata import (
+    DATASET_METADATA_FILE,
+    METADATA_FILE,
+    DatasetMetadata,
+    Metadata,
+)
+from bigquery_etl.metadata.publish_metadata import publish_metadata
 from bigquery_etl.util.common import project_dirs
 
 DATA_FILENAME = "data.csv"
 SCHEMA_FILENAME = "schema.json"
-DESCRIPTION_FILENAME = "description.txt"
 
 
 @click.group("static", help="Commands for working with static CSV files.")
@@ -58,20 +64,20 @@ def publish(project_id):
             if not os.path.exists(schema_file_path):
                 schema_file_path = None
 
-            description_file_path = os.path.join(table_dir, DESCRIPTION_FILENAME)
-            if not os.path.exists(description_file_path):
-                description_file_path = None
+            metadata_file_path = os.path.join(table_dir, METADATA_FILE)
+            if not os.path.exists(metadata_file_path):
+                metadata_file_path = None
 
             _load_table(
                 data_file_path,
                 schema_file_path,
-                description_file_path,
+                metadata_file_path,
                 target_project,
             )
 
 
 def _load_table(
-    data_file_path, schema_file_path=None, description_file_path=None, project=None
+    data_file_path, schema_file_path=None, metadata_file_path=None, project=None
 ):
     # Assume path is ...project/dataset/table/data.csv
     path_split = os.path.normcase(data_file_path).split(os.path.sep)
@@ -84,7 +90,7 @@ def _load_table(
     )
 
     client = bigquery.Client(project)
-    dataset_ref = client.dataset(dataset_id, project=project)
+    dataset_ref = DatasetReference(project, dataset_id)
     table_ref = dataset_ref.table(table_id)
 
     job_config = bigquery.LoadJobConfig(
@@ -118,12 +124,9 @@ def _load_table(
 
     job.result()
 
-    if description_file_path is not None:
-        with open(description_file_path) as description_file:
-            description = description_file.read()
-            table = client.get_table(table_ref)
-            table.description = description
-            client.update_table(table, ["description"])
+    if metadata_file_path is not None:
+        metadata = Metadata.from_file(metadata_file_path)
+        publish_metadata(client, project, dataset_id, table_id, metadata)
 
 
 @functools.lru_cache

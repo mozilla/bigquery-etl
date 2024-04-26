@@ -4,8 +4,6 @@ description: |-
   Captures activity history of each client in 28-day
   windows for each submission date based on baseline pings.
 
-  # TODO: add information about the KPI fields here.
-
   Clustering fields: `normalized_channel`, `sample_id`
 
   See also: `baseline_clients_daily`

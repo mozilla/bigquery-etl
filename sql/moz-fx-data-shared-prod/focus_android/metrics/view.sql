@@ -220,7 +220,12 @@ SELECT
       metrics.labeled_counter.pdfjs_editing_highlight_kind,
       metrics.labeled_counter.pdfjs_editing_highlight_method,
       metrics.labeled_counter.pdfjs_editing_highlight_number_of_colors,
-      metrics.labeled_counter.cert_verifier_crlite_status
+      metrics.labeled_counter.cert_verifier_crlite_status,
+      metrics.labeled_counter.webrtcdtls_cipher,
+      metrics.labeled_counter.webrtcdtls_client_handshake_result,
+      metrics.labeled_counter.webrtcdtls_protocol_version,
+      metrics.labeled_counter.webrtcdtls_server_handshake_result,
+      metrics.labeled_counter.webrtcdtls_srtp_cipher
     ) AS `labeled_counter`,
     metrics.memory_distribution,
     STRUCT(
@@ -470,7 +475,12 @@ SELECT
       metrics.labeled_counter.pdfjs_editing_highlight_kind,
       metrics.labeled_counter.pdfjs_editing_highlight_method,
       metrics.labeled_counter.pdfjs_editing_highlight_number_of_colors,
-      metrics.labeled_counter.cert_verifier_crlite_status
+      metrics.labeled_counter.cert_verifier_crlite_status,
+      metrics.labeled_counter.webrtcdtls_cipher,
+      metrics.labeled_counter.webrtcdtls_client_handshake_result,
+      metrics.labeled_counter.webrtcdtls_protocol_version,
+      metrics.labeled_counter.webrtcdtls_server_handshake_result,
+      metrics.labeled_counter.webrtcdtls_srtp_cipher
     ) AS `labeled_counter`,
     metrics.memory_distribution,
     STRUCT(

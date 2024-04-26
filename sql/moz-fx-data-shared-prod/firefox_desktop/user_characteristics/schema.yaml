@@ -371,6 +371,72 @@ fields:
       description: 'The target frame rate in frames-per-second.
 
         '
+    - name: characteristics_font_default_modified
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of other modified font.default prefs.
+
+        '
+    - name: characteristics_font_minimum_size_modified
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of other modified font.minimum-size prefs.
+
+        '
+    - name: characteristics_font_name_list_cursive_modified
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of modified font.name-list.cursive. prefs.
+
+        '
+    - name: characteristics_font_name_list_monospace_modified
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of modified font.name-list.monospace. prefs.
+
+        '
+    - name: characteristics_font_name_list_sans_serif_modified
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of modified font.name-list.sans-serif. prefs.
+
+        '
+    - name: characteristics_font_name_list_serif_modified
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of modified font.name-list.serif. prefs.
+
+        '
+    - name: characteristics_font_name_monospace_modified
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of other modified font.name.monospace prefs.
+
+        '
+    - name: characteristics_font_name_sans_serif_modified
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of other modified font.name.sans-serif prefs.
+
+        '
+    - name: characteristics_font_name_serif_modified
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of other modified font.name.serif prefs.
+
+        '
+    - name: characteristics_font_size_monospace_modified
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of other modified font.size.monospace prefs.
+
+        '
+    - name: characteristics_font_size_variable_modified
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of other modified font.size.variable prefs.
+
+        '
   - name: string
     type: RECORD
     mode: NULLABLE
@@ -399,6 +465,93 @@ fields:
       type: STRING
       mode: NULLABLE
       description: 'The locale used by the host OS for localization.
+
+        '
+    - name: characteristics_font_default_default_group
+      type: STRING
+      mode: NULLABLE
+      description: 'The value of the font.default.<default language group> pref
+
+        '
+    - name: characteristics_font_default_western
+      type: STRING
+      mode: NULLABLE
+      description: 'The value of the font.default.x-western pref
+
+        '
+    - name: characteristics_font_minimum_size_default_group
+      type: STRING
+      mode: NULLABLE
+      description: 'The value of the font.minimum-size.<default language group> pref
+
+        '
+    - name: characteristics_font_minimum_size_western
+      type: STRING
+      mode: NULLABLE
+      description: 'The value of the font.minimum-size.x-western pref
+
+        '
+    - name: characteristics_font_name_monospace_default_group
+      type: STRING
+      mode: NULLABLE
+      description: 'The value of the font.name.monospace.<default language group>
+        pref
+
+        '
+    - name: characteristics_font_name_monospace_western
+      type: STRING
+      mode: NULLABLE
+      description: 'The value of the font.name.monospace.x-western pref
+
+        '
+    - name: characteristics_font_name_sans_serif_default_group
+      type: STRING
+      mode: NULLABLE
+      description: 'The value of the font.name.sans-serif.<default language group>
+        pref
+
+        '
+    - name: characteristics_font_name_sans_serif_western
+      type: STRING
+      mode: NULLABLE
+      description: 'The value of the font.name.sans-serif.x-western pref
+
+        '
+    - name: characteristics_font_name_serif_default_group
+      type: STRING
+      mode: NULLABLE
+      description: 'The value of the font.name.serif.<default language group> pref
+
+        '
+    - name: characteristics_font_name_serif_western
+      type: STRING
+      mode: NULLABLE
+      description: 'The value of the font.name.serif.x-western pref
+
+        '
+    - name: characteristics_font_size_monospace_default_group
+      type: STRING
+      mode: NULLABLE
+      description: 'The value of the font.size.monospace.<default language group>
+        pref
+
+        '
+    - name: characteristics_font_size_monospace_western
+      type: STRING
+      mode: NULLABLE
+      description: 'The value of the font.size.monospace.x-western pref
+
+        '
+    - name: characteristics_font_size_variable_default_group
+      type: STRING
+      mode: NULLABLE
+      description: 'The value of the font.size.variable.<default language group> pref
+
+        '
+    - name: characteristics_font_size_variable_western
+      type: STRING
+      mode: NULLABLE
+      description: 'The value of the font.size.variable.x-western pref
 
         '
   - name: uuid
@@ -488,6 +641,18 @@ fields:
       type: BOOLEAN
       mode: NULLABLE
       description: 'Sending "global privacy control" HTTP header
+
+        '
+    - name: characteristics_font_name_list_emoji_modified
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether the pref font.name-list.emoji was modified.
+
+        '
+    - name: characteristics_prefs_browser_display_use_document_fonts
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Allow pages to choose their own fonts.
 
         '
   - name: text2

@@ -56,7 +56,7 @@ states AS (
     extracted_fields e
   LEFT JOIN
     (SELECT DISTINCT country FROM `moz-fx-data-shared-prod.ltv.ios_state_values`) AS countries
-    ON extracted_fields.first_reported_country = countries.country
+    ON COALESCE(e.first_reported_country, 'ROW') = countries.country
 )
 SELECT
   client_id,
@@ -73,5 +73,5 @@ FROM
 CROSS JOIN
   UNNEST(markov_states)
 JOIN
-  `moz-fx-data-shared-prod.firefox_ios.ltv_state_values`
+  `moz-fx-data-shared-prod.ltv.ios_state_values` 
   USING (country, state_function, state)

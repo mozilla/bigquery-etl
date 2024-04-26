@@ -23,6 +23,17 @@
   subscribed: true
   unsub_reason: for reasons
   update_timestamp: 2021-01-01 13:00:00+00:00
+- email_id: user_1
+  name: waitlist_3
+  fields: '{
+    "geo": "DE",
+    "platform": "platform_3"
+  }'
+  source: source_3
+  create_timestamp: 2020-01-01 10:00:00+00:00
+  subscribed: false
+  unsub_reason: for reasons
+  update_timestamp: 2021-01-01 13:00:00+00:00
 # user 2 unsubscribed from two waitlists
 - email_id: user_2
   name: waitlist_2

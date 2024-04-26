@@ -1,7 +1,7 @@
 # braze products
 ---
 # user 1
-- external_id: external_id_1
+- external_id: user_1
   products:
     - plan_id: 1
       plan_name: plan_1
@@ -15,7 +15,7 @@
 # user 2
 # user 3
 # user 4
-- external_id: external_id_4
+- external_id: user_4_only_products
   products:
     - plan_id: 1
       plan_name: plan_1

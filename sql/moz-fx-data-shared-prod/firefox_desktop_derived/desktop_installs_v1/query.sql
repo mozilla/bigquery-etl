@@ -1,11 +1,11 @@
 WITH download_token_info AS (
   SELECT
-    stub.jsonPayload.fields.dltoken AS attribution_dltoken,
-    MIN(DATE(stub.timestamp)) AS download_date
+    s.jsonPayload.fields.dltoken AS attribution_dltoken,
+    MIN(DATE(s.`timestamp`)) AS download_date
   FROM
-    `moz-fx-stubattribut-prod-32a5.stubattribution_prod.stdout` AS stub
+    `moz-fx-stubattribut-prod-32a5.stubattribution_prod.stdout` AS s
   GROUP BY
-    stub.jsonPayload.fields.dltoken
+    s.jsonPayload.fields.dltoken
 ),
 install_ping AS (
   SELECT

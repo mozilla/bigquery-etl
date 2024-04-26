@@ -1,12 +1,11 @@
--- Query for firefox_desktop_derived.desktop_installs_v1
-            -- For more information on writing queries see:
-            -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
 WITH download_token_info AS (
   SELECT
-    dltoken AS attribution_dltoken,
-    download_date
+    stub.jsonPayload.fields.dltoken AS dltoken,
+    MIN(DATE(stub.timestamp)) AS download_date
   FROM
-    `moz-fx-data-marketing-prod.ga_derived.downloads_with_attribution_v1`
+    `moz-fx-stubattribut-prod-32a5.stubattribution_prod.stdout` AS stub
+  GROUP BY
+    stub.jsonPayload.fields.dltoken
 ),
 install_ping AS (
   SELECT

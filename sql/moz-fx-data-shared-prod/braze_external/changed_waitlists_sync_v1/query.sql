@@ -29,8 +29,7 @@ SELECT
 FROM
   `moz-fx-data-shared-prod.braze_derived.waitlists_v1` AS waitlists
 CROSS JOIN
-  UNNEST(waitlists.waitlists) AS waitlists_array,
-  max_update
+  UNNEST(waitlists.waitlists) AS waitlists_array
 WHERE
   waitlists_array.update_timestamp > (SELECT max_update_timestamp FROM max_update)
 GROUP BY

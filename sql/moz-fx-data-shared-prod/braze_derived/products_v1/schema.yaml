@@ -1,6 +1,6 @@
 fields:
 - mode: NULLABLE
-  name: fxa_id_sha256
+  name: external_id
   type: STRING
 - fields:
   - mode: NULLABLE

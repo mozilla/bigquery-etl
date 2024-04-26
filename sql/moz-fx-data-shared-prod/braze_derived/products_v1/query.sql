@@ -1,14 +1,14 @@
 SELECT
-  subscriptions.fxa_uid AS fxa_id_sha256,
+  fxa.email_id AS external_id,
   ARRAY_AGG(
     STRUCT(
-      subscriptions.plan_id,
-      subscriptions.product_id,
-      subscriptions.status,
-      subscriptions.plan_started_at,
-      subscriptions.plan_ended_at,
-      subscriptions.plan_interval,
-      subscriptions.plan_interval_count,
+      subscriptions.plan_id AS plan_id,
+      subscriptions.product_id AS product_id,
+      subscriptions.status AS status,
+      subscriptions.plan_started_at AS plan_started_at,
+      subscriptions.plan_ended_at AS plan_ended_at,
+      subscriptions.plan_interval AS plan_interval,
+      subscriptions.plan_interval_count AS plan_interval_count,
       subscriptions.event_timestamp AS update_timestamp
     )
     ORDER BY
@@ -27,4 +27,4 @@ INNER JOIN
   `moz-fx-data-shared-prod.braze_derived.users_v1` AS users
   ON users.external_id = fxa.email_id
 GROUP BY
-  fxa_id_sha256;
+  email_id;

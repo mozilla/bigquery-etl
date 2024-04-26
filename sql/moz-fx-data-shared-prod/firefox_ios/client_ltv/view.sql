@@ -51,7 +51,7 @@ states AS (
           e.active,
           e.max_weeks
         ) AS `state`,
-        'get_state_ios_v2' AS state_function
+        'state_ios_v2' AS state_function
       )
     ] AS markov_states
   FROM
@@ -76,4 +76,4 @@ CROSS JOIN
   UNNEST(markov_states)
 JOIN
   `moz-fx-data-shared-prod.ltv.ios_state_values`
-  USING (country, state_function, state)
+  USING (country, state_function, `state`)

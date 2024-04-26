@@ -25,9 +25,8 @@ SELECT
 FROM
   `moz-fx-data-shared-prod.braze_derived.newsletters_v1` AS newsletters
 CROSS JOIN
-  UNNEST(newsletters.newsletters) AS newsletters_array,
-  max_update
+  UNNEST(newsletters.newsletters) AS newsletters_array
 WHERE
-  newsletters_array.update_timestamp > max_update.max_update_timestamp
+  newsletters_array.update_timestamp > (SELECT max_update_timestamp FROM max_update)
 GROUP BY
   newsletters.external_id;

@@ -1,3 +1,7 @@
+--Params Note: Set these same values in firefox_ios.ltv_states
+{% set max_weeks = 32 %}
+{% set death_time = 160 %}
+{% set lookback = 28 %}
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.firefox_ios.client_ltv`
 AS
@@ -14,13 +18,18 @@ WITH extracted_fields AS (
     ad_clicks,
     adjust_network,
     first_reported_country,
-    first_reported_isp
-    --add new cols below
-    --? AS death_time,
-    --? AS pattern,
-    -- ? AS active,
-    --? AS max_weeks
-    --add new cols above
+    first_reported_isp,
+    {{ death_time }} AS death_time,
+    {{ max_weeks }} AS max_weeks,
+    BIT_COUNT(
+      `mozfun`.bytes.extract_bits(days_seen_bytes, - {{lookback}}, {{lookback}})
+    ) AS pattern,
+    IF(
+      (durations > 0)
+      AND (BIT_COUNT(`mozfun`.bytes.extract_bits(days_seen_bytes, -1, 1)) = 1),
+      1,
+      0
+    ) AS active
   FROM
     `moz-fx-data-shared-prod.firefox_ios_derived.client_ltv_v1`
 ),
@@ -29,23 +38,19 @@ states AS (
     e.client_id,
     e.sample_id,
     e.as_of_date,
-  --put these into the function
     e.first_seen_date,
-    e.days_seen_bytes,
-    e.durations,
-    e.ad_clicks,
-    e.adjust_network,
-    e.first_reported_isp,
-  --put these into the function
     COALESCE(countries.country, "ROW") AS country,
-    mozfun.ltv.get_state_ios_v2(
-      e.days_since_first_seen,
-      e.days_since_seen,
-      e.as_of_date,
-      e.death_time,
-      e.pattern,
-      e.active,
-      e.max_weeks
+    STRUCT(
+      mozfun.ltv.get_state_ios_v2(
+        e.days_since_first_seen,
+        e.days_since_seen,
+        e.as_of_date,
+        e.death_time,
+        e.pattern,
+        e.active,
+        e.max_weeks
+      ) AS state,
+      'get_state_ios_v2' AS state_function
     )
   FROM
     extracted_fields e
@@ -68,5 +73,5 @@ FROM
 CROSS JOIN
   UNNEST(markov_states)
 JOIN
-  ?
-  USING (country, state_function, state) --join
+  `moz-fx-data-shared-prod.firefox_ios.ltv_state_values`
+  USING (country, state_function, state)

@@ -1,6 +1,6 @@
 WITH download_token_info AS (
   SELECT
-    stub.jsonPayload.fields.dltoken AS dltoken,
+    stub.jsonPayload.fields.dltoken AS attribution_dltoken,
     MIN(DATE(stub.timestamp)) AS download_date
   FROM
     `moz-fx-stubattribut-prod-32a5.stubattribution_prod.stdout` AS stub

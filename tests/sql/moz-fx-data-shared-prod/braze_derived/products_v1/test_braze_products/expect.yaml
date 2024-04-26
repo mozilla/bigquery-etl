@@ -1,7 +1,7 @@
 # expect braze products
 ---
 # user 1
-- external_id: external_id_1
+- external_id: user_1
   products:
     - plan_id: plan_1
       product_id: prod_1
@@ -28,7 +28,7 @@
       plan_interval_count: 1
       update_timestamp: 2022-12-01 10:00:00+00:00
 # user 2
-- external_id: external_id_2
+- external_id: user_2
   products:
     - plan_id: plan_1
       product_id: prod_1
@@ -39,7 +39,7 @@
       plan_interval_count: 3
       update_timestamp: 2020-12-01 10:00:00+00:00
 # user 3 no active subscriptions
-- external_id: external_id_3
+- external_id: user_3
   products:
     - plan_id: plan_1
       product_id: prod_1

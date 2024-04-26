@@ -62,7 +62,7 @@ SELECT
       ping_info.parsed_end_time
     ) AS ping_info
   ),
-  event_offset + 1 AS event_number,
+  CONCAT(document_id, '-', event_offset) AS event_id,
   event.timestamp AS event_timestamp,
   event.category AS event_category,
   event.name AS event_name,

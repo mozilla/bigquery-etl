@@ -62,10 +62,11 @@ SELECT
       ping_info.parsed_end_time
     ) AS ping_info
   ),
+  event_offset + 1 AS event_number,
   event.timestamp AS event_timestamp,
   event.category AS event_category,
   event.name AS event_name,
   event.extra AS event_extra
 FROM `{{ project_id }}.{{ dataset }}.events` AS e
-CROSS JOIN UNNEST(e.events) AS event
+CROSS JOIN UNNEST(e.events) AS event WITH OFFSET AS event_offset
 {% endfor %}

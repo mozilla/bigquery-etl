@@ -62,18 +62,6 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_ga_derived__downloads_with_attribution__v1 = ExternalTaskSensor(
-        task_id="wait_for_ga_derived__downloads_with_attribution__v1",
-        external_dag_id="bqetl_google_analytics_derived",
-        external_task_id="ga_derived__downloads_with_attribution__v1",
-        execution_delta=datetime.timedelta(seconds=3300),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
     firefox_desktop_derived__desktop_installs__v1 = bigquery_etl_query(
         task_id="firefox_desktop_derived__desktop_installs__v1",
         destination_table="desktop_installs_v1",
@@ -87,8 +75,4 @@ with DAG(
 
     firefox_desktop_derived__desktop_installs__v1.set_upstream(
         wait_for_copy_deduplicate_all
-    )
-
-    firefox_desktop_derived__desktop_installs__v1.set_upstream(
-        wait_for_ga_derived__downloads_with_attribution__v1
     )

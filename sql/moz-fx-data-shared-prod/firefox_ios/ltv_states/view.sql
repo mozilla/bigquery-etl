@@ -1,3 +1,4 @@
+--Params note: Set these same values in firefox_ios.client_ltv
 {% set max_weeks = 32 %}
 {% set death_time = 160 %}
 {% set lookback = 28 %}

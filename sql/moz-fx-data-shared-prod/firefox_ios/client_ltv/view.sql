@@ -40,18 +40,20 @@ states AS (
     e.as_of_date,
     e.first_seen_date,
     COALESCE(countries.country, "ROW") AS country,
-    STRUCT(
-      mozfun.ltv.get_state_ios_v2(
-        e.days_since_first_seen,
-        e.days_since_seen,
-        e.as_of_date,
-        e.death_time,
-        e.pattern,
-        e.active,
-        e.max_weeks
-      ) AS state,
-      'get_state_ios_v2' AS state_function
-    )
+    [
+      STRUCT(
+        mozfun.ltv.get_state_ios_v2(
+          e.days_since_first_seen,
+          e.days_since_seen,
+          e.as_of_date,
+          e.death_time,
+          e.pattern,
+          e.active,
+          e.max_weeks
+        ) AS `state`,
+        'get_state_ios_v2' AS state_function
+      )
+    ] AS markov_states
   FROM
     extracted_fields e
   LEFT JOIN
@@ -73,5 +75,5 @@ FROM
 CROSS JOIN
   UNNEST(markov_states)
 JOIN
-  `moz-fx-data-shared-prod.ltv.ios_state_values` 
+  `moz-fx-data-shared-prod.ltv.ios_state_values`
   USING (country, state_function, state)

@@ -194,44 +194,30 @@ def deploy(
             if remove_updated_artifacts:
                 shutil.rmtree(artifact_test_path)
 
-            # rename test files
-            for test_file_path in map(Path, glob(f"{TEST_DIR}/**/*", recursive=True)):
-                for test_dep_file in artifact_files:
-                    test_dep_project = test_dep_file.parent.parent.parent.name
-                    test_dep_dataset = test_dep_file.parent.parent.name
-                    test_dep_name = test_dep_file.parent.name
+        # rename test files
+        for test_file_path in map(Path, glob(f"{TEST_DIR}/**/*", recursive=True)):
+            test_file_suffix = test_file_path.suffix
+            if test_file_path.name in (
+                f"{artifact_project}.{artifact_dataset}.{artifact_name}{test_file_suffix}",
+                f"{artifact_project}.{artifact_dataset}.{artifact_name}.schema{test_file_suffix}",
+            ) or (
+                test_file_path.name
+                in (
+                    f"{artifact_dataset}.{artifact_name}{test_file_suffix}",
+                    f"{artifact_dataset}.{artifact_name}.schema{test_file_suffix}",
+                )
+                and artifact_project in test_file_path.parent.parts
+            ):
+                new_test_file_name = (
+                    f"{project_id}.{new_artifact_dataset}.{artifact_name}"
+                )
+                if test_file_path.name.endswith(f".schema{test_file_suffix}"):
+                    new_test_file_name += ".schema"
+                new_test_file_name += test_file_suffix
 
-                    test_file_suffix = test_file_path.suffix
-                    if test_file_path.name in (
-                        f"{test_dep_project}.{test_dep_dataset}.{test_dep_name}{test_file_suffix}",
-                        f"{test_dep_project}.{test_dep_dataset}.{test_dep_name}.schema{test_file_suffix}",
-                    ) or (
-                        test_file_path.name
-                        in (
-                            f"{test_dep_dataset}.{test_dep_name}{test_file_suffix}",
-                            f"{test_dep_dataset}.{test_dep_name}.schema{test_file_suffix}",
-                        )
-                        and test_dep_project == artifact_project
-                    ):
-                        new_test_dep_dataset = (
-                            f"{test_dep_dataset}_{artifact_project.replace('-', '_')}"
-                        )
-
-                        if dataset_suffix:
-                            new_test_dep_dataset = (
-                                f"{new_test_dep_dataset}_{dataset_suffix}"
-                            )
-
-                        new_test_file_name = (
-                            f"{project_id}.{new_test_dep_dataset}.{test_dep_name}"
-                        )
-                        if test_file_path.name.endswith(f".schema{test_file_suffix}"):
-                            new_test_file_name += ".schema"
-                        new_test_file_name += test_file_suffix
-
-                        new_test_file_path = test_file_path.parent / new_test_file_name
-                        if not new_test_file_path.exists():
-                            test_file_path.rename(new_test_file_path)
+                new_test_file_path = test_file_path.parent / new_test_file_name
+                if not new_test_file_path.exists():
+                    test_file_path.rename(new_test_file_path)
 
     # remove artifacts from the "prod" folders
     if remove_updated_artifacts:

@@ -1,38 +1,39 @@
-CREATE TEMP FUNCTION normalize_browser(browser STRING) AS (
-  CASE
-    WHEN `moz-fx-data-shared-prod.udf.ga_is_mozilla_browser`(browser)
-      THEN 'Firefox'
-    WHEN browser IN ('Internet Explorer')
-      THEN 'MSIE'
-    WHEN browser IN ('Edge')
-      THEN 'Edge'
-    WHEN browser IN ('Chrome')
-      THEN 'Chrome'
-    WHEN browser IN ('Safari')
-      THEN 'Safari'
-    WHEN browser IN ('(not set)')
-      THEN NULL
-    WHEN browser IS NULL
-      THEN NULL
-    ELSE 'Other'
-  END
-);
+-- CREATE TEMP FUNCTION normalize_browser(browser STRING) AS (
+--   CASE
+--     WHEN `moz-fx-data-shared-prod.udf.ga_is_mozilla_browser`(browser)
+--       THEN 'Firefox'
+--     WHEN browser IN ('Internet Explorer')
+--       THEN 'MSIE'
+--     WHEN browser IN ('Edge')
+--       THEN 'Edge'
+--     WHEN browser IN ('Chrome')
+--       THEN 'Chrome'
+--     WHEN browser IN ('Safari')
+--       THEN 'Safari'
+--     WHEN browser IN ('(not set)')
+--       THEN NULL
+--     WHEN browser IS NULL
+--       THEN NULL
+--     ELSE 'Other'
+--   END
+-- );
 
-CREATE TEMP FUNCTION normalize_ga_os(os STRING, nrows INTEGER) AS (
-  CASE
-    WHEN nrows > 1
-      THEN NULL
-    WHEN os IS NULL
-      THEN NULL
-    WHEN os LIKE 'Macintosh%'
-      THEN 'Mac'  -- these values are coming from GA.
-    ELSE mozfun.norm.os(os)
-  END
-);
+-- CREATE TEMP FUNCTION normalize_ga_os(os STRING, nrows INTEGER) AS (
+--   CASE
+--     WHEN nrows > 1
+--       THEN NULL
+--     WHEN os IS NULL
+--       THEN NULL
+--     WHEN os LIKE 'Macintosh%'
+--       THEN 'Mac'  -- these values are coming from GA.
+--     ELSE mozfun.norm.os(os)
+--   END
+-- );
 
 
 WITH
 -- Extract all the download rows, de-duping and tracking number of duplicates per download token.
+-- Also filter out null/empty strings for stub_visit_ids and stub_download_session_ids
 stub_downloads AS (
   SELECT
     stub.jsonPayload.fields.visit_id AS stub_visit_id,
@@ -48,6 +49,10 @@ stub_downloads AS (
     DATE(stub.timestamp) = "2024-02-15"
     -- AND DATE(stub.timestamp) <= "2024-02-20"
     AND stub.jsonPayload.fields.log_type = 'download_started'
+    AND stub.jsonPayload.fields.visit_id NOT LIKE ("(not set)")
+    AND stub.jsonPayload.fields.session_id NOT LIKE ("(not set)")
+    AND NULLIF(stub.jsonPayload.fields.visit_id, "") IS NOT NULL
+    AND NULLIF(stub.jsonPayload.fields.session_id, "") IS NOT NULL
   GROUP BY
     stub_visit_id,
     stub_download_session_id,
@@ -138,14 +143,10 @@ SELECT
   ph.browser_version,
   ph.language,
   ph.page_path,
-  gav.time_on_site,
-  gav.had_download_event,
   SUM(CASE WHEN ph.hit_type = 'PAGE' then 1 else 0 end) AS page_hits,
   COUNT(distinct(CASE WHEN ph.hit_type = 'PAGE' THEN ph.page_path ELSE NULL END)) AS unique_page_hits,
   MAX(CASE WHEN ph.is_entrance is true then ph.page_path ELSE NULL END) as landing_page
 FROM `moz-fx-data-marketing-prod.ga_derived.www_site_hits_v2`  ph
-LEFT JOIN ga_sessions_time_on_site gav
-  ON gav.visit_identifier = ph.visit_identifier
 WHERE date = "2024-02-14"
   GROUP BY
   ph.full_visitor_id,
@@ -161,9 +162,7 @@ WHERE date = "2024-02-14"
   ph.browser,
   ph.browser_version,
   ph.language,
-  ph.page_path,
-  gav.time_on_site,
-  gav.had_download_event
+  ph.page_path
 )
 ,
 -- join stub_sessions with ga_sessions using full_visitor_id
@@ -190,38 +189,50 @@ downloads_with_ga_sessions AS (
   ph.browser_version,
   ph.language,
   ph.page_path,
-  ph.time_on_site,
+  gav.time_on_site,
   ph.page_hits,
   ph.unique_page_hits,
   ph.landing_page,
-  ph.had_download_event
+  gav.had_download_event,
  FROM stub_download_ids_ga_session_ids sd
  LEFT JOIN page_hits ph ON
  ph.full_visitor_id = sd.full_visitor_id
  AND sd.download_date = ph.submission_date
+ LEFT JOIN ga_sessions_time_on_site gav
+  ON gav.visit_identifier = ph.visit_identifier
 )
 
-SELECT dltoken,
-  time_on_site,
-  ad_content,
-  campaign,
-  medium,
-  source,
-  landing_page,
-  country,
-  -- normalized_country_code,
-  device_category,
-  os,
-  -- normalized_os,
-  browser,
+SELECT
+  dgs.dltoken,
+  dgs.time_on_site,
+  dgs.ad_content,
+  dgs.campaign,
+  dgs.medium,
+  dgs.source,
+  dgs.landing_page,
+  dgs.country,
+  cn.code AS normalized_country_code,
+  dgs.device_category,
+  dgs.os,
+  CASE
+    WHEN dgs.os IS NULL
+      THEN NULL
+    WHEN dgs.os LIKE 'Macintosh%'
+      THEN 'Mac'  -- these values are coming from GA.
+    ELSE mozfun.norm.os(os)
+  END AS normalized_os,
+  dgs.browser,
   -- normalized_browser,
-  browser_version,
+  dgs.browser_version,
   -- browser_major_version,
-  language,
-  page_hits AS pageviews,
-  unique_page_hits AS unique_pageviews,
-  had_download_event AS has_ga_download_event,
-  count_dltoken_duplicates,
-  additional_download_occurred,
-  download_date
-FROM downloads_with_ga_sessions
+  dgs.language,
+  dgs.page_hits AS pageviews,
+  dgs.unique_page_hits AS unique_pageviews,
+  dgs.had_download_event AS has_ga_download_event,
+  dgs.count_dltoken_duplicates,
+  dgs.additional_download_occurred,
+  dgs.download_date
+FROM downloads_with_ga_sessions dgs
+LEFT JOIN
+  `moz-fx-data-shared-prod.static.country_names_v1` AS cn
+  ON cn.name = country

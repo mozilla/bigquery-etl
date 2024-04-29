@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.fenix.retention_clients`
+  `moz-fx-data-shared-prod.fenix.retention_profiles`
 AS
 WITH clients_last_seen AS (
   SELECT
@@ -25,7 +25,7 @@ attribution AS (
     adjust_network,
     install_source,
   FROM
-    `moz-fx-data-shared-prod.fenix.firefox_android_clients`
+    `moz-fx-data-shared-prod.fenix_derived.firefox_android_clients_v1`
 )
 SELECT
   clients_last_seen.submission_date AS submission_date,
@@ -38,6 +38,7 @@ SELECT
   clients_daily.country,
   clients_daily.app_display_version,
   clients_daily.locale,
+  clients_daily.isp,
   attribution.adjust_ad_group,
   attribution.adjust_campaign,
   attribution.adjust_creative,
@@ -55,7 +56,7 @@ SELECT
     clients_last_seen.retention_active.day_27.active_on_metric_date
     AND clients_last_seen.retention_active.day_27.active_in_week_3
   ) AS retained_week_4,
-  -- new client retention
+  -- new profile retention
   clients_daily.is_new_profile AS new_profile_metric_date,
   (
     clients_daily.is_new_profile

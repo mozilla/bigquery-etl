@@ -12,6 +12,9 @@ description: |
   - adjust_campaign
   - adjust_creative
   - adjust_network
+  - play_store_attribution_campaign
+  - play_store_attribution_medium
+  - play_store_attribution_source
   - install_source
 
   For all profiles that sent us a ping on the metric date.

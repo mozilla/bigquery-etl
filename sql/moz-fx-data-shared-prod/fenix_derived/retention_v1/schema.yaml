@@ -55,6 +55,21 @@ fields:
   mode: NULLABLE
   description: Adjust Network the profile is attributed to.
 
+- name: play_store_attribution_campaign
+  type: STRING
+  mode: NULLABLE
+  description: Play store campaign the profile is attributed to.
+
+- name: play_store_attribution_medium
+  type: STRING
+  mode: NULLABLE
+  description: Play store Medium the profile is attributed to.
+
+- name: play_store_attribution_source
+  type: STRING
+  mode: NULLABLE
+  description: Play store source the profile is attributed to.
+
 - name: install_source
   type: STRING
   mode: NULLABLE

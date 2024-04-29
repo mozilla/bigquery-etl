@@ -23,6 +23,9 @@ attribution AS (
     adjust_campaign,
     adjust_creative,
     adjust_network,
+    play_store_attribution_campaign,
+    play_store_attribution_medium,
+    play_store_attribution_source,
     install_source,
   FROM
     `moz-fx-data-shared-prod.fenix_derived.firefox_android_clients_v1`
@@ -43,6 +46,9 @@ SELECT
   attribution.adjust_campaign,
   attribution.adjust_creative,
   attribution.adjust_network,
+  attribution.play_store_attribution_campaign,
+  attribution.play_store_attribution_medium,
+  attribution.play_store_attribution_source,
   attribution.install_source,
   -- ping sent retention
   clients_last_seen.retention_seen.day_27.active_on_metric_date AS ping_sent_metric_date,

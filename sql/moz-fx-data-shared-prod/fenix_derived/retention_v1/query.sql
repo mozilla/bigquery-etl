@@ -10,6 +10,9 @@ SELECT
   adjust_campaign,
   adjust_creative,
   adjust_network,
+  play_store_attribution_campaign,
+  play_store_attribution_medium,
+  play_store_attribution_source,
   install_source,
   COUNTIF(ping_sent_metric_date) AS ping_sent_metric_date,
   COUNTIF(ping_sent_week_4) AS ping_sent_week_4,
@@ -35,4 +38,7 @@ GROUP BY
   adjust_campaign,
   adjust_creative,
   adjust_network,
+  play_store_attribution_campaign,
+  play_store_attribution_medium,
+  play_store_attribution_source,
   install_source

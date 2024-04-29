@@ -576,9 +576,6 @@ jobs:
                   fi
                 # workaround for job failing with `Too long with no output (exceeded 10m0s): context deadline exceeded` error
                 no_output_timeout: 30m
-            - store_artifacts:
-                path: sql
-                when: on_fail
             - run:
                 name: Copy generated SQL to temporary stage directory
                 command: |
@@ -589,6 +586,15 @@ jobs:
                 root: /tmp/workspace
                 paths:
                   - staged-generated-sql
+            - run:
+                name: Copy generated SQL to save for debugging
+                command: |
+                  mkdir -p /tmp/debug_artifacts
+                  cp -r sql /tmp/debug_artifacts/sql
+                when: on_fail
+            - store_artifacts:
+                path: /tmp/debug_artifacts
+                destination: /
       - unless:
           condition: *validate-sql-or-routines
           steps:

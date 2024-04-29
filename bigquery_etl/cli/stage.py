@@ -153,7 +153,6 @@ def deploy(
         new_artifact_dataset = (
             f"{artifact_dataset}_{artifact_project.replace('-', '_')}"
         )
-
         if dataset_suffix:
             new_artifact_dataset = f"{new_artifact_dataset}_{dataset_suffix}"
 
@@ -194,9 +193,13 @@ def deploy(
             if remove_updated_artifacts:
                 shutil.rmtree(artifact_test_path)
 
-        # rename test files
-        for test_file_path in map(Path, glob(f"{TEST_DIR}/**/*", recursive=True)):
-            test_file_suffix = test_file_path.suffix
+    # rename test files
+    for test_file_path in map(Path, glob(f"{TEST_DIR}/**/*", recursive=True)):
+        test_file_suffix = test_file_path.suffix
+        for artifact_file in artifact_files:
+            artifact_project = artifact_file.parent.parent.parent.name
+            artifact_dataset = artifact_file.parent.parent.name
+            artifact_name = artifact_file.parent.name
             if test_file_path.name in (
                 f"{artifact_project}.{artifact_dataset}.{artifact_name}{test_file_suffix}",
                 f"{artifact_project}.{artifact_dataset}.{artifact_name}.schema{test_file_suffix}",
@@ -208,6 +211,12 @@ def deploy(
                 )
                 and artifact_project in test_file_path.parent.parts
             ):
+                new_artifact_dataset = (
+                    f"{artifact_dataset}_{artifact_project.replace('-', '_')}"
+                )
+                if dataset_suffix:
+                    new_artifact_dataset = f"{new_artifact_dataset}_{dataset_suffix}"
+
                 new_test_file_name = (
                     f"{project_id}.{new_artifact_dataset}.{artifact_name}"
                 )
@@ -218,6 +227,7 @@ def deploy(
                 new_test_file_path = test_file_path.parent / new_test_file_name
                 if not new_test_file_path.exists():
                     test_file_path.rename(new_test_file_path)
+                break
 
     # remove artifacts from the "prod" folders
     if remove_updated_artifacts:

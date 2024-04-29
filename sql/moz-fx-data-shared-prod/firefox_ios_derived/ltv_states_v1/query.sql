@@ -27,13 +27,15 @@ ad_clicks AS (
     b.days_since_seen,
     b.days_seen_bytes,
     b.durations,
-    attr_clients.ad_clicks AS ad_clicks
+    --fix below
+    --? AS ad_clicks
+    --? AS total_historic_ad_clicks
+    --fix above 
   FROM
     base b
   LEFT JOIN
-    mozdata.firefox_ios.attributable_clients attr_clients
-    ON b.client_id = attr_clients.client_id
-    AND b.submission_date = attr_clients.submission_date
+    mozdata.firefox_ios.client_adclicks_history ad_clck_hist
+    ON b.client_id = ad_clck_hist.client_id
 )
 SELECT
   ac.client_id,
@@ -45,6 +47,7 @@ SELECT
   ac.days_seen_bytes,
   ac.durations,
   ac.ad_clicks,
+  ac.total_historical_ad_clicks,
   c.adjust_network,
   c.first_reported_country,
   c.first_reported_isp

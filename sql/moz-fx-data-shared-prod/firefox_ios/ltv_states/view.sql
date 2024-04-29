@@ -1,4 +1,4 @@
---Params note: Set these same values in firefox_ios.client_ltv
+--Params note: Set these same values in moz-fx-data-shared-prod.ltv.firefox_ios_client_ltv in private BQETL
 {% set max_weeks = 32 %}
 {% set death_time = 160 %}
 {% set lookback = 28 %}

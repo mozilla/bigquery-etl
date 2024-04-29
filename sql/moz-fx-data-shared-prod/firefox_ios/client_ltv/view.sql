@@ -39,6 +39,7 @@ states AS (
     e.sample_id,
     e.as_of_date,
     e.first_seen_date,
+    e.ad_clicks,
     COALESCE(countries.country, "ROW") AS country,
     [
       STRUCT(
@@ -64,12 +65,9 @@ SELECT
   client_id,
   sample_id,
   country,
-  COALESCE(total_historic_ad_clicks, 0) AS total_historic_ad_clicks,
+  COALESCE(ad_clicks,0) AS total_historic_ad_clicks,
   COALESCE(predicted_ad_clicks, 0) AS total_future_ad_clicks,
-  COALESCE(total_historic_ad_clicks, 0) + COALESCE(
-    predicted_ad_clicks,
-    0
-  ) AS total_predicted_ad_clicks,
+  COALESCE(ad_clicks,0) + COALESCE(predicted_ad_clicks,0) AS total_predicted_ad_clicks
 FROM
   states
 CROSS JOIN

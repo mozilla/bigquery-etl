@@ -40,7 +40,7 @@ SELECT
   (
     clients_daily.app_display_version = '107.2'
     AND clients_daily.submission_date >= '2023-02-01'
-  ) AS is_suspicious_device_client,
+  ) AS is_suspicious_device_profile,
   -- ping sent retention
   clients_last_seen.retention_seen.day_27.active_on_metric_date AS ping_sent_metric_date,
   clients_last_seen.retention_seen.day_27.active_on_metric_date

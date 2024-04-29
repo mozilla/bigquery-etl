@@ -6,8 +6,6 @@ SELECT
   CASE
     WHEN first_seen_date = metric_date
       THEN 'new_client'
-    -- TODO: Should we rename "repeat_client" to something different to avoid a mix up
-    -- between this field and the repeat_clients field?
     WHEN DATE_DIFF(metric_date, first_seen_date, DAY)
       BETWEEN 1
       AND 27

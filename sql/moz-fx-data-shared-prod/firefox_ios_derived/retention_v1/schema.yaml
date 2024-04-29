@@ -8,54 +8,54 @@ fields:
 - mode: NULLABLE
   name: first_seen_date
   type: DATE
-  description: When the client has been seen for the first time.
+  description: When the profile has been seen for the first time.
 
 - name: app_name
   type: STRING
   mode: NULLABLE
-  description: App name the client is using.
+  description: App name the profile is using.
 
 - mode: NULLABLE
   name: normalized_channel
   type: STRING
-  description: Release channel of the app the client is using.
+  description: Release channel of the app the profile is using.
 
 - name: country
   type: STRING
   mode: NULLABLE
-  description: Client's country on the metric date.
+  description: Profile's country on the metric date.
 
 - name: app_display_version
   type: STRING
   mode: NULLABLE
-  description: Client's app version on the metric date.
+  description: Profile's app version on the metric date.
 
 - name: locale
   type: STRING
   mode: NULLABLE
-  description: Client's locale on the metric date.
+  description: Profile's locale on the metric date.
 
 - name: adjust_ad_group
   type: STRING
   mode: NULLABLE
-  description: Adjust Ad Group the client is attributed to.
+  description: Adjust Ad Group the profile is attributed to.
 
 - name: adjust_campaign
   type: STRING
   mode: NULLABLE
-  description: Adjust Campaign the client is attributed to.
+  description: Adjust Campaign the profile is attributed to.
 
 - name: adjust_creative
   type: STRING
   mode: NULLABLE
-  description: Adjust Creative the client is attributed to.
+  description: Adjust Creative the profile is attributed to.
 
 - name: adjust_network
   type: STRING
   mode: NULLABLE
-  description: Adjust Network the client is attributed to.
+  description: Adjust Network the profile is attributed to.
 
-- name: is_suspicious_device_client
+- name: is_suspicious_device_profile
   type: STRING
   mode: NULLABLE
   description: Flag to identify suspicious device users, see bug-1846554 for more info.
@@ -63,34 +63,34 @@ fields:
 - name: ping_sent_metric_date
   type: INTEGER
   mode: NULLABLE
-  description: Number of clients that sent a ping on the metric date.
+  description: Number of profiles that sent a ping on the metric date.
 
 - name: ping_sent_week_4
   type: INTEGER
   mode: NULLABLE
-  description: Number of clients that sent a ping between days 22 and 28 after the metric date.
+  description: Number of profiles that sent a ping between days 22 and 28 after the metric date.
 
 - name: active_metric_date
   type: INTEGER
   mode: NULLABLE
-  description: Number of DAU clients on the metric date.
+  description: Number of DAU profiles on the metric date.
 
 - name: retained_week_4
   type: INTEGER
   mode: NULLABLE
-  description: Number of clients that were DAU on the metric date and between days 22 and 28 after the metric date.
+  description: Number of profiles that were DAU on the metric date and between days 22 and 28 after the metric date.
 
-- name: retained_week_4_new_clients
+- name: retained_week_4_new_profiles
   type: INTEGER
   mode: NULLABLE
-  description: Number of new clients on the metric date that were DAU between days 22 and 28 after the metric date.
+  description: Number of new profiles on the metric date that were DAU between days 22 and 28 after the metric date.
 
-- name: new_clients_metric_date
+- name: new_profiles_metric_date
   type: INTEGER
   mode: NULLABLE
-  description: Number of new clients on the metric date.
+  description: Number of new profiles on the metric date.
 
-- name: repeat_clients
+- name: repeat_profiles
   type: INTEGER
   mode: NULLABLE
-  description: Number of new clients on the metric date that were DAU at least twice in the next 28 days.
+  description: Number of new profiles on the metric date that were DAU at least twice in the next 28 days.

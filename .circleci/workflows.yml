@@ -178,12 +178,6 @@ jobs:
                 name: Run SQL tests
                 command: |
                     PATH="venv/bin:$PATH" script/entrypoint -m sql -n 8
-            - store_artifacts:
-                path: sql
-                when: on_fail
-            - store_artifacts:
-                path: tests
-                when: on_fail
       - unless:
           condition: *validate-sql-or-routines
           steps:

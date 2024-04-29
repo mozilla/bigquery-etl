@@ -1,4 +1,4 @@
-WITH ActiveSubscriptionCounts AS (
+WITH active_subscription_counts AS (
   SELECT
     subscriptions.mozilla_account_id_sha256,
     COUNTIF(
@@ -62,10 +62,10 @@ SELECT
       subscriptions.provider_subscription_updated_at AS subscription_updated_at
     )
     ORDER BY
+      subscriptions.product_name,
       subscriptions.provider_subscription_updated_at,
       subscriptions.started_at,
-      subscriptions.ended_at,
-      subscriptions.product_name
+      subscriptions.ended_at
   ) AS products
 FROM
   `moz-fx-data-shared-prod.subscription_platform.logical_subscriptions` AS subscriptions

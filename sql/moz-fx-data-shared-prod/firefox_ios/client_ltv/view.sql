@@ -65,9 +65,9 @@ SELECT
   client_id,
   sample_id,
   country,
-  COALESCE(ad_clicks,0) AS total_historic_ad_clicks,
+  COALESCE(ad_clicks, 0) AS total_historic_ad_clicks,
   COALESCE(predicted_ad_clicks, 0) AS total_future_ad_clicks,
-  COALESCE(ad_clicks,0) + COALESCE(predicted_ad_clicks,0) AS total_predicted_ad_clicks
+  COALESCE(ad_clicks, 0) + COALESCE(predicted_ad_clicks, 0) AS total_predicted_ad_clicks
 FROM
   states
 CROSS JOIN

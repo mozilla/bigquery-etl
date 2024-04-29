@@ -1,35 +1,22 @@
--- CREATE TEMP FUNCTION normalize_browser(browser STRING) AS (
---   CASE
---     WHEN `moz-fx-data-shared-prod.udf.ga_is_mozilla_browser`(browser)
---       THEN 'Firefox'
---     WHEN browser IN ('Internet Explorer')
---       THEN 'MSIE'
---     WHEN browser IN ('Edge')
---       THEN 'Edge'
---     WHEN browser IN ('Chrome')
---       THEN 'Chrome'
---     WHEN browser IN ('Safari')
---       THEN 'Safari'
---     WHEN browser IN ('(not set)')
---       THEN NULL
---     WHEN browser IS NULL
---       THEN NULL
---     ELSE 'Other'
---   END
--- );
-
--- CREATE TEMP FUNCTION normalize_ga_os(os STRING, nrows INTEGER) AS (
---   CASE
---     WHEN nrows > 1
---       THEN NULL
---     WHEN os IS NULL
---       THEN NULL
---     WHEN os LIKE 'Macintosh%'
---       THEN 'Mac'  -- these values are coming from GA.
---     ELSE mozfun.norm.os(os)
---   END
--- );
-
+CREATE TEMP FUNCTION normalize_browser(browser STRING) AS (
+  CASE
+    WHEN `moz-fx-data-shared-prod.udf.ga_is_mozilla_browser`(browser)
+      THEN 'Firefox'
+    WHEN browser IN ('Internet Explorer')
+      THEN 'MSIE'
+    WHEN browser IN ('Edge')
+      THEN 'Edge'
+    WHEN browser IN ('Chrome')
+      THEN 'Chrome'
+    WHEN browser IN ('Safari')
+      THEN 'Safari'
+    WHEN browser IN ('(not set)')
+      THEN NULL
+    WHEN browser IS NULL
+      THEN NULL
+    ELSE 'Other'
+  END
+);
 
 WITH
 -- Extract all the download rows, de-duping and tracking number of duplicates per download token.
@@ -222,9 +209,9 @@ SELECT
     ELSE mozfun.norm.os(os)
   END AS normalized_os,
   dgs.browser,
-  -- normalized_browser,
+  normalize(dgs.browser) AS normalized_browser,
   dgs.browser_version,
-  -- browser_major_version,
+  CAST(mozfun.norm.extract_version(browser_version, 'major') AS INTEGER) AS browser_major_version,
   dgs.language,
   dgs.page_hits AS pageviews,
   dgs.unique_page_hits AS unique_pageviews,

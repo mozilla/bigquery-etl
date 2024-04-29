@@ -1,5 +1,5 @@
 {{ header }}
-{% set all_kpi_products = [
+{% set products_to_include_extra_activity_fields = [
   "firefox_ios",
   "focus_ios",
   "klar_ios",
@@ -23,7 +23,7 @@ SELECT
     `moz-fx-data-shared-prod`.udf.pos_of_trailing_set_bit(days_{{ ut }}_bits) AS days_since_{{ ut }},
   {% endfor %}
   last_seen.*,
-  {% if app_name in all_kpi_products %}
+  {% if app_name in products_to_include_extra_activity_fields %}
   -- Metrics based on activity
   CASE
     WHEN BIT_COUNT(days_active_bits)
@@ -39,13 +39,13 @@ SELECT
         THEN 'core_user'
     ELSE 'other'
   END AS activity_segment,
-  mozfun.bits28.days_since_seen(days_active_bits) = 0 AS is_dau,
-  mozfun.bits28.days_since_seen(days_active_bits) < 7 AS is_wau,
-  mozfun.bits28.days_since_seen(days_active_bits) < 28 AS is_mau,
+  IFNULL(mozfun.bits28.days_since_seen(days_active_bits) = 0, FALSE) AS is_dau,
+  IFNULL(mozfun.bits28.days_since_seen(days_active_bits) < 7, FALSE) AS is_wau,
+  IFNULL(mozfun.bits28.days_since_seen(days_active_bits) < 28, FALSE) AS is_mau,
   -- Metrics based on pings sent
-  mozfun.bits28.days_since_seen(days_seen_bits) = 0 AS is_daily_user,
-  mozfun.bits28.days_since_seen(days_seen_bits) < 7 AS is_weekly_user,
-  mozfun.bits28.days_since_seen(days_seen_bits) < 28 AS is_monthly_user,
+  IFNULL(mozfun.bits28.days_since_seen(days_seen_bits) = 0, FALSE) AS is_daily_user,
+  IFNULL(mozfun.bits28.days_since_seen(days_seen_bits) < 7, FALSE) AS is_weekly_user,
+  IFNULL(mozfun.bits28.days_since_seen(days_seen_bits) < 28, FALSE) AS is_monthly_user,
   CASE
       WHEN LOWER(isp) = 'browserstack'
         THEN CONCAT("{{ app_name }}", ' ', isp)

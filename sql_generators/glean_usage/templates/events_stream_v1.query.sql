@@ -38,6 +38,7 @@ WITH base AS (
         INTERVAL event.timestamp MILLISECOND
       )
     ) AS event_timestamp,
+    CONCAT(document_id, '-', event_offset) AS event_id,
     event.category as event_category,
     event.name as event_name,
     ARRAY_TO_STRING([event.category, event.name], '.') AS event, -- handles NULL values better
@@ -47,6 +48,7 @@ WITH base AS (
     `{{ events_view }}` AS e
   CROSS JOIN
     UNNEST(events) AS event
+    WITH OFFSET as event_offset
   WHERE
     {% raw %}
     {% if is_init() %}

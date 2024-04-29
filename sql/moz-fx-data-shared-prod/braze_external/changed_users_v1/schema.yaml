@@ -3,6 +3,9 @@ fields:
   name: external_id
   type: STRING
 - mode: NULLABLE
+  type: STRING
+  name: status
+- mode: NULLABLE
   name: email
   type: STRING
 - mode: NULLABLE

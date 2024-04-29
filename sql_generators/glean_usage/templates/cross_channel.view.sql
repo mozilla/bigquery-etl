@@ -1,6 +1,5 @@
 -- Generated via ./bqetl generate glean_usage
 
-
 CREATE OR REPLACE VIEW
     `{{ project_id }}.{{ target_view }}`
 AS

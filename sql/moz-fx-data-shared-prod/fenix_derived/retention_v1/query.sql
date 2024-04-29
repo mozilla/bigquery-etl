@@ -15,9 +15,9 @@ SELECT
   COUNTIF(ping_sent_week_4) AS ping_sent_week_4,
   COUNTIF(active_metric_date) AS active_metric_date,
   COUNTIF(retained_week_4) AS retained_week_4,
-  COUNTIF(retained_week_4_new_client) AS retained_week_4_new_clients,
-  COUNTIF(new_client_metric_date) AS new_clients_metric_date,
-  COUNTIF(repeat_client) AS repeat_clients,
+  COUNTIF(retained_week_4_new_profile) AS retained_week_4_new_profiles,
+  COUNTIF(new_profile_metric_date) AS new_profiles_metric_date,
+  COUNTIF(repeat_profile) AS repeat_profiles,
 FROM
   fenix.retention_clients
 WHERE

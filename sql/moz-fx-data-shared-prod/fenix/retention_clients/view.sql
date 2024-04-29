@@ -33,6 +33,7 @@ SELECT
   clients_daily.first_seen_date,
   clients_daily.client_id,
   clients_daily.sample_id,
+  clients_last_seen.app_name,
   clients_daily.normalized_channel,
   clients_daily.country,
   clients_daily.app_display_version,
@@ -42,28 +43,28 @@ SELECT
   attribution.adjust_creative,
   attribution.adjust_network,
   attribution.install_source,
-  -- TODO: add play store attributes
-  CASE
-    WHEN clients_daily.isp = 'BrowserStack'
-      THEN CONCAT('Firefox Android', ' ', clients_daily.isp)
-    ELSE 'Firefox Android'
-  END AS app_name,
   -- ping sent retention
-  retention_seen.day_27.active_on_metric_date AS ping_sent_metric_date,
-  retention_seen.day_27.active_on_metric_date
-  AND retention_seen.day_27.active_in_week_3 AS ping_sent_week_4,
+  clients_last_seen.retention_seen.day_27.active_on_metric_date AS ping_sent_metric_date,
+  (
+    clients_last_seen.retention_seen.day_27.active_on_metric_date
+    AND clients_last_seen.retention_seen.day_27.active_in_week_3
+  ) AS ping_sent_week_4,
   -- activity retention
-  retention_active.day_27.active_on_metric_date AS active_metric_date,
-  retention_active.day_27.active_on_metric_date
-  AND retention_active.day_27.active_in_week_3 AS retained_week_4,
+  clients_last_seen.retention_active.day_27.active_on_metric_date AS active_metric_date,
+  (
+    clients_last_seen.retention_active.day_27.active_on_metric_date
+    AND clients_last_seen.retention_active.day_27.active_in_week_3
+  ) AS retained_week_4,
   -- new client retention
-  clients_daily.is_new_profile AS new_client_metric_date,
+  clients_daily.is_new_profile AS new_profile_metric_date,
+  (
+    clients_daily.is_new_profile
+    AND clients_last_seen.retention_active.day_27.active_in_week_3
+  ) AS retained_week_4_new_profile,
   clients_daily.is_new_profile
-  AND retention_active.day_27.active_in_week_3 AS retained_week_4_new_client,
-  clients_daily.is_new_profile
-  AND BIT_COUNT(days_active_bits) > 1 AS repeat_client,
-  days_seen_bits,
-  days_active_bits,
+  AND BIT_COUNT(clients_last_seen.days_active_bits) > 1 AS repeat_profile,
+  clients_last_seen.days_seen_bits,
+  clients_last_seen.days_active_bits,
 FROM
   `moz-fx-data-shared-prod.fenix.baseline_clients_daily` AS clients_daily
 INNER JOIN

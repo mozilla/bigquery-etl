@@ -24,7 +24,16 @@ SELECT
   {% endfor %}
   last_seen.*,
   {% if app_name in products_to_include_extra_activity_fields %}
-  -- Metrics based on activity
+  CASE
+      WHEN LOWER(isp) = 'browserstack'
+        THEN CONCAT("{{ app_name }}", ' ', isp)
+      {% if app_name in ["fenix"] %}
+      WHEN LOWER(distribution_id) = 'mozillaonline'
+        THEN CONCAT("{{ app_name }}", ' ', distribution_id)
+      {% endif %}
+      ELSE "{{ app_name }}"
+  END AS app_name,
+  -- Activity fields to support metrics built on top of activity
   CASE
     WHEN BIT_COUNT(days_active_bits)
         BETWEEN 1 AND 6
@@ -46,15 +55,6 @@ SELECT
   IFNULL(mozfun.bits28.days_since_seen(days_seen_bits) = 0, FALSE) AS is_daily_user,
   IFNULL(mozfun.bits28.days_since_seen(days_seen_bits) < 7, FALSE) AS is_weekly_user,
   IFNULL(mozfun.bits28.days_since_seen(days_seen_bits) < 28, FALSE) AS is_monthly_user,
-  CASE
-      WHEN LOWER(isp) = 'browserstack'
-        THEN CONCAT("{{ app_name }}", ' ', isp)
-      {% if app_name in ["fenix"] %}
-      WHEN LOWER(distribution_id) = 'mozillaonline'
-        THEN CONCAT("{{ app_name }}", ' ', distribution_id)
-      {% endif %}
-      ELSE "{{ app_name }}"
-  END AS app_name,
   {% if app_name in mobile_kpi_products %}
   (
     LOWER(IFNULL(isp, "")) <> "browserstack"

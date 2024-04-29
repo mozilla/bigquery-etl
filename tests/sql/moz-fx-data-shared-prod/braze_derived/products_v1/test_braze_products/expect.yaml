@@ -3,49 +3,127 @@
 # user 1
 - external_id: user_1
   products:
-    - plan_id: plan_1
-      product_id: prod_1
-      status: active
-      plan_started_at: 2020-01-01 10:00:00+00:00
-      plan_ended_at: 2020-12-31 10:00:00+00:00
-      plan_interval: month
-      plan_interval_count: 3
-      update_timestamp: 2020-12-01 10:00:00+00:00
-    - plan_id: plan_3
-      product_id: prod_1
-      status: canceled
-      plan_started_at: 2021-01-01 10:00:00+00:00
-      plan_ended_at: 2021-12-31 10:00:00+00:00
-      plan_interval: month
-      plan_interval_count: 1
-      update_timestamp: 2022-12-01 10:00:00+00:00
-    - plan_id: plan_2
-      product_id: prod_2
-      status: active
-      plan_started_at: 2021-01-01 10:00:00+00:00
-      plan_ended_at: 2022-12-31 10:00:00+00:00
-      plan_interval: month
-      plan_interval_count: 1
-      update_timestamp: 2022-12-01 10:00:00+00:00
+    - provider: Stripe
+      payment_provider: Paypal
+      product_name: product_1_name
+      service_name: service_1_name
+      subscription_plan_id: plan_1_id
+      subscription_product_id: product_1_id
+      subscription_started_at: 2020-01-01 10:00:00+00:00
+      subscription_summary: plan_1_summary
+      subscription_billing_interval: month
+      subscription_interval_count: 3
+      subscription_currency: USD
+      subscription_amount: 4.99
+      is_bundle: true
+      is_trial: false
+      is_active: true
+      subscription_status: active
+      subscription_country_code: US
+      subscription_country_name: United States
+      is_auto_renew: true
+      has_refunds: false
+      has_fraudulent_charges: false
+      active_subscription_count: 2
+      subscription_updated_at: 2020-12-01 10:00:00+00:00
+    - provider: Stripe
+      payment_provider: Paypal
+      product_name: product_2_name
+      service_name: service_2_name
+      subscription_plan_id: plan_2_id
+      subscription_product_id: product_2_id
+      subscription_started_at: 2020-01-01 10:00:00+00:00
+      subscription_ended_at: 2020-12-31 10:00:00+00:00
+      subscription_summary: plan_2_summary
+      subscription_billing_interval: month
+      subscription_interval_count: 2
+      subscription_currency: USD
+      subscription_amount: 2.99
+      is_bundle: false
+      is_trial: false
+      is_active: false
+      subscription_status: canceled
+      subscription_country_code: US
+      subscription_country_name: United States
+      is_auto_renew: false
+      has_refunds: false
+      has_fraudulent_charges: false
+      active_subscription_count: 2
+      subscription_updated_at: 2020-12-01 10:00:00+00:00
+    - provider: Stripe
+      payment_provider: Paypal
+      product_name: product_3_name
+      service_name: service_3_name
+      subscription_plan_id: plan_3_id
+      subscription_product_id: product_3_id
+      subscription_started_at: 2020-01-01 10:00:00+00:00
+      subscription_ended_at: 2020-12-31 10:00:00+00:00
+      subscription_summary: plan_3_summary
+      subscription_billing_interval: month
+      subscription_interval_count: 3
+      subscription_currency: USD
+      subscription_amount: 1.99
+      is_bundle: false
+      is_trial: true
+      is_active: false
+      subscription_status: trialing
+      subscription_country_code: US
+      subscription_country_name: United States
+      is_auto_renew: false
+      has_refunds: false
+      has_fraudulent_charges: false
+      active_subscription_count: 2
+      subscription_updated_at: 2020-12-01 10:00:00+00:00
 # user 2
 - external_id: user_2
   products:
-    - plan_id: plan_1
-      product_id: prod_1
-      status: active
-      plan_started_at: 2020-01-01 10:00:00+00:00
-      plan_ended_at: 2020-12-31 10:00:00+00:00
-      plan_interval: month
-      plan_interval_count: 3
-      update_timestamp: 2020-12-01 10:00:00+00:00
+    - provider: Stripe
+      payment_provider: Paypal
+      product_name: product_1_name
+      service_name: service_1_name
+      subscription_plan_id: plan_1_id
+      subscription_product_id: product_1_id
+      subscription_started_at: 2020-01-01 10:00:00+00:00
+      subscription_summary: plan_1_summary
+      subscription_billing_interval: month
+      subscription_interval_count: 3
+      subscription_currency: USD
+      subscription_amount: 4.99
+      is_bundle: true
+      is_trial: false
+      is_active: true
+      subscription_status: active
+      subscription_country_code: US
+      subscription_country_name: United States
+      is_auto_renew: true
+      has_refunds: false
+      has_fraudulent_charges: false
+      active_subscription_count: 1
+      subscription_updated_at: 2020-12-01 10:00:00+00:00
 # user 3 no active subscriptions
 - external_id: user_3
   products:
-    - plan_id: plan_1
-      product_id: prod_1
-      status: canceled
-      plan_started_at: 2020-01-01 10:00:00+00:00
-      plan_ended_at: 2020-12-31 10:00:00+00:00
-      plan_interval: month
-      plan_interval_count: 3
-      update_timestamp: 2020-12-01 10:00:00+00:00
+    - provider: Stripe
+      payment_provider: Paypal
+      product_name: product_1_name
+      service_name: service_1_name
+      subscription_plan_id: plan_1_id
+      subscription_product_id: product_1_id
+      subscription_started_at: 2020-01-01 10:00:00+00:00
+      subscription_ended_at: 2020-12-31 10:00:00+00:00
+      subscription_summary: plan_1_summary
+      subscription_billing_interval: month
+      subscription_interval_count: 3
+      subscription_currency: USD
+      subscription_amount: 4.99
+      is_bundle: true
+      is_trial: false
+      is_active: false
+      subscription_status: canceled
+      subscription_country_code: US
+      subscription_country_name: United States
+      is_auto_renew: false
+      has_refunds: false
+      has_fraudulent_charges: false
+      active_subscription_count: 0
+      subscription_updated_at: 2020-12-01 10:00:00+00:00

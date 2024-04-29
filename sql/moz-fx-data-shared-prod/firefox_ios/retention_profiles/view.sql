@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.firefox_ios.retention_clients`
+  `moz-fx-data-shared-prod.firefox_ios.retention_profiles`
 AS
 WITH clients_last_seen AS (
   SELECT
@@ -24,7 +24,7 @@ attribution AS (
     adjust_creative,
     adjust_network,
   FROM
-    `moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients`
+    `moz-fx-data-shared-prod.firefox_ios_derived.firefox_ios_clients_v1`
 )
 SELECT
   clients_last_seen.submission_date AS submission_date,
@@ -37,19 +37,24 @@ SELECT
   clients_daily.country,
   clients_daily.app_display_version,
   clients_daily.locale,
+  clients_daily.isp,
   (
     clients_daily.app_display_version = '107.2'
     AND clients_daily.submission_date >= '2023-02-01'
   ) AS is_suspicious_device_profile,
   -- ping sent retention
   clients_last_seen.retention_seen.day_27.active_on_metric_date AS ping_sent_metric_date,
-  clients_last_seen.retention_seen.day_27.active_on_metric_date
-  AND clients_last_seen.retention_seen.day_27.active_in_week_3 AS ping_sent_week_4,
+  (
+    clients_last_seen.retention_seen.day_27.active_on_metric_date
+    AND clients_last_seen.retention_seen.day_27.active_in_week_3
+  ) AS ping_sent_week_4,
   -- activity retention
   clients_last_seen.retention_active.day_27.active_on_metric_date AS active_metric_date,
-  clients_last_seen.retention_active.day_27.active_on_metric_date
-  AND clients_last_seen.retention_active.day_27.active_in_week_3 AS retained_week_4,
-  -- new client retention
+  (
+    clients_last_seen.retention_active.day_27.active_on_metric_date
+    AND clients_last_seen.retention_active.day_27.active_in_week_3
+  ) AS retained_week_4,
+  -- new profile retention
   clients_daily.is_new_profile AS new_profile_metric_date,
   (
     clients_daily.is_new_profile

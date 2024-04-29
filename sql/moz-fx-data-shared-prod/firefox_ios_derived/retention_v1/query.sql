@@ -19,7 +19,7 @@ SELECT
   COUNTIF(new_profile_metric_date) AS new_profiles_metric_date,
   COUNTIF(repeat_profile) AS repeat_profiles,
 FROM
-  firefox_ios.retention_clients
+  firefox_ios.retention_profiles
 WHERE
   metric_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
   AND submission_date = @submission_date

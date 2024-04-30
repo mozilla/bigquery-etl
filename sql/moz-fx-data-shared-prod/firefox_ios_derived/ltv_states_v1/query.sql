@@ -68,3 +68,8 @@ FROM
 JOIN
   `mozdata.firefox_ios.firefox_ios_clients` c
   USING (sample_id, client_id)
+WHERE
+    -- BrowserStack clients are bots, we don't want to accidentally report on them
+  COALESCE(first_reported_isp, '') != "BrowserStack"
+    -- Remove clients who are new on this day, but have more/less than 1 day of activity
+  AND NOT (days_since_first_seen = 0 AND BIT_COUNT(days_seen_bytes) != 1)

@@ -1039,6 +1039,20 @@ with DAG(
         )
     )
 
+    with TaskGroup(
+        "subscription_platform_derived__logical_subscriptions_history__v1_external",
+    ) as subscription_platform_derived__logical_subscriptions_history__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_braze__wait_for_subscription_platform_derived__logical_subscriptions_history__v1",
+            external_dag_id="bqetl_braze",
+            external_task_id="wait_for_subscription_platform_derived__logical_subscriptions_history__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=56700)).isoformat() }}",
+        )
+
+        subscription_platform_derived__logical_subscriptions_history__v1_external.set_upstream(
+            subscription_platform_derived__logical_subscriptions_history__v1
+        )
+
     subscription_platform_derived__monthly_active_logical_subscriptions__v1 = bigquery_etl_query(
         task_id="subscription_platform_derived__monthly_active_logical_subscriptions__v1",
         destination_table="monthly_active_logical_subscriptions_v1",

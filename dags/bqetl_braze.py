@@ -51,18 +51,16 @@ with DAG(
     tags=tags,
 ) as dag:
 
-    wait_for_subscription_platform_derived__stripe_subscriptions__v1 = (
-        ExternalTaskSensor(
-            task_id="wait_for_subscription_platform_derived__stripe_subscriptions__v1",
-            external_dag_id="bqetl_subplat",
-            external_task_id="subscription_platform_derived__stripe_subscriptions__v1",
-            execution_delta=datetime.timedelta(seconds=29700),
-            check_existence=True,
-            mode="reschedule",
-            allowed_states=ALLOWED_STATES,
-            failed_states=FAILED_STATES,
-            pool="DATA_ENG_EXTERNALTASKSENSOR",
-        )
+    wait_for_subscription_platform_derived__logical_subscriptions_history__v1 = ExternalTaskSensor(
+        task_id="wait_for_subscription_platform_derived__logical_subscriptions_history__v1",
+        external_dag_id="bqetl_subplat",
+        external_task_id="subscription_platform_derived__logical_subscriptions_history__v1",
+        execution_delta=datetime.timedelta(seconds=29700),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     wait_for_acoustic_external__contact_raw__v1 = ExternalTaskSensor(
@@ -87,6 +85,20 @@ with DAG(
         allowed_states=ALLOWED_STATES,
         failed_states=FAILED_STATES,
         pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_subscription_platform_derived__stripe_subscriptions__v1 = (
+        ExternalTaskSensor(
+            task_id="wait_for_subscription_platform_derived__stripe_subscriptions__v1",
+            external_dag_id="bqetl_subplat",
+            external_task_id="subscription_platform_derived__stripe_subscriptions__v1",
+            execution_delta=datetime.timedelta(seconds=29700),
+            check_existence=True,
+            mode="reschedule",
+            allowed_states=ALLOWED_STATES,
+            failed_states=FAILED_STATES,
+            pool="DATA_ENG_EXTERNALTASKSENSOR",
+        )
     )
 
     braze_derived__newsletters__v1 = bigquery_etl_query(
@@ -185,6 +197,18 @@ with DAG(
         task_concurrency=1,
     )
 
+    braze_external__changed_products_sync__v1 = bigquery_etl_query(
+        task_id="braze_external__changed_products_sync__v1",
+        destination_table="changed_products_sync_v1",
+        dataset_id="braze_external",
+        project_id="moz-fx-data-shared-prod",
+        owner="cbeck@mozilla.com",
+        email=["cbeck@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
     braze_external__changed_subscriptions_sync__v1 = bigquery_etl_query(
         task_id="braze_external__changed_subscriptions_sync__v1",
         destination_table="changed_subscriptions_sync_v1",
@@ -262,7 +286,7 @@ with DAG(
     braze_derived__products__v1.set_upstream(braze_derived__users__v1)
 
     braze_derived__products__v1.set_upstream(
-        wait_for_subscription_platform_derived__stripe_subscriptions__v1
+        wait_for_subscription_platform_derived__logical_subscriptions_history__v1
     )
 
     braze_derived__subscriptions__v1.set_upstream(braze_derived__user_profiles__v1)
@@ -294,6 +318,8 @@ with DAG(
     braze_external__changed_newsletters_sync__v1.set_upstream(
         braze_derived__newsletters__v1
     )
+
+    braze_external__changed_products_sync__v1.set_upstream(braze_derived__products__v1)
 
     braze_external__changed_subscriptions_sync__v1.set_upstream(
         braze_derived__subscriptions__v1

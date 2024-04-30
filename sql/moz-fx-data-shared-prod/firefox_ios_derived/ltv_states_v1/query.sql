@@ -9,7 +9,7 @@ WITH base AS (
     days_seen_bytes,
     durations
   FROM
-    `mozdata.firefox_ios.baseline_clients_yearly`
+    `moz-fx-data-shared-prod.firefox_ios.baseline_clients_yearly`
   WHERE
     submission_date = @submission_date
     AND NOT (
@@ -46,7 +46,7 @@ ad_clicks AS (
   FROM
     base b
   LEFT JOIN
-    `mozdata.firefox_ios.client_adclicks_history` ad_clck_hist
+    `moz-fx-data-shared-prod.firefox_ios.client_adclicks_history` ad_clck_hist
     USING (client_id, sample_id)
 )
 SELECT
@@ -66,7 +66,7 @@ SELECT
 FROM
   ad_clicks ac
 JOIN
-  `mozdata.firefox_ios.firefox_ios_clients` c
+  `moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients` c
   USING (sample_id, client_id)
 WHERE
     -- BrowserStack clients are bots, we don't want to accidentally report on them

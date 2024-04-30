@@ -178,12 +178,16 @@ jobs:
                 name: Run SQL tests
                 command: |
                     PATH="venv/bin:$PATH" script/entrypoint -m sql -n 8
-            - store_artifacts:
-                path: sql
+            - run:
+                name: Copy generated SQL and tests to save for debugging
+                command: |
+                  mkdir -p /tmp/debug_artifacts
+                  cp -r sql /tmp/debug_artifacts/sql
+                  cp -r tests /tmp/debug_artifacts/tests
                 when: on_fail
             - store_artifacts:
-                path: tests
-                when: on_fail
+                path: /tmp/debug_artifacts
+                destination: /
       - unless:
           condition: *validate-sql-or-routines
           steps:

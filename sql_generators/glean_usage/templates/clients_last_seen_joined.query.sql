@@ -1,20 +1,29 @@
+{% set products_to_include_extra_activity_fields = [
+  "firefox_ios",
+  "focus_ios",
+  "klar_ios",
+  "fenix",
+  "focus_android",
+  "klar_android",
+  "firefox_desktop"
+] %}
 WITH baseline AS (
   SELECT
-    * EXCEPT(
-      -- These were added as part of https://mozilla-hub.atlassian.net/browse/DENG-3462
-      -- to enable KPI metric calculations. This exclusion is to avoid potential compatibility
-      -- issues downstream from this query.
-      is_dau,
-      is_wau,
-      is_mau,
-      is_daily_user,
-      is_weekly_user,
-      is_monthly_user,
-      app_name,
-      activity_segment,
-      is_mobile,
-      is_desktop
-    )
+    * {% if app_name in products_to_include_extra_activity_fields %}EXCEPT(
+    -- These were added as part of https://mozilla-hub.atlassian.net/browse/DENG-3462
+    -- to enable KPI metric calculations. This exclusion is to avoid potential compatibility
+    -- issues downstream from this query.
+    is_dau,
+    is_wau,
+    is_mau,
+    is_daily_user,
+    is_weekly_user,
+    is_monthly_user,
+    app_name,
+    activity_segment,
+    is_mobile,
+    is_desktop
+  ){% endif %}
   FROM
     `{{ project_id }}.{{ app_name }}.baseline_clients_last_seen`
   WHERE

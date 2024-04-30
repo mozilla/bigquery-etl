@@ -107,25 +107,25 @@
   services:
     - name: service_1_name
   first_touch_attribution:
-      impression_at: 2020-12-01 10:00:00+00:00
-      entrypoint: first_entrypoint
-      entrypoint_experiment: first_entrypoint_exp
-      entrypoint_variation: first_entrypoint_var
-      utm_campaign: first_campaign
-      utm_content: first_content
-      utm_medium: first_medium
-      utm_source: first_source
-      utm_term: first_term
+    impression_at: 2020-12-01 10:00:00+00:00
+    entrypoint: first_entrypoint
+    entrypoint_experiment: first_entrypoint_exp
+    entrypoint_variation: first_entrypoint_var
+    utm_campaign: first_campaign
+    utm_content: first_content
+    utm_medium: first_medium
+    utm_source: first_source
+    utm_term: first_term
   last_touch_attribution:
-      impression_at: 2020-12-01 10:00:00+00:00
-      entrypoint: last_entrypoint
-      entrypoint_experiment: last_entrypoint_exp
-      entrypoint_variation: last_entrypoint_var
-      utm_campaign: last_campaign
-      utm_content: last_content
-      utm_medium: last_medium
-      utm_source: last_source
-      utm_term: last_term
+    impression_at: 2020-12-01 10:00:00+00:00
+    entrypoint: last_entrypoint
+    entrypoint_experiment: last_entrypoint_exp
+    entrypoint_variation: last_entrypoint_var
+    utm_campaign: last_campaign
+    utm_content: last_content
+    utm_medium: last_medium
+    utm_source: last_source
+    utm_term: last_term
   provider_subscription_created_at: 2020-01-01 10:00:00+00:00
   provider_subscription_updated_at: 2020-02-01 10:00:00+00:00
 # user 3 no active subscriptions

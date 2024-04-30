@@ -9,7 +9,7 @@ WITH base AS (
     days_seen_bytes,
     durations
   FROM
-    mozdata.firefox_ios.baseline_clients_yearly
+    `mozdata.firefox_ios.baseline_clients_yearly`
   WHERE
     submission_date = @submission_date
     AND NOT (
@@ -33,7 +33,7 @@ ad_clicks AS (
       FROM
         UNNEST(ad_click_history)
       WHERE
-        key = clients_yearly.submission_date
+        key = b.submission_date
     ) AS ad_clicks,
     (
       SELECT
@@ -41,12 +41,12 @@ ad_clicks AS (
       FROM
         UNNEST(ad_click_history)
       WHERE
-        key <= clients_yearly.submission_date
+        key <= b.submission_date
     ) AS total_historic_ad_clicks
   FROM
     base b
   LEFT JOIN
-    mozdata.firefox_ios.client_adclicks_history ad_clck_hist
+    `mozdata.firefox_ios.client_adclicks_history` ad_clck_hist
     USING (client_id, sample_id)
 )
 SELECT
@@ -59,12 +59,12 @@ SELECT
   ac.days_seen_bytes,
   ac.durations,
   ac.ad_clicks,
-  ac.total_historical_ad_clicks,
+  ac.total_historic_ad_clicks,
   c.adjust_network,
   c.first_reported_country,
   c.first_reported_isp
 FROM
   ad_clicks ac
 JOIN
-  mozdata.firefox_ios.firefox_ios_clients c
+  `mozdata.firefox_ios.firefox_ios_clients` c
   USING (sample_id, client_id)

@@ -66,7 +66,7 @@ SELECT
     )
   ) AS PAYLOAD
 FROM
-  `moz-fx-data-shared-prod.braze_derived.products_v2` AS products
+  `moz-fx-data-shared-prod.braze_derived.products_v1` AS products
 CROSS JOIN
   UNNEST(products.products) AS products_array
 WHERE

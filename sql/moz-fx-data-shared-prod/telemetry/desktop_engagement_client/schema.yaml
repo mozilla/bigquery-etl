@@ -23,6 +23,10 @@ fields:
   type: STRING
   mode: NULLABLE
   description: App Version
+- name: isp_name
+  type: STRING
+  mode: NULLABLE
+  description: ISP Name
 - name: first_seen_date
   type: DATE
   mode: NULLABLE

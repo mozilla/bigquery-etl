@@ -1,6 +1,7 @@
 CREATE OR REPLACE FUNCTION serp_events.ad_blocker_inferred(num_loaded INT, num_blocked INT)
 RETURNS BOOL AS (
-  num_loaded > 0 AND num_blocked = num_loaded
+  num_loaded > 0
+  AND num_blocked = num_loaded
 );
 
 -- Tests

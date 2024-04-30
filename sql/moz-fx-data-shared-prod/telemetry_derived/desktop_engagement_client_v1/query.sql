@@ -5,6 +5,7 @@ SELECT
   cls.distribution_id,
   cls.locale,
   cls.app_version,
+  cls.isp_name,
   cfs.first_seen_date,
   cfs.attribution_campaign,
   cfs.attribution_content,

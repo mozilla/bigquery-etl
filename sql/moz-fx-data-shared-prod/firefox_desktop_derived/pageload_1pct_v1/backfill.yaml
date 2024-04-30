@@ -4,4 +4,4 @@
   reason: Backfill a smaller sample for a new table to ensure data is correct.
   watchers:
   - wichan@mozilla.com
-  status: Initiate
+  status: Complete

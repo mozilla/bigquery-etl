@@ -2,6 +2,7 @@
     'moz-fx-data-marketing-prod.searchconsole_addons',
     'moz-fx-data-marketing-prod.searchconsole_blog',
     'moz-fx-data-marketing-prod.searchconsole_getpocket',
+    'moz-fx-data-marketing-prod.searchconsole_mdn',
     'moz-fx-data-marketing-prod.searchconsole_support',
     'moz-fx-data-marketing-prod.searchconsole_www',
 ] %}
@@ -61,11 +62,13 @@ WITH searchdata_url_impression_union AS (
 SELECT
   data_date AS `date`,
   site_url,
-  REGEXP_EXTRACT(site_url, r'^(?:https?://|sc-domain:)([^/]+)') AS site_domain_name,
+  mozfun.google_search_console.extract_url_domain_name(site_url) AS site_domain_name,
   url AS page_url,
-  REGEXP_EXTRACT(url, r'^https?://([^/]+)') AS page_domain_name,
-  REGEXP_EXTRACT(url, r'^https?://(?:[^/]+)([^\?#]*)') AS page_path,
-  REGEXP_EXTRACT(url, r'^https?://(?:[^/]+)/*([^/\?#]*)') AS page_path_segment_1,
+  mozfun.google_search_console.extract_url_domain_name(url) AS page_domain_name,
+  mozfun.google_search_console.extract_url_path(url) AS page_path,
+  mozfun.google_search_console.extract_url_locale(url) AS localized_site_code,
+  mozfun.google_search_console.extract_url_language_code(url) AS localized_site_language_code,
+  mozfun.google_search_console.extract_url_country_code(url) AS localized_site_country_code,
   query,
   (is_anonymized_query OR is_anonymized_discover) AS is_anonymized,
   is_page_experience AS has_good_page_experience,
@@ -77,7 +80,7 @@ SELECT
     {% endfor %}
     ELSE 'Normal result'
   END AS search_appearance,
-  UPPER(country) AS country_code,
+  UPPER(country) AS user_country_code,
   INITCAP(device) AS device_type,
   impressions,
   clicks,

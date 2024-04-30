@@ -1,3 +1,4 @@
+--Params note: Set these same values in moz-fx-data-shared-prod.ltv.firefox_ios_client_ltv in private BQETL
 {% set max_weeks = 32 %}
 {% set death_time = 160 %}
 {% set lookback = 28 %}
@@ -22,6 +23,7 @@ WITH base_layer AS (
       0
     ) AS active,
     ad_clicks,
+    total_historic_ad_clicks,
     adjust_network,
     first_reported_country,
     first_reported_isp,
@@ -40,6 +42,7 @@ SELECT
   pattern,
   active,
   ad_clicks,
+  total_historic_ad_clicks,
   adjust_network,
   first_reported_country,
   first_reported_isp,

@@ -130,7 +130,7 @@ fields:
     name: last_touch_utm_medium
     type: STRING
   - mode: NULLABLE
-    name: first_touch_utm_source
+    name: last_touch_utm_source
     type: STRING
   - mode: NULLABLE
     name: last_touch_utm_term

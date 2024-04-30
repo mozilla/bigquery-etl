@@ -20,10 +20,6 @@ fields:
   type: STRING
   description: App Version
 - mode: NULLABLE
-  name: isp_name
-  type: STRING
-  description: ISP Name
-- mode: NULLABLE
   name: attribution_campaign
   type: STRING
   description: Attribution Campaign

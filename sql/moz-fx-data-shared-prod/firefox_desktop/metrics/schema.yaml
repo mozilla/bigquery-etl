@@ -7876,8 +7876,8 @@ fields:
           mode: NULLABLE
       description: 'If a HTTPS-First (`dom.security.https_first` enabled) upgrade
         isn''t successful, measures the timespan between the navigation start and
-        the downgrade. This is essentially the overhead caused by HTTPS-First if a
-        site does not support HTTPS.
+        the downgrade. This does not include the case in which the https request times
+        out and the http request sent after 3s gets a response faster.
 
         '
     - name: httpsfirst_downgrade_time_schemeless
@@ -7922,8 +7922,9 @@ fields:
           mode: NULLABLE
       description: 'If a schemeless HTTPS-First (`dom.security.https_first` disabled,
         but load marked as schemeless) upgrade isn''t successful, measures the timespan
-        between the navigation start and the downgrade. This is essentially the overhead
-        caused by HTTPS-First if a site does not support HTTPS.
+        between the navigation start and the downgrade. This does not include the
+        case in which the https request times out and the http request sent after
+        3s gets a response faster.
 
         '
     - name: networking_http_content_cssloader_ondatafinished_to_onstop_delay
@@ -8054,6 +8055,49 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'Time spent in the call to the native OS DNS resolution.
+
+        '
+    - name: relevancy_classify_duration
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Record the duration (in ms) of a successful classification.
 
         '
   - name: quantity

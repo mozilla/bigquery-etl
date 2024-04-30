@@ -11170,8 +11170,8 @@ fields:
           mode: NULLABLE
       description: 'If a HTTPS-First (`dom.security.https_first` enabled) upgrade
         isn''t successful, measures the timespan between the navigation start and
-        the downgrade. This is essentially the overhead caused by HTTPS-First if a
-        site does not support HTTPS.
+        the downgrade. This does not include the case in which the https request times
+        out and the http request sent after 3s gets a response faster.
 
         '
     - name: httpsfirst_downgrade_time_schemeless
@@ -11216,8 +11216,9 @@ fields:
           mode: NULLABLE
       description: 'If a schemeless HTTPS-First (`dom.security.https_first` disabled,
         but load marked as schemeless) upgrade isn''t successful, measures the timespan
-        between the navigation start and the downgrade. This is essentially the overhead
-        caused by HTTPS-First if a site does not support HTTPS.
+        between the navigation start and the downgrade. This does not include the
+        case in which the https request times out and the http request sent after
+        3s gets a response faster.
 
         '
     - name: networking_http_content_cssloader_ondatafinished_to_onstop_delay

@@ -27,15 +27,27 @@ ad_clicks AS (
     b.days_since_seen,
     b.days_seen_bytes,
     b.durations,
-    --fix below
-    --? AS ad_clicks
-    --? AS total_historic_ad_clicks
-    --fix above 
+    (
+      SELECT
+        LEAST(value, 10000)
+      FROM
+        UNNEST(ad_click_history)
+      WHERE
+        key = clients_yearly.submission_date
+    ) AS ad_clicks,
+    (
+      SELECT
+        SUM(LEAST(value, 10000))
+      FROM
+        UNNEST(ad_click_history)
+      WHERE
+        key <= clients_yearly.submission_date
+    ) AS total_historic_ad_clicks
   FROM
     base b
   LEFT JOIN
     mozdata.firefox_ios.client_adclicks_history ad_clck_hist
-    ON b.client_id = ad_clck_hist.client_id
+    USING (client_id, sample_id)
 )
 SELECT
   ac.client_id,

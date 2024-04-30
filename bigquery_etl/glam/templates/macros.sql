@@ -1,4 +1,4 @@
-{% macro enumerate_table_combinations(source_table, output_table, cubed_attributes, attribute_combinations) %}
+{% macro enumerate_table_combinations(source_table, output_table, cubed_attributes, attribute_combinations, sampled, sampled_exp) %}
 -- Cross join with the attribute combinations to reduce the query complexity
 -- with respect to the number of operations. A table with n rows cross joined
 -- with a combination of m attributes will generate a new table with n*m rows.
@@ -31,6 +31,9 @@ static_combos AS (
         table.* EXCEPT(
             {{ cubed_attributes | join(",") }}
         ),
+        {% if sampled %}
+            {{ sampled_exp }},
+        {% endif %}
         {% for attribute in cubed_attributes %}
             COALESCE(combo.{{ attribute }}, table.{{ attribute }}) as {{ attribute }}
             {% if not loop.last %}

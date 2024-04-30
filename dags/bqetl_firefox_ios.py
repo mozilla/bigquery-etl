@@ -224,6 +224,20 @@ with DAG(
         retries=0,
     )
 
+    with TaskGroup(
+        "checks__fail_firefox_ios_derived__client_adclicks_history__v1_external",
+    ) as checks__fail_firefox_ios_derived__client_adclicks_history__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_org_mozilla_firefox_derived__wait_for_checks__fail_firefox_ios_derived__client_adclicks_history__v1",
+            external_dag_id="bqetl_org_mozilla_firefox_derived",
+            external_task_id="wait_for_checks__fail_firefox_ios_derived__client_adclicks_history__v1",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=7200)).isoformat() }}",
+        )
+
+        checks__fail_firefox_ios_derived__client_adclicks_history__v1_external.set_upstream(
+            checks__fail_firefox_ios_derived__client_adclicks_history__v1
+        )
+
     checks__fail_firefox_ios_derived__clients_activation__v1 = bigquery_dq_check(
         task_id="checks__fail_firefox_ios_derived__clients_activation__v1",
         source_table="clients_activation_v1",
@@ -453,20 +467,6 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
-
-    with TaskGroup(
-        "firefox_ios_derived__attributable_clients__v1_external",
-    ) as firefox_ios_derived__attributable_clients__v1_external:
-        ExternalTaskMarker(
-            task_id="bqetl_org_mozilla_firefox_derived__wait_for_firefox_ios_derived__attributable_clients__v1",
-            external_dag_id="bqetl_org_mozilla_firefox_derived",
-            external_task_id="wait_for_firefox_ios_derived__attributable_clients__v1",
-            execution_date="{{ (execution_date - macros.timedelta(seconds=7200)).isoformat() }}",
-        )
-
-        firefox_ios_derived__attributable_clients__v1_external.set_upstream(
-            firefox_ios_derived__attributable_clients__v1
-        )
 
     firefox_ios_derived__baseline_clients_yearly__v1 = bigquery_etl_query(
         task_id="firefox_ios_derived__baseline_clients_yearly__v1",

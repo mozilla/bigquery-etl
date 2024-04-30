@@ -19,7 +19,7 @@ WITH with_ads_arrays AS (
       FROM
         UNNEST(engagements)
       WHERE
-        is_ad_component(component)
+        mozfun.serp_events.is_ad_component(component)
     ) AS _ad_engagements,
     ARRAY(
       SELECT AS STRUCT
@@ -28,13 +28,16 @@ WITH with_ads_arrays AS (
         num_elements_visible,
         num_elements_blocked,
         num_elements_notshowing,
-        ad_blocker_inferred(num_elements_loaded, num_elements_blocked) AS blocker_inferred,
+        mozfun.serp_events.ad_blocker_inferred(
+          num_elements_loaded,
+          num_elements_blocked
+        ) AS blocker_inferred,
         0 AS num_clicks,
         0 AS num_other_engagements
       FROM
         UNNEST(component_impressions)
       WHERE
-        is_ad_component(component)
+        mozfun.serp_events.is_ad_component(component)
     ) AS _ad_impressions,
   FROM
     `{{ project_id }}.{{ app_name }}_derived.serp_events_v2`
@@ -65,7 +68,7 @@ SELECT
     FROM
       UNNEST(engagements) AS e
     WHERE
-      NOT is_ad_component(e.component)
+      NOT mozfun.serp_events.is_ad_component(e.component)
   ) AS non_ad_engagements,
   -- remaining impressions for non-ad components
   ARRAY(
@@ -74,7 +77,7 @@ SELECT
     FROM
       UNNEST(component_impressions) AS c
     WHERE
-      NOT is_ad_component(c.component)
+      NOT mozfun.serp_events.is_ad_component(c.component)
   ) AS non_ad_impressions,
   -- total ad clicks for the SERP impression
   (
@@ -83,7 +86,7 @@ SELECT
     FROM
       UNNEST(engagements)
     WHERE
-      is_ad_component(component)
+      mozfun.serp_events.is_ad_component(component)
       AND action = 'clicked'
   ) AS num_ad_clicks,
   -- total non-ad link clicks for the SERP impression
@@ -104,7 +107,11 @@ SELECT
       UNNEST(engagements)
     WHERE
       action != 'clicked'
-      OR (action = 'clicked' AND NOT is_ad_component(component) AND component != 'non_ads_link')
+      OR (
+        action = 'clicked'
+        AND NOT mozfun.serp_events.is_ad_component(component)
+        AND component != 'non_ads_link'
+      )
   ) AS num_other_engagements,
   -- total ads loaded for the SERP impression
   (
@@ -113,7 +120,7 @@ SELECT
     FROM
       UNNEST(component_impressions)
     WHERE
-      is_ad_component(component)
+      mozfun.serp_events.is_ad_component(component)
   ) AS num_ads_loaded,
   -- total ads visible for the SERP impression
   (
@@ -122,7 +129,7 @@ SELECT
     FROM
       UNNEST(component_impressions)
     WHERE
-      is_ad_component(component)
+      mozfun.serp_events.is_ad_component(component)
   ) AS num_ads_visible,
   -- total ads blocked for the SERP impression
   (
@@ -131,7 +138,7 @@ SELECT
     FROM
       UNNEST(component_impressions)
     WHERE
-      is_ad_component(component)
+      mozfun.serp_events.is_ad_component(component)
   ) AS num_ads_blocked,
   -- total ads not showing for the SERP impression
   (
@@ -140,17 +147,22 @@ SELECT
     FROM
       UNNEST(component_impressions)
     WHERE
-      is_ad_component(component)
+      mozfun.serp_events.is_ad_component(component)
   ) AS num_ads_notshowing,
   -- is ad blocker inferred?
   -- true if blocker is inferred for at least 1 component
   (
     SELECT
-      COALESCE(LOGICAL_OR(ad_blocker_inferred(num_elements_loaded, num_elements_blocked)), FALSE)
+      COALESCE(
+        LOGICAL_OR(
+          mozfun.serp_events.ad_blocker_inferred(num_elements_loaded, num_elements_blocked)
+        ),
+        FALSE
+      )
     FROM
       UNNEST(component_impressions)
     WHERE
-      is_ad_component(component)
+      mozfun.serp_events.is_ad_component(component)
   ) AS ad_blocker_inferred,
 FROM
   with_ads_arrays

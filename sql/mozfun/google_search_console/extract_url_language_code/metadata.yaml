@@ -1,0 +1,3 @@
+friendly_name: Extract URL Language Code
+description: >-
+  Extract the language code from a URL if it's present.

@@ -52,6 +52,7 @@ SELECT
       ping_info.parsed_end_time
     ) AS ping_info
   ),
+  CONCAT(document_id, '-', event_offset) AS event_id,
   event.timestamp AS event_timestamp,
   event.category AS event_category,
   event.name AS event_name,
@@ -60,6 +61,7 @@ FROM
   `moz-fx-data-shared-prod.org_mozilla_focus.events` AS e
 CROSS JOIN
   UNNEST(e.events) AS event
+  WITH OFFSET AS event_offset
 UNION ALL
 SELECT
   "org_mozilla_focus_beta" AS normalized_app_id,
@@ -111,6 +113,7 @@ SELECT
       ping_info.parsed_end_time
     ) AS ping_info
   ),
+  CONCAT(document_id, '-', event_offset) AS event_id,
   event.timestamp AS event_timestamp,
   event.category AS event_category,
   event.name AS event_name,
@@ -119,6 +122,7 @@ FROM
   `moz-fx-data-shared-prod.org_mozilla_focus_beta.events` AS e
 CROSS JOIN
   UNNEST(e.events) AS event
+  WITH OFFSET AS event_offset
 UNION ALL
 SELECT
   "org_mozilla_focus_nightly" AS normalized_app_id,
@@ -170,6 +174,7 @@ SELECT
       ping_info.parsed_end_time
     ) AS ping_info
   ),
+  CONCAT(document_id, '-', event_offset) AS event_id,
   event.timestamp AS event_timestamp,
   event.category AS event_category,
   event.name AS event_name,
@@ -178,3 +183,4 @@ FROM
   `moz-fx-data-shared-prod.org_mozilla_focus_nightly.events` AS e
 CROSS JOIN
   UNNEST(e.events) AS event
+  WITH OFFSET AS event_offset

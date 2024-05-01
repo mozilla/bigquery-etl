@@ -13,7 +13,6 @@ from bigquery_etl.cli.utils import is_valid_project, use_cloud_function_option
 from bigquery_etl.format_sql.formatter import reformat
 
 TEMPLATED_FILES = {
-    "init.sql",
     "metadata.yaml",
     "query.sql",
     "stored_procedure.sql",

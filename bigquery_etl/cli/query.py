@@ -114,13 +114,6 @@ def query(ctx):
     default="example@mozilla.com",
 )
 @click.option(
-    "--init",
-    "-i",
-    help="Create an init.sql file to initialize the table",
-    default=False,
-    is_flag=True,
-)
-@click.option(
     "--dag",
     "-d",
     help=(
@@ -144,7 +137,7 @@ def query(ctx):
     is_flag=True,
 )
 @click.pass_context
-def create(ctx, name, sql_dir, project_id, owner, init, dag, no_schedule):
+def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule):
     """CLI command for creating a new query."""
     # create directory structure for query
     try:
@@ -233,20 +226,6 @@ def create(ctx, name, sql_dir, project_id, owner, init, dag, no_schedule):
         ),
     )
     metadata.write(metadata_file)
-
-    # optionally create init.sql
-    if init:
-        init_file = derived_path / "init.sql"
-        init_file.write_text(
-            reformat(
-                f"""
-                -- SQL for initializing the query destination table.
-                CREATE OR REPLACE TABLE
-                  `{ConfigLoader.get('default', 'project', fallback="moz-fx-data-shared-prod")}.{dataset}.{name}{version}`
-                AS SELECT * FROM table"""
-            )
-            + "\n"
-        )
 
     dataset_metadata_file = derived_path.parent / "dataset_metadata.yaml"
     if not dataset_metadata_file.exists():
@@ -681,6 +660,17 @@ def _backfill_query(
 @click.option(
     "--checks/--no-checks", help="Whether to run checks during backfill", default=False
 )
+@click.option(
+    "--scheduling_parameters_override",
+    "--scheduling-parameters-override",
+    "-spo",
+    required=False,
+    multiple=True,
+    default=[],
+    help=(
+        "Pass a list of parameters to override query's existing scheduling parameters. "
+    ),
+)
 @click.pass_context
 def backfill(
     ctx,
@@ -695,6 +685,7 @@ def backfill(
     parallelism,
     destination_table,
     checks,
+    scheduling_parameters_override,
 ):
     """Run a backfill."""
     if not is_authenticated():
@@ -734,6 +725,8 @@ def backfill(
         date_partition_offset = metadata.scheduling.get("date_partition_offset", 0)
         scheduling_parameters = metadata.scheduling.get("parameters", [])
 
+        if scheduling_parameters_override:
+            scheduling_parameters = scheduling_parameters_override
         partitioning_type = None
         if metadata.bigquery and metadata.bigquery.time_partitioning:
             partitioning_type = metadata.bigquery.time_partitioning.type
@@ -942,7 +935,7 @@ def _run_query(
             logging.error(e)
             sys.exit(1)
         except FileNotFoundError:
-            logging.warning("No metadata.yaml found for {}", query_file)
+            logging.warning("No metadata.yaml found for %s", query_file)
 
         if not use_public_table and destination_table is not None:
             # destination table was parsed by argparse, however if it wasn't modified to
@@ -1277,7 +1270,7 @@ def _initialize_in_parallel(
         - Create the table if it doesn't exist and run a full backfill.
         - Run a full backfill if the table exists and is empty.
         - Raise an exception if the table exists and has data, or if the table exists and the schema doesn't match the query.
-       It supports `query.sql` files that use the is_init() pattern, and `init.sql` files.
+       It supports `query.sql` files that use the is_init() pattern.
        To run in parallel per sample_id, include a @sample_id parameter in the query.
 
        Examples:
@@ -1342,9 +1335,6 @@ def initialize(
         table = None
 
         sql_content = query_file.read_text()
-        init_files = list(
-            map(Path, glob(f"{query_file.parent}/**/init.sql", recursive=True))
-        )
         materialized_views = list(
             map(
                 Path,
@@ -1353,7 +1343,7 @@ def initialize(
         )
 
         # check if the provided file can be initialized and whether existing ones should be skipped
-        if "is_init()" in sql_content or len(init_files) > 0:
+        if "is_init()" in sql_content:
             try:
                 table = client.get_table(full_table_id)
                 if skip_existing:
@@ -1432,7 +1422,7 @@ def initialize(
                         },
                     )
             else:
-                for file in init_files + materialized_views:
+                for file in materialized_views:
                     with open(file) as init_file_stream:
                         init_sql = init_file_stream.read()
                         job_config = bigquery.QueryJobConfig(

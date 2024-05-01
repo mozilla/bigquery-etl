@@ -1,17 +1,9 @@
 {{ header }}
 
-{% if init %}
+{% raw %}
+{% if is_init() %}
+{% endraw %}
 
-CREATE TABLE IF NOT EXISTS
-  `{{ last_seen_table }}`
-PARTITION BY
-  submission_date
-CLUSTER BY
-  normalized_channel,
-  sample_id
-OPTIONS
-  (require_partition_filter = TRUE)
-AS
 SELECT
   CAST(NULL AS INT64) AS days_seen_bits,
   CAST(NULL AS INT64) AS days_active_bits,
@@ -27,7 +19,9 @@ WHERE
   -- Output empty table and read no input rows
   FALSE
 
+{% raw %}
 {% else %}
+{% endraw %}
 
 WITH _current AS (
   SELECT
@@ -79,4 +73,6 @@ FULL JOIN
   _previous
   USING (client_id)
 
+{% raw %}
 {% endif %}
+{% endraw %}

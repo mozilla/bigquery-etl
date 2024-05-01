@@ -25,6 +25,7 @@ SELECT
     ELSE SPLIT(user_email, '@')[SAFE_OFFSET(0)]
   END AS user_type,
   'https://sql.telemetry.mozilla.org/queries/' || query_id || '/source' AS query_url,
-  username = "Scheduled" AS is_scheduled
+  username = "Scheduled" AS is_scheduled,
+  (total_slot_ms * 0.06) / (60 * 60 * 1000) AS cost,
 FROM
   `moz-fx-data-shared-prod.monitoring_derived.bigquery_usage_v2`

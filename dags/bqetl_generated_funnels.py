@@ -211,6 +211,53 @@ with DAG(
         depends_on_past=False,
     )
 
+    firefox_accounts_derived__login_funnels_email_confirmation_by_service__v1 = bigquery_etl_query(
+        task_id="firefox_accounts_derived__login_funnels_email_confirmation_by_service__v1",
+        destination_table="login_funnels_email_confirmation_by_service_v1",
+        dataset_id="firefox_accounts_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="ksiegler@mozilla.org",
+        email=[
+            "ascholtz@mozilla.com",
+            "ksiegler@mozilla.org",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    firefox_accounts_derived__login_funnels_submit_by_service__v1 = bigquery_etl_query(
+        task_id="firefox_accounts_derived__login_funnels_submit_by_service__v1",
+        destination_table="login_funnels_submit_by_service_v1",
+        dataset_id="firefox_accounts_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="ksiegler@mozilla.org",
+        email=[
+            "ascholtz@mozilla.com",
+            "ksiegler@mozilla.org",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    firefox_accounts_derived__login_funnels_two_factor_by_service__v1 = (
+        bigquery_etl_query(
+            task_id="firefox_accounts_derived__login_funnels_two_factor_by_service__v1",
+            destination_table="login_funnels_two_factor_by_service_v1",
+            dataset_id="firefox_accounts_derived",
+            project_id="moz-fx-data-shared-prod",
+            owner="ksiegler@mozilla.org",
+            email=[
+                "ascholtz@mozilla.com",
+                "ksiegler@mozilla.org",
+                "telemetry-alerts@mozilla.com",
+            ],
+            date_partition_parameter="submission_date",
+            depends_on_past=False,
+        )
+    )
+
     firefox_accounts_derived__registration_funnels__v1 = bigquery_etl_query(
         task_id="firefox_accounts_derived__registration_funnels__v1",
         destination_table="registration_funnels_v1",
@@ -291,6 +338,18 @@ with DAG(
     )
 
     firefox_accounts_derived__login_funnels_by_service__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    firefox_accounts_derived__login_funnels_email_confirmation_by_service__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    firefox_accounts_derived__login_funnels_submit_by_service__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    firefox_accounts_derived__login_funnels_two_factor_by_service__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
 

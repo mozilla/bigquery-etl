@@ -44,7 +44,6 @@ SELECT
     {replacements}),
   `moz-fx-data-shared-prod`.udf.funnel_derived_installs(
         silent, 
-        update_channel,
         submission_timestamp, 
         build_id, 
         attribution, 

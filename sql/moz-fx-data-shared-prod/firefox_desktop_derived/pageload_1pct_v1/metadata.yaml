@@ -1,0 +1,24 @@
+friendly_name: Pageload 1pct
+description: |-
+  Contains 1pct sample from pageload_v1.  Document_id was used to sample data since most pings did not have client_id.
+owners:
+- wichan@mozilla.com
+- acreskey@mozilla.com
+- dpalmeiro@mozilla.com
+labels:
+  incremental: true
+scheduling:
+  dag_name: bqetl_pageload_v1
+  task_name: firefox_desktop_pageload_1pct__v1
+  arguments: ['--schema_update_option=ALLOW_FIELD_ADDITION']
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_timestamp
+    require_partition_filter: true
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields:
+    - normalized_channel
+references: {}

@@ -1,0 +1,53 @@
+fields:
+- description: Unique ID for the client installation.
+  mode: NULLABLE
+  name: client_id
+  type: STRING
+- description: Sample ID
+  mode: NULLABLE
+  name: sample_id
+  type: INT64
+- description: Submission Date
+  mode: NULLABLE
+  name: submission_date
+  type: DATE
+- description: First Seen Date
+  mode: NULLABLE
+  name: first_seen_date
+  type: DATE
+- description: Days Since First Seen
+  mode: NULLABLE
+  name: days_since_first_seen
+  type: INT64
+- description: Days Since Seen
+  mode: NULLABLE
+  name: days_since_seen
+  type: INT64
+- description: Days Seen Bytes
+  mode: NULLABLE
+  name: days_seen_bytes
+  type: BYTES
+- description: Durations
+  mode: NULLABLE
+  name: durations
+  type: INT64
+- description: Ad Clicks
+  mode: NULLABLE
+  name: ad_clicks
+  type: INT64
+- description: Total Historic Ad Clicks
+  mode: NULLABLE
+  name: total_historic_ad_clicks
+  type: INT64
+- description: Adjust Network
+  mode: NULLABLE
+  name: adjust_network
+  type: STRING
+- description: First Reported Country
+  mode: NULLABLE
+  name: first_reported_country
+  type: STRING
+- description: First Reported ISP
+  mode: NULLABLE
+  name: first_reported_isp
+  type: STRING

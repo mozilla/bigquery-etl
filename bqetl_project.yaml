@@ -25,6 +25,7 @@ dry_run:
   # TODO: once data observability platform assessment concludes this should be removed.
   - sql/data-observability-dev/**/**/*.sql
   # Access Denied
+  - sql/moz-fx-data-shared-prod/firefox_desktop_derived/desktop_installs_v1/query.sql
   - sql/moz-fx-data-experiments/monitoring/query_cost_v1/query.sql
   - sql/moz-fx-data-shared-prod/app_store_external/**/*.sql
   - sql/moz-fx-data-shared-prod/app_store/**/*.sql
@@ -236,6 +237,7 @@ format:
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_keyed_histogram_aggregates_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_keyed_scalar_aggregates_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_scalar_aggregates_v1/query.sql
+  - sql/moz-fx-data-shared-prod/telemetry_derived/clients_histogram_aggregates_new_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_histogram_aggregates_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_histogram_probe_counts_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_histogram_bucket_counts_v1/query.sql

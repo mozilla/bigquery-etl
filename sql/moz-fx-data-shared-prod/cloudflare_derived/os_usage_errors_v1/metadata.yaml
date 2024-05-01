@@ -13,5 +13,5 @@ bigquery:
     expiration_days: null
   clustering:
     fields:
-    - os
+    - location
     - device_type

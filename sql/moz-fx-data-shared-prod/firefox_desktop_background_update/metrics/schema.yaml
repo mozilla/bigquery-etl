@@ -3819,6 +3819,18 @@ fields:
         type: BOOLEAN
         mode: NULLABLE
       description: Whether or not each step of the OSKeyStore self test succeeded.
+    - name: media_playback_device_hardware_decoder_support
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: BOOLEAN
+        mode: NULLABLE
+      description: The results of hardware decoder support for different video codecs.
+        True means that codec can be decoded by hardware on user's device.
   - name: rate
     type: RECORD
     mode: NULLABLE
@@ -9149,6 +9161,53 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'Time spent in the call to the native OS DNS resolution.
+
+        '
+    - name: bounce_tracking_protection_purge_duration
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'For every purge that is scheduled, we call the ClearDataService
+        to purge persistent storage for each detected bounce tracker. This may do
+        some blocking work on main thread and dispatch some cleanups to other threads.
+        Collect telemetry on how long it takes to clear in the wild to determine whether
+        we need to improve performance here.
 
         '
   - name: quantity

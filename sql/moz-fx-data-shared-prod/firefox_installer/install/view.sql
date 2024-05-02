@@ -3,6 +3,15 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.firefox_installer.install`
 AS
 SELECT
-  * REPLACE (mozfun.norm.metadata(metadata) AS metadata)
+  * REPLACE (mozfun.norm.metadata(metadata) AS metadata),
+  `moz-fx-data-shared-prod`.udf.funnel_derived_installs(
+    silent,
+    submission_timestamp,
+    build_id,
+    attribution,
+    distribution_id
+  ) AS funnel_derived,
+  `moz-fx-data-shared-prod`.udf.distribution_model_installs(distribution_id) AS distribution_model,
+  `moz-fx-data-shared-prod`.udf.partner_org_installs(distribution_id) AS partner_org
 FROM
   `moz-fx-data-shared-prod.firefox_installer_stable.install_v1`

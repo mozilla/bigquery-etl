@@ -387,3 +387,12 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Version of partner distribution, defaulting to 0 for Mozilla distributions
+- name: funnel_derived
+  type: STRING
+  mode: NULLABLE
+- name: distribution_model
+  type: STRING
+  mode: NULLABLE
+- name: partner_org
+  type: STRING
+  mode: NULLABLE

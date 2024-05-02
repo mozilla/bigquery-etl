@@ -38,7 +38,6 @@ SELECT
           products_array.auto_renew_disabled_at AS auto_renew_disabled_at,
           products_array.has_refunds AS has_refunds,
           products_array.has_fraudulent_charges AS has_fraudulent_charges,
-          products_array.active_subscriptions_count AS active_subscriptions_count,
           products_array.first_touch_impression_at AS first_touch_impression_at,
           products_array.first_touch_entrypoint AS first_touch_entrypoint,
           products_array.first_touch_entrypoint_experiment AS first_touch_entrypoint_experiment,

@@ -290,9 +290,9 @@ class View:
             actual_view_query = sqlparse.format(
                 table.view_query, strip_comments=True
             ).strip(";" + string.whitespace)
-        except TypeError as err:
+        except TypeError:
             print(f"ERROR: There has been an issue formating: {target_view_id}")
-            raise err
+            raise
 
         if expected_view_query != actual_view_query:
             print(f"view {target_view_id} will change: query does not match")

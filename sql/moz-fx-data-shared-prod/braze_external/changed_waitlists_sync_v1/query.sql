@@ -18,12 +18,13 @@ SELECT
           waitlists_array.waitlist_platform AS waitlist_platform,
           waitlists_array.waitlist_source AS waitlist_source,
           waitlists_array.subscribed AS subscribed,
-          waitlists_array.create_timestamp AS create_timestamp,
-          waitlists_array.update_timestamp AS update_timestamp
+          -- braze required format for nested timestamps
+          STRUCT(FORMAT_TIMESTAMP('%Y-%m-%d %H:%M:%E6S UTC', waitlists_array.create_timestamp, 'UTC') AS `$time`) AS create_timestamp,
+          STRUCT(FORMAT_TIMESTAMP('%Y-%m-%d %H:%M:%E6S UTC', waitlists_array.update_timestamp, 'UTC') AS `$time`) AS update_timestamp
         )
         ORDER BY
           waitlists_array.update_timestamp DESC
-      ) AS waitlists
+      ) AS waitlists_v1
     )
   ) AS PAYLOAD
 FROM

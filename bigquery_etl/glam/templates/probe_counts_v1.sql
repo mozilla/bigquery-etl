@@ -68,17 +68,7 @@ SELECT
     {% else %}
         agg_type AS client_agg_type,
         'histogram' as agg_type,
-        {% if channel == "release" %}
-          -- Logic to count clients based on sampled windows release data, which started in v119.
-          -- If you're changing this, then you'll also need to change
-          -- clients_daily_[scalar | histogram]_aggregates
-          IF(os = 'Windows' AND app_version >= 119,
-            CAST(ROUND(SUM(record.value)) AS INT64) * 10,
-            CAST(ROUND(SUM(record.value)) AS INT64)
-          ) AS total_users,
-        {% else %}
-          CAST(ROUND(SUM(record.value)) AS INT64) AS total_users,
-        {% endif %}
+        CAST(ROUND(SUM(record.value)) AS INT64) AS total_users,
         mozfun.glam.histogram_fill_buckets_dirichlet(
             mozfun.map.sum(ARRAY_AGG(record)),
             mozfun.glam.histogram_buckets_cast_string_array(

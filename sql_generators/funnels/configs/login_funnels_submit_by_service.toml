@@ -6,11 +6,11 @@ start_date = "2024-01-01"
 
 [funnels]
 
-[funnels.login_overall_success_by_service]
+[funnels.login_submit_overall_success_by_service]
 
-friendly_name = "Login Funnel Conversion by Service"
+friendly_name = "Login Funnel Conversion with Submit Events by Service"
 description = "Overall login funnel conversion rates by Service"
-steps = ["login_view", "login_complete"]
+steps = ["login_view", "login_submit", "login_success", "login_complete"]
 dimensions = ["service"]
 
 [steps]
@@ -21,6 +21,24 @@ description = "View of the top of the login funnel"
 data_source = "monitor_frontend"
 select_expression = "metrics.string.session_flow_id"
 where_expression = "metrics.string.event_name = 'login_view'"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.login_submit]
+friendly_name = "Successful Login Submission"
+description = "The login form was attempted to be submitted"
+data_source = "monitor_frontend"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "metrics.string.event_name = 'login_submit'"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.login_success]
+friendly_name = "Successful Login Submission"
+description = "The login form was submitted successfully (backend)"
+data_source = "monitor_backend"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "metrics.string.event_name = 'login_success'"
 aggregation = "count distinct"
 join_previous_step_on = "metrics.string.session_flow_id"
 

@@ -271,7 +271,7 @@ def write_view_if_not_exists(target_project: str, sql_dir: Path, schema: SchemaF
     replacements_str = ",\n    ".join(replacements)
 
     # For the firefox_installer.install view, use the FF_INSTLL_VIEW_QUERY_TEMPLATE template
-    if target_file == "sql/moz-fx-data-shared-prod/firefox_installer/install/view.sql":
+    if full_view_id == "moz-fx-data-shared-prod.firefox_installer.install":
         full_sql = reformat(
             FF_INSTLL_VIEW_QUERY_TEMPLATE.format(
                 target=full_source_id,

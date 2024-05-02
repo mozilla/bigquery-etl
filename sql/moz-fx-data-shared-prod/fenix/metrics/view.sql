@@ -288,7 +288,10 @@ SELECT
       metrics.boolean.shopping_settings_user_has_onboarded,
       metrics.boolean.shopping_settings_disabled_ads,
       metrics.boolean.debug_drawer_debug_drawer_enabled,
-      metrics.boolean.tab_strip_enabled
+      metrics.boolean.tab_strip_enabled,
+      metrics.boolean.bounce_tracking_protection_enabled_at_startup,
+      metrics.boolean.bounce_tracking_protection_enabled_dry_run_mode_at_startup,
+      metrics.boolean.customize_home_bookmarks
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -379,7 +382,9 @@ SELECT
       metrics.counter.httpsfirst_upgraded,
       metrics.counter.httpsfirst_upgraded_schemeless,
       metrics.counter.hls_canplay_requested,
-      metrics.counter.hls_canplay_supported
+      metrics.counter.hls_canplay_supported,
+      metrics.counter.home_bookmarks_bookmark_clicked,
+      metrics.counter.home_bookmarks_show_all_bookmarks
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -905,7 +910,10 @@ SELECT
       metrics.boolean.shopping_settings_user_has_onboarded,
       metrics.boolean.shopping_settings_disabled_ads,
       metrics.boolean.debug_drawer_debug_drawer_enabled,
-      metrics.boolean.tab_strip_enabled
+      metrics.boolean.tab_strip_enabled,
+      metrics.boolean.bounce_tracking_protection_enabled_at_startup,
+      metrics.boolean.bounce_tracking_protection_enabled_dry_run_mode_at_startup,
+      metrics.boolean.customize_home_bookmarks
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -996,7 +1004,9 @@ SELECT
       metrics.counter.httpsfirst_upgraded,
       metrics.counter.httpsfirst_upgraded_schemeless,
       metrics.counter.hls_canplay_requested,
-      metrics.counter.hls_canplay_supported
+      metrics.counter.hls_canplay_supported,
+      metrics.counter.home_bookmarks_bookmark_clicked,
+      metrics.counter.home_bookmarks_show_all_bookmarks
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,

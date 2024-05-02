@@ -679,6 +679,27 @@ fields:
       description: 'Whether or not the tab strip feature is enabled
 
         '
+    - name: bounce_tracking_protection_enabled_at_startup
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Keeps track of whether the feature is enabled at startup.
+
+        '
+    - name: bounce_tracking_protection_enabled_dry_run_mode_at_startup
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Keeps track of whether the feature is enabled and running in dry-run
+        mode at startup.
+
+        '
+    - name: customize_home_bookmarks
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'An indication of whether the recently
+
+        saved section is enabled to be displayed. This was previously customize_home.recently_saved.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -1438,6 +1459,26 @@ fields:
       description: 'Record when a canPlayType request supports HLS.
 
         '
+    - name: home_bookmarks_bookmark_clicked
+      type: INTEGER
+      mode: NULLABLE
+      description: 'A counter that indicates the number of times that a user
+
+        has clicked on a bookmark from the home
+
+        screen. This was previously recent_bookmarks.bookmark_clicked.
+
+        '
+    - name: home_bookmarks_show_all_bookmarks
+      type: INTEGER
+      mode: NULLABLE
+      description: 'A counter that indicates the number of times that a user
+
+        has clicked the show all button for bookmarks
+
+        on the home screen. This was previously recent_bookmarks.show_all_bookmarks.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -1810,8 +1851,7 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream. (Migrated from
-        the geckoview metric of the same name).
+      description: 'Failure occurs when initializing the audio stream.
 
         '
     - name: glean_validation_pings_submitted
@@ -5418,6 +5458,14 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: 'The total number of trust objects in cert9.db
+
+        '
+    - name: home_bookmarks_bookmarks_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of bookmarked items appearing in the
+
+        Bookmarks section on the home page. This was previously recent_bookmarks.recent_bookmarks_count.
 
         '
   - name: timing_distribution

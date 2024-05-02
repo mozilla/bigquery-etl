@@ -255,6 +255,12 @@ fields:
     - name: gfx_status_headless
       type: BOOLEAN
       mode: NULLABLE
+    - name: bounce_tracking_protection_enabled_at_startup
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: bounce_tracking_protection_enabled_dry_run_mode_at_startup
+      type: BOOLEAN
+      mode: NULLABLE
   - name: counter
     type: RECORD
     mode: NULLABLE

@@ -405,6 +405,19 @@ fields:
         display) mode (Migrated from the geckoview metric of the same name).
 
         '
+    - name: bounce_tracking_protection_enabled_at_startup
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Keeps track of whether the feature is enabled at startup.
+
+        '
+    - name: bounce_tracking_protection_enabled_dry_run_mode_at_startup
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Keeps track of whether the feature is enabled and running in dry-run
+        mode at startup.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE

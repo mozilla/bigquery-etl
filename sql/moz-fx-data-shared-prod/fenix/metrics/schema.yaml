@@ -369,6 +369,15 @@ fields:
     - name: tab_strip_enabled
       type: BOOLEAN
       mode: NULLABLE
+    - name: bounce_tracking_protection_enabled_at_startup
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: bounce_tracking_protection_enabled_dry_run_mode_at_startup
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: customize_home_bookmarks
+      type: BOOLEAN
+      mode: NULLABLE
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -638,6 +647,12 @@ fields:
       type: INTEGER
       mode: NULLABLE
     - name: hls_canplay_supported
+      type: INTEGER
+      mode: NULLABLE
+    - name: home_bookmarks_bookmark_clicked
+      type: INTEGER
+      mode: NULLABLE
+    - name: home_bookmarks_show_all_bookmarks
       type: INTEGER
       mode: NULLABLE
   - name: custom_distribution
@@ -3035,6 +3050,9 @@ fields:
       type: INTEGER
       mode: NULLABLE
     - name: cert_verifier_trust_obj_count
+      type: INTEGER
+      mode: NULLABLE
+    - name: home_bookmarks_bookmarks_count
       type: INTEGER
       mode: NULLABLE
   - name: string

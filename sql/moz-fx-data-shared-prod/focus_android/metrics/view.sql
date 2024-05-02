@@ -51,7 +51,9 @@ SELECT
       metrics.boolean.cookie_banners_service_detect_only,
       metrics.boolean.extensions_use_remote_policy,
       metrics.boolean.extensions_use_remote_pref,
-      metrics.boolean.gfx_status_headless
+      metrics.boolean.gfx_status_headless,
+      metrics.boolean.bounce_tracking_protection_enabled_at_startup,
+      metrics.boolean.bounce_tracking_protection_enabled_dry_run_mode_at_startup
     ) AS `boolean`,
     STRUCT(
       metrics.counter.glean_error_io,
@@ -306,7 +308,9 @@ SELECT
       metrics.boolean.cookie_banners_service_detect_only,
       metrics.boolean.extensions_use_remote_policy,
       metrics.boolean.extensions_use_remote_pref,
-      metrics.boolean.gfx_status_headless
+      metrics.boolean.gfx_status_headless,
+      metrics.boolean.bounce_tracking_protection_enabled_at_startup,
+      metrics.boolean.bounce_tracking_protection_enabled_dry_run_mode_at_startup
     ) AS `boolean`,
     STRUCT(
       metrics.counter.glean_error_io,

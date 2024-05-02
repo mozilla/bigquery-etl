@@ -67,13 +67,6 @@ with DAG(
         "acoustic_external__suppression_list__v1_external",
     ) as acoustic_external__suppression_list__v1_external:
         ExternalTaskMarker(
-            task_id="bqetl_braze__wait_for_acoustic_external__suppression_list__v1",
-            external_dag_id="bqetl_braze",
-            external_task_id="wait_for_acoustic_external__suppression_list__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
             task_id="bqetl_marketing_suppression_list__wait_for_acoustic_external__suppression_list__v1",
             external_dag_id="bqetl_marketing_suppression_list",
             external_task_id="wait_for_acoustic_external__suppression_list__v1",

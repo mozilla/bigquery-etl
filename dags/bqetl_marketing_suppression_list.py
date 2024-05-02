@@ -99,6 +99,20 @@ with DAG(
         task_concurrency=1,
     )
 
+    with TaskGroup(
+        "marketing_suppression_list_derived__main_suppression_list__v1_external",
+    ) as marketing_suppression_list_derived__main_suppression_list__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_braze__wait_for_marketing_suppression_list_derived__main_suppression_list__v1",
+            external_dag_id="bqetl_braze",
+            external_task_id="wait_for_marketing_suppression_list_derived__main_suppression_list__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=61200)).isoformat() }}",
+        )
+
+        marketing_suppression_list_derived__main_suppression_list__v1_external.set_upstream(
+            marketing_suppression_list_derived__main_suppression_list__v1
+        )
+
     marketing_suppression_list_external__campaign_monitor_suppression_list__v1 = GKEPodOperator(
         task_id="marketing_suppression_list_external__campaign_monitor_suppression_list__v1",
         arguments=[

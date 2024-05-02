@@ -32,9 +32,7 @@ FROM
   `{target}`
 """
 
-#Still need to figure out how to get the view mozdata.firefox_installer.install 
-#to use this template and not the other one
-MOZDATA_FIREFOX_INSTALLER_INSTALL_VIEW_QUERY_TEMPLATE = """\
+FF_INSTLL_VIEW_QUERY_TEMPLATE = """\
 -- Generated via ./bqetl generate stable_views
 CREATE OR REPLACE VIEW
     `{full_view_id}`
@@ -130,7 +128,11 @@ def write_view_if_not_exists(target_project: str, sql_dir: Path, schema: SchemaF
 
     from bigquery_etl.format_sql.formatter import reformat
     from bigquery_etl.schema import Schema
-    from sql_generators.stable_views import VIEW_METADATA_TEMPLATE, VIEW_QUERY_TEMPLATE
+    from sql_generators.stable_views import (
+        VIEW_METADATA_TEMPLATE,
+        VIEW_QUERY_TEMPLATE,
+        FF_INSTLL_VIEW_QUERY_TEMPLATE,
+    )
 
     VIEW_CREATE_REGEX = re.compile(
         r"CREATE OR REPLACE VIEW\n\s*[^\s]+\s*\nAS", re.IGNORECASE
@@ -267,14 +269,27 @@ def write_view_if_not_exists(target_project: str, sql_dir: Path, schema: SchemaF
             "`moz-fx-data-shared-prod`.udf.normalize_main_payload(payload) AS payload"
         ]
     replacements_str = ",\n    ".join(replacements)
-    full_sql = reformat(
-        VIEW_QUERY_TEMPLATE.format(
-            target=full_source_id,
-            replacements=replacements_str,
-            full_view_id=full_view_id,
-        ),
-        trailing_newline=True,
-    )
+
+    # For the firefox_installer.install view, use the FF_INSTLL_VIEW_QUERY_TEMPLATE template
+    if target_file == "sql/moz-fx-data-shared-prod/firefox_installer/install/view.sql":
+        full_sql = reformat(
+            FF_INSTLL_VIEW_QUERY_TEMPLATE.format(
+                target=full_source_id,
+                replacements=replacements_str,
+                full_view_id=full_view_id,
+            ),
+            trailing_newline=True,
+        )
+    # For all other views, use the VIEW_QUERY_TEMPLATE
+    else:
+        full_sql = reformat(
+            VIEW_QUERY_TEMPLATE.format(
+                target=full_source_id,
+                replacements=replacements_str,
+                full_view_id=full_view_id,
+            ),
+            trailing_newline=True,
+        )
     print(f"Creating {target_file}")
     target_dir.mkdir(parents=True, exist_ok=True)
     with target_file.open("w") as f:

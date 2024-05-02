@@ -1,7 +1,5 @@
 fields:
-- mode: NULLABLE
-  name: email
+- name: email
+  mode: NULLABLE
   type: STRING
-- mode: NULLABLE
-  name: email_id
-  type: STRING
+  description: Emails on the suppression list plus emails that have been opted out of emails in CTMS.

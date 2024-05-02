@@ -282,12 +282,18 @@ class View:
             print(f"view {target_view_id} will change: does not exist in BigQuery")
             return True
 
-        expected_view_query = CREATE_VIEW_PATTERN.sub(
-            "", sqlparse.format(self.content, strip_comments=True), count=1
-        ).strip(";" + string.whitespace)
-        actual_view_query = sqlparse.format(
-            table.view_query, strip_comments=True
-        ).strip(";" + string.whitespace)
+        try:
+            expected_view_query = CREATE_VIEW_PATTERN.sub(
+                "", sqlparse.format(self.content, strip_comments=True), count=1
+            ).strip(";" + string.whitespace)
+
+            actual_view_query = sqlparse.format(
+                table.view_query, strip_comments=True
+            ).strip(";" + string.whitespace)
+        except TypeError as err:
+            print(f"ERROR: There has been an issue formating: {target_view_id}")
+            raise err
+
         if expected_view_query != actual_view_query:
             print(f"view {target_view_id} will change: query does not match")
             return True

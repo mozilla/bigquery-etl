@@ -99,30 +99,6 @@ with DAG(
         task_concurrency=1,
     )
 
-    monitoring_derived__bigquery_etl_scheduled_queries_cost__v1 = GKEPodOperator(
-        task_id="monitoring_derived__bigquery_etl_scheduled_queries_cost__v1",
-        arguments=[
-            "python",
-            "sql/moz-fx-data-shared-prod/monitoring_derived/bigquery_etl_scheduled_queries_cost_v1/query.py",
-        ]
-        + ["--date", "{{ ds }}"],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com"],
-    )
-
-    monitoring_derived__bigquery_etl_scheduled_query_usage__v1 = GKEPodOperator(
-        task_id="monitoring_derived__bigquery_etl_scheduled_query_usage__v1",
-        arguments=[
-            "python",
-            "sql/moz-fx-data-shared-prod/monitoring_derived/bigquery_etl_scheduled_query_usage_v1/query.py",
-        ]
-        + ["--date", "{{ ds }}"],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com"],
-    )
-
     monitoring_derived__bigquery_table_storage__v1 = GKEPodOperator(
         task_id="monitoring_derived__bigquery_table_storage__v1",
         arguments=[

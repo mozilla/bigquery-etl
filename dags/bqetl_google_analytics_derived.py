@@ -23,7 +23,7 @@ for user activity to appear in these tables.
 
 #### Owner
 
-ascholtz@mozilla.com
+kwindau@mozilla.com
 
 #### Tags
 
@@ -33,10 +33,10 @@ ascholtz@mozilla.com
 
 
 default_args = {
-    "owner": "ascholtz@mozilla.com",
+    "owner": "kwindau@mozilla.com",
     "start_date": datetime.datetime(2020, 10, 31, 0, 0),
     "end_date": None,
-    "email": ["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+    "email": ["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),
     "email_on_failure": True,
@@ -60,7 +60,11 @@ with DAG(
         dataset_id="ga_derived",
         project_id="moz-fx-data-marketing-prod",
         owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        email=[
+            "ascholtz@mozilla.com",
+            "kwindau@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -71,7 +75,11 @@ with DAG(
         dataset_id="ga_derived",
         project_id="moz-fx-data-marketing-prod",
         owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        email=[
+            "ascholtz@mozilla.com",
+            "kwindau@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
@@ -84,7 +92,11 @@ with DAG(
         dataset_id="ga_derived",
         project_id="moz-fx-data-marketing-prod",
         owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        email=[
+            "ascholtz@mozilla.com",
+            "kwindau@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -95,7 +107,11 @@ with DAG(
         dataset_id="ga_derived",
         project_id="moz-fx-data-marketing-prod",
         owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        email=[
+            "ascholtz@mozilla.com",
+            "kwindau@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -106,7 +122,11 @@ with DAG(
         dataset_id="ga_derived",
         project_id="moz-fx-data-marketing-prod",
         owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        email=[
+            "ascholtz@mozilla.com",
+            "kwindau@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -118,8 +138,8 @@ with DAG(
         project_id="moz-fx-data-marketing-prod",
         owner="gleonard@mozilla.com",
         email=[
-            "ascholtz@mozilla.com",
             "gleonard@mozilla.com",
+            "kwindau@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
         date_partition_parameter="submission_date",
@@ -133,7 +153,7 @@ with DAG(
         project_id="moz-fx-data-marketing-prod",
         owner="rbaffourawuah@mozilla.com",
         email=[
-            "ascholtz@mozilla.com",
+            "kwindau@mozilla.com",
             "rbaffourawuah@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
@@ -147,7 +167,11 @@ with DAG(
         dataset_id="ga_derived",
         project_id="moz-fx-data-marketing-prod",
         owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        email=[
+            "ascholtz@mozilla.com",
+            "kwindau@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -158,7 +182,11 @@ with DAG(
         dataset_id="ga_derived",
         project_id="moz-fx-data-marketing-prod",
         owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        email=[
+            "ascholtz@mozilla.com",
+            "kwindau@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
@@ -184,7 +212,11 @@ with DAG(
         dataset_id="ga_derived",
         project_id="moz-fx-data-marketing-prod",
         owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        email=[
+            "ascholtz@mozilla.com",
+            "kwindau@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -195,7 +227,11 @@ with DAG(
         dataset_id="ga_derived",
         project_id="moz-fx-data-marketing-prod",
         owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        email=[
+            "ascholtz@mozilla.com",
+            "kwindau@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -206,7 +242,11 @@ with DAG(
         dataset_id="ga_derived",
         project_id="moz-fx-data-marketing-prod",
         owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        email=[
+            "ascholtz@mozilla.com",
+            "kwindau@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -217,7 +257,11 @@ with DAG(
         dataset_id="ga_derived",
         project_id="moz-fx-data-marketing-prod",
         owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        email=[
+            "ascholtz@mozilla.com",
+            "kwindau@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -228,7 +272,11 @@ with DAG(
         dataset_id="ga_derived",
         project_id="moz-fx-data-marketing-prod",
         owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        email=[
+            "ascholtz@mozilla.com",
+            "kwindau@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )

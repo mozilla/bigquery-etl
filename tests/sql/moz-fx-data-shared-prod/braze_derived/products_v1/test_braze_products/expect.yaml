@@ -26,7 +26,6 @@
       is_auto_renew: true
       has_refunds: false
       has_fraudulent_charges: false
-      active_subscriptions_count: 1
       subscription_updated_at: 2020-12-01 10:00:00+00:00
     - provider: Stripe
       payment_provider: PayPal
@@ -51,7 +50,6 @@
       auto_renew_disabled_at: 2020-12-01 10:00:00+00:00
       has_refunds: false
       has_fraudulent_charges: false
-      active_subscriptions_count: 1
       subscription_updated_at: 2020-12-01 10:00:00+00:00
     - provider: Stripe
       payment_provider: PayPal
@@ -75,7 +73,6 @@
       is_auto_renew: false
       has_refunds: false
       has_fraudulent_charges: false
-      active_subscriptions_count: 1
       subscription_updated_at: 2020-12-01 10:00:00+00:00
 # user 2
 - external_id: user_2
@@ -104,7 +101,6 @@
       is_auto_renew: true
       has_refunds: false
       has_fraudulent_charges: false
-      active_subscriptions_count: 1
       first_touch_impression_at: 2020-12-01 10:00:00+00:00
       first_touch_entrypoint: first_entrypoint
       first_touch_entrypoint_experiment: first_entrypoint_exp
@@ -150,5 +146,4 @@
       is_auto_renew: false
       has_refunds: false
       has_fraudulent_charges: false
-      active_subscriptions_count: 0
       subscription_updated_at: 2020-12-01 10:00:00+00:00

@@ -24,7 +24,7 @@ fields:
   type: STRING
   description: App Version
 - mode: NULLABLE
-  name: isp_name
+  name: isp
   type: STRING
   description: ISP Name
 - mode: NULLABLE

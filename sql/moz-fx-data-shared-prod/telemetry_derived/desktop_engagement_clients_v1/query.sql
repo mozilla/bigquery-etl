@@ -5,7 +5,7 @@ SELECT
   cls.distribution_id,
   cls.locale,
   cls.app_version,
-  cls.isp_name,
+  cls.isp_name AS isp,
   cfs.first_seen_date,
   cfs.attribution_campaign,
   cfs.attribution_content,
@@ -19,9 +19,9 @@ SELECT
     NULLIF(SPLIT(cls.normalized_os_version, ".")[SAFE_OFFSET(0)], "")
   ) AS normalized_os_version,
   cls.country,
-  cls.is_dau AS dau,
-  cls.is_wau AS wau,
-  cls.is_mau AS mau
+  cls.is_dau,
+  cls.is_wau,
+  cls.is_mau
 FROM
   `moz-fx-data-shared-prod.telemetry.clients_last_seen_v2` cls
 LEFT JOIN

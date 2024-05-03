@@ -1,5 +1,5 @@
 import os
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 import yaml
 from click.testing import CliRunner
@@ -139,7 +139,54 @@ class TestRunQuery:
             result = runner.invoke(
                 run, [str(query_file), "--destination_table=query_v1"]
             )
-            result.exit_code == 1
+            assert result.exit_code == 1
 
             result = runner.invoke(run, [str(query_file), "--dataset_id=test"])
-            result.exit_code == 1
+            assert result.exit_code == 1
+
+    @patch("subprocess.check_call")
+    @patch("google.cloud.bigquery.Client")
+    def test_run_query_billing_project(
+        self, mock_client, mock_subprocess_call, tmp_path
+    ):
+        query_file_path = (
+            tmp_path / "sql" / "moz-fx-data-shared-prod" / "dataset_1" / "query_v1"
+        )
+        os.makedirs(query_file_path)
+        query_file = query_file_path / "query.sql"
+        query_file.write_text("SELECT 1")
+
+        runner = CliRunner()
+
+        # bigquery.client().query().session_info.session_id = ...
+        mock_query_call = Mock()
+        mock_query_call.return_value.session_info.session_id = "1234567890"
+        mock_client.return_value.query = mock_query_call
+
+        mock_subprocess_call.return_value = 1
+        result = runner.invoke(
+            run,
+            [
+                str(query_file),
+                "--billing-project=project-2",
+                "--project-id=moz-fx-data-shared-prod",
+            ],
+        )
+        assert result.exit_code == 0
+
+        assert mock_query_call.call_count == 1
+        query_text, query_job_config = mock_query_call.call_args.args
+        assert (
+            query_text
+            == "SET @@dataset_project_id = 'moz-fx-data-shared-prod';\nSET @@dataset_id = 'dataset_1';"
+        )
+        assert query_job_config.create_session is True
+
+        assert mock_subprocess_call.call_args.args == (
+            [
+                "bq",
+                "query",
+                "--project_id=project-2",
+                "--session_id=1234567890",
+            ],
+        )

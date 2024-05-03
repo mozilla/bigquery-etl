@@ -9,7 +9,6 @@ from pathlib import Path
 from typing import Iterator, List, Optional, Tuple
 
 import click
-import sqlglot
 from google.auth.exceptions import DefaultCredentialsError
 from google.cloud import bigquery
 
@@ -152,91 +151,6 @@ def paths_matching_name_pattern(
         print(f"No files matching: {pattern}")
 
     return matching_files
-
-
-def qualify_table_references(
-    query_text: str, target_project: str, default_dataset: str
-) -> str:
-    """Add project id and dataset id to table/view references and persistent udfs in a given query.
-
-    e.g.:
-    `table` -> `target_project.default_dataset.table`
-    `dataset.table` -> `target_project.dataset.table`
-
-    This allows a query to run in a different project than the sql dir it is located in
-    while referencing the same tables.
-    """
-    # sqlglot cannot handle scripts with variables and control statements
-    if re.search(r"^\s*DECLARE\b", query_text, flags=re.MULTILINE):
-        raise NotImplementedError("Cannot qualify table_references of query scripts")
-
-    query = sqlglot.parse(query_text, read="bigquery")
-
-    # tuples of (table identifier, replacement string)
-    table_replacements: List[Tuple[str, str]] = []
-
-    # find all non-fully qualified table/view references including backticks
-    for statement in query:
-        if statement is None:
-            continue
-
-        cte_names = {
-            cte.alias_or_name.lower() for cte in statement.find_all(sqlglot.exp.CTE)
-        }
-
-        for table_expr in statement.find_all(sqlglot.exp.Table):
-            # existing table ref including backticks without alias
-            table_expr.set("alias", "")
-            reference_string = table_expr.sql(dialect="bigquery")
-
-            if reference_string.replace("`", "").lower() in cte_names:
-                continue
-
-            # project id is parsed as the catalog attribute
-            # but information_schema region may also be parsed as catalog
-            if table_expr.catalog.startswith("region-"):
-                project_name = f"{target_project}`.`{table_expr.catalog}"
-            elif table_expr.catalog == "":  # no project id
-                project_name = target_project
-            else:  # project id exists
-                continue
-
-            # fully qualified table ref
-            replacement_string = f"`{project_name}`.`{table_expr.db or default_dataset}`.`{table_expr.name}`"
-
-            table_replacements.append((reference_string, replacement_string))
-
-    updated_query = query_text
-
-    for identifier, replacement in table_replacements:
-        if identifier.count(".") == 0:
-            # if no dataset and project, only replace if it follows a FROM, JOIN, or implicit cross join
-            regex = (
-                r"(?P<from>(FROM|JOIN)\s+)"
-                r"(?P<cross_join>[a-zA-Z0-9_`.\-]+\s*,\s*)?"
-                rf"{identifier}(?![a-zA-Z0-9_`.])"
-            )
-            replacement = r"\g<from>\g<cross_join>" + replacement
-        else:
-            identifier = identifier.replace(".", r"\.")
-            # ensure match is against the full identifier and no project id already
-            regex = rf"(?<![a-zA-Z0-9_`.]){identifier}(?![a-zA-Z0-9_`.])"
-
-        updated_query = re.sub(
-            re.compile(regex),
-            replacement,
-            updated_query,
-        )
-
-    # replace udfs from udf/udf_js that do not have a project qualifier
-    regex = r"(?<![a-zA-Z0-9_.])`?(?P<dataset>udf(_js)?)`?\.`?(?P<name>[a-zA-Z0-9_]+)`?"
-    updated_query = re.sub(
-        re.compile(regex),
-        rf"`{target_project}.\g<dataset>.\g<name>`",
-        updated_query,
-    )
-
-    return updated_query
 
 
 sql_dir_option = click.option(

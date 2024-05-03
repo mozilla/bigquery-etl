@@ -35,7 +35,6 @@ from ..cli.utils import (
     parallelism_option,
     paths_matching_name_pattern,
     project_id_option,
-    qualify_table_references,
     respect_dryrun_skip_option,
     sql_dir_option,
     temp_dataset_option,
@@ -864,15 +863,17 @@ def _run_query(
     addl_templates: Optional[dict] = None,
     billing_project: Optional[str] = None,
 ):
-    """Run a query."""
+    """Run a query.
+
+    project_id is the default project to use with table/view/udf references in the query that
+    do not have a project id qualifier.
+    billing_project is the project to run the query in for the purposes of billing and
+    slot reservation selection.  This is project_id if billing_project is not set
+    """
     if dataset_id is not None:
         # dataset ID was parsed by argparse but needs to be passed as parameter
         # when running the query
-        if billing_project is not None and project_id is not None:
-            dataset_arg = f"{project_id}:{dataset_id}"
-        else:
-            dataset_arg = dataset_id
-        query_arguments.append("--dataset_id={}".format(dataset_arg))
+        query_arguments.append(f"--dataset_id={dataset_id}")
 
     if billing_project is not None:
         query_arguments.append(f"--project_id={billing_project}")
@@ -948,23 +949,15 @@ def _run_query(
             **addl_templates,
         )
 
-        # project ids need to be added to table references to allow queries to run in a different project
+        # create a session, setting default project and dataset
         if billing_project is not None:
             if dataset_id is not None:
                 default_dataset = dataset_id
             else:
                 _, default_dataset, _ = extract_from_query_path(query_file)
 
-            try:
-                query_text = qualify_table_references(
-                    query_text, project_id, default_dataset
-                )
-            except NotImplementedError:
-                click.echo(
-                    "--billing-project cannot be used with query scripts, e.g. script.sql",
-                    err=True,
-                )
-                raise
+            session_id = create_query_session(project_id, default_dataset)
+            query_arguments.append(f"--session_id={session_id}")
 
         # write rendered query to a temporary file;
         # query string cannot be passed directly to bq as SQL comments will be interpreted as CLI arguments
@@ -974,6 +967,40 @@ def _run_query(
 
             # run the query as shell command so that passed parameters can be used as is
             subprocess.check_call(["bq"] + query_arguments, stdin=query_stream)
+
+
+def create_query_session(
+    project_id: Optional[str] = None, dataset_id: Optional[str] = None
+):
+    """Create a bigquery session and return the session id.
+
+    Optionally set the system variables @@dataset_project_id and @@dataset_id
+    if project_id and dataset_id are given. This sets the default project_id or dataset_id
+    for table/view/udf references that do not have a project or dataset qualifier.
+    """
+    query_parts = []
+    if project_id is not None:
+        query_parts.append(f"SET @@dataset_project_id = '{project_id}';")
+    if dataset_id is not None:
+        query_parts.append(f"SET @@dataset_id = '{dataset_id}';")
+
+    if len(query_parts) == 0:  # need to run a non-empty query
+        session_query = "SELECT 1"
+    else:
+        session_query = "\n".join(query_parts)
+
+    client = bigquery.Client()
+
+    job_config = bigquery.QueryJobConfig(
+        create_session=True,
+        use_legacy_sql=False,
+    )
+    result = client.query(session_query, job_config)
+
+    if result.session_info is None:
+        raise RuntimeError(f"Failed to get session id with {query}")
+
+    return result.session_info.session_id
 
 
 @query.command(

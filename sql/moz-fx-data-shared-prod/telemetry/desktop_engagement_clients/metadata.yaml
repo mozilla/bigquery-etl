@@ -1,4 +1,4 @@
-friendly_name: Desktop Engagement Client
+friendly_name: Desktop Engagement Clients
 description: |-
   Please provide a description for the query
 owners: []
@@ -11,4 +11,4 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   view.sql:
-  - moz-fx-data-shared-prod.telemetry_derived.desktop_engagement_client_v1
+  - moz-fx-data-shared-prod.telemetry_derived.desktop_engagement_clients_v1

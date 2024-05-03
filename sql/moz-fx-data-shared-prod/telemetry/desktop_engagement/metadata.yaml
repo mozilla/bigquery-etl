@@ -1,4 +1,4 @@
-friendly_name: Desktop Engagement Agg
+friendly_name: Desktop Engagement
 description: |-
   Please provide a description for the query
 owners: []
@@ -11,4 +11,4 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   view.sql:
-  - moz-fx-data-shared-prod.telemetry_derived.desktop_engagement_agg_v1
+  - moz-fx-data-shared-prod.telemetry_derived.desktop_engagement_v1

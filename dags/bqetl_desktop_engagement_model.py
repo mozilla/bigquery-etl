@@ -76,9 +76,9 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    telemetry_derived__desktop_engagement_agg__v1 = bigquery_etl_query(
-        task_id="telemetry_derived__desktop_engagement_agg__v1",
-        destination_table="desktop_engagement_agg_v1",
+    telemetry_derived__desktop_engagement__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__desktop_engagement__v1",
+        destination_table="desktop_engagement_v1",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         owner="kwindau@mozilla.com",
@@ -87,9 +87,9 @@ with DAG(
         depends_on_past=False,
     )
 
-    telemetry_derived__desktop_engagement_client__v1 = bigquery_etl_query(
-        task_id="telemetry_derived__desktop_engagement_client__v1",
-        destination_table="desktop_engagement_client_v1",
+    telemetry_derived__desktop_engagement_clients__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__desktop_engagement_clients__v1",
+        destination_table="desktop_engagement_clients_v1",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         owner="kwindau@mozilla.com",
@@ -98,14 +98,14 @@ with DAG(
         depends_on_past=False,
     )
 
-    telemetry_derived__desktop_engagement_agg__v1.set_upstream(
-        telemetry_derived__desktop_engagement_client__v1
+    telemetry_derived__desktop_engagement__v1.set_upstream(
+        telemetry_derived__desktop_engagement_clients__v1
     )
 
-    telemetry_derived__desktop_engagement_client__v1.set_upstream(
+    telemetry_derived__desktop_engagement_clients__v1.set_upstream(
         wait_for_checks__fail_telemetry_derived__clients_first_seen__v2
     )
 
-    telemetry_derived__desktop_engagement_client__v1.set_upstream(
+    telemetry_derived__desktop_engagement_clients__v1.set_upstream(
         wait_for_checks__fail_telemetry_derived__clients_last_seen__v2
     )

@@ -14,7 +14,7 @@ SELECT
           changed_users.fxa_primary_email AS fxa_primary_email,
           changed_users.fxa_lang AS fxa_lang,
           changed_users.fxa_first_service AS fxa_first_service,
-          changed_users.fxa_created_date AS fxa_created_date,
+          changed_users.fxa_created_at AS fxa_created_at,
           -- braze required format for nested timestamps
           STRUCT(
             FORMAT_TIMESTAMP(

@@ -63,6 +63,17 @@ with DAG(
         )
     )
 
+    wait_for_fenix_derived__funnel_retention_week_4__v1 = ExternalTaskSensor(
+        task_id="wait_for_fenix_derived__funnel_retention_week_4__v1",
+        external_dag_id="bqetl_analytics_tables",
+        external_task_id="fenix_derived__funnel_retention_week_4__v1",
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     checks__fail_google_ads_derived__ad_groups__v1 = bigquery_dq_check(
         task_id="checks__fail_google_ads_derived__ad_groups__v1",
         source_table="ad_groups_v1",
@@ -242,6 +253,10 @@ with DAG(
 
     google_ads_derived__android_app_campaign_stats__v1.set_upstream(
         checks__fail_google_ads_derived__campaigns__v1
+    )
+
+    google_ads_derived__android_app_campaign_stats__v1.set_upstream(
+        wait_for_fenix_derived__funnel_retention_week_4__v1
     )
 
     google_ads_derived__android_app_campaign_stats__v1.set_upstream(

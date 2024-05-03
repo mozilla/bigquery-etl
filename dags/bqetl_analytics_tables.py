@@ -509,6 +509,19 @@ with DAG(
         depends_on_past=False,
     )
 
+    with TaskGroup(
+        "fenix_derived__funnel_retention_week_4__v1_external",
+    ) as fenix_derived__funnel_retention_week_4__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_fivetran_google_ads__wait_for_fenix_derived__funnel_retention_week_4__v1",
+            external_dag_id="bqetl_fivetran_google_ads",
+            external_task_id="wait_for_fenix_derived__funnel_retention_week_4__v1",
+        )
+
+        fenix_derived__funnel_retention_week_4__v1_external.set_upstream(
+            fenix_derived__funnel_retention_week_4__v1
+        )
+
     firefox_android_clients = bigquery_etl_query(
         task_id="firefox_android_clients",
         destination_table="firefox_android_clients_v1",

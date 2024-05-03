@@ -6,7 +6,7 @@ description: |
   - app_name
   - normalized_channel
   - country
-  - app_display_version
+  - app_version
   - locale
   - adjust_ad_group
   - adjust_campaign
@@ -15,6 +15,7 @@ description: |
   - play_store_attribution_campaign
   - play_store_attribution_medium
   - play_store_attribution_source
+  - meta_attribution_app
   - install_source
 
   For all profiles that sent us a ping on the metric date.

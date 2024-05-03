@@ -4,7 +4,7 @@ SELECT
   app_name,
   normalized_channel,
   country,
-  app_display_version,
+  app_version,
   locale,
   adjust_ad_group,
   adjust_campaign,
@@ -13,6 +13,7 @@ SELECT
   play_store_attribution_campaign,
   play_store_attribution_medium,
   play_store_attribution_source,
+  meta_attribution_app,
   install_source,
   COUNTIF(ping_sent_metric_date) AS ping_sent_metric_date,
   COUNTIF(ping_sent_week_4) AS ping_sent_week_4,
@@ -22,7 +23,7 @@ SELECT
   COUNTIF(new_profile_metric_date) AS new_profiles_metric_date,
   COUNTIF(repeat_profile) AS repeat_profiles,
 FROM
-  fenix.retention_profiles
+  fenix.retention_clients
 WHERE
   metric_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
   AND submission_date = @submission_date
@@ -32,7 +33,7 @@ GROUP BY
   app_name,
   normalized_channel,
   country,
-  app_display_version,
+  app_version,
   locale,
   adjust_ad_group,
   adjust_campaign,
@@ -41,4 +42,5 @@ GROUP BY
   play_store_attribution_campaign,
   play_store_attribution_medium,
   play_store_attribution_source,
+  meta_attribution_app,
   install_source

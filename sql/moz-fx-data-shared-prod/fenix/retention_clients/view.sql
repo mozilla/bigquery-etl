@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.fenix.retention_profiles`
+  `moz-fx-data-shared-prod.fenix.retention_clients`
 AS
 WITH clients_last_seen AS (
   SELECT
@@ -20,12 +20,17 @@ attribution AS (
     sample_id,
     channel AS normalized_channel,
     adjust_ad_group,
-    adjust_campaign,
     adjust_creative,
     adjust_network,
+    CASE
+      WHEN adjust_network IN ('Google Organic Search', 'Organic')
+        THEN ''
+      ELSE adjust_campaign
+    END AS adjust_campaign,
     play_store_attribution_campaign,
     play_store_attribution_medium,
     play_store_attribution_source,
+    -- meta_attribution_app,  -- TODO: Once PR https://github.com/mozilla/bigquery-etl/pull/5404 merged, this needs to be uncommmented.
     install_source,
   FROM
     `moz-fx-data-shared-prod.fenix_derived.firefox_android_clients_v1`
@@ -39,7 +44,7 @@ SELECT
   clients_last_seen.app_name,
   clients_daily.normalized_channel,
   clients_daily.country,
-  clients_daily.app_display_version,
+  clients_daily.app_display_version AS app_version,
   clients_daily.locale,
   clients_daily.isp,
   attribution.adjust_ad_group,
@@ -49,6 +54,7 @@ SELECT
   attribution.play_store_attribution_campaign,
   attribution.play_store_attribution_medium,
   attribution.play_store_attribution_source,
+  attribution.meta_attribution_app,
   attribution.install_source,
   -- ping sent retention
   clients_last_seen.retention_seen.day_27.active_on_metric_date AS ping_sent_metric_date,
@@ -72,6 +78,17 @@ SELECT
   AND BIT_COUNT(clients_last_seen.days_active_bits) > 1 AS repeat_profile,
   clients_last_seen.days_seen_bits,
   clients_last_seen.days_active_bits,
+  CASE
+    WHEN first_seen_date = metric_date
+      THEN 'new_profile'
+    WHEN DATE_DIFF(metric_date, first_seen_date, DAY)
+      BETWEEN 1
+      AND 27
+      THEN 'repeat_user'
+    WHEN DATE_DIFF(metric_date, first_seen_date, DAY) >= 28
+      THEN 'existing_user'
+    ELSE 'Unknown'
+  END AS lifecycle_stage,
 FROM
   `moz-fx-data-shared-prod.fenix.baseline_clients_daily` AS clients_daily
 INNER JOIN

@@ -25,7 +25,7 @@ fields:
   mode: NULLABLE
   description: Client's country on the metric date.
 
-- name: app_display_version
+- name: app_version
   type: STRING
   mode: NULLABLE
   description: Client's app version on the metric date.
@@ -69,6 +69,11 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Play store source the profile is attributed to.
+
+- name: meta_attribution_app
+  type: STRING
+  mode: NULLABLE
+  description: Facebook app linked to paid marketing.
 
 - name: install_source
   type: STRING

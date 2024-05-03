@@ -10,13 +10,17 @@ products_with_counts AS (
   SELECT
     products.external_id,
     products_array.*,
-    COUNT(*) OVER (PARTITION BY products.external_id, products_array.product_name) AS subscription_count
+    COUNT(*) OVER (
+      PARTITION BY
+        products.external_id,
+        products_array.product_name
+    ) AS subscription_count
   FROM
     `moz-fx-data-shared-prod.braze_derived.products_v1` AS products
   CROSS JOIN
     UNNEST(products.products) AS products_array
   WHERE
-  products_array.subscription_updated_at > (SELECT max_update_timestamp FROM max_update)
+    products_array.subscription_updated_at > (SELECT max_update_timestamp FROM max_update)
 )
 SELECT
   CURRENT_TIMESTAMP() AS UPDATED_AT,

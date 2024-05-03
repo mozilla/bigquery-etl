@@ -19,8 +19,20 @@ SELECT
           waitlists_array.waitlist_source AS waitlist_source,
           waitlists_array.subscribed AS subscribed,
           -- braze required format for nested timestamps
-          STRUCT(FORMAT_TIMESTAMP('%Y-%m-%d %H:%M:%E6S UTC', waitlists_array.create_timestamp, 'UTC') AS `$time`) AS create_timestamp,
-          STRUCT(FORMAT_TIMESTAMP('%Y-%m-%d %H:%M:%E6S UTC', waitlists_array.update_timestamp, 'UTC') AS `$time`) AS update_timestamp
+          STRUCT(
+            FORMAT_TIMESTAMP(
+              '%Y-%m-%d %H:%M:%E6S UTC',
+              waitlists_array.create_timestamp,
+              'UTC'
+            ) AS `$time`
+          ) AS create_timestamp,
+          STRUCT(
+            FORMAT_TIMESTAMP(
+              '%Y-%m-%d %H:%M:%E6S UTC',
+              waitlists_array.update_timestamp,
+              'UTC'
+            ) AS `$time`
+          ) AS update_timestamp
         )
         ORDER BY
           waitlists_array.update_timestamp DESC

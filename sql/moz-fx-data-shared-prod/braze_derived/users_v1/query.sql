@@ -96,7 +96,7 @@ SELECT
   basket_token,
   email_lang,
   fxa_id_sha256,
-  has_fxa, 
+  has_fxa,
   fxa_primary_email,
   fxa_lang,
   fxa_first_service,

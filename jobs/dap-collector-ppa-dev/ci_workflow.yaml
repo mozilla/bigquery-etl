@@ -1,0 +1,13 @@
+job-dap-collector-ppa-dev:
+  jobs:
+    - build-job-dap-collector-ppa-dev
+    - gcp-gcr/build-and-push-image:
+        context: data-eng-airflow-gcr
+        docker-context: jobs/dap-collector-ppa-dev/
+        path: jobs/dap-collector-ppa-dev/
+        image: dap-collector-ppa-dev_docker_etl
+        requires:
+          - build-job-dap-collector-ppa-dev
+        filters:
+          branches:
+            only: main

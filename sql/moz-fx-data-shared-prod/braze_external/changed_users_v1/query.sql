@@ -16,7 +16,7 @@ SELECT
         AND current_users.fxa_primary_email = previous_users.fxa_primary_email
         AND current_users.fxa_lang = previous_users.fxa_lang
         AND current_users.fxa_first_service = previous_users.fxa_first_service
-        AND current_users.fxa_created_date = previous_users.fxa_created_date
+        AND current_users.fxa_created_at = previous_users.fxa_created_at
       )
       THEN 'Changed'
   END AS status,
@@ -31,7 +31,7 @@ SELECT
   COALESCE(current_users.fxa_primary_email, previous_users.fxa_primary_email) AS fxa_primary_email,
   COALESCE(current_users.fxa_lang, previous_users.fxa_lang) AS fxa_lang,
   COALESCE(current_users.fxa_first_service, previous_users.fxa_first_service) AS fxa_first_service,
-  COALESCE(current_users.fxa_created_date, previous_users.fxa_created_date) AS fxa_created_date
+  COALESCE(current_users.fxa_created_at, previous_users.fxa_created_at) AS fxa_created_at
 FROM
   `moz-fx-data-shared-prod.braze_derived.users_v1` current_users
 FULL OUTER JOIN
@@ -51,5 +51,5 @@ WHERE
     AND current_users.fxa_primary_email = previous_users.fxa_primary_email
     AND current_users.fxa_lang = previous_users.fxa_lang
     AND current_users.fxa_first_service = previous_users.fxa_first_service
-    AND current_users.fxa_created_date = previous_users.fxa_created_date
+    AND current_users.fxa_created_at = previous_users.fxa_created_at
   ); -- changed rows

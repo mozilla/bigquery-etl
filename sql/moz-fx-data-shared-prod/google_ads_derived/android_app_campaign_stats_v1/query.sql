@@ -25,8 +25,7 @@ activations AS (
     fenix_derived.firefox_android_clients_v1
   JOIN
     mozdata.ltv.fenix_client_ltv
-  USING
-    (client_id)
+    USING (client_id)
   WHERE
     first_seen_date >= '2022-12-01'
   GROUP BY
@@ -69,20 +68,16 @@ FROM
   daily_stats
 LEFT JOIN
   activations
-USING
-  (date, campaign_id, ad_group_id)
+  USING (date, campaign_id, ad_group_id)
 LEFT JOIN
   retention_aggs
-USING
-  (date, campaign_id, ad_group_id)
+  USING (date, campaign_id, ad_group_id)
 JOIN
   google_ads_derived.campaigns_v1
-USING
-  (campaign_id)
+  USING (campaign_id)
 JOIN
   google_ads_derived.ad_groups_v1
-USING
-  (campaign_id, ad_group_id)
+  USING (campaign_id, ad_group_id)
 GROUP BY
   date,
   campaign,

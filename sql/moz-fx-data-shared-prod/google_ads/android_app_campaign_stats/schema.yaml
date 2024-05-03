@@ -45,9 +45,6 @@ fields:
 - name: spend
   type: FLOAT
   mode: NULLABLE
-  description: Spend in US dollars attributed to this ad group on this day.
 - name: lifetime_value
   type: FLOAT
   mode: NULLABLE
-  description: Lifetime Value (LTV) of the users acquired by this ad group on this
-    day.

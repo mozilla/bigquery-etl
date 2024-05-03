@@ -33,7 +33,7 @@ SELECT
         )
         ORDER BY
           changed_users.update_timestamp DESC
-      ) AS user_attributes
+      ) AS user_attributes_v1
     )
   ) AS PAYLOAD
 FROM

@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.firefox_ios.retention_profiles`
+  `moz-fx-data-shared-prod.firefox_ios.retention_clients`
 AS
 WITH clients_last_seen AS (
   SELECT
@@ -12,7 +12,7 @@ WITH clients_last_seen AS (
     days_seen_bits,
     days_active_bits,
   FROM
-    `moz-fx-data-shared-prod.firefox_ios.baseline_clients_last_seen`
+    `moz-fx-data-shared-prod.firefox_ios.baseline_clients_last_seen_extended_activity`
 ),
 attribution AS (
   SELECT
@@ -23,6 +23,7 @@ attribution AS (
     adjust_campaign,
     adjust_creative,
     adjust_network,
+    is_suspicious_device_profile,
   FROM
     `moz-fx-data-shared-prod.firefox_ios_derived.firefox_ios_clients_v1`
 )
@@ -35,13 +36,10 @@ SELECT
   clients_last_seen.app_name,
   clients_daily.normalized_channel,
   clients_daily.country,
-  clients_daily.app_display_version,
+  clients_daily.app_display_version AS app_version,
   clients_daily.locale,
   clients_daily.isp,
-  (
-    clients_daily.app_display_version = '107.2'
-    AND clients_daily.submission_date >= '2023-02-01'
-  ) AS is_suspicious_device_profile,
+  attribution.is_suspicious_device_profile,
   -- ping sent retention
   clients_last_seen.retention_seen.day_27.active_on_metric_date AS ping_sent_metric_date,
   (
@@ -63,13 +61,24 @@ SELECT
   (
     clients_daily.is_new_profile
     AND BIT_COUNT(clients_last_seen.days_active_bits) > 1
-  ) AS repeat_client,
-  clients_daily.adjust_ad_group,
-  clients_daily.adjust_campaign,
-  clients_daily.adjust_creative,
-  clients_daily.adjust_network,
+  ) AS repeat_profile,
+  attribution.adjust_ad_group,
+  attribution.adjust_campaign,
+  attribution.adjust_creative,
+  attribution.adjust_network,
   clients_last_seen.days_seen_bits,
   clients_last_seen.days_active_bits,
+  CASE
+    WHEN first_seen_date = clients_daily.submission_date
+      THEN 'new_profile'
+    WHEN DATE_DIFF(clients_daily.submission_date, first_seen_date, DAY)
+      BETWEEN 1
+      AND 27
+      THEN 'repeat_user'
+    WHEN DATE_DIFF(clients_daily.submission_date, first_seen_date, DAY) >= 28
+      THEN 'existing_user'
+    ELSE 'Unknown'
+  END AS lifecycle_stage
 FROM
   `moz-fx-data-shared-prod.firefox_ios.baseline_clients_daily` AS clients_daily
 INNER JOIN

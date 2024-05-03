@@ -25,7 +25,7 @@ fields:
   mode: NULLABLE
   description: Profile's country on the metric date.
 
-- name: app_display_version
+- name: app_version
   type: STRING
   mode: NULLABLE
   description: Profile's app version on the metric date.

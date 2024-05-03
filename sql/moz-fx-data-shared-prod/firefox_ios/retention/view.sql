@@ -5,13 +5,13 @@ SELECT
   *,
   CASE
     WHEN first_seen_date = metric_date
-      THEN 'new_client'
+      THEN 'new_profile'
     WHEN DATE_DIFF(metric_date, first_seen_date, DAY)
       BETWEEN 1
       AND 27
-      THEN 'repeat_client'
+      THEN 'repeat_user'
     WHEN DATE_DIFF(metric_date, first_seen_date, DAY) >= 28
-      THEN 'existing_client'
+      THEN 'existing_user'
     ELSE 'Unknown'
   END AS lifecycle_stage
 FROM

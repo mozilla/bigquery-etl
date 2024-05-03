@@ -3071,6 +3071,12 @@ fields:
         by the user.
 
         '
+    - name: windows_ipad_window_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'A snapshot of how many windows the user has opened on iPad.
+
+        '
   - name: rate
     type: RECORD
     mode: NULLABLE

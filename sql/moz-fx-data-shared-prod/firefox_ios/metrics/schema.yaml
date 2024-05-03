@@ -1762,6 +1762,9 @@ fields:
     - name: addresses_saved_all
       type: INTEGER
       mode: NULLABLE
+    - name: windows_ipad_window_count
+      type: INTEGER
+      mode: NULLABLE
   - name: rate
     type: RECORD
     mode: NULLABLE

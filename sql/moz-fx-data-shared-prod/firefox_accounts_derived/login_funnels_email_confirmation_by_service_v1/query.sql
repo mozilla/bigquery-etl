@@ -25,6 +25,7 @@ WITH login_success_with_email_by_service_login_view AS (
       DATE(submission_timestamp) = @submission_date
     {% endif %}
     AND metrics.string.event_name = 'login_view'
+    AND metrics.string.session_flow_id != ''
 ),
 login_success_with_email_by_service_login_submit AS (
   SELECT
@@ -46,6 +47,7 @@ login_success_with_email_by_service_login_submit AS (
       DATE(submission_timestamp) = @submission_date
     {% endif %}
     AND metrics.string.event_name = 'login_submit'
+    AND metrics.string.session_flow_id != ''
 ),
 login_success_with_email_by_service_login_success AS (
   SELECT
@@ -67,6 +69,7 @@ login_success_with_email_by_service_login_success AS (
       DATE(submission_timestamp) = @submission_date
     {% endif %}
     AND metrics.string.event_name = 'login_success'
+    AND metrics.string.session_flow_id != ''
 ),
 login_success_with_email_by_service_login_email_confirmation_view AS (
   SELECT
@@ -88,6 +91,7 @@ login_success_with_email_by_service_login_email_confirmation_view AS (
       DATE(submission_timestamp) = @submission_date
     {% endif %}
     AND metrics.string.event_name = 'login_email_confirmation_view'
+    AND metrics.string.session_flow_id != ''
 ),
 login_success_with_email_by_service_login_email_confirmation_submit AS (
   SELECT
@@ -109,6 +113,7 @@ login_success_with_email_by_service_login_email_confirmation_submit AS (
       DATE(submission_timestamp) = @submission_date
     {% endif %}
     AND metrics.string.event_name = 'login_email_confirmation_submit'
+    AND metrics.string.session_flow_id != ''
 ),
 login_success_with_email_by_service_login_email_confirmation_success AS (
   SELECT
@@ -130,6 +135,7 @@ login_success_with_email_by_service_login_email_confirmation_success AS (
       DATE(submission_timestamp) = @submission_date
     {% endif %}
     AND metrics.string.event_name = 'login_email_confirmation_success'
+    AND metrics.string.session_flow_id != ''
 ),
 login_success_with_email_by_service_login_complete AS (
   SELECT
@@ -151,6 +157,7 @@ login_success_with_email_by_service_login_complete AS (
       DATE(submission_timestamp) = @submission_date
     {% endif %}
     AND metrics.string.event_name = 'login_complete'
+    AND metrics.string.session_flow_id != ''
 ),
 -- aggregate each funnel step value
 login_success_with_email_by_service_login_view_aggregated AS (

@@ -80,9 +80,9 @@ active_users AS (
         SELECT
           1
         FROM
-          `moz-fx-data-shared-prod.subscription_platform.logical_subscriptions` AS products
+          `moz-fx-data-shared-prod.subscription_platform_derived.stripe_subscriptions_v1` AS products
         WHERE
-          products.mozilla_account_id_sha256 = emails.fxa_id_sha256
+          products.fxa_uid = emails.fxa_id_sha256
       )
     )
 )

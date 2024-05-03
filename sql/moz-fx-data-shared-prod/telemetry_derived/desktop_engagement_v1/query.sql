@@ -17,7 +17,7 @@ SELECT
   COUNTIF(is_wau) AS wau,
   COUNTIF(is_mau) AS mau
 FROM
-  `moz-fx-data-shared-prod.telemetry.desktop_engagement_clients`
+  `moz-fx-data-shared-prod.telemetry_derived.desktop_engagement_clients_v1`
 WHERE
   submission_date = @submission_date
 GROUP BY

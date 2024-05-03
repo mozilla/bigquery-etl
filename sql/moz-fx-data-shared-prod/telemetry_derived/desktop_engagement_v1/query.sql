@@ -13,11 +13,11 @@ SELECT
   normalized_os,
   normalized_os_version,
   country,
-  SUM(CASE WHEN dau THEN 1 ELSE 0 END) AS dau,
-  SUM(CASE WHEN wau THEN 1 ELSE 0 END) AS wau,
-  SUM(CASE WHEN mau THEN 1 ELSE 0 END) AS mau
+  COUNTIF(is_dau) AS dau,
+  COUNTIF(is_wau) AS wau,
+  COUNTIF(is_mau) AS mau
 FROM
-  `moz-fx-data-shared-prod.telemetry.desktop_engagement_client`
+  `moz-fx-data-shared-prod.telemetry_derived.desktop_engagement_clients_v1`
 WHERE
   submission_date = @submission_date
 GROUP BY

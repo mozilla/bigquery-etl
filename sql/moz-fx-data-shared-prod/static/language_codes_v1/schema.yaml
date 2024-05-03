@@ -1,0 +1,17 @@
+fields:
+- name: code_3
+  description: ISO 639 alpha-3 language code.
+  type: STRING
+  mode: REQUIRED
+- name: code_2
+  description: ISO 639 alpha-2 language code (if any).
+  type: STRING
+  mode: NULLABLE
+- name: name
+  description: Language name.
+  type: STRING
+  mode: REQUIRED
+- name: other_names
+  description: Other names for the language (if any).
+  type: STRING
+  mode: NULLABLE

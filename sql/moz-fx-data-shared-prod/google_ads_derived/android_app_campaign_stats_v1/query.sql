@@ -25,22 +25,8 @@ activations AS (
     fenix_derived.firefox_android_clients_v1
   JOIN
     mozdata.ltv.fenix_client_ltv
-    USING (client_id)
-  WHERE
-    first_seen_date >= '2022-12-01'
-  GROUP BY
-    date,
-    campaign_id,
-    ad_group_id
-),
-retention_aggs as (
-  SELECT
-     first_seen_date AS date,
-    CAST(REGEXP_EXTRACT(adjust_campaign, r' \((\d+)\)$') AS INT64) AS campaign_id,
-    CAST(REGEXP_EXTRACT(adjust_ad_group, r' \((\d+)\)$') AS INT64) AS ad_group_id,
-    SUM(repeat_user) as repeat_users,
-    SUM(retained_week_4) as retained_week_4
-  FROM fenix.funnel_retention_week_4
+  USING
+    (client_id)
   WHERE
     first_seen_date >= '2022-12-01'
   GROUP BY
@@ -59,24 +45,22 @@ SELECT
   SUM(clicks) AS clicks,
   SUM(new_profiles) AS new_profiles,
   SUM(activated) AS activated_profiles,
-  SUM(repeat_users) as repeat_users,
-  SUM(retained_week_4) week_4_retained_users,
   SUM(spend) AS spend,
   SUM(lifetime_value) AS lifetime_value,
 FROM
   daily_stats
 LEFT JOIN
   activations
-  USING (date, campaign_id, ad_group_id)
-LEFT JOIN
-  retention_aggs
-  USING (date, campaign_id, ad_group_id)
+USING
+  (date, campaign_id, ad_group_id)
 JOIN
   google_ads_derived.campaigns_v1
-  USING (campaign_id)
+USING
+  (campaign_id)
 JOIN
   google_ads_derived.ad_groups_v1
-  USING (campaign_id, ad_group_id)
+USING
+  (campaign_id, ad_group_id)
 GROUP BY
   date,
   campaign,

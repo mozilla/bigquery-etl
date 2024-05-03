@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.telemetry.desktop_engagement_agg`
+  `moz-fx-data-shared-prod.telemetry.desktop_engagement`
 AS
 SELECT
   a.*,

@@ -2,13 +2,9 @@
 ---
 # user 2.0
 - email: user_2@mail.com
-  external_id: user_2
-# user 2.1 with different id - should show up
+# user 2.1 double in this list
 - email: user_2@mail.com
-  external_id: user_2_with_different_id
 # user 2.2 with different email - should show up
 - email: user_2_second_mail@mail.com
-  external_id: user_2
 # user 4 - on the suppression list but not opted out of emails in Acoustic or CTMS
 - email: user_4@mail.com
-  external_id: user_on_suppression_list_but_not_opted_out

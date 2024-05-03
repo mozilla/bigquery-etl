@@ -40,3 +40,4 @@ fields:
   type: STRING
 - mode: NULLABLE
   name: fxa_created_at
+  type: TIMESTAMP

@@ -21,7 +21,8 @@ WITH ctms_emails AS (
     END AS has_fxa,
     LOWER(fxa.primary_email) AS fxa_primary_email,
     LOWER(fxa.lang) AS fxa_lang,
-    LOWER(fxa.first_service) AS first_service,
+    LOWER(fxa.first_service) AS fxa_first_service,
+    CAST(fxa.created_date AS TIMESTAMP) AS fxa_created_at,
     emails.create_timestamp,
     emails.update_timestamp
   FROM
@@ -42,7 +43,8 @@ active_users AS (
     emails.has_fxa,
     emails.fxa_primary_email,
     emails.fxa_lang,
-    emails.first_service,
+    emails.fxa_first_service,
+    emails.fxa_created_at,
     emails.create_timestamp,
     emails.update_timestamp
   FROM
@@ -94,10 +96,11 @@ SELECT
   basket_token,
   email_lang,
   fxa_id_sha256,
-  has_fxa,
+  has_fxa, 
   fxa_primary_email,
   fxa_lang,
-  first_service,
+  fxa_first_service,
+  fxa_created_at,
   create_timestamp,
   update_timestamp
 FROM

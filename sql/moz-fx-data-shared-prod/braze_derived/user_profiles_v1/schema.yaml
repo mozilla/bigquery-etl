@@ -48,8 +48,12 @@ fields:
   type: STRING
   mode: NULLABLE
 
-- name: first_service
+- name: fxa_first_service
   type: STRING
+  mode: NULLABLE
+
+- name: fxa_created_at
+  type: TIMESTAMP
   mode: NULLABLE
 
 - name: newsletters

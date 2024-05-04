@@ -73,6 +73,10 @@ fields:
     type: STRING
     mode: NULLABLE
 
+  - name: newsletter_source
+    type: STRING
+    mode: NULLABLE
+
   - name: create_timestamp
     type: TIMESTAMP
     mode: NULLABLE

@@ -437,6 +437,12 @@ fields:
       description: 'The number of other modified font.size.variable prefs.
 
         '
+    - name: characteristics_prefs_network_cookie_cookiebehavior
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Value of the network.cookie.cookieBehavior pref.
+
+        '
   - name: string
     type: RECORD
     mode: NULLABLE

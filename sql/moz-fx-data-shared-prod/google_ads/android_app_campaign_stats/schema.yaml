@@ -42,6 +42,14 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: Number of activated profiles for this ad group on this day.
+- name: repeat_users
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of repeat users on this day.
+- name: week_4_retained_users
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of week 4 retained users on this day.
 - name: spend
   type: FLOAT
   mode: NULLABLE
@@ -51,11 +59,3 @@ fields:
   mode: NULLABLE
   description: Lifetime Value (LTV) of the users acquired by this ad group on this
     day.
-- name: repeat_users
-  type: INTEGER
-  mode: NULLABLE
-  description: Number of repeat users on this day.
-- name: week_4_retained_users
-  type: INTEGER
-  mode: NULLABLE
-  description: Number of week 4 retained users on this day.

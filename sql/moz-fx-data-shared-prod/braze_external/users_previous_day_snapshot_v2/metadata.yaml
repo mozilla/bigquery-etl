@@ -1,8 +1,11 @@
-friendly_name: Braze Changed Subscriptions Sync
+friendly_name: Braze User Profiles Previous Day Snapshot v2
 description: |-
-  Changes in subscriptions mapped to Braze from the previous day. In order to consume the least amount
-  of data points, we only want to sync rows changed since the last sync. This table holds
-  all of the changed subscription data that syncs to braze.
+  This is a snapshot of the users table at the state it was in before
+  the most recent DAG run. Since the user profiles table updates once a day at
+  10AM UTC, we can update this snapshot looking 12 hours back (yesterday).
+
+  This snapshot allows us to compare changed values in order to generate the
+  JSON payloads for Braze's cloud data ingestion tool.
 
   See https://mozilla-hub.atlassian.net/browse/DENG-3182
 owners:
@@ -27,7 +30,4 @@ workgroup_access:
 - role: roles/bigquery.dataEditor
   members:
   - workgroup:braze/writers
-references:
-  query.sql:
-  - moz-fx-data-shared-prod.braze_derived.subscriptions_v1
-  - moz-fx-data-shared-prod.braze_external.changed_subscriptions_sync_v1
+references: {}

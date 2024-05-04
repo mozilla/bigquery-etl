@@ -173,6 +173,18 @@ with DAG(
         task_concurrency=1,
     )
 
+    braze_external__changed_firefox_subscriptions_sync__v1 = bigquery_etl_query(
+        task_id="braze_external__changed_firefox_subscriptions_sync__v1",
+        destination_table="changed_firefox_subscriptions_sync_v1",
+        dataset_id="braze_external",
+        project_id="moz-fx-data-shared-prod",
+        owner="cbeck@mozilla.com",
+        email=["cbeck@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
     braze_external__changed_newsletters_sync__v1 = bigquery_etl_query(
         task_id="braze_external__changed_newsletters_sync__v1",
         destination_table="changed_newsletters_sync_v1",
@@ -188,18 +200,6 @@ with DAG(
     braze_external__changed_products_sync__v1 = bigquery_etl_query(
         task_id="braze_external__changed_products_sync__v1",
         destination_table="changed_products_sync_v1",
-        dataset_id="braze_external",
-        project_id="moz-fx-data-shared-prod",
-        owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=False,
-        task_concurrency=1,
-    )
-
-    braze_external__changed_subscriptions_sync__v1 = bigquery_etl_query(
-        task_id="braze_external__changed_subscriptions_sync__v1",
-        destination_table="changed_subscriptions_sync_v1",
         dataset_id="braze_external",
         project_id="moz-fx-data-shared-prod",
         owner="cbeck@mozilla.com",
@@ -269,6 +269,18 @@ with DAG(
         sql_file_path="sql/moz-fx-data-shared-prod/braze_external/users_previous_day_snapshot_v1/script.sql",
     )
 
+    braze_external__users_previous_day_snapshot__v2 = bigquery_etl_query(
+        task_id="braze_external__users_previous_day_snapshot__v2",
+        destination_table=None,
+        dataset_id="braze_external",
+        project_id="moz-fx-data-shared-prod",
+        owner="cbeck@mozilla.com",
+        email=["cbeck@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        sql_file_path="sql/moz-fx-data-shared-prod/braze_external/users_previous_day_snapshot_v2/script.sql",
+    )
+
     braze_derived__newsletters__v1.set_upstream(braze_derived__users__v1)
 
     braze_derived__products__v1.set_upstream(braze_derived__users__v1)
@@ -299,20 +311,20 @@ with DAG(
         wait_for_subscription_platform_derived__stripe_subscriptions__v1
     )
 
+    braze_external__changed_firefox_subscriptions_sync__v1.set_upstream(
+        braze_derived__subscriptions__v1
+    )
+
     braze_external__changed_newsletters_sync__v1.set_upstream(
         braze_derived__newsletters__v1
     )
 
     braze_external__changed_products_sync__v1.set_upstream(braze_derived__products__v1)
 
-    braze_external__changed_subscriptions_sync__v1.set_upstream(
-        braze_derived__subscriptions__v1
-    )
-
     braze_external__changed_users__v1.set_upstream(braze_derived__users__v1)
 
     braze_external__changed_users__v1.set_upstream(
-        braze_external__users_previous_day_snapshot__v1
+        braze_external__users_previous_day_snapshot__v2
     )
 
     braze_external__changed_users_sync__v1.set_upstream(

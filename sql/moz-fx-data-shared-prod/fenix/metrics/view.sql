@@ -789,7 +789,8 @@ SELECT
       metrics.timing_distribution.networking_http_content_cssloader_ondatafinished_to_onstop_delay,
       metrics.timing_distribution.cert_verifier_cert_trust_evaluation_time,
       metrics.timing_distribution.networking_dns_native_https_call_time,
-      metrics.timing_distribution.bounce_tracking_protection_purge_duration
+      metrics.timing_distribution.bounce_tracking_protection_purge_duration,
+      metrics.timing_distribution.performance_pageload_async_sheet_load
     ) AS `timing_distribution`,
     metrics.memory_distribution,
     metrics.datetime,
@@ -1411,7 +1412,8 @@ SELECT
       metrics.timing_distribution.networking_http_content_cssloader_ondatafinished_to_onstop_delay,
       metrics.timing_distribution.cert_verifier_cert_trust_evaluation_time,
       metrics.timing_distribution.networking_dns_native_https_call_time,
-      metrics.timing_distribution.bounce_tracking_protection_purge_duration
+      metrics.timing_distribution.bounce_tracking_protection_purge_duration,
+      metrics.timing_distribution.performance_pageload_async_sheet_load
     ) AS `timing_distribution`,
     metrics.memory_distribution,
     metrics.datetime,

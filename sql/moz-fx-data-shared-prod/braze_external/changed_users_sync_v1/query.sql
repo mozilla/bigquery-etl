@@ -13,13 +13,27 @@ SELECT
           changed_users.has_fxa AS has_fxa,
           changed_users.fxa_primary_email AS fxa_primary_email,
           changed_users.fxa_lang AS fxa_lang,
-          changed_users.first_service AS first_service,
-          changed_users.create_timestamp AS create_timestamp,
-          changed_users.update_timestamp AS update_timestamp
+          changed_users.fxa_first_service AS fxa_first_service,
+          changed_users.fxa_created_at AS fxa_created_at,
+          -- braze required format for nested timestamps
+          STRUCT(
+            FORMAT_TIMESTAMP(
+              '%Y-%m-%d %H:%M:%E6S UTC',
+              changed_users.create_timestamp,
+              'UTC'
+            ) AS `$time`
+          ) AS create_timestamp,
+          STRUCT(
+            FORMAT_TIMESTAMP(
+              '%Y-%m-%d %H:%M:%E6S UTC',
+              changed_users.update_timestamp,
+              'UTC'
+            ) AS `$time`
+          ) AS update_timestamp
         )
         ORDER BY
           changed_users.update_timestamp DESC
-      ) AS user_attributes
+      ) AS user_attributes_v1
     )
   ) AS PAYLOAD
 FROM

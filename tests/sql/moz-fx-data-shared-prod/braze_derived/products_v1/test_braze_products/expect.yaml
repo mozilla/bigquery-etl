@@ -19,7 +19,7 @@
       is_trial: false
       is_active: true
       subscription_status: active
-      subscription_country_code: US
+      subscription_country_code: us
       subscription_country_name: United States
       current_period_started_at: 2020-12-01 10:00:00+00:00
       current_period_ends_at: 2020-12-30 10:00:00+00:00
@@ -44,7 +44,7 @@
       is_trial: false
       is_active: false
       subscription_status: canceled
-      subscription_country_code: US
+      subscription_country_code: us
       subscription_country_name: United States
       is_auto_renew: false
       auto_renew_disabled_at: 2020-12-01 10:00:00+00:00
@@ -68,7 +68,7 @@
       is_trial: true
       is_active: false
       subscription_status: trialing
-      subscription_country_code: US
+      subscription_country_code: us
       subscription_country_name: United States
       is_auto_renew: false
       has_refunds: false
@@ -94,7 +94,7 @@
       is_trial: false
       is_active: true
       subscription_status: active
-      subscription_country_code: US
+      subscription_country_code: us
       subscription_country_name: United States
       current_period_started_at: 2020-01-01 10:00:00+00:00
       current_period_ends_at: 2021-01-01 10:00:00+00:00
@@ -141,7 +141,7 @@
       is_trial: false
       is_active: false
       subscription_status: inactive
-      subscription_country_code: US
+      subscription_country_code: us
       subscription_country_name: United States
       is_auto_renew: false
       has_refunds: false

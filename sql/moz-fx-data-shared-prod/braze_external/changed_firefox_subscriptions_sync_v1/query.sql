@@ -1,3 +1,4 @@
+-- Construct the JSON payload in Braze required format
 SELECT
   CURRENT_TIMESTAMP() AS UPDATED_AT,
   subscriptions.external_id AS EXTERNAL_ID,

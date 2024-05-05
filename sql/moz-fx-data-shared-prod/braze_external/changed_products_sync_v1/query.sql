@@ -1,15 +1,21 @@
+-- Braze requires the timestamps in the JSON payload to be in a certain format
+-- that cannot be easily extracted from a JSON type object. We extract the timestamp
+-- value and then use a user defined function (UDF) to parse it from the JSON object
 WITH extract_timestamp AS (
   SELECT
-    MAX(TO_JSON_STRING(payload.products_v1[0].subscription_updated_at)) AS subscription_updated_at
+    TO_JSON_STRING(payload.products_v1[0].subscription_updated_at) AS extracted_time
   FROM
     `moz-fx-data-shared-prod.braze_external.changed_products_sync_v1`
 ),
+-- Retrieves the maximum subscription updated timestamp from the last run to only
+-- select recently changed records
 max_update AS (
-  SELECT
-    TIMESTAMP(braze_parse_time(subscription_updated_at)) AS latest_subscription_updated_at
+  MAX(SELECT
+    TIMESTAMP(mozfun.datetime_util.braze_parse_time(extracted_time))) AS latest_subscription_updated_at
   FROM
     extract_timestamp
 ),
+-- Counts the number of subscriptions per product
 products_with_counts AS (
   SELECT
     products.external_id,
@@ -26,6 +32,7 @@ products_with_counts AS (
   WHERE
     products_array.subscription_updated_at > (SELECT latest_subscription_updated_at FROM max_update)
 )
+-- Construct the JSON payload in Braze required format
 SELECT
   CURRENT_TIMESTAMP() AS UPDATED_AT,
   products.external_id AS EXTERNAL_ID,

@@ -14,7 +14,7 @@ SELECT
     )
   ) AS PAYLOAD
 FROM
-  `moz-fx-data-shared-prod.braze_derived.subscriptions_v1` AS subscriptions
+  `moz-fx-data-shared-prod.braze_external.changed_subscriptions_v1` AS subscriptions
 CROSS JOIN
   UNNEST(subscriptions.subscriptions) AS subscriptions_array
 WHERE

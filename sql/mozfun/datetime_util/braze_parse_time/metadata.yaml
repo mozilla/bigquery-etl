@@ -1,0 +1,3 @@
+description: |
+  Function for parsing the $time value from Braze's JSON payload
+friendly_name: braze_parse_time

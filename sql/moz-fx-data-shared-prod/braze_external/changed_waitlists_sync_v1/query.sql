@@ -1,10 +1,14 @@
-WITH max_update AS (
+WITH extract_timestamp AS (
   SELECT
-    MAX(UPDATED_AT) AS max_update_timestamp
+    MAX(TO_JSON_STRING(payload.newsletters_v1[0].update_timestamp)) AS max_updated_at
   FROM
-    `moz-fx-data-shared-prod.braze_external.changed_waitlists_sync_v1`
-  LIMIT
-    1
+    `moz-fx-data-shared-prod.braze_external.changed_newsletters_sync_v1`
+),
+max_update AS (
+  SELECT
+    TIMESTAMP(braze_parse_time(max_updated_at)) AS latest_newsletter_updated_at
+  FROM
+    extract_timestamp
 )
 SELECT
   CURRENT_TIMESTAMP() AS UPDATED_AT,
@@ -25,14 +29,14 @@ SELECT
               waitlists_array.create_timestamp,
               'UTC'
             ) AS `$time`
-          ) AS create_timestamp,
+          ) AS created_at,
           STRUCT(
             FORMAT_TIMESTAMP(
               '%Y-%m-%d %H:%M:%E6S UTC',
               waitlists_array.update_timestamp,
               'UTC'
             ) AS `$time`
-          ) AS update_timestamp
+          ) AS updated_at
         )
         ORDER BY
           waitlists_array.update_timestamp DESC
@@ -44,6 +48,6 @@ FROM
 CROSS JOIN
   UNNEST(waitlists.waitlists) AS waitlists_array
 WHERE
-  waitlists_array.update_timestamp > (SELECT max_update_timestamp FROM max_update)
+  waitlists_array.update_timestamp > (SELECT latest_newsletter_updated_at FROM max_update)
 GROUP BY
   waitlists.external_id;

@@ -1,8 +1,14 @@
-WITH max_update AS (
+WITH extract_timestamp AS (
   SELECT
-    MAX(UPDATED_AT) AS max_update_timestamp
+    MAX(TO_JSON_STRING(payload.newsletters_v1[0].update_timestamp)) AS max_updated_at
   FROM
     `moz-fx-data-shared-prod.braze_external.changed_newsletters_sync_v1`
+),
+max_update AS (
+  SELECT
+    TIMESTAMP(braze_parse_time(max_updated_at)) AS latest_newsletter_updated_at
+  FROM
+    extract_timestamp
 )
 SELECT
   CURRENT_TIMESTAMP() AS UPDATED_AT,
@@ -22,14 +28,14 @@ SELECT
               newsletters_array.create_timestamp,
               'UTC'
             ) AS `$time`
-          ) AS create_timestamp,
+          ) AS created_at,
           STRUCT(
             FORMAT_TIMESTAMP(
               '%Y-%m-%d %H:%M:%E6S UTC',
               newsletters_array.update_timestamp,
               'UTC'
             ) AS `$time`
-          ) AS update_timestamp
+          ) AS updated_at
         )
         ORDER BY
           newsletters_array.update_timestamp DESC
@@ -41,6 +47,6 @@ FROM
 CROSS JOIN
   UNNEST(newsletters.newsletters) AS newsletters_array
 WHERE
-  newsletters_array.update_timestamp > (SELECT max_update_timestamp FROM max_update)
+  newsletters_array.update_timestamp > (SELECT latest_newsletter_updated_at FROM max_update)
 GROUP BY
   newsletters.external_id;

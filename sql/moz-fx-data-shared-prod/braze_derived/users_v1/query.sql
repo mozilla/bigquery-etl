@@ -2,7 +2,7 @@ WITH ctms_emails AS (
   SELECT
     emails.email_id AS external_id,
     LOWER(emails.primary_email) AS email,
-    LOWER(emails.mailing_country) AS mailing_country,
+    NULLIF(LOWER(emails.mailing_country), '') AS mailing_country,
     CASE
       WHEN emails.double_opt_in = TRUE
         THEN 'opted_in'
@@ -12,7 +12,7 @@ WITH ctms_emails AS (
       ELSE 'unsubscribed'
     END AS email_subscribe,
     emails.basket_token,
-    LOWER(emails.email_lang) AS email_lang,
+    NULLIF(LOWER(emails.email_lang), '') AS email_lang,
     TO_HEX(SHA256(fxa.fxa_id)) AS fxa_id_sha256,
     CASE
       WHEN fxa.fxa_id IS NOT NULL
@@ -20,8 +20,8 @@ WITH ctms_emails AS (
         THEN TRUE
     END AS has_fxa,
     LOWER(fxa.primary_email) AS fxa_primary_email,
-    LOWER(fxa.lang) AS fxa_lang,
-    LOWER(fxa.first_service) AS fxa_first_service,
+    NULLIF(LOWER(fxa.lang), '') AS fxa_lang,
+    NULLIF(LOWER(fxa.first_service), '') AS fxa_first_service,
     CAST(fxa.created_date AS TIMESTAMP) AS fxa_created_at,
     emails.create_timestamp,
     emails.update_timestamp
@@ -50,14 +50,14 @@ active_users AS (
   FROM
     ctms_emails AS emails
   LEFT JOIN
-    `moz-fx-data-shared-prod.braze_derived.suppressions_v1` AS suppressions
+    `moz-fx-data-shared-prod.marketing_suppression_list_derived` AS suppressions
     ON emails.email = suppressions.email
   LEFT JOIN
     `moz-fx-data-shared-prod.ctms_braze.ctms_fxa` AS fxa
     ON emails.external_id = fxa.email_id
   WHERE
-    -- exclude users on suppression list
-    suppressions.email IS NULL
+    suppressions.email IS NULL -- exclude users on suppression list
+    AND has_opted_out_of_email =  false -- has not opted out of all newsletters
     -- ensure user is associated w/ active subscription or product
     AND (
       EXISTS(
@@ -82,9 +82,9 @@ active_users AS (
         SELECT
           1
         FROM
-          `moz-fx-data-shared-prod.subscription_platform_derived.stripe_subscriptions_v1` AS products
+          `moz-fx-data-shared-prod.subscription_platform.logical_subscriptions` AS products
         WHERE
-          products.fxa_uid = emails.fxa_id_sha256
+          products.mozilla_account_id_sha256 = emails.fxa_id_sha256
       )
     )
 )

@@ -1,10 +1,14 @@
-WITH max_update AS (
+WITH extract_timestamp AS (
   SELECT
-    MAX(UPDATED_AT) AS max_update_timestamp
+    MAX(TO_JSON_STRING(payload.products_v1[0].subscription_updated_at)) AS subscription_updated_at
   FROM
     `moz-fx-data-shared-prod.braze_external.changed_products_sync_v1`
-  LIMIT
-    1
+),
+max_update AS (
+  SELECT
+    TIMESTAMP(braze_parse_time(subscription_updated_at)) AS latest_subscription_updated_at
+  FROM
+    extract_timestamp
 ),
 products_with_counts AS (
   SELECT
@@ -20,7 +24,7 @@ products_with_counts AS (
   CROSS JOIN
     UNNEST(products.products) AS products_array
   WHERE
-    products_array.subscription_updated_at > (SELECT max_update_timestamp FROM max_update)
+    products_array.subscription_updated_at > (SELECT latest_subscription_updated_at FROM max_update)
 )
 SELECT
   CURRENT_TIMESTAMP() AS UPDATED_AT,

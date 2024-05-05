@@ -1,54 +1,49 @@
 WITH unified AS (
-  -- Combine newsletters and waitlists into a single set of records from user_profiles
   SELECT
     external_id,
-    newsletter.newsletter_name AS subscription_name,  -- No change to name for newsletters
-    newsletter.update_timestamp,
-    IF(newsletter.subscribed, 'subscribed', 'unsubscribed') AS subscription_state
-  FROM
-    `moz-fx-data-shared-prod.braze_derived.user_profiles_v1`,
-    UNNEST(newsletters) AS newsletter
-  UNION ALL
-  SELECT
-    external_id,
-    CONCAT(
-      waitlist.waitlist_name,
-      '-waitlist'
-    ) AS subscription_name,  -- Add '-waitlist' suffix to match braze naming
-    waitlist.update_timestamp,
-    IF(waitlist.subscribed, 'subscribed', 'unsubscribed') AS subscription_state
-  FROM
-    `moz-fx-data-shared-prod.braze_derived.user_profiles_v1`,
-    UNNEST(waitlists) AS waitlist
-),
-all_subscriptions AS (
-  -- Create a comprehensive list of all users and their potential subscriptions
-  SELECT
-    users.external_id,
-    map.braze_subscription_name AS subscription_name,
-    map.firefox_subscription_id,
-    map.mozilla_subscription_id,
-    map.mozilla_dev_subscription_id
-  FROM
-    `moz-fx-data-shared-prod.braze_derived.users_v1` AS users
-  CROSS JOIN
-    `moz-fx-data-shared-prod.braze_derived.subscriptions_map_v1` AS map
+    subscription_name,
+    MAX(update_timestamp) AS update_timestamp,
+    MAX(subscription_state) AS subscription_state
+  FROM (
+    SELECT
+      external_id,
+      newsletter.newsletter_name AS subscription_name,
+      newsletter.update_timestamp,
+      IF(newsletter.subscribed, 'subscribed', 'unsubscribed') AS subscription_state
+    FROM
+      `moz-fx-data-shared-prod.braze_derived.user_profiles_v1`,
+      UNNEST(newsletters) AS newsletter
+    UNION ALL
+    SELECT
+      external_id,
+      CASE 
+        WHEN waitlist.waitlist_name = 'vpn' THEN 'guardian-vpn-waitlist'
+        ELSE CONCAT(waitlist.waitlist_name, '-waitlist')
+      END AS subscription_name,
+      waitlist.update_timestamp,
+      IF(waitlist.subscribed, 'subscribed', 'unsubscribed') AS subscription_state
+    FROM
+      `moz-fx-data-shared-prod.braze_derived.user_profiles_v1`,
+      UNNEST(waitlists) AS waitlist
+  ) AS unified_data
+  GROUP BY
+    external_id, subscription_name
 ),
 subscriptions_mapped AS (
   SELECT
-    all_subscriptions.external_id,
-    all_subscriptions.subscription_name,
-    all_subscriptions.firefox_subscription_id,
-    all_subscriptions.mozilla_subscription_id,
-    all_subscriptions.mozilla_dev_subscription_id,
-    COALESCE(unified.subscription_state, 'unsubscribed') AS subscription_state,
+    unified.external_id,
+    unified.subscription_name,
+    map.firefox_subscription_id,
+    map.mozilla_subscription_id,
+    map.mozilla_dev_subscription_id,
+    unified.subscription_state,
     unified.update_timestamp
   FROM
-    all_subscriptions
-  LEFT JOIN
     unified
-    ON unified.external_id = all_subscriptions.external_id
-    AND unified.subscription_name = all_subscriptions.subscription_name
+  JOIN
+    `moz-fx-data-shared-prod.braze_derived.subscriptions_map_v1` AS map
+  ON
+    unified.subscription_name = map.braze_subscription_name
 )
 SELECT
   subscriptions_mapped.external_id AS external_id,
@@ -67,4 +62,6 @@ SELECT
 FROM
   subscriptions_mapped
 GROUP BY
-  subscriptions_mapped.external_id;
+  subscriptions_mapped.external_id
+HAVING
+  COUNT(subscriptions_mapped.subscription_name) > 0; -- Only include rows where subscription IDs are not null

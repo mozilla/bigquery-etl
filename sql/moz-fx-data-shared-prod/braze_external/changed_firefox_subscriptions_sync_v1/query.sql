@@ -1,9 +1,3 @@
-WITH max_update AS (
-  SELECT
-    MAX(UPDATED_AT) AS max_update_timestamp
-  FROM
-    `moz-fx-data-shared-prod.braze_external.changed_firefox_subscriptions_sync_v1`
-)
 SELECT
   CURRENT_TIMESTAMP() AS UPDATED_AT,
   subscriptions.external_id AS EXTERNAL_ID,

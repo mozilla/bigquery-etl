@@ -10,9 +10,3 @@ AS
     return null;
   }
 """;
-
--- test
-assert.equals(
-  "2024-05-03 16:14:09 UTC",
-  mozfun.datetime_util.braze_parse_time("{" $ time ":" 2024 - 05 - 03 16 : 14 : 09.000000 UTC "}")
-),

@@ -1,9 +1,5 @@
 """Import Braze Currents from GCS into BigQuery."""
 
-# import os
-# import sys
-# import warnings
-
 import rich_click as click
 from google.cloud import bigquery
 

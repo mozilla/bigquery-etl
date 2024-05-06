@@ -950,13 +950,14 @@ def _run_query(
         )
 
         # create a session, setting default project and dataset
-        if billing_project is not None:
-            if dataset_id is not None:
-                default_dataset = dataset_id
-            else:
-                _, default_dataset, _ = extract_from_query_path(query_file)
+        if billing_project is not None and billing_project != project_id:
+            default_project, default_dataset, _ = extract_from_query_path(query_file)
 
-            session_id = create_query_session(project_id, default_dataset)
+            session_id = create_query_session(
+                session_project=billing_project,
+                default_project=project_id or default_project,
+                default_dataset=dataset_id or default_dataset,
+            )
             query_arguments.append(f"--session_id={session_id}")
 
         # write rendered query to a temporary file;
@@ -970,37 +971,46 @@ def _run_query(
 
 
 def create_query_session(
-    project_id: Optional[str] = None, dataset_id: Optional[str] = None
+    session_project: str,
+    default_project: Optional[str] = None,
+    default_dataset: Optional[str] = None,
 ):
     """Create a bigquery session and return the session id.
 
     Optionally set the system variables @@dataset_project_id and @@dataset_id
     if project_id and dataset_id are given. This sets the default project_id or dataset_id
     for table/view/udf references that do not have a project or dataset qualifier.
+
+    :param session_project: Project to create the session in
+    :param default_project: Optional project to use in queries for object
+        that do not have a project qualifier.
+    :param default_dataset: Optional dataset to use in queries for object
+        that do not have a project qualifier.
     """
     query_parts = []
-    if project_id is not None:
-        query_parts.append(f"SET @@dataset_project_id = '{project_id}';")
-    if dataset_id is not None:
-        query_parts.append(f"SET @@dataset_id = '{dataset_id}';")
+    if default_project is not None:
+        query_parts.append(f"SET @@dataset_project_id = '{default_project}'")
+    if default_dataset is not None:
+        query_parts.append(f"SET @@dataset_id = '{default_dataset}'")
 
     if len(query_parts) == 0:  # need to run a non-empty query
         session_query = "SELECT 1"
     else:
-        session_query = "\n".join(query_parts)
+        session_query = ";\n".join(query_parts)
 
-    client = bigquery.Client()
+    client = bigquery.Client(project=session_project)
 
     job_config = bigquery.QueryJobConfig(
         create_session=True,
         use_legacy_sql=False,
     )
-    result = client.query(session_query, job_config)
+    job = client.query(session_query, job_config)
+    job.result()
 
-    if result.session_info is None:
-        raise RuntimeError(f"Failed to get session id with {query}")
+    if job.session_info is None:
+        raise RuntimeError(f"Failed to get session id with job id {job.job_id}")
 
-    return result.session_info.session_id
+    return job.session_info.session_id
 
 
 @query.command(

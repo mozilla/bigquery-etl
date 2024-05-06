@@ -6,9 +6,9 @@
 ASSERT(
   WITH max_update AS (
     SELECT
-      MAX(UPDATED_AT) AS max_updated_at
+      MAX(update_timestamp) AS latest_subscription_updated_at
     FROM
-      `moz-fx-data-shared-prod.braze_external.changed_subscriptions_sync_v1`
+      `moz-fx-data-shared-prod.braze_external.changed_subscriptions_v1`
   )
   SELECT
     COUNT(1)
@@ -17,7 +17,7 @@ ASSERT(
     UNNEST(subscriptions) AS subscriptions,
     max_update
   WHERE
-    subscriptions.update_timestamp > max_update.max_updated_at
+    subscriptions.update_timestamp > max_update.latest_subscription_updated_at
 ) > 0;
 
 -- macro checks

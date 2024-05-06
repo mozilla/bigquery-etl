@@ -1,0 +1,11 @@
+# main suppression list
+---
+# user 1 before cutoff date
+- email: user_1@example.mail
+  suppressed_timestamp: 2020-01-01
+# user 2 after cutoff date already in campaign monitor
+- email: user_2@example.mail
+  suppressed_timestamp: 2024-04-01
+# user 3 after cutoff date, not in campaign monitor
+- email: user_3@example.mail
+  suppressed_timestamp: 2024-04-02

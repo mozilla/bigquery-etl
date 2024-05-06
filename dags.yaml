@@ -419,9 +419,9 @@ bqetl_google_analytics_derived:
     The GA export runs at 15:00 UTC, so there's an effective 2-day delay
     for user activity to appear in these tables.
   default_args:
-    owner: ascholtz@mozilla.com
+    owner: kwindau@mozilla.com
     email:
-      - ascholtz@mozilla.com
+      - kwindau@mozilla.com
       - telemetry-alerts@mozilla.com
     start_date: "2020-10-31"
     retries: 2

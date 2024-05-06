@@ -1,0 +1,17 @@
+fields:
+- name: country_code
+  description: ISO 3166 alpha-2 country code.
+  type: STRING
+  mode: REQUIRED
+- name: country
+  description: Country name.
+  type: STRING
+  mode: REQUIRED
+- name: vat
+  description: VAT rate.
+  type: NUMERIC
+  mode: REQUIRED
+- name: effective_date
+  description: Date when the VAT rate should take effect.
+  type: DATE
+  mode: REQUIRED

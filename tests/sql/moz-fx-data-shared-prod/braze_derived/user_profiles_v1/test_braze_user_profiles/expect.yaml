@@ -13,7 +13,8 @@
   has_fxa: true
   fxa_primary_email: user_1_primary@mail.com
   fxa_lang: DE
-  first_service: service_1
+  fxa_first_service: service_1
+  fxa_created_at: 2020-01-01 10:00:00+00:00
   newsletters:
     - newsletter_name: newsletter_1
       newsletter_lang: EN
@@ -58,6 +59,7 @@
 # user 4
 - external_id: user_4_only_products
   fxa_id_sha256: fxa_user_4
+  fxa_created_at: 2020-01-01 10:00:00+00:00
   has_fxa: true
   newsletters: []
   waitlists: []

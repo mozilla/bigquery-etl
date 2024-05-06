@@ -1,0 +1,5 @@
+# suppression_list_historical_download
+---
+- email: user7@example.com
+  opt_in_date: 2022-01-24 10:00 PM
+  opt_in_details: too many emails

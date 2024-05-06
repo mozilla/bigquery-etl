@@ -8,11 +8,9 @@ ASSERT(
     COUNT(1)
   FROM
     `moz-fx-data-shared-prod.braze_derived.subscriptions_v1`,
-    UNNEST(subscriptions) AS subscriptions,
-    max_update
+    UNNEST(subscriptions) AS subscriptions
   WHERE
-    subscriptions.update_timestamp > CURRENT_TIMESTAMP(),
-    INTERVAL 15 HOUR
+    subscriptions.update_timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 15 HOUR)
 ) > 0;
 
 -- macro checks

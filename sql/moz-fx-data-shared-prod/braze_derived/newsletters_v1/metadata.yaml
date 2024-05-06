@@ -1,19 +1,8 @@
-friendly_name: Braze Newsletters
-description: |-
-  Newsletter Subscription Data from CTMS and Acoustic.
-
-  See https://mozilla-hub.atlassian.net/browse/DENG-3008
-owners:
-- cbeck@mozilla.com
-labels:
-  incremental: false
-  schedule: daily
-  owner: cbeck
-bigquery:
-  time_partitioning: null
-scheduling:
-  dag_name: bqetl_braze
-  date_partition_parameter: null
-  referenced_tables:
-    - ['moz-fx-data-shared-prod', 'braze_external', 'changed_newsletters_sync_v1']
-
+friendly_name : Braze Newsletters description : | -Newsletter Subscription Data
+FROM
+  CTMS
+  AND Acoustic.See https : / /mozilla - hub.atlassian.net / browse / DENG - 3008 owners : -cbeck @mozilla.com labels : incremental : FALSE schedule : daily owner : cbeck bigquery : time_partitioning : NULL scheduling : dag_name : bqetl_braze date_partition_parameter : NULL referenced_tables : - [
+    'moz-fx-data-shared-prod',
+    'braze_external',
+    'changed_newsletters_sync_v1'
+  ]

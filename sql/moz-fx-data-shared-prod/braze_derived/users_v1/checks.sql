@@ -4,21 +4,13 @@
 
 #fail
 ASSERT(
-  WITH extract_timestamp AS (
+  WITH max_update AS (
     SELECT
-      TO_JSON_STRING(payload.users_v1[0].update_timestamp) AS extracted_time
+      MAX(
+        TIMESTAMP(JSON_VALUE(payload.newsletters_v1[0].update_timestamp, '$."$time"'))
+      ) AS latest_user_updated_at
     FROM
       `moz-fx-data-shared-prod.braze_external.changed_users_sync_v1`
-  ),
--- Retrieves the maximum users updated timestamp from the last run to only
--- select recently changed records
-  max_update AS (
-    MAX(
-      SELECT
-        TIMESTAMP(mozfun.datetime_util.braze_parse_time(extracted_time))
-    ) AS latest_user_updated_at
-    FROM
-      extract_timestamp
   )
   SELECT
     COUNT(1)

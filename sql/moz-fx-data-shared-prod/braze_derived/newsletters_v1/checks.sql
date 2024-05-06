@@ -4,22 +4,12 @@
 
 #fail
 ASSERT(
-  WITH extract_timestamp AS (
-    SELECT
-      TO_JSON_STRING(payload.newsletters_v1[0].update_timestamp) AS extracted_time
+  WITH max_update AS (
+  SELECT
+    MAX(TIMESTAMP(JSON_VALUE(payload.newsletters_v1[0].update_timestamp, '$."$time"'))) AS latest_newsletter_updated_at 
     FROM
-      `moz-fx-data-shared-prod.braze_external.changed_newsletters_sync_v1`
-  ),
--- Retrieves the maximum newsletter updated timestamp from the last run to only
--- select recently changed records
-  max_update AS (
-    MAX(
-      SELECT
-        TIMESTAMP(mozfun.datetime_util.braze_parse_time(extracted_time))
-    ) AS latest_newsletter_updated_at
-    FROM
-      extract_timestamp
-  )
+    `moz-fx-data-shared-prod.braze_external.changed_newsletters_sync_v1`
+)
   SELECT
     COUNT(1)
   FROM

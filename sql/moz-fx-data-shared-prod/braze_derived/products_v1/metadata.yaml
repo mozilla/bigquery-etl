@@ -1,7 +1,15 @@
-friendly_name : Braze Products description : | -Product data
-FROM
-  Stripe Subscriptions.See https : / /mozilla - hub.atlassian.net / browse / DENG - 3008 owners : -cbeck @mozilla.com labels : incremental : FALSE schedule : daily owner : cbeck bigquery : time_partitioning : NULL scheduling : dag_name : bqetl_braze date_partition_parameter : NULL referenced_tables : - [
-    'moz-fx-data-shared-prod',
-    'braze_external',
-    'changed_products_sync_v1'
-  ]
+friendly_name: Braze Products
+description: |-
+  Product data from Stripe Subscriptions.
+  See https://mozilla-hub.atlassian.net/browse/DENG-3008
+owners:
+- cbeck@mozilla.com
+labels:
+  incremental: false
+  schedule: daily
+  owner: cbeck
+bigquery:
+  time_partitioning: null
+scheduling:
+  dag_name: bqetl_braze
+  date_partition_parameter: null

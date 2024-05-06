@@ -6,22 +6,13 @@
 ASSERT(
 -- Retrieves the maximum subscription updated timestamp from the last run to only
 -- select recently changed records
-  WITH max_update AS (
-    SELECT
-      MAX(
-        TIMESTAMP(JSON_VALUE(payload.products_v1[0].update_timestamp, '$."$time"'))
-      ) AS latest_subscription_updated_at
-    FROM
-      `moz-fx-data-shared-prod.braze_external.changed_products_sync_v1`
-  )
   SELECT
     COUNT(1)
   FROM
     `moz-fx-data-shared-prod.braze_derived.products_v1`,
-    UNNEST(products) AS products,
-    max_update
+    UNNEST(products) AS products
   WHERE
-    products.subscription_updated_at > max_update.latest_subscription_updated_at
+    products.subscription_updated_at > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 15 HOUR)
 ) > 0;
 
 -- macro checks

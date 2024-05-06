@@ -4,22 +4,13 @@
 
 #fail
 ASSERT(
-  WITH max_update AS (
-    SELECT
-      MAX(
-        TIMESTAMP(JSON_VALUE(payload.newsletters_v1[0].update_timestamp, '$."$time"'))
-      ) AS latest_waitlist_updated_at
-    FROM
-      `moz-fx-data-shared-prod.braze_external.changed_waitlists_sync_v1`
-  )
   SELECT
     COUNT(1)
   FROM
     `moz-fx-data-shared-prod.braze_derived.waitlists_v1`,
-    UNNEST(waitlists) AS waitlists,
-    max_update
+    UNNEST(waitlists) AS waitlists
   WHERE
-    waitlists.update_timestamp > max_update.latest_waitlist_updated_at
+    waitlists.update_timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 15 HOUR)
 ) > 0;
 
 #fail

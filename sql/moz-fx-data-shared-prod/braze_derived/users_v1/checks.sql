@@ -4,21 +4,12 @@
 
 #fail
 ASSERT(
-  WITH max_update AS (
-    SELECT
-      MAX(
-        TIMESTAMP(JSON_VALUE(payload.users_v1[0].update_timestamp, '$."$time"'))
-      ) AS latest_user_updated_at
-    FROM
-      `moz-fx-data-shared-prod.braze_external.changed_users_sync_v1`
-  )
   SELECT
     COUNT(1)
   FROM
-    `moz-fx-data-shared-prod.braze_derived.users_v1` AS users,
-    max_update
+    `moz-fx-data-shared-prod.braze_derived.users_v1` AS users
   WHERE
-    users.update_timestamp > max_update.latest_user_updated_at
+    users.update_timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 15 HOUR)
 ) > 0;
 
 -- macro checks

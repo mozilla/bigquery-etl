@@ -24,9 +24,9 @@ filtered_subscriptions AS (
     ) AS subscriptions
   FROM
     `moz-fx-data-shared-prod.braze_derived.subscriptions_v1` AS subscriptions
-  CROSS JOIN max_update_timestamp
+  CROSS JOIN
+    max_update_timestamp
 )
-
 SELECT
   external_id,
   subscriptions

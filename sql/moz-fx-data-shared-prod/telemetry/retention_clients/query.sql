@@ -40,11 +40,13 @@ new_profiles AS (
     attribution_content,
     attribution_dlsource,
     attribution_medium,
+    attribution_experiment,
     attribution_ua,
     distribution_id,
     normalized_channel,
     normalized_os,
     normalized_os_version,
+    startup_profile_selection,
     TRUE AS is_new_profile
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v2`
@@ -109,9 +111,11 @@ SELECT
   COALESCE(cd.attribution_content, np.attribution_content) AS attribution_content,
   COALESCE(cd.attribution_dlsource, np.attribution_dlsource) AS attribution_dlsource,
   COALESCE(cd.attribution_medium, np.attribution_medium) AS attribution_medium,
+  np.attribution_experiment,
   COALESCE(cd.attribution_ua, np.attribution_ua) AS attribution_ua,
   COALESCE(cd.normalized_os, np.normalized_os) AS normalized_os,
   COALESCE(cd.normalized_os_version, np.normalized_os_version) AS normalized_os_version,
+  np.startup_profile_selection,
   cd.ping_sent_metric_date,
   cd.ping_sent_week_4,
   cd.active_metric_date,

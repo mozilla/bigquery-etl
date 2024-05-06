@@ -36,5 +36,5 @@ fields:
   name: fxa_lang
   type: STRING
 - mode: NULLABLE
-  name: first_service
+  name: fxa_first_service
   type: STRING

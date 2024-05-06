@@ -34,55 +34,85 @@ RETURNS ARRAY<INT64> AS (
   )
 );
 {% endif %}
+WITH probe_counts AS (
+  SELECT
+      {{ attributes }},
+      {{ aggregate_attributes }},
+      {% if is_scalar %}
+          client_agg_type,
+          agg_type,
+          {%if channel == "release" %}
+            -- Logic to count clients based on sampled windows release data, which started in v119.
+            -- If you're changing this, then you'll also need to change
+            -- clients_daily_[scalar | histogram]_aggregates
+            IF(os = 'Windows' AND app_version >= 119,
+              SUM(count) * 10,
+              SUM(count)
+            ) AS total_users,
+          {% else %}
+            SUM(count) AS total_users,
+          {% endif %}
+          mozfun.glam.histogram_fill_buckets_dirichlet(
+              mozfun.map.sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
+              CASE
+                WHEN metric_type IN ({{ scalar_metric_types }})
+                  THEN ARRAY(SELECT FORMAT("%.*f", 2, bucket) FROM UNNEST(
+                      mozfun.glam.histogram_generate_scalar_buckets(range_min, range_max, bucket_count)
+                    ) AS bucket ORDER BY bucket)
+                WHEN metric_type in ({{ boolean_metric_types }})
+                  THEN ['always', 'never', 'sometimes']
+              END,
+              SUM(count)
+          )
+          AS aggregates
+      {% else %}
+          agg_type AS client_agg_type,
+          'histogram' as agg_type,
+          CAST(ROUND(SUM(record.value)) AS INT64) AS total_users,
+          mozfun.glam.histogram_fill_buckets_dirichlet(
+              mozfun.map.sum(ARRAY_AGG(record)),
+              mozfun.glam.histogram_buckets_cast_string_array(
+                  udf_get_buckets(metric_type, range_min, range_max, bucket_count)
+              ),
+              CAST(ROUND(SUM(record.value)) AS INT64)
+          ) AS aggregates
+      {% endif %}
+  FROM
+      {{ source_table }}
+  GROUP BY
+      {{ attributes }},
+      range_min,
+      range_max,
+      bucket_count,
+      {{ aggregate_attributes }},
+      {{ aggregate_grouping }}
+),
+windows_probe_counts AS (
+  SELECT
+    *,
+  FROM
+    probe_counts
+  WHERE
+    os = "Windows"
+)
 
 SELECT
-    {{ attributes }},
-    {{ aggregate_attributes }},
-    {% if is_scalar %}
-        client_agg_type,
-        agg_type,
-        {%if channel == "release" %}
-          -- Logic to count clients based on sampled windows release data, which started in v119.
-          -- If you're changing this, then you'll also need to change
-          -- clients_daily_[scalar | histogram]_aggregates
-          IF(os = 'Windows' AND app_version >= 119,
-            SUM(count) * 10,
-            SUM(count)
-          ) AS total_users,
-        {% else %}
-          SUM(count) AS total_users,
-        {% endif %}
-        mozfun.glam.histogram_fill_buckets_dirichlet(
-            mozfun.map.sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
-            CASE
-              WHEN metric_type IN ({{ scalar_metric_types }})
-                THEN ARRAY(SELECT FORMAT("%.*f", 2, bucket) FROM UNNEST(
-                    mozfun.glam.histogram_generate_scalar_buckets(range_min, range_max, bucket_count)
-                  ) AS bucket ORDER BY bucket)
-              WHEN metric_type in ({{ boolean_metric_types }})
-                THEN ['always', 'never', 'sometimes']
-            END,
-            SUM(count)
-        )
-        AS aggregates
-    {% else %}
-        agg_type AS client_agg_type,
-        'histogram' as agg_type,
-        CAST(ROUND(SUM(record.value)) AS INT64) AS total_users,
-        mozfun.glam.histogram_fill_buckets_dirichlet(
-            mozfun.map.sum(ARRAY_AGG(record)),
-            mozfun.glam.histogram_buckets_cast_string_array(
-                udf_get_buckets(metric_type, range_min, range_max, bucket_count)
-            ),
-            CAST(ROUND(SUM(record.value)) AS INT64)
-        ) AS aggregates
-    {% endif %}
+  pc.* EXCEPT(total_users),
+IF
+  (pc.os = "*", CAST(COALESCE((pc.total_users + (wpc.total_users * 0.9)), pc.total_users) AS INT64), pc.total_users) AS total_users
 FROM
-    {{ source_table }}
-GROUP BY
-    {{ attributes }},
-    range_min,
-    range_max,
-    bucket_count,
-    {{ aggregate_attributes }},
-    {{ aggregate_grouping }}
+  probe_counts pc
+LEFT JOIN
+  windows_probe_counts wpc
+USING
+  (
+    ping_type,
+    app_version,
+    app_build_id,
+    channel,
+    metric,
+    metric_type,
+    KEY,
+    client_agg_type,
+    agg_type
+  )

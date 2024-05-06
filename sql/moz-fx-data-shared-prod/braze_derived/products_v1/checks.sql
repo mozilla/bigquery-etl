@@ -1,16 +1,19 @@
 -- raw SQL checks
 -- checking to see if there is new data since the last run
 -- if not, fail or we will have blank sync tables
+
 #fail
 ASSERT(
 -- Retrieves the maximum subscription updated timestamp from the last run to only
 -- select recently changed records
   WITH max_update AS (
-  SELECT
-    MAX(TIMESTAMP(JSON_VALUE(payload.products_v1[0].update_timestamp, '$."$time"'))) AS latest_subscription_updated_at 
+    SELECT
+      MAX(
+        TIMESTAMP(JSON_VALUE(payload.products_v1[0].update_timestamp, '$."$time"'))
+      ) AS latest_subscription_updated_at
     FROM
-    `moz-fx-data-shared-prod.braze_external.changed_products_sync_v1`
-)
+      `moz-fx-data-shared-prod.braze_external.changed_products_sync_v1`
+  )
   SELECT
     COUNT(1)
   FROM

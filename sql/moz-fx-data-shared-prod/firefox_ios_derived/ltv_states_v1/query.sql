@@ -9,7 +9,7 @@ WITH base AS (
     days_seen_bytes,
     durations
   FROM
-    mozdata.firefox_ios.baseline_clients_yearly
+    `moz-fx-data-shared-prod.firefox_ios.baseline_clients_yearly`
   WHERE
     submission_date = @submission_date
     AND NOT (
@@ -27,13 +27,27 @@ ad_clicks AS (
     b.days_since_seen,
     b.days_seen_bytes,
     b.durations,
-    attr_clients.ad_clicks AS ad_clicks
+    (
+      SELECT
+        LEAST(value, 10000)
+      FROM
+        UNNEST(ad_click_history)
+      WHERE
+        key = b.submission_date
+    ) AS ad_clicks,
+    (
+      SELECT
+        SUM(LEAST(value, 10000))
+      FROM
+        UNNEST(ad_click_history)
+      WHERE
+        key <= b.submission_date
+    ) AS total_historic_ad_clicks
   FROM
     base b
   LEFT JOIN
-    mozdata.firefox_ios.attributable_clients attr_clients
-    ON b.client_id = attr_clients.client_id
-    AND b.submission_date = attr_clients.submission_date
+    `moz-fx-data-shared-prod.firefox_ios.client_adclicks_history` ad_clck_hist
+    USING (client_id, sample_id)
 )
 SELECT
   ac.client_id,
@@ -45,11 +59,17 @@ SELECT
   ac.days_seen_bytes,
   ac.durations,
   ac.ad_clicks,
+  ac.total_historic_ad_clicks,
   c.adjust_network,
   c.first_reported_country,
   c.first_reported_isp
 FROM
   ad_clicks ac
 JOIN
-  mozdata.firefox_ios.firefox_ios_clients c
+  `moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients` c
   USING (sample_id, client_id)
+WHERE
+    -- BrowserStack clients are bots, we don't want to accidentally report on them
+  COALESCE(first_reported_isp, '') != "BrowserStack"
+    -- Remove clients who are new on this day, but have more/less than 1 day of activity
+  AND NOT (days_since_first_seen = 0 AND BIT_COUNT(days_seen_bytes) != 1)

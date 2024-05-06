@@ -4,7 +4,8 @@ SELECT
     STRUCT(
       newsletters.name AS newsletter_name,
       newsletters.subscribed AS subscribed,
-      newsletters.lang AS newsletter_lang,
+      LOWER(newsletters.lang) AS newsletter_lang,
+      newsletters.source AS newsletter_source,
       newsletters.create_timestamp AS create_timestamp,
       newsletters.update_timestamp AS update_timestamp
     )

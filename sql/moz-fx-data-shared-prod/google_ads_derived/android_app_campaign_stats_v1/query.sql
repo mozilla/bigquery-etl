@@ -32,6 +32,22 @@ activations AS (
     date,
     campaign_id,
     ad_group_id
+),
+retention_aggs AS (
+  SELECT
+    first_seen_date AS date,
+    CAST(REGEXP_EXTRACT(adjust_campaign, r' \((\d+)\)$') AS INT64) AS campaign_id,
+    CAST(REGEXP_EXTRACT(adjust_ad_group, r' \((\d+)\)$') AS INT64) AS ad_group_id,
+    SUM(repeat_user) AS repeat_users,
+    SUM(retained_week_4) AS retained_week_4
+  FROM
+    fenix.funnel_retention_week_4
+  WHERE
+    first_seen_date >= '2022-12-01'
+  GROUP BY
+    date,
+    campaign_id,
+    ad_group_id
 )
 SELECT
   date,
@@ -44,12 +60,17 @@ SELECT
   SUM(clicks) AS clicks,
   SUM(new_profiles) AS new_profiles,
   SUM(activated) AS activated_profiles,
+  SUM(repeat_users) AS repeat_users,
+  SUM(retained_week_4) week_4_retained_users,
   SUM(spend) AS spend,
   SUM(lifetime_value) AS lifetime_value,
 FROM
   daily_stats
 LEFT JOIN
   activations
+  USING (date, campaign_id, ad_group_id)
+LEFT JOIN
+  retention_aggs
   USING (date, campaign_id, ad_group_id)
 JOIN
   google_ads_derived.campaigns_v1

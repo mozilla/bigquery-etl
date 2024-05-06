@@ -1,5 +1,28 @@
 {{ header }}
 
+{% raw %}
+{% if is_init() %}
+{% endraw %}
+
+SELECT
+  CAST(NULL AS INT64) AS days_seen_bits,
+  CAST(NULL AS INT64) AS days_active_bits,
+  CAST(NULL AS INT64) AS days_created_profile_bits,
+  -- We make sure to delay * until the end so that as new columns are added
+  -- to the daily table we can add those columns in the same order to the end
+  -- of this schema, which may be necessary for the daily join query between
+  -- the two tables to validate.
+  *
+FROM
+  `{{ daily_table }}`
+WHERE
+  -- Output empty table and read no input rows
+  FALSE
+
+{% raw %}
+{% else %}
+{% endraw %}
+
 WITH _current AS (
   SELECT
     -- In this raw table, we capture the history of activity over the past
@@ -49,3 +72,7 @@ FROM
 FULL JOIN
   _previous
   USING (client_id)
+
+{% raw %}
+{% endif %}
+{% endraw %}

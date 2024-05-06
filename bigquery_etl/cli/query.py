@@ -1438,7 +1438,7 @@ def initialize(
 
                     _initialize_in_parallel(
                         project=project,
-                        table=destination_table,
+                        table=full_table_id,
                         dataset=dataset,
                         query_file=query_file,
                         arguments=arguments,
@@ -1454,7 +1454,7 @@ def initialize(
                         query_files=[query_file],
                         project_id=project,
                         public_project_id=None,
-                        destination_table=destination_table,
+                        destination_table=full_table_id,
                         dataset_id=dataset,
                         query_arguments=arguments,
                         addl_templates={

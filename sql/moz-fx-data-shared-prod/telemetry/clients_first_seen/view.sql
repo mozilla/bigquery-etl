@@ -4,7 +4,6 @@ AS
 SELECT
   a.*,
   `moz-fx-data-shared-prod`.udf.funnel_derived_clients(
-    normalized_channel,
     normalized_os,
     first_seen_date,
     app_build_id,

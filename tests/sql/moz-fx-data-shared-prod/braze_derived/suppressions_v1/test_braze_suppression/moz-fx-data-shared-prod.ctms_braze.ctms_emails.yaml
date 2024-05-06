@@ -1,0 +1,12 @@
+# ctms_emails
+---
+# user 3
+- primary_email: user_3@mail.com
+  has_opted_out_of_email: true
+# user 4 - on the suppression list but not opted out of emails in Acoustic or CTMS
+- email: user_4@mail.com
+  has_opted_out_of_email: false
+# user 5 - not on the suppression list and not opted out of emails in Acoustic or CTMS
+# should not show up on suppressions.
+- email: user_5@mail.com
+  has_opted_out_of_email: false

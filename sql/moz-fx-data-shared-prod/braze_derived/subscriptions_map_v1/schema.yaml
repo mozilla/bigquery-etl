@@ -12,5 +12,8 @@ fields:
   name: firefox_subscription_id
   type: STRING
 - mode: NULLABLE
+  name: mozilla_dev_subscription_id
+  type: STRING
+- mode: NULLABLE
   name: basket_slug
   type: STRING

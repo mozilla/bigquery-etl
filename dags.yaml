@@ -419,9 +419,9 @@ bqetl_google_analytics_derived:
     The GA export runs at 15:00 UTC, so there's an effective 2-day delay
     for user activity to appear in these tables.
   default_args:
-    owner: ascholtz@mozilla.com
+    owner: kwindau@mozilla.com
     email:
-      - ascholtz@mozilla.com
+      - kwindau@mozilla.com
       - telemetry-alerts@mozilla.com
     start_date: "2020-10-31"
     retries: 2
@@ -1567,6 +1567,57 @@ bqetl_braze_currents:
       - leli@mozilla.com
     start_date: '2024-04-15'
     retries: 1
+    retry_delay: 30m
+  tags:
+    - impact/tier_2
+
+bqetl_marketing_suppression_list:
+  schedule_interval: 0 3 * * *
+  description: |
+    Ingest marketing suppression lists into BigQuery
+  default_args:
+    owner: leli@mozilla.com
+    email:
+      - leli@mozilla.com
+    start_date: '2024-04-21'
+    retries: 1
+    retry_delay: 30m
+  tags:
+    - impact/tier_2
+
+bqetl_pageload_v1:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - wichan@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    owner: wichan@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2024-04-01'
+  description: DAG to build pageload tables
+  repo: bigquery-etl
+  schedule_interval: daily
+  tags:
+    - impact/tier_1
+    - repo/bigquery-etl
+
+bqetl_desktop_engagement_model:
+  schedule_interval: 0 12 * * *
+  description: Loads the desktop engagement model tables
+  default_args:
+    depends_on_past: false
+    owner: kwindau@mozilla.com
+    email:
+      - kwindau@mozilla.com
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    start_date: "2024-04-24"
+    retries: 2
     retry_delay: 30m
   tags:
     - impact/tier_2

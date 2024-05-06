@@ -1,0 +1,10 @@
+# acoustic suppression
+---
+# user 2.0
+- email: user_2@mail.com
+# user 2.1 double in this list
+- email: user_2@mail.com
+# user 2.2 with different email - should show up
+- email: user_2_second_mail@mail.com
+# user 4 - on the suppression list but not opted out of emails in Acoustic or CTMS
+- email: user_4@mail.com

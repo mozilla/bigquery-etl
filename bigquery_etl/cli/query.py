@@ -386,14 +386,8 @@ def schedule(name, sql_dir, project_id, dag, depends_on_past, task_name):
 @click.argument("name", required=False)
 @sql_dir_option
 @project_id_option()
-@click.option("--cost", help="Include information about query costs", is_flag=True)
-@click.option(
-    "--last_updated",
-    help="Include timestamps when destination tables were last updated",
-    is_flag=True,
-)
 @click.pass_context
-def info(ctx, name, sql_dir, project_id, cost, last_updated):
+def info(ctx, name, sql_dir, project_id):
     """Return information about all or specific queries."""
     if name is None:
         name = "*.*"
@@ -436,41 +430,8 @@ def info(ctx, name, sql_dir, project_id, cost, last_updated):
                 click.echo("scheduling:")
                 click.echo(f"  dag_name: {metadata.scheduling['dag_name']}")
 
-        if cost or last_updated:
-            if not is_authenticated():
-                click.echo(
-                    "Authentication to GCP required for "
-                    "accessing cost and last_updated."
-                )
-            else:
-                client = bigquery.Client()
-                end_date = date.today().strftime("%Y-%m-%d")
-                start_date = (date.today() - timedelta(7)).strftime("%Y-%m-%d")
-                result = client.query(
-                    f"""
-                    SELECT
-                        SUM(cost_usd) AS cost,
-                        MAX(creation_time) AS last_updated
-                    FROM `moz-fx-data-shared-prod.monitoring_derived.bigquery_etl_scheduled_queries_cost_v1`
-                    WHERE submission_date BETWEEN '{start_date}' AND '{end_date}'
-                        AND dataset = '{dataset}'
-                        AND table = '{table}'
-                """  # noqa E501
-                ).result()
+        # TODO: Add costs and last_updated info
 
-                if result.total_rows == 0:
-                    if last_updated:
-                        click.echo("last_updated: never")
-                    if cost:
-                        click.echo("Cost over the last 7 days: none")
-
-                for row in result:
-                    if last_updated:
-                        click.echo(f"  last_updated: {row.last_updated}")
-                    if cost:
-                        click.echo(
-                            f"  Cost over the last 7 days: {round(row.cost, 2)} USD"
-                        )
         click.echo("")
 
 
@@ -935,7 +896,7 @@ def _run_query(
             logging.error(e)
             sys.exit(1)
         except FileNotFoundError:
-            logging.warning("No metadata.yaml found for {}", query_file)
+            logging.warning("No metadata.yaml found for %s", query_file)
 
         if not use_public_table and destination_table is not None:
             # destination table was parsed by argparse, however if it wasn't modified to

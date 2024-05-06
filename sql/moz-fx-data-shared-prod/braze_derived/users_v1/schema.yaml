@@ -27,11 +27,17 @@ fields:
   name: fxa_id_sha256
   type: STRING
 - mode: NULLABLE
+  name: has_fxa
+  type: BOOLEAN
+- mode: NULLABLE
   name: fxa_primary_email
   type: STRING
 - mode: NULLABLE
   name: fxa_lang
   type: STRING
 - mode: NULLABLE
-  name: first_service
+  name: fxa_first_service
   type: STRING
+- mode: NULLABLE
+  name: fxa_created_at
+  type: TIMESTAMP

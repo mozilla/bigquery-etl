@@ -40,7 +40,3 @@ def main(
             source_format=bigquery.job.SourceFormat.AVRO,
         ),
     ).result()
-
-
-if __name__ == "__main__":
-    main()

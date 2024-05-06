@@ -1,3 +1,7 @@
 description: |
-  Function for parsing the $time value from Braze's JSON payload
+  Function for parsing the $time value from Braze's JSON payload. Braze has a requirement for
+  constructing JSON payloads that includes a special character ($).
+
+  This UDF extracts the time component from a JSON object and returns the time as a string.
+
 friendly_name: braze_parse_time

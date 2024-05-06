@@ -278,27 +278,35 @@ def _view_dependencies(artifact_files, sql_dir):
             )
             for dependency in dependencies:
                 dependency_components = dependency.split(".")
+                dependency_project_id, dependency_dataset_id, dependency_table_id = (
+                    None,
+                    None,
+                    None,
+                )
 
-                if len(dependency_components) == 3:
-                    [
-                        depdendency_project_id,
-                        dependency_dataset_id,
-                        dependency_table_id,
-                    ] = dependency_components
-                # Fully qualify the reference:
-                elif len(dependency_components) == 2:
-                    depdendency_project_id = dep_file.parent.parent.parent.name
-                    [dependency_dataset_id, dependency_table_id] = dependency_components
-                elif len(dependency_components) == 1:
-                    depdendency_project_id = dep_file.parent.parent.parent.name
-                    dependency_dataset_id = dep_file.parent.parent.name
-                    dependency_table_id = dependency_components[0]
-                else:
-                    return
+                match len(dependency_components):
+                    case 3:
+                        [
+                            dependency_project_id,
+                            dependency_dataset_id,
+                            dependency_table_id,
+                        ] = dependency_components
+                    # Fully qualify the reference:
+                    case 2:
+                        dependency_project_id = dep_file.parent.parent.parent.name
+                        [dependency_dataset_id, dependency_table_id] = (
+                            dependency_components
+                        )
+                    case 1:
+                        dependency_project_id = dep_file.parent.parent.parent.name
+                        dependency_dataset_id = dep_file.parent.parent.name
+                        dependency_table_id = dependency_components[0]
+                    case _:
+                        continue
 
                 file_path = (
                     Path(sql_dir)
-                    / depdendency_project_id
+                    / dependency_project_id
                     / dependency_dataset_id
                     / dependency_table_id
                     / VIEW_FILE

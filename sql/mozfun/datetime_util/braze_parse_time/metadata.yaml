@@ -4,4 +4,6 @@ description: |
 
   This UDF extracts the time component from a JSON object and returns the time as a string.
 
+  Example JSON object as constructed to Braze requirements: {"$time":"2024-05-05 14:46:02.000000 UTC"}
+
 friendly_name: braze_parse_time

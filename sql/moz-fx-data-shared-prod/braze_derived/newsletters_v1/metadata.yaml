@@ -14,3 +14,6 @@ bigquery:
 scheduling:
   dag_name: bqetl_braze
   date_partition_parameter: null
+  referenced_tables:
+  - ["moz-fx-data-shared-prod", "ctms_braze", "ctms_newsletters"]
+  - ["moz-fx-data-shared-prod", "braze_derived", "users_v1"]

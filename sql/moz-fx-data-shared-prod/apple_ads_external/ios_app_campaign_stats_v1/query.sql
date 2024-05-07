@@ -1,6 +1,6 @@
 WITH daily_stats AS (
   SELECT
-    date_day AS date,
+    date_day AS `date`,
     campaign_name AS campaign,
     campaign_id AS campaign_id,
     REGEXP_EXTRACT(
@@ -51,7 +51,7 @@ activations AS (
 ),
 retention_aggs AS (
   SELECT
-    first_seen_date AS date,
+    first_seen_date AS `date`,
     CAST(REGEXP_EXTRACT(adjust_campaign, r' \((\d+)\)$') AS INT64) AS campaign_id,
     CAST(REGEXP_EXTRACT(adjust_ad_group, r' \((\d+)\)$') AS INT64) AS ad_group_id,
     SUM(repeat_user) AS repeat_users,
@@ -59,7 +59,7 @@ retention_aggs AS (
   FROM
     firefox_ios.funnel_retention_week_4
   GROUP BY
-    date,
+    `date`,
     campaign_id,
     ad_group_id
 )

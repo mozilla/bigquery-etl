@@ -87,6 +87,46 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    checks__fail_marketing_suppression_list_derived__main_suppression_list__v1 = bigquery_dq_check(
+        task_id="checks__fail_marketing_suppression_list_derived__main_suppression_list__v1",
+        source_table="main_suppression_list_v1",
+        dataset_id="marketing_suppression_list_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=True,
+        owner="leli@mozilla.com",
+        email=["leli@mozilla.com"],
+        depends_on_past=False,
+        task_concurrency=1,
+        retries=0,
+    )
+
+    with TaskGroup(
+        "checks__fail_marketing_suppression_list_derived__main_suppression_list__v1_external",
+    ) as checks__fail_marketing_suppression_list_derived__main_suppression_list__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_braze__wait_for_checks__fail_marketing_suppression_list_derived__main_suppression_list__v1",
+            external_dag_id="bqetl_braze",
+            external_task_id="wait_for_checks__fail_marketing_suppression_list_derived__main_suppression_list__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=61200)).isoformat() }}",
+        )
+
+        checks__fail_marketing_suppression_list_derived__main_suppression_list__v1_external.set_upstream(
+            checks__fail_marketing_suppression_list_derived__main_suppression_list__v1
+        )
+
+    checks__warn_marketing_suppression_list_derived__main_suppression_list__v1 = bigquery_dq_check(
+        task_id="checks__warn_marketing_suppression_list_derived__main_suppression_list__v1",
+        source_table="main_suppression_list_v1",
+        dataset_id="marketing_suppression_list_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=False,
+        owner="leli@mozilla.com",
+        email=["leli@mozilla.com"],
+        depends_on_past=False,
+        task_concurrency=1,
+        retries=0,
+    )
+
     marketing_suppression_list_derived__main_suppression_list__v1 = bigquery_etl_query(
         task_id="marketing_suppression_list_derived__main_suppression_list__v1",
         destination_table="main_suppression_list_v1",
@@ -98,20 +138,6 @@ with DAG(
         depends_on_past=False,
         task_concurrency=1,
     )
-
-    with TaskGroup(
-        "marketing_suppression_list_derived__main_suppression_list__v1_external",
-    ) as marketing_suppression_list_derived__main_suppression_list__v1_external:
-        ExternalTaskMarker(
-            task_id="bqetl_braze__wait_for_marketing_suppression_list_derived__main_suppression_list__v1",
-            external_dag_id="bqetl_braze",
-            external_task_id="wait_for_marketing_suppression_list_derived__main_suppression_list__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=61200)).isoformat() }}",
-        )
-
-        marketing_suppression_list_derived__main_suppression_list__v1_external.set_upstream(
-            marketing_suppression_list_derived__main_suppression_list__v1
-        )
 
     marketing_suppression_list_external__campaign_monitor_suppression_list__v1 = GKEPodOperator(
         task_id="marketing_suppression_list_external__campaign_monitor_suppression_list__v1",
@@ -126,6 +152,14 @@ with DAG(
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="leli@mozilla.com",
         email=["leli@mozilla.com"],
+    )
+
+    checks__fail_marketing_suppression_list_derived__main_suppression_list__v1.set_upstream(
+        marketing_suppression_list_derived__main_suppression_list__v1
+    )
+
+    checks__warn_marketing_suppression_list_derived__main_suppression_list__v1.set_upstream(
+        marketing_suppression_list_derived__main_suppression_list__v1
     )
 
     marketing_suppression_list_derived__main_suppression_list__v1.set_upstream(

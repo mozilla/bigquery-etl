@@ -25,5 +25,8 @@ workgroup_access:
   members:
   - workgroup:braze/writers
 references:
+  checks.sql:
+  - ..
+  - moz-fx-data-shared-prod.braze_derived.waitlists_v1
   query.sql:
   - moz-fx-data-shared-prod.ctms_braze.ctms_waitlists

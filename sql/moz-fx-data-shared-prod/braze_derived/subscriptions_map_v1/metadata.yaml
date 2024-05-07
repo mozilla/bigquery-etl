@@ -24,5 +24,9 @@ workgroup_access:
   members:
   - workgroup:braze/writers
 references:
+  checks.sql:
+  - ..
+  - moz-fx-data-shared-prod.braze_derived.user_profiles_v1
+  - moz-fx-data-shared-prod.braze_derived.users_v1
   script.sql:
   - braze_derived.subscriptions_map_v1

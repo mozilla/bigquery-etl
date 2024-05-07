@@ -1,6 +1,6 @@
 friendly_name: Braze Changed Subscriptions
 description: |-
-  This table represents changes to user subscriptions since the 
+  This table represents changes to user subscriptions since the
   previous DAG run. It enables us to build the changed subscriptions
   sync(s)
 

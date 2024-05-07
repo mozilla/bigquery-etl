@@ -1,4 +1,4 @@
-  -- CTE to determine the maximum update timestamp from changed_subscriptions_v1
+    -- CTE to determine the maximum update timestamp from changed_subscriptions_v1
 WITH max_update AS (
   SELECT
     MAX(subscriptions.update_timestamp) AS latest_subscription_updated_at

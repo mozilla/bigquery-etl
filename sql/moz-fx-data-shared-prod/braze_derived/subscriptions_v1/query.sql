@@ -36,18 +36,18 @@ subscriptions AS (
 ),
 subscriptions_mapped AS (
   SELECT
-    unified.external_id,
-    unified.subscription_name,
+    subscriptions.external_id,
+    subscriptions.subscription_name,
     map.firefox_subscription_id,
     map.mozilla_subscription_id,
     map.mozilla_dev_subscription_id,
-    unified.subscription_state,
-    unified.update_timestamp
+    subscriptions.subscription_state,
+    subscriptions.update_timestamp
   FROM
     subscriptions
   JOIN
     `moz-fx-data-shared-prod.braze_derived.subscriptions_map_v1` AS map
-    ON unified.subscription_name = map.braze_subscription_name
+    ON subscriptions.subscription_name = map.braze_subscription_name
 )
 SELECT
   subscriptions_mapped.external_id AS external_id,

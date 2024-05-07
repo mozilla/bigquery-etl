@@ -1,0 +1,25 @@
+# test_braze_users - subscription_platform
+---
+# user 1 has all the subscriptions
+- mozilla_account_id_sha256: 627731529c24ee38e55d95a143c89f60c2e824e863a46d5608aba22b239bb3f4 # fxa_uid_1
+# user 2 only has newsletter subscription
+# user 3 only has waitlist subscription
+# user 4 only has product subscription
+- mozilla_account_id_sha256: ed3e620d7e5067bcef4b33acc8ffc79b8edcaf7930181175df00ed14bf8615f3 # fxa_uid_4
+# user 5 has newsletter and waitlist subscription
+# user 6 has newsletter, waitlist and product subscription
+- mozilla_account_id_sha256: 56d7e178eb20f8324e84e641277fca5de54cb9cdef64005a67967e7ce10f902e # fxa_uid_6
+# user 7 has newsletter subscription but is on suppression list
+# user 8 has newsletter subscription but has_opted_out_of_email in CTMS
+# user 9 has newsletter subscription but not double opted in yet
+# user 10 has newsletter subscription, not double opted in and opted out of emails
+# user 11 has newsletter subscription, double opted in and opted out of emails
+# user 12 has waitlist subscription but never opened or clicked through anything in acoustic
+# user 13 has waitlist subscription and clicked on it
+# user 14 has waitlist subscription but deleted their fxa_account
+- mozilla_account_id_sha256: 77bba43d555391e6b5eec36b7999be5a68709c1a004391b47a49d71ecb82201c # fxa_uid_14
+# user 15 has newsletter subscription but is unsubscribed from all of them
+# user 16 has unsubscribed newsletter subscriptions and active waitlist subscriptions
+# user 17 has only unsubscribed waitlist subscriptions
+# user 18 is only subscribed to MoFo subscriptions
+# user 19 has newsletter subscription and MoFo subscription

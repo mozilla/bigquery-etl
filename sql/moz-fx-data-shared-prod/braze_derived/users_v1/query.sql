@@ -20,6 +20,7 @@ WITH ctms_emails AS (
       WHEN fxa.fxa_id IS NOT NULL
         AND fxa.account_deleted = FALSE
         THEN TRUE
+      ELSE FALSE
     END AS has_fxa,
     LOWER(fxa.primary_email) AS fxa_primary_email,
     NULLIF(LOWER(fxa.lang), '') AS fxa_lang,
@@ -81,7 +82,10 @@ LEFT JOIN
 WHERE
   suppressions.email IS NULL -- exclude users on suppression list
   AND emails.has_opted_out_of_email = FALSE -- has not opted out of all newsletters
-  AND fxa.account_deleted = FALSE -- has not deleted FxA
+  AND (
+    fxa.account_deleted = FALSE -- has not deleted FxA
+    OR fxa.account_deleted IS NULL
+  )
   AND (
     EXISTS(
       SELECT

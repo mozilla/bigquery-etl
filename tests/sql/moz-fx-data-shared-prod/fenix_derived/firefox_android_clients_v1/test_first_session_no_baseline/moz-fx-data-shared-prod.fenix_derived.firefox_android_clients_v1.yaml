@@ -10,3 +10,4 @@
     reported_first_session_ping: false
     reported_metrics_ping: false
     install_source__source_ping: metrics
+  meta_attribution_app: 'Test Meta'

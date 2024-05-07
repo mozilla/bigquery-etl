@@ -6,9 +6,7 @@ WITH extract_timestamp AS (
 ),
 max_update AS (
   SELECT
-    TIMESTAMP(
-      braze_parse_time(max_updated_at)
-    ) AS latest_newsletter_updated_at
+    TIMESTAMP(braze_parse_time(max_updated_at)) AS latest_newsletter_updated_at
   FROM
     extract_timestamp
 )

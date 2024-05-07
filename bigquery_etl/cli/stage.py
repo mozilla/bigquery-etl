@@ -15,6 +15,7 @@ from ..cli.query import update as update_query_schema
 from ..cli.routine import publish as publish_routine
 from ..cli.utils import paths_matching_name_pattern, sql_dir_option
 from ..cli.view import publish as publish_view
+from ..dependency import get_dependency_graph
 from ..dryrun import DryRun
 from ..routine.parse_routine import (
     ROUTINE_FILES,
@@ -24,6 +25,7 @@ from ..routine.parse_routine import (
     read_routine_dir,
 )
 from ..schema import SCHEMA_FILE, Schema
+from ..util import extract_from_query_path
 from ..util.common import render
 from ..view import View
 
@@ -107,21 +109,41 @@ def deploy(
         shutil.copytree(sql_dir, tmp_dir)
         sql_dir = tmp_dir / sql_dir.name
 
+    paths = list(paths)
     artifact_files = set()
+    seen_paths = set()
+    dependency_graph = get_dependency_graph([sql_dir])
 
     # get SQL files for artifacts that are to be deployed
     for path in paths:
-        artifact_files.update(
-            [
-                p
-                for p in paths_matching_name_pattern(
-                    path, sql_dir, None, files=["*.sql", "*.py"]
-                )
-                if p.suffix in [".sql", ".py"]
-                and p.name != "checks.sql"
-                and len(p.suffixes) == 1
-            ]
-        )
+        if path in seen_paths:
+            continue
+
+        seen_paths.add(path)
+        matching_files = [
+            p
+            for p in paths_matching_name_pattern(
+                path, sql_dir, None, files=["*.sql", "*.py"]
+            )
+            if p.suffix in [".sql", ".py"]
+            and p.name != "checks.sql"
+            and len(p.suffixes) == 1
+        ]
+
+        artifact_files.update(matching_files)
+
+        # get downstream dependencies that might be impacted by the change
+        for matching_file in matching_files:
+            project, dataset, table = extract_from_query_path(matching_file)
+            identifier = f"{project}.{dataset}.{table}"
+
+            for dep, refs in dependency_graph.items():
+                if identifier in refs:
+                    dep_parts = dep.split(".")
+                    dependency_path = (
+                        Path(sql_dir) / dep_parts[0] / dep_parts[1] / dep_parts[2]
+                    )
+                    paths.append(dependency_path)
 
     # any dependencies need to be determined an deployed as well since the stage
     # environment doesn't have access to the prod environment

@@ -1,12 +1,12 @@
--- CTE to determine the maximum update timestamp from changed_subscriptions_v1
-WITH max_update_timestamp AS (
+  -- CTE to determine the maximum update timestamp from changed_subscriptions_v1
+WITH max_update AS (
   SELECT
-    MAX(subscriptions.update_timestamp) AS max_timestamp
+    MAX(subscriptions.update_timestamp) AS latest_subscription_updated_at
   FROM
     `moz-fx-data-shared-prod.braze_external.changed_subscriptions_v1` AS changed,
     UNNEST(changed.subscriptions) AS subscriptions
 )
--- Main query to select all records from subscriptions_v1 that have been updated since the last sync
+  -- Main query to select all records from subscriptions_v1 that have been updated since the last sync
 SELECT
   subscriptions.external_id,
   -- Reconstruct the subscriptions array to include only entries with non-null timestamps greater than max_timestamp
@@ -21,13 +21,13 @@ SELECT
     FROM
       UNNEST(subscriptions.subscriptions) AS subscriptions_array
     WHERE
-      subscriptions_array.update_timestamp > max_update_timestamp.max_timestamp
+      subscriptions_array.update_timestamp > max_update.latest_subscription_updated_at
       AND subscriptions_array.update_timestamp IS NOT NULL
   ) AS subscriptions
 FROM
   `moz-fx-data-shared-prod.braze_derived.subscriptions_v1` AS subscriptions,
-  max_update_timestamp
--- Filter to include only those rows where the new subscriptions array is not empty
+  max_update
+  -- Filter to include only those rows where the new subscriptions array is not empty
 WHERE
   ARRAY_LENGTH(
     ARRAY(
@@ -36,7 +36,7 @@ WHERE
       FROM
         UNNEST(subscriptions.subscriptions) AS subscriptions_array
       WHERE
-        subscriptions_array.update_timestamp > max_update_timestamp.max_timestamp
+        subscriptions_array.update_timestamp > max_update.latest_subscription_updated_at
         AND subscriptions_array.update_timestamp IS NOT NULL
     )
   ) > 0;

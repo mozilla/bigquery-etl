@@ -1,20 +1,14 @@
--- Braze requires the timestamps in the JSON payload to be in a certain format
--- that cannot be easily extracted from a JSON type object. We extract the timestamp
--- value and then use a user defined function (UDF) to parse it from the JSON object
-WITH extract_timestamp AS (
+  -- Retrieves the maximum newsletter updated timestamp from the last run to only
+  -- select recently changed records
+WITH max_update AS (
   SELECT
-    TO_JSON_STRING(payload.newsletters_v1[0].update_timestamp) AS extracted_time
+    MAX(
+      TIMESTAMP(JSON_VALUE(payload.waitlists_v1[0].update_timestamp, '$."$time"'))
+    ) AS latest_waitlist_updated_at
   FROM
-    `moz-fx-data-shared-prod.braze_external.changed_newsletters_sync_v1`
-),
--- Retrieves the maximum newsletter updated timestamp from the last run to only
--- select recently changed records
-max_update AS (
-  MAX(SELECT
-    TIMESTAMP(mozfun.datetime_util.braze_parse_time(extracted_time))) AS latest_newsletter_updated_at
-  FROM
-    extract_timestamp
+    `moz-fx-data-shared-prod.braze_external.changed_waitlists_sync_v1`
 )
+  -- Construct the JSON payload in Braze required format
 -- Construct the JSON payload in Braze required format
 SELECT
   CURRENT_TIMESTAMP() AS UPDATED_AT,
@@ -54,6 +48,6 @@ FROM
 CROSS JOIN
   UNNEST(waitlists.waitlists) AS waitlists_array
 WHERE
-  waitlists_array.update_timestamp > (SELECT latest_newsletter_updated_at FROM max_update)
+  waitlists_array.update_timestamp > (SELECT latest_waitlist_updated_at FROM max_update)
 GROUP BY
   waitlists.external_id;

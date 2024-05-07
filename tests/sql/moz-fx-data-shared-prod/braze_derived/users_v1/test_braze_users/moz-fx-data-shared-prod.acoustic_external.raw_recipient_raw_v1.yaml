@@ -55,3 +55,35 @@
 # user 17 has only unsubscribed waitlist subscriptions
 # user 18 is only subscribed to MoFo subscriptions
 # user 19 has newsletter subscription and MoFo subscription
+# user 20 has newsletter subscription and multiple acoustic events
+- recipient_id: user_20_recipient_id
+  event_timestamp: 01/20/2024 00:01:00
+  event_type: Click Through
+- recipient_id: user_20_recipient_id
+  event_timestamp: 01/20/2024 00:09:00
+  event_type: Click Through
+- recipient_id: user_20_recipient_id
+  event_timestamp: 01/20/2024 01:01:00
+  event_type: Click Through
+- recipient_id: user_20_recipient_id
+  event_timestamp: 01/20/2024 03:01:00
+  event_type: Open
+- recipient_id: user_20_recipient_id
+  event_timestamp: 01/20/2024 07:0:00
+  event_type: Open
+- recipient_id: user_20_recipient_id
+  event_timestamp: 01/20/2024 07:0:00
+  event_type: other event
+# user 21 has newsletter subscription and multiple acoustic events but no open or click through
+- recipient_id: user_21_recipient_id
+  event_timestamp: 01/21/2024 01:00:00
+  event_type: other event
+- recipient_id: user_21_recipient_id
+  event_timestamp: 01/21/2024 02:00:00
+  event_type: other event
+- recipient_id: user_21_recipient_id
+  event_timestamp: 01/21/2024 03:00:00
+  event_type: other other event
+- recipient_id: user_21_recipient_id
+  event_timestamp: 01/21/2024 07:00:00
+  event_type: another event

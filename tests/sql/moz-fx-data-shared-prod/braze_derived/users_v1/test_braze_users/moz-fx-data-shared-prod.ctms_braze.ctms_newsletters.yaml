@@ -58,3 +58,20 @@
   name: mozilla-foundation
   subscribed: true
 # user 19 has newsletter subscription and MoFo subscription
+- email_id: user_19
+  name: mozilla-foundation
+  subscribed: true
+- email_id: user_19
+  name: newsletter_1
+  subscribed: true
+- email_id: user_19
+  name: newsletter_2
+  subscribed: true
+# user 20 has newsletter subscription and multiple acoustic events
+- email_id: user_20
+  name: newsletter_1
+  subscribed: true
+# user 21 has newsletter subscription and multiple acoustic events but no open or click through
+- email_id: user_21
+  name: newsletter_1
+  subscribed: true

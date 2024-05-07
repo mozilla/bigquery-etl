@@ -95,6 +95,7 @@ WHERE
       WHERE
         newsletters.email_id = emails.external_id
         AND newsletters.subscribed = TRUE
+        AND newsletters.name != 'mozilla-foundation'
     )
     OR EXISTS(
       SELECT
@@ -112,47 +113,5 @@ WHERE
         `moz-fx-data-shared-prod.subscription_platform.logical_subscriptions` AS products
       WHERE
         products.mozilla_account_id_sha256 = emails.fxa_id_sha256
-    )
-  )
-  AND (
-      -- Check if user is not subscribed only to 'mozilla-foundation' and has at least one other subscription
-    (
-      NOT EXISTS(
-        SELECT
-          1
-        FROM
-          `moz-fx-data-shared-prod.ctms_braze.ctms_newsletters` AS mofo_newsletters
-        WHERE
-          mofo_newsletters.email_id = emails.external_id
-          AND mofo_newsletters.subscribed = TRUE
-          AND mofo_newsletters.name = 'mozilla-foundation'
-      )
-      OR EXISTS(
-        SELECT
-          1
-        FROM
-          `moz-fx-data-shared-prod.ctms_braze.ctms_newsletters` AS other_newsletters
-        WHERE
-          other_newsletters.email_id = emails.external_id
-          AND other_newsletters.subscribed = TRUE
-          AND other_newsletters.name != 'mozilla-foundation'
-      )
-      OR EXISTS(
-        SELECT
-          1
-        FROM
-          `moz-fx-data-shared-prod.ctms_braze.ctms_waitlists` AS waitlists
-        WHERE
-          waitlists.email_id = emails.external_id
-          AND waitlists.subscribed = TRUE
-      )
-      OR EXISTS(
-        SELECT
-          1
-        FROM
-          `moz-fx-data-shared-prod.subscription_platform.logical_subscriptions` AS subscriptions
-        WHERE
-          subscriptions.mozilla_account_id_sha256 = emails.fxa_id_sha256
-      )
     )
   )

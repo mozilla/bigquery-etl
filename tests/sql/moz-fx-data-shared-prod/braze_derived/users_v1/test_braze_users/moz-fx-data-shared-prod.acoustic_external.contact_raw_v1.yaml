@@ -43,3 +43,9 @@
 # user 17 has only unsubscribed waitlist subscriptions
 # user 18 is only subscribed to MoFo subscriptions
 # user 19 has newsletter subscription and MoFo subscription
+# user 20 has newsletter subscription and multiple acoustic events
+- email_id: user_20
+  recipient_id: user_20_recipient_id
+# user 21 has newsletter subscription and multiple acoustic events but no open or click through
+- email_id: user_21
+  recipient_id: user_21_recipient_id

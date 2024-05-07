@@ -181,3 +181,32 @@
   create_timestamp: 2021-01-18 10:00:00+00:00
   update_timestamp: 2024-01-18 08:00:00+00:00
 # user 19 has newsletter subscription and MoFo subscription
+- email_id: user_19
+  primary_email: user_19@email.com
+  has_opted_out_of_email: false
+  double_opt_in: true
+  mailing_country: us
+  basket_token: basket_user_19
+  email_lang: en
+  create_timestamp: 2021-01-19 10:00:00+00:00
+  update_timestamp: 2024-01-19 08:00:00+00:00
+# user 20 has newsletter subscription and multiple acoustic events
+- email_id: user_20
+  primary_email: user_20@email.com
+  has_opted_out_of_email: false
+  double_opt_in: true
+  mailing_country: us
+  basket_token: basket_user_20
+  email_lang: en
+  create_timestamp: 2021-01-20 10:00:00+00:00
+  update_timestamp: 2024-01-20 08:00:00+00:00
+# user 21 has newsletter subscription and multiple acoustic events but no open or click through
+- email_id: user_21
+  primary_email: user_21@email.com
+  has_opted_out_of_email: false
+  double_opt_in: true
+  mailing_country: us
+  basket_token: basket_user_21
+  email_lang: en
+  create_timestamp: 2021-01-21 10:00:00+00:00
+  update_timestamp: 2024-01-21 08:00:00+00:00

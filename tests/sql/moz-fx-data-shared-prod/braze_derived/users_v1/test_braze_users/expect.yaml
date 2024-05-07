@@ -132,7 +132,33 @@
 # user 17 has only unsubscribed waitlist subscriptions
 # user 18 is only subscribed to MoFo subscriptions
 # user 19 has newsletter subscription and MoFo subscription
+- external_id: user_19
+  email: user_19@email.com
+  email_subscribe: opted_in
+  mailing_country: us
+  basket_token: basket_user_19
+  email_lang: en
+  has_fxa: false
+  create_timestamp: 2021-01-19 10:00:00+00:00
+  update_timestamp: 2024-01-19 08:00:00+00:00
 # user 20 has newsletter subscription and multiple acoustic events
+- external_id: user_20
+  email: user_20@email.com
+  email_subscribe: opted_in
+  mailing_country: us
+  basket_token: basket_user_20
+  email_lang: en
+  has_fxa: false
+  create_timestamp: 2021-01-20 10:00:00+00:00
+  update_timestamp: 2024-01-20 08:00:00+00:00
+  acoustic_last_engaged_at: 2024-01-20 07:00:00+00:00
 # user 21 has newsletter subscription and multiple acoustic events but no open or click through
-# user 22 has product subscription but deleted fxa account
-# user 23 has only newsletter subscribed false
+- external_id: user_21
+  email: user_21@email.com
+  email_subscribe: opted_in
+  mailing_country: us
+  basket_token: basket_user_21
+  email_lang: en
+  has_fxa: false
+  create_timestamp: 2021-01-21 10:00:00+00:00
+  update_timestamp: 2024-01-21 08:00:00+00:00

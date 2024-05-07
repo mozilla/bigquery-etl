@@ -21,7 +21,7 @@ from google.cloud import bigquery
 @click.option("--source-bucket", required=True, help="Google Cloud Storage Bucket ")
 @click.option("--source-prefix", required=True, help="Prefix of the path in GSC.")
 @click.option("--event-type", required=True, help="Eventtype for the table.")
-def main(
+def import_braze_current_from_bucket(
     destination_project,
     destination_dataset,
     destination_table,

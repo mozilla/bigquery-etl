@@ -1,0 +1,61 @@
+fields:
+- name: date
+  type: DATE
+  mode: NULLABLE
+  description: Date
+- name: campaign
+  type: STRING
+  mode: NULLABLE
+  description: Campaign Name
+- name: campaign_id
+  type: INTEGER
+  mode: NULLABLE
+  description: Campaign ID
+- name: campaign_country_code
+  type: STRING
+  mode: NULLABLE
+  description: Campaign Country Code
+- name: ad_group_name
+  type: STRING
+  mode: NULLABLE
+  description: Ad Group Name
+- name: ad_group_id
+  type: INTEGER
+  mode: NULLABLE
+  description: Ad Group ID
+- name: impressions
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of Impressions
+- name: clicks
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of Clicks
+- name: downloads
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of Downloads
+- name: new_profiles
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of New Profiles
+- name: activated_profiles
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of Activated Profiles
+- name: repeat_users
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of Repeat Users
+- name: week_4_retained_users
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of Week 4 Retained Users
+- name: spend
+  type: BIGNUMERIC
+  mode: NULLABLE
+  description: Marketing Spend
+- name: lifetime_value
+  type: FLOAT
+  mode: NULLABLE
+  description: Lifetime Value

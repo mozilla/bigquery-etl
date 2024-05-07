@@ -22,16 +22,18 @@ IF
     -- Materialized views don't support COALESCE or IFNULL
     SUM(
       CAST(
-        ARRAY_CONCAT(payload.processes.parent.keyed_scalars.browser_search_ad_clicks, [('', 0)])[
-          SAFE_OFFSET(i)
-        ].value AS INT64
+        ARRAY_CONCAT(
+          payload.processes.parent.keyed_scalars.browser_search_adclicks_urlbar,
+          [('', 0)]
+        )[SAFE_OFFSET(i)].value AS INT64
       )
     ) AS ad_clicks_count,
     SUM(
       CAST(
-        ARRAY_CONCAT(payload.processes.parent.keyed_scalars.browser_search_with_ads, [('', 0)])[
-          SAFE_OFFSET(i)
-        ].value AS INT64
+        ARRAY_CONCAT(
+          payload.processes.parent.keyed_scalars.browser_search_withads_urlbar,
+          [('', 0)]
+        )[SAFE_OFFSET(i)].value AS INT64
       )
     ) AS search_with_ads_count,
     SUM(

@@ -16,7 +16,7 @@
   name: waitlist_2
   fields: '{
     "geo": "DE",
-    "platform": "platform_2"
+    "platform": "Platform_2"
   }'
   source: source_2
   create_timestamp: 2020-01-01 10:00:00+00:00
@@ -29,7 +29,7 @@
     "geo": "DE",
     "platform": "platform_3"
   }'
-  source: source_3
+  source: Source_3
   create_timestamp: 2020-01-01 10:00:00+00:00
   subscribed: false
   unsub_reason: for reasons

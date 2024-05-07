@@ -1,11 +1,14 @@
+-- Retrieves the maximum subscription updated timestamp from the last run to only
+-- select recently changed records
 WITH max_update AS (
   SELECT
-    MAX(UPDATED_AT) AS max_update_timestamp
+    MAX(
+      TIMESTAMP(JSON_VALUE(payload.products_v1[0].subscription_updated_at, '$."$time"'))
+    ) AS latest_subscription_updated_at
   FROM
     `moz-fx-data-shared-prod.braze_external.changed_products_sync_v1`
-  LIMIT
-    1
 ),
+-- Counts the number of subscriptions per product
 products_with_counts AS (
   SELECT
     products.external_id,
@@ -20,8 +23,9 @@ products_with_counts AS (
   CROSS JOIN
     UNNEST(products.products) AS products_array
   WHERE
-    products_array.subscription_updated_at > (SELECT max_update_timestamp FROM max_update)
+    products_array.subscription_updated_at > (SELECT latest_subscription_updated_at FROM max_update)
 )
+-- Construct the JSON payload in Braze required format
 SELECT
   CURRENT_TIMESTAMP() AS UPDATED_AT,
   products.external_id AS EXTERNAL_ID,

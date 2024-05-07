@@ -7,7 +7,7 @@ SELECT
       LOWER(JSON_EXTRACT_SCALAR(fields, '$.platform')) AS waitlist_platform,
       LOWER(source) AS waitlist_source,
       waitlists.create_timestamp AS create_timestamp,
-      waitlists.subscribed AS waitlist_subscribed,
+      waitlists.subscribed AS subscribed,
       waitlists.unsub_reason AS unsub_reason,
       waitlists.update_timestamp AS update_timestamp
     )

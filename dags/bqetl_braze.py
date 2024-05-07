@@ -75,18 +75,28 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_subscription_platform_derived__stripe_subscriptions__v1 = (
-        ExternalTaskSensor(
-            task_id="wait_for_subscription_platform_derived__stripe_subscriptions__v1",
-            external_dag_id="bqetl_subplat",
-            external_task_id="subscription_platform_derived__stripe_subscriptions__v1",
-            execution_delta=datetime.timedelta(seconds=29700),
-            check_existence=True,
-            mode="reschedule",
-            allowed_states=ALLOWED_STATES,
-            failed_states=FAILED_STATES,
-            pool="DATA_ENG_EXTERNALTASKSENSOR",
-        )
+    wait_for_acoustic_external__contact_raw__v1 = ExternalTaskSensor(
+        task_id="wait_for_acoustic_external__contact_raw__v1",
+        external_dag_id="bqetl_acoustic_contact_export",
+        external_task_id="acoustic_external__contact_raw__v1",
+        execution_delta=datetime.timedelta(seconds=3600),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_acoustic_external__raw_recipient_raw__v1 = ExternalTaskSensor(
+        task_id="wait_for_acoustic_external__raw_recipient_raw__v1",
+        external_dag_id="bqetl_acoustic_raw_recipient_export",
+        external_task_id="acoustic_external__raw_recipient_raw__v1",
+        execution_delta=datetime.timedelta(seconds=3600),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     braze_derived__newsletters__v1 = bigquery_etl_query(
@@ -500,8 +510,6 @@ with DAG(
         checks__fail_braze_derived__user_profiles__v1
     )
 
-    braze_derived__subscriptions__v1.set_upstream(checks__fail_braze_derived__users__v1)
-
     braze_derived__suppressions__v1.set_upstream(
         wait_for_checks__fail_marketing_suppression_list_derived__main_suppression_list__v1
     )
@@ -520,14 +528,24 @@ with DAG(
         checks__fail_braze_derived__waitlists__v1
     )
 
-    braze_derived__users__v1.set_upstream(braze_derived__suppressions__v1)
+    braze_derived__users__v1.set_upstream(wait_for_acoustic_external__contact_raw__v1)
 
     braze_derived__users__v1.set_upstream(
-        wait_for_subscription_platform_derived__stripe_subscriptions__v1
+        wait_for_acoustic_external__raw_recipient_raw__v1
     )
 
+    braze_derived__users__v1.set_upstream(
+        wait_for_checks__fail_marketing_suppression_list_derived__main_suppression_list__v1
+    )
+
+    braze_derived__users__v1.set_upstream(
+        wait_for_subscription_platform_derived__logical_subscriptions_history__v1
+    )
+
+    braze_derived__waitlists__v1.set_upstream(checks__fail_braze_derived__users__v1)
+
     braze_external__changed_firefox_subscriptions_sync__v1.set_upstream(
-        checks__fail_braze_derived__subscriptions__v1
+        checks__fail_braze_external__changed_subscriptions__v1
     )
 
     braze_external__changed_newsletters_sync__v1.set_upstream(
@@ -551,7 +569,7 @@ with DAG(
     )
 
     braze_external__changed_users_sync__v1.set_upstream(
-        braze_external__changed_users__v1
+        checks__fail_braze_derived__users__v1
     )
 
     braze_external__changed_waitlists_sync__v1.set_upstream(

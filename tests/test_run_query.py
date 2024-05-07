@@ -178,7 +178,7 @@ class TestRunQuery:
         query_text, query_job_config = mock_query_call.call_args.args
         assert (
             query_text
-            == "SET @@dataset_project_id = 'moz-fx-data-shared-prod';\nSET @@dataset_id = 'dataset_1';"
+            == "SET @@dataset_project_id = 'moz-fx-data-shared-prod';\nSET @@dataset_id = 'dataset_1'"
         )
         assert query_job_config.create_session is True
 

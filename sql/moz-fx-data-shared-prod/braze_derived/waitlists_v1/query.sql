@@ -6,18 +6,21 @@ SELECT
       LOWER(JSON_EXTRACT_SCALAR(fields, '$.geo')) AS waitlist_geo,
       LOWER(JSON_EXTRACT_SCALAR(fields, '$.platform')) AS waitlist_platform,
       LOWER(source) AS waitlist_source,
-      create_timestamp,
-      subscribed,
-      unsub_reason,
-      update_timestamp
+      waitlists.create_timestamp AS create_timestamp,
+      waitlists.subscribed AS waitlist_subscribed,
+      waitlists.unsub_reason AS unsub_reason,
+      waitlists.update_timestamp AS update_timestamp
     )
     ORDER BY
-      update_timestamp,
-      create_timestamp,
-      name
+      waitlists.update_timestamp,
+      waitlists.create_timestamp,
+      waitlists.name
   ) AS waitlists
 FROM
-  `moz-fx-data-shared-prod.ctms_braze.ctms_waitlists`
+  `moz-fx-data-shared-prod.ctms_braze.ctms_waitlists` AS waitlists
+INNER JOIN
+  `moz-fx-data-shared-prod.braze_derived.users_v1` AS users
+  ON users.external_id = waitlists.email_id
 GROUP BY
   email_id
 HAVING

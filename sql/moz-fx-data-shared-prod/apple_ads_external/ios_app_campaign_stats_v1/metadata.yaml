@@ -4,17 +4,14 @@ description: |-
 owners:
 - kwindau@mozilla.com
 labels:
-  incremental: true
+  incremental: false
   owner1: kwindau@mozilla.com
 scheduling:
-  dag_name: bqetl_default
+  dag_name: bqetl_ios_campaign_reporting
+  depends_on_past: false
+  date_partition_parameter: null
 bigquery:
-  time_partitioning:
-    type: day
-    field: date
-    require_partition_filter: false
-    expiration_days: null
-  range_partitioning: null
+  time_partitioning: null
   clustering:
-    fields: []
+    fields: [campaign]
 references: {}

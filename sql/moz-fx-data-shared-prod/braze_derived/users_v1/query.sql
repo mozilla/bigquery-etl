@@ -26,8 +26,8 @@ WITH ctms_emails AS (
     NULLIF(LOWER(fxa.first_service), '') AS fxa_first_service,
     has_opted_out_of_email,
     CAST(fxa.created_date AS TIMESTAMP) AS fxa_created_at,
-    emails.create_timestamp,
-    emails.update_timestamp
+    emails.create_timestamp AS create_timestamp,
+    emails.update_timestamp AS update_timestamp
   FROM
     `moz-fx-data-shared-prod.ctms_braze.ctms_emails` AS emails
   LEFT JOIN

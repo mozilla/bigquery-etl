@@ -38,3 +38,6 @@ fields:
 - mode: NULLABLE
   name: fxa_first_service
   type: STRING
+- mode: NULLABLE
+  name: fxa_created_at
+  type: TIMESTAMP

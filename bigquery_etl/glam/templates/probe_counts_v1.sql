@@ -45,7 +45,7 @@ WITH probe_counts AS (
     {% if is_scalar %}
       client_agg_type,
       agg_type,
-      {%if channel == "release" %}
+      {% if channel == "release" %}
             -- Logic to count clients based on sampled windows release data, which started in v119.
             -- If you're changing this, then you'll also need to change
             -- clients_daily_[scalar | histogram]_aggregates
@@ -97,34 +97,36 @@ WITH probe_counts AS (
     bucket_count,
     {{ aggregate_attributes }},
     {{ aggregate_grouping }}
-),
-windows_probe_counts AS (
-  SELECT
-    *,
-  FROM
-    probe_counts
-  WHERE
-    os = "Windows"
 )
-SELECT
-  pc.* EXCEPT (total_users),
-  IF(
-    pc.os = "*",
-    CAST(COALESCE((pc.total_users + (wpc.total_users * 0.9)), pc.total_users) AS INT64),
-    pc.total_users
-  ) AS total_users
-FROM
-  probe_counts pc
-LEFT JOIN
-  windows_probe_counts wpc
-  USING (
-    ping_type,
-    app_version,
-    app_build_id,
-    channel,
-    metric,
-    metric_type,
-    KEY,
-    client_agg_type,
-    agg_type
+
+{% if channel == "release" %}
+,
+  -- Fix All OS client counts which were originally calculated taking only 10% of Windows due to sampling.
+  windows_probe_counts AS (
+    SELECT
+      *
+    FROM
+      probe_counts
+    WHERE
+      os = "Windows"
   )
+  SELECT
+    pc.* EXCEPT (total_users),
+    IF(
+      pc.os = "*",
+      -- Add the remaining 90% of Windows client count, if present, to the All OS (*) client count.
+      pc.total_users + CAST((COALESCE(wpc.total_users, 0) * 0.9) AS INT64),
+      pc.total_users
+    ) AS total_users
+  FROM
+    probe_counts pc
+  LEFT JOIN
+    windows_probe_counts wpc
+    USING (
+      {{ attributes_no_os }},
+      {{ aggregate_attributes }},
+      {{ aggregate_grouping }}
+    )
+{% else %}
+  SELECT * FROM probe_counts
+{% endif %}

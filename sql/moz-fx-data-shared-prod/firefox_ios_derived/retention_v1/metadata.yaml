@@ -1,0 +1,44 @@
+friendly_name: Profile / Client Retention - Firefox iOS (Aggregated)
+description: |
+  Profile / client retention (Firefox iOS) metrics aggregated on:
+  - metric_date
+  - first_seen_date
+  - app_name
+  - normalized_channel
+  - country
+  - app_version
+  - locale
+  - adjust_ad_group
+  - adjust_campaign
+  - adjust_creative
+  - adjust_network
+  - is_suspicious_device_client
+
+  For all profiles that sent us a ping on the metric date.
+  Profiles's attributes are the attribute values observed on the metric date.
+
+  see: DENG-3183 for more information.
+owners:
+- kik@mozilla.com
+labels:
+  schedule: daily
+  incremental: true
+  dag: bqetl_firefox_ios
+  owner1: kik
+scheduling:
+  dag_name: bqetl_firefox_ios
+  depends_on_past: false
+  date_partition_parameter: submission_date
+bigquery:
+  time_partitioning:
+    type: day
+    field: metric_date
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields:
+    - app_name
+    - country
+    - first_seen_date
+references: {}

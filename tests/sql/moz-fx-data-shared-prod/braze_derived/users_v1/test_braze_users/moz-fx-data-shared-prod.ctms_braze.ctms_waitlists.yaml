@@ -49,3 +49,14 @@
   name: waitlist_2
 # user 18 is only subscribed to MoFo subscriptions
 # user 19 has newsletter subscription and MoFo subscription
+# user 20 has newsletter subscription and multiple acoustic events
+# user 21 has newsletter subscription and multiple acoustic events but no open or click through
+# user 22 has waitlist subscription to vpn
+- email_id: user_22
+  subscribed: true
+  name: vpn
+# user 23 has newsletter subscription not in the subscription map
+# user 24 has waitlist subscription not on the subscription map
+- email_id: user_23
+  subscribed: true
+  name: not_a_waitlist

@@ -75,3 +75,8 @@
 - email_id: user_21
   name: newsletter_1
   subscribed: true
+# user 23 has newsletter subscription not in the subscription map
+- email_id: user_22
+  name: not_a_newsletter
+  subscribed: true
+# user 24 has waitlist subscription not on the subscription map

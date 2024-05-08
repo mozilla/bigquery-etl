@@ -92,26 +92,23 @@ WHERE
         1
       FROM
         `moz-fx-data-shared-prod.ctms_braze.ctms_newsletters` AS newsletters
+      INNER JOIN
+        `moz-fx-data-shared-prod.braze_derived.subscriptions_map_v1` AS map
+        ON newsletters.name = map.braze_subscription_name
       WHERE
         newsletters.email_id = emails.external_id
         AND newsletters.subscribed = TRUE
-        AND newsletters.name != 'mozilla-foundation'
     )
     OR EXISTS(
       SELECT
         1
       FROM
         `moz-fx-data-shared-prod.ctms_braze.ctms_waitlists` AS waitlists
+      INNER JOIN
+        `moz-fx-data-shared-prod.braze_derived.subscriptions_map_v1` AS map
+        ON IF(waitlists.name = "vpn", "guardian-vpn-waitlist", CONCAT(waitlists.name, "-waitlist")) = map.braze_subscription_name
       WHERE
         waitlists.email_id = emails.external_id
         AND waitlists.subscribed = TRUE
-    )
-    OR EXISTS(
-      SELECT
-        1
-      FROM
-        `moz-fx-data-shared-prod.subscription_platform.logical_subscriptions` AS products
-      WHERE
-        products.mozilla_account_id_sha256 = emails.fxa_id_sha256
     )
   )

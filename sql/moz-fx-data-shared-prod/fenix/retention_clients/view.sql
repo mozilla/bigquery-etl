@@ -74,8 +74,11 @@ SELECT
     clients_daily.is_new_profile
     AND clients_last_seen.retention_active.day_27.active_in_week_3
   ) AS retained_week_4_new_profile,
-  clients_daily.is_new_profile
-  AND BIT_COUNT(clients_last_seen.days_active_bits) > 1 AS repeat_profile,
+  (
+    clients_daily.is_new_profile
+    -- Looking back at 27 days to support the official definition of repeat_profile (someone active between days 2 and 28):
+    AND BIT_COUNT(mozfun.bits28.range(clients_last_seen.days_active_bits, -26, 27)) > 1
+  ) AS repeat_profile,
   clients_last_seen.days_seen_bits,
   clients_last_seen.days_active_bits,
   CASE

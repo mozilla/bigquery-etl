@@ -78,14 +78,10 @@ clients_data AS (
     cd.attribution.experiment AS attribution_experiment,
     cd.startup_profile_selection_reason_first AS startup_profile_selection_reason,
     cd.distribution_id AS distribution_id,
-    cd.isp_name,
+    cd.isp_name AS isp,
     cls.days_seen_bits,
     cls.days_active_bits,
     mozfun.norm.os(cd.os) AS normalized_os,
-    COALESCE(
-      mozfun.norm.windows_version_info(cd.os, cd.os_version, cd.windows_build_number),
-      NULLIF(SPLIT(cd.normalized_os_version, ".")[SAFE_OFFSET(0)], "")
-    ) AS normalized_os_version,
     cls.retention_seen.day_27.active_in_week_3 AS retention_active_in_week_3,
   -- ping sent retention
     cls.retention_seen.day_27.active_on_metric_date AS ping_sent_metric_date,
@@ -131,9 +127,9 @@ SELECT
     np.startup_profile_selection_reason
   ) AS startup_profile_selection_reason,
   COALESCE(cd.normalized_os, np.normalized_os) AS normalized_os,
-  COALESCE(cd.normalized_os_version, np.normalized_os_version) AS normalized_os_version,
+  np.normalized_os_version,
   COALESCE(cd.distribution_id, np.distribution_id) AS distribution_id,
-  cd.isp_name,
+  cd.isp,
   cd.ping_sent_metric_date,
   cd.ping_sent_week_4,
   cd.active_metric_date,

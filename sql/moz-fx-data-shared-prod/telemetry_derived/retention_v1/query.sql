@@ -1,7 +1,6 @@
 SELECT
   metric_date,
   first_seen_date,
-  app_name,
   normalized_channel,
   country,
   app_version,

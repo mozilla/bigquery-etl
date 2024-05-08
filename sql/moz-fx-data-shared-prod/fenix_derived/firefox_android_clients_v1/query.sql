@@ -439,7 +439,7 @@ _previous AS (
     {% if is_init() %}
       FALSE
     {% else %}
-      submission_date < @submission_date
+      first_seen_date < @submission_date
     {% endif %}
 )
 SELECT

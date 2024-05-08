@@ -11,7 +11,7 @@ ASSERT(
     UNNEST(newsletters) AS newsletters
   WHERE
     newsletters.update_timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 15 HOUR)
-) > 0;
+) > 0 AS "No new records in the braze_derived.newsletters_v1 table in the last 15 hours";
 
 -- macro checks
 

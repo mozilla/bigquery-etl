@@ -6,6 +6,7 @@ WITH clients_last_seen AS (
     submission_date,
     client_id,
     sample_id,
+    app_name,
     normalized_channel,
     mozfun.bits28.retention(days_seen_bits, submission_date) AS retention_seen,
     mozfun.bits28.retention(days_active_bits & days_seen_bits, submission_date) AS retention_active,
@@ -82,13 +83,13 @@ SELECT
   clients_last_seen.days_seen_bits,
   clients_last_seen.days_active_bits,
   CASE
-    WHEN first_seen_date = metric_date
+    WHEN first_seen_date = clients_daily.submission_date
       THEN 'new_profile'
-    WHEN DATE_DIFF(metric_date, first_seen_date, DAY)
+    WHEN DATE_DIFF(clients_daily.submission_date, first_seen_date, DAY)
       BETWEEN 1
       AND 27
       THEN 'repeat_user'
-    WHEN DATE_DIFF(metric_date, first_seen_date, DAY) >= 28
+    WHEN DATE_DIFF(clients_daily.submission_date, first_seen_date, DAY) >= 28
       THEN 'existing_user'
     ELSE 'Unknown'
   END AS lifecycle_stage,
@@ -101,6 +102,7 @@ INNER JOIN
   AND clients_daily.normalized_channel = clients_last_seen.normalized_channel
 LEFT JOIN
   attribution
-  USING (client_id, normalized_channel)
+  ON clients_daily.client_id = attribution.client_id
+  AND clients_daily.normalized_channel = attribution.normalized_channel
 WHERE
   clients_last_seen.retention_seen.day_27.active_on_metric_date

@@ -12,7 +12,7 @@ description: |
   - adjust_campaign
   - adjust_creative
   - adjust_network
-  - is_suspicious_device_profile
+  - is_suspicious_device_client
 
   For all profiles that sent us a ping on the metric date.
   Profiles's attributes are the attribute values observed on the metric date.

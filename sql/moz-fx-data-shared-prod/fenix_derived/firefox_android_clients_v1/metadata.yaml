@@ -22,6 +22,7 @@ description: |-
   https://help.adjust.com/en/article/tracker-urls#campaign-structure-parameters.
 owners:
 - lvargas@mozilla.com
+- kik@mozilla.com
 labels:
   application: firefox_android
   # This query results in the table being rebuilt on each run
@@ -46,5 +47,4 @@ bigquery:
     - channel
     - first_reported_country
     - distribution_id
-    - sample_id
 references: {}

@@ -19,7 +19,11 @@ WITH registration_overall_success_by_service_reg_view AS (
   FROM
     mozdata.accounts_frontend.accounts_events
   WHERE
-    DATE(submission_timestamp) = @submission_date
+    {% if is_init() %}
+      DATE(submission_timestamp) >= DATE("2024-01-01")
+    {% else %}
+      DATE(submission_timestamp) = @submission_date
+    {% endif %}
     AND metrics.string.event_name = 'reg_view'
 ),
 registration_overall_success_by_service_reg_email_code_view AS (
@@ -36,7 +40,11 @@ registration_overall_success_by_service_reg_email_code_view AS (
     ON prev.submission_date = DATE(submission_timestamp)
     AND prev.join_key = metrics.string.session_flow_id
   WHERE
-    DATE(submission_timestamp) = @submission_date
+    {% if is_init() %}
+      DATE(submission_timestamp) >= DATE("2024-01-01")
+    {% else %}
+      DATE(submission_timestamp) = @submission_date
+    {% endif %}
     AND metrics.string.event_name = 'reg_signup_code_view'
 ),
 registration_overall_success_by_service_reg_complete AS (
@@ -53,7 +61,11 @@ registration_overall_success_by_service_reg_complete AS (
     ON prev.submission_date = DATE(submission_timestamp)
     AND prev.join_key = metrics.string.session_flow_id
   WHERE
-    DATE(submission_timestamp) = @submission_date
+    {% if is_init() %}
+      DATE(submission_timestamp) >= DATE("2024-01-01")
+    {% else %}
+      DATE(submission_timestamp) = @submission_date
+    {% endif %}
     AND metrics.string.event_name = 'reg_complete'
 ),
 -- aggregate each funnel step value

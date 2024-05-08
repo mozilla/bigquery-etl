@@ -23,6 +23,7 @@ workgroup_access:
   members:
   - workgroup:braze
   - workgroup:braze/ingestion-mozilla-dev
+  - workgroup:braze/ingestion-firefox
 - role: roles/bigquery.dataEditor
   members:
   - workgroup:braze/writers

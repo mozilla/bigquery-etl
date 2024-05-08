@@ -1,5 +1,9 @@
 fields:
 - mode: NULLABLE
+  name: source
+  type: STRING
+  description: Source
+- mode: NULLABLE
   name: submission_date
   type: DATE
   description: Submission Date
@@ -12,10 +16,6 @@ fields:
   type: INT64
   description: Sample ID
 - mode: NULLABLE
-  name: distribution_id
-  type: STRING
-  description: Distribution ID
-- mode: NULLABLE
   name: locale
   type: STRING
   description: Locale
@@ -27,26 +27,6 @@ fields:
   name: first_seen_date
   type: DATE
   description: First Seen Date
-- mode: NULLABLE
-  name: attribution_campaign
-  type: STRING
-  description: Attribution Campaign
-- mode: NULLABLE
-  name: attribution_content
-  type: STRING
-  description: Attribution Content
-- mode: NULLABLE
-  name: attribution_dlsource
-  type: STRING
-  description: Attribution Download Source
-- mode: NULLABLE
-  name: attribution_medium
-  type: STRING
-  description: Attribution Medium
-- mode: NULLABLE
-  name: attribution_ua
-  type: STRING
-  description: Attribution UA
 - mode: NULLABLE
   name: normalized_channel
   type: STRING

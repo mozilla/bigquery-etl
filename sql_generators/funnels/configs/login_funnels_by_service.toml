@@ -141,7 +141,7 @@ client_id_column = "client_info.client_id"
 [dimensions]
 
 [dimensions.service]
-data_source = "monitor_frontend"
+data_source = "accounts_frontend"
 select_expression = "IF(COALESCE(NULLIF(metrics.string.relying_party_oauth_client_id, ''), NULLIF(metrics.string.relying_party_service, '')) = 'sync', '5882386c6d801776', COALESCE(NULLIF(metrics.string.relying_party_oauth_client_id, ''), NULLIF(metrics.string.relying_party_service, '')))"
 friendly_name = "Service"
 description = "Oauth Client ID is used to map to service name for which service the user logged in through"

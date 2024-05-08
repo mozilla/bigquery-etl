@@ -77,7 +77,7 @@ SELECT
   (
     clients_daily.is_new_profile
     -- Looking back at 27 days to support the official definition of repeat_profile (someone active between days 2 and 28):
-    AND BIT_COUNT(mozfun.bits28.range(clients_last_seen.days_active_bits, -26, 27)) > 1
+    AND BIT_COUNT(mozfun.bits28.range(clients_last_seen.days_active_bits, -26, 27)) > 0
   ) AS repeat_profile,
   clients_last_seen.days_seen_bits,
   clients_last_seen.days_active_bits,
@@ -101,6 +101,6 @@ INNER JOIN
   AND clients_daily.normalized_channel = clients_last_seen.normalized_channel
 LEFT JOIN
   attribution
-  USING(client_id, normalized_channel)
+  USING (client_id, normalized_channel)
 WHERE
   clients_last_seen.retention_seen.day_27.active_on_metric_date

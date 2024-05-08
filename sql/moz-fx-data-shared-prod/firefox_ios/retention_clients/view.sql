@@ -60,7 +60,8 @@ SELECT
   ) AS retained_week_4_new_profile,
   (
     clients_daily.is_new_profile
-    AND BIT_COUNT(clients_last_seen.days_active_bits) > 1
+    -- Looking back at 27 days to support the official definition of repeat_profile (someone active between days 2 and 28):
+    AND BIT_COUNT(mozfun.bits28.range(clients_last_seen.days_active_bits, -26, 27)) > 0
   ) AS repeat_profile,
   attribution.adjust_ad_group,
   attribution.adjust_campaign,

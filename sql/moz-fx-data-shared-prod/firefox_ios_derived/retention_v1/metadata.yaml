@@ -45,6 +45,4 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references:
-  query.sql:
-  - firefox_ios.retention_clients
+references: {}

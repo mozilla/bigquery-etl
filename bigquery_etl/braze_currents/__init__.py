@@ -31,7 +31,7 @@ def import_braze_current_from_bucket(
 ):
     """Use bigquery client to store AVRO files from bucket in BigQuery."""
     client = bigquery.Client(destination_project)
-    uri = f"gs://{source_bucket}/{source_prefix}/event_type={event_type}"
+    uri = f"gs://{source_bucket}/{source_prefix}/event_type={event_type}/*"
     client.load_table_from_uri(
         uri,
         destination=f"{destination_project}.{destination_dataset}.{destination_table}",

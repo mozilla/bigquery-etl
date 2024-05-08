@@ -39,7 +39,8 @@ SUBMISSION_DATE=${SUBMISSION_DATE:-$(yesterday)}
 # changing the dataset location for testing.
 function replace_dataset {
     local sql_path=$1
-    sed "s/$PROD_DATASET/$FULLY_QUALIFIED_DATASET/g" < "$sql_path"
+    local fully_qualified_dataset_bq=$(echo "$FULLY_QUALIFIED_DATASET" | sed 's/:/./g')
+    sed "s/\($DST_PROJECT.\)\?$PROD_DATASET/$fully_qualified_dataset_bq/g" < "$sql_path"
 }
 
 

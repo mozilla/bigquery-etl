@@ -23,6 +23,8 @@ owners:
 labels:
   schedule: daily
   incremental: true
+  dag: bqetl_firefox_ios
+  owner1: kik
 scheduling:
   dag_name: bqetl_firefox_ios
   depends_on_past: false
@@ -32,8 +34,11 @@ bigquery:
     type: day
     field: metric_date
     require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
   clustering:
     fields:
     - app_name
     - country
     - first_seen_date
+references: {}

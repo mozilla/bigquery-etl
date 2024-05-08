@@ -13,7 +13,9 @@ ASSERT(
     UNNEST(products) AS products
   WHERE
     products.subscription_updated_at > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 15 HOUR)
-) > 0 AS "No new records in the braze_derived.products_v1 table in the last 15 hours";
+) > 0
+AS
+  "No new records in the braze_derived.products_v1 table in the last 15 hours";
 
 -- macro checks
 

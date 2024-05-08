@@ -1,4 +1,4 @@
-"""Braze Currents - Firefox - State Changes."""
+"""Braze Currents - Firefox - Unsubscribes."""
 
 from bigquery_etl.braze_currents import import_braze_current_from_bucket
 

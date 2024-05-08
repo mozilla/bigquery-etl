@@ -5,4 +5,3 @@ SELECT
   *
 FROM
   `moz-fx-data-shared-prod.fakespot_syndicate.bestbuy_products`
-

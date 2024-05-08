@@ -1638,3 +1638,20 @@ bqetl_ios_campaign_reporting:
     retry_delay: 30m
   tags:
     - impact/tier_2
+
+bqetl_mobile_engagement_model:
+  schedule_interval: 0 12 * * *
+  description: Loads the mobile engagement model tables
+  default_args:
+    depends_on_past: false
+    owner: kwindau@mozilla.com
+    email:
+      - kwindau@mozilla.com
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    start_date: "2024-05-10"
+    retries: 2
+    retry_delay: 30m
+  tags:
+    - impact/tier_2

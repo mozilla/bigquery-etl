@@ -41,16 +41,23 @@ new_profiles AS (
     --   NULLIF(SPLIT(cfs.normalized_os_version, ".")[SAFE_OFFSET(0)], "")
     -- ) AS normalized_os_version,
     cfs.normalized_os_version,
-    submission_date,
+    COALESCE(
+      cls.submission_date,
+      DATE_ADD(cfs.first_seen_date, INTERVAL 27 day)
+    ) AS submission_date,
     TRUE AS is_new_profile,
-    cls.retention_active.day_27.active_in_week_3 as retained_week_4_new_profile,
-    BIT_COUNT(mozfun.bits28.from_string('0111111111111111111111111111') & cls.days_active_bits) > 0 as repeat_profile
+    cls.retention_active.day_27.active_in_week_3 AS retained_week_4_new_profile,
+    BIT_COUNT(
+      mozfun.bits28.from_string('0111111111111111111111111111') & cls.days_active_bits
+    ) > 0 AS repeat_profile
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v2` cfs
-  LEFT JOIN clients_last_seen cls
+  LEFT JOIN
+    clients_last_seen cls
     ON cfs.first_seen_date = cls.retention_active.day_27.metric_date
     AND cfs.client_id = cls.client_id
-  WHERE first_seen_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+  WHERE
+    first_seen_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
 ),
 clients_data AS (
   SELECT
@@ -69,7 +76,7 @@ clients_data AS (
     cd.attribution.medium AS attribution_medium,
     cd.attribution.ua AS attribution_ua,
     cd.attribution.experiment AS attribution_experiment,
-    cd.startup_profile_selection_reason_first as startup_profile_selection_reason,
+    cd.startup_profile_selection_reason_first AS startup_profile_selection_reason,
     cd.distribution_id AS distribution_id,
     cd.isp_name,
     cls.days_seen_bits,
@@ -104,9 +111,9 @@ clients_data AS (
 )
   -- new profile retention
 SELECT
-  COALESCE(cd.client_id, np.client_id) as client_id,
-  COALESCE(cd.sample_id, np.sample_id) as sample_id,
-  COALESCE(cd.submission_date, np.submission_date) as submission_date,
+  COALESCE(cd.client_id, np.client_id) AS client_id,
+  COALESCE(cd.sample_id, np.sample_id) AS sample_id,
+  COALESCE(cd.submission_date, np.submission_date) AS submission_date,
   COALESCE(cd.metric_date, np.first_seen_date) AS metric_date,
   COALESCE(cd.country, np.country) AS country,
   COALESCE(cd.locale, np.locale) AS locale,
@@ -119,7 +126,10 @@ SELECT
   COALESCE(cd.attribution_medium, np.attribution_medium) AS attribution_medium,
   COALESCE(cd.attribution_ua, np.attribution_ua) AS attribution_ua,
   COALESCE(cd.attribution_experiment, np.attribution_experiment) AS attribution_experiment,
-  COALESCE(cd.startup_profile_selection_reason, np.startup_profile_selection_reason) AS startup_profile_selection_reason,
+  COALESCE(
+    cd.startup_profile_selection_reason,
+    np.startup_profile_selection_reason
+  ) AS startup_profile_selection_reason,
   COALESCE(cd.normalized_os, np.normalized_os) AS normalized_os,
   COALESCE(cd.normalized_os_version, np.normalized_os_version) AS normalized_os_version,
   COALESCE(cd.distribution_id, np.distribution_id) AS distribution_id,
@@ -128,9 +138,9 @@ SELECT
   cd.ping_sent_week_4,
   cd.active_metric_date,
   cd.retained_week_4,
-  COALESCE(np.is_new_profile, FALSE) as is_new_profile,
-  COALESCE(np.repeat_profile, FALSE) as repeat_profile,
-  COALESCE(np.retained_week_4_new_profile, FALSE) as retained_week_4_new_profile,
+  COALESCE(np.is_new_profile, FALSE) AS is_new_profile,
+  COALESCE(np.repeat_profile, FALSE) AS repeat_profile,
+  COALESCE(np.retained_week_4_new_profile, FALSE) AS retained_week_4_new_profile,
 FROM
   clients_data cd
 FULL OUTER JOIN

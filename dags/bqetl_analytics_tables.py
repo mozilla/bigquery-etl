@@ -231,6 +231,7 @@ with DAG(
         owner="lvargas@mozilla.com",
         email=[
             "gkaberere@mozilla.com",
+            "kik@mozilla.com",
             "lvargas@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
@@ -368,6 +369,7 @@ with DAG(
         owner="lvargas@mozilla.com",
         email=[
             "gkaberere@mozilla.com",
+            "kik@mozilla.com",
             "lvargas@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
@@ -530,6 +532,7 @@ with DAG(
         owner="lvargas@mozilla.com",
         email=[
             "gkaberere@mozilla.com",
+            "kik@mozilla.com",
             "lvargas@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],

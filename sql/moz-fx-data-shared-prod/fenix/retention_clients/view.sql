@@ -12,7 +12,7 @@ WITH clients_last_seen AS (
     days_seen_bits,
     days_active_bits,
   FROM
-    `moz-fx-data-shared-prod.fenix.baseline_clients_last_seen`
+    `moz-fx-data-shared-prod.fenix.baseline_clients_last_seen_extended_activity`
 ),
 attribution AS (
   SELECT

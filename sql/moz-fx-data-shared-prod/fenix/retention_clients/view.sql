@@ -30,7 +30,7 @@ attribution AS (
     play_store_attribution_campaign,
     play_store_attribution_medium,
     play_store_attribution_source,
-    -- meta_attribution_app,  -- TODO: Once PR https://github.com/mozilla/bigquery-etl/pull/5404 merged, this needs to be uncommmented.
+    meta_attribution_app,
     install_source,
   FROM
     `moz-fx-data-shared-prod.fenix_derived.firefox_android_clients_v1`

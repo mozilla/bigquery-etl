@@ -538,10 +538,6 @@ with DAG(
         wait_for_checks__fail_marketing_suppression_list_derived__main_suppression_list__v1
     )
 
-    braze_derived__users__v1.set_upstream(
-        wait_for_subscription_platform_derived__logical_subscriptions_history__v1
-    )
-
     braze_derived__waitlists__v1.set_upstream(checks__fail_braze_derived__users__v1)
 
     braze_external__changed_firefox_subscriptions_sync__v1.set_upstream(

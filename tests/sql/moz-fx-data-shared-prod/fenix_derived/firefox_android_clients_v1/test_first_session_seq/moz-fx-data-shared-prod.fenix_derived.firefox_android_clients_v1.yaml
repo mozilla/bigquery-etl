@@ -11,3 +11,4 @@
     reported_metrics_ping: false
     reported_baseline_ping: true
     install_source__source_ping: metrics
+  meta_attribution_app: 'Test Meta'

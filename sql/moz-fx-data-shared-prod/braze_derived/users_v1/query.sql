@@ -106,7 +106,11 @@ WHERE
         `moz-fx-data-shared-prod.ctms_braze.ctms_waitlists` AS waitlists
       INNER JOIN
         `moz-fx-data-shared-prod.braze_derived.subscriptions_map_v1` AS map
-        ON IF(waitlists.name = "vpn", "guardian-vpn-waitlist", CONCAT(waitlists.name, "-waitlist")) = map.braze_subscription_name
+        ON IF(
+          waitlists.name = "vpn",
+          "guardian-vpn-waitlist",
+          CONCAT(waitlists.name, "-waitlist")
+        ) = map.braze_subscription_name
       WHERE
         waitlists.email_id = emails.external_id
         AND waitlists.subscribed = TRUE

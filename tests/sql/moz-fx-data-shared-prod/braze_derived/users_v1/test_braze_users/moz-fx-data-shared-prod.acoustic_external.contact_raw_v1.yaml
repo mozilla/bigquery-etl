@@ -1,0 +1,51 @@
+# test_braze_users - acoustic raw contacts
+---
+# user 1 has all the subscriptions
+- email_id: user_1
+  recipient_id: user_1_recipient_id
+# user 2 only has newsletter subscription
+- email_id: user_2
+  recipient_id: user_2_recipient_id
+# user 3 only has waitlist subscription
+- email_id: user_3
+  recipient_id: user_3_recipient_id
+# user 4 only has product subscription
+- email_id: user_4
+  recipient_id: user_4_recipient_id
+# user 5 has newsletter and waitlist subscription
+- email_id: user_5
+  recipient_id: user_5_recipient_id
+# user 6 has newsletter, waitlist and product subscription
+- email_id: user_6
+  recipient_id: user_6_recipient_id
+# user 7 has newsletter subscription but is on suppression list
+- email_id: user_7
+  recipient_id: user_7_recipient_id
+# user 8 has newsletter subscription but has_opted_out_of_email in CTMS
+- email_id: user_8
+  recipient_id: user_8_recipient_id
+# user 9 has newsletter subscription but not double opted in yet
+- email_id: user_9
+  recipient_id: user_9_recipient_id
+# user 10 has newsletter subscription, not double opted in and opted out of emails
+- email_id: user_10
+  recipient_id: user_10_recipient_id
+# user 11 has newsletter subscription, double opted in and opted out of emails
+- email_id: user_11
+  recipient_id: user_11_recipient_id
+# user 12 has waitlist subscription but never opened or clicked through anything in acoustic
+# user 13 has waitlist subscription and clicked on it
+- email_id: user_13
+  recipient_id: user_13_recipient_id
+# user 14 has waitlist subscription but deleted their fxa_account
+# user 15 has newsletter subscription but is unsubscribed from all of them
+# user 16 has unsubscribed newsletter subscriptions and active waitlist subscriptions
+# user 17 has only unsubscribed waitlist subscriptions
+# user 18 is only subscribed to MoFo subscriptions
+# user 19 has newsletter subscription and MoFo subscription
+# user 20 has newsletter subscription and multiple acoustic events
+- email_id: user_20
+  recipient_id: user_20_recipient_id
+# user 21 has newsletter subscription and multiple acoustic events but no open or click through
+- email_id: user_21
+  recipient_id: user_21_recipient_id

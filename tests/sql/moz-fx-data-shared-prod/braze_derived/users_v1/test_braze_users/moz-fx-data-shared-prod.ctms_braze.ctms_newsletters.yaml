@@ -1,0 +1,82 @@
+# test_braze_users - ctms newsletters
+---
+# user 1 has all the subscriptions
+- email_id: user_1
+  name: newsletter_1
+  subscribed: true
+# user 2 only has newsletter subscription
+- email_id: user_2
+  name: newsletter_1
+  subscribed: true
+# user 3 only has waitlist subscription
+# user 4 only has product subscription
+# user 5 has newsletter and waitlist subscription
+- email_id: user_5
+  name: newsletter_1
+  subscribed: true
+# user 6 has newsletter, waitlist and product subscription
+- email_id: user_6
+  name: newsletter_1
+  subscribed: true
+# user 7 has newsletter subscription but is on suppression list
+- email_id: user_7
+  name: newsletter_1
+  subscribed: true
+# user 8 has newsletter subscription but has_opted_out_of_email in CTMS
+- email_id: user_8
+  name: newsletter_1
+  subscribed: true
+# user 9 has newsletter subscription but not double opted in yet
+- email_id: user_9
+  name: newsletter_1
+  subscribed: true
+# user 10 has newsletter subscription, not double opted in and opted out of emails
+- email_id: user_10
+  name: newsletter_1
+  subscribed: true
+# user 11 has newsletter subscription, double opted in and opted out of emails
+- email_id: user_11
+  name: newsletter_1
+  subscribed: true
+# user 12 has waitlist subscription but never opened or clicked through anything in acoustic
+# user 13 has waitlist subscription and clicked on it
+# user 14 has waitlist subscription but deleted their fxa_account
+# user 15 has newsletter subscription but is unsubscribed from all of them
+- email_id: user_15
+  name: newsletter_1
+  subscribed: false
+# user 16 has unsubscribed newsletter subscriptions and active waitlist subscriptions
+- email_id: user_16
+  name: newsletter_1
+  subscribed: false
+- email_id: user_16
+  name: newsletter_2
+  subscribed: false
+# user 17 has only unsubscribed waitlist subscriptions
+# user 18 is only subscribed to MoFo subscriptions
+- email_id: user_18
+  name: mozilla-foundation
+  subscribed: true
+# user 19 has newsletter subscription and MoFo subscription
+- email_id: user_19
+  name: mozilla-foundation
+  subscribed: true
+- email_id: user_19
+  name: newsletter_1
+  subscribed: true
+- email_id: user_19
+  name: newsletter_2
+  subscribed: true
+# user 20 has newsletter subscription and multiple acoustic events
+- email_id: user_20
+  name: newsletter_1
+  subscribed: true
+# user 21 has newsletter subscription and multiple acoustic events but no open or click through
+- email_id: user_21
+  name: newsletter_1
+  subscribed: true
+# user 23 has newsletter subscription not in the subscription map
+- email_id: user_22
+  name: not_a_newsletter
+  subscribed: true
+# user 24 has waitlist subscription not on the subscription map

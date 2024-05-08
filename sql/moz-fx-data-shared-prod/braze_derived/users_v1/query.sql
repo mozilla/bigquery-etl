@@ -20,6 +20,7 @@ WITH ctms_emails AS (
       WHEN fxa.fxa_id IS NOT NULL
         AND fxa.account_deleted = FALSE
         THEN TRUE
+      ELSE FALSE
     END AS has_fxa,
     LOWER(fxa.primary_email) AS fxa_primary_email,
     NULLIF(LOWER(fxa.lang), '') AS fxa_lang,
@@ -81,13 +82,19 @@ LEFT JOIN
 WHERE
   suppressions.email IS NULL -- exclude users on suppression list
   AND emails.has_opted_out_of_email = FALSE -- has not opted out of all newsletters
-  AND fxa.account_deleted = FALSE -- has not deleted FxA
+  AND (
+    fxa.account_deleted = FALSE -- has not deleted FxA
+    OR fxa.account_deleted IS NULL
+  )
   AND (
     EXISTS(
       SELECT
         1
       FROM
         `moz-fx-data-shared-prod.ctms_braze.ctms_newsletters` AS newsletters
+      INNER JOIN
+        `moz-fx-data-shared-prod.braze_derived.subscriptions_map_v1` AS map
+        ON newsletters.name = map.braze_subscription_name
       WHERE
         newsletters.email_id = emails.external_id
         AND newsletters.subscribed = TRUE
@@ -97,58 +104,15 @@ WHERE
         1
       FROM
         `moz-fx-data-shared-prod.ctms_braze.ctms_waitlists` AS waitlists
+      INNER JOIN
+        `moz-fx-data-shared-prod.braze_derived.subscriptions_map_v1` AS map
+        ON IF(
+          waitlists.name = "vpn",
+          "guardian-vpn-waitlist",
+          CONCAT(waitlists.name, "-waitlist")
+        ) = map.braze_subscription_name
       WHERE
         waitlists.email_id = emails.external_id
         AND waitlists.subscribed = TRUE
-    )
-    OR EXISTS(
-      SELECT
-        1
-      FROM
-        `moz-fx-data-shared-prod.subscription_platform.logical_subscriptions` AS products
-      WHERE
-        products.mozilla_account_id_sha256 = emails.fxa_id_sha256
-    )
-  )
-  AND (
-      -- Check if user is not subscribed only to 'mozilla-foundation' and has at least one other subscription
-    (
-      NOT EXISTS(
-        SELECT
-          1
-        FROM
-          `moz-fx-data-shared-prod.ctms_braze.ctms_newsletters` AS mofo_newsletters
-        WHERE
-          mofo_newsletters.email_id = emails.external_id
-          AND mofo_newsletters.subscribed = TRUE
-          AND mofo_newsletters.name = 'mozilla-foundation'
-      )
-      OR EXISTS(
-        SELECT
-          1
-        FROM
-          `moz-fx-data-shared-prod.ctms_braze.ctms_newsletters` AS other_newsletters
-        WHERE
-          other_newsletters.email_id = emails.external_id
-          AND other_newsletters.subscribed = TRUE
-          AND other_newsletters.name != 'mozilla-foundation'
-      )
-      OR EXISTS(
-        SELECT
-          1
-        FROM
-          `moz-fx-data-shared-prod.ctms_braze.ctms_waitlists` AS waitlists
-        WHERE
-          waitlists.email_id = emails.external_id
-          AND waitlists.subscribed = TRUE
-      )
-      OR EXISTS(
-        SELECT
-          1
-        FROM
-          `moz-fx-data-shared-prod.subscription_platform.logical_subscriptions` AS subscriptions
-        WHERE
-          subscriptions.mozilla_account_id_sha256 = emails.fxa_id_sha256
-      )
     )
   )

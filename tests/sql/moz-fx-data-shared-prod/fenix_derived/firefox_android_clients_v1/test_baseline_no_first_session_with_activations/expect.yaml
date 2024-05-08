@@ -5,7 +5,7 @@
   first_seen_date: 2023-01-01
   submission_date: 2023-01-01
   last_reported_date: 2023-01-01
-  device_model: model-1
+  device_model: model-2
   last_reported_device_model: model-2
   last_reported_channel: release
   activated: true
@@ -18,7 +18,6 @@
     reported_metrics_ping: true
     reported_first_session_ping: false
     reported_baseline_ping: true
-  meta_attribution_app: 'Test Meta'
 - client_id: client-2
   sample_id: 50
   first_seen_date: 2022-12-25

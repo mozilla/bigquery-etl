@@ -142,7 +142,8 @@ mobile_attribution AS (
     play_store_attribution_source,
     play_store_attribution_medium,
     meta_attribution_app,
-    install_source
+    install_source,
+    NULL AS is_suspicious_device_client
   FROM
     `moz-fx-data-shared-prod.fenix_derived.firefox_android_clients_v1`
   UNION ALL
@@ -159,7 +160,8 @@ mobile_attribution AS (
     NULL AS play_store_attribution_source,
     NULL AS play_store_attribution_medium,
     NULL AS meta_attribution_app,
-    NULL AS install_source
+    NULL AS install_source,
+    is_suspicious_device_client
   FROM
     `moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients`
 )
@@ -186,7 +188,8 @@ SELECT
   attr.play_store_attribution_source,
   attr.play_store_attribution_medium,
   attr.meta_attribution_app,
-  attr.install_source
+  attr.install_source,
+  attr.is_suspicious_device_client
 FROM
   mobile_clients_last_seen cls
 LEFT JOIN

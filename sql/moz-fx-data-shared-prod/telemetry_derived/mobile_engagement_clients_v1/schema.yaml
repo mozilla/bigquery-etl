@@ -91,3 +91,7 @@ fields:
   name: install_source
   type: STRING
   description: Install Source
+- mode: NULLABLE
+  name: is_suspicious_device_client
+  type: BOOLEAN
+  description: Is Suspicious Device Client

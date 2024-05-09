@@ -21,7 +21,7 @@ WITH suppressions AS (
   SELECT
     LOWER(email_address) AS email,
     TIMESTAMP_SECONDS(time) AS suppressed_timestamp,
-    "clicked header" AS suppression_reason,
+    "hard bounce" AS suppression_reason,
     "Braze Firefox hard bounce" AS suppression_source
   FROM
     `moz-fx-data-shared-prod.braze_external.braze_currents_firefox_hard_bounces_v1`
@@ -32,7 +32,7 @@ WITH suppressions AS (
   SELECT
     LOWER(email_address) AS email,
     TIMESTAMP_SECONDS(time) AS suppressed_timestamp,
-    "clicked header" AS suppression_reason,
+    "hard bounce" AS suppression_reason,
     "Braze Mozilla hard bounce" AS suppression_source
   FROM
     `moz-fx-data-shared-prod.braze_external.braze_currents_mozilla_hard_bounces_v1`

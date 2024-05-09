@@ -44,7 +44,7 @@ def generate(target_project, output_dir, use_cloud_function):
     env = Environment(loader=FileSystemLoader(str(THIS_PATH / "templates")))
     desktop_query_template = env.get_template("desktop_query.sql")
     metadata_template = "metadata.yaml"
-    # view_template = env.get_template("view.sql")
+    view_template = env.get_template("view.sql")
     output_dir = Path(output_dir) / target_project
     browser = Browsers["firefox_desktop"]
     query_sql = reformat(
@@ -77,15 +77,15 @@ def generate(target_project, output_dir, use_cloud_function):
         skip_existing=False,
     )
 
-    # write_sql(
-    #     output_dir=output_dir,
-    #     full_table_id=f"{target_project}.{browser.name}.{TABLE_NAME}",
-    #     basename="view.sql",
-    #     sql=reformat(
-    #         view_template.render(
-    #             project_id=target_project,
-    #             app_name=browser.name,
-    #         )
-    #     ),
-    #     skip_existing=False,
-    # )
+    write_sql(
+        output_dir=output_dir,
+        full_table_id=f"{target_project}.{browser.name}.{TABLE_NAME}",
+        basename="view.sql",
+        sql=reformat(
+            view_template.render(
+                project_id=target_project,
+                app_name=browser.name,
+            )
+        ),
+        skip_existing=False,
+    )

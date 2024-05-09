@@ -29,7 +29,7 @@ GROUP BY
   app_name,
   normalized_channel,
   country,
-  app_display_version,
+  app_version,
   locale,
   adjust_ad_group,
   adjust_campaign,

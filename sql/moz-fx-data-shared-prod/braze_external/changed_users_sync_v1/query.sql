@@ -32,7 +32,11 @@ SELECT
           CASE
             WHEN acoustic_last_engaged_at IS NOT NULL
               THEN STRUCT(
-                  FORMAT_TIMESTAMP('%Y-%m-%d %H:%M:%E6S UTC', acoustic_last_engaged_at, 'UTC') AS `$time`
+                  FORMAT_TIMESTAMP(
+                    '%Y-%m-%d %H:%M:%E6S UTC',
+                    acoustic_last_engaged_at,
+                    'UTC'
+                  ) AS `$time`
                 )
             ELSE STRUCT(
                 FORMAT_TIMESTAMP(

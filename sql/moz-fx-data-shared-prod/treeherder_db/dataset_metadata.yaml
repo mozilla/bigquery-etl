@@ -6,10 +6,10 @@ labels: {}
 syndication:
   stage:
     syndicated_project: "moz-fx-treeherde-nonprod-34ec"
-    syndicated_dataset: "treeherder"
+    syndicated_dataset: "treeherder_stage"
   prod:
     syndicated_project: "moz-fx-treeherder-prod-c739"
-    syndicated_dataset: "treeherder"
+    syndicated_dataset: "treeherder_prod"
   administer_views: false
 workgroup_access:
 - role: roles/bigquery.dataViewer

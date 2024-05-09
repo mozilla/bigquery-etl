@@ -1,4 +1,4 @@
-# expect for braze waitlists
+# tets_braze_waitlists - expect
 ---
 # user 1
 - external_id: user_1
@@ -28,3 +28,4 @@
       unsub_reason: for reasons
       update_timestamp: 2021-01-01 13:00:00+00:00
 # user 2 unsubscribed from two waitlists
+# user 3 not on waitlists

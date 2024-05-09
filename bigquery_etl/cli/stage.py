@@ -15,7 +15,6 @@ from ..cli.query import update as update_query_schema
 from ..cli.routine import publish as publish_routine
 from ..cli.utils import paths_matching_name_pattern, sql_dir_option
 from ..cli.view import publish as publish_view
-from ..dependency import extract_table_references
 from ..dryrun import DryRun
 from ..routine.parse_routine import (
     ROUTINE_FILES,
@@ -261,59 +260,13 @@ def _udf_dependencies(artifact_files):
 def _view_dependencies(artifact_files, sql_dir):
     """Determine view dependencies."""
     view_dependencies = set()
-    view_dependency_files = [
-        file for file in artifact_files if file.name in {VIEW_FILE, QUERY_FILE}
-    ]
+    view_dependency_files = [file for file in artifact_files if file.name == VIEW_FILE]
     for dep_file in view_dependency_files:
         # all references views and tables need to be deployed in the same stage project
         if dep_file not in artifact_files:
             view_dependencies.add(dep_file)
 
-        if dep_file.name == QUERY_FILE:
-            # check query files for view dependencies
-            # views need to be deployed to stage as they might reference other changed artifacts upstream
-            # without getting changed themselves
-            dependencies = extract_table_references(
-                render(dep_file.name, dep_file.parent)
-            )
-            for dependency in dependencies:
-                dependency_components = dependency.split(".")
-                dependency_project_id, dependency_dataset_id, dependency_table_id = (
-                    None,
-                    None,
-                    None,
-                )
-
-                match len(dependency_components):
-                    case 3:
-                        [
-                            dependency_project_id,
-                            dependency_dataset_id,
-                            dependency_table_id,
-                        ] = dependency_components
-                    # Fully qualify the reference:
-                    case 2:
-                        dependency_project_id = dep_file.parent.parent.parent.name
-                        [dependency_dataset_id, dependency_table_id] = (
-                            dependency_components
-                        )
-                    case 1:
-                        dependency_project_id = dep_file.parent.parent.parent.name
-                        dependency_dataset_id = dep_file.parent.parent.name
-                        dependency_table_id = dependency_components[0]
-                    case _:
-                        continue
-
-                file_path = (
-                    Path(sql_dir)
-                    / dependency_project_id
-                    / dependency_dataset_id
-                    / dependency_table_id
-                    / VIEW_FILE
-                )
-                if file_path.exists():
-                    view_dependency_files.append(file_path)
-        elif dep_file.name == VIEW_FILE:
+        if dep_file.name == VIEW_FILE:
             view = View.from_file(dep_file)
 
             for dependency in view.table_references:

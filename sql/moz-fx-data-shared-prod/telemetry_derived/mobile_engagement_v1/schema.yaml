@@ -28,6 +28,10 @@ fields:
   type: STRING
   description: App Name
 - mode: NULLABLE
+  name: app_version
+  type: STRING
+  description: App Version (also known as app display version)
+- mode: NULLABLE
   name: adjust_network
   type: STRING
   description: Adjust Network

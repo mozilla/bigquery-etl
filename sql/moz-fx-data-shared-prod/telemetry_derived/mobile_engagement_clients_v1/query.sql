@@ -11,6 +11,7 @@ WITH mobile_clients_last_seen AS (
     country,
     isp,
     app_name,
+    app_display_version AS app_version,
     is_dau,
     is_wau,
     is_mau
@@ -31,6 +32,7 @@ WITH mobile_clients_last_seen AS (
     country,
     isp,
     app_name,
+    app_display_version AS app_version,
     is_dau,
     is_wau,
     is_mau
@@ -51,6 +53,7 @@ WITH mobile_clients_last_seen AS (
     country,
     isp,
     app_name, --will work once the column is added by Kik via PR#5434
+    app_display_version AS app_version,
     is_dau, --will work once the column is added by Kik
     is_wau, --will work once the column is added by Kik
     is_mau --will work once the column is added by Kik
@@ -71,6 +74,7 @@ WITH mobile_clients_last_seen AS (
     country,
     isp,
     app_name, --will work once the column is added by Kik via PR#5434
+    app_display_version AS app_version,
     is_dau, --will work once the column is added by Kik
     is_wau, --will work once the column is added by Kik
     is_mau --will work once the column is added by Kik
@@ -127,6 +131,7 @@ SELECT
   cls.country,
   cls.isp,
   cls.app_name,
+  cls.app_version,
   cls.is_dau,
   cls.is_wau,
   cls.is_mau,

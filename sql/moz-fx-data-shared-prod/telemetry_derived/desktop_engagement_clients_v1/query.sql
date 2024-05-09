@@ -1,3 +1,7 @@
+/*
+add startup_profile_selection_reason_first
+add  attribution.experiment
+*/
 SELECT
   cls.submission_date,
   cls.client_id,
@@ -18,6 +22,7 @@ SELECT
     mozfun.norm.windows_version_info(cls.os, cls.os_version, cls.windows_build_number),
     NULLIF(SPLIT(cls.normalized_os_version, ".")[SAFE_OFFSET(0)], "")
   ) AS normalized_os_version,
+  cls.startup_profile_selection_reason_first,
   cls.country,
   cls.is_dau,
   cls.is_wau,
@@ -25,7 +30,7 @@ SELECT
 FROM
   `moz-fx-data-shared-prod.telemetry.clients_last_seen_v2` cls
 LEFT JOIN
-  `mozdata.telemetry.clients_first_seen` cfs
+  `moz-fx-data-shared-prod.telemetry.clients_first_seen` cfs
   ON cls.client_id = cfs.client_id
 WHERE
   cls.submission_date = @submission_date

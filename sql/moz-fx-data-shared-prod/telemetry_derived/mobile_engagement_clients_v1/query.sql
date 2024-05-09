@@ -140,7 +140,8 @@ mobile_attribution AS (
     play_store_attribution_campaign,
     play_store_attribution_source,
     play_store_attribution_medium,
-    meta_attribution_app
+    meta_attribution_app,
+    install_source
   FROM
     `moz-fx-data-shared-prod.fenix_derived.firefox_android_clients_v1` --which types of ones are in here?
   UNION ALL
@@ -157,7 +158,8 @@ mobile_attribution AS (
     NULL AS play_store_attribution_campaign,
     NULL AS play_store_attribution_source,
     NULL AS play_store_attribution_medium,
-    NULL AS meta_attribution_app
+    NULL AS meta_attribution_app,
+    NULL AS install_source
   FROM
   --Klar Android
   UNION ALL
@@ -172,7 +174,8 @@ mobile_attribution AS (
     NULL AS play_store_attribution_campaign,
     NULL AS play_store_attribution_source,
     NULL AS play_store_attribution_medium,
-    NULL AS meta_attribution_app
+    NULL AS meta_attribution_app,
+    NULL AS install_source
   FROM --?
   UNION ALL
   --Klar iOS
@@ -187,7 +190,8 @@ mobile_attribution AS (
     NULL AS play_store_attribution_campaign,
     NULL AS play_store_attribution_source,
     NULL AS play_store_attribution_medium,
-    NULL AS meta_attribution_app
+    NULL AS meta_attribution_app,
+    NULL AS install_source
   FROM
   UNION ALL
   --Focus Android
@@ -202,7 +206,8 @@ mobile_attribution AS (
     NULL AS play_store_attribution_campaign,
     NULL AS play_store_attribution_source,
     NULL AS play_store_attribution_medium,
-    NULL AS meta_attribution_app
+    NULL AS meta_attribution_app,
+    NULL AS install_source
   FROM
   UNION ALL
   --Focus iOS
@@ -211,7 +216,8 @@ mobile_attribution AS (
     NULL AS play_store_attribution_campaign,
     NULL AS play_store_attribution_source,
     NULL AS play_store_attribution_medium,
-    NULL AS meta_attribution_app
+    NULL AS meta_attribution_app,
+    NULL AS install_source
   FROM
   UNION ALL
   --
@@ -219,7 +225,8 @@ mobile_attribution AS (
     NULL AS play_store_attribution_campaign,
     NULL AS play_store_attribution_source,
     NULL AS play_store_attribution_medium,
-    NULL AS meta_attribution_app
+    NULL AS meta_attribution_app,
+    NULL AS install_source
   FROM
 ),
 SELECT
@@ -244,7 +251,8 @@ SELECT
   attr.play_store_attribution_campaign,
   attr.play_store_attribution_source,
   attr.play_store_attribution_medium,
-  attr.meta_attribution_app
+  attr.meta_attribution_app,
+  attr.install_source
 FROM
   mobile_clients_last_seen cls
 LEFT JOIN

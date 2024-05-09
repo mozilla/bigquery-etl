@@ -72,7 +72,7 @@ fields:
   type: STRING
   description: Normalized Operating System Version
 - mode: NULLABLE
-  name: startup_profile_selection_reason_first
+  name: startup_profile_selection_reason
   type: STRING
   description: Startup Profile Selection Reason - How the profile was selected during startup
 - mode: NULLABLE

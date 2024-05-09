@@ -1,6 +1,3 @@
---need to add:
---app name
---is_suspicious_device_client
 WITH mobile_clients_last_seen AS (
   --Fenix
   SELECT
@@ -15,6 +12,7 @@ WITH mobile_clients_last_seen AS (
     locale,
     country,
     isp,
+    app_name,
     is_dau,
     is_wau,
     is_mau
@@ -36,6 +34,7 @@ WITH mobile_clients_last_seen AS (
     locale,
     country,
     isp,
+    app_name,
     is_dau,
     is_wau,
     is_mau
@@ -57,6 +56,7 @@ WITH mobile_clients_last_seen AS (
     locale,
     country,
     isp,
+    app_name, --will work once the column is added by Kik via PR#5434
     is_dau, --will work once the column is added by Kik via PR#5434
     is_wau, --will work once the column is added by Kik via PR#5434
     is_mau --will work once the column is added by Kik via PR#5434
@@ -78,6 +78,7 @@ WITH mobile_clients_last_seen AS (
     locale,
     country,
     isp,
+    app_name, --will work once the column is added by Kik via PR#5434
     is_dau, --will work once the column is added by Kik
     is_wau, --will work once the column is added by Kik
     is_mau --will work once the column is added by Kik
@@ -99,6 +100,7 @@ WITH mobile_clients_last_seen AS (
     locale,
     country,
     isp,
+    app_name, --will work once the column is added by Kik via PR#5434
     is_dau, --will work once the column is added by Kik
     is_wau, --will work once the column is added by Kik
     is_mau --will work once the column is added by Kik
@@ -120,6 +122,7 @@ WITH mobile_clients_last_seen AS (
     locale,
     country,
     isp,
+    app_name, --will work once the column is added by Kik via PR#5434
     is_dau, --will work once the column is added by Kik
     is_wau, --will work once the column is added by Kik
     is_mau --will work once the column is added by Kik
@@ -177,6 +180,7 @@ SELECT
   cls.locale,
   cls.country,
   cls.isp,
+  cls.app_name,
   cls.is_dau,
   cls.is_wau,
   cls.is_mau,

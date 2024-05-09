@@ -44,6 +44,10 @@ fields:
   type: STRING
   description: Internet Service Provider
 - mode: NULLABLE
+  name: app_name
+  type: STRING
+  description: App Name
+- mode: NULLABLE
   name: is_dau
   type: BOOLEAN
   description: DAU - Daily Active User

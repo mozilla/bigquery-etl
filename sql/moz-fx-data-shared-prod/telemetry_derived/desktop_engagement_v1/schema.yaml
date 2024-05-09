@@ -22,7 +22,7 @@ fields:
 - mode: NULLABLE
   name: startup_profile_selection_reason_first
   type: STRING
-  description: startup_profile_selection_reason_first - How the profile was selected during startup
+  description: Startup Profile Selection Reason First - How the profile was selected during startup
 - mode: NULLABLE
   name: attribution_campaign
   type: STRING

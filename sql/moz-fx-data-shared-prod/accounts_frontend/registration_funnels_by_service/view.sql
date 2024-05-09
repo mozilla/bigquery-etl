@@ -1,14 +1,14 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.accounts_frontend.login_funnels_by_service`
+  `moz-fx-data-shared-prod.accounts_frontend.registration_funnels_by_service`
 AS
 SELECT
   o.name AS service_name,
-  l.*
+  r.*
 FROM
-  `moz-fx-data-shared-prod.accounts_frontend_derived.login_funnels_by_service_v1` AS l
+  `moz-fx-data-shared-prod.accounts_frontend_derived.registration_funnels_by_service_v1` AS r
 JOIN
   `moz-fx-data-shared-prod.accounts_db.fxa_oauth_clients` AS o
-  ON l.service = o.id
+  ON r.service = o.id
 WHERE
   o.id NOT IN (
     '00efbcb5b2dbfa0e',  -- Mozilla.social invitation flow

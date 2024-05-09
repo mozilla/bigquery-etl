@@ -32,6 +32,10 @@ fields:
   type: STRING
   description: Country
 - mode: NULLABLE
+  name: app_name
+  type: STRING
+  description: App Name
+- mode: NULLABLE
   name: adjust_network
   type: STRING
   description: Adjust Network

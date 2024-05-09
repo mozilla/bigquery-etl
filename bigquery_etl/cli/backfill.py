@@ -36,7 +36,12 @@ from ..backfill.validate import (
 )
 from ..cli.query import backfill as query_backfill
 from ..cli.query import deploy
-from ..cli.utils import is_authenticated, project_id_option, sql_dir_option
+from ..cli.utils import (
+    billing_project_option,
+    is_authenticated,
+    project_id_option,
+    sql_dir_option,
+)
 from ..config import ConfigLoader
 from ..metadata.parse_metadata import METADATA_FILE, Metadata
 
@@ -347,8 +352,11 @@ def scheduled(ctx, qualified_table_name, sql_dir, project_id, status, json_path=
 @project_id_option(
     ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod")
 )
+@billing_project_option()
 @click.pass_context
-def initiate(ctx, qualified_table_name, parallelism, sql_dir, project_id):
+def initiate(
+    ctx, qualified_table_name, parallelism, sql_dir, project_id, billing_project
+):
     """Process backfill entry with initiate status in backfill.yaml file(s)."""
     click.echo("Backfill processing (initiate) started....")
 
@@ -386,6 +394,7 @@ def initiate(ctx, qualified_table_name, parallelism, sql_dir, project_id):
         entry_to_initiate,
         parallelism,
         dry_run=True,
+        billing_project=billing_project,
     )
 
     click.echo(
@@ -397,6 +406,7 @@ def initiate(ctx, qualified_table_name, parallelism, sql_dir, project_id):
         backfill_staging_qualified_table_name,
         entry_to_initiate,
         parallelism,
+        billing_project=billing_project,
     )
 
     click.echo(
@@ -411,6 +421,7 @@ def _initiate_backfill(
     entry: Backfill,
     parallelism: int = 16,
     dry_run: bool = False,
+    billing_project=None,
 ):
     if not is_authenticated():
         click.echo(
@@ -434,6 +445,7 @@ def _initiate_backfill(
             destination_table=backfill_staging_qualified_table_name,
             parallelism=parallelism,
             dry_run=dry_run,
+            billing_project=billing_project,
         )
     except subprocess.CalledProcessError as e:
         raise ValueError(

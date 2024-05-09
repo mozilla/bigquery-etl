@@ -11,7 +11,8 @@ SELECT
   users.has_fxa,
   users.fxa_primary_email,
   users.fxa_lang,
-  users.first_service,
+  users.fxa_first_service,
+  users.fxa_created_at,
   newsletters.newsletters,
   waitlists.waitlists,
   products.products
@@ -25,4 +26,4 @@ LEFT JOIN
   ON users.external_id = waitlists.external_id
 LEFT JOIN
   `moz-fx-data-shared-prod.braze_derived.products_v1` AS products
-  ON users.fxa_id_sha256 = products.fxa_id_sha256;
+  ON users.external_id = products.external_id;

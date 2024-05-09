@@ -1,0 +1,8 @@
+# test_braze_waitlists - users
+---
+# user 1
+- external_id: user_1
+# user 2 unsubscribed from two waitlists
+- external_id: user_2
+# user 3 not on waitlists
+- external_id: user_3

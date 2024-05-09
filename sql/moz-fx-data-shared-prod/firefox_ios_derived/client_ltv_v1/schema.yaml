@@ -35,6 +35,10 @@ fields:
   mode: NULLABLE
   name: ad_clicks
   type: INT64
+- description: Total Historical Ad Clicks
+  mode: NULLABLE
+  name: total_historic_ad_clicks
+  type: INT64
 - description: Adjust Network
   mode: NULLABLE
   name: adjust_network

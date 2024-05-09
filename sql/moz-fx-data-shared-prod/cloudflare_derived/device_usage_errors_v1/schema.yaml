@@ -1,0 +1,9 @@
+fields:
+  - name: dte
+    mode: NULLABLE
+    type: DATE
+    description: Date unable to get device usage data for
+  - name: location
+    mode: NULLABLE
+    type: STRING
+    description: Location unable to get device usage data for

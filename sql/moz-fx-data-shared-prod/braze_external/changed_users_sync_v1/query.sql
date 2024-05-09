@@ -1,30 +1,64 @@
+
+-- Construct the JSON payload in Braze required format
 SELECT
   CURRENT_TIMESTAMP() AS UPDATED_AT,
-  changed_users.external_id AS EXTERNAL_ID,
+  external_id AS EXTERNAL_ID,
   TO_JSON(
     STRUCT(
+      email AS email,
+      email_subscribe AS email_subscribe,
       ARRAY_AGG(
         STRUCT(
-          changed_users.email AS email,
-          changed_users.mailing_country AS mailing_country,
-          changed_users.email_subscribe AS email_subscribe,
-          changed_users.basket_token AS basket_token,
-          changed_users.email_lang AS email_lang,
-          changed_users.has_fxa AS has_fxa,
-          changed_users.fxa_primary_email AS fxa_primary_email,
-          changed_users.fxa_lang AS fxa_lang,
-          changed_users.first_service AS first_service,
-          changed_users.create_timestamp AS create_timestamp,
-          changed_users.update_timestamp AS update_timestamp
+          mailing_country AS mailing_country,
+          basket_token AS basket_token,
+          email_lang AS email_lang,
+          has_fxa AS has_fxa,
+          fxa_primary_email AS fxa_primary_email,
+          fxa_lang AS fxa_lang,
+          fxa_first_service AS fxa_first_service,
+          CASE
+            WHEN fxa_created_at IS NOT NULL
+              THEN STRUCT(
+                  FORMAT_TIMESTAMP('%Y-%m-%d %H:%M:%E6S UTC', fxa_created_at, 'UTC') AS `$time`
+                )
+            ELSE STRUCT(
+                FORMAT_TIMESTAMP(
+                  '%Y-%m-%d %H:%M:%E6S UTC',
+                  '1900-01-01 00:00:00.000000 UTC',
+                  'UTC'
+                ) AS `$time`
+              )
+          END AS fxa_created_at,
+          CASE
+            WHEN acoustic_last_engaged_at IS NOT NULL
+              THEN STRUCT(
+                  FORMAT_TIMESTAMP(
+                    '%Y-%m-%d %H:%M:%E6S UTC',
+                    acoustic_last_engaged_at,
+                    'UTC'
+                  ) AS `$time`
+                )
+            ELSE STRUCT(
+                FORMAT_TIMESTAMP(
+                  '%Y-%m-%d %H:%M:%E6S UTC',
+                  '1900-01-01 00:00:00.000000 UTC',
+                  'UTC'
+                ) AS `$time`
+              )
+          END AS acoustic_last_engaged_at,
+          STRUCT(
+            FORMAT_TIMESTAMP('%Y-%m-%d %H:%M:%E6S UTC', create_timestamp, 'UTC') AS `$time`
+          ) AS created_at,
+          STRUCT(
+            FORMAT_TIMESTAMP('%Y-%m-%d %H:%M:%E6S UTC', update_timestamp, 'UTC') AS `$time`
+          ) AS updated_at
         )
-        ORDER BY
-          changed_users.update_timestamp DESC
-      ) AS user_attributes
+      ) AS user_attributes_v1
     )
   ) AS PAYLOAD
 FROM
-  `moz-fx-data-shared-prod.braze_external.changed_users_v1` AS changed_users
-WHERE
-  changed_users.status = 'Changed'
+  `moz-fx-data-shared-prod.braze_derived.users_v1`
 GROUP BY
-  changed_users.external_id;
+  external_id,
+  email,
+  email_subscribe;

@@ -1,9 +1,7 @@
 friendly_name: Suppression List
 description: >
   Suppression List from Acoustic
-  Combination of a one-time upload 2024-03-20_main_suppression_list,
-  the ongoing fivetran updates for the suppression list combined with the
-  contact list in order to get the Acoustic email_id.
+  The suppression list was pruned in April 2024 -- https://mozilla-hub.atlassian.net/browse/CTMS-163
   Moved from moz-fx-data-marketing-prod to moz-fx-data-shared-prod in https://mozilla-hub.atlassian.net/browse/DENG-3287
 owners:
   - leli@mozilla.com

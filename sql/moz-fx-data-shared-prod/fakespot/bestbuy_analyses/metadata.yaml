@@ -4,6 +4,7 @@ description: |-
 owners:
 - wstuckey@mozilla.com
 labels:
+  authorized: true
   owner1: wstuckey
 bigquery: null
 workgroup_access:

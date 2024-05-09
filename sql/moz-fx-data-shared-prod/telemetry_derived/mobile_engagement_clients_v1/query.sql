@@ -123,7 +123,6 @@ mobile_attribution AS (
 SELECT
   cls.submission_date,
   cls.client_id,
-  cls.source,
   cls.sample_id,
   cls.first_seen_date,
   cls.normalized_channel,

@@ -4,7 +4,6 @@
 SELECT
   submission_date,
   first_seen_date,
-  source,
   locale,
   normalized_channel,
   country,
@@ -29,7 +28,6 @@ WHERE
 GROUP BY
   submission_date,
   first_seen_date,
-  source,
   locale,
   normalized_channel,
   country,

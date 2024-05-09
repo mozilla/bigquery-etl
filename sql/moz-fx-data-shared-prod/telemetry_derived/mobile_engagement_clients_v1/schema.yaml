@@ -8,10 +8,6 @@ fields:
   type: STRING
   description: Client ID
 - mode: NULLABLE
-  name: source
-  type: STRING
-  description: Source
-- mode: NULLABLE
   name: sample_id
   type: INT64
   description: Sample ID

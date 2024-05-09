@@ -8,10 +8,6 @@ fields:
   type: DATE
   description: First Seen Date
 - mode: NULLABLE
-  name: source
-  type: STRING
-  description: Source
-- mode: NULLABLE
   name: locale
   type: STRING
   description: Locale

@@ -64,10 +64,6 @@ fields:
   type: STRING
   description: Adjust Campaign
 - mode: NULLABLE
-  name: country
-  type: STRING
-  description: Country
-- mode: NULLABLE
   name: adjust_ad_group
   type: STRING
   description: Adjust Ad Group
@@ -83,6 +79,10 @@ fields:
   name: play_store_attribution_source
   type: STRING
   description: Play Store Attribution Source
+- mode: NULLABLE
+  name: play_store_attribution_medium
+  type: STRING
+  description: Play Store Attribution Medium
 - mode: NULLABLE
   name: meta_attribution_app
   type: STRING

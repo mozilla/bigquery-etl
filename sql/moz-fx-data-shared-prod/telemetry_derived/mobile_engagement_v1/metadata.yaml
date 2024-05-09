@@ -18,5 +18,6 @@ bigquery:
   clustering:
     fields:
     - country
-    - normalized_os
+    - app_name
+    - app_version
 references: {}

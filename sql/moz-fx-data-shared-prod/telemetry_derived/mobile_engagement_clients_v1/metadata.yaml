@@ -19,5 +19,6 @@ bigquery:
     fields:
     - sample_id
     - country
-    - normalized_os
+    - app_name
+    - app_version
 references: {}

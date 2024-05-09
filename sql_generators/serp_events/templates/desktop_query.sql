@@ -59,10 +59,10 @@ impressions AS (
     sample_id,
     ping_info.experiments,
     -- SERP session characteristics
-    CAST(mozfun.map.get_key(event.extra, 'is_shopping_page') AS bool) AS is_shopping_page,
+    SAFE_CAST(mozfun.map.get_key(event.extra, 'is_shopping_page') AS bool) AS is_shopping_page,
     mozfun.map.get_key(event.extra, 'provider') AS search_engine,
     mozfun.map.get_key(event.extra, 'source') AS sap_source,
-    CAST(mozfun.map.get_key(event.extra, 'tagged') AS bool) AS is_tagged
+    SAFE_CAST(mozfun.map.get_key(event.extra, 'tagged') AS bool) AS is_tagged
   FROM
     serp_events
   WHERE
@@ -124,9 +124,9 @@ ad_impression_counts AS (
       SELECT
         impression_id,
         mozfun.map.get_key(event.extra, 'component') AS component,
-        CAST(mozfun.map.get_key(event.extra, 'ads_loaded') AS int) AS ads_loaded,
-        CAST(mozfun.map.get_key(event.extra, 'ads_visible') AS int) AS ads_visible,
-        CAST(mozfun.map.get_key(event.extra, 'ads_hidden') AS int) AS ads_hidden,
+        SAFE_CAST(mozfun.map.get_key(event.extra, 'ads_loaded') AS int) AS ads_loaded,
+        SAFE_CAST(mozfun.map.get_key(event.extra, 'ads_visible') AS int) AS ads_visible,
+        SAFE_CAST(mozfun.map.get_key(event.extra, 'ads_hidden') AS int) AS ads_hidden,
       -- there should be at most 1 ad_impression event per component
       -- if there are multiple, it would be an edge case where events got duplicated
       -- enforce 1 row per session/component for data cleanliness

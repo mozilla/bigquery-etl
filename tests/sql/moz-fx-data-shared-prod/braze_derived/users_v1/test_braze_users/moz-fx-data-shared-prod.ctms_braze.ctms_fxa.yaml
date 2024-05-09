@@ -1,0 +1,49 @@
+# test_braze_users - ctms_fxa
+---
+# user 1 has all the subscriptions
+- email_id: user_1
+  fxa_id: fxa_uid_1
+  account_deleted: false
+  primary_email: User_1_primary@email.com
+  lang: EN
+  first_service: firefox-desktop
+  created_date: 2020-01-01
+# user 2 only has newsletter subscription
+# user 3 only has waitlist subscription
+# user 4 only has product subscription
+- email_id: user_4
+  fxa_id: fxa_uid_4
+  account_deleted: false
+  primary_email: user_4_primary@email.com
+  lang: EN
+  first_service: firefox-desktop
+  created_date: 2020-01-04
+# user 5 has newsletter and waitlist subscription
+# user 6 has newsletter, waitlist and product subscription
+- email_id: user_6
+  fxa_id: fxa_uid_6
+  account_deleted: false
+  primary_email: user_6_primary@email.com
+  lang: EN
+  first_service: firefox-desktop
+  created_date: 2020-01-06
+# user 7 has newsletter subscription but is on suppression list
+# user 8 has newsletter subscription but has_opted_out_of_email in CTMS
+# user 9 has newsletter subscription but not double opted in yet
+# user 10 has newsletter subscription, not double opted in and opted out of emails
+# user 11 has newsletter subscription, double opted in and opted out of emails
+# user 12 has waitlist subscription but never opened or clicked through anything in acoustic
+# user 13 has waitlist subscription and clicked on it
+# user 14 has waitlist subscription but deleted their fxa_account
+- email_id: user_14
+  fxa_id: fxa_uid_14
+  account_deleted: true
+  primary_email: user_14_primary@email.com
+  lang: EN
+  first_service: firefox-desktop
+  created_date: 2020-01-14
+# user 15 has newsletter subscription but is unsubscribed from all of them
+# user 16 has unsubscribed newsletter subscriptions and active waitlist subscriptions
+# user 17 has only unsubscribed waitlist subscriptions
+# user 18 is only subscribed to MoFo subscriptions
+# user 19 has newsletter subscription and MoFo subscription

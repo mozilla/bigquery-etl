@@ -7,4 +7,4 @@
 {{ min_row_count(1) }}
 
 #warn
-{{ is_unique(["external_id", "email", "fxa_id_sha256"]) }}
+{{ is_unique(["external_id", "email"]) }}

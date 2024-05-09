@@ -1,9 +1,4 @@
-WITH max_update AS (
-  SELECT
-    MAX(UPDATED_AT) AS max_update_timestamp
-  FROM
-    `moz-fx-data-shared-prod.braze_external.changed_firefox_subscriptions_sync_v1`
-)
+-- Construct the JSON payload in Braze required format
 SELECT
   CURRENT_TIMESTAMP() AS UPDATED_AT,
   subscriptions.external_id AS EXTERNAL_ID,
@@ -20,10 +15,8 @@ SELECT
     )
   ) AS PAYLOAD
 FROM
-  `moz-fx-data-shared-prod.braze_derived.subscriptions_v1` AS subscriptions
+  `moz-fx-data-shared-prod.braze_external.changed_subscriptions_v1` AS subscriptions
 CROSS JOIN
   UNNEST(subscriptions.subscriptions) AS subscriptions_array
-WHERE
-  subscriptions_array.update_timestamp > (SELECT max_update_timestamp FROM max_update)
 GROUP BY
   subscriptions.external_id;

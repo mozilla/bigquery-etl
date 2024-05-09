@@ -1,9 +1,8 @@
-friendly_name: Braze Changed Subscriptions Sync | Firefox Workspace
+friendly_name: Braze Changed Subscriptions
 description: |-
-  Changes in subscriptions in Braze from the previous day - mapped to the Firefox workspace.
-  In order to consume the least amount of data points, we only want to sync rows changed
-  since the last sync. This table holds all of the changed subscription data that syncs to braze.
-
+  This table represents changes to user subscriptions since the
+  previous DAG run. It enables us to build the changed subscriptions
+  sync(s)
 
   See https://mozilla-hub.atlassian.net/browse/DENG-3182
 owners:

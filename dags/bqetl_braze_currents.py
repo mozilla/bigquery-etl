@@ -345,7 +345,7 @@ with DAG(
         + [
             "--destination-project=moz-fx-data-shared-prod",
             "--destination-dataset=braze_external",
-            "--destination-table=hard_bounces_mozilla_v1",
+            "--destination-table=braze_currents_mozilla_hard_bounces_v1",
             "--source-bucket=moz-fx-data-marketing-prod-braze-mozilla",
             "--source-prefix=currents/dataexport.prod-05.GCS.integration.65fdf62e352dc7004cebd366",
             "--event-type=users.messages.email.Bounce",
@@ -444,25 +444,6 @@ with DAG(
             "--source-bucket=moz-fx-data-marketing-prod-braze-mozilla",
             "--source-prefix=currents/dataexport.prod-05.GCS.integration.65fdf62e352dc7004cebd366",
             "--event-type=users.behaviors.subscriptiongroup.StateChange",
-        ],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="leli@mozilla.com",
-        email=["leli@mozilla.com"],
-    )
-
-    braze_external__braze_currents_mozilla_unsubscribe__v1 = GKEPodOperator(
-        task_id="braze_external__braze_currents_mozilla_unsubscribe__v1",
-        arguments=[
-            "python",
-            "sql/moz-fx-data-shared-prod/braze_external/braze_currents_mozilla_unsubscribe_v1/query.py",
-        ]
-        + [
-            "--destination-project=moz-fx-data-shared-prod",
-            "--destination-dataset=braze_external",
-            "--destination-table=braze_currents_mozilla_unsubscribe_v1",
-            "--source-bucket=moz-fx-data-marketing-prod-braze-mozilla",
-            "--source-prefix=currents/dataexport.prod-05.GCS.integration.65fdf62e352dc7004cebd366",
-            "--event-type=users.messages.email.Unsubscribe",
         ],
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="leli@mozilla.com",

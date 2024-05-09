@@ -870,7 +870,8 @@ def _run_query(
     billing_project is the project to run the query in for the purposes of billing and
     slot reservation selection.  This is project_id if billing_project is not set
     """
-    if dataset_id is not None:
+    # if billing_project is set, default dataset is set with the @@dataset_id variable instead
+    if dataset_id is not None and billing_project is None:
         # dataset ID was parsed by argparse but needs to be passed as parameter
         # when running the query
         query_arguments.append(f"--dataset_id={dataset_id}")
@@ -949,7 +950,9 @@ def _run_query(
             **addl_templates,
         )
 
-        # create a session, setting default project and dataset
+        # create a session, setting default project and dataset for the query
+        # this is needed if the project the query is run in (billing_project) doesn't match the
+        # project directory the query is in
         if billing_project is not None and billing_project != project_id:
             default_project, default_dataset, _ = extract_from_query_path(query_file)
 

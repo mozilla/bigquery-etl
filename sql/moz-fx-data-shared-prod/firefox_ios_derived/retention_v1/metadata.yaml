@@ -28,7 +28,10 @@ labels:
 scheduling:
   dag_name: bqetl_firefox_ios
   depends_on_past: false
-  date_partition_parameter: submission_date
+  date_partition_parameter: metric_date
+  date_partition_offset: -27
+  parameters:
+  - submission_date:DATE:{{ds}}
 bigquery:
   time_partitioning:
     type: day

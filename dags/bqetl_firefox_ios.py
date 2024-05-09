@@ -462,14 +462,15 @@ with DAG(
 
     checks__warn_firefox_ios_derived__retention__v1 = bigquery_dq_check(
         task_id="checks__warn_firefox_ios_derived__retention__v1",
-        source_table="retention_v1",
+        source_table='retention_v1${{ macros.ds_format(macros.ds_add(ds, -27), "%Y-%m-%d", "%Y%m%d") }}',
         dataset_id="firefox_ios_derived",
         project_id="moz-fx-data-shared-prod",
         is_dq_check_fail=False,
         owner="kik@mozilla.com",
         email=["frank@mozilla.com", "kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
-        parameters=["submission_date:DATE:{{ds}}"],
+        parameters=["metric_date:DATE:{{macros.ds_add(ds, -27)}}"]
+        + ["submission_date:DATE:{{ds}}"],
         retries=0,
     )
 
@@ -612,13 +613,15 @@ with DAG(
 
     firefox_ios_derived__retention__v1 = bigquery_etl_query(
         task_id="firefox_ios_derived__retention__v1",
-        destination_table="retention_v1",
+        destination_table='retention_v1${{ macros.ds_format(macros.ds_add(ds, -27), "%Y-%m-%d", "%Y%m%d") }}',
         dataset_id="firefox_ios_derived",
         project_id="moz-fx-data-shared-prod",
         owner="kik@mozilla.com",
         email=["frank@mozilla.com", "kik@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
+        date_partition_parameter=None,
         depends_on_past=False,
+        parameters=["metric_date:DATE:{{macros.ds_add(ds, -27)}}"]
+        + ["submission_date:DATE:{{ds}}"],
     )
 
     org_mozilla_ios_firefox__unified_metrics__v1 = GKEPodOperator(

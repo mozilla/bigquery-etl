@@ -435,7 +435,7 @@ with DAG(
 
     checks__warn_fenix_derived__retention__v1 = bigquery_dq_check(
         task_id="checks__warn_fenix_derived__retention__v1",
-        source_table="retention_v1",
+        source_table='retention_v1${{ macros.ds_format(macros.ds_add(ds, -27), "%Y-%m-%d", "%Y%m%d") }}',
         dataset_id="fenix_derived",
         project_id="moz-fx-data-shared-prod",
         is_dq_check_fail=False,
@@ -447,7 +447,8 @@ with DAG(
             "telemetry-alerts@mozilla.com",
         ],
         depends_on_past=False,
-        parameters=["submission_date:DATE:{{ds}}"],
+        parameters=["metric_date:DATE:{{macros.ds_add(ds, -27)}}"]
+        + ["submission_date:DATE:{{ds}}"],
         retries=0,
     )
 
@@ -544,7 +545,7 @@ with DAG(
 
     fenix_derived__retention__v1 = bigquery_etl_query(
         task_id="fenix_derived__retention__v1",
-        destination_table="retention_v1",
+        destination_table='retention_v1${{ macros.ds_format(macros.ds_add(ds, -27), "%Y-%m-%d", "%Y%m%d") }}',
         dataset_id="fenix_derived",
         project_id="moz-fx-data-shared-prod",
         owner="kik@mozilla.com",
@@ -554,8 +555,10 @@ with DAG(
             "lvargas@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
-        date_partition_parameter="submission_date",
+        date_partition_parameter=None,
         depends_on_past=False,
+        parameters=["metric_date:DATE:{{macros.ds_add(ds, -27)}}"]
+        + ["submission_date:DATE:{{ds}}"],
     )
 
     firefox_android_clients = bigquery_etl_query(

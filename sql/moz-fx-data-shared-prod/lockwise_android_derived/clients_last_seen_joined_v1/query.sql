@@ -32,3 +32,9 @@ LEFT JOIN
     baseline.normalized_channel = metrics.normalized_channel
     OR (baseline.normalized_channel IS NULL AND metrics.normalized_channel IS NULL)
   )
+-- In some rare cases we end up with the same client_id in multiple channels
+-- In those cases, this union can result in client_id duplicates.
+-- This logic ensures that the resulting table only includes the client from the channel
+-- we've seen first.
+QUALIFY
+  ROW_NUMBER() OVER (PARTITION BY client_id ORDER BY first_seen_date ASC) = 1

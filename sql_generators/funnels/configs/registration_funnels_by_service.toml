@@ -1,7 +1,8 @@
-destination_dataset = "firefox_accounts_derived"
-platform = "firefox_accounts"
+destination_dataset = "accounts_frontend_derived"
+platform = "accounts_frontend"
 owners = ["ksiegler@mozilla.org"]  # optional; users getting notification if funnel run fails
-version = "1"  # optional; default is set to 1
+version = "1"
+start_date = "2024-01-01"
 
 [funnels]
 
@@ -17,7 +18,7 @@ dimensions = ["service"]
 [steps.reg_view]
 friendly_name = "Registration View Form"
 description = "View of the registration form requesting password creation and age"
-data_source = "monitor_frontend"
+data_source = "accounts_frontend"
 select_expression = "metrics.string.session_flow_id"
 where_expression = "metrics.string.event_name = 'reg_view'"
 aggregation = "count distinct"
@@ -26,7 +27,7 @@ join_previous_step_on = "metrics.string.session_flow_id"
 [steps.reg_email_code_view]
 friendly_name = "Registration Confirm Email Code View Form"
 description = "View of the email confirmation code page"
-data_source = "monitor_frontend"
+data_source = "accounts_frontend"
 select_expression = "metrics.string.session_flow_id"
 where_expression = "metrics.string.event_name = 'reg_signup_code_view'"
 aggregation = "count distinct"
@@ -35,7 +36,7 @@ join_previous_step_on = "metrics.string.session_flow_id"
 [steps.reg_complete]
 friendly_name = "Registration Completed"
 description = "Account was successfully created"
-data_source = "monitor_backend"
+data_source = "accounts_backend"
 select_expression = "metrics.string.session_flow_id"
 where_expression = "metrics.string.event_name = 'reg_complete'"
 aggregation = "count distinct"
@@ -43,12 +44,12 @@ join_previous_step_on = "metrics.string.session_flow_id"
 
 [data_sources]
 
-[data_sources.monitor_frontend]
+[data_sources.accounts_frontend]
 from_expression = "mozdata.accounts_frontend.accounts_events"
 submission_date_column = "DATE(submission_timestamp)"
 client_id_column = "client_info.client_id"
 
-[data_sources.monitor_backend]
+[data_sources.accounts_backend]
 from_expression = "mozdata.accounts_backend.accounts_events"
 submission_date_column = "DATE(submission_timestamp)"
 client_id_column = "client_info.client_id"
@@ -56,7 +57,7 @@ client_id_column = "client_info.client_id"
 [dimensions]
 
 [dimensions.service]
-data_source = "monitor_frontend"
+data_source = "accounts_frontend"
 select_expression = "IF(COALESCE(NULLIF(metrics.string.relying_party_oauth_client_id, ''), NULLIF(metrics.string.relying_party_service, '')) = 'sync', '5882386c6d801776', COALESCE(NULLIF(metrics.string.relying_party_oauth_client_id, ''), NULLIF(metrics.string.relying_party_service, '')))"
 friendly_name = "Service"
 description = "Oauth Client ID is used to map to service name for which service the user logged in through"

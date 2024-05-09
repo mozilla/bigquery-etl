@@ -6,6 +6,7 @@ WITH clients_last_seen AS (
     submission_date,
     client_id,
     sample_id,
+    app_name,
     normalized_channel,
     mozfun.bits28.retention(days_seen_bits, submission_date) AS retention_seen,
     mozfun.bits28.retention(days_active_bits & days_seen_bits, submission_date) AS retention_active,
@@ -23,7 +24,7 @@ attribution AS (
     adjust_campaign,
     adjust_creative,
     adjust_network,
-    is_suspicious_device_profile,
+    is_suspicious_device_client,
   FROM
     `moz-fx-data-shared-prod.firefox_ios_derived.firefox_ios_clients_v1`
 )
@@ -39,7 +40,7 @@ SELECT
   clients_daily.app_display_version AS app_version,
   clients_daily.locale,
   clients_daily.isp,
-  attribution.is_suspicious_device_profile,
+  attribution.is_suspicious_device_client,
   -- ping sent retention
   clients_last_seen.retention_seen.day_27.active_on_metric_date AS ping_sent_metric_date,
   (
@@ -89,6 +90,7 @@ INNER JOIN
   AND clients_daily.normalized_channel = clients_last_seen.normalized_channel
 LEFT JOIN
   attribution
-  USING (client_id, normalized_channel)
+  ON clients_daily.client_id = attribution.client_id
+  AND clients_daily.normalized_channel = attribution.normalized_channel
 WHERE
   clients_last_seen.retention_seen.day_27.active_on_metric_date

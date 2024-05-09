@@ -6,11 +6,11 @@ fields:
 - mode: NULLABLE
   name: first_seen_date
   type: DATE
-  description: First Seen Date
+  description: First Seen Date - Date when the server first received any of the 3 ping types from this client
 - mode: NULLABLE
   name: distribution_id
   type: STRING
-  description: Distribution ID
+  description: Distribution ID - Identifies the Firefox distribution
 - mode: NULLABLE
   name: locale
   type: STRING
@@ -50,7 +50,7 @@ fields:
 - mode: NULLABLE
   name: normalized_channel
   type: STRING
-  description: Normalized Channel
+  description: Normalized Channel - The Firefox channel, set to Other for unrecognized channel names
 - mode: NULLABLE
   name: normalized_os
   type: STRING

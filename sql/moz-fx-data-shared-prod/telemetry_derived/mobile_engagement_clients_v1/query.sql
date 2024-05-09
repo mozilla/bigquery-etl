@@ -1,4 +1,5 @@
---need to add app name
+--need to add:
+--app name
 --is_suspicious_device_client
 WITH mobile_clients_last_seen AS (
   --Fenix
@@ -10,7 +11,7 @@ WITH mobile_clients_last_seen AS (
     first_seen_date,
     normalized_channel,
     normalized_os,
-    normalized_version,
+    normalized_os_version,
     locale,
     country,
     isp,
@@ -30,7 +31,7 @@ WITH mobile_clients_last_seen AS (
     client_id,
     first_seen_date,
     normalized_channel,
-    normalized_os,
+    normalized_os_version,
     normalized_version,
     locale,
     country,
@@ -52,7 +53,7 @@ WITH mobile_clients_last_seen AS (
     first_seen_date,
     normalized_channel,
     normalized_os,
-    normalized_version,
+    normalized_os_version,
     locale,
     country,
     isp,
@@ -73,7 +74,7 @@ WITH mobile_clients_last_seen AS (
     first_seen_date,
     normalized_channel,
     normalized_os,
-    normalized_version,
+    normalized_os_version,
     locale,
     country,
     isp,
@@ -94,7 +95,7 @@ WITH mobile_clients_last_seen AS (
     first_seen_date,
     normalized_channel,
     normalized_os,
-    normalized_version,
+    normalized_os_version,
     locale,
     country,
     isp,
@@ -115,7 +116,7 @@ WITH mobile_clients_last_seen AS (
     first_seen_date,
     normalized_channel,
     normalized_os,
-    normalized_version,
+    normalized_os_version,
     locale,
     country,
     isp,
@@ -165,6 +166,7 @@ mobile_attribution AS (
     DATE(submission_timestamp) < current_date
   QUALIFY
     ROW_NUMBER() OVER (PARTITION BY client_info.client_id ORDER BY submission_timestamp ASC) = 1
+    /*
   --Klar Android
   UNION ALL
   SELECT
@@ -232,7 +234,8 @@ mobile_attribution AS (
     NULL AS meta_attribution_app,
     NULL AS install_source
   FROM
-),
+  */
+)
 SELECT
   cls.submission_date,
   cls.client_id,

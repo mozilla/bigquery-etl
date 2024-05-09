@@ -43,50 +43,6 @@ WITH mobile_clients_last_seen AS (
   WHERE
     submission_date = @submission_date
   UNION ALL
-  --Klar Android
-  SELECT
-    'Klar Android' AS source,
-    sample_id,
-    submission_date,
-    client_id,
-    first_seen_date,
-    normalized_channel,
-    normalized_os,
-    normalized_os_version,
-    locale,
-    country,
-    isp,
-    app_name, --will work once the column is added by Kik via PR#5434
-    is_dau, --will work once the column is added by Kik via PR#5434
-    is_wau, --will work once the column is added by Kik via PR#5434
-    is_mau --will work once the column is added by Kik via PR#5434
-  FROM
-    `moz-fx-data-shared-prod.klar_android.baseline_clients_last_seen`
-  WHERE
-    submission_date = @submission_date
-  UNION ALL
-  --Klar iOS
-  SELECT
-    'Klar iOS' AS source,
-    sample_id,
-    submission_date,
-    client_id,
-    first_seen_date,
-    normalized_channel,
-    normalized_os,
-    normalized_os_version,
-    locale,
-    country,
-    isp,
-    app_name, --will work once the column is added by Kik via PR#5434
-    is_dau, --will work once the column is added by Kik
-    is_wau, --will work once the column is added by Kik
-    is_mau --will work once the column is added by Kik
-  FROM
-    `moz-fx-data-shared-prod.klar_ios.baseline_clients_last_seen`
-  WHERE
-    submission_date = @submission_date
-  UNION ALL
   --Focus Android
   SELECT
     'Focus Android' AS source,

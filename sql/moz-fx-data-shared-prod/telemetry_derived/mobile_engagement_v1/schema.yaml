@@ -20,14 +20,6 @@ fields:
   type: STRING
   description: Normalized Channel
 - mode: NULLABLE
-  name: normalized_os
-  type: STRING
-  description: Normalized Operating System
-- mode: NULLABLE
-  name: normalized_os_version
-  type: STRING
-  description: Normalized Operating System Version
-- mode: NULLABLE
   name: country
   type: STRING
   description: Country

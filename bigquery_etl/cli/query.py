@@ -870,12 +870,6 @@ def _run_query(
     billing_project is the project to run the query in for the purposes of billing and
     slot reservation selection.  This is project_id if billing_project is not set
     """
-    # if billing_project is set, default dataset is set with the @@dataset_id variable instead
-    if dataset_id is not None and billing_project is None:
-        # dataset ID was parsed by argparse but needs to be passed as parameter
-        # when running the query
-        query_arguments.append(f"--dataset_id={dataset_id}")
-
     if billing_project is not None:
         query_arguments.append(f"--project_id={billing_project}")
     elif project_id is not None:
@@ -962,6 +956,11 @@ def _run_query(
                 default_dataset=dataset_id or default_dataset,
             )
             query_arguments.append(f"--session_id={session_id}")
+        # if billing_project is set, default dataset is set with the @@dataset_id variable instead
+        elif dataset_id is not None:
+            # dataset ID was parsed by argparse but needs to be passed as parameter
+            # when running the query
+            query_arguments.append(f"--dataset_id={dataset_id}")
 
         # write rendered query to a temporary file;
         # query string cannot be passed directly to bq as SQL comments will be interpreted as CLI arguments

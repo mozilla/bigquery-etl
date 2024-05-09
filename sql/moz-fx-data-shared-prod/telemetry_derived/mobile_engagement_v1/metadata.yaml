@@ -16,5 +16,7 @@ bigquery:
     expiration_days: null
   range_partitioning: null
   clustering:
-    fields: []
+    fields:
+    - country
+    - normalized_os
 references: {}

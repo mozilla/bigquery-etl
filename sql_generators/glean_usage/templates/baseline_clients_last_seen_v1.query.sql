@@ -1,9 +1,5 @@
 {{ header }}
-
-{% raw %}
-{% if is_init() %}
-{% endraw %}
-
+{% raw %}{% if is_init() %}{% endraw %}
 SELECT
   CAST(NULL AS INT64) AS days_seen_bits,
   CAST(NULL AS INT64) AS days_active_bits,
@@ -18,11 +14,7 @@ FROM
 WHERE
   -- Output empty table and read no input rows
   FALSE
-
-{% raw %}
-{% else %}
-{% endraw %}
-
+{% raw %}{% else %}{% endraw %}
 WITH _current AS (
   SELECT
     -- In this raw table, we capture the history of activity over the past
@@ -72,7 +64,4 @@ FROM
 FULL JOIN
   _previous
   USING (client_id)
-
-{% raw %}
-{% endif %}
-{% endraw %}
+{% raw %}{% endif %}{% endraw %}

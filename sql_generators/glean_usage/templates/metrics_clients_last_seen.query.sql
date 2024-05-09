@@ -1,3 +1,18 @@
+{{ header }}
+
+{% raw %}
+{% if is_init() %}
+{% endraw %}
+SELECT
+    *
+  FROM
+    `{{ project_id }}.{{ app_name }}.metrics_clients_daily` AS m
+  WHERE
+    FALSE
+{% raw %}
+{% else %}
+{% endraw %}
+
 WITH
   _previous AS (
   SELECT
@@ -46,3 +61,7 @@ FULL JOIN
     OR (_previous.normalized_channel IS NULL AND _current.normalized_channel IS NULL)
   )
 WHERE _current.client_id IS NOT NULL
+
+{% raw %}
+{% endif %}
+{% endraw %}

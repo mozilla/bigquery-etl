@@ -16,6 +16,7 @@ SELECT
   cfs.attribution_dlsource,
   cfs.attribution_medium,
   cfs.attribution_ua,
+  cfs.attribution_experiment,
   cls.normalized_channel,
   mozfun.norm.os(cls.os) AS normalized_os,
   COALESCE(

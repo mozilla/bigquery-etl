@@ -44,6 +44,10 @@ fields:
   type: STRING
   description: Attribution UA
 - mode: NULLABLE
+  name: attribution_experiment
+  type: STRING
+  description: Attribution Experiment
+- mode: NULLABLE
   name: normalized_channel
   type: STRING
   description: Normalized Channel

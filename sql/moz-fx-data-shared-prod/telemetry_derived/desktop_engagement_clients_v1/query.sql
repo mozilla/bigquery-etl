@@ -1,7 +1,3 @@
-/*
-add startup_profile_selection_reason_first
-add  attribution.experiment
-*/
 SELECT
   cls.submission_date,
   cls.client_id,

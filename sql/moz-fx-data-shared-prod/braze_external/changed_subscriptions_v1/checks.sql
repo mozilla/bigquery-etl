@@ -11,7 +11,9 @@ ASSERT(
     UNNEST(subscriptions) AS subscriptions
   WHERE
     subscriptions.update_timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 15 HOUR)
-) > 0;
+) > 0
+AS
+  "No new records in the braze_external.changed_subscriptions_v1 table in the last 15 hours";
 
 -- macro checks
 

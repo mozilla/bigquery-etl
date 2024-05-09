@@ -1,11 +1,11 @@
 CREATE OR REPLACE VIEW
-  `{{ project }}`.glam_etl.firefox_desktop_glam_nightly__view_clients_daily_scalar_aggregates_v1
+  `{{ project }}.glam_etl.firefox_desktop_glam_nightly__view_clients_daily_scalar_aggregates_v1`
 AS
 WITH extracted AS (
   SELECT
     *
   FROM
-    `{{ project }}`.glam_etl.firefox_desktop__view_clients_daily_scalar_aggregates_v1
+    `{{ project }}.glam_etl.firefox_desktop__view_clients_daily_scalar_aggregates_v1`
   WHERE
     channel = 'nightly'
     AND SAFE.PARSE_DATETIME('%Y%m%d%H%M%S', app_build_id) IS NOT NULL

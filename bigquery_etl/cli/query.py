@@ -2,6 +2,7 @@
 
 import copy
 import datetime
+import json
 import logging
 import multiprocessing
 import os
@@ -622,14 +623,14 @@ def _backfill_query(
     "--checks/--no-checks", help="Whether to run checks during backfill", default=False
 )
 @click.option(
-    "--scheduling_parameters_override",
-    "--scheduling-parameters-override",
-    "-spo",
+    "--scheduling_overrides",
+    "--scheduling-overrides",
+    "-so",
     required=False,
-    multiple=True,
-    default=[],
+    type=str,
+    default="{}",
     help=(
-        "Pass a list of parameters to override query's existing scheduling parameters. "
+        "Pass overrides for scheduling sections: parameters and/or date_partition_parameter as needed. "
     ),
 )
 @click.pass_context
@@ -646,7 +647,7 @@ def backfill(
     parallelism,
     destination_table,
     checks,
-    scheduling_parameters_override,
+    scheduling_overrides,
 ):
     """Run a backfill."""
     if not is_authenticated():
@@ -680,14 +681,16 @@ def backfill(
         depends_on_past = metadata.scheduling.get("depends_on_past", False)
         # If date_partition_parameter isn't set it's assumed to be submission_date:
         # https://github.com/mozilla/telemetry-airflow/blob/dbc2782fa23a34ae8268e7788f9621089ac71def/utils/gcp.py#L194C48-L194C48
-        date_partition_parameter = metadata.scheduling.get(
-            "date_partition_parameter", "submission_date"
+        scheduling_overrides_dict = json.loads(scheduling_overrides)
+        date_partition_parameter = scheduling_overrides_dict.get(
+            "date_partition_parameter",
+            metadata.scheduling.get("date_partition_parameter", "submission_date"),
         )
         date_partition_offset = metadata.scheduling.get("date_partition_offset", 0)
-        scheduling_parameters = metadata.scheduling.get("parameters", [])
+        scheduling_parameters = scheduling_overrides_dict.get(
+            "parameters", metadata.scheduling.get("parameters", [])
+        )
 
-        if scheduling_parameters_override:
-            scheduling_parameters = scheduling_parameters_override
         partitioning_type = None
         if metadata.bigquery and metadata.bigquery.time_partitioning:
             partitioning_type = metadata.bigquery.time_partitioning.type

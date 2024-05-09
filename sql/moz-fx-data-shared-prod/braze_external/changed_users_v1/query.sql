@@ -1,3 +1,4 @@
+-- Compares users from the previous run to detect changes to sync
 SELECT
   COALESCE(current_users.external_id, previous_users.external_id) AS external_id,
   CASE

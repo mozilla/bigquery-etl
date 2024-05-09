@@ -29,6 +29,7 @@ from ..backfill.utils import QUALIFIED_TABLE_NAME_RE, qualified_table_name_match
 from ..cli import check
 from ..cli.format import format
 from ..cli.utils import (
+    billing_project_option,
     is_authenticated,
     is_valid_project,
     no_dryrun_option,
@@ -458,6 +459,7 @@ def _backfill_query(
     backfill_date,
     destination_table,
     run_checks,
+    billing_project,
 ):
     """Run a query backfill for a specific date."""
     project, dataset, table = extract_from_query_path(query_file_path)
@@ -521,6 +523,7 @@ def _backfill_query(
             "default", "public_project", fallback="mozilla-public-data"
         ),
         query_arguments=arguments,
+        billing_project=billing_project,
     )
 
     # Run checks on the query
@@ -570,6 +573,7 @@ def _backfill_query(
 @click.argument("name")
 @sql_dir_option
 @project_id_option(required=True)
+@billing_project_option()
 @click.option(
     "--start_date",
     "--start-date",
@@ -639,6 +643,7 @@ def backfill(
     name,
     sql_dir,
     project_id,
+    billing_project,
     start_date,
     end_date,
     exclude,
@@ -713,7 +718,12 @@ def backfill(
             project, dataset, table = extract_from_query_path(query_file_path)
             client.get_table(f"{project}.{dataset}.{table}")
         except NotFound:
-            ctx.invoke(initialize, name=query_file, dry_run=dry_run)
+            ctx.invoke(
+                initialize,
+                name=query_file,
+                dry_run=dry_run,
+                billing_project=billing_project,
+            )
 
         backfill_query = partial(
             _backfill_query,
@@ -728,6 +738,7 @@ def backfill(
             partitioning_type,
             destination_table=destination_table,
             run_checks=checks,
+            billing_project=billing_project,
         )
 
         if not depends_on_past and parallelism > 0:
@@ -776,6 +787,7 @@ def backfill(
 @click.argument("name")
 @sql_dir_option
 @project_id_option()
+@billing_project_option()
 @click.option(
     "--public_project_id",
     "--public-project-id",
@@ -808,6 +820,7 @@ def run(
     name,
     sql_dir,
     project_id,
+    billing_project,
     public_project_id,
     destination_table,
     dataset_id,
@@ -839,6 +852,7 @@ def run(
         destination_table,
         dataset_id,
         ctx.args,
+        billing_project=billing_project,
     )
 
 
@@ -850,14 +864,24 @@ def _run_query(
     dataset_id,
     query_arguments,
     addl_templates: Optional[dict] = None,
+    billing_project: Optional[str] = None,
 ):
-    """Run a query."""
-    if dataset_id is not None:
+    """Run a query.
+
+    project_id is the default project to use with table/view/udf references in the query that
+    do not have a project id qualifier.
+    billing_project is the project to run the query in for the purposes of billing and
+    slot reservation selection.  This is project_id if billing_project is not set
+    """
+    # if billing_project is set, default dataset is set with the @@dataset_id variable instead
+    if dataset_id is not None and billing_project is None:
         # dataset ID was parsed by argparse but needs to be passed as parameter
         # when running the query
-        query_arguments.append("--dataset_id={}".format(dataset_id))
+        query_arguments.append(f"--dataset_id={dataset_id}")
 
-    if project_id is not None:
+    if billing_project is not None:
+        query_arguments.append(f"--project_id={billing_project}")
+    elif project_id is not None:
         query_arguments.append(f"--project_id={project_id}")
 
     if addl_templates is None:
@@ -921,22 +945,78 @@ def _run_query(
         if "query" not in query_arguments:
             query_arguments = ["query"] + query_arguments
 
+        query_text = render_template(
+            query_file.name,
+            template_folder=str(query_file.parent),
+            templates_dir="",
+            format=False,
+            **addl_templates,
+        )
+
+        # create a session, setting default project and dataset for the query
+        # this is needed if the project the query is run in (billing_project) doesn't match the
+        # project directory the query is in
+        if billing_project is not None and billing_project != project_id:
+            default_project, default_dataset, _ = extract_from_query_path(query_file)
+
+            session_id = create_query_session(
+                session_project=billing_project,
+                default_project=project_id or default_project,
+                default_dataset=dataset_id or default_dataset,
+            )
+            query_arguments.append(f"--session_id={session_id}")
+
         # write rendered query to a temporary file;
         # query string cannot be passed directly to bq as SQL comments will be interpreted as CLI arguments
         with tempfile.NamedTemporaryFile(mode="w+") as query_stream:
-            query_stream.write(
-                render_template(
-                    query_file.name,
-                    template_folder=str(query_file.parent),
-                    templates_dir="",
-                    format=False,
-                    **addl_templates,
-                )
-            )
+            query_stream.write(query_text)
             query_stream.seek(0)
 
             # run the query as shell command so that passed parameters can be used as is
             subprocess.check_call(["bq"] + query_arguments, stdin=query_stream)
+
+
+def create_query_session(
+    session_project: str,
+    default_project: Optional[str] = None,
+    default_dataset: Optional[str] = None,
+):
+    """Create a bigquery session and return the session id.
+
+    Optionally set the system variables @@dataset_project_id and @@dataset_id
+    if project_id and dataset_id are given. This sets the default project_id or dataset_id
+    for table/view/udf references that do not have a project or dataset qualifier.
+
+    :param session_project: Project to create the session in
+    :param default_project: Optional project to use in queries for object
+        that do not have a project qualifier.
+    :param default_dataset: Optional dataset to use in queries for object
+        that do not have a project qualifier.
+    """
+    query_parts = []
+    if default_project is not None:
+        query_parts.append(f"SET @@dataset_project_id = '{default_project}'")
+    if default_dataset is not None:
+        query_parts.append(f"SET @@dataset_id = '{default_dataset}'")
+
+    if len(query_parts) == 0:  # need to run a non-empty query
+        session_query = "SELECT 1"
+    else:
+        session_query = ";\n".join(query_parts)
+
+    client = bigquery.Client(project=session_project)
+
+    job_config = bigquery.QueryJobConfig(
+        create_session=True,
+        use_legacy_sql=False,
+    )
+    job = client.query(session_query, job_config)
+    job.result()
+
+    if job.session_info is None:
+        raise RuntimeError(f"Failed to get session id with job id {job.job_id}")
+
+    return job.session_info.session_id
 
 
 @query.command(
@@ -1211,6 +1291,7 @@ def _initialize_in_parallel(
     parallelism,
     sample_ids,
     addl_templates,
+    billing_project,
 ):
     with ThreadPool(parallelism) as pool:
         # Process all sample_ids in parallel.
@@ -1223,6 +1304,7 @@ def _initialize_in_parallel(
                 table,
                 dataset,
                 addl_templates=addl_templates,
+                billing_project=billing_project,
             ),
             [arguments + [f"--parameter=sample_id:INT64:{i}"] for i in sample_ids],
         )
@@ -1245,6 +1327,7 @@ def _initialize_in_parallel(
 @click.argument("name")
 @sql_dir_option
 @project_id_option()
+@billing_project_option()
 @click.option(
     "--dry_run/--no_dry_run",
     "--dry-run/--no-dry-run",
@@ -1266,7 +1349,15 @@ def _initialize_in_parallel(
 )
 @click.pass_context
 def initialize(
-    ctx, name, sql_dir, project_id, dry_run, parallelism, skip_existing, force
+    ctx,
+    name,
+    sql_dir,
+    project_id,
+    billing_project,
+    dry_run,
+    parallelism,
+    skip_existing,
+    force,
 ):
     """Create the destination table for the provided query."""
     if not is_authenticated():
@@ -1363,7 +1454,7 @@ def initialize(
 
                     _initialize_in_parallel(
                         project=project,
-                        table=destination_table,
+                        table=full_table_id,
                         dataset=dataset,
                         query_file=query_file,
                         arguments=arguments,
@@ -1372,18 +1463,20 @@ def initialize(
                         addl_templates={
                             "is_init": lambda: True,
                         },
+                        billing_project=billing_project,
                     )
                 else:
                     _run_query(
                         query_files=[query_file],
                         project_id=project,
                         public_project_id=None,
-                        destination_table=destination_table,
+                        destination_table=full_table_id,
                         dataset_id=dataset,
                         query_arguments=arguments,
                         addl_templates={
                             "is_init": lambda: True,
                         },
+                        billing_project=billing_project,
                     )
             else:
                 for file in materialized_views:

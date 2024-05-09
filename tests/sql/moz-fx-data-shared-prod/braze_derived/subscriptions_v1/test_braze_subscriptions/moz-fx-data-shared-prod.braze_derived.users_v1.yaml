@@ -1,9 +1,0 @@
-# braze users
----
-# user 1
-- external_id: user_1
-# user 2
-- external_id: user_2
-# user 3
-- external_id: user_3
-# user 4 not in braze_users

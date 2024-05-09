@@ -87,3 +87,7 @@ fields:
   name: meta_attribution_app
   type: STRING
   description: Meta Attribution App
+- mode: NULLABLE
+  name: install_source
+  type: STRING
+  description: Install Source

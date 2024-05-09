@@ -19,7 +19,7 @@ WITH mobile_clients_last_seen AS (
     is_wau,
     is_mau
   FROM
-    `moz-fx-data-shared-prod.fenix.baseline_clients_last_seen`
+    `moz-fx-data-shared-prod.fenix.baseline_clients_last_seen_extended_activity` --eventually use: `moz-fx-data-shared-prod.fenix.baseline_clients_last_seen`
   WHERE
     submission_date = @submission_date
   UNION ALL
@@ -40,7 +40,7 @@ WITH mobile_clients_last_seen AS (
     is_wau,
     is_mau
   FROM
-    `moz-fx-data-shared-prod.firefox_ios.baseline_clients_last_seen`
+    `moz-fx-data-shared-prod.firefox_ios.baseline_clients_last_seen_extended_activity` --eventually use: `moz-fx-data-shared-prod.firefox_ios.baseline_clients_last_seen`
   WHERE
     submission_date = @submission_date
   UNION ALL
@@ -57,9 +57,9 @@ WITH mobile_clients_last_seen AS (
     locale,
     country,
     isp,
-    is_dau,
-    is_wau,
-    is_mau
+    is_dau, --will work once the column is added by Kik via PR#5434
+    is_wau, --will work once the column is added by Kik via PR#5434
+    is_mau --will work once the column is added by Kik via PR#5434
   FROM
     `moz-fx-data-shared-prod.klar_android.baseline_clients_last_seen`
   WHERE
@@ -78,9 +78,9 @@ WITH mobile_clients_last_seen AS (
     locale,
     country,
     isp,
-    is_dau,
-    is_wau,
-    is_mau
+    is_dau, --will work once the column is added by Kik
+    is_wau, --will work once the column is added by Kik
+    is_mau --will work once the column is added by Kik
   FROM
     `moz-fx-data-shared-prod.klar_ios.baseline_clients_last_seen`
   WHERE
@@ -99,9 +99,9 @@ WITH mobile_clients_last_seen AS (
     locale,
     country,
     isp,
-    is_dau,
-    is_wau,
-    is_mau
+    is_dau, --will work once the column is added by Kik
+    is_wau, --will work once the column is added by Kik
+    is_mau --will work once the column is added by Kik
   FROM
     `moz-fx-data-shared-prod.focus_android.baseline_clients_last_seen`
   WHERE
@@ -120,9 +120,9 @@ WITH mobile_clients_last_seen AS (
     locale,
     country,
     isp,
-    is_dau,
-    is_wau,
-    is_mau
+    is_dau, --will work once the column is added by Kik
+    is_wau, --will work once the column is added by Kik
+    is_mau --will work once the column is added by Kik
   FROM
     `moz-fx-data-shared-prod.focus_ios.baseline_clients_last_seen`
   WHERE
@@ -166,75 +166,6 @@ mobile_attribution AS (
     DATE(submission_timestamp) < current_date
   QUALIFY
     ROW_NUMBER() OVER (PARTITION BY client_info.client_id ORDER BY submission_timestamp ASC) = 1
-    /*
-  --Klar Android
-  UNION ALL
-  SELECT
-    'Klar Android' AS source,
-    client_id,
-    sample_id,
-    ? AS adjust_network,
-    ? AS adjust_campaign,
-    ? AS adjust_ad_group,
-    ? AS adjust_creative,
-    NULL AS play_store_attribution_campaign,
-    NULL AS play_store_attribution_source,
-    NULL AS play_store_attribution_medium,
-    NULL AS meta_attribution_app,
-    NULL AS install_source
-  FROM --?
-  UNION ALL
-  --Klar iOS
-  SELECT
-    'Klar iOS' AS source,
-    client_id,
-    sample_id,
-    ? AS adjust_network,
-    ? AS adjust_campaign,
-    ? AS adjust_ad_group,
-    ? AS adjust_creative,
-    NULL AS play_store_attribution_campaign,
-    NULL AS play_store_attribution_source,
-    NULL AS play_store_attribution_medium,
-    NULL AS meta_attribution_app,
-    NULL AS install_source
-  FROM
-  UNION ALL
-  --Focus Android
-  SELECT
-    'Focus Android' AS source,
-    client_id,
-    sample_id,
-    ? AS adjust_network,
-    ? AS adjust_campaign,
-    ? AS adjust_ad_group,
-    ? AS adjust_creative,
-    NULL AS play_store_attribution_campaign,
-    NULL AS play_store_attribution_source,
-    NULL AS play_store_attribution_medium,
-    NULL AS meta_attribution_app,
-    NULL AS install_source
-  FROM
-  UNION ALL
-  --Focus iOS
-  SELECT
-    'Focus iOS' AS source,
-    NULL AS play_store_attribution_campaign,
-    NULL AS play_store_attribution_source,
-    NULL AS play_store_attribution_medium,
-    NULL AS meta_attribution_app,
-    NULL AS install_source
-  FROM
-  UNION ALL
-  --
-  SELECT
-    NULL AS play_store_attribution_campaign,
-    NULL AS play_store_attribution_source,
-    NULL AS play_store_attribution_medium,
-    NULL AS meta_attribution_app,
-    NULL AS install_source
-  FROM
-  */
 )
 SELECT
   cls.submission_date,

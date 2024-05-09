@@ -1,7 +1,7 @@
-friendly_name: Historical Pings for `accounts-backend/deletion-request`
+friendly_name: Historical Pings for `firefox-desktop/prototype-no-code-events`
 description: |-
   A historical view of pings sent for the
-  `accounts-backend/deletion-request`
+  `firefox-desktop/prototype-no-code-events`
   document type.
 
   This view is guaranteed to contain only complete days
@@ -18,4 +18,4 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   view.sql:
-  - moz-fx-data-shared-prod.accounts_backend_stable.deletion_request_v1
+  - moz-fx-data-shared-prod.firefox_desktop_stable.prototype_no_code_events_v1

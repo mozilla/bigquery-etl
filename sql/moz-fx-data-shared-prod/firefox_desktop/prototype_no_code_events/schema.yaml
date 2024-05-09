@@ -74,6 +74,14 @@ fields:
     mode: NULLABLE
     description: The user-visible version of the operating system (e.g. "1.2.3").
       If the version detection fails, this metric gets set to `Unknown`.
+  - name: session_count
+    type: INTEGER
+    mode: NULLABLE
+    description: An optional running counter of the number of sessions for a client.
+  - name: session_id
+    type: STRING
+    mode: NULLABLE
+    description: An optional UUID uniquely identifying the client's current session.
   - name: telemetry_sdk_build
     type: STRING
     mode: NULLABLE
@@ -83,14 +91,6 @@ fields:
     mode: NULLABLE
     description: The optional Windows build number, reported by Windows (e.g. 22000)
       and not set for other platforms
-  - name: session_count
-    type: INTEGER
-    mode: NULLABLE
-    description: An optional running counter of the number of sessions for a client.
-  - name: session_id
-    type: STRING
-    mode: NULLABLE
-    description: An optional UUID uniquely identifying the client's current session.
 - name: document_id
   type: STRING
   mode: NULLABLE

@@ -72,6 +72,10 @@ fields:
   type: STRING
   mode: NULLABLE
   description: The id of the browser distribution made available in installation sources.
+- name: meta_attribution_app
+  type: STRING
+  mode: NULLABLE
+  description: null
 - name: play_store_attribution_campaign
   type: STRING
   mode: NULLABLE
@@ -101,26 +105,22 @@ fields:
   type: STRING
   mode: NULLABLE
   description: The full install referrer response.
-- name: meta_attribution_app
+- name: last_reported_adjust_campaign
   type: STRING
   mode: NULLABLE
-  description: null
-- name: last_reported_locale
+  description: Last reported campaign name.
+- name: last_reported_adjust_ad_group
   type: STRING
   mode: NULLABLE
-  description: Last reported client locale.
-- name: last_reported_device_manufacturer
+  description: Last reported campaign ad group.
+- name: last_reported_adjust_creative
   type: STRING
   mode: NULLABLE
-  description: Last reported client device manufacturer.
-- name: last_reported_device_model
+  description: Last reported campaign name.
+- name: last_reported_adjust_network
   type: STRING
   mode: NULLABLE
-  description: Last reported client device model.
-- name: last_reported_country
-  type: STRING
-  mode: NULLABLE
-  description: Last reported client country.
+  description: Last reported client campaign network.
 - name: last_reported_date
   type: DATE
   mode: NULLABLE
@@ -129,22 +129,22 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Last reported client channel.
-- name: last_reported_adjust_network
+- name: last_reported_country
   type: STRING
   mode: NULLABLE
-  description: Last reported client campaign network.
-- name: last_reported_adjust_creative
+  description: Last reported client country.
+- name: last_reported_device_model
   type: STRING
   mode: NULLABLE
-  description: Last reported campaign name.
-- name: last_reported_adjust_ad_group
+  description: Last reported client device model.
+- name: last_reported_device_manufacturer
   type: STRING
   mode: NULLABLE
-  description: Last reported campaign ad group.
-- name: last_reported_adjust_campaign
+  description: Last reported client device manufacturer.
+- name: last_reported_locale
   type: STRING
   mode: NULLABLE
-  description: Last reported campaign name.
+  description: Last reported client locale.
 - name: metadata
   type: RECORD
   mode: NULLABLE

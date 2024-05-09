@@ -11,6 +11,9 @@ fields:
 - name: legacy_telemetry_client_id
   type: STRING
   mode: NULLABLE
+- name: ping_seq
+  type: INTEGER
+  mode: NULLABLE
 - name: event_timestamp
   type: INTEGER
   mode: NULLABLE
@@ -45,27 +48,6 @@ fields:
 - name: sample_id
   type: INTEGER
   mode: NULLABLE
-- name: is_shopping_page
-  type: BOOLEAN
-  mode: NULLABLE
-- name: search_engine
-  type: STRING
-  mode: NULLABLE
-- name: sap_source
-  type: STRING
-  mode: NULLABLE
-- name: is_tagged
-  type: BOOLEAN
-  mode: NULLABLE
-- name: is_engaged
-  type: BOOLEAN
-  mode: NULLABLE
-- name: abandon_reason
-  type: STRING
-  mode: NULLABLE
-- name: ping_seq
-  type: INTEGER
-  mode: NULLABLE
 - name: experiments
   type: RECORD
   mode: REPEATED
@@ -90,39 +72,108 @@ fields:
       - name: enrollment_id
         type: STRING
         mode: NULLABLE
-- name: has_ads_loaded
+- name: is_shopping_page
   type: BOOLEAN
   mode: NULLABLE
-- name: component
+- name: is_private
+  type: BOOLEAN
+  mode: NULLABLE
+- name: is_signed_in
+  type: BOOLEAN
+  mode: NULLABLE
+- name: search_engine
   type: STRING
   mode: NULLABLE
-- name: is_ad_component
+- name: sap_source
+  type: STRING
+  mode: NULLABLE
+- name: is_tagged
   type: BOOLEAN
   mode: NULLABLE
-- name: num_clicks
+- name: abandon_reason
+  type: STRING
+  mode: NULLABLE
+- name: ad_components
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: component
+    type: STRING
+    mode: NULLABLE
+  - name: num_loaded
+    type: INTEGER
+    mode: NULLABLE
+  - name: num_visible
+    type: INTEGER
+    mode: NULLABLE
+  - name: num_blocked
+    type: INTEGER
+    mode: NULLABLE
+  - name: num_notshowing
+    type: INTEGER
+    mode: NULLABLE
+  - name: num_clicks
+    type: INTEGER
+    mode: NULLABLE
+  - name: num_other_engagements
+    type: INTEGER
+    mode: NULLABLE
+  - name: blocker_inferred
+    type: BOOLEAN
+    mode: NULLABLE
+- name: non_ad_engagements
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: component
+    type: STRING
+    mode: NULLABLE
+  - name: action
+    type: STRING
+    mode: NULLABLE
+  - name: num_engagements
+    type: INTEGER
+    mode: NULLABLE
+- name: non_ad_impressions
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: component
+    type: STRING
+    mode: NULLABLE
+  - name: num_elements_loaded
+    type: INTEGER
+    mode: NULLABLE
+  - name: num_elements_visible
+    type: INTEGER
+    mode: NULLABLE
+  - name: num_elements_blocked
+    type: INTEGER
+    mode: NULLABLE
+  - name: num_elements_notshowing
+    type: INTEGER
+    mode: NULLABLE
+- name: num_ad_clicks
   type: INTEGER
   mode: NULLABLE
-- name: num_expands
+- name: num_non_ad_link_clicks
   type: INTEGER
   mode: NULLABLE
-- name: num_submits
+- name: num_other_engagements
   type: INTEGER
   mode: NULLABLE
-- name: num_ads_loaded_reported
+- name: num_ads_loaded
   type: INTEGER
   mode: NULLABLE
-- name: num_ads_visible_reported
+- name: num_ads_visible
   type: INTEGER
   mode: NULLABLE
-- name: num_ads_hidden_reported
-  type: INTEGER
-  mode: NULLABLE
-- name: ad_blocker_inferred
-  type: BOOLEAN
-  mode: NULLABLE
-- name: num_ads_showing
+- name: num_ads_blocked
   type: INTEGER
   mode: NULLABLE
 - name: num_ads_notshowing
   type: INTEGER
+  mode: NULLABLE
+- name: ad_blocker_inferred
+  type: BOOLEAN
   mode: NULLABLE

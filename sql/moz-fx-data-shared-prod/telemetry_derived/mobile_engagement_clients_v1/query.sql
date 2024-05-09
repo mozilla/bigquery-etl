@@ -149,23 +149,19 @@ mobile_attribution AS (
   --Firefox iOS
   SELECT
     'Firefox iOS' AS source,
-    client_info.client_id,
+    client_id,
     sample_id,
-    metrics.string.adjust_network AS adjust_network,
-    metrics.string.adjust_campaign AS adjust_campaign,
-    metrics.string.adjust_ad_group AS adjust_ad_group,
-    metrics.string.adjust_creative AS adjust_creative,
+    adjust_network,
+    adjust_campaign,
+    adjust_ad_group,
+    adjust_creative,
     NULL AS play_store_attribution_campaign,
     NULL AS play_store_attribution_source,
     NULL AS play_store_attribution_medium,
     NULL AS meta_attribution_app,
     NULL AS install_source
   FROM
-    `mozdata.firefox_ios.first_session`
-  WHERE
-    DATE(submission_timestamp) < current_date
-  QUALIFY
-    ROW_NUMBER() OVER (PARTITION BY client_info.client_id ORDER BY submission_timestamp ASC) = 1
+    `moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients`
 )
 SELECT
   cls.submission_date,

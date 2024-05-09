@@ -1,0 +1,15 @@
+friendly_name: Fakespot Amazon Products
+description: |-
+  Amazon Products from Fakespot, pulled from syndicate dataset
+owners:
+- wstuckey@mozilla.com
+labels:
+  owner1: wstuckey
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.fakespot_syndicate.amazon_products

@@ -143,24 +143,28 @@ mobile_attribution AS (
     meta_attribution_app,
     install_source
   FROM
-    `moz-fx-data-shared-prod.fenix_derived.firefox_android_clients_v1` --which types of ones are in here?
+    `moz-fx-data-shared-prod.fenix_derived.firefox_android_clients_v1`
   UNION ALL
   --Firefox iOS
   SELECT
     'Firefox iOS' AS source,
-    client_id,
+    client_info.client_id,
     sample_id,
-    adjust_network,
-    adjust_campaign,
-    adjust_ad_group,
-    adjust_creative,
-  --google play store all null
+    metrics.string.adjust_network AS adjust_network,
+    metrics.string.adjust_campaign AS adjust_campaign,
+    metrics.string.adjust_ad_group AS adjust_ad_group,
+    metrics.string.adjust_creative AS adjust_creative,
     NULL AS play_store_attribution_campaign,
     NULL AS play_store_attribution_source,
     NULL AS play_store_attribution_medium,
     NULL AS meta_attribution_app,
     NULL AS install_source
   FROM
+    `mozdata.firefox_ios.first_session`
+  WHERE
+    DATE(submission_timestamp) < current_date
+  QUALIFY
+    ROW_NUMBER() OVER (PARTITION BY client_info.client_id ORDER BY submission_timestamp ASC) = 1
   --Klar Android
   UNION ALL
   SELECT

@@ -238,6 +238,12 @@ DELETE_TARGETS: DeleteIndex = {
     client_id_target(table="telemetry_stable.untrusted_modules_v4"): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.update_v4"): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.voice_v4"): DESKTOP_SRC,
+    client_id_target(table="telemetry_derived.mobile_engagement_clients_v1"): (
+        DeleteSource(table="firefox_ios.deletion_request", field=GLEAN_CLIENT_ID),
+        DeleteSource(table="focus_ios.deletion_request", field=GLEAN_CLIENT_ID),
+        DeleteSource(table="focus_android.deletion_request", field=GLEAN_CLIENT_ID),
+        DeleteSource(table="fenix.deletion_request", field=GLEAN_CLIENT_ID),
+    ),
     # activity stream
     DeleteTarget(
         table="messaging_system_stable.cfr_v1", field=(CLIENT_ID, IMPRESSION_ID)

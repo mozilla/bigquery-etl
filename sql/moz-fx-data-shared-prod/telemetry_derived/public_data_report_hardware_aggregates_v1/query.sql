@@ -61,7 +61,11 @@ latest_per_client AS (
       0
     ) AS screen_height,
     environment.system.cpu.cores AS cpu_cores,
-    environment.system.cpu.vendor AS cpu_vendor,
+    IF(
+      STARTS_WITH(environment.system.cpu.name, 'Apple '),
+      'Apple',
+      environment.system.cpu.vendor
+    ) AS cpu_vendor,
     environment.system.cpu.speed_m_hz AS cpu_speed,
     'Shockwave Flash' IN (SELECT name FROM UNNEST(environment.addons.active_plugins)) AS has_flash
   FROM

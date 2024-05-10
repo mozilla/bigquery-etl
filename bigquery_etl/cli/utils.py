@@ -199,6 +199,22 @@ def project_id_option(default=None, required=False):
     )
 
 
+def billing_project_option(default=None, required=False):
+    """Generate a billing-project option, with optional default."""
+    return click.option(
+        "--billing-project",
+        "--billing_project",
+        help=(
+            "GCP project ID to run the query in. "
+            "This can be used to run a query using a different slot reservation "
+            "than the one used by the query's default project."
+        ),
+        type=str,
+        default=default,
+        required=required,
+    )
+
+
 def respect_dryrun_skip_option(default=True):
     """Generate a respect_dryrun_skip option."""
     flags = {True: "--respect-dryrun-skip", False: "--ignore-dryrun-skip"}

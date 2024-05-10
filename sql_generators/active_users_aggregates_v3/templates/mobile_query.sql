@@ -1,24 +1,24 @@
 --- Query generated via sql_generators.active_users.
 WITH
 {% if app_name == "fenix"%}
-attribution_data AS (
-  SELECT
-    client_id,
-    adjust_network,
-    install_source
-  FROM
-    fenix.firefox_android_clients
-),
+  attribution_data AS (
+    SELECT
+      client_id,
+      adjust_network,
+      install_source
+    FROM
+      fenix.firefox_android_clients
+  ),
 {% endif %}
 {% if app_name == "firefox_ios"%}
-attribution_data AS (
-SELECT
-    client_id,
-    adjust_network,
-    CAST(NULL AS STRING) install_source
-  FROM
-    firefox_ios.firefox_ios_clients
-),
+  attribution_data AS (
+    SELECT
+      client_id,
+      adjust_network,
+      CAST(NULL AS STRING) install_source
+    FROM
+      firefox_ios.firefox_ios_clients
+  ),
 {% endif %}
 baseline AS (
   SELECT
@@ -47,8 +47,7 @@ baseline AS (
   WHERE
     submission_date = @submission_date
 ),
-metrics AS
-(
+metrics AS (
   SELECT
     submission_date,
     client_id,
@@ -58,7 +57,10 @@ metrics AS
   FROM
     `{{ project_id }}.{{ app_name }}.metrics_clients_last_seen`
   WHERE
-    submission_date = DATE_ADD(@submission_date, INTERVAL 1 DAY) -- Metrics ping usually arrives 1 day after baseline ping.
+    submission_date = DATE_ADD(
+      @submission_date,
+      INTERVAL 1 DAY
+    ) -- Metrics ping usually arrives 1 day after baseline ping.
 ),
 unioned AS (
   SELECT
@@ -161,19 +163,19 @@ unioned_with_searches_and_attribution AS (
   SELECT
     unioned.*,
     {% if app_name == "fenix" or  app_name == "firefox_ios" %}
-    attribution_data.install_source,
-    attribution_data.adjust_network
+      attribution_data.install_source,
+      attribution_data.adjust_network
     {% else %}
-    CAST(NULL AS STRING) AS install_source,
-    CAST(NULL AS STRING) AS adjust_network
+      CAST(NULL AS STRING) AS install_source,
+      CAST(NULL AS STRING) AS adjust_network
     {% endif %}
   FROM
     unioned_with_searches unioned
-  {% if app_name == "fenix" or  app_name == "firefox_ios" %}
-  LEFT JOIN
-    attribution_data
-    USING (client_id)
-  {% endif %}
+    {% if app_name == "fenix" or  app_name == "firefox_ios" %}
+      LEFT JOIN
+        attribution_data
+        USING (client_id)
+    {% endif %}
 ),
 todays_metrics AS (
   SELECT

@@ -58,6 +58,8 @@ SELECT
   ) AS PAYLOAD
 FROM
   `moz-fx-data-shared-prod.braze_external.changed_users_v1`
+WHERE
+  status = 'Changed'
 GROUP BY
   external_id,
   email,

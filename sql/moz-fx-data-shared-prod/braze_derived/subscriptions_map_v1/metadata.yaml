@@ -14,3 +14,6 @@ labels:
   owner: cbeck
 bigquery:
   time_partitioning: null
+scheduling:
+  dag_name: bqetl_braze
+  date_partition_parameter: null

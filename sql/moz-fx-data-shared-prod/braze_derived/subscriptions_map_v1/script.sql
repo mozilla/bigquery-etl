@@ -43,14 +43,6 @@ VALUES
     'antiharassment-waitlist'
   ),
   (
-    'app-dev',
-    'Developer Newsletter',
-    '3ade707a-e9de-4577-ab02-2ababbc669b5',
-    'e3f5edd9-7009-4309-8224-b87c6d8d198b',
-    '23069735-6496-4a19-8240-b910f94660b0',
-    'app-dev'
-  ),
-  (
     'didthis-waitlist',
     'DidThis Waitlist',
     '13d0a1e5-54eb-43bb-891d-f83576415fda',

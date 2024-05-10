@@ -8,6 +8,7 @@ labels:
   owner1: leli
 scheduling:
   dag_name: bqetl_marketing_suppression_list
+  destination_table: null
   arguments:
   - --api_key={{ var.value.campaign_monitor_api_key }}
   - --client_id={{ var.value.campaign_monitor_client_id }}

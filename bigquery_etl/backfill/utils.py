@@ -113,7 +113,9 @@ def validate_depends_on_past(sql_dir, qualified_table_name) -> bool:
     table_metadata = Metadata.from_file(table_metadata_path)
 
     if "depends_on_past" in table_metadata.scheduling:
-        return not table_metadata.scheduling["depends_on_past"]  # skip if depends_on_past
+        return not table_metadata.scheduling[
+            "depends_on_past"
+        ]  # skip if depends_on_past
 
     return True
 
@@ -220,7 +222,6 @@ def get_scheduled_backfills(
     backfills_to_process_dict = {}
 
     for qualified_table_name, entries in backfills_dict.items():
-
         # do not return backfill if depends on past
         if not validate_depends_on_past(sql_dir, qualified_table_name):
             continue

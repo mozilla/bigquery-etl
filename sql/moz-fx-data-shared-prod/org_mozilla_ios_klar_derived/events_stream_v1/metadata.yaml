@@ -16,6 +16,9 @@ labels:
 scheduling:
   dag_name: bqetl_glean_usage
   task_group: klar_ios
+  arguments:
+  - --billing-project
+  - moz-fx-data-backfill-2
 bigquery:
   time_partitioning:
     type: day

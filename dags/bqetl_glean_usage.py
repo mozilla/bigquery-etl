@@ -169,6 +169,7 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_accounts_backend,
     )
 
@@ -223,6 +224,7 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_accounts_cirrus,
     )
 
@@ -252,6 +254,7 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_accounts_frontend,
     )
 
@@ -269,6 +272,7 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_bedrock,
     )
 
@@ -335,6 +339,7 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_burnham,
     )
 
@@ -1520,6 +1525,7 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_debug_ping_view,
     )
 
@@ -1660,6 +1666,7 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_firefox_desktop_background_defaultagent,
     )
 
@@ -1726,6 +1733,7 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_firefox_desktop_background_tasks,
     )
 
@@ -1804,6 +1812,7 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_firefox_desktop_background_update,
     )
 
@@ -1894,6 +1903,7 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_firefox_desktop,
     )
 
@@ -2143,6 +2153,7 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_firefox_translations,
     )
 
@@ -2282,6 +2293,7 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_glean_dictionary,
     )
 
@@ -2507,6 +2519,7 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_mdn_yari,
     )
 
@@ -2561,6 +2574,7 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_monitor_cirrus,
     )
 
@@ -2590,6 +2604,7 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_monitor_frontend,
     )
 
@@ -2666,6 +2681,7 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_lockwise_android,
     )
 
@@ -2720,6 +2736,7 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_mach,
     )
 
@@ -2788,6 +2805,7 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_mozillavpn_backend_cirrus,
     )
 
@@ -2854,6 +2872,7 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_mozilla_vpn,
     )
 
@@ -2920,6 +2939,7 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_mozphab,
     )
 
@@ -2997,6 +3017,7 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_bergamot,
     )
 
@@ -3053,6 +3074,7 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_firefox_echo_show,
     )
 
@@ -3134,6 +3156,7 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_fenix,
     )
 
@@ -3217,6 +3240,7 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_fenix,
     )
 
@@ -3300,6 +3324,7 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_fenix,
     )
 
@@ -3385,6 +3410,7 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_fenix,
     )
 
@@ -3466,6 +3492,7 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_fenix,
     )
 
@@ -3524,6 +3551,7 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_mozilla_vpn,
     )
 
@@ -3578,6 +3606,7 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_firefox_reality_pc,
     )
 
@@ -3634,6 +3663,7 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_focus_android,
     )
 
@@ -3688,6 +3718,7 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_focus_android,
     )
 
@@ -3744,6 +3775,7 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_focus_android,
     )
 
@@ -3822,6 +3854,7 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_firefox_ios,
     )
 
@@ -3902,6 +3935,7 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_firefox_ios,
     )
 
@@ -3980,6 +4014,7 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_firefox_ios,
     )
 
@@ -4034,6 +4069,7 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_mozilla_vpn,
     )
 
@@ -4088,6 +4124,7 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_mozilla_vpn,
     )
 
@@ -4142,6 +4179,7 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_focus_ios,
     )
 
@@ -4196,6 +4234,7 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_klar_ios,
     )
 
@@ -4254,6 +4293,7 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_lockwise_ios,
     )
 
@@ -4308,6 +4348,7 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_klar_android,
     )
 
@@ -4364,6 +4405,7 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_mozregression,
     )
 
@@ -4420,6 +4462,7 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_reference_browser,
     )
 
@@ -4474,6 +4517,7 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_org_mozilla_social_nightly,
     )
 
@@ -4552,6 +4596,7 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_firefox_fire_tv,
     )
 
@@ -4606,6 +4651,7 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_firefox_reality,
     )
 
@@ -4660,6 +4706,7 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_pine,
     )
 
@@ -4725,6 +4772,7 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_relay_backend,
     )
 
@@ -4742,6 +4790,7 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_treeherder,
     )
 
@@ -4759,6 +4808,7 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_viu_politica,
     )
 

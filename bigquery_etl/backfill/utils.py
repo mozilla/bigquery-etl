@@ -108,8 +108,7 @@ def validate_depends_on_past(sql_dir, qualified_table_name) -> bool:
     Managed backfills currently do not support tables that depends on past.
     """
     project, dataset, table = qualified_table_name_matching(qualified_table_name)
-    dataset_path = Path(sql_dir) / project / dataset
-    table_metadata_path = dataset_path / table / METADATA_FILE
+    table_metadata_path = Path(sql_dir) / project / dataset / table / METADATA_FILE
 
     table_metadata = Metadata.from_file(table_metadata_path)
 

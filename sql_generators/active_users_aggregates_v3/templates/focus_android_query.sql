@@ -19,23 +19,7 @@ WITH baseline AS (
     distribution_id,
     CAST(NULL AS string) AS isp,
     'Focus Android Legacy' AS app_name,
-    CASE
-      WHEN BIT_COUNT(days_seen_bits)
-        BETWEEN 1
-        AND 6
-        THEN 'infrequent_user'
-      WHEN BIT_COUNT(days_seen_bits)
-        BETWEEN 7
-        AND 13
-        THEN 'casual_user'
-      WHEN BIT_COUNT(days_seen_bits)
-        BETWEEN 14
-        AND 20
-        THEN 'regular_user'
-      WHEN BIT_COUNT(days_seen_bits) >= 21
-        THEN 'core_user'
-      ELSE 'other'
-    END AS segment
+    CAST(NULL AS STRING) AS segment
   FROM
     `{{ project_id }}.telemetry.core_clients_last_seen`
   WHERE

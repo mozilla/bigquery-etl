@@ -43,6 +43,14 @@ VALUES
     'antiharassment-waitlist'
   ),
   (
+    'app-dev',
+    'Developer Newsletter',
+    '3ade707a-e9de-4577-ab02-2ababbc669b5',
+    'e3f5edd9-7009-4309-8224-b87c6d8d198b',
+    '23069735-6496-4a19-8240-b910f94660b0',
+    'app-dev'
+  ),
+  (
     'didthis-waitlist',
     'DidThis Waitlist',
     '13d0a1e5-54eb-43bb-891d-f83576415fda',
@@ -57,14 +65,6 @@ VALUES
     '9615c825-d9d7-4e9e-a6fe-e5557917ccf0',
     'e095ad1d-ce90-4d4e-981e-9afc2da22a21',
     'firefox-accounts-journey'
-  ),
-  (
-    'about-addons',
-    'Firefox addons developer newsletter',
-    'b9f6b780-8fc3-4eab-b033-10d4f5f7a370',
-    '09b3ebc5-02d8-4621-932c-2119ca493956',
-    '56ad1633-dcc7-4841-aa4d-64026e4e17cb',
-    'about-addons'
   ),
   (
     'graceland-waitlist',

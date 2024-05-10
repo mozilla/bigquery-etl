@@ -146,6 +146,20 @@ with DAG(
         email=["leli@mozilla.com"],
     )
 
+    with TaskGroup(
+        "braze_external__braze_currents_firefox_hard_bounces__v1_external",
+    ) as braze_external__braze_currents_firefox_hard_bounces__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_marketing_suppression_list__wait_for_braze_external__braze_currents_firefox_hard_bounces__v1",
+            external_dag_id="bqetl_marketing_suppression_list",
+            external_task_id="wait_for_braze_external__braze_currents_firefox_hard_bounces__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
+        )
+
+        braze_external__braze_currents_firefox_hard_bounces__v1_external.set_upstream(
+            braze_external__braze_currents_firefox_hard_bounces__v1
+        )
+
     braze_external__braze_currents_firefox_mark_as_spam__v1 = GKEPodOperator(
         task_id="braze_external__braze_currents_firefox_mark_as_spam__v1",
         arguments=[
@@ -260,6 +274,20 @@ with DAG(
         email=["leli@mozilla.com"],
     )
 
+    with TaskGroup(
+        "braze_external__braze_currents_firefox_unsubscribe__v1_external",
+    ) as braze_external__braze_currents_firefox_unsubscribe__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_marketing_suppression_list__wait_for_braze_external__braze_currents_firefox_unsubscribe__v1",
+            external_dag_id="bqetl_marketing_suppression_list",
+            external_task_id="wait_for_braze_external__braze_currents_firefox_unsubscribe__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
+        )
+
+        braze_external__braze_currents_firefox_unsubscribe__v1_external.set_upstream(
+            braze_external__braze_currents_firefox_unsubscribe__v1
+        )
+
     braze_external__braze_currents_mozilla_click__v1 = GKEPodOperator(
         task_id="braze_external__braze_currents_mozilla_click__v1",
         arguments=[
@@ -355,6 +383,20 @@ with DAG(
         email=["leli@mozilla.com"],
     )
 
+    with TaskGroup(
+        "braze_external__braze_currents_mozilla_hard_bounces__v1_external",
+    ) as braze_external__braze_currents_mozilla_hard_bounces__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_marketing_suppression_list__wait_for_braze_external__braze_currents_mozilla_hard_bounces__v1",
+            external_dag_id="bqetl_marketing_suppression_list",
+            external_task_id="wait_for_braze_external__braze_currents_mozilla_hard_bounces__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
+        )
+
+        braze_external__braze_currents_mozilla_hard_bounces__v1_external.set_upstream(
+            braze_external__braze_currents_mozilla_hard_bounces__v1
+        )
+
     braze_external__braze_currents_mozilla_mark_as_spam__v1 = GKEPodOperator(
         task_id="braze_external__braze_currents_mozilla_mark_as_spam__v1",
         arguments=[
@@ -449,55 +491,3 @@ with DAG(
         owner="leli@mozilla.com",
         email=["leli@mozilla.com"],
     )
-
-    braze_external__hard_bounces__v1 = GKEPodOperator(
-        task_id="braze_external__hard_bounces__v1",
-        arguments=[
-            "python",
-            "sql/moz-fx-data-shared-prod/braze_external/hard_bounces_v1/query.py",
-        ]
-        + [],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="leli@mozilla.com",
-        email=["leli@mozilla.com"],
-    )
-
-    with TaskGroup(
-        "braze_external__hard_bounces__v1_external",
-    ) as braze_external__hard_bounces__v1_external:
-        ExternalTaskMarker(
-            task_id="bqetl_marketing_suppression_list__wait_for_braze_external__hard_bounces__v1",
-            external_dag_id="bqetl_marketing_suppression_list",
-            external_task_id="wait_for_braze_external__hard_bounces__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
-        )
-
-        braze_external__hard_bounces__v1_external.set_upstream(
-            braze_external__hard_bounces__v1
-        )
-
-    braze_external__unsubscribes__v1 = GKEPodOperator(
-        task_id="braze_external__unsubscribes__v1",
-        arguments=[
-            "python",
-            "sql/moz-fx-data-shared-prod/braze_external/unsubscribes_v1/query.py",
-        ]
-        + [],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="leli@mozilla.com",
-        email=["leli@mozilla.com"],
-    )
-
-    with TaskGroup(
-        "braze_external__unsubscribes__v1_external",
-    ) as braze_external__unsubscribes__v1_external:
-        ExternalTaskMarker(
-            task_id="bqetl_marketing_suppression_list__wait_for_braze_external__unsubscribes__v1",
-            external_dag_id="bqetl_marketing_suppression_list",
-            external_task_id="wait_for_braze_external__unsubscribes__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
-        )
-
-        braze_external__unsubscribes__v1_external.set_upstream(
-            braze_external__unsubscribes__v1
-        )

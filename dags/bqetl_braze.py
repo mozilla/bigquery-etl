@@ -565,7 +565,7 @@ with DAG(
     )
 
     braze_external__changed_users_sync__v1.set_upstream(
-        checks__fail_braze_derived__users__v1
+        braze_external__changed_users__v1
     )
 
     braze_external__changed_waitlists_sync__v1.set_upstream(

@@ -194,7 +194,9 @@ def validate(
     for qualified_table_name in backfills_dict:
 
         if not validate_depends_on_past(sql_dir, qualified_table_name):
-            click.echo("Tables that depend on past are currently not supported.")
+            click.echo(
+                f"Tables that depend on past are currently not supported:  {qualified_table_name}"
+            )
             sys.exit(1)
 
         if not validate_metadata_workgroups(sql_dir, qualified_table_name):

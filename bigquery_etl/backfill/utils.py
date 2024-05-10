@@ -105,7 +105,7 @@ def validate_depends_on_past(sql_dir, qualified_table_name) -> bool:
     """
     Check if the table depends on past.
 
-    Managed backfill currently do not support tables that depend on past.
+    Managed backfills currently do not support tables that depends on past.
     """
     project, dataset, table = qualified_table_name_matching(qualified_table_name)
     dataset_path = Path(sql_dir) / project / dataset

@@ -568,7 +568,7 @@ class TestBackfill:
             )
             assert result.exit_code == 1
             assert (
-                "Tables that depend on past are currently not supported."
+                "Tables that depend on past are currently not supported"
                 in result.output
             )
 

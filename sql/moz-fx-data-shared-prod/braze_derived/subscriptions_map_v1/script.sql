@@ -19,6 +19,14 @@ INSERT INTO
   )
 VALUES
   (
+    'about-addons',
+    'Firefox addons developer newsletter',
+    'b9f6b780-8fc3-4eab-b033-10d4f5f7a370',
+    '09b3ebc5-02d8-4621-932c-2119ca493956',
+    '56ad1633-dcc7-4841-aa4d-64026e4e17cb',
+    'about-addons'
+  ),
+  (
     'about-mozilla',
     'Mozilla Community Newsletter',
     'e23dfa20-6dd9-4a2f-a9cb-7bd2f8db5925',

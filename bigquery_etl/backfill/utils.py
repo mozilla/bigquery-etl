@@ -112,12 +112,10 @@ def validate_depends_on_past(sql_dir, qualified_table_name) -> bool:
 
     table_metadata = Metadata.from_file(table_metadata_path)
 
-    depends_on_past = False
-
     if "depends_on_past" in table_metadata.scheduling:
-        depends_on_past = table_metadata.scheduling["depends_on_past"]
+        return not table_metadata.scheduling["depends_on_past"]  # skip if depends_on_past
 
-    return not depends_on_past
+    return True
 
 
 def validate_metadata_workgroups(sql_dir, qualified_table_name) -> bool:

@@ -7,24 +7,35 @@ WITH suppressions AS (
     "Acoustic" AS suppression_source,
   FROM
     `moz-fx-data-shared-prod.acoustic_external.suppression_list_v1`
-  -- braze unsubscribes
+  -- braze unsubscribes from Firefox workspace
   UNION DISTINCT
   SELECT
     LOWER(email_address) AS email,
     TIMESTAMP_SECONDS(time) AS suppressed_timestamp,
     "clicked header" AS suppression_reason,
-    "Braze unsubscribe" AS suppression_source
+    "Braze Firefox unsubscribe" AS suppression_source
   FROM
-    `moz-fx-data-shared-prod.braze_external.unsubscribes_v1`
-  -- braze hard bounces
+    `moz-fx-data-shared-prod.braze_external.braze_currents_firefox_unsubscribe_v1`
+  -- braze hard bounces from Firefox workspace
   UNION DISTINCT
   SELECT
     LOWER(email_address) AS email,
     TIMESTAMP_SECONDS(time) AS suppressed_timestamp,
     "hard bounce" AS suppression_reason,
-    "Braze hard bounce" AS suppression_source
+    "Braze Firefox hard bounce" AS suppression_source
   FROM
-    `moz-fx-data-shared-prod.braze_external.hard_bounces_v1`
+    `moz-fx-data-shared-prod.braze_external.braze_currents_firefox_hard_bounces_v1`
+  -- braze unsubscribes from Mozilla workspace
+  -- TODO set this up once there are unsubscribes
+  -- braze hard bounces from Mozilla workspace
+  UNION DISTINCT
+  SELECT
+    LOWER(email_address) AS email,
+    TIMESTAMP_SECONDS(time) AS suppressed_timestamp,
+    "hard bounce" AS suppression_reason,
+    "Braze Mozilla hard bounce" AS suppression_source
+  FROM
+    `moz-fx-data-shared-prod.braze_external.braze_currents_mozilla_hard_bounces_v1`
 -- MoFo suppression List
   UNION DISTINCT
   SELECT

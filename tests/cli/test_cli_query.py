@@ -537,6 +537,7 @@ class TestQuery:
                     "--end_date=2021-01-09",
                     "--exclude=2021-01-06",
                     "--parallelism=0",
+                    "--billing-project=backfill-project",
                 ],
             )
 

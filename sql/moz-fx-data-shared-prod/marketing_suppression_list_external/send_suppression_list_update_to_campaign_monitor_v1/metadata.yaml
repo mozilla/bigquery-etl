@@ -1,0 +1,15 @@
+friendly_name: Send Suppression List Update To CampaignMonitor
+description: |-
+  This python script gets the table new_suppression_list_entries_for_mofo_v1 and uploads the result to the Campaign Monitor API.
+owners:
+- leli@mozilla.com
+labels:
+  incremental: false
+  owner1: leli
+scheduling:
+  dag_name: bqetl_marketing_suppression_list
+  arguments:
+  - --api_key={{ var.value.campaign_monitor_api_key }}
+  - --client_id={{ var.value.campaign_monitor_client_id }}
+bigquery: null
+references: {}

@@ -19,6 +19,14 @@ INSERT INTO
   )
 VALUES
   (
+    'about-mozilla',
+    'Mozilla Community Newsletter',
+    'e23dfa20-6dd9-4a2f-a9cb-7bd2f8db5925',
+    '2a94147c-466f-4cbe-8362-3305886d2dea',
+    '0d4f7b75-fb25-4db0-a83a-98cb3558e185',
+    'about-mozilla'
+  ),
+  (
     'antiharassment-waitlist',
     'Anti-Harassment tool Waitlist',
     'ebe059f4-ab45-467e-9dfc-25094ca85a51',

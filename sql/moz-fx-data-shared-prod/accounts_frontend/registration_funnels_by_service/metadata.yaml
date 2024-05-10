@@ -4,6 +4,3 @@ description: |-
   that includes relevant OAuth client IDs as well as interpretable service names
 owners:
 - ksiegler@mozilla.com
-labels: {}
-bigquery: null
-references: {}

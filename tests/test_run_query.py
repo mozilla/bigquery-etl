@@ -37,8 +37,8 @@ class TestRunQuery:
                 [
                     "bq",
                     "query",
-                    "--dataset_id=test",
                     "--destination_table=query_v1",
+                    "--dataset_id=test",
                 ],
             )
             assert "stdin" in mock_call.call_args.kwargs
@@ -76,8 +76,8 @@ class TestRunQuery:
                 [
                     "bq",
                     "query",
-                    "--dataset_id=test",
                     "--destination_table=mozdata:test.query_v1",
+                    "--dataset_id=test",
                 ],
             )
             assert "stdin" in mock_call.call_args.kwargs
@@ -112,8 +112,8 @@ class TestRunQuery:
                 [
                     "bq",
                     "query",
-                    "--dataset_id=test",
                     "--destination_table=mozilla-public-data:test.query_v1",
+                    "--dataset_id=test",
                 ],
             )
 

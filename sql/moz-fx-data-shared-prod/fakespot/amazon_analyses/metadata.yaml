@@ -3,3 +3,5 @@ description: |-
   Amazon Product analyses from Fakespot, pulled from syndicate dataset
 owners:
   - wstuckey@mozilla.com
+labels:
+  authorized: true

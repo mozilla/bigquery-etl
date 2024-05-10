@@ -11,7 +11,11 @@ owners:
 - cbeck@mozilla.com
 labels:
   owner: cbeck
+  dag: bqetl_braze
   owner1: cbeck
+scheduling:
+  dag_name: bqetl_braze
+  date_partition_parameter: null
 bigquery:
   time_partitioning: null
   range_partitioning: null
@@ -26,7 +30,5 @@ workgroup_access:
 references:
   checks.sql:
   - ..
-  - moz-fx-data-shared-prod.braze_derived.user_profiles_v1
-  - moz-fx-data-shared-prod.braze_derived.users_v1
   script.sql:
   - braze_derived.subscriptions_map_v1

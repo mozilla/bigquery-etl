@@ -125,6 +125,8 @@ with DAG(
 
     task_group_reference_browser = TaskGroup("reference_browser")
 
+    task_group_relay_backend = TaskGroup("relay_backend")
+
     task_group_treeherder = TaskGroup("treeherder")
 
     task_group_viu_politica = TaskGroup("viu_politica")
@@ -4709,6 +4711,23 @@ with DAG(
         task_group=task_group_reference_browser,
     )
 
+    relay_backend_derived__events_stream__v1 = bigquery_etl_query(
+        task_id="relay_backend_derived__events_stream__v1",
+        destination_table="events_stream_v1",
+        dataset_id="relay_backend_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="jrediger@mozilla.com",
+        email=[
+            "ascholtz@mozilla.com",
+            "jrediger@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+            "wstuckey@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        task_group=task_group_relay_backend,
+    )
+
     treeherder_derived__events_stream__v1 = bigquery_etl_query(
         task_id="treeherder_derived__events_stream__v1",
         destination_table="events_stream_v1",
@@ -6624,6 +6643,8 @@ with DAG(
     reference_browser_derived__metrics_clients_last_seen__v1.set_upstream(
         reference_browser_derived__metrics_clients_daily__v1
     )
+
+    relay_backend_derived__events_stream__v1.set_upstream(wait_for_copy_deduplicate_all)
 
     treeherder_derived__events_stream__v1.set_upstream(wait_for_copy_deduplicate_all)
 

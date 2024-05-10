@@ -6,5 +6,6 @@
   metrics:
     string:
       first_session_network: Organic
+      meta_attribution_app: 'Test Meta'
   ping_info:
     seq: 0

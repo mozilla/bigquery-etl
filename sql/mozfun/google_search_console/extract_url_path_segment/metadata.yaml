@@ -1,0 +1,3 @@
+friendly_name: Extract URL Path Segment
+description: >-
+  Extract a particular path segment from a URL.

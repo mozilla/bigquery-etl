@@ -2,6 +2,7 @@
     'moz-fx-data-marketing-prod.searchconsole_addons',
     'moz-fx-data-marketing-prod.searchconsole_blog',
     'moz-fx-data-marketing-prod.searchconsole_getpocket',
+    'moz-fx-data-marketing-prod.searchconsole_mdn',
     'moz-fx-data-marketing-prod.searchconsole_support',
     'moz-fx-data-marketing-prod.searchconsole_www',
 ] %}
@@ -28,11 +29,11 @@ WITH searchdata_site_impression_union AS (
 SELECT
   data_date AS `date`,
   site_url,
-  REGEXP_EXTRACT(site_url, r'^(?:https?://|sc-domain:)([^/]+)') AS site_domain_name,
+  mozfun.google_search_console.extract_url_domain_name(site_url) AS site_domain_name,
   query,
   is_anonymized_query AS is_anonymized,
   INITCAP(REPLACE(search_type, '_', ' ')) AS search_type,
-  UPPER(country) AS country_code,
+  UPPER(country) AS user_country_code,
   INITCAP(device) AS device_type,
   impressions,
   clicks,

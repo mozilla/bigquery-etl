@@ -16,7 +16,7 @@ historic_data AS (
   SELECT
     *
   FROM
-    firefox_ios_derived.client_ltv_v1
+    `moz-fx-data-shared-prod.firefox_ios_derived.client_ltv_v1`
 )
 SELECT
   (

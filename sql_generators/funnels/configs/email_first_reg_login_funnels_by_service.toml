@@ -24,7 +24,7 @@ dimensions = ["service"]
 [steps.email_first_view]
 friendly_name = "Email First View"
 description = "View of the email_first form requesting email for registration or login"
-data_source = "monitor_frontend"
+data_source = "accounts_frontend"
 select_expression = "metrics.string.session_flow_id"
 where_expression = "metrics.string.event_name = 'email_first_view'"
 aggregation = "count distinct"
@@ -33,7 +33,7 @@ join_previous_step_on = "metrics.string.session_flow_id"
 [steps.login_view]
 friendly_name = "Login View Form"
 description = "View of the login form requesting password"
-data_source = "monitor_frontend"
+data_source = "accounts_frontend"
 select_expression = "metrics.string.session_flow_id"
 where_expression = "metrics.string.event_name = 'login_view'"
 aggregation = "count distinct"
@@ -42,7 +42,7 @@ join_previous_step_on = "metrics.string.session_flow_id"
 [steps.login_success]
 friendly_name = "Successful Login Submission"
 description = "Successful submission of the login form"
-data_source = "monitor_frontend"
+data_source = "accounts_frontend"
 select_expression = "metrics.string.session_flow_id"
 where_expression = "metrics.string.event_name = 'login_submit_success'"
 aggregation = "count distinct"
@@ -51,7 +51,7 @@ join_previous_step_on = "metrics.string.session_flow_id"
 [steps.reg_view]
 friendly_name = "Registration View Form"
 description = "View of the registration form requesting password creation and age"
-data_source = "monitor_frontend"
+data_source = "accounts_frontend"
 select_expression = "metrics.string.session_flow_id"
 where_expression = "metrics.string.event_name = 'reg_view'"
 aggregation = "count distinct"
@@ -60,7 +60,7 @@ join_previous_step_on = "metrics.string.session_flow_id"
 [steps.reg_success]
 friendly_name = "Registration Completed"
 description = "Account was successfully created"
-data_source = "monitor_backend"
+data_source = "accounts_backend"
 select_expression = "metrics.string.session_flow_id"
 where_expression = "metrics.string.event_name = 'reg_complete'"
 aggregation = "count distinct"
@@ -68,12 +68,12 @@ join_previous_step_on = "metrics.string.session_flow_id"
 
 [data_sources]
 
-[data_sources.monitor_frontend]
+[data_sources.accounts_frontend]
 from_expression = "mozdata.accounts_frontend.accounts_events"
 submission_date_column = "DATE(submission_timestamp)"
 client_id_column = "client_info.client_id"
 
-[data_sources.monitor_backend]
+[data_sources.accounts_backend]
 from_expression = "mozdata.accounts_backend.accounts_events"
 submission_date_column = "DATE(submission_timestamp)"
 client_id_column = "client_info.client_id"
@@ -81,7 +81,7 @@ client_id_column = "client_info.client_id"
 [dimensions]
 
 [dimensions.service]
-data_source = "monitor_frontend"
+data_source = "accounts_frontend"
 select_expression = "IF(COALESCE(NULLIF(metrics.string.relying_party_oauth_client_id, ''), NULLIF(metrics.string.relying_party_service, '')) = 'sync', '5882386c6d801776', COALESCE(NULLIF(metrics.string.relying_party_oauth_client_id, ''), NULLIF(metrics.string.relying_party_service, '')))"
 friendly_name = "Service"
 description = "Oauth Client ID is used to map to service name for which service the user logged in through"

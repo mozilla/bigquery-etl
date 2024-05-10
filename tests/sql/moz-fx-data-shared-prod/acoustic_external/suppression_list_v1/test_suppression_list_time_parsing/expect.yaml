@@ -1,0 +1,14 @@
+---
+- email: user1@example.com
+  suppressed_timestamp: 2024-09-20 22:20:00+00:00
+  suppression_reason: bounced
+- email: user2@example.com
+  suppressed_timestamp: 2024-07-15 02:50:00+00:00
+- email: user3@example.com
+  suppressed_timestamp: 2024-05-13 23:42:00+00:00
+- email: user4@example.com
+  suppressed_timestamp: 2024-04-01 22:03:00+00:00
+- email: user5@example.com
+  suppressed_timestamp: 2024-05-12 03:31:00+00:00
+- email: user6@example.com
+  suppressed_timestamp: 2024-05-27 06:09:00+00:00

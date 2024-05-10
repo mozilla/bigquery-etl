@@ -103,6 +103,10 @@ fields:
   mode: NULLABLE
   name: play_store_attribution_install_referrer_response
   type: STRING
+- description:
+  mode: NULLABLE
+  name: meta_attribution_app
+  type: STRING
 - description: Last reported client locale.
   mode: NULLABLE
   name: last_reported_locale
@@ -208,6 +212,10 @@ fields:
   - description: Datetime of the ping that reported the first play_store_attribution_install_referrer_response__ping_datetime value.
     mode: NULLABLE
     name: play_store_attribution_install_referrer_response__ping_datetime
+    type: DATETIME
+  - description: Datetime of the ping that reported the first meta_attribution_app value.
+    mode: NULLABLE
+    name: meta_attribution_app__ping_datetime
     type: DATETIME
   mode: NULLABLE
   name: metadata

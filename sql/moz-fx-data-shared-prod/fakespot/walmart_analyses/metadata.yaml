@@ -1,0 +1,7 @@
+friendly_name: Fakespot Walmart Products
+description: |-
+  Walmart Products from Fakespot, pulled from syndicate dataset
+owners:
+  - wstuckey@mozilla.com
+labels:
+  authorized: true

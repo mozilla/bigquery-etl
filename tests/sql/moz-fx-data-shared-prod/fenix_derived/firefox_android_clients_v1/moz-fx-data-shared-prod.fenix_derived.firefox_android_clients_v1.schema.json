@@ -104,6 +104,10 @@
     "name": "play_store_attribution_install_referrer_response"
   },
   {
+    "type": "STRING",
+    "name": "meta_attribution_app"
+  },
+  {
     "fields": [
       {
         "type": "BOOLEAN",
@@ -168,6 +172,10 @@
       {
         "type": "DATETIME",
         "name": "play_store_attribution_install_referrer_response__ping_datetime"
+      },
+      {
+        "type": "DATETIME",
+        "name": "meta_attribution_app__ping_datetime"
       }
     ],
     "name": "metadata",

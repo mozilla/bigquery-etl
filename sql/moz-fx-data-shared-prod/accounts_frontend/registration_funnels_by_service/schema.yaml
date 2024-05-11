@@ -1,0 +1,22 @@
+fields:
+- name: service_name
+  type: STRING
+  mode: NULLABLE
+- name: service
+  type: STRING
+  mode: NULLABLE
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+- name: funnel
+  type: STRING
+  mode: NULLABLE
+- name: reg_view
+  type: INTEGER
+  mode: NULLABLE
+- name: reg_email_code_view
+  type: INTEGER
+  mode: NULLABLE
+- name: reg_complete
+  type: INTEGER
+  mode: NULLABLE

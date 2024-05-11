@@ -31,4 +31,4 @@ references:
   checks.sql:
   - ..
   script.sql:
-  - braze_derived.subscriptions_map_v1
+  - moz-fx-data-shared-prod.braze_derived.subscriptions_map_v1

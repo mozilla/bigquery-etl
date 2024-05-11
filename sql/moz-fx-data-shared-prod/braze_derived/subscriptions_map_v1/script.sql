@@ -1,5 +1,5 @@
 CREATE OR REPLACE TABLE
-  `moz-fx-data-shared-prod.braze_derived.subscriptions_map_v1` AS (
+  `moz-fx-data-shared-prod.braze_derived.subscriptions_map_v1`(
     braze_subscription_name STRING,
     description STRING,
     mozilla_subscription_id STRING,

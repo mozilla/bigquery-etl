@@ -12,11 +12,11 @@ fields:
   type: STRING
   mode: REQUIRED
 - name: region_name
-  description: The UNSD region name.
+  description: Region name.
   type: STRING
   mode: REQUIRED
 - name: subregion_name
-  description: The UNSD sub-region name.
+  description: Sub-region name.
   type: STRING
   mode: REQUIRED
 - name: pocket_available_on_newtab

@@ -19,10 +19,6 @@ fields:
   description: The UNSD sub-region name.
   type: STRING
   mode: REQUIRED
-- name: intermediate_region_name
-  description: The UNSD intermediate region name.
-  type: STRING
-  mode: REQUIRED
 - name: pocket_available_on_newtab
   description: Whether Pocket is available on the newtab page in this country. Note
     that Pocket might only be available in certain locales/languages within a country.

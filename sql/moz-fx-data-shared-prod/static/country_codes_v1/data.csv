@@ -7,7 +7,7 @@ American Samoa,AS,ASM,Oceania,Polynesia,FALSE,FALSE,FALSE,null
 Andorra,AD,AND,Europe,Southern Europe,FALSE,FALSE,FALSE,null
 Angola,AO,AGO,Africa,Middle Africa,FALSE,FALSE,FALSE,null
 Anguilla,AI,AIA,North America,Caribbean,FALSE,FALSE,FALSE,null
-Antarctica,AQ,ATA,Unspecified,Unspecified,FALSE,FALSE,FALSE,null
+Antarctica,AQ,ATA,Antarctica,Antarctica,FALSE,FALSE,FALSE,null
 Antigua and Barbuda,AG,ATG,North America,Caribbean,FALSE,FALSE,FALSE,null
 Argentina,AR,ARG,South America,South America,FALSE,FALSE,FALSE,null
 Armenia,AM,ARM,Asia,Western Asia,FALSE,FALSE,FALSE,null
@@ -248,6 +248,6 @@ Western Sahara,EH,ESH,Africa,Northern Africa,FALSE,FALSE,FALSE,null
 Yemen,YE,YEM,Asia,Western Asia,FALSE,FALSE,FALSE,null
 Zambia,ZM,ZMB,Africa,Eastern Africa,FALSE,FALSE,FALSE,null
 Zimbabwe,ZW,ZWE,Africa,Eastern Africa,FALSE,FALSE,FALSE,null
-Kosovo,XK,XKK,Unspecified,Unspecified,FALSE,FALSE,FALSE,null
-Rest of World,ROW,ROW,Unspecified,Unspecified,FALSE,FALSE,FALSE,null
+Kosovo,XK,XKK,Europe,Southern Europe,FALSE,FALSE,FALSE,null
+Rest of World,ROW,ROW,Rest of World,Rest of World,FALSE,FALSE,FALSE,null
 Unknown Country Name,??,???,Unknown Region,Unknown Sub-region,FALSE,FALSE,FALSE,null

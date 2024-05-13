@@ -19,7 +19,7 @@ SELECT
       subscriptions.is_trial AS is_trial,
       subscriptions.is_active AS is_active,
       subscriptions.provider_status AS subscription_status,
-      subscriptions.country_code AS subscription_country_code,
+      LOWER(subscriptions.country_code) AS subscription_country_code,
       subscriptions.country_name AS subscription_country_name,
       subscriptions.current_period_started_at AS current_period_started_at,
       subscriptions.current_period_ends_at AS current_period_ends_at,

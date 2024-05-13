@@ -47,12 +47,12 @@
   unsub_reason: ""
   create_timestamp: 2020-01-01 10:00:00
   update_timestamp: 2021-01-01 11:00:00
-  source: https://some.url.com
+  source: https://some.other.url.com
 - email_id: email_id_3_sort_multiple_entries
   name: newsletter_2
   subscribed: true
   format: H
-  lang: DE
+  lang: de
   unsub_reason: ""
   create_timestamp: 2020-01-01 10:00:00
   update_timestamp: 2021-01-01 11:00:01

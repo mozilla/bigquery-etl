@@ -11,7 +11,8 @@ SELECT
   users.has_fxa,
   users.fxa_primary_email,
   users.fxa_lang,
-  users.first_service,
+  users.fxa_first_service,
+  users.fxa_created_at,
   newsletters.newsletters,
   waitlists.waitlists,
   products.products

@@ -48,8 +48,7 @@ def store_data_in_bigquery(data, schema, destination_project, destination_table_
         data, destination_table_id, location="US", job_config=job_config
     )
     load_job.result()
-    stored_table = client.get_table(destination_table_id)
-    click.echo(f"Loaded {stored_table.num_rows} rows into {destination_table_id}.")
+    click.echo(f"Loaded {len(data)} rows into {destination_table_id}.")
 
 
 def download_suppression_list(

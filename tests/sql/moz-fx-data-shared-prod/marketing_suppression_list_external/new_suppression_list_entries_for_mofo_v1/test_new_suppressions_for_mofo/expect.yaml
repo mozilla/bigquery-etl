@@ -1,6 +1,0 @@
-# expect
----
-# user 1 before cutoff date
-# user 2 after cutoff date already in campaign monitor
-# user 3 after cutoff date, not in campaign monitor
-- email: user_3@example.mail

@@ -53,3 +53,31 @@ SELECT
     ),
     NULL
   );
+
+#fail
+WITH dau_current AS (
+  SELECT
+    SUM(dau) AS dau
+  FROM
+    `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`
+  WHERE
+    submission_date = @submission_date
+),
+dau_previous AS (
+  SELECT
+    SUM(dau) AS dau
+  FROM
+    `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`
+  WHERE
+    submission_date = DATE_SUB(@submission_date, INTERVAL 1 DAY)
+)
+SELECT
+  IF(
+    ABS((SELECT SUM(dau) FROM dau_current) / (SELECT SUM(dau) FROM dau_previous)) > 1.5,
+    ERROR(
+      "Current date's DAU is 50% higher than in previous date. See source table (`{{ project_id }}.{{ dataset_id }}.{{ table_name }}`)!"
+    ),
+    NULL
+  );
+
+

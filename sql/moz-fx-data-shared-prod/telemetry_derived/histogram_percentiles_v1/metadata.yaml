@@ -12,4 +12,4 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - clients_histogram_probe_counts_v1
+  - moz-fx-data-shared-prod.telemetry_derived.clients_histogram_probe_counts_v1

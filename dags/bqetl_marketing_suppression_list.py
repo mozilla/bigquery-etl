@@ -172,18 +172,6 @@ with DAG(
         email=["leli@mozilla.com"],
     )
 
-    marketing_suppression_list_external__new_suppression_list_entries_for_mofo__v1 = bigquery_etl_query(
-        task_id="marketing_suppression_list_external__new_suppression_list_entries_for_mofo__v1",
-        destination_table="new_suppression_list_entries_for_mofo_v1",
-        dataset_id="marketing_suppression_list_external",
-        project_id="moz-fx-data-shared-prod",
-        owner="leli@mozilla.com",
-        email=["leli@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=False,
-        task_concurrency=1,
-    )
-
     marketing_suppression_list_external__send_suppression_list_update_to_campaign_monitor__v1 = GKEPodOperator(
         task_id="marketing_suppression_list_external__send_suppression_list_update_to_campaign_monitor__v1",
         arguments=[
@@ -227,10 +215,6 @@ with DAG(
         marketing_suppression_list_external__campaign_monitor_suppression_list__v1
     )
 
-    marketing_suppression_list_external__new_suppression_list_entries_for_mofo__v1.set_upstream(
-        checks__fail_marketing_suppression_list_derived__main_suppression_list__v1
-    )
-
-    marketing_suppression_list_external__new_suppression_list_entries_for_mofo__v1.set_upstream(
+    marketing_suppression_list_external__send_suppression_list_update_to_campaign_monitor__v1.set_upstream(
         marketing_suppression_list_external__campaign_monitor_suppression_list__v1
     )

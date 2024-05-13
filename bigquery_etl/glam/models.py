@@ -130,6 +130,7 @@ def probe_counts(**kwargs):
 
     return dict(
         attributes=",".join(attributes),
+        attributes_no_os=",".join([attr for attr in attributes if attr != "os"]),
         aggregate_attributes="""
             metric,
             metric_type,

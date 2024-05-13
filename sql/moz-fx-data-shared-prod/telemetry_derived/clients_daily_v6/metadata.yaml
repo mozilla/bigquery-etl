@@ -44,4 +44,5 @@ workgroup_access:
   members:
   - workgroup:mozilla-confidential
   - workgroup:cloudops-managed/poucave
+  - workgroup:cloudops-managed/telescope
 references: {}

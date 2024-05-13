@@ -1,0 +1,89 @@
+# test_brze_users - acoustic raw recipients
+---
+# user 1 has all the subscriptions
+- recipient_id: user_1_recipient_id
+  event_timestamp: 01/01/2024 07:00:00
+  event_type: Open
+# user 2 only has newsletter subscription
+- recipient_id: user_2_recipient_id
+  event_timestamp: 01/02/2024 07:00:00
+  event_type: Open
+# user 3 only has waitlist subscription
+- recipient_id: user_3_recipient_id
+  event_timestamp: 01/03/2024 07:00:00
+  event_type: Open
+# user 4 only has product subscription
+- recipient_id: user_4_recipient_id
+  event_timestamp: 01/04/2024 07:00:00
+  event_type: Open
+# user 5 has newsletter and waitlist subscription
+- recipient_id: user_5_recipient_id
+  event_timestamp: 01/05/2024 07:00:00
+  event_type: Open
+# user 6 has newsletter, waitlist and product subscription
+- recipient_id: user_6_recipient_id
+  event_timestamp: 01/06/2024 07:00:00
+  event_type: Open
+# user 7 has newsletter subscription but is on suppression list
+- recipient_id: user_7_recipient_id
+  event_timestamp: 01/07/2024 07:00:00
+  event_type: Open
+# user 8 has newsletter subscription but has_opted_out_of_email in CTMS
+- recipient_id: user_8_recipient_id
+  event_timestamp: 01/08/2024 07:00:00
+  event_type: Open
+# user 9 has newsletter subscription but not double opted in yet
+- recipient_id: user_9_recipient_id
+  event_timestamp: 01/09/2024 07:00:00
+  event_type: Open
+# user 10 has newsletter subscription, not double opted in and opted out of emails
+- recipient_id: user_10_recipient_id
+  event_timestamp: 01/10/2024 07:00:00
+  event_type: Open
+# user 11 has newsletter subscription, double opted in and opted out of emails
+- recipient_id: user_11_recipient_id
+  event_timestamp: 01/11/2024 07:00:00
+  event_type: Open
+# user 12 has waitlist subscription but never opened or clicked through anything in acoustic
+# user 13 has waitlist subscription and clicked on it
+- recipient_id: user_13_recipient_id
+  event_timestamp: 01/13/2024 07:00:00
+  event_type: Click Through
+# user 14 has waitlist subscription but deleted their fxa_account
+# user 15 has newsletter subscription but is unsubscribed from all of them
+# user 16 has unsubscribed newsletter subscriptions and active waitlist subscriptions
+# user 17 has only unsubscribed waitlist subscriptions
+# user 18 is only subscribed to MoFo subscriptions
+# user 19 has newsletter subscription and MoFo subscription
+# user 20 has newsletter subscription and multiple acoustic events
+- recipient_id: user_20_recipient_id
+  event_timestamp: 01/20/2024 00:01:00
+  event_type: Click Through
+- recipient_id: user_20_recipient_id
+  event_timestamp: 01/20/2024 00:09:00
+  event_type: Click Through
+- recipient_id: user_20_recipient_id
+  event_timestamp: 01/20/2024 01:01:00
+  event_type: Click Through
+- recipient_id: user_20_recipient_id
+  event_timestamp: 01/20/2024 03:01:00
+  event_type: Open
+- recipient_id: user_20_recipient_id
+  event_timestamp: 01/20/2024 07:0:00
+  event_type: Open
+- recipient_id: user_20_recipient_id
+  event_timestamp: 01/20/2024 07:0:00
+  event_type: other event
+# user 21 has newsletter subscription and multiple acoustic events but no open or click through
+- recipient_id: user_21_recipient_id
+  event_timestamp: 01/21/2024 01:00:00
+  event_type: other event
+- recipient_id: user_21_recipient_id
+  event_timestamp: 01/21/2024 02:00:00
+  event_type: other event
+- recipient_id: user_21_recipient_id
+  event_timestamp: 01/21/2024 03:00:00
+  event_type: other other event
+- recipient_id: user_21_recipient_id
+  event_timestamp: 01/21/2024 07:00:00
+  event_type: another event

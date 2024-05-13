@@ -2,9 +2,9 @@
 
 import functools
 import glob
-import json
 import logging
 import os
+from pathlib import Path
 
 import rich_click as click
 from google.cloud import bigquery
@@ -19,10 +19,10 @@ from bigquery_etl.metadata.parse_metadata import (
     Metadata,
 )
 from bigquery_etl.metadata.publish_metadata import publish_metadata
+from bigquery_etl.schema import SCHEMA_FILE, Schema
 from bigquery_etl.util.common import project_dirs
 
 DATA_FILENAME = "data.csv"
-SCHEMA_FILENAME = "schema.json"
 
 
 @click.group("static", help="Commands for working with static CSV files.")
@@ -60,7 +60,7 @@ def publish(project_id):
                 )
                 continue
 
-            schema_file_path = os.path.join(table_dir, SCHEMA_FILENAME)
+            schema_file_path = os.path.join(table_dir, SCHEMA_FILE)
             if not os.path.exists(schema_file_path):
                 schema_file_path = None
 
@@ -108,17 +108,9 @@ def _load_table(
             ]
             data_file.seek(0)
         else:
-            with open(schema_file_path) as schema_file:
-                fields = json.load(schema_file)
-            job_config.schema = [
-                bigquery.SchemaField(
-                    field["name"],
-                    field_type=field.get("type", "STRING"),
-                    mode=field.get("mode", "NULLABLE"),
-                    description=field.get("description"),
-                )
-                for field in fields
-            ]
+            job_config.schema = Schema.from_schema_file(
+                Path(schema_file_path)
+            ).to_bigquery_schema()
 
         job = client.load_table_from_file(data_file, table_ref, job_config=job_config)
 

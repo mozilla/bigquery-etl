@@ -20,7 +20,7 @@ SELECT
   COUNTIF(new_profile_metric_date) AS new_profiles_metric_date,
   COUNTIF(repeat_profile) AS repeat_profiles,
 FROM
-  `moz-fx-data-shared-prod.telemetry.retention_clients`
+  `moz-fx-data-shared-prod.telemetry_derived.desktop_retention_clients_v1`
 WHERE
   metric_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
   AND submission_date = @submission_date

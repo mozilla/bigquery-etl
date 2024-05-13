@@ -93,8 +93,8 @@ WITH preconditions AS (
       TRUE,
       ERROR('Pre-condition failed: Current submission_date parameter skips a day or more of data.')
     ) histogram_aggregates_up_to_date
-)
-WITH clients_histogram_aggregates_new AS (
+),
+clients_histogram_aggregates_new AS (
   SELECT
     * EXCEPT (histogram_aggregates_up_to_date)
   FROM

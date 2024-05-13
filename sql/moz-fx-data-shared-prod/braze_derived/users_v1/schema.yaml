@@ -36,5 +36,11 @@ fields:
   name: fxa_lang
   type: STRING
 - mode: NULLABLE
-  name: first_service
+  name: fxa_first_service
   type: STRING
+- mode: NULLABLE
+  name: fxa_created_at
+  type: TIMESTAMP
+- mode: NULLABLE
+  name: acoustic_last_engaged_at
+  type: TIMESTAMP

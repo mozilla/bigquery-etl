@@ -1,0 +1,15 @@
+# braze Firefox hard bounces
+---
+# User 1 only on Acoustic
+# User 2 Acoustic and braze unsubscribe
+# User 3 Acoustic and braze unsubscribe and braze hard bounce
+- email_address: user3@email.com
+  time: 1646096400
+# User 4 Acoustic, braze unsubscribe, braze hard bounce and MoFo
+- email_address: user4@email.com
+  time: 1648771200
+# User 5 braze unsubscribe
+# User 6 braze hard bounce
+- email_address: user6@emil.com
+  time: 1654041600
+# User 7 MoFo

@@ -12,11 +12,16 @@ fields:
   type: STRING
   mode: REQUIRED
 - name: region_name
-  description: Region name.
+  description: Region name. These are based on the UN Statistics Division standard
+    country or area codes for statistical use (M49), but with the "Americas" region
+    split into "North America" and "South America".
   type: STRING
   mode: REQUIRED
 - name: subregion_name
-  description: Sub-region name.
+  description: Sub-region name. These are based on UN Statistics Division standard
+    country or area codes for statistical use (M49), but with the "Latin America and the
+    Caribbean" and "Sub-Saharan Africa" sub-regions split into more specific
+    sub-regions.
   type: STRING
   mode: REQUIRED
 - name: pocket_available_on_newtab

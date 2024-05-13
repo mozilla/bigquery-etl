@@ -10,9 +10,9 @@ scheduling:
   dag_name: bqetl_desktop_retention_model
 bigquery:
   time_partitioning:
-    type:
-    field:
-    require_partition_filter: true
+    type: day
+    field: 'metric_date'
+    require_partition_filter: false
     expiration_days: null
   range_partitioning: null
   clustering:

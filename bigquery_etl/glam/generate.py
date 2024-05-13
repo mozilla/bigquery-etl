@@ -271,6 +271,7 @@ def main():
                 source_table=f"glam_etl.{args.prefix}__clients_histogram_aggregates_v1",
                 **config[args.prefix],
             ),
+            channel=channel_prefixes[args.prefix],
         ),
         table(
             "probe_counts_v1",

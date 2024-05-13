@@ -119,7 +119,7 @@ combined AS (
     'firefox-suggest' AS match_type,
     SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
     -- This is the opt-in for Merino, not in use on mobile
-    FALSE AS suggest_data_sharing_enabled,
+    CAST(NULL AS BOOLEAN) AS suggest_data_sharing_enabled,
     blocks.query_type,
   FROM
     `moz-fx-data-shared-prod.fenix.fx_suggest` fs
@@ -151,7 +151,7 @@ combined AS (
     'firefox-suggest' AS match_type,
     SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
     -- This is the opt-in for Merino, not in use on mobile
-    FALSE AS suggest_data_sharing_enabled,
+    CAST(NULL AS BOOLEAN) AS suggest_data_sharing_enabled,
     blocks.query_type,
   FROM
     `moz-fx-data-shared-prod.firefox_ios.fx_suggest` fs

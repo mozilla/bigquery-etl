@@ -160,7 +160,7 @@ combined AS (
     'firefox-suggest' AS match_type,
     SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
     -- This is the opt-in for Merino, not in use on mobile
-    FALSE AS suggest_data_sharing_enabled,
+    CAST(NULL AS BOOLEAN) AS suggest_data_sharing_enabled,
     blocks.query_type,
   FROM
     `moz-fx-data-shared-prod.firefox_ios.fx_suggest` fs
@@ -190,7 +190,7 @@ combined AS (
     NULL AS match_type,
     SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
     -- 'suggest_data_sharing_enabled' is only available for `quicksuggest_*` tables
-    NULL AS suggest_data_sharing_enabled,
+    CAST(NULL AS BOOLEAN) AS suggest_data_sharing_enabled,
     CAST(NULL AS STRING) AS query_type,
   FROM
     firefox_desktop.top_sites

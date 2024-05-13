@@ -1,17 +1,17 @@
-friendly_name: Retention Clients
+friendly_name: Desktop Retention - Client Level
 description: |-
-  Please provide a description for the query
+  Desktop Retention data at the client level, including attribution information
 owners:
-- example@mozilla.com
+- mhirose@mozilla.com
 labels:
   incremental: true
   owner1: example
 scheduling:
-  dag_name: bqetl_default
+  dag_name: bqetl_desktop_retention_model
 bigquery:
   time_partitioning:
     type: day
-    field: ''
+    field: 'submission_date'
     require_partition_filter: true
     expiration_days: null
   range_partitioning: null

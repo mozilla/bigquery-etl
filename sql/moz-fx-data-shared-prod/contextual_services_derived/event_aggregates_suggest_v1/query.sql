@@ -101,25 +101,23 @@ combined AS (
   SELECT
     metrics.uuid.fx_suggest_context_id AS context_id,
     DATE(submission_timestamp) AS submission_date,
-    'suggest' AS source,
-    IF(
-      metrics.string.fx_suggest_ping_type = "fxsuggest-click",
-      "click",
-      "impression"
-    ) AS event_type,
     'phone' AS form_factor,
     normalized_country_code AS country,
-    metadata.geo.subdivision1 AS subdivision1,
     metrics.string.fx_suggest_advertiser AS advertiser,
+    SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
     client_info.app_channel AS release_channel,
     metrics.quantity.fx_suggest_position AS position,
     -- Only remote settings is in use on mobile
     'remote settings' AS provider,
     -- Only standard suggestions are in use on mobile
     'firefox-suggest' AS match_type,
-    SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
     -- This is the opt-in for Merino, not in use on mobile
     CAST(NULL AS BOOLEAN) AS suggest_data_sharing_enabled,
+    IF(
+      metrics.string.fx_suggest_ping_type = "fxsuggest-click",
+      "click",
+      "impression"
+    ) AS event_type,
     blocks.query_type,
   FROM
     `moz-fx-data-shared-prod.fenix.fx_suggest` fs
@@ -133,25 +131,23 @@ combined AS (
   SELECT
     metrics.uuid.fx_suggest_context_id AS context_id,
     DATE(submission_timestamp) AS submission_date,
-    'suggest' AS source,
-    IF(
-      metrics.string.fx_suggest_ping_type = "fxsuggest-click",
-      "click",
-      "impression"
-    ) AS event_type,
     'phone' AS form_factor,
     normalized_country_code AS country,
-    metadata.geo.subdivision1 AS subdivision1,
     metrics.string.fx_suggest_advertiser AS advertiser,
+    SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
     client_info.app_channel AS release_channel,
     metrics.quantity.fx_suggest_position AS position,
     -- Only remote settings is in use on mobile
     'remote settings' AS provider,
     -- Only standard suggestions are in use on mobile
     'firefox-suggest' AS match_type,
-    SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
     -- This is the opt-in for Merino, not in use on mobile
     CAST(NULL AS BOOLEAN) AS suggest_data_sharing_enabled,
+    IF(
+      metrics.string.fx_suggest_ping_type = "fxsuggest-click",
+      "click",
+      "impression"
+    ) AS event_type,
     blocks.query_type,
   FROM
     `moz-fx-data-shared-prod.firefox_ios.fx_suggest` fs

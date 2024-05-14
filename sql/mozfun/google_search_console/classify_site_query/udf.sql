@@ -14,59 +14,160 @@ RETURNS STRING AS (
         query,
         ARRAY_TO_STRING(
           [
-            r'\bff\b',
-            r'f.ref.x',
-            r'fier',
-            r'fire',
+            r'.i.e.ox',
+            r'^f..ef[ioa]+',
+            r'^f[aie]+r\s?[fbv]',
+            r'^f[ier]+\s?[fv][oei]?[xkc]',
+            r'f.r.f.x',
+            r'faiya-fokkusu',
+            r'fi\w+x',
             r'firf',
-            r'focus',
-            r'fokku',
-            r'fox',
+            r'huohu',
             r'nightly',
             r'quantum',
-            r'лиса',  -- fox (Cyrillic)
-            r'фаер',  -- fire (Cyrillic)
-            r'фаир',  -- fair (Cyrillic)
-            r'файер',  -- fire (Cyrillic)
-            r'файр',  -- fire (Cyrillic)
-            r'фире',  -- fire (Cyrillic)
-            r'фокс',  -- fox (Cyrillic)
-            r'фох',  -- fox (Cyrillic)
-            r'כןרקכםס',  -- yes, rakhems (Hebrew)
-            r'פיירפוקס',  -- firefox (Hebrew)
-            r'فاکس',  -- fax (Arabic)
-            r'فاير',  -- fire (Arabic)
-            r'فایر',  -- fire (Arabic)
-            r'فكس',  -- fx (Arabic)
-            r'فوكس',  -- fox (Arabic)
-            r'فير',  -- fir (Arabic)
-            r'फायरफक्स',  -- firefox (Indic)
-            r'फायरफॉक्स',  -- firefox (Indic)
-            r'फ़ायरफ़ॉक्स',  -- firefox (Indic)
-            r'ফায়ারফক্স',  -- firefox (Indic)
-            r'ฟายฟอก',  -- bleach (Thai)
-            r'ฟายฟ๊อก',  -- firefox (Thai)
-            r'ไฟ ฟอก',  -- fire bleach (Thai)
-            r'ไฟฟ็อก',  -- fire fox (Thai)
-            r'ไฟฟ๊อก',  -- fire fox (Thai)
-            r'ไฟฟอก',  -- purifying light (Thai)
-            r'ไฟร์ฟอกซ์',  -- firefox (Thai)
-            r'ไฟล์ฟอก',  -- bleaching file (Thai)
-            r'ไฟลฟอก',  -- fire bleach (Thai)
-            r'파이어',  -- fire (Korean)
-            r'폭스',  -- fox (Korean)
-            r'화이어',  -- fire (Korean)
-            r'ふぁいあ',  -- faia (Japanese)
-            r'ファイア',  -- fire (Japanese)
-            r'ファイや',  -- faiya (Japanese)
-            r'ファイヤ',  -- fire (Japanese)
-            r'ふぁいやー',  -- fire (Japanese)
-            r'ふぃれふぉ',  -- firefox (Japanese)
-            r'ふぉっくす',  -- fox (Japanese)
-            r'フォックス',  -- fox (Japanese)
-            r'火孤',  -- firefox (Chinese)
-            r'火狐',  -- firefox (Chinese)
-            r'狐狸'  -- fox (Chinese)
+            r'כןרקכםס',
+            r'פיירפוקס',
+            r'فاجا بوكس',
+            r'فارفكس',
+            r'فافير',
+            r'فرفاكس',
+            r'فرفكس',
+            r'فري فاكس',
+            r'فري فكس',
+            r'فريفكس',
+            r'فكس',
+            r'فور فكس',
+            r'فورفكس',
+            r'فياير',
+            r'فير بكس',
+            r'فير بوكس',
+            r'فير ف',
+            r'فير فاكس',
+            r'فير فايز',
+            r'فير فكس',
+            r'فير فوك',
+            r'فير فيكس',
+            r'فير موكس',
+            r'فير',
+            r'فيربكس',
+            r'فيربوكس',
+            r'فيرر',
+            r'فيرفاكس',
+            r'فيرفكس',
+            r'فيرفو',
+            r'فيرفيكس',
+            r'فيركس',
+            r'فيركوس',
+            r'فيرو فكس',
+            r'فيرو فيكس',
+            r'فيروفكس',
+            r'فيروفيكس',
+            r'فيروكس',
+            r'فيريكس',
+            r'फायर फॉक्स',
+            r'फायरफक्स',
+            r'फायरफॉक्स',
+            r'फ़ायरफ़ॉक्स',
+            r'फ़ायर्फ़ॉक्स',
+            r'फिरेफोक्स',
+            r'फ्री फॉक्स',
+            r'ফায়ার বক্স',
+            r'ফায়ার বক্স',
+            r'ফায়ারফক্স',
+            r'ফায়ারফক্স',
+            r'ดฟายฟอก',
+            r'ฟายฟอก',
+            r'ฟายฟ๊อก',
+            r'ไฟ ฟอก',
+            r'ไฟฟอก',
+            r'ไฟฟ็อก',
+            r'ไฟฟ๊อก',
+            r'ไฟฟ๊อก',
+            r'ไฟร์ฟอกซ์',
+            r'ไฟลฟอก',
+            r'ไฟล์ฟอก',
+            r'หมาไฟ',
+            r'파워폭스',
+            r'파이어 포스',
+            r'파이어 폭스',
+            r'파이어',
+            r'파이어박스',
+            r'파이어복스',
+            r'파이어팍스',
+            r'파이어포그',
+            r'파이어포긋',
+            r'파이어포스',
+            r'파이어폭',
+            r'파이어폭수',
+            r'파이어폭스',
+            r'파폭',
+            r'ファイーフォックス',
+            r'ファイア フォックス',
+            r'ふぁいあ',
+            r'ファイア',
+            r'ファイアー フォックス',
+            r'ファイアー',
+            r'ふぁいあーふぉ',
+            r'ファイアーフォクス',
+            r'ファイアーフォッ',
+            r'ふぁいあーふぉっく',
+            r'ふぁいあーふぉっくす',
+            r'ふあいあーふぉっくす',
+            r'ファイアーフォックス',
+            r'ふぁいあふぉ',
+            r'ファイアフォクス',
+            r'ファイアフォッ',
+            r'ふぁいあふぉっくす',
+            r'ふあいあふぉっくす',
+            r'ファイアフォックス',
+            r'ファイアボックス',
+            r'ファイフォ',
+            r'ファイフォックス',
+            r'ふぁいや',
+            r'ふあいや',
+            r'ファイや',
+            r'ファイヤ',
+            r'ファイヤー フォックス',
+            r'ふぁいやー',
+            r'ファイヤー',
+            r'ファイヤー^フォックス',
+            r'ファイヤーファックス',
+            r'ふぁいやーふぉ',
+            r'ファイヤーフォークス',
+            r'ファイヤーふぉくす',
+            r'ファイヤーフォクス',
+            r'ファイヤーフォッ',
+            r'ふぁいやーふぉっく',
+            r'ファイヤーフォック',
+            r'ふぁいやーふぉっくす',
+            r'ふぁいやーフォックス',
+            r'ふあいやーふおつくす',
+            r'ファイヤーふぉっくす',
+            r'ファイヤーフォックス',
+            r'ファイヤーフォツクス',
+            r'フアイヤーフオツクス',
+            r'ファイヤーボッ',
+            r'ふぁいやーほっくす',
+            r'ファイヤーほっくす',
+            r'ファイヤーホックス',
+            r'ファイヤーボックス',
+            r'ふぁいやふぉっくす',
+            r'ファイやフォックス',
+            r'ファイヤフォックス',
+            r'ファイルフォックス',
+            r'ふぁやざ',
+            r'フィヤーフォックス',
+            r'ふぃれふぉ',
+            r'ふぃれふぉx',
+            r'ふぃれふぉｘ',
+            r'ふぉｘ',
+            r'フォッ',
+            r'フォックス',
+            r'フォックスファイヤー',
+            r'フファイヤーフォックス',
+            r'フリーフォックス',
+            r'火孤',
+            r'火狐'
           ],
           '|'
         )
@@ -76,24 +177,33 @@ RETURNS STRING AS (
         query,
         ARRAY_TO_STRING(
           [
-            r'\bm.z',
-            r'il+a\b',
-            r'μοζ+ιλ+α',  -- moz+il+a (Greek)
-            r'μοτζιλα',  -- motzila (Greek)
-            r'мази',  -- mazi (Cyrillic)
-            r'мазі',  -- mazi (Cyrillic)
-            r'моз',  -- moz (Cyrillic)
-            r'муз',  -- muz (Cyrillic)
-            r'מוזילה',  -- mozilla (Hebrew)
-            r'موزلا',  -- mozilla (Arabic)
-            r'موزيلا',  -- mozilla (Arabic)
-            r'موزیلا',  -- mozilla (Arabic)
-            r'मोजिला',  -- mozilla (Indic)
-            r'मोज़िला',  -- mozilla (Indic)
-            r'মজিলা',  -- mozilla (Indic)
-            r'মোজিলা',  -- mozilla (Indic)
-            r'모질라',  -- mozilla (Korean)
-            r'モジラ'  -- mozilla (Japanese)
+            r'm o z i l l a',
+            r'm.zil',
+            r'm\w*zilla',
+            r'mizolla',
+            r'moz://a',
+            r'moz:lla',
+            r'moz*\w*l+',
+            r'moz+ira',
+            r'mozıl',
+            r'mzoilla',
+            r'μοζ+ιλ+α',
+            r'μονζ+ιλ+α',
+            r'μοτζιλα',
+            r'м.з+ил',
+            r'м.з+іл',
+            r'მოზილა',
+            r'מוזילה',
+            r'موزلا',
+            r'موزيل',
+            r'موزيلا',
+            r'موزیلا',
+            r'मोजिला',
+            r'मोज़िला',
+            r'মজিলা',
+            r'মোজিলা',
+            r'모질라',
+            r'モジラ'
           ],
           '|'
         )

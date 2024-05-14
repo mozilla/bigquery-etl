@@ -109,6 +109,8 @@ SELECT
   search_impressions.search_appearance,
   search_impressions.user_country_code,
   COALESCE(user_country.name, search_impressions.user_country_code) AS user_country,
+  user_country.region_name AS user_region,
+  user_country.subregion_name AS user_subregion,
   search_impressions.device_type,
   search_impressions.impressions,
   search_impressions.clicks,

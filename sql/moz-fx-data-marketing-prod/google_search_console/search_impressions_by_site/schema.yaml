@@ -49,6 +49,14 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Country from which the user was searching.
+- name: user_region
+  type: STRING
+  mode: NULLABLE
+  description: Region from which the user was searching.
+- name: user_subregion
+  type: STRING
+  mode: NULLABLE
+  description: Sub-region from which the user was searching.
 - name: device_type
   type: STRING
   mode: NULLABLE

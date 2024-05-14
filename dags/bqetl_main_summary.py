@@ -138,6 +138,13 @@ with DAG(
         )
 
         ExternalTaskMarker(
+            task_id="bqetl_desktop_retention_model__wait_for_checks__fail_telemetry_derived__clients_last_seen__v2",
+            external_dag_id="bqetl_desktop_retention_model",
+            external_task_id="wait_for_checks__fail_telemetry_derived__clients_last_seen__v2",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=50400)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="taar_daily__wait_for_clients_last_seen",
             external_dag_id="taar_daily",
             external_task_id="wait_for_clients_last_seen",
@@ -378,6 +385,13 @@ with DAG(
             external_dag_id="bqetl_sponsored_tiles_clients_daily",
             external_task_id="wait_for_telemetry_derived__clients_daily_joined__v1",
             execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=79200)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_desktop_retention_model__wait_for_telemetry_derived__clients_daily_joined__v1",
+            external_dag_id="bqetl_desktop_retention_model",
+            external_task_id="wait_for_telemetry_derived__clients_daily_joined__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=50400)).isoformat() }}",
         )
 
         ExternalTaskMarker(

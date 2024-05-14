@@ -2,14 +2,13 @@
 WITH todays_metrics AS (
   SELECT
     client_id,
-    activity_segment_v1 AS segment,
+    activity_segments_v1 AS segment,
     app_name,
     app_version AS app_version,
     normalized_channel AS channel,
     IFNULL(country, '??') country,
     city,
     COALESCE(REGEXP_EXTRACT(locale, r'^(.+?)-'), locale, NULL) AS locale,
-    first_seen_date,
     EXTRACT(YEAR FROM first_seen_date) AS first_seen_year,
     os,
     COALESCE(
@@ -35,6 +34,12 @@ WITH todays_metrics AS (
     attribution.medium AS attribution_medium,
     attribution.medium IS NOT NULL
     OR attribution.source IS NOT NULL AS attributed,
+    is_daily_user,
+    is_weekly_user,
+    is_monthly_user,
+    is_dau,
+    is_wau,
+    is_mau,
     ad_clicks_count_all AS ad_click,
     search_count_organic AS organic_search_count,
     search_count_all AS search_count,
@@ -48,13 +53,18 @@ WITH todays_metrics AS (
 SELECT
   todays_metrics.* EXCEPT (
     client_id,
+    is_daily_user,
+    is_weekly_user,
+    is_monthly_user,
+    is_dau,
+    is_wau,
+    is_mau,
     ad_click,
     organic_search_count,
     search_count,
     search_with_ads,
     uri_count,
-    active_hours_sum,
-    first_seen_date
+    active_hours_sum
   ),
   COUNTIF(is_daily_user) AS daily_users,
   COUNTIF(is_weekly_user) AS weekly_users,

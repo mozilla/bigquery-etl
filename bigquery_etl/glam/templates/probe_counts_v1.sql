@@ -111,13 +111,15 @@ WITH probe_counts AS (
       os = "Windows"
   )
   SELECT
-    pc.* EXCEPT (total_users),
-    IF(
-      pc.os = "*",
-      -- Add the remaining 90% of Windows client count, if present, to the All OS (*) client count.
-      pc.total_users + CAST((COALESCE(wpc.total_users, 0) * 0.9) AS INT64),
-      pc.total_users
-    ) AS total_users
+    pc.* REPLACE (
+      IF(
+        pc.os = "*",
+        -- Add the remaining 90% of Windows client count, if present, to the All OS (*) client count.
+        pc.total_users + CAST((COALESCE(wpc.total_users, 0) * 0.9) AS INT64),
+        pc.total_users
+      )
+      AS total_users
+    )
   FROM
     probe_counts pc
   LEFT JOIN

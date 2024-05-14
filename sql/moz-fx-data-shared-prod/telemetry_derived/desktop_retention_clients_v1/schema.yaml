@@ -96,9 +96,9 @@ fields:
   type: BOOLEAN
   description: Retained Week 4
 - mode: NULLABLE
-  name: is_new_profile
+  name: new_profile_metric_date
   type: BOOLEAN
-  description: Is New Profile
+  description: New Profile on Metric Date
 - mode: NULLABLE
   name: repeat_profile
   type: BOOLEAN

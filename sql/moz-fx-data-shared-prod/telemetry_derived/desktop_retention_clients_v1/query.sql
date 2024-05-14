@@ -134,7 +134,7 @@ SELECT
   cd.ping_sent_week_4,
   cd.active_metric_date,
   cd.retained_week_4,
-  COALESCE(np.is_new_profile, FALSE) AS is_new_profile,
+  COALESCE(np.is_new_profile, FALSE) AS new_profile_metric_date,
   COALESCE(np.repeat_profile, FALSE) AS repeat_profile,
   COALESCE(np.retained_week_4_new_profile, FALSE) AS retained_week_4_new_profile,
 FROM

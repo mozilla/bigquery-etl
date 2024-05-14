@@ -352,8 +352,10 @@ generate:
       - org_mozilla_ios_tiktok_reporter_tiktok_reportershare
       - org_mozilla_tiktokreporter
     events_monitoring:
-      default_event_table: events_v1
-      event_table:
-        mozillavpn: main_v1
-        accounts_frontend: accounts_events_v1
-        accounts_backend: accounts_events_v1
+      skip_pings:
+      - topsites-impression
+      events_tables:
+        accounts_frontend:
+        - accounts_events_v1
+        accounts_backend:
+        - accounts_events_v1

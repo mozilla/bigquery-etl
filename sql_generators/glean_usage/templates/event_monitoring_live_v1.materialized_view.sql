@@ -58,8 +58,19 @@ IF
         ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch 
       END AS experiment_branch,
       COUNT(*) AS total_events
-    FROM
+    FROM (
+      {% for events_table in events_tables -%}
+      SELECT
+        submission_timestamp,
+        events,
+        normalized_country_code,
+        client_info,
+        ping_info
+      FROM
       `{{ project_id }}.{{ dataset }}_live.{{ events_table }}`
+      {{ "UNION ALL" if not loop.last }}
+      {% endfor -%}
+    )
     CROSS JOIN
       UNNEST(events) AS event,
       -- Iterator for accessing experiments.

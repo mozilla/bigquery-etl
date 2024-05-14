@@ -39,10 +39,11 @@ parser.add_argument(
     default="telemetry",
     const="telemetry",
     nargs="?",
-    choices=["telemetry", "pioneer"],
-    help="environment to run in (dictates the choice of source and target tables):"
-    "telemetry - standard environment"
-    "pioneer - restricted pioneer environment",
+    choices=["telemetry", "pioneer", "experiments"],
+    help="environment to run in (dictates the choice of source and target tables): "
+    "telemetry - standard environment, "
+    "pioneer - restricted pioneer environment, "
+    "experiments - experiment analysis tables",
 )
 parser.add_argument(
     "--pioneer-study-projects",
@@ -483,12 +484,15 @@ def main():
     if args.environment == "telemetry":
         with ThreadPool(args.parallelism) as pool:
             glean_targets = find_glean_targets(pool, client)
-            experiment_analysis_targets = find_experiment_analysis_targets(pool, client)
         targets_with_sources = chain(
             DELETE_TARGETS.items(),
             glean_targets.items(),
-            experiment_analysis_targets.items(),
         )
+    elif args.environment == "experiments":
+        with ThreadPool(args.parallelism) as pool:
+            targets_with_sources = find_experiment_analysis_targets(
+                pool, client
+            ).items()
     elif args.environment == "pioneer":
         with ThreadPool(args.parallelism) as pool:
             targets_with_sources = find_pioneer_targets(

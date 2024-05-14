@@ -150,6 +150,30 @@ with DAG(
         depends_on_past=False,
     )
 
+    fenix_derived__firefox_android_aggregates__v1 = bigquery_etl_query(
+        task_id="fenix_derived__firefox_android_aggregates__v1",
+        destination_table="firefox_android_aggregates_v1",
+        dataset_id="fenix_derived",
+        project_id="data-observability-dev",
+        owner="kik@mozilla.com",
+        email=["akommasani@mozilla.com", "ascholtz@mozilla.com", "kik@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=True,
+        parameters=["submission_date:DATE:{{ds}}"],
+    )
+
+    fenix_derived__firefox_android_anonymised__v1 = bigquery_etl_query(
+        task_id="fenix_derived__firefox_android_anonymised__v1",
+        destination_table="firefox_android_anonymised_v1",
+        dataset_id="fenix_derived",
+        project_id="data-observability-dev",
+        owner="kik@mozilla.com",
+        email=["akommasani@mozilla.com", "ascholtz@mozilla.com", "kik@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=True,
+        parameters=["submission_date:DATE:{{ds}}"],
+    )
+
     fenix_derived__firefox_android_clients__v1 = bigquery_etl_query(
         task_id="fenix_derived__firefox_android_clients__v1",
         destination_table="firefox_android_clients_v1",
@@ -173,6 +197,18 @@ with DAG(
         depends_on_past=False,
     )
 
+    telemetry_derived__firefox_aggregates__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__firefox_aggregates__v1",
+        destination_table="firefox_aggregates_v1",
+        dataset_id="telemetry_derived",
+        project_id="data-observability-dev",
+        owner="kik@mozilla.com",
+        email=["akommasani@mozilla.com", "ascholtz@mozilla.com", "kik@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=True,
+        parameters=["submission_date:DATE:{{ds}}"],
+    )
+
     fenix_derived__clients_last_seen_joined__v1.set_upstream(
         wait_for_fenix_derived__clients_last_seen_joined__v1
     )
@@ -189,4 +225,8 @@ with DAG(
 
     fenix_derived__metrics_clients_last_seen__v1.set_upstream(
         wait_for_fenix_derived__metrics_clients_last_seen__v1
+    )
+
+    telemetry_derived__firefox_aggregates__v1.set_upstream(
+        fenix_derived__firefox_android_aggregates__v1
     )

@@ -41,7 +41,7 @@ fields:
   type: STRING
   mode: NULLABLE
   description: |-
-    Localized site description based on `localized_site_language` and `localized_site_country` (if any).
+    Description of the localized site language and/or country based on `localized_site_language_code` (if any).
     This will be null for anonymized Discover impressions.
 - name: localized_site_language_code
   type: STRING
@@ -54,18 +54,6 @@ fields:
   mode: NULLABLE
   description: |-
     Localized site language based on `localized_site_language_code` (if any).
-    This will be null for anonymized Discover impressions.
-- name: localized_site_country_code
-  type: STRING
-  mode: NULLABLE
-  description: |-
-    Localized site country code in ISO-3166-1-alpha-2 format found in the first segment of the page URL path (if any).
-    This will be null for anonymized Discover impressions.
-- name: localized_site_country
-  type: STRING
-  mode: NULLABLE
-  description: |-
-    Localized site country based on `localized_site_country_code` (if any).
     This will be null for anonymized Discover impressions.
 - name: query
   type: STRING

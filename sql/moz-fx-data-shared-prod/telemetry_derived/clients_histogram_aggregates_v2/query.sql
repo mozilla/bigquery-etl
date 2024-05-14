@@ -86,19 +86,21 @@ RETURNS ARRAY<
 WITH preconditions AS (
   SELECT
     IF(
-      (SELECT MAX(submission_date) FROM clients_histogram_aggregates_v2) = DATE_SUB(
-        DATE(@submission_date),
-        INTERVAL 1 DAY
-      ),
+      (
+        SELECT
+          MAX(submission_date)
+        FROM
+          `moz-fx-data-shared-prod.telemetry_derived.clients_histogram_aggregates_v2`
+      ) = DATE_SUB(DATE(@submission_date), INTERVAL 1 DAY),
       TRUE,
       ERROR('Pre-condition failed: Current submission_date parameter skips a day or more of data.')
     ) histogram_aggregates_up_to_date
-)
-WITH clients_histogram_aggregates_new AS (
+),
+clients_histogram_aggregates_new AS (
   SELECT
     * EXCEPT (histogram_aggregates_up_to_date)
   FROM
-    telemetry_derived.clients_histogram_aggregates_new_v1,
+    `moz-fx-data-shared-prod.telemetry_derived.clients_histogram_aggregates_new_v1`,
     preconditions
   WHERE
     preconditions.histogram_aggregates_up_to_date
@@ -109,7 +111,9 @@ clients_histogram_aggregates_partition AS (
   SELECT
     *
   FROM
-    telemetry_derived.clients_histogram_aggregates_v2
+    `moz-fx-data-shared-prod.telemetry_derived.clients_histogram_aggregates_v2`
+  WHERE
+    submission_date = DATE_SUB(DATE(@submission_date), INTERVAL 1 DAY)
 ),
 clients_histogram_aggregates_old AS (
   SELECT
@@ -125,7 +129,7 @@ clients_histogram_aggregates_old AS (
   FROM
     clients_histogram_aggregates_partition AS hist_aggs
   LEFT JOIN
-    latest_versions
+    `moz-fx-data-shared-prod.telemetry_derived.latest_versions` AS latest_versions
     ON latest_versions.channel = hist_aggs.channel
   WHERE
     app_version >= (latest_version - 2)

@@ -45,3 +45,5 @@
     min_metrics_ping_submission_date: 2022-12-30
     install_source__source_ping: metrics
     adjust_network__source_ping_datetime: '2023-01-01T00:00:00'
+    meta_attribution_app__ping_datetime: '2023-01-01T00:00:00'
+  meta_attribution_app: 'Test Meta'

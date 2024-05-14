@@ -40,6 +40,14 @@ fields:
   type: INTEGER
   description: "Number of activated profiles for this ad group on this day."
 - mode: NULLABLE
+  name: repeat_users
+  type: INTEGER
+  description: "Number of repeat users on this day."
+- mode: NULLABLE
+  name: week_4_retained_users
+  type: INTEGER
+  description: "Number of week 4 retained users on this day."
+- mode: NULLABLE
   name: spend
   type: FLOAT64
   description: "Spend in US dollars attributed to this ad group on this day."

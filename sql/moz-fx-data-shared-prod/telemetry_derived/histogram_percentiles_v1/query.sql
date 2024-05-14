@@ -23,4 +23,4 @@ SELECT
     ('99.9', mozfun.glam.percentile(99.9, non_norm_aggregates, metric_type))
   ] AS non_norm_aggregates
 FROM
-  clients_histogram_probe_counts_v1
+  `moz-fx-data-shared-prod.telemetry_derived.clients_histogram_probe_counts_v1`

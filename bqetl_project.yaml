@@ -25,6 +25,7 @@ dry_run:
   # TODO: once data observability platform assessment concludes this should be removed.
   - sql/data-observability-dev/**/**/*.sql
   # Access Denied
+  - sql/moz-fx-data-shared-prod/firefox_desktop_derived/desktop_installs_v1/query.sql
   - sql/moz-fx-data-experiments/monitoring/query_cost_v1/query.sql
   - sql/moz-fx-data-shared-prod/app_store_external/**/*.sql
   - sql/moz-fx-data-shared-prod/app_store/**/*.sql
@@ -66,6 +67,7 @@ dry_run:
   - sql/moz-fx-data-shared-prod/fivetran_costs_derived/destinations_v1/query.sql
   - sql/moz-fx-data-shared-prod/fivetran_costs_derived/incremental_mar_v1/query.sql
   - sql/moz-fx-data-shared-prod/fivetran_costs_derived/monthly_costs_v1/query.sql
+  - sql/moz-fx-data-shared-prod/fakespot/**/*.sql
   - sql/**/apple_ads_external*/**/query.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/shredder_progress/view.sql
   - sql/moz-fx-data-shared-prod/monitoring/shredder_progress/view.sql
@@ -336,6 +338,7 @@ generate:
     - org_mozilla_ios_tiktok_reporter
     - org_mozilla_ios_tiktok_reporter_tiktok_reportershare
     - org_mozilla_tiktokreporter
+    - relay_backend  # temporary fix, see https://mozilla-hub.atlassian.net/browse/DENG-3720
     events_stream:
       skip_apps:
       - bergamot

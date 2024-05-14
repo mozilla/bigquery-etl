@@ -1,5 +1,10 @@
+{#
+-- Commented out for now as due an upstream issue we're ending up with
+-- a small number of duplicates across channels causing this check to fail.
+-- The upstream issue is described in this bug: https://bugzilla.mozilla.org/show_bug.cgi?id=1887708
 #warn
 {{ is_unique(["client_id"]) }}
+#}
 
 #fail
 {{ min_row_count(1, "`submission_date` = @submission_date") }}

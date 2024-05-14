@@ -1,4 +1,4 @@
-# braze user profiles w/ newsletter and waitlist data
+# test_braze_subscriptions - braze user profiles w/ newsletter and waitlist data
 ---
 # user 1
 - external_id: user_1
@@ -46,12 +46,3 @@
       subscribed: true
       update_timestamp: 2020-03-11 11:00:00+00:00
 # user 4 not in braze_users
-- external_id: not_a_user
-  newsletters:
-    - newsletter_name: newsletter_1
-      subscribed: true
-      update_timestamp: 2020-04-01 10:00:00+00:00
-  waitlists:
-    - waitlist_name: waitlist_1
-      subscribed: true
-      update_timestamp: 2020-04-11 11:00:00+00:00

@@ -24,7 +24,6 @@ bigquery:
   clustering:
     fields:
     - channel
-    - first_reported_country
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

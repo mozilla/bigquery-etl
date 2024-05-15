@@ -1983,7 +1983,7 @@ UNION ALL
     WITH event_counters AS (
       SELECT
         DATE(submission_timestamp) AS submission_date,
-        "Firefox Accounts Frontend" AS normalized_app_name,
+        "Mozilla Accounts Frontend" AS normalized_app_name,
         client_info.app_channel AS channel,
         metrics.labeled_counter
       FROM
@@ -2033,7 +2033,7 @@ UNION ALL
     WITH event_counters AS (
       SELECT
         DATE(submission_timestamp) AS submission_date,
-        "Firefox Accounts Backend" AS normalized_app_name,
+        "Mozilla Accounts Backend" AS normalized_app_name,
         client_info.app_channel AS channel,
         metrics.labeled_counter
       FROM

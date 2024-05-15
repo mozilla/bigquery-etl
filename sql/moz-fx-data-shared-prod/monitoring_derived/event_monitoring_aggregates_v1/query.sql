@@ -2577,7 +2577,7 @@ SELECT
   metrics.string.event_name,
   CAST(NULL AS STRING) AS event_extra_key,
   normalized_country_code AS country,
-  "Firefox Accounts Frontend" AS normalized_app_name,
+  "Mozilla Accounts Frontend" AS normalized_app_name,
   client_info.app_channel AS channel,
   client_info.app_display_version AS version,
     -- Access experiment information.
@@ -2635,7 +2635,7 @@ SELECT
   metrics.string.event_name,
   CAST(NULL AS STRING) AS event_extra_key,
   normalized_country_code AS country,
-  "Firefox Accounts Backend" AS normalized_app_name,
+  "Mozilla Accounts Backend" AS normalized_app_name,
   client_info.app_channel AS channel,
   client_info.app_display_version AS version,
     -- Access experiment information.

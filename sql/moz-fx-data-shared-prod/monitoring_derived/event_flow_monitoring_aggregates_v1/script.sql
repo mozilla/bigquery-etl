@@ -612,7 +612,7 @@ CREATE TEMP TABLE
         CAST(NULL AS STRING) AS category,
         metrics.string.event_name AS name,
         submission_timestamp AS timestamp,
-        "Firefox Accounts Frontend" AS normalized_app_name,
+        "Mozilla Accounts Frontend" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
         `moz-fx-data-shared-prod.accounts_frontend.accounts_events`
@@ -626,7 +626,7 @@ CREATE TEMP TABLE
         CAST(NULL AS STRING) AS category,
         metrics.string.event_name AS name,
         submission_timestamp AS timestamp,
-        "Firefox Accounts Backend" AS normalized_app_name,
+        "Mozilla Accounts Backend" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
         `moz-fx-data-shared-prod.accounts_backend.accounts_events`

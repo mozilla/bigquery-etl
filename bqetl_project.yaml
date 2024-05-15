@@ -353,9 +353,13 @@ generate:
       - org_mozilla_tiktokreporter
     events_monitoring:
       skip_pings:
-      - topsites-impression
+      - topsites-impression # access denied
+      - serp-categorization # access denied
+      - background-update # table doesn't exist
       events_tables:
         accounts_frontend:
         - accounts_events_v1
         accounts_backend:
         - accounts_events_v1
+        pine:
+        - events_v1

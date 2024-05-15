@@ -174,16 +174,44 @@ class EventMonitoringLive(GleanTable):
         aggregate_table = "event_monitoring_aggregates_v1"
         target_view_name = "_".join(self.target_table_id.split("_")[:-1])
 
-        default_events_table = ConfigLoader.get(
-            "generate",
-            "glean_usage",
-            "events_monitoring",
-            "default_event_table",
-            fallback="events_v1",
-        )
         events_table_overwrites = ConfigLoader.get(
-            "generate", "glean_usage", "events_monitoring", "event_table", fallback={}
+            "generate", "glean_usage", "events_monitoring", "events_tables", fallback={}
         )
+
+        event_tables_per_dataset = {}
+
+        for app in apps:
+            for app_dataset in app:
+                dataset = app_dataset["bq_dataset_family"]
+                app_name = [
+                    app_dataset["app_name"]
+                    for _, app in get_app_info().items()
+                    for app_dataset in app
+                    if dataset == app_dataset["bq_dataset_family"]
+                ][0]
+
+                if app_name in events_table_overwrites:
+                    event_tables_per_dataset[dataset] = events_table_overwrites[
+                        app_name
+                    ]
+                else:
+                    v1_name = [
+                        app_dataset["v1_name"]
+                        for _, app in get_app_info().items()
+                        for app_dataset in app
+                        if dataset == app_dataset["bq_dataset_family"]
+                    ][0]
+                    event_tables = [
+                        f"{ping.replace('-', '_')}_v1"
+                        for ping in self._get_tables_with_events(v1_name)
+                        if ping
+                        not in ConfigLoader.get(
+                            "generate", "glean_usage", "events_monitoring", "skip_pings"
+                        )
+                    ]
+
+                    if len(event_tables) > 0:
+                        event_tables_per_dataset[dataset] = event_tables
 
         render_kwargs = dict(
             header="-- Generated via bigquery_etl.glean_usage\n",
@@ -194,8 +222,7 @@ class EventMonitoringLive(GleanTable):
             target_table=f"{TARGET_DATASET_CROSS_APP}_derived.{aggregate_table}",
             apps=apps,
             prod_datasets=prod_datasets_with_event,
-            default_events_table=default_events_table,
-            events_table_overwrites=events_table_overwrites,
+            event_tables_per_dataset=event_tables_per_dataset,
         )
         render_kwargs.update(self.custom_render_kwargs)
 

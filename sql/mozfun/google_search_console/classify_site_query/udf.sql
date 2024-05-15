@@ -92,7 +92,7 @@ RETURNS STRING AS (
         query,
         ARRAY_TO_STRING(
           [
-            r'^p[oeckvjrli]{3,}t',
+            r'\bp[eiocjklrv]{3,}t',
             r'getpo',
             r'pocke',
             r'покет'  -- pocket (Cyrillic)

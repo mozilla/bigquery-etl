@@ -338,6 +338,7 @@ generate:
     - org_mozilla_ios_tiktok_reporter
     - org_mozilla_ios_tiktok_reporter_tiktok_reportershare
     - org_mozilla_tiktokreporter
+    - relay_backend  # temporary fix, see https://mozilla-hub.atlassian.net/browse/DENG-3720
     events_stream:
       skip_apps:
       - bergamot

@@ -629,12 +629,12 @@ def _backfill_query(
 @click.option(
     "--scheduling_overrides",
     "--scheduling-overrides",
-    "-so",
     required=False,
     type=str,
     default="{}",
     help=(
-        "Pass overrides for scheduling sections: parameters and/or date_partition_parameter as needed. "
+        "Pass overrides as a JSON string for scheduling sections: "
+        "parameters and/or date_partition_parameter as needed."
     ),
 )
 @click.pass_context
@@ -686,15 +686,15 @@ def backfill(
         depends_on_past = metadata.scheduling.get("depends_on_past", False)
         # If date_partition_parameter isn't set it's assumed to be submission_date:
         # https://github.com/mozilla/telemetry-airflow/blob/dbc2782fa23a34ae8268e7788f9621089ac71def/utils/gcp.py#L194C48-L194C48
-        scheduling_overrides_dict = json.loads(scheduling_overrides)
-        date_partition_parameter = scheduling_overrides_dict.get(
-            "date_partition_parameter",
-            metadata.scheduling.get("date_partition_parameter", "submission_date"),
+
+        # adding copy logic for cleaner handling of overrides
+        scheduling_metadata = metadata.scheduling.copy()
+        scheduling_metadata.update(json.loads(scheduling_overrides))
+        date_partition_parameter = scheduling_metadata.get(
+            "date_partition_parameter", "submission_date"
         )
-        date_partition_offset = metadata.scheduling.get("date_partition_offset", 0)
-        scheduling_parameters = scheduling_overrides_dict.get(
-            "parameters", metadata.scheduling.get("parameters", [])
-        )
+        scheduling_parameters = scheduling_metadata.get("parameters", [])
+        date_partition_offset = scheduling_metadata.get("date_partition_offset", 0)
 
         partitioning_type = None
         if metadata.bigquery and metadata.bigquery.time_partitioning:

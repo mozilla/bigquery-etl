@@ -1,5 +1,6 @@
 WITH _derived_search_cols AS (
   SELECT
+    COALESCE(udf.normalize_search_engine(engine), "Other") AS short_engine,
     COALESCE(organic, 0) + COALESCE(search_count, 0) + COALESCE(unknown, 0) + COALESCE(
       tagged_sap,
       0
@@ -18,10 +19,10 @@ _derived_engine_searches AS (
   -- that we will use for aggregation later
   SELECT
     STRUCT(
-      engine AS key,
+      short_engine AS key,
       STRUCT(total_searches, tagged_searches, ad_click, search_with_ads) AS value
     ) AS engine_searches,
-    *
+    * EXCEPT (short_engine)
   FROM
     _derived_search_cols
 ),

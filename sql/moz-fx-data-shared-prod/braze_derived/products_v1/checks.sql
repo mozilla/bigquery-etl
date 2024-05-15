@@ -12,10 +12,10 @@ ASSERT(
     `moz-fx-data-shared-prod.braze_derived.products_v1`,
     UNNEST(products) AS products
   WHERE
-    products.subscription_updated_at > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 15 HOUR)
+    products.subscription_updated_at > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 8 HOUR)
 ) > 0
 AS
-  "No new records in the braze_derived.products_v1 table in the last 15 hours";
+  "No new records in the braze_derived.products_v1 table in the last 8 hours";
 
 -- macro checks
 

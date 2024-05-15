@@ -29,7 +29,6 @@ WITH events_unnested AS (
     `moz-fx-data-shared-prod.accounts_backend.events` AS e
   CROSS JOIN
     UNNEST(e.events) AS event
-    WITH OFFSET AS event_offset
 ),
 fxa_events AS (
   SELECT

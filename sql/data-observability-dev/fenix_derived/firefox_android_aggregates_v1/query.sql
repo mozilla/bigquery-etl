@@ -6,7 +6,7 @@ SELECT
   distribution_id,
   COUNT(*) AS client_count,
 FROM
-  `data-observability-dev.fenix_derived.firefox_android_clients`
+  `data-observability-dev.fenix.firefox_android_clients`
 WHERE
   submission_date = @submission_date
 GROUP BY

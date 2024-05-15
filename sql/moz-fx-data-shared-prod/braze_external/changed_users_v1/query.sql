@@ -4,6 +4,8 @@ SELECT
   CASE
     WHEN current_users.external_id IS NULL
       THEN 'Deleted'
+    WHEN previous_users.external_id IS NULL
+      THEN 'New'
     WHEN NOT (
         current_users.email = previous_users.email
         AND current_users.mailing_country = previous_users.mailing_country
@@ -18,6 +20,7 @@ SELECT
         AND current_users.fxa_lang = previous_users.fxa_lang
         AND current_users.fxa_first_service = previous_users.fxa_first_service
         AND current_users.fxa_created_at = previous_users.fxa_created_at
+        AND current_users.acoustic_last_engaged_at = previous_users.acoustic_last_engaged_at
       )
       THEN 'Changed'
   END AS status,
@@ -32,7 +35,11 @@ SELECT
   COALESCE(current_users.fxa_primary_email, previous_users.fxa_primary_email) AS fxa_primary_email,
   COALESCE(current_users.fxa_lang, previous_users.fxa_lang) AS fxa_lang,
   COALESCE(current_users.fxa_first_service, previous_users.fxa_first_service) AS fxa_first_service,
-  COALESCE(current_users.fxa_created_at, previous_users.fxa_created_at) AS fxa_created_at
+  COALESCE(current_users.fxa_created_at, previous_users.fxa_created_at) AS fxa_created_at,
+  COALESCE(
+    current_users.acoustic_last_engaged_at,
+    previous_users.acoustic_last_engaged_at
+  ) AS acoustic_last_engaged_at
 FROM
   `moz-fx-data-shared-prod.braze_derived.users_v1` current_users
 FULL OUTER JOIN
@@ -40,6 +47,7 @@ FULL OUTER JOIN
   ON current_users.external_id = previous_users.external_id
 WHERE
   current_users.external_id IS NULL  -- deleted rows
+  OR previous_users.external_id IS NULL -- new rows
   OR NOT (
     current_users.email = previous_users.email
     AND current_users.mailing_country = previous_users.mailing_country
@@ -53,4 +61,5 @@ WHERE
     AND current_users.fxa_lang = previous_users.fxa_lang
     AND current_users.fxa_first_service = previous_users.fxa_first_service
     AND current_users.fxa_created_at = previous_users.fxa_created_at
+    AND current_users.acoustic_last_engaged_at = previous_users.acoustic_last_engaged_at
   ); -- changed rows

@@ -1,0 +1,17 @@
+fields:
+- description: Date when the app first reported a baseline ping for the client.
+  mode: NULLABLE
+  name: first_seen_date
+  type: DATE
+- description: Hashed client_id
+  mode: NULLABLE
+  name: client_id_hashed
+  type: BYTES
+- description: Channel where the browser is released.
+  mode: NULLABLE
+  name: channel
+  type: STRING
+- description:
+  mode: NULLABLE
+  name: funky_column
+  type: STRING

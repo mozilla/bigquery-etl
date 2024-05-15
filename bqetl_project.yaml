@@ -356,10 +356,10 @@ generate:
       - topsites-impression # access denied
       - serp-categorization # access denied
       - background-update # table doesn't exist
-      events_tables:
-        accounts_frontend:
+      events_tables: # overwrite event tables
+        accounts_frontend: # event pings land in accounts_events_v1 tables
         - accounts_events_v1
         accounts_backend:
         - accounts_events_v1
-        pine:
+        pine: # Probe info returns pings that don't have tables, only use events_v1
         - events_v1

@@ -42,8 +42,6 @@ class EventMonitoringLive(GleanTable):
     def _get_tables_with_events(self, v1_name: str) -> Set[str]:
         pings = set()
         resp = requests.get(METRICS_INFO_URL.format(app_name=v1_name))
-        if resp.status_code == 404:
-            return pings
         resp.raise_for_status()
         metrics_json = resp.json()
 

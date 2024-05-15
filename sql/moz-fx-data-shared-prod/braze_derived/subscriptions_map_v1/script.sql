@@ -123,6 +123,14 @@ VALUES
     'mozilla-and-you'
   ),
   (
+    'mozilla-builder',
+    'Mozilla Builder newsletter',
+    '7e8d71f9-2e26-4308-ac0f-05a591cbae5a',
+    '1825ad87-9b63-45e4-b0ae-92c2e38feace',
+    '74435f4a-e25e-41bb-973a-a769179e05a0',
+    'mozilla-builder'
+  ),
+  (
     'mozilla-innovation',
     'Innovation Newsletter',
     '39fcaf11-2926-4366-b756-2c02e65cbce7',

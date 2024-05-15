@@ -19,58 +19,58 @@ RETURNS STRING AS (
             r'^f[aie]+r\s?[fbv]',
             r'^f[ier]+\s?[fv][oei]?[xkc]',
             r'f.r.f.x',
-            r'faiya-fokkusu',
+            r'faiya-fokkusu',  -- fire fox (Japanese)
             r'fi\w+x',
             r'firf',
-            r'huohu',
+            r'huohu',  -- fire fox (Chinese)
             r'nightly',
             r'quantum',
-            r'כןרקכםס',
-            r'פיירפוקס',
-            r'فاجا بوكس',
-            r'فرفاكس',
-            r'فري فاكس',
-            r'فكس',
-            r'فياير',
-            r'فير',
-            r'फायर फॉक्स',
-            r'फायरफक्स',
-            r'फायरफॉक्स',
-            r'फ़ायरफ़ॉक्स',
-            r'फ़ायर्फ़ॉक्स',
-            r'फिरेफोक्स',
-            r'फ्री फॉक्स',
-            r'ফায়ার বক্স',
-            r'ফায়ারফক্স',
-            r'ฟายฟอก',
-            r'ฟายฟ๊อก',
-            r'ไฟ ฟอก',
-            r'ไฟฟอก',
-            r'ไฟฟ็อก',
-            r'ไฟฟ๊อก',
-            r'ไฟร์ฟอกซ์',
-            r'ไฟลฟอก',
-            r'ไฟล์ฟอก',
-            r'หมาไฟ',
-            r'파워폭스',
-            r'파이어',
-            r'파폭',
-            r'ふぁいあ',
-            r'ファイア',
-            r'ふあいあーふぉっくす',
-            r'ふあいあふぉっくす',
-            r'ファイフォ',
-            r'ふぁいや',
-            r'ふあいや',
-            r'ファイや',
-            r'ファイヤ',
-            r'フアイヤーフオツクス',
-            r'ふぁやざ',
-            r'ふぃれふぉ',
-            r'ふぉｘ',
-            r'フォッ',
-            r'火孤',
-            r'火狐'
+            r'כןרקכםס',  -- yes you have been (Hebrew)
+            r'פיירפוקס',  -- firefox (Hebrew)
+            r'فاجا بوكس',  -- `faja buks` (Arabic)
+            r'فرفاكس',  -- `firfaks` (Arabic)
+            r'فري فاكس',  -- `fri faks` (Arabic)
+            r'فكس',  -- `fiks` (Arabic)
+            r'فياير',  -- `fayayar` (Arabic)
+            r'فير',  -- `fir` (Arabic)
+            r'फायर फॉक्स',  -- fire fox (Indic)
+            r'फायरफक्स',  -- firefox (Indic)
+            r'फायरफॉक्स',  -- firefox (Indic)
+            r'फ़ायरफ़ॉक्स',  -- firefox (Indic)
+            r'फ़ायर्फ़ॉक्स',  -- firefox (Indic)
+            r'फिरेफोक्स',  -- firefox (Indic)
+            r'फ्री फॉक्स',  -- free fox (Indic)
+            r'ফায়ার বক্স',  -- fire box (Indic)
+            r'ফায়ারফক্স',  -- firefox (Indic)
+            r'ฟายฟอก',  -- `fay fxk` (Thai)
+            r'ฟายฟ๊อก',  -- firefox (Thai)
+            r'ไฟ ฟอก',  -- `fi fxk` (Thai)
+            r'ไฟฟอก',  -- `fi fxk` (Thai)
+            r'ไฟฟ็อก',  -- firefox (Thai)
+            r'ไฟฟ๊อก',  -- firefox (Thai)
+            r'ไฟร์ฟอกซ์',  -- firefox (Thai)
+            r'ไฟลฟอก',  -- `fil fxk` (Thai)
+            r'ไฟล์ฟอก',  -- `fil fxk` (Thai)
+            r'หมาไฟ',  -- fire dog (Thai)
+            r'파워폭스',  -- powerfox (Korean)
+            r'파이어',  -- fire (Korean)
+            r'파폭',  -- `papog` (Korean)
+            r'ふぁいあ',  -- `faia` (Japanese)
+            r'ファイア',  -- fire (Japanese)
+            r'ふあいあーふぉっくす',  -- `faia fokkusu` (Japanese)
+            r'ふあいあふぉっくす',  -- `faiafokkusu` (Japanese)
+            r'ファイフォ',  -- `faifo` (Japanese)
+            r'ふぁいや',  -- fire (Japanese)
+            r'ふあいや',  -- `faiya` (Japanese)
+            r'ファイや',  -- `faiya` (Japanese)
+            r'ファイヤ',  -- fire (Japanese)
+            r'フアイヤーフオツクス',  -- firefox (Japanese)
+            r'ふぁやざ',  -- `fayaza` (Japanese)
+            r'ふぃれふぉ',  -- firefox (Japanese)
+            r'ふぉｘ',  -- fox (Japanese)
+            r'フォッ',  -- `fot` (Japanese)
+            r'火孤',  -- `huogu` (Chinese)
+            r'火狐'  -- firefox (Chinese)
           ],
           '|'
         )
@@ -90,22 +90,22 @@ RETURNS STRING AS (
             r'moz+ira',
             r'mozıl',
             r'mzoilla',
-            r'μοζ+ιλ+α',
-            r'μονζ+ιλ+α',
-            r'μοτζιλα',
-            r'м.з+ил',
-            r'м.з+іл',
-            r'მოზილა',
-            r'מוזילה',
-            r'موزلا',
-            r'موزيل',
-            r'موزیلا',
-            r'मोजिला',
-            r'मोज़िला',
-            r'মজিলা',
-            r'মোজিলা',
-            r'모질라',
-            r'モジラ'
+            r'μοζ+ιλ+α',  -- moz+il+a (Greek)
+            r'μονζ+ιλ+α',  -- monz+il+a (Greek)
+            r'μοτζιλα',  -- motzila (Greek)
+            r'м.з+ил',  -- m.z+il (Cyrilic)
+            r'м.з+іл',  -- m.z+il (Cyrilic)
+            r'მოზილა',  -- mozilla (Georgian)
+            r'מוזילה',  -- mozilla (Hebrew)
+            r'موزلا',  -- mozilla (Arabic)
+            r'موزيل',  -- `muzil` (Arabic)
+            r'موزیلا',  -- mozilla (Arabic)
+            r'मोजिला',  -- mozilla (Indic)
+            r'मोज़िला',  -- mozilla (Indic)
+            r'মজিলা',  -- `mojila` (Indic)
+            r'মোজিলা',  -- mozilla (Indic)
+            r'모질라',  -- mozilla (Korean)
+            r'モジラ'  -- mozilla (Japanese)
           ],
           '|'
         )

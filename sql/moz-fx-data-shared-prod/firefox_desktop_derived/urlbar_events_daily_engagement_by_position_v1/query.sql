@@ -5,7 +5,7 @@ SELECT
   pref_fx_suggestions AS firefox_suggest_enabled,
   pref_sponsored_suggestions AS sponsored_suggestions_enabled,
   selected_position,
-  COUNT(DISTINCT event_id) as num_clicks
+  COUNT(DISTINCT event_id) AS num_clicks
 FROM
   `mozdata.firefox_desktop.urlbar_events`
 WHERE

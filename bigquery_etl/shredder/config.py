@@ -242,7 +242,8 @@ DELETE_TARGETS: DeleteIndex = {
     client_id_target(table="telemetry_stable.update_v4"): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.voice_v4"): DESKTOP_SRC,
     DeleteTarget(
-        table="telemetry_derived.mobile_engagement_clients_v1", field=CLIENT_ID
+        table="telemetry_derived.mobile_engagement_clients_v1",
+        field=(CLIENT_ID, CLIENT_ID),
     ): (
         DeleteSource(table="firefox_ios.deletion_request", field=GLEAN_CLIENT_ID),
         DeleteSource(table="fenix.deletion_request", field=GLEAN_CLIENT_ID),

@@ -92,6 +92,19 @@ RETURNS STRING AS (
         query,
         ARRAY_TO_STRING(
           [
+            r'^p[oeckvjrli]{3,}t',
+            r'getpo',
+            r'pocke',
+            r'покет'  -- pocket (Cyrillic)
+          ],
+          '|'
+        )
+      )
+      THEN 'Pocket Brand'
+    WHEN REGEXP_CONTAINS(
+        query,
+        ARRAY_TO_STRING(
+          [
             r'm o z i l l a',
             r'm.zil',
             r'm\w*zilla',
@@ -167,4 +180,8 @@ SELECT
   assert.equals(
     google_search_console.classify_site_query('addons.mozilla.org', 'firefox', 'Web'),
     'Firefox Brand'
+  ),
+  assert.equals(
+    google_search_console.classify_site_query('www.mozilla.org', 'pocket', 'Web'),
+    'Pocket Brand'
   ),

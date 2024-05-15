@@ -80,6 +80,14 @@ TABLE_METADATA_CONF_EMPTY_WORKGROUP = {
     "workgroup_access": [],
 }
 
+TABLE_METADATA_CONF_DEPENDS_ON_PAST = {
+    "friendly_name": "test",
+    "description": "test",
+    "owners": ["test@example.org"],
+    "workgroup_access": VALID_WORKGROUP_ACCESS,
+    "scheduling": {"depends_on_past": True},
+}
+
 DATASET_METADATA_CONF = {
     "friendly_name": "test",
     "description": "test",
@@ -144,6 +152,41 @@ class TestBackfill:
             assert backfill.watchers == [DEFAULT_WATCHER]
             assert backfill.reason == DEFAULT_REASON
             assert backfill.status == DEFAULT_STATUS
+
+    def test_create_backfill_depends_on_past_should_fail(self, runner):
+        with runner.isolated_filesystem():
+            SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v1"
+            os.makedirs(SQL_DIR)
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/query.sql", "w"
+            ) as f:
+                f.write("SELECT 1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(TABLE_METADATA_CONF_DEPENDS_ON_PAST))
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
+            ) as f:
+                f.write(yaml.dump(DATASET_METADATA_CONF))
+
+            result = runner.invoke(
+                create,
+                [
+                    "moz-fx-data-shared-prod.test.test_query_v1",
+                    "--start_date=2021-03-01",
+                ],
+            )
+
+            assert result.exit_code == 1
+            assert (
+                "Tables that depend on past are currently not supported."
+                in result.output
+            )
 
     def test_create_backfill_with_invalid_watcher(self, runner):
         with runner.isolated_filesystem():
@@ -491,6 +534,43 @@ class TestBackfill:
                 ],
             )
             assert result.exit_code == 0
+
+    def test_validate_backfill_depends_on_past_should_fail(self, runner):
+        with runner.isolated_filesystem():
+            SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v1"
+            os.makedirs(SQL_DIR)
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/query.sql", "w"
+            ) as f:
+                f.write("SELECT 1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(TABLE_METADATA_CONF_DEPENDS_ON_PAST))
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
+            ) as f:
+                f.write(yaml.dump(DATASET_METADATA_CONF))
+
+            backfill_file = Path(SQL_DIR) / BACKFILL_FILE
+            backfill_file.write_text(BACKFILL_YAML_TEMPLATE)
+            assert BACKFILL_FILE in os.listdir(SQL_DIR)
+
+            result = runner.invoke(
+                validate,
+                [
+                    "moz-fx-data-shared-prod.test.test_query_v1",
+                ],
+            )
+            assert result.exit_code == 1
+            assert (
+                "Tables that depend on past are currently not supported"
+                in result.output
+            )
 
     def test_validate_backfill_invalid_table_name(self, runner):
         with runner.isolated_filesystem():
@@ -1826,6 +1906,76 @@ class TestBackfill:
 
             assert result.exit_code == 0
             assert "1 backfill(s) require processing." in result.output
+
+    @patch("google.cloud.bigquery.Client.get_table")
+    def test_backfill_scheduled_depends_on_past_should_fail(self, get_table, runner):
+        get_table.side_effect = [
+            None,  # Check that staging data exists
+            NotFound(  # Check that clone does not exist
+                "moz-fx-data-shared-prod.backfills_staging_derived.test_query_v1_backup_2021_05_03"
+                "not found"
+            ),
+            NotFound(  # Check that staging data does not exist
+                "moz-fx-data-shared-prod.backfills_staging_derived.test_query_v1_2021_05_04"
+                "not found"
+            ),
+        ]
+        with runner.isolated_filesystem():
+            SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v1"
+            os.makedirs(SQL_DIR)
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/query.sql", "w"
+            ) as f:
+                f.write("SELECT 1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(TABLE_METADATA_CONF_DEPENDS_ON_PAST))
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
+            ) as f:
+                f.write(yaml.dump(DATASET_METADATA_CONF))
+
+            backfill_file = Path(SQL_DIR) / BACKFILL_FILE
+            backfill_file.write_text(
+                BACKFILL_YAML_TEMPLATE
+                + """
+2021-05-03:
+  start_date: 2021-01-03
+  end_date: 2021-05-03
+  reason: test_reason
+  watchers:
+  - test@example.org
+  status: Complete"""
+            )
+
+            result = runner.invoke(
+                scheduled,
+                [
+                    "--json_path=tmp.json",
+                    "--status=Complete",
+                ],
+            )
+
+            assert result.exit_code == 0
+            assert "0 backfill(s) require processing." in result.output
+            assert Path("tmp.json").exists()
+            assert len(json.loads(Path("tmp.json").read_text())) == 0
+
+            result = runner.invoke(
+                scheduled,
+                [
+                    "--json_path=tmp.json",
+                    "--status=Initiate",
+                ],
+            )
+
+            assert result.exit_code == 0
+            assert "0 backfill(s) require processing." in result.output
 
     @patch("google.cloud.bigquery.Client.get_table")
     @patch("google.cloud.bigquery.Client.copy_table")

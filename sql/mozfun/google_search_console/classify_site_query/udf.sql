@@ -15,19 +15,31 @@ RETURNS STRING AS (
         ARRAY_TO_STRING(
           [
             r'.i.e.ox',
-            r'^f..ef[ioa]+',
-            r'^f[aie]+r\s?[fbv]',
-            r'^f[ier]+\s?[fv][oei]?[xkc]',
+            r'\bf..ef[ioa]+',
+            r'\bf[aie]+re?\s?[fbv]',
+            r'\bf[ier]+\s?[fv][oei]?[xkc]',
+            r'\bfi[aeiobcfkrvx]+x',
+            r'\bfirf',
             r'f.r.f.x',
             r'faiya-fokkusu',  -- fire fox (Japanese)
-            r'fi\w+x',
-            r'firf',
             r'huohu',  -- fire fox (Chinese)
             r'nightly',
             r'quantum',
+            r'лиса',  -- fox (Cyrillic)
+            r'фаер',  -- fire (Cyrillic)
+            r'фаир',  -- `fair` (Cyrillic)
+            r'файер',  -- fire (Cyrillic)
+            r'файр',  -- fire (Cyrillic)
+            r'фире',  -- fire (Cyrillic)
+            r'фокс',  -- fox (Cyrillic)
+            r'фох',  -- `fox` (Cyrillic)
             r'כןרקכםס',  -- yes you have been (Hebrew)
             r'פיירפוקס',  -- firefox (Hebrew)
             r'فاجا بوكس',  -- `faja buks` (Arabic)
+            r'فاير فوكس',  -- fire fox (Arabic)
+            r'فايرفوكس',  -- firefox (Arabic)
+            r'فایر فاکس',  -- fire fox (Arabic)
+            r'فایرفاکس',  -- firefox (Arabic)
             r'فرفاكس',  -- `firfaks` (Arabic)
             r'فري فاكس',  -- `fri faks` (Arabic)
             r'فكس',  -- `fiks` (Arabic)
@@ -86,13 +98,13 @@ RETURNS STRING AS (
             r'mizolla',
             r'moz://a',
             r'moz:lla',
-            r'moz*\w*l+',
+            r'moz+\w*l',
             r'moz+ira',
             r'mozıl',
             r'mzoilla',
             r'μοζ+ιλ+α',  -- moz+il+a (Greek)
             r'μονζ+ιλ+α',  -- monz+il+a (Greek)
-            r'μοτζιλα',  -- motzila (Greek)
+            r'μοτζ+ιλ+α',  -- motz+il+a (Greek)
             r'м.з+ил',  -- m.z+il (Cyrilic)
             r'м.з+іл',  -- m.z+il (Cyrilic)
             r'მოზილა',  -- mozilla (Georgian)

@@ -610,7 +610,6 @@ class TestQuery:
             assert check_call.call_count == 2
 
             for call in check_call.call_args_list:
-                print(call)
                 submission_date_params = [
                     arg for arg in call.args[0] if "--parameter=submission_date" in arg
                 ]

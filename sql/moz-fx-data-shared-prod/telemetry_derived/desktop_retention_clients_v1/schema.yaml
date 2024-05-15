@@ -60,6 +60,10 @@ fields:
   type: STRING
   description: Attribution Experiment
 - mode: NULLABLE
+  name: attribution_variation
+  type: STRING
+  description: Attribution Variation
+- mode: NULLABLE
   name: startup_profile_selection_reason
   type: STRING
   description: Start up Profile Selection Reason

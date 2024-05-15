@@ -96,6 +96,22 @@ with DAG(
         depends_on_past=False,
     )
 
+    firefox_desktop_derived__urlbar_events_daily_engagement_by_position__v1 = bigquery_etl_query(
+        task_id="firefox_desktop_derived__urlbar_events_daily_engagement_by_position__v1",
+        destination_table="urlbar_events_daily_engagement_by_position_v1",
+        dataset_id="firefox_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="tbrooks@mozilla.com",
+        email=[
+            "akomar@mozilla.com",
+            "anicholson@mozilla.com",
+            "tbrooks@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     firefox_desktop_urlbar_events__v2 = bigquery_etl_query(
         task_id="firefox_desktop_urlbar_events__v2",
         destination_table="urlbar_events_v2",
@@ -131,6 +147,10 @@ with DAG(
     )
 
     firefox_desktop_derived__urlbar_events_daily__v1.set_upstream(
+        firefox_desktop_urlbar_events__v2
+    )
+
+    firefox_desktop_derived__urlbar_events_daily_engagement_by_position__v1.set_upstream(
         firefox_desktop_urlbar_events__v2
     )
 

@@ -1,0 +1,29 @@
+friendly_name: Urlbar Events Daily Engagement by Position
+description: |-
+  Each row in this table represents a daily summary statistic of clicks per ordinal position per a host of meaningful dimensions.
+owners:
+- tbrooks@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  dag: bqetl_urlbar
+  owner1: tbrooks
+scheduling:
+  dag_name: bqetl_urlbar
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields:
+    - normalized_channel
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  query.sql:
+  - mozdata.firefox_desktop.urlbar_events

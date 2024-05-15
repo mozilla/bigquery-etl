@@ -34,3 +34,14 @@
   acoustic_last_engaged_at: 2021-01-01 11:00:00+00:00
 
 # user 3 - unchanged
+# user 4 - new user
+- external_id: user_4
+  status: New
+  email: user_4@mail.com
+  email_subscribe: opted_in
+  mailing_country: us
+  basket_token: token_4
+  email_lang: en
+  has_fxa: false
+  create_timestamp: 2024-05-13 19:00:00+00:00
+  update_timestamp: 2024-05-13 20:00:00+00:00

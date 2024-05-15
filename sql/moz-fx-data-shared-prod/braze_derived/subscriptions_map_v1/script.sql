@@ -1,5 +1,5 @@
 CREATE OR REPLACE TABLE
-  braze_derived.subscriptions_map_v1(
+  `moz-fx-data-shared-prod.braze_derived.subscriptions_map_v1`(
     braze_subscription_name STRING,
     description STRING,
     mozilla_subscription_id STRING,
@@ -9,7 +9,7 @@ CREATE OR REPLACE TABLE
   );
 
 INSERT INTO
-  braze_derived.subscriptions_map_v1(
+  `moz-fx-data-shared-prod.braze_derived.subscriptions_map_v1`(
     braze_subscription_name,
     description,
     mozilla_subscription_id,
@@ -121,6 +121,14 @@ VALUES
     'e1de4636-7c12-4769-a746-978daae231d0',
     '96f6577e-6efd-4744-9d96-dbe67b1f48c5',
     'mozilla-and-you'
+  ),
+  (
+    'mozilla-builder',
+    'Mozilla Builder newsletter',
+    '7e8d71f9-2e26-4308-ac0f-05a591cbae5a',
+    '1825ad87-9b63-45e4-b0ae-92c2e38feace',
+    '74435f4a-e25e-41bb-973a-a769179e05a0',
+    'mozilla-builder'
   ),
   (
     'mozilla-innovation',

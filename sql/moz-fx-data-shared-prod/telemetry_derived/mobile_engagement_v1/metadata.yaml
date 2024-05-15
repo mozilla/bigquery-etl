@@ -1,0 +1,23 @@
+friendly_name: Mobile Engagement
+description: |-
+  Aggregated summary data about mobile Firefox engagement
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau@mozilla.com
+scheduling:
+  dag_name: bqetl_mobile_engagement_model
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields:
+    - country
+    - app_name
+    - app_version
+references: {}

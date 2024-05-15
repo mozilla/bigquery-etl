@@ -68,7 +68,7 @@ fields:
   type: INT64
   description: DAU - Daily Active Users
 - mode: NULLABLE
-  name: install_source
+  name: wau
   type: INT64
   description: WAU - Weekly Active Users
 - mode: NULLABLE

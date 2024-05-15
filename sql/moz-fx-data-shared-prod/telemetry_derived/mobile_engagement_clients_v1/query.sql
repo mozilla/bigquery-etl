@@ -40,6 +40,7 @@ WITH mobile_clients_last_seen AS (
     `moz-fx-data-shared-prod.firefox_ios.baseline_clients_last_seen_extended_activity` --eventually use: `moz-fx-data-shared-prod.firefox_ios.baseline_clients_last_seen`
   WHERE
     submission_date = @submission_date
+    /*
   UNION ALL
   --Focus Android
   SELECT
@@ -82,6 +83,7 @@ WITH mobile_clients_last_seen AS (
     `moz-fx-data-shared-prod.focus_ios.baseline_clients_last_seen`
   WHERE
     submission_date = @submission_date
+    */
 ),
 mobile_attribution AS (
   --Fenix

@@ -15,10 +15,6 @@ fields:
   - name: sponsored_suggestions_enabled
     type: BOOLEAN
     mode: NULLABLE
-  - name: product_result_type
-    type: STRING
-    mode: NULLABLE
-    description: Product type identifier for this result.
   - name: selected_position
     type: INTEGER
     mode: NULLABLE

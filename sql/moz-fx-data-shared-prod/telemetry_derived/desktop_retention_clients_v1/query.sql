@@ -29,18 +29,16 @@ new_profiles AS (
     attribution_dlsource,
     attribution_medium,
     attribution_ua,
+    attribution_experiment,
     distribution_id,
     -- cfs.isp_name,
     cfs.normalized_channel,
     startup_profile_selection_reason,
-    attribution_experiment,
-    -- mozfun.norm.os(cfs.os) AS normalized_os,
-    cfs.normalized_os,
+    mozfun.norm.os(cfs.normalized_os) AS normalized_os,
     -- COALESCE(
     --   mozfun.norm.windows_version_info(cfs.os, cfs.os_version, cfs.windows_build_number),
     --   NULLIF(SPLIT(cfs.normalized_os_version, ".")[SAFE_OFFSET(0)], "")
     -- ) AS normalized_os_version,
-    cfs.normalized_os_version,
     COALESCE(
       cls.submission_date,
       DATE_ADD(cfs.first_seen_date, INTERVAL 27 day)
@@ -76,12 +74,17 @@ clients_data AS (
     cd.attribution.medium AS attribution_medium,
     cd.attribution.ua AS attribution_ua,
     cd.attribution.experiment AS attribution_experiment,
+    cd.attribution.variation AS attribution_variation,
     cd.startup_profile_selection_reason_first AS startup_profile_selection_reason,
     cd.distribution_id AS distribution_id,
     cd.isp_name AS isp,
     cls.days_seen_bits,
     cls.days_active_bits,
     mozfun.norm.os(cd.os) AS normalized_os,
+    COALESCE(
+      mozfun.norm.windows_version_info(cd.os, cd.os_version, cd.windows_build_number),
+      NULLIF(SPLIT(cd.normalized_os_version, ".")[SAFE_OFFSET(0)], "")
+    ) AS normalized_os_version,
     cls.retention_seen.day_27.active_in_week_3 AS retention_active_in_week_3,
   -- ping sent retention
     cls.retention_seen.day_27.active_on_metric_date AS ping_sent_metric_date,
@@ -122,12 +125,13 @@ SELECT
   COALESCE(cd.attribution_medium, np.attribution_medium) AS attribution_medium,
   COALESCE(cd.attribution_ua, np.attribution_ua) AS attribution_ua,
   COALESCE(cd.attribution_experiment, np.attribution_experiment) AS attribution_experiment,
+  cd.attribution_variation AS attribution_variation,
   COALESCE(
     cd.startup_profile_selection_reason,
     np.startup_profile_selection_reason
   ) AS startup_profile_selection_reason,
   COALESCE(cd.normalized_os, np.normalized_os) AS normalized_os,
-  np.normalized_os_version,
+  cd.normalized_os_version,
   COALESCE(cd.distribution_id, np.distribution_id) AS distribution_id,
   cd.isp,
   cd.ping_sent_metric_date,

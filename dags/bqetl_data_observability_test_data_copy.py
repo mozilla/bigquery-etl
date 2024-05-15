@@ -219,6 +219,14 @@ with DAG(
         wait_for_fenix_derived__events_daily__v1
     )
 
+    fenix_derived__firefox_android_aggregates__v1.set_upstream(
+        fenix_derived__firefox_android_clients__v1
+    )
+
+    fenix_derived__firefox_android_anonymised__v1.set_upstream(
+        fenix_derived__firefox_android_clients__v1
+    )
+
     fenix_derived__firefox_android_clients__v1.set_upstream(
         wait_for_checks__fail_fenix_derived__firefox_android_clients__v1
     )

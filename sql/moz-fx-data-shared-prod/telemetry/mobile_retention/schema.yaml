@@ -50,6 +50,9 @@ fields:
 - name: is_suspicious_device_client
   type: BOOLEAN
   mode: NULLABLE
+- name: lifecycle_stage
+  type: STRING
+  mode: NULLABLE
 - name: ping_sent_metric_date
   type: INTEGER
   mode: NULLABLE

@@ -3,10 +3,10 @@ fields:
   mode: NULLABLE
   name: first_seen_date
   type: DATE
-- description: First reported country for the client installation
+- description: Hashed client_id
   mode: NULLABLE
-  name: first_reported_country
-  type: STRING
+  name: client_id_hashed
+  type: BYTES
 - description: Channel where the browser is released.
   mode: NULLABLE
   name: channel

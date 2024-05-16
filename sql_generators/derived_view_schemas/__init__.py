@@ -78,7 +78,7 @@ def _generate_view_schema(sql_dir, view_directory):
     schema = view.view_schema
     if not schema:
         logging.warning(
-            f"Got empty schema for {view.view_identifier} potentially "
+            f"Couldn't get schema for {view.view_identifier} potentially "
             f"due to dry-run error. Won't write yaml."
         )
         return

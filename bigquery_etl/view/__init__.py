@@ -20,7 +20,7 @@ from bigquery_etl.metadata.parse_metadata import (
     DatasetMetadata,
     Metadata,
 )
-from bigquery_etl.schema import Schema
+from bigquery_etl.schema import SCHEMA_FILE, Schema
 from bigquery_etl.util import extract_from_query_path
 from bigquery_etl.util.common import render
 
@@ -176,27 +176,33 @@ class View:
 
     @cached_property
     def view_schema(self):
-        """Derive view schema from a schema file or a dry run result."""
-        schema_file = Path(self.path).parent / "schema.yaml"
-        # check schema based on schema file
-        if schema_file.is_file():
-            return Schema.from_schema_file(schema_file)
-        else:  # check schema based on dry run results
-            try:
-                client = bigquery.Client()
+        """Derive view schema from a dry run result and/or a schema file."""
+        schema = None
 
-                query_job = client.query(
-                    query=self.content,
-                    job_config=bigquery.QueryJobConfig(
-                        dry_run=True, use_legacy_sql=False
-                    ),
-                )
-                return Schema.from_bigquery_schema(query_job.schema)
-            except Forbidden:
-                print(
-                    f"Missing permission to dry run view {self.view_identifier} to get schema"
-                )
-                return None
+        # check schema based on dry run results
+        try:
+            client = bigquery.Client()
+            query_job = client.query(
+                query=self.content,
+                job_config=bigquery.QueryJobConfig(dry_run=True, use_legacy_sql=False),
+            )
+            query_job.result()
+            schema = Schema.from_bigquery_schema(query_job.schema)
+        except Forbidden:
+            print(
+                f"Missing permission to dry run view {self.view_identifier} to get schema"
+            )
+
+        # check schema based on schema file
+        schema_file = Path(self.path).parent / SCHEMA_FILE
+        if schema_file.is_file():
+            configured_schema = Schema.from_schema_file(schema_file)
+            if schema:
+                schema.merge(configured_schema, add_missing_fields=False)
+            else:
+                schema = configured_schema
+
+        return schema
 
     def _valid_fully_qualified_references(self):
         """Check that referenced tables and views are fully qualified."""
@@ -369,7 +375,7 @@ class View:
                         raise
 
                 try:
-                    schema_path = Path(self.path).parent / "schema.yaml"
+                    schema_path = Path(self.path).parent / SCHEMA_FILE
                     if schema_path.is_file():
                         self.view_schema.deploy(target_view)
                 except Exception as e:

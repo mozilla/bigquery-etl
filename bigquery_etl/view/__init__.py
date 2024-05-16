@@ -10,7 +10,7 @@ from textwrap import dedent
 
 import attr
 import sqlparse
-from google.api_core.exceptions import BadRequest, Forbidden, NotFound
+from google.api_core.exceptions import BadRequest, NotFound
 from google.cloud import bigquery
 
 from bigquery_etl.config import ConfigLoader
@@ -201,10 +201,8 @@ class View:
             )
             query_job.result()
             schema = Schema.from_bigquery_schema(query_job.schema)
-        except Forbidden:
-            print(
-                f"Missing permission to dry run view {self.view_identifier} to get schema"
-            )
+        except Exception as e:
+            print(f"Error dry-running view {self.view_identifier} to get schema: {e}")
 
         # check schema based on schema file
         schema_file = Path(self.path).parent / SCHEMA_FILE

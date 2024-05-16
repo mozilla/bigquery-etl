@@ -165,7 +165,7 @@ telemetry AS (
         SELECT
           SUM(value.value)
         FROM
-          UNNEST(payload.processes.parent.keyed_scalars.browser_search_ad_clicks) AS value
+          UNNEST(payload.processes.parent.keyed_scalars.browser_search_adclicks_urlbar) AS value
       )
     ) AS ad_clicks_count,
     SUM(
@@ -173,7 +173,7 @@ telemetry AS (
         SELECT
           SUM(value.value)
         FROM
-          UNNEST(payload.processes.parent.keyed_scalars.browser_search_with_ads) AS value
+          UNNEST(payload.processes.parent.keyed_scalars.browser_search_withads_urlbar) AS value
       )
     ) AS search_with_ads_count,
     SUM(
@@ -183,7 +183,7 @@ telemetry AS (
         FROM
           UNNEST(payload.keyed_histograms.search_counts) AS value
       )
-    ) AS search_count
+    ) AS search_count,
   FROM
     `moz-fx-data-shared-prod.telemetry_stable.main_v5`
   LEFT JOIN

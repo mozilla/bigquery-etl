@@ -216,5 +216,9 @@ with DAG(
     )
 
     marketing_suppression_list_external__send_suppression_list_update_to_campaign_monitor__v1.set_upstream(
+        marketing_suppression_list_derived__main_suppression_list__v1
+    )
+
+    marketing_suppression_list_external__send_suppression_list_update_to_campaign_monitor__v1.set_upstream(
         marketing_suppression_list_external__campaign_monitor_suppression_list__v1
     )

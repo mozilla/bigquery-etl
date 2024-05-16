@@ -190,6 +190,7 @@ DELETE_TARGETS: DeleteIndex = {
         table="telemetry_derived.clients_histogram_aggregates_v1"
     ): DESKTOP_SRC,
     client_id_target(table="telemetry_derived.clients_last_seen_v1"): DESKTOP_SRC,
+    client_id_target(table="telemetry_derived.clients_last_seen_v2"): DESKTOP_SRC,
     client_id_target(
         table="telemetry_derived.clients_last_seen_joined_v1"
     ): DESKTOP_SRC,

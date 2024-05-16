@@ -16,6 +16,10 @@ NON_USER_FACING_DATASET_SUBSTRINGS = (
     "udf",
 )
 
+VIEW_FILE = "view.sql"
+METADATA_FILE = "metadata.yaml"
+SCHEMA_FILE = "schema.yaml"
+
 
 def _generate_view_schema(sql_dir, view_directory):
     import logging
@@ -26,10 +30,6 @@ def _generate_view_schema(sql_dir, view_directory):
     from bigquery_etl.util.common import render
 
     logging.basicConfig(format="%(levelname)s (%(filename)s:%(lineno)d) - %(message)s")
-
-    VIEW_FILE = "view.sql"
-    METADATA_FILE = "metadata.yaml"
-    SCHEMA_FILE = "schema.yaml"
 
     # If the view references only one table, we can:
     # 1. Get the reference table partition key if it exists.
@@ -178,7 +178,11 @@ def generate(target_project, output_dir, parallelism, use_cloud_function):
     ]
 
     for dataset_path in dataset_paths:
-        view_directories = [path for path in dataset_path.iterdir() if path.is_dir()]
+        view_directories = [
+            path
+            for path in dataset_path.iterdir()
+            if path.is_dir() and (path / VIEW_FILE).exists()
+        ]
 
         with ProcessingPool(parallelism) as pool:
             pool.map(

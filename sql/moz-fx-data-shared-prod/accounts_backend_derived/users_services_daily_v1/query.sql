@@ -41,7 +41,7 @@ fxa_events AS (
     ) AS service,
     metrics.string.session_flow_id AS flow_id,
     metrics.string.session_entrypoint AS entrypoint,
-    event_name AS event_name,
+    event_name,
     -- `access_token_checked` events are triggered on traffic from RP backend services and don't have client's geo data
     IF(event_name != 'access_token_checked', metadata.geo.country, NULL) AS country,
     metrics.string.utm_term AS utm_term,

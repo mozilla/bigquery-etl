@@ -55,6 +55,7 @@ _baseline AS (
     `{{ baseline_table }}`
   WHERE
     DATE(submission_timestamp) = @submission_date
+    AND client_info.client_id IS NOT NULL -- Bug 1896455
 ),
 _current AS (
   SELECT DISTINCT
@@ -98,7 +99,7 @@ _current AS (
     `{{ baseline_table }}`
   WHERE
     DATE(submission_timestamp) = @submission_date
-    and client_info.client_id IS NOT NULL
+    AND client_info.client_id IS NOT NULL -- Bug 1896455
 ),
   -- query over all of history to see whether the client_id has shown up before
 _previous AS (

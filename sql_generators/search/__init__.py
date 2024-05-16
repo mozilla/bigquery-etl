@@ -15,7 +15,6 @@ from bigquery_etl.cli.utils import use_cloud_function_option
 from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.util.common import write_sql
 
-
 # fmt: off
 FIREFOX_ANDROID_TUPLES = [
     ("org_mozilla_fenix",           "Firefox Preview",  "beta"),  # noqa E241 E501

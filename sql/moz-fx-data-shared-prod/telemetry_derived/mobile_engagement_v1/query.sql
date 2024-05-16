@@ -15,6 +15,7 @@ SELECT
   play_store_attribution_medium,
   meta_attribution_app,
   install_source,
+  is_suspicious_device_client,
   COUNTIF(is_dau) AS dau,
   COUNTIF(is_wau) AS wau,
   COUNTIF(is_mau) AS mau
@@ -38,4 +39,5 @@ GROUP BY
   play_store_attribution_source,
   play_store_attribution_medium,
   meta_attribution_app,
-  install_source
+  install_source,
+  is_suspicious_device_client

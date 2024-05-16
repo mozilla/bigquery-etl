@@ -1467,7 +1467,7 @@ UNION ALL
         client_info.app_channel AS channel,
         metrics.labeled_counter
       FROM
-        `moz-fx-data-shared-prod.mozillavpn_stable.main_v1`
+        `moz-fx-data-shared-prod.mozillavpn_stable.events_v1`
       WHERE
         DATE(submission_timestamp) = @submission_date
     )
@@ -1987,7 +1987,7 @@ UNION ALL
         client_info.app_channel AS channel,
         metrics.labeled_counter
       FROM
-        `moz-fx-data-shared-prod.accounts_frontend_stable.accounts_events_v1`
+        `moz-fx-data-shared-prod.accounts_frontend_stable.events_v1`
       WHERE
         DATE(submission_timestamp) = @submission_date
     )
@@ -2037,7 +2037,7 @@ UNION ALL
         client_info.app_channel AS channel,
         metrics.labeled_counter
       FROM
-        `moz-fx-data-shared-prod.accounts_backend_stable.accounts_events_v1`
+        `moz-fx-data-shared-prod.accounts_backend_stable.events_v1`
       WHERE
         DATE(submission_timestamp) = @submission_date
     )

@@ -16,4 +16,6 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   materialized_view.sql:
+  - moz-fx-data-shared-prod.mozillavpn_live.daemonsession_v1
   - moz-fx-data-shared-prod.mozillavpn_live.main_v1
+  - moz-fx-data-shared-prod.mozillavpn_live.vpnsession_v1

@@ -20,8 +20,8 @@ IF
     event_extra.key AS event_extra_key,
     normalized_country_code AS country,
     'Viu Politica' AS normalized_app_name,
-    client_info.app_channel AS channel,
-    client_info.app_display_version AS version,
+    channel,
+    version,
       -- Access experiment information.
       -- Additional iteration is necessary to aggregate total event count across experiments
       -- which is denoted with "*".
@@ -41,7 +41,27 @@ IF
     END AS experiment_branch,
     COUNT(*) AS total_events
   FROM
-    `moz-fx-data-shared-prod.viu_politica_live.events_v1`
+    (
+      SELECT
+        submission_timestamp,
+        events,
+        normalized_country_code,
+        client_info.app_channel AS channel,
+        client_info.app_display_version AS version,
+        ping_info
+      FROM
+        `moz-fx-data-shared-prod.viu_politica_live.main_events_v1`
+      UNION ALL
+      SELECT
+        submission_timestamp,
+        events,
+        normalized_country_code,
+        client_info.app_channel AS channel,
+        client_info.app_display_version AS version,
+        ping_info
+      FROM
+        `moz-fx-data-shared-prod.viu_politica_live.video_index_v1`
+    )
   CROSS JOIN
     UNNEST(events) AS event,
       -- Iterator for accessing experiments.

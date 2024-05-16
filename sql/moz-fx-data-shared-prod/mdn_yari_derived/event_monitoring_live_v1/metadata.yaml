@@ -16,4 +16,4 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   materialized_view.sql:
-  - moz-fx-data-shared-prod.mdn_yari_live.events_v1
+  - moz-fx-data-shared-prod.mdn_yari_live.action_v1

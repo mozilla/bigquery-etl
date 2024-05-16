@@ -63,15 +63,23 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Install Source
+- name: is_suspicious_device_client
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Flags Firefox iOS clients created recently from an older app version
+    associated with unusual counts
 - name: dau
   type: INTEGER
   mode: NULLABLE
+  description: DAU - Daily Active Users
 - name: wau
   type: INTEGER
   mode: NULLABLE
+  description: WAU - Weekly Active Users
 - name: mau
   type: INTEGER
   mode: NULLABLE
+  description: MAU - Monthly Active Users
 - name: lifecycle_stage
   type: STRING
   mode: NULLABLE

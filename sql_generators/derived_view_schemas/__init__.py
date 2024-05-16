@@ -181,7 +181,9 @@ def generate(target_project, output_dir, parallelism, use_cloud_function):
         view_directories = [
             path
             for path in dataset_path.iterdir()
-            if path.is_dir() and (path / VIEW_FILE).exists()
+            if path.is_dir()
+            and (path / VIEW_FILE).exists()
+            and not (path / SCHEMA_FILE).exists()
         ]
 
         with ProcessingPool(parallelism) as pool:

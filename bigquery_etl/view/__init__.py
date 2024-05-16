@@ -182,25 +182,20 @@ class View:
 
         # check schema based on dry run results
         try:
-            client = bigquery.Client()
-            query_job = client.query(
-                # We have to remove `CREATE OR REPLACE VIEW ... AS` from the query to avoid
-                # view creation permission denied errors, and we have to apply a `WHERE FALSE`
-                # filter to avoid partition column filter missing errors.
-                query=dedent(
-                    f"""
-                    WITH view_query AS (
-                        {CREATE_VIEW_PATTERN.sub("", self.content)}
-                    )
-                    SELECT *
-                    FROM view_query
-                    WHERE FALSE
-                    """
-                ),
-                job_config=bigquery.QueryJobConfig(dry_run=True, use_legacy_sql=False),
+            # We have to remove `CREATE OR REPLACE VIEW ... AS` from the query to avoid
+            # view creation permission denied errors, and we have to apply a `WHERE FALSE`
+            # filter to avoid partition column filter missing errors.
+            schema_query = dedent(
+                f"""
+                WITH view_query AS (
+                    {CREATE_VIEW_PATTERN.sub("", self.content)}
+                )
+                SELECT *
+                FROM view_query
+                WHERE FALSE
+                """
             )
-            query_job.result()
-            schema = Schema.from_bigquery_schema(query_job.schema)
+            schema = Schema.from_query_file(Path(self.path), content=schema_query)
         except Exception as e:
             print(f"Error dry-running view {self.view_identifier} to get schema: {e}")
 

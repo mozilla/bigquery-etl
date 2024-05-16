@@ -106,6 +106,7 @@
       `org_mozilla_fenix_nightly_stable.baseline_v1`
     WHERE
       DATE(submission_timestamp) = @submission_date
+      AND client_info.client_id IS NOT NULL -- Bug 1896455
   ),
   _current AS (
     SELECT DISTINCT

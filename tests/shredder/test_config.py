@@ -6,6 +6,7 @@ from google.cloud import bigquery
 from google.cloud.bigquery import DatasetReference
 
 from bigquery_etl.shredder.config import (
+    DELETE_TARGETS,
     DeleteSource,
     DeleteTarget,
     _list_tables,
@@ -309,3 +310,14 @@ def test_list_tables_wrapper_empty():
     tables = _list_tables(DatasetReference("project", "dataset"), EmptyFakeClient())
 
     assert tables == []
+
+
+def test_delete_target_fields_match_sources():
+    """The number of fields in the delete targets should match the number of sources."""
+    for target, sources in DELETE_TARGETS.items():
+        field_count = 1 if isinstance(target.field, str) else len(target.field)
+        source_count = 1 if isinstance(sources, DeleteSource) else len(sources)
+        assert field_count == source_count, (
+            f"Invalid delete target for {target.table}: number of fields in target "
+            f"(found {field_count}) must match number of sources (found {source_count})"
+        )

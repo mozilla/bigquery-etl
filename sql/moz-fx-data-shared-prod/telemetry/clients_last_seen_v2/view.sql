@@ -35,7 +35,7 @@ WITH days_since AS (
     IFNULL(mozfun.bits28.days_since_seen(cls.days_active_bits) < 7, FALSE) AS is_wau,
     IFNULL(mozfun.bits28.days_since_seen(cls.days_active_bits) < 28, FALSE) AS is_mau,
     IFNULL(mozfun.bits28.days_since_seen(cls.days_seen_bits) = 0, FALSE) AS is_daily_user,
-    IFNULL(mozfun.bits28.days_since_seen(cls.days_active_bits) < 7, FALSE) AS is_weekly_user,
+    IFNULL(mozfun.bits28.days_since_seen(cls.days_seen_bits) < 7, FALSE) AS is_weekly_user,
     IFNULL(mozfun.bits28.days_since_seen(cls.days_seen_bits) < 28, FALSE) AS is_monthly_user,
     IF(
       LOWER(IFNULL(cls.isp_name, '')) <> "browserstack"

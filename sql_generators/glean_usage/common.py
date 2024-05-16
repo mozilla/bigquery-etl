@@ -274,7 +274,10 @@ class GleanTable:
         # Schema files are optional
         try:
             schema = render(
-                schema_filename, format=False, template_folder=PATH / "templates", **render_kwargs
+                schema_filename,
+                format=False,
+                template_folder=PATH / "templates",
+                **render_kwargs,
             )
         except TemplateNotFound:
             schema = None
@@ -303,7 +306,7 @@ class GleanTable:
                     )
                 else:
                     artifacts.append(Artifact(table, "checks.sql", checks_sql))
-            
+
             if schema:
                 artifacts.append(Artifact(table, "schema.yaml", schema))
 

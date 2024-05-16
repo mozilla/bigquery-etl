@@ -46,6 +46,8 @@ from ..cli.utils import (
 from ..config import ConfigLoader
 from ..metadata.parse_metadata import METADATA_FILE, Metadata
 
+DEFAULT_BILLING_PROJECT = "moz-fx-data-backfill-slots"
+
 
 @click.group(help="Commands for managing backfills.")
 @click.pass_context
@@ -102,6 +104,7 @@ def backfill(ctx):
     help="Watcher of the backfill (email address)",
     default=DEFAULT_WATCHER,
 )
+@billing_project_option()
 @click.pass_context
 def create(
     ctx,
@@ -111,6 +114,7 @@ def create(
     end_date,
     exclude,
     watcher,
+    billing_project,
 ):
     """CLI command for creating a new backfill entry in backfill.yaml file.
 
@@ -136,6 +140,7 @@ def create(
         reason=DEFAULT_REASON,
         watchers=[watcher],
         status=BackfillStatus.INITIATE,
+        billing_project=billing_project,
     )
 
     validate_duplicate_entry_with_initiate_status(new_entry, existing_backfills)
@@ -364,7 +369,7 @@ def scheduled(ctx, qualified_table_name, sql_dir, project_id, status, json_path=
 @project_id_option(
     ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod")
 )
-@billing_project_option()
+@billing_project_option(default=DEFAULT_BILLING_PROJECT)
 @click.pass_context
 def initiate(
     ctx, qualified_table_name, parallelism, sql_dir, project_id, billing_project
@@ -396,9 +401,14 @@ def initiate(
         destination_table=backfill_staging_qualified_table_name,
     )
 
+    # override with billing project from backfill entry
+    if entry_to_initiate.billing_project is not None:
+        billing_project = entry_to_initiate.billing_project
+
     click.echo(
         f"\nInitiating backfill for {qualified_table_name} with entry date {entry_to_initiate.entry_date} via dry run:"
     )
+
     _initiate_backfill(
         ctx,
         qualified_table_name,
@@ -433,7 +443,7 @@ def _initiate_backfill(
     entry: Backfill,
     parallelism: int = 16,
     dry_run: bool = False,
-    billing_project=None,
+    billing_project=DEFAULT_BILLING_PROJECT,
 ):
     if not is_authenticated():
         click.echo(

@@ -69,6 +69,7 @@ class Backfill:
     reason: str = attr.ib()
     watchers: List[str] = attr.ib()
     status: BackfillStatus = attr.ib()
+    billing_project: Optional[str] = attr.ib(None)
 
     def __str__(self):
         """Return print friendly string of backfill object."""
@@ -147,6 +148,14 @@ class Backfill:
         if not hasattr(BackfillStatus, value.name):
             raise ValueError(f"Invalid status: {value.name}.")
 
+    @billing_project.validator
+    def validate_billing_project(self, attribute, value):
+        """Check that billing project is valid."""
+        if value and not value.startswith("moz-fx-data-backfill-"):
+            raise ValueError(
+                f"Invalid billing project: {value}.  Please use one of the projects assigned to backfills."
+            )
+
     @staticmethod
     def is_backfill_file(file_path: Path) -> bool:
         """Check if the provided file is a backfill file."""
@@ -181,6 +190,10 @@ class Backfill:
                     if "excluded_dates" in entry:
                         excluded_dates = entry["excluded_dates"]
 
+                    billing_project = None
+                    if "billing_project" in entry:
+                        billing_project = entry["billing_project"]
+
                     backfill = cls(
                         entry_date=entry_date,
                         start_date=entry["start_date"],
@@ -189,6 +202,7 @@ class Backfill:
                         reason=entry["reason"],
                         watchers=entry["watchers"],
                         status=BackfillStatus[entry["status"].upper()],
+                        billing_project=billing_project,
                     )
 
                     backfill_entries.append(backfill)
@@ -208,11 +222,15 @@ class Backfill:
                 "reason": self.reason,
                 "watchers": self.watchers,
                 "status": self.status.value,
+                "billing_project": self.billing_project,
             }
         }
 
         if yaml_dict[self.entry_date]["excluded_dates"] == []:
             del yaml_dict[self.entry_date]["excluded_dates"]
+
+        if yaml_dict[self.entry_date]["billing_project"] is None:
+            del yaml_dict[self.entry_date]["billing_project"]
 
         return yaml.dump(
             yaml_dict,

@@ -103,6 +103,24 @@ DATASET_METADATA_CONF_EMPTY_WORKGROUP = {
     "default_table_workgroup_access": VALID_WORKGROUP_ACCESS,
 }
 
+PARTITIONED_TABLE_METADATA = {
+    "friendly_name": "test",
+    "description": "test",
+    "owners": ["test@example.org"],
+    "workgroup_access": VALID_WORKGROUP_ACCESS,
+    "bigquery": {
+        "time_partitioning": {
+            "type": "day",
+            "field": "submission_date",
+            "require_partition_filter": True,
+        }
+    },
+}
+
+DEFAULT_BILLING_PROJECT = "moz-fx-data-backfill-slots"
+VALID_BILLING_PROJECT = "moz-fx-data-backfill-1"
+INVALID_BILLING_PROJECT = "mozdata"
+
 
 class TestBackfill:
     @pytest.fixture
@@ -152,6 +170,86 @@ class TestBackfill:
             assert backfill.watchers == [DEFAULT_WATCHER]
             assert backfill.reason == DEFAULT_REASON
             assert backfill.status == DEFAULT_STATUS
+            assert backfill.billing_project is None
+
+    def test_create_backfill_with_billing_project(self, runner):
+        with runner.isolated_filesystem():
+            SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v1"
+            os.makedirs(SQL_DIR)
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/query.sql", "w"
+            ) as f:
+                f.write("SELECT 1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(TABLE_METADATA_CONF))
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
+            ) as f:
+                f.write(yaml.dump(DATASET_METADATA_CONF))
+
+            result = runner.invoke(
+                create,
+                [
+                    "moz-fx-data-shared-prod.test.test_query_v1",
+                    "--start_date=2021-03-01",
+                    f"--billing_project={VALID_BILLING_PROJECT}",
+                ],
+            )
+
+            assert result.exit_code == 0
+            assert BACKFILL_FILE in os.listdir(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1"
+            )
+
+            backfill_file = SQL_DIR + "/" + BACKFILL_FILE
+            backfill = Backfill.entries_from_file(backfill_file)[0]
+
+            assert backfill.entry_date == date.today()
+            assert backfill.start_date == date(2021, 3, 1)
+            assert backfill.end_date == date.today()
+            assert backfill.watchers == [DEFAULT_WATCHER]
+            assert backfill.reason == DEFAULT_REASON
+            assert backfill.status == DEFAULT_STATUS
+            assert backfill.billing_project == VALID_BILLING_PROJECT
+
+    def test_create_backfill_with_invalid_billing_project_should_fail(self, runner):
+        with runner.isolated_filesystem():
+            SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v1"
+            os.makedirs(SQL_DIR)
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/query.sql", "w"
+            ) as f:
+                f.write("SELECT 1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(TABLE_METADATA_CONF))
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
+            ) as f:
+                f.write(yaml.dump(DATASET_METADATA_CONF))
+
+            result = runner.invoke(
+                create,
+                [
+                    "moz-fx-data-shared-prod.test.test_query_v1",
+                    "--start_date=2021-03-01",
+                    f"--billing_project={INVALID_BILLING_PROJECT}",
+                ],
+            )
+
+            assert result.exit_code == 1
+            assert "Invalid billing project" in str(result.exception)
 
     def test_create_backfill_depends_on_past_should_fail(self, runner):
         with runner.isolated_filesystem():
@@ -442,7 +540,7 @@ class TestBackfill:
             assert backfills[1] == backfill_entry_1
             assert backfills[0] == backfill_entry_2
 
-    def test_create_backfill_with_exsting_entry_with_initiate_status_should_fail(
+    def test_create_backfill_with_existing_entry_with_initiate_status_should_fail(
         self, runner
     ):
         with runner.isolated_filesystem():
@@ -534,6 +632,79 @@ class TestBackfill:
                 ],
             )
             assert result.exit_code == 0
+
+    def test_validate_backfill_with_billing_project(self, runner):
+        with runner.isolated_filesystem():
+            SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v1"
+            os.makedirs(SQL_DIR)
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/query.sql", "w"
+            ) as f:
+                f.write("SELECT 1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(TABLE_METADATA_CONF))
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
+            ) as f:
+                f.write(yaml.dump(DATASET_METADATA_CONF))
+
+            backfill_file = Path(SQL_DIR) / BACKFILL_FILE
+            backfill_text = (
+                BACKFILL_YAML_TEMPLATE + f"  billing_project: {VALID_BILLING_PROJECT}"
+            )
+            backfill_file.write_text(backfill_text)
+            assert BACKFILL_FILE in os.listdir(SQL_DIR)
+
+            result = runner.invoke(
+                validate,
+                [
+                    "moz-fx-data-shared-prod.test.test_query_v1",
+                ],
+            )
+            assert result.exit_code == 0
+
+    def test_validate_backfill_with_invalid_billing_project_should_fail(self, runner):
+        with runner.isolated_filesystem():
+            SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v1"
+            os.makedirs(SQL_DIR)
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/query.sql", "w"
+            ) as f:
+                f.write("SELECT 1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(TABLE_METADATA_CONF))
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
+            ) as f:
+                f.write(yaml.dump(DATASET_METADATA_CONF))
+
+            backfill_file = Path(SQL_DIR) / BACKFILL_FILE
+            backfill_text = (
+                BACKFILL_YAML_TEMPLATE + f"  billing_project: {INVALID_BILLING_PROJECT}"
+            )
+            backfill_file.write_text(backfill_text)
+            assert BACKFILL_FILE in os.listdir(SQL_DIR)
+
+            result = runner.invoke(
+                validate,
+                [
+                    "moz-fx-data-shared-prod.test.test_query_v1",
+                ],
+            )
+            assert result.exit_code == 1
+            assert "Invalid billing project" in str(result.exception)
 
     def test_validate_backfill_depends_on_past_should_fail(self, runner):
         with runner.isolated_filesystem():
@@ -1993,20 +2164,6 @@ class TestBackfill:
         copy_table.side_effect = None
         delete_table.side_effect = None
 
-        partitioned_table_metadata = {
-            "friendly_name": "test",
-            "description": "test",
-            "owners": ["test@example.org"],
-            "workgroup_access": VALID_WORKGROUP_ACCESS,
-            "bigquery": {
-                "time_partitioning": {
-                    "type": "day",
-                    "field": "submission_date",
-                    "require_partition_filter": True,
-                }
-            },
-        }
-
         with runner.isolated_filesystem():
             SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v1"
             os.makedirs(SQL_DIR)
@@ -2020,7 +2177,7 @@ class TestBackfill:
                 "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
                 "w",
             ) as f:
-                f.write(yaml.dump(partitioned_table_metadata))
+                f.write(yaml.dump(PARTITIONED_TABLE_METADATA))
 
             with open(
                 "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
@@ -2068,20 +2225,6 @@ class TestBackfill:
             None,  # Check that production data exists
         ]
 
-        partitioned_table_metadata = {
-            "friendly_name": "test",
-            "description": "test",
-            "owners": ["test@example.org"],
-            "workgroup_access": VALID_WORKGROUP_ACCESS,
-            "bigquery": {
-                "time_partitioning": {
-                    "type": "day",
-                    "field": "submission_date",
-                    "require_partition_filter": True,
-                }
-            },
-        }
-
         with runner.isolated_filesystem():
             SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v1"
             os.makedirs(SQL_DIR)
@@ -2095,7 +2238,7 @@ class TestBackfill:
                 "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
                 "w",
             ) as f:
-                f.write(yaml.dump(partitioned_table_metadata))
+                f.write(yaml.dump(PARTITIONED_TABLE_METADATA))
 
             with open(
                 "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
@@ -2133,3 +2276,266 @@ class TestBackfill:
                 ]
                 assert len(submission_date_params) == 1
                 assert submission_date_params[0] in expected_submission_date_params
+                assert f"--project_id={DEFAULT_BILLING_PROJECT}" in call.args[0]
+
+    @patch("google.cloud.bigquery.Client.get_table")
+    @patch("subprocess.check_call")
+    def test_initiate_partitioned_backfill_with_billing_project(
+        self, check_call, get_table, runner
+    ):
+        get_table.side_effect = [
+            NotFound(  # Check that staging data does not exist
+                "moz-fx-data-shared-prod.backfills_staging_derived.test_query_v1_backup_2021_05_03"
+                "not found"
+            ),
+            None,  # Check that production data exists during dry run
+            None,  # Check that production data exists
+        ]
+
+        with runner.isolated_filesystem():
+            SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v1"
+            os.makedirs(SQL_DIR)
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/query.sql", "w"
+            ) as f:
+                f.write("SELECT 1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(PARTITIONED_TABLE_METADATA))
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
+            ) as f:
+                f.write(yaml.dump(DATASET_METADATA_CONF_EMPTY_WORKGROUP))
+
+            backfill_file = Path(SQL_DIR) / BACKFILL_FILE
+            backfill_file.write_text(
+                """
+2021-05-03:
+  start_date: 2021-01-03
+  end_date: 2021-01-08
+  reason: test_reason
+  watchers:
+  - test@example.org
+  status: Initiate"""
+            )
+
+            result = runner.invoke(
+                initiate,
+                [
+                    "moz-fx-data-shared-prod.test.test_query_v1",
+                    "--parallelism=0",
+                    f"--billing_project={VALID_BILLING_PROJECT}",
+                ],
+            )
+
+            assert result.exit_code == 0
+
+            expected_submission_date_params = [
+                f"--parameter=submission_date:DATE:2021-01-0{day}"
+                for day in range(3, 9)
+            ]
+
+            assert check_call.call_count == 12  # 6 for dry run, 6 for backfill
+            for call in check_call.call_args_list:
+                submission_date_params = [
+                    arg for arg in call.args[0] if "--parameter=submission_date" in arg
+                ]
+                assert len(submission_date_params) == 1
+                assert submission_date_params[0] in expected_submission_date_params
+                assert f"--project_id={VALID_BILLING_PROJECT}" in call.args[0]
+
+        @patch("google.cloud.bigquery.Client.get_table")
+        @patch("subprocess.check_call")
+        def test_initiate_partitioned_backfill_with_invalid_billing_project_should_fail(
+            self, check_call, get_table, runner
+        ):
+            get_table.side_effect = [
+                NotFound(  # Check that staging data does not exist
+                    "moz-fx-data-shared-prod.backfills_staging_derived.test_query_v1_backup_2021_05_03"
+                    "not found"
+                ),
+                None,  # Check that production data exists during dry run
+                None,  # Check that production data exists
+            ]
+
+            with runner.isolated_filesystem():
+                SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v1"
+                os.makedirs(SQL_DIR)
+
+                with open(
+                    "sql/moz-fx-data-shared-prod/test/test_query_v1/query.sql", "w"
+                ) as f:
+                    f.write("SELECT 1")
+
+                with open(
+                    "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
+                    "w",
+                ) as f:
+                    f.write(yaml.dump(PARTITIONED_TABLE_METADATA))
+
+                with open(
+                    "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
+                ) as f:
+                    f.write(yaml.dump(DATASET_METADATA_CONF_EMPTY_WORKGROUP))
+
+                backfill_file = Path(SQL_DIR) / BACKFILL_FILE
+                backfill_file.write_text(
+                    """
+    2021-05-03:
+      start_date: 2021-01-03
+      end_date: 2021-01-08
+      reason: test_reason
+      watchers:
+      - test@example.org
+      status: Initiate"""
+                )
+
+                result = runner.invoke(
+                    initiate,
+                    [
+                        "moz-fx-data-shared-prod.test.test_query_v1",
+                        "--parallelism=0",
+                        f"--billing_project={INVALID_BILLING_PROJECT}",
+                    ],
+                )
+
+                assert result.exit_code == 1
+                assert "Invalid billing project" in str(result.exception)
+
+    @patch("google.cloud.bigquery.Client.get_table")
+    @patch("subprocess.check_call")
+    def test_initiate_partitioned_backfill_with_billing_project_override(
+        self, check_call, get_table, runner
+    ):
+        get_table.side_effect = [
+            NotFound(  # Check that staging data does not exist
+                "moz-fx-data-shared-prod.backfills_staging_derived.test_query_v1_backup_2021_05_03"
+                "not found"
+            ),
+            None,  # Check that production data exists during dry run
+            None,  # Check that production data exists
+        ]
+
+        with runner.isolated_filesystem():
+            SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v1"
+            os.makedirs(SQL_DIR)
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/query.sql", "w"
+            ) as f:
+                f.write("SELECT 1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(PARTITIONED_TABLE_METADATA))
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
+            ) as f:
+                f.write(yaml.dump(DATASET_METADATA_CONF_EMPTY_WORKGROUP))
+
+            backfill_file = Path(SQL_DIR) / BACKFILL_FILE
+            backfill_file.write_text(
+                f"""
+2021-05-03:
+  start_date: 2021-01-03
+  end_date: 2021-01-08
+  reason: test_reason
+  watchers:
+  - test@example.org
+  status: Initiate
+  billing_project: {VALID_BILLING_PROJECT}
+  """
+            )
+
+            result = runner.invoke(
+                initiate,
+                [
+                    "moz-fx-data-shared-prod.test.test_query_v1",
+                    "--parallelism=0",
+                    f"--billing_project={INVALID_BILLING_PROJECT}",
+                ],
+            )
+
+            assert result.exit_code == 0
+
+            expected_submission_date_params = [
+                f"--parameter=submission_date:DATE:2021-01-0{day}"
+                for day in range(3, 9)
+            ]
+
+            assert check_call.call_count == 12  # 6 for dry run, 6 for backfill
+            for call in check_call.call_args_list:
+                submission_date_params = [
+                    arg for arg in call.args[0] if "--parameter=submission_date" in arg
+                ]
+                assert len(submission_date_params) == 1
+                assert submission_date_params[0] in expected_submission_date_params
+                assert f"--project_id={VALID_BILLING_PROJECT}" in call.args[0]
+
+    @patch("google.cloud.bigquery.Client.get_table")
+    @patch("subprocess.check_call")
+    def test_initiate_partitioned_backfill_with_invalid_billing_project_override_should_fail(
+        self, check_call, get_table, runner
+    ):
+        get_table.side_effect = [
+            NotFound(  # Check that staging data does not exist
+                "moz-fx-data-shared-prod.backfills_staging_derived.test_query_v1_backup_2021_05_03"
+                "not found"
+            ),
+            None,  # Check that production data exists during dry run
+            None,  # Check that production data exists
+        ]
+
+        with runner.isolated_filesystem():
+            SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v1"
+            os.makedirs(SQL_DIR)
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/query.sql", "w"
+            ) as f:
+                f.write("SELECT 1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(PARTITIONED_TABLE_METADATA))
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
+            ) as f:
+                f.write(yaml.dump(DATASET_METADATA_CONF_EMPTY_WORKGROUP))
+
+            backfill_file = Path(SQL_DIR) / BACKFILL_FILE
+            backfill_file.write_text(
+                f"""
+2021-05-03:
+  start_date: 2021-01-03
+  end_date: 2021-01-08
+  reason: test_reason
+  watchers:
+  - test@example.org
+  status: Initiate
+  billing_project: {INVALID_BILLING_PROJECT}
+  """
+            )
+
+            result = runner.invoke(
+                initiate,
+                [
+                    "moz-fx-data-shared-prod.test.test_query_v1",
+                    "--parallelism=0",
+                    f"--billing_project={VALID_BILLING_PROJECT}",
+                ],
+            )
+
+            assert result.exit_code == 1
+            assert "Invalid billing project" in str(result.exception)

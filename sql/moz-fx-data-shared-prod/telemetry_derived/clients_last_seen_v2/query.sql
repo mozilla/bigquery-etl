@@ -108,8 +108,10 @@ _previous AS (
     submission_date = DATE_SUB(@submission_date, INTERVAL 1 DAY)
     -- Filter out rows from yesterday that have now fallen outside the 28-day window.
     AND udf.shift_28_bits_one_day(days_seen_bits) > 0
-)
---
+),
+
+staging AS (
+
 SELECT
   @submission_date AS submission_date,
   IF(cfs.first_seen_date > @submission_date, NULL, cfs.first_seen_date) AS first_seen_date,
@@ -172,3 +174,9 @@ FULL JOIN
 LEFT JOIN
   clients_first_seen_v2 AS cfs
   USING (client_id)
+) 
+
+SELECT a.* 
+EXCEPT (days_active_bits),
+days_active_bits
+FROM staging  a

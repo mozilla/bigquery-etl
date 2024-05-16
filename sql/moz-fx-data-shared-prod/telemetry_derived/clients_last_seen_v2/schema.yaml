@@ -9,8 +9,7 @@ fields:
 - mode: NULLABLE
   name: second_seen_date
   type: DATE
-- description: Bit pattern to identify when the client_id has sent a main ping in the previous 28 days.
-  mode: NULLABLE
+- mode: NULLABLE
   name: days_seen_bits
   type: INTEGER
 - mode: NULLABLE
@@ -200,6 +199,12 @@ fields:
   - mode: NULLABLE
     name: dltoken
     type: STRING
+  - mode: NULLABLE
+    name: dlsource
+    type: STRING
+  - name: ua
+    type: STRING
+    mode: NULLABLE
   mode: NULLABLE
   name: attribution
   type: RECORD
@@ -2347,7 +2352,45 @@ fields:
   - name: value
     type: INTEGER
     mode: NULLABLE
-- description: Bit pattern to identify when the client_id has sent a main ping & also qualifies as active in the previous 28 days.
-  name: days_active_bits
+- name: startup_profile_selection_reason_first
+  type: STRING
+  mode: NULLABLE
+- name: first_document_id
+  type: STRING
+  mode: NULLABLE
+- name: partner_id
+  type: STRING
+  mode: NULLABLE
+- name: distribution_version
+  type: STRING
+  mode: NULLABLE
+- name: distributor
+  type: STRING
+  mode: NULLABLE
+- name: distributor_channel
+  type: STRING
+  mode: NULLABLE
+- name: env_build_platform_version
+  type: STRING
+  mode: NULLABLE
+- name: env_build_xpcom_abi
+  type: STRING
+  mode: NULLABLE
+- name: geo_db_version
+  type: STRING
+  mode: NULLABLE
+- name: apple_model_id
+  type: STRING
+  mode: NULLABLE
+- name: max_subsession_counter
+  type: INTEGER
+  mode: NULLABLE
+- name: min_subsession_counter
+  type: INTEGER
+  mode: NULLABLE
+- name: startup_profile_selection_first_ping_only
+  type: STRING
+  mode: NULLABLE
+- name: days_active_bits
   type: INTEGER
   mode: NULLABLE

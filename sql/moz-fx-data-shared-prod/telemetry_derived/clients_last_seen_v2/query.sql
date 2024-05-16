@@ -109,74 +109,72 @@ _previous AS (
     -- Filter out rows from yesterday that have now fallen outside the 28-day window.
     AND udf.shift_28_bits_one_day(days_seen_bits) > 0
 ),
-
 staging AS (
-
+  SELECT
+    @submission_date AS submission_date,
+    IF(cfs.first_seen_date > @submission_date, NULL, cfs.first_seen_date) AS first_seen_date,
+    IF(cfs.second_seen_date > @submission_date, NULL, cfs.second_seen_date) AS second_seen_date,
+    IF(_current.client_id IS NOT NULL, _current, _previous).* REPLACE (
+      udf.combine_adjacent_days_28_bits(
+        _previous.days_seen_bits,
+        _current.days_seen_bits
+      ) AS days_seen_bits,
+      udf.combine_adjacent_days_28_bits(
+        _previous.days_active_bits,
+        _current.days_active_bits
+      ) AS days_active_bits,
+      udf.combine_adjacent_days_28_bits(
+        _previous.days_visited_1_uri_bits,
+        _current.days_visited_1_uri_bits
+      ) AS days_visited_1_uri_bits,
+      udf.combine_adjacent_days_28_bits(
+        _previous.days_visited_5_uri_bits,
+        _current.days_visited_5_uri_bits
+      ) AS days_visited_5_uri_bits,
+      udf.combine_adjacent_days_28_bits(
+        _previous.days_visited_10_uri_bits,
+        _current.days_visited_10_uri_bits
+      ) AS days_visited_10_uri_bits,
+      udf.combine_adjacent_days_28_bits(
+        _previous.days_had_8_active_ticks_bits,
+        _current.days_had_8_active_ticks_bits
+      ) AS days_had_8_active_ticks_bits,
+      udf.combine_adjacent_days_28_bits(
+        _previous.days_opened_dev_tools_bits,
+        _current.days_opened_dev_tools_bits
+      ) AS days_opened_dev_tools_bits,
+      udf.combine_adjacent_days_28_bits(
+        _previous.days_interacted_bits,
+        _current.days_interacted_bits
+      ) AS days_interacted_bits,
+      udf.combine_adjacent_days_28_bits(
+        _previous.days_visited_1_uri_normal_mode_bits,
+        _current.days_visited_1_uri_normal_mode_bits
+      ) AS days_visited_1_uri_normal_mode_bits,
+      udf.combine_adjacent_days_28_bits(
+        _previous.days_visited_1_uri_private_mode_bits,
+        _current.days_visited_1_uri_private_mode_bits
+      ) AS days_visited_1_uri_private_mode_bits,
+      udf.coalesce_adjacent_days_28_bits(
+        _previous.days_created_profile_bits,
+        _current.days_created_profile_bits
+      ) AS days_created_profile_bits,
+      udf.combine_experiment_days(
+        _previous.days_seen_in_experiment,
+        _current.days_seen_in_experiment
+      ) AS days_seen_in_experiment
+    )
+  FROM
+    _current
+  FULL JOIN
+    _previous
+    USING (client_id)
+  LEFT JOIN
+    clients_first_seen_v2 AS cfs
+    USING (client_id)
+)
 SELECT
-  @submission_date AS submission_date,
-  IF(cfs.first_seen_date > @submission_date, NULL, cfs.first_seen_date) AS first_seen_date,
-  IF(cfs.second_seen_date > @submission_date, NULL, cfs.second_seen_date) AS second_seen_date,
-  IF(_current.client_id IS NOT NULL, _current, _previous).* REPLACE (
-    udf.combine_adjacent_days_28_bits(
-      _previous.days_seen_bits,
-      _current.days_seen_bits
-    ) AS days_seen_bits,
-    udf.combine_adjacent_days_28_bits(
-      _previous.days_active_bits,
-      _current.days_active_bits
-    ) AS days_active_bits,
-    udf.combine_adjacent_days_28_bits(
-      _previous.days_visited_1_uri_bits,
-      _current.days_visited_1_uri_bits
-    ) AS days_visited_1_uri_bits,
-    udf.combine_adjacent_days_28_bits(
-      _previous.days_visited_5_uri_bits,
-      _current.days_visited_5_uri_bits
-    ) AS days_visited_5_uri_bits,
-    udf.combine_adjacent_days_28_bits(
-      _previous.days_visited_10_uri_bits,
-      _current.days_visited_10_uri_bits
-    ) AS days_visited_10_uri_bits,
-    udf.combine_adjacent_days_28_bits(
-      _previous.days_had_8_active_ticks_bits,
-      _current.days_had_8_active_ticks_bits
-    ) AS days_had_8_active_ticks_bits,
-    udf.combine_adjacent_days_28_bits(
-      _previous.days_opened_dev_tools_bits,
-      _current.days_opened_dev_tools_bits
-    ) AS days_opened_dev_tools_bits,
-    udf.combine_adjacent_days_28_bits(
-      _previous.days_interacted_bits,
-      _current.days_interacted_bits
-    ) AS days_interacted_bits,
-    udf.combine_adjacent_days_28_bits(
-      _previous.days_visited_1_uri_normal_mode_bits,
-      _current.days_visited_1_uri_normal_mode_bits
-    ) AS days_visited_1_uri_normal_mode_bits,
-    udf.combine_adjacent_days_28_bits(
-      _previous.days_visited_1_uri_private_mode_bits,
-      _current.days_visited_1_uri_private_mode_bits
-    ) AS days_visited_1_uri_private_mode_bits,
-    udf.coalesce_adjacent_days_28_bits(
-      _previous.days_created_profile_bits,
-      _current.days_created_profile_bits
-    ) AS days_created_profile_bits,
-    udf.combine_experiment_days(
-      _previous.days_seen_in_experiment,
-      _current.days_seen_in_experiment
-    ) AS days_seen_in_experiment
-  )
+  a.* EXCEPT (days_active_bits),
+  days_active_bits
 FROM
-  _current
-FULL JOIN
-  _previous
-  USING (client_id)
-LEFT JOIN
-  clients_first_seen_v2 AS cfs
-  USING (client_id)
-) 
-
-SELECT a.* 
-EXCEPT (days_active_bits),
-days_active_bits
-FROM staging  a
+  staging a

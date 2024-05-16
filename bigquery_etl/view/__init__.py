@@ -6,6 +6,7 @@ import string
 import time
 from functools import cached_property
 from pathlib import Path
+from textwrap import dedent
 
 import attr
 import sqlparse
@@ -183,7 +184,19 @@ class View:
         try:
             client = bigquery.Client()
             query_job = client.query(
-                query=self.content,
+                # We have to remove `CREATE OR REPLACE VIEW ... AS` from the query to avoid
+                # view creation permission denied errors, and we have to apply a `WHERE FALSE`
+                # filter to avoid partition column filter missing errors.
+                query=dedent(
+                    f"""
+                    WITH view_query AS (
+                        {CREATE_VIEW_PATTERN.sub("", self.content)}
+                    )
+                    SELECT *
+                    FROM view_query
+                    WHERE FALSE
+                    """
+                ),
                 job_config=bigquery.QueryJobConfig(dry_run=True, use_legacy_sql=False),
             )
             query_job.result()

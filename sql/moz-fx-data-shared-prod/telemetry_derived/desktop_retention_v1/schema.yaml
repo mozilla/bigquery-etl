@@ -44,6 +44,18 @@ fields:
   type: STRING
   description: Attribution UA
 - mode: NULLABLE
+  name: attribution_experiment
+  type: STRING
+  description: Attribution Experiment
+- mode: NULLABLE
+  name: attribution_variation
+  type: STRING
+  description: Attribution Variation
+- mode: NULLABLE
+  name: startup_profile_selection_reason
+  type: STRING
+  description: Startup Profile Selection Reason
+- mode: NULLABLE
   name: normalized_os
   type: STRING
   description: Normalized OS

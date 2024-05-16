@@ -10,6 +10,9 @@ SELECT
   attribution_dlsource,
   attribution_medium,
   attribution_ua,
+  attribution_experiment,
+  attribution_variation,
+  startup_profile_selection_reason,
   normalized_os,
   normalized_os_version,
   COUNTIF(ping_sent_metric_date) AS ping_sent_metric_date,
@@ -36,5 +39,8 @@ GROUP BY
   attribution_dlsource,
   attribution_medium,
   attribution_ua,
+  attribution_experiment,
+  attribution_variation,
+  startup_profile_selection_reason,
   normalized_os,
   normalized_os_version

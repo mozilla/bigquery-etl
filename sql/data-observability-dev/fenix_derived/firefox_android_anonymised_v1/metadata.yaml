@@ -22,5 +22,4 @@ bigquery:
   clustering:
     fields:
     - channel
-    - first_reported_country
 references: {}

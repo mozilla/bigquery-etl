@@ -40,10 +40,6 @@ WITH todays_metrics AS (
     is_dau,
     is_wau,
     is_mau,
-    ad_clicks_count_all AS ad_click,
-    search_count_organic AS organic_search_count,
-    search_count_all AS search_count,
-    search_with_ads_count_all AS search_with_ads,
     active_hours_sum
   FROM
     `moz-fx-data-shared-prod.telemetry.clients_last_seen_v2`
@@ -59,10 +55,6 @@ SELECT
     is_dau,
     is_wau,
     is_mau,
-    ad_click,
-    organic_search_count,
-    search_count,
-    search_with_ads,
     uri_count,
     active_hours_sum
   ),
@@ -72,10 +64,6 @@ SELECT
   COUNTIF(is_dau) AS dau,
   COUNTIF(is_wau) AS wau,
   COUNTIF(is_mau) AS mau,
-  SUM(ad_click) AS ad_clicks,
-  SUM(organic_search_count) AS organic_search_count,
-  SUM(search_count) AS search_count,
-  SUM(search_with_ads) AS search_with_ads,
   SUM(uri_count) AS uri_count,
   SUM(active_hours_sum) AS active_hours,
 FROM

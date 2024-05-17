@@ -182,7 +182,7 @@ class View:
 
     @cached_property
     def schema_path(self):
-        """Schema file path."""
+        """Return the schema file path."""
         return Path(self.path).parent / SCHEMA_FILE
 
     @cached_property

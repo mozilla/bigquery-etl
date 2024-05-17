@@ -404,6 +404,11 @@ def initiate(
     # override with billing project from backfill entry
     if entry_to_initiate.billing_project is not None:
         billing_project = entry_to_initiate.billing_project
+    elif not billing_project.startswith("moz-fx-data-backfill-"):
+        raise ValueError(
+            f"Invalid billing project: {billing_project}.  Please use one of the projects assigned to backfills."
+        )
+        sys.exit(1)
 
     click.echo(
         f"\nInitiating backfill for {qualified_table_name} with entry date {entry_to_initiate.entry_date} via dry run:"

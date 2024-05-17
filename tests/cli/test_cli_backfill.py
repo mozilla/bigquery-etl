@@ -2213,10 +2213,10 @@ class TestBackfill:
                 )
             assert delete_table.call_count == 1
 
-    @patch("google.cloud.bigquery.Client.get_table")
+    @patch("google.cloud.bigquery.Client")
     @patch("subprocess.check_call")
-    def test_initiate_partitioned_backfill(self, check_call, get_table, runner):
-        get_table.side_effect = [
+    def test_initiate_partitioned_backfill(self, check_call, mock_client, runner):
+        mock_client().get_table.side_effect = [
             NotFound(  # Check that staging data does not exist
                 "moz-fx-data-shared-prod.backfills_staging_derived.test_query_v1_backup_2021_05_03"
                 "not found"
@@ -2278,12 +2278,12 @@ class TestBackfill:
                 assert submission_date_params[0] in expected_submission_date_params
                 assert f"--project_id={DEFAULT_BILLING_PROJECT}" in call.args[0]
 
-    @patch("google.cloud.bigquery.Client.get_table")
+    @patch("google.cloud.bigquery.Client")
     @patch("subprocess.check_call")
     def test_initiate_partitioned_backfill_with_billing_project(
-        self, check_call, get_table, runner
+        self, check_call, mock_client, runner
     ):
-        get_table.side_effect = [
+        mock_client().get_table.side_effect = [
             NotFound(  # Check that staging data does not exist
                 "moz-fx-data-shared-prod.backfills_staging_derived.test_query_v1_backup_2021_05_03"
                 "not found"
@@ -2349,70 +2349,69 @@ class TestBackfill:
                 assert submission_date_params[0] in expected_submission_date_params
                 assert f"--project_id={VALID_BILLING_PROJECT}" in call.args[0]
 
-        @patch("google.cloud.bigquery.Client.get_table")
-        @patch("subprocess.check_call")
-        def test_initiate_partitioned_backfill_with_invalid_billing_project_should_fail(
-            self, check_call, get_table, runner
-        ):
-            get_table.side_effect = [
-                NotFound(  # Check that staging data does not exist
-                    "moz-fx-data-shared-prod.backfills_staging_derived.test_query_v1_backup_2021_05_03"
-                    "not found"
-                ),
-                None,  # Check that production data exists during dry run
-                None,  # Check that production data exists
-            ]
+    @patch("google.cloud.bigquery.Client")
+    def test_initiate_partitioned_backfill_with_invalid_billing_project_should_fail(
+        self, mock_client, runner
+    ):
+        mock_client().get_table.side_effect = [
+            NotFound(  # Check that staging data does not exist
+                "moz-fx-data-shared-prod.backfills_staging_derived.test_query_v1_backup_2021_05_03"
+                "not found"
+            ),
+            None,  # Check that production data exists during dry run
+            None,  # Check that production data exists
+        ]
 
-            with runner.isolated_filesystem():
-                SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v1"
-                os.makedirs(SQL_DIR)
+        with runner.isolated_filesystem():
+            SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v1"
+            os.makedirs(SQL_DIR)
 
-                with open(
-                    "sql/moz-fx-data-shared-prod/test/test_query_v1/query.sql", "w"
-                ) as f:
-                    f.write("SELECT 1")
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/query.sql", "w"
+            ) as f:
+                f.write("SELECT 1")
 
-                with open(
-                    "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
-                    "w",
-                ) as f:
-                    f.write(yaml.dump(PARTITIONED_TABLE_METADATA))
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(PARTITIONED_TABLE_METADATA))
 
-                with open(
-                    "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
-                ) as f:
-                    f.write(yaml.dump(DATASET_METADATA_CONF_EMPTY_WORKGROUP))
+            with open(
+                "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
+            ) as f:
+                f.write(yaml.dump(DATASET_METADATA_CONF_EMPTY_WORKGROUP))
 
-                backfill_file = Path(SQL_DIR) / BACKFILL_FILE
-                backfill_file.write_text(
-                    """
-    2021-05-03:
-      start_date: 2021-01-03
-      end_date: 2021-01-08
-      reason: test_reason
-      watchers:
-      - test@example.org
-      status: Initiate"""
-                )
+            backfill_file = Path(SQL_DIR) / BACKFILL_FILE
+            backfill_file.write_text(
+                """
+2021-05-03:
+  start_date: 2021-01-03
+  end_date: 2021-01-08
+  reason: test_reason
+  watchers:
+  - test@example.org
+  status: Initiate"""
+            )
 
-                result = runner.invoke(
-                    initiate,
-                    [
-                        "moz-fx-data-shared-prod.test.test_query_v1",
-                        "--parallelism=0",
-                        f"--billing_project={INVALID_BILLING_PROJECT}",
-                    ],
-                )
+            result = runner.invoke(
+                initiate,
+                [
+                    "moz-fx-data-shared-prod.test.test_query_v1",
+                    "--parallelism=0",
+                    f"--billing_project={INVALID_BILLING_PROJECT}",
+                ],
+            )
 
-                assert result.exit_code == 1
-                assert "Invalid billing project" in str(result.exception)
+            assert result.exit_code == 1
+            assert "Invalid billing project" in str(result.exception)
 
-    @patch("google.cloud.bigquery.Client.get_table")
+    @patch("google.cloud.bigquery.Client")
     @patch("subprocess.check_call")
     def test_initiate_partitioned_backfill_with_billing_project_override(
-        self, check_call, get_table, runner
+        self, check_call, mock_client, runner
     ):
-        get_table.side_effect = [
+        mock_client().get_table.side_effect = [
             NotFound(  # Check that staging data does not exist
                 "moz-fx-data-shared-prod.backfills_staging_derived.test_query_v1_backup_2021_05_03"
                 "not found"
@@ -2480,12 +2479,11 @@ class TestBackfill:
                 assert submission_date_params[0] in expected_submission_date_params
                 assert f"--project_id={VALID_BILLING_PROJECT}" in call.args[0]
 
-    @patch("google.cloud.bigquery.Client.get_table")
-    @patch("subprocess.check_call")
+    @patch("google.cloud.bigquery.Client")
     def test_initiate_partitioned_backfill_with_invalid_billing_project_override_should_fail(
-        self, check_call, get_table, runner
+        self, mock_client, runner
     ):
-        get_table.side_effect = [
+        mock_client().get_table.side_effect = [
             NotFound(  # Check that staging data does not exist
                 "moz-fx-data-shared-prod.backfills_staging_derived.test_query_v1_backup_2021_05_03"
                 "not found"

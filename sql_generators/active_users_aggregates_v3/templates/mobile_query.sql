@@ -25,10 +25,8 @@ baseline AS (
     submission_date,
     normalized_channel,
     client_id,
-    days_since_seen,
     days_active_bits,
     days_created_profile_bits,
-    durations,
     normalized_os,
     normalized_os_version,
     locale,
@@ -41,32 +39,92 @@ baseline AS (
     CAST(NULL AS string) AS distribution_id,
     isp,
     app_name,
-    activity_segment AS segment
+    activity_segment AS segment,
+    is_daily_user,
+    is_weekly_user,
+    is_monthly_user,
+    is_dau,
+    is_wau,
+    is_mau
   FROM
     `{{ project_id }}.{{ app_name }}.baseline_clients_last_seen`
   WHERE
     submission_date = @submission_date
 ),
 metrics AS (
-  SELECT
-    submission_date,
-    client_id,
-    normalized_channel,
-    uri_count,
-    is_default_browser
-  FROM
-    `{{ project_id }}.{{ app_name }}.metrics_clients_last_seen`
-  WHERE
-    submission_date = DATE_ADD(
-      @submission_date,
-      INTERVAL 1 DAY
-    ) -- Metrics ping usually arrives 1 day after baseline ping.
+    -- Metrics ping can arrive either in the same or next day as the baseline ping.
+    WITH min_metrics_ping AS
+    (
+      SELECT
+        client_id,
+        MIN(submission_date) AS submission_date
+      FROM
+        `moz-fx-data-shared-prod.focus_android.metrics_clients_last_seen`
+      WHERE
+        submission_date BETWEEN @submission_date AND DATE_ADD(
+          @submission_date,
+          INTERVAL 1 DAY)
+        GROUP BY client_id
+    )
+    SELECT
+      client_id,
+      submission_date,
+      metrics.normalized_channel,
+      metrics.uri_count,
+      metrics.is_default_browser
+    FROM
+      `moz-fx-data-shared-prod.focus_android.metrics_clients_last_seen` AS metrics
+    INNER JOIN min_metrics_ping USING (client_id, submission_date)
+    WHERE submission_date BETWEEN @submission_date AND DATE_ADD(
+          @submission_date,
+          INTERVAL 1 DAY)
 ),
 unioned AS (
   SELECT
-    baseline.*,
+    baseline.client_id,
+    baseline.segment,
+    baseline.app_name,
+    baseline.app_display_version AS app_version,
+    baseline.normalized_channel,
+    IFNULL(baseline.country, '??') country,
+    baseline.city,
+    baseline.days_created_profile_bits,
+    baseline.device_model,
+    baseline.isp,
+    baseline.is_new_profile,
+    baseline.locale,
+    baseline.first_seen_date,
+    baseline.normalized_os,
+    baseline.normalized_os_version,
+    COALESCE(
+      SAFE_CAST(NULLIF(SPLIT(baseline.normalized_os_version, ".")[SAFE_OFFSET(0)], "") AS INTEGER),
+      0
+    ) AS os_version_major,
+    COALESCE(
+      SAFE_CAST(NULLIF(SPLIT(baseline.normalized_os_version, ".")[SAFE_OFFSET(1)], "") AS INTEGER),
+      0
+    ) AS os_version_minor,
+    COALESCE(
+      SAFE_CAST(NULLIF(SPLIT(baseline.normalized_os_version, ".")[SAFE_OFFSET(2)], "") AS INTEGER),
+      0
+    ) AS os_version_patch,
+    baseline.submission_date,
+    metrics.uri_count,
     metrics.is_default_browser,
-    metrics.uri_count
+    baseline.distribution_id,
+    CAST(NULL AS string) AS attribution_content,
+    CAST(NULL AS string) AS attribution_source,
+    CAST(NULL AS string) AS attribution_medium,
+    CAST(NULL AS string) AS attribution_campaign,
+    CAST(NULL AS string) AS attribution_experiment,
+    CAST(NULL AS string) AS attribution_variation,
+    CAST(NULL AS FLOAT64) AS active_hours_sum,
+    is_daily_user,
+    is_weekly_user,
+    is_monthly_user,
+    is_dau,
+    is_wau,
+    is_mau
   FROM
     baseline
   LEFT JOIN
@@ -74,92 +132,7 @@ unioned AS (
     ON baseline.client_id = metrics.client_id
     AND baseline.normalized_channel IS NOT DISTINCT FROM metrics.normalized_channel
 ),
-search_clients AS (
-  SELECT
-    client_id,
-    submission_date,
-    ad_click,
-    organic,
-    search_count,
-    search_with_ads
-  FROM
-    `moz-fx-data-shared-prod.search_derived.mobile_search_clients_daily_v1`
-  WHERE
-    submission_date = @submission_date
-),
-search_metrics AS (
-  SELECT
-    unioned.client_id,
-    unioned.submission_date,
-    SUM(ad_click) AS ad_clicks,
-    SUM(organic) AS organic_search_count,
-    SUM(search_count) AS search_count,
-    SUM(search_with_ads) AS search_with_ads
-  FROM
-    unioned
-  LEFT JOIN
-    search_clients s
-    ON unioned.client_id = s.client_id
-    AND unioned.submission_date = s.submission_date
-  GROUP BY
-    client_id,
-    submission_date
-),
-unioned_with_searches AS (
-  SELECT
-    unioned.client_id,
-    unioned.segment,
-    unioned.app_name,
-    unioned.app_display_version AS app_version,
-    unioned.normalized_channel,
-    IFNULL(country, '??') country,
-    unioned.city,
-    unioned.days_created_profile_bits,
-    DATE_DIFF(unioned.submission_date, unioned.first_seen_date, DAY) AS days_since_first_seen,
-    unioned.device_model,
-    unioned.isp,
-    unioned.is_new_profile,
-    unioned.locale,
-    unioned.first_seen_date,
-    unioned.days_since_seen,
-    unioned.normalized_os,
-    unioned.normalized_os_version,
-    COALESCE(
-      SAFE_CAST(NULLIF(SPLIT(unioned.normalized_os_version, ".")[SAFE_OFFSET(0)], "") AS INTEGER),
-      0
-    ) AS os_version_major,
-    COALESCE(
-      SAFE_CAST(NULLIF(SPLIT(unioned.normalized_os_version, ".")[SAFE_OFFSET(1)], "") AS INTEGER),
-      0
-    ) AS os_version_minor,
-    COALESCE(
-      SAFE_CAST(NULLIF(SPLIT(unioned.normalized_os_version, ".")[SAFE_OFFSET(2)], "") AS INTEGER),
-      0
-    ) AS os_version_patch,
-    unioned.durations AS durations,
-    unioned.submission_date,
-    unioned.uri_count,
-    unioned.is_default_browser,
-    unioned.distribution_id,
-    CAST(NULL AS string) AS attribution_content,
-    CAST(NULL AS string) AS attribution_source,
-    CAST(NULL AS string) AS attribution_medium,
-    CAST(NULL AS string) AS attribution_campaign,
-    CAST(NULL AS string) AS attribution_experiment,
-    CAST(NULL AS string) AS attribution_variation,
-    search.ad_clicks,
-    search.organic_search_count,
-    search.search_count,
-    search.search_with_ads,
-    CAST(NULL AS FLOAT64) AS active_hours_sum
-  FROM
-    unioned
-  LEFT JOIN
-    search_metrics search
-    ON search.client_id = unioned.client_id
-    AND search.submission_date = unioned.submission_date
-),
-unioned_with_searches_and_attribution AS (
+unioned_with_attribution AS (
   SELECT
     unioned.*,
     {% if app_name == "fenix" or  app_name == "firefox_ios" %}
@@ -170,7 +143,7 @@ unioned_with_searches_and_attribution AS (
       CAST(NULL AS STRING) AS adjust_network
     {% endif %}
   FROM
-    unioned_with_searches unioned
+    unioned
     {% if app_name == "fenix" or  app_name == "firefox_ios" %}
       LEFT JOIN
         attribution_data
@@ -197,34 +170,32 @@ todays_metrics AS (
     normalized_os_version AS os_version,
     os_version_major,
     os_version_minor,
-    durations,
     submission_date,
-    days_since_seen,
     client_id,
-    first_seen_date,
-    ad_clicks,
-    organic_search_count,
-    search_count,
-    search_with_ads,
     uri_count,
     active_hours_sum,
     adjust_network,
-    install_source
+    install_source,
+    is_daily_user,
+    is_weekly_user,
+    is_monthly_user,
+    is_dau,
+    is_wau,
+    is_mau
   FROM
-    unioned_with_searches_and_attribution
+    unioned_with_attribution
 )
 SELECT
   todays_metrics.* EXCEPT (
     client_id,
-    days_since_seen,
-    ad_clicks,
-    organic_search_count,
-    search_count,
-    search_with_ads,
+    is_daily_user,
+    is_weekly_user,
+    is_monthly_user,
+    is_dau,
+    is_wau,
+    is_mau,
     uri_count,
-    active_hours_sum,
-    first_seen_date,
-    durations
+    active_hours_sum
   ),
   COUNTIF(is_daily_user) AS daily_users,
   COUNTIF(is_weekly_user) AS weekly_users,
@@ -232,10 +203,6 @@ SELECT
   COUNTIF(is_dau) AS dau,
   COUNTIF(is_wau) AS wau,
   COUNTIF(is_mau) AS mau,
-  SUM(ad_clicks) AS ad_clicks,
-  SUM(organic_search_count) AS organic_search_count,
-  SUM(search_count) AS search_count,
-  SUM(search_with_ads) AS search_with_ads,
   SUM(uri_count) AS uri_count,
   SUM(active_hours_sum) AS active_hours,
 FROM

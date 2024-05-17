@@ -17,9 +17,6 @@ fields:
 - name: city
   type: STRING
   mode: NULLABLE
-- name: locale
-  type: STRING
-  mode: NULLABLE
 - name: first_seen_year
   type: INTEGER
   mode: NULLABLE
@@ -53,6 +50,9 @@ fields:
 - name: attributed
   type: BOOLEAN
   mode: NULLABLE
+- name: language_name
+  type: STRING
+  mode: NULLABLE
 - name: daily_users
   type: INTEGER
   mode: NULLABLE
@@ -65,10 +65,19 @@ fields:
 - name: dau
   type: INTEGER
   mode: NULLABLE
-- name: wau
+- name: new_profiles
   type: INTEGER
   mode: NULLABLE
-- name: mau
+- name: ad_clicks
+  type: INTEGER
+  mode: NULLABLE
+- name: organic_search_count
+  type: INTEGER
+  mode: NULLABLE
+- name: search_count
+  type: INTEGER
+  mode: NULLABLE
+- name: search_with_ads
   type: INTEGER
   mode: NULLABLE
 - name: uri_count

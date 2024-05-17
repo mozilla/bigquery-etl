@@ -48,7 +48,7 @@ WITH baseline AS (
     CAST(NULL AS string) AS distribution_id,
     isp,
     app_name,
-    activity_segment AS segment,
+    segment,
     is_daily_user,
     is_weekly_user,
     is_monthly_user,

@@ -99,7 +99,19 @@ def generate_all(ctx, output_dir, target_project, ignore, use_cloud_function):
     """Run all SQL generators."""
     click.echo(f"Generating SQL content in {output_dir}.")
     click.echo(ROOT / SQL_GENERATORS_DIR)
-    for _, cmd in reversed(generate.commands.items()):
+
+    def generator_command_sort_key(command):
+        match command.name:
+            # Run `stable_views` after `glean_usage` because both update `dataset_metadata.yaml` files
+            # and we want the `stable_views` updates to take precedence.
+            case "glean_usage":
+                return (1, command.name)
+            case "stable_views":
+                return (2, command.name)
+            case _:
+                return (3, command.name)
+
+    for cmd in sorted(generate.commands.values(), key=generator_command_sort_key):
         if cmd.name != "all" and cmd.name not in ignore:
             ctx.invoke(
                 cmd,

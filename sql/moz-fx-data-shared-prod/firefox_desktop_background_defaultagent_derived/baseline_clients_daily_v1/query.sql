@@ -23,6 +23,7 @@ WITH base AS (
     normalized_channel,
     normalized_os,
     normalized_os_version,
+    metrics.string.metrics_distribution_id AS distribution_id,
   FROM
     `firefox_desktop_background_defaultagent_stable.baseline_v1`
   -- Baseline pings with 'foreground' reason were first introduced in early April 2020;
@@ -89,6 +90,7 @@ windowed AS (
     udf.mode_last(ARRAY_AGG(device_manufacturer) OVER w1) AS device_manufacturer,
     udf.mode_last(ARRAY_AGG(device_model) OVER w1) AS device_model,
     udf.mode_last(ARRAY_AGG(telemetry_sdk_build) OVER w1) AS telemetry_sdk_build,
+    udf.mode_last(ARRAY_AGG(distribution_id) OVER w1) AS distribution_id,
   FROM
     with_date_offsets
   WHERE

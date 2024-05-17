@@ -62,31 +62,34 @@ WITH baseline AS (
 ),
 metrics AS (
   -- Metrics ping can arrive either in the same or next day as the baseline ping.
-    WITH min_metrics_ping AS
-    (
-      SELECT
-        client_id,
-        MIN(submission_date) AS submission_date
-      FROM
-        `moz-fx-data-shared-prod.focus_android.metrics_clients_last_seen`
-      WHERE
-        submission_date BETWEEN @submission_date AND DATE_ADD(
-          @submission_date,
-          INTERVAL 1 DAY)
-        GROUP BY client_id
-    )
+  WITH min_metrics_ping AS (
     SELECT
       client_id,
-      submission_date,
-      metrics.normalized_channel,
-      metrics.uri_count,
-      metrics.is_default_browser
+      MIN(submission_date) AS submission_date
     FROM
-      `moz-fx-data-shared-prod.focus_android.metrics_clients_last_seen` AS metrics
-    INNER JOIN min_metrics_ping USING (client_id, submission_date)
-    WHERE submission_date BETWEEN @submission_date AND DATE_ADD(
-          @submission_date,
-          INTERVAL 1 DAY)
+      `moz-fx-data-shared-prod.focus_android.metrics_clients_last_seen`
+    WHERE
+      submission_date
+      BETWEEN @submission_date
+      AND DATE_ADD(@submission_date, INTERVAL 1 DAY)
+    GROUP BY
+      client_id
+  )
+  SELECT
+    client_id,
+    submission_date,
+    metrics.normalized_channel,
+    metrics.uri_count,
+    metrics.is_default_browser
+  FROM
+    `moz-fx-data-shared-prod.focus_android.metrics_clients_last_seen` AS metrics
+  INNER JOIN
+    min_metrics_ping
+    USING (client_id, submission_date)
+  WHERE
+    submission_date
+    BETWEEN @submission_date
+    AND DATE_ADD(@submission_date, INTERVAL 1 DAY)
 ),
 unioned AS (
   SELECT

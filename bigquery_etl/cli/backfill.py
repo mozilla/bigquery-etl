@@ -372,10 +372,13 @@ def scheduled(ctx, qualified_table_name, sql_dir, project_id, status, json_path=
 @project_id_option(
     ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod")
 )
-@billing_project_option(default=DEFAULT_BILLING_PROJECT)
 @click.pass_context
 def initiate(
-    ctx, qualified_table_name, parallelism, sql_dir, project_id, billing_project
+    ctx,
+    qualified_table_name,
+    parallelism,
+    sql_dir,
+    project_id,
 ):
     """Process backfill entry with initiate status in backfill.yaml file(s)."""
     click.echo("Backfill processing (initiate) started....")
@@ -403,6 +406,8 @@ def initiate(
         project_id=project,
         destination_table=backfill_staging_qualified_table_name,
     )
+
+    billing_project = DEFAULT_BILLING_PROJECT
 
     # override with billing project from backfill entry
     if entry_to_initiate.billing_project is not None:

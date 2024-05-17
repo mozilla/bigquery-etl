@@ -108,6 +108,9 @@ def generate_all(ctx, output_dir, target_project, ignore, use_cloud_function):
                 return (1, command.name)
             case "stable_views":
                 return (2, command.name)
+            # Run `derived_view_schemas` last in case other SQL generators create derived views.
+            case "derived_view_schemas":
+                return (4, command.name)
             case _:
                 return (3, command.name)
 

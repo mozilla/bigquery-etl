@@ -187,23 +187,15 @@ class Backfill:
                     if status is not None and entry["status"] != status:
                         continue
 
-                    excluded_dates = []
-                    if "excluded_dates" in entry:
-                        excluded_dates = entry["excluded_dates"]
-
-                    billing_project = None
-                    if "billing_project" in entry:
-                        billing_project = entry["billing_project"]
-
                     backfill = cls(
                         entry_date=entry_date,
                         start_date=entry["start_date"],
                         end_date=entry["end_date"],
-                        excluded_dates=excluded_dates,
+                        excluded_dates=entry.get("excluded_dates", []),
                         reason=entry["reason"],
                         watchers=entry["watchers"],
                         status=BackfillStatus[entry["status"].upper()],
-                        billing_project=billing_project,
+                        billing_project=entry.get("billing_project", None),
                     )
 
                     backfill_entries.append(backfill)

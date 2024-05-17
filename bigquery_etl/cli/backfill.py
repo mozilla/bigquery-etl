@@ -1,6 +1,7 @@
 """bigquery-etl CLI backfill command."""
 
 import json
+import logging
 import subprocess
 import sys
 import tempfile
@@ -46,6 +47,9 @@ from ..cli.utils import (
 )
 from ..config import ConfigLoader
 from ..metadata.parse_metadata import METADATA_FILE, Metadata
+
+logging.basicConfig(level=logging.INFO)
+log = logging.getLogger(__name__)
 
 
 @click.group(help="Commands for managing backfills.")
@@ -457,6 +461,14 @@ def _initiate_backfill(
         sys.exit(1)
 
     project, dataset, table = qualified_table_name_matching(qualified_table_name)
+
+    logging_str = f"""Initiating backfill for {qualified_table_name} (destination: {backfill_staging_qualified_table_name}).
+                    Query will be executed in {billing_project}."""
+
+    if dry_run:
+        logging_str += "  This is a dry run."
+
+    log.info(logging_str)
 
     # backfill table
     # in the long-run we should remove the query backfill command and require a backfill entry for all backfills

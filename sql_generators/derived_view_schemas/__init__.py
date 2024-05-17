@@ -99,18 +99,20 @@ def _generate_view_schema(sql_dir, view_directory):
 
     # Optionally enrich the view schema if we have a valid table reference
     if reference_path:
-        try:
-            reference_schema = Schema.from_schema_file(reference_path / SCHEMA_FILE)
-            schema.merge(
-                reference_schema,
-                attributes=["description"],
-                add_missing_fields=False,
-                ignore_missing_fields=True,
-            )
-        except Exception as e:
-            logging.info(
-                f"Unable to open reference schema; unable to enrich schema: {e}"
-            )
+        reference_schema_file = reference_path / SCHEMA_FILE
+        if reference_schema_file.exists():
+            try:
+                reference_schema = Schema.from_schema_file(reference_schema_file)
+                schema.merge(
+                    reference_schema,
+                    attributes=["description"],
+                    add_missing_fields=False,
+                    ignore_missing_fields=True,
+                )
+            except Exception as e:
+                logging.warning(
+                    f"Error enriching {view.view_identifier} view schema from {reference_schema_file}: {e}"
+                )
 
     schema.to_yaml_file(view_directory / SCHEMA_FILE)
 

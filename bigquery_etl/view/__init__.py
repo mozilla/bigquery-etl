@@ -206,6 +206,7 @@ class View:
             if schema:
                 schema.merge(
                     configured_schema,
+                    attributes=["description"],
                     add_missing_fields=False,
                     ignore_missing_fields=True,
                 )

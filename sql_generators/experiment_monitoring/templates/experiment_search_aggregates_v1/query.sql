@@ -7,30 +7,30 @@ WITH
       submission_timestamp,
       unnested_experiments.key AS experiment,
       unnested_experiments.value AS branch,
-      SUM(
-        (
-          SELECT
-            SUM(value.value)
-          FROM
-            UNNEST(payload.processes.parent.keyed_scalars.browser_search_ad_clicks) AS value
+      {% for metric_name, metric in search_metrics['telemetry'].items() -%}
+        {% if metric == None %}
+          SUM(0)
+        {% elif metric_name == "search_count" %}
+        SUM(
+          (
+            SELECT
+              SUM(`moz-fx-data-shared-prod`.udf.extract_histogram_sum(value.value))
+            FROM
+              UNNEST(payload.keyed_histograms.search_counts) AS value
+          )
         )
-      ) AS ad_clicks_count,
-      SUM(
-        (
-          SELECT
-            SUM(value.value)
-          FROM
-            UNNEST(payload.processes.parent.keyed_scalars.browser_search_with_ads) AS value
-        )
-      ) AS search_with_ads_count,
-      SUM(
-        (
-          SELECT
-            SUM(`moz-fx-data-shared-prod`.udf.extract_histogram_sum(value.value))
-          FROM
-            UNNEST(payload.keyed_histograms.search_counts) AS value
-        )
-      ) AS search_count
+        {% else %}
+          SUM(
+            (
+              SELECT
+                SUM(value.value)
+              FROM
+                UNNEST({{ metric }}) AS value
+            )
+          )
+        {% endif %}
+        AS {{ metric_name }},
+      {% endfor -%}
     FROM
       `moz-fx-data-shared-prod.telemetry_stable.main_v5`
     LEFT JOIN

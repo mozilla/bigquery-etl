@@ -222,6 +222,12 @@ fields:
       - name: version
         type: STRING
         mode: NULLABLE
+      - name: signed_state
+        type: INTEGER
+        mode: NULLABLE
+      - name: signed_types
+        type: STRING
+        mode: NULLABLE
   - name: build
     type: RECORD
     mode: NULLABLE

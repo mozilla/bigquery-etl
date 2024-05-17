@@ -2441,6 +2441,19 @@ fields:
         ID in 4 hex digits (eg; SRTP_AES128_CM_HMAC_SHA1_80 would be "0x0001")
 
         '
+    - name: media_playback_not_supported_video_per_mime_type
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: Count the amount of times where video playback is failed to start
+        due to the mime type is not supported by Firefox. The result is accumulated
+        per mime type, eg. video/hevc.
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE

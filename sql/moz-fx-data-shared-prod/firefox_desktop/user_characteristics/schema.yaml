@@ -443,6 +443,54 @@ fields:
       description: 'Value of the network.cookie.cookieBehavior pref.
 
         '
+    - name: characteristics_color_accentcolor
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The CSS system-color Accentcolor.
+
+        '
+    - name: characteristics_color_accentcolortext
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The CSS system-color Accentcolortext.
+
+        '
+    - name: characteristics_color_canvas
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The CSS system-color Canvas.
+
+        '
+    - name: characteristics_color_canvastext
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The CSS system-color Canvastext.
+
+        '
+    - name: characteristics_color_highlight
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The CSS system-color Highlight.
+
+        '
+    - name: characteristics_color_highlighttext
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The CSS system-color Highlighttext.
+
+        '
+    - name: characteristics_color_selecteditem
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The CSS system-color Selecteditem.
+
+        '
+    - name: characteristics_color_selecteditemtext
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The CSS system-color Selecteditemtext.
+
+        '
   - name: string
     type: RECORD
     mode: NULLABLE
@@ -661,6 +709,13 @@ fields:
       description: 'Allow pages to choose their own fonts.
 
         '
+    - name: characteristics_use_document_colors
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'This is the derived PreferenceSheet::Prefs::mUseDocumentColors
+        value.
+
+        '
   - name: text2
     type: RECORD
     mode: NULLABLE
@@ -672,6 +727,13 @@ fields:
         contains the fonts that are missing from the user''s computer.
 
         '
+  - name: string_list
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: characteristics_gamepads
+      type: STRING
+      mode: REPEATED
   - name: text
     type: RECORD
     mode: NULLABLE

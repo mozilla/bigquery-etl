@@ -1,2 +1,11 @@
-description: Meta V2 campaign name extractor
 friendly_name: Meta V2
+description: |-
+  Meta V2 campaign name extractor
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}

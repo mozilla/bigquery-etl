@@ -1,11 +1,10 @@
-friendly_name: Google Ads V2
+friendly_name: marketing_campaign_names
 description: |-
-  Extract fields from Google Ads v2 campagign names
-owners: []
+  UDFs for parsing marketing campaign names
+dataset_base_acl: view
+user_facing: true
 labels: {}
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references: {}

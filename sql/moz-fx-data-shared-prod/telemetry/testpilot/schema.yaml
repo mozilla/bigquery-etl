@@ -266,6 +266,14 @@ fields:
       - name: foreign_install
         type: INTEGER
         mode: NULLABLE
+      - name: signed_state
+        type: INTEGER
+        mode: NULLABLE
+        description: The state of the signature of the theme.
+      - name: signed_types
+        type: STRING
+        mode: NULLABLE
+        description: A JSON-stringified array of signature types found for the theme.
   - name: build
     type: RECORD
     mode: NULLABLE

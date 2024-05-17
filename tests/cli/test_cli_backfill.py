@@ -2269,6 +2269,11 @@ class TestBackfill:
                 for day in range(3, 9)
             ]
 
+            expected_destination_table_params = [
+                f"--destination_table=moz-fx-data-shared-prod:backfills_staging_derived.test_query_v1_2021_05_03$2021010{day}"
+                for day in range(3, 9)
+            ]
+
             assert check_call.call_count == 12  # 6 for dry run, 6 for backfill
             for call in check_call.call_args_list:
                 submission_date_params = [
@@ -2277,6 +2282,10 @@ class TestBackfill:
                 assert len(submission_date_params) == 1
                 assert submission_date_params[0] in expected_submission_date_params
                 assert f"--project_id={DEFAULT_BILLING_PROJECT}" in call.args[0]
+                destination_table_params = [
+                    arg for arg in call.args[0] if "--destination_table" in arg
+                ]
+                assert destination_table_params[0] in expected_destination_table_params
 
     @patch("google.cloud.bigquery.Client")
     @patch("subprocess.check_call")
@@ -2340,6 +2349,11 @@ class TestBackfill:
                 for day in range(3, 9)
             ]
 
+            expected_destination_table_params = [
+                f"--destination_table=moz-fx-data-shared-prod:backfills_staging_derived.test_query_v1_2021_05_03$2021010{day}"
+                for day in range(3, 9)
+            ]
+
             assert check_call.call_count == 12  # 6 for dry run, 6 for backfill
             for call in check_call.call_args_list:
                 submission_date_params = [
@@ -2348,6 +2362,10 @@ class TestBackfill:
                 assert len(submission_date_params) == 1
                 assert submission_date_params[0] in expected_submission_date_params
                 assert f"--project_id={VALID_BILLING_PROJECT}" in call.args[0]
+                destination_table_params = [
+                    arg for arg in call.args[0] if "--destination_table" in arg
+                ]
+                assert destination_table_params[0] in expected_destination_table_params
 
     @patch("google.cloud.bigquery.Client")
     def test_initiate_partitioned_backfill_with_invalid_billing_project_should_fail(
@@ -2470,6 +2488,11 @@ class TestBackfill:
                 for day in range(3, 9)
             ]
 
+            expected_destination_table_params = [
+                f"--destination_table=moz-fx-data-shared-prod:backfills_staging_derived.test_query_v1_2021_05_03$2021010{day}"
+                for day in range(3, 9)
+            ]
+
             assert check_call.call_count == 12  # 6 for dry run, 6 for backfill
             for call in check_call.call_args_list:
                 submission_date_params = [
@@ -2478,6 +2501,10 @@ class TestBackfill:
                 assert len(submission_date_params) == 1
                 assert submission_date_params[0] in expected_submission_date_params
                 assert f"--project_id={VALID_BILLING_PROJECT}" in call.args[0]
+                destination_table_params = [
+                    arg for arg in call.args[0] if "--destination_table" in arg
+                ]
+                assert destination_table_params[0] in expected_destination_table_params
 
     @patch("google.cloud.bigquery.Client")
     def test_initiate_partitioned_backfill_with_invalid_billing_project_override_should_fail(

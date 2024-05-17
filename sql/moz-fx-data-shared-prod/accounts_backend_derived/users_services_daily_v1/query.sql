@@ -19,7 +19,18 @@ CREATE TEMP FUNCTION count_distinct(arr ANY TYPE) AS (
   (SELECT COUNT(DISTINCT x) FROM UNNEST(arr) AS x)
 );
 
-WITH fxa_events AS (
+WITH events_unnested AS (
+  SELECT
+    e.* EXCEPT (events),
+    event.timestamp AS event_timestamp,
+    CONCAT(event.category, "_", event.name) AS event_name,
+    event.extra AS event_extra
+  FROM
+    `moz-fx-data-shared-prod.accounts_backend.events` AS e
+  CROSS JOIN
+    UNNEST(e.events) AS event
+),
+fxa_events AS (
   SELECT
     submission_timestamp,
     metrics.string.account_user_id_sha256 AS user_id_sha256,
@@ -30,9 +41,9 @@ WITH fxa_events AS (
     ) AS service,
     metrics.string.session_flow_id AS flow_id,
     metrics.string.session_entrypoint AS entrypoint,
-    metrics.string.event_name AS event_name,
+    event_name,
     -- `access_token_checked` events are triggered on traffic from RP backend services and don't have client's geo data
-    IF(metrics.string.event_name != 'access_token_checked', metadata.geo.country, NULL) AS country,
+    IF(event_name != 'access_token_checked', metadata.geo.country, NULL) AS country,
     metrics.string.utm_term AS utm_term,
     metrics.string.utm_medium AS utm_medium,
     metrics.string.utm_source AS utm_source,
@@ -40,12 +51,12 @@ WITH fxa_events AS (
     metrics.string.utm_content AS utm_content,
     metadata.user_agent,
   FROM
-    `accounts_backend.accounts_events`
+    events_unnested
   WHERE
     DATE(submission_timestamp)
     BETWEEN DATE_SUB(@submission_date, INTERVAL 1 DAY)
     AND @submission_date
-    AND metrics.string.event_name IN (
+    AND event_name IN (
       'access_token_checked',
       'access_token_created',
       -- registration and login events used when deriving the first_seen table

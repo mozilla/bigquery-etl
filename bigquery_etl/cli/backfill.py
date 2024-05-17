@@ -15,6 +15,7 @@ from google.cloud.exceptions import Conflict, NotFound
 from ..backfill.date_range import BackfillDateRange, get_backfill_partition
 from ..backfill.parse import (
     BACKFILL_FILE,
+    DEFAULT_BILLING_PROJECT,
     DEFAULT_REASON,
     DEFAULT_WATCHER,
     Backfill,
@@ -45,8 +46,6 @@ from ..cli.utils import (
 )
 from ..config import ConfigLoader
 from ..metadata.parse_metadata import METADATA_FILE, Metadata
-
-DEFAULT_BILLING_PROJECT = "moz-fx-data-backfill-slots"
 
 
 @click.group(help="Commands for managing backfills.")

@@ -14,6 +14,7 @@ from bigquery_etl.query_scheduling.utils import is_email_or_github_identity
 BACKFILL_FILE = "backfill.yaml"
 DEFAULT_WATCHER = "nobody@mozilla.com"
 DEFAULT_REASON = "Please provide a reason for the backfill and links to any related bugzilla or jira tickets"
+DEFAULT_BILLING_PROJECT = "moz-fx-data-backfill-slots"
 
 
 class UniqueKeyLoader(yaml.SafeLoader):

@@ -74,3 +74,6 @@ fields:
 - name: distribution_id
   type: STRING
   mode: NULLABLE
+- name: geo_subdivision
+  type: STRING
+  mode: NULLABLE

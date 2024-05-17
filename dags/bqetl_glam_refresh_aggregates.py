@@ -54,7 +54,7 @@ with DAG(
         task_id="wait_for_extracts",
         external_dag_id="glam",
         external_task_id="extracts",
-        execution_delta=datetime.timedelta(seconds=21600),
+        execution_delta=datetime.timedelta(days=-1, seconds=68400),
         check_existence=True,
         mode="reschedule",
         allowed_states=ALLOWED_STATES,

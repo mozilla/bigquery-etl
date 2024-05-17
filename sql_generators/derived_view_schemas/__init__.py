@@ -25,14 +25,18 @@ def _generate_view_schema(sql_dir, view_directory):
     import logging
 
     from bigquery_etl.dependency import extract_table_references
+    from bigquery_etl.metadata.parse_metadata import Metadata
     from bigquery_etl.schema import Schema
     from bigquery_etl.util.common import render
     from bigquery_etl.view import View
 
     logging.basicConfig(format="%(levelname)s (%(filename)s:%(lineno)d) - %(message)s")
 
-    # If the view references only one table, we can get the reference table schema
-    # and use it to enrich the view schema we get from dry-running.
+    # If the view references only one table, we can:
+    # 1. Get the reference table partition column if it exists.
+    #   (to dry run views to partitioned tables).
+    # 2. Get the reference table schema and use it to enrich the
+    #   view schema we get from dry-running.
     def _get_reference_dir_path(view_file):
         view_references = extract_table_references(
             render(view_file.name, view_file.parent)
@@ -62,6 +66,33 @@ def _generate_view_schema(sql_dir, view_directory):
             sql_dir / reference_project_id / reference_dataset_id / reference_table_id
         )
 
+    def _get_reference_partition_column(ref_path):
+        if ref_path is None:
+            logging.debug("No table reference, skipping partition column.")
+            return
+
+        try:
+            reference_metadata = Metadata.from_file(ref_path / METADATA_FILE)
+        except Exception as metadata_exception:
+            logging.warning(f"Unable to get reference metadata: {metadata_exception}")
+            return
+
+        bigquery_metadata = reference_metadata.bigquery
+        if bigquery_metadata is None:
+            logging.warning(
+                f"No bigquery metadata at {ref_path}, unable to get partition column."
+            )
+            return
+
+        partition_metadata = bigquery_metadata.time_partitioning
+        if partition_metadata is None:
+            logging.warning(
+                f"No partition metadata at {ref_path}, unable to get partition column."
+            )
+            return
+
+        return partition_metadata.field
+
     view_file = view_directory / VIEW_FILE
     if not view_file.exists():
         return
@@ -74,7 +105,13 @@ def _generate_view_schema(sql_dir, view_directory):
         if reference_dataset.endswith("_stable"):
             return
 
-    view = View.from_file(view_file)
+    # Optionally get the upstream partition column
+    reference_partition_column = _get_reference_partition_column(reference_path)
+    if reference_partition_column is None:
+        logging.debug("No reference partition column, dry running without one.")
+
+    view = View.from_file(view_file, partition_column=reference_partition_column)
+
     # `View.schema` prioritizes the configured schema over the dryrun schema, but here
     # we prioritize the dryrun schema because the `schema.yaml` file might be out of date.
     schema = view.dryrun_schema or view.configured_schema

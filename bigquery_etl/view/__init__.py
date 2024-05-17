@@ -7,6 +7,7 @@ import time
 from functools import cached_property
 from pathlib import Path
 from textwrap import dedent
+from typing import Optional
 
 import attr
 import sqlparse
@@ -39,6 +40,7 @@ class View:
     name: str = attr.ib()
     dataset: str = attr.ib()
     project: str = attr.ib()
+    partition_column: Optional[str] = attr.ib(None)
 
     @path.validator
     def validate_path(self, attribute, value):
@@ -53,10 +55,12 @@ class View:
         return render(path.name, template_folder=path.parent)
 
     @classmethod
-    def from_file(cls, path):
+    def from_file(cls, path, **kwargs):
         """View from SQL file."""
         project, dataset, name = extract_from_query_path(path)
-        return cls(path=str(path), name=name, dataset=dataset, project=project)
+        return cls(
+            path=str(path), name=name, dataset=dataset, project=project, **kwargs
+        )
 
     @property
     def view_identifier(self):
@@ -197,8 +201,13 @@ class View:
         """Derive view schema from a dry run result."""
         try:
             # We have to remove `CREATE OR REPLACE VIEW ... AS` from the query to avoid
-            # view-creation-permission-denied errors, and we have to apply a `WHERE FALSE`
+            # view-creation-permission-denied errors, and we have to apply a `WHERE`
             # filter to avoid partition-column-filter-missing errors.
+            schema_query_filter = (
+                f"DATE(`{self.partition_column}`) = DATE('2020-01-01')"
+                if self.partition_column
+                else "FALSE"
+            )
             schema_query = dedent(
                 f"""
                 WITH view_query AS (
@@ -206,7 +215,7 @@ class View:
                 )
                 SELECT *
                 FROM view_query
-                WHERE FALSE
+                WHERE {schema_query_filter}
                 """
             )
             return Schema.from_query_file(Path(self.path), content=schema_query)

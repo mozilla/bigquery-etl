@@ -62,6 +62,7 @@ class Browsers(Enum):
     focus_android = "Focus Android"
     firefox_ios = "Firefox iOS"
     klar_ios = "Klar iOS"
+    klar_android = "Klar Android"
 
 
 @click.command()
@@ -248,6 +249,7 @@ def generate(target_project, output_dir, use_cloud_function):
                 focus_android_dataset=Browsers("Focus Android").name,
                 firefox_ios_dataset=Browsers("Firefox iOS").name,
                 klar_ios_dataset=Browsers("Klar iOS").name,
+                klar_android_dataset=Browsers("Klar Android").name,
             )
         ),
         skip_existing=False,

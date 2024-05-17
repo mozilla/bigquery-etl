@@ -58,7 +58,7 @@ metrics AS (
       client_id,
       MIN(submission_date) AS submission_date
     FROM
-      `moz-fx-data-shared-prod.focus_android.metrics_clients_last_seen`
+      `{{ project_id }}.{{ app_name }}.metrics_clients_last_seen`
     WHERE
       submission_date
       BETWEEN @submission_date
@@ -70,10 +70,15 @@ metrics AS (
     client_id,
     submission_date,
     metrics.normalized_channel,
-    metrics.uri_count,
-    metrics.is_default_browser
+    {% if app_name == "klar_android"%}
+    CAST(NULL AS INTEGER) AS uri_count,
+    CAST(NULL AS INTEGER) AS is_default_browser
+    {% else %}
+      metrics.uri_count,
+      metrics.is_default_browser
+    {% endif %}
   FROM
-    `moz-fx-data-shared-prod.focus_android.metrics_clients_last_seen` AS metrics
+    `{{ project_id }}.{{ app_name }}.metrics_clients_last_seen` AS metrics
   INNER JOIN
     min_metrics_ping
     USING (client_id, submission_date)

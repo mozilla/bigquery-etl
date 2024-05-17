@@ -87,7 +87,9 @@ def _generate_view_schema(sql_dir, view_directory):
     if reference_path:
         try:
             reference_schema = Schema.from_schema_file(reference_path / SCHEMA_FILE)
-            schema.merge(reference_schema, add_missing_fields=False)
+            schema.merge(
+                reference_schema, add_missing_fields=False, ignore_missing_fields=True
+            )
         except Exception as e:
             logging.info(
                 f"Unable to open reference schema; unable to enrich schema: {e}"

@@ -1350,7 +1350,7 @@ bqetl_glean_usage:
     - impact/tier_1
 
 bqetl_glam_export:
-  schedule_interval: 0 8 * * *
+  schedule_interval: 0 19 * * *
   default_args:
     depends_on_past: false
     email:

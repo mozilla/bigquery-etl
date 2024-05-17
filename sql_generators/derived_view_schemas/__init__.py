@@ -75,7 +75,21 @@ def _generate_view_schema(sql_dir, view_directory):
             return
 
     view = View.from_file(view_file)
-    schema = view.schema
+    # `View.schema` prioritizes the configured schema over the dryrun schema, but here
+    # we prioritize the dryrun schema because the `schema.yaml` file might be out of date.
+    schema = view.dryrun_schema or view.configured_schema
+    if view.dryrun_schema and view.configured_schema:
+        try:
+            schema.merge(
+                view.configured_schema,
+                attributes=["description"],
+                add_missing_fields=False,
+                ignore_missing_fields=True,
+            )
+        except Exception as e:
+            logging.warning(
+                f"Error enriching {view.view_identifier} view schema from {view.schema_path}: {e}"
+            )
     if not schema:
         logging.warning(
             f"Couldn't get schema for {view.view_identifier} potentially "

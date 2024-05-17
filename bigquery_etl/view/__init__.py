@@ -177,14 +177,28 @@ class View:
 
     @cached_property
     def schema(self):
-        """Derive view schema from a dry run result and/or a schema file."""
-        schema = None
+        """Derive view schema from a schema file or a dry run result."""
+        return self.configured_schema or self.dryrun_schema
 
-        # check schema based on dry run results
+    @cached_property
+    def schema_path(self):
+        """Schema file path."""
+        return Path(self.path).parent / SCHEMA_FILE
+
+    @cached_property
+    def configured_schema(self):
+        """Derive view schema from a schema file."""
+        if self.schema_path.is_file():
+            return Schema.from_schema_file(self.schema_path)
+        return None
+
+    @cached_property
+    def dryrun_schema(self):
+        """Derive view schema from a dry run result."""
         try:
             # We have to remove `CREATE OR REPLACE VIEW ... AS` from the query to avoid
-            # view creation permission denied errors, and we have to apply a `WHERE FALSE`
-            # filter to avoid partition column filter missing errors.
+            # view-creation-permission-denied errors, and we have to apply a `WHERE FALSE`
+            # filter to avoid partition-column-filter-missing errors.
             schema_query = dedent(
                 f"""
                 WITH view_query AS (
@@ -195,25 +209,10 @@ class View:
                 WHERE FALSE
                 """
             )
-            schema = Schema.from_query_file(Path(self.path), content=schema_query)
+            return Schema.from_query_file(Path(self.path), content=schema_query)
         except Exception as e:
             print(f"Error dry-running view {self.view_identifier} to get schema: {e}")
-
-        # check schema based on schema file
-        schema_file = Path(self.path).parent / SCHEMA_FILE
-        if schema_file.is_file():
-            configured_schema = Schema.from_schema_file(schema_file)
-            if schema:
-                schema.merge(
-                    configured_schema,
-                    attributes=["description"],
-                    add_missing_fields=False,
-                    ignore_missing_fields=True,
-                )
-            else:
-                schema = configured_schema
-
-        return schema
+            return None
 
     def _valid_fully_qualified_references(self):
         """Check that referenced tables and views are fully qualified."""
@@ -386,8 +385,7 @@ class View:
                         raise
 
                 try:
-                    schema_path = Path(self.path).parent / SCHEMA_FILE
-                    if schema_path.is_file():
+                    if self.schema_path.is_file():
                         self.schema.deploy(target_view)
                 except Exception as e:
                     print(f"Could not update field descriptions for {target_view}: {e}")

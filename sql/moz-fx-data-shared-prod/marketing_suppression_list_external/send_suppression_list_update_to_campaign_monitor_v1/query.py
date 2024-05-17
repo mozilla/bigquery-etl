@@ -129,6 +129,9 @@ def main(api_key: str, client_id: str) -> None:
             destination_project=PROJECT_ID,
             destination_table_id=destination_table_id,
         )
+        click.echo(
+            f"Added {len(not_uploadable_emails)} emails to the list of emails that can't be uploaded due to bad formatting."
+        )
 
 
 if __name__ == "__main__":

@@ -1,0 +1,17 @@
+fields:
+- description: Date when the app first reported a baseline ping for the client.
+  mode: NULLABLE
+  name: first_seen_date
+  type: DATE
+- description: First reported country for the client installation
+  mode: NULLABLE
+  name: first_reported_country
+  type: STRING
+- description: Channel where the browser is released.
+  mode: NULLABLE
+  name: channel
+  type: STRING
+- description:
+  mode: NULLABLE
+  name: client_count
+  type: INTEGER

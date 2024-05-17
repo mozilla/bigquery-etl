@@ -75,7 +75,7 @@ def _generate_view_schema(sql_dir, view_directory):
             return
 
     view = View.from_file(view_file)
-    schema = view.view_schema
+    schema = view.schema
     if not schema:
         logging.warning(
             f"Couldn't get schema for {view.view_identifier} potentially "

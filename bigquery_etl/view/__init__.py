@@ -176,7 +176,7 @@ class View:
         )
 
     @cached_property
-    def view_schema(self):
+    def schema(self):
         """Derive view schema from a dry run result and/or a schema file."""
         schema = None
 
@@ -331,7 +331,7 @@ class View:
 
         table_schema = Schema.from_bigquery_schema(table.schema)
 
-        if self.view_schema is not None and not self.view_schema.equal(table_schema):
+        if self.schema is not None and not self.schema.equal(table_schema):
             print(f"view {target_view_id} will change: schema does not match")
             return True
 
@@ -388,7 +388,7 @@ class View:
                 try:
                     schema_path = Path(self.path).parent / SCHEMA_FILE
                     if schema_path.is_file():
-                        self.view_schema.deploy(target_view)
+                        self.schema.deploy(target_view)
                 except Exception as e:
                     print(f"Could not update field descriptions for {target_view}: {e}")
 

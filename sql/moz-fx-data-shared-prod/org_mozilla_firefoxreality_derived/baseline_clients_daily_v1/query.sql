@@ -23,7 +23,7 @@ WITH base AS (
     normalized_channel,
     normalized_os,
     normalized_os_version,
-    metrics.string.metrics_distribution_id AS distribution_id,
+    CAST(NULL AS STRING) AS distribution_id,
     metadata.geo.subdivision1 AS geo_subdivision,
   FROM
     `org_mozilla_firefoxreality_stable.baseline_v1`

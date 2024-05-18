@@ -24,7 +24,7 @@ WITH base AS (
     normalized_channel,
     normalized_os,
     normalized_os_version,
-    NULL AS distribution_id,
+    CAST(NULL AS STRING) AS distribution_id,
     metadata.geo.subdivision1 AS geo_subdivision,
   FROM
     `{{ baseline_table }}`

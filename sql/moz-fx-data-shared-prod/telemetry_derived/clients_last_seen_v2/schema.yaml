@@ -1,5 +1,6 @@
 fields:
-- name: submission_date
+- mode: NULLABLE
+  name: submission_date
   type: DATE
 - mode: NULLABLE
   name: first_seen_date

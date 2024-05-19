@@ -64,18 +64,23 @@ fields:
 - mode: NULLABLE
   name: client_id
   type: STRING
+  description: Client ID
 - mode: NULLABLE
   name: aborts_content_sum
   type: INTEGER
+  description: Aborts Content Sum
 - mode: NULLABLE
   name: aborts_gmplugin_sum
   type: INTEGER
+  description: NULL
 - mode: NULLABLE
   name: aborts_plugin_sum
   type: INTEGER
+  description: Aborts Plugin Sum
 - mode: NULLABLE
   name: active_addons_count_mean
   type: FLOAT
+  description: Active Addons Count Mean
 - fields:
   - mode: NULLABLE
     name: addon_id

@@ -174,7 +174,6 @@ staging AS (
     USING (client_id)
 )
 SELECT
-
   submission_date,
   first_seen_date,
   second_seen_date,
@@ -436,10 +435,6 @@ SELECT
   default_private_search_engine_data_origin,
   default_private_search_engine_data_submission_url,
   search_counts,
-    engine,
-    source,
-    count,
-  }],
   user_pref_browser_search_region,
   search_with_ads,
   ad_clicks,

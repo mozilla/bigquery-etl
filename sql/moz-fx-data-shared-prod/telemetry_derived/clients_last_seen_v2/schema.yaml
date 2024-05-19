@@ -9,6 +9,7 @@ fields:
   type: DATE
 - name: days_seen_bits
   type: INTEGER
+  description: Bit pattern to identify when the client_id has sent a main ping in the previous 28 days.
 - mode: NULLABLE
   name: days_visited_1_uri_bits
   type: INTEGER
@@ -33,12 +34,12 @@ fields:
 - name: days_created_profile_bits
   type: INTEGER
 - fields:
-    - name: experiment
-      type: STRING
-    - name: branch
-      type: STRING
-    - name: bits
-      type: INTEGER
+  - name: experiment
+    type: STRING
+  - name: branch
+    type: STRING
+  - name: bits
+    type: INTEGER
   mode: REPEATED
   name: days_seen_in_experiment
   type: RECORD
@@ -53,38 +54,38 @@ fields:
 - name: active_addons_count_mean
   type: FLOAT
 - fields:
-    - name: addon_id
-      type: STRING
-    - name: blocklisted
-      type: BOOLEAN
-    - name: name
-      type: STRING
-    - name: user_disabled
-      type: BOOLEAN
-    - name: app_disabled
-      type: BOOLEAN
-    - name: version
-      type: STRING
-    - name: scope
-      type: INTEGER
-    - name: type
-      type: STRING
-    - name: foreign_install
-      type: BOOLEAN
-    - name: has_binary_components
-      type: BOOLEAN
-    - name: install_day
-      type: INTEGER
-    - name: update_day
-      type: INTEGER
-    - name: signed_state
-      type: INTEGER
-    - name: is_system
-      type: BOOLEAN
-    - name: is_web_extension
-      type: BOOLEAN
-    - name: multiprocess_compatible
-      type: BOOLEAN
+  - name: addon_id
+    type: STRING
+  - name: blocklisted
+    type: BOOLEAN
+  - name: name
+    type: STRING
+  - name: user_disabled
+    type: BOOLEAN
+  - name: app_disabled
+    type: BOOLEAN
+  - name: version
+    type: STRING
+  - name: scope
+    type: INTEGER
+  - name: type
+    type: STRING
+  - name: foreign_install
+    type: BOOLEAN
+  - name: has_binary_components
+    type: BOOLEAN
+  - name: install_day
+    type: INTEGER
+  - name: update_day
+    type: INTEGER
+  - name: signed_state
+    type: INTEGER
+  - name: is_system
+    type: BOOLEAN
+  - name: is_web_extension
+    type: BOOLEAN
+  - name: multiprocess_compatible
+    type: BOOLEAN
   mode: REPEATED
   name: active_addons
   type: RECORD
@@ -105,29 +106,29 @@ fields:
 - name: app_version
   type: STRING
 - fields:
-    - name: source
-      type: STRING
-    - name: medium
-      type: STRING
-    - name: campaign
-      type: STRING
-    - name: content
-      type: STRING
-    - mode: NULLABLE
-      name: experiment
-      type: STRING
-    - mode: NULLABLE
-      name: variation
-      type: STRING
-    - mode: NULLABLE
-      name: dltoken
-      type: STRING
-    - mode: NULLABLE
-      name: dlsource
-      type: STRING
-    - mode: NULLABLE
-      name: ua
-      type: STRING
+  - name: source
+    type: STRING
+  - name: medium
+    type: STRING
+  - name: campaign
+    type: STRING
+  - name: content
+    type: STRING
+  - mode: NULLABLE
+    name: experiment
+    type: STRING
+  - mode: NULLABLE
+    name: variation
+    type: STRING
+  - mode: NULLABLE
+    name: dltoken
+    type: STRING
+  - mode: NULLABLE
+    name: dlsource
+    type: STRING
+  - mode: NULLABLE
+    name: ua
+    type: STRING
   name: attribution
   type: RECORD
 - name: blocklist_enabled
@@ -664,62 +665,62 @@ fields:
   name: search_count_urlbar_searchmode
   type: INTEGER
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: scalar_parent_browser_ui_interaction_preferences_pane_home_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: scalar_parent_urlbar_picked_autofill_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: scalar_parent_urlbar_picked_autofill_about_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: scalar_parent_urlbar_picked_autofill_adaptive_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: scalar_parent_urlbar_picked_autofill_origin_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: scalar_parent_urlbar_picked_autofill_other_sum
   type: RECORD
@@ -744,82 +745,82 @@ fields:
   name: scalar_parent_urlbar_picked_autofill_url_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: scalar_parent_urlbar_picked_bookmark_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: scalar_parent_urlbar_picked_dynamic_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: scalar_parent_urlbar_picked_extension_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: scalar_parent_urlbar_picked_formhistory_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: scalar_parent_urlbar_picked_history_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: scalar_parent_urlbar_picked_keyword_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: scalar_parent_urlbar_picked_remotetab_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: scalar_parent_urlbar_picked_searchengine_sum
   type: RECORD
@@ -834,62 +835,62 @@ fields:
   name: scalar_parent_urlbar_picked_searchsuggestion_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: scalar_parent_urlbar_picked_switchtab_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: scalar_parent_urlbar_picked_tabtosearch_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: scalar_parent_urlbar_picked_tip_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: scalar_parent_urlbar_picked_topsite_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: scalar_parent_urlbar_picked_unknown_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: scalar_parent_urlbar_picked_visiturl_sum
   type: RECORD
@@ -925,112 +926,112 @@ fields:
   name: user_pref_browser_search_region
   type: STRING
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: search_with_ads
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: ad_clicks
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: search_content_urlbar_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: search_content_urlbar_handoff_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: search_content_urlbar_searchmode_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: search_content_contextmenu_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: search_content_about_home_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: search_content_about_newtab_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: search_content_searchbar_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: search_content_system_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: search_content_webextension_sum
   type: RECORD
@@ -1055,22 +1056,22 @@ fields:
   name: search_content_reload_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: search_content_unknown_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: search_withads_urlbar_sum
   type: RECORD
@@ -1085,22 +1086,22 @@ fields:
   name: search_withads_urlbar_handoff_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: search_withads_urlbar_searchmode_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: search_withads_contextmenu_sum
   type: RECORD
@@ -1115,22 +1116,22 @@ fields:
   name: search_withads_about_home_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: search_withads_about_newtab_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: search_withads_searchbar_sum
   type: RECORD
@@ -1165,142 +1166,142 @@ fields:
   name: search_withads_tabhistory_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: search_withads_reload_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: search_withads_unknown_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: search_adclicks_urlbar_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: search_adclicks_urlbar_handoff_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: search_adclicks_urlbar_searchmode_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: search_adclicks_contextmenu_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: search_adclicks_about_home_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: search_adclicks_about_newtab_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: search_adclicks_searchbar_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: search_adclicks_system_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: search_adclicks_webextension_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: search_adclicks_tabhistory_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: search_adclicks_reload_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: search_adclicks_unknown_sum
   type: RECORD
@@ -1338,22 +1339,22 @@ fields:
   name: user_pref_app_shield_optoutstudies_enabled
   type: STRING
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: contextual_services_quicksuggest_click_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: contextual_services_quicksuggest_impression_sum
   type: RECORD
@@ -1754,22 +1755,22 @@ fields:
   name: contextual_services_quicksuggest_impression_nonsponsored_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: contextual_services_quicksuggest_impression_sponsored_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: contextual_services_quicksuggest_impression_weather_sum
   type: RECORD
@@ -1780,32 +1781,32 @@ fields:
   name: places_searchbar_cumulative_filter_count_sum
   type: INTEGER
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: scalar_parent_sidebar_opened_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: scalar_parent_sidebar_search_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: scalar_parent_sidebar_link_sum
   type: RECORD
@@ -1822,32 +1823,32 @@ fields:
   name: places_bookmarks_searchbar_cumulative_searches_sum
   type: INTEGER
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: scalar_parent_library_link_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: scalar_parent_library_opened_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: scalar_parent_library_search_sum
   type: RECORD
@@ -1892,3 +1893,4 @@ fields:
   type: STRING
 - name: days_active_bits
   type: INTEGER
+  description: Bit pattern to identify when the client_id has sent a main ping & also qualifies as active in the previous 28 days.

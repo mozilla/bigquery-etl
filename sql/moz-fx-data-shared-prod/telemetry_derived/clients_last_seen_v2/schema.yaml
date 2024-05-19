@@ -1050,22 +1050,22 @@ fields:
   name: search_content_webextension_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: search_content_tabhistory_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: search_content_reload_sum
   type: RECORD
@@ -1090,12 +1090,12 @@ fields:
   name: search_withads_urlbar_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: search_withads_urlbar_handoff_sum
   type: RECORD
@@ -1120,12 +1120,12 @@ fields:
   name: search_withads_contextmenu_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: search_withads_about_home_sum
   type: RECORD
@@ -1150,32 +1150,32 @@ fields:
   name: search_withads_searchbar_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: search_withads_system_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: search_withads_webextension_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: search_withads_tabhistory_sum
   type: RECORD
@@ -1373,12 +1373,12 @@ fields:
   name: contextual_services_quicksuggest_impression_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: contextual_services_quicksuggest_help_sum
   type: RECORD
@@ -1699,32 +1699,32 @@ fields:
   name: contextual_services_quicksuggest_click_sponsored_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: contextual_services_quicksuggest_click_weather_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: contextual_services_quicksuggest_help_dynamic_wikipedia_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: contextual_services_quicksuggest_help_nonsponsored_sum
   type: RECORD

@@ -216,10 +216,10 @@ fields:
   name: environment_settings_intl_regional_prefs_locales
   type: STRING
 - fields:
-    - name: key
-      type: STRING
-    - name: value
-      type: STRING
+  - name: key
+    type: STRING
+  - name: value
+    type: STRING
   mode: REPEATED
   name: experiments
   type: RECORD
@@ -396,10 +396,10 @@ fields:
 - name: scalar_parent_devtools_accessibility_picker_used_count_sum
   type: INTEGER
 - fields:
-    - name: key
-      type: STRING
-    - name: value
-      type: INTEGER
+  - name: key
+    type: STRING
+  - name: value
+    type: INTEGER
   mode: REPEATED
   name: scalar_parent_devtools_accessibility_select_accessible_for_node_sum
   type: RECORD
@@ -520,126 +520,126 @@ fields:
   name: scalar_parent_urlbar_impression_autofill_url_sum
   type: INTEGER
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: scalar_parent_telemetry_event_counts_sum
   type: RECORD
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: scalar_content_telemetry_event_counts_sum
   type: RECORD
 - fields:
-    - name: key
-      type: STRING
-    - name: value
-      type: INTEGER
+  - name: key
+    type: STRING
+  - name: value
+    type: INTEGER
   mode: REPEATED
   name: scalar_parent_urlbar_searchmode_bookmarkmenu_sum
   type: RECORD
 - fields:
-    - name: key
-      type: STRING
-    - name: value
-      type: INTEGER
+  - name: key
+    type: STRING
+  - name: value
+    type: INTEGER
   mode: REPEATED
   name: scalar_parent_urlbar_searchmode_handoff_sum
   type: RECORD
 - fields:
-    - name: key
-      type: STRING
-    - name: value
-      type: INTEGER
+  - name: key
+    type: STRING
+  - name: value
+    type: INTEGER
   mode: REPEATED
   name: scalar_parent_urlbar_searchmode_keywordoffer_sum
   type: RECORD
 - fields:
-    - name: key
-      type: STRING
-    - name: value
-      type: INTEGER
+  - name: key
+    type: STRING
+  - name: value
+    type: INTEGER
   mode: REPEATED
   name: scalar_parent_urlbar_searchmode_oneoff_sum
   type: RECORD
 - fields:
-    - name: key
-      type: STRING
-    - name: value
-      type: INTEGER
+  - name: key
+    type: STRING
+  - name: value
+    type: INTEGER
   mode: REPEATED
   name: scalar_parent_urlbar_searchmode_other_sum
   type: RECORD
 - fields:
-    - name: key
-      type: STRING
-    - name: value
-      type: INTEGER
+  - name: key
+    type: STRING
+  - name: value
+    type: INTEGER
   mode: REPEATED
   name: scalar_parent_urlbar_searchmode_shortcut_sum
   type: RECORD
 - fields:
-    - name: key
-      type: STRING
-    - name: value
-      type: INTEGER
+  - name: key
+    type: STRING
+  - name: value
+    type: INTEGER
   mode: REPEATED
   name: scalar_parent_urlbar_searchmode_tabmenu_sum
   type: RECORD
 - fields:
-    - name: key
-      type: STRING
-    - name: value
-      type: INTEGER
+  - name: key
+    type: STRING
+  - name: value
+    type: INTEGER
   mode: REPEATED
   name: scalar_parent_urlbar_searchmode_tabtosearch_sum
   type: RECORD
 - fields:
-    - name: key
-      type: STRING
-    - name: value
-      type: INTEGER
+  - name: key
+    type: STRING
+  - name: value
+    type: INTEGER
   mode: REPEATED
   name: scalar_parent_urlbar_searchmode_tabtosearch_onboard_sum
   type: RECORD
 - fields:
-    - name: key
-      type: STRING
-    - name: value
-      type: INTEGER
+  - name: key
+    type: STRING
+  - name: value
+    type: INTEGER
   mode: REPEATED
   name: scalar_parent_urlbar_searchmode_topsites_newtab_sum
   type: RECORD
 - fields:
-    - name: key
-      type: STRING
-    - name: value
-      type: INTEGER
+  - name: key
+    type: STRING
+  - name: value
+    type: INTEGER
   mode: REPEATED
   name: scalar_parent_urlbar_searchmode_topsites_urlbar_sum
   type: RECORD
 - fields:
-    - name: key
-      type: STRING
-    - name: value
-      type: INTEGER
+  - name: key
+    type: STRING
+  - name: value
+    type: INTEGER
   mode: REPEATED
   name: scalar_parent_urlbar_searchmode_touchbar_sum
   type: RECORD
 - fields:
-    - name: key
-      type: STRING
-    - name: value
-      type: INTEGER
+  - name: key
+    type: STRING
+  - name: value
+    type: INTEGER
   mode: REPEATED
   name: scalar_parent_urlbar_searchmode_typed_sum
   type: RECORD

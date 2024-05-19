@@ -45,27 +45,36 @@ fields:
 - mode: NULLABLE
   name: days_visited_1_uri_private_mode_bits
   type: INTEGER
-- name: days_created_profile_bits
+- mode: NULLABLE
+  name: days_created_profile_bits
   type: INTEGER
 - fields:
-  - name: experiment
+  - mode: NULLABLE
+    name: experiment
     type: STRING
-  - name: branch
+  - mode: NULLABLE
+    name: branch
     type: STRING
-  - name: bits
+  - mode: NULLABLE
+    name: bits
     type: INTEGER
   mode: REPEATED
   name: days_seen_in_experiment
   type: RECORD
-- name: client_id
+- mode: NULLABLE
+  name: client_id
   type: STRING
-- name: aborts_content_sum
+- mode: NULLABLE
+  name: aborts_content_sum
   type: INTEGER
-- name: aborts_gmplugin_sum
+- mode: NULLABLE
+  name: aborts_gmplugin_sum
   type: INTEGER
-- name: aborts_plugin_sum
+- mode: NULLABLE
+  name: aborts_plugin_sum
   type: INTEGER
-- name: active_addons_count_mean
+- mode: NULLABLE
+  name: active_addons_count_mean
   type: FLOAT
 - fields:
   - name: addon_id

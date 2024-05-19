@@ -30,10 +30,15 @@ fields:
 - mode: NULLABLE
   name: days_had_8_active_ticks_bits
   type: INTEGER
-- name: days_opened_dev_tools_bits
+  description: Days Had 8 Active Ticks Bits
+- mode: NULLABLE
+  name: days_opened_dev_tools_bits
   type: INTEGER
-- name: days_interacted_bits
+  description: Days Opened Dev Tools Bits
+- mode: NULLABLE
+  name: days_interacted_bits
   type: INTEGER
+  description: Days Interacted Bits
 - mode: NULLABLE
   name: days_visited_1_uri_normal_mode_bits
   type: INTEGER

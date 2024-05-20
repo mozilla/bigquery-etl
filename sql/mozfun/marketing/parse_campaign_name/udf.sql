@@ -14,7 +14,9 @@ RETURNS ARRAY<STRUCT<key STRING, value STRING>> AS (
         ),
         STRUCT(
           "country_code" AS key,
-          google_ads.extract_segments_from_campaign_name(campaign_name).campaign_country_code AS value
+          google_ads.extract_segments_from_campaign_name(
+            campaign_name
+          ).campaign_country_code AS value
         ),
         STRUCT(
           "language" AS key,

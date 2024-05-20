@@ -19,7 +19,7 @@ RETURNS ARRAY<STRUCT<key STRING, value STRING>> AS (
                   'format',
                   'dimension',
                   'length',
-                  'cta',
+                  'cta'
                 ] AS keys
             )
         )

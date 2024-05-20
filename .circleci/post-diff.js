@@ -74,7 +74,7 @@ async function minimize_pr_diff_comments() {
 }
 
 function diff() {
-    let root = "/tmp/workspace/generated-sql/";
+    let root = "/tmp/workspace/";
     let diff_content = fs.readFileSync(root + "/" + diff_file, "utf8");
 
     var body = "No content detected.";

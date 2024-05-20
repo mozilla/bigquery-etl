@@ -35,7 +35,8 @@
       {% endfor %}
       -- List cols explicitly here: the schema is static (schema.yaml),
       -- and new columns added upstream will need to be manually added
-      normalized_app_id client_id,
+      normalized_app_id,
+      client_id,
       sample_id,
       first_run_date,
       durations,

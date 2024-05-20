@@ -41,9 +41,11 @@ nav:
       - Testing: cookbooks/testing.md
   - Reference:
       - bqetl CLI: bqetl.md
+      - Bqetl Configuration: reference/configuration.md
       - Recommended practices: reference/recommended_practices.md
       - Incremental queries: reference/incremental.md
       - Scheduling: reference/scheduling.md
       - Public data: reference/public_data.md
       - Airflow Tags: reference/airflow_tags.md
       - Data Checks: reference/data_checks.md
+      - Stage Deploy & CI: reference/stage-deploys-continuous-integration.md

@@ -499,7 +499,8 @@ fields:
   name: histogram_parent_devtools_layoutview_opened_count_sum
   type: INTEGER
   description: null
-- name: histogram_parent_devtools_memory_opened_count_sum
+- mode: NULLABLE
+  name: histogram_parent_devtools_memory_opened_count_sum
   type: INTEGER
 - mode: NULLABLE
   name: histogram_parent_devtools_menu_eyedropper_opened_count_sum
@@ -1884,7 +1885,8 @@ fields:
   name: user_pref_browser_urlbar_quicksuggest_onboarding_dialog_choice
   type: STRING
   description: null
-- name: >-
+- mode: NULLABLE
+  name: >-
     scalar_parent_browser_engagement_total_uri_count_normal_and_private_mode_sum
   type: INTEGER
   description: null

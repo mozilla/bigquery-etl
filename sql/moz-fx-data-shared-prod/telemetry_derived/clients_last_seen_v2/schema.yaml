@@ -528,7 +528,7 @@ fields:
   name: histogram_parent_devtools_ruleview_opened_count_sum
   type: INTEGER
   description: null
-- mode:
+- mode: NULLABLE
   name: histogram_parent_devtools_scratchpad_opened_count_sum
   type: INTEGER
   description: null

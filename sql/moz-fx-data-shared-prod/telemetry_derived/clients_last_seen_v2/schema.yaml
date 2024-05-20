@@ -149,22 +149,39 @@ fields:
   mode: REPEATED
   name: active_addons
   type: RECORD
-- name: active_experiment_branch
+  description: Active Addons
+- mode: NULLABLE
+  name: active_experiment_branch
   type: STRING
-- name: active_experiment_id
+  description: Active Experiment Branch
+- mode: NULLABLE
+  name: active_experiment_id
   type: STRING
-- name: active_hours_sum
+  description: Active Experiment ID
+- mode: NULLABLE
+  name: active_hours_sum
   type: FLOAT
-- name: addon_compatibility_check_enabled
+  description: Active Hours Sum
+- mode: NULLABLE
+  name: addon_compatibility_check_enabled
   type: BOOLEAN
-- name: app_build_id
+  description: Addon Compatibility Check Enabled
+- mode: NULLABLE
+  name: app_build_id
   type: STRING
-- name: app_display_version
+  description: App Build ID
+- mode: NULLABLE
+  name: app_display_version
   type: STRING
-- name: app_name
+  description: App Display Version
+- mode: NULLABLE
+  name: app_name
   type: STRING
-- name: app_version
+  description: App Name
+- mode: NULLABLE
+  name: app_version
   type: STRING
+  description: App Version
 - fields:
   - name: source
     type: STRING

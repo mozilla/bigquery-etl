@@ -13,3 +13,5 @@ workgroup_access:
   - workgroup:pocket/prefect
   - workgroup:mozsocial/prefect
   - workgroup:mozsocial/service
+  - workgroup:mozilla-confidential
+  

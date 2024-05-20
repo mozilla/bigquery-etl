@@ -727,44 +727,74 @@ fields:
   type: INTEGER
 - name: sync_count_mobile_sum
   type: INTEGER
-- name: telemetry_enabled
+- mode: NULLABLE
+  name: telemetry_enabled
   type: BOOLEAN
-- name: timezone_offset
+  description: Telemetry Enabled Indicator
+- mode: NULLABLE
+  name: timezone_offset
   type: INTEGER
-- name: total_hours_sum
+  description: Timezone Offset
+- mode: NULLABLE
+  name: total_hours_sum
   type: NUMERIC
-- name: update_auto_download
+  description: Total Hours Sum
+- mode: NULLABLE
+  name: update_auto_download
   type: BOOLEAN
-- name: update_channel
+  description: Update Auto Download
+- mode: NULLABLE
+  name: update_channel
   type: STRING
-- name: update_enabled
+  description: Update Channel
+- mode: NULLABLE
+  name: update_enabled
   type: BOOLEAN
-- name: vendor
+  description: Update Enabled
+- mode: NULLABLE
+  name: vendor
   type: STRING
-- name: web_notification_shown_sum
+  description: Vendor
+- mode: NULLABLE
+  name: web_notification_shown_sum
   type: INTEGER
-- name: windows_build_number
+  description: Web Notification Shown Sum
+- mode: NULLABLE
+  name: windows_build_number
   type: INTEGER
-- name: windows_ubr
+  description: Windows Build Number
+- mode: NULLABLE
+  name: windows_ubr
   type: INTEGER
-- name: fxa_configured
+  description: Windows UBR
+- mode: NULLABLE
+  name: fxa_configured
   type: BOOLEAN
-- name: trackers_blocked_sum
+  description: FXA Configured
+- mode: NULLABLE
+  name: trackers_blocked_sum
   type: INTEGER
-- name: submission_timestamp_min
+  description: Trackers Blocked Sum
+- mode: NULLABLE
+  name: submission_timestamp_min
   type: TIMESTAMP
+  description: Minimum Submission Timestamp
 - mode: NULLABLE
   name: ad_clicks_count_all
   type: INTEGER
+  description: Ad Clicks Count All
 - mode: NULLABLE
   name: search_with_ads_count_all
   type: INTEGER
+  description: Search with Ads Count All
 - mode: NULLABLE
   name: scalar_parent_urlbar_impression_autofill_about_sum
   type: INTEGER
+  description: Scalar Parent URL Bar Impression Autofill About Sum
 - mode: NULLABLE
   name: scalar_parent_urlbar_impression_autofill_adaptive_sum
   type: INTEGER
+  description: Scalar Parent URL Bar Impression Autofill Adaptive Sum
 - mode: NULLABLE
   name: scalar_parent_urlbar_impression_autofill_origin_sum
   type: INTEGER

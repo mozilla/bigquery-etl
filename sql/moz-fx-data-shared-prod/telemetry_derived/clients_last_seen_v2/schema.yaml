@@ -373,6 +373,7 @@ fields:
 - mode: REPEATED
   name: environment_settings_intl_system_locales
   type: STRING
+  description: Environment Settings Intl System Locales
 - mode: REPEATED
   name: environment_settings_intl_regional_prefs_locales
   type: STRING
@@ -795,44 +796,74 @@ fields:
   name: search_count_system
   type: INTEGER
   description: Search Count System
-- name: search_count_urlbar
+- mode: NULLABLE
+  name: search_count_urlbar
   type: INTEGER
-- name: search_count_all
+  description: Search Count URL Bar
+- mode: NULLABLE
+  name: search_count_all
   type: INTEGER
+  description: Search Count All
 - mode: NULLABLE
   name: search_count_tagged_sap
   type: INTEGER
+  description: null
 - mode: NULLABLE
   name: search_count_tagged_follow_on
   type: INTEGER
+  description: null
 - mode: NULLABLE
   name: search_count_organic
   type: INTEGER
+  description: Search Count - Organic
 - mode: NULLABLE
   name: search_count_urlbar_handoff
   type: INTEGER
-- name: session_restored_mean
+  description: null
+- mode: NULLABLE
+  name: session_restored_mean
   type: FLOAT
-- name: sessions_started_on_this_day
+  description: Session Restored Mean
+- mode: NULLABLE
+  name: sessions_started_on_this_day
   type: INTEGER
-- name: shutdown_kill_sum
+  description: Sessions Started On This Day
+- mode: NULLABLE
+  name: shutdown_kill_sum
   type: INTEGER
-- name: subsession_hours_sum
+  description: Shutdown Kill Sum
+- mode: NULLABLE
+  name: subsession_hours_sum
   type: NUMERIC
-- name: ssl_handshake_result_failure_sum
+  description: Subsession Hours Sum
+- mode: NULLABLE
+  name: ssl_handshake_result_failure_sum
   type: INTEGER
-- name: ssl_handshake_result_success_sum
+  description: SSL Handshake Result Failure Sum
+- mode: NULLABLE
+  name: ssl_handshake_result_success_sum
   type: INTEGER
-- name: sync_configured
+  description: SSL Handshake Result Success Sum
+- mode: NULLABLE
+  name: sync_configured
   type: BOOLEAN
-- name: sync_count_desktop_mean
+  description: Sync Configured Indicator
+- mode: NULLABLE
+  name: sync_count_desktop_mean
   type: FLOAT
-- name: sync_count_mobile_mean
+  description: Sync Count Desktop Mean
+- mode: NULLABLE
+  name: sync_count_mobile_mean
   type: FLOAT
-- name: sync_count_desktop_sum
+  description: Sync Count Mobile Mean
+- mode: NULLABLE
+  name: sync_count_desktop_sum
   type: INTEGER
-- name: sync_count_mobile_sum
+  description: Sync Count Desktop Sum
+- mode: NULLABLE
+  name: sync_count_mobile_sum
   type: INTEGER
+  description: Sync Count Mobile Sum
 - mode: NULLABLE
   name: telemetry_enabled
   type: BOOLEAN

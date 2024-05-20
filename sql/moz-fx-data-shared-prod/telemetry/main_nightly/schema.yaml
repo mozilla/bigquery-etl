@@ -14885,6 +14885,9 @@ fields:
     - name: use_counter2_workernavigator_permissions_page
       type: STRING
       mode: NULLABLE
+    - name: process_lifetime
+      type: STRING
+      mode: NULLABLE
   - name: info
     type: RECORD
     mode: NULLABLE

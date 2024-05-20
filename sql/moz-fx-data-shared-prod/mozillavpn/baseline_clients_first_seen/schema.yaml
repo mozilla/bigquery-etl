@@ -71,3 +71,9 @@ fields:
 - name: is_new_profile
   type: BOOLEAN
   mode: NULLABLE
+- name: distribution_id
+  type: STRING
+  mode: NULLABLE
+- name: geo_subdivision
+  type: STRING
+  mode: NULLABLE

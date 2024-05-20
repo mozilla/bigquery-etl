@@ -7064,6 +7064,9 @@ fields:
     - name: top_level_content_documents_destroyed
       type: STRING
       mode: NULLABLE
+    - name: process_lifetime
+      type: STRING
+      mode: NULLABLE
   - name: info
     type: RECORD
     mode: NULLABLE

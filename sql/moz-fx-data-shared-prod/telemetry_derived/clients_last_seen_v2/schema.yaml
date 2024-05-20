@@ -960,6 +960,7 @@ fields:
   mode: REPEATED
   name: scalar_parent_telemetry_event_counts_sum
   type: RECORD
+  description: Scalar Parent Telemetry Event Counts Sum
 - fields:
   - mode: NULLABLE
     name: key
@@ -972,10 +973,12 @@ fields:
   type: RECORD
   description: null
 - fields:
-  - name: key
+  - mode: NULLABLE
+    name: key
     type: STRING
     description: Key
-  - name: value
+  - mode: NULLABLE
+    name: value
     type: INTEGER
     description: Value
   mode: REPEATED
@@ -983,10 +986,12 @@ fields:
   type: RECORD
   description: null
 - fields:
-  - name: key
+  - mode: NULLABLE
+    name: key
     type: STRING
     description: Key
-  - name: value
+  - mode: NULLABLE
+    name: value
     type: INTEGER
     description: Value
   mode: REPEATED
@@ -994,10 +999,12 @@ fields:
   type: RECORD
   description: Scalar Parent URL Bar Search Mode Handoff Sum
 - fields:
-  - name: key
+  - mode: NULLABLE
+    name: key
     type: STRING
     description: Key
-  - name: value
+  - mode: NULLABLE
+    name: value
     type: INTEGER
     description: Value
   mode: REPEATED
@@ -1005,10 +1012,12 @@ fields:
   type: RECORD
   description: Scalar Parent URL Bar Search Mode Keyword Offer Sum
 - fields:
-  - name: key
+  - mode: NULLABLE
+    name: key
     type: STRING
     description: Key
-  - name: value
+  - mode: NULLABLE
+    name: value
     type: INTEGER
     description: Value
   mode: REPEATED
@@ -1016,10 +1025,12 @@ fields:
   type: RECORD
   description: Scalar Parent URL Bar Search Mode One-off Sum
 - fields:
-  - name: key
+  - mode: NULLABLE
+    name: key
     type: STRING
     description: null
-  - name: value
+  - mode: NULLABLE
+    name: value
     type: INTEGER
     description: null
   mode: REPEATED
@@ -1078,18 +1089,26 @@ fields:
   type: RECORD
   description: Scalar Parent URL Bar Search Mode Tab to Search Onboard Sum
 - fields:
-  - name: key
+  - mode: NULLABLE
+    name: key
     type: STRING
-  - name: value
+    description: Key
+  - mode: NULLABLE
+    name: value
     type: INTEGER
+    description: Value
   mode: REPEATED
   name: scalar_parent_urlbar_searchmode_topsites_newtab_sum
   type: RECORD
 - fields:
-  - name: key
+  - mode: NULLABLE
+    name: key
     type: STRING
-  - name: value
+    description: Key
+  - mode: NULLABLE
+    name: value
     type: INTEGER
+    description: Value
   mode: REPEATED
   name: scalar_parent_urlbar_searchmode_topsites_urlbar_sum
   type: RECORD
@@ -1106,34 +1125,53 @@ fields:
   name: scalar_parent_urlbar_searchmode_touchbar_sum
   type: RECORD
 - fields:
-  - name: key
+  - mode: NULLABLE
+    name: key
     type: STRING
-  - name: value
+    description: Key
+  - mode: NULLABLE
+    name: value
     type: INTEGER
+    description: Value
   mode: REPEATED
   name: scalar_parent_urlbar_searchmode_typed_sum
   type: RECORD
-- name: scalar_parent_os_environment_is_taskbar_pinned
+- mode: NULLABLE
+  name: scalar_parent_os_environment_is_taskbar_pinned
   type: BOOLEAN
-- name: scalar_parent_os_environment_launched_via_desktop
+  description: Scalar Parent OS Environment Is Taskbar Pinned
+- mode: NULLABLE
+  name: scalar_parent_os_environment_launched_via_desktop
   type: BOOLEAN
-- name: scalar_parent_os_environment_launched_via_start_menu
+  description: Scalar Parent OS Environment Launched Via Desktop
+- mode: NULLABLE
+  name: scalar_parent_os_environment_launched_via_start_menu
   type: BOOLEAN
-- name: scalar_parent_os_environment_launched_via_taskbar
+  description: Scalar Parent OS Environment Launched Via Start Menu
+- mode: NULLABLE
+  name: scalar_parent_os_environment_launched_via_taskbar
   type: BOOLEAN
-- name: scalar_parent_os_environment_launched_via_other_shortcut
+  description: Scalar Parent OS Environment Launched via Task Bar
+- mode: NULLABLE
+  name: scalar_parent_os_environment_launched_via_other_shortcut
   type: BOOLEAN
-- name: scalar_parent_os_environment_launched_via_other
+  description: Scalar Parent OS Environment Launched Via Other Shortcut
+- mode: NULLABLE
+  name: scalar_parent_os_environment_launched_via_other
   type: BOOLEAN
+  description: Scalar Parent OS Environment Launched Via Other
 - mode: NULLABLE
   name: search_count_webextension
   type: INTEGER
+  description: Search Count Web Extension
 - mode: NULLABLE
   name: search_count_alias
   type: INTEGER
+  description: Search Count Alias
 - mode: NULLABLE
   name: search_count_urlbar_searchmode
   type: INTEGER
+  description: Search Count URL Bar Search Mode
 - fields:
   - mode: NULLABLE
     name: key

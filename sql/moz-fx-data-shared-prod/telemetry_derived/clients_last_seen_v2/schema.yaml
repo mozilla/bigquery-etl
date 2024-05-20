@@ -208,29 +208,52 @@ fields:
     type: STRING
   name: attribution
   type: RECORD
-- name: blocklist_enabled
+- mode: NULLABLE
+  name: blocklist_enabled
   type: BOOLEAN
-- name: channel
+  description: Blocklist Enabled
+- mode: NULLABLE
+  name: channel
   type: STRING
-- name: client_clock_skew_mean
+  description: Channel
+- mode: NULLABLE
+  name: client_clock_skew_mean
   type: FLOAT
-- name: client_submission_latency_mean
+  description: Client Clock Skew Mean
+- mode: NULLABLE
+  name: client_submission_latency_mean
   type: FLOAT
-- name: cpu_cores
+  description: Client Submission Latency Mean
+- mode: NULLABLE
+  name: cpu_cores
   type: INTEGER
-- name: cpu_count
+  description: CPU Cores
+- mode: NULLABLE
+  name: cpu_count
   type: INTEGER
-- name: cpu_family
+  description: CPU Count
+- mode: NULLABLE
+  name: cpu_family
   type: INTEGER
-- name: cpu_l2_cache_kb
+  description: CPU Family
+- mode: NULLABLE
+  name: cpu_l2_cache_kb
   type: INTEGER
-- name: cpu_l3_cache_kb
+  description: CPU L2 Cache KB
+- mode: NULLABLE
+  name: cpu_l3_cache_kb
   type: INTEGER
-- name: cpu_model
+  description: CPU L3 Cache KB
+- mode: NULLABLE
+  name: cpu_model
   type: INTEGER
-- name: cpu_speed_mhz
+  description: CPU Model
+- mode: NULLABLE
+  name: cpu_speed_mhz
   type: INTEGER
-- name: cpu_stepping
+  description: CPU Speed MHz
+- mode: NULLABLE
+  name: cpu_stepping
   type: INTEGER
 - name: cpu_vendor
   type: STRING
@@ -252,46 +275,73 @@ fields:
   type: INTEGER
 - name: crash_submit_success_plugin_sum
   type: INTEGER
-- name: default_search_engine
+- mode: NULLABLE
+  name: default_search_engine
   type: STRING
-- name: default_search_engine_data_load_path
+  description: Default Search Engine
+- mode: NULLABLE
+  name: default_search_engine_data_load_path
   type: STRING
-- name: default_search_engine_data_name
+  description: Default Search Engine Data Load Path
+- mode: NULLABLE
+  name: default_search_engine_data_name
   type: STRING
-- name: default_search_engine_data_origin
+  description: Default Search Engine Data Name
+- mode: NULLABLE
+  name: default_search_engine_data_origin
   type: STRING
-- name: default_search_engine_data_submission_url
+  description: Default Search Engine Data origin
+- mode: NULLABLE
+  name: default_search_engine_data_submission_url
   type: STRING
-- name: devtools_toolbox_opened_count_sum
+  description: Default Search Engine Data Submission URL
+- mode: NULLABLE
+  name: devtools_toolbox_opened_count_sum
   type: INTEGER
-- name: distribution_id
+  description: Dev Tools Toolbox Opened Count Sum
+- mode: NULLABLE
+  name: distribution_id
   type: STRING
-- name: e10s_enabled
+  description: Distribution ID
+- mode: NULLABLE
+  name: e10s_enabled
   type: BOOLEAN
-- name: env_build_arch
+  description: E10s Enabled
+- mode: NULLABLE
+  name: env_build_arch
   type: STRING
-- name: env_build_id
+  description: Environment Build Arch
+- mode: NULLABLE
+  name: env_build_id
   type: STRING
-- name: env_build_version
+  description: Environment Build ID
+- mode: NULLABLE
+  name: env_build_version
   type: STRING
+  description: Environment Build Version
 - mode: REPEATED
   name: environment_settings_intl_accept_languages
   type: STRING
+  description: Environment Settings Intl Accept Languages
 - mode: REPEATED
   name: environment_settings_intl_app_locales
   type: STRING
+  description: Environment Settings Intl App Locales
 - mode: REPEATED
   name: environment_settings_intl_available_locales
   type: STRING
+  description: Environment Settings Intl Available Locales
 - mode: REPEATED
   name: environment_settings_intl_requested_locales
   type: STRING
+  description: Environment Settings Intl Requested Localed
 - mode: REPEATED
   name: environment_settings_intl_system_locales
   type: STRING
 - mode: REPEATED
   name: environment_settings_intl_regional_prefs_locales
   type: STRING
+  description: Environment Settings Intl Regional Prefs Locales
 - fields:
   - name: key
     type: STRING

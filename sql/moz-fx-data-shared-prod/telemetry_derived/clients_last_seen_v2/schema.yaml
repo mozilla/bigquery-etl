@@ -85,51 +85,67 @@ fields:
   - mode: NULLABLE
     name: addon_id
     type: STRING
+    description: Add-On Identifier
   - mode: NULLABLE
     name: blocklisted
     type: BOOLEAN
+    description: Blocklisted
   - mode: NULLABLE
     name: name
     type: STRING
+    description: Name
   - mode: NULLABLE
     name: user_disabled
     type: BOOLEAN
+    description: User Disabled
   - mode: NULLABLE
     name: app_disabled
     type: BOOLEAN
+    description: App Disabled
   - mode: NULLABLE
     name: version
     type: STRING
+    description: Version
   - mode: NULLABLE
     name: scope
     type: INTEGER
+    description: Scope
   - mode: NULLABLE
     name: type
     type: STRING
+    description: Type
   - mode: NULLABLE
     name: foreign_install
     type: BOOLEAN
+    description: Foreign Install
   - mode: NULLABLE
     name: has_binary_components
     type: BOOLEAN
+    description: Has Binary Components
   - mode: NULLABLE
     name: install_day
     type: INTEGER
+    description: Install Day
   - mode: NULLABLE
     name: update_day
     type: INTEGER
+    description: Update Day
   - mode: NULLABLE
     name: signed_state
     type: INTEGER
+    description: Signed State
   - mode: NULLABLE
     name: is_system
     type: BOOLEAN
+    description: Is System
   - mode: NULLABLE
     name: is_web_extension
     type: BOOLEAN
+    description: Is Web Extension
   - mode: NULLABLE
     name: multiprocess_compatible
     type: BOOLEAN
+    description: Multiprocess Compatible
   mode: REPEATED
   name: active_addons
   type: RECORD

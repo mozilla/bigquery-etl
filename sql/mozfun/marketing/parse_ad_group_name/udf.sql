@@ -3,38 +3,25 @@ RETURNS ARRAY<STRUCT<key STRING, value STRING>> AS (
   CASE
     WHEN REGEXP_CONTAINS(ad_group_name, r"^gads_v2")
       AND ARRAY_LENGTH(SPLIT(ad_group_name, "_")) = 9
-      THEN ARRAY(
-          SELECT AS STRUCT
-            keys[off] AS key,
-            value
-          FROM
-            UNNEST(SPLIT(ad_group_name, "_")) AS value
-            WITH OFFSET off,
-            (
-              SELECT
-                [
-                  'ad_network',
-                  'version',
-                  'product',
-                  'iniative',
-                  'region',
-                  'country_code',
-                  'placement',
-                  'audience',
-                  'targeting'
-                ] AS keys
-            )
+      THEN mozfun.map.from_lists(
+          [
+            'ad_network',
+            'version',
+            'product',
+            'iniative',
+            'region',
+            'country_code',
+            'placement',
+            'audience',
+            'targeting'
+          ],
+          SPLIT(ad_group_name, "_")
         )
     WHEN REGEXP_CONTAINS(ad_group_name, r"^meta_v2")
       AND ARRAY_LENGTH(SPLIT(ad_group_name, "_")) = 5
-      THEN ARRAY(
-          SELECT AS STRUCT
-            keys[off] AS key,
-            value
-          FROM
-            UNNEST(SPLIT(ad_group_name, "_")) AS value
-            WITH OFFSET off,
-            (SELECT ['ad_network', 'version', 'audience', 'placement', 'targeting'] AS keys)
+      THEN mozfun.map.from_lists(
+          ['ad_network', 'version', 'audience', 'placement', 'targeting'],
+          SPLIT(ad_group_name, "_")
         )
     ELSE NULL
   END

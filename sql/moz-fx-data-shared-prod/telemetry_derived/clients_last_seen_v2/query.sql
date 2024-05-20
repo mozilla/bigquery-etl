@@ -66,7 +66,7 @@ WITH _current AS (
     ) AS days_seen_in_experiment,
     * EXCEPT (submission_date)
   FROM
-    clients_daily_v6
+    `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6`
   WHERE
     submission_date = @submission_date
 ),
@@ -103,7 +103,7 @@ _previous AS (
       second_seen_date
     )
   FROM
-    clients_last_seen_v2
+    `moz-fx-data-shared-prod.telemetry_derived.clients_last_seen_v2`
   WHERE
     submission_date = DATE_SUB(@submission_date, INTERVAL 1 DAY)
     -- Filter out rows from yesterday that have now fallen outside the 28-day window.

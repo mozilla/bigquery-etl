@@ -734,10 +734,14 @@ fields:
   type: INTEGER
   description: Scalar Parent Dev Tools Accessibility Picker Used Count Sum
 - fields:
-  - name: key
+  - mode: NULLABLE
+    name: key
     type: STRING
-  - name: value
+    description: Key
+  - mode: NULLABLE
+    name: value
     type: INTEGER
+    description: Value
   mode: REPEATED
   name: scalar_parent_devtools_accessibility_select_accessible_for_node_sum
   type: RECORD

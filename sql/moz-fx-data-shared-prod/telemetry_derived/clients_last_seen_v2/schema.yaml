@@ -904,22 +904,28 @@ fields:
 - mode: NULLABLE
   name: scalar_parent_urlbar_impression_autofill_origin_sum
   type: INTEGER
+  description: null
 - mode: NULLABLE
   name: scalar_parent_urlbar_impression_autofill_other_sum
   type: INTEGER
+  description: null
 - mode: NULLABLE
   name: scalar_parent_urlbar_impression_autofill_preloaded_sum
   type: INTEGER
+  description: null
 - mode: NULLABLE
   name: scalar_parent_urlbar_impression_autofill_url_sum
   type: INTEGER
+  description: null
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: null
   - mode: NULLABLE
     name: value
     type: INTEGER
+    description: null
   mode: REPEATED
   name: scalar_parent_telemetry_event_counts_sum
   type: RECORD
@@ -933,78 +939,113 @@ fields:
   mode: REPEATED
   name: scalar_content_telemetry_event_counts_sum
   type: RECORD
+  description: null
 - fields:
   - name: key
     type: STRING
+    description: Key
   - name: value
     type: INTEGER
+    description: Value
   mode: REPEATED
   name: scalar_parent_urlbar_searchmode_bookmarkmenu_sum
   type: RECORD
+  description: null
 - fields:
   - name: key
     type: STRING
+    description: Key
   - name: value
     type: INTEGER
+    description: Value
   mode: REPEATED
   name: scalar_parent_urlbar_searchmode_handoff_sum
   type: RECORD
+  description: Scalar Parent URL Bar Search Mode Handoff Sum
 - fields:
   - name: key
     type: STRING
+    description: Key
   - name: value
     type: INTEGER
+    description: Value
   mode: REPEATED
   name: scalar_parent_urlbar_searchmode_keywordoffer_sum
   type: RECORD
+  description: Scalar Parent URL Bar Search Mode Keyword Offer Sum
 - fields:
   - name: key
     type: STRING
+    description: Key
   - name: value
     type: INTEGER
+    description: Value
   mode: REPEATED
   name: scalar_parent_urlbar_searchmode_oneoff_sum
   type: RECORD
+  description: Scalar Parent URL Bar Search Mode One-off Sum
 - fields:
   - name: key
     type: STRING
+    description: null
   - name: value
     type: INTEGER
+    description: null
   mode: REPEATED
   name: scalar_parent_urlbar_searchmode_other_sum
   type: RECORD
+  description: Scalar Parent URL Bar Search Mode Other Sum
 - fields:
-  - name: key
+  - mode: NULLABLE
+    name: key
     type: STRING
-  - name: value
+    description: null
+  - mode: NULLABLE
+    name: value
     type: INTEGER
+    description: null
   mode: REPEATED
   name: scalar_parent_urlbar_searchmode_shortcut_sum
   type: RECORD
 - fields:
-  - name: key
+  - mode: NULLABLE
+    name: key
     type: STRING
-  - name: value
+    description: null
+  - mode: NULLABLE
+    name: value
     type: INTEGER
+    description: null
   mode: REPEATED
   name: scalar_parent_urlbar_searchmode_tabmenu_sum
   type: RECORD
+  description: Scalar Parent URL Bar Search Mode Tab Menu Sum
 - fields:
-  - name: key
+  - mode: NULLABLE
+    name: key
     type: STRING
-  - name: value
+    description: Key
+  - mode: NULLABLE
+    name: value
     type: INTEGER
+    description: Value
   mode: REPEATED
   name: scalar_parent_urlbar_searchmode_tabtosearch_sum
   type: RECORD
+  description: Scalar Parent URL Bar Search Mode Tab to Search Sum
 - fields:
-  - name: key
+  - mode: NULLABLE
+    name: key
     type: STRING
-  - name: value
+    description: null
+  - mode: NULLABLE
+    name: value
     type: INTEGER
+    description: null
   mode: REPEATED
   name: scalar_parent_urlbar_searchmode_tabtosearch_onboard_sum
   type: RECORD
+  description: Scalar Parent URL Bar Search Mode Tab to Search Onboard Sum
 - fields:
   - name: key
     type: STRING

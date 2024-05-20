@@ -75,10 +75,10 @@ LEFT JOIN
   retention_aggs
   USING (date, campaign_id, ad_group_id)
 JOIN
-  google_ads_derived.campaigns_v2
+  `moz-fx-data-shared-prod`.google_ads_derived.campaigns_v2
   USING (campaign_id)
 JOIN
-  google_ads_derived.ad_groups_v2
+  `moz-fx-data-shared-prod`.google_ads_derived.ad_groups_v1
   USING (campaign_id, ad_group_id)
 GROUP BY
   date,

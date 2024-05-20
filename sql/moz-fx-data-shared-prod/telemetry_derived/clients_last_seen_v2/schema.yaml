@@ -521,37 +521,38 @@ fields:
   name: histogram_parent_devtools_picker_eyedropper_opened_count_sum
   type: INTEGER
   description: null
-- name: histogram_parent_devtools_responsive_opened_count_sum
+- mode: NULLABLE
+  name: histogram_parent_devtools_responsive_opened_count_sum
   type: INTEGER
-  description: null
+  description: Histogram Parent Dev Tools Responsive Opened Count Sum
 - mode: NULLABLE
   name: histogram_parent_devtools_ruleview_opened_count_sum
   type: INTEGER
-  description: null
+  description: Histogram Parent Dev Tools Rule View Opened Count Sum
 - mode: NULLABLE
   name: histogram_parent_devtools_scratchpad_opened_count_sum
   type: INTEGER
-  description: null
+  description: Histogram Parent Dev Tools Scratchpad Opened Count Sum
 - mode: NULLABLE
   name: histogram_parent_devtools_scratchpad_window_opened_count_sum
   type: INTEGER
-  description: null
+  description: Histogram Parent Dev Tools Scratchpad Window Opened Count Sum
 - mode: NULLABLE
   name: histogram_parent_devtools_shadereditor_opened_count_sum
   type: INTEGER
-  description: null
+  description: Histogram Parent Dev Tools Shader Editor Opened Count Sum
 - mode: NULLABLE
   name: histogram_parent_devtools_storage_opened_count_sum
   type: INTEGER
-  description: null
+  description: Histogram Parent Dev Tools Storage Opened Count Sum
 - mode: NULLABLE
   name: histogram_parent_devtools_styleeditor_opened_count_sum
   type: INTEGER
-  description: null
+  description: Histogram Parent Dev Tools Style Editor Opened Count Sum
 - mode: NULLABLE
   name: histogram_parent_devtools_webaudioeditor_opened_count_sum
   type: INTEGER
-  description: null
+  description: Histogram Parent Dev Tools Web Audio Editor Opened Count Sum
 - mode: NULLABLE
   name: histogram_parent_devtools_webconsole_opened_count_sum
   type: INTEGER
@@ -559,7 +560,7 @@ fields:
 - mode: NULLABLE
   name: histogram_parent_devtools_webide_opened_count_sum
   type: INTEGER
-  description: null
+  description: Histogram Parent Dev Tools Web IDE Opened Count Sum
 - mode: NULLABLE
   name: install_year
   type: INTEGER
@@ -567,11 +568,11 @@ fields:
 - mode: NULLABLE
   name: is_default_browser
   type: BOOLEAN
-  description: Is Default Browser
+  description: Is Default Browser Indicator
 - mode: NULLABLE
   name: is_wow64
   type: BOOLEAN
-  description: null
+  description: WoW64 Indicator
 - mode: NULLABLE
   name: locale
   type: STRING

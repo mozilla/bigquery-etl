@@ -1,0 +1,27 @@
+friendly_name: Active Users Aggregates Device
+description: |-
+  This aggregation contains the growth metrics: daily, weekly, monthly
+  users and active users in the context of analysing per device.
+
+  This aggregate is separated from active_users_aggregates to improve 
+  query performance by aggregating on device's unique identifiers.
+owners:
+- lvargas@mozilla.com
+labels:
+  incremental: true
+scheduling:
+  dag_name: bqetl_analytics_aggregations
+  task_name: active_users_aggregates_device_v2
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+    - country
+    - channel
+    - os
+    - first_seen_year
+references: {}

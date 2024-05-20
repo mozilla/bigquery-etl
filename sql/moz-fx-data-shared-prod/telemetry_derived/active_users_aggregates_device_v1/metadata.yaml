@@ -1,4 +1,5 @@
 friendly_name: Active Users Aggregates Device
+deprecated: true
 description: |-
   This aggregation contains the metrics of daily, weekly and monthly
   active users as well as new profiles and search counts in the

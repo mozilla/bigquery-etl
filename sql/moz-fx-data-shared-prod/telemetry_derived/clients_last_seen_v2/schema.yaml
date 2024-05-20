@@ -1293,6 +1293,7 @@ fields:
   mode: REPEATED
   name: search_content_about_newtab_sum
   type: RECORD
+  description: Search Content About New Tab Sum
 - fields:
   - mode: NULLABLE
     name: key
@@ -1303,6 +1304,7 @@ fields:
   mode: REPEATED
   name: search_content_searchbar_sum
   type: RECORD
+  description: Search Content Search Bar Sum
 - fields:
   - mode: NULLABLE
     name: key
@@ -1313,6 +1315,7 @@ fields:
   mode: REPEATED
   name: search_content_system_sum
   type: RECORD
+  description: Search Content System Sum
 - fields:
   - mode: NULLABLE
     name: key
@@ -1323,6 +1326,7 @@ fields:
   mode: REPEATED
   name: search_content_webextension_sum
   type: RECORD
+  description: Search Content Web Extension Sum
 - fields:
   - mode: NULLABLE
     name: key
@@ -1333,6 +1337,7 @@ fields:
   mode: REPEATED
   name: search_content_tabhistory_sum
   type: RECORD
+  description: Search Content Tab History Sum
 - fields:
   - mode: NULLABLE
     name: key
@@ -1343,6 +1348,7 @@ fields:
   mode: REPEATED
   name: search_content_reload_sum
   type: RECORD
+  description: Search Content Reload Sum
 - fields:
   - mode: NULLABLE
     name: key
@@ -1353,6 +1359,7 @@ fields:
   mode: REPEATED
   name: search_content_unknown_sum
   type: RECORD
+  description: Search Content Unknown Sum
 - fields:
   - mode: NULLABLE
     name: key
@@ -1363,6 +1370,7 @@ fields:
   mode: REPEATED
   name: search_withads_urlbar_sum
   type: RECORD
+  description: Search With Ads URL Bar Sum
 - fields:
   - mode: NULLABLE
     name: key
@@ -1373,6 +1381,7 @@ fields:
   mode: REPEATED
   name: search_withads_urlbar_handoff_sum
   type: RECORD
+  description: Search With Ads URL Bar Handoff Sum
 - fields:
   - mode: NULLABLE
     name: key
@@ -1393,6 +1402,7 @@ fields:
   mode: REPEATED
   name: search_withads_contextmenu_sum
   type: RECORD
+  description: Search With Ads Context Menu Sum
 - fields:
   - mode: NULLABLE
     name: key
@@ -1403,6 +1413,7 @@ fields:
   mode: REPEATED
   name: search_withads_about_home_sum
   type: RECORD
+  description: Search With Ads About Home Sum
 - fields:
   - mode: NULLABLE
     name: key
@@ -1413,6 +1424,7 @@ fields:
   mode: REPEATED
   name: search_withads_about_newtab_sum
   type: RECORD
+  description: Search With Ads About New Tab Sum
 - fields:
   - mode: NULLABLE
     name: key
@@ -1423,6 +1435,7 @@ fields:
   mode: REPEATED
   name: search_withads_searchbar_sum
   type: RECORD
+  description: Search With Ads Search Bar Sum
 - fields:
   - mode: NULLABLE
     name: key
@@ -1433,6 +1446,7 @@ fields:
   mode: REPEATED
   name: search_withads_system_sum
   type: RECORD
+  description: Search With Ads System Sum
 - fields:
   - mode: NULLABLE
     name: key
@@ -1443,6 +1457,7 @@ fields:
   mode: REPEATED
   name: search_withads_webextension_sum
   type: RECORD
+  description: Search With Ads Web Extension Sum
 - fields:
   - mode: NULLABLE
     name: key
@@ -1453,6 +1468,7 @@ fields:
   mode: REPEATED
   name: search_withads_tabhistory_sum
   type: RECORD
+  description: Search With Ads Tab History Sum
 - fields:
   - mode: NULLABLE
     name: key
@@ -1533,6 +1549,7 @@ fields:
   mode: REPEATED
   name: search_adclicks_about_newtab_sum
   type: RECORD
+  description: Search Ad Clicks About New Tab Sum
 - fields:
   - mode: NULLABLE
     name: key
@@ -1543,6 +1560,7 @@ fields:
   mode: REPEATED
   name: search_adclicks_searchbar_sum
   type: RECORD
+  description: Search Ad Clicks Search Bar Sum
 - fields:
   - mode: NULLABLE
     name: key
@@ -1593,39 +1611,50 @@ fields:
   mode: REPEATED
   name: search_adclicks_unknown_sum
   type: RECORD
+  description: Search Ad Clicks Unknown Sum
 - mode: NULLABLE
   name: update_background
   type: BOOLEAN
 - mode: NULLABLE
   name: user_pref_browser_search_suggest_enabled
   type: STRING
+  description: User Preferences Browser Search Suggest Enabled
 - mode: NULLABLE
   name: user_pref_browser_widget_in_navbar
   type: STRING
+  description: User Preferences Browser Widget in Navigation Bar
 - mode: NULLABLE
   name: user_pref_browser_urlbar_suggest_searches
   type: STRING
+  description: User Preferences Browser URL Bar Suggest Searches
 - mode: NULLABLE
   name: user_pref_browser_urlbar_show_search_suggestions_first
   type: STRING
+  description: null
 - mode: NULLABLE
   name: user_pref_browser_urlbar_suggest_quicksuggest
   type: STRING
+  description: null
 - mode: NULLABLE
   name: user_pref_browser_urlbar_suggest_quicksuggest_sponsored
   type: STRING
+  description: null
 - mode: NULLABLE
   name: user_pref_browser_urlbar_quicksuggest_onboarding_dialog_choice
   type: STRING
+  description: null
 - name: >-
     scalar_parent_browser_engagement_total_uri_count_normal_and_private_mode_sum
   type: INTEGER
+  description: null
 - mode: NULLABLE
   name: user_pref_browser_newtabpage_enabled
   type: STRING
+  description: User Preferences Browser New Tab Page Enabled
 - mode: NULLABLE
   name: user_pref_app_shield_optoutstudies_enabled
   type: STRING
+  description: User Preferences App Shield Opt Out Studies Enabled
 - fields:
   - mode: NULLABLE
     name: key
@@ -1636,6 +1665,7 @@ fields:
   mode: REPEATED
   name: contextual_services_quicksuggest_click_sum
   type: RECORD
+  description: Contextual Services Quick Suggest Click Sum
 - fields:
   - mode: NULLABLE
     name: key
@@ -1646,6 +1676,7 @@ fields:
   mode: REPEATED
   name: contextual_services_quicksuggest_impression_sum
   type: RECORD
+  description: Contextual Services Quick Suggest Impression Sum
 - fields:
   - mode: NULLABLE
     name: key
@@ -1656,6 +1687,7 @@ fields:
   mode: REPEATED
   name: contextual_services_quicksuggest_help_sum
   type: RECORD
+  description: Contextual Services Quick Suggest Help Sum
 - fields:
   - mode: NULLABLE
     name: key
@@ -1666,6 +1698,7 @@ fields:
   mode: REPEATED
   name: contextual_services_topsites_click_sum
   type: RECORD
+  description: Contextual Services Topsites Click Sum
 - fields:
   - mode: NULLABLE
     name: key
@@ -1676,18 +1709,23 @@ fields:
   mode: REPEATED
   name: contextual_services_topsites_impression_sum
   type: RECORD
+  description: Contextual Services Topsites Impression Sum
 - mode: NULLABLE
   name: user_pref_browser_urlbar_suggest_quicksuggest_nonsponsored
   type: STRING
+  description: User Preferences Browser URL Bar Suggest Quick Suggest Non-Sponsored
 - mode: NULLABLE
   name: user_pref_browser_urlbar_quicksuggest_data_collection_enabled
   type: STRING
+  description: User Preferences Browser URL Bar Quick Suggest Data Collection Enabled
 - mode: NULLABLE
   name: scalar_a11y_hcm_foreground
   type: INTEGER
+  description: null
 - mode: NULLABLE
   name: scalar_a11y_hcm_background
   type: INTEGER
+  description: null
 - fields:
   - mode: NULLABLE
     name: key
@@ -1698,6 +1736,7 @@ fields:
   mode: REPEATED
   name: a11y_theme
   type: RECORD
+  description: null
 - fields:
   - mode: NULLABLE
     name: key
@@ -1708,6 +1747,7 @@ fields:
   mode: REPEATED
   name: contextual_services_quicksuggest_help_nonsponsored_bestmatch_sum
   type: RECORD
+  description: Contextual Services Quick Suggest Help Non-Sponsored Best Match Sum
 - fields:
   - mode: NULLABLE
     name: key
@@ -1718,6 +1758,7 @@ fields:
   mode: REPEATED
   name: contextual_services_quicksuggest_help_sponsored_bestmatch_sum
   type: RECORD
+  description: null
 - fields:
   - mode: NULLABLE
     name: key
@@ -1742,12 +1783,15 @@ fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: null
   - mode: NULLABLE
     name: value
     type: INTEGER
+    description: null
   mode: REPEATED
   name: contextual_services_quicksuggest_block_sponsored_bestmatch_sum
   type: RECORD
+  description: Contextual Services Quick Suggest Block Sponsored Best Match Sum
 - fields:
   - mode: NULLABLE
     name: key
@@ -1768,6 +1812,7 @@ fields:
   mode: REPEATED
   name: contextual_services_quicksuggest_click_sponsored_bestmatch_sum
   type: RECORD
+  description: null
 - fields:
   - mode: NULLABLE
     name: key
@@ -1798,18 +1843,23 @@ fields:
   mode: REPEATED
   name: contextual_services_quicksuggest_impression_nonsponsored_bestmatch_sum
   type: RECORD
+  description: null
 - mode: NULLABLE
   name: user_pref_browser_urlbar_suggest_bestmatch
   type: STRING
+  description: User Preferences Browser URL Bar Suggest Best Match
 - mode: NULLABLE
   name: scalar_parent_browser_ui_interaction_textrecognition_error_sum
   type: INTEGER
+  description: Scalar Parent Browser UI Interaction Text Recognition Error Sum
 - mode: NULLABLE
   name: text_recognition_interaction_timing_sum
   type: INTEGER
+  description: Text Recognition Interaction Timing Sum
 - mode: NULLABLE
   name: text_recognition_interaction_timing_count_sum
   type: INTEGER
+  description: Text Recognition Interaction Timing Count Sum
 - fields:
   - mode: NULLABLE
     name: key
@@ -1820,57 +1870,75 @@ fields:
   mode: REPEATED
   name: scalar_parent_browser_ui_interaction_content_context_sum
   type: RECORD
+  description: Scalar Parent Browser UI Interaction Content Context Sum
 - mode: NULLABLE
   name: text_recognition_api_performance_sum
   type: INTEGER
+  description: Text Recognition API Performance Sum
 - mode: NULLABLE
   name: text_recognition_api_performance_count_sum
   type: INTEGER
+  description: Text Recognition API Performance Count Sum
 - mode: NULLABLE
   name: text_recognition_text_length_sum
   type: INTEGER
+  description: Text Recognition Text Length Sum
 - mode: NULLABLE
   name: text_recognition_text_length_count_sum
   type: INTEGER
+  description: Text Recognition Text Length Count Sum
 - mode: NULLABLE
   name: scalar_parent_os_environment_launched_via_taskbar_private
   type: BOOLEAN
+  description: Scalar Parent OS Environment Launched via Taskbar Private
 - mode: NULLABLE
   name: dom_parentprocess_private_window_used
   type: BOOLEAN
+  description: DOM Parent Process Private Window Used
 - mode: NULLABLE
   name: os_environment_is_taskbar_pinned_any
   type: BOOLEAN
+  description: OS Environment Is Taskbar Pinned Any
 - mode: NULLABLE
   name: os_environment_is_taskbar_pinned_private_any
   type: BOOLEAN
+  description: OS Environment Is Taskbar Pinned Private Any
 - mode: NULLABLE
   name: os_environment_is_taskbar_pinned_private
   type: BOOLEAN
+  description: OS Environment Is Taskbar Pinned Private
 - mode: NULLABLE
   name: bookmark_migrations_quantity_chrome
   type: INTEGER
+  description: Bookmark Migrations Quantity Chrome
 - mode: NULLABLE
   name: bookmark_migrations_quantity_edge
   type: INTEGER
+  description: Bookmark Migrations Quantity Edge
 - mode: NULLABLE
   name: bookmark_migrations_quantity_safari
   type: INTEGER
+  description: Bookmark Migrations Quantity Safari
 - mode: NULLABLE
   name: bookmark_migrations_quantity_all
   type: INTEGER
+  description: Bookmark Migrations Quantity All
 - mode: NULLABLE
   name: history_migrations_quantity_chrome
   type: INTEGER
+  description: History Migrations Quantity Chrome
 - mode: NULLABLE
   name: history_migrations_quantity_edge
   type: INTEGER
+  description: History Migrations Quantity Edge
 - mode: NULLABLE
   name: history_migrations_quantity_safari
   type: INTEGER
+  description: History Migrations Quantity Safari
 - mode: NULLABLE
   name: history_migrations_quantity_all
   type: INTEGER
+  description: History Migrations Quantity All
 - mode: NULLABLE
   name: logins_migrations_quantity_chrome
   type: INTEGER

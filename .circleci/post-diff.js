@@ -93,11 +93,14 @@ ${diff_content}
 \`\`\`
 
 </details>
+
+${warnings}
+
+[Link to full diff](https://output.circle-artifacts.com/output/job/${process.env.CIRCLE_WORKFLOW_JOB_ID}/artifacts/${process.env.CIRCLE_NODE_INDEX}/${diff_file})
 `
     }
     var content = `#### \`${diff_file}\`
 ${body}
-${warnings}
 `;
     return content;
 }
@@ -107,8 +110,6 @@ function post_diff() {
         process.env.GH_AUTH_TOKEN,
         `### Integration report for "${bot.env.commitMessage}"
 ${diff()}
-
-[Link to full diff](https://output.circle-artifacts.com/output/job/${process.env.CIRCLE_WORKFLOW_JOB_ID}/artifacts/${process.env.CIRCLE_NODE_INDEX}/${diff_file})
 `
     );
 }

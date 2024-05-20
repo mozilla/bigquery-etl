@@ -183,31 +183,45 @@ fields:
   type: STRING
   description: App Version
 - fields:
-  - name: source
+  - mode: NULLABLE
+    name: source
     type: STRING
-  - name: medium
+    description: Source
+  - mode: NULLABLE
+    name: medium
     type: STRING
-  - name: campaign
+    description: Medium
+  - mode: NULLABLE
+    name: campaign
     type: STRING
-  - name: content
+    description: Campaign
+  - mode: NULLABLE
+    name: content
     type: STRING
+    description: Content
   - mode: NULLABLE
     name: experiment
     type: STRING
+    description: Experiment
   - mode: NULLABLE
     name: variation
     type: STRING
+    description: Variation
   - mode: NULLABLE
     name: dltoken
     type: STRING
+    description: Download Token
   - mode: NULLABLE
     name: dlsource
     type: STRING
+    description: Download Source
   - mode: NULLABLE
     name: ua
     type: STRING
+    description: null
   name: attribution
   type: RECORD
+  description: Attribution
 - mode: NULLABLE
   name: blocklist_enabled
   type: BOOLEAN
@@ -255,26 +269,47 @@ fields:
 - mode: NULLABLE
   name: cpu_stepping
   type: INTEGER
-- name: cpu_vendor
+  description: CPU Stepping
+- mode: NULLABLE
+  name: cpu_vendor
   type: STRING
-- name: crashes_detected_content_sum
+  description: CPU Vendor
+- mode: NULLABLE
+  name: crashes_detected_content_sum
   type: INTEGER
-- name: crashes_detected_gmplugin_sum
+  description: Crashes Detected Content Sum
+- mode: NULLABLE
+  name: crashes_detected_gmplugin_sum
   type: INTEGER
-- name: crashes_detected_plugin_sum
+  description: null
+- mode: NULLABLE
+  name: crashes_detected_plugin_sum
   type: INTEGER
-- name: crash_submit_attempt_content_sum
+  description: Crashes Detected Plugin Sum
+- mode: NULLABLE
+  name: crash_submit_attempt_content_sum
   type: INTEGER
-- name: crash_submit_attempt_main_sum
+  description: Crash Submit Attempt Content Sum
+- mode: NULLABLE
+  name: crash_submit_attempt_main_sum
   type: INTEGER
-- name: crash_submit_attempt_plugin_sum
+  description: Crash Submit Attempt Main Sum
+- mode: NULLABLE
+  name: crash_submit_attempt_plugin_sum
   type: INTEGER
-- name: crash_submit_success_content_sum
+  description: Crash Submit Attempt Plugin Sum
+- mode: NULLABLE
+  name: crash_submit_success_content_sum
   type: INTEGER
-- name: crash_submit_success_main_sum
+  description: Crash Submit Success Content Sum
+- mode: NULLABLE
+  name: crash_submit_success_main_sum
   type: INTEGER
-- name: crash_submit_success_plugin_sum
+  description: Crash Submit Success Main Sum
+- mode: NULLABLE
+  name: crash_submit_success_plugin_sum
   type: INTEGER
+  description: Crash Submit Success Plugin Sum
 - mode: NULLABLE
   name: default_search_engine
   type: STRING
@@ -343,13 +378,18 @@ fields:
   type: STRING
   description: Environment Settings Intl Regional Prefs Locales
 - fields:
-  - name: key
+  - mode: NULLABLE
+    name: key
     type: STRING
-  - name: value
+    description: Key
+  - mode: NULLABLE
+    name: value
     type: STRING
+    description: Value
   mode: REPEATED
   name: experiments
   type: RECORD
+  description: Experiments
 - mode: NULLABLE
   name: first_paint_mean
   type: FLOAT
@@ -615,44 +655,82 @@ fields:
   name: sample_id
   type: INTEGER
   description: Sample ID
-- name: sandbox_effective_content_process_level
+- mode: NULLABLE
+  name: sandbox_effective_content_process_level
   type: INTEGER
-- name: scalar_combined_webrtc_nicer_stun_retransmits_sum
+  description: Sandbox Effective Content Process Level
+- mode: NULLABLE
+  name: scalar_combined_webrtc_nicer_stun_retransmits_sum
   type: INTEGER
-- name: scalar_combined_webrtc_nicer_turn_401s_sum
+  description: Scalar Combined WebRTC Nicer Stun Retransmits Sum
+- mode: NULLABLE
+  name: scalar_combined_webrtc_nicer_turn_401s_sum
   type: INTEGER
-- name: scalar_combined_webrtc_nicer_turn_403s_sum
+  description: null
+- mode: NULLABLE
+  name: scalar_combined_webrtc_nicer_turn_403s_sum
   type: INTEGER
-- name: scalar_combined_webrtc_nicer_turn_438s_sum
+  description: null
+- mode: NULLABLE
+  name: scalar_combined_webrtc_nicer_turn_438s_sum
   type: INTEGER
-- name: scalar_content_navigator_storage_estimate_count_sum
+  description: null
+- mode: NULLABLE
+  name: scalar_content_navigator_storage_estimate_count_sum
   type: INTEGER
-- name: scalar_content_navigator_storage_persist_count_sum
+  description: null
+- mode: NULLABLE
+  name: scalar_content_navigator_storage_persist_count_sum
   type: INTEGER
-- name: scalar_parent_aushelper_websense_reg_version
+  description: null
+- mode: NULLABLE
+  name: scalar_parent_aushelper_websense_reg_version
   type: STRING
-- name: scalar_parent_browser_engagement_max_concurrent_tab_count_max
+  description: null
+- mode: NULLABLE
+  name: scalar_parent_browser_engagement_max_concurrent_tab_count_max
   type: INTEGER
-- name: scalar_parent_browser_engagement_max_concurrent_window_count_max
+  description: null
+- mode: NULLABLE
+  name: scalar_parent_browser_engagement_max_concurrent_window_count_max
   type: INTEGER
-- name: scalar_parent_browser_engagement_tab_open_event_count_sum
+  description: null
+- mode: NULLABLE
+  name: scalar_parent_browser_engagement_tab_open_event_count_sum
   type: INTEGER
-- name: scalar_parent_browser_engagement_total_uri_count_sum
+  description: null
+- mode: NULLABLE
+  name: scalar_parent_browser_engagement_total_uri_count_sum
   type: INTEGER
-- name: scalar_parent_browser_engagement_unfiltered_uri_count_sum
+  description: Scalar Parent Browser Engagement Total URI Count Sum
+- mode: NULLABLE
+  name: scalar_parent_browser_engagement_unfiltered_uri_count_sum
   type: INTEGER
-- name: scalar_parent_browser_engagement_unique_domains_count_max
+  description: Scalar Parent Browser Engagement Unfiltered URI Count Sum
+- mode: NULLABLE
+  name: scalar_parent_browser_engagement_unique_domains_count_max
   type: INTEGER
-- name: scalar_parent_browser_engagement_unique_domains_count_mean
+  description: Scalar Parent Browser Engagement Unique Domains Count Max
+- mode: NULLABLE
+  name: scalar_parent_browser_engagement_unique_domains_count_mean
   type: FLOAT
-- name: scalar_parent_browser_engagement_window_open_event_count_sum
+  description: Scalar Parent Browser Engagement Unique Domains Count Mean
+- mode: NULLABLE
+  name: scalar_parent_browser_engagement_window_open_event_count_sum
   type: INTEGER
-- name: scalar_parent_devtools_accessibility_node_inspected_count_sum
+  description: Scalar Parent Browser Engagement Window Open Event Count Sum
+- mode: NULLABLE
+  name: scalar_parent_devtools_accessibility_node_inspected_count_sum
   type: INTEGER
-- name: scalar_parent_devtools_accessibility_opened_count_sum
+  description: Scalar Parent Dev Tools Accessibility Mode Inspected Count Sum
+- mode: NULLABLE
+  name: scalar_parent_devtools_accessibility_opened_count_sum
   type: INTEGER
-- name: scalar_parent_devtools_accessibility_picker_used_count_sum
+  description: null
+- mode: NULLABLE
+  name: scalar_parent_devtools_accessibility_picker_used_count_sum
   type: INTEGER
+  description: Scalar Parent Dev Tools Accessibility Picker Used Count Sum
 - fields:
   - name: key
     type: STRING
@@ -661,34 +739,62 @@ fields:
   mode: REPEATED
   name: scalar_parent_devtools_accessibility_select_accessible_for_node_sum
   type: RECORD
-- name: scalar_parent_devtools_accessibility_service_enabled_count_sum
+- mode: NULLABLE
+  name: scalar_parent_devtools_accessibility_service_enabled_count_sum
   type: INTEGER
-- name: scalar_parent_devtools_copy_full_css_selector_opened_sum
+  description: Scalar Parent Devtools Accessibility Service Enabled Count Sum
+- mode: NULLABLE
+  name: scalar_parent_devtools_copy_full_css_selector_opened_sum
   type: INTEGER
-- name: scalar_parent_devtools_copy_unique_css_selector_opened_sum
+  description: null
+- mode: NULLABLE
+  name: scalar_parent_devtools_copy_unique_css_selector_opened_sum
   type: INTEGER
-- name: scalar_parent_devtools_toolbar_eyedropper_opened_sum
+  description: null
+- mode: NULLABLE
+  name: scalar_parent_devtools_toolbar_eyedropper_opened_sum
   type: INTEGER
-- name: scalar_parent_dom_contentprocess_troubled_due_to_memory_sum
+  description: null
+- mode: NULLABLE
+  name: scalar_parent_dom_contentprocess_troubled_due_to_memory_sum
   type: INTEGER
-- name: scalar_parent_navigator_storage_estimate_count_sum
+  description: null
+- mode: NULLABLE
+  name: scalar_parent_navigator_storage_estimate_count_sum
   type: INTEGER
-- name: scalar_parent_navigator_storage_persist_count_sum
+  description: null
+- mode: NULLABLE
+  name: scalar_parent_navigator_storage_persist_count_sum
   type: INTEGER
-- name: scalar_parent_storage_sync_api_usage_extensions_using_sum
+  description: null
+- mode: NULLABLE
+  name: scalar_parent_storage_sync_api_usage_extensions_using_sum
   type: INTEGER
-- name: search_cohort
+  description: null
+- mode: NULLABLE
+  name: search_cohort
   type: STRING
-- name: search_count_abouthome
+  description: Search Cohort
+- mode: NULLABLE
+  name: search_count_abouthome
   type: INTEGER
-- name: search_count_contextmenu
+  description: Search Count About Home
+- mode: NULLABLE
+  name: search_count_contextmenu
   type: INTEGER
-- name: search_count_newtab
+  description: Search Count Context Menu
+- mode: NULLABLE
+  name: search_count_newtab
   type: INTEGER
-- name: search_count_searchbar
+  description: Search Count New Tab
+- mode: NULLABLE
+  name: search_count_searchbar
   type: INTEGER
-- name: search_count_system
+  description: Search Count Search Bar
+- mode: NULLABLE
+  name: search_count_system
   type: INTEGER
+  description: Search Count System
 - name: search_count_urlbar
   type: INTEGER
 - name: search_count_all

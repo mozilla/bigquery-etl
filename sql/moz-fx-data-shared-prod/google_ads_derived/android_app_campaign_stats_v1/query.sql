@@ -52,9 +52,9 @@ retention_aggs AS (
 SELECT
   date,
   campaigns_v2.campaign_name AS campaign,
-  map.get_key(campaigns_v2.campaign_segments, "region") AS campaign_region,
-  map.get_key(campaigns_v2.campaign_segments, "country_code") AS campaign_country_code,
-  map.get_key(campaigns_v2.campaign_segments, "language") AS campaign_language,
+  mozfun.map.get_key(campaigns_v2.campaign_segments, "region") AS campaign_region,
+  mozfun.map.get_key(campaigns_v2.campaign_segments, "country_code") AS campaign_country_code,
+  mozfun.map.get_key(campaigns_v2.campaign_segments, "language") AS campaign_language,
   campaigns_v2.campaign_segments,
   ad_groups_v2.ad_group_name AS ad_group,
   ad_groups_v2.ad_group_segments,

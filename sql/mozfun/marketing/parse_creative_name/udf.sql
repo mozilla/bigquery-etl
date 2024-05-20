@@ -32,11 +32,18 @@ RETURNS ARRAY<STRUCT<key STRING, value STRING>> AS (
           FROM
             UNNEST(SPLIT(creative_name, "_")) AS value
             WITH OFFSET off,
-            (SELECT ['ad_network', 'version', 'creative',
+            (
+              SELECT
+                [
+                  'ad_network',
+                  'version',
+                  'creative',
                   'format',
                   'dimension',
                   'length',
-                  'cta'] AS keys)
+                  'cta'
+                ] AS keys
+            )
         )
     ELSE NULL
   END
@@ -45,9 +52,7 @@ RETURNS ARRAY<STRUCT<key STRING, value STRING>> AS (
 -- Tests
 SELECT
   assert.equals(
-    ARRAY_LENGTH(
-      marketing.parse_creative_name('gads_v2_newDevice_video_mix_30S_download')
-    ),
+    ARRAY_LENGTH(marketing.parse_creative_name('gads_v2_newDevice_video_mix_30S_download')),
     7
   ),
   assert.equals(

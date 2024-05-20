@@ -12,3 +12,4 @@ workgroup_access:
   members:
   - workgroup:pocket/prefect
   - workgroup:mozsocial/prefect
+  - workgroup:mozsocial/service

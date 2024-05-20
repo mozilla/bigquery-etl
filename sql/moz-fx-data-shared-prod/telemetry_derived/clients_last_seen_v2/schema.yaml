@@ -2092,6 +2092,7 @@ fields:
   mode: REPEATED
   name: contextual_services_quicksuggest_help_weather_sum
   type: RECORD
+  description: Contextual Services Quick Suggest Help Weather Sum
 - fields:
   - mode: NULLABLE
     name: key
@@ -2102,6 +2103,7 @@ fields:
   mode: REPEATED
   name: contextual_services_quicksuggest_impression_dynamic_wikipedia_sum
   type: RECORD
+  description: Contextual Services Quick Suggest Impression Dynamic Wikipedia Sum
 - fields:
   - mode: NULLABLE
     name: key
@@ -2112,6 +2114,7 @@ fields:
   mode: REPEATED
   name: contextual_services_quicksuggest_impression_nonsponsored_sum
   type: RECORD
+  description: Contextual Services Quick Suggest Impression Nonsponsored Sum
 - fields:
   - mode: NULLABLE
     name: key
@@ -2122,6 +2125,7 @@ fields:
   mode: REPEATED
   name: contextual_services_quicksuggest_impression_sponsored_sum
   type: RECORD
+  description: Contextual Services Quick Suggest Impression Sponsored Sum
 - fields:
   - mode: NULLABLE
     name: key
@@ -2132,12 +2136,15 @@ fields:
   mode: REPEATED
   name: contextual_services_quicksuggest_impression_weather_sum
   type: RECORD
+  description: Contextual Services Quick Suggest Impression Weather Sum
 - mode: NULLABLE
   name: places_searchbar_cumulative_searches_sum
   type: INTEGER
+  description: Places Search Bar Cumulative Searches Sum
 - mode: NULLABLE
   name: places_searchbar_cumulative_filter_count_sum
   type: INTEGER
+  description: Places Search Bar Cumulative Filter Count Sum
 - fields:
   - mode: NULLABLE
     name: key
@@ -2148,6 +2155,7 @@ fields:
   mode: REPEATED
   name: scalar_parent_sidebar_opened_sum
   type: RECORD
+  description: Scalar Parent Sidebar Opened Sum
 - fields:
   - mode: NULLABLE
     name: key
@@ -2158,6 +2166,7 @@ fields:
   mode: REPEATED
   name: scalar_parent_sidebar_search_sum
   type: RECORD
+  description: Scalar Parent Sidebar Search Sum
 - fields:
   - mode: NULLABLE
     name: key

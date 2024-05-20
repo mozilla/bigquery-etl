@@ -1063,10 +1063,14 @@ fields:
   name: scalar_parent_urlbar_searchmode_topsites_urlbar_sum
   type: RECORD
 - fields:
-  - name: key
+  - mode: NULLABLE
+    name: key
     type: STRING
-  - name: value
+    description: null
+  - mode: NULLABLE
+    name: value
     type: INTEGER
+    description: null
   mode: REPEATED
   name: scalar_parent_urlbar_searchmode_touchbar_sum
   type: RECORD
@@ -1103,9 +1107,11 @@ fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: Key
   - mode: NULLABLE
     name: value
     type: INTEGER
+    description: Value
   mode: REPEATED
   name: scalar_parent_browser_ui_interaction_preferences_pane_home_sum
   type: RECORD
@@ -1329,47 +1335,61 @@ fields:
   mode: REPEATED
   name: scalar_parent_urlbar_picked_visiturl_sum
   type: RECORD
+  description: Scalar Parent URL Bar Picked Visit URL Sum
 - mode: NULLABLE
   name: default_private_search_engine
   type: STRING
+  description: Default Private Search Engine
 - mode: NULLABLE
   name: default_private_search_engine_data_load_path
   type: STRING
+  description: Default Private Search Engine Data Load Path
 - mode: NULLABLE
   name: default_private_search_engine_data_name
   type: STRING
+  description: Default Private Search Engine Data Name
 - mode: NULLABLE
   name: default_private_search_engine_data_origin
   type: STRING
+  description: Default Private Search Engine Data Origin
 - mode: NULLABLE
   name: default_private_search_engine_data_submission_url
   type: STRING
+  description: Default Private Search Engine Data Submission URL
 - fields:
   - mode: NULLABLE
     name: engine
     type: STRING
+    description: Engine
   - mode: NULLABLE
     name: source
     type: STRING
+    description: Source
   - mode: NULLABLE
     name: count
     type: INTEGER
+    description: Count
   mode: REPEATED
   name: search_counts
   type: RECORD
+  description: Search Counts
 - mode: NULLABLE
   name: user_pref_browser_search_region
   type: STRING
+  description: User Preferences Browser Search Region
 - fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: null
   - mode: NULLABLE
     name: value
     type: INTEGER
+    description: null
   mode: REPEATED
   name: search_with_ads
   type: RECORD
+  description: Search with Ads
 - fields:
   - mode: NULLABLE
     name: key

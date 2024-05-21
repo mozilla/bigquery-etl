@@ -14,7 +14,7 @@ WITH clients_last_seen AS (
     days_seen_bits,
     days_active_bits,
   FROM
-    `{{ project_id }}.{{ dataset }}.baseline_clients_last_seen_extended_activity`
+    `{{ project_id }}.{{ dataset }}.active_users`
 ),
 attribution AS (
   SELECT
@@ -40,7 +40,11 @@ attribution AS (
     is_suspicious_device_client,
     {% endif %}
   FROM
+    {% if name == "fenix" %}
     `{{ project_id }}.{{ dataset }}_derived.firefox_android_clients_v1`
+    {% elif name == "firefox_ios" %}
+    `{{ project_id }}.{{ dataset }}_derived.firefox_ios_clients_v1`
+    {% endif %}
 )
 SELECT
   clients_last_seen.submission_date AS submission_date,
@@ -93,7 +97,7 @@ SELECT
   clients_last_seen.days_seen_bits,
   clients_last_seen.days_active_bits,
   CASE
-    WHEN first_seen_date = clients_daily.submission_date
+    WHEN clients_daily.submission_date = first_seen_date
       THEN 'new_profile'
     WHEN DATE_DIFF(clients_daily.submission_date, first_seen_date, DAY)
       BETWEEN 1

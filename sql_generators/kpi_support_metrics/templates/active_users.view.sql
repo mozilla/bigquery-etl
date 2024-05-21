@@ -2,11 +2,8 @@
 CREATE OR REPLACE VIEW
   `{{ project_id }}.{{ dataset }}.{{ name }}`
 AS
--- This view is being added temporarily until issues preventing
--- https://github.com/mozilla/bigquery-etl/pull/5434
--- from merging have been resolved.
 SELECT
-  last_seen.*,
+  *,
   CASE
     WHEN LOWER(isp) = 'browserstack'
       THEN CONCAT("{{ friendly_name }}", ' ', isp)
@@ -41,10 +38,10 @@ SELECT
   (
     LOWER(IFNULL(isp, "")) <> "browserstack"
     {% if has_mozilla_online %}
-    AND LOWER(IFNULL(clients.distribution_id, "")) <> "mozillaonline"
+    AND LOWER(IFNULL(distribution_id, "")) <> "mozillaonline"
     {% endif %}
   )
   {% else %}FALSE{% endif %} AS is_mobile,
   {% if is_desktop_kpi %}TRUE{% else %}FALSE{% endif %} AS is_desktop,
 FROM
-  `{{ project_id }}.{{ dataset }}.baseline_clients_last_seen` AS last_seen
+  `{{ project_id }}.{{ dataset }}.baseline_clients_last_seen`

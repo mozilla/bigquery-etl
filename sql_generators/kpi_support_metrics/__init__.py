@@ -14,10 +14,10 @@ from bigquery_etl.util.common import write_sql
 
 GENERATOR_ROOT = Path(path.dirname(__file__))
 
-HEADER = "-- Query generated via `activity_kpi_support_metrics` SQL generator."
+HEADER = f"-- Query generated via `{GENERATOR_ROOT.name}` SQL generator."
 VERSION = "v1"
 TEMPLATES = (
-    "baseline_clients_last_seen_extended_activity.view.sql",
+    "active_users.view.sql",
     "retention_clients.view.sql",
     "retention.query.sql",
     "retention.view.sql",
@@ -99,7 +99,7 @@ def generate(target_project, output_dir, use_cloud_function):
             # Other SQL requires a clients table, currently only fenix and firefox_ios has one.
             # This is why skipping this skip for now.
             if product.value.baseline_view_only and not target_name.startswith(
-                "baseline_clients_last_seen"
+                "active_users"
             ):
                 continue
 
@@ -109,7 +109,7 @@ def generate(target_project, output_dir, use_cloud_function):
                     **asdict(product.value),
                     **default_template_args,
                     dataset=target_dataset,
-                    name=product.name,
+                    name=target_name,
                 )
             )
 
@@ -133,7 +133,7 @@ def generate(target_project, output_dir, use_cloud_function):
                     **asdict(product.value),
                     **default_template_args,
                     dataset=target_dataset,
-                    name=product.name,
+                    name=target_name,
                     format=False,
                 )
 

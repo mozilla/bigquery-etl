@@ -37,6 +37,7 @@ NO_BASELINE_PING_APPS = (
 )
 
 APPS_WITH_DISTRIBUTION_ID = ("fenix",)
+APP_WITH_BACKFILL_CONFIG = ("fenix",)
 
 
 def write_dataset_metadata(output_dir, full_table_id, derived_dataset_metadata=False):
@@ -326,7 +327,13 @@ class GleanTable:
                 artifacts.append(Artifact(table, "schema.yaml", schema))
 
             if backfill_config:
-                artifacts.append(Artifact(table, "backfill.yaml", backfill_config))
+                if app_name not in APP_WITH_BACKFILL_CONFIG:
+                    logging.info(
+                        "Skipped copying backfill.yaml for %s as app: %s is not expected to contain any backfill configuration."
+                        % (table, app_name)
+                    )
+                else:
+                    artifacts.append(Artifact(table, "backfill.yaml", backfill_config))
 
             for artifact in artifacts:
                 destination = (

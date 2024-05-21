@@ -22,6 +22,7 @@ SELECT
   campaigns.campaign_name,
   ad_group_names.ad_group_id,
   ad_group_names.ad_group_name,
+  mozfun.marketing.parse_ad_group_name(ad_group_names.ad_group_name) AS ad_group_segments,
 FROM
   ad_group_names
 JOIN

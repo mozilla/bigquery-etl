@@ -2274,6 +2274,7 @@ class TestBackfill:
                 for day in range(3, 9)
             ]
 
+            # this is inspecting calls to the underlying subprocess.check_call(["bq]"...)
             assert check_call.call_count == 12  # 6 for dry run, 6 for backfill
             for call in check_call.call_args_list:
                 submission_date_params = [
@@ -2355,6 +2356,7 @@ class TestBackfill:
                 for day in range(3, 9)
             ]
 
+            # this is inspecting calls to the underlying subprocess.check_call(["bq]"...)
             assert check_call.call_count == 12  # 6 for dry run, 6 for backfill
             for call in check_call.call_args_list:
                 submission_date_params = [

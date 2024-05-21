@@ -221,6 +221,7 @@ class GleanTable:
         view_metadata_filename = f"{self.target_table_id[:-3]}.metadata.yaml"
         table_metadata_filename = f"{self.target_table_id}.metadata.yaml"
         schema_filename = f"{self.target_table_id}.schema.yaml"
+        backfill_config_filename = f"{self.target_table_id}.backfill.yaml"
 
         table = tables[f"{self.prefix}_table"]
         view = tables[f"{self.prefix}_view"]
@@ -285,6 +286,17 @@ class GleanTable:
         except TemplateNotFound:
             schema = None
 
+        # backfill config files are optional
+        try:
+            backfill_config = render(
+                backfill_config_filename,
+                format=False,
+                template_folder=PATH / "templates",
+                **render_kwargs,
+            )
+        except TemplateNotFound:
+            backfill_config = None
+
         # generated files to update
         Artifact = namedtuple("Artifact", "table_id basename sql")
         artifacts = [
@@ -312,6 +324,9 @@ class GleanTable:
 
             if schema:
                 artifacts.append(Artifact(table, "schema.yaml", schema))
+
+            if backfill_config:
+                artifacts.append(Artifact(table, "backfill.yaml", backfill_config))
 
             for artifact in artifacts:
                 destination = (

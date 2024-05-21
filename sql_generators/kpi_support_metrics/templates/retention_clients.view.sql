@@ -24,7 +24,7 @@ attribution AS (
     adjust_ad_group,
     adjust_creative,
     adjust_network,
-    {% if name == "fenix" %}
+    {% if app_name == "fenix" %}
     CASE
       WHEN adjust_network IN ('Google Organic Search', 'Organic')
         THEN ''
@@ -35,14 +35,14 @@ attribution AS (
     play_store_attribution_source,
     meta_attribution_app,
     install_source,
-    {% elif name == "firefox_ios" %}
+    {% elif app_name == "firefox_ios" %}
     adjust_campaign,
     is_suspicious_device_client,
     {% endif %}
   FROM
-    {% if name == "fenix" %}
+    {% if app_name == "fenix" %}
     `{{ project_id }}.{{ dataset }}_derived.firefox_android_clients_v1`
-    {% elif name == "firefox_ios" %}
+    {% elif app_name == "firefox_ios" %}
     `{{ project_id }}.{{ dataset }}_derived.firefox_ios_clients_v1`
     {% endif %}
 )
@@ -58,13 +58,13 @@ SELECT
   clients_daily.app_display_version AS app_version,
   clients_daily.locale,
   clients_daily.isp,
-  {% if name == "fenix" %}
+  {% if app_name == "fenix" %}
   attribution.play_store_attribution_campaign,
   attribution.play_store_attribution_medium,
   attribution.play_store_attribution_source,
   attribution.meta_attribution_app,
   attribution.install_source,
-  {% elif name == "firefox_ios" %}
+  {% elif app_name == "firefox_ios" %}
   attribution.is_suspicious_device_client,
   {% endif %}
   -- ping sent retention

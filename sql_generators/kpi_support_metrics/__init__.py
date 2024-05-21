@@ -109,7 +109,8 @@ def generate(target_project, output_dir, use_cloud_function):
                     **asdict(product.value),
                     **default_template_args,
                     dataset=target_dataset,
-                    name=target_name,
+                    target_name=target_name,
+                    app_name=product.name,
                 )
             )
 
@@ -133,7 +134,8 @@ def generate(target_project, output_dir, use_cloud_function):
                     **asdict(product.value),
                     **default_template_args,
                     dataset=target_dataset,
-                    name=target_name,
+                    target_name=target_name,
+                    app_name=product.name,
                     format=False,
                 )
 

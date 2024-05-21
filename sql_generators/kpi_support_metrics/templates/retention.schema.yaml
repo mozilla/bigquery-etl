@@ -54,7 +54,7 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Adjust Network the profile is attributed to.
-{% if name == "fenix" %}
+{% if app_name == "fenix" %}
 - name: play_store_attribution_campaign
   type: STRING
   mode: NULLABLE
@@ -79,7 +79,7 @@ fields:
   type: STRING
   mode: NULLABLE
   description: The source of a profile installation.
-{% elif name == "firefox_ios" %}
+{% elif app_name == "firefox_ios" %}
 - name: is_suspicious_device_client
   type: BOOLEAN
   mode: NULLABLE

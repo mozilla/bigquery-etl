@@ -32,7 +32,7 @@ class Product:
     is_mobile_kpi: bool = False
     is_desktop_kpi: bool = False
     has_mozilla_online: bool = False
-    baseline_view_only: bool = (
+    active_users_view_only: bool = (
         False  # TODO: for now only fenix and firefox_ios has a client table
     )
 
@@ -42,14 +42,14 @@ class MobileProducts(Enum):
 
     fenix = Product(friendly_name="Fenix", is_mobile_kpi=True, has_mozilla_online=True)
     focus_android = Product(
-        friendly_name="Focus Android", is_mobile_kpi=True, baseline_view_only=True
+        friendly_name="Focus Android", is_mobile_kpi=True, active_users_view_only=True
     )
     firefox_ios = Product(friendly_name="Firefox iOS", is_mobile_kpi=True)
     focus_ios = Product(
-        friendly_name="Focus iOS", is_mobile_kpi=True, baseline_view_only=True
+        friendly_name="Focus iOS", is_mobile_kpi=True, active_users_view_only=True
     )
-    klar_ios = Product(friendly_name="Klar iOS", baseline_view_only=True)
-    klar_android = Product(friendly_name="Klar Android", baseline_view_only=True)
+    klar_ios = Product(friendly_name="Klar iOS", active_users_view_only=True)
+    klar_android = Product(friendly_name="Klar Android", active_users_view_only=True)
 
 
 @click.command()
@@ -87,8 +87,8 @@ def generate(target_project, output_dir, use_cloud_function):
         "schema.yaml",
     )
 
-    for product in MobileProducts:
-        for template in TEMPLATES:
+    for template in TEMPLATES:
+        for product in MobileProducts:
             target_name, target_filename, target_extension = template.split(".")
             target_dataset = (
                 product.name + "_derived"
@@ -98,7 +98,7 @@ def generate(target_project, output_dir, use_cloud_function):
 
             # Other SQL requires a clients table, currently only fenix and firefox_ios has one.
             # This is why skipping this skip for now.
-            if product.value.baseline_view_only and not target_name.startswith(
+            if product.value.active_users_view_only and not target_name.startswith(
                 "active_users"
             ):
                 continue
@@ -148,3 +148,32 @@ def generate(target_project, output_dir, use_cloud_function):
                     ),
                     skip_existing=False,
                 )
+
+        # we only want to generate a union view inside telemetry for views
+        if target_filename != "view":
+            continue
+
+        target_dataset = "telemetry"
+
+        union_sql_template = env.get_template("union.view.sql")
+        union_sql_rendered = union_sql_template.render(
+            **default_template_args,
+            dataset=target_dataset,
+            name=target_name,
+            target_filename=target_filename,
+            format=False,
+            products=[
+                product.name
+                for product in MobileProducts
+                if target_name.startswith("active_users")
+                or not product.value.active_users_view_only
+            ],
+        )
+
+        write_sql(
+            output_dir=output_dir,
+            full_table_id=f"{target_project}.{target_dataset}.{target_name}",
+            basename=f"{target_filename}.{target_extension}",
+            sql=(reformat(union_sql_rendered)),
+            skip_existing=False,
+        )

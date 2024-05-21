@@ -1,4 +1,4 @@
-{ header }
+{{ header }}
 SELECT
   metric_date,
   first_seen_date,

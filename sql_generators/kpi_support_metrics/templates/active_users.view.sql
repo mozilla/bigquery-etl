@@ -5,8 +5,10 @@ AS
 SELECT
   *,
   CASE
-    WHEN LOWER(isp) = 'browserstack'
-      THEN CONCAT("{{ friendly_name }}", ' ', isp)
+    WHEN LOWER(isp) = "browserstack"
+      THEN CONCAT("{{ friendly_name }}", " ", isp)
+    WHEN LOWER(distribution_id) = "mozillaonline"
+      THEN CONCAT("{{ friendly_name }}", " ", distribution_id)
     ELSE "{{ friendly_name }}"
   END AS app_name,
   -- Activity fields to support metrics built on top of activity
@@ -14,18 +16,18 @@ SELECT
     WHEN BIT_COUNT(days_active_bits)
       BETWEEN 1
       AND 6
-      THEN 'infrequent_user'
+      THEN "infrequent_user"
     WHEN BIT_COUNT(days_active_bits)
       BETWEEN 7
       AND 13
-      THEN 'casual_user'
+      THEN "casual_user"
     WHEN BIT_COUNT(days_active_bits)
       BETWEEN 14
       AND 20
-      THEN 'regular_user'
+      THEN "regular_user"
     WHEN BIT_COUNT(days_active_bits) >= 21
-      THEN 'core_user'
-    ELSE 'other'
+      THEN "core_user"
+    ELSE "other"
   END AS activity_segment,
   IFNULL(mozfun.bits28.days_since_seen(days_active_bits) = 0, FALSE) AS is_dau,
   IFNULL(mozfun.bits28.days_since_seen(days_active_bits) < 7, FALSE) AS is_wau,
@@ -37,9 +39,7 @@ SELECT
   {% if is_mobile_kpi %}
     (
       LOWER(IFNULL(isp, "")) <> "browserstack"
-      {% if has_mozilla_online %}
-        AND LOWER(IFNULL(distribution_id, "")) <> "mozillaonline"
-      {% endif %}
+      AND LOWER(IFNULL(distribution_id, "")) <> "mozillaonline"
     )
   {% else %}
     FALSE

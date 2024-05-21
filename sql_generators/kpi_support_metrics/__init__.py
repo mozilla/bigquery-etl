@@ -31,7 +31,6 @@ class Product:
     friendly_name: str
     is_mobile_kpi: bool = False
     is_desktop_kpi: bool = False
-    has_mozilla_online: bool = False
     active_users_view_only: bool = (
         False  # TODO: for now only fenix and firefox_ios has a client table
     )
@@ -40,7 +39,7 @@ class Product:
 class MobileProducts(Enum):
     """Enumeration with browser names and equivalent dataset names."""
 
-    fenix = Product(friendly_name="Fenix", is_mobile_kpi=True, has_mozilla_online=True)
+    fenix = Product(friendly_name="Fenix", is_mobile_kpi=True)
     focus_android = Product(
         friendly_name="Focus Android", is_mobile_kpi=True, active_users_view_only=True
     )

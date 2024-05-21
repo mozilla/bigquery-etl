@@ -92,7 +92,7 @@ def generate(target_project, output_dir, use_cloud_function):
     # templates
     mobile_query_template = env.get_template("mobile_query.sql")
     mobile_view_template = env.get_template("view.sql")
-    active_users_aggregates_view_template = env.get_template("active_users_aggregates_device_view.sql")
+    active_users_aggregates_unioned_view_template = env.get_template("active_users_aggregates_unioned_device_view.sql")
     metadata_template = "metadata.yaml"
     mobile_schema_template = "schema.yaml"
     mobile_checks_template = env.get_template("mobile_checks.sql")
@@ -181,10 +181,10 @@ def generate(target_project, output_dir, use_cloud_function):
 
     write_sql(
         output_dir=output_dir,
-        full_table_id=f"{target_project}.{DATASET_FOR_UNIONED_VIEWS}.{BASE_NAME}_mobile",
+        full_table_id=f"{target_project}.{DATASET_FOR_UNIONED_VIEWS}.{BASE_NAME}",
         basename="view.sql",
         sql=reformat(
-            active_users_aggregates_view_template.render(
+            active_users_aggregates_unioned_view_template.render(
                 project_id=target_project,
                 dataset_id=DATASET_FOR_UNIONED_VIEWS,
                 fenix_dataset=Browsers("Fenix").name,

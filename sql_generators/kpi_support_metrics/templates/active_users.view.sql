@@ -35,13 +35,19 @@ SELECT
   IFNULL(mozfun.bits28.days_since_seen(days_seen_bits) < 7, FALSE) AS is_weekly_user,
   IFNULL(mozfun.bits28.days_since_seen(days_seen_bits) < 28, FALSE) AS is_monthly_user,
   {% if is_mobile_kpi %}
-  (
-    LOWER(IFNULL(isp, "")) <> "browserstack"
-    {% if has_mozilla_online %}
-    AND LOWER(IFNULL(distribution_id, "")) <> "mozillaonline"
-    {% endif %}
-  )
-  {% else %}FALSE{% endif %} AS is_mobile,
-  {% if is_desktop_kpi %}TRUE{% else %}FALSE{% endif %} AS is_desktop,
+    (
+      LOWER(IFNULL(isp, "")) <> "browserstack"
+      {% if has_mozilla_online %}
+        AND LOWER(IFNULL(distribution_id, "")) <> "mozillaonline"
+      {% endif %}
+    )
+  {% else %}
+    FALSE
+  {% endif %} AS is_mobile,
+  {% if is_desktop_kpi %}
+    TRUE
+  {% else %}
+    FALSE
+  {% endif %} AS is_desktop,
 FROM
   `{{ project_id }}.{{ dataset }}.baseline_clients_last_seen`

@@ -96,6 +96,11 @@ def generate(target_project, output_dir, use_cloud_function):
                 else product.name
             )
 
+            table_id = f"{target_project}.{target_dataset}.{target_name}"
+            full_table_id = (
+                table_id + f"_{VERSION}" if target_filename == "query" else table_id
+            )
+
             # Other SQL requires a clients table, currently only fenix and firefox_ios has one.
             # This is why skipping this skip for now.
             if product.value.active_users_view_only and not target_name.startswith(
@@ -111,12 +116,13 @@ def generate(target_project, output_dir, use_cloud_function):
                     dataset=target_dataset,
                     target_name=target_name,
                     app_name=product.name,
+                    name=target_name,
                 )
             )
 
             write_sql(
                 output_dir=output_dir,
-                full_table_id=f"{target_project}.{target_dataset}.{target_name}",
+                full_table_id=full_table_id,
                 basename=f"{target_filename}.{target_extension}",
                 sql=rendered_sql,
                 skip_existing=False,
@@ -136,12 +142,13 @@ def generate(target_project, output_dir, use_cloud_function):
                     dataset=target_dataset,
                     target_name=target_name,
                     app_name=product.name,
+                    name=target_name,
                     format=False,
                 )
 
                 write_sql(
                     output_dir=output_dir,
-                    full_table_id=f"{target_project}.{target_dataset}.{target_name}",
+                    full_table_id=full_table_id,
                     basename=query_support_config,
                     sql=(
                         reformat(support_config_rendered)

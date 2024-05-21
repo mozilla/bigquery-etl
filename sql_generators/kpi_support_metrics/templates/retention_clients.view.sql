@@ -25,25 +25,25 @@ attribution AS (
     adjust_creative,
     adjust_network,
     {% if app_name == "fenix" %}
-    CASE
-      WHEN adjust_network IN ('Google Organic Search', 'Organic')
-        THEN ''
-      ELSE adjust_campaign
-    END AS adjust_campaign
-    play_store_attribution_campaign,
-    play_store_attribution_medium,
-    play_store_attribution_source,
-    meta_attribution_app,
-    install_source,
+      CASE
+        WHEN adjust_network IN ('Google Organic Search', 'Organic')
+          THEN ''
+        ELSE adjust_campaign
+      END AS adjust_campaign,
+      play_store_attribution_campaign,
+      play_store_attribution_medium,
+      play_store_attribution_source,
+      meta_attribution_app,
+      install_source,
     {% elif app_name == "firefox_ios" %}
-    adjust_campaign,
-    is_suspicious_device_client,
+      adjust_campaign,
+      is_suspicious_device_client,
     {% endif %}
   FROM
     {% if app_name == "fenix" %}
-    `{{ project_id }}.{{ dataset }}_derived.firefox_android_clients_v1`
+      `{{ project_id }}.{{ dataset }}_derived.firefox_android_clients_v1`
     {% elif app_name == "firefox_ios" %}
-    `{{ project_id }}.{{ dataset }}_derived.firefox_ios_clients_v1`
+      `{{ project_id }}.{{ dataset }}_derived.firefox_ios_clients_v1`
     {% endif %}
 )
 SELECT
@@ -59,13 +59,13 @@ SELECT
   clients_daily.locale,
   clients_daily.isp,
   {% if app_name == "fenix" %}
-  attribution.play_store_attribution_campaign,
-  attribution.play_store_attribution_medium,
-  attribution.play_store_attribution_source,
-  attribution.meta_attribution_app,
-  attribution.install_source,
+    attribution.play_store_attribution_campaign,
+    attribution.play_store_attribution_medium,
+    attribution.play_store_attribution_source,
+    attribution.meta_attribution_app,
+    attribution.install_source,
   {% elif app_name == "firefox_ios" %}
-  attribution.is_suspicious_device_client,
+    attribution.is_suspicious_device_client,
   {% endif %}
   -- ping sent retention
   clients_last_seen.retention_seen.day_27.active_on_metric_date AS ping_sent_metric_date,

@@ -12,13 +12,13 @@ SELECT
   adjust_creative,
   adjust_network,
   {% if app_name == "fenix" %}
-  play_store_attribution_campaign,
-  play_store_attribution_medium,
-  play_store_attribution_source,
-  meta_attribution_app,
-  install_source,
+    play_store_attribution_campaign,
+    play_store_attribution_medium,
+    play_store_attribution_source,
+    meta_attribution_app,
+    install_source,
   {% elif app_name == "firefox_ios" %}
-  is_suspicious_device_client,
+    is_suspicious_device_client,
   {% endif %}
   COUNTIF(ping_sent_metric_date) AS ping_sent_metric_date,
   COUNTIF(ping_sent_week_4) AS ping_sent_week_4,
@@ -45,11 +45,11 @@ GROUP BY
   adjust_creative,
   adjust_network,
   {% if app_name == "fenix" %}
-  play_store_attribution_campaign,
-  play_store_attribution_medium,
-  play_store_attribution_source,
-  meta_attribution_app,
-  install_source
+    play_store_attribution_campaign,
+    play_store_attribution_medium,
+    play_store_attribution_source,
+    meta_attribution_app,
+    install_source
   {% elif app_name == "firefox_ios" %}
-  is_suspicious_device_client
+    is_suspicious_device_client
   {% endif %}

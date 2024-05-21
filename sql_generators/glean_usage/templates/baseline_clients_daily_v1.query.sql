@@ -24,7 +24,11 @@ WITH base AS (
     normalized_channel,
     normalized_os,
     normalized_os_version,
+    {% if has_distribution_id %}
+    metrics.string.metrics_distribution_id AS distribution_id,
+    {% else %}
     CAST(NULL AS STRING) AS distribution_id,
+    {% endif %}
     metadata.geo.subdivision1 AS geo_subdivision,
   FROM
     `{{ baseline_table }}`

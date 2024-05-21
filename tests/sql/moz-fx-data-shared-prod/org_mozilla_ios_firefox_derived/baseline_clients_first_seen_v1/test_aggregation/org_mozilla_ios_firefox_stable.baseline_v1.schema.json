@@ -275,12 +275,6 @@
             "type": "STRING",
             "name": "glean_baseline_locale",
             "mode": "NULLABLE"
-          },
-          {
-            "description": "",
-            "type": "STRING",
-            "name": "metrics_distribution_id",
-            "mode": "NULLABLE"
           }
         ],
         "type": "RECORD",

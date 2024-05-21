@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#parse_creative_name-udf" class="md-skip">
+        <a href="#parse_ad_group_name-udf" class="md-skip">
           Skip to content
         </a>
       
@@ -801,6 +801,72 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#parse_ad_group_name-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      parse_ad_group_name (UDF)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parse-ad-group-name-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parse Ad Group Name UDF
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parse Ad Group Name UDF">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameters
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parse_campaign_name-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      parse_campaign_name (UDF)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parse-campaign-name-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parse Campaign Name UDF
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parse Campaign Name UDF">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameters
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#parse_creative_name-udf" class="md-nav__link">
     <span class="md-ellipsis">
       parse_creative_name (UDF)
@@ -820,7 +886,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#parameters" class="md-nav__link">
+  <a href="#parameters_2" class="md-nav__link">
     <span class="md-ellipsis">
       Parameters
     </span>
@@ -1013,27 +1079,6 @@
             Moz fx data shared prod
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../moz-fx-data-shared-prod/marketing_campaign_names/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Marketing campaign names
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
             
               
                 
@@ -1459,6 +1504,72 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#parse_ad_group_name-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      parse_ad_group_name (UDF)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parse-ad-group-name-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parse Ad Group Name UDF
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parse Ad Group Name UDF">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameters
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parse_campaign_name-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      parse_campaign_name (UDF)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parse-campaign-name-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parse Campaign Name UDF
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parse Campaign Name UDF">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameters
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#parse_creative_name-udf" class="md-nav__link">
     <span class="md-ellipsis">
       parse_creative_name (UDF)
@@ -1478,7 +1589,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#parameters" class="md-nav__link">
+  <a href="#parameters_2" class="md-nav__link">
     <span class="md-ellipsis">
       Parameters
     </span>
@@ -1508,6 +1619,43 @@
 
   <h1>Marketing</h1>
 
+<h2 id="parse_ad_group_name-udf">parse_ad_group_name (UDF)</h2>
+<p>Please provide a description for the routine</p>
+<h2 id="parse-ad-group-name-udf">Parse Ad Group Name UDF</h2>
+<p>This function takes a ad group name and parses out known segments.
+These segments are things like country, language, or audience; multiple
+ad groups can share segments.</p>
+<p>We use versioned ad group names to define segments, where the ad network
+(e.g. gads) and the version (e.g. v1, v2) correspond to certain available segments
+in the ad group name. We track the versions in <a href="https://docs.google.com/spreadsheets/d/1hkK8-IKbgjsHRQq_XNm-Hr6bA8657CcpnChSywlYUMU/edit#gid=635816846">this spreadsheet</a>.</p>
+<p>For a history of this naming scheme, see the <a href="https://docs.google.com/document/d/1lnZ6iMT091fq37SmnbpD9IcREMpGupae19Euqu94Low/edit">original proposal</a>.</p>
+<p>See also: <code>marketing.parse_campaign_name</code>, which does the same, but for campaign names.</p>
+<h3 id="parameters">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>ad_group_name STRING
+</code></pre></div>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>ARRAY&lt;STRUCT&lt;key STRING, value STRING&gt;&gt;
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/marketing/parse_ad_group_name">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/marketing/parse_ad_group_name/metadata.yaml">Edit</a></p>
+<h2 id="parse_campaign_name-udf">parse_campaign_name (UDF)</h2>
+<p>Parse a campaign name. Extracts things like region, country_code, and language.</p>
+<h2 id="parse-campaign-name-udf">Parse Campaign Name UDF</h2>
+<p>This function takes a campaign name and parses out known segments.
+These segments are things like country, language, or audience; multiple
+campaigns can share segments.</p>
+<p>We use versioned campaign names to define segments, where the ad network
+(e.g. gads) and the version (e.g. v1, v2) correspond to certain available segments
+in the campaign name. We track the versions in <a href="https://docs.google.com/spreadsheets/d/1hkK8-IKbgjsHRQq_XNm-Hr6bA8657CcpnChSywlYUMU/edit#gid=635816846">this spreadsheet</a>.</p>
+<p>For a history of this naming scheme, see the <a href="https://docs.google.com/document/d/1lnZ6iMT091fq37SmnbpD9IcREMpGupae19Euqu94Low/edit">original proposal</a>.</p>
+<h3 id="parameters_1">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>campaign_name STRING
+</code></pre></div>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>ARRAY&lt;STRUCT&lt;key STRING, value STRING&gt;&gt;
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/marketing/parse_campaign_name">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/marketing/parse_campaign_name/metadata.yaml">Edit</a></p>
 <h2 id="parse_creative_name-udf">parse_creative_name (UDF)</h2>
 <p>Parse segments from a creative name.</p>
 <h2 id="parse-creative-name-udf">Parse Creative Name UDF</h2>
@@ -1519,7 +1667,7 @@ creatives can share segments.</p>
 in the creative name. We track the versions in <a href="https://docs.google.com/spreadsheets/d/1hkK8-IKbgjsHRQq_XNm-Hr6bA8657CcpnChSywlYUMU/edit#gid=635816846">this spreadsheet</a>.</p>
 <p>For a history of this naming scheme, see the <a href="https://docs.google.com/document/d/1lnZ6iMT091fq37SmnbpD9IcREMpGupae19Euqu94Low/edit">original proposal</a>.</p>
 <p>See also: <code>marketing.parse_campaign_name</code>, which does the same, but for campaign names.</p>
-<h3 id="parameters">Parameters</h3>
+<h3 id="parameters_2">Parameters</h3>
 <p><strong>INPUTS</strong></p>
 <div class="highlight"><pre><span></span><code>creative_name STRING
 </code></pre></div>

@@ -113,6 +113,19 @@ with DAG(
         retries=0,
     )
 
+    checks__fail_google_ads_derived__campaigns__v2 = bigquery_dq_check(
+        task_id="checks__fail_google_ads_derived__campaigns__v2",
+        source_table="campaigns_v2",
+        dataset_id="google_ads_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=True,
+        owner="frank@mozilla.com",
+        email=["frank@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        task_concurrency=1,
+        retries=0,
+    )
+
     google_ads_derived__accounts__v1 = bigquery_etl_query(
         task_id="google_ads_derived__accounts__v1",
         destination_table="accounts_v1",
@@ -203,6 +216,18 @@ with DAG(
         task_concurrency=1,
     )
 
+    google_ads_derived__campaigns__v2 = bigquery_etl_query(
+        task_id="google_ads_derived__campaigns__v2",
+        destination_table="campaigns_v2",
+        dataset_id="google_ads_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="frank@mozilla.com",
+        email=["frank@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
     google_ads_derived__daily_ad_group_stats__v1 = bigquery_etl_query(
         task_id="google_ads_derived__daily_ad_group_stats__v1",
         destination_table="daily_ad_group_stats_v1",
@@ -239,6 +264,10 @@ with DAG(
         google_ads_derived__campaigns__v1
     )
 
+    checks__fail_google_ads_derived__campaigns__v2.set_upstream(
+        google_ads_derived__campaigns__v2
+    )
+
     google_ads_derived__ad_groups__v1.set_upstream(
         checks__fail_google_ads_derived__campaigns__v1
     )
@@ -252,7 +281,7 @@ with DAG(
     )
 
     google_ads_derived__android_app_campaign_stats__v1.set_upstream(
-        checks__fail_google_ads_derived__campaigns__v1
+        checks__fail_google_ads_derived__campaigns__v2
     )
 
     google_ads_derived__android_app_campaign_stats__v1.set_upstream(
@@ -272,3 +301,5 @@ with DAG(
     )
 
     google_ads_derived__campaigns__v1.set_upstream(google_ads_derived__accounts__v1)
+
+    google_ads_derived__campaigns__v2.set_upstream(google_ads_derived__accounts__v1)

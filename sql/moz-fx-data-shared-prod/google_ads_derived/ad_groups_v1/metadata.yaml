@@ -4,6 +4,10 @@ description: |-
   One row per Ad Group ID. If
   an Ad Group name changes, we take
   the latest name.
+
+  Newer ad group naming schemes will
+  be parsed into segments, available
+  in the "ad_group_segments" field.
 owners:
 - frank@mozilla.com
 labels:

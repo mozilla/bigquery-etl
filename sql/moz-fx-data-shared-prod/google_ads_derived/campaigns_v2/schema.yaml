@@ -15,18 +15,10 @@ fields:
   name: campaign_name
   type: STRING
   description: The name of the Google Ads campaign. We take the most recently reported name.
-- mode: NULLABLE
-  name: ad_group_id
-  type: INTEGER
-  description: The ID of the ad group.
-- mode: NULLABLE
-  name: ad_group_name
-  type: STRING
-  description: The name of the ad group. We take the most recently reported name for the ad group ID.
 - mode: REPEATED
-  name: ad_group_segments
+  name: campaign_segments
   type: RECORD
-  description: Segments that are parsed from the ad group name, e.g. region or country.
+  description: Segments that are parsed from the campaign name, e.g. region or country.
   fields:
   - mode: NULLABLE
     name: key

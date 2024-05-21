@@ -19,11 +19,11 @@ WITH metrics AS (
     submission_date,
     metrics.normalized_channel AS channel,
     {% if app_name == "klar_android"%}
-    CAST(NULL AS INTEGER) AS uri_count,
-    CAST(NULL AS INTEGER) AS is_default_browser
+      CAST(NULL AS INTEGER) AS uri_count,
+      CAST(NULL AS INTEGER) AS is_default_browser
     {% else %}
-    metrics.uri_count AS uri_count,
-    metrics.is_default_browser AS is_default_browser
+      metrics.uri_count AS uri_count,
+      metrics.is_default_browser AS is_default_browser
     {% endif %}
   FROM
     `{{ project_id }}.{{ app_name }}.metrics_clients_last_seen` AS metrics
@@ -37,7 +37,7 @@ WITH metrics AS (
 ),
 baseline AS (
   SELECT
-      client_id,
+    client_id,
     app_display_version AS app_version,
     IFNULL(country, '??') AS country,
     device_model,
@@ -58,7 +58,7 @@ baseline AS (
       SAFE_CAST(NULLIF(SPLIT(normalized_os_version, ".")[SAFE_OFFSET(2)], "") AS INTEGER),
       0
     ) AS os_version_patch,
-      submission_date,
+    submission_date,
     is_daily_user,
     is_weekly_user,
     is_monthly_user,
@@ -70,18 +70,20 @@ baseline AS (
   WHERE
     submission_date = @submission_date
 ),
-unioned AS
-(
-  SELECT baseline.*,
+unioned AS (
+  SELECT
+    baseline.*,
     metrics.uri_count,
     metrics.is_default_browser
-  FROM baseline
-  LEFT JOIN metrics
+  FROM
+    baseline
+  LEFT JOIN
+    metrics
     ON (
-        baseline.client_id = metrics.client_id
-        AND baseline.channel IS NOT DISTINCT FROM metrics.channel
-        )
-  )
+      baseline.client_id = metrics.client_id
+      AND baseline.channel IS NOT DISTINCT FROM metrics.channel
+    )
+)
 SELECT
   unioned.* EXCEPT (
     client_id,

@@ -25,3 +25,16 @@ fields:
   mode: NULLABLE
   description: The name of the ad group. We take the most recently reported name for
     the ad group ID.
+- name: ad_group_segments
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: key
+    type: STRING
+    mode: NULLABLE
+    description: Field name, e.g. region or country.
+  - name: value
+    type: STRING
+    mode: NULLABLE
+    description: Field value, e.g. "NA" or "US".
+  description: Segments that are parsed from the ad group name, e.g. region or country.

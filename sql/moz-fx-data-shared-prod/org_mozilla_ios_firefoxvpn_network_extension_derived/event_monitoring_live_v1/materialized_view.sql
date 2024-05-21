@@ -50,7 +50,7 @@ IF
         client_info.app_display_version AS version,
         ping_info
       FROM
-        `moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_network_extension_live.vpnsession_v1`
+        `moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_network_extension_live.main_v1`
       UNION ALL
       SELECT
         submission_timestamp,
@@ -60,7 +60,7 @@ IF
         client_info.app_display_version AS version,
         ping_info
       FROM
-        `moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_network_extension_live.main_v1`
+        `moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_network_extension_live.vpnsession_v1`
       UNION ALL
       SELECT
         submission_timestamp,

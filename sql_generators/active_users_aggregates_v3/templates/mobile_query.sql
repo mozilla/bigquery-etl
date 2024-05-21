@@ -71,8 +71,8 @@ metrics AS (
     submission_date,
     metrics.normalized_channel,
     {% if app_name == "klar_android"%}
-    CAST(NULL AS INTEGER) AS uri_count,
-    CAST(NULL AS INTEGER) AS is_default_browser
+      CAST(NULL AS INTEGER) AS uri_count,
+      CAST(NULL AS INTEGER) AS is_default_browser
     {% else %}
       metrics.uri_count,
       metrics.is_default_browser

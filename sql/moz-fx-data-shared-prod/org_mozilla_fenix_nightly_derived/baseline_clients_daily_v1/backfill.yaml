@@ -1,0 +1,7 @@
+2024-05-21:
+  start_date: 2022-11-18
+  end_date: 2024-05-21
+  reason: Backfill to populate distribution_id inside Fenix tables only.
+  watchers:
+  - kik@mozilla.com
+  status: Initiate

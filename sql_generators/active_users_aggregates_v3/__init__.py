@@ -50,6 +50,9 @@ CHECKS_TEMPLATE_CHANNELS = {
     "klar_ios": [
         {"table": "`moz-fx-data-shared-prod.org_mozilla_ios_klar_live.baseline_v1`"}
     ],
+    "klar_android": [
+        {"table": "`moz-fx-data-shared-prod.org_mozilla_klar_live.baseline_v1`"}
+    ],
 }
 
 

@@ -144,18 +144,6 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_fenix_derived__new_profile_activation__v1 = ExternalTaskSensor(
-        task_id="wait_for_fenix_derived__new_profile_activation__v1",
-        external_dag_id="bqetl_mobile_activation",
-        external_task_id="fenix_derived__new_profile_activation__v1",
-        execution_delta=datetime.timedelta(seconds=7200),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
     wait_for_org_mozilla_fenix_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
         task_id="wait_for_org_mozilla_fenix_derived__baseline_clients_daily__v1",
         external_dag_id="bqetl_glean_usage",
@@ -204,6 +192,18 @@ with DAG(
         task_id="wait_for_org_mozilla_firefox_derived__baseline_clients_daily__v1",
         external_dag_id="bqetl_glean_usage",
         external_task_id="fenix.org_mozilla_firefox_derived__baseline_clients_daily__v1",
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_fenix_derived__new_profile_activation__v1 = ExternalTaskSensor(
+        task_id="wait_for_fenix_derived__new_profile_activation__v1",
+        external_dag_id="bqetl_mobile_activation",
+        external_task_id="fenix_derived__new_profile_activation__v1",
+        execution_delta=datetime.timedelta(seconds=7200),
         check_existence=True,
         mode="reschedule",
         allowed_states=ALLOWED_STATES,
@@ -447,6 +447,25 @@ with DAG(
         retries=0,
     )
 
+    checks__warn_fenix_derived__retention__v1 = bigquery_dq_check(
+        task_id="checks__warn_fenix_derived__retention__v1",
+        source_table='retention_v1${{ macros.ds_format(macros.ds_add(ds, -27), "%Y-%m-%d", "%Y%m%d") }}',
+        dataset_id="fenix_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=False,
+        owner="kik@mozilla.com",
+        email=[
+            "gkaberere@mozilla.com",
+            "kik@mozilla.com",
+            "lvargas@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        depends_on_past=False,
+        parameters=["metric_date:DATE:{{macros.ds_add(ds, -27)}}"]
+        + ["submission_date:DATE:{{ds}}"],
+        retries=0,
+    )
+
     clients_first_seen_v2 = bigquery_etl_query(
         task_id="clients_first_seen_v2",
         destination_table="clients_first_seen_v2",
@@ -538,6 +557,24 @@ with DAG(
             fenix_derived__funnel_retention_week_4__v1
         )
 
+    fenix_derived__retention__v1 = bigquery_etl_query(
+        task_id="fenix_derived__retention__v1",
+        destination_table='retention_v1${{ macros.ds_format(macros.ds_add(ds, -27), "%Y-%m-%d", "%Y%m%d") }}',
+        dataset_id="fenix_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kik@mozilla.com",
+        email=[
+            "gkaberere@mozilla.com",
+            "kik@mozilla.com",
+            "lvargas@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        parameters=["metric_date:DATE:{{macros.ds_add(ds, -27)}}"]
+        + ["submission_date:DATE:{{ds}}"],
+    )
+
     firefox_android_clients = bigquery_etl_query(
         task_id="firefox_android_clients",
         destination_table="firefox_android_clients_v1",
@@ -597,6 +634,8 @@ with DAG(
         fenix_derived__funnel_retention_week_4__v1
     )
 
+    checks__warn_fenix_derived__retention__v1.set_upstream(fenix_derived__retention__v1)
+
     clients_first_seen_v2.set_upstream(wait_for_copy_deduplicate_all)
 
     clients_first_seen_v2.set_upstream(wait_for_copy_deduplicate_first_shutdown_ping)
@@ -653,6 +692,50 @@ with DAG(
 
     fenix_derived__funnel_retention_week_4__v1.set_upstream(
         fenix_derived__funnel_retention_clients_week_4__v1
+    )
+
+    fenix_derived__retention__v1.set_upstream(
+        checks__fail_fenix_derived__firefox_android_clients__v1
+    )
+
+    fenix_derived__retention__v1.set_upstream(
+        wait_for_checks__fail_org_mozilla_fenix_derived__baseline_clients_last_seen__v1
+    )
+
+    fenix_derived__retention__v1.set_upstream(
+        wait_for_checks__fail_org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1
+    )
+
+    fenix_derived__retention__v1.set_upstream(
+        wait_for_checks__fail_org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1
+    )
+
+    fenix_derived__retention__v1.set_upstream(
+        wait_for_checks__fail_org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1
+    )
+
+    fenix_derived__retention__v1.set_upstream(
+        wait_for_checks__fail_org_mozilla_firefox_derived__baseline_clients_last_seen__v1
+    )
+
+    fenix_derived__retention__v1.set_upstream(
+        wait_for_org_mozilla_fenix_derived__baseline_clients_daily__v1
+    )
+
+    fenix_derived__retention__v1.set_upstream(
+        wait_for_org_mozilla_fenix_nightly_derived__baseline_clients_daily__v1
+    )
+
+    fenix_derived__retention__v1.set_upstream(
+        wait_for_org_mozilla_fennec_aurora_derived__baseline_clients_daily__v1
+    )
+
+    fenix_derived__retention__v1.set_upstream(
+        wait_for_org_mozilla_firefox_beta_derived__baseline_clients_daily__v1
+    )
+
+    fenix_derived__retention__v1.set_upstream(
+        wait_for_org_mozilla_firefox_derived__baseline_clients_daily__v1
     )
 
     firefox_android_clients.set_upstream(wait_for_copy_deduplicate_all)

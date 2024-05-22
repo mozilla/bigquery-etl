@@ -474,6 +474,20 @@ with DAG(
         retries=0,
     )
 
+    checks__warn_firefox_ios_derived__retention__v1 = bigquery_dq_check(
+        task_id="checks__warn_firefox_ios_derived__retention__v1",
+        source_table='retention_v1${{ macros.ds_format(macros.ds_add(ds, -27), "%Y-%m-%d", "%Y%m%d") }}',
+        dataset_id="firefox_ios_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=False,
+        owner="kik@mozilla.com",
+        email=["frank@mozilla.com", "kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        parameters=["metric_date:DATE:{{macros.ds_add(ds, -27)}}"]
+        + ["submission_date:DATE:{{ds}}"],
+        retries=0,
+    )
+
     firefox_ios_derived__app_store_funnel__v1 = bigquery_etl_query(
         task_id="firefox_ios_derived__app_store_funnel__v1",
         destination_table="app_store_funnel_v1",
@@ -611,6 +625,19 @@ with DAG(
         depends_on_past=True,
     )
 
+    firefox_ios_derived__retention__v1 = bigquery_etl_query(
+        task_id="firefox_ios_derived__retention__v1",
+        destination_table='retention_v1${{ macros.ds_format(macros.ds_add(ds, -27), "%Y-%m-%d", "%Y%m%d") }}',
+        dataset_id="firefox_ios_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kik@mozilla.com",
+        email=["frank@mozilla.com", "kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        parameters=["metric_date:DATE:{{macros.ds_add(ds, -27)}}"]
+        + ["submission_date:DATE:{{ds}}"],
+    )
+
     org_mozilla_ios_firefox__unified_metrics__v1 = GKEPodOperator(
         task_id="org_mozilla_ios_firefox__unified_metrics__v1",
         arguments=[
@@ -689,6 +716,10 @@ with DAG(
 
     checks__warn_firefox_ios_derived__new_profile_activation__v2.set_upstream(
         firefox_ios_derived__new_profile_activation__v2
+    )
+
+    checks__warn_firefox_ios_derived__retention__v1.set_upstream(
+        firefox_ios_derived__retention__v1
     )
 
     firefox_ios_derived__app_store_funnel__v1.set_upstream(
@@ -833,4 +864,32 @@ with DAG(
 
     firefox_ios_derived__new_profile_activation__v2.set_upstream(
         wait_for_search_derived__mobile_search_clients_daily__v1
+    )
+
+    firefox_ios_derived__retention__v1.set_upstream(
+        checks__fail_firefox_ios_derived__firefox_ios_clients__v1
+    )
+
+    firefox_ios_derived__retention__v1.set_upstream(
+        wait_for_checks__fail_org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1
+    )
+
+    firefox_ios_derived__retention__v1.set_upstream(
+        wait_for_checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
+    )
+
+    firefox_ios_derived__retention__v1.set_upstream(
+        wait_for_checks__fail_org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1
+    )
+
+    firefox_ios_derived__retention__v1.set_upstream(
+        wait_for_org_mozilla_ios_fennec_derived__baseline_clients_daily__v1
+    )
+
+    firefox_ios_derived__retention__v1.set_upstream(
+        wait_for_org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
+    )
+
+    firefox_ios_derived__retention__v1.set_upstream(
+        wait_for_org_mozilla_ios_firefoxbeta_derived__baseline_clients_daily__v1
     )

@@ -1,4 +1,3 @@
--- Query generated via `kpi_support_metrics` SQL generator.
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.fenix.retention_clients`
 AS
@@ -14,7 +13,7 @@ WITH clients_last_seen AS (
     days_seen_bits,
     days_active_bits,
   FROM
-    `moz-fx-data-shared-prod.fenix.active_users`
+    `moz-fx-data-shared-prod.fenix.baseline_clients_last_seen_extended_activity`
 ),
 attribution AS (
   SELECT
@@ -49,6 +48,10 @@ SELECT
   clients_daily.app_display_version AS app_version,
   clients_daily.locale,
   clients_daily.isp,
+  attribution.adjust_ad_group,
+  attribution.adjust_campaign,
+  attribution.adjust_creative,
+  attribution.adjust_network,
   attribution.play_store_attribution_campaign,
   attribution.play_store_attribution_medium,
   attribution.play_store_attribution_source,
@@ -77,14 +80,10 @@ SELECT
     -- Looking back at 27 days to support the official definition of repeat_profile (someone active between days 2 and 28):
     AND BIT_COUNT(mozfun.bits28.range(clients_last_seen.days_active_bits, -26, 27)) > 0
   ) AS repeat_profile,
-  attribution.adjust_ad_group,
-  attribution.adjust_campaign,
-  attribution.adjust_creative,
-  attribution.adjust_network,
   clients_last_seen.days_seen_bits,
   clients_last_seen.days_active_bits,
   CASE
-    WHEN clients_daily.submission_date = first_seen_date
+    WHEN first_seen_date = clients_daily.submission_date
       THEN 'new_profile'
     WHEN DATE_DIFF(clients_daily.submission_date, first_seen_date, DAY)
       BETWEEN 1
@@ -93,7 +92,7 @@ SELECT
     WHEN DATE_DIFF(clients_daily.submission_date, first_seen_date, DAY) >= 28
       THEN 'existing_user'
     ELSE 'Unknown'
-  END AS lifecycle_stage
+  END AS lifecycle_stage,
 FROM
   `moz-fx-data-shared-prod.fenix.baseline_clients_daily` AS clients_daily
 INNER JOIN

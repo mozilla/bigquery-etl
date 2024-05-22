@@ -8,7 +8,7 @@ This script is intended to be run in a docker container.
 Build the docker image with:
 
 ```sh
-docker build -t python-template-job .
+docker build -t broken-site-report-ml .
 ```
 
 To run locally, install dependencies with:
@@ -17,10 +17,11 @@ To run locally, install dependencies with:
 pip install -r requirements.txt
 ```
 
-Run the script with 
+And then run the script after authentication with gcloud:
 
 ```sh   
-python3 -m python_template_job.main
+gcloud auth application-default login
+python3 broken_site_report_ml/main.py --bq_project_id=<your_project_id> --bq_dataset_id=<your_dataset_id>
 ```
 
 ## Development
@@ -40,6 +41,6 @@ pytest --black --flake8
 or
 
 ```sh
-flake8 python_template_job/ tests/
-black --diff python_template_job/ tests/
+flake8 broken_site_report/ tests/
+black --diff broken_site_report/ tests/
 ```

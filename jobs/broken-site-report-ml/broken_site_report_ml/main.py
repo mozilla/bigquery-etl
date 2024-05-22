@@ -111,6 +111,49 @@ def add_classification_results(client, bq_dataset_id, results):
     logging.info(f"Loaded {len(res)} rows into {table}")
 
 
+def save_translations(client, bq_dataset_id, results):
+    res = []
+    for uuid, result in results.items():
+        if not result["status"]:
+            bq_result = {
+                "report_uuid": uuid,
+                "translated_text": result["translated_text"],
+                "language_code": result["language_code"],
+            }
+            res.append(bq_result)
+
+    job_config = bigquery.LoadJobConfig(
+        source_format=bigquery.SourceFormat.NEWLINE_DELIMITED_JSON,
+        schema=[
+            bigquery.SchemaField("report_uuid", "STRING", mode="REQUIRED"),
+            bigquery.SchemaField("translated_text", "STRING"),
+            bigquery.SchemaField("language_code", "STRING"),
+        ],
+        write_disposition="WRITE_APPEND",
+    )
+
+    translations_table = f"{bq_dataset_id}.translations"
+
+    job = client.load_table_from_json(
+        res,
+        translations_table,
+        job_config=job_config,
+    )
+
+    logging.info("Writing to `translations` table")
+
+    try:
+        job.result()
+    except Exception as e:
+        print(f"ERROR: {e}")
+        if job.errors:
+            for error in job.errors:
+                logging.error(error)
+
+    table = client.get_table(translations_table)
+    logging.info(f"Loaded {len(res)} rows into {table}")
+
+
 def record_classification_run(client, bq_dataset_id, is_ok, count):
     rows_to_insert = [
         {
@@ -141,13 +184,18 @@ def get_last_classification_datetime(client, bq_dataset_id):
     return last_run_time
 
 
-def get_reports_since_last_run(client, last_run_time):
+def get_reports_since_last_run(client, last_run_time, bq_dataset_id):
     query = f"""
             SELECT
-                uuid,
-                comments as body,
-                COALESCE(url, uuid) as title
-            FROM `moz-fx-data-shared-prod.org_mozilla_broken_site_report.user_reports_live`
+                reports.uuid,
+                reports.comments as body,
+                COALESCE(reports.url, reports.uuid) as title,
+                translations.translated_text
+            FROM
+            `moz-fx-data-shared-prod.org_mozilla_broken_site_report.user_reports_live`
+            AS reports
+            LEFT JOIN `{bq_dataset_id}.translations` AS translations
+            ON reports.uuid = translations.report_uuid
             WHERE reported_at >= "{last_run_time}" AND comments != ""
             ORDER BY reported_at
         """
@@ -160,12 +208,15 @@ def get_missed_reports(client, last_run_time, bq_dataset_id):
             SELECT
                 reports.uuid,
                 reports.comments as body,
-                COALESCE(reports.url, reports.uuid) as title
+                COALESCE(reports.url, reports.uuid) as title,
+                translations.translated_text
             FROM
             `moz-fx-data-shared-prod.org_mozilla_broken_site_report.user_reports_live`
             AS reports
             LEFT JOIN `{bq_dataset_id}.bugbug_predictions` AS predictions
             ON reports.uuid = predictions.report_uuid
+            LEFT JOIN `{bq_dataset_id}.translations` AS translations
+            ON reports.uuid = translations.report_uuid
             WHERE predictions.report_uuid IS NULL AND reported_at < "{last_run_time}"
             AND reports.comments != ""
             ORDER BY reports.reported_at
@@ -174,9 +225,64 @@ def get_missed_reports(client, last_run_time, bq_dataset_id):
     return list(query_job.result())
 
 
+def translate_by_uuid(client, uuids, bq_dataset_id):
+    uuids_sql = ", ".join(f"'{uuid}'" for uuid in uuids)
+
+    query = f"""
+            WITH reports AS (
+                SELECT uuid, comments as text_content
+                FROM
+                `moz-fx-data-shared-prod.org_mozilla_broken_site_report.user_reports_live`
+                WHERE uuid IN ({uuids_sql})
+            )
+            SELECT
+                uuid,
+                STRING(
+                    ml_translate_result.translations[0].detected_language_code
+                ) AS language_code,
+                STRING(
+                    ml_translate_result.translations[0].translated_text
+                ) AS translated_text,
+                ml_translate_status as status
+            FROM
+            ML.TRANSLATE(
+                MODEL `{bq_dataset_id}.translation`,
+                TABLE reports,
+                STRUCT(
+                  'translate_text' AS translate_mode,
+                  'en' AS target_language_code
+                )
+            );
+    """
+    query_job = client.query(query)
+    return list(query_job.result())
+
+
+def translate_reports(client, reports, bq_dataset_id):
+    result = {}
+    # Only translate reports that weren't translated
+    uuids_to_translate = [d["uuid"] for d in reports if not d["translated_text"]]
+
+    if uuids_to_translate:
+        translation_results = translate_by_uuid(
+            client, uuids_to_translate, bq_dataset_id
+        )
+        result = {
+            result["uuid"]: {field: value for field, value in result.items()}
+            for result in translation_results
+            if not result["status"]
+        }
+
+    return result
+
+
 def deduplicate_reports(reports):
     seen = set()
-    return [x for x in reports if not (x["uuid"] in seen or seen.add(x["uuid"]))]
+    return [
+        {field: value for field, value in report.items()}
+        for report in reports
+        if report["uuid"] not in seen and not seen.add(report["uuid"])
+    ]
 
 
 def chunk_list(data, size):
@@ -195,12 +301,21 @@ def main(bq_project_id, bq_dataset_id):
 
     # Get reports that were filed since last classification run
     # and have non-empty descriptions as well as reports that were missed
-    new_reports = get_reports_since_last_run(client, last_run_time)
+    new_reports = get_reports_since_last_run(client, last_run_time, bq_dataset_id)
     missed_reports = get_missed_reports(client, last_run_time, bq_dataset_id)
 
     combined = missed_reports + new_reports
 
     deduplicated_combined = deduplicate_reports(combined)
+
+    translated = translate_reports(client, deduplicated_combined, bq_dataset_id)
+
+    if translated:
+        save_translations(client, bq_dataset_id, translated)
+
+    for report in deduplicated_combined:
+        if report["uuid"] in translated:
+            report["translated_text"] = translated[report["uuid"]]["translated_text"]
 
     if not deduplicated_combined:
         logging.info(
@@ -213,7 +328,11 @@ def main(bq_project_id, bq_dataset_id):
     try:
         for chunk in chunk_list(deduplicated_combined, 20):
             objects_dict = {
-                row["uuid"]: {field: value for field, value in row.items()}
+                row["uuid"]: {
+                    "uuid": row["uuid"],
+                    "title": row["title"],
+                    "body": row.get("translated_text", row["body"]),
+                }
                 for row in chunk
             }
             logging.info("Getting classification results from bugbug.")

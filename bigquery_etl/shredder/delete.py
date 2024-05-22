@@ -489,10 +489,7 @@ def main():
             glean_targets.items(),
         )
     elif args.environment == "experiments":
-        with ThreadPool(args.parallelism) as pool:
-            targets_with_sources = find_experiment_analysis_targets(
-                pool, client
-            ).items()
+        targets_with_sources = find_experiment_analysis_targets(client).items()
     elif args.environment == "pioneer":
         with ThreadPool(args.parallelism) as pool:
             targets_with_sources = find_pioneer_targets(

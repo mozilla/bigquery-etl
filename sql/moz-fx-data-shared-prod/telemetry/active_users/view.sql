@@ -1,4 +1,4 @@
-CREATE OR REPLACE TABLE
+CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.telemetry.active_users`
 AS
 -- Firefox Desktop

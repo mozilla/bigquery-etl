@@ -155,6 +155,7 @@ def generate(target_project, output_dir, use_cloud_function):
     for template, template_settings in TEMPLATES.items():
         for product in MobileProducts:
             target_name, target_filename, target_extension = template.split(".")
+
             target_dataset = (
                 product.name + "_derived"
                 if target_filename == "query"
@@ -178,7 +179,7 @@ def generate(target_project, output_dir, use_cloud_function):
                 sql_template.render(
                     **asdict(product.value),
                     **default_template_args,
-                    dataset=target_dataset,
+                    dataset=product.name,
                     target_name=target_name,
                     app_name=product.name,
                     name=target_name,

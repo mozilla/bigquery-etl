@@ -56,6 +56,8 @@
       first_seen_date,
       is_new_profile,
       isp,
+      distribution_id,
+      geo_subdivision,
     FROM
       base
     WHERE

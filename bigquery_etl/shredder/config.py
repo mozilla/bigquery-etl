@@ -634,29 +634,32 @@ EXPERIMENT_ANALYSIS = "moz-fx-data-experiments"
 
 
 def find_experiment_analysis_targets(
-    pool: ThreadPool, client: bigquery.Client, project: str = EXPERIMENT_ANALYSIS
+    client: bigquery.Client, project: str = EXPERIMENT_ANALYSIS
 ) -> DeleteIndex:
     """Return a dict like DELETE_TARGETS for experiment analysis tables.
 
     Note that dict values *must* be either DeleteSource or tuple[DeleteSource, ...],
     and other iterable types, e.g. list[DeleteSource] are not allowed or supported.
     """
-    datasets = {dataset.reference for dataset in client.list_datasets(project)}
+    table_query = f"""
+    SELECT
+      table_schema AS dataset_id,
+      table_name,
+    FROM
+      `{project}.region-us.INFORMATION_SCHEMA.TABLES`
+    WHERE
+      table_type = 'BASE TABLE'
+      AND NOT STARTS_WITH(table_name, "statistics")
+      AND ddl LIKE '%client_id STRING,%'
+    """
 
-    tables = [
-        table
-        for tables in pool.map(
-            client.list_tables,
-            datasets,
-            chunksize=1,
-        )
-        for table in tables
-        if table.table_type != "VIEW" and not table.table_id.startswith("statistics_")
-    ]
+    target_tables = client.query_and_wait(query=table_query)
 
     return {
-        client_id_target(table=qualified_table_id(table), project=project): DESKTOP_SRC
-        for table in tables
+        client_id_target(
+            table=f"{table.dataset_id}.{table.table_name}", project=project
+        ): DESKTOP_SRC
+        for table in target_tables
     }
 
 

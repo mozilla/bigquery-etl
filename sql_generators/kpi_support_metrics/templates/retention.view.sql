@@ -1,5 +1,6 @@
+{{ header }}
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.fenix.retention`
+  `{{ project_id }}.{{ dataset }}.{{ name }}`
 AS
 SELECT
   *,
@@ -15,4 +16,4 @@ SELECT
     ELSE 'Unknown'
   END AS lifecycle_stage,
 FROM
-  `moz-fx-data-shared-prod.fenix_derived.retention_v1`
+  `{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}`

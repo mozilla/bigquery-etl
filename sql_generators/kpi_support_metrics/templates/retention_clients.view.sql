@@ -30,15 +30,12 @@ attribution AS (
           THEN ''
         ELSE adjust_campaign
       END AS adjust_campaign,
-      play_store_attribution_campaign,
-      play_store_attribution_medium,
-      play_store_attribution_source,
-      meta_attribution_app,
-      install_source,
-    {% elif app_name == "firefox_ios" %}
+    {% else %}
       adjust_campaign,
-      is_suspicious_device_client,
     {% endif %}
+    {% for field in product_specific_attribution_fields %}
+      {{ field.name if field.name != "adjust_campaign" }},
+    {% endfor %}
   FROM
     {% if app_name == "fenix" %}
       `{{ project_id }}.{{ dataset }}_derived.firefox_android_clients_v1`
@@ -58,15 +55,9 @@ SELECT
   clients_daily.app_display_version AS app_version,
   clients_daily.locale,
   clients_daily.isp,
-  {% if app_name == "fenix" %}
-    attribution.play_store_attribution_campaign,
-    attribution.play_store_attribution_medium,
-    attribution.play_store_attribution_source,
-    attribution.meta_attribution_app,
-    attribution.install_source,
-  {% elif app_name == "firefox_ios" %}
-    attribution.is_suspicious_device_client,
-  {% endif %}
+  {% for field in product_specific_attribution_fields %}
+    attribution.{{ field.name }},
+  {% endfor %}
   -- ping sent retention
   clients_last_seen.retention_seen.day_27.active_on_metric_date AS ping_sent_metric_date,
   (

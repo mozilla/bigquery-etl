@@ -3,7 +3,7 @@ CREATE OR REPLACE VIEW
   `{{ project_id }}.{{ dataset }}.{{ name }}`
 AS
 SELECT
-  *,
+  * EXCEPT (isp),
   CASE
     WHEN LOWER(isp) = "browserstack"
       THEN CONCAT("{{ friendly_name }}", " ", isp)
@@ -49,5 +49,8 @@ SELECT
   {% else %}
     FALSE
   {% endif %} AS is_desktop,
+  -- Adding isp at the end because it's in different column index in baseline table for some products.
+  -- This is to make sure downstream union works as intended.
+  isp,
 FROM
   `{{ project_id }}.{{ dataset }}.baseline_clients_last_seen`

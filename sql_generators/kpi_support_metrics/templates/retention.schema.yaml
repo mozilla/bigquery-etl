@@ -54,38 +54,13 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Adjust Network the profile is attributed to.
-{% if app_name == "fenix" %}
-- name: play_store_attribution_campaign
-  type: STRING
+{% for field in product_specific_attribution_fields %}
+- name: {{ field.name }}
+  type: {{ field.type }}
   mode: NULLABLE
-  description: Play store campaign the profile is attributed to.
+  description: {{ field.description }}
+{% endfor %}
 
-- name: play_store_attribution_medium
-  type: STRING
-  mode: NULLABLE
-  description: Play store Medium the profile is attributed to.
-
-- name: play_store_attribution_source
-  type: STRING
-  mode: NULLABLE
-  description: Play store source the profile is attributed to.
-
-- name: meta_attribution_app
-  type: STRING
-  mode: NULLABLE
-  description: Facebook app linked to paid marketing.
-
-- name: install_source
-  type: STRING
-  mode: NULLABLE
-  description: The source of a profile installation.
-{% elif app_name == "firefox_ios" %}
-- name: is_suspicious_device_client
-  type: BOOLEAN
-  mode: NULLABLE
-  description: Flag to identify suspicious device users, see bug-1846554 for more
-    info.
-{% endif %}
 - name: ping_sent_metric_date
   type: INTEGER
   mode: NULLABLE

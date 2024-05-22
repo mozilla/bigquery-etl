@@ -1,6 +1,7 @@
 """Generate active users aggregates per app."""
 
-from dataclasses import asdict, dataclass
+import itertools
+from dataclasses import asdict, dataclass, field
 from enum import Enum
 from os import path
 from pathlib import Path
@@ -16,12 +17,56 @@ GENERATOR_ROOT = Path(path.dirname(__file__))
 
 HEADER = f"-- Query generated via `{GENERATOR_ROOT.name}` SQL generator."
 VERSION = "v1"
-TEMPLATES = (
-    "active_users.view.sql",
-    "retention_clients.view.sql",
-    "retention.query.sql",
-    "retention.view.sql",
-)
+TEMPLATES = {
+    "active_users.view.sql": {
+        "include_additional_attribution_fields_in_union": False,
+    },
+    "retention_clients.view.sql": {
+        "include_additional_attribution_fields_in_union": True,
+    },
+    "retention.query.sql": {
+        "include_additional_attribution_fields_in_union": True,
+    },
+    "retention.view.sql": {
+        "include_additional_attribution_fields_in_union": True,
+    },
+}
+
+ADDITIONAL_ATTRIBUTION_FIELDS_FENIX = [
+    {
+        "name": "play_store_attribution_campaign",
+        "type": "STRING",
+        "description": "Play store campaign the profile is attributed to.",
+    },
+    {
+        "name": "play_store_attribution_medium",
+        "type": "STRING",
+        "description": "Play store Medium the profile is attributed to.",
+    },
+    {
+        "name": "play_store_attribution_source",
+        "type": "STRING",
+        "description": "Play store source the profile is attributed to.",
+    },
+    {
+        "name": "meta_attribution_app",
+        "type": "STRING",
+        "description": "Facebook app linked to paid marketing.",
+    },
+    {
+        "name": "install_source",
+        "type": "STRING",
+        "description": "The source of a profile installation.",
+    },
+]
+
+ADDITIONAL_ATTRIBUTION_FIELDS_FIREFOX_IOS = [
+    {
+        "name": "is_suspicious_device_client",
+        "type": "BOOLEAN",
+        "description": "Flag to identify suspicious device users, see bug-1846554 for more info.",
+    },
+]
 
 
 @dataclass
@@ -34,16 +79,25 @@ class Product:
     active_users_view_only: bool = (
         False  # TODO: for now only fenix and firefox_ios has a client table
     )
+    product_specific_attribution_fields: list = field(default_factory=list)
 
 
 class MobileProducts(Enum):
     """Enumeration with browser names and equivalent dataset names."""
 
-    fenix = Product(friendly_name="Fenix", is_mobile_kpi=True)
+    fenix = Product(
+        friendly_name="Fenix",
+        is_mobile_kpi=True,
+        product_specific_attribution_fields=ADDITIONAL_ATTRIBUTION_FIELDS_FENIX,
+    )
     focus_android = Product(
         friendly_name="Focus Android", is_mobile_kpi=True, active_users_view_only=True
     )
-    firefox_ios = Product(friendly_name="Firefox iOS", is_mobile_kpi=True)
+    firefox_ios = Product(
+        friendly_name="Firefox iOS",
+        is_mobile_kpi=True,
+        product_specific_attribution_fields=ADDITIONAL_ATTRIBUTION_FIELDS_FIREFOX_IOS,
+    )
     focus_ios = Product(
         friendly_name="Focus iOS", is_mobile_kpi=True, active_users_view_only=True
     )
@@ -86,7 +140,19 @@ def generate(target_project, output_dir, use_cloud_function):
         "schema.yaml",
     )
 
-    for template in TEMPLATES:
+    all_additional_attribution_fields = {
+        field["name"]: field
+        for field in list(
+            itertools.chain.from_iterable(
+                [
+                    product.value.product_specific_attribution_fields
+                    for product in MobileProducts
+                ]
+            )
+        )
+    }
+
+    for template, template_settings in TEMPLATES.items():
         for product in MobileProducts:
             target_name, target_filename, target_extension = template.split(".")
             target_dataset = (
@@ -171,7 +237,27 @@ def generate(target_project, output_dir, use_cloud_function):
             target_filename=target_filename,
             format=False,
             products=[
-                product.name
+                {
+                    "name": product.name,
+                    "additional_attribution_fields": (
+                        [
+                            {
+                                "exists": field_name
+                                in [
+                                    field["name"]
+                                    for field in product.value.product_specific_attribution_fields
+                                ],
+                                "name": field_name,
+                                "type": field_properties["type"],
+                            }
+                            for field_name, field_properties in all_additional_attribution_fields.items()
+                        ]
+                        if template_settings[
+                            "include_additional_attribution_fields_in_union"
+                        ]
+                        else []
+                    ),
+                }
                 for product in MobileProducts
                 if target_name.startswith("active_users")
                 or not product.value.active_users_view_only

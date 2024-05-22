@@ -1,4 +1,4 @@
-CREATE OR REPLACE VIEW
+CREATE OR REPLACE TABLE
   `moz-fx-data-shared-prod.telemetry.active_users`
 AS
 -- Firefox Desktop
@@ -19,6 +19,8 @@ SELECT
   FALSE AS is_mobile
 FROM
   `moz-fx-data-shared-prod.telemetry.clients_last_seen_v2`
+WHERE
+  submission_date < current_date
 UNION ALL
 -- Fenix
 SELECT
@@ -37,7 +39,9 @@ SELECT
   is_desktop,
   is_mobile
 FROM
-  `moz-fx-data-shared-prod.fenix.baseline_clients_last_seen_extended_activity` --eventually use: `moz-fx-data-shared-prod.fenix.baseline_clients_last_seen`
+  `moz-fx-data-shared-prod.fenix.active_users`
+WHERE
+  submission_date < current_date
 UNION ALL
 -- Firefox iOS
 SELECT
@@ -56,9 +60,9 @@ SELECT
   is_desktop,
   is_mobile
 FROM
-  `moz-fx-data-shared-prod.firefox_ios.baseline_clients_last_seen_extended_activity` --eventually use: `moz-fx-data-shared-prod.firefox_ios.baseline_clients_last_seen`
-/*
---waiting for these to have the new columns
+  `moz-fx-data-shared-prod.firefox_ios.active_users`
+WHERE
+  submission_date < current_date
 UNION ALL
 -- Focus Android
 SELECT
@@ -77,7 +81,9 @@ SELECT
   is_desktop,
   is_mobile
 FROM
-  `moz-fx-data-shared-prod.focus_android.baseline_clients_last_seen`
+  `moz-fx-data-shared-prod.focus_android.active_users`
+WHERE
+  submission_date < current_date
 UNION ALL
 -- Focus iOS
 SELECT
@@ -96,7 +102,9 @@ SELECT
   is_desktop,
   is_mobile
 FROM
-  `moz-fx-data-shared-prod.focus_ios.baseline_clients_last_seen`
+  `moz-fx-data-shared-prod.focus_ios.active_users`
+WHERE
+  submission_date < current_date
 UNION ALL
 -- Klar Android
 SELECT
@@ -115,7 +123,9 @@ SELECT
   is_desktop,
   is_mobile
 FROM
-  `moz-fx-data-shared-prod.klar_android.baseline_clients_last_seen`
+  `moz-fx-data-shared-prod.klar_android.active_users`
+WHERE
+  submission_date < current_date
 UNION ALL
 -- Klar iOS
 SELECT
@@ -134,5 +144,6 @@ SELECT
   is_desktop,
   is_mobile
 FROM
-  `moz-fx-data-shared-prod.klar_ios.baseline_clients_last_seen`
-*/
+  `moz-fx-data-shared-prod.klar_ios.active_users`
+WHERE
+  submission_date < current_date

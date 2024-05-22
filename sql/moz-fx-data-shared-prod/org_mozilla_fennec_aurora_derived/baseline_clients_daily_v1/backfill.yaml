@@ -1,0 +1,8 @@
+2024-05-22:
+  start_date: 2024-05-15
+  end_date: 2024-05-20
+  reason: |-
+    This is a limited time window trial of the managed backfill process to use sql_generated query.
+  watchers:
+  - kik@mozilla.com
+  status: Initiate

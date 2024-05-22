@@ -1,6 +1,7 @@
 """bigquery-etl CLI backfill command."""
 
 import json
+import logging
 import subprocess
 import sys
 import tempfile
@@ -15,6 +16,7 @@ from google.cloud.exceptions import Conflict, NotFound
 from ..backfill.date_range import BackfillDateRange, get_backfill_partition
 from ..backfill.parse import (
     BACKFILL_FILE,
+    DEFAULT_BILLING_PROJECT,
     DEFAULT_REASON,
     DEFAULT_WATCHER,
     Backfill,
@@ -45,6 +47,9 @@ from ..cli.utils import (
 )
 from ..config import ConfigLoader
 from ..metadata.parse_metadata import METADATA_FILE, Metadata
+
+logging.basicConfig(level=logging.INFO)
+log = logging.getLogger(__name__)
 
 
 @click.group(help="Commands for managing backfills.")
@@ -102,6 +107,8 @@ def backfill(ctx):
     help="Watcher of the backfill (email address)",
     default=DEFAULT_WATCHER,
 )
+# If not specified, the billing project will be set to the default billing project when the backfill is initiated.
+@billing_project_option()
 @click.pass_context
 def create(
     ctx,
@@ -111,6 +118,7 @@ def create(
     end_date,
     exclude,
     watcher,
+    billing_project,
 ):
     """CLI command for creating a new backfill entry in backfill.yaml file.
 
@@ -136,6 +144,7 @@ def create(
         reason=DEFAULT_REASON,
         watchers=[watcher],
         status=BackfillStatus.INITIATE,
+        billing_project=billing_project,
     )
 
     validate_duplicate_entry_with_initiate_status(new_entry, existing_backfills)
@@ -364,10 +373,13 @@ def scheduled(ctx, qualified_table_name, sql_dir, project_id, status, json_path=
 @project_id_option(
     ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod")
 )
-@billing_project_option()
 @click.pass_context
 def initiate(
-    ctx, qualified_table_name, parallelism, sql_dir, project_id, billing_project
+    ctx,
+    qualified_table_name,
+    parallelism,
+    sql_dir,
+    project_id,
 ):
     """Process backfill entry with initiate status in backfill.yaml file(s)."""
     click.echo("Backfill processing (initiate) started....")
@@ -396,9 +408,21 @@ def initiate(
         destination_table=backfill_staging_qualified_table_name,
     )
 
+    billing_project = DEFAULT_BILLING_PROJECT
+
+    # override with billing project from backfill entry
+    if entry_to_initiate.billing_project is not None:
+        billing_project = entry_to_initiate.billing_project
+    elif not billing_project.startswith("moz-fx-data-backfill-"):
+        raise ValueError(
+            f"Invalid billing project: {billing_project}.  Please use one of the projects assigned to backfills."
+        )
+        sys.exit(1)
+
     click.echo(
         f"\nInitiating backfill for {qualified_table_name} with entry date {entry_to_initiate.entry_date} via dry run:"
     )
+
     _initiate_backfill(
         ctx,
         qualified_table_name,
@@ -433,7 +457,7 @@ def _initiate_backfill(
     entry: Backfill,
     parallelism: int = 16,
     dry_run: bool = False,
-    billing_project=None,
+    billing_project=DEFAULT_BILLING_PROJECT,
 ):
     if not is_authenticated():
         click.echo(
@@ -443,6 +467,14 @@ def _initiate_backfill(
         sys.exit(1)
 
     project, dataset, table = qualified_table_name_matching(qualified_table_name)
+
+    logging_str = f"""Initiating backfill for {qualified_table_name} (destination: {backfill_staging_qualified_table_name}).
+                    Query will be executed in {billing_project}."""
+
+    if dry_run:
+        logging_str += "  This is a dry run."
+
+    log.info(logging_str)
 
     # backfill table
     # in the long-run we should remove the query backfill command and require a backfill entry for all backfills

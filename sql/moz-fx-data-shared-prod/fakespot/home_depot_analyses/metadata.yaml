@@ -1,7 +1,0 @@
-friendly_name: Fakespot Home Depot Products
-description: |-
-  Home Depot Products from Fakespot, pulled from syndicate dataset
-owners:
-  - wstuckey@mozilla.com
-labels:
-  authorized: true

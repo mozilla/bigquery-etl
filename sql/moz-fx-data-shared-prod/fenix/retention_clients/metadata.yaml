@@ -10,6 +10,6 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   view.sql:
+  - moz-fx-data-shared-prod.fenix.active_users
   - moz-fx-data-shared-prod.fenix.baseline_clients_daily
-  - moz-fx-data-shared-prod.fenix.baseline_clients_last_seen_extended_activity
   - moz-fx-data-shared-prod.fenix_derived.firefox_android_clients_v1

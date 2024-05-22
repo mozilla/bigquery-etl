@@ -1,3 +1,4 @@
+-- Query generated via `kpi_support_metrics` SQL generator.
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.firefox_ios.retention`
 AS
@@ -13,6 +14,6 @@ SELECT
     WHEN DATE_DIFF(metric_date, first_seen_date, DAY) >= 28
       THEN 'existing_user'
     ELSE 'Unknown'
-  END AS lifecycle_stage
+  END AS lifecycle_stage,
 FROM
   `moz-fx-data-shared-prod.firefox_ios_derived.retention_v1`

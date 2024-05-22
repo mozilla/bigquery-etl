@@ -1,0 +1,33 @@
+-- Query generated via `kpi_support_metrics` SQL generator.
+CREATE OR REPLACE VIEW
+  `moz-fx-data-shared-prod.telemetry.active_users`
+AS
+SELECT
+  *,
+FROM
+  `moz-fx-data-shared-prod.fenix.active_users`
+UNION ALL
+SELECT
+  *,
+FROM
+  `moz-fx-data-shared-prod.focus_android.active_users`
+UNION ALL
+SELECT
+  *,
+FROM
+  `moz-fx-data-shared-prod.firefox_ios.active_users`
+UNION ALL
+SELECT
+  *,
+FROM
+  `moz-fx-data-shared-prod.focus_ios.active_users`
+UNION ALL
+SELECT
+  *,
+FROM
+  `moz-fx-data-shared-prod.klar_ios.active_users`
+UNION ALL
+SELECT
+  *,
+FROM
+  `moz-fx-data-shared-prod.klar_android.active_users`

@@ -80,6 +80,7 @@ fields:
   mode: NULLABLE
   description: The source of a profile installation.
 
+
 - name: ping_sent_metric_date
   type: INTEGER
   mode: NULLABLE

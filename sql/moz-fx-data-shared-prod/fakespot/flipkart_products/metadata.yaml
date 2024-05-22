@@ -1,0 +1,7 @@
+friendly_name: Fakespot Flipkart Products
+description: |-
+  Flipkart products from Fakespot, pulled from syndicate dataset
+owners:
+  - wstuckey@mozilla.com
+labels:
+  authorized: true

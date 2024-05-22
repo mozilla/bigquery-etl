@@ -1,3 +1,4 @@
+-- Query generated via `kpi_support_metrics` SQL generator.
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.firefox_ios.retention_clients`
 AS
@@ -13,7 +14,7 @@ WITH clients_last_seen AS (
     days_seen_bits,
     days_active_bits,
   FROM
-    `moz-fx-data-shared-prod.firefox_ios.baseline_clients_last_seen_extended_activity`
+    `moz-fx-data-shared-prod.firefox_ios.active_users`
 ),
 attribution AS (
   SELECT
@@ -21,9 +22,9 @@ attribution AS (
     sample_id,
     channel AS normalized_channel,
     adjust_ad_group,
-    adjust_campaign,
     adjust_creative,
     adjust_network,
+    adjust_campaign,
     is_suspicious_device_client,
   FROM
     `moz-fx-data-shared-prod.firefox_ios_derived.firefox_ios_clients_v1`
@@ -71,7 +72,7 @@ SELECT
   clients_last_seen.days_seen_bits,
   clients_last_seen.days_active_bits,
   CASE
-    WHEN first_seen_date = clients_daily.submission_date
+    WHEN clients_daily.submission_date = first_seen_date
       THEN 'new_profile'
     WHEN DATE_DIFF(clients_daily.submission_date, first_seen_date, DAY)
       BETWEEN 1

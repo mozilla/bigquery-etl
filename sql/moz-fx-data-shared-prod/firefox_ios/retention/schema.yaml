@@ -18,15 +18,15 @@ fields:
 - name: country
   type: STRING
   mode: NULLABLE
-  description: Profile's country on the metric date.
+  description: Client's country on the metric date.
 - name: app_version
   type: STRING
   mode: NULLABLE
-  description: Profile's app version on the metric date.
+  description: Client's app version on the metric date.
 - name: locale
   type: STRING
   mode: NULLABLE
-  description: Profile's locale on the metric date.
+  description: Client's locale on the metric date.
 - name: adjust_ad_group
   type: STRING
   mode: NULLABLE

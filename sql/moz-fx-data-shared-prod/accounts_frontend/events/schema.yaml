@@ -443,6 +443,30 @@ fields:
         rotated with each page load and is sent along with each event ping.
 
         '
+  - name: labeled_boolean
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: sync_cwts
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: BOOLEAN
+        mode: NULLABLE
+      description: 'The set of Sync engine options at the time of an account sign
+        up via
+
+        Sync.  For example, if the user only opted into syncing their Firefox
+
+        bookmarks and history, then "bookmarks" and "history" will have true for
+
+        their values, while the rest of the labels will have false.
+
+        '
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

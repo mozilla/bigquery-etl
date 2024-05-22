@@ -79,23 +79,6 @@ with DAG(
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
     )
 
-    firefox_desktop_pageload_experiments__v1 = bigquery_etl_query(
-        task_id="firefox_desktop_pageload_experiments__v1",
-        destination_table="pageload_experiments_v1",
-        dataset_id="firefox_desktop_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="wichan@mozilla.com",
-        email=[
-            "acreskey@mozilla.com",
-            "dpalmeiro@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-            "wichan@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
-    )
-
     firefox_desktop_pageload_nightly__v1 = bigquery_etl_query(
         task_id="firefox_desktop_pageload_nightly__v1",
         destination_table="pageload_nightly_v1",
@@ -114,7 +97,5 @@ with DAG(
     )
 
     firefox_desktop_pageload_1pct__v1.set_upstream(wait_for_copy_deduplicate_all)
-
-    firefox_desktop_pageload_experiments__v1.set_upstream(wait_for_copy_deduplicate_all)
 
     firefox_desktop_pageload_nightly__v1.set_upstream(wait_for_copy_deduplicate_all)

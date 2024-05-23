@@ -1,6 +1,6 @@
 {{ header }}
 CREATE OR REPLACE VIEW
-  `{{ project_id }}.{{ dataset }}.{{ name }}` AS
+  `{{ project_id }}.{{ dataset }}.{{ target_name }}` AS
   {% for product in products %}
     {% if not loop.first %}
       UNION ALL

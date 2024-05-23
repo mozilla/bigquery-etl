@@ -54,33 +54,47 @@ fields:
 - name: adjust_network
   type: STRING
   mode: NULLABLE
+  description: Adjust Network
 - name: adjust_campaign
   type: STRING
   mode: NULLABLE
+  description: Adjust Campaign
 - name: adjust_ad_group
   type: STRING
   mode: NULLABLE
+  description: Adjust Ad Group
 - name: adjust_creative
   type: STRING
   mode: NULLABLE
+  description: Adjust Creative
 - name: play_store_attribution_campaign
   type: STRING
   mode: NULLABLE
+  description: Play Store Attribution Campaign
 - name: play_store_attribution_source
   type: STRING
   mode: NULLABLE
+  description: Play Store Attribution Source
 - name: play_store_attribution_medium
   type: STRING
   mode: NULLABLE
+  description: Play Store Attribution Medium
 - name: meta_attribution_app
   type: STRING
   mode: NULLABLE
+  description: Meta Attribution App
 - name: install_source
   type: STRING
   mode: NULLABLE
+  description: Install Source
 - name: is_suspicious_device_client
   type: BOOLEAN
   mode: NULLABLE
+  description: Is Suspicious Device Client
+- name: is_mobile
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Is Mobile
 - name: lifecycle_stage
   type: STRING
   mode: NULLABLE

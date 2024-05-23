@@ -71,12 +71,19 @@ fields:
 - name: dau
   type: INTEGER
   mode: NULLABLE
+  description: DAU - Daily Active Users
 - name: wau
   type: INTEGER
   mode: NULLABLE
+  description: WAU - Weekly Active Users
 - name: mau
   type: INTEGER
   mode: NULLABLE
+  description: MAU - Monthly Active Users
+- name: is_mobile
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Is Mobile
 - name: lifecycle_stage
   type: STRING
   mode: NULLABLE

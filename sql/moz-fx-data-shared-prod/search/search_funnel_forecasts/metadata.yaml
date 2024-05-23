@@ -1,0 +1,7 @@
+---
+friendly_name: Search Funnel Forecasts
+description: |
+  A view that contains the forecasts of search funnel metrics.
+owners:
+  - mbowerman@mozilla.com
+  - skahmann@mozilla.com

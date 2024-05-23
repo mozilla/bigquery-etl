@@ -68,6 +68,14 @@ fields:
   type: BOOLEAN
   description: Flags Firefox iOS clients created recently from an older app version associated with unusual counts
 - mode: NULLABLE
+  name: is_desktop
+  type: BOOLEAN
+  description: Is Desktop
+- mode: NULLABLE
+  name: is_mobile
+  type: BOOLEAN
+  description: Is Mobile
+- mode: NULLABLE
   name: dau
   type: INT64
   description: DAU - Daily Active Users

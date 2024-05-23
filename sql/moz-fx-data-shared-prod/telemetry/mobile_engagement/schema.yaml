@@ -71,15 +71,12 @@ fields:
 - name: dau
   type: INTEGER
   mode: NULLABLE
-  description: DAU - Daily Active Users
 - name: wau
   type: INTEGER
   mode: NULLABLE
-  description: WAU - Weekly Active Users
 - name: mau
   type: INTEGER
   mode: NULLABLE
-  description: MAU - Monthly Active Users
 - name: lifecycle_stage
   type: STRING
   mode: NULLABLE

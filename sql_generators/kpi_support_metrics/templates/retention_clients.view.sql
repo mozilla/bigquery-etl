@@ -1,5 +1,6 @@
+{{ header }}
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.fenix.retention_clients`
+  `{{ project_id }}.{{ dataset }}.{{ name }}`
 AS
 WITH clients_last_seen AS (
   SELECT
@@ -13,7 +14,7 @@ WITH clients_last_seen AS (
     days_seen_bits,
     days_active_bits,
   FROM
-    `moz-fx-data-shared-prod.fenix.baseline_clients_last_seen_extended_activity`
+    `{{ project_id }}.{{ dataset }}.active_users`
 ),
 attribution AS (
   SELECT
@@ -23,18 +24,24 @@ attribution AS (
     adjust_ad_group,
     adjust_creative,
     adjust_network,
-    CASE
-      WHEN adjust_network IN ('Google Organic Search', 'Organic')
-        THEN ''
-      ELSE adjust_campaign
-    END AS adjust_campaign,
-    play_store_attribution_campaign,
-    play_store_attribution_medium,
-    play_store_attribution_source,
-    meta_attribution_app,
-    install_source,
+    {% if app_name == "fenix" %}
+      CASE
+        WHEN adjust_network IN ('Google Organic Search', 'Organic')
+          THEN ''
+        ELSE adjust_campaign
+      END AS adjust_campaign,
+    {% else %}
+      adjust_campaign,
+    {% endif %}
+    {% for field in product_specific_attribution_fields %}
+      {{ field.name if field.name != "adjust_campaign" }},
+    {% endfor %}
   FROM
-    `moz-fx-data-shared-prod.fenix_derived.firefox_android_clients_v1`
+    {% if app_name == "fenix" %}
+      `{{ project_id }}.{{ dataset }}_derived.firefox_android_clients_v1`
+    {% elif app_name == "firefox_ios" %}
+      `{{ project_id }}.{{ dataset }}_derived.firefox_ios_clients_v1`
+    {% endif %}
 )
 SELECT
   clients_last_seen.submission_date AS submission_date,
@@ -48,15 +55,9 @@ SELECT
   clients_daily.app_display_version AS app_version,
   clients_daily.locale,
   clients_daily.isp,
-  attribution.adjust_ad_group,
-  attribution.adjust_campaign,
-  attribution.adjust_creative,
-  attribution.adjust_network,
-  attribution.play_store_attribution_campaign,
-  attribution.play_store_attribution_medium,
-  attribution.play_store_attribution_source,
-  attribution.meta_attribution_app,
-  attribution.install_source,
+  {% for field in product_specific_attribution_fields %}
+    attribution.{{ field.name }},
+  {% endfor %}
   -- ping sent retention
   clients_last_seen.retention_seen.day_27.active_on_metric_date AS ping_sent_metric_date,
   (
@@ -80,10 +81,14 @@ SELECT
     -- Looking back at 27 days to support the official definition of repeat_profile (someone active between days 2 and 28):
     AND BIT_COUNT(mozfun.bits28.range(clients_last_seen.days_active_bits, -26, 27)) > 0
   ) AS repeat_profile,
+  attribution.adjust_ad_group,
+  attribution.adjust_campaign,
+  attribution.adjust_creative,
+  attribution.adjust_network,
   clients_last_seen.days_seen_bits,
   clients_last_seen.days_active_bits,
   CASE
-    WHEN first_seen_date = clients_daily.submission_date
+    WHEN clients_daily.submission_date = first_seen_date
       THEN 'new_profile'
     WHEN DATE_DIFF(clients_daily.submission_date, first_seen_date, DAY)
       BETWEEN 1
@@ -92,9 +97,9 @@ SELECT
     WHEN DATE_DIFF(clients_daily.submission_date, first_seen_date, DAY) >= 28
       THEN 'existing_user'
     ELSE 'Unknown'
-  END AS lifecycle_stage,
+  END AS lifecycle_stage
 FROM
-  `moz-fx-data-shared-prod.fenix.baseline_clients_daily` AS clients_daily
+  `{{ project_id }}.{{ dataset }}.baseline_clients_daily` AS clients_daily
 INNER JOIN
   clients_last_seen
   ON clients_daily.submission_date = clients_last_seen.retention_seen.day_27.metric_date

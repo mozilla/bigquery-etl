@@ -14,9 +14,10 @@ WITH mobile_clients_last_seen AS (
     app_display_version AS app_version,
     is_dau,
     is_wau,
-    is_mau
+    is_mau,
+    is_mobile
   FROM
-    `moz-fx-data-shared-prod.fenix.baseline_clients_last_seen_extended_activity` --eventually use: `moz-fx-data-shared-prod.fenix.baseline_clients_last_seen`
+    `moz-fx-data-shared-prod.fenix.active_users`
   WHERE
     submission_date = @submission_date
   UNION ALL
@@ -35,12 +36,12 @@ WITH mobile_clients_last_seen AS (
     app_display_version AS app_version,
     is_dau,
     is_wau,
-    is_mau
+    is_mau,
+    is_mobile
   FROM
-    `moz-fx-data-shared-prod.firefox_ios.baseline_clients_last_seen_extended_activity` --eventually use: `moz-fx-data-shared-prod.firefox_ios.baseline_clients_last_seen`
+    `moz-fx-data-shared-prod.firefox_ios.active_users`
   WHERE
     submission_date = @submission_date
-    /*
   UNION ALL
   --Focus Android
   SELECT
@@ -53,13 +54,14 @@ WITH mobile_clients_last_seen AS (
     locale,
     country,
     isp,
-    app_name, --will work once the column is added by Kik via PR#5434
+    app_name,
     app_display_version AS app_version,
-    is_dau, --will work once the column is added by Kik
-    is_wau, --will work once the column is added by Kik
-    is_mau --will work once the column is added by Kik
+    is_dau,
+    is_wau,
+    is_mau,
+    is_mobile
   FROM
-    `moz-fx-data-shared-prod.focus_android.baseline_clients_last_seen`
+    `moz-fx-data-shared-prod.focus_android.active_users`
   WHERE
     submission_date = @submission_date
   UNION ALL
@@ -74,16 +76,16 @@ WITH mobile_clients_last_seen AS (
     locale,
     country,
     isp,
-    app_name, --will work once the column is added by Kik via PR#5434
+    app_name,
     app_display_version AS app_version,
-    is_dau, --will work once the column is added by Kik
-    is_wau, --will work once the column is added by Kik
-    is_mau --will work once the column is added by Kik
+    is_dau,
+    is_wau,
+    is_mau,
+    is_mobile
   FROM
-    `moz-fx-data-shared-prod.focus_ios.baseline_clients_last_seen`
+    `moz-fx-data-shared-prod.focus_ios.active_users`
   WHERE
     submission_date = @submission_date
-    */
 ),
 mobile_attribution AS (
   --Fenix
@@ -136,6 +138,7 @@ SELECT
   cls.is_dau,
   cls.is_wau,
   cls.is_mau,
+  cls.is_mobile,
   attr.adjust_network,
   attr.adjust_campaign,
   attr.adjust_ad_group,

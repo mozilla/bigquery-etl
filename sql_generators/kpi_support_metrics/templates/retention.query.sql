@@ -1,3 +1,4 @@
+{{ header }}
 SELECT
   metric_date,
   first_seen_date,
@@ -10,11 +11,9 @@ SELECT
   adjust_campaign,
   adjust_creative,
   adjust_network,
-  play_store_attribution_campaign,
-  play_store_attribution_medium,
-  play_store_attribution_source,
-  meta_attribution_app,
-  install_source,
+  {% for field in product_specific_attribution_fields %}
+    {{ field.name }},
+  {% endfor %}
   COUNTIF(ping_sent_metric_date) AS ping_sent_metric_date,
   COUNTIF(ping_sent_week_4) AS ping_sent_week_4,
   COUNTIF(active_metric_date) AS active_metric_date,
@@ -23,7 +22,7 @@ SELECT
   COUNTIF(new_profile_metric_date) AS new_profiles_metric_date,
   COUNTIF(repeat_profile) AS repeat_profiles,
 FROM
-  fenix.retention_clients
+  `{{ project_id }}.{{ dataset }}.retention_clients`
 WHERE
   metric_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
   AND submission_date = @submission_date
@@ -39,8 +38,8 @@ GROUP BY
   adjust_campaign,
   adjust_creative,
   adjust_network,
-  play_store_attribution_campaign,
-  play_store_attribution_medium,
-  play_store_attribution_source,
-  meta_attribution_app,
-  install_source
+  {% for field in product_specific_attribution_fields %}
+    {{ field.name }}
+    {% if not loop.last %},
+    {% endif %}
+  {% endfor %}

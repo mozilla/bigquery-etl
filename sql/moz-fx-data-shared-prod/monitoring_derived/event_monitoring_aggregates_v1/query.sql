@@ -1555,7 +1555,7 @@ FROM
       client_info.app_display_version AS version,
       ping_info
     FROM
-      `moz-fx-data-shared-prod.mozillavpn_stable.main_v1`
+      `moz-fx-data-shared-prod.mozillavpn_stable.vpnsession_v1`
     UNION ALL
     SELECT
       submission_timestamp,
@@ -1575,7 +1575,7 @@ FROM
       client_info.app_display_version AS version,
       ping_info
     FROM
-      `moz-fx-data-shared-prod.mozillavpn_stable.vpnsession_v1`
+      `moz-fx-data-shared-prod.mozillavpn_stable.main_v1`
   )
 CROSS JOIN
   UNNEST(events) AS event,
@@ -1646,7 +1646,7 @@ FROM
       client_info.app_display_version AS version,
       ping_info
     FROM
-      `moz-fx-data-shared-prod.org_mozilla_firefox_vpn_stable.main_v1`
+      `moz-fx-data-shared-prod.org_mozilla_firefox_vpn_stable.vpnsession_v1`
     UNION ALL
     SELECT
       submission_timestamp,
@@ -1666,7 +1666,7 @@ FROM
       client_info.app_display_version AS version,
       ping_info
     FROM
-      `moz-fx-data-shared-prod.org_mozilla_firefox_vpn_stable.vpnsession_v1`
+      `moz-fx-data-shared-prod.org_mozilla_firefox_vpn_stable.main_v1`
   )
 CROSS JOIN
   UNNEST(events) AS event,
@@ -1737,7 +1737,7 @@ FROM
       client_info.app_display_version AS version,
       ping_info
     FROM
-      `moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_stable.main_v1`
+      `moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_stable.vpnsession_v1`
     UNION ALL
     SELECT
       submission_timestamp,
@@ -1757,7 +1757,7 @@ FROM
       client_info.app_display_version AS version,
       ping_info
     FROM
-      `moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_stable.vpnsession_v1`
+      `moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_stable.main_v1`
   )
 CROSS JOIN
   UNNEST(events) AS event,
@@ -1828,7 +1828,7 @@ FROM
       client_info.app_display_version AS version,
       ping_info
     FROM
-      `moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_network_extension_stable.main_v1`
+      `moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_network_extension_stable.vpnsession_v1`
     UNION ALL
     SELECT
       submission_timestamp,
@@ -1848,7 +1848,7 @@ FROM
       client_info.app_display_version AS version,
       ping_info
     FROM
-      `moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_network_extension_stable.vpnsession_v1`
+      `moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_network_extension_stable.main_v1`
   )
 CROSS JOIN
   UNNEST(events) AS event,
@@ -1990,7 +1990,7 @@ FROM
       client_info.app_display_version AS version,
       ping_info
     FROM
-      `moz-fx-data-shared-prod.bedrock_stable.events_v1`
+      `moz-fx-data-shared-prod.bedrock_stable.interaction_v1`
     UNION ALL
     SELECT
       submission_timestamp,
@@ -2000,7 +2000,7 @@ FROM
       client_info.app_display_version AS version,
       ping_info
     FROM
-      `moz-fx-data-shared-prod.bedrock_stable.interaction_v1`
+      `moz-fx-data-shared-prod.bedrock_stable.events_v1`
     UNION ALL
     SELECT
       submission_timestamp,
@@ -2081,7 +2081,7 @@ FROM
       client_info.app_display_version AS version,
       ping_info
     FROM
-      `moz-fx-data-shared-prod.viu_politica_stable.main_events_v1`
+      `moz-fx-data-shared-prod.viu_politica_stable.video_index_v1`
     UNION ALL
     SELECT
       submission_timestamp,
@@ -2091,7 +2091,7 @@ FROM
       client_info.app_display_version AS version,
       ping_info
     FROM
-      `moz-fx-data-shared-prod.viu_politica_stable.video_index_v1`
+      `moz-fx-data-shared-prod.viu_politica_stable.main_events_v1`
   )
 CROSS JOIN
   UNNEST(events) AS event,
@@ -2162,7 +2162,7 @@ FROM
       client_info.app_display_version AS version,
       ping_info
     FROM
-      `moz-fx-data-shared-prod.firefox_desktop_background_tasks_stable.background_tasks_v1`
+      `moz-fx-data-shared-prod.firefox_desktop_background_tasks_stable.events_v1`
     UNION ALL
     SELECT
       submission_timestamp,
@@ -2172,7 +2172,7 @@ FROM
       client_info.app_display_version AS version,
       ping_info
     FROM
-      `moz-fx-data-shared-prod.firefox_desktop_background_tasks_stable.events_v1`
+      `moz-fx-data-shared-prod.firefox_desktop_background_tasks_stable.background_tasks_v1`
   )
 CROSS JOIN
   UNNEST(events) AS event,

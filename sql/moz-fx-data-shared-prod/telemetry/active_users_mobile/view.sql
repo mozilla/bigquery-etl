@@ -1,6 +1,6 @@
 -- Query generated via `kpi_support_metrics` SQL generator.
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.telemetry.active_users`
+  `moz-fx-data-shared-prod.telemetry.active_users_mobile`
 AS
 SELECT
   *,

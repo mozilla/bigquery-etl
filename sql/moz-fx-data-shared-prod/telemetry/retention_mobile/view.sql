@@ -1,6 +1,6 @@
 -- Query generated via `kpi_support_metrics` SQL generator.
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.telemetry.retention_clients`
+  `moz-fx-data-shared-prod.telemetry.retention_mobile`
 AS
 SELECT
   * EXCEPT (
@@ -17,7 +17,7 @@ SELECT
   install_source,
   CAST(NULL AS BOOLEAN) AS is_suspicious_device_client,
 FROM
-  `moz-fx-data-shared-prod.fenix.retention_clients`
+  `moz-fx-data-shared-prod.fenix.retention`
 UNION ALL
 SELECT
   * EXCEPT (is_suspicious_device_client),
@@ -28,4 +28,4 @@ SELECT
   CAST(NULL AS STRING) AS install_source,
   is_suspicious_device_client,
 FROM
-  `moz-fx-data-shared-prod.firefox_ios.retention_clients`
+  `moz-fx-data-shared-prod.firefox_ios.retention`

@@ -744,6 +744,7 @@ def backfill(
 
         if not depends_on_past and parallelism > 0:
             # run backfill for dates in parallel if depends_on_past is false
+            failed_backfills = []
             with futures.ProcessPoolExecutor(max_workers=parallelism) as executor:
                 future_to_date = {
                     executor.submit(backfill_query, backfill_date): backfill_date
@@ -755,8 +756,13 @@ def backfill(
                         future.result()
                     except Exception as e:  # TODO: More specific exception(s)
                         print(f"Encountered exception {e}: {backfill_date}.")
+                        failed_backfills.append(backfill_date)
                     else:
                         print(f"Completed processing: {backfill_date}.")
+            if failed_backfills:
+                raise RuntimeError(
+                    f"Backfill processing failed for the following backfill dates: {failed_backfills}"
+                )
         else:
             # if data depends on previous runs, then execute backfill sequentially
             for backfill_date in date_range:

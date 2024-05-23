@@ -16,7 +16,6 @@ SELECT
   meta_attribution_app,
   install_source,
   is_suspicious_device_client,
-  is_desktop,
   is_mobile,
   COUNTIF(is_dau) AS dau,
   COUNTIF(is_wau) AS wau,
@@ -43,5 +42,4 @@ GROUP BY
   meta_attribution_app,
   install_source,
   is_suspicious_device_client,
-  is_desktop,
   is_mobile

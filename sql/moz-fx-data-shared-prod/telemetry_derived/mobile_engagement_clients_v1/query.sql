@@ -15,7 +15,6 @@ WITH mobile_clients_last_seen AS (
     is_dau,
     is_wau,
     is_mau,
-    FALSE AS is_desktop,
     is_mobile
   FROM
     `moz-fx-data-shared-prod.fenix.active_users`
@@ -38,7 +37,6 @@ WITH mobile_clients_last_seen AS (
     is_dau,
     is_wau,
     is_mau,
-    FALSE AS is_desktop,
     is_mobile
   FROM
     `moz-fx-data-shared-prod.firefox_ios.active_users`
@@ -61,7 +59,6 @@ WITH mobile_clients_last_seen AS (
     is_dau,
     is_wau,
     is_mau,
-    FALSE AS is_desktop,
     is_mobile
   FROM
     `moz-fx-data-shared-prod.focus_android.active_users`
@@ -84,7 +81,6 @@ WITH mobile_clients_last_seen AS (
     is_dau,
     is_wau,
     is_mau,
-    FALSE AS is_desktop,
     is_mobile
   FROM
     `moz-fx-data-shared-prod.focus_ios.active_users`
@@ -142,7 +138,6 @@ SELECT
   cls.is_dau,
   cls.is_wau,
   cls.is_mau,
-  cls.is_desktop,
   cls.is_mobile,
   attr.adjust_network,
   attr.adjust_campaign,

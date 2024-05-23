@@ -18,8 +18,6 @@ SELECT
   FALSE AS is_mobile
 FROM
   `moz-fx-data-shared-prod.telemetry.clients_last_seen_v2`
-WHERE
-  submission_date < current_date
 UNION ALL
 SELECT
   submission_date,
@@ -38,5 +36,3 @@ SELECT
   is_mobile
 FROM
   `moz-fx-data-shared-prod.telemetry.active_users_mobile`
-WHERE
-  submission_date < current_date

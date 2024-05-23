@@ -9,6 +9,7 @@
   metrics:
     string:
       first_session_network: 'Organic'
+      meta_attribution_app: 'Test Meta'
 - client_info:
     client_id: client-2
     first_run_date: '2023-05-02+08:00'
@@ -19,3 +20,4 @@
   metrics:
     string:
       first_session_network: 'Untrusted Devices'
+      meta_attribution_app: 'Test Meta'

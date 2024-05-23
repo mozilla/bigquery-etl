@@ -10,16 +10,12 @@ WITH suppression_lists AS (
     opt_in_details AS suppression_reason,
   FROM
     `moz-fx-data-bq-fivetran.acoustic_sftp.suppression_export_v_1`
-  UNION ALL
-  SELECT
-    email,
-    PARSE_TIMESTAMP("%Y-%m-%d %I:%M %p", opt_in_date) AS suppressed_timestamp,
-    opt_in_details AS suppression_reason
-  -- historic upload
-  FROM
-    `moz-fx-data-shared-prod.acoustic_external.2024-03-20_main_suppression_list`
 )
 SELECT
   *
 FROM
   suppression_lists
+-- remove older entries after the suppression list prune in April 2024
+-- https://mozilla-hub.atlassian.net/browse/CTMS-163
+WHERE
+  suppressed_timestamp > "2024-03-31"

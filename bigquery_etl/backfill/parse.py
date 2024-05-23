@@ -14,6 +14,7 @@ from bigquery_etl.query_scheduling.utils import is_email_or_github_identity
 BACKFILL_FILE = "backfill.yaml"
 DEFAULT_WATCHER = "nobody@mozilla.com"
 DEFAULT_REASON = "Please provide a reason for the backfill and links to any related bugzilla or jira tickets"
+DEFAULT_BILLING_PROJECT = "moz-fx-data-backfill-slots"
 
 
 class UniqueKeyLoader(yaml.SafeLoader):
@@ -69,6 +70,7 @@ class Backfill:
     reason: str = attr.ib()
     watchers: List[str] = attr.ib()
     status: BackfillStatus = attr.ib()
+    billing_project: Optional[str] = attr.ib(None)
 
     def __str__(self):
         """Return print friendly string of backfill object."""
@@ -147,6 +149,14 @@ class Backfill:
         if not hasattr(BackfillStatus, value.name):
             raise ValueError(f"Invalid status: {value.name}.")
 
+    @billing_project.validator
+    def validate_billing_project(self, attribute, value):
+        """Check that billing project is valid."""
+        if value and not value.startswith("moz-fx-data-backfill-"):
+            raise ValueError(
+                f"Invalid billing project: {value}.  Please use one of the projects assigned to backfills."
+            )
+
     @staticmethod
     def is_backfill_file(file_path: Path) -> bool:
         """Check if the provided file is a backfill file."""
@@ -177,18 +187,15 @@ class Backfill:
                     if status is not None and entry["status"] != status:
                         continue
 
-                    excluded_dates = []
-                    if "excluded_dates" in entry:
-                        excluded_dates = entry["excluded_dates"]
-
                     backfill = cls(
                         entry_date=entry_date,
                         start_date=entry["start_date"],
                         end_date=entry["end_date"],
-                        excluded_dates=excluded_dates,
+                        excluded_dates=entry.get("excluded_dates", []),
                         reason=entry["reason"],
                         watchers=entry["watchers"],
                         status=BackfillStatus[entry["status"].upper()],
+                        billing_project=entry.get("billing_project", None),
                     )
 
                     backfill_entries.append(backfill)
@@ -208,11 +215,15 @@ class Backfill:
                 "reason": self.reason,
                 "watchers": self.watchers,
                 "status": self.status.value,
+                "billing_project": self.billing_project,
             }
         }
 
         if yaml_dict[self.entry_date]["excluded_dates"] == []:
             del yaml_dict[self.entry_date]["excluded_dates"]
+
+        if yaml_dict[self.entry_date]["billing_project"] is None:
+            del yaml_dict[self.entry_date]["billing_project"]
 
         return yaml.dump(
             yaml_dict,

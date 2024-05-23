@@ -80,6 +80,10 @@
           {
             "type": "STRING",
             "name": "play_store_attribution_term"
+          },
+          {
+            "type": "STRING",
+            "name": "meta_attribution_app"
           }
         ]
       },

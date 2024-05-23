@@ -2983,6 +2983,16 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
+    - name: power_energy_per_process_type
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
   - name: quantity
     type: RECORD
     mode: NULLABLE

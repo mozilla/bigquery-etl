@@ -2248,6 +2248,18 @@ fields:
       description: Count the amount of times where video playback is failed to start
         due to the mime type is not supported by Firefox. The result is accumulated
         per mime type, eg. video/hevc.
+    - name: power_energy_per_process_type
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: "How much energy (in \xB5Wh) has been used, broken down by process\
+        \ type. Only available on Apple Silicon.\n"
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE

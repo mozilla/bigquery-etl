@@ -35,6 +35,11 @@ fields:
   mode: NULLABLE
   description: Client's locale on the metric date.
 
+- name: is_mobile
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Indicates if this specific entry is used towards calculating mobile DAU.
+
 - name: adjust_ad_group
   type: STRING
   mode: NULLABLE
@@ -60,7 +65,6 @@ fields:
   mode: NULLABLE
   description: {{ field.description }}
 {% endfor %}
-
 - name: ping_sent_metric_date
   type: INTEGER
   mode: NULLABLE

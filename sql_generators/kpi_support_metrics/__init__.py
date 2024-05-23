@@ -75,7 +75,6 @@ class Product:
 
     friendly_name: str
     is_mobile_kpi: bool = False
-    is_desktop_kpi: bool = False
     active_users_view_only: bool = (
         False  # TODO: for now only fenix and firefox_ios has a client table
     )
@@ -230,8 +229,7 @@ def generate(target_project, output_dir, use_cloud_function):
 
         target_dataset = "telemetry"
 
-        platform = "mobile"
-        union_target_name = f"{target_name}_{platform}"
+        union_target_name = f"mobile_{target_name}"
 
         union_sql_template = env.get_template("union.view.sql")
         union_sql_rendered = union_sql_template.render(

@@ -1,3 +1,4 @@
+fields:
 - name: days_seen_bits
   type: INTEGER
 - name: days_active_bits

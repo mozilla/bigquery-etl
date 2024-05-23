@@ -14,7 +14,8 @@ WITH mobile_clients_last_seen AS (
     app_display_version AS app_version,
     is_dau,
     is_wau,
-    is_mau
+    is_mau,
+    is_mobile
   FROM
     `moz-fx-data-shared-prod.fenix.active_users`
   WHERE
@@ -35,7 +36,8 @@ WITH mobile_clients_last_seen AS (
     app_display_version AS app_version,
     is_dau,
     is_wau,
-    is_mau
+    is_mau,
+    is_mobile
   FROM
     `moz-fx-data-shared-prod.firefox_ios.active_users`
   WHERE
@@ -56,7 +58,8 @@ WITH mobile_clients_last_seen AS (
     app_display_version AS app_version,
     is_dau,
     is_wau,
-    is_mau
+    is_mau,
+    is_mobile
   FROM
     `moz-fx-data-shared-prod.focus_android.active_users`
   WHERE
@@ -77,7 +80,8 @@ WITH mobile_clients_last_seen AS (
     app_display_version AS app_version,
     is_dau,
     is_wau,
-    is_mau
+    is_mau,
+    is_mobile
   FROM
     `moz-fx-data-shared-prod.focus_ios.active_users`
   WHERE
@@ -134,6 +138,7 @@ SELECT
   cls.is_dau,
   cls.is_wau,
   cls.is_mau,
+  cls.is_mobile,
   attr.adjust_network,
   attr.adjust_campaign,
   attr.adjust_ad_group,

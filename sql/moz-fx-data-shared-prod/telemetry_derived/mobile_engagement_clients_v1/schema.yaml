@@ -52,6 +52,10 @@ fields:
   type: BOOLEAN
   description: MAU - Monthly Active User
 - mode: NULLABLE
+  name: is_mobile
+  type: BOOLEAN
+  description: Is Mobile
+- mode: NULLABLE
   name: adjust_network
   type: STRING
   description: Adjust Network

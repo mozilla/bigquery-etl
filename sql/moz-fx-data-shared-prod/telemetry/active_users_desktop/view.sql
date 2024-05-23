@@ -10,7 +10,7 @@ SELECT
   days_active_bits,
   CASE
     WHEN isp_name = 'BrowserStack'
-      THEN CONCAT(app_name, ' ', cls.isp_name)
+      THEN CONCAT(app_name, ' ', isp_name)
     WHEN distribution_id = 'MozillaOnline'
       THEN CONCAT(app_name, ' ', distribution_id)
     ELSE app_name

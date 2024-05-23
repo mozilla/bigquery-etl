@@ -1,0 +1,7 @@
+2024-05-23:
+  start_date: 2021-01-01
+  end_date: 2024-05-21
+  reason: Backfilling new mobile engagement table; related to https://mozilla-hub.atlassian.net/browse/DENG-3288
+  watchers:
+  - kwindau@mozilla.com
+  status: Initiate

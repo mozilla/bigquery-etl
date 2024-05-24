@@ -80,6 +80,10 @@ fields:
   type: STRING
   description: Country
 - mode: NULLABLE
+  name: is_desktop
+  type: BOOLEAN
+  description: Indicates if the client is included in the desktop KPI
+- mode: NULLABLE
   name: is_dau
   type: BOOLEAN
   description: DAU - Daily Active User

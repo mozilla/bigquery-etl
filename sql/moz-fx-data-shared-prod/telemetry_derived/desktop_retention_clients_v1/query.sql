@@ -1,21 +1,21 @@
-WITH clients_last_seen AS (
+WITH active_users AS (
   SELECT
-    cls.submission_date,
-    cls.client_id,
-    cls.sample_id,
-    cls.normalized_channel,
-    mozfun.bits28.retention(cls.days_seen_bits, cls.submission_date) AS retention_seen,
+    au.submission_date,
+    au.client_id,
+    au.sample_id,
+    au.normalized_channel,
+    mozfun.bits28.retention(au.days_seen_bits, au.submission_date) AS retention_seen,
     mozfun.bits28.retention(
-      cls.days_active_bits & cls.days_seen_bits,
-      cls.submission_date
+      au.days_active_bits & au.days_seen_bits,
+      au.submission_date
     ) AS retention_active,
-    cls.days_seen_bits,
-    cls.days_active_bits,
-    cls.is_desktop
+    au.days_seen_bits,
+    au.days_active_bits,
+    au.is_desktop
   FROM
-    `moz-fx-data-shared-prod.telemetry.clients_last_seen_v2` cls
+    `moz-fx-data-shared-prod.telemetry.desktop_active_users` AS au
   WHERE
-    cls.submission_date = @submission_date
+    au.submission_date = @submission_date
 ),
 new_profiles AS (
   SELECT
@@ -42,26 +42,26 @@ new_profiles AS (
     --   NULLIF(SPLIT(cfs.normalized_os_version, ".")[SAFE_OFFSET(0)], "")
     -- ) AS normalized_os_version,
     COALESCE(
-      cls.submission_date,
+      au.submission_date,
       DATE_ADD(cfs.first_seen_date, INTERVAL 27 day)
     ) AS submission_date,
     TRUE AS is_new_profile,
-    cls.retention_active.day_27.active_in_week_3 AS retained_week_4_new_profile,
+    au.retention_active.day_27.active_in_week_3 AS retained_week_4_new_profile,
     BIT_COUNT(
-      mozfun.bits28.from_string('0111111111111111111111111111') & cls.days_active_bits
+      mozfun.bits28.from_string('0111111111111111111111111111') & au.days_active_bits
     ) > 0 AS repeat_profile
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v2` cfs
   LEFT JOIN
-    clients_last_seen cls
-    ON cfs.first_seen_date = cls.retention_active.day_27.metric_date
-    AND cfs.client_id = cls.client_id
+    active_users AS au
+    ON cfs.first_seen_date = au.retention_active.day_27.metric_date
+    AND cfs.client_id = au.client_id
   WHERE
     first_seen_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
 ),
 clients_data AS (
   SELECT
-    cls.submission_date AS submission_date,
+    au.submission_date AS submission_date,
     cd.submission_date AS metric_date,
     cd.first_seen_date,
     cd.client_id,
@@ -80,35 +80,35 @@ clients_data AS (
     cd.startup_profile_selection_reason_first AS startup_profile_selection_reason,
     cd.distribution_id AS distribution_id,
     cd.isp_name AS isp,
-    cls.days_seen_bits,
-    cls.days_active_bits,
+    au.days_seen_bits,
+    au.days_active_bits,
     mozfun.norm.os(cd.os) AS normalized_os,
-    cls.is_desktop,
+    au.is_desktop,
     COALESCE(
       mozfun.norm.windows_version_info(cd.os, cd.os_version, cd.windows_build_number),
       NULLIF(SPLIT(cd.normalized_os_version, ".")[SAFE_OFFSET(0)], "")
     ) AS normalized_os_version,
-    cls.retention_seen.day_27.active_in_week_3 AS retention_active_in_week_3,
+    au.retention_seen.day_27.active_in_week_3 AS retention_active_in_week_3,
   -- ping sent retention
-    cls.retention_seen.day_27.active_on_metric_date AS ping_sent_metric_date,
+    au.retention_seen.day_27.active_on_metric_date AS ping_sent_metric_date,
     (
-      cls.retention_seen.day_27.active_on_metric_date
-      AND cls.retention_seen.day_27.active_in_week_3
+      au.retention_seen.day_27.active_on_metric_date
+      AND au.retention_seen.day_27.active_in_week_3
     ) AS ping_sent_week_4,
   -- activity retention
-    cls.retention_active.day_27.active_on_metric_date AS active_metric_date,
+    au.retention_active.day_27.active_on_metric_date AS active_metric_date,
     (
-      cls.retention_active.day_27.active_on_metric_date
-      AND cls.retention_active.day_27.active_in_week_3
+      au.retention_active.day_27.active_on_metric_date
+      AND au.retention_active.day_27.active_in_week_3
     ) AS retained_week_4,
   FROM
     `moz-fx-data-shared-prod.telemetry.clients_daily` AS cd
   INNER JOIN
-    clients_last_seen AS cls
-    ON cd.submission_date = cls.retention_seen.day_27.metric_date
-    AND cd.client_id = cls.client_id
+    active_users AS au
+    ON cd.submission_date = au.retention_seen.day_27.metric_date
+    AND cd.client_id = au.client_id
   WHERE
-    cls.retention_seen.day_27.active_on_metric_date
+    au.retention_seen.day_27.active_on_metric_date
     AND cd.submission_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
 )
 SELECT

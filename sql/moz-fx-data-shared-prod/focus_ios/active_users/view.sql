@@ -40,7 +40,6 @@ SELECT
     LOWER(IFNULL(isp, "")) <> "browserstack"
     AND LOWER(IFNULL(distribution_id, "")) <> "mozillaonline"
   ) AS is_mobile,
-  FALSE AS is_desktop,
   -- Adding isp at the end because it's in different column index in baseline table for some products.
   -- This is to make sure downstream union works as intended.
   isp,

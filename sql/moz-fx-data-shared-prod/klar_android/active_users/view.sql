@@ -37,7 +37,6 @@ SELECT
   IFNULL(mozfun.bits28.days_since_seen(days_seen_bits) < 7, FALSE) AS is_weekly_user,
   IFNULL(mozfun.bits28.days_since_seen(days_seen_bits) < 28, FALSE) AS is_monthly_user,
   FALSE AS is_mobile,
-  FALSE AS is_desktop,
   -- Adding isp at the end because it's in different column index in baseline table for some products.
   -- This is to make sure downstream union works as intended.
   isp,

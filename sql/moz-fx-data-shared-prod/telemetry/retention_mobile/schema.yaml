@@ -20,6 +20,9 @@ fields:
 - name: locale
   type: STRING
   mode: NULLABLE
+- name: is_mobile
+  type: BOOLEAN
+  mode: NULLABLE
 - name: adjust_ad_group
   type: STRING
   mode: NULLABLE

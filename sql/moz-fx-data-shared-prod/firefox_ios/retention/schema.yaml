@@ -27,6 +27,9 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Client's locale on the metric date.
+- name: is_mobile
+  type: BOOLEAN
+  mode: NULLABLE
 - name: adjust_ad_group
   type: STRING
   mode: NULLABLE

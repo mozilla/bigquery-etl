@@ -5,7 +5,6 @@ SELECT
   submission_date,
   client_id,
   sample_id,
-  app_name,
   days_seen_bits,
   days_active_bits,
   CASE

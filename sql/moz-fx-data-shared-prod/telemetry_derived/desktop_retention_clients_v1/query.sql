@@ -11,6 +11,7 @@ WITH clients_last_seen AS (
     ) AS retention_active,
     cls.days_seen_bits,
     cls.days_active_bits,
+    cls.is_desktop
   FROM
     `moz-fx-data-shared-prod.telemetry.clients_last_seen_v2` cls
   WHERE
@@ -31,6 +32,7 @@ new_profiles AS (
     attribution_ua,
     attribution_experiment,
     distribution_id,
+    LOWER(IFNULL(distribution_id, "")) <> "mozillaonline" AS is_desktop,
     -- cfs.isp_name,
     cfs.normalized_channel,
     startup_profile_selection_reason,
@@ -81,6 +83,7 @@ clients_data AS (
     cls.days_seen_bits,
     cls.days_active_bits,
     mozfun.norm.os(cd.os) AS normalized_os,
+    cls.is_desktop,
     COALESCE(
       mozfun.norm.windows_version_info(cd.os, cd.os_version, cd.windows_build_number),
       NULLIF(SPLIT(cd.normalized_os_version, ".")[SAFE_OFFSET(0)], "")
@@ -108,7 +111,6 @@ clients_data AS (
     cls.retention_seen.day_27.active_on_metric_date
     AND cd.submission_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
 )
-  -- new profile retention
 SELECT
   COALESCE(cd.client_id, np.client_id) AS client_id,
   COALESCE(cd.sample_id, np.sample_id) AS sample_id,
@@ -134,6 +136,7 @@ SELECT
   cd.normalized_os_version,
   COALESCE(cd.distribution_id, np.distribution_id) AS distribution_id,
   cd.isp,
+  COALESCE(cd.is_desktop, np.is_desktop) AS is_desktop,
   cd.ping_sent_metric_date,
   cd.ping_sent_week_4,
   cd.active_metric_date,

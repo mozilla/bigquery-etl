@@ -745,7 +745,7 @@ def backfill(
         if not depends_on_past and parallelism > 0:
             # run backfill for dates in parallel if depends_on_past is false
             failed_backfills = []
-            with futures.ProcessPoolExecutor(max_workers=parallelism) as executor:
+            with futures.ThreadPoolExecutor(max_workers=parallelism) as executor:
                 future_to_date = {
                     executor.submit(backfill_query, backfill_date): backfill_date
                     for backfill_date in date_range

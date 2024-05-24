@@ -3,7 +3,6 @@ WITH active_users AS (
     au.submission_date,
     au.client_id,
     au.sample_id,
-    au.normalized_channel,
     mozfun.bits28.retention(au.days_seen_bits, au.submission_date) AS retention_seen,
     mozfun.bits28.retention(
       au.days_active_bits & au.days_seen_bits,

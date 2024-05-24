@@ -233,6 +233,9 @@ fields:
 - name: app_display_version
   type: STRING
   mode: NULLABLE
+- name: app_name
+  type: STRING
+  mode: NULLABLE
 - name: app_version
   type: STRING
   mode: NULLABLE
@@ -2215,30 +2218,6 @@ fields:
   mode: NULLABLE
 - name: days_active_bits
   type: INTEGER
-  mode: NULLABLE
-- name: app_name
-  type: STRING
-  mode: NULLABLE
-- name: is_dau
-  type: BOOLEAN
-  mode: NULLABLE
-- name: is_wau
-  type: BOOLEAN
-  mode: NULLABLE
-- name: is_mau
-  type: BOOLEAN
-  mode: NULLABLE
-- name: is_daily_user
-  type: BOOLEAN
-  mode: NULLABLE
-- name: is_weekly_user
-  type: BOOLEAN
-  mode: NULLABLE
-- name: is_monthly_user
-  type: BOOLEAN
-  mode: NULLABLE
-- name: is_desktop
-  type: BOOLEAN
   mode: NULLABLE
 - name: _sample_id_string
   type: STRING

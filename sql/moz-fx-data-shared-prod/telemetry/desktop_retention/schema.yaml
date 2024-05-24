@@ -54,31 +54,24 @@ fields:
 - name: ping_sent_metric_date
   type: INTEGER
   mode: NULLABLE
-  description: Count of Pings Sent on Metric Date
 - name: ping_sent_week_4
   type: INTEGER
   mode: NULLABLE
-  description: Count of Pings Sent on Week 4
 - name: active_metric_date
   type: INTEGER
   mode: NULLABLE
-  description: Count of Clients Active on Metric Date
 - name: retained_week_4
   type: INTEGER
   mode: NULLABLE
-  description: Count of Clients Retained on Week 4
 - name: retained_week_4_new_profiles
   type: INTEGER
   mode: NULLABLE
-  description: Count of New Profiles Retained on Week 4
 - name: new_profiles_metric_date
   type: INTEGER
   mode: NULLABLE
-  description: Count of New Profiles on Metric Date
 - name: repeat_profiles
   type: INTEGER
   mode: NULLABLE
-  description: Count of Repeat Profiles
 - name: attribution_experiment
   type: STRING
   mode: NULLABLE

@@ -85,15 +85,12 @@ fields:
 - name: is_dau
   type: BOOLEAN
   mode: NULLABLE
-  description: DAU - Daily Active User
 - name: is_wau
   type: BOOLEAN
   mode: NULLABLE
-  description: WAU - Weekly Active User
 - name: is_mau
   type: BOOLEAN
   mode: NULLABLE
-  description: MAU - Monthly Active User
 - name: lifecycle_stage
   type: STRING
   mode: NULLABLE

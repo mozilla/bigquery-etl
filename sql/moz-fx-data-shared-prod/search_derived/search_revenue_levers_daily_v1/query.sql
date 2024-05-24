@@ -202,8 +202,8 @@ mobile_data_google AS (
     SUM(IF(normalized_engine = 'Google', ad_click, 0)) AS ad_click,
     SUM(IF(normalized_engine = 'Google', organic, 0)) AS organic,
     SUM(IF(normalized_engine = 'Google', ad_click_organic, 0)) AS ad_click_organic,
+    SUM(IF(normalized_engine = 'Google', search_with_ads_organic, 0)) AS search_with_ads_organic,
     -- metrics do not exist for mobile
-    0 AS search_with_ads_organic,
     0 AS monetizable_sap
   FROM
     `moz-fx-data-shared-prod.search.mobile_search_clients_engines_sources_daily`
@@ -270,8 +270,8 @@ mobile_data_bing_ddg AS (
     SUM(IF(normalized_engine = 'Bing', ad_click, 0)) AS bing_ad_click,
     SUM(IF(normalized_engine = 'Bing', organic, 0)) AS bing_organic,
     SUM(IF(normalized_engine = 'Bing', ad_click_organic, 0)) AS bing_ad_click_organic,
+    SUM(IF(normalized_engine = 'Bing', search_with_ads_organic, 0)) AS bing_search_with_ads_organic,
     -- metrics do not exist for mobile
-    0 AS bing_search_with_ads_organic,
     0 AS bing_monetizable_sap,
     SUM(IF(normalized_engine = 'DuckDuckGo', sap, 0)) AS ddg_sap,
     SUM(IF(normalized_engine = 'DuckDuckGo', tagged_sap, 0)) AS ddg_tagged_sap,
@@ -280,8 +280,8 @@ mobile_data_bing_ddg AS (
     SUM(IF(normalized_engine = 'DuckDuckGo', ad_click, 0)) AS ddg_ad_click,
     SUM(IF(normalized_engine = 'DuckDuckGo', organic, 0)) AS ddg_organic,
     SUM(IF(normalized_engine = 'DuckDuckGo', ad_click_organic, 0)) AS ddg_ad_click_organic,
+    SUM(IF(normalized_engine = 'DuckDuckGo', search_with_ads_organic, 0)) AS ddg_search_with_ads_organic,
     -- metrics do not exist for mobile
-    0 AS ddg_search_with_ads_organic,
     0 AS ddg_monetizable_sap
   FROM
     `moz-fx-data-shared-prod.search.mobile_search_clients_engines_sources_daily`

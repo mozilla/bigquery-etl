@@ -41,10 +41,7 @@ new_profiles AS (
     --   mozfun.norm.windows_version_info(cfs.os, cfs.os_version, cfs.windows_build_number),
     --   NULLIF(SPLIT(cfs.normalized_os_version, ".")[SAFE_OFFSET(0)], "")
     -- ) AS normalized_os_version,
-    COALESCE(
-      au.submission_date,
-      DATE_ADD(cfs.first_seen_date, INTERVAL 27 day)
-    ) AS submission_date,
+    COALESCE(au.submission_date, DATE_ADD(cfs.first_seen_date, INTERVAL 27 day)) AS submission_date,
     TRUE AS is_new_profile,
     au.retention_active.day_27.active_in_week_3 AS retained_week_4_new_profile,
     BIT_COUNT(

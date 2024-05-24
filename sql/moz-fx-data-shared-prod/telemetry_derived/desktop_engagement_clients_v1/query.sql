@@ -22,13 +22,17 @@ SELECT
   ) AS normalized_os_version,
   cls.startup_profile_selection_reason_first AS startup_profile_selection_reason,
   cls.country,
-  cls.is_dau,
-  cls.is_wau,
-  cls.is_mau
+  aud.is_dau,
+  aud.is_wau,
+  aud.is_mau
 FROM
   `moz-fx-data-shared-prod.telemetry.clients_last_seen_v2` cls
 LEFT JOIN
   `moz-fx-data-shared-prod.telemetry.clients_first_seen` cfs
   ON cls.client_id = cfs.client_id
+LEFT JOIN
+  `moz-fx-data-shared-prod.telemetry.desktop_active_users` aud
+  ON cls.client_id = aud.client_id
+  AND cls.submission_date = aud.submission_date
 WHERE
   cls.submission_date = @submission_date

@@ -218,6 +218,7 @@ pocket_events AS (
   SELECT
     mozfun.map.get_key(event_details, "newtab_visit_id") AS newtab_visit_id,
     SAFE_CAST(mozfun.map.get_key(event_details, "position") AS INT64) AS pocket_story_position,
+    mozfun.map.get_key(event_details, "tile_id") AS pocket_tile_id,
     COUNTIF(event_name = 'save') AS pocket_saves,
     COUNTIF(event_name = 'click') AS pocket_clicks,
     COUNTIF(event_name = 'impression') AS pocket_impressions,
@@ -251,7 +252,8 @@ pocket_events AS (
     event_category = 'pocket'
   GROUP BY
     newtab_visit_id,
-    pocket_story_position
+    pocket_story_position,
+    pocket_tile_id
 ),
 pocket_summary AS (
   SELECT
@@ -259,6 +261,7 @@ pocket_summary AS (
     ARRAY_AGG(
       STRUCT(
         pocket_story_position,
+        pocket_tile_id,
         pocket_impressions,
         sponsored_pocket_impressions,
         organic_pocket_impressions,

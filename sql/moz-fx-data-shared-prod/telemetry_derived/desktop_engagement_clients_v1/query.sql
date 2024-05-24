@@ -31,7 +31,7 @@ LEFT JOIN
   `moz-fx-data-shared-prod.telemetry.clients_first_seen` cfs
   ON cls.client_id = cfs.client_id
 LEFT JOIN
-  `moz-fx-data-shared-prod.telemetry.active_users_desktop` aud
+  `moz-fx-data-shared-prod.telemetry.desktop_active_users` aud
   ON cls.client_id = aud.client_id
   AND cls.submission_date = aud.submission_date
 WHERE

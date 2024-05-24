@@ -22,6 +22,7 @@ SELECT
   ) AS normalized_os_version,
   cls.startup_profile_selection_reason_first AS startup_profile_selection_reason,
   cls.country,
+  aud.is_desktop,
   aud.is_dau,
   aud.is_wau,
   aud.is_mau

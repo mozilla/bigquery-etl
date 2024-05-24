@@ -32,7 +32,7 @@ SELECT
   is_daily_user,
   is_weekly_user,
   is_monthly_user,
-  is_desktop,
+  FALSE AS is_desktop,
   is_mobile
 FROM
   `moz-fx-data-shared-prod.telemetry.mobile_active_users`

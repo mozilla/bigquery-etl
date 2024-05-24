@@ -1,4 +1,4 @@
--- Query generated via `kpi_support_metrics` SQL generator.
+-- Query generated via `mobile_kpi_support_metrics` SQL generator.
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.fenix.retention`
 AS

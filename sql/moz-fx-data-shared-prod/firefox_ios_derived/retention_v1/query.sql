@@ -1,4 +1,4 @@
--- Query generated via `kpi_support_metrics` SQL generator.
+-- Query generated via `mobile_kpi_support_metrics` SQL generator.
 SELECT
   metric_date,
   first_seen_date,

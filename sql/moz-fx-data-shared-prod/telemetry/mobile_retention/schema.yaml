@@ -11,14 +11,17 @@ fields:
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
+- name: country
+  type: STRING
+  mode: NULLABLE
 - name: app_version
   type: STRING
   mode: NULLABLE
 - name: locale
   type: STRING
   mode: NULLABLE
-- name: country
-  type: STRING
+- name: is_mobile
+  type: BOOLEAN
   mode: NULLABLE
 - name: adjust_ad_group
   type: STRING
@@ -30,6 +33,30 @@ fields:
   type: STRING
   mode: NULLABLE
 - name: adjust_network
+  type: STRING
+  mode: NULLABLE
+- name: ping_sent_metric_date
+  type: INTEGER
+  mode: NULLABLE
+- name: ping_sent_week_4
+  type: INTEGER
+  mode: NULLABLE
+- name: active_metric_date
+  type: INTEGER
+  mode: NULLABLE
+- name: retained_week_4
+  type: INTEGER
+  mode: NULLABLE
+- name: retained_week_4_new_profiles
+  type: INTEGER
+  mode: NULLABLE
+- name: new_profiles_metric_date
+  type: INTEGER
+  mode: NULLABLE
+- name: repeat_profiles
+  type: INTEGER
+  mode: NULLABLE
+- name: lifecycle_stage
   type: STRING
   mode: NULLABLE
 - name: play_store_attribution_campaign
@@ -49,28 +76,4 @@ fields:
   mode: NULLABLE
 - name: is_suspicious_device_client
   type: BOOLEAN
-  mode: NULLABLE
-- name: lifecycle_stage
-  type: STRING
-  mode: NULLABLE
-- name: ping_sent_metric_date
-  type: INTEGER
-  mode: NULLABLE
-- name: ping_sent_week_4
-  type: INTEGER
-  mode: NULLABLE
-- name: active_metric_date
-  type: INTEGER
-  mode: NULLABLE
-- name: retained_week_4
-  type: INTEGER
-  mode: NULLABLE
-- name: new_profiles_metric_date
-  type: INTEGER
-  mode: NULLABLE
-- name: repeat_profiles
-  type: INTEGER
-  mode: NULLABLE
-- name: retained_week_4_new_profiles
-  type: INTEGER
   mode: NULLABLE

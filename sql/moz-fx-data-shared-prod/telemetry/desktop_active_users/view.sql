@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.telemetry.active_users_desktop`
+  `moz-fx-data-shared-prod.telemetry.desktop_active_users`
 AS
 SELECT
   submission_date,

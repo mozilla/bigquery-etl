@@ -17,7 +17,7 @@ SELECT
   is_desktop,
   FALSE AS is_mobile
 FROM
-  `moz-fx-data-shared-prod.telemetry.active_users_desktop`
+  `moz-fx-data-shared-prod.telemetry.desktop_active_users`
 UNION ALL
 SELECT
   submission_date,

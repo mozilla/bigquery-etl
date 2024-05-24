@@ -44,11 +44,6 @@ SELECT
   {% else %}
     FALSE
   {% endif %} AS is_mobile,
-  {% if is_desktop_kpi %}
-    TRUE
-  {% else %}
-    FALSE
-  {% endif %} AS is_desktop,
   -- Adding isp at the end because it's in different column index in baseline table for some products.
   -- This is to make sure downstream union works as intended.
   isp,

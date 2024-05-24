@@ -35,4 +35,4 @@ SELECT
   is_desktop,
   is_mobile
 FROM
-  `moz-fx-data-shared-prod.telemetry.active_users_mobile`
+  `moz-fx-data-shared-prod.telemetry.mobile_active_users`

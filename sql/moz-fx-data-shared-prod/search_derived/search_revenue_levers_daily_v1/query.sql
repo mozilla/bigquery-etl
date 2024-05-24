@@ -90,8 +90,7 @@ desktop_data_ddg AS (
     COUNT(
       DISTINCT IF(
         (
-          default_search_engine LIKE('%ddg%')
-          OR default_search_engine LIKE('%duckduckgo%')
+          (default_search_engine LIKE('%ddg%') OR default_search_engine LIKE('%duckduckgo%'))
           AND NOT default_search_engine LIKE('%addon%')
         ),
         client_id,
@@ -103,8 +102,7 @@ desktop_data_ddg AS (
         (engine) IN ('ddg', 'duckduckgo')
         AND sap > 0
         AND (
-          default_search_engine LIKE('%ddg%')
-          OR default_search_engine LIKE('%duckduckgo%')
+          (default_search_engine LIKE('%ddg%') OR default_search_engine LIKE('%duckduckgo%'))
           AND NOT default_search_engine LIKE('%addon%')
         ),
         client_id,

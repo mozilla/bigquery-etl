@@ -69,13 +69,13 @@ SELECT
     attribution.{{ field.name }},
   {% endfor %}
   CASE
-    WHEN clients_daily.submission_date = first_seen_date
+    WHEN active_users.submission_date = first_seen_date
       THEN 'new_profile'
-    WHEN DATE_DIFF(clients_daily.submission_date, first_seen_date, DAY)
+    WHEN DATE_DIFF(active_users.submission_date, first_seen_date, DAY)
       BETWEEN 1
       AND 27
       THEN 'repeat_user'
-    WHEN DATE_DIFF(clients_daily.submission_date, first_seen_date, DAY) >= 28
+    WHEN DATE_DIFF(active_users.submission_date, first_seen_date, DAY) >= 28
       THEN 'existing_user'
     ELSE 'Unknown'
   END AS lifecycle_stage,
@@ -83,4 +83,4 @@ FROM
   active_users
 LEFT JOIN
   attribution
-  USING (client_id, normalized_channel)
+  USING (client_id, sample_id, normalized_channel)

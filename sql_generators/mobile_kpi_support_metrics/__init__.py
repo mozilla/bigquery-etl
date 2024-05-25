@@ -30,6 +30,15 @@ TEMPLATES = {
     "retention.view.sql": {
         "include_additional_attribution_fields_in_union": True,
     },
+    "engagement_clients.view.sql": {
+        "include_additional_attribution_fields_in_union": True,
+    },
+    "engagement.query.sql": {
+        "include_additional_attribution_fields_in_union": True,
+    },
+    "engagement.view.sql": {
+        "include_additional_attribution_fields_in_union": True,
+    },
 }
 
 ADDITIONAL_ATTRIBUTION_FIELDS_FENIX = [

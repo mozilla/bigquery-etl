@@ -48,26 +48,26 @@ attribution AS (
     {% endif %}
 )
 SELECT
-    submission_date,
-    client_id,
-    sample_id,
-    first_seen_date,
-    normalized_channel,
-    locale,
-    country,
-    isp,
-    app_display_version AS app_version,
-    is_dau,
-    is_wau,
-    is_mau,
-    is_mobile,
-    attribution.adjust_ad_group,
-    attribution.adjust_campaign,
-    attribution.adjust_creative,
-    attribution.adjust_network,
-    {% for field in product_specific_attribution_fields %}
-        attribution.{{ field.name }},
-    {% endfor %}
+  submission_date,
+  client_id,
+  sample_id,
+  first_seen_date,
+  normalized_channel,
+  locale,
+  country,
+  isp,
+  app_display_version AS app_version,
+  is_dau,
+  is_wau,
+  is_mau,
+  is_mobile,
+  attribution.adjust_ad_group,
+  attribution.adjust_campaign,
+  attribution.adjust_creative,
+  attribution.adjust_network,
+  {% for field in product_specific_attribution_fields %}
+    attribution.{{ field.name }},
+  {% endfor %}
   CASE
     WHEN clients_daily.submission_date = first_seen_date
       THEN 'new_profile'
@@ -83,4 +83,4 @@ FROM
   active_users
 LEFT JOIN
   attribution
-  USING(client_id, normalized_channel)
+  USING (client_id, normalized_channel)

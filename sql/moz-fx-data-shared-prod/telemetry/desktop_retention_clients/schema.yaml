@@ -1,28 +1,40 @@
 fields:
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+  description: Client ID
+- name: sample_id
+  type: INTEGER
+  mode: NULLABLE
+  description: Sample ID
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Submission Date
 - name: metric_date
   type: DATE
   mode: NULLABLE
-  description: Metric DAte
-- name: first_seen_date
-  type: DATE
-  mode: NULLABLE
-  description: First Seen Date
-- name: normalized_channel
-  type: STRING
-  mode: NULLABLE
-  description: Normalized Channel
+  description: Metric Date
 - name: country
   type: STRING
   mode: NULLABLE
   description: Country
-- name: app_version
-  type: STRING
-  mode: NULLABLE
-  description: App Version
 - name: locale
   type: STRING
   mode: NULLABLE
   description: Locale
+- name: app_version
+  type: STRING
+  mode: NULLABLE
+  description: App Version
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+  description: Normalized Channel
+- name: first_seen_date
+  type: DATE
+  mode: NULLABLE
+  description: First Seen Date
 - name: attribution_campaign
   type: STRING
   mode: NULLABLE
@@ -43,6 +55,14 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Attribution UA
+- name: attribution_experiment
+  type: STRING
+  mode: NULLABLE
+  description: Attribution Experiment
+- name: startup_profile_selection_reason
+  type: STRING
+  mode: NULLABLE
+  description: Start up Profile Selection Reason
 - name: normalized_os
   type: STRING
   mode: NULLABLE
@@ -51,46 +71,46 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Normalized OS Version
-- name: ping_sent_metric_date
-  type: INTEGER
-  mode: NULLABLE
-  description: Count of Pings Sent on Metric Date
-- name: ping_sent_week_4
-  type: INTEGER
-  mode: NULLABLE
-  description: Count of Pings Sent on Week 4
-- name: active_metric_date
-  type: INTEGER
-  mode: NULLABLE
-  description: Count of Clients Active on Metric Date
-- name: retained_week_4
-  type: INTEGER
-  mode: NULLABLE
-  description: Count of Clients Retained on Week 4
-- name: retained_week_4_new_profiles
-  type: INTEGER
-  mode: NULLABLE
-  description: Count of New Profiles Retained on Week 4
-- name: new_profiles_metric_date
-  type: INTEGER
-  mode: NULLABLE
-  description: Count of New Profiles on Metric Date
-- name: repeat_profiles
-  type: INTEGER
-  mode: NULLABLE
-  description: Count of Repeat Profiles
-- name: attribution_experiment
+- name: distribution_id
   type: STRING
   mode: NULLABLE
-  description: Attribution Experiment
+  description: Distribution ID
+- name: isp
+  type: STRING
+  mode: NULLABLE
+  description: ISP
+- name: ping_sent_metric_date
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Ping Sent on Metric Date
+- name: ping_sent_week_4
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Ping Sent Week 4
+- name: active_metric_date
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Active on Metric Date
+- name: retained_week_4
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Retained Week 4
+- name: new_profile_metric_date
+  type: BOOLEAN
+  mode: NULLABLE
+  description: New Profile on Metric Date
+- name: repeat_profile
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Repeat Profile
+- name: retained_week_4_new_profile
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Retained Week 4 New Profile
 - name: attribution_variation
   type: STRING
   mode: NULLABLE
   description: Attribution Variation
-- name: startup_profile_selection_reason
-  type: STRING
-  mode: NULLABLE
-  description: Startup Profile Selection Reason
 - name: is_desktop
   type: BOOLEAN
   mode: NULLABLE

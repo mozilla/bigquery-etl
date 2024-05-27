@@ -74,12 +74,19 @@ fields:
 - name: dau
   type: INTEGER
   mode: NULLABLE
+  description: DAU - Daily Active User
 - name: wau
   type: INTEGER
   mode: NULLABLE
+  description: WAU - Weekly Active User
 - name: mau
   type: INTEGER
   mode: NULLABLE
+  description: MAU - Monthly Active User
+- name: is_desktop
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Indicates if the client is included in the desktop KPI
 - name: lifecycle_stage
   type: STRING
   mode: NULLABLE

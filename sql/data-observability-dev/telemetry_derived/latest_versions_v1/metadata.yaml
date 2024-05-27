@@ -1,0 +1,10 @@
+friendly_name: Latest Versions
+description: |-
+  [Missing]
+owners:
+- ascholtz@mozilla.com
+labels:
+  application: firefox
+  incremental: false
+  schedule: daily
+# scheduling done via telemetry-airflow

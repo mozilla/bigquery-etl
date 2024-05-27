@@ -45,7 +45,7 @@ tags = ["impact/tier_2", "repo/bigquery-etl"]
 with DAG(
     "bqetl_glam_export",
     default_args=default_args,
-    schedule_interval="0 19 * * *",
+    schedule_interval="0 22 * * *",
     doc_md=docs,
     tags=tags,
 ) as dag:

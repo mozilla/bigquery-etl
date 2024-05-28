@@ -23,6 +23,7 @@ UDF_FILE = "udf.sql"
 PROCEDURE_FILE = "stored_procedure.sql"
 ROUTINE_FILES = (UDF_FILE, PROCEDURE_FILE)
 TEMP_UDF_RE = re.compile(f"(?:udf|assert)_{UDF_CHAR}+")
+TEMP_UDF_PREFIX_RE_STR = r"CREATE\s+TEMP(?:ORARY)?\s+FUNCTION\s+"
 PERSISTENT_UDF_PREFIX_RE_STR = (
     r"CREATE\s+(?:OR\s+REPLACE\s+)?(?:FUNCTION|PROCEDURE)(?:\s+IF\s+NOT\s+EXISTS)?"
 )
@@ -361,3 +362,30 @@ def prepend_routine_usage_definitions(text, project, raw_routines=None):
     """Prepend definitions of UDFs used to provided SQL text."""
     statements = routine_usage_definitions(text, project, raw_routines)
     return "\n\n".join(statements + [text])
+
+
+def get_local_routines_from_text(text: str) -> List[str]:
+    """Return list of tuples of temp UDF names and definitions in the given text."""
+    temp_udf_re = re.compile(TEMP_UDF_PREFIX_RE_STR, flags=re.IGNORECASE)
+    return [
+        stmt
+        for stmt in sqlparse.split(text)
+        if re.match(temp_udf_re, sqlparse.format(stmt, strip_comments=True))
+    ]
+
+
+def get_local_routine_name(routine_def: str) -> str:
+    """Return name of the given temp UDF or raise ValueError if unable to find."""
+    udf_name_re = re.compile(
+        pattern=rf"\s*{TEMP_UDF_PREFIX_RE_STR}(?P<name>[a-z0-9_]+)\s*\(",
+        flags=re.IGNORECASE,
+    )
+    try:
+        match = udf_name_re.search(sqlparse.format(routine_def, strip_comments=True))
+        if match is None:
+            raise IndexError
+        return match["name"]
+    except IndexError:
+        raise ValueError(
+            "Could not find UDF name from definition, possibly invalid definition."
+        )

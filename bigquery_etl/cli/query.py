@@ -60,6 +60,7 @@ from ..metadata.parse_metadata import (
 )
 from ..query_scheduling.dag_collection import DagCollection
 from ..query_scheduling.generate_airflow_dags import get_dags
+from ..routine.parse_routine import get_local_routine_name, get_local_routines_from_text
 from ..schema import SCHEMA_FILE, Schema
 from ..util import extract_from_query_path
 from ..util.bigquery_id import sql_table_id
@@ -984,6 +985,13 @@ def _run_query(
                 default_dataset=dataset_id or default_dataset,
             )
             query_arguments.append(f"--session_id={session_id}")
+
+            query_text = extract_and_run_temp_udfs(
+                query_text=query_text,
+                project_id=billing_project,
+                session_id=session_id,
+            )
+
         # if billing_project is set, default dataset is set with the @@dataset_id variable instead
         elif dataset_id is not None:
             # dataset ID was parsed by argparse but needs to be passed as parameter
@@ -1041,6 +1049,37 @@ def create_query_session(
         raise RuntimeError(f"Failed to get session id with job id {job.job_id}")
 
     return job.session_info.session_id
+
+
+def extract_and_run_temp_udfs(query_text: str, project_id: str, session_id: str) -> str:
+    """Create temp udfs in the session and return the query without udf definitions.
+
+    Does not support dry run because the query will fail dry run if udfs aren't defined.
+    """
+    udfs = get_local_routines_from_text(query_text)
+
+    if len(udfs) == 0:
+        return query_text
+
+    updated_query = query_text
+
+    for udf in udfs:
+        udf_name = get_local_routine_name(udf)
+        updated_query = updated_query.replace(
+            udf, f"-- temp udf created in session: {udf_name}"
+        )
+
+    udf_def_statement = "\n".join([udf for udf in udfs])
+
+    client = bigquery.Client(project=project_id)
+
+    job_config = bigquery.QueryJobConfig(
+        use_legacy_sql=False,
+        connection_properties=[bigquery.ConnectionProperty("session_id", session_id)],
+    )
+    client.query_and_wait(udf_def_statement, job_config=job_config)
+
+    return updated_query
 
 
 @query.command(

@@ -1,10 +1,11 @@
 import os
+from textwrap import dedent
 from unittest.mock import Mock, patch
 
 import yaml
 from click.testing import CliRunner
 
-from bigquery_etl.cli.query import run
+from bigquery_etl.cli.query import extract_and_run_temp_udfs, run
 
 
 class TestRunQuery:
@@ -189,4 +190,103 @@ class TestRunQuery:
                 "--project_id=project-2",
                 "--session_id=1234567890",
             ],
+        )
+
+    @patch("subprocess.check_call")
+    @patch("google.cloud.bigquery.Client")
+    def test_run_query_billing_project_temp_udf(
+        self, mock_client, mock_subprocess_call, tmp_path
+    ):
+        query_file_path = (
+            tmp_path / "sql" / "moz-fx-data-shared-prod" / "dataset_1" / "query_v1"
+        )
+        os.makedirs(query_file_path)
+        query_file = query_file_path / "query.sql"
+
+        temp_udf_sql = "CREATE TEMP FUNCTION fn(param INT) AS (1);"
+        query_file.write_text(f"{temp_udf_sql} SELECT 1")
+
+        runner = CliRunner()
+
+        # bigquery.client().query().session_info.session_id = ...
+        mock_query_call = Mock()
+        mock_query_call.return_value.session_info.session_id = "1234567890"
+        mock_client.return_value.query = mock_query_call
+
+        mock_query_and_wait_call = Mock()
+        session_id = "1234567890"
+        mock_client.return_value.query_and_wait = mock_query_and_wait_call
+
+        mock_subprocess_call.return_value = 1
+        result = runner.invoke(
+            run,
+            [
+                str(query_file),
+                "--billing-project=project-2",
+                "--project-id=moz-fx-data-shared-prod",
+            ],
+        )
+        assert result.exit_code == 0
+
+        assert mock_query_call.call_count == 1
+
+        # udf define query
+        assert mock_query_and_wait_call.call_count == 1
+        query_text = mock_query_and_wait_call.call_args[0][0]
+        query_job_config = mock_query_and_wait_call.call_args[1]["job_config"]
+        assert query_text == temp_udf_sql
+        assert query_job_config.connection_properties[0].value == session_id
+
+    @patch("google.cloud.bigquery.Client")
+    def test_extract_and_run_temp_udfs(self, mock_client):
+        mock_client.return_value = mock_client
+
+        sql = dedent(
+            """
+            -- basic
+            CREATE TEMP FUNCTION f1() AS (
+              1
+            );
+
+            -- js
+            CREATE TEMP FUNCTION f2()
+            RETURNS STRING LANGUAGE js
+            AS "return 'abc'";
+
+            SELECT a, b, c FROM abc
+            """
+        )
+
+        updated_query = extract_and_run_temp_udfs(
+            sql, project_id="project-1", session_id="123"
+        )
+
+        expected_query = dedent(
+            """
+            -- temp udf created in session: f1
+
+            -- temp udf created in session: f2
+
+            SELECT a, b, c FROM abc
+            """
+        )
+        assert updated_query == expected_query
+
+        mock_client.assert_called_once_with(project="project-1")
+
+        assert mock_client.query_and_wait.call_count == 1
+        assert (
+            mock_client.query_and_wait.call_args[0][0]
+            == dedent(
+                """
+                -- basic
+                CREATE TEMP FUNCTION f1() AS (
+                  1
+                );
+                -- js
+                CREATE TEMP FUNCTION f2()
+                RETURNS STRING LANGUAGE js
+                AS "return 'abc'";
+                """
+            ).strip()
         )

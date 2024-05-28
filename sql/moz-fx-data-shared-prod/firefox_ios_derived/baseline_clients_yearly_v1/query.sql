@@ -33,7 +33,34 @@
       {% for usage_type, criterion in usage_types %}
         udf.bool_to_365_bits({{ criterion }}) AS `days_{{ usage_type }}_bytes`,
       {% endfor %}
-      * EXCEPT (submission_date),
+      -- List cols explicitly here: the schema is static (schema.yaml),
+      -- and new columns added upstream will need to be manually added
+      normalized_app_id,
+      client_id,
+      sample_id,
+      first_run_date,
+      durations,
+      days_seen_session_start_bits,
+      days_seen_session_end_bits,
+      normalized_channel,
+      normalized_os,
+      normalized_os_version,
+      android_sdk_version,
+      locale,
+      city,
+      country,
+      app_build,
+      app_channel,
+      app_display_version,
+      architecture,
+      device_manufacturer,
+      device_model,
+      telemetry_sdk_build,
+      first_seen_date,
+      is_new_profile,
+      isp,
+      distribution_id,
+      geo_subdivision,
     FROM
       `moz-fx-data-shared-prod`.firefox_ios.baseline_clients_daily
     WHERE

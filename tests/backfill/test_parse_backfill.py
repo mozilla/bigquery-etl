@@ -12,6 +12,7 @@ from bigquery_etl.backfill.parse import (
 )
 
 DEFAULT_STATUS = BackfillStatus.INITIATE
+DEFAULT_BILLING_PROJECT = "moz-fx-data-backfill-slots"
 
 TEST_DIR = Path(__file__).parent.parent
 
@@ -35,6 +36,17 @@ TEST_BACKFILL_2 = Backfill(
     DEFAULT_STATUS,
 )
 
+TEST_BACKFILL_3 = Backfill(
+    date(2021, 5, 3),
+    date(2021, 1, 3),
+    date(2021, 5, 3),
+    [date(2021, 2, 3)],
+    DEFAULT_REASON,
+    [DEFAULT_WATCHER],
+    DEFAULT_STATUS,
+    DEFAULT_BILLING_PROJECT,
+)
+
 
 class TestParseBackfill(object):
     def test_backfill_instantiation(self):
@@ -47,6 +59,35 @@ class TestParseBackfill(object):
         assert backfill.reason == DEFAULT_REASON
         assert backfill.watchers == [DEFAULT_WATCHER]
         assert backfill.status == DEFAULT_STATUS
+        assert backfill.billing_project is None
+
+    def test_backfill_instantiation_with_billing_project(self):
+        backfill = TEST_BACKFILL_3
+
+        assert backfill.entry_date == date(2021, 5, 3)
+        assert backfill.start_date == date(2021, 1, 3)
+        assert backfill.end_date == date(2021, 5, 3)
+        assert backfill.excluded_dates == [date(2021, 2, 3)]
+        assert backfill.reason == DEFAULT_REASON
+        assert backfill.watchers == [DEFAULT_WATCHER]
+        assert backfill.status == DEFAULT_STATUS
+        assert backfill.billing_project == DEFAULT_BILLING_PROJECT
+
+    def test_invalid_billing_project(self):
+        with pytest.raises(ValueError) as e:
+            invalid_billing_project = "mozdata"
+            Backfill(
+                TEST_BACKFILL_1.entry_date,
+                TEST_BACKFILL_1.start_date,
+                TEST_BACKFILL_1.end_date,
+                TEST_BACKFILL_1.excluded_dates,
+                TEST_BACKFILL_1.reason,
+                TEST_BACKFILL_1.watchers,
+                TEST_BACKFILL_1.status,
+                invalid_billing_project,
+            )
+
+        assert "Invalid billing project" in str(e.value)
 
     def test_invalid_watcher(self):
         with pytest.raises(ValueError) as e:

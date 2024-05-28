@@ -32,8 +32,8 @@ IF
       event_extra.key AS event_extra_key,
       normalized_country_code AS country,
       '{{ app_name }}' AS normalized_app_name,
-      client_info.app_channel AS channel,
-      client_info.app_display_version AS version,
+      channel,
+      version,
       -- Access experiment information.
       -- Additional iteration is necessary to aggregate total event count across experiments
       -- which is denoted with "*".
@@ -58,8 +58,20 @@ IF
         ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch 
       END AS experiment_branch,
       COUNT(*) AS total_events
-    FROM
+    FROM (
+      {% for events_table in events_tables -%}
+      SELECT
+        submission_timestamp,
+        events,
+        normalized_country_code,
+        client_info.app_channel AS channel,
+        client_info.app_display_version AS version,
+        ping_info
+      FROM
       `{{ project_id }}.{{ dataset }}_live.{{ events_table }}`
+      {{ "UNION ALL" if not loop.last }}
+      {% endfor -%}
+    )
     CROSS JOIN
       UNNEST(events) AS event,
       -- Iterator for accessing experiments.
@@ -93,12 +105,12 @@ IF
         ) MINUTE
       ) AS window_end,
       NULL AS event_category,
-      metrics.string.event_name,
+      event_name,
       NULL AS event_extra_key,
       normalized_country_code AS country,
       '{{ app_name }}' AS normalized_app_name,
-      client_info.app_channel AS channel,
-      client_info.app_display_version AS VERSION,
+      channel,
+      version,
       -- Access experiment information.
       -- Additional iteration is necessary to aggregate total event count across experiments
       -- which is denoted with "*".
@@ -123,8 +135,21 @@ IF
         ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch 
       END AS experiment_branch,
       COUNT(*) AS total_events
-    FROM
+    FROM (
+      {% for events_table in events_tables -%}
+      SELECT
+        submission_timestamp,
+        events,
+        metrics.string.event_name,
+        normalized_country_code,
+        client_info.app_channel AS channel,
+        client_info.app_display_version AS version,
+        ping_info
+      FROM
       `{{ project_id }}.{{ dataset }}_live.{{ events_table }}`
+      {{ "UNION ALL" if not loop.last }}
+      {% endfor -%}
+    )
     CROSS JOIN
       -- Iterator for accessing experiments.
       -- Add one more for aggregating events across all experiments

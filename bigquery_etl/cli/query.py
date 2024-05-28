@@ -21,6 +21,7 @@ from traceback import print_exc
 from typing import Optional
 
 import rich_click as click
+import sqlparse
 import yaml
 from google.cloud import bigquery
 from google.cloud.exceptions import NotFound
@@ -60,7 +61,6 @@ from ..metadata.parse_metadata import (
 )
 from ..query_scheduling.dag_collection import DagCollection
 from ..query_scheduling.generate_airflow_dags import get_dags
-from ..routine.parse_routine import get_local_routine_name, get_local_routines_from_text
 from ..schema import SCHEMA_FILE, Schema
 from ..util import extract_from_query_path
 from ..util.bigquery_id import sql_table_id
@@ -986,11 +986,13 @@ def _run_query(
             )
             query_arguments.append(f"--session_id={session_id}")
 
-            query_text = extract_and_run_temp_udfs(
-                query_text=query_text,
-                project_id=billing_project,
-                session_id=session_id,
-            )
+            # temp udfs cannot be used in a session when destination table is set
+            if destination_table is not None and query_file.name != "script.sql":
+                query_text = extract_and_run_temp_udfs(
+                    query_text=query_text,
+                    project_id=billing_project,
+                    session_id=session_id,
+                )
 
         # if billing_project is set, default dataset is set with the @@dataset_id variable instead
         elif dataset_id is not None:
@@ -1056,30 +1058,22 @@ def extract_and_run_temp_udfs(query_text: str, project_id: str, session_id: str)
 
     Does not support dry run because the query will fail dry run if udfs aren't defined.
     """
-    udfs = get_local_routines_from_text(query_text)
+    sql_statements = sqlparse.split(query_text)
 
-    if len(udfs) == 0:
+    if len(sql_statements) == 1:
         return query_text
 
-    updated_query = query_text
-
-    for udf in udfs:
-        udf_name = get_local_routine_name(udf)
-        updated_query = updated_query.replace(
-            udf, f"-- temp udf created in session: {udf_name}\n"
-        )
-
-    udf_def_statement = "\n".join([udf for udf in udfs])
-
     client = bigquery.Client(project=project_id)
-
     job_config = bigquery.QueryJobConfig(
         use_legacy_sql=False,
         connection_properties=[bigquery.ConnectionProperty("session_id", session_id)],
     )
+
+    # assume query files only have temp udfs as additional statements
+    udf_def_statement = "\n".join(sql_statements[:-1])
     client.query_and_wait(udf_def_statement, job_config=job_config)
 
-    return updated_query
+    return sql_statements[-1]
 
 
 @query.command(

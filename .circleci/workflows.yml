@@ -1053,7 +1053,7 @@ jobs:
               then
                 echo "Found changes to package version dir, proceeding with deployment."
               else
-                echo "No changes in package version. Skipping metric-config-parser deployment."
+                echo "No changes in package version. Skipping bigquery-etl deployment."
                 circleci-agent step halt
             fi
       - run:

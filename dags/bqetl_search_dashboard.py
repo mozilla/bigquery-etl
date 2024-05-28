@@ -83,10 +83,72 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_active_users_aggregates_device_v1 = ExternalTaskSensor(
-        task_id="wait_for_active_users_aggregates_device_v1",
+    wait_for_checks__fail_fenix_derived__active_users_aggregates__v3 = (
+        ExternalTaskSensor(
+            task_id="wait_for_checks__fail_fenix_derived__active_users_aggregates__v3",
+            external_dag_id="bqetl_analytics_aggregations",
+            external_task_id="checks__fail_fenix_derived__active_users_aggregates__v3",
+            execution_delta=datetime.timedelta(seconds=900),
+            check_existence=True,
+            mode="reschedule",
+            allowed_states=ALLOWED_STATES,
+            failed_states=FAILED_STATES,
+            pool="DATA_ENG_EXTERNALTASKSENSOR",
+        )
+    )
+
+    wait_for_checks__fail_firefox_ios_derived__active_users_aggregates__v3 = ExternalTaskSensor(
+        task_id="wait_for_checks__fail_firefox_ios_derived__active_users_aggregates__v3",
         external_dag_id="bqetl_analytics_aggregations",
-        external_task_id="active_users_aggregates_device_v1",
+        external_task_id="checks__fail_firefox_ios_derived__active_users_aggregates__v3",
+        execution_delta=datetime.timedelta(seconds=900),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_checks__fail_focus_android_derived__active_users_aggregates__v3 = ExternalTaskSensor(
+        task_id="wait_for_checks__fail_focus_android_derived__active_users_aggregates__v3",
+        external_dag_id="bqetl_analytics_aggregations",
+        external_task_id="checks__fail_focus_android_derived__active_users_aggregates__v3",
+        execution_delta=datetime.timedelta(seconds=900),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_checks__fail_focus_ios_derived__active_users_aggregates__v3 = ExternalTaskSensor(
+        task_id="wait_for_checks__fail_focus_ios_derived__active_users_aggregates__v3",
+        external_dag_id="bqetl_analytics_aggregations",
+        external_task_id="checks__fail_focus_ios_derived__active_users_aggregates__v3",
+        execution_delta=datetime.timedelta(seconds=900),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_checks__fail_klar_ios_derived__active_users_aggregates__v3 = ExternalTaskSensor(
+        task_id="wait_for_checks__fail_klar_ios_derived__active_users_aggregates__v3",
+        external_dag_id="bqetl_analytics_aggregations",
+        external_task_id="checks__fail_klar_ios_derived__active_users_aggregates__v3",
+        execution_delta=datetime.timedelta(seconds=900),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_firefox_desktop_active_users_aggregates = ExternalTaskSensor(
+        task_id="wait_for_firefox_desktop_active_users_aggregates",
+        external_dag_id="bqetl_analytics_aggregations",
+        external_task_id="firefox_desktop_active_users_aggregates",
         execution_delta=datetime.timedelta(seconds=900),
         check_existence=True,
         mode="reschedule",
@@ -184,7 +246,27 @@ with DAG(
     )
 
     search_derived__search_revenue_levers_daily__v1.set_upstream(
-        wait_for_active_users_aggregates_device_v1
+        wait_for_checks__fail_fenix_derived__active_users_aggregates__v3
+    )
+
+    search_derived__search_revenue_levers_daily__v1.set_upstream(
+        wait_for_checks__fail_firefox_ios_derived__active_users_aggregates__v3
+    )
+
+    search_derived__search_revenue_levers_daily__v1.set_upstream(
+        wait_for_checks__fail_focus_android_derived__active_users_aggregates__v3
+    )
+
+    search_derived__search_revenue_levers_daily__v1.set_upstream(
+        wait_for_checks__fail_focus_ios_derived__active_users_aggregates__v3
+    )
+
+    search_derived__search_revenue_levers_daily__v1.set_upstream(
+        wait_for_checks__fail_klar_ios_derived__active_users_aggregates__v3
+    )
+
+    search_derived__search_revenue_levers_daily__v1.set_upstream(
+        wait_for_firefox_desktop_active_users_aggregates
     )
 
     search_derived__search_revenue_levers_daily__v1.set_upstream(

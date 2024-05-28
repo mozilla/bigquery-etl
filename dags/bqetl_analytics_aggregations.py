@@ -318,20 +318,6 @@ with DAG(
         depends_on_past=False,
     )
 
-    with TaskGroup(
-        "active_users_aggregates_device_v1_external",
-    ) as active_users_aggregates_device_v1_external:
-        ExternalTaskMarker(
-            task_id="bqetl_search_dashboard__wait_for_active_users_aggregates_device_v1",
-            external_dag_id="bqetl_search_dashboard",
-            external_task_id="wait_for_active_users_aggregates_device_v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=85500)).isoformat() }}",
-        )
-
-        active_users_aggregates_device_v1_external.set_upstream(
-            active_users_aggregates_device_v1
-        )
-
     active_users_aggregates_v1 = bigquery_etl_query(
         task_id="active_users_aggregates_v1",
         destination_table="active_users_aggregates_v1",
@@ -364,6 +350,20 @@ with DAG(
         retries=0,
     )
 
+    with TaskGroup(
+        "checks__fail_fenix_derived__active_users_aggregates__v3_external",
+    ) as checks__fail_fenix_derived__active_users_aggregates__v3_external:
+        ExternalTaskMarker(
+            task_id="bqetl_search_dashboard__wait_for_checks__fail_fenix_derived__active_users_aggregates__v3",
+            external_dag_id="bqetl_search_dashboard",
+            external_task_id="wait_for_checks__fail_fenix_derived__active_users_aggregates__v3",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=85500)).isoformat() }}",
+        )
+
+        checks__fail_fenix_derived__active_users_aggregates__v3_external.set_upstream(
+            checks__fail_fenix_derived__active_users_aggregates__v3
+        )
+
     checks__fail_firefox_ios_derived__active_users_aggregates__v3 = bigquery_dq_check(
         task_id="checks__fail_firefox_ios_derived__active_users_aggregates__v3",
         source_table="active_users_aggregates_v3",
@@ -380,6 +380,20 @@ with DAG(
         parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
     )
+
+    with TaskGroup(
+        "checks__fail_firefox_ios_derived__active_users_aggregates__v3_external",
+    ) as checks__fail_firefox_ios_derived__active_users_aggregates__v3_external:
+        ExternalTaskMarker(
+            task_id="bqetl_search_dashboard__wait_for_checks__fail_firefox_ios_derived__active_users_aggregates__v3",
+            external_dag_id="bqetl_search_dashboard",
+            external_task_id="wait_for_checks__fail_firefox_ios_derived__active_users_aggregates__v3",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=85500)).isoformat() }}",
+        )
+
+        checks__fail_firefox_ios_derived__active_users_aggregates__v3_external.set_upstream(
+            checks__fail_firefox_ios_derived__active_users_aggregates__v3
+        )
 
     checks__fail_focus_android_derived__active_users_aggregates__v3 = bigquery_dq_check(
         task_id="checks__fail_focus_android_derived__active_users_aggregates__v3",
@@ -398,6 +412,20 @@ with DAG(
         retries=0,
     )
 
+    with TaskGroup(
+        "checks__fail_focus_android_derived__active_users_aggregates__v3_external",
+    ) as checks__fail_focus_android_derived__active_users_aggregates__v3_external:
+        ExternalTaskMarker(
+            task_id="bqetl_search_dashboard__wait_for_checks__fail_focus_android_derived__active_users_aggregates__v3",
+            external_dag_id="bqetl_search_dashboard",
+            external_task_id="wait_for_checks__fail_focus_android_derived__active_users_aggregates__v3",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=85500)).isoformat() }}",
+        )
+
+        checks__fail_focus_android_derived__active_users_aggregates__v3_external.set_upstream(
+            checks__fail_focus_android_derived__active_users_aggregates__v3
+        )
+
     checks__fail_focus_ios_derived__active_users_aggregates__v3 = bigquery_dq_check(
         task_id="checks__fail_focus_ios_derived__active_users_aggregates__v3",
         source_table="active_users_aggregates_v3",
@@ -415,6 +443,20 @@ with DAG(
         retries=0,
     )
 
+    with TaskGroup(
+        "checks__fail_focus_ios_derived__active_users_aggregates__v3_external",
+    ) as checks__fail_focus_ios_derived__active_users_aggregates__v3_external:
+        ExternalTaskMarker(
+            task_id="bqetl_search_dashboard__wait_for_checks__fail_focus_ios_derived__active_users_aggregates__v3",
+            external_dag_id="bqetl_search_dashboard",
+            external_task_id="wait_for_checks__fail_focus_ios_derived__active_users_aggregates__v3",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=85500)).isoformat() }}",
+        )
+
+        checks__fail_focus_ios_derived__active_users_aggregates__v3_external.set_upstream(
+            checks__fail_focus_ios_derived__active_users_aggregates__v3
+        )
+
     checks__fail_klar_ios_derived__active_users_aggregates__v3 = bigquery_dq_check(
         task_id="checks__fail_klar_ios_derived__active_users_aggregates__v3",
         source_table="active_users_aggregates_v3",
@@ -431,6 +473,20 @@ with DAG(
         parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
     )
+
+    with TaskGroup(
+        "checks__fail_klar_ios_derived__active_users_aggregates__v3_external",
+    ) as checks__fail_klar_ios_derived__active_users_aggregates__v3_external:
+        ExternalTaskMarker(
+            task_id="bqetl_search_dashboard__wait_for_checks__fail_klar_ios_derived__active_users_aggregates__v3",
+            external_dag_id="bqetl_search_dashboard",
+            external_task_id="wait_for_checks__fail_klar_ios_derived__active_users_aggregates__v3",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=85500)).isoformat() }}",
+        )
+
+        checks__fail_klar_ios_derived__active_users_aggregates__v3_external.set_upstream(
+            checks__fail_klar_ios_derived__active_users_aggregates__v3
+        )
 
     checks__warn_fenix_derived__active_users_aggregates__v3 = bigquery_dq_check(
         task_id="checks__warn_fenix_derived__active_users_aggregates__v3",
@@ -565,6 +621,20 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
+
+    with TaskGroup(
+        "firefox_desktop_active_users_aggregates_external",
+    ) as firefox_desktop_active_users_aggregates_external:
+        ExternalTaskMarker(
+            task_id="bqetl_search_dashboard__wait_for_firefox_desktop_active_users_aggregates",
+            external_dag_id="bqetl_search_dashboard",
+            external_task_id="wait_for_firefox_desktop_active_users_aggregates",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=85500)).isoformat() }}",
+        )
+
+        firefox_desktop_active_users_aggregates_external.set_upstream(
+            firefox_desktop_active_users_aggregates
+        )
 
     firefox_ios_active_users_aggregates = bigquery_etl_query(
         task_id="firefox_ios_active_users_aggregates",

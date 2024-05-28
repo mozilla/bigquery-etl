@@ -1047,6 +1047,16 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Check for package version change in last commit before proceeding.
+          command: |
+            if git diff main HEAD~1 pyproject.toml | grep 'version'
+              then
+                echo "Found changes to package version dir, proceeding with deployment."
+              else
+                echo "No changes in package version. Skipping bigquery-etl deployment."
+                circleci-agent step halt
+            fi
+      - run:
           name: Install deployment tools
           command: |
             pip install --upgrade setuptools wheel twine
@@ -1211,8 +1221,6 @@ workflows:
     jobs:
       - deploy-to-pypi:
           filters:
-            tags:
-              only: /[0-9]{4}.[0-9]{1,2}.[0-9]+/  # Calver: YYYY.M.MINOR
             branches:
-              # Ignore all branches; this workflow should only run for tags.
-              ignore: /.*/
+              only:
+                - main

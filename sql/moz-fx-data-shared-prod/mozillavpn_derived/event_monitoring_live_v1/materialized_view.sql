@@ -60,7 +60,7 @@ IF
         client_info.app_display_version AS version,
         ping_info
       FROM
-        `moz-fx-data-shared-prod.mozillavpn_live.vpnsession_v1`
+        `moz-fx-data-shared-prod.mozillavpn_live.daemonsession_v1`
       UNION ALL
       SELECT
         submission_timestamp,
@@ -70,7 +70,7 @@ IF
         client_info.app_display_version AS version,
         ping_info
       FROM
-        `moz-fx-data-shared-prod.mozillavpn_live.daemonsession_v1`
+        `moz-fx-data-shared-prod.mozillavpn_live.vpnsession_v1`
     )
   CROSS JOIN
     UNNEST(events) AS event,

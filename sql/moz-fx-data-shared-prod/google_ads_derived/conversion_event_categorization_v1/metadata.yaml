@@ -17,5 +17,6 @@ bigquery:
   range_partitioning: null
   clustering:
     fields:
+    - client_id
     - country
 references: {}

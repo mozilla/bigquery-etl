@@ -23,7 +23,6 @@ UDF_FILE = "udf.sql"
 PROCEDURE_FILE = "stored_procedure.sql"
 ROUTINE_FILES = (UDF_FILE, PROCEDURE_FILE)
 TEMP_UDF_RE = re.compile(f"(?:udf|assert)_{UDF_CHAR}+")
-TEMP_UDF_PREFIX_RE_STR = r"CREATE\s+TEMP(?:ORARY)?\s+FUNCTION\s+"
 PERSISTENT_UDF_PREFIX_RE_STR = (
     r"CREATE\s+(?:OR\s+REPLACE\s+)?(?:FUNCTION|PROCEDURE)(?:\s+IF\s+NOT\s+EXISTS)?"
 )

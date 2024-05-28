@@ -591,29 +591,30 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: 'How many regular HTTPS-First (`dom.security.https_first` enabled)
-        upgrades get downgraded again.
+        upgrades fail and get downgraded again.
 
         '
     - name: httpsfirst_downgraded_schemeless
       type: INTEGER
       mode: NULLABLE
       description: 'How many schemeless HTTPS-First (`dom.security.https_first` disabled,
-        but load marked as schemeless) upgrades get downgraded again.
+        but load marked as schemeless) upgrades fail and get downgraded again.
 
         '
     - name: httpsfirst_upgraded
       type: INTEGER
       mode: NULLABLE
-      description: 'Counts how often a load is marked to be upgraded to HTTPS because
-        of HTTPS-First (`dom.security.https_first` enabled).
+      description: 'Counts how often a load is successfully upgraded to HTTPS because
+        of HTTPS-First (`dom.security.https_first` enabled). This does not include
+        loads that get downgraded again.
 
         '
     - name: httpsfirst_upgraded_schemeless
       type: INTEGER
       mode: NULLABLE
-      description: 'Counts how often a load is marked to be upgraded to HTTPS because
+      description: 'Counts how often a load is successfully upgraded to HTTPS because
         of schemeless HTTPS-First (`dom.security.https_first` disabled, but load marked
-        as schemeless).
+        as schemeless). This does not include loads that get downgraded again.
 
         '
     - name: hls_canplay_requested
@@ -9020,8 +9021,7 @@ fields:
           mode: NULLABLE
       description: 'If a HTTPS-First (`dom.security.https_first` enabled) upgrade
         isn''t successful, measures the timespan between the navigation start and
-        the downgrade. This does not include the case in which the https request times
-        out and the http request sent after 3s gets a response faster.
+        the downgrade.
 
         '
     - name: httpsfirst_downgrade_time_schemeless
@@ -9066,9 +9066,7 @@ fields:
           mode: NULLABLE
       description: 'If a schemeless HTTPS-First (`dom.security.https_first` disabled,
         but load marked as schemeless) upgrade isn''t successful, measures the timespan
-        between the navigation start and the downgrade. This does not include the
-        case in which the https request times out and the http request sent after
-        3s gets a response faster.
+        between the navigation start and the downgrade.
 
         '
     - name: networking_http_content_cssloader_ondatafinished_to_onstop_delay

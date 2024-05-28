@@ -323,6 +323,57 @@ fields:
         mode at startup.
 
         '
+    - name: installation_first_seen_admin_user
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether the installer is running from an elevated admin user
+
+        '
+    - name: installation_first_seen_default_path
+      type: BOOLEAN
+      mode: NULLABLE
+      description: '(optional, present if installer_type is "full") Whether the default
+        path was used
+
+        '
+    - name: installation_first_seen_from_msi
+      type: BOOLEAN
+      mode: NULLABLE
+      description: '(optional, present if installer_type is "full") Whether this was
+        an MSI install
+
+        '
+    - name: installation_first_seen_install_existed
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether there was already an install in this location
+
+        '
+    - name: installation_first_seen_other_inst
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether there was already any non-MSIX install on this system
+
+        '
+    - name: installation_first_seen_other_msix_inst
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether there was already any MSIX install on this system
+
+        '
+    - name: installation_first_seen_profdir_existed
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether the top-level profile directory existed
+
+        '
+    - name: installation_first_seen_silent
+      type: BOOLEAN
+      mode: NULLABLE
+      description: '(optional, present if installer_type is "full") Whether this was
+        a silent install
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -664,29 +715,30 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: 'How many regular HTTPS-First (`dom.security.https_first` enabled)
-        upgrades get downgraded again.
+        upgrades fail and get downgraded again.
 
         '
     - name: httpsfirst_downgraded_schemeless
       type: INTEGER
       mode: NULLABLE
       description: 'How many schemeless HTTPS-First (`dom.security.https_first` disabled,
-        but load marked as schemeless) upgrades get downgraded again.
+        but load marked as schemeless) upgrades fail and get downgraded again.
 
         '
     - name: httpsfirst_upgraded
       type: INTEGER
       mode: NULLABLE
-      description: 'Counts how often a load is marked to be upgraded to HTTPS because
-        of HTTPS-First (`dom.security.https_first` enabled).
+      description: 'Counts how often a load is successfully upgraded to HTTPS because
+        of HTTPS-First (`dom.security.https_first` enabled). This does not include
+        loads that get downgraded again.
 
         '
     - name: httpsfirst_upgraded_schemeless
       type: INTEGER
       mode: NULLABLE
-      description: 'Counts how often a load is marked to be upgraded to HTTPS because
+      description: 'Counts how often a load is successfully upgraded to HTTPS because
         of schemeless HTTPS-First (`dom.security.https_first` disabled, but load marked
-        as schemeless).
+        as schemeless). This does not include loads that get downgraded again.
 
         '
     - name: hls_canplay_requested
@@ -4261,6 +4313,28 @@ fields:
       mode: NULLABLE
       description: 'The version of the Gecko engine, example: 74.0a1 (Migrated from
         the geckoview metric of the same name).
+
+        '
+    - name: installation_first_seen_failure_reason
+      type: STRING
+      mode: NULLABLE
+      description: 'Only sent if unable to collect firstSeen data. Can have value
+        "NotFoundError" if file not found or other values depending on the failure
+        reason.
+
+        '
+    - name: installation_first_seen_installer_type
+      type: STRING
+      mode: NULLABLE
+      description: 'The type of installer used to install Firefox. The value is one
+        of "stub", "full", or "msix"
+
+        '
+    - name: installation_first_seen_version
+      type: STRING
+      mode: NULLABLE
+      description: 'The application version installed by the installer (not necessarily
+        the current version)
 
         '
   - name: timespan
@@ -9176,8 +9250,7 @@ fields:
           mode: NULLABLE
       description: 'If a HTTPS-First (`dom.security.https_first` enabled) upgrade
         isn''t successful, measures the timespan between the navigation start and
-        the downgrade. This does not include the case in which the https request times
-        out and the http request sent after 3s gets a response faster.
+        the downgrade.
 
         '
     - name: httpsfirst_downgrade_time_schemeless
@@ -9222,9 +9295,7 @@ fields:
           mode: NULLABLE
       description: 'If a schemeless HTTPS-First (`dom.security.https_first` disabled,
         but load marked as schemeless) upgrade isn''t successful, measures the timespan
-        between the navigation start and the downgrade. This does not include the
-        case in which the https request times out and the http request sent after
-        3s gets a response faster.
+        between the navigation start and the downgrade.
 
         '
     - name: networking_http_content_cssloader_ondatafinished_to_onstop_delay

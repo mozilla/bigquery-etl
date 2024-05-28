@@ -429,6 +429,13 @@ fields:
         "content": what specifically was clicked to bring the user to the site
 
         '
+  - name: string_list
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: navigator_user_languages
+      type: STRING
+      mode: REPEATED
   - name: url
     type: RECORD
     mode: NULLABLE

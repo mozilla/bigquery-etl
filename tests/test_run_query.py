@@ -265,7 +265,9 @@ class TestRunQuery:
             """
             -- temp udf created in session: f1
 
+
             -- temp udf created in session: f2
+
 
             SELECT a, b, c FROM abc
             """

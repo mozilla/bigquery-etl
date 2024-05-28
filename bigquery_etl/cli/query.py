@@ -1066,7 +1066,7 @@ def extract_and_run_temp_udfs(query_text: str, project_id: str, session_id: str)
     for udf in udfs:
         udf_name = get_local_routine_name(udf)
         updated_query = updated_query.replace(
-            udf, f"-- temp udf created in session: {udf_name}"
+            udf, f"-- temp udf created in session: {udf_name}\n"
         )
 
     udf_def_statement = "\n".join([udf for udf in udfs])

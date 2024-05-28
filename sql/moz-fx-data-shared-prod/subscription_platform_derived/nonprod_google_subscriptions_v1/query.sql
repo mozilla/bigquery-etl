@@ -152,5 +152,4 @@ FROM
   google_iap_periods AS periods
 LEFT JOIN
   google_iap_trial_periods AS trial_periods
-USING
-  (document_id, start_time)
+  USING (document_id, start_time)

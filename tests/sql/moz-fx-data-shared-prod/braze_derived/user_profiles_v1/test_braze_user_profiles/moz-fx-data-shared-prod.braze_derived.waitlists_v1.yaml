@@ -1,0 +1,15 @@
+# braze waitlists
+---
+# user 1
+- external_id: user_1
+  waitlists:
+    - waitlist_name: waitlist_1
+      subscribed: true
+# user 2
+# user 3
+- external_id: user_3_only_waitlist
+  waitlists:
+    - waitlist_name: waitlist_1
+      subscribed: true
+# user 4
+# user 5 not in user list - should not show up

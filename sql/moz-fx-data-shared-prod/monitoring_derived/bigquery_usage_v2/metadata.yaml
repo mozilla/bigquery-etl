@@ -8,14 +8,6 @@ labels:
   schedule: daily
 scheduling:
   dag_name: bqetl_monitoring
-  referenced_tables:
-  - - 'moz-fx-data-shared-prod'
-    - 'monitoring_derived'
-    - 'job_by_organization_v1'
-  depends_on:
-  - task_id: monitoring_derived__jobs_by_organization__v1
-    dag_name: bqetl_monitoring
-  arguments: ["--date", "{{ ds }}"]
 bigquery:
   time_partitioning:
     type: day

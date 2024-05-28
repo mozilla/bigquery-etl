@@ -106,8 +106,7 @@ per_client AS (
     per_clients_without_addons
   INNER JOIN
     per_clients_just_addons
-  USING
-    (submission_date, client_id, sample_id)
+    USING (submission_date, client_id, sample_id)
 )
 SELECT
   * EXCEPT (addons),

@@ -1,4 +1,5 @@
 """GLEAN Usage."""
+
 from functools import cache, partial
 from pathlib import Path
 
@@ -10,13 +11,16 @@ from bigquery_etl.cli.utils import (
     table_matches_patterns,
     use_cloud_function_option,
 )
+from bigquery_etl.config import ConfigLoader
 from sql_generators.glean_usage import (
     baseline_clients_daily,
     baseline_clients_first_seen,
     baseline_clients_last_seen,
     clients_last_seen_joined,
     event_error_monitoring,
+    event_flow_monitoring,
     event_monitoring_live,
+    events_stream,
     events_unnested,
     glean_app_ping_views,
     metrics_clients_daily,
@@ -36,13 +40,9 @@ GLEAN_TABLES = [
     clients_last_seen_joined.ClientsLastSeenJoined(),
     event_monitoring_live.EventMonitoringLive(),
     event_error_monitoring.EventErrorMonitoring(),
+    event_flow_monitoring.EventFlowMonitoring(),
+    events_stream.EventsStreamTable(),
 ]
-
-# * mlhackweek_search was an experiment that we don't want to generate tables
-# for
-# * regrets_reporter currently refers to two applications, skip the glean
-# one to avoid confusion: https://github.com/mozilla/bigquery-etl/issues/2499
-SKIP_APPS = ["mlhackweek_search", "regrets_reporter", "regrets_reporter_ucs"]
 
 
 @click.command()
@@ -113,7 +113,12 @@ def generate(
             baseline_table
             for baseline_table in baseline_tables
             if baseline_table.split(".")[1]
-            not in [f"{skipped_app}_stable" for skipped_app in SKIP_APPS]
+            not in [
+                f"{skipped_app}_stable"
+                for skipped_app in ConfigLoader.get(
+                    "generate", "glean_usage", "skip_apps", fallback=[]
+                )
+            ]
         ]
 
     output_dir = Path(output_dir) / target_project
@@ -123,7 +128,12 @@ def generate(
     if app_name:
         app_info = {name: info for name, info in app_info.items() if name == app_name}
 
-    app_info = [info for name, info in app_info.items() if name not in SKIP_APPS]
+    app_info = [
+        info
+        for name, info in app_info.items()
+        if name
+        not in ConfigLoader.get("generate", "glean_usage", "skip_apps", fallback=[])
+    ]
 
     # Prepare parameters so that generation of all Glean datasets can be done in parallel
 
@@ -137,6 +147,7 @@ def generate(
                 output_dir=output_dir,
                 use_cloud_function=use_cloud_function,
                 app_info=app_info,
+                parallelism=parallelism,
             ),
             baseline_table,
         )
@@ -153,6 +164,7 @@ def generate(
                 target_project,
                 output_dir=output_dir,
                 use_cloud_function=use_cloud_function,
+                parallelism=parallelism,
             ),
             info,
         )
@@ -168,6 +180,7 @@ def generate(
                 target_project,
                 output_dir=output_dir,
                 use_cloud_function=use_cloud_function,
+                parallelism=parallelism,
             ),
             app_info,
         )

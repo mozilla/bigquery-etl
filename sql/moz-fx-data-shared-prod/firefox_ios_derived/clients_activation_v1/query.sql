@@ -58,9 +58,7 @@ FROM
   new_clients
 LEFT JOIN
   new_clients_activity
-USING
-  (client_id, first_seen_date, sample_id, channel)
+  USING (client_id, first_seen_date, sample_id, channel)
 LEFT JOIN
   clients_search
-USING
-  (client_id, sample_id, channel)
+  USING (client_id, sample_id, channel)

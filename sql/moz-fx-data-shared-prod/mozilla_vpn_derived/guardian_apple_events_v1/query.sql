@@ -18,8 +18,7 @@ WITH legacy_subscriptions AS (
     `moz-fx-data-shared-prod`.mozilla_vpn_external.subscriptions_20230117 AS subscriptions
   JOIN
     `moz-fx-data-shared-prod`.mozilla_vpn_external.users_v1 AS users
-  ON
-    (subscriptions.user_id = users.id)
+    ON (subscriptions.user_id = users.id)
   WHERE
     -- Subscriptions migrated to fxa no longer have subscriptions.provider = "APPLE"
     subscriptions.provider_receipt_json IS NOT NULL

@@ -80,8 +80,7 @@ merino_sanitized AS (
     merino_logs
   LEFT JOIN
     allowed_queries
-  USING
-    (query)
+    USING (query)
 )
 SELECT
   * EXCEPT (request_id, sanitized_query, telemetry_query),
@@ -90,5 +89,4 @@ FROM
   impressions
 LEFT JOIN
   merino_sanitized
-USING
-  (request_id)
+  USING (request_id)

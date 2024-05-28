@@ -9,51 +9,39 @@ FROM
   `moz-fx-data-marketing-prod.apple_app_store_exported.active_devices_by_opt_in_source`
 FULL JOIN
   `moz-fx-data-marketing-prod.apple_app_store_exported.active_devices_last_30_days_by_opt_in_source`
-USING
-  (date, app_name, source)
+  USING (date, app_name, source)
 FULL JOIN
   `moz-fx-data-marketing-prod.apple_app_store_exported.app_units_by_source`
-USING
-  (date, app_name, source)
+  USING (date, app_name, source)
 FULL JOIN
   `moz-fx-data-marketing-prod.apple_app_store_exported.deletions_by_opt_in_source`
-USING
-  (date, app_name, source)
+  USING (date, app_name, source)
 FULL JOIN
   `moz-fx-data-marketing-prod.apple_app_store_exported.iap_by_source`
-USING
-  (date, app_name, source)
+  USING (date, app_name, source)
 FULL JOIN
   `moz-fx-data-marketing-prod.apple_app_store_exported.impressions_by_source`
-USING
-  (date, app_name, source)
+  USING (date, app_name, source)
 FULL JOIN
   `moz-fx-data-marketing-prod.apple_app_store_exported.impressions_unique_device_by_source`
-USING
-  (date, app_name, source)
+  USING (date, app_name, source)
 FULL JOIN
   `moz-fx-data-marketing-prod.apple_app_store_exported.installations_by_opt_in_source`
-USING
-  (date, app_name, source)
+  USING (date, app_name, source)
 FULL JOIN
   `moz-fx-data-marketing-prod.apple_app_store_exported.paying_users_by_source`
-USING
-  (date, app_name, source)
+  USING (date, app_name, source)
 FULL JOIN
   `moz-fx-data-marketing-prod.apple_app_store_exported.product_page_views_by_source`
-USING
-  (date, app_name, source)
+  USING (date, app_name, source)
 FULL JOIN
   `moz-fx-data-marketing-prod.apple_app_store_exported.product_page_views_unique_device_by_source`
-USING
-  (date, app_name, source)
+  USING (date, app_name, source)
 FULL JOIN
   `moz-fx-data-marketing-prod.apple_app_store_exported.sales_by_source`
-USING
-  (date, app_name, source)
+  USING (date, app_name, source)
 FULL JOIN
   `moz-fx-data-marketing-prod.apple_app_store_exported.sessions_by_opt_in_source`
-USING
-  (date, app_name, source)
+  USING (date, app_name, source)
 WHERE
   date = @submission_date

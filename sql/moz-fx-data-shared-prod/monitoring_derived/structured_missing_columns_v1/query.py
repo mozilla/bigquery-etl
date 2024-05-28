@@ -8,13 +8,13 @@ from collections import defaultdict
 
 from google.cloud import bigquery
 
-NAMESPACE_QUERY = """
+NAMESPACE_QUERY = r"""
 SELECT
   schema_name
 FROM
   `moz-fx-data-shared-prod`.INFORMATION_SCHEMA.SCHEMATA
 WHERE
-  schema_name LIKE "%_stable"
+  schema_name LIKE r"%\_stable"
   AND schema_name NOT LIKE "%telemetry%"
 ORDER BY
   schema_name
@@ -107,7 +107,7 @@ def structured_missing_columns(
                 ),
             )
             job.result()
-            mb_processed[namespace] = round(job.total_bytes_processed / 1024 ** 2, 1)
+            mb_processed[namespace] = round(job.total_bytes_processed / 1024**2, 1)
         except Exception as e:
             if not skip_exceptions:
                 raise

@@ -18,7 +18,7 @@ WITH filtered_data AS (
     os = 'Windows'
     AND channel = 'release' AS sampled
   FROM
-    clients_histogram_aggregates_v2
+    `moz-fx-data-shared-prod.telemetry_derived.clients_histogram_aggregates_v2`
   CROSS JOIN
     UNNEST(histogram_aggregates)
   WHERE
@@ -55,8 +55,7 @@ data_with_enough_wau AS (
     filtered_data table
   INNER JOIN
     build_ids
-  USING
-    (app_build_id, channel)
+    USING (app_build_id, channel)
 ),
 normalized_histograms AS (
   SELECT

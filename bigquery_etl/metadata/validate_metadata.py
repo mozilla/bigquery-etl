@@ -98,12 +98,23 @@ def validate_change_control(
     return True
 
 
+def validate_deprecation(metadata, path):
+    """Check that deprecated is True when deletion date exists."""
+    if metadata.deletion_date and not metadata.deprecated:
+        click.echo(
+            f"Deletion date should only be added when table is deprecated in {path}"
+        )
+        return False
+
+    return True
+
+
 def validate(target):
     """Validate metadata files."""
     failed = False
 
     if os.path.isdir(target):
-        for root, dirs, files in os.walk(target):
+        for root, dirs, files in os.walk(target, followlinks=True):
             for file in files:
                 if Metadata.is_metadata_file(file):
                     path = os.path.join(root, file)
@@ -117,6 +128,9 @@ def validate(target):
                         metadata=metadata,
                         codeowners_file=CODEOWNERS_FILE,
                     ):
+                        failed = True
+
+                    if not validate_deprecation(metadata, path):
                         failed = True
 
                     # todo more validation
@@ -134,7 +148,7 @@ def validate_datasets(target):
     failed = False
 
     if os.path.isdir(target):
-        for root, dirs, files in os.walk(target):
+        for root, dirs, files in os.walk(target, followlinks=True):
             for file in files:
                 if DatasetMetadata.is_dataset_metadata_file(file):
                     path = os.path.join(root, file)

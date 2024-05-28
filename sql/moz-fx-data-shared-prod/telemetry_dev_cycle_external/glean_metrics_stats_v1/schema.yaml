@@ -29,3 +29,8 @@ fields:
   type: STRING
   mode: NULLABLE
   description: When this metric will expire. Can be "never" or a date or a version number.
+
+- name: in_source
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Shows if the metric is still found in the source code. If not, the metric is no longer active.

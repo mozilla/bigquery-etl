@@ -59,6 +59,13 @@ WITH services AS (
             STRUCT('8c3e3e6de4ee9731' AS id, 'mozilla-hubs' AS name),
             STRUCT('34bc0d0a6add7329' AS id, 'mozilla-hubs-dev' AS name)
           ] AS subplat_oauth_clients
+        ),
+        STRUCT(
+          'Monitor' AS id,
+          'Mozilla Monitor Plus' AS name,
+          ARRAY<STRUCT<name STRING, subplat_capabilities ARRAY<STRING>>>[] AS tiers,
+          ['monitor'] AS subplat_capabilities,
+          [STRUCT('802d56ef2a9af9fa' AS id, 'fx-monitor' AS name)] AS subplat_oauth_clients
         )
       ]
     )
@@ -92,8 +99,7 @@ service_stripe_product_ids AS (
     UNNEST(
       SPLIT(JSON_VALUE(stripe_products.metadata['capabilities:' || subplat_oauth_client.id]), ',')
     ) AS capability
-  ON
-    TRIM(capability) IN UNNEST(services.subplat_capabilities)
+    ON TRIM(capability) IN UNNEST(services.subplat_capabilities)
   GROUP BY
     service_id
 ),
@@ -110,8 +116,7 @@ service_stripe_plan_capabilities AS (
     stripe_plans
   LEFT JOIN
     stripe_products
-  ON
-    stripe_plans.product_id = stripe_products.id
+    ON stripe_plans.product_id = stripe_products.id
   JOIN
     UNNEST(
       SPLIT(
@@ -122,8 +127,7 @@ service_stripe_plan_capabilities AS (
         ','
       )
     ) AS capability
-  ON
-    TRIM(capability) IN UNNEST(services.subplat_capabilities)
+    ON TRIM(capability) IN UNNEST(services.subplat_capabilities)
 ),
 service_stripe_plan_ids AS (
   SELECT
@@ -144,13 +148,11 @@ service_stripe_plan_tier_names AS (
     service_stripe_plan_capabilities
   JOIN
     services
-  ON
-    service_stripe_plan_capabilities.service_id = services.id
+    ON service_stripe_plan_capabilities.service_id = services.id
   JOIN
     UNNEST(services.tiers) AS tier
     WITH OFFSET AS tier_order
-  ON
-    service_stripe_plan_capabilities.capability IN UNNEST(tier.subplat_capabilities)
+    ON service_stripe_plan_capabilities.capability IN UNNEST(tier.subplat_capabilities)
   GROUP BY
     service_id,
     stripe_plan_id
@@ -181,8 +183,7 @@ service_tiers AS (
     WITH OFFSET AS tier_order
   LEFT JOIN
     service_tier_stripe_plan_ids
-  ON
-    services.id = service_tier_stripe_plan_ids.service_id
+    ON services.id = service_tier_stripe_plan_ids.service_id
     AND tier.name = service_tier_stripe_plan_ids.tier_name
   GROUP BY
     service_id
@@ -195,13 +196,10 @@ FROM
   services
 LEFT JOIN
   service_tiers
-ON
-  services.id = service_tiers.service_id
+  ON services.id = service_tiers.service_id
 LEFT JOIN
   service_stripe_product_ids
-ON
-  services.id = service_stripe_product_ids.service_id
+  ON services.id = service_stripe_product_ids.service_id
 LEFT JOIN
   service_stripe_plan_ids
-ON
-  services.id = service_stripe_plan_ids.service_id
+  ON services.id = service_stripe_plan_ids.service_id

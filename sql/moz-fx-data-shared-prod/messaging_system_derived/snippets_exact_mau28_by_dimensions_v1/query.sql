@@ -12,8 +12,7 @@ FROM
   messaging_system.snippets_users_last_seen AS suls
 LEFT JOIN
   static.country_codes_v1 AS cc
-ON
-  (suls.country = cc.code)
+  ON (suls.country = cc.code)
 WHERE
   client_id IS NOT NULL
   -- Reprocess all dates by running this query with --parameter=submission_date:DATE:NULL

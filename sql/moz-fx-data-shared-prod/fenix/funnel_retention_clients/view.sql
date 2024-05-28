@@ -26,5 +26,4 @@ FROM
   `moz-fx-data-shared-prod.fenix_derived.funnel_retention_clients_week_2_v1` AS retention_week_2
 FULL OUTER JOIN
   `moz-fx-data-shared-prod.fenix_derived.funnel_retention_clients_week_4_v1` AS retention_week_4
-USING
-  (first_seen_date, client_id, sample_id)
+  USING (first_seen_date, client_id, sample_id)

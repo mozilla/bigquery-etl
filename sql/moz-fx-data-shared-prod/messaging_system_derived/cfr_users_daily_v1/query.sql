@@ -6,7 +6,7 @@ WITH windowed AS (
     ROW_NUMBER() OVER w1_unframed AS _n,
     --
     -- Boolean fields that define more specific usage criteria
-    (COUNTIF(bucket_id LIKE '%WHATS_NEW%') OVER w1 > 0) AS seen_whats_new,
+    (COUNTIF(bucket_id LIKE r'%WHATS\_NEW%') OVER w1 > 0) AS seen_whats_new,
     --
     -- For all dimensions, we use the mode of observed values in the day.
     udf.mode_last(ARRAY_AGG(release_channel) OVER w1) AS release_channel,

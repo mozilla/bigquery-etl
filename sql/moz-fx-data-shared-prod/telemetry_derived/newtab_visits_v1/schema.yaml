@@ -24,6 +24,9 @@ fields:
   name: channel
   type: STRING
 - mode: NULLABLE
+  name: locale
+  type: STRING
+- mode: NULLABLE
   name: browser_version
   type: STRING
 - mode: NULLABLE
@@ -46,6 +49,9 @@ fields:
   type: BOOLEAN
 - mode: NULLABLE
   name: topsites_enabled
+  type: BOOLEAN
+- mode: NULLABLE
+  name: topsites_sponsored_enabled
   type: BOOLEAN
 - mode: NULLABLE
   name: newtab_homepage_category
@@ -97,6 +103,9 @@ fields:
   type: STRING
 - mode: NULLABLE
   name: had_non_impression_engagement
+  type: BOOLEAN
+- mode: NULLABLE
+  name: had_non_search_engagement
   type: BOOLEAN
 - fields:
   - mode: NULLABLE
@@ -162,6 +171,15 @@ fields:
     type: INTEGER
   - mode: NULLABLE
     name: organic_topsite_tile_impressions
+    type: INTEGER
+  - mode: NULLABLE
+    name: topsite_tile_dismissals
+    type: INTEGER
+  - mode: NULLABLE
+    name: sponsored_topsite_tile_dismissals
+    type: INTEGER
+  - mode: NULLABLE
+    name: organic_topsite_tile_dismissals
     type: INTEGER
   mode: REPEATED
   name: topsite_tile_interactions

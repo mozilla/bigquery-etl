@@ -1,4 +1,5 @@
-{% set options = ["a", "b", "c"] %}{# sample comment #}
+{% set options = ["a", "b", "c"] %}
+{# sample comment #}
 SELECT
   {% for option in options %}
     {% if option == "a" %}
@@ -7,5 +8,5 @@ SELECT
       "{{ option }}" AS {{ option }},
     {% endif %}
   {% endfor %}
-  test,{# another comment #}
+  test, {# another comment #}
   foo

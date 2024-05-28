@@ -11,9 +11,10 @@ labels:
   application: fxa
   incremental: true
   schedule: daily
-scheduling:
-  dag_name: bqetl_fxa_events
-  referenced_tables: []
+# Query descheduled as a direct result of AWS migration to GCP
+# on 27th September 2023 the last AWS instances were spun down.
+# scheduling:
+#   dag_name: bqetl_fxa_events
 bigquery:
   time_partitioning:
     type: day

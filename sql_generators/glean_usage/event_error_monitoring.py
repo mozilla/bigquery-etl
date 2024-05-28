@@ -4,6 +4,7 @@ import os
 from collections import namedtuple
 from pathlib import Path
 
+from bigquery_etl.config import ConfigLoader
 from bigquery_etl.schema.stable_table_schema import get_stable_table_schemas
 from sql_generators.glean_usage.common import (
     GleanTable,
@@ -22,7 +23,6 @@ class EventErrorMonitoring(GleanTable):
     """Represents the generated aggregated table for event error monitoring."""
 
     def __init__(self) -> None:
-        self.no_init = False
         self.per_app_id_enabled = False
         self.per_app_enabled = False
         self.across_apps_enabled = True
@@ -32,7 +32,7 @@ class EventErrorMonitoring(GleanTable):
         self.base_table_name = "events_v1"
 
     def generate_across_apps(
-        self, project_id, apps, output_dir=None, use_cloud_function=True
+        self, project_id, apps, output_dir=None, use_cloud_function=True, parallelism=8
     ):
         """Generate a query across all apps."""
         if not self.across_apps_enabled:
@@ -45,11 +45,24 @@ class EventErrorMonitoring(GleanTable):
             and s.bq_table == "events_v1"
         ]
 
+        default_events_table = ConfigLoader.get(
+            "generate",
+            "glean_usage",
+            "events_monitoring",
+            "default_event_table",
+            fallback="events_v1",
+        )
+        events_table_overwrites = ConfigLoader.get(
+            "generate", "glean_usage", "events_monitoring", "event_table", fallback={}
+        )
+
         render_kwargs = dict(
             project_id=project_id,
             target_table=f"{TARGET_DATASET_CROSS_APP}_derived.{AGGREGATE_TABLE_NAME}",
             apps=apps,
             prod_datasets=prod_datasets_with_event,
+            default_events_table=default_events_table,
+            events_table_overwrites=events_table_overwrites,
         )
         render_kwargs.update(self.custom_render_kwargs)
 

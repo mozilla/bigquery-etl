@@ -33,8 +33,7 @@ clients_first_seen_28_days_ago_with_days_seen AS (
     clients_first_seen_28_days_ago
   LEFT JOIN
     telemetry.clients_last_seen cls
-  ON
-    clients_first_seen_28_days_ago.client_id = cls.client_id
+    ON clients_first_seen_28_days_ago.client_id = cls.client_id
     AND cls.submission_date = @submission_date
 )
 SELECT

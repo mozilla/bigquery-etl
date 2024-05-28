@@ -7,7 +7,7 @@ import sys
 import tempfile
 from pathlib import Path
 
-import click
+import rich_click as click
 
 from bigquery_etl.config import ConfigLoader
 from bigquery_etl.dryrun import DryRun
@@ -101,7 +101,7 @@ def validate(project_dirs, log_level):
         if os.path.isdir(project_dir):
             parsed_routines = read_routine_dir(project_dir)
 
-            for root, dirs, files in os.walk(project_dir):
+            for root, dirs, files in os.walk(project_dir, followlinks=True):
                 if os.path.basename(root) == EXAMPLE_DIR:
                     sql_files = (f for f in files if os.path.splitext(f)[1] == ".sql")
                     for file in sql_files:

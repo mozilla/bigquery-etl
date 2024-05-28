@@ -8,7 +8,7 @@ SET datasets = (
   FROM
     `moz-fx-data-shared-prod.INFORMATION_SCHEMA.SCHEMATA`
   WHERE
-    schema_name LIKE '%_stable%'
+    schema_name LIKE r'%\_stable%'
 );
 
 CREATE TEMP TABLE

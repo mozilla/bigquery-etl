@@ -1,4 +1,5 @@
 """Variables for templated SQL."""
+
 from .utils import compute_datacube_groupings, get_custom_distribution_metadata
 
 
@@ -129,6 +130,7 @@ def probe_counts(**kwargs):
 
     return dict(
         attributes=",".join(attributes),
+        attributes_no_os=",".join([attr for attr in attributes if attr != "os"]),
         aggregate_attributes="""
             metric,
             metric_type,

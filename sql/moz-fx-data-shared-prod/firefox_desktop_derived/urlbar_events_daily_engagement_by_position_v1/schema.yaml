@@ -1,0 +1,25 @@
+---
+fields:
+  - name: submission_date
+    type: DATE
+    mode: NULLABLE
+  - name: normalized_country_code
+    type: STRING
+    mode: NULLABLE
+  - name: normalized_channel
+    type: STRING
+    mode: NULLABLE
+  - name: firefox_suggest_enabled
+    type: BOOLEAN
+    mode: NULLABLE
+  - name: sponsored_suggestions_enabled
+    type: BOOLEAN
+    mode: NULLABLE
+  - name: selected_position
+    type: INTEGER
+    mode: NULLABLE
+    description: The ordinal position of the selection for this result.
+  - name: num_clicks
+    type: INTEGER
+    mode: NULLABLE
+    description: The number of clicks made on this result.

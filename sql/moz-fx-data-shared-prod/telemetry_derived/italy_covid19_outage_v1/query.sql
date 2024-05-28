@@ -108,8 +108,7 @@ final_health_data AS (
     health_data_aggregates AS h
   INNER JOIN
     DAUs
-  ON
-    DAUs.date = h.date
+    ON DAUs.date = h.date
 ),
 -- Compute aggregates for histograms coming from the health ping.
 histogram_data_sample AS (
@@ -255,23 +254,18 @@ FROM
   final_health_data AS hd
 FULL OUTER JOIN
   DAUs
-ON
-  DAUs.date = hd.date
+  ON DAUs.date = hd.date
 FULL OUTER JOIN
   dns_success_time AS ds
-ON
-  DAUs.date = ds.date
+  ON DAUs.date = ds.date
 FULL OUTER JOIN
   dns_failure_time AS df
-ON
-  DAUs.date = df.date
+  ON DAUs.date = df.date
 FULL OUTER JOIN
   dns_failure_counts AS dfc
-ON
-  DAUs.date = dfc.date
+  ON DAUs.date = dfc.date
 FULL OUTER JOIN
   tls_handshake_time AS tls
-ON
-  DAUs.date = tls.date
+  ON DAUs.date = tls.date
 ORDER BY
   1

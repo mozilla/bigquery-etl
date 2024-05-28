@@ -186,9 +186,7 @@ FROM
   aggregated
 FULL JOIN
   extracted_core t1
-USING
-  (client_id, submission_date)
+  USING (client_id, submission_date)
 FULL JOIN
   meta t2
-USING
-  (client_id, submission_date)
+  USING (client_id, submission_date)

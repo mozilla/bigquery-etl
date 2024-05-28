@@ -9,7 +9,7 @@ from pathlib import Path
 
 import attr
 import sqlparse
-from google.api_core.exceptions import BadRequest, NotFound
+from google.api_core.exceptions import BadRequest, Forbidden, NotFound
 from google.cloud import bigquery
 
 from bigquery_etl.config import ConfigLoader
@@ -150,7 +150,7 @@ class View:
             )
         }
 
-    def is_valid(self):
+    def is_valid(self) -> bool:
         """Validate the SQL view definition."""
         if any(str(self.path).endswith(p) for p in self.skip_validation()):
             print(f"Skipped validation for {self.path}")
@@ -174,6 +174,30 @@ class View:
             self.content, Path(self.path).parent.parent.parent
         )
 
+    @cached_property
+    def view_schema(self):
+        """Derive view schema from a schema file or a dry run result."""
+        schema_file = Path(self.path).parent / "schema.yaml"
+        # check schema based on schema file
+        if schema_file.is_file():
+            return Schema.from_schema_file(schema_file)
+        else:  # check schema based on dry run results
+            try:
+                client = bigquery.Client()
+
+                query_job = client.query(
+                    query=self.content,
+                    job_config=bigquery.QueryJobConfig(
+                        dry_run=True, use_legacy_sql=False
+                    ),
+                )
+                return Schema.from_bigquery_schema(query_job.schema)
+            except Forbidden:
+                print(
+                    f"Missing permission to dry run view {self.view_identifier} to get schema"
+                )
+                return None
+
     def _valid_fully_qualified_references(self):
         """Check that referenced tables and views are fully qualified."""
         for table in self.table_references:
@@ -184,10 +208,12 @@ class View:
 
     def _valid_view_naming(self):
         """Validate that the created view naming matches the directory structure."""
-        parsed = sqlparse.parse(self.content)[0]
+        if not (parsed := sqlparse.parse(self.content)):
+            raise ValueError(f"Unable to parse view SQL for {self.path}")
+
         tokens = [
             t
-            for t in parsed.tokens
+            for t in parsed[0].tokens
             if not (t.is_whitespace or isinstance(t, sqlparse.sql.Comment))
         ]
         is_view_statement = (
@@ -256,26 +282,21 @@ class View:
             print(f"view {target_view_id} will change: does not exist in BigQuery")
             return True
 
-        expected_view_query = CREATE_VIEW_PATTERN.sub(
-            "", sqlparse.format(self.content, strip_comments=True), count=1
-        ).strip(";" + string.whitespace)
-        actual_view_query = sqlparse.format(
-            table.view_query, strip_comments=True
-        ).strip(";" + string.whitespace)
+        try:
+            expected_view_query = CREATE_VIEW_PATTERN.sub(
+                "", sqlparse.format(self.content, strip_comments=True), count=1
+            ).strip(";" + string.whitespace)
+
+            actual_view_query = sqlparse.format(
+                table.view_query, strip_comments=True
+            ).strip(";" + string.whitespace)
+        except TypeError:
+            print(f"ERROR: There has been an issue formating: {target_view_id}")
+            raise
+
         if expected_view_query != actual_view_query:
             print(f"view {target_view_id} will change: query does not match")
             return True
-
-        # check schema
-        schema_file = Path(self.path).parent / "schema.yaml"
-        if schema_file.is_file():
-            view_schema = Schema.from_schema_file(schema_file)
-            table_schema = Schema.from_json(
-                {"fields": [f.to_api_repr() for f in table.schema]}
-            )
-            if not view_schema.equal(table_schema):
-                print(f"view {target_view_id} will change: schema does not match")
-                return True
 
         # check metadata
         if self.metadata is not None:
@@ -290,6 +311,12 @@ class View:
             if self.labels != table.labels:
                 print(f"view {target_view_id} will change: labels do not match")
                 return True
+
+        table_schema = Schema.from_bigquery_schema(table.schema)
+
+        if self.view_schema is not None and not self.view_schema.equal(table_schema):
+            print(f"view {target_view_id} will change: schema does not match")
+            return True
 
         return False
 
@@ -344,8 +371,7 @@ class View:
                 try:
                     schema_path = Path(self.path).parent / "schema.yaml"
                     if schema_path.is_file():
-                        view_schema = Schema.from_schema_file(schema_path)
-                        view_schema.deploy(target_view)
+                        self.view_schema.deploy(target_view)
                 except Exception as e:
                     print(f"Could not update field descriptions for {target_view}: {e}")
 

@@ -53,8 +53,7 @@ combined AS (
     _current
   FULL JOIN
     _previous
-  USING
-    (user_id, service, device_id)
+    USING (user_id, service, device_id)
 )
 SELECT
   -- Retaining `timestamp` to represent when the last event took place

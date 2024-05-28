@@ -1,0 +1,19 @@
+friendly_name: Braze Subscriptions Map
+description: |-
+  This is a map from Basket/CTMS newsletter and waitlist data to Braze subscriptions.
+  Each time a new subscription is added in Braze, it must also be added to this map.
+
+  Newsletter and waitlist subscriptions are joined on newsletter/waitlist name to
+  braze subscription name.
+
+  See https://mozilla-hub.atlassian.net/browse/DENG-3008
+owners:
+- cbeck@mozilla.com
+labels:
+  incremental: false
+  owner: cbeck
+bigquery:
+  time_partitioning: null
+scheduling:
+  dag_name: bqetl_braze
+  date_partition_parameter: null

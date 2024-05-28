@@ -4,7 +4,7 @@ WITH placeholder_table_names AS (
   FROM
     `moz-fx-data-shared-prod.telemetry_stable.INFORMATION_SCHEMA.TABLE_OPTIONS`
   WHERE
-    option_value LIKE '%placeholder_schema%'
+    option_value LIKE r'%placeholder\_schema%'
 ),
 extracted AS (
   SELECT

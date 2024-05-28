@@ -136,8 +136,7 @@ FROM
   all_subscriptions
 JOIN
   events
-USING
-  (subscription_id)
+  USING (subscription_id)
 GROUP BY
   event_date,
   event_type,

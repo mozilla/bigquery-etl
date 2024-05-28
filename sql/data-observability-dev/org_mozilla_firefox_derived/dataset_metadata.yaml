@@ -1,0 +1,10 @@
+friendly_name: Firefox Android Derived (release channel only)
+description: |-
+  Derived data based on GLEAN pings.
+dataset_base_acl: derived_restricted
+user_facing: false
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

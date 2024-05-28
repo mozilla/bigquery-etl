@@ -19,18 +19,28 @@ PROJECT=${PROJECT:-"glam-fenix-dev"}
 # different from PROJECT. One example would be for running desktop SQL into a
 # dataset that's not moz-fx-data-shared-prod.
 DST_PROJECT=${DST_PROJECT:-$PROJECT}
+# Make sure FULLY_QUALIFIED_DATASET is used in --dataset_id when this is
+# used
+#
+# Use this when the project used for billing is different than the project
+# that stores the tables and/or project_id folder that contains the queries.
+BILLING_PROJECT=${BILLING_PROJECT:-$DST_PROJECT}
 PROD_DATASET=${PROD_DATASET:-"glam_etl"}
 DATASET=${DATASET:-"glam_etl_dev"}
+# Disambiguates the project id and allows --project_id to be used for
+# billing exclusively.
+FULLY_QUALIFIED_DATASET=$DST_PROJECT:$DATASET
 SUBMISSION_DATE=${SUBMISSION_DATE:-$(yesterday)}
 
 
-# Replace PROD_DATASET with DATASET in order to run the entire pipeline within a
+# Replace PROD_DATASET with FULLY_QUALIFIED_DATASET in order to run the entire pipeline within a
 # separate dataset. This is effectively a hack for what should be generated
 # queries in the correct location. However, this provides a mechanism for
 # changing the dataset location for testing.
 function replace_dataset {
     local sql_path=$1
-    sed "s/$PROD_DATASET/$DATASET/g" < "$sql_path"
+    local fully_qualified_dataset_bq=$(echo "$FULLY_QUALIFIED_DATASET" | sed 's/:/./g')
+    sed "s/\($DST_PROJECT.\)\?$PROD_DATASET/$fully_qualified_dataset_bq/g" < "$sql_path"
 }
 
 
@@ -56,8 +66,8 @@ function run_query {
         --max_rows=0 \
         --use_legacy_sql=false \
         $additional_arguments \
-        --project_id="$DST_PROJECT" \
-        --dataset_id="$DATASET" \
+        --project_id="$BILLING_PROJECT" \
+        --dataset_id="$FULLY_QUALIFIED_DATASET" \
         --destination_table="$destination_table" \
         --parameter="submission_date:DATE:$SUBMISSION_DATE" \
         --parameter="min_sample_id:INT64:$min_sample_id" \

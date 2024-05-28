@@ -12,9 +12,7 @@ See:
 - https://en.wikipedia.org/wiki/Regional_Indicator_Symbol
 
 */
-CREATE OR REPLACE FUNCTION udf.country_code_to_flag(
-  country_code string
-) AS ( --
+CREATE OR REPLACE FUNCTION udf.country_code_to_flag(country_code string) AS ( --
   CODE_POINTS_TO_STRING(
     ARRAY(
       SELECT

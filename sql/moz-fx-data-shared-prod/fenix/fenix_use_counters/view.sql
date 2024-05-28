@@ -4,4 +4,4 @@ AS
 SELECT
   *
 FROM
-  `moz-fx-data-shared-prod.fenix_derived.fenix_use_counters_v1`
+  `mozilla-public-data.fenix_derived.fenix_use_counters_v2`

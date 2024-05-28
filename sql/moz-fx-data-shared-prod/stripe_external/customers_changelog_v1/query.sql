@@ -62,14 +62,12 @@ customer_latest_discounts AS (
     customers
   JOIN
     `moz-fx-data-shared-prod`.stripe_external.customer_discount_v1 AS customer_discounts
-  ON
-    customers.id = customer_discounts.customer_id
+    ON customers.id = customer_discounts.customer_id
     AND customers._fivetran_synced >= customer_discounts.start
     AND (customers._fivetran_synced < customer_discounts.`end` OR customer_discounts.`end` IS NULL)
   JOIN
     `moz-fx-data-shared-prod`.stripe_external.coupon_v1 AS coupons
-  ON
-    customer_discounts.coupon_id = coupons.id
+    ON customer_discounts.coupon_id = coupons.id
   GROUP BY
     customers.id
 )
@@ -101,5 +99,4 @@ FROM
   customers
 LEFT JOIN
   customer_latest_discounts
-ON
-  customers.id = customer_latest_discounts.customer_id
+  ON customers.id = customer_latest_discounts.customer_id

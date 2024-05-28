@@ -45,8 +45,7 @@ WITH todays_metrics AS (
     telemetry.clients_last_seen AS last_seen
   INNER JOIN
     `{{ app_name }}.deletion_request` AS request
-  ON
-    client_info.client_id = client_id
+    ON client_info.client_id = client_id
   WHERE
     last_seen.submission_date >= '2021-01-01'
     AND last_seen.submission_date <= @end_date
@@ -67,8 +66,7 @@ todays_metrics_enriched AS (
     todays_metrics
   LEFT JOIN
     `mozdata.static.csa_gblmkt_languages` AS languages
-  ON
-    todays_metrics.locale = languages.code
+    ON todays_metrics.locale = languages.code
 )
 SELECT
   todays_metrics_enriched.* EXCEPT (
@@ -82,12 +80,12 @@ SELECT
     active_hours_sum,
     first_seen_date
   ),
-  COUNT(DISTINCT IF(days_since_seen = 0, client_id, NULL)) AS dau,
-  COUNT(DISTINCT IF(days_since_seen < 7, client_id, NULL)) AS wau,
-  COUNT(DISTINCT client_id) AS mau,
+  COUNT(DISTINCT IF(days_since_seen = 0, client_id, NULL)) AS daily_users,
+  COUNT(DISTINCT IF(days_since_seen < 7, client_id, NULL)) AS weekly_users,
+  COUNT(DISTINCT client_id) AS montly_users,
   COUNT(
     DISTINCT IF(days_since_seen = 0 AND active_hours_sum > 0 AND uri_count > 0, client_id, NULL)
-  ) AS qdau,
+  ) AS dau,
   COUNT(DISTINCT IF(submission_date = first_seen_date, client_id, NULL)) AS new_profiles,
   SUM(ad_click) AS ad_clicks,
   SUM(organic_search_count) AS organic_search_count,

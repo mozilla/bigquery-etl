@@ -30,7 +30,6 @@ FROM
   _current
 FULL OUTER JOIN
   _previous
-USING
-  (user_id)
+  USING (user_id)
 WHERE
   _previous.user_id IS NULL

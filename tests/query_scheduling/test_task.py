@@ -801,3 +801,48 @@ class TestTask:
             TaskRef(dag_name="test_dag", task_id="task", execution_delta="invalid")
 
         assert TaskRef(dag_name="test_dag", task_id="task", execution_delta="1h15m")
+
+    def test_check_get_dependencies(self, tmp_path):
+        metadata = Metadata(
+            "test", "test", ["test@example.org"], {}, self.default_scheduling
+        )
+
+        table1_file = tmp_path / "test-project" / "test" / "table1_v1" / "query.sql"
+        os.makedirs(table1_file.parent)
+        table1_file.write_text("SELECT 12345")
+        metadata.write(
+            tmp_path / "test-project" / "test" / "table1_v1" / "metadata.yaml"
+        )
+        table1_task = Task.of_query(table1_file, metadata)
+
+        table2_file = tmp_path / "test-project" / "test" / "table2_v1" / "query.sql"
+        os.makedirs(table2_file.parent)
+        table2_file.write_text("SELECT 67890")
+        table2_task = Task.of_query(table2_file, metadata)
+
+        check_file = tmp_path / "test-project" / "test" / "table1_v1" / "checks.sql"
+        check_file.write_text("SELECT * FROM `test-project`.test.table2_v1")
+        checks_task = Task.of_dq_check(
+            check_file, is_check_fail=True, metadata=metadata
+        )
+
+        dags = DagCollection.from_dict(
+            {
+                "bqetl_test_dag": {
+                    "schedule_interval": "daily",
+                    "default_args": {
+                        "owner": "test@example.org",
+                        "start_date": "2020-01-01",
+                    },
+                }
+            }
+        ).with_tasks([checks_task, table1_task, table2_task])
+
+        checks_task.with_upstream_dependencies(dags)
+        result = checks_task.upstream_dependencies
+
+        tables = [t.task_id for t in result]
+
+        assert len(tables) == 2
+        assert "test__table1__v1" in tables
+        assert "test__table2__v1" in tables

@@ -1,5 +1,6 @@
 import os
 import types
+from pathlib import Path
 from unittest.mock import patch
 
 import pytest
@@ -143,6 +144,39 @@ class TestQuery:
                 "view.sql"
             ]
 
+    def test_create_derived_query_with_existing_view(self, runner):
+        with runner.isolated_filesystem():
+            project_dir = Path("sql/moz-fx-data-shared-prod")
+            existing_query = (
+                project_dir / "test_derived" / "test_query_v1" / "query.sql"
+            )
+            existing_query.parent.mkdir(parents=True)
+            existing_query.touch()
+
+            existing_view = project_dir / "test" / "test_query" / "view.sql"
+            existing_view.parent.mkdir(parents=True)
+            existing_view.touch()
+
+            result = runner.invoke(
+                create, ["test_derived.test_query_v2", "--no_schedule"]
+            )
+            assert result.exit_code == 0
+            assert "test_derived" in os.listdir("sql/moz-fx-data-shared-prod")
+            assert "test" in os.listdir("sql/moz-fx-data-shared-prod")
+            assert sorted(os.listdir("sql/moz-fx-data-shared-prod/test_derived")) == [
+                "dataset_metadata.yaml",
+                "test_query_v1",
+                "test_query_v2",
+            ]
+            assert sorted(os.listdir("sql/moz-fx-data-shared-prod/test")) == [
+                "dataset_metadata.yaml",
+                "test_query",
+            ]
+            assert os.listdir("sql/moz-fx-data-shared-prod/test/test_query") == [
+                "view.sql"
+            ]
+            assert existing_view.read_text() == ""
+
     def test_create_query_as_derived(self, runner):
         with runner.isolated_filesystem():
             os.makedirs("sql/moz-fx-data-shared-prod")
@@ -163,27 +197,6 @@ class TestQuery:
             assert os.listdir("sql/moz-fx-data-shared-prod/test/test_query") == [
                 "view.sql"
             ]
-
-    def test_create_query_with_init(self, runner):
-        with runner.isolated_filesystem():
-            os.makedirs("sql/moz-fx-data-shared-prod")
-            result = runner.invoke(
-                create, ["test.test_query", "--init", "--no_schedule"]
-            )
-            assert result.exit_code == 0
-            assert sorted(os.listdir("sql/moz-fx-data-shared-prod/test")) == [
-                "dataset_metadata.yaml",
-                "test_query_v1",
-            ]
-            assert "query.sql" in os.listdir(
-                "sql/moz-fx-data-shared-prod/test/test_query_v1"
-            )
-            assert "metadata.yaml" in os.listdir(
-                "sql/moz-fx-data-shared-prod/test/test_query_v1"
-            )
-            assert "init.sql" in os.listdir(
-                "sql/moz-fx-data-shared-prod/test/test_query_v1"
-            )
 
     def test_schedule_invalid_path(self, runner):
         with runner.isolated_filesystem():
@@ -493,7 +506,6 @@ class TestQuery:
             patch("subprocess.check_call", autospec=True) as check_call,
         ):
             os.makedirs("sql/moz-fx-data-shared-prod/telemetry_derived/query_v1")
-            os.makedirs("sql/moz-fx-data-shared-prod/telemetry_derived/query_v2")
 
             with open(
                 "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/query.sql", "w"
@@ -507,6 +519,135 @@ class TestQuery:
                 "description": "test",
                 "owners": ["test@example.org"],
                 "scheduling": {"dag_name": "bqetl_test", "date_partition_offset": -2},
+                "bigquery": {"time_partitioning": {"type": "day"}},
+            }
+
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(metadata_conf))
+
+            result = runner.invoke(
+                backfill,
+                [
+                    "telemetry_derived.query_v1",
+                    "--project_id=moz-fx-data-shared-prod",
+                    "--start_date=2021-01-05",
+                    "--end_date=2021-01-09",
+                    "--exclude=2021-01-06",
+                    "--parallelism=0",
+                    "--billing-project=backfill-project",
+                ],
+            )
+
+            assert result.exit_code == 0
+
+            expected_submission_date_params = [
+                f"--parameter=submission_date:DATE:2021-01-0{day}"
+                for day in (3, 5, 6, 7)
+            ]
+
+            assert check_call.call_count == 4
+            for call in check_call.call_args_list:
+                submission_date_params = [
+                    arg for arg in call.args[0] if "--parameter=submission_date" in arg
+                ]
+                assert len(submission_date_params) == 1
+                assert submission_date_params[0] in expected_submission_date_params
+
+    def test_query_backfill_with_scheduling_overrides(self, runner):
+        with (
+            runner.isolated_filesystem(),
+            # Mock client to avoid NotFound
+            patch("google.cloud.bigquery.Client", autospec=True),
+            patch("subprocess.check_call", autospec=True) as check_call,
+        ):
+            os.makedirs("sql/moz-fx-data-shared-prod/telemetry_derived/query_v1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/query.sql", "w"
+            ) as f:
+                f.write(
+                    "SELECT DATE('2021-01-01') as submission_date WHERE submission_date = @submission_date"
+                )
+
+            metadata_conf = {
+                "friendly_name": "test",
+                "description": "test",
+                "owners": ["test@example.org"],
+                "scheduling": {
+                    "dag_name": "bqetl_test",
+                    "date_partition_parameter": None,
+                    "parameters": [
+                        "submission_date:DATE:{{(execution_date - macros.timedelta(hours=1)).strftime('%Y-%m-%d')}}",
+                    ],
+                },
+                "bigquery": {"time_partitioning": {"type": "day"}},
+            }
+
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(metadata_conf))
+            result = runner.invoke(
+                backfill,
+                [
+                    "telemetry_derived.query_v1",
+                    "--project_id=moz-fx-data-shared-prod",
+                    "--start_date=2021-01-05",
+                    "--end_date=2021-01-06",
+                    "--parallelism=0",
+                    """--scheduling_overrides={"parameters": ["test:INT64:30"], "date_partition_parameter": "submission_date"}""",
+                ],
+            )
+            assert result.exit_code == 0
+
+            expected_submission_date_params = [
+                f"--parameter=submission_date:DATE:2021-01-0{day}" for day in (5, 6)
+            ]
+            assert check_call.call_count == 2
+
+            for call in check_call.call_args_list:
+                submission_date_params = [
+                    arg for arg in call.args[0] if "--parameter=submission_date" in arg
+                ]
+                assert len(submission_date_params) == 1
+                assert submission_date_params[0] in expected_submission_date_params
+
+                test_params = [arg for arg in call.args[0] if "--parameter=test" in arg]
+                assert len(test_params) == 1
+                assert test_params[0] == "--parameter=test:INT64:30"
+
+    def test_query_backfill_unpartitioned_with_parameters(self, runner):
+        with (
+            runner.isolated_filesystem(),
+            # Mock client to avoid NotFound
+            patch("google.cloud.bigquery.Client", autospec=True),
+            patch("subprocess.check_call", autospec=True) as check_call,
+        ):
+            os.makedirs("sql/moz-fx-data-shared-prod/telemetry_derived/query_v1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/query.sql", "w"
+            ) as f:
+                f.write(
+                    "SELECT DATE('2021-01-01') as submission_date WHERE submission_date = @submission_date"
+                )
+
+            metadata_conf = {
+                "friendly_name": "test",
+                "description": "test",
+                "owners": ["test@example.org"],
+                "scheduling": {
+                    "dag_name": "bqetl_test",
+                    "date_partition_parameter": None,
+                    "parameters": [
+                        "submission_date:DATE:{{ds}}",
+                        "conversion_window:INT64:30",
+                    ],
+                },
             }
 
             with open(
@@ -526,17 +667,34 @@ class TestQuery:
                 ],
             )
 
-            assert result.exit_code == 0
-
+            expected_destination_arg = (
+                "--destination_table=moz-fx-data-shared-prod:telemetry_derived.query_v1"
+            )
             expected_submission_date_params = [
                 f"--parameter=submission_date:DATE:2021-01-0{day}"
-                for day in range(3, 8)
+                for day in range(5, 10)
             ]
+
+            assert result.exit_code == 0
 
             assert check_call.call_count == 5
             for call in check_call.call_args_list:
+                destination_table_params = [
+                    arg for arg in call.args[0] if "--destination_table" in arg
+                ]
+                assert len(destination_table_params) == 1
+                assert destination_table_params[0] == expected_destination_arg
+
                 submission_date_params = [
                     arg for arg in call.args[0] if "--parameter=submission_date" in arg
                 ]
                 assert len(submission_date_params) == 1
                 assert submission_date_params[0] in expected_submission_date_params
+
+                conversion_params = [
+                    arg
+                    for arg in call.args[0]
+                    if "--parameter=conversion_window" in arg
+                ]
+                assert len(conversion_params) == 1
+                assert conversion_params[0] == "--parameter=conversion_window:INT64:30"

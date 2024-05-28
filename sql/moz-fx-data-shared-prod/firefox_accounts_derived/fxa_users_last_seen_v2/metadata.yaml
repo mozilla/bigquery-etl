@@ -15,17 +15,13 @@ labels:
   application: fxa
   incremental: true
   schedule: daily
-# scheduling:
-#   dag_name: bqetl_fxa_events
-#   depends_on_past: true
-#   start_date: '2019-04-23'
-#   referenced_tables: []
+scheduling:
+  dag_name: bqetl_fxa_events
+  depends_on_past: true
+  start_date: "2024-02-11"
 bigquery:
   time_partitioning:
     type: day
     field: submission_date
     require_partition_filter: true
     expiration_days: null
-  clustering:
-    fields:
-      - user_id

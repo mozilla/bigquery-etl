@@ -33,7 +33,7 @@ WITH new_flow_events AS (
   FROM
     `moz-fx-data-shared-prod.firefox_accounts.fxa_all_events`
   WHERE
-    fxa_log IN ('content', 'auth', 'stdout')
+    fxa_log IN ('content', 'auth', 'stdout', 'payments')
     AND flow_id IS NOT NULL
     {% if is_init() %}
       AND DATE(`timestamp`) < CURRENT_DATE()
@@ -69,8 +69,7 @@ CROSS JOIN
   services_metadata
 LEFT JOIN
   existing_flow_ids
-ON
-  new_flow_events.flow_id = existing_flow_ids.flow_id
+  ON new_flow_events.flow_id = existing_flow_ids.flow_id
 QUALIFY
   LOGICAL_OR(
     new_flow_events.oauth_client_id IN UNNEST(services_metadata.subplat_oauth_client_ids)

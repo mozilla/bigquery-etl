@@ -1,0 +1,54 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: The date when flow was captured
+- mode: NULLABLE
+  name: flow_id
+  type: STRING
+  description: Unique identifier for the specific flow
+- fields:
+  - fields:
+    - name: category
+      type: STRING
+      description: Event category
+    - name: name
+      type: STRING
+      description: Event name
+    - name: timestamp
+      type: TIMESTAMP
+      description: Event timestamp
+    mode: NULLABLE
+    name: source
+    type: RECORD
+    description: Source event
+  - fields:
+    - name: category
+      type: STRING
+      description: Event category
+    - name: name
+      type: STRING
+      description: Event name
+    - name: timestamp
+      type: TIMESTAMP
+      description: Event timestamp
+    mode: NULLABLE
+    name: target
+    type: RECORD
+    description: Target event
+  mode: REPEATED
+  name: events
+  type: RECORD
+  description: Flow events
+- mode: NULLABLE
+  name: normalized_app_name
+  type: STRING
+  description: The name of the app the event flow is coming from
+- mode: NULLABLE
+  name: channel
+  type: STRING
+  description: The app channel
+- mode: NULLABLE
+  name: flow_hash
+  type: STRING
+  description: Hash of the complete event flow

@@ -17,7 +17,6 @@ FROM
 -- approved for dev here.
 JOIN
   addon_id_lookup
-USING
-  (hashed_addon_id)
+  USING (hashed_addon_id)
 WHERE
   submission_date = @submission_date

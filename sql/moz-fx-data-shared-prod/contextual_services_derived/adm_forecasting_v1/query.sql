@@ -96,8 +96,7 @@ client_share AS (
     client_counts
   LEFT JOIN
     grand_total
-  USING
-    (submission_date, device)
+    USING (submission_date, device)
   WHERE
     device IS NOT NULL
 ),
@@ -307,8 +306,7 @@ daily_mobile_clients AS (
           )
         )
     )
-  USING
-    (client_id)
+    USING (client_id)
   WHERE
     submission_date >= "2022-05-10"
   -- then mobile tiles went to default
@@ -492,20 +490,16 @@ FROM
   population
 LEFT JOIN
   tiles_percentages pe
-USING
-  (product, submission_date, country, device)
+  USING (product, submission_date, country, device)
 LEFT JOIN
   suggest_percentages
-USING
-  (product, submission_date, country, device)
+  USING (product, submission_date, country, device)
 LEFT JOIN
   clicks c
-USING
-  (product, submission_date, country, device)
+  USING (product, submission_date, country, device)
 LEFT JOIN
   client_share
-USING
-  (device, country, submission_date)
+  USING (device, country, submission_date)
 WHERE
   submission_date = @submission_date
 ORDER BY

@@ -53,6 +53,5 @@ FROM
   ad_stats
 INNER JOIN
   client_activation_per_campaign
-ON
-  ad_stats.date_day = client_activation_per_campaign.first_seen_date
+  ON ad_stats.date_day = client_activation_per_campaign.first_seen_date
   AND ad_stats.campaign_id = client_activation_per_campaign.campaign_id

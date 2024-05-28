@@ -57,11 +57,9 @@ FROM
   dou
 LEFT JOIN
   client_search
-USING
-  (client_id)
+  USING (client_id)
 LEFT JOIN
   previous_client_entries
-USING
-  (client_id)
+  USING (client_id)
 WHERE
   previous_client_entries.client_id IS NULL

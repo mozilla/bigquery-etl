@@ -14,6 +14,7 @@ from bigquery_etl.query_scheduling.utils import is_email_or_github_identity
 BACKFILL_FILE = "backfill.yaml"
 DEFAULT_WATCHER = "nobody@mozilla.com"
 DEFAULT_REASON = "Please provide a reason for the backfill and links to any related bugzilla or jira tickets"
+DEFAULT_BILLING_PROJECT = "moz-fx-data-backfill-slots"
 
 
 class UniqueKeyLoader(yaml.SafeLoader):
@@ -49,8 +50,7 @@ yaml.add_representer(Literal, literal_presenter)
 class BackfillStatus(enum.Enum):
     """Represents backfill status types."""
 
-    DRAFTING = "Drafting"
-    VALIDATED = "Validated"
+    INITIATE = "Initiate"
     COMPLETE = "Complete"
 
 
@@ -70,6 +70,7 @@ class Backfill:
     reason: str = attr.ib()
     watchers: List[str] = attr.ib()
     status: BackfillStatus = attr.ib()
+    billing_project: Optional[str] = attr.ib(None)
 
     def __str__(self):
         """Return print friendly string of backfill object."""
@@ -94,41 +95,67 @@ class Backfill:
 
     @entry_date.validator
     def validate_entry_date(self, attribute, value):
-        """Check that provided entry date is valid."""
+        """Check that provided entry date is not in the future."""
         if date.today() < value:
             raise ValueError(f"Backfill entry {value} can't be in the future.")
 
     @start_date.validator
     def validate_start_date(self, attribute, value):
-        """Check that provided start date is valid."""
+        """Check that provided start date is before end date and entry date."""
         if self.end_date < value or self.entry_date < value:
             raise ValueError(f"Invalid start date: {value}.")
 
     @end_date.validator
     def validate_end_date(self, attribute, value):
-        """Check that provided end date is valid."""
-        if value < self.start_date or self.entry_date < self.end_date:
+        """Check that provided end date is after start date and before entry date."""
+        if value < self.start_date or value > self.entry_date:
             raise ValueError(f"Invalid end date: {value}.")
 
     @excluded_dates.validator
     def validate_excluded_dates(self, attribute, value):
-        """Check that provided excluded dates are valid."""
+        """Check that provided excluded dates are between start and end dates, are sorted and contain no duplicates."""
         if not all(map(lambda e: self.start_date < e < self.end_date, value)):
             raise ValueError(f"Invalid excluded dates: {value}.")
 
+        if not value == sorted(value):
+            raise ValueError(
+                f"Existing backfill entry with excluded dates not sorted: {value}."
+            )
+        if not len(value) == len(set(value)):
+            raise ValueError(
+                f"Existing backfill entry with duplicate excluded dates: {value}."
+            )
+
     @watchers.validator
     def validate_watchers(self, attribute, value):
-        """Check that provided watchers are valid."""
+        """Check that provided watchers are valid emails or Github identity with no duplicates."""
         if not value or not all(
             map(lambda e: e and is_email_or_github_identity(e), value)
         ):
             raise ValueError(f"Invalid email or Github identity for watchers: {value}.")
+
+        if len(value) != len(set(value)):
+            raise ValueError(f"Duplicate watcher in ({value}).")
+
+    @reason.validator
+    def validate_reason(self, attribute, value):
+        """Check that provided status is not empty."""
+        if not value:
+            raise ValueError("Reason in backfill entry should not be empty.")
 
     @status.validator
     def validate_status(self, attribute, value):
         """Check that provided status is valid."""
         if not hasattr(BackfillStatus, value.name):
             raise ValueError(f"Invalid status: {value.name}.")
+
+    @billing_project.validator
+    def validate_billing_project(self, attribute, value):
+        """Check that billing project is valid."""
+        if value and not value.startswith("moz-fx-data-backfill-"):
+            raise ValueError(
+                f"Invalid billing project: {value}.  Please use one of the projects assigned to backfills."
+            )
 
     @staticmethod
     def is_backfill_file(file_path: Path) -> bool:
@@ -157,21 +184,18 @@ class Backfill:
                 backfills = yaml.load(yaml_stream, Loader=UniqueKeyLoader) or {}
 
                 for entry_date, entry in backfills.items():
-                    if status is not None and entry["status"].lower() != status.lower():
+                    if status is not None and entry["status"] != status:
                         continue
-
-                    excluded_dates = []
-                    if "excluded_dates" in entry:
-                        excluded_dates = entry["excluded_dates"]
 
                     backfill = cls(
                         entry_date=entry_date,
                         start_date=entry["start_date"],
                         end_date=entry["end_date"],
-                        excluded_dates=excluded_dates,
+                        excluded_dates=entry.get("excluded_dates", []),
                         reason=entry["reason"],
                         watchers=entry["watchers"],
                         status=BackfillStatus[entry["status"].upper()],
+                        billing_project=entry.get("billing_project", None),
                     )
 
                     backfill_entries.append(backfill)
@@ -191,11 +215,15 @@ class Backfill:
                 "reason": self.reason,
                 "watchers": self.watchers,
                 "status": self.status.value,
+                "billing_project": self.billing_project,
             }
         }
 
         if yaml_dict[self.entry_date]["excluded_dates"] == []:
             del yaml_dict[self.entry_date]["excluded_dates"]
+
+        if yaml_dict[self.entry_date]["billing_project"] is None:
+            del yaml_dict[self.entry_date]["billing_project"]
 
         return yaml.dump(
             yaml_dict,

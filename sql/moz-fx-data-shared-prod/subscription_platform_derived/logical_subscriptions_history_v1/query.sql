@@ -46,8 +46,7 @@ customer_attribution_impressions AS (
     `moz-fx-data-shared-prod.mozilla_vpn_derived.users_attribution_v1` AS users_attribution
   JOIN
     `moz-fx-data-shared-prod.mozilla_vpn_derived.users_v1` AS users
-  ON
-    users_attribution.user_id = users.id
+    ON users_attribution.user_id = users.id
   WHERE
     DATE(users.created_at) <= '2021-08-25'
     AND (
@@ -110,8 +109,7 @@ subscription_attributions AS (
     UNNEST(subscription_starts.services) AS service
   JOIN
     customer_attribution_impressions
-  ON
-    subscription_starts.mozilla_account_id_sha256 = customer_attribution_impressions.mozilla_account_id_sha256
+    ON subscription_starts.mozilla_account_id_sha256 = customer_attribution_impressions.mozilla_account_id_sha256
     AND service.id IN UNNEST(customer_attribution_impressions.service_ids)
     AND subscription_starts.started_at >= customer_attribution_impressions.impression_at
   GROUP BY
@@ -205,9 +203,7 @@ FROM
   history
 LEFT JOIN
   countries
-ON
-  history.subscription.country_code = countries.code
+  ON history.subscription.country_code = countries.code
 LEFT JOIN
   subscription_attributions
-ON
-  history.subscription.id = subscription_attributions.subscription_id
+  ON history.subscription.id = subscription_attributions.subscription_id

@@ -24,7 +24,7 @@ PATH = Path(os.path.dirname(__file__))
 # need to be omitted. For more info see: bug-1868848
 NO_BASELINE_PING_APPS = (
     "mozilla_vpn",
-    "mozillavpn_cirrus",
+    "mozillavpn_backend_cirrus",
     "accounts_backend",
     "burnham",
     "firefox_reality_pc",
@@ -35,6 +35,8 @@ NO_BASELINE_PING_APPS = (
     "mozphab",
     "mozregression",
 )
+
+APPS_WITH_DISTRIBUTION_ID = ("fenix",)
 
 
 def write_dataset_metadata(output_dir, full_table_id, derived_dataset_metadata=False):
@@ -120,6 +122,9 @@ def table_names_from_baseline(baseline_table, include_project_id=True):
         last_seen_view=f"{prefix}.baseline_clients_last_seen",
         first_seen_view=f"{prefix}.baseline_clients_first_seen",
         event_monitoring=f"{prefix}_derived.event_monitoring_live_v1",
+        events_view=f"{prefix}.events",
+        events_stream_table=f"{prefix}_derived.events_stream_v1",
+        events_stream_view=f"{prefix}.events_stream",
     )
 
 
@@ -176,7 +181,6 @@ class GleanTable:
         self.target_table_id = ""
         self.prefix = ""
         self.custom_render_kwargs = {}
-        self.no_init = True
         self.per_app_id_enabled = True
         self.per_app_enabled = True
         self.across_apps_enabled = True
@@ -203,6 +207,7 @@ class GleanTable:
         output_dir=None,
         use_cloud_function=True,
         app_info=[],
+        parallelism=8,
     ):
         """Generate the baseline table query per app_id."""
         if not self.per_app_id_enabled:
@@ -210,12 +215,12 @@ class GleanTable:
 
         tables = table_names_from_baseline(baseline_table, include_project_id=False)
 
-        init_filename = f"{self.target_table_id}.init.sql"
         query_filename = f"{self.target_table_id}.query.sql"
         checks_filename = f"{self.target_table_id}.checks.sql"
         view_filename = f"{self.target_table_id[:-3]}.view.sql"
         view_metadata_filename = f"{self.target_table_id[:-3]}.metadata.yaml"
         table_metadata_filename = f"{self.target_table_id}.metadata.yaml"
+        schema_filename = f"{self.target_table_id}.schema.yaml"
 
         table = tables[f"{self.prefix}_table"]
         view = tables[f"{self.prefix}_view"]
@@ -235,6 +240,7 @@ class GleanTable:
             project_id=project_id,
             derived_dataset=derived_dataset,
             app_name=app_name,
+            has_distribution_id=app_name in APPS_WITH_DISTRIBUTION_ID,
         )
 
         render_kwargs.update(self.custom_render_kwargs)
@@ -268,18 +274,16 @@ class GleanTable:
         except TemplateNotFound:
             checks_sql = None
 
-        if not self.no_init:
-            try:
-                init_sql = render(
-                    init_filename, template_folder=PATH / "templates", **render_kwargs
-                )
-            except TemplateNotFound:
-                init_sql = render(
-                    query_filename,
-                    template_folder=PATH / "templates",
-                    init=True,
-                    **render_kwargs,
-                )
+        # Schema files are optional
+        try:
+            schema = render(
+                schema_filename,
+                format=False,
+                template_folder=PATH / "templates",
+                **render_kwargs,
+            )
+        except TemplateNotFound:
+            schema = None
 
         # generated files to update
         Artifact = namedtuple("Artifact", "table_id basename sql")
@@ -297,9 +301,6 @@ class GleanTable:
         skip_existing_artifact = self.skip_existing(output_dir, project_id)
 
         if output_dir:
-            if not self.no_init:
-                artifacts.append(Artifact(table, "init.sql", init_sql))
-
             if checks_sql:
                 if "baseline" in table and app_name in NO_BASELINE_PING_APPS:
                     logging.info(
@@ -308,6 +309,9 @@ class GleanTable:
                     )
                 else:
                     artifacts.append(Artifact(table, "checks.sql", checks_sql))
+
+            if schema:
+                artifacts.append(Artifact(table, "schema.yaml", schema))
 
             for artifact in artifacts:
                 destination = (
@@ -326,7 +330,12 @@ class GleanTable:
             write_dataset_metadata(output_dir, view)
 
     def generate_per_app(
-        self, project_id, app_info, output_dir=None, use_cloud_function=True
+        self,
+        project_id,
+        app_info,
+        output_dir=None,
+        use_cloud_function=True,
+        parallelism=8,
     ):
         """Generate the baseline table query per app_name."""
         if not self.per_app_enabled:
@@ -438,7 +447,7 @@ class GleanTable:
                 write_dataset_metadata(output_dir, table, derived_dataset_metadata=True)
 
     def generate_across_apps(
-        self, project_id, apps, output_dir=None, use_cloud_function=True
+        self, project_id, apps, output_dir=None, use_cloud_function=True, parallelism=8
     ):
         """Generate a query across all apps."""
         # logic for implementing cross-app queries needs to be implemented in the

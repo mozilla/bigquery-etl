@@ -9,7 +9,7 @@ from functools import partial
 from multiprocessing.pool import Pool
 from typing import List, Set
 
-import click
+import rich_click as click
 from google.cloud import bigquery
 
 from ..cli.utils import is_authenticated
@@ -72,7 +72,13 @@ def dryrun(
     project: str,
 ):
     """Perform a dry run."""
-    file_names = ("query.sql", "view.sql", "part*.sql", "init.sql")
+    file_names = (
+        "query.sql",
+        "view.sql",
+        "part*.sql",
+        "init.sql",
+        "materialized_view.sql",
+    )
     file_re = re.compile("|".join(map(fnmatch.translate, file_names)))
 
     sql_files: Set[str] = set()
@@ -97,7 +103,9 @@ def dryrun(
         sys.exit(0)
 
     if not use_cloud_function and not is_authenticated():
-        click.echo("Not authenticated to GCP. Run `gcloud auth login` to login.")
+        click.echo(
+            "Not authenticated to GCP. Run `gcloud auth login  --update-adc` to login."
+        )
         sys.exit(1)
 
     sql_file_valid = partial(

@@ -18,8 +18,7 @@ BEGIN
     dataset.partitioned_table1 AS t1
   JOIN
     dataset.partitioned_table2 AS t2
-  ON
-    t1.id = t2.id
+    ON t1.id = t2.id
   WHERE
     t1.date = target_date
     AND t2.date = target_date;

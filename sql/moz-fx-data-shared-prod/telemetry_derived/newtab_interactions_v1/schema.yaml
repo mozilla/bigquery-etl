@@ -173,3 +173,12 @@ fields:
 - mode: NULLABLE
   name: organic_topsite_impressions
   type: INTEGER
+- mode: NULLABLE
+  name: topsite_dismissals
+  type: INTEGER
+- mode: NULLABLE
+  name: sponsored_topsite_dismissals
+  type: INTEGER
+- mode: NULLABLE
+  name: organic_topsite_dismissals
+  type: INTEGER

@@ -1,6 +1,4 @@
-CREATE TEMP FUNCTION udf_contains_tier1_country(
-  x ANY TYPE
-) AS ( --
+CREATE TEMP FUNCTION udf_contains_tier1_country(x ANY TYPE) AS ( --
   EXISTS(
     SELECT
       country
@@ -89,8 +87,7 @@ user_service_flow_entrypoints AS (
     fxa_events
   JOIN
     flow_entrypoints
-  USING
-    (flow_id)
+    USING (flow_id)
   GROUP BY
     user_id,
     service
@@ -129,8 +126,7 @@ user_service_utms AS (
     fxa_events
   JOIN
     flow_utms
-  USING
-    (flow_id)
+    USING (flow_id)
   GROUP BY
     user_id,
     service
@@ -196,12 +192,10 @@ FROM
   windowed
 LEFT JOIN
   user_service_flow_entrypoints
-USING
-  (user_id, service)
+  USING (user_id, service)
 LEFT JOIN
   user_service_utms
-USING
-  (user_id, service)
+  USING (user_id, service)
 WHERE
   user_id IS NOT NULL
   AND service IS NOT NULL

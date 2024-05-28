@@ -14,8 +14,7 @@ FROM
   `ga-mozilla-org-prod-001.Adjust.deliverable_*` AS adjust
 LEFT JOIN
   `moz-fx-data-shared-prod.static.country_codes_v1` AS country
-ON
-  UPPER(adjust.country) = country.code
+  ON UPPER(adjust.country) = country.code
 WHERE
   adjust.app = 'Firefox Android and iOS'
   AND adjust._TABLE_SUFFIX >= '20220101'

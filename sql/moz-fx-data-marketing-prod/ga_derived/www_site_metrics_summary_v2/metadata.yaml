@@ -1,0 +1,30 @@
+friendly_name: WWW Site Metrics Summary V2
+description: |-
+  Summary of site metrics from Google Analytics (specifically Google Analytics 4)
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau@mozilla.com
+scheduling:
+  dag_name: bqetl_google_analytics_derived_ga4
+  depends_on_tables_existing:
+  - task_id: wait_for_wmo_events_table
+    table_id: 'moz-fx-data-marketing-prod.analytics_313696158.events_{{ ds_nodash }}'
+    poke_interval: 30m
+    timeout: 10h
+    retries: 1
+    retry_delay: 30m
+bigquery:
+  time_partitioning:
+    type: day
+    field: date
+    require_partition_filter: false
+    expiration_days: null
+  clustering:
+    fields:
+    - country
+    - browser
+    - source
+    - medium
+references: {}

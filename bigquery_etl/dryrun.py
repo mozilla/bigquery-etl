@@ -14,6 +14,7 @@ proxy the queries through the dry run service endpoint.
 import glob
 import json
 import re
+import sys
 from enum import Enum
 from os.path import basename, dirname, exists
 from pathlib import Path
@@ -21,7 +22,10 @@ from typing import Optional, Set
 from urllib.request import Request, urlopen
 
 import click
+import google.auth
+from google.auth.transport.requests import Request as GoogleAuthRequest
 from google.cloud import bigquery
+from google.oauth2.id_token import fetch_id_token
 
 from .config import ConfigLoader
 from .metadata.parse_metadata import Metadata
@@ -69,6 +73,15 @@ class DryRun:
         except FileNotFoundError:
             self.metadata = None
 
+        from bigquery_etl.cli.utils import is_authenticated
+
+        if not is_authenticated():
+            print(
+                "Authentication to GCP required. Run `gcloud auth login  --update-adc` "
+                "and check that the project is set correctly."
+            )
+            sys.exit(1)
+
     @staticmethod
     def skipped_files(sql_dir=ConfigLoader.get("default", "sql_dir")) -> Set[str]:
         """Return files skipped by dry run."""
@@ -88,12 +101,16 @@ class DryRun:
         # update skip list to include renamed queries in stage.
         test_project = ConfigLoader.get("default", "test_project", fallback="")
         file_pattern_re = re.compile(r"sql/([^\/]+)/([^/]+)(/?.*|$)")
+
         skip_files.update(
             [
                 file
                 for skip in ConfigLoader.get("dry_run", "skip", fallback=[])
                 for file in glob.glob(
-                    file_pattern_re.sub(f"sql/{test_project}/\\2*\\3", skip),
+                    file_pattern_re.sub(
+                        lambda x: f"sql/{test_project}/{x.group(2)}_{x.group(1).replace('-', '_')}*{x.group(3)}",
+                        skip,
+                    ),
                     recursive=True,
                 )
             ]
@@ -121,6 +138,12 @@ class DryRun:
         if self.strip_dml:
             sql = re.sub(
                 "CREATE OR REPLACE VIEW.*?AS",
+                "",
+                sql,
+                flags=re.DOTALL,
+            )
+            sql = re.sub(
+                "CREATE MATERIALIZED VIEW.*?AS",
                 "",
                 sql,
                 flags=re.DOTALL,
@@ -157,15 +180,33 @@ class DryRun:
                     + ")(?![a-zA-Z0-9_])"
                 )
                 sql = pattern.sub("@submission_date", sql)
+        project = basename(dirname(dirname(dirname(self.sqlfile))))
         dataset = basename(dirname(dirname(self.sqlfile)))
         try:
             if self.use_cloud_function:
+                auth_req = GoogleAuthRequest()
+                creds, _ = google.auth.default(
+                    scopes=["https://www.googleapis.com/auth/cloud-platform"]
+                )
+                creds.refresh(auth_req)
+                if hasattr(creds, "id_token"):
+                    # Get token from default credentials for the current environment created via Cloud SDK run
+                    id_token = creds.id_token
+                else:
+                    # If the environment variable GOOGLE_APPLICATION_CREDENTIALS is set to service account JSON file,
+                    # then ID token is acquired using this service account credentials.
+                    id_token = fetch_id_token(auth_req, self.dry_run_url)
+
                 r = urlopen(
                     Request(
                         self.dry_run_url,
-                        headers={"Content-Type": "application/json"},
+                        headers={
+                            "Content-Type": "application/json",
+                            "Authorization": f"Bearer {id_token}",
+                        },
                         data=json.dumps(
                             {
+                                "project": project,
                                 "dataset": dataset,
                                 "query": sql,
                             }
@@ -175,7 +216,6 @@ class DryRun:
                 )
                 return json.load(r)
             else:
-                project = basename(dirname(dirname(dirname(self.sqlfile))))
                 self.client.project = project
                 job_config = bigquery.QueryJobConfig(
                     dry_run=True,

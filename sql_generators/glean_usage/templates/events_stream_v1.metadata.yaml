@@ -1,0 +1,27 @@
+{{ header_yaml }}
+friendly_name: Events Stream
+description: |-
+  An events stream table, with one row per event.
+
+  Clients that don't send events on a particular day
+  won't be included on that day.
+owners:
+  - jrediger@mozilla.com
+  - wstuckey@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_glean_usage
+  task_group: {{ app_name }}
+  # Use backfill-2 project for on-demand query billing
+  arguments: ["--billing-project", "moz-fx-data-backfill-2"]
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_timestamp
+    require_partition_filter: true
+  clustering:
+    fields:
+    - sample_id
+    - event_category

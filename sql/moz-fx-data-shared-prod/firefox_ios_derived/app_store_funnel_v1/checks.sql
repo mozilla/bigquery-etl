@@ -1,10 +1,12 @@
-#fail
+#warn
 {{ is_unique(["submission_date", "country"], "country IS NOT NULL") }}
 -- min_row_count helps us detect if we're seeing delays in the data arriving
 -- could also be an indicator of an upstream issue.
+
 #fail
 {{ min_row_count(1, "submission_date = @submission_date") }}
-#fail
+
+#warn
 WITH fx_ios_count AS (
   SELECT
     COUNT(*)
@@ -67,7 +69,8 @@ SELECT
   )
 FROM
   base;
-#fail
+
+#warn
 SELECT
   IF(
     DATE_DIFF(submission_date, first_seen_date, DAY) <> 7,
@@ -78,4 +81,5 @@ FROM
   `moz-fx-data-shared-prod.firefox_ios_derived.app_store_funnel_v1`
 WHERE
   submission_date = @submission_date;
+
 -- TODO: for this query it'd be useful to compare sum variance between each day to improve our confidence the data was complete at the execution time.

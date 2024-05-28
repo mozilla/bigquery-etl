@@ -55,8 +55,7 @@ activity_cohort_match AS (
     cohorts_in_range
   LEFT JOIN
     submission_date_activity
-  USING
-    (client_id, activity_date)
+    USING (client_id, activity_date)
 )
 SELECT
   cohort_date,

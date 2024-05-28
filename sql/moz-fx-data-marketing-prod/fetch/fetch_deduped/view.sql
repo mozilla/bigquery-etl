@@ -46,5 +46,4 @@ FROM
 LEFT JOIN
   -- Join metric / spend data to campaign information data
   latest_ingested_metrics AS metric
-USING
-  (AdName)
+  USING (AdName)

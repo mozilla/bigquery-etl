@@ -1,0 +1,10 @@
+# expect braze suppression
+---
+# user 2.0
+- email: user_2@mail.com
+# user 2.2 with different email - should show up
+- email: user_2_second_mail@mail.com
+# user 3
+- email: user_3@mail.com
+# user 4
+- email: user_4@mail.com

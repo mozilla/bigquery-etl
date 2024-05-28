@@ -1,0 +1,97 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: Submission Date
+- mode: NULLABLE
+  name: client_id
+  type: STRING
+  description: Client ID
+- mode: NULLABLE
+  name: sample_id
+  type: INT64
+  description: Sample ID
+- mode: NULLABLE
+  name: first_seen_date
+  type: DATE
+  description: First Seen Date
+- mode: NULLABLE
+  name: normalized_channel
+  type: STRING
+  description: Normalized Channel
+- mode: NULLABLE
+  name: locale
+  type: STRING
+  description: Locale
+- mode: NULLABLE
+  name: country
+  type: STRING
+  description: Country
+- mode: NULLABLE
+  name: isp
+  type: STRING
+  description: Internet Service Provider
+- mode: NULLABLE
+  name: app_name
+  type: STRING
+  description: App Name
+- mode: NULLABLE
+  name: app_version
+  type: STRING
+  description: App Version (also known as app display version)
+- mode: NULLABLE
+  name: is_dau
+  type: BOOLEAN
+  description: DAU - Daily Active User
+- mode: NULLABLE
+  name: is_wau
+  type: BOOLEAN
+  description: WAU - Weekly Active User
+- mode: NULLABLE
+  name: is_mau
+  type: BOOLEAN
+  description: MAU - Monthly Active User
+- mode: NULLABLE
+  name: is_mobile
+  type: BOOLEAN
+  description: Is Mobile
+- mode: NULLABLE
+  name: adjust_network
+  type: STRING
+  description: Adjust Network
+- mode: NULLABLE
+  name: adjust_campaign
+  type: STRING
+  description: Adjust Campaign
+- mode: NULLABLE
+  name: adjust_ad_group
+  type: STRING
+  description: Adjust Ad Group
+- mode: NULLABLE
+  name: adjust_creative
+  type: STRING
+  description: Adjust Creative
+- mode: NULLABLE
+  name: play_store_attribution_campaign
+  type: STRING
+  description: Play Store Attribution Campaign
+- mode: NULLABLE
+  name: play_store_attribution_source
+  type: STRING
+  description: Play Store Attribution Source
+- mode: NULLABLE
+  name: play_store_attribution_medium
+  type: STRING
+  description: Play Store Attribution Medium
+- mode: NULLABLE
+  name: meta_attribution_app
+  type: STRING
+  description: Meta Attribution App
+- mode: NULLABLE
+  name: install_source
+  type: STRING
+  description: Install Source
+- mode: NULLABLE
+  name: is_suspicious_device_client
+  type: BOOLEAN
+  description: Is Suspicious Device Client

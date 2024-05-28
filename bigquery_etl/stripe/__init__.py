@@ -9,8 +9,8 @@ from tempfile import TemporaryFile
 from time import sleep
 from typing import Any, Dict, List, Optional
 
-import click
 import requests
+import rich_click as click
 import stripe
 import ujson
 from dateutil.relativedelta import relativedelta
@@ -165,7 +165,7 @@ def stripe_import(
     elif quiet:
         handle = open(os.devnull, "w+b")
     else:
-        handle = sys.stdout.buffer
+        handle = sys.stdout.buffer  # type: ignore
     with handle as file_obj:
         path = Path(__file__).parent / f"{report_type}.schema.json"
         root = bigquery.SchemaField.from_api_repr(

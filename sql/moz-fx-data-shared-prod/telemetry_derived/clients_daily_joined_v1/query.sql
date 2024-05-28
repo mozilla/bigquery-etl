@@ -42,15 +42,12 @@ FROM
   telemetry_derived.clients_daily_v6 AS cd
 LEFT JOIN
   daily_events
-USING
-  (submission_date, sample_id, client_id)
+  USING (submission_date, sample_id, client_id)
 LEFT JOIN
   first_seen
-USING
-  (submission_date, sample_id, client_id)
+  USING (submission_date, sample_id, client_id)
 LEFT JOIN
   crashes_daily
-USING
-  (submission_date, sample_id, client_id)
+  USING (submission_date, sample_id, client_id)
 WHERE
   cd.submission_date = @submission_date

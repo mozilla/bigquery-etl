@@ -1,0 +1,34 @@
+friendly_name: Profile / Client Retention - {{ friendly_name }} (Aggregated)
+description: |-
+  Profile / Client Retention ({{ friendly_name }}) aggregated metrics
+
+  For all profiles that sent us a ping on the metric date.
+  Client's attribute values as observed on the metric date.
+
+  see: DENG-3183 for more information.
+
+owners:
+  - mozilla/kpi_table_reviewers
+  - kik@mozilla.com
+labels:
+  schedule: daily
+  incremental: true
+# will be commented out in a follow up PR which will add a DAG
+# scheduling:
+#   dag_name:  # TODO: think about which DAG this should run in.
+#   depends_on_past: false
+#   task_group: {{ app_name }}
+#   date_partition_parameter: metric_date
+#   date_partition_offset: -27
+#   parameters:
+#     - submission_date:DATE:{{ds}}
+bigquery:
+  time_partitioning:
+    type: day
+    field: metric_date
+    require_partition_filter: false
+  clustering:
+    fields:
+      - app_name
+      - country
+      - first_seen_date

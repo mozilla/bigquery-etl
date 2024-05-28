@@ -1,5 +1,5 @@
-{#- format off #}
 WITH product_union AS (
+{#- format off #}
 {%- for product in ["mozilla_vpn", "relay", "hubs"] %}
   SELECT
     active_date,

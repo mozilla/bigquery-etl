@@ -85,5 +85,4 @@ FROM
   deduped
 LEFT JOIN
   core_clients_first_seen_v1 AS cfs
-USING
-  (client_id)
+  USING (client_id)

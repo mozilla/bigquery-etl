@@ -10,6 +10,7 @@
   activity_segment: lots_of_activity
   browser_name: Firefox Desktop
   had_non_impression_engagement: true
+  had_non_search_engagement: true
   search_interactions:
     - search_engine: Engine1
       search_access_point: urlbar
@@ -30,6 +31,9 @@
       topsite_tile_impressions: 0
       sponsored_topsite_tile_impressions: 0
       organic_topsite_tile_impressions: 0
+      topsite_tile_dismissals: 0
+      sponsored_topsite_tile_dismissals: 0
+      organic_topsite_tile_dismissals: 0
   pocket_interactions:
     - pocket_story_position: 1
       pocket_impressions: 1

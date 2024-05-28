@@ -205,5 +205,4 @@ FROM
   aggregated
 JOIN
   meta_recent
-USING
-  (client_id, submission_date)
+  USING (client_id, submission_date)

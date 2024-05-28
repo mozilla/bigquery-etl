@@ -38,11 +38,10 @@ structured_detailed_hourly_errors AS (
     error_message,
     sample_payload
   FROM
-    `moz-fx-data-shared-prod.monitoring_derived.structured_error_counts_v1` structured_hourly_errors
+    `moz-fx-data-shared-prod.monitoring.structured_error_counts` structured_hourly_errors
   FULL OUTER JOIN
     error_examples
-  USING
-    (hour, document_namespace, document_type, document_version, error_type)
+    USING (hour, document_namespace, document_type, document_version, error_type)
 ),
 with_ratio AS (
   SELECT

@@ -19,11 +19,10 @@ bigquery:
     type: day
     field: submission_timestamp
     require_partition_filter: true
-    expiration_days: 15
+    expiration_days: 14
 
 scheduling:
   dag_name: bqetl_search_terms_daily
-  referenced_tables: []
   arguments: ['--schema_update_option=ALLOW_FIELD_ADDITION']
 
 workgroup_access:

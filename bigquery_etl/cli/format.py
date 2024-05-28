@@ -1,6 +1,6 @@
 """bigquery-etl CLI format command."""
 
-import click
+import rich_click as click
 
 from bigquery_etl.format_sql.format import format as format_sql
 

@@ -44,5 +44,4 @@ FROM
   _current
 FULL JOIN
   _previous
-USING
-  (_join_key)
+  USING (_join_key)

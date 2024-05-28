@@ -9,15 +9,24 @@ version = "1"  # optional; default is set to 1
 
 friendly_name = "Firefox for Android Onboarding Funnel"
 description = "Funnel Steps for Firefox for Android Onboarding"
-steps = ["first_card",
-         "second_card",
-         "third_card",
-         "onboarding_completed"
+steps = [
+        "new_profile",
+        "first_card_impression",
+        "first_card_primary_click",
+        "first_card_secondary_click",
+        "second_card_impression",
+        "second_card_primary_click",
+        "second_card_secondary_click",
+        "third_card_impression",
+        "third_card_primary_click",
+        "third_card_secondary_click",
+         "onboarding_completed",
+         "sync_sign_in",
+         "default_browser"
          ]
 
-dimensions = ["funnel_id",
-              "action",
-              "element_type",
+dimensions = [
+              "funnel_id",
               "country",
               "locale",
               "android_version",
@@ -34,117 +43,200 @@ dimensions = ["funnel_id",
               "retained_week_2",
               "retained_week_4"
               ]
+[steps.new_profile]
+friendly_name = "New Profile"
+description = "Total New Profiles"
+data_source = "onboarding_events"
+# join_previous_step_on = "ac.client_id"
+select_expression = "ac.client_id"
+aggregation = "count distinct"
 
-[steps.first_card]
+[steps.first_card_impression]
 friendly_name = "First Card"
-description = "First Onboarding Card"
+description = "First Onboarding Card Impression"
 data_source = "onboarding_events"
-where_expression = """
-    `mozfun.map.get_key`(event_extra, 'sequence_position') = '1' AND
+# join_previous_step_on = "ac.client_id"
+select_expression = """CASE WHEN `mozfun.map.get_key`(event_extra, 'sequence_position') = '1' AND
+    `mozfun.map.get_key`(event_extra, 'action') = 'impression' AND
     event_name != 'completed' AND
-    event_category = 'onboarding'
-"""
-join_previous_step_on = "client_info.client_id"
-select_expression = "client_info.client_id"
+    event_category = 'onboarding' THEN ac.client_id END"""
 aggregation = "count distinct"
 
-[steps.second_card]
+[steps.first_card_primary_click]
+friendly_name = "First Card Primary Click"
+description = "First Onboarding Card Primary Button Click"
+data_source = "onboarding_events"
+# join_previous_step_on = "ac.client_id"
+select_expression = """CASE WHEN `mozfun.map.get_key`(event_extra, 'sequence_position') = '1' AND
+    `mozfun.map.get_key`(event_extra, 'action') = 'click' AND
+    `mozfun.map.get_key`(event_extra, 'element_type') = 'primary_button' AND
+    event_name != 'completed' AND
+    event_category = 'onboarding' THEN ac.client_id END"""
+aggregation = "count distinct"
+
+[steps.first_card_secondary_click]
+friendly_name = "First Card Secondary Click"
+description = "First Onboarding Card Secondary Button Click"
+data_source = "onboarding_events"
+# join_previous_step_on = "ac.client_id"
+select_expression = """CASE WHEN `mozfun.map.get_key`(event_extra, 'sequence_position') = '1' AND
+    `mozfun.map.get_key`(event_extra, 'action') = 'click' AND
+    `mozfun.map.get_key`(event_extra, 'element_type') = 'secondary_button' AND
+    event_name != 'completed' AND
+    event_category = 'onboarding' THEN ac.client_id END"""
+aggregation = "count distinct"
+
+[steps.second_card_impression]
 friendly_name = "Second Card"
-description = "Impression on Second Onboarding Card"
+description = "Second Onboarding Card Impression"
 data_source = "onboarding_events"
-where_expression = """
-    `mozfun.map.get_key`(event_extra, 'sequence_position') = '2' AND
+# join_previous_step_on = "ac.client_id"
+select_expression = """CASE WHEN `mozfun.map.get_key`(event_extra, 'sequence_position')= '2' AND
+    `mozfun.map.get_key`(event_extra, 'action') = 'impression' AND
     event_name != 'completed' AND
-    event_category = 'onboarding'
-"""
-join_previous_step_on = "client_info.client_id"
-select_expression = "client_info.client_id"
+    event_category = 'onboarding' THEN ac.client_id END"""
 aggregation = "count distinct"
 
-[steps.third_card]
-friendly_name = "Third Card"
-description = "Third Onboarding Card"
+[steps.second_card_primary_click]
+friendly_name = "Second Card Primary Click"
+description = "Second Onboarding Card Primary Button Click"
 data_source = "onboarding_events"
-where_expression = """
-    `mozfun.map.get_key`(event_extra, 'sequence_position') = '3' AND
+# join_previous_step_on = "ac.client_id"
+select_expression = """CASE WHEN `mozfun.map.get_key`(event_extra, 'sequence_position')= '2' AND
+    `mozfun.map.get_key`(event_extra, 'action') = 'click' AND
+    `mozfun.map.get_key`(event_extra, 'element_type') = 'primary_button' AND
     event_name != 'completed' AND
-    event_category = 'onboarding'
-"""
-join_previous_step_on = "client_info.client_id"
-select_expression = "client_info.client_id"
+    event_category = 'onboarding' THEN ac.client_id END"""
+aggregation = "count distinct"
+
+[steps.second_card_secondary_click]
+friendly_name = "Second Card secondary Click"
+description = "Second Onboarding Card secondary Button Click"
+data_source = "onboarding_events"
+# join_previous_step_on = "ac.client_id"
+select_expression = """CASE WHEN `mozfun.map.get_key`(event_extra, 'sequence_position')= '2' AND
+    `mozfun.map.get_key`(event_extra, 'action') = 'click' AND
+    `mozfun.map.get_key`(event_extra, 'element_type') = 'secondary_button' AND
+    event_name != 'completed' AND
+    event_category = 'onboarding' THEN ac.client_id END"""
+aggregation = "count distinct"
+
+[steps.third_card_impression]
+friendly_name = "Third Card"
+description = "Third Onboarding Card Impression"
+data_source = "onboarding_events"
+# join_previous_step_on = "ac.client_id"
+select_expression = """CASE WHEN `mozfun.map.get_key`(event_extra, 'sequence_position')= '3' AND
+    `mozfun.map.get_key`(event_extra, 'action') = 'impression' AND
+    event_name != 'completed' AND
+    event_category = 'onboarding' THEN ac.client_id END"""
+aggregation = "count distinct"
+
+[steps.third_card_primary_click]
+friendly_name = "Third Card Primary Click"
+description = "Third Onboarding Card Primary Button Click"
+data_source = "onboarding_events"
+# join_previous_step_on = "ac.client_id"
+select_expression = """CASE WHEN `mozfun.map.get_key`(event_extra, 'sequence_position')= '3' AND
+    `mozfun.map.get_key`(event_extra, 'action') = 'click' AND
+    `mozfun.map.get_key`(event_extra, 'element_type') = 'primary_button' AND
+    event_name != 'completed' AND
+    event_category = 'onboarding' THEN ac.client_id END"""
+aggregation = "count distinct"
+
+[steps.third_card_secondary_click]
+friendly_name = "Third Card secondary Click"
+description = "Third Onboarding Card secondary Button Click"
+data_source = "onboarding_events"
+# join_previous_step_on = "ac.client_id"
+select_expression = """CASE WHEN `mozfun.map.get_key`(event_extra, 'sequence_position')= '3' AND
+    `mozfun.map.get_key`(event_extra, 'action') = 'click' AND
+    `mozfun.map.get_key`(event_extra, 'element_type') = 'secondary_button' AND
+    event_name != 'completed' AND
+    event_category = 'onboarding' THEN ac.client_id END"""
 aggregation = "count distinct"
 
 [steps.onboarding_completed]
-friendly_name = "Third Card"
-description = "Third Onboarding Card"
+friendly_name = "Onboarding Completed"
+description = "Onboarding Completed Event"
 data_source = "onboarding_events"
-where_expression = """
+# join_previous_step_on = "ac.client_id"
+select_expression = """CASE WHEN
     event_name = 'completed' AND
-    event_category = 'onboarding'
-"""
-join_previous_step_on = "client_info.client_id"
-select_expression = "client_info.client_id"
+    event_category = 'onboarding' THEN ac.client_id END"""
+aggregation = "count distinct"
+
+[steps.sync_sign_in]
+friendly_name = "Signed into Sync"
+description = "User Successfully Signed into FxA (Signed in OR up)"
+data_source = "onboarding_events"
+select_expression = """CASE WHEN event_name IN ('sign_in', 'sign_up') AND
+    event_category = 'sync_auth'
+THEN ac.client_id END"""
+aggregation = "count distinct"
+
+[steps.default_browser]
+friendly_name = "Made Fenix Default Browser"
+description = "User changed their default browser to Firefox"
+data_source = "onboarding_events"
+select_expression = """CASE WHEN event_name = 'default_browser_changed' AND
+    event_category = 'events'
+THEN ac.client_id END"""
 aggregation = "count distinct"
 
 [data_sources]
 
 [data_sources.onboarding_events]
 from_expression = """
-  fenix.events_unnested eu
+  fenix.firefox_android_clients ac
   LEFT JOIN `moz-fx-data-shared-prod`.fenix_derived.funnel_retention_clients_week_4_v1 r
-  ON eu.client_info.client_id = r.client_id
-  LEFT JOIN fenix.firefox_android_clients ac
-  ON eu.client_info.client_id = ac.client_id
-"""
+  ON ac.client_id = r.client_id
+  LEFT JOIN
+    (SELECT * FROM fenix.events_unnested eu WHERE DATE(submission_timestamp) = @submission_date) eu
+  ON ac.client_id = eu.client_info.client_id
+  LEFT JOIN
+    (SELECT client_info.client_id,
+    ANY_VALUE(`mozfun.map.get_key`(event_extra, 'sequence_id')) AS funnel_id
+    FROM fenix.events_unnested
+    WHERE `mozfun.map.get_key`(event_extra, 'sequence_id') IS NOT NULL
+    AND DATE(submission_timestamp) = @submission_date
+    GROUP BY 1) funnel_ids
+  ON ac.client_id  = funnel_ids.client_id
 
-submission_date_column = "DATE(submission_timestamp)"
-client_id_column = "client_info.client_id"
+"""
+submission_date_column = "ac.submission_date"
+client_id_column = "ac.client_id"
 
 
 [dimensions]
 
-# these dimensions are sourced from events_unnested
-[dimensions.action]
-data_source = "onboarding_events"
-select_expression = "`mozfun.map.get_key`(event_extra, 'action')"
-friendly_name = "Card Action"
-description = "Action Taken on Card"
-client_id_column = "eu.client_id"
-
 [dimensions.funnel_id]
 data_source = "onboarding_events"
-select_expression = "`mozfun.map.get_key`(event_extra, 'sequence_id')"
+select_expression = "COALESCE(funnel_id, 'no_onboarding_reported')"
 friendly_name = "Funnel ID"
 description = "ID of the Onboarding Funnel"
-client_id_column = "eu.client_id"
-
-[dimensions.element_type]
-data_source = "onboarding_events"
-select_expression = "`mozfun.map.get_key`(event_extra, 'element_type')"
-friendly_name = "Element Type"
-description = "Type of Card Element Interacted With"
-client_id_column = "eu.client_id"
+client_id_column = "ac.client_id"
 
 # these dimensions are sourced from funnel_retention_clients_week_4_v1
 [dimensions.repeat_first_month_user]
 friendly_name = "Repeat First Month User"
 description = "Whether the Client is a Repeat First Month User"
 data_source = "onboarding_events"
-select_expression = "r.repeat_first_month_user"
+select_expression = "COALESCE(r.repeat_first_month_user, FALSE)"
 client_id_column = "r.client_id"
 
 [dimensions.retained_week_2]
 friendly_name = "Repeat First Month User"
 description = "Whether the Client is Retained in their Second Week"
 data_source = "onboarding_events"
-select_expression = "r.retained_week_2"
+select_expression = "COALESCE(r.retained_week_2, FALSE)"
 client_id_column = "r.client_id"
 
 [dimensions.retained_week_4]
 friendly_name = "Repeat First Month User"
 description = "Whether the Client is Retained in their Fourth Week"
 data_source = "onboarding_events"
-select_expression = "r.retained_week_4"
+select_expression = "COALESCE(r.retained_week_4, FALSE)"
 client_id_column = "r.client_id"
 
 # these dimensions are sourced from firefox_android_clients

@@ -215,24 +215,19 @@ merged_funnels AS (
     subscription_funnel_signup_aggregated
   FULL OUTER JOIN
     subscription_funnel_verify_aggregated
-  USING
-    (submission_date, funnel)
+    USING (submission_date, funnel)
   FULL OUTER JOIN
     subscription_funnel_start_subscription_aggregated
-  USING
-    (submission_date, funnel)
+    USING (submission_date, funnel)
   FULL OUTER JOIN
     subscription_error_funnel_signup_aggregated
-  USING
-    (submission_date, funnel)
+    USING (submission_date, funnel)
   FULL OUTER JOIN
     subscription_error_funnel_verify_aggregated
-  USING
-    (submission_date, funnel)
+    USING (submission_date, funnel)
   FULL OUTER JOIN
     subscription_error_funnel_error_subscription_aggregated
-  USING
-    (submission_date, funnel)
+    USING (submission_date, funnel)
 )
 SELECT
   *

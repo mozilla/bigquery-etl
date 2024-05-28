@@ -15,8 +15,7 @@ CREATE OR REPLACE FUNCTION map.set_key(map ANY TYPE, new_key ANY TYPE, new_value
         -- BQ doesn't allow you to FULL OUTER JOIN an
         -- unnested array directly, so we use a subquery
         (SELECT * FROM UNNEST(map)) AS existing_data
-      USING
-        (key)
+        USING (key)
     )
   )
 );

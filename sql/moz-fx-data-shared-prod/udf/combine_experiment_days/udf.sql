@@ -29,8 +29,7 @@ CREATE OR REPLACE FUNCTION udf.combine_experiment_days(
         UNNEST(prev) AS prev
       LEFT JOIN
         UNNEST(curr) AS curr
-      USING
-        (experiment, branch)
+        USING (experiment, branch)
       WHERE
         udf.combine_adjacent_days_28_bits(prev.bits, curr.bits) > 0
     ),
@@ -44,8 +43,7 @@ CREATE OR REPLACE FUNCTION udf.combine_experiment_days(
         UNNEST(curr) AS curr
       LEFT JOIN
         UNNEST(prev) AS prev
-      USING
-        (experiment, branch)
+        USING (experiment, branch)
       WHERE
         prev IS NULL
     )

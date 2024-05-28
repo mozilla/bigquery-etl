@@ -22,4 +22,3 @@ bigquery:
     expiration_days: null
   clustering:
     fields: [normalized_channel, sample_id]
-deprecated: false

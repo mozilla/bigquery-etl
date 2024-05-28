@@ -39,8 +39,7 @@ retention_calculation AS (
     clients_retention
   INNER JOIN
     clients_first_seen
-  USING
-    (client_id, sample_id)
+    USING (client_id, sample_id)
 )
 SELECT
   @submission_date AS submission_date,
@@ -53,9 +52,7 @@ SELECT
     ) AS first_seen_date
   ),
   days_seen_in_first_28_days > 1 AS repeat_first_month_user,
-  -- retention UDF works on 0 index basis, that's why for example week_1 is aliased as week 2 to make it a bit more user friendly.
-  -- retained_week_2 added for testing.
-  retention.day_27.active_in_week_1 AS retained_week_2,
+  -- retention UDF works on 0 index basis, that's why week_3 is aliased as week 4 to make it a bit more user friendly.
   retention.day_27.active_in_week_3 AS retained_week_4,
 FROM
   retention_calculation

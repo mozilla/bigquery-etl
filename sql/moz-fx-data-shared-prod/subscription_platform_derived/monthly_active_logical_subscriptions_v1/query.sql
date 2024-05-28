@@ -37,8 +37,7 @@ monthly_active_subscriptions AS (
     months
   JOIN
     `moz-fx-data-shared-prod.subscription_platform_derived.daily_active_logical_subscriptions_v1` AS daily_subscriptions
-  ON
-    (daily_subscriptions.date BETWEEN months.month_start_date AND months.month_end_date)
+    ON (daily_subscriptions.date BETWEEN months.month_start_date AND months.month_end_date)
   GROUP BY
     months.month_start_date,
     months.month_end_date,

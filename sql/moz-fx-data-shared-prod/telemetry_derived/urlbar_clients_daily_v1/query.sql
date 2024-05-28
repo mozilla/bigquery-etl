@@ -178,5 +178,4 @@ FROM
   combined_urlbar_picked
 FULL OUTER JOIN
   count_picked
-USING
-  (submission_date, client_id)
+  USING (submission_date, client_id)

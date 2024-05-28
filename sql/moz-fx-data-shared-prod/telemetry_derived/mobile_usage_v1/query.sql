@@ -70,8 +70,7 @@ nested_counts_by_slice_year_dense AS (
             WHERE
               submission_year = nested_counts_by_slice_year_sparse.submission_year
           )
-        USING
-          (submission_date)
+          USING (submission_date)
       ) AS counts_array
     )
   FROM

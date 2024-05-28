@@ -1,19 +1,19 @@
 friendly_name: Firefox Android Clients
 description: |-
-  First observations for Firefox Android clients of channel Release,
-  retrieved from the earliest pings: baseline, first_session and metrics.
-  The attributes stored in this table include the first attribution,
-  device, OS and ISP details.
-
   This table should be accessed through the user-facing view
   `fenix.firefox_android_clients`.
+
+  Contains a list of Firefox Android clients along with their first attributes
+  retrieved from baseline, first_session and metrics pings.
+
+  This includes information such as their initial geo, OS, ISP, and attribution info.
 
   For analysis purposes, use first_seen_date to query clients that
   effectively appeared on that date. The submission_date indicates
   when the server received the data.
 
-  The query for this table overwrites the whole table instead of writing to
-  a single partition, so manual backfills must use parameter --no_partition.
+  Note that the query for this table overwrites the whole table instead of writing to
+  a single partition.
 
   Proposal:
   https://docs.google.com/document/d/12bj4DhCybelqHVgOVq8KJlzgtbbUw3f68palNrv-gaM/.
@@ -22,9 +22,12 @@ description: |-
   https://help.adjust.com/en/article/tracker-urls#campaign-structure-parameters.
 owners:
 - lvargas@mozilla.com
+- kik@mozilla.com
 labels:
   application: firefox_android
-  incremental: true
+  # This query results in the table being rebuilt on each run
+  # by merging the existing and new records to update changes and insert new records.
+  incremental: false
   schedule: daily
   owner1: lvargas
 scheduling:
@@ -39,11 +42,9 @@ bigquery:
     type: day
     field: first_seen_date
     require_partition_filter: false
-    expiration_days: null
   clustering:
     fields:
     - channel
-    - sample_id
     - first_reported_country
-    - device_model
+    - distribution_id
 references: {}

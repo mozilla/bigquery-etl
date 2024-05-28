@@ -1,4 +1,15 @@
-WITH combined AS (
+WITH blocks AS (
+  SELECT
+    b.id,
+    b.queryType AS query_type,
+  FROM
+    `moz-fx-ads-prod.adm.blocks` b
+  WHERE
+    b.date <= @submission_date
+  QUALIFY
+    1 = ROW_NUMBER() OVER (PARTITION BY b.id ORDER BY b.date DESC)
+),
+combined AS (
   SELECT
     metrics.uuid.quick_suggest_context_id AS context_id,
     DATE(submission_timestamp) AS submission_date,
@@ -22,8 +33,12 @@ WITH combined AS (
     metrics.string.quick_suggest_match_type AS match_type,
     SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
     (metrics.boolean.quick_suggest_improve_suggest_experience) AS suggest_data_sharing_enabled,
+    blocks.query_type,
   FROM
-    firefox_desktop.quick_suggest
+    firefox_desktop.quick_suggest qs
+  LEFT JOIN
+    blocks
+    ON SAFE_CAST(qs.metrics.string.quick_suggest_block_id AS INT) = blocks.id
   WHERE
     metrics.string.quick_suggest_ping_type IN ("quicksuggest-click", "quicksuggest-impression")
   UNION ALL
@@ -51,6 +66,7 @@ WITH combined AS (
       OR request_id IS NOT NULL
       OR scenario = 'online'
     ) AS suggest_data_sharing_enabled,
+    CAST(NULL AS STRING) AS query_type,
   FROM
     contextual_services.quicksuggest_impression
   WHERE
@@ -82,12 +98,77 @@ WITH combined AS (
       OR request_id IS NOT NULL
       OR scenario = 'online'
     ) AS suggest_data_sharing_enabled,
+    CAST(NULL AS STRING) AS query_type,
   FROM
     contextual_services.quicksuggest_click
   WHERE
     -- For firefox 116+ use firefox_desktop.quick_suggest instead
     -- https://bugzilla.mozilla.org/show_bug.cgi?id=1836283
     SAFE_CAST(metadata.user_agent.version AS INT64) < 116
+  UNION ALL
+  -- Suggest Android
+  SELECT
+    metrics.uuid.fx_suggest_context_id AS context_id,
+    DATE(submission_timestamp) AS submission_date,
+    'suggest' AS source,
+    IF(
+      metrics.string.fx_suggest_ping_type = "fxsuggest-click",
+      "click",
+      "impression"
+    ) AS event_type,
+    'phone' AS form_factor,
+    normalized_country_code AS country,
+    metadata.geo.subdivision1 AS subdivision1,
+    metrics.string.fx_suggest_advertiser AS advertiser,
+    client_info.app_channel AS release_channel,
+    metrics.quantity.fx_suggest_position AS position,
+    -- Only remote settings is in use on mobile
+    'remote settings' AS provider,
+    -- Only standard suggestions are in use on mobile
+    'firefox-suggest' AS match_type,
+    SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
+    -- This is the opt-in for Merino, not in use on mobile
+    CAST(NULL AS BOOLEAN) AS suggest_data_sharing_enabled,
+    blocks.query_type,
+  FROM
+    `moz-fx-data-shared-prod.fenix.fx_suggest` fs
+  LEFT JOIN
+    blocks
+    ON fs.metrics.quantity.fx_suggest_block_id = blocks.id
+  WHERE
+    metrics.string.fx_suggest_ping_type IN ("fxsuggest-click", "fxsuggest-impression")
+  UNION ALL
+  -- Suggest iOS
+  SELECT
+    metrics.uuid.fx_suggest_context_id AS context_id,
+    DATE(submission_timestamp) AS submission_date,
+    'suggest' AS source,
+    IF(
+      metrics.string.fx_suggest_ping_type = "fxsuggest-click",
+      "click",
+      "impression"
+    ) AS event_type,
+    'phone' AS form_factor,
+    normalized_country_code AS country,
+    metadata.geo.subdivision1 AS subdivision1,
+    metrics.string.fx_suggest_advertiser AS advertiser,
+    client_info.app_channel AS release_channel,
+    metrics.quantity.fx_suggest_position AS position,
+    -- Only remote settings is in use on mobile
+    'remote settings' AS provider,
+    -- Only standard suggestions are in use on mobile
+    'firefox-suggest' AS match_type,
+    SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
+    -- This is the opt-in for Merino, not in use on mobile
+    CAST(NULL AS BOOLEAN) AS suggest_data_sharing_enabled,
+    blocks.query_type,
+  FROM
+    `moz-fx-data-shared-prod.firefox_ios.fx_suggest` fs
+  LEFT JOIN
+    blocks
+    ON fs.metrics.quantity.fx_suggest_block_id = blocks.id
+  WHERE
+    metrics.string.fx_suggest_ping_type IN ("fxsuggest-click", "fxsuggest-impression")
   UNION ALL
   SELECT
     metrics.uuid.top_sites_context_id AS context_id,
@@ -109,7 +190,8 @@ WITH combined AS (
     NULL AS match_type,
     SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
     -- 'suggest_data_sharing_enabled' is only available for `quicksuggest_*` tables
-    NULL AS suggest_data_sharing_enabled,
+    CAST(NULL AS BOOLEAN) AS suggest_data_sharing_enabled,
+    CAST(NULL AS STRING) AS query_type,
   FROM
     firefox_desktop.top_sites
   WHERE
@@ -136,6 +218,7 @@ WITH combined AS (
     SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
     -- 'suggest_data_sharing_enabled' is only available for `quicksuggest_*` tables
     NULL AS suggest_data_sharing_enabled,
+    CAST(NULL AS STRING) AS query_type,
   FROM
     contextual_services.topsites_impression
   WHERE
@@ -164,6 +247,7 @@ WITH combined AS (
     SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
     -- 'suggest_data_sharing_enabled' is only available for `quicksuggest_*` tables
     NULL AS suggest_data_sharing_enabled,
+    CAST(NULL AS STRING) AS query_type,
   FROM
     contextual_services.topsites_click
   WHERE
@@ -193,6 +277,7 @@ WITH combined AS (
     normalized_os,
     -- 'suggest_data_sharing_enabled' is only available for `quicksuggest_*` tables
     NULL AS suggest_data_sharing_enabled,
+    CAST(NULL AS STRING) AS query_type,
   FROM
     org_mozilla_firefox.topsites_impression
   UNION ALL
@@ -216,6 +301,7 @@ WITH combined AS (
     normalized_os,
     -- 'suggest_data_sharing_enabled' is only available for `quicksuggest_*` tables
     NULL AS suggest_data_sharing_enabled,
+    CAST(NULL AS STRING) AS query_type,
   FROM
     org_mozilla_firefox_beta.topsites_impression
   UNION ALL
@@ -239,6 +325,7 @@ WITH combined AS (
     normalized_os,
     -- 'suggest_data_sharing_enabled' is only available for `quicksuggest_*` tables
     NULL AS suggest_data_sharing_enabled,
+    CAST(NULL AS STRING) AS query_type,
   FROM
     org_mozilla_fenix.topsites_impression
   UNION ALL
@@ -271,6 +358,7 @@ WITH combined AS (
     'iOS' AS normalized_os,
     -- 'suggest_data_sharing_enabled' is only available for `quicksuggest_*` tables
     NULL AS suggest_data_sharing_enabled,
+    CAST(NULL AS STRING) AS query_type,
   FROM
     org_mozilla_ios_firefox.topsites_impression
   UNION ALL
@@ -303,6 +391,7 @@ WITH combined AS (
     'iOS' AS normalized_os,
     -- 'suggest_data_sharing_enabled' is only available for `quicksuggest_*` tables
     NULL AS suggest_data_sharing_enabled,
+    CAST(NULL AS STRING) AS query_type,
   FROM
     org_mozilla_ios_firefoxbeta.topsites_impression
 ),
@@ -323,9 +412,10 @@ with_event_count AS (
     context_id
 )
 SELECT
-  * EXCEPT (context_id, user_event_count),
+  * EXCEPT (context_id, user_event_count, query_type),
   COUNT(*) AS event_count,
   COUNT(DISTINCT(context_id)) AS user_count,
+  query_type,
 FROM
   with_event_count
 WHERE
@@ -350,4 +440,5 @@ GROUP BY
   provider,
   match_type,
   normalized_os,
-  suggest_data_sharing_enabled
+  suggest_data_sharing_enabled,
+  query_type

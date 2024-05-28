@@ -33,8 +33,7 @@ WITH shredder AS (
     `moz-fx-data-shredder.shredder_state.tasks`
   LEFT JOIN
     `moz-fx-data-shredder.shredder_state.shredder_state`
-  USING
-    (task_id, end_date)
+    USING (task_id, end_date)
   GROUP BY
     task_id,
     target, -- every task has exactly one target
@@ -83,8 +82,7 @@ progress_by_target AS (
     shredder
   LEFT JOIN
     successful_jobs
-  USING
-    (project_id, job_id)
+    USING (project_id, job_id)
   GROUP BY
     target,
     airflow_task_id,
@@ -141,8 +139,7 @@ progress AS (
     progress_by_target
   LEFT JOIN
     avg_bytes_per_slot_ms AS _
-  USING
-    (airflow_task_id, end_date)
+    USING (airflow_task_id, end_date)
   GROUP BY
     airflow_task_id,
     end_date

@@ -1,24 +1,25 @@
-description: Daily summary Google analytics data for blog.mozilla.org
-  landing page
 friendly_name: Blogs Landing Page Summary
+description: |-
+  Daily summary Google analytics data for blog.mozilla.org landing page
+owners:
+- ascholtz@mozilla.com
 labels:
   incremental: true
   schedule: daily
-owners:
-  - ascholtz@mozilla.com
+  dag: bqetl_google_analytics_derived
+  owner1: ascholtz
 scheduling:
   dag_name: bqetl_google_analytics_derived
-  referenced_tables:
-    - ["moz-fx-data-marketing-prod", "ga_derived", "blogs_goals_v1"]
-    - ["moz-fx-data-marketing-prod", "ga_derived", "blogs_sessions_v1"]
 bigquery:
   time_partitioning:
     type: day
     field: date
     require_partition_filter: false
+    expiration_days: null
   clustering:
     fields:
-      - cleaned_landing_page
-      - browser
-      - blog
-      - subblog
+    - cleaned_landing_page
+    - browser
+    - blog
+    - subblog
+references: {}

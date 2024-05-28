@@ -6,5 +6,6 @@
   metrics:
     string:
       first_session_network: 'Test Adjust'
+      meta_attribution_app: 'Test Meta'
   ping_info:
     seq: 0

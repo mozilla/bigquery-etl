@@ -46,5 +46,4 @@ FROM
   current_sample
 FULL JOIN
   previous
-USING
-  (user_id)
+  USING (user_id)

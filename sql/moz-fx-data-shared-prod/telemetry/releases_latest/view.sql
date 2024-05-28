@@ -54,8 +54,7 @@ joined AS (
     dates_and_channels
   FULL OUTER JOIN
     releases
-  USING
-    (`date`, channel)
+    USING (`date`, channel)
   WINDOW
     latest_values AS (
       PARTITION BY

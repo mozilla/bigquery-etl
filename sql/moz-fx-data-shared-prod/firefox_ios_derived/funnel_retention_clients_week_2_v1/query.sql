@@ -38,8 +38,7 @@ retention_calculation AS (
     clients_retention
   INNER JOIN
     clients_first_seen
-  USING
-    (client_id, sample_id)
+    USING (client_id, sample_id)
 )
 SELECT
   @submission_date AS submission_date,

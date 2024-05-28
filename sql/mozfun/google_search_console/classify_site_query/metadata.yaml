@@ -1,0 +1,3 @@
+friendly_name: Classify Site Query
+description: >-
+  Classify a Google search query for a site as "Anonymized", "Firefox Brand", "Pocket Brand", "Mozilla Brand", or "Non-Brand".

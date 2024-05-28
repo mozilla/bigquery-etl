@@ -57,15 +57,15 @@ build_ids AS (
     -- for context see https://github.com/mozilla/glam/issues/1575#issuecomment-946880387
     CASE
       WHEN channel = 'release'
-        THEN COUNT(DISTINCT client_id) > 625000/(@max_sample_id - @min_sample_id + 1)
+        THEN COUNT(DISTINCT client_id) > 625000 / (@max_sample_id - @min_sample_id + 1)
       WHEN channel = 'beta'
-        THEN COUNT(DISTINCT client_id) > 9000/(@max_sample_id - @min_sample_id + 1)
+        THEN COUNT(DISTINCT client_id) > 9000 / (@max_sample_id - @min_sample_id + 1)
       WHEN channel = 'nightly'
-        THEN COUNT(DISTINCT client_id) > 375/(@max_sample_id - @min_sample_id + 1)
-      ELSE COUNT(DISTINCT client_id) > 100/(@max_sample_id - @min_sample_id + 1)
+        THEN COUNT(DISTINCT client_id) > 375 / (@max_sample_id - @min_sample_id + 1)
+      ELSE COUNT(DISTINCT client_id) > 100 / (@max_sample_id - @min_sample_id + 1)
     END
 ),
-all_combos as (
+all_combos AS (
   SELECT
     * EXCEPT (os, app_build_id),
     COALESCE(combo.os, table.os) AS os,
@@ -74,19 +74,17 @@ all_combos as (
     filtered_data table
   INNER JOIN
     build_ids
-  USING
-    (app_build_id, channel)
+    USING (app_build_id, channel)
   CROSS JOIN
     static_combos combo
 ),
 non_normalized_histograms AS (
   SELECT
-    * EXCEPT (sampled) REPLACE(
-        mozfun.map.sum(ARRAY_CONCAT_AGG(aggregates)) AS aggregates
-      )
+    * EXCEPT (sampled) REPLACE(mozfun.map.sum(ARRAY_CONCAT_AGG(aggregates)) AS aggregates)
   FROM
     all_combos
-  WHERE sample_id >= @min_sample_id
+  WHERE
+    sample_id >= @min_sample_id
     AND sample_id <= @max_sample_id
   GROUP BY
     sample_id,

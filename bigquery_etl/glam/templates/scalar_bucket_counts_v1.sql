@@ -22,8 +22,7 @@ valid_clients_scalar_aggregates AS (
     {{ source_table }}
   INNER JOIN
     build_ids
-  USING
-    (app_build_id, channel)
+    USING (app_build_id, channel)
 ),
 bucketed_booleans AS (
   SELECT

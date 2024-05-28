@@ -79,8 +79,7 @@ site_data AS (
     sessions_table
   LEFT JOIN
     download_aggregates
-  ON
-    sessions_table.date = download_aggregates.date
+    ON sessions_table.date = download_aggregates.date
     AND sessions_table.device_category = download_aggregates.device_category
     AND sessions_table.operating_system = download_aggregates.operating_system
     AND sessions_table.browser = download_aggregates.browser
@@ -117,10 +116,16 @@ SELECT
   sessions,
   non_fx_sessions,
   downloads,
-  non_fx_downloads
+  non_fx_downloads,
+  `moz-fx-data-shared-prod`.udf.funnel_derived_ga_metrics(
+    device_category,
+    browser,
+    operating_system
+  ) AS funnel_derived,
+  `moz-fx-data-shared-prod`.udf.distribution_model_ga_metrics() AS distribution_model,
+  `moz-fx-data-shared-prod`.udf.partner_org_ga_metrics() AS partner_org
 FROM
   site_data
 LEFT JOIN
   `moz-fx-data-shared-prod.static.third_party_standardized_country_names` AS standardized_country_list
-ON
-  site_data.country = standardized_country_list.raw_country
+  ON site_data.country = standardized_country_list.raw_country

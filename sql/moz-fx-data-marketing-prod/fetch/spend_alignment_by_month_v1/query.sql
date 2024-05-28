@@ -29,8 +29,7 @@ FROM
   fetch_summary
 LEFT JOIN
   detailed_summary
-USING
-  (month, year)
+  USING (month, year)
 ORDER BY
   year,
   month

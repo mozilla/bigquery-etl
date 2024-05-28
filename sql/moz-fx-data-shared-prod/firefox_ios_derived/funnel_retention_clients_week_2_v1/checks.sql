@@ -1,8 +1,14 @@
-#fail
-{{ is_unique(["client_id"]) }}
-#fail
+{#
+-- Disabled for now due to known duplication issue in Fenix data, see:
+-- https://bugzilla.mozilla.org/show_bug.cgi?id=1887708
+-- #warn
+-- {{ is_unique(["client_id"]) }}
+#}
+
+#warn
 {{ min_row_count(1, "submission_date = @submission_date") }}
-#fail
+
+#warn
 SELECT
   IF(
     DATE_DIFF(submission_date, first_seen_date, DAY) <> 13,
@@ -11,5 +17,7 @@ SELECT
     ),
     NULL
   )
-FROM `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`
-WHERE submission_date = @submission_date;
+FROM
+  `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`
+WHERE
+  submission_date = @submission_date;

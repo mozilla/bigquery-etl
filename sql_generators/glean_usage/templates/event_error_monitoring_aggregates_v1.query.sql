@@ -17,7 +17,11 @@
       client_info.app_channel AS channel,
       metrics.labeled_counter
     FROM
-      `{{ project_id }}.{{ dataset['bq_dataset_family'] }}_stable.events_v1`
+      `{{ project_id }}.{{ dataset['bq_dataset_family'] }}_stable.{{ 
+        default_events_table
+        if dataset['bq_dataset_family'] not in events_table_overwrites
+        else events_table_overwrites[dataset['bq_dataset_family']] 
+      }}`
     WHERE
         DATE(submission_timestamp) = @submission_date
   )
@@ -70,7 +74,11 @@
       client_info.app_channel AS channel,
       metrics.labeled_counter
     FROM
-      `{{ project_id }}.{{ dataset['bq_dataset_family'] }}_stable.accounts_events_v1`
+      `{{ project_id }}.{{ dataset['bq_dataset_family'] }}_stable.{{ 
+        default_events_table
+        if dataset['bq_dataset_family'] not in events_table_overwrites
+        else events_table_overwrites[dataset['bq_dataset_family']] 
+      }}`
     WHERE
         DATE(submission_timestamp) = @submission_date
   )

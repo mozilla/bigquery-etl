@@ -135,17 +135,13 @@ FROM
   total_downloads
 LEFT JOIN
   per_source
-USING
-  (submission_date, hashed_addon_id)
+  USING (submission_date, hashed_addon_id)
 LEFT JOIN
   per_content
-USING
-  (submission_date, hashed_addon_id)
+  USING (submission_date, hashed_addon_id)
 LEFT JOIN
   per_medium
-USING
-  (submission_date, hashed_addon_id)
+  USING (submission_date, hashed_addon_id)
 LEFT JOIN
   per_campaign
-USING
-  (submission_date, hashed_addon_id)
+  USING (submission_date, hashed_addon_id)

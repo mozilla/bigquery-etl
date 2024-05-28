@@ -1,4 +1,3 @@
----
 friendly_name: FxA Users Last Seen
 description: |
   Usage aggregations per FxA user per day over a 28-day window.
@@ -8,23 +7,18 @@ description: |
   These fields are calculated from `fxa_users_daily_v1` table
   which only looks at the following category of events:
   auth, auth_bounce, content, oauth.
-
 owners:
-  - kik@mozilla.com
+- kik@mozilla.com
 labels:
   application: fxa
   incremental: true
   schedule: daily
+# TODO: Once fxa_users_last_seen_v2 backfill is completed and data confirmed to be heatlhy
+# this query should be descheduled, description and the corresponding view updated.
 scheduling:
   dag_name: bqetl_fxa_events
   depends_on_past: true
   start_date: '2019-04-23'
-  referenced_tables:
-    - [
-      'moz-fx-data-shared-prod',
-      'firefox_accounts_derived',
-      'fxa_users_daily_v1'
-    ]
 bigquery:
   time_partitioning:
     type: day
@@ -33,4 +27,5 @@ bigquery:
     expiration_days: null
   clustering:
     fields:
-      - user_id
+    - user_id
+references: {}

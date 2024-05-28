@@ -1,0 +1,11 @@
+friendly_name: Firefox Major Release Dates
+description: |-
+  Dates for major firefox releases in release, beta and nightly
+owners:
+- leli@mozilla.com
+labels:
+  incremental: false
+  owner1: leli@mozilla.com
+scheduling:
+  dag_name: bqetl_telemetry_dev_cycle
+  date_partition_parameter: null

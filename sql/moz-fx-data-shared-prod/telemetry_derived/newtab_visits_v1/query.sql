@@ -20,7 +20,16 @@ WITH events_unnested AS (
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND category IN ('newtab', 'topsites', 'newtab.search', 'newtab.search.ad', 'pocket')
-    AND name IN ('closed', 'opened', 'impression', 'issued', 'click', 'save', 'topic_click')
+    AND name IN (
+      'closed',
+      'opened',
+      'impression',
+      'issued',
+      'click',
+      'save',
+      'topic_click',
+      'dismiss'
+    )
 ),
 visit_metadata AS (
   SELECT
@@ -32,6 +41,7 @@ visit_metadata AS (
     ANY_VALUE(normalized_os_version) AS normalized_os_version,
     ANY_VALUE(normalized_country_code) AS country_code,
     ANY_VALUE(normalized_channel) AS channel,
+    ANY_VALUE(client_info.locale) AS locale,
     ANY_VALUE(client_info.app_display_version) AS browser_version,
     "Firefox Desktop" AS browser_name,
     ANY_VALUE(metrics.string.search_engine_default_engine_id) AS default_search_engine,
@@ -40,6 +50,7 @@ visit_metadata AS (
     ANY_VALUE(metrics.boolean.pocket_enabled) AS pocket_enabled,
     ANY_VALUE(metrics.boolean.pocket_sponsored_stories_enabled) AS pocket_sponsored_stories_enabled,
     ANY_VALUE(metrics.boolean.topsites_enabled) AS topsites_enabled,
+    ANY_VALUE(metrics.boolean.topsites_sponsored_enabled) AS topsites_sponsored_enabled,
     ANY_VALUE(metrics.string.newtab_homepage_category) AS newtab_homepage_category,
     ANY_VALUE(metrics.string.newtab_newtab_category) AS newtab_newtab_category,
     ANY_VALUE(metrics.boolean.newtab_search_enabled) AS newtab_search_enabled,
@@ -51,7 +62,8 @@ visit_metadata AS (
     ANY_VALUE(
       IF(event_name = "opened", mozfun.map.get_key(event_details, "source"), NULL)
     ) AS newtab_open_source,
-    LOGICAL_OR(event_name IN ("click", "issued", "save")) AS had_non_impression_engagement
+    LOGICAL_OR(event_name IN ("click", "issued", "save")) AS had_non_impression_engagement,
+    LOGICAL_OR(event_name IN ("click", "save")) AS had_non_search_engagement
   FROM
     events_unnested
   GROUP BY
@@ -150,12 +162,20 @@ topsites_events AS (
       event_name = 'click'
       AND mozfun.map.get_key(event_details, "is_sponsored") = "false"
     ) AS organic_topsite_tile_clicks,
+    COUNTIF(event_name = 'dismiss') AS topsite_tile_dismissals,
+    COUNTIF(
+      event_name = 'dismiss'
+      AND mozfun.map.get_key(event_details, "is_sponsored") = "true"
+    ) AS sponsored_topsite_tile_dismissals,
+    COUNTIF(
+      event_name = 'dismiss'
+      AND mozfun.map.get_key(event_details, "is_sponsored") = "false"
+    ) AS organic_topsite_tile_dismissals,
   FROM
     events_unnested
   LEFT JOIN
     UNNEST(metrics.string_list.newtab_sov_allocation) sov
-  ON
-    SAFE_CAST(mozfun.map.get_key(event_details, "position") AS INT64) = SAFE_CAST(
+    ON SAFE_CAST(mozfun.map.get_key(event_details, "position") AS INT64) = SAFE_CAST(
       JSON_EXTRACT(sov, "$.pos") AS INT64
     )
   WHERE
@@ -183,7 +203,10 @@ topsites_summary AS (
         organic_topsite_tile_clicks,
         topsite_tile_impressions,
         sponsored_topsite_tile_impressions,
-        organic_topsite_tile_impressions
+        organic_topsite_tile_impressions,
+        topsite_tile_dismissals,
+        sponsored_topsite_tile_dismissals,
+        organic_topsite_tile_dismissals
       )
     ) AS topsite_tile_interactions
   FROM
@@ -259,16 +282,13 @@ combined_newtab_activity AS (
     visit_metadata
   LEFT JOIN
     search_summary
-  USING
-    (newtab_visit_id)
+    USING (newtab_visit_id)
   LEFT JOIN
     topsites_summary
-  USING
-    (newtab_visit_id)
+    USING (newtab_visit_id)
   LEFT JOIN
     pocket_summary
-  USING
-    (newtab_visit_id)
+    USING (newtab_visit_id)
   WHERE
    -- Keep only rows with interactions, unless we receive a valid newtab.opened event.
    -- This is meant to drop only interactions that only have a newtab.closed event on the same partition
@@ -296,5 +316,4 @@ FROM
   combined_newtab_activity
 LEFT JOIN
   client_profile_info
-USING
-  (legacy_telemetry_client_id)
+  USING (legacy_telemetry_client_id)

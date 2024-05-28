@@ -39,5 +39,4 @@ FROM
   with_pinfo AS usage
 LEFT JOIN
   `moz-fx-data-shared-prod.static.country_codes_v1` AS cc
-ON
-  (usage.country = cc.code)
+  ON (usage.country = cc.code)

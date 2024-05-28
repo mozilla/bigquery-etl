@@ -41,8 +41,7 @@ clients_with_adblocker_addons AS (
     UNNEST(active_addons) a
   INNER JOIN
     adblocker_addons
-  USING
-    (addon_id)
+    USING (addon_id)
   WHERE
     submission_date = @submission_date
     AND NOT a.user_disabled
@@ -105,8 +104,7 @@ combined_access_point AS (
     telemetry.clients_daily
   LEFT JOIN
     clients_with_adblocker_addons
-  USING
-    (client_id, submission_date)
+    USING (client_id, submission_date)
 ),
 augmented AS (
   SELECT

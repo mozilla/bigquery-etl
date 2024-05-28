@@ -1,4 +1,5 @@
 """Generate query directories."""
+
 import os
 from dataclasses import dataclass
 from pathlib import Path
@@ -12,7 +13,6 @@ from bigquery_etl.cli.utils import is_valid_project, use_cloud_function_option
 from bigquery_etl.format_sql.formatter import reformat
 
 TEMPLATED_FILES = {
-    "init.sql",
     "metadata.yaml",
     "query.sql",
     "stored_procedure.sql",
@@ -113,7 +113,7 @@ class TemplatedDir:
 
 def get_query_dirs(path):
     """Walk a path to get all templated query dirs."""
-    for directory, sub_dirs, files in os.walk(path):
+    for directory, sub_dirs, files in os.walk(path, followlinks=True):
         non_hidden = {f for f in files if not f.startswith(".")}
         if non_hidden and non_hidden.issubset(ALLOWED_FILES):
             dir_path = Path(directory)

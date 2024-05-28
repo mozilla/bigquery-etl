@@ -9,5 +9,4 @@ FROM
   `moz-fx-data-shared-prod.activity_stream_bi.impression_stats_flat_v1` AS stats
 LEFT JOIN
   `moz-fx-data-shared-prod.pocket.spoc_tile_ids` AS spoc_tile_ids
-USING
-  (tile_id)
+  USING (tile_id)

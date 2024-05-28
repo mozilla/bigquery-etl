@@ -2,12 +2,13 @@
 
 import re
 import sys
+from glob import glob
 from itertools import groupby
 from pathlib import Path
 from subprocess import CalledProcessError
 from typing import Dict, Iterator, List, Tuple
 
-import click
+import rich_click as click
 import sqlglot
 import yaml
 
@@ -19,13 +20,17 @@ stable_views = None
 
 
 def _raw_table_name(table: sqlglot.exp.Table) -> str:
-    return (
+    with_replacements = (
         table.sql("bigquery", comments=False)
         # remove alias
         .split(" AS ", 1)[0]
         # remove quotes
         .replace("`", "")
     )
+    # remove PIVOT/UNPIVOT
+    removed_pivots = re.sub(" (?:UN)?PIVOT.*$", "", with_replacements)
+
+    return removed_pivots
 
 
 def extract_table_references(sql: str) -> List[str]:
@@ -34,24 +39,10 @@ def extract_table_references(sql: str) -> List[str]:
     if re.search(r"^\s*DECLARE\b", sql, flags=re.MULTILINE):
         return []
     # sqlglot parses UDFs with keyword names incorrectly:
-    # https://github.com/tobymao/sqlglot/issues/1535
+    # https://github.com/tobymao/sqlglot/issues/3332
     sql = re.sub(
-        r"\.(range|true|false|null)\(",
-        r".\1_(",
-        sql,
-        flags=re.IGNORECASE,
-    )
-    # sqlglot doesn't suppport OPTIONS on UDFs
-    sql = re.sub(
-        r"""OPTIONS\s*\(("([^"]|\\")*"|'([^']|\\')*'|[^)])*\)""",
-        "",
-        sql,
-        flags=re.MULTILINE | re.IGNORECASE,
-    )
-    # sqlglot doesn't fully support byte strings
-    sql = re.sub(
-        r"""b(["'])""",
-        r"\1",
+        r"\.(true|false|null)\(",
+        r".`\1`(",
         sql,
         flags=re.IGNORECASE,
     )
@@ -145,7 +136,11 @@ def _get_references(
     file_paths = {
         path
         for parent in map(Path, paths or ["sql"])
-        for path in (parent.glob("**/*.sql") if parent.is_dir() else [parent])
+        for path in (
+            map(Path, glob(f"{parent}/**/*.sql", recursive=True))
+            if parent.is_dir()
+            else [parent]
+        )
         if not path.name.endswith(".template.sql")  # skip templates
     }
     fail = False

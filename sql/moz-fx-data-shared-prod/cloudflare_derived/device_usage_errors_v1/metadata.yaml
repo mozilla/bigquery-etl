@@ -1,0 +1,16 @@
+friendly_name: Cloudflare Device Usage Errors
+description: Log table for any errors from cloudflare_device_usage DAG
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: false
+  owner1: kwindau@mozilla.com
+bigquery:
+  time_partitioning:
+    type: day
+    field: dte
+    require_partition_filter: false
+    expiration_days: null
+  clustering:
+    fields:
+    - location

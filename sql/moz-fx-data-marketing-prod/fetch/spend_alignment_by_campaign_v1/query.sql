@@ -25,7 +25,6 @@ FROM
   fetch_summary
 LEFT JOIN
   detailed_summary
-USING
-  (campaign)
+  USING (campaign)
 ORDER BY
   fetch_summary_spend DESC

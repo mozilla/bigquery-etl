@@ -36,8 +36,7 @@ JOIN
     GROUP BY
       job_start_time
   ) AS languages
-ON
-  metadata.started_at = languages.job_start_time
+  ON metadata.started_at = languages.job_start_time
 WHERE
   status = 'SUCCESS'
 ORDER BY

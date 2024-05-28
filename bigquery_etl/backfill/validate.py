@@ -1,24 +1,20 @@
 """Validate backfill entries."""
+
 from pathlib import Path
 from typing import List
 
 from ..backfill.parse import DEFAULT_REASON, DEFAULT_WATCHER, Backfill, BackfillStatus
 
 
-def validate_duplicate_entry_dates(entry_1: Backfill, entry_2: Backfill) -> None:
+def validate_duplicate_entry_dates(
+    backfill_entry: Backfill, backfills: list[Backfill]
+) -> None:
     """Check if backfill entries have the same entry dates."""
-    if entry_1.entry_date == entry_2.entry_date:
-        raise ValueError(f"Duplicate backfill with entry date: {entry_1.entry_date}.")
-
-
-def validate_overlap_dates(entry_1: Backfill, entry_2: Backfill) -> None:
-    """Check overlap dates between two backfill entries."""
-    if max(entry_1.start_date, entry_2.start_date) <= min(
-        entry_1.end_date, entry_2.end_date
-    ):
-        raise ValueError(
-            f"Existing backfill entry with overlap dates from: {entry_2.entry_date}."
-        )
+    for b in backfills:
+        if backfill_entry.entry_date == b.entry_date:
+            raise ValueError(
+                f"Duplicate backfill with entry date: {backfill_entry.entry_date}."
+            )
 
 
 def validate_excluded_dates(entry: Backfill) -> None:
@@ -33,25 +29,23 @@ def validate_excluded_dates(entry: Backfill) -> None:
         )
 
 
-def validate_reason(entry: Backfill) -> None:
-    """Check if backfill reason is the same as default or empty."""
-    if not entry.reason or entry.reason == DEFAULT_REASON:
-        raise ValueError(f"Invalid Reason: {entry.reason}.")
+def validate_default_reason(entry: Backfill) -> None:
+    """Check if backfill reason is the same as default."""
+    if entry.reason == DEFAULT_REASON:
+        raise ValueError(f"Default reason found: {entry.reason}.")
 
 
-def validate_watchers(entry: Backfill) -> None:
-    """Check if backfill watcher is the same as default or duplicated."""
-    if DEFAULT_WATCHER in entry.watchers or len(entry.watchers) != len(
-        set(entry.watchers)
-    ):
-        raise ValueError(f"Duplicate or default watcher in ({entry.watchers}).")
+def validate_default_watchers(entry: Backfill) -> None:
+    """Check if backfill watcher is the same as default."""
+    if DEFAULT_WATCHER in entry.watchers:
+        raise ValueError(f"Default watcher found: ({entry.watchers}).")
 
 
 def validate_entries_are_sorted(backfills: List[Backfill]) -> None:
-    """Check if list of backfill entries are sorted."""
-    entry_dates = [backfill.entry_date for backfill in backfills]
+    """Check if list of backfill entries are sorted by entry dates."""
+    entry_dates = [b.entry_date for b in backfills]
     if not entry_dates == sorted(entry_dates, reverse=True):
-        raise ValueError("Backfill entries are not sorted")
+        raise ValueError("Backfill entries are not sorted by entry dates")
 
 
 def validate_file(file: Path) -> None:
@@ -60,18 +54,26 @@ def validate_file(file: Path) -> None:
     validate_entries(backfills)
 
 
+def validate_duplicate_entry_with_initiate_status(
+    backfill_entry: Backfill, backfills: list
+) -> None:
+    """Check if list of backfill entries have more than one entry with Initiate Status."""
+    if backfill_entry.status == BackfillStatus.INITIATE:
+        for b in backfills:
+            if b.status == BackfillStatus.INITIATE:
+                raise ValueError(
+                    "Backfill entries cannot contain more than one entry with Initiate status"
+                )
+
+
 def validate_entries(backfills: list) -> None:
     """Validate a list of backfill entries."""
-    for i, backfill_entry_1 in enumerate(backfills):
-        validate_watchers(backfill_entry_1)
-        validate_reason(backfill_entry_1)
-        validate_excluded_dates(backfill_entry_1)
-
-        # validate against other entries with drafting status
-        if backfill_entry_1.status == BackfillStatus.DRAFTING:
-            for backfill_entry_2 in backfills[i + 1 :]:
-                if backfill_entry_2.status == BackfillStatus.DRAFTING:
-                    validate_duplicate_entry_dates(backfill_entry_1, backfill_entry_2)
-                    validate_overlap_dates(backfill_entry_1, backfill_entry_2)
-
+    for i, backfill_entry in enumerate(backfills):
+        validate_default_watchers(backfill_entry)
+        validate_default_reason(backfill_entry)
+        validate_duplicate_entry_dates(backfill_entry, backfills[i + 1 :])
+        validate_excluded_dates(backfill_entry)
+        validate_duplicate_entry_with_initiate_status(
+            backfill_entry, backfills[i + 1 :]
+        )
     validate_entries_are_sorted(backfills)

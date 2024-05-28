@@ -1,4 +1,5 @@
 """Monitor the number of rows deleted by shredder."""
+
 import datetime
 from argparse import ArgumentParser
 from multiprocessing.pool import ThreadPool
@@ -54,8 +55,7 @@ FROM
   shredder
 JOIN
   successful_jobs
-USING
-  (project_id, job_id)
+  USING (project_id, job_id)
 """
 
 parser = ArgumentParser()

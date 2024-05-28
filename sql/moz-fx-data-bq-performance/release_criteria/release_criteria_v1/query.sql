@@ -41,8 +41,7 @@ rc_test_data AS (
     rc_flattened_test_data_v1 AS flattened
   LEFT JOIN
     rc_included_tests AS included_rc
-  ON
-    flattened.framework = included_rc.framework
+    ON flattened.framework = included_rc.framework
     AND flattened.platform = included_rc.platform
     AND flattened.normalized_test_type = included_rc.test_type
     AND flattened.test_name = included_rc.test_name
@@ -298,8 +297,7 @@ rc_tests_with_tested_version AS (
     rc_tests
   LEFT JOIN
     versions
-  ON
-    date_utc = DATE(task_group_time)
+    ON date_utc = DATE(task_group_time)
     AND (
       (project IN ('fenix', 'mozilla-central', 'mozilla-beta', 'autoland') AND category = 'dev')
       OR (project = 'mozilla-release' AND category = 'stability')

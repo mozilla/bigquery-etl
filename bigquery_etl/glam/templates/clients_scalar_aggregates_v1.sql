@@ -5,8 +5,7 @@
   {% if filter_version %}
   LEFT JOIN
       glam_etl.{{ prefix }}__latest_versions_v1
-  USING
-      (channel)
+      USING (channel)
   {% endif %}
   WHERE
       -- allow for builds to be slighly ahead of the current submission date, to
@@ -112,8 +111,7 @@ joined_new_old AS (
     filtered_new AS new_data
   FULL OUTER JOIN
     filtered_old AS old_data
-  USING
-    ({{ attributes }})
+    USING ({{ attributes }})
 )
 SELECT
   {{ attributes }},

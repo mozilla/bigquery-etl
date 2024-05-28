@@ -6,7 +6,6 @@ owners:
 - ascholtz@mozilla.com
 scheduling:
   dag_name: bqetl_experiments_daily
-  referenced_tables: [['region-us', 'INFORMATION_SCHEMA', 'JOBS_BY_PROJECT']]
 bigquery:
   time_partitioning:
     type: day

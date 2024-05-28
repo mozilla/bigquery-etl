@@ -4,7 +4,7 @@ import logging
 import warnings
 from pathlib import Path
 
-import click
+import rich_click as click
 
 from .._version import __version__
 
@@ -20,13 +20,13 @@ from ..cli.metadata import metadata
 from ..cli.query import query
 from ..cli.routine import mozfun, routine
 from ..cli.stage import stage
+from ..cli.static import static_
 from ..cli.view import view
 from ..config import ConfigLoader
 from ..copy_deduplicate import copy_deduplicate
 from ..dependency import dependency
 from ..docs import docs_
 from ..glam.cli import glam
-from ..static import static_
 from ..stripe import stripe_
 from ..subplat.apple import apple
 

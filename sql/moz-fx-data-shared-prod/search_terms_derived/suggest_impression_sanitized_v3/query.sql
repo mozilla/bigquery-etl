@@ -63,8 +63,7 @@ validated_queries AS (
     sanitized_queries_count
   LEFT JOIN
     sanitized_queries
-  ON
-    TRUE
+    ON TRUE
   WHERE
     IF(
       _n < 1,
@@ -80,5 +79,4 @@ FROM
   impressions
 LEFT JOIN
   validated_queries
-USING
-  (request_id)
+  USING (request_id)

@@ -31,7 +31,6 @@ FROM
   channel_summary
 INNER JOIN
   counts
-USING
-  (normalized_channel)
+  USING (normalized_channel)
 ORDER BY
   max_build_number ASC

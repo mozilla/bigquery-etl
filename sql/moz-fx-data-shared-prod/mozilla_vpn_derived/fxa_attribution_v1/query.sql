@@ -17,7 +17,7 @@ WITH fxa_content_auth_stdout_events AS (
   FROM
     `moz-fx-data-shared-prod.firefox_accounts.fxa_all_events`
   WHERE
-    fxa_log IN ('content', 'auth', 'stdout')
+    fxa_log IN ('content', 'auth', 'stdout', 'payments')
 ),
 flows AS (
   SELECT
@@ -63,7 +63,7 @@ flows AS (
       OR service = "guardian-vpn"
       OR (
         (service IS NULL OR service = "undefined_oauth")
-        AND (event_type = "fxa_rp_button - view" OR event_type LIKE "fxa_pay_%")
+        AND (event_type = "fxa_rp_button - view" OR event_type LIKE r"fxa\_pay\_%")
       )
     )
   GROUP BY

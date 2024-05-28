@@ -17,7 +17,11 @@ WITH client_day AS (
   FROM
     `moz-fx-data-shared-prod`.fenix.baseline
   WHERE
-    DATE(submission_timestamp) = @submission_date
+    {% if is_init() %}
+      DATE(submission_timestamp) >= DATE("2021-01-01")
+    {% else %}
+      DATE(submission_timestamp) = @submission_date
+    {% endif %}
   GROUP BY
     submission_date,
     sample_id,
@@ -34,7 +38,11 @@ searches AS (
   FROM
     `moz-fx-data-shared-prod.search_derived.mobile_search_clients_daily_v1`
   WHERE
-    submission_date = @submission_date
+    {% if is_init() %}
+      submission_date >= DATE("2021-01-01")
+    {% else %}
+      submission_date = @submission_date
+    {% endif %}
     AND normalized_app_name = 'Fenix'
     AND os = 'Android'
   GROUP BY
@@ -49,7 +57,7 @@ first_seen AS (
   FROM
     `moz-fx-data-shared-prod`.fenix.baseline_clients_first_seen
   WHERE
-    submission_date >= "2021-01-01"
+    submission_date >= DATE("2021-01-01")
 ),
 adjust_client AS (
   SELECT
@@ -72,7 +80,11 @@ activations AS (
   FROM
     `moz-fx-data-shared-prod`.fenix.new_profile_activation
   WHERE
-    submission_date = @submission_date
+    {% if is_init() %}
+      submission_date >= DATE("2021-01-01")
+    {% else %}
+      submission_date = @submission_date
+    {% endif %}
 )
 SELECT
   submission_date,
@@ -113,17 +125,13 @@ FROM
   adjust_client
 JOIN
   client_day
-USING
-  (client_id)
+  USING (client_id)
 FULL OUTER JOIN
   searches AS metrics_searches
-USING
-  (client_id, submission_date)
+  USING (client_id, submission_date)
 JOIN
   first_seen
-USING
-  (client_id)
+  USING (client_id)
 LEFT JOIN
   activations
-USING
-  (client_id, submission_date)
+  USING (client_id, submission_date)

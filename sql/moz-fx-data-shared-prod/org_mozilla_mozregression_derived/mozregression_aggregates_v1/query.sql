@@ -10,7 +10,11 @@ SELECT
 FROM
   `moz-fx-data-shared-prod`.org_mozilla_mozregression.usage
 WHERE
-  DATE(submission_timestamp) = @submission_date
+  {% if is_init() %}
+    DATE(submission_timestamp) > '2020-04-01'
+  {% else %}
+    DATE(submission_timestamp) = @submission_date
+  {% endif %}
   AND client_info.app_display_version NOT LIKE '%.dev%'
 GROUP BY
   date,

@@ -24,25 +24,11 @@ sample AS (
     UNNEST([country, 'Worldwide']) AS country_group
   LEFT JOIN
     countries AS cn
-  ON
-    cn.code = country_group
+    ON cn.code = country_group
   WHERE
-    COALESCE(cn.name, country_group) IN (
-      'Worldwide',
-      'Brazil',
-      'China',
-      'France',
-      'Germany',
-      'India',
-      'Indonesia',
-      'Italy',
-      'Poland',
-      'Russia',
-      'United States'
-    )
     -- we need the whole week for daily_usage metric
     -- others can look at just the last day (Sunday, see `is_last_day_of_week` above)
-    AND submission_date >= @submission_date
+    submission_date >= @submission_date
     AND submission_date < DATE_ADD(@submission_date, INTERVAL 7 DAY)
     AND subsession_hours_sum < 24 --remove outliers
     AND sample_id = 1
@@ -64,7 +50,7 @@ sample_addons AS (
       IF(
         ARRAY_LENGTH(active_addons) > 0,
         active_addons,
-            -- include a null addon if there were none (either null or an empty list)
+        -- include a null addon if there were none (either null or an empty list)
         [active_addons[SAFE_OFFSET(0)]]
       )
     ) AS addons
@@ -185,8 +171,7 @@ active_clients_with_latest_releases AS (
     active_clients_weekly
   JOIN
     latest_releases
-  ON
-    latest_releases.day <= active_clients_weekly.last_day_seen
+    ON latest_releases.day <= active_clients_weekly.last_day_seen
   WHERE
     client_id IS NOT NULL
   GROUP BY
@@ -250,8 +235,7 @@ addon_ratios AS (
     addon_counts
   JOIN
     mau_wau
-  USING
-    (week_start, country_name)
+    USING (week_start, country_name)
 ),
 top_addons AS (
   SELECT
@@ -320,8 +304,7 @@ locale_ratios AS (
     locale_counts
   JOIN
     mau_wau
-  USING
-    (week_start, country_name)
+    USING (week_start, country_name)
 ),
 top_locales AS (
   SELECT
@@ -349,29 +332,22 @@ FROM
   mau_wau
 JOIN
   daily_usage
-USING
-  (week_start, country_name)
+  USING (week_start, country_name)
 JOIN
   intensity
-USING
-  (week_start, country_name)
+  USING (week_start, country_name)
 JOIN
   new_profile_rate
-USING
-  (week_start, country_name)
+  USING (week_start, country_name)
 JOIN
   latest_version_ratio
-USING
-  (week_start, country_name)
+  USING (week_start, country_name)
 JOIN
   top_addons
-USING
-  (week_start, country_name)
+  USING (week_start, country_name)
 JOIN
   top_locales
-USING
-  (week_start, country_name)
+  USING (week_start, country_name)
 JOIN
   has_addon
-USING
-  (week_start, country_name)
+  USING (week_start, country_name)

@@ -48,8 +48,7 @@ cumulative_populations AS (
       FROM
         `moz-fx-data-shared-prod.telemetry_derived.experiment_enrollment_aggregates_live_v1`
     )
-  USING
-    (window_start, branch, experiment)
+    USING (window_start, branch, experiment)
   WINDOW
     previous_rows_window AS (
       PARTITION BY

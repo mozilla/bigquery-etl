@@ -206,8 +206,7 @@ final_health_data AS (
     health_data_aggregates AS h
   INNER JOIN
     DAUs
-  USING
-    (datetime, country, city)
+    USING (datetime, country, city)
 ),
 -- Compute aggregates for histograms coming from the health ping.
 histogram_data_sample AS (
@@ -489,33 +488,25 @@ FROM
 -- are not accounted for in telemetry.clients_daily
 LEFT JOIN
   DAUs
-USING
-  (datetime, country, city)
+  USING (datetime, country, city)
 LEFT JOIN
   dns_success_time AS ds
-USING
-  (datetime, country, city)
+  USING (datetime, country, city)
 LEFT JOIN
   dns_no_dns_lookup_time AS ds_missing
-USING
-  (datetime, country, city)
+  USING (datetime, country, city)
 LEFT JOIN
   dns_failure_time AS df
-USING
-  (datetime, country, city)
+  USING (datetime, country, city)
 LEFT JOIN
   dns_failure_counts AS dfc
-USING
-  (datetime, country, city)
+  USING (datetime, country, city)
 LEFT JOIN
   dns_no_dns_failure_time AS df_missing
-USING
-  (datetime, country, city)
+  USING (datetime, country, city)
 LEFT JOIN
   tls_handshake_time AS tls
-USING
-  (datetime, country, city)
+  USING (datetime, country, city)
 LEFT JOIN
   ssl_error_prop AS ssl
-USING
-  (datetime, country, city)
+  USING (datetime, country, city)

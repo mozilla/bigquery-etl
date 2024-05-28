@@ -38,8 +38,7 @@ monthly_costs_per_mar AS (
     monthly_paid_mar
   LEFT JOIN
     monthly_costs
-  USING
-    (destination_id, measured_month)
+    USING (destination_id, measured_month)
 ),
 daily_mar AS (
   SELECT
@@ -74,12 +73,10 @@ daily_connector_costs AS (
     daily_mar
   LEFT JOIN
     monthly_costs_per_mar
-  USING
-    (destination_id, measured_month)
+    USING (destination_id, measured_month)
   LEFT JOIN
     destinations
-  USING
-    (destination_id)
+    USING (destination_id)
 )
 SELECT
   *

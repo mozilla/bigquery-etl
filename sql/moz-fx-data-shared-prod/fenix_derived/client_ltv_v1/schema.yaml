@@ -1,0 +1,62 @@
+fields:
+  - name: client_id
+    mode: NULLABLE
+    type: STRING
+    description: "Client ID; uniquely identifies a client. Joinable with fenix.firefox_android_clients."
+  - name: sample_id
+    mode: NULLABLE
+    type: INTEGER
+    description: "A number, 0-99, that samples by client_id."
+  - name: as_of_date
+    mode: NULLABLE
+    type: DATE
+    description: >
+      The date from which the markov states are pulled from.
+      After a year of inactivity, the markov states will stop updated;
+      similarly, the as_of_date will not update.
+  - name: first_seen_date
+    mode: NULLABLE
+    type: DATE
+    description: "First submission date that this client was seen on."
+  - name: days_since_first_seen
+    mode: NULLABLE
+    type: INTEGER
+    description: "Number of days since this client was first seen."
+  - name: days_since_seen
+    mode: NULLABLE
+    type: INTEGER
+    description: "Number of days since this client was last seen. For example, if they were seen yesterday, days_since_seen would be 1."
+  - name: consecutive_days_seen
+    mode: NULLABLE
+    type: INTEGER
+    description: >
+      Number of consecutive days this client has been seen.
+      For example, if they were missing two days ago but present yesterday & today, consecutive_days_seen would be 2.
+  - name: days_seen_bytes
+    mode: NULLABLE
+    type: BYTES
+    description: "Days seen over the past year, represented as bytes."
+  - name: ad_clicks_on_date
+    mode: NULLABLE
+    type: INTEGER
+    description: "Number of ad clicks by this client on this submission date."
+  - name: total_historic_ad_clicks
+    mode: NULLABLE
+    type: INTEGER
+    description: "Total historic ad clicks by this client up to this date (inclusive of this date)."
+  - name: first_reported_country
+    mode: NULLABLE
+    type: STRING
+    description: "First country reported by this client."
+  - name: first_reported_isp
+    mode: NULLABLE
+    type: STRING
+    description: "First ISP reported by this client."
+  - name: adjust_network
+    mode: NULLABLE
+    type: STRING
+    description: "First Adjust Network reported by this client."
+  - name: install_source
+    mode: NULLABLE
+    type: STRING
+    description: "First install source reported by this client."

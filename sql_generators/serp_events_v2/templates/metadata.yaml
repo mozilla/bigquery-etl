@@ -1,0 +1,37 @@
+friendly_name: Serp Events
+description: |-
+  Each row in this table represents one `serp.impression` event, with information from associated `serp.ad_impression`, `serp.engagement`, and `serp.abandonment` events appended in the same row, indexed by `impression_id`.
+  This table operates at 1 day lag, so today's job run populates the partition for 2 days ago rather than yesterday. Events associated with a given `impression_id` may be submitted some time after the original `impression` event, and this lag is intended to capture enough events associated with each impression.
+  A SERP impression has either 1 or more engagements, or an abandonment reason. In either case, it has 0 or more component impressions.
+owners:
+- akommasani@mozilla.com
+- pissac@mozilla.com
+- dzeber@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_serp
+  task_name: {{ app_name }}_serp_events__v2
+  date_partition_parameter: null
+  destination_table:
+    >-
+    {% raw %}serp_events_v2${{
+    (execution_date - macros.timedelta(hours=24)).strftime("%Y%m%d")
+    }}{% endraw %}
+  parameters:
+    - >-
+      {% raw %}submission_date:DATE:{{ds}}{% endraw %}
+  query_file_path:
+    # explicit query file path is necessary because the destination table
+    # includes a partition identifier that is not in the path
+    sql/moz-fx-data-shared-prod/{{ app_name }}_derived/serp_events_v2/query.sql
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+  clustering:
+    fields:
+      - normalized_channel
+      - sample_id

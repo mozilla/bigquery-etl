@@ -25,8 +25,7 @@ aic_flows AS (
     flows_live
   JOIN
     EXTERNAL_QUERY("moz-fx-cjms-nonprod-9a36.us.cjms-sql", "SELECT flow_id FROM aic")
-  USING
-    (flow_id)
+    USING (flow_id)
   WHERE
     -- only use the last 10 days in stage
     submission_date >= CURRENT_DATE - 10
@@ -45,8 +44,7 @@ attributed_flows AS (
     aic_flows
   JOIN
     `moz-fx-data-shared-prod`.subscription_platform_derived.nonprod_stripe_subscriptions_v1 AS subscriptions
-  ON
-    aic_flows.fxa_uid = subscriptions.fxa_uid
+    ON aic_flows.fxa_uid = subscriptions.fxa_uid
     AND aic_flows.flow_started < subscriptions.created
   GROUP BY
     subscription_id,
@@ -72,8 +70,7 @@ initial_invoices AS (
     attributed_subs
   JOIN
     `moz-fx-data-shared-prod`.stripe_external.nonprod_invoice_v1 AS invoices
-  USING
-    (subscription_id)
+    USING (subscription_id)
   QUALIFY
     1 = ROW_NUMBER() OVER (PARTITION BY subscription_id ORDER BY invoices.created)
 ),
@@ -87,16 +84,13 @@ initial_discounts AS (
     initial_invoices
   JOIN
     `moz-fx-data-shared-prod`.stripe_external.nonprod_invoice_discount_v1 AS invoice_discounts
-  USING
-    (invoice_id)
+    USING (invoice_id)
   JOIN
     `moz-fx-data-shared-prod`.stripe_external.nonprod_promotion_code_v1 AS promotion_codes
-  ON
-    invoice_discounts.promotion_code = promotion_codes.id
+    ON invoice_discounts.promotion_code = promotion_codes.id
   JOIN
     `moz-fx-data-shared-prod`.stripe_external.nonprod_coupon_v1 AS coupons
-  ON
-    promotion_codes.coupon_id = coupons.id
+    ON promotion_codes.coupon_id = coupons.id
 ),
 promotion_codes AS (
   SELECT
@@ -127,8 +121,7 @@ percent_discounts AS (
     initial_discounts AS discounts
   JOIN
     `moz-fx-data-shared-prod`.subscription_platform_derived.nonprod_stripe_subscriptions_v1 AS subscriptions
-  USING
-    (subscription_id)
+    USING (subscription_id)
   WHERE
     discounts.percent_off IS NOT NULL
   GROUP BY
@@ -156,17 +149,13 @@ FROM
   attributed_subs
 JOIN
   `moz-fx-data-shared-prod`.subscription_platform_derived.nonprod_stripe_subscriptions_v1 AS subscriptions
-USING
-  (subscription_id)
+  USING (subscription_id)
 LEFT JOIN
   promotion_codes
-USING
-  (subscription_id)
+  USING (subscription_id)
 LEFT JOIN
   amount_discounts
-USING
-  (subscription_id)
+  USING (subscription_id)
 LEFT JOIN
   percent_discounts
-USING
-  (subscription_id, subscription_item_id)
+  USING (subscription_id, subscription_item_id)

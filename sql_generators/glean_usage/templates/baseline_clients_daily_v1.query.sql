@@ -1,18 +1,5 @@
 {{ header }}
 
-{% if init %}
-  CREATE TABLE IF NOT EXISTS
-    `{{ daily_table }}`
-  PARTITION BY
-    submission_date
-  CLUSTER BY
-    is_new_profile,
-    normalized_channel,
-    sample_id
-  OPTIONS
-    (require_partition_filter = TRUE)
-  AS
-{% endif %}
 WITH base AS (
   SELECT
     submission_timestamp,
@@ -37,6 +24,12 @@ WITH base AS (
     normalized_channel,
     normalized_os,
     normalized_os_version,
+    {% if has_distribution_id %}
+    metrics.string.metrics_distribution_id AS distribution_id,
+    {% else %}
+    CAST(NULL AS STRING) AS distribution_id,
+    {% endif %}
+    metadata.geo.subdivision1 AS geo_subdivision,
   FROM
     `{{ baseline_table }}`
   -- Baseline pings with 'foreground' reason were first introduced in early April 2020;
@@ -103,14 +96,22 @@ windowed AS (
     udf.mode_last(ARRAY_AGG(device_manufacturer) OVER w1) AS device_manufacturer,
     udf.mode_last(ARRAY_AGG(device_model) OVER w1) AS device_model,
     udf.mode_last(ARRAY_AGG(telemetry_sdk_build) OVER w1) AS telemetry_sdk_build,
+    udf.mode_last(ARRAY_AGG(distribution_id) OVER w1) AS distribution_id,
+    udf.mode_last(ARRAY_AGG(geo_subdivision) OVER w1) AS geo_subdivision,
   FROM
     with_date_offsets
   WHERE
-    {% if init %}
+    {% raw %}
+    {% if is_init() %}
+    {% endraw %}
       submission_date >= '2018-01-01'
+    {% raw %}
     {% else %}
+    {% endraw %}
       submission_date = @submission_date
+    {% raw %}
     {% endif %}
+    {% endraw %}
 
   WINDOW
     w1 AS (
@@ -145,8 +146,7 @@ joined as (
     windowed AS cd
   LEFT JOIN
     `{{ first_seen_table }}` AS cfs
-  USING
-    (client_id)
+    USING (client_id)
   WHERE
     _n = 1
 )

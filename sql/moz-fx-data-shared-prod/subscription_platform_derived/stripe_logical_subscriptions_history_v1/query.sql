@@ -46,8 +46,7 @@ plan_services AS (
     UNNEST(services.stripe_plan_ids) AS plan_id
   LEFT JOIN
     UNNEST(services.tiers) AS tier
-  ON
-    plan_id IN UNNEST(tier.stripe_plan_ids)
+    ON plan_id IN UNNEST(tier.stripe_plan_ids)
   GROUP BY
     plan_id
 ),
@@ -84,21 +83,17 @@ subscriptions_history_charge_summaries AS (
     `moz-fx-data-shared-prod.stripe_external.charge_v1` AS charges
   JOIN
     `moz-fx-data-shared-prod.stripe_external.invoice_v1` AS invoices
-  ON
-    charges.invoice_id = invoices.id
+    ON charges.invoice_id = invoices.id
   JOIN
     active_subscriptions_history AS history
-  ON
-    invoices.subscription_id = history.subscription.id
+    ON invoices.subscription_id = history.subscription.id
     AND charges.created < history.valid_to
   LEFT JOIN
     `moz-fx-data-shared-prod.stripe_external.card_v1` AS cards
-  ON
-    charges.card_id = cards.id
+    ON charges.card_id = cards.id
   LEFT JOIN
     `moz-fx-data-shared-prod.stripe_external.refund_v1` AS refunds
-  ON
-    charges.id = refunds.charge_id
+    ON charges.id = refunds.charge_id
   GROUP BY
     subscriptions_history_id
 )
@@ -198,13 +193,10 @@ CROSS JOIN
   UNNEST(history.subscription.items) AS subscription_item
 LEFT JOIN
   plan_services
-ON
-  subscription_item.plan.id = plan_services.plan_id
+  ON subscription_item.plan.id = plan_services.plan_id
 LEFT JOIN
   paypal_subscriptions
-ON
-  history.subscription.id = paypal_subscriptions.subscription_id
+  ON history.subscription.id = paypal_subscriptions.subscription_id
 LEFT JOIN
   subscriptions_history_charge_summaries AS charge_summaries
-ON
-  history.id = charge_summaries.subscriptions_history_id
+  ON history.id = charge_summaries.subscriptions_history_id

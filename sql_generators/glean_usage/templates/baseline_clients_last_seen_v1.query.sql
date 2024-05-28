@@ -1,19 +1,12 @@
 {{ header }}
 
-{% if init %}
+{% raw %}
+{% if is_init() %}
+{% endraw %}
 
-CREATE TABLE IF NOT EXISTS
-  `{{ last_seen_table }}`
-PARTITION BY
-  submission_date
-CLUSTER BY
-  normalized_channel,
-  sample_id
-OPTIONS
-  (require_partition_filter = TRUE)
-AS
 SELECT
   CAST(NULL AS INT64) AS days_seen_bits,
+  CAST(NULL AS INT64) AS days_active_bits,
   CAST(NULL AS INT64) AS days_created_profile_bits,
   -- We make sure to delay * until the end so that as new columns are added
   -- to the daily table we can add those columns in the same order to the end
@@ -26,14 +19,19 @@ WHERE
   -- Output empty table and read no input rows
   FALSE
 
+{% raw %}
 {% else %}
+{% endraw %}
 
 WITH _current AS (
   SELECT
     -- In this raw table, we capture the history of activity over the past
     -- 28 days for each usage criterion as a single 64-bit integer. The
-    -- rightmost bit represents whether the user was active in the current day.
+    -- rightmost bit in 'days_since_seen' represents whether the user sent a
+    -- baseline ping in the submission_date and similarly, the rightmost bit in
+    -- days_active_bits represents whether the user counts as active on that date.
     CAST(TRUE AS INT64) AS days_seen_bits,
+    CAST(TRUE AS INT64) & CAST(durations > 0  AS INT64) AS days_active_bits,
     udf.days_since_created_profile_as_28_bits(
       DATE_DIFF(submission_date, first_run_date, DAY)
     ) AS days_created_profile_bits,
@@ -47,7 +45,8 @@ WITH _current AS (
   --
 _previous AS (
   SELECT
-    * EXCEPT (submission_date)
+    days_seen_bits, days_active_bits, days_created_profile_bits,
+    * EXCEPT (submission_date, days_seen_bits, days_active_bits, days_created_profile_bits),
   FROM
     `{{ last_seen_table }}`
   WHERE
@@ -72,7 +71,8 @@ FROM
   _current
 FULL JOIN
   _previous
-USING
-  (client_id)
+  USING (client_id)
 
+{% raw %}
 {% endif %}
+{% endraw %}

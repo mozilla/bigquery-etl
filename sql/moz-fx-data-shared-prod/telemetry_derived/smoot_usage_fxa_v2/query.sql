@@ -13,8 +13,7 @@ WITH
     `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_users_last_seen_v1` AS fxa
   LEFT JOIN
     `moz-fx-data-shared-prod.static.country_names_v1` AS country_names
-  ON
-    fxa.country = country_names.`name` ),
+    ON fxa.country = country_names.`name` ),
   --
   nested AS (
   SELECT

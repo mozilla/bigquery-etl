@@ -25,8 +25,7 @@ _core_clients_first_seen AS (
     _fennec_id_lookup
   JOIN
      _core
-  ON
-    _fennec_id_lookup.fennec_client_id = _core.client_id
+    ON _fennec_id_lookup.fennec_client_id = _core.client_id
   GROUP BY
     _fennec_id_lookup.client_id
 )

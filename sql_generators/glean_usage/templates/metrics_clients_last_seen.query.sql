@@ -39,11 +39,10 @@ FROM
   _previous
 FULL JOIN
   _current
-ON
-  _previous.client_id = _current.client_id AND
-  _previous.sample_id = _current.sample_id AND
-  (
-    _previous.normalized_channel = _current.normalized_channel OR 
-    (_previous.normalized_channel IS NULL AND _current.normalized_channel IS NULL) 
+  ON _previous.client_id = _current.client_id
+  AND _previous.sample_id = _current.sample_id
+  AND (
+    _previous.normalized_channel = _current.normalized_channel
+    OR (_previous.normalized_channel IS NULL AND _current.normalized_channel IS NULL)
   )
 WHERE _current.client_id IS NOT NULL

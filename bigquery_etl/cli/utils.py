@@ -4,6 +4,7 @@ import fnmatch
 import os
 import re
 from fnmatch import fnmatchcase
+from glob import glob
 from pathlib import Path
 from typing import Iterator, List, Optional, Tuple
 
@@ -108,10 +109,18 @@ def paths_matching_name_pattern(
     if pattern is None:
         pattern = "*.*"
 
-    if os.path.isdir(pattern):
-        for root, _, _ in os.walk(pattern):
+    # click nargs are passed in as a tuple
+    if isinstance(pattern, tuple) or isinstance(pattern, list):
+        for p in pattern:
+            matching_files += paths_matching_name_pattern(
+                str(p), sql_path, project_id, files, file_regex
+            )
+    elif os.path.isdir(pattern):
+        for root, _, _ in os.walk(pattern, followlinks=True):
             for file in files:
-                matching_files.extend(Path(root).rglob(file))
+                matching_files.extend(
+                    map(Path, glob(f"{root}/**/{file}", recursive=True))
+                )
     elif os.path.isfile(pattern):
         matching_files.append(Path(pattern))
     else:
@@ -122,7 +131,9 @@ def paths_matching_name_pattern(
         all_matching_files: List[Path] = []
 
         for file in files:
-            all_matching_files.extend(Path(sql_path).rglob(file))
+            all_matching_files.extend(
+                map(Path, glob(f"{sql_path}/**/{file}", recursive=True))
+            )
 
         for query_file in all_matching_files:
             match = file_regex.match(str(query_file))
@@ -184,6 +195,22 @@ def project_id_option(default=None, required=False):
         help="GCP project ID",
         default=default,
         callback=is_valid_project,
+        required=required,
+    )
+
+
+def billing_project_option(default=None, required=False):
+    """Generate a billing-project option, with optional default."""
+    return click.option(
+        "--billing-project",
+        "--billing_project",
+        help=(
+            "GCP project ID to run the query in. "
+            "This can be used to run a query using a different slot reservation "
+            "than the one used by the query's default project."
+        ),
+        type=str,
+        default=default,
         required=required,
     )
 

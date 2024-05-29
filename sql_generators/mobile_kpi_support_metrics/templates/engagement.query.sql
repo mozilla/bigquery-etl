@@ -8,7 +8,7 @@ SELECT
   country,
   locale,
   is_mobile,
-  adadjust_ad_group,
+  adjust_ad_group,
   adjust_campaign,
   adjust_creative,
   adjust_network,

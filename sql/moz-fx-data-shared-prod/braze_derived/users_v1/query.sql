@@ -34,23 +34,6 @@ WITH ctms_emails AS (
   LEFT JOIN
     `moz-fx-data-shared-prod.ctms_braze.ctms_fxa` AS fxa
     ON emails.email_id = fxa.email_id
-),
--- latest engagement date from Acoustic events, filtered by event type
-acoustic_events AS (
-  SELECT
-    contacts.email_id,
-    MAX(
-      PARSE_TIMESTAMP("%m/%d/%Y %H:%M:%S", recipients.event_timestamp)
-    ) AS acoustic_last_engaged_at
-  FROM
-    `moz-fx-data-shared-prod.acoustic_external.raw_recipient_raw_v1` AS recipients
-  JOIN
-    `moz-fx-data-shared-prod.acoustic_external.contact_raw_v1` AS contacts
-    ON recipients.recipient_id = contacts.recipient_id
-  WHERE
-    recipients.event_type IN ('Open', 'Click Through') -- Filtering events by type
-  GROUP BY
-    contacts.email_id
 )
 SELECT
   emails.external_id AS external_id,
@@ -67,12 +50,8 @@ SELECT
   emails.fxa_created_at AS fxa_created_at,
   emails.create_timestamp AS create_timestamp,
   emails.update_timestamp AS update_timestamp,
-  events.acoustic_last_engaged_at AS acoustic_last_engaged_at
 FROM
   ctms_emails AS emails
-LEFT JOIN
-  acoustic_events AS events
-  ON emails.external_id = events.email_id
 LEFT JOIN
   `moz-fx-data-shared-prod.marketing_suppression_list_derived.main_suppression_list_v1` AS suppressions
   ON emails.email = suppressions.email

@@ -30,7 +30,6 @@
   fxa_lang: DE
   fxa_first_service: service_1
   fxa_created_at: 2020-01-01 10:00:00+00:00
-  acoustic_last_engaged_at: 2021-01-01 11:00:00+00:00
 # user 3
 - external_id: user_3
   email: user_3@mail.com
@@ -45,4 +44,3 @@
   fxa_primary_email: user_3_primary@mail.com
   fxa_lang: DE
   fxa_first_service: service_1
-  acoustic_last_engaged_at: 2021-01-01 11:00:00+00:00

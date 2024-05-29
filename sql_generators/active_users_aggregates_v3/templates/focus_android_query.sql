@@ -64,25 +64,19 @@ metrics AS (
   -- Metrics ping can arrive either in the same or next day as the baseline ping.
   SELECT
     client_id,
-    ARRAY_AGG(
-      normalized_channel IGNORE NULLS
-      ORDER BY
-        submission_date ASC
-    )[SAFE_OFFSET(0)] AS normalized_channel,
-    ARRAY_AGG(
-      uri_count IGNORE NULLS
-      ORDER BY
-        submission_date ASC
-    )[SAFE_OFFSET(0)] AS uri_count,
-    ARRAY_AGG(
-      is_default_browser IGNORE NULLS
-      ORDER BY
-        submission_date ASC
-    )[SAFE_OFFSET(0)] AS is_default_browser
+    ARRAY_AGG(normalized_channel IGNORE NULLS ORDER BY submission_date ASC)[
+      SAFE_OFFSET(0)
+    ] AS normalized_channel,
+    ARRAY_AGG(uri_count IGNORE NULLS ORDER BY submission_date ASC)[SAFE_OFFSET(0)] AS uri_count,
+    ARRAY_AGG(is_default_browser IGNORE NULLS ORDER BY submission_date ASC)[
+      SAFE_OFFSET(0)
+    ] AS is_default_browser
   FROM
     `{{ project_id }}.{{ app_name }}.metrics_clients_last_seen`
   WHERE
-    DATE(submission_date) BETWEEN @submission_date AND DATE_ADD(@submission_date, INTERVAL 1 DAY)
+    DATE(submission_date)
+    BETWEEN @submission_date
+    AND DATE_ADD(@submission_date, INTERVAL 1 DAY)
   GROUP BY
     client_id
 ),

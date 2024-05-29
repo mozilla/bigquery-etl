@@ -31,7 +31,7 @@ SELECT
       THEN CONCAT(app_name, ' ', distribution_id)
     ELSE app_name
   END AS app_name,
-  app_version AS app_version,
+  app_version,
   normalized_channel,
   country,
   city,

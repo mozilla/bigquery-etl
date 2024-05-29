@@ -11,6 +11,7 @@ import string
 import subprocess
 import sys
 import tempfile
+from concurrent import futures
 from datetime import date, timedelta
 from functools import partial
 from glob import glob
@@ -20,6 +21,7 @@ from traceback import print_exc
 from typing import Optional
 
 import rich_click as click
+import sqlparse
 import yaml
 from google.cloud import bigquery
 from google.cloud.exceptions import NotFound
@@ -743,10 +745,25 @@ def backfill(
 
         if not depends_on_past and parallelism > 0:
             # run backfill for dates in parallel if depends_on_past is false
-            with Pool(parallelism) as p:
-                result = p.map(backfill_query, date_range, chunksize=1)
-            if not all(result):
-                sys.exit(1)
+            failed_backfills = []
+            with futures.ThreadPoolExecutor(max_workers=parallelism) as executor:
+                future_to_date = {
+                    executor.submit(backfill_query, backfill_date): backfill_date
+                    for backfill_date in date_range
+                }
+                for future in futures.as_completed(future_to_date):
+                    backfill_date = future_to_date[future]
+                    try:
+                        future.result()
+                    except Exception as e:  # TODO: More specific exception(s)
+                        print(f"Encountered exception {e}: {backfill_date}.")
+                        failed_backfills.append(backfill_date)
+                    else:
+                        print(f"Completed processing: {backfill_date}.")
+            if failed_backfills:
+                raise RuntimeError(
+                    f"Backfill processing failed for the following backfill dates: {failed_backfills}"
+                )
         else:
             # if data depends on previous runs, then execute backfill sequentially
             for backfill_date in date_range:
@@ -968,6 +985,15 @@ def _run_query(
                 default_dataset=dataset_id or default_dataset,
             )
             query_arguments.append(f"--session_id={session_id}")
+
+            # temp udfs cannot be used in a session when destination table is set
+            if destination_table is not None and query_file.name != "script.sql":
+                query_text = extract_and_run_temp_udfs(
+                    query_text=query_text,
+                    project_id=billing_project,
+                    session_id=session_id,
+                )
+
         # if billing_project is set, default dataset is set with the @@dataset_id variable instead
         elif dataset_id is not None:
             # dataset ID was parsed by argparse but needs to be passed as parameter
@@ -1025,6 +1051,29 @@ def create_query_session(
         raise RuntimeError(f"Failed to get session id with job id {job.job_id}")
 
     return job.session_info.session_id
+
+
+def extract_and_run_temp_udfs(query_text: str, project_id: str, session_id: str) -> str:
+    """Create temp udfs in the session and return the query without udf definitions.
+
+    Does not support dry run because the query will fail dry run if udfs aren't defined.
+    """
+    sql_statements = sqlparse.split(query_text)
+
+    if len(sql_statements) == 1:
+        return query_text
+
+    client = bigquery.Client(project=project_id)
+    job_config = bigquery.QueryJobConfig(
+        use_legacy_sql=False,
+        connection_properties=[bigquery.ConnectionProperty("session_id", session_id)],
+    )
+
+    # assume query files only have temp udfs as additional statements
+    udf_def_statement = "\n".join(sql_statements[:-1])
+    client.query_and_wait(udf_def_statement, job_config=job_config)
+
+    return sql_statements[-1]
 
 
 @query.command(

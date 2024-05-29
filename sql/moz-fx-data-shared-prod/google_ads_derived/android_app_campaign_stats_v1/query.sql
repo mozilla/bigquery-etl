@@ -48,6 +48,32 @@ retention_aggs AS (
     date,
     campaign_id,
     ad_group_id
+),
+by_ad_group_id AS (
+  SELECT
+    date,
+    campaign_id,
+    ad_group_id,
+    SUM(impressions) AS impressions,
+    SUM(clicks) AS clicks,
+    SUM(new_profiles) AS new_profiles,
+    SUM(activated) AS activated_profiles,
+    SUM(repeat_users) AS repeat_users,
+    SUM(retained_week_4) week_4_retained_users,
+    SUM(spend) AS spend,
+    SUM(lifetime_value) AS lifetime_value,
+  FROM
+    daily_stats
+  LEFT JOIN
+    activations
+    USING (date, campaign_id, ad_group_id)
+  LEFT JOIN
+    retention_aggs
+    USING (date, campaign_id, ad_group_id)
+  GROUP BY
+    date,
+    campaign_id,
+    ad_group_id
 )
 SELECT
   date,
@@ -56,34 +82,21 @@ SELECT
   mozfun.map.get_key(campaigns_v2.campaign_segments, "country_code") AS campaign_country_code,
   mozfun.map.get_key(campaigns_v2.campaign_segments, "language") AS campaign_language,
   campaigns_v2.campaign_segments,
-  ad_groups_v2.ad_group_name AS ad_group,
-  ad_groups_v2.ad_group_segments,
-  SUM(impressions) AS impressions,
-  SUM(clicks) AS clicks,
-  SUM(new_profiles) AS new_profiles,
-  SUM(activated) AS activated_profiles,
-  SUM(repeat_users) AS repeat_users,
-  SUM(retained_week_4) week_4_retained_users,
-  SUM(spend) AS spend,
-  SUM(lifetime_value) AS lifetime_value,
+  ad_groups_v1.ad_group_name AS ad_group,
+  ad_groups_v1.ad_group_segments,
+  impressions,
+  clicks,
+  new_profiles,
+  activated_profiles,
+  repeat_users,
+  week_4_retained_users,
+  spend,
+  lifetime_value,
 FROM
-  daily_stats
-LEFT JOIN
-  activations
-  USING (date, campaign_id, ad_group_id)
-LEFT JOIN
-  retention_aggs
-  USING (date, campaign_id, ad_group_id)
-JOIN
-  `moz-fx-data-shared-prod`.google_ads_derived.campaigns_v2
-  USING (campaign_id)
+  by_ad_group_id
 JOIN
   `moz-fx-data-shared-prod`.google_ads_derived.ad_groups_v1
-  USING (campaign_id, ad_group_id)
-GROUP BY
-  date,
-  campaign,
-  campaign_region,
-  campaign_country_code,
-  campaign_language,
-  ad_group
+  USING (ad_group_id)
+JOIN
+  `moz-fx-data-shared-prod`.google_ads_derived.campaigns_v2
+  ON ad_groups_v1.campaign_id = campaigns_v2.campaign_id

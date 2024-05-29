@@ -9,14 +9,14 @@ WITH all_clients AS (
   SELECT
     client_id,
     {{ attributes }}
-  FROM `{{ project }}`.{{ dataset }}.{{ prefix }}__clients_scalar_aggregates_v1
-  
+  FROM `{{ project }}.{{ dataset }}.{{ prefix }}__clients_scalar_aggregates_v1`
+
   UNION ALL
-  
+
   SELECT
     client_id,
     {{ attributes }}
-  FROM `{{ project }}`.{{ dataset }}.{{ prefix }}__clients_histogram_aggregates_v1
+  FROM `{{ project }}.{{ dataset }}.{{ prefix }}__clients_histogram_aggregates_v1`
 ),
 {{
     enumerate_table_combinations(

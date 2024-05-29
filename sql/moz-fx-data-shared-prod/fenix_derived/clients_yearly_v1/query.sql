@@ -28,11 +28,36 @@
   ),
   _current AS (
     SELECT
-    -- In this raw table, we capture the history of activity over the past
-    -- 365 days for each usage criterion as an array of bytes. The
-    -- rightmost bit represents whether the user was active in the current day.
+      -- In this raw table, we capture the history of activity over the past
+      -- 365 days for each usage criterion as an array of bytes. The
+      -- rightmost bit represents whether the user was active in the current day.
       udf.bool_to_365_bits(TRUE) AS days_seen_bytes,
-      * EXCEPT (submission_date, rn),
+      -- We explicitly pull out the fields specified in schema.yaml
+      client_id,
+      sample_id,
+      first_run_date,
+      durations,
+      days_seen_session_start_bits,
+      days_seen_session_end_bits,
+      normalized_channel,
+      normalized_os,
+      normalized_os_version,
+      android_sdk_version,
+      locale,
+      city,
+      country,
+      app_build,
+      app_channel,
+      app_display_version,
+      architecture,
+      device_manufacturer,
+      device_model,
+      telemetry_sdk_build,
+      first_seen_date,
+      is_new_profile,
+      isp,
+      distribution_id,
+      geo_subdivision,
     FROM
       base
     WHERE

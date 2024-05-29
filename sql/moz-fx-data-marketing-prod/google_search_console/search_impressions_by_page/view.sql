@@ -97,11 +97,6 @@ SELECT
     localized_site_language.name,
     search_impressions.localized_site_language_code
   ) AS localized_site_language,
-  search_impressions.localized_site_country_code,
-  COALESCE(
-    localized_site_country.name,
-    search_impressions.localized_site_country_code
-  ) AS localized_site_country,
   search_impressions.query,
   mozfun.google_search_console.classify_site_query(
     search_impressions.site_domain_name,
@@ -114,6 +109,8 @@ SELECT
   search_impressions.search_appearance,
   search_impressions.user_country_code,
   COALESCE(user_country.name, search_impressions.user_country_code) AS user_country,
+  user_country.region_name AS user_region,
+  user_country.subregion_name AS user_subregion,
   search_impressions.device_type,
   search_impressions.impressions,
   search_impressions.clicks,

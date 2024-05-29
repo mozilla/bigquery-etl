@@ -30,27 +30,35 @@ fields:
 - mode: NULLABLE
   name: first_seen_date
   type: DATE
-  description: First Seen Date
+  description: First Seen Date - Date when the server first received any of the 3 ping types from this client
 - mode: NULLABLE
   name: attribution_campaign
   type: STRING
-  description: Attribution Campaign
+  description: Attribution Campaign (from clients first seen)
 - mode: NULLABLE
   name: attribution_content
   type: STRING
-  description: Attribution Content
+  description: Attribution Content (from clients first seen)
 - mode: NULLABLE
   name: attribution_dlsource
   type: STRING
-  description: Attribution Download Source
+  description: Attribution Download Source (from clients first seen)
 - mode: NULLABLE
   name: attribution_medium
   type: STRING
-  description: Attribution Medium
+  description: Attribution Medium (from clients first seen)
 - mode: NULLABLE
   name: attribution_ua
   type: STRING
-  description: Attribution UA
+  description: Attribution UA (from clients first seen)
+- mode: NULLABLE
+  name: attribution_experiment
+  type: STRING
+  description: Attribution Experiment (from clients first seen)
+- mode: NULLABLE
+  name: attribution_variation
+  type: STRING
+  description: Attribution Variation (from clients last seen since unavailable in clients first seen)
 - mode: NULLABLE
   name: normalized_channel
   type: STRING
@@ -64,9 +72,17 @@ fields:
   type: STRING
   description: Normalized Operating System Version
 - mode: NULLABLE
+  name: startup_profile_selection_reason
+  type: STRING
+  description: Startup Profile Selection Reason - How the profile was selected during startup
+- mode: NULLABLE
   name: country
   type: STRING
   description: Country
+- mode: NULLABLE
+  name: is_desktop
+  type: BOOLEAN
+  description: Indicates if the client is included in the desktop KPI
 - mode: NULLABLE
   name: is_dau
   type: BOOLEAN

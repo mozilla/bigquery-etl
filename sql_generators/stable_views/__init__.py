@@ -129,9 +129,9 @@ def write_view_if_not_exists(target_project: str, sql_dir: Path, schema: SchemaF
     from bigquery_etl.format_sql.formatter import reformat
     from bigquery_etl.schema import Schema
     from sql_generators.stable_views import (
+        FF_INSTLL_VIEW_QUERY_TEMPLATE,
         VIEW_METADATA_TEMPLATE,
         VIEW_QUERY_TEMPLATE,
-        FF_INSTLL_VIEW_QUERY_TEMPLATE,
     )
 
     VIEW_CREATE_REGEX = re.compile(

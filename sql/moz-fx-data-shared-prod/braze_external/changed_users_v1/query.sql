@@ -4,6 +4,8 @@ SELECT
   CASE
     WHEN current_users.external_id IS NULL
       THEN 'Deleted'
+    WHEN previous_users.external_id IS NULL
+      THEN 'New'
     WHEN NOT (
         current_users.email = previous_users.email
         AND current_users.mailing_country = previous_users.mailing_country
@@ -45,6 +47,7 @@ FULL OUTER JOIN
   ON current_users.external_id = previous_users.external_id
 WHERE
   current_users.external_id IS NULL  -- deleted rows
+  OR previous_users.external_id IS NULL -- new rows
   OR NOT (
     current_users.email = previous_users.email
     AND current_users.mailing_country = previous_users.mailing_country

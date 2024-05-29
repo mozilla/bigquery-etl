@@ -154,10 +154,7 @@ bqetl_subplat:
     Stripe data retrieved by stripe_external__itemized_payout_reconciliation__v5
     task has highly viariable availability timing, so it is possible for it to
     fail with the following type of error:
-    `Error: Request req_OTssZ0Zv1cEmmm: Data for the report type
-            payout_reconciliation.itemized.5 is only available through
-            2022-05-08 12:00:00 UTC; you requested `interval_end`
-            = 2022-05-09 00:00:00 UTC.`
+    `Report 'frr_...' did not succeed, status was 'pending'`
     In such cases the failure is expected, the task will continue to retry every
     30 minutes until the data becomes available. If failure observed looks
     different then it should be reported using the Airflow triage process.
@@ -1350,7 +1347,7 @@ bqetl_glean_usage:
     - impact/tier_1
 
 bqetl_glam_export:
-  schedule_interval: 0 8 * * *
+  schedule_interval: 0 22 * * *
   default_args:
     depends_on_past: false
     email:
@@ -1547,10 +1544,15 @@ bqetl_braze:
   schedule_interval: 0 10 * * *
   description: |
     ETL for Braze workflows.
+    ## Triage notes:
+    Don't rerun this DAG!
+    Ping Chelsey Beck or Leli Schiestl.
+    If both are out, follow the [workbook](https://mozilla-hub.atlassian.net/wiki/spaces/DATA/pages/730234942/bqetl+braze+DAG+workbook) in confluence.
   default_args:
     owner: cbeck@mozilla.com
     email:
       - cbeck@mozilla.com
+      - leli@mozilla.com
     start_date: '2024-04-15'
     retries: 1
     retry_delay: 30m
@@ -1617,6 +1619,23 @@ bqetl_desktop_engagement_model:
     email_on_failure: true
     email_on_retry: false
     start_date: "2024-04-24"
+    retries: 2
+    retry_delay: 30m
+  tags:
+    - impact/tier_2
+
+bqetl_desktop_retention_model:
+  schedule_interval: 0 12 * * *
+  description: Loads the desktop retention model tables
+  default_args:
+    depends_on_past: false
+    owner: mhirose@mozilla.com
+    email:
+      - mhirose@mozilla.com
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    start_date: "2024-05-14"
     retries: 2
     retry_delay: 30m
   tags:

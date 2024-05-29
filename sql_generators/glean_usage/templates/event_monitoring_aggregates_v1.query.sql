@@ -2,7 +2,8 @@
 {% for app in apps %}
 {% set outer_loop = loop -%}
 {% for dataset in app -%}
-{% if dataset['bq_dataset_family'] not in ["telemetry", "accounts_frontend", "accounts_backend"] %}
+{% if dataset['bq_dataset_family'] not in ["telemetry", "accounts_frontend", "accounts_backend"]
+   and dataset['bq_dataset_family'] in event_tables_per_dataset %}
   {% if not outer_loop.first -%}
   UNION ALL
   {% endif -%}
@@ -34,8 +35,8 @@
     event_extra.key AS event_extra_key,
     normalized_country_code AS country,
     "{{ dataset['canonical_app_name'] }}" AS normalized_app_name,
-    client_info.app_channel AS channel,
-    client_info.app_display_version AS version,
+    channel,
+    version,
     -- Access experiment information.
     -- Additional iteration is necessary to aggregate total event count across experiments
     -- which is denoted with "*".
@@ -60,12 +61,20 @@
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch 
     END AS experiment_branch,
     COUNT(*) AS total_events
-  FROM
-    `{{ project_id }}.{{ dataset['bq_dataset_family'] }}_stable.{{ 
-        default_events_table
-        if dataset['bq_dataset_family'] not in events_table_overwrites
-        else events_table_overwrites[dataset['bq_dataset_family']] 
-    }}`
+  FROM (
+    {% for events_table in event_tables_per_dataset[dataset['bq_dataset_family']] -%}
+    SELECT
+      submission_timestamp,
+      events,
+      normalized_country_code,
+      client_info.app_channel AS channel,
+      client_info.app_display_version AS version,
+      ping_info
+    FROM
+      `{{ project_id }}.{{ dataset['bq_dataset_family'] }}_stable.{{ events_table }}`
+    {{ "UNION ALL" if not loop.last }}
+    {% endfor -%}
+  )
   CROSS JOIN
     UNNEST(events) AS event,
     -- Iterator for accessing experiments.
@@ -117,12 +126,12 @@
       ) MINUTE
     ) AS window_end,
     CAST(NULL AS STRING) AS event_category,
-    metrics.string.event_name,
+    event_name,
     CAST(NULL AS STRING) AS event_extra_key,
     normalized_country_code AS country,
     "{{ dataset['canonical_app_name'] }}" AS normalized_app_name,
-    client_info.app_channel AS channel,
-    client_info.app_display_version AS version,
+    channel,
+    version,
     -- Access experiment information.
     -- Additional iteration is necessary to aggregate total event count across experiments
     -- which is denoted with "*".
@@ -147,12 +156,21 @@
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch 
     END AS experiment_branch,
     COUNT(*) AS total_events
-  FROM
-    `{{ project_id }}.{{ dataset['bq_dataset_family'] }}_stable.{{ 
-        default_events_table
-        if dataset['bq_dataset_family'] not in events_table_overwrites
-        else events_table_overwrites[dataset['bq_dataset_family']] 
-    }}`
+  FROM (
+    {% for events_table in event_tables_per_dataset[dataset['bq_dataset_family']] -%}
+    SELECT
+      submission_timestamp,
+      events,
+      metrics.string.event_name,
+      normalized_country_code,
+      client_info.app_channel AS channel,
+      client_info.app_display_version AS version,
+      ping_info
+    FROM
+      `{{ project_id }}.{{ dataset['bq_dataset_family'] }}_stable.{{ events_table }}`
+    {{ "UNION ALL" if not loop.last }}
+    {% endfor -%}
+  )
   CROSS JOIN
     -- Iterator for accessing experiments.
     -- Add one more for aggregating events across all experiments

@@ -9,10 +9,10 @@ ASSERT(
   FROM
     `moz-fx-data-shared-prod.braze_derived.users_v1` AS users
   WHERE
-    users.update_timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 15 HOUR)
+    users.update_timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 HOUR)
 ) > 0
 AS
-  "No new records in the braze_derived.users_v1 table in the last 15 hours";
+  "No new records in the braze_derived.users_v1 table in the last 7 hours";
 
 -- macro checks
 

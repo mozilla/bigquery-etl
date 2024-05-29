@@ -95,8 +95,8 @@ SELECT
 FROM
   by_ad_group_id
 JOIN
-  `moz-fx-data-shared-prod`.google_ads_derived.campaigns_v2
-  USING (campaign_id)
-JOIN
   `moz-fx-data-shared-prod`.google_ads_derived.ad_groups_v1
-  USING (campaign_id, ad_group_id)
+  USING (ad_group_id)
+JOIN
+  `moz-fx-data-shared-prod`.google_ads_derived.campaigns_v2
+  ON ad_groups_v1.campaign_id = campaigns_v2.campaign_id

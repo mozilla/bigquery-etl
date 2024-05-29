@@ -1347,7 +1347,7 @@ bqetl_glean_usage:
     - impact/tier_1
 
 bqetl_glam_export:
-  schedule_interval: 0 19 * * *
+  schedule_interval: 0 22 * * *
   default_args:
     depends_on_past: false
     email:
@@ -1653,23 +1653,6 @@ bqetl_ios_campaign_reporting:
     email_on_failure: true
     email_on_retry: false
     start_date: "2024-05-08"
-    retries: 2
-    retry_delay: 30m
-  tags:
-    - impact/tier_2
-
-bqetl_mobile_engagement_model:
-  schedule_interval: 0 12 * * *
-  description: Loads the mobile engagement model tables
-  default_args:
-    depends_on_past: false
-    owner: kwindau@mozilla.com
-    email:
-      - kwindau@mozilla.com
-      - telemetry-alerts@mozilla.com
-    email_on_failure: true
-    email_on_retry: false
-    start_date: "2024-05-16"
     retries: 2
     retry_delay: 30m
   tags:

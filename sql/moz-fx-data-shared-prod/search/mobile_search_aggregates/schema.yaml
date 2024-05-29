@@ -62,6 +62,9 @@ fields:
 - name: ad_click_organic
   type: INTEGER
   mode: NULLABLE
+- name: search_with_ads_organic
+  type: INTEGER
+  mode: NULLABLE
 - name: normalized_engine
   type: STRING
   mode: NULLABLE

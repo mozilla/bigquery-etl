@@ -19,7 +19,7 @@ SELECT
   COUNTIF(is_wau) AS wau,
   COUNTIF(is_mau) AS mau
 FROM
-  `{{ project_id }}.{{ dataset }}_derived.engagement_clients_{{ version }}`
+  `{{ project_id }}.{{ dataset }}.engagement_clients`
 WHERE
   submission_date = @submission_date
 GROUP BY

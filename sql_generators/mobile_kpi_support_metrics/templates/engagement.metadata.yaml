@@ -13,10 +13,6 @@ labels:
 #   dag_name:  # TODO: think about which DAG this should run in.
 #   depends_on_past: false
 #   task_group: {{ app_name }}
-#   date_partition_parameter: metric_date
-#   date_partition_offset: -27
-#   parameters:
-#     - submission_date:DATE:{{ds}}
 bigquery:
   time_partitioning:
     type: day

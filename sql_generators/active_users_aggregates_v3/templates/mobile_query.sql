@@ -39,7 +39,7 @@ baseline AS (
     CAST(NULL AS string) AS distribution_id,
     isp,
     app_name,
-    segment,
+    activity_segment AS segment,
     is_daily_user,
     is_weekly_user,
     is_monthly_user,
@@ -47,45 +47,35 @@ baseline AS (
     is_wau,
     is_mau
   FROM
-    `{{ project_id }}.{{ app_name }}.baseline_clients_last_seen`
+    `{{ project_id }}.{{ app_name }}.active_users`
   WHERE
     submission_date = @submission_date
 ),
 metrics AS (
     -- Metrics ping can arrive either in the same or next day as the baseline ping.
-  WITH min_metrics_ping AS (
-    SELECT
-      client_id,
-      MIN(submission_date) AS submission_date
-    FROM
-      `{{ project_id }}.{{ app_name }}.metrics_clients_last_seen`
-    WHERE
-      submission_date
-      BETWEEN @submission_date
-      AND DATE_ADD(@submission_date, INTERVAL 1 DAY)
-    GROUP BY
-      client_id
-  )
   SELECT
     client_id,
-    submission_date,
-    metrics.normalized_channel,
-    {% if app_name == "klar_android"%}
-      CAST(NULL AS INTEGER) AS uri_count,
-      CAST(NULL AS INTEGER) AS is_default_browser
-    {% else %}
-      metrics.uri_count,
-      metrics.is_default_browser
-    {% endif %}
+    ARRAY_AGG(
+      normalized_channel IGNORE NULLS
+      ORDER BY
+        submission_date ASC
+    )[SAFE_OFFSET(0)] AS normalized_channel,
+    ARRAY_AGG(
+      uri_count IGNORE NULLS
+      ORDER BY
+        submission_date ASC
+    )[SAFE_OFFSET(0)] AS uri_count,
+    ARRAY_AGG(
+      is_default_browser IGNORE NULLS
+      ORDER BY
+        submission_date ASC
+    )[SAFE_OFFSET(0)] AS is_default_browser
   FROM
-    `{{ project_id }}.{{ app_name }}.metrics_clients_last_seen` AS metrics
-  INNER JOIN
-    min_metrics_ping
-    USING (client_id, submission_date)
+    `{{ project_id }}.{{ app_name }}.metrics_clients_last_seen`
   WHERE
-    submission_date
-    BETWEEN @submission_date
-    AND DATE_ADD(@submission_date, INTERVAL 1 DAY)
+    DATE(submission_date) BETWEEN @submission_date AND DATE_ADD(@submission_date, INTERVAL 1 DAY)
+  GROUP BY
+    client_id
 ),
 unioned AS (
   SELECT

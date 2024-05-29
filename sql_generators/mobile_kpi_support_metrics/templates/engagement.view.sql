@@ -1,8 +1,9 @@
+{{ header }}
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.telemetry.mobile_engagement`
+  `{{ project_id }}.{{ dataset }}.{{ name }}`
 AS
 SELECT
-  a.*,
+  *,
   CASE
     WHEN first_seen_date = submission_date
       THEN 'new_profile'
@@ -13,6 +14,6 @@ SELECT
     WHEN DATE_DIFF(submission_date, first_seen_date, DAY) >= 28
       THEN 'existing_user'
     ELSE 'Unknown'
-  END AS lifecycle_stage
+  END AS lifecycle_stage,
 FROM
-  `moz-fx-data-shared-prod.telemetry_derived.mobile_engagement_v1` a
+  `{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}`

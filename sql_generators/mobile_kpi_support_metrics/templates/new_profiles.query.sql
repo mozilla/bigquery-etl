@@ -1,6 +1,5 @@
 {{ header }}
 SELECT
-  submission_date,
   first_seen_date,
   normalized_channel,
   app_name,
@@ -9,26 +8,20 @@ SELECT
   locale,
   is_mobile,
   {% for field in product_attribution_fields.values() %}
-    attribution.{{ field.name }},
+    {{ field.name }},
   {% endfor %}
-  COUNTIF(is_dau) AS dau,
-  COUNTIF(is_wau) AS wau,
-  COUNTIF(is_mau) AS mau,
+  COUNT(*) AS new_profiles,
 FROM
-  `{{ project_id }}.{{ dataset }}.engagement_clients`
-LEFT JOIN
-  `{{ project_id }}.{{ dataset }}.attribution_clients` AS attribution
-  USING(client_id)
+  `{{ project_id }}.{{ dataset }}.new_profile_clients`
 WHERE
   {% raw %}
   {% if is_init() %}
-    submission_date < CURRENT_DATE
+    first_seen_date < CURRENT_DATE
   {% else %}
-    submission_date = @submission_date
+    first_seen_date = @submission_date
   {% endif %}
   {% endraw %}
 GROUP BY
-  submission_date,
   first_seen_date,
   normalized_channel,
   app_name,

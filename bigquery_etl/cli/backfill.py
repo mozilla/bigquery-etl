@@ -399,11 +399,7 @@ def initiate(
     )
 
     project, dataset, table = qualified_table_name_matching(qualified_table_name)
-    query_path = Path(sql_dir) / project / dataset / table
-    # deploy backfill staging table
-    # TODO: We've been silently ignoring missing schema files in calls to
-    # TODO: ctx.invoke(deploy). We should either call schema update to write
-    # TODO: the schema or write the schema directly.
+    query_path = Path(sql_dir) / project / dataset / table / "query.sql"
 
     try:
         deploy_table(

@@ -13,6 +13,11 @@ labels:
   schedule: daily
   incremental: true
   owner1: kik
+scheduling:
+  date_partition_parameter: metric_date
+  date_partition_offset: -27
+  parameters:
+  - submission_date:DATE:{{ds}}
 bigquery:
   time_partitioning:
     type: day

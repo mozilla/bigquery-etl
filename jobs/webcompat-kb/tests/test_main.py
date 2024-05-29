@@ -151,6 +151,69 @@ SAMPLE_BREAKAGE_BUGS = [
     },
 ]
 
+SAMPLE_CORE_AS_KB_BUGS = [
+    {
+        "whiteboard": "",
+        "see_also": ["https://bugzilla.mozilla.org/show_bug.cgi?id=1740472"],
+        "severity": "S3",
+        "product": "Core",
+        "depends_on": [],
+        "summary": "Consider adding support for Error.captureStackTrace",
+        "resolution": "",
+        "last_change_time": "2024-05-27T15:07:03Z",
+        "keywords": ["parity-chrome", "parity-safari", "webcompat:platform-bug"],
+        "priority": "P3",
+        "creation_time": "2024-03-21T16:40:27Z",
+        "cf_user_story": "",
+        "status": "NEW",
+        "blocks": [1539848, 1729514, 1896383],
+        "url": "",
+        "cf_last_resolved": None,
+        "component": "JavaScript Engine",
+        "id": 1886820,
+    },
+    {
+        "depends_on": [1896672],
+        "product": "Core",
+        "severity": "S2",
+        "see_also": ["https://bugzilla.mozilla.org/show_bug.cgi?id=1863217"],
+        "whiteboard": "",
+        "resolution": "",
+        "summary": "Popup blocker is too strict when opening new windows",
+        "status": "NEW",
+        "cf_user_story": "",
+        "priority": "P3",
+        "creation_time": "2024-04-30T14:04:23Z",
+        "keywords": ["webcompat:platform-bug"],
+        "last_change_time": "2024-05-14T15:19:21Z",
+        "id": 1894244,
+        "component": "DOM: Window and Location",
+        "cf_last_resolved": None,
+        "url": "",
+        "blocks": [1656444, 1835339, 222222],
+    },
+    {
+        "whiteboard": "",
+        "see_also": [],
+        "severity": "S3",
+        "product": "Core",
+        "depends_on": [999999],
+        "summary": "Example core issue",
+        "resolution": "",
+        "last_change_time": "2024-05-27T15:07:03Z",
+        "keywords": ["webcompat:platform-bug"],
+        "priority": "P3",
+        "creation_time": "2024-03-21T16:40:27Z",
+        "cf_user_story": "",
+        "status": "NEW",
+        "blocks": [],
+        "url": "",
+        "cf_last_resolved": None,
+        "component": "JavaScript Engine",
+        "id": 444444,
+    },
+]
+
 SAMPLE_HISTORY = [
     {
         "id": 1536482,
@@ -519,3 +582,57 @@ class TestMain(TestCase):
             ]
         }
         self.assertEqual(parse_string_to_json(input_str), expected)
+
+    def test_filter_core_as_kb_bugs(self):
+        core_as_kb_bugs = self.bz.filter_core_as_kb_bugs(
+            SAMPLE_CORE_AS_KB_BUGS, {1835339}, {1896383, 222222}
+        )
+
+        assert core_as_kb_bugs[0] == [
+            {
+                "whiteboard": "",
+                "see_also": ["https://bugzilla.mozilla.org/show_bug.cgi?id=1740472"],
+                "severity": "S3",
+                "product": "Core",
+                "depends_on": [],
+                "summary": "Consider adding support for Error.captureStackTrace",
+                "resolution": "",
+                "last_change_time": "2024-05-27T15:07:03Z",
+                "keywords": [
+                    "parity-chrome",
+                    "parity-safari",
+                    "webcompat:platform-bug",
+                ],
+                "priority": "P3",
+                "creation_time": "2024-03-21T16:40:27Z",
+                "cf_user_story": "",
+                "status": "NEW",
+                "blocks": [1896383],
+                "url": "",
+                "cf_last_resolved": None,
+                "component": "JavaScript Engine",
+                "id": 1886820,
+            },
+            {
+                "whiteboard": "",
+                "see_also": [],
+                "severity": "S3",
+                "product": "Core",
+                "depends_on": [999999],
+                "summary": "Example core issue",
+                "resolution": "",
+                "last_change_time": "2024-05-27T15:07:03Z",
+                "keywords": ["webcompat:platform-bug"],
+                "priority": "P3",
+                "creation_time": "2024-03-21T16:40:27Z",
+                "cf_user_story": "",
+                "status": "NEW",
+                "blocks": [],
+                "url": "",
+                "cf_last_resolved": None,
+                "component": "JavaScript Engine",
+                "id": 444444,
+            },
+        ]
+
+        assert core_as_kb_bugs[1] == {999999}

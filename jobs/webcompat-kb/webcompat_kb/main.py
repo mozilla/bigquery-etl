@@ -24,6 +24,7 @@ FIELD_MAP = {
     "n/a": None,
     "--": None,
 }
+CORE_AS_KB_KEYWORD = "webcompat:platform-bug"
 
 FILTER_CONFIG = {
     "wc": {
@@ -193,6 +194,28 @@ class BugzillaToBigQuery:
             self.bugs_fetch_completed = False
             return []
 
+    def filter_core_as_kb_bugs(self, other, kb_bugs_ids, site_reports_ids):
+        core_as_kb_bugs = []
+        ckb_depends_on_ids = set()
+
+        for bug in other:
+            if CORE_AS_KB_KEYWORD in bug["keywords"]:
+                # Check if the core bug already has a kb entry and skip if so
+                if any(blocked_id in kb_bugs_ids for blocked_id in bug["blocks"]):
+                    continue
+
+                # Only store a breakage bug as it's the relation we care about
+                bug["blocks"] = [
+                    blocked_id
+                    for blocked_id in bug["blocks"]
+                    if blocked_id in site_reports_ids
+                ]
+
+                ckb_depends_on_ids.update(bug["depends_on"])
+                core_as_kb_bugs.append(bug)
+
+        return core_as_kb_bugs, ckb_depends_on_ids
+
     def fetch_all_bugs(self):
         fetched_bugs = {}
 
@@ -202,11 +225,24 @@ class BugzillaToBigQuery:
 
         kb_bugs = []
         kb_depends_on_ids = set()
+        site_reports_ids = set()
+        kb_bugs_ids = set()
 
         for bug in fetched_bugs["wc"]:
             if bug["component"] == "Knowledge Base":
                 kb_bugs.append(bug)
                 kb_depends_on_ids.update(bug["depends_on"])
+                kb_bugs_ids.add(bug["id"])
+
+            elif bug["component"] == "Site Reports":
+                site_reports_ids.add(bug["id"])
+
+        core_as_kb_bugs, ckb_depends_on_ids = self.filter_core_as_kb_bugs(
+            fetched_bugs["other"], kb_bugs_ids, site_reports_ids
+        )
+
+        kb_depends_on_ids.update(ckb_depends_on_ids)
+        merged_kb_bugs = kb_bugs + core_as_kb_bugs
 
         logging.info("Fetching blocking bugs for KB bugs")
 
@@ -219,7 +255,7 @@ class BugzillaToBigQuery:
             + core_bugs
         )
 
-        return all_bugs, kb_bugs, core_bugs
+        return all_bugs, merged_kb_bugs, core_bugs
 
     def split_bugs(self, dep_bugs, bug_ids):
         core_bugs, breakage_bugs = [], []
@@ -301,7 +337,6 @@ class BugzillaToBigQuery:
     def update_bugs(self, bugs):
         res = []
         for bug in bugs:
-
             resolved = None
 
             if bug["status"] in ["RESOLVED", "VERIFIED"] and bug["cf_last_resolved"]:
@@ -367,6 +402,38 @@ class BugzillaToBigQuery:
                     logging.error(error)
 
         table = self.client.get_table(bugs_table)
+        logging.info(f"Loaded {table.num_rows} rows into {table}")
+
+    def update_kb_ids(self, ids):
+        res = [{"number": kb_id} for kb_id in ids]
+
+        job_config = bigquery.LoadJobConfig(
+            source_format=bigquery.SourceFormat.NEWLINE_DELIMITED_JSON,
+            schema=[
+                bigquery.SchemaField("number", "INTEGER", mode="REQUIRED"),
+            ],
+            write_disposition="WRITE_TRUNCATE",
+        )
+
+        kb_bugs_table = f"{self.bq_dataset_id}.kb_bugs"
+
+        job = self.client.load_table_from_json(
+            res,
+            kb_bugs_table,
+            job_config=job_config,
+        )
+
+        logging.info("Writing to `kb_bugs` table")
+
+        try:
+            job.result()
+        except Exception as e:
+            print(f"ERROR: {e}")
+            if job.errors:
+                for error in job.errors:
+                    logging.error(error)
+
+        table = self.client.get_table(kb_bugs_table)
         logging.info(f"Loaded {table.num_rows} rows into {table}")
 
     def update_relations(self, relations):
@@ -614,9 +681,12 @@ class BugzillaToBigQuery:
         # Build relations for BQ tables.
         rels = self.build_relations(kb_data, RELATION_CONFIG)
 
+        kb_ids = list(kb_data.keys())
+
         all_bugs_unique = list({item["id"]: item for item in all_bugs}.values())
 
         self.update_bugs(all_bugs_unique)
+        self.update_kb_ids(kb_ids)
         self.update_relations(rels)
 
         history_changes = self.fetch_update_history(all_bugs_unique)

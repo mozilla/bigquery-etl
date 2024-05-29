@@ -10,7 +10,7 @@ ASSERT(
     `moz-fx-data-shared-prod.braze_derived.waitlists_v1`,
     UNNEST(waitlists) AS waitlists
   WHERE
-    waitlists.update_timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 8 HOUR)
+    waitlists.update_timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 HOUR)
 ) > 0
 AS
   "No new records in the braze_derived.waitlists_v1 table in the last 8 hours";

@@ -131,6 +131,32 @@ with DAG(
         "checks__fail_telemetry_derived__clients_last_seen__v2_external",
     ) as checks__fail_telemetry_derived__clients_last_seen__v2_external:
         ExternalTaskMarker(
+            task_id="bqetl_analytics_aggregations__wait_for_checks__fail_telemetry_derived__clients_last_seen__v2",
+            external_dag_id="bqetl_analytics_aggregations",
+            external_task_id="wait_for_checks__fail_telemetry_derived__clients_last_seen__v2",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=78300)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_kpis_shredder__wait_for_checks__fail_telemetry_derived__clients_last_seen__v2",
+            external_dag_id="bqetl_kpis_shredder",
+            external_task_id="wait_for_checks__fail_telemetry_derived__clients_last_seen__v2",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_search_dashboard__wait_for_checks__fail_telemetry_derived__clients_last_seen__v2",
+            external_dag_id="bqetl_search_dashboard",
+            external_task_id="wait_for_checks__fail_telemetry_derived__clients_last_seen__v2",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=77400)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_analytics_tables__wait_for_checks__fail_telemetry_derived__clients_last_seen__v2",
+            external_dag_id="bqetl_analytics_tables",
+            external_task_id="wait_for_checks__fail_telemetry_derived__clients_last_seen__v2",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_desktop_engagement_model__wait_for_checks__fail_telemetry_derived__clients_last_seen__v2",
             external_dag_id="bqetl_desktop_engagement_model",
             external_task_id="wait_for_checks__fail_telemetry_derived__clients_last_seen__v2",
@@ -138,10 +164,38 @@ with DAG(
         )
 
         ExternalTaskMarker(
+            task_id="bqetl_desktop_funnel__wait_for_checks__fail_telemetry_derived__clients_last_seen__v2",
+            external_dag_id="bqetl_desktop_funnel",
+            external_task_id="wait_for_checks__fail_telemetry_derived__clients_last_seen__v2",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=79200)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_desktop_retention_model__wait_for_checks__fail_telemetry_derived__clients_last_seen__v2",
             external_dag_id="bqetl_desktop_retention_model",
             external_task_id="wait_for_checks__fail_telemetry_derived__clients_last_seen__v2",
             execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=50400)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_feature_usage__wait_for_checks__fail_telemetry_derived__clients_last_seen__v2",
+            external_dag_id="bqetl_feature_usage",
+            external_task_id="wait_for_checks__fail_telemetry_derived__clients_last_seen__v2",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=75600)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_gud__wait_for_checks__fail_telemetry_derived__clients_last_seen__v2",
+            external_dag_id="bqetl_gud",
+            external_task_id="wait_for_checks__fail_telemetry_derived__clients_last_seen__v2",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_unified__wait_for_checks__fail_telemetry_derived__clients_last_seen__v2",
+            external_dag_id="bqetl_unified",
+            external_task_id="wait_for_checks__fail_telemetry_derived__clients_last_seen__v2",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
         )
 
         ExternalTaskMarker(
@@ -454,26 +508,6 @@ with DAG(
         "telemetry_derived__clients_last_seen__v1_external",
     ) as telemetry_derived__clients_last_seen__v1_external:
         ExternalTaskMarker(
-            task_id="bqetl_analytics_aggregations__wait_for_telemetry_derived__clients_last_seen__v1",
-            external_dag_id="bqetl_analytics_aggregations",
-            external_task_id="wait_for_telemetry_derived__clients_last_seen__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=78300)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
-            task_id="bqetl_kpis_shredder__wait_for_telemetry_derived__clients_last_seen__v1",
-            external_dag_id="bqetl_kpis_shredder",
-            external_task_id="wait_for_telemetry_derived__clients_last_seen__v1",
-        )
-
-        ExternalTaskMarker(
-            task_id="bqetl_search_dashboard__wait_for_telemetry_derived__clients_last_seen__v1",
-            external_dag_id="bqetl_search_dashboard",
-            external_task_id="wait_for_telemetry_derived__clients_last_seen__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=77400)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
             task_id="bqetl_addons__wait_for_telemetry_derived__clients_last_seen__v1",
             external_dag_id="bqetl_addons",
             external_task_id="wait_for_telemetry_derived__clients_last_seen__v1",
@@ -481,37 +515,10 @@ with DAG(
         )
 
         ExternalTaskMarker(
-            task_id="bqetl_analytics_tables__wait_for_telemetry_derived__clients_last_seen__v1",
-            external_dag_id="bqetl_analytics_tables",
+            task_id="bqetl_analytics_aggregations__wait_for_telemetry_derived__clients_last_seen__v1",
+            external_dag_id="bqetl_analytics_aggregations",
             external_task_id="wait_for_telemetry_derived__clients_last_seen__v1",
-        )
-
-        ExternalTaskMarker(
-            task_id="bqetl_desktop_funnel__wait_for_telemetry_derived__clients_last_seen__v1",
-            external_dag_id="bqetl_desktop_funnel",
-            external_task_id="wait_for_telemetry_derived__clients_last_seen__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=79200)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
-            task_id="bqetl_feature_usage__wait_for_telemetry_derived__clients_last_seen__v1",
-            external_dag_id="bqetl_feature_usage",
-            external_task_id="wait_for_telemetry_derived__clients_last_seen__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=75600)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
-            task_id="bqetl_gud__wait_for_telemetry_derived__clients_last_seen__v1",
-            external_dag_id="bqetl_gud",
-            external_task_id="wait_for_telemetry_derived__clients_last_seen__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
-            task_id="bqetl_unified__wait_for_telemetry_derived__clients_last_seen__v1",
-            external_dag_id="bqetl_unified",
-            external_task_id="wait_for_telemetry_derived__clients_last_seen__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=78300)).isoformat() }}",
         )
 
         ExternalTaskMarker(
@@ -741,7 +748,7 @@ with DAG(
     crashes_daily_v1.set_upstream(wait_for_copy_deduplicate_all)
 
     firefox_desktop_exact_mau28_by_client_count_dimensions.set_upstream(
-        telemetry_derived__clients_last_seen__v1
+        checks__fail_telemetry_derived__clients_last_seen__v2
     )
 
     firefox_desktop_exact_mau28_by_dimensions.set_upstream(
@@ -749,7 +756,7 @@ with DAG(
     )
 
     firefox_desktop_exact_mau28_by_dimensions_v2.set_upstream(
-        telemetry_derived__clients_last_seen__v1
+        checks__fail_telemetry_derived__clients_last_seen__v2
     )
 
     telemetry_derived__clients_daily__v6.set_upstream(
@@ -760,6 +767,10 @@ with DAG(
 
     telemetry_derived__clients_daily_event__v1.set_upstream(wait_for_event_events)
 
+    telemetry_derived__clients_daily_joined__v1.set_upstream(
+        checks__fail_telemetry_derived__clients_last_seen__v2
+    )
+
     telemetry_derived__clients_daily_joined__v1.set_upstream(crashes_daily_v1)
 
     telemetry_derived__clients_daily_joined__v1.set_upstream(
@@ -768,10 +779,6 @@ with DAG(
 
     telemetry_derived__clients_daily_joined__v1.set_upstream(
         telemetry_derived__clients_daily_event__v1
-    )
-
-    telemetry_derived__clients_daily_joined__v1.set_upstream(
-        telemetry_derived__clients_last_seen__v1
     )
 
     telemetry_derived__clients_first_seen__v1.set_upstream(

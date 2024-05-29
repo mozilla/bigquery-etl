@@ -47,10 +47,10 @@ with DAG(
     tags=tags,
 ) as dag:
 
-    wait_for_telemetry_derived__clients_last_seen__v1 = ExternalTaskSensor(
-        task_id="wait_for_telemetry_derived__clients_last_seen__v1",
+    wait_for_checks__fail_telemetry_derived__clients_last_seen__v2 = ExternalTaskSensor(
+        task_id="wait_for_checks__fail_telemetry_derived__clients_last_seen__v2",
         external_dag_id="bqetl_main_summary",
-        external_task_id="telemetry_derived__clients_last_seen__v1",
+        external_task_id="checks__fail_telemetry_derived__clients_last_seen__v2",
         execution_delta=datetime.timedelta(seconds=9000),
         check_existence=True,
         mode="reschedule",
@@ -234,7 +234,7 @@ with DAG(
     )
 
     search_derived__desktop_search_aggregates_by_userstate__v1.set_upstream(
-        wait_for_telemetry_derived__clients_last_seen__v1
+        wait_for_checks__fail_telemetry_derived__clients_last_seen__v2
     )
 
     search_derived__desktop_search_aggregates_for_searchreport__v1.set_upstream(

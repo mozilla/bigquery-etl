@@ -211,10 +211,10 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_telemetry_derived__clients_last_seen__v1 = ExternalTaskSensor(
-        task_id="wait_for_telemetry_derived__clients_last_seen__v1",
+    wait_for_checks__fail_telemetry_derived__clients_last_seen__v2 = ExternalTaskSensor(
+        task_id="wait_for_checks__fail_telemetry_derived__clients_last_seen__v2",
         external_dag_id="bqetl_main_summary",
-        external_task_id="telemetry_derived__clients_last_seen__v1",
+        external_task_id="checks__fail_telemetry_derived__clients_last_seen__v2",
         check_existence=True,
         mode="reschedule",
         allowed_states=ALLOWED_STATES,
@@ -679,5 +679,5 @@ with DAG(
     )
 
     telemetry_derived__clients_first_seen_28_days_later__v1.set_upstream(
-        wait_for_telemetry_derived__clients_last_seen__v1
+        wait_for_checks__fail_telemetry_derived__clients_last_seen__v2
     )

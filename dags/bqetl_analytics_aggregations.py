@@ -140,10 +140,10 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_telemetry_derived__clients_last_seen__v1 = ExternalTaskSensor(
-        task_id="wait_for_telemetry_derived__clients_last_seen__v1",
+    wait_for_checks__fail_telemetry_derived__clients_last_seen__v2 = ExternalTaskSensor(
+        task_id="wait_for_checks__fail_telemetry_derived__clients_last_seen__v2",
         external_dag_id="bqetl_main_summary",
-        external_task_id="telemetry_derived__clients_last_seen__v1",
+        external_task_id="checks__fail_telemetry_derived__clients_last_seen__v2",
         execution_delta=datetime.timedelta(seconds=8100),
         check_existence=True,
         mode="reschedule",
@@ -286,6 +286,18 @@ with DAG(
             failed_states=FAILED_STATES,
             pool="DATA_ENG_EXTERNALTASKSENSOR",
         )
+    )
+
+    wait_for_telemetry_derived__clients_last_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_telemetry_derived__clients_last_seen__v1",
+        external_dag_id="bqetl_main_summary",
+        external_task_id="telemetry_derived__clients_last_seen__v1",
+        execution_delta=datetime.timedelta(seconds=8100),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     active_users_aggregates_attribution_v1 = bigquery_etl_query(
@@ -809,11 +821,11 @@ with DAG(
     )
 
     checks__warn_firefox_desktop_derived__active_users_aggregates__v3.set_upstream(
-        firefox_desktop_active_users_aggregates
+        wait_for_checks__fail_telemetry_derived__clients_last_seen__v2
     )
 
     checks__warn_firefox_desktop_derived__active_users_aggregates__v3.set_upstream(
-        wait_for_telemetry_derived__clients_last_seen__v1
+        firefox_desktop_active_users_aggregates
     )
 
     checks__warn_firefox_ios_derived__active_users_aggregates__v3.set_upstream(
@@ -853,7 +865,7 @@ with DAG(
     )
 
     firefox_desktop_active_users_aggregates.set_upstream(
-        wait_for_telemetry_derived__clients_last_seen__v1
+        wait_for_checks__fail_telemetry_derived__clients_last_seen__v2
     )
 
     firefox_ios_active_users_aggregates.set_upstream(

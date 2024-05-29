@@ -86,10 +86,10 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_telemetry_derived__clients_last_seen__v1 = ExternalTaskSensor(
-        task_id="wait_for_telemetry_derived__clients_last_seen__v1",
+    wait_for_checks__fail_telemetry_derived__clients_last_seen__v2 = ExternalTaskSensor(
+        task_id="wait_for_checks__fail_telemetry_derived__clients_last_seen__v2",
         external_dag_id="bqetl_main_summary",
-        external_task_id="telemetry_derived__clients_last_seen__v1",
+        external_task_id="checks__fail_telemetry_derived__clients_last_seen__v2",
         check_existence=True,
         mode="reschedule",
         allowed_states=ALLOWED_STATES,
@@ -218,15 +218,15 @@ with DAG(
     )
 
     firefox_desktop_active_users_aggregates_for_deletion_requests.set_upstream(
+        wait_for_checks__fail_telemetry_derived__clients_last_seen__v2
+    )
+
+    firefox_desktop_active_users_aggregates_for_deletion_requests.set_upstream(
         wait_for_copy_deduplicate_all
     )
 
     firefox_desktop_active_users_aggregates_for_deletion_requests.set_upstream(
         wait_for_search_derived__mobile_search_clients_daily__v1
-    )
-
-    firefox_desktop_active_users_aggregates_for_deletion_requests.set_upstream(
-        wait_for_telemetry_derived__clients_last_seen__v1
     )
 
     firefox_ios_active_users_aggregates_for_deletion_requests.set_upstream(

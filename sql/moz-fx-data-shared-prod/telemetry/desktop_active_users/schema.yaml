@@ -9,6 +9,9 @@ fields:
 - name: sample_id
   type: INTEGER
   mode: NULLABLE
+- name: activity_segment
+  type: STRING
+  mode: NULLABLE
 - name: days_seen_bits
   type: INTEGER
   mode: NULLABLE
@@ -16,6 +19,55 @@ fields:
   type: INTEGER
   mode: NULLABLE
 - name: app_name
+  type: STRING
+  mode: NULLABLE
+- name: app_version
+  type: STRING
+  mode: NULLABLE
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+- name: country
+  type: STRING
+  mode: NULLABLE
+- name: city
+  type: STRING
+  mode: NULLABLE
+- name: locale
+  type: STRING
+  mode: NULLABLE
+- name: first_seen_date
+  type: DATE
+  mode: NULLABLE
+  description: First Seen Date
+- name: os
+  type: STRING
+  mode: NULLABLE
+- name: normalized_os_version
+  type: STRING
+  mode: NULLABLE
+- name: windows_build_number
+  type: INTEGER
+  mode: NULLABLE
+- name: scalar_parent_browser_engagement_total_uri_count_normal_and_private_mode_sum
+  type: INTEGER
+  mode: NULLABLE
+- name: scalar_parent_browser_engagement_total_uri_count_sum
+  type: INTEGER
+  mode: NULLABLE
+- name: is_default_browser
+  type: BOOLEAN
+  mode: NULLABLE
+- name: distribution_id
+  type: STRING
+  mode: NULLABLE
+- name: active_hours_sum
+  type: FLOAT
+  mode: NULLABLE
+- name: attribution_source
+  type: STRING
+  mode: NULLABLE
+- name: attribution_medium
   type: STRING
   mode: NULLABLE
 - name: is_dau

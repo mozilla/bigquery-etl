@@ -38,7 +38,6 @@ from ..backfill.validate import (
     validate_file,
 )
 from ..cli.query import backfill as query_backfill
-from ..cli.query import deploy
 from ..cli.utils import (
     billing_project_option,
     is_authenticated,
@@ -46,6 +45,7 @@ from ..cli.utils import (
     sql_dir_option,
 )
 from ..config import ConfigLoader
+from ..deploy import FailedDeployException, SkippedDeployException, deploy_table
 from ..metadata.parse_metadata import METADATA_FILE, Metadata
 
 logging.basicConfig(level=logging.INFO)
@@ -394,19 +394,26 @@ def initiate(
 
     entry_to_initiate = backfills_to_process_dict[qualified_table_name]
 
-    project, dataset, table = qualified_table_name_matching(qualified_table_name)
-
     backfill_staging_qualified_table_name = get_backfill_staging_qualified_table_name(
         qualified_table_name, entry_to_initiate.entry_date
     )
 
+    project, dataset, table = qualified_table_name_matching(qualified_table_name)
+    query_path = Path(sql_dir) / project / dataset / table
     # deploy backfill staging table
-    ctx.invoke(
-        deploy,
-        name=f"{dataset}.{table}",
-        project_id=project,
-        destination_table=backfill_staging_qualified_table_name,
-    )
+    # TODO: We've been silently ignoring missing schema files in calls to
+    # TODO: ctx.invoke(deploy). We should either call schema update to write
+    # TODO: the schema or write the schema directly.
+
+    try:
+        deploy_table(
+            query_file=query_path,
+            destination_table=backfill_staging_qualified_table_name,
+        )
+    except (SkippedDeployException, FailedDeployException) as e:
+        raise RuntimeError(
+            f"Backfill initiate failed to deploy {query_path} to {backfill_staging_qualified_table_name}."
+        ) from e
 
     billing_project = DEFAULT_BILLING_PROJECT
 

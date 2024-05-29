@@ -2,7 +2,7 @@
 WITH todays_metrics AS (
   SELECT
     client_id,
-    activity_segments_v1 AS segment,
+    activity_segment AS segment,
     app_name,
     app_version AS app_version,
     normalized_channel AS channel,
@@ -30,10 +30,10 @@ WITH todays_metrics AS (
     ) AS uri_count,
     is_default_browser,
     distribution_id,
-    attribution.source AS attribution_source,
-    attribution.medium AS attribution_medium,
-    attribution.medium IS NOT NULL
-    OR attribution.source IS NOT NULL AS attributed,
+    attribution_source,
+    attribution_medium,
+    attribution_medium IS NOT NULL
+    OR attribution_source IS NOT NULL AS attributed,
     is_daily_user,
     is_weekly_user,
     is_monthly_user,
@@ -69,21 +69,4 @@ SELECT
 FROM
   todays_metrics
 GROUP BY
-  app_version,
-  attribution_medium,
-  attribution_source,
-  attributed,
-  city,
-  country,
-  distribution_id,
-  first_seen_year,
-  is_default_browser,
-  locale,
-  app_name,
-  channel,
-  os,
-  os_version,
-  os_version_major,
-  os_version_minor,
-  submission_date,
-  segment
+  ALL

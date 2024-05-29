@@ -64,6 +64,10 @@ fields:
   type: STRING
   description: Normalized OS Version
 - mode: NULLABLE
+  name: is_desktop
+  type: BOOLEAN
+  description: Indicates if the client is included in the desktop KPI
+- mode: NULLABLE
   name: ping_sent_metric_date
   type: INT64
   description: Count of Pings Sent on Metric Date

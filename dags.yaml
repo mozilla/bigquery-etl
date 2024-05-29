@@ -154,10 +154,7 @@ bqetl_subplat:
     Stripe data retrieved by stripe_external__itemized_payout_reconciliation__v5
     task has highly viariable availability timing, so it is possible for it to
     fail with the following type of error:
-    `Error: Request req_OTssZ0Zv1cEmmm: Data for the report type
-            payout_reconciliation.itemized.5 is only available through
-            2022-05-08 12:00:00 UTC; you requested `interval_end`
-            = 2022-05-09 00:00:00 UTC.`
+    `Report 'frr_...' did not succeed, status was 'pending'`
     In such cases the failure is expected, the task will continue to retry every
     30 minutes until the data becomes available. If failure observed looks
     different then it should be reported using the Airflow triage process.
@@ -1350,7 +1347,7 @@ bqetl_glean_usage:
     - impact/tier_1
 
 bqetl_glam_export:
-  schedule_interval: 0 8 * * *
+  schedule_interval: 0 22 * * *
   default_args:
     depends_on_past: false
     email:
@@ -1656,23 +1653,6 @@ bqetl_ios_campaign_reporting:
     email_on_failure: true
     email_on_retry: false
     start_date: "2024-05-08"
-    retries: 2
-    retry_delay: 30m
-  tags:
-    - impact/tier_2
-
-bqetl_mobile_engagement_model:
-  schedule_interval: 0 12 * * *
-  description: Loads the mobile engagement model tables
-  default_args:
-    depends_on_past: false
-    owner: kwindau@mozilla.com
-    email:
-      - kwindau@mozilla.com
-      - telemetry-alerts@mozilla.com
-    email_on_failure: true
-    email_on_retry: false
-    start_date: "2024-05-16"
     retries: 2
     retry_delay: 30m
   tags:

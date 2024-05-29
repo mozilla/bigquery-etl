@@ -13,7 +13,7 @@ ASSERT(
     waitlists.update_timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 HOUR)
 ) > 0
 AS
-  "No new records in the braze_derived.waitlists_v1 table in the last 8 hours";
+  "No new records in the braze_derived.waitlists_v1 table in the last 7 hours";
 
 #fail
 {{ not_null(["external_id"]) }} -- to do: add array values

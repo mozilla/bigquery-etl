@@ -11,4 +11,5 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   view.sql:
-  - moz-fx-data-shared-prod.telemetry_derived.mobile_engagement_clients_v1
+  - moz-fx-data-shared-prod.fenix.engagement_clients
+  - moz-fx-data-shared-prod.firefox_ios.engagement_clients

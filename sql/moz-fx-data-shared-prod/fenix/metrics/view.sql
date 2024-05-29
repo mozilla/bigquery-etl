@@ -386,7 +386,8 @@ SELECT
       metrics.counter.hls_canplay_requested,
       metrics.counter.hls_canplay_supported,
       metrics.counter.home_bookmarks_bookmark_clicked,
-      metrics.counter.home_bookmarks_show_all_bookmarks
+      metrics.counter.home_bookmarks_show_all_bookmarks,
+      metrics.counter.bounce_tracking_protection_purge_count_classified_tracker
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -1012,7 +1013,8 @@ SELECT
       metrics.counter.hls_canplay_requested,
       metrics.counter.hls_canplay_supported,
       metrics.counter.home_bookmarks_bookmark_clicked,
-      metrics.counter.home_bookmarks_show_all_bookmarks
+      metrics.counter.home_bookmarks_show_all_bookmarks,
+      metrics.counter.bounce_tracking_protection_purge_count_classified_tracker
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,

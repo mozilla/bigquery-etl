@@ -108,7 +108,8 @@ SELECT
       metrics.counter.httpsfirst_upgraded,
       metrics.counter.httpsfirst_upgraded_schemeless,
       metrics.counter.hls_canplay_requested,
-      metrics.counter.hls_canplay_supported
+      metrics.counter.hls_canplay_supported,
+      metrics.counter.bounce_tracking_protection_purge_count_classified_tracker
     ) AS `counter`,
     metrics.datetime,
     STRUCT(
@@ -367,7 +368,8 @@ SELECT
       metrics.counter.httpsfirst_upgraded,
       metrics.counter.httpsfirst_upgraded_schemeless,
       metrics.counter.hls_canplay_requested,
-      metrics.counter.hls_canplay_supported
+      metrics.counter.hls_canplay_supported,
+      metrics.counter.bounce_tracking_protection_purge_count_classified_tracker
     ) AS `counter`,
     metrics.datetime,
     STRUCT(

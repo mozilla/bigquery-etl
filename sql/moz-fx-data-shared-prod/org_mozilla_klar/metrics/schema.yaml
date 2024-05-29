@@ -835,6 +835,14 @@ fields:
       description: 'Record when a canPlayType request supports HLS.
 
         '
+    - name: bounce_tracking_protection_purge_count_classified_tracker
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counts sites purged from BTP that are classified as trackers as
+        part of the following lists: [emailtracking-protection, fingerprinting-protection,
+        socialtracking-protection, tracking-protection]
+
+        '
   - name: datetime
     type: RECORD
     mode: NULLABLE

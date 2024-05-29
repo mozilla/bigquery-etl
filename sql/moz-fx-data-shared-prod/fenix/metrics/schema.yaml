@@ -655,6 +655,9 @@ fields:
     - name: home_bookmarks_show_all_bookmarks
       type: INTEGER
       mode: NULLABLE
+    - name: bounce_tracking_protection_purge_count_classified_tracker
+      type: INTEGER
+      mode: NULLABLE
   - name: custom_distribution
     type: RECORD
     mode: NULLABLE

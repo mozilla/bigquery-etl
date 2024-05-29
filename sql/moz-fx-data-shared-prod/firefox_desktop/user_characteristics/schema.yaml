@@ -491,6 +491,30 @@ fields:
       description: 'The CSS system-color Selecteditemtext.
 
         '
+    - name: characteristics_avail_height
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Available height property
+
+        '
+    - name: characteristics_avail_width
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Available width property
+
+        '
+    - name: characteristics_orientation_angle
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Orientation angle of the screen
+
+        '
+    - name: characteristics_pixel_depth
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Screen pixel depth property
+
+        '
   - name: string
     type: RECORD
     mode: NULLABLE

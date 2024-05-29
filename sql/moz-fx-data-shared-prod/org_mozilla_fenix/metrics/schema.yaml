@@ -1480,6 +1480,14 @@ fields:
         on the home screen. This was previously recent_bookmarks.show_all_bookmarks.
 
         '
+    - name: bounce_tracking_protection_purge_count_classified_tracker
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counts sites purged from BTP that are classified as trackers as
+        part of the following lists: [emailtracking-protection, fingerprinting-protection,
+        socialtracking-protection, tracking-protection]
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -1852,7 +1860,8 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream.
+      description: 'Failure occurs when initializing the audio stream. (Migrated from
+        the geckoview metric of the same name).
 
         '
     - name: glean_validation_pings_submitted

@@ -424,6 +424,9 @@ fields:
     - name: hls_canplay_supported
       type: INTEGER
       mode: NULLABLE
+    - name: bounce_tracking_protection_purge_count_classified_tracker
+      type: INTEGER
+      mode: NULLABLE
   - name: datetime
     type: RECORD
     mode: NULLABLE

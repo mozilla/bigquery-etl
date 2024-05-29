@@ -663,7 +663,7 @@ CREATE TEMP TABLE
           -- limit event.timestamp, otherwise this will cause an overflow
           INTERVAL LEAST(event_timestamp, 20000000000000) MILLISECOND
         ) AS timestamp,
-        "Firefox Monitor (Cirrus)" AS normalized_app_name,
+        "Mozilla Monitor (Cirrus)" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
         `moz-fx-data-shared-prod.monitor_cirrus.events_unnested`,
@@ -701,7 +701,7 @@ CREATE TEMP TABLE
           -- limit event.timestamp, otherwise this will cause an overflow
           INTERVAL LEAST(event_timestamp, 20000000000000) MILLISECOND
         ) AS timestamp,
-        "Firefox Monitor (Frontend)" AS normalized_app_name,
+        "Mozilla Monitor (Frontend)" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
         `moz-fx-data-shared-prod.monitor_frontend.events_unnested`,

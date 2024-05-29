@@ -11,6 +11,7 @@ import string
 import subprocess
 import sys
 import tempfile
+from concurrent import futures
 from datetime import date, timedelta
 from functools import partial
 from glob import glob
@@ -743,10 +744,25 @@ def backfill(
 
         if not depends_on_past and parallelism > 0:
             # run backfill for dates in parallel if depends_on_past is false
-            with Pool(parallelism) as p:
-                result = p.map(backfill_query, date_range, chunksize=1)
-            if not all(result):
-                sys.exit(1)
+            failed_backfills = []
+            with futures.ThreadPoolExecutor(max_workers=parallelism) as executor:
+                future_to_date = {
+                    executor.submit(backfill_query, backfill_date): backfill_date
+                    for backfill_date in date_range
+                }
+                for future in futures.as_completed(future_to_date):
+                    backfill_date = future_to_date[future]
+                    try:
+                        future.result()
+                    except Exception as e:  # TODO: More specific exception(s)
+                        print(f"Encountered exception {e}: {backfill_date}.")
+                        failed_backfills.append(backfill_date)
+                    else:
+                        print(f"Completed processing: {backfill_date}.")
+            if failed_backfills:
+                raise RuntimeError(
+                    f"Backfill processing failed for the following backfill dates: {failed_backfills}"
+                )
         else:
             # if data depends on previous runs, then execute backfill sequentially
             for backfill_date in date_range:

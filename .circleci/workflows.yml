@@ -957,42 +957,6 @@ jobs:
           steps:
             - *skip
   generate-diff:
-    docker: *docker
-    steps:
-      - when:
-          condition: *validate-sql-or-routines
-          steps:
-            - attach_workspace:
-                at: /tmp/workspace
-            - run:
-                name: Generate diff
-                command: |
-                  diff -qr --no-dereference \
-                    /tmp/workspace/main-generated-sql/dags/ /tmp/workspace/generated-sql/dags/ \
-                    | grep '^Only in' \
-                    > /tmp/workspace/generated-sql/sql.diff || true
-                  diff -bur --no-dereference --new-file \
-                    /tmp/workspace/main-generated-sql/dags/ /tmp/workspace/generated-sql/dags/ \
-                    >> /tmp/workspace/generated-sql/sql.diff || true
-                  diff -qr --no-dereference \
-                    /tmp/workspace/main-generated-sql/sql/ /tmp/workspace/generated-sql/sql/ \
-                    | grep '^Only in' \
-                    >> /tmp/workspace/generated-sql/sql.diff || true
-                  diff -bur --no-dereference --new-file \
-                    /tmp/workspace/main-generated-sql/sql/ /tmp/workspace/generated-sql/sql/ \
-                    >> /tmp/workspace/generated-sql/sql.diff || true
-            - persist_to_workspace:
-                root: /tmp/workspace
-                paths:
-                  - generated-sql
-            - store_artifacts:
-                path: /tmp/workspace/generated-sql/sql.diff
-                destination: sql.diff
-      - unless:
-          condition: *validate-sql-or-routines
-          steps:
-            - *skip
-  post-diff:
     docker:
       - image: cimg/node:21.2.0
     steps:
@@ -1002,6 +966,26 @@ jobs:
             - checkout
             - attach_workspace:
                 at: /tmp/workspace
+            - run:
+                name: Generate diff
+                command: |
+                  diff -qr --no-dereference \
+                    /tmp/workspace/main-generated-sql/dags/ /tmp/workspace/generated-sql/dags/ \
+                    | grep '^Only in' \
+                    > /tmp/workspace/sql.diff || true
+                  diff -bur --no-dereference --new-file \
+                    /tmp/workspace/main-generated-sql/dags/ /tmp/workspace/generated-sql/dags/ \
+                    >> /tmp/workspace/sql.diff || true
+                  diff -qr --no-dereference \
+                    /tmp/workspace/main-generated-sql/sql/ /tmp/workspace/generated-sql/sql/ \
+                    | grep '^Only in' \
+                    >> /tmp/workspace/sql.diff || true
+                  diff -bur --no-dereference --new-file \
+                    /tmp/workspace/main-generated-sql/sql/ /tmp/workspace/generated-sql/sql/ \
+                    >> /tmp/workspace/sql.diff || true
+            - store_artifacts:
+                path: /tmp/workspace/sql.diff
+                destination: sql.diff
             - run: npm i circle-github-bot@2.1.0 @octokit/graphql@7.0.2
             - run: .circleci/post-diff.js
       - unless:
@@ -1063,6 +1047,16 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Check for package version change in last commit before proceeding.
+          command: |
+            if git diff main HEAD~1 pyproject.toml | grep 'version'
+              then
+                echo "Found changes to package version dir, proceeding with deployment."
+              else
+                echo "No changes in package version. Skipping bigquery-etl deployment."
+                circleci-agent step halt
+            fi
+      - run:
           name: Install deployment tools
           command: |
             pip install --upgrade setuptools wheel twine
@@ -1118,12 +1112,6 @@ workflows:
           requires:
             - generate-dags
             - main-generate-sql-and-dags
-          filters:
-            branches:
-              ignore: main
-      - post-diff:
-          requires:
-            - generate-diff
           filters:
             branches:
               ignore: main
@@ -1233,8 +1221,6 @@ workflows:
     jobs:
       - deploy-to-pypi:
           filters:
-            tags:
-              only: /[0-9]{4}.[0-9]{1,2}.[0-9]+/  # Calver: YYYY.M.MINOR
             branches:
-              # Ignore all branches; this workflow should only run for tags.
-              ignore: /.*/
+              only:
+                - main

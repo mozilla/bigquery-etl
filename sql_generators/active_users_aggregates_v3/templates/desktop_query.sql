@@ -42,7 +42,7 @@ WITH todays_metrics AS (
     is_mau,
     active_hours_sum
   FROM
-    `moz-fx-data-shared-prod.telemetry.clients_last_seen_v2`
+    `moz-fx-data-shared-prod.telemetry.desktop_active_users`
   WHERE
     submission_date = @submission_date
 )

@@ -21,6 +21,7 @@ from traceback import print_exc
 from typing import Optional
 
 import rich_click as click
+import sqlparse
 import yaml
 from google.cloud import bigquery
 from google.cloud.exceptions import NotFound
@@ -984,6 +985,15 @@ def _run_query(
                 default_dataset=dataset_id or default_dataset,
             )
             query_arguments.append(f"--session_id={session_id}")
+
+            # temp udfs cannot be used in a session when destination table is set
+            if destination_table is not None and query_file.name != "script.sql":
+                query_text = extract_and_run_temp_udfs(
+                    query_text=query_text,
+                    project_id=billing_project,
+                    session_id=session_id,
+                )
+
         # if billing_project is set, default dataset is set with the @@dataset_id variable instead
         elif dataset_id is not None:
             # dataset ID was parsed by argparse but needs to be passed as parameter
@@ -1041,6 +1051,29 @@ def create_query_session(
         raise RuntimeError(f"Failed to get session id with job id {job.job_id}")
 
     return job.session_info.session_id
+
+
+def extract_and_run_temp_udfs(query_text: str, project_id: str, session_id: str) -> str:
+    """Create temp udfs in the session and return the query without udf definitions.
+
+    Does not support dry run because the query will fail dry run if udfs aren't defined.
+    """
+    sql_statements = sqlparse.split(query_text)
+
+    if len(sql_statements) == 1:
+        return query_text
+
+    client = bigquery.Client(project=project_id)
+    job_config = bigquery.QueryJobConfig(
+        use_legacy_sql=False,
+        connection_properties=[bigquery.ConnectionProperty("session_id", session_id)],
+    )
+
+    # assume query files only have temp udfs as additional statements
+    udf_def_statement = "\n".join(sql_statements[:-1])
+    client.query_and_wait(udf_def_statement, job_config=job_config)
+
+    return sql_statements[-1]
 
 
 @query.command(

@@ -13,15 +13,15 @@ owners:
 labels:
   schedule: daily
   incremental: true
-# will be commented out in a follow up PR which will add a DAG
-# scheduling:
+scheduling:
+#   will be commented out in a follow up PR which will add a DAG
 #   dag_name:  # TODO: think about which DAG this should run in.
 #   depends_on_past: false
 #   task_group: {{ app_name }}
-#   date_partition_parameter: metric_date
-#   date_partition_offset: -27
-#   parameters:
-#     - submission_date:DATE:{{ds}}
+  date_partition_parameter: metric_date
+  date_partition_offset: -27
+  parameters:
+    - submission_date:DATE:{% raw %}{{ds}}{% endraw %}
 bigquery:
   time_partitioning:
     type: day

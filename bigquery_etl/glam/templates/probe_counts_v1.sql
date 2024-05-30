@@ -86,7 +86,14 @@ WITH probe_counts AS (
           udf_get_buckets(metric_type, range_min, range_max, bucket_count)
         ),
         CAST(ROUND(SUM(record.value)) AS INT64)
-      ) AS aggregates
+      ) AS aggregates,
+      mozfun.glam.histogram_fill_buckets(
+        mozfun.map.sum(ARRAY_AGG(non_norm_record)),
+        mozfun.glam.histogram_buckets_cast_string_array(
+          udf_get_buckets(metric_type, range_min, range_max, bucket_count)
+        ),
+        CAST(ROUND(SUM(non_norm_record.value)) AS INT64)
+      ) AS non_norm_aggregates
     {% endif %}
   FROM
     {{ source_table }}
@@ -105,6 +112,9 @@ WITH probe_counts AS (
   windows_probe_counts AS (
     SELECT
       *
+      {% if is_scalar %}
+      , aggregates AS non_norm_aggregates
+      {% endif %}
     FROM
       probe_counts
     WHERE
@@ -120,6 +130,9 @@ WITH probe_counts AS (
       )
       AS total_users
     )
+    {% if is_scalar %}
+      , aggregates AS non_norm_aggregates
+    {% endif %}
   FROM
     probe_counts pc
   LEFT JOIN
@@ -130,5 +143,11 @@ WITH probe_counts AS (
       {{ aggregate_grouping }}
     )
 {% else %}
-  SELECT * FROM probe_counts
+  SELECT *
+  {% if is_scalar %}
+      --Scalars are always non-normalized.
+      --This is to comply with histograms' schema
+    , aggregates AS non_norm_aggregates
+  {% endif %}
+  FROM probe_counts
 {% endif %}

@@ -56,7 +56,7 @@ FROM
 JOIN
   successful_jobs
   USING (project_id, job_id)
-  WHERE lower(successful_jobs.destination_table.table_id) not like 'clients_last_seen_v2%
+  WHERE lower(successful_jobs.destination_table.table_id) not like 'clients_last_seen_v2%'
 """ #Since backfill cutover for this table, skip all jobs for clients last seen v2 yesterday
 
 

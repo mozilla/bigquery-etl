@@ -230,7 +230,8 @@ SELECT
       metrics.labeled_counter.webrtcdtls_server_handshake_result,
       metrics.labeled_counter.webrtcdtls_srtp_cipher,
       metrics.labeled_counter.media_playback_not_supported_video_per_mime_type,
-      metrics.labeled_counter.power_energy_per_process_type
+      metrics.labeled_counter.power_energy_per_process_type,
+      metrics.labeled_counter.bounce_tracking_protection_purge_count
     ) AS `labeled_counter`,
     metrics.memory_distribution,
     STRUCT(
@@ -490,7 +491,8 @@ SELECT
       metrics.labeled_counter.webrtcdtls_server_handshake_result,
       metrics.labeled_counter.webrtcdtls_srtp_cipher,
       metrics.labeled_counter.media_playback_not_supported_video_per_mime_type,
-      metrics.labeled_counter.power_energy_per_process_type
+      metrics.labeled_counter.power_energy_per_process_type,
+      metrics.labeled_counter.bounce_tracking_protection_purge_count
     ) AS `labeled_counter`,
     metrics.memory_distribution,
     STRUCT(

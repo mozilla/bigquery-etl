@@ -17648,6 +17648,147 @@ fields:
         rate.
 
         '
+    - name: use_counter_doc_js_subclassing_array_type_2
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document Array is Type II subclassed. Compare against
+        `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_doc_js_subclassing_array_type_3
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document Array is Type III subclassed. Compare against
+        `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_doc_js_subclassing_arraybuffer_type_3
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document ArrayBuffer is Type III subclassed. Compare
+        against `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_doc_js_subclassing_promise_type_2
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document Promise is Type II subclassed. Compare against
+        `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_doc_js_subclassing_promise_type_3
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document Promise is Type III subclassed. Compare against
+        `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_doc_js_subclassing_regexp_type_3
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document RegExp is Type III subclassed. Compare against
+        `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_doc_js_subclassing_regexp_type_4
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document RegExp is Type IV subclassed. Compare against
+        `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_doc_js_subclassing_sharedarraybuffer_type_3
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document SharedArrayBuffer is Type III subclassed. Compare
+        against `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_doc_js_subclassing_typedarray_type_2
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document TypedArray is Type II subclassed. Compare against
+        `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_doc_js_subclassing_typedarray_type_3
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document TypedArray is Type III subclassed. Compare
+        against `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_page_js_subclassing_array_type_2
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page Array is Type II subclassed. Compare against `use.counter.top_level_content_documents_destroyed`
+        to calculate the rate.
+
+        '
+    - name: use_counter_page_js_subclassing_array_type_3
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page Array is Type III subclassed. Compare against `use.counter.top_level_content_documents_destroyed`
+        to calculate the rate.
+
+        '
+    - name: use_counter_page_js_subclassing_arraybuffer_type_3
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page ArrayBuffer is Type III subclassed. Compare against
+        `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_page_js_subclassing_promise_type_2
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page Promise is Type II subclassed. Compare against
+        `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_page_js_subclassing_promise_type_3
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page Promise is Type III subclassed. Compare against
+        `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_page_js_subclassing_regexp_type_3
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page RegExp is Type III subclassed. Compare against
+        `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_page_js_subclassing_regexp_type_4
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page RegExp is Type IV subclassed. Compare against `use.counter.top_level_content_documents_destroyed`
+        to calculate the rate.
+
+        '
+    - name: use_counter_page_js_subclassing_sharedarraybuffer_type_3
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page SharedArrayBuffer is Type III subclassed. Compare
+        against `use.counter.top_level_content_documents_destroyed` to calculate the
+        rate.
+
+        '
+    - name: use_counter_page_js_subclassing_typedarray_type_2
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page TypedArray is Type II subclassed. Compare against
+        `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_page_js_subclassing_typedarray_type_3
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page TypedArray is Type III subclassed. Compare against
+        `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

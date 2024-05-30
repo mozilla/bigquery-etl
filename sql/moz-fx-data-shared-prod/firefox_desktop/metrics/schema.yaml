@@ -2526,6 +2526,22 @@ fields:
         mode: NULLABLE
       description: "How much energy (in \xB5Wh) has been used, broken down by process\
         \ type. Only available on Apple Silicon.\n"
+    - name: bounce_tracking_protection_purge_count
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts how often we purge trackers. Giving a high level overview
+        about the effectivness of bounce tracking protection. Allows determining error
+        rate with failed/success label. When in dry mode, we count the purges that
+        would have happened under the dry label.
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE

@@ -1645,6 +1645,16 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
+    - name: bounce_tracking_protection_purge_count
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE

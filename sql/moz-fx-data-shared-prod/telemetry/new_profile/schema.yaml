@@ -1334,6 +1334,79 @@ fields:
             A value of "0" is used to indicate that no file was present during startup.
 
             '
+        - name: installation_first_seen_admin_user
+          type: BOOLEAN
+          mode: NULLABLE
+          description: 'Whether the installer is running from an elevated admin user
+
+            '
+        - name: installation_first_seen_default_path
+          type: BOOLEAN
+          mode: NULLABLE
+          description: '(optional, present if installer_type is "full") Whether the
+            default path was used
+
+            '
+        - name: installation_first_seen_failure_reason
+          type: STRING
+          mode: NULLABLE
+          description: 'Only sent if unable to collect firstSeen data. Can have value
+            "NotFoundError" if file not found or other values depending on the failure
+            reason.
+
+            '
+        - name: installation_first_seen_from_msi
+          type: BOOLEAN
+          mode: NULLABLE
+          description: '(optional, present if installer_type is "full") Whether this
+            was an MSI install
+
+            '
+        - name: installation_first_seen_install_existed
+          type: BOOLEAN
+          mode: NULLABLE
+          description: '''Whether there was already an install in this location''
+
+            '
+        - name: installation_first_seen_installer_type
+          type: STRING
+          mode: NULLABLE
+          description: 'The type of installer used to install Firefox. The value is
+            one of "stub", "full", or "msix"
+
+            '
+        - name: installation_first_seen_other_inst
+          type: BOOLEAN
+          mode: NULLABLE
+          description: '''Whether there was already any non-MSIX install on this system''
+
+            '
+        - name: installation_first_seen_other_msix_inst
+          type: BOOLEAN
+          mode: NULLABLE
+          description: '''Whether there was already any MSIX install on this system''
+
+            '
+        - name: installation_first_seen_profdir_existed
+          type: BOOLEAN
+          mode: NULLABLE
+          description: '''Whether the top-level profile directory existed''
+
+            '
+        - name: installation_first_seen_silent
+          type: BOOLEAN
+          mode: NULLABLE
+          description: '(optional, present if installer_type is "full") Whether this
+            was a silent install
+
+            '
+        - name: installation_first_seen_version
+          type: STRING
+          mode: NULLABLE
+          description: 'The application version installed by the installer (not necessarily
+            the current version)
+
+            '
 - name: sample_id
   type: INTEGER
   mode: NULLABLE

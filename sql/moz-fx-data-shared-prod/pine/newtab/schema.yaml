@@ -446,6 +446,13 @@ fields:
         pref. Can be `true` even if topsites.enabled is `false`.
 
         '
+    - name: newtab_weather_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether the weather widget is enabled on the newtab. Corresponds
+        to the value of the `browser.newtabpage.activity-stream.showWeather` pref.
+
+        '
   - name: quantity
     type: RECORD
     mode: NULLABLE

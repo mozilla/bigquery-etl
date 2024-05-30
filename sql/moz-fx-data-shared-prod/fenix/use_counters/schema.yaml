@@ -7170,6 +7170,66 @@ fields:
     - name: use_counter_css_page_css_position_visibility
       type: INTEGER
       mode: NULLABLE
+    - name: use_counter_doc_js_subclassing_array_type_2
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_doc_js_subclassing_array_type_3
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_doc_js_subclassing_arraybuffer_type_3
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_doc_js_subclassing_promise_type_2
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_doc_js_subclassing_promise_type_3
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_doc_js_subclassing_regexp_type_3
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_doc_js_subclassing_regexp_type_4
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_doc_js_subclassing_sharedarraybuffer_type_3
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_doc_js_subclassing_typedarray_type_2
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_doc_js_subclassing_typedarray_type_3
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_page_js_subclassing_array_type_2
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_page_js_subclassing_array_type_3
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_page_js_subclassing_arraybuffer_type_3
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_page_js_subclassing_promise_type_2
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_page_js_subclassing_promise_type_3
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_page_js_subclassing_regexp_type_3
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_page_js_subclassing_regexp_type_4
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_page_js_subclassing_sharedarraybuffer_type_3
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_page_js_subclassing_typedarray_type_2
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_page_js_subclassing_typedarray_type_3
+      type: INTEGER
+      mode: NULLABLE
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

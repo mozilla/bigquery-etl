@@ -33298,6 +33298,39 @@ fields:
         - name: networking_captive_portal_banner_displayed
           type: INTEGER
           mode: NULLABLE
+        - name: installation_first_seen_admin_user
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: installation_first_seen_default_path
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: installation_first_seen_failure_reason
+          type: STRING
+          mode: NULLABLE
+        - name: installation_first_seen_from_msi
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: installation_first_seen_install_existed
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: installation_first_seen_installer_type
+          type: STRING
+          mode: NULLABLE
+        - name: installation_first_seen_other_inst
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: installation_first_seen_other_msix_inst
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: installation_first_seen_profdir_existed
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: installation_first_seen_silent
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: installation_first_seen_version
+          type: STRING
+          mode: NULLABLE
     - name: dynamic
       type: RECORD
       mode: NULLABLE
@@ -33457,6 +33490,39 @@ fields:
         - name: networking_captive_portal_banner_displayed
           type: INTEGER
           mode: NULLABLE
+        - name: installation_first_seen_admin_user
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: installation_first_seen_default_path
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: installation_first_seen_failure_reason
+          type: STRING
+          mode: NULLABLE
+        - name: installation_first_seen_from_msi
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: installation_first_seen_install_existed
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: installation_first_seen_installer_type
+          type: STRING
+          mode: NULLABLE
+        - name: installation_first_seen_other_inst
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: installation_first_seen_other_msix_inst
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: installation_first_seen_profdir_existed
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: installation_first_seen_silent
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: installation_first_seen_version
+          type: STRING
+          mode: NULLABLE
     - name: extension
       type: RECORD
       mode: NULLABLE
@@ -33615,6 +33681,39 @@ fields:
           mode: NULLABLE
         - name: networking_captive_portal_banner_displayed
           type: INTEGER
+          mode: NULLABLE
+        - name: installation_first_seen_admin_user
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: installation_first_seen_default_path
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: installation_first_seen_failure_reason
+          type: STRING
+          mode: NULLABLE
+        - name: installation_first_seen_from_msi
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: installation_first_seen_install_existed
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: installation_first_seen_installer_type
+          type: STRING
+          mode: NULLABLE
+        - name: installation_first_seen_other_inst
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: installation_first_seen_other_msix_inst
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: installation_first_seen_profdir_existed
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: installation_first_seen_silent
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: installation_first_seen_version
+          type: STRING
           mode: NULLABLE
     - name: gpu
       type: RECORD
@@ -34194,6 +34293,39 @@ fields:
           mode: NULLABLE
         - name: networking_captive_portal_banner_displayed
           type: INTEGER
+          mode: NULLABLE
+        - name: installation_first_seen_admin_user
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: installation_first_seen_default_path
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: installation_first_seen_failure_reason
+          type: STRING
+          mode: NULLABLE
+        - name: installation_first_seen_from_msi
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: installation_first_seen_install_existed
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: installation_first_seen_installer_type
+          type: STRING
+          mode: NULLABLE
+        - name: installation_first_seen_other_inst
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: installation_first_seen_other_msix_inst
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: installation_first_seen_profdir_existed
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: installation_first_seen_silent
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: installation_first_seen_version
+          type: STRING
           mode: NULLABLE
     - name: parent
       type: RECORD
@@ -38538,6 +38670,39 @@ fields:
         - name: browser_backup_storage_sync_size
           type: INTEGER
           mode: NULLABLE
+        - name: installation_first_seen_admin_user
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: installation_first_seen_default_path
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: installation_first_seen_failure_reason
+          type: STRING
+          mode: NULLABLE
+        - name: installation_first_seen_from_msi
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: installation_first_seen_install_existed
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: installation_first_seen_installer_type
+          type: STRING
+          mode: NULLABLE
+        - name: installation_first_seen_other_inst
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: installation_first_seen_other_msix_inst
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: installation_first_seen_profdir_existed
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: installation_first_seen_silent
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: installation_first_seen_version
+          type: STRING
+          mode: NULLABLE
     - name: socket
       type: RECORD
       mode: NULLABLE
@@ -39318,6 +39483,39 @@ fields:
           mode: NULLABLE
         - name: networking_captive_portal_banner_displayed
           type: INTEGER
+          mode: NULLABLE
+        - name: installation_first_seen_admin_user
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: installation_first_seen_default_path
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: installation_first_seen_failure_reason
+          type: STRING
+          mode: NULLABLE
+        - name: installation_first_seen_from_msi
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: installation_first_seen_install_existed
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: installation_first_seen_installer_type
+          type: STRING
+          mode: NULLABLE
+        - name: installation_first_seen_other_inst
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: installation_first_seen_other_msix_inst
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: installation_first_seen_profdir_existed
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: installation_first_seen_silent
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: installation_first_seen_version
+          type: STRING
           mode: NULLABLE
   - name: simple_measurements
     type: RECORD

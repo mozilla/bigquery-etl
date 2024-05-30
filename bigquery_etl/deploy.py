@@ -90,19 +90,18 @@ def deploy_table(
     if update_metadata:
         attach_metadata(query_file, table)
 
-    _create_or_update(client, table, destination_table, skip_existing)
+    _create_or_update(client, table, skip_existing)
 
 
 def _create_or_update(
     client: bigquery.Client,
     table: bigquery.Table,
-    destination_table: str,
     skip_existing: bool = False,
 ) -> None:
     if table.created:
         if skip_existing:
-            raise SkippedDeployException(f"{destination_table} already exists.")
-        log.info(f"{destination_table} already exists, updating.")
+            raise SkippedDeployException(f"{table} already exists.")
+        log.info(f"{table} already exists, updating.")
         client.update_table(
             table,
             [
@@ -114,7 +113,7 @@ def _create_or_update(
                 "labels",
             ],
         )
-        log.info(f"{destination_table} updated.")
+        log.info(f"{table} updated.")
     else:
         client.create_table(table)
-        log.info(f"{destination_table} created.")
+        log.info(f"{table} created.")

@@ -424,15 +424,18 @@ class Metadata:
 
     def set_bigquery_clustering(self, clustering_fields):
         """Update the BigQuery partitioning metadata."""
+        time_partitioning = None
+        range_partitioning = None
+        
         if self.bigquery:
             time_partitioning = self.bigquery.time_partitioning
             range_partitioning = self.bigquery.range_partitioning
 
-            self.bigquery = BigQueryMetadata(
-                time_partitioning=time_partitioning,
-                range_partitioning=range_partitioning,
-                clustering=ClusteringMetadata(fields=clustering_fields),
-            )
+        self.bigquery = BigQueryMetadata(
+            time_partitioning=time_partitioning,
+            range_partitioning=range_partitioning,
+            clustering=ClusteringMetadata(fields=clustering_fields),
+        )
 
 
 @attr.s(auto_attribs=True)

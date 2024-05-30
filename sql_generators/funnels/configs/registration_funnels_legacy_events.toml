@@ -78,8 +78,8 @@ aggregation = "count distinct"
 join_previous_step_on = "flow_id"
 
 [steps.login_complete]
-friendly_name = "Registration Completed"
-description = "Account was successfully created"
+friendly_name = "Login Completed"
+description = "Login successfully completed"
 data_source = "all_events"
 select_expression = "flow_id"
 where_expression = "event_type = 'fxa_login - complete'"

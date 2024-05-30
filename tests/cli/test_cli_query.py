@@ -8,13 +8,13 @@ import yaml
 from click.testing import CliRunner
 
 from bigquery_etl.cli.query import (
-    _attach_metadata,
     backfill,
     create,
     info,
     paths_matching_name_pattern,
     schedule,
 )
+from bigquery_etl.metadata.publish_metadata import attach_metadata
 
 
 class TestQuery:
@@ -487,7 +487,7 @@ class TestQuery:
                 f.write(yaml.dump(metadata_conf))
 
             table = types.SimpleNamespace()
-            _attach_metadata(
+            attach_metadata(
                 "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/query.sql",
                 table,
             )

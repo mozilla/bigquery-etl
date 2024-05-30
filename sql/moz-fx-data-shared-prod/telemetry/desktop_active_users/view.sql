@@ -43,6 +43,7 @@ SELECT
   scalar_parent_browser_engagement_total_uri_count_normal_and_private_mode_sum,
   scalar_parent_browser_engagement_total_uri_count_sum,
   is_default_browser,
+  isp_name,
   distribution_id,
   active_hours_sum,
   attribution.source AS attribution_source,

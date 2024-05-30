@@ -45,7 +45,6 @@ first_seen AS (
     os_version,
     app_version,
     locale,
-    distribution_id,
   FROM
     baseline_clients
   WHERE
@@ -259,6 +258,9 @@ baseline_ping AS (
     ARRAY_AGG(locale IGNORE NULLS ORDER BY submission_date DESC)[
       SAFE_OFFSET(0)
     ] AS last_reported_locale,
+    ARRAY_AGG(distribution_id IGNORE NULLS ORDER BY submission_date DESC)[
+      SAFE_OFFSET(0)
+    ] AS distribution_id,
   FROM
     baseline_clients
   GROUP BY

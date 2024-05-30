@@ -4,17 +4,17 @@ CREATE OR REPLACE FUNCTION glam.histogram_generate_scalar_buckets(
   max_bucket FLOAT64,
   num_buckets INT64
 )
-RETURNS ARRAY<FLOAT64> DETERMINISTIC
-LANGUAGE js
-AS
-  '''
-  let bucket_size = (max_bucket - min_bucket) / num_buckets;
-  let buckets = new Set();
-  for (let bucket = min_bucket; bucket < max_bucket; bucket += bucket_size) {
-    buckets.add(Math.pow(2, bucket).toFixed(2));
-  }
-  return Array.from(buckets);
-''';
+RETURNS ARRAY<FLOAT64> AS (
+    ARRAY(
+      SELECT
+        ROUND(
+          POW(2, (max_bucket - min_bucket) / num_buckets * val),
+          2
+        )
+      FROM
+        UNNEST(GENERATE_ARRAY(0, num_buckets - 1)) AS val
+    )
+);
 
 SELECT
   assert.array_equals([1, 2, 4, 8], glam.histogram_generate_scalar_buckets(0, LOG(16, 2), 4)),

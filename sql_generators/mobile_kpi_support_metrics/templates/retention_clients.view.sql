@@ -22,20 +22,20 @@ attribution AS (
     client_id,
     sample_id,
     channel AS normalized_channel,
-    adjust_ad_group,
-    adjust_creative,
-    adjust_network,
+    NULLIF(adjust_ad_group, "") AS adjust_ad_group,
+    NULLIF(adjust_creative, "") AS adjust_creative,
+    NULLIF(adjust_network, "") AS adjust_network,
     {% if app_name == "fenix" %}
       CASE
         WHEN adjust_network IN ('Google Organic Search', 'Organic')
-          THEN ''
-        ELSE adjust_campaign
-      END AS adjust_campaign,
+          THEN 'Organic'
+        ELSE NULLIF(adjust_campaign, "")
+      END
     {% else %}
-      adjust_campaign,
-    {% endif %}
+      NULLIF(adjust_campaign, "")
+    {% endif %} AS adjust_campaign,
     {% for field in product_specific_attribution_fields %}
-      {{ field.name if field.name != "adjust_campaign" }},
+      NULLIF({{ field.name }}, "") AS {{ field.name }},
     {% endfor %}
   FROM
     {% if app_name == "fenix" %}

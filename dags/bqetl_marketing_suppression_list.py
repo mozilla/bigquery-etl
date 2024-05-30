@@ -118,19 +118,6 @@ with DAG(
         retries=0,
     )
 
-    with TaskGroup(
-        "checks__fail_marketing_suppression_list_derived__main_suppression_list__v1_external",
-    ) as checks__fail_marketing_suppression_list_derived__main_suppression_list__v1_external:
-        ExternalTaskMarker(
-            task_id="bqetl_braze__wait_for_checks__fail_marketing_suppression_list_derived__main_suppression_list__v1",
-            external_dag_id="bqetl_braze",
-            external_task_id="wait_for_checks__fail_marketing_suppression_list_derived__main_suppression_list__v1",
-        )
-
-        checks__fail_marketing_suppression_list_derived__main_suppression_list__v1_external.set_upstream(
-            checks__fail_marketing_suppression_list_derived__main_suppression_list__v1
-        )
-
     checks__warn_marketing_suppression_list_derived__main_suppression_list__v1 = bigquery_dq_check(
         task_id="checks__warn_marketing_suppression_list_derived__main_suppression_list__v1",
         source_table="main_suppression_list_v1",

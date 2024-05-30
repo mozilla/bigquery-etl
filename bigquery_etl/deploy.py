@@ -85,9 +85,8 @@ def deploy_table(
         table = client.get_table(destination_table)
     except NotFound:
         table = bigquery.Table(destination_table)
+    table.schema = existing_schema.to_bigquery_schema()
 
-    bigquery_schema = existing_schema.to_bigquery_schema()
-    table.schema = bigquery_schema
     if update_metadata:
         attach_metadata(query_file, table)
 

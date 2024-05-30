@@ -2197,9 +2197,7 @@ def deploy(
         click.echo("The following tables could not be deployed:")
         for failed_deploy in failed_deploys:
             click.echo(failed_deploy)
-        sys.exit(
-            1
-        )  # TODO: It would be nice to raise an ExceptionGroup here with the FailedDeployExceptions
+        sys.exit(1)
 
 
 def _deploy_external_data(

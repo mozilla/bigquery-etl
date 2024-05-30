@@ -77,28 +77,6 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_acoustic_external__contact_raw__v1 = ExternalTaskSensor(
-        task_id="wait_for_acoustic_external__contact_raw__v1",
-        external_dag_id="bqetl_acoustic_contact_export",
-        external_task_id="acoustic_external__contact_raw__v1",
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    wait_for_acoustic_external__raw_recipient_raw__v1 = ExternalTaskSensor(
-        task_id="wait_for_acoustic_external__raw_recipient_raw__v1",
-        external_dag_id="bqetl_acoustic_raw_recipient_export",
-        external_task_id="acoustic_external__raw_recipient_raw__v1",
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
     braze_derived__newsletters__v1 = bigquery_etl_query(
         task_id="braze_derived__newsletters__v1",
         destination_table="newsletters_v1",
@@ -145,18 +123,6 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=False,
         sql_file_path="sql/moz-fx-data-shared-prod/braze_derived/subscriptions_map_v1/script.sql",
-    )
-
-    braze_derived__suppressions__v1 = bigquery_etl_query(
-        task_id="braze_derived__suppressions__v1",
-        destination_table="suppressions_v1",
-        dataset_id="braze_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com", "leli@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=False,
-        task_concurrency=1,
     )
 
     braze_derived__user_profiles__v1 = bigquery_etl_query(
@@ -525,8 +491,6 @@ with DAG(
 
     braze_derived__newsletters__v1.set_upstream(checks__fail_braze_derived__users__v1)
 
-    braze_derived__products__v1.set_upstream(checks__fail_braze_derived__users__v1)
-
     braze_derived__products__v1.set_upstream(
         wait_for_subscription_platform_derived__logical_subscriptions_history__v1
     )
@@ -537,10 +501,6 @@ with DAG(
 
     braze_derived__subscriptions__v1.set_upstream(
         checks__fail_braze_derived__user_profiles__v1
-    )
-
-    braze_derived__suppressions__v1.set_upstream(
-        wait_for_checks__fail_marketing_suppression_list_derived__main_suppression_list__v1
     )
 
     braze_derived__user_profiles__v1.set_upstream(
@@ -555,16 +515,6 @@ with DAG(
 
     braze_derived__user_profiles__v1.set_upstream(
         checks__fail_braze_derived__waitlists__v1
-    )
-
-    braze_derived__users__v1.set_upstream(wait_for_acoustic_external__contact_raw__v1)
-
-    braze_derived__users__v1.set_upstream(
-        wait_for_acoustic_external__raw_recipient_raw__v1
-    )
-
-    braze_derived__users__v1.set_upstream(
-        checks__fail_braze_derived__subscriptions_map__v1
     )
 
     braze_derived__users__v1.set_upstream(

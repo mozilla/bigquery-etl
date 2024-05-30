@@ -12,6 +12,10 @@ labels:
 scheduling:
   dag_name: bqetl_braze
   date_partition_parameter: null
+  referenced_tables:
+  - - moz-fx-data-shared-prod
+    - subscription_platform_derived
+    - logical_subscriptions_history_v1
 bigquery:
   time_partitioning: null
   range_partitioning: null

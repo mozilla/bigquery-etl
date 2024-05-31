@@ -13,7 +13,11 @@ labels:
   schedule: daily
   owner: cbeck
 bigquery:
-  time_partitioning: null
+  time_partitioning:
+  type: day
+  field: updated_at
+  require_partition_filter: false
+  expiration_days: 7
 scheduling:
   dag_name: bqetl_braze
   date_partition_parameter: null

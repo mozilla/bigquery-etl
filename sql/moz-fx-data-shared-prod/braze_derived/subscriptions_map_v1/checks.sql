@@ -1,3 +1,5 @@
+--macro checks
+
 #fail
 {{ not_null(["braze_subscription_name", "description", "mozilla_subscription_id", "firefox_subscription_id", "mozilla_dev_subscription_id", "basket_slug"]) }}
 

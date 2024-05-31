@@ -89,6 +89,42 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    wait_for_firefox_accounts_derived__fxa_gcp_stderr_events__v1 = ExternalTaskSensor(
+        task_id="wait_for_firefox_accounts_derived__fxa_gcp_stderr_events__v1",
+        external_dag_id="bqetl_fxa_events",
+        external_task_id="firefox_accounts_derived__fxa_gcp_stderr_events__v1",
+        execution_delta=datetime.timedelta(seconds=12600),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_firefox_accounts_derived__fxa_gcp_stdout_events__v1 = ExternalTaskSensor(
+        task_id="wait_for_firefox_accounts_derived__fxa_gcp_stdout_events__v1",
+        external_dag_id="bqetl_fxa_events",
+        external_task_id="firefox_accounts_derived__fxa_gcp_stdout_events__v1",
+        execution_delta=datetime.timedelta(seconds=12600),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_firefox_accounts_derived__fxa_stdout_events__v1 = ExternalTaskSensor(
+        task_id="wait_for_firefox_accounts_derived__fxa_stdout_events__v1",
+        external_dag_id="bqetl_fxa_events",
+        external_task_id="firefox_accounts_derived__fxa_stdout_events__v1",
+        execution_delta=datetime.timedelta(seconds=12600),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     accounts_frontend_derived__email_first_reg_login_funnels__v1 = bigquery_etl_query(
         task_id="accounts_frontend_derived__email_first_reg_login_funnels__v1",
         destination_table="email_first_reg_login_funnels_v1",
@@ -196,6 +232,23 @@ with DAG(
         depends_on_past=False,
     )
 
+    firefox_accounts_derived__registration_funnels_legacy_events__v1 = (
+        bigquery_etl_query(
+            task_id="firefox_accounts_derived__registration_funnels_legacy_events__v1",
+            destination_table="registration_funnels_legacy_events_v1",
+            dataset_id="firefox_accounts_derived",
+            project_id="moz-fx-data-shared-prod",
+            owner="ksiegler@mozilla.org",
+            email=[
+                "ascholtz@mozilla.com",
+                "ksiegler@mozilla.org",
+                "telemetry-alerts@mozilla.com",
+            ],
+            date_partition_parameter="submission_date",
+            depends_on_past=False,
+        )
+    )
+
     monitor_frontend_derived__monitor_dashboard_user_journey_funnels__v1 = bigquery_etl_query(
         task_id="monitor_frontend_derived__monitor_dashboard_user_journey_funnels__v1",
         destination_table="monitor_dashboard_user_journey_funnels_v1",
@@ -243,6 +296,18 @@ with DAG(
 
     fenix_derived__android_onboarding__v1.set_upstream(
         wait_for_fenix_derived__funnel_retention_clients_week_4__v1
+    )
+
+    firefox_accounts_derived__registration_funnels_legacy_events__v1.set_upstream(
+        wait_for_firefox_accounts_derived__fxa_gcp_stderr_events__v1
+    )
+
+    firefox_accounts_derived__registration_funnels_legacy_events__v1.set_upstream(
+        wait_for_firefox_accounts_derived__fxa_gcp_stdout_events__v1
+    )
+
+    firefox_accounts_derived__registration_funnels_legacy_events__v1.set_upstream(
+        wait_for_firefox_accounts_derived__fxa_stdout_events__v1
     )
 
     monitor_frontend_derived__monitor_dashboard_user_journey_funnels__v1.set_upstream(

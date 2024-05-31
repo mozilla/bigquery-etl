@@ -8,8 +8,7 @@ description: |-
 owners:
 - cbeck@mozilla.com
 labels:
-  incremental: false
-  schedule: daily
+  incremental: true
   owner: cbeck
 bigquery:
   time_partitioning:

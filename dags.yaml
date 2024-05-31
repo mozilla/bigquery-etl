@@ -154,10 +154,7 @@ bqetl_subplat:
     Stripe data retrieved by stripe_external__itemized_payout_reconciliation__v5
     task has highly viariable availability timing, so it is possible for it to
     fail with the following type of error:
-    `Error: Request req_OTssZ0Zv1cEmmm: Data for the report type
-            payout_reconciliation.itemized.5 is only available through
-            2022-05-08 12:00:00 UTC; you requested `interval_end`
-            = 2022-05-09 00:00:00 UTC.`
+    `Report 'frr_...' did not succeed, status was 'pending'`
     In such cases the failure is expected, the task will continue to retry every
     30 minutes until the data becomes available. If failure observed looks
     different then it should be reported using the Airflow triage process.
@@ -419,9 +416,9 @@ bqetl_google_analytics_derived:
     The GA export runs at 15:00 UTC, so there's an effective 2-day delay
     for user activity to appear in these tables.
   default_args:
-    owner: ascholtz@mozilla.com
+    owner: kwindau@mozilla.com
     email:
-      - ascholtz@mozilla.com
+      - kwindau@mozilla.com
       - telemetry-alerts@mozilla.com
     start_date: "2020-10-31"
     retries: 2
@@ -794,9 +791,9 @@ bqetl_acoustic_contact_export:
     fivetran_acoustic_contact_export
     DAG to clean up the data loaded from Acoustic.
   default_args:
-    owner: kik@mozilla.com
-    start_date: "2021-03-01"
-    email: ["telemetry-alerts@mozilla.com", "kik@mozilla.com"]
+    owner: leli@mozilla.com
+    start_date: "2024-04-03"
+    email: ["telemetry-alerts@mozilla.com", "leli@mozilla.com"]
     retries: 1
     retry_delay: 5m
   tags:
@@ -809,9 +806,9 @@ bqetl_acoustic_raw_recipient_export:
     fivetran_acoustic_raw_recipient_export
     DAG to clean up the data loaded from Acoustic.
   default_args:
-    owner: kik@mozilla.com
-    start_date: "2022-03-01"
-    email: ["telemetry-alerts@mozilla.com", "kik@mozilla.com"]
+    owner: leli@mozilla.com
+    start_date: "2024-04-03"
+    email: ["telemetry-alerts@mozilla.com", "leli@mozilla.com"]
     retries: 1
     retry_delay: 5m
   tags:
@@ -1350,7 +1347,7 @@ bqetl_glean_usage:
     - impact/tier_1
 
 bqetl_glam_export:
-  schedule_interval: 0 8 * * *
+  schedule_interval: 0 22 * * *
   default_args:
     depends_on_past: false
     email:
@@ -1430,7 +1427,11 @@ bqetl_telemetry_dev_cycle:
     retries: 2
     retry_delay: 30m
     start_date: '2023-12-19'
-  description: DAG for Telemetry Dev Cycle Dashboard
+  description: |
+    DAG for Telemetry Dev Cycle Dashboard
+
+    Airflow Triage Note:
+    The tables are build every day so only the last run needs to be successful.
   repo: bigquery-etl
   schedule_interval: 0 18 * * *
   tags:
@@ -1506,3 +1507,153 @@ bqetl_google_search_console:
     retry_delay: 30m
   tags:
     - impact/tier_1
+
+bqetl_data_observability_test_data_copy:
+  schedule_interval: 0 8 * * *
+  description: |
+    ETL used to copy over data to data-observability-dev BQ project used
+    for testing out different data observability platforms.
+  default_args:
+    owner: kik@mozilla.com
+    email:
+      - kik@mozilla.com
+      - akommasani@mozilla.com
+      - ascholtz@mozilla.com
+    start_date: '2024-03-20'
+    retries: 2
+    retry_delay: 30m
+  tags:
+    - triage/no_triage
+    - impact/tier_3
+
+bqetl_acoustic_suppression_list:
+  schedule_interval: 0 9 * * *
+  description: |
+    ETL for Acoustic suppression list.
+  default_args:
+    owner: leli@mozilla.com
+    email:
+      - leli@mozilla.com
+    start_date: '2024-04-03'
+    retries: 1
+    retry_delay: 30m
+  tags:
+    - impact/tier_3
+
+bqetl_braze:
+  schedule_interval: 30 4,12,20 * * *
+  description: |
+    ETL for Braze workflows.
+    ## Triage notes:
+    Don't rerun this DAG!
+    Ping Chelsey Beck or Leli Schiestl.
+    If both are out, follow the [workbook](https://mozilla-hub.atlassian.net/wiki/spaces/DATA/pages/730234942/bqetl+braze+DAG+workbook) in confluence.
+  default_args:
+    owner: cbeck@mozilla.com
+    email:
+      - cbeck@mozilla.com
+      - leli@mozilla.com
+    start_date: '2024-04-15'
+    retries: 1
+    retry_delay: 30m
+  tags:
+    - impact/tier_2
+
+bqetl_braze_currents:
+  schedule_interval: 0 2 * * *
+  description: |
+    Load Braze current data from GCS into BigQuery
+  default_args:
+    owner: leli@mozilla.com
+    email:
+      - leli@mozilla.com
+    start_date: '2024-04-15'
+    retries: 1
+    retry_delay: 30m
+  tags:
+    - impact/tier_2
+
+bqetl_marketing_suppression_list:
+  schedule_interval: 0 3 * * *
+  description: |
+    Ingest marketing suppression lists into BigQuery
+  default_args:
+    owner: leli@mozilla.com
+    email:
+      - leli@mozilla.com
+    start_date: '2024-04-21'
+    retries: 1
+    retry_delay: 30m
+  tags:
+    - impact/tier_2
+
+bqetl_pageload_v1:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - wichan@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    owner: wichan@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2024-04-01'
+  description: DAG to build pageload tables
+  repo: bigquery-etl
+  schedule_interval: daily
+  tags:
+    - impact/tier_1
+    - repo/bigquery-etl
+
+bqetl_desktop_engagement_model:
+  schedule_interval: 0 12 * * *
+  description: Loads the desktop engagement model tables
+  default_args:
+    depends_on_past: false
+    owner: kwindau@mozilla.com
+    email:
+      - kwindau@mozilla.com
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    start_date: "2024-04-24"
+    retries: 2
+    retry_delay: 30m
+  tags:
+    - impact/tier_2
+
+bqetl_desktop_retention_model:
+  schedule_interval: 0 12 * * *
+  description: Loads the desktop retention model tables
+  default_args:
+    depends_on_past: false
+    owner: mhirose@mozilla.com
+    email:
+      - mhirose@mozilla.com
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    start_date: "2024-05-14"
+    retries: 2
+    retry_delay: 30m
+  tags:
+    - impact/tier_2
+
+bqetl_ios_campaign_reporting:
+  schedule_interval: 0 12 * * *
+  description: Loads the apple ads ios_app_campaign_stats table
+  default_args:
+    depends_on_past: false
+    owner: kwindau@mozilla.com
+    email:
+      - kwindau@mozilla.com
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    start_date: "2024-05-08"
+    retries: 2
+    retry_delay: 30m
+  tags:
+    - impact/tier_2

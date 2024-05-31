@@ -234,3 +234,9 @@ fields:
 - name: firefox_home_page_customize_homepage_button
   type: INTEGER
   mode: NULLABLE
+- name: addresses_saved_all_users
+  type: INTEGER
+  mode: NULLABLE
+- name: addresses_saved_all
+  type: INTEGER
+  mode: NULLABLE

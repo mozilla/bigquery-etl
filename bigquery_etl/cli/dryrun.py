@@ -72,7 +72,13 @@ def dryrun(
     project: str,
 ):
     """Perform a dry run."""
-    file_names = ("query.sql", "view.sql", "part*.sql", "init.sql")
+    file_names = (
+        "query.sql",
+        "view.sql",
+        "part*.sql",
+        "init.sql",
+        "materialized_view.sql",
+    )
     file_re = re.compile("|".join(map(fnmatch.translate, file_names)))
 
     sql_files: Set[str] = set()

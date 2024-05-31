@@ -1,0 +1,31 @@
+# tets_braze_waitlists - expect
+---
+# user 1
+- external_id: user_1
+  waitlists:
+    - waitlist_name: waitlist_1
+      waitlist_geo: de
+      waitlist_platform: platform_1
+      waitlist_source: source_1
+      create_timestamp: 2020-01-01 10:00:00+00:00
+      subscribed: true
+      unsub_reason: because
+      update_timestamp: 2021-01-01 13:00:00+00:00
+    - waitlist_name: waitlist_2
+      waitlist_geo: de
+      waitlist_platform: platform_2
+      waitlist_source: source_2
+      create_timestamp: 2020-01-01 10:00:00+00:00
+      subscribed: true
+      unsub_reason: for reasons
+      update_timestamp: 2021-01-01 13:00:00+00:00
+    - waitlist_name: waitlist_3
+      waitlist_geo: de
+      waitlist_platform: platform_3
+      waitlist_source: source_3
+      create_timestamp: 2020-01-01 10:00:00+00:00
+      subscribed: false
+      unsub_reason: for reasons
+      update_timestamp: 2021-01-01 13:00:00+00:00
+# user 2 unsubscribed from two waitlists
+# user 3 not on waitlists

@@ -1,0 +1,9 @@
+2024-04-22:
+  start_date: 2022-11-01
+  end_date: 2024-04-10
+  reason: Initial backfill of `newtab_clients_daily_v1`, derived from `newtab_visits_v1`
+  watchers:
+  - mbowerman@mozilla.com
+  - anicholson@mozilla.com
+  - wichan@mozilla.com
+  status: Complete

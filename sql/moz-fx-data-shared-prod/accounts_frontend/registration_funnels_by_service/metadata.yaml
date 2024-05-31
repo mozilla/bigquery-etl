@@ -1,0 +1,6 @@
+friendly_name: Registration Funnels By Service
+description: |-
+  A view on top of accounts_frontend_derived.registration_funnels_by_service_v1
+  that includes relevant OAuth client IDs as well as interpretable service names
+owners:
+- ksiegler@mozilla.com

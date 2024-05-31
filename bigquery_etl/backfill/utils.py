@@ -101,6 +101,25 @@ def get_backfill_backup_table_name(qualified_table_name: str, entry_date: date) 
     return f"{BACKFILL_DESTINATION_PROJECT}.{BACKFILL_DESTINATION_DATASET}.{cloned_table_id}"
 
 
+def validate_depends_on_past(sql_dir, qualified_table_name) -> bool:
+    """
+    Check if the table depends on past.
+
+    Managed backfills currently do not support tables that depends on past.
+    """
+    project, dataset, table = qualified_table_name_matching(qualified_table_name)
+    table_metadata_path = Path(sql_dir) / project / dataset / table / METADATA_FILE
+
+    table_metadata = Metadata.from_file(table_metadata_path)
+
+    if "depends_on_past" in table_metadata.scheduling:
+        return not table_metadata.scheduling[
+            "depends_on_past"
+        ]  # skip if depends_on_past
+
+    return True
+
+
 def validate_metadata_workgroups(sql_dir, qualified_table_name) -> bool:
     """
     Check if either table or dataset metadata workgroup is valid.
@@ -186,7 +205,7 @@ def get_scheduled_backfills(
     qualified_table_name: Optional[str] = None,
     status: Optional[str] = None,
 ) -> Dict[str, Backfill]:
-    """Return backfill entries to initiate."""
+    """Return backfill entries to initiate or complete."""
     client = bigquery.Client(project=project)
 
     if qualified_table_name:
@@ -203,6 +222,10 @@ def get_scheduled_backfills(
     backfills_to_process_dict = {}
 
     for qualified_table_name, entries in backfills_dict.items():
+        # do not return backfill if depends on past
+        if not validate_depends_on_past(sql_dir, qualified_table_name):
+            continue
+
         # do not return backfill if not mozilla-confidential
         if not validate_metadata_workgroups(sql_dir, qualified_table_name):
             continue
@@ -242,6 +265,7 @@ def _should_initiate(
     staging_table = get_backfill_staging_qualified_table_name(
         qualified_table_name, backfill.entry_date
     )
+
     if _table_exists(client, staging_table):
         return False
 
@@ -262,12 +286,14 @@ def _should_complete(
         qualified_table_name, backfill.entry_date
     )
     if not _table_exists(client, staging_table):
+        click.echo(f"Backfill staging table does not exist: {staging_table}")
         return False
 
     backup_table_name = get_backfill_backup_table_name(
         qualified_table_name, backfill.entry_date
     )
     if _table_exists(client, backup_table_name):
+        click.echo(f"Backfill backup table already exists: {backup_table_name}")
         return False
 
     return True

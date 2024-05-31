@@ -54,6 +54,8 @@ description: |-
     - Geographical data is based on IPGeo databases. These databases are
     imperfect, so some activity may be attributed to the wrong location.
     Further, proxy and VPN usage can create geo-attribution errors.
+    - Data contains duplicates prior to mid-2022. See [this bug](https://bugzilla.mozilla.org/show_bug.cgi?id=1753470)
+    for further information.
 owners:
 - aplacitelli@mozilla.com
 labels:

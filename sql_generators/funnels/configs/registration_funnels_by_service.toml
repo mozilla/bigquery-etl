@@ -1,0 +1,64 @@
+destination_dataset = "accounts_frontend_derived"
+platform = "accounts_frontend"
+owners = ["ksiegler@mozilla.org"]  # optional; users getting notification if funnel run fails
+version = "1"
+start_date = "2024-01-01"
+
+[funnels]
+
+[funnels.registration_overall_success_by_service]
+
+friendly_name = "Registration Funnel Conversion"
+description = "Overall registration funnel conversion rate beginning from registration view form"
+steps = ["reg_view", "reg_email_code_view", "reg_complete"]
+dimensions = ["service"]
+
+[steps]
+
+[steps.reg_view]
+friendly_name = "Registration View Form"
+description = "View of the registration form requesting password creation and age"
+data_source = "accounts_frontend"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "metrics.string.event_name = 'reg_view'"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.reg_email_code_view]
+friendly_name = "Registration Confirm Email Code View Form"
+description = "View of the email confirmation code page"
+data_source = "accounts_frontend"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "metrics.string.event_name = 'reg_signup_code_view'"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.reg_complete]
+friendly_name = "Registration Completed"
+description = "Account was successfully created"
+data_source = "accounts_backend"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "metrics.string.event_name = 'reg_complete'"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[data_sources]
+
+[data_sources.accounts_frontend]
+from_expression = "mozdata.accounts_frontend.accounts_events"
+submission_date_column = "DATE(submission_timestamp)"
+client_id_column = "client_info.client_id"
+
+[data_sources.accounts_backend]
+from_expression = "mozdata.accounts_backend.accounts_events"
+submission_date_column = "DATE(submission_timestamp)"
+client_id_column = "client_info.client_id"
+
+[dimensions]
+
+[dimensions.service]
+data_source = "accounts_frontend"
+select_expression = "IF(COALESCE(NULLIF(metrics.string.relying_party_oauth_client_id, ''), NULLIF(metrics.string.relying_party_service, '')) = 'sync', '5882386c6d801776', COALESCE(NULLIF(metrics.string.relying_party_oauth_client_id, ''), NULLIF(metrics.string.relying_party_service, '')))"
+friendly_name = "Service"
+description = "Oauth Client ID is used to map to service name for which service the user logged in through"
+client_id_column = "client_info.client_id"

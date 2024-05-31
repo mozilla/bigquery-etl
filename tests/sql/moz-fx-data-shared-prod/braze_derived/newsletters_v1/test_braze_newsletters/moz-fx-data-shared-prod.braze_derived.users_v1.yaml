@@ -1,0 +1,10 @@
+# users_v1
+---
+# user 1
+- external_id: email_id_1
+# user 2
+- external_id: email_id_2
+# user 3 with multiple entries
+- external_id: email_id_3_sort_multiple_entries
+# user 4 should not show up no current newsletters
+- external_id: email_id_4

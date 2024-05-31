@@ -1,0 +1,18 @@
+friendly_name: Cloudflare Operating System Usage
+description: |-
+  Contains OS market share data from Cloudflare over time
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau@mozilla.com
+bigquery:
+  time_partitioning:
+    type: day
+    field: dte
+    require_partition_filter: false
+    expiration_days: null
+  clustering:
+    fields:
+    - os
+    - device_type

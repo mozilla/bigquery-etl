@@ -71,27 +71,20 @@ class SqlTest(pytest.Item, pytest.File):
         """Run."""
         test_name = self.fspath.basename
         query_name = self.fspath.dirpath().basename
-        dataset_name = self.fspath.dirpath().dirpath().basename
-        project_name = self.fspath.dirpath().dirpath().dirpath().basename
         project_dir = (
             self.fspath.dirpath().dirpath().dirpath().dirname.replace("tests", "")
         )
 
-        init_test = False
         script_test = False
 
         # init tests write to dataset_query_test, instead of their default name
         path = self.fspath.dirname.replace("tests", "")
         if test_name == "test_init":
-            init_test = True
-
-            query = render("init.sql", template_folder=path)
-            original, dest_name = (
-                rf"`?(?<![._])\b({project_name}`?\.`?)?{dataset_name}`?\.`?{query_name}\b(?![._])`?",
-                f"{dataset_name}_{query_name}_{test_name}",
+            query = render(
+                "query.sql",
+                template_folder=path,
+                **{"is_init": lambda: True},
             )
-            query = re.sub(original, dest_name, query)
-            query_name = dest_name
         elif test_name == "test_script":
             script_test = True
             query = render("script.sql", template_folder=path)
@@ -189,7 +182,7 @@ class SqlTest(pytest.Item, pytest.File):
             # configure job
             res_table = bigquery.TableReference(default_dataset, query_name)
 
-            if init_test or script_test:
+            if script_test:
                 job_config = bigquery.QueryJobConfig(
                     default_dataset=default_dataset,
                     query_parameters=get_query_params(self.fspath.strpath),

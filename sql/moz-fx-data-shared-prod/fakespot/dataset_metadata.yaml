@@ -1,0 +1,26 @@
+friendly_name: Fakespot
+description: |-
+  Views for accessing Fakespot syndicated data
+dataset_base_acl: syndicate
+user_facing: true
+syndication:
+  prod:
+    syndicated_project: "moz-fx-data-shared-prod"
+    syndicated_dataset: "fakespot_syndicate"
+    syndicated_tables:
+      - amazon_analyses
+      - amazon_products
+      - bestbuy_analyses
+      - bestbuy_products
+      - walmart_analyses
+      - walmart_products
+      - flipkart_analyses
+      - flipkart_products
+      - home_depot_analyses
+      - home_depot_products
+  administer_views: false
+labels: {}
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:mozilla-confidential

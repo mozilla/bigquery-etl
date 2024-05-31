@@ -4,23 +4,27 @@ CREATE OR REPLACE FUNCTION glam.histogram_generate_functional_buckets(
   buckets_per_magnitude INT64,
   range_max INT64
 )
-RETURNS ARRAY<FLOAT64>
-AS (
+RETURNS ARRAY<FLOAT64> AS (
   (
     WITH bucket_indexes AS (
       -- Generate all bucket indexes
       -- https://github.com/mozilla/glean/blob/main/glean-core/src/histogram/functional.rs
-      SELECT GENERATE_ARRAY(0, CEIL(LOG(range_max + 1, log_base) * buckets_per_magnitude)) AS indexes
+      SELECT
+        GENERATE_ARRAY(0, CEIL(LOG(range_max + 1, log_base) * buckets_per_magnitude)) AS indexes
     ),
     buckets AS (
       SELECT
         FLOOR(POW(log_base, (idx) / buckets_per_magnitude)) AS bucket
-      FROM bucket_indexes, UNNEST(indexes) as idx
+      FROM
+        bucket_indexes,
+        UNNEST(indexes) AS idx
       WHERE
         FLOOR(POW(log_base, (idx) / buckets_per_magnitude)) <= range_max
     )
-    SELECT ARRAY_CONCAT([0.0], ARRAY_AGG(DISTINCT(bucket) ORDER BY bucket))
-    FROM buckets
+    SELECT
+      ARRAY_CONCAT([0.0], ARRAY_AGG(DISTINCT(bucket) ORDER BY bucket))
+    FROM
+      buckets
   )
 );
 

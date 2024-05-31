@@ -5,15 +5,12 @@ CREATE OR REPLACE FUNCTION glam.histogram_generate_scalar_buckets(
   num_buckets INT64
 )
 RETURNS ARRAY<FLOAT64> AS (
-    ARRAY(
-      SELECT
-        ROUND(
-          POW(2, (max_bucket - min_bucket) / num_buckets * val),
-          2
-        )
-      FROM
-        UNNEST(GENERATE_ARRAY(0, num_buckets - 1)) AS val
-    )
+  ARRAY(
+    SELECT
+      ROUND(POW(2, (max_bucket - min_bucket) / num_buckets * val), 2)
+    FROM
+      UNNEST(GENERATE_ARRAY(0, num_buckets - 1)) AS val
+  )
 );
 
 SELECT

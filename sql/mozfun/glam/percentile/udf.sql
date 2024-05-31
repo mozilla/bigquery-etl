@@ -4,20 +4,24 @@ CREATE OR REPLACE FUNCTION glam.percentile(
   histogram ARRAY<STRUCT<key STRING, value FLOAT64>>,
   type STRING
 )
-RETURNS FLOAT64
-AS (
+RETURNS FLOAT64 AS (
   (
-    WITH
-      check AS (
-        SELECT IF(pct >= 0 AND pct <= 100, TRUE, ERROR('percentile must be a value between 0 and 100')) pct_ok
-      ),
-      keyed_cum_sum AS (
-        SELECT
-          key,
-          SUM(value) OVER (ORDER BY key) / SUM(value) OVER () AS cum_sum
-        FROM
-          UNNEST(histogram)
-      )
+    WITH check AS (
+      SELECT
+        IF(
+          pct >= 0
+          AND pct <= 100,
+          TRUE,
+          ERROR('percentile must be a value between 0 and 100')
+        ) pct_ok
+    ),
+    keyed_cum_sum AS (
+      SELECT
+        key,
+        SUM(value) OVER (ORDER BY key) / SUM(value) OVER () AS cum_sum
+      FROM
+        UNNEST(histogram)
+    )
     SELECT
       CAST(key AS FLOAT64)
     FROM
@@ -28,9 +32,11 @@ AS (
       AND cum_sum >= pct / 100
     ORDER BY
       cum_sum
-    LIMIT 1
+    LIMIT
+      1
   )
 );
+
 SELECT
   assert.equals(
     2,

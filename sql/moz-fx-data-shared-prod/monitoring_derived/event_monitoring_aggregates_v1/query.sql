@@ -55,7 +55,7 @@ FROM
       client_info.app_display_version AS version,
       ping_info
     FROM
-      `moz-fx-data-shared-prod.firefox_desktop_stable.prototype_no_code_events_v1`
+      `moz-fx-data-shared-prod.firefox_desktop_stable.urlbar_potential_exposure_v1`
     UNION ALL
     SELECT
       submission_timestamp,
@@ -65,7 +65,7 @@ FROM
       client_info.app_display_version AS version,
       ping_info
     FROM
-      `moz-fx-data-shared-prod.firefox_desktop_stable.urlbar_potential_exposure_v1`
+      `moz-fx-data-shared-prod.firefox_desktop_stable.prototype_no_code_events_v1`
     UNION ALL
     SELECT
       submission_timestamp,
@@ -582,7 +582,7 @@ FROM
       client_info.app_display_version AS version,
       ping_info
     FROM
-      `moz-fx-data-shared-prod.org_mozilla_ios_firefox_stable.first_session_v1`
+      `moz-fx-data-shared-prod.org_mozilla_ios_firefox_stable.metrics_v1`
     UNION ALL
     SELECT
       submission_timestamp,
@@ -592,7 +592,7 @@ FROM
       client_info.app_display_version AS version,
       ping_info
     FROM
-      `moz-fx-data-shared-prod.org_mozilla_ios_firefox_stable.metrics_v1`
+      `moz-fx-data-shared-prod.org_mozilla_ios_firefox_stable.first_session_v1`
   )
 CROSS JOIN
   UNNEST(events) AS event,
@@ -673,7 +673,7 @@ FROM
       client_info.app_display_version AS version,
       ping_info
     FROM
-      `moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta_stable.first_session_v1`
+      `moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta_stable.metrics_v1`
     UNION ALL
     SELECT
       submission_timestamp,
@@ -683,7 +683,7 @@ FROM
       client_info.app_display_version AS version,
       ping_info
     FROM
-      `moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta_stable.metrics_v1`
+      `moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta_stable.first_session_v1`
   )
 CROSS JOIN
   UNNEST(events) AS event,
@@ -764,7 +764,7 @@ FROM
       client_info.app_display_version AS version,
       ping_info
     FROM
-      `moz-fx-data-shared-prod.org_mozilla_ios_fennec_stable.first_session_v1`
+      `moz-fx-data-shared-prod.org_mozilla_ios_fennec_stable.metrics_v1`
     UNION ALL
     SELECT
       submission_timestamp,
@@ -774,7 +774,7 @@ FROM
       client_info.app_display_version AS version,
       ping_info
     FROM
-      `moz-fx-data-shared-prod.org_mozilla_ios_fennec_stable.metrics_v1`
+      `moz-fx-data-shared-prod.org_mozilla_ios_fennec_stable.first_session_v1`
   )
 CROSS JOIN
   UNNEST(events) AS event,
@@ -2081,7 +2081,7 @@ FROM
       client_info.app_display_version AS version,
       ping_info
     FROM
-      `moz-fx-data-shared-prod.viu_politica_stable.video_index_v1`
+      `moz-fx-data-shared-prod.viu_politica_stable.main_events_v1`
     UNION ALL
     SELECT
       submission_timestamp,
@@ -2091,7 +2091,7 @@ FROM
       client_info.app_display_version AS version,
       ping_info
     FROM
-      `moz-fx-data-shared-prod.viu_politica_stable.main_events_v1`
+      `moz-fx-data-shared-prod.viu_politica_stable.video_index_v1`
   )
 CROSS JOIN
   UNNEST(events) AS event,

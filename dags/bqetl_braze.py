@@ -175,18 +175,6 @@ with DAG(
         task_concurrency=1,
     )
 
-    braze_external__changed_subscriptions__v1 = bigquery_etl_query(
-        task_id="braze_external__changed_subscriptions__v1",
-        destination_table="changed_subscriptions_v1",
-        dataset_id="braze_external",
-        project_id="moz-fx-data-shared-prod",
-        owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com", "leli@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=False,
-        task_concurrency=1,
-    )
-
     braze_external__changed_users__v1 = bigquery_etl_query(
         task_id="braze_external__changed_users__v1",
         destination_table="changed_users_v1",
@@ -350,19 +338,6 @@ with DAG(
         retries=0,
     )
 
-    checks__fail_braze_external__changed_subscriptions__v1 = bigquery_dq_check(
-        task_id="checks__fail_braze_external__changed_subscriptions__v1",
-        source_table="changed_subscriptions_v1",
-        dataset_id="braze_external",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=True,
-        owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com", "leli@mozilla.com"],
-        depends_on_past=False,
-        task_concurrency=1,
-        retries=0,
-    )
-
     checks__warn_braze_external__changed_firefox_subscriptions_sync__v1 = bigquery_dq_check(
         task_id="checks__warn_braze_external__changed_firefox_subscriptions_sync__v1",
         source_table="changed_firefox_subscriptions_sync_v1",
@@ -392,19 +367,6 @@ with DAG(
     checks__warn_braze_external__changed_products_sync__v1 = bigquery_dq_check(
         task_id="checks__warn_braze_external__changed_products_sync__v1",
         source_table="changed_products_sync_v1",
-        dataset_id="braze_external",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=False,
-        owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com", "leli@mozilla.com"],
-        depends_on_past=False,
-        task_concurrency=1,
-        retries=0,
-    )
-
-    checks__warn_braze_external__changed_subscriptions__v1 = bigquery_dq_check(
-        task_id="checks__warn_braze_external__changed_subscriptions__v1",
-        source_table="changed_subscriptions_v1",
         dataset_id="braze_external",
         project_id="moz-fx-data-shared-prod",
         is_dq_check_fail=False,
@@ -494,7 +456,7 @@ with DAG(
     braze_derived__waitlists__v1.set_upstream(checks__fail_braze_derived__users__v1)
 
     braze_external__changed_firefox_subscriptions_sync__v1.set_upstream(
-        checks__fail_braze_external__changed_subscriptions__v1
+        checks__fail_braze_derived__subscriptions__v1
     )
 
     braze_external__changed_newsletters_sync__v1.set_upstream(
@@ -503,10 +465,6 @@ with DAG(
 
     braze_external__changed_products_sync__v1.set_upstream(
         checks__fail_braze_derived__products__v1
-    )
-
-    braze_external__changed_subscriptions__v1.set_upstream(
-        checks__fail_braze_derived__subscriptions__v1
     )
 
     braze_external__changed_users__v1.set_upstream(
@@ -551,14 +509,6 @@ with DAG(
 
     checks__fail_braze_derived__waitlists__v1.set_upstream(braze_derived__waitlists__v1)
 
-    checks__fail_braze_external__changed_subscriptions__v1.set_upstream(
-        braze_external__changed_subscriptions__v1
-    )
-
-    checks__fail_braze_external__changed_subscriptions__v1.set_upstream(
-        checks__fail_braze_derived__subscriptions__v1
-    )
-
     checks__warn_braze_external__changed_firefox_subscriptions_sync__v1.set_upstream(
         braze_external__changed_firefox_subscriptions_sync__v1
     )
@@ -569,14 +519,6 @@ with DAG(
 
     checks__warn_braze_external__changed_products_sync__v1.set_upstream(
         braze_external__changed_products_sync__v1
-    )
-
-    checks__warn_braze_external__changed_subscriptions__v1.set_upstream(
-        braze_external__changed_subscriptions__v1
-    )
-
-    checks__warn_braze_external__changed_subscriptions__v1.set_upstream(
-        checks__fail_braze_derived__subscriptions__v1
     )
 
     checks__warn_braze_external__changed_users__v1.set_upstream(

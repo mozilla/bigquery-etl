@@ -3544,6 +3544,62 @@ fields:
         would have happened under the dry label.
 
         '
+    - name: network_tls_early_data_accepted
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'TLS early data was used and it was accepted or rejected by the
+        remote host.
+
+        '
+    - name: network_tls_early_data_negotiated
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Sending TLS early data was not possible, possible and used, or
+        possible but not used.
+
+        '
+    - name: networking_http_redirect_to_scheme_subresource
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Count of the HTTP redirection that triggered by subresource, keyed
+        by the URL scheme redirected to
+
+        '
+    - name: networking_http_redirect_to_scheme_top_level
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Count of the HTTP redirection that triggered by top-level document,
+        keyed by the URL scheme redirected to
+
+        '
   - name: string
     type: RECORD
     mode: NULLABLE
@@ -5337,6 +5393,32 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'The thickness used to draw a free highlight.
+
+        '
+    - name: network_tls_early_data_bytes_written
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Amount of bytes sent using TLS early data at the start of a TLS
+        connection for a given channel.
 
         '
   - name: quantity

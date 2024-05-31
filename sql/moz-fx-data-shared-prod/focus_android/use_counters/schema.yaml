@@ -7230,6 +7230,48 @@ fields:
     - name: use_counter_page_js_subclassing_typedarray_type_3
       type: INTEGER
       mode: NULLABLE
+    - name: use_counter_deprecated_ops_doc_domattr_modified
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_deprecated_ops_doc_domcharacter_data_modified
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_deprecated_ops_doc_domnode_inserted
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_deprecated_ops_doc_domnode_inserted_into_document
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_deprecated_ops_doc_domnode_removed
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_deprecated_ops_doc_domnode_removed_from_document
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_deprecated_ops_doc_domsubtree_modified
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_deprecated_ops_page_domattr_modified
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_deprecated_ops_page_domcharacter_data_modified
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_deprecated_ops_page_domnode_inserted
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_deprecated_ops_page_domnode_inserted_into_document
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_deprecated_ops_page_domnode_removed
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_deprecated_ops_page_domnode_removed_from_document
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_deprecated_ops_page_domsubtree_modified
+      type: INTEGER
+      mode: NULLABLE
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

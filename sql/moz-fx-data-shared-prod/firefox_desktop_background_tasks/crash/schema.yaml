@@ -246,6 +246,40 @@ fields:
       description: 'If true, the crash occurred during process startup.
 
         '
+    - name: crash_is_garbage_collecting
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Indicates that the crash occurred while the garbage collector
+        was running.
+
+        '
+    - name: crash_windows_error_reporting
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Indicates if the crash was intercepted by the Windows Error Reporting
+        runtime exception module.
+
+        '
+    - name: dll_blocklist_init_failed
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Indicates whether initialization of the DLL blocklist failed.
+
+        '
+    - name: dll_blocklist_user32_loaded_before
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Indicates whether `user32.dll` was loaded before the DLL blocklist
+        was initialized.
+
+        '
+    - name: environment_headless_mode
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether the app was invoked in headless mode via `--headless`
+        or `--backgroundtask`.
+
+        '
   - name: datetime
     type: RECORD
     mode: NULLABLE
@@ -342,6 +376,101 @@ fields:
         for the purpose of experimentation enrollment.
 
         '
+    - name: crash_app_build
+      type: STRING
+      mode: NULLABLE
+      description: 'The build id of the application. This may differ from `client_info`
+        because a main process crash may be reported later by a different (e.g. updated)
+        client.
+
+        '
+    - name: crash_app_channel
+      type: STRING
+      mode: NULLABLE
+      description: 'The release channel of the application. This may differ from `client_info`
+        because a main process crash may be reported later by a different (e.g. updated)
+        client.
+
+        '
+    - name: crash_app_display_version
+      type: STRING
+      mode: NULLABLE
+      description: 'The version of the application. This may differ from `client_info`
+        because a main process crash may be reported later by a different (e.g. updated)
+        client.
+
+        '
+    - name: crash_background_task_name
+      type: STRING
+      mode: NULLABLE
+      description: 'The name of the background task if launched as one.
+
+        '
+    - name: crash_font_name
+      type: STRING
+      mode: NULLABLE
+      description: 'The font family name that is being loaded when the crash occurred.
+
+        '
+    - name: crash_ipc_channel_error
+      type: STRING
+      mode: NULLABLE
+      description: 'The error reason for an ipc-based content crash.
+
+        '
+    - name: crash_main_thread_runnable_name
+      type: STRING
+      mode: NULLABLE
+      description: 'Name of the currently executing `nsIRunnable` on the main thread.
+        Nightly-only.
+
+        '
+    - name: crash_minidump_sha256_hash
+      type: STRING
+      mode: NULLABLE
+      description: 'The SHA256 hash of the associated minidump file, if any.
+
+        '
+    - name: crash_moz_crash_reason
+      type: STRING
+      mode: NULLABLE
+      description: 'Contains the string passed to `MOZ_CRASH()`.
+
+        '
+    - name: crash_profiler_child_shutdown_phase
+      type: STRING
+      mode: NULLABLE
+      description: 'The shutdown phase of the profiler.
+
+        '
+    - name: crash_remote_type
+      type: STRING
+      mode: NULLABLE
+      description: 'The type of the content process. See the full list of options
+        [here](https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/data/crash-ping.html#remote-process-types).
+
+        '
+    - name: crash_shutdown_progress
+      type: STRING
+      mode: NULLABLE
+      description: 'The shutdown phase in which the crash occurred.
+
+        '
+    - name: crash_windows_file_dialog_error_code
+      type: STRING
+      mode: NULLABLE
+      description: 'The HRESULT returned from a Win32 system call leading to termination
+        of the file-dialog utility process. MozCrashReason is expected to provide
+        context for the value.
+
+        '
+    - name: windows_package_family_name
+      type: STRING
+      mode: NULLABLE
+      description: 'The Package Family Name of Firefox, if installed through an MSIX
+        package.
+
+        '
   - name: timespan
     type: RECORD
     mode: NULLABLE
@@ -360,6 +489,143 @@ fields:
         ping''s `UptimeTS` field.
 
         '
+    - name: environment_uptime
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The start time of the application.
+
+        '
+  - name: object
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: crash_async_shutdown_timeout
+      type: JSON
+      mode: NULLABLE
+      description: 'Present when a shutdown blocker failed to respond within a reasonable
+        amount of time.
+
+        '
+    - name: crash_quota_manager_shutdown_timeout
+      type: JSON
+      mode: NULLABLE
+      description: 'Contains a list of shutdown steps and status of the quota manager
+        clients.
+
+        '
+    - name: crash_stack_traces
+      type: JSON
+      mode: NULLABLE
+      description: 'Stack trace and module information of the crashing process.
+
+        '
+  - name: quantity
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: crash_event_loop_nesting_level
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Indicates the nesting level of the event loop.
+
+        '
+    - name: crash_gpu_process_launch
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of times that the GPU process was launched.
+
+        '
+    - name: memory_available_commit
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Available commit size.
+
+        '
+    - name: memory_available_physical
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Available physical memory.
+
+        '
+    - name: memory_available_swap
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Available swap memory.
+
+        '
+    - name: memory_available_virtual
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Available virtual memory.
+
+        '
+    - name: memory_low_physical
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of times the available memory tracker has detected
+        that free physical memory is running low.
+
+        '
+    - name: memory_oom_allocation_size
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The size of the allocation that caused on OOM crash.
+
+        '
+    - name: memory_purgeable_physical
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The amount of memory that can be deallocated by the OS in case
+        of memory pressure.
+
+        '
+    - name: memory_system_use_percentage
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The percentage of memory in use.
+
+        '
+    - name: memory_texture
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The amount of memory used in textures.
+
+        '
+    - name: memory_total_page_file
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The total page file size.
+
+        '
+    - name: memory_total_physical
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The total physical memory.
+
+        '
+    - name: memory_total_virtual
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The total virtual memory.
+
+        '
+  - name: string_list
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: dll_blocklist_list
+      type: STRING
+      mode: REPEATED
+    - name: environment_experimental_features
+      type: STRING
+      mode: REPEATED
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

@@ -175,7 +175,11 @@ SELECT
       metrics.labeled_counter.webrtcdtls_srtp_cipher,
       metrics.labeled_counter.media_playback_not_supported_video_per_mime_type,
       metrics.labeled_counter.power_energy_per_process_type,
-      metrics.labeled_counter.bounce_tracking_protection_purge_count
+      metrics.labeled_counter.bounce_tracking_protection_purge_count,
+      metrics.labeled_counter.network_tls_early_data_accepted,
+      metrics.labeled_counter.network_tls_early_data_negotiated,
+      metrics.labeled_counter.networking_http_redirect_to_scheme_subresource,
+      metrics.labeled_counter.networking_http_redirect_to_scheme_top_level
     ) AS `labeled_counter`,
     metrics.quantity,
     metrics.string,
@@ -439,7 +443,8 @@ SELECT
       metrics.custom_distribution.networking_http_3_upload_throughput_100,
       metrics.custom_distribution.networking_http_3_upload_throughput_10_50,
       metrics.custom_distribution.networking_http_3_upload_throughput_50_100,
-      metrics.custom_distribution.pdfjs_editing_highlight_thickness
+      metrics.custom_distribution.pdfjs_editing_highlight_thickness,
+      metrics.custom_distribution.network_tls_early_data_bytes_written
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -577,7 +582,11 @@ SELECT
       metrics.labeled_counter.webrtcdtls_srtp_cipher,
       metrics.labeled_counter.media_playback_not_supported_video_per_mime_type,
       metrics.labeled_counter.power_energy_per_process_type,
-      metrics.labeled_counter.bounce_tracking_protection_purge_count
+      metrics.labeled_counter.bounce_tracking_protection_purge_count,
+      metrics.labeled_counter.network_tls_early_data_accepted,
+      metrics.labeled_counter.network_tls_early_data_negotiated,
+      metrics.labeled_counter.networking_http_redirect_to_scheme_subresource,
+      metrics.labeled_counter.networking_http_redirect_to_scheme_top_level
     ) AS `labeled_counter`,
     metrics.quantity,
     STRUCT(
@@ -1067,7 +1076,8 @@ SELECT
       metrics.custom_distribution.networking_http_3_upload_throughput_100,
       metrics.custom_distribution.networking_http_3_upload_throughput_10_50,
       metrics.custom_distribution.networking_http_3_upload_throughput_50_100,
-      metrics.custom_distribution.pdfjs_editing_highlight_thickness
+      metrics.custom_distribution.pdfjs_editing_highlight_thickness,
+      metrics.custom_distribution.network_tls_early_data_bytes_written
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -1205,7 +1215,11 @@ SELECT
       metrics.labeled_counter.webrtcdtls_srtp_cipher,
       metrics.labeled_counter.media_playback_not_supported_video_per_mime_type,
       metrics.labeled_counter.power_energy_per_process_type,
-      metrics.labeled_counter.bounce_tracking_protection_purge_count
+      metrics.labeled_counter.bounce_tracking_protection_purge_count,
+      metrics.labeled_counter.network_tls_early_data_accepted,
+      metrics.labeled_counter.network_tls_early_data_negotiated,
+      metrics.labeled_counter.networking_http_redirect_to_scheme_subresource,
+      metrics.labeled_counter.networking_http_redirect_to_scheme_top_level
     ) AS `labeled_counter`,
     metrics.quantity,
     STRUCT(
@@ -1609,7 +1623,11 @@ SELECT
       metrics.labeled_counter.webrtcdtls_srtp_cipher,
       metrics.labeled_counter.media_playback_not_supported_video_per_mime_type,
       metrics.labeled_counter.power_energy_per_process_type,
-      metrics.labeled_counter.bounce_tracking_protection_purge_count
+      metrics.labeled_counter.bounce_tracking_protection_purge_count,
+      metrics.labeled_counter.network_tls_early_data_accepted,
+      metrics.labeled_counter.network_tls_early_data_negotiated,
+      metrics.labeled_counter.networking_http_redirect_to_scheme_subresource,
+      metrics.labeled_counter.networking_http_redirect_to_scheme_top_level
     ) AS `labeled_counter`,
     metrics.quantity,
     metrics.string,

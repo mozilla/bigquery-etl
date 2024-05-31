@@ -28,7 +28,6 @@ workgroup_access:
 references:
   checks.sql:
   - ..
-  - moz-fx-data-shared-prod.braze_derived.users_v1
   query.sql:
   - moz-fx-data-shared-prod.braze_derived.subscriptions_map_v1
   - moz-fx-data-shared-prod.ctms_braze.ctms_emails

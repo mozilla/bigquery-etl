@@ -515,6 +515,12 @@ fields:
       description: 'Screen pixel depth property
 
         '
+    - name: characteristics_screen_orientation
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Orientation of the primary screen.
+
+        '
   - name: string
     type: RECORD
     mode: NULLABLE

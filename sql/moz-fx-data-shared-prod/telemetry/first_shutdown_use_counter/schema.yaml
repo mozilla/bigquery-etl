@@ -10953,6 +10953,142 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Whether a page uses WebAssembly legacy exception-handling
+    - name: use_counter2_deprecated_dom_attr_modified_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document used DOMAttrModified
+    - name: use_counter2_deprecated_dom_attr_modified_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page used DOMAttrModified
+    - name: use_counter2_deprecated_dom_character_data_modified_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document used DOMCharacterDataModified
+    - name: use_counter2_deprecated_dom_character_data_modified_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page used DOMCharacterDataModified
+    - name: use_counter2_deprecated_dom_node_inserted_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document used DOMNodeInserted
+    - name: use_counter2_deprecated_dom_node_inserted_into_document_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document used DOMNodeInsertedIntoDocument
+    - name: use_counter2_deprecated_dom_node_inserted_into_document_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page used DOMNodeInsertedIntoDocument
+    - name: use_counter2_deprecated_dom_node_inserted_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page used DOMNodeInserted
+    - name: use_counter2_deprecated_dom_node_removed_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document used DOMNodeRemoved
+    - name: use_counter2_deprecated_dom_node_removed_from_document_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document used DOMNodeRemovedFromDocument
+    - name: use_counter2_deprecated_dom_node_removed_from_document_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page used DOMNodeRemovedFromDocument
+    - name: use_counter2_deprecated_dom_node_removed_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page used DOMNodeRemoved
+    - name: use_counter2_deprecated_dom_subtree_modified_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document used DOMSubtreeModified
+    - name: use_counter2_deprecated_dom_subtree_modified_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page used DOMSubtreeModified
+    - name: use_counter2_js_subclassing_array_type_2_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document Array is Type II subclassed
+    - name: use_counter2_js_subclassing_array_type_2_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page Array is Type II subclassed
+    - name: use_counter2_js_subclassing_array_type_3_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document Array is Type III subclassed
+    - name: use_counter2_js_subclassing_array_type_3_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page Array is Type III subclassed
+    - name: use_counter2_js_subclassing_arraybuffer_type_3_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document ArrayBuffer is Type III subclassed
+    - name: use_counter2_js_subclassing_arraybuffer_type_3_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page ArrayBuffer is Type III subclassed
+    - name: use_counter2_js_subclassing_promise_type_2_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document Promise is Type II subclassed
+    - name: use_counter2_js_subclassing_promise_type_2_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page Promise is Type II subclassed
+    - name: use_counter2_js_subclassing_promise_type_3_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document Promise is Type III subclassed
+    - name: use_counter2_js_subclassing_promise_type_3_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page Promise is Type III subclassed
+    - name: use_counter2_js_subclassing_regexp_type_3_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document RegExp is Type III subclassed
+    - name: use_counter2_js_subclassing_regexp_type_3_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page RegExp is Type III subclassed
+    - name: use_counter2_js_subclassing_regexp_type_4_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document RegExp is Type IV subclassed
+    - name: use_counter2_js_subclassing_regexp_type_4_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page RegExp is Type IV subclassed
+    - name: use_counter2_js_subclassing_sharedarraybuffer_type_3_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document SharedArrayBuffer is Type III subclassed
+    - name: use_counter2_js_subclassing_sharedarraybuffer_type_3_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page SharedArrayBuffer is Type III subclassed
+    - name: use_counter2_js_subclassing_typedarray_type_2_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document TypedArray is Type II subclassed
+    - name: use_counter2_js_subclassing_typedarray_type_2_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page TypedArray is Type II subclassed
+    - name: use_counter2_js_subclassing_typedarray_type_3_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document TypedArray is Type III subclassed
+    - name: use_counter2_js_subclassing_typedarray_type_3_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page TypedArray is Type III subclassed
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -21758,6 +21894,142 @@ fields:
           type: STRING
           mode: NULLABLE
           description: Whether a page uses WebAssembly legacy exception-handling
+        - name: use_counter2_deprecated_dom_attr_modified_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document used DOMAttrModified
+        - name: use_counter2_deprecated_dom_attr_modified_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page used DOMAttrModified
+        - name: use_counter2_deprecated_dom_character_data_modified_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document used DOMCharacterDataModified
+        - name: use_counter2_deprecated_dom_character_data_modified_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page used DOMCharacterDataModified
+        - name: use_counter2_deprecated_dom_node_inserted_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document used DOMNodeInserted
+        - name: use_counter2_deprecated_dom_node_inserted_into_document_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document used DOMNodeInsertedIntoDocument
+        - name: use_counter2_deprecated_dom_node_inserted_into_document_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page used DOMNodeInsertedIntoDocument
+        - name: use_counter2_deprecated_dom_node_inserted_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page used DOMNodeInserted
+        - name: use_counter2_deprecated_dom_node_removed_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document used DOMNodeRemoved
+        - name: use_counter2_deprecated_dom_node_removed_from_document_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document used DOMNodeRemovedFromDocument
+        - name: use_counter2_deprecated_dom_node_removed_from_document_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page used DOMNodeRemovedFromDocument
+        - name: use_counter2_deprecated_dom_node_removed_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page used DOMNodeRemoved
+        - name: use_counter2_deprecated_dom_subtree_modified_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document used DOMSubtreeModified
+        - name: use_counter2_deprecated_dom_subtree_modified_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page used DOMSubtreeModified
+        - name: use_counter2_js_subclassing_array_type_2_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document Array is Type II subclassed
+        - name: use_counter2_js_subclassing_array_type_2_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page Array is Type II subclassed
+        - name: use_counter2_js_subclassing_array_type_3_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document Array is Type III subclassed
+        - name: use_counter2_js_subclassing_array_type_3_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page Array is Type III subclassed
+        - name: use_counter2_js_subclassing_arraybuffer_type_3_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document ArrayBuffer is Type III subclassed
+        - name: use_counter2_js_subclassing_arraybuffer_type_3_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page ArrayBuffer is Type III subclassed
+        - name: use_counter2_js_subclassing_promise_type_2_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document Promise is Type II subclassed
+        - name: use_counter2_js_subclassing_promise_type_2_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page Promise is Type II subclassed
+        - name: use_counter2_js_subclassing_promise_type_3_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document Promise is Type III subclassed
+        - name: use_counter2_js_subclassing_promise_type_3_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page Promise is Type III subclassed
+        - name: use_counter2_js_subclassing_regexp_type_3_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document RegExp is Type III subclassed
+        - name: use_counter2_js_subclassing_regexp_type_3_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page RegExp is Type III subclassed
+        - name: use_counter2_js_subclassing_regexp_type_4_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document RegExp is Type IV subclassed
+        - name: use_counter2_js_subclassing_regexp_type_4_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page RegExp is Type IV subclassed
+        - name: use_counter2_js_subclassing_sharedarraybuffer_type_3_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document SharedArrayBuffer is Type III subclassed
+        - name: use_counter2_js_subclassing_sharedarraybuffer_type_3_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page SharedArrayBuffer is Type III subclassed
+        - name: use_counter2_js_subclassing_typedarray_type_2_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document TypedArray is Type II subclassed
+        - name: use_counter2_js_subclassing_typedarray_type_2_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page TypedArray is Type II subclassed
+        - name: use_counter2_js_subclassing_typedarray_type_3_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document TypedArray is Type III subclassed
+        - name: use_counter2_js_subclassing_typedarray_type_3_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page TypedArray is Type III subclassed
 - name: sample_id
   type: INTEGER
   mode: NULLABLE

@@ -8090,6 +8090,108 @@ fields:
     - name: use_counter2_js_wasm_legacy_exceptions_page
       type: STRING
       mode: NULLABLE
+    - name: use_counter2_deprecated_dom_attr_modified_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_deprecated_dom_attr_modified_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_deprecated_dom_character_data_modified_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_deprecated_dom_character_data_modified_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_deprecated_dom_node_inserted_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_deprecated_dom_node_inserted_into_document_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_deprecated_dom_node_inserted_into_document_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_deprecated_dom_node_inserted_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_deprecated_dom_node_removed_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_deprecated_dom_node_removed_from_document_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_deprecated_dom_node_removed_from_document_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_deprecated_dom_node_removed_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_deprecated_dom_subtree_modified_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_deprecated_dom_subtree_modified_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_js_subclassing_array_type_2_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_js_subclassing_array_type_2_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_js_subclassing_array_type_3_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_js_subclassing_array_type_3_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_js_subclassing_arraybuffer_type_3_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_js_subclassing_arraybuffer_type_3_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_js_subclassing_promise_type_2_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_js_subclassing_promise_type_2_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_js_subclassing_promise_type_3_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_js_subclassing_promise_type_3_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_js_subclassing_regexp_type_3_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_js_subclassing_regexp_type_3_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_js_subclassing_regexp_type_4_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_js_subclassing_regexp_type_4_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_js_subclassing_sharedarraybuffer_type_3_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_js_subclassing_sharedarraybuffer_type_3_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_js_subclassing_typedarray_type_2_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_js_subclassing_typedarray_type_2_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_js_subclassing_typedarray_type_3_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_js_subclassing_typedarray_type_3_page
+      type: STRING
+      mode: NULLABLE
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -16047,6 +16149,108 @@ fields:
           type: STRING
           mode: NULLABLE
         - name: use_counter2_js_wasm_legacy_exceptions_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_deprecated_dom_attr_modified_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_deprecated_dom_attr_modified_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_deprecated_dom_character_data_modified_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_deprecated_dom_character_data_modified_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_deprecated_dom_node_inserted_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_deprecated_dom_node_inserted_into_document_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_deprecated_dom_node_inserted_into_document_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_deprecated_dom_node_inserted_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_deprecated_dom_node_removed_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_deprecated_dom_node_removed_from_document_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_deprecated_dom_node_removed_from_document_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_deprecated_dom_node_removed_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_deprecated_dom_subtree_modified_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_deprecated_dom_subtree_modified_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_js_subclassing_array_type_2_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_js_subclassing_array_type_2_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_js_subclassing_array_type_3_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_js_subclassing_array_type_3_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_js_subclassing_arraybuffer_type_3_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_js_subclassing_arraybuffer_type_3_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_js_subclassing_promise_type_2_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_js_subclassing_promise_type_2_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_js_subclassing_promise_type_3_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_js_subclassing_promise_type_3_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_js_subclassing_regexp_type_3_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_js_subclassing_regexp_type_3_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_js_subclassing_regexp_type_4_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_js_subclassing_regexp_type_4_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_js_subclassing_sharedarraybuffer_type_3_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_js_subclassing_sharedarraybuffer_type_3_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_js_subclassing_typedarray_type_2_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_js_subclassing_typedarray_type_2_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_js_subclassing_typedarray_type_3_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_js_subclassing_typedarray_type_3_page
           type: STRING
           mode: NULLABLE
 - name: sample_id

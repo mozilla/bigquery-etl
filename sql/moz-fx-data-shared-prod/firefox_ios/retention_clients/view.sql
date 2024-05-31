@@ -22,11 +22,11 @@ attribution AS (
     client_id,
     sample_id,
     channel AS normalized_channel,
-    adjust_ad_group,
-    adjust_creative,
-    adjust_network,
-    adjust_campaign,
-    is_suspicious_device_client,
+    NULLIF(adjust_ad_group, "") AS adjust_ad_group,
+    NULLIF(adjust_creative, "") AS adjust_creative,
+    NULLIF(adjust_network, "") AS adjust_network,
+    NULLIF(adjust_campaign, "") AS adjust_campaign,
+    is_suspicious_device_client
   FROM
     `moz-fx-data-shared-prod.firefox_ios_derived.firefox_ios_clients_v1`
 )

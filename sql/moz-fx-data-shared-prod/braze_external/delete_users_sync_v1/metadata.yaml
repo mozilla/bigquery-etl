@@ -17,6 +17,7 @@ description: |-
 owners:
 - cbeck@mozilla.com
 labels:
+  incremental: true
   schedule: daily
   owner: cbeck
   dag: bqetl_braze

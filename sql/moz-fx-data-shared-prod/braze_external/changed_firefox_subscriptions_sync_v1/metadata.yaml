@@ -9,7 +9,7 @@ description: |-
 owners:
 - cbeck@mozilla.com
 labels:
-  schedule: daily
+  incremental: true
   owner: cbeck
   dag: bqetl_braze
   owner1: cbeck

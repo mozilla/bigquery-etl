@@ -78,7 +78,11 @@ by_ad_group_id AS (
 SELECT
   date,
   campaigns_v2.campaign_name AS campaign,
-  UPPER(mozfun.map.get_key(campaigns_v2.campaign_segments, "region")) AS campaign_region,
+  CASE
+    WHEN LOWER(mozfun.map.get_key(campaigns_v2.campaign_segments, "region")) = "expansion"
+      THEN "Expansion"
+    ELSE UPPER(mozfun.map.get_key(campaigns_v2.campaign_segments, "region"))
+  END AS campaign_region,
   UPPER(
     mozfun.map.get_key(campaigns_v2.campaign_segments, "country_code")
   ) AS campaign_country_code,

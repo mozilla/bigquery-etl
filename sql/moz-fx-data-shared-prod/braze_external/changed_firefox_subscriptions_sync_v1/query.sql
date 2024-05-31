@@ -32,7 +32,7 @@ CROSS JOIN
   UNNEST(subscriptions.subscriptions) AS subscriptions_array
 JOIN
   max_timestamps
-ON
-  subscriptions.external_id = max_timestamps.external_id
+  ON subscriptions.external_id = max_timestamps.external_id
 GROUP BY
-  subscriptions.external_id, max_timestamps.max_update_timestamp;
+  subscriptions.external_id,
+  max_timestamps.max_update_timestamp;

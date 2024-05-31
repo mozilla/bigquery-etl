@@ -1,7 +1,9 @@
     -- CTE to determine the maximum update timestamp from changed_subscriptions_v1
 WITH max_update AS (
-  SELECT 
-  MAX(CAST(JSON_EXTRACT_SCALAR(payload, '$.update_timestamp') AS TIMESTAMP)) AS latest_subscription_updated_at
+  SELECT
+    MAX(
+      CAST(JSON_EXTRACT_SCALAR(payload, '$.update_timestamp') AS TIMESTAMP)
+    ) AS latest_subscription_updated_at
   FROM
     `moz-fx-data-shared-prod.braze_external.changed_firefox_subscriptions_sync_v1`
 )

@@ -1,4 +1,4 @@
--- CTE to determine the maximum update timestamp from changed_subscriptions_v1
+-- get the latest update timestamp from the last sync
 WITH max_update AS (
   SELECT
     MAX(
@@ -7,7 +7,7 @@ WITH max_update AS (
   FROM
     `moz-fx-data-shared-prod.braze_external.changed_firefox_subscriptions_sync_v1`
 ),
--- CTE to get the max update timestamp for each external_id in subscriptions_v1
+-- get the max update timestamp for each external_id in subscriptions_v1
 max_subscriptions AS (
   SELECT
     external_id,
@@ -19,7 +19,8 @@ max_subscriptions AS (
   GROUP BY
     external_id
 )
--- Main query to select all records from subscriptions_v1 that have been updated since the last sync
+-- select all records from subscriptions_v1 that have been updated since the last sync
+-- and construct JSON payload for Braze sync
 SELECT
   CURRENT_TIMESTAMP() AS UPDATED_AT,
   subscriptions.external_id AS EXTERNAL_ID,

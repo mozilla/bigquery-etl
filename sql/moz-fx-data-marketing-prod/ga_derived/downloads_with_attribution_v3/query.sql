@@ -36,10 +36,6 @@ stub_downloads AS (
     DATE(stub.timestamp) = "2024-02-15"
     -- AND DATE(stub.timestamp) <= "2024-02-20"
     AND stub.jsonPayload.fields.log_type = 'download_started'
-    AND stub.jsonPayload.fields.visit_id NOT LIKE ("(not set)")
-    AND stub.jsonPayload.fields.session_id NOT LIKE ("(not set)")
-    AND NULLIF(stub.jsonPayload.fields.visit_id, "") IS NOT NULL
-    AND NULLIF(stub.jsonPayload.fields.session_id, "") IS NOT NULL
   GROUP BY
     stub_visit_id,
     stub_download_session_id,

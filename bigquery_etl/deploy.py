@@ -45,8 +45,8 @@ def deploy_table(
             and "destination_table" in metadata.scheduling
             and metadata.scheduling["destination_table"] is None
         ):
-            raise FailedDeployException(
-                f"Destination table configured for {query_file} in metadata but is empty."
+            raise SkippedDeployException(
+                f"Skipping deploy for {query_file}, null destination_table configured."
             )
     except FileNotFoundError:
         log.warning(f"No metadata found for {query_file}.")

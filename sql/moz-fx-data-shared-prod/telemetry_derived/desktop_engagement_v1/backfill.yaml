@@ -4,4 +4,4 @@
   reason: Loading a new table per DENG-3186; must run only after desktop_engagement_clients_v1 backfill is done for same time
   watchers:
   - kwindau@mozilla.com
-  status: Initiate
+  status: Complete

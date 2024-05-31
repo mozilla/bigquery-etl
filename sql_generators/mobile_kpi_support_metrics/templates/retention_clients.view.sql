@@ -35,7 +35,11 @@ attribution AS (
       NULLIF(adjust_campaign, "")
     {% endif %} AS adjust_campaign,
     {% for field in product_specific_attribution_fields %}
-      NULLIF({{ field.name }}, "") AS {{ field.name }},
+      {% if field.type == "STRING" %}
+        NULLIF({{ field.name }}, "") AS {{ field.name }},
+      {% else %}
+        {{ field.name }}
+      {% endif %}
     {% endfor %}
   FROM
     {% if app_name == "fenix" %}

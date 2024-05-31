@@ -34,12 +34,16 @@ attribution AS (
         WHEN adjust_network IN ('Google Organic Search', 'Organic')
           THEN 'Organic'
         ELSE NULLIF(adjust_campaign, "")
-      END AS adjust_campaign,
+      END
     {% else %}
-      NULLIF(adjust_campaign, "") AS adjust_campaign,
-    {% endif %}
+      NULLIF(adjust_campaign, "")
+    {% endif %} AS adjust_campaign,
     {% for field in product_specific_attribution_fields %}
-      NULLIF({{ field.name }}, "") AS {{ field.name }},
+      {% if field.type == "STRING" %}
+        NULLIF({{ field.name }}, "") AS {{ field.name }},
+      {% else %}
+        {{ field.name }}
+      {% endif %}
     {% endfor %}
   FROM
     {% if app_name == "fenix" %}

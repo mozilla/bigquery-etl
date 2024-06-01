@@ -29,9 +29,9 @@ DATASET = "search_derived"
 TABLE_NAME = "mobile_search_clients_daily_v1"
 
 FIREFOX_IOS_TUPLES = [
-    ("org_mozilla_ios_firefox",     "Fennec", "release"),  # noqa E241 E501
-    ("org_mozilla_ios_firefoxbeta", "Fennec", "beta"),  # noqa E241 E501
-    ("org_mozilla_ios_fennec",      "Fennec", "nightly"),  # noqa E241 E501
+    ("org_mozilla_ios_firefox",     "Firefox iOS Glean", "release"),  # noqa E241 E501
+    ("org_mozilla_ios_firefoxbeta", "Firefox iOS Glean", "beta"),  # noqa E241 E501
+    ("org_mozilla_ios_fennec",      "Firefox iOS Glean", "nightly"),  # noqa E241 E501
 ]
 
 FOCUS_ANDROID_TUPLES = [

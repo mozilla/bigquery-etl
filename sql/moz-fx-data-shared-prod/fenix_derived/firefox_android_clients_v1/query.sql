@@ -19,6 +19,7 @@ WITH baseline_clients AS (
     app_display_version AS app_version,
     locale,
     is_new_profile,
+    distribution_id,
   FROM
     `moz-fx-data-shared-prod.fenix.baseline_clients_daily`
   WHERE
@@ -43,7 +44,7 @@ first_seen AS (
     device_model,
     os_version,
     app_version,
-    locale
+    locale,
   FROM
     baseline_clients
   WHERE
@@ -154,11 +155,6 @@ first_session_ping AS (
       ORDER BY
         submission_timestamp ASC
     )[SAFE_OFFSET(0)] AS play_store_attribution_install_referrer_response,
-    ARRAY_AGG(
-      metrics.string.first_session_distribution_id IGNORE NULLS
-      ORDER BY
-        submission_timestamp ASC
-    )[SAFE_OFFSET(0)] AS distribution_id,
     ARRAY_AGG(metrics.string.meta_attribution_app IGNORE NULLS ORDER BY submission_timestamp ASC)[
       SAFE_OFFSET(0)
     ] AS meta_attribution_app,
@@ -231,11 +227,6 @@ metrics_ping AS (
       ORDER BY
         submission_timestamp DESC
     )[SAFE_OFFSET(0)] AS last_reported_adjust_campaign,
-    ARRAY_AGG(
-      metrics.string.metrics_distribution_id IGNORE NULLS
-      ORDER BY
-        submission_timestamp ASC
-    )[SAFE_OFFSET(0)] AS distribution_id,
   FROM
     fenix.metrics AS fenix_metrics
   WHERE
@@ -267,6 +258,9 @@ baseline_ping AS (
     ARRAY_AGG(locale IGNORE NULLS ORDER BY submission_date DESC)[
       SAFE_OFFSET(0)
     ] AS last_reported_locale,
+    ARRAY_AGG(distribution_id IGNORE NULLS ORDER BY submission_date DESC)[
+      SAFE_OFFSET(0)
+    ] AS distribution_id,
   FROM
     baseline_clients
   GROUP BY
@@ -299,7 +293,7 @@ _current AS (
     first_session.play_store_attribution_source,
     first_session.play_store_attribution_term,
     first_session.play_store_attribution_install_referrer_response,
-    COALESCE(first_session.distribution_id, metrics.distribution_id) AS distribution_id,
+    baseline.distribution_id,
     first_session.meta_attribution_app AS meta_attribution_app,
     metrics.last_reported_adjust_campaign AS last_reported_adjust_campaign,
     metrics.last_reported_adjust_ad_group AS last_reported_adjust_ad_group,

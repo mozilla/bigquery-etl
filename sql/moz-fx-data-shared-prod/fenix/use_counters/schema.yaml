@@ -7272,6 +7272,24 @@ fields:
     - name: use_counter_deprecated_ops_page_domsubtree_modified
       type: INTEGER
       mode: NULLABLE
+    - name: use_counter_css_doc_css_inset_area
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_css_doc_css_position_try_order
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_css_doc_css_webkit_font_smoothing
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_css_page_css_inset_area
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_css_page_css_position_try_order
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_css_page_css_webkit_font_smoothing
+      type: INTEGER
+      mode: NULLABLE
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

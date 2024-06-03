@@ -18,4 +18,4 @@ bigquery:
   expiration_days: 7
 scheduling:
   dag_name: bqetl_braze
-  date_partition_parameter: null
+  date_partition_parameter: updated_at

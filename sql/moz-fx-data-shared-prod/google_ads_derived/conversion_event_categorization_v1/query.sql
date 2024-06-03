@@ -1,4 +1,4 @@
-DECLARE first_cohort_date DATE DEFAULT DATE(2024, 5, 1);
+DECLARE first_cohort_date DATE DEFAULT DATE(2023, 11, 1);
 
 DECLARE last_cohort_date DATE DEFAULT DATE_SUB(
   CURRENT_DATE,

@@ -1,0 +1,12 @@
+build-job-eam-integrations:
+  docker:
+    - image: << pipeline.parameters.git-image >>
+  steps:
+    - checkout
+    - compare-branch:
+        pattern: ^jobs/eam-integrations/
+    - setup_remote_docker:
+        version: << pipeline.parameters.docker-version >>
+    - run:
+        name: Build Docker image
+        command: docker build -t app:build jobs/eam-integrations/

@@ -152,6 +152,19 @@ jobs:
           name: Test Code
           command: docker run app:build pytest --flake8 --black
 
+  build-job-eam-integrations:
+    docker:
+      - image: << pipeline.parameters.git-image >>
+    steps:
+      - checkout
+      - compare-branch:
+          pattern: ^jobs/eam-integrations/
+      - setup_remote_docker:
+          version: << pipeline.parameters.docker-version >>
+      - run:
+          name: Build Docker image
+          command: docker build -t app:build jobs/eam-integrations/
+
   build-job-example_job:
     docker:
       - image: << pipeline.parameters.git-image >>
@@ -391,6 +404,20 @@ workflows:
   job-desktop-mobile-mau-2020:
     jobs:
       - build-job-desktop-mobile-mau-2020
+
+  job-eam-integrations:
+    jobs:
+      - build-job-eam-integrations
+      - gcp-gcr/build-and-push-image:
+          context: data-eng-airflow-gcr
+          docker-context: jobs/eam-integrations/
+          path: jobs/eam-integrations/
+          image: eam-integrations_docker_etl
+          requires:
+            - build-job-eam-integrations
+          filters:
+            branches:
+              only: main
 
   job-example_job:
     jobs:

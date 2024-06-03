@@ -1,0 +1,13 @@
+job-eam-integrations:
+  jobs:
+    - build-job-eam-integrations
+    - gcp-gcr/build-and-push-image:
+        context: data-eng-airflow-gcr
+        docker-context: jobs/eam-integrations/
+        path: jobs/eam-integrations/
+        image: eam-integrations_docker_etl
+        requires:
+          - build-job-eam-integrations
+        filters:
+          branches:
+            only: main

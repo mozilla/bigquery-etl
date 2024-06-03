@@ -26,10 +26,10 @@ SELECT
   days_active_bits,
   CASE
     WHEN isp_name = 'BrowserStack'
-      THEN CONCAT(app_name, ' ', isp_name)
+      THEN CONCAT('Firefox Desktop', ' ', isp_name)
     WHEN distribution_id = 'MozillaOnline'
-      THEN CONCAT(app_name, ' ', distribution_id)
-    ELSE app_name
+      THEN CONCAT('Firefox Desktop', ' ', distribution_id)
+    ELSE 'Firefox Desktop'
   END AS app_name,
   app_version,
   normalized_channel,

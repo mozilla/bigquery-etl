@@ -21,7 +21,7 @@ labels:
   owner: cbeck
 bigquery:
   time_partitioning:
-  type: hour
+  type: day
   field: updated_at
   require_partition_filter: false
   expiration_days: 7

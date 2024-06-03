@@ -21,32 +21,32 @@ WITH active_users AS (
   FROM
     `{{ project_id }}.{{ dataset }}.active_users`
 )
-{% if attribution_fields %}
-, attribution AS (
-  SELECT
-    client_id,
-    sample_id,
-    channel AS normalized_channel,
-    {% for field in attribution_fields %}
-      {% if app_name == "fenix" and field.name == "adjust_campaign" %}
-      CASE
-        WHEN adjust_network IN ('Google Organic Search', 'Organic')
-          THEN 'Organic'
-        ELSE NULLIF(adjust_campaign, "")
-      END AS adjust_campaign,
-      {% elif field.type == "STRING" %}
-        NULLIF({{ field.name }}, "") AS {{ field.name }},
-      {% else %}
-        {{ field.name }},
+{% if attribution_fields %},
+  attribution AS (
+    SELECT
+      client_id,
+      sample_id,
+      channel AS normalized_channel,
+      {% for field in attribution_fields %}
+        {% if app_name == "fenix" and field.name == "adjust_campaign" %}
+          CASE
+            WHEN adjust_network IN ('Google Organic Search', 'Organic')
+              THEN 'Organic'
+            ELSE NULLIF(adjust_campaign, "")
+          END AS adjust_campaign,
+        {% elif field.type == "STRING" %}
+          NULLIF({{ field.name }}, "") AS {{ field.name }},
+        {% else %}
+          {{ field.name }},
+        {% endif %}
+      {% endfor %}
+    FROM
+      {% if app_name == "fenix" %}
+        `{{ project_id }}.{{ dataset }}_derived.firefox_android_clients_v1`
+      {% elif app_name == "firefox_ios" %}
+        `{{ project_id }}.{{ dataset }}_derived.firefox_ios_clients_v1`
       {% endif %}
-    {% endfor %}
-  FROM
-    {% if app_name == "fenix" %}
-      `{{ project_id }}.{{ dataset }}_derived.firefox_android_clients_v1`
-    {% elif app_name == "firefox_ios" %}
-      `{{ project_id }}.{{ dataset }}_derived.firefox_ios_clients_v1`
-    {% endif %}
-)
+  )
 {% endif %}
 SELECT
   submission_date,
@@ -79,8 +79,8 @@ SELECT
   END AS lifecycle_stage,
 FROM
   active_users
-{% if attribution_fields %}
-LEFT JOIN
-  attribution
-  USING (client_id, sample_id, normalized_channel)
-{% endif %}
+  {% if attribution_fields %}
+    LEFT JOIN
+      attribution
+      USING (client_id, sample_id, normalized_channel)
+  {% endif %}

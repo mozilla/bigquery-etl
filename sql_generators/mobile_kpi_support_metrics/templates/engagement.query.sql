@@ -17,7 +17,13 @@ SELECT
 FROM
   `{{ project_id }}.{{ dataset }}.engagement_clients`
 WHERE
-  submission_date = @submission_date
+  {% raw %}
+  {% if is_init() %}
+    submission_date < CURRENT_DATE
+  {% else %}
+    submission_date = @submission_date
+  {% endif %}
+  {% endraw %}
 GROUP BY
   submission_date,
   first_seen_date,

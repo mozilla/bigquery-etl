@@ -21,8 +21,15 @@ SELECT
 FROM
   `{{ project_id }}.{{ dataset }}.retention_clients`
 WHERE
-  metric_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
-  AND submission_date = @submission_date
+  {% raw %}
+  {% if is_init() %}
+    metric_date < DATE_SUB(CURRENT_DATE, INTERVAL 27 DAY)
+    AND submission_date < CURRENT_DATE
+  {% else %}
+    metric_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+    AND submission_date = @submission_date
+  {% endif %}
+  {% endraw %}
 GROUP BY
   metric_date,
   first_seen_date,

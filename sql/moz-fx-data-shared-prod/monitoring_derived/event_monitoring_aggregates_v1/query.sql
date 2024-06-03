@@ -45,7 +45,7 @@ FROM
       client_info.app_display_version AS version,
       ping_info
     FROM
-      `moz-fx-data-shared-prod.firefox_desktop_stable.prototype_no_code_events_v1`
+      `moz-fx-data-shared-prod.firefox_desktop_stable.newtab_v1`
     UNION ALL
     SELECT
       submission_timestamp,
@@ -65,7 +65,7 @@ FROM
       client_info.app_display_version AS version,
       ping_info
     FROM
-      `moz-fx-data-shared-prod.firefox_desktop_stable.newtab_v1`
+      `moz-fx-data-shared-prod.firefox_desktop_stable.prototype_no_code_events_v1`
     UNION ALL
     SELECT
       submission_timestamp,
@@ -2000,7 +2000,7 @@ FROM
       client_info.app_display_version AS version,
       ping_info
     FROM
-      `moz-fx-data-shared-prod.bedrock_stable.interaction_v1`
+      `moz-fx-data-shared-prod.bedrock_stable.non_interaction_v1`
     UNION ALL
     SELECT
       submission_timestamp,
@@ -2010,7 +2010,7 @@ FROM
       client_info.app_display_version AS version,
       ping_info
     FROM
-      `moz-fx-data-shared-prod.bedrock_stable.non_interaction_v1`
+      `moz-fx-data-shared-prod.bedrock_stable.interaction_v1`
   )
 CROSS JOIN
   UNNEST(events) AS event,
@@ -2081,7 +2081,7 @@ FROM
       client_info.app_display_version AS version,
       ping_info
     FROM
-      `moz-fx-data-shared-prod.viu_politica_stable.video_index_v1`
+      `moz-fx-data-shared-prod.viu_politica_stable.main_events_v1`
     UNION ALL
     SELECT
       submission_timestamp,
@@ -2091,7 +2091,7 @@ FROM
       client_info.app_display_version AS version,
       ping_info
     FROM
-      `moz-fx-data-shared-prod.viu_politica_stable.main_events_v1`
+      `moz-fx-data-shared-prod.viu_politica_stable.video_index_v1`
   )
 CROSS JOIN
   UNNEST(events) AS event,

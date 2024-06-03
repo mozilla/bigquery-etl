@@ -15,7 +15,6 @@
   fxa_lang: DE
   fxa_first_service: service_1
   fxa_created_at: 2020-01-01 10:00:00+00:00
-  acoustic_last_engaged_at: 2021-01-01 11:00:00+00:00
 
 # user 2 - deleted
 # user 3 - unchanged
@@ -32,7 +31,6 @@
   fxa_primary_email: user_3_primary@mail.com
   fxa_lang: DE
   fxa_first_service: service_1
-  acoustic_last_engaged_at: 2021-01-01 11:00:00+00:00
 # user 4 - new user
 - external_id: user_4
   email: user_4@mail.com

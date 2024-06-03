@@ -428,11 +428,11 @@ class Metadata:
             time_partitioning = self.bigquery.time_partitioning
             range_partitioning = self.bigquery.range_partitioning
 
-        self.bigquery = BigQueryMetadata(
-            time_partitioning=time_partitioning,
-            range_partitioning=range_partitioning,
-            clustering=ClusteringMetadata(fields=clustering_fields),
-        )
+            self.bigquery = BigQueryMetadata(
+                time_partitioning=time_partitioning,
+                range_partitioning=range_partitioning,
+                clustering=ClusteringMetadata(fields=clustering_fields),
+            )
 
 
 @attr.s(auto_attribs=True)

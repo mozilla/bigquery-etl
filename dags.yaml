@@ -1669,7 +1669,7 @@ bqetl_desktop_conv_evnt_categorization:
       - telemetry-alerts@mozilla.com
     email_on_failure: true
     email_on_retry: false
-    start_date: "2024-06-01"
+    start_date: "2024-06-04"
     retries: 2
     retry_delay: 30m
   tags:

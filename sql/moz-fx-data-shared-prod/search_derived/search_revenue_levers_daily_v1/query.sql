@@ -313,7 +313,9 @@ mobile_data_bing_ddg AS (
     SUM(IF(normalized_engine = 'DuckDuckGo', ad_click, 0)) AS ddg_ad_click,
     SUM(IF(normalized_engine = 'DuckDuckGo', organic, 0)) AS ddg_organic,
     SUM(IF(normalized_engine = 'DuckDuckGo', ad_click_organic, 0)) AS ddg_ad_click_organic,
-    SUM(IF(normalized_engine = 'DuckDuckGo', search_with_ads_organic, 0)) AS ddg_search_with_ads_organic,
+    SUM(
+      IF(normalized_engine = 'DuckDuckGo', search_with_ads_organic, 0)
+    ) AS ddg_search_with_ads_organic,
     -- metrics do not exist for mobile
     0 AS ddg_monetizable_sap
   FROM

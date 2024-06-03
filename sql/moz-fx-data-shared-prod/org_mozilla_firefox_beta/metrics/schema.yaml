@@ -3197,8 +3197,7 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream. (Migrated from
-        the geckoview metric of the same name).
+      description: 'Failure occurs when initializing the audio stream.
 
         '
     - name: glean_validation_pings_submitted
@@ -4877,7 +4876,7 @@ fields:
         mode: NULLABLE
       description: 'Counts how often we purge trackers. Giving a high level overview
         about the effectivness of bounce tracking protection. Allows determining error
-        rate with failed/success label. When in dry mode, we count the purges that
+        rate with failure/success label. When in dry mode, we count the purges that
         would have happened under the dry label.
 
         '

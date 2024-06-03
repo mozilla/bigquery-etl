@@ -190,18 +190,6 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_search_derived__mobile_search_clients_daily__v1 = ExternalTaskSensor(
-        task_id="wait_for_search_derived__mobile_search_clients_daily__v1",
-        external_dag_id="bqetl_mobile_search",
-        external_task_id="search_derived__mobile_search_clients_daily__v1",
-        execution_delta=datetime.timedelta(seconds=8100),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
     wait_for_firefox_ios_derived__clients_last_seen_joined__v1 = ExternalTaskSensor(
         task_id="wait_for_firefox_ios_derived__clients_last_seen_joined__v1",
         external_dag_id="bqetl_glean_usage",
@@ -860,10 +848,6 @@ with DAG(
         wait_for_fenix_derived__clients_last_seen_joined__v1
     )
 
-    fenix_active_users_aggregates.set_upstream(
-        wait_for_search_derived__mobile_search_clients_daily__v1
-    )
-
     firefox_desktop_active_users_aggregates.set_upstream(
         wait_for_checks__fail_telemetry_derived__clients_last_seen__v2
     )
@@ -884,16 +868,8 @@ with DAG(
         wait_for_firefox_ios_derived__clients_last_seen_joined__v1
     )
 
-    firefox_ios_active_users_aggregates.set_upstream(
-        wait_for_search_derived__mobile_search_clients_daily__v1
-    )
-
     focus_android_active_users_aggregates.set_upstream(
         wait_for_focus_android_derived__clients_last_seen_joined__v1
-    )
-
-    focus_android_active_users_aggregates.set_upstream(
-        wait_for_search_derived__mobile_search_clients_daily__v1
     )
 
     focus_android_active_users_aggregates.set_upstream(
@@ -916,10 +892,6 @@ with DAG(
         wait_for_focus_ios_derived__clients_last_seen_joined__v1
     )
 
-    focus_ios_active_users_aggregates.set_upstream(
-        wait_for_search_derived__mobile_search_clients_daily__v1
-    )
-
     klar_ios_active_users_aggregates.set_upstream(
         wait_for_checks__fail_fenix_derived__firefox_android_clients__v1
     )
@@ -934,10 +906,6 @@ with DAG(
 
     klar_ios_active_users_aggregates.set_upstream(
         wait_for_klar_ios_derived__clients_last_seen_joined__v1
-    )
-
-    klar_ios_active_users_aggregates.set_upstream(
-        wait_for_search_derived__mobile_search_clients_daily__v1
     )
 
     telemetry_derived__cohort_daily_statistics__v1.set_upstream(

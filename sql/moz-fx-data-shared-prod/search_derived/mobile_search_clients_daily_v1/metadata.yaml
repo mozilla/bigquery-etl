@@ -1,30 +1,9 @@
-friendly_name: Mobile Search Clients Daily
-description: |
-  A daily aggregate of baseline and metrics pings that have
-  searches from each (client_id, engine, source) combination,
-  partitioned by day.
-
-  Exposed to users as `search.mobile_search_clients_engines_sources_daily`.
-owners:
-- akomar@mozilla.com
-- cmorales@mozilla.com
-labels:
-  schedule: daily
-  dag: bqetl_mobile_search
-  owner1: akomar
-  owner2: cmorales
-scheduling:
-  dag_name: bqetl_mobile_search
-bigquery:
-  time_partitioning:
-    type: day
-    field: submission_date
-    require_partition_filter: true
-    expiration_days: null
-  range_partitioning: null
-  clustering:
-    fields:
-    - sample_id
+friendly_name: Mobile Search Clients Daily V1
+description: |-
+  Please provide a description for the query
+owners: []
+labels: {}
+bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

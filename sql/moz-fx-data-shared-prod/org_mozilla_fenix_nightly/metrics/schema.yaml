@@ -3540,7 +3540,7 @@ fields:
         mode: NULLABLE
       description: 'Counts how often we purge trackers. Giving a high level overview
         about the effectivness of bounce tracking protection. Allows determining error
-        rate with failed/success label. When in dry mode, we count the purges that
+        rate with failure/success label. When in dry mode, we count the purges that
         would have happened under the dry label.
 
         '

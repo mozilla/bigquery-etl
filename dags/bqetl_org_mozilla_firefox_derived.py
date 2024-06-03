@@ -139,17 +139,6 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_search_derived__mobile_search_clients_daily__v1 = ExternalTaskSensor(
-        task_id="wait_for_search_derived__mobile_search_clients_daily__v1",
-        external_dag_id="bqetl_mobile_search",
-        external_task_id="search_derived__mobile_search_clients_daily__v1",
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
     wait_for_checks__fail_firefox_ios_derived__baseline_clients_yearly__v1 = ExternalTaskSensor(
         task_id="wait_for_checks__fail_firefox_ios_derived__baseline_clients_yearly__v1",
         external_dag_id="bqetl_firefox_ios",
@@ -531,18 +520,10 @@ with DAG(
         wait_for_org_mozilla_firefox_derived__baseline_clients_daily__v1
     )
 
-    fenix_derived__attributable_clients__v1.set_upstream(
-        wait_for_search_derived__mobile_search_clients_daily__v1
-    )
-
     fenix_derived__attributable_clients__v2.set_upstream(wait_for_copy_deduplicate_all)
 
     fenix_derived__attributable_clients__v2.set_upstream(
         wait_for_fenix_derived__new_profile_activation__v1
-    )
-
-    fenix_derived__attributable_clients__v2.set_upstream(
-        wait_for_search_derived__mobile_search_clients_daily__v1
     )
 
     fenix_derived__client_adclicks_history__v1.set_upstream(

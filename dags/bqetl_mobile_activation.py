@@ -182,18 +182,6 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_search_derived__mobile_search_clients_daily__v1 = ExternalTaskSensor(
-        task_id="wait_for_search_derived__mobile_search_clients_daily__v1",
-        external_dag_id="bqetl_mobile_search",
-        external_task_id="search_derived__mobile_search_clients_daily__v1",
-        execution_delta=datetime.timedelta(days=-1, seconds=79200),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
     wait_for_checks__fail_org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
         task_id="wait_for_checks__fail_org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1",
         external_dag_id="bqetl_glean_usage",
@@ -353,10 +341,6 @@ with DAG(
         wait_for_org_mozilla_firefox_derived__baseline_clients_daily__v1
     )
 
-    fenix_derived__new_profile_activation__v1.set_upstream(
-        wait_for_search_derived__mobile_search_clients_daily__v1
-    )
-
     firefox_ios_derived__new_profile_activation__v1.set_upstream(
         wait_for_checks__fail_org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1
     )
@@ -379,8 +363,4 @@ with DAG(
 
     firefox_ios_derived__new_profile_activation__v1.set_upstream(
         wait_for_org_mozilla_ios_firefoxbeta_derived__baseline_clients_daily__v1
-    )
-
-    firefox_ios_derived__new_profile_activation__v1.set_upstream(
-        wait_for_search_derived__mobile_search_clients_daily__v1
     )

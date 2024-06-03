@@ -8,11 +8,7 @@ SELECT
   country,
   locale,
   is_mobile,
-  adjust_ad_group,
-  adjust_campaign,
-  adjust_creative,
-  adjust_network,
-  {% for field in product_specific_attribution_fields %}
+  {% for field in attribution_fields %}
     {{ field.name }},
   {% endfor %}
   COUNTIF(is_dau) AS dau,
@@ -31,11 +27,7 @@ GROUP BY
   country,
   locale,
   is_mobile,
-  adjust_ad_group,
-  adjust_campaign,
-  adjust_creative,
-  adjust_network,
-  {% for field in product_specific_attribution_fields %}
+  {% for field in attribution_fields %}
     {{ field.name }}
     {% if not loop.last %},
     {% endif %}

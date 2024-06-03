@@ -15,6 +15,9 @@ labels:
 scheduling:
   dag_name: bqetl_braze
   date_partition_parameter: null
+  arguments:
+  - --append_table
+  - --noreplace
 bigquery:
   time_partitioning: null
   range_partitioning: null

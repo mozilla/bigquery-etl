@@ -149,6 +149,7 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
+        arguments=["--append_table", "--noreplace"],
     )
 
     braze_external__changed_newsletters_sync__v1 = bigquery_etl_query(
@@ -161,6 +162,7 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
+        arguments=["--append_table", "--noreplace"],
     )
 
     braze_external__changed_products_sync__v1 = bigquery_etl_query(
@@ -173,6 +175,7 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
+        arguments=["--append_table", "--noreplace"],
     )
 
     braze_external__changed_users__v1 = bigquery_etl_query(
@@ -197,6 +200,7 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
+        arguments=["--append_table", "--noreplace"],
     )
 
     braze_external__changed_waitlists_sync__v1 = bigquery_etl_query(
@@ -209,6 +213,7 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
+        arguments=["--append_table", "--noreplace"],
     )
 
     braze_external__delete_users_sync__v1 = bigquery_etl_query(
@@ -221,6 +226,7 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
+        arguments=["--append_table", "--noreplace"],
     )
 
     braze_external__users_previous_day_snapshot__v1 = bigquery_etl_query(
@@ -348,6 +354,7 @@ with DAG(
         email=["cbeck@mozilla.com", "leli@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
+        arguments=["--append_table", "--noreplace"],
         retries=0,
     )
 
@@ -361,6 +368,7 @@ with DAG(
         email=["cbeck@mozilla.com", "leli@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
+        arguments=["--append_table", "--noreplace"],
         retries=0,
     )
 
@@ -374,6 +382,7 @@ with DAG(
         email=["cbeck@mozilla.com", "leli@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
+        arguments=["--append_table", "--noreplace"],
         retries=0,
     )
 
@@ -400,6 +409,7 @@ with DAG(
         email=["cbeck@mozilla.com", "leli@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
+        arguments=["--append_table", "--noreplace"],
         retries=0,
     )
 
@@ -413,6 +423,7 @@ with DAG(
         email=["cbeck@mozilla.com", "leli@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
+        arguments=["--append_table", "--noreplace"],
         retries=0,
     )
 
@@ -426,6 +437,7 @@ with DAG(
         email=["cbeck@mozilla.com", "leli@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
+        arguments=["--append_table", "--noreplace"],
         retries=0,
     )
 

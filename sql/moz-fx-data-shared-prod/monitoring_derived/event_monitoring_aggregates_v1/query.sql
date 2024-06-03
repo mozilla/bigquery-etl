@@ -45,16 +45,6 @@ FROM
       client_info.app_display_version AS version,
       ping_info
     FROM
-      `moz-fx-data-shared-prod.firefox_desktop_stable.events_v1`
-    UNION ALL
-    SELECT
-      submission_timestamp,
-      events,
-      normalized_country_code,
-      client_info.app_channel AS channel,
-      client_info.app_display_version AS version,
-      ping_info
-    FROM
       `moz-fx-data-shared-prod.firefox_desktop_stable.prototype_no_code_events_v1`
     UNION ALL
     SELECT
@@ -66,6 +56,16 @@ FROM
       ping_info
     FROM
       `moz-fx-data-shared-prod.firefox_desktop_stable.urlbar_potential_exposure_v1`
+    UNION ALL
+    SELECT
+      submission_timestamp,
+      events,
+      normalized_country_code,
+      client_info.app_channel AS channel,
+      client_info.app_display_version AS version,
+      ping_info
+    FROM
+      `moz-fx-data-shared-prod.firefox_desktop_stable.events_v1`
     UNION ALL
     SELECT
       submission_timestamp,
@@ -572,6 +572,16 @@ FROM
       client_info.app_display_version AS version,
       ping_info
     FROM
+      `moz-fx-data-shared-prod.org_mozilla_ios_firefox_stable.events_v1`
+    UNION ALL
+    SELECT
+      submission_timestamp,
+      events,
+      normalized_country_code,
+      client_info.app_channel AS channel,
+      client_info.app_display_version AS version,
+      ping_info
+    FROM
       `moz-fx-data-shared-prod.org_mozilla_ios_firefox_stable.metrics_v1`
     UNION ALL
     SELECT
@@ -583,16 +593,6 @@ FROM
       ping_info
     FROM
       `moz-fx-data-shared-prod.org_mozilla_ios_firefox_stable.first_session_v1`
-    UNION ALL
-    SELECT
-      submission_timestamp,
-      events,
-      normalized_country_code,
-      client_info.app_channel AS channel,
-      client_info.app_display_version AS version,
-      ping_info
-    FROM
-      `moz-fx-data-shared-prod.org_mozilla_ios_firefox_stable.events_v1`
   )
 CROSS JOIN
   UNNEST(events) AS event,
@@ -655,6 +655,16 @@ SELECT
   COUNT(*) AS total_events
 FROM
   (
+    SELECT
+      submission_timestamp,
+      events,
+      normalized_country_code,
+      client_info.app_channel AS channel,
+      client_info.app_display_version AS version,
+      ping_info
+    FROM
+      `moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta_stable.events_v1`
+    UNION ALL
     SELECT
       submission_timestamp,
       events,
@@ -674,16 +684,6 @@ FROM
       ping_info
     FROM
       `moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta_stable.first_session_v1`
-    UNION ALL
-    SELECT
-      submission_timestamp,
-      events,
-      normalized_country_code,
-      client_info.app_channel AS channel,
-      client_info.app_display_version AS version,
-      ping_info
-    FROM
-      `moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta_stable.events_v1`
   )
 CROSS JOIN
   UNNEST(events) AS event,
@@ -754,6 +754,16 @@ FROM
       client_info.app_display_version AS version,
       ping_info
     FROM
+      `moz-fx-data-shared-prod.org_mozilla_ios_fennec_stable.events_v1`
+    UNION ALL
+    SELECT
+      submission_timestamp,
+      events,
+      normalized_country_code,
+      client_info.app_channel AS channel,
+      client_info.app_display_version AS version,
+      ping_info
+    FROM
       `moz-fx-data-shared-prod.org_mozilla_ios_fennec_stable.metrics_v1`
     UNION ALL
     SELECT
@@ -765,16 +775,6 @@ FROM
       ping_info
     FROM
       `moz-fx-data-shared-prod.org_mozilla_ios_fennec_stable.first_session_v1`
-    UNION ALL
-    SELECT
-      submission_timestamp,
-      events,
-      normalized_country_code,
-      client_info.app_channel AS channel,
-      client_info.app_display_version AS version,
-      ping_info
-    FROM
-      `moz-fx-data-shared-prod.org_mozilla_ios_fennec_stable.events_v1`
   )
 CROSS JOIN
   UNNEST(events) AS event,
@@ -1555,16 +1555,6 @@ FROM
       client_info.app_display_version AS version,
       ping_info
     FROM
-      `moz-fx-data-shared-prod.mozillavpn_stable.main_v1`
-    UNION ALL
-    SELECT
-      submission_timestamp,
-      events,
-      normalized_country_code,
-      client_info.app_channel AS channel,
-      client_info.app_display_version AS version,
-      ping_info
-    FROM
       `moz-fx-data-shared-prod.mozillavpn_stable.daemonsession_v1`
     UNION ALL
     SELECT
@@ -1576,6 +1566,16 @@ FROM
       ping_info
     FROM
       `moz-fx-data-shared-prod.mozillavpn_stable.vpnsession_v1`
+    UNION ALL
+    SELECT
+      submission_timestamp,
+      events,
+      normalized_country_code,
+      client_info.app_channel AS channel,
+      client_info.app_display_version AS version,
+      ping_info
+    FROM
+      `moz-fx-data-shared-prod.mozillavpn_stable.main_v1`
   )
 CROSS JOIN
   UNNEST(events) AS event,
@@ -1638,16 +1638,6 @@ SELECT
   COUNT(*) AS total_events
 FROM
   (
-    SELECT
-      submission_timestamp,
-      events,
-      normalized_country_code,
-      client_info.app_channel AS channel,
-      client_info.app_display_version AS version,
-      ping_info
-    FROM
-      `moz-fx-data-shared-prod.org_mozilla_firefox_vpn_stable.main_v1`
-    UNION ALL
     SELECT
       submission_timestamp,
       events,
@@ -1667,6 +1657,16 @@ FROM
       ping_info
     FROM
       `moz-fx-data-shared-prod.org_mozilla_firefox_vpn_stable.vpnsession_v1`
+    UNION ALL
+    SELECT
+      submission_timestamp,
+      events,
+      normalized_country_code,
+      client_info.app_channel AS channel,
+      client_info.app_display_version AS version,
+      ping_info
+    FROM
+      `moz-fx-data-shared-prod.org_mozilla_firefox_vpn_stable.main_v1`
   )
 CROSS JOIN
   UNNEST(events) AS event,
@@ -1729,16 +1729,6 @@ SELECT
   COUNT(*) AS total_events
 FROM
   (
-    SELECT
-      submission_timestamp,
-      events,
-      normalized_country_code,
-      client_info.app_channel AS channel,
-      client_info.app_display_version AS version,
-      ping_info
-    FROM
-      `moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_stable.main_v1`
-    UNION ALL
     SELECT
       submission_timestamp,
       events,
@@ -1758,6 +1748,16 @@ FROM
       ping_info
     FROM
       `moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_stable.vpnsession_v1`
+    UNION ALL
+    SELECT
+      submission_timestamp,
+      events,
+      normalized_country_code,
+      client_info.app_channel AS channel,
+      client_info.app_display_version AS version,
+      ping_info
+    FROM
+      `moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_stable.main_v1`
   )
 CROSS JOIN
   UNNEST(events) AS event,
@@ -1828,16 +1828,6 @@ FROM
       client_info.app_display_version AS version,
       ping_info
     FROM
-      `moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_network_extension_stable.main_v1`
-    UNION ALL
-    SELECT
-      submission_timestamp,
-      events,
-      normalized_country_code,
-      client_info.app_channel AS channel,
-      client_info.app_display_version AS version,
-      ping_info
-    FROM
       `moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_network_extension_stable.daemonsession_v1`
     UNION ALL
     SELECT
@@ -1849,6 +1839,16 @@ FROM
       ping_info
     FROM
       `moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_network_extension_stable.vpnsession_v1`
+    UNION ALL
+    SELECT
+      submission_timestamp,
+      events,
+      normalized_country_code,
+      client_info.app_channel AS channel,
+      client_info.app_display_version AS version,
+      ping_info
+    FROM
+      `moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_network_extension_stable.main_v1`
   )
 CROSS JOIN
   UNNEST(events) AS event,
@@ -1990,7 +1990,7 @@ FROM
       client_info.app_display_version AS version,
       ping_info
     FROM
-      `moz-fx-data-shared-prod.bedrock_stable.interaction_v1`
+      `moz-fx-data-shared-prod.bedrock_stable.events_v1`
     UNION ALL
     SELECT
       submission_timestamp,
@@ -2010,7 +2010,7 @@ FROM
       client_info.app_display_version AS version,
       ping_info
     FROM
-      `moz-fx-data-shared-prod.bedrock_stable.events_v1`
+      `moz-fx-data-shared-prod.bedrock_stable.interaction_v1`
   )
 CROSS JOIN
   UNNEST(events) AS event,
@@ -2162,7 +2162,7 @@ FROM
       client_info.app_display_version AS version,
       ping_info
     FROM
-      `moz-fx-data-shared-prod.firefox_desktop_background_tasks_stable.background_tasks_v1`
+      `moz-fx-data-shared-prod.firefox_desktop_background_tasks_stable.events_v1`
     UNION ALL
     SELECT
       submission_timestamp,
@@ -2172,7 +2172,7 @@ FROM
       client_info.app_display_version AS version,
       ping_info
     FROM
-      `moz-fx-data-shared-prod.firefox_desktop_background_tasks_stable.events_v1`
+      `moz-fx-data-shared-prod.firefox_desktop_background_tasks_stable.background_tasks_v1`
   )
 CROSS JOIN
   UNNEST(events) AS event,

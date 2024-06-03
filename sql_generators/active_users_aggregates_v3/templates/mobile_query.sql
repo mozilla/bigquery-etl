@@ -37,9 +37,9 @@ baseline AS (
     first_seen_date,
     submission_date = first_seen_date AS is_new_profile,
     {% if app_name == "fenix"%}
-        distribution_id,
+      distribution_id,
     {% else %}
-        CAST(NULL AS string) AS distribution_id,
+      CAST(NULL AS string) AS distribution_id,
     {% endif %}
     isp,
     app_name,

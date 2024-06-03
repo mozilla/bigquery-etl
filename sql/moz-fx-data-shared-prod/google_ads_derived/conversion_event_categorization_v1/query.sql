@@ -4,7 +4,6 @@ DECLARE last_cohort_date DATE DEFAULT DATE_SUB(
   CURRENT_DATE,
   INTERVAL 8 DAY
 ); -- want to make sure the last cohort we are reporting has had their full first 7 days
-
 WITH clients_first_seen AS (
   SELECT
     client_id,
@@ -18,7 +17,9 @@ WITH clients_first_seen AS (
   FROM
     `moz-fx-data-shared-prod.telemetry.clients_first_seen` --contains all new clients, including those that never sent a main ping
   WHERE
-    first_seen_date BETWEEN first_cohort_date and last_cohort_date
+    first_seen_date
+    BETWEEN first_cohort_date
+    AND last_cohort_date
 ),
 clients_last_seen AS (
   SELECT

@@ -8,11 +8,11 @@ SELECT
   app_version,
   locale,
   is_mobile,
+  is_suspicious_device_client,
   adjust_ad_group,
   adjust_campaign,
   adjust_creative,
   adjust_network,
-  is_suspicious_device_client,
   COUNTIF(ping_sent_metric_date) AS ping_sent_metric_date,
   COUNTIF(ping_sent_week_4) AS ping_sent_week_4,
   COUNTIF(active_metric_date) AS active_metric_date,
@@ -23,8 +23,13 @@ SELECT
 FROM
   `moz-fx-data-shared-prod.firefox_ios.retention_clients`
 WHERE
-  metric_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
-  AND submission_date = @submission_date
+  {% if is_init() %}
+    metric_date < DATE_SUB(CURRENT_DATE, INTERVAL 27 DAY)
+    AND submission_date < CURRENT_DATE
+  {% else %}
+    metric_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+    AND submission_date = @submission_date
+  {% endif %}
 GROUP BY
   metric_date,
   first_seen_date,
@@ -34,8 +39,8 @@ GROUP BY
   app_version,
   locale,
   is_mobile,
+  is_suspicious_device_client,
   adjust_ad_group,
   adjust_campaign,
   adjust_creative,
-  adjust_network,
-  is_suspicious_device_client
+  adjust_network

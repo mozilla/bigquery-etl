@@ -26,19 +26,19 @@ attribution AS (
     client_id,
     sample_id,
     channel AS normalized_channel,
-    NULLIF(adjust_ad_group, "") AS adjust_ad_group,
-    NULLIF(adjust_creative, "") AS adjust_creative,
-    NULLIF(adjust_network, "") AS adjust_network,
-    CASE
-      WHEN adjust_network IN ('Google Organic Search', 'Organic')
-        THEN 'Organic'
-      ELSE NULLIF(adjust_campaign, "")
-    END AS adjust_campaign,
     NULLIF(play_store_attribution_campaign, "") AS play_store_attribution_campaign,
     NULLIF(play_store_attribution_medium, "") AS play_store_attribution_medium,
     NULLIF(play_store_attribution_source, "") AS play_store_attribution_source,
     NULLIF(meta_attribution_app, "") AS meta_attribution_app,
     NULLIF(install_source, "") AS install_source,
+    NULLIF(adjust_ad_group, "") AS adjust_ad_group,
+    CASE
+      WHEN adjust_network IN ('Google Organic Search', 'Organic')
+        THEN 'Organic'
+      ELSE NULLIF(adjust_campaign, "")
+    END AS adjust_campaign,
+    NULLIF(adjust_creative, "") AS adjust_creative,
+    NULLIF(adjust_network, "") AS adjust_network,
   FROM
     `moz-fx-data-shared-prod.fenix_derived.firefox_android_clients_v1`
 )
@@ -57,15 +57,15 @@ SELECT
   is_wau,
   is_mau,
   is_mobile,
-  attribution.adjust_ad_group,
-  attribution.adjust_campaign,
-  attribution.adjust_creative,
-  attribution.adjust_network,
   attribution.play_store_attribution_campaign,
   attribution.play_store_attribution_medium,
   attribution.play_store_attribution_source,
   attribution.meta_attribution_app,
   attribution.install_source,
+  attribution.adjust_ad_group,
+  attribution.adjust_campaign,
+  attribution.adjust_creative,
+  attribution.adjust_network,
   CASE
     WHEN active_users.submission_date = first_seen_date
       THEN 'new_profile'

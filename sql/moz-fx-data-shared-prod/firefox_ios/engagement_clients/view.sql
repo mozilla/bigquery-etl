@@ -26,11 +26,11 @@ attribution AS (
     client_id,
     sample_id,
     channel AS normalized_channel,
+    is_suspicious_device_client,
     NULLIF(adjust_ad_group, "") AS adjust_ad_group,
+    NULLIF(adjust_campaign, "") AS adjust_campaign,
     NULLIF(adjust_creative, "") AS adjust_creative,
     NULLIF(adjust_network, "") AS adjust_network,
-    NULLIF(adjust_campaign, "") AS adjust_campaign,
-    is_suspicious_device_client
   FROM
     `moz-fx-data-shared-prod.firefox_ios_derived.firefox_ios_clients_v1`
 )
@@ -49,11 +49,11 @@ SELECT
   is_wau,
   is_mau,
   is_mobile,
+  attribution.is_suspicious_device_client,
   attribution.adjust_ad_group,
   attribution.adjust_campaign,
   attribution.adjust_creative,
   attribution.adjust_network,
-  attribution.is_suspicious_device_client,
   CASE
     WHEN active_users.submission_date = first_seen_date
       THEN 'new_profile'

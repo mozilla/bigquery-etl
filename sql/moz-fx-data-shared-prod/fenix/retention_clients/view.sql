@@ -22,19 +22,19 @@ attribution AS (
     client_id,
     sample_id,
     channel AS normalized_channel,
-    NULLIF(adjust_ad_group, "") AS adjust_ad_group,
-    NULLIF(adjust_creative, "") AS adjust_creative,
-    NULLIF(adjust_network, "") AS adjust_network,
-    CASE
-      WHEN adjust_network IN ('Google Organic Search', 'Organic')
-        THEN 'Organic'
-      ELSE NULLIF(adjust_campaign, "")
-    END AS adjust_campaign,
     NULLIF(play_store_attribution_campaign, "") AS play_store_attribution_campaign,
     NULLIF(play_store_attribution_medium, "") AS play_store_attribution_medium,
     NULLIF(play_store_attribution_source, "") AS play_store_attribution_source,
     NULLIF(meta_attribution_app, "") AS meta_attribution_app,
     NULLIF(install_source, "") AS install_source,
+    NULLIF(adjust_ad_group, "") AS adjust_ad_group,
+    CASE
+      WHEN adjust_network IN ('Google Organic Search', 'Organic')
+        THEN 'Organic'
+      ELSE NULLIF(adjust_campaign, "")
+    END AS adjust_campaign,
+    NULLIF(adjust_creative, "") AS adjust_creative,
+    NULLIF(adjust_network, "") AS adjust_network,
   FROM
     `moz-fx-data-shared-prod.fenix_derived.firefox_android_clients_v1`
 )
@@ -56,6 +56,10 @@ SELECT
   attribution.play_store_attribution_source,
   attribution.meta_attribution_app,
   attribution.install_source,
+  attribution.adjust_ad_group,
+  attribution.adjust_campaign,
+  attribution.adjust_creative,
+  attribution.adjust_network,
   -- ping sent retention
   active_users.retention_seen.day_27.active_on_metric_date AS ping_sent_metric_date,
   (
@@ -79,10 +83,6 @@ SELECT
     -- Looking back at 27 days to support the official definition of repeat_profile (someone active between days 2 and 28):
     AND BIT_COUNT(mozfun.bits28.range(active_users.days_active_bits, -26, 27)) > 0
   ) AS repeat_profile,
-  attribution.adjust_ad_group,
-  attribution.adjust_campaign,
-  attribution.adjust_creative,
-  attribution.adjust_network,
   active_users.days_seen_bits,
   active_users.days_active_bits,
   CASE

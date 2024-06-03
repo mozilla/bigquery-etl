@@ -13,3 +13,7 @@ references:
   view.sql:
   - moz-fx-data-shared-prod.fenix.retention_clients
   - moz-fx-data-shared-prod.firefox_ios.retention_clients
+  - moz-fx-data-shared-prod.focus_android.retention_clients
+  - moz-fx-data-shared-prod.focus_ios.retention_clients
+  - moz-fx-data-shared-prod.klar_android.retention_clients
+  - moz-fx-data-shared-prod.klar_ios.retention_clients

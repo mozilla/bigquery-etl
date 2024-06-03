@@ -13,3 +13,7 @@ references:
   view.sql:
   - moz-fx-data-shared-prod.fenix.engagement
   - moz-fx-data-shared-prod.firefox_ios.engagement
+  - moz-fx-data-shared-prod.focus_android.engagement
+  - moz-fx-data-shared-prod.focus_ios.engagement
+  - moz-fx-data-shared-prod.klar_android.engagement
+  - moz-fx-data-shared-prod.klar_ios.engagement

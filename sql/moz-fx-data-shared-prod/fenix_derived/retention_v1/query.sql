@@ -8,15 +8,15 @@ SELECT
   app_version,
   locale,
   is_mobile,
-  adjust_ad_group,
-  adjust_campaign,
-  adjust_creative,
-  adjust_network,
   play_store_attribution_campaign,
   play_store_attribution_medium,
   play_store_attribution_source,
   meta_attribution_app,
   install_source,
+  adjust_ad_group,
+  adjust_campaign,
+  adjust_creative,
+  adjust_network,
   COUNTIF(ping_sent_metric_date) AS ping_sent_metric_date,
   COUNTIF(ping_sent_week_4) AS ping_sent_week_4,
   COUNTIF(active_metric_date) AS active_metric_date,
@@ -27,8 +27,13 @@ SELECT
 FROM
   `moz-fx-data-shared-prod.fenix.retention_clients`
 WHERE
-  metric_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
-  AND submission_date = @submission_date
+  {% if is_init() %}
+    metric_date < DATE_SUB(CURRENT_DATE, INTERVAL 27 DAY)
+    AND submission_date < CURRENT_DATE
+  {% else %}
+    metric_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+    AND submission_date = @submission_date
+  {% endif %}
 GROUP BY
   metric_date,
   first_seen_date,
@@ -38,12 +43,12 @@ GROUP BY
   app_version,
   locale,
   is_mobile,
-  adjust_ad_group,
-  adjust_campaign,
-  adjust_creative,
-  adjust_network,
   play_store_attribution_campaign,
   play_store_attribution_medium,
   play_store_attribution_source,
   meta_attribution_app,
-  install_source
+  install_source,
+  adjust_ad_group,
+  adjust_campaign,
+  adjust_creative,
+  adjust_network

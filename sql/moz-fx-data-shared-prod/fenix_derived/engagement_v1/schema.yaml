@@ -39,26 +39,6 @@ fields:
   mode: NULLABLE
   description: Indicates if this specific entry is used towards calculating mobile DAU.
 
-- name: adjust_ad_group
-  type: STRING
-  mode: NULLABLE
-  description: Adjust Ad Group the profile is attributed to.
-
-- name: adjust_campaign
-  type: STRING
-  mode: NULLABLE
-  description: Adjust Campaign the profile is attributed to.
-
-- name: adjust_creative
-  type: STRING
-  mode: NULLABLE
-  description: Adjust Creative the profile is attributed to.
-
-- name: adjust_network
-  type: STRING
-  mode: NULLABLE
-  description: Adjust Network the profile is attributed to.
-
 - name: play_store_attribution_campaign
   type: STRING
   mode: NULLABLE
@@ -83,6 +63,26 @@ fields:
   type: STRING
   mode: NULLABLE
   description: The source of a profile installation.
+
+- name: adjust_ad_group
+  type: STRING
+  mode: NULLABLE
+  description: Adjust Ad Group the profile is attributed to.
+
+- name: adjust_campaign
+  type: STRING
+  mode: NULLABLE
+  description: Adjust Campaign the profile is attributed to.
+
+- name: adjust_creative
+  type: STRING
+  mode: NULLABLE
+  description: Adjust Creative the profile is attributed to.
+
+- name: adjust_network
+  type: STRING
+  mode: NULLABLE
+  description: Adjust Network the profile is attributed to.
 
 - name: dau
   type: INTEGER

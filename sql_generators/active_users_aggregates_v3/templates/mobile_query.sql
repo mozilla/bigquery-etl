@@ -36,7 +36,11 @@ baseline AS (
     device_model,
     first_seen_date,
     submission_date = first_seen_date AS is_new_profile,
-    CAST(NULL AS string) AS distribution_id,
+    {% if app_name == "fenix"%}
+        distribution_id,
+    {% else %}
+        CAST(NULL AS string) AS distribution_id,
+    {% endif %}
     isp,
     app_name,
     activity_segment AS segment,
@@ -52,7 +56,7 @@ baseline AS (
     submission_date = @submission_date
 ),
 metrics AS (
-    -- Metrics ping can arrive either in the same or next day as the baseline ping.
+    -- Metrics ping may arrive in the same or next day as the baseline ping.
   SELECT
     client_id,
     ARRAY_AGG(normalized_channel IGNORE NULLS ORDER BY submission_date ASC)[
@@ -200,23 +204,4 @@ SELECT
 FROM
   todays_metrics
 GROUP BY
-  app_version,
-  attribution_medium,
-  attribution_source,
-  attributed,
-  city,
-  country,
-  distribution_id,
-  first_seen_year,
-  is_default_browser,
-  locale,
-  app_name,
-  channel,
-  os,
-  os_version,
-  os_version_major,
-  os_version_minor,
-  submission_date,
-  segment,
-  adjust_network,
-  install_source
+  ALL

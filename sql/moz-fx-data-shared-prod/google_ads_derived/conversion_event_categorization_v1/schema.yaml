@@ -32,9 +32,9 @@ fields:
   type: DATE
   description: Report Date
 - mode: NULLABLE
-  name: sent_main_ping
+  name: sent_main_ping_in_first_7_days
   type: BOOLEAN
-  description: Sent Main Ping Indicator
+  description: Sent Main Ping In First 7 Days After First Seen Date Indicator
 - mode: NULLABLE
   name: country
   type: STRING

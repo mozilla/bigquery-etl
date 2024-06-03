@@ -1,9 +1,10 @@
-DECLARE first_cohort_date DATE DEFAULT DATE(2023, 11, 1);
+DECLARE first_cohort_date DATE DEFAULT DATE(2024, 5, 1);
 
 DECLARE last_cohort_date DATE DEFAULT DATE_SUB(
   CURRENT_DATE,
   INTERVAL 8 DAY
 ); -- want to make sure the last cohort we are reporting has had their full first 7 days
+
 WITH clients_first_seen AS (
   SELECT
     client_id,
@@ -17,9 +18,7 @@ WITH clients_first_seen AS (
   FROM
     `moz-fx-data-shared-prod.telemetry.clients_first_seen` --contains all new clients, including those that never sent a main ping
   WHERE
-    first_seen_date
-    BETWEEN first_cohort_date
-    AND last_cohort_date
+    first_seen_date BETWEEN first_cohort_date and last_cohort_date
 ),
 clients_last_seen AS (
   SELECT
@@ -58,7 +57,7 @@ clients_last_seen AS (
   FROM
     `moz-fx-data-shared-prod.telemetry.clients_last_seen`
   WHERE
-    submission_date >= first_cohort_date
+    submission_date >= first_cohort_date --greater than 11/1/2023
     AND submission_date
     BETWEEN first_seen_date
     AND DATE_ADD(first_seen_date, INTERVAL 6 DAY)
@@ -68,46 +67,59 @@ clients_last_seen AS (
 combined AS (
   SELECT
     client_id,
-  -- we should use their actual first date as their cohort date
+    -- we should use their first_seen_date from clients_first_seen as their cohort date
     cfs.first_seen_date,
     cfs.attribution_campaign,
     cfs.attribution_content,
     cfs.attribution_dltoken,
     cfs.attribution_medium,
     cfs.attribution_source,
-    cls.report_date,
-  -- not a strictly necessary field, used to see how many clients actually send a main ping
-    IF(cls.first_seen_date IS NOT NULL, TRUE, FALSE) AS sent_main_ping,
-  -- because the conversion events and ltv are based on their first observed country in CLS, use that country if its available.
-    COALESCE(cls.country, cfs.country) AS country,
-    COALESCE(dou, 0) AS dou,
-    COALESCE(active_hours_sum, 0) AS active_hours_sum,
-    COALESCE(search_with_ads_count_all, 0) AS search_with_ads_count_all
-  FROM
-    cfs
-  LEFT JOIN
-    cls
-    USING (client_id)
-)
-SELECT
-  client_id,
-  first_seen_date,
-  attribution_campaign,
-  attribution_content,
-  attribution_dltoken,
-  attribution_medium,
-  attribution_source,
-  report_date,
-  sent_main_ping,
-  country,
-  dou,
-  active_hours_sum,
-  search_with_ads_count_all,
+    --Report Date
+    --If a client never sends a main ping after 27 days, set all conversion events to false
+    --If a client does send a main ping before or equal to 27 days
+    --if there is a report date, use that
+    --
+    COALESCE(
+      cls.report_date,
+      IF(
+        (cls.report_date IS NULL)
+        AND (cls.first_seen_date IS NULL)
+        AND (DATE_DIFF(CURRENT_DATE, cfs.first_seen_date, DAY) >= 27),
+        DATE_ADD(cfs.first_seen_date, INTERVAL 27 DAY),
+        NULL
+      ) AS report_date,
+    -- not a strictly necessary field, used to see how many clients actually send a main ping
+      IF(cls.first_seen_date IS NOT NULL, TRUE, FALSE) AS sent_main_ping_in_first_7_days,
+    -- because the conversion events and ltv are based on their first observed country in CLS, use that country if its available.
+      COALESCE(cls.country, cfs.country) AS country,
+      COALESCE(dou, 0) AS dou,
+      COALESCE(active_hours_sum, 0) AS active_hours_sum,
+      COALESCE(search_with_ads_count_all, 0) AS search_with_ads_count_all
+      FROM
+        cfs
+      LEFT JOIN
+        cls
+        USING (client_id)
+    )
+  SELECT
+    client_id,
+    first_seen_date,
+    attribution_campaign,
+    attribution_content,
+    attribution_dltoken,
+    attribution_medium,
+    attribution_source,
+    report_date,
+    sent_main_ping_in_first_7_days,
+    country,
+    dou,
+    active_hours_sum,
+    search_with_ads_count_all,
   --"strictest" event
-  IF(report_date IS NOT NULL, (search_with_ads_count_all > 0) AND (dou >= 5), NULL) AS event_1,
+    IF(report_date IS NOT NULL, (search_with_ads_count_all > 0) AND (dou >= 5), NULL) AS event_1,
   -- "medium" event
-  IF(report_date IS NOT NULL, (search_with_ads_count_all > 0) AND (dou >= 3), NULL) AS event_2,
+    IF(report_date IS NOT NULL, (search_with_ads_count_all > 0) AND (dou >= 3), NULL) AS event_2,
   -- "most_lenient" event
-  IF(report_date IS NOT NULL, (active_hours_sum >= 0.4) AND (dou >= 3), NULL) AS event_3,
-FROM
-  combined
+    IF(report_date IS NOT NULL, (active_hours_sum >= 0.4) AND (dou >= 3), NULL) AS event_3,
+  FROM
+    combined

@@ -23,18 +23,6 @@ fields:
 - name: is_mobile
   type: BOOLEAN
   mode: NULLABLE
-- name: adjust_ad_group
-  type: STRING
-  mode: NULLABLE
-- name: adjust_campaign
-  type: STRING
-  mode: NULLABLE
-- name: adjust_creative
-  type: STRING
-  mode: NULLABLE
-- name: adjust_network
-  type: STRING
-  mode: NULLABLE
 - name: dau
   type: INTEGER
   mode: NULLABLE
@@ -62,6 +50,21 @@ fields:
 - name: install_source
   type: STRING
   mode: NULLABLE
+- name: adjust_ad_group
+  type: STRING
+  mode: NULLABLE
+- name: adjust_campaign
+  type: STRING
+  mode: NULLABLE
+- name: adjust_creative
+  type: STRING
+  mode: NULLABLE
+- name: adjust_network
+  type: STRING
+  mode: NULLABLE
 - name: is_suspicious_device_client
   type: BOOLEAN
+  mode: NULLABLE
+- name: product_name
+  type: STRING
   mode: NULLABLE

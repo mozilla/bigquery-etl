@@ -13,7 +13,7 @@ SELECT
   {% endfor %}
   COUNTIF(is_dau) AS dau,
   COUNTIF(is_wau) AS wau,
-  COUNTIF(is_mau) AS mau
+  COUNTIF(is_mau) AS mau,
 FROM
   `{{ project_id }}.{{ dataset }}.engagement_clients`
 WHERE
@@ -32,8 +32,10 @@ GROUP BY
   app_version,
   country,
   locale,
-  is_mobile,
+  is_mobile
   {% for field in attribution_fields %}
+    {% if loop.first %},
+    {% endif %}
     {{ field.name }}
     {% if not loop.last %},
     {% endif %}

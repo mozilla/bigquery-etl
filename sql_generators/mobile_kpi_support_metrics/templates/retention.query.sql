@@ -38,8 +38,10 @@ GROUP BY
   country,
   app_version,
   locale,
-  is_mobile,
+  is_mobile
   {% for field in attribution_fields %}
+    {% if loop.first %},
+    {% endif %}
     {{ field.name }}
     {% if not loop.last %},
     {% endif %}

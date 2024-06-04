@@ -45,7 +45,7 @@ fields:
   description: DOU
 - mode: NULLABLE
   name: active_hours_sum
-  type: NUMERIC
+  type: FLOAT
   description: Active Hours Sum
 - mode: NULLABLE
   name: account_name

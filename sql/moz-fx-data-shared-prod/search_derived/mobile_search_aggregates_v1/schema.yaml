@@ -60,6 +60,9 @@ fields:
   name: search_with_ads
   type: INTEGER
 - mode: NULLABLE
+  name: search_with_ads_organic
+  type: INTEGER
+- mode: NULLABLE
   name: unknown
   type: INTEGER
 - mode: NULLABLE

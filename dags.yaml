@@ -1674,3 +1674,20 @@ bqetl_mobile_kpi_metrics:
     retry_delay: 30m
   tags:
     - impact/tier_1
+
+bqetl_desktop_conv_evnt_categorization:
+  schedule_interval: 0 12 * * *
+  description: Loads the desktop conversion event tables
+  default_args:
+    depends_on_past: false
+    owner: kwindau@mozilla.com
+    email:
+      - kwindau@mozilla.com
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    start_date: "2024-06-04"
+    retries: 2
+    retry_delay: 30m
+  tags:
+    - impact/tier_2

@@ -52,15 +52,19 @@ clients_with_adblocker_addons AS (
     submission_date
 ),
 is_enterprise_policies AS (
-  SELECT 
-    client_id, 
-    DATE(submission_timestamp) as submission_date,
+  SELECT
+    client_id,
+    DATE(submission_timestamp) AS submission_date,
     mozfun.stats.mode_last(
-      ARRAY_AGG(payload.processes.parent.scalars.policies_is_enterprise  ORDER BY submission_timestamp)
+      ARRAY_AGG(
+        payload.processes.parent.scalars.policies_is_enterprise
+        ORDER BY
+          submission_timestamp
+      )
     ) AS policies_is_enterprise
   FROM
-     `moz-fx-data-shared-prod`.telemetry_stable.main_v5
-  WHERE 
+    `moz-fx-data-shared-prod`.telemetry_stable.main_v5
+  WHERE
     normalized_app_name = 'Firefox'
     AND document_id IS NOT NULL
   GROUP BY

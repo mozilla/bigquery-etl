@@ -188,13 +188,6 @@ with DAG(
             execution_date="{{ (execution_date - macros.timedelta(seconds=10800)).isoformat() }}",
         )
 
-        ExternalTaskMarker(
-            task_id="kpi_forecasting__wait_for_unified_metrics",
-            external_dag_id="kpi_forecasting",
-            external_task_id="wait_for_unified_metrics",
-            execution_date="{{ (execution_date + macros.timedelta(seconds=3600)).isoformat() }}",
-        )
-
         checks__fail_telemetry_derived__unified_metrics__v1_external.set_upstream(
             checks__fail_telemetry_derived__unified_metrics__v1
         )
@@ -216,20 +209,6 @@ with DAG(
         parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
     )
-
-    with TaskGroup(
-        "checks__warn_telemetry_derived__unified_metrics__v1_external",
-    ) as checks__warn_telemetry_derived__unified_metrics__v1_external:
-        ExternalTaskMarker(
-            task_id="kpi_forecasting__wait_for_unified_metrics",
-            external_dag_id="kpi_forecasting",
-            external_task_id="wait_for_unified_metrics",
-            execution_date="{{ (execution_date + macros.timedelta(seconds=3600)).isoformat() }}",
-        )
-
-        checks__warn_telemetry_derived__unified_metrics__v1_external.set_upstream(
-            checks__warn_telemetry_derived__unified_metrics__v1
-        )
 
     telemetry_derived__rolling_cohorts__v1 = bigquery_etl_query(
         task_id="telemetry_derived__rolling_cohorts__v1",
@@ -277,20 +256,6 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
-
-    with TaskGroup(
-        "telemetry_derived__unified_metrics__v1_external",
-    ) as telemetry_derived__unified_metrics__v1_external:
-        ExternalTaskMarker(
-            task_id="kpi_forecasting__wait_for_unified_metrics",
-            external_dag_id="kpi_forecasting",
-            external_task_id="wait_for_unified_metrics",
-            execution_date="{{ (execution_date + macros.timedelta(seconds=3600)).isoformat() }}",
-        )
-
-        telemetry_derived__unified_metrics__v1_external.set_upstream(
-            telemetry_derived__unified_metrics__v1
-        )
 
     checks__fail_telemetry_derived__unified_metrics__v1.set_upstream(
         telemetry_derived__unified_metrics__v1

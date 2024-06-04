@@ -19,10 +19,6 @@ labels:
   owner1: loines
 scheduling:
   dag_name: bqetl_unified
-  external_downstream_tasks:
-  - task_id: wait_for_unified_metrics
-    dag_name: kpi_forecasting
-    execution_delta: 1h
 bigquery:
   time_partitioning:
     type: day

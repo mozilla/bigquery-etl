@@ -8,11 +8,11 @@ table_deployments:
       - fq_table_name: data-observability-dev.data-observability-dev.fenix_derived.events_daily_v1
         row_creation_time: submission_date
         table_metrics:
-          - metric_type: 
+          - metric_type:
               predefined_metric: COUNT_ROWS
-        columns:  
+        columns:
           - column_name: client_id
-            metrics:  
+            metrics:
               - metric_type:
                   predefined_metric: PERCENT_NULL
               - metric_type:
@@ -25,6 +25,6 @@ table_deployments:
                   predefined_metric: COUNT_DISTINCT
               - metric_type:
                   predefined_metric: PERCENT_VALUE_IN_LIST
-                parameters:              
+                parameters:
                   - key: list
                     string_value: "release,beta,nightly"

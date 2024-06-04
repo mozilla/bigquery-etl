@@ -365,20 +365,6 @@ with DAG(
         task_group=task_group_burnham,
     )
 
-    checks__fail_accounts_cirrus_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
-        task_id="checks__fail_accounts_cirrus_derived__baseline_clients_last_seen__v1",
-        source_table="baseline_clients_last_seen_v1",
-        dataset_id="accounts_cirrus_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=True,
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
-        task_group=task_group_accounts_cirrus,
-    )
-
     checks__fail_firefox_desktop_background_defaultagent_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
         task_id="checks__fail_firefox_desktop_background_defaultagent_derived__baseline_clients_last_seen__v1",
         source_table="baseline_clients_last_seen_v1",
@@ -1271,20 +1257,6 @@ with DAG(
         parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
         task_group=task_group_pine,
-    )
-
-    checks__warn_accounts_cirrus_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
-        task_id="checks__warn_accounts_cirrus_derived__baseline_clients_last_seen__v1",
-        source_table="baseline_clients_last_seen_v1",
-        dataset_id="accounts_cirrus_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=False,
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
-        task_group=task_group_accounts_cirrus,
     )
 
     checks__warn_firefox_desktop_background_defaultagent_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
@@ -5128,18 +5100,6 @@ with DAG(
         burnham_derived__metrics_clients_daily__v1
     )
 
-    checks__fail_accounts_cirrus_derived__baseline_clients_last_seen__v1.set_upstream(
-        accounts_cirrus_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__fail_accounts_cirrus_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__fail_accounts_cirrus_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
-    )
-
     checks__fail_firefox_desktop_background_defaultagent_derived__baseline_clients_last_seen__v1.set_upstream(
         checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
     )
@@ -5422,18 +5382,6 @@ with DAG(
 
     checks__fail_pine_derived__baseline_clients_last_seen__v1.set_upstream(
         pine_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__warn_accounts_cirrus_derived__baseline_clients_last_seen__v1.set_upstream(
-        accounts_cirrus_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__warn_accounts_cirrus_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__warn_accounts_cirrus_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
     )
 
     checks__warn_firefox_desktop_background_defaultagent_derived__baseline_clients_last_seen__v1.set_upstream(

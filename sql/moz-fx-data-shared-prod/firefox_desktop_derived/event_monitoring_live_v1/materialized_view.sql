@@ -60,7 +60,7 @@ IF
         client_info.app_display_version AS version,
         ping_info
       FROM
-        `moz-fx-data-shared-prod.firefox_desktop_live.urlbar_potential_exposure_v1`
+        `moz-fx-data-shared-prod.firefox_desktop_live.prototype_no_code_events_v1`
       UNION ALL
       SELECT
         submission_timestamp,
@@ -70,7 +70,7 @@ IF
         client_info.app_display_version AS version,
         ping_info
       FROM
-        `moz-fx-data-shared-prod.firefox_desktop_live.prototype_no_code_events_v1`
+        `moz-fx-data-shared-prod.firefox_desktop_live.urlbar_potential_exposure_v1`
       UNION ALL
       SELECT
         submission_timestamp,
@@ -90,7 +90,7 @@ IF
   LEFT JOIN
     UNNEST(event.extra) AS event_extra
   WHERE
-    DATE(submission_timestamp) >= "2024-06-03"
+    DATE(submission_timestamp) >= "2024-06-04"
   GROUP BY
     submission_date,
     window_start,

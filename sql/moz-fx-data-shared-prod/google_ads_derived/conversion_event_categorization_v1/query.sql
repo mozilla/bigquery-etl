@@ -58,7 +58,7 @@ client_activity_first_7_days AS (
         WHEN first_seen_date = submission_date
           THEN country
       END
-    ) AS country, --any country from their first 7 days of main pings
+    ) AS country, --any country from their first day in clients_last_seen
     ANY_VALUE(
       CASE
         WHEN submission_date = DATE_ADD(first_seen_date, INTERVAL 6 DAY)

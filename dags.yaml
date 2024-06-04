@@ -1658,6 +1658,23 @@ bqetl_ios_campaign_reporting:
   tags:
     - impact/tier_2
 
+bqetl_mobile_kpi_metrics:
+  schedule_interval: 0 12 * * *
+  description: Generates support metrics for mobile KPI's
+  default_args:
+    depends_on_past: false
+    owner: kik@mozilla.com
+    email:
+      - kik@mozilla.com
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    start_date: '2024-06-08'
+    retries: 1
+    retry_delay: 30m
+  tags:
+    - impact/tier_1
+
 bqetl_desktop_conv_evnt_categorization:
   schedule_interval: 0 12 * * *
   description: Loads the desktop conversion event tables

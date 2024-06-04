@@ -75,11 +75,6 @@ combined AS (
     cfs.attribution_dltoken,
     cfs.attribution_medium,
     cfs.attribution_source,
-    --Report Date
-    --If a client never sends a main ping after 27 days, set all conversion events to false
-    --If a client does send a main ping before or equal to 27 days
-    --if there is a report date, use that
-    --
     COALESCE(
       cls.report_date,
       IF(

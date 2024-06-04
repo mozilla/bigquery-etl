@@ -95,7 +95,6 @@ combined AS (
     cfs.attribution_dltoken,
     cfs.attribution_medium,
     cfs.attribution_source,
-    @submission_date AS report_date,
     IF(cls.first_seen_date IS NOT NULL, TRUE, FALSE) AS sent_main_ping_in_first_7_days,
     COALESCE(
       cls.country,

@@ -16,7 +16,7 @@ scheduling:
 bigquery:
   time_partitioning:
     type: day
-    field: report_date
+    field: first_seen_date
     require_partition_filter: true
     expiration_days: null
   range_partitioning: null

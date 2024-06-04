@@ -28,14 +28,3 @@ table_deployments:
                 parameters:              
                   - key: list
                     string_value: "release,beta,nightly"
-          - column_name: events
-            metrics:
-              - metric_type:
-                  predefined_metric: PERCENT_NULL
-              - metric_type:
-                  predefined_metric: COUNT_DISTINCT
-              - metric_type:
-                  predefined_metric: PERCENT_VALUE_IN_LIST
-                parameters:              
-                  - key: list
-                    string_value: "release,beta,nightly" 

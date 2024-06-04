@@ -22,47 +22,50 @@ WITH clients_first_seen_14_days_ago AS (
 --STEP 2: For every client, get the first 7 days worth of main pings sent after their first main ping
 client_activity_first_7_days AS (
   SELECT
-    client_id,
+    cls.client_id,
     ANY_VALUE(
-      first_seen_date
+      cls.first_seen_date
     ) AS first_seen_date, --date we got first main ping (potentially different than above first seen date)
     ANY_VALUE(
       CASE
-        WHEN first_seen_date = submission_date
-          THEN country
+        WHEN cls.first_seen_date = cls.submission_date
+          THEN cls.country
       END
     ) AS country, --any country from their first 7 days of main pings
     ANY_VALUE(
       CASE
-        WHEN submission_date = DATE_ADD(first_seen_date, INTERVAL 6 DAY)
-          THEN BIT_COUNT(days_visited_1_uri_bits & days_interacted_bits)
+        WHEN cls.submission_date = DATE_ADD(cls.first_seen_date, INTERVAL 6 DAY)
+          THEN BIT_COUNT(cls.days_visited_1_uri_bits & days_interacted_bits)
       END
     ) AS dou, --total # of days of activity during their first 7 days of main pings
   -- if a client doesn't send a ping on `submission_date` their last active day's value will be carried forward
   -- so we only take measurements from days that they send a ping.
     SUM(
       CASE
-        WHEN days_since_seen = 0
-          THEN COALESCE(active_hours_sum, 0)
+        WHEN cls.days_since_seen = 0
+          THEN COALESCE(cls.active_hours_sum, 0)
         ELSE 0
       END
     ) AS active_hours_sum,
     SUM(
       CASE
-        WHEN days_since_seen = 0
-          THEN COALESCE(search_with_ads_count_all, 0)
+        WHEN cls.days_since_seen = 0
+          THEN COALESCE(cls.search_with_ads_count_all, 0)
         ELSE 0
       END
     ) AS search_with_ads_count_all
   FROM
-    `moz-fx-data-shared-prod.telemetry.clients_last_seen`
+    `moz-fx-data-shared-prod.telemetry.clients_last_seen` cls
+  JOIN
+    clients_first_seen_14_days_ago clients
+    USING (client_id)
   WHERE
-    submission_date >= '2023-11-01' --first cohort date
-    AND submission_date
-    BETWEEN first_seen_date
-    AND DATE_ADD(first_seen_date, INTERVAL 6 DAY)
+    cls.submission_date >= '2023-11-01' --first cohort date
+    AND cls.submission_date
+    BETWEEN cls.first_seen_date
+    AND DATE_ADD(cls.first_seen_date, INTERVAL 6 DAY)
   GROUP BY
-    client_id
+    cls.client_id
 ),
 combined AS (
   SELECT

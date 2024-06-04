@@ -2,7 +2,6 @@ WITH extracted AS (
   -- We'll look at the metrics ping to estimate the major geckoview version.
   -- The metrics section is aliased, so we must rename the table for this to
   -- work as expected (e.g. t1).
-
   -- geckoview_version was replaced with gecko_version but still used as fallback
   -- in case we're processing that is prior to the replacement.
   SELECT

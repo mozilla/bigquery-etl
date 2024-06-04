@@ -12,8 +12,12 @@ owners:
 labels:
   schedule: daily
   incremental: true
+  dag: bqetl_mobile_kpi_metrics
   owner1: kik
 scheduling:
+  dag_name: bqetl_mobile_kpi_metrics
+  depends_on_past: false
+  task_group: klar_ios
   date_partition_parameter: metric_date
   date_partition_offset: -27
   parameters:

@@ -1669,7 +1669,7 @@ bqetl_mobile_kpi_metrics:
       - telemetry-alerts@mozilla.com
     email_on_failure: true
     email_on_retry: false
-    start_date: '2024-06-08'
+    start_date: '2024-06-03'
     retries: 1
     retry_delay: 30m
   tags:

@@ -19,3 +19,5 @@ bigquery:
 scheduling:
   dag_name: bqetl_braze
   date_partition_parameter: null
+  parameters:
+  - snapshot_interval: 1 HOUR

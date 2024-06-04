@@ -28,7 +28,7 @@
         "fields": [
           {
             "type": "STRING",
-            "name": "geckoview_version",
+            "name": "gecko_version",
             "mode": "NULLABLE"
           }
         ]

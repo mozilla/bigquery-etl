@@ -2426,9 +2426,7 @@ class TestBackfill:
             os.makedirs(SQL_DIR)
             query_path = Path(SQL_DIR) / QUERY_FILE
 
-            with open(
-                "sql/moz-fx-data-shared-prod/test/test_query_v1/query.sql", "w"
-            ) as f:
+            with open(query_path, "w") as f:
                 f.write("SELECT 1")
 
             with open(
@@ -2527,9 +2525,7 @@ class TestBackfill:
             os.makedirs(SQL_DIR)
             query_path = Path(SQL_DIR) / QUERY_FILE
 
-            with open(
-                "sql/moz-fx-data-shared-prod/test/test_query_v1/query.sql", "w"
-            ) as f:
+            with open(query_path, "w") as f:
                 f.write("SELECT 1")
 
             with open(

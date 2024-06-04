@@ -48,10 +48,6 @@ fields:
   type: FLOAT
   description: Active Hours Sum
 - mode: NULLABLE
-  name: account_name
-  type: STRING
-  description: The name of the Google Ads account, e.g. Mozilla Firefox.
-- mode: NULLABLE
   name: search_with_ads_count_all
   type: INTEGER
   description: Search With Ads Count All

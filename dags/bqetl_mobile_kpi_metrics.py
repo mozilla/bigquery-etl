@@ -30,7 +30,7 @@ kik@mozilla.com
 
 default_args = {
     "owner": "kik@mozilla.com",
-    "start_date": datetime.datetime(2024, 6, 8, 0, 0),
+    "start_date": datetime.datetime(2024, 6, 3, 0, 0),
     "end_date": None,
     "email": ["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
     "depends_on_past": False,

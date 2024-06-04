@@ -7,7 +7,7 @@ labels:
   application: cjms
   schedule: hourly
 scheduling:
-  dag_name: bqetl_cjms_nonprod
+  dag_name: bqetl_subplat_hourly
   query_project: moz-fx-data-shared-prod
   # delay aggregates by 2 hours, to ensure data is complete
   date_partition_parameter: null

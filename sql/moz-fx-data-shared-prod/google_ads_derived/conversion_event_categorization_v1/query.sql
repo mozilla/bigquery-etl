@@ -18,7 +18,9 @@ WITH clients_first_seen AS (
     `moz-fx-data-shared-prod.telemetry.clients_first_seen` --contains all new clients, including those that never sent a main ping
   WHERE
     first_seen_date = DATE_SUB(@submission_date, INTERVAL 28 DAY)
-    AND first_seen_date BETWEEN first_cohort_date AND last_cohort_date
+    AND first_seen_date
+    BETWEEN first_cohort_date
+    AND last_cohort_date
 ),
 clients_last_seen AS (
   SELECT

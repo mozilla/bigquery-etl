@@ -7,7 +7,7 @@ CREATE OR REPLACE VIEW
     {% endif %}
     SELECT
       *
-      {% for field in product.additional_attribution_fields if field.exists %}
+      {% for field in product.all_possible_attribution_fields if field.exists %}
         {% if loop.first %}
           EXCEPT(
         {% endif %}
@@ -19,13 +19,14 @@ CREATE OR REPLACE VIEW
 {% endif %}
 {% else %},
 {% endfor %}
-{% for field in product.additional_attribution_fields %}
+{% for field in product.all_possible_attribution_fields %}
   {% if field.exists %}
     {{ field.name }},
   {% else %}
-    CAST(NULL AS {{field.type}}) AS {{ field.name }},
+    CAST(NULL AS {{ field.type }}) AS {{ field.name }},
   {% endif %}
 {% endfor %}
+"{{ product.name }}" AS product_name,
 FROM
   `{{ project_id }}.{{ product.name }}.{{ name }}`
 {% endfor %}

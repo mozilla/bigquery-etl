@@ -16,38 +16,34 @@ WITH active_users AS (
     is_mobile,
   FROM
     `{{ project_id }}.{{ dataset }}.active_users`
-),
-attribution AS (
-  SELECT
-    client_id,
-    sample_id,
-    channel AS normalized_channel,
-    NULLIF(adjust_ad_group, "") AS adjust_ad_group,
-    NULLIF(adjust_creative, "") AS adjust_creative,
-    NULLIF(adjust_network, "") AS adjust_network,
-    {% if app_name == "fenix" %}
-      CASE
-        WHEN adjust_network IN ('Google Organic Search', 'Organic')
-          THEN 'Organic'
-        ELSE NULLIF(adjust_campaign, "")
-      END
-    {% else %}
-      NULLIF(adjust_campaign, "")
-    {% endif %} AS adjust_campaign,
-    {% for field in product_specific_attribution_fields %}
-      {% if field.type == "STRING" %}
-        NULLIF({{ field.name }}, "") AS {{ field.name }},
-      {% else %}
-        {{ field.name }}
-      {% endif %}
-    {% endfor %}
-  FROM
-    {% if app_name == "fenix" %}
-      `{{ project_id }}.{{ dataset }}_derived.firefox_android_clients_v1`
-    {% elif app_name == "firefox_ios" %}
-      `{{ project_id }}.{{ dataset }}_derived.firefox_ios_clients_v1`
-    {% endif %}
 )
+{% if attribution_fields %},
+  attribution AS (
+    SELECT
+      client_id,
+      sample_id,
+      channel AS normalized_channel,
+      {% for field in attribution_fields %}
+        {% if app_name == "fenix" and field.name == "adjust_campaign" %}
+          CASE
+            WHEN adjust_network IN ('Google Organic Search', 'Organic')
+              THEN 'Organic'
+            ELSE NULLIF(adjust_campaign, "")
+          END AS adjust_campaign,
+        {% elif field.type == "STRING" %}
+          NULLIF({{ field.name }}, "") AS {{ field.name }},
+        {% else %}
+          {{ field.name }},
+        {% endif %}
+      {% endfor %}
+    FROM
+      {% if app_name == "fenix" %}
+        `{{ project_id }}.{{ dataset }}_derived.firefox_android_clients_v1`
+      {% elif app_name == "firefox_ios" %}
+        `{{ project_id }}.{{ dataset }}_derived.firefox_ios_clients_v1`
+      {% endif %}
+  )
+{% endif %}
 SELECT
   active_users.submission_date AS submission_date,
   clients_daily.submission_date AS metric_date,
@@ -61,7 +57,7 @@ SELECT
   clients_daily.locale,
   clients_daily.isp,
   active_users.is_mobile,
-  {% for field in product_specific_attribution_fields %}
+  {% for field in attribution_fields %}
     attribution.{{ field.name }},
   {% endfor %}
   -- ping sent retention
@@ -87,10 +83,6 @@ SELECT
     -- Looking back at 27 days to support the official definition of repeat_profile (someone active between days 2 and 28):
     AND BIT_COUNT(mozfun.bits28.range(active_users.days_active_bits, -26, 27)) > 0
   ) AS repeat_profile,
-  attribution.adjust_ad_group,
-  attribution.adjust_campaign,
-  attribution.adjust_creative,
-  attribution.adjust_network,
   active_users.days_seen_bits,
   active_users.days_active_bits,
   CASE
@@ -111,9 +103,11 @@ INNER JOIN
   ON clients_daily.submission_date = active_users.retention_seen.day_27.metric_date
   AND clients_daily.client_id = active_users.client_id
   AND clients_daily.normalized_channel = active_users.normalized_channel
-LEFT JOIN
-  attribution
-  ON clients_daily.client_id = attribution.client_id
-  AND clients_daily.normalized_channel = attribution.normalized_channel
+  {% if attribution_fields %}
+    LEFT JOIN
+      attribution
+      ON clients_daily.client_id = attribution.client_id
+      AND clients_daily.normalized_channel = attribution.normalized_channel
+  {% endif %}
 WHERE
   active_users.retention_seen.day_27.active_on_metric_date

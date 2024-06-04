@@ -18,7 +18,6 @@ owners:
 - cbeck@mozilla.com
 labels:
   incremental: true
-  schedule: daily
   owner: cbeck
 bigquery:
   time_partitioning:
@@ -29,3 +28,6 @@ bigquery:
 scheduling:
   dag_name: bqetl_braze
   date_partition_parameter: null
+  arguments:
+  - --append_table
+  - --noreplace

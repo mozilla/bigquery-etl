@@ -58,12 +58,12 @@ fields:
 - mode: NULLABLE
   name: event_1
   type: BOOLEAN
-  description: Event 1 Indicator
+  description: Event 1 Indicator - 5 or more days of use and 1 or more search with ads
 - mode: NULLABLE
   name: event_2
   type: BOOLEAN
-  description: Event 2 Indicator
+  description: Event 2 Indicator - 3 or more days of use and 1 or more search with ads
 - mode: NULLABLE
   name: event_3
   type: BOOLEAN
-  description: Event 3 Indicator
+  description: Event 3 Indicator - 3 or more days of use and 0.4 or more active hours

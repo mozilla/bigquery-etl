@@ -2,10 +2,13 @@ WITH extracted AS (
   -- We'll look at the metrics ping to estimate the major geckoview version.
   -- The metrics section is aliased, so we must rename the table for this to
   -- work as expected (e.g. t1).
+
+  -- geckoview_version was replaced with gecko_version but still used as fallback
+  -- in case we're processing that is prior to the replacement.
   SELECT
     submission_timestamp,
     client_info.app_build,
-    metrics.string.gecko_version,
+    COALESCE(metrics.string.gecko_version, metrics.string.geckoview_version) AS gecko_version,
   FROM
     org_mozilla_fenix.metrics AS t1
   WHERE
@@ -14,14 +17,14 @@ WITH extracted AS (
   SELECT
     submission_timestamp,
     client_info.app_build,
-    metrics.string.gecko_version,
+    COALESCE(metrics.string.gecko_version, metrics.string.geckoview_version) AS gecko_version,
   FROM
     org_mozilla_fenix_nightly.metrics AS t1
   UNION ALL
   SELECT
     submission_timestamp,
     client_info.app_build,
-    metrics.string.gecko_version,
+    COALESCE(metrics.string.gecko_version, metrics.string.geckoview_version) AS gecko_version,
   FROM
     org_mozilla_fennec_aurora.metrics AS t1
 ),

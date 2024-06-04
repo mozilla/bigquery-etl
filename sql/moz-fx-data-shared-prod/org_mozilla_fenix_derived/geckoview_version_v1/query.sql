@@ -5,7 +5,7 @@ WITH extracted AS (
   SELECT
     submission_timestamp,
     client_info.app_build,
-    metrics.string.geckoview_version,
+    metrics.string.gecko_version,
   FROM
     org_mozilla_fenix.metrics AS t1
   WHERE
@@ -14,21 +14,21 @@ WITH extracted AS (
   SELECT
     submission_timestamp,
     client_info.app_build,
-    metrics.string.geckoview_version,
+    metrics.string.gecko_version,
   FROM
     org_mozilla_fenix_nightly.metrics AS t1
   UNION ALL
   SELECT
     submission_timestamp,
     client_info.app_build,
-    metrics.string.geckoview_version,
+    metrics.string.gecko_version,
   FROM
     org_mozilla_fennec_aurora.metrics AS t1
 ),
 transformed AS (
   SELECT
     app_build,
-    geckoview_version,
+    gecko_version,
     -- Truncate to the hour, since older builds give minute resolution.
     DATETIME_TRUNC(mozfun.norm.fenix_build_to_datetime(app_build), HOUR) AS build_hour
   FROM
@@ -43,22 +43,22 @@ grouped_build_hours AS (
   -- We choose a minimum number of pings for each group to filter out noise.
   SELECT
     build_hour,
-    geckoview_version,
+    gecko_version,
     COUNT(*) AS n_pings
   FROM
     transformed
   WHERE
-    geckoview_version IS NOT NULL
+    gecko_version IS NOT NULL
     AND app_build IS NOT NULL
     AND build_hour IS NOT NULL
   GROUP BY
     build_hour,
-    geckoview_version
+    gecko_version
   HAVING
     n_pings > 5
   ORDER BY
     build_hour DESC,
-    geckoview_version
+    gecko_version
 ),
 aggregated_build_hours AS (
   SELECT
@@ -97,7 +97,7 @@ estimated_version AS (
     build_hour,
     -- Versions are expected to be monotonically increasing. We use the major
     -- version for integer comparisons when the version hits 100.
-    MAX(CAST(SPLIT(geckoview_version, ".")[OFFSET(0)] AS INT64)) OVER (
+    MAX(CAST(SPLIT(gecko_version, ".")[OFFSET(0)] AS INT64)) OVER (
       ORDER BY
         build_hour ASC
       ROWS BETWEEN

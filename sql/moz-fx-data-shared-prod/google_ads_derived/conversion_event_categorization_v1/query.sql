@@ -64,10 +64,10 @@ client_activity_first_7_days AS (
     AND cls.submission_date
     BETWEEN cls.first_seen_date
     AND DATE_ADD(cls.first_seen_date, INTERVAL 6 DAY)
-    --to process less data, we only check for submission dates between @submission date - 14 days and submission date for each date this runs
+    --to process less data, we only check for submission dates between @submission date - 14 days and submission date + 14 days for each date this runs
     AND cls.submission_date
     BETWEEN DATE_SUB(@submission_date, INTERVAL 14 DAY)
-    AND @submission_date
+    AND DATE_ADD(@submission_date, INTERVAL 14 DAY)
   GROUP BY
     cls.client_id
 ),

@@ -14,7 +14,7 @@ WITH clients_first_seen_14_days_ago AS (
   FROM
     `moz-fx-data-shared-prod.telemetry.clients_first_seen` --contains all new clients, including those that never sent a main ping
   WHERE
-    first_seen_date = DATE_SUB(@submission_date, INTERVAL 14 DAY)
+    first_seen_date = @submission_date --this is 14 days before {{ds}}
     AND first_seen_date
     BETWEEN '2023-11-01'
     AND DATE_SUB(CURRENT_DATE, INTERVAL 8 DAY)
@@ -43,8 +43,8 @@ clients_last_seen_raw AS (
     AND DATE_ADD(cls.first_seen_date, INTERVAL 6 DAY) --get first 7 days from their first main ping
     --to process less data, we only check for pings between @submission date - 15 days and submission date + 15 days for each date this runs
     AND cls.submission_date
-    BETWEEN DATE_SUB(@submission_date, INTERVAL 15 DAY)
-    AND DATE_ADD(@submission_date, INTERVAL 15 DAY)
+    BETWEEN DATE_SUB(@submission_date, INTERVAL 1 DAY) --15 days before DS
+    AND DATE_ADD(@submission_date, INTERVAL 29 DAY) --29 days after DS
 ),
 --STEP 2: For every client, get the first 7 days worth of main pings sent after their first main ping
 client_activity_first_7_days AS (
@@ -88,7 +88,7 @@ client_activity_first_7_days AS (
 ),
 combined AS (
   SELECT
-    client_id,
+    cfs.client_id,
     cfs.first_seen_date,
     cfs.attribution_campaign,
     cfs.attribution_content,

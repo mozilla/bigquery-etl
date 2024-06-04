@@ -29,9 +29,9 @@ clients_last_seen AS (
     ANY_VALUE(first_seen_date) AS first_seen_date,
   -- just the country value from their first main ping day
     ANY_VALUE(CASE WHEN first_seen_date = submission_date THEN country END) AS country,
-  -- the date we would report on their conversion events (after we get data from their 7th day)
+  -- the date we would report on their conversion events
     ANY_VALUE(
-      IF(submission_date = DATE_ADD(first_seen_date, INTERVAL 6 DAY), submission_date, NULL)
+      IF(submission_date = DATE_ADD(first_seen_date, INTERVAL 28 DAY), submission_date, NULL)
     ) AS report_date,
   -- their first week days of use, taken from their 7th day data
     ANY_VALUE(

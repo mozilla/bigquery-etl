@@ -44,7 +44,7 @@ clients_last_seen_raw AS (
     --to process less data, we only check for pings between @submission date - 15 days and submission date + 15 days for each date this runs
     AND cls.submission_date
     BETWEEN DATE_SUB(@report_date, INTERVAL 1 DAY) --15 days before DS
-    AND DATE_ADD(@report_date, INTERVAL 29 DAY) --29 days after DS
+    AND DATE_ADD(@report_date, INTERVAL 29 DAY) --15 days after DS
 ),
 --STEP 2: For every client, get the first 7 days worth of main pings sent after their first main ping
 client_activity_first_7_days AS (

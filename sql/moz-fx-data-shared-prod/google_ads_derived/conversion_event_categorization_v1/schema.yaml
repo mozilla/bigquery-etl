@@ -28,6 +28,10 @@ fields:
   type: STRING
   description: Attribution Source
 - mode: NULLABLE
+  name: report_date
+  type: DATE
+  description: Report Date
+- mode: NULLABLE
   name: sent_main_ping_in_first_7_days
   type: BOOLEAN
   description: Sent Main Ping In First 7 Days After First Seen Date Indicator

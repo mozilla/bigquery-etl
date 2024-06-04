@@ -47,6 +47,7 @@ from ..cli.utils import (
 from ..config import ConfigLoader
 from ..deploy import FailedDeployException, SkippedDeployException, deploy_table
 from ..metadata.parse_metadata import METADATA_FILE, Metadata
+from ..schema import SCHEMA_FILE, Schema
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
@@ -401,10 +402,24 @@ def initiate(
     project, dataset, table = qualified_table_name_matching(qualified_table_name)
     query_path = Path(sql_dir) / project / dataset / table / "query.sql"
 
+    # create schema before deploying staging table if it does not exist
+    schema_path = query_path.parent / SCHEMA_FILE
+
+    if not schema_path.exists():
+        # if schema doesn't exist, a schema file is created to allow backfill staging table deployment
+        query_schema = Schema.from_query_file(
+            query_file=query_path,
+            respect_skip=False,
+            sql_dir=sql_dir,
+        )
+        query_schema.to_yaml_file(schema_path)
+        click.echo(f"Schema file created for {qualified_table_name}: {schema_path}")
+
     try:
         deploy_table(
             query_file=query_path,
             destination_table=backfill_staging_qualified_table_name,
+            respect_dryrun_skip=False,
         )
     except (SkippedDeployException, FailedDeployException) as e:
         raise RuntimeError(

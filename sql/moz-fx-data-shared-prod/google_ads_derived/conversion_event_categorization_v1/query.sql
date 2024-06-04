@@ -19,57 +19,72 @@ WITH clients_first_seen_14_days_ago AS (
     BETWEEN '2023-11-01'
     AND DATE_SUB(CURRENT_DATE, INTERVAL 8 DAY)
 ),
+--Step 2: Get only the columns we need from clients last seen, for only the small window of time we need
+clients_last_seen_raw AS (
+  SELECT
+    cls.client_id,
+    cls.first_seen_date,
+    cls.country,
+    cls.submission_date,
+    cls.days_since_seen,
+    cls.active_hours_sum,
+    cls.days_visited_1_uri_bits,
+    cls.days_interacted_bits,
+    cls.search_with_ads_count_all
+  FROM
+    `moz-fx-data-shared-prod.telemetry.clients_last_seen` cls
+  JOIN
+    clients_first_seen_14_days_ago clients
+    ON cls.client_id = clients.client_id
+  WHERE
+    cls.submission_date >= '2023-11-01' --first cohort date
+    AND cls.submission_date
+    BETWEEN cls.first_seen_date
+    AND DATE_ADD(cls.first_seen_date, INTERVAL 6 DAY) --get first 7 days from their first main ping
+    --to process less data, we only check for pings between @submission date - 15 days and submission date + 15 days for each date this runs
+    AND cls.submission_date
+    BETWEEN DATE_SUB(@submission_date, INTERVAL 15 DAY)
+    AND DATE_ADD(@submission_date, INTERVAL 15 DAY)
+),
 --STEP 2: For every client, get the first 7 days worth of main pings sent after their first main ping
 client_activity_first_7_days AS (
   SELECT
-    cls.client_id,
+    client_id,
     ANY_VALUE(
-      cls.first_seen_date
+      first_seen_date
     ) AS first_seen_date, --date we got first main ping (potentially different than above first seen date)
     ANY_VALUE(
       CASE
-        WHEN cls.first_seen_date = cls.submission_date
-          THEN cls.country
+        WHEN first_seen_date = submission_date
+          THEN country
       END
     ) AS country, --any country from their first 7 days of main pings
     ANY_VALUE(
       CASE
-        WHEN cls.submission_date = DATE_ADD(cls.first_seen_date, INTERVAL 6 DAY)
-          THEN BIT_COUNT(cls.days_visited_1_uri_bits & days_interacted_bits)
+        WHEN submission_date = DATE_ADD(first_seen_date, INTERVAL 6 DAY)
+          THEN BIT_COUNT(days_visited_1_uri_bits & days_interacted_bits)
       END
     ) AS dou, --total # of days of activity during their first 7 days of main pings
   -- if a client doesn't send a ping on `submission_date` their last active day's value will be carried forward
   -- so we only take measurements from days that they send a ping.
     SUM(
       CASE
-        WHEN cls.days_since_seen = 0
-          THEN COALESCE(cls.active_hours_sum, 0)
+        WHEN days_since_seen = 0
+          THEN COALESCE(active_hours_sum, 0)
         ELSE 0
       END
     ) AS active_hours_sum,
     SUM(
       CASE
-        WHEN cls.days_since_seen = 0
-          THEN COALESCE(cls.search_with_ads_count_all, 0)
+        WHEN days_since_seen = 0
+          THEN COALESCE(search_with_ads_count_all, 0)
         ELSE 0
       END
     ) AS search_with_ads_count_all
   FROM
-    `moz-fx-data-shared-prod.telemetry.clients_last_seen` cls
-  JOIN
-    clients_first_seen_14_days_ago clients
-    USING (client_id)
-  WHERE
-    cls.submission_date >= '2023-11-01' --first cohort date
-    AND cls.submission_date
-    BETWEEN cls.first_seen_date
-    AND DATE_ADD(cls.first_seen_date, INTERVAL 6 DAY)
-    --to process less data, we only check for submission dates between @submission date - 14 days and submission date + 14 days for each date this runs
-    AND cls.submission_date
-    BETWEEN DATE_SUB(@submission_date, INTERVAL 14 DAY)
-    AND DATE_ADD(@submission_date, INTERVAL 14 DAY)
+    clients_last_seen_raw
   GROUP BY
-    cls.client_id
+    client_id
 ),
 combined AS (
   SELECT

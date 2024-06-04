@@ -102,8 +102,8 @@ SELECT
   dou,
   active_hours_sum,
   search_with_ads_count_all,
-  IF((search_with_ads_count_all > 0) AND (dou >= 5), TRUE, FALSE) AS event_1,
-  IF((search_with_ads_count_all > 0) AND (dou >= 3), TRUE, FALSE) AS event_2,
-  IF((active_hours_sum >= 0.4) AND (dou >= 3), TRUE, FALSE) AS event_3,
+  IF(search_with_ads_count_all > 0 AND dou >= 5, TRUE, FALSE) AS event_1,
+  IF(search_with_ads_count_all > 0 AND dou >= 3, TRUE, FALSE) AS event_2,
+  IF(active_hours_sum >= 0.4 AND dou >= 3, TRUE, FALSE) AS event_3,
 FROM
   combined

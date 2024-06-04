@@ -117,7 +117,7 @@ SELECT
   attribution_dltoken,
   attribution_medium,
   attribution_source,
-  report_date,
+  @submission_date AS report_date,
   sent_main_ping_in_first_7_days,
   country,
   dou,

@@ -30,6 +30,11 @@
             "type": "STRING",
             "name": "gecko_version",
             "mode": "NULLABLE"
+          },
+          {
+            "type": "STRING",
+            "name": "geckoview_version",
+            "mode": "NULLABLE"
           }
         ]
       }

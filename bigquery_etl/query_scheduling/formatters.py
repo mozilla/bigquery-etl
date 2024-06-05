@@ -39,17 +39,18 @@ def format_date(date_string):
 def format_timedelta(timdelta_string):
     """Format a timedelta object."""
     timedelta_regex = re.compile(
-        r"^((?P<hours>-?\d+?)h)?((?P<minutes>-?\d+?)m)?((?P<seconds>-?\d+?)s)?$"
+        r"^-?((?P<hours>\d+?)h)?((?P<minutes>\d+?)m)?((?P<seconds>\d+?)s)?$"
     )
     parts = timedelta_regex.match(timdelta_string)
     if not parts:
         return timdelta_string
 
     parts = parts.groupdict()
+    is_negative = timdelta_string.startswith("-")
     time_params = {}
     for name, param in parts.items():
         if param:
-            time_params[name] = int(param)
+            time_params[name] = int(param) * (-1 if is_negative else 1)
 
     return timedelta(**time_params)
 

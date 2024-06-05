@@ -2,9 +2,12 @@ fields:
 - name: build_hour
   type: DATETIME
   mode: NULLABLE
+  description: null
 - name: geckoview_major_version
   type: INTEGER
   mode: NULLABLE
+  description: null
 - name: n_pings
   type: INTEGER
   mode: NULLABLE
+  description: null

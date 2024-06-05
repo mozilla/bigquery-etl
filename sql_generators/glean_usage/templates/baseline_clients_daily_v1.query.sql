@@ -144,7 +144,7 @@ joined as (
     (cd.submission_date = cfs.first_seen_date) AS is_new_profile
   FROM
     windowed AS cd
-  LEFT JOIN
+  INNER JOIN
     `{{ first_seen_table }}` AS cfs
     USING (client_id)
   WHERE

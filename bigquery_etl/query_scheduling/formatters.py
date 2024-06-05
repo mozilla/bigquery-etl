@@ -1,9 +1,9 @@
 """This file contains custom filters for formatting data types in Jinja templates."""
 
-import re
 from datetime import datetime, timedelta
 
 from bigquery_etl import query_scheduling
+from bigquery_etl.query_scheduling.utils import TIMEDELTA_RE
 
 
 def format_schedule_interval(interval):
@@ -38,10 +38,7 @@ def format_date(date_string):
 # -timedelta-object-from-a-simple-string
 def format_timedelta(timdelta_string):
     """Format a timedelta object."""
-    timedelta_regex = re.compile(
-        r"^-?((?P<hours>\d+?)h)?((?P<minutes>\d+?)m)?((?P<seconds>\d+?)s)?$"
-    )
-    parts = timedelta_regex.match(timdelta_string)
+    parts = TIMEDELTA_RE.match(timdelta_string)
     if not parts:
         return timdelta_string
 

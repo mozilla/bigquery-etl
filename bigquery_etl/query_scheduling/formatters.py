@@ -36,14 +36,14 @@ def format_date(date_string):
 
 # based on https://stackoverflow.com/questions/4628122/how-to-construct-a
 # -timedelta-object-from-a-simple-string
-def format_timedelta(timdelta_string):
+def format_timedelta(timedelta_string):
     """Format a timedelta object."""
-    parts = TIMEDELTA_RE.match(timdelta_string)
+    parts = TIMEDELTA_RE.match(timedelta_string)
     if not parts:
-        return timdelta_string
+        return timedelta_string
 
     parts = parts.groupdict()
-    is_negative = timdelta_string.startswith("-")
+    is_negative = timedelta_string.startswith("-")
     time_params = {}
     for name, param in parts.items():
         if param:

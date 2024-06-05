@@ -4,7 +4,8 @@ description: |-
 
   KPIs calculated for deletion requests.
 
-  Deprecation decision https://mozilla-hub.atlassian.net/browse/DENG-3998
+  Deprecation decision https://mozilla-hub.atlassian.net/browse/DENG-3998.
+  This table will be used for validation purposes and should not be deleted.
 owners:
 - lvargas@mozilla.com
 labels:

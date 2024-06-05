@@ -12,8 +12,6 @@
   metadata:
     geo:
       subdivision1: DC
-    user_agent:
-      os: iOS 17
   client_info:
     app_channel: release
   normalized_country_code: US

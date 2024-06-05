@@ -77,6 +77,9 @@ fields:
 - name: unknown
   type: INTEGER
   mode: NULLABLE
+- name: policies_is_enterprise
+  type: BOOLEAN
+  mode: NULLABLE
 - name: normalized_engine
   type: STRING
   mode: NULLABLE

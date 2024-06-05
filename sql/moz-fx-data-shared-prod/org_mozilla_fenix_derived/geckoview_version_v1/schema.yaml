@@ -1,0 +1,13 @@
+fields:
+- description: null
+  mode: NULLABLE
+  name: build_hour
+  type: DATETIME
+- description: null
+  mode: NULLABLE
+  name: geckoview_major_version
+  type: INTEGER
+- description: null
+  mode: NULLABLE
+  name: n_pings
+  type: INTEGER

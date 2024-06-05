@@ -42,6 +42,9 @@ fields:
   name: is_default_browser
   type: BOOLEAN
 - mode: NULLABLE
+  name: policies_is_enterprise
+  type: BOOLEAN
+- mode: NULLABLE
   name: channel
   type: STRING
 - mode: NULLABLE

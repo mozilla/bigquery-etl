@@ -4,9 +4,11 @@ import glob
 import os
 import os.path
 import sys
+from pathlib import Path
 
 from bigquery_etl.config import ConfigLoader
 from bigquery_etl.format_sql.formatter import reformat  # noqa E402
+from bigquery_etl.util.common import qualify_table_references_in_path
 
 
 def skip_format():
@@ -52,6 +54,12 @@ def format(paths, check=False):
         for path in sql_files:
             with open(path) as fp:
                 query = fp.read()
+
+            try:
+                query = qualify_table_references_in_path(Path(path))
+            except NotImplementedError:
+                pass  # not implemented for scripts
+
             formatted = reformat(query, trailing_newline=True)
             if query != formatted:
                 if check:

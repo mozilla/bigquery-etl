@@ -1,0 +1,3 @@
+version: 1
+include_file_patterns:
+  - "*/*/*/monitors.yaml"

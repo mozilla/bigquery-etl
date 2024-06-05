@@ -3,6 +3,8 @@ description: |-
   Prototype.
 
   KPIs calculated for deletion requests.
+
+  Deprecation decision https://mozilla-hub.atlassian.net/browse/DENG-3998
 owners:
 - lvargas@mozilla.com
 labels:
@@ -36,12 +38,10 @@ bigquery:
     - app_name
     - attribution_medium
     - channel
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:mozilla-confidential
+workgroup_access: []
 references:
   query.sql:
   - firefox_desktop.deletion_request
   - mozdata.static.csa_gblmkt_languages
   - telemetry.clients_last_seen
+deprecated: true

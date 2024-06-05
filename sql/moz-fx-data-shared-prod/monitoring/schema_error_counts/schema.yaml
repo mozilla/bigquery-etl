@@ -27,3 +27,6 @@ fields:
   type: STRING
   mode: NULLABLE
   description: concatenated error messages, limited to 300 characters
+- name: channel
+  type: STRING
+  mode: NULLABLE

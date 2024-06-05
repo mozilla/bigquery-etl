@@ -179,7 +179,8 @@ SELECT
       metrics.labeled_counter.network_tls_early_data_accepted,
       metrics.labeled_counter.network_tls_early_data_negotiated,
       metrics.labeled_counter.networking_http_redirect_to_scheme_subresource,
-      metrics.labeled_counter.networking_http_redirect_to_scheme_top_level
+      metrics.labeled_counter.networking_http_redirect_to_scheme_top_level,
+      metrics.labeled_counter.translations_request_count
     ) AS `labeled_counter`,
     metrics.quantity,
     metrics.string,
@@ -586,7 +587,8 @@ SELECT
       metrics.labeled_counter.network_tls_early_data_accepted,
       metrics.labeled_counter.network_tls_early_data_negotiated,
       metrics.labeled_counter.networking_http_redirect_to_scheme_subresource,
-      metrics.labeled_counter.networking_http_redirect_to_scheme_top_level
+      metrics.labeled_counter.networking_http_redirect_to_scheme_top_level,
+      metrics.labeled_counter.translations_request_count
     ) AS `labeled_counter`,
     metrics.quantity,
     STRUCT(
@@ -1219,7 +1221,8 @@ SELECT
       metrics.labeled_counter.network_tls_early_data_accepted,
       metrics.labeled_counter.network_tls_early_data_negotiated,
       metrics.labeled_counter.networking_http_redirect_to_scheme_subresource,
-      metrics.labeled_counter.networking_http_redirect_to_scheme_top_level
+      metrics.labeled_counter.networking_http_redirect_to_scheme_top_level,
+      metrics.labeled_counter.translations_request_count
     ) AS `labeled_counter`,
     metrics.quantity,
     STRUCT(
@@ -1627,7 +1630,8 @@ SELECT
       metrics.labeled_counter.network_tls_early_data_accepted,
       metrics.labeled_counter.network_tls_early_data_negotiated,
       metrics.labeled_counter.networking_http_redirect_to_scheme_subresource,
-      metrics.labeled_counter.networking_http_redirect_to_scheme_top_level
+      metrics.labeled_counter.networking_http_redirect_to_scheme_top_level,
+      metrics.labeled_counter.translations_request_count
     ) AS `labeled_counter`,
     metrics.quantity,
     metrics.string,

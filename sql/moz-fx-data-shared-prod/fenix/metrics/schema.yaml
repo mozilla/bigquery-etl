@@ -3066,6 +3066,16 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
+    - name: translations_request_count
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
   - name: quantity
     type: RECORD
     mode: NULLABLE

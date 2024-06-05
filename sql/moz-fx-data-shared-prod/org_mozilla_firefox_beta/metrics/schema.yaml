@@ -4937,6 +4937,19 @@ fields:
         keyed by the URL scheme redirected to
 
         '
+    - name: translations_request_count
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The count of translation requests, along with their type.
+
+        '
   - name: quantity
     type: RECORD
     mode: NULLABLE

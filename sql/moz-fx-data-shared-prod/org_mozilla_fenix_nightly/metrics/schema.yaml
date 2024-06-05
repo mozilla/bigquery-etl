@@ -1860,8 +1860,7 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream. (Migrated from
-        the geckoview metric of the same name).
+      description: 'Failure occurs when initializing the audio stream.
 
         '
     - name: glean_validation_pings_submitted
@@ -3598,6 +3597,19 @@ fields:
         mode: NULLABLE
       description: 'Count of the HTTP redirection that triggered by top-level document,
         keyed by the URL scheme redirected to
+
+        '
+    - name: translations_request_count
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The count of translation requests, along with their type.
 
         '
   - name: string

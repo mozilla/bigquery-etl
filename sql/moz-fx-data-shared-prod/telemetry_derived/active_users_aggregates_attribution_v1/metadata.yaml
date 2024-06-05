@@ -16,7 +16,7 @@ description: |-
 
   Documentation about the Adjust parameters:
   https://help.adjust.com/en/article/tracker-urls#campaign-structure-parameters.
-  
+
   Deprecation decision: https://mozilla-hub.atlassian.net/browse/DENG-3966
 owners:
 - lvargas@mozilla.com

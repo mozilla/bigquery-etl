@@ -1,7 +1,7 @@
 fields:
 - name: activity_date
   mode: NULLABLE
-  type: DATE
+  type: STRING
   description: Activity Date
 - name: gclid
   mode: NULLABLE

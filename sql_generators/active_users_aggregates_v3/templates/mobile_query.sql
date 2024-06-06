@@ -62,10 +62,15 @@ metrics AS (
     ARRAY_AGG(normalized_channel IGNORE NULLS ORDER BY submission_date ASC)[
       SAFE_OFFSET(0)
     ] AS normalized_channel,
-    ARRAY_AGG(uri_count IGNORE NULLS ORDER BY submission_date ASC)[SAFE_OFFSET(0)] AS uri_count,
-    ARRAY_AGG(is_default_browser IGNORE NULLS ORDER BY submission_date ASC)[
-      SAFE_OFFSET(0)
-    ] AS is_default_browser
+    {% if app_name == "klar_android"%}
+      CAST(NULL AS INTEGER) AS uri_count,
+      CAST(NULL AS INTEGER) AS is_default_browser,
+    {% else %}
+      ARRAY_AGG(uri_count IGNORE NULLS ORDER BY submission_date ASC)[SAFE_OFFSET(0)] AS uri_count,
+      ARRAY_AGG(is_default_browser IGNORE NULLS ORDER BY submission_date ASC)[
+        SAFE_OFFSET(0)
+      ] AS is_default_browser
+    {% endif %}
   FROM
     `{{ project_id }}.{{ app_name }}.metrics_clients_last_seen`
   WHERE

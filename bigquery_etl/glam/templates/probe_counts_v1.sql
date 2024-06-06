@@ -112,9 +112,6 @@ WITH probe_counts AS (
   windows_probe_counts AS (
     SELECT
       *
-      {% if is_scalar %}
-      , aggregates AS non_norm_aggregates
-      {% endif %}
     FROM
       probe_counts
     WHERE

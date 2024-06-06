@@ -18,6 +18,8 @@ WITH clients_first_seen_14_days_ago AS (
     `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v1` m -- the "old" CFS table, contains the date of the client's *first main ping*
     ON cfs.client_id = m.client_id
     AND m.first_seen_date
+    -- join so that we only get "first main ping" dates from clients that sent their first main ping within -1 and +6 days from their first_seen_date.
+    -- we will miss ~5% of clients that send their first main ping later, this is a trade-off we make to have a two-week reporting cadence (one week to send their first main ping, then we report on the outcomes *one week after that*
     BETWEEN DATE_SUB(cfs.first_seen_date, INTERVAL 1 DAY)
     AND DATE_ADD(cfs.first_seen_date, INTERVAL 6 DAY)
   WHERE

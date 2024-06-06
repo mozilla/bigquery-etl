@@ -2228,7 +2228,7 @@ class TestBackfill:
 
         mock_client().get_table.side_effect = [
             NotFound(  # Check that staging data does not exist
-                f"{Backfill_staging_table_name}_backup_2021_05_03" "not found"
+                f"{backfill_staging_table_name}_backup_2021_05_03" "not found"
             ),
             None,  # Check that production data exists during dry run
             None,  # Check that production data exists
@@ -2281,7 +2281,7 @@ class TestBackfill:
 
             mock_deploy_table.assert_called_with(
                 query_file=query_path,
-                destination_table=f"{Backfill_staging_table_name}_2021_05_03",
+                destination_table=f"{backfill_staging_table_name}_2021_05_03",
                 respect_dryrun_skip=False,
             )
 
@@ -2316,13 +2316,13 @@ class TestBackfill:
     def test_initiate_partitioned_backfill_without_schema_should_pass(
         self, mock_from_query_file, mock_deploy_table, check_call, mock_client, runner
     ):
-        Backfill_staging_table_name = (
+        backfill_staging_table_name = (
             "moz-fx-data-shared-prod.backfills_staging_derived.test__test_query_v1"
         )
 
         mock_client().get_table.side_effect = [
             NotFound(  # Check that staging data does not exist
-                f"{Backfill_staging_table_name}_backup_2021_05_03" "not found"
+                f"{backfill_staging_table_name}_backup_2021_05_03" "not found"
             ),
             None,  # Check that production data exists during dry run
             None,  # Check that production data exists
@@ -2374,7 +2374,7 @@ class TestBackfill:
 
             mock_deploy_table.assert_called_with(
                 query_file=query_path,
-                destination_table=f"{Backfill_staging_table_name}_2021_05_03",
+                destination_table=f"{backfill_staging_table_name}_2021_05_03",
                 respect_dryrun_skip=False,
             )
 
@@ -2409,13 +2409,13 @@ class TestBackfill:
     def test_initiate_partitioned_backfill_with_valid_billing_project_from_entry(
         self, mock_from_query_file, mock_deploy_table, check_call, mock_client, runner
     ):
-        Backfill_staging_table_name = (
+        backfill_staging_table_name = (
             "moz-fx-data-shared-prod.backfills_staging_derived.test__test_query_v1"
         )
 
         mock_client().get_table.side_effect = [
             NotFound(  # Check that staging data does not exist
-                f"{Backfill_staging_table_name}_backup_2021_05_03" "not found"
+                f"{backfill_staging_table_name}_backup_2021_05_03" "not found"
             ),
             None,  # Check that production data exists during dry run
             None,  # Check that production data exists
@@ -2467,11 +2467,11 @@ class TestBackfill:
                 ],
             )
 
-            assert not mock_from_query_file.called
+            assert not mock_from_query_file.called  # schema exists
 
             mock_deploy_table.assert_called_with(
                 query_file=query_path,
-                destination_table=f"{Backfill_staging_table_name}_2021_05_03",
+                destination_table=f"{backfill_staging_table_name}_2021_05_03",
                 respect_dryrun_skip=False,
             )
             assert result.exit_code == 0
@@ -2506,7 +2506,7 @@ class TestBackfill:
     def test_initiate_backfill_with_failed_deploy(
         self, mock_from_query_file, mock_deploy_table, mock_client, runner
     ):
-        Backfill_staging_table_name = (
+        backfill_staging_table_name = (
             "moz-fx-data-shared-prod.backfills_staging_derived.test__test_query_v1"
         )
 
@@ -2514,7 +2514,7 @@ class TestBackfill:
 
         mock_client().get_table.side_effect = [
             NotFound(  # Check that staging data does not exist
-                f"{Backfill_staging_table_name}_backup_2021_05_03" "not found"
+                f"{backfill_staging_table_name}_backup_2021_05_03" "not found"
             ),
             None,  # Check that production data exists during dry run
             None,  # Check that production data exists
@@ -2568,7 +2568,7 @@ class TestBackfill:
 
             mock_deploy_table.assert_called_with(
                 query_file=query_path,
-                destination_table=f"{Backfill_staging_table_name}_2021_05_03",
+                destination_table=f"{backfill_staging_table_name}_2021_05_03",
                 respect_dryrun_skip=False,
             )
             assert result.exit_code == 1
@@ -2578,13 +2578,13 @@ class TestBackfill:
     def test_initiate_partitioned_backfill_with_invalid_billing_project_from_entry_should_fail(
         self, mock_client, runner
     ):
-        Backfill_staging_table_name = (
+        backfill_staging_table_name = (
             "moz-fx-data-shared-prod.backfills_staging_derived.test__test_query_v1"
         )
 
         mock_client().get_table.side_effect = [
             NotFound(  # Check that staging data does not exist
-                f"{Backfill_staging_table_name}_backup_2021_05_03" "not found"
+                f"{backfill_staging_table_name}_backup_2021_05_03" "not found"
             ),
             None,  # Check that production data exists during dry run
             None,  # Check that production data exists

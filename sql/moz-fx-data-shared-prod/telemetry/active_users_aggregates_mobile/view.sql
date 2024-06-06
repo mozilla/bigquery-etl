@@ -26,3 +26,8 @@ SELECT
   *
 FROM
   `moz-fx-data-shared-prod.focus_android.active_users_aggregates`
+UNION ALL
+SELECT
+  *
+FROM
+  `moz-fx-data-shared-prod.klar_android.active_users_aggregates`

@@ -1191,6 +1191,13 @@ with DAG(
         parent_group=task_group_klar_android,
     ) as checks__fail_org_mozilla_klar_derived__baseline_clients_last_seen__v1_external:
         ExternalTaskMarker(
+            task_id="bqetl_analytics_aggregations__wait_for_checks__fail_org_mozilla_klar_derived__baseline_clients_last_seen__v1",
+            external_dag_id="bqetl_analytics_aggregations",
+            external_task_id="wait_for_checks__fail_org_mozilla_klar_derived__baseline_clients_last_seen__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=78300)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_mobile_kpi_metrics__wait_for_checks__fail_org_mozilla_klar_derived__baseline_clients_last_seen__v1",
             external_dag_id="bqetl_mobile_kpi_metrics",
             external_task_id="wait_for_checks__fail_org_mozilla_klar_derived__baseline_clients_last_seen__v1",
@@ -2496,6 +2503,21 @@ with DAG(
         depends_on_past=False,
         task_group=task_group_klar_android,
     )
+
+    with TaskGroup(
+        "klar_android_derived__metrics_clients_last_seen__v1_external",
+        parent_group=task_group_klar_android,
+    ) as klar_android_derived__metrics_clients_last_seen__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_analytics_aggregations__wait_for_klar_android_derived__metrics_clients_last_seen__v1",
+            external_dag_id="bqetl_analytics_aggregations",
+            external_task_id="wait_for_klar_android_derived__metrics_clients_last_seen__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=78300)).isoformat() }}",
+        )
+
+        klar_android_derived__metrics_clients_last_seen__v1_external.set_upstream(
+            klar_android_derived__metrics_clients_last_seen__v1
+        )
 
     klar_ios_derived__clients_last_seen_joined__v1 = bigquery_etl_query(
         task_id="klar_ios_derived__clients_last_seen_joined__v1",

@@ -322,6 +322,30 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    wait_for_checks__fail_org_mozilla_klar_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_checks__fail_org_mozilla_klar_derived__baseline_clients_last_seen__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="klar_android.checks__fail_org_mozilla_klar_derived__baseline_clients_last_seen__v1",
+        execution_delta=datetime.timedelta(seconds=8100),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_klar_android_derived__metrics_clients_last_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_klar_android_derived__metrics_clients_last_seen__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="klar_android.klar_android_derived__metrics_clients_last_seen__v1",
+        execution_delta=datetime.timedelta(seconds=8100),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     wait_for_checks__fail_org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
         task_id="wait_for_checks__fail_org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1",
         external_dag_id="bqetl_glean_usage",
@@ -538,6 +562,37 @@ with DAG(
             checks__fail_focus_ios_derived__active_users_aggregates__v3
         )
 
+    checks__fail_klar_android_derived__active_users_aggregates__v3 = bigquery_dq_check(
+        task_id="checks__fail_klar_android_derived__active_users_aggregates__v3",
+        source_table='active_users_aggregates_v3${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
+        dataset_id="klar_android_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=True,
+        owner="lvargas@mozilla.com",
+        email=[
+            "gkaberere@mozilla.com",
+            "lvargas@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
+        retries=0,
+    )
+
+    with TaskGroup(
+        "checks__fail_klar_android_derived__active_users_aggregates__v3_external",
+    ) as checks__fail_klar_android_derived__active_users_aggregates__v3_external:
+        ExternalTaskMarker(
+            task_id="bqetl_search_dashboard__wait_for_checks__fail_klar_android_derived__active_users_aggregates__v3",
+            external_dag_id="bqetl_search_dashboard",
+            external_task_id="wait_for_checks__fail_klar_android_derived__active_users_aggregates__v3",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=85500)).isoformat() }}",
+        )
+
+        checks__fail_klar_android_derived__active_users_aggregates__v3_external.set_upstream(
+            checks__fail_klar_android_derived__active_users_aggregates__v3
+        )
+
     checks__fail_klar_ios_derived__active_users_aggregates__v3 = bigquery_dq_check(
         task_id="checks__fail_klar_ios_derived__active_users_aggregates__v3",
         source_table='active_users_aggregates_v3${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
@@ -641,6 +696,23 @@ with DAG(
         task_id="checks__warn_focus_ios_derived__active_users_aggregates__v3",
         source_table='active_users_aggregates_v3${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
         dataset_id="focus_ios_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=False,
+        owner="lvargas@mozilla.com",
+        email=[
+            "gkaberere@mozilla.com",
+            "lvargas@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
+        retries=0,
+    )
+
+    checks__warn_klar_android_derived__active_users_aggregates__v3 = bigquery_dq_check(
+        task_id="checks__warn_klar_android_derived__active_users_aggregates__v3",
+        source_table='active_users_aggregates_v3${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
+        dataset_id="klar_android_derived",
         project_id="moz-fx-data-shared-prod",
         is_dq_check_fail=False,
         owner="lvargas@mozilla.com",
@@ -765,6 +837,22 @@ with DAG(
         parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
     )
 
+    klar_android_active_users_aggregates = bigquery_etl_query(
+        task_id="klar_android_active_users_aggregates",
+        destination_table='active_users_aggregates_v3${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
+        dataset_id="klar_android_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="lvargas@mozilla.com",
+        email=[
+            "gkaberere@mozilla.com",
+            "lvargas@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
+    )
+
     klar_ios_active_users_aggregates = bigquery_etl_query(
         task_id="klar_ios_active_users_aggregates",
         destination_table='active_users_aggregates_v3${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
@@ -857,6 +945,10 @@ with DAG(
         focus_ios_active_users_aggregates
     )
 
+    checks__fail_klar_android_derived__active_users_aggregates__v3.set_upstream(
+        klar_android_active_users_aggregates
+    )
+
     checks__fail_klar_ios_derived__active_users_aggregates__v3.set_upstream(
         klar_ios_active_users_aggregates
     )
@@ -903,6 +995,10 @@ with DAG(
 
     checks__warn_focus_ios_derived__active_users_aggregates__v3.set_upstream(
         focus_ios_active_users_aggregates
+    )
+
+    checks__warn_klar_android_derived__active_users_aggregates__v3.set_upstream(
+        klar_android_active_users_aggregates
     )
 
     checks__warn_klar_ios_derived__active_users_aggregates__v3.set_upstream(
@@ -991,6 +1087,14 @@ with DAG(
 
     focus_ios_active_users_aggregates.set_upstream(
         wait_for_focus_ios_derived__metrics_clients_last_seen__v1
+    )
+
+    klar_android_active_users_aggregates.set_upstream(
+        wait_for_checks__fail_org_mozilla_klar_derived__baseline_clients_last_seen__v1
+    )
+
+    klar_android_active_users_aggregates.set_upstream(
+        wait_for_klar_android_derived__metrics_clients_last_seen__v1
     )
 
     klar_ios_active_users_aggregates.set_upstream(

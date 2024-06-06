@@ -121,6 +121,18 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    wait_for_checks__fail_klar_android_derived__active_users_aggregates__v3 = ExternalTaskSensor(
+        task_id="wait_for_checks__fail_klar_android_derived__active_users_aggregates__v3",
+        external_dag_id="bqetl_analytics_aggregations",
+        external_task_id="checks__fail_klar_android_derived__active_users_aggregates__v3",
+        execution_delta=datetime.timedelta(seconds=900),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     wait_for_checks__fail_klar_ios_derived__active_users_aggregates__v3 = ExternalTaskSensor(
         task_id="wait_for_checks__fail_klar_ios_derived__active_users_aggregates__v3",
         external_dag_id="bqetl_analytics_aggregations",
@@ -244,6 +256,10 @@ with DAG(
 
     search_derived__search_revenue_levers_daily__v1.set_upstream(
         wait_for_checks__fail_focus_ios_derived__active_users_aggregates__v3
+    )
+
+    search_derived__search_revenue_levers_daily__v1.set_upstream(
+        wait_for_checks__fail_klar_android_derived__active_users_aggregates__v3
     )
 
     search_derived__search_revenue_levers_daily__v1.set_upstream(

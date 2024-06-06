@@ -3,19 +3,26 @@
 --Note: Max cohort date cannot be more than 7 days ago (to ensure we always have at least 7 days of data)
 WITH clients_first_seen_14_days_ago AS (
   SELECT
-    client_id,
-    first_seen_date,
-    country,
-    attribution_campaign,
-    attribution_content,
-    attribution_dltoken,
-    attribution_medium,
-    attribution_source
+    cfs.client_id,
+    cfs.first_seen_date,
+    m.first_seen_date AS first_main_ping_date,
+    cfs.country,
+    cfs.attribution_campaign,
+    cfs.attribution_content,
+    cfs.attribution_dltoken,
+    cfs.attribution_medium,
+    cfs.attribution_source
   FROM
-    `moz-fx-data-shared-prod.telemetry.clients_first_seen` --contains all new clients, including those that never sent a main ping
+    `moz-fx-data-shared-prod.telemetry.clients_first_seen` cfs --contains all new clients, including those that never sent a main ping
+  LEFT JOIN
+    `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v1` m
+    ON cfs.client_id = m.client_id
+    AND m.first_seen_date
+    BETWEEN DATE_SUB(cfs.first_seen_date, INTERVAL 1 DAY)
+    AND DATE_ADD(cfs.first_seen_date, INTERVAL 6 DAY)
   WHERE
-    first_seen_date = @report_date --this is 14 days before {{ds}}
-    AND first_seen_date
+    cfs.first_seen_date = @report_date --this is 14 days before {{ds}}
+    AND cfs.first_seen_date
     BETWEEN '2023-11-01'
     AND DATE_SUB(CURRENT_DATE, INTERVAL 8 DAY)
 ),
@@ -24,6 +31,7 @@ clients_last_seen_raw AS (
   SELECT
     cls.client_id,
     cls.first_seen_date,
+    clients.first_main_ping_date,
     cls.country,
     cls.submission_date,
     cls.days_since_seen,
@@ -36,15 +44,9 @@ clients_last_seen_raw AS (
   JOIN
     clients_first_seen_14_days_ago clients
     ON cls.client_id = clients.client_id
-  WHERE
-    cls.submission_date >= '2023-11-01' --first cohort date
     AND cls.submission_date
-    BETWEEN cls.first_seen_date
-    AND DATE_ADD(cls.first_seen_date, INTERVAL 6 DAY) --get first 7 days from their first main ping
-    --to process less data, we only check for pings between @submission date - 15 days and submission date + 15 days for each date this runs
-    AND cls.submission_date
-    BETWEEN DATE_SUB(@report_date, INTERVAL 1 DAY) --15 days before DS
-    AND DATE_ADD(@report_date, INTERVAL 29 DAY) --15 days after DS
+    BETWEEN clients.first_main_ping
+    AND DATE_ADD(clients.first_main_ping, INTERVAL 6 DAY)
 ),
 --STEP 2: For every client, get the first 7 days worth of main pings sent after their first main ping
 client_activity_first_7_days AS (
@@ -55,13 +57,13 @@ client_activity_first_7_days AS (
     ) AS first_seen_date, --date we got first main ping (potentially different than above first seen date)
     ANY_VALUE(
       CASE
-        WHEN first_seen_date = submission_date
+        WHEN first_main_ping_date = submission_date
           THEN country
       END
     ) AS country, --any country from their first day in clients_last_seen
     ANY_VALUE(
       CASE
-        WHEN submission_date = DATE_ADD(first_seen_date, INTERVAL 6 DAY)
+        WHEN first_main_ping_date = DATE_ADD(first_seen_date, INTERVAL 6 DAY)
           THEN BIT_COUNT(days_visited_1_uri_bits & days_interacted_bits)
       END
     ) AS dou, --total # of days of activity during their first 7 days of main pings
@@ -95,7 +97,7 @@ combined AS (
     cfs.attribution_dltoken,
     cfs.attribution_medium,
     cfs.attribution_source,
-    IF(cls.first_seen_date IS NOT NULL, TRUE, FALSE) AS sent_main_ping_in_first_7_days,
+    cfs.first_main_ping_date,
     COALESCE(
       cls.country,
       cfs.country
@@ -118,7 +120,7 @@ SELECT
   attribution_medium,
   attribution_source,
   @submission_date AS report_date,
-  sent_main_ping_in_first_7_days,
+  first_main_ping_date,
   country,
   dou,
   active_hours_sum,

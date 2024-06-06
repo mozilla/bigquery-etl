@@ -5,7 +5,7 @@ CREATE OR REPLACE VIEW
 AS
 SELECT
   * EXCEPT (app_version, app_name),
-  IF(app_name IN ('Focus Android Glean', 'Focus Android'), 'Focus Android', app_name) AS app_name,
+  app_name,
   app_version,
   `mozfun.norm.browser_version_info`(app_version).major_version AS app_version_major,
   `mozfun.norm.browser_version_info`(app_version).minor_version AS app_version_minor,
@@ -15,4 +15,4 @@ SELECT
 FROM
   `moz-fx-data-shared-prod.focus_android_derived.active_users_aggregates_v3`
 WHERE
-  app_name IN ('Focus Android Glean', 'Focus Android Glean BrowserStack')
+  app_name != 'Focus Android Legacy'

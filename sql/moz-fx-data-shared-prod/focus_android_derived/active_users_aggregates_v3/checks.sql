@@ -8,7 +8,7 @@ WITH daily_users_sum AS (
     `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`
   WHERE
     submission_date = @submission_date
-    AND app_name IN ('Focus Android Glean', 'Focus Android Glean BrowserStack')
+    AND app_name IN ('Focus Android', 'Focus Android BrowserStack')
     ),
 distinct_client_count_base AS (
     SELECT

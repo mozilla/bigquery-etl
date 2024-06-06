@@ -769,6 +769,13 @@ with DAG(
         parent_group=task_group_focus_android,
     ) as checks__fail_org_mozilla_focus_beta_derived__baseline_clients_last_seen__v1_external:
         ExternalTaskMarker(
+            task_id="bqetl_analytics_aggregations__wait_for_checks__fail_org_mozilla_focus_beta_derived__baseline_clients_last_seen__v1",
+            external_dag_id="bqetl_analytics_aggregations",
+            external_task_id="wait_for_checks__fail_org_mozilla_focus_beta_derived__baseline_clients_last_seen__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=78300)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_mobile_kpi_metrics__wait_for_checks__fail_org_mozilla_focus_beta_derived__baseline_clients_last_seen__v1",
             external_dag_id="bqetl_mobile_kpi_metrics",
             external_task_id="wait_for_checks__fail_org_mozilla_focus_beta_derived__baseline_clients_last_seen__v1",
@@ -797,6 +804,13 @@ with DAG(
         "checks__fail_org_mozilla_focus_derived__baseline_clients_last_seen__v1_external",
         parent_group=task_group_focus_android,
     ) as checks__fail_org_mozilla_focus_derived__baseline_clients_last_seen__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_analytics_aggregations__wait_for_checks__fail_org_mozilla_focus_derived__baseline_clients_last_seen__v1",
+            external_dag_id="bqetl_analytics_aggregations",
+            external_task_id="wait_for_checks__fail_org_mozilla_focus_derived__baseline_clients_last_seen__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=78300)).isoformat() }}",
+        )
+
         ExternalTaskMarker(
             task_id="bqetl_mobile_kpi_metrics__wait_for_checks__fail_org_mozilla_focus_derived__baseline_clients_last_seen__v1",
             external_dag_id="bqetl_mobile_kpi_metrics",
@@ -841,6 +855,13 @@ with DAG(
         parent_group=task_group_focus_android,
     ) as checks__fail_org_mozilla_focus_nightly_derived__baseline_clients_last_seen__v1_external:
         ExternalTaskMarker(
+            task_id="bqetl_analytics_aggregations__wait_for_checks__fail_org_mozilla_focus_nightly_derived__baseline_clients_last_seen__v1",
+            external_dag_id="bqetl_analytics_aggregations",
+            external_task_id="wait_for_checks__fail_org_mozilla_focus_nightly_derived__baseline_clients_last_seen__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=78300)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_mobile_kpi_metrics__wait_for_checks__fail_org_mozilla_focus_nightly_derived__baseline_clients_last_seen__v1",
             external_dag_id="bqetl_mobile_kpi_metrics",
             external_task_id="wait_for_checks__fail_org_mozilla_focus_nightly_derived__baseline_clients_last_seen__v1",
@@ -869,6 +890,13 @@ with DAG(
         "checks__fail_org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1_external",
         parent_group=task_group_firefox_ios,
     ) as checks__fail_org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_analytics_aggregations__wait_for_checks__fail_org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1",
+            external_dag_id="bqetl_analytics_aggregations",
+            external_task_id="wait_for_checks__fail_org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=78300)).isoformat() }}",
+        )
+
         ExternalTaskMarker(
             task_id="bqetl_firefox_ios__wait_for_checks__fail_org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1",
             external_dag_id="bqetl_firefox_ios",
@@ -927,6 +955,13 @@ with DAG(
         parent_group=task_group_firefox_ios,
     ) as checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1_external:
         ExternalTaskMarker(
+            task_id="bqetl_analytics_aggregations__wait_for_checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1",
+            external_dag_id="bqetl_analytics_aggregations",
+            external_task_id="wait_for_checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=78300)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_firefox_ios__wait_for_checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1",
             external_dag_id="bqetl_firefox_ios",
             external_task_id="wait_for_checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1",
@@ -969,6 +1004,13 @@ with DAG(
         "checks__fail_org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1_external",
         parent_group=task_group_firefox_ios,
     ) as checks__fail_org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_analytics_aggregations__wait_for_checks__fail_org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1",
+            external_dag_id="bqetl_analytics_aggregations",
+            external_task_id="wait_for_checks__fail_org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=78300)).isoformat() }}",
+        )
+
         ExternalTaskMarker(
             task_id="bqetl_firefox_ios__wait_for_checks__fail_org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1",
             external_dag_id="bqetl_firefox_ios",
@@ -1013,6 +1055,13 @@ with DAG(
         parent_group=task_group_focus_ios,
     ) as checks__fail_org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1_external:
         ExternalTaskMarker(
+            task_id="bqetl_analytics_aggregations__wait_for_checks__fail_org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1",
+            external_dag_id="bqetl_analytics_aggregations",
+            external_task_id="wait_for_checks__fail_org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=78300)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_mobile_kpi_metrics__wait_for_checks__fail_org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1",
             external_dag_id="bqetl_mobile_kpi_metrics",
             external_task_id="wait_for_checks__fail_org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1",
@@ -1055,6 +1104,13 @@ with DAG(
         "checks__fail_org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1_external",
         parent_group=task_group_klar_ios,
     ) as checks__fail_org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_analytics_aggregations__wait_for_checks__fail_org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1",
+            external_dag_id="bqetl_analytics_aggregations",
+            external_task_id="wait_for_checks__fail_org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=78300)).isoformat() }}",
+        )
+
         ExternalTaskMarker(
             task_id="bqetl_mobile_kpi_metrics__wait_for_checks__fail_org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1",
             external_dag_id="bqetl_mobile_kpi_metrics",
@@ -1630,13 +1686,6 @@ with DAG(
         parent_group=task_group_fenix,
     ) as fenix_derived__clients_last_seen_joined__v1_external:
         ExternalTaskMarker(
-            task_id="bqetl_analytics_aggregations__wait_for_fenix_derived__clients_last_seen_joined__v1",
-            external_dag_id="bqetl_analytics_aggregations",
-            external_task_id="wait_for_fenix_derived__clients_last_seen_joined__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=78300)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
             task_id="bqetl_kpis_shredder__wait_for_fenix_derived__clients_last_seen_joined__v1",
             external_dag_id="bqetl_kpis_shredder",
             external_task_id="wait_for_fenix_derived__clients_last_seen_joined__v1",
@@ -1688,6 +1737,13 @@ with DAG(
         "fenix_derived__metrics_clients_last_seen__v1_external",
         parent_group=task_group_fenix,
     ) as fenix_derived__metrics_clients_last_seen__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_analytics_aggregations__wait_for_fenix_derived__metrics_clients_last_seen__v1",
+            external_dag_id="bqetl_analytics_aggregations",
+            external_task_id="wait_for_fenix_derived__metrics_clients_last_seen__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=78300)).isoformat() }}",
+        )
+
         ExternalTaskMarker(
             task_id="bqetl_data_observability_test_data_copy__wait_for_fenix_derived__metrics_clients_last_seen__v1",
             external_dag_id="bqetl_data_observability_test_data_copy",
@@ -2104,13 +2160,6 @@ with DAG(
         parent_group=task_group_firefox_ios,
     ) as firefox_ios_derived__clients_last_seen_joined__v1_external:
         ExternalTaskMarker(
-            task_id="bqetl_analytics_aggregations__wait_for_firefox_ios_derived__clients_last_seen_joined__v1",
-            external_dag_id="bqetl_analytics_aggregations",
-            external_task_id="wait_for_firefox_ios_derived__clients_last_seen_joined__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=78300)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
             task_id="bqetl_kpis_shredder__wait_for_firefox_ios_derived__clients_last_seen_joined__v1",
             external_dag_id="bqetl_kpis_shredder",
             external_task_id="wait_for_firefox_ios_derived__clients_last_seen_joined__v1",
@@ -2150,6 +2199,21 @@ with DAG(
         depends_on_past=False,
         task_group=task_group_firefox_ios,
     )
+
+    with TaskGroup(
+        "firefox_ios_derived__metrics_clients_last_seen__v1_external",
+        parent_group=task_group_firefox_ios,
+    ) as firefox_ios_derived__metrics_clients_last_seen__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_analytics_aggregations__wait_for_firefox_ios_derived__metrics_clients_last_seen__v1",
+            external_dag_id="bqetl_analytics_aggregations",
+            external_task_id="wait_for_firefox_ios_derived__metrics_clients_last_seen__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=78300)).isoformat() }}",
+        )
+
+        firefox_ios_derived__metrics_clients_last_seen__v1_external.set_upstream(
+            firefox_ios_derived__metrics_clients_last_seen__v1
+        )
 
     firefox_reality_derived__clients_last_seen_joined__v1 = bigquery_etl_query(
         task_id="firefox_reality_derived__clients_last_seen_joined__v1",
@@ -2258,13 +2322,6 @@ with DAG(
         parent_group=task_group_focus_android,
     ) as focus_android_derived__clients_last_seen_joined__v1_external:
         ExternalTaskMarker(
-            task_id="bqetl_analytics_aggregations__wait_for_focus_android_derived__clients_last_seen_joined__v1",
-            external_dag_id="bqetl_analytics_aggregations",
-            external_task_id="wait_for_focus_android_derived__clients_last_seen_joined__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=78300)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
             task_id="bqetl_unified__wait_for_focus_android_derived__clients_last_seen_joined__v1",
             external_dag_id="bqetl_unified",
             external_task_id="wait_for_focus_android_derived__clients_last_seen_joined__v1",
@@ -2299,6 +2356,21 @@ with DAG(
         task_group=task_group_focus_android,
     )
 
+    with TaskGroup(
+        "focus_android_derived__metrics_clients_last_seen__v1_external",
+        parent_group=task_group_focus_android,
+    ) as focus_android_derived__metrics_clients_last_seen__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_analytics_aggregations__wait_for_focus_android_derived__metrics_clients_last_seen__v1",
+            external_dag_id="bqetl_analytics_aggregations",
+            external_task_id="wait_for_focus_android_derived__metrics_clients_last_seen__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=78300)).isoformat() }}",
+        )
+
+        focus_android_derived__metrics_clients_last_seen__v1_external.set_upstream(
+            focus_android_derived__metrics_clients_last_seen__v1
+        )
+
     focus_ios_derived__clients_last_seen_joined__v1 = bigquery_etl_query(
         task_id="focus_ios_derived__clients_last_seen_joined__v1",
         destination_table="clients_last_seen_joined_v1",
@@ -2315,13 +2387,6 @@ with DAG(
         "focus_ios_derived__clients_last_seen_joined__v1_external",
         parent_group=task_group_focus_ios,
     ) as focus_ios_derived__clients_last_seen_joined__v1_external:
-        ExternalTaskMarker(
-            task_id="bqetl_analytics_aggregations__wait_for_focus_ios_derived__clients_last_seen_joined__v1",
-            external_dag_id="bqetl_analytics_aggregations",
-            external_task_id="wait_for_focus_ios_derived__clients_last_seen_joined__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=78300)).isoformat() }}",
-        )
-
         ExternalTaskMarker(
             task_id="bqetl_kpis_shredder__wait_for_focus_ios_derived__clients_last_seen_joined__v1",
             external_dag_id="bqetl_kpis_shredder",
@@ -2362,6 +2427,21 @@ with DAG(
         depends_on_past=False,
         task_group=task_group_focus_ios,
     )
+
+    with TaskGroup(
+        "focus_ios_derived__metrics_clients_last_seen__v1_external",
+        parent_group=task_group_focus_ios,
+    ) as focus_ios_derived__metrics_clients_last_seen__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_analytics_aggregations__wait_for_focus_ios_derived__metrics_clients_last_seen__v1",
+            external_dag_id="bqetl_analytics_aggregations",
+            external_task_id="wait_for_focus_ios_derived__metrics_clients_last_seen__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=78300)).isoformat() }}",
+        )
+
+        focus_ios_derived__metrics_clients_last_seen__v1_external.set_upstream(
+            focus_ios_derived__metrics_clients_last_seen__v1
+        )
 
     glean_dictionary_derived__events_stream__v1 = bigquery_etl_query(
         task_id="glean_dictionary_derived__events_stream__v1",
@@ -2434,13 +2514,6 @@ with DAG(
         parent_group=task_group_klar_ios,
     ) as klar_ios_derived__clients_last_seen_joined__v1_external:
         ExternalTaskMarker(
-            task_id="bqetl_analytics_aggregations__wait_for_klar_ios_derived__clients_last_seen_joined__v1",
-            external_dag_id="bqetl_analytics_aggregations",
-            external_task_id="wait_for_klar_ios_derived__clients_last_seen_joined__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=78300)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
             task_id="bqetl_kpis_shredder__wait_for_klar_ios_derived__clients_last_seen_joined__v1",
             external_dag_id="bqetl_kpis_shredder",
             external_task_id="wait_for_klar_ios_derived__clients_last_seen_joined__v1",
@@ -2480,6 +2553,21 @@ with DAG(
         depends_on_past=False,
         task_group=task_group_klar_ios,
     )
+
+    with TaskGroup(
+        "klar_ios_derived__metrics_clients_last_seen__v1_external",
+        parent_group=task_group_klar_ios,
+    ) as klar_ios_derived__metrics_clients_last_seen__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_analytics_aggregations__wait_for_klar_ios_derived__metrics_clients_last_seen__v1",
+            external_dag_id="bqetl_analytics_aggregations",
+            external_task_id="wait_for_klar_ios_derived__metrics_clients_last_seen__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=78300)).isoformat() }}",
+        )
+
+        klar_ios_derived__metrics_clients_last_seen__v1_external.set_upstream(
+            klar_ios_derived__metrics_clients_last_seen__v1
+        )
 
     lockwise_android_derived__clients_last_seen_joined__v1 = bigquery_etl_query(
         task_id="lockwise_android_derived__clients_last_seen_joined__v1",

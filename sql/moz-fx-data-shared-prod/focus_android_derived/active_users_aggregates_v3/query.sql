@@ -4,10 +4,7 @@ WITH baseline AS (
     submission_date,
     normalized_channel,
     client_id,
-    days_since_seen,
-    days_seen_bits,
     days_created_profile_bits,
-    durations,
     os AS normalized_os,
     osversion AS normalized_os_version,
     locale,
@@ -17,11 +14,16 @@ WITH baseline AS (
     device AS device_model,
     first_seen_date,
     submission_date = first_seen_date AS is_new_profile,
-    NULL AS uri_count,
-    default_browser AS is_default_browser,
     distribution_id,
     CAST(NULL AS string) AS isp,
-    'Focus Android' AS app_name
+    'Focus Android Legacy' AS app_name,
+    CAST(NULL AS STRING) AS segment,
+    CAST(NULL AS BOOLEAN) AS is_daily_user,
+    CAST(NULL AS BOOLEAN) AS is_weekly_user,
+    CAST(NULL AS BOOLEAN) AS is_monthly_user,
+    CAST(NULL AS BOOLEAN) AS is_dau,
+    CAST(NULL AS BOOLEAN) AS is_wau,
+    CAST(NULL AS BOOLEAN) AS is_mau
   FROM
     `moz-fx-data-shared-prod.telemetry.core_clients_last_seen`
   WHERE
@@ -33,10 +35,7 @@ WITH baseline AS (
     submission_date,
     normalized_channel,
     client_id,
-    days_since_seen,
-    days_seen_bits,
     days_created_profile_bits,
-    durations,
     normalized_os,
     normalized_os_version,
     locale,
@@ -46,127 +45,97 @@ WITH baseline AS (
     device_model,
     first_seen_date,
     submission_date = first_seen_date AS is_new_profile,
-    uri_count,
-    is_default_browser,
     CAST(NULL AS string) AS distribution_id,
     isp,
-    'Focus Android Glean' AS app_name
+    app_name,
+    activity_segment AS segment,
+    is_daily_user,
+    is_weekly_user,
+    is_monthly_user,
+    is_dau,
+    is_wau,
+    is_mau
   FROM
-    `moz-fx-data-shared-prod.focus_android.clients_last_seen_joined`
+    `moz-fx-data-shared-prod.focus_android.active_users`
   WHERE
     submission_date = @submission_date
+),
+metrics AS (
+  -- Metrics ping can arrive either in the same or next day as the baseline ping.
+  SELECT
+    client_id,
+    ARRAY_AGG(normalized_channel IGNORE NULLS ORDER BY submission_date ASC)[
+      SAFE_OFFSET(0)
+    ] AS normalized_channel,
+    ARRAY_AGG(uri_count IGNORE NULLS ORDER BY submission_date ASC)[SAFE_OFFSET(0)] AS uri_count,
+    ARRAY_AGG(is_default_browser IGNORE NULLS ORDER BY submission_date ASC)[
+      SAFE_OFFSET(0)
+    ] AS is_default_browser
+  FROM
+    `moz-fx-data-shared-prod.focus_android.metrics_clients_last_seen`
+  WHERE
+    DATE(submission_date)
+    BETWEEN @submission_date
+    AND DATE_ADD(@submission_date, INTERVAL 1 DAY)
+  GROUP BY
+    client_id
 ),
 unioned AS (
   SELECT
-    * REPLACE (IF(isp = 'BrowserStack', CONCAT(app_name, ' BrowserStack'), app_name) AS app_name)
-  FROM
-    baseline
-),
-search_clients AS (
-  SELECT
-    client_id,
-    submission_date,
-    ad_click,
-    organic,
-    search_count,
-    search_with_ads
-  FROM
-    `moz-fx-data-shared-prod.search_derived.mobile_search_clients_daily_v1`
-  WHERE
-    submission_date = @submission_date
-),
-search_metrics AS (
-  SELECT
-    unioned.client_id,
-    unioned.submission_date,
-    SUM(ad_click) AS ad_clicks,
-    SUM(organic) AS organic_search_count,
-    SUM(search_count) AS search_count,
-    SUM(search_with_ads) AS search_with_ads
-  FROM
-    unioned
-  LEFT JOIN
-    search_clients s
-    ON unioned.client_id = s.client_id
-    AND unioned.submission_date = s.submission_date
-  GROUP BY
-    client_id,
-    submission_date
-),
-unioned_with_searches AS (
-  SELECT
-    unioned.client_id,
-    CASE
-      WHEN BIT_COUNT(days_seen_bits)
-        BETWEEN 1
-        AND 6
-        THEN 'infrequent_user'
-      WHEN BIT_COUNT(days_seen_bits)
-        BETWEEN 7
-        AND 13
-        THEN 'casual_user'
-      WHEN BIT_COUNT(days_seen_bits)
-        BETWEEN 14
-        AND 20
-        THEN 'regular_user'
-      WHEN BIT_COUNT(days_seen_bits) >= 21
-        THEN 'core_user'
-      ELSE 'other'
-    END AS activity_segment,
-    unioned.app_name,
-    unioned.app_display_version AS app_version,
-    unioned.normalized_channel,
-    IFNULL(country, '??') country,
-    unioned.city,
-    unioned.days_seen_bits,
-    unioned.days_created_profile_bits,
-    DATE_DIFF(unioned.submission_date, unioned.first_seen_date, DAY) AS days_since_first_seen,
-    unioned.device_model,
-    unioned.isp,
-    unioned.is_new_profile,
-    unioned.locale,
-    unioned.first_seen_date,
-    unioned.days_since_seen,
-    unioned.normalized_os,
-    unioned.normalized_os_version,
+    baseline.client_id,
+    baseline.segment,
+    baseline.app_name,
+    baseline.app_display_version AS app_version,
+    baseline.normalized_channel,
+    IFNULL(baseline.country, '??') country,
+    baseline.city,
+    baseline.days_created_profile_bits,
+    baseline.device_model,
+    baseline.isp,
+    baseline.is_new_profile,
+    baseline.locale,
+    baseline.first_seen_date,
+    baseline.normalized_os,
+    baseline.normalized_os_version,
     COALESCE(
-      SAFE_CAST(NULLIF(SPLIT(unioned.normalized_os_version, ".")[SAFE_OFFSET(0)], "") AS INTEGER),
+      SAFE_CAST(NULLIF(SPLIT(baseline.normalized_os_version, ".")[SAFE_OFFSET(0)], "") AS INTEGER),
       0
     ) AS os_version_major,
     COALESCE(
-      SAFE_CAST(NULLIF(SPLIT(unioned.normalized_os_version, ".")[SAFE_OFFSET(1)], "") AS INTEGER),
+      SAFE_CAST(NULLIF(SPLIT(baseline.normalized_os_version, ".")[SAFE_OFFSET(1)], "") AS INTEGER),
       0
     ) AS os_version_minor,
     COALESCE(
-      SAFE_CAST(NULLIF(SPLIT(unioned.normalized_os_version, ".")[SAFE_OFFSET(2)], "") AS INTEGER),
+      SAFE_CAST(NULLIF(SPLIT(baseline.normalized_os_version, ".")[SAFE_OFFSET(2)], "") AS INTEGER),
       0
     ) AS os_version_patch,
-    unioned.durations AS durations,
-    unioned.submission_date,
-    unioned.uri_count,
-    unioned.is_default_browser,
-    unioned.distribution_id,
+    baseline.submission_date,
+    metrics.uri_count,
+    metrics.is_default_browser,
+    baseline.distribution_id,
     CAST(NULL AS string) AS attribution_content,
     CAST(NULL AS string) AS attribution_source,
     CAST(NULL AS string) AS attribution_medium,
     CAST(NULL AS string) AS attribution_campaign,
     CAST(NULL AS string) AS attribution_experiment,
     CAST(NULL AS string) AS attribution_variation,
-    search.ad_clicks,
-    search.organic_search_count,
-    search.search_count,
-    search.search_with_ads,
-    CAST(NULL AS FLOAT64) AS active_hours_sum
+    CAST(NULL AS FLOAT64) AS active_hours_sum,
+    is_daily_user,
+    is_weekly_user,
+    is_monthly_user,
+    is_dau,
+    is_wau,
+    is_mau
   FROM
-    unioned
+    baseline
   LEFT JOIN
-    search_metrics search
-    ON search.client_id = unioned.client_id
-    AND search.submission_date = unioned.submission_date
+    metrics
+    ON baseline.client_id = metrics.client_id
+    AND baseline.normalized_channel IS NOT DISTINCT FROM metrics.normalized_channel
 ),
 todays_metrics AS (
   SELECT
-    activity_segment AS segment,
+    segment,
     app_version,
     attribution_medium,
     attribution_source,
@@ -184,63 +153,43 @@ todays_metrics AS (
     normalized_os_version AS os_version,
     os_version_major,
     os_version_minor,
-    durations,
     submission_date,
-    days_since_seen,
     client_id,
-    first_seen_date,
-    ad_clicks,
-    organic_search_count,
-    search_count,
-    search_with_ads,
     uri_count,
     active_hours_sum,
+    is_daily_user,
+    is_weekly_user,
+    is_monthly_user,
+    is_dau,
+    is_wau,
+    is_mau,
     CAST(NULL AS STRING) AS adjust_network,
     CAST(NULL AS STRING) AS install_source
   FROM
-    unioned_with_searches
-),
-todays_metrics_enriched AS (
-  SELECT
-    todays_metrics.* EXCEPT (locale),
-    CASE
-      WHEN locale IS NOT NULL
-        AND languages.language_name IS NULL
-        THEN 'Other'
-      ELSE languages.language_name
-    END AS language_name,
-  FROM
-    todays_metrics
-  LEFT JOIN
-    `mozdata.static.csa_gblmkt_languages` AS languages
-    ON todays_metrics.locale = languages.code
+    unioned
 )
 SELECT
-  todays_metrics_enriched.* EXCEPT (
+  todays_metrics.* EXCEPT (
     client_id,
-    days_since_seen,
-    ad_clicks,
-    organic_search_count,
-    search_count,
-    search_with_ads,
+    is_daily_user,
+    is_weekly_user,
+    is_monthly_user,
+    is_dau,
+    is_wau,
+    is_mau,
     uri_count,
-    active_hours_sum,
-    first_seen_date,
-    durations
+    active_hours_sum
   ),
-  COUNT(DISTINCT IF(days_since_seen = 0, client_id, NULL)) AS daily_users,
-  COUNT(DISTINCT IF(days_since_seen < 7, client_id, NULL)) AS weekly_users,
-  COUNT(DISTINCT client_id) AS monthly_users,
-  COUNT(DISTINCT IF(days_since_seen = 0 AND durations > 0, client_id, NULL)) AS dau,
-  COUNT(DISTINCT IF(submission_date = first_seen_date, client_id, NULL)) AS new_profiles,
-  SUM(ad_clicks) AS ad_clicks,
-  SUM(organic_search_count) AS organic_search_count,
-  SUM(search_count) AS search_count,
-  SUM(search_with_ads) AS search_with_ads,
+  COUNTIF(is_daily_user) AS daily_users,
+  COUNTIF(is_weekly_user) AS weekly_users,
+  COUNTIF(is_monthly_user) AS monthly_users,
+  COUNTIF(is_dau) AS dau,
+  COUNTIF(is_wau) AS wau,
+  COUNTIF(is_mau) AS mau,
   SUM(uri_count) AS uri_count,
   SUM(active_hours_sum) AS active_hours,
 FROM
-  todays_metrics_enriched
+  todays_metrics
 GROUP BY
   app_version,
   attribution_medium,
@@ -251,7 +200,7 @@ GROUP BY
   distribution_id,
   first_seen_year,
   is_default_browser,
-  language_name,
+  locale,
   app_name,
   channel,
   os,

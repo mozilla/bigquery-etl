@@ -1,0 +1,128 @@
+destination_dataset = "firefox_accounts_derived"
+platform = "firefox_accounts"
+owners = ["ksiegler@mozilla.org"]  # optional; users getting notification if funnel run fails
+version = "1"
+start_date = "2023-01-01"
+
+[funnels]
+
+[funnels.registration_overall_success_by_service]
+
+friendly_name = "Registration Funnel Conversion"
+description = "Overall registration funnel conversion rate beginning from registration view form"
+steps = ["reg_view", "reg_complete"]
+dimensions = ["service", "country"]
+
+[funnels.registration_email_confirmation_overall_success_by_service]
+
+friendly_name = "Registration Funnel Conversion"
+description = "Overall registration funnel conversion rate beginning from registration view form"
+steps = ["reg_view", "reg_email_code_view", "reg_complete"]
+dimensions = ["service", "country"]
+
+[funnels.google_reg_third_party_auth_completions]
+
+friendly_name = "Google Signins from Registrations"
+description = "For finding registration/logins that came from Google/Apple signin complete events"
+steps = ["google_signin_complete", "reg_complete"]
+dimensions = ["service", "country"]
+
+[funnels.google_login_third_party_auth_completions]
+
+friendly_name = "Google Signins from Logins"
+description = "For finding registration/logins that came from Google/Apple signin complete events"
+steps = ["google_signin_complete", "login_complete"]
+dimensions = ["service", "country"]
+
+[funnels.apple_reg_third_party_auth_completions]
+
+friendly_name = "Apple Signins from Registrations"
+description = "For finding registration/logins that came from Google/Apple signin complete events"
+steps = ["apple_signin_complete", "reg_complete"]
+dimensions = ["service", "country"]
+
+[funnels.apple_login_third_party_auth_completions]
+
+friendly_name = "Apple Signins from Logins"
+description = "For finding registration/logins that came from Google/Apple signin complete events"
+steps = ["apple_signin_complete", "login_complete"]
+dimensions = ["service", "country"]
+
+[steps]
+
+[steps.reg_view]
+friendly_name = "Registration View Form"
+description = "View of the registration form requesting password creation and age"
+data_source = "all_events"
+select_expression = "flow_id"
+where_expression = "event_type = 'fxa_reg - view'"
+aggregation = "count distinct"
+join_previous_step_on = "flow_id"
+
+[steps.reg_email_code_view]
+friendly_name = "Registration Confirm Email Code View Form"
+description = "View of the email confirmation code page"
+data_source = "all_events"
+select_expression = "flow_id"
+where_expression = "event_type = 'fxa_reg - signup_code_view'"
+aggregation = "count distinct"
+join_previous_step_on = "flow_id"
+
+[steps.reg_complete]
+friendly_name = "Registration Completed"
+description = "Account was successfully created"
+data_source = "all_events"
+select_expression = "flow_id"
+where_expression = "event_type = 'fxa_reg - complete'"
+aggregation = "count distinct"
+join_previous_step_on = "flow_id"
+
+[steps.login_complete]
+friendly_name = "Login Completed"
+description = "Login successfully completed"
+data_source = "all_events"
+select_expression = "flow_id"
+where_expression = "event_type = 'fxa_login - complete'"
+aggregation = "count distinct"
+join_previous_step_on = "flow_id"
+
+[steps.google_signin_complete]
+friendly_name = "Google Signin Complete"
+description = "Successful signin through third party Google"
+data_source = "all_events"
+select_expression = "flow_id"
+where_expression = "event_type = 'fxa_third_party_auth - google_signin_complete'"
+aggregation = "count distinct"
+join_previous_step_on = "flow_id"
+
+[steps.apple_signin_complete]
+friendly_name = "Apple Signin Completed"
+description = "Successful signin through third party Apple"
+data_source = "all_events"
+select_expression = "flow_id"
+where_expression = "event_type = 'fxa_third_party_auth - apple_signin_complete'"
+aggregation = "count distinct"
+join_previous_step_on = "flow_id"
+
+[data_sources]
+
+[data_sources.all_events]
+from_expression = "mozdata.firefox_accounts.fxa_all_events"
+submission_date_column = "DATE(timestamp)"
+client_id_column = "user_id"
+
+[dimensions]
+
+[dimensions.service]
+data_source = "all_events"
+select_expression = "service"
+friendly_name = "Service"
+description = "Oauth Client ID is used to map to service name for which service the user logged in through"
+client_id_column = "user_id"
+
+[dimensions.country]
+data_source = "all_events"
+select_expression = "country"
+friendly_name = "Country"
+description = "Country that the flow events originate from"
+client_id_column = "user_id"

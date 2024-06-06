@@ -1541,7 +1541,7 @@ bqetl_acoustic_suppression_list:
     - impact/tier_3
 
 bqetl_braze:
-  schedule_interval: 0 10 * * *
+  schedule_interval: 30 4,12,20 * * *
   description: |
     ETL for Braze workflows.
     ## Triage notes:
@@ -1658,9 +1658,26 @@ bqetl_ios_campaign_reporting:
   tags:
     - impact/tier_2
 
-bqetl_mobile_engagement_model:
+bqetl_mobile_kpi_metrics:
   schedule_interval: 0 12 * * *
-  description: Loads the mobile engagement model tables
+  description: Generates support metrics for mobile KPI's
+  default_args:
+    depends_on_past: false
+    owner: kik@mozilla.com
+    email:
+      - kik@mozilla.com
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    start_date: '2024-06-03'
+    retries: 1
+    retry_delay: 30m
+  tags:
+    - impact/tier_1
+
+bqetl_desktop_conv_evnt_categorization:
+  schedule_interval: 0 12 * * *
+  description: Loads the desktop conversion event tables
   default_args:
     depends_on_past: false
     owner: kwindau@mozilla.com
@@ -1669,7 +1686,7 @@ bqetl_mobile_engagement_model:
       - telemetry-alerts@mozilla.com
     email_on_failure: true
     email_on_retry: false
-    start_date: "2024-05-16"
+    start_date: "2024-06-04"
     retries: 2
     retry_delay: 30m
   tags:

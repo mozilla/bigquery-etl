@@ -246,6 +246,12 @@ glean_flattened_searches AS (
             SUBSTR(search.key, STRPOS(search.key, '.') + 1),
             search.search_type
           )
+      WHEN search.search_type = 'search-with-ads'
+        THEN IF(
+            REGEXP_CONTAINS(search.key, '\\.'),
+            SUBSTR(search.key, STRPOS(search.key, '.') + 1),
+            search.search_type
+          )
       ELSE search.search_type
     END AS source,
 
@@ -304,6 +310,8 @@ combined_search_clients AS (
     CASE
       WHEN search_type = 'ad-click'
         THEN IF(STARTS_WITH(source, 'in-content.organic'), 'ad-click-organic', search_type)
+      WHEN search_type = 'search-with-ads'
+        THEN IF(STARTS_WITH(source, 'in-content.organic'), 'search-with-ads-organic', search_type)
       WHEN STARTS_WITH(source, 'in-content.sap.')
         THEN 'tagged-sap'
       WHEN REGEXP_CONTAINS(source, '^in-content.*-follow-on')
@@ -368,6 +376,15 @@ unfiltered_search_clients AS (
     SUM(
       IF(search_type != 'search-with-ads' OR engine IS NULL OR search_count > 10000, 0, search_count)
     ) AS search_with_ads,
+    SUM(
+      IF(
+        search_type != 'search-with-ads-organic'
+        OR engine IS NULL
+        OR search_count > 10000,
+        0,
+        search_count
+      )
+    ) AS search_with_ads_organic,
     SUM(
       IF(search_type != 'unknown' OR engine IS NULL OR search_count > 10000, 0, search_count)
     ) AS unknown,

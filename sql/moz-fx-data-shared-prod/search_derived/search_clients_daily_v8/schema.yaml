@@ -45,6 +45,9 @@ fields:
   name: is_default_browser
   type: BOOLEAN
 - mode: NULLABLE
+  name: policies_is_enterprise
+  type: BOOLEAN
+- mode: NULLABLE
   name: profile_creation_date
   type: INTEGER
 - mode: NULLABLE

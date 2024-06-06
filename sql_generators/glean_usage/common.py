@@ -26,6 +26,7 @@ NO_BASELINE_PING_APPS = (
     "mozilla_vpn",
     "mozillavpn_backend_cirrus",
     "accounts_backend",
+    "accounts_cirrus",
     "burnham",
     "firefox_reality_pc",
     "lockwise_android",

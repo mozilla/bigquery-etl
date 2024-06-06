@@ -13,3 +13,7 @@ bigquery:
 scheduling:
   dag_name: bqetl_braze
   date_partition_parameter: null
+  # this dag runs more frequently than the upstream tables and relies
+  # mostly on data replicated into bq from ctms cloud sql
+  # once product latency is at an hour, we can remove the below
+  referenced_tables: []

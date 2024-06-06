@@ -1,0 +1,21 @@
+friendly_name: Google Analytics Desktop Conversions Feed
+description: |-
+  Query that pulls conversion event data so Census feed can pull and send to Google for marketing campaigns
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau@mozilla.com
+scheduling:
+  dag_name: bqetl_census_feed
+bigquery:
+  time_partitioning:
+    type: day
+    field: activity_date
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields:
+    - conversion_name
+references: {}

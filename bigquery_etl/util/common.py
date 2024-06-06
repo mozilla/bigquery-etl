@@ -173,7 +173,6 @@ def qualify_table_references_in_path(path: Path) -> str:
     This allows a query to run in a different project than the sql dir it is located in
     while referencing the same tables.
     """
-
     # sqlglot cannot handle scripts with variables and control statements
     if re.search(
         r"^\s*DECLARE\b", path.read_text(), flags=re.MULTILINE
@@ -182,8 +181,12 @@ def qualify_table_references_in_path(path: Path) -> str:
             "Cannot qualify table_references of query scripts or UDFs"
         )
 
+    # determine the default target project and dataset from the path
     target_project = Path(path).parent.parent.parent.name
     default_dataset = Path(path).parent.parent.name
+
+    # sqlglot doesn't support Jinja, so we need to render the queries and
+    # init queries to raw SQL
     sql_query = render(
         path.name,
         template_folder=path.parent,
@@ -199,6 +202,7 @@ def qualify_table_references_in_path(path: Path) -> str:
             "metrics": MetricHub(),
         },
     )
+    # use sqlglot to get the SQL AST
     init_query_statements = sqlglot.parse(
         init_query,
         read="bigquery",

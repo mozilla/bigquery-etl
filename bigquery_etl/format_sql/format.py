@@ -42,7 +42,7 @@ def format(paths, check=False):
                     # skip tests/**/input.sql
                     and not (path.startswith("tests") and filename == "input.sql")
                     for filepath in [os.path.join(dirpath, filename)]
-                    if filepath not in skip_format()
+                    if not any([filepath.endswith(s) for s in skip_format()])
                 )
             elif path:
                 sql_files.append(path)
@@ -58,7 +58,7 @@ def format(paths, check=False):
             try:
                 query = qualify_table_references_in_path(Path(path))
             except NotImplementedError:
-                pass  # not implemented for scripts
+                pass  # not implemented for scripts or UDFs
 
             formatted = reformat(query, trailing_newline=True)
             if query != formatted:

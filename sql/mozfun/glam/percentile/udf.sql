@@ -18,7 +18,7 @@ RETURNS FLOAT64 AS (
     keyed_cum_sum AS (
       SELECT
         key,
-        SUM(value) OVER (ORDER BY key) / SUM(value) OVER () AS cum_sum
+        SUM(value) OVER (ORDER BY CAST(key AS FLOAT64)) / SUM(value) OVER () AS cum_sum
       FROM
         UNNEST(histogram)
     )
@@ -59,6 +59,14 @@ SELECT
     glam.percentile(
       0.0,
       ARRAY<STRUCT<key STRING, value FLOAT64>>[("0", 1), ("2", 2), ("3", 1)],
+      "timing_distribution"
+    )
+  ),
+  assert.equals(
+    2,
+    glam.percentile(
+      2.0,
+      ARRAY<STRUCT<key STRING, value FLOAT64>>[("0", 1), ("2", 2), ("10", 10), ("11", 100)],
       "timing_distribution"
     )
   );

@@ -407,12 +407,11 @@ def initiate(
 
     if not schema_path.exists():
         # if schema doesn't exist, a schema file is created to allow backfill staging table deployment
-        query_schema = Schema.from_query_file(
+        Schema.from_query_file(
             query_file=query_path,
             respect_skip=False,
             sql_dir=sql_dir,
-        )
-        query_schema.to_yaml_file(schema_path)
+        ).to_yaml_file(schema_path)
         click.echo(f"Schema file created for {qualified_table_name}: {schema_path}")
 
     try:

@@ -76,6 +76,18 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    wait_for_telemetry_derived__clients_first_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_telemetry_derived__clients_first_seen__v1",
+        external_dag_id="bqetl_main_summary",
+        external_task_id="telemetry_derived__clients_first_seen__v1",
+        execution_delta=datetime.timedelta(seconds=36000),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     checks__warn_google_ads_derived__conversion_event_categorization__v1 = bigquery_dq_check(
         task_id="checks__warn_google_ads_derived__conversion_event_categorization__v1",
         source_table='conversion_event_categorization_v1${{ macros.ds_format(macros.ds_add(ds, -14), "%Y-%m-%d", "%Y%m%d") }}',
@@ -113,4 +125,8 @@ with DAG(
 
     google_ads_derived__conversion_event_categorization__v1.set_upstream(
         wait_for_checks__fail_telemetry_derived__clients_last_seen__v2
+    )
+
+    google_ads_derived__conversion_event_categorization__v1.set_upstream(
+        wait_for_telemetry_derived__clients_first_seen__v1
     )

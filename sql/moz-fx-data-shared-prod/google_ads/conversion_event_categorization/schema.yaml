@@ -31,10 +31,10 @@ fields:
   type: DATE
   mode: NULLABLE
   description: Report Date
-- name: sent_main_ping_in_first_7_days
-  type: BOOLEAN
+- name: first_main_ping_date
+  type: DATE
   mode: NULLABLE
-  description: Sent Main Ping In First 7 Days After First Seen Date Indicator
+  description: First Main Ping Date
 - name: country
   type: STRING
   mode: NULLABLE

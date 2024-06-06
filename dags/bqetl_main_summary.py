@@ -498,6 +498,20 @@ with DAG(
         priority_weight=80,
     )
 
+    with TaskGroup(
+        "telemetry_derived__clients_first_seen__v1_external",
+    ) as telemetry_derived__clients_first_seen__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_desktop_conv_evnt_categorization__wait_for_telemetry_derived__clients_first_seen__v1",
+            external_dag_id="bqetl_desktop_conv_evnt_categorization",
+            external_task_id="wait_for_telemetry_derived__clients_first_seen__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=50400)).isoformat() }}",
+        )
+
+        telemetry_derived__clients_first_seen__v1_external.set_upstream(
+            telemetry_derived__clients_first_seen__v1
+        )
+
     telemetry_derived__clients_last_seen__v1 = bigquery_etl_query(
         task_id="telemetry_derived__clients_last_seen__v1",
         destination_table="clients_last_seen_v1",

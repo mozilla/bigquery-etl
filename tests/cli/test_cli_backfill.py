@@ -2277,7 +2277,7 @@ class TestBackfill:
 
             assert result.exit_code == 0
 
-            assert not mock_from_query_file.called
+            assert not mock_from_query_file.called  # schema exists
 
             mock_deploy_table.assert_called_with(
                 query_file=query_path,

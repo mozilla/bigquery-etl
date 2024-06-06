@@ -17,6 +17,8 @@ WITH final_probe_extract AS ( SELECT
     MAX(total_users) as total_users,
     MAX(IF(agg_type = "histogram", mozfun.glam.histogram_cast_json(aggregates), NULL)) as histogram,
     MAX(IF(agg_type = "percentiles", mozfun.glam.histogram_cast_json(aggregates), NULL)) as percentiles,
+    MAX(IF(agg_type = "histogram", mozfun.glam.histogram_cast_json(non_norm_aggregates), NULL)) as non_norm_histogram,
+    MAX(IF(agg_type = "percentiles", mozfun.glam.histogram_cast_json(non_norm_aggregates), NULL)) as non_norm_percentiles
 FROM
     `{{ dataset }}.{{ prefix }}__view_probe_counts_v1`
 WHERE
@@ -96,6 +98,8 @@ SELECT channel,
   total_users,
   histogram,
   percentiles,
+  non_norm_histogram,
+  non_norm_percentiles,
   CAST(total_sample as INT) total_sample
 FROM ranked_data
 WHERE rnk = 1

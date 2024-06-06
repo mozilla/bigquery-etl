@@ -1,3 +1,12 @@
 version: 1
 include_file_patterns:
   - "*/*/*/monitors.yaml"
+montecarlo:
+  notifications:
+    slack:
+      - name: mc-test-channel-private
+        channel: C075T4RV1MH
+        audience: private-test-audience
+      - name: mc-test-channel
+        channel: C075SH4NJPQ
+        audience: test-audience

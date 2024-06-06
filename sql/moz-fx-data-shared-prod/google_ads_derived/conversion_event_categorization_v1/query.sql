@@ -47,6 +47,7 @@ clients_last_seen_raw AS (
     clients_first_seen_14_days_ago clients
     ON cls.client_id = clients.client_id
     AND cls.submission_date
+    -- join the clients_last_seen so that we get the first 7 days of each client's main ping records (for the clients that sent > 0 main pings in their first week)
     BETWEEN clients.first_main_ping
     AND DATE_ADD(clients.first_main_ping, INTERVAL 6 DAY)
 ),

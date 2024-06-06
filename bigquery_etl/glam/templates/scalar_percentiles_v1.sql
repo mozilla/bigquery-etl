@@ -17,7 +17,7 @@ WITH flat_clients_scalar_aggregates AS (
         attribute_combinations
     )
 }},
-percentiles AS (
+pre_percentiles AS (
     SELECT
         {{ attributes | join(",") }},
         {{ aggregate_attributes }},
@@ -31,8 +31,16 @@ percentiles AS (
         {{ attributes | join(",") }},
         {{ aggregate_attributes }},
         client_agg_type
+),
+percentiles AS (
+  SELECT
+    * REPLACE (mozfun.glam.map_from_array_offsets_precise([0.1, 1.0, 5.0, 25.0, 50.0, 75.0, 95.0, 99.0, 99.9], aggregates) AS aggregates)
+  FROM
+    pre_percentiles
 )
 SELECT
-  * REPLACE (mozfun.glam.map_from_array_offsets_precise([0.1, 1.0, 5.0, 25.0, 50.0, 75.0, 95.0, 99.0, 99.9], aggregates) AS aggregates)
-FROM
-  percentiles
+  *,
+  --Scalars are always non normalized.
+  --This is to comply with histograms' schema
+  aggregates AS non_norm_aggregates
+FROM percentiles

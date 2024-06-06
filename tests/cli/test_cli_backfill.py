@@ -2222,7 +2222,7 @@ class TestBackfill:
     def test_initiate_partitioned_backfill(
         self, mock_from_query_file, mock_deploy_table, check_call, mock_client, runner
     ):
-        Backfill_staging_table_name = (
+        backfill_staging_table_name = (
             "moz-fx-data-shared-prod.backfills_staging_derived.test__test_query_v1"
         )
 

@@ -1,5 +1,5 @@
 SELECT
-  activity_date AS activity_date,
+  activity_date,
   FORMAT_DATETIME("%F %T", DATETIME(activity_date, TIME(23, 59, 59))) AS activity_datetime,
   gclid,
   -- Names as represented in Google Ads

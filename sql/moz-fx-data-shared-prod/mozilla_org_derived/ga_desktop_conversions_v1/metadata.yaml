@@ -8,6 +8,10 @@ labels:
   owner1: kwindau@mozilla.com
 scheduling:
   dag_name: bqetl_census_feed
+  date_partition_parameter: activity_date
+  date_partition_offset: -2
+  parameters:
+  - submission_date:DATE:{{ds}}
 bigquery:
   time_partitioning:
     type: day

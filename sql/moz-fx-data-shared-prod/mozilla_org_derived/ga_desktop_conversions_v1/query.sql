@@ -26,4 +26,4 @@ FROM
   )
 WHERE
   did_conversion
-  AND activity_date >= DATE_SUB(CURRENT_DATE, INTERVAL 2 DAY)
+  AND activity_date = DATE_SUB(@activity_date, INTERVAL 2 DAY)

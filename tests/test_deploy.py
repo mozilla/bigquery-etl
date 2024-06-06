@@ -50,7 +50,25 @@ class TestDeploy:
         (query_path / "query.sql").write_text("SELECT 1")
 
         with pytest.raises(deploy.SkippedDeployException, match="Schema missing"):
-            deploy.deploy_table(query_file=tmp_path / "query.sql")
+            deploy.deploy_table(query_file=query_path / "query.sql")
+
+    def test_deploy_with_null_destination_raises_skip(self, tmp_path):
+        query_path = (
+            tmp_path / "sql" / "moz-fx-data-shared-prod" / "test" / "test_query_v1"
+        )
+        query_path.mkdir(parents=True)
+        (query_path / "query.sql").write_text("SELECT 1")
+        (query_path / "schema.yaml").write_text(
+            yaml.dump({"fields": [{"name": "f0_", "type": "INTEGER"}]})
+        )
+        (query_path / "metadata.yaml").write_text(
+            yaml.dump({"scheduling": {"destination_table": None}})
+        )
+
+        with pytest.raises(
+            deploy.SkippedDeployException, match="null destination_table configured"
+        ):
+            deploy.deploy_table(query_file=query_path / "query.sql")
 
     @patch("google.cloud.bigquery.Client")
     @patch("bigquery_etl.dryrun.DryRun")

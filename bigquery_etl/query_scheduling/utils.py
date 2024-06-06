@@ -3,6 +3,10 @@
 import re
 from datetime import datetime
 
+TIMEDELTA_RE = re.compile(
+    r"^-?((?P<hours>\d+)h)?((?P<minutes>\d+)m)?((?P<seconds>\d+)s)?$"
+)
+
 
 def is_timedelta_string(s):
     """
@@ -10,8 +14,7 @@ def is_timedelta_string(s):
 
     Timedeltas in configs are specified like: 1h, 30m, 1h15m, ...
     """
-    timedelta_regex = re.compile(r"^-?(\d+h)?(\d+m)?(\d+s)?$")
-    return timedelta_regex.match(s)
+    return TIMEDELTA_RE.match(s)
 
 
 def validate_timedelta_string(s):

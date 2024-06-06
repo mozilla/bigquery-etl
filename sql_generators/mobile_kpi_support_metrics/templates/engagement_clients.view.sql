@@ -20,34 +20,34 @@ WITH active_users AS (
     is_mobile,
   FROM
     `{{ project_id }}.{{ dataset }}.active_users`
-),
-attribution AS (
-  SELECT
-    client_id,
-    sample_id,
-    channel AS normalized_channel,
-    adjust_ad_group,
-    adjust_creative,
-    adjust_network,
-    {% if app_name == "fenix" %}
-      CASE
-        WHEN adjust_network IN ('Google Organic Search', 'Organic')
-          THEN ''
-        ELSE adjust_campaign
-      END AS adjust_campaign,
-    {% else %}
-      adjust_campaign,
-    {% endif %}
-    {% for field in product_specific_attribution_fields %}
-      {{ field.name if field.name != "adjust_campaign" }},
-    {% endfor %}
-  FROM
-    {% if app_name == "fenix" %}
-      `{{ project_id }}.{{ dataset }}_derived.firefox_android_clients_v1`
-    {% elif app_name == "firefox_ios" %}
-      `{{ project_id }}.{{ dataset }}_derived.firefox_ios_clients_v1`
-    {% endif %}
 )
+{% if attribution_fields %},
+  attribution AS (
+    SELECT
+      client_id,
+      sample_id,
+      channel AS normalized_channel,
+      {% for field in attribution_fields %}
+        {% if app_name == "fenix" and field.name == "adjust_campaign" %}
+          CASE
+            WHEN adjust_network IN ('Google Organic Search', 'Organic')
+              THEN 'Organic'
+            ELSE NULLIF(adjust_campaign, "")
+          END AS adjust_campaign,
+        {% elif field.type == "STRING" %}
+          NULLIF({{ field.name }}, "") AS {{ field.name }},
+        {% else %}
+          {{ field.name }},
+        {% endif %}
+      {% endfor %}
+    FROM
+      {% if app_name == "fenix" %}
+        `{{ project_id }}.{{ dataset }}_derived.firefox_android_clients_v1`
+      {% elif app_name == "firefox_ios" %}
+        `{{ project_id }}.{{ dataset }}_derived.firefox_ios_clients_v1`
+      {% endif %}
+  )
+{% endif %}
 SELECT
   submission_date,
   client_id,
@@ -63,11 +63,7 @@ SELECT
   is_wau,
   is_mau,
   is_mobile,
-  attribution.adjust_ad_group,
-  attribution.adjust_campaign,
-  attribution.adjust_creative,
-  attribution.adjust_network,
-  {% for field in product_specific_attribution_fields %}
+  {% for field in attribution_fields %}
     attribution.{{ field.name }},
   {% endfor %}
   CASE
@@ -83,6 +79,8 @@ SELECT
   END AS lifecycle_stage,
 FROM
   active_users
-LEFT JOIN
-  attribution
-  USING (client_id, sample_id, normalized_channel)
+  {% if attribution_fields %}
+    LEFT JOIN
+      attribution
+      USING (client_id, sample_id, normalized_channel)
+  {% endif %}

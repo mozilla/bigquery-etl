@@ -8,11 +8,10 @@ owners:
 labels:
   schedule: daily
   incremental: true
-# will be commented out in a follow up PR which will add a DAG
-# scheduling:
-#   dag_name:  # TODO: think about which DAG this should run in.
-#   depends_on_past: false
-#   task_group: {{ app_name }}
+scheduling:
+  dag_name: bqetl_mobile_kpi_metrics
+  depends_on_past: false
+  task_group: {{ app_name }}
 bigquery:
   time_partitioning:
     type: day

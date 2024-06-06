@@ -72,7 +72,10 @@ WITH events_unnested AS (
     SAFE_CAST(mozfun.map.get_key(extra, "n_chars") AS int) AS num_chars_typed,
     SAFE_CAST(mozfun.map.get_key(extra, "n_results") AS int) AS num_total_results,
   --If 0, then no result was selected.
-    NULLIF(SAFE_CAST(mozfun.map.get_key(extra, "selected_position") AS int), 0) AS selected_position,
+    NULLIF(
+      SAFE_CAST(mozfun.map.get_key(extra, "selected_position") AS int),
+      0
+    ) AS selected_position,
     mozfun.map.get_key(extra, "selected_result") AS selected_result,
     enumerated_array(
       SPLIT(mozfun.map.get_key(extra, "results"), ','),

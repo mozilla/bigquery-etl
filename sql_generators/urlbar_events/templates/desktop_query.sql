@@ -69,8 +69,8 @@ WITH events_unnested AS (
     COALESCE(metrics.boolean.urlbar_pref_suggest_nonsponsored, FALSE) AS pref_fx_suggestions,
     mozfun.map.get_key(extra, "engagement_type") AS engagement_type,
     mozfun.map.get_key(extra, "interaction") AS interaction,
-    CAST(mozfun.map.get_key(extra, "n_chars") AS int) AS num_chars_typed,
-    CAST(mozfun.map.get_key(extra, "n_results") AS int) AS num_total_results,
+    SAFE_CAST(mozfun.map.get_key(extra, "n_chars") AS int) AS num_chars_typed,
+    SAFE_CAST(mozfun.map.get_key(extra, "n_results") AS int) AS num_total_results,
   --If 0, then no result was selected.
     NULLIF(CAST(mozfun.map.get_key(extra, "selected_position") AS int), 0) AS selected_position,
     mozfun.map.get_key(extra, "selected_result") AS selected_result,

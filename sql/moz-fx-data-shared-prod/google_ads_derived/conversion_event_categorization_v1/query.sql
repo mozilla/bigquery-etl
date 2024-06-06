@@ -24,9 +24,7 @@ WITH clients_first_seen_14_days_ago AS (
     AND DATE_ADD(cfs.first_seen_date, INTERVAL 6 DAY)
   WHERE
     cfs.first_seen_date = @report_date --this is 14 days before {{ds}}
-    AND cfs.first_seen_date
-    BETWEEN '2023-11-01'
-    AND DATE_SUB(CURRENT_DATE, INTERVAL 8 DAY)
+    AND cfs.first_seen_date >= '2023-11-01'
 ),
 --Step 2: Get only the columns we need from clients last seen, for only the small window of time we need
 clients_last_seen_raw AS (

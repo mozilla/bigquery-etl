@@ -15,7 +15,7 @@ WITH clients_first_seen_14_days_ago AS (
   FROM
     `moz-fx-data-shared-prod.telemetry.clients_first_seen` cfs --contains all new clients, including those that never sent a main ping
   LEFT JOIN
-    `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v1` m
+    `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v1` m -- the "old" CFS table, contains the date of the client's *first main ping*
     ON cfs.client_id = m.client_id
     AND m.first_seen_date
     BETWEEN DATE_SUB(cfs.first_seen_date, INTERVAL 1 DAY)

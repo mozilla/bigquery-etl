@@ -1,16 +1,15 @@
 ---
 metric_hub:
   app_name: "multi_product"
-  slug: "search_forecasting_search_count"
-  alias: "search_forecasting_search_count"
+  slug: "search_forecasting_ad_clicks"
+  alias: "search_forecasting_ad_clicks"
   start_date: "2018-01-01"
   end_date: "last complete month"
   segments:
     device: "device"
-    channel: "'all'"
-    country: "CASE WHEN country = 'US' THEN 'US' ELSE 'ROW' END"
-    partner: "partner"
-  where: "partner = 'Google'"
+    channel: "'all' AS channel"
+    country: "CASE WHEN country = 'US' THEN 'US' ELSE 'ROW' END AS country"
+  where: "partner_name = 'Google'"
 
 forecast_model:
   model_type: "funnel"
@@ -30,34 +29,34 @@ forecast_model:
           changepoint_range: [0.8, 0.9]
           weekly_seasonality: True
           yearly_seasonality: True
-        cv_settings:
-          initial: "1296 days"
-          period: "30 days"
-          horizon: "30 days"
-          parallel: "processes"
+          cv_settings:
+            initial: "1296 days"
+            period: "30 days"
+            horizon: "30 days"
+            parallel: "processes"
       mobile:
-        start_date: "2020-01-01"
+        start_date: "2019-03-01"
         end_date: NULL
         holidays: ["easter"]
-        regressors: ["after_fenix", "in_covid"]
+        regressors: ["after_fenix", "addcode_topsite", "in_covid"]
         grid_parameters:
-          changepoint_prior_scale: [0.001, 0.01, 0.1]
+          changepoint_prior_scale: [0.001, 0.005, 0.05]
           weekly_seasonality: True
           yearly_seasonality: True
           growth: "logistic"
-        cv_settings:
-          initial: "366 days"
-          period: "30 days"
-          horizon: "30 days"
-          parallel: "processes"
+          cv_settings:
+            initial: "1196 days"
+            period: "30 days"
+            horizon: "30 days"
+            parallel: "processes"
 
 summarize:
   periods: ["day", "month"]
   numpy_aggregations: ["mean"]
-  percentiles: [10, 50, 90]
+  percentiles: [5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 95]
 
 write_results:
-  project: "moz-fx-data-shared_prod"
-  forecast_dataset: "search_derived"
-  forecast_table: "search_funnel_forecasts"
-  components_table: "search_forecast_model_components"
+  project: "moz-fx-data-shared-prod"
+  dataset: "mbowerman"
+  table: "test_prod_set"
+  components_table: "test_prod_components"

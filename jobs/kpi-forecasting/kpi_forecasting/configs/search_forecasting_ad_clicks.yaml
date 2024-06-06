@@ -5,37 +5,51 @@ metric_hub:
   alias: "search_forecasting_ad_clicks"
   start_date: "2018-01-01"
   end_date: "last complete month"
+  segments:
+    device: "device"
+    channel: "'all'"
+    country: "CASE WHEN country = 'US' THEN 'US' ELSE 'ROW' END"
+    partner: "partner"
+  where: "partner = 'Google'"
 
 forecast_model:
   model_type: "funnel"
-  segment_settings:
-    desktop:
-      start_date: "2018-01-01"
-      end_date: NULL
-      holidays: ["easter", "covid_sip11"]
-      regressors: ["post_esr_migration", "in_covid"]
-      parameters:
-        changepoint_prior_scale: [0.001, 0.01, 0.1, 0.2, 0.5]
-        changepoint_range: [0.8, 0.9]
-        weekly_seasonality: True
-        yearly_seasonality: True
+  start_date: NULL
+  end_date: NULL
+  use_holidays: False
+  parameters:
+    model_setting_split_dim: "device"
+    segment_settings:
+      desktop:
+        start_date: "2018-01-01"
+        end_date: NULL
+        holidays: ["easter", "covid_sip11"]
+        regressors: ["post_esr_migration", "in_covid", "ad_click_bug"]
+        grid_parameters:
+          changepoint_prior_scale: [0.001, 0.01, 0.1, 0.2, 0.5]
+          changepoint_range: [0.8, 0.9]
+          n_changepoints: [25, 50]
+          weekly_seasonality: True
+          yearly_seasonality: True
         cv_settings:
           initial: "1296 days"
           period: "30 days"
           horizon: "30 days"
           parallel: "processes"
-    mobile:
-      start_date: "2019-03-01"
-      end_date: NULL
-      holidays: ["easter"]
-      regressors: ["after_fenix", "addcode_topsite", "in_covid"]
-      parameters:
-        changepoint_prior_scale: [0.001, 0.005, 0.05]
-        weekly_seasonality: True
-        yearly_seasonality: True
-        growth: "logistic"
+      mobile:
+        start_date: "2022-01-01"
+        end_date: NULL
+        holidays: ["easter"]
+        regressors: ["after_fenix", "in_covid"]
+        grid_parameters:
+          changepoint_prior_scale: [.01, .1, .15, .2]
+          changepoint_range: [0.8, 0.9, 1]
+          n_changepoints: [25, 50]
+          weekly_seasonality: True
+          yearly_seasonality: True
+          growth: "logistic"
         cv_settings:
-          initial: "1196 days"
+          initial: "366 days"
           period: "30 days"
           horizon: "30 days"
           parallel: "processes"
@@ -43,9 +57,10 @@ forecast_model:
 summarize:
   periods: ["day", "month"]
   numpy_aggregations: ["mean"]
-  percentiles: [5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 95]
+  percentiles: [10, 50, 90]
 
 write_results:
-  project: "moz-fx-data-shared-prod"
-  dataset: "telemetry_derived"
-  table: "kpi_forecasts_v0"
+  project: "moz-fx-data-shared_prod"
+  forecast_dataset: "search_derived"
+  forecast_table: "search_funnel_forecasts"
+  components_table: "search_forecast_model_components"

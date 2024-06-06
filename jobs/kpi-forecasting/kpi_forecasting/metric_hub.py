@@ -2,6 +2,7 @@ import pandas as pd
 
 from dataclasses import dataclass
 from datetime import datetime
+from dotmap import DotMap
 from google.cloud import bigquery
 from mozanalysis.config import ConfigLoader
 from textwrap import dedent
@@ -37,7 +38,7 @@ class MetricHub:
     app_name: str
     slug: str
     start_date: str
-    segments: Dict[str, str] = None
+    segments: DotMap = None
     where: str = None
     end_date: str = None
     alias: str = None
@@ -67,7 +68,8 @@ class MetricHub:
 
         if self.segments:
             segment_select_query = []
-            for alias, sql in self.segments.items():
+            segments = dict(self.segments)
+            for alias, sql in segments.items():
                 segment_select_query.append(f"  {sql} AS {alias},")
             self.segment_select_query = "," + "\n              ".join(
                 segment_select_query

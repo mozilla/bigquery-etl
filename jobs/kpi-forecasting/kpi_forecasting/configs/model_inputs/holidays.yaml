@@ -1,5 +1,6 @@
 ---
 easter:
+  name: "easter"
   ds:
     [
       "2016-03-27",
@@ -17,41 +18,49 @@ easter:
   upper_window: 1
 
 covid_sip1:
+  name: "covid_sip1"
   ds: ["2020-03-14"]
   lower_window: 0
   upper_window: 45
 
 covid_sip11:
+  name: "covid_sip11"
   ds: ["2020-03-14"]
   lower_window: -14
   upper_window: 30
 
 covid_sip12:
+  name: "covid_sip12"
   ds: ["2020-09-15"]
   lower_window: -28
   upper_window: 30
 
 covid_esr:
+  name: "covid_esr"
   ds: ["2020-03-14"]
   lower_window: 0
   upper_window: 120
 
 covid_esr_rev:
+  name: "covid_esr_rev"
   ds: ["2020-03-14"]
   lower_window: -14
   upper_window: 105
 
 covid_esr_row_rev:
+  name: "covid_esr_row_rev"
   ds: ["2020-04-15"]
   lower_window: -45
   upper_window: 75
 
 covid_mobile_row_rev:
+  name: "covid_mobile_row_rev"
   ds: ["2020-04-01"]
   lower_window: -31
   upper_window: 60
 
 fenix_migration:
+  name: "fenix_migration"
   ds: ["2020-09-15"]
   lower_window: -28
   upper_window: 30

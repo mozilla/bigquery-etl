@@ -22,6 +22,7 @@ class ProphetRegressor:
     """
 
     name: str
+    description: str
     start_date: Optional[str] = None
     end_date: Optional[str] = None
     prior_scale: Union[int, float] = 1
@@ -38,22 +39,3 @@ class ProphetHoliday:
     ds: List
     lower_window: int
     upper_window: int
-
-
-@attr.s(auto_attribs=True, frozen=False)
-class ModelConfig:
-
-    metric: str
-    slug: str
-    segment: Dict[str, str]
-    start_date: Optional[str] = None
-    holidays: Optional[pd.DataFrame] = None
-    regressors: Optional[List[ProphetRegressor]] = []
-    parameters: Optional[Dict[str, Union[List[float], float]]] = None
-    cv_settings: Optional[Dict[str, str]] = {
-        "initial": "365 days",
-        "period": "30 days",
-        "horizon": "30 days",
-        "parallel": "processes",
-    }
-    trend_change: Optional[str] = ""

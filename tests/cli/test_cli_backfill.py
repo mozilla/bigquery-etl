@@ -1712,7 +1712,7 @@ class TestBackfill:
 
     def test_get_backfill_staging_qualified_table_name(self, runner):
         qualified_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
-        backfill_table_id = "test_query_v1_2023_05_30"
+        backfill_table_id = "test__test_query_v1_2023_05_30"
 
         actual_backfill_staging = get_backfill_staging_qualified_table_name(
             qualified_table_name, "2023-05-30"
@@ -2158,7 +2158,7 @@ class TestBackfill:
         get_table.side_effect = [
             None,  # Check that staging data exists
             NotFound(  # Check that clone does not exist
-                "moz-fx-data-shared-prod.backfills_staging_derived.test_query_v1_backup_2021_05_03"
+                "moz-fx-data-shared-prod.backfills_staging_derived.test__test_query_v1_backup_2021_05_03"
                 "not found"
             ),
         ]
@@ -2209,7 +2209,7 @@ class TestBackfill:
             for i, call in enumerate(copy_table.call_args_list[1:]):
                 d = date(2021, 1, 3) + timedelta(days=i)
                 assert call.args == (
-                    f'moz-fx-data-shared-prod.backfills_staging_derived.test_query_v1_2021_05_03${d.strftime("%Y%m%d")}',
+                    f'moz-fx-data-shared-prod.backfills_staging_derived.test__test_query_v1_2021_05_03${d.strftime("%Y%m%d")}',
                     f'moz-fx-data-shared-prod.test.test_query_v1${d.strftime("%Y%m%d")}',
                 )
             assert delete_table.call_count == 1
@@ -2222,7 +2222,7 @@ class TestBackfill:
     ):
         mock_client().get_table.side_effect = [
             NotFound(  # Check that staging data does not exist
-                "moz-fx-data-shared-prod.backfills_staging_derived.test_query_v1_backup_2021_05_03"
+                "moz-fx-data-shared-prod.backfills_staging_derived.test__test_query_v1_backup_2021_05_03"
                 "not found"
             ),
             None,  # Check that production data exists during dry run
@@ -2277,7 +2277,7 @@ class TestBackfill:
                 query_file=Path(
                     "sql/moz-fx-data-shared-prod/test/test_query_v1/query.sql"
                 ),
-                destination_table="moz-fx-data-shared-prod.backfills_staging_derived.test_query_v1_2021_05_03",
+                destination_table="moz-fx-data-shared-prod.backfills_staging_derived.test__test_query_v1_2021_05_03",
             )
 
             expected_submission_date_params = [
@@ -2286,7 +2286,7 @@ class TestBackfill:
             ]
 
             expected_destination_table_params = [
-                f"--destination_table=moz-fx-data-shared-prod:backfills_staging_derived.test_query_v1_2021_05_03$2021010{day}"
+                f"--destination_table=moz-fx-data-shared-prod:backfills_staging_derived.test__test_query_v1_2021_05_03$2021010{day}"
                 for day in range(3, 9)
             ]
 
@@ -2313,7 +2313,7 @@ class TestBackfill:
 
         mock_client().get_table.side_effect = [
             NotFound(  # Check that staging data does not exist
-                "moz-fx-data-shared-prod.backfills_staging_derived.test_query_v1_backup_2021_05_03"
+                "moz-fx-data-shared-prod.backfills_staging_derived.test__test_query_v1_backup_2021_05_03"
                 "not found"
             ),
             None,  # Check that production data exists during dry run
@@ -2371,7 +2371,7 @@ class TestBackfill:
                 query_file=Path(
                     "sql/moz-fx-data-shared-prod/test/test_query_v1/query.sql"
                 ),
-                destination_table="moz-fx-data-shared-prod.backfills_staging_derived.test_query_v1_2021_05_03",
+                destination_table="moz-fx-data-shared-prod.backfills_staging_derived.test__test_query_v1_2021_05_03",
             )
             assert result.exit_code == 0
 
@@ -2381,7 +2381,7 @@ class TestBackfill:
             ]
 
             expected_destination_table_params = [
-                f"--destination_table=moz-fx-data-shared-prod:backfills_staging_derived.test_query_v1_2021_05_03$2021010{day}"
+                f"--destination_table=moz-fx-data-shared-prod:backfills_staging_derived.test__test_query_v1_2021_05_03$2021010{day}"
                 for day in range(3, 9)
             ]
 
@@ -2409,7 +2409,7 @@ class TestBackfill:
 
         mock_client().get_table.side_effect = [
             NotFound(  # Check that staging data does not exist
-                "moz-fx-data-shared-prod.backfills_staging_derived.test_query_v1_backup_2021_05_03"
+                "moz-fx-data-shared-prod.backfills_staging_derived.test__test_query_v1_backup_2021_05_03"
                 "not found"
             ),
             None,  # Check that production data exists during dry run
@@ -2461,7 +2461,7 @@ class TestBackfill:
                 query_file=Path(
                     "sql/moz-fx-data-shared-prod/test/test_query_v1/query.sql"
                 ),
-                destination_table="moz-fx-data-shared-prod.backfills_staging_derived.test_query_v1_2021_05_03",
+                destination_table="moz-fx-data-shared-prod.backfills_staging_derived.test__test_query_v1_2021_05_03",
             )
             assert result.exit_code == 1
             assert "Backfill initiate failed to deploy" in str(result.exception)

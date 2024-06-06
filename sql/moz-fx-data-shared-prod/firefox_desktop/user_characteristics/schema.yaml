@@ -527,6 +527,50 @@ fields:
       description: 'Number of domains the users has a non-default zoom level.
 
         '
+    - name: characteristics_inner_height
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Inner height of user''s browser.
+
+        '
+    - name: characteristics_inner_width
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Inner width of user''s browser.
+
+        '
+    - name: characteristics_outer_height
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Outer height of user''s browser.
+
+        '
+    - name: characteristics_outer_width
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Outer width of user''s browser.
+
+        '
+    - name: characteristics_posx
+      type: INTEGER
+      mode: NULLABLE
+      description: 'window.screen.left value. Provides us the position of the browser
+        and the width of any possible task/menu bar
+
+        '
+    - name: characteristics_posy
+      type: INTEGER
+      mode: NULLABLE
+      description: 'window.screen.top value. Provides us the position of the browser
+        and the height of any possible task/menu bar
+
+        '
+    - name: characteristics_size_mode
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether window is maximized, minimized, normal or fullscreen
+
+        '
   - name: string
     type: RECORD
     mode: NULLABLE
@@ -769,6 +813,99 @@ fields:
         contains the fonts that are missing from the user''s computer.
 
         '
+    - name: characteristics_canvasdata1
+      type: STRING
+      mode: NULLABLE
+      description: 'The base64 encoded form of an image rendered on a canvas. The
+        image is a simple organge box and used as a control image
+
+        '
+    - name: characteristics_canvasdata10
+      type: STRING
+      mode: NULLABLE
+      description: 'The base64 encoded form of an image rendered on a canvas. The
+        image is a font shipped with Firefox rendered with italics, rotation, and
+        shadow-blur.
+
+        '
+    - name: characteristics_canvasdata11_webgl
+      type: STRING
+      mode: NULLABLE
+      description: 'The base64 encoded form of an image rendered on a WebGL canvas
+        (instead of Canvas2D). IT is a RGB gradient cube.
+
+        '
+    - name: characteristics_canvasdata12_fingerprintjs1
+      type: STRING
+      mode: NULLABLE
+      description: 'The base64 encoded form of an image rendered on a canvas, it is
+        a copy of fingerprintjs'' text canvas
+
+        '
+    - name: characteristics_canvasdata13_fingerprintjs2
+      type: STRING
+      mode: NULLABLE
+      description: 'The base64 encoded form of an image rendered on a canvas, it is
+        a copy of fingerprintjs'' geometry canvas
+
+        '
+    - name: characteristics_canvasdata2
+      type: STRING
+      mode: NULLABLE
+      description: 'The base64 encoded form of an image rendered on a canvas. The
+        image is a bordered triage, and used to test point interpolation
+
+        '
+    - name: characteristics_canvasdata3
+      type: STRING
+      mode: NULLABLE
+      description: 'The base64 encoded form of an image rendered on a canvas. The
+        image is a stretched photographic image, used to test image operations.
+
+        '
+    - name: characteristics_canvasdata4
+      type: STRING
+      mode: NULLABLE
+      description: 'The base64 encoded form of an image rendered on a canvas. The
+        image is two rotated, semi-transparenct overlapping squares, used to test
+        transparency and point interpolation.
+
+        '
+    - name: characteristics_canvasdata5
+      type: STRING
+      mode: NULLABLE
+      description: 'The base64 encoded form of an image rendered on a canvas. The
+        image is a local font rendered normally.
+
+        '
+    - name: characteristics_canvasdata6
+      type: STRING
+      mode: NULLABLE
+      description: 'The base64 encoded form of an image rendered on a canvas. The
+        image is a local font rendered with italics, rotation, and shadow-blur.
+
+        '
+    - name: characteristics_canvasdata7
+      type: STRING
+      mode: NULLABLE
+      description: 'The base64 encoded form of an image rendered on a canvas. The
+        image is a system-ui font rendered normally.
+
+        '
+    - name: characteristics_canvasdata8
+      type: STRING
+      mode: NULLABLE
+      description: 'The base64 encoded form of an image rendered on a canvas. The
+        image is a system-ui font rendered with italics, rotation, and shadow-blur.
+
+        '
+    - name: characteristics_canvasdata9
+      type: STRING
+      mode: NULLABLE
+      description: 'The base64 encoded form of an image rendered on a canvas. The
+        image is a font shipped with Firefox rendered normally.
+
+        '
   - name: string_list
     type: RECORD
     mode: NULLABLE
@@ -781,6 +918,45 @@ fields:
     mode: NULLABLE
     fields:
     - name: characteristics_missing_fonts
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_canvasdata1
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_canvasdata10
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_canvasdata11_webgl
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_canvasdata12_fingerprintjs1
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_canvasdata13_fingerprintjs2
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_canvasdata2
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_canvasdata3
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_canvasdata4
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_canvasdata5
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_canvasdata6
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_canvasdata7
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_canvasdata8
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_canvasdata9
       type: STRING
       mode: NULLABLE
 - name: normalized_app_name

@@ -13,7 +13,7 @@ from jinja2 import Environment, FileSystemLoader
 
 from bigquery_etl.cli.utils import use_cloud_function_option
 from bigquery_etl.format_sql.formatter import reformat
-from bigquery_etl.util.common import write_sql
+from bigquery_etl.util.common import write_sql, render
 
 # fmt: off
 FIREFOX_ANDROID_TUPLES = [
@@ -76,6 +76,7 @@ def union_statements(statements: List[str]):
 @use_cloud_function_option
 def generate(output_dir, target_project, use_cloud_function):
     """Generate mobile search clients daily query and print to stdout."""
+
     base_dir = Path(__file__).parent
 
     output_dir = Path(output_dir) / target_project
@@ -88,6 +89,7 @@ def generate(output_dir, target_project, use_cloud_function):
     android_klar_template = env.get_template("android_klar.template.sql")
     ios_focus_template = env.get_template("ios_focus.template.sql")
     ios_klar_template = env.get_template("ios_klar.template.sql")
+    metadata_template = "metadata.yaml"
 
     firefox_android_queries = [
         android_query_template.render(
@@ -195,3 +197,16 @@ def generate(output_dir, target_project, use_cloud_function):
         sql=reformat(search_query),
         skip_existing=False,
     )
+
+    write_sql(
+            output_dir=output_dir,
+            full_table_id=f"{target_project}.{DATASET}.{TABLE_NAME}",
+            basename="metadata.yaml",
+            sql=render(
+                metadata_template,
+                template_folder=base_dir / "templates",
+                format=False,
+            ),
+            skip_existing=False,
+    )
+

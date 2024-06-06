@@ -50,7 +50,7 @@ IF
         client_info.app_display_version AS version,
         ping_info
       FROM
-        `moz-fx-data-shared-prod.firefox_desktop_live.newtab_v1`
+        `moz-fx-data-shared-prod.firefox_desktop_live.prototype_no_code_events_v1`
       UNION ALL
       SELECT
         submission_timestamp,
@@ -70,7 +70,7 @@ IF
         client_info.app_display_version AS version,
         ping_info
       FROM
-        `moz-fx-data-shared-prod.firefox_desktop_live.prototype_no_code_events_v1`
+        `moz-fx-data-shared-prod.firefox_desktop_live.events_v1`
       UNION ALL
       SELECT
         submission_timestamp,
@@ -80,7 +80,7 @@ IF
         client_info.app_display_version AS version,
         ping_info
       FROM
-        `moz-fx-data-shared-prod.firefox_desktop_live.events_v1`
+        `moz-fx-data-shared-prod.firefox_desktop_live.newtab_v1`
     )
   CROSS JOIN
     UNNEST(events) AS event,

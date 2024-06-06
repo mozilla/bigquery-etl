@@ -38,7 +38,7 @@ metrics AS (
       SAFE_OFFSET(0)
     ] AS normalized_channel,
     CAST(NULL AS INTEGER) AS uri_count,
-    CAST(NULL AS INTEGER) AS is_default_browser,
+    CAST(NULL AS BOOL) AS is_default_browser,
   FROM
     `moz-fx-data-shared-prod.klar_android.metrics_clients_last_seen`
   WHERE

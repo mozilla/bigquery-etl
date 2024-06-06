@@ -13,6 +13,7 @@ SELECT
   os,
   os_version,
   is_default_browser,
+  policies_is_enterprise,
   channel,
   CAST(
     NULL AS STRING
@@ -47,4 +48,5 @@ GROUP BY
   os,
   os_version,
   is_default_browser,
+  policies_is_enterprise,
   channel

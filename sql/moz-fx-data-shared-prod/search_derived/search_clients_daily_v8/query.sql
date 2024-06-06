@@ -51,6 +51,26 @@ clients_with_adblocker_addons AS (
     client_id,
     submission_date
 ),
+is_enterprise_policies AS (
+  SELECT
+    client_id,
+    DATE(submission_timestamp) AS submission_date,
+    mozfun.stats.mode_last(
+      ARRAY_AGG(
+        payload.processes.parent.scalars.policies_is_enterprise
+        ORDER BY
+          submission_timestamp
+      )
+    ) AS policies_is_enterprise
+  FROM
+    `moz-fx-data-shared-prod`.telemetry_stable.main_v5
+  WHERE
+    normalized_app_name = 'Firefox'
+    AND document_id IS NOT NULL
+  GROUP BY
+    client_id,
+    submission_date
+),
 combined_access_point AS (
   SELECT
     * EXCEPT (has_adblocker_addon),
@@ -104,6 +124,9 @@ combined_access_point AS (
     telemetry.clients_daily
   LEFT JOIN
     clients_with_adblocker_addons
+    USING (client_id, submission_date)
+  LEFT JOIN
+    is_enterprise_policies
     USING (client_id, submission_date)
 ),
 augmented AS (
@@ -229,6 +252,7 @@ counted AS (
     country,
     get_search_addon_version(active_addons) AS addon_version,
     has_adblocker_addon,
+    policies_is_enterprise,
     app_version,
     distribution_id,
     locale,

@@ -26,3 +26,8 @@ SELECT
   *
 FROM
   `{{ project_id }}.{{ focus_android_dataset }}.active_users_aggregates`
+UNION ALL
+SELECT
+  *
+FROM
+  `{{ project_id }}.{{ klar_android_dataset }}.active_users_aggregates`

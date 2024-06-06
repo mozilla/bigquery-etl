@@ -15,7 +15,7 @@ scheduling:
 bigquery:
   time_partitioning:
     type: day
-    field: activity_date
+    field: run_date
     require_partition_filter: false
     expiration_days: null
   range_partitioning: null

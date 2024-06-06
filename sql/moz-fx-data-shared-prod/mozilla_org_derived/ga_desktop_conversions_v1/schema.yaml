@@ -7,6 +7,10 @@ fields:
   mode: NULLABLE
   type: STRING
   description: Activity Datetime
+- name: run_date
+  mode: NULLABLE
+  type: DATE
+  description: Run Date - The submission date
 - name: gclid
   mode: NULLABLE
   type: STRING

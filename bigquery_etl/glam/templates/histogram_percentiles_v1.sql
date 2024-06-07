@@ -1,6 +1,6 @@
 {{ header }}
 SELECT
-  * EXCEPT (aggregates) REPLACE('percentiles' AS agg_type),
+  * EXCEPT (aggregates, non_norm_aggregates) REPLACE('percentiles' AS agg_type),
   ARRAY<STRUCT<key STRING, value FLOAT64>>[
     ('0.1', mozfun.glam.percentile(0.1, aggregates, metric_type)),
     ('1', mozfun.glam.percentile(1, aggregates, metric_type)),
@@ -24,4 +24,4 @@ SELECT
     ('99.9', mozfun.glam.percentile(99.9, non_norm_aggregates, metric_type))
   ] AS non_norm_aggregates
 FROM
-  glam_etl.{{ prefix }}__histogram_probe_counts_v1
+  glam_etl.{{ prefix }} __histogram_probe_counts_v1

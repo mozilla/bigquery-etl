@@ -24,4 +24,4 @@ SELECT
     ('99.9', mozfun.glam.percentile(99.9, non_norm_aggregates, metric_type))
   ] AS non_norm_aggregates
 FROM
-  glam_etl.{{ prefix }} __histogram_probe_counts_v1
+  glam_etl.{{ prefix }}__histogram_probe_counts_v1

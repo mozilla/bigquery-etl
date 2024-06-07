@@ -141,5 +141,11 @@ def _sql_file_valid(
         respect_skip=respect_skip,
     )
     if validate_schemas:
-        return result.validate_schema(), sqlfile
+        try:
+            success = result.validate_schema()
+        except Exception as e:  # validate_schema raises base exception
+            click.echo(e, err=True)
+            success = False
+        return success, sqlfile
+
     return result.is_valid(), sqlfile

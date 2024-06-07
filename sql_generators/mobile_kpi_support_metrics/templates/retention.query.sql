@@ -8,11 +8,7 @@ SELECT
   app_version,
   locale,
   is_mobile,
-  adjust_ad_group,
-  adjust_campaign,
-  adjust_creative,
-  adjust_network,
-  {% for field in product_specific_attribution_fields %}
+  {% for field in attribution_fields %}
     {{ field.name }},
   {% endfor %}
   COUNTIF(ping_sent_metric_date) AS ping_sent_metric_date,
@@ -25,8 +21,15 @@ SELECT
 FROM
   `{{ project_id }}.{{ dataset }}.retention_clients`
 WHERE
-  metric_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
-  AND submission_date = @submission_date
+  {% raw %}
+  {% if is_init() %}
+    metric_date < DATE_SUB(CURRENT_DATE, INTERVAL 27 DAY)
+    AND submission_date < CURRENT_DATE
+  {% else %}
+    metric_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+    AND submission_date = @submission_date
+  {% endif %}
+  {% endraw %}
 GROUP BY
   metric_date,
   first_seen_date,
@@ -35,12 +38,10 @@ GROUP BY
   country,
   app_version,
   locale,
-  is_mobile,
-  adjust_ad_group,
-  adjust_campaign,
-  adjust_creative,
-  adjust_network,
-  {% for field in product_specific_attribution_fields %}
+  is_mobile
+  {% for field in attribution_fields %}
+    {% if loop.first %},
+    {% endif %}
     {{ field.name }}
     {% if not loop.last %},
     {% endif %}

@@ -9,6 +9,7 @@ description: |
 owners:
   - akomar@mozilla.com
   - cmorales@mozilla.com
+  - akommasani@mozilla.com
 labels:
   schedule: daily
 scheduling:

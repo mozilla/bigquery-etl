@@ -17,31 +17,48 @@ GENERATOR_ROOT = Path(path.dirname(__file__))
 
 HEADER = f"-- Query generated via `{GENERATOR_ROOT.name}` SQL generator."
 VERSION = "v1"
-TEMPLATES = {
-    "active_users.view.sql": {
-        "include_additional_attribution_fields_in_union": False,
-    },
-    "retention_clients.view.sql": {
-        "include_additional_attribution_fields_in_union": True,
-    },
-    "retention.query.sql": {
-        "include_additional_attribution_fields_in_union": True,
-    },
-    "retention.view.sql": {
-        "include_additional_attribution_fields_in_union": True,
-    },
-    "engagement_clients.view.sql": {
-        "include_additional_attribution_fields_in_union": True,
-    },
-    "engagement.query.sql": {
-        "include_additional_attribution_fields_in_union": True,
-    },
-    "engagement.view.sql": {
-        "include_additional_attribution_fields_in_union": True,
-    },
-}
+TEMPLATES = (
+    "active_users.view.sql",
+    "retention_clients.view.sql",
+    "retention.query.sql",
+    "retention.view.sql",
+    "engagement_clients.view.sql",
+    "engagement.query.sql",
+    "engagement.view.sql",
+)
 
-ADDITIONAL_ATTRIBUTION_FIELDS_FENIX = [
+INSTALL_SOURCE = [
+    {
+        "name": "install_source",
+        "type": "STRING",
+        "description": "The source of a profile installation.",
+    },
+]
+
+ADJUST_FIELDS = [
+    {
+        "name": "adjust_ad_group",
+        "type": "STRING",
+        "description": "Adjust Ad Group the profile is attributed to.",
+    },
+    {
+        "name": "adjust_campaign",
+        "type": "STRING",
+        "description": "Adjust Campaign the profile is attributed to.",
+    },
+    {
+        "name": "adjust_creative",
+        "type": "STRING",
+        "description": "Adjust Creative the profile is attributed to.",
+    },
+    {
+        "name": "adjust_network",
+        "type": "STRING",
+        "description": "Adjust Network the profile is attributed to.",
+    },
+]
+
+FENIX_ATTRIBUTION_FIELDS = [
     {
         "name": "play_store_attribution_campaign",
         "type": "STRING",
@@ -62,19 +79,17 @@ ADDITIONAL_ATTRIBUTION_FIELDS_FENIX = [
         "type": "STRING",
         "description": "Facebook app linked to paid marketing.",
     },
-    {
-        "name": "install_source",
-        "type": "STRING",
-        "description": "The source of a profile installation.",
-    },
+    *INSTALL_SOURCE,
+    *ADJUST_FIELDS,
 ]
 
-ADDITIONAL_ATTRIBUTION_FIELDS_FIREFOX_IOS = [
+FIREFOX_IOS_ATTRIBUTION_FIELDS = [
     {
         "name": "is_suspicious_device_client",
         "type": "BOOLEAN",
         "description": "Flag to identify suspicious device users, see bug-1846554 for more info.",
     },
+    *ADJUST_FIELDS,
 ]
 
 
@@ -84,10 +99,7 @@ class Product:
 
     friendly_name: str
     is_mobile_kpi: bool = False
-    active_users_view_only: bool = (
-        False  # TODO: for now only fenix and firefox_ios has a client table
-    )
-    product_specific_attribution_fields: list = field(default_factory=list)
+    attribution_fields: list = field(default_factory=list)
 
 
 class MobileProducts(Enum):
@@ -96,21 +108,22 @@ class MobileProducts(Enum):
     fenix = Product(
         friendly_name="Fenix",
         is_mobile_kpi=True,
-        product_specific_attribution_fields=ADDITIONAL_ATTRIBUTION_FIELDS_FENIX,
+        attribution_fields=FENIX_ATTRIBUTION_FIELDS,
     )
     focus_android = Product(
-        friendly_name="Focus Android", is_mobile_kpi=True, active_users_view_only=True
+        friendly_name="Focus Android",
+        is_mobile_kpi=True,
+    )
+    klar_android = Product(
+        friendly_name="Klar Android",
     )
     firefox_ios = Product(
         friendly_name="Firefox iOS",
         is_mobile_kpi=True,
-        product_specific_attribution_fields=ADDITIONAL_ATTRIBUTION_FIELDS_FIREFOX_IOS,
+        attribution_fields=FIREFOX_IOS_ATTRIBUTION_FIELDS,
     )
-    focus_ios = Product(
-        friendly_name="Focus iOS", is_mobile_kpi=True, active_users_view_only=True
-    )
-    klar_ios = Product(friendly_name="Klar iOS", active_users_view_only=True)
-    klar_android = Product(friendly_name="Klar Android", active_users_view_only=True)
+    focus_ios = Product(friendly_name="Focus iOS", is_mobile_kpi=True)
+    klar_ios = Product(friendly_name="Klar iOS")
 
 
 @click.command()
@@ -148,19 +161,16 @@ def generate(target_project, output_dir, use_cloud_function):
         "schema.yaml",
     )
 
-    all_additional_attribution_fields = {
+    all_possible_attribution_fields = {
         field["name"]: field
         for field in list(
             itertools.chain.from_iterable(
-                [
-                    product.value.product_specific_attribution_fields
-                    for product in MobileProducts
-                ]
+                [product.value.attribution_fields for product in MobileProducts]
             )
         )
     }
 
-    for template, template_settings in TEMPLATES.items():
+    for template in TEMPLATES:
         for product in MobileProducts:
             target_name, target_filename, target_extension = template.split(".")
 
@@ -174,13 +184,6 @@ def generate(target_project, output_dir, use_cloud_function):
             full_table_id = (
                 table_id + f"_{VERSION}" if target_filename == "query" else table_id
             )
-
-            # Other SQL requires a clients table, currently only fenix and firefox_ios has one.
-            # This is why skipping this skip for now.
-            if product.value.active_users_view_only and not target_name.startswith(
-                "active_users"
-            ):
-                continue
 
             sql_template = env.get_template(template)
             rendered_sql = reformat(
@@ -251,28 +254,24 @@ def generate(target_project, output_dir, use_cloud_function):
             products=[
                 {
                     "name": product.name,
-                    "additional_attribution_fields": (
+                    "all_possible_attribution_fields": (
                         [
                             {
                                 "exists": field_name
                                 in [
                                     field["name"]
-                                    for field in product.value.product_specific_attribution_fields
+                                    for field in product.value.attribution_fields
                                 ],
                                 "name": field_name,
                                 "type": field_properties["type"],
                             }
-                            for field_name, field_properties in all_additional_attribution_fields.items()
+                            for field_name, field_properties in all_possible_attribution_fields.items()
                         ]
-                        if template_settings[
-                            "include_additional_attribution_fields_in_union"
-                        ]
+                        if not template.startswith("active_users")
                         else []
                     ),
                 }
                 for product in MobileProducts
-                if target_name.startswith("active_users")
-                or not product.value.active_users_view_only
             ],
         )
 

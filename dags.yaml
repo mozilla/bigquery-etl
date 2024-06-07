@@ -1728,3 +1728,4 @@ bqetl_cloudflare:
   tags:
     - triage/no_triage
     - repo/bigquery-etl
+    - impact/tier_3

@@ -637,6 +637,26 @@ fields:
         socialtracking-protection, tracking-protection]
 
         '
+    - name: webauthn_create_failure
+      type: INTEGER
+      mode: NULLABLE
+      description: The total number of failed calls to navigator.credentials.create.
+    - name: webauthn_create_passkey
+      type: INTEGER
+      mode: NULLABLE
+      description: The number of client-side discoverable credentials (passkeys) created.
+    - name: webauthn_create_success
+      type: INTEGER
+      mode: NULLABLE
+      description: The total number of successful calls to navigator.credentials.create.
+    - name: webauthn_get_failure
+      type: INTEGER
+      mode: NULLABLE
+      description: The total number of failed calls to navigator.credentials.get.
+    - name: webauthn_get_success
+      type: INTEGER
+      mode: NULLABLE
+      description: The total number of successful calls to navigator.credentials.get.
   - name: datetime
     type: RECORD
     mode: NULLABLE
@@ -2354,6 +2374,54 @@ fields:
       description: 'The count of translation requests, along with their type.
 
         '
+    - name: cert_compression_failures
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: The number of times each certificate compression algorithm returned
+        an error.
+    - name: cert_compression_used
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: The number of times each certificate compression algorithm was
+        used.
+    - name: webauthn_create_authenticator_attachment
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: The number of successfully created credentials by authenticator
+        attachment modality.
+    - name: webauthn_get_authenticator_attachment
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: The number of successfully asserted credentials by authenticator
+        attachment modality.
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -3925,6 +3993,54 @@ fields:
         connection for a given channel.
 
         '
+    - name: cert_compression_brotli_saved_bytes
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: The difference between the length of encoded certificate vs the
+        actual certificate.
+    - name: cert_compression_zlib_saved_bytes
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: The difference between the length of encoded certificate vs the
+        actual certificate.
   - name: labeled_boolean
     type: RECORD
     mode: NULLABLE

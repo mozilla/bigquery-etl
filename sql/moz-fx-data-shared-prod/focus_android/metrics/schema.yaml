@@ -427,6 +427,21 @@ fields:
     - name: bounce_tracking_protection_purge_count_classified_tracker
       type: INTEGER
       mode: NULLABLE
+    - name: webauthn_create_failure
+      type: INTEGER
+      mode: NULLABLE
+    - name: webauthn_create_passkey
+      type: INTEGER
+      mode: NULLABLE
+    - name: webauthn_create_success
+      type: INTEGER
+      mode: NULLABLE
+    - name: webauthn_get_failure
+      type: INTEGER
+      mode: NULLABLE
+    - name: webauthn_get_success
+      type: INTEGER
+      mode: NULLABLE
   - name: datetime
     type: RECORD
     mode: NULLABLE
@@ -1705,6 +1720,46 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
+    - name: cert_compression_failures
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: cert_compression_used
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: webauthn_create_authenticator_attachment
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: webauthn_get_authenticator_attachment
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -2894,6 +2949,46 @@ fields:
           type: INTEGER
           mode: NULLABLE
     - name: network_tls_early_data_bytes_written
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+    - name: cert_compression_brotli_saved_bytes
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+    - name: cert_compression_zlib_saved_bytes
       type: RECORD
       mode: NULLABLE
       fields:

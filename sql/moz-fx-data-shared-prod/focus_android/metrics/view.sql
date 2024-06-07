@@ -109,7 +109,12 @@ SELECT
       metrics.counter.httpsfirst_upgraded_schemeless,
       metrics.counter.hls_canplay_requested,
       metrics.counter.hls_canplay_supported,
-      metrics.counter.bounce_tracking_protection_purge_count_classified_tracker
+      metrics.counter.bounce_tracking_protection_purge_count_classified_tracker,
+      metrics.counter.webauthn_create_failure,
+      metrics.counter.webauthn_create_passkey,
+      metrics.counter.webauthn_create_success,
+      metrics.counter.webauthn_get_failure,
+      metrics.counter.webauthn_get_success
     ) AS `counter`,
     metrics.datetime,
     STRUCT(
@@ -236,7 +241,11 @@ SELECT
       metrics.labeled_counter.network_tls_early_data_negotiated,
       metrics.labeled_counter.networking_http_redirect_to_scheme_subresource,
       metrics.labeled_counter.networking_http_redirect_to_scheme_top_level,
-      metrics.labeled_counter.translations_request_count
+      metrics.labeled_counter.translations_request_count,
+      metrics.labeled_counter.cert_compression_failures,
+      metrics.labeled_counter.cert_compression_used,
+      metrics.labeled_counter.webauthn_create_authenticator_attachment,
+      metrics.labeled_counter.webauthn_get_authenticator_attachment
     ) AS `labeled_counter`,
     metrics.memory_distribution,
     STRUCT(
@@ -375,7 +384,12 @@ SELECT
       metrics.counter.httpsfirst_upgraded_schemeless,
       metrics.counter.hls_canplay_requested,
       metrics.counter.hls_canplay_supported,
-      metrics.counter.bounce_tracking_protection_purge_count_classified_tracker
+      metrics.counter.bounce_tracking_protection_purge_count_classified_tracker,
+      metrics.counter.webauthn_create_failure,
+      metrics.counter.webauthn_create_passkey,
+      metrics.counter.webauthn_create_success,
+      metrics.counter.webauthn_get_failure,
+      metrics.counter.webauthn_get_success
     ) AS `counter`,
     metrics.datetime,
     STRUCT(
@@ -502,7 +516,11 @@ SELECT
       metrics.labeled_counter.network_tls_early_data_negotiated,
       metrics.labeled_counter.networking_http_redirect_to_scheme_subresource,
       metrics.labeled_counter.networking_http_redirect_to_scheme_top_level,
-      metrics.labeled_counter.translations_request_count
+      metrics.labeled_counter.translations_request_count,
+      metrics.labeled_counter.cert_compression_failures,
+      metrics.labeled_counter.cert_compression_used,
+      metrics.labeled_counter.webauthn_create_authenticator_attachment,
+      metrics.labeled_counter.webauthn_get_authenticator_attachment
     ) AS `labeled_counter`,
     metrics.memory_distribution,
     STRUCT(

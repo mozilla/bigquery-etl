@@ -906,6 +906,26 @@ fields:
         image is a font shipped with Firefox rendered normally.
 
         '
+    - name: characteristics_audio_devices
+      type: STRING
+      mode: NULLABLE
+      description: 'A JSON object containing sample rate and max channel count of
+        every audio device, and output latency of default device
+
+        '
+    - name: characteristics_media_devices
+      type: STRING
+      mode: NULLABLE
+      description: 'A JSON object containing the number of audio input/output, video
+        input and the number of unique group ids.
+
+        '
+    - name: characteristics_voices
+      type: STRING
+      mode: NULLABLE
+      description: 'Available speechSynthesis voices.
+
+        '
   - name: string_list
     type: RECORD
     mode: NULLABLE
@@ -957,6 +977,15 @@ fields:
       type: STRING
       mode: NULLABLE
     - name: characteristics_canvasdata9
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_audio_devices
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_media_devices
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_voices
       type: STRING
       mode: NULLABLE
 - name: normalized_app_name

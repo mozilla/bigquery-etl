@@ -180,7 +180,11 @@ SELECT
       metrics.labeled_counter.network_tls_early_data_negotiated,
       metrics.labeled_counter.networking_http_redirect_to_scheme_subresource,
       metrics.labeled_counter.networking_http_redirect_to_scheme_top_level,
-      metrics.labeled_counter.translations_request_count
+      metrics.labeled_counter.translations_request_count,
+      metrics.labeled_counter.cert_compression_failures,
+      metrics.labeled_counter.cert_compression_used,
+      metrics.labeled_counter.webauthn_create_authenticator_attachment,
+      metrics.labeled_counter.webauthn_get_authenticator_attachment
     ) AS `labeled_counter`,
     metrics.quantity,
     metrics.string,
@@ -393,7 +397,12 @@ SELECT
       metrics.counter.hls_canplay_supported,
       metrics.counter.home_bookmarks_bookmark_clicked,
       metrics.counter.home_bookmarks_show_all_bookmarks,
-      metrics.counter.bounce_tracking_protection_purge_count_classified_tracker
+      metrics.counter.bounce_tracking_protection_purge_count_classified_tracker,
+      metrics.counter.webauthn_create_failure,
+      metrics.counter.webauthn_create_passkey,
+      metrics.counter.webauthn_create_success,
+      metrics.counter.webauthn_get_failure,
+      metrics.counter.webauthn_get_success
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -445,7 +454,9 @@ SELECT
       metrics.custom_distribution.networking_http_3_upload_throughput_10_50,
       metrics.custom_distribution.networking_http_3_upload_throughput_50_100,
       metrics.custom_distribution.pdfjs_editing_highlight_thickness,
-      metrics.custom_distribution.network_tls_early_data_bytes_written
+      metrics.custom_distribution.network_tls_early_data_bytes_written,
+      metrics.custom_distribution.cert_compression_brotli_saved_bytes,
+      metrics.custom_distribution.cert_compression_zlib_saved_bytes
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -588,7 +599,11 @@ SELECT
       metrics.labeled_counter.network_tls_early_data_negotiated,
       metrics.labeled_counter.networking_http_redirect_to_scheme_subresource,
       metrics.labeled_counter.networking_http_redirect_to_scheme_top_level,
-      metrics.labeled_counter.translations_request_count
+      metrics.labeled_counter.translations_request_count,
+      metrics.labeled_counter.cert_compression_failures,
+      metrics.labeled_counter.cert_compression_used,
+      metrics.labeled_counter.webauthn_create_authenticator_attachment,
+      metrics.labeled_counter.webauthn_get_authenticator_attachment
     ) AS `labeled_counter`,
     metrics.quantity,
     STRUCT(
@@ -1027,7 +1042,12 @@ SELECT
       metrics.counter.hls_canplay_supported,
       metrics.counter.home_bookmarks_bookmark_clicked,
       metrics.counter.home_bookmarks_show_all_bookmarks,
-      metrics.counter.bounce_tracking_protection_purge_count_classified_tracker
+      metrics.counter.bounce_tracking_protection_purge_count_classified_tracker,
+      metrics.counter.webauthn_create_failure,
+      metrics.counter.webauthn_create_passkey,
+      metrics.counter.webauthn_create_success,
+      metrics.counter.webauthn_get_failure,
+      metrics.counter.webauthn_get_success
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -1079,7 +1099,9 @@ SELECT
       metrics.custom_distribution.networking_http_3_upload_throughput_10_50,
       metrics.custom_distribution.networking_http_3_upload_throughput_50_100,
       metrics.custom_distribution.pdfjs_editing_highlight_thickness,
-      metrics.custom_distribution.network_tls_early_data_bytes_written
+      metrics.custom_distribution.network_tls_early_data_bytes_written,
+      metrics.custom_distribution.cert_compression_brotli_saved_bytes,
+      metrics.custom_distribution.cert_compression_zlib_saved_bytes
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -1222,7 +1244,11 @@ SELECT
       metrics.labeled_counter.network_tls_early_data_negotiated,
       metrics.labeled_counter.networking_http_redirect_to_scheme_subresource,
       metrics.labeled_counter.networking_http_redirect_to_scheme_top_level,
-      metrics.labeled_counter.translations_request_count
+      metrics.labeled_counter.translations_request_count,
+      metrics.labeled_counter.cert_compression_failures,
+      metrics.labeled_counter.cert_compression_used,
+      metrics.labeled_counter.webauthn_create_authenticator_attachment,
+      metrics.labeled_counter.webauthn_get_authenticator_attachment
     ) AS `labeled_counter`,
     metrics.quantity,
     STRUCT(
@@ -1631,7 +1657,11 @@ SELECT
       metrics.labeled_counter.network_tls_early_data_negotiated,
       metrics.labeled_counter.networking_http_redirect_to_scheme_subresource,
       metrics.labeled_counter.networking_http_redirect_to_scheme_top_level,
-      metrics.labeled_counter.translations_request_count
+      metrics.labeled_counter.translations_request_count,
+      metrics.labeled_counter.cert_compression_failures,
+      metrics.labeled_counter.cert_compression_used,
+      metrics.labeled_counter.webauthn_create_authenticator_attachment,
+      metrics.labeled_counter.webauthn_get_authenticator_attachment
     ) AS `labeled_counter`,
     metrics.quantity,
     metrics.string,

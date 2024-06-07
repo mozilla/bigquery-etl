@@ -50,7 +50,7 @@ IF
         client_info.app_display_version AS version,
         ping_info
       FROM
-        `moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_live.daemonsession_v1`
+        `moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_live.main_v1`
       UNION ALL
       SELECT
         submission_timestamp,
@@ -70,7 +70,7 @@ IF
         client_info.app_display_version AS version,
         ping_info
       FROM
-        `moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_live.main_v1`
+        `moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_live.daemonsession_v1`
     )
   CROSS JOIN
     UNNEST(events) AS event,
@@ -80,7 +80,7 @@ IF
   LEFT JOIN
     UNNEST(event.extra) AS event_extra
   WHERE
-    DATE(submission_timestamp) >= "2024-06-06"
+    DATE(submission_timestamp) >= "2024-06-07"
   GROUP BY
     submission_date,
     window_start,

@@ -23,10 +23,6 @@ CSV_FIELDS = [
     "device_type",
     "market",
     "os_version",
-    "age_group",
-    "gender",
-    "sandbox_id",
-    "is_interactive",
     "successful_install_count",
 ]
 
@@ -92,8 +88,6 @@ def download_microsoft_store_data(date, application_id, bearer_token):
         "deviceType",
         "market",
         "osVersion",
-        "ageGroup",
-        "gender",
     ]
     # getting overview metrics for different kpis / Deliverables
     url = f"https://manage.devcenter.microsoft.com/v1.0/my/analytics/installs?applicationId={app_id}"
@@ -133,10 +127,6 @@ def clean_json(query_export, date):
             "device_type": val["deviceType"],
             "market": val["market"],
             "os_version": val["osVersion"],
-            "age_group": val["ageGroup"],
-            "gender": val["gender"],
-            "sandbox_id": val["sandboxId"],
-            "is_interactive": val["isInteractive"],
             "successful_install_count": val["successfulInstallCount"],
         }
         fields_list.append(field_dict)
@@ -168,10 +158,6 @@ def upload_to_bigquery(csv_data, project, dataset, table_name, date):
                     bigquery.SchemaField("device_type", "STRING"),
                     bigquery.SchemaField("market", "STRING"),
                     bigquery.SchemaField("os_version", "STRING"),
-                    bigquery.SchemaField("age_group", "STRING"),
-                    bigquery.SchemaField("gender", "STRING"),
-                    bigquery.SchemaField("sandbox_id", "STRING"),
-                    bigquery.SchemaField("is_interactive", "STRING"),
                     bigquery.SchemaField("successful_install_count", "INT64"),
                 ],
             )

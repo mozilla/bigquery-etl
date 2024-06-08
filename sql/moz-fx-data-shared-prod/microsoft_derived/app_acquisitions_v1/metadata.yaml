@@ -1,4 +1,4 @@
-friendly_name: App Acquisitionss
+friendly_name: App Acquisitions
 description: |-
   This table represents acquisition data downloaded from the Microsoft Store for Firefox, FX Beta and FX Nightly
   The link for this data is here: https://manage.devcenter.microsoft.com/v1.0/my/analytics/appacquisitions?
@@ -17,7 +17,7 @@ scheduling:
       "--microsoft_store_app_list", "{{var.value.MICROSOFT_STORE_APP_LIST}}",
       "--microsoft_tenant_id", "{{var.value.MICROSOFT_TENANT_ID}}"
     ]
-  bigquery:
+  git pusbigquery:
   time_partitioning:
     type: day
     field: DATE

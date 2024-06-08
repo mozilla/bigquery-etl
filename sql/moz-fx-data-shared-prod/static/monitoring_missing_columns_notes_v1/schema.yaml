@@ -1,25 +1,25 @@
 fields:
-- name: start_date
+- mode: NULLABLE
+  name: start_date
   type: DATE
-  mode: NULLABLE
-- name: end_date
+- mode: NULLABLE
+  name: end_date
   type: DATE
-  mode: NULLABLE
-- name: document_namespace
+- mode: NULLABLE
+  name: document_namespace
   type: STRING
-  mode: NULLABLE
-- name: document_type
+- mode: NULLABLE
+  name: document_type
   type: STRING
-  mode: NULLABLE
-- name: document_version
+- mode: NULLABLE
+  name: document_version
   type: STRING
-  mode: NULLABLE
-- name: path
+- mode: NULLABLE
+  name: path
   type: STRING
-  mode: NULLABLE
-- name: notes
+- mode: NULLABLE
+  name: notes
   type: STRING
-  mode: NULLABLE
-- name: bug
+- mode: NULLABLE
+  name: bug
   type: STRING
-  mode: NULLABLE

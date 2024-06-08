@@ -1,0 +1,184 @@
+fields:
+- name: submission
+  type: DATE
+  mode: NULLABLE
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+- name: id
+  type: STRING
+  mode: NULLABLE
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+- name: metadata
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: timestamp
+    type: INTEGER
+    mode: NULLABLE
+  - name: date
+    type: STRING
+    mode: NULLABLE
+  - name: normalized_channel
+    type: STRING
+    mode: NULLABLE
+  - name: geo_country
+    type: STRING
+    mode: NULLABLE
+  - name: geo_city
+    type: STRING
+    mode: NULLABLE
+  - name: geo_subdivision1
+    type: STRING
+    mode: NULLABLE
+  - name: geo_subdivision2
+    type: STRING
+    mode: NULLABLE
+  - name: creation_timestamp
+    type: INTEGER
+    mode: NULLABLE
+  - name: x_ping_sender_version
+    type: STRING
+    mode: NULLABLE
+- name: environment
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: build
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: application_name
+      type: STRING
+      mode: NULLABLE
+    - name: architecture
+      type: STRING
+      mode: NULLABLE
+    - name: version
+      type: STRING
+      mode: NULLABLE
+    - name: build_id
+      type: STRING
+      mode: NULLABLE
+    - name: vendor
+      type: STRING
+      mode: NULLABLE
+    - name: hotfix_version
+      type: STRING
+      mode: NULLABLE
+  - name: partner
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: distribution_id
+      type: STRING
+      mode: NULLABLE
+    - name: distribution_version
+      type: STRING
+      mode: NULLABLE
+    - name: partner_id
+      type: STRING
+      mode: NULLABLE
+    - name: distributor
+      type: STRING
+      mode: NULLABLE
+    - name: distributor_channel
+      type: STRING
+      mode: NULLABLE
+    - name: partner_names
+      type: STRING
+      mode: REPEATED
+  - name: settings
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: is_default_browser
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: default_search_engine
+      type: STRING
+      mode: NULLABLE
+    - name: default_search_engine_data
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: name
+        type: STRING
+        mode: NULLABLE
+      - name: load_path
+        type: STRING
+        mode: NULLABLE
+      - name: origin
+        type: STRING
+        mode: NULLABLE
+      - name: submission_url
+        type: STRING
+        mode: NULLABLE
+    - name: telemetry_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: locale
+      type: STRING
+      mode: NULLABLE
+    - name: attribution
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: source
+        type: STRING
+        mode: NULLABLE
+      - name: medium
+        type: STRING
+        mode: NULLABLE
+      - name: campaign
+        type: STRING
+        mode: NULLABLE
+      - name: content
+        type: STRING
+        mode: NULLABLE
+    - name: update
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: channel
+        type: STRING
+        mode: NULLABLE
+      - name: enabled
+        type: BOOLEAN
+        mode: NULLABLE
+      - name: auto_download
+        type: BOOLEAN
+        mode: NULLABLE
+  - name: system
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: os
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: name
+        type: STRING
+        mode: NULLABLE
+      - name: version
+        type: STRING
+        mode: NULLABLE
+      - name: locale
+        type: STRING
+        mode: NULLABLE
+  - name: profile
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: creation_date
+      type: INTEGER
+      mode: NULLABLE
+- name: payload
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: reason
+    type: STRING
+    mode: NULLABLE

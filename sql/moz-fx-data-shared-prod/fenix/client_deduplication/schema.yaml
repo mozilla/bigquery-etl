@@ -324,6 +324,7 @@ fields:
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
+  description: Normalized channel name
 - name: normalized_country_code
   type: STRING
   mode: NULLABLE

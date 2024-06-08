@@ -1,0 +1,276 @@
+fields:
+- name: submission
+  type: DATE
+  mode: NULLABLE
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+- name: application
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: addons
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: active_addons
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: STRING
+        mode: NULLABLE
+    - name: active_experiment
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: id
+        type: STRING
+        mode: NULLABLE
+      - name: branch
+        type: STRING
+        mode: NULLABLE
+    - name: active_gmplugins
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: STRING
+        mode: NULLABLE
+    - name: active_plugins
+      type: STRING
+      mode: NULLABLE
+    - name: persona
+      type: STRING
+      mode: NULLABLE
+    - name: theme
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: id
+        type: STRING
+        mode: NULLABLE
+      - name: blocklisted
+        type: BOOLEAN
+        mode: NULLABLE
+      - name: description
+        type: STRING
+        mode: NULLABLE
+      - name: name
+        type: STRING
+        mode: NULLABLE
+      - name: user_disabled
+        type: BOOLEAN
+        mode: NULLABLE
+      - name: app_disabled
+        type: BOOLEAN
+        mode: NULLABLE
+      - name: version
+        type: STRING
+        mode: NULLABLE
+      - name: scope
+        type: INTEGER
+        mode: NULLABLE
+      - name: foreign_install
+        type: STRING
+        mode: NULLABLE
+      - name: has_binary_components
+        type: BOOLEAN
+        mode: NULLABLE
+      - name: install_day
+        type: STRING
+        mode: NULLABLE
+      - name: update_day
+        type: INTEGER
+        mode: NULLABLE
+  - name: architecture
+    type: STRING
+    mode: NULLABLE
+  - name: build_id
+    type: STRING
+    mode: NULLABLE
+  - name: channel
+    type: STRING
+    mode: NULLABLE
+  - name: name
+    type: STRING
+    mode: NULLABLE
+  - name: platform_version
+    type: STRING
+    mode: NULLABLE
+  - name: version
+    type: STRING
+    mode: NULLABLE
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+- name: creation_date
+  type: STRING
+  mode: NULLABLE
+- name: environment
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: system
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: os
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: name
+        type: STRING
+        mode: NULLABLE
+      - name: version
+        type: STRING
+        mode: NULLABLE
+      - name: locale
+        type: STRING
+        mode: NULLABLE
+  - name: profile
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: creation_date
+      type: INTEGER
+      mode: NULLABLE
+    - name: reset_date
+      type: INTEGER
+      mode: NULLABLE
+  - name: settings
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: blocklist_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: is_default_browser
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: default_search_engine
+      type: STRING
+      mode: NULLABLE
+    - name: default_search_engine_data
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: name
+        type: STRING
+        mode: NULLABLE
+      - name: load_path
+        type: STRING
+        mode: NULLABLE
+      - name: submission_url
+        type: STRING
+        mode: NULLABLE
+      - name: origin
+        type: STRING
+        mode: NULLABLE
+    - name: e10s_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: e10s_cohort
+      type: STRING
+      mode: NULLABLE
+    - name: locale
+      type: STRING
+      mode: NULLABLE
+    - name: telemetry_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: update
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: auto_download
+        type: BOOLEAN
+        mode: NULLABLE
+      - name: channel
+        type: STRING
+        mode: NULLABLE
+      - name: enabled
+        type: BOOLEAN
+        mode: NULLABLE
+- name: id
+  type: STRING
+  mode: NULLABLE
+- name: type
+  type: STRING
+  mode: NULLABLE
+- name: version
+  type: FLOAT
+  mode: NULLABLE
+- name: payload
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: version
+    type: INTEGER
+    mode: NULLABLE
+  - name: study_name
+    type: STRING
+    mode: NULLABLE
+  - name: branch
+    type: STRING
+    mode: NULLABLE
+  - name: addon_version
+    type: STRING
+    mode: NULLABLE
+  - name: shield_version
+    type: STRING
+    mode: NULLABLE
+  - name: testing
+    type: BOOLEAN
+    mode: NULLABLE
+  - name: data
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: study_state
+      type: STRING
+      mode: NULLABLE
+    - name: study_state_fullname
+      type: STRING
+      mode: NULLABLE
+    - name: attributes
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: STRING
+        mode: NULLABLE
+  - name: type
+    type: STRING
+    mode: NULLABLE
+- name: metadata
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: timestamp
+    type: INTEGER
+    mode: NULLABLE
+  - name: submission_date
+    type: STRING
+    mode: NULLABLE
+  - name: date
+    type: STRING
+    mode: NULLABLE
+  - name: normalized_channel
+    type: STRING
+    mode: NULLABLE
+  - name: geo_country
+    type: STRING
+    mode: NULLABLE
+  - name: geo_city
+    type: STRING
+    mode: NULLABLE

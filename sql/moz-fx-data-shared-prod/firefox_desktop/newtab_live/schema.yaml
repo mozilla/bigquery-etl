@@ -1,0 +1,54 @@
+fields:
+- name: submission_timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: normalized_country_code
+  type: STRING
+  mode: NULLABLE
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+- name: document_id
+  type: STRING
+  mode: NULLABLE
+- name: pocket_enabled
+  type: BOOLEAN
+  mode: NULLABLE
+- name: pocket_sponsored_stories_enabled
+  type: BOOLEAN
+  mode: NULLABLE
+- name: newtab_locale
+  type: STRING
+  mode: NULLABLE
+- name: app_build
+  type: STRING
+  mode: NULLABLE
+- name: app_display_version
+  type: STRING
+  mode: NULLABLE
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+- name: events
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: category
+    type: STRING
+    mode: NULLABLE
+  - name: extra
+    type: RECORD
+    mode: REPEATED
+    fields:
+    - name: key
+      type: STRING
+      mode: NULLABLE
+    - name: value
+      type: STRING
+      mode: NULLABLE
+  - name: name
+    type: STRING
+    mode: NULLABLE
+  - name: timestamp
+    type: INTEGER
+    mode: NULLABLE

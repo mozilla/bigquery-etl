@@ -6,9 +6,12 @@ fields:
 - name: country
   type: STRING
   mode: NULLABLE
+  description: Country name.
 - name: vat
   type: NUMERIC
   mode: NULLABLE
+  description: VAT rate.
 - name: effective_date
   type: DATE
   mode: NULLABLE
+  description: Date when the VAT rate should take effect.

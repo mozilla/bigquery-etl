@@ -1,7 +1,7 @@
 fields:
 - name: score
   type: NUMERIC
-  mode: NULLABLE
+  mode: REQUIRED
 - name: value
   type: NUMERIC
-  mode: NULLABLE
+  mode: REQUIRED

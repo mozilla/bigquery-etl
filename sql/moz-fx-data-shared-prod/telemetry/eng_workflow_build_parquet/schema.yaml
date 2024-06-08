@@ -1,0 +1,111 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+- name: submission_date_s3
+  type: DATE
+  mode: NULLABLE
+- name: metadata
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: document_id
+    type: STRING
+    mode: NULLABLE
+  - name: timestamp
+    type: INTEGER
+    mode: NULLABLE
+  - name: date
+    type: STRING
+    mode: NULLABLE
+- name: argv
+  type: STRING
+  mode: REPEATED
+- name: build_opts
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: artifact
+    type: BOOLEAN
+    mode: NULLABLE
+  - name: ccache
+    type: BOOLEAN
+    mode: NULLABLE
+  - name: compiler
+    type: STRING
+    mode: NULLABLE
+  - name: debug
+    type: BOOLEAN
+    mode: NULLABLE
+  - name: icecream
+    type: BOOLEAN
+    mode: NULLABLE
+  - name: opt
+    type: BOOLEAN
+    mode: NULLABLE
+  - name: sccache
+    type: BOOLEAN
+    mode: NULLABLE
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+- name: command
+  type: STRING
+  mode: NULLABLE
+- name: duration_ms
+  type: FLOAT
+  mode: NULLABLE
+- name: success
+  type: BOOLEAN
+  mode: NULLABLE
+- name: system
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: os
+    type: STRING
+    mode: NULLABLE
+  - name: cpu_brand
+    type: STRING
+    mode: NULLABLE
+  - name: drive_is_ssd
+    type: BOOLEAN
+    mode: NULLABLE
+  - name: logical_cores
+    type: INTEGER
+    mode: NULLABLE
+  - name: memory_gb
+    type: INTEGER
+    mode: NULLABLE
+  - name: physical_cores
+    type: INTEGER
+    mode: NULLABLE
+  - name: virtual_machine
+    type: BOOLEAN
+    mode: NULLABLE
+- name: time
+  type: STRING
+  mode: NULLABLE
+- name: exception
+  type: STRING
+  mode: NULLABLE
+- name: file_types_changed
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: count
+    type: INTEGER
+    mode: NULLABLE
+  - name: ext
+    type: STRING
+    mode: NULLABLE
+- name: build_attrs
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: clobber
+    type: BOOLEAN
+    mode: NULLABLE
+  - name: cpu_percent
+    type: FLOAT
+    mode: NULLABLE

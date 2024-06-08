@@ -2,9 +2,12 @@ fields:
 - name: activity_date
   type: STRING
   mode: NULLABLE
+  description: The date that the conversion action took place.
 - name: gclid
   type: STRING
   mode: NULLABLE
+  description: A Google Click ID, which uniquely represent an ad impression for Google
+    ads.
 - name: conversion_name
   type: STRING
   mode: NULLABLE

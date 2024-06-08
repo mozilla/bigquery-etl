@@ -6,36 +6,48 @@ fields:
 - name: client_id
   type: STRING
   mode: NULLABLE
+  description: Client ID
 - name: sample_id
   type: INTEGER
   mode: NULLABLE
+  description: Sample ID
 - name: activity_segment
   type: STRING
   mode: NULLABLE
 - name: days_seen_bits
   type: INTEGER
   mode: NULLABLE
+  description: Bit pattern to identify when the client_id has sent a main ping in
+    the previous 28 days.
 - name: days_active_bits
   type: INTEGER
   mode: NULLABLE
+  description: Bit pattern to identify when the client_id has sent a main ping & also
+    qualifies as active in the previous 28 days.
 - name: app_name
   type: STRING
   mode: NULLABLE
+  description: App Name
 - name: app_version
   type: STRING
   mode: NULLABLE
+  description: App Version
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
+  description: Normalized Channel
 - name: country
   type: STRING
   mode: NULLABLE
+  description: Country
 - name: city
   type: STRING
   mode: NULLABLE
+  description: City
 - name: locale
   type: STRING
   mode: NULLABLE
+  description: Locale
 - name: first_seen_date
   type: DATE
   mode: NULLABLE
@@ -43,30 +55,39 @@ fields:
 - name: os
   type: STRING
   mode: NULLABLE
+  description: Operating System
 - name: normalized_os_version
   type: STRING
   mode: NULLABLE
+  description: Normalized OS Version
 - name: windows_build_number
   type: INTEGER
   mode: NULLABLE
+  description: Windows Build Number
 - name: scalar_parent_browser_engagement_total_uri_count_normal_and_private_mode_sum
   type: INTEGER
   mode: NULLABLE
+  description: null
 - name: scalar_parent_browser_engagement_total_uri_count_sum
   type: INTEGER
   mode: NULLABLE
+  description: Scalar Parent Browser Engagement Total URI Count Sum
 - name: is_default_browser
   type: BOOLEAN
   mode: NULLABLE
+  description: Is Default Browser Indicator
 - name: isp_name
   type: STRING
   mode: NULLABLE
+  description: ISP Name
 - name: distribution_id
   type: STRING
   mode: NULLABLE
+  description: Distribution ID
 - name: active_hours_sum
   type: FLOAT
   mode: NULLABLE
+  description: Active Hours Sum
 - name: attribution_source
   type: STRING
   mode: NULLABLE

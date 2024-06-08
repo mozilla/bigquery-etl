@@ -87,8 +87,8 @@ def get_backfill_file_from_qualified_table_name(sql_dir, qualified_table_name) -
 # TODO: It would be better to take in a backfill object.
 def get_backfill_staging_qualified_table_name(qualified_table_name, entry_date) -> str:
     """Return full table name where processed backfills are stored."""
-    _, _, table = qualified_table_name_matching(qualified_table_name)
-    backfill_table_id = f"{table}_{entry_date}".replace("-", "_")
+    _, dataset, table = qualified_table_name_matching(qualified_table_name)
+    backfill_table_id = f"{dataset}__{table}_{entry_date}".replace("-", "_")
 
     return f"{BACKFILL_DESTINATION_PROJECT}.{BACKFILL_DESTINATION_DATASET}.{backfill_table_id}"
 
@@ -146,7 +146,7 @@ def validate_metadata_workgroups(sql_dir, qualified_table_name) -> bool:
 
     except FileNotFoundError as e:
         raise ValueError(
-            f"Unable to validate workgroups for {qualified_table_name}"
+            f"Unable to validate workgroups for {qualified_table_name} in dataset metadata file."
         ) from e
 
     if _validate_workgroup_members(dataset_workgroup_access, DATASET_METADATA_FILE):

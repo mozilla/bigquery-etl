@@ -3,47 +3,15 @@ RETURNS ARRAY<STRUCT<key STRING, value STRING>> AS (
   CASE
     WHEN REGEXP_CONTAINS(creative_name, r"^gads_v2")
       AND ARRAY_LENGTH(SPLIT(creative_name, "_")) = 7
-      THEN ARRAY(
-          SELECT AS STRUCT
-            keys[off] AS key,
-            value
-          FROM
-            UNNEST(SPLIT(creative_name, "_")) AS value
-            WITH OFFSET off,
-            (
-              SELECT
-                [
-                  'ad_network',
-                  'version',
-                  'creative',
-                  'format',
-                  'dimension',
-                  'length',
-                  'cta'
-                ] AS keys
-            )
+      THEN mozfun.map.from_lists(
+          ['ad_network', 'version', 'creative', 'format', 'dimension', 'length', 'cta'],
+          SPLIT(creative_name, "_")
         )
     WHEN REGEXP_CONTAINS(creative_name, r"^meta_v2")
       AND ARRAY_LENGTH(SPLIT(creative_name, "_")) = 7
-      THEN ARRAY(
-          SELECT AS STRUCT
-            keys[off] AS key,
-            value
-          FROM
-            UNNEST(SPLIT(creative_name, "_")) AS value
-            WITH OFFSET off,
-            (
-              SELECT
-                [
-                  'ad_network',
-                  'version',
-                  'creative',
-                  'format',
-                  'dimension',
-                  'length',
-                  'cta'
-                ] AS keys
-            )
+      THEN mozfun.map.from_lists(
+          ['ad_network', 'version', 'creative', 'format', 'dimension', 'length', 'cta'],
+          SPLIT(creative_name, "_")
         )
     ELSE NULL
   END

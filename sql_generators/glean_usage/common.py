@@ -26,6 +26,7 @@ NO_BASELINE_PING_APPS = (
     "mozilla_vpn",
     "mozillavpn_backend_cirrus",
     "accounts_backend",
+    "accounts_cirrus",
     "burnham",
     "firefox_reality_pc",
     "lockwise_android",
@@ -35,6 +36,8 @@ NO_BASELINE_PING_APPS = (
     "mozphab",
     "mozregression",
 )
+
+APPS_WITH_DISTRIBUTION_ID = ("fenix",)
 
 
 def write_dataset_metadata(output_dir, full_table_id, derived_dataset_metadata=False):
@@ -238,6 +241,7 @@ class GleanTable:
             project_id=project_id,
             derived_dataset=derived_dataset,
             app_name=app_name,
+            has_distribution_id=app_name in APPS_WITH_DISTRIBUTION_ID,
         )
 
         render_kwargs.update(self.custom_render_kwargs)

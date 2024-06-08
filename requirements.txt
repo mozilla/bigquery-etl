@@ -805,9 +805,9 @@ mkdocs-material-extensions==1.3 \
     --hash=sha256:0297cc48ba68a9fdd1ef3780a3b41b534b0d0df1d1181a44676fda5f464eeadc \
     --hash=sha256:f0446091503acb110a7cab9349cbc90eeac51b58d1caa92a704a81ca1e24ddbd
     # via mkdocs-material
-mozilla-metric-config-parser==2024.3.1 \
-    --hash=sha256:b2a34750531766494b0f5e48baa6a738cfe6b55ea8799135daee8a92d0ae3bc6 \
-    --hash=sha256:ecaf44bf891aff9e4ec11a8aab2e39d965ed76bbad91920f5833e2982840bfbc
+mozilla-metric-config-parser==2024.6.1 \
+    --hash=sha256:69192cf01e50301163187955490587b1a5c81875d9ae9a7846585b415eab96a8 \
+    --hash=sha256:d550d28c82603016335f6216273facdfdef52eba42a463589531e56c490202eb
     # via -r requirements.in
 mozilla-nimbus-schemas==2023.9.2 \
     --hash=sha256:aa23d024bf01e67564d4dfb288397cbea8046961dc246f687a2dff05280dd4d0 \
@@ -1437,9 +1437,9 @@ regex==2023.8.8 \
     --hash=sha256:f2200e00b62568cfd920127782c61bc1c546062a879cdc741cfcc6976668dfcf \
     --hash=sha256:fcbdc5f2b0f1cd0f6a56cdb46fe41d2cce1e644e3b68832f3eeebc5fb0f7712e
     # via mkdocs-material
-requests==2.31.0 \
-    --hash=sha256:58cd2187c01e70e6e26505bca751777aa9f2ee0b7f4300988b709f44e013003f \
-    --hash=sha256:942c5a758f98d790eaed1a29cb6eefc7ffb0d1cf7af05c3d2791656dbd6ad1e1
+requests==2.32.0 \
+    --hash=sha256:f2c3881dddb70d056c5bd7600a4fae312b2a300e39be6a118d30b90bd27262b5 \
+    --hash=sha256:fa5490319474c82ef1d2c9bc459d3652e3ae4ef4c4ebdd18a21145a47ca4b6b8
     # via
     #   gcsfs
     #   google-api-core

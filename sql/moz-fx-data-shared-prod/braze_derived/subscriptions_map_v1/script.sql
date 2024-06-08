@@ -131,6 +131,14 @@ VALUES
     'mozilla-builder'
   ),
   (
+    'mozilla-builders-application-2024',
+    'Mozilla Builder Application',
+    'd48a2578-4963-4ac9-9d4e-3005106a3606',
+    'd985ba67-a7ad-47a3-8358-04d223a16079',
+    '6fdbce2c-0110-4bd5-94ce-ff6f4e2ca905',
+    'mozilla-builders-application-2024'
+  ),
+  (
     'mozilla-innovation',
     'Innovation Newsletter',
     '39fcaf11-2926-4366-b756-2c02e65cbce7',

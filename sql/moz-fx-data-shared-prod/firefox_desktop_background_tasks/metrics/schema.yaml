@@ -326,6 +326,39 @@ fields:
         respectively) due to an inconsistency in our internal bookkeeping?
 
         '
+    - name: crash_submission_failure
+      type: INTEGER
+      mode: NULLABLE
+      description: 'How many ping upload responses did we not record as a success
+        or failure
+
+        (in `glean.upload.send_success` or `glean.upload.send_failue`,
+
+        respectively) due to an inconsistency in our internal bookkeeping?
+
+        '
+    - name: crash_submission_pending
+      type: INTEGER
+      mode: NULLABLE
+      description: 'How many ping upload responses did we not record as a success
+        or failure
+
+        (in `glean.upload.send_success` or `glean.upload.send_failue`,
+
+        respectively) due to an inconsistency in our internal bookkeeping?
+
+        '
+    - name: crash_submission_success
+      type: INTEGER
+      mode: NULLABLE
+      description: 'How many ping upload responses did we not record as a success
+        or failure
+
+        (in `glean.upload.send_success` or `glean.upload.send_failue`,
+
+        respectively) due to an inconsistency in our internal bookkeeping?
+
+        '
   - name: datetime
     type: RECORD
     mode: NULLABLE
@@ -430,6 +463,22 @@ fields:
 
         '
     - name: glean_validation_pings_submitted
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: "A count of the pings submitted, by ping type.\n\nThis metric appears\
+        \ in both the metrics and baseline pings.\n\n- On the metrics ping, the counts\
+        \ include the number of pings sent since\n  the last metrics ping (including\
+        \ the last metrics ping)\n- On the baseline ping, the counts include the number\
+        \ of pings send since\n  the last baseline ping (including the last baseline\
+        \ ping)\n"
+    - name: crash_submission_collector_errors
       type: RECORD
       mode: REPEATED
       fields:

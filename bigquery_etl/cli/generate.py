@@ -102,11 +102,11 @@ def generate_all(ctx, output_dir, target_project, ignore, use_cloud_function):
 
     def generator_command_sort_key(command):
         match command.name:
-            # Run `stable_views` after `glean_usage` because both update `dataset_metadata.yaml` files
-            # and we want the `stable_views` updates to take precedence.
-            case "glean_usage":
-                return (1, command.name)
+            # Run `glean_usage` after `stable_views` because both update `dataset_metadata.yaml` files
+            # and we want the `glean_usage` updates to take precedence.
             case "stable_views":
+                return (1, command.name)
+            case "glean_usage":
                 return (2, command.name)
             # Run `derived_view_schemas` last in case other SQL generators create derived views.
             case "derived_view_schemas":

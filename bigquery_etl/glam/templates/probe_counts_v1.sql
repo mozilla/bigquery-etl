@@ -127,7 +127,7 @@ WITH probe_counts AS (
       AS total_users
     )
     {% if is_scalar %}
-      , aggregates AS non_norm_aggregates
+      , pc.aggregates AS non_norm_aggregates
     {% endif %}
   FROM
     probe_counts pc

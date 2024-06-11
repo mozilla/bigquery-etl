@@ -323,7 +323,8 @@ jobs:
           command: docker build -t app:build jobs/webcompat-kb/
       - run:
           name: Test Code
-          command: docker run app:build pytest --flake8 --black
+          command: docker run app:build pytest --ruff --ruff-format
+
 
 workflows:
   docker-etl:

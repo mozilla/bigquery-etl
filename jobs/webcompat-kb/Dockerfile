@@ -1,4 +1,4 @@
-FROM python:3.8
+FROM python:3.12
 MAINTAINER <kberezina@mozilla.com>
 
 # https://github.com/mozilla-services/Dockerflow/blob/master/docs/building-container.md

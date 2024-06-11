@@ -247,7 +247,7 @@ class Schema:
                                     f"for {prefix}.{field_path} are incompatible"
                                 )
 
-                if dtype == "RECORD":
+                if dtype == "RECORD" and nodes[node_name]["type"] == "RECORD":
                     # keep traversing nested fields
                     self._traverse(
                         f"{prefix}.{field_path}",

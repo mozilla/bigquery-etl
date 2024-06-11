@@ -333,3 +333,26 @@ def main():
     load_result_csv_to_bq_stg_job.result()
     result_bq_stg_tbl = client.get_table(device_usg_configs["results_bq_stg_table"])
     print("Loaded {} rows to results staging.".format(result_bq_stg_tbl.num_rows))
+
+    ### FIX BELOW HERE 
+    # STEP 3 - Copy the error data from GCS staging to BQ staging table
+    load_error_csv_to_bq_stg_job = client.load_table_from_uri(
+        error_uri,
+        device_usg_configs["errors_bq_stg_table"],
+        job_config=bigquery.LoadJobConfig(
+            create_disposition="CREATE_IF_NEEDED",
+            write_disposition="WRITE_TRUNCATE",
+            schema=[
+            {"name": "StartTime", "type": "TIMESTAMP", "mode": "REQUIRED"},
+            {"name": "EndTime", "type": "TIMESTAMP", "mode": "REQUIRED"},
+            {"name": "Location", "type": "STRING", "mode": "NULLABLE"},],
+            skip_leading_rows=1,
+            source_format=bigquery.SourceFormat.CSV,
+        ),
+    )
+
+    load_error_csv_to_bq_stg_job.result()
+    error_bq_stg_tbl = client.get_table(device_usg_configs["errors_bq_stg_table"])
+    print("Loaded {} rows to errors staging.".format(error_bq_stg_tbl.num_rows))
+
+    ### FIX ABOVE HERE 

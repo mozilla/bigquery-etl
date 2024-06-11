@@ -10,7 +10,7 @@ from google.cloud import storage
 # Configs
 brwsr_usg_configs = {
     "timeout_limit": 2000,
-    "device_types": ["DESKTOP"],  # , "MOBILE", "OTHER", "ALL"],
+    "device_types": ["DESKTOP", "MOBILE", "OTHER", "ALL"],
     "max_limit": 20,
     "operating_systems": [
         "ALL",
@@ -166,64 +166,81 @@ def get_browser_data(date_of_interest, auth_token):
                     brwsr_usg_api_url = generate_browser_api_call(
                         start_date, end_date, device_type, loc, os, user_type, limit
                     )
-                    response = requests.get(
-                        brwsr_usg_api_url,
-                        headers=headers,
-                        timeout=brwsr_usg_configs["timeout_limit"],
-                    )
-                    response_json = json.loads(response.text)
-
-                    # if the response was successful, get the result and append it to the results dataframe
-                    if response_json["success"] is True:
-                        # Save the results to GCS
-                        result = response_json["result"]
-                        confidence_level = result["meta"]["confidenceInfo"]["level"]
-                        normalization = result["meta"]["normalization"]
-                        last_updated = result["meta"]["lastUpdated"]
-                        startTime = result["meta"]["dateRange"][0]["startTime"]
-                        endTime = result["meta"]["dateRange"][0]["endTime"]
-                        data = result["top_0"]
-                        browser_lst = []
-                        browser_share_lst = []
-
-                        for browser in data:
-                            browser_lst.append(browser["name"])
-                            browser_share_lst.append(browser["value"])
-
-                        new_browser_results_df = pd.DataFrame(
-                            {
-                                "StartTime": [startTime] * len(browser_lst),
-                                "EndTime": [endTime] * len(browser_lst),
-                                "DeviceType": [device_type] * len(browser_lst),
-                                "Location": [loc] * len(browser_lst),
-                                "UserType": [user_type] * len(browser_lst),
-                                "Browser": browser_lst,
-                                "OperatingSystem": [os] * len(browser_lst),
-                                "PercentShare": browser_share_lst,
-                                "ConfLevel": [confidence_level] * len(browser_lst),
-                                "Normalization": [normalization] * len(browser_lst),
-                                "LastUpdated": [last_updated] * len(browser_lst),
-                            }
+                    #######BELOW HERE IS START OF TRY BLOCK ##########
+                    try: 
+                        response = requests.get(
+                            brwsr_usg_api_url,
+                            headers=headers,
+                            timeout=brwsr_usg_configs["timeout_limit"],
                         )
-                        browser_results_df = pd.concat(
-                            [browser_results_df, new_browser_results_df]
-                        )
+                        response_json = json.loads(response.text)
 
-                    # If there were errors, save them to the errors dataframe
-                    else:
+                        # if the response was successful, get the result and append it to the results dataframe
+                        if response_json["success"] is True:
+                            # Save the results to GCS
+                            result = response_json["result"]
+                            confidence_level = result["meta"]["confidenceInfo"]["level"]
+                            normalization = result["meta"]["normalization"]
+                            last_updated = result["meta"]["lastUpdated"]
+                            startTime = result["meta"]["dateRange"][0]["startTime"]
+                            endTime = result["meta"]["dateRange"][0]["endTime"]
+                            data = result["top_0"]
+                            browser_lst = []
+                            browser_share_lst = []
+
+                            for browser in data:
+                                browser_lst.append(browser["name"])
+                                browser_share_lst.append(browser["value"])
+
+                            new_browser_results_df = pd.DataFrame(
+                                {
+                                    "StartTime": [startTime] * len(browser_lst),
+                                    "EndTime": [endTime] * len(browser_lst),
+                                    "DeviceType": [device_type] * len(browser_lst),
+                                    "Location": [loc] * len(browser_lst),
+                                    "UserType": [user_type] * len(browser_lst),
+                                    "Browser": browser_lst,
+                                    "OperatingSystem": [os] * len(browser_lst),
+                                    "PercentShare": browser_share_lst,
+                                    "ConfLevel": [confidence_level] * len(browser_lst),
+                                    "Normalization": [normalization] * len(browser_lst),
+                                    "LastUpdated": [last_updated] * len(browser_lst),
+                                }
+                            )
+                            browser_results_df = pd.concat(
+                                [browser_results_df, new_browser_results_df]
+                            )
+
+                        # If there were errors, save them to the errors dataframe
+                        else:
+                            new_browser_error_df = pd.DataFrame(
+                                {
+                                    "StartTime": [start_date],
+                                    "EndTime": [end_date],
+                                    "Location": [loc],
+                                    "UserType": [user_type],
+                                    "DeviceType": [device_type],
+                                    "OperatingSystem": [os],
+                                }
+                            )
+                            browser_errors_df = pd.concat(
+                                [browser_errors_df, new_browser_error_df]
+                            )
+                    except:
                         new_browser_error_df = pd.DataFrame(
-                            {
-                                "StartTime": [start_date],
-                                "EndTime": [end_date],
-                                "Location": [loc],
-                                "UserType": [user_type],
-                                "DeviceType": [device_type],
-                                "OperatingSystem": [os],
-                            }
-                        )
+                                {
+                                    "StartTime": [start_date],
+                                    "EndTime": [end_date],
+                                    "Location": [loc],
+                                    "UserType": [user_type],
+                                    "DeviceType": [device_type],
+                                    "OperatingSystem": [os],
+                                }
+                            )
                         browser_errors_df = pd.concat(
-                            [browser_errors_df, new_browser_error_df]
-                        )
+                                [browser_errors_df, new_browser_error_df]
+                            )
+
 
     # LOAD RESULTS & ERRORS TO STAGING GCS
     result_fpath = brwsr_usg_configs["bucket"] + brwsr_usg_configs[

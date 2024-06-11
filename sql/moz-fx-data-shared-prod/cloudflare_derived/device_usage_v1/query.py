@@ -191,6 +191,7 @@ def get_device_usage_data(date_of_interest, auth_token):
             response_json = json.loads(response.text)
             # If response was successful, get the result
             if response_json["success"] is True:
+
                 result = response_json["result"]
                 human_ts, human_dsktp, human_mbl, human_othr = (
                     parse_device_type_timeseries_response_human(result)
@@ -216,6 +217,7 @@ def get_device_usage_data(date_of_interest, auth_token):
                     aggr_intvl,
                     loc,
                 )
+
                 bot_result_df = make_device_usage_result_df(
                     "Bot",
                     bot_dsktp,
@@ -314,7 +316,6 @@ def main():
             write_disposition="WRITE_TRUNCATE",
             schema=[
                 {"name": "StartTime", "type": "TIMESTAMP", "mode": "REQUIRED"},
-                {"name": "EndTime", "type": "TIMESTAMP", "mode": "REQUIRED"},
                 {"name": "UserType", "type": "STRING", "mode": "NULLABLE"},
                 {"name": "Location", "type": "STRING", "mode": "NULLABLE"},
                 {"name": "DesktopUsagePct", "type": "NUMERIC", "mode": "NULLABLE"},

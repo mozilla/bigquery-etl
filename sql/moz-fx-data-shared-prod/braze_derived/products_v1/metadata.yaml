@@ -1,0 +1,19 @@
+friendly_name: Braze Products
+description: |-
+  Product data from Stripe Subscriptions.
+  See https://mozilla-hub.atlassian.net/browse/DENG-3008
+owners:
+- cbeck@mozilla.com
+labels:
+  incremental: false
+  schedule: daily
+  owner: cbeck
+bigquery:
+  time_partitioning: null
+scheduling:
+  dag_name: bqetl_braze
+  date_partition_parameter: null
+  # this dag runs more frequently than the upstream tables and relies
+  # mostly on data replicated into bq from ctms cloud sql
+  # once product latency is at an hour, we can remove the below
+  referenced_tables: []

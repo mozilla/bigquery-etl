@@ -137,18 +137,24 @@ def deploy(
     (Path(sql_dir) / project_id).mkdir(parents=True, exist_ok=True)
     # copy updated files locally to a folder representing the stage env project
     for artifact_file in artifact_files:
-        project = artifact_file.parent.parent.parent.name
-        dataset = artifact_file.parent.parent.name
-        name = artifact_file.parent.name
-        test_path = TEST_DIR / project / dataset / name
+        artifact_project = artifact_file.parent.parent.parent.name
+        artifact_dataset = artifact_file.parent.parent.name
+        artifact_name = artifact_file.parent.name
+        artifact_test_path = (
+            TEST_DIR / artifact_project / artifact_dataset / artifact_name
+        )
 
-        if dataset == "INFORMATION_SCHEMA" or "INFORMATION_SCHEMA" in name:
+        if (
+            artifact_dataset == "INFORMATION_SCHEMA"
+            or "INFORMATION_SCHEMA" in artifact_name
+        ):
             continue
 
-        dataset = f"{dataset}_{project.replace('-', '_')}"
-
+        new_artifact_dataset = (
+            f"{artifact_dataset}_{artifact_project.replace('-', '_')}"
+        )
         if dataset_suffix:
-            dataset = f"{dataset}_{dataset_suffix}"
+            new_artifact_dataset = f"{new_artifact_dataset}_{dataset_suffix}"
 
         if artifact_file.name == MATERIALIZED_VIEW:
             # replace CREATE MATERIALIED VIEW statement
@@ -169,45 +175,59 @@ def deploy(
             artifact_file.rename(query_path)
             artifact_file = query_path
 
-        new_artifact_path = Path(sql_dir) / project_id / dataset / name
+        new_artifact_path = (
+            Path(sql_dir) / project_id / new_artifact_dataset / artifact_name
+        )
         new_artifact_path.mkdir(parents=True, exist_ok=True)
         shutil.copytree(artifact_file.parent, new_artifact_path, dirs_exist_ok=True)
         updated_artifact_files.add(new_artifact_path / artifact_file.name)
 
         # copy tests to the right structure
-        if test_path.exists():
-            test_destination = TEST_DIR / project_id / dataset / name
-            shutil.copytree(test_path, test_destination, dirs_exist_ok=True)
+        if artifact_test_path.exists():
+            new_artifact_test_path = (
+                TEST_DIR / project_id / new_artifact_dataset / artifact_name
+            )
+            shutil.copytree(
+                artifact_test_path, new_artifact_test_path, dirs_exist_ok=True
+            )
             if remove_updated_artifacts:
-                shutil.rmtree(test_path)
+                shutil.rmtree(artifact_test_path)
 
-            # rename test files
-            for test_file_path in map(Path, glob(f"{TEST_DIR}/**/*", recursive=True)):
-                for test_dep_file in artifact_files:
-                    test_project = test_dep_file.parent.parent.parent.name
-                    test_dataset = test_dep_file.parent.parent.name
-                    test_name = test_dep_file.parent.name
+    # rename test files
+    for test_file_path in map(Path, glob(f"{TEST_DIR}/**/*", recursive=True)):
+        test_file_suffix = test_file_path.suffix
+        for artifact_file in artifact_files:
+            artifact_project = artifact_file.parent.parent.parent.name
+            artifact_dataset = artifact_file.parent.parent.name
+            artifact_name = artifact_file.parent.name
+            if test_file_path.name in (
+                f"{artifact_project}.{artifact_dataset}.{artifact_name}{test_file_suffix}",
+                f"{artifact_project}.{artifact_dataset}.{artifact_name}.schema{test_file_suffix}",
+            ) or (
+                test_file_path.name
+                in (
+                    f"{artifact_dataset}.{artifact_name}{test_file_suffix}",
+                    f"{artifact_dataset}.{artifact_name}.schema{test_file_suffix}",
+                )
+                and artifact_project in test_file_path.parent.parts
+            ):
+                new_artifact_dataset = (
+                    f"{artifact_dataset}_{artifact_project.replace('-', '_')}"
+                )
+                if dataset_suffix:
+                    new_artifact_dataset = f"{new_artifact_dataset}_{dataset_suffix}"
 
-                    file_suffix = test_file_path.suffix
-                    if test_file_path.name in (
-                        f"{test_project}.{test_dataset}.{test_name}{file_suffix}",
-                        f"{test_project}.{test_dataset}.{test_name}.schema{file_suffix}",
-                        f"{test_dataset}.{test_name}{file_suffix}",
-                        f"{test_dataset}.{test_name}.schema{file_suffix}",
-                    ):
-                        test_dataset = f"{test_dataset}_{project_id.replace('-', '_')}"
+                new_test_file_name = (
+                    f"{project_id}.{new_artifact_dataset}.{artifact_name}"
+                )
+                if test_file_path.name.endswith(f".schema{test_file_suffix}"):
+                    new_test_file_name += ".schema"
+                new_test_file_name += test_file_suffix
 
-                        if dataset_suffix:
-                            test_dataset = f"{test_dataset}_{dataset_suffix}"
-
-                        name = f"{project_id}.{test_dataset}.{test_name}"
-                        if test_file_path.name.endswith(f".schema{file_suffix}"):
-                            name += ".schema"
-                        name += file_suffix
-
-                        test_file_path_dest = test_file_path.parent / name
-                        if not test_file_path_dest.exists():
-                            test_file_path.rename(test_file_path_dest)
+                new_test_file_path = test_file_path.parent / new_test_file_name
+                if not new_test_file_path.exists():
+                    test_file_path.rename(new_test_file_path)
+                break
 
     # remove artifacts from the "prod" folders
     if remove_updated_artifacts:
@@ -312,6 +332,7 @@ def _view_dependencies(artifact_files, sql_dir):
 
 def _update_references(artifact_files, project_id, dataset_suffix, sql_dir):
     replace_references = []
+    replace_partial_references = []
     for artifact_file in artifact_files:
         name = artifact_file.parent.name
         name_pattern = name.replace("*", r"\*")  # match literal *
@@ -331,40 +352,72 @@ def _update_references(artifact_files, project_id, dataset_suffix, sql_dir):
         deployed_project = project_id
 
         # Replace references, preserving fully quoted references.
-        replace_references += [
+        replace_partial_references += [
             # partially qualified references (like "telemetry.main")
             (
                 re.compile(rf"(?<![\._])`{original_dataset}\.{name_pattern}`"),
                 f"`{deployed_project}.{deployed_dataset}.{name}`",
+                original_project,
             ),
             (
                 re.compile(
                     rf"(?<![\._])`?{original_dataset}`?\.`?{name_pattern}(?![a-zA-Z0-9_])`?"
                 ),
                 f"`{deployed_project}`.`{deployed_dataset}`.`{name}`",
+                original_project,
             ),
+        ]
+        replace_references += [
             # fully qualified references (like "moz-fx-data-shared-prod.telemetry.main")
             (
                 re.compile(
                     rf"`{original_project}\.{original_dataset}\.{name_pattern}`"
                 ),
                 f"`{deployed_project}.{deployed_dataset}.{name}`",
+                original_project,
             ),
             (
                 re.compile(
                     rf"(?<![a-zA-Z0-9_])`?{original_project}`?\.`?{original_dataset}`?\.`?{name_pattern}(?![a-zA-Z0-9_])`?"
                 ),
                 f"`{deployed_project}`.`{deployed_dataset}`.`{name}`",
+                original_project,
             ),
         ]
 
     for path in map(Path, glob(f"{sql_dir}/**/*.sql", recursive=True)):
         # apply substitutions
         if path.is_file():
-            sql = render(path.name, template_folder=path.parent, format=False)
+            if "is_init()" in path.read_text():
+                init_sql = render(
+                    path.name,
+                    template_folder=path.parent,
+                    format=False,
+                    **{"is_init": lambda: True},
+                )
+                query_sql = render(
+                    path.name,
+                    template_folder=path.parent,
+                    format=False,
+                    **{"is_init": lambda: False},
+                )
+                sql = f"""
+                    {{% if is_init() %}}
+                    {init_sql}
+                    {{% else %}}
+                    {query_sql}
+                    {{% endif %}}
+                """
+            else:
+                sql = render(path.name, template_folder=path.parent, format=False)
 
             for ref in replace_references:
                 sql = re.sub(ref[0], ref[1], sql)
+
+            for ref in replace_partial_references:
+                file_project = path.parent.parent.parent.name
+                if file_project == ref[2]:
+                    sql = re.sub(ref[0], ref[1], sql)
 
             path.write_text(sql)
 
@@ -381,13 +434,15 @@ def _deploy_artifacts(ctx, artifact_files, project_id, dataset_suffix, sql_dir):
     ctx.invoke(publish_routine, name=None, project_id=project_id, dry_run=False)
 
     # deploy table schemas
-    query_files = [
-        file
-        for file in artifact_files
-        if file.name in [QUERY_FILE, QUERY_SCRIPT]
-        # don't attempt to deploy wildcard or metadata tables
-        and "*" not in file.parent.name and file.parent.name != "INFORMATION_SCHEMA"
-    ]
+    query_files = list(
+        {
+            file
+            for file in artifact_files
+            if file.name in [QUERY_FILE, QUERY_SCRIPT]
+            # don't attempt to deploy wildcard or metadata tables
+            and "*" not in file.parent.name and file.parent.name != "INFORMATION_SCHEMA"
+        }
+    )
 
     if len(query_files) > 0:
         # checking and creating datasets needs to happen sequentially
@@ -403,6 +458,7 @@ def _deploy_artifacts(ctx, artifact_files, project_id, dataset_suffix, sql_dir):
             sql_dir=sql_dir,
             project_id=project_id,
             respect_dryrun_skip=True,
+            is_init=True,
         )
         ctx.invoke(
             deploy_query_schema,
@@ -432,7 +488,7 @@ def _deploy_artifacts(ctx, artifact_files, project_id, dataset_suffix, sql_dir):
         sql_dir=sql_dir,
         project_id=project_id,
         dry_run=False,
-        skip_authorized=True,
+        skip_authorized=False,
         force=True,
         respect_dryrun_skip=True,
     )

@@ -1,4 +1,3 @@
--- Aggregate meta attribution counts by country and channel.
 SELECT
   DATE(submission_timestamp) AS submission_date,
   CASE
@@ -8,7 +7,7 @@ SELECT
       THEN 'Firefox Browser for Android'
     WHEN (metrics.string.meta_attribution_app = '697946762208244')
       THEN 'Firefox Nightly for Android'
-    ELSE CAST(NULL AS STRING)
+    ELSE NULL
   END AS meta_attribution_app,
   normalized_channel,
   metadata.geo.country AS country,
@@ -16,7 +15,11 @@ SELECT
 FROM
   fenix.first_session
 WHERE
-  DATE(submission_timestamp) = @submission_date
+  {% if is_init() %}
+    DATE(submission_timestamp) >= '2023-11-01'
+  {% else %}
+    DATE(submission_timestamp) = @submission_date
+  {% endif %}
   AND client_info.client_id IS NOT NULL
 GROUP BY
   submission_date,

@@ -50,6 +50,7 @@ visit_metadata AS (
     ANY_VALUE(metrics.boolean.pocket_enabled) AS pocket_enabled,
     ANY_VALUE(metrics.boolean.pocket_sponsored_stories_enabled) AS pocket_sponsored_stories_enabled,
     ANY_VALUE(metrics.boolean.topsites_enabled) AS topsites_enabled,
+    ANY_VALUE(metrics.boolean.topsites_sponsored_enabled) AS topsites_sponsored_enabled,
     ANY_VALUE(metrics.string.newtab_homepage_category) AS newtab_homepage_category,
     ANY_VALUE(metrics.string.newtab_newtab_category) AS newtab_newtab_category,
     ANY_VALUE(metrics.boolean.newtab_search_enabled) AS newtab_search_enabled,

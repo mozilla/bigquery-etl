@@ -14,7 +14,6 @@ class BaselineClientsFirstSeenTable(GleanTable):
         GleanTable.__init__(self)
         self.target_table_id = TARGET_TABLE_ID
         self.prefix = PREFIX
-        self.no_init = False
         self.custom_render_kwargs = {}
 
     def generate_per_app_id(

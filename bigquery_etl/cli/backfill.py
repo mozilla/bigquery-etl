@@ -1,6 +1,7 @@
 """bigquery-etl CLI backfill command."""
 
 import json
+import logging
 import subprocess
 import sys
 import tempfile
@@ -15,6 +16,7 @@ from google.cloud.exceptions import Conflict, NotFound
 from ..backfill.date_range import BackfillDateRange, get_backfill_partition
 from ..backfill.parse import (
     BACKFILL_FILE,
+    DEFAULT_BILLING_PROJECT,
     DEFAULT_REASON,
     DEFAULT_WATCHER,
     Backfill,
@@ -28,6 +30,7 @@ from ..backfill.utils import (
     get_qualified_table_name_to_entries_map_by_project,
     get_scheduled_backfills,
     qualified_table_name_matching,
+    validate_depends_on_past,
     validate_metadata_workgroups,
 )
 from ..backfill.validate import (
@@ -35,10 +38,19 @@ from ..backfill.validate import (
     validate_file,
 )
 from ..cli.query import backfill as query_backfill
-from ..cli.query import deploy
-from ..cli.utils import is_authenticated, project_id_option, sql_dir_option
+from ..cli.utils import (
+    billing_project_option,
+    is_authenticated,
+    project_id_option,
+    sql_dir_option,
+)
 from ..config import ConfigLoader
+from ..deploy import FailedDeployException, SkippedDeployException, deploy_table
 from ..metadata.parse_metadata import METADATA_FILE, Metadata
+from ..schema import SCHEMA_FILE, Schema
+
+logging.basicConfig(level=logging.INFO)
+log = logging.getLogger(__name__)
 
 
 @click.group(help="Commands for managing backfills.")
@@ -96,6 +108,8 @@ def backfill(ctx):
     help="Watcher of the backfill (email address)",
     default=DEFAULT_WATCHER,
 )
+# If not specified, the billing project will be set to the default billing project when the backfill is initiated.
+@billing_project_option()
 @click.pass_context
 def create(
     ctx,
@@ -105,11 +119,16 @@ def create(
     end_date,
     exclude,
     watcher,
+    billing_project,
 ):
     """CLI command for creating a new backfill entry in backfill.yaml file.
 
     A backfill.yaml file will be created if it does not already exist.
     """
+    if not validate_depends_on_past(sql_dir, qualified_table_name):
+        click.echo("Tables that depend on past are currently not supported.")
+        sys.exit(1)
+
     if not validate_metadata_workgroups(sql_dir, qualified_table_name):
         click.echo("Only mozilla-confidential workgroups are supported.")
         sys.exit(1)
@@ -126,6 +145,7 @@ def create(
         reason=DEFAULT_REASON,
         watchers=[watcher],
         status=BackfillStatus.INITIATE,
+        billing_project=billing_project,
     )
 
     validate_duplicate_entry_with_initiate_status(new_entry, existing_backfills)
@@ -187,6 +207,13 @@ def validate(
         )
 
     for qualified_table_name in backfills_dict:
+
+        if not validate_depends_on_past(sql_dir, qualified_table_name):
+            click.echo(
+                f"Tables that depend on past are currently not supported:  {qualified_table_name}"
+            )
+            sys.exit(1)
+
         if not validate_metadata_workgroups(sql_dir, qualified_table_name):
             click.echo(
                 f"Only mozilla-confidential workgroups are supported.  {qualified_table_name} contain workgroup access that is not supported"
@@ -337,12 +364,24 @@ def scheduled(ctx, qualified_table_name, sql_dir, project_id, status, json_path=
     """
 )
 @click.argument("qualified_table_name")
+@click.option(
+    "--parallelism",
+    default=16,
+    type=int,
+    help="Maximum number of queries to execute concurrently",
+)
 @sql_dir_option
 @project_id_option(
     ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod")
 )
 @click.pass_context
-def initiate(ctx, qualified_table_name, sql_dir, project_id):
+def initiate(
+    ctx,
+    qualified_table_name,
+    parallelism,
+    sql_dir,
+    project_id,
+):
     """Process backfill entry with initiate status in backfill.yaml file(s)."""
     click.echo("Backfill processing (initiate) started....")
 
@@ -356,29 +395,59 @@ def initiate(ctx, qualified_table_name, sql_dir, project_id):
 
     entry_to_initiate = backfills_to_process_dict[qualified_table_name]
 
-    project, dataset, table = qualified_table_name_matching(qualified_table_name)
-
     backfill_staging_qualified_table_name = get_backfill_staging_qualified_table_name(
         qualified_table_name, entry_to_initiate.entry_date
     )
 
-    # deploy backfill staging table
-    ctx.invoke(
-        deploy,
-        name=f"{dataset}.{table}",
-        project_id=project,
-        destination_table=backfill_staging_qualified_table_name,
-    )
+    project, dataset, table = qualified_table_name_matching(qualified_table_name)
+    query_path = Path(sql_dir) / project / dataset / table / "query.sql"
+
+    # create schema before deploying staging table if it does not exist
+    schema_path = query_path.parent / SCHEMA_FILE
+
+    if not schema_path.exists():
+        # if schema doesn't exist, a schema file is created to allow backfill staging table deployment
+        Schema.from_query_file(
+            query_file=query_path,
+            respect_skip=False,
+            sql_dir=sql_dir,
+        ).to_yaml_file(schema_path)
+        click.echo(f"Schema file created for {qualified_table_name}: {schema_path}")
+
+    try:
+        deploy_table(
+            query_file=query_path,
+            destination_table=backfill_staging_qualified_table_name,
+            respect_dryrun_skip=False,
+        )
+    except (SkippedDeployException, FailedDeployException) as e:
+        raise RuntimeError(
+            f"Backfill initiate failed to deploy {query_path} to {backfill_staging_qualified_table_name}."
+        ) from e
+
+    billing_project = DEFAULT_BILLING_PROJECT
+
+    # override with billing project from backfill entry
+    if entry_to_initiate.billing_project is not None:
+        billing_project = entry_to_initiate.billing_project
+    elif not billing_project.startswith("moz-fx-data-backfill-"):
+        raise ValueError(
+            f"Invalid billing project: {billing_project}.  Please use one of the projects assigned to backfills."
+        )
+        sys.exit(1)
 
     click.echo(
         f"\nInitiating backfill for {qualified_table_name} with entry date {entry_to_initiate.entry_date} via dry run:"
     )
+
     _initiate_backfill(
         ctx,
         qualified_table_name,
         backfill_staging_qualified_table_name,
         entry_to_initiate,
+        parallelism,
         dry_run=True,
+        billing_project=billing_project,
     )
 
     click.echo(
@@ -389,6 +458,8 @@ def initiate(ctx, qualified_table_name, sql_dir, project_id):
         qualified_table_name,
         backfill_staging_qualified_table_name,
         entry_to_initiate,
+        parallelism,
+        billing_project=billing_project,
     )
 
     click.echo(
@@ -401,7 +472,9 @@ def _initiate_backfill(
     qualified_table_name: str,
     backfill_staging_qualified_table_name: str,
     entry: Backfill,
+    parallelism: int = 16,
     dry_run: bool = False,
+    billing_project=DEFAULT_BILLING_PROJECT,
 ):
     if not is_authenticated():
         click.echo(
@@ -411,6 +484,14 @@ def _initiate_backfill(
         sys.exit(1)
 
     project, dataset, table = qualified_table_name_matching(qualified_table_name)
+
+    logging_str = f"""Initiating backfill for {qualified_table_name} (destination: {backfill_staging_qualified_table_name}).
+                    Query will be executed in {billing_project}."""
+
+    if dry_run:
+        logging_str += "  This is a dry run."
+
+    log.info(logging_str)
 
     # backfill table
     # in the long-run we should remove the query backfill command and require a backfill entry for all backfills
@@ -423,7 +504,9 @@ def _initiate_backfill(
             end_date=datetime.fromisoformat(entry.end_date.isoformat()),
             exclude=[e.strftime("%Y-%m-%d") for e in entry.excluded_dates],
             destination_table=backfill_staging_qualified_table_name,
+            parallelism=parallelism,
             dry_run=dry_run,
+            billing_project=billing_project,
         )
     except subprocess.CalledProcessError as e:
         raise ValueError(
@@ -487,7 +570,7 @@ def complete(ctx, qualified_table_name, sql_dir, project_id):
 
     project, dataset, table = qualified_table_name_matching(qualified_table_name)
     table_metadata = Metadata.from_file(
-        Path(sql_dir / project / dataset / table / METADATA_FILE)
+        Path(sql_dir) / project / dataset / table / METADATA_FILE
     )
 
     _copy_backfill_staging_to_prod(
@@ -552,8 +635,7 @@ def _copy_backfill_staging_to_prod(
                     offset,
                     partitioning_type,
                 )
-                is None
-            ):
+            ) is None:
                 raise ValueError(
                     f"Null partition found completing backfill {entry} for {qualified_table_name}."
                 )

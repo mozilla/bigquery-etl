@@ -17,6 +17,15 @@ fields:
   type: STRING
   mode: NULLABLE
   description: The search query.
+- name: query_type
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Type of search query:
+      * Anonymized: Query was redacted by Google to protect the users' privacy.
+      * Brand: Query contained one or more Mozilla brand keywords.
+      * Non-Brand: Query didn't contain any Mozilla brand keywords.
+      * Unknown: Query couldn't be classified.
 - name: is_anonymized
   type: BOOLEAN
   mode: NULLABLE
@@ -32,10 +41,22 @@ fields:
       * Image: In Google Search's "Images" tab.
       * Video: In Google Search's "Videos" tab.
       * News: In Google Search's "News" tab.
-- name: country_code
+- name: user_country_code
   type: STRING
   mode: NULLABLE
-  description: Country from which the search was made, in ISO-3166-1-Alpha-3 format.
+  description: Country from which the user was searching, in ISO-3166-1-alpha-3 format.
+- name: user_country
+  type: STRING
+  mode: NULLABLE
+  description: Country from which the user was searching.
+- name: user_region
+  type: STRING
+  mode: NULLABLE
+  description: Region from which the user was searching.
+- name: user_subregion
+  type: STRING
+  mode: NULLABLE
+  description: Sub-region from which the user was searching.
 - name: device_type
   type: STRING
   mode: NULLABLE

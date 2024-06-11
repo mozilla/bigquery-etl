@@ -1,0 +1,27 @@
+friendly_name: Conversion Event Categorization
+description: |-
+  Classifies conversion events
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau@mozilla.com
+scheduling:
+  dag_name: bqetl_desktop_conv_evnt_categorization
+  depends_on_past: false
+  date_partition_parameter: report_date
+  date_partition_offset: -14
+  parameters:
+  - submission_date:DATE:{{ds}}
+bigquery:
+  time_partitioning:
+    type: day
+    field: first_seen_date
+    require_partition_filter: true
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields:
+    - client_id
+    - country
+references: {}

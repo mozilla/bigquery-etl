@@ -76,6 +76,23 @@ class PartitionMetadata:
 
 
 @attr.s(auto_attribs=True)
+class PartitionRange:
+    """Metadata for defining the partition range."""
+
+    start: int
+    end: int
+    interval: int
+
+
+@attr.s(auto_attribs=True)
+class RangePartitionMetadata:
+    """Metadata for defining range partitioned tables."""
+
+    range: PartitionRange
+    field: Optional[str] = attr.ib(None)
+
+
+@attr.s(auto_attribs=True)
 class ClusteringMetadata:
     """Metadata for defining BigQuery table clustering."""
 
@@ -91,6 +108,7 @@ class BigQueryMetadata:
     """
 
     time_partitioning: Optional[PartitionMetadata] = attr.ib(None)
+    range_partitioning: Optional[RangePartitionMetadata] = attr.ib(None)
     clustering: Optional[ClusteringMetadata] = attr.ib(None)
 
 
@@ -406,14 +424,15 @@ class Metadata:
 
     def set_bigquery_clustering(self, clustering_fields):
         """Update the BigQuery partitioning metadata."""
-        partitioning = None
-        if self.bigquery and self.bigquery.time_partitioning:
-            partitioning = self.bigquery.time_partitioning
+        if self.bigquery:
+            time_partitioning = self.bigquery.time_partitioning
+            range_partitioning = self.bigquery.range_partitioning
 
-        self.bigquery = BigQueryMetadata(
-            time_partitioning=partitioning,
-            clustering=ClusteringMetadata(fields=clustering_fields),
-        )
+            self.bigquery = BigQueryMetadata(
+                time_partitioning=time_partitioning,
+                range_partitioning=range_partitioning,
+                clustering=ClusteringMetadata(fields=clustering_fields),
+            )
 
 
 @attr.s(auto_attribs=True)

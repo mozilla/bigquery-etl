@@ -1,0 +1,25 @@
+friendly_name: Firefox Android Anonymised
+description: |-
+  [Missing]
+owners:
+- kik@mozilla.com
+labels:
+  application: firefox_android
+  incremental: false
+  schedule: daily
+scheduling:
+  dag_name: bqetl_data_observability_test_data_copy
+  depends_on_past: true
+  date_partition_parameter: null
+  parameters:
+  - submission_date:DATE:{{ds}}
+bigquery:
+  time_partitioning:
+    type: day
+    field: first_seen_date
+    require_partition_filter: false
+    expiration_days: null
+  clustering:
+    fields:
+    - channel
+references: {}

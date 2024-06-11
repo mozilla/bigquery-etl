@@ -16,10 +16,12 @@ SELECT
   ) AS user_id
 FROM
   `moz-fx-fxa-prod-0712.fxa_prod_logs.docker_fxa_auth`
-WHERE
-  DATE(`timestamp`) = @submission_date
-UNION DISTINCT
-SELECT
-  user_id
-FROM
-  fxa_amplitude_user_ids_v1
+  {% if not is_init() %}
+    WHERE
+      DATE(`timestamp`) = @submission_date
+    UNION DISTINCT
+    SELECT
+      user_id
+    FROM
+      fxa_amplitude_user_ids_v1
+  {% endif %}

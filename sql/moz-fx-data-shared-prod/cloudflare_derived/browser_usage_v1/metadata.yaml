@@ -1,0 +1,21 @@
+friendly_name: Cloudflare Browser Usage
+description: Contains data from Cloudflare on browser market share by day, device type, & location
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau@mozilla.com
+scheduling:
+  dag_name: bqetl_cloudflare
+  date_partition_parameter: dte
+  arguments: ["--date", "{{ds}}", "--cloudflare_api_token", "{{ var.value.cloudflare_auth_token}}"]
+bigquery:
+  time_partitioning:
+    type: day
+    field: dte
+    require_partition_filter: false
+    expiration_days: null
+  clustering:
+    fields:
+    - location
+    - device_type

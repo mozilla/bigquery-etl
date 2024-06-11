@@ -29,6 +29,9 @@ fields:
 - name: is_default_browser
   type: BOOLEAN
   mode: NULLABLE
+- name: locale
+  type: STRING
+  mode: NULLABLE
 - name: app_name
   type: STRING
   mode: NULLABLE
@@ -56,9 +59,6 @@ fields:
 - name: install_source
   type: STRING
   mode: NULLABLE
-- name: language_name
-  type: STRING
-  mode: NULLABLE
 - name: daily_users
   type: INTEGER
   mode: NULLABLE
@@ -71,19 +71,10 @@ fields:
 - name: dau
   type: INTEGER
   mode: NULLABLE
-- name: new_profiles
+- name: wau
   type: INTEGER
   mode: NULLABLE
-- name: ad_clicks
-  type: INTEGER
-  mode: NULLABLE
-- name: organic_search_count
-  type: INTEGER
-  mode: NULLABLE
-- name: search_count
-  type: INTEGER
-  mode: NULLABLE
-- name: search_with_ads
+- name: mau
   type: INTEGER
   mode: NULLABLE
 - name: uri_count

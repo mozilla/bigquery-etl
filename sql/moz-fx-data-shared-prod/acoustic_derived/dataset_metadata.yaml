@@ -1,0 +1,10 @@
+friendly_name: Acoustic Derived
+description: |-
+  This dataset holds Acoustic tables without PII
+dataset_base_acl: derived
+user_facing: false
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

@@ -1,0 +1,26 @@
+---
+- &suggest_base
+  submission_timestamp: "2030-01-01 01:00:00"
+  metrics: &suggest_metrics
+    quantity:
+      fx_suggest_block_id: 123
+      fx_suggest_position: 1
+    string:
+      fx_suggest_advertiser: ad4
+      fx_suggest_ping_type: fxsuggest-impression
+    uuid:
+      fx_suggest_context_id: fenix-b
+  metadata:
+    geo:
+      subdivision1: DC
+    user_agent:
+      os: Android
+  client_info:
+    app_channel: release
+  normalized_country_code: US
+- <<: *suggest_base
+  metrics:
+    <<: *suggest_metrics
+    string:
+      fx_suggest_advertiser: ad4
+      fx_suggest_ping_type: fxsuggest-someotherevent

@@ -53,8 +53,9 @@ device_usg_configs = {
     "gcp_project_id": "moz-fx-data-shared-prod",
     "gcp_conn_id": "google_cloud_shared_prod",
     "results_bq_stg_table": "moz-fx-data-shared-prod.cloudflare_derived.device_results_stg",
-    "errors_bq_stg_table": "moz-fx-data-shared-prod.cloudflare_derived.device_errors_stg"
+    "errors_bq_stg_table": "moz-fx-data-shared-prod.cloudflare_derived.device_errors_stg",
 }
+
 
 # Define a function to move a GCS object then delete the original
 def move_blob(bucket_name, blob_name, destination_bucket_name, destination_blob_name):
@@ -254,14 +255,12 @@ def get_device_usage_data(date_of_interest, auth_token):
             errors_df = pd.concat([errors_df, new_errors_df])
 
     # LOAD RESULTS & ERRORS TO STAGING GCS
-    result_fpath = (
-        device_usg_configs["bucket"]
-        + device_usg_configs["results_stg_gcs_fpth"] % (start_date, logical_dag_dt)
-    )
-    error_fpath = (
-        device_usg_configs["bucket"]
-        + device_usg_configs["errors_stg_gcs_fpth"] % (start_date, logical_dag_dt)
-    )
+    result_fpath = device_usg_configs["bucket"] + device_usg_configs[
+        "results_stg_gcs_fpth"
+    ] % (start_date, logical_dag_dt)
+    error_fpath = device_usg_configs["bucket"] + device_usg_configs[
+        "errors_stg_gcs_fpth"
+    ] % (start_date, logical_dag_dt)
     results_df.to_csv(result_fpath, index=False)
     errors_df.to_csv(error_fpath, index=False)
     print("Wrote errors to: ", error_fpath)
@@ -314,19 +313,20 @@ def main():
             create_disposition="CREATE_IF_NEEDED",
             write_disposition="WRITE_TRUNCATE",
             schema=[
-            {"name": "StartTime", "type": "TIMESTAMP", "mode": "REQUIRED"},
-            {"name": "EndTime", "type": "TIMESTAMP", "mode": "REQUIRED"},
-            {"name": "Location", "type": "STRING", "mode": "NULLABLE"},
-            {"name": "DesktopUsagePct", "type": "NUMERIC", "mode": "NULLABLE"},
-            {"name": "MobileUsagePct", "type": "NUMERIC", "mode": "NULLABLE"},
-            {"name": "OtherUsagePct", "type": "NUMERIC", "mode": "NULLABLE"},
-            {"name": "ConfLevel", "type": "STRING", "mode": "NULLABLE"},
-            {"name": "AggInterval", "type": "STRING", "mode": "NULLABLE"},
-            {"name": "NormalizationType", "type": "STRING", "mode": "NULLABLE"},
-            {"name": "LastUpdated", "type": "TIMESTAMP", "mode": "NULLABLE"},
-        ],
-        skip_leading_rows=1,
-        source_format=bigquery.SourceFormat.CSV,
+                {"name": "StartTime", "type": "TIMESTAMP", "mode": "REQUIRED"},
+                {"name": "EndTime", "type": "TIMESTAMP", "mode": "REQUIRED"},
+                {"name": "UserType", "type": "STRING", "mode": "NULLABLE"},
+                {"name": "Location", "type": "STRING", "mode": "NULLABLE"},
+                {"name": "DesktopUsagePct", "type": "NUMERIC", "mode": "NULLABLE"},
+                {"name": "MobileUsagePct", "type": "NUMERIC", "mode": "NULLABLE"},
+                {"name": "OtherUsagePct", "type": "NUMERIC", "mode": "NULLABLE"},
+                {"name": "ConfLevel", "type": "STRING", "mode": "NULLABLE"},
+                {"name": "AggInterval", "type": "STRING", "mode": "NULLABLE"},
+                {"name": "NormalizationType", "type": "STRING", "mode": "NULLABLE"},
+                {"name": "LastUpdated", "type": "TIMESTAMP", "mode": "NULLABLE"},
+            ],
+            skip_leading_rows=1,
+            source_format=bigquery.SourceFormat.CSV,
         ),
     )
 
@@ -334,7 +334,6 @@ def main():
     result_bq_stg_tbl = client.get_table(device_usg_configs["results_bq_stg_table"])
     print("Loaded {} rows to results staging.".format(result_bq_stg_tbl.num_rows))
 
-    ### FIX BELOW HERE 
     # STEP 3 - Copy the error data from GCS staging to BQ staging table
     load_error_csv_to_bq_stg_job = client.load_table_from_uri(
         error_uri,
@@ -343,9 +342,10 @@ def main():
             create_disposition="CREATE_IF_NEEDED",
             write_disposition="WRITE_TRUNCATE",
             schema=[
-            {"name": "StartTime", "type": "TIMESTAMP", "mode": "REQUIRED"},
-            {"name": "EndTime", "type": "TIMESTAMP", "mode": "REQUIRED"},
-            {"name": "Location", "type": "STRING", "mode": "NULLABLE"},],
+                {"name": "StartTime", "type": "TIMESTAMP", "mode": "REQUIRED"},
+                {"name": "EndTime", "type": "TIMESTAMP", "mode": "REQUIRED"},
+                {"name": "Location", "type": "STRING", "mode": "NULLABLE"},
+            ],
             skip_leading_rows=1,
             source_format=bigquery.SourceFormat.CSV,
         ),
@@ -355,4 +355,49 @@ def main():
     error_bq_stg_tbl = client.get_table(device_usg_configs["errors_bq_stg_table"])
     print("Loaded {} rows to errors staging.".format(error_bq_stg_tbl.num_rows))
 
-    ### FIX ABOVE HERE 
+    # STEP 4 - Delete results from gold for this day, if there are any already (so if rerun, no issues will occur)
+    del_exstng_gold_res_for_date = f"""DELETE FROM `moz-fx-data-shared-prod.cloudflare_derived.device_usage_v1` WHERE dte = DATE_SUB('{args.date}', INTERVAL 4 DAY)  """
+    del_gold_res_job = client.query(del_exstng_gold_res_for_date)
+    del_gold_res_job.result()
+    print("Deleted anything already existing for this date from results gold")
+
+    # STEP 5 - Delete errors from gold for this day, if there are any already (so if rerun, no issues will occur)
+    del_exstng_gold_err_for_date = f"""DELETE FROM `moz-fx-data-shared-prod.cloudflare_derived.device_usage_errors_v1` WHERE dte = DATE_SUB('{args.date}', INTERVAL 4 DAY) """
+    del_gold_err_job = client.query(del_exstng_gold_err_for_date)
+    del_gold_err_job.result()
+    print("Deleted anything already existing for this date from errors gold")
+
+    # STEP 6 - Load results from stage to gold
+    device_usg_stg_to_gold_query = f""" INSERT INTO `moz-fx-data-shared-prod.cloudflare_derived.device_usage_v1`
+SELECT 
+CAST(StartTime AS DATE) AS dte,
+UserType AS user_type,
+Location AS location,
+DesktopUsagePct AS desktop_usage_pct,
+MobileUsagePct AS mobile_usage_pct,
+OtherUsagePct AS other_usage_pct,
+AggInterval AS aggregation_interval,
+NormalizationType AS normalization_type,
+LastUpdated AS last_updated_ts 
+FROM `moz-fx-data-shared-prod.cloudflare_derived.device_results_stg`
+WHERE CAST(StartTime as date) = DATE_SUB('{args.date}', INTERVAL 4 DAY) """
+    load_res_to_gold = client.query(device_usg_stg_to_gold_query)
+    load_res_to_gold.result()
+
+    # STEP 7 - Load errors from stage to gold
+    browser_usg_errors_stg_to_gold_query = f""" INSERT INTO `moz-fx-data-shared-prod.cloudflare_derived.device_usage_errors_v1`
+SELECT
+CAST(StartTime as date) AS dte,
+Location AS location
+FROM `moz-fx-data-shared-prod.cloudflare_derived.device_errors_stg`
+WHERE CAST(StartTime as date) = DATE_SUB('{args.date}', INTERVAL 4 DAY) """
+    load_err_to_gold = client.query(browser_usg_errors_stg_to_gold_query)
+    load_err_to_gold.result()
+
+    # Initialize a storage client to use in next steps
+    storage_client = storage.Client()
+
+    # STEP 8 - Copy the result CSV from stage to archive, then delete from stage
+
+    ### FIX BELOW HERE
+    # Calculate the fpaths we will use ahead of time

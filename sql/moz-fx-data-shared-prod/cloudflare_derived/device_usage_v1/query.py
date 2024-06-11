@@ -399,5 +399,38 @@ WHERE CAST(StartTime as date) = DATE_SUB('{args.date}', INTERVAL 4 DAY) """
 
     # STEP 8 - Copy the result CSV from stage to archive, then delete from stage
 
-    ### FIX BELOW HERE
     # Calculate the fpaths we will use ahead of time
+    result_stg_fpath = device_usg_configs["results_stg_gcs_fpth"] % (
+        datetime.strptime(args.date, "%Y-%m-%d").date() - timedelta(days=4),
+        args.date,
+    )
+    result_archive_fpath = device_usg_configs["results_archive_gcs_fpath"] % (
+        datetime.strptime(args.date, "%Y-%m-%d").date() - timedelta(days=4),
+        args.date,
+    )
+    move_blob(
+        device_usg_configs["bucket_no_gs"],
+        result_stg_fpath,
+        device_usg_configs["bucket_no_gs"],
+        result_archive_fpath,
+    )
+
+    # STEP 9 - Copy the error CSV from stage to archive, then delete from stage
+    error_stg_fpath = device_usg_configs["errors_stg_gcs_fpth"] % (
+        datetime.strptime(args.date, "%Y-%m-%d").date() - timedelta(days=4),
+        args.date,
+    )
+    error_archive_fpath = device_usg_configs["errors_archive_gcs_fpath"] % (
+        datetime.strptime(args.date, "%Y-%m-%d").date() - timedelta(days=4),
+        args.date,
+    )
+    move_blob(
+        device_usg_configs["bucket_no_gs"],
+        error_stg_fpath,
+        device_usg_configs["bucket_no_gs"],
+        error_archive_fpath,
+    )
+
+
+if __name__ == "__main__":
+    main()

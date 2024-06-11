@@ -166,8 +166,7 @@ def get_browser_data(date_of_interest, auth_token):
                     brwsr_usg_api_url = generate_browser_api_call(
                         start_date, end_date, device_type, loc, os, user_type, limit
                     )
-                    #######BELOW HERE IS START OF TRY BLOCK ##########
-                    try: 
+                    try:
                         response = requests.get(
                             brwsr_usg_api_url,
                             headers=headers,
@@ -228,19 +227,18 @@ def get_browser_data(date_of_interest, auth_token):
                             )
                     except:
                         new_browser_error_df = pd.DataFrame(
-                                {
-                                    "StartTime": [start_date],
-                                    "EndTime": [end_date],
-                                    "Location": [loc],
-                                    "UserType": [user_type],
-                                    "DeviceType": [device_type],
-                                    "OperatingSystem": [os],
-                                }
-                            )
+                            {
+                                "StartTime": [start_date],
+                                "EndTime": [end_date],
+                                "Location": [loc],
+                                "UserType": [user_type],
+                                "DeviceType": [device_type],
+                                "OperatingSystem": [os],
+                            }
+                        )
                         browser_errors_df = pd.concat(
-                                [browser_errors_df, new_browser_error_df]
-                            )
-
+                            [browser_errors_df, new_browser_error_df]
+                        )
 
     # LOAD RESULTS & ERRORS TO STAGING GCS
     result_fpath = brwsr_usg_configs["bucket"] + brwsr_usg_configs[

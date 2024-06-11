@@ -45,16 +45,16 @@ device_usg_configs = {
         "GR",
     ],
     "bucket": "gs://moz-fx-data-prod-external-data/",
-    "results_stg_gcs_fpth": "gs://moz-fx-data-prod-external-data/cloudflare/device_usage/RESULTS_STAGING/%s_results.csv",
-    "results_archive_gcs_fpath": "gs://moz-fx-data-prod-external-data/cloudflare/device_usage/RESULTS_ARCHIVE/%s_results.csv",
-    "errors_stg_gcs_fpth": "gs://moz-fx-data-prod-external-data/cloudflare/device_usage/ERRORS_STAGING/%s_errors.csv",
-    "errors_archive_gcs_fpath": "gs://moz-fx-data-prod-external-data/cloudflare/device_usage/ERRORS_ARCHIVE/%s_errors.csv",
+    "bucket_no_gs": "moz-fx-data-prod-external-data",
+    "results_stg_gcs_fpth": "gs://moz-fx-data-prod-external-data/cloudflare/device_usage/RESULTS_STAGING/%s_results_from_%s_run.csv",
+    "results_archive_gcs_fpath": "gs://moz-fx-data-prod-external-data/cloudflare/device_usage/RESULTS_ARCHIVE/%s_results_from_%s_run.csv",
+    "errors_stg_gcs_fpth": "gs://moz-fx-data-prod-external-data/cloudflare/device_usage/ERRORS_STAGING/%s_errors_from_%s_run.csv",
+    "errors_archive_gcs_fpath": "gs://moz-fx-data-prod-external-data/cloudflare/device_usage/ERRORS_ARCHIVE/%s_errors_from_%s_run.csv",
     "gcp_project_id": "moz-fx-data-shared-prod",
     "gcp_conn_id": "google_cloud_shared_prod",
+    "results_bq_stg_table": "moz-fx-data-shared-prod.cloudflare_derived.device_results_stg",
+    "errors_bq_stg_table": "moz-fx-data-shared-prod.cloudflare_derived.device_errors_stg"
 }
-
-### DEFINE FUNCTIONS
-
 
 # Define a function to move a GCS object then delete the original
 def move_blob(bucket_name, blob_name, destination_bucket_name, destination_blob_name):
@@ -256,11 +256,11 @@ def get_device_usage_data(date_of_interest, auth_token):
     # LOAD RESULTS & ERRORS TO STAGING GCS
     result_fpath = (
         device_usg_configs["bucket"]
-        + device_usg_configs["results_stg_gcs_fpth"] % logical_dag_dt
+        + device_usg_configs["results_stg_gcs_fpth"] % (start_date, logical_dag_dt)
     )
     error_fpath = (
         device_usg_configs["bucket"]
-        + device_usg_configs["errors_stg_gcs_fpth"] % logical_dag_dt
+        + device_usg_configs["errors_stg_gcs_fpth"] % (start_date, logical_dag_dt)
     )
     results_df.to_csv(result_fpath, index=False)
     errors_df.to_csv(error_fpath, index=False)
@@ -283,3 +283,53 @@ def main():
     parser.add_argument("--dataset", default="cloudflare_derived")
 
     args = parser.parse_args()
+    print("Running for date: ")
+    print(args.date)
+
+    # STEP 1 - Pull the data from the API, save results & errors to GCS staging area
+    result_summary = get_device_usage_data(args.date, args.cloudflare_api_token)
+    print("result_summary")
+    print(result_summary)
+
+    # Create a bigquery client
+    client = bigquery.Client(args.project)
+
+    result_uri = device_usg_configs["bucket"] + device_usg_configs[
+        "results_stg_gcs_fpth"
+    ] % (datetime.strptime(args.date, "%Y-%m-%d").date() - timedelta(days=4), args.date)
+    error_uri = device_usg_configs["bucket"] + device_usg_configs[
+        "errors_stg_gcs_fpth"
+    ] % (datetime.strptime(args.date, "%Y-%m-%d").date() - timedelta(days=4), args.date)
+    print("result_uri")
+    print(result_uri)
+
+    print("error_uri")
+    print(error_uri)
+
+    # STEP 2 - Copy the result data from GCS staging to BQ staging table
+    load_result_csv_to_bq_stg_job = client.load_table_from_uri(
+        result_uri,
+        device_usg_configs["results_bq_stg_table"],
+        job_config=bigquery.LoadJobConfig(
+            create_disposition="CREATE_IF_NEEDED",
+            write_disposition="WRITE_TRUNCATE",
+            schema=[
+            {"name": "StartTime", "type": "TIMESTAMP", "mode": "REQUIRED"},
+            {"name": "EndTime", "type": "TIMESTAMP", "mode": "REQUIRED"},
+            {"name": "Location", "type": "STRING", "mode": "NULLABLE"},
+            {"name": "DesktopUsagePct", "type": "NUMERIC", "mode": "NULLABLE"},
+            {"name": "MobileUsagePct", "type": "NUMERIC", "mode": "NULLABLE"},
+            {"name": "OtherUsagePct", "type": "NUMERIC", "mode": "NULLABLE"},
+            {"name": "ConfLevel", "type": "STRING", "mode": "NULLABLE"},
+            {"name": "AggInterval", "type": "STRING", "mode": "NULLABLE"},
+            {"name": "NormalizationType", "type": "STRING", "mode": "NULLABLE"},
+            {"name": "LastUpdated", "type": "TIMESTAMP", "mode": "NULLABLE"},
+        ],
+        skip_leading_rows=1,
+        source_format=bigquery.SourceFormat.CSV,
+        ),
+    )
+
+    load_result_csv_to_bq_stg_job.result()
+    result_bq_stg_tbl = client.get_table(device_usg_configs["results_bq_stg_table"])
+    print("Loaded {} rows to results staging.".format(result_bq_stg_tbl.num_rows))

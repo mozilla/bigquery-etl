@@ -50,6 +50,16 @@ IF
         client_info.app_display_version AS version,
         ping_info
       FROM
+        `moz-fx-data-shared-prod.firefox_desktop_live.events_v1`
+      UNION ALL
+      SELECT
+        submission_timestamp,
+        events,
+        normalized_country_code,
+        client_info.app_channel AS channel,
+        client_info.app_display_version AS version,
+        ping_info
+      FROM
         `moz-fx-data-shared-prod.firefox_desktop_live.urlbar_potential_exposure_v1`
       UNION ALL
       SELECT
@@ -61,16 +71,6 @@ IF
         ping_info
       FROM
         `moz-fx-data-shared-prod.firefox_desktop_live.newtab_v1`
-      UNION ALL
-      SELECT
-        submission_timestamp,
-        events,
-        normalized_country_code,
-        client_info.app_channel AS channel,
-        client_info.app_display_version AS version,
-        ping_info
-      FROM
-        `moz-fx-data-shared-prod.firefox_desktop_live.events_v1`
       UNION ALL
       SELECT
         submission_timestamp,

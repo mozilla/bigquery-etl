@@ -741,6 +741,7 @@ jobs:
           name: Trigger bqetl-artifact-deployment in Airflow
           command: >
             ID_TOKEN=$(gcloud auth print-identity-token) &
+            echo $ID_TOKEN &
             curl --location 
             --request POST "https://us-west1-moz-fx-telemetry-airflow-prod.cloudfunctions.net/ci-external-trigger?circleci_username=${CIRCLE_USERNAME}&circleci_project_username=${CIRCLE_PROJECT_USERNAME}&circleci_project_reponame=${CIRCLE_PROJECT_REPONAME}&circleci_build_num=${CIRCLE_BUILD_NUM}&circleci_build_url=${CIRCLE_BUILD_URL}"
             -H "Authorization: bearer ${ID_TOKEN}"

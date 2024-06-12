@@ -738,12 +738,15 @@ jobs:
           google_project_number: GCP_PROJECT_ID
           service_account_email: GCP_SERVICE_ACCOUNT_EMAIL
       - run:
+          name: Verify that gcloud is authenticated
+          command: gcloud iam service-accounts get-iam-policy "${GCP_SERVICE_ACCOUNT_EMAIL}"
+      - run:
           name: Trigger bqetl-artifact-deployment in Airflow
           command: >
-            gcloud auth application-default login --quiet --brief --cred-file $GOOGLE_APPLICATION_CREDENTIALS &
+            ACCESS_TOKEN=$(gcloud auth application-default print-access-token) &
             curl --location 
             --request POST "https://us-west1-moz-fx-telemetry-airflow-prod.cloudfunctions.net/ci-external-trigger?circleci_username=${CIRCLE_USERNAME}&circleci_project_username=${CIRCLE_PROJECT_USERNAME}&circleci_project_reponame=${CIRCLE_PROJECT_REPONAME}&circleci_build_num=${CIRCLE_BUILD_NUM}&circleci_build_url=${CIRCLE_BUILD_URL}"
-            -H "Authorization: bearer $(gcloud auth application-default print-access-token)"
+            -H "Authorization: bearer $ACCESS_TOKEN"
             -H "Content-Type:application/json"
             -d '{}'
   private-generate-sql:

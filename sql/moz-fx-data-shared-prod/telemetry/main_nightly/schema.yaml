@@ -323,6 +323,9 @@ fields:
     - name: reset_date
       type: FLOAT
       mode: NULLABLE
+    - name: recovered_from_backup
+      type: FLOAT
+      mode: NULLABLE
   - name: services
     type: RECORD
     mode: NULLABLE

@@ -303,4 +303,56 @@ def main():
     del_gold_err_job.result()
     print("Deleted anything already existing for this date from errors gold")
 
-    ######### BELOW IS HERE ########
+    # STEP 6 - Load results from stage to gold # NEED TO UPDATE THIS STILL
+    device_usg_stg_to_gold_query = f""" INSERT INTO `moz-fx-data-shared-prod.cloudflare_derived.os_usage_v1`
+SELECT 
+--fix here
+FROM `moz-fx-data-shared-prod.cloudflare_derived.os_results_stg`
+WHERE CAST(StartTime as date) = DATE_SUB('{args.date}', INTERVAL 4 DAY) """
+    load_res_to_gold = client.query(device_usg_stg_to_gold_query)
+    load_res_to_gold.result()
+
+    # STEP 7 - Load errors from stage to gold #FIX THIS
+    browser_usg_errors_stg_to_gold_query = f""" INSERT INTO `moz-fx-data-shared-prod.cloudflare_derived.os_usage_errors_v1`
+SELECT
+--???
+FROM `moz-fx-data-shared-prod.cloudflare_derived.os_errors_stg`
+WHERE CAST(StartTime as date) = DATE_SUB('{args.date}', INTERVAL 4 DAY) """
+    load_err_to_gold = client.query(browser_usg_errors_stg_to_gold_query)
+    load_err_to_gold.result()
+
+    # Initialize a storage client to use in next steps
+    storage_client = storage.Client()
+
+    # STEP 8 - Copy the result CSV from stage to archive, then delete from stage
+    # Calculate the fpaths we will use ahead of time
+    result_stg_fpath = os_usg_configs["results_stg_gcs_fpth"] % (
+        datetime.strptime(args.date, "%Y-%m-%d").date() - timedelta(days=4),
+        args.date,
+    )
+    result_archive_fpath = os_usg_configs["results_archive_gcs_fpath"] % (
+        datetime.strptime(args.date, "%Y-%m-%d").date() - timedelta(days=4),
+        args.date,
+    )
+    move_blob(
+        os_usg_configs["bucket_no_gs"],
+        result_stg_fpath,
+        os_usg_configs["bucket_no_gs"],
+        result_archive_fpath,
+    )
+
+    # STEP 9 - Copy the error CSV from stage to archive, then delete from stage
+    error_stg_fpath = os_usg_configs["errors_stg_gcs_fpth"] % (
+        datetime.strptime(args.date, "%Y-%m-%d").date() - timedelta(days=4),
+        args.date,
+    )
+    error_archive_fpath = os_usg_configs["errors_archive_gcs_fpath"] % (
+        datetime.strptime(args.date, "%Y-%m-%d").date() - timedelta(days=4),
+        args.date,
+    )
+    move_blob(
+        os_usg_configs["bucket_no_gs"],
+        error_stg_fpath,
+        os_usg_configs["bucket_no_gs"],
+        error_archive_fpath,
+    )

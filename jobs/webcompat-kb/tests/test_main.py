@@ -33,6 +33,11 @@ SAMPLE_BUGS = [
         "blocks": [],
         "id": 1835339,
         "summary": "Missing implementation of textinput event",
+        "assigned_to": "test@example.org",
+        "creation_time": "2000-07-25T13:50:04Z",
+        "keywords": [],
+        "url": "",
+        "whiteboard": "",
     },
     {
         "component": "Knowledge Base",
@@ -57,6 +62,11 @@ SAMPLE_BUGS = [
         "severity": "--",
         "cf_user_story": "url:webminidisc.com/*\r\nurl:app.webadb.com/*\r\nurl:www.numworks.com/*\r\nurl:webadb.github.io/*\r\nurl:www.stemplayer.com/*\r\nurl:wootility.io/*\r\nurl:python.microbit.org/*\r\nurl:flash.android.com/*",  # noqa
         "status": "NEW",
+        "assigned_to": "nobody@mozilla.org",
+        "creation_time": "2000-07-25T13:50:04Z",
+        "keywords": [],
+        "url": "",
+        "whiteboard": "",
     },
     {
         "component": "Knowledge Base",
@@ -78,6 +88,11 @@ SAMPLE_BUGS = [
         "severity": "--",
         "cf_user_story": "",
         "status": "NEW",
+        "assigned_to": "nobody@mozilla.org",
+        "creation_time": "2000-07-25T13:50:04Z",
+        "keywords": [],
+        "url": "",
+        "whiteboard": "",
     },
 ]
 
@@ -104,6 +119,7 @@ SAMPLE_CORE_BUGS = [
         ],
         "resolution": "",
         "summary": "Missing textinput event",
+        "assigned_to": "nobody@mozilla.org",
     },
     {
         "id": 555555,
@@ -118,6 +134,7 @@ SAMPLE_CORE_BUGS = [
         "see_also": ["https://mozilla.github.io/standards-positions/#testposition"],
         "resolution": "",
         "summary": "Test Core bug",
+        "assigned_to": "nobody@mozilla.org",
     },
 ]
 
@@ -135,6 +152,7 @@ SAMPLE_BREAKAGE_BUGS = [
         "component": "Desktop",
         "severity": "--",
         "priority": "--",
+        "assigned_to": "nobody@mozilla.org",
     },
     {
         "id": 222222,
@@ -149,6 +167,7 @@ SAMPLE_BREAKAGE_BUGS = [
         "component": "Desktop",
         "severity": "--",
         "priority": "--",
+        "assigned_to": "nobody@mozilla.org",
     },
 ]
 
@@ -172,6 +191,7 @@ SAMPLE_CORE_AS_KB_BUGS = [
         "cf_last_resolved": None,
         "component": "JavaScript Engine",
         "id": 1886820,
+        "assigned_to": "nobody@mozilla.org",
     },
     {
         "depends_on": [1896672],
@@ -192,6 +212,7 @@ SAMPLE_CORE_AS_KB_BUGS = [
         "cf_last_resolved": None,
         "url": "",
         "blocks": [1656444, 1835339, 222222],
+        "assigned_to": "nobody@mozilla.org",
     },
     {
         "whiteboard": "",
@@ -212,6 +233,7 @@ SAMPLE_CORE_AS_KB_BUGS = [
         "cf_last_resolved": None,
         "component": "JavaScript Engine",
         "id": 444444,
+        "assigned_to": "nobody@mozilla.org",
     },
 ]
 
@@ -609,6 +631,7 @@ def test_filter_core_as_kb_bugs(bz):
 
     assert core_as_kb_bugs[0] == [
         {
+            "assigned_to": "nobody@mozilla.org",
             "whiteboard": "",
             "see_also": ["https://bugzilla.mozilla.org/show_bug.cgi?id=1740472"],
             "severity": "S3",
@@ -633,6 +656,7 @@ def test_filter_core_as_kb_bugs(bz):
             "id": 1886820,
         },
         {
+            "assigned_to": "nobody@mozilla.org",
             "whiteboard": "",
             "see_also": [],
             "severity": "S3",
@@ -655,3 +679,83 @@ def test_filter_core_as_kb_bugs(bz):
     ]
 
     assert core_as_kb_bugs[1] == {999999}
+
+
+def test_convert_bug_data(bz):
+    expected_data = [
+        {
+            "assigned_to": "test@example.org",
+            "component": "Knowledge Base",
+            "creation_time": "2000-07-25T13:50:04Z",
+            "keywords": [],
+            "number": 1835339,
+            "priority": None,
+            "product": "Web Compatibility",
+            "resolution": "",
+            "resolved_time": None,
+            "severity": None,
+            "status": "NEW",
+            "title": "Missing implementation of textinput event",
+            "url": "",
+            "user_story": {
+                "url": [
+                    "cmcreg.bancosantander.es/*",
+                    "new.reddit.com/*",
+                    "web.whatsapp.com/*",
+                    "facebook.com/*",
+                    "twitter.com/*",
+                    "reddit.com/*",
+                    "mobilevikings.be/*",
+                    "book.ersthelfer.tv/*",
+                ],
+            },
+            "whiteboard": "",
+        },
+        {
+            "assigned_to": None,
+            "component": "Knowledge Base",
+            "creation_time": "2000-07-25T13:50:04Z",
+            "keywords": [],
+            "number": 1835416,
+            "priority": None,
+            "product": "Web Compatibility",
+            "resolution": "",
+            "resolved_time": None,
+            "severity": None,
+            "status": "NEW",
+            "title": "Sites breaking due to the lack of WebUSB support",
+            "url": "",
+            "user_story": {
+                "url": [
+                    "webminidisc.com/*",
+                    "app.webadb.com/*",
+                    "www.numworks.com/*",
+                    "webadb.github.io/*",
+                    "www.stemplayer.com/*",
+                    "wootility.io/*",
+                    "python.microbit.org/*",
+                    "flash.android.com/*",
+                ],
+            },
+            "whiteboard": "",
+        },
+        {
+            "assigned_to": None,
+            "component": "Knowledge Base",
+            "creation_time": "2000-07-25T13:50:04Z",
+            "keywords": [],
+            "number": 111111,
+            "priority": None,
+            "product": "Web Compatibility",
+            "resolution": "",
+            "resolved_time": None,
+            "severity": None,
+            "status": "NEW",
+            "title": "Test bug",
+            "url": "",
+            "user_story": "",
+            "whiteboard": "",
+        },
+    ]
+    for bug, expected in zip(SAMPLE_BUGS, expected_data):
+        assert bz.convert_bug_data(bug) == expected

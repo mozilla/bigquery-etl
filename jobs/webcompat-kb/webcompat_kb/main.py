@@ -169,6 +169,7 @@ class BugzillaToBigQuery:
             "priority",
             "severity",
             "creation_time",
+            "assigned_to",
             "keywords",
             "url",
             "cf_user_story",
@@ -334,33 +335,37 @@ class BugzillaToBigQuery:
 
         return relations
 
+    def convert_bug_data(self, bug):
+        resolved = None
+        if bug["status"] in ["RESOLVED", "VERIFIED"] and bug["cf_last_resolved"]:
+            resolved = bug["cf_last_resolved"]
+
+        user_story = parse_string_to_json(bug["cf_user_story"])
+
+        assigned_to = (
+            bug["assigned_to"] if bug["assigned_to"] != "nobody@mozilla.org" else None
+        )
+
+        return {
+            "number": bug["id"],
+            "title": bug["summary"],
+            "status": bug["status"],
+            "resolution": bug["resolution"],
+            "product": bug["product"],
+            "component": bug["component"],
+            "severity": extract_int_from_field(bug["severity"]),
+            "priority": extract_int_from_field(bug["priority"]),
+            "creation_time": bug["creation_time"],
+            "assigned_to": assigned_to,
+            "keywords": bug["keywords"],
+            "url": bug["url"],
+            "user_story": user_story,
+            "resolved_time": resolved,
+            "whiteboard": bug["whiteboard"],
+        }
+
     def update_bugs(self, bugs):
-        res = []
-        for bug in bugs:
-            resolved = None
-
-            if bug["status"] in ["RESOLVED", "VERIFIED"] and bug["cf_last_resolved"]:
-                resolved = bug["cf_last_resolved"]
-
-            user_story = parse_string_to_json(bug["cf_user_story"])
-
-            bq_bug = {
-                "number": bug["id"],
-                "title": bug["summary"],
-                "status": bug["status"],
-                "resolution": bug["resolution"],
-                "product": bug["product"],
-                "component": bug["component"],
-                "severity": extract_int_from_field(bug["severity"]),
-                "priority": extract_int_from_field(bug["priority"]),
-                "creation_time": bug["creation_time"],
-                "keywords": bug["keywords"],
-                "url": bug["url"],
-                "user_story": user_story,
-                "resolved_time": resolved,
-                "whiteboard": bug["whiteboard"],
-            }
-            res.append(bq_bug)
+        res = [self.convert_bug_data(bug) for bug in bugs]
 
         job_config = bigquery.LoadJobConfig(
             source_format=bigquery.SourceFormat.NEWLINE_DELIMITED_JSON,
@@ -374,6 +379,7 @@ class BugzillaToBigQuery:
                 bigquery.SchemaField("severity", "INTEGER"),
                 bigquery.SchemaField("priority", "INTEGER"),
                 bigquery.SchemaField("creation_time", "TIMESTAMP", mode="REQUIRED"),
+                bigquery.SchemaField("assigned_to", "STRING"),
                 bigquery.SchemaField("keywords", "STRING", mode="REPEATED"),
                 bigquery.SchemaField("url", "STRING"),
                 bigquery.SchemaField("user_story", "JSON"),

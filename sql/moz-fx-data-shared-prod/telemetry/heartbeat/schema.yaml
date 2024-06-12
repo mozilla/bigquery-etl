@@ -616,6 +616,11 @@ fields:
       mode: NULLABLE
       description: The date the user profile was reset, as the integer number of days
         since UNIX epoch. This is optional.
+    - name: recovered_from_backup
+      type: FLOAT
+      mode: NULLABLE
+      description: The date the user profile was recovered from a backup, as the integer
+        number of days since UNIX epoch. This is optional.
   - name: services
     type: RECORD
     mode: NULLABLE

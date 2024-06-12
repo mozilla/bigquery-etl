@@ -2703,6 +2703,45 @@ fields:
         mode: NULLABLE
       description: The number of times each certificate compression algorithm was
         used.
+    - name: private_attribution_database
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The metrics for the attribution data stores
+
+        '
+    - name: private_attribution_measure_conversion
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The count of outcomes for the measureConversion API
+
+        '
+    - name: private_attribution_save_impression
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The count of outcomes for the saveImpression API
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE

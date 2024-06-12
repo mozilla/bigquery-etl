@@ -743,7 +743,7 @@ jobs:
             gcloud auth application-default login --quiet --brief --cred-file $GOOGLE_APPLICATION_CREDENTIALS &
             curl --location 
             --request POST "https://us-west1-moz-fx-telemetry-airflow-prod.cloudfunctions.net/ci-external-trigger?circleci_username=${CIRCLE_USERNAME}&circleci_project_username=${CIRCLE_PROJECT_USERNAME}&circleci_project_reponame=${CIRCLE_PROJECT_REPONAME}&circleci_build_num=${CIRCLE_BUILD_NUM}&circleci_build_url=${CIRCLE_BUILD_URL}"
-            -H "Authorization: bearer $(gcloud auth application-default print-identity-token)"
+            -H "Authorization: bearer $(gcloud auth application-default print-access-token)"
             -H "Content-Type:application/json"
             -d '{}'
   private-generate-sql:

@@ -9,7 +9,7 @@ WITH daily_stats AS (
   FROM
     `moz-fx-data-shared-prod`.google_ads_derived.daily_ad_group_stats_v1
   WHERE
-    date >= '2024-05-01'
+    date >= '2022-12-01'
     AND account_name = "Mozilla Firefox UAC"
     AND campaign_name NOT LIKE '%iOS%'
 ),
@@ -26,7 +26,7 @@ activations AS (
     `moz-fx-data-shared-prod`.ltv.fenix_client_ltv
     USING (client_id)
   WHERE
-    first_seen_date >= '2024-05-01'
+    first_seen_date >= '2022-12-01'
   GROUP BY
     date,
     ad_group_id
@@ -40,7 +40,7 @@ retention_aggs AS (
   FROM
     `moz-fx-data-shared-prod`.fenix.funnel_retention_week_4
   WHERE
-    first_seen_date >= '2024-05-01'
+    first_seen_date >= '2022-12-01'
   GROUP BY
     date,
     ad_group_id

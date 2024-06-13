@@ -20,16 +20,6 @@ WITH events_unnested AS (
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND category IN ('newtab', 'topsites', 'newtab.search', 'newtab.search.ad', 'pocket')
-    AND name IN (
-      'closed',
-      'opened',
-      'impression',
-      'issued',
-      'click',
-      'save',
-      'topic_click',
-      'dismiss'
-    )
 ),
 visit_metadata AS (
   SELECT
@@ -54,6 +44,7 @@ visit_metadata AS (
     ANY_VALUE(metrics.string.newtab_homepage_category) AS newtab_homepage_category,
     ANY_VALUE(metrics.string.newtab_newtab_category) AS newtab_newtab_category,
     ANY_VALUE(metrics.boolean.newtab_search_enabled) AS newtab_search_enabled,
+    ANY_VALUE(metrics.boolean.newtab_weather_enabled) AS weather_widget_enabled,
     ANY_VALUE(metrics.quantity.topsites_rows) AS topsites_rows,
     ANY_VALUE(metrics.string_list.newtab_blocked_sponsors) AS newtab_blocked_sponsors,
     ANY_VALUE(ping_info.experiments) AS experiments,
@@ -110,6 +101,7 @@ search_events AS (
     events_unnested
   WHERE
     event_category IN ('newtab.search', 'newtab.search.ad')
+    AND event_name IN ('click', 'impression', 'issued')
   GROUP BY
     newtab_visit_id,
     search_engine,
@@ -180,6 +172,7 @@ topsites_events AS (
     )
   WHERE
     event_category = 'topsites'
+    AND event_name IN ('dismiss', 'click', 'impression')
   GROUP BY
     newtab_visit_id,
     topsite_tile_position,
@@ -219,6 +212,7 @@ pocket_events AS (
     mozfun.map.get_key(event_details, "newtab_visit_id") AS newtab_visit_id,
     SAFE_CAST(mozfun.map.get_key(event_details, "position") AS INT64) AS pocket_story_position,
     mozfun.map.get_key(event_details, "tile_id") AS pocket_tile_id,
+    mozfun.map.get_key(event_details, "recommendation_id") AS pocket_recommendation_id,
     COUNTIF(event_name = 'save') AS pocket_saves,
     COUNTIF(event_name = 'click') AS pocket_clicks,
     COUNTIF(event_name = 'impression') AS pocket_impressions,
@@ -250,10 +244,12 @@ pocket_events AS (
     events_unnested
   WHERE
     event_category = 'pocket'
+    AND event_name IN ('impression', 'click', 'save')
   GROUP BY
     newtab_visit_id,
     pocket_story_position,
-    pocket_tile_id
+    pocket_tile_id,
+    pocket_recommendation_id
 ),
 pocket_summary AS (
   SELECT
@@ -262,6 +258,7 @@ pocket_summary AS (
       STRUCT(
         pocket_story_position,
         pocket_tile_id,
+        pocket_recommendation_id,
         pocket_impressions,
         sponsored_pocket_impressions,
         organic_pocket_impressions,
@@ -275,6 +272,99 @@ pocket_summary AS (
     ) AS pocket_interactions
   FROM
     pocket_events
+  GROUP BY
+    newtab_visit_id
+),
+wallpaper_events AS (
+  SELECT
+    mozfun.map.get_key(event_details, "newtab_visit_id") AS newtab_visit_id,
+    mozfun.map.get_key(event_details, "selected_wallpaper") AS wallpaper_selected_wallpaper,
+    COUNTIF(event_name = 'wallpaper_click') AS wallpaper_clicks,
+    COUNTIF(
+      event_name = 'wallpaper_click'
+      AND mozfun.map.get_key(event_details, "had_previous_wallpaper") = "true"
+    ) AS wallpaper_clicks_had_previous_wallpaper,
+    COUNTIF(
+      event_name = 'wallpaper_click'
+      AND mozfun.map.get_key(event_details, "had_previous_wallpaper") = "false"
+    ) AS wallpaper_clicks_first_selected_wallpaper,
+    COUNTIF(event_name = 'wallpaper_category_click') AS wallpaper_category_clicks,
+    COUNTIF(event_name = 'wallpaper_highlight_dismissed') AS wallpaper_highlight_dismissals,
+    COUNTIF(event_name = 'wallpaper_highlight_cta_click') AS wallpaper_highlight_cta_clicks
+  FROM
+    events_unnested
+  WHERE
+    event_category = 'newtab'
+    AND event_name IN (
+      'wallpaper_click',
+      'wallpaper_category_click',
+      'wallpaper_highlight_cta_clicks',
+      'wallpaper_highlight_dismissed'
+    )
+  GROUP BY
+    newtab_visit_id,
+    wallpaper_selected_wallpaper
+),
+wallpaper_summary AS (
+  SELECT
+    newtab_visit_id,
+    ARRAY_AGG(
+      STRUCT(
+        wallpaper_selected_wallpaper,
+        wallpaper_clicks,
+        wallpaper_clicks_had_previous_wallpaper,
+        wallpaper_clicks_first_selected_wallpaper,
+        wallpaper_category_clicks,
+        wallpaper_highlight_dismissals,
+        wallpaper_highlight_cta_clicks
+      )
+    ) AS wallpaper_interactions
+  FROM
+    wallpaper_events
+  GROUP BY
+    newtab_visit_id
+),
+weather_events AS (
+  SELECT
+    mozfun.map.get_key(event_details, "newtab_visit_id") AS newtab_visit_id,
+    COUNTIF(event_name = 'weather_impression') AS weather_widget_impressions,
+    COUNTIF(event_name = 'weather_open_provider_url') AS weather_widget_clicks,
+    COUNTIF(event_name = 'weather_load_error') AS weather_widget_load_errors,
+    COUNTIF(
+      event_name = 'weather_change_display'
+      AND mozfun.map.get_key(event_details, "weather_display_mode") = "detailed"
+    ) AS weather_widget_change_display_to_detailed,
+    COUNTIF(
+      event_name = 'weather_change_display'
+      AND mozfun.map.get_key(event_details, "weather_display_mode") = "simple"
+    ) AS weather_widget_change_display_to_simple
+  FROM
+    events_unnested
+  WHERE
+    event_category = 'newtab'
+    AND event_name IN (
+      'weather_impression',
+      'weather_open_provider_url',
+      'weather_load_error',
+      'weather_change_display'
+    )
+  GROUP BY
+    newtab_visit_id
+),
+weather_summary AS (
+  SELECT
+    newtab_visit_id,
+    ARRAY_AGG(
+      STRUCT(
+        weather_widget_impressions,
+        weather_widget_clicks,
+        weather_widget_load_errors,
+        weather_widget_change_display_to_detailed,
+        weather_widget_change_display_to_simple
+      )
+    ) AS weather_interactions
+  FROM
+    weather_events
   GROUP BY
     newtab_visit_id
 ),
@@ -292,6 +382,12 @@ combined_newtab_activity AS (
   LEFT JOIN
     pocket_summary
     USING (newtab_visit_id)
+  LEFT JOIN
+    wallpaper_summary
+    USING (newtab_visit_id)
+  LEFT JOIN
+    weather_summary
+    USING (newtab_visit_id)
   WHERE
    -- Keep only rows with interactions, unless we receive a valid newtab.opened event.
    -- This is meant to drop only interactions that only have a newtab.closed event on the same partition
@@ -300,6 +396,8 @@ combined_newtab_activity AS (
     OR search_interactions IS NOT NULL
     OR topsite_tile_interactions IS NOT NULL
     OR pocket_interactions IS NOT NULL
+    OR wallpaper_interactions IS NOT NULL
+    OR weather_interactions IS NOT NULL
 ),
 client_profile_info AS (
   SELECT
@@ -314,7 +412,15 @@ client_profile_info AS (
     client_id
 )
 SELECT
-  *
+  *,
+  CASE
+    WHEN (
+        (newtab_open_source = "about:home" AND newtab_homepage_category = "enabled")
+        OR (newtab_open_source = "about:newtab" AND newtab_newtab_category = "enabled")
+      )
+      THEN "default"
+    ELSE "non-default"
+  END AS newtab_default_ui,
 FROM
   combined_newtab_activity
 LEFT JOIN

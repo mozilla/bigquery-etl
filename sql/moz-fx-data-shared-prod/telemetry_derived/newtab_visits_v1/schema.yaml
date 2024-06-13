@@ -215,6 +215,12 @@ fields:
   - mode: NULLABLE
     name: organic_pocket_saves
     type: INTEGER
+  - name: pocket_tile_id
+    type: STRING
+    mode: NULLABLE
+  - name: pocket_recommendation_id
+    type: STRING
+    mode: NULLABLE
   mode: REPEATED
   name: pocket_interactions
   type: RECORD
@@ -224,3 +230,53 @@ fields:
 - mode: NULLABLE
   name: activity_segment
   type: STRING
+- mode: NULLABLE
+  name: newtab_default_ui
+  type: STRING
+- name: weather_widget_enabled
+  type: BOOLEAN
+  mode: NULLABLE
+- name: wallpaper_interactions
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: wallpaper_selected_wallpaper
+    type: STRING
+    mode: NULLABLE
+  - name: wallpaper_clicks
+    type: INTEGER
+    mode: NULLABLE
+  - name: wallpaper_clicks_had_previous_wallpaper
+    type: INTEGER
+    mode: NULLABLE
+  - name: wallpaper_clicks_first_selected_wallpaper
+    type: INTEGER
+    mode: NULLABLE
+  - name: wallpaper_category_clicks
+    type: INTEGER
+    mode: NULLABLE
+  - name: wallpaper_highlight_dismissals
+    type: INTEGER
+    mode: NULLABLE
+  - name: wallpaper_highlight_cta_clicks
+    type: INTEGER
+    mode: NULLABLE
+- name: weather_interactions
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: weather_widget_impressions
+    type: INTEGER
+    mode: NULLABLE
+  - name: weather_widget_clicks
+    type: INTEGER
+    mode: NULLABLE
+  - name: weather_widget_load_errors
+    type: INTEGER
+    mode: NULLABLE
+  - name: weather_widget_change_display_to_detailed
+    type: INTEGER
+    mode: NULLABLE
+  - name: weather_widget_change_display_to_simple
+    type: INTEGER
+    mode: NULLABLE

@@ -178,14 +178,22 @@ jobs:
                 name: Run SQL tests
                 command: |
                     PATH="venv/bin:$PATH" script/entrypoint -m sql -n 8
-            - run:
-                name: Copy generated SQL and tests to save for debugging
+            - &copy_debug_sql
+              run:
+                name: Copy generated SQL to save for debugging
                 command: |
                   mkdir -p /tmp/debug_artifacts
                   cp -r sql /tmp/debug_artifacts/sql
+                when: on_fail
+            - &copy_debug_tests
+              run:
+                name: Copy generated tests to save for debugging
+                command: |
+                  mkdir -p /tmp/debug_artifacts
                   cp -r tests /tmp/debug_artifacts/tests
                 when: on_fail
-            - store_artifacts:
+            - &store_debug_artifacts
+              store_artifacts:
                 path: /tmp/debug_artifacts
                 destination: /
       - unless:
@@ -232,6 +240,8 @@ jobs:
                   echo $PATHS
                   PATH="venv/bin:$PATH" script/bqetl dryrun --validate-schemas $PATHS
                 # yamllint enable rule:line-length
+            - *copy_debug_sql
+            - *store_debug_artifacts
       - unless:
           condition: *validate-sql-or-routines
           steps:
@@ -254,6 +264,8 @@ jobs:
                 name: Verify that backfill.yaml files are valid
                 command: |
                   PATH="venv/bin:$PATH" script/bqetl backfill validate
+            - *copy_debug_sql
+            - *store_debug_artifacts
       - unless:
           condition: *validate-sql
           steps:
@@ -277,6 +289,8 @@ jobs:
                   # TODO: Add check here to make sure all queries have metadata.yaml
                   PATH="venv/bin:$PATH" script/bqetl query validate \
                     --respect-dryrun-skip
+            - *copy_debug_sql
+            - *store_debug_artifacts
       - unless:
           condition: *validate-sql
           steps:
@@ -372,6 +386,15 @@ jobs:
                   python -m pytest tests/dags/test_dag_validity.py --junitxml=~/telemetry-airflow/test-results/junit.xml
             - store_test_results:
                 path: ~/telemetry-airflow/test-results/junit.xml
+            - &copy_debug_dags
+              run:
+                name: Copy generated DAGs to save for debugging
+                command: |
+                  mkdir -p /tmp/debug_artifacts
+                  cp -r dags /tmp/debug_artifacts/dags
+                when: on_fail
+            - *copy_debug_sql
+            - *store_debug_artifacts
       - unless:
           condition: *validate-sql
           steps:
@@ -399,6 +422,9 @@ jobs:
                 name: Validate doc examples
                 command: |
                   PATH="venv/bin:$PATH" script/bqetl routine validate --docs-only
+            - *copy_debug_sql
+            - *copy_debug_tests
+            - *store_debug_artifacts
       - unless:
           condition: *validate-routines
           steps:
@@ -420,6 +446,8 @@ jobs:
                 name: Validate views
                 command: |
                   PATH="venv/bin:$PATH" script/bqetl view validate
+            - *copy_debug_sql
+            - *store_debug_artifacts
       - unless:
           condition: *validate-sql-or-routines
           steps:
@@ -590,15 +618,8 @@ jobs:
                 root: /tmp/workspace
                 paths:
                   - staged-generated-sql
-            - run:
-                name: Copy generated SQL to save for debugging
-                command: |
-                  mkdir -p /tmp/debug_artifacts
-                  cp -r sql /tmp/debug_artifacts/sql
-                when: on_fail
-            - store_artifacts:
-                path: /tmp/debug_artifacts
-                destination: /
+            - *copy_debug_sql
+            - *store_debug_artifacts
       - unless:
           condition: *validate-sql-or-routines
           steps:
@@ -936,42 +957,6 @@ jobs:
           steps:
             - *skip
   generate-diff:
-    docker: *docker
-    steps:
-      - when:
-          condition: *validate-sql-or-routines
-          steps:
-            - attach_workspace:
-                at: /tmp/workspace
-            - run:
-                name: Generate diff
-                command: |
-                  diff -qr --no-dereference \
-                    /tmp/workspace/main-generated-sql/dags/ /tmp/workspace/generated-sql/dags/ \
-                    | grep '^Only in' \
-                    > /tmp/workspace/generated-sql/sql.diff || true
-                  diff -bur --no-dereference --new-file \
-                    /tmp/workspace/main-generated-sql/dags/ /tmp/workspace/generated-sql/dags/ \
-                    >> /tmp/workspace/generated-sql/sql.diff || true
-                  diff -qr --no-dereference \
-                    /tmp/workspace/main-generated-sql/sql/ /tmp/workspace/generated-sql/sql/ \
-                    | grep '^Only in' \
-                    >> /tmp/workspace/generated-sql/sql.diff || true
-                  diff -bur --no-dereference --new-file \
-                    /tmp/workspace/main-generated-sql/sql/ /tmp/workspace/generated-sql/sql/ \
-                    >> /tmp/workspace/generated-sql/sql.diff || true
-            - persist_to_workspace:
-                root: /tmp/workspace
-                paths:
-                  - generated-sql
-            - store_artifacts:
-                path: /tmp/workspace/generated-sql/sql.diff
-                destination: sql.diff
-      - unless:
-          condition: *validate-sql-or-routines
-          steps:
-            - *skip
-  post-diff:
     docker:
       - image: cimg/node:21.2.0
     steps:
@@ -981,6 +966,26 @@ jobs:
             - checkout
             - attach_workspace:
                 at: /tmp/workspace
+            - run:
+                name: Generate diff
+                command: |
+                  diff -qr --no-dereference \
+                    /tmp/workspace/main-generated-sql/dags/ /tmp/workspace/generated-sql/dags/ \
+                    | grep '^Only in' \
+                    > /tmp/workspace/sql.diff || true
+                  diff -bur --no-dereference --new-file \
+                    /tmp/workspace/main-generated-sql/dags/ /tmp/workspace/generated-sql/dags/ \
+                    >> /tmp/workspace/sql.diff || true
+                  diff -qr --no-dereference \
+                    /tmp/workspace/main-generated-sql/sql/ /tmp/workspace/generated-sql/sql/ \
+                    | grep '^Only in' \
+                    >> /tmp/workspace/sql.diff || true
+                  diff -bur --no-dereference --new-file \
+                    /tmp/workspace/main-generated-sql/sql/ /tmp/workspace/generated-sql/sql/ \
+                    >> /tmp/workspace/sql.diff || true
+            - store_artifacts:
+                path: /tmp/workspace/sql.diff
+                destination: sql.diff
             - run: npm i circle-github-bot@2.1.0 @octokit/graphql@7.0.2
             - run: .circleci/post-diff.js
       - unless:
@@ -1042,6 +1047,16 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Check for package version change in last commit before proceeding.
+          command: |
+            if git diff main HEAD~1 pyproject.toml | grep 'version'
+              then
+                echo "Found changes to package version dir, proceeding with deployment."
+              else
+                echo "No changes in package version. Skipping bigquery-etl deployment."
+                circleci-agent step halt
+            fi
+      - run:
           name: Install deployment tools
           command: |
             pip install --upgrade setuptools wheel twine
@@ -1097,12 +1112,6 @@ workflows:
           requires:
             - generate-dags
             - main-generate-sql-and-dags
-          filters:
-            branches:
-              ignore: main
-      - post-diff:
-          requires:
-            - generate-diff
           filters:
             branches:
               ignore: main
@@ -1212,8 +1221,6 @@ workflows:
     jobs:
       - deploy-to-pypi:
           filters:
-            tags:
-              only: /[0-9]{4}.[0-9]{1,2}.[0-9]+/  # Calver: YYYY.M.MINOR
             branches:
-              # Ignore all branches; this workflow should only run for tags.
-              ignore: /.*/
+              only:
+                - main

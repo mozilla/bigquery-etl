@@ -1,15 +1,3 @@
-WITH active_subscription_counts AS (
-  SELECT
-    subscriptions.mozilla_account_id_sha256,
-    COUNTIF(
-      subscriptions.is_active
-      AND subscriptions.provider_status = 'active'
-    ) AS active_subscription_count
-  FROM
-    `moz-fx-data-shared-prod.subscription_platform.logical_subscriptions` AS subscriptions
-  GROUP BY
-    subscriptions.mozilla_account_id_sha256
-)
 SELECT
   fxa.email_id AS external_id,
   ARRAY_AGG(
@@ -31,7 +19,7 @@ SELECT
       subscriptions.is_trial AS is_trial,
       subscriptions.is_active AS is_active,
       subscriptions.provider_status AS subscription_status,
-      subscriptions.country_code AS subscription_country_code,
+      LOWER(subscriptions.country_code) AS subscription_country_code,
       subscriptions.country_name AS subscription_country_name,
       subscriptions.current_period_started_at AS current_period_started_at,
       subscriptions.current_period_ends_at AS current_period_ends_at,
@@ -39,7 +27,6 @@ SELECT
       subscriptions.auto_renew_disabled_at AS auto_renew_disabled_at,
       subscriptions.has_refunds AS has_refunds,
       subscriptions.has_fraudulent_charges AS has_fraudulent_charges,
-      active_counts.active_subscription_count AS active_subscriptions_count,
       subscriptions.first_touch_attribution.impression_at AS first_touch_impression_at,
       subscriptions.first_touch_attribution.entrypoint AS first_touch_entrypoint,
       subscriptions.first_touch_attribution.entrypoint_experiment AS first_touch_entrypoint_experiment,
@@ -72,9 +59,6 @@ FROM
 LEFT JOIN
   `moz-fx-data-shared-prod.ctms_braze.ctms_fxa` AS fxa
   ON subscriptions.mozilla_account_id_sha256 = TO_HEX(SHA256(fxa.fxa_id))
-LEFT JOIN
-  active_subscription_counts AS active_counts
-  ON active_counts.mozilla_account_id_sha256 = subscriptions.mozilla_account_id_sha256
 INNER JOIN
   `moz-fx-data-shared-prod.braze_derived.users_v1` AS users
   ON users.external_id = fxa.email_id

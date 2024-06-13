@@ -19,14 +19,13 @@
       is_trial: false
       is_active: true
       subscription_status: active
-      subscription_country_code: US
+      subscription_country_code: us
       subscription_country_name: United States
       current_period_started_at: 2020-12-01 10:00:00+00:00
       current_period_ends_at: 2020-12-30 10:00:00+00:00
       is_auto_renew: true
       has_refunds: false
       has_fraudulent_charges: false
-      active_subscriptions_count: 1
       subscription_updated_at: 2020-12-01 10:00:00+00:00
     - provider: Stripe
       payment_provider: PayPal
@@ -45,13 +44,12 @@
       is_trial: false
       is_active: false
       subscription_status: canceled
-      subscription_country_code: US
+      subscription_country_code: us
       subscription_country_name: United States
       is_auto_renew: false
       auto_renew_disabled_at: 2020-12-01 10:00:00+00:00
       has_refunds: false
       has_fraudulent_charges: false
-      active_subscriptions_count: 1
       subscription_updated_at: 2020-12-01 10:00:00+00:00
     - provider: Stripe
       payment_provider: PayPal
@@ -70,12 +68,11 @@
       is_trial: true
       is_active: false
       subscription_status: trialing
-      subscription_country_code: US
+      subscription_country_code: us
       subscription_country_name: United States
       is_auto_renew: false
       has_refunds: false
       has_fraudulent_charges: false
-      active_subscriptions_count: 1
       subscription_updated_at: 2020-12-01 10:00:00+00:00
 # user 2
 - external_id: user_2
@@ -97,14 +94,13 @@
       is_trial: false
       is_active: true
       subscription_status: active
-      subscription_country_code: US
+      subscription_country_code: us
       subscription_country_name: United States
       current_period_started_at: 2020-01-01 10:00:00+00:00
       current_period_ends_at: 2021-01-01 10:00:00+00:00
       is_auto_renew: true
       has_refunds: false
       has_fraudulent_charges: false
-      active_subscriptions_count: 1
       first_touch_impression_at: 2020-12-01 10:00:00+00:00
       first_touch_entrypoint: first_entrypoint
       first_touch_entrypoint_experiment: first_entrypoint_exp
@@ -145,10 +141,9 @@
       is_trial: false
       is_active: false
       subscription_status: inactive
-      subscription_country_code: US
+      subscription_country_code: us
       subscription_country_name: United States
       is_auto_renew: false
       has_refunds: false
       has_fraudulent_charges: false
-      active_subscriptions_count: 0
       subscription_updated_at: 2020-12-01 10:00:00+00:00

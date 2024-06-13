@@ -169,7 +169,7 @@ DELETE_TARGETS: DeleteIndex = {
     ): DESKTOP_SRC,
     client_id_target(table="search_derived.search_clients_daily_v8"): DESKTOP_SRC,
     client_id_target(
-        table="telemetry_derived.desktop_engagement_client_v1"
+        table="telemetry_derived.desktop_engagement_clients_v1"
     ): DESKTOP_SRC,
     client_id_target(table="search_derived.search_clients_last_seen_v1"): DESKTOP_SRC,
     client_id_target(
@@ -190,6 +190,7 @@ DELETE_TARGETS: DeleteIndex = {
         table="telemetry_derived.clients_histogram_aggregates_v1"
     ): DESKTOP_SRC,
     client_id_target(table="telemetry_derived.clients_last_seen_v1"): DESKTOP_SRC,
+    client_id_target(table="telemetry_derived.clients_last_seen_v2"): DESKTOP_SRC,
     client_id_target(
         table="telemetry_derived.clients_last_seen_joined_v1"
     ): DESKTOP_SRC,
@@ -207,6 +208,9 @@ DELETE_TARGETS: DeleteIndex = {
     client_id_target(table="telemetry_derived.main_1pct_v1"): DESKTOP_SRC,
     client_id_target(table="telemetry_derived.main_remainder_1pct_v1"): DESKTOP_SRC,
     client_id_target(table="telemetry_derived.main_use_counter_1pct_v1"): DESKTOP_SRC,
+    client_id_target(
+        table="telemetry_derived.desktop_retention_clients_v1"
+    ): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.block_autoplay_v1"): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.crash_v4"): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.downgrade_v4"): DESKTOP_SRC,
@@ -238,6 +242,13 @@ DELETE_TARGETS: DeleteIndex = {
     client_id_target(table="telemetry_stable.untrusted_modules_v4"): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.update_v4"): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.voice_v4"): DESKTOP_SRC,
+    DeleteTarget(
+        table="telemetry_derived.mobile_engagement_clients_v1",
+        field=(CLIENT_ID, CLIENT_ID),
+    ): (
+        DeleteSource(table="firefox_ios.deletion_request", field=GLEAN_CLIENT_ID),
+        DeleteSource(table="fenix.deletion_request", field=GLEAN_CLIENT_ID),
+    ),
     # activity stream
     DeleteTarget(
         table="messaging_system_stable.cfr_v1", field=(CLIENT_ID, IMPRESSION_ID)
@@ -567,6 +578,8 @@ def find_glean_targets(
             and not table.table_id.startswith(source_doctype)
             # migration tables not yet supported
             and not table.table_id.startswith("migration")
+            # skip tables with explicitly excluded client ids
+            and table.labels.get("include_client_id", "true").lower() != "false"
         },
         **{
             # glean derived tables that contain client_id
@@ -623,29 +636,32 @@ EXPERIMENT_ANALYSIS = "moz-fx-data-experiments"
 
 
 def find_experiment_analysis_targets(
-    pool: ThreadPool, client: bigquery.Client, project: str = EXPERIMENT_ANALYSIS
+    client: bigquery.Client, project: str = EXPERIMENT_ANALYSIS
 ) -> DeleteIndex:
     """Return a dict like DELETE_TARGETS for experiment analysis tables.
 
     Note that dict values *must* be either DeleteSource or tuple[DeleteSource, ...],
     and other iterable types, e.g. list[DeleteSource] are not allowed or supported.
     """
-    datasets = {dataset.reference for dataset in client.list_datasets(project)}
+    table_query = f"""
+    SELECT
+      table_schema AS dataset_id,
+      table_name,
+    FROM
+      `{project}.region-us.INFORMATION_SCHEMA.TABLES`
+    WHERE
+      table_type = 'BASE TABLE'
+      AND NOT STARTS_WITH(table_name, "statistics")
+      AND ddl LIKE '%client_id STRING,%'
+    """
 
-    tables = [
-        table
-        for tables in pool.map(
-            client.list_tables,
-            datasets,
-            chunksize=1,
-        )
-        for table in tables
-        if table.table_type != "VIEW" and not table.table_id.startswith("statistics_")
-    ]
+    target_tables = client.query_and_wait(query=table_query)
 
     return {
-        client_id_target(table=qualified_table_id(table)): DESKTOP_SRC
-        for table in tables
+        client_id_target(
+            table=f"{table.dataset_id}.{table.table_name}", project=project
+        ): DESKTOP_SRC
+        for table in target_tables
     }
 
 

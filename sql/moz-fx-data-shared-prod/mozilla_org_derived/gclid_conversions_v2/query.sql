@@ -45,7 +45,8 @@ telemetry_id_to_activity_staging AS (
     ad_clicks_count_all > 0 AS did_click_ad,
     NULL AS first_wk_5_actv_days_and_1_or_more_search_w_ads,
     NULL AS first_wk_3_actv_days_and_1_or_more_search_w_ads,
-    NULL AS first_wk_3_actv_days_and_24_active_minutes TRUE AS was_active,
+    NULL AS first_wk_3_actv_days_and_24_active_minutes,
+    TRUE AS was_active,
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6`
   WHERE
@@ -58,7 +59,8 @@ telemetry_id_to_activity_staging AS (
     NULL AS did_click_ad,
     event_1 AS first_wk_5_actv_days_and_1_or_more_search_w_ads,
     event_2 AS first_wk_3_actv_days_and_1_or_more_search_w_ads,
-    event_3 AS first_wk_3_actv_days_and_24_active_minutes TRUE AS was_active
+    event_3 AS first_wk_3_actv_days_and_24_active_minutes, 
+    NULL AS was_active
   FROM
     `moz-fx-data-shared-prod.google_ads_derived.conversion_event_categorization_v1`
   WHERE

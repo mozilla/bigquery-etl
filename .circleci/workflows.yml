@@ -743,10 +743,9 @@ jobs:
             ID_TOKEN=$(gcloud auth print-identity-token --impersonate-service-account ${GCP_SERVICE_ACCOUNT_EMAIL}) &&
             DAGRUN_NOTE="DAG triggered by **[${CIRCLE_USERNAME}](https://github.com/${CIRCLE_USERNAME})** from ${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME} CI build [${CIRCLE_BUILD_NUM}](${CIRCLE_BUILD_URL})" &&
             curl --location --request POST "https://us-west1-moz-fx-telemetry-airflow-prod.cloudfunctions.net/ci-external-trigger"
-            --data-urlencode "dagrun_note=$DAGRUN_NOTE"
             -H "Authorization: bearer ${ID_TOKEN}"
-            -H "Content-Type:application/x-www-form-urlencoded"
-            -d '{}'
+            -H "Content-Type:application/json"
+            -d "{\"dagrun_note\": \"${DAGRUN_NOTE}\"}"
   private-generate-sql:
     docker: *docker
     steps:

@@ -53,7 +53,7 @@ telemetry_id_to_activity_staging AS (
     submission_date = @activity_date
   UNION ALL
   SELECT
-    telemetry_client_id,
+    client_id AS telemetry_client_id,
     report_date AS activity_date,
     NULL AS did_search,
     NULL AS did_click_ad,

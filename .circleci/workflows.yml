@@ -741,8 +741,9 @@ jobs:
           name: Trigger bqetl-artifact-deployment in Airflow
           command: >
             ID_TOKEN=$(gcloud auth print-identity-token --impersonate-service-account ${GCP_SERVICE_ACCOUNT_EMAIL}) &&
+            DAGRUN_NOTE="DAG triggered by **${CIRCLE_USERNAME}](https://github.com/${CIRCLE_USERNAME}** from ${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME} CI build [${CIRCLE_BUILD_NUM}](${CIRCLE_BUILD_URL})" &&
             curl --location
-            --request POST "https://us-west1-moz-fx-telemetry-airflow-prod.cloudfunctions.net/ci-external-trigger?circleci_username=${CIRCLE_USERNAME}&circleci_project_username=${CIRCLE_PROJECT_USERNAME}&circleci_project_reponame=${CIRCLE_PROJECT_REPONAME}&circleci_build_num=${CIRCLE_BUILD_NUM}&circleci_build_url=${CIRCLE_BUILD_URL}"
+            --request POST "https://us-west1-moz-fx-telemetry-airflow-prod.cloudfunctions.net/ci-external-trigger?dagrun_note=${DAGRUN_NOTE}"
             -H "Authorization: bearer ${ID_TOKEN}"
             -H "Content-Type:application/json"
             -d '{}'
@@ -1182,14 +1183,12 @@ workflows:
                 - main
       - artifact-deployment:
           name: Trigger bqetl_artifact_deployment Airflow DAG
-          context:
-            - data-eng-circleci-deployment
-          requires:
-            - deploy
-          filters:
-            branches:
-              only:
-                - main
+#          requires:
+#            - deploy
+#          filters:
+#            branches:
+#              only:
+#                - main
       - sync-dags-repo:
           name: 🔃 Synchronize bigquery-etl submodule
           repo-to-sync: ${CIRCLE_PROJECT_REPONAME}

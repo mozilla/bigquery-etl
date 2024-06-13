@@ -33,6 +33,8 @@ THEN
       total_users,
       histogram,
       percentiles,
+      non_norm_histogram,
+      non_norm_percentiles,
       total_sample
     )
   VALUES
@@ -49,6 +51,8 @@ THEN
       S.total_users,
       S.histogram,
       S.percentiles,
+      S.non_norm_histogram,
+      S.non_norm_percentiles,
       S.total_sample
     )
   WHEN MATCHED
@@ -57,4 +61,6 @@ THEN
     SET T.total_users = S.total_users,
     T.histogram = S.histogram,
     T.percentiles = S.percentiles,
+    T.non_norm_histogram = S.non_norm_histogram,
+    T.non_norm_percentiles = S.non_norm_percentiles,
     T.total_sample = S.total_sample

@@ -7,7 +7,7 @@ import re
 import sys
 from functools import partial
 from multiprocessing.pool import Pool
-from typing import List, Set
+from typing import List, Set, Tuple
 
 import rich_click as click
 from google.cloud import bigquery
@@ -99,7 +99,7 @@ def dryrun(
         sql_files -= DryRun.skipped_files()
 
     if not sql_files:
-        print("Skipping dry run because no queries matched")
+        click.echo("Skipping dry run because no queries matched")
         sys.exit(0)
 
     if not use_cloud_function and not is_authenticated():
@@ -114,13 +114,20 @@ def dryrun(
 
     with Pool(8) as p:
         result = p.map(sql_file_valid, sql_files, chunksize=1)
-    if not all(result):
+
+    failures = sorted([r[1] for r in result if not r[0]])
+    if len(failures) > 0:
+        click.echo(
+            f"Failed to validate {len(failures)} queries (see above for error messages):",
+            err=True,
+        )
+        click.echo("\n".join(failures), err=True)
         sys.exit(1)
 
 
 def _sql_file_valid(
     use_cloud_function, project, respect_skip, validate_schemas, sqlfile
-):
+) -> Tuple[bool, str]:
     if not use_cloud_function:
         client = bigquery.Client(project=project)
     else:
@@ -134,5 +141,11 @@ def _sql_file_valid(
         respect_skip=respect_skip,
     )
     if validate_schemas:
-        return result.validate_schema()
-    return result.is_valid()
+        try:
+            success = result.validate_schema()
+        except Exception as e:  # validate_schema raises base exception
+            click.echo(e, err=True)
+            success = False
+        return success, sqlfile
+
+    return result.is_valid(), sqlfile

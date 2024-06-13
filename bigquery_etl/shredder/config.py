@@ -578,6 +578,8 @@ def find_glean_targets(
             and not table.table_id.startswith(source_doctype)
             # migration tables not yet supported
             and not table.table_id.startswith("migration")
+            # skip tables with explicitly excluded client ids
+            and table.labels.get("include_client_id", "true").lower() != "false"
         },
         **{
             # glean derived tables that contain client_id

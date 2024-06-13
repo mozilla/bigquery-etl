@@ -374,3 +374,6 @@ WHERE CAST(StartTime as date) = DATE_SUB('{args.date}', INTERVAL 4 DAY) """
         os_usg_configs["bucket_no_gs"],
         error_archive_fpath,
     )
+
+if __name__ == "__main__":
+    main()

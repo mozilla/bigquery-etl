@@ -140,53 +140,63 @@ def get_os_usage_data(date_of_interest, auth_token):
             os_usage_api_url = generate_os_timeseries_api_call(
                 start_date, end_date, "1d", loc, device_type
             )
+            try:
+                # Call the API and save the response as JSON
+                response = requests.get(
+                    os_usage_api_url,
+                    headers=headers,
+                    timeout=os_usg_configs["timeout_limit"],
+                )
+                response_json = json.loads(response.text)
 
-            # Call the API and save the response as JSON
-            response = requests.get(
-                os_usage_api_url,
-                headers=headers,
-                timeout=os_usg_configs["timeout_limit"],
-            )
-            response_json = json.loads(response.text)
+                # If response was successful, get the result
+                if response_json["success"] is True:
+                    result = response_json["result"]
+                    # Parse metadata
+                    conf_lvl = result["meta"]["confidenceInfo"]["level"]
+                    aggr_intvl = result["meta"]["aggInterval"]
+                    nrmlztn = result["meta"]["normalization"]
+                    lst_upd = result["meta"]["lastUpdated"]
+                    data_dict = result["serie_0"]
 
-            # If response was successful, get the result
-            if response_json["success"] is True:
-                result = response_json["result"]
-                # Parse metadata
-                conf_lvl = result["meta"]["confidenceInfo"]["level"]
-                aggr_intvl = result["meta"]["aggInterval"]
-                nrmlztn = result["meta"]["normalization"]
-                lst_upd = result["meta"]["lastUpdated"]
-                data_dict = result["serie_0"]
+                    for key, val in data_dict.items():
+                        new_result_df = pd.DataFrame(
+                            {
+                                "Timestamps": data_dict["timestamps"],
+                                "OS": [key] * len(val),
+                                "Location": [loc] * len(val),
+                                "DeviceType": [device_type] * len(val),
+                                "Share": val,
+                                "ConfidenceLevel": [conf_lvl] * len(val),
+                                "AggrInterval": [aggr_intvl] * len(val),
+                                "Normalization": [nrmlztn] * len(val),
+                                "LastUpdatedTS": [lst_upd] * len(val),
+                            }
+                        )
+                        result_df = pd.concat([result_df, new_result_df])
 
-                for key, val in data_dict.items():
-                    new_result_df = pd.DataFrame(
+                # If response was not successful, get the errors
+                else:
+                    # errors = response_json["errors"]  # Maybe add to capture, right now not using this
+                    new_errors_df = pd.DataFrame(
                         {
-                            "Timestamps": data_dict["timestamps"],
-                            "OS": [key] * len(val),
-                            "Location": [loc] * len(val),
-                            "DeviceType": [device_type] * len(val),
-                            "Share": val,
-                            "ConfidenceLevel": [conf_lvl] * len(val),
-                            "AggrInterval": [aggr_intvl] * len(val),
-                            "Normalization": [nrmlztn] * len(val),
-                            "LastUpdatedTS": [lst_upd] * len(val),
+                            "StartTime": [start_date],
+                            "EndTime": [end_date],
+                            "Location": [loc],
+                            "DeviceType": [device_type],
                         }
                     )
-                    result_df = pd.concat([result_df, new_result_df])
-
-            # If response was not successful, get the errors
-            else:
-                # errors = response_json["errors"]  # Maybe add to capture, right now not using this
-                new_errors_df = pd.DataFrame(
-                    {
-                        "StartTime": [start_date],
-                        "EndTime": [end_date],
-                        "Location": [loc],
-                        "DeviceType": [device_type],
-                    }
-                )
-                errors_df = pd.concat([errors_df, new_errors_df])
+                    errors_df = pd.concat([errors_df, new_errors_df])
+            except:
+                    new_errors_df = pd.DataFrame(
+                        {
+                            "StartTime": [start_date],
+                            "EndTime": [end_date],
+                            "Location": [loc],
+                            "DeviceType": [device_type],
+                        }
+                    )
+                    errors_df = pd.concat([errors_df, new_errors_df])      
 
     result_fpath = (
         os_usg_configs["bucket"]
@@ -318,10 +328,12 @@ WHERE CAST(StartTime as date) = DATE_SUB('{args.date}', INTERVAL 4 DAY) """
     load_res_to_gold = client.query(device_usg_stg_to_gold_query)
     load_res_to_gold.result()
 
-    # STEP 7 - Load errors from stage to gold #FIX THIS
+    # STEP 7 - Load errors from stage to gold
     browser_usg_errors_stg_to_gold_query = f""" INSERT INTO `moz-fx-data-shared-prod.cloudflare_derived.os_usage_errors_v1`
 SELECT
---???
+CAST(StartTime as date) AS dte,
+Location AS location,
+DeviceType AS device_type
 FROM `moz-fx-data-shared-prod.cloudflare_derived.os_errors_stg`
 WHERE CAST(StartTime as date) = DATE_SUB('{args.date}', INTERVAL 4 DAY) """
     load_err_to_gold = client.query(browser_usg_errors_stg_to_gold_query)

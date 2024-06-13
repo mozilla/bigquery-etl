@@ -16,13 +16,12 @@ description: |-
 
   Documentation about the Adjust parameters:
   https://help.adjust.com/en/article/tracker-urls#campaign-structure-parameters.
+
+  Deprecation decision: https://mozilla-hub.atlassian.net/browse/DENG-3966
 owners:
 - lvargas@mozilla.com
 labels:
   incremental: true
-scheduling:
-  dag_name: bqetl_analytics_aggregations
-  task_name: active_users_aggregates_attribution_v1
 bigquery:
   time_partitioning:
     type: day
@@ -36,3 +35,4 @@ bigquery:
     - app_name
     - attribution_medium
 references: {}
+deprecated: true

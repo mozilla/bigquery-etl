@@ -7,7 +7,8 @@ WITH
         source_table,
         "all_combos",
         cubed_attributes,
-        attribute_combinations
+        attribute_combinations,
+        add_windows_release_sample = channel == "release"
     )
 }},
 build_ids AS (
@@ -21,13 +22,23 @@ build_ids AS (
     2
   HAVING
       COUNT(DISTINCT client_id) > {{ minimum_client_count }}),
-normalized_histograms AS (
+histograms_cte AS (
   SELECT
+    {% if channel == "release" %}
+      sampled,
+    {% endif %}
     {{ attributes }},
     ARRAY(
       SELECT AS STRUCT
         {{metric_attributes}},
-        mozfun.glam.histogram_normalized_sum(value, 1.0) AS aggregates
+        {% if channel == "release" %}
+        -- Logic to count clients based on sampled windows release data, which started in v119.
+        -- If you're changing this, then you'll also need to change
+        -- clients_daily_[scalar | histogram]_aggregates
+          mozfun.glam.histogram_normalized_sum_with_original(value, IF(sampled, 10.0, 1.0)) AS aggregates,
+        {% else %}
+          mozfun.glam.histogram_normalized_sum_with_original(value, 1.0) AS aggregates,
+        {% endif %}
       FROM unnest(histogram_aggregates)
     )AS histogram_aggregates
   FROM
@@ -40,9 +51,10 @@ unnested AS (
         histogram_aggregates.{{ metric_attribute }} AS {{ metric_attribute }},
     {% endfor %}
     aggregates.key AS bucket,
-    aggregates.value
+    aggregates.value AS value,
+    aggregates.non_norm_value AS non_norm_value
   FROM
-    normalized_histograms,
+    histograms_cte,
     UNNEST(histogram_aggregates) AS histogram_aggregates,
     UNNEST(aggregates) AS aggregates
   INNER JOIN build_ids
@@ -90,7 +102,8 @@ records as (
     SELECT
         {{ attributes }},
         {{ metric_attributes }},
-        STRUCT<key STRING, value FLOAT64>(CAST(bucket AS STRING), 1.0 * SUM(value)) AS record
+        STRUCT<key STRING, value FLOAT64>(CAST(bucket AS STRING), 1.0 * SUM(value)) AS record,
+        STRUCT<key STRING, value FLOAT64>(CAST(bucket AS STRING), 1.0 * SUM(non_norm_value)) AS non_norm_record
     FROM
         unnested
     GROUP BY

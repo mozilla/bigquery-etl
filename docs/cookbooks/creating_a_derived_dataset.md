@@ -183,6 +183,9 @@ For our example, the starting date is `2020-06-01` and we use a schedule interva
 
 The `--tag impact/tier3` parameter specifies that this DAG is considered "tier 3". For a list of valid tags and their descriptions see [Airflow Tags](../reference/airflow_tags.md).
 
+When creating a new DAG, while it is still under active development and assumed to fail during this phase, the DAG can be tagged as `--tag triage/no_triage`. That way it will be ignored by the person on Airflow Triage.
+Once the active development is done, the `triage/no_triage` tag can be removed and problems will addressed during the Airflow Triage process.
+
 ```bash
 ./bqetl dag create bqetl_internal_tooling --schedule-interval "0 4 * * *" --owner wlachance@mozilla.com --description "This DAG schedules queries for populating queries related to Mozilla's internal developer tooling (e.g. mozregression)." --start-date 2020-06-01 --tag impact/tier_3
 ```
@@ -271,7 +274,7 @@ For our example:
 
 3. Open a Pull Request with the backfill entry, see [this example](https://github.com/mozilla/bigquery-etl/pull/5369). Once merged, you should receive a notification in around an hour that processing has started. Your backfill data will be temporarily placed in a staging location.
 
-4. Watchers will be notified via Slack when processing is complete, and you can validate your backfill data.
+4. Watchers need to join the #dataops-alerts Slack channel. They will be notified via Slack when processing is complete, and you can validate your backfill data.
 
 ### Completing the backfill:
 

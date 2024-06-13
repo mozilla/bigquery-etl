@@ -67,6 +67,7 @@ dry_run:
   - sql/moz-fx-data-shared-prod/fivetran_costs_derived/destinations_v1/query.sql
   - sql/moz-fx-data-shared-prod/fivetran_costs_derived/incremental_mar_v1/query.sql
   - sql/moz-fx-data-shared-prod/fivetran_costs_derived/monthly_costs_v1/query.sql
+  - sql/moz-fx-data-shared-prod/fakespot/**/*.sql
   - sql/**/apple_ads_external*/**/query.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/shredder_progress/view.sql
   - sql/moz-fx-data-shared-prod/monitoring/shredder_progress/view.sql
@@ -154,6 +155,7 @@ dry_run:
   - sql/moz-fx-data-shared-prod/telemetry_derived/italy_covid19_outage_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/main_nightly_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/main_1pct_v1/query.sql
+  - sql/moz-fx-data-shared-prod/fenix_derived/android_onboarding_v1/query.sql
   # Query parameter not found
   - sql/moz-fx-data-shared-prod/telemetry_derived/experiments_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_scalar_aggregates_v1/query.sql
@@ -337,6 +339,7 @@ generate:
     - org_mozilla_ios_tiktok_reporter
     - org_mozilla_ios_tiktok_reporter_tiktok_reportershare
     - org_mozilla_tiktokreporter
+    - relay_backend  # temporary fix, see https://mozilla-hub.atlassian.net/browse/DENG-3720
     events_stream:
       skip_apps:
       - bergamot
@@ -350,8 +353,14 @@ generate:
       - org_mozilla_ios_tiktok_reporter_tiktok_reportershare
       - org_mozilla_tiktokreporter
     events_monitoring:
-      default_event_table: events_v1
-      event_table:
-        mozillavpn: main_v1
-        accounts_frontend: accounts_events_v1
-        accounts_backend: accounts_events_v1
+      skip_pings:
+      - topsites-impression # access denied
+      - serp-categorization # access denied
+      - background-update # table doesn't exist
+      events_tables: # overwrite event tables
+        accounts_frontend: # event pings land in accounts_events_v1 tables
+        - accounts_events_v1
+        accounts_backend:
+        - accounts_events_v1
+        pine: # Probe info returns pings that don't have tables, only use events_v1
+        - events_v1

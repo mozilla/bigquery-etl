@@ -1,5 +1,5 @@
 CREATE OR REPLACE TABLE
-  braze_derived.subscriptions_map_v1(
+  `moz-fx-data-shared-prod.braze_derived.subscriptions_map_v1`(
     braze_subscription_name STRING,
     description STRING,
     mozilla_subscription_id STRING,
@@ -9,7 +9,7 @@ CREATE OR REPLACE TABLE
   );
 
 INSERT INTO
-  braze_derived.subscriptions_map_v1(
+  `moz-fx-data-shared-prod.braze_derived.subscriptions_map_v1`(
     braze_subscription_name,
     description,
     mozilla_subscription_id,
@@ -18,6 +18,22 @@ INSERT INTO
     basket_slug
   )
 VALUES
+  (
+    'about-addons',
+    'Firefox addons developer newsletter',
+    'b9f6b780-8fc3-4eab-b033-10d4f5f7a370',
+    '09b3ebc5-02d8-4621-932c-2119ca493956',
+    '56ad1633-dcc7-4841-aa4d-64026e4e17cb',
+    'about-addons'
+  ),
+  (
+    'about-mozilla',
+    'Mozilla Community Newsletter',
+    'e23dfa20-6dd9-4a2f-a9cb-7bd2f8db5925',
+    '2a94147c-466f-4cbe-8362-3305886d2dea',
+    '0d4f7b75-fb25-4db0-a83a-98cb3558e185',
+    'about-mozilla'
+  ),
   (
     'antiharassment-waitlist',
     'Anti-Harassment tool Waitlist',
@@ -105,6 +121,22 @@ VALUES
     'e1de4636-7c12-4769-a746-978daae231d0',
     '96f6577e-6efd-4744-9d96-dbe67b1f48c5',
     'mozilla-and-you'
+  ),
+  (
+    'mozilla-builder',
+    'Mozilla Builder newsletter',
+    '7e8d71f9-2e26-4308-ac0f-05a591cbae5a',
+    '1825ad87-9b63-45e4-b0ae-92c2e38feace',
+    '74435f4a-e25e-41bb-973a-a769179e05a0',
+    'mozilla-builder'
+  ),
+  (
+    'mozilla-builders-application-2024',
+    'Mozilla Builder Application',
+    'd48a2578-4963-4ac9-9d4e-3005106a3606',
+    'd985ba67-a7ad-47a3-8358-04d223a16079',
+    '6fdbce2c-0110-4bd5-94ce-ff6f4e2ca905',
+    'mozilla-builders-application-2024'
   ),
   (
     'mozilla-innovation',

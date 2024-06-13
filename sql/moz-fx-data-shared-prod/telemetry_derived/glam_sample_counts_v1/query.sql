@@ -11,7 +11,7 @@ WITH histogram_data AS (
     h1.aggregates,
     IF(os = 'Windows' AND channel = 'release', 10, 1) AS sample_mult
   FROM
-    clients_histogram_aggregates_v2,
+    `moz-fx-data-shared-prod.telemetry_derived.clients_histogram_aggregates_v2`,
     UNNEST(histogram_aggregates) h1
   WHERE
     submission_date = @submission_date
@@ -25,7 +25,7 @@ scalars_data AS (
     scalar_aggregates,
     IF(os = 'Windows' AND channel = 'release', 10, 1) AS sample_mult
   FROM
-    clients_scalar_aggregates_v1
+    `moz-fx-data-shared-prod.telemetry_derived.clients_scalar_aggregates_v1`
   WHERE
     submission_date = @submission_date
 )

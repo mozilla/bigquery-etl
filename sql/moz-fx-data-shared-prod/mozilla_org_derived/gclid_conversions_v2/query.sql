@@ -65,7 +65,7 @@ telemetry_id_to_activity_staging AS (
     `moz-fx-data-shared-prod.google_ads_derived.conversion_event_categorization_v1`
   WHERE
     (event_1 IS TRUE OR event_2 IS TRUE OR event_3 IS TRUE)
-    AND activity_date = @activity_date
+    AND report_date = @activity_date
     AND first_seen_date < @activity_date --needed since this is a required partition filter
 ),
 telemetry_id_to_activity AS (

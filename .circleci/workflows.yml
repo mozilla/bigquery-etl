@@ -745,7 +745,7 @@ jobs:
             curl --location --request POST "https://us-west1-moz-fx-telemetry-airflow-prod.cloudfunctions.net/ci-external-trigger"
             --data-urlencode "dagrun_note=$DAGRUN_NOTE"
             -H "Authorization: bearer ${ID_TOKEN}"
-            -H "Content-Type:application/json"
+            -H "Content-Type:application/x-www-form-urlencoded"
             -d '{}'
   private-generate-sql:
     docker: *docker

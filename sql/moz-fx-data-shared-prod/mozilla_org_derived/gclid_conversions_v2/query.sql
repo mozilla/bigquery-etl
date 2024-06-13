@@ -43,7 +43,7 @@ telemetry_id_to_activity_staging AS (
     submission_date AS activity_date,
     search_count_all > 0 AS did_search,
     ad_clicks_count_all > 0 AS did_click_ad,
-    NULL AS first_wk_5_actv_days_and_1_or_more_search_w_ads,
+    CAST(NULL AS BOOLEAN) AS first_wk_5_actv_days_and_1_or_more_search_w_ads,
     NULL AS first_wk_3_actv_days_and_1_or_more_search_w_ads,
     NULL AS first_wk_3_actv_days_and_24_active_minutes,
     TRUE AS was_active,

@@ -741,15 +741,10 @@ jobs:
           name: Trigger bqetl-artifact-deployment in Airflow
           command: >
             ID_TOKEN=$(gcloud auth print-identity-token --impersonate-service-account ${GCP_SERVICE_ACCOUNT_EMAIL}) &&
-            curl --location
-            --request POST "https://us-west1-moz-fx-telemetry-airflow-prod.cloudfunctions.net/ci-external-trigger"
+            curl --location 
+            --request POST "https://us-west1-moz-fx-telemetry-airflow-prod.cloudfunctions.net/ci-external-trigger?circleci_username=${CIRCLE_USERNAME}&circleci_project_username=${CIRCLE_PROJECT_USERNAME}&circleci_project_reponame=${CIRCLE_PROJECT_REPONAME}&circleci_build_num=${CIRCLE_BUILD_NUM}&circleci_build_url=${CIRCLE_BUILD_URL}"
             -H "Authorization: bearer ${ID_TOKEN}"
-            -H "Content-Type: application/json"
-            --data-urlencode "circleci_username=${CIRCLE_USERNAME}"
-            --data-urlencode "circleci_project_username=${CIRCLE_PROJECT_USERNAME}"
-            --data-urlencode "circleci_project_reponame=${CIRCLE_PROJECT_REPONAME}"
-            --data-urlencode "circleci_build_num=${CIRCLE_BUILD_NUM}"
-            --data-urlencode "circleci_build_url=${CIRCLE_BUILD_URL}"
+            -H "Content-Type:application/json"
             -d '{}'
   private-generate-sql:
     docker: *docker

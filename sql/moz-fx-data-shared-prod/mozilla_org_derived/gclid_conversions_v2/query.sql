@@ -1,3 +1,4 @@
+--Step 1: Get all combinations of google click IDs, google analytics client IDs, and stub session IDs in last 30 days
 WITH gclids_to_ga_ids AS (
   SELECT DISTINCT
     unnested_gclid AS gclid,
@@ -14,6 +15,7 @@ WITH gclids_to_ga_ids AS (
     AND session_date <= @activity_date
     AND gclid IS NOT NULL
 ),
+--Step 2: Get all the download tokens associated with a known GA client ID & stub session ID
 ga_ids_to_dl_token AS (
   SELECT
     ga_client_id,
@@ -25,6 +27,7 @@ ga_ids_to_dl_token AS (
     ga_client_id IS NOT NULL
     AND stub_session_id IS NOT NULL
 ),
+--Step 3: Get the telemetry clent ID & first seen date for each download token
 dl_token_to_telemetry_id AS (
   SELECT
     client_id AS telemetry_client_id,
@@ -33,18 +36,59 @@ dl_token_to_telemetry_id AS (
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v2`
 ),
-telemetry_id_to_activity AS (
+--Step 4: Get all clients who were active on the activity date, and the type of activity they had
+telemetry_id_to_activity_staging AS (
   SELECT
     client_id AS telemetry_client_id,
     submission_date AS activity_date,
     search_count_all > 0 AS did_search,
     ad_clicks_count_all > 0 AS did_click_ad,
-    TRUE AS was_active,
+    NULL AS first_wk_5_actv_days_and_1_or_more_search_w_ads,
+    NULL AS first_wk_3_actv_days_and_1_or_more_search_w_ads,
+    NULL AS first_wk_3_actv_days_and_24_active_minutes TRUE AS was_active,
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6`
   WHERE
     submission_date = @activity_date
+  UNION ALL
+  SELECT
+    telemetry_client_id,
+    report_date AS activity_date,
+    NULL AS did_search,
+    NULL AS did_click_ad,
+    event_1 AS first_wk_5_actv_days_and_1_or_more_search_w_ads,
+    event_2 AS first_wk_3_actv_days_and_1_or_more_search_w_ads,
+    event_3 AS first_wk_3_actv_days_and_24_active_minutes TRUE AS was_active
+  FROM
+    `moz-fx-data-shared-prod.google_ads_derived.conversion_event_categorization_v1`
+  WHERE
+    (event_1 IS TRUE OR event_2 IS TRUE OR event_3 IS TRUE)
+    AND activity_date = @activity_date
+    AND first_seen_date < @activity_date --needed since this is a required partition filter
+),
+telemetry_id_to_activity AS (
+  SELECT
+    client_id,
+    activity_date,
+    MAX(COALESCE(did_search, 0)) AS did_search,
+    MAX(COALESCE(did_click_ad, 0)) AS did_click_ad,
+    MAX(
+      COALESCE(first_wk_5_actv_days_and_1_or_more_search_w_ads, 0)
+    ) AS first_wk_5_actv_days_and_1_or_more_search_w_ads,
+    MAX(
+      COALESCE(first_wk_3_actv_days_and_1_or_more_search_w_ads, 0)
+    ) AS first_wk_3_actv_days_and_1_or_more_search_w_ads,
+    MAX(
+      COALESCE(first_wk_3_actv_days_and_24_active_minutes, 0)
+    ) AS first_wk_3_actv_days_and_24_active_minutes,
+    MAX(COALESCE(was_active, 0)) AS was_active
+  FROM
+    telemetry_id_to_activity_staging
+  GROUP BY
+    client_id,
+    activity_date
 )
+--Step 5: Get Click IDs and associated events on this activity date (using previous defined events)
 SELECT
   activity_date,
   gclid,
@@ -58,6 +102,9 @@ SELECT
     LOGICAL_OR(was_active AND activity_date > first_seen_date),
     FALSE
   ) AS did_returned_second_day,
+  first_wk_5_actv_days_and_1_or_more_search_w_ads,
+  first_wk_3_actv_days_and_1_or_more_search_w_ads,
+  first_wk_3_actv_days_and_24_active_minutes
 FROM
   gclids_to_ga_ids
 INNER JOIN

@@ -163,20 +163,21 @@ def get_os_usage_data(date_of_interest, auth_token):
                     data_dict = result["serie_0"]
 
                     for key, val in data_dict.items():
-                        new_result_df = pd.DataFrame(
-                            {
-                                "Timestamps": data_dict["timestamps"],
-                                "OS": [key] * len(val),
-                                "Location": [loc] * len(val),
-                                "DeviceType": [device_type] * len(val),
-                                "Share": val,
-                                "ConfidenceLevel": [conf_lvl] * len(val),
-                                "AggrInterval": [aggr_intvl] * len(val),
-                                "Normalization": [nrmlztn] * len(val),
-                                "LastUpdatedTS": [lst_upd] * len(val),
-                            }
-                        )
-                        result_df = pd.concat([result_df, new_result_df])
+                        if key != 'timestamps':
+                            new_result_df = pd.DataFrame(
+                                {
+                                    "Timestamps": data_dict["timestamps"],
+                                    "OS": [key] * len(val),
+                                    "Location": [loc] * len(val),
+                                    "DeviceType": [device_type] * len(val),
+                                    "Share": val,
+                                    "ConfidenceLevel": [conf_lvl] * len(val),
+                                    "AggrInterval": [aggr_intvl] * len(val),
+                                    "Normalization": [nrmlztn] * len(val),
+                                    "LastUpdatedTS": [lst_upd] * len(val),
+                                }
+                            )
+                            result_df = pd.concat([result_df, new_result_df])
 
                 # If response was not successful, get the errors
                 else:

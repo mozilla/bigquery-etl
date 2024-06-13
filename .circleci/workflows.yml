@@ -1182,12 +1182,12 @@ workflows:
                 - main
       - artifact-deployment:
           name: Trigger bqetl_artifact_deployment Airflow DAG
-#          requires:
-#            - deploy
-#          filters:
-#            branches:
-#              only:
-#                - main
+          requires:
+            - deploy
+          filters:
+            branches:
+              only:
+                - main
       - sync-dags-repo:
           name: 🔃 Synchronize bigquery-etl submodule
           repo-to-sync: ${CIRCLE_PROJECT_REPONAME}

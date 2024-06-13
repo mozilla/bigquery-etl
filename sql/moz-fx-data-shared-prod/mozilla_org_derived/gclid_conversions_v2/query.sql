@@ -41,11 +41,11 @@ telemetry_id_to_activity_staging AS (
   SELECT
     client_id AS telemetry_client_id,
     submission_date AS activity_date,
-    search_count_all > 0 AS did_search,
-    ad_clicks_count_all > 0 AS did_click_ad,
+    IFNULL(search_count_all, 0) > 0 AS did_search,
+    IFNULL(ad_clicks_count_all, 0) > 0 AS did_click_ad,
     CAST(NULL AS BOOLEAN) AS first_wk_5_actv_days_and_1_or_more_search_w_ads,
-    NULL AS first_wk_3_actv_days_and_1_or_more_search_w_ads,
-    NULL AS first_wk_3_actv_days_and_24_active_minutes,
+    CAST(NULL AS BOOLEAN) AS first_wk_3_actv_days_and_1_or_more_search_w_ads,
+    CAST(NULL AS BOOLEAN) AS first_wk_3_actv_days_and_24_active_minutes,
     TRUE AS was_active,
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6`
@@ -55,8 +55,8 @@ telemetry_id_to_activity_staging AS (
   SELECT
     client_id AS telemetry_client_id,
     report_date AS activity_date,
-    NULL AS did_search,
-    NULL AS did_click_ad,
+    CAST(NULL AS BOOLEAN) AS did_search,
+    CAST(NULL AS BOOLEAN) AS did_click_ad,
     event_1 AS first_wk_5_actv_days_and_1_or_more_search_w_ads,
     event_2 AS first_wk_3_actv_days_and_1_or_more_search_w_ads,
     event_3 AS first_wk_3_actv_days_and_24_active_minutes,

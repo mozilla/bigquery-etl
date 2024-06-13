@@ -5,6 +5,8 @@
   metrics:
     uuid:
       legacy_telemetry_client_id: legacy_id_1
+    string:
+      newtab_newtab_category: enabled
   events:
     - category: newtab
       name: opened

@@ -57,6 +57,7 @@ os_usg_configs = {
     "errors_bq_stg_table": "moz-fx-data-shared-prod.cloudflare_derived.os_errors_stg",
 }
 
+
 # Define a function to move a GCS object then delete the original
 def move_blob(bucket_name, blob_name, destination_bucket_name, destination_blob_name):
     """Moves a blob from one bucket to another with a new name."""
@@ -83,6 +84,7 @@ def move_blob(bucket_name, blob_name, destination_bucket_name, destination_blob_
         )
     )
 
+
 # Function to configure the API URL
 def generate_os_timeseries_api_call(strt_dt, end_dt, agg_int, location, device_type):
     """Generate the API call for Operating System Usage Data."""
@@ -95,6 +97,7 @@ def generate_os_timeseries_api_call(strt_dt, end_dt, agg_int, location, device_t
     else:
         os_usage_api_url = f"https://api.cloudflare.com/client/v4/radar/http/timeseries_groups/os?dateStart={strt_dt}T00:00:00.000Z&dateEnd={end_dt}T00:00:00.000Z&location={location}&deviceType={device_type}&format=json&aggInterval={agg_int}"
     return os_usage_api_url
+
 
 def get_os_usage_data(date_of_interest, auth_token):
     """Pull OS usage data from the Cloudflare API and save errors & results to GCS."""
@@ -188,23 +191,23 @@ def get_os_usage_data(date_of_interest, auth_token):
                     )
                     errors_df = pd.concat([errors_df, new_errors_df])
             except:
-                    new_errors_df = pd.DataFrame(
-                        {
-                            "StartTime": [start_date],
-                            "EndTime": [end_date],
-                            "Location": [loc],
-                            "DeviceType": [device_type],
-                        }
-                    )
-                    errors_df = pd.concat([errors_df, new_errors_df])      
+                new_errors_df = pd.DataFrame(
+                    {
+                        "StartTime": [start_date],
+                        "EndTime": [end_date],
+                        "Location": [loc],
+                        "DeviceType": [device_type],
+                    }
+                )
+                errors_df = pd.concat([errors_df, new_errors_df])
 
-    result_fpath = (
-        os_usg_configs["bucket"]
-        + os_usg_configs["results_stg_gcs_fpth"] % (start_date, logical_dag_dt)
+    result_fpath = os_usg_configs["bucket"] + os_usg_configs["results_stg_gcs_fpth"] % (
+        start_date,
+        logical_dag_dt,
     )
-    errors_fpath = (
-        os_usg_configs["bucket"]
-        + os_usg_configs["errors_stg_gcs_fpth"] % (start_date, logical_dag_dt)
+    errors_fpath = os_usg_configs["bucket"] + os_usg_configs["errors_stg_gcs_fpth"] % (
+        start_date,
+        logical_dag_dt,
     )
 
     result_df.to_csv(result_fpath, index=False)
@@ -217,7 +220,6 @@ def get_os_usage_data(date_of_interest, auth_token):
     len_errors = str(len(errors_df))
     result_summary = f"# Result Rows: {len_results}; # of Error Rows: {len_errors}"
     return result_summary
-
 
 
 def main():
@@ -236,16 +238,18 @@ def main():
     result_summary = get_os_usage_data(args.date, args.cloudflare_api_token)
     print("result_summary")
     print(result_summary)
-    
+
     # Create a bigquery client
     client = bigquery.Client(args.project)
 
-    result_uri = os_usg_configs["bucket"] + os_usg_configs[
-        "results_stg_gcs_fpth"
-    ] % (datetime.strptime(args.date, "%Y-%m-%d").date() - timedelta(days=4), args.date)
-    error_uri = os_usg_configs["bucket"] + os_usg_configs[
-        "errors_stg_gcs_fpth"
-    ] % (datetime.strptime(args.date, "%Y-%m-%d").date() - timedelta(days=4), args.date)
+    result_uri = os_usg_configs["bucket"] + os_usg_configs["results_stg_gcs_fpth"] % (
+        datetime.strptime(args.date, "%Y-%m-%d").date() - timedelta(days=4),
+        args.date,
+    )
+    error_uri = os_usg_configs["bucket"] + os_usg_configs["errors_stg_gcs_fpth"] % (
+        datetime.strptime(args.date, "%Y-%m-%d").date() - timedelta(days=4),
+        args.date,
+    )
     print("result_uri")
     print(result_uri)
 
@@ -260,16 +264,16 @@ def main():
             create_disposition="CREATE_IF_NEEDED",
             write_disposition="WRITE_TRUNCATE",
             schema=[
-            {"name": "Timestamps", "type": "TIMESTAMP", "mode": "REQUIRED"},
-            {"name": "OS", "type": "STRING", "mode": "NULLABLE"},
-            {"name": "Location", "type": "STRING", "mode": "NULLABLE"},
-            {"name": "DeviceType", "type": "STRING", "mode": "NULLABLE"},
-            {"name": "Share", "type": "NUMERIC", "mode": "NULLABLE"},
-            {"name": "ConfidenceLevel", "type": "STRING", "mode": "NULLABLE"},
-            {"name": "AggrInterval", "type": "STRING", "mode": "NULLABLE"},
-            {"name": "Normalization", "type": "STRING", "mode": "NULLABLE"},
-            {"name": "LastUpdatedTS", "type": "TIMESTAMP", "mode": "NULLABLE"},
-            ], 
+                {"name": "Timestamps", "type": "TIMESTAMP", "mode": "REQUIRED"},
+                {"name": "OS", "type": "STRING", "mode": "NULLABLE"},
+                {"name": "Location", "type": "STRING", "mode": "NULLABLE"},
+                {"name": "DeviceType", "type": "STRING", "mode": "NULLABLE"},
+                {"name": "Share", "type": "NUMERIC", "mode": "NULLABLE"},
+                {"name": "ConfidenceLevel", "type": "STRING", "mode": "NULLABLE"},
+                {"name": "AggrInterval", "type": "STRING", "mode": "NULLABLE"},
+                {"name": "Normalization", "type": "STRING", "mode": "NULLABLE"},
+                {"name": "LastUpdatedTS", "type": "TIMESTAMP", "mode": "NULLABLE"},
+            ],
             skip_leading_rows=1,
             source_format=bigquery.SourceFormat.CSV,
         ),
@@ -287,10 +291,10 @@ def main():
             create_disposition="CREATE_IF_NEEDED",
             write_disposition="WRITE_TRUNCATE",
             schema=[
-            {"name": "StartTime", "type": "TIMESTAMP", "mode": "REQUIRED"},
-            {"name": "EndTime", "type": "TIMESTAMP", "mode": "REQUIRED"},
-            {"name": "Location", "type": "STRING", "mode": "NULLABLE"},
-            {"name": "DeviceType", "type": "STRING", "mode": "NULLABLE"},
+                {"name": "StartTime", "type": "TIMESTAMP", "mode": "REQUIRED"},
+                {"name": "EndTime", "type": "TIMESTAMP", "mode": "REQUIRED"},
+                {"name": "Location", "type": "STRING", "mode": "NULLABLE"},
+                {"name": "DeviceType", "type": "STRING", "mode": "NULLABLE"},
             ],
             skip_leading_rows=1,
             source_format=bigquery.SourceFormat.CSV,
@@ -374,6 +378,7 @@ WHERE CAST(StartTime as date) = DATE_SUB('{args.date}', INTERVAL 4 DAY) """
         os_usg_configs["bucket_no_gs"],
         error_archive_fpath,
     )
+
 
 if __name__ == "__main__":
     main()

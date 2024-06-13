@@ -70,7 +70,7 @@ telemetry_id_to_activity_staging AS (
 ),
 telemetry_id_to_activity AS (
   SELECT
-    client_id,
+    telemetry_client_id,
     activity_date,
     MAX(COALESCE(did_search, 0)) AS did_search,
     MAX(COALESCE(did_click_ad, 0)) AS did_click_ad,
@@ -87,7 +87,7 @@ telemetry_id_to_activity AS (
   FROM
     telemetry_id_to_activity_staging
   GROUP BY
-    client_id,
+    telemetry_client_id,
     activity_date
 )
 --Step 5: Get Click IDs and associated events on this activity date (using previous defined events)

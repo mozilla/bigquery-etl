@@ -5,8 +5,6 @@
   metrics:
     uuid:
       legacy_telemetry_client_id: legacy_id_1
-    boolean:
-      newtab_weather_enabled: true
   events:
     - category: newtab
       name: opened

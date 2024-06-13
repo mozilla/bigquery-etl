@@ -13,7 +13,6 @@
   browser_name: Firefox Desktop
   had_non_impression_engagement: true
   had_non_search_engagement: true
-  newtab_weather_enabled: true
   search_interactions:
     - search_engine: Engine1
       search_access_point: urlbar

@@ -84,3 +84,20 @@ with DAG(
         owner="kwindau@mozilla.com",
         email=["kwindau@mozilla.com"],
     )
+
+    cloudflare_derived__os_usage__v1 = GKEPodOperator(
+        task_id="cloudflare_derived__os_usage__v1",
+        arguments=[
+            "python",
+            "sql/moz-fx-data-shared-prod/cloudflare_derived/os_usage_v1/query.py",
+        ]
+        + [
+            "--date",
+            "{{ds}}",
+            "--cloudflare_api_token",
+            "{{ var.value.cloudflare_auth_token}}",
+        ],
+        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com"],
+    )

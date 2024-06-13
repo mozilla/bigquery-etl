@@ -2,8 +2,6 @@
 - submission_date: 2021-09-01
   newtab_visit_id: visit_id_1
   newtab_open_source: about:newtab
-  newtab_newtab_category: default
-  newtab_default_ui: default
   client_id: client_id_1
   legacy_telemetry_client_id: legacy_id_1
   experiments: []

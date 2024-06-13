@@ -3171,6 +3171,16 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
+    - name: network_byte_range_request
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
   - name: quantity
     type: RECORD
     mode: NULLABLE
@@ -3396,6 +3406,9 @@ fields:
       type: STRING
       mode: NULLABLE
     - name: gecko_version
+      type: STRING
+      mode: NULLABLE
+    - name: first_session_install_source
       type: STRING
       mode: NULLABLE
   - name: string_list

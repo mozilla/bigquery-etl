@@ -245,7 +245,8 @@ SELECT
       metrics.labeled_counter.cert_compression_failures,
       metrics.labeled_counter.cert_compression_used,
       metrics.labeled_counter.webauthn_create_authenticator_attachment,
-      metrics.labeled_counter.webauthn_get_authenticator_attachment
+      metrics.labeled_counter.webauthn_get_authenticator_attachment,
+      metrics.labeled_counter.network_byte_range_request
     ) AS `labeled_counter`,
     metrics.memory_distribution,
     STRUCT(
@@ -520,7 +521,8 @@ SELECT
       metrics.labeled_counter.cert_compression_failures,
       metrics.labeled_counter.cert_compression_used,
       metrics.labeled_counter.webauthn_create_authenticator_attachment,
-      metrics.labeled_counter.webauthn_get_authenticator_attachment
+      metrics.labeled_counter.webauthn_get_authenticator_attachment,
+      metrics.labeled_counter.network_byte_range_request
     ) AS `labeled_counter`,
     metrics.memory_distribution,
     STRUCT(

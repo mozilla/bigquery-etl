@@ -184,7 +184,8 @@ SELECT
       metrics.labeled_counter.cert_compression_failures,
       metrics.labeled_counter.cert_compression_used,
       metrics.labeled_counter.webauthn_create_authenticator_attachment,
-      metrics.labeled_counter.webauthn_get_authenticator_attachment
+      metrics.labeled_counter.webauthn_get_authenticator_attachment,
+      metrics.labeled_counter.network_byte_range_request
     ) AS `labeled_counter`,
     metrics.quantity,
     metrics.string,
@@ -603,7 +604,8 @@ SELECT
       metrics.labeled_counter.cert_compression_failures,
       metrics.labeled_counter.cert_compression_used,
       metrics.labeled_counter.webauthn_create_authenticator_attachment,
-      metrics.labeled_counter.webauthn_get_authenticator_attachment
+      metrics.labeled_counter.webauthn_get_authenticator_attachment,
+      metrics.labeled_counter.network_byte_range_request
     ) AS `labeled_counter`,
     metrics.quantity,
     STRUCT(
@@ -653,7 +655,8 @@ SELECT
       metrics.string.gpu_process_feature_status,
       metrics.string.preferences_open_links_in_app_enabled,
       metrics.string.gecko_build_id,
-      metrics.string.gecko_version
+      metrics.string.gecko_version,
+      metrics.string.first_session_install_source
     ) AS `string`,
     metrics.string_list,
     STRUCT(
@@ -1248,7 +1251,8 @@ SELECT
       metrics.labeled_counter.cert_compression_failures,
       metrics.labeled_counter.cert_compression_used,
       metrics.labeled_counter.webauthn_create_authenticator_attachment,
-      metrics.labeled_counter.webauthn_get_authenticator_attachment
+      metrics.labeled_counter.webauthn_get_authenticator_attachment,
+      metrics.labeled_counter.network_byte_range_request
     ) AS `labeled_counter`,
     metrics.quantity,
     STRUCT(
@@ -1298,7 +1302,8 @@ SELECT
       metrics.string.gpu_process_feature_status,
       metrics.string.preferences_open_links_in_app_enabled,
       metrics.string.gecko_build_id,
-      metrics.string.gecko_version
+      metrics.string.gecko_version,
+      metrics.string.first_session_install_source
     ) AS `string`,
     metrics.string_list,
     STRUCT(
@@ -1661,7 +1666,8 @@ SELECT
       metrics.labeled_counter.cert_compression_failures,
       metrics.labeled_counter.cert_compression_used,
       metrics.labeled_counter.webauthn_create_authenticator_attachment,
-      metrics.labeled_counter.webauthn_get_authenticator_attachment
+      metrics.labeled_counter.webauthn_get_authenticator_attachment,
+      metrics.labeled_counter.network_byte_range_request
     ) AS `labeled_counter`,
     metrics.quantity,
     metrics.string,

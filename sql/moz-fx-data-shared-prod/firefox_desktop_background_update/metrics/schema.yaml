@@ -2446,6 +2446,19 @@ fields:
         mode: NULLABLE
       description: The number of times each certificate compression algorithm was
         used.
+    - name: network_byte_range_request
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts of cacheable/non-cacheable byte-range requests
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE

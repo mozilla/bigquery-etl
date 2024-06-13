@@ -5066,6 +5066,19 @@ fields:
         mode: NULLABLE
       description: The number of successfully asserted credentials by authenticator
         attachment modality.
+    - name: network_byte_range_request
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts of cacheable/non-cacheable byte-range requests
+
+        '
   - name: quantity
     type: RECORD
     mode: NULLABLE
@@ -5658,6 +5671,12 @@ fields:
       mode: NULLABLE
       description: 'The version of the Gecko engine, example: 74.0a1 (Migrated from
         the geckoview metric of the same name).
+
+        '
+    - name: first_session_install_source
+      type: STRING
+      mode: NULLABLE
+      description: 'Used to identify the source the app was installed from.
 
         '
   - name: string_list

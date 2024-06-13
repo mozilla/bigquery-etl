@@ -732,6 +732,12 @@ fields:
       description: 'Font anti aliasing level
 
         '
+    - name: characteristics_keyboard_layout
+      type: STRING
+      mode: NULLABLE
+      description: 'Name of the current keyboard layout.
+
+        '
   - name: uuid
     type: RECORD
     mode: NULLABLE

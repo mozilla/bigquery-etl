@@ -203,5 +203,10 @@
     "type": "BOOLEAN",
     "name": "is_default_browser",
     "mode": "NULLABLE"
+  },
+  {
+    "type": "BOOLEAN",
+    "name": "policies_is_enterprise",
+    "mode": "NULLABLE"
   }
 ]

@@ -15,6 +15,7 @@ SELECT
   startup_profile_selection_reason,
   normalized_os,
   normalized_os_version,
+  is_desktop,
   COUNTIF(ping_sent_metric_date) AS ping_sent_metric_date,
   COUNTIF(ping_sent_week_4) AS ping_sent_week_4,
   COUNTIF(active_metric_date) AS active_metric_date,
@@ -43,4 +44,5 @@ GROUP BY
   attribution_variation,
   startup_profile_selection_reason,
   normalized_os,
-  normalized_os_version
+  normalized_os_version,
+  is_desktop

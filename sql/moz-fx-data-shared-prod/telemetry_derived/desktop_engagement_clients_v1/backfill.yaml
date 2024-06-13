@@ -1,0 +1,7 @@
+2024-05-30:
+  start_date: 2021-01-01
+  end_date: 2024-05-29
+  reason: Loading new table; related to DENG-3186
+  watchers:
+  - kwindau@mozilla.com
+  status: Complete

@@ -1,5 +1,6 @@
 """bigquery-etl CLI query command."""
 
+import concurrent.futures
 import copy
 import datetime
 import json
@@ -11,6 +12,7 @@ import string
 import subprocess
 import sys
 import tempfile
+from concurrent import futures
 from datetime import date, timedelta
 from functools import partial
 from glob import glob
@@ -20,6 +22,7 @@ from traceback import print_exc
 from typing import Optional
 
 import rich_click as click
+import sqlparse
 import yaml
 from google.cloud import bigquery
 from google.cloud.exceptions import NotFound
@@ -43,6 +46,7 @@ from ..cli.utils import (
 )
 from ..config import ConfigLoader
 from ..dependency import get_dependency_graph
+from ..deploy import FailedDeployException, SkippedDeployException, deploy_table
 from ..dryrun import DryRun
 from ..format_sql.format import skip_format
 from ..format_sql.formatter import reformat
@@ -57,6 +61,7 @@ from ..metadata.parse_metadata import (
     PartitionMetadata,
     PartitionType,
 )
+from ..metadata.publish_metadata import attach_metadata
 from ..query_scheduling.dag_collection import DagCollection
 from ..query_scheduling.generate_airflow_dags import get_dags
 from ..schema import SCHEMA_FILE, Schema
@@ -743,10 +748,25 @@ def backfill(
 
         if not depends_on_past and parallelism > 0:
             # run backfill for dates in parallel if depends_on_past is false
-            with Pool(parallelism) as p:
-                result = p.map(backfill_query, date_range, chunksize=1)
-            if not all(result):
-                sys.exit(1)
+            failed_backfills = []
+            with futures.ThreadPoolExecutor(max_workers=parallelism) as executor:
+                future_to_date = {
+                    executor.submit(backfill_query, backfill_date): backfill_date
+                    for backfill_date in date_range
+                }
+                for future in futures.as_completed(future_to_date):
+                    backfill_date = future_to_date[future]
+                    try:
+                        future.result()
+                    except Exception as e:  # TODO: More specific exception(s)
+                        print(f"Encountered exception {e}: {backfill_date}.")
+                        failed_backfills.append(backfill_date)
+                    else:
+                        print(f"Completed processing: {backfill_date}.")
+            if failed_backfills:
+                raise RuntimeError(
+                    f"Backfill processing failed for the following backfill dates: {failed_backfills}"
+                )
         else:
             # if data depends on previous runs, then execute backfill sequentially
             for backfill_date in date_range:
@@ -968,6 +988,15 @@ def _run_query(
                 default_dataset=dataset_id or default_dataset,
             )
             query_arguments.append(f"--session_id={session_id}")
+
+            # temp udfs cannot be used in a session when destination table is set
+            if destination_table is not None and query_file.name != "script.sql":
+                query_text = extract_and_run_temp_udfs(
+                    query_text=query_text,
+                    project_id=billing_project,
+                    session_id=session_id,
+                )
+
         # if billing_project is set, default dataset is set with the @@dataset_id variable instead
         elif dataset_id is not None:
             # dataset ID was parsed by argparse but needs to be passed as parameter
@@ -1025,6 +1054,29 @@ def create_query_session(
         raise RuntimeError(f"Failed to get session id with job id {job.job_id}")
 
     return job.session_info.session_id
+
+
+def extract_and_run_temp_udfs(query_text: str, project_id: str, session_id: str) -> str:
+    """Create temp udfs in the session and return the query without udf definitions.
+
+    Does not support dry run because the query will fail dry run if udfs aren't defined.
+    """
+    sql_statements = sqlparse.split(query_text)
+
+    if len(sql_statements) == 1:
+        return query_text
+
+    client = bigquery.Client(project=project_id)
+    job_config = bigquery.QueryJobConfig(
+        use_legacy_sql=False,
+        connection_properties=[bigquery.ConnectionProperty("session_id", session_id)],
+    )
+
+    # assume query files only have temp udfs as additional statements
+    udf_def_statement = "\n".join(sql_statements[:-1])
+    client.query_and_wait(udf_def_statement, job_config=job_config)
+
+    return sql_statements[-1]
 
 
 @query.command(
@@ -2083,7 +2135,6 @@ def deploy(
             "and check that the project is set correctly."
         )
         sys.exit(1)
-    client = bigquery.Client()
 
     query_files = paths_matching_name_pattern(
         name, sql_dir, project_id, ["query.*", "script.sql"]
@@ -2102,91 +2153,34 @@ def deploy(
         if not query_files:
             raise click.ClickException(f"No queries matching `{name}` were found.")
 
-    def _deploy(query_file):
-        if respect_dryrun_skip and str(query_file) in DryRun.skipped_files():
-            click.echo(f"{query_file} dry runs are skipped. Cannot validate schemas.")
-            return
+    _deploy = partial(
+        deploy_table,
+        destination_table=destination_table,
+        force=force,
+        use_cloud_function=use_cloud_function,
+        skip_existing=skip_existing,
+        respect_dryrun_skip=respect_dryrun_skip,
+        sql_dir=sql_dir,
+    )
 
-        query_file_path = Path(query_file)
-        existing_schema_path = query_file_path.parent / SCHEMA_FILE
-
-        if not existing_schema_path.is_file():
-            click.echo(f"No schema file found for {query_file}")
-            return
-
-        try:
-            metadata = Metadata.of_query_file(query_file_path)
-            if (
-                metadata.scheduling
-                and "destination_table" in metadata.scheduling
-                and metadata.scheduling["destination_table"] is None
-            ):
-                click.echo(f"No destination table defined for {query_file}")
-                return
-        except FileNotFoundError:
-            pass
-
-        try:
-            table_name = query_file_path.parent.name
-            dataset_name = query_file_path.parent.parent.name
-            project_name = query_file_path.parent.parent.parent.name
-
-            if destination_table:
-                full_table_id = destination_table
-            else:
-                full_table_id = f"{project_name}.{dataset_name}.{table_name}"
-
-            existing_schema = Schema.from_schema_file(existing_schema_path)
-
-            if not force and str(query_file_path).endswith("query.sql"):
-                query_schema = Schema.from_query_file(
-                    query_file_path,
-                    use_cloud_function=use_cloud_function,
-                    respect_skip=respect_dryrun_skip,
-                    sql_dir=sql_dir,
-                )
-                if not existing_schema.equal(query_schema):
-                    click.echo(
-                        f"Query {query_file_path} does not match "
-                        f"schema in {existing_schema_path}. "
-                        f"To update the local schema file, "
-                        f"run `./bqetl query schema update "
-                        f"{dataset_name}.{table_name}`",
-                        err=True,
-                    )
-                    sys.exit(1)
-
-            bigquery_schema = existing_schema.to_bigquery_schema()
+    failed_deploys, skipped_deploys = [], []
+    with concurrent.futures.ThreadPoolExecutor(max_workers=parallelism) as executor:
+        future_to_query = {
+            executor.submit(_deploy, query_file): query_file
+            for query_file in query_files
+        }
+        for future in futures.as_completed(future_to_query):
+            query_file = future_to_query[future]
             try:
-                table = client.get_table(full_table_id)
-            except NotFound:
-                table = bigquery.Table(full_table_id)
-
-            table.schema = bigquery_schema
-            _attach_metadata(query_file_path, table)
-
-            if not table.created:
-                client.create_table(table, exists_ok=True)
-                click.echo(f"Destination table {full_table_id} created.")
-            elif not skip_existing:
-                client.update_table(
-                    table,
-                    [
-                        "schema",
-                        "friendly_name",
-                        "description",
-                        "time_partitioning",
-                        "clustering_fields",
-                        "labels",
-                    ],
-                )
-                click.echo(f"Schema (and metadata) updated for {full_table_id}.")
-        except Exception:
-            print_exc()
-            return query_file
-
-    with ThreadPool(parallelism) as pool:
-        failed_deploys = [r for r in pool.map(_deploy, query_files) if r]
+                future.result()
+            except SkippedDeployException as e:
+                print(f"Skipped deploy for {query_file}: ({e})")
+                skipped_deploys.append(query_file)
+            except FailedDeployException as e:
+                print(f"Failed deploy for {query_file}: ({e})")
+                failed_deploys.append(query_file)
+            else:
+                print(f"{query_file} successfully deployed!")
 
     if not skip_external_data:
         failed_external_deploys = _deploy_external_data(
@@ -2194,55 +2188,16 @@ def deploy(
         )
         failed_deploys += failed_external_deploys
 
-    if len(failed_deploys) > 0:
+    if skipped_deploys:
+        click.echo("The following deploys were skipped:")
+        for skipped_deploy in skipped_deploys:
+            click.echo(skipped_deploy)
+
+    if failed_deploys:
         click.echo("The following tables could not be deployed:")
         for failed_deploy in failed_deploys:
             click.echo(failed_deploy)
         sys.exit(1)
-
-    click.echo("All tables have been deployed.")
-
-
-def _attach_metadata(query_file_path: Path, table: bigquery.Table) -> None:
-    """Add metadata from query file's metadata.yaml to table object."""
-    try:
-        metadata = Metadata.of_query_file(query_file_path)
-    except FileNotFoundError:
-        return
-
-    table.description = metadata.description
-    table.friendly_name = metadata.friendly_name
-
-    if metadata.bigquery and metadata.bigquery.time_partitioning:
-        table.time_partitioning = bigquery.TimePartitioning(
-            metadata.bigquery.time_partitioning.type.bigquery_type,
-            field=metadata.bigquery.time_partitioning.field,
-            require_partition_filter=(
-                metadata.bigquery.time_partitioning.require_partition_filter
-            ),
-            expiration_ms=metadata.bigquery.time_partitioning.expiration_ms,
-        )
-    elif metadata.bigquery and metadata.bigquery.range_partitioning:
-        table.range_partitioning = bigquery.RangePartitioning(
-            field=metadata.bigquery.range_partitioning.field,
-            range_=bigquery.PartitionRange(
-                start=metadata.bigquery.range_partitioning.range.start,
-                end=metadata.bigquery.range_partitioning.range.end,
-                interval=metadata.bigquery.range_partitioning.range.interval,
-            ),
-        )
-
-    if metadata.bigquery and metadata.bigquery.clustering:
-        table.clustering_fields = metadata.bigquery.clustering.fields
-
-    # BigQuery only allows for string type labels with specific requirements to be published:
-    # https://cloud.google.com/bigquery/docs/labels-intro#requirements
-    if metadata.labels:
-        table.labels = {
-            key: value
-            for key, value in metadata.labels.items()
-            if isinstance(value, str)
-        }
 
 
 def _deploy_external_data(
@@ -2286,7 +2241,7 @@ def _deploy_external_data(
 
             bigquery_schema = existing_schema.to_bigquery_schema()
             table.schema = bigquery_schema
-            _attach_metadata(metadata_file_path, table)
+            attach_metadata(metadata_file_path, table)
 
             if not table.created:
                 if metadata.external_data.format in (

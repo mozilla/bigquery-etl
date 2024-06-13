@@ -5,6 +5,10 @@ owners:
 labels:
   incremental: true
   owner1: kwindau@mozilla.com
+scheduling:
+  dag_name: bqetl_cloudflare
+  date_partition_parameter: dte
+  arguments: ["--date", "{{ds}}", "--cloudflare_api_token", "{{ var.value.cloudflare_auth_token}}"]
 bigquery:
   time_partitioning:
     type: day

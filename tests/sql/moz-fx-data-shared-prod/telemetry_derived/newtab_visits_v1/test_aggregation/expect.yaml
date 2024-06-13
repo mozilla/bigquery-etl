@@ -12,6 +12,7 @@
   had_non_impression_engagement: true
   had_non_search_engagement: true
   newtab_default_ui: default
+  newtab_newtab_category: enabled
   search_interactions:
     - search_engine: Engine1
       search_access_point: urlbar

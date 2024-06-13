@@ -5,6 +5,8 @@
   metrics:
     uuid:
       legacy_telemetry_client_id: legacy_id_1
+    boolean:
+      newtab_weather_enabled: true
   events:
     - category: newtab
       name: opened
@@ -57,3 +59,17 @@
           value: 1
         - key: is_sponsored
           value: false
+    - category: newtab
+      name: wallpaper_click
+      extra:
+        - key: newtab_visit_id
+          value: visit_id_1
+        - key: selected_wallpaper
+          value: wallpaper_1
+        - key: had_previous_wallpaper
+          value: false
+    - category: newtab
+      name: weather_impression
+      extra:
+        - key: newtab_visit_id
+          value: visit_id_1

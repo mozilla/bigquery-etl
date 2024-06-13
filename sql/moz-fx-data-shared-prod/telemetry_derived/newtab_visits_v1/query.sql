@@ -44,7 +44,7 @@ visit_metadata AS (
     ANY_VALUE(metrics.string.newtab_homepage_category) AS newtab_homepage_category,
     ANY_VALUE(metrics.string.newtab_newtab_category) AS newtab_newtab_category,
     ANY_VALUE(metrics.boolean.newtab_search_enabled) AS newtab_search_enabled,
-    ANY_VALUE(metrics.boolean.newtab_weather_enabled) AS weather_widget_enabled,
+    ANY_VALUE(metrics.boolean.newtab_weather_enabled) AS newtab_weather_widget_enabled,
     ANY_VALUE(metrics.quantity.topsites_rows) AS topsites_rows,
     ANY_VALUE(metrics.string_list.newtab_blocked_sponsors) AS newtab_blocked_sponsors,
     ANY_VALUE(ping_info.experiments) AS experiments,

@@ -233,7 +233,7 @@ fields:
 - mode: NULLABLE
   name: newtab_default_ui
   type: STRING
-- name: weather_widget_enabled
+- name: newtab_weather_widget_enabled
   type: BOOLEAN
   mode: NULLABLE
 - name: wallpaper_interactions

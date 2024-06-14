@@ -50,7 +50,7 @@ IF
         client_info.app_display_version AS version,
         ping_info
       FROM
-        `moz-fx-data-shared-prod.viu_politica_live.video_index_v1`
+        `moz-fx-data-shared-prod.viu_politica_live.main_events_v1`
       UNION ALL
       SELECT
         submission_timestamp,
@@ -60,7 +60,7 @@ IF
         client_info.app_display_version AS version,
         ping_info
       FROM
-        `moz-fx-data-shared-prod.viu_politica_live.main_events_v1`
+        `moz-fx-data-shared-prod.viu_politica_live.video_index_v1`
     )
   CROSS JOIN
     UNNEST(events) AS event,
@@ -70,7 +70,7 @@ IF
   LEFT JOIN
     UNNEST(event.extra) AS event_extra
   WHERE
-    DATE(submission_timestamp) >= "2024-06-13"
+    DATE(submission_timestamp) >= "2024-06-14"
   GROUP BY
     submission_date,
     window_start,

@@ -66,6 +66,11 @@
   },
   {
     "type": "INTEGER",
+    "name": "search_with_ads_organic",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
     "name": "unknown",
     "mode": "NULLABLE"
   },

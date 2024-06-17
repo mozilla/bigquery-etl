@@ -16,6 +16,10 @@ NON_USER_FACING_DATASET_SUBSTRINGS = (
     "udf",
 )
 
+VIEW_FILE = "view.sql"
+METADATA_FILE = "metadata.yaml"
+SCHEMA_FILE = "schema.yaml"
+
 
 def _generate_view_schema(sql_dir, view_directory):
     import logging
@@ -24,29 +28,24 @@ def _generate_view_schema(sql_dir, view_directory):
     from bigquery_etl.metadata.parse_metadata import Metadata
     from bigquery_etl.schema import Schema
     from bigquery_etl.util.common import render
+    from bigquery_etl.view import View
 
     logging.basicConfig(format="%(levelname)s (%(filename)s:%(lineno)d) - %(message)s")
 
-    VIEW_FILE = "view.sql"
-    METADATA_FILE = "metadata.yaml"
-    SCHEMA_FILE = "schema.yaml"
-
     # If the view references only one table, we can:
-    # 1. Get the reference table partition key if it exists.
+    # 1. Get the reference table partition column if it exists.
     #   (to dry run views to partitioned tables).
     # 2. Get the reference table schema and use it to enrich the
     #   view schema we get from dry-running.
-    def _get_reference_dir_path(view_dir):
-        view_file = view_dir / VIEW_FILE
-        if not view_file.exists():
-            return
-
-        view_references = extract_table_references(render(view_file.name, view_dir))
+    def _get_reference_dir_path(view_file):
+        view_references = extract_table_references(
+            render(view_file.name, view_file.parent)
+        )
         if len(view_references) != 1:
             return
 
-        target_project = view_dir.parent.parent.name
-        target_dataset = view_dir.parent.name
+        target_project = view_file.parent.parent.parent.name
+        target_dataset = view_file.parent.parent.name
 
         target_reference = view_references[0]
         parts = target_reference.split(".")
@@ -67,9 +66,9 @@ def _generate_view_schema(sql_dir, view_directory):
             sql_dir / reference_project_id / reference_dataset_id / reference_table_id
         )
 
-    def _get_reference_partition_key(ref_path):
+    def _get_reference_partition_column(ref_path):
         if ref_path is None:
-            logging.debug("No table reference, skipping partition key.")
+            logging.debug("No table reference, skipping partition column.")
             return
 
         try:
@@ -81,20 +80,24 @@ def _generate_view_schema(sql_dir, view_directory):
         bigquery_metadata = reference_metadata.bigquery
         if bigquery_metadata is None:
             logging.warning(
-                f"No bigquery metadata at {ref_path}, unable to get partition key."
+                f"No bigquery metadata at {ref_path}, unable to get partition column."
             )
             return
 
         partition_metadata = bigquery_metadata.time_partitioning
         if partition_metadata is None:
             logging.warning(
-                f"No partition metadata at {ref_path}, unable to get partition key."
+                f"No partition metadata at {ref_path}, unable to get partition column."
             )
             return
 
         return partition_metadata.field
 
-    reference_path = _get_reference_dir_path(view_directory)
+    view_file = view_directory / VIEW_FILE
+    if not view_file.exists():
+        return
+
+    reference_path = _get_reference_dir_path(view_file)
 
     # If this is a view to a stable table, don't try to write the schema:
     if reference_path is not None:
@@ -102,34 +105,51 @@ def _generate_view_schema(sql_dir, view_directory):
         if reference_dataset.endswith("_stable"):
             return
 
-    # Optionally get the upstream partition key
-    reference_partition_key = _get_reference_partition_key(reference_path)
-    if reference_partition_key is None:
-        logging.debug("No reference partition key, dry running without one.")
+    # Optionally get the upstream partition column
+    reference_partition_column = _get_reference_partition_column(reference_path)
+    if reference_partition_column is None:
+        logging.debug("No reference partition column, dry running without one.")
 
-    project_id = view_directory.parent.parent.name
-    dataset_id = view_directory.parent.name
-    view_id = view_directory.name
+    view = View.from_file(view_file, partition_column=reference_partition_column)
 
-    schema = Schema.for_table(
-        project_id, dataset_id, view_id, partitioned_by=reference_partition_key
-    )
-    if len(schema.schema.get("fields")) == 0:
+    # `View.schema` prioritizes the configured schema over the dryrun schema, but here
+    # we prioritize the dryrun schema because the `schema.yaml` file might be out of date.
+    schema = view.dryrun_schema or view.configured_schema
+    if view.dryrun_schema and view.configured_schema:
+        try:
+            schema.merge(
+                view.configured_schema,
+                attributes=["description"],
+                add_missing_fields=False,
+                ignore_missing_fields=True,
+            )
+        except Exception as e:
+            logging.warning(
+                f"Error enriching {view.view_identifier} view schema from {view.schema_path}: {e}"
+            )
+    if not schema:
         logging.warning(
-            f"Got empty schema for {project_id}.{dataset_id}.{view_id} potentially "
+            f"Couldn't get schema for {view.view_identifier} potentially "
             f"due to dry-run error. Won't write yaml."
         )
         return
 
     # Optionally enrich the view schema if we have a valid table reference
     if reference_path:
-        try:
-            reference_schema = Schema.from_schema_file(reference_path / SCHEMA_FILE)
-            schema.merge(reference_schema, add_missing_fields=False)
-        except Exception as e:
-            logging.info(
-                f"Unable to open reference schema; unable to enrich schema: {e}"
-            )
+        reference_schema_file = reference_path / SCHEMA_FILE
+        if reference_schema_file.exists():
+            try:
+                reference_schema = Schema.from_schema_file(reference_schema_file)
+                schema.merge(
+                    reference_schema,
+                    attributes=["description"],
+                    add_missing_fields=False,
+                    ignore_missing_fields=True,
+                )
+            except Exception as e:
+                logging.warning(
+                    f"Error enriching {view.view_identifier} view schema from {reference_schema_file}: {e}"
+                )
 
     schema.to_yaml_file(view_directory / SCHEMA_FILE)
 
@@ -178,7 +198,11 @@ def generate(target_project, output_dir, parallelism, use_cloud_function):
     ]
 
     for dataset_path in dataset_paths:
-        view_directories = [path for path in dataset_path.iterdir() if path.is_dir()]
+        view_directories = [
+            path
+            for path in dataset_path.iterdir()
+            if path.is_dir() and (path / VIEW_FILE).exists()
+        ]
 
         with ProcessingPool(parallelism) as pool:
             pool.map(

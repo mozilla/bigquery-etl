@@ -3,6 +3,9 @@ description: |-
   Prototype.
 
   KPIs calculated for deletion requests.
+
+  Deprecation decision https://mozilla-hub.atlassian.net/browse/DENG-3998.
+  This table will be used for validation purposes and should not be deleted.
 owners:
   - lvargas@mozilla.com
 labels:
@@ -30,3 +33,4 @@ bigquery:
       - app_name
       - attribution_medium
       - channel
+deprecated: true

@@ -25,6 +25,7 @@ labels:
 scheduling:
   dag_name: bqetl_analytics_aggregations
   task_name: {{ app_name }}_active_users_aggregates
+  date_partition_offset: -1
 bigquery:
   time_partitioning:
     type: day

@@ -14,10 +14,9 @@ labels:
   schedule: daily
   incremental: true
 scheduling:
-#   will be commented out in a follow up PR which will add a DAG
-#   dag_name:  # TODO: think about which DAG this should run in.
-#   depends_on_past: false
-#   task_group: {{ app_name }}
+  dag_name: bqetl_mobile_kpi_metrics
+  depends_on_past: false
+  task_group: {{ app_name }}
   date_partition_parameter: metric_date
   date_partition_offset: -27
   parameters:

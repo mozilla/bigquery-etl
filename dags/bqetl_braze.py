@@ -50,7 +50,7 @@ tags = ["impact/tier_2", "repo/bigquery-etl"]
 with DAG(
     "bqetl_braze",
     default_args=default_args,
-    schedule_interval="30 4,12,20 * * *",
+    schedule_interval="0 5,13,21 * * *",
     doc_md=docs,
     tags=tags,
 ) as dag:
@@ -241,18 +241,6 @@ with DAG(
         sql_file_path="sql/moz-fx-data-shared-prod/braze_external/users_previous_day_snapshot_v1/script.sql",
     )
 
-    braze_external__users_previous_day_snapshot__v2 = bigquery_etl_query(
-        task_id="braze_external__users_previous_day_snapshot__v2",
-        destination_table=None,
-        dataset_id="braze_external",
-        project_id="moz-fx-data-shared-prod",
-        owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com", "leli@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=False,
-        sql_file_path="sql/moz-fx-data-shared-prod/braze_external/users_previous_day_snapshot_v2/script.sql",
-    )
-
     checks__fail_braze_derived__newsletters__v1 = bigquery_dq_check(
         task_id="checks__fail_braze_derived__newsletters__v1",
         source_table="newsletters_v1",
@@ -335,6 +323,19 @@ with DAG(
         task_id="checks__fail_braze_derived__waitlists__v1",
         source_table="waitlists_v1",
         dataset_id="braze_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=True,
+        owner="cbeck@mozilla.com",
+        email=["cbeck@mozilla.com", "leli@mozilla.com"],
+        depends_on_past=False,
+        task_concurrency=1,
+        retries=0,
+    )
+
+    checks__fail_braze_external__users_previous_day_snapshot__v1 = bigquery_dq_check(
+        task_id="checks__fail_braze_external__users_previous_day_snapshot__v1",
+        source_table="users_previous_day_snapshot_v1",
+        dataset_id="braze_external",
         project_id="moz-fx-data-shared-prod",
         is_dq_check_fail=True,
         owner="cbeck@mozilla.com",
@@ -480,11 +481,11 @@ with DAG(
     )
 
     braze_external__changed_users__v1.set_upstream(
-        braze_external__users_previous_day_snapshot__v2
+        checks__fail_braze_derived__users__v1
     )
 
     braze_external__changed_users__v1.set_upstream(
-        checks__fail_braze_derived__users__v1
+        checks__fail_braze_external__users_previous_day_snapshot__v1
     )
 
     braze_external__changed_users_sync__v1.set_upstream(
@@ -520,6 +521,10 @@ with DAG(
     checks__fail_braze_derived__users__v1.set_upstream(braze_derived__users__v1)
 
     checks__fail_braze_derived__waitlists__v1.set_upstream(braze_derived__waitlists__v1)
+
+    checks__fail_braze_external__users_previous_day_snapshot__v1.set_upstream(
+        braze_external__users_previous_day_snapshot__v1
+    )
 
     checks__warn_braze_external__changed_firefox_subscriptions_sync__v1.set_upstream(
         braze_external__changed_firefox_subscriptions_sync__v1

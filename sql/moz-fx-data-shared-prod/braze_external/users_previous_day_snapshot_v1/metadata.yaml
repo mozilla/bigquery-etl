@@ -1,8 +1,9 @@
-friendly_name: Braze User Profiles Previous Day Snapshot
+friendly_name: Braze Users Previous Day Snapshot
 description: |-
   This is a snapshot of the users table at the state it was in before
-  the most recent DAG run. Since the user profiles table updates once a day at
-  10AM UTC, we can update this snapshot looking 12 hours back (yesterday).
+  the most recent DAG run. Since the user profiles table updates three times a day at
+  0500, 1300, & 2100 UTC, we can update this snapshot looking 1 hour back (to capture the state
+  prior to this run).
 
   This snapshot allows us to compare changed values in order to generate the
   JSON payloads for Braze's cloud data ingestion tool.
@@ -31,4 +32,6 @@ workgroup_access:
 - role: roles/bigquery.dataEditor
   members:
   - workgroup:braze/writers
-references: {}
+references:
+  checks.sql:
+  - ..

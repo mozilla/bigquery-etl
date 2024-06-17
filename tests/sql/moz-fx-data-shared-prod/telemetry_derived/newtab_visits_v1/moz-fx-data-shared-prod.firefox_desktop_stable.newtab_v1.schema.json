@@ -418,6 +418,11 @@
             "name": "topsites_sponsored_enabled",
             "type": "BOOLEAN",
             "mode": "NULLABLE"
+          },
+          {
+            "name": "newtab_weather_enabled",
+            "type": "BOOLEAN",
+            "mode": "NULLABLE"
           }
         ]
       },

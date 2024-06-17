@@ -66,7 +66,7 @@ client_activity_first_7_days AS (
     ) AS country, --any country from their first day in clients_last_seen
     ANY_VALUE(
       CASE
-        WHEN first_main_ping_date = DATE_ADD(first_seen_date, INTERVAL 6 DAY)
+        WHEN submission_date = DATE_ADD(first_main_ping_date, INTERVAL 6 DAY)
           THEN BIT_COUNT(days_visited_1_uri_bits & days_interacted_bits)
       END
     ) AS dou, --total # of days of activity during their first 7 days of main pings

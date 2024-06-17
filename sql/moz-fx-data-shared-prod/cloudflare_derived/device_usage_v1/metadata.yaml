@@ -5,9 +5,9 @@ owners:
 - kwindau@mozilla.com
 labels:
   owner1: kwindau
-  dag: bqetl_cloudflare
+  dag: bqetl_cloudflare_device_market_share
 scheduling:
-  dag_name: bqetl_cloudflare
+  dag_name: bqetl_cloudflare_device_market_share
   date_partition_parameter: dte
   arguments:
   - --date
@@ -29,4 +29,6 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references: {}
+references:
+  checks.sql:
+  - ..

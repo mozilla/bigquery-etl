@@ -10,13 +10,13 @@ from utils.constants import ALLOWED_STATES, FAILED_STATES
 from utils.gcp import bigquery_etl_query, bigquery_dq_check
 
 docs = """
-### bqetl_cloudflare
+### bqetl_cloudflare_device_market_share
 
-Built from bigquery-etl repo, [`dags/bqetl_cloudflare.py`](https://github.com/mozilla/bigquery-etl/blob/generated-sql/dags/bqetl_cloudflare.py)
+Built from bigquery-etl repo, [`dags/bqetl_cloudflare_device_market_share.py`](https://github.com/mozilla/bigquery-etl/blob/generated-sql/dags/bqetl_cloudflare_device_market_share.py)
 
 #### Description
 
-Derived tables built on Cloudflare downloaded data
+Pulls device usage market share data from Cloudflare API
 
 #### Owner
 
@@ -31,7 +31,7 @@ kwindau@mozilla.com
 
 default_args = {
     "owner": "kwindau@mozilla.com",
-    "start_date": datetime.datetime(2024, 6, 7, 0, 0),
+    "start_date": datetime.datetime(2024, 6, 16, 0, 0),
     "end_date": None,
     "email": ["kwindau@mozilla.com"],
     "depends_on_past": False,
@@ -44,28 +44,30 @@ default_args = {
 tags = ["impact/tier_3", "repo/bigquery-etl"]
 
 with DAG(
-    "bqetl_cloudflare",
+    "bqetl_cloudflare_device_market_share",
     default_args=default_args,
-    schedule_interval="0 4 * * *",
+    schedule_interval="0 16 * * *",
     doc_md=docs,
     tags=tags,
 ) as dag:
 
-    cloudflare_derived__browser_usage__v1 = GKEPodOperator(
-        task_id="cloudflare_derived__browser_usage__v1",
+    checks__warn_cloudflare_derived__device_usage__v1 = bigquery_dq_check(
+        task_id="checks__warn_cloudflare_derived__device_usage__v1",
+        source_table="device_usage_v1",
+        dataset_id="cloudflare_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=False,
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com"],
+        depends_on_past=False,
         arguments=[
-            "python",
-            "sql/moz-fx-data-shared-prod/cloudflare_derived/browser_usage_v1/query.py",
-        ]
-        + [
             "--date",
             "{{ds}}",
             "--cloudflare_api_token",
             "{{ var.value.cloudflare_auth_token}}",
         ],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com"],
+        parameters=["dte:DATE:{{ds}}"],
+        retries=0,
     )
 
     cloudflare_derived__device_usage__v1 = GKEPodOperator(
@@ -85,19 +87,6 @@ with DAG(
         email=["kwindau@mozilla.com"],
     )
 
-    cloudflare_derived__os_usage__v1 = GKEPodOperator(
-        task_id="cloudflare_derived__os_usage__v1",
-        arguments=[
-            "python",
-            "sql/moz-fx-data-shared-prod/cloudflare_derived/os_usage_v1/query.py",
-        ]
-        + [
-            "--date",
-            "{{ds}}",
-            "--cloudflare_api_token",
-            "{{ var.value.cloudflare_auth_token}}",
-        ],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com"],
+    checks__warn_cloudflare_derived__device_usage__v1.set_upstream(
+        cloudflare_derived__device_usage__v1
     )

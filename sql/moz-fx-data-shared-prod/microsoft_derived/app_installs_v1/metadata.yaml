@@ -6,17 +6,7 @@ owners:
 - mhirose@mozilla.com
 labels:
   incremental: false
-  owner1: example
-scheduling:
-  dag_name: bqetl_microsoft_store
-  date_partition_parameter: date
-  arguments: >
-    [
-      "--date", "{{ds}}",
-      "--microsoft_client_id", "{{var.value.MICROSOFT_CLIENT_ID}}",
-      "--microsoft_store_app_list", "{{var.value.MICROSOFT_STORE_APP_LIST}}",
-      "--microsoft_tenant_id", "{{var.value.MICROSOFT_TENANT_ID}}"
-    ]
+  owner1: mhirose@mozilla.com
 bigquery:
   time_partitioning:
     type: day

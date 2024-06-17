@@ -14234,6 +14234,12 @@ fields:
       description: 'Static data recorded to verify the new object metric type end-to-end.
 
         '
+    - name: nimbus_system_recorded_nimbus_context
+      type: JSON
+      mode: NULLABLE
+      description: 'The Nimbus context object that is recorded to Glean
+
+        '
   - name: labeled_string
     type: RECORD
     mode: NULLABLE

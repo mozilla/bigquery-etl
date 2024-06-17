@@ -843,15 +843,21 @@ fields:
     - name: crash_submission_failure
       type: INTEGER
       mode: NULLABLE
-      description: The total number of successful calls to navigator.credentials.get.
+      description: 'Number of failed crash report submissions
+
+        '
     - name: crash_submission_pending
       type: INTEGER
       mode: NULLABLE
-      description: The total number of successful calls to navigator.credentials.get.
+      description: 'Number of pending crash report submissions
+
+        '
     - name: crash_submission_success
       type: INTEGER
       mode: NULLABLE
-      description: The total number of successful calls to navigator.credentials.get.
+      description: 'Number of successfull crash report submissions
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -2701,8 +2707,9 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: The number of times each certificate compression algorithm was
-        used.
+      description: 'Amount and error name reported when performing crash submission.
+
+        '
     - name: private_attribution_database
       type: RECORD
       mode: REPEATED

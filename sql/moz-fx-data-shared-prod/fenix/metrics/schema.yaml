@@ -10530,6 +10530,9 @@ fields:
     - name: fog_validation_some_object
       type: JSON
       mode: NULLABLE
+    - name: nimbus_system_recorded_nimbus_context
+      type: JSON
+      mode: NULLABLE
   - name: labeled_string
     type: RECORD
     mode: NULLABLE

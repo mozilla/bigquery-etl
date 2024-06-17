@@ -95,6 +95,8 @@ with DAG(
 
     task_group_glean_dictionary = TaskGroup("glean_dictionary")
 
+    task_group_gleanjs_docs = TaskGroup("gleanjs_docs")
+
     task_group_klar_android = TaskGroup("klar_android")
 
     task_group_klar_ios = TaskGroup("klar_ios")
@@ -2466,6 +2468,24 @@ with DAG(
         depends_on_past=False,
         arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_glean_dictionary,
+    )
+
+    gleanjs_docs_derived__events_stream__v1 = bigquery_etl_query(
+        task_id="gleanjs_docs_derived__events_stream__v1",
+        destination_table="events_stream_v1",
+        dataset_id="gleanjs_docs_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="jrediger@mozilla.com",
+        email=[
+            "ascholtz@mozilla.com",
+            "jrediger@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+            "wstuckey@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        arguments=["--billing-project", "moz-fx-data-backfill-2"],
+        task_group=task_group_gleanjs_docs,
     )
 
     klar_android_derived__clients_last_seen_joined__v1 = bigquery_etl_query(
@@ -6083,6 +6103,8 @@ with DAG(
     glean_dictionary_derived__events_stream__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
+
+    gleanjs_docs_derived__events_stream__v1.set_upstream(wait_for_copy_deduplicate_all)
 
     klar_android_derived__clients_last_seen_joined__v1.set_upstream(
         checks__fail_org_mozilla_klar_derived__baseline_clients_last_seen__v1

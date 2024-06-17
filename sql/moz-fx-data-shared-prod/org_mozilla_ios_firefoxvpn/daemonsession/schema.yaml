@@ -373,6 +373,26 @@ fields:
         health check is started because of the return.
 
         '
+    - name: connection_health_pending_count
+      type: INTEGER
+      mode: NULLABLE
+      description: '(iOS only) Count of times that the connection health check is
+        in pending.
+
+
+        The health check counters must not be considered as markers of time.
+
+        There is a possible situation in the health check (which calls the
+
+        telemetry) which frequently results in more than one count per second.
+
+        The situation: A health check is conducted because a network check did not
+
+        return, and milliseconds later that network check returns and another
+
+        health check is started because of the return.
+
+        '
   - name: datetime
     type: RECORD
     mode: NULLABLE
@@ -598,6 +618,49 @@ fields:
         frequently are relaunched during VPN sessions. It is
 
         collected in daemonsession for mobile clients.
+
+        '
+    - name: connection_health_pending_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: '(iOS only) Time spent in pending state.
 
         '
 - name: normalized_app_name

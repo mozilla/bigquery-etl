@@ -3265,7 +3265,8 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream.
+      description: 'Failure occurs when initializing the audio stream. (Migrated from
+        the geckoview metric of the same name).
 
         '
     - name: glean_validation_pings_submitted
@@ -14232,6 +14233,12 @@ fields:
       type: JSON
       mode: NULLABLE
       description: 'Static data recorded to verify the new object metric type end-to-end.
+
+        '
+    - name: nimbus_system_recorded_nimbus_context
+      type: JSON
+      mode: NULLABLE
+      description: 'The Nimbus context object that is recorded to Glean
 
         '
   - name: labeled_string

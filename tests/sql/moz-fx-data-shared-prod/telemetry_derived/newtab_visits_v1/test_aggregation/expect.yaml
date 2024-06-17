@@ -11,6 +11,8 @@
   browser_name: Firefox Desktop
   had_non_impression_engagement: true
   had_non_search_engagement: true
+  newtab_default_ui: default
+  newtab_newtab_category: enabled
   search_interactions:
     - search_engine: Engine1
       search_access_point: urlbar
@@ -45,3 +47,17 @@
       pocket_saves: 0
       sponsored_pocket_saves: 0
       organic_pocket_saves: 0
+  wallpaper_interactions:
+    - wallpaper_selected_wallpaper: wallpaper_1
+      wallpaper_clicks: 1
+      wallpaper_clicks_had_previous_wallpaper: 0
+      wallpaper_clicks_first_selected_wallpaper: 1
+      wallpaper_category_clicks: 0
+      wallpaper_highlight_dismissals: 0
+      wallpaper_highlight_cta_clicks: 0
+  weather_interactions:
+    - weather_widget_impressions: 1
+      weather_widget_clicks: 0
+      weather_widget_load_errors: 0
+      weather_widget_change_display_to_detailed: 0
+      weather_widget_change_display_to_simple: 0

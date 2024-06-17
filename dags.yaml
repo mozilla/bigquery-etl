@@ -1541,7 +1541,8 @@ bqetl_acoustic_suppression_list:
     - impact/tier_3
 
 bqetl_braze:
-  schedule_interval: 30 4,12,20 * * *
+  schedule_interval: 0 5,13,21 * * *
+
   description: |
     ETL for Braze workflows.
     ## Triage notes:

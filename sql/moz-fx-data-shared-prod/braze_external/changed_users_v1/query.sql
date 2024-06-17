@@ -38,7 +38,7 @@ SELECT
 FROM
   `moz-fx-data-shared-prod.braze_derived.users_v1` current_users
 FULL OUTER JOIN
-  `moz-fx-data-shared-prod.braze_external.users_previous_day_snapshot_v2` previous_users --change back to v1 after run tomorrow
+  `moz-fx-data-shared-prod.braze_external.users_previous_day_snapshot_v1` previous_users --change back to v1 after run tomorrow
   ON current_users.external_id = previous_users.external_id
 WHERE
   current_users.external_id IS NULL  -- deleted rows

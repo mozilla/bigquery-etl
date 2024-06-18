@@ -51,9 +51,15 @@ WITH flat AS (
 )
 SELECT
   *,
---   `moz-fx-data-shared-prod`.udf.serp_category_name(
---     sponsored_category_id
---   ) AS sponsored_category_name,
---   `moz-fx-data-shared-prod`.udf.serp_category_name(organic_category_id) AS organic_category_name
+  nsp.category_name AS sponsored_category_name,
+  norg.category_name AS organic_category_name
 FROM
-  flat
+  flat AS f
+LEFT JOIN
+  `moz-fx-data-shared-prod.static.serp_category_name` AS nsp
+  ON f.mappings_version = nsp.mappings_version
+  AND f.sponsored_category_id = nsp.category_id
+LEFT JOIN
+  `moz-fx-data-shared-prod.static.serp_category_name` AS norg
+  ON f.mappings_version = norg.mappings_version
+  AND f.organic_category_id = norg.category_id

@@ -386,13 +386,13 @@ WHERE CAST(StartTime as date) = DATE_SUB('{args.date}', INTERVAL 4 DAY) """
     load_res_to_gold.result()
 
     # STEP 7 - Load errors from stage to gold
-    browser_usg_errors_stg_to_gold_query = f""" INSERT INTO `moz-fx-data-shared-prod.cloudflare_derived.device_usage_errors_v1`
+    device_usg_errors_stg_to_gold_query = f""" INSERT INTO `moz-fx-data-shared-prod.cloudflare_derived.device_usage_errors_v1`
 SELECT
 CAST(StartTime as date) AS dte,
 Location AS location
 FROM `moz-fx-data-shared-prod.cloudflare_derived.device_errors_stg`
 WHERE CAST(StartTime as date) = DATE_SUB('{args.date}', INTERVAL 4 DAY) """
-    load_err_to_gold = client.query(browser_usg_errors_stg_to_gold_query)
+    load_err_to_gold = client.query(device_usg_errors_stg_to_gold_query)
     load_err_to_gold.result()
 
     # STEP 8 - Copy the result CSV from stage to archive, then delete from stage

@@ -18,6 +18,7 @@ WITH cte AS (
     pocket_sponsored_stories_enabled,
     topsites_enabled,
     topsites_sponsored_enabled,
+    newtab_weather_widget_enabled,
     newtab_homepage_category,
     newtab_newtab_category,
     topsites_rows,
@@ -28,7 +29,10 @@ WITH cte AS (
     activity_segment,
     search_interactions,
     topsite_tile_interactions,
-    pocket_interactions
+    pocket_interactions,
+    wallpaper_interactions,
+    weather_interactions,
+    newtab_default_ui
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.newtab_visits_v1`
   WHERE
@@ -54,18 +58,23 @@ visits_data AS (
     LOGICAL_AND(pocket_sponsored_stories_enabled) AS pocket_sponsored_stories_enabled,
     LOGICAL_AND(topsites_enabled) AS topsites_enabled,
     LOGICAL_AND(topsites_sponsored_enabled) AS topsites_sponsored_enabled,
+    LOGICAL_AND(newtab_weather_widget_enabled) AS newtab_weather_widget_enabled,
     ANY_VALUE(newtab_homepage_category) AS newtab_homepage_category,
     ANY_VALUE(newtab_newtab_category) AS newtab_newtab_category,
     ANY_VALUE(topsites_rows) AS topsites_rows,
     ANY_VALUE(experiments) AS experiments,
-    SUM(
-      CASE
-        WHEN had_non_impression_engagement
-          THEN 1
-        ELSE 0
-      END
-    ) AS visits_with_non_impression_engagement,
-    SUM(CASE WHEN had_non_search_engagement THEN 1 ELSE 0 END) AS visits_with_non_search_engagement,
+    COUNTIF(had_non_impression_engagement) AS visits_with_non_impression_engagement,
+    COUNTIF(had_non_search_engagement) AS visits_with_non_search_engagement,
+    COUNTIF(newtab_default_ui = "default") AS visits_with_default_ui,
+    COUNTIF(
+      newtab_default_ui = "default"
+      AND had_non_impression_engagement
+    ) AS visits_with_default_ui_with_non_impression_engagement,
+    COUNTIF(
+      newtab_default_ui = "default"
+      AND had_non_search_engagement
+    ) AS visits_with_default_ui_with_non_search_engagement,
+    COUNTIF(newtab_default_ui = "non-default") AS visits_with_non_default_ui,
     LOGICAL_OR(is_new_profile) AS is_new_profile,
     ANY_VALUE(activity_segment) AS activity_segment
   FROM
@@ -128,6 +137,37 @@ pocket_data AS (
     UNNEST(pocket_interactions)
   GROUP BY
     client_id
+),
+wallpaper_data AS (
+  SELECT
+    client_id,
+    SUM(wallpaper_clicks) AS wallpaper_clicks,
+    SUM(wallpaper_clicks_had_previous_wallpaper) AS wallpaper_clicks_had_previous_wallpaper,
+    SUM(wallpaper_clicks_first_selected_wallpaper) AS wallpaper_clicks_first_selected_wallpaper,
+    SUM(wallpaper_category_clicks) AS wallpaper_category_clicks,
+    SUM(wallpaper_highlight_dismissals) AS wallpaper_highlight_dismissals,
+    SUM(wallpaper_highlight_cta_clicks) AS wallpaper_highlight_cta_clicks
+  FROM
+    cte
+  CROSS JOIN
+    UNNEST(wallpaper_interactions)
+  GROUP BY
+    client_id
+),
+weather_data AS (
+  SELECT
+    client_id,
+    SUM(weather_widget_impressions) AS weather_widget_impressions,
+    SUM(weather_widget_clicks) AS weather_widget_clicks,
+    SUM(weather_widget_load_errors) AS weather_widget_load_errors,
+    SUM(weather_widget_change_display_to_detailed) AS weather_widget_change_display_to_detailed,
+    SUM(weather_widget_change_display_to_simple) AS weather_widget_change_display_to_simple,
+  FROM
+    cte
+  CROSS JOIN
+    UNNEST(weather_interactions)
+  GROUP BY
+    client_id
 )
 SELECT
   visits_data.*,
@@ -157,6 +197,23 @@ SELECT
   COALESCE(pocket_saves, 0) AS pocket_saves,
   COALESCE(sponsored_pocket_saves, 0) AS sponsored_pocket_saves,
   COALESCE(organic_pocket_saves, 0) AS organic_pocket_saves,
+  COALESCE(wallpaper_clicks, 0) AS wallpaper_clicks,
+  COALESCE(wallpaper_clicks_had_previous_wallpaper, 0) AS wallpaper_clicks_had_previous_wallpaper,
+  COALESCE(
+    wallpaper_clicks_first_selected_wallpaper,
+    0
+  ) AS wallpaper_clicks_first_selected_wallpaper,
+  COALESCE(wallpaper_category_clicks, 0) AS wallpaper_category_clicks,
+  COALESCE(wallpaper_highlight_dismissals, 0) AS wallpaper_highlight_dismissals,
+  COALESCE(wallpaper_highlight_cta_clicks, 0) AS wallpaper_highlight_cta_clicks,
+  COALESCE(weather_widget_impressions, 0) AS weather_widget_impressions,
+  COALESCE(weather_widget_clicks, 0) AS weather_widget_clicks,
+  COALESCE(weather_widget_load_errors, 0) AS weather_widget_load_errors,
+  COALESCE(
+    weather_widget_change_display_to_detailed,
+    0
+  ) AS weather_widget_change_display_to_detailed,
+  COALESCE(weather_widget_change_display_to_simple, 0) AS weather_widget_change_display_to_simple,
 FROM
   visits_data
 LEFT JOIN
@@ -167,4 +224,10 @@ LEFT JOIN
   USING (client_id)
 LEFT JOIN
   pocket_data
+  USING (client_id)
+LEFT JOIN
+  weather_data
+  USING (client_id)
+LEFT JOIN
+  wallpaper_data
   USING (client_id)

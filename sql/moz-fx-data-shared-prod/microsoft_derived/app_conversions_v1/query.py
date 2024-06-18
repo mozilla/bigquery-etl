@@ -2,6 +2,7 @@
 
 import csv
 import json
+import os
 import tempfile
 from argparse import ArgumentParser
 
@@ -28,6 +29,11 @@ CSV_FIELDS = [
     "click_count",
     "conversion_count",
 ]
+
+MS_CLIENT_ID = os.environ.get("MICROSOFT_CLIENT_ID")
+MS_CLIENT_SECRET = os.environ.get("MICROSOFT_CLIENT_SECRET")
+MS_APP_LIST = os.environ.get("MICROSOFT_STORE_APP_LIST")
+MS_TENANT_ID = os.environ.get("MICROSOFT_TENANT_ID")
 
 
 def post_response(url, headers, data):
@@ -188,10 +194,6 @@ def main():
     """Input data, call functions, get stuff done."""
     parser = ArgumentParser(description=__doc__)
     parser.add_argument("--date", required=True)
-    parser.add_argument("--microsoft_store_client_id", required=True)
-    parser.add_argument("--microsoft_store_client_id", required=True)
-    parser.add_argument("--microsoft_store_app_list", required=True)
-    parser.add_argument("--microsoft_store_tenant_id", required=True)
     parser.add_argument("--project", default="moz-fx-data-shared-prod")
     parser.add_argument("--dataset", default="microsoft_derived")
 
@@ -204,10 +206,10 @@ def main():
     table_name = "microsoft_app_conversions"
 
     date = args.date
-    client_id = args.microsoft_store_client_id
-    client_secret = args.microsoft_store_client_secret
-    app_list = args.microsoft_store_app_list
-    tenant_id = args.microsoft_store_tenant_id
+    client_id = MS_CLIENT_ID
+    client_secret = MS_CLIENT_SECRET
+    app_list = MS_APP_LIST
+    tenant_id = MS_TENANT_ID
     resource_url = API_URI
 
     data = []

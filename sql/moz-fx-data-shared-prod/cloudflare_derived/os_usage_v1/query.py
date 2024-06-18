@@ -344,9 +344,6 @@ WHERE CAST(StartTime as date) = DATE_SUB('{args.date}', INTERVAL 4 DAY) """
     load_err_to_gold = client.query(browser_usg_errors_stg_to_gold_query)
     load_err_to_gold.result()
 
-    # Initialize a storage client to use in next steps
-    storage_client = storage.Client()
-
     # STEP 8 - Copy the result CSV from stage to archive, then delete from stage
     # Calculate the fpaths we will use ahead of time
     result_stg_fpath = os_usg_configs["results_stg_gcs_fpth"] % (

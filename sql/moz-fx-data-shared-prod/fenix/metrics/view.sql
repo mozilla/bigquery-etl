@@ -185,7 +185,15 @@ SELECT
       metrics.labeled_counter.cert_compression_used,
       metrics.labeled_counter.webauthn_create_authenticator_attachment,
       metrics.labeled_counter.webauthn_get_authenticator_attachment,
-      metrics.labeled_counter.network_byte_range_request
+      metrics.labeled_counter.network_byte_range_request,
+      metrics.labeled_counter.networking_http_channel_disposition,
+      metrics.labeled_counter.networking_http_channel_disposition_disabled_no_reason,
+      metrics.labeled_counter.networking_http_channel_disposition_disabled_upgrade,
+      metrics.labeled_counter.networking_http_channel_disposition_disabled_wont,
+      metrics.labeled_counter.networking_http_channel_disposition_enabled_no_reason,
+      metrics.labeled_counter.networking_http_channel_disposition_enabled_upgrade,
+      metrics.labeled_counter.networking_http_channel_disposition_enabled_wont,
+      metrics.labeled_counter.networking_http_channel_onstart_status
     ) AS `labeled_counter`,
     metrics.quantity,
     metrics.string,
@@ -605,7 +613,15 @@ SELECT
       metrics.labeled_counter.cert_compression_used,
       metrics.labeled_counter.webauthn_create_authenticator_attachment,
       metrics.labeled_counter.webauthn_get_authenticator_attachment,
-      metrics.labeled_counter.network_byte_range_request
+      metrics.labeled_counter.network_byte_range_request,
+      metrics.labeled_counter.networking_http_channel_disposition,
+      metrics.labeled_counter.networking_http_channel_disposition_disabled_no_reason,
+      metrics.labeled_counter.networking_http_channel_disposition_disabled_upgrade,
+      metrics.labeled_counter.networking_http_channel_disposition_disabled_wont,
+      metrics.labeled_counter.networking_http_channel_disposition_enabled_no_reason,
+      metrics.labeled_counter.networking_http_channel_disposition_enabled_upgrade,
+      metrics.labeled_counter.networking_http_channel_disposition_enabled_wont,
+      metrics.labeled_counter.networking_http_channel_onstart_status
     ) AS `labeled_counter`,
     metrics.quantity,
     STRUCT(
@@ -827,7 +843,16 @@ SELECT
       metrics.timing_distribution.networking_dns_native_https_call_time,
       metrics.timing_distribution.bounce_tracking_protection_purge_duration,
       metrics.timing_distribution.performance_pageload_async_sheet_load,
-      metrics.timing_distribution.networking_http_onstart_suspend_total_time
+      metrics.timing_distribution.networking_http_onstart_suspend_total_time,
+      metrics.timing_distribution.performance_pageload_eh_fcp_preconnect,
+      metrics.timing_distribution.performance_pageload_eh_fcp_preconnect_preload_with_eh,
+      metrics.timing_distribution.performance_pageload_eh_fcp_preconnect_preload_without_eh,
+      metrics.timing_distribution.performance_pageload_eh_fcp_preload_with_eh,
+      metrics.timing_distribution.performance_pageload_eh_fcp_preload_without_eh,
+      metrics.timing_distribution.performance_pageload_h3p_fcp_with_priority,
+      metrics.timing_distribution.performance_pageload_http3_fcp_http3,
+      metrics.timing_distribution.performance_pageload_http3_fcp_supports_http3,
+      metrics.timing_distribution.performance_pageload_http3_fcp_without_priority
     ) AS `timing_distribution`,
     metrics.memory_distribution,
     metrics.datetime,
@@ -1252,7 +1277,15 @@ SELECT
       metrics.labeled_counter.cert_compression_used,
       metrics.labeled_counter.webauthn_create_authenticator_attachment,
       metrics.labeled_counter.webauthn_get_authenticator_attachment,
-      metrics.labeled_counter.network_byte_range_request
+      metrics.labeled_counter.network_byte_range_request,
+      metrics.labeled_counter.networking_http_channel_disposition,
+      metrics.labeled_counter.networking_http_channel_disposition_disabled_no_reason,
+      metrics.labeled_counter.networking_http_channel_disposition_disabled_upgrade,
+      metrics.labeled_counter.networking_http_channel_disposition_disabled_wont,
+      metrics.labeled_counter.networking_http_channel_disposition_enabled_no_reason,
+      metrics.labeled_counter.networking_http_channel_disposition_enabled_upgrade,
+      metrics.labeled_counter.networking_http_channel_disposition_enabled_wont,
+      metrics.labeled_counter.networking_http_channel_onstart_status
     ) AS `labeled_counter`,
     metrics.quantity,
     STRUCT(
@@ -1474,7 +1507,16 @@ SELECT
       metrics.timing_distribution.networking_dns_native_https_call_time,
       metrics.timing_distribution.bounce_tracking_protection_purge_duration,
       metrics.timing_distribution.performance_pageload_async_sheet_load,
-      metrics.timing_distribution.networking_http_onstart_suspend_total_time
+      metrics.timing_distribution.networking_http_onstart_suspend_total_time,
+      metrics.timing_distribution.performance_pageload_eh_fcp_preconnect,
+      metrics.timing_distribution.performance_pageload_eh_fcp_preconnect_preload_with_eh,
+      metrics.timing_distribution.performance_pageload_eh_fcp_preconnect_preload_without_eh,
+      metrics.timing_distribution.performance_pageload_eh_fcp_preload_with_eh,
+      metrics.timing_distribution.performance_pageload_eh_fcp_preload_without_eh,
+      metrics.timing_distribution.performance_pageload_h3p_fcp_with_priority,
+      metrics.timing_distribution.performance_pageload_http3_fcp_http3,
+      metrics.timing_distribution.performance_pageload_http3_fcp_supports_http3,
+      metrics.timing_distribution.performance_pageload_http3_fcp_without_priority
     ) AS `timing_distribution`,
     metrics.memory_distribution,
     metrics.datetime,
@@ -1667,7 +1709,15 @@ SELECT
       metrics.labeled_counter.cert_compression_used,
       metrics.labeled_counter.webauthn_create_authenticator_attachment,
       metrics.labeled_counter.webauthn_get_authenticator_attachment,
-      metrics.labeled_counter.network_byte_range_request
+      metrics.labeled_counter.network_byte_range_request,
+      metrics.labeled_counter.networking_http_channel_disposition,
+      metrics.labeled_counter.networking_http_channel_disposition_disabled_no_reason,
+      metrics.labeled_counter.networking_http_channel_disposition_disabled_upgrade,
+      metrics.labeled_counter.networking_http_channel_disposition_disabled_wont,
+      metrics.labeled_counter.networking_http_channel_disposition_enabled_no_reason,
+      metrics.labeled_counter.networking_http_channel_disposition_enabled_upgrade,
+      metrics.labeled_counter.networking_http_channel_disposition_enabled_wont,
+      metrics.labeled_counter.networking_http_channel_onstart_status
     ) AS `labeled_counter`,
     metrics.quantity,
     metrics.string,

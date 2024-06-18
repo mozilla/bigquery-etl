@@ -246,7 +246,15 @@ SELECT
       metrics.labeled_counter.cert_compression_used,
       metrics.labeled_counter.webauthn_create_authenticator_attachment,
       metrics.labeled_counter.webauthn_get_authenticator_attachment,
-      metrics.labeled_counter.network_byte_range_request
+      metrics.labeled_counter.network_byte_range_request,
+      metrics.labeled_counter.networking_http_channel_disposition,
+      metrics.labeled_counter.networking_http_channel_disposition_disabled_no_reason,
+      metrics.labeled_counter.networking_http_channel_disposition_disabled_upgrade,
+      metrics.labeled_counter.networking_http_channel_disposition_disabled_wont,
+      metrics.labeled_counter.networking_http_channel_disposition_enabled_no_reason,
+      metrics.labeled_counter.networking_http_channel_disposition_enabled_upgrade,
+      metrics.labeled_counter.networking_http_channel_disposition_enabled_wont,
+      metrics.labeled_counter.networking_http_channel_onstart_status
     ) AS `labeled_counter`,
     metrics.memory_distribution,
     STRUCT(
@@ -522,7 +530,15 @@ SELECT
       metrics.labeled_counter.cert_compression_used,
       metrics.labeled_counter.webauthn_create_authenticator_attachment,
       metrics.labeled_counter.webauthn_get_authenticator_attachment,
-      metrics.labeled_counter.network_byte_range_request
+      metrics.labeled_counter.network_byte_range_request,
+      metrics.labeled_counter.networking_http_channel_disposition,
+      metrics.labeled_counter.networking_http_channel_disposition_disabled_no_reason,
+      metrics.labeled_counter.networking_http_channel_disposition_disabled_upgrade,
+      metrics.labeled_counter.networking_http_channel_disposition_disabled_wont,
+      metrics.labeled_counter.networking_http_channel_disposition_enabled_no_reason,
+      metrics.labeled_counter.networking_http_channel_disposition_enabled_upgrade,
+      metrics.labeled_counter.networking_http_channel_disposition_enabled_wont,
+      metrics.labeled_counter.networking_http_channel_onstart_status
     ) AS `labeled_counter`,
     metrics.memory_distribution,
     STRUCT(

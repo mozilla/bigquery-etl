@@ -50,7 +50,7 @@ IF
         client_info.app_display_version AS version,
         ping_info
       FROM
-        `moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_live.main_v1`
+        `moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_live.daemonsession_v1`
       UNION ALL
       SELECT
         submission_timestamp,
@@ -60,7 +60,17 @@ IF
         client_info.app_display_version AS version,
         ping_info
       FROM
-        `moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_live.daemonsession_v1`
+        `moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_live.events_v1`
+      UNION ALL
+      SELECT
+        submission_timestamp,
+        events,
+        normalized_country_code,
+        client_info.app_channel AS channel,
+        client_info.app_display_version AS version,
+        ping_info
+      FROM
+        `moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_live.main_v1`
       UNION ALL
       SELECT
         submission_timestamp,

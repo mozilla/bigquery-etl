@@ -72,18 +72,18 @@ telemetry_id_to_activity AS (
   SELECT
     telemetry_client_id,
     activity_date,
-    MAX(COALESCE(did_search, 0)) AS did_search,
-    MAX(COALESCE(did_click_ad, 0)) AS did_click_ad,
+    MAX(COALESCE(did_search, FALSE)) AS did_search,
+    MAX(COALESCE(did_click_ad, FALSE)) AS did_click_ad,
     MAX(
-      COALESCE(first_wk_5_actv_days_and_1_or_more_search_w_ads, 0)
+      COALESCE(first_wk_5_actv_days_and_1_or_more_search_w_ads, FALSE)
     ) AS first_wk_5_actv_days_and_1_or_more_search_w_ads,
     MAX(
-      COALESCE(first_wk_3_actv_days_and_1_or_more_search_w_ads, 0)
+      COALESCE(first_wk_3_actv_days_and_1_or_more_search_w_ads, FALSE)
     ) AS first_wk_3_actv_days_and_1_or_more_search_w_ads,
     MAX(
-      COALESCE(first_wk_3_actv_days_and_24_active_minutes, 0)
+      COALESCE(first_wk_3_actv_days_and_24_active_minutes, FALSE)
     ) AS first_wk_3_actv_days_and_24_active_minutes,
-    MAX(COALESCE(was_active, 0)) AS was_active
+    MAX(COALESCE(was_active, FALSE)) AS was_active
   FROM
     telemetry_id_to_activity_staging
   GROUP BY
@@ -104,9 +104,18 @@ SELECT
     LOGICAL_OR(was_active AND activity_date > first_seen_date),
     FALSE
   ) AS did_returned_second_day,
-  first_wk_5_actv_days_and_1_or_more_search_w_ads,
-  first_wk_3_actv_days_and_1_or_more_search_w_ads,
-  first_wk_3_actv_days_and_24_active_minutes
+  COALESCE(
+    LOGICAL_OR(first_wk_5_actv_days_and_1_or_more_search_w_ads),
+    FALSE
+  ) AS first_wk_5_actv_days_and_1_or_more_search_w_ads,
+  COALESCE(
+    LOGICAL_OR(first_wk_3_actv_days_and_1_or_more_search_w_ads),
+    FALSE
+  ) AS first_wk_3_actv_days_and_1_or_more_search_w_ads,
+  COALESCE(
+    LOGICAL_OR(first_wk_3_actv_days_and_24_active_minutes),
+    FALSE
+  ) AS first_wk_3_actv_days_and_24_active_minutes
 FROM
   gclids_to_ga_ids
 INNER JOIN

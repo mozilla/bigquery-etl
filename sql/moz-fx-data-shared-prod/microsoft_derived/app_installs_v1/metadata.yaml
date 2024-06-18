@@ -1,0 +1,14 @@
+friendly_name: App Acquisitionss
+description: >
+  This table represents acquisition data downloaded from the Microsoft Store for Firefox, FX Beta and FX Nightly
+  The link for this data is here: https://manage.devcenter.microsoft.com/v1.0/my/analytics/installs?
+owners:
+- mhirose@mozilla.com
+labels:
+  incremental: false
+  owner1: mhirose@mozilla.com
+bigquery:
+  time_partitioning:
+    type: day
+    field: DATE
+    require_partition_filter: false

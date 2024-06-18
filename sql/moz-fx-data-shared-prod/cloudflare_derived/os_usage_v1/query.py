@@ -292,8 +292,8 @@ def main():
             create_disposition="CREATE_IF_NEEDED",
             write_disposition="WRITE_TRUNCATE",
             schema=[
-                {"name": "StartTime", "type": "TIMESTAMP", "mode": "REQUIRED"},
-                {"name": "EndTime", "type": "TIMESTAMP", "mode": "REQUIRED"},
+                {"name": "StartDate", "type": "DATE", "mode": "REQUIRED"},
+                {"name": "EndDate", "type": "DATE", "mode": "REQUIRED"},
                 {"name": "Location", "type": "STRING", "mode": "NULLABLE"},
                 {"name": "DeviceType", "type": "STRING", "mode": "NULLABLE"},
             ],
@@ -336,7 +336,7 @@ WHERE CAST(Timestamps as date) = DATE_SUB('{args.date}', INTERVAL 4 DAY) """
     # STEP 7 - Load errors from stage to gold
     os_usg_errors_stg_to_gold_query = f""" INSERT INTO `moz-fx-data-shared-prod.cloudflare_derived.os_usage_errors_v1`
 SELECT
-CAST(StartTime as date) AS dte,
+CAST(StartDate as date) AS dte,
 Location AS location,
 DeviceType AS device_type
 FROM `moz-fx-data-shared-prod.cloudflare_derived.os_errors_stg`

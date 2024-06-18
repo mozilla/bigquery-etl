@@ -106,6 +106,19 @@ with DAG(
         )
     )
 
+    wait_for_google_ads_derived__conversion_event_categorization__v1 = (
+        ExternalTaskSensor(
+            task_id="wait_for_google_ads_derived__conversion_event_categorization__v1",
+            external_dag_id="bqetl_desktop_conv_evnt_categorization",
+            external_task_id="google_ads_derived__conversion_event_categorization__v1",
+            check_existence=True,
+            mode="reschedule",
+            allowed_states=ALLOWED_STATES,
+            failed_states=FAILED_STATES,
+            pool="DATA_ENG_EXTERNALTASKSENSOR",
+        )
+    )
+
     wait_for_telemetry_derived__clients_daily__v6 = ExternalTaskSensor(
         task_id="wait_for_telemetry_derived__clients_daily__v6",
         external_dag_id="bqetl_main_summary",
@@ -359,7 +372,7 @@ with DAG(
 
     mozilla_org_derived__gclid_conversions__v2 = bigquery_etl_query(
         task_id="mozilla_org_derived__gclid_conversions__v2",
-        destination_table="gclid_conversions_v2",
+        destination_table='gclid_conversions_v2${{ macros.ds_format(macros.ds_add(ds, -14), "%Y-%m-%d", "%Y%m%d") }}',
         dataset_id="mozilla_org_derived",
         project_id="moz-fx-data-shared-prod",
         owner="mhirose@mozilla.com",
@@ -368,9 +381,10 @@ with DAG(
             "mhirose@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
-        date_partition_parameter="activity_date",
+        date_partition_parameter=None,
         depends_on_past=False,
-        parameters=["conversion_window:INT64:30"],
+        parameters=["activity_date:DATE:{{macros.ds_add(ds, -14)}}"]
+        + ["conversion_window:INT64:30"],
     )
 
     mozilla_vpn_derived__site_metrics_summary__v2 = bigquery_etl_query(
@@ -446,6 +460,10 @@ with DAG(
 
     mozilla_org_derived__gclid_conversions__v2.set_upstream(
         wait_for_checks__fail_telemetry_derived__clients_first_seen__v2
+    )
+
+    mozilla_org_derived__gclid_conversions__v2.set_upstream(
+        wait_for_google_ads_derived__conversion_event_categorization__v1
     )
 
     mozilla_org_derived__gclid_conversions__v2.set_upstream(

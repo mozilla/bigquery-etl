@@ -248,16 +248,21 @@ class GleanAppPingViews(GleanTable):
         # iterate through fields
         for node_name, node in unioned_schema_nodes.items():
             dtype = node["type"]
+            node_path = path + [node_name]
 
             if node_name in app_schema_nodes:
                 # field exists in app schema
 
-                if node == app_schema_nodes[node_name]:
+                # We always fully specify the `metrics` fields to select to try to avoid problems
+                # when the underlying table/view schemas change due to new metrics being added.
+                if node == app_schema_nodes[node_name] and not (
+                    node_path[0] == "metrics" and len(node_path) <= 2
+                ):
                     if node_name not in OVERRIDDEN_FIELDS:
                         # field (and all nested fields) are identical, so just query it
-                        select_expr.append(f"{'.'.join(path + [node_name])}")
+                        select_expr.append(f"{'.'.join(node_path)}")
                 else:
-                    # fields, and/or nested fields are not identical
+                    # fields and/or nested fields are not identical, or this is within `metrics`
                     if dtype == "RECORD":
                         # for nested fields, recursively generate select expression
 
@@ -270,7 +275,7 @@ class GleanAppPingViews(GleanTable):
                                             STRUCT(
                                                 {self._generate_select_expression(node['fields'], app_schema_nodes[node_name]['fields'], [node_name])}
                                             )
-                                        FROM UNNEST({'.'.join(path + [node_name])}) AS `{node_name}`
+                                        FROM UNNEST({'.'.join(node_path)}) AS `{node_name}`
                                     ) AS `{node_name}`
                                 """
                             )
@@ -279,7 +284,7 @@ class GleanAppPingViews(GleanTable):
                             select_expr.append(
                                 f"""
                                     STRUCT(
-                                        {self._generate_select_expression(node['fields'], app_schema_nodes[node_name]['fields'], path + [node_name])}
+                                        {self._generate_select_expression(node['fields'], app_schema_nodes[node_name]['fields'], node_path)}
                                     ) AS `{node_name}`
                                 """
                             )

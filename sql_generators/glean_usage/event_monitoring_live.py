@@ -1,7 +1,7 @@
 """Generate Materialized Views and aggregate queries for event monitoring."""
 
 import os
-from collections import namedtuple
+from collections import namedtuple, OrderedDict
 from datetime import datetime
 from pathlib import Path
 from typing import List, Set
@@ -128,7 +128,7 @@ class EventMonitoringLive(GleanTable):
                 for app_dataset in app
                 if dataset == app_dataset["bq_dataset_family"]
             ][0],
-            events_tables=events_tables,
+            events_tables=sorted(events_tables),
         )
 
         render_kwargs.update(self.custom_render_kwargs)
@@ -182,7 +182,7 @@ class EventMonitoringLive(GleanTable):
             "generate", "glean_usage", "events_monitoring", "events_tables", fallback={}
         )
 
-        event_tables_per_dataset = {}
+        event_tables_per_dataset = OrderedDict()
 
         for app in apps:
             for app_dataset in app:
@@ -217,7 +217,7 @@ class EventMonitoringLive(GleanTable):
                     ]
 
                     if len(event_tables) > 0:
-                        event_tables_per_dataset[dataset] = event_tables
+                        event_tables_per_dataset[dataset] = sorted(event_tables)
 
         render_kwargs = dict(
             header="-- Generated via bigquery_etl.glean_usage\n",

@@ -11,3 +11,6 @@ workgroup_access:
   - role: roles/bigquery.dataViewer
     members:
       - workgroup:search-terms/aggregated
+  - role: roles/bigquery.dataEditor
+    members:
+      - workgroup:search-terms/external-outerbounds-task-search-terms-sanitized

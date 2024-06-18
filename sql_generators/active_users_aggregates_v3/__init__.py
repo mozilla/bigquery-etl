@@ -50,8 +50,10 @@ CHECKS_TEMPLATE_CHANNELS = {
     "klar_ios": [
         {"table": "`moz-fx-data-shared-prod.org_mozilla_ios_klar_live.baseline_v1`"}
     ],
+    "klar_android" : [
+        {"table" : "`moz-fx-data-shared-prod.org_mozilla_klar_live.baseline_v1`"}
+    ],
 }
-
 
 class Browsers(Enum):
     """Enumeration with browser names and equivalent dataset names."""
@@ -62,6 +64,7 @@ class Browsers(Enum):
     focus_android = "Focus Android"
     firefox_ios = "Firefox iOS"
     klar_ios = "Klar iOS"
+    klar_android = "Klar Android"
 
 
 @click.command()
@@ -129,6 +132,7 @@ def generate(target_project, output_dir, use_cloud_function):
                 )
             )
             schema_template = mobile_schema_template
+
         # create checks_sql
         if browser.name == "firefox_desktop":
             checks_sql = desktop_checks_template.render(
@@ -248,6 +252,7 @@ def generate(target_project, output_dir, use_cloud_function):
                 focus_android_dataset=Browsers("Focus Android").name,
                 firefox_ios_dataset=Browsers("Firefox iOS").name,
                 klar_ios_dataset=Browsers("Klar iOS").name,
+                klar_android_dataset=Browsers("Klar Android").name,
             )
         ),
         skip_existing=False,

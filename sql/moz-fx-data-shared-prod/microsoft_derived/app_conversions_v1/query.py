@@ -203,7 +203,7 @@ def main():
 
     project = args.project
     dataset = args.dataset
-    table_name = "microsoft_app_conversions"
+    table_name = "app_conversions"
 
     date = args.date
     client_id = MS_CLIENT_ID

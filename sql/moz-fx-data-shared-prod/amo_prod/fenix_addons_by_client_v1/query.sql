@@ -15,14 +15,14 @@ WITH unioned AS (
     get_fields(release).*,
     client_info.app_display_version AS app_version,
   FROM
-    org_mozilla_firefox.metrics AS release
+    `moz-fx-data-shared-prod.org_mozilla_firefox.metrics` AS release
   UNION ALL
   SELECT
     get_fields(beta).*,
     -- Bug 1669516 We choose to show beta versions as 80.0.0b1, etc.
     REPLACE(client_info.app_display_version, '-beta.', 'b') AS app_version,
   FROM
-    org_mozilla_firefox_beta.metrics AS beta
+    `moz-fx-data-shared-prod.org_mozilla_firefox_beta.metrics` AS beta
   UNION ALL
   SELECT
     get_fields(nightly).*,
@@ -30,19 +30,19 @@ WITH unioned AS (
     -- so we take the geckoview version instead.
     nightly.metrics.string.geckoview_version AS app_version,
   FROM
-    org_mozilla_fenix.metrics AS nightly
+    `moz-fx-data-shared-prod.org_mozilla_fenix.metrics` AS nightly
   UNION ALL
   SELECT
     get_fields(preview_nightly).*,
     preview_nightly.metrics.string.geckoview_version AS app_version,
   FROM
-    org_mozilla_fenix_nightly.metrics AS preview_nightly
+    `moz-fx-data-shared-prod.org_mozilla_fenix_nightly.metrics` AS preview_nightly
   UNION ALL
   SELECT
     get_fields(old_fenix_nightly).*,
     old_fenix_nightly.metrics.string.geckoview_version AS app_version,
   FROM
-    org_mozilla_fennec_aurora.metrics AS old_fenix_nightly
+    `moz-fx-data-shared-prod.org_mozilla_fennec_aurora.metrics` AS old_fenix_nightly
 ),
 cleaned AS (
   SELECT
@@ -68,9 +68,9 @@ per_client AS (
     ARRAY_AGG(app_version ORDER BY mozfun.norm.truncate_version(app_version, "minor") DESC)[
       SAFE_OFFSET(0)
     ] AS app_version,
-    udf.mode_last(ARRAY_AGG(normalized_country_code)) AS country,
-    udf.mode_last(ARRAY_AGG(locale)) AS locale,
-    udf.mode_last(ARRAY_AGG(normalized_os)) AS app_os,
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(normalized_country_code)) AS country,
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(locale)) AS locale,
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(normalized_os)) AS app_os,
   FROM
     cleaned
   WHERE

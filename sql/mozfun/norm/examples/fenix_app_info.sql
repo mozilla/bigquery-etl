@@ -12,12 +12,12 @@ WITH base AS (
   SELECT
     extract_fields('org_mozilla_firefox_beta', m).*
   FROM
-    org_mozilla_firefox_beta.metrics AS m
+    `mozfun.org_mozilla_firefox_beta.metrics` AS m
   UNION ALL
   SELECT
     extract_fields('org_mozilla_fenix', m).*
   FROM
-    org_mozilla_fenix.metrics AS m
+    `mozfun.org_mozilla_fenix.metrics` AS m
 )
 SELECT
   DATE(submission_timestamp) AS submission_date,

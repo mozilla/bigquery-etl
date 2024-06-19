@@ -15,9 +15,9 @@ WITH glean_app_with_parsed_expiry_date AS (
       ELSE releases.publish_date
     END AS expiry_date,
   FROM
-    `telemetry_dev_cycle_external.glean_metrics_stats_v1` AS glean
+    `moz-fx-data-shared-prod.telemetry_dev_cycle_external.glean_metrics_stats_v1` AS glean
   LEFT JOIN
-    `telemetry_dev_cycle_derived.firefox_major_release_dates_v1` AS releases
+    `moz-fx-data-shared-prod.telemetry_dev_cycle_derived.firefox_major_release_dates_v1` AS releases
     ON glean.expires = CAST(releases.version AS STRING)
     AND COALESCE(
       REGEXP_EXTRACT(glean.glean_app, r"beta"),

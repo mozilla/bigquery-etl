@@ -9,7 +9,7 @@ WITH extracted AS (
     client_info.app_build,
     COALESCE(metrics.string.gecko_version, metrics.string.geckoview_version) AS gecko_version,
   FROM
-    org_mozilla_fenix.metrics AS t1
+    `moz-fx-data-shared-prod.org_mozilla_fenix.metrics` AS t1
   WHERE
     mozfun.norm.fenix_app_info('org_mozilla_fenix', client_info.app_build).channel = 'nightly'
   UNION ALL
@@ -18,14 +18,14 @@ WITH extracted AS (
     client_info.app_build,
     COALESCE(metrics.string.gecko_version, metrics.string.geckoview_version) AS gecko_version,
   FROM
-    org_mozilla_fenix_nightly.metrics AS t1
+    `moz-fx-data-shared-prod.org_mozilla_fenix_nightly.metrics` AS t1
   UNION ALL
   SELECT
     submission_timestamp,
     client_info.app_build,
     COALESCE(metrics.string.gecko_version, metrics.string.geckoview_version) AS gecko_version,
   FROM
-    org_mozilla_fennec_aurora.metrics AS t1
+    `moz-fx-data-shared-prod.org_mozilla_fennec_aurora.metrics` AS t1
 ),
 transformed AS (
   SELECT

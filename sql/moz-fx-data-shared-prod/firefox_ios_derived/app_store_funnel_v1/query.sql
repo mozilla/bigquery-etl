@@ -5,7 +5,7 @@ WITH views_data AS (
     territory AS country_name,
     SUM(impressions_unique_device) AS views,
   FROM
-    app_store.firefox_app_store_territory_source_type_report
+    `moz-fx-data-shared-prod.app_store.firefox_app_store_territory_source_type_report`
   WHERE
     DATE(`date`) = DATE_SUB(@submission_date, INTERVAL 7 DAY)
   GROUP BY
@@ -20,7 +20,7 @@ downloads_data AS (
     SUM(first_time_downloads) AS first_time_downloads,
     SUM(redownloads) AS redownloads,
   FROM
-    app_store.firefox_downloads_territory_source_type_report
+    `moz-fx-data-shared-prod.app_store.firefox_downloads_territory_source_type_report`
   WHERE
     DATE(`date`) = DATE_SUB(@submission_date, INTERVAL 7 DAY)
     AND source_type <> 'Institutional Purchase'
@@ -42,7 +42,7 @@ store_stats AS (
     downloads_data
     USING (`date`, country_name)
   LEFT JOIN
-    static.country_names_v1 AS country_names
+    `moz-fx-data-shared-prod.static.country_names_v1` AS country_names
     ON country_names.name = views_data.country_name
 ),
 _new_profiles AS (
@@ -51,7 +51,7 @@ _new_profiles AS (
     first_reported_country AS country,
     COUNT(*) AS new_profiles,
   FROM
-    firefox_ios.firefox_ios_clients
+    `moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients`
   WHERE
     first_seen_date = DATE_SUB(@submission_date, INTERVAL 7 DAY)
     AND channel = "release"

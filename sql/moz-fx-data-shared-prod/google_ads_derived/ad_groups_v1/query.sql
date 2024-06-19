@@ -26,5 +26,5 @@ SELECT
 FROM
   ad_group_names
 JOIN
-  google_ads_derived.campaigns_v1 AS campaigns
+  `moz-fx-data-shared-prod.google_ads_derived.campaigns_v1` AS campaigns
   ON campaigns.campaign_id = ad_group_names.campaign_id

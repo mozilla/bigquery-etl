@@ -24,7 +24,7 @@ SELECT
   SUM(unknown) AS unknown,
   CAST(NULL AS string) normalized_engine,
 FROM
-  mobile_search_clients_daily_v1
+  `moz-fx-data-shared-prod.search_derived.mobile_search_clients_daily_v1`
 WHERE
   submission_date = @submission_date
   AND engine IS NOT NULL

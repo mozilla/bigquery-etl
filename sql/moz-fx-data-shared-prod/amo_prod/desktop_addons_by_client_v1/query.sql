@@ -26,7 +26,7 @@ WITH filtered_main AS (
     environment.settings.locale,
     normalized_os
   FROM
-    telemetry.main
+    `moz-fx-data-shared-prod.telemetry.main`
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND client_id IS NOT NULL

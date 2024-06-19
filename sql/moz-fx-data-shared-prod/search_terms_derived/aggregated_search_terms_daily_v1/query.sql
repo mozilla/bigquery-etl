@@ -6,7 +6,7 @@ WITH aggregated_search_terms AS (
     COUNTIF(is_clicked) AS clicks,
     COUNT(DISTINCT context_id) AS client_days
   FROM
-    search_terms_derived.suggest_impression_sanitized_v2
+    `moz-fx-data-shared-prod.search_terms_derived.suggest_impression_sanitized_v2`
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -20,7 +20,7 @@ suggest_attributes AS (
     iab_category,
     title,
   FROM
-    search_terms_derived.remotesettings_suggestions_v1 AS t
+    `moz-fx-data-shared-prod.search_terms_derived.remotesettings_suggestions_v1` AS t
   CROSS JOIN
     t.keywords AS search_terms
 )

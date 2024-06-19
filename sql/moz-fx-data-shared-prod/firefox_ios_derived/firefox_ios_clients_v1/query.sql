@@ -13,7 +13,7 @@
       normalized_os_version AS os_version,
       app_display_version AS app_version
     FROM
-      firefox_ios.baseline_clients_first_seen
+      `moz-fx-data-shared-prod.firefox_ios.baseline_clients_first_seen`
     WHERE
       submission_date < CURRENT_DATE
       AND client_id IS NOT NULL
@@ -29,7 +29,7 @@
       NULLIF(metrics.string.adjust_creative, "") AS adjust_creative,
       NULLIF(metrics.string.adjust_network, "") AS adjust_network,
     FROM
-      firefox_ios.first_session
+      `moz-fx-data-shared-prod.firefox_ios.first_session`
     WHERE
       DATE(submission_timestamp) < CURRENT_DATE
       AND client_info.client_id IS NOT NULL
@@ -75,7 +75,7 @@
       NULLIF(fxa_metrics.metrics.string.adjust_creative, "") AS adjust_creative,
       NULLIF(fxa_metrics.metrics.string.adjust_network, "") AS adjust_network,
     FROM
-      firefox_ios.metrics AS fxa_metrics
+      `moz-fx-data-shared-prod.firefox_ios.metrics` AS fxa_metrics
     WHERE
       DATE(submission_timestamp) < CURRENT_DATE
       AND client_info.client_id IS NOT NULL
@@ -171,7 +171,7 @@
       normalized_os_version AS os_version,
       app_display_version AS app_version,
     FROM
-      firefox_ios.baseline_clients_first_seen
+      `moz-fx-data-shared-prod.firefox_ios.baseline_clients_first_seen`
     WHERE
       submission_date = @submission_date
       AND client_id IS NOT NULL
@@ -187,7 +187,7 @@
       NULLIF(metrics.string.adjust_creative, "") AS adjust_creative,
       NULLIF(metrics.string.adjust_network, "") AS adjust_network,
     FROM
-      firefox_ios.first_session
+      `moz-fx-data-shared-prod.firefox_ios.first_session`
     WHERE
       DATE(submission_timestamp) = @submission_date
       AND client_info.client_id IS NOT NULL
@@ -233,7 +233,7 @@
       NULLIF(fxa_metrics.metrics.string.adjust_creative, "") AS adjust_creative,
       NULLIF(fxa_metrics.metrics.string.adjust_network, "") AS adjust_network,
     FROM
-      firefox_ios.metrics AS fxa_metrics
+      `moz-fx-data-shared-prod.firefox_ios.metrics` AS fxa_metrics
     WHERE
       DATE(submission_timestamp) = @submission_date
       AND client_info.client_id IS NOT NULL
@@ -309,7 +309,7 @@
     SELECT
       *
     FROM
-      firefox_ios_derived.firefox_ios_clients_v1
+      `moz-fx-data-shared-prod.firefox_ios_derived.firefox_ios_clients_v1`
   )
   SELECT
     client_id,

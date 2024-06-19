@@ -3,6 +3,6 @@ SELECT
   mozfun.bits28.range(days_seen_bits, -13 + 0, 7) AS week_0_bits,
   mozfun.bits28.range(days_seen_bits, -13 + 7, 7) AS week_1_bits
 FROM
-  telemetry.clients_last_seen
+  `mozfun.telemetry.clients_last_seen`
 WHERE
   submission_date > '2020-01-01'

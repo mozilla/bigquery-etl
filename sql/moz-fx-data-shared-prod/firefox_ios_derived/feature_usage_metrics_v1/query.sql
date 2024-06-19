@@ -7,7 +7,7 @@ WITH baseline_clients AS (
     normalized_channel AS channel,
     normalized_country_code AS country
   FROM
-    firefox_ios.baseline
+    `moz-fx-data-shared-prod.firefox_ios.baseline`
   WHERE
     metrics.timespan.glean_baseline_duration.value > 0
     AND LOWER(metadata.isp.name) <> "browserstack"
@@ -31,7 +31,7 @@ client_attribution AS (
     channel,
     adjust_network,
   FROM
-    firefox_ios.firefox_ios_clients
+    `moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients`
 ),
 metric_ping_clients_feature_usage AS (
   SELECT
@@ -102,7 +102,7 @@ metric_ping_clients_feature_usage AS (
     --Address
     SUM(COALESCE(metrics.quantity.addresses_saved_all, 0)) AS addresses_saved_all
   FROM
-    firefox_ios.metrics AS metric_ping
+    `moz-fx-data-shared-prod.firefox_ios.metrics` AS metric_ping
   LEFT JOIN
     UNNEST(metrics.labeled_counter.bookmarks_add) AS bookmarks_add_table
   LEFT JOIN

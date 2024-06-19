@@ -6,7 +6,7 @@ WITH submission_date_activity AS (
     (days_visited_1_uri_bits & days_interacted_bits) AS days_seen_dau_bits,
     DATE(submission_date) AS submission_date
   FROM
-    telemetry.clients_last_seen_v1
+    `moz-fx-data-shared-prod.telemetry.clients_last_seen_v1`
   WHERE
     submission_date = @submission_date
   GROUP BY
@@ -55,7 +55,7 @@ cohorts_in_range AS (
       0
     ) AS os_version_minor,
   FROM
-    telemetry_derived.clients_first_seen_v2
+    `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v2`
   WHERE
     first_seen_date
     BETWEEN DATE_SUB(@submission_date, INTERVAL 112 DAY)

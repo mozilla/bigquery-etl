@@ -56,11 +56,11 @@ def format(paths, check=False):
                 query = fp.read()
 
             try:
-                query = qualify_table_references_in_path(Path(path))
+                fully_referenced_query = qualify_table_references_in_path(Path(path))
             except NotImplementedError:
-                pass  # not implemented for scripts or UDFs
+                fully_referenced_query = query  # not implemented for scripts
 
-            formatted = reformat(query, trailing_newline=True)
+            formatted = reformat(fully_referenced_query, trailing_newline=True)
             if query != formatted:
                 if check:
                     print(f"Needs reformatting: bqetl format {path}")

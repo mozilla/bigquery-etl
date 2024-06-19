@@ -1,10 +1,10 @@
 """Generate Materialized Views and aggregate queries for event monitoring."""
 
 import os
-from collections import namedtuple
+from collections import namedtuple, OrderedDict
 from datetime import datetime
 from pathlib import Path
-from typing import Set
+from typing import List, Set
 
 import requests
 
@@ -39,7 +39,17 @@ class EventMonitoringLive(GleanTable):
         self.custom_render_kwargs = {}
         self.base_table_name = "events_v1"
 
-    def _get_tables_with_events(self, v1_name: str) -> Set[str]:
+    def _get_prod_datasets_with_event(self) -> List[str]:
+        """Get glean datasets with an events table in generated schemas."""
+        return [
+            s.bq_dataset_family
+            for s in get_stable_table_schemas()
+            if s.schema_id == "moz://mozilla.org/schemas/glean/ping/1"
+            and s.bq_table == "events_v1"
+        ]
+
+    def _get_tables_with_events(self, v1_name: str, bq_dataset_name: str) -> Set[str]:
+        """Get tables for the given app that receive event type metrics."""
         pings = set()
         resp = requests.get(METRICS_INFO_URL.format(app_name=v1_name))
         resp.raise_for_status()
@@ -49,6 +59,9 @@ class EventMonitoringLive(GleanTable):
             if metric.get("type", None) == "event":
                 latest_history = metric.get("history", [])[-1]
                 pings.update(latest_history.get("send_in_pings", []))
+
+        if bq_dataset_name in self._get_prod_datasets_with_event():
+            pings.add("events")
 
         return pings
 
@@ -89,7 +102,7 @@ class EventMonitoringLive(GleanTable):
                 for app_dataset in app
                 if dataset == app_dataset["bq_dataset_family"]
             ][0]
-            events_tables = self._get_tables_with_events(v1_name)
+            events_tables = self._get_tables_with_events(v1_name, dataset)
             events_tables = [
                 f"{ping.replace('-', '_')}_v1"
                 for ping in events_tables
@@ -115,7 +128,7 @@ class EventMonitoringLive(GleanTable):
                 for app_dataset in app
                 if dataset == app_dataset["bq_dataset_family"]
             ][0],
-            events_tables=events_tables,
+            events_tables=sorted(events_tables),
         )
 
         render_kwargs.update(self.custom_render_kwargs)
@@ -162,13 +175,6 @@ class EventMonitoringLive(GleanTable):
         if not self.across_apps_enabled:
             return
 
-        prod_datasets_with_event = [
-            s.bq_dataset_family
-            for s in get_stable_table_schemas()
-            if s.schema_id == "moz://mozilla.org/schemas/glean/ping/1"
-            and s.bq_table == "events_v1"
-        ]
-
         aggregate_table = "event_monitoring_aggregates_v1"
         target_view_name = "_".join(self.target_table_id.split("_")[:-1])
 
@@ -176,7 +182,7 @@ class EventMonitoringLive(GleanTable):
             "generate", "glean_usage", "events_monitoring", "events_tables", fallback={}
         )
 
-        event_tables_per_dataset = {}
+        event_tables_per_dataset = OrderedDict()
 
         for app in apps:
             for app_dataset in app:
@@ -201,7 +207,9 @@ class EventMonitoringLive(GleanTable):
                     ][0]
                     event_tables = [
                         f"{ping.replace('-', '_')}_v1"
-                        for ping in self._get_tables_with_events(v1_name)
+                        for ping in self._get_tables_with_events(
+                            v1_name, app_dataset["bq_dataset_family"]
+                        )
                         if ping
                         not in ConfigLoader.get(
                             "generate", "glean_usage", "events_monitoring", "skip_pings"
@@ -209,7 +217,7 @@ class EventMonitoringLive(GleanTable):
                     ]
 
                     if len(event_tables) > 0:
-                        event_tables_per_dataset[dataset] = event_tables
+                        event_tables_per_dataset[dataset] = sorted(event_tables)
 
         render_kwargs = dict(
             header="-- Generated via bigquery_etl.glean_usage\n",
@@ -219,7 +227,7 @@ class EventMonitoringLive(GleanTable):
             table=target_view_name,
             target_table=f"{TARGET_DATASET_CROSS_APP}_derived.{aggregate_table}",
             apps=apps,
-            prod_datasets=prod_datasets_with_event,
+            prod_datasets=self._get_prod_datasets_with_event(),
             event_tables_per_dataset=event_tables_per_dataset,
         )
         render_kwargs.update(self.custom_render_kwargs)

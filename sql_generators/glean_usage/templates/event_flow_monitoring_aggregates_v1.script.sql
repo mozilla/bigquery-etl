@@ -21,7 +21,7 @@ CREATE TEMP TABLE
         {% if not loop.first -%}
           UNION ALL
         {% endif %}
-        {% if app['bq_dataset_family'] not in ["telemetry", "accounts_frontend", "accounts_backend"] %}
+        {% if app['bq_dataset_family'] not in ["telemetry"] %}
           SELECT DISTINCT
             @submission_date AS submission_date,
             ext.value AS flow_id,
@@ -40,20 +40,6 @@ CREATE TEMP TABLE
           WHERE
             DATE(submission_timestamp) = @submission_date
             AND ext.key = "flow_id"
-        {% elif app['bq_dataset_family'] in ["accounts_frontend", "accounts_backend"] %}
-          SELECT DISTINCT
-            @submission_date AS submission_date,
-            metrics.string.session_flow_id AS flow_id,
-            CAST(NULL AS STRING) AS category,
-            metrics.string.event_name AS name,
-            submission_timestamp AS timestamp,
-            "{{ app['canonical_app_name'] }}" AS normalized_app_name,
-            client_info.app_channel AS channel
-          FROM
-            `moz-fx-data-shared-prod.{{ app['app_name'] }}.accounts_events`
-          WHERE
-            DATE(submission_timestamp) = @submission_date
-            AND metrics.string.session_flow_id != ""
         {% endif %}
       {% endfor %}
     ),

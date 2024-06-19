@@ -340,7 +340,7 @@ StartDate AS dte,
 Location AS location,
 DeviceType AS device_type
 FROM `moz-fx-data-shared-prod.cloudflare_derived.os_errors_stg`
-WHERE CAST(StartTime as date) = DATE_SUB('{args.date}', INTERVAL 4 DAY) """
+WHERE StartDate = DATE_SUB('{args.date}', INTERVAL 4 DAY) """
     load_err_to_gold = client.query(os_usg_errors_stg_to_gold_query)
     load_err_to_gold.result()
 

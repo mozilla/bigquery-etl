@@ -1977,9 +1977,6 @@ UNION ALL
   )
 UNION ALL
   (
-  -- FxA events are sent in a custom `accounts_events` ping
-  -- Although they do not contain event metrics, this query monitors errors
-  -- related to String metrics.
     WITH event_counters AS (
       SELECT
         DATE(submission_timestamp) AS submission_date,
@@ -2027,9 +2024,6 @@ UNION ALL
   )
 UNION ALL
   (
-  -- FxA events are sent in a custom `accounts_events` ping
-  -- Although they do not contain event metrics, this query monitors errors
-  -- related to String metrics.
     WITH event_counters AS (
       SELECT
         DATE(submission_timestamp) AS submission_date,

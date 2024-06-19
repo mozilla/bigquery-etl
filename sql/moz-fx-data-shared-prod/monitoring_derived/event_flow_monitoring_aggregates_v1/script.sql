@@ -608,31 +608,41 @@ CREATE TEMP TABLE
       UNION ALL
       SELECT DISTINCT
         @submission_date AS submission_date,
-        metrics.string.session_flow_id AS flow_id,
-        CAST(NULL AS STRING) AS category,
-        metrics.string.event_name AS name,
-        submission_timestamp AS timestamp,
+        ext.value AS flow_id,
+        event_category AS category,
+        event_name AS name,
+        TIMESTAMP_ADD(
+          submission_timestamp,
+          -- limit event.timestamp, otherwise this will cause an overflow
+          INTERVAL LEAST(event_timestamp, 20000000000000) MILLISECOND
+        ) AS timestamp,
         "Mozilla Accounts Frontend" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
-        `moz-fx-data-shared-prod.accounts_frontend.accounts_events`
+        `moz-fx-data-shared-prod.accounts_frontend.events_unnested`,
+        UNNEST(event_extra) AS ext
       WHERE
         DATE(submission_timestamp) = @submission_date
-        AND metrics.string.session_flow_id != ""
+        AND ext.key = "flow_id"
       UNION ALL
       SELECT DISTINCT
         @submission_date AS submission_date,
-        metrics.string.session_flow_id AS flow_id,
-        CAST(NULL AS STRING) AS category,
-        metrics.string.event_name AS name,
-        submission_timestamp AS timestamp,
+        ext.value AS flow_id,
+        event_category AS category,
+        event_name AS name,
+        TIMESTAMP_ADD(
+          submission_timestamp,
+          -- limit event.timestamp, otherwise this will cause an overflow
+          INTERVAL LEAST(event_timestamp, 20000000000000) MILLISECOND
+        ) AS timestamp,
         "Mozilla Accounts Backend" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
-        `moz-fx-data-shared-prod.accounts_backend.accounts_events`
+        `moz-fx-data-shared-prod.accounts_backend.events_unnested`,
+        UNNEST(event_extra) AS ext
       WHERE
         DATE(submission_timestamp) = @submission_date
-        AND metrics.string.session_flow_id != ""
+        AND ext.key = "flow_id"
       UNION ALL
       SELECT DISTINCT
         @submission_date AS submission_date,

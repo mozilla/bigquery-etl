@@ -50,7 +50,7 @@ IF
         client_info.app_display_version AS version,
         ping_info
       FROM
-        `moz-fx-data-shared-prod.accounts_backend_live.accounts_events_v1`
+        `moz-fx-data-shared-prod.accounts_backend_live.events_v1`
     )
   CROSS JOIN
     UNNEST(events) AS event,

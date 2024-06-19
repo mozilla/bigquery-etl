@@ -336,7 +336,7 @@ WHERE CAST(Timestamps as date) = DATE_SUB('{args.date}', INTERVAL 4 DAY) """
     # STEP 7 - Load errors from stage to gold
     os_usg_errors_stg_to_gold_query = f""" INSERT INTO `moz-fx-data-shared-prod.cloudflare_derived.os_usage_errors_v1`
 SELECT
-CAST(StartDate as date) AS dte,
+StartDate AS dte,
 Location AS location,
 DeviceType AS device_type
 FROM `moz-fx-data-shared-prod.cloudflare_derived.os_errors_stg`

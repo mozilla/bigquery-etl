@@ -3,7 +3,7 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.klar_ios.active_users_aggregates`
 AS
 SELECT
-  * EXCEPT (app_version, app_name),
+  * EXCEPT (app_version, app_name, uri_count, active_hours),
   app_name,
   app_version,
   `mozfun.norm.browser_version_info`(app_version).major_version AS app_version_major,

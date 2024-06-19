@@ -71,12 +71,6 @@ fields:
 - name: mau
   type: INTEGER
   mode: NULLABLE
-- name: uri_count
-  type: INTEGER
-  mode: NULLABLE
-- name: active_hours
-  type: FLOAT
-  mode: NULLABLE
 - name: app_name
   type: STRING
   mode: NULLABLE

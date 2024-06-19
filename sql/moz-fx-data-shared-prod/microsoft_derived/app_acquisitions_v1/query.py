@@ -208,8 +208,6 @@ def main():
 
     args = parser.parse_args()
 
-    app_list = json.loads(args.microsoft_store_app_list)
-
     project = args.project
     dataset = args.dataset
     table_name = "app_acquisitions"
@@ -221,6 +219,8 @@ def main():
     tenant_id = MS_TENANT_ID
     resource_url = API_URI
 
+    ms_app_list = json.loads(app_list)
+
     data = []
 
     bearer_token = microsoft_authorization(
@@ -228,7 +228,7 @@ def main():
     )
 
     # Cycle through the apps to get the relevant data
-    for app in app_list:
+    for app in ms_app_list:
         print(f'This is data for {app["app_name"]} - {app["app_id"]} ')
         # Ping the microsoft_store URL and get a response
         json_file = download_microsoft_store_data(date, app["app_id"], bearer_token)

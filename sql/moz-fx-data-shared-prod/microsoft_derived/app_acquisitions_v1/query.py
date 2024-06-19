@@ -212,7 +212,7 @@ def main():
 
     project = args.project
     dataset = args.dataset
-    table_name = "microsoft_app_acquisitions"
+    table_name = "app_acquisitions"
 
     date = args.date
     client_id = MS_CLIENT_ID

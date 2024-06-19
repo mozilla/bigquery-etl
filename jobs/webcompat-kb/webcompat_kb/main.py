@@ -5,7 +5,7 @@ import re
 import time
 
 from google.cloud import bigquery
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 BUGZILLA_API = "https://bugzilla.mozilla.org/rest"
 
@@ -49,6 +49,19 @@ FILTER_CONFIG = {
         "o1": "notequals",
         "keywords": "webcompat:",
         "keywords_type": "regexp",
+    },
+    "parity": {
+        "f1": "OP",
+        "f2": "bug_status",
+        "o2": "changedafter",
+        "v2": "2020-01-01",
+        "j1": "OR",
+        "f3": "resolution",
+        "o3": "isempty",
+        "f4": "CP",
+        "f5": "keywords",
+        "o5": "regexp",
+        "v5": "parity-",
     },
 }
 
@@ -144,6 +157,10 @@ def parse_string_to_json(input_string):
     return result_dict
 
 
+def parse_datetime_str(s):
+    return datetime.strptime(s, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
+
+
 class BugzillaToBigQuery:
     def __init__(self, bq_project_id, bq_dataset_id, bugzilla_api_key):
         self.client = bigquery.Client(project=bq_project_id)
@@ -151,6 +168,7 @@ class BugzillaToBigQuery:
         self.bugzilla_api_key = bugzilla_api_key
         self.bugs_fetch_completed = True
         self.history_fetch_completed = True
+        self.start_time = None
 
     def fetch_bugs(self, params=None):
         if params is None:
@@ -176,6 +194,7 @@ class BugzillaToBigQuery:
             "cf_last_resolved",
             "last_change_time",
             "whiteboard",
+            "creator",
         ]
 
         headers = {}
@@ -253,6 +272,7 @@ class BugzillaToBigQuery:
             fetched_bugs["wc"]
             + fetched_bugs["interventions"]
             + fetched_bugs["other"]
+            + fetched_bugs["parity"]
             + core_bugs
         )
 
@@ -511,19 +531,19 @@ class BugzillaToBigQuery:
             return []
 
     def fetch_bugs_history(self, ids, last_import_time=None):
-        bugs_history = []
+        history = []
 
         for bug_id in ids:
             try:
                 logging.info(f"Fetching history from bugzilla for {bug_id}")
                 bug_history = self.fetch_history(bug_id, last_import_time)
-                bugs_history.append(bug_history)
+                history.append(bug_history)
                 time.sleep(2)
 
             except Exception as e:
                 logging.error(f"Failed to fetch history for bug {bug_id}: {e}")
 
-        return bugs_history
+        return history
 
     def update_history(self, records):
         job_config = bigquery.LoadJobConfig(
@@ -569,10 +589,79 @@ class BugzillaToBigQuery:
 
         return records
 
-    def filter_bug_history_changes(self, history):
-        res = []
+    def get_existing_history_records_by_ids(self, bug_ids):
+        numbers_list = list(bug_ids)
+        formatted_numbers = ", ".join(map(str, numbers_list))
 
-        for bug_history in history:
+        query = f"""
+                    SELECT *
+                    FROM `{self.bq_dataset_id}.bugs_history`
+                    WHERE number IN ({formatted_numbers})
+                """
+        result = self.client.query(query).result()
+        return result
+
+    def extract_flattened_history(self, records, is_existing=False):
+        history_set = set()
+        for record in records:
+            changes = record["changes"]
+            change_time = record["change_time"]
+
+            # Convert BQ timestamp to string to match bugzilla format
+            if is_existing:
+                change_time = change_time.strftime("%Y-%m-%dT%H:%M:%SZ")
+
+            for change in changes:
+                history_row = (
+                    record["number"],
+                    record["who"],
+                    change_time,
+                    change["field_name"],
+                    change["added"],
+                    change["removed"],
+                )
+                history_set.add(history_row)
+
+        return history_set
+
+    def unflatten_history(self, diff):
+        changes = {}
+        for item in diff:
+            number, who, change_time, field_name, added, removed = item
+            key = (number, who, change_time)
+
+            if key not in changes:
+                changes[key] = {
+                    "number": number,
+                    "who": who,
+                    "change_time": change_time,
+                    "changes": [],
+                }
+
+            changes[key]["changes"].append(
+                {"field_name": field_name, "added": added, "removed": removed}
+            )
+
+        return list(changes.values())
+
+    def filter_only_unsaved_changes(self, history_updates, bug_ids):
+        existing_records = self.get_existing_history_records_by_ids(bug_ids)
+
+        if not existing_records:
+            return history_updates
+
+        existing_history = self.extract_flattened_history(existing_records, True)
+        new_history = self.extract_flattened_history(history_updates)
+
+        diff = new_history - existing_history
+
+        return self.unflatten_history(diff)
+
+    def extract_relevant_fields(self, updated_history):
+        result = []
+        bug_ids = set()
+
+        for bug_history in updated_history:
             filtered_changes = []
 
             for record in bug_history["history"]:
@@ -590,30 +679,169 @@ class BugzillaToBigQuery:
                         "changes": relevant_changes,
                     }
                     filtered_changes.append(filtered_record)
+                    bug_ids.add(bug_history["id"])
 
             if filtered_changes:
-                res.extend(filtered_changes)
+                result.extend(filtered_changes)
 
-        return res
+        return result, bug_ids
+
+    def filter_relevant_history(self, updated_history):
+        only_unsaved_changes = []
+        result, bug_ids = self.extract_relevant_fields(updated_history)
+
+        if result:
+            only_unsaved_changes = self.filter_only_unsaved_changes(result, bug_ids)
+
+        return only_unsaved_changes
 
     def get_bugs_updated_since_last_import(self, all_bugs, last_import_time):
         return [
             bug["id"]
             for bug in all_bugs
-            if datetime.strptime(bug["last_change_time"], "%Y-%m-%dT%H:%M:%SZ").replace(
-                tzinfo=timezone.utc
-            )
-            > last_import_time
+            if parse_datetime_str(bug["last_change_time"]) > last_import_time
         ]
 
-    def fetch_update_history(self, all_bugs):
-        last_import_time = self.get_last_import_datetime()
+    def get_imported_ids(self):
+        query = f"""
+                SELECT number
+                FROM `{self.bq_dataset_id}.bugzilla_bugs`
+            """
+        res = self.client.query(query).result()
+        rows = list(res)
 
-        history_changes = []
+        imported_ids = {bug["number"] for bug in rows}
+
+        return imported_ids
+
+    def create_keyword_map(self, history):
+        keyword_history = {}
+
+        for record in history:
+            bug_id = record["number"]
+            timestamp = parse_datetime_str(record["change_time"])
+
+            for change in record["changes"]:
+                if "keywords" in change["field_name"]:
+                    if bug_id not in keyword_history:
+                        keyword_history[bug_id] = {"added": {}, "removed": {}}
+
+                    keyword_records = keyword_history[bug_id]
+
+                    for action in ["added", "removed"]:
+                        keywords = change[action]
+                        if keywords:
+                            for keyword in keywords.split(", "):
+                                if keyword not in keyword_records[action]:
+                                    keyword_records[action][keyword] = []
+
+                                keyword_records[action][keyword].append(timestamp)
+
+        return keyword_history
+
+    def is_removed_earliest(self, added_times, removed_times):
+        events = [(at, "added") for at in added_times] + [
+            (rt, "removed") for rt in removed_times
+        ]
+        events.sort()
+
+        if not events:
+            return False
+
+        return events[0][1] == "removed"
+
+    def get_missing_keywords(self, bug_id, current_keywords, keyword_history):
+        missing_keywords = []
+
+        # Check if keyword exists, but is not in "added" history
+        for keyword in current_keywords:
+            if bug_id not in keyword_history or keyword not in keyword_history[
+                bug_id
+            ].get("added", {}):
+                if keyword not in missing_keywords:
+                    missing_keywords.append(keyword)
+
+        # Check for keywords that have "removed" record as the earliest
+        # event in the sorted timeline
+        if bug_id in keyword_history:
+            for keyword, removed_times in (
+                keyword_history[bug_id].get("removed", {}).items()
+            ):
+                added_times = keyword_history[bug_id].get("added", {}).get(keyword, [])
+
+                removed_earliest = self.is_removed_earliest(added_times, removed_times)
+
+                if removed_earliest and keyword not in missing_keywords:
+                    missing_keywords.append(keyword)
+
+        return missing_keywords
+
+    def build_missing_history(self, bugs_without_history):
+        result = []
+        for bug, missing_keywords in bugs_without_history:
+            record = {
+                "number": bug["id"],
+                "who": bug["creator"],
+                "change_time": bug["creation_time"],
+                "changes": [
+                    {
+                        "added": ", ".join(missing_keywords),
+                        "field_name": "keywords",
+                        "removed": "",
+                    }
+                ],
+            }
+            result.append(record)
+        return result
+
+    def create_synthetic_history(self, bugs, history):
+        keyword_history = self.create_keyword_map(history)
+
+        bugs_without_history = []
+
+        for bug in bugs:
+            bug_id = bug["id"]
+            current_keywords = bug["keywords"]
+
+            missing_keywords = self.get_missing_keywords(
+                bug_id, current_keywords, keyword_history
+            )
+
+            if missing_keywords:
+                bugs_without_history.append((bug, missing_keywords))
+
+        return self.build_missing_history(bugs_without_history)
+
+    def fetch_history_for_new_bugs(self, all_bugs):
+        only_unsaved_changes = []
+
+        existing_ids = self.get_imported_ids()
+        all_ids = {bug["id"] for bug in all_bugs}
+        new_ids = all_ids - existing_ids
+
+        logging.info(f"Fetching new bugs history: {list(new_ids)}")
+
+        new_bugs = [bug for bug in all_bugs if bug["id"] in new_ids]
+
+        history, _ = self.extract_relevant_fields(self.fetch_bugs_history(new_ids))
+
+        synthetic_history = self.create_synthetic_history(new_bugs, history)
+
+        new_bugs_history = history + synthetic_history
+
+        if new_bugs_history:
+            only_unsaved_changes = self.filter_only_unsaved_changes(
+                new_bugs_history, new_ids
+            )
+
+        return only_unsaved_changes, new_ids
+
+    def fetch_history_updates(self, all_existing_bugs):
+        last_import_time = self.get_last_import_datetime()
 
         if last_import_time:
             updated_bug_ids = self.get_bugs_updated_since_last_import(
-                all_bugs, last_import_time
+                all_existing_bugs, last_import_time
             )
 
             logging.info(
@@ -625,15 +853,33 @@ class BugzillaToBigQuery:
                     updated_bug_ids, last_import_time
                 )
 
-                if bugs_history and self.history_fetch_completed:
-                    filtered_records = self.filter_bug_history_changes(bugs_history)
-                    history_changes.extend(self.update_history(filtered_records))
+                return bugs_history
 
-        return history_changes
+        return []
 
-    def record_import_run(self, history_fetch_completed, count, history_count):
-        current_time_utc = datetime.utcnow()
-        formatted_time = current_time_utc.strftime("%Y-%m-%dT%H:%M:%SZ")
+    def fetch_update_history(self, all_bugs):
+        filtered_new_history, new_ids = self.fetch_history_for_new_bugs(all_bugs)
+
+        existing_bugs = [bug for bug in all_bugs if bug["id"] not in new_ids]
+
+        existing_bugs_history = self.fetch_history_updates(existing_bugs)
+
+        if (
+            filtered_new_history or existing_bugs_history
+        ) and self.history_fetch_completed:
+            filtered_existing = self.filter_relevant_history(existing_bugs_history)
+            filtered_records = filtered_existing + filtered_new_history
+            return self.update_history(filtered_records)
+
+        return []
+
+    def record_import_run(
+        self, history_fetch_completed, count, history_count, last_change_time
+    ):
+        elapsed_time = time.monotonic() - self.start_time
+        elapsed_time_delta = timedelta(seconds=elapsed_time)
+        run_at = last_change_time - elapsed_time_delta
+        formatted_time = run_at.strftime("%Y-%m-%dT%H:%M:%SZ")
 
         rows_to_insert = [
             {
@@ -651,6 +897,8 @@ class BugzillaToBigQuery:
             logging.info("Last import run recorded")
 
     def run(self):
+        self.start_time = time.monotonic()
+
         all_bugs, kb_bugs, core_bugs = self.fetch_all_bugs()
 
         if not self.bugs_fetch_completed:
@@ -691,14 +939,23 @@ class BugzillaToBigQuery:
 
         all_bugs_unique = list({item["id"]: item for item in all_bugs}.values())
 
+        history_changes = self.fetch_update_history(all_bugs_unique)
+
         self.update_bugs(all_bugs_unique)
         self.update_kb_ids(kb_ids)
         self.update_relations(rels)
 
-        history_changes = self.fetch_update_history(all_bugs_unique)
+        last_change_time_max = parse_datetime_str(
+            max(all_bugs_unique, key=lambda x: x["last_change_time"])[
+                "last_change_time"
+            ]
+        )
 
         self.record_import_run(
-            self.history_fetch_completed, len(all_bugs_unique), len(history_changes)
+            self.history_fetch_completed,
+            len(all_bugs_unique),
+            len(history_changes),
+            last_change_time_max,
         )
 
 

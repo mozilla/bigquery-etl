@@ -264,7 +264,7 @@ counted AS (
       WHEN mozfun.norm.os(os) = "Windows"
         THEN mozfun.norm.windows_version_info(os, os_version, windows_build_number)
       ELSE CAST(mozfun.norm.truncate_version(os_version, "major") AS STRING)
-    END AS os_version_major
+    END AS os_version_major,
     CASE
       WHEN mozfun.norm.os(os) = "Windows"
         THEN mozfun.norm.windows_version_info(os, os_version, windows_build_number)

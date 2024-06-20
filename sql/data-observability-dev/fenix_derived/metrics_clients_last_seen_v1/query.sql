@@ -15,13 +15,12 @@ WHERE
   AND submission_date = "2024-05-23"
   AND sample_id < 50
 UNION ALL
--- create an entry where normalized channel is null
+-- create entries where normalized channel is null
 SELECT
   * REPLACE (NULL AS normalized_channel),
 FROM
   `moz-fx-data-shared-prod.fenix_derived.metrics_clients_last_seen_v1`
 WHERE
   submission_date = @submission_date
-  AND submission_date = "2024-05-24"
-LIMIT
-  1
+  AND submission_date = "2024-05-27"
+  AND sample_id = 0

@@ -22,7 +22,7 @@ FROM google/cloud-sdk:${GOOGLE_CLOUD_SDK_VERSION}-alpine AS google-cloud-sdk
 
 FROM base
 # add bash for entrypoint
-RUN mkdir -p /usr/share/man/man1 && apt-get update -qqy && apt-get install -qqy bash git
+RUN mkdir -p /usr/share/man/man1 && apt-get update -qqy && apt-get install -qqy bash git jq
 COPY --from=google-cloud-sdk /google-cloud-sdk /google-cloud-sdk
 ENV PATH /google-cloud-sdk/bin:$PATH
 COPY --from=python-deps /usr/local /usr/local

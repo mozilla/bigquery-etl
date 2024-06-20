@@ -50,8 +50,10 @@ CHECKS_TEMPLATE_CHANNELS = {
     "klar_ios": [
         {"table": "`moz-fx-data-shared-prod.org_mozilla_ios_klar_live.baseline_v1`"}
     ],
+    "klar_android" : [
+        {"table" : "`moz-fx-data-shared-prod.org_mozilla_klar_live.baseline_v1`"}
+    ],
 }
-
 
 class Browsers(Enum):
     """Enumeration with browser names and equivalent dataset names."""
@@ -62,6 +64,7 @@ class Browsers(Enum):
     focus_android = "Focus Android"
     firefox_ios = "Firefox iOS"
     klar_ios = "Klar iOS"
+    klar_android = "Klar Android"
 
 
 @click.command()
@@ -95,7 +98,8 @@ def generate(target_project, output_dir, use_cloud_function):
     mobile_view_template = env.get_template("mobile_view.sql")
     view_template = env.get_template("view.sql")
     # metadata template
-    metadata_template = "metadata.yaml"
+    mobile_metadata_template = "mobile_metadata.yaml"
+    desktop_metadata_template = "desktop_metadata.yaml"
     # schema template
     desktop_schema_template = "desktop_schema.yaml"
     mobile_schema_template = "mobile_schema.yaml"
@@ -129,6 +133,7 @@ def generate(target_project, output_dir, use_cloud_function):
                 )
             )
             schema_template = mobile_schema_template
+
         # create checks_sql
         if browser.name == "firefox_desktop":
             checks_sql = desktop_checks_template.render(
@@ -158,17 +163,29 @@ def generate(target_project, output_dir, use_cloud_function):
             skip_existing=False,
         )
 
-        write_sql(
-            output_dir=output_dir,
-            full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}",
-            basename="metadata.yaml",
-            sql=render(
-                metadata_template,
+        # create metadata files
+        if browser.name == "firefox_desktop":
+            metadata_file = render(
+                desktop_metadata_template,
                 template_folder=THIS_PATH / "templates",
                 app_value=browser.value,
                 app_name=browser.name,
                 format=False,
-            ),
+            )
+        else:
+            metadata_file = render(
+                mobile_metadata_template,
+                template_folder=THIS_PATH / "templates",
+                app_value=browser.value,
+                app_name=browser.name,
+                format=False,
+            )
+
+        write_sql(
+            output_dir=output_dir,
+            full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}",
+            basename="metadata.yaml",
+            sql=metadata_file,
             skip_existing=False,
         )
 
@@ -248,6 +265,7 @@ def generate(target_project, output_dir, use_cloud_function):
                 focus_android_dataset=Browsers("Focus Android").name,
                 firefox_ios_dataset=Browsers("Firefox iOS").name,
                 klar_ios_dataset=Browsers("Klar iOS").name,
+                klar_android_dataset=Browsers("Klar Android").name,
             )
         ),
         skip_existing=False,

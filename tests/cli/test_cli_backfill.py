@@ -34,6 +34,8 @@ from bigquery_etl.cli.backfill import (
     scheduled,
     validate,
 )
+from bigquery_etl.cli.stage import QUERY_FILE
+from bigquery_etl.deploy import FailedDeployException
 
 DEFAULT_STATUS = BackfillStatus.INITIATE
 VALID_REASON = "test_reason"
@@ -1711,7 +1713,7 @@ class TestBackfill:
 
     def test_get_backfill_staging_qualified_table_name(self, runner):
         qualified_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
-        backfill_table_id = "test_query_v1_2023_05_30"
+        backfill_table_id = "test__test_query_v1_2023_05_30"
 
         actual_backfill_staging = get_backfill_staging_qualified_table_name(
             qualified_table_name, "2023-05-30"
@@ -2157,7 +2159,7 @@ class TestBackfill:
         get_table.side_effect = [
             None,  # Check that staging data exists
             NotFound(  # Check that clone does not exist
-                "moz-fx-data-shared-prod.backfills_staging_derived.test_query_v1_backup_2021_05_03"
+                "moz-fx-data-shared-prod.backfills_staging_derived.test__test_query_v1_backup_2021_05_03"
                 "not found"
             ),
         ]
@@ -2208,18 +2210,25 @@ class TestBackfill:
             for i, call in enumerate(copy_table.call_args_list[1:]):
                 d = date(2021, 1, 3) + timedelta(days=i)
                 assert call.args == (
-                    f'moz-fx-data-shared-prod.backfills_staging_derived.test_query_v1_2021_05_03${d.strftime("%Y%m%d")}',
+                    f'moz-fx-data-shared-prod.backfills_staging_derived.test__test_query_v1_2021_05_03${d.strftime("%Y%m%d")}',
                     f'moz-fx-data-shared-prod.test.test_query_v1${d.strftime("%Y%m%d")}',
                 )
             assert delete_table.call_count == 1
 
     @patch("google.cloud.bigquery.Client")
     @patch("subprocess.check_call")
-    def test_initiate_partitioned_backfill(self, check_call, mock_client, runner):
+    @patch("bigquery_etl.cli.backfill.deploy_table")
+    @patch("bigquery_etl.cli.backfill.Schema.from_query_file")
+    def test_initiate_partitioned_backfill(
+        self, mock_from_query_file, mock_deploy_table, check_call, mock_client, runner
+    ):
+        backfill_staging_table_name = (
+            "moz-fx-data-shared-prod.backfills_staging_derived.test__test_query_v1"
+        )
+
         mock_client().get_table.side_effect = [
             NotFound(  # Check that staging data does not exist
-                "moz-fx-data-shared-prod.backfills_staging_derived.test_query_v1_backup_2021_05_03"
-                "not found"
+                f"{backfill_staging_table_name}_backup_2021_05_03" "not found"
             ),
             None,  # Check that production data exists during dry run
             None,  # Check that production data exists
@@ -2228,11 +2237,15 @@ class TestBackfill:
         with runner.isolated_filesystem():
             SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v1"
             os.makedirs(SQL_DIR)
+            query_path = Path(SQL_DIR) / QUERY_FILE
+
+            with open(query_path, "w") as f:
+                f.write("SELECT 1")
 
             with open(
-                "sql/moz-fx-data-shared-prod/test/test_query_v1/query.sql", "w"
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/schema.yaml", "w"
             ) as f:
-                f.write("SELECT 1")
+                f.write(yaml.dump({"fields": [{"name": "f0_", "type": "INTEGER"}]}))
 
             with open(
                 "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
@@ -2248,13 +2261,13 @@ class TestBackfill:
             backfill_file = Path(SQL_DIR) / BACKFILL_FILE
             backfill_file.write_text(
                 """
-2021-05-03:
-  start_date: 2021-01-03
-  end_date: 2021-01-08
-  reason: test_reason
-  watchers:
-  - test@example.org
-  status: Initiate"""
+            2021-05-03:
+              start_date: 2021-01-03
+              end_date: 2021-01-08
+              reason: test_reason
+              watchers:
+              - test@example.org
+              status: Initiate"""
             )
 
             result = runner.invoke(
@@ -2264,13 +2277,21 @@ class TestBackfill:
 
             assert result.exit_code == 0
 
+            assert not mock_from_query_file.called  # schema exists
+
+            mock_deploy_table.assert_called_with(
+                query_file=query_path,
+                destination_table=f"{backfill_staging_table_name}_2021_05_03",
+                respect_dryrun_skip=False,
+            )
+
             expected_submission_date_params = [
                 f"--parameter=submission_date:DATE:2021-01-0{day}"
                 for day in range(3, 9)
             ]
 
             expected_destination_table_params = [
-                f"--destination_table=moz-fx-data-shared-prod:backfills_staging_derived.test_query_v1_2021_05_03$2021010{day}"
+                f"--destination_table=moz-fx-data-shared-prod:backfills_staging_derived.test__test_query_v1_2021_05_03$2021010{day}"
                 for day in range(3, 9)
             ]
 
@@ -2290,13 +2311,18 @@ class TestBackfill:
 
     @patch("google.cloud.bigquery.Client")
     @patch("subprocess.check_call")
-    def test_initiate_partitioned_backfill_with_valid_billing_project_from_entry(
-        self, check_call, mock_client, runner
+    @patch("bigquery_etl.cli.backfill.deploy_table")
+    @patch("bigquery_etl.cli.backfill.Schema.from_query_file")
+    def test_initiate_partitioned_backfill_without_schema_should_pass(
+        self, mock_from_query_file, mock_deploy_table, check_call, mock_client, runner
     ):
+        backfill_staging_table_name = (
+            "moz-fx-data-shared-prod.backfills_staging_derived.test__test_query_v1"
+        )
+
         mock_client().get_table.side_effect = [
             NotFound(  # Check that staging data does not exist
-                "moz-fx-data-shared-prod.backfills_staging_derived.test_query_v1_backup_2021_05_03"
-                "not found"
+                f"{backfill_staging_table_name}_backup_2021_05_03" "not found"
             ),
             None,  # Check that production data exists during dry run
             None,  # Check that production data exists
@@ -2305,10 +2331,9 @@ class TestBackfill:
         with runner.isolated_filesystem():
             SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v1"
             os.makedirs(SQL_DIR)
+            query_path = Path(SQL_DIR) / QUERY_FILE
 
-            with open(
-                "sql/moz-fx-data-shared-prod/test/test_query_v1/query.sql", "w"
-            ) as f:
+            with open(query_path, "w") as f:
                 f.write("SELECT 1")
 
             with open(
@@ -2324,16 +2349,114 @@ class TestBackfill:
 
             backfill_file = Path(SQL_DIR) / BACKFILL_FILE
             backfill_file.write_text(
+                """
+            2021-05-03:
+              start_date: 2021-01-03
+              end_date: 2021-01-08
+              reason: test_reason
+              watchers:
+              - test@example.org
+              status: Initiate"""
+            )
+
+            result = runner.invoke(
+                initiate,
+                ["moz-fx-data-shared-prod.test.test_query_v1", "--parallelism=0"],
+            )
+
+            assert result.exit_code == 0
+
+            mock_from_query_file.assert_called_with(
+                query_file=query_path,
+                respect_skip=False,
+                sql_dir="sql/",
+            )
+
+            mock_deploy_table.assert_called_with(
+                query_file=query_path,
+                destination_table=f"{backfill_staging_table_name}_2021_05_03",
+                respect_dryrun_skip=False,
+            )
+
+            expected_submission_date_params = [
+                f"--parameter=submission_date:DATE:2021-01-0{day}"
+                for day in range(3, 9)
+            ]
+
+            expected_destination_table_params = [
+                f"--destination_table=moz-fx-data-shared-prod:backfills_staging_derived.test__test_query_v1_2021_05_03$2021010{day}"
+                for day in range(3, 9)
+            ]
+
+            # this is inspecting calls to the underlying subprocess.check_call(["bq]"...)
+            assert check_call.call_count == 12  # 6 for dry run, 6 for backfill
+            for call in check_call.call_args_list:
+                submission_date_params = [
+                    arg for arg in call.args[0] if "--parameter=submission_date" in arg
+                ]
+                assert len(submission_date_params) == 1
+                assert submission_date_params[0] in expected_submission_date_params
+                assert f"--project_id={DEFAULT_BILLING_PROJECT}" in call.args[0]
+                destination_table_params = [
+                    arg for arg in call.args[0] if "--destination_table" in arg
+                ]
+                assert destination_table_params[0] in expected_destination_table_params
+
+    @patch("google.cloud.bigquery.Client")
+    @patch("subprocess.check_call")
+    @patch("bigquery_etl.cli.backfill.deploy_table")
+    @patch("bigquery_etl.cli.backfill.Schema.from_query_file")
+    def test_initiate_partitioned_backfill_with_valid_billing_project_from_entry(
+        self, mock_from_query_file, mock_deploy_table, check_call, mock_client, runner
+    ):
+        backfill_staging_table_name = (
+            "moz-fx-data-shared-prod.backfills_staging_derived.test__test_query_v1"
+        )
+
+        mock_client().get_table.side_effect = [
+            NotFound(  # Check that staging data does not exist
+                f"{backfill_staging_table_name}_backup_2021_05_03" "not found"
+            ),
+            None,  # Check that production data exists during dry run
+            None,  # Check that production data exists
+        ]
+
+        with runner.isolated_filesystem():
+            SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v1"
+            os.makedirs(SQL_DIR)
+            query_path = Path(SQL_DIR) / QUERY_FILE
+
+            with open(query_path, "w") as f:
+                f.write("SELECT 1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/schema.yaml", "w"
+            ) as f:
+                f.write(yaml.dump({"fields": [{"name": "f0_", "type": "INTEGER"}]}))
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(PARTITIONED_TABLE_METADATA))
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
+            ) as f:
+                f.write(yaml.dump(DATASET_METADATA_CONF_EMPTY_WORKGROUP))
+
+            backfill_file = Path(SQL_DIR) / BACKFILL_FILE
+            backfill_file.write_text(
                 f"""
-2021-05-03:
-  start_date: 2021-01-03
-  end_date: 2021-01-08
-  reason: test_reason
-  watchers:
-  - test@example.org
-  status: Initiate
-  billing_project: {VALID_BILLING_PROJECT}
-  """
+            2021-05-03:
+              start_date: 2021-01-03
+              end_date: 2021-01-08
+              reason: test_reason
+              watchers:
+              - test@example.org
+              status: Initiate
+              billing_project: {VALID_BILLING_PROJECT}
+              """
             )
 
             result = runner.invoke(
@@ -2344,6 +2467,13 @@ class TestBackfill:
                 ],
             )
 
+            assert not mock_from_query_file.called  # schema exists
+
+            mock_deploy_table.assert_called_with(
+                query_file=query_path,
+                destination_table=f"{backfill_staging_table_name}_2021_05_03",
+                respect_dryrun_skip=False,
+            )
             assert result.exit_code == 0
 
             expected_submission_date_params = [
@@ -2352,7 +2482,7 @@ class TestBackfill:
             ]
 
             expected_destination_table_params = [
-                f"--destination_table=moz-fx-data-shared-prod:backfills_staging_derived.test_query_v1_2021_05_03$2021010{day}"
+                f"--destination_table=moz-fx-data-shared-prod:backfills_staging_derived.test__test_query_v1_2021_05_03$2021010{day}"
                 for day in range(3, 9)
             ]
 
@@ -2371,13 +2501,90 @@ class TestBackfill:
                 assert destination_table_params[0] in expected_destination_table_params
 
     @patch("google.cloud.bigquery.Client")
+    @patch("bigquery_etl.cli.backfill.deploy_table")
+    @patch("bigquery_etl.cli.backfill.Schema.from_query_file")
+    def test_initiate_backfill_with_failed_deploy(
+        self, mock_from_query_file, mock_deploy_table, mock_client, runner
+    ):
+        backfill_staging_table_name = (
+            "moz-fx-data-shared-prod.backfills_staging_derived.test__test_query_v1"
+        )
+
+        mock_deploy_table.side_effect = FailedDeployException("Unable to deploy table")
+
+        mock_client().get_table.side_effect = [
+            NotFound(  # Check that staging data does not exist
+                f"{backfill_staging_table_name}_backup_2021_05_03" "not found"
+            ),
+            None,  # Check that production data exists during dry run
+            None,  # Check that production data exists
+        ]
+
+        with runner.isolated_filesystem():
+            SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v1"
+            os.makedirs(SQL_DIR)
+            query_path = Path(SQL_DIR) / QUERY_FILE
+
+            with open(query_path, "w") as f:
+                f.write("SELECT 1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(PARTITIONED_TABLE_METADATA))
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
+            ) as f:
+                f.write(yaml.dump(DATASET_METADATA_CONF_EMPTY_WORKGROUP))
+
+            backfill_file = Path(SQL_DIR) / BACKFILL_FILE
+            backfill_file.write_text(
+                """
+            2021-05-03:
+              start_date: 2021-01-03
+              end_date: 2021-01-08
+              reason: test_reason
+              watchers:
+              - test@example.org
+              status: Initiate
+              """
+            )
+
+            result = runner.invoke(
+                initiate,
+                [
+                    "moz-fx-data-shared-prod.test.test_query_v1",
+                    "--parallelism=0",
+                ],
+            )
+
+            mock_from_query_file.assert_called_with(
+                query_file=query_path,
+                respect_skip=False,
+                sql_dir="sql/",
+            )
+
+            mock_deploy_table.assert_called_with(
+                query_file=query_path,
+                destination_table=f"{backfill_staging_table_name}_2021_05_03",
+                respect_dryrun_skip=False,
+            )
+            assert result.exit_code == 1
+            assert "Backfill initiate failed to deploy" in str(result.exception)
+
+    @patch("google.cloud.bigquery.Client")
     def test_initiate_partitioned_backfill_with_invalid_billing_project_from_entry_should_fail(
         self, mock_client, runner
     ):
+        backfill_staging_table_name = (
+            "moz-fx-data-shared-prod.backfills_staging_derived.test__test_query_v1"
+        )
+
         mock_client().get_table.side_effect = [
             NotFound(  # Check that staging data does not exist
-                "moz-fx-data-shared-prod.backfills_staging_derived.test_query_v1_backup_2021_05_03"
-                "not found"
+                f"{backfill_staging_table_name}_backup_2021_05_03" "not found"
             ),
             None,  # Check that production data exists during dry run
             None,  # Check that production data exists
@@ -2406,15 +2613,15 @@ class TestBackfill:
             backfill_file = Path(SQL_DIR) / BACKFILL_FILE
             backfill_file.write_text(
                 f"""
-2021-05-03:
-  start_date: 2021-01-03
-  end_date: 2021-01-08
-  reason: test_reason
-  watchers:
-  - test@example.org
-  status: Initiate
-  billing_project: {INVALID_BILLING_PROJECT}
-  """
+            2021-05-03:
+              start_date: 2021-01-03
+              end_date: 2021-01-08
+              reason: test_reason
+              watchers:
+              - test@example.org
+              status: Initiate
+              billing_project: {INVALID_BILLING_PROJECT}
+              """
             )
 
             result = runner.invoke(

@@ -623,7 +623,8 @@ CREATE TEMP TABLE
         UNNEST(event_extra) AS ext
       WHERE
         DATE(submission_timestamp) = @submission_date
-        AND ext.key = "flow_id"
+        AND metrics.string.session_flow_id IS NOT NULL
+        AND metrics.string.session_flow_id != ""
       UNION ALL
       SELECT DISTINCT
         @submission_date AS submission_date,
@@ -642,7 +643,8 @@ CREATE TEMP TABLE
         UNNEST(event_extra) AS ext
       WHERE
         DATE(submission_timestamp) = @submission_date
-        AND ext.key = "flow_id"
+        AND metrics.string.session_flow_id IS NOT NULL
+        AND metrics.string.session_flow_id != ""
       UNION ALL
       SELECT DISTINCT
         @submission_date AS submission_date,

@@ -9,7 +9,7 @@ from google.cloud import storage
 
 # Configurations
 os_usg_configs = {
-    "timeout_limit": 2000,
+    "timeout_limit": 2500,
     "device_types": ["DESKTOP", "MOBILE", "OTHER", "ALL"],
     "locations": [
         "ALL",
@@ -65,7 +65,7 @@ def move_blob(bucket_name, blob_name, destination_bucket_name, destination_blob_
     source_bucket = storage_client.bucket(bucket_name)
     source_blob = source_bucket.blob(blob_name)
     destination_bucket = storage_client.bucket(destination_bucket_name)
-    destination_generation_match_precondition = 0
+    destination_generation_match_precondition = None
 
     blob_copy = source_bucket.copy_blob(
         source_blob,
@@ -91,7 +91,7 @@ def generate_os_timeseries_api_call(strt_dt, end_dt, agg_int, location, device_t
     if location == "ALL" and device_type == "ALL":
         os_usage_api_url = f"https://api.cloudflare.com/client/v4/radar/http/timeseries_groups/os?dateStart={strt_dt}T00:00:00.000Z&dateEnd={end_dt}T00:00:00.000Z&format=json&aggInterval={agg_int}"
     elif location != "ALL" and device_type == "ALL":
-        os_usage_api_url = f"https://api.cloudflare.com/client/v4/radar/http/timeseries_groups/os?dateStart={strt_dt}T00:00:00.000Z&dateEnd={strt_dt}T00:00:00.000Z&location={location}&format=json&aggInterval={agg_int}"
+        os_usage_api_url = f"https://api.cloudflare.com/client/v4/radar/http/timeseries_groups/os?dateStart={strt_dt}T00:00:00.000Z&dateEnd={end_dt}T00:00:00.000Z&location={location}&format=json&aggInterval={agg_int}"
     elif location == "ALL" and device_type != "ALL":
         os_usage_api_url = f"https://api.cloudflare.com/client/v4/radar/http/timeseries_groups/os?dateStart={strt_dt}T00:00:00.000Z&dateEnd={end_dt}T00:00:00.000Z&deviceType={device_type}&format=json&aggInterval={agg_int}"
     else:
@@ -350,7 +350,7 @@ WHERE StartDate = DATE_SUB('{args.date}', INTERVAL 4 DAY) """
         datetime.strptime(args.date, "%Y-%m-%d").date() - timedelta(days=4),
         args.date,
     )
-    result_archive_fpath = os_usg_configs["results_archive_gcs_fpath"] % (
+    result_archive_fpath = os_usg_configs["results_archive_gcs_fpth"] % (
         datetime.strptime(args.date, "%Y-%m-%d").date() - timedelta(days=4),
         args.date,
     )
@@ -366,7 +366,7 @@ WHERE StartDate = DATE_SUB('{args.date}', INTERVAL 4 DAY) """
         datetime.strptime(args.date, "%Y-%m-%d").date() - timedelta(days=4),
         args.date,
     )
-    error_archive_fpath = os_usg_configs["errors_archive_gcs_fpath"] % (
+    error_archive_fpath = os_usg_configs["errors_archive_gcs_fpth"] % (
         datetime.strptime(args.date, "%Y-%m-%d").date() - timedelta(days=4),
         args.date,
     )

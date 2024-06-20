@@ -9,7 +9,7 @@ from google.cloud import storage
 
 # Configs
 brwsr_usg_configs = {
-    "timeout_limit": 2000,
+    "timeout_limit": 2400,
     "device_types": ["DESKTOP", "MOBILE", "OTHER", "ALL"],
     "max_limit": 20,
     "operating_systems": [
@@ -77,7 +77,7 @@ def move_blob(bucket_name, blob_name, destination_bucket_name, destination_blob_
     source_bucket = storage_client.bucket(bucket_name)
     source_blob = source_bucket.blob(blob_name)
     destination_bucket = storage_client.bucket(destination_bucket_name)
-    destination_generation_match_precondition = 0
+    destination_generation_match_precondition = None
 
     blob_copy = source_bucket.copy_blob(
         source_blob,

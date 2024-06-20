@@ -162,7 +162,7 @@ with DAG(
             "telemetry-alerts@mozilla.com",
         ],
         depends_on_past=False,
-        parameters=["conversion_window:INT64:30"] + ["activity_date:DATE:{{ds}}"],
+        parameters=["conversion_window:INT64:30"] + ["submission_date:DATE:{{ds}}"],
         retries=0,
     )
 
@@ -372,7 +372,7 @@ with DAG(
 
     mozilla_org_derived__gclid_conversions__v2 = bigquery_etl_query(
         task_id="mozilla_org_derived__gclid_conversions__v2",
-        destination_table='gclid_conversions_v2${{ macros.ds_format(macros.ds_add(ds, -14), "%Y-%m-%d", "%Y%m%d") }}',
+        destination_table="gclid_conversions_v2",
         dataset_id="mozilla_org_derived",
         project_id="moz-fx-data-shared-prod",
         owner="mhirose@mozilla.com",
@@ -381,10 +381,9 @@ with DAG(
             "mhirose@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
-        date_partition_parameter=None,
+        date_partition_parameter="submission_date",
         depends_on_past=False,
-        parameters=["activity_date:DATE:{{macros.ds_add(ds, -14)}}"]
-        + ["conversion_window:INT64:30"],
+        parameters=["conversion_window:INT64:30"],
     )
 
     mozilla_vpn_derived__site_metrics_summary__v2 = bigquery_etl_query(

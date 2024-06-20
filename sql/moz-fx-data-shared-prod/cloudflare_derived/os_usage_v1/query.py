@@ -350,7 +350,7 @@ WHERE StartDate = DATE_SUB('{args.date}', INTERVAL 4 DAY) """
         datetime.strptime(args.date, "%Y-%m-%d").date() - timedelta(days=4),
         args.date,
     )
-    result_archive_fpath = os_usg_configs["results_archive_gcs_fpath"] % (
+    result_archive_fpath = os_usg_configs["results_archive_gcs_fpth"] % (
         datetime.strptime(args.date, "%Y-%m-%d").date() - timedelta(days=4),
         args.date,
     )

@@ -23,3 +23,6 @@ bigquery:
     fields:
     - conversion_name
 references: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members: [workgroup:dataops-managed/external-census]

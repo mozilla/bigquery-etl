@@ -606,45 +606,77 @@ CREATE TEMP TABLE
         DATE(submission_timestamp) = @submission_date
         AND ext.key = "flow_id"
       UNION ALL
-      SELECT DISTINCT
-        @submission_date AS submission_date,
-        ext.value AS flow_id,
-        event_category AS category,
-        event_name AS name,
-        TIMESTAMP_ADD(
-          submission_timestamp,
+        (
+          WITH events_unnested_with_metrics AS (
+            -- events_unnested views do not have metrics, accounts send flow_id in a string metric
+            -- so we need to unnest with metrics here
+            SELECT
+              e.* EXCEPT (events),
+              event.timestamp AS event_timestamp,
+              event.category AS event_category,
+              event.name AS event_name,
+              event.extra AS event_extra
+            FROM
+              `moz-fx-data-shared-prod.accounts_frontend.events` e
+            CROSS JOIN
+              UNNEST(e.events) AS event
+          )
+          SELECT DISTINCT
+            @submission_date AS submission_date,
+            ext.value AS flow_id,
+            event_category AS category,
+            event_name AS name,
+            TIMESTAMP_ADD(
+              submission_timestamp,
           -- limit event.timestamp, otherwise this will cause an overflow
-          INTERVAL LEAST(event_timestamp, 20000000000000) MILLISECOND
-        ) AS timestamp,
-        "Mozilla Accounts Frontend" AS normalized_app_name,
-        client_info.app_channel AS channel
-      FROM
-        `moz-fx-data-shared-prod.accounts_frontend.events_unnested`,
-        UNNEST(event_extra) AS ext
-      WHERE
-        DATE(submission_timestamp) = @submission_date
-        AND metrics.string.session_flow_id IS NOT NULL
-        AND metrics.string.session_flow_id != ""
+              INTERVAL LEAST(event_timestamp, 20000000000000) MILLISECOND
+            ) AS timestamp,
+            "Mozilla Accounts Frontend" AS normalized_app_name,
+            client_info.app_channel AS channel
+          FROM
+            events_unnested_with_metrics,
+            UNNEST(event_extra) AS ext
+          WHERE
+            DATE(submission_timestamp) = @submission_date
+            AND metrics.string.session_flow_id IS NOT NULL
+            AND metrics.string.session_flow_id != ""
+        )
       UNION ALL
-      SELECT DISTINCT
-        @submission_date AS submission_date,
-        ext.value AS flow_id,
-        event_category AS category,
-        event_name AS name,
-        TIMESTAMP_ADD(
-          submission_timestamp,
+        (
+          WITH events_unnested_with_metrics AS (
+            -- events_unnested views do not have metrics, accounts send flow_id in a string metric
+            -- so we need to unnest with metrics here
+            SELECT
+              e.* EXCEPT (events),
+              event.timestamp AS event_timestamp,
+              event.category AS event_category,
+              event.name AS event_name,
+              event.extra AS event_extra
+            FROM
+              `moz-fx-data-shared-prod.accounts_backend.events` e
+            CROSS JOIN
+              UNNEST(e.events) AS event
+          )
+          SELECT DISTINCT
+            @submission_date AS submission_date,
+            ext.value AS flow_id,
+            event_category AS category,
+            event_name AS name,
+            TIMESTAMP_ADD(
+              submission_timestamp,
           -- limit event.timestamp, otherwise this will cause an overflow
-          INTERVAL LEAST(event_timestamp, 20000000000000) MILLISECOND
-        ) AS timestamp,
-        "Mozilla Accounts Backend" AS normalized_app_name,
-        client_info.app_channel AS channel
-      FROM
-        `moz-fx-data-shared-prod.accounts_backend.events_unnested`,
-        UNNEST(event_extra) AS ext
-      WHERE
-        DATE(submission_timestamp) = @submission_date
-        AND metrics.string.session_flow_id IS NOT NULL
-        AND metrics.string.session_flow_id != ""
+              INTERVAL LEAST(event_timestamp, 20000000000000) MILLISECOND
+            ) AS timestamp,
+            "Mozilla Accounts Backend" AS normalized_app_name,
+            client_info.app_channel AS channel
+          FROM
+            events_unnested_with_metrics,
+            UNNEST(event_extra) AS ext
+          WHERE
+            DATE(submission_timestamp) = @submission_date
+            AND metrics.string.session_flow_id IS NOT NULL
+            AND metrics.string.session_flow_id != ""
+        )
       UNION ALL
       SELECT DISTINCT
         @submission_date AS submission_date,

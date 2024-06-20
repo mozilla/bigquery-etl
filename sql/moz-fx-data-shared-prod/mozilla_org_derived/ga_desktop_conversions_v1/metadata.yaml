@@ -25,4 +25,6 @@ bigquery:
 references: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
-  members: [workgroup:dataops-managed/external-census]
+  members:
+  - workgroup:dataops-managed/external-census
+  - workgroup:mozilla-confidential

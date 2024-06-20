@@ -39,7 +39,12 @@ CREATE TEMP TABLE
             UNNEST(event_extra) AS ext
           WHERE
             DATE(submission_timestamp) = @submission_date
+            {% if app['bq_dataset_family'] in ["accounts_frontend", "accounts_backend"] %}
+            AND metrics.string.session_flow_id IS NOT NULL
+            AND metrics.string.session_flow_id != ""
+            {% else %}
             AND ext.key = "flow_id"
+            {% endif %}
         {% endif %}
       {% endfor %}
     ),

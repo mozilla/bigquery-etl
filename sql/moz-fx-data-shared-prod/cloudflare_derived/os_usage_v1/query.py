@@ -91,7 +91,7 @@ def generate_os_timeseries_api_call(strt_dt, end_dt, agg_int, location, device_t
     if location == "ALL" and device_type == "ALL":
         os_usage_api_url = f"https://api.cloudflare.com/client/v4/radar/http/timeseries_groups/os?dateStart={strt_dt}T00:00:00.000Z&dateEnd={end_dt}T00:00:00.000Z&format=json&aggInterval={agg_int}"
     elif location != "ALL" and device_type == "ALL":
-        os_usage_api_url = f"https://api.cloudflare.com/client/v4/radar/http/timeseries_groups/os?dateStart={strt_dt}T00:00:00.000Z&dateEnd={strt_dt}T00:00:00.000Z&location={location}&format=json&aggInterval={agg_int}"
+        os_usage_api_url = f"https://api.cloudflare.com/client/v4/radar/http/timeseries_groups/os?dateStart={strt_dt}T00:00:00.000Z&dateEnd={end_dt}T00:00:00.000Z&location={location}&format=json&aggInterval={agg_int}"
     elif location == "ALL" and device_type != "ALL":
         os_usage_api_url = f"https://api.cloudflare.com/client/v4/radar/http/timeseries_groups/os?dateStart={strt_dt}T00:00:00.000Z&dateEnd={end_dt}T00:00:00.000Z&deviceType={device_type}&format=json&aggInterval={agg_int}"
     else:

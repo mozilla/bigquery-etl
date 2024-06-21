@@ -6,7 +6,6 @@ WITH flat AS (
     DATE(submission_timestamp) AS submission_date,
     document_id,
     CONCAT(document_id, '-', event_offset) AS event_id,
-    event.timestamp AS event_timestamp,
     SAFE.TIMESTAMP_MILLIS(
       SAFE_CAST(mozfun.map.get_key(event.extra, 'glean_timestamp') AS INT64)
     ) AS glean_timestamp,

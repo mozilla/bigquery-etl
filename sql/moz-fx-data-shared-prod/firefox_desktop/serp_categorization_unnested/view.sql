@@ -48,18 +48,27 @@ WITH flat AS (
   WHERE
     event.category = 'serp'
     AND event.name = 'categorization'
+),
+adj AS (
+  SELECT
+    * EXCEPT (sponsored_category_id, organic_category_id),
+        -- categorization did not take place if there were no domains
+    IF(sponsored_num_domains = 0, NULL, sponsored_category_id) AS sponsored_category_id,
+    IF(organic_num_domains = 0, NULL, organic_category_id) AS organic_category_id,
+  FROM
+    flat
 )
 SELECT
-  *,
+  a.*,
   nsp.category_name AS sponsored_category_name,
   norg.category_name AS organic_category_name
 FROM
-  flat AS f
+  adj AS a
 LEFT JOIN
   `moz-fx-data-shared-prod.static.serp_category_name` AS nsp
-  ON f.mappings_version = nsp.mappings_version
-  AND f.sponsored_category_id = nsp.category_id
+  ON a.mappings_version = nsp.mappings_version
+  AND a.sponsored_category_id = nsp.category_id
 LEFT JOIN
   `moz-fx-data-shared-prod.static.serp_category_name` AS norg
-  ON f.mappings_version = norg.mappings_version
-  AND f.organic_category_id = norg.category_id
+  ON a.mappings_version = norg.mappings_version
+  AND a.organic_category_id = norg.category_id

@@ -193,7 +193,8 @@ SELECT
       metrics.labeled_counter.networking_http_channel_disposition_enabled_no_reason,
       metrics.labeled_counter.networking_http_channel_disposition_enabled_upgrade,
       metrics.labeled_counter.networking_http_channel_disposition_enabled_wont,
-      metrics.labeled_counter.networking_http_channel_onstart_status
+      metrics.labeled_counter.networking_http_channel_onstart_status,
+      metrics.labeled_counter.networking_http_to_https_upgrade_reason
     ) AS `labeled_counter`,
     metrics.quantity,
     metrics.string,
@@ -621,7 +622,8 @@ SELECT
       metrics.labeled_counter.networking_http_channel_disposition_enabled_no_reason,
       metrics.labeled_counter.networking_http_channel_disposition_enabled_upgrade,
       metrics.labeled_counter.networking_http_channel_disposition_enabled_wont,
-      metrics.labeled_counter.networking_http_channel_onstart_status
+      metrics.labeled_counter.networking_http_channel_onstart_status,
+      metrics.labeled_counter.networking_http_to_https_upgrade_reason
     ) AS `labeled_counter`,
     metrics.quantity,
     STRUCT(
@@ -1285,7 +1287,8 @@ SELECT
       metrics.labeled_counter.networking_http_channel_disposition_enabled_no_reason,
       metrics.labeled_counter.networking_http_channel_disposition_enabled_upgrade,
       metrics.labeled_counter.networking_http_channel_disposition_enabled_wont,
-      metrics.labeled_counter.networking_http_channel_onstart_status
+      metrics.labeled_counter.networking_http_channel_onstart_status,
+      metrics.labeled_counter.networking_http_to_https_upgrade_reason
     ) AS `labeled_counter`,
     metrics.quantity,
     STRUCT(
@@ -1717,7 +1720,8 @@ SELECT
       metrics.labeled_counter.networking_http_channel_disposition_enabled_no_reason,
       metrics.labeled_counter.networking_http_channel_disposition_enabled_upgrade,
       metrics.labeled_counter.networking_http_channel_disposition_enabled_wont,
-      metrics.labeled_counter.networking_http_channel_onstart_status
+      metrics.labeled_counter.networking_http_channel_onstart_status,
+      metrics.labeled_counter.networking_http_to_https_upgrade_reason
     ) AS `labeled_counter`,
     metrics.quantity,
     metrics.string,

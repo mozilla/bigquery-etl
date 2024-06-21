@@ -3261,6 +3261,16 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
+    - name: networking_http_to_https_upgrade_reason
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
   - name: quantity
     type: RECORD
     mode: NULLABLE

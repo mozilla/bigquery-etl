@@ -3265,8 +3265,7 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream. (Migrated from
-        the geckoview metric of the same name).
+      description: 'Failure occurs when initializing the audio stream.
 
         '
     - name: glean_validation_pings_submitted
@@ -5182,6 +5181,20 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Whether successfully started HTTP channels
+
+        '
+    - name: networking_http_to_https_upgrade_reason
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Whether a top-level HTTP request gets upgraded to HTTPS and the
+        reason for it
 
         '
   - name: quantity

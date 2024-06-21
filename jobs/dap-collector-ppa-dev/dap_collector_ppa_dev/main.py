@@ -20,8 +20,6 @@ ADS_SCHEMA = [
     bigquery.SchemaField("task_size", "INTEGER", mode="REQUIRED"),
     bigquery.SchemaField("task_id", "STRING", mode="REQUIRED"),
     bigquery.SchemaField("task_index", "INTEGER", mode="REQUIRED"),
-    bigquery.SchemaField("impression_count", "INTEGER", mode="REQUIRED"),
-    bigquery.SchemaField("click_count", "INTEGER", mode="REQUIRED"),
     bigquery.SchemaField("conversion_count", "INTEGER", mode="REQUIRED"),
 ]
 REPORT_SCHEMA = [
@@ -132,9 +130,7 @@ async def collect_once(task, timestamp, duration, hpke_private_key, auth_token):
                         cnt["task_id"] = task["task_id"]
                         cnt["task_index"] = i
                         cnt["task_size"] = ad["debug"]["taskSize"]
-                        cnt["impression_count"] = entries[i]
-                        cnt["click_count"] = entries[i + TASK_AD_SIZE]
-                        cnt["conversion_count"] = entries[i + (TASK_AD_SIZE * 2)]
+                        cnt["conversion_count"] = entries[i]
 
                         res["counts"].append(cnt)
             elif line.startswith("Number of reports:"):

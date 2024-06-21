@@ -104,7 +104,7 @@ class GleanAppPingViews(GleanTable):
             included_channel_apps = []
             included_channel_views = []
             for channel_app in app_info:
-                channel_dataset = channel_app["document_namespace"].replace("-", "_")
+                channel_dataset = channel_app["bq_dataset_family"]
                 channel_dataset_view = f"{channel_dataset}.{view_name}"
                 schema = Schema.for_table(
                     "moz-fx-data-shared-prod",
@@ -143,9 +143,7 @@ class GleanAppPingViews(GleanTable):
             def _generate_view_sql(restructure_metrics=False) -> str:
                 queries = []
                 for channel_app in included_channel_apps:
-                    channel_dataset = channel_app["document_namespace"].replace(
-                        "-", "_"
-                    )
+                    channel_dataset = channel_app["bq_dataset_family"]
 
                     # compare table schema with unioned schema to determine fields that need to be NULL
                     select_expression = self._generate_select_expression(

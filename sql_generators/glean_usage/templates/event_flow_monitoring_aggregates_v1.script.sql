@@ -57,7 +57,7 @@ CREATE TEMP TABLE
           )
           SELECT DISTINCT
             @submission_date AS submission_date,
-            ext.value AS flow_id,
+            metrics.string.session_flow_id AS flow_id,
             event_category AS category,
             event_name AS name,
             TIMESTAMP_ADD(
@@ -68,8 +68,7 @@ CREATE TEMP TABLE
             "{{ app['canonical_app_name'] }}" AS normalized_app_name,
             client_info.app_channel AS channel
           FROM
-            events_unnested_with_metrics,
-            UNNEST(event_extra) AS ext
+            events_unnested_with_metrics
           WHERE
             DATE(submission_timestamp) = @submission_date
             AND metrics.string.session_flow_id IS NOT NULL

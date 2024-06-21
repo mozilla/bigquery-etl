@@ -327,8 +327,8 @@ def main():
             create_disposition="CREATE_IF_NEEDED",
             write_disposition="WRITE_TRUNCATE",
             schema=[
-                {"name": "StartTime", "type": "TIMESTAMP", "mode": "REQUIRED"},
-                {"name": "EndTime", "type": "TIMESTAMP", "mode": "REQUIRED"},
+                {"name": "StartTime", "type": "DATE", "mode": "REQUIRED"},
+                {"name": "EndTime", "type": "DATE", "mode": "REQUIRED"},
                 {"name": "Location", "type": "STRING", "mode": "NULLABLE"},
                 {"name": "UserType", "type": "STRING", "mode": "NULLABLE"},
                 {"name": "DeviceType", "type": "STRING", "mode": "NULLABLE"},

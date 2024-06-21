@@ -9,7 +9,7 @@ from google.cloud import storage
 
 # Configs
 brwsr_usg_configs = {
-    "timeout_limit": 2000,
+    "timeout_limit": 2400,
     "device_types": ["DESKTOP", "MOBILE", "OTHER", "ALL"],
     "max_limit": 20,
     "operating_systems": [
@@ -77,7 +77,7 @@ def move_blob(bucket_name, blob_name, destination_bucket_name, destination_blob_
     source_bucket = storage_client.bucket(bucket_name)
     source_blob = source_bucket.blob(blob_name)
     destination_bucket = storage_client.bucket(destination_bucket_name)
-    destination_generation_match_precondition = 0
+    destination_generation_match_precondition = None
 
     blob_copy = source_bucket.copy_blob(
         source_blob,
@@ -327,8 +327,8 @@ def main():
             create_disposition="CREATE_IF_NEEDED",
             write_disposition="WRITE_TRUNCATE",
             schema=[
-                {"name": "StartTime", "type": "TIMESTAMP", "mode": "REQUIRED"},
-                {"name": "EndTime", "type": "TIMESTAMP", "mode": "REQUIRED"},
+                {"name": "StartTime", "type": "DATE", "mode": "REQUIRED"},
+                {"name": "EndTime", "type": "DATE", "mode": "REQUIRED"},
                 {"name": "Location", "type": "STRING", "mode": "NULLABLE"},
                 {"name": "UserType", "type": "STRING", "mode": "NULLABLE"},
                 {"name": "DeviceType", "type": "STRING", "mode": "NULLABLE"},
@@ -384,9 +384,6 @@ FROM `moz-fx-data-shared-prod.cloudflare_derived.browser_errors_stg`
 WHERE CAST(StartTime as date) = DATE_SUB('{args.date}', INTERVAL 4 DAY) """
     load_err_to_gold = client.query(browser_usg_errors_stg_to_gold_query)
     load_err_to_gold.result()
-
-    # Initialize a storage client to use in next steps
-    storage_client = storage.Client()
 
     # STEP 8 - Copy the result CSV from stage to archive, then delete from stage
 

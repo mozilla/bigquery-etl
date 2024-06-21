@@ -41,7 +41,7 @@ fields:
   type: STRING
   mode: NULLABLE
   description: |-
-    Description of the localized site language and/or country based on `localized_site_language_code` (if any).
+    Description of the localized site language and/or country based on `localized_site_code` (if any).
     This will be null for anonymized Discover impressions.
 - name: localized_site_language_code
   type: STRING

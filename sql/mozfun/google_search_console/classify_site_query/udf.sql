@@ -22,6 +22,7 @@ RETURNS STRING AS (
             r'\bfirf',
             r'f.r.f.x',
             r'faiya-fokkusu',  -- fire fox (Japanese)
+            r'foxfire',
             r'huohu',  -- fire fox (Chinese)
             r'nightly',
             r'quantum',

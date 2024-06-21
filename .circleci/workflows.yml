@@ -527,10 +527,10 @@ jobs:
                     GENERATED_SQL_CHANGED=true
                   fi
 
-                  # Check if this PR removes a file. SQL generation needs to be re-run because
+                  # Check if this PR removes or renames a file. SQL generation needs to be re-run because
                   # simply merging the changes with the generated-sql branch would result in files being part of generated DAGs
-                  # and other artifacts that were actually removed
-                  if [[ $(git diff --no-index --name-only --diff-filter=D ~/remote-bigquery-etl-main/sql sql) ]]; then
+                  # and other artifacts that were actually removed or renamed
+                  if [[ $(git diff --no-index --name-only --diff-filter=DR ~/remote-bigquery-etl-main/sql sql) ]]; then
                     echo "SQL file was removed; re-generate SQL"
                     GENERATED_SQL_CHANGED=true
                   fi
@@ -914,10 +914,10 @@ jobs:
                     GENERATED_SQL_CHANGED=true
                   fi
 
-                  # If a SQL was removed from main re-run SQL generation
+                  # If a SQL was removed from main or renamed re-run SQL generation
                   # simply merging the changes with the generated-sql branch would result in files being part of generated DAGs
-                  # and other artifacts that were removed
-                  if [[ $(git diff --name-only --diff-filter=D $LATEST_TAG_GENERATED_SQL...HEAD -- sql) ]]; then
+                  # and other artifacts that were removed or renamed
+                  if [[ $(git diff --name-only --diff-filter=DR $LATEST_TAG_GENERATED_SQL...HEAD -- sql) ]]; then
                     echo "SQL file was removed; re-generate SQL"
                     GENERATED_SQL_CHANGED=true
                   fi

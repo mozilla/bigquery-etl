@@ -38,6 +38,8 @@ description: |-
 # MUST be kept in sync with the query in `app_ping_view.view.sql`
 OVERRIDDEN_FIELDS = {"normalized_channel"}
 
+VIEW_SQL_LENGTH_LIMIT = 256 * 1024
+
 PATH = Path(os.path.dirname(__file__))
 
 
@@ -63,7 +65,6 @@ class GleanAppPingViews(GleanTable):
 
         If schemas are incompatible, then use release channel only.
         """
-
         # get release channel info
         release_app = app_info[0]
         target_dataset = release_app["app_name"]
@@ -99,8 +100,11 @@ class GleanAppPingViews(GleanTable):
             cached_schemas = {}
 
             # iterate through app_info to get all channels
-            for channel in app_info:
-                channel_dataset = channel["document_namespace"].replace("-", "_")
+            included_channel_apps = []
+            included_channel_views = []
+            for channel_app in app_info:
+                channel_dataset = channel_app["bq_dataset_family"]
+                channel_dataset_view = f"{channel_dataset}.{view_name}"
                 schema = Schema.for_table(
                     "moz-fx-data-shared-prod",
                     channel_dataset,
@@ -110,6 +114,11 @@ class GleanAppPingViews(GleanTable):
                 )
                 cached_schemas[channel_dataset] = deepcopy(schema)
 
+                if schema.schema["fields"] == []:
+                    # check for empty schemas (e.g. restricted ones) and skip for now
+                    print(f"Cannot get schema for `{channel_dataset_view}`; Skipping")
+                    continue
+
                 try:
                     unioned_schema.merge(
                         schema, add_missing_fields=True, ignore_incompatible_fields=True
@@ -117,52 +126,53 @@ class GleanAppPingViews(GleanTable):
                 except Exception as e:
                     # if schema incompatibilities are detected, then only generate for release channel
                     print(
-                        f"Cannot UNION 'moz-fx-data-shared-prod.{channel_dataset}.{view_name}': {e}"
+                        f"Cannot UNION `moz-fx-data-shared-prod.{channel_dataset_view}`: {e}"
                     )
-
                     break
 
-            # generate the SELECT expression used for UNIONing the stable tables;
-            # fields that are not part of a table, but exist in others, are set to NULL
-            queries = []
-            for app in app_info:
-                channel_dataset = app["document_namespace"].replace("-", "_")
+                included_channel_apps.append(channel_app)
+                included_channel_views.append(channel_dataset_view)
 
-                if (
-                    channel_dataset not in cached_schemas
-                    or cached_schemas[channel_dataset].schema["fields"] == []
-                ):
-                    # check for empty schemas (e.g. restricted ones) and skip for now
-                    print(
-                        f"Cannot get schema for `{channel_dataset}.{view_name}`; Skipping"
-                    )
-                    continue
-
-                # compare table schema with unioned schema to determine fields that need to be NULL
-                select_expression = self._generate_select_expression(
-                    unioned_schema.schema["fields"],
-                    cached_schemas[channel_dataset].schema["fields"],
-                )
-
-                queries.append(
-                    dict(
-                        select_expression=select_expression,
-                        dataset=channel_dataset,
-                        table=view_name,
-                        channel=app.get("app_channel"),
-                        app_name=release_app["app_name"],
-                    )
-                )
-
-            if queries == []:
+            if included_channel_apps == []:
                 # nothing to render
                 return
 
-            # render view SQL
-            render_kwargs = dict(
-                project_id=project_id, target_view=full_view_id, queries=queries
-            )
-            rendered_view = reformat(view_template.render(**render_kwargs))
+            # generate the SELECT expression used for UNIONing the stable tables;
+            # fields that are not part of a table, but exist in others, are set to NULL
+            def _generate_view_sql(restructure_metrics=False) -> str:
+                queries = []
+                for channel_app in included_channel_apps:
+                    channel_dataset = channel_app["bq_dataset_family"]
+
+                    # compare table schema with unioned schema to determine fields that need to be NULL
+                    select_expression = self._generate_select_expression(
+                        unioned_schema.schema["fields"],
+                        cached_schemas[channel_dataset].schema["fields"],
+                        restructure_metrics=restructure_metrics,
+                    )
+
+                    queries.append(
+                        dict(
+                            select_expression=select_expression,
+                            dataset=channel_dataset,
+                            table=view_name,
+                            channel=channel_app.get("app_channel"),
+                            app_name=release_app["app_name"],
+                        )
+                    )
+
+                render_kwargs = dict(
+                    project_id=project_id, target_view=full_view_id, queries=queries
+                )
+                return reformat(view_template.render(**render_kwargs))
+
+            view_sql = _generate_view_sql(restructure_metrics=True)
+            if len(view_sql) > VIEW_SQL_LENGTH_LIMIT:
+                print(
+                    f"Generated SQL for `{full_view_id}` view with restructured `metrics` exceeds {VIEW_SQL_LENGTH_LIMIT:,} character limit."
+                    " Regenerating SQL without restructured `metrics`."
+                )
+                view_sql = _generate_view_sql(restructure_metrics=False)
 
             # write generated SQL files to destination folders
             if output_dir:
@@ -170,16 +180,12 @@ class GleanAppPingViews(GleanTable):
                     output_dir,
                     full_view_id,
                     "view.sql",
-                    rendered_view,
+                    view_sql,
                     skip_existing=str(
                         get_table_dir(output_dir, full_view_id) / "view.sql"
                     )
                     in skip_existing,
                 )
-
-                app_channels = [
-                    f"{channel['dataset']}.{view_name}" for channel in queries
-                ]
 
                 write_sql(
                     output_dir,
@@ -188,7 +194,7 @@ class GleanAppPingViews(GleanTable):
                     VIEW_METADATA_TEMPLATE.format(
                         ping_name=ping_name,
                         app_name=release_app["canonical_app_name"],
-                        app_channels=", ".join(app_channels),
+                        app_channels=", ".join(included_channel_views),
                     ),
                     skip_existing=str(
                         get_table_dir(output_dir, full_view_id) / "metadata.yaml"
@@ -234,7 +240,7 @@ class GleanAppPingViews(GleanTable):
             )
 
     def _generate_select_expression(
-        self, unioned_schema_nodes, app_schema_nodes, path=[]
+        self, unioned_schema_nodes, app_schema_nodes, path=[], restructure_metrics=False
     ) -> str:
         """
         Generate the select expression based on the unioned schema and the app channel schema.
@@ -248,16 +254,24 @@ class GleanAppPingViews(GleanTable):
         # iterate through fields
         for node_name, node in unioned_schema_nodes.items():
             dtype = node["type"]
+            node_path = path + [node_name]
 
             if node_name in app_schema_nodes:
                 # field exists in app schema
 
-                if node == app_schema_nodes[node_name]:
+                # We sometimes fully specify the `metrics` fields structure to try to avoid problems
+                # when the underlying table/view schemas change due to new metrics being added.
+                if node == app_schema_nodes[node_name] and not (
+                    restructure_metrics
+                    and node_path[0] == "metrics"
+                    and len(node_path) <= 2
+                    and dtype == "RECORD"
+                ):
                     if node_name not in OVERRIDDEN_FIELDS:
                         # field (and all nested fields) are identical, so just query it
-                        select_expr.append(f"{'.'.join(path + [node_name])}")
+                        select_expr.append(f"{'.'.join(node_path)}")
                 else:
-                    # fields, and/or nested fields are not identical
+                    # fields and/or nested fields are not identical, or this is within `metrics`
                     if dtype == "RECORD":
                         # for nested fields, recursively generate select expression
 
@@ -268,9 +282,14 @@ class GleanAppPingViews(GleanTable):
                                     ARRAY(
                                         SELECT
                                             STRUCT(
-                                                {self._generate_select_expression(node['fields'], app_schema_nodes[node_name]['fields'], [node_name])}
+                                                {self._generate_select_expression(
+                                                    node['fields'],
+                                                    app_schema_nodes[node_name]['fields'],
+                                                    [node_name],
+                                                    restructure_metrics
+                                                )}
                                             )
-                                        FROM UNNEST({'.'.join(path + [node_name])}) AS `{node_name}`
+                                        FROM UNNEST({'.'.join(node_path)}) AS `{node_name}`
                                     ) AS `{node_name}`
                                 """
                             )
@@ -279,7 +298,12 @@ class GleanAppPingViews(GleanTable):
                             select_expr.append(
                                 f"""
                                     STRUCT(
-                                        {self._generate_select_expression(node['fields'], app_schema_nodes[node_name]['fields'], path + [node_name])}
+                                        {self._generate_select_expression(
+                                            node['fields'],
+                                            app_schema_nodes[node_name]['fields'],
+                                            node_path,
+                                            restructure_metrics
+                                        )}
                                     ) AS `{node_name}`
                                 """
                             )
@@ -295,7 +319,7 @@ class GleanAppPingViews(GleanTable):
         return ", ".join(select_expr)
 
     def _type_info(self, node):
-        """Determine the type information"""
+        """Determine the type information."""
         dtype = node["type"]
         if dtype == "RECORD":
             dtype = (

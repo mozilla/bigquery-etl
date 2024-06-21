@@ -65,7 +65,6 @@ class GleanAppPingViews(GleanTable):
 
         If schemas are incompatible, then use release channel only.
         """
-
         # get release channel info
         release_app = app_info[0]
         target_dataset = release_app["app_name"]
@@ -283,7 +282,12 @@ class GleanAppPingViews(GleanTable):
                                     ARRAY(
                                         SELECT
                                             STRUCT(
-                                                {self._generate_select_expression(node['fields'], app_schema_nodes[node_name]['fields'], [node_name], restructure_metrics)}
+                                                {self._generate_select_expression(
+                                                    node['fields'],
+                                                    app_schema_nodes[node_name]['fields'],
+                                                    [node_name],
+                                                    restructure_metrics
+                                                )}
                                             )
                                         FROM UNNEST({'.'.join(node_path)}) AS `{node_name}`
                                     ) AS `{node_name}`
@@ -294,7 +298,12 @@ class GleanAppPingViews(GleanTable):
                             select_expr.append(
                                 f"""
                                     STRUCT(
-                                        {self._generate_select_expression(node['fields'], app_schema_nodes[node_name]['fields'], node_path, restructure_metrics)}
+                                        {self._generate_select_expression(
+                                            node['fields'],
+                                            app_schema_nodes[node_name]['fields'],
+                                            node_path,
+                                            restructure_metrics
+                                        )}
                                     ) AS `{node_name}`
                                 """
                             )
@@ -310,7 +319,7 @@ class GleanAppPingViews(GleanTable):
         return ", ".join(select_expr)
 
     def _type_info(self, node):
-        """Determine the type information"""
+        """Determine the type information."""
         dtype = node["type"]
         if dtype == "RECORD":
             dtype = (

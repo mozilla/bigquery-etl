@@ -44,7 +44,7 @@ forecast_model:
         grid_parameters:
           changepoint_prior_scale: [.01, .1, .15, .2]
           changepoint_range: [0.8, 0.9, 1]
-          n_changepoints: [25, 50]
+          n_changepoints: [30]
           weekly_seasonality: True
           yearly_seasonality: True
           growth: "logistic"
@@ -62,5 +62,5 @@ summarize:
 write_results:
   project: "moz-fx-data-shared_prod"
   forecast_dataset: "search_derived"
-  forecast_table: "search_funnel_forecasts"
-  components_table: "search_forecast_model_components"
+  forecast_table: "search_funnel_forecasts_v1"
+  components_table: "search_forecast_model_components_v1"

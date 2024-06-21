@@ -1430,7 +1430,7 @@ def initialize(
     else:
         file_regex = re.compile(
             r"^.*/([a-zA-Z0-9-]+)/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+(_v[0-9]+)?)/"
-            r"(?:query\.sql|init\.sql|materialized_view\.sql)$"
+            r"(?:query\.sql|init\.sql)$"
         )
         query_files = paths_matching_name_pattern(
             name, sql_dir, project_id, file_regex=file_regex
@@ -1472,7 +1472,7 @@ def initialize(
             except NotFound:
                 # continue with creating the table
                 pass
-        elif len(materialized_views) == 0:
+        else:
             return
 
         try:

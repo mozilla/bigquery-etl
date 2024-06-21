@@ -10,7 +10,20 @@ SELECT
   document_id,
   events,
   metadata,
-  metrics,
+  STRUCT(
+    STRUCT(
+      metrics.labeled_counter.glean_error_invalid_label,
+      metrics.labeled_counter.glean_error_invalid_overflow,
+      metrics.labeled_counter.glean_error_invalid_state,
+      metrics.labeled_counter.glean_error_invalid_value,
+      metrics.labeled_counter.inactive_tabs_tray_toggle_inactive_tab_tray
+    ) AS `labeled_counter`,
+    STRUCT(
+      metrics.counter.firefox_home_page_history_highlights_item_opened,
+      metrics.counter.tabs_grouped_tab_closed
+    ) AS `counter`,
+    STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,
@@ -29,7 +42,20 @@ SELECT
   document_id,
   events,
   metadata,
-  metrics,
+  STRUCT(
+    STRUCT(
+      metrics.labeled_counter.glean_error_invalid_label,
+      metrics.labeled_counter.glean_error_invalid_overflow,
+      metrics.labeled_counter.glean_error_invalid_state,
+      metrics.labeled_counter.glean_error_invalid_value,
+      metrics.labeled_counter.inactive_tabs_tray_toggle_inactive_tab_tray
+    ) AS `labeled_counter`,
+    STRUCT(
+      metrics.counter.firefox_home_page_history_highlights_item_opened,
+      metrics.counter.tabs_grouped_tab_closed
+    ) AS `counter`,
+    STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,
@@ -48,7 +74,20 @@ SELECT
   document_id,
   events,
   metadata,
-  metrics,
+  STRUCT(
+    STRUCT(
+      metrics.labeled_counter.glean_error_invalid_label,
+      metrics.labeled_counter.glean_error_invalid_overflow,
+      metrics.labeled_counter.glean_error_invalid_state,
+      metrics.labeled_counter.glean_error_invalid_value,
+      metrics.labeled_counter.inactive_tabs_tray_toggle_inactive_tab_tray
+    ) AS `labeled_counter`,
+    STRUCT(
+      metrics.counter.firefox_home_page_history_highlights_item_opened,
+      metrics.counter.tabs_grouped_tab_closed
+    ) AS `counter`,
+    STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,

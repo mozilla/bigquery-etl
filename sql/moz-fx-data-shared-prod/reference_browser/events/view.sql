@@ -17,6 +17,14 @@ SELECT
   ping_info,
   sample_id,
   submission_timestamp,
-  metrics
+  STRUCT(
+    STRUCT(
+      metrics.labeled_counter.glean_error_invalid_label,
+      metrics.labeled_counter.glean_error_invalid_value,
+      metrics.labeled_counter.glean_error_invalid_state,
+      metrics.labeled_counter.glean_error_invalid_overflow
+    ) AS `labeled_counter`,
+    STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`
+  ) AS `metrics`
 FROM
   `moz-fx-data-shared-prod.org_mozilla_reference_browser.events`

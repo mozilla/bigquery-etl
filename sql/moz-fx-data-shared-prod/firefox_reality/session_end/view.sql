@@ -10,7 +10,40 @@ SELECT
   document_id,
   events,
   metadata,
-  metrics,
+  STRUCT(
+    STRUCT(
+      metrics.counter.tabs_activated,
+      metrics.counter.url_domains,
+      metrics.counter.url_visits,
+      metrics.counter.control_open_new_window,
+      metrics.counter.windows_movement,
+      metrics.counter.windows_resize
+    ) AS `counter`,
+    STRUCT(
+      metrics.labeled_counter.glean_error_invalid_label,
+      metrics.labeled_counter.glean_error_invalid_value,
+      metrics.labeled_counter.tabs_opened,
+      metrics.labeled_counter.glean_error_invalid_state,
+      metrics.labeled_counter.glean_error_invalid_overflow,
+      metrics.labeled_counter.windows_opened_pri_window_count,
+      metrics.labeled_counter.windows_opened_window_count
+    ) AS `labeled_counter`,
+    STRUCT(
+      metrics.string.distribution_channel_name,
+      metrics.string.glean_client_annotation_experimentation_id
+    ) AS `string`,
+    STRUCT(
+      metrics.timing_distribution.windows_active_in_front_time,
+      metrics.timing_distribution.windows_active_in_left_time,
+      metrics.timing_distribution.windows_active_in_right_time,
+      metrics.timing_distribution.windows_double_pri_window_opened_time,
+      metrics.timing_distribution.windows_double_window_opened_time,
+      metrics.timing_distribution.windows_single_pri_window_opened_time,
+      metrics.timing_distribution.windows_single_window_opened_time,
+      metrics.timing_distribution.windows_triple_pri_window_opened_time,
+      metrics.timing_distribution.windows_triple_window_opened_time
+    ) AS `timing_distribution`
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,

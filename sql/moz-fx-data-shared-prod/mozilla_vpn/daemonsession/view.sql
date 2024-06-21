@@ -10,7 +10,38 @@ SELECT
   document_id,
   events,
   metadata,
-  metrics,
+  STRUCT(
+    STRUCT(
+      metrics.labeled_counter.glean_error_invalid_label,
+      metrics.labeled_counter.glean_error_invalid_overflow,
+      metrics.labeled_counter.glean_error_invalid_state,
+      metrics.labeled_counter.glean_error_invalid_value
+    ) AS `labeled_counter`,
+    STRUCT(
+      metrics.counter.session_connection_health_stable_count,
+      metrics.counter.connection_health_no_signal_count,
+      metrics.counter.connection_health_stable_count,
+      metrics.counter.connection_health_unstable_count,
+      metrics.counter.connection_health_pending_count
+    ) AS `counter`,
+    STRUCT(
+      metrics.datetime.session_daemon_session_end,
+      metrics.datetime.raw_session_daemon_session_end,
+      metrics.datetime.session_daemon_session_start,
+      metrics.datetime.raw_session_daemon_session_start
+    ) AS `datetime`,
+    STRUCT(
+      metrics.string.session_daemon_session_source,
+      metrics.string.glean_client_annotation_experimentation_id
+    ) AS `string`,
+    STRUCT(metrics.uuid.session_daemon_session_id, metrics.uuid.session_installation_id) AS `uuid`,
+    STRUCT(
+      metrics.timing_distribution.connection_health_no_signal_time,
+      metrics.timing_distribution.connection_health_stable_time,
+      metrics.timing_distribution.connection_health_unstable_time,
+      metrics.timing_distribution.connection_health_pending_time
+    ) AS `timing_distribution`
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,
@@ -29,7 +60,38 @@ SELECT
   document_id,
   events,
   metadata,
-  metrics,
+  STRUCT(
+    STRUCT(
+      metrics.labeled_counter.glean_error_invalid_label,
+      metrics.labeled_counter.glean_error_invalid_overflow,
+      metrics.labeled_counter.glean_error_invalid_state,
+      metrics.labeled_counter.glean_error_invalid_value
+    ) AS `labeled_counter`,
+    STRUCT(
+      metrics.counter.session_connection_health_stable_count,
+      metrics.counter.connection_health_no_signal_count,
+      metrics.counter.connection_health_stable_count,
+      metrics.counter.connection_health_unstable_count,
+      metrics.counter.connection_health_pending_count
+    ) AS `counter`,
+    STRUCT(
+      metrics.datetime.session_daemon_session_end,
+      metrics.datetime.raw_session_daemon_session_end,
+      metrics.datetime.session_daemon_session_start,
+      metrics.datetime.raw_session_daemon_session_start
+    ) AS `datetime`,
+    STRUCT(
+      metrics.string.session_daemon_session_source,
+      metrics.string.glean_client_annotation_experimentation_id
+    ) AS `string`,
+    STRUCT(metrics.uuid.session_daemon_session_id, metrics.uuid.session_installation_id) AS `uuid`,
+    STRUCT(
+      metrics.timing_distribution.connection_health_no_signal_time,
+      metrics.timing_distribution.connection_health_stable_time,
+      metrics.timing_distribution.connection_health_unstable_time,
+      metrics.timing_distribution.connection_health_pending_time
+    ) AS `timing_distribution`
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,
@@ -48,7 +110,38 @@ SELECT
   document_id,
   events,
   metadata,
-  metrics,
+  STRUCT(
+    STRUCT(
+      metrics.labeled_counter.glean_error_invalid_label,
+      metrics.labeled_counter.glean_error_invalid_overflow,
+      metrics.labeled_counter.glean_error_invalid_state,
+      metrics.labeled_counter.glean_error_invalid_value
+    ) AS `labeled_counter`,
+    STRUCT(
+      metrics.counter.session_connection_health_stable_count,
+      metrics.counter.connection_health_no_signal_count,
+      metrics.counter.connection_health_stable_count,
+      metrics.counter.connection_health_unstable_count,
+      metrics.counter.connection_health_pending_count
+    ) AS `counter`,
+    STRUCT(
+      metrics.datetime.session_daemon_session_end,
+      metrics.datetime.raw_session_daemon_session_end,
+      metrics.datetime.session_daemon_session_start,
+      metrics.datetime.raw_session_daemon_session_start
+    ) AS `datetime`,
+    STRUCT(
+      metrics.string.session_daemon_session_source,
+      metrics.string.glean_client_annotation_experimentation_id
+    ) AS `string`,
+    STRUCT(metrics.uuid.session_daemon_session_id, metrics.uuid.session_installation_id) AS `uuid`,
+    STRUCT(
+      metrics.timing_distribution.connection_health_no_signal_time,
+      metrics.timing_distribution.connection_health_stable_time,
+      metrics.timing_distribution.connection_health_unstable_time,
+      metrics.timing_distribution.connection_health_pending_time
+    ) AS `timing_distribution`
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,
@@ -68,15 +161,36 @@ SELECT
   events,
   metadata,
   STRUCT(
-    metrics.labeled_counter,
-    metrics.counter,
-    metrics.datetime,
+    STRUCT(
+      metrics.labeled_counter.glean_error_invalid_label,
+      metrics.labeled_counter.glean_error_invalid_overflow,
+      metrics.labeled_counter.glean_error_invalid_state,
+      metrics.labeled_counter.glean_error_invalid_value
+    ) AS `labeled_counter`,
+    STRUCT(
+      metrics.counter.session_connection_health_stable_count,
+      metrics.counter.connection_health_no_signal_count,
+      metrics.counter.connection_health_stable_count,
+      metrics.counter.connection_health_unstable_count,
+      metrics.counter.connection_health_pending_count
+    ) AS `counter`,
+    STRUCT(
+      metrics.datetime.session_daemon_session_end,
+      metrics.datetime.raw_session_daemon_session_end,
+      metrics.datetime.session_daemon_session_start,
+      metrics.datetime.raw_session_daemon_session_start
+    ) AS `datetime`,
     STRUCT(
       metrics.string.session_daemon_session_source,
       metrics.string.glean_client_annotation_experimentation_id
     ) AS `string`,
-    metrics.uuid,
-    metrics.timing_distribution
+    STRUCT(metrics.uuid.session_daemon_session_id, metrics.uuid.session_installation_id) AS `uuid`,
+    STRUCT(
+      metrics.timing_distribution.connection_health_no_signal_time,
+      metrics.timing_distribution.connection_health_stable_time,
+      metrics.timing_distribution.connection_health_unstable_time,
+      metrics.timing_distribution.connection_health_pending_time
+    ) AS `timing_distribution`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,

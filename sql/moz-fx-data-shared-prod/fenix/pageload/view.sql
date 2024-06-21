@@ -13,7 +13,15 @@ SELECT
   document_id,
   events,
   metadata,
-  metrics,
+  STRUCT(
+    STRUCT(
+      metrics.labeled_counter.glean_error_invalid_label,
+      metrics.labeled_counter.glean_error_invalid_overflow,
+      metrics.labeled_counter.glean_error_invalid_state,
+      metrics.labeled_counter.glean_error_invalid_value
+    ) AS `labeled_counter`,
+    STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,
@@ -35,7 +43,15 @@ SELECT
   document_id,
   events,
   metadata,
-  metrics,
+  STRUCT(
+    STRUCT(
+      metrics.labeled_counter.glean_error_invalid_label,
+      metrics.labeled_counter.glean_error_invalid_overflow,
+      metrics.labeled_counter.glean_error_invalid_state,
+      metrics.labeled_counter.glean_error_invalid_value
+    ) AS `labeled_counter`,
+    STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,
@@ -57,7 +73,15 @@ SELECT
   document_id,
   events,
   metadata,
-  metrics,
+  STRUCT(
+    STRUCT(
+      metrics.labeled_counter.glean_error_invalid_label,
+      metrics.labeled_counter.glean_error_invalid_overflow,
+      metrics.labeled_counter.glean_error_invalid_state,
+      metrics.labeled_counter.glean_error_invalid_value
+    ) AS `labeled_counter`,
+    STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,
@@ -79,7 +103,15 @@ SELECT
   document_id,
   events,
   metadata,
-  metrics,
+  STRUCT(
+    STRUCT(
+      metrics.labeled_counter.glean_error_invalid_label,
+      metrics.labeled_counter.glean_error_invalid_overflow,
+      metrics.labeled_counter.glean_error_invalid_state,
+      metrics.labeled_counter.glean_error_invalid_value
+    ) AS `labeled_counter`,
+    STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,
@@ -101,7 +133,15 @@ SELECT
   document_id,
   events,
   metadata,
-  metrics,
+  STRUCT(
+    STRUCT(
+      metrics.labeled_counter.glean_error_invalid_label,
+      metrics.labeled_counter.glean_error_invalid_overflow,
+      metrics.labeled_counter.glean_error_invalid_state,
+      metrics.labeled_counter.glean_error_invalid_value
+    ) AS `labeled_counter`,
+    STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,

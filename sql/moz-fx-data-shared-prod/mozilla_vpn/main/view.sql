@@ -10,7 +10,20 @@ SELECT
   document_id,
   events,
   metadata,
-  metrics,
+  STRUCT(
+    STRUCT(
+      metrics.labeled_counter.glean_error_invalid_label,
+      metrics.labeled_counter.glean_error_invalid_overflow,
+      metrics.labeled_counter.glean_error_invalid_state,
+      metrics.labeled_counter.glean_error_invalid_value
+    ) AS `labeled_counter`,
+    STRUCT(
+      metrics.boolean.settings_connect_on_startup_active,
+      metrics.boolean.settings_using_system_language
+    ) AS `boolean`,
+    STRUCT(metrics.timing_distribution.performance_time_to_main_screen) AS `timing_distribution`,
+    STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,
@@ -64,7 +77,20 @@ SELECT
     metadata.isp,
     metadata.user_agent
   ) AS `metadata`,
-  metrics,
+  STRUCT(
+    STRUCT(
+      metrics.labeled_counter.glean_error_invalid_label,
+      metrics.labeled_counter.glean_error_invalid_overflow,
+      metrics.labeled_counter.glean_error_invalid_state,
+      metrics.labeled_counter.glean_error_invalid_value
+    ) AS `labeled_counter`,
+    STRUCT(
+      metrics.boolean.settings_connect_on_startup_active,
+      metrics.boolean.settings_using_system_language
+    ) AS `boolean`,
+    STRUCT(metrics.timing_distribution.performance_time_to_main_screen) AS `timing_distribution`,
+    STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,
@@ -118,7 +144,20 @@ SELECT
     metadata.isp,
     metadata.user_agent
   ) AS `metadata`,
-  metrics,
+  STRUCT(
+    STRUCT(
+      metrics.labeled_counter.glean_error_invalid_label,
+      metrics.labeled_counter.glean_error_invalid_overflow,
+      metrics.labeled_counter.glean_error_invalid_state,
+      metrics.labeled_counter.glean_error_invalid_value
+    ) AS `labeled_counter`,
+    STRUCT(
+      metrics.boolean.settings_connect_on_startup_active,
+      metrics.boolean.settings_using_system_language
+    ) AS `boolean`,
+    STRUCT(metrics.timing_distribution.performance_time_to_main_screen) AS `timing_distribution`,
+    STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,
@@ -193,8 +232,16 @@ SELECT
     metadata.user_agent
   ) AS `metadata`,
   STRUCT(
-    metrics.labeled_counter,
-    metrics.boolean,
+    STRUCT(
+      metrics.labeled_counter.glean_error_invalid_label,
+      metrics.labeled_counter.glean_error_invalid_overflow,
+      metrics.labeled_counter.glean_error_invalid_state,
+      metrics.labeled_counter.glean_error_invalid_value
+    ) AS `labeled_counter`,
+    STRUCT(
+      metrics.boolean.settings_connect_on_startup_active,
+      metrics.boolean.settings_using_system_language
+    ) AS `boolean`,
     CAST(
       NULL
       AS
@@ -212,7 +259,7 @@ SELECT
           >
         >
     ) AS `timing_distribution`,
-    metrics.string
+    STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,

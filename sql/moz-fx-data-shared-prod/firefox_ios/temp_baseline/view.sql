@@ -10,7 +10,20 @@ SELECT
   document_id,
   events,
   metadata,
-  metrics,
+  STRUCT(
+    STRUCT(
+      metrics.labeled_counter.glean_error_invalid_label,
+      metrics.labeled_counter.glean_error_invalid_overflow,
+      metrics.labeled_counter.glean_error_invalid_state,
+      metrics.labeled_counter.glean_error_invalid_value
+    ) AS `labeled_counter`,
+    STRUCT(
+      metrics.timespan.baseline_validation_baseline_duration,
+      metrics.timespan.baseline_validation_startup_duration,
+      metrics.timespan.baseline_validation_visible_duration
+    ) AS `timespan`,
+    STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,
@@ -29,7 +42,20 @@ SELECT
   document_id,
   events,
   metadata,
-  metrics,
+  STRUCT(
+    STRUCT(
+      metrics.labeled_counter.glean_error_invalid_label,
+      metrics.labeled_counter.glean_error_invalid_overflow,
+      metrics.labeled_counter.glean_error_invalid_state,
+      metrics.labeled_counter.glean_error_invalid_value
+    ) AS `labeled_counter`,
+    STRUCT(
+      metrics.timespan.baseline_validation_baseline_duration,
+      metrics.timespan.baseline_validation_startup_duration,
+      metrics.timespan.baseline_validation_visible_duration
+    ) AS `timespan`,
+    STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,
@@ -48,7 +74,20 @@ SELECT
   document_id,
   events,
   metadata,
-  metrics,
+  STRUCT(
+    STRUCT(
+      metrics.labeled_counter.glean_error_invalid_label,
+      metrics.labeled_counter.glean_error_invalid_overflow,
+      metrics.labeled_counter.glean_error_invalid_state,
+      metrics.labeled_counter.glean_error_invalid_value
+    ) AS `labeled_counter`,
+    STRUCT(
+      metrics.timespan.baseline_validation_baseline_duration,
+      metrics.timespan.baseline_validation_startup_duration,
+      metrics.timespan.baseline_validation_visible_duration
+    ) AS `timespan`,
+    STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,

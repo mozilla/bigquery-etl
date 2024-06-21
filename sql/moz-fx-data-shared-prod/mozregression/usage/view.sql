@@ -10,7 +10,33 @@ SELECT
   document_id,
   events,
   metadata,
-  metrics,
+  STRUCT(
+    STRUCT(
+      metrics.labeled_counter.glean_error_invalid_label,
+      metrics.labeled_counter.glean_error_invalid_overflow,
+      metrics.labeled_counter.glean_error_invalid_state,
+      metrics.labeled_counter.glean_error_invalid_value
+    ) AS `labeled_counter`,
+    STRUCT(
+      metrics.string.usage_app,
+      metrics.string.usage_variant,
+      metrics.string.usage_build_type,
+      metrics.string.usage_linux_distro,
+      metrics.string.usage_linux_version,
+      metrics.string.usage_mac_version,
+      metrics.string.usage_python_version,
+      metrics.string.usage_windows_version,
+      metrics.string.glean_client_annotation_experimentation_id
+    ) AS `string`,
+    STRUCT(
+      metrics.datetime.usage_bad_date,
+      metrics.datetime.raw_usage_bad_date,
+      metrics.datetime.usage_good_date,
+      metrics.datetime.raw_usage_good_date,
+      metrics.datetime.usage_launch_date,
+      metrics.datetime.raw_usage_launch_date
+    ) AS `datetime`
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,

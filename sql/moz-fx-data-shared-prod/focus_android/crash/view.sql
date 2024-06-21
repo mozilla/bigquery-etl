@@ -10,7 +10,23 @@ SELECT
   document_id,
   events,
   metadata,
-  metrics,
+  STRUCT(
+    STRUCT(metrics.boolean.crash_startup) AS `boolean`,
+    STRUCT(metrics.datetime.crash_time, metrics.datetime.raw_crash_time) AS `datetime`,
+    STRUCT(
+      metrics.labeled_counter.glean_error_invalid_label,
+      metrics.labeled_counter.glean_error_invalid_overflow,
+      metrics.labeled_counter.glean_error_invalid_state,
+      metrics.labeled_counter.glean_error_invalid_value
+    ) AS `labeled_counter`,
+    STRUCT(
+      metrics.string.crash_process_type,
+      metrics.string.crash_cause,
+      metrics.string.crash_remote_type,
+      metrics.string.glean_client_annotation_experimentation_id
+    ) AS `string`,
+    STRUCT(metrics.timespan.crash_uptime) AS `timespan`
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,
@@ -29,7 +45,23 @@ SELECT
   document_id,
   events,
   metadata,
-  metrics,
+  STRUCT(
+    STRUCT(metrics.boolean.crash_startup) AS `boolean`,
+    STRUCT(metrics.datetime.crash_time, metrics.datetime.raw_crash_time) AS `datetime`,
+    STRUCT(
+      metrics.labeled_counter.glean_error_invalid_label,
+      metrics.labeled_counter.glean_error_invalid_overflow,
+      metrics.labeled_counter.glean_error_invalid_state,
+      metrics.labeled_counter.glean_error_invalid_value
+    ) AS `labeled_counter`,
+    STRUCT(
+      metrics.string.crash_process_type,
+      metrics.string.crash_cause,
+      metrics.string.crash_remote_type,
+      metrics.string.glean_client_annotation_experimentation_id
+    ) AS `string`,
+    STRUCT(metrics.timespan.crash_uptime) AS `timespan`
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,
@@ -48,7 +80,23 @@ SELECT
   document_id,
   events,
   metadata,
-  metrics,
+  STRUCT(
+    STRUCT(metrics.boolean.crash_startup) AS `boolean`,
+    STRUCT(metrics.datetime.crash_time, metrics.datetime.raw_crash_time) AS `datetime`,
+    STRUCT(
+      metrics.labeled_counter.glean_error_invalid_label,
+      metrics.labeled_counter.glean_error_invalid_overflow,
+      metrics.labeled_counter.glean_error_invalid_state,
+      metrics.labeled_counter.glean_error_invalid_value
+    ) AS `labeled_counter`,
+    STRUCT(
+      metrics.string.crash_process_type,
+      metrics.string.crash_cause,
+      metrics.string.crash_remote_type,
+      metrics.string.glean_client_annotation_experimentation_id
+    ) AS `string`,
+    STRUCT(metrics.timespan.crash_uptime) AS `timespan`
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,

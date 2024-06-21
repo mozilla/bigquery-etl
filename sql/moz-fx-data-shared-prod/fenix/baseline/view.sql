@@ -13,7 +13,36 @@ SELECT
   document_id,
   events,
   metadata,
-  metrics,
+  STRUCT(
+    STRUCT(
+      metrics.counter.events_total_uri_count,
+      metrics.counter.glean_validation_metrics_ping_count,
+      metrics.counter.events_normal_and_private_uri_count
+    ) AS `counter`,
+    STRUCT(
+      metrics.labeled_counter.glean_error_invalid_label,
+      metrics.labeled_counter.glean_error_invalid_overflow,
+      metrics.labeled_counter.glean_error_invalid_state,
+      metrics.labeled_counter.glean_error_invalid_value,
+      metrics.labeled_counter.metrics_search_count,
+      metrics.labeled_counter.browser_search_ad_clicks,
+      metrics.labeled_counter.browser_search_in_content,
+      metrics.labeled_counter.browser_search_with_ads,
+      metrics.labeled_counter.glean_validation_pings_submitted
+    ) AS `labeled_counter`,
+    STRUCT(
+      metrics.string.glean_baseline_locale,
+      metrics.string.search_default_engine_code,
+      metrics.string.search_default_engine_name,
+      metrics.string.metrics_distribution_id,
+      metrics.string.glean_client_annotation_experimentation_id
+    ) AS `string`,
+    STRUCT(metrics.timespan.glean_baseline_duration) AS `timespan`,
+    STRUCT(
+      metrics.datetime.glean_validation_first_run_hour,
+      metrics.datetime.raw_glean_validation_first_run_hour
+    ) AS `datetime`
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,
@@ -35,7 +64,36 @@ SELECT
   document_id,
   events,
   metadata,
-  metrics,
+  STRUCT(
+    STRUCT(
+      metrics.counter.events_total_uri_count,
+      metrics.counter.glean_validation_metrics_ping_count,
+      metrics.counter.events_normal_and_private_uri_count
+    ) AS `counter`,
+    STRUCT(
+      metrics.labeled_counter.glean_error_invalid_label,
+      metrics.labeled_counter.glean_error_invalid_overflow,
+      metrics.labeled_counter.glean_error_invalid_state,
+      metrics.labeled_counter.glean_error_invalid_value,
+      metrics.labeled_counter.metrics_search_count,
+      metrics.labeled_counter.browser_search_ad_clicks,
+      metrics.labeled_counter.browser_search_in_content,
+      metrics.labeled_counter.browser_search_with_ads,
+      metrics.labeled_counter.glean_validation_pings_submitted
+    ) AS `labeled_counter`,
+    STRUCT(
+      metrics.string.glean_baseline_locale,
+      metrics.string.search_default_engine_code,
+      metrics.string.search_default_engine_name,
+      metrics.string.metrics_distribution_id,
+      metrics.string.glean_client_annotation_experimentation_id
+    ) AS `string`,
+    STRUCT(metrics.timespan.glean_baseline_duration) AS `timespan`,
+    STRUCT(
+      metrics.datetime.glean_validation_first_run_hour,
+      metrics.datetime.raw_glean_validation_first_run_hour
+    ) AS `datetime`
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,
@@ -76,7 +134,11 @@ SELECT
   events,
   metadata,
   STRUCT(
-    metrics.counter,
+    STRUCT(
+      metrics.counter.events_total_uri_count,
+      metrics.counter.glean_validation_metrics_ping_count,
+      metrics.counter.events_normal_and_private_uri_count
+    ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
       metrics.labeled_counter.glean_error_invalid_overflow,
@@ -88,9 +150,18 @@ SELECT
       metrics.labeled_counter.browser_search_with_ads,
       metrics.labeled_counter.glean_validation_pings_submitted
     ) AS `labeled_counter`,
-    metrics.string,
-    metrics.timespan,
-    metrics.datetime
+    STRUCT(
+      metrics.string.glean_baseline_locale,
+      metrics.string.search_default_engine_code,
+      metrics.string.search_default_engine_name,
+      metrics.string.metrics_distribution_id,
+      metrics.string.glean_client_annotation_experimentation_id
+    ) AS `string`,
+    STRUCT(metrics.timespan.glean_baseline_duration) AS `timespan`,
+    STRUCT(
+      metrics.datetime.glean_validation_first_run_hour,
+      metrics.datetime.raw_glean_validation_first_run_hour
+    ) AS `datetime`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -141,7 +212,11 @@ SELECT
   events,
   metadata,
   STRUCT(
-    metrics.counter,
+    STRUCT(
+      metrics.counter.events_total_uri_count,
+      metrics.counter.glean_validation_metrics_ping_count,
+      metrics.counter.events_normal_and_private_uri_count
+    ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
       metrics.labeled_counter.glean_error_invalid_overflow,
@@ -153,9 +228,18 @@ SELECT
       metrics.labeled_counter.browser_search_with_ads,
       metrics.labeled_counter.glean_validation_pings_submitted
     ) AS `labeled_counter`,
-    metrics.string,
-    metrics.timespan,
-    metrics.datetime
+    STRUCT(
+      metrics.string.glean_baseline_locale,
+      metrics.string.search_default_engine_code,
+      metrics.string.search_default_engine_name,
+      metrics.string.metrics_distribution_id,
+      metrics.string.glean_client_annotation_experimentation_id
+    ) AS `string`,
+    STRUCT(metrics.timespan.glean_baseline_duration) AS `timespan`,
+    STRUCT(
+      metrics.datetime.glean_validation_first_run_hour,
+      metrics.datetime.raw_glean_validation_first_run_hour
+    ) AS `datetime`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -187,7 +271,36 @@ SELECT
   document_id,
   events,
   metadata,
-  metrics,
+  STRUCT(
+    STRUCT(
+      metrics.counter.events_total_uri_count,
+      metrics.counter.glean_validation_metrics_ping_count,
+      metrics.counter.events_normal_and_private_uri_count
+    ) AS `counter`,
+    STRUCT(
+      metrics.labeled_counter.glean_error_invalid_label,
+      metrics.labeled_counter.glean_error_invalid_overflow,
+      metrics.labeled_counter.glean_error_invalid_state,
+      metrics.labeled_counter.glean_error_invalid_value,
+      metrics.labeled_counter.metrics_search_count,
+      metrics.labeled_counter.browser_search_ad_clicks,
+      metrics.labeled_counter.browser_search_in_content,
+      metrics.labeled_counter.browser_search_with_ads,
+      metrics.labeled_counter.glean_validation_pings_submitted
+    ) AS `labeled_counter`,
+    STRUCT(
+      metrics.string.glean_baseline_locale,
+      metrics.string.search_default_engine_code,
+      metrics.string.search_default_engine_name,
+      metrics.string.metrics_distribution_id,
+      metrics.string.glean_client_annotation_experimentation_id
+    ) AS `string`,
+    STRUCT(metrics.timespan.glean_baseline_duration) AS `timespan`,
+    STRUCT(
+      metrics.datetime.glean_validation_first_run_hour,
+      metrics.datetime.raw_glean_validation_first_run_hour
+    ) AS `datetime`
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,

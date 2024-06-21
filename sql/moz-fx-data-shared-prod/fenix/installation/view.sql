@@ -13,7 +13,27 @@ SELECT
   document_id,
   events,
   metadata,
-  metrics,
+  STRUCT(
+    STRUCT(
+      metrics.labeled_counter.glean_error_invalid_label,
+      metrics.labeled_counter.glean_error_invalid_overflow,
+      metrics.labeled_counter.glean_error_invalid_state,
+      metrics.labeled_counter.glean_error_invalid_value
+    ) AS `labeled_counter`,
+    STRUCT(
+      metrics.string.installation_adgroup,
+      metrics.string.installation_campaign,
+      metrics.string.installation_creative,
+      metrics.string.installation_network,
+      metrics.string.installation_timestamp,
+      metrics.string.installation_identifier,
+      metrics.string.glean_client_annotation_experimentation_id
+    ) AS `string`,
+    STRUCT(
+      metrics.datetime.installation_timestamp,
+      metrics.datetime.raw_installation_timestamp
+    ) AS `datetime`
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,
@@ -35,7 +55,27 @@ SELECT
   document_id,
   events,
   metadata,
-  metrics,
+  STRUCT(
+    STRUCT(
+      metrics.labeled_counter.glean_error_invalid_label,
+      metrics.labeled_counter.glean_error_invalid_overflow,
+      metrics.labeled_counter.glean_error_invalid_state,
+      metrics.labeled_counter.glean_error_invalid_value
+    ) AS `labeled_counter`,
+    STRUCT(
+      metrics.string.installation_adgroup,
+      metrics.string.installation_campaign,
+      metrics.string.installation_creative,
+      metrics.string.installation_network,
+      metrics.string.installation_timestamp,
+      metrics.string.installation_identifier,
+      metrics.string.glean_client_annotation_experimentation_id
+    ) AS `string`,
+    STRUCT(
+      metrics.datetime.installation_timestamp,
+      metrics.datetime.raw_installation_timestamp
+    ) AS `datetime`
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,
@@ -57,7 +97,27 @@ SELECT
   document_id,
   events,
   metadata,
-  metrics,
+  STRUCT(
+    STRUCT(
+      metrics.labeled_counter.glean_error_invalid_label,
+      metrics.labeled_counter.glean_error_invalid_overflow,
+      metrics.labeled_counter.glean_error_invalid_state,
+      metrics.labeled_counter.glean_error_invalid_value
+    ) AS `labeled_counter`,
+    STRUCT(
+      metrics.string.installation_adgroup,
+      metrics.string.installation_campaign,
+      metrics.string.installation_creative,
+      metrics.string.installation_network,
+      metrics.string.installation_timestamp,
+      metrics.string.installation_identifier,
+      metrics.string.glean_client_annotation_experimentation_id
+    ) AS `string`,
+    STRUCT(
+      metrics.datetime.installation_timestamp,
+      metrics.datetime.raw_installation_timestamp
+    ) AS `datetime`
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,
@@ -79,7 +139,27 @@ SELECT
   document_id,
   events,
   metadata,
-  metrics,
+  STRUCT(
+    STRUCT(
+      metrics.labeled_counter.glean_error_invalid_label,
+      metrics.labeled_counter.glean_error_invalid_overflow,
+      metrics.labeled_counter.glean_error_invalid_state,
+      metrics.labeled_counter.glean_error_invalid_value
+    ) AS `labeled_counter`,
+    STRUCT(
+      metrics.string.installation_adgroup,
+      metrics.string.installation_campaign,
+      metrics.string.installation_creative,
+      metrics.string.installation_network,
+      metrics.string.installation_timestamp,
+      metrics.string.installation_identifier,
+      metrics.string.glean_client_annotation_experimentation_id
+    ) AS `string`,
+    STRUCT(
+      metrics.datetime.installation_timestamp,
+      metrics.datetime.raw_installation_timestamp
+    ) AS `datetime`
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,
@@ -101,7 +181,27 @@ SELECT
   document_id,
   events,
   metadata,
-  metrics,
+  STRUCT(
+    STRUCT(
+      metrics.labeled_counter.glean_error_invalid_label,
+      metrics.labeled_counter.glean_error_invalid_overflow,
+      metrics.labeled_counter.glean_error_invalid_state,
+      metrics.labeled_counter.glean_error_invalid_value
+    ) AS `labeled_counter`,
+    STRUCT(
+      metrics.string.installation_adgroup,
+      metrics.string.installation_campaign,
+      metrics.string.installation_creative,
+      metrics.string.installation_network,
+      metrics.string.installation_timestamp,
+      metrics.string.installation_identifier,
+      metrics.string.glean_client_annotation_experimentation_id
+    ) AS `string`,
+    STRUCT(
+      metrics.datetime.installation_timestamp,
+      metrics.datetime.raw_installation_timestamp
+    ) AS `datetime`
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,

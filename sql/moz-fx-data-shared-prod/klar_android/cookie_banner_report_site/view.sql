@@ -10,7 +10,17 @@ SELECT
   document_id,
   events,
   metadata,
-  metrics,
+  STRUCT(
+    STRUCT(
+      metrics.labeled_counter.glean_error_invalid_label,
+      metrics.labeled_counter.glean_error_invalid_overflow,
+      metrics.labeled_counter.glean_error_invalid_state,
+      metrics.labeled_counter.glean_error_invalid_value
+    ) AS `labeled_counter`,
+    STRUCT(metrics.url2.cookie_banner_report_site_domain) AS `url2`,
+    STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`,
+    STRUCT(metrics.url.cookie_banner_report_site_domain) AS `url`
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,

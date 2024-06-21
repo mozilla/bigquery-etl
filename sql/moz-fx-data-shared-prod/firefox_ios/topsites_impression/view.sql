@@ -10,7 +10,32 @@ SELECT
   document_id,
   events,
   metadata,
-  metrics,
+  STRUCT(
+    STRUCT(
+      metrics.labeled_counter.glean_error_invalid_label,
+      metrics.labeled_counter.glean_error_invalid_overflow,
+      metrics.labeled_counter.glean_error_invalid_state,
+      metrics.labeled_counter.glean_error_invalid_value
+    ) AS `labeled_counter`,
+    STRUCT(
+      metrics.quantity.top_site_contile_tile_id,
+      metrics.quantity.top_sites_contile_tile_id
+    ) AS `quantity`,
+    STRUCT(
+      metrics.string.top_site_contile_advertiser,
+      metrics.string.top_sites_contile_advertiser,
+      metrics.string.glean_client_annotation_experimentation_id
+    ) AS `string`,
+    STRUCT(
+      metrics.url2.top_site_contile_reporting_url,
+      metrics.url2.top_sites_contile_reporting_url
+    ) AS `url2`,
+    STRUCT(metrics.uuid.top_site_context_id, metrics.uuid.top_sites_context_id) AS `uuid`,
+    STRUCT(
+      metrics.url.top_site_contile_reporting_url,
+      metrics.url.top_sites_contile_reporting_url
+    ) AS `url`
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,
@@ -29,7 +54,32 @@ SELECT
   document_id,
   events,
   metadata,
-  metrics,
+  STRUCT(
+    STRUCT(
+      metrics.labeled_counter.glean_error_invalid_label,
+      metrics.labeled_counter.glean_error_invalid_overflow,
+      metrics.labeled_counter.glean_error_invalid_state,
+      metrics.labeled_counter.glean_error_invalid_value
+    ) AS `labeled_counter`,
+    STRUCT(
+      metrics.quantity.top_site_contile_tile_id,
+      metrics.quantity.top_sites_contile_tile_id
+    ) AS `quantity`,
+    STRUCT(
+      metrics.string.top_site_contile_advertiser,
+      metrics.string.top_sites_contile_advertiser,
+      metrics.string.glean_client_annotation_experimentation_id
+    ) AS `string`,
+    STRUCT(
+      metrics.url2.top_site_contile_reporting_url,
+      metrics.url2.top_sites_contile_reporting_url
+    ) AS `url2`,
+    STRUCT(metrics.uuid.top_site_context_id, metrics.uuid.top_sites_context_id) AS `uuid`,
+    STRUCT(
+      metrics.url.top_site_contile_reporting_url,
+      metrics.url.top_sites_contile_reporting_url
+    ) AS `url`
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,
@@ -48,7 +98,32 @@ SELECT
   document_id,
   events,
   metadata,
-  metrics,
+  STRUCT(
+    STRUCT(
+      metrics.labeled_counter.glean_error_invalid_label,
+      metrics.labeled_counter.glean_error_invalid_overflow,
+      metrics.labeled_counter.glean_error_invalid_state,
+      metrics.labeled_counter.glean_error_invalid_value
+    ) AS `labeled_counter`,
+    STRUCT(
+      metrics.quantity.top_site_contile_tile_id,
+      metrics.quantity.top_sites_contile_tile_id
+    ) AS `quantity`,
+    STRUCT(
+      metrics.string.top_site_contile_advertiser,
+      metrics.string.top_sites_contile_advertiser,
+      metrics.string.glean_client_annotation_experimentation_id
+    ) AS `string`,
+    STRUCT(
+      metrics.url2.top_site_contile_reporting_url,
+      metrics.url2.top_sites_contile_reporting_url
+    ) AS `url2`,
+    STRUCT(metrics.uuid.top_site_context_id, metrics.uuid.top_sites_context_id) AS `uuid`,
+    STRUCT(
+      metrics.url.top_site_contile_reporting_url,
+      metrics.url.top_sites_contile_reporting_url
+    ) AS `url`
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,

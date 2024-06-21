@@ -10,7 +10,26 @@ SELECT
   document_id,
   events,
   metadata,
-  metrics,
+  STRUCT(
+    STRUCT(
+      metrics.labeled_counter.glean_error_invalid_label,
+      metrics.labeled_counter.glean_error_invalid_value,
+      metrics.labeled_counter.glean_error_invalid_state,
+      metrics.labeled_counter.glean_error_invalid_overflow,
+      metrics.labeled_counter.glean_validation_pings_submitted
+    ) AS `labeled_counter`,
+    STRUCT(
+      metrics.string.distribution_channel_name,
+      metrics.string.glean_baseline_locale,
+      metrics.string.glean_client_annotation_experimentation_id
+    ) AS `string`,
+    STRUCT(metrics.timespan.glean_baseline_duration) AS `timespan`,
+    STRUCT(metrics.counter.glean_validation_metrics_ping_count) AS `counter`,
+    STRUCT(
+      metrics.datetime.glean_validation_first_run_hour,
+      metrics.datetime.raw_glean_validation_first_run_hour
+    ) AS `datetime`
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,

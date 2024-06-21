@@ -10,7 +10,20 @@ SELECT
   document_id,
   events,
   metadata,
-  metrics,
+  STRUCT(
+    STRUCT(metrics.boolean.fog_validation_profile_disk_is_ssd) AS `boolean`,
+    STRUCT(
+      metrics.labeled_counter.glean_error_invalid_label,
+      metrics.labeled_counter.glean_error_invalid_overflow,
+      metrics.labeled_counter.glean_error_invalid_state,
+      metrics.labeled_counter.glean_error_invalid_value
+    ) AS `labeled_counter`,
+    STRUCT(
+      metrics.string.fog_validation_os_version,
+      metrics.string.glean_client_annotation_experimentation_id
+    ) AS `string`,
+    STRUCT(metrics.uuid.fog_validation_legacy_telemetry_client_id) AS `uuid`
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,

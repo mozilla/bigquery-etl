@@ -29,11 +29,35 @@ SELECT
       CAST(NULL AS INTEGER) AS `glean_validation_app_forceclosed_count`,
       CAST(NULL AS INTEGER) AS `glean_validation_baseline_ping_count`
     ) AS `counter`,
-    metrics.datetime,
-    metrics.labeled_counter,
-    metrics.memory_distribution,
-    metrics.string,
-    metrics.timing_distribution
+    STRUCT(
+      metrics.datetime.glean_validation_first_run_hour,
+      metrics.datetime.raw_glean_validation_first_run_hour
+    ) AS `datetime`,
+    STRUCT(
+      metrics.labeled_counter.glean_error_invalid_label,
+      metrics.labeled_counter.glean_error_invalid_overflow,
+      metrics.labeled_counter.glean_error_invalid_state,
+      metrics.labeled_counter.glean_error_invalid_value,
+      metrics.labeled_counter.glean_upload_ping_upload_failure,
+      metrics.labeled_counter.glean_validation_pings_submitted
+    ) AS `labeled_counter`,
+    STRUCT(
+      metrics.memory_distribution.glean_database_size,
+      metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
+      metrics.memory_distribution.glean_upload_pending_pings_directory_size
+    ) AS `memory_distribution`,
+    STRUCT(
+      metrics.string.ping_reason,
+      metrics.string.glean_client_annotation_experimentation_id,
+      metrics.string.glean_database_rkv_load_error
+    ) AS `string`,
+    STRUCT(
+      metrics.timing_distribution.glean_upload_send_failure,
+      metrics.timing_distribution.glean_upload_send_success,
+      metrics.timing_distribution.glean_validation_shutdown_dispatcher_wait,
+      metrics.timing_distribution.glean_validation_shutdown_wait,
+      metrics.timing_distribution.performance_time_to_main_screen
+    ) AS `timing_distribution`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -72,8 +96,18 @@ SELECT
       metrics.counter.glean_validation_app_forceclosed_count,
       metrics.counter.glean_validation_baseline_ping_count
     ) AS `counter`,
-    metrics.datetime,
-    metrics.labeled_counter,
+    STRUCT(
+      metrics.datetime.glean_validation_first_run_hour,
+      metrics.datetime.raw_glean_validation_first_run_hour
+    ) AS `datetime`,
+    STRUCT(
+      metrics.labeled_counter.glean_error_invalid_label,
+      metrics.labeled_counter.glean_error_invalid_overflow,
+      metrics.labeled_counter.glean_error_invalid_state,
+      metrics.labeled_counter.glean_error_invalid_value,
+      metrics.labeled_counter.glean_upload_ping_upload_failure,
+      metrics.labeled_counter.glean_validation_pings_submitted
+    ) AS `labeled_counter`,
     STRUCT(
       STRUCT(
         metrics.memory_distribution.glean_database_size.count,
@@ -91,7 +125,11 @@ SELECT
         metrics.memory_distribution.glean_upload_pending_pings_directory_size.values
       ) AS `glean_upload_pending_pings_directory_size`
     ) AS `memory_distribution`,
-    metrics.string,
+    STRUCT(
+      metrics.string.ping_reason,
+      metrics.string.glean_client_annotation_experimentation_id,
+      metrics.string.glean_database_rkv_load_error
+    ) AS `string`,
     STRUCT(
       metrics.timing_distribution.glean_upload_send_failure,
       metrics.timing_distribution.glean_upload_send_success,
@@ -157,10 +195,28 @@ SELECT
       CAST(NULL AS INTEGER) AS `glean_validation_app_forceclosed_count`,
       CAST(NULL AS INTEGER) AS `glean_validation_baseline_ping_count`
     ) AS `counter`,
-    metrics.datetime,
-    metrics.labeled_counter,
-    metrics.memory_distribution,
-    metrics.string,
+    STRUCT(
+      metrics.datetime.glean_validation_first_run_hour,
+      metrics.datetime.raw_glean_validation_first_run_hour
+    ) AS `datetime`,
+    STRUCT(
+      metrics.labeled_counter.glean_error_invalid_label,
+      metrics.labeled_counter.glean_error_invalid_overflow,
+      metrics.labeled_counter.glean_error_invalid_state,
+      metrics.labeled_counter.glean_error_invalid_value,
+      metrics.labeled_counter.glean_upload_ping_upload_failure,
+      metrics.labeled_counter.glean_validation_pings_submitted
+    ) AS `labeled_counter`,
+    STRUCT(
+      metrics.memory_distribution.glean_database_size,
+      metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
+      metrics.memory_distribution.glean_upload_pending_pings_directory_size
+    ) AS `memory_distribution`,
+    STRUCT(
+      metrics.string.ping_reason,
+      metrics.string.glean_client_annotation_experimentation_id,
+      metrics.string.glean_database_rkv_load_error
+    ) AS `string`,
     STRUCT(
       metrics.timing_distribution.glean_upload_send_failure,
       metrics.timing_distribution.glean_upload_send_success,
@@ -206,15 +262,35 @@ SELECT
       CAST(NULL AS INTEGER) AS `glean_validation_app_forceclosed_count`,
       CAST(NULL AS INTEGER) AS `glean_validation_baseline_ping_count`
     ) AS `counter`,
-    metrics.datetime,
-    metrics.labeled_counter,
-    metrics.memory_distribution,
+    STRUCT(
+      metrics.datetime.glean_validation_first_run_hour,
+      metrics.datetime.raw_glean_validation_first_run_hour
+    ) AS `datetime`,
+    STRUCT(
+      metrics.labeled_counter.glean_error_invalid_label,
+      metrics.labeled_counter.glean_error_invalid_overflow,
+      metrics.labeled_counter.glean_error_invalid_state,
+      metrics.labeled_counter.glean_error_invalid_value,
+      metrics.labeled_counter.glean_upload_ping_upload_failure,
+      metrics.labeled_counter.glean_validation_pings_submitted
+    ) AS `labeled_counter`,
+    STRUCT(
+      metrics.memory_distribution.glean_database_size,
+      metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
+      metrics.memory_distribution.glean_upload_pending_pings_directory_size
+    ) AS `memory_distribution`,
     STRUCT(
       metrics.string.ping_reason,
       metrics.string.glean_client_annotation_experimentation_id,
       metrics.string.glean_database_rkv_load_error
     ) AS `string`,
-    metrics.timing_distribution
+    STRUCT(
+      metrics.timing_distribution.glean_upload_send_failure,
+      metrics.timing_distribution.glean_upload_send_success,
+      metrics.timing_distribution.glean_validation_shutdown_dispatcher_wait,
+      metrics.timing_distribution.glean_validation_shutdown_wait,
+      metrics.timing_distribution.performance_time_to_main_screen
+    ) AS `timing_distribution`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,

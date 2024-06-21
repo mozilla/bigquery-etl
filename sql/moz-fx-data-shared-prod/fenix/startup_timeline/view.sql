@@ -13,7 +13,26 @@ SELECT
   document_id,
   events,
   metadata,
-  metrics,
+  STRUCT(
+    STRUCT(
+      metrics.boolean.startup_timeline_framework_start_error,
+      metrics.boolean.startup_timeline_framework_start_read_error
+    ) AS `boolean`,
+    STRUCT(metrics.counter.startup_timeline_clock_ticks_per_second) AS `counter`,
+    STRUCT(
+      metrics.labeled_counter.glean_error_invalid_label,
+      metrics.labeled_counter.glean_error_invalid_overflow,
+      metrics.labeled_counter.glean_error_invalid_state,
+      metrics.labeled_counter.glean_error_invalid_value
+    ) AS `labeled_counter`,
+    STRUCT(
+      metrics.timespan.startup_timeline_framework_start,
+      metrics.timespan.startup_timeline_framework_primary,
+      metrics.timespan.startup_timeline_framework_secondary
+    ) AS `timespan`,
+    STRUCT(metrics.quantity.startup_timeline_clock_ticks_per_second_v2) AS `quantity`,
+    STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,
@@ -35,7 +54,26 @@ SELECT
   document_id,
   events,
   metadata,
-  metrics,
+  STRUCT(
+    STRUCT(
+      metrics.boolean.startup_timeline_framework_start_error,
+      metrics.boolean.startup_timeline_framework_start_read_error
+    ) AS `boolean`,
+    STRUCT(metrics.counter.startup_timeline_clock_ticks_per_second) AS `counter`,
+    STRUCT(
+      metrics.labeled_counter.glean_error_invalid_label,
+      metrics.labeled_counter.glean_error_invalid_overflow,
+      metrics.labeled_counter.glean_error_invalid_state,
+      metrics.labeled_counter.glean_error_invalid_value
+    ) AS `labeled_counter`,
+    STRUCT(
+      metrics.timespan.startup_timeline_framework_start,
+      metrics.timespan.startup_timeline_framework_primary,
+      metrics.timespan.startup_timeline_framework_secondary
+    ) AS `timespan`,
+    STRUCT(metrics.quantity.startup_timeline_clock_ticks_per_second_v2) AS `quantity`,
+    STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,
@@ -57,7 +95,26 @@ SELECT
   document_id,
   events,
   metadata,
-  metrics,
+  STRUCT(
+    STRUCT(
+      metrics.boolean.startup_timeline_framework_start_error,
+      metrics.boolean.startup_timeline_framework_start_read_error
+    ) AS `boolean`,
+    STRUCT(metrics.counter.startup_timeline_clock_ticks_per_second) AS `counter`,
+    STRUCT(
+      metrics.labeled_counter.glean_error_invalid_label,
+      metrics.labeled_counter.glean_error_invalid_overflow,
+      metrics.labeled_counter.glean_error_invalid_state,
+      metrics.labeled_counter.glean_error_invalid_value
+    ) AS `labeled_counter`,
+    STRUCT(
+      metrics.timespan.startup_timeline_framework_start,
+      metrics.timespan.startup_timeline_framework_primary,
+      metrics.timespan.startup_timeline_framework_secondary
+    ) AS `timespan`,
+    STRUCT(metrics.quantity.startup_timeline_clock_ticks_per_second_v2) AS `quantity`,
+    STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,
@@ -79,7 +136,26 @@ SELECT
   document_id,
   events,
   metadata,
-  metrics,
+  STRUCT(
+    STRUCT(
+      metrics.boolean.startup_timeline_framework_start_error,
+      metrics.boolean.startup_timeline_framework_start_read_error
+    ) AS `boolean`,
+    STRUCT(metrics.counter.startup_timeline_clock_ticks_per_second) AS `counter`,
+    STRUCT(
+      metrics.labeled_counter.glean_error_invalid_label,
+      metrics.labeled_counter.glean_error_invalid_overflow,
+      metrics.labeled_counter.glean_error_invalid_state,
+      metrics.labeled_counter.glean_error_invalid_value
+    ) AS `labeled_counter`,
+    STRUCT(
+      metrics.timespan.startup_timeline_framework_start,
+      metrics.timespan.startup_timeline_framework_primary,
+      metrics.timespan.startup_timeline_framework_secondary
+    ) AS `timespan`,
+    STRUCT(metrics.quantity.startup_timeline_clock_ticks_per_second_v2) AS `quantity`,
+    STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,
@@ -101,7 +177,26 @@ SELECT
   document_id,
   events,
   metadata,
-  metrics,
+  STRUCT(
+    STRUCT(
+      metrics.boolean.startup_timeline_framework_start_error,
+      metrics.boolean.startup_timeline_framework_start_read_error
+    ) AS `boolean`,
+    STRUCT(metrics.counter.startup_timeline_clock_ticks_per_second) AS `counter`,
+    STRUCT(
+      metrics.labeled_counter.glean_error_invalid_label,
+      metrics.labeled_counter.glean_error_invalid_overflow,
+      metrics.labeled_counter.glean_error_invalid_state,
+      metrics.labeled_counter.glean_error_invalid_value
+    ) AS `labeled_counter`,
+    STRUCT(
+      metrics.timespan.startup_timeline_framework_start,
+      metrics.timespan.startup_timeline_framework_primary,
+      metrics.timespan.startup_timeline_framework_secondary
+    ) AS `timespan`,
+    STRUCT(metrics.quantity.startup_timeline_clock_ticks_per_second_v2) AS `quantity`,
+    STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`
+  ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
   normalized_os,

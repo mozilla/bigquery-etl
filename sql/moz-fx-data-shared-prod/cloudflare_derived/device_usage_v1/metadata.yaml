@@ -20,3 +20,5 @@ bigquery:
     fields:
     - location
     - user_type
+secrets:
+- CLOUDFLARE_AUTH_TOKEN

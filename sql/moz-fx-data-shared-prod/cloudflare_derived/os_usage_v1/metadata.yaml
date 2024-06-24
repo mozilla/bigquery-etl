@@ -20,3 +20,5 @@ bigquery:
     fields:
     - os
     - device_type
+secrets:
+- CLOUDFLARE_AUTH_TOKEN

@@ -136,6 +136,12 @@ class WorkgroupAccessMetadata:
     members: List[str]
 
 
+@attr.s(auto_attribs=True)
+class SecretKeys:
+    """Names of airflow-gke-prod secret keys to be loaded into the generated DAG"""
+    key_name: str
+
+
 class ExternalDataFormat(enum.Enum):
     """Represents the external types fo data that are supported to be integrated."""
 
@@ -246,6 +252,7 @@ class Metadata:
         schema = None
         workgroup_access = None
         references = {}
+        secrets = {}
         external_data = None
         deprecated = False
         deletion_date = None
@@ -309,6 +316,9 @@ class Metadata:
                 if "references" in metadata:
                     references = metadata["references"]
 
+                if "secrets" in metadata:
+                    secrets = metadata["secrets"]
+
                 if "external_data" in metadata:
                     converter = cattrs.BaseConverter()
                     external_data = converter.structure(
@@ -329,6 +339,7 @@ class Metadata:
                     schema,
                     workgroup_access,
                     references,
+                    secrets,
                     external_data,
                     deprecated,
                     deletion_date,

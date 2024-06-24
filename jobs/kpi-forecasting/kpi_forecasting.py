@@ -1,11 +1,13 @@
 from kpi_forecasting.inputs import CLI, YAML
 from kpi_forecasting.models.prophet_forecast import ProphetForecast
+from kpi_forecasting.models.funnel_forecast import FunnelForecast
 from kpi_forecasting.metric_hub import MetricHub
 
 
 # A dictionary of available models in the `models` directory.
 MODELS = {
     "prophet": ProphetForecast,
+    "funnel": FunnelForecast,
 }
 
 

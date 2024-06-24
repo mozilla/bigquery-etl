@@ -9,7 +9,7 @@ from google.cloud import storage
 
 # Configs
 brwsr_usg_configs = {
-    "timeout_limit": 2400,
+    "timeout_limit": 220,
     "device_types": ["DESKTOP", "MOBILE", "OTHER", "ALL"],
     "max_limit": 20,
     "operating_systems": [

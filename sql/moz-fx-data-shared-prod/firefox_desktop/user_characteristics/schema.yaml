@@ -584,6 +584,85 @@ fields:
         some of the decimal places
 
         '
+    - name: characteristics_any_pointer_type
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Union of pointers available. We apply union to determine if the
+        user have both coarse and fine pointer.
+
+        '
+    - name: characteristics_motion_decimals
+      type: INTEGER
+      mode: NULLABLE
+      description: 'devicemotion event''s decimal places count
+
+        '
+    - name: characteristics_motion_freq
+      type: INTEGER
+      mode: NULLABLE
+      description: 'devicemotion event''s frequency
+
+        '
+    - name: characteristics_orientation_decimals
+      type: INTEGER
+      mode: NULLABLE
+      description: 'deviceorientation event''s decimal places count
+
+        '
+    - name: characteristics_orientation_freq
+      type: INTEGER
+      mode: NULLABLE
+      description: 'deviceorientation event''s frequency
+
+        '
+    - name: characteristics_orientationabs_decimals
+      type: INTEGER
+      mode: NULLABLE
+      description: 'deviceorientationabsolute event''s decimal places count
+
+        '
+    - name: characteristics_orientationabs_freq
+      type: INTEGER
+      mode: NULLABLE
+      description: 'deviceorientationabsolute event''s frequency
+
+        '
+    - name: characteristics_pointer_height
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Height of user''s pointer
+
+        '
+    - name: characteristics_pointer_tiltx
+      type: INTEGER
+      mode: NULLABLE
+      description: 'TiltX of user''s pointer
+
+        '
+    - name: characteristics_pointer_tilty
+      type: INTEGER
+      mode: NULLABLE
+      description: 'TiltY of user''s pointer
+
+        '
+    - name: characteristics_pointer_twist
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Twist of user''s pointer
+
+        '
+    - name: characteristics_pointer_type
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Pointer type of the user''s primary pointer device.
+
+        '
+    - name: characteristics_pointer_width
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Width of user''s pointer
+
+        '
   - name: string
     type: RECORD
     mode: NULLABLE
@@ -736,6 +815,24 @@ fields:
       type: STRING
       mode: NULLABLE
       description: 'Name of the current keyboard layout.
+
+        '
+    - name: characteristics_pointer_pressure
+      type: STRING
+      mode: NULLABLE
+      description: 'Pressure of user''s pointer
+
+        '
+    - name: characteristics_pointer_tangentinal_pressure
+      type: STRING
+      mode: NULLABLE
+      description: 'Tangential Pressure of user''s pointer
+
+        '
+    - name: characteristics_touch_rotation_angle
+      type: STRING
+      mode: NULLABLE
+      description: 'Rotation angle of user''s touch
 
         '
   - name: uuid
@@ -983,6 +1080,25 @@ fields:
         can be run smoothly and power-efficiently.
 
         '
+    - name: characteristics_errors
+      type: STRING
+      mode: NULLABLE
+      description: 'Errors occured on C++ side of data collection
+
+        '
+    - name: characteristics_ice_foundations
+      type: STRING
+      mode: NULLABLE
+      description: 'Unique ICE foundations occurance count and the standard deviation
+        of latencies
+
+        '
+    - name: characteristics_js_errors
+      type: STRING
+      mode: NULLABLE
+      description: 'Errors occured on JavaScript side of data collection
+
+        '
   - name: string_list
     type: RECORD
     mode: NULLABLE
@@ -1049,6 +1165,15 @@ fields:
       type: STRING
       mode: NULLABLE
     - name: characteristics_media_capabilities
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_errors
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_ice_foundations
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_js_errors
       type: STRING
       mode: NULLABLE
 - name: normalized_app_name

@@ -6,6 +6,7 @@ import requests
 from argparse import ArgumentParser
 from google.cloud import bigquery
 from google.cloud import storage
+import os
 
 # Configs
 brwsr_usg_configs = {
@@ -263,7 +264,6 @@ def main():
     """Call the API, save data to GCS, load to BQ staging, delete & load to BQ gold"""
     parser = ArgumentParser(description=__doc__)
     parser.add_argument("--date", required=True)
-    parser.add_argument("--cloudflare_api_token", required=True)
     parser.add_argument("--project", default=brwsr_usg_configs["gcp_project_id"])
     parser.add_argument("--dataset", default="cloudflare_derived")
 
@@ -271,8 +271,10 @@ def main():
     print("Running for date: ")
     print(args.date)
 
+    cf_api_token = os.environ.get("CLOUDFLARE_AUTH_TOKEN")
+
     # STEP 1 - Pull the data from the API, save results & errors to GCS staging area
-    result_summary = get_browser_data(args.date, args.cloudflare_api_token)
+    result_summary = get_browser_data(args.date, cf_api_token)
     print("result_summary")
     print(result_summary)
 

@@ -9,7 +9,7 @@ from google.cloud import storage
 
 # Configurations
 os_usg_configs = {
-    "timeout_limit": 2500,
+    "timeout_limit": 500,
     "device_types": ["DESKTOP", "MOBILE", "OTHER", "ALL"],
     "locations": [
         "ALL",

@@ -7,7 +7,7 @@ import time
 from google.cloud import bigquery
 import requests
 
-LEADER = "https://dap-07-1.api.divviup.org"
+LEADER = "https://dap-09-3.api.divviup.org"
 CMD = f"./collect --task-id {{task_id}} --leader {LEADER} --vdaf {{vdaf}} {{vdaf_args}} --authorization-bearer-token {{auth_token}} --batch-interval-start {{timestamp}} --batch-interval-duration {{duration}} --hpke-config {{hpke_config}} --hpke-private-key {{hpke_private_key}}"
 INTERVAL_LENGTH = 300
 JOB_INTERVAL = 15
@@ -21,6 +21,9 @@ ADS_SCHEMA = [
     bigquery.SchemaField("task_id", "STRING", mode="REQUIRED"),
     bigquery.SchemaField("task_index", "INTEGER", mode="REQUIRED"),
     bigquery.SchemaField("conversion_count", "INTEGER", mode="REQUIRED"),
+    bigquery.SchemaField("advertiser_id", "STRING", mode="REQUIRED"),
+    bigquery.SchemaField("advertiser_name", "STRING", mode="REQUIRED"),
+    bigquery.SchemaField("campaign_id", "STRING", mode="REQUIRED"),
 ]
 REPORT_SCHEMA = [
     bigquery.SchemaField("collection_time", "TIMESTAMP", mode="REQUIRED"),
@@ -124,12 +127,15 @@ async def collect_once(task, timestamp, duration, hpke_private_key, auth_token):
                     if ad is not None:
                         cnt = {}
                         cnt["collection_time"] = collection_time
-                        cnt["placement_id"] = ad["debug"]["placementId"]
-                        cnt["ad_id"] = ad["debug"]["adId"]
-                        cnt["conversion_key"] = ad["debug"]["conversionKey"]
+                        cnt["placement_id"] = ad["advertiserInfo"]["placementId"]
+                        cnt["advertiser_id"] = ad["advertiserInfo"]["advertiserId"]
+                        cnt["advertiser_name"] = ad["advertiserInfo"]["advertiserName"]
+                        cnt["ad_id"] = ad["advertiserInfo"]["adId"]
+                        cnt["conversion_key"] = ad["advertiserInfo"]["conversionKey"]
                         cnt["task_id"] = task["task_id"]
                         cnt["task_index"] = i
-                        cnt["task_size"] = ad["debug"]["taskSize"]
+                        cnt["task_size"] = task["task_size"]
+                        cnt["campaign_id"] = ad["advertiserInfo"]["campaignId"]
                         cnt["conversion_count"] = entries[i]
 
                         res["counts"].append(cnt)
@@ -162,7 +168,7 @@ def build_base_report(task_id, timestamp, metric_type, collection_time):
 def get_ad(task_id, index):
     global ads
     for ad in ads:
-        if ad["debug"]["taskId"] == task_id and ad["debug"]["taskIndex"] == index:
+        if ad["taskId"] == task_id and ad["taskIndex"] == index:
             return ad
 
 

@@ -1,12 +1,16 @@
 {{ header }}
-
-WITH final_probe_extract AS ( SELECT
+WITH final_probe_extract AS (
+  SELECT
     channel,
-    app_version as version,
+    app_version AS version,
     ping_type,
     os,
-    app_build_id as build_id,
-    IF(app_build_id="*", NULL, SAFE_CAST({{ build_date_udf }}(app_build_id) AS STRING)) as build_date,
+    app_build_id AS build_id,
+    IF(
+      app_build_id = "*",
+      NULL,
+      SAFE_CAST({{ build_date_udf }}(app_build_id) AS STRING)
+    ) AS build_date,
     metric,
     metric_type,
     -- BigQuery has some null unicode characters which Postgresql doesn't like,
@@ -14,17 +18,23 @@ WITH final_probe_extract AS ( SELECT
     -- length.
     SUBSTR(REPLACE(key, r"\x00", ""), 0, 200) AS metric_key,
     client_agg_type,
-    MAX(total_users) as total_users,
-    MAX(IF(agg_type = "histogram", mozfun.glam.histogram_cast_json(aggregates), NULL)) as histogram,
-    MAX(IF(agg_type = "percentiles", mozfun.glam.histogram_cast_json(aggregates), NULL)) as percentiles,
-    MAX(IF(agg_type = "histogram", mozfun.glam.histogram_cast_json(non_norm_aggregates), NULL)) as non_norm_histogram,
-    MAX(IF(agg_type = "percentiles", mozfun.glam.histogram_cast_json(non_norm_aggregates), NULL)) as non_norm_percentiles
-FROM
+    MAX(total_users) AS total_users,
+    MAX(IF(agg_type = "histogram", mozfun.glam.histogram_cast_json(aggregates), NULL)) AS histogram,
+    MAX(
+      IF(agg_type = "percentiles", mozfun.glam.histogram_cast_json(aggregates), NULL)
+    ) AS percentiles,
+    MAX(
+      IF(agg_type = "histogram", mozfun.glam.histogram_cast_json(non_norm_aggregates), NULL)
+    ) AS non_norm_histogram,
+    MAX(
+      IF(agg_type = "percentiles", mozfun.glam.histogram_cast_json(non_norm_aggregates), NULL)
+    ) AS non_norm_percentiles
+  FROM
     `{{ dataset }}.{{ prefix }}__view_probe_counts_v1`
-WHERE
+  WHERE
     total_users > {{ total_users }}
     AND app_version NOT IN (2015815747, 2015819723, 2015828803, 2015829155, 3015815747)
-GROUP BY
+  GROUP BY
     channel,
     app_version,
     ping_type,
@@ -37,17 +47,25 @@ GROUP BY
 ),
 -- to populate total_sample for agg_type other than 'count'
 glam_sample_counts AS (
-  SELECT fsc1.os,
+  SELECT
+    fsc1.os,
     fsc1.app_version,
     fsc1.app_build_id,
     fsc1.metric,
     fsc1.key,
     fsc1.ping_type,
     fsc1.agg_type,
-    CASE WHEN fsc1.agg_type in ('max','min','sum','avg') AND fsc2.agg_type = 'count' THEN fsc2.total_sample ELSE fsc1.total_sample END as total_sample
-  FROM `{{ dataset }}.{{ prefix }}__view_sample_counts_v1`  fsc1
-  INNER JOIN `{{ dataset }}.{{ prefix }}__view_sample_counts_v1`  fsc2
-  ON fsc1.os = fsc2.os
+    CASE
+      WHEN fsc1.agg_type IN ('max', 'min', 'sum', 'avg')
+        AND fsc2.agg_type = 'count'
+        THEN fsc2.total_sample
+      ELSE fsc1.total_sample
+    END AS total_sample
+  FROM
+    `{{ dataset }}.{{ prefix }}__view_sample_counts_v1` fsc1
+  INNER JOIN
+    `{{ dataset }}.{{ prefix }}__view_sample_counts_v1` fsc2
+    ON fsc1.os = fsc2.os
     AND fsc1.app_build_id = fsc2.app_build_id
     AND fsc1.app_version = fsc2.app_version
     AND fsc1.metric = fsc2.metric
@@ -55,37 +73,61 @@ glam_sample_counts AS (
     AND fsc1.ping_type = fsc2.ping_type
 ),
 -- get all the rcords from view_probe_counts and the matching from view_sample_counts
-ranked_data AS (SELECT
-  cp.channel,
-  cp.version,
-  cp.os,
-  cp.ping_type,
-  cp.build_id,
-  cp.build_date,
-  cp.metric,
-  cp.metric_key,
-  cp.client_agg_type,
-  cp.metric_type,
-  total_users,
-  histogram,
-  percentiles,
-  CASE WHEN client_agg_type = '' THEN 0 ELSE total_sample END AS total_sample,
-  ROW_NUMBER() OVER (PARTITION BY cp.version, cp.os, cp.build_id,cp.ping_type, cp.metric, cp.metric_key, cp.client_agg_type,cp.metric_type,histogram, percentiles
-                    ORDER BY total_users, total_sample DESC) as rnk
-FROM
-  final_probe_extract cp
-LEFT JOIN glam_sample_counts sc
-  ON
-    sc.os = cp.os
+ranked_data AS (
+  SELECT
+    cp.channel,
+    cp.version,
+    cp.os,
+    cp.ping_type,
+    cp.build_id,
+    cp.build_date,
+    cp.metric,
+    cp.metric_key,
+    cp.client_agg_type,
+    cp.metric_type,
+    total_users,
+    histogram,
+    percentiles,
+    non_norm_histogram,
+    non_norm_percentiles,
+    CASE
+      WHEN client_agg_type = ''
+        THEN 0
+      ELSE total_sample
+    END AS total_sample,
+    ROW_NUMBER() OVER (
+      PARTITION BY
+        cp.version,
+        cp.os,
+        cp.build_id,
+        cp.ping_type,
+        cp.metric,
+        cp.metric_key,
+        cp.client_agg_type,
+        cp.metric_type,
+        histogram,
+        percentiles,
+        non_norm_histogram,
+        non_norm_percentiles
+      ORDER BY
+        total_users,
+        total_sample DESC
+    ) AS rnk
+  FROM
+    final_probe_extract cp
+  LEFT JOIN
+    glam_sample_counts sc
+    ON sc.os = cp.os
     AND sc.app_build_id = cp.build_id
     AND sc.app_version = cp.version
     AND sc.metric = cp.metric
     AND sc.key = cp.metric_key
     AND total_sample IS NOT NULL
-    AND (sc.agg_type = cp.client_agg_type OR cp.client_agg_type='')
+    AND (sc.agg_type = cp.client_agg_type OR cp.client_agg_type = '')
 )
 --remove duplicates
-SELECT channel,
+SELECT
+  channel,
   version,
   ping_type,
   os,
@@ -100,6 +142,8 @@ SELECT channel,
   percentiles,
   non_norm_histogram,
   non_norm_percentiles,
-  CAST(total_sample as INT) total_sample
-FROM ranked_data
-WHERE rnk = 1
+  CAST(total_sample AS INT) total_sample
+FROM
+  ranked_data
+WHERE
+  rnk = 1

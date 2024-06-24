@@ -37,8 +37,6 @@ CREATE OR REPLACE VIEW
       dau,
       wau,
       mau,
-      uri_count,
-      active_hours,
       app_name,
       app_version,
       app_version_major,

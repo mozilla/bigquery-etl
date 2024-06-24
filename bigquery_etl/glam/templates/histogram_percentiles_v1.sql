@@ -1,6 +1,6 @@
 {{ header }}
 SELECT
-  * EXCEPT (aggregates) REPLACE('percentiles' AS agg_type),
+  * EXCEPT (aggregates, non_norm_aggregates) REPLACE('percentiles' AS agg_type),
   ARRAY<STRUCT<key STRING, value FLOAT64>>[
     ('0.1', mozfun.glam.percentile(0.1, aggregates, metric_type)),
     ('1', mozfun.glam.percentile(1, aggregates, metric_type)),

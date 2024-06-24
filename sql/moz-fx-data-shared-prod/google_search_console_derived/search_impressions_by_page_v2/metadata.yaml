@@ -1,0 +1,55 @@
+friendly_name: Search Impressions By Page
+description: |-
+  Google Search impressions aggregated by page, exported directly to BigQuery for the following domains:
+    * addons.mozilla.org
+    * blog.mozilla.org
+    * developer.mozilla.org
+    * getpocket.com
+    * support.mozilla.org
+    * www.mozilla.org
+
+  Anonymized search queries are included.
+
+  For the developer.mozilla.org domain, we started exporting Google Search Console data directly to BigQuery in April 2024.
+  See https://bugzilla.mozilla.org/show_bug.cgi?id=1890816.
+
+  For the other domains, we started exporting Google Search Console data directly to BigQuery in July 2023.
+  See https://bugzilla.mozilla.org/show_bug.cgi?id=1764960#c34.
+owners:
+- srose@mozilla.com
+labels:
+  incremental: true
+  owner1: srose
+scheduling:
+  dag_name: bqetl_google_search_console
+  date_partition_parameter: date
+  # Google Search Console exports typically happen two days after the data date in UTC.
+  date_partition_offset: -1
+  depends_on_table_partitions_existing:
+  - task_id: wait_for_google_search_console_addons_url_impressions
+    table_id: moz-fx-data-marketing-prod.searchconsole_addons.searchdata_url_impression
+    partition_id: '{{ data_interval_start.subtract(days=1) | ds_nodash }}'
+  - task_id: wait_for_google_search_console_blog_url_impressions
+    table_id: moz-fx-data-marketing-prod.searchconsole_blog.searchdata_url_impression
+    partition_id: '{{ data_interval_start.subtract(days=1) | ds_nodash }}'
+  - task_id: wait_for_google_search_console_getpocket_url_impressions
+    table_id: moz-fx-data-marketing-prod.searchconsole_getpocket.searchdata_url_impression
+    partition_id: '{{ data_interval_start.subtract(days=1) | ds_nodash }}'
+  - task_id: wait_for_google_search_console_mdn_url_impressions
+    table_id: moz-fx-data-marketing-prod.searchconsole_mdn.searchdata_url_impression
+    partition_id: '{{ data_interval_start.subtract(days=1) | ds_nodash }}'
+  - task_id: wait_for_google_search_console_support_url_impressions
+    table_id: moz-fx-data-marketing-prod.searchconsole_support.searchdata_url_impression
+    partition_id: '{{ data_interval_start.subtract(days=1) | ds_nodash }}'
+  - task_id: wait_for_google_search_console_www_url_impressions
+    table_id: moz-fx-data-marketing-prod.searchconsole_www.searchdata_url_impression
+    partition_id: '{{ data_interval_start.subtract(days=1) | ds_nodash }}'
+bigquery:
+  time_partitioning:
+    type: day
+    field: date
+    require_partition_filter: false
+    expiration_days: null
+  clustering:
+    fields:
+    - site_domain_name

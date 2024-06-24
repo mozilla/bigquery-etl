@@ -30,6 +30,7 @@
   is_sap_monetizable: False
   has_adblocker_addon: False
   policies_is_enterprise: True
+  os: 'Windows_NT'
 - <<: *base
   client_id: b
   engine: engine1

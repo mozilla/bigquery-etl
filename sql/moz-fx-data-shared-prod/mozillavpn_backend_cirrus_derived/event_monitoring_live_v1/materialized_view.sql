@@ -60,7 +60,7 @@ IF
   LEFT JOIN
     UNNEST(event.extra) AS event_extra
   WHERE
-    DATE(submission_timestamp) >= "2024-06-24"
+    DATE(submission_timestamp) >= "2024-06-25"
   GROUP BY
     submission_date,
     window_start,

@@ -22,8 +22,14 @@
   ad_clicks: []
   search_with_ads: []
   active_addons: []
+  windows_build_number: 22635
+  os: 'Darwin'
+  os_version: '23.4.0'
 - <<: *base
   client_id: b
+  windows_build_number: 22635
+  os: 'Windows_NT'
+  os_version: '10.0'
   search_counts:
     - source: searchbar
       engine: engine1

@@ -1,0 +1,23 @@
+friendly_name: Search Impressions By Page
+description: |-
+  Google Search impressions aggregated by page for the following domains:
+    * addons.mozilla.org
+    * blog.mozilla.org
+    * developer.mozilla.org
+    * getpocket.com
+    * support.mozilla.org
+    * www.mozilla.org
+
+  For the developer.mozilla.org domain:
+    * Records from 2024-04-10 onward are from source data exported directly to BigQuery by Google.
+    * Records before 2024-04-10 are from source data synced to BigQuery by Fivetran.
+
+  For the other domains:
+    * Records from 2023-08-01 onward are from source data exported directly to BigQuery by Google.
+    * Records before 2023-08-01 are from source data synced to BigQuery by Fivetran.
+
+  Anonymized search queries, and Discover and Google News search impressions are only included if the source data was exported directly to BigQuery by Google.
+owners:
+- srose@mozilla.com
+labels:
+  owner1: srose

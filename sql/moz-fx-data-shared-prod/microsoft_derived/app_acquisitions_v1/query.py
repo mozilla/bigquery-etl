@@ -5,6 +5,7 @@ import json
 import os
 import tempfile
 from argparse import ArgumentParser
+from time import sleep
 
 import requests
 from google.cloud import bigquery
@@ -114,6 +115,7 @@ def download_microsoft_store_data(date, application_id, bearer_token):
     }
     print(url)
     response = get_response(url, headers, url_params)
+    print(response)
     return response
 
 
@@ -210,7 +212,7 @@ def main():
 
     project = args.project
     dataset = args.dataset
-    table_name = "app_acquisitions"
+    table_name = "app_acquisitions_v1"
 
     date = args.date
     client_id = MS_CLIENT_ID
@@ -233,12 +235,14 @@ def main():
         # Ping the microsoft_store URL and get a response
         json_file = download_microsoft_store_data(date, app["app_id"], bearer_token)
         query_export = check_json(json_file.text)
+        print(query_export)
         if query_export is not None:
             # This section writes the tmp json data into a temp CSV file which will then be put into a BigQuery table
             microsoft_store_data = clean_json(query_export, date)
             data.extend(microsoft_store_data)
         else:
             print("no data for today")
+        sleep(5)
 
     upload_to_bigquery(data, project, dataset, table_name, date)
 

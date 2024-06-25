@@ -260,6 +260,16 @@ counted AS (
     search_cohort,
     os,
     os_version,
+    CASE
+      WHEN mozfun.norm.os(os) = "Windows"
+        THEN mozfun.norm.windows_version_info(os, os_version, windows_build_number)
+      ELSE CAST(mozfun.norm.truncate_version(os_version, "major") AS STRING)
+    END AS os_version_major,
+    CASE
+      WHEN mozfun.norm.os(os) = "Windows"
+        THEN mozfun.norm.windows_version_info(os, os_version, windows_build_number)
+      ELSE CAST(mozfun.norm.truncate_version(os_version, "minor") AS STRING)
+    END AS os_version_minor,
     channel,
     is_default_browser,
     UNIX_DATE(DATE(profile_creation_date)) AS profile_creation_date,

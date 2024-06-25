@@ -4,17 +4,17 @@ CREATE OR REPLACE FUNCTION glam.histogram_generate_linear_buckets(
   max FLOAT64,
   nBuckets FLOAT64
 )
-RETURNS ARRAY<FLOAT64> DETERMINISTIC
-LANGUAGE js
-AS
-  '''
-  let result = [0];
-  for (let i = 1; i < Math.min(nBuckets, max, 10000); i++) {
-    let linearRange = (min * (nBuckets - 1 - i) + max * (i - 1)) / (nBuckets - 2);
-    result.push(Math.round(linearRange));
-  }
-  return result;
-''';
+RETURNS ARRAY<FLOAT64> AS (
+  ARRAY_CONCAT(
+    [0.0],
+    ARRAY(
+      SELECT
+        ROUND((min * (nBuckets - 1 - i) + max * (i - 1)) / (nBuckets - 2))
+      FROM
+        UNNEST(GENERATE_ARRAY(1, LEAST(nBuckets - 1, max, 10000))) AS i
+    )
+  )
+);
 
 SELECT
   -- Buckets of CONTENT_FRAME_TIME_VSYNC

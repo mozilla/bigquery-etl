@@ -132,12 +132,7 @@ SELECT
     ) AS days_seen_bits,
     `moz-fx-data-shared-prod.udf.combine_days_seen_maps`(
       _previous.os_used_month,
-      ARRAY(
-        SELECT
-          STRUCT(key, CAST(TRUE AS INT64) AS value)
-        FROM
-          `moz-fx-data-shared-prod._current.os_used_month` AS key
-      )
+      ARRAY(SELECT STRUCT(key, CAST(TRUE AS INT64) AS value) FROM _current.os_used_month AS key)
     ) AS os_used_month
   )
 FROM

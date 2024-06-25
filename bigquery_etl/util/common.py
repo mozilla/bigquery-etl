@@ -163,7 +163,7 @@ def write_sql(output_dir, full_table_id, basename, sql, skip_existing=False):
         f.write("\n")
 
 
-def qualify_table_references_in_path(path: Path) -> str:
+def qualify_table_references_in_file(path: Path) -> str:
     """Add project id and dataset id to table/view references and persistent udfs in a given query.
 
     e.g.:
@@ -197,10 +197,8 @@ def qualify_table_references_in_path(path: Path) -> str:
         path.name,
         template_folder=path.parent,
         format=False,
-        **{
-            "is_init": lambda: True,
-            "metrics": MetricHub(),
-        },
+        is_init=lambda: True,
+        metrics=MetricHub(),
     )
     # use sqlglot to get the SQL AST
     init_query_statements = sqlglot.parse(
@@ -222,18 +220,30 @@ def qualify_table_references_in_path(path: Path) -> str:
                 cte.alias_or_name.lower() for cte in statement.find_all(sqlglot.exp.CTE)
             }
 
+            table_aliases = {
+                cte.alias_or_name.lower()
+                for cte in statement.find_all(sqlglot.exp.TableAlias)
+            }
+
             for table_expr in statement.find_all(sqlglot.exp.Table):
                 # existing table ref including backticks without alias
                 table_expr.set("alias", "")
                 reference_string = table_expr.sql(dialect="bigquery")
 
-                if reference_string.replace("`", "").lower() in cte_names:
+                matched_cte = [
+                    re.match(
+                        rf"^{cte}(?![a-zA-Z0-9_])",
+                        reference_string.replace("`", "").lower(),
+                    )
+                    for cte in cte_names.union(table_aliases)
+                ]
+                if any(matched_cte):
                     continue
 
                 # project id is parsed as the catalog attribute
                 # but information_schema region may also be parsed as catalog
                 if table_expr.catalog.startswith("region-"):
-                    project_name = f"{target_project}`.`{table_expr.catalog}"
+                    project_name = f"{target_project}.{table_expr.catalog}"
                 elif table_expr.catalog == "":  # no project id
                     project_name = target_project
                 else:  # project id exists

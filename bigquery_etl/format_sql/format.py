@@ -8,7 +8,7 @@ from pathlib import Path
 
 from bigquery_etl.config import ConfigLoader
 from bigquery_etl.format_sql.formatter import reformat  # noqa E402
-from bigquery_etl.util.common import qualify_table_references_in_path
+from bigquery_etl.util.common import qualify_table_references_in_file
 
 
 def skip_format():
@@ -52,11 +52,10 @@ def format(paths, check=False):
         sql_files.sort()
         reformatted = unchanged = 0
         for path in sql_files:
-            with open(path) as fp:
-                query = fp.read()
+            query = Path(path).read_text()
 
             try:
-                fully_referenced_query = qualify_table_references_in_path(Path(path))
+                fully_referenced_query = qualify_table_references_in_file(Path(path))
             except NotImplementedError:
                 fully_referenced_query = query  # not implemented for scripts
 

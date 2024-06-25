@@ -49,7 +49,7 @@ SELECT
 FROM
   clients_yearly
 JOIN
-  `moz-fx-data-shared-prod.fenix.firefox_android_clients`
+  `moz-fx-data-shared-prod.fenix.firefox_android_clients` AS firefox_android_clients
   USING (sample_id, client_id)
 LEFT JOIN
   `moz-fx-data-shared-prod.fenix.client_adclicks_history`

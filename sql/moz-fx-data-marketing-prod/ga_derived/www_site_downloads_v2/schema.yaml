@@ -24,6 +24,26 @@ fields:
   type: STRING
   description: Country - The country from which events were reported, based on IP address
 - mode: NULLABLE
+  name: traffic_source_name
+  type: STRING
+  description: Traffic Source - Name
+- mode: NULLABLE
+  name: traffic_source_medium
+  type: STRING
+  description: Traffic Source - Medium
+- mode: NULLABLE
+  name: traffic_source_source
+  type: STRING
+  description: Traffic Source - Source
+- mode: NULLABLE
+  name: manual_campaign_id
+  type: STRING
+  description: Manual Campaign ID (comes from collected traffic source)
+- mode: NULLABLE
+  name: manual_term
+  type: STRING
+  description: Manual Term (comes from collected traffic source)
+- mode: NULLABLE
   name: source
   type: STRING
   description: Source - Referring partner domain

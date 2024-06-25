@@ -13,9 +13,8 @@ WITH events_new AS (
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
-    ALL
-  ORDER BY
-    1
+    DATE(e.submission_timestamp),
+    CONCAT(event.category, "_", event.name)
 ),
 events_old AS (
   SELECT
@@ -27,9 +26,8 @@ events_old AS (
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
-    ALL
-  ORDER BY
-    1
+    DATE(submission_timestamp),
+    metrics.string.event_name
 ),
 check_results AS (
   SELECT

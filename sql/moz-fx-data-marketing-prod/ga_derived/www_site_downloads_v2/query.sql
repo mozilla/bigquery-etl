@@ -47,13 +47,11 @@ WITH staging AS (
         device.operating_system AS operating_system,
         device.language AS `language`,
         geo.country AS country,
-        --below is new
         traffic_source.name AS traffic_source_name,
         traffic_source.medium AS traffic_source_medium,
         traffic_source.source AS traffic_source_source,
         collected_traffic_source.manual_campaign_id AS manual_campaign_id,
         collected_traffic_source.manual_term AS manual_term,
-        --above is new
         collected_traffic_source.manual_source AS source,
         collected_traffic_source.manual_medium AS medium,
         collected_traffic_source.manual_campaign_name AS campaign,

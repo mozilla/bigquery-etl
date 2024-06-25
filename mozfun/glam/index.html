@@ -2341,7 +2341,7 @@
 <div class="highlight"><pre><span></span><code>histogram ARRAY&lt;STRUCT&lt;key STRING, value FLOAT64&gt;&gt;
 </code></pre></div>
 <p><strong>OUTPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>STRING DETERMINISTIC
+<div class="highlight"><pre><span></span><code>STRING
 </code></pre></div>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/glam/histogram_cast_json">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/glam/histogram_cast_json/metadata.yaml">Edit</a></p>
 <h2 id="histogram_fill_buckets-udf">histogram_fill_buckets (UDF)</h2>
@@ -2411,7 +2411,7 @@ determined with the following function:</p>
 <div class="highlight"><pre><span></span><code>log_base INT64, buckets_per_magnitude INT64, range_max INT64
 </code></pre></div>
 <p><strong>OUTPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>ARRAY&lt;FLOAT64&gt;DETERMINISTIC
+<div class="highlight"><pre><span></span><code>ARRAY&lt;FLOAT64&gt;
 </code></pre></div>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/glam/histogram_generate_functional_buckets">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/glam/histogram_generate_functional_buckets/metadata.yaml">Edit</a></p>
 <h2 id="histogram_generate_linear_buckets-udf">histogram_generate_linear_buckets (UDF)</h2>
@@ -2421,7 +2421,7 @@ determined with the following function:</p>
 <div class="highlight"><pre><span></span><code>min FLOAT64, max FLOAT64, nBuckets FLOAT64
 </code></pre></div>
 <p><strong>OUTPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>ARRAY&lt;FLOAT64&gt;DETERMINISTIC
+<div class="highlight"><pre><span></span><code>ARRAY&lt;FLOAT64&gt;
 </code></pre></div>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/glam/histogram_generate_linear_buckets">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/glam/histogram_generate_linear_buckets/metadata.yaml">Edit</a></p>
 <h2 id="histogram_generate_scalar_buckets-udf">histogram_generate_scalar_buckets (UDF)</h2>
@@ -2431,7 +2431,7 @@ determined with the following function:</p>
 <div class="highlight"><pre><span></span><code>min_bucket FLOAT64, max_bucket FLOAT64, num_buckets INT64
 </code></pre></div>
 <p><strong>OUTPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>ARRAY&lt;FLOAT64&gt;DETERMINISTIC
+<div class="highlight"><pre><span></span><code>ARRAY&lt;FLOAT64&gt;
 </code></pre></div>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/glam/histogram_generate_scalar_buckets">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/glam/histogram_generate_scalar_buckets/metadata.yaml">Edit</a></p>
 <h2 id="histogram_normalized_sum-udf">histogram_normalized_sum (UDF)</h2>
@@ -2476,10 +2476,10 @@ determined with the following function:</p>
 <p>Get the value of the approximate CDF at the given percentile.</p>
 <h3 id="parameters_17">Parameters</h3>
 <p><strong>INPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>percentile FLOAT64, histogram ARRAY&lt;STRUCT&lt;key STRING, value FLOAT64&gt;&gt;, type STRING
+<div class="highlight"><pre><span></span><code>pct FLOAT64, histogram ARRAY&lt;STRUCT&lt;key STRING, value FLOAT64&gt;&gt;, type STRING
 </code></pre></div>
 <p><strong>OUTPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>FLOAT64 DETERMINISTIC
+<div class="highlight"><pre><span></span><code>FLOAT64
 </code></pre></div>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/glam/percentile">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/glam/percentile/metadata.yaml">Edit</a></p>
 

@@ -18,6 +18,8 @@
   normalized_app_name: Fennec
   country: FR
   os_version: '23'
+  os_version_major: 23
+  os_version_minor: 0
   profile_creation_date: 16606
   profile_age_in_days: 1625
   experiments: []
@@ -33,6 +35,8 @@
   normalized_app_name: Fennec
   country: CA
   os_version: '26'
+  os_version_major: 26
+  os_version_minor: 0
   profile_creation_date: 17332
   profile_age_in_days: 899
 - <<: *base
@@ -47,6 +51,8 @@
   normalized_app_name: Fennec
   country: CA
   os_version: '26'
+  os_version_major: 26
+  os_version_minor: 0
   profile_creation_date: 17332
   profile_age_in_days: 899
 - <<: *base
@@ -59,6 +65,8 @@
   normalized_app_name: Fennec
   country: CA
   os_version: '26'
+  os_version_major: 26
+  os_version_minor: 0
   profile_creation_date: 17653
   profile_age_in_days: 578
   experiments:
@@ -73,6 +81,8 @@
   normalized_app_name: Fenix
   country: US
   os_version: '29'
+  os_version_major: 29
+  os_version_minor: 0
   profile_creation_date: 18201
   profile_age_in_days: 30
   default_search_engine: engine1
@@ -89,6 +99,8 @@
   normalized_app_name: Fenix
   country: CA
   os_version: '29'
+  os_version_major: 29
+  os_version_minor: 0
   profile_creation_date: 18201
   profile_age_in_days: 30
 - <<: *base
@@ -103,6 +115,8 @@
   normalized_app_name: Fenix
   country: CA
   os_version: '29'
+  os_version_major: 29
+  os_version_minor: 0
   profile_creation_date: 18201
   profile_age_in_days: 30
 - <<: *base
@@ -117,6 +131,8 @@
   normalized_app_name: Fenix
   country: CA
   os_version: '29'
+  os_version_major: 29
+  os_version_minor: 0
   profile_creation_date: 18201
   profile_age_in_days: 30
 - <<: *base
@@ -129,6 +145,8 @@
   normalized_app_name: Fenix
   country: EG
   os_version: '29'
+  os_version_major: 29
+  os_version_minor: 0
   profile_creation_date: 18201
   profile_age_in_days: 30
 - <<: *base
@@ -142,6 +160,8 @@
   normalized_app_name: Fenix
   country: US
   os_version: '29'
+  os_version_major: 29
+  os_version_minor: 0
   profile_creation_date: 18201
   profile_age_in_days: 30
 - &new_field_base
@@ -156,6 +176,8 @@
   normalized_app_name: Fenix
   country: US
   os_version: '29'
+  os_version_major: 29
+  os_version_minor: 0
   profile_creation_date: 18201
   profile_age_in_days: 30
   total_uri_count: 22
@@ -222,6 +244,8 @@
   normalized_app_name: Fenix
   country: US
   os_version: '29'
+  os_version_major: 29
+  os_version_minor: 0
   profile_creation_date: 18201
   profile_age_in_days: 30
   engine: __other__
@@ -236,6 +260,8 @@
   client_id: release_ios
   os: iOS
   os_version: "13.0"
+  os_version_major: 13
+  os_version_minor: 0
   app_version: "35.0"
   app_name: Fennec
   normalized_app_name: Fennec

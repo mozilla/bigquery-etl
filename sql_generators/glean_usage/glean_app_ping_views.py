@@ -158,6 +158,12 @@ class GleanAppPingViews(GleanTable):
                             table=view_name,
                             channel=channel_app.get("app_channel"),
                             app_name=release_app["app_name"],
+                            includes_client_info=any(
+                                [
+                                    "client_info" == f["name"]
+                                    for f in unioned_schema.schema["fields"]
+                                ]
+                            ),
                         )
                     )
 

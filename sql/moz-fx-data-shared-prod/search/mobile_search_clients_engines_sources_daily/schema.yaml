@@ -90,6 +90,12 @@ fields:
 - name: search_with_ads_organic
   type: INTEGER
   mode: NULLABLE
+- name: os_version_major
+  type: INTEGER
+  mode: NULLABLE
+- name: os_version_minor
+  type: INTEGER
+  mode: NULLABLE
 - name: normalized_engine
   type: STRING
   mode: NULLABLE

@@ -88,10 +88,31 @@ with DAG(
         depends_on_past=False,
     )
 
+    checks__warn_accounts_backend_derived__users_services_daily__v1 = bigquery_dq_check(
+        task_id="checks__warn_accounts_backend_derived__users_services_daily__v1",
+        source_table="users_services_daily_v1",
+        dataset_id="accounts_backend_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=False,
+        owner="ksiegler@mozilla.com",
+        email=["akomar@mozilla.com", "ksiegler@mozilla.com"],
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+    )
+
     accounts_backend_derived__users_services_daily__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
 
     accounts_backend_derived__users_services_last_seen__v1.set_upstream(
         accounts_backend_derived__users_services_daily__v1
+    )
+
+    checks__warn_accounts_backend_derived__users_services_daily__v1.set_upstream(
+        accounts_backend_derived__users_services_daily__v1
+    )
+
+    checks__warn_accounts_backend_derived__users_services_daily__v1.set_upstream(
+        wait_for_copy_deduplicate_all
     )

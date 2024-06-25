@@ -1860,6 +1860,16 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
+    - name: networking_http_response_status_code
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -3089,6 +3099,26 @@ fields:
           type: INTEGER
           mode: NULLABLE
     - name: cert_compression_zlib_saved_bytes
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+    - name: bounce_tracking_protection_num_hosts_per_purge_run
       type: RECORD
       mode: NULLABLE
       fields:

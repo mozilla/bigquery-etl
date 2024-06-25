@@ -348,7 +348,7 @@ fields:
       description: 'A marketing campaign.  For example, if a user signs into FxA from
         selecting a
 
-        Mozilla VPN plan on Mozilla VPN''s product site, then value of this metric
+        Mozilla VPN plan on Mozilla VPN''s product site, then the value of this metric
         could
 
         be ''vpn-product-page''.  The value has a max length of 128 characters with

@@ -229,7 +229,8 @@ SELECT
       metrics.custom_distribution.pdfjs_editing_highlight_thickness,
       metrics.custom_distribution.network_tls_early_data_bytes_written,
       metrics.custom_distribution.cert_compression_brotli_saved_bytes,
-      metrics.custom_distribution.cert_compression_zlib_saved_bytes
+      metrics.custom_distribution.cert_compression_zlib_saved_bytes,
+      metrics.custom_distribution.bounce_tracking_protection_num_hosts_per_purge_run
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -386,7 +387,8 @@ SELECT
       metrics.labeled_counter.networking_http_channel_disposition_enabled_upgrade,
       metrics.labeled_counter.networking_http_channel_disposition_enabled_wont,
       metrics.labeled_counter.networking_http_channel_onstart_status,
-      metrics.labeled_counter.networking_http_to_https_upgrade_reason
+      metrics.labeled_counter.networking_http_to_https_upgrade_reason,
+      metrics.labeled_counter.networking_http_response_status_code
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -983,7 +985,8 @@ SELECT
       metrics.custom_distribution.pdfjs_editing_highlight_thickness,
       metrics.custom_distribution.network_tls_early_data_bytes_written,
       metrics.custom_distribution.cert_compression_brotli_saved_bytes,
-      metrics.custom_distribution.cert_compression_zlib_saved_bytes
+      metrics.custom_distribution.cert_compression_zlib_saved_bytes,
+      metrics.custom_distribution.bounce_tracking_protection_num_hosts_per_purge_run
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -1140,7 +1143,8 @@ SELECT
       metrics.labeled_counter.networking_http_channel_disposition_enabled_upgrade,
       metrics.labeled_counter.networking_http_channel_disposition_enabled_wont,
       metrics.labeled_counter.networking_http_channel_onstart_status,
-      metrics.labeled_counter.networking_http_to_https_upgrade_reason
+      metrics.labeled_counter.networking_http_to_https_upgrade_reason,
+      metrics.labeled_counter.networking_http_response_status_code
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -1755,7 +1759,8 @@ SELECT
       metrics.custom_distribution.pdfjs_editing_highlight_thickness,
       metrics.custom_distribution.network_tls_early_data_bytes_written,
       metrics.custom_distribution.cert_compression_brotli_saved_bytes,
-      metrics.custom_distribution.cert_compression_zlib_saved_bytes
+      metrics.custom_distribution.cert_compression_zlib_saved_bytes,
+      metrics.custom_distribution.bounce_tracking_protection_num_hosts_per_purge_run
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -1912,7 +1917,8 @@ SELECT
       metrics.labeled_counter.networking_http_channel_disposition_enabled_upgrade,
       metrics.labeled_counter.networking_http_channel_disposition_enabled_wont,
       metrics.labeled_counter.networking_http_channel_onstart_status,
-      metrics.labeled_counter.networking_http_to_https_upgrade_reason
+      metrics.labeled_counter.networking_http_to_https_upgrade_reason,
+      metrics.labeled_counter.networking_http_response_status_code
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -2536,7 +2542,8 @@ SELECT
       metrics.custom_distribution.pdfjs_editing_highlight_thickness,
       metrics.custom_distribution.network_tls_early_data_bytes_written,
       metrics.custom_distribution.cert_compression_brotli_saved_bytes,
-      metrics.custom_distribution.cert_compression_zlib_saved_bytes
+      metrics.custom_distribution.cert_compression_zlib_saved_bytes,
+      metrics.custom_distribution.bounce_tracking_protection_num_hosts_per_purge_run
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -2693,7 +2700,8 @@ SELECT
       metrics.labeled_counter.networking_http_channel_disposition_enabled_upgrade,
       metrics.labeled_counter.networking_http_channel_disposition_enabled_wont,
       metrics.labeled_counter.networking_http_channel_onstart_status,
-      metrics.labeled_counter.networking_http_to_https_upgrade_reason
+      metrics.labeled_counter.networking_http_to_https_upgrade_reason,
+      metrics.labeled_counter.networking_http_response_status_code
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -3299,7 +3307,8 @@ SELECT
       metrics.custom_distribution.pdfjs_editing_highlight_thickness,
       metrics.custom_distribution.network_tls_early_data_bytes_written,
       metrics.custom_distribution.cert_compression_brotli_saved_bytes,
-      metrics.custom_distribution.cert_compression_zlib_saved_bytes
+      metrics.custom_distribution.cert_compression_zlib_saved_bytes,
+      metrics.custom_distribution.bounce_tracking_protection_num_hosts_per_purge_run
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -3456,7 +3465,8 @@ SELECT
       metrics.labeled_counter.networking_http_channel_disposition_enabled_upgrade,
       metrics.labeled_counter.networking_http_channel_disposition_enabled_wont,
       metrics.labeled_counter.networking_http_channel_onstart_status,
-      metrics.labeled_counter.networking_http_to_https_upgrade_reason
+      metrics.labeled_counter.networking_http_to_https_upgrade_reason,
+      metrics.labeled_counter.networking_http_response_status_code
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,

@@ -271,6 +271,12 @@ fields:
 - name: policies_is_enterprise
   type: BOOLEAN
   mode: NULLABLE
+- name: os_version_major
+  type: STRING
+  mode: NULLABLE
+- name: os_version_minor
+  type: STRING
+  mode: NULLABLE
 - name: normalized_engine
   type: STRING
   mode: NULLABLE

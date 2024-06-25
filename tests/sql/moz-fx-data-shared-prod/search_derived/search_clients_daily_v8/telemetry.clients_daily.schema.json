@@ -146,6 +146,11 @@
   },
   {
     "mode": "NULLABLE",
+    "name": "windows_build_number",
+    "type": "INTEGER"
+  },
+  {
+    "mode": "NULLABLE",
     "name": "profile_age_in_days",
     "type": "INTEGER"
   },

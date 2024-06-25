@@ -19,7 +19,7 @@ fields:
   type: STRING
 - mode: NULLABLE
   name: has_adblocker_addon
-  type: STRING
+  type: BOOLEAN
 - mode: NULLABLE
   name: app_version
   type: STRING

@@ -19,6 +19,7 @@
   scalar_parent_urlbar_searchmode_touchbar_sum: []
   scalar_parent_urlbar_searchmode_typed_sum: []
   active_addons: []
+  windows_build_number: 16288
 - <<: *base
   client_id: b
   # should be ignored other than searchbar sap

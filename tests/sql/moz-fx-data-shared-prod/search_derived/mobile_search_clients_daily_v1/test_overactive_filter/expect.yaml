@@ -18,6 +18,8 @@
   country: FR
   os: Android
   os_version: '23'
+  os_version_major: 23
+  os_version_minor: 0
   profile_creation_date: 16606
   profile_age_in_days: 1625
   sample_id: 1
@@ -34,6 +36,8 @@
   normalized_app_name: Fennec
   country: CA
   os_version: '26'
+  os_version_major: 26
+  os_version_minor: 0
   profile_creation_date: 17332
   profile_age_in_days: 899
 - <<: *base
@@ -46,6 +50,8 @@
   normalized_app_name: Fennec
   country: CA
   os_version: '26'
+  os_version_major: 26
+  os_version_minor: 0
   profile_creation_date: 17332
   profile_age_in_days: 899
 - <<: *base
@@ -58,6 +64,8 @@
   normalized_app_name: Fenix
   country: US
   os_version: '29'
+  os_version_major: 29
+  os_version_minor: 0
   profile_creation_date: 18207
   profile_age_in_days: 24
 - <<: *base
@@ -72,6 +80,8 @@
   normalized_app_name: Fenix
   country: CA
   os_version: '29'
+  os_version_major: 29
+  os_version_minor: 0
   profile_creation_date: 18201
   profile_age_in_days: 30
 - <<: *base
@@ -84,6 +94,8 @@
   normalized_app_name: Fenix
   country: CA
   os_version: '29'
+  os_version_major: 29
+  os_version_minor: 0
   profile_creation_date: 18201
   profile_age_in_days: 30
 - <<: *base
@@ -93,6 +105,8 @@
   country: US
   os: iOS
   os_version: "35.0"
+  os_version_major: 35
+  os_version_minor: 0
   default_search_engine: engine2
 - <<: *base
   client_id: release_ios
@@ -101,6 +115,8 @@
   country: US
   os: iOS
   os_version: "35.0"
+  os_version_major: 35
+  os_version_minor: 0
   default_search_engine: engine2
 - <<: *base
   client_id: release_ios
@@ -109,6 +125,8 @@
   country: US
   os: iOS
   os_version: "35.0"
+  os_version_major: 35
+  os_version_minor: 0
   default_search_engine: engine2
 - <<: *base
   client_id: release_ios
@@ -117,4 +135,6 @@
   country: US
   os: iOS
   os_version: "35.0"
+  os_version_major: 35
+  os_version_minor: 0
   default_search_engine: engine2

@@ -10,9 +10,9 @@ WITH gclids_to_ga_ids AS (
   CROSS JOIN
     UNNEST(all_reported_stub_session_ids) AS stub_session_id
   WHERE
-    session_date >= DATE_SUB(@activity_date, INTERVAL @conversion_window DAY)
+    session_date >= DATE_SUB(@submission_date, INTERVAL @conversion_window DAY)
     -- Next line is needed for backfilling purposes
-    AND session_date <= @activity_date
+    AND session_date <= @submission_date
     AND gclid IS NOT NULL
 ),
 --Step 2: Get all the download tokens associated with a known GA client ID & stub session ID
@@ -50,7 +50,7 @@ telemetry_id_to_activity_staging AS (
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6`
   WHERE
-    submission_date = @activity_date
+    submission_date = @submission_date
   UNION ALL
   SELECT
     client_id AS telemetry_client_id,
@@ -65,8 +65,8 @@ telemetry_id_to_activity_staging AS (
     `moz-fx-data-shared-prod.google_ads_derived.conversion_event_categorization_v1`
   WHERE
     (event_1 IS TRUE OR event_2 IS TRUE OR event_3 IS TRUE)
-    AND report_date = @activity_date
-    AND first_seen_date < @activity_date --needed since this is a required partition filter
+    AND report_date = @submission_date
+    AND first_seen_date < @submission_date --needed since this is a required partition filter
 ),
 telemetry_id_to_activity AS (
   SELECT

@@ -91,8 +91,7 @@ WITH probe_counts AS (
         mozfun.map.sum(ARRAY_AGG(non_norm_record)),
         mozfun.glam.histogram_buckets_cast_string_array(
           udf_get_buckets(metric_type, range_min, range_max, bucket_count)
-        ),
-        CAST(ROUND(SUM(non_norm_record.value)) AS INT64)
+        )
       ) AS non_norm_aggregates
     {% endif %}
   FROM
@@ -128,7 +127,7 @@ WITH probe_counts AS (
       AS total_users
     )
     {% if is_scalar %}
-      , aggregates AS non_norm_aggregates
+      , pc.aggregates AS non_norm_aggregates
     {% endif %}
   FROM
     probe_counts pc

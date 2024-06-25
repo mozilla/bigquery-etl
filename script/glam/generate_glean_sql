@@ -63,13 +63,12 @@ function write_clients_daily_aggregates {
     # GLAM only supports tables with glean_ping_* schema.
     # Also excluding use_counters because they are not supported
     # and their generated query is too big to run
-    tables=$(
-        bq ls "$qualified" \
-        | grep TABLE \
-        | grep 'schema_id:glean_ping_[0-9]\+' \
-        | grep -v use_counters \
-        | awk '{print $1}'
-    )
+    tables=$(bq ls --format=json "$qualified" | \
+        jq -r '.[] |
+        select(.labels.schema_id | test("^glean_ping_[0-9]+")) |
+        select(.type == "TABLE") |
+        select(.tableReference.tableId | test("^use_counters.*") | not) |
+        "\(.tableReference.tableId)"')
     # generate all of the schemas in parallel
     for table in $tables; do
         write_scalars "$product" "$dataset" "$table" "$dst_project" "$sql_dir" &

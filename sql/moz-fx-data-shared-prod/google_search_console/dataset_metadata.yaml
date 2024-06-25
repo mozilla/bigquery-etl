@@ -1,0 +1,9 @@
+friendly_name: Google Search Console
+description: |-
+  Data related to Google Search Console.
+dataset_base_acl: view
+user_facing: true
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

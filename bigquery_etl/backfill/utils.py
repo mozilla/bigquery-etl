@@ -146,7 +146,7 @@ def validate_metadata_workgroups(sql_dir, qualified_table_name) -> bool:
 
     except FileNotFoundError as e:
         raise ValueError(
-            f"Unable to validate workgroups for {qualified_table_name}"
+            f"Unable to validate workgroups for {qualified_table_name} in dataset metadata file."
         ) from e
 
     if _validate_workgroup_members(dataset_workgroup_access, DATASET_METADATA_FILE):

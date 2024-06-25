@@ -15,6 +15,12 @@ SELECT
       THEN "firefox_first_ad_click"
     WHEN "did_returned_second_day"
       THEN "firefox_second_run"
+    WHEN "first_wk_5_actv_days_and_1_or_more_search_w_ads"
+      THEN "first_wk_5_actv_days_and_1_or_more_search_w_ads"
+    WHEN "first_wk_3_actv_days_and_1_or_more_search_w_ads"
+      THEN "first_wk_3_actv_days_and_1_or_more_search_w_ads"
+    WHEN "first_wk_3_actv_days_and_24_active_minutes"
+      THEN "first_wk_3_actv_days_and_24_active_minutes"
     ELSE NULL
   END AS conversion_name,
 FROM
@@ -23,7 +29,10 @@ FROM
       did_firefox_first_run,
       did_search,
       did_click_ad,
-      did_returned_second_day
+      did_returned_second_day,
+      first_wk_5_actv_days_and_1_or_more_search_w_ads,
+      first_wk_3_actv_days_and_1_or_more_search_w_ads,
+      first_wk_3_actv_days_and_24_active_minutes
     )
   )
 WHERE

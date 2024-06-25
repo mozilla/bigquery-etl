@@ -1,0 +1,9 @@
+friendly_name: Google Search Console Derived
+description: |-
+  Derived data related to Google Search Console.
+dataset_base_acl: derived
+user_facing: false
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

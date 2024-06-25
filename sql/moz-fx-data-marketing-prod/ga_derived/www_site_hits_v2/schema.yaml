@@ -84,21 +84,41 @@ fields:
   type: STRING
   description: Country - The country from which events were reported, based on IP address
 - mode: NULLABLE
+  name: traffic_source_name
+  type: STRING
+  description: Traffic Source - Name
+- mode: NULLABLE
+  name: traffic_source_medium
+  type: STRING
+  description: Traffic Source - Medium
+- mode: NULLABLE
+  name: traffic_source_source
+  type: STRING
+  description: Traffic Source - Source
+- mode: NULLABLE
+  name: manual_campaign_id
+  type: STRING
+  description: Manual Campaign ID (comes from collected traffic source)
+- mode: NULLABLE
+  name: manual_term
+  type: STRING
+  description: Manual Term (comes from collected traffic source)
+- mode: NULLABLE
   name: source
   type: STRING
-  description: Source - Referring partner domain
+  description: Source - Referring partner domain (comes from collected traffic source)
 - mode: NULLABLE
   name: medium
   type: STRING
-  description: Medium - Category of the source, such as 'organic' for a search engine
+  description: Medium - Category of the source, such as 'organic' for a search engine (comes from collected traffic source)
 - mode: NULLABLE
   name: campaign
   type: STRING
-  description: Campaign - Identifier for the marketing campaign
+  description: Campaign - Identifier for the marketing campaign (comes from collected traffic source)
 - mode: NULLABLE
   name: ad_content
   type: STRING
-  description: Ad Content - Indicates the particular link within a campaign
+  description: Ad Content - Indicates the particular link within a campaign (comes from collected traffic source)
 - mode: NULLABLE
   name: visits
   type: INT64

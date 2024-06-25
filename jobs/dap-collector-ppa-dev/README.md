@@ -16,9 +16,10 @@ docker build -t dap-collector-ppa-dev .
 To run locally, install dependencies with (in jobs/dap-collector):
 
 ```sh
-git clone --depth 1 https://github.com/divviup/janus.git --branch '0.6.6'
+git clone --depth 1 https://github.com/divviup/janus.git --branch '0.7.20'
 cd janus
-cargo build -p janus_collector --example collect
+cargo build -r -p janus_tools --bin collect
+cp target/release/collect ../dap_collector_ppa_dev/
 cd ..
 pip install -r requirements.txt
 ```

@@ -195,7 +195,6 @@ format:
   - bigquery_etl/glam/templates/*.sql
   - sql_generators/**/*.sql
   - tests/**/*.sql
-  - sql/mozfun/**/examples/*.sql
   - sql/moz-fx-data-shared-prod/telemetry/fenix_events_v1/view.sql
   - sql/moz-fx-data-shared-prod/telemetry/fennec_ios_events_v1/view.sql
   - sql/moz-fx-data-shared-prod/telemetry/fire_tv_events_v1/view.sql
@@ -265,6 +264,8 @@ format:
   - sql/moz-fx-data-shared-prod/udf_legacy/date_trunc.sql
   - sql/moz-fx-data-shared-prod/udf_legacy/to_iso8601.sql
   - stored_procedures/safe_crc32_uuid.sql
+  skip_qualifying_references:
+  - sql/mozfun/**/examples/*.sql
 
 routine:
   dependency_dir: udf_js_lib/

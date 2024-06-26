@@ -20,6 +20,17 @@ def skip_format():
     ]
 
 
+def skip_qualifying_references():
+    """Return a list of configured queries where fully qualifying references should be skipped."""
+    return [
+        file
+        for skip in ConfigLoader.get(
+            "format", "skip_qualifying_references", fallback=[]
+        )
+        for file in glob.glob(skip, recursive=True)
+    ]
+
+
 def format(paths, check=False):
     """Format SQL files."""
     if not paths:
@@ -55,7 +66,12 @@ def format(paths, check=False):
             query = Path(path).read_text()
 
             try:
-                fully_referenced_query = qualify_table_references_in_file(Path(path))
+                if not any([path.endswith(s) for s in skip_qualifying_references()]):
+                    fully_referenced_query = qualify_table_references_in_file(
+                        Path(path)
+                    )
+                else:
+                    fully_referenced_query = query
             except NotImplementedError:
                 fully_referenced_query = query  # not implemented for scripts
 

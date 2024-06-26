@@ -28,3 +28,4 @@ bigquery:
   clustering:
     fields: ["country"]
 references: {}
+deprecated: true

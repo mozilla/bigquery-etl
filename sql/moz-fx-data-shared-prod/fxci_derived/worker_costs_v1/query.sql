@@ -1,6 +1,10 @@
 SELECT
   project.id AS project,
-  REGEXP_EXTRACT(resource.name, "/instances/(.+)$") AS name,
+  IF(
+    resource.name LIKE "%/instances/%",
+    REGEXP_EXTRACT(resource.name, "/instances/(.+)$"),
+    resource.name
+  ) AS name,
   REGEXP_EXTRACT(resource.global_name, "/zones/([^/]+)") AS zone,
   REGEXP_EXTRACT(resource.global_name, "/instances/([^/]+)") AS instance_id,
   DATE(usage_start_time) AS usage_start_date,

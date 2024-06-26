@@ -128,12 +128,10 @@ dry_run:
   - sql/moz-fx-data-shared-prod/**/client_deduplication*/*.sql
   - sql/moz-fx-data-marketing-prod/ga_derived/downloads_with_attribution_v1/query.sql
   - sql/moz-fx-data-marketing-prod/ga_derived/downloads_with_attribution_v2/query.sql
-  - sql/moz-fx-data-marketing-prod/google_search_console_derived/search_impressions_by_page_v1/query.sql
-  - sql/moz-fx-data-marketing-prod/google_search_console_derived/search_impressions_by_page_v2/query.sql
-  - sql/moz-fx-data-marketing-prod/google_search_console_derived/search_impressions_by_site_v1/query.sql
-  - sql/moz-fx-data-marketing-prod/google_search_console_derived/search_impressions_by_site_v2/query.sql
-  - sql/moz-fx-data-marketing-prod/google_search_console_derived/site_impression_exports_empty_check_v1/query.sql
-  - sql/moz-fx-data-marketing-prod/google_search_console_derived/url_impression_exports_empty_check_v1/query.sql
+  - sql/moz-fx-data-shared-prod/google_search_console_derived/search_impressions_by_page_v1/query.sql
+  - sql/moz-fx-data-shared-prod/google_search_console_derived/search_impressions_by_page_v2/query.sql
+  - sql/moz-fx-data-shared-prod/google_search_console_derived/search_impressions_by_site_v1/query.sql
+  - sql/moz-fx-data-shared-prod/google_search_console_derived/search_impressions_by_site_v2/query.sql
   - sql/moz-fx-data-shared-prod/mozilla_org_derived/gclid_conversions_v1/query.sql
   - sql/moz-fx-data-shared-prod/fenix_derived/ltv_state_values_v1/query.sql
   - sql/moz-fx-data-shared-prod/fenix_derived/ltv_state_values_v2/query.sql

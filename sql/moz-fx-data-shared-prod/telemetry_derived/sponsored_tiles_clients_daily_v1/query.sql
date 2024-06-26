@@ -43,7 +43,8 @@ impressions_main AS (
     1,
     2
 ),
-  ------ DESKTOP Dismissals and Disables
+------ DESKTOP Dismissals and Disables
+--- Note PingCentre was deprecated as of Fx123 (Feb 20, 2024)
 desktop_activity_stream_events AS (
   SELECT
     client_id,
@@ -65,6 +66,43 @@ desktop_activity_stream_events AS (
   GROUP BY
     1,
     2
+),
+--- Current telemetry for dismissals and deactivations comes in Glean's newtab ping as of Fx120 (Nov 21, 2023)
+desktop_newtab_events AS (
+  SELECT
+    n.client_info.client_id AS client_id,
+    n.metrics.uuid.legacy_telemetry_client_id AS legacy_telemetry_client_id,
+    DATE(submission_timestamp) AS submission_date,
+    COUNTIF(
+      e.category = 'topsites'
+      AND e.name = 'dismiss'
+      AND `mozfun.map.get_key`(e.extra, 'is_sponsored') = 'true'
+    ) AS sponsored_tiles_dismissal_count,
+    COUNTIF(
+      e.name = 'pref_changed'
+      AND `mozfun.map.get_key`(e.extra, 'pref_name') = 'browser.newtabpage.activity-stream.showSponsoredTopSites'
+      AND `mozfun.map.get_key`(e.extra, 'new_value') = 'false'
+   ) AS sponsored_tiles_disable_count
+  FROM `moz-fx-data-shared-prod.firefox_desktop.newtab` n,
+  UNNEST(events) e
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+  GROUP BY
+    1,
+    2,
+    3
+),
+desktop_joint_events AS (
+  SELECT
+    COALESCE(n.submission_date, a.submission_date) AS submission_date,
+    COALESCE(n.legacy_telemetry_client_id, a.client_id) AS client_id,
+    COALESCE(n.sponsored_tiles_dismissal_count, a.sponsored_tiles_dismissal_count) AS sponsored_tiles_dismissal_count,
+    COALESCE(n.sponsored_tiles_disable_count, a.sponsored_tiles_disable_count) AS sponsored_tiles_disable_count
+  FROM desktop_newtab_events n
+  FULL OUTER JOIN desktop_activity_stream_events a
+    ON
+      n.legacy_telemetry_client_id = a.client_id
+      AND n.submission_date = a.submission_date
 ),
 ------ iOS SPONSORED TILES
 ios_data AS (
@@ -192,7 +230,7 @@ LEFT JOIN
   impressions_main
   USING (client_id, submission_date)
 LEFT JOIN
-  desktop_activity_stream_events
+  desktop_joint_events
   USING (client_id, submission_date)
 -- add experiments data
 LEFT JOIN

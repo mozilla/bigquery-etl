@@ -30,8 +30,6 @@ bigquery:
   clustering:
     fields:
     - country
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:mozilla-confidential
+workgroup_access: []
 references: {}
+deprecated: true

@@ -9,7 +9,7 @@ from google.cloud import storage
 
 # Configurations
 os_usg_configs = {
-    "timeout_limit": 2000,
+    "timeout_limit": 500,
     "device_types": ["DESKTOP", "MOBILE", "OTHER", "ALL"],
     "locations": [
         "ALL",
@@ -65,7 +65,7 @@ def move_blob(bucket_name, blob_name, destination_bucket_name, destination_blob_
     source_bucket = storage_client.bucket(bucket_name)
     source_blob = source_bucket.blob(blob_name)
     destination_bucket = storage_client.bucket(destination_bucket_name)
-    destination_generation_match_precondition = 0
+    destination_generation_match_precondition = None
 
     blob_copy = source_bucket.copy_blob(
         source_blob,
@@ -91,7 +91,7 @@ def generate_os_timeseries_api_call(strt_dt, end_dt, agg_int, location, device_t
     if location == "ALL" and device_type == "ALL":
         os_usage_api_url = f"https://api.cloudflare.com/client/v4/radar/http/timeseries_groups/os?dateStart={strt_dt}T00:00:00.000Z&dateEnd={end_dt}T00:00:00.000Z&format=json&aggInterval={agg_int}"
     elif location != "ALL" and device_type == "ALL":
-        os_usage_api_url = f"https://api.cloudflare.com/client/v4/radar/http/timeseries_groups/os?dateStart={strt_dt}T00:00:00.000Z&dateEnd={strt_dt}T00:00:00.000Z&location={location}&format=json&aggInterval={agg_int}"
+        os_usage_api_url = f"https://api.cloudflare.com/client/v4/radar/http/timeseries_groups/os?dateStart={strt_dt}T00:00:00.000Z&dateEnd={end_dt}T00:00:00.000Z&location={location}&format=json&aggInterval={agg_int}"
     elif location == "ALL" and device_type != "ALL":
         os_usage_api_url = f"https://api.cloudflare.com/client/v4/radar/http/timeseries_groups/os?dateStart={strt_dt}T00:00:00.000Z&dateEnd={end_dt}T00:00:00.000Z&deviceType={device_type}&format=json&aggInterval={agg_int}"
     else:
@@ -292,8 +292,8 @@ def main():
             create_disposition="CREATE_IF_NEEDED",
             write_disposition="WRITE_TRUNCATE",
             schema=[
-                {"name": "StartTime", "type": "TIMESTAMP", "mode": "REQUIRED"},
-                {"name": "EndTime", "type": "TIMESTAMP", "mode": "REQUIRED"},
+                {"name": "StartDate", "type": "DATE", "mode": "REQUIRED"},
+                {"name": "EndDate", "type": "DATE", "mode": "REQUIRED"},
                 {"name": "Location", "type": "STRING", "mode": "NULLABLE"},
                 {"name": "DeviceType", "type": "STRING", "mode": "NULLABLE"},
             ],
@@ -319,7 +319,7 @@ def main():
     print("Deleted anything already existing for this date from errors gold")
 
     # STEP 6 - Load results from stage to gold # NEED TO UPDATE THIS STILL
-    device_usg_stg_to_gold_query = f""" INSERT INTO `moz-fx-data-shared-prod.cloudflare_derived.os_usage_v1`
+    os_usg_stg_to_gold_query = f""" INSERT INTO `moz-fx-data-shared-prod.cloudflare_derived.os_usage_v1`
 SELECT 
 CAST(Timestamps AS date) AS dte,
 OS AS os,
@@ -330,22 +330,19 @@ Normalization AS normalization_type,
 LastUpdatedTS AS last_updated_ts
 FROM `moz-fx-data-shared-prod.cloudflare_derived.os_results_stg`
 WHERE CAST(Timestamps as date) = DATE_SUB('{args.date}', INTERVAL 4 DAY) """
-    load_res_to_gold = client.query(device_usg_stg_to_gold_query)
+    load_res_to_gold = client.query(os_usg_stg_to_gold_query)
     load_res_to_gold.result()
 
     # STEP 7 - Load errors from stage to gold
-    browser_usg_errors_stg_to_gold_query = f""" INSERT INTO `moz-fx-data-shared-prod.cloudflare_derived.os_usage_errors_v1`
+    os_usg_errors_stg_to_gold_query = f""" INSERT INTO `moz-fx-data-shared-prod.cloudflare_derived.os_usage_errors_v1`
 SELECT
-CAST(StartTime as date) AS dte,
+StartDate AS dte,
 Location AS location,
 DeviceType AS device_type
 FROM `moz-fx-data-shared-prod.cloudflare_derived.os_errors_stg`
-WHERE CAST(StartTime as date) = DATE_SUB('{args.date}', INTERVAL 4 DAY) """
-    load_err_to_gold = client.query(browser_usg_errors_stg_to_gold_query)
+WHERE StartDate = DATE_SUB('{args.date}', INTERVAL 4 DAY) """
+    load_err_to_gold = client.query(os_usg_errors_stg_to_gold_query)
     load_err_to_gold.result()
-
-    # Initialize a storage client to use in next steps
-    storage_client = storage.Client()
 
     # STEP 8 - Copy the result CSV from stage to archive, then delete from stage
     # Calculate the fpaths we will use ahead of time
@@ -353,7 +350,7 @@ WHERE CAST(StartTime as date) = DATE_SUB('{args.date}', INTERVAL 4 DAY) """
         datetime.strptime(args.date, "%Y-%m-%d").date() - timedelta(days=4),
         args.date,
     )
-    result_archive_fpath = os_usg_configs["results_archive_gcs_fpath"] % (
+    result_archive_fpath = os_usg_configs["results_archive_gcs_fpth"] % (
         datetime.strptime(args.date, "%Y-%m-%d").date() - timedelta(days=4),
         args.date,
     )
@@ -369,7 +366,7 @@ WHERE CAST(StartTime as date) = DATE_SUB('{args.date}', INTERVAL 4 DAY) """
         datetime.strptime(args.date, "%Y-%m-%d").date() - timedelta(days=4),
         args.date,
     )
-    error_archive_fpath = os_usg_configs["errors_archive_gcs_fpath"] % (
+    error_archive_fpath = os_usg_configs["errors_archive_gcs_fpth"] % (
         datetime.strptime(args.date, "%Y-%m-%d").date() - timedelta(days=4),
         args.date,
     )

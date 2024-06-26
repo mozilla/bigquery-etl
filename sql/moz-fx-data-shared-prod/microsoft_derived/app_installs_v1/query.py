@@ -5,6 +5,7 @@ import json
 import os
 import tempfile
 from argparse import ArgumentParser
+from time import sleep
 
 import requests
 from google.cloud import bigquery
@@ -185,11 +186,9 @@ def main():
 
     args = parser.parse_args()
 
-    app_list = json.loads(args.microsoft_store_app_list)
-
     project = args.project
     dataset = args.dataset
-    table_name = "microsoft_app_installs"
+    table_name = "app_installs_v1"
 
     date = args.date
     client_id = MS_CLIENT_ID
@@ -198,6 +197,8 @@ def main():
     tenant_id = MS_TENANT_ID
     resource_url = API_URI
 
+    ms_app_list = json.loads(app_list)
+
     data = []
 
     bearer_token = microsoft_authorization(
@@ -205,7 +206,7 @@ def main():
     )
 
     # Cycle through the apps to get the relevant data
-    for app in app_list:
+    for app in ms_app_list:
         print(f'This is data for {app["app_name"]} - {app["app_id"]} ')
         # Ping the microsoft_store URL and get a response
         json_file = download_microsoft_store_data(date, app["app_id"], bearer_token)
@@ -216,6 +217,7 @@ def main():
             data.extend(microsoft_store_data)
         else:
             print("no data for today")
+        sleep(5)
     upload_to_bigquery(data, project, dataset, table_name, date)
 
 

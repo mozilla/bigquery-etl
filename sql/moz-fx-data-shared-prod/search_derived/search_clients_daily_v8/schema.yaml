@@ -18,6 +18,9 @@ fields:
   name: addon_version
   type: STRING
 - mode: NULLABLE
+  name: has_adblocker_addon
+  type: BOOLEAN
+- mode: NULLABLE
   name: app_version
   type: STRING
 - mode: NULLABLE
@@ -37,6 +40,12 @@ fields:
   type: STRING
 - mode: NULLABLE
   name: os_version
+  type: STRING
+- mode: NULLABLE
+  name: os_version_major
+  type: STRING
+- mode: NULLABLE
+  name: os_version_minor
   type: STRING
 - mode: NULLABLE
   name: channel

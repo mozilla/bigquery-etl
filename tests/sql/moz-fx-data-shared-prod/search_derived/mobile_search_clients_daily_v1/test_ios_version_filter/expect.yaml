@@ -19,6 +19,8 @@
   country: US
   os: iOS
   os_version: "13"
+  os_version_major: 13
+  os_version_minor: 0
   profile_creation_date: 18201
   profile_age_in_days: 30
   sample_id: 1

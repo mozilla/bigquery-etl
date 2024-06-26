@@ -128,12 +128,10 @@ dry_run:
   - sql/moz-fx-data-shared-prod/**/client_deduplication*/*.sql
   - sql/moz-fx-data-marketing-prod/ga_derived/downloads_with_attribution_v1/query.sql
   - sql/moz-fx-data-marketing-prod/ga_derived/downloads_with_attribution_v2/query.sql
-  - sql/moz-fx-data-marketing-prod/google_search_console_derived/search_impressions_by_page_v1/query.sql
-  - sql/moz-fx-data-marketing-prod/google_search_console_derived/search_impressions_by_page_v2/query.sql
-  - sql/moz-fx-data-marketing-prod/google_search_console_derived/search_impressions_by_site_v1/query.sql
-  - sql/moz-fx-data-marketing-prod/google_search_console_derived/search_impressions_by_site_v2/query.sql
-  - sql/moz-fx-data-marketing-prod/google_search_console_derived/site_impression_exports_empty_check_v1/query.sql
-  - sql/moz-fx-data-marketing-prod/google_search_console_derived/url_impression_exports_empty_check_v1/query.sql
+  - sql/moz-fx-data-shared-prod/google_search_console_derived/search_impressions_by_page_v1/query.sql
+  - sql/moz-fx-data-shared-prod/google_search_console_derived/search_impressions_by_page_v2/query.sql
+  - sql/moz-fx-data-shared-prod/google_search_console_derived/search_impressions_by_site_v1/query.sql
+  - sql/moz-fx-data-shared-prod/google_search_console_derived/search_impressions_by_site_v2/query.sql
   - sql/moz-fx-data-shared-prod/mozilla_org_derived/gclid_conversions_v1/query.sql
   - sql/moz-fx-data-shared-prod/fenix_derived/ltv_state_values_v1/query.sql
   - sql/moz-fx-data-shared-prod/fenix_derived/ltv_state_values_v2/query.sql
@@ -327,6 +325,7 @@ generate:
     skip_existing: # Skip automatically updating the following artifacts
     - sql/moz-fx-data-shared-prod/fenix/client_deduplication/**
     - sql/moz-fx-data-shared-prod/org_mozilla_tv_firefox_derived/baseline_clients_last_seen_v1/checks.sql
+    - sql/moz-fx-data-shared-prod/org_mozilla_reference_browser_derived/baseline_clients_last_seen_v1/checks.sql
     skip_apps:
     - mlhackweek_search
     - moso_mastodon_android
@@ -358,9 +357,5 @@ generate:
       - serp-categorization # access denied
       - background-update # table doesn't exist
       events_tables: # overwrite event tables
-        accounts_frontend: # event pings land in accounts_events_v1 tables
-        - accounts_events_v1
-        accounts_backend:
-        - accounts_events_v1
         pine: # Probe info returns pings that don't have tables, only use events_v1
         - events_v1

@@ -13,10 +13,13 @@ CREATE OR REPLACE FUNCTION glam.histogram_cast_json(
 RETURNS STRING AS (
   (
     SELECT
-      CONCAT(
-        '{',
-        STRING_AGG(CONCAT('"', key, '":', ROUND(value, 4)) ORDER BY CAST(key AS FLOAT64)),
-        '}'
+      COALESCE(
+        CONCAT(
+          '{',
+          STRING_AGG(CONCAT('"', key, '":', ROUND(value, 4)) ORDER BY CAST(key AS FLOAT64)),
+          '}'
+        ),
+        "{}"
       )
     FROM
       UNNEST(histogram)

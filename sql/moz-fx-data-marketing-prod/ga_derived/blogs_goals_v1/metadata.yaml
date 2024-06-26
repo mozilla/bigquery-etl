@@ -21,3 +21,4 @@ bigquery:
     expiration_days: null
   clustering: null
 references: {}
+deprecated: true

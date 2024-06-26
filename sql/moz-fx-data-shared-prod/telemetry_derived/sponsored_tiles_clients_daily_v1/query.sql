@@ -81,11 +81,15 @@ desktop_newtab_events AS (
     ) AS sponsored_tiles_dismissal_count,
     COUNTIF(
       e.name = 'pref_changed'
-      AND `mozfun.map.get_key`(e.extra, 'pref_name') = 'browser.newtabpage.activity-stream.showSponsoredTopSites'
+      AND `mozfun.map.get_key`(
+        e.extra,
+        'pref_name'
+      ) = 'browser.newtabpage.activity-stream.showSponsoredTopSites'
       AND `mozfun.map.get_key`(e.extra, 'new_value') = 'false'
-   ) AS sponsored_tiles_disable_count
-  FROM `moz-fx-data-shared-prod.firefox_desktop.newtab` n,
-  UNNEST(events) e
+    ) AS sponsored_tiles_disable_count
+  FROM
+    `moz-fx-data-shared-prod.firefox_desktop.newtab` n,
+    UNNEST(events) e
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND `mozfun`.norm.browser_version_info(client_info.app_display_version).major_version >= 123
@@ -100,14 +104,16 @@ desktop_joint_events AS (
     n.legacy_telemetry_client_id AS client_id,
     n.sponsored_tiles_dismissal_count,
     n.sponsored_tiles_disable_count
-  FROM desktop_newtab_events n
+  FROM
+    desktop_newtab_events n
   UNION DISTINCT
   SELECT
     a.submission_date,
     a.client_id,
     a.sponsored_tiles_dismissal_count,
     a.sponsored_tiles_disable_count
-  FROM desktop_activity_stream_events a
+  FROM
+    desktop_activity_stream_events a
 ),
 desktop_agg_events AS (
   SELECT
@@ -115,7 +121,8 @@ desktop_agg_events AS (
     client_id,
     SUM(sponsored_tiles_dismissal_count) AS sponsored_tiles_dismissal_count,
     SUM(sponsored_tiles_disable_count) AS sponsored_tiles_disable_count
-  FROM desktop_joint_events
+  FROM
+    desktop_joint_events
   GROUP BY
     1,
     2

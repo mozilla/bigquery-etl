@@ -745,7 +745,7 @@ jobs:
             curl --location --request POST "https://us-west1-moz-fx-telemetry-airflow-prod.cloudfunctions.net/ci-external-trigger"
             -H "Authorization: bearer ${ID_TOKEN}"
             -H "Content-Type:application/json"
-            -d "{\"dagrun_note\": \"${DAGRUN_NOTE}\"}"
+            -d "{\"dagrun_note\": \"${DAGRUN_NOTE}\", \"dag_id\": \"bqetl_artifact_deployment\"}"
   private-generate-sql:
     docker: *docker
     steps:

@@ -109,7 +109,7 @@ def download_microsoft_store_data(date, application_id, bearer_token):
         "Content-Type": "application/x-www-form-urlencoded",
         "Authorization": f"Bearer {token}",
     }
-    print(url + "&" + url_params)
+    print(url)
     response = get_response(url, headers, url_params)
     return response
 

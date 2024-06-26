@@ -63,6 +63,7 @@ desktop_activity_stream_events AS (
     `moz-fx-data-shared-prod.activity_stream.events`
   WHERE
     DATE(submission_timestamp) = @submission_date
+    AND CAST(metadata.user_agent.version AS INT64) < 123
   GROUP BY
     1,
     2
@@ -87,6 +88,7 @@ desktop_newtab_events AS (
   UNNEST(events) e
   WHERE
     DATE(submission_timestamp) = @submission_date
+    AND `mozfun`.norm.browser_version_info(client_info.app_display_version).major_version >= 123
   GROUP BY
     1,
     2,
@@ -94,15 +96,29 @@ desktop_newtab_events AS (
 ),
 desktop_joint_events AS (
   SELECT
-    COALESCE(n.submission_date, a.submission_date) AS submission_date,
-    COALESCE(n.legacy_telemetry_client_id, a.client_id) AS client_id,
-    COALESCE(n.sponsored_tiles_dismissal_count, a.sponsored_tiles_dismissal_count) AS sponsored_tiles_dismissal_count,
-    COALESCE(n.sponsored_tiles_disable_count, a.sponsored_tiles_disable_count) AS sponsored_tiles_disable_count
+    n.submission_date,
+    n.legacy_telemetry_client_id AS client_id,
+    n.sponsored_tiles_dismissal_count,
+    n.sponsored_tiles_disable_count
   FROM desktop_newtab_events n
-  FULL OUTER JOIN desktop_activity_stream_events a
-    ON
-      n.legacy_telemetry_client_id = a.client_id
-      AND n.submission_date = a.submission_date
+  UNION DISTINCT
+  SELECT
+    a.submission_date,
+    a.client_id,
+    a.sponsored_tiles_dismissal_count,
+    a.sponsored_tiles_disable_count
+  FROM desktop_activity_stream_events a
+),
+desktop_agg_events AS (
+  SELECT
+    submission_date,
+    client_id,
+    SUM(sponsored_tiles_dismissal_count) AS sponsored_tiles_dismissal_count,
+    SUM(sponsored_tiles_disable_count) AS sponsored_tiles_disable_count
+  FROM desktop_joint_events
+  GROUP BY
+    1,
+    2
 ),
 ------ iOS SPONSORED TILES
 ios_data AS (
@@ -230,7 +246,7 @@ LEFT JOIN
   impressions_main
   USING (client_id, submission_date)
 LEFT JOIN
-  desktop_joint_events
+  desktop_agg_events
   USING (client_id, submission_date)
 -- add experiments data
 LEFT JOIN

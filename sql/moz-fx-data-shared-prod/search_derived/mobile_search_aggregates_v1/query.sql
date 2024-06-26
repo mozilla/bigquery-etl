@@ -23,6 +23,7 @@ SELECT
   SUM(search_with_ads_organic) AS search_with_ads_organic,
   SUM(unknown) AS unknown,
   CAST(NULL AS string) normalized_engine,
+  `mozfun.mobile_search.normalize_app_name`(app_name, os).normalized_app_name_os
 FROM
   mobile_search_clients_daily_v1
 WHERE

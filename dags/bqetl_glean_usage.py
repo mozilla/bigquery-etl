@@ -53,6 +53,8 @@ with DAG(
 
     task_group_accounts_frontend = TaskGroup("accounts_frontend")
 
+    task_group_ads_backend = TaskGroup("ads_backend")
+
     task_group_bedrock = TaskGroup("bedrock")
 
     task_group_bergamot = TaskGroup("bergamot")
@@ -256,6 +258,24 @@ with DAG(
         depends_on_past=False,
         arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_accounts_frontend,
+    )
+
+    ads_backend_derived__events_stream__v1 = bigquery_etl_query(
+        task_id="ads_backend_derived__events_stream__v1",
+        destination_table="events_stream_v1",
+        dataset_id="ads_backend_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="jrediger@mozilla.com",
+        email=[
+            "ascholtz@mozilla.com",
+            "jrediger@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+            "wstuckey@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        arguments=["--billing-project", "moz-fx-data-backfill-2"],
+        task_group=task_group_ads_backend,
     )
 
     bedrock_derived__events_stream__v1 = bigquery_etl_query(
@@ -1222,42 +1242,6 @@ with DAG(
 
         checks__fail_org_mozilla_klar_derived__baseline_clients_last_seen__v1_external.set_upstream(
             checks__fail_org_mozilla_klar_derived__baseline_clients_last_seen__v1
-        )
-
-    checks__fail_org_mozilla_reference_browser_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
-        task_id="checks__fail_org_mozilla_reference_browser_derived__baseline_clients_last_seen__v1",
-        source_table="baseline_clients_last_seen_v1",
-        dataset_id="org_mozilla_reference_browser_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=True,
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
-        task_group=task_group_reference_browser,
-    )
-
-    with TaskGroup(
-        "checks__fail_org_mozilla_reference_browser_derived__baseline_clients_last_seen__v1_external",
-        parent_group=task_group_reference_browser,
-    ) as checks__fail_org_mozilla_reference_browser_derived__baseline_clients_last_seen__v1_external:
-        ExternalTaskMarker(
-            task_id="bqetl_nondesktop__wait_for_checks__fail_org_mozilla_reference_browser_derived__baseline_clients_last_seen__v1",
-            external_dag_id="bqetl_nondesktop",
-            external_task_id="wait_for_checks__fail_org_mozilla_reference_browser_derived__baseline_clients_last_seen__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
-            task_id="bqetl_gud__wait_for_checks__fail_org_mozilla_reference_browser_derived__baseline_clients_last_seen__v1",
-            external_dag_id="bqetl_gud",
-            external_task_id="wait_for_checks__fail_org_mozilla_reference_browser_derived__baseline_clients_last_seen__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
-        )
-
-        checks__fail_org_mozilla_reference_browser_derived__baseline_clients_last_seen__v1_external.set_upstream(
-            checks__fail_org_mozilla_reference_browser_derived__baseline_clients_last_seen__v1
         )
 
     checks__fail_org_mozilla_social_nightly_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
@@ -4808,6 +4792,28 @@ with DAG(
         task_group=task_group_reference_browser,
     )
 
+    with TaskGroup(
+        "org_mozilla_reference_browser_derived__baseline_clients_last_seen__v1_external",
+        parent_group=task_group_reference_browser,
+    ) as org_mozilla_reference_browser_derived__baseline_clients_last_seen__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_nondesktop__wait_for_org_mozilla_reference_browser_derived__baseline_clients_last_seen__v1",
+            external_dag_id="bqetl_nondesktop",
+            external_task_id="wait_for_org_mozilla_reference_browser_derived__baseline_clients_last_seen__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_gud__wait_for_org_mozilla_reference_browser_derived__baseline_clients_last_seen__v1",
+            external_dag_id="bqetl_gud",
+            external_task_id="wait_for_org_mozilla_reference_browser_derived__baseline_clients_last_seen__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
+        )
+
+        org_mozilla_reference_browser_derived__baseline_clients_last_seen__v1_external.set_upstream(
+            org_mozilla_reference_browser_derived__baseline_clients_last_seen__v1
+        )
+
     org_mozilla_reference_browser_derived__events_stream__v1 = bigquery_etl_query(
         task_id="org_mozilla_reference_browser_derived__events_stream__v1",
         destination_table="events_stream_v1",
@@ -5190,6 +5196,8 @@ with DAG(
         wait_for_copy_deduplicate_all
     )
 
+    ads_backend_derived__events_stream__v1.set_upstream(wait_for_copy_deduplicate_all)
+
     bedrock_derived__events_stream__v1.set_upstream(wait_for_copy_deduplicate_all)
 
     burnham_derived__baseline_clients_daily__v1.set_upstream(
@@ -5466,18 +5474,6 @@ with DAG(
         org_mozilla_klar_derived__baseline_clients_last_seen__v1
     )
 
-    checks__fail_org_mozilla_reference_browser_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__fail_org_mozilla_reference_browser_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
-    )
-
-    checks__fail_org_mozilla_reference_browser_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_reference_browser_derived__baseline_clients_last_seen__v1
-    )
-
     checks__fail_org_mozilla_social_nightly_derived__baseline_clients_last_seen__v1.set_upstream(
         checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
     )
@@ -5748,14 +5744,6 @@ with DAG(
 
     checks__warn_org_mozilla_klar_derived__baseline_clients_last_seen__v1.set_upstream(
         org_mozilla_klar_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__warn_org_mozilla_reference_browser_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__warn_org_mozilla_reference_browser_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
     )
 
     checks__warn_org_mozilla_reference_browser_derived__baseline_clients_last_seen__v1.set_upstream(
@@ -6999,7 +6987,7 @@ with DAG(
     pine_derived__metrics_clients_daily__v1.set_upstream(wait_for_copy_deduplicate_all)
 
     reference_browser_derived__clients_last_seen_joined__v1.set_upstream(
-        checks__fail_org_mozilla_reference_browser_derived__baseline_clients_last_seen__v1
+        org_mozilla_reference_browser_derived__baseline_clients_last_seen__v1
     )
 
     reference_browser_derived__clients_last_seen_joined__v1.set_upstream(

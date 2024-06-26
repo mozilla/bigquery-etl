@@ -32,6 +32,7 @@ references:
   - moz-fx-data-shared-prod.accounts_backend_stable.events_v1
   - moz-fx-data-shared-prod.accounts_cirrus_stable.events_v1
   - moz-fx-data-shared-prod.accounts_frontend_stable.events_v1
+  - moz-fx-data-shared-prod.ads_backend_stable.events_v1
   - moz-fx-data-shared-prod.bedrock_stable.events_v1
   - moz-fx-data-shared-prod.burnham_stable.events_v1
   - moz-fx-data-shared-prod.debug_ping_view_stable.events_v1

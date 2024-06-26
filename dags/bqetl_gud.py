@@ -206,18 +206,6 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_checks__fail_org_mozilla_reference_browser_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
-        task_id="wait_for_checks__fail_org_mozilla_reference_browser_derived__baseline_clients_last_seen__v1",
-        external_dag_id="bqetl_glean_usage",
-        external_task_id="reference_browser.checks__fail_org_mozilla_reference_browser_derived__baseline_clients_last_seen__v1",
-        execution_delta=datetime.timedelta(seconds=3600),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
     wait_for_checks__fail_org_mozilla_vrbrowser_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
         task_id="wait_for_checks__fail_org_mozilla_vrbrowser_derived__baseline_clients_last_seen__v1",
         external_dag_id="bqetl_glean_usage",
@@ -234,6 +222,18 @@ with DAG(
         task_id="wait_for_mozilla_lockbox_derived__baseline_clients_last_seen__v1",
         external_dag_id="bqetl_glean_usage",
         external_task_id="lockwise_android.mozilla_lockbox_derived__baseline_clients_last_seen__v1",
+        execution_delta=datetime.timedelta(seconds=3600),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_org_mozilla_reference_browser_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_org_mozilla_reference_browser_derived__baseline_clients_last_seen__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="reference_browser.org_mozilla_reference_browser_derived__baseline_clients_last_seen__v1",
         execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
@@ -431,15 +431,15 @@ with DAG(
     )
 
     telemetry_derived__smoot_usage_nondesktop__v2.set_upstream(
-        wait_for_checks__fail_org_mozilla_reference_browser_derived__baseline_clients_last_seen__v1
-    )
-
-    telemetry_derived__smoot_usage_nondesktop__v2.set_upstream(
         wait_for_checks__fail_org_mozilla_vrbrowser_derived__baseline_clients_last_seen__v1
     )
 
     telemetry_derived__smoot_usage_nondesktop__v2.set_upstream(
         wait_for_mozilla_lockbox_derived__baseline_clients_last_seen__v1
+    )
+
+    telemetry_derived__smoot_usage_nondesktop__v2.set_upstream(
+        wait_for_org_mozilla_reference_browser_derived__baseline_clients_last_seen__v1
     )
 
     telemetry_derived__smoot_usage_nondesktop__v2.set_upstream(

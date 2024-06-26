@@ -23,3 +23,4 @@ bigquery:
     - event_action
     - event_label
 references: {}
+deprecated: true

@@ -16,7 +16,12 @@ RETURNS STRING AS (
       COALESCE(
         CONCAT(
           '{',
-          STRING_AGG(CONCAT('"', key, '":', ROUND(value, 4)) ORDER BY CAST(key AS FLOAT64)),
+          STRING_AGG(
+            CONCAT('"', key, '":', ROUND(value, 4))
+            ORDER BY
+              COALESCE(SAFE_CAST(key AS FLOAT64)),
+              key
+          ),
           '}'
         ),
         "{}"
@@ -45,3 +50,9 @@ SELECT
     )
   ),
   assert.equals('{}', glam.histogram_cast_json(ARRAY<STRUCT<key STRING, value FLOAT64>>[])),
+  assert.equals(
+    '{"always":0.5,"never":0.5}',
+    glam.histogram_cast_json(
+      ARRAY<STRUCT<key STRING, value FLOAT64>>[("always", 0.5), ("never", 0.5)]
+    )
+  ),

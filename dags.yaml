@@ -412,6 +412,7 @@ bqetl_google_analytics_derived:
   schedule_interval: 0 23 * * *
   description: |
     Daily aggregations of data exported from Google Analytics.
+
     The GA export runs at 15:00 UTC, so there's an effective 2-day delay
     for user activity to appear in these tables.
   default_args:

@@ -17,7 +17,7 @@ SELECT
   SAFE.PARSE_TIMESTAMP("%FT%H:%M:%S.0%Ez", payload.info.session_start_date) AS session_start_time,
   payload.info.subsession_id AS subsession_id,
   submission_timestamp AS `timestamp`,
-  udf.deanonymize_event(e).*,
+  `moz-fx-data-shared-prod.udf.deanonymize_event`(e).*,
   event_process,
   application.build_id,
   environment.build.architecture AS build_architecture,
@@ -29,7 +29,7 @@ SELECT
   environment.system.memory_mb AS system_memory_mb,
   metadata.geo.city
 FROM
-  telemetry.main
+  `moz-fx-data-shared-prod.telemetry.main`
 CROSS JOIN
   -- While there are more "events" fields under other process in the main ping schema,
   -- events were moved out to the event ping before those other processes were added. This is

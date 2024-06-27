@@ -733,9 +733,9 @@ jobs:
     steps:
       - gcp-cli/setup:
           use_oidc: true
-          workload_identity_pool_id: GCP_WIP_ID
-          workload_identity_pool_provider_id: GCP_WIP_PROVIDER_ID
-          google_project_number: GCP_PROJECT_ID
+          workload_identity_pool_id: GCPV2_WORKLOAD_IDENTITY_POOL_ID
+          workload_identity_pool_provider_id: GCPV2_CIRCLECI_WORKLOAD_IDENTITY_PROVIDER
+          google_project_number: GCPV2_WORKLOAD_IDENTITY_POOL_PROJECT_NUMBER
           service_account_email: GCP_SERVICE_ACCOUNT_EMAIL
       - run:
           name: Trigger bqetl-artifact-deployment in Airflow
@@ -1182,6 +1182,7 @@ workflows:
                 - main
       - artifact-deployment:
           name: Trigger bqetl_artifact_deployment Airflow DAG
+          context: gcpv2-workload-identity
           requires:
             - deploy
           filters:

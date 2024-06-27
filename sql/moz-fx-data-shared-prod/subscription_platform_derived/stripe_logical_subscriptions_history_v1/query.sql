@@ -62,14 +62,19 @@ subscriptions_history_charge_summaries AS (
   SELECT
     history.id AS subscriptions_history_id,
     ARRAY_AGG(
-      cards.country IGNORE NULLS
+      STRUCT(
+        cards.country AS latest_card_country,
+        COALESCE(
+          us_zip_code_prefixes.state_code,
+          ca_postal_districts.province_code
+        ) AS latest_card_state
+      )
       ORDER BY
-        -- Prefer charges that succeeded.
+        -- Prefer charges that succeeded and non-null country
         IF(charges.status = 'succeeded', 1, 2),
+        cards.country DESC NULLS LAST,
         charges.created DESC
-      LIMIT
-        1
-    )[SAFE_ORDINAL(1)] AS latest_card_country,
+    )[SAFE_ORDINAL(1)].*,
     LOGICAL_OR(refunds.status = 'succeeded') AS has_refunds,
     LOGICAL_OR(
       charges.fraud_details_user_report = 'fraudulent'
@@ -94,6 +99,14 @@ subscriptions_history_charge_summaries AS (
   LEFT JOIN
     `moz-fx-data-shared-prod.stripe_external.refund_v1` AS refunds
     ON charges.id = refunds.charge_id
+  LEFT JOIN
+    `moz-fx-data-shared-prod.static.us_zip_code_prefixes_v1` AS us_zip_code_prefixes
+    ON cards.country = "US"
+    AND LEFT(cards.address_zip, 3) = us_zip_code_prefixes.zip_code_prefix
+  LEFT JOIN
+    `moz-fx-data-shared-prod.static.ca_postal_districts_v1` AS ca_postal_districts
+    ON cards.country = "CA"
+    AND UPPER(LEFT(cards.address_zip, 1)) = ca_postal_districts.postal_district_code
   GROUP BY
     subscriptions_history_id
 )
@@ -109,83 +122,107 @@ SELECT
   history.valid_from,
   history.valid_to,
   history.id AS provider_subscriptions_history_id,
-  STRUCT(
-    CONCAT(
-      'Stripe-',
-      history.subscription.id,
-      '-',
-      FORMAT_TIMESTAMP('%FT%H:%M:%E6S', history.subscription_first_active_at)
-    ) AS id,
-    'Stripe' AS provider,
-    IF(paypal_subscriptions.subscription_id IS NOT NULL, 'PayPal', 'Stripe') AS payment_provider,
-    history.subscription.id AS provider_subscription_id,
-    subscription_item.id AS provider_subscription_item_id,
-    history.subscription.created AS provider_subscription_created_at,
-    history.subscription.customer.id AS provider_customer_id,
-    history.subscription.customer.metadata.userid AS mozilla_account_id,
-    history.subscription.customer.metadata.userid_sha256 AS mozilla_account_id_sha256,
-    CASE
-      -- Use the same address hierarchy as Stripe Tax after we enabled Stripe Tax (FXA-5457).
-      -- https://stripe.com/docs/tax/customer-locations#address-hierarchy
-      WHEN DATE(history.valid_to) >= '2022-12-01'
-        AND (
-          DATE(history.subscription.ended_at) >= '2022-12-01'
-          OR history.subscription.ended_at IS NULL
-        )
-        THEN COALESCE(
-            NULLIF(history.subscription.customer.shipping.address.country, ''),
-            NULLIF(history.subscription.customer.address.country, ''),
-            charge_summaries.latest_card_country
-          )
-      -- SubPlat copies the PayPal billing agreement country to the customer's address.
-      WHEN paypal_subscriptions.subscription_id IS NOT NULL
-        THEN NULLIF(history.subscription.customer.address.country, '')
-      ELSE charge_summaries.latest_card_country
-    END AS country_code,
-    plan_services.services,
-    subscription_item.plan.product.id AS provider_product_id,
-    subscription_item.plan.product.name AS product_name,
-    subscription_item.plan.id AS provider_plan_id,
-    subscription_item.plan.`interval` AS plan_interval_type,
-    subscription_item.plan.interval_count AS plan_interval_count,
-    UPPER(subscription_item.plan.currency) AS plan_currency,
-    (CAST(subscription_item.plan.amount AS DECIMAL) / 100) AS plan_amount,
-    IF(ARRAY_LENGTH(plan_services.services) > 1, TRUE, FALSE) AS is_bundle,
-    IF(
-      history.subscription.status = 'trialing'
-      OR (
-        history.subscription.ended_at
-        BETWEEN history.subscription.trial_start
-        AND history.subscription.trial_end
-      ),
-      TRUE,
-      FALSE
-    ) AS is_trial,
-    history.subscription_is_active AS is_active,
-    history.subscription.status AS provider_status,
-    history.subscription_first_active_at AS started_at,
-    history.subscription.ended_at,
+  (
+    SELECT AS STRUCT
+      CONCAT(
+        'Stripe-',
+        history.subscription.id,
+        '-',
+        FORMAT_TIMESTAMP('%FT%H:%M:%E6S', history.subscription_first_active_at)
+      ) AS id,
+      'Stripe' AS provider,
+      IF(paypal_subscriptions.subscription_id IS NOT NULL, 'PayPal', 'Stripe') AS payment_provider,
+      history.subscription.id AS provider_subscription_id,
+      subscription_item.id AS provider_subscription_item_id,
+      history.subscription.created AS provider_subscription_created_at,
+      history.subscription.customer.id AS provider_customer_id,
+      history.subscription.customer.metadata.userid AS mozilla_account_id,
+      history.subscription.customer.metadata.userid_sha256 AS mozilla_account_id_sha256,
+      (
+        CASE
+            -- Use the same address hierarchy as Stripe Tax after we enabled Stripe Tax (FXA-5457).
+            -- https://stripe.com/docs/tax/customer-locations#address-hierarchy
+          WHEN DATE(history.valid_to) >= '2022-12-01'
+            AND (
+              DATE(history.subscription.ended_at) >= '2022-12-01'
+              OR history.subscription.ended_at IS NULL
+            )
+            THEN
+              CASE
+                WHEN NULLIF(history.subscription.customer.shipping.address.country, '') IS NOT NULL
+                  THEN STRUCT(
+                      history.subscription.customer.shipping.address.country AS country_code,
+                      history.subscription.customer.shipping.address.state AS country_state_code
+                    )
+                WHEN NULLIF(history.subscription.customer.address.country, '') IS NOT NULL
+                  THEN STRUCT(
+                      history.subscription.customer.address.country AS country_code,
+                      history.subscription.customer.address.state AS country_state_code
+                    )
+                ELSE STRUCT(
+                    charge_summaries.latest_card_country AS country_code,
+                    charge_summaries.latest_card_state AS country_state_code
+                  )
+              END
+            -- SubPlat copies the PayPal billing agreement country to the customer's address.
+          WHEN paypal_subscriptions.subscription_id IS NOT NULL
+            THEN STRUCT(
+                NULLIF(history.subscription.customer.shipping.address.country, '') AS country_code,
+                NULLIF(
+                  history.subscription.customer.shipping.address.state,
+                  ''
+                ) AS country_state_code
+              )
+          ELSE STRUCT(
+              charge_summaries.latest_card_country AS country_code,
+              charge_summaries.latest_card_state AS country_state_code
+            )
+        END
+      ).*,
+      plan_services.services,
+      subscription_item.plan.product.id AS provider_product_id,
+      subscription_item.plan.product.name AS product_name,
+      subscription_item.plan.id AS provider_plan_id,
+      subscription_item.plan.`interval` AS plan_interval_type,
+      subscription_item.plan.interval_count AS plan_interval_count,
+      UPPER(subscription_item.plan.currency) AS plan_currency,
+      (CAST(subscription_item.plan.amount AS DECIMAL) / 100) AS plan_amount,
+      IF(ARRAY_LENGTH(plan_services.services) > 1, TRUE, FALSE) AS is_bundle,
+      IF(
+        history.subscription.status = 'trialing'
+        OR (
+          history.subscription.ended_at
+          BETWEEN history.subscription.trial_start
+          AND history.subscription.trial_end
+        ),
+        TRUE,
+        FALSE
+      ) AS is_trial,
+      history.subscription_is_active AS is_active,
+      history.subscription.status AS provider_status,
+      history.subscription_first_active_at AS started_at,
+      history.subscription.ended_at,
     -- TODO: ended_reason
-    IF(
-      history.subscription.ended_at IS NULL,
-      history.subscription.current_period_start,
-      NULL
-    ) AS current_period_started_at,
-    IF(
-      history.subscription.ended_at IS NULL,
-      history.subscription.current_period_end,
-      NULL
-    ) AS current_period_ends_at,
-    history.subscription.cancel_at_period_end IS NOT TRUE AS auto_renew,
-    IF(
-      history.subscription.cancel_at_period_end,
-      history.subscription.canceled_at,
-      NULL
-    ) AS auto_renew_disabled_at,
+      IF(
+        history.subscription.ended_at IS NULL,
+        history.subscription.current_period_start,
+        NULL
+      ) AS current_period_started_at,
+      IF(
+        history.subscription.ended_at IS NULL,
+        history.subscription.current_period_end,
+        NULL
+      ) AS current_period_ends_at,
+      history.subscription.cancel_at_period_end IS NOT TRUE AS auto_renew,
+      IF(
+        history.subscription.cancel_at_period_end,
+        history.subscription.canceled_at,
+        NULL
+      ) AS auto_renew_disabled_at,
     -- TODO: promotion_codes
     -- TODO: promotion_discounts_amount
-    COALESCE(charge_summaries.has_refunds, FALSE) AS has_refunds,
-    COALESCE(charge_summaries.has_fraudulent_charges, FALSE) AS has_fraudulent_charges
+      COALESCE(charge_summaries.has_refunds, FALSE) AS has_refunds,
+      COALESCE(charge_summaries.has_fraudulent_charges, FALSE) AS has_fraudulent_charges
   ) AS subscription
 FROM
   active_subscriptions_history AS history

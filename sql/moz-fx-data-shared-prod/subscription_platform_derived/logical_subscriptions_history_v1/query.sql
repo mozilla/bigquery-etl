@@ -146,6 +146,7 @@ SELECT
     ) AS customer_subscription_number,
     history.subscription.country_code,
     COALESCE(countries.name, history.subscription.country_code, 'Unknown') AS country_name,
+    history.subscription.country_state_code,
     history.subscription.services,
     history.subscription.provider_product_id,
     history.subscription.product_name,

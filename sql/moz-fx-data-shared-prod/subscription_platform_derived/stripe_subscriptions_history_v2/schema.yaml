@@ -53,6 +53,10 @@ fields:
         type: STRING
         mode: NULLABLE
         description: Two-letter country code (ISO 3166-1 alpha-2).
+      - name: state
+        type: STRING
+        mode: NULLABLE
+        description: Two-letter state/province code (only for US and CA).
     - name: created
       type: TIMESTAMP
       mode: NULLABLE
@@ -218,6 +222,10 @@ fields:
           type: STRING
           mode: NULLABLE
           description: Two-letter country code (ISO 3166-1 alpha-2).
+        - name: state
+          type: STRING
+          mode: NULLABLE
+          description: Two-letter state/province code (only for US and CA).
     - name: tax_exempt
       type: STRING
       mode: NULLABLE

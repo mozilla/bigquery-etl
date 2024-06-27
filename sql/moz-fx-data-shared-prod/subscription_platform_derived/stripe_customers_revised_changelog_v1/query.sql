@@ -40,18 +40,64 @@ WITH original_changelog AS (
             JSON_VALUE(customer.metadata.userid) AS userid,
             TO_HEX(SHA256(JSON_VALUE(customer.metadata.userid))) AS userid_sha256
           ) AS metadata,
-          -- Limit address data to just country since the metadata includes FxA user IDs
-          -- and this is in a Mozilla-confidential dataset.
-          STRUCT(customer.address.country) AS address,
+          -- Limit address data to country and state since the metadata includes FxA user IDs
+          -- and this is in a Mozilla-confidential dataset.  State is only for US and CA.
+          STRUCT(
+            customer.address.country,
+            IF(
+              customer.address.country IN ("US", "CA"),
+              COALESCE(
+                NULLIF(customer.address.state, ""),
+                us_zip_code_prefixes.state_code,
+                ca_postal_districts.province_code
+              ),
+              NULL
+            ) AS state
+          ) AS address,
           (
             SELECT AS STRUCT
-              customer.shipping.* REPLACE (STRUCT(customer.shipping.address.country) AS address)
+              customer.shipping.* REPLACE (
+                STRUCT(
+                  customer.shipping.address.country,
+                  IF(
+                    customer.shipping.address.country IN ("US", "CA"),
+                    COALESCE(
+                      NULLIF(customer.shipping.address.state, ""),
+                      us_shipping_zip_code_prefixes.state_code,
+                      ca_shipping_postal_districts.province_code
+                    ),
+                    NULL
+                  ) AS state
+                ) AS address
+              )
           ) AS shipping
         )
     ) AS customer,
     ROW_NUMBER() OVER customer_changes_asc AS customer_change_number
   FROM
     `moz-fx-data-shared-prod`.stripe_external.customers_changelog_v1
+  -- try to get state using postal code if state field is unavailable
+  LEFT JOIN
+    `moz-fx-data-shared-prod.static.us_zip_code_prefixes_v1` AS us_shipping_zip_code_prefixes
+    ON customer.shipping.address.country = "US"
+    AND LEFT(
+      customer.shipping.address.postal_code,
+      3
+    ) = us_shipping_zip_code_prefixes.zip_code_prefix
+  LEFT JOIN
+    `moz-fx-data-shared-prod.static.us_zip_code_prefixes_v1` AS us_zip_code_prefixes
+    ON customer.address.country = "US"
+    AND LEFT(customer.address.postal_code, 3) = us_zip_code_prefixes.zip_code_prefix
+  LEFT JOIN
+    `moz-fx-data-shared-prod.static.ca_postal_districts_v1` AS ca_shipping_postal_districts
+    ON customer.shipping.address.country = "CA"
+    AND UPPER(
+      LEFT(customer.shipping.address.postal_code, 1)
+    ) = ca_shipping_postal_districts.postal_district_code
+  LEFT JOIN
+    `moz-fx-data-shared-prod.static.ca_postal_districts_v1` AS ca_postal_districts
+    ON customer.address.country = "CA"
+    AND UPPER(LEFT(customer.address.postal_code, 1)) = ca_postal_districts.postal_district_code
   WINDOW
     customer_changes_asc AS (
       PARTITION BY
@@ -68,7 +114,7 @@ pre_fivetran_changelog AS (
     TIMESTAMP '2022-03-25 00:02:29' AS `timestamp`,
     STRUCT(
       id,
-      STRUCT(address.country) AS address,
+      STRUCT(address.country, address.state) AS address,
       created,
       CAST(NULL AS STRING) AS default_source_id,
       CAST(
@@ -103,7 +149,7 @@ pre_fivetran_changelog AS (
         CAST(NULL AS STRING) AS userid,
         JSON_VALUE(metadata.userid_sha256) AS userid_sha256
       ) AS metadata,
-      CAST(NULL AS STRUCT<address STRUCT<country STRING>>) AS shipping,
+      CAST(NULL AS STRUCT<address STRUCT<country STRING, state STRING>>) AS shipping,
       CAST(NULL AS STRING) AS tax_exempt
     ) AS customer,
     1 AS customer_change_number

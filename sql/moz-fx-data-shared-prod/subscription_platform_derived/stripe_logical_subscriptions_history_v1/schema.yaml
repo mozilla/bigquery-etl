@@ -45,6 +45,9 @@ fields:
   - name: country_code
     type: STRING
     mode: NULLABLE
+  - name: country_state_code
+    type: STRING
+    mode: NULLABLE
   - name: services
     type: RECORD
     mode: REPEATED

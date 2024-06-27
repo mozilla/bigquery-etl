@@ -7070,6 +7070,9 @@ fields:
     - name: process_lifetime
       type: STRING
       mode: NULLABLE
+    - name: browser_backup_total_backup_size
+      type: STRING
+      mode: NULLABLE
   - name: info
     type: RECORD
     mode: NULLABLE

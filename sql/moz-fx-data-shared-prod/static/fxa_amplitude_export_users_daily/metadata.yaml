@@ -12,4 +12,4 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - fxa_amplitude_export_event_date
+  - moz-fx-data-shared-prod.static.fxa_amplitude_export_event_date

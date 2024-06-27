@@ -12,5 +12,5 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - fxa_amplitude_export_users_daily
-  - fxa_amplitude_export_users_last_seen
+  - moz-fx-data-shared-prod.static.fxa_amplitude_export_users_daily
+  - moz-fx-data-shared-prod.static.fxa_amplitude_export_users_last_seen

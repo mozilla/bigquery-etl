@@ -8,7 +8,7 @@
       name AS event,
       extra,
     FROM
-      org_mozilla_firefox.events e
+      `moz-fx-data-shared-prod.org_mozilla_firefox.events` e
     CROSS JOIN
       UNNEST(e.events) AS event
     UNION ALL
@@ -19,7 +19,7 @@
       name AS event,
       extra,
     FROM
-      org_mozilla_firefox_beta.events e
+      `moz-fx-data-shared-prod.org_mozilla_firefox_beta.events` e
     CROSS JOIN
       UNNEST(e.events) AS event
     UNION ALL
@@ -30,7 +30,7 @@
       name AS event,
       extra,
     FROM
-      org_mozilla_fenix.events e
+      `moz-fx-data-shared-prod.org_mozilla_fenix.events` e
     CROSS JOIN
       UNNEST(e.events) AS event
   ),
@@ -115,7 +115,9 @@
       ARRAY_AGG(
         STRUCT(
           event_property_value AS key,
-          udf.event_code_points_to_string([event_property_value_index]) AS value,
+          `moz-fx-data-shared-prod.udf.event_code_points_to_string`(
+            [event_property_value_index]
+          ) AS value,
           event_property_value_index AS index
         )
         ORDER BY
@@ -140,7 +142,7 @@
       event,
       first_timestamp,
       primary_index AS numeric_index,
-      udf.event_code_points_to_string([primary_index]) AS index,
+      `moz-fx-data-shared-prod.udf.event_code_points_to_string`([primary_index]) AS index,
       ARRAY_AGG(
         IF(
           event_property IS NULL,
@@ -181,7 +183,7 @@
       name AS event,
       extra,
     FROM
-      org_mozilla_firefox.events e
+      `moz-fx-data-shared-prod.org_mozilla_firefox.events` e
     CROSS JOIN
       UNNEST(e.events) AS event
     UNION ALL
@@ -192,7 +194,7 @@
       name AS event,
       extra,
     FROM
-      org_mozilla_firefox_beta.events e
+      `moz-fx-data-shared-prod.org_mozilla_firefox_beta.events` e
     CROSS JOIN
       UNNEST(e.events) AS event
     UNION ALL
@@ -203,7 +205,7 @@
       name AS event,
       extra,
     FROM
-      org_mozilla_fenix.events e
+      `moz-fx-data-shared-prod.org_mozilla_fenix.events` e
     CROSS JOIN
       UNNEST(e.events) AS event
   ),
@@ -219,7 +221,7 @@
     SELECT
       *
     FROM
-      fenix_derived.event_types_history_v1
+      `moz-fx-data-shared-prod.fenix_derived.event_types_history_v1`
     WHERE
       submission_date = DATE_SUB(@submission_date, INTERVAL 1 DAY)
   ),
@@ -402,7 +404,9 @@
       ARRAY_AGG(
         STRUCT(
           event_property_value AS key,
-          udf.event_code_points_to_string([event_property_value_index]) AS value,
+          `moz-fx-data-shared-prod.udf.event_code_points_to_string`(
+            [event_property_value_index]
+          ) AS value,
           event_property_value_index AS index
         )
         ORDER BY
@@ -425,7 +429,7 @@
       event,
       first_timestamp,
       numeric_index,
-      udf.event_code_points_to_string([numeric_index]) AS index,
+      `moz-fx-data-shared-prod.udf.event_code_points_to_string`([numeric_index]) AS index,
       ARRAY_AGG(
         IF(
           event_property IS NULL,

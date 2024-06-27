@@ -5,7 +5,7 @@ WITH _previous AS (
     `moz-fx-data-shared-prod.klar_ios_derived.metrics_clients_last_seen_v1`
   WHERE
     submission_date = DATE_SUB(@submission_date, INTERVAL 1 DAY)
-    AND udf.shift_28_bits_one_day(days_sent_metrics_ping_bits) > 0
+    AND `moz-fx-data-shared-prod.udf.shift_28_bits_one_day`(days_sent_metrics_ping_bits) > 0
 ),
 _current AS (
   SELECT
@@ -21,7 +21,7 @@ SELECT
   _current.sample_id,
   _current.normalized_channel,
   _current.n_metrics_ping,
-  udf.combine_adjacent_days_28_bits(
+  `moz-fx-data-shared-prod.udf.combine_adjacent_days_28_bits`(
     _previous.days_sent_metrics_ping_bits,
     _current.days_sent_metrics_ping_bits
   ) AS days_sent_metrics_ping_bits,

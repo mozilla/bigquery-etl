@@ -25,8 +25,8 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - add_device_events_v1
-  - all_subscriptions_v1
-  - login_flows_v1
-  - protected_v1
-  - users_v1
+  - moz-fx-data-shared-prod.mozilla_vpn_derived.add_device_events_v1
+  - moz-fx-data-shared-prod.mozilla_vpn_derived.all_subscriptions_v1
+  - moz-fx-data-shared-prod.mozilla_vpn_derived.login_flows_v1
+  - moz-fx-data-shared-prod.mozilla_vpn_derived.protected_v1
+  - moz-fx-data-shared-prod.mozilla_vpn_derived.users_v1

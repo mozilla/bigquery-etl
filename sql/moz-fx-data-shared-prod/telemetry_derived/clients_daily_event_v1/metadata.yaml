@@ -32,4 +32,4 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - telemetry.events
+  - moz-fx-data-shared-prod.telemetry.events

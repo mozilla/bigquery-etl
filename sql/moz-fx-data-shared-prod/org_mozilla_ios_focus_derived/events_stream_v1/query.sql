@@ -98,7 +98,7 @@ WITH base AS (
     ping_info.reason AS reason,
     from_map_experiment(ping_info.experiments) AS experiments,
   FROM
-    `org_mozilla_ios_focus.events`
+    `moz-fx-data-shared-prod.org_mozilla_ios_focus.events`
   WHERE
     {% if is_init() %}
       DATE(submission_timestamp) >= '2023-11-01'

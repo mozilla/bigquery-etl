@@ -58,7 +58,7 @@ WITH core_flattened_searches AS (
     searches.value AS search_count,
     SAFE_SUBTRACT(UNIX_DATE(DATE(submission_timestamp)), profile_date) AS profile_age_in_days
   FROM
-    telemetry.core
+    `moz-fx-data-shared-prod.telemetry.core`
   CROSS JOIN
     UNNEST(
       -- Add a null search to pings that have no searches
@@ -78,7 +78,7 @@ baseline_org_mozilla_fenix AS (
     client_info.client_id,
     client_info.locale
   FROM
-    org_mozilla_fenix.baseline
+    `moz-fx-data-shared-prod.org_mozilla_fenix.baseline`
 ),
 -- metrics for Firefox Preview beta
 metrics_org_mozilla_fenix AS (
@@ -104,7 +104,7 @@ metrics_org_mozilla_fenix AS (
     ping_info.experiments,
     metrics.counter.events_total_uri_count AS total_uri_count,
   FROM
-    org_mozilla_fenix.metrics AS org_mozilla_fenix_metrics
+    `moz-fx-data-shared-prod.org_mozilla_fenix.metrics` AS org_mozilla_fenix_metrics
 ),
 -- baseline for Firefox Preview nightly
 baseline_org_mozilla_fenix_nightly AS (
@@ -113,7 +113,7 @@ baseline_org_mozilla_fenix_nightly AS (
     client_info.client_id,
     client_info.locale
   FROM
-    org_mozilla_fenix_nightly.baseline
+    `moz-fx-data-shared-prod.org_mozilla_fenix_nightly.baseline`
 ),
 -- metrics for Firefox Preview nightly
 metrics_org_mozilla_fenix_nightly AS (
@@ -139,7 +139,7 @@ metrics_org_mozilla_fenix_nightly AS (
     ping_info.experiments,
     metrics.counter.events_total_uri_count AS total_uri_count,
   FROM
-    org_mozilla_fenix_nightly.metrics AS org_mozilla_fenix_nightly_metrics
+    `moz-fx-data-shared-prod.org_mozilla_fenix_nightly.metrics` AS org_mozilla_fenix_nightly_metrics
 ),
 -- baseline for Fenix nightly
 baseline_org_mozilla_fennec_aurora AS (
@@ -148,7 +148,7 @@ baseline_org_mozilla_fennec_aurora AS (
     client_info.client_id,
     client_info.locale
   FROM
-    org_mozilla_fennec_aurora.baseline
+    `moz-fx-data-shared-prod.org_mozilla_fennec_aurora.baseline`
 ),
 -- metrics for Fenix nightly
 metrics_org_mozilla_fennec_aurora AS (
@@ -174,7 +174,7 @@ metrics_org_mozilla_fennec_aurora AS (
     ping_info.experiments,
     metrics.counter.events_total_uri_count AS total_uri_count,
   FROM
-    org_mozilla_fennec_aurora.metrics AS org_mozilla_fennec_aurora_metrics
+    `moz-fx-data-shared-prod.org_mozilla_fennec_aurora.metrics` AS org_mozilla_fennec_aurora_metrics
 ),
 -- baseline for Fenix beta
 baseline_org_mozilla_firefox_beta AS (
@@ -183,7 +183,7 @@ baseline_org_mozilla_firefox_beta AS (
     client_info.client_id,
     client_info.locale
   FROM
-    org_mozilla_firefox_beta.baseline
+    `moz-fx-data-shared-prod.org_mozilla_firefox_beta.baseline`
 ),
 -- metrics for Fenix beta
 metrics_org_mozilla_firefox_beta AS (
@@ -209,7 +209,7 @@ metrics_org_mozilla_firefox_beta AS (
     ping_info.experiments,
     metrics.counter.events_total_uri_count AS total_uri_count,
   FROM
-    org_mozilla_firefox_beta.metrics AS org_mozilla_firefox_beta_metrics
+    `moz-fx-data-shared-prod.org_mozilla_firefox_beta.metrics` AS org_mozilla_firefox_beta_metrics
 ),
 -- baseline for Fenix release
 baseline_org_mozilla_firefox AS (
@@ -218,7 +218,7 @@ baseline_org_mozilla_firefox AS (
     client_info.client_id,
     client_info.locale
   FROM
-    org_mozilla_firefox.baseline
+    `moz-fx-data-shared-prod.org_mozilla_firefox.baseline`
 ),
 -- metrics for Fenix release
 metrics_org_mozilla_firefox AS (
@@ -244,7 +244,7 @@ metrics_org_mozilla_firefox AS (
     ping_info.experiments,
     metrics.counter.events_total_uri_count AS total_uri_count,
   FROM
-    org_mozilla_firefox.metrics AS org_mozilla_firefox_metrics
+    `moz-fx-data-shared-prod.org_mozilla_firefox.metrics` AS org_mozilla_firefox_metrics
 ),
 -- metrics for Firefox iOS release
 metrics_org_mozilla_ios_firefox AS (
@@ -272,7 +272,7 @@ metrics_org_mozilla_ios_firefox AS (
     NULL AS total_uri_count,
     client_info.locale,
   FROM
-    org_mozilla_ios_firefox.metrics AS org_mozilla_ios_firefox_metrics
+    `moz-fx-data-shared-prod.org_mozilla_ios_firefox.metrics` AS org_mozilla_ios_firefox_metrics
   WHERE
     mozfun.norm.truncate_version(client_info.app_display_version, 'major') >= 28
 ),
@@ -302,7 +302,7 @@ metrics_org_mozilla_ios_firefoxbeta AS (
     NULL AS total_uri_count,
     client_info.locale,
   FROM
-    org_mozilla_ios_firefoxbeta.metrics AS org_mozilla_ios_firefoxbeta_metrics
+    `moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta.metrics` AS org_mozilla_ios_firefoxbeta_metrics
   WHERE
     mozfun.norm.truncate_version(client_info.app_display_version, 'major') >= 28
 ),
@@ -332,7 +332,7 @@ metrics_org_mozilla_ios_fennec AS (
     NULL AS total_uri_count,
     client_info.locale,
   FROM
-    org_mozilla_ios_fennec.metrics AS org_mozilla_ios_fennec_metrics
+    `moz-fx-data-shared-prod.org_mozilla_ios_fennec.metrics` AS org_mozilla_ios_fennec_metrics
   WHERE
     mozfun.norm.truncate_version(client_info.app_display_version, 'major') >= 28
 ),
@@ -361,7 +361,7 @@ metrics_org_mozilla_focus AS (
     metrics.counter.browser_total_uri_count,
     client_info.locale,
   FROM
-    org_mozilla_focus.metrics AS org_mozilla_focus_metrics
+    `moz-fx-data-shared-prod.org_mozilla_focus.metrics` AS org_mozilla_focus_metrics
 ),
 -- metrics for Focus Android Glean beta
 metrics_org_mozilla_focus_beta AS (
@@ -388,7 +388,7 @@ metrics_org_mozilla_focus_beta AS (
     metrics.counter.browser_total_uri_count,
     client_info.locale,
   FROM
-    org_mozilla_focus_beta.metrics AS org_mozilla_focus_beta_metrics
+    `moz-fx-data-shared-prod.org_mozilla_focus_beta.metrics` AS org_mozilla_focus_beta_metrics
 ),
 -- metrics for Focus Android Glean nightly
 metrics_org_mozilla_focus_nightly AS (
@@ -415,7 +415,7 @@ metrics_org_mozilla_focus_nightly AS (
     metrics.counter.browser_total_uri_count,
     client_info.locale,
   FROM
-    org_mozilla_focus_nightly.metrics AS org_mozilla_focus_nightly_metrics
+    `moz-fx-data-shared-prod.org_mozilla_focus_nightly.metrics` AS org_mozilla_focus_nightly_metrics
 ),
 -- metrics for Klar Android Glean release
 metrics_org_mozilla_klar AS (
@@ -442,7 +442,7 @@ metrics_org_mozilla_klar AS (
     metrics.counter.browser_total_uri_count,
     client_info.locale,
   FROM
-    org_mozilla_klar.metrics AS org_mozilla_klar_metrics
+    `moz-fx-data-shared-prod.org_mozilla_klar.metrics` AS org_mozilla_klar_metrics
 ),
 -- metrics for Focus iOS Glean release
 metrics_org_mozilla_ios_focus AS (
@@ -469,7 +469,7 @@ metrics_org_mozilla_ios_focus AS (
     metrics.counter.browser_total_uri_count,
     client_info.locale,
   FROM
-    org_mozilla_ios_focus.metrics AS org_mozilla_ios_focus_metrics
+    `moz-fx-data-shared-prod.org_mozilla_ios_focus.metrics` AS org_mozilla_ios_focus_metrics
 ),
 -- metrics for Klar iOS Glean release
 metrics_org_mozilla_ios_klar AS (
@@ -496,7 +496,7 @@ metrics_org_mozilla_ios_klar AS (
     metrics.counter.browser_total_uri_count,
     client_info.locale,
   FROM
-    org_mozilla_ios_klar.metrics AS org_mozilla_ios_klar_metrics
+    `moz-fx-data-shared-prod.org_mozilla_ios_klar.metrics` AS org_mozilla_ios_klar_metrics
 ),
 fenix_baseline AS (
   SELECT
@@ -625,7 +625,7 @@ ios_organic_filtered AS (
 fenix_client_locales AS (
   SELECT
     client_id,
-    udf.mode_last(ARRAY_AGG(locale)) AS locale
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(locale)) AS locale
   FROM
     fenix_baseline
   WHERE
@@ -729,10 +729,12 @@ glean_flattened_searches AS (
       ELSE search.search_type
     END AS source,
     search.value AS search_count,
-    UNIX_DATE(udf.parse_iso8601_date(first_run_date)) AS profile_creation_date,
+    UNIX_DATE(
+      `moz-fx-data-shared-prod.udf.parse_iso8601_date`(first_run_date)
+    ) AS profile_creation_date,
     SAFE.DATE_DIFF(
-      udf.parse_iso8601_date(end_time),
-      udf.parse_iso8601_date(first_run_date),
+      `moz-fx-data-shared-prod.udf.parse_iso8601_date`(end_time),
+      `moz-fx-data-shared-prod.udf.parse_iso8601_date`(first_run_date),
       DAY
     ) AS profile_age_in_days,
   FROM
@@ -873,33 +875,47 @@ unfiltered_search_clients AS (
     SUM(
       IF(search_type != 'unknown' OR engine IS NULL OR search_count > 10000, 0, search_count)
     ) AS unknown,
-    udf.mode_last(ARRAY_AGG(country)) AS country,
-    udf.mode_last(ARRAY_AGG(locale)) AS locale,
-    udf.mode_last(ARRAY_AGG(app_version)) AS app_version,
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(country)) AS country,
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(locale)) AS locale,
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(app_version)) AS app_version,
     channel,
-    udf.mode_last(ARRAY_AGG(os)) AS os,
-    udf.mode_last(ARRAY_AGG(os_version)) AS os_version,
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(os)) AS os,
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(os_version)) AS os_version,
     COALESCE(
       SAFE_CAST(
-        NULLIF(SPLIT(udf.mode_last(ARRAY_AGG(os_version)), ".")[SAFE_OFFSET(0)], "") AS INTEGER
+        NULLIF(
+          SPLIT(`moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(os_version)), ".")[
+            SAFE_OFFSET(0)
+          ],
+          ""
+        ) AS INTEGER
       ),
       0
     ) AS os_version_major,
     COALESCE(
       SAFE_CAST(
-        NULLIF(SPLIT(udf.mode_last(ARRAY_AGG(os_version)), ".")[SAFE_OFFSET(1)], "") AS INTEGER
+        NULLIF(
+          SPLIT(`moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(os_version)), ".")[
+            SAFE_OFFSET(1)
+          ],
+          ""
+        ) AS INTEGER
       ),
       0
     ) AS os_version_minor,
-    udf.mode_last(ARRAY_AGG(default_search_engine)) AS default_search_engine,
-    udf.mode_last(
+    `moz-fx-data-shared-prod.udf.mode_last`(
+      ARRAY_AGG(default_search_engine)
+    ) AS default_search_engine,
+    `moz-fx-data-shared-prod.udf.mode_last`(
       ARRAY_AGG(default_search_engine_submission_url)
     ) AS default_search_engine_submission_url,
-    udf.mode_last(ARRAY_AGG(distribution_id)) AS distribution_id,
-    udf.mode_last(ARRAY_AGG(profile_creation_date)) AS profile_creation_date,
-    udf.mode_last(ARRAY_AGG(profile_age_in_days)) AS profile_age_in_days,
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(distribution_id)) AS distribution_id,
+    `moz-fx-data-shared-prod.udf.mode_last`(
+      ARRAY_AGG(profile_creation_date)
+    ) AS profile_creation_date,
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(profile_age_in_days)) AS profile_age_in_days,
     ANY_VALUE(sample_id) AS sample_id,
-    udf.map_mode_last(ARRAY_CONCAT_AGG(experiments)) AS experiments,
+    `moz-fx-data-shared-prod.udf.map_mode_last`(ARRAY_CONCAT_AGG(experiments)) AS experiments,
     SUM(total_uri_count) AS total_uri_count,
   FROM
     combined_search_clients

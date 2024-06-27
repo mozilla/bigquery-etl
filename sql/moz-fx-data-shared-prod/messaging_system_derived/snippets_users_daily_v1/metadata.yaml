@@ -25,4 +25,4 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - messaging_system.snippets
+  - moz-fx-data-shared-prod.messaging_system.snippets

@@ -39,5 +39,5 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - telemetry_derived.clients_last_seen_event_v1
-  - telemetry_derived.clients_last_seen_v1
+  - moz-fx-data-shared-prod.telemetry_derived.clients_last_seen_event_v1
+  - moz-fx-data-shared-prod.telemetry_derived.clients_last_seen_v1

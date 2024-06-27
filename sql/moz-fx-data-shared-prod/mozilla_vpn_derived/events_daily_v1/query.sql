@@ -27,7 +27,7 @@ WITH sample AS (
         UNNEST(ping_info.experiments)
     ) AS experiments
   FROM
-    mozillavpn.main e
+    `moz-fx-data-shared-prod.mozillavpn.main` e
   CROSS JOIN
     UNNEST(e.events) AS event
   UNION ALL
@@ -58,7 +58,7 @@ WITH sample AS (
         UNNEST(ping_info.experiments)
     ) AS experiments
   FROM
-    org_mozilla_firefox_vpn.main e
+    `moz-fx-data-shared-prod.org_mozilla_firefox_vpn.main` e
   CROSS JOIN
     UNNEST(e.events) AS event
   UNION ALL
@@ -89,7 +89,7 @@ WITH sample AS (
         UNNEST(ping_info.experiments)
     ) AS experiments
   FROM
-    org_mozilla_ios_firefoxvpn.main e
+    `moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn.main` e
   CROSS JOIN
     UNNEST(e.events) AS event
   UNION ALL
@@ -120,7 +120,7 @@ WITH sample AS (
         UNNEST(ping_info.experiments)
     ) AS experiments
   FROM
-    org_mozilla_ios_firefoxvpn_network_extension.main e
+    `moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_network_extension.main` e
   CROSS JOIN
     UNNEST(e.events) AS event
 ),
@@ -138,12 +138,18 @@ events AS (
 ),
 joined AS (
   SELECT
-    CONCAT(udf.pack_event_properties(events.extra, event_types.event_properties), index) AS index,
+    CONCAT(
+      `moz-fx-data-shared-prod.udf.pack_event_properties`(
+        events.extra,
+        event_types.event_properties
+      ),
+      index
+    ) AS index,
     events.* EXCEPT (category, event, extra)
   FROM
     events
   INNER JOIN
-    mozilla_vpn.event_types event_types
+    `moz-fx-data-shared-prod.mozilla_vpn.event_types` event_types
     USING (category, event)
 )
 SELECT

@@ -25,4 +25,4 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - mobile_search_clients_daily_v1
+  - moz-fx-data-shared-prod.search_derived.mobile_search_clients_daily_v1

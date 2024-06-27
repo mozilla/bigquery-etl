@@ -3,14 +3,14 @@ WITH crash_pings AS (
   SELECT
     *
   FROM
-    telemetry_live.crash_v4
+    `moz-fx-data-shared-prod.telemetry_live.crash_v4`
   WHERE
     DATE(submission_timestamp) >= DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY)
   UNION ALL
   SELECT
     *
   FROM
-    telemetry_stable.crash_v4
+    `moz-fx-data-shared-prod.telemetry_stable.crash_v4`
   WHERE
     DATE(submission_timestamp) < DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY)
 ),
@@ -18,14 +18,14 @@ main_pings AS (
   SELECT
     *
   FROM
-    telemetry_live.main_v5
+    `moz-fx-data-shared-prod.telemetry_live.main_v5`
   WHERE
     DATE(submission_timestamp) >= DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY)
   UNION ALL
   SELECT
     *
   FROM
-    telemetry_stable.main_v5
+    `moz-fx-data-shared-prod.telemetry_stable.main_v5`
   WHERE
     DATE(submission_timestamp) < DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY)
 ),
@@ -33,14 +33,14 @@ core_pings AS (
   SELECT
     *
   FROM
-    telemetry_derived.core_live
+    `moz-fx-data-shared-prod.telemetry_derived.core_live`
   WHERE
     DATE(submission_timestamp) >= DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY)
   UNION ALL
   SELECT
     *
   FROM
-    telemetry.core
+    `moz-fx-data-shared-prod.telemetry.core`
   WHERE
     DATE(submission_timestamp) < DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY)
 ),
@@ -104,15 +104,21 @@ main_ping_data AS (
     0 AS content_shutdown_crash,
     payload.info.subsession_length AS usage_seconds,
     COALESCE(
-      udf.keyed_histogram_get_sum(payload.keyed_histograms.subprocess_crashes_with_dump, 'gpu'),
+      `moz-fx-data-shared-prod.udf.keyed_histogram_get_sum`(
+        payload.keyed_histograms.subprocess_crashes_with_dump,
+        'gpu'
+      ),
       0
     ) AS gpu_crashes,
     COALESCE(
-      udf.keyed_histogram_get_sum(payload.keyed_histograms.subprocess_crashes_with_dump, 'plugin'),
+      `moz-fx-data-shared-prod.udf.keyed_histogram_get_sum`(
+        payload.keyed_histograms.subprocess_crashes_with_dump,
+        'plugin'
+      ),
       0
     ) AS plugin_crashes,
     COALESCE(
-      udf.keyed_histogram_get_sum(
+      `moz-fx-data-shared-prod.udf.keyed_histogram_get_sum`(
         payload.keyed_histograms.subprocess_crashes_with_dump,
         'gmplugin'
       ),
@@ -164,7 +170,7 @@ combined_ping_data AS (
 )
 SELECT
   DATE(submission_timestamp) AS submission_date,
-  udf.round_timestamp_to_minute(submission_timestamp, 5) AS window_start,
+  `moz-fx-data-shared-prod.udf.round_timestamp_to_minute`(submission_timestamp, 5) AS window_start,
   channel,
   version,
   display_version,

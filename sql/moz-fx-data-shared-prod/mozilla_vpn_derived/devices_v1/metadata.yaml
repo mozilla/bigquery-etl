@@ -18,4 +18,4 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - mozilla_vpn_external.devices_v1
+  - moz-fx-data-shared-prod.mozilla_vpn_external.devices_v1

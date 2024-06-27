@@ -1,5 +1,4 @@
 
-
 #warn
 WITH daily_users_sum AS (
   SELECT
@@ -9,29 +8,29 @@ WITH daily_users_sum AS (
   WHERE
     submission_date = @submission_date
     AND app_name IN ('Focus Android', 'Focus Android BrowserStack')
-    ),
+),
 distinct_client_count_base AS (
-    SELECT
-      COUNT(DISTINCT client_info.client_id) AS distinct_client_count,
-    FROM
-      `moz-fx-data-shared-prod.org_mozilla_focus_live.baseline_v1`
-    WHERE
-      DATE(submission_timestamp) = @submission_date
+  SELECT
+    COUNT(DISTINCT client_info.client_id) AS distinct_client_count,
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_focus_live.baseline_v1`
+  WHERE
+    DATE(submission_timestamp) = @submission_date
   UNION ALL
-    SELECT
-      COUNT(DISTINCT client_info.client_id) AS distinct_client_count,
-    FROM
-      `moz-fx-data-shared-prod.org_mozilla_focus_beta_live.baseline_v1`
-    WHERE
-      DATE(submission_timestamp) = @submission_date
+  SELECT
+    COUNT(DISTINCT client_info.client_id) AS distinct_client_count,
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_focus_beta_live.baseline_v1`
+  WHERE
+    DATE(submission_timestamp) = @submission_date
   UNION ALL
-    SELECT
-      COUNT(DISTINCT client_info.client_id) AS distinct_client_count,
-    FROM
-      `moz-fx-data-shared-prod.org_mozilla_focus_nightly_live.baseline_v1`
-    WHERE
-      DATE(submission_timestamp) = @submission_date
-  ),
+  SELECT
+    COUNT(DISTINCT client_info.client_id) AS distinct_client_count,
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_focus_nightly_live.baseline_v1`
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+),
 distinct_client_count AS (
   SELECT
     SUM(distinct_client_count)
@@ -80,5 +79,3 @@ SELECT
     ),
     NULL
   );
-
-

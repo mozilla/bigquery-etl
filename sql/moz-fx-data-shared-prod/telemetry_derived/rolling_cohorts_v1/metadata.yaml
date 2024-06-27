@@ -37,4 +37,4 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - telemetry.unified_metrics
+  - moz-fx-data-shared-prod.telemetry.unified_metrics

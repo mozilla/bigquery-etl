@@ -98,7 +98,7 @@ WITH base AS (
     ping_info.reason AS reason,
     from_map_experiment(ping_info.experiments) AS experiments,
   FROM
-    `firefox_desktop_background_tasks.events`
+    `moz-fx-data-shared-prod.firefox_desktop_background_tasks.events`
   WHERE
     {% if is_init() %}
       DATE(submission_timestamp) >= '2023-11-01'

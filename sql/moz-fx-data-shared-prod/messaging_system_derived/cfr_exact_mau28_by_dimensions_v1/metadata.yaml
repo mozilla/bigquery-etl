@@ -23,5 +23,5 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - messaging_system.cfr_users_last_seen
-  - static.country_codes_v1
+  - moz-fx-data-shared-prod.messaging_system.cfr_users_last_seen
+  - moz-fx-data-shared-prod.static.country_codes_v1

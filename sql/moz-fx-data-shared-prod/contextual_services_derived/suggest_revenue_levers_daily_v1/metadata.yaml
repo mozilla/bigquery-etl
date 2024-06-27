@@ -29,6 +29,6 @@ workgroup_access:
   - workgroup:contextual-services
 references:
   query.sql:
-  - search.search_clients_engines_sources_daily
-  - telemetry.suggest_clients_daily
-  - telemetry.unified_metrics
+  - moz-fx-data-shared-prod.search.search_clients_engines_sources_daily
+  - moz-fx-data-shared-prod.telemetry.suggest_clients_daily
+  - moz-fx-data-shared-prod.telemetry.unified_metrics

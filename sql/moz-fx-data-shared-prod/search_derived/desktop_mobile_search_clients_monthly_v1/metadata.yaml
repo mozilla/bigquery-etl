@@ -31,5 +31,5 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - search.mobile_search_clients_engines_sources_daily
-  - search.search_clients_engines_sources_daily
+  - moz-fx-data-shared-prod.search.mobile_search_clients_engines_sources_daily
+  - moz-fx-data-shared-prod.search.search_clients_engines_sources_daily

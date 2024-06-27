@@ -31,5 +31,5 @@ references:
   checks.sql:
   - ..
   query.sql:
-  - firefox_ios.baseline_clients_last_seen
-  - firefox_ios.firefox_ios_clients
+  - moz-fx-data-shared-prod.firefox_ios.baseline_clients_last_seen
+  - moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients

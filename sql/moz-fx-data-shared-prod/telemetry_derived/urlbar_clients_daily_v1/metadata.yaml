@@ -26,5 +26,5 @@ bigquery:
 workgroup_access: []
 references:
   query.sql:
-  - telemetry_derived.clients_daily_joined_v1
+  - moz-fx-data-shared-prod.telemetry_derived.clients_daily_joined_v1
 deprecated: true

@@ -24,7 +24,7 @@ WITH baseline AS (
   FROM
     `moz-fx-data-shared-prod.focus_ios.clients_last_seen_joined` AS joined
   INNER JOIN
-    `focus_ios.deletion_request` AS request
+    `moz-fx-data-shared-prod.focus_ios.deletion_request` AS request
     ON client_info.client_id = client_id
   WHERE
     joined.submission_date <= @end_date
@@ -43,7 +43,7 @@ search_clients AS (
   FROM
     `moz-fx-data-shared-prod.search_derived.mobile_search_clients_daily_v1` search
   INNER JOIN
-    `focus_ios.deletion_request` AS request
+    `moz-fx-data-shared-prod.focus_ios.deletion_request` AS request
     ON client_info.client_id = client_id
   WHERE
     search.submission_date <= @end_date

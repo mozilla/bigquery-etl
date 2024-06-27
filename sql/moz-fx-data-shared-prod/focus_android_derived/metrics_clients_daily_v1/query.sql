@@ -8,7 +8,7 @@ SELECT
   SUM(metrics.counter.browser_total_uri_count) AS uri_count,
   LOGICAL_OR(metrics.boolean.browser_is_default) AS is_default_browser,
 FROM
-  `org_mozilla_focus.metrics` AS m
+  `moz-fx-data-shared-prod.org_mozilla_focus.metrics` AS m
 WHERE
   DATE(submission_timestamp) = @submission_date
 GROUP BY
@@ -27,7 +27,7 @@ SELECT
   SUM(metrics.counter.browser_total_uri_count) AS uri_count,
   LOGICAL_OR(metrics.boolean.browser_is_default) AS is_default_browser,
 FROM
-  `org_mozilla_focus_beta.metrics` AS m
+  `moz-fx-data-shared-prod.org_mozilla_focus_beta.metrics` AS m
 WHERE
   DATE(submission_timestamp) = @submission_date
 GROUP BY
@@ -46,7 +46,7 @@ SELECT
   SUM(metrics.counter.browser_total_uri_count) AS uri_count,
   LOGICAL_OR(metrics.boolean.browser_is_default) AS is_default_browser,
 FROM
-  `org_mozilla_focus_nightly.metrics` AS m
+  `moz-fx-data-shared-prod.org_mozilla_focus_nightly.metrics` AS m
 WHERE
   DATE(submission_timestamp) = @submission_date
 GROUP BY

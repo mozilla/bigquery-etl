@@ -8,7 +8,7 @@ SELECT
   SUM(metrics.counter.browser_total_uri_count) AS uri_count,
   LOGICAL_OR(metrics.counter.app_opened_as_default_browser > 0) AS is_default_browser,
 FROM
-  `org_mozilla_ios_focus.metrics` AS m
+  `moz-fx-data-shared-prod.org_mozilla_ios_focus.metrics` AS m
 WHERE
   DATE(submission_timestamp) = @submission_date
 GROUP BY

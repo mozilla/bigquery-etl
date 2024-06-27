@@ -3,7 +3,7 @@ WITH sample AS (
   SELECT
     *
   FROM
-    messaging_system_derived.normalized_onboarding_events
+    `moz-fx-data-shared-prod.messaging_system_derived.normalized_onboarding_events`
 ),
 events AS (
   SELECT
@@ -19,12 +19,18 @@ events AS (
 ),
 joined AS (
   SELECT
-    CONCAT(udf.pack_event_properties(events.extra, event_types.event_properties), index) AS index,
+    CONCAT(
+      `moz-fx-data-shared-prod.udf.pack_event_properties`(
+        events.extra,
+        event_types.event_properties
+      ),
+      index
+    ) AS index,
     events.* EXCEPT (category, event, extra)
   FROM
     events
   INNER JOIN
-    messaging_system.event_types event_types
+    `moz-fx-data-shared-prod.messaging_system.event_types` event_types
     USING (category, event)
 )
 SELECT

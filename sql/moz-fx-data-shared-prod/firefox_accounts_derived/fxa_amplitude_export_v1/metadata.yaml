@@ -25,7 +25,7 @@ workgroup_access:
 references:
   query.sql:
   - _current.os_used_month
-  - firefox_accounts_derived.fxa_amplitude_export_v1
   - moz-fx-data-shared-prod.firefox_accounts_derived.encrypted_keys_v1
+  - moz-fx-data-shared-prod.firefox_accounts_derived.fxa_amplitude_export_v1
   - moz-fx-dataops-secrets.airflow_query_keys.fxa_prod
   - moz-fx-fxa-prod-0712.fxa_prod_logs.docker_fxa_auth

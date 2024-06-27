@@ -33,7 +33,7 @@ references:
   - moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients
   - moz-fx-data-shared-prod.firefox_ios_derived.app_store_funnel_v1
   query.sql:
-  - app_store.firefox_app_store_territory_source_type_report
-  - app_store.firefox_downloads_territory_source_type_report
-  - firefox_ios.firefox_ios_clients
-  - static.country_names_v1
+  - moz-fx-data-shared-prod.app_store.firefox_app_store_territory_source_type_report
+  - moz-fx-data-shared-prod.app_store.firefox_downloads_territory_source_type_report
+  - moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients
+  - moz-fx-data-shared-prod.static.country_names_v1

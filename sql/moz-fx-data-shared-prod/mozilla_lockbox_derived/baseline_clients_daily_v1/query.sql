@@ -7,7 +7,9 @@ WITH base AS (
     sample_id,
     SAFE.PARSE_DATE('%F', SUBSTR(client_info.first_run_date, 1, 10)) AS first_run_date,
     mozfun.glean.parse_datetime(ping_info.end_time) AS parsed_end_time,
-    udf.glean_timespan_seconds(metrics.timespan.glean_baseline_duration) AS duration,
+    `moz-fx-data-shared-prod.udf.glean_timespan_seconds`(
+      metrics.timespan.glean_baseline_duration
+    ) AS duration,
     client_info.android_sdk_version,
     client_info.app_build,
     client_info.app_channel,
@@ -26,7 +28,7 @@ WITH base AS (
     CAST(NULL AS STRING) AS distribution_id,
     metadata.geo.subdivision1 AS geo_subdivision,
   FROM
-    `mozilla_lockbox_stable.baseline_v1`
+    `moz-fx-data-shared-prod.mozilla_lockbox_stable.baseline_v1`
   -- Baseline pings with 'foreground' reason were first introduced in early April 2020;
   -- we initially excluded them from baseline_clients_daily so that we could measure
   -- effects on KPIs. On 2020-08-25, we removed the filter on reason and backfilled. See:
@@ -76,23 +78,35 @@ windowed AS (
     ) OVER w1 AS days_seen_session_end_bits,
     --
     -- For all other dimensions, we use the mode of observed values in the day.
-    udf.mode_last(ARRAY_AGG(normalized_channel) OVER w1) AS normalized_channel,
-    udf.mode_last(ARRAY_AGG(normalized_os) OVER w1) AS normalized_os,
-    udf.mode_last(ARRAY_AGG(normalized_os_version) OVER w1) AS normalized_os_version,
-    udf.mode_last(ARRAY_AGG(android_sdk_version) OVER w1) AS android_sdk_version,
-    udf.mode_last(ARRAY_AGG(locale) OVER w1) AS locale,
-    udf.mode_last(ARRAY_AGG(city) OVER w1) AS city,
-    udf.mode_last(ARRAY_AGG(country) OVER w1) AS country,
-    udf.mode_last(ARRAY_AGG(isp) OVER w1) AS isp,
-    udf.mode_last(ARRAY_AGG(app_build) OVER w1) AS app_build,
-    udf.mode_last(ARRAY_AGG(app_channel) OVER w1) AS app_channel,
-    udf.mode_last(ARRAY_AGG(app_display_version) OVER w1) AS app_display_version,
-    udf.mode_last(ARRAY_AGG(architecture) OVER w1) AS architecture,
-    udf.mode_last(ARRAY_AGG(device_manufacturer) OVER w1) AS device_manufacturer,
-    udf.mode_last(ARRAY_AGG(device_model) OVER w1) AS device_model,
-    udf.mode_last(ARRAY_AGG(telemetry_sdk_build) OVER w1) AS telemetry_sdk_build,
-    udf.mode_last(ARRAY_AGG(distribution_id) OVER w1) AS distribution_id,
-    udf.mode_last(ARRAY_AGG(geo_subdivision) OVER w1) AS geo_subdivision,
+    `moz-fx-data-shared-prod.udf.mode_last`(
+      ARRAY_AGG(normalized_channel) OVER w1
+    ) AS normalized_channel,
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(normalized_os) OVER w1) AS normalized_os,
+    `moz-fx-data-shared-prod.udf.mode_last`(
+      ARRAY_AGG(normalized_os_version) OVER w1
+    ) AS normalized_os_version,
+    `moz-fx-data-shared-prod.udf.mode_last`(
+      ARRAY_AGG(android_sdk_version) OVER w1
+    ) AS android_sdk_version,
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(locale) OVER w1) AS locale,
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(city) OVER w1) AS city,
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(country) OVER w1) AS country,
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(isp) OVER w1) AS isp,
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(app_build) OVER w1) AS app_build,
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(app_channel) OVER w1) AS app_channel,
+    `moz-fx-data-shared-prod.udf.mode_last`(
+      ARRAY_AGG(app_display_version) OVER w1
+    ) AS app_display_version,
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(architecture) OVER w1) AS architecture,
+    `moz-fx-data-shared-prod.udf.mode_last`(
+      ARRAY_AGG(device_manufacturer) OVER w1
+    ) AS device_manufacturer,
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(device_model) OVER w1) AS device_model,
+    `moz-fx-data-shared-prod.udf.mode_last`(
+      ARRAY_AGG(telemetry_sdk_build) OVER w1
+    ) AS telemetry_sdk_build,
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(distribution_id) OVER w1) AS distribution_id,
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(geo_subdivision) OVER w1) AS geo_subdivision,
   FROM
     with_date_offsets
   WHERE
@@ -133,7 +147,7 @@ joined AS (
   FROM
     windowed AS cd
   LEFT JOIN
-    `mozilla_lockbox_derived.baseline_clients_first_seen_v1` AS cfs
+    `moz-fx-data-shared-prod.mozilla_lockbox_derived.baseline_clients_first_seen_v1` AS cfs
     USING (client_id)
   WHERE
     _n = 1

@@ -6,7 +6,7 @@ SELECT
   COUNT(*) AS n_metrics_ping,
   1 AS days_sent_metrics_ping_bits,
 FROM
-  `mozillavpn.metrics` AS m
+  `moz-fx-data-shared-prod.mozillavpn.metrics` AS m
 WHERE
   DATE(submission_timestamp) = @submission_date
 GROUP BY
@@ -23,7 +23,7 @@ SELECT
   COUNT(*) AS n_metrics_ping,
   1 AS days_sent_metrics_ping_bits,
 FROM
-  `org_mozilla_firefox_vpn.metrics` AS m
+  `moz-fx-data-shared-prod.org_mozilla_firefox_vpn.metrics` AS m
 WHERE
   DATE(submission_timestamp) = @submission_date
 GROUP BY
@@ -40,7 +40,7 @@ SELECT
   COUNT(*) AS n_metrics_ping,
   1 AS days_sent_metrics_ping_bits,
 FROM
-  `org_mozilla_ios_firefoxvpn.metrics` AS m
+  `moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn.metrics` AS m
 WHERE
   DATE(submission_timestamp) = @submission_date
 GROUP BY
@@ -57,7 +57,7 @@ SELECT
   COUNT(*) AS n_metrics_ping,
   1 AS days_sent_metrics_ping_bits,
 FROM
-  `org_mozilla_ios_firefoxvpn_network_extension.metrics` AS m
+  `moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_network_extension.metrics` AS m
 WHERE
   DATE(submission_timestamp) = @submission_date
 GROUP BY

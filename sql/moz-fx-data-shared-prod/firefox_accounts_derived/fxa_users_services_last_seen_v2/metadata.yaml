@@ -25,5 +25,5 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - firefox_accounts_derived.fxa_users_services_daily_v2
-  - firefox_accounts_derived.fxa_users_services_last_seen_v2
+  - moz-fx-data-shared-prod.firefox_accounts_derived.fxa_users_services_daily_v2
+  - moz-fx-data-shared-prod.firefox_accounts_derived.fxa_users_services_last_seen_v2

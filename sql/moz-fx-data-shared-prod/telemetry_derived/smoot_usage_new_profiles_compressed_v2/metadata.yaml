@@ -26,4 +26,4 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - smoot_usage_new_profiles_v2
+  - moz-fx-data-shared-prod.telemetry_derived.smoot_usage_new_profiles_v2

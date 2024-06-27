@@ -98,7 +98,7 @@ WITH base AS (
     ping_info.reason AS reason,
     from_map_experiment(ping_info.experiments) AS experiments,
   FROM
-    `treeherder.events`
+    `moz-fx-data-shared-prod.treeherder.events`
   WHERE
     {% if is_init() %}
       DATE(submission_timestamp) >= '2023-11-01'

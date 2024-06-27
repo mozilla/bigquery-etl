@@ -3,7 +3,7 @@
     SELECT
       *
     FROM
-      telemetry_derived.deanonymized_events
+      `moz-fx-data-shared-prod.telemetry_derived.deanonymized_events`
   ),
   sample AS (
     SELECT
@@ -86,7 +86,9 @@
       ARRAY_AGG(
         STRUCT(
           event_property_value AS key,
-          udf.event_code_points_to_string([event_property_value_index]) AS value,
+          `moz-fx-data-shared-prod.udf.event_code_points_to_string`(
+            [event_property_value_index]
+          ) AS value,
           event_property_value_index AS index
         )
         ORDER BY
@@ -111,7 +113,7 @@
       event,
       first_timestamp,
       primary_index AS numeric_index,
-      udf.event_code_points_to_string([primary_index]) AS index,
+      `moz-fx-data-shared-prod.udf.event_code_points_to_string`([primary_index]) AS index,
       ARRAY_AGG(
         IF(
           event_property IS NULL,
@@ -149,7 +151,7 @@
     SELECT
       *
     FROM
-      telemetry_derived.deanonymized_events
+      `moz-fx-data-shared-prod.telemetry_derived.deanonymized_events`
   ),
   current_events AS (
     SELECT
@@ -163,7 +165,7 @@
     SELECT
       *
     FROM
-      telemetry_derived.event_types_history_v1
+      `moz-fx-data-shared-prod.telemetry_derived.event_types_history_v1`
     WHERE
       submission_date = DATE_SUB(@submission_date, INTERVAL 1 DAY)
   ),
@@ -346,7 +348,9 @@
       ARRAY_AGG(
         STRUCT(
           event_property_value AS key,
-          udf.event_code_points_to_string([event_property_value_index]) AS value,
+          `moz-fx-data-shared-prod.udf.event_code_points_to_string`(
+            [event_property_value_index]
+          ) AS value,
           event_property_value_index AS index
         )
         ORDER BY
@@ -369,7 +373,7 @@
       event,
       first_timestamp,
       numeric_index,
-      udf.event_code_points_to_string([numeric_index]) AS index,
+      `moz-fx-data-shared-prod.udf.event_code_points_to_string`([numeric_index]) AS index,
       ARRAY_AGG(
         IF(
           event_property IS NULL,

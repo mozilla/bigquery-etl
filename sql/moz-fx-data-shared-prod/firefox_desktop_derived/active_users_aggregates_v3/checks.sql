@@ -178,5 +178,3 @@ SELECT
     ),
     NULL
   );
-
-

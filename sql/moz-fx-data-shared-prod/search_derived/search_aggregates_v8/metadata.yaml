@@ -28,4 +28,4 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - search_clients_daily_v8
+  - moz-fx-data-shared-prod.search_derived.search_clients_daily_v8

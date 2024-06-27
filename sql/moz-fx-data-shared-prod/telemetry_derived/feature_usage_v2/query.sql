@@ -68,7 +68,7 @@ WITH user_type AS (
         UNNEST(contextual_services_topsites_click_sum)
     ) AS num_new_tab_topsites_clicks_sponsored,
   FROM
-    telemetry.clients_last_seen
+    `moz-fx-data-shared-prod.telemetry.clients_last_seen`
   WHERE
     submission_date = @submission_date
     AND sample_id = 0
@@ -313,7 +313,7 @@ main AS (
       )
     ) AS keyboard_shortcut_total,
   FROM
-    telemetry.main_remainder_1pct
+    `moz-fx-data-shared-prod.telemetry.main_remainder_1pct`
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND sample_id = 0
@@ -424,7 +424,7 @@ events AS (
       AND event_object IN ('OPEN_NEWTAB_PREFS')
     ) AS newtab_prefs_opened,
   FROM
-    telemetry.events
+    `moz-fx-data-shared-prod.telemetry.events`
   WHERE
     submission_date = @submission_date
     AND sample_id = 0
@@ -485,7 +485,7 @@ activity_stream_events AS (
       AND JSON_EXTRACT_SCALAR(value, '$.card_type') = 'organic'
     ) AS activitystream_organic_topsite_clicks,
   FROM
-    activity_stream.events
+    `moz-fx-data-shared-prod.activity_stream.events`
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND sample_id = 0
@@ -508,7 +508,7 @@ activity_stream_sessions AS (
     COUNTIF(page = 'about:newtab') AS activitystream_sessions_newtab,
     COUNTIF(page IN ('about:newtab', 'about:home')) AS activitystream_sessions_both,
   FROM
-    activity_stream.sessions
+    `moz-fx-data-shared-prod.activity_stream.sessions`
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND sample_id = 0
@@ -545,7 +545,7 @@ addons AS (
       COALESCE(addon_id = 'private-relay@firefox.com', FALSE)
     ) AS has_private_relay_extension,
   FROM
-    telemetry.addons
+    `moz-fx-data-shared-prod.telemetry.addons`
   WHERE
     submission_date = @submission_date
     AND sample_id = 0

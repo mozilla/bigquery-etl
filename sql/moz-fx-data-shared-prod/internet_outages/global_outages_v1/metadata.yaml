@@ -86,6 +86,6 @@ references:
   - ..
   query.sql:
   - C
-  - telemetry.clients_daily
-  - telemetry.health
-  - telemetry_stable.main_v5
+  - moz-fx-data-shared-prod.telemetry.clients_daily
+  - moz-fx-data-shared-prod.telemetry.health
+  - moz-fx-data-shared-prod.telemetry_stable.main_v5

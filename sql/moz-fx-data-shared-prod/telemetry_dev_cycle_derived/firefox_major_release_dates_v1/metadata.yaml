@@ -16,4 +16,4 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - telemetry.buildhub2
+  - moz-fx-data-shared-prod.telemetry.buildhub2

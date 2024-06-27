@@ -8,7 +8,7 @@ SELECT
   SUM(metrics.counter.tabs_normal_and_private_uri_count) AS uri_count,
   LOGICAL_OR(metrics.counter.app_opened_as_default_browser > 0) AS is_default_browser,
 FROM
-  `org_mozilla_ios_firefox.metrics` AS m
+  `moz-fx-data-shared-prod.org_mozilla_ios_firefox.metrics` AS m
 WHERE
   DATE(submission_timestamp) = @submission_date
 GROUP BY
@@ -27,7 +27,7 @@ SELECT
   SUM(metrics.counter.tabs_normal_and_private_uri_count) AS uri_count,
   LOGICAL_OR(metrics.counter.app_opened_as_default_browser > 0) AS is_default_browser,
 FROM
-  `org_mozilla_ios_firefoxbeta.metrics` AS m
+  `moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta.metrics` AS m
 WHERE
   DATE(submission_timestamp) = @submission_date
 GROUP BY
@@ -46,7 +46,7 @@ SELECT
   SUM(metrics.counter.tabs_normal_and_private_uri_count) AS uri_count,
   LOGICAL_OR(metrics.counter.app_opened_as_default_browser > 0) AS is_default_browser,
 FROM
-  `org_mozilla_ios_fennec.metrics` AS m
+  `moz-fx-data-shared-prod.org_mozilla_ios_fennec.metrics` AS m
 WHERE
   DATE(submission_timestamp) = @submission_date
 GROUP BY

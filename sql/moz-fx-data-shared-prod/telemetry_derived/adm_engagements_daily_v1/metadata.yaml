@@ -28,5 +28,5 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - search.search_clients_engines_sources_daily
-  - telemetry.events
+  - moz-fx-data-shared-prod.search.search_clients_engines_sources_daily
+  - moz-fx-data-shared-prod.telemetry.events

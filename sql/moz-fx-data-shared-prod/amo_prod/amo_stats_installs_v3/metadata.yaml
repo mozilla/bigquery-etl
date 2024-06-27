@@ -28,4 +28,4 @@ workgroup_access:
   - workgroup:amo/prod
 references:
   query.sql:
-  - telemetry.events
+  - moz-fx-data-shared-prod.telemetry.events

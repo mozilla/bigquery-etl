@@ -49,6 +49,6 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - telemetry.clients_daily
-  - telemetry.health
-  - telemetry.main
+  - moz-fx-data-shared-prod.telemetry.clients_daily
+  - moz-fx-data-shared-prod.telemetry.health
+  - moz-fx-data-shared-prod.telemetry.main

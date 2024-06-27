@@ -32,4 +32,4 @@ workgroup_access:
 references:
   query.sql:
   - EXTERNAL_QUERY('moz-fx-guardian-prod-bfc7.us.guardian-sql-prod', @external_database_query)
-  - devices_v1
+  - moz-fx-data-shared-prod.mozilla_vpn_external.devices_v1

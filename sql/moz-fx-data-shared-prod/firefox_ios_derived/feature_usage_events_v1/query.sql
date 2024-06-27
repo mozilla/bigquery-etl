@@ -7,7 +7,7 @@ WITH baseline_clients AS (
     normalized_channel AS channel,
     normalized_country_code AS country
   FROM
-    firefox_ios.baseline
+    `moz-fx-data-shared-prod.firefox_ios.baseline`
   WHERE
     metrics.timespan.glean_baseline_duration.value > 0
     AND LOWER(metadata.isp.name) <> "browserstack"
@@ -31,7 +31,7 @@ client_attribution AS (
     channel,
     adjust_network,
   FROM
-    firefox_ios.firefox_ios_clients
+    `moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients`
 ),
 default_browser AS (
   SELECT
@@ -45,7 +45,7 @@ default_browser AS (
     normalized_country_code AS country,
     IF(SUM(metrics.counter.app_opened_as_default_browser) > 0, TRUE, FALSE) AS is_default_browser
   FROM
-    firefox_ios.metrics AS metric_ping
+    `moz-fx-data-shared-prod.firefox_ios.metrics` AS metric_ping
   WHERE
     LOWER(metadata.isp.name) <> "browserstack"
     -- we need to work with a larger time window as some metrics ping arrive with a multi day delay
@@ -272,7 +272,7 @@ event_ping_clients_feature_usage AS (
       AND event_name = 'settings_autofill'
     ) AS address_settings_autofill
   FROM
-    firefox_ios.events_unnested
+    `moz-fx-data-shared-prod.firefox_ios.events_unnested`
   LEFT JOIN
     UNNEST(event_extra) AS extra
   WHERE

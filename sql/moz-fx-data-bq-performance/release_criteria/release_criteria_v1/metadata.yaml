@@ -18,5 +18,5 @@ scheduling:
 references:
   query.sql:
   - dp2-prod.sumo.release_calendar
-  - rc_flattened_test_data_v1
-  - release_criteria_helper
+  - moz-fx-data-bq-performance.release_criteria.rc_flattened_test_data_v1
+  - moz-fx-data-bq-performance.release_criteria.release_criteria_helper

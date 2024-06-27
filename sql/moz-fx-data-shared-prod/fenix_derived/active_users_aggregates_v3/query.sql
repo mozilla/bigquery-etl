@@ -5,7 +5,7 @@ WITH attribution_data AS (
     adjust_network,
     install_source
   FROM
-    fenix.firefox_android_clients
+    `moz-fx-data-shared-prod.fenix.firefox_android_clients`
 ),
 baseline AS (
   SELECT

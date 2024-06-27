@@ -26,5 +26,5 @@ references:
   checks.sql:
   - ..
   query.sql:
-  - google_ads_derived.campaigns_v1
   - moz-fx-data-bq-fivetran.ads_google_mmc.ad_group_history
+  - moz-fx-data-shared-prod.google_ads_derived.campaigns_v1

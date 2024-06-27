@@ -24,6 +24,6 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - fenix.baseline
-  - fenix.firefox_android_clients
-  - fenix.metrics
+  - moz-fx-data-shared-prod.fenix.baseline
+  - moz-fx-data-shared-prod.fenix.firefox_android_clients
+  - moz-fx-data-shared-prod.fenix.metrics

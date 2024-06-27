@@ -12,4 +12,4 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - telemetry.main_summary
+  - moz-fx-data-shared-prod.telemetry.main_summary

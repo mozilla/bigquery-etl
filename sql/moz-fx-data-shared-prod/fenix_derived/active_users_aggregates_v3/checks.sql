@@ -150,5 +150,3 @@ SELECT
     ),
     NULL
   );
-
-

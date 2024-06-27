@@ -79,7 +79,7 @@ WITH build_ids AS (
     app_build_id,
     channel,
   FROM
-    glam_etl.org_mozilla_fenix_glam_nightly__clients_scalar_aggregates_v1
+    `glam-fenix-dev.glam_etl.org_mozilla_fenix_glam_nightly__clients_scalar_aggregates_v1`
   GROUP BY
     app_build_id,
     channel
@@ -90,7 +90,7 @@ valid_clients_scalar_aggregates AS (
   SELECT
     *
   FROM
-    glam_etl.org_mozilla_fenix_glam_nightly__clients_scalar_aggregates_v1
+    `glam-fenix-dev.glam_etl.org_mozilla_fenix_glam_nightly__clients_scalar_aggregates_v1`
   INNER JOIN
     build_ids
     USING (app_build_id, channel)

@@ -42,9 +42,9 @@ WITH todays_metrics AS (
     search_with_ads_count_all AS search_with_ads,
     active_hours_sum
   FROM
-    telemetry.clients_last_seen AS last_seen
+    `moz-fx-data-shared-prod.telemetry.clients_last_seen` AS last_seen
   INNER JOIN
-    `firefox_desktop.deletion_request` AS request
+    `moz-fx-data-shared-prod.firefox_desktop.deletion_request` AS request
     ON client_info.client_id = client_id
   WHERE
     last_seen.submission_date >= '2021-01-01'

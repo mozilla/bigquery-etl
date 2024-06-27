@@ -1,4 +1,4 @@
--- Note: udf.udf_json_extract_int_map map doesn't work in this case as it expects an INT -> INT
+-- Note: `moz-fx-data-shared-prod.udf.udf_json_extract_int_map` map doesn't work in this case as it expects an INT -> INT
 -- map, while we have a STRING->int map
 CREATE TEMP FUNCTION udf_json_extract_string_to_int_map(input STRING) AS (
   ARRAY(
@@ -20,7 +20,7 @@ WITH DAUs AS (
     submission_date AS date,
     COUNT(*) AS client_count
   FROM
-    telemetry.clients_daily
+    `moz-fx-data-shared-prod.telemetry.clients_daily`
   WHERE
     submission_date >= '2020-01-01'
     AND submission_date <= '2020-03-31'
@@ -70,7 +70,7 @@ health_data_sample AS (
       )
     ) AS eChannelOpen,
   FROM
-    telemetry.health
+    `moz-fx-data-shared-prod.telemetry.health`
   WHERE
     DATE(submission_timestamp) >= '2020-01-01'
     AND DATE(submission_timestamp) <= '2020-03-31'
@@ -122,7 +122,7 @@ histogram_data_sample AS (
       payload.processes.content.histograms.http_page_tls_handshake
     ).values AS tls_handshake,
   FROM
-    telemetry.main
+    `moz-fx-data-shared-prod.telemetry.main`
   WHERE
     DATE(submission_timestamp) >= '2020-01-01'
     AND DATE(submission_timestamp) <= '2020-03-31'

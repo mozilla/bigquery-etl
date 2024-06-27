@@ -1,7 +1,7 @@
 -- Generated via ./bqetl generate experiment_monitoring
 CREATE MATERIALIZED VIEW
 IF
-  NOT EXISTS org_mozilla_ios_klar_derived.experiment_events_live_v1
+  NOT EXISTS `moz-fx-data-shared-prod.org_mozilla_ios_klar_derived.experiment_events_live_v1`
   OPTIONS
     (enable_refresh = TRUE, refresh_interval_minutes = 5)
   AS

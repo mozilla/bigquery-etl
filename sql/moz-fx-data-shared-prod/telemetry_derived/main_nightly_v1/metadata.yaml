@@ -49,4 +49,4 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - telemetry_stable.main_v5
+  - moz-fx-data-shared-prod.telemetry_stable.main_v5

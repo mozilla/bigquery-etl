@@ -21,12 +21,19 @@ WITH onboarding_funnel_new_profile AS (
     ac.client_id AS client_id,
     ac.client_id AS column
   FROM
-    fenix.firefox_android_clients ac
+    `moz-fx-data-shared-prod.fenix.firefox_android_clients` ac
   LEFT JOIN
     `moz-fx-data-shared-prod`.fenix_derived.funnel_retention_clients_week_4_v1 r
     ON ac.client_id = r.client_id
   LEFT JOIN
-    (SELECT * FROM fenix.events_unnested eu WHERE DATE(submission_timestamp) = @submission_date) eu
+    (
+      SELECT
+        *
+      FROM
+        `moz-fx-data-shared-prod.fenix.events_unnested` eu
+      WHERE
+        DATE(submission_timestamp) = @submission_date
+    ) eu
     ON ac.client_id = eu.client_info.client_id
   LEFT JOIN
     (
@@ -34,7 +41,7 @@ WITH onboarding_funnel_new_profile AS (
         client_info.client_id,
         ANY_VALUE(`mozfun.map.get_key`(event_extra, 'sequence_id')) AS funnel_id
       FROM
-        fenix.events_unnested
+        `moz-fx-data-shared-prod.fenix.events_unnested`
       WHERE
         `mozfun.map.get_key`(event_extra, 'sequence_id') IS NOT NULL
         AND DATE(submission_timestamp) = @submission_date
@@ -73,12 +80,19 @@ onboarding_funnel_first_card_impression AS (
         THEN ac.client_id
     END AS column
   FROM
-    fenix.firefox_android_clients ac
+    `moz-fx-data-shared-prod.fenix.firefox_android_clients` ac
   LEFT JOIN
     `moz-fx-data-shared-prod`.fenix_derived.funnel_retention_clients_week_4_v1 r
     ON ac.client_id = r.client_id
   LEFT JOIN
-    (SELECT * FROM fenix.events_unnested eu WHERE DATE(submission_timestamp) = @submission_date) eu
+    (
+      SELECT
+        *
+      FROM
+        `moz-fx-data-shared-prod.fenix.events_unnested` eu
+      WHERE
+        DATE(submission_timestamp) = @submission_date
+    ) eu
     ON ac.client_id = eu.client_info.client_id
   LEFT JOIN
     (
@@ -86,7 +100,7 @@ onboarding_funnel_first_card_impression AS (
         client_info.client_id,
         ANY_VALUE(`mozfun.map.get_key`(event_extra, 'sequence_id')) AS funnel_id
       FROM
-        fenix.events_unnested
+        `moz-fx-data-shared-prod.fenix.events_unnested`
       WHERE
         `mozfun.map.get_key`(event_extra, 'sequence_id') IS NOT NULL
         AND DATE(submission_timestamp) = @submission_date
@@ -126,12 +140,19 @@ onboarding_funnel_first_card_primary_click AS (
         THEN ac.client_id
     END AS column
   FROM
-    fenix.firefox_android_clients ac
+    `moz-fx-data-shared-prod.fenix.firefox_android_clients` ac
   LEFT JOIN
     `moz-fx-data-shared-prod`.fenix_derived.funnel_retention_clients_week_4_v1 r
     ON ac.client_id = r.client_id
   LEFT JOIN
-    (SELECT * FROM fenix.events_unnested eu WHERE DATE(submission_timestamp) = @submission_date) eu
+    (
+      SELECT
+        *
+      FROM
+        `moz-fx-data-shared-prod.fenix.events_unnested` eu
+      WHERE
+        DATE(submission_timestamp) = @submission_date
+    ) eu
     ON ac.client_id = eu.client_info.client_id
   LEFT JOIN
     (
@@ -139,7 +160,7 @@ onboarding_funnel_first_card_primary_click AS (
         client_info.client_id,
         ANY_VALUE(`mozfun.map.get_key`(event_extra, 'sequence_id')) AS funnel_id
       FROM
-        fenix.events_unnested
+        `moz-fx-data-shared-prod.fenix.events_unnested`
       WHERE
         `mozfun.map.get_key`(event_extra, 'sequence_id') IS NOT NULL
         AND DATE(submission_timestamp) = @submission_date
@@ -179,12 +200,19 @@ onboarding_funnel_first_card_secondary_click AS (
         THEN ac.client_id
     END AS column
   FROM
-    fenix.firefox_android_clients ac
+    `moz-fx-data-shared-prod.fenix.firefox_android_clients` ac
   LEFT JOIN
     `moz-fx-data-shared-prod`.fenix_derived.funnel_retention_clients_week_4_v1 r
     ON ac.client_id = r.client_id
   LEFT JOIN
-    (SELECT * FROM fenix.events_unnested eu WHERE DATE(submission_timestamp) = @submission_date) eu
+    (
+      SELECT
+        *
+      FROM
+        `moz-fx-data-shared-prod.fenix.events_unnested` eu
+      WHERE
+        DATE(submission_timestamp) = @submission_date
+    ) eu
     ON ac.client_id = eu.client_info.client_id
   LEFT JOIN
     (
@@ -192,7 +220,7 @@ onboarding_funnel_first_card_secondary_click AS (
         client_info.client_id,
         ANY_VALUE(`mozfun.map.get_key`(event_extra, 'sequence_id')) AS funnel_id
       FROM
-        fenix.events_unnested
+        `moz-fx-data-shared-prod.fenix.events_unnested`
       WHERE
         `mozfun.map.get_key`(event_extra, 'sequence_id') IS NOT NULL
         AND DATE(submission_timestamp) = @submission_date
@@ -231,12 +259,19 @@ onboarding_funnel_second_card_impression AS (
         THEN ac.client_id
     END AS column
   FROM
-    fenix.firefox_android_clients ac
+    `moz-fx-data-shared-prod.fenix.firefox_android_clients` ac
   LEFT JOIN
     `moz-fx-data-shared-prod`.fenix_derived.funnel_retention_clients_week_4_v1 r
     ON ac.client_id = r.client_id
   LEFT JOIN
-    (SELECT * FROM fenix.events_unnested eu WHERE DATE(submission_timestamp) = @submission_date) eu
+    (
+      SELECT
+        *
+      FROM
+        `moz-fx-data-shared-prod.fenix.events_unnested` eu
+      WHERE
+        DATE(submission_timestamp) = @submission_date
+    ) eu
     ON ac.client_id = eu.client_info.client_id
   LEFT JOIN
     (
@@ -244,7 +279,7 @@ onboarding_funnel_second_card_impression AS (
         client_info.client_id,
         ANY_VALUE(`mozfun.map.get_key`(event_extra, 'sequence_id')) AS funnel_id
       FROM
-        fenix.events_unnested
+        `moz-fx-data-shared-prod.fenix.events_unnested`
       WHERE
         `mozfun.map.get_key`(event_extra, 'sequence_id') IS NOT NULL
         AND DATE(submission_timestamp) = @submission_date
@@ -284,12 +319,19 @@ onboarding_funnel_second_card_primary_click AS (
         THEN ac.client_id
     END AS column
   FROM
-    fenix.firefox_android_clients ac
+    `moz-fx-data-shared-prod.fenix.firefox_android_clients` ac
   LEFT JOIN
     `moz-fx-data-shared-prod`.fenix_derived.funnel_retention_clients_week_4_v1 r
     ON ac.client_id = r.client_id
   LEFT JOIN
-    (SELECT * FROM fenix.events_unnested eu WHERE DATE(submission_timestamp) = @submission_date) eu
+    (
+      SELECT
+        *
+      FROM
+        `moz-fx-data-shared-prod.fenix.events_unnested` eu
+      WHERE
+        DATE(submission_timestamp) = @submission_date
+    ) eu
     ON ac.client_id = eu.client_info.client_id
   LEFT JOIN
     (
@@ -297,7 +339,7 @@ onboarding_funnel_second_card_primary_click AS (
         client_info.client_id,
         ANY_VALUE(`mozfun.map.get_key`(event_extra, 'sequence_id')) AS funnel_id
       FROM
-        fenix.events_unnested
+        `moz-fx-data-shared-prod.fenix.events_unnested`
       WHERE
         `mozfun.map.get_key`(event_extra, 'sequence_id') IS NOT NULL
         AND DATE(submission_timestamp) = @submission_date
@@ -337,12 +379,19 @@ onboarding_funnel_second_card_secondary_click AS (
         THEN ac.client_id
     END AS column
   FROM
-    fenix.firefox_android_clients ac
+    `moz-fx-data-shared-prod.fenix.firefox_android_clients` ac
   LEFT JOIN
     `moz-fx-data-shared-prod`.fenix_derived.funnel_retention_clients_week_4_v1 r
     ON ac.client_id = r.client_id
   LEFT JOIN
-    (SELECT * FROM fenix.events_unnested eu WHERE DATE(submission_timestamp) = @submission_date) eu
+    (
+      SELECT
+        *
+      FROM
+        `moz-fx-data-shared-prod.fenix.events_unnested` eu
+      WHERE
+        DATE(submission_timestamp) = @submission_date
+    ) eu
     ON ac.client_id = eu.client_info.client_id
   LEFT JOIN
     (
@@ -350,7 +399,7 @@ onboarding_funnel_second_card_secondary_click AS (
         client_info.client_id,
         ANY_VALUE(`mozfun.map.get_key`(event_extra, 'sequence_id')) AS funnel_id
       FROM
-        fenix.events_unnested
+        `moz-fx-data-shared-prod.fenix.events_unnested`
       WHERE
         `mozfun.map.get_key`(event_extra, 'sequence_id') IS NOT NULL
         AND DATE(submission_timestamp) = @submission_date
@@ -389,12 +438,19 @@ onboarding_funnel_third_card_impression AS (
         THEN ac.client_id
     END AS column
   FROM
-    fenix.firefox_android_clients ac
+    `moz-fx-data-shared-prod.fenix.firefox_android_clients` ac
   LEFT JOIN
     `moz-fx-data-shared-prod`.fenix_derived.funnel_retention_clients_week_4_v1 r
     ON ac.client_id = r.client_id
   LEFT JOIN
-    (SELECT * FROM fenix.events_unnested eu WHERE DATE(submission_timestamp) = @submission_date) eu
+    (
+      SELECT
+        *
+      FROM
+        `moz-fx-data-shared-prod.fenix.events_unnested` eu
+      WHERE
+        DATE(submission_timestamp) = @submission_date
+    ) eu
     ON ac.client_id = eu.client_info.client_id
   LEFT JOIN
     (
@@ -402,7 +458,7 @@ onboarding_funnel_third_card_impression AS (
         client_info.client_id,
         ANY_VALUE(`mozfun.map.get_key`(event_extra, 'sequence_id')) AS funnel_id
       FROM
-        fenix.events_unnested
+        `moz-fx-data-shared-prod.fenix.events_unnested`
       WHERE
         `mozfun.map.get_key`(event_extra, 'sequence_id') IS NOT NULL
         AND DATE(submission_timestamp) = @submission_date
@@ -442,12 +498,19 @@ onboarding_funnel_third_card_primary_click AS (
         THEN ac.client_id
     END AS column
   FROM
-    fenix.firefox_android_clients ac
+    `moz-fx-data-shared-prod.fenix.firefox_android_clients` ac
   LEFT JOIN
     `moz-fx-data-shared-prod`.fenix_derived.funnel_retention_clients_week_4_v1 r
     ON ac.client_id = r.client_id
   LEFT JOIN
-    (SELECT * FROM fenix.events_unnested eu WHERE DATE(submission_timestamp) = @submission_date) eu
+    (
+      SELECT
+        *
+      FROM
+        `moz-fx-data-shared-prod.fenix.events_unnested` eu
+      WHERE
+        DATE(submission_timestamp) = @submission_date
+    ) eu
     ON ac.client_id = eu.client_info.client_id
   LEFT JOIN
     (
@@ -455,7 +518,7 @@ onboarding_funnel_third_card_primary_click AS (
         client_info.client_id,
         ANY_VALUE(`mozfun.map.get_key`(event_extra, 'sequence_id')) AS funnel_id
       FROM
-        fenix.events_unnested
+        `moz-fx-data-shared-prod.fenix.events_unnested`
       WHERE
         `mozfun.map.get_key`(event_extra, 'sequence_id') IS NOT NULL
         AND DATE(submission_timestamp) = @submission_date
@@ -495,12 +558,19 @@ onboarding_funnel_third_card_secondary_click AS (
         THEN ac.client_id
     END AS column
   FROM
-    fenix.firefox_android_clients ac
+    `moz-fx-data-shared-prod.fenix.firefox_android_clients` ac
   LEFT JOIN
     `moz-fx-data-shared-prod`.fenix_derived.funnel_retention_clients_week_4_v1 r
     ON ac.client_id = r.client_id
   LEFT JOIN
-    (SELECT * FROM fenix.events_unnested eu WHERE DATE(submission_timestamp) = @submission_date) eu
+    (
+      SELECT
+        *
+      FROM
+        `moz-fx-data-shared-prod.fenix.events_unnested` eu
+      WHERE
+        DATE(submission_timestamp) = @submission_date
+    ) eu
     ON ac.client_id = eu.client_info.client_id
   LEFT JOIN
     (
@@ -508,7 +578,7 @@ onboarding_funnel_third_card_secondary_click AS (
         client_info.client_id,
         ANY_VALUE(`mozfun.map.get_key`(event_extra, 'sequence_id')) AS funnel_id
       FROM
-        fenix.events_unnested
+        `moz-fx-data-shared-prod.fenix.events_unnested`
       WHERE
         `mozfun.map.get_key`(event_extra, 'sequence_id') IS NOT NULL
         AND DATE(submission_timestamp) = @submission_date
@@ -545,12 +615,19 @@ onboarding_funnel_onboarding_completed AS (
         THEN ac.client_id
     END AS column
   FROM
-    fenix.firefox_android_clients ac
+    `moz-fx-data-shared-prod.fenix.firefox_android_clients` ac
   LEFT JOIN
     `moz-fx-data-shared-prod`.fenix_derived.funnel_retention_clients_week_4_v1 r
     ON ac.client_id = r.client_id
   LEFT JOIN
-    (SELECT * FROM fenix.events_unnested eu WHERE DATE(submission_timestamp) = @submission_date) eu
+    (
+      SELECT
+        *
+      FROM
+        `moz-fx-data-shared-prod.fenix.events_unnested` eu
+      WHERE
+        DATE(submission_timestamp) = @submission_date
+    ) eu
     ON ac.client_id = eu.client_info.client_id
   LEFT JOIN
     (
@@ -558,7 +635,7 @@ onboarding_funnel_onboarding_completed AS (
         client_info.client_id,
         ANY_VALUE(`mozfun.map.get_key`(event_extra, 'sequence_id')) AS funnel_id
       FROM
-        fenix.events_unnested
+        `moz-fx-data-shared-prod.fenix.events_unnested`
       WHERE
         `mozfun.map.get_key`(event_extra, 'sequence_id') IS NOT NULL
         AND DATE(submission_timestamp) = @submission_date
@@ -595,12 +672,19 @@ onboarding_funnel_sync_sign_in AS (
         THEN ac.client_id
     END AS column
   FROM
-    fenix.firefox_android_clients ac
+    `moz-fx-data-shared-prod.fenix.firefox_android_clients` ac
   LEFT JOIN
     `moz-fx-data-shared-prod`.fenix_derived.funnel_retention_clients_week_4_v1 r
     ON ac.client_id = r.client_id
   LEFT JOIN
-    (SELECT * FROM fenix.events_unnested eu WHERE DATE(submission_timestamp) = @submission_date) eu
+    (
+      SELECT
+        *
+      FROM
+        `moz-fx-data-shared-prod.fenix.events_unnested` eu
+      WHERE
+        DATE(submission_timestamp) = @submission_date
+    ) eu
     ON ac.client_id = eu.client_info.client_id
   LEFT JOIN
     (
@@ -608,7 +692,7 @@ onboarding_funnel_sync_sign_in AS (
         client_info.client_id,
         ANY_VALUE(`mozfun.map.get_key`(event_extra, 'sequence_id')) AS funnel_id
       FROM
-        fenix.events_unnested
+        `moz-fx-data-shared-prod.fenix.events_unnested`
       WHERE
         `mozfun.map.get_key`(event_extra, 'sequence_id') IS NOT NULL
         AND DATE(submission_timestamp) = @submission_date
@@ -645,12 +729,19 @@ onboarding_funnel_default_browser AS (
         THEN ac.client_id
     END AS column
   FROM
-    fenix.firefox_android_clients ac
+    `moz-fx-data-shared-prod.fenix.firefox_android_clients` ac
   LEFT JOIN
     `moz-fx-data-shared-prod`.fenix_derived.funnel_retention_clients_week_4_v1 r
     ON ac.client_id = r.client_id
   LEFT JOIN
-    (SELECT * FROM fenix.events_unnested eu WHERE DATE(submission_timestamp) = @submission_date) eu
+    (
+      SELECT
+        *
+      FROM
+        `moz-fx-data-shared-prod.fenix.events_unnested` eu
+      WHERE
+        DATE(submission_timestamp) = @submission_date
+    ) eu
     ON ac.client_id = eu.client_info.client_id
   LEFT JOIN
     (
@@ -658,7 +749,7 @@ onboarding_funnel_default_browser AS (
         client_info.client_id,
         ANY_VALUE(`mozfun.map.get_key`(event_extra, 'sequence_id')) AS funnel_id
       FROM
-        fenix.events_unnested
+        `moz-fx-data-shared-prod.fenix.events_unnested`
       WHERE
         `mozfun.map.get_key`(event_extra, 'sequence_id') IS NOT NULL
         AND DATE(submission_timestamp) = @submission_date

@@ -65,6 +65,9 @@ fields:
 - name: search_with_ads_organic
   type: INTEGER
   mode: NULLABLE
+- name: normalized_app_name_os
+  type: STRING
+  mode: NULLABLE
 - name: normalized_engine
   type: STRING
   mode: NULLABLE
@@ -74,6 +77,6 @@ fields:
 - name: sap
   type: INTEGER
   mode: NULLABLE
-- name: normalized_app_name_os
+- name: normalized_app_name_os_1
   type: STRING
   mode: NULLABLE

@@ -6,7 +6,7 @@ SELECT
   COUNT(*) AS n_metrics_ping,
   1 AS days_sent_metrics_ping_bits,
 FROM
-  `accounts_cirrus.metrics` AS m
+  `moz-fx-data-shared-prod.accounts_cirrus.metrics` AS m
 WHERE
   DATE(submission_timestamp) = @submission_date
 GROUP BY

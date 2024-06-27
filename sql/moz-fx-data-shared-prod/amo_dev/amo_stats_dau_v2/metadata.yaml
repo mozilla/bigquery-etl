@@ -28,4 +28,4 @@ workgroup_access:
   - workgroup:amo/nonprod
 references:
   query.sql:
-  - amo_prod.amo_stats_dau_v2
+  - moz-fx-data-shared-prod.amo_prod.amo_stats_dau_v2

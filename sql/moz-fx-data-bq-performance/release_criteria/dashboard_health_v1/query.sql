@@ -8,7 +8,7 @@ WITH recent_tests AS (
     IFNULL(test_extra_options, '') AS test_extra_options,
     IFNULL(subtest_name, '') AS subtest_name
   FROM
-    rc_flattened_test_data_v1
+    `moz-fx-data-bq-performance.release_criteria.rc_flattened_test_data_v1`
   WHERE
     task_group_time >= TIMESTAMP_SUB(current_timestamp, INTERVAL 28 DAY)
 ),
@@ -23,7 +23,7 @@ distinct_rc AS (
     ARRAY_TO_STRING(ARRAY_AGG(DISTINCT rc_test_name), '\n') AS rc_test_name,
     COUNT(*) AS defined_criteria
   FROM
-    release_criteria_helper
+    `moz-fx-data-bq-performance.release_criteria.release_criteria_helper`
   GROUP BY
     framework,
     platform,

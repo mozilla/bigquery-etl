@@ -38,18 +38,18 @@ WITH windowed AS (
     DATE(`timestamp`) AS submission_date,
     user_id,
     ROW_NUMBER() OVER w1_unframed AS _n,
-    udf.mode_last(ARRAY_AGG(country) OVER w1) AS country,
-    udf.mode_last(ARRAY_AGG(`language`) OVER w1) AS language,
-    udf.mode_last(ARRAY_AGG(app_version) OVER w1) AS app_version,
-    udf.mode_last(ARRAY_AGG(os_name) OVER w1) AS os_name,
-    udf.mode_last(ARRAY_AGG(os_version) OVER w1) AS os_version,
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(country) OVER w1) AS country,
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(`language`) OVER w1) AS language,
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(app_version) OVER w1) AS app_version,
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(os_name) OVER w1) AS os_name,
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(os_version) OVER w1) AS os_version,
     udf_contains_tier1_country(ARRAY_AGG(country) OVER w1) AS seen_in_tier1_country,
     udf_contains_registration(ARRAY_AGG(event_type) OVER w1) AS registered,
     COUNTIF(
       NOT (event_type = 'fxa_rp - engage' AND service = 'fx-monitor')
     ) OVER w1 = 0 AS monitor_only
   FROM
-    firefox_accounts.fxa_all_events
+    `moz-fx-data-shared-prod.firefox_accounts.fxa_all_events`
   WHERE
     fxa_log IN ('auth', 'auth_bounce', 'content', 'oauth')
     AND user_id IS NOT NULL

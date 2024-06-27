@@ -5,11 +5,11 @@
       client_info.client_id,
       -- Some Glean data from 2019 contains incorrect sample_id, so we
       -- recalculate here; see bug 1707640
-      udf.safe_sample_id(client_info.client_id) AS sample_id,
+      `moz-fx-data-shared-prod.udf.safe_sample_id`(client_info.client_id) AS sample_id,
       DATE(MIN(submission_timestamp)) AS submission_date,
       DATE(MIN(submission_timestamp)) AS first_seen_date,
     FROM
-      `mozilla_lockbox_stable.baseline_v1`
+      `moz-fx-data-shared-prod.mozilla_lockbox_stable.baseline_v1`
     -- initialize by looking over all of history
     WHERE
       DATE(submission_timestamp) > "2010-01-01"
@@ -29,7 +29,7 @@
       sample_id,
       client_info.client_id
     FROM
-      `mozilla_lockbox_stable.baseline_v1`
+      `moz-fx-data-shared-prod.mozilla_lockbox_stable.baseline_v1`
     WHERE
       DATE(submission_timestamp) = @submission_date
       AND client_info.client_id IS NOT NULL -- Bug 1896455
@@ -42,7 +42,7 @@
       sample_id,
       client_id
     FROM
-      `mozilla_lockbox_derived.baseline_clients_first_seen_v1`
+      `moz-fx-data-shared-prod.mozilla_lockbox_derived.baseline_clients_first_seen_v1`
     WHERE
       first_seen_date > "2010-01-01"
       AND first_seen_date < @submission_date

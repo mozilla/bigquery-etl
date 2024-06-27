@@ -17,5 +17,5 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - google_ads_derived.accounts_v1
   - moz-fx-data-bq-fivetran.ads_google_mmc.campaign_history
+  - moz-fx-data-shared-prod.google_ads_derived.accounts_v1

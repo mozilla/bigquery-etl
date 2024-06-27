@@ -27,9 +27,9 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - telemetry.core
-  - telemetry_derived.core_live
-  - telemetry_live.crash_v4
-  - telemetry_live.main_v5
-  - telemetry_stable.crash_v4
-  - telemetry_stable.main_v5
+  - moz-fx-data-shared-prod.telemetry.core
+  - moz-fx-data-shared-prod.telemetry_derived.core_live
+  - moz-fx-data-shared-prod.telemetry_live.crash_v4
+  - moz-fx-data-shared-prod.telemetry_live.main_v5
+  - moz-fx-data-shared-prod.telemetry_stable.crash_v4
+  - moz-fx-data-shared-prod.telemetry_stable.main_v5

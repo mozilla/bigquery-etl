@@ -19,4 +19,4 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - twice_weekly_active_user_counts_history_v1
+  - moz-fx-data-shared-prod.pocket_derived.twice_weekly_active_user_counts_history_v1

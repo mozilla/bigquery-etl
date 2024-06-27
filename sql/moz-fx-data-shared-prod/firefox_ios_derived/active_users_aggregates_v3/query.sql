@@ -5,7 +5,7 @@ WITH attribution_data AS (
     adjust_network,
     CAST(NULL AS STRING) install_source
   FROM
-    firefox_ios.firefox_ios_clients
+    `moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients`
 ),
 baseline AS (
   SELECT

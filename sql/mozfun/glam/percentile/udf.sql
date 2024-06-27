@@ -13,23 +13,38 @@ RETURNS FLOAT64 AS (
           AND pct <= 100,
           TRUE,
           ERROR('percentile must be a value between 0 and 100')
-        ) pct_ok
+        ) pct_ok,
+        SUM(value) AS total_value
+      FROM
+        UNNEST(histogram)
     ),
     keyed_cum_sum AS (
       SELECT
         key,
-        SUM(value) OVER (ORDER BY CAST(key AS FLOAT64)) / SUM(value) OVER () AS cum_sum
+        IF(
+          total_value = 0,
+          0,
+          SUM(value) OVER (ORDER BY CAST(key AS FLOAT64)) / SUM(value) OVER ()
+        ) cum_sum
+      FROM
+        UNNEST(histogram),
+        check
+    ),
+    max_bucket AS (
+      SELECT
+        MAX(CAST(key AS FLOAT64)) AS bucket
       FROM
         UNNEST(histogram)
     )
     SELECT
-      CAST(key AS FLOAT64)
+      IF(total_value = 0, max_bucket.bucket, CAST(key AS FLOAT64))
     FROM
       keyed_cum_sum,
-      check
+      check,
+      max_bucket
     WHERE
       check.pct_ok
-      AND cum_sum >= pct / 100
+      AND (total_value = 0 OR cum_sum >= pct / 100)
     ORDER BY
       cum_sum
     LIMIT

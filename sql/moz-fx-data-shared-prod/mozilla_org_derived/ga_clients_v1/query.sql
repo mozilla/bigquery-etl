@@ -2,7 +2,7 @@ WITH historical_clients AS (
   SELECT
     *
   FROM
-    mozilla_org_derived.ga_clients_v1
+    `moz-fx-data-shared-prod.mozilla_org_derived.ga_clients_v1`
 ),
 new_clients AS (
   SELECT
@@ -35,7 +35,7 @@ new_clients AS (
       MIN_BY(ga_session_id, session_number) AS ga_session_id
     ) AS first_reported,
   FROM
-    mozilla_org_derived.ga_sessions_v1
+    `moz-fx-data-shared-prod.mozilla_org_derived.ga_sessions_v1`
   WHERE
     ga_client_id IS NOT NULL
     {% if is_init() %}

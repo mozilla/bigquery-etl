@@ -1,4 +1,4 @@
--- Note: udf.udf_json_extract_int_map map doesn't work in this case as it expects an INT -> INT
+-- Note: `moz-fx-data-shared-prod.udf.udf_json_extract_int_map` map doesn't work in this case as it expects an INT -> INT
 -- map, while we have a STRING->int map
 CREATE TEMP FUNCTION udf_json_extract_string_to_int_map(input STRING) AS (
   ARRAY(
@@ -84,7 +84,7 @@ WITH DAUs AS (
     TIMESTAMP_TRUNC(submission_timestamp_min, HOUR) AS datetime,
     COUNT(*) AS client_count
   FROM
-    telemetry.clients_daily
+    `moz-fx-data-shared-prod.telemetry.clients_daily`
   WHERE
     submission_date = @submission_date
     -- Country can be null if geoip lookup failed.
@@ -107,10 +107,12 @@ WITH DAUs AS (
 health_data_sample AS (
   SELECT
     -- `city` is processed in `health_data_aggregates`.
-    udf.geo_struct(metadata.geo.country, metadata.geo.city, NULL, NULL).* EXCEPT (
-      geo_subdivision1,
-      geo_subdivision2
-    ),
+    `moz-fx-data-shared-prod.udf.geo_struct`(
+      metadata.geo.country,
+      metadata.geo.city,
+      NULL,
+      NULL
+    ).* EXCEPT (geo_subdivision1, geo_subdivision2),
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS datetime,
     client_id,
     SUM(
@@ -156,7 +158,7 @@ health_data_sample AS (
       )
     ) AS e_channel_open,
   FROM
-    telemetry.health
+    `moz-fx-data-shared-prod.telemetry.health`
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
@@ -211,7 +213,7 @@ final_health_data AS (
 -- Compute aggregates for histograms coming from the health ping.
 histogram_data_sample AS (
   SELECT
-    -- We don't need to use udf.geo_struct here since `telemetry.main` won't
+    -- We don't need to use `moz-fx-data-shared-prod.udf.geo_struct` here since `telemetry.main` won't
     -- have '??' values. It only has nulls, which we can handle.
     metadata.geo.country AS country,
     -- If cities are NULL then it's from cities we either don't
@@ -228,7 +230,7 @@ histogram_data_sample AS (
       payload.processes.content.histograms.http_page_tls_handshake
     ).values AS tls_handshake,
   FROM
-    telemetry_stable.main_v5
+    `moz-fx-data-shared-prod.telemetry_stable.main_v5`
   WHERE
     DATE(submission_timestamp) = @submission_date
     -- Restrict to Firefox.
@@ -485,7 +487,7 @@ FROM
 -- with whatever we pass on the RIGHT.
 -- When doing a FULL OUTER JOIN, we end up sometimes with nulls on the
 -- left because there are a few samples coming from telemetry.main that
--- are not accounted for in telemetry.clients_daily
+-- are not accounted for in `moz-fx-data-shared-prod.telemetry.clients_daily`
 LEFT JOIN
   DAUs
   USING (datetime, country, city)

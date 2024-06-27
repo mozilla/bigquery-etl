@@ -7,7 +7,7 @@ WITH baseline_clients AS (
     normalized_channel AS channel,
     normalized_country_code AS country,
   FROM
-    fenix.baseline
+    `moz-fx-data-shared-prod.fenix.baseline`
   WHERE
     DATE(submission_timestamp)
     BETWEEN DATE_SUB(@submission_date, INTERVAL 4 DAY)
@@ -31,7 +31,7 @@ client_attribution AS (
     channel,
     adjust_network,
   FROM
-    fenix.firefox_android_clients
+    `moz-fx-data-shared-prod.fenix.firefox_android_clients`
 ),
 metric_ping_clients_feature_usage AS (
   SELECT
@@ -122,7 +122,7 @@ metric_ping_clients_feature_usage AS (
     COUNTIF(metrics.boolean.customize_home_recently_saved) AS customize_home_recently_saved,
     COUNTIF(metrics.boolean.customize_home_recently_visited) AS customize_home_recently_visited
   FROM
-    fenix.metrics AS metric
+    `moz-fx-data-shared-prod.fenix.metrics` AS metric
   LEFT JOIN
     UNNEST(metrics.labeled_counter.metrics_bookmarks_add) AS metrics_bookmarks_add_table
   LEFT JOIN

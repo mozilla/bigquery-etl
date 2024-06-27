@@ -4,7 +4,7 @@ WITH
     DATE(submission_timestamp) AS submission_date,
     * REPLACE(LOWER(client_id) AS client_id)
   FROM
-    telemetry.core
+    `moz-fx-data-shared-prod.telemetry.core`
   WHERE
     client_id IS NOT NULL ),
   --
@@ -84,5 +84,5 @@ SELECT
 FROM
   deduped
 LEFT JOIN
-  core_clients_first_seen_v1 AS cfs
+  `moz-fx-data-shared-prod.telemetry_derived.core_clients_first_seen_v1` AS cfs
   USING (client_id)

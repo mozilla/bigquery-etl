@@ -16,9 +16,9 @@ SELECT
   osversion,
   COALESCE(cc.name, cls.country) AS country_name
 FROM
-  telemetry.core_clients_last_seen_v1 AS cls
+  `moz-fx-data-shared-prod.telemetry.core_clients_last_seen_v1` AS cls
 LEFT JOIN
-  static.country_codes_v1 AS cc
+  `moz-fx-data-shared-prod.static.country_codes_v1` AS cc
   ON (cls.country = cc.code)
 WHERE
   client_id IS NOT NULL

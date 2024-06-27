@@ -13,7 +13,7 @@ WITH fxa_users_services_daily_new_entries AS (
     user_service_utm_info,
     registered,
   FROM
-    firefox_accounts_derived.fxa_users_services_daily_v2
+    `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_users_services_daily_v2`
   WHERE
     submission_date = @submission_date
 ),
@@ -22,7 +22,7 @@ existing_entries AS (
     user_id,
     service,
   FROM
-    firefox_accounts_derived.fxa_users_services_first_seen_v2
+    `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_users_services_first_seen_v2`
   WHERE
     DATE(submission_date) < @submission_date
 )

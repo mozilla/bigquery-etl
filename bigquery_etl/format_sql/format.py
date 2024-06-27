@@ -4,9 +4,11 @@ import glob
 import os
 import os.path
 import sys
+from pathlib import Path
 
 from bigquery_etl.config import ConfigLoader
 from bigquery_etl.format_sql.formatter import reformat  # noqa E402
+from bigquery_etl.util.common import qualify_table_references_in_file
 
 
 def skip_format():
@@ -14,6 +16,17 @@ def skip_format():
     return [
         file
         for skip in ConfigLoader.get("format", "skip", fallback=[])
+        for file in glob.glob(skip, recursive=True)
+    ]
+
+
+def skip_qualifying_references():
+    """Return a list of configured queries where fully qualifying references should be skipped."""
+    return [
+        file
+        for skip in ConfigLoader.get(
+            "format", "skip_qualifying_references", fallback=[]
+        )
         for file in glob.glob(skip, recursive=True)
     ]
 
@@ -40,7 +53,7 @@ def format(paths, check=False):
                     # skip tests/**/input.sql
                     and not (path.startswith("tests") and filename == "input.sql")
                     for filepath in [os.path.join(dirpath, filename)]
-                    if filepath not in skip_format()
+                    if not any([filepath.endswith(s) for s in skip_format()])
                 )
             elif path:
                 sql_files.append(path)
@@ -50,9 +63,19 @@ def format(paths, check=False):
         sql_files.sort()
         reformatted = unchanged = 0
         for path in sql_files:
-            with open(path) as fp:
-                query = fp.read()
-            formatted = reformat(query, trailing_newline=True)
+            query = Path(path).read_text()
+
+            try:
+                if not any([path.endswith(s) for s in skip_qualifying_references()]):
+                    fully_referenced_query = qualify_table_references_in_file(
+                        Path(path)
+                    )
+                else:
+                    fully_referenced_query = query
+            except NotImplementedError:
+                fully_referenced_query = query  # not implemented for scripts
+
+            formatted = reformat(fully_referenced_query, trailing_newline=True)
             if query != formatted:
                 if check:
                     print(f"Needs reformatting: bqetl format {path}")

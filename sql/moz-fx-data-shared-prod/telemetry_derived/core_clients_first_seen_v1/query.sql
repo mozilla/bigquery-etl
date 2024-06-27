@@ -3,7 +3,7 @@
     client_id,
     DATE(MIN(submission_timestamp)) AS first_seen_date,
   FROM
-    telemetry.core
+    `moz-fx-data-shared-prod.telemetry.core`
   WHERE
     submission_timestamp > '2010-01-01'
   GROUP BY
@@ -13,7 +13,7 @@
     SELECT DISTINCT
       client_id
     FROM
-      telemetry.core
+      `moz-fx-data-shared-prod.telemetry.core`
     WHERE
       DATE(submission_timestamp) = @submission_date
   ),
@@ -21,7 +21,7 @@
     SELECT
       *
     FROM
-      telemetry_derived.core_clients_first_seen_v1
+      `moz-fx-data-shared-prod.telemetry_derived.core_clients_first_seen_v1`
     WHERE
     -- In the case we need to backfill older partitions of this table, we don't want newer partitions
     -- to alter results of the query.

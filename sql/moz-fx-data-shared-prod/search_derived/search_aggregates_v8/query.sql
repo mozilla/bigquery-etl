@@ -29,7 +29,7 @@ SELECT
   SUM(search_with_ads_organic) AS search_with_ads_organic,
   SUM(unknown) AS unknown
 FROM
-  search_clients_daily_v8
+  `moz-fx-data-shared-prod.search_derived.search_clients_daily_v8`
 WHERE
   submission_date = @submission_date
   AND engine IS NOT NULL

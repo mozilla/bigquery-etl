@@ -139,6 +139,7 @@ dry_run:
   - sql/moz-fx-data-shared-prod/stub_attribution_service_derived/dl_token_ga_attribution_lookup_v1/query.sql
   - sql/moz-fx-data-shared-prod/mozilla_org_derived/gclid_conversions_v2/query.sql
   - sql/moz-fx-data-shared-prod/search_derived/search_clients_daily_v8/query.sql
+  - sql/moz-fx-data-shared-prod/search_derived/mobile_search_aggregates_v1/query.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/telemetry_missing_columns_v1/view.sql
   # No matching signature for function IF
   - sql/moz-fx-data-shared-prod/static/fxa_amplitude_export_users_last_seen/query.sql
@@ -193,12 +194,8 @@ dry_run:
 format:
   skip:
   - bigquery_etl/glam/templates/*.sql
-  - sql_generators/events_daily/templates/**/*.sql
-  - sql_generators/glean_usage/templates/*.sql
-  - sql_generators/search/templates/*.sql
-  - sql_generators/experiment_monitoring/templates/**/*.sql
-  - sql_generators/feature_usage/templates/*.sql
-  - sql_generators/funnels/templates/*.sql
+  - sql_generators/**/*.sql
+  - tests/**/*.sql
   - sql/moz-fx-data-shared-prod/telemetry/fenix_events_v1/view.sql
   - sql/moz-fx-data-shared-prod/telemetry/fennec_ios_events_v1/view.sql
   - sql/moz-fx-data-shared-prod/telemetry/fire_tv_events_v1/view.sql
@@ -268,6 +265,8 @@ format:
   - sql/moz-fx-data-shared-prod/udf_legacy/date_trunc.sql
   - sql/moz-fx-data-shared-prod/udf_legacy/to_iso8601.sql
   - stored_procedures/safe_crc32_uuid.sql
+  skip_qualifying_references:
+  - sql/mozfun/**/examples/*.sql
 
 routine:
   dependency_dir: udf_js_lib/
@@ -339,6 +338,7 @@ generate:
     - org_mozilla_ios_tiktok_reporter_tiktok_reportershare
     - org_mozilla_tiktokreporter
     - relay_backend  # temporary fix, see https://mozilla-hub.atlassian.net/browse/DENG-3720
+    - ads_backend
     events_stream:
       skip_apps:
       - bergamot

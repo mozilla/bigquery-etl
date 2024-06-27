@@ -7,7 +7,7 @@ WITH baseline_clients AS (
     normalized_channel AS channel,
     normalized_country_code AS country
   FROM
-    fenix.baseline
+    `moz-fx-data-shared-prod.fenix.baseline`
   WHERE
     metrics.timespan.glean_baseline_duration.value > 0
     AND LOWER(metadata.isp.name) <> "browserstack"
@@ -31,7 +31,7 @@ client_attribution AS (
     channel,
     adjust_network,
   FROM
-    fenix.firefox_android_clients
+    `moz-fx-data-shared-prod.fenix.firefox_android_clients`
 ),
 default_browser AS (
   SELECT
@@ -45,7 +45,7 @@ default_browser AS (
     normalized_country_code AS country,
     COALESCE(metrics.boolean.metrics_default_browser, FALSE) AS is_default_browser,
   FROM
-    fenix.metrics AS metric_ping
+    `moz-fx-data-shared-prod.fenix.metrics` AS metric_ping
   WHERE
     LOWER(metadata.isp.name) <> "browserstack"
     -- we need to work with a larger time window as some metrics ping arrive with a multi day delay
@@ -332,7 +332,7 @@ event_ping_clients_feature_usage AS (
       AND event_name = 'customize_home_clicked'
     ) AS home_page_customize_home_clicked
   FROM
-    fenix.events_unnested
+    `moz-fx-data-shared-prod.fenix.events_unnested`
   WHERE
     DATE(submission_timestamp)
     BETWEEN DATE_SUB(@submission_date, INTERVAL 4 DAY)

@@ -19,7 +19,7 @@ WITH clients_first_seen_28_days_ago AS (
     startup_profile_selection_reason,
     first_seen_date,
   FROM
-    telemetry_derived.clients_first_seen_v2
+    `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v2`
   WHERE
     first_seen_date = DATE_SUB(@submission_date, INTERVAL 27 day)
 ),
@@ -32,7 +32,7 @@ clients_first_seen_28_days_ago_with_days_seen AS (
   FROM
     clients_first_seen_28_days_ago
   LEFT JOIN
-    telemetry.clients_last_seen cls
+    `moz-fx-data-shared-prod.telemetry.clients_last_seen` cls
     ON clients_first_seen_28_days_ago.client_id = cls.client_id
     AND cls.submission_date = @submission_date
 )

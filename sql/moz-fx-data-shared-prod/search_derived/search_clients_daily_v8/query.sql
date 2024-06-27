@@ -26,7 +26,7 @@ WITH adblocker_addons AS (
     addon_id,
     addon_name
   FROM
-    revenue.monetization_blocking_addons
+    `moz-fx-data-shared-prod.revenue.monetization_blocking_addons`
   WHERE
     blocks_monetization
 ),
@@ -36,7 +36,7 @@ clients_with_adblocker_addons AS (
     submission_date,
     TRUE AS has_adblocker_addon
   FROM
-    telemetry.clients_daily
+    `moz-fx-data-shared-prod.telemetry.clients_daily`
   CROSS JOIN
     UNNEST(active_addons) a
   INNER JOIN
@@ -121,7 +121,7 @@ combined_access_point AS (
       add_access_point(search_adclicks_unknown_sum, 'unknown')
     ) AS ad_clicks_with_sap,
   FROM
-    telemetry.clients_daily
+    `moz-fx-data-shared-prod.telemetry.clients_daily`
   LEFT JOIN
     clients_with_adblocker_addons
     USING (client_id, submission_date)

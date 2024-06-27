@@ -565,6 +565,7 @@ jobs:
                   PATH="venv/bin:$PATH" script/bqetl metadata update \
                     --sql-dir /tmp/workspace/generated-sql/sql/ \
                     /tmp/workspace/generated-sql/sql/
+                  PATH="venv/bin:$PATH" script/bqetl format /tmp/workspace/generated-sql/sql/
             - persist_to_workspace:
                 root: /tmp/workspace
                 paths:
@@ -791,6 +792,7 @@ jobs:
                   PATH="venv/bin:$PATH" script/bqetl metadata update \
                     --sql-dir /tmp/workspace/private-generated-sql/sql/ \
                     /tmp/workspace/private-generated-sql/sql/
+                  PATH="venv/bin:$PATH" script/bqetl format /tmp/workspace/private-generated-sql/sql/
 
                   # Change directory to generate DAGs so `sql_file_path` values are relative to the repo root.
                   export PATH="$PWD/venv/bin:$PATH"
@@ -946,6 +948,7 @@ jobs:
                     --sql-dir /tmp/workspace/main-generated-sql/sql/ \
                     /tmp/workspace/main-generated-sql/sql/
                   # re-generate DAGs
+                  ./script/bqetl format /tmp/workspace/main-generated-sql/sql/
 
                   ./script/bqetl dag generate \
                     --sql-dir /tmp/workspace/main-generated-sql/sql/ \

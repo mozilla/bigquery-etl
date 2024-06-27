@@ -6,14 +6,14 @@ SELECT DISTINCT
   rc_test_name,
   task_group_time
 FROM
-  release_criteria_v1 AS a
+  `moz-fx-data-bq-performance.release_criteria.release_criteria_v1` AS a
 WHERE
   `moz-fx-data-bq-performance.udf.is_stale_test`(task_group_time, test_tier)
   AND task_group_time = (
     SELECT
       MAX(task_group_time)
     FROM
-      release_criteria_v1 AS b
+      `moz-fx-data-bq-performance.release_criteria.release_criteria_v1` AS b
     WHERE
       a.project = b.project
       AND a.platform = b.platform

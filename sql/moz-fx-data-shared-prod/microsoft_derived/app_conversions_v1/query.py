@@ -214,6 +214,7 @@ def main():
         json_none_string = change_null_to_string(json_file.text)
         # Convert the string to a dictionary
         query_export = eval(json_none_string)
+        print("This is query_export: ", query_export)
         if query_export["Value"]:
             # This section writes the tmp json data into a temp CSV file which will then be put into a BigQuery table
             microsoft_store_data = clean_json(query_export, date)

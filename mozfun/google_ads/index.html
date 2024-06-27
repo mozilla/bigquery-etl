@@ -1493,12 +1493,12 @@ syntax:
 <span class="w">  </span><span class="k">SELECT</span>
 <span class="w">    </span><span class="n">extract_fields</span><span class="p">(</span><span class="s1">&#39;org_mozilla_firefox_beta&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">m</span><span class="p">).</span><span class="o">*</span>
 <span class="w">  </span><span class="k">FROM</span>
-<span class="w">    </span><span class="n">org_mozilla_firefox_beta</span><span class="p">.</span><span class="n">metrics</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">m</span>
+<span class="w">    </span><span class="o">`</span><span class="n">mozdata</span><span class="p">.</span><span class="n">org_mozilla_firefox_beta</span><span class="p">.</span><span class="n">metrics</span><span class="o">`</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">m</span>
 <span class="w">  </span><span class="k">UNION</span><span class="w"> </span><span class="k">ALL</span>
 <span class="w">  </span><span class="k">SELECT</span>
 <span class="w">    </span><span class="n">extract_fields</span><span class="p">(</span><span class="s1">&#39;org_mozilla_fenix&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">m</span><span class="p">).</span><span class="o">*</span>
 <span class="w">  </span><span class="k">FROM</span>
-<span class="w">    </span><span class="n">org_mozilla_fenix</span><span class="p">.</span><span class="n">metrics</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">m</span>
+<span class="w">    </span><span class="o">`</span><span class="n">mozdata</span><span class="p">.</span><span class="n">org_mozilla_fenix</span><span class="p">.</span><span class="n">metrics</span><span class="o">`</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">m</span>
 <span class="p">)</span>
 <span class="k">SELECT</span>
 <span class="w">  </span><span class="nb">DATE</span><span class="p">(</span><span class="n">submission_timestamp</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">submission_date</span><span class="p">,</span>

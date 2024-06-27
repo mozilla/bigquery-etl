@@ -1,0 +1,9 @@
+friendly_name: PPA Measurements
+description: |-
+  Aggregated conversion data from PPA (Privacy-Preserving Attribution)
+owners:
+  - cmorales@mozilla.com
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:ads

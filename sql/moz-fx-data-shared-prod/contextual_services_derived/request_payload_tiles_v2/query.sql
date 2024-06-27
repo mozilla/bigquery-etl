@@ -1,7 +1,9 @@
 WITH parsed AS (
   SELECT
     submission_timestamp,
-    udf_js.parse_sponsored_interaction(udf_js.extract_string_from_bytes(payload)) AS si
+    `moz-fx-data-shared-prod.udf_js.parse_sponsored_interaction`(
+      `moz-fx-data-shared-prod.udf_js.extract_string_from_bytes`(payload)
+    ) AS si
   FROM
     `moz-fx-data-shared-prod.payload_bytes_error.contextual_services`
   WHERE

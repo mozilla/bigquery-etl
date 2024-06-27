@@ -128,7 +128,7 @@ WITH combined_urlbar_picked AS (
       )
     ] AS urlbar_picked_by_type_by_position
   FROM
-    `telemetry_derived.clients_daily_joined_v1`
+    `moz-fx-data-shared-prod.telemetry_derived.clients_daily_joined_v1`
   WHERE
     submission_date = @submission_date
 ),

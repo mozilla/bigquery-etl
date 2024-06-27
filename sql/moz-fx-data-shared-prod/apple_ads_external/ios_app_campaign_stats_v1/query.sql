@@ -17,7 +17,7 @@ WITH daily_stats AS (
     SUM(redownloads) AS redownloads,
     SUM(total_downloads) AS total_downloads
   FROM
-    apple_ads.ad_group_report
+    `moz-fx-data-shared-prod.apple_ads.ad_group_report`
   GROUP BY
     date_day,
     campaign_name,
@@ -39,7 +39,7 @@ activations AS (
   FROM
     `mozdata.ltv.firefox_ios_client_ltv` ltv
   INNER JOIN
-    firefox_ios.firefox_ios_clients cl
+    `moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients` cl
     ON ltv.client_id = cl.client_id
     AND ltv.sample_id = cl.sample_id
   WHERE
@@ -57,7 +57,7 @@ retention_aggs AS (
     SUM(repeat_user) AS repeat_users,
     SUM(retained_week_4) AS retained_week_4
   FROM
-    firefox_ios.funnel_retention_week_4
+    `moz-fx-data-shared-prod.firefox_ios.funnel_retention_week_4`
   GROUP BY
     `date`,
     campaign_id,

@@ -89,7 +89,7 @@ WITH filtered_date_channel AS (
   SELECT
     *
   FROM
-    glam_etl.firefox_desktop_glam_nightly__view_clients_daily_scalar_aggregates_v1
+    `glam-fenix-dev.glam_etl.firefox_desktop_glam_nightly__view_clients_daily_scalar_aggregates_v1`
   WHERE
     submission_date = @submission_date
 ),
@@ -131,7 +131,7 @@ version_filtered_new AS (
   FROM
     filtered_aggregates AS scalar_aggs
   LEFT JOIN
-    glam_etl.firefox_desktop_glam_nightly__latest_versions_v1
+    `glam-fenix-dev.glam_etl.firefox_desktop_glam_nightly__latest_versions_v1`
     USING (channel)
   WHERE
       -- allow for builds to be slighly ahead of the current submission date, to
@@ -212,9 +212,9 @@ filtered_old AS (
     scalar_aggs.channel,
     scalar_aggregates
   FROM
-    glam_etl.firefox_desktop_glam_nightly__clients_scalar_aggregates_v1 AS scalar_aggs
+    `glam-fenix-dev.glam_etl.firefox_desktop_glam_nightly__clients_scalar_aggregates_v1` AS scalar_aggs
   LEFT JOIN
-    glam_etl.firefox_desktop_glam_nightly__latest_versions_v1
+    `glam-fenix-dev.glam_etl.firefox_desktop_glam_nightly__latest_versions_v1`
     USING (channel)
   WHERE
       -- allow for builds to be slighly ahead of the current submission date, to

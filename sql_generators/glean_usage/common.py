@@ -31,6 +31,7 @@ NO_BASELINE_PING_APPS = (
     "firefox_reality_pc",
     "lockwise_android",
     "mach",
+    "monitor_backend",
     "monitor_cirrus",
     "moso_mastodon_backend",
     "mozphab",

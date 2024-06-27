@@ -8,7 +8,7 @@ WITH install_stats AS (
     mozfun.map.get_key(event_map_values, 'utm_source') AS utm_source,
     mozfun.map.get_key(event_map_values, 'utm_medium') AS utm_medium,
   FROM
-    telemetry.events
+    `moz-fx-data-shared-prod.telemetry.events`
   WHERE
     event_category = 'addonsManager'
     AND event_method = 'install_stats'

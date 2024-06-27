@@ -18,7 +18,7 @@ SELECT
     SAFE.DATE_FROM_UNIX_DATE(MIN(SAFE_CAST(environment.profile.creation_date AS INT64)))
   ) AS profile_creation_date
 FROM
-  telemetry.main,
+  `moz-fx-data-shared-prod.telemetry.main`,
   UNNEST(environment.addons.active_addons),
   UNNEST(
     [

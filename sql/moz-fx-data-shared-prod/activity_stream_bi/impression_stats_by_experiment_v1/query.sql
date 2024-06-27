@@ -11,7 +11,7 @@ SELECT
   tile_id,
   user_prefs,
 FROM
-  activity_stream_bi.impression_stats_flat_v1
+  `moz-fx-data-shared-prod.activity_stream_bi.impression_stats_flat_v1`
 CROSS JOIN
   UNNEST(experiments) AS experiment
 WHERE

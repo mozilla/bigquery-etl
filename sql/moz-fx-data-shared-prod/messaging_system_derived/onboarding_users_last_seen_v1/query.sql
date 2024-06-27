@@ -6,7 +6,7 @@ WITH _current AS (
     CAST(TRUE AS INT64) AS days_seen_bits,
     * EXCEPT (submission_date)
   FROM
-    onboarding_users_daily_v1
+    `moz-fx-data-shared-prod.messaging_system_derived.onboarding_users_daily_v1`
   WHERE
     submission_date = @submission_date
 ),
@@ -15,16 +15,16 @@ _previous AS (
   SELECT
     * EXCEPT (submission_date)
   FROM
-    onboarding_users_last_seen_v1
+    `moz-fx-data-shared-prod.messaging_system_derived.onboarding_users_last_seen_v1`
   WHERE
     submission_date = DATE_SUB(@submission_date, INTERVAL 1 DAY)
-    AND udf.shift_28_bits_one_day(days_seen_bits) > 0
+    AND `moz-fx-data-shared-prod.udf.shift_28_bits_one_day`(days_seen_bits) > 0
 )
 --
 SELECT
   @submission_date AS submission_date,
   IF(_current.client_id IS NOT NULL, _current, _previous).* REPLACE (
-    udf.combine_adjacent_days_28_bits(
+    `moz-fx-data-shared-prod.udf.combine_adjacent_days_28_bits`(
       _previous.days_seen_bits,
       _current.days_seen_bits
     ) AS days_seen_bits

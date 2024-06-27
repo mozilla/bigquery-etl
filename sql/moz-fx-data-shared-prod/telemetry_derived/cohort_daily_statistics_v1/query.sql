@@ -3,7 +3,7 @@ WITH submission_date_activity AS (
     client_id,
     submission_date AS activity_date
   FROM
-    telemetry.unified_metrics
+    `moz-fx-data-shared-prod.telemetry.unified_metrics`
   WHERE
     submission_date = @activity_date
     AND days_since_seen = 0
@@ -38,7 +38,7 @@ cohorts_in_range AS (
     os_version_major,
     os_version_minor,
   FROM
-    telemetry_derived.rolling_cohorts_v1
+    `moz-fx-data-shared-prod.telemetry_derived.rolling_cohorts_v1`
   WHERE
     cohort_date
     BETWEEN DATE_SUB(@activity_date, INTERVAL 180 DAY)

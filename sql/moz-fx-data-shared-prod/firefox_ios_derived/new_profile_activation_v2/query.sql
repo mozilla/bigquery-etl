@@ -14,7 +14,7 @@ WITH dou AS (
       mozfun.bits28.to_dates(mozfun.bits28.range(days_seen_bits, -5, 6), submission_date)
     ) AS days_2_7,
   FROM
-    firefox_ios.baseline_clients_last_seen
+    `moz-fx-data-shared-prod.firefox_ios.baseline_clients_last_seen`
   WHERE
     submission_date = @submission_date
     AND DATE_DIFF(submission_date, first_seen_date, DAY) = 6
@@ -24,7 +24,7 @@ client_search AS (
     client_id,
     SUM(search_count) AS search_count
   FROM
-    search_derived.mobile_search_clients_daily_v1
+    `moz-fx-data-shared-prod.search_derived.mobile_search_clients_daily_v1`
   WHERE
     (submission_date BETWEEN DATE_SUB(@submission_date, INTERVAL 3 DAY) AND @submission_date)
     AND os = 'iOS'
@@ -42,7 +42,7 @@ previous_client_entries AS (
   SELECT
     client_id
   FROM
-    firefox_ios_derived.new_profile_activation_v2
+    `moz-fx-data-shared-prod.firefox_ios_derived.new_profile_activation_v2`
   WHERE
     `date` < @submission_date
 )

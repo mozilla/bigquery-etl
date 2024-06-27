@@ -51,7 +51,7 @@ fields:
   - name: country_name
     type: STRING
     mode: NULLABLE
-  - name: country_state_name
+  - name: country_state_code
     type: STRING
     mode: NULLABLE
   - name: services

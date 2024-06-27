@@ -65,8 +65,10 @@ subscriptions_history_charge_summaries AS (
       STRUCT(
         cards.country AS latest_card_country,
         COALESCE(
-          us_zip_code_prefixes.state_code,
-          ca_postal_districts.province_code
+          card_us_zip.state_code,
+          card_ca_post.province_code,
+          charge_us_zip.state_code,
+          charge_ca_post.province_code
         ) AS latest_card_state
       )
       ORDER BY
@@ -99,14 +101,27 @@ subscriptions_history_charge_summaries AS (
   LEFT JOIN
     `moz-fx-data-shared-prod.stripe_external.refund_v1` AS refunds
     ON charges.id = refunds.charge_id
+  -- cards have postal code but no state
   LEFT JOIN
-    `moz-fx-data-shared-prod.static.us_zip_code_prefixes_v1` AS us_zip_code_prefixes
+    `moz-fx-data-shared-prod.static.us_zip_code_prefixes_v1` AS card_us_zip
     ON cards.country = "US"
-    AND LEFT(cards.address_zip, 3) = us_zip_code_prefixes.zip_code_prefix
+    AND LEFT(cards.address_zip, 3) = card_us_zip.zip_code_prefix
   LEFT JOIN
-    `moz-fx-data-shared-prod.static.ca_postal_districts_v1` AS ca_postal_districts
+    `moz-fx-data-shared-prod.static.ca_postal_districts_v1` AS card_ca_post
     ON cards.country = "CA"
-    AND UPPER(LEFT(cards.address_zip, 1)) = ca_postal_districts.postal_district_code
+    AND UPPER(LEFT(cards.address_zip, 1)) = card_ca_post.postal_district_code
+  -- charges usually have postal code and are sometimes associated with
+  -- a card that does not have a state or postal code
+  LEFT JOIN
+    `moz-fx-data-shared-prod.static.us_zip_code_prefixes_v1` AS charge_us_zip
+    ON cards.country = "US"
+    AND LEFT(charges.billing_detail_address_postal_code, 3) = charge_us_zip.zip_code_prefix
+  LEFT JOIN
+    `moz-fx-data-shared-prod.static.ca_postal_districts_v1` AS charge_ca_post
+    ON cards.country = "CA"
+    AND UPPER(
+      LEFT(charges.billing_detail_address_postal_code, 1)
+    ) = charge_ca_post.postal_district_code
   GROUP BY
     subscriptions_history_id
 )
@@ -140,8 +155,8 @@ SELECT
       history.subscription.customer.metadata.userid_sha256 AS mozilla_account_id_sha256,
       (
         CASE
-            -- Use the same address hierarchy as Stripe Tax after we enabled Stripe Tax (FXA-5457).
-            -- https://stripe.com/docs/tax/customer-locations#address-hierarchy
+          -- Use the same address hierarchy as Stripe Tax after we enabled Stripe Tax (FXA-5457).
+          -- https://stripe.com/docs/tax/customer-locations#address-hierarchy
           WHEN DATE(history.valid_to) >= '2022-12-01'
             AND (
               DATE(history.subscription.ended_at) >= '2022-12-01'
@@ -164,7 +179,7 @@ SELECT
                     charge_summaries.latest_card_state AS country_state_code
                   )
               END
-            -- SubPlat copies the PayPal billing agreement country to the customer's address.
+          -- SubPlat copies the PayPal billing agreement country to the customer's address.
           WHEN paypal_subscriptions.subscription_id IS NOT NULL
             THEN STRUCT(
                 NULLIF(history.subscription.customer.shipping.address.country, '') AS country_code,

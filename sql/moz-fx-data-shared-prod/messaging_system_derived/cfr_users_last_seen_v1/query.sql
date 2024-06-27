@@ -12,7 +12,7 @@ WITH _current AS (
     CAST(seen_whats_new AS INT64) AS days_seen_whats_new_bits,
     * EXCEPT (submission_date)
   FROM
-    cfr_users_daily_v1
+    `moz-fx-data-shared-prod.messaging_system_derived.cfr_users_daily_v1`
   WHERE
     submission_date = @submission_date
 ),
@@ -22,20 +22,20 @@ _previous AS (
     COALESCE(impression_id, client_id) AS _join_key,
     * EXCEPT (submission_date)
   FROM
-    cfr_users_last_seen_v1
+    `moz-fx-data-shared-prod.messaging_system_derived.cfr_users_last_seen_v1`
   WHERE
     submission_date = DATE_SUB(@submission_date, INTERVAL 1 DAY)
-    AND udf.shift_28_bits_one_day(days_seen_bits) > 0
+    AND `moz-fx-data-shared-prod.udf.shift_28_bits_one_day`(days_seen_bits) > 0
 )
 --
 SELECT
   @submission_date AS submission_date,
   IF(_current._join_key IS NOT NULL, _current, _previous).* EXCEPT (_join_key) REPLACE(
-    udf.combine_adjacent_days_28_bits(
+    `moz-fx-data-shared-prod.udf.combine_adjacent_days_28_bits`(
       _previous.days_seen_bits,
       _current.days_seen_bits
     ) AS days_seen_bits,
-    udf.combine_adjacent_days_28_bits(
+    `moz-fx-data-shared-prod.udf.combine_adjacent_days_28_bits`(
       _previous.days_seen_whats_new_bits,
       _current.days_seen_whats_new_bits
     ) AS days_seen_whats_new_bits

@@ -5,7 +5,7 @@ WITH clients_retention AS (
     sample_id,
     days_seen_bits,
   FROM
-    fenix.baseline_clients_last_seen
+    `moz-fx-data-shared-prod.fenix.baseline_clients_last_seen`
   WHERE
     submission_date = @submission_date
     AND normalized_channel = "release"
@@ -23,7 +23,7 @@ clients_first_seen AS (
     adjust_network,
     install_source,
   FROM
-    fenix.firefox_android_clients
+    `moz-fx-data-shared-prod.fenix.firefox_android_clients`
   WHERE
     -- Two weeks need to elapse before calculating the week 2 retention
     first_seen_date = DATE_SUB(@submission_date, INTERVAL 13 DAY)

@@ -8,7 +8,7 @@ WITH extracted AS (
     error_message,
     uri
   FROM
-    monitoring.payload_bytes_error_all
+    `moz-fx-data-shared-prod.monitoring.payload_bytes_error_all`
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND exception_class = 'org.everit.json.schema.ValidationException'

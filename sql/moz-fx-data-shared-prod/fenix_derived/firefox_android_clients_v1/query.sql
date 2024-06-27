@@ -87,7 +87,7 @@ first_session_ping_min_seq AS (
             submission_timestamp
         ) AS RANK
       FROM
-        fenix.first_session AS fenix_first_session
+        `moz-fx-data-shared-prod.fenix.first_session` AS fenix_first_session
       WHERE
         ping_info.seq IS NOT NULL
         AND
@@ -159,7 +159,7 @@ first_session_ping AS (
       SAFE_OFFSET(0)
     ] AS meta_attribution_app,
   FROM
-    fenix.first_session AS fenix_first_session
+    `moz-fx-data-shared-prod.fenix.first_session` AS fenix_first_session
   LEFT JOIN
     first_session_ping_min_seq
     ON (
@@ -228,7 +228,7 @@ metrics_ping AS (
         submission_timestamp DESC
     )[SAFE_OFFSET(0)] AS last_reported_adjust_campaign,
   FROM
-    fenix.metrics AS fenix_metrics
+    `moz-fx-data-shared-prod.fenix.metrics` AS fenix_metrics
   WHERE
     {% if is_init() %}
       DATE(submission_timestamp) >= "2020-08-01"

@@ -3,7 +3,7 @@ WITH flat_clients_scalar_aggregates AS (
   SELECT
     * EXCEPT (scalar_aggregates)
   FROM
-    glam_etl.firefox_desktop_glam_nightly__clients_scalar_aggregates_v1
+    `glam-fenix-dev.glam_etl.firefox_desktop_glam_nightly__clients_scalar_aggregates_v1`
   CROSS JOIN
     UNNEST(scalar_aggregates)
 ),

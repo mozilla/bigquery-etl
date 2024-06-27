@@ -12,7 +12,7 @@ SELECT
     AND event_object = 'protection_report'
   ) AS n_viewed_protection_report,
 FROM
-  telemetry.events
+  `moz-fx-data-shared-prod.telemetry.events`
 WHERE
   submission_date = @submission_date
 GROUP BY

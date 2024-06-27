@@ -33,6 +33,6 @@
       @external_database_query
     ) AS _current
   FULL JOIN
-    users_v1 AS _previous
+    `moz-fx-data-shared-prod.mozilla_vpn_external.users_v1` AS _previous
     USING (id)
 {% endif %}

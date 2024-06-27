@@ -1,7 +1,7 @@
 SELECT
   *
 FROM
-  telemetry.events
+  `moz-fx-data-shared-prod.telemetry.events`
 WHERE
   sample_id = 0
   {% if not is_init() %}

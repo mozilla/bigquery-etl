@@ -13,7 +13,7 @@ SELECT
   metadata.geo.country AS country,
   COUNT(*) AS ping_count
 FROM
-  fenix.first_session
+  `moz-fx-data-shared-prod.fenix.first_session`
 WHERE
   {% if is_init() %}
     DATE(submission_timestamp) >= '2023-11-01'

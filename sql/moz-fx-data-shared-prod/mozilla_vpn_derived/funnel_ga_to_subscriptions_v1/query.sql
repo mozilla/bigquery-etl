@@ -19,7 +19,7 @@ WITH website_base AS (
     subscribe_intent_goal,
     country,
   FROM
-    site_metrics_summary_v1
+    `moz-fx-data-shared-prod.mozilla_vpn_derived.site_metrics_summary_v1`
   WHERE
     -- Populate from mozilla.org starting 2021-03-11, and from vpn.mozilla.org before that
     IF(`date` < DATE "2021-03-11", site = "vpn.mozilla.org", site = "mozilla.org")
@@ -81,7 +81,7 @@ subscriptions AS (
       DISTINCT IF(DATE(customer_start_date) < DATE(subscription_start_date), subscription_id, NULL)
     ) AS returning_subscriptions,
   FROM
-    all_subscriptions_v1
+    `moz-fx-data-shared-prod.mozilla_vpn_derived.all_subscriptions_v1`
   WHERE
     subscription_start_date IS NOT NULL
     AND DATE(subscription_start_date) >= '2020-07-01'

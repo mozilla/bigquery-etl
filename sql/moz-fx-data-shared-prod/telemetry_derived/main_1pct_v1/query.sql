@@ -3,7 +3,7 @@
     CAST(NULL AS INT64) AS subsample_id,
     *
   FROM
-    telemetry_stable.main_v5
+    `moz-fx-data-shared-prod.telemetry_stable.main_v5`
   WHERE
     FALSE
     AND sample_id = 0
@@ -24,7 +24,7 @@
       `moz-fx-data-shared-prod.udf.normalize_main_payload`(payload) AS payload
     )
   FROM
-    telemetry_stable.main_v5
+    `moz-fx-data-shared-prod.telemetry_stable.main_v5`
   WHERE
     sample_id = 0
     AND DATE(submission_timestamp) = @submission_date

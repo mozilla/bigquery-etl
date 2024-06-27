@@ -77,6 +77,3 @@ fields:
 - name: sap
   type: INTEGER
   mode: NULLABLE
-- name: normalized_app_name_os_1
-  type: STRING
-  mode: NULLABLE

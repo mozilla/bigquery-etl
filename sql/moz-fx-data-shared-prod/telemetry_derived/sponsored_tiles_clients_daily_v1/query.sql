@@ -65,8 +65,8 @@ desktop_activity_stream_events AS (
     DATE(submission_timestamp) = @submission_date
     AND CAST(metadata.user_agent.version AS INT64) < 123
   GROUP BY
-    1,
-    2
+    client_id,
+    submission_date
 ),
 --- Current telemetry for dismissals and deactivations comes in Glean's newtab ping as of Fx120 (Nov 21, 2023)
 desktop_newtab_events AS (
@@ -94,9 +94,9 @@ desktop_newtab_events AS (
     DATE(submission_timestamp) = @submission_date
     AND `mozfun`.norm.browser_version_info(client_info.app_display_version).major_version >= 123
   GROUP BY
-    1,
-    2,
-    3
+    client_id,
+    legacy_telemetry_client_id,
+    submission_date
 ),
 desktop_joint_events AS (
   SELECT
@@ -106,7 +106,7 @@ desktop_joint_events AS (
     n.sponsored_tiles_disable_count
   FROM
     desktop_newtab_events n
-  UNION DISTINCT
+  UNION ALL
   SELECT
     a.submission_date,
     a.client_id,
@@ -124,8 +124,8 @@ desktop_agg_events AS (
   FROM
     desktop_joint_events
   GROUP BY
-    1,
-    2
+    submission_date,
+    client_id
 ),
 ------ iOS SPONSORED TILES
 ios_data AS (

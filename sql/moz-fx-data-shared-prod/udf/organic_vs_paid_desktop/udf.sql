@@ -5,15 +5,10 @@ RETURNS STRING AS (
         'paidsearch',
         'paiddisplay',
         'cpc',
-        'email',
         'display',
         'paidsocial',
         'paidvideo',
-        'social',
-        'ppc',
-        'banner',
-        'ad-unit',
-        'newsletter'
+        'ppc'
       )
       THEN 'Paid'
     ELSE 'Organic'
@@ -24,6 +19,7 @@ SELECT
   mozfun.assert.equals(udf.organic_vs_paid_desktop('display'), 'Paid'),
   mozfun.assert.equals(udf.organic_vs_paid_desktop('PAIDDISPLAY'), 'Paid'),
   mozfun.assert.equals(udf.organic_vs_paid_desktop('paidsocial'), 'Paid'),
-  mozfun.assert.equals(udf.organic_vs_paid_desktop('ad-unit'), 'Paid'),
+  mozfun.assert.equals(udf.organic_vs_paid_desktop('paidvideo'), 'Paid'),
+  mozfun.assert.equals(udf.organic_vs_paid_desktop('ppc'), 'Paid'),
   mozfun.assert.equals(udf.organic_vs_paid_desktop(NULL), 'Organic'),
   mozfun.assert.equals(udf.organic_vs_paid_desktop('abc'), 'Organic');

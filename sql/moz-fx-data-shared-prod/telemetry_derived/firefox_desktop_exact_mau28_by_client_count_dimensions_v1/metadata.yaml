@@ -26,5 +26,5 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - static.country_codes_v1
-  - telemetry.clients_last_seen
+  - moz-fx-data-shared-prod.static.country_codes_v1
+  - moz-fx-data-shared-prod.telemetry.clients_last_seen

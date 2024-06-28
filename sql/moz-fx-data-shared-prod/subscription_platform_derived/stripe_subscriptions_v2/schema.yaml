@@ -24,7 +24,7 @@ fields:
     - name: state
       type: STRING
       mode: NULLABLE
-      description: Two-letter state/province code (only for US and CA).
+      description: Two-letter state/province code (only for US and Canada).
   - name: created
     type: TIMESTAMP
     mode: NULLABLE
@@ -190,7 +190,7 @@ fields:
       - name: state
         type: STRING
         mode: NULLABLE
-        description: Two-letter state/province code (only for US and CA).
+        description: Two-letter state/province code (only for US and Canada).
   - name: tax_exempt
     type: STRING
     mode: NULLABLE

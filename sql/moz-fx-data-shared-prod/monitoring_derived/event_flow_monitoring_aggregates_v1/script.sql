@@ -762,25 +762,6 @@ CREATE TEMP TABLE
           -- limit event.timestamp, otherwise this will cause an overflow
           INTERVAL LEAST(event_timestamp, 20000000000000) MILLISECOND
         ) AS timestamp,
-        "Mozilla Monitor (Backend)" AS normalized_app_name,
-        client_info.app_channel AS channel
-      FROM
-        `moz-fx-data-shared-prod.monitor_backend.events_unnested`,
-        UNNEST(event_extra) AS ext
-      WHERE
-        DATE(submission_timestamp) = @submission_date
-        AND ext.key = "flow_id"
-      UNION ALL
-      SELECT DISTINCT
-        @submission_date AS submission_date,
-        ext.value AS flow_id,
-        event_category AS category,
-        event_name AS name,
-        TIMESTAMP_ADD(
-          submission_timestamp,
-          -- limit event.timestamp, otherwise this will cause an overflow
-          INTERVAL LEAST(event_timestamp, 20000000000000) MILLISECOND
-        ) AS timestamp,
         "Glean.js Documentation" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM

@@ -741,15 +741,18 @@ jobs:
             echo "export OIDC_WIP_PROVIDER_ID=$GCPV2_CIRCLECI_WORKLOAD_IDENTITY_PROVIDER" >> "$BASH_ENV"
             echo "export GOOGLE_PROJECT_NUMBER=$GCPV2_WORKLOAD_IDENTITY_POOL_PROJECT_NUMBER" >> "$BASH_ENV"
             echo "export OIDC_SERVICE_ACCOUNT_EMAIL=$GCP_SERVICE_ACCOUNT_EMAIL" >> "$BASH_ENV"
-      - gcp-cli/setup:
-          use_oidc: true
       - run:
-          name: Generate API Token and DAG run note
+          name: Test env
           command: |
             echo $GOOGLE_PROJECT_ID
             echo $OIDC_WIP_ID
             echo $OIDC_WIP_PROVIDER_ID
             echo $GOOGLE_PROJECT_NUMBER
+      - gcp-cli/setup:
+          use_oidc: true
+      - run:
+          name: Generate API Token and DAG run note
+          command: |
             echo "export DAGRUN_NOTE=\"DAG triggered by **[${CIRCLE_USERNAME}](https://github.com/${CIRCLE_USERNAME})** from ${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME} CI build [${CIRCLE_BUILD_NUM}](${CIRCLE_BUILD_URL})\"" >> "$BASH_ENV"
             echo "export ID_TOKEN=$(gcloud auth print-identity-token --impersonate-service-account ${GCP_SERVICE_ACCOUNT_EMAIL})" >> "$BASH_ENV"
       - run:

@@ -43,7 +43,7 @@ WITH original_changelog AS (
           -- Limit address data to country and state since the metadata includes FxA user IDs
           -- and this is in a Mozilla-confidential dataset.  State is only for US and Canada.
           STRUCT(
-            NULLIF(customer.address.country, ""),
+            NULLIF(customer.address.country, "") AS country,
             IF(
               customer.address.country IN ("US", "CA"),
               COALESCE(
@@ -59,7 +59,7 @@ WITH original_changelog AS (
             SELECT AS STRUCT
               customer.shipping.* REPLACE (
                 STRUCT(
-                  NULLIF(customer.shipping.address.country, ""),
+                  NULLIF(customer.shipping.address.country, "") AS country,
                   IF(
                     customer.shipping.address.country IN ("US", "CA"),
                     COALESCE(

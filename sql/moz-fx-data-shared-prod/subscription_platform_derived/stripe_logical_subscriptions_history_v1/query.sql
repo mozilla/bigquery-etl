@@ -74,6 +74,8 @@ subscriptions_history_charge_summaries AS (
         -- Prefer charges that succeeded
         IF(charges.status = 'succeeded', 1, 2),
         charges.created DESC
+      LIMIT
+        1
     )[SAFE_ORDINAL(1)].*,
     LOGICAL_OR(refunds.status = 'succeeded') AS has_refunds,
     LOGICAL_OR(

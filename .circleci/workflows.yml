@@ -733,7 +733,7 @@ jobs:
     executor: gcp-cli/google
     steps:
       - run:
-          name: Prepare environment variables for OIDC
+          name: Prepare environment variables for OIDC authentication
           # Project ID is not used for OIDC authentication, but gcloud CLI requires a valid project ID.
           command: |
             echo 'export GOOGLE_PROJECT_ID="moz-fx-telemetry-airflow-prod"' >> "$BASH_ENV"
@@ -741,13 +741,6 @@ jobs:
             echo "export OIDC_WIP_PROVIDER_ID=$GCPV2_CIRCLECI_WORKLOAD_IDENTITY_PROVIDER" >> "$BASH_ENV"
             echo "export GOOGLE_PROJECT_NUMBER=$GCPV2_WORKLOAD_IDENTITY_POOL_PROJECT_NUMBER" >> "$BASH_ENV"
             echo "export OIDC_SERVICE_ACCOUNT_EMAIL=$GCP_SERVICE_ACCOUNT_EMAIL" >> "$BASH_ENV"
-      - run:
-          name: Test env
-          command: |
-            echo $GOOGLE_PROJECT_ID
-            echo $OIDC_WIP_ID
-            echo $OIDC_WIP_PROVIDER_ID
-            echo $GOOGLE_PROJECT_NUMBER
       - gcp-cli/setup:
           use_oidc: true
       - run:
@@ -1201,13 +1194,12 @@ workflows:
       - artifact-deployment:
           name: Trigger bqetl_artifact_deployment Airflow DAG
           context: gcpv2-workload-identity
-          # TODO uncomment after testing
-#          requires:
-#            - deploy
-#          filters:
-#            branches:
-#              only:
-#                - main
+          requires:
+            - deploy
+          filters:
+            branches:
+              only:
+                - main
       - sync-dags-repo:
           name: 🔃 Synchronize bigquery-etl submodule
           repo-to-sync: ${CIRCLE_PROJECT_REPONAME}

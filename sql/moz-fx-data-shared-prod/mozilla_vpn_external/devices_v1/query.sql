@@ -35,6 +35,6 @@
       @external_database_query
     ) AS _update
   FULL JOIN
-    `moz-fx-data-shared-prod.mozilla_vpn_external.devices_v1`
+    `moz-fx-data-shared-prod.mozilla_vpn_external.devices_v1` AS devices_v1
     USING (id)
 {% endif %}

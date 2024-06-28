@@ -217,7 +217,7 @@ SELECT
       history.subscription.status AS provider_status,
       history.subscription_first_active_at AS started_at,
       history.subscription.ended_at,
-    -- TODO: ended_reason
+      -- TODO: ended_reason
       IF(
         history.subscription.ended_at IS NULL,
         history.subscription.current_period_start,
@@ -234,8 +234,8 @@ SELECT
         history.subscription.canceled_at,
         NULL
       ) AS auto_renew_disabled_at,
-    -- TODO: promotion_codes
-    -- TODO: promotion_discounts_amount
+      -- TODO: promotion_codes
+      -- TODO: promotion_discounts_amount
       COALESCE(charge_summaries.has_refunds, FALSE) AS has_refunds,
       COALESCE(charge_summaries.has_fraudulent_charges, FALSE) AS has_fraudulent_charges
   ) AS subscription

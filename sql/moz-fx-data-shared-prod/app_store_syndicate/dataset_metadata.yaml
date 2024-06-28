@@ -1,0 +1,12 @@
+friendly_name: app_store_syndicate
+description: |
+  Syndicated App Store data from Fivetran. User-facing views into this data can be found
+  in the ads dataset
+dataset_base_acl: syndicate
+user_facing: false
+syndication:
+  prod:
+    syndicated_project: "moz-fx-data-bq-fivetran"
+    syndicated_dataset: "app_store"
+  administer_views: false
+workgroup_access: []

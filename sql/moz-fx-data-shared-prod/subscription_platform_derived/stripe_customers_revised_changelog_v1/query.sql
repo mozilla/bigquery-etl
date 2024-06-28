@@ -63,7 +63,11 @@ WITH original_changelog AS (
                   IF(
                     customer.shipping.address.country IN ("US", "CA"),
                     COALESCE(
-                      IF(LENGTH(customer.shipping.address.state) = 2, customer.shipping.address.state, NULL),
+                      IF(
+                        LENGTH(customer.shipping.address.state) = 2,
+                        customer.shipping.address.state,
+                        NULL
+                      ),
                       us_shipping_zip_code_prefixes.state_code,
                       ca_shipping_postal_districts.province_code
                     ),

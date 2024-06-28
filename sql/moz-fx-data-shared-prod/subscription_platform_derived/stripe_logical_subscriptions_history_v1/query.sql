@@ -66,10 +66,7 @@ subscriptions_history_charge_summaries AS (
         cards.country IS NOT NULL,
         STRUCT(
           cards.country AS latest_card_country,
-          COALESCE(
-            charge_us_zip.state_code,
-            charge_ca_post.province_code
-          ) AS latest_card_state
+          COALESCE(charge_us_zip.state_code, charge_ca_post.province_code) AS latest_card_state
         ),
         NULL
       ) IGNORE NULLS

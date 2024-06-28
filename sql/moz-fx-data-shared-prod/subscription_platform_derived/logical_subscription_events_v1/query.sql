@@ -5,9 +5,14 @@ WITH subscription_changes AS (
     subscription,
     LAG(subscription) OVER (PARTITION BY subscription.id ORDER BY valid_from) AS old_subscription
   FROM
-    `benwubenwutest.subscription_platform_derived.logical_subscriptions_history_v1`
+    `moz-fx-data-shared-prod.subscription_platform_derived.logical_subscriptions_history_v1`
   WHERE
-    DATE(valid_from) < CURRENT_DATE()
+    {% if is_init() %}
+      DATE(valid_from) < CURRENT_DATE()
+    {% else %}
+      DATE(valid_from) = @date
+      OR DATE(valid_to) = @date
+    {% endif %}
 ),
 subscription_start_events AS (
   SELECT

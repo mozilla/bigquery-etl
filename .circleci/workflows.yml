@@ -732,17 +732,25 @@ jobs:
   artifact-deployment:
     executor: gcp-cli/google
     steps:
+      - run:
+          name: Prepare environment variables for OIDC
+          command: |
+            # Project ID is not used for OIDC authentication, but gcloud CLI requires a valid project ID.
+            echo 'export GOOGLE_PROJECT_ID="moz-fx-telemetry-airflow-prod"' >> "$BASH_ENV"
+            echo "export OIDC_WIP_ID=$GCPV2_WORKLOAD_IDENTITY_POOL_ID" >> "$BASH_ENV"
+            echo "export OIDC_WIP_PROVIDER_ID=$GCPV2_CIRCLECI_WORKLOAD_IDENTITY_PROVIDER" >> "$BASH_ENV"
+            echo "export GOOGLE_PROJECT_NUMBER=$GCPV2_WORKLOAD_IDENTITY_POOL_PROJECT_NUMBER" >> "$BASH_ENV"
+            echo "export OIDC_SERVICE_ACCOUNT_EMAIL=$GCP_SERVICE_ACCOUNT_EMAIL" >> "$BASH_ENV"
       - gcp-cli/setup:
           use_oidc: true
-          workload_identity_pool_id: GCPV2_WORKLOAD_IDENTITY_POOL_ID
-          workload_identity_pool_provider_id: GCPV2_CIRCLECI_WORKLOAD_IDENTITY_PROVIDER
-          google_project_number: GCPV2_WORKLOAD_IDENTITY_POOL_PROJECT_NUMBER
-          service_account_email: GCP_SERVICE_ACCOUNT_EMAIL
+      - run:
+          name: Generate API Token and DAG run note
+          command: |
+            echo "export ID_TOKEN=$(gcloud auth print-identity-token --impersonate-service-account ${GCP_SERVICE_ACCOUNT_EMAIL})" >> "$BASH_ENV"
+            echo "export DAGRUN_NOTE=\"DAG triggered by **[${CIRCLE_USERNAME}](https://github.com/${CIRCLE_USERNAME})** from ${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME} CI build [${CIRCLE_BUILD_NUM}](${CIRCLE_BUILD_URL})\"" >> "$BASH_ENV"
       - run:
           name: Trigger bqetl-artifact-deployment in Airflow
           command: >
-            ID_TOKEN=$(gcloud auth print-identity-token --impersonate-service-account ${GCP_SERVICE_ACCOUNT_EMAIL}) &&
-            DAGRUN_NOTE="DAG triggered by **[${CIRCLE_USERNAME}](https://github.com/${CIRCLE_USERNAME})** from ${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME} CI build [${CIRCLE_BUILD_NUM}](${CIRCLE_BUILD_URL})" &&
             curl --location --request POST "https://us-west1-moz-fx-telemetry-airflow-prod.cloudfunctions.net/ci-external-trigger"
             -H "Authorization: bearer ${ID_TOKEN}"
             -H "Content-Type:application/json"
@@ -1186,12 +1194,13 @@ workflows:
       - artifact-deployment:
           name: Trigger bqetl_artifact_deployment Airflow DAG
           context: gcpv2-workload-identity
-          requires:
-            - deploy
-          filters:
-            branches:
-              only:
-                - main
+          # TODO uncomment after testing
+#          requires:
+#            - deploy
+#          filters:
+#            branches:
+#              only:
+#                - main
       - sync-dags-repo:
           name: 🔃 Synchronize bigquery-etl submodule
           repo-to-sync: ${CIRCLE_PROJECT_REPONAME}

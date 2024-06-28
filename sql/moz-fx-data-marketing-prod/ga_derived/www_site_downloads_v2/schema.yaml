@@ -64,6 +64,10 @@ fields:
   type: STRING
   description: Browser
 - mode: NULLABLE
+  name: campaign_from_event_params
+  type: STRING
+  description: Campaign - Parsed from nested event_params key = campaign
+- mode: NULLABLE
   name: download_events
   type: INT64
   description: Download Events - Number of Firefox Desktop Downloads

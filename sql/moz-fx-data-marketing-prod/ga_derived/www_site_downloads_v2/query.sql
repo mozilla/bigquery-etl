@@ -16,6 +16,7 @@ WITH staging AS (
     campaign,
     ad_content,
     browser,
+    campaign_from_event_params,
   --note: the 2 columns are the same because in GA4, there is no logic saying you can only count 1 download per session, unlike GA3
     COUNTIF(
     --prior to and including 2/16/24
@@ -64,6 +65,16 @@ WITH staging AS (
           FROM
             UNNEST(event_params)
           WHERE
+            key = 'campaign'
+          LIMIT
+            1
+        ).string_value AS campaign_from_event_params,
+        (
+          SELECT
+            `value`
+          FROM
+            UNNEST(event_params)
+          WHERE
             key = 'product'
           LIMIT
             1
@@ -103,7 +114,8 @@ WITH staging AS (
     medium,
     campaign,
     ad_content,
-    browser
+    browser,
+    campaign_from_event_params
 )
 SELECT
   `date`,
@@ -121,6 +133,7 @@ SELECT
   medium,
   campaign,
   ad_content,
+  campaign_from_event_params,
   browser,
   download_events,
   download_events AS downloads,

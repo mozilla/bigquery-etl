@@ -8,7 +8,7 @@ description: |-
 
   This table's schema closely mirrors Stripe's subscriptions API (https://stripe.com/docs/api/subscriptions/object).
   Fields which Fivetran doesn't sync and fields we've specifically chosen not to include (e.g. PII) have been omitted.
-  In particular, postal codes have been omitted from address because Firefox Account user IDs are present and this is in a Mozilla-confidential dataset.
+  In particular, all address fields except country and state have been omitted because Firefox Account user IDs are present and this is in a Mozilla-confidential dataset.
 owners:
 - srose@mozilla.com
 labels:

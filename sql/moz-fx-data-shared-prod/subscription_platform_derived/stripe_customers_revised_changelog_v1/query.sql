@@ -41,13 +41,14 @@ WITH original_changelog AS (
             TO_HEX(SHA256(JSON_VALUE(customer.metadata.userid))) AS userid_sha256
           ) AS metadata,
           -- Limit address data to country and state since the metadata includes FxA user IDs
-          -- and this is in a Mozilla-confidential dataset.  State is only for US and CA.
+          -- and this is in a Mozilla-confidential dataset.  State is only for US and Canada.
           STRUCT(
-            customer.address.country,
+            NULLIF(customer.address.country, ""),
             IF(
               customer.address.country IN ("US", "CA"),
               COALESCE(
-                NULLIF(customer.address.state, ""),
+                -- Only use two-letter codes for consistency since billing addresses sometimes have full names
+                IF(LENGTH(customer.address.state) = 2, customer.address.state, NULL),
                 us_zip_code_prefixes.state_code,
                 ca_postal_districts.province_code
               ),
@@ -58,11 +59,11 @@ WITH original_changelog AS (
             SELECT AS STRUCT
               customer.shipping.* REPLACE (
                 STRUCT(
-                  customer.shipping.address.country,
+                  NULLIF(customer.shipping.address.country, ""),
                   IF(
                     customer.shipping.address.country IN ("US", "CA"),
                     COALESCE(
-                      NULLIF(customer.shipping.address.state, ""),
+                      IF(LENGTH(customer.shipping.address.state) = 2, customer.shipping.address.state, NULL),
                       us_shipping_zip_code_prefixes.state_code,
                       ca_shipping_postal_districts.province_code
                     ),

@@ -62,19 +62,20 @@ subscriptions_history_charge_summaries AS (
   SELECT
     history.id AS subscriptions_history_id,
     ARRAY_AGG(
-      STRUCT(
-        cards.country AS latest_card_country,
-        COALESCE(
-          card_us_zip.state_code,
-          card_ca_post.province_code,
-          charge_us_zip.state_code,
-          charge_ca_post.province_code
-        ) AS latest_card_state
-      )
+      IF(
+        cards.country IS NOT NULL,
+        STRUCT(
+          cards.country AS latest_card_country,
+          COALESCE(
+            charge_us_zip.state_code,
+            charge_ca_post.province_code
+          ) AS latest_card_state
+        ),
+        NULL
+      ) IGNORE NULLS
       ORDER BY
-        -- Prefer charges that succeeded and non-null country
+        -- Prefer charges that succeeded
         IF(charges.status = 'succeeded', 1, 2),
-        cards.country DESC NULLS LAST,
         charges.created DESC
     )[SAFE_ORDINAL(1)].*,
     LOGICAL_OR(refunds.status = 'succeeded') AS has_refunds,
@@ -101,15 +102,6 @@ subscriptions_history_charge_summaries AS (
   LEFT JOIN
     `moz-fx-data-shared-prod.stripe_external.refund_v1` AS refunds
     ON charges.id = refunds.charge_id
-  -- cards have postal code but no state
-  LEFT JOIN
-    `moz-fx-data-shared-prod.static.us_zip_code_prefixes_v1` AS card_us_zip
-    ON cards.country = "US"
-    AND LEFT(cards.address_zip, 3) = card_us_zip.zip_code_prefix
-  LEFT JOIN
-    `moz-fx-data-shared-prod.static.ca_postal_districts_v1` AS card_ca_post
-    ON cards.country = "CA"
-    AND UPPER(LEFT(cards.address_zip, 1)) = card_ca_post.postal_district_code
   -- charges usually have postal code and are sometimes associated with
   -- a card that does not have a state or postal code
   LEFT JOIN
@@ -155,7 +147,7 @@ SELECT
       history.subscription.customer.metadata.userid_sha256 AS mozilla_account_id_sha256,
       (
         CASE
-          -- Use the same address hierarchy as Stripe Tax after we enabled Stripe Tax (FXA-5457).
+          -- Use the same address hierarchy as Stripe Tax after we enabled Stripe Tax on 2022-12-01 (FXA-5457).
           -- https://stripe.com/docs/tax/customer-locations#address-hierarchy
           WHEN DATE(history.valid_to) >= '2022-12-01'
             AND (
@@ -164,33 +156,30 @@ SELECT
             )
             THEN
               CASE
-                WHEN NULLIF(history.subscription.customer.shipping.address.country, '') IS NOT NULL
+                WHEN history.subscription.customer.shipping.address.country IS NOT NULL
                   THEN STRUCT(
                       history.subscription.customer.shipping.address.country AS country_code,
-                      history.subscription.customer.shipping.address.state AS country_state_code
+                      history.subscription.customer.shipping.address.state AS state_code
                     )
-                WHEN NULLIF(history.subscription.customer.address.country, '') IS NOT NULL
+                WHEN history.subscription.customer.address.country IS NOT NULL
                   THEN STRUCT(
                       history.subscription.customer.address.country AS country_code,
-                      history.subscription.customer.address.state AS country_state_code
+                      history.subscription.customer.address.state AS state_code
                     )
                 ELSE STRUCT(
                     charge_summaries.latest_card_country AS country_code,
-                    charge_summaries.latest_card_state AS country_state_code
+                    charge_summaries.latest_card_state AS state_code
                   )
               END
-          -- SubPlat copies the PayPal billing agreement country to the customer's address.
+          -- SubPlat copied the PayPal billing agreement country to the customer's address before we enabled Stripe Tax (FXA-5457).
           WHEN paypal_subscriptions.subscription_id IS NOT NULL
             THEN STRUCT(
-                NULLIF(history.subscription.customer.shipping.address.country, '') AS country_code,
-                NULLIF(
-                  history.subscription.customer.shipping.address.state,
-                  ''
-                ) AS country_state_code
+                history.subscription.customer.address.country AS country_code,
+                history.subscription.customer.address.state AS state_code
               )
           ELSE STRUCT(
               charge_summaries.latest_card_country AS country_code,
-              charge_summaries.latest_card_state AS country_state_code
+              charge_summaries.latest_card_state AS state_code
             )
         END
       ).*,

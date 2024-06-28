@@ -395,9 +395,20 @@ extra_props AS (
                     CAST(SAFE_CAST(value AS BOOLEAN) AS STRING)
                   )
               WHEN key = 'profile.blockPopups'
-                THEN CONCAT('"', 'pref_block_popups', '":', CAST(SAFE_CAST(value AS BOOLEAN) AS STRING))
+                THEN CONCAT(
+                    '"',
+                    'pref_block_popups',
+                    '":',
+                    CAST(SAFE_CAST(value AS BOOLEAN) AS STRING)
+                  )
               WHEN key = 'profile.prefkey.trackingprotection.enabled'
-                THEN CONCAT('"', 'pref_tracking_protection_enabled', '":"', CAST(value AS STRING), '"')
+                THEN CONCAT(
+                    '"',
+                    'pref_tracking_protection_enabled',
+                    '":"',
+                    CAST(value AS STRING),
+                    '"'
+                  )
               WHEN key = 'profile.prefkey.trackingprotection.normalbrowsing'
                 THEN CONCAT(
                     '"',
@@ -415,9 +426,20 @@ extra_props AS (
                     '"'
                   )
               WHEN key = 'profile.prefkey.trackingprotection.strength'
-                THEN CONCAT('"', 'pref_tracking_protection_strength', '":"', CAST(value AS STRING), '"')
+                THEN CONCAT(
+                    '"',
+                    'pref_tracking_protection_strength',
+                    '":"',
+                    CAST(value AS STRING),
+                    '"'
+                  )
               WHEN key = 'profile.saveLogins'
-                THEN CONCAT('"', 'pref_save_logins', '":', CAST(SAFE_CAST(value AS BOOLEAN) AS STRING))
+                THEN CONCAT(
+                    '"',
+                    'pref_save_logins',
+                    '":',
+                    CAST(SAFE_CAST(value AS BOOLEAN) AS STRING)
+                  )
               WHEN key = 'profile.settings.closePrivateTabs'
                 THEN CONCAT(
                     '"',

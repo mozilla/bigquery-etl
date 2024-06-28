@@ -18,7 +18,7 @@ WITH base AS (
     SAFE.TIMESTAMP_MILLIS(payload.process_start_timestamp) AS session_start_time,
     payload.subsession_id AS subsession_id,
     submission_timestamp AS `timestamp`,
-    udf.deanonymize_event(e).*,
+    `moz-fx-data-shared-prod.udf.deanonymize_event`(e).*,
     event_process,
     application.build_id,
     environment.build.architecture AS build_architecture,
@@ -30,7 +30,7 @@ WITH base AS (
     environment.system.memory_mb AS system_memory_mb,
     metadata.geo.city
   FROM
-    telemetry.event
+    `moz-fx-data-shared-prod.telemetry.event`
   CROSS JOIN
     UNNEST(
       [

@@ -8,8 +8,7 @@ SELECT
     app_name,
     os
   ).normalized_app_name AS normalized_app_name,
-  search_count AS sap,
-  `mozfun.mobile_search.normalize_app_name`(app_name, os).normalized_app_name_os
+  search_count AS sap
 FROM
   `moz-fx-data-shared-prod.search_derived.mobile_search_aggregates_v1`
 WHERE

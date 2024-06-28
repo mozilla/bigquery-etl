@@ -109,6 +109,8 @@ with DAG(
 
     task_group_mdn_yari = TaskGroup("mdn_yari")
 
+    task_group_monitor_backend = TaskGroup("monitor_backend")
+
     task_group_monitor_cirrus = TaskGroup("monitor_cirrus")
 
     task_group_monitor_frontend = TaskGroup("monitor_frontend")
@@ -2699,6 +2701,24 @@ with DAG(
         depends_on_past=False,
         arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_mdn_yari,
+    )
+
+    monitor_backend_derived__events_stream__v1 = bigquery_etl_query(
+        task_id="monitor_backend_derived__events_stream__v1",
+        destination_table="events_stream_v1",
+        dataset_id="monitor_backend_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="jrediger@mozilla.com",
+        email=[
+            "ascholtz@mozilla.com",
+            "jrediger@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+            "wstuckey@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        arguments=["--billing-project", "moz-fx-data-backfill-2"],
+        task_group=task_group_monitor_backend,
     )
 
     monitor_cirrus_derived__baseline_clients_daily__v1 = bigquery_etl_query(
@@ -6151,6 +6171,10 @@ with DAG(
     )
 
     mdn_yari_derived__events_stream__v1.set_upstream(wait_for_copy_deduplicate_all)
+
+    monitor_backend_derived__events_stream__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
 
     monitor_cirrus_derived__baseline_clients_daily__v1.set_upstream(
         wait_for_copy_deduplicate_all

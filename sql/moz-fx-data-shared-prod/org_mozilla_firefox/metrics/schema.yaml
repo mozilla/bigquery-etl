@@ -2918,6 +2918,30 @@ fields:
       description: 'Number of bounce trackers purged successfully per scheduled purge.
 
         '
+    - name: cert_compression_zstd_saved_bytes
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: The difference between the length of encoded certificate vs the
+        actual certificate.
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -3290,8 +3314,7 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream. (Migrated from
-        the geckoview metric of the same name).
+      description: 'Failure occurs when initializing the audio stream.
 
         '
     - name: glean_validation_pings_submitted
@@ -5235,6 +5258,19 @@ fields:
         mode: NULLABLE
       description: 'HTTP Response Status Code (200, 301, 302, 304, 307, 308, 400,
         401, 403, 404, 421, 425, 429, other 400 and 500)
+
+        '
+    - name: netwerk_eh_response_version
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'HTTP protocol version from Early Hints response
 
         '
   - name: quantity

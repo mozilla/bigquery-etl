@@ -8,7 +8,7 @@ WITH wnp_visits AS (
     country,
     IF(hit_number = first_interaction AND bounces = 1, TRUE, FALSE) AS is_bounce
   FROM
-    `moz-fx-data-marketing-prod.ga_derived.www_site_hits_v1`
+    `moz-fx-data-marketing-prod.mozilla_org_derived.www_site_hits_v1`
   WHERE
     date = @submission_date
     AND hit_type = 'PAGE'
@@ -19,10 +19,10 @@ WITH wnp_visits AS (
     AND page_level_3 = 'whatsnew'
 )
 SELECT
-  date,
+  `date`,
   country,
   locale,
-  version,
+  `version`,
   version_info.major_version,
   version_info.minor_version,
   version_info.patch_revision,

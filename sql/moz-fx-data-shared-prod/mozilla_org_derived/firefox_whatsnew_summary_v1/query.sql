@@ -8,7 +8,7 @@ WITH wnp_visits AS (
     country,
     IF(hit_number = first_interaction AND bounces = 1, TRUE, FALSE) AS is_bounce
   FROM
-    `moz-fx-data-marketing-prod.mozilla_org_derived.www_site_hits_v1`
+    `moz-fx-data-shared-prod.mozilla_org_derived.www_site_hits_v1`
   WHERE
     date = @submission_date
     AND hit_type = 'PAGE'

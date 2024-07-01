@@ -23,7 +23,7 @@ SELECT
   COUNT(*) AS total_events,
   COUNT(DISTINCT visit_identifier) AS unique_events,
 FROM
-  `moz-fx-data-marketing-prod.ga_derived.www_site_hits_v1`
+  `moz-fx-data-shared-prod.mozilla_org_derived.www_site_hits_v1`
 WHERE
   date = @submission_date
   AND hit_type = 'EVENT'

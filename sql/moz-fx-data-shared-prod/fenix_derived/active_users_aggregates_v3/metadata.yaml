@@ -1,7 +1,7 @@
 friendly_name: Fenix Active Users Aggregates
 description: |-
-  This table contains daily/weekly/monthly active users,
-  new profiles, searches and ad_clicks for Fenix,
+  This table contains dau, wau, mau, daily users,
+  weekly users and monthly users for Fenix,
   aggregated by submission_date, attribution, channel,
   country, city, device model, distribution_id, os details
   and activity segment.

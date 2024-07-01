@@ -1,7 +1,7 @@
 friendly_name: Klar iOS Active Users Aggregates
 description: |-
-  This table contains daily/weekly/monthly active users,
-  new profiles, searches and ad_clicks for Klar iOS,
+  This table contains dau, wau, mau, daily users,
+  weekly users and monthly users for Klar iOS,
   aggregated by submission_date, attribution, channel,
   country, city, device model, distribution_id, os details
   and activity segment.

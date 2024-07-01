@@ -626,23 +626,21 @@ with DAG(
         retries=0,
     )
 
-    checks__warn_firefox_desktop_derived__active_users_aggregates__v3 = (
-        bigquery_dq_check(
-            task_id="checks__warn_firefox_desktop_derived__active_users_aggregates__v3",
-            source_table="active_users_aggregates_v3",
-            dataset_id="firefox_desktop_derived",
-            project_id="moz-fx-data-shared-prod",
-            is_dq_check_fail=False,
-            owner="lvargas@mozilla.com",
-            email=[
-                "gkaberere@mozilla.com",
-                "lvargas@mozilla.com",
-                "telemetry-alerts@mozilla.com",
-            ],
-            depends_on_past=False,
-            parameters=["submission_date:DATE:{{ds}}"],
-            retries=0,
-        )
+    checks__warn_firefox_desktop_derived__active_users_aggregates__v3 = bigquery_dq_check(
+        task_id="checks__warn_firefox_desktop_derived__active_users_aggregates__v3",
+        source_table='active_users_aggregates_v3${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
+        dataset_id="firefox_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=False,
+        owner="lvargas@mozilla.com",
+        email=[
+            "gkaberere@mozilla.com",
+            "lvargas@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
+        retries=0,
     )
 
     checks__warn_firefox_ios_derived__active_users_aggregates__v3 = bigquery_dq_check(
@@ -748,7 +746,7 @@ with DAG(
 
     firefox_desktop_active_users_aggregates = bigquery_etl_query(
         task_id="firefox_desktop_active_users_aggregates",
-        destination_table="active_users_aggregates_v3",
+        destination_table='active_users_aggregates_v3${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
         dataset_id="firefox_desktop_derived",
         project_id="moz-fx-data-shared-prod",
         owner="lvargas@mozilla.com",
@@ -757,8 +755,9 @@ with DAG(
             "lvargas@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
-        date_partition_parameter="submission_date",
+        date_partition_parameter=None,
         depends_on_past=False,
+        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
     )
 
     with TaskGroup(

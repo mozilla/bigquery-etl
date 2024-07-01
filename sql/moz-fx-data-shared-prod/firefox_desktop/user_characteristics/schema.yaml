@@ -672,6 +672,12 @@ fields:
       description: 'Number of domains the users has a non-default zoom level.
 
         '
+    - name: characteristics_build_date
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Firefox build''s build date in unix time
+
+        '
   - name: string
     type: RECORD
     mode: NULLABLE
@@ -844,6 +850,128 @@ fields:
         for the purpose of experimentation enrollment.
 
         '
+    - name: characteristics_canvasdata1
+      type: STRING
+      mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        simple organge box and used as a control image
+
+        '
+    - name: characteristics_canvasdata10
+      type: STRING
+      mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        font shipped with Firefox rendered with italics, rotation, and shadow-blur.
+
+        '
+    - name: characteristics_canvasdata11_webgl
+      type: STRING
+      mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a WebGL canvas (instead
+        of Canvas2D). IT is a RGB gradient cube.
+
+        '
+    - name: characteristics_canvasdata12_fingerprintjs1
+      type: STRING
+      mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas, it is a copy of
+        fingerprintjs'' text canvas
+
+        '
+    - name: characteristics_canvasdata13_fingerprintjs2
+      type: STRING
+      mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas, it is a copy of
+        fingerprintjs'' geometry canvas
+
+        '
+    - name: characteristics_canvasdata2
+      type: STRING
+      mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        bordered triage, and used to test point interpolation
+
+        '
+    - name: characteristics_canvasdata3
+      type: STRING
+      mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        stretched photographic image, used to test image operations.
+
+        '
+    - name: characteristics_canvasdata4
+      type: STRING
+      mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is two
+        rotated, semi-transparenct overlapping squares, used to test transparency
+        and point interpolation.
+
+        '
+    - name: characteristics_canvasdata5
+      type: STRING
+      mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        local font rendered normally.
+
+        '
+    - name: characteristics_canvasdata6
+      type: STRING
+      mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        local font rendered with italics, rotation, and shadow-blur.
+
+        '
+    - name: characteristics_canvasdata7
+      type: STRING
+      mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        system-ui font rendered normally.
+
+        '
+    - name: characteristics_canvasdata8
+      type: STRING
+      mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        system-ui font rendered with italics, rotation, and shadow-blur.
+
+        '
+    - name: characteristics_canvasdata9
+      type: STRING
+      mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        font shipped with Firefox rendered normally.
+
+        '
+    - name: characteristics_channel
+      type: STRING
+      mode: NULLABLE
+      description: 'Firefox build channel
+
+        '
+    - name: characteristics_cpu_model
+      type: STRING
+      mode: NULLABLE
+      description: 'CPU model of the user''s device
+
+        '
+    - name: characteristics_os_name
+      type: STRING
+      mode: NULLABLE
+      description: 'User''s OS name
+
+        '
+    - name: characteristics_os_version
+      type: STRING
+      mode: NULLABLE
+      description: 'User''s OS version
+
+        '
+    - name: characteristics_version
+      type: STRING
+      mode: NULLABLE
+      description: 'Firefox build version
+
+        '
   - name: string_list
     type: RECORD
     mode: NULLABLE
@@ -865,94 +993,93 @@ fields:
     - name: characteristics_canvasdata1
       type: STRING
       mode: NULLABLE
-      description: 'The base64 encoded form of an image rendered on a canvas. The
-        image is a simple organge box and used as a control image
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        simple organge box and used as a control image
 
         '
     - name: characteristics_canvasdata10
       type: STRING
       mode: NULLABLE
-      description: 'The base64 encoded form of an image rendered on a canvas. The
-        image is a font shipped with Firefox rendered with italics, rotation, and
-        shadow-blur.
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        font shipped with Firefox rendered with italics, rotation, and shadow-blur.
 
         '
     - name: characteristics_canvasdata11_webgl
       type: STRING
       mode: NULLABLE
-      description: 'The base64 encoded form of an image rendered on a WebGL canvas
-        (instead of Canvas2D). IT is a RGB gradient cube.
+      description: 'The sha1 hash of an image rendered on a WebGL canvas (instead
+        of Canvas2D). IT is a RGB gradient cube.
 
         '
     - name: characteristics_canvasdata12_fingerprintjs1
       type: STRING
       mode: NULLABLE
-      description: 'The base64 encoded form of an image rendered on a canvas, it is
-        a copy of fingerprintjs'' text canvas
+      description: 'The sha1 hash of an image rendered on a canvas, it is a copy of
+        fingerprintjs'' text canvas
 
         '
     - name: characteristics_canvasdata13_fingerprintjs2
       type: STRING
       mode: NULLABLE
-      description: 'The base64 encoded form of an image rendered on a canvas, it is
-        a copy of fingerprintjs'' geometry canvas
+      description: 'The sha1 hash of an image rendered on a canvas, it is a copy of
+        fingerprintjs'' geometry canvas
 
         '
     - name: characteristics_canvasdata2
       type: STRING
       mode: NULLABLE
-      description: 'The base64 encoded form of an image rendered on a canvas. The
-        image is a bordered triage, and used to test point interpolation
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        bordered triage, and used to test point interpolation
 
         '
     - name: characteristics_canvasdata3
       type: STRING
       mode: NULLABLE
-      description: 'The base64 encoded form of an image rendered on a canvas. The
-        image is a stretched photographic image, used to test image operations.
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        stretched photographic image, used to test image operations.
 
         '
     - name: characteristics_canvasdata4
       type: STRING
       mode: NULLABLE
-      description: 'The base64 encoded form of an image rendered on a canvas. The
-        image is two rotated, semi-transparenct overlapping squares, used to test
-        transparency and point interpolation.
+      description: 'The sha1 hash of an image rendered on a canvas. The image is two
+        rotated, semi-transparenct overlapping squares, used to test transparency
+        and point interpolation.
 
         '
     - name: characteristics_canvasdata5
       type: STRING
       mode: NULLABLE
-      description: 'The base64 encoded form of an image rendered on a canvas. The
-        image is a local font rendered normally.
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        local font rendered normally.
 
         '
     - name: characteristics_canvasdata6
       type: STRING
       mode: NULLABLE
-      description: 'The base64 encoded form of an image rendered on a canvas. The
-        image is a local font rendered with italics, rotation, and shadow-blur.
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        local font rendered with italics, rotation, and shadow-blur.
 
         '
     - name: characteristics_canvasdata7
       type: STRING
       mode: NULLABLE
-      description: 'The base64 encoded form of an image rendered on a canvas. The
-        image is a system-ui font rendered normally.
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        system-ui font rendered normally.
 
         '
     - name: characteristics_canvasdata8
       type: STRING
       mode: NULLABLE
-      description: 'The base64 encoded form of an image rendered on a canvas. The
-        image is a system-ui font rendered with italics, rotation, and shadow-blur.
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        system-ui font rendered with italics, rotation, and shadow-blur.
 
         '
     - name: characteristics_canvasdata9
       type: STRING
       mode: NULLABLE
-      description: 'The base64 encoded form of an image rendered on a canvas. The
-        image is a font shipped with Firefox rendered normally.
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        font shipped with Firefox rendered normally.
 
         '
     - name: characteristics_errors

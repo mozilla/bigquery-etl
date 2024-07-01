@@ -10849,6 +10849,32 @@ fields:
           mode: NULLABLE
       description: The difference between the length of encoded certificate vs the
         actual certificate.
+    - name: networking_cookie_chips_partition_limit_overflow
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The number of cookie bytes exceeding chips partition limit capacity
+        for a single partition
+
+        '
   - name: url2
     type: RECORD
     mode: NULLABLE
@@ -11238,6 +11264,22 @@ fields:
       description: 'How many of schemeless HTTPS-First (`dom.security.https_first`
         disabled, but load marked as schemeless) upgrades get downgraded again because
         the HTTP request fired after 3s received a answer faster than the HTTPS request
+
+        '
+    - name: private_browsing_window_open_during_teardown
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: denominator
+        type: INTEGER
+        mode: NULLABLE
+      - name: numerator
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Numerator: How often a new private browsing window is opened while
+        the old private browsing session is still being shut down. Denominator: How
+        many private browsing sessions (are fully exited). Rate: Of all private browsing
+        sessions, how often do we run into the race condition.
 
         '
   - name: string_list

@@ -3168,6 +3168,26 @@ fields:
         - name: value
           type: INTEGER
           mode: NULLABLE
+    - name: networking_cookie_chips_partition_limit_overflow
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
   - name: timespan
     type: RECORD
     mode: NULLABLE

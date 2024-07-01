@@ -231,7 +231,8 @@ SELECT
       metrics.custom_distribution.cert_compression_brotli_saved_bytes,
       metrics.custom_distribution.cert_compression_zlib_saved_bytes,
       metrics.custom_distribution.bounce_tracking_protection_num_hosts_per_purge_run,
-      metrics.custom_distribution.cert_compression_zstd_saved_bytes
+      metrics.custom_distribution.cert_compression_zstd_saved_bytes,
+      metrics.custom_distribution.networking_cookie_chips_partition_limit_overflow
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -989,7 +990,8 @@ SELECT
       metrics.custom_distribution.cert_compression_brotli_saved_bytes,
       metrics.custom_distribution.cert_compression_zlib_saved_bytes,
       metrics.custom_distribution.bounce_tracking_protection_num_hosts_per_purge_run,
-      metrics.custom_distribution.cert_compression_zstd_saved_bytes
+      metrics.custom_distribution.cert_compression_zstd_saved_bytes,
+      metrics.custom_distribution.networking_cookie_chips_partition_limit_overflow
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -1765,7 +1767,8 @@ SELECT
       metrics.custom_distribution.cert_compression_brotli_saved_bytes,
       metrics.custom_distribution.cert_compression_zlib_saved_bytes,
       metrics.custom_distribution.bounce_tracking_protection_num_hosts_per_purge_run,
-      metrics.custom_distribution.cert_compression_zstd_saved_bytes
+      metrics.custom_distribution.cert_compression_zstd_saved_bytes,
+      metrics.custom_distribution.networking_cookie_chips_partition_limit_overflow
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -2550,7 +2553,8 @@ SELECT
       metrics.custom_distribution.cert_compression_brotli_saved_bytes,
       metrics.custom_distribution.cert_compression_zlib_saved_bytes,
       metrics.custom_distribution.bounce_tracking_protection_num_hosts_per_purge_run,
-      metrics.custom_distribution.cert_compression_zstd_saved_bytes
+      metrics.custom_distribution.cert_compression_zstd_saved_bytes,
+      metrics.custom_distribution.networking_cookie_chips_partition_limit_overflow
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -3317,7 +3321,8 @@ SELECT
       metrics.custom_distribution.cert_compression_brotli_saved_bytes,
       metrics.custom_distribution.cert_compression_zlib_saved_bytes,
       metrics.custom_distribution.bounce_tracking_protection_num_hosts_per_purge_run,
-      metrics.custom_distribution.cert_compression_zstd_saved_bytes
+      metrics.custom_distribution.cert_compression_zstd_saved_bytes,
+      metrics.custom_distribution.networking_cookie_chips_partition_limit_overflow
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,

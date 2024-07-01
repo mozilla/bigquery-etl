@@ -2942,6 +2942,32 @@ fields:
           mode: NULLABLE
       description: The difference between the length of encoded certificate vs the
         actual certificate.
+    - name: networking_cookie_chips_partition_limit_overflow
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The number of cookie bytes exceeding chips partition limit capacity
+        for a single partition
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -3314,7 +3340,8 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream.
+      description: 'Failure occurs when initializing the audio stream. (Migrated from
+        the geckoview metric of the same name).
 
         '
     - name: glean_validation_pings_submitted

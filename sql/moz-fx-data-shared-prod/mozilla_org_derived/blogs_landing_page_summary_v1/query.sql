@@ -42,9 +42,9 @@ SELECT
   SUM(social_share) AS social_share,
   SUM(newsletter_subscription) AS newsletter_subscription,
 FROM
-  `moz-fx-data-marketing-prod.mozilla_org_derived.blogs_sessions_v1` AS sessions_table
+  `moz-fx-data-shared-prod.mozilla_org_derived.blogs_sessions_v1` AS sessions_table
 LEFT JOIN
-  `moz-fx-data-marketing-prod.mozilla_org_derived.blogs_goals_v1` AS goals_table
+  `moz-fx-data-shared-prod.mozilla_org_derived.blogs_goals_v1` AS goals_table
   USING (date, visit_identifier)
 LEFT JOIN
   landing_page_table

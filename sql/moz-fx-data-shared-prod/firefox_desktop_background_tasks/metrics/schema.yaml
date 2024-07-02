@@ -476,6 +476,20 @@ fields:
       description: 'Amount and error name reported when performing crash submission.
 
         '
+    - name: crash_submission_channel_status
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Collecting XHR channel status on error code when statusCode ==
+        0.
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE

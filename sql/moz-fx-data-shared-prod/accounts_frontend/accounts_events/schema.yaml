@@ -464,6 +464,25 @@ fields:
         their values, while the rest of the labels will have false.
 
         '
+    - name: standard_marketing
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: BOOLEAN
+        mode: NULLABLE
+      description: 'The set of marketing options at the time of an account sign up
+        (standard flow).
+
+        For example, if the user only opted into getting ''news'' then only news would
+        be
+
+        marked as true
+
+        '
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

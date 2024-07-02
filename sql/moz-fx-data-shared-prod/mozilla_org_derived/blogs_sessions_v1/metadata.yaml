@@ -1,0 +1,24 @@
+friendly_name: Blogs Sessions
+description: |-
+  Intermediate table containing normalized sessions for blog.mozilla.org
+owners:
+- ascholtz@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  dag: bqetl_google_analytics_derived
+  owner1: ascholtz
+scheduling:
+  dag_name: bqetl_google_analytics_derived
+  depends_on:
+  - task_id: mozilla_org_derived__blogs_empty_check__v1
+    dag_name: bqetl_google_analytics_derived
+bigquery:
+  time_partitioning:
+    type: day
+    field: date
+    require_partition_filter: false
+    expiration_days: null
+  clustering: null
+references: {}
+deprecated: true

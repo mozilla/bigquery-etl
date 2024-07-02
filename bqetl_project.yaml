@@ -291,6 +291,9 @@ generate:
       - org_mozilla_ios_tiktok_reporter
       - org_mozilla_ios_tiktok_reporter_tiktok_reportershare
       - org_mozilla_tiktokreporter
+      metrics_as_struct:
+      - accounts_frontend
+      - accounts_backend
     events_monitoring:
       skip_pings:
       - topsites-impression # access denied

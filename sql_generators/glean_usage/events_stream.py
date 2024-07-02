@@ -22,6 +22,7 @@ class EventsStreamTable(GleanTable):
         self.across_apps_enabled = True
         self.cross_channel_template = "cross_channel_events_stream.query.sql"
         self.base_table_name = "events_v1"
+        self.custom_render_kwargs = {}
 
     def generate_per_app_id(
         self,
@@ -42,6 +43,11 @@ class EventsStreamTable(GleanTable):
             "generate", "glean_usage", "events_stream", "skip_apps", fallback=[]
         ):
             return
+
+        metrics_as_struct = app_id in ConfigLoader.get(
+            "generate", "glean_usage", "events_stream", "metrics_as_struct", fallback=[]
+        )
+        self.custom_render_kwargs = {"metrics_as_struct": metrics_as_struct}
 
         super().generate_per_app_id(
             project_id, baseline_table, output_dir, use_cloud_function, app_info

@@ -5,6 +5,7 @@ montecarlo:
     timestamp_field: submission_date
     name: submission_date_nulls
     description: "Check for nulls in submission_date"
+    labels: ['test-audience']
     comparisons:
     - type: threshold
       operator: AUTO
@@ -13,6 +14,7 @@ montecarlo:
     timestamp_field: submission_date
     name: client_id_uniqueness
     description: client_id duplicates
+    labels: ['test-audience']
     comparisons:
     - type: threshold
       operator: LT
@@ -20,10 +22,12 @@ montecarlo:
       - client_id
       threshold_value: 1
       metric: DUPLICATE_COUNT
+
   - table: data-observability-dev:fenix_derived.events_daily_v1
     timestamp_field: submission_date
     name: client_id_nullness
     description: client_id NULLs
+    labels: ['test-audience']
     comparisons:
     - type: threshold
       operator: LT
@@ -39,6 +43,7 @@ montecarlo:
       - data-observability-dev:fenix_derived.events_daily_v1
     name: channel_value_check
     description: Check channel values
+    labels: ['test-audience']
     query_result_type: SINGLE_NUMERIC
     schedule:
       type: fixed

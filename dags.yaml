@@ -168,6 +168,23 @@ bqetl_subplat:
   tags:
     - impact/tier_1
 
+bqetl_subplat_hourly:
+  schedule_interval: 30 * * * *
+  description: |
+    Hourly imports for Subscription Platform data from Stripe as well as derived tables based on that data.
+
+    This DAG is scheduled with consideration for its ETLs that write to date-partitioned tables,
+    so the last run targeting a particular date partition will happen at 00:30 the following day,
+    allowing time for all of the data for that date to be ready from external systems like Stripe.
+  default_args:
+    owner: srose@mozilla.com
+    start_date: "2022-03-24"
+    email: ["telemetry-alerts@mozilla.com", "srose@mozilla.com"]
+    retries: 2
+    retry_delay: 5m
+  tags:
+    - impact/tier_1
+
 bqetl_mozilla_vpn_site_metrics:
   schedule_interval: 0 15 * * *
   description: |
@@ -770,19 +787,6 @@ bqetl_regrets_reporter_summary:
   schedule_interval: 0 4 * * *
   tags:
     - impact/tier_1
-
-bqetl_cjms_nonprod:
-  schedule_interval: 0 * * * *
-  description: |
-    Hourly ETL for cjms nonprod.
-  default_args:
-    owner: srose@mozilla.com
-    start_date: "2022-03-24"
-    email: ["telemetry-alerts@mozilla.com", "srose@mozilla.com"]
-    retries: 2
-    retry_delay: 5m
-  tags:
-    - impact/tier_3
 
 bqetl_acoustic_contact_export:
   schedule_interval: 0 9 * * *

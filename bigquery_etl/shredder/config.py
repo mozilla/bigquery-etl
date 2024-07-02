@@ -106,6 +106,9 @@ FXA_HMAC_SRC = DeleteSource(
     table="firefox_accounts.fxa_delete_events", field="hmac_user_id"
 )
 FXA_SRC = DeleteSource(table="firefox_accounts.fxa_delete_events", field=USER_ID)
+FXA_UNHASHED_SRC = DeleteSource(
+    table="firefox_accounts.fxa_delete_events", field="user_id_unhashed"
+)
 REGRETS_SRC = DeleteSource(
     table="regrets_reporter_stable.regrets_reporter_update_v1",
     field="data_deletion_request.extension_installation_uuid",
@@ -363,6 +366,11 @@ DELETE_TARGETS: DeleteIndex = {
     context_id_target(
         table="contextual_services_stable.quicksuggest_impression_v1"
     ): CONTEXTUAL_SERVICES_SRC,
+    # client association ping
+    DeleteTarget(
+        table="firefox_desktop_stable.fx_accounts_v1",
+        field="metrics.string.client_association_uid",
+    ): FXA_UNHASHED_SRC,
     # legacy mobile
     DeleteTarget(
         table="telemetry_stable.core_v1",

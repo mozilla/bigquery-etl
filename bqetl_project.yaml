@@ -27,7 +27,6 @@ dry_run:
   # Access Denied
   - sql/moz-fx-data-shared-prod/firefox_desktop_derived/desktop_installs_v1/query.sql
   - sql/moz-fx-data-experiments/monitoring/query_cost_v1/query.sql
-  - sql/moz-fx-data-shared-prod/app_store_external/**/*.sql
   - sql/moz-fx-data-shared-prod/app_store/**/*.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/bigquery_usage_v2/query.sql
   - sql/moz-fx-data-shared-prod/pocket/pocket_reach_mau/view.sql
@@ -38,6 +37,7 @@ dry_run:
   - sql/moz-fx-data-shared-prod/accounts_backend_external/emails_v1/query.sql
   - sql/moz-fx-data-shared-prod/accounts_db_external/**/*.sql
   - sql/moz-fx-data-shared-prod/accounts_db_nonprod_external/**/*.sql
+  - sql/moz-fx-data-shared-prod/ads/ppa_measurements/*.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_content_events_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_auth_bounce_events_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_auth_events_v1/query.sql
@@ -275,8 +275,9 @@ generate:
     - org_mozilla_ios_tiktok_reporter
     - org_mozilla_ios_tiktok_reporter_tiktok_reportershare
     - org_mozilla_tiktokreporter
-    - relay_backend  # temporary fix, see https://mozilla-hub.atlassian.net/browse/DENG-3720
+    - relay_backend  # see https://mozilla-hub.atlassian.net/browse/DENG-3720
     - ads_backend
+    - monitor_backend  # see https://bugzilla.mozilla.org/show_bug.cgi?id=1905444
     events_stream:
       skip_apps:
       - bergamot
@@ -289,6 +290,9 @@ generate:
       - org_mozilla_ios_tiktok_reporter
       - org_mozilla_ios_tiktok_reporter_tiktok_reportershare
       - org_mozilla_tiktokreporter
+      metrics_as_struct:
+      - accounts_frontend
+      - accounts_backend
     events_monitoring:
       skip_pings:
       - topsites-impression # access denied

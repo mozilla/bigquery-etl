@@ -98,8 +98,7 @@ def generate(target_project, output_dir, use_cloud_function):
     mobile_view_template = env.get_template("mobile_view.sql")
     view_template = env.get_template("view.sql")
     # metadata template
-    mobile_metadata_template = "mobile_metadata.yaml"
-    desktop_metadata_template = "desktop_metadata.yaml"
+    metadata_template = "metadata.yaml"
     # schema template
     desktop_schema_template = "desktop_schema.yaml"
     mobile_schema_template = "mobile_schema.yaml"
@@ -163,29 +162,18 @@ def generate(target_project, output_dir, use_cloud_function):
             skip_existing=False,
         )
 
-        # create metadata files
-        if browser.name == "firefox_desktop":
-            metadata_file = render(
-                desktop_metadata_template,
-                template_folder=THIS_PATH / "templates",
-                app_value=browser.value,
-                app_name=browser.name,
-                format=False,
-            )
-        else:
-            metadata_file = render(
-                mobile_metadata_template,
-                template_folder=THIS_PATH / "templates",
-                app_value=browser.value,
-                app_name=browser.name,
-                format=False,
-            )
-
+        # generate metadata file
         write_sql(
             output_dir=output_dir,
             full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}",
             basename="metadata.yaml",
-            sql=metadata_file,
+            sql=render(
+                    metadata_template,
+                    template_folder=THIS_PATH / "templates",
+                    app_value=browser.value,
+                    app_name=browser.name,
+                    format=False,
+                ),
             skip_existing=False,
         )
 

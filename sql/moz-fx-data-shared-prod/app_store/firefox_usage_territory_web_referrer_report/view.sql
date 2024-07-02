@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.app_store.firefox_downloads_territory_source_type_report`
+  `moz-fx-data-shared-prod.app_store.firefox_usage_territory_web_referrer_report`
 AS
 SELECT
   -- https://developer.apple.com/help/app-store-connect/view-sales-and-trends/download-and-view-reports
@@ -8,4 +8,4 @@ SELECT
   * REPLACE (TIMESTAMP(DATETIME(`date`, "America/Los_Angeles")) AS `date`),
   `date` AS date_pst,
 FROM
-  `moz-fx-data-shared-prod.app_store_syndicate.firefox_downloads_territory_source_type_report_v1`
+  `moz-fx-data-shared-prod.app_store_syndicate.firefox_usage_territory_web_referrer_report_v1`

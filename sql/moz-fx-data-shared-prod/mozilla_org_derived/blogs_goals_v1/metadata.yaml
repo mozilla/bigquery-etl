@@ -10,9 +10,6 @@ labels:
   owner1: ascholtz
 scheduling:
   dag_name: bqetl_google_analytics_derived
-  depends_on:
-  - task_id: mozilla_org_derived__blogs_empty_check__v1
-    dag_name: bqetl_google_analytics_derived
 bigquery:
   time_partitioning:
     type: day

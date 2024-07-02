@@ -25,7 +25,7 @@ WITH sessions_table AS (
       IF(NOT `moz-fx-data-shared-prod.udf.ga_is_mozilla_browser`(browser), entrances, 0)
     ) AS non_fx_sessions,
   FROM
-    `moz-fx-data-marketing-prod.ga_derived.www_site_hits_v1`
+    `moz-fx-data-marketing-prod.mozilla_org_derived.www_site_hits_v1`
   WHERE
     date = @submission_date
   GROUP BY
@@ -57,7 +57,7 @@ pageviews_table AS (
     COUNT(DISTINCT(page_path)) AS unique_pageviews,
     COUNT(*) AS pageviews,
   FROM
-    `moz-fx-data-marketing-prod.ga_derived.www_site_hits_v1`
+    `moz-fx-data-marketing-prod.mozilla_org_derived.www_site_hits_v1`
   WHERE
     date = @submission_date
     AND hit_type = 'PAGE'
@@ -73,7 +73,7 @@ bounces_table AS (
     SUM(IF(hit_number = first_interaction, bounces, 0)) AS bounces,
     SUM(exits) AS exits,
   FROM
-    `moz-fx-data-marketing-prod.ga_derived.www_site_hits_v1`
+    `moz-fx-data-marketing-prod.mozilla_org_derived.www_site_hits_v1`
   WHERE
     date = @submission_date
   GROUP BY
@@ -114,7 +114,7 @@ joined_table AS (
   FROM
     sessions_table
   FULL JOIN
-    `moz-fx-data-marketing-prod.ga_derived.www_site_downloads_v1` AS downloads_table
+    `moz-fx-data-marketing-prod.mozilla_org_derived.www_site_downloads_v1` AS downloads_table
     USING (date, visit_identifier)
   FULL JOIN
     pageviews_table

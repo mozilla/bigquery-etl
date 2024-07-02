@@ -46,7 +46,7 @@ download_aggregates AS (
     SUM(downloads) AS downloads,
     SUM(non_fx_downloads) AS non_fx_downloads,
   FROM
-    `moz-fx-data-marketing-prod.ga_derived.www_site_downloads_v1`
+    `moz-fx-data-marketing-prod.mozilla_org_derived.www_site_downloads_v1`
   GROUP BY
     date,
     device_category,

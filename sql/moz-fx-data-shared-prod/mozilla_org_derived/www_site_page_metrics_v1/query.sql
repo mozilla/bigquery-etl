@@ -9,7 +9,7 @@ WITH page_hits AS (
         hit_time
     ) AS next_pageview,
   FROM
-    `moz-fx-data-marketing-prod.ga_derived.www_site_hits_v1`
+    `moz-fx-data-shared-prod.mozilla_org_derived.www_site_hits_v1`
   WHERE
     date = @submission_date
     AND hit_type = 'PAGE'
@@ -101,7 +101,7 @@ bounce_aggregates AS (
     SUM(IF(hit_number = first_interaction, bounces, 0)) AS bounces,
     SUM(exits) AS exits,
   FROM
-    `moz-fx-data-marketing-prod.ga_derived.www_site_hits_v1`
+    `moz-fx-data-shared-prod.mozilla_org_derived.www_site_hits_v1`
   WHERE
     date = @submission_date
   GROUP BY
@@ -149,7 +149,7 @@ events_table AS (
     COUNT(*) AS total_events,
     COUNT(DISTINCT CONCAT(visit_identifier, event_id)) AS unique_events
   FROM
-    `moz-fx-data-marketing-prod.ga_derived.www_site_hits_v1`
+    `moz-fx-data-shared-prod.mozilla_org_derived.www_site_hits_v1`
   WHERE
     date = @submission_date
     AND hit_type = 'EVENT'

@@ -50,30 +50,6 @@ with DAG(
     tags=tags,
 ) as dag:
 
-    wait_for_app_store_external__firefox_app_store_territory_source_type_report__v1 = ExternalTaskSensor(
-        task_id="wait_for_app_store_external__firefox_app_store_territory_source_type_report__v1",
-        external_dag_id="bqetl_fivetran_copied_tables",
-        external_task_id="app_store_external__firefox_app_store_territory_source_type_report__v1",
-        execution_delta=datetime.timedelta(seconds=3600),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    wait_for_app_store_external__firefox_downloads_territory_source_type_report__v1 = ExternalTaskSensor(
-        task_id="wait_for_app_store_external__firefox_downloads_territory_source_type_report__v1",
-        external_dag_id="bqetl_fivetran_copied_tables",
-        external_task_id="app_store_external__firefox_downloads_territory_source_type_report__v1",
-        execution_delta=datetime.timedelta(seconds=3600),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
     wait_for_copy_deduplicate_all = ExternalTaskSensor(
         task_id="wait_for_copy_deduplicate_all",
         external_dag_id="copy_deduplicate",
@@ -682,14 +658,6 @@ with DAG(
 
     checks__warn_firefox_ios_derived__new_profile_activation__v2.set_upstream(
         firefox_ios_derived__new_profile_activation__v2
-    )
-
-    firefox_ios_derived__app_store_funnel__v1.set_upstream(
-        wait_for_app_store_external__firefox_app_store_territory_source_type_report__v1
-    )
-
-    firefox_ios_derived__app_store_funnel__v1.set_upstream(
-        wait_for_app_store_external__firefox_downloads_territory_source_type_report__v1
     )
 
     firefox_ios_derived__app_store_funnel__v1.set_upstream(

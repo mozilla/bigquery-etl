@@ -68,9 +68,7 @@ def main():
     query_job = client.query(client_association_query, job_config=job_config)
     results = query_job.result()
 
-    rows_as_dicts = [
-        _clean_dict(dict(row)) for row in results
-    ]
+    rows_as_dicts = [_clean_dict(dict(row)) for row in results]
     json_string = json.dumps(rows_as_dicts)
 
     print(json_string)

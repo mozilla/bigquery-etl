@@ -5,6 +5,7 @@ import json
 import os
 import tempfile
 from argparse import ArgumentParser
+from time import sleep
 
 import requests
 from google.cloud import bigquery
@@ -239,6 +240,7 @@ def main():
             data.extend(microsoft_store_data)
         else:
             print("no data for today")
+        sleep(5)
 
     upload_to_bigquery(data, project, dataset, table_name, date)
 

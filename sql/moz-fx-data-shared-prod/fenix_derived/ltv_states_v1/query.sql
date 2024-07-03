@@ -9,7 +9,7 @@ WITH clients_yearly AS (
     consecutive_days_seen,
     days_seen_bytes,
   FROM
-    fenix.clients_yearly
+    `moz-fx-data-shared-prod.fenix.clients_yearly`
   WHERE
     {% if is_init() %}
       submission_date >= "2010-01-01"
@@ -49,10 +49,10 @@ SELECT
 FROM
   clients_yearly
 JOIN
-  fenix.firefox_android_clients
+  `moz-fx-data-shared-prod.fenix.firefox_android_clients` AS firefox_android_clients
   USING (sample_id, client_id)
 LEFT JOIN
-  fenix.client_adclicks_history
+  `moz-fx-data-shared-prod.fenix.client_adclicks_history`
   USING (sample_id, client_id)
 WHERE
     -- BrowserStack clients are bots, we don't want to accidentally report on them

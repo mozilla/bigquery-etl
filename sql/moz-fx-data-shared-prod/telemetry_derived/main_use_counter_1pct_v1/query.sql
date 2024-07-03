@@ -11,7 +11,7 @@ SELECT
   -- to perform full backfills as needed if this logic changes.
   * REPLACE (mozfun.norm.metadata(metadata) AS metadata)
 FROM
-  telemetry_stable.main_use_counter_v4
+  `moz-fx-data-shared-prod.telemetry_stable.main_use_counter_v4`
 WHERE
   sample_id = 0
   AND DATE(submission_timestamp) = @submission_date

@@ -31,7 +31,9 @@
       -- 365 days for each usage criterion as an array of bytes. The
       -- rightmost bit represents whether the user was active in the current day.
       {% for usage_type, criterion in usage_types %}
-        udf.bool_to_365_bits({{ criterion }}) AS `days_{{ usage_type }}_bytes`,
+        `moz-fx-data-shared-prod.udf.bool_to_365_bits`(
+          {{ criterion }}
+        ) AS `days_{{ usage_type }}_bytes`,
       {% endfor %}
       -- List cols explicitly here: the schema is static (schema.yaml),
       -- and new columns added upstream will need to be manually added
@@ -76,7 +78,7 @@
     WHERE
       submission_date = DATE_SUB(@submission_date, INTERVAL 1 DAY)
       -- Filter out rows from yesterday that have now fallen outside the 365-day window.
-      AND BIT_COUNT(udf.shift_365_bits_one_day(days_seen_bytes)) > 0
+      AND BIT_COUNT(`moz-fx-data-shared-prod.udf.shift_365_bits_one_day`(days_seen_bytes)) > 0
       AND sample_id IS NOT NULL
   )
   --
@@ -84,7 +86,7 @@
     @submission_date AS submission_date,
     IF(_current.client_id IS NOT NULL, _current, _previous).* REPLACE (
       {% for usage_type, _ in usage_types %}
-        udf.combine_adjacent_days_365_bits(
+        `moz-fx-data-shared-prod.udf.combine_adjacent_days_365_bits`(
           _previous.`days_{{ usage_type }}_bytes`,
           _current.`days_{{ usage_type }}_bytes`
         ) AS `days_{{ usage_type }}_bytes` {{ "," if not loop.last }}

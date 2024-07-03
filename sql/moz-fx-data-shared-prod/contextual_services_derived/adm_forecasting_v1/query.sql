@@ -63,7 +63,7 @@ WITH client_counts AS (
       END
     ) AS eligible_clients
   FROM
-    telemetry.unified_metrics
+    `moz-fx-data-shared-prod.telemetry.unified_metrics`
   WHERE
     mozfun.bits28.active_in_range(days_seen_bits, 0, 1)
     AND submission_date >= "2021-09-07"
@@ -123,7 +123,7 @@ tiles_percentages AS (
       END
     ) / NULLIF(SUM(user_count), 0) AS p_other
   FROM
-    contextual_services.event_aggregates
+    `moz-fx-data-shared-prod.contextual_services.event_aggregates`
   WHERE
     submission_date >= "2021-09-07"
     AND release_channel = "release"
@@ -157,7 +157,7 @@ suggest_percentages AS (
       END
     ) AS other_dou,
   FROM
-    contextual_services.event_aggregates
+    `moz-fx-data-shared-prod.contextual_services.event_aggregates`
   WHERE
     submission_date >= "2022-06-07"
     AND release_channel = "release"
@@ -180,7 +180,7 @@ desktop_population AS (
     "desktop" AS device,
     COUNT(DISTINCT client_id) AS clients
   FROM
-    telemetry.clients_daily
+    `moz-fx-data-shared-prod.telemetry.clients_daily`
   CROSS JOIN
     UNNEST(experiments) AS experiment
   WHERE
@@ -235,7 +235,7 @@ desktop_population AS (
     "desktop" AS device,
     COUNT(DISTINCT client_id) AS clients
   FROM
-    telemetry.clients_daily
+    `moz-fx-data-shared-prod.telemetry.clients_daily`
   CROSS JOIN
     UNNEST(experiments) AS experiment
   WHERE
@@ -289,7 +289,7 @@ daily_mobile_clients AS (
         client_id,
         country
       FROM
-        telemetry.unified_metrics AS browser_dau
+        `moz-fx-data-shared-prod.telemetry.unified_metrics` AS browser_dau
       WHERE
         mozfun.bits28.active_in_range(browser_dau.days_seen_bits, 0, 1)
             -- don't want Focus apps
@@ -316,7 +316,7 @@ daily_mobile_clients AS (
     submission_date,
     country
   FROM
-    telemetry.unified_metrics AS browser_dau
+    `moz-fx-data-shared-prod.telemetry.unified_metrics` AS browser_dau
   WHERE
     mozfun.bits28.active_in_range(browser_dau.days_seen_bits, 0, 1)
     -- don't want Focus apps
@@ -400,7 +400,7 @@ clicks AS (
       0
     ) AS other_clicks
   FROM
-    contextual_services.event_aggregates
+    `moz-fx-data-shared-prod.contextual_services.event_aggregates`
   WHERE
     submission_date >= "2021-09-07"
     AND release_channel = "release"
@@ -428,7 +428,7 @@ clicks AS (
       0
     ) AS other_clicks
   FROM
-    contextual_services.event_aggregates
+    `moz-fx-data-shared-prod.contextual_services.event_aggregates`
   WHERE
     submission_date >= "2022-06-07"
     AND release_channel = "release"

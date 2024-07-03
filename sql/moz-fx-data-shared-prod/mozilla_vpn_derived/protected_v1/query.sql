@@ -16,7 +16,7 @@ WITH base AS (
   SELECT
     *
   FROM
-    protected_v1
+    `moz-fx-data-shared-prod.mozilla_vpn_derived.protected_v1`
 )
 SELECT
   fxa_uid,

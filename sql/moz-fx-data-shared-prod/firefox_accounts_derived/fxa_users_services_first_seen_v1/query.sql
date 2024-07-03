@@ -25,8 +25,12 @@
       user_id,
       service,
       -- using mode_last with w1_reversed to get mode_first
-      udf.mode_last(ARRAY_AGG(`timestamp`) OVER w1_reversed) AS first_service_timestamp_last,
-      udf.mode_last(ARRAY_AGG(flow_id) OVER w1_reversed) AS first_service_flow,
+      `moz-fx-data-shared-prod.udf.mode_last`(
+        ARRAY_AGG(`timestamp`) OVER w1_reversed
+      ) AS first_service_timestamp_last,
+      `moz-fx-data-shared-prod.udf.mode_last`(
+        ARRAY_AGG(flow_id) OVER w1_reversed
+      ) AS first_service_flow,
       LOGICAL_OR(IFNULL(event_type = 'fxa_reg - complete', FALSE)) OVER w1_reversed AS did_register
     FROM
       fxa_content_auth_oauth
@@ -38,7 +42,7 @@
       AND DATE(`timestamp`) >= '2019-03-01'
       AND user_id IS NOT NULL
     WINDOW
-    -- We must provide a window with `ORDER BY timestamp DESC` so that udf.mode_last actually aggregates mode first.
+    -- We must provide a window with `ORDER BY timestamp DESC` so that `moz-fx-data-shared-prod.udf.mode_last` actually aggregates mode first.
       w1_reversed AS (
         PARTITION BY
           user_id,
@@ -172,8 +176,12 @@
       user_id,
       service,
       -- using mode_last with w1_reversed to get mode_first
-      udf.mode_last(ARRAY_AGG(`timestamp`) OVER w1_reversed) AS first_service_timestamp_last,
-      udf.mode_last(ARRAY_AGG(flow_id) OVER w1_reversed) AS first_service_flow,
+      `moz-fx-data-shared-prod.udf.mode_last`(
+        ARRAY_AGG(`timestamp`) OVER w1_reversed
+      ) AS first_service_timestamp_last,
+      `moz-fx-data-shared-prod.udf.mode_last`(
+        ARRAY_AGG(flow_id) OVER w1_reversed
+      ) AS first_service_flow,
       LOGICAL_OR(IFNULL(event_type = 'fxa_reg - complete', FALSE)) OVER w1_reversed AS did_register
     FROM
       fxa_content_auth_oauth
@@ -185,7 +193,7 @@
       AND DATE(`timestamp`) >= '2019-03-01'
       AND user_id IS NOT NULL
     WINDOW
-    -- We must provide a window with `ORDER BY timestamp DESC` so that udf.mode_last actually aggregates mode first.
+    -- We must provide a window with `ORDER BY timestamp DESC` so that `moz-fx-data-shared-prod.udf.mode_last` actually aggregates mode first.
       w1_reversed AS (
         PARTITION BY
           user_id,

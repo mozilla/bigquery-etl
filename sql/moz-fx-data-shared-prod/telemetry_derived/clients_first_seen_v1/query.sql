@@ -13,7 +13,7 @@ query slots aren't exceeded.
       client_id,
       ARRAY_AGG(submission_date ORDER BY submission_date) AS dates_seen,
     FROM
-      telemetry_derived.clients_daily_v6
+      `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6`
     WHERE
       submission_date >= DATE('2010-01-01')
       AND sample_id = @sample_id
@@ -33,7 +33,7 @@ query slots aren't exceeded.
     cfsd.second_seen_date,
     cd.* EXCEPT (submission_date)
   FROM
-    telemetry_derived.clients_daily_v6 AS cd
+    `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6` AS cd
   LEFT JOIN
     clients_first_seen_dates AS cfsd
     ON (cd.submission_date = cfsd.first_seen_date AND cd.client_id = cfsd.client_id)
@@ -49,7 +49,7 @@ query slots aren't exceeded.
       CAST(NULL AS DATE) AS second_seen_date,
       * EXCEPT (submission_date)
     FROM
-      clients_daily_v6
+      `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6`
     WHERE
       submission_date = @submission_date
   ),
@@ -62,7 +62,7 @@ query slots aren't exceeded.
         IF(second_seen_date >= @submission_date, NULL, second_seen_date) AS second_seen_date
       )
     FROM
-      clients_first_seen_v1
+      `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v1`
     WHERE
       first_seen_date < @submission_date
   )

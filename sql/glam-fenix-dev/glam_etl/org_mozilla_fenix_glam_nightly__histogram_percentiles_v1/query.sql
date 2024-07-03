@@ -9,4 +9,4 @@ SELECT
     ('95', mozfun.glam.percentile(95, aggregates, metric_type))
   ] AS aggregates
 FROM
-  glam_etl.org_mozilla_fenix_glam_nightly__histogram_probe_counts_v1
+  `glam-fenix-dev.glam_etl.org_mozilla_fenix_glam_nightly__histogram_probe_counts_v1`

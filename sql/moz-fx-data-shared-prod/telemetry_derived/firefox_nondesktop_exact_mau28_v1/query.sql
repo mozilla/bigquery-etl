@@ -16,7 +16,7 @@ SELECT
   country,
   distribution_id
 FROM
-  telemetry.nondesktop_clients_last_seen
+  `moz-fx-data-shared-prod.telemetry.nondesktop_clients_last_seen`
 WHERE
   contributes_to_2020_kpi
   -- 2017-01-01 is the first populated day of telemetry_core_parquet, so start 28 days later.

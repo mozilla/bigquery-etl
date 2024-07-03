@@ -26,6 +26,11 @@ CREATE OR REPLACE VIEW
     CAST(NULL AS {{ field.type }}) AS {{ field.name }},
   {% endif %}
 {% endfor %}
+{% if 'adjust_network'.exists %}
+  `moz-fx-data-shared-prod.udf.organic_vs_paid_mobile`(adjust_network) AS paid_vs_organic,
+{% else %}
+  'Organic' AS paid_vs_organic,
+{% endif %}
 "{{ product.name }}" AS product_name,
 FROM
   `{{ project_id }}.{{ product.name }}.{{ name }}`

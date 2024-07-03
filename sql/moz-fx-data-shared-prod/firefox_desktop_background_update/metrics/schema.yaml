@@ -675,6 +675,13 @@ fields:
       description: 'Number of successfull crash report submissions
 
         '
+    - name: netwerk_parent_connect_timeout
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counts how often the parent-connect-timeout timer is necessary
+        to clear up EarlyHintPreloader
+
+        '
   - name: datetime
     type: RECORD
     mode: NULLABLE

@@ -1508,6 +1508,13 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: The total number of successful calls to navigator.credentials.get.
+    - name: netwerk_parent_connect_timeout
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counts how often the parent-connect-timeout timer is necessary
+        to clear up EarlyHintPreloader
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -1880,7 +1887,8 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream.
+      description: 'Failure occurs when initializing the audio stream. (Migrated from
+        the geckoview metric of the same name).
 
         '
     - name: glean_validation_pings_submitted

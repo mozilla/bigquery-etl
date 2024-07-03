@@ -871,6 +871,13 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: The total number of successful calls to navigator.credentials.get.
+    - name: netwerk_parent_connect_timeout
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counts how often the parent-connect-timeout timer is necessary
+        to clear up EarlyHintPreloader
+
+        '
   - name: datetime
     type: RECORD
     mode: NULLABLE

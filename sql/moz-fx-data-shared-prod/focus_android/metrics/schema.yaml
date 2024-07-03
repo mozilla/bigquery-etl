@@ -442,6 +442,9 @@ fields:
     - name: webauthn_get_success
       type: INTEGER
       mode: NULLABLE
+    - name: netwerk_parent_connect_timeout
+      type: INTEGER
+      mode: NULLABLE
   - name: datetime
     type: RECORD
     mode: NULLABLE

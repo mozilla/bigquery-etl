@@ -175,7 +175,8 @@ SELECT
       metrics.counter.webauthn_create_passkey,
       metrics.counter.webauthn_create_success,
       metrics.counter.webauthn_get_failure,
-      metrics.counter.webauthn_get_success
+      metrics.counter.webauthn_get_success,
+      metrics.counter.netwerk_parent_connect_timeout
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -934,7 +935,8 @@ SELECT
       metrics.counter.webauthn_create_passkey,
       metrics.counter.webauthn_create_success,
       metrics.counter.webauthn_get_failure,
-      metrics.counter.webauthn_get_success
+      metrics.counter.webauthn_get_success,
+      metrics.counter.netwerk_parent_connect_timeout
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -1711,7 +1713,8 @@ SELECT
       metrics.counter.webauthn_create_passkey,
       metrics.counter.webauthn_create_success,
       metrics.counter.webauthn_get_failure,
-      metrics.counter.webauthn_get_success
+      metrics.counter.webauthn_get_success,
+      metrics.counter.netwerk_parent_connect_timeout
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -2497,7 +2500,8 @@ SELECT
       metrics.counter.webauthn_create_passkey,
       metrics.counter.webauthn_create_success,
       metrics.counter.webauthn_get_failure,
-      metrics.counter.webauthn_get_success
+      metrics.counter.webauthn_get_success,
+      metrics.counter.netwerk_parent_connect_timeout
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -3265,7 +3269,8 @@ SELECT
       metrics.counter.webauthn_create_passkey,
       metrics.counter.webauthn_create_success,
       metrics.counter.webauthn_get_failure,
-      metrics.counter.webauthn_get_success
+      metrics.counter.webauthn_get_success,
+      metrics.counter.netwerk_parent_connect_timeout
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,

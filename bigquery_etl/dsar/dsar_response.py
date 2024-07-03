@@ -69,7 +69,7 @@ def main():
     results = query_job.result()
 
     rows_as_dicts = [
-        _clean_dict({k: v for k, v in dict(row).items()}) for row in results
+        _clean_dict(dict(row)) for row in results
     ]
     json_string = json.dumps(rows_as_dicts)
 

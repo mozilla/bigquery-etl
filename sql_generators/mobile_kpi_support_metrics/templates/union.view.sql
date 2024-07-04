@@ -26,6 +26,7 @@ CREATE OR REPLACE VIEW
     CAST(NULL AS {{ field.type }}) AS {{ field.name }},
   {% endif %}
 {% endfor %}
+"{{ product.name }}" AS product_name,
 FROM
   `{{ project_id }}.{{ product.name }}.{{ name }}`
 {% endfor %}

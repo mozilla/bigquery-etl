@@ -4503,6 +4503,10 @@ fields:
       description: 'The total number of trust objects in cert9.db
 
         '
+    - name: pkcs11_third_party_modules_loaded
+      type: INTEGER
+      mode: NULLABLE
+      description: The number of third-party PKCS#11 modules loaded.
   - name: string
     type: RECORD
     mode: NULLABLE
@@ -10880,6 +10884,34 @@ fields:
       description: 'How many of schemeless HTTPS-First (`dom.security.https_first`
         disabled, but load marked as schemeless) upgrades get downgraded again because
         the HTTP request fired after 3s received a answer faster than the HTTPS request
+
+        '
+    - name: pkcs11_built_in_roots_module
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: denominator
+        type: INTEGER
+        mode: NULLABLE
+      - name: numerator
+        type: INTEGER
+        mode: NULLABLE
+      description: 'How many successfully-built certificate chains used a certificate
+        from the built-in roots module.
+
+        '
+    - name: pkcs11_nss_cert_db
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: denominator
+        type: INTEGER
+        mode: NULLABLE
+      - name: numerator
+        type: INTEGER
+        mode: NULLABLE
+      description: 'How many successfully-built certificate chains used a certificate
+        from the NSS cert DB.
 
         '
   - name: string_list

@@ -420,7 +420,8 @@ SELECT
       metrics.quantity.data_storage_client_auth_remember_list,
       metrics.quantity.data_storage_site_security_service_state,
       metrics.quantity.cert_verifier_trust_obj_count,
-      metrics.quantity.home_bookmarks_bookmarks_count
+      metrics.quantity.home_bookmarks_bookmarks_count,
+      metrics.quantity.pkcs11_third_party_modules_loaded
     ) AS `quantity`,
     STRUCT(
       metrics.string.experiments_metrics_active_experiment,
@@ -742,7 +743,9 @@ SELECT
       metrics.rate.verification_used_cert_from_third_party_certificates,
       metrics.rate.verification_used_cert_from_tls_handshake,
       metrics.rate.httpsfirst_downgraded_on_timer,
-      metrics.rate.httpsfirst_downgraded_on_timer_schemeless
+      metrics.rate.httpsfirst_downgraded_on_timer_schemeless,
+      metrics.rate.pkcs11_built_in_roots_module,
+      metrics.rate.pkcs11_nss_cert_db
     ) AS `rate`,
     STRUCT(metrics.uuid.metrics_shared_prefs_uuid) AS `uuid`,
     STRUCT(
@@ -1180,7 +1183,8 @@ SELECT
       metrics.quantity.data_storage_client_auth_remember_list,
       metrics.quantity.data_storage_site_security_service_state,
       metrics.quantity.cert_verifier_trust_obj_count,
-      metrics.quantity.home_bookmarks_bookmarks_count
+      metrics.quantity.home_bookmarks_bookmarks_count,
+      metrics.quantity.pkcs11_third_party_modules_loaded
     ) AS `quantity`,
     STRUCT(
       metrics.string.experiments_metrics_active_experiment,
@@ -1502,7 +1506,9 @@ SELECT
       metrics.rate.verification_used_cert_from_third_party_certificates,
       metrics.rate.verification_used_cert_from_tls_handshake,
       metrics.rate.httpsfirst_downgraded_on_timer,
-      metrics.rate.httpsfirst_downgraded_on_timer_schemeless
+      metrics.rate.httpsfirst_downgraded_on_timer_schemeless,
+      metrics.rate.pkcs11_built_in_roots_module,
+      metrics.rate.pkcs11_nss_cert_db
     ) AS `rate`,
     STRUCT(metrics.uuid.metrics_shared_prefs_uuid) AS `uuid`,
     STRUCT(
@@ -1958,7 +1964,8 @@ SELECT
       metrics.quantity.data_storage_client_auth_remember_list,
       metrics.quantity.data_storage_site_security_service_state,
       metrics.quantity.cert_verifier_trust_obj_count,
-      metrics.quantity.home_bookmarks_bookmarks_count
+      metrics.quantity.home_bookmarks_bookmarks_count,
+      metrics.quantity.pkcs11_third_party_modules_loaded
     ) AS `quantity`,
     STRUCT(
       metrics.string.experiments_metrics_active_experiment,
@@ -2280,7 +2287,9 @@ SELECT
       metrics.rate.verification_used_cert_from_third_party_certificates,
       metrics.rate.verification_used_cert_from_tls_handshake,
       metrics.rate.httpsfirst_downgraded_on_timer,
-      metrics.rate.httpsfirst_downgraded_on_timer_schemeless
+      metrics.rate.httpsfirst_downgraded_on_timer_schemeless,
+      metrics.rate.pkcs11_built_in_roots_module,
+      metrics.rate.pkcs11_nss_cert_db
     ) AS `rate`,
     STRUCT(metrics.uuid.metrics_shared_prefs_uuid) AS `uuid`,
     STRUCT(
@@ -2745,7 +2754,8 @@ SELECT
       metrics.quantity.data_storage_client_auth_remember_list,
       metrics.quantity.data_storage_site_security_service_state,
       metrics.quantity.cert_verifier_trust_obj_count,
-      metrics.quantity.home_bookmarks_bookmarks_count
+      metrics.quantity.home_bookmarks_bookmarks_count,
+      metrics.quantity.pkcs11_third_party_modules_loaded
     ) AS `quantity`,
     STRUCT(
       metrics.string.experiments_metrics_active_experiment,
@@ -3067,7 +3077,9 @@ SELECT
       metrics.rate.verification_used_cert_from_third_party_certificates,
       metrics.rate.verification_used_cert_from_tls_handshake,
       metrics.rate.httpsfirst_downgraded_on_timer,
-      metrics.rate.httpsfirst_downgraded_on_timer_schemeless
+      metrics.rate.httpsfirst_downgraded_on_timer_schemeless,
+      metrics.rate.pkcs11_built_in_roots_module,
+      metrics.rate.pkcs11_nss_cert_db
     ) AS `rate`,
     STRUCT(metrics.uuid.metrics_shared_prefs_uuid) AS `uuid`,
     STRUCT(
@@ -3514,7 +3526,8 @@ SELECT
       metrics.quantity.data_storage_client_auth_remember_list,
       metrics.quantity.data_storage_site_security_service_state,
       metrics.quantity.cert_verifier_trust_obj_count,
-      metrics.quantity.home_bookmarks_bookmarks_count
+      metrics.quantity.home_bookmarks_bookmarks_count,
+      metrics.quantity.pkcs11_third_party_modules_loaded
     ) AS `quantity`,
     STRUCT(
       metrics.string.experiments_metrics_active_experiment,
@@ -3836,7 +3849,9 @@ SELECT
       metrics.rate.verification_used_cert_from_third_party_certificates,
       metrics.rate.verification_used_cert_from_tls_handshake,
       metrics.rate.httpsfirst_downgraded_on_timer,
-      metrics.rate.httpsfirst_downgraded_on_timer_schemeless
+      metrics.rate.httpsfirst_downgraded_on_timer_schemeless,
+      metrics.rate.pkcs11_built_in_roots_module,
+      metrics.rate.pkcs11_nss_cert_db
     ) AS `rate`,
     STRUCT(metrics.uuid.metrics_shared_prefs_uuid) AS `uuid`,
     STRUCT(

@@ -3436,6 +3436,9 @@ fields:
     - name: home_bookmarks_bookmarks_count
       type: INTEGER
       mode: NULLABLE
+    - name: pkcs11_third_party_modules_loaded
+      type: INTEGER
+      mode: NULLABLE
   - name: string
     type: RECORD
     mode: NULLABLE
@@ -11022,6 +11025,26 @@ fields:
         type: INTEGER
         mode: NULLABLE
     - name: httpsfirst_downgraded_on_timer_schemeless
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: denominator
+        type: INTEGER
+        mode: NULLABLE
+      - name: numerator
+        type: INTEGER
+        mode: NULLABLE
+    - name: pkcs11_built_in_roots_module
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: denominator
+        type: INTEGER
+        mode: NULLABLE
+      - name: numerator
+        type: INTEGER
+        mode: NULLABLE
+    - name: pkcs11_nss_cert_db
       type: RECORD
       mode: NULLABLE
       fields:

@@ -307,7 +307,8 @@ SELECT
       metrics.quantity.gfx_display_count,
       metrics.quantity.gfx_display_primary_height,
       metrics.quantity.gfx_display_primary_width,
-      metrics.quantity.cert_verifier_trust_obj_count
+      metrics.quantity.cert_verifier_trust_obj_count,
+      metrics.quantity.pkcs11_third_party_modules_loaded
     ) AS `quantity`,
     STRUCT(
       metrics.custom_distribution.tab_count_app_backgrounded,
@@ -526,7 +527,9 @@ SELECT
       metrics.rate.verification_used_cert_from_third_party_certificates,
       metrics.rate.verification_used_cert_from_tls_handshake,
       metrics.rate.httpsfirst_downgraded_on_timer,
-      metrics.rate.httpsfirst_downgraded_on_timer_schemeless
+      metrics.rate.httpsfirst_downgraded_on_timer_schemeless,
+      metrics.rate.pkcs11_built_in_roots_module,
+      metrics.rate.pkcs11_nss_cert_db
     ) AS `rate`,
     STRUCT(metrics.uuid.legacy_ids_client_id) AS `uuid`,
     STRUCT(metrics.object.fog_validation_some_object) AS `object`,
@@ -847,7 +850,8 @@ SELECT
       metrics.quantity.gfx_display_count,
       metrics.quantity.gfx_display_primary_height,
       metrics.quantity.gfx_display_primary_width,
-      metrics.quantity.cert_verifier_trust_obj_count
+      metrics.quantity.cert_verifier_trust_obj_count,
+      metrics.quantity.pkcs11_third_party_modules_loaded
     ) AS `quantity`,
     STRUCT(
       metrics.custom_distribution.tab_count_app_backgrounded,
@@ -1066,7 +1070,9 @@ SELECT
       metrics.rate.verification_used_cert_from_third_party_certificates,
       metrics.rate.verification_used_cert_from_tls_handshake,
       metrics.rate.httpsfirst_downgraded_on_timer,
-      metrics.rate.httpsfirst_downgraded_on_timer_schemeless
+      metrics.rate.httpsfirst_downgraded_on_timer_schemeless,
+      metrics.rate.pkcs11_built_in_roots_module,
+      metrics.rate.pkcs11_nss_cert_db
     ) AS `rate`,
     STRUCT(metrics.uuid.legacy_ids_client_id) AS `uuid`,
     STRUCT(metrics.object.fog_validation_some_object) AS `object`,
@@ -1387,7 +1393,8 @@ SELECT
       metrics.quantity.gfx_display_count,
       metrics.quantity.gfx_display_primary_height,
       metrics.quantity.gfx_display_primary_width,
-      metrics.quantity.cert_verifier_trust_obj_count
+      metrics.quantity.cert_verifier_trust_obj_count,
+      metrics.quantity.pkcs11_third_party_modules_loaded
     ) AS `quantity`,
     STRUCT(
       metrics.custom_distribution.tab_count_app_backgrounded,
@@ -1606,7 +1613,9 @@ SELECT
       metrics.rate.verification_used_cert_from_third_party_certificates,
       metrics.rate.verification_used_cert_from_tls_handshake,
       metrics.rate.httpsfirst_downgraded_on_timer,
-      metrics.rate.httpsfirst_downgraded_on_timer_schemeless
+      metrics.rate.httpsfirst_downgraded_on_timer_schemeless,
+      metrics.rate.pkcs11_built_in_roots_module,
+      metrics.rate.pkcs11_nss_cert_db
     ) AS `rate`,
     STRUCT(metrics.uuid.legacy_ids_client_id) AS `uuid`,
     STRUCT(metrics.object.fog_validation_some_object) AS `object`,

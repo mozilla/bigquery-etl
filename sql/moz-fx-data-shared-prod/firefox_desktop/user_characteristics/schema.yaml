@@ -678,6 +678,24 @@ fields:
       description: 'Firefox build''s build date in unix time
 
         '
+    - name: characteristics_audio_channels
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Audio sampling rate
+
+        '
+    - name: characteristics_audio_frames
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Audio frames
+
+        '
+    - name: characteristics_audio_rate
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Audio sampling rate
+
+        '
   - name: string
     type: RECORD
     mode: NULLABLE
@@ -970,6 +988,98 @@ fields:
       type: STRING
       mode: NULLABLE
       description: 'Firefox build version
+
+        '
+    - name: characteristics_canvasdata10software
+      type: STRING
+      mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        font shipped with Firefox rendered with italics, rotation, and shadow-blur.
+
+        '
+    - name: characteristics_canvasdata11_webglsoftware
+      type: STRING
+      mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a WebGL canvas (instead
+        of Canvas2D). IT is a RGB gradient cube.
+
+        '
+    - name: characteristics_canvasdata12_fingerprintjs1software
+      type: STRING
+      mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas, it is a copy of
+        fingerprintjs'' text canvas
+
+        '
+    - name: characteristics_canvasdata13_fingerprintjs2software
+      type: STRING
+      mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas, it is a copy of
+        fingerprintjs'' geometry canvas
+
+        '
+    - name: characteristics_canvasdata1software
+      type: STRING
+      mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        simple organge box and used as a control image
+
+        '
+    - name: characteristics_canvasdata2software
+      type: STRING
+      mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        bordered triage, and used to test point interpolation
+
+        '
+    - name: characteristics_canvasdata3software
+      type: STRING
+      mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        stretched photographic image, used to test image operations.
+
+        '
+    - name: characteristics_canvasdata4software
+      type: STRING
+      mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is two
+        rotated, semi-transparenct overlapping squares, used to test transparency
+        and point interpolation.
+
+        '
+    - name: characteristics_canvasdata5software
+      type: STRING
+      mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        local font rendered normally.
+
+        '
+    - name: characteristics_canvasdata6software
+      type: STRING
+      mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        local font rendered with italics, rotation, and shadow-blur.
+
+        '
+    - name: characteristics_canvasdata7software
+      type: STRING
+      mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        system-ui font rendered normally.
+
+        '
+    - name: characteristics_canvasdata8software
+      type: STRING
+      mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        system-ui font rendered with italics, rotation, and shadow-blur.
+
+        '
+    - name: characteristics_canvasdata9software
+      type: STRING
+      mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        font shipped with Firefox rendered normally.
 
         '
   - name: string_list

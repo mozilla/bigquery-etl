@@ -9482,6 +9482,10 @@ fields:
       description: 'The total number of trust objects in cert9.db
 
         '
+    - name: pkcs11_third_party_modules_loaded
+      type: INTEGER
+      mode: NULLABLE
+      description: The number of third-party PKCS#11 modules loaded.
   - name: labeled_boolean
     type: RECORD
     mode: NULLABLE
@@ -11301,6 +11305,34 @@ fields:
         the old private browsing session is still being shut down. Denominator: How
         many private browsing sessions (are fully exited). Rate: Of all private browsing
         sessions, how often do we run into the race condition.
+
+        '
+    - name: pkcs11_built_in_roots_module
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: denominator
+        type: INTEGER
+        mode: NULLABLE
+      - name: numerator
+        type: INTEGER
+        mode: NULLABLE
+      description: 'How many successfully-built certificate chains used a certificate
+        from the built-in roots module.
+
+        '
+    - name: pkcs11_nss_cert_db
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: denominator
+        type: INTEGER
+        mode: NULLABLE
+      - name: numerator
+        type: INTEGER
+        mode: NULLABLE
+      description: 'How many successfully-built certificate chains used a certificate
+        from the NSS cert DB.
 
         '
   - name: string_list

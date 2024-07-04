@@ -30,6 +30,7 @@ SELECT
   clients_daily.locale,
   clients_daily.isp,
   active_users.is_mobile,
+  "Organic" AS paid_vs_organic,
   -- ping sent retention
   active_users.retention_seen.day_27.active_on_metric_date AS ping_sent_metric_date,
   (

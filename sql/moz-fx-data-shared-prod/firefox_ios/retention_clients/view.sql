@@ -43,6 +43,9 @@ SELECT
   clients_daily.locale,
   clients_daily.isp,
   active_users.is_mobile,
+  `moz-fx-data-shared-prod.udf.organic_vs_paid_mobile`(
+    attribution.adjust_network
+  ) AS paid_vs_organic,
   attribution.is_suspicious_device_client,
   attribution.adjust_ad_group,
   attribution.adjust_campaign,

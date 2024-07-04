@@ -36,6 +36,7 @@ SELECT
   is_wau,
   is_mau,
   is_mobile,
+  "Organic" AS paid_vs_organic,
   CASE
     WHEN active_users.submission_date = first_seen_date
       THEN 'new_profile'

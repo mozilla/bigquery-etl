@@ -51,6 +51,9 @@ SELECT
   clients_daily.locale,
   clients_daily.isp,
   active_users.is_mobile,
+  `moz-fx-data-shared-prod.udf.organic_vs_paid_mobile`(
+    attribution.adjust_network
+  ) AS paid_vs_organic,
   attribution.play_store_attribution_campaign,
   attribution.play_store_attribution_medium,
   attribution.play_store_attribution_source,

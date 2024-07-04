@@ -15,5 +15,6 @@ SELECT
       THEN 'existing_user'
     ELSE 'Unknown'
   END AS lifecycle_stage,
+  `moz-fx-data-shared-prod.udf.organic_vs_paid_mobile`(adjust_network) AS paid_vs_organic,
 FROM
   `moz-fx-data-shared-prod.firefox_ios_derived.retention_v1`

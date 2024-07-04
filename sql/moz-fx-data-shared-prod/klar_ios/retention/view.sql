@@ -15,5 +15,6 @@ SELECT
       THEN 'existing_user'
     ELSE 'Unknown'
   END AS lifecycle_stage,
+  "Organic" AS paid_vs_organic,
 FROM
   `moz-fx-data-shared-prod.klar_ios_derived.retention_v1`

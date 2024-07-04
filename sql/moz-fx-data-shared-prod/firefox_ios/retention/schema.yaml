@@ -88,3 +88,6 @@ fields:
 - name: lifecycle_stage
   type: STRING
   mode: NULLABLE
+- name: paid_vs_organic
+  type: STRING
+  mode: NULLABLE

@@ -1,0 +1,70 @@
+---
+- &base
+  submission_date: '2017-01-01'
+  client_id: a
+  country: US
+  profile_creation_date: '2019-09-06 00:00:00'
+  experiments: []
+  scalar_parent_urlbar_searchmode_bookmarkmenu_sum: []
+  scalar_parent_urlbar_searchmode_handoff_sum: []
+  scalar_parent_urlbar_searchmode_keywordoffer_sum: []
+  scalar_parent_urlbar_searchmode_oneoff_sum: []
+  scalar_parent_urlbar_searchmode_other_sum: []
+  scalar_parent_urlbar_searchmode_shortcut_sum: []
+  scalar_parent_urlbar_searchmode_tabmenu_sum: []
+  scalar_parent_urlbar_searchmode_tabtosearch_sum: []
+  scalar_parent_urlbar_searchmode_tabtosearch_onboard_sum: []
+  scalar_parent_urlbar_searchmode_topsites_newtab_sum: []
+  scalar_parent_urlbar_searchmode_topsites_urlbar_sum: []
+  scalar_parent_urlbar_searchmode_touchbar_sum: []
+  scalar_parent_urlbar_searchmode_typed_sum: []
+  search_counts: []
+  ad_clicks: []
+  search_with_ads: []
+  active_addons: []
+  windows_build_number: 22635
+  os: 'Darwin'
+  os_version: '23.4.0'
+- <<: *base
+  client_id: b
+  windows_build_number: 22635
+  os: 'Windows_NT'
+  os_version: '10.0'
+  search_counts:
+    - source: searchbar
+      engine: engine1
+      count: 1
+    - source: 'in-content:sap:code'
+      engine: engine2
+      count: 2
+    - source: 'in-content:sap-follow-on:code'
+      engine: engine2
+      count: 3
+    - source: 'in-content:organic:none'
+      engine: engine2
+      count: 4
+  ad_clicks:
+    - key: engine1
+      value: 2
+    - key: 'engine1:organic.none'
+      value: 3
+  search_with_ads:
+    - key: 'engine1:sap.code'
+      value: 3
+- <<: *base
+  client_id: c
+  active_addons:
+    - addon_id: random@mozilla.com
+      version: '0.1'
+      user_disabled: false
+      app_disabled: false
+      blocklisted: false
+    - addon_id: followonsearch@mozilla.com
+      version: 0.9.6
+      user_disabled: false
+      app_disabled: false
+      blocklisted: false
+  search_counts:
+    - source: contextmenu
+      engine: engine2
+      count: 2

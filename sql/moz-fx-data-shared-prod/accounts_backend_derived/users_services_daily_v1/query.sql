@@ -69,7 +69,7 @@ windowed AS (
     submission_timestamp,
     user_id_sha256,
     service,
-    udf.mode_last(ARRAY_AGG(country) OVER w1) AS country,
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(country) OVER w1) AS country,
     udf_contains_tier1_country(ARRAY_AGG(country) OVER w1) AS seen_in_tier1_country,
     LOGICAL_OR(event_name = 'reg_complete') OVER w1 AS registered,
     -- we cannot count distinct here because the window is ordered by submission_timestamp

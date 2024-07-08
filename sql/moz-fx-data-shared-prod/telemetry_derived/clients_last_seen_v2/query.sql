@@ -52,7 +52,7 @@ WITH _current AS (
     ) AS days_visited_1_uri_private_mode_bits,
     -- We only trust profile_date if it is within one week of the ping submission,
     -- so we ignore any value more than seven days old.
-    udf.days_since_created_profile_as_28_bits(
+    `moz-fx-data-shared-prod.udf.days_since_created_profile_as_28_bits`(
       DATE_DIFF(submission_date, SAFE.PARSE_DATE("%F", SUBSTR(profile_creation_date, 0, 10)), DAY)
     ) AS days_created_profile_bits,
     -- Experiments are an array, so we keep track of a usage bit pattern per experiment.
@@ -107,7 +107,7 @@ _previous AS (
   WHERE
     submission_date = DATE_SUB(@submission_date, INTERVAL 1 DAY)
     -- Filter out rows from yesterday that have now fallen outside the 28-day window.
-    AND udf.shift_28_bits_one_day(days_seen_bits) > 0
+    AND `moz-fx-data-shared-prod.udf.shift_28_bits_one_day`(days_seen_bits) > 0
 ),
 staging AS (
   SELECT
@@ -115,51 +115,51 @@ staging AS (
     IF(cfs.first_seen_date > @submission_date, NULL, cfs.first_seen_date) AS first_seen_date,
     IF(cfs.second_seen_date > @submission_date, NULL, cfs.second_seen_date) AS second_seen_date,
     IF(_current.client_id IS NOT NULL, _current, _previous).* REPLACE (
-      udf.combine_adjacent_days_28_bits(
+      `moz-fx-data-shared-prod.udf.combine_adjacent_days_28_bits`(
         _previous.days_seen_bits,
         _current.days_seen_bits
       ) AS days_seen_bits,
-      udf.combine_adjacent_days_28_bits(
+      `moz-fx-data-shared-prod.udf.combine_adjacent_days_28_bits`(
         _previous.days_active_bits,
         _current.days_active_bits
       ) AS days_active_bits,
-      udf.combine_adjacent_days_28_bits(
+      `moz-fx-data-shared-prod.udf.combine_adjacent_days_28_bits`(
         _previous.days_visited_1_uri_bits,
         _current.days_visited_1_uri_bits
       ) AS days_visited_1_uri_bits,
-      udf.combine_adjacent_days_28_bits(
+      `moz-fx-data-shared-prod.udf.combine_adjacent_days_28_bits`(
         _previous.days_visited_5_uri_bits,
         _current.days_visited_5_uri_bits
       ) AS days_visited_5_uri_bits,
-      udf.combine_adjacent_days_28_bits(
+      `moz-fx-data-shared-prod.udf.combine_adjacent_days_28_bits`(
         _previous.days_visited_10_uri_bits,
         _current.days_visited_10_uri_bits
       ) AS days_visited_10_uri_bits,
-      udf.combine_adjacent_days_28_bits(
+      `moz-fx-data-shared-prod.udf.combine_adjacent_days_28_bits`(
         _previous.days_had_8_active_ticks_bits,
         _current.days_had_8_active_ticks_bits
       ) AS days_had_8_active_ticks_bits,
-      udf.combine_adjacent_days_28_bits(
+      `moz-fx-data-shared-prod.udf.combine_adjacent_days_28_bits`(
         _previous.days_opened_dev_tools_bits,
         _current.days_opened_dev_tools_bits
       ) AS days_opened_dev_tools_bits,
-      udf.combine_adjacent_days_28_bits(
+      `moz-fx-data-shared-prod.udf.combine_adjacent_days_28_bits`(
         _previous.days_interacted_bits,
         _current.days_interacted_bits
       ) AS days_interacted_bits,
-      udf.combine_adjacent_days_28_bits(
+      `moz-fx-data-shared-prod.udf.combine_adjacent_days_28_bits`(
         _previous.days_visited_1_uri_normal_mode_bits,
         _current.days_visited_1_uri_normal_mode_bits
       ) AS days_visited_1_uri_normal_mode_bits,
-      udf.combine_adjacent_days_28_bits(
+      `moz-fx-data-shared-prod.udf.combine_adjacent_days_28_bits`(
         _previous.days_visited_1_uri_private_mode_bits,
         _current.days_visited_1_uri_private_mode_bits
       ) AS days_visited_1_uri_private_mode_bits,
-      udf.coalesce_adjacent_days_28_bits(
+      `moz-fx-data-shared-prod.udf.coalesce_adjacent_days_28_bits`(
         _previous.days_created_profile_bits,
         _current.days_created_profile_bits
       ) AS days_created_profile_bits,
-      udf.combine_experiment_days(
+      `moz-fx-data-shared-prod.udf.combine_experiment_days`(
         _previous.days_seen_in_experiment,
         _current.days_seen_in_experiment
       ) AS days_seen_in_experiment

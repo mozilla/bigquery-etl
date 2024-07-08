@@ -1,6 +1,6 @@
 friendly_name: Telemetry Derived - Event Events
 description: |-
-  [DESCRIPTION_MISSING]
+  Daily flattened legacy events, i.e. one row per event nested in telemetry_stable.event_v4
 owners:
 - data-platform-infra-wg@mozilla.com
 labels:
@@ -15,4 +15,5 @@ bigquery:
     fields:
     - event_category
     - sample_id
+    - client_id
 references: {}

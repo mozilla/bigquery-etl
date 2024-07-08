@@ -1,0 +1,16 @@
+fields:
+- name: date
+  type: DATE
+  mode: NULLABLE
+- name: visit_identifier
+  type: STRING
+  mode: NULLABLE
+- name: downloads
+  type: INTEGER
+  mode: NULLABLE
+- name: social_share
+  type: INTEGER
+  mode: NULLABLE
+- name: newsletter_subscription
+  type: INTEGER
+  mode: NULLABLE

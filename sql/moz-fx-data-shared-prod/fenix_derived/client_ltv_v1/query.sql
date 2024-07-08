@@ -20,7 +20,7 @@ historic_data AS (
   SELECT
     *
   FROM
-    fenix_derived.client_ltv_v1
+    `moz-fx-data-shared-prod.fenix_derived.client_ltv_v1`
 )
 SELECT
   (

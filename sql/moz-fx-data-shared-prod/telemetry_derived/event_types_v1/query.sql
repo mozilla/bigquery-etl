@@ -3,7 +3,7 @@
 SELECT
   * EXCEPT (submission_date)
 FROM
-  telemetry_derived.event_types_history_v1
+  `moz-fx-data-shared-prod.telemetry_derived.event_types_history_v1`
   {% if not is_init() %}
     WHERE
       submission_date = @submission_date

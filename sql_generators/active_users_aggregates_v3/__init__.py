@@ -162,17 +162,18 @@ def generate(target_project, output_dir, use_cloud_function):
             skip_existing=False,
         )
 
+        # generate metadata file
         write_sql(
             output_dir=output_dir,
             full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}",
             basename="metadata.yaml",
             sql=render(
-                metadata_template,
-                template_folder=THIS_PATH / "templates",
-                app_value=browser.value,
-                app_name=browser.name,
-                format=False,
-            ),
+                    metadata_template,
+                    template_folder=THIS_PATH / "templates",
+                    app_value=browser.value,
+                    app_name=browser.name,
+                    format=False,
+                ),
             skip_existing=False,
         )
 

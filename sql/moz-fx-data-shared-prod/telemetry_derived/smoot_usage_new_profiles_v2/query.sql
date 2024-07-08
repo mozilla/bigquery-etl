@@ -1,16 +1,26 @@
-WITH
-  base AS (
-  SELECT * FROM smoot_usage_desktop_v2
+WITH base AS (
+  SELECT
+    *
+  FROM
+    `moz-fx-data-shared-prod.telemetry_derived.smoot_usage_desktop_v2`
   UNION ALL
-  SELECT * FROM smoot_usage_nondesktop_v2
+  SELECT
+    *
+  FROM
+    `moz-fx-data-shared-prod.telemetry_derived.smoot_usage_nondesktop_v2`
   UNION ALL
-  SELECT * FROM smoot_usage_fxa_v2
-  )
+  SELECT
+    *
+  FROM
+    `moz-fx-data-shared-prod.telemetry_derived.smoot_usage_fxa_v2`
+)
   --
 SELECT
   submission_date,
-  CASE usage
-    WHEN 'Any Firefox Account Activity' THEN 'New Firefox Account Registered'
+  CASE
+    usage
+    WHEN 'Any Firefox Account Activity'
+      THEN 'New Firefox Account Registered'
     ELSE REGEXP_REPLACE(usage, 'Any (.*) Activity', 'New \\1 Profile Created')
   END AS usage,
   metrics.day_6.new_profiles,

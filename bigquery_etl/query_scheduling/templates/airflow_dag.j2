@@ -75,7 +75,7 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
         task_id='wait_for_{{ dependency.task_id }}',
         external_dag_id='{{ dependency.dag_name }}',
         {% if dependency.task_group -%}
-        external_task_group_id='{{ dependency.task_group }}'
+        external_task_group_id='{{ dependency.task_group }}',
         {% endif -%}
         external_task_id='{{ dependency.task_id }}',
         {% if dependency.get_execution_delta(schedule_interval) -%}

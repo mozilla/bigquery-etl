@@ -14,6 +14,7 @@ scheduling:
   dag_name: bqetl_glam_export
   date_partition_parameter: null
   depends_on:
-  - task_id: extracts
+  - task_id: glam_client_probe_counts_beta_extract
+    task_group: extracts
     dag_name: glam
     execution_delta: 6h

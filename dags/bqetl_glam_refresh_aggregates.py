@@ -50,10 +50,34 @@ with DAG(
     tags=tags,
 ) as dag:
 
-    wait_for_extracts = ExternalTaskSensor(
-        task_id="wait_for_extracts",
+    wait_for_glam_client_probe_counts_beta_extract = ExternalTaskSensor(
+        task_id="wait_for_glam_client_probe_counts_beta_extract",
         external_dag_id="glam",
-        external_task_id="extracts",
+        external_task_id="extracts.glam_client_probe_counts_beta_extract",
+        execution_delta=datetime.timedelta(days=-1, seconds=57600),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_glam_client_probe_counts_nightly_extract = ExternalTaskSensor(
+        task_id="wait_for_glam_client_probe_counts_nightly_extract",
+        external_dag_id="glam",
+        external_task_id="extracts.glam_client_probe_counts_nightly_extract",
+        execution_delta=datetime.timedelta(days=-1, seconds=57600),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_glam_client_probe_counts_release_extract = ExternalTaskSensor(
+        task_id="wait_for_glam_client_probe_counts_release_extract",
+        external_dag_id="glam",
+        external_task_id="extracts.glam_client_probe_counts_release_extract",
         execution_delta=datetime.timedelta(days=-1, seconds=57600),
         check_existence=True,
         mode="reschedule",
@@ -242,11 +266,17 @@ with DAG(
         sql_file_path="sql/moz-fx-data-glam-prod-fca7/glam_etl/glam_fog_release_aggregates_v1/script.sql",
     )
 
-    glam_etl__glam_desktop_beta_aggregates__v1.set_upstream(wait_for_extracts)
+    glam_etl__glam_desktop_beta_aggregates__v1.set_upstream(
+        wait_for_glam_client_probe_counts_beta_extract
+    )
 
-    glam_etl__glam_desktop_nightly_aggregates__v1.set_upstream(wait_for_extracts)
+    glam_etl__glam_desktop_nightly_aggregates__v1.set_upstream(
+        wait_for_glam_client_probe_counts_nightly_extract
+    )
 
-    glam_etl__glam_desktop_release_aggregates__v1.set_upstream(wait_for_extracts)
+    glam_etl__glam_desktop_release_aggregates__v1.set_upstream(
+        wait_for_glam_client_probe_counts_release_extract
+    )
 
     glam_etl__glam_fenix_beta_aggregates__v1.set_upstream(
         wait_for_export_org_mozilla_fenix_glam_beta

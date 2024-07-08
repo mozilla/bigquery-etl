@@ -50,6 +50,18 @@ with DAG(
     tags=tags,
 ) as dag:
 
+    wait_for_glam_client_probe_counts_beta_extract = ExternalTaskSensor(
+        task_id="wait_for_glam_client_probe_counts_beta_extract",
+        external_dag_id="glam",
+        external_task_id="extracts.glam_client_probe_counts_beta_extract",
+        execution_delta=datetime.timedelta(seconds=21600),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     wait_for_extracts = ExternalTaskSensor(
         task_id="wait_for_extracts",
         external_dag_id="glam",
@@ -87,7 +99,7 @@ with DAG(
     )
 
     glam_derived__client_probe_counts_firefox_desktop_beta__v1.set_upstream(
-        wait_for_extracts
+        wait_for_glam_client_probe_counts_beta_extract
     )
 
     glam_derived__client_probe_counts_firefox_desktop_nightly__v1.set_upstream(

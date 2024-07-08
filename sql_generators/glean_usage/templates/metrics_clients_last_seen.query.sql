@@ -1,14 +1,21 @@
 {{ header }}
 
-{% raw %}
-{% if is_init() %}
-{% endraw %}
+{% raw %}{% if is_init() %}{% endraw %}
 SELECT
-    *
-  FROM
-    `{{ project_id }}.{{ app_name }}.metrics_clients_daily` AS m
-  WHERE
-    FALSE
+  DATE(@submission_date) AS submission_date,
+  _current.client_id,
+  _current.sample_id,
+  _current.normalized_channel,
+  _current.n_metrics_ping,
+  _current.days_sent_metrics_ping_bits AS days_sent_metrics_ping_bits,
+  {% if app_name in metrics -%}
+  {% for metric in metrics[app_name] -%}
+    _current.{{metric}} AS {{metric}},
+  {% endfor -%}
+  {% endif -%}
+FROM
+  `{{ project_id }}.{{ app_name }}.metrics_clients_daily` AS _current
+WHERE FALSE
 {% raw %}
 {% else %}
 {% endraw %}

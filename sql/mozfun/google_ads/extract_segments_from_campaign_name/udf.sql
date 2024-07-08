@@ -6,7 +6,21 @@ RETURNS STRUCT<campaign_region STRING, campaign_country_code STRING, campaign_la
     -- Mozilla_FF_UAC_AU_AU_EN_AllGroups_Event7
     -- Mozilla_Firefox_DE_DE_Google_UAC_Android
     -- Mozilla_NA_FF_UAC_Group1_Event1
+    -- Mozilla_FF_YouTube_US_EN_Drip_Consideration
   CASE
+    -- Monitor Plus
+    WHEN REGEXP_CONTAINS(campaign_name, r"^(Mozilla_Monitor_Plus)")
+      THEN STRUCT(
+        CASE
+          WHEN REGEXP_CONTAINS(campaign_name, r"_(US|CA)_")
+            THEN "NA"
+          ELSE "EU"
+        END AS campaign_region,
+        REGEXP_EXTRACT(campaign_name, r"^Mozilla_Monitor_Plus_([A-Z]{2})") AS campaign_country_code,
+        REGEXP_EXTRACT(campaign_name, r"^Mozilla_Monitor_Plus_[A-Z]{2}_([A-Z]{2})") AS campaign_language
+
+      )
+    -- UAC
     WHEN REGEXP_CONTAINS(campaign_name, r"^(Mozilla_FF_UAC)")
       THEN STRUCT(
           CASE
@@ -50,23 +64,31 @@ RETURNS STRUCT<campaign_region STRING, campaign_country_code STRING, campaign_la
 );
 
 SELECT
-  assert.struct_equals(
+
+  -- Test Monitor Plus
+  mozfun.assert.struct_equals(
+    google_ads.extract_segments_from_campaign_name("Mozilla_Monitor_Plus_US_EN_Google_Search_07.05.24-31.07.24_NB"),
+    STRUCT("NA" AS campaign_region, "US" AS campaign_country_code, "EN" AS campaign_language)
+  ),
+
+  -- Test UAC
+  mozfun.assert.struct_equals(
     google_ads.extract_segments_from_campaign_name("Mozilla_FF_UAC_EU_AT_EN_AllGroups_Event1"),
     STRUCT("EU" AS campaign_region, "AT" AS campaign_country_code, "EN" AS campaign_language)
   ),
-  assert.struct_equals(
+  mozfun.assert.struct_equals(
     google_ads.extract_segments_from_campaign_name("Mozilla_FF_UAC_MGFQ3_KE_EN_CPI"),
     STRUCT("Expansion" AS campaign_region, "KE" AS campaign_country_code, "EN" AS campaign_language)
   ),
-  assert.struct_equals(
+  mozfun.assert.struct_equals(
     google_ads.extract_segments_from_campaign_name("Mozilla_FF_UAC_AU_AU_EN_AllGroups_Event7"),
     STRUCT("AU" AS campaign_region, "AU" AS campaign_country_code, "EN" AS campaign_language)
   ),
-  assert.struct_equals(
+  mozfun.assert.struct_equals(
     google_ads.extract_segments_from_campaign_name("Mozilla_Firefox_DE_DE_Google_UAC_Android"),
     STRUCT("EU" AS campaign_region, "DE" AS campaign_country_code, "DE" AS campaign_language)
   ),
-  assert.struct_equals(
+  mozfun.assert.struct_equals(
     google_ads.extract_segments_from_campaign_name("Mozilla_NA_FF_UAC_Group1_Event1"),
     STRUCT(
       "NA" AS campaign_region,

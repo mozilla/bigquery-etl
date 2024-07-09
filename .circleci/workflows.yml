@@ -853,7 +853,6 @@ jobs:
           steps:
             - *skip
   deploy-to-private-gcr:
-    executor: ubuntu-machine-executor
 
     executor: gcp-cli/google
     steps:

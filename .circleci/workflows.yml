@@ -854,7 +854,20 @@ jobs:
             - *skip
   deploy-to-private-gcr:
     executor: ubuntu-machine-executor
+
+    executor: gcp-cli/google
     steps:
+      - run:
+          name: Prepare environment variables for OIDC authentication
+          # Project ID is not used for OIDC authentication, but gcloud CLI requires a valid project ID.
+          command: |
+            echo 'export GOOGLE_PROJECT_ID="moz-fx-telemetry-airflow-prod"' >> "$BASH_ENV"
+            echo "export OIDC_WIP_ID=$GCPV2_WORKLOAD_IDENTITY_POOL_ID" >> "$BASH_ENV"
+            echo "export OIDC_WIP_PROVIDER_ID=$GCPV2_CIRCLECI_WORKLOAD_IDENTITY_PROVIDER" >> "$BASH_ENV"
+            echo "export GOOGLE_PROJECT_NUMBER=$GCPV2_WORKLOAD_IDENTITY_POOL_PROJECT_NUMBER" >> "$BASH_ENV"
+            echo "export OIDC_SERVICE_ACCOUNT_EMAIL=$GCP_SERVICE_ACCOUNT_EMAIL" >> "$BASH_ENV"
+      - gcp-cli/setup:
+          use_oidc: true
       - when:
           condition: *deploy
           steps:

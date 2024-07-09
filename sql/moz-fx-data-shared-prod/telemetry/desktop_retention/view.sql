@@ -14,5 +14,6 @@ SELECT
       THEN 'existing_user'
     ELSE 'Unknown'
   END AS lifecycle_stage,
+  `moz-fx-data-shared-prod.udf.organic_vs_paid_desktop`(attribution_medium) AS paid_vs_organic
 FROM
   `moz-fx-data-shared-prod.telemetry_derived.desktop_retention_v1`

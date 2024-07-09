@@ -66,6 +66,11 @@ SELECT
   {% for field in attribution_fields %}
     attribution.{{ field.name }},
   {% endfor %}
+  {% for field in attribution_fields if field.name == "adjust_network" %}
+    `moz-fx-data-shared-prod.udf.organic_vs_paid_mobile`(attribution.adjust_network) AS paid_vs_organic,
+  {% else %}
+    "Organic" AS paid_vs_organic,
+  {% endfor %}
   CASE
     WHEN active_users.submission_date = first_seen_date
       THEN 'new_profile'

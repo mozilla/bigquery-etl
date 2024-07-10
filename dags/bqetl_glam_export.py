@@ -62,10 +62,10 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_extracts = ExternalTaskSensor(
-        task_id="wait_for_extracts",
+    wait_for_glam_client_probe_counts_nightly_extract = ExternalTaskSensor(
+        task_id="wait_for_glam_client_probe_counts_nightly_extract",
         external_dag_id="glam",
-        external_task_id="extracts",
+        external_task_id="extracts.glam_client_probe_counts_nightly_extract",
         execution_delta=datetime.timedelta(seconds=21600),
         check_existence=True,
         mode="reschedule",
@@ -103,5 +103,5 @@ with DAG(
     )
 
     glam_derived__client_probe_counts_firefox_desktop_nightly__v1.set_upstream(
-        wait_for_extracts
+        wait_for_glam_client_probe_counts_nightly_extract
     )

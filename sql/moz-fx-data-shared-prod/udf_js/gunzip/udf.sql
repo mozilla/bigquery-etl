@@ -22,7 +22,10 @@ AS
 
     function binary2String(byteArray) {
         // converts a UTF-16 byte array to a string
-        return String.fromCharCode.apply(String, byteArray);
+        return byteArray.reduce(
+          (accumulator, char_code) => accumulator + String.fromCharCode(char_code),
+          "",
+        )
     }
 
     // BYTES are base64 encoded by BQ, so this needs to be decoded
@@ -70,6 +73,7 @@ unzipped AS (
 )
   --
 SELECT
-  mozfun.assert.equals(expected, result)
+  mozfun.assert.equals(expected, result),
+  mozfun.assert.equals(udf_js.gunzip(CAST(REPEAT("a", 500000) AS BYTES)), REPEAT("a", 500000)),
 FROM
   unzipped

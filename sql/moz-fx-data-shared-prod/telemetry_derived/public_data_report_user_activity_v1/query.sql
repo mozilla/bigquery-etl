@@ -33,6 +33,24 @@ sample AS (
     AND subsession_hours_sum < 24 --remove outliers
     AND sample_id = 1
 ),
+-- active_users_aggregates is used for canonical usage calculations
+active_users_aggregates AS (
+  SELECT
+    DATE_TRUNC(submission_date, WEEK(MONDAY)) AS week_start,
+    COALESCE(cn.name, country_group) AS country_name,
+    mau,
+    wau,
+  FROM
+    `moz-fx-data-shared-prod.firefox_desktop.active_users_aggregates`
+  CROSS JOIN
+    -- add "Worldwide" row for every row to get totals
+    UNNEST([country, 'Worldwide']) AS country_group
+  LEFT JOIN
+    countries AS cn
+    ON cn.code = country_group
+  WHERE
+    submission_date = @submission_date
+),
 sample_addons AS (
   SELECT
     week_start,
@@ -58,12 +76,23 @@ sample_addons AS (
     days_since_seen < 7
     AND is_last_day_of_week
 ),
-mau_wau AS (
+aggregate_mau AS (
   SELECT
     week_start,
     country_name,
-    COUNT(DISTINCT IF(days_since_seen < 28, client_id, NULL)) AS mau,
-    COUNT(DISTINCT IF(days_since_seen < 7, client_id, NULL)) AS wau
+    SUM(mau) AS mau,
+  FROM
+    active_users_aggregates
+  GROUP BY
+    week_start,
+    country_name
+),
+-- used to calculate ratios
+legacy_wau AS (
+  SELECT
+    week_start,
+    country_name,
+    COUNT(DISTINCT IF(days_since_seen < 7, client_id, NULL)) AS wau,
   FROM
     sample
   WHERE
@@ -234,7 +263,7 @@ addon_ratios AS (
   FROM
     addon_counts
   JOIN
-    mau_wau
+    legacy_wau
     USING (week_start, country_name)
 ),
 top_addons AS (
@@ -303,7 +332,7 @@ locale_ratios AS (
   FROM
     locale_counts
   JOIN
-    mau_wau
+    legacy_wau
     USING (week_start, country_name)
 ),
 top_locales AS (
@@ -318,9 +347,9 @@ top_locales AS (
     country_name
 )
 SELECT
-  mau_wau.week_start AS submission_date,
-  mau_wau.country_name,
-  mau_wau.mau,
+  aggregate_mau.week_start AS submission_date,
+  aggregate_mau.country_name,
+  aggregate_mau.mau,
   daily_usage.avg_hours_usage_daily,
   intensity.intensity,
   new_profile_rate.new_profile_rate,
@@ -329,7 +358,7 @@ SELECT
   has_addon.has_addon_ratio,
   top_locales.top_locales
 FROM
-  mau_wau
+  aggregate_mau
 JOIN
   daily_usage
   USING (week_start, country_name)

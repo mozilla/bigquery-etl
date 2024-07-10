@@ -1243,11 +1243,11 @@ workflows:
           filters:
             branches:
               only:
-                - main
+                - DSRE-1683
   tagged-deploy:
     jobs:
       - deploy-to-pypi:
           filters:
             branches:
               only:
-                - DSRE-1683
+                - main

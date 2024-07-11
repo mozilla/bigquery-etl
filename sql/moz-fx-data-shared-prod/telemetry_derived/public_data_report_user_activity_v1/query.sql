@@ -41,7 +41,7 @@ active_users_aggregates AS (
     mau,
     wau,
   FROM
-    `moz-fx-data-shared-prod.firefox_desktop.active_users_aggregates`
+    `moz-fx-data-shared-prod.telemetry.active_users_aggregates`
   CROSS JOIN
     -- add "Worldwide" row for every row to get totals
     UNNEST([country, 'Worldwide']) AS country_group
@@ -50,6 +50,7 @@ active_users_aggregates AS (
     ON cn.code = country_group
   WHERE
     submission_date = @submission_date
+    AND app_name = 'Firefox Desktop'
 ),
 sample_addons AS (
   SELECT

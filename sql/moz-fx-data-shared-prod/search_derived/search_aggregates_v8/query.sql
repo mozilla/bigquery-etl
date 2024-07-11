@@ -14,10 +14,10 @@ SELECT
   os_version,
   is_default_browser,
   policies_is_enterprise,
+  is_sap_monetizable,
   channel,
-  CAST(
-    NULL AS STRING
-  ) AS normalized_engine, -- See https://github.com/mozilla/bigquery-etl/issues/2462
+  `moz-fx-data-shared-prod`.udf.normalize_search_engine(engine) AS normalized_engine,
+  is_sap_monetizable,
   COUNT(*) AS client_count,
   SUM(organic) AS organic,
   SUM(tagged_sap) AS tagged_sap,
@@ -49,4 +49,5 @@ GROUP BY
   os_version,
   is_default_browser,
   policies_is_enterprise,
-  channel
+  channel,
+  is_sap_monetizable

@@ -14,7 +14,6 @@ SELECT
   os_version,
   is_default_browser,
   policies_is_enterprise,
-  is_sap_monetizable,
   channel,
   `moz-fx-data-shared-prod`.udf.normalize_search_engine(engine) AS normalized_engine,
   is_sap_monetizable,

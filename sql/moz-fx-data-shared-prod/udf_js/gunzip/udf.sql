@@ -64,6 +64,10 @@ WITH input AS (
   SELECT
     CAST('{"hello": "world"}' AS BYTES),
     '{"hello": "world"}'
+  UNION ALL
+  SELECT
+      CAST(REPEAT("ab", 200000) AS BYTES),
+      REPEAT("ab", 200000)
 ),
   --
 unzipped AS (
@@ -75,7 +79,6 @@ unzipped AS (
 )
   --
 SELECT
-  mozfun.assert.equals(expected, result),
-  mozfun.assert.equals(udf_js.gunzip(CAST(REPEAT("abc", 200000) AS BYTES)), REPEAT("abc", 200000)),
+  mozfun.assert.equals(expected, result)
 FROM
   unzipped

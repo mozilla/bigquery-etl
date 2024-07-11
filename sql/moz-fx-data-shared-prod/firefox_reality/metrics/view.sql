@@ -54,7 +54,8 @@ SELECT
       metrics.timing_distribution.glean_upload_send_failure,
       metrics.timing_distribution.glean_upload_send_success,
       metrics.timing_distribution.glean_validation_shutdown_wait,
-      metrics.timing_distribution.glean_validation_shutdown_dispatcher_wait
+      metrics.timing_distribution.glean_validation_shutdown_dispatcher_wait,
+      metrics.timing_distribution.glean_database_write_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,

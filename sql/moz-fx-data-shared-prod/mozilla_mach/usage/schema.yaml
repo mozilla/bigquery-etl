@@ -284,6 +284,10 @@ fields:
       type: BOOLEAN
       mode: NULLABLE
       description: True if there is an instance of vscode running.
+    - name: mach_moz_automation
+      type: BOOLEAN
+      mode: NULLABLE
+      description: True if this command is being run on Mozilla Automation/CI
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -426,6 +430,10 @@ fields:
       type: STRING
       mode: NULLABLE
       description: The project being built.
+    - name: mozbuild_target
+      type: STRING
+      mode: NULLABLE
+      description: The target architecture for the build, such as "x86_64-pc-mingw32".
   - name: string_list
     type: RECORD
     mode: NULLABLE
@@ -448,6 +456,94 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: How long it took for the command to complete.
+    - name: mozbuild_tier_artifact_duration
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: How long it took for the artifact tier of the build to complete.
+    - name: mozbuild_tier_compile_duration
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: How long it took for the compile tier of the build to complete.
+    - name: mozbuild_tier_configure_duration
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: How long it took for the configure tier of the build to complete.
+    - name: mozbuild_tier_export_duration
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: How long it took for the export tier of the build to complete.
+    - name: mozbuild_tier_libs_duration
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: How long it took for the libs tier of the build to complete.
+    - name: mozbuild_tier_misc_duration
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: How long it took for the misc tier of the build to complete.
+    - name: mozbuild_tier_pre_export_duration
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: How long it took for the pre-export tier of the build to complete.
+    - name: mozbuild_tier_tools_duration
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: How long it took for the tools tier of the build to complete.
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

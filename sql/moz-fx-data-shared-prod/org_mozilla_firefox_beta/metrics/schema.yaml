@@ -1515,6 +1515,13 @@ fields:
         to clear up EarlyHintPreloader
 
         '
+    - name: networking_os_socket_limit_reached
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counts the number of times the os socket limit was reached. i.e.
+        CanAttachSocket() returned false.
+
+        '
   - name: custom_distribution
     type: RECORD
     mode: NULLABLE
@@ -3347,7 +3354,8 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream.
+      description: 'Failure occurs when initializing the audio stream. (Migrated from
+        the geckoview metric of the same name).
 
         '
     - name: glean_validation_pings_submitted
@@ -13952,6 +13960,49 @@ fields:
         not include rasterization or compositing of that paint. This is collected
         only on page load where the main document uses HTTP3. A "priority" header
         has not been received.
+
+        '
+    - name: glean_database_write_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The time it takes for a write-commit for the Glean database.
 
         '
   - name: memory_distribution

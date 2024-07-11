@@ -96,7 +96,8 @@ SELECT
       metrics.counter.webauthn_create_success,
       metrics.counter.webauthn_get_failure,
       metrics.counter.webauthn_get_success,
-      metrics.counter.netwerk_parent_connect_timeout
+      metrics.counter.netwerk_parent_connect_timeout,
+      metrics.counter.networking_os_socket_limit_reached
     ) AS `counter`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -493,7 +494,8 @@ SELECT
       metrics.timing_distribution.performance_pageload_h3p_fcp_with_priority,
       metrics.timing_distribution.performance_pageload_http3_fcp_http3,
       metrics.timing_distribution.performance_pageload_http3_fcp_supports_http3,
-      metrics.timing_distribution.performance_pageload_http3_fcp_without_priority
+      metrics.timing_distribution.performance_pageload_http3_fcp_without_priority,
+      metrics.timing_distribution.glean_database_write_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.labeled_boolean.cookie_banners_normal_window_service_mode,
@@ -639,7 +641,8 @@ SELECT
       metrics.counter.webauthn_create_success,
       metrics.counter.webauthn_get_failure,
       metrics.counter.webauthn_get_success,
-      metrics.counter.netwerk_parent_connect_timeout
+      metrics.counter.netwerk_parent_connect_timeout,
+      metrics.counter.networking_os_socket_limit_reached
     ) AS `counter`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -1036,7 +1039,8 @@ SELECT
       metrics.timing_distribution.performance_pageload_h3p_fcp_with_priority,
       metrics.timing_distribution.performance_pageload_http3_fcp_http3,
       metrics.timing_distribution.performance_pageload_http3_fcp_supports_http3,
-      metrics.timing_distribution.performance_pageload_http3_fcp_without_priority
+      metrics.timing_distribution.performance_pageload_http3_fcp_without_priority,
+      metrics.timing_distribution.glean_database_write_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.labeled_boolean.cookie_banners_normal_window_service_mode,
@@ -1182,7 +1186,8 @@ SELECT
       metrics.counter.webauthn_create_success,
       metrics.counter.webauthn_get_failure,
       metrics.counter.webauthn_get_success,
-      metrics.counter.netwerk_parent_connect_timeout
+      metrics.counter.netwerk_parent_connect_timeout,
+      metrics.counter.networking_os_socket_limit_reached
     ) AS `counter`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -1579,7 +1584,8 @@ SELECT
       metrics.timing_distribution.performance_pageload_h3p_fcp_with_priority,
       metrics.timing_distribution.performance_pageload_http3_fcp_http3,
       metrics.timing_distribution.performance_pageload_http3_fcp_supports_http3,
-      metrics.timing_distribution.performance_pageload_http3_fcp_without_priority
+      metrics.timing_distribution.performance_pageload_http3_fcp_without_priority,
+      metrics.timing_distribution.glean_database_write_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.labeled_boolean.cookie_banners_normal_window_service_mode,

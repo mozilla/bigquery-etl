@@ -56,7 +56,8 @@ SELECT
       metrics.timing_distribution.glean_upload_send_success,
       metrics.timing_distribution.glean_validation_shutdown_dispatcher_wait,
       metrics.timing_distribution.glean_validation_shutdown_wait,
-      metrics.timing_distribution.performance_time_to_main_screen
+      metrics.timing_distribution.performance_time_to_main_screen,
+      metrics.timing_distribution.glean_database_write_time
     ) AS `timing_distribution`
   ) AS `metrics`,
   normalized_app_name,
@@ -135,7 +136,8 @@ SELECT
       metrics.timing_distribution.glean_upload_send_success,
       metrics.timing_distribution.glean_validation_shutdown_dispatcher_wait,
       metrics.timing_distribution.glean_validation_shutdown_wait,
-      metrics.timing_distribution.performance_time_to_main_screen
+      metrics.timing_distribution.performance_time_to_main_screen,
+      metrics.timing_distribution.glean_database_write_time
     ) AS `timing_distribution`
   ) AS `metrics`,
   normalized_app_name,
@@ -222,7 +224,8 @@ SELECT
       metrics.timing_distribution.glean_upload_send_success,
       metrics.timing_distribution.glean_validation_shutdown_dispatcher_wait,
       metrics.timing_distribution.glean_validation_shutdown_wait,
-      metrics.timing_distribution.performance_time_to_main_screen
+      metrics.timing_distribution.performance_time_to_main_screen,
+      metrics.timing_distribution.glean_database_write_time
     ) AS `timing_distribution`
   ) AS `metrics`,
   normalized_app_name,
@@ -289,7 +292,8 @@ SELECT
       metrics.timing_distribution.glean_upload_send_success,
       metrics.timing_distribution.glean_validation_shutdown_dispatcher_wait,
       metrics.timing_distribution.glean_validation_shutdown_wait,
-      metrics.timing_distribution.performance_time_to_main_screen
+      metrics.timing_distribution.performance_time_to_main_screen,
+      metrics.timing_distribution.glean_database_write_time
     ) AS `timing_distribution`
   ) AS `metrics`,
   normalized_app_name,

@@ -176,7 +176,8 @@ SELECT
       metrics.counter.webauthn_create_success,
       metrics.counter.webauthn_get_failure,
       metrics.counter.webauthn_get_success,
-      metrics.counter.netwerk_parent_connect_timeout
+      metrics.counter.netwerk_parent_connect_timeout,
+      metrics.counter.networking_os_socket_limit_reached
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -674,7 +675,8 @@ SELECT
       metrics.timing_distribution.performance_pageload_h3p_fcp_with_priority,
       metrics.timing_distribution.performance_pageload_http3_fcp_http3,
       metrics.timing_distribution.performance_pageload_http3_fcp_supports_http3,
-      metrics.timing_distribution.performance_pageload_http3_fcp_without_priority
+      metrics.timing_distribution.performance_pageload_http3_fcp_without_priority,
+      metrics.timing_distribution.glean_database_write_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -939,7 +941,8 @@ SELECT
       metrics.counter.webauthn_create_success,
       metrics.counter.webauthn_get_failure,
       metrics.counter.webauthn_get_success,
-      metrics.counter.netwerk_parent_connect_timeout
+      metrics.counter.netwerk_parent_connect_timeout,
+      metrics.counter.networking_os_socket_limit_reached
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -1437,7 +1440,8 @@ SELECT
       metrics.timing_distribution.performance_pageload_h3p_fcp_with_priority,
       metrics.timing_distribution.performance_pageload_http3_fcp_http3,
       metrics.timing_distribution.performance_pageload_http3_fcp_supports_http3,
-      metrics.timing_distribution.performance_pageload_http3_fcp_without_priority
+      metrics.timing_distribution.performance_pageload_http3_fcp_without_priority,
+      metrics.timing_distribution.glean_database_write_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -1720,7 +1724,8 @@ SELECT
       metrics.counter.webauthn_create_success,
       metrics.counter.webauthn_get_failure,
       metrics.counter.webauthn_get_success,
-      metrics.counter.netwerk_parent_connect_timeout
+      metrics.counter.netwerk_parent_connect_timeout,
+      metrics.counter.networking_os_socket_limit_reached
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -2218,7 +2223,8 @@ SELECT
       metrics.timing_distribution.performance_pageload_h3p_fcp_with_priority,
       metrics.timing_distribution.performance_pageload_http3_fcp_http3,
       metrics.timing_distribution.performance_pageload_http3_fcp_supports_http3,
-      metrics.timing_distribution.performance_pageload_http3_fcp_without_priority
+      metrics.timing_distribution.performance_pageload_http3_fcp_without_priority,
+      metrics.timing_distribution.glean_database_write_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -2510,7 +2516,8 @@ SELECT
       metrics.counter.webauthn_create_success,
       metrics.counter.webauthn_get_failure,
       metrics.counter.webauthn_get_success,
-      metrics.counter.netwerk_parent_connect_timeout
+      metrics.counter.netwerk_parent_connect_timeout,
+      metrics.counter.networking_os_socket_limit_reached
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -3008,7 +3015,8 @@ SELECT
       metrics.timing_distribution.performance_pageload_h3p_fcp_with_priority,
       metrics.timing_distribution.performance_pageload_http3_fcp_http3,
       metrics.timing_distribution.performance_pageload_http3_fcp_supports_http3,
-      metrics.timing_distribution.performance_pageload_http3_fcp_without_priority
+      metrics.timing_distribution.performance_pageload_http3_fcp_without_priority,
+      metrics.timing_distribution.glean_database_write_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -3282,7 +3290,8 @@ SELECT
       metrics.counter.webauthn_create_success,
       metrics.counter.webauthn_get_failure,
       metrics.counter.webauthn_get_success,
-      metrics.counter.netwerk_parent_connect_timeout
+      metrics.counter.netwerk_parent_connect_timeout,
+      metrics.counter.networking_os_socket_limit_reached
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -3780,7 +3789,8 @@ SELECT
       metrics.timing_distribution.performance_pageload_h3p_fcp_with_priority,
       metrics.timing_distribution.performance_pageload_http3_fcp_http3,
       metrics.timing_distribution.performance_pageload_http3_fcp_supports_http3,
-      metrics.timing_distribution.performance_pageload_http3_fcp_without_priority
+      metrics.timing_distribution.performance_pageload_http3_fcp_without_priority,
+      metrics.timing_distribution.glean_database_write_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,

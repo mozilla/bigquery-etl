@@ -22,7 +22,8 @@ SELECT
       metrics.boolean.mozbuild_sccache,
       metrics.boolean.mach_system_ssh_connection,
       metrics.boolean.mach_system_vscode_terminal,
-      metrics.boolean.mach_system_vscode_running
+      metrics.boolean.mach_system_vscode_running,
+      metrics.boolean.mach_moz_automation
     ) AS `boolean`,
     STRUCT(
       metrics.counter.mach_system_logical_cores,
@@ -42,10 +43,21 @@ SELECT
       metrics.string.mach_system_distro,
       metrics.string.mach_system_distro_version,
       metrics.string.glean_client_annotation_experimentation_id,
-      metrics.string.mozbuild_project
+      metrics.string.mozbuild_project,
+      metrics.string.mozbuild_target
     ) AS `string`,
     STRUCT(metrics.string_list.mach_argv) AS `string_list`,
-    STRUCT(metrics.timespan.mach_duration) AS `timespan`
+    STRUCT(
+      metrics.timespan.mach_duration,
+      metrics.timespan.mozbuild_tier_artifact_duration,
+      metrics.timespan.mozbuild_tier_compile_duration,
+      metrics.timespan.mozbuild_tier_configure_duration,
+      metrics.timespan.mozbuild_tier_export_duration,
+      metrics.timespan.mozbuild_tier_libs_duration,
+      metrics.timespan.mozbuild_tier_misc_duration,
+      metrics.timespan.mozbuild_tier_pre_export_duration,
+      metrics.timespan.mozbuild_tier_tools_duration
+    ) AS `timespan`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,

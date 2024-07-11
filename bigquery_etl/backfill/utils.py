@@ -95,8 +95,8 @@ def get_backfill_staging_qualified_table_name(qualified_table_name, entry_date) 
 
 def get_backfill_backup_table_name(qualified_table_name: str, entry_date: date) -> str:
     """Return full table name where backup of production table is stored."""
-    _, _, table = qualified_table_name_matching(qualified_table_name)
-    cloned_table_id = f"{table}_backup_{entry_date}".replace("-", "_")
+    _, dataset, table = qualified_table_name_matching(qualified_table_name)
+    cloned_table_id = f"{dataset}__{table}_backup_{entry_date}".replace("-", "_")
 
     return f"{BACKFILL_DESTINATION_PROJECT}.{BACKFILL_DESTINATION_DATASET}.{cloned_table_id}"
 

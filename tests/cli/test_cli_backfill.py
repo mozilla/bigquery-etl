@@ -19,6 +19,7 @@ from bigquery_etl.backfill.parse import (
 from bigquery_etl.backfill.utils import (
     BACKFILL_DESTINATION_DATASET,
     BACKFILL_DESTINATION_PROJECT,
+    get_backfill_backup_table_name,
     get_backfill_file_from_qualified_table_name,
     get_backfill_staging_qualified_table_name,
     get_entries_from_qualified_table_name,
@@ -1721,6 +1722,17 @@ class TestBackfill:
         expected_backfill_staging = f"{BACKFILL_DESTINATION_PROJECT}.{BACKFILL_DESTINATION_DATASET}.{backfill_table_id}"
 
         assert actual_backfill_staging == expected_backfill_staging
+
+    def test_get_backfill_backup_table_name(self, runner):
+        qualified_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
+        cloned_table_id = "test__test_query_v1_backup_2023_05_30"
+
+        actual_backfill_staging = get_backfill_backup_table_name(
+            qualified_table_name, "2023-05-30"
+        )
+        expected_backfill_backup = f"{BACKFILL_DESTINATION_PROJECT}.{BACKFILL_DESTINATION_DATASET}.{cloned_table_id}"
+
+        assert actual_backfill_staging == expected_backfill_backup
 
     def test_validate_metadata_workgroups_invalid_table_workgroup_and_valid_dataset_workgroup(
         self, runner

@@ -66,8 +66,8 @@ WITH input AS (
     '{"hello": "world"}'
   UNION ALL
   SELECT
-      CAST(REPEAT("ab", 200000) AS BYTES),
-      REPEAT("ab", 200000)
+    CAST(REPEAT("ab", 200000) AS BYTES),
+    REPEAT("ab", 200000)
 ),
   --
 unzipped AS (

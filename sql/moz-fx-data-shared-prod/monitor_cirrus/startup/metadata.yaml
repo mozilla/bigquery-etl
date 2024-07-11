@@ -16,6 +16,7 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
+  - workgroup:dataops-managed/external-fides
 references:
   view.sql:
   - moz-fx-data-shared-prod.monitor_cirrus_stable.startup_v1

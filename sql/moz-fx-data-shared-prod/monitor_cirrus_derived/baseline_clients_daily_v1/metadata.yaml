@@ -30,6 +30,7 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
+  - workgroup:dataops-managed/external-fides
 references:
   query.sql:
   - monitor_cirrus_derived.baseline_clients_first_seen_v1

@@ -38709,6 +38709,18 @@ fields:
         - name: installation_first_seen_version
           type: STRING
           mode: NULLABLE
+        - name: formautofill_addresses_detected_sections_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: formautofill_addresses_submitted_sections_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: formautofill_credit_cards_detected_sections_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: formautofill_credit_cards_submitted_sections_count
+          type: INTEGER
+          mode: NULLABLE
     - name: socket
       type: RECORD
       mode: NULLABLE

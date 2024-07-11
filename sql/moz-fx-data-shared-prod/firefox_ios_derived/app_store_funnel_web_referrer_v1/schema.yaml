@@ -1,0 +1,103 @@
+fields:
+
+- mode: NULLABLE
+  name: date
+  type: DATE
+  description: |
+    DAte value corresponding to the entry.
+
+- mode: NULLABLE
+  name: app_id
+  type: STRING
+  description: |
+    TODO
+
+- mode: NULLABLE
+  name: territory
+  type: STRING
+  description: |
+    territory / country by which the users are aggregated.
+
+- mode: NULLABLE
+  name: web_referrer
+  type: STRING
+  description: |
+    TODO
+
+- mode: NULLABLE
+  name: campaign
+  type: STRING
+  description: |
+    TODO
+
+- mode: NULLABLE
+  name: impressions
+  type: INTEGER
+  description: |
+    Number of Firefox iOS app impressions in the Apple Store.
+
+- mode: NULLABLE
+  name: impressions_unique_device
+  type: INTEGER
+  description: |
+    Number of Firefox iOS app unique impressions in the Apple Store.
+
+- mode: NULLABLE
+  name: page_views
+  type: INTEGER
+  description: |
+    TODO
+
+- mode: NULLABLE
+  name: page_views_unique_device
+  type: INTEGER
+  description: |
+    TODO
+
+- mode: NULLABLE
+  name: first_time_downloads
+  type: INTEGER
+  description: |
+    Number of first time downloads of the Firefox iOS app from the Apple Store.
+
+- mode: NULLABLE
+  name: redownloads
+  type: INTEGER
+  description: |
+    Number of redownloads of the Firefox iOS app from the Apple Store.
+
+- mode: NULLABLE
+  name: total_downloads
+  type: INTEGER
+  description: |
+    Total number of downloads of the Firefox iOS app from the Apple Store.
+
+- mode: NULLABLE
+  name: opt_in_active_devices
+  type: INTEGER
+  description: |
+    TODO
+
+- mode: NULLABLE
+  name: active_devices_last_30_days
+  type: INTEGER
+  description: |
+    TODO
+
+- mode: NULLABLE
+  name: deletions
+  type: INTEGER
+  description: |
+    TODO
+
+- mode: NULLABLE
+  name: installations
+  type: INTEGER
+  description: |
+    TODO
+
+- mode: NULLABLE
+  name: sessions
+  type: INTEGER
+  description: |
+    TODO

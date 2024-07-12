@@ -267,7 +267,7 @@ For our example:
   ```bash
   bqetl backfill create <project>.<dataset>.<table> --start_date=<YYYY-MM-DD> --end_date=<YYYY-MM-DD>
   ```
-* Do not overwrite existing backfill entries since it will cause issues in the workflow.
+**Note** Do not overwrite existing backfill entries since it will cause issues in the workflow.
 
 2. Fill out the missing details:
   - Watchers: Mozilla Emails for users that should be notified via Slack about backfill progress.

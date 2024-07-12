@@ -343,13 +343,13 @@ SELECT
     app_referrer_stats.deletions,
     source_type_stats.deletions,
     0
-  ) AS deletions,
+  ) AS opt_in_deletions,
   COALESCE(
     web_referrer_stats.installations,
     app_referrer_stats.installations,
     source_type_stats.installations,
     0
-  ) AS installations,
+  ) AS opt_in_installations,
   COALESCE(
     web_referrer_stats.sessions,
     app_referrer_stats.sessions,

@@ -48,7 +48,7 @@ desktop_data_bing AS (
     SUM(IF(normalized_engine = 'Bing', search_with_ads_organic, 0)) AS search_with_ads_organic,
     SUM(IF(normalized_engine = 'Bing' AND is_sap_monetizable, sap, 0)) AS monetizable_sap
   FROM
-   `moz-fx-data-shared-prod.search.search_aggregates`
+    `moz-fx-data-shared-prod.search.search_aggregates`
   WHERE
     submission_date = @submission_date
     AND (distribution_id IS NULL OR distribution_id NOT LIKE '%acer%')
@@ -79,7 +79,6 @@ desktop_data_ddg AS (
     ) AS ddg_search_with_ads_organic,
     SUM(IF(engine IN ('ddg', 'duckduckgo') AND is_sap_monetizable, sap, 0)) AS ddg_monetizable_sap,
     -- in-content probes not available for addon so these metrics although being here will be zero
-   
     SUM(IF(engine IN ('ddg-addon'), sap, 0)) AS ddgaddon_sap,
     SUM(IF(engine IN ('ddg-addon'), tagged_sap, 0)) AS ddgaddon_tagged_sap,
     SUM(IF(engine IN ('ddg-addon'), tagged_follow_on, 0)) AS ddgaddon_tagged_follow_on,
@@ -102,7 +101,6 @@ desktop_data_ddg AS (
     submission_date,
     country
 ),
-
 -- -- Google Mobile (search only - as mobile search metrics is based on metrics
 -- -- ping, while DAU should be based on main ping on Mobile, see also
 -- -- https://mozilla-hub.atlassian.net/browse/RS-575)
@@ -124,7 +122,6 @@ mobile_data_google AS (
     0 AS monetizable_sap
   FROM
     `moz-fx-data-shared-prod.search.mobile_search_aggregates`
-
   WHERE
     submission_date = @submission_date
     AND (
@@ -176,7 +173,8 @@ mobile_data_bing AS (
     submission_date,
     country
 ),
-mobile_data_ddg AS(SELECT
+mobile_data_ddg AS (
+  SELECT
     submission_date,
     country,
     'DuckDuckGo' AS partner,
@@ -195,8 +193,6 @@ mobile_data_ddg AS(SELECT
     0 AS ddg_monetizable_sap
   FROM
     `moz-fx-data-shared-prod.search.mobile_search_aggregates`
-
- 
   WHERE
     submission_date = @submission_date
     AND (
@@ -231,8 +227,12 @@ SELECT
   dau_w_engine_as_default
 FROM
   desktop_data_google ddg
- INNER JOIN search_aggregates_dau sad ON ddg.country = sad.country AND ddg.submission_date = sad.submission_date
-  AND ddg.partner = sad.partner AND ddg.device = sad.device
+INNER JOIN
+  `moz-fx-data-shared-prod.search.search_aggregates_dau` sad
+  ON ddg.country = sad.country
+  AND ddg.submission_date = sad.submission_date
+  AND ddg.partner = sad.partner
+  AND ddg.device = sad.device
 UNION ALL
 SELECT
   ddb.submission_date,
@@ -254,8 +254,12 @@ SELECT
   dau_w_engine_as_default
 FROM
   desktop_data_bing ddb
- INNER JOIN search_aggregates_dau sad ON ddb.country = sad.country AND ddb.submission_date = sad.submission_date
-  AND ddb.partner = sad.partner AND ddb.device = sad.device
+INNER JOIN
+  `moz-fx-data-shared-prod.search.search_aggregates_dau` sad
+  ON ddb.country = sad.country
+  AND ddb.submission_date = sad.submission_date
+  AND ddb.partner = sad.partner
+  AND ddb.device = sad.device
 UNION ALL
 SELECT
   ddd.submission_date,
@@ -277,8 +281,12 @@ SELECT
   dau_w_engine_as_default
 FROM
   desktop_data_ddg ddd
-INNER JOIN search_aggregates_dau sad ON ddd.country = sad.country AND ddd.submission_date = sad.submission_date
-AND ddd.partner = sad.partner AND ddd.device = sad.device
+INNER JOIN
+  `moz-fx-data-shared-prod.search.search_aggregates_dau` sad
+  ON ddd.country = sad.country
+  AND ddd.submission_date = sad.submission_date
+  AND ddd.partner = sad.partner
+  AND ddd.device = sad.device
 UNION ALL
 SELECT
   ddd.submission_date,
@@ -300,8 +308,12 @@ SELECT
   dau_w_engine_as_default
 FROM
   desktop_data_ddg ddd
-INNER JOIN search_aggregates_dau sad ON ddd.country = sad.country AND ddd.submission_date = sad.submission_date
-AND ddd.partner = sad.partner AND ddd.device = sad.device
+INNER JOIN
+  `moz-fx-data-shared-prod.search.search_aggregates_dau` sad
+  ON ddd.country = sad.country
+  AND ddd.submission_date = sad.submission_date
+  AND ddd.partner = sad.partner
+  AND ddd.device = sad.device
 UNION ALL
 SELECT
   mdg.submission_date,
@@ -323,8 +335,12 @@ SELECT
   dau_w_engine_as_default
 FROM
   mobile_data_google mdg
-INNER JOIN search_aggregates_dau sad ON mdg.country = sad.country AND mdg.submission_date = sad.submission_date
-AND mdg.partner = sad.partner AND mdg.device = sad.device
+INNER JOIN
+  `moz-fx-data-shared-prod.search.search_aggregates_dau` sad
+  ON mdg.country = sad.country
+  AND mdg.submission_date = sad.submission_date
+  AND mdg.partner = sad.partner
+  AND mdg.device = sad.device
 UNION ALL
 SELECT
   mdb.submission_date,
@@ -346,8 +362,12 @@ SELECT
   dau_w_engine_as_default
 FROM
   mobile_data_bing mdb
-INNER JOIN search_aggregates_dau sad ON mdb.country = sad.country AND mdb.submission_date = sad.submission_date
-AND mdb.partner = sad.partner AND mdb.device = sad.device
+INNER JOIN
+  `moz-fx-data-shared-prod.search.search_aggregates_dau` sad
+  ON mdb.country = sad.country
+  AND mdb.submission_date = sad.submission_date
+  AND mdb.partner = sad.partner
+  AND mdb.device = sad.device
 UNION ALL
 SELECT
   mdd.submission_date,
@@ -369,5 +389,9 @@ SELECT
   dau_w_engine_as_default
 FROM
   mobile_data_ddg mdd
-INNER JOIN search_aggregates_dau sad ON mdd.country = sad.country AND mdd.submission_date = sad.submission_date
-AND mdd.partner = sad.partner AND mdd.device = sad.device
+INNER JOIN
+  `moz-fx-data-shared-prod.search.search_aggregates_dau` sad
+  ON mdd.country = sad.country
+  AND mdd.submission_date = sad.submission_date
+  AND mdd.partner = sad.partner
+  AND mdd.device = sad.device

@@ -1,0 +1,8 @@
+---
+friendly_name: Search DAU metrics for desktop and mobile
+description: |
+  A daily DAU for desktop and mobile
+owners:
+  - akommasani@mozilla.com
+  - skahmann@mozilla.com
+  - pissac@mozilla.com

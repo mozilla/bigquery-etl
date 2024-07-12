@@ -1,0 +1,17 @@
+friendly_name: Search Aggregates for DAU metrics
+description: |-
+  Daily search clients, aggregated across unique sets of dimensions
+  and partitioned by day only relates to DAU metrics
+owners:
+- akommasani@mozilla.com
+- skahmann@mozilla.com
+labels:
+  schedule: daily
+scheduling:
+  dag_name: bqetl_search
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+  clustering: null

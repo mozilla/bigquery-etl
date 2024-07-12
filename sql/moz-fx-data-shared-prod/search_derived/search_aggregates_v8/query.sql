@@ -1,8 +1,9 @@
 WITH acer_cohort AS (
-  SELECT client_id
-  FROM `moz-fx-data-shared-prod.search.acer_cohort`
+  SELECT
+    client_id
+  FROM
+    `moz-fx-data-shared-prod.search.acer_cohort`
 )
-
 SELECT
   scd.submission_date,
   scd.addon_version,
@@ -33,7 +34,8 @@ SELECT
   SUM(scd.search_with_ads_organic) AS search_with_ads_organic,
   SUM(scd.unknown) AS unknown,
   CASE
-    WHEN ac.client_id IS NOT NULL THEN TRUE
+    WHEN ac.client_id IS NOT NULL
+      THEN TRUE
     ELSE FALSE
   END AS is_acer_cohort
 FROM

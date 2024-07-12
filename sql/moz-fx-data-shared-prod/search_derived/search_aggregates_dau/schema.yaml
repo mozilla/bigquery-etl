@@ -1,0 +1,25 @@
+fields:
+  - mode: NULLABLE
+    name: submission_date
+    type: DATE
+  - mode: NULLABLE
+    name: partner
+    type: STRING
+  - mode: NULLABLE
+    name: device
+    type: STRING
+  - mode: NULLABLE
+    name: channel
+    type: STRING
+  - mode: NULLABLE
+    name: country
+    type: STRING
+  - mode: NULLABLE
+    name: dau
+    type: INTEGER
+  - mode: NULLABLE
+    name: dau_engaged_w_sap
+    type: INTEGER
+  - mode: NULLABLE
+    name: dau_w_engine_as_default
+    type: INTEGER

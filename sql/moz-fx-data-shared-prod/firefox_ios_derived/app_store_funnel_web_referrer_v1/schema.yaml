@@ -19,6 +19,22 @@ fields:
     The App Store as determined by the customer’s billing address.
 
 - mode: NULLABLE
+  name: source_type
+  type: STRING
+  description: |
+    The source type from which a customer tapped a link to your App Store
+    product page to view your app or download it for the first time.
+    Use this filter to view metrics based on the source from which users are finding your app.
+
+- mode: NULLABLE
+  name: app_referrer
+  type: STRING
+  description: |
+    The app from which a customer tapped a link to your App Store
+    product page to view it or download it for the first time.
+    Filter by App Referrer to view a list of apps that referred users to your app’s product page.
+
+- mode: NULLABLE
   name: web_referrer
   type: STRING
   description: |
@@ -90,7 +106,7 @@ fields:
     Based on devices running a minimum of iOS 8, macOS 11, tvOS 9, or visionOS 1.
 
 - mode: NULLABLE
-  name: active_devices_last_30_days
+  name: opt_in_active_devices_last_30_days
   type: INTEGER
   description: |
     The number of active devices with at least one session during the previous 30 days.
@@ -116,7 +132,7 @@ fields:
     Only completed installations are counted. Failed or incomplete installations aren't included.
 
 - mode: NULLABLE
-  name: sessions
+  name: opt_in_sessions
   type: INTEGER
   description: |
     The number of times the app has been used for at least two seconds.

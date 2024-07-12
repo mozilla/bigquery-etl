@@ -1,52 +1,65 @@
+WITH acer_cohort AS (
+  SELECT client_id
+  FROM `moz-fx-data-shared-prod.search.acer_cohort`
+)
+
 SELECT
-  submission_date,
-  addon_version,
-  app_version,
-  country,
-  distribution_id,
-  engine,
-  locale,
-  search_cohort,
-  source,
-  default_search_engine,
-  default_private_search_engine,
-  os,
-  os_version,
-  is_default_browser,
-  policies_is_enterprise,
-  channel,
-  `moz-fx-data-shared-prod`.udf.normalize_search_engine(engine) AS normalized_engine,
-  is_sap_monetizable,
+  scd.submission_date,
+  scd.addon_version,
+  scd.app_version,
+  scd.country,
+  scd.distribution_id,
+  scd.engine,
+  scd.locale,
+  scd.search_cohort,
+  scd.source,
+  scd.default_search_engine,
+  scd.default_private_search_engine,
+  scd.os,
+  scd.os_version,
+  scd.is_default_browser,
+  scd.policies_is_enterprise,
+  scd.channel,
+  `moz-fx-data-shared-prod`.udf.normalize_search_engine(scd.engine) AS normalized_engine,
+  scd.is_sap_monetizable,
   COUNT(*) AS client_count,
-  SUM(organic) AS organic,
-  SUM(tagged_sap) AS tagged_sap,
-  SUM(tagged_follow_on) AS tagged_follow_on,
-  SUM(sap) AS sap,
-  SUM(ad_click) AS ad_click,
-  SUM(ad_click_organic) AS ad_click_organic,
-  SUM(search_with_ads) AS search_with_ads,
-  SUM(search_with_ads_organic) AS search_with_ads_organic,
-  SUM(unknown) AS unknown
+  SUM(scd.organic) AS organic,
+  SUM(scd.tagged_sap) AS tagged_sap,
+  SUM(scd.tagged_follow_on) AS tagged_follow_on,
+  SUM(scd.sap) AS sap,
+  SUM(scd.ad_click) AS ad_click,
+  SUM(scd.ad_click_organic) AS ad_click_organic,
+  SUM(scd.search_with_ads) AS search_with_ads,
+  SUM(scd.search_with_ads_organic) AS search_with_ads_organic,
+  SUM(scd.unknown) AS unknown,
+  CASE
+    WHEN ac.client_id IS NOT NULL THEN TRUE
+    ELSE FALSE
+  END AS is_acer_cohort
 FROM
-  `moz-fx-data-shared-prod.search_derived.search_clients_daily_v8`
+  `moz-fx-data-shared-prod.search_derived.search_clients_daily_v8` scd
+LEFT JOIN
+  acer_cohort ac
+  ON scd.client_id = ac.client_id
 WHERE
-  submission_date = @submission_date
-  AND engine IS NOT NULL
+  scd.submission_date = @submission_date
 GROUP BY
-  submission_date,
-  addon_version,
-  app_version,
-  country,
-  distribution_id,
-  engine,
-  locale,
-  search_cohort,
-  source,
-  default_search_engine,
-  default_private_search_engine,
-  os,
-  os_version,
-  is_default_browser,
-  policies_is_enterprise,
-  channel,
-  is_sap_monetizable
+  scd.submission_date,
+  scd.addon_version,
+  scd.app_version,
+  scd.country,
+  scd.distribution_id,
+  scd.engine,
+  scd.locale,
+  scd.search_cohort,
+  scd.source,
+  scd.default_search_engine,
+  scd.default_private_search_engine,
+  scd.os,
+  scd.os_version,
+  scd.is_default_browser,
+  scd.policies_is_enterprise,
+  scd.channel,
+  normalized_engine,
+  scd.is_sap_monetizable,
+  is_acer_cohort

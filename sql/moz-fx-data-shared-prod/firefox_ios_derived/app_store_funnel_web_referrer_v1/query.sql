@@ -6,17 +6,21 @@ WITH views_territory AS (
     web_referrer.web_referrer,
     COALESCE(campaign.campaign, "MISSING") AS campaign,
     SUM(COALESCE(campaign.impressions, web_referrer.impressions)) AS impressions,
-    SUM(COALESCE(campaign.impressions_unique_device, web_referrer.impressions_unique_device)) AS impressions_unique_device,
+    SUM(
+      COALESCE(campaign.impressions_unique_device, web_referrer.impressions_unique_device)
+    ) AS impressions_unique_device,
     SUM(COALESCE(campaign.page_views, web_referrer.page_views)) AS page_views,
-    SUM(COALESCE(campaign.page_views_unique_device, web_referrer.page_views_unique_device)) AS page_views_unique_device,
+    SUM(
+      COALESCE(campaign.page_views_unique_device, web_referrer.page_views_unique_device)
+    ) AS page_views_unique_device,
   FROM
     `moz-fx-data-bq-fivetran.firefox_app_store.app_store_territory_web_referrer_report` AS web_referrer
   LEFT JOIN
     `moz-fx-data-bq-fivetran.firefox_app_store.app_store_territory_campaign_report` AS campaign
     ON web_referrer.`date` = campaign.`date`
-      AND web_referrer.app_id = campaign.app_id
-      AND web_referrer.territory = campaign.territory
-      AND web_referrer.web_referrer = "mozilla.org"
+    AND web_referrer.app_id = campaign.app_id
+    AND web_referrer.territory = campaign.territory
+    AND web_referrer.web_referrer = "mozilla.org"
   GROUP BY
     `date`,
     app_id,
@@ -31,7 +35,9 @@ downloads_territory AS (
     web_referrer.territory,
     web_referrer.web_referrer,
     COALESCE(campaign.campaign, "MISSING") AS campaign,
-    SUM(COALESCE(campaign.first_time_downloads, web_referrer.first_time_downloads)) AS first_time_downloads,
+    SUM(
+      COALESCE(campaign.first_time_downloads, web_referrer.first_time_downloads)
+    ) AS first_time_downloads,
     SUM(COALESCE(campaign.redownloads, web_referrer.redownloads)) AS redownloads,
     SUM(COALESCE(campaign.total_downloads, web_referrer.total_downloads)) AS total_downloads,
   FROM
@@ -39,9 +45,9 @@ downloads_territory AS (
   LEFT JOIN
     `moz-fx-data-bq-fivetran.firefox_app_store.downloads_territory_campaign_report` AS campaign
     ON web_referrer.`date` = campaign.`date`
-      AND web_referrer.app_id = campaign.app_id
-      AND web_referrer.territory = campaign.territory
-      AND web_referrer.web_referrer = "mozilla.org"
+    AND web_referrer.app_id = campaign.app_id
+    AND web_referrer.territory = campaign.territory
+    AND web_referrer.web_referrer = "mozilla.org"
   GROUP BY
     `date`,
     app_id,
@@ -57,7 +63,9 @@ usage_territory AS (
     web_referrer.web_referrer,
     COALESCE(campaign.campaign, "MISSING") AS campaign,
     SUM(COALESCE(campaign.active_devices, web_referrer.active_devices)) AS active_devices,
-    SUM(COALESCE(campaign.active_devices_last_30_days, web_referrer.active_devices_last_30_days)) AS active_devices_last_30_days,
+    SUM(
+      COALESCE(campaign.active_devices_last_30_days, web_referrer.active_devices_last_30_days)
+    ) AS active_devices_last_30_days,
     SUM(COALESCE(campaign.deletions, web_referrer.deletions)) AS deletions,
     SUM(COALESCE(campaign.installations, web_referrer.installations)) AS installations,
     SUM(COALESCE(campaign.sessions, web_referrer.sessions)) AS sessions,
@@ -66,9 +74,9 @@ usage_territory AS (
   LEFT JOIN
     `moz-fx-data-bq-fivetran.firefox_app_store.usage_territory_campaign_report` AS campaign
     ON web_referrer.`date` = campaign.`date`
-      AND web_referrer.app_id = campaign.app_id
-      AND web_referrer.territory = campaign.territory
-      AND web_referrer.web_referrer = "mozilla.org"
+    AND web_referrer.app_id = campaign.app_id
+    AND web_referrer.territory = campaign.territory
+    AND web_referrer.web_referrer = "mozilla.org"
   GROUP BY
     `date`,
     app_id,

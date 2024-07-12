@@ -10,7 +10,7 @@ WITH source_type_stats AS (
       SUM(page_views) AS page_views,
       SUM(page_views_unique_device) AS page_views_unique_device,
     FROM
-      `moz-fx-data-bq-fivetran.firefox_app_store.app_store_territory_source_type_report`
+      `moz-fx-data-shared-prod.app_store.firefox_app_store_territory_source_type_report`
     GROUP BY
       `date`,
       app_id,
@@ -27,7 +27,7 @@ WITH source_type_stats AS (
       SUM(redownloads) AS redownloads,
       SUM(total_downloads) AS total_downloads,
     FROM
-      `moz-fx-data-bq-fivetran.firefox_app_store.downloads_territory_source_type_report`
+      `moz-fx-data-shared-prod.app_store.downloads_territory_source_type_report`
     GROUP BY
       `date`,
       app_id,
@@ -46,7 +46,7 @@ WITH source_type_stats AS (
       SUM(installations) AS installations,
       SUM(sessions) AS sessions,
     FROM
-      `moz-fx-data-bq-fivetran.firefox_app_store.usage_territory_source_type_report`
+      `moz-fx-data-shared-prod.app_store.firefox_usage_territory_source_type_report`
     GROUP BY
       `date`,
       app_id,
@@ -91,7 +91,7 @@ app_referrer_stats AS (
       SUM(page_views) AS page_views,
       SUM(page_views_unique_device) AS page_views_unique_device,
     FROM
-      `moz-fx-data-bq-fivetran.firefox_app_store.app_store_territory_app_referrer_report`
+      `moz-fx-data-shared-prod.app_store.firefox_app_store_territory_app_referrer_report`
     GROUP BY
       `date`,
       app_id,
@@ -108,7 +108,7 @@ app_referrer_stats AS (
       SUM(redownloads) AS redownloads,
       SUM(total_downloads) AS total_downloads,
     FROM
-      `moz-fx-data-bq-fivetran.firefox_app_store.downloads_territory_app_referrer_report`
+      `moz-fx-data-shared-prod.app_store.firefox_downloads_territory_app_referrer_report`
     GROUP BY
       `date`,
       app_id,
@@ -127,7 +127,7 @@ app_referrer_stats AS (
       SUM(installations) AS installations,
       SUM(sessions) AS sessions,
     FROM
-      `moz-fx-data-bq-fivetran.firefox_app_store.usage_territory_app_referrer_report`
+      `moz-fx-data-shared-prod.app_store.firefox_usage_territory_app_referrer_report`
     GROUP BY
       `date`,
       app_id,
@@ -178,9 +178,9 @@ web_referrer_stats AS (
         COALESCE(campaign.page_views_unique_device, web_referrer.page_views_unique_device)
       ) AS page_views_unique_device,
     FROM
-      `moz-fx-data-bq-fivetran.firefox_app_store.app_store_territory_web_referrer_report` AS web_referrer
+      `moz-fx-data-shared-prod.app_store.firefox_app_store_territory_web_referrer_report` AS web_referrer
     LEFT JOIN
-      `moz-fx-data-bq-fivetran.firefox_app_store.app_store_territory_campaign_report` AS campaign
+      `moz-fx-data-shared-prod.app_store.firefox_app_store_territory_campaign_report` AS campaign
       ON web_referrer.`date` = campaign.`date`
       AND web_referrer.app_id = campaign.app_id
       AND web_referrer.territory = campaign.territory
@@ -205,9 +205,9 @@ web_referrer_stats AS (
       SUM(COALESCE(campaign.redownloads, web_referrer.redownloads)) AS redownloads,
       SUM(COALESCE(campaign.total_downloads, web_referrer.total_downloads)) AS total_downloads,
     FROM
-      `moz-fx-data-bq-fivetran.firefox_app_store.downloads_territory_web_referrer_report` AS web_referrer
+      `moz-fx-data-shared-prod.app_store.firefox_downloads_territory_web_referrer_report` AS web_referrer
     LEFT JOIN
-      `moz-fx-data-bq-fivetran.firefox_app_store.downloads_territory_campaign_report` AS campaign
+      `moz-fx-data-shared-prod.app_store.firefox_downloads_territory_campaign_report` AS campaign
       ON web_referrer.`date` = campaign.`date`
       AND web_referrer.app_id = campaign.app_id
       AND web_referrer.territory = campaign.territory
@@ -234,9 +234,9 @@ web_referrer_stats AS (
       SUM(COALESCE(campaign.installations, web_referrer.installations)) AS installations,
       SUM(COALESCE(campaign.sessions, web_referrer.sessions)) AS sessions,
     FROM
-      `moz-fx-data-bq-fivetran.firefox_app_store.usage_territory_web_referrer_report` AS web_referrer
+      `moz-fx-data-shared-prod.app_store.firefox_usage_territory_web_referrer_report` AS web_referrer
     LEFT JOIN
-      `moz-fx-data-bq-fivetran.firefox_app_store.usage_territory_campaign_report` AS campaign
+      `moz-fx-data-shared-prod.app_store.firefox_usage_territory_campaign_report` AS campaign
       ON web_referrer.`date` = campaign.`date`
       AND web_referrer.app_id = campaign.app_id
       AND web_referrer.territory = campaign.territory

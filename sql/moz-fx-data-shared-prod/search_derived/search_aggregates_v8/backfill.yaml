@@ -1,6 +1,6 @@
-2024-07-09:
-  start_date: 2022-01-01
-  end_date: 2024-06-25
+2024-06-27:
+  start_date: 2024-04-01
+  end_date: 2024-05-31
   reason: https://mozilla-hub.atlassian.net/browse/RS-1247
   watchers:
   - akommasani@mozilla.com

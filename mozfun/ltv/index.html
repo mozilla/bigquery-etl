@@ -855,6 +855,30 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#desktop_states_v1-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      desktop_states_v1 (UDF)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="desktop_states_v1 (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameters
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#get_state_ios_v2-udf" class="md-nav__link">
     <span class="md-ellipsis">
       get_state_ios_v2 (UDF)
@@ -865,7 +889,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#parameters_4" class="md-nav__link">
+  <a href="#parameters_5" class="md-nav__link">
     <span class="md-ellipsis">
       Parameters
     </span>
@@ -1621,6 +1645,30 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#desktop_states_v1-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      desktop_states_v1 (UDF)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="desktop_states_v1 (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameters
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#get_state_ios_v2-udf" class="md-nav__link">
     <span class="md-ellipsis">
       get_state_ios_v2 (UDF)
@@ -1631,7 +1679,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#parameters_4" class="md-nav__link">
+  <a href="#parameters_5" class="md-nav__link">
     <span class="md-ellipsis">
       Parameters
     </span>
@@ -1704,9 +1752,25 @@ The model can use this state as a sink, where the client will never return if th
 <div class="highlight"><pre><span></span><code>STRING
 </code></pre></div>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/ltv/android_states_with_paid_v2">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/ltv/android_states_with_paid_v2/metadata.yaml">Edit</a></p>
+<h2 id="desktop_states_v1-udf">desktop_states_v1 (UDF)</h2>
+<p>LTV states for Desktop. Results in strings like: "0_1_1_1_1"
+Where each component is
+1. the age in days of the client
+2. the day of week of first_seen_date
+3. the day of week of submission_date
+4. the activity level, possible values are 0-3, plus "00" for "dead"
+5. whether the client is active on submission_date</p>
+<h3 id="parameters_4">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>days_since_first_seen INT64, days_since_active INT64, submission_date DATE, first_seen_date DATE, death_time INT64, pattern INT64, active INT64, max_days INT64, lookback INT64
+</code></pre></div>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>STRING
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/ltv/desktop_states_v1">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/ltv/desktop_states_v1/metadata.yaml">Edit</a></p>
 <h2 id="get_state_ios_v2-udf">get_state_ios_v2 (UDF)</h2>
 <p>LTV states for iOS.</p>
-<h3 id="parameters_4">Parameters</h3>
+<h3 id="parameters_5">Parameters</h3>
 <p><strong>INPUTS</strong></p>
 <div class="highlight"><pre><span></span><code>days_since_first_seen INT64, days_since_seen INT64, submission_date DATE, death_time INT64, pattern INT64, active INT64, max_weeks INT64
 </code></pre></div>

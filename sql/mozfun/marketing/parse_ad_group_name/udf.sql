@@ -8,7 +8,7 @@ RETURNS ARRAY<STRUCT<key STRING, value STRING>> AS (
             'ad_network',
             'version',
             'product',
-            'iniative',
+            'initiative',
             'region',
             'country_code',
             'placement',

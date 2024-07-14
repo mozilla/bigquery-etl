@@ -8,8 +8,15 @@ syndication:
   prod:
     syndicated_project: "moz-fx-data-bq-fivetran"
     syndicated_dataset: "firefox_app_store"
+  syndicated_tables:
+    - app_store_territory_source_type_report
+    - downloads_territory_source_type_report
+    - usage_territory_source_type_report
+    - app_store_territory_web_referrer_report
+    - downloads_territory_web_referrer_report
+    - usage_territory_web_referrer_report
   administer_views: true
 workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:mozilla-confidential
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:mozilla-confidential

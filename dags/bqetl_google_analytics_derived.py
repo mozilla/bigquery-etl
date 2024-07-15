@@ -281,9 +281,39 @@ with DAG(
         depends_on_past=False,
     )
 
+    mozilla_org_derived__blogs_daily_summary__v1 = bigquery_etl_query(
+        task_id="mozilla_org_derived__blogs_daily_summary__v1",
+        destination_table="blogs_daily_summary_v1",
+        dataset_id="mozilla_org_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="ascholtz@mozilla.com",
+        email=[
+            "ascholtz@mozilla.com",
+            "kwindau@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     mozilla_org_derived__blogs_goals__v1 = bigquery_etl_query(
         task_id="mozilla_org_derived__blogs_goals__v1",
         destination_table="blogs_goals_v1",
+        dataset_id="mozilla_org_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="ascholtz@mozilla.com",
+        email=[
+            "ascholtz@mozilla.com",
+            "kwindau@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    mozilla_org_derived__blogs_landing_page_summary__v1 = bigquery_etl_query(
+        task_id="mozilla_org_derived__blogs_landing_page_summary__v1",
+        destination_table="blogs_landing_page_summary_v1",
         dataset_id="mozilla_org_derived",
         project_id="moz-fx-data-shared-prod",
         owner="ascholtz@mozilla.com",
@@ -451,6 +481,22 @@ with DAG(
     )
 
     ga_derived__www_site_page_metrics__v1.set_upstream(ga_derived__www_site_hits__v1)
+
+    mozilla_org_derived__blogs_daily_summary__v1.set_upstream(
+        mozilla_org_derived__blogs_goals__v1
+    )
+
+    mozilla_org_derived__blogs_daily_summary__v1.set_upstream(
+        mozilla_org_derived__blogs_sessions__v1
+    )
+
+    mozilla_org_derived__blogs_landing_page_summary__v1.set_upstream(
+        mozilla_org_derived__blogs_goals__v1
+    )
+
+    mozilla_org_derived__blogs_landing_page_summary__v1.set_upstream(
+        mozilla_org_derived__blogs_sessions__v1
+    )
 
     mozilla_org_derived__firefox_whatsnew_summary__v1.set_upstream(
         mozilla_org_derived__www_site_hits__v1

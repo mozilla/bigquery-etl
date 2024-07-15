@@ -11,6 +11,7 @@ gitpython==3.1.42
 google-auth>=2.30.0  # To try to fix "Compute Engine Metadata server call to universe/universe_domain returned 404" errors.
 google-cloud-bigquery==3.19.0
 google-cloud-bigquery-storage[fastavro]==2.24.0
+google-cloud-datacatalog-lineage==0.3.7
 google-cloud-storage==2.15.0
 Jinja2==3.1.4
 jsonschema==4.21.1

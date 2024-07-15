@@ -30,6 +30,7 @@ bigquery:
     fields:
     - sample_id
     - event_category
+    - client_id
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

@@ -1,6 +1,6 @@
 WITH download_event_count AS (
   SELECT
-    date,
+    `date`,
     visit_identifier,
     device_category,
     operating_system,
@@ -15,12 +15,12 @@ WITH download_event_count AS (
   FROM
     `moz-fx-data-shared-prod.mozilla_org_derived.www_site_hits_v1`
   WHERE
-    date = @submission_date
+    `date` = @submission_date
     AND hit_type = 'EVENT'
     AND event_category IS NOT NULL
     AND event_label LIKE 'Firefox for Desktop%'
   GROUP BY
-    date,
+    `date`,
     visit_identifier,
     device_category,
     operating_system,
@@ -42,7 +42,7 @@ SELECT
 FROM
   download_event_count
 GROUP BY
-  date,
+  `date`,
   device_category,
   operating_system,
   `language`,

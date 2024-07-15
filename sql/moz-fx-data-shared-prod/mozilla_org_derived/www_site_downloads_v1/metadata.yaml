@@ -2,7 +2,7 @@ friendly_name: WWW Site Downloads
 description: |-
   Aggregated download counts for www.mozilla.org
 owners:
-- ascholtz@mozilla.com
+- kwindau@mozilla.com
 labels:
   incremental: true
   schedule: daily

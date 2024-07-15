@@ -59,4 +59,8 @@ SELECT
   mozfun.assert.equals(
     '5_1_7_1_1',
     mozfun.ltv.get_state_desktop_v1(400, 100, '2024-07-13', '2023-06-11', 300, 0, 1, 5, 7)
+  ),
+  mozfun.assert.equals(
+    '2_1_7_00_0',
+    mozfun.ltv.get_state_desktop_v1(400, 100, '2024-07-13', '2023-06-11', 14, 0, 0, 2, 7)
   );

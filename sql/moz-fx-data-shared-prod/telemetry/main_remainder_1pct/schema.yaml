@@ -7073,6 +7073,15 @@ fields:
     - name: browser_backup_total_backup_size
       type: STRING
       mode: NULLABLE
+    - name: browser_backup_favicons_time_ms
+      type: STRING
+      mode: NULLABLE
+    - name: browser_backup_places_time_ms
+      type: STRING
+      mode: NULLABLE
+    - name: browser_backup_total_backup_time_ms
+      type: STRING
+      mode: NULLABLE
   - name: info
     type: RECORD
     mode: NULLABLE

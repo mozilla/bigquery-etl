@@ -1,0 +1,23 @@
+friendly_name: WWW Site Downloads
+description: |-
+  Aggregated download counts for www.mozilla.org
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  dag: bqetl_google_analytics_derived
+  owner1: kwindau
+scheduling:
+  dag_name: bqetl_google_analytics_derived
+bigquery:
+  time_partitioning:
+    type: day
+    field: date
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+  clustering: null
+workgroup_access: []
+references: {}
+deprecated: true

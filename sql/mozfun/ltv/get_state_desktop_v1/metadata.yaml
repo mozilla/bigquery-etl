@@ -1,0 +1,4 @@
+description: |
+  LTV states for Firefox Desktop. Results in strings like:
+  "1_dow3_2_1" and "0_dow1_1_1"
+friendly_name: Get Desktop State V1

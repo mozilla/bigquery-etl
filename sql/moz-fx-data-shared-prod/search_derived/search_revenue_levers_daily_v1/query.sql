@@ -316,8 +316,7 @@ dau_metrics_wide AS (
     browsers_dau
   FULL JOIN
     search_telemetry
-  USING
-    (submission_date, client_id, country, device)
+    USING (submission_date, client_id, country, device)
   GROUP BY
     submission_date,
     device,
@@ -380,5 +379,4 @@ FROM
   search_metrics
 LEFT JOIN
   dau_metrics_long
-USING
-  (submission_date, device, country, normalized_engine)
+  USING (submission_date, device, country, normalized_engine)

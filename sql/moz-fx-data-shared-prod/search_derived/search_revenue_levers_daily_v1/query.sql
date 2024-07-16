@@ -1,214 +1,259 @@
--- selects DESKTOP search telemetry from Google, Bing, DDG default engines
--- we need all clients by default engine for DAU counting
--- for search reporting we only want searches by normalized_engine
-WITH desktop_search_telemetry AS (
+WITH
+-- Google Desktop (search + DAU)
+desktop_data_google AS (
   SELECT
     submission_date,
+    IF(LOWER(channel) LIKE '%esr%', 'ESR', 'personal') AS channel,
     country,
-    client_id,
-    default_search_engine,
-    normalized_engine,
-    -- differentiate Google ESR and DDG extension via normalized_channel
-    -- IF((normalized_engine = 'Google') AND (LOWER(channel) LIKE '%esr%'), 'ESR',
-    --   IF(engine IN ('ddg-addon'), "extension",
-    --   'personal')) AS normalized_channel,
-    SUM(sap) AS sap,
-    SUM(tagged_sap) AS tagged_sap,
-    SUM(tagged_follow_on) AS tagged_follow_on,
-    SUM(search_with_ads) AS search_with_ads,
-    SUM(ad_click) AS ad_click,
-    SUM(organic) AS organic,
-    SUM(ad_click_organic) AS ad_click_organic,
-    SUM(search_with_ads_organic) AS search_with_ads_organic,
-    SUM(IF(is_sap_monetizable, sap, 0)) AS monetizable_sap
+    COUNT(DISTINCT client_id) AS dau,
+    COUNT(
+      DISTINCT IF(default_search_engine LIKE '%google%', client_id, NULL)
+    ) AS dau_w_engine_as_default,
+    COUNT(
+      DISTINCT IF(
+        sap > 0
+        AND normalized_engine = 'Google'
+        AND default_search_engine LIKE '%google%',
+        client_id,
+        NULL
+      )
+    ) AS dau_engaged_w_sap,
+    SUM(IF(normalized_engine = 'Google', sap, 0)) AS sap,
+    SUM(IF(normalized_engine = 'Google', tagged_sap, 0)) AS tagged_sap,
+    SUM(IF(normalized_engine = 'Google', tagged_follow_on, 0)) AS tagged_follow_on,
+    SUM(IF(normalized_engine = 'Google', search_with_ads, 0)) AS search_with_ads,
+    SUM(IF(normalized_engine = 'Google', ad_click, 0)) AS ad_click,
+    SUM(IF(normalized_engine = 'Google', organic, 0)) AS organic,
+    SUM(IF(normalized_engine = 'Google', ad_click_organic, 0)) AS ad_click_organic,
+    SUM(IF(normalized_engine = 'Google', search_with_ads_organic, 0)) AS search_with_ads_organic,
+    SUM(IF(normalized_engine = 'Google' AND is_sap_monetizable, sap, 0)) AS monetizable_sap
   FROM
     `moz-fx-data-shared-prod.search.search_clients_engines_sources_daily`
   WHERE
     submission_date = @submission_date
     AND (
-      -- Google has specific market restrictions
-      (
-        (default_search_engine LIKE '%google%' OR normalized_engine = "Google")
-        AND (
-          (submission_date < "2023-12-01" AND country NOT IN ('RU', 'UA', 'TR', 'BY', 'KZ', 'CN'))
-          OR (submission_date >= "2023-12-01" AND country NOT IN ('RU', 'UA', 'BY', 'CN'))
-        )
-      )
-      -- Bing removes Acer distribution
-      OR (
-        (default_search_engine LIKE '%bing%' OR normalized_engine = "Bing")
-        AND (
-          (distribution_id IS NULL OR distribution_id NOT LIKE '%acer%')
-          AND client_id NOT IN (SELECT client_id FROM `moz-fx-data-shared-prod.search.acer_cohort`)
-        )
-      )
-          -- DDG has no additional filters
-      OR (
-        default_search_engine LIKE '%ddg%'
-        OR default_search_engine LIKE '%duckduckgo%'
-        OR default_search_engine LIKE 'ddg%addon'
-        OR normalized_engine = "DuckDuckGo"
-      )
+      (submission_date < "2023-12-01" AND country NOT IN ('RU', 'UA', 'TR', 'BY', 'KZ', 'CN'))
+      OR (submission_date >= "2023-12-01" AND country NOT IN ('RU', 'UA', 'BY', 'CN'))
     )
   GROUP BY
     submission_date,
-    country,
-    default_search_engine,
-    normalized_engine,
-    -- normalized_channel,
-    client_id
+    channel,
+    country
   ORDER BY
     submission_date,
-    country,
-    default_search_engine,
-    normalized_engine,
-    -- normalized_channel,
-    client_id
+    channel,
+    country
 ),
--- selects MOBILE search telemetry from Google, Bing, DDG default engines
--- we need all clients by default engine for DAU counting
--- for search reporting we only want searches by normalized_engine
-mobile_search_telemetry AS (
+-- Bing Desktop (non-Acer)
+desktop_data_bing AS (
   SELECT
     submission_date,
     country,
-    default_search_engine,
-    normalized_engine,
-    -- "personal" as normalized_channel,
-    client_id,
-    SUM(sap) AS sap,
-    SUM(tagged_sap) AS tagged_sap,
-    SUM(tagged_follow_on) AS tagged_follow_on,
-    SUM(search_with_ads) AS search_with_ads,
-    SUM(ad_click) AS ad_click,
-    SUM(organic) AS organic,
-    SUM(ad_click_organic) AS ad_click_organic,
-    SUM(search_with_ads_organic) AS search_with_ads_organic,
-    0 AS monetizable_sap -- does not exist for mobile
+    COUNT(DISTINCT client_id) AS dau,
+    COUNT(
+      DISTINCT IF(default_search_engine LIKE '%bing%', client_id, NULL)
+    ) AS dau_w_engine_as_default,
+    COUNT(
+      DISTINCT IF(
+        sap > 0
+        AND normalized_engine = 'Bing'
+        AND default_search_engine LIKE '%bing%',
+        client_id,
+        NULL
+      )
+    ) AS dau_engaged_w_sap,
+    SUM(IF(normalized_engine = 'Bing', sap, 0)) AS sap,
+    SUM(IF(normalized_engine = 'Bing', tagged_sap, 0)) AS tagged_sap,
+    SUM(IF(normalized_engine = 'Bing', tagged_follow_on, 0)) AS tagged_follow_on,
+    SUM(IF(normalized_engine = 'Bing', search_with_ads, 0)) AS search_with_ads,
+    SUM(IF(normalized_engine = 'Bing', ad_click, 0)) AS ad_click,
+    SUM(IF(normalized_engine = 'Bing', organic, 0)) AS organic,
+    SUM(IF(normalized_engine = 'Bing', ad_click_organic, 0)) AS ad_click_organic,
+    SUM(IF(normalized_engine = 'Bing', search_with_ads_organic, 0)) AS search_with_ads_organic,
+    SUM(IF(normalized_engine = 'Bing' AND is_sap_monetizable, sap, 0)) AS monetizable_sap
   FROM
-    `moz-fx-data-shared-prod.search.mobile_search_clients_engines_sources_daily`
+    `moz-fx-data-shared-prod.search.search_clients_engines_sources_daily`
   WHERE
     submission_date = @submission_date
-    AND (
-      -- Google has specific market restrictions
-      (
-        (default_search_engine LIKE '%google%' OR normalized_engine = "Google")
+    AND (distribution_id IS NULL OR distribution_id NOT LIKE '%acer%')
+    AND client_id NOT IN (SELECT client_id FROM `moz-fx-data-shared-prod.search.acer_cohort`)
+  GROUP BY
+    submission_date,
+    country
+  ORDER BY
+    submission_date,
+    country
+),
+-- DDG Desktop + Extension
+desktop_data_ddg AS (
+  SELECT
+    submission_date,
+    country,
+    COUNT(DISTINCT client_id) AS dau,
+    COUNT(
+      DISTINCT IF(
+        (
+          (default_search_engine LIKE('%ddg%') OR default_search_engine LIKE('%duckduckgo%'))
+          AND NOT default_search_engine LIKE('%addon%')
+        ),
+        client_id,
+        NULL
+      )
+    ) AS ddg_dau_w_engine_as_default,
+    COUNT(
+      DISTINCT IF(
+        (engine) IN ('ddg', 'duckduckgo')
+        AND sap > 0
         AND (
-          (submission_date < "2023-12-01" AND country NOT IN ('RU', 'UA', 'TR', 'BY', 'KZ', 'CN'))
-          OR (submission_date >= "2023-12-01" AND country NOT IN ('RU', 'UA', 'BY', 'CN'))
-        )
+          (default_search_engine LIKE('%ddg%') OR default_search_engine LIKE('%duckduckgo%'))
+          AND NOT default_search_engine LIKE('%addon%')
+        ),
+        client_id,
+        NULL
       )
-      -- Bing has no additional filters
-      OR ((default_search_engine LIKE '%bing%' OR normalized_engine = "Bing"))
-      -- DDG has no additional filters
-      OR (
-        default_search_engine LIKE '%ddg%'
-        OR default_search_engine LIKE '%duckduckgo%'
-        OR default_search_engine LIKE 'ddg%addon'
-        OR normalized_engine = "DuckDuckGo"
+    ) AS ddg_dau_engaged_w_sap,
+    SUM(IF(engine IN ('ddg', 'duckduckgo'), sap, 0)) AS ddg_sap,
+    SUM(IF(engine IN ('ddg', 'duckduckgo'), tagged_sap, 0)) AS ddg_tagged_sap,
+    SUM(IF(engine IN ('ddg', 'duckduckgo'), tagged_follow_on, 0)) AS ddg_tagged_follow_on,
+    SUM(IF(engine IN ('ddg', 'duckduckgo'), search_with_ads, 0)) AS ddg_search_with_ads,
+    SUM(IF(engine IN ('ddg', 'duckduckgo'), ad_click, 0)) AS ddg_ad_click,
+    SUM(IF(engine IN ('ddg', 'duckduckgo'), organic, 0)) AS ddg_organic,
+    SUM(IF(engine IN ('ddg', 'duckduckgo'), ad_click_organic, 0)) AS ddg_ad_click_organic,
+    SUM(
+      IF(engine IN ('ddg', 'duckduckgo'), search_with_ads_organic, 0)
+    ) AS ddg_search_with_ads_organic,
+    SUM(IF(engine IN ('ddg', 'duckduckgo') AND is_sap_monetizable, sap, 0)) AS ddg_monetizable_sap,
+   -- in-content probes not available for addon so these metrics although being here will be zero
+    COUNT(
+      DISTINCT IF(default_search_engine LIKE('ddg%addon'), client_id, NULL)
+    ) AS ddgaddon_dau_w_engine_as_default,
+    COUNT(
+      DISTINCT IF(
+        engine = 'ddg-addon'
+        AND sap > 0
+        AND default_search_engine LIKE('ddg%addon'),
+        client_id,
+        NULL
       )
-    )
-  GROUP BY
-    submission_date,
-    country,
-    default_search_engine,
-    normalized_engine,
-    -- normalized_channel,
-    client_id
-  ORDER BY
-    submission_date,
-    country,
-    default_search_engine,
-    normalized_engine,
-    -- normalized_channel,
-    client_id
-),
-search_telemetry AS (
-  SELECT
-    "desktop" AS device,
-    submission_date,
-    country,
-    client_id,
-    default_search_engine,
-    normalized_engine,
-    -- normalized_channel,
-    sap,
-    tagged_sap,
-    tagged_follow_on,
-    search_with_ads,
-    ad_click,
-    organic,
-    ad_click_organic,
-    search_with_ads_organic,
-    monetizable_sap
+    ) AS ddgaddon_dau_engaged_w_sap,
+    SUM(IF(engine IN ('ddg-addon'), sap, 0)) AS ddgaddon_sap,
+    SUM(IF(engine IN ('ddg-addon'), tagged_sap, 0)) AS ddgaddon_tagged_sap,
+    SUM(IF(engine IN ('ddg-addon'), tagged_follow_on, 0)) AS ddgaddon_tagged_follow_on,
+    SUM(IF(engine IN ('ddg-addon'), search_with_ads, 0)) AS ddgaddon_search_with_ads,
+    SUM(IF(engine IN ('ddg-addon'), ad_click, 0)) AS ddgaddon_ad_click,
+    SUM(IF(engine IN ('ddg-addon'), organic, 0)) AS ddgaddon_organic,
+    SUM(IF(engine IN ('ddg-addon'), ad_click_organic, 0)) AS ddgaddon_ad_click_organic,
+    SUM(
+      IF(engine IN ('ddg-addon'), search_with_ads_organic, 0)
+    ) AS ddgaddon_search_with_ads_organic,
+    SUM(IF(engine IN ('ddg-addon') AND is_sap_monetizable, sap, 0)) AS ddgaddon_monetizable_sap
   FROM
-    desktop_search_telemetry
-  UNION ALL
-  SELECT
-    "mobile" AS device,
-    submission_date,
-    country,
-    client_id,
-    default_search_engine,
-    normalized_engine,
-    -- normalized_channel,
-    sap,
-    tagged_sap,
-    tagged_follow_on,
-    search_with_ads,
-    ad_click,
-    organic,
-    ad_click_organic,
-    search_with_ads_organic,
-    monetizable_sap
-  FROM
-    mobile_search_telemetry
-),
--- we don't restrict search metrics to KPI-eligible clients
--- we report all activity from top search engines
-search_metrics AS (
-  SELECT
-    device,
-    submission_date,
-    country,
-    normalized_engine,
-      --  normalized_channel,
-    SUM(sap) AS sap,
-    SUM(tagged_sap) AS tagged_sap,
-    SUM(tagged_follow_on) AS tagged_follow_on,
-    SUM(search_with_ads) AS search_with_ads,
-    SUM(ad_click) AS ad_click,
-    SUM(organic) AS organic,
-    SUM(ad_click_organic) AS ad_click_organic,
-    SUM(search_with_ads_organic) AS search_with_ads_organic,
-    SUM(monetizable_sap) AS monetizable_sap
-  FROM
-    search_telemetry
-  WHERE
-    normalized_engine IN ("Google", "Bing", "DuckDuckGo")
-  GROUP BY
-    submission_date,
-    device,
-    country,
-    normalized_engine
-      --  normalized_channel
-),
--- dau from active users tables
--- all activity filtering done behind the scenes, managed by browsers DS
--- use individual device tables since will need to filter by country
-browsers_dau AS (
-  SELECT
-    submission_date,
-    "desktop" AS device,
-    country,
-    client_id
-  FROM
-    `mozdata.telemetry.desktop_active_users`
+    `moz-fx-data-shared-prod.search.search_clients_engines_sources_daily`
   WHERE
     submission_date = @submission_date
-    AND is_dau
+  GROUP BY
+    submission_date,
+    country
+  ORDER BY
+    submission_date,
+    country
+),
+-- Mobile DAU data -- merging baseline clients to AUA clients
+## baseline ping -- mobile default search engine by client id
+mobile_baseline_engine AS (
+  SELECT DISTINCT
+    DATE(submission_timestamp) AS submission_date,
+    client_info.client_id,
+    metrics.string.search_default_engine_code AS default_search_engine,
+  FROM
+    `moz-fx-data-shared-prod.fenix.baseline`
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+  UNION ALL
+  SELECT DISTINCT
+    DATE(submission_timestamp) AS submission_date,
+    client_info.client_id,
+    metrics.string.search_default_engine AS default_search_engine
+  FROM
+    `moz-fx-data-shared-prod.firefox_ios.baseline`
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+  UNION ALL
+  SELECT DISTINCT
+    DATE(submission_timestamp) AS submission_date,
+    client_info.client_id,
+    metrics.string.browser_default_search_engine AS default_search_engine
+  FROM
+    `moz-fx-data-shared-prod.focus_android.baseline`
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+  UNION ALL
+  SELECT DISTINCT
+    DATE(submission_timestamp) AS submission_date,
+    client_info.client_id,
+    metrics.string.search_default_engine AS default_search_engine
+  FROM
+    `moz-fx-data-shared-prod.focus_ios.baseline`
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+),
+## baseline ping search counts -- mobile search counts by client id
+mobile_baseline_search AS (
+  SELECT
+    DATE(submission_timestamp) AS submission_date,
+    client_info.client_id,
+    metrics.string.search_default_engine_code AS default_search_engine,
+    `moz-fx-data-shared-prod.udf.normalize_search_engine`(key_value.key) AS normalized_engine,
+    key_value.value AS search_count
+  FROM
+    `moz-fx-data-shared-prod.fenix.baseline`,
+    UNNEST(metrics.labeled_counter.metrics_search_count) AS key_value
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+    AND key_value.value <= 10000
   UNION ALL
   SELECT
+    DATE(submission_timestamp) AS submission_date,
+    client_info.client_id,
+    metrics.string.search_default_engine AS default_search_engine,
+    `moz-fx-data-shared-prod.udf.normalize_search_engine`(key_value.key) AS normalized_engine,
+    key_value.value AS search_count
+  FROM
+    `moz-fx-data-shared-prod.firefox_ios.baseline`,
+    UNNEST(metrics.labeled_counter.search_counts) AS key_value
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+    AND key_value.value <= 10000
+  UNION ALL
+  SELECT
+    DATE(submission_timestamp) AS submission_date,
+    client_info.client_id,
+    metrics.string.browser_default_search_engine AS default_search_engine,
+    `moz-fx-data-shared-prod.udf.normalize_search_engine`(key_value.key) AS normalized_engine,
+    key_value.value AS search_count
+  FROM
+    `moz-fx-data-shared-prod.focus_android.baseline`,
+    UNNEST(metrics.labeled_counter.browser_search_search_count) AS key_value
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+    AND key_value.value <= 10000
+  UNION ALL
+  SELECT
+    DATE(submission_timestamp) AS submission_date,
+    client_info.client_id,
+    metrics.string.search_default_engine AS default_search_engine,
+    `moz-fx-data-shared-prod.udf.normalize_search_engine`(key_value.key) AS normalized_engine,
+    key_value.value AS search_count
+  FROM
+    `moz-fx-data-shared-prod.focus_ios.baseline`,
+    UNNEST(metrics.labeled_counter.browser_search_search_count) AS key_value
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+    AND key_value.value <= 10000
+),
+## baseline-powered clients who qualify for KPI (activity filters applied)
+mobile_dau_data AS (
+  SELECT DISTINCT
     submission_date,
     "mobile" AS device,
     country,
@@ -218,23 +263,30 @@ browsers_dau AS (
   WHERE
     submission_date = @submission_date
     AND is_dau
+   # not including Fenix MozillaOnline, BrowserStack, Klar
+    AND app_name IN ("Focus iOS", "Firefox iOS", "Fenix", "Focus Android")
 ),
--- merge search & DAU data to calculate search DAU
--- no group by normalized_engine since want default search engine regardless
-dau_metrics_wide AS (
+final_mobile_dau_counts AS (
   SELECT
     submission_date,
-    device,
     country,
-    COUNT(DISTINCT client_id) AS dau_eligible_markets,
+    COUNT(DISTINCT client_id) AS eligible_dau,
     COUNT(
       DISTINCT IF(
         (
-          default_search_engine LIKE '%google%'
-          AND (
-            (submission_date < "2023-12-01" AND country NOT IN ('RU', 'UA', 'TR', 'BY', 'KZ', 'CN'))
-            OR (submission_date >= "2023-12-01" AND country NOT IN ('RU', 'UA', 'BY', 'CN'))
-          )
+          (submission_date < "2023-12-01" AND country NOT IN ('RU', 'UA', 'TR', 'BY', 'KZ', 'CN'))
+          OR (submission_date >= "2023-12-01" AND country NOT IN ('RU', 'UA', 'BY', 'CN'))
+        ),
+        client_id,
+        NULL
+      )
+    ) AS google_eligible_dau,
+    COUNT(
+      DISTINCT IF(
+        default_search_engine LIKE '%google%'
+        AND (
+          (submission_date < "2023-12-01" AND country NOT IN ('RU', 'UA', 'TR', 'BY', 'KZ', 'CN'))
+          OR (submission_date >= "2023-12-01" AND country NOT IN ('RU', 'UA', 'BY', 'CN'))
         ),
         client_id,
         NULL
@@ -242,129 +294,166 @@ dau_metrics_wide AS (
     ) AS google_dau_w_engine_as_default,
     COUNT(
       DISTINCT IF(
-        (
-          default_search_engine LIKE '%bing%'
-          -- AND ((distribution_id IS NULL OR distribution_id NOT LIKE '%acer%')
-          AND client_id NOT IN (SELECT client_id FROM `moz-fx-data-shared-prod.search.acer_cohort`)
-        ),
-        client_id,
-        NULL
-      )
-    ) AS bing_dau_w_engine_as_default,
-    COUNT(
-      DISTINCT IF(
-        (
-          (
-            default_search_engine LIKE '%ddg%'
-            OR default_search_engine LIKE '%duckduckgo%'
-            OR default_search_engine LIKE 'ddg%addon'
-          )
-        ),
-        client_id,
-        NULL
-      )
-    ) AS ddg_dau_w_engine_as_default,
-    COUNT(
-      DISTINCT IF(
-        sap > 0
+        search_count > 0
+        AND normalized_engine = 'Google'
+        AND default_search_engine LIKE '%google%'
         AND (
-          (
-            normalized_engine = 'Google'
-            AND default_search_engine LIKE '%google%'
-            AND (
-              (
-                submission_date < "2023-12-01"
-                AND country NOT IN ('RU', 'UA', 'TR', 'BY', 'KZ', 'CN')
-              )
-              OR (submission_date >= "2023-12-01" AND country NOT IN ('RU', 'UA', 'BY', 'CN'))
-            )
-          )
+          (submission_date < "2023-12-01" AND country NOT IN ('RU', 'UA', 'TR', 'BY', 'KZ', 'CN'))
+          OR (submission_date >= "2023-12-01" AND country NOT IN ('RU', 'UA', 'BY', 'CN'))
         ),
         client_id,
         NULL
       )
     ) AS google_dau_engaged_w_sap,
     COUNT(
+      DISTINCT IF(default_search_engine LIKE '%bing%', client_id, NULL)
+    ) AS bing_dau_w_engine_as_default,
+    COUNT(
       DISTINCT IF(
-        sap > 0
-        AND (
-          normalized_engine = 'Bing'
-          AND default_search_engine LIKE '%bing%'
-            -- AND ((distribution_id IS NULL OR distribution_id NOT LIKE '%acer%')
-          AND client_id NOT IN (SELECT client_id FROM `moz-fx-data-shared-prod.search.acer_cohort`)
-        ),
+        search_count > 0
+        AND normalized_engine = 'Bing'
+        AND default_search_engine LIKE '%bing%',
         client_id,
         NULL
       )
     ) AS bing_dau_engaged_w_sap,
     COUNT(
       DISTINCT IF(
-        sap > 0
-        AND (
-          normalized_engine = 'DuckDuckGo'
-          AND (
-            default_search_engine LIKE '%ddg%'
-            OR default_search_engine LIKE '%duckduckgo%'
-            OR default_search_engine LIKE 'ddg%addon'
-          )
-        ),
+        default_search_engine LIKE('%ddg%')
+        OR default_search_engine LIKE('%duckduckgo%'),
         client_id,
         NULL
       )
-    ) AS ddg_dau_engaged_w_sap,
+    ) AS ddg_dau_w_engine_as_default,
+    COUNT(
+      DISTINCT IF(
+        normalized_engine = "DuckDuckGo"
+        AND search_count > 0
+        AND (default_search_engine LIKE('%ddg%') OR default_search_engine LIKE('%duckduckgo%')),
+        client_id,
+        NULL
+      )
+    ) AS ddg_dau_engaged_w_sap
   FROM
-    browsers_dau
-  FULL JOIN
-    search_telemetry
-    USING (submission_date, client_id, country, device)
+    mobile_dau_data
+  LEFT JOIN
+    mobile_baseline_engine
+    USING (submission_date, client_id)
+  LEFT JOIN
+    mobile_baseline_search
+    USING (submission_date, client_id, default_search_engine)
+  GROUP BY
+    1,
+    2
+),
+-- Google Mobile (search only - as mobile search metrics is based on metrics
+-- ping, while DAU should be based on main ping on Mobile, see also
+-- https://mozilla-hub.atlassian.net/browse/RS-575)
+mobile_data_google AS (
+  SELECT
+    submission_date,
+    country,
+    google_eligible_dau,
+    google_dau_w_engine_as_default,
+    google_dau_engaged_w_sap,
+    SUM(IF(normalized_engine = 'Google', sap, 0)) AS sap,
+    SUM(IF(normalized_engine = 'Google', tagged_sap, 0)) AS tagged_sap,
+    SUM(IF(normalized_engine = 'Google', tagged_follow_on, 0)) AS tagged_follow_on,
+    SUM(IF(normalized_engine = 'Google', search_with_ads, 0)) AS search_with_ads,
+    SUM(IF(normalized_engine = 'Google', ad_click, 0)) AS ad_click,
+    SUM(IF(normalized_engine = 'Google', organic, 0)) AS organic,
+    SUM(IF(normalized_engine = 'Google', ad_click_organic, 0)) AS ad_click_organic,
+   -- metrics do not exist for mobile
+    0 AS search_with_ads_organic,
+    0 AS monetizable_sap
+  FROM
+    `moz-fx-data-shared-prod.search.mobile_search_clients_engines_sources_daily`
+  INNER JOIN
+    final_mobile_dau_counts
+    USING (submission_date, country)
+  WHERE
+    submission_date = @submission_date
+    AND (
+      (submission_date < "2023-12-01" AND country NOT IN ('RU', 'UA', 'TR', 'BY', 'KZ', 'CN'))
+      OR (submission_date >= "2023-12-01" AND country NOT IN ('RU', 'UA', 'BY', 'CN'))
+    )
+    AND (
+      app_name IN ('Fenix', 'Firefox Preview', 'Focus', 'Focus Android Glean', 'Focus iOS Glean')
+      OR (app_name = 'Fennec' AND os = 'iOS')
+    )
   GROUP BY
     submission_date,
-    device,
+    country,
+    google_eligible_dau,
+    google_dau_w_engine_as_default,
+    google_dau_engaged_w_sap
+  ORDER BY
+    submission_date,
     country
-      --  normalized_engine
-      --  normalized_channel
 ),
-dau_metrics_long AS (
+-- Bing & DDG Mobile (search only - as mobile search metrics is based on
+-- metrics ping, while DAU should be based on main ping on Mobile, see also
+-- https://mozilla-hub.atlassian.net/browse/RS-575)
+mobile_data_bing_ddg AS (
   SELECT
     submission_date,
-    device,
     country,
-    "Google" AS normalized_engine,
-    dau_eligible_markets,
-    google_dau_w_engine_as_default AS dau_w_engine_as_default,
-    google_dau_engaged_w_sap AS dau_engaged_w_sap,
+    eligible_dau,
+    bing_dau_w_engine_as_default,
+    bing_dau_engaged_w_sap,
+    ddg_dau_w_engine_as_default,
+    ddg_dau_engaged_w_sap,
+    SUM(IF(normalized_engine = 'Bing', sap, 0)) AS bing_sap,
+    SUM(IF(normalized_engine = 'Bing', tagged_sap, 0)) AS bing_tagged_sap,
+    SUM(IF(normalized_engine = 'Bing', tagged_follow_on, 0)) AS bing_tagged_follow_on,
+    SUM(IF(normalized_engine = 'Bing', search_with_ads, 0)) AS bing_search_with_ads,
+    SUM(IF(normalized_engine = 'Bing', ad_click, 0)) AS bing_ad_click,
+    SUM(IF(normalized_engine = 'Bing', organic, 0)) AS bing_organic,
+    SUM(IF(normalized_engine = 'Bing', ad_click_organic, 0)) AS bing_ad_click_organic,
+   -- metrics do not exist for mobile
+    0 AS bing_search_with_ads_organic,
+    0 AS bing_monetizable_sap,
+    SUM(IF(normalized_engine = 'DuckDuckGo', sap, 0)) AS ddg_sap,
+    SUM(IF(normalized_engine = 'DuckDuckGo', tagged_sap, 0)) AS ddg_tagged_sap,
+    SUM(IF(normalized_engine = 'DuckDuckGo', tagged_follow_on, 0)) AS ddg_tagged_follow_on,
+    SUM(IF(normalized_engine = 'DuckDuckGo', search_with_ads, 0)) AS ddg_search_with_ads,
+    SUM(IF(normalized_engine = 'DuckDuckGo', ad_click, 0)) AS ddg_ad_click,
+    SUM(IF(normalized_engine = 'DuckDuckGo', organic, 0)) AS ddg_organic,
+    SUM(IF(normalized_engine = 'DuckDuckGo', ad_click_organic, 0)) AS ddg_ad_click_organic,
+   -- metrics do not exist for mobile
+    0 AS ddg_search_with_ads_organic,
+    0 AS ddg_monetizable_sap
   FROM
-    dau_metrics_wide
-  UNION ALL
-  SELECT
+    `moz-fx-data-shared-prod.search.mobile_search_clients_engines_sources_daily`
+  INNER JOIN
+    final_mobile_dau_counts
+    USING (submission_date, country)
+  WHERE
+    submission_date = @submission_date
+    AND (
+      app_name IN ('Fenix', 'Firefox Preview', 'Focus', 'Focus Android Glean', 'Focus iOS Glean')
+      OR (app_name = 'Fennec' AND os = 'iOS')
+    )
+  GROUP BY
     submission_date,
-    device,
     country,
-    "Bing" AS normalized_engine,
-    dau_eligible_markets,
-    bing_dau_w_engine_as_default AS dau_w_engine_as_default,
-    bing_dau_engaged_w_sap AS dau_engaged_w_sap,
-  FROM
-    dau_metrics_wide
-  UNION ALL
-  SELECT
+    eligible_dau,
+    bing_dau_w_engine_as_default,
+    bing_dau_engaged_w_sap,
+    ddg_dau_w_engine_as_default,
+    ddg_dau_engaged_w_sap
+  ORDER BY
     submission_date,
-    device,
-    country,
-    "DuckDuckGo" AS normalized_engine,
-    dau_eligible_markets,
-    ddg_dau_w_engine_as_default AS dau_w_engine_as_default,
-    ddg_dau_engaged_w_sap AS dau_engaged_w_sap,
-  FROM
-    dau_metrics_wide
+    country
 )
+-- combine all desktop and mobile together
 SELECT
   submission_date,
-  device,
+  'Google' AS partner,
+  'desktop' AS device,
+  channel,
   country,
-  normalized_engine,
-  dau_eligible_markets,
-  dau_w_engine_as_default,
+  dau,
   dau_engaged_w_sap,
   sap,
   tagged_sap,
@@ -374,9 +463,133 @@ SELECT
   organic,
   ad_click_organic,
   search_with_ads_organic,
-  monetizable_sap
+  monetizable_sap,
+  dau_w_engine_as_default
 FROM
-  search_metrics
-LEFT JOIN
-  dau_metrics_long
-  USING (submission_date, device, country, normalized_engine)
+  desktop_data_google
+UNION ALL
+SELECT
+  submission_date,
+  'Bing' AS partner,
+  'desktop' AS device,
+  NULL AS channel,
+  country,
+  dau,
+  dau_engaged_w_sap,
+  sap,
+  tagged_sap,
+  tagged_follow_on,
+  search_with_ads,
+  ad_click,
+  organic,
+  ad_click_organic,
+  search_with_ads_organic,
+  monetizable_sap,
+  dau_w_engine_as_default
+FROM
+  desktop_data_bing
+UNION ALL
+SELECT
+  submission_date,
+  'DuckDuckGo' AS partner,
+  'desktop' AS device,
+  NULL AS channel,
+  country,
+  dau,
+  ddg_dau_engaged_w_sap AS dau_engaged_w_sap,
+  ddg_sap AS sap,
+  ddg_tagged_sap AS tagged_sap,
+  ddg_tagged_follow_on AS tagged_follow_on,
+  ddg_search_with_ads AS search_with_ads,
+  ddg_ad_click AS ad_click,
+  ddg_organic AS organic,
+  ddg_ad_click_organic AS ad_click_organic,
+  ddg_search_with_ads_organic AS search_with_ads_organic,
+  ddg_monetizable_sap AS monetizable_sap,
+  ddg_dau_w_engine_as_default AS dau_w_engine_as_default
+FROM
+  desktop_data_ddg
+UNION ALL
+SELECT
+  submission_date,
+  'DuckDuckGo' AS partner,
+  'extension' AS device,
+  NULL AS channel,
+  country,
+  dau,
+  ddgaddon_dau_engaged_w_sap AS dau_engaged_w_sap,
+  ddgaddon_sap AS sap,
+  ddgaddon_tagged_sap AS tagged_sap,
+  ddgaddon_tagged_follow_on AS tagged_follow_on,
+  ddgaddon_search_with_ads AS search_with_ads,
+  ddgaddon_ad_click AS ad_click,
+  ddgaddon_organic AS organic,
+  ddgaddon_ad_click_organic AS ad_click_organic,
+  ddgaddon_search_with_ads_organic AS search_with_ads_organic,
+  ddgaddon_monetizable_sap AS monetizable_sap,
+  ddgaddon_dau_w_engine_as_default AS dau_w_engine_as_default
+FROM
+  desktop_data_ddg
+UNION ALL
+SELECT
+  submission_date,
+  'Google' AS partner,
+  'mobile' AS device,
+  'n/a' AS channel,
+  country,
+  google_eligible_dau AS dau,
+  google_dau_engaged_w_sap AS dau_engaged_w_sap,
+  sap,
+  tagged_sap,
+  tagged_follow_on,
+  search_with_ads,
+  ad_click,
+  organic,
+  ad_click_organic,
+  search_with_ads_organic,
+  monetizable_sap,
+  google_dau_w_engine_as_default AS dau_w_engine_as_default
+FROM
+  mobile_data_google
+UNION ALL
+SELECT
+  submission_date,
+  'Bing' AS partner,
+  'mobile' AS device,
+  NULL AS channel,
+  country,
+  eligible_dau,
+  bing_dau_engaged_w_sap,
+  bing_sap,
+  bing_tagged_sap,
+  bing_tagged_follow_on,
+  bing_search_with_ads,
+  bing_ad_click,
+  bing_organic,
+  bing_ad_click_organic,
+  bing_search_with_ads_organic,
+  bing_monetizable_sap,
+  bing_dau_w_engine_as_default AS dau_w_engine_as_default
+FROM
+  mobile_data_bing_ddg
+UNION ALL
+SELECT
+  submission_date,
+  'DuckDuckGo' AS partner,
+  'mobile' AS device,
+  NULL AS channel,
+  country,
+  eligible_dau,
+  ddg_dau_engaged_w_sap,
+  ddg_sap,
+  ddg_tagged_sap,
+  ddg_tagged_follow_on,
+  ddg_search_with_ads,
+  ddg_ad_click,
+  ddg_organic,
+  ddg_ad_click_organic,
+  ddg_search_with_ads_organic,
+  ddg_monetizable_sap,
+  ddg_dau_w_engine_as_default AS dau_w_engine_as_default
+FROM
+  mobile_data_bing_ddg

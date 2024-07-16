@@ -1,0 +1,11 @@
+friendly_name: Tiles Revenue Forecast Inputs
+description: |-
+  Monthly inputs, calculated from Fx telemetry, into the desktop tiles revenue forecast.
+    Geo markets as of 2024/07/16: 'US','DE','FR','AU','CA','IT','ES','MX','BR','IN','GB','JP'.
+owners:
+  - sbetancourt@mozilla.com
+  - cmorales@mozilla.com
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:mozilla-confidential

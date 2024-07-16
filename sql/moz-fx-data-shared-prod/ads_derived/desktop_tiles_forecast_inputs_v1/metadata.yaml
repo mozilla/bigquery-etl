@@ -1,0 +1,25 @@
+friendly_name: Tiles Revenue Forecast Inputs
+description: |-
+  Monthly inputs, calculated from Fx telemetry, into the desktop tiles revenue forecast.
+  Geo markets as of 2024/07/16: 'US','DE','FR','AU','CA','IT','ES','MX','BR','IN','GB','JP'.
+owners:
+  - sbetancourt@mozilla.com
+  - cmorales@mozilla.com
+labels:
+  incremental: true
+  schedule: monthly
+  change_controlled: true
+scheduling:
+  dag_name: bqetl_ads
+bigquery:
+  time_partitioning:
+    field: submission_date
+    type: day
+    require_partition_filter: true
+    expiration_days: null
+  clustering: null
+references: {}
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:mozilla-confidential

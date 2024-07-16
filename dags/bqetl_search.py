@@ -146,6 +146,13 @@ with DAG(
         )
 
         ExternalTaskMarker(
+            task_id="bqetl_firefox_desktop_ad_click_history__wait_for_search_derived__search_clients_daily__v8",
+            external_dag_id="bqetl_firefox_desktop_ad_click_history",
+            external_task_id="wait_for_search_derived__search_clients_daily__v8",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=39600)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_review_checker__wait_for_search_derived__search_clients_daily__v8",
             external_dag_id="bqetl_review_checker",
             external_task_id="wait_for_search_derived__search_clients_daily__v8",

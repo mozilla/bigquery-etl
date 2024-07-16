@@ -24,7 +24,7 @@ WITH desktop_search_telemetry AS (
   FROM
     `moz-fx-data-shared-prod.search.search_clients_engines_sources_daily`
   WHERE
-    submission_date = "2024-06-15"
+    submission_date = @submission_date
     AND (
       -- Google has specific market restrictions
       (
@@ -88,7 +88,7 @@ mobile_search_telemetry AS (
   FROM
     `moz-fx-data-shared-prod.search.mobile_search_clients_engines_sources_daily`
   WHERE
-    submission_date = "2024-06-15"
+    submission_date = @submission_date
     AND (
       -- Google has specific market restrictions
       (
@@ -205,7 +205,7 @@ browsers_dau AS (
   FROM
     `mozdata.telemetry.desktop_active_users`
   WHERE
-    submission_date = "2024-06-15"
+    submission_date = @submission_date
     AND is_dau
   UNION ALL
   SELECT
@@ -216,7 +216,7 @@ browsers_dau AS (
   FROM
     `mozdata.telemetry.mobile_active_users`
   WHERE
-    submission_date = "2024-06-15"
+    submission_date = @submission_date
     AND is_dau
 ),
 -- merge search & DAU data to calculate search DAU

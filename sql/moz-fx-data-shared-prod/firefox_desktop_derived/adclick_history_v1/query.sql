@@ -7,7 +7,7 @@ WITH new_data AS (
     `moz-fx-data-shared-prod.search_derived.search_clients_daily_v8`
   WHERE
     submission_date = @submission_date
-    AND ad_clicks > 0
+    AND ad_click > 0
 ),
 existing_data AS (
   SELECT

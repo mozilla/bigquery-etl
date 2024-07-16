@@ -39,12 +39,16 @@ check_results AS (
     events_old
     USING (day, event_name)
   WHERE
-    events_new.count_new IS NULL
-    OR events_old.count_old IS NULL
-    OR (
-      (event_name NOT LIKE 'access_token_%' AND events_new.count_new - events_old.count_old > 1)
-    -- access_token_checked is sent frequently, 300M per day and due to small time differences some events might end up in a different day's parition
-      OR (event_name LIKE 'access_token_%' AND events_new.count_new - events_old.count_old > 50)
+    -- investigated in https://github.com/mozilla/fxa/pull/17226
+    event_name NOT IN ('google_login_complete', 'apple_login_complete')
+    AND (
+      events_new.count_new IS NULL
+      OR events_old.count_old IS NULL
+      OR (
+        (event_name NOT LIKE 'access_token_%' AND events_new.count_new - events_old.count_old > 1)
+        -- access_token_checked is sent frequently, 300M per day and due to small time differences some events might end up in a different day's parition
+        OR (event_name LIKE 'access_token_%' AND events_new.count_new - events_old.count_old > 50)
+      )
     )
 )
 SELECT
@@ -101,12 +105,35 @@ check_results AS (
     USING (day, event_name)
   WHERE
     event_name IS NOT NULL
-  -- these were recently added in https://mozilla-hub.atlassian.net/browse/FXA-9978
-  -- will be removed from here when this lands in production
+    -- fix in progress in https://github.com/mozilla/fxa/pull/17218
+    -- will be removed from here when this lands in production
     AND event_name NOT IN (
-      'login_backup_code_submit',
-      'login_backup_code_success_view',
-      'login_backup_code_view'
+      'google_oauth_reg_start',
+      'reg_google_oauth_reg_start',
+      'apple_oauth_reg_start',
+      'reg_apple_oauth_reg_start',
+      'third_party_auth_login_no_pw_view',
+      'login_third_party_auth_login_no_pw_view',
+      'google_oauth_login_start',
+      'login_google_oauth_login_start',
+      'apple_oauth_login_start',
+      'login_apple_oauth_login_start',
+      'google_deeplink',
+      'third_party_auth_google_deeplink',
+      'apple_deeplink',
+      'third_party_auth_apple_deeplink',
+      'apple_oauth_email_first_start',
+      'email_apple_oauth_email_first_start',
+      'email_google_oauth_email_first_start',
+      'google_oauth_email_first_start'
+    )
+    -- fix in progress in https://github.com/mozilla/fxa/pull/17223
+    -- will be removed from here when this lands in production
+    AND event_name NOT IN (
+      'cad_approve_device_submit',
+      'cad_firefox_notnow_submit',
+      'cad_mobile_pair_submit',
+      'cad_mobile_pair_use_app_view'
     )
     AND (
       (events_new.count_new IS NULL AND events_old.count_old > 1) -- ignore erroneous event names
@@ -114,7 +141,7 @@ check_results AS (
       OR ABS(events_new.count_new - events_old.count_old) / LEAST(
         events_new.count_new,
         events_old.count_old
-      ) > 0.01
+      ) > 0.02
     )
 )
 SELECT

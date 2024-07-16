@@ -1770,7 +1770,7 @@ bqetl_cloudflare_device_market_share:
     - repo/bigquery-etl
     - impact/tier_3
 
-firefox_desktop_ad_click_history:
+bqetl_firefox_desktop_ad_click_history:
   default_args:
     depends_on_past: false
     email:

@@ -1769,3 +1769,24 @@ bqetl_cloudflare_device_market_share:
   tags:
     - repo/bigquery-etl
     - impact/tier_3
+
+firefox_desktop_ad_click_history:
+  default_args:
+    depends_on_past: false
+    email:
+      - kwindau@mozilla.com
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    owner: kwindau@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2024-07-16'
+  description: |
+    Calculates # of historical ad clicks for Firefox Desktop clients
+  repo: bigquery-etl
+  schedule_interval: 0 16 * * *
+  tags:
+    - repo/bigquery-etl
+    - impact/tier_2

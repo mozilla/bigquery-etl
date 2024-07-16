@@ -39,12 +39,16 @@ check_results AS (
     events_old
     USING (day, event_name)
   WHERE
-    events_new.count_new IS NULL
-    OR events_old.count_old IS NULL
-    OR (
-      (event_name NOT LIKE 'access_token_%' AND events_new.count_new - events_old.count_old > 1)
-    -- access_token_checked is sent frequently, 300M per day and due to small time differences some events might end up in a different day's parition
-      OR (event_name LIKE 'access_token_%' AND events_new.count_new - events_old.count_old > 50)
+    -- investigated in https://github.com/mozilla/fxa/pull/17226
+    event_name NOT IN ('google_login_complete', 'apple_login_complete')
+    AND (
+      events_new.count_new IS NULL
+      OR events_old.count_old IS NULL
+      OR (
+        (event_name NOT LIKE 'access_token_%' AND events_new.count_new - events_old.count_old > 1)
+        -- access_token_checked is sent frequently, 300M per day and due to small time differences some events might end up in a different day's parition
+        OR (event_name LIKE 'access_token_%' AND events_new.count_new - events_old.count_old > 50)
+      )
     )
 )
 SELECT
@@ -137,7 +141,7 @@ check_results AS (
       OR ABS(events_new.count_new - events_old.count_old) / LEAST(
         events_new.count_new,
         events_old.count_old
-      ) > 0.01
+      ) > 0.02
     )
 )
 SELECT

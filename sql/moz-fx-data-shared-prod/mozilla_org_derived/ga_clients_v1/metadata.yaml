@@ -7,6 +7,11 @@ owners:
 labels:
   incremental: true
   owner1: frank
+scheduling:
+  depends_on_past: true
+  date_partition_parameter: null
+  parameters:
+  - session_date:DATE:{{ds}}
 bigquery:
   time_partitioning: null
   range_partitioning: null

@@ -6,6 +6,8 @@ owners:
 labels:
   incremental: true
   owner1: frank
+scheduling:
+  date_partition_parameter: session_date
 bigquery:
   time_partitioning:
     type: day

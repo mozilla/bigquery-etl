@@ -1,6 +1,8 @@
 friendly_name: Tiles Revenue Forecast Inputs
 description: |-
   Monthly inputs, calculated from Fx telemetry, into the desktop tiles revenue forecast.
+  Note that the forecast methodology was officially switched over from Activity Stream sessions to visits in June 2024.
+  Also, note that PingCentre (and thus sessions telemetry) was deprecated in Feb 2024.
   Geo markets as of 2024/07/16: 'US','DE','FR','AU','CA','IT','ES','MX','BR','IN','GB','JP'.
 owners:
   - sbetancourt@mozilla.com

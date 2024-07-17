@@ -75,6 +75,19 @@ with DAG(
         retries=0,
     )
 
+    checks__fail_mozilla_org_derived__downloads_with_attribution__v2 = bigquery_dq_check(
+        task_id="checks__fail_mozilla_org_derived__downloads_with_attribution__v2",
+        source_table='downloads_with_attribution_v2${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
+        dataset_id="mozilla_org_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=True,
+        owner="gleonard@mozilla.com",
+        email=["gleonard@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        parameters=["download_date:DATE:{{macros.ds_add(ds, -1)}}"],
+        retries=0,
+    )
+
     ga_derived__downloads_with_attribution__v2 = bigquery_etl_query(
         task_id="ga_derived__downloads_with_attribution__v2",
         destination_table='downloads_with_attribution_v2${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
@@ -87,8 +100,24 @@ with DAG(
         parameters=["download_date:DATE:{{macros.ds_add(ds, -1)}}"],
     )
 
+    mozilla_org_derived__downloads_with_attribution__v2 = bigquery_etl_query(
+        task_id="mozilla_org_derived__downloads_with_attribution__v2",
+        destination_table='downloads_with_attribution_v2${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
+        dataset_id="mozilla_org_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="gleonard@mozilla.com",
+        email=["gleonard@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        parameters=["download_date:DATE:{{macros.ds_add(ds, -1)}}"],
+    )
+
     checks__fail_ga_derived__downloads_with_attribution__v2.set_upstream(
         ga_derived__downloads_with_attribution__v2
+    )
+
+    checks__fail_mozilla_org_derived__downloads_with_attribution__v2.set_upstream(
+        mozilla_org_derived__downloads_with_attribution__v2
     )
 
     ga_derived__downloads_with_attribution__v2.set_upstream(

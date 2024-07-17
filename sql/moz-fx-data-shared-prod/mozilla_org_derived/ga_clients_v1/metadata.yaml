@@ -7,13 +7,6 @@ owners:
 labels:
   incremental: true
   owner1: frank
-  dag: bqetl_mozilla_org_derived
-scheduling:
-  depends_on_past: true
-  dag_name: bqetl_mozilla_org_derived
-  date_partition_parameter: null
-  parameters:
-  - session_date:DATE:{{ds}}
 bigquery:
   time_partitioning: null
   range_partitioning: null

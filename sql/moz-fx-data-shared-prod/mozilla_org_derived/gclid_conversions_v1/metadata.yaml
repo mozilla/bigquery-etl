@@ -10,12 +10,6 @@ owners:
 labels:
   incremental: true
   owner1: frank
-  dag: bqetl_mozilla_org_derived
-scheduling:
-  dag_name: bqetl_mozilla_org_derived
-  date_partition_parameter: activity_date
-  parameters:
-  - conversion_window:INT64:30
 bigquery:
   time_partitioning:
     type: day

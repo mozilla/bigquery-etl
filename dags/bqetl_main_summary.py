@@ -339,12 +339,6 @@ with DAG(
         )
 
         ExternalTaskMarker(
-            task_id="bqetl_mozilla_org_derived__wait_for_telemetry_derived__clients_daily__v6",
-            external_dag_id="bqetl_mozilla_org_derived",
-            external_task_id="wait_for_telemetry_derived__clients_daily__v6",
-        )
-
-        ExternalTaskMarker(
             task_id="bqetl_google_analytics_derived_ga4__wait_for_telemetry_derived__clients_daily__v6",
             external_dag_id="bqetl_google_analytics_derived_ga4",
             external_task_id="wait_for_telemetry_derived__clients_daily__v6",

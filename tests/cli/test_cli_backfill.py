@@ -1728,7 +1728,7 @@ class TestBackfill:
         cloned_table_id = "test__test_query_v1_backup_2023_05_30"
 
         actual_backfill_staging = get_backfill_backup_table_name(
-            qualified_table_name, "2023-05-30"
+            qualified_table_name, date.fromisoformat("2023-05-30")
         )
         expected_backfill_backup = f"{BACKFILL_DESTINATION_PROJECT}.{BACKFILL_DESTINATION_DATASET}.{cloned_table_id}"
 

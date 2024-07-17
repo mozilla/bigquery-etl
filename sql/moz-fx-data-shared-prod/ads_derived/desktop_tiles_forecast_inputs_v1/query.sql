@@ -16,7 +16,9 @@ WITH cs_impressions AS (
     AND country IN ('US', 'DE', 'FR', 'AU', 'CA', 'IT', 'ES', 'MX', 'BR', 'IN', 'GB', 'JP')
   GROUP BY
     1
-),
+)
+/* Remnant of old telemetry, which was formally deprecated in February 2024 */
+,
 as_sessions AS (
   SELECT
     normalized_country_code AS country_code,

@@ -18,6 +18,7 @@ bigquery:
   clustering:
     fields:
     - sample_id
+    - client_id
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

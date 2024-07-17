@@ -1,0 +1,12 @@
+friendly_name: monitor-backend
+description: |-
+  User-facing views related to document namespace monitor-backend; see
+  https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/monitor-backend
+dataset_base_acl: view
+user_facing: true
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+  - workgroup:dataops-managed/external-fides

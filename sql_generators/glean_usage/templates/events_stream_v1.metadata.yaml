@@ -25,3 +25,4 @@ bigquery:
     fields:
     - sample_id
     - event_category
+    - client_id

@@ -20,10 +20,10 @@
         {% endfor %}
       {% endif %}
       {{ data_sources[steps[step_name].data_source].submission_date_column }} AS submission_date,
-      curr.{{ data_sources[steps[step_name].data_source].client_id_column }} AS client_id,
+      {{ data_sources[steps[step_name].data_source].client_id_column }} AS client_id,
       {{ steps[step_name].select_expression }} AS column
     FROM 
-      {{ data_sources[steps[step_name].data_source].from_expression }} AS curr
+      {{ data_sources[steps[step_name].data_source].from_expression }}
     {% if not loop.first and steps[step_name].join_previous_step_on %}
       INNER JOIN {{ funnel_name }}_{{ loop.previtem }} AS prev
         ON prev.submission_date = {{ data_sources[steps[step_name].data_source].submission_date_column }}

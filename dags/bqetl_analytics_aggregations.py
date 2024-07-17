@@ -440,20 +440,6 @@ with DAG(
         retries=0,
     )
 
-    with TaskGroup(
-        "checks__fail_fenix_derived__active_users_aggregates__v3_external",
-    ) as checks__fail_fenix_derived__active_users_aggregates__v3_external:
-        ExternalTaskMarker(
-            task_id="bqetl_search_dashboard__wait_for_checks__fail_fenix_derived__active_users_aggregates__v3",
-            external_dag_id="bqetl_search_dashboard",
-            external_task_id="wait_for_checks__fail_fenix_derived__active_users_aggregates__v3",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=85500)).isoformat() }}",
-        )
-
-        checks__fail_fenix_derived__active_users_aggregates__v3_external.set_upstream(
-            checks__fail_fenix_derived__active_users_aggregates__v3
-        )
-
     checks__fail_firefox_ios_derived__active_users_aggregates__v3 = bigquery_dq_check(
         task_id="checks__fail_firefox_ios_derived__active_users_aggregates__v3",
         source_table='active_users_aggregates_v3${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
@@ -470,20 +456,6 @@ with DAG(
         parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
         retries=0,
     )
-
-    with TaskGroup(
-        "checks__fail_firefox_ios_derived__active_users_aggregates__v3_external",
-    ) as checks__fail_firefox_ios_derived__active_users_aggregates__v3_external:
-        ExternalTaskMarker(
-            task_id="bqetl_search_dashboard__wait_for_checks__fail_firefox_ios_derived__active_users_aggregates__v3",
-            external_dag_id="bqetl_search_dashboard",
-            external_task_id="wait_for_checks__fail_firefox_ios_derived__active_users_aggregates__v3",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=85500)).isoformat() }}",
-        )
-
-        checks__fail_firefox_ios_derived__active_users_aggregates__v3_external.set_upstream(
-            checks__fail_firefox_ios_derived__active_users_aggregates__v3
-        )
 
     checks__fail_focus_android_derived__active_users_aggregates__v3 = bigquery_dq_check(
         task_id="checks__fail_focus_android_derived__active_users_aggregates__v3",
@@ -502,20 +474,6 @@ with DAG(
         retries=0,
     )
 
-    with TaskGroup(
-        "checks__fail_focus_android_derived__active_users_aggregates__v3_external",
-    ) as checks__fail_focus_android_derived__active_users_aggregates__v3_external:
-        ExternalTaskMarker(
-            task_id="bqetl_search_dashboard__wait_for_checks__fail_focus_android_derived__active_users_aggregates__v3",
-            external_dag_id="bqetl_search_dashboard",
-            external_task_id="wait_for_checks__fail_focus_android_derived__active_users_aggregates__v3",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=85500)).isoformat() }}",
-        )
-
-        checks__fail_focus_android_derived__active_users_aggregates__v3_external.set_upstream(
-            checks__fail_focus_android_derived__active_users_aggregates__v3
-        )
-
     checks__fail_focus_ios_derived__active_users_aggregates__v3 = bigquery_dq_check(
         task_id="checks__fail_focus_ios_derived__active_users_aggregates__v3",
         source_table='active_users_aggregates_v3${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
@@ -532,20 +490,6 @@ with DAG(
         parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
         retries=0,
     )
-
-    with TaskGroup(
-        "checks__fail_focus_ios_derived__active_users_aggregates__v3_external",
-    ) as checks__fail_focus_ios_derived__active_users_aggregates__v3_external:
-        ExternalTaskMarker(
-            task_id="bqetl_search_dashboard__wait_for_checks__fail_focus_ios_derived__active_users_aggregates__v3",
-            external_dag_id="bqetl_search_dashboard",
-            external_task_id="wait_for_checks__fail_focus_ios_derived__active_users_aggregates__v3",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=85500)).isoformat() }}",
-        )
-
-        checks__fail_focus_ios_derived__active_users_aggregates__v3_external.set_upstream(
-            checks__fail_focus_ios_derived__active_users_aggregates__v3
-        )
 
     checks__fail_klar_android_derived__active_users_aggregates__v3 = bigquery_dq_check(
         task_id="checks__fail_klar_android_derived__active_users_aggregates__v3",
@@ -564,20 +508,6 @@ with DAG(
         retries=0,
     )
 
-    with TaskGroup(
-        "checks__fail_klar_android_derived__active_users_aggregates__v3_external",
-    ) as checks__fail_klar_android_derived__active_users_aggregates__v3_external:
-        ExternalTaskMarker(
-            task_id="bqetl_search_dashboard__wait_for_checks__fail_klar_android_derived__active_users_aggregates__v3",
-            external_dag_id="bqetl_search_dashboard",
-            external_task_id="wait_for_checks__fail_klar_android_derived__active_users_aggregates__v3",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=85500)).isoformat() }}",
-        )
-
-        checks__fail_klar_android_derived__active_users_aggregates__v3_external.set_upstream(
-            checks__fail_klar_android_derived__active_users_aggregates__v3
-        )
-
     checks__fail_klar_ios_derived__active_users_aggregates__v3 = bigquery_dq_check(
         task_id="checks__fail_klar_ios_derived__active_users_aggregates__v3",
         source_table='active_users_aggregates_v3${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
@@ -594,20 +524,6 @@ with DAG(
         parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
         retries=0,
     )
-
-    with TaskGroup(
-        "checks__fail_klar_ios_derived__active_users_aggregates__v3_external",
-    ) as checks__fail_klar_ios_derived__active_users_aggregates__v3_external:
-        ExternalTaskMarker(
-            task_id="bqetl_search_dashboard__wait_for_checks__fail_klar_ios_derived__active_users_aggregates__v3",
-            external_dag_id="bqetl_search_dashboard",
-            external_task_id="wait_for_checks__fail_klar_ios_derived__active_users_aggregates__v3",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=85500)).isoformat() }}",
-        )
-
-        checks__fail_klar_ios_derived__active_users_aggregates__v3_external.set_upstream(
-            checks__fail_klar_ios_derived__active_users_aggregates__v3
-        )
 
     checks__warn_fenix_derived__active_users_aggregates__v3 = bigquery_dq_check(
         task_id="checks__warn_fenix_derived__active_users_aggregates__v3",
@@ -759,20 +675,6 @@ with DAG(
         depends_on_past=False,
         parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
     )
-
-    with TaskGroup(
-        "firefox_desktop_active_users_aggregates_external",
-    ) as firefox_desktop_active_users_aggregates_external:
-        ExternalTaskMarker(
-            task_id="bqetl_search_dashboard__wait_for_firefox_desktop_active_users_aggregates",
-            external_dag_id="bqetl_search_dashboard",
-            external_task_id="wait_for_firefox_desktop_active_users_aggregates",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=85500)).isoformat() }}",
-        )
-
-        firefox_desktop_active_users_aggregates_external.set_upstream(
-            firefox_desktop_active_users_aggregates
-        )
 
     firefox_ios_active_users_aggregates = bigquery_etl_query(
         task_id="firefox_ios_active_users_aggregates",

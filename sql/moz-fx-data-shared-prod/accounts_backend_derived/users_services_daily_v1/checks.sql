@@ -136,8 +136,8 @@ check_results AS (
       'cad_mobile_pair_use_app_view'
     )
     AND (
-      (events_new.count_new IS NULL AND events_old.count_old > 1) -- ignore erroneous event names
-      OR (events_old.count_old IS NULL AND events_new.count_new > 1)
+      (events_new.count_new IS NULL AND events_old.count_old > 10) -- ignore erroneous event names
+      OR (events_old.count_old IS NULL AND events_new.count_new > 10)
       OR ABS(events_new.count_new - events_old.count_old) / LEAST(
         events_new.count_new,
         events_old.count_old

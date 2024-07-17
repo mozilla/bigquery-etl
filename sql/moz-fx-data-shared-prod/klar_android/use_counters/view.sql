@@ -2383,7 +2383,9 @@ SELECT
       metrics.counter.use_counter_css_doc_css_field_sizing,
       metrics.counter.use_counter_css_page_css_field_sizing,
       metrics.counter.use_counter_css_doc_css_webkit_font_feature_settings,
-      metrics.counter.use_counter_css_page_css_webkit_font_feature_settings
+      metrics.counter.use_counter_css_page_css_webkit_font_feature_settings,
+      metrics.counter.use_counter_css_doc_css_position_try_fallbacks,
+      metrics.counter.use_counter_css_page_css_position_try_fallbacks
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,

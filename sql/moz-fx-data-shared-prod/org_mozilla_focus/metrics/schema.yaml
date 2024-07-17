@@ -2987,6 +2987,33 @@ fields:
       description: 'HTTP protocol version from Early Hints response
 
         '
+    - name: geolocation_fallback
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Whether the default provider falled back to NetworkGeolocationProvider.
+
+        '
+    - name: geolocation_request_result
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The result for each geolocation request. Success label will only
+        happen once for each request, even if it''s a watch request.
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -4833,6 +4860,31 @@ fields:
           mode: NULLABLE
       description: 'The number of cookie bytes exceeding chips partition limit capacity
         for a single partition
+
+        '
+    - name: geolocation_accuracy
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Accuracy returned by the Geolocation API
 
         '
   - name: timespan
@@ -10569,6 +10621,19 @@ fields:
         mode: NULLABLE
       description: The results of hardware decoder support for different video codecs.
         True means that codec can be decoded by hardware on user's device.
+    - name: geolocation_linux_provider
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: BOOLEAN
+        mode: NULLABLE
+      description: 'Which system provider are we using on Linux
+
+        '
   - name: rate
     type: RECORD
     mode: NULLABLE

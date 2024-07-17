@@ -2948,6 +2948,46 @@ fields:
         0.
 
         '
+    - name: geolocation_fallback
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Whether the default provider falled back to NetworkGeolocationProvider.
+
+        '
+    - name: geolocation_request_result
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The result for each geolocation request. Success label will only
+        happen once for each request, even if it''s a watch request.
+
+        '
+    - name: serp_ads_blocked_count
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the specific type of block.
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -9790,6 +9830,19 @@ fields:
         mode: NULLABLE
       description: The results of hardware decoder support for different video codecs.
         True means that codec can be decoded by hardware on user's device.
+    - name: geolocation_linux_provider
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: BOOLEAN
+        mode: NULLABLE
+      description: 'Which system provider are we using on Linux
+
+        '
   - name: uuid
     type: RECORD
     mode: NULLABLE
@@ -11126,6 +11179,31 @@ fields:
         for a single partition
 
         '
+    - name: geolocation_accuracy
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Accuracy returned by the Geolocation API
+
+        '
   - name: url2
     type: RECORD
     mode: NULLABLE
@@ -11602,6 +11680,20 @@ fields:
         of the Google Search domains. The value could be "Accept", "Reject" or "Custom".
         We use the label to record different choices on different Google domains.
         We only collect this if the default search engine is Google.
+
+        '
+    - name: places_places_database_corruption_handling_stage
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: STRING
+        mode: NULLABLE
+      description: 'PLACES - stage reached when trying to fix a database corruption,
+        see Places::Database::eCorruptDBReplaceStage.
 
         '
   - name: url

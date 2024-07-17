@@ -7308,6 +7308,12 @@ fields:
     - name: use_counter_css_page_css_webkit_font_feature_settings
       type: INTEGER
       mode: NULLABLE
+    - name: use_counter_css_doc_css_position_try_fallbacks
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_css_page_css_position_try_fallbacks
+      type: INTEGER
+      mode: NULLABLE
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

@@ -696,6 +696,66 @@ fields:
       description: 'Audio sampling rate
 
         '
+    - name: characteristics_mathml1
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Width of the drawn MathML element
+
+        '
+    - name: characteristics_mathml10
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Width of the drawn MathML element
+
+        '
+    - name: characteristics_mathml2
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Width of the drawn MathML element
+
+        '
+    - name: characteristics_mathml3
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Width of the drawn MathML element
+
+        '
+    - name: characteristics_mathml4
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Width of the drawn MathML element
+
+        '
+    - name: characteristics_mathml5
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Width of the drawn MathML element
+
+        '
+    - name: characteristics_mathml6
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Width of the drawn MathML element
+
+        '
+    - name: characteristics_mathml7
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Width of the drawn MathML element
+
+        '
+    - name: characteristics_mathml8
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Width of the drawn MathML element
+
+        '
+    - name: characteristics_mathml9
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Width of the drawn MathML element
+
+        '
   - name: string
     type: RECORD
     mode: NULLABLE

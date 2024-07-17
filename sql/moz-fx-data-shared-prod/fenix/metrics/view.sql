@@ -234,7 +234,8 @@ SELECT
       metrics.custom_distribution.cert_compression_zlib_saved_bytes,
       metrics.custom_distribution.bounce_tracking_protection_num_hosts_per_purge_run,
       metrics.custom_distribution.cert_compression_zstd_saved_bytes,
-      metrics.custom_distribution.networking_cookie_chips_partition_limit_overflow
+      metrics.custom_distribution.networking_cookie_chips_partition_limit_overflow,
+      metrics.custom_distribution.geolocation_accuracy
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -393,7 +394,9 @@ SELECT
       metrics.labeled_counter.networking_http_channel_onstart_status,
       metrics.labeled_counter.networking_http_to_https_upgrade_reason,
       metrics.labeled_counter.networking_http_response_status_code,
-      metrics.labeled_counter.netwerk_eh_response_version
+      metrics.labeled_counter.netwerk_eh_response_version,
+      metrics.labeled_counter.geolocation_fallback,
+      metrics.labeled_counter.geolocation_request_result
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -718,7 +721,8 @@ SELECT
       metrics.labeled_boolean.cookie_banners_private_window_service_mode,
       metrics.labeled_boolean.data_storage_migration,
       metrics.labeled_boolean.oskeystore_self_test,
-      metrics.labeled_boolean.media_playback_device_hardware_decoder_support
+      metrics.labeled_boolean.media_playback_device_hardware_decoder_support,
+      metrics.labeled_boolean.geolocation_linux_provider
     ) AS `labeled_boolean`,
     STRUCT(
       metrics.rate.rtcrtpsender_setparameters_fail_length_changed,
@@ -999,7 +1003,8 @@ SELECT
       metrics.custom_distribution.cert_compression_zlib_saved_bytes,
       metrics.custom_distribution.bounce_tracking_protection_num_hosts_per_purge_run,
       metrics.custom_distribution.cert_compression_zstd_saved_bytes,
-      metrics.custom_distribution.networking_cookie_chips_partition_limit_overflow
+      metrics.custom_distribution.networking_cookie_chips_partition_limit_overflow,
+      metrics.custom_distribution.geolocation_accuracy
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -1158,7 +1163,9 @@ SELECT
       metrics.labeled_counter.networking_http_channel_onstart_status,
       metrics.labeled_counter.networking_http_to_https_upgrade_reason,
       metrics.labeled_counter.networking_http_response_status_code,
-      metrics.labeled_counter.netwerk_eh_response_version
+      metrics.labeled_counter.netwerk_eh_response_version,
+      metrics.labeled_counter.geolocation_fallback,
+      metrics.labeled_counter.geolocation_request_result
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -1483,7 +1490,8 @@ SELECT
       metrics.labeled_boolean.cookie_banners_private_window_service_mode,
       metrics.labeled_boolean.data_storage_migration,
       metrics.labeled_boolean.oskeystore_self_test,
-      metrics.labeled_boolean.media_playback_device_hardware_decoder_support
+      metrics.labeled_boolean.media_playback_device_hardware_decoder_support,
+      metrics.labeled_boolean.geolocation_linux_provider
     ) AS `labeled_boolean`,
     STRUCT(
       metrics.rate.rtcrtpsender_setparameters_fail_length_changed,
@@ -1782,7 +1790,8 @@ SELECT
       metrics.custom_distribution.cert_compression_zlib_saved_bytes,
       metrics.custom_distribution.bounce_tracking_protection_num_hosts_per_purge_run,
       metrics.custom_distribution.cert_compression_zstd_saved_bytes,
-      metrics.custom_distribution.networking_cookie_chips_partition_limit_overflow
+      metrics.custom_distribution.networking_cookie_chips_partition_limit_overflow,
+      metrics.custom_distribution.geolocation_accuracy
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -1941,7 +1950,9 @@ SELECT
       metrics.labeled_counter.networking_http_channel_onstart_status,
       metrics.labeled_counter.networking_http_to_https_upgrade_reason,
       metrics.labeled_counter.networking_http_response_status_code,
-      metrics.labeled_counter.netwerk_eh_response_version
+      metrics.labeled_counter.netwerk_eh_response_version,
+      metrics.labeled_counter.geolocation_fallback,
+      metrics.labeled_counter.geolocation_request_result
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -2266,7 +2277,8 @@ SELECT
       metrics.labeled_boolean.cookie_banners_private_window_service_mode,
       metrics.labeled_boolean.data_storage_migration,
       metrics.labeled_boolean.oskeystore_self_test,
-      metrics.labeled_boolean.media_playback_device_hardware_decoder_support
+      metrics.labeled_boolean.media_playback_device_hardware_decoder_support,
+      metrics.labeled_boolean.geolocation_linux_provider
     ) AS `labeled_boolean`,
     STRUCT(
       metrics.rate.rtcrtpsender_setparameters_fail_length_changed,
@@ -2574,7 +2586,8 @@ SELECT
       metrics.custom_distribution.cert_compression_zlib_saved_bytes,
       metrics.custom_distribution.bounce_tracking_protection_num_hosts_per_purge_run,
       metrics.custom_distribution.cert_compression_zstd_saved_bytes,
-      metrics.custom_distribution.networking_cookie_chips_partition_limit_overflow
+      metrics.custom_distribution.networking_cookie_chips_partition_limit_overflow,
+      metrics.custom_distribution.geolocation_accuracy
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -2733,7 +2746,9 @@ SELECT
       metrics.labeled_counter.networking_http_channel_onstart_status,
       metrics.labeled_counter.networking_http_to_https_upgrade_reason,
       metrics.labeled_counter.networking_http_response_status_code,
-      metrics.labeled_counter.netwerk_eh_response_version
+      metrics.labeled_counter.netwerk_eh_response_version,
+      metrics.labeled_counter.geolocation_fallback,
+      metrics.labeled_counter.geolocation_request_result
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -3058,7 +3073,8 @@ SELECT
       metrics.labeled_boolean.cookie_banners_private_window_service_mode,
       metrics.labeled_boolean.data_storage_migration,
       metrics.labeled_boolean.oskeystore_self_test,
-      metrics.labeled_boolean.media_playback_device_hardware_decoder_support
+      metrics.labeled_boolean.media_playback_device_hardware_decoder_support,
+      metrics.labeled_boolean.geolocation_linux_provider
     ) AS `labeled_boolean`,
     STRUCT(
       metrics.rate.rtcrtpsender_setparameters_fail_length_changed,
@@ -3348,7 +3364,8 @@ SELECT
       metrics.custom_distribution.cert_compression_zlib_saved_bytes,
       metrics.custom_distribution.bounce_tracking_protection_num_hosts_per_purge_run,
       metrics.custom_distribution.cert_compression_zstd_saved_bytes,
-      metrics.custom_distribution.networking_cookie_chips_partition_limit_overflow
+      metrics.custom_distribution.networking_cookie_chips_partition_limit_overflow,
+      metrics.custom_distribution.geolocation_accuracy
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -3507,7 +3524,9 @@ SELECT
       metrics.labeled_counter.networking_http_channel_onstart_status,
       metrics.labeled_counter.networking_http_to_https_upgrade_reason,
       metrics.labeled_counter.networking_http_response_status_code,
-      metrics.labeled_counter.netwerk_eh_response_version
+      metrics.labeled_counter.netwerk_eh_response_version,
+      metrics.labeled_counter.geolocation_fallback,
+      metrics.labeled_counter.geolocation_request_result
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -3832,7 +3851,8 @@ SELECT
       metrics.labeled_boolean.cookie_banners_private_window_service_mode,
       metrics.labeled_boolean.data_storage_migration,
       metrics.labeled_boolean.oskeystore_self_test,
-      metrics.labeled_boolean.media_playback_device_hardware_decoder_support
+      metrics.labeled_boolean.media_playback_device_hardware_decoder_support,
+      metrics.labeled_boolean.geolocation_linux_provider
     ) AS `labeled_boolean`,
     STRUCT(
       metrics.rate.rtcrtpsender_setparameters_fail_length_changed,

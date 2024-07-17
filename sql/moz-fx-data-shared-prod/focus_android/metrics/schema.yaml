@@ -1886,6 +1886,26 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
+    - name: geolocation_fallback
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: geolocation_request_result
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -3178,6 +3198,26 @@ fields:
           type: INTEGER
           mode: NULLABLE
     - name: networking_cookie_chips_partition_limit_overflow
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+    - name: geolocation_accuracy
       type: RECORD
       mode: NULLABLE
       fields:
@@ -8068,6 +8108,16 @@ fields:
         type: BOOLEAN
         mode: NULLABLE
     - name: media_playback_device_hardware_decoder_support
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: BOOLEAN
+        mode: NULLABLE
+    - name: geolocation_linux_provider
       type: RECORD
       mode: REPEATED
       fields:

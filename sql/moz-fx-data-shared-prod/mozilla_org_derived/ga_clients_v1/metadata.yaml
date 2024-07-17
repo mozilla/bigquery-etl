@@ -4,6 +4,10 @@ description: |-
   Key is ga_client_id.
 owners:
 - frank@mozilla.com
+scheduling:
+  depends_on_past: true
+  date_partition_parameter: null
+  parameters: ["session_date:DATE:{{ds}}"]
 labels:
   incremental: true
   owner1: frank@mozilla.com

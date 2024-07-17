@@ -20,7 +20,7 @@ WITH cs_impressions AS (
 as_sessions AS (
   SELECT
     normalized_country_code AS country_code,
-    APPROX_COUNT_DISTINCT(session_id) AS sessions_total,
+    APPROX_COUNT_DISTINCT(session_id) AS as_sessions,
     2 * APPROX_COUNT_DISTINCT(session_id) AS sessions_total_inventory_1and2,
     APPROX_COUNT_DISTINCT(client_id) AS session_total_clients
   FROM
@@ -72,7 +72,7 @@ users_table AS (
 ,
 nt_visits AS (
   SELECT
-    DATE_TRUNC(DATE_SUB(CURRENT_DATE(), INTERVAL 1 MONTH), MONTH) AS submission_month,
+    DATE_TRUNC(DATE_SUB(@submission_date, INTERVAL 1 MONTH), MONTH) AS submission_month,
     n.country_code,
     APPROX_COUNT_DISTINCT(newtab_visit_id) AS newtab_visits,
     APPROX_COUNT_DISTINCT(client_id) AS newtab_clients,
@@ -95,7 +95,6 @@ nt_visits AS (
     2
 )
 SELECT
-  ,
   n.submission_month,
   n.country_code AS country,
   u.total_user_count,

@@ -85,8 +85,7 @@ with DAG(
         owner="kwindau@mozilla.com",
         email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
-        depends_on_past=False,
-        task_concurrency=1,
+        depends_on_past=True,
         parameters=["submission_date:DATE:{{ds}}"],
     )
 

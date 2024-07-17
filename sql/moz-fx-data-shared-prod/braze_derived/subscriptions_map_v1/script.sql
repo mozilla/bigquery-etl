@@ -67,6 +67,14 @@ VALUES
     'firefox-accounts-journey'
   ),
   (
+    'formulaic-app',
+    'Formulaic newsletter',
+    '3349e1ab-acb8-4396-8fff-ee9d5cf96678',
+    '9ceceace-0184-4fb6-a2d8-0c1943026bb7',
+    '91f8d0bf-5d01-48b5-bcc4-e12373e3f89b',
+    'formulaic-app'
+  ),
+  (
     'graceland-waitlist',
     'Graceland Waitlist',
     '0dd864a8-7afb-4e01-874c-5bd89c62f249',

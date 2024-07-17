@@ -857,6 +857,7 @@ jobs:
     executor: gcp-cli/google
     steps:
       - run: *oidc-setup
+      - run: echo "export OIDC_SERVICE_ACCOUNT_EMAIL=someother-sa-name-that-we-want to override" >> "$BASH_ENV"
       - gcp-cli/setup:
           use_oidc: true
       - when:

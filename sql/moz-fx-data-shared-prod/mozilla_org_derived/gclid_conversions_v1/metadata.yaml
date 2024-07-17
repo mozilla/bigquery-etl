@@ -10,6 +10,9 @@ owners:
 labels:
   incremental: true
   owner1: frank@mozilla.com
+scheduling:
+  date_partition_parameter: activity_date
+  parameters: ["conversion_window:INT64:30"]
 bigquery:
   time_partitioning:
     type: day

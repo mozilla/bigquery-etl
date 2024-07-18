@@ -296,7 +296,6 @@ final_mobile_dau_counts AS (
       DISTINCT IF(
         search_count > 0
         AND normalized_engine = 'Google'
-        AND default_search_engine LIKE '%google%'
         AND (
           (submission_date < "2023-12-01" AND country NOT IN ('RU', 'UA', 'TR', 'BY', 'KZ', 'CN'))
           OR (submission_date >= "2023-12-01" AND country NOT IN ('RU', 'UA', 'BY', 'CN'))
@@ -309,13 +308,7 @@ final_mobile_dau_counts AS (
       DISTINCT IF(default_search_engine LIKE '%bing%', client_id, NULL)
     ) AS bing_dau_w_engine_as_default,
     COUNT(
-      DISTINCT IF(
-        search_count > 0
-        AND normalized_engine = 'Bing'
-        AND default_search_engine LIKE '%bing%',
-        client_id,
-        NULL
-      )
+      DISTINCT IF(search_count > 0 AND normalized_engine = 'Bing', client_id, NULL)
     ) AS bing_dau_engaged_w_sap,
     COUNT(
       DISTINCT IF(
@@ -326,13 +319,7 @@ final_mobile_dau_counts AS (
       )
     ) AS ddg_dau_w_engine_as_default,
     COUNT(
-      DISTINCT IF(
-        normalized_engine = "DuckDuckGo"
-        AND search_count > 0
-        AND (default_search_engine LIKE('%ddg%') OR default_search_engine LIKE('%duckduckgo%')),
-        client_id,
-        NULL
-      )
+      DISTINCT IF(normalized_engine = "DuckDuckGo" AND search_count > 0, client_id, NULL)
     ) AS ddg_dau_engaged_w_sap
   FROM
     mobile_dau_data
@@ -343,8 +330,8 @@ final_mobile_dau_counts AS (
     mobile_baseline_search
     USING (submission_date, client_id, default_search_engine)
   GROUP BY
-    1,
-    2
+    submission_date,
+    country
 ),
 -- Google Mobile (search only - as mobile search metrics is based on metrics
 -- ping, while DAU should be based on main ping on Mobile, see also
@@ -548,7 +535,14 @@ SELECT
   ad_click_organic,
   search_with_ads_organic,
   monetizable_sap,
-  google_dau_w_engine_as_default AS dau_w_engine_as_default
+  # custom engine bug merged in v121
+  # null engine bug merged in v126
+  # remove default engine data prior to June 2024
+  IF(
+    submission_date >= "2024-06-01",
+    google_dau_w_engine_as_default,
+    NULL
+  ) AS dau_w_engine_as_default
 FROM
   mobile_data_google
 UNION ALL
@@ -569,7 +563,10 @@ SELECT
   bing_ad_click_organic,
   bing_search_with_ads_organic,
   bing_monetizable_sap,
-  bing_dau_w_engine_as_default AS dau_w_engine_as_default
+  # custom engine bug merged in v121
+  # null engine bug merged in v126
+  # remove default engine data prior to June 2024
+  IF(submission_date >= "2024-06-01", bing_dau_w_engine_as_default, NULL) AS dau_w_engine_as_default
 FROM
   mobile_data_bing_ddg
 UNION ALL
@@ -590,6 +587,9 @@ SELECT
   ddg_ad_click_organic,
   ddg_search_with_ads_organic,
   ddg_monetizable_sap,
-  ddg_dau_w_engine_as_default AS dau_w_engine_as_default
+  # custom engine bug merged in v121
+  # null engine bug merged in v126
+  # remove default engine data prior to June 2024
+  IF(submission_date >= "2024-06-01", ddg_dau_w_engine_as_default, NULL) AS dau_w_engine_as_default
 FROM
   mobile_data_bing_ddg

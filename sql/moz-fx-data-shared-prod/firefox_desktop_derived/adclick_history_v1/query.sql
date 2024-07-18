@@ -2,17 +2,16 @@ WITH new_data AS (
   SELECT
     client_id,
     sample_id,
-    sum(ad_click) AS ad_clicks
+    SUM(ad_click) AS ad_clicks
   FROM
     `moz-fx-data-shared-prod.search_derived.search_clients_daily_v8`
   WHERE
     submission_date = @submission_date
     AND ad_click > 0
-    GROUP BY 
+  GROUP BY
     client_id,
     sample_id
 )
-    
 SELECT
   client_id,
   sample_id,

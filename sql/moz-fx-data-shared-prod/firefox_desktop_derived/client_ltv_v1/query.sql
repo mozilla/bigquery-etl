@@ -11,12 +11,6 @@ WITH new_data AS (
   GROUP BY
     client_id,
     sample_id
-),
-historic_data AS (
-  SELECT
-    *
-  FROM
-    `moz-fx-data-shared-prod.firefox_ios_derived.client_ltv_v1`
 )
 SELECT
   (
@@ -31,7 +25,7 @@ SELECT
     END
   ).*
 FROM
-  historic_data
+  `moz-fx-data-shared-prod.firefox_desktop_derived.client_ltv_v1` historic_data
 FULL OUTER JOIN
   new_data
   USING (sample_id, client_id)

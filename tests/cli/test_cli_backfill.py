@@ -1717,7 +1717,7 @@ class TestBackfill:
         backfill_table_id = "test__test_query_v1_2023_05_30"
 
         actual_backfill_staging = get_backfill_staging_qualified_table_name(
-            qualified_table_name, "2023-05-30"
+            qualified_table_name, date.fromisoformat("2023-05-30")
         )
         expected_backfill_staging = f"{BACKFILL_DESTINATION_PROJECT}.{BACKFILL_DESTINATION_DATASET}.{backfill_table_id}"
 

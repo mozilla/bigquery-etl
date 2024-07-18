@@ -14,8 +14,7 @@ MERGE INTO
       s.submission_date = @submission_date
       AND s.ad_click > 0
   ) S
-  ON T.sample_id = S.sample_id
-  AND T.client_id = S.client_id
+  ON T.client_id = S.client_id
 WHEN NOT MATCHED
 THEN
   INSERT

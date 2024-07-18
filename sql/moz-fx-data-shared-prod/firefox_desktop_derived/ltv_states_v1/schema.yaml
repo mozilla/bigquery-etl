@@ -3,14 +3,14 @@ fields:
   mode: NULLABLE
   name: client_id
   type: STRING
-- description: Sample ID
-  mode: NULLABLE
-  name: sample_id
-  type: INT64
 - description: Submission Date
   mode: NULLABLE
   name: submission_date
   type: DATE
+- description: Sample ID
+  mode: NULLABLE
+  name: sample_id
+  type: INT64
 - description: First Seen Date
   mode: NULLABLE
   name: first_seen_date
@@ -66,11 +66,6 @@ fields:
 - description: Active
   mode: NULLABLE
   name: active
-  type: BYTES #??
-
-- description: Durations
-  mode: NULLABLE
-  name: durations
   type: INT64
 - description: Ad Clicks
   mode: NULLABLE
@@ -80,7 +75,3 @@ fields:
   mode: NULLABLE
   name: total_historic_ad_clicks
   type: INT64
-- description: Adjust Network
-  mode: NULLABLE
-  name: adjust_network
-  type: STRING

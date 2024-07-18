@@ -36,6 +36,4 @@ THEN
   WHEN MATCHED
 THEN
   UPDATE
-    SET T.ad_click_history = S.ad_click_history,
-    T.sample_id = S.sample_id,
-    T.client_id = S.client_id
+    SET T.ad_click_history = S.ad_click_history

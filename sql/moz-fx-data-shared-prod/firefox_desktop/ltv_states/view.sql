@@ -43,7 +43,7 @@ SELECT
   death_time,
   max_days,
   STRUCT(
-    mozfun.ltv.get_state_desktop_v1(
+    mozfun.ltv.desktop_states_v1(
       days_since_first_seen,
       days_since_active,
       submission_date,

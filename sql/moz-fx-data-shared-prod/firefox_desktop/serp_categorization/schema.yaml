@@ -225,6 +225,19 @@ fields:
         for the purpose of experimentation enrollment.
 
         '
+  - name: object
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: serp_experiment_info
+      type: JSON
+      mode: NULLABLE
+      description: 'Whether the client is enrolled in a specified experiment and if
+        so, which branch the client is assigned to. The target experiment is specified
+        in the Nimbus config by creating a "targetExperiment" key and setting its
+        value to the experiment''s slug (and ensuring the featureId is "search").
+
+        '
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

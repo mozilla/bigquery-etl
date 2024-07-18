@@ -245,6 +245,18 @@ fields:
         has an additional dependency on Color Depth.
 
         '
+    - name: characteristics_monochrome
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether the user''s device is monochrome
+
+        '
+    - name: characteristics_pdf_viewer
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'PDF viewer support reported by the navigator
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -1140,6 +1152,18 @@ fields:
       mode: NULLABLE
       description: 'The sha1 hash of an image rendered on a canvas. The image is a
         font shipped with Firefox rendered normally.
+
+        '
+    - name: characteristics_oscpu
+      type: STRING
+      mode: NULLABLE
+      description: 'User''s OS CPU reported by the navigator
+
+        '
+    - name: characteristics_platform
+      type: STRING
+      mode: NULLABLE
+      description: 'Platform reported by the navigator
 
         '
   - name: string_list

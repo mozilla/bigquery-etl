@@ -3,10 +3,6 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Unique ID for the client installation.
-- name: sample_id
-  type: INTEGER
-  mode: NULLABLE
-  description: Sample ID to limit query results during an analysis.
 - name: ad_click_history
   type: RECORD
   mode: REPEATED

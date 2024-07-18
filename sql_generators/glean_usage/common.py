@@ -189,9 +189,7 @@ def get_app_info():
     app_info = {}
 
     for app in apps_json:
-        if app["app_id"].startswith("rally"):
-            pass
-        elif app["app_name"] not in app_info:
+        if app["app_name"] not in app_info:
             app_info[app["app_name"]] = [app]
         else:
             app_info[app["app_name"]].append(app)

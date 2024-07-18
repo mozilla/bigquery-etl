@@ -2,7 +2,6 @@
 
 """Meta data about tables and ids for self serve deletion."""
 
-import logging
 import re
 from collections import defaultdict
 from dataclasses import dataclass
@@ -81,9 +80,6 @@ IMPRESSION_ID = "impression_id"
 USER_ID = "user_id"
 POCKET_ID = "pocket_id"
 SHIELD_ID = "shield_id"
-PIONEER_ID = "pioneer_id"
-RALLY_ID = "metrics.uuid.rally_id"
-RALLY_ID_TOP_LEVEL = "rally_id"
 ID = "id"
 FXA_USER_ID = "jsonPayload.fields.user_id"
 # these must be in the same order as SYNC_SOURCES
@@ -482,8 +478,6 @@ SEARCH_IGNORE_TABLES |= {
         client_id_target(table="telemetry_stable.mobile_metrics_v1"),
         # internal
         client_id_target(table="eng_workflow_stable.build_v1"),
-        # other
-        DeleteTarget(table="telemetry_stable.pioneer_study_v4", field=PIONEER_ID),
     ]
 }
 
@@ -700,164 +694,4 @@ def find_experiment_analysis_targets(
             table=f"{table.dataset_id}.{table.table_name}", project=project
         ): DESKTOP_SRC
         for table in target_tables
-    }
-
-
-PIONEER_PROD = "moz-fx-data-pioneer-prod"
-
-
-def find_pioneer_targets(
-    pool: ThreadPool,
-    client: bigquery.Client,
-    project: str = PIONEER_PROD,
-    study_projects: list[str] = [],
-) -> DeleteIndex:
-    """Return a dict like DELETE_TARGETS for Pioneer tables.
-
-    Note that dict values *must* be either DeleteSource or tuple[DeleteSource, ...],
-    and other iterable types, e.g. list[DeleteSource] are not allowed or supported.
-    """
-
-    def _has_nested_rally_id(field):
-        """Check if any of the fields contains nested `metrics.uuid_rally_id`."""
-        if field.name == "metrics" and field.field_type == "RECORD":
-            uuid_field = next(filter(lambda f: f.name == "uuid", field.fields), None)
-            if uuid_field and uuid_field.field_type == "RECORD":
-                return any(field.name == "rally_id" for field in uuid_field.fields)
-        return False
-
-    def _get_tables_with_pioneer_id(dataset):
-        tables_with_pioneer_id = []
-        for table in client.list_tables(dataset):
-            table_ref = client.get_table(table)
-            if (
-                any(field.name == PIONEER_ID for field in table_ref.schema)
-                or any(field.name == RALLY_ID_TOP_LEVEL for field in table_ref.schema)
-                or any(_has_nested_rally_id(field) for field in table_ref.schema)
-            ) and table_ref.table_type != "VIEW":
-                tables_with_pioneer_id.append(table_ref)
-        return tables_with_pioneer_id
-
-    def _get_client_id_field(table, deletion_request_view=False, study_name=None):
-        """Determine which column should be used as client id for a given table."""
-        if table.dataset_id.startswith("rally_"):
-            # `rally_zero_one` is a special case where top-level rally_id is used
-            # both in the ping tables and the deletion_requests view
-            if table.dataset_id in ["rally_zero_one_stable", "rally_zero_one_derived"]:
-                return RALLY_ID_TOP_LEVEL
-            # deletion request views expose rally_id as a top-level field
-            if deletion_request_view:
-                return RALLY_ID_TOP_LEVEL
-            else:
-                return RALLY_ID
-        elif table.dataset_id == "analysis":
-            # Rally analysis tables do not have schemas specified upfront,
-            # analysts might decide to use either nested or top-level rally_id.
-            # Shared datasets, like attention stream, may also have derived
-            # datasets with rally IDs
-            # See https://github.com/mozilla-services/cloudops-infra/blob/master/projects/data-pioneer/tf/prod/envs/prod/study-projects/main.tf#L60-L67 # noqa
-            if any(_has_nested_rally_id(field) for field in table.schema):
-                return RALLY_ID
-            elif any(field.name == RALLY_ID_TOP_LEVEL for field in table.schema):
-                return RALLY_ID_TOP_LEVEL
-            # Pioneer derived tables will have a PIONEER_ID
-            elif any(field.name == PIONEER_ID for field in table.schema):
-                return PIONEER_ID
-            else:
-                logging.error(f"Failed to find client_id field for {table}")
-        else:
-            return PIONEER_ID
-
-    datasets = {
-        dataset.reference
-        for dataset in client.list_datasets(project)
-        if dataset.reference.dataset_id.startswith("pioneer_")
-        or dataset.reference.dataset_id.startswith("rally_")
-    }
-    # There should be a single stable and derived dataset per study
-    stable_datasets = {dr for dr in datasets if dr.dataset_id.endswith("_stable")}
-    derived_datasets = {dr for dr in datasets if dr.dataset_id.endswith("_derived")}
-
-    stable_tables = [
-        table
-        for tables in pool.map(client.list_tables, stable_datasets, chunksize=1)
-        for table in tables
-    ]
-
-    # Each derived deletion request view is a union of:
-    # * corresponding deletion_request table from the _stable dataset
-    # * uninstall_deletion pings from pioneer_core_stable dataset
-    derived_deletion_request_views = [
-        table
-        for tables in pool.map(client.list_tables, derived_datasets, chunksize=1)
-        for table in tables
-        if (table.table_type == "VIEW" and table.table_id == "deletion_requests")
-    ]
-
-    # There is a derived dataset for each stable one
-    # For simplicity when accessing this map later on, keys are changed to `_stable` here
-    sources = {
-        table.dataset_id.replace("_derived", "_stable"): DeleteSource(
-            qualified_table_id(table),
-            _get_client_id_field(table, deletion_request_view=True),
-            project,
-        )
-        # dict comprehension will only keep the last value for a given key, so
-        # sort by table_id to use the latest version
-        for table in sorted(derived_deletion_request_views, key=lambda t: t.table_id)
-    }
-
-    # Dictionary mapping analysis dataset names to corresponding study names.
-    # We expect analysis tables to be created only under `analysis` datasets
-    # in study projects. These datasets are labeled with study names which
-    # we use for discovering corresponding delete request tables later on.
-    analysis_datasets = {}
-    for project in study_projects:
-        analysis_dataset = bigquery.DatasetReference(project, "analysis")
-        labels = client.get_dataset(analysis_dataset).labels
-        # study names in labels are not normalized (contain '-', not '_')
-        study_name = labels.get("study_name")
-        if study_name is None:
-            logging.error(
-                f"Dataset {analysis_dataset} does not have `study_name` label, skipping..."
-            )
-        else:
-            analysis_datasets[analysis_dataset] = study_name
-
-    return {
-        **{
-            # stable tables
-            DeleteTarget(
-                table=qualified_table_id(table),
-                field=_get_client_id_field(table),
-                project=PIONEER_PROD,
-            ): sources[table.dataset_id]
-            for table in stable_tables
-            if not table.table_id.startswith("deletion_request_")
-            and not table.table_id.startswith("pioneer_enrollment_")
-            and not table.table_id.startswith("enrollment_")
-            and not table.table_id.startswith("study_enrollment_")
-            and not table.table_id.startswith("study_unenrollment_")
-            and not table.table_id.startswith("unenrollment_")
-        },
-        **{
-            # derived tables with pioneer_id
-            DeleteTarget(
-                table=qualified_table_id(table),
-                field=_get_client_id_field(table),
-                project=PIONEER_PROD,
-            ): sources[table.dataset_id]
-            for dataset in derived_datasets
-            for table in _get_tables_with_pioneer_id(dataset)
-        },
-        **{
-            # tables with pioneer_id located in study analysis projects
-            DeleteTarget(
-                table=qualified_table_id(table),
-                field=_get_client_id_field(table, study_name=study),
-                project=table.project,
-            ): sources[study.replace("-", "_") + "_stable"]
-            for dataset, study in analysis_datasets.items()
-            for table in _get_tables_with_pioneer_id(dataset)
-        },
     }

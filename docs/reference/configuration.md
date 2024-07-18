@@ -32,9 +32,7 @@ schema:
   skip_update:
   - sql/moz-fx-data-shared-prod/mozilla_vpn_derived/users_v1/schema.yaml
   # - ...
-  skip_prefixes:
-  - pioneer
-  - rally
+  skip_prefixes: []
 
 routines:
   skip_publishing:

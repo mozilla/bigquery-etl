@@ -6,13 +6,24 @@ MERGE INTO
       s.sample_id,
       mozfun.map.set_key(h.ad_click_history, @submission_date, ad_click) AS ad_click_history
     FROM
-      `moz-fx-data-shared-prod.search_derived.search_clients_daily_v8` s
+      (
+        SELECT
+          client_id,
+          sample_id,
+          SUM(ad_click) AS ad_click
+        FROM
+          `moz-fx-data-shared-prod.search_derived.search_clients_daily_v8`
+        WHERE
+          submission_date = @submission_date
+        GROUP BY
+          client_id,
+          sample_id
+        HAVING
+          SUM(ad_click) > 0
+      ) s
     LEFT JOIN
       `moz-fx-data-shared-prod.firefox_desktop_derived.adclick_history_v1` h
       USING (client_id)
-    WHERE
-      s.submission_date = @submission_date
-      AND s.ad_click > 0
   ) S
   ON T.client_id = S.client_id
 WHEN NOT MATCHED

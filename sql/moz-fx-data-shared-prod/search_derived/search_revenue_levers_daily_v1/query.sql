@@ -161,8 +161,8 @@ desktop_data_ddg AS (
 -- Mobile DAU data -- merging baseline clients to AUA clients
 ## baseline ping -- mobile default search engine by client id
 mobile_baseline_engine AS (
-  SELECT
-    DISTINCT DATE(submission_timestamp) AS submission_date,
+  SELECT DISTINCT
+    DATE(submission_timestamp) AS submission_date,
     client_info.client_id,
     metrics.string.search_default_engine_code AS default_search_engine,
   FROM
@@ -170,8 +170,8 @@ mobile_baseline_engine AS (
   WHERE
     DATE(submission_timestamp) = @submission_date
   UNION ALL
-  SELECT
-    DISTINCT DATE(submission_timestamp) AS submission_date,
+  SELECT DISTINCT
+    DATE(submission_timestamp) AS submission_date,
     client_info.client_id,
     metrics.string.search_default_engine AS default_search_engine
   FROM
@@ -179,8 +179,8 @@ mobile_baseline_engine AS (
   WHERE
     DATE(submission_timestamp) = @submission_date
   UNION ALL
-  SELECT
-    DISTINCT DATE(submission_timestamp) AS submission_date,
+  SELECT DISTINCT
+    DATE(submission_timestamp) AS submission_date,
     client_info.client_id,
     metrics.string.browser_default_search_engine AS default_search_engine
   FROM
@@ -188,8 +188,8 @@ mobile_baseline_engine AS (
   WHERE
     DATE(submission_timestamp) = @submission_date
   UNION ALL
-  SELECT
-    DISTINCT DATE(submission_timestamp) AS submission_date,
+  SELECT DISTINCT
+    DATE(submission_timestamp) AS submission_date,
     client_info.client_id,
     metrics.string.search_default_engine AS default_search_engine
   FROM
@@ -253,8 +253,8 @@ mobile_baseline_search AS (
 ),
 ## baseline-powered clients who qualify for KPI (activity filters applied)
 mobile_dau_data AS (
-  SELECT
-    DISTINCT submission_date,
+  SELECT DISTINCT
+    submission_date,
     "mobile" AS device,
     country,
     client_id
@@ -325,15 +325,13 @@ final_mobile_dau_counts AS (
     mobile_dau_data
   LEFT JOIN
     mobile_baseline_engine
-  USING
-    (submission_date, client_id)
+    USING (submission_date, client_id)
   LEFT JOIN
     mobile_baseline_search
-  USING
-    (submission_date, client_id, default_search_engine)
+    USING (submission_date, client_id, default_search_engine)
   GROUP BY
-    1,
-    2
+    submission_date,
+    country
 ),
 -- Google Mobile (search only - as mobile search metrics is based on metrics
 -- ping, while DAU should be based on main ping on Mobile, see also
@@ -359,8 +357,7 @@ mobile_data_google AS (
     `moz-fx-data-shared-prod.search.mobile_search_clients_engines_sources_daily`
   INNER JOIN
     final_mobile_dau_counts
-  USING
-    (submission_date, country)
+    USING (submission_date, country)
   WHERE
     submission_date = @submission_date
     AND (
@@ -417,8 +414,7 @@ mobile_data_bing_ddg AS (
     `moz-fx-data-shared-prod.search.mobile_search_clients_engines_sources_daily`
   INNER JOIN
     final_mobile_dau_counts
-  USING
-    (submission_date, country)
+    USING (submission_date, country)
   WHERE
     submission_date = @submission_date
     AND (

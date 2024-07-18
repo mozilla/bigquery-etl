@@ -7,6 +7,7 @@ WITH base AS (
     cfs.first_seen_date AS first_seen_date,
     first_reported_country,
     cfs.attribution,
+    days_seen_bytes,
     `moz-fx-data-shared-prod`.udf.bits_to_days_since_seen(days_seen_bytes) AS days_since_active,
     IF(
       (

@@ -16,6 +16,7 @@ SELECT
   active,
   ad_clicks,
   total_historic_ad_clicks,
+  days_seen_bytes,
   BIT_COUNT(`mozfun`.bytes.extract_bits(days_seen_bytes, - {{lookback}}, {{lookback}})) AS pattern,
   {{death_time}} AS death_time,
   {{max_days}} AS max_days

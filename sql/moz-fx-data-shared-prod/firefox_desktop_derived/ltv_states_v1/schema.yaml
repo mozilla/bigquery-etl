@@ -63,6 +63,10 @@ fields:
   - name: ua
     type: STRING
     mode: NULLABLE
+- description: Days Seen Bytes
+  mode: NULLABLE
+  name: days_seen_bytes
+  type: BYTES    
 - description: Active
   mode: NULLABLE
   name: active

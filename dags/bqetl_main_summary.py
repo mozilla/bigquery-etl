@@ -496,6 +496,13 @@ with DAG(
         "telemetry_derived__clients_first_seen__v1_external",
     ) as telemetry_derived__clients_first_seen__v1_external:
         ExternalTaskMarker(
+            task_id="bqetl_firefox_desktop_ad_click_history__wait_for_telemetry_derived__clients_first_seen__v1",
+            external_dag_id="bqetl_firefox_desktop_ad_click_history",
+            external_task_id="wait_for_telemetry_derived__clients_first_seen__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=36000)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_desktop_conv_evnt_categorization__wait_for_telemetry_derived__clients_first_seen__v1",
             external_dag_id="bqetl_desktop_conv_evnt_categorization",
             external_task_id="wait_for_telemetry_derived__clients_first_seen__v1",

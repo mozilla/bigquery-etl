@@ -249,6 +249,13 @@ with DAG(
         "search_derived__search_clients_last_seen__v2_external",
     ) as search_derived__search_clients_last_seen__v2_external:
         ExternalTaskMarker(
+            task_id="bqetl_firefox_desktop_ad_click_history__wait_for_search_derived__search_clients_last_seen__v2",
+            external_dag_id="bqetl_firefox_desktop_ad_click_history",
+            external_task_id="wait_for_search_derived__search_clients_last_seen__v2",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=39600)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="ltv_daily__wait_for_search_clients_last_seen",
             external_dag_id="ltv_daily",
             external_task_id="wait_for_search_clients_last_seen",

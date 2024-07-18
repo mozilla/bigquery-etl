@@ -63,6 +63,30 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    wait_for_search_derived__search_clients_last_seen__v2 = ExternalTaskSensor(
+        task_id="wait_for_search_derived__search_clients_last_seen__v2",
+        external_dag_id="bqetl_search",
+        external_task_id="search_derived__search_clients_last_seen__v2",
+        execution_delta=datetime.timedelta(seconds=46800),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_telemetry_derived__clients_first_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_telemetry_derived__clients_first_seen__v1",
+        external_dag_id="bqetl_main_summary",
+        external_task_id="telemetry_derived__clients_first_seen__v1",
+        execution_delta=datetime.timedelta(seconds=50400),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     checks__fail_firefox_desktop_derived__adclick_history__v1 = bigquery_dq_check(
         task_id="checks__fail_firefox_desktop_derived__adclick_history__v1",
         source_table="adclick_history_v1",
@@ -89,10 +113,33 @@ with DAG(
         parameters=["submission_date:DATE:{{ds}}"],
     )
 
+    firefox_desktop_derived__ltv_states__v1 = bigquery_etl_query(
+        task_id="firefox_desktop_derived__ltv_states__v1",
+        destination_table="ltv_states_v1",
+        dataset_id="firefox_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     checks__fail_firefox_desktop_derived__adclick_history__v1.set_upstream(
         firefox_desktop_derived__adclick_history__v1
     )
 
     firefox_desktop_derived__adclick_history__v1.set_upstream(
         wait_for_search_derived__search_clients_daily__v8
+    )
+
+    firefox_desktop_derived__ltv_states__v1.set_upstream(
+        checks__fail_firefox_desktop_derived__adclick_history__v1
+    )
+
+    firefox_desktop_derived__ltv_states__v1.set_upstream(
+        wait_for_search_derived__search_clients_last_seen__v2
+    )
+
+    firefox_desktop_derived__ltv_states__v1.set_upstream(
+        wait_for_telemetry_derived__clients_first_seen__v1
     )

@@ -1,0 +1,97 @@
+fields:
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+  description: Unique ID for the client installation.
+- name: sample_id
+  type: INTEGER
+  mode: NULLABLE
+  description: Sample ID
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Submission Date
+- name: first_seen_date
+  type: DATE
+  mode: NULLABLE
+  description: First Seen Date
+- name: days_since_first_seen
+  type: INTEGER
+  mode: NULLABLE
+  description: Days Since First Seen
+- name: days_since_active
+  type: INTEGER
+  mode: NULLABLE
+  description: Days Since Active
+- name: first_reported_country
+  type: STRING
+  mode: NULLABLE
+  description: First Reported Country
+- name: attribution
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: source
+    type: STRING
+    mode: NULLABLE
+    description: null
+  - name: medium
+    type: STRING
+    mode: NULLABLE
+    description: null
+  - name: campaign
+    type: STRING
+    mode: NULLABLE
+    description: null
+  - name: content
+    type: STRING
+    mode: NULLABLE
+    description: null
+  - name: experiment
+    type: STRING
+    mode: NULLABLE
+  - name: variation
+    type: STRING
+    mode: NULLABLE
+  - name: dltoken
+    type: STRING
+    mode: NULLABLE
+  - name: dlsource
+    type: STRING
+    mode: NULLABLE
+  - name: ua
+    type: STRING
+    mode: NULLABLE
+  description: Attribution
+- name: active
+  type: INTEGER
+  mode: NULLABLE
+  description: Active
+- name: ad_clicks
+  type: INTEGER
+  mode: NULLABLE
+  description: Ad Clicks
+- name: total_historic_ad_clicks
+  type: INTEGER
+  mode: NULLABLE
+  description: Total Historic Ad Clicks
+- name: days_seen_bytes
+  type: BYTES
+  mode: NULLABLE
+  description: Days Seen Bytes
+- name: pattern
+  type: INTEGER
+  mode: NULLABLE
+- name: death_time
+  type: INTEGER
+  mode: NULLABLE
+- name: max_days
+  type: INTEGER
+  mode: NULLABLE
+- name: markov_state
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: desktop_states_v1
+    type: STRING
+    mode: NULLABLE

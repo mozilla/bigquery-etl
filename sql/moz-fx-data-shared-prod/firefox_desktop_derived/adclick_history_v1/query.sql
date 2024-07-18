@@ -8,7 +8,9 @@ WITH new_data AS (
   WHERE
     submission_date = @submission_date
     AND ad_click > 0
-    GROUP BY 1,2
+    GROUP BY 
+    client_id,
+    sample_id
 )
     
 SELECT

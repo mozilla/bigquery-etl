@@ -88,7 +88,7 @@ fields:
 - name: max_days
   type: INTEGER
   mode: NULLABLE
-- name: markov_state
+- name: markov_states
   type: RECORD
   mode: NULLABLE
   fields:

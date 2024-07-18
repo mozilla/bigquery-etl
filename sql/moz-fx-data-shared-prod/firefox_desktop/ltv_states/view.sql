@@ -55,6 +55,6 @@ SELECT
       max_days,
       lookback
     ) AS desktop_states_v1
-  ) AS markov_state
+  ) AS markov_states
 FROM
   base

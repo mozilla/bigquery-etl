@@ -22,7 +22,8 @@ WITH base AS (
       `mozfun`.bytes.extract_bits(days_seen_bytes, - {{lookback}}, {{lookback}})
     ) AS pattern,
     {{death_time}} AS death_time,
-    {{max_days}} AS max_days
+    {{max_days}} AS max_days,
+    {{lookback}} AS lookback,
   FROM
     `moz-fx-data-shared-prod.firefox_desktop_derived.ltv_states_v1`
 )

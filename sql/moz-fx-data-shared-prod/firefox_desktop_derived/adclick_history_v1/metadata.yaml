@@ -8,11 +8,11 @@ labels:
   owner1: kwindau@mozilla.com
 scheduling:
   dag_name: bqetl_firefox_desktop_ad_click_history
+  depends_on_past: true
   date_partition_parameter: null
   parameters: ["submission_date:DATE:{{ds}}"]
 bigquery:
   clustering:
     fields:
-    - sample_id
     - client_id
 references: {}

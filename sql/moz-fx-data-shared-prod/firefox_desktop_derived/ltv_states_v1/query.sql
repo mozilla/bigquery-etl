@@ -5,14 +5,14 @@ WITH base AS (
     cls.submission_date,
     DATE_DIFF(cls.submission_date, cfs.first_seen_date, DAY) AS days_since_first_seen,
     cfs.first_seen_date AS first_seen_date,
-    first_reported_country,
+    cls.first_reported_country,
     cfs.attribution,
-    days_seen_bytes,
-    `moz-fx-data-shared-prod`.udf.bits_to_days_since_seen(days_seen_bytes) AS days_since_active,
+    cls.days_seen_bytes,
+    `moz-fx-data-shared-prod`.udf.bits_to_days_since_seen(cls.days_seen_bytes) AS days_since_active,
     IF(
       (
-        (total_uri_count_sum > 0)
-        AND (`moz-fx-data-shared-prod`.udf.bits_to_days_since_seen(days_seen_bytes) = 0)
+        (cls.total_uri_count_sum > 0)
+        AND (`moz-fx-data-shared-prod`.udf.bits_to_days_since_seen(cls.days_seen_bytes) = 0)
         AND (cls.active_hours_sum > 0)
       ),
       1,
@@ -26,12 +26,12 @@ WITH base AS (
   WHERE
     cls.submission_date = @submission_date
     AND cls.submission_date >= cfs.first_seen_date  -- remove cases where the last time a client was seen was before their supposed first date
-    AND `moz-fx-data-shared-prod`.udf.bits_to_days_since_seen(days_seen_bytes) <= DATE_DIFF(
+    AND `moz-fx-data-shared-prod`.udf.bits_to_days_since_seen(cls.days_seen_bytes) <= DATE_DIFF(
       cls.submission_date,
       cfs.first_seen_date,
       DAY
     )
-    AND days_seen_bytes IS NOT NULL
+    AND cls.days_seen_bytes IS NOT NULL
 )
 SELECT
   b.client_id,

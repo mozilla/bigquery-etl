@@ -29,7 +29,6 @@ WITH base AS (
 SELECT
   client_id,
   sample_id,
-  ,
   submission_date,
   first_seen_date,
   days_since_first_seen,

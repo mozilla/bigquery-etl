@@ -42,6 +42,7 @@ SELECT
   b.days_since_active,
   b.first_reported_country,
   b.attribution,
+  b.days_seen_bytes,
   b.active,
   (
     SELECT

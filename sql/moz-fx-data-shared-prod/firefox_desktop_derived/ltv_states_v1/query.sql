@@ -26,6 +26,7 @@ WITH base AS (
   WHERE
     cls.submission_date = @submission_date
     AND cls.submission_date >= cfs.first_seen_date  -- remove cases where the last time a client was seen was before their supposed first date
+    -- days since last seen should be less than or equal to days since first seen
     AND `moz-fx-data-shared-prod`.udf.bits_to_days_since_seen(cls.days_seen_bytes) <= DATE_DIFF(
       cls.submission_date,
       cfs.first_seen_date,

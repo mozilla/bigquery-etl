@@ -63,8 +63,7 @@ WITH new_profile_ping_agg AS (
       environment.settings.attribution.experiment RESPECT NULLS
       ORDER BY
         submission_timestamp
-    )[SAFE_OFFSET(0)
-    ] AS attribution_experiment,
+    )[SAFE_OFFSET(0)] AS attribution_experiment,
     ARRAY_AGG(environment.settings.attribution.medium RESPECT NULLS ORDER BY submission_timestamp)[
       SAFE_OFFSET(0)
     ] AS attribution_medium,
@@ -125,55 +124,65 @@ WITH new_profile_ping_agg AS (
       payload.processes.parent.scalars.startup_profile_selection_reason RESPECT NULLS
       ORDER BY
         submission_timestamp
-    )[SAFE_OFFSET(0)]
-      AS startup_profile_selection_reason,
+    )[SAFE_OFFSET(0)] AS startup_profile_selection_reason,
     ARRAY_AGG(
-      payload.processes.parent.scalars.installation_first_seen_admin_user RESPECT NULLS ORDER BY submission_timestamp
-      )[SAFE_OFFSET(0)]
-      AS installation_first_seen_admin_user,
+      payload.processes.parent.scalars.installation_first_seen_admin_user RESPECT NULLS
+      ORDER BY
+        submission_timestamp
+    )[SAFE_OFFSET(0)] AS installation_first_seen_admin_user,
     ARRAY_AGG(
-      payload.processes.parent.scalars.installation_first_seen_default_path RESPECT NULLS ORDER BY submission_timestamp
-      )[SAFE_OFFSET(0)]
-      AS installation_first_seen_default_path,
+      payload.processes.parent.scalars.installation_first_seen_default_path RESPECT NULLS
+      ORDER BY
+        submission_timestamp
+    )[SAFE_OFFSET(0)] AS installation_first_seen_default_path,
     ARRAY_AGG(
-      payload.processes.parent.scalars.installation_first_seen_failure_reason RESPECT NULLS ORDER BY submission_timestamp
-      )[SAFE_OFFSET(0)]
-      AS installation_first_seen_failure_reason,
+      payload.processes.parent.scalars.installation_first_seen_failure_reason RESPECT NULLS
+      ORDER BY
+        submission_timestamp
+    )[SAFE_OFFSET(0)] AS installation_first_seen_failure_reason,
     ARRAY_AGG(
-      payload.processes.parent.scalars.installation_first_seen_from_msi RESPECT NULLS ORDER BY submission_timestamp
-      )[SAFE_OFFSET(0)]
-      AS installation_first_seen_from_msi,
+      payload.processes.parent.scalars.installation_first_seen_from_msi RESPECT NULLS
+      ORDER BY
+        submission_timestamp
+    )[SAFE_OFFSET(0)] AS installation_first_seen_from_msi,
     ARRAY_AGG(
-      payload.processes.parent.scalars.installation_first_seen_install_existed RESPECT NULLS ORDER BY submission_timestamp
-      )[SAFE_OFFSET(0)]
-      AS installation_first_seen_install_existed,
+      payload.processes.parent.scalars.installation_first_seen_install_existed RESPECT NULLS
+      ORDER BY
+        submission_timestamp
+    )[SAFE_OFFSET(0)] AS installation_first_seen_install_existed,
     ARRAY_AGG(
-      payload.processes.parent.scalars.installation_first_seen_installer_type RESPECT NULLS ORDER BY submission_timestamp
-      )[SAFE_OFFSET(0)]
-      AS installation_first_seen_installer_type,
+      payload.processes.parent.scalars.installation_first_seen_installer_type RESPECT NULLS
+      ORDER BY
+        submission_timestamp
+    )[SAFE_OFFSET(0)] AS installation_first_seen_installer_type,
     ARRAY_AGG(
-      payload.processes.parent.scalars.installation_first_seen_other_inst RESPECT NULLS ORDER BY submission_timestamp
-      )[SAFE_OFFSET(0)]
-      AS installation_first_seen_other_inst,
+      payload.processes.parent.scalars.installation_first_seen_other_inst RESPECT NULLS
+      ORDER BY
+        submission_timestamp
+    )[SAFE_OFFSET(0)] AS installation_first_seen_other_inst,
     ARRAY_AGG(
-      payload.processes.parent.scalars.installation_first_seen_other_msix_inst RESPECT NULLS ORDER BY submission_timestamp
-      )[SAFE_OFFSET(0)]
-      AS installation_first_seen_other_msix_inst,
+      payload.processes.parent.scalars.installation_first_seen_other_msix_inst RESPECT NULLS
+      ORDER BY
+        submission_timestamp
+    )[SAFE_OFFSET(0)] AS installation_first_seen_other_msix_inst,
     ARRAY_AGG(
-      payload.processes.parent.scalars.installation_first_seen_profdir_existed RESPECT NULLS ORDER BY submission_timestamp
-      )[SAFE_OFFSET(0)]
-      AS installation_first_seen_profdir_existed,
+      payload.processes.parent.scalars.installation_first_seen_profdir_existed RESPECT NULLS
+      ORDER BY
+        submission_timestamp
+    )[SAFE_OFFSET(0)] AS installation_first_seen_profdir_existed,
     ARRAY_AGG(
-      payload.processes.parent.scalars.installation_first_seen_silent RESPECT NULLS ORDER BY submission_timestamp
-      )[SAFE_OFFSET(0)]
-      AS installation_first_seen_silent,
+      payload.processes.parent.scalars.installation_first_seen_silent RESPECT NULLS
+      ORDER BY
+        submission_timestamp
+    )[SAFE_OFFSET(0)] AS installation_first_seen_silent,
     ARRAY_AGG(
-      payload.processes.parent.scalars.installation_first_seen_version RESPECT NULLS ORDER BY submission_timestamp)[
-      SAFE_OFFSET(0)]
-        AS installation_first_seen_version,
+      payload.processes.parent.scalars.installation_first_seen_version RESPECT NULLS
+      ORDER BY
+        submission_timestamp
+    )[SAFE_OFFSET(0)] AS installation_first_seen_version,
     ARRAY_AGG(environment.settings.attribution.dltoken RESPECT NULLS ORDER BY submission_timestamp)[
-      SAFE_OFFSET(0)]
-        AS attribution_dltoken,
+      SAFE_OFFSET(0)
+    ] AS attribution_dltoken,
     ARRAY_AGG(
       environment.settings.attribution.dlsource RESPECT NULLS
       ORDER BY
@@ -184,21 +193,17 @@ WITH new_profile_ping_agg AS (
       ORDER BY
         submission_timestamp
     )[SAFE_OFFSET(0)] AS attribution_variation,
-    ARRAY_AGG(
-      environment.system.os.name RESPECT NULLS
-      ORDER BY
-        submission_timestamp
-        ) [SAFE_OFFSET(0)] as os,
-    ARRAY_AGG(
-      environment.system.os.version RESPECT NULLS
-      ORDER BY
-        submission_timestamp
-        ) [SAFE_OFFSET(0)] as os_version,
+    ARRAY_AGG(environment.system.os.name RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS os,
+    ARRAY_AGG(environment.system.os.version RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS os_version,
     ARRAY_AGG(
       environment.system.os.windows_build_number RESPECT NULLS
       ORDER BY
         submission_timestamp
-        ) [SAFE_OFFSET(0)] as windows_build_number,
+    )[SAFE_OFFSET(0)] AS windows_build_number,
   FROM
     `moz-fx-data-shared-prod.telemetry.new_profile`
   WHERE
@@ -213,9 +218,15 @@ WITH new_profile_ping_agg AS (
     sample_id
 ),
 new_profile_ping AS (
-SELECT *,
-    mozfun.norm.windows_version_info(os, os_version, CAST(windows_build_number AS INT64)) AS windows_version
-FROM new_profile_ping_agg
+  SELECT
+    *,
+    mozfun.norm.windows_version_info(
+      os,
+      os_version,
+      CAST(windows_build_number AS INT64)
+    ) AS windows_version
+  FROM
+    new_profile_ping_agg
 ),
 shutdown_ping_agg AS (
   SELECT
@@ -339,17 +350,17 @@ shutdown_ping_agg AS (
       ORDER BY
         submission_timestamp
     )[SAFE_OFFSET(0)] AS startup_profile_selection_reason,
-    CAST(null AS BOOL) AS installation_first_seen_admin_user,
-    CAST(null AS BOOL) AS installation_first_seen_default_path,
-    CAST(null AS STRING) AS installation_first_seen_failure_reason,
-    CAST(null AS BOOL) AS installation_first_seen_from_msi,
-    CAST(null AS BOOL) AS installation_first_seen_install_existed,
-    CAST(null AS STRING) AS installation_first_seen_installer_type,
-    CAST(null AS BOOL) AS installation_first_seen_other_inst,
-    CAST(null AS BOOL) AS installation_first_seen_other_msix_inst,
-    CAST(null AS BOOL) AS installation_first_seen_profdir_existed,
-    CAST(null AS BOOL) AS installation_first_seen_silent,
-    CAST(null AS STRING) AS installation_first_seen_version,
+    CAST(NULL AS BOOL) AS installation_first_seen_admin_user,
+    CAST(NULL AS BOOL) AS installation_first_seen_default_path,
+    CAST(NULL AS STRING) AS installation_first_seen_failure_reason,
+    CAST(NULL AS BOOL) AS installation_first_seen_from_msi,
+    CAST(NULL AS BOOL) AS installation_first_seen_install_existed,
+    CAST(NULL AS STRING) AS installation_first_seen_installer_type,
+    CAST(NULL AS BOOL) AS installation_first_seen_other_inst,
+    CAST(NULL AS BOOL) AS installation_first_seen_other_msix_inst,
+    CAST(NULL AS BOOL) AS installation_first_seen_profdir_existed,
+    CAST(NULL AS BOOL) AS installation_first_seen_silent,
+    CAST(NULL AS STRING) AS installation_first_seen_version,
     ARRAY_AGG(environment.settings.attribution.dltoken RESPECT NULLS ORDER BY submission_timestamp)[
       SAFE_OFFSET(0)
     ] AS attribution_dltoken,
@@ -363,21 +374,17 @@ shutdown_ping_agg AS (
       ORDER BY
         submission_timestamp
     )[SAFE_OFFSET(0)] AS attribution_variation,
-    ARRAY_AGG(
-      environment.system.os.name RESPECT NULLS
-      ORDER BY
-        submission_timestamp
-        ) [SAFE_OFFSET(0)] as os,
-    ARRAY_AGG(
-      environment.system.os.version RESPECT NULLS
-      ORDER BY
-        submission_timestamp
-        ) [SAFE_OFFSET(0)] as os_version,
+    ARRAY_AGG(environment.system.os.name RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS os,
+    ARRAY_AGG(environment.system.os.version RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS os_version,
     ARRAY_AGG(
       environment.system.os.windows_build_number RESPECT NULLS
       ORDER BY
         submission_timestamp
-        ) [SAFE_OFFSET(0)] as windows_build_number,
+    )[SAFE_OFFSET(0)] AS windows_build_number,
   FROM
     `moz-fx-data-shared-prod.telemetry.first_shutdown`
   WHERE
@@ -392,9 +399,15 @@ shutdown_ping_agg AS (
     sample_id
 ),
 shutdown_ping AS (
-SELECT *,
-    mozfun.norm.windows_version_info(os, os_version, CAST(windows_build_number AS INT64)) AS windows_version
-FROM shutdown_ping_agg
+  SELECT
+    *,
+    mozfun.norm.windows_version_info(
+      os,
+      os_version,
+      CAST(windows_build_number AS INT64)
+    ) AS windows_version
+  FROM
+    shutdown_ping_agg
 ),
 main_ping_agg AS (
   -- The columns set as NULL are not available in clients_daily_v6 and need to be
@@ -479,31 +492,31 @@ main_ping_agg AS (
     ARRAY_AGG(geo_subdivision1 RESPECT NULLS ORDER BY submission_date)[
       SAFE_OFFSET(0)
     ] AS subdivision1,
-    ARRAY_AGG(isp_name RESPECT NULLS ORDER BY submission_date)[
-      SAFE_OFFSET(0)
-    ] AS isp_name,
+    ARRAY_AGG(isp_name RESPECT NULLS ORDER BY submission_date)[SAFE_OFFSET(0)] AS isp_name,
     ARRAY_AGG(normalized_channel RESPECT NULLS ORDER BY submission_date)[
       SAFE_OFFSET(0)
     ] AS normalized_channel,
     ARRAY_AGG(country RESPECT NULLS ORDER BY submission_date)[SAFE_OFFSET(0)] AS country,
-    ARRAY_AGG(mozfun.norm.os(os) RESPECT NULLS ORDER BY submission_date)[SAFE_OFFSET(0)] AS normalized_os,
+    ARRAY_AGG(mozfun.norm.os(os) RESPECT NULLS ORDER BY submission_date)[
+      SAFE_OFFSET(0)
+    ] AS normalized_os,
     ARRAY_AGG(normalized_os_version RESPECT NULLS ORDER BY submission_date)[
       SAFE_OFFSET(0)
     ] AS normalized_os_version,
     ARRAY_AGG(startup_profile_selection_first_ping_only RESPECT NULLS ORDER BY submission_date)[
       SAFE_OFFSET(0)
     ] AS startup_profile_selection_reason,
-    CAST(null AS BOOL) AS installation_first_seen_admin_user,
-    CAST(null AS BOOL) AS installation_first_seen_default_path,
-    CAST(null AS STRING) AS installation_first_seen_failure_reason,
-    CAST(null AS BOOL) AS installation_first_seen_from_msi,
-    CAST(null AS BOOL) AS installation_first_seen_install_existed,
-    CAST(null AS STRING) AS installation_first_seen_installer_type,
-    CAST(null AS BOOL) AS installation_first_seen_other_inst,
-    CAST(null AS BOOL) AS installation_first_seen_other_msix_inst,
-    CAST(null AS BOOL) AS installation_first_seen_profdir_existed,
-    CAST(null AS BOOL) AS installation_first_seen_silent,
-    CAST(null AS STRING) AS installation_first_seen_version,
+    CAST(NULL AS BOOL) AS installation_first_seen_admin_user,
+    CAST(NULL AS BOOL) AS installation_first_seen_default_path,
+    CAST(NULL AS STRING) AS installation_first_seen_failure_reason,
+    CAST(NULL AS BOOL) AS installation_first_seen_from_msi,
+    CAST(NULL AS BOOL) AS installation_first_seen_install_existed,
+    CAST(NULL AS STRING) AS installation_first_seen_installer_type,
+    CAST(NULL AS BOOL) AS installation_first_seen_other_inst,
+    CAST(NULL AS BOOL) AS installation_first_seen_other_msix_inst,
+    CAST(NULL AS BOOL) AS installation_first_seen_profdir_existed,
+    CAST(NULL AS BOOL) AS installation_first_seen_silent,
+    CAST(NULL AS STRING) AS installation_first_seen_version,
     ARRAY_AGG(attribution.dltoken RESPECT NULLS ORDER BY submission_date)[
       SAFE_OFFSET(0)
     ] AS attribution_dltoken,
@@ -513,21 +526,11 @@ main_ping_agg AS (
     ARRAY_AGG(attribution.variation RESPECT NULLS ORDER BY submission_date)[
       SAFE_OFFSET(0)
     ] AS attribution_variation,
-    ARRAY_AGG(
-      os RESPECT NULLS
-      ORDER BY
-        submission_date
-        ) [SAFE_OFFSET(0)] as os,
-    ARRAY_AGG(
-      os_version RESPECT NULLS
-      ORDER BY
-        submission_date
-        ) [SAFE_OFFSET(0)] as os_version,
-    ARRAY_AGG(
-      windows_build_number RESPECT NULLS
-      ORDER BY
-        submission_date
-        ) [SAFE_OFFSET(0)] as windows_build_number,
+    ARRAY_AGG(os RESPECT NULLS ORDER BY submission_date)[SAFE_OFFSET(0)] AS os,
+    ARRAY_AGG(os_version RESPECT NULLS ORDER BY submission_date)[SAFE_OFFSET(0)] AS os_version,
+    ARRAY_AGG(windows_build_number RESPECT NULLS ORDER BY submission_date)[
+      SAFE_OFFSET(0)
+    ] AS windows_build_number,
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6`
   WHERE
@@ -542,9 +545,15 @@ main_ping_agg AS (
     sample_id
 ),
 main_ping AS (
-  SELECT *,
-      mozfun.norm.windows_version_info(os, os_version, CAST(windows_build_number AS INT64)) AS windows_version
-  FROM main_ping_agg
+  SELECT
+    *,
+    mozfun.norm.windows_version_info(
+      os,
+      os_version,
+      CAST(windows_build_number AS INT64)
+    ) AS windows_version
+  FROM
+    main_ping_agg
 ),
 -- The ping priority is required when different ping types have the exact same timestamp
 unioned AS (

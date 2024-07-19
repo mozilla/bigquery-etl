@@ -8,6 +8,7 @@ SELECT
   app_version,
   locale,
   is_mobile,
+  install_source,
   COUNTIF(ping_sent_metric_date) AS ping_sent_metric_date,
   COUNTIF(ping_sent_week_4) AS ping_sent_week_4,
   COUNTIF(active_metric_date) AS active_metric_date,
@@ -33,4 +34,5 @@ GROUP BY
   country,
   app_version,
   locale,
-  is_mobile
+  is_mobile,
+  install_source

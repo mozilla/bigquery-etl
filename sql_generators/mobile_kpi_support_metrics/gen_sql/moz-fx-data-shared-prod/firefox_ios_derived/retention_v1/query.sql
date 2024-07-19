@@ -8,11 +8,11 @@ SELECT
   app_version,
   locale,
   is_mobile,
-  is_suspicious_device_client,
   adjust_ad_group,
   adjust_campaign,
   adjust_creative,
   adjust_network,
+  is_suspicious_device_client,
   COUNTIF(ping_sent_metric_date) AS ping_sent_metric_date,
   COUNTIF(ping_sent_week_4) AS ping_sent_week_4,
   COUNTIF(active_metric_date) AS active_metric_date,
@@ -39,8 +39,8 @@ GROUP BY
   app_version,
   locale,
   is_mobile,
-  is_suspicious_device_client,
   adjust_ad_group,
   adjust_campaign,
   adjust_creative,
-  adjust_network
+  adjust_network,
+  is_suspicious_device_client

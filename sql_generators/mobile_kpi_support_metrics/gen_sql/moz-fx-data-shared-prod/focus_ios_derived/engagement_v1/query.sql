@@ -13,6 +13,9 @@ SELECT
   COUNTIF(is_mau) AS mau,
 FROM
   `moz-fx-data-shared-prod.focus_ios.engagement_clients`
+LEFT JOIN
+  `moz-fx-data-shared-prod.focus_ios.attribution_clients` AS attribution
+  USING (client_id)
 WHERE
   {% if is_init() %}
     submission_date < CURRENT_DATE

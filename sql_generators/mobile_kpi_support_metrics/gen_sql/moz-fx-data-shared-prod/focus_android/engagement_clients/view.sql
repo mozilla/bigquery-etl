@@ -36,6 +36,7 @@ SELECT
   is_wau,
   is_mau,
   is_mobile,
+  NULLIF(attribution.install_source, "") AS install_source,
   "Organic" AS paid_vs_organic,
   CASE
     WHEN active_users.submission_date = first_seen_date
@@ -50,3 +51,6 @@ SELECT
   END AS lifecycle_stage,
 FROM
   active_users
+LEFT JOIN
+  `moz-fx-data-shared-prod.focus_android.attribution_clients` AS attribution
+  USING (client_id)

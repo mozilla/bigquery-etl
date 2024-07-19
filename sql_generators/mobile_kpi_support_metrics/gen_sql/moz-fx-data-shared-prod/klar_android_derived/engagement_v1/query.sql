@@ -8,11 +8,15 @@ SELECT
   country,
   locale,
   is_mobile,
+  attribution.install_source,
   COUNTIF(is_dau) AS dau,
   COUNTIF(is_wau) AS wau,
   COUNTIF(is_mau) AS mau,
 FROM
   `moz-fx-data-shared-prod.klar_android.engagement_clients`
+LEFT JOIN
+  `moz-fx-data-shared-prod.klar_android.attribution_clients` AS attribution
+  USING (client_id)
 WHERE
   {% if is_init() %}
     submission_date < CURRENT_DATE
@@ -27,4 +31,5 @@ GROUP BY
   app_version,
   country,
   locale,
-  is_mobile
+  is_mobile,
+  install_source

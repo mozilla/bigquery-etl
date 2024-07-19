@@ -74,5 +74,8 @@ INNER JOIN
   ON clients_daily.submission_date = active_users.retention_seen.day_27.metric_date
   AND clients_daily.client_id = active_users.client_id
   AND clients_daily.normalized_channel = active_users.normalized_channel
+LEFT JOIN
+  `moz-fx-data-shared-prod.focus_ios.attribution_clients` AS attribution
+  USING (client_id)
 WHERE
   active_users.retention_seen.day_27.active_on_metric_date

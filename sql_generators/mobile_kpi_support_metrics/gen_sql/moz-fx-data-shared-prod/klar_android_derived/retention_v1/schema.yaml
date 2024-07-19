@@ -39,6 +39,11 @@ fields:
   mode: NULLABLE
   description: Indicates if this specific entry is used towards calculating mobile DAU.
 
+- name: install_source
+  type: STRING
+  mode: NULLABLE
+  description: The source of a profile installation.
+
 - name: ping_sent_metric_date
   type: INTEGER
   mode: NULLABLE

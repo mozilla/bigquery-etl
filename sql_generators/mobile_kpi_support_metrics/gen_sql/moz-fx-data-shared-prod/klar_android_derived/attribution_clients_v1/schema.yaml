@@ -1,0 +1,22 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description:
+
+- mode: NULLABLE
+  name: client_id
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: submission_timestamp
+  type: TIMESTAMP
+  description: |
+    Timestamp associated with the ping that contained the attribution info.
+
+- name: install_source
+  type: STRING
+  mode: NULLABLE
+  description: The source of a profile installation.
+

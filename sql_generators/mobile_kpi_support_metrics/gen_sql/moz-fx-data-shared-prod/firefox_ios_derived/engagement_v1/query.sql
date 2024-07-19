@@ -8,16 +8,19 @@ SELECT
   country,
   locale,
   is_mobile,
-  is_suspicious_device_client,
-  adjust_ad_group,
-  adjust_campaign,
-  adjust_creative,
-  adjust_network,
+  attribution.adjust_ad_group,
+  attribution.adjust_campaign,
+  attribution.adjust_creative,
+  attribution.adjust_network,
+  attribution.is_suspicious_device_client,
   COUNTIF(is_dau) AS dau,
   COUNTIF(is_wau) AS wau,
   COUNTIF(is_mau) AS mau,
 FROM
   `moz-fx-data-shared-prod.firefox_ios.engagement_clients`
+LEFT JOIN
+  `moz-fx-data-shared-prod.firefox_ios.attribution_clients` AS attribution
+  USING (client_id)
 WHERE
   {% if is_init() %}
     submission_date < CURRENT_DATE
@@ -33,8 +36,8 @@ GROUP BY
   country,
   locale,
   is_mobile,
-  is_suspicious_device_client,
   adjust_ad_group,
   adjust_campaign,
   adjust_creative,
-  adjust_network
+  adjust_network,
+  is_suspicious_device_client

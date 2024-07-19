@@ -105,11 +105,12 @@ class AttributionFields:
                 "type": "STRING",
                 "description": "Play store source the profile is attributed to.",
             },
-            {
-                "name": "play_store_attribution_install_referrer_response",
-                "type": "STRING",
-                "description": "Play store source the profile is attributed to.",
-            },
+            # TODO: decide if this should be added here?
+            # {
+            #     "name": "play_store_attribution_install_referrer_response",
+            #     "type": "STRING",
+            #     "description": "Play store source the profile is attributed to.",
+            # },
         ],
     )
     meta = AttributionFieldGroup(
@@ -198,11 +199,11 @@ class MobileProducts(Enum):
     focus_android = Product(
         friendly_name="Focus Android",
         is_mobile_kpi=True,
-        attribution_groups=[AttributionFields.install_source],
+        # attribution_groups=[AttributionFields.install_source],
     )
     klar_android = Product(
         friendly_name="Klar Android",
-        attribution_groups=[AttributionFields.install_source],
+        # attribution_groups=[AttributionFields.install_source],
     )
     firefox_ios = Product(
         friendly_name="Firefox iOS",

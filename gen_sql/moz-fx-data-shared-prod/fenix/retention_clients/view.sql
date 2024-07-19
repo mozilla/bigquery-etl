@@ -51,9 +51,6 @@ SELECT
   clients_daily.locale,
   clients_daily.isp,
   active_users.is_mobile,
-  `moz-fx-data-shared-prod.udf.organic_vs_paid_mobile`(
-    attribution.adjust_network
-  ) AS paid_vs_organic,
   attribution.play_store_attribution_campaign,
   attribution.play_store_attribution_medium,
   attribution.play_store_attribution_source,
@@ -63,6 +60,7 @@ SELECT
   attribution.adjust_campaign,
   attribution.adjust_creative,
   attribution.adjust_network,
+  `moz-fx-data-shared-prod.udf.organic_vs_paid_mobile`(adjust_network) AS paid_vs_organic,
   -- ping sent retention
   active_users.retention_seen.day_27.active_on_metric_date AS ping_sent_metric_date,
   (
@@ -108,7 +106,6 @@ INNER JOIN
   AND clients_daily.normalized_channel = active_users.normalized_channel
 LEFT JOIN
   attribution
-  ON clients_daily.client_id = attribution.client_id
-  AND clients_daily.normalized_channel = attribution.normalized_channel
+  USING (client_id, sample_id, normalized_channel)
 WHERE
   active_users.retention_seen.day_27.active_on_metric_date

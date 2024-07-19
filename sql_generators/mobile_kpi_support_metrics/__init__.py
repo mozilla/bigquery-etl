@@ -1,6 +1,7 @@
 """Generate active users aggregates per app."""
 
 import itertools
+from collections import ChainMap
 from dataclasses import asdict, dataclass, field
 from enum import Enum
 from os import path
@@ -27,70 +28,117 @@ TEMPLATES = (
     "engagement.view.sql",
 )
 
-INSTALL_SOURCE = [
-    {
-        "name": "install_source",
-        "type": "STRING",
-        "description": "The source of a profile installation.",
-    },
-]
 
-ADJUST_FIELDS = [
-    {
-        "name": "adjust_ad_group",
-        "type": "STRING",
-        "description": "Adjust Ad Group the profile is attributed to.",
-    },
-    {
-        "name": "adjust_campaign",
-        "type": "STRING",
-        "description": "Adjust Campaign the profile is attributed to.",
-    },
-    {
-        "name": "adjust_creative",
-        "type": "STRING",
-        "description": "Adjust Creative the profile is attributed to.",
-    },
-    {
-        "name": "adjust_network",
-        "type": "STRING",
-        "description": "Adjust Network the profile is attributed to.",
-    },
-]
+class Pings(Enum):
+    """TODO."""
 
-FENIX_ATTRIBUTION_FIELDS = [
-    {
-        "name": "play_store_attribution_campaign",
-        "type": "STRING",
-        "description": "Play store campaign the profile is attributed to.",
-    },
-    {
-        "name": "play_store_attribution_medium",
-        "type": "STRING",
-        "description": "Play store Medium the profile is attributed to.",
-    },
-    {
-        "name": "play_store_attribution_source",
-        "type": "STRING",
-        "description": "Play store source the profile is attributed to.",
-    },
-    {
-        "name": "meta_attribution_app",
-        "type": "STRING",
-        "description": "Facebook app linked to paid marketing.",
-    },
-    *INSTALL_SOURCE,
-    *ADJUST_FIELDS,
-]
+    metrics: str = "metrics"
+    first_session: str = "first_session"
+    baseline: str = "baseline"
 
-FIREFOX_IOS_ATTRIBUTION_FIELDS = [
-    {
-        "name": "is_suspicious_device_client",
-        "type": "BOOLEAN",
-        "description": "Flag to identify suspicious device users, see bug-1846554 for more info.",
-    },
-    *ADJUST_FIELDS,
-]
+
+@dataclass
+class AttributionFieldGroup:
+    """TODO."""
+
+    name: str
+    source_pings: list[Pings]
+    fields: list[dict[str, str]]
+
+
+class AttributionFields:
+    """TODO."""
+
+    install_source = AttributionFieldGroup(
+        name="install_source",
+        source_pings=[Pings.metrics],
+        fields=[
+            {
+                "name": "install_source",
+                "type": "STRING",
+                "description": "The source of a profile installation.",
+            },
+        ],
+    )
+    adjust = AttributionFieldGroup(
+        name="adjust",
+        source_pings=[Pings.metrics, Pings.first_session],
+        fields=[
+            {
+                "name": "adjust_ad_group",
+                "type": "STRING",
+                "description": "Adjust Ad Group the profile is attributed to.",
+            },
+            {
+                "name": "adjust_campaign",
+                "type": "STRING",
+                "description": "Adjust Campaign the profile is attributed to.",
+            },
+            {
+                "name": "adjust_creative",
+                "type": "STRING",
+                "description": "Adjust Creative the profile is attributed to.",
+            },
+            {
+                "name": "adjust_network",
+                "type": "STRING",
+                "description": "Adjust Network the profile is attributed to.",
+            },
+        ],
+    )
+    play_store = AttributionFieldGroup(
+        name="play_store",
+        source_pings=[Pings.first_session],
+        fields=[
+            {
+                "name": "play_store_attribution_campaign",
+                "type": "STRING",
+                "description": "Play store campaign the profile is attributed to.",
+            },
+            {
+                "name": "play_store_attribution_medium",
+                "type": "STRING",
+                "description": "Play store Medium the profile is attributed to.",
+            },
+            {
+                "name": "play_store_attribution_source",
+                "type": "STRING",
+                "description": "Play store source the profile is attributed to.",
+            },
+            {
+                "name": "play_store_attribution_install_referrer_response",
+                "type": "STRING",
+                "description": "Play store source the profile is attributed to.",
+            },
+        ],
+    )
+    meta = AttributionFieldGroup(
+        name="meta",
+        source_pings=[Pings.first_session],
+        fields=[
+            {
+                "name": "meta_attribution_app",
+                "type": "STRING",
+                "description": "Facebook app linked to paid marketing.",
+            },
+        ],
+    )
+    is_suspicious_device_client = AttributionFieldGroup(
+        name="is_suspicious_device_client",
+        source_pings=[],
+        fields=[
+            {
+                "name": "is_suspicious_device_client",
+                "type": "BOOLEAN",
+                "description": "Flag to identify suspicious device users, see bug-1846554 for more info.",
+            },
+        ],
+    )
+    empty = AttributionFieldGroup(
+        name="empty",
+        source_pings=[],
+        fields=[],
+    )
 
 
 @dataclass
@@ -99,7 +147,39 @@ class Product:
 
     friendly_name: str
     is_mobile_kpi: bool = False
-    attribution_fields: list = field(default_factory=list)
+    attribution_groups: list[AttributionFieldGroup] = field(
+        default_factory=list[AttributionFields.empty]  # type: ignore[valid-type]
+    )
+
+    def get_product_attribution_fields(self) -> dict[str, dict[str, str]]:
+        """TODO."""
+        return {
+            field["name"]: field
+            for field in list(
+                itertools.chain.from_iterable(
+                    [
+                        attribution_group.fields
+                        for attribution_group in self.attribution_groups
+                    ]
+                )
+            )
+        }
+
+    def get_attribution_pings(self) -> list[str]:
+        """TODO."""
+        return list(
+            set(
+                [
+                    ping.value
+                    for attribution_group in self.attribution_groups
+                    for ping in attribution_group.source_pings
+                ]
+            )
+        )
+
+    def get_attribution_group_names(self) -> list[str]:
+        """TODO."""
+        return [attribution_group.name for attribution_group in self.attribution_groups]
 
 
 class MobileProducts(Enum):
@@ -108,22 +188,37 @@ class MobileProducts(Enum):
     fenix = Product(
         friendly_name="Fenix",
         is_mobile_kpi=True,
-        attribution_fields=FENIX_ATTRIBUTION_FIELDS,
+        attribution_groups=[
+            AttributionFields.play_store,
+            AttributionFields.meta,
+            AttributionFields.install_source,
+            AttributionFields.adjust,
+        ],
     )
     focus_android = Product(
         friendly_name="Focus Android",
         is_mobile_kpi=True,
+        attribution_groups=[AttributionFields.install_source],
     )
     klar_android = Product(
         friendly_name="Klar Android",
+        attribution_groups=[AttributionFields.install_source],
     )
     firefox_ios = Product(
         friendly_name="Firefox iOS",
         is_mobile_kpi=True,
-        attribution_fields=FIREFOX_IOS_ATTRIBUTION_FIELDS,
+        attribution_groups=[
+            AttributionFields.is_suspicious_device_client,
+            AttributionFields.adjust,
+        ],
     )
-    focus_ios = Product(friendly_name="Focus iOS", is_mobile_kpi=True)
-    klar_ios = Product(friendly_name="Klar iOS")
+    focus_ios = Product(
+        friendly_name="Focus iOS",
+        is_mobile_kpi=True,
+    )
+    klar_ios = Product(
+        friendly_name="Klar iOS",
+    )
 
 
 @click.command()
@@ -161,17 +256,18 @@ def generate(target_project, output_dir, use_cloud_function):
         "schema.yaml",
     )
 
-    all_possible_attribution_fields = {
-        field["name"]: field
-        for field in list(
-            itertools.chain.from_iterable(
-                [product.value.attribution_fields for product in MobileProducts]
-            )
+    all_possible_attribution_fields = dict(
+        ChainMap(
+            *[
+                product.value.get_product_attribution_fields()
+                for product in MobileProducts
+            ]
         )
-    }
+    )
 
     for template in TEMPLATES:
         for product in MobileProducts:
+
             target_name, target_filename, target_extension = template.split(".")
 
             target_dataset = (
@@ -181,19 +277,28 @@ def generate(target_project, output_dir, use_cloud_function):
             )
 
             table_id = f"{target_project}.{target_dataset}.{target_name}"
+
             full_table_id = (
                 table_id + f"_{VERSION}" if target_filename == "query" else table_id
             )
 
+            product_args = {
+                "dataset": product.name,
+                "target_name": target_name,
+                "app_name": product.name,
+                "name": target_name,
+                "product_attribution_groups": product.value.attribution_groups,
+                "product_attribution_group_names": product.value.get_attribution_group_names(),
+                "product_attribution_group_pings": product.value.get_attribution_pings(),
+                "product_attribution_fields": product.value.get_product_attribution_fields(),
+            }
+
             sql_template = env.get_template(template)
             rendered_sql = reformat(
                 sql_template.render(
-                    **asdict(product.value),
                     **default_template_args,
-                    dataset=product.name,
-                    target_name=target_name,
-                    app_name=product.name,
-                    name=target_name,
+                    **asdict(product.value),
+                    **product_args,
                 )
             )
 
@@ -214,12 +319,9 @@ def generate(target_project, output_dir, use_cloud_function):
                     f"{target_name}.{query_support_config}"
                 )
                 support_config_rendered = support_config_template.render(
-                    **asdict(product.value),
                     **default_template_args,
-                    dataset=target_dataset,
-                    target_name=target_name,
-                    app_name=product.name,
-                    name=target_name,
+                    **asdict(product.value),
+                    **product_args,
                     format=False,
                 )
 
@@ -258,10 +360,7 @@ def generate(target_project, output_dir, use_cloud_function):
                         [
                             {
                                 "exists": field_name
-                                in [
-                                    field["name"]
-                                    for field in product.value.attribution_fields
-                                ],
+                                in product.value.get_product_attribution_fields().keys(),
                                 "name": field_name,
                                 "type": field_properties["type"],
                             }

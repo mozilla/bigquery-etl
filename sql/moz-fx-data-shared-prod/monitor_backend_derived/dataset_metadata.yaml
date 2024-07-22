@@ -1,0 +1,12 @@
+friendly_name: monitor-backend Derived
+description: |-
+  Derived tables related to document namespace monitor-backend, usually populated via queries defined in
+  https://github.com/mozilla/bigquery-etl and managed by Airflow
+dataset_base_acl: derived
+user_facing: false
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+  - workgroup:dataops-managed/external-fides

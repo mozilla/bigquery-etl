@@ -126,6 +126,8 @@ dry_run:
   - sql/moz-fx-data-shared-prod/monitoring_derived/airflow_*/*.sql
   - sql/moz-fx-data-shared-prod/google_ads_derived/**/*.sql
   - sql/moz-fx-data-shared-prod/**/client_deduplication*/*.sql
+  - sql/moz-fx-data-shared-prod/mozilla_org_derived/downloads_with_attribution_v1/query.sql
+  - sql/moz-fx-data-shared-prod/mozilla_org_derived/downloads_with_attribution_v2/query.sql
   - sql/moz-fx-data-marketing-prod/ga_derived/downloads_with_attribution_v1/query.sql
   - sql/moz-fx-data-marketing-prod/ga_derived/downloads_with_attribution_v2/query.sql
   - sql/moz-fx-data-shared-prod/google_search_console_derived/search_impressions_by_page_v1/query.sql
@@ -168,7 +170,6 @@ dry_run:
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_histogram_aggregates_v2/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_histogram_probe_counts_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_histogram_bucket_counts_v1/query.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/clients_non_norm_histogram_bucket_counts_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/glam_client_probe_counts_extract_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/client_probe_counts/view.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/glam_sample_counts_v1/query.sql

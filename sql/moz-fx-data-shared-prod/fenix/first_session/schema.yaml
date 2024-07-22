@@ -288,6 +288,9 @@ fields:
     - name: meta_attribution_t
       type: STRING
       mode: NULLABLE
+    - name: first_session_install_source
+      type: STRING
+      mode: NULLABLE
   - name: timing_distribution
     type: RECORD
     mode: NULLABLE

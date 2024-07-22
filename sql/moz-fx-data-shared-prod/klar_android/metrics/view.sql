@@ -253,7 +253,9 @@ SELECT
       metrics.labeled_counter.networking_http_response_status_code,
       metrics.labeled_counter.netwerk_eh_response_version,
       metrics.labeled_counter.geolocation_fallback,
-      metrics.labeled_counter.geolocation_request_result
+      metrics.labeled_counter.geolocation_request_result,
+      metrics.labeled_counter.cert_verifier_cert_revocation_mechanisms,
+      metrics.labeled_counter.cert_verifier_crlite_vs_ocsp_result
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,

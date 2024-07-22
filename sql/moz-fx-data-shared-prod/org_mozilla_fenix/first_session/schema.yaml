@@ -411,6 +411,12 @@ fields:
       description: 'Value tracking user interaction with Meta attribution.
 
         '
+    - name: first_session_install_source
+      type: STRING
+      mode: NULLABLE
+      description: 'Used to identify the source the app was installed from.
+
+        '
   - name: timing_distribution
     type: RECORD
     mode: NULLABLE

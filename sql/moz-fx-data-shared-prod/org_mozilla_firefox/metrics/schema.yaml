@@ -5365,6 +5365,32 @@ fields:
         happen once for each request, even if it''s a watch request.
 
         '
+    - name: cert_verifier_cert_revocation_mechanisms
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Which revocation checking mechanisms were used in a TLS handshake?
+
+        '
+    - name: cert_verifier_crlite_vs_ocsp_result
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The OCSP result when CRLite claims a certificate is revoked.
+
+        '
   - name: quantity
     type: RECORD
     mode: NULLABLE

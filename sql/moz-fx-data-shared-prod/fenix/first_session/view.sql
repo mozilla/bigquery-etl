@@ -38,7 +38,8 @@ SELECT
       metrics.string.glean_client_annotation_experimentation_id,
       metrics.string.meta_attribution_app,
       metrics.string.meta_attribution_nonce,
-      metrics.string.meta_attribution_t
+      metrics.string.meta_attribution_t,
+      metrics.string.first_session_install_source
     ) AS `string`,
     STRUCT(
       metrics.timing_distribution.first_session_adjust_attribution_time
@@ -99,7 +100,8 @@ SELECT
       metrics.string.glean_client_annotation_experimentation_id,
       metrics.string.meta_attribution_app,
       metrics.string.meta_attribution_nonce,
-      metrics.string.meta_attribution_t
+      metrics.string.meta_attribution_t,
+      metrics.string.first_session_install_source
     ) AS `string`,
     STRUCT(
       metrics.timing_distribution.first_session_adjust_attribution_time
@@ -160,7 +162,8 @@ SELECT
       metrics.string.glean_client_annotation_experimentation_id,
       metrics.string.meta_attribution_app,
       metrics.string.meta_attribution_nonce,
-      metrics.string.meta_attribution_t
+      metrics.string.meta_attribution_t,
+      metrics.string.first_session_install_source
     ) AS `string`,
     STRUCT(
       metrics.timing_distribution.first_session_adjust_attribution_time
@@ -221,7 +224,8 @@ SELECT
       metrics.string.glean_client_annotation_experimentation_id,
       metrics.string.meta_attribution_app,
       metrics.string.meta_attribution_nonce,
-      metrics.string.meta_attribution_t
+      metrics.string.meta_attribution_t,
+      metrics.string.first_session_install_source
     ) AS `string`,
     STRUCT(
       metrics.timing_distribution.first_session_adjust_attribution_time
@@ -282,7 +286,8 @@ SELECT
       metrics.string.glean_client_annotation_experimentation_id,
       metrics.string.meta_attribution_app,
       metrics.string.meta_attribution_nonce,
-      metrics.string.meta_attribution_t
+      metrics.string.meta_attribution_t,
+      metrics.string.first_session_install_source
     ) AS `string`,
     STRUCT(
       metrics.timing_distribution.first_session_adjust_attribution_time

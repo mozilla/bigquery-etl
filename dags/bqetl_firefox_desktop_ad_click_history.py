@@ -113,6 +113,18 @@ with DAG(
         parameters=["submission_date:DATE:{{ds}}"],
     )
 
+    firefox_desktop_derived__client_ltv__v1 = bigquery_etl_query(
+        task_id="firefox_desktop_derived__client_ltv__v1",
+        destination_table="client_ltv_v1",
+        dataset_id="firefox_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=True,
+        parameters=["submission_date:DATE:{{ds}}"],
+    )
+
     firefox_desktop_derived__ltv_states__v1 = bigquery_etl_query(
         task_id="firefox_desktop_derived__ltv_states__v1",
         destination_table="ltv_states_v1",
@@ -130,6 +142,10 @@ with DAG(
 
     firefox_desktop_derived__adclick_history__v1.set_upstream(
         wait_for_search_derived__search_clients_daily__v8
+    )
+
+    firefox_desktop_derived__client_ltv__v1.set_upstream(
+        firefox_desktop_derived__ltv_states__v1
     )
 
     firefox_desktop_derived__ltv_states__v1.set_upstream(

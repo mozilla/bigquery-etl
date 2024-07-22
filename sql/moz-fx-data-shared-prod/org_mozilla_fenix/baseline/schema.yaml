@@ -293,6 +293,12 @@ fields:
         for the purpose of experimentation enrollment.
 
         '
+    - name: first_session_install_source
+      type: STRING
+      mode: NULLABLE
+      description: 'Used to identify the source the app was installed from.
+
+        '
   - name: timespan
     type: RECORD
     mode: NULLABLE

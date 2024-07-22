@@ -35,7 +35,8 @@ SELECT
       metrics.string.search_default_engine_code,
       metrics.string.search_default_engine_name,
       metrics.string.metrics_distribution_id,
-      metrics.string.glean_client_annotation_experimentation_id
+      metrics.string.glean_client_annotation_experimentation_id,
+      metrics.string.first_session_install_source
     ) AS `string`,
     STRUCT(metrics.timespan.glean_baseline_duration) AS `timespan`,
     STRUCT(
@@ -86,7 +87,8 @@ SELECT
       metrics.string.search_default_engine_code,
       metrics.string.search_default_engine_name,
       metrics.string.metrics_distribution_id,
-      metrics.string.glean_client_annotation_experimentation_id
+      metrics.string.glean_client_annotation_experimentation_id,
+      metrics.string.first_session_install_source
     ) AS `string`,
     STRUCT(metrics.timespan.glean_baseline_duration) AS `timespan`,
     STRUCT(
@@ -155,7 +157,8 @@ SELECT
       metrics.string.search_default_engine_code,
       metrics.string.search_default_engine_name,
       metrics.string.metrics_distribution_id,
-      metrics.string.glean_client_annotation_experimentation_id
+      metrics.string.glean_client_annotation_experimentation_id,
+      metrics.string.first_session_install_source
     ) AS `string`,
     STRUCT(metrics.timespan.glean_baseline_duration) AS `timespan`,
     STRUCT(
@@ -233,7 +236,8 @@ SELECT
       metrics.string.search_default_engine_code,
       metrics.string.search_default_engine_name,
       metrics.string.metrics_distribution_id,
-      metrics.string.glean_client_annotation_experimentation_id
+      metrics.string.glean_client_annotation_experimentation_id,
+      metrics.string.first_session_install_source
     ) AS `string`,
     STRUCT(metrics.timespan.glean_baseline_duration) AS `timespan`,
     STRUCT(
@@ -293,7 +297,8 @@ SELECT
       metrics.string.search_default_engine_code,
       metrics.string.search_default_engine_name,
       metrics.string.metrics_distribution_id,
-      metrics.string.glean_client_annotation_experimentation_id
+      metrics.string.glean_client_annotation_experimentation_id,
+      metrics.string.first_session_install_source
     ) AS `string`,
     STRUCT(metrics.timespan.glean_baseline_duration) AS `timespan`,
     STRUCT(

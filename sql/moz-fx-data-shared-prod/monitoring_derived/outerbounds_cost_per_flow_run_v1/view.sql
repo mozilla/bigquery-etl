@@ -7,7 +7,7 @@ SELECT
   IFNULL(SAFE.LEFT(labels.value, INSTR(labels.value, '-', -1) - 1), labels.value) AS flow_name,
   SUM(cost) AS cost_usd
 FROM
-  moz - fx - data - shared - prod.billing_syndicate.gcp_billing_export_resource_v1_01E7D5_97288E_E2EBA0
+  `moz-fx-data-shared-prod.billing_syndicate.gcp_billing_export_resource_v1_01E7D5_97288E_E2EBA0`
 JOIN
   UNNEST(labels) AS labels
   ON labels.key = "k8s-label/workflows.argoproj.io/workflow"

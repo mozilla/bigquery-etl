@@ -78,8 +78,18 @@ WITH DAUs AS (
     -- If cities are either '??' or NULL then it's from cities we either don't
     -- know about or have a population less than 15k. Just rename to 'unknown'.
     IF(city = '??' OR city IS NULL, 'unknown', city) AS city,
-    IF(geo_subdivision1 = '??' OR geo_subdivision1 IS NULL, 'missing', geo_subdivision1) AS geo_subdivision1,
-    IF(geo_subdivision2 = '??' OR geo_subdivision2 IS NULL, 'missing', geo_subdivision2) AS geo_subdivision2,
+    IF(
+      geo_subdivision1 = '??'
+      OR geo_subdivision1 IS NULL,
+      'missing',
+      geo_subdivision1
+    ) AS geo_subdivision1,
+    IF(
+      geo_subdivision2 = '??'
+      OR geo_subdivision2 IS NULL,
+      'missing',
+      geo_subdivision2
+    ) AS geo_subdivision2,
     -- Truncate the submission timestamp to the hour. Note that this filed was
     -- introduced on the 16th December 2019, so it will be `null` for queries
     -- before that day. See https://github.com/mozilla/bigquery-etl/pull/603 .
@@ -179,8 +189,18 @@ health_data_aggregates AS (
     -- If cities are either '??' or NULL then it's from cities we either don't
     -- know about or have a population less than 15k. Just rename to 'unknown'.
     IF(city = '??' OR city IS NULL, 'unknown', city) AS city,
-    IF(geo_subdivision1 = '??' OR geo_subdivision1 IS NULL, 'missing', geo_subdivision1) AS geo_subdivision1,
-    IF(geo_subdivision2 = '??' OR geo_subdivision2 IS NULL, 'missing', geo_subdivision2) AS geo_subdivision2,
+    IF(
+      geo_subdivision1 = '??'
+      OR geo_subdivision1 IS NULL,
+      'missing',
+      geo_subdivision1
+    ) AS geo_subdivision1,
+    IF(
+      geo_subdivision2 = '??'
+      OR geo_subdivision2 IS NULL,
+      'missing',
+      geo_subdivision2
+    ) AS geo_subdivision2,
     `datetime`,
     COUNTIF(e_undefined > 0) AS num_clients_e_undefined,
     COUNTIF(e_timeout > 0) AS num_clients_e_timeout,

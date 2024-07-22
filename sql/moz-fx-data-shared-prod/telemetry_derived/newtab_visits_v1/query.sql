@@ -328,6 +328,7 @@ weather_events AS (
   SELECT
     mozfun.map.get_key(event_details, "newtab_visit_id") AS newtab_visit_id,
     COUNTIF(event_name = 'weather_impression') AS weather_widget_impressions,
+    COUNTIF(event_name = 'weather_location_selected') AS weather_widget_location_selected,
     COUNTIF(event_name = 'weather_open_provider_url') AS weather_widget_clicks,
     COUNTIF(event_name = 'weather_load_error') AS weather_widget_load_errors,
     COUNTIF(
@@ -346,7 +347,8 @@ weather_events AS (
       'weather_impression',
       'weather_open_provider_url',
       'weather_load_error',
-      'weather_change_display'
+      'weather_change_display',
+      'weather_location_selected'
     )
   GROUP BY
     newtab_visit_id

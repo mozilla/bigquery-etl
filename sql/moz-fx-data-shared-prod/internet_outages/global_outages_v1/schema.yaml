@@ -6,6 +6,12 @@ fields:
   name: city
   type: STRING
 - mode: NULLABLE
+  name: geo_subdivision1
+  type: STRING
+- mode: NULLABLE
+  name: geo_subdivision2
+  type: STRING
+- mode: NULLABLE
   name: datetime
   type: TIMESTAMP
 - mode: NULLABLE

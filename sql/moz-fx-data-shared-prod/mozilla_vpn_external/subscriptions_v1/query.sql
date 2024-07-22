@@ -34,6 +34,6 @@
       @external_database_query
     ) AS _update
   FULL JOIN
-    subscriptions_v1
+    `moz-fx-data-shared-prod.mozilla_vpn_external.subscriptions_v1` AS subscriptions_v1
     USING (id)
 {% endif %}

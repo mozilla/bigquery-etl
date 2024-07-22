@@ -146,13 +146,16 @@ class TestView:
         assert mock_bigquery_table().friendly_name == "Test metadata file"
         assert mock_bigquery_table().description == "Test description"
 
+    @patch("bigquery_etl.dryrun.DryRun")
     @patch("google.cloud.bigquery.Client")
-    def test_view_has_changes_no_changes(self, mock_client, simple_view):
+    def test_view_has_changes_no_changes(self, mock_client, mock_dryrun, simple_view):
         deployed_view = Mock()
         deployed_view.view_query = CREATE_VIEW_PATTERN.sub("", simple_view.content)
         deployed_view.schema = [SchemaField("a", "INT")]
         mock_client.return_value.get_table.return_value = deployed_view
-        mock_client.return_value.query.return_value.schema = [SchemaField("a", "INT")]
+        mock_dryrun.return_value.get_schema.return_value = {
+            "fields": [{"name": "a", "type": "INT"}]
+        }
 
         assert not simple_view.has_changes()
 
@@ -194,16 +197,18 @@ class TestView:
         assert metadata_view.has_changes()
         assert "friendly_name" in capsys.readouterr().out
 
+    @patch("bigquery_etl.dryrun.DryRun")
     @patch("google.cloud.bigquery.Client")
-    def test_view_has_changes_changed_schema(self, mock_client, simple_view, capsys):
+    def test_view_has_changes_changed_schema(
+        self, mock_client, mock_dryrun, simple_view, capsys
+    ):
         deployed_view = Mock()
         deployed_view.view_query = CREATE_VIEW_PATTERN.sub("", simple_view.content)
         deployed_view.schema = [SchemaField("a", "INT")]
         mock_client.return_value.get_table.return_value = deployed_view
-        mock_client.return_value.query.return_value.schema = [
-            SchemaField("a", "INT"),
-            SchemaField("b", "INT"),
-        ]
+        mock_dryrun.return_value.get_schema.return_value = {
+            "fields": [{"name": "a", "type": "INT"}, {"name": "b", "type": "INT"}]
+        }
 
         assert simple_view.has_changes()
         assert "schema" in capsys.readouterr().out

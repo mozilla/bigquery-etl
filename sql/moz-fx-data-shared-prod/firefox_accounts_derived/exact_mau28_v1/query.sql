@@ -13,7 +13,7 @@ backfill AS (
     ) AS days_since_seen_in_tier1_country,
     country
   FROM
-    static.fxa_amplitude_export_users_last_seen
+    `moz-fx-data-shared-prod.static.fxa_amplitude_export_users_last_seen`
   WHERE
     submission_date < DATE '2019-03-28'
 ),
@@ -27,7 +27,7 @@ live AS (
     days_since_seen_in_tier1_country,
     country
   FROM
-    firefox_accounts.fxa_users_last_seen
+    `moz-fx-data-shared-prod.firefox_accounts.fxa_users_last_seen`
   WHERE
     submission_date >= DATE '2019-03-28'
 ),

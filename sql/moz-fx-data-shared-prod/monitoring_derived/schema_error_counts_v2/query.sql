@@ -5,9 +5,10 @@ WITH extracted AS (
     document_namespace,
     document_type,
     document_version,
-    error_message
+    error_message,
+    uri
   FROM
-    monitoring.payload_bytes_error_all
+    `moz-fx-data-shared-prod.monitoring.payload_bytes_error_all`
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND exception_class = 'org.everit.json.schema.ValidationException'
@@ -20,6 +21,7 @@ count_errors AS (
     hour,
     job_name,
     `moz-fx-data-shared-prod.udf.extract_schema_validation_path`(error_message) AS path,
+    `moz-fx-data-shared-prod.udf.parse_desktop_telemetry_uri`(uri).app_update_channel AS channel,
     COUNT(*) AS error_count,
     -- aggregating distinct error messages to show sample_error messages
     -- removing path and exception_class for better readability
@@ -43,7 +45,8 @@ count_errors AS (
     document_version,
     hour,
     job_name,
-    path
+    path,
+    channel
 )
 SELECT
   @submission_date AS submission_date,

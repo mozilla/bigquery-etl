@@ -4,7 +4,7 @@
     DATE(MIN(`timestamp`)) AS first_seen_date,
     ARRAY_AGG(DISTINCT service IGNORE NULLS ORDER BY service) AS services_used,
   FROM
-    firefox_accounts.fxa_all_events
+    `moz-fx-data-shared-prod.firefox_accounts.fxa_all_events`
   WHERE
     `timestamp` > '2010-01-01'
     AND fxa_log IN ('auth', 'auth_bounce', 'content', 'oauth')
@@ -16,7 +16,7 @@
       user_id,
       ARRAY_AGG(DISTINCT service IGNORE NULLS) AS services_used,
     FROM
-      firefox_accounts.fxa_all_events
+      `moz-fx-data-shared-prod.firefox_accounts.fxa_all_events`
     WHERE
       DATE(`timestamp`) = @submission_date
       AND fxa_log IN ('auth', 'auth_bounce', 'content', 'oauth')
@@ -27,7 +27,7 @@
     SELECT
       *
     FROM
-      firefox_accounts_derived.fxa_users_first_seen_v1
+      `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_users_first_seen_v1`
     WHERE
     -- In reprocessing scenarios, we must always backfill from the first affected date
     -- all the way to the present; to enforce that, we explicitly drop any data after

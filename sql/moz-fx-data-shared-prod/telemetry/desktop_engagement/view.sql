@@ -13,6 +13,7 @@ SELECT
     WHEN DATE_DIFF(submission_date, first_seen_date, DAY) >= 28
       THEN 'existing_user'
     ELSE 'Unknown'
-  END AS lifecycle_stage
+  END AS lifecycle_stage,
+  `moz-fx-data-shared-prod.udf.organic_vs_paid_desktop`(attribution_medium) AS paid_vs_organic
 FROM
   `moz-fx-data-shared-prod.telemetry_derived.desktop_engagement_v1` a

@@ -22,7 +22,7 @@ SELECT
   value.is_web_extension,
   value.multiprocess_compatible
 FROM
-  telemetry.main,
+  `moz-fx-data-shared-prod.telemetry.main`,
   UNNEST(
     IF(
       ARRAY_LENGTH(environment.addons.active_addons) > 0,

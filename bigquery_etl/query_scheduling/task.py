@@ -95,7 +95,11 @@ class TaskRef:
     @property
     def task_key(self):
         """Key to uniquely identify the task."""
-        return f"{self.dag_name}.{self.task_id}"
+        return (
+            f"{self.dag_name}.{self.task_group}.{self.task_id}"
+            if self.task_group
+            else f"{self.dag_name}.{self.task_id}"
+        )
 
     @execution_delta.validator
     def validate_execution_delta(self, attribute, value):

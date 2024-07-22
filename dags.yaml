@@ -522,16 +522,16 @@ bqetl_desktop_platform:
 bqetl_internal_tooling:
   description: |
     This DAG schedules queries for populating queries related to Mozilla's
-    internal developer tooling (e.g. mozregression).
+    internal developer tooling (e.g. mozregression and Firefox-CI).
   default_args:
     depends_on_past: false
     email:
-      - wlachance@mozilla.com
+      - ahalberstadt@mozilla.com
       - telemetry-alerts@mozilla.com
     email_on_failure: true
     email_on_retry: true
     end_date: null
-    owner: wlachance@mozilla.com
+    owner: ahalberstadt@mozilla.com
     retries: 2
     retry_delay: 30m
     start_date: "2020-06-01"
@@ -1541,7 +1541,8 @@ bqetl_acoustic_suppression_list:
     - impact/tier_3
 
 bqetl_braze:
-  schedule_interval: 30 4,12,20 * * *
+  schedule_interval: 0 5,13,21 * * *
+
   description: |
     ETL for Braze workflows.
     ## Triage notes:
@@ -1554,8 +1555,8 @@ bqetl_braze:
       - cbeck@mozilla.com
       - leli@mozilla.com
     start_date: '2024-04-15'
-    retries: 1
-    retry_delay: 30m
+    retries: 3
+    retry_delay: 5m
   tags:
     - impact/tier_2
 
@@ -1669,8 +1670,123 @@ bqetl_mobile_kpi_metrics:
       - telemetry-alerts@mozilla.com
     email_on_failure: true
     email_on_retry: false
-    start_date: '2024-06-08'
+    start_date: '2024-06-03'
     retries: 1
     retry_delay: 30m
   tags:
     - impact/tier_1
+
+bqetl_desktop_conv_evnt_categorization:
+  schedule_interval: 0 12 * * *
+  description: Loads the desktop conversion event tables
+  default_args:
+    depends_on_past: false
+    owner: kwindau@mozilla.com
+    email:
+      - kwindau@mozilla.com
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    start_date: "2024-06-04"
+    retries: 2
+    retry_delay: 30m
+  tags:
+    - impact/tier_2
+
+bqetl_census_feed:
+  schedule_interval: 0 17 * * *
+  description: Loads the desktop conversion event tables
+  default_args:
+    depends_on_past: false
+    owner: kwindau@mozilla.com
+    email:
+      - kwindau@mozilla.com
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    start_date: "2024-06-10"
+    retries: 2
+    retry_delay: 30m
+  tags:
+    - impact/tier_2
+
+bqetl_cloudflare_os_market_share:
+  default_args:
+    depends_on_past: false
+    email:
+      - kwindau@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    owner: kwindau@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2024-06-16'
+  description: |
+    Pulls OS market share data from Cloudflare API
+  repo: bigquery-etl
+  schedule_interval: 0 4 * * *
+  tags:
+    - repo/bigquery-etl
+    - impact/tier_3
+
+bqetl_cloudflare_browser_market_share:
+  default_args:
+    depends_on_past: false
+    email:
+      - kwindau@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    owner: kwindau@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2024-06-16'
+  description: |
+    Pulls browser market share data from Cloudflare API
+  repo: bigquery-etl
+  schedule_interval: 0 10 * * *
+  tags:
+    - repo/bigquery-etl
+    - impact/tier_3
+
+bqetl_cloudflare_device_market_share:
+  default_args:
+    depends_on_past: false
+    email:
+      - kwindau@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    owner: kwindau@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2024-06-16'
+  description: |
+    Pulls device usage market share data from Cloudflare API
+  repo: bigquery-etl
+  schedule_interval: 0 16 * * *
+  tags:
+    - repo/bigquery-etl
+    - impact/tier_3
+
+bqetl_firefox_desktop_ad_click_history:
+  default_args:
+    depends_on_past: false
+    email:
+      - kwindau@mozilla.com
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    owner: kwindau@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2024-07-16'
+  description: |
+    Calculates # of historical ad clicks for Firefox Desktop clients
+  repo: bigquery-etl
+  schedule_interval: 0 16 * * *
+  tags:
+    - repo/bigquery-etl
+    - impact/tier_2

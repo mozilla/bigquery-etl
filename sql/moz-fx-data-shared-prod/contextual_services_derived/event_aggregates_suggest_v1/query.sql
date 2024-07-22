@@ -134,7 +134,9 @@ combined AS (
     'phone' AS form_factor,
     normalized_country_code AS country,
     metrics.string.fx_suggest_advertiser AS advertiser,
-    SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
+    -- This is now hardcoded, we can use the derived `normalized_os` once
+    -- https://bugzilla.mozilla.org/show_bug.cgi?id=1773722 is fixed
+    'iOS' AS normalized_os,
     client_info.app_channel AS release_channel,
     metrics.quantity.fx_suggest_position AS position,
     -- Only remote settings is in use on mobile

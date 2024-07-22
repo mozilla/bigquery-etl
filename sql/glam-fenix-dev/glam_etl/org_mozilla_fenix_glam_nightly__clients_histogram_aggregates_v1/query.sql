@@ -60,7 +60,7 @@ WITH extracted_accumulated AS (
   SELECT
     *
   FROM
-    glam_etl.org_mozilla_fenix_glam_nightly__clients_histogram_aggregates_v1
+    `glam-fenix-dev.glam_etl.org_mozilla_fenix_glam_nightly__clients_histogram_aggregates_v1`
   WHERE
     sample_id >= @min_sample_id
     AND sample_id <= @max_sample_id
@@ -78,7 +78,7 @@ filtered_accumulated AS (
   FROM
     extracted_accumulated
   LEFT JOIN
-    glam_etl.org_mozilla_fenix_glam_nightly__latest_versions_v1
+    `glam-fenix-dev.glam_etl.org_mozilla_fenix_glam_nightly__latest_versions_v1`
     USING (channel)
   WHERE
       -- allow for builds to be slighly ahead of the current submission date, to
@@ -98,7 +98,7 @@ extracted_daily AS (
     CAST(app_version AS INT64) AS app_version,
     unnested_histogram_aggregates AS histogram_aggregates
   FROM
-    glam_etl.org_mozilla_fenix_glam_nightly__view_clients_daily_histogram_aggregates_v1,
+    `glam-fenix-dev.glam_etl.org_mozilla_fenix_glam_nightly__view_clients_daily_histogram_aggregates_v1`,
     UNNEST(histogram_aggregates) unnested_histogram_aggregates
   WHERE
     submission_date = @submission_date
@@ -118,7 +118,7 @@ filtered_daily AS (
   FROM
     extracted_daily
   LEFT JOIN
-    glam_etl.org_mozilla_fenix_glam_nightly__latest_versions_v1
+    `glam-fenix-dev.glam_etl.org_mozilla_fenix_glam_nightly__latest_versions_v1`
     USING (channel)
   WHERE
       -- allow for builds to be slighly ahead of the current submission date, to

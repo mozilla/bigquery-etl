@@ -8,4 +8,4 @@ SELECT
   * REPLACE (TIMESTAMP(DATETIME(`date`, "America/Los_Angeles")) AS `date`),
   `date` AS date_pst,
 FROM
-  `moz-fx-data-shared-prod.app_store_external.firefox_app_store_territory_source_type_report_v1`
+  `moz-fx-data-shared-prod.app_store_syndicate.app_store_territory_source_type_report`

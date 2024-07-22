@@ -1,5 +1,5 @@
 destination_dataset = "events_stream_derived"
-platform = "events_stream"
+platform = "accounts_frontend"
 owners = ["ksiegler@mozilla.org"]  # optional; users getting notification if funnel run fails
 version = "1"
 start_date = "2024-07-10"

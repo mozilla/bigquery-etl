@@ -1,0 +1,18 @@
+friendly_name: Adclick History
+description: |-
+  Contains the full history of ad-clicks for each Firefox Desktop client.
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau@mozilla.com
+scheduling:
+  dag_name: bqetl_firefox_desktop_ad_click_history
+  depends_on_past: true
+  date_partition_parameter: null
+  parameters: ["submission_date:DATE:{{ds}}"]
+bigquery:
+  clustering:
+    fields:
+    - client_id
+references: {}

@@ -78,8 +78,8 @@ WITH DAUs AS (
     -- If cities are either '??' or NULL then it's from cities we either don't
     -- know about or have a population less than 15k. Just rename to 'unknown'.
     IF(city = '??' OR city IS NULL, 'unknown', city) AS city,
-    NULLIF(geo_subdivision1, '??') AS geo_subdivision1,
-    NULLIF(geo_subdivision2, '??') AS geo_subdivision2,
+    IF(geo_subdivision1 = '??' OR geo_subdivision1 IS NULL, 'missing', geo_subdivision1) AS geo_subdivision1,
+    IF(geo_subdivision2 = '??' OR geo_subdivision2 IS NULL, 'missing', geo_subdivision2) AS geo_subdivision2,
     -- Truncate the submission timestamp to the hour. Note that this filed was
     -- introduced on the 16th December 2019, so it will be `null` for queries
     -- before that day. See https://github.com/mozilla/bigquery-etl/pull/603 .
@@ -179,9 +179,9 @@ health_data_aggregates AS (
     -- If cities are either '??' or NULL then it's from cities we either don't
     -- know about or have a population less than 15k. Just rename to 'unknown'.
     IF(city = '??' OR city IS NULL, 'unknown', city) AS city,
-    geo_subdivision1,
-    geo_subdivision2,
-    datetime,
+    IF(geo_subdivision1 = '??' OR geo_subdivision1 IS NULL, 'missing', geo_subdivision1) AS geo_subdivision1,
+    IF(geo_subdivision2 = '??' OR geo_subdivision2 IS NULL, 'missing', geo_subdivision2) AS geo_subdivision2,
+    `datetime`,
     COUNTIF(e_undefined > 0) AS num_clients_e_undefined,
     COUNTIF(e_timeout > 0) AS num_clients_e_timeout,
     COUNTIF(e_abort > 0) AS num_clients_e_abort,
@@ -199,7 +199,7 @@ health_data_aggregates AS (
     city,
     geo_subdivision1,
     geo_subdivision2,
-    datetime
+    `datetime`
   HAVING
     COUNT(*) > 50
 ),
@@ -220,7 +220,7 @@ final_health_data AS (
     health_data_aggregates AS h
   INNER JOIN
     DAUs
-    USING (datetime, country, city, geo_subdivision1, geo_subdivision2)
+    USING (`datetime`, country, city, geo_subdivision1, geo_subdivision2)
 ),
 -- Compute aggregates for histograms coming from the health ping.
 histogram_data_sample AS (
@@ -231,8 +231,8 @@ histogram_data_sample AS (
     -- If cities are NULL then it's from cities we either don't
     -- know about or have a population less than 15k. Just rename to 'unknown'.
     IFNULL(metadata.geo.city, 'unknown') AS city,
-    metadata.geo.subdivision1 AS geo_subdivision1,
-    metadata.geo.subdivision2 AS geo_subdivision2,
+    IFNULL(metadata.geo.subdivision1, 'missing') AS geo_subdivision1,
+    IFNULL(metadata.geo.subdivision2, 'missing') AS geo_subdivision2,
     client_id,
     document_id,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS time_slot,
@@ -534,10 +534,10 @@ tls_handshake_time AS (
 SELECT
   DAUs.country AS country,
   DAUs.city AS city,
-  DAUs.geo_subdivision1,
-  DAUs.geo_subdivision2,
-  DAUs.datetime AS datetime,
-  hd.* EXCEPT (datetime, country, city),
+  NULLIF(DAUs.geo_subdivision1, "missing") AS geo_subdivision1,
+  NULLIF(DAUs.geo_subdivision2, "missing") AS geo_subdivision2,
+  DAUs.datetime AS `datetime`,
+  hd.* EXCEPT (`datetime`, country, city, geo_subdivision1, geo_subdivision2),
   ds.value AS avg_dns_success_time,
   ds_missing.value AS missing_dns_success,
   df.value AS avg_dns_failure_time,

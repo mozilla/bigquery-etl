@@ -1,6 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-glam-prod-fca7.glam_etl.glam_fenix_release_aggregates`
-AS (
+  `moz-fx-data-glam-prod-fca7.glam_etl.glam_fenix_release_aggregates` AS (
     WITH base AS (
       SELECT
         * EXCEPT (percentiles, non_norm_percentiles),

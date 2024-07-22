@@ -1,7 +1,7 @@
 CREATE OR REPLACE FUNCTION serp_events.is_ad_component(component STRING)
 RETURNS BOOL AS (
   COALESCE(
-    component IN ('ad_carousel', 'ad_image_row', 'ad_link', 'ad_sidebar', 'ad_sitelink'),
+    component IN ('ad_carousel', 'ad_image_row', 'ad_link', 'ad_sidebar', 'ad_sitelink', 'ad_uncategorized'),
     FALSE
   )
 );

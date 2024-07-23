@@ -359,6 +359,7 @@ weather_summary AS (
     ARRAY_AGG(
       STRUCT(
         weather_widget_impressions,
+        weather_widget_location_selected,
         weather_widget_clicks,
         weather_widget_load_errors,
         weather_widget_change_display_to_detailed,

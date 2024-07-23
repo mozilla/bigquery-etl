@@ -236,19 +236,19 @@ fields:
   type: RECORD
   mode: NULLABLE
   fields:
-- description: Ping that reported the first seen date (main, first_shutdown or new_profile).
-  name: first_seen_date_source_ping
-  type: STRING
-  mode: NULLABLE
-- description: Indicates wether the client ever reported a main ping.
-  name: reported_main_ping
-  type: BOOLEAN
-  mode: NULLABLE
-- description: Indicates wether the client ever reported a new profile ping.
-  name: reported_new_profile_ping
-  type: BOOLEAN
-  mode: NULLABLE
-- description: Indicates wether the client ever reported a first shutdown ping.
-  name: reported_shutdown_ping
-  type: BOOLEAN
-  mode: NULLABLE
+  - description: Ping that reported the first seen date (main, first_shutdown or new_profile).
+    name: first_seen_date_source_ping
+    type: STRING
+    mode: NULLABLE
+  - description: Indicates wether the client ever reported a main ping.
+    name: reported_main_ping
+    type: BOOLEAN
+    mode: NULLABLE
+  - description: Indicates wether the client ever reported a new profile ping.
+    name: reported_new_profile_ping
+    type: BOOLEAN
+    mode: NULLABLE
+  - description: Indicates wether the client ever reported a first shutdown ping.
+    name: reported_shutdown_ping
+    type: BOOLEAN
+    mode: NULLABLE

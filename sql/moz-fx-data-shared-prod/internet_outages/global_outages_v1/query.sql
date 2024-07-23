@@ -1,19 +1,3 @@
--- Note: `moz-fx-data-shared-prod.udf.udf_json_extract_int_map` map doesn't work in this case as it expects an INT -> INT
--- map, while we have a STRING->int map
-CREATE TEMP FUNCTION udf_json_extract_string_to_int_map(input STRING) AS (
-  ARRAY(
-    SELECT
-      STRUCT(
-        CAST(SPLIT(entry, ':')[OFFSET(0)] AS STRING) AS key,
-        CAST(SPLIT(entry, ':')[OFFSET(1)] AS INT64) AS value
-      )
-    FROM
-      UNNEST(SPLIT(REPLACE(TRIM(input, '{}'), '"', ''), ',')) AS entry
-    WHERE
-      LENGTH(entry) > 0
-  )
-);
-
 -- This sums the values reported by an histogram.
 CREATE TEMP FUNCTION sum_values(x ARRAY<STRUCT<key INT64, value INT64>>) AS (
   (

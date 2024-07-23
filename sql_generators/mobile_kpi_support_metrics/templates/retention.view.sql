@@ -15,10 +15,10 @@ SELECT
       THEN 'existing_user'
     ELSE 'Unknown'
   END AS lifecycle_stage,
-  {% for field in attribution_fields if field.name == "adjust_network" %}
+  {% if 'adjust_network' in product_attribution_fields %}
     `moz-fx-data-shared-prod.udf.organic_vs_paid_mobile`(adjust_network) AS paid_vs_organic,
   {% else %}
     "Organic" AS paid_vs_organic,
-  {% endfor %}
+  {% endif %}
 FROM
   `{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}`

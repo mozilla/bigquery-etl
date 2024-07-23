@@ -227,10 +227,6 @@ fields:
   name: windows_build_number
   type: STRING
   mode: NULLABLE
-- description: Result of UDF for browserstack and mozillaonline
-  name: is_desktop
-  type: STRING
-  mode: NULLABLE
 - description: Combo of os, os_version, windows_build_number, NULL if not windows
   name: windows_version
   type: STRING

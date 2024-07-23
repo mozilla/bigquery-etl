@@ -32,7 +32,7 @@ labels:
   owner1: mhirose
 scheduling:
   dag_name: bqetl_analytics_tables
-  task_name: clients_first_seen_v2
+  task_name: clients_first_seen_v3
   depends_on_past: true
   date_partition_parameter: null
   parameters:

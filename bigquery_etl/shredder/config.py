@@ -94,6 +94,9 @@ USER_CHARACTERISTICS_ID = "metrics.uuid.characteristics_client_identifier"
 DESKTOP_SRC = DeleteSource(
     table="telemetry_stable.deletion_request_v4", field=CLIENT_ID
 )
+DESKTOP_GLEAN_SRC = DeleteSource(
+    table="firefox_desktop_stable.deletion_request_v1", field=GLEAN_CLIENT_ID
+)
 IMPRESSION_SRC = DeleteSource(
     table="telemetry_stable.deletion_request_v4",
     field="payload.scalars.parent.deletion_request_impression_id",
@@ -369,8 +372,8 @@ DELETE_TARGETS: DeleteIndex = {
     # client association ping
     DeleteTarget(
         table="firefox_desktop_stable.fx_accounts_v1",
-        field="metrics.string.client_association_uid",
-    ): FXA_UNHASHED_SRC,
+        field=("metrics.string.client_association_uid", GLEAN_CLIENT_ID),
+    ): (FXA_UNHASHED_SRC, DESKTOP_GLEAN_SRC),
     # legacy mobile
     DeleteTarget(
         table="telemetry_stable.core_v1",

@@ -309,3 +309,28 @@ fields:
   type: TIMESTAMP
   mode: NULLABLE
   description: Time when the ingestion edge server accepted this message
+- name: metrics
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: string
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: monitor_plan_tier
+      type: STRING
+      mode: NULLABLE
+      description: Which tier of plan the user is on [Free, Plus]
+    - name: monitor_session_id
+      type: STRING
+      mode: NULLABLE
+      description: "An ID that allows us to track \u201Csessions\u201D of the user\
+        \ experience within the product."
+    - name: monitor_user_id
+      type: STRING
+      mode: NULLABLE
+      description: Mozilla Monitor-specific user ID.
+    - name: mozilla_account_id
+      type: STRING
+      mode: NULLABLE
+      description: Mozilla Accounts ID.

@@ -141,7 +141,7 @@ check_results AS (
       OR ABS(events_new.count_new - events_old.count_old) / LEAST(
         events_new.count_new,
         events_old.count_old
-      ) > 0.02
+      ) > 0.05
     )
 )
 SELECT

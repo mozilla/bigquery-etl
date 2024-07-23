@@ -114,7 +114,7 @@ WITH new_profile_ping_agg AS (
     ARRAY_AGG(normalized_country_code RESPECT NULLS ORDER BY submission_timestamp)[
       SAFE_OFFSET(0)
     ] AS country,
-    ARRAY_AGG(norm.os(os) RESPECT NULLS ORDER BY submission_timestamp)[
+    ARRAY_AGG(mozfun.norm.os(os) RESPECT NULLS ORDER BY submission_timestamp)[
       SAFE_OFFSET(0)
     ] AS normalized_os,
     ARRAY_AGG(normalized_os_version RESPECT NULLS ORDER BY submission_timestamp)[

@@ -1,0 +1,67 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description:
+
+- mode: NULLABLE
+  name: client_id
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: submission_timestamp
+  type: TIMESTAMP
+  description: |
+    Timestamp associated with the ping that contained the attribution info.
+
+- name: install_source
+  type: STRING
+  mode: NULLABLE
+  description: The source of a profile installation.
+
+- name: adjust_ad_group
+  type: STRING
+  mode: NULLABLE
+  description: Adjust Ad Group the profile is attributed to.
+
+- name: adjust_campaign
+  type: STRING
+  mode: NULLABLE
+  description: Adjust Campaign the profile is attributed to.
+
+- name: adjust_creative
+  type: STRING
+  mode: NULLABLE
+  description: Adjust Creative the profile is attributed to.
+
+- name: adjust_network
+  type: STRING
+  mode: NULLABLE
+  description: Adjust Network the profile is attributed to.
+
+- name: meta_attribution_app
+  type: STRING
+  mode: NULLABLE
+  description: Facebook app linked to paid marketing.
+
+- name: play_store_attribution_campaign
+  type: STRING
+  mode: NULLABLE
+  description: Play store campaign the profile is attributed to.
+
+- name: play_store_attribution_medium
+  type: STRING
+  mode: NULLABLE
+  description: Play store Medium the profile is attributed to.
+
+- name: play_store_attribution_source
+  type: STRING
+  mode: NULLABLE
+  description: Play store source the profile is attributed to.
+
+- name: play_store_attribution_install_referrer_response
+  type: STRING
+  mode: NULLABLE
+  description: Play store source the profile is attributed to.
+

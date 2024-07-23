@@ -8,14 +8,17 @@ SELECT
   country,
   locale,
   is_mobile,
-  {% for field in attribution_fields %}
-    {{ field.name }},
+  {% for field in product_attribution_fields.values() %}
+    attribution.{{ field.name }},
   {% endfor %}
   COUNTIF(is_dau) AS dau,
   COUNTIF(is_wau) AS wau,
   COUNTIF(is_mau) AS mau,
 FROM
   `{{ project_id }}.{{ dataset }}.engagement_clients`
+LEFT JOIN
+  `{{ project_id }}.{{ dataset }}.attribution_clients` AS attribution
+  USING(client_id)
 WHERE
   {% raw %}
   {% if is_init() %}
@@ -33,7 +36,7 @@ GROUP BY
   country,
   locale,
   is_mobile
-  {% for field in attribution_fields %}
+  {% for field in product_attribution_fields.values() %}
     {% if loop.first %},
     {% endif %}
     {{ field.name }}

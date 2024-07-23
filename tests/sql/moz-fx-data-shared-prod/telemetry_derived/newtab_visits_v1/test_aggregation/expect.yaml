@@ -61,3 +61,4 @@
       weather_widget_load_errors: 0
       weather_widget_change_display_to_detailed: 0
       weather_widget_change_display_to_simple: 0
+      weather_widget_location_selected: 0

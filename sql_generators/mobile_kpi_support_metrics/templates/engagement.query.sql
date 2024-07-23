@@ -8,7 +8,7 @@ SELECT
   country,
   locale,
   is_mobile,
-  {% for field in attribution_fields %}
+  {% for field in product_attribution_fields.values() %}
     {{ field.name }},
   {% endfor %}
   COUNTIF(is_dau) AS dau,
@@ -33,7 +33,7 @@ GROUP BY
   country,
   locale,
   is_mobile
-  {% for field in attribution_fields %}
+  {% for field in product_attribution_fields.values() %}
     {% if loop.first %},
     {% endif %}
     {{ field.name }}

@@ -424,6 +424,10 @@ DELETE_TARGETS: DeleteIndex = {
         table="firefox_desktop_stable.user_characteristics_v1",
         field=USER_CHARACTERISTICS_ID,
     ): USER_CHARACTERISTICS_SRC,
+    # tables in Glean derived datasets that use different sources than the find_glean_targets defaults
+    client_id_target(table="firefox_desktop_derived.adclick_history_v1"): DESKTOP_SRC,
+    client_id_target(table="firefox_desktop_derived.client_ltv_v1"): DESKTOP_SRC,
+    client_id_target(table="firefox_desktop_derived.ltv_states_v1"): DESKTOP_SRC,
 }
 
 SEARCH_IGNORE_TABLES = {source.table for source in SOURCES}
@@ -573,6 +577,9 @@ def find_glean_targets(
             if app_name is not None and app_name != channel_name:
                 sources[app_name + "_derived"] += (source,)
 
+    # skip tables already added to DELETE_TARGETS
+    manually_added_tables = {target.table for target in DELETE_TARGETS.keys()}
+
     return {
         **{
             # glean stable tables that have a source
@@ -588,6 +595,7 @@ def find_glean_targets(
             and not table.table_id.startswith("migration")
             # skip tables with explicitly excluded client ids
             and table.labels.get("include_client_id", "true").lower() != "false"
+            and qualified_table_id(table) not in manually_added_tables
         },
         **{
             # glean derived tables that contain client_id
@@ -599,6 +607,7 @@ def find_glean_targets(
             for table in glean_derived_tables
             if any(field.name == CLIENT_ID for field in table.schema)
             and not table.table_id.startswith(derived_source_prefix)
+            and qualified_table_id(table) not in manually_added_tables
         },
     }
 

@@ -1,6 +1,6 @@
-friendly_name: Adclick History
+friendly_name: Firefox Desktop Client LTV
 description: |-
-  Contains the full history of ad-clicks for each Firefox Desktop client.
+  Gets 1 row for each client with the relevant info needed for calculating LTV
 owners:
 - kwindau@mozilla.com
 labels:
@@ -10,9 +10,12 @@ scheduling:
   dag_name: bqetl_firefox_desktop_ad_click_history
   depends_on_past: true
   date_partition_parameter: null
-  parameters: ["submission_date:DATE:{{ds}}"]
+  parameters:
+  - "submission_date:DATE:{{ds}}"
 bigquery:
+  time_partitioning: null
+  range_partitioning: null
   clustering:
     fields:
-    - client_id
+    - sample_id
 references: {}

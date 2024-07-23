@@ -110,6 +110,7 @@ INNER JOIN
   AND clients_daily.normalized_channel = active_users.normalized_channel
 {% if product_attribution_fields %}
   LEFT JOIN
+    attribution
     ON clients_daily.client_id = attribution.client_id
       AND clients_daily.normalized_channel = attribution.normalized_channel
 {% endif %}

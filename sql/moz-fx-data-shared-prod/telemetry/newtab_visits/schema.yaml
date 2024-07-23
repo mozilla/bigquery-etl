@@ -280,3 +280,6 @@ fields:
   - name: weather_widget_change_display_to_simple
     type: INTEGER
     mode: NULLABLE
+  - name: weather_widget_location_selected
+    type: INTEGER
+    mode: NULLABLE

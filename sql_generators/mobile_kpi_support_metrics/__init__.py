@@ -29,8 +29,8 @@ TEMPLATES = (
 )
 
 
-class Pings(Enum):
-    """TODO."""
+class AttributionPings(Enum):
+    """An enumerator containing a list of pings that could be the source of attribution information."""
 
     metrics: str = "metrics"
     first_session: str = "first_session"
@@ -39,19 +39,19 @@ class Pings(Enum):
 
 @dataclass
 class AttributionFieldGroup:
-    """TODO."""
+    """An object to encapsulate a logical grouping of attribution fields together."""
 
     name: str
-    source_pings: list[Pings]
+    source_pings: list[AttributionPings]
     fields: list[dict[str, str]]
 
 
 class AttributionFields:
-    """TODO."""
+    """Defines all possible AttributionFieldGroups."""
 
     install_source = AttributionFieldGroup(
         name="install_source",
-        source_pings=[Pings.metrics],
+        source_pings=[AttributionPings.metrics],
         fields=[
             {
                 "name": "install_source",
@@ -62,7 +62,7 @@ class AttributionFields:
     )
     adjust = AttributionFieldGroup(
         name="adjust",
-        source_pings=[Pings.metrics, Pings.first_session],
+        source_pings=[AttributionPings.metrics, AttributionPings.first_session],
         fields=[
             {
                 "name": "adjust_ad_group",
@@ -88,7 +88,7 @@ class AttributionFields:
     )
     play_store = AttributionFieldGroup(
         name="play_store",
-        source_pings=[Pings.first_session],
+        source_pings=[AttributionPings.first_session],
         fields=[
             {
                 "name": "play_store_attribution_campaign",
@@ -115,7 +115,7 @@ class AttributionFields:
     )
     meta = AttributionFieldGroup(
         name="meta",
-        source_pings=[Pings.first_session],
+        source_pings=[AttributionPings.first_session],
         fields=[
             {
                 "name": "meta_attribution_app",
@@ -153,7 +153,7 @@ class Product:
     )
 
     def get_product_attribution_fields(self) -> dict[str, dict[str, str]]:
-        """TODO."""
+        """Merge all AttributionFieldGroups assigned to a product into a single map containing all attribution fields set for that product."""
         return {
             field["name"]: field
             for field in list(
@@ -167,7 +167,8 @@ class Product:
         }
 
     def get_attribution_pings(self) -> list[str]:
-        """TODO."""
+        """Merge all source_pings of AttributionFieldGroups assigned to \
+        a product into a single list of all pings containing attribution data for that specific product."""
         return list(
             set(
                 [
@@ -179,7 +180,7 @@ class Product:
         )
 
     def get_attribution_group_names(self) -> list[str]:
-        """TODO."""
+        """Return a list containing AttributionGroup names only."""
         return [attribution_group.name for attribution_group in self.attribution_groups]
 
 
@@ -199,11 +200,9 @@ class MobileProducts(Enum):
     focus_android = Product(
         friendly_name="Focus Android",
         is_mobile_kpi=True,
-        # attribution_groups=[AttributionFields.install_source],
     )
     klar_android = Product(
         friendly_name="Klar Android",
-        # attribution_groups=[AttributionFields.install_source],
     )
     firefox_ios = Product(
         friendly_name="Firefox iOS",

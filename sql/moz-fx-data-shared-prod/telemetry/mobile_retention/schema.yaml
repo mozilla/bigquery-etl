@@ -50,6 +50,21 @@ fields:
 - name: paid_vs_organic
   type: STRING
   mode: NULLABLE
+- name: is_suspicious_device_client
+  type: BOOLEAN
+  mode: NULLABLE
+- name: adjust_ad_group
+  type: STRING
+  mode: NULLABLE
+- name: adjust_campaign
+  type: STRING
+  mode: NULLABLE
+- name: adjust_creative
+  type: STRING
+  mode: NULLABLE
+- name: adjust_network
+  type: STRING
+  mode: NULLABLE
 - name: play_store_attribution_campaign
   type: STRING
   mode: NULLABLE
@@ -64,21 +79,6 @@ fields:
   mode: NULLABLE
 - name: install_source
   type: STRING
-  mode: NULLABLE
-- name: adjust_ad_group
-  type: STRING
-  mode: NULLABLE
-- name: adjust_campaign
-  type: STRING
-  mode: NULLABLE
-- name: adjust_creative
-  type: STRING
-  mode: NULLABLE
-- name: adjust_network
-  type: STRING
-  mode: NULLABLE
-- name: is_suspicious_device_client
-  type: BOOLEAN
   mode: NULLABLE
 - name: product_name
   type: STRING

@@ -54,9 +54,7 @@ SELECT
   attribution.adjust_campaign,
   attribution.adjust_creative,
   attribution.adjust_network,
-  `moz-fx-data-shared-prod.udf.organic_vs_paid_mobile`(
-    attribution.adjust_network
-  ) AS paid_vs_organic,
+  `moz-fx-data-shared-prod.udf.organic_vs_paid_mobile`(adjust_network) AS paid_vs_organic,
   CASE
     WHEN active_users.submission_date = first_seen_date
       THEN 'new_profile'

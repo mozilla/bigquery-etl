@@ -231,7 +231,8 @@ fields:
   name: windows_version
   type: STRING
   mode: NULLABLE
-- description:
+- description: A collection of pings - which ping is reported in the table as well as a record of all other
+    pings in the data for this one particular client
   name: metadata
   type: RECORD
   mode: NULLABLE

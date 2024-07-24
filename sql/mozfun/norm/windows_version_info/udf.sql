@@ -33,9 +33,9 @@ RETURNS STRING AS (
     WHEN os_version = '10.0'
       AND windows_build_number < 22000
       THEN 'Windows 10'
-     WHEN os_version = '10.0'
-       AND windows_build_number IS NULL
-       THEN 'Windows 10 or 11'
+    WHEN os_version = '10.0'
+      AND windows_build_number IS NULL
+      THEN 'Windows 10 or 11'
     ELSE NULL
   END
 );

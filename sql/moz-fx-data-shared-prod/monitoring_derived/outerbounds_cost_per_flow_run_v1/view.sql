@@ -15,7 +15,7 @@ WHERE
   project.id = "moz-fx-mfouterbounds-prod-f98d"
   AND usage_start_time >= '2024-07-10'
 GROUP BY
-  1,
-  2
+  invoice_day,
+  run_id
 ORDER BY
-  3 DESC
+  flow_name DESC

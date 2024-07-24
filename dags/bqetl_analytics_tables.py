@@ -464,6 +464,23 @@ with DAG(
         parameters=["submission_date:DATE:{{ds}}"],
     )
 
+    clients_first_seen_v3 = bigquery_etl_query(
+        task_id="clients_first_seen_v3",
+        destination_table="clients_first_seen_v3",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="mhirose@mozilla.com",
+        email=[
+            "gkaberere@mozilla.com",
+            "lvargas@mozilla.com",
+            "mhirose@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter=None,
+        depends_on_past=True,
+        parameters=["submission_date:DATE:{{ds}}"],
+    )
+
     fenix_derived__funnel_retention_clients_week_2__v1 = bigquery_etl_query(
         task_id="fenix_derived__funnel_retention_clients_week_2__v1",
         destination_table="funnel_retention_clients_week_2_v1",
@@ -603,6 +620,12 @@ with DAG(
     clients_first_seen_v2.set_upstream(wait_for_copy_deduplicate_first_shutdown_ping)
 
     clients_first_seen_v2.set_upstream(wait_for_telemetry_derived__clients_daily__v6)
+
+    clients_first_seen_v3.set_upstream(wait_for_copy_deduplicate_all)
+
+    clients_first_seen_v3.set_upstream(wait_for_copy_deduplicate_first_shutdown_ping)
+
+    clients_first_seen_v3.set_upstream(wait_for_telemetry_derived__clients_daily__v6)
 
     fenix_derived__funnel_retention_clients_week_2__v1.set_upstream(
         checks__fail_fenix_derived__firefox_android_clients__v1

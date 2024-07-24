@@ -10,6 +10,8 @@ description: |-
   daily when NULL.
   This table should be accessed through the user-facing view
   `telemetry.clients_first_seen`.
+
+  Although this is clients_first_seen_v3, the documents below for clients_first_seen_v2 still apply
   See caveats for analysis and how to use this table:
   https://docs.google.com/document/d/1qMkTUIruTOxTGRj7S60nEsyNjGHYAuVJ51-53NZxnd4/edit?usp=sharing
 
@@ -18,10 +20,10 @@ description: |-
 
   The initialization command creates the table and then inserts data
   in parallel for each sample_id. Usage:
-  `bqetl query initialize sql/moz-fx-data-shared-prod/telemetry_derived/clients_first_seen_v2/query.sql`
+  `bqetl query initialize sql/moz-fx-data-shared-prod/telemetry_derived/clients_first_seen_v3/query.sql`
 
-  This version of clients_first_seen (v3) has more columns than clients_first_seen_v2. Some where forgotten
-  in v2, some are new.
+  This version of clients_first_seen (v3) has more columns than clients_first_seen_v2. Some were forgotten
+  in v2, some are recorded only in the new_profiles_ping.
 owners:
 - mhirose@mozilla.com
 labels:

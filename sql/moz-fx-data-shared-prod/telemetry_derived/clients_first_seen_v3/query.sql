@@ -726,6 +726,7 @@ _previous AS (
     os,
     os_version,
     windows_build_number,
+    windows_version,
     metadata
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v3`
@@ -787,6 +788,7 @@ _previous AS (
     os,
     os_version,
     windows_build_number,
+    windows_version,
     metadata
   FROM
     _current

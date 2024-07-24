@@ -1,3 +1,19 @@
+-- placeholder until the udf has landed
+
+CREATE temp FUNCTION geo_struct_unknown(
+  country STRING,
+  city STRING,
+  geo_subdivision1 STRING,
+  geo_subdivision2 STRING
+) AS ( --
+  STRUCT(
+    IFNULL(country, '??') AS country,
+    IFNULL(city, '??') AS city,
+    IFNULL(geo_subdivision1, '??') AS geo_subdivision1,
+    IFNULL(geo_subdivision2, '??') AS geo_subdivision2
+  )
+);
+
 -- This sums the values reported by an histogram.
 CREATE TEMP FUNCTION sum_values(x ARRAY<STRUCT<key INT64, value INT64>>) AS (
   (

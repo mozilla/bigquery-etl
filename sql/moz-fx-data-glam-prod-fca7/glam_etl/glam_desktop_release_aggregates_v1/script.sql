@@ -48,17 +48,17 @@ THEN
       S.metric_type,
       S.total_users,
       S.histogram,
-      S.percentiles,
+      null,
       S.total_sample,
       S.non_norm_histogram,
-      S.non_norm_percentiles
+      null
     )
   WHEN MATCHED
 THEN
   UPDATE
     SET T.total_users = S.total_users,
     T.histogram = S.histogram,
-    T.percentiles = S.percentiles,
+    T.percentiles = null,
     T.total_sample = S.total_sample,
     T.non_norm_histogram = S.non_norm_histogram,
-    T.non_norm_percentiles = S.non_norm_percentiles
+    T.non_norm_percentiles = null

@@ -50,9 +50,9 @@ THEN
       S.client_agg_type,
       S.total_users,
       S.histogram,
-      null,
+      NULL,
       S.non_norm_histogram,
-      null,
+      NULL,
       S.total_sample
     )
   WHEN MATCHED
@@ -60,7 +60,7 @@ THEN
   UPDATE
     SET T.total_users = S.total_users,
     T.histogram = S.histogram,
-    T.percentiles = null,
+    T.percentiles = NULL,
     T.non_norm_histogram = S.non_norm_histogram,
-    T.non_norm_percentiles = null,
+    T.non_norm_percentiles = NULL,
     T.total_sample = S.total_sample

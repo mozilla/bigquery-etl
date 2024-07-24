@@ -72,7 +72,7 @@ SELECT
   cp.client_agg_type,
   cp.metric_type,
   total_users,
-  histogram
+  histogram,
   CASE
     WHEN client_agg_type = ''
       THEN 0

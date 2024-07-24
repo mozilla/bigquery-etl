@@ -3225,6 +3225,32 @@ fields:
         mebibyte.
 
         '
+    - name: browser_backup_compressed_archive_size
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The total compressed size of a single-file profile data backup
+        archive. To reduce fingerprintability, we round to the nearest 1 mebibyte.
+
+        '
   - name: string
     type: RECORD
     mode: NULLABLE

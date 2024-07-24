@@ -14903,6 +14903,9 @@ fields:
     - name: browser_backup_total_backup_time_ms
       type: STRING
       mode: NULLABLE
+    - name: browser_backup_compressed_archive_size
+      type: STRING
+      mode: NULLABLE
   - name: info
     type: RECORD
     mode: NULLABLE

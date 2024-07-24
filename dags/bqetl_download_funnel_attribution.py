@@ -50,31 +50,6 @@ with DAG(
     tags=tags,
 ) as dag:
 
-    wait_for_ga_derived__www_site_empty_check__v1 = ExternalTaskSensor(
-        task_id="wait_for_ga_derived__www_site_empty_check__v1",
-        external_dag_id="bqetl_google_analytics_derived",
-        external_task_id="ga_derived__www_site_empty_check__v1",
-        execution_delta=datetime.timedelta(days=1),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    checks__fail_ga_derived__downloads_with_attribution__v2 = bigquery_dq_check(
-        task_id="checks__fail_ga_derived__downloads_with_attribution__v2",
-        source_table='downloads_with_attribution_v2${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
-        dataset_id="ga_derived",
-        project_id="moz-fx-data-marketing-prod",
-        is_dq_check_fail=True,
-        owner="gleonard@mozilla.com",
-        email=["gleonard@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        parameters=["download_date:DATE:{{macros.ds_add(ds, -1)}}"],
-        retries=0,
-    )
-
     checks__fail_mozilla_org_derived__downloads_with_attribution__v2 = bigquery_dq_check(
         task_id="checks__fail_mozilla_org_derived__downloads_with_attribution__v2",
         source_table='downloads_with_attribution_v2${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
@@ -86,18 +61,6 @@ with DAG(
         depends_on_past=False,
         parameters=["download_date:DATE:{{macros.ds_add(ds, -1)}}"],
         retries=0,
-    )
-
-    ga_derived__downloads_with_attribution__v2 = bigquery_etl_query(
-        task_id="ga_derived__downloads_with_attribution__v2",
-        destination_table='downloads_with_attribution_v2${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
-        dataset_id="ga_derived",
-        project_id="moz-fx-data-marketing-prod",
-        owner="gleonard@mozilla.com",
-        email=["gleonard@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=False,
-        parameters=["download_date:DATE:{{macros.ds_add(ds, -1)}}"],
     )
 
     mozilla_org_derived__downloads_with_attribution__v2 = bigquery_etl_query(
@@ -112,14 +75,6 @@ with DAG(
         parameters=["download_date:DATE:{{macros.ds_add(ds, -1)}}"],
     )
 
-    checks__fail_ga_derived__downloads_with_attribution__v2.set_upstream(
-        ga_derived__downloads_with_attribution__v2
-    )
-
     checks__fail_mozilla_org_derived__downloads_with_attribution__v2.set_upstream(
         mozilla_org_derived__downloads_with_attribution__v2
-    )
-
-    ga_derived__downloads_with_attribution__v2.set_upstream(
-        wait_for_ga_derived__www_site_empty_check__v1
     )

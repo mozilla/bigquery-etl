@@ -6,13 +6,13 @@ CREATE OR REPLACE VIEW
         IF(
           percentiles IS NOT NULL,
           NULL,
-          udfs.glam_histogram_to_struct(histogram)
+          mozfun.glam.histogram_cast_struct(histogram)
         ) AS struct_histogram,
         IF(
           metric_type IN ("counter", "labeled_counter", "quantity")
           OR non_norm_percentiles IS NOT NULL,
           NULL,
-          udfs.glam_histogram_to_struct(non_norm_histogram)
+          mozfun.glam.histogram_cast_struct(non_norm_histogram)
         ) AS struct_non_norm_histogram,
         percentiles AS existing_percentiles,
         non_norm_percentiles AS existing_non_norm_percentiles

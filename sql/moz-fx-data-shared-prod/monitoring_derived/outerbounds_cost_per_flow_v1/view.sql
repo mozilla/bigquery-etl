@@ -26,7 +26,7 @@ SELECT
   SUM(cost_usd) AS total_cost_usd,
   COUNT(flow_name) AS num_runs
 FROM
-  cost_by_run
+  `moz-fx-data-shared-prod.monitoring_derived.outerbounds_cost_per_flow_run_v1`
 GROUP BY
   1
 ORDER BY

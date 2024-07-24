@@ -52,5 +52,4 @@ SELECT
   assert.equals('Windows 11', norm.windows_version_info('Windows_NT', '10.0', 22623)),
   assert.equals('Windows 10 or 11', norm.windows_version_info('Windows_NT', '10.0', NULL)),
   assert.null(norm.windows_version_info('Darwin', '11.4.2', NULL)),
-  assert.null(norm.windows_version_info('Windows_NT', '7.7', 19043)),
-  assert.null(norm.windows_version_info('Windows_NT', '10.0', NULL))
+  assert.null(norm.windows_version_info('Windows_NT', '7.7', 19043))

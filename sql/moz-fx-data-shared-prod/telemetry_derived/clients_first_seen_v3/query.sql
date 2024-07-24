@@ -59,6 +59,14 @@ WITH new_profile_ping_agg AS (
     ARRAY_AGG(environment.settings.attribution.content RESPECT NULLS ORDER BY submission_timestamp)[
       SAFE_OFFSET(0)
     ] AS attribution_content,
+    ARRAY_AGG(environment.settings.attribution.dltoken RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS attribution_dltoken,
+    ARRAY_AGG(
+      environment.settings.attribution.dlsource RESPECT NULLS
+      ORDER BY
+        submission_timestamp
+    )[SAFE_OFFSET(0)] AS attribution_dlsource,
     ARRAY_AGG(
       environment.settings.attribution.experiment RESPECT NULLS
       ORDER BY
@@ -73,6 +81,11 @@ WITH new_profile_ping_agg AS (
     ARRAY_AGG(environment.settings.attribution.ua RESPECT NULLS ORDER BY submission_timestamp)[
       SAFE_OFFSET(0)
     ] AS attribution_ua,
+    ARRAY_AGG(
+      environment.settings.attribution.variation RESPECT NULLS
+      ORDER BY
+        submission_timestamp
+    )[SAFE_OFFSET(0)] AS attribution_variation,
     ARRAY_AGG(
       environment.settings.default_search_engine_data.load_path RESPECT NULLS
       ORDER BY
@@ -182,19 +195,6 @@ WITH new_profile_ping_agg AS (
       ORDER BY
         submission_timestamp
     )[SAFE_OFFSET(0)] AS installation_first_seen_version,
-    ARRAY_AGG(environment.settings.attribution.dltoken RESPECT NULLS ORDER BY submission_timestamp)[
-      SAFE_OFFSET(0)
-    ] AS attribution_dltoken,
-    ARRAY_AGG(
-      environment.settings.attribution.dlsource RESPECT NULLS
-      ORDER BY
-        submission_timestamp
-    )[SAFE_OFFSET(0)] AS attribution_dlsource,
-    ARRAY_AGG(
-      environment.settings.attribution.variation RESPECT NULLS
-      ORDER BY
-        submission_timestamp
-    )[SAFE_OFFSET(0)] AS attribution_variation,
     ARRAY_AGG(environment.system.os.name RESPECT NULLS ORDER BY submission_timestamp)[
       SAFE_OFFSET(0)
     ] AS os,
@@ -286,6 +286,14 @@ shutdown_ping_agg AS (
     ARRAY_AGG(environment.settings.attribution.content RESPECT NULLS ORDER BY submission_timestamp)[
       SAFE_OFFSET(0)
     ] AS attribution_content,
+    ARRAY_AGG(environment.settings.attribution.dltoken RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS attribution_dltoken,
+    ARRAY_AGG(
+      environment.settings.attribution.dlsource RESPECT NULLS
+      ORDER BY
+        submission_timestamp
+    )[SAFE_OFFSET(0)] AS attribution_dlsource,
     ARRAY_AGG(
       environment.settings.attribution.experiment RESPECT NULLS
       ORDER BY
@@ -300,6 +308,11 @@ shutdown_ping_agg AS (
     ARRAY_AGG(environment.settings.attribution.ua RESPECT NULLS ORDER BY submission_timestamp)[
       SAFE_OFFSET(0)
     ] AS attribution_ua,
+    ARRAY_AGG(
+      environment.settings.attribution.variation RESPECT NULLS
+      ORDER BY
+        submission_timestamp
+    )[SAFE_OFFSET(0)] AS attribution_variation,
     ARRAY_AGG(
       environment.settings.default_search_engine_data.load_path RESPECT NULLS
       ORDER BY
@@ -365,19 +378,6 @@ shutdown_ping_agg AS (
     CAST(NULL AS BOOL) AS installation_first_seen_profdir_existed,
     CAST(NULL AS BOOL) AS installation_first_seen_silent,
     CAST(NULL AS STRING) AS installation_first_seen_version,
-    ARRAY_AGG(environment.settings.attribution.dltoken RESPECT NULLS ORDER BY submission_timestamp)[
-      SAFE_OFFSET(0)
-    ] AS attribution_dltoken,
-    ARRAY_AGG(
-      environment.settings.attribution.dlsource RESPECT NULLS
-      ORDER BY
-        submission_timestamp
-    )[SAFE_OFFSET(0)] AS attribution_dlsource,
-    ARRAY_AGG(
-      environment.settings.attribution.variation RESPECT NULLS
-      ORDER BY
-        submission_timestamp
-    )[SAFE_OFFSET(0)] AS attribution_variation,
     ARRAY_AGG(environment.system.os.name RESPECT NULLS ORDER BY submission_timestamp)[
       SAFE_OFFSET(0)
     ] AS os,
@@ -464,6 +464,12 @@ main_ping_agg AS (
     ARRAY_AGG(attribution.content RESPECT NULLS ORDER BY submission_date)[
       SAFE_OFFSET(0)
     ] AS attribution_content,
+    ARRAY_AGG(attribution.dltoken RESPECT NULLS ORDER BY submission_date)[
+      SAFE_OFFSET(0)
+    ] AS attribution_dltoken,
+    ARRAY_AGG(attribution.dlsource RESPECT NULLS ORDER BY submission_date)[
+      SAFE_OFFSET(0)
+    ] AS attribution_dlsource,
     ARRAY_AGG(attribution.experiment RESPECT NULLS ORDER BY submission_date)[
       SAFE_OFFSET(0)
     ] AS attribution_experiment,
@@ -476,6 +482,9 @@ main_ping_agg AS (
     ARRAY_AGG(attribution.ua RESPECT NULLS ORDER BY submission_date)[
       SAFE_OFFSET(0)
     ] AS attribution_ua,
+    ARRAY_AGG(attribution.variation RESPECT NULLS ORDER BY submission_date)[
+      SAFE_OFFSET(0)
+    ] AS attribution_variation,
     ARRAY_AGG(default_search_engine_data_load_path RESPECT NULLS ORDER BY submission_date)[
       SAFE_OFFSET(0)
     ] AS engine_data_load_path,
@@ -521,15 +530,6 @@ main_ping_agg AS (
     CAST(NULL AS BOOL) AS installation_first_seen_profdir_existed,
     CAST(NULL AS BOOL) AS installation_first_seen_silent,
     CAST(NULL AS STRING) AS installation_first_seen_version,
-    ARRAY_AGG(attribution.dltoken RESPECT NULLS ORDER BY submission_date)[
-      SAFE_OFFSET(0)
-    ] AS attribution_dltoken,
-    ARRAY_AGG(attribution.dlsource RESPECT NULLS ORDER BY submission_date)[
-      SAFE_OFFSET(0)
-    ] AS attribution_dlsource,
-    ARRAY_AGG(attribution.variation RESPECT NULLS ORDER BY submission_date)[
-      SAFE_OFFSET(0)
-    ] AS attribution_variation,
     ARRAY_AGG(os RESPECT NULLS ORDER BY submission_date)[SAFE_OFFSET(0)] AS os,
     ARRAY_AGG(os_version RESPECT NULLS ORDER BY submission_date)[SAFE_OFFSET(0)] AS os_version,
     ARRAY_AGG(windows_build_number RESPECT NULLS ORDER BY submission_date)[
@@ -671,13 +671,123 @@ _current AS (
 ),
 _previous AS (
   SELECT
-    *
+    client_id,
+    sample_id,
+    first_seen_date,
+    second_seen_date,
+    architecture,
+    app_build_id,
+    app_name,
+    locale,
+    platform_version,
+    vendor,
+    app_version,
+    xpcom_abi,
+    document_id,
+    distribution_id,
+    partner_distribution_version,
+    partner_distributor,
+    partner_distributor_channel,
+    partner_id,
+    attribution_campaign,
+    attribution_content,
+    attribution_dltoken,
+    attribution_dlsource,
+    attribution_experiment,
+    attribution_medium,
+    attribution_source,
+    attribution_ua,
+    attribution_variation,
+    engine_data_load_path,
+    engine_data_name,
+    engine_data_origin,
+    engine_data_submission_url,
+    apple_model_id,
+    city,
+    db_version,
+    subdivision1,
+    isp_name,
+    normalized_channel,
+    country,
+    normalized_os,
+    normalized_os_version,
+    startup_profile_selection_reason,
+    installation_first_seen_admin_user,
+    installation_first_seen_default_path,
+    installation_first_seen_failure_reason,
+    installation_first_seen_from_msi,
+    installation_first_seen_install_existed,
+    installation_first_seen_installer_type,
+    installation_first_seen_other_inst,
+    installation_first_seen_other_msix_inst,
+    installation_first_seen_profdir_existed,
+    installation_first_seen_silent,
+    installation_first_seen_version,
+    os,
+    os_version,
+    windows_build_number,
+    metadata
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v3`
 )
 {% if is_init() %}
   SELECT
-    *
+    client_id,
+    sample_id,
+    first_seen_date,
+    second_seen_date,
+    architecture,
+    app_build_id,
+    app_name,
+    locale,
+    platform_version,
+    vendor,
+    app_version,
+    xpcom_abi,
+    document_id,
+    distribution_id,
+    partner_distribution_version,
+    partner_distributor,
+    partner_distributor_channel,
+    partner_id,
+    attribution_campaign,
+    attribution_content,
+    attribution_dltoken,
+    attribution_dlsource,
+    attribution_experiment,
+    attribution_medium,
+    attribution_source,
+    attribution_ua,
+    attribution_variation,
+    engine_data_load_path,
+    engine_data_name,
+    engine_data_origin,
+    engine_data_submission_url,
+    apple_model_id,
+    city,
+    db_version,
+    subdivision1,
+    isp_name,
+    normalized_channel,
+    country,
+    normalized_os,
+    normalized_os_version,
+    startup_profile_selection_reason,
+    installation_first_seen_admin_user,
+    installation_first_seen_default_path,
+    installation_first_seen_failure_reason,
+    installation_first_seen_from_msi,
+    installation_first_seen_install_existed,
+    installation_first_seen_installer_type,
+    installation_first_seen_other_inst,
+    installation_first_seen_other_msix_inst,
+    installation_first_seen_profdir_existed,
+    installation_first_seen_silent,
+    installation_first_seen_version,
+    os,
+    os_version,
+    windows_build_number,
+    metadata
   FROM
     _current
 {% else %}

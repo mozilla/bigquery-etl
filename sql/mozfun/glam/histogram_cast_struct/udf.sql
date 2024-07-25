@@ -13,7 +13,7 @@ AS
   const json_dict = JSON.parse(json_str);
   const entries = Object.entries(json_dict).map(
       (r)=>Object.fromEntries(
-        [["KEY", parseFloat(r[0])],["value", parseFloat(r[1])]]
+        [["KEY", r[0]],["value", parseFloat(r[1])]]
       )
   );
   return entries;

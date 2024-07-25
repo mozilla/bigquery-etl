@@ -21,14 +21,8 @@ WITH final_probe_extract AS (
     MAX(total_users) AS total_users,
     MAX(IF(agg_type = "histogram", mozfun.glam.histogram_cast_json(aggregates), NULL)) AS histogram,
     MAX(
-      IF(agg_type = "percentiles", mozfun.glam.histogram_cast_json(aggregates), NULL)
-    ) AS percentiles,
-    MAX(
       IF(agg_type = "histogram", mozfun.glam.histogram_cast_json(non_norm_aggregates), NULL)
-    ) AS non_norm_histogram,
-    MAX(
-      IF(agg_type = "percentiles", mozfun.glam.histogram_cast_json(non_norm_aggregates), NULL)
-    ) AS non_norm_percentiles
+    ) AS non_norm_histogram
   FROM
     `{{ dataset }}.{{ prefix }}__view_probe_counts_v1`
   WHERE
@@ -87,9 +81,7 @@ ranked_data AS (
     cp.metric_type,
     total_users,
     histogram,
-    percentiles,
     non_norm_histogram,
-    non_norm_percentiles,
     CASE
       WHEN client_agg_type = ''
         THEN 0
@@ -106,9 +98,7 @@ ranked_data AS (
         cp.client_agg_type,
         cp.metric_type,
         histogram,
-        percentiles,
         non_norm_histogram,
-        non_norm_percentiles
       ORDER BY
         total_users,
         total_sample DESC
@@ -139,9 +129,7 @@ SELECT
   client_agg_type,
   total_users,
   histogram,
-  percentiles,
   non_norm_histogram,
-  non_norm_percentiles,
   CAST(total_sample AS INT) total_sample
 FROM
   ranked_data

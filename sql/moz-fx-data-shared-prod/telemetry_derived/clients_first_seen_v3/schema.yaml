@@ -225,7 +225,7 @@ fields:
   mode: NULLABLE
 - description: Windows build number
   name: windows_build_number
-  type: STRING
+  type: FLOAT64
   mode: NULLABLE
 - description: Combo of os, os_version, windows_build_number, NULL if not windows
   name: windows_version

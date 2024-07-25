@@ -532,8 +532,8 @@ main_ping_agg AS (
     CAST(NULL AS STRING) AS installation_first_seen_version,
     ARRAY_AGG(os RESPECT NULLS ORDER BY submission_date)[SAFE_OFFSET(0)] AS os,
     ARRAY_AGG(os_version RESPECT NULLS ORDER BY submission_date)[SAFE_OFFSET(0)] AS os_version,
-    ARRAY_AGG(windows_build_number RESPECT NULLS ORDER BY submission_date)[
-      SAFE_OFFSET(0)
+    CAST(ARRAY_AGG(windows_build_number RESPECT NULLS ORDER BY submission_date)[
+      SAFE_OFFSET(0) AS FLOAT64)
     ] AS windows_build_number,
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6`

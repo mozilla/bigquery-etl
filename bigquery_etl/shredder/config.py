@@ -399,15 +399,15 @@ DELETE_TARGETS: DeleteIndex = {
         field="user_id_sha256",
     ): FXA_SRC,
     DeleteTarget(
-        table="accounts_backend_stable.events_v1",
+        table="accounts_frontend_stable.events_v1",
         field=("metrics.string.account_user_id_sha256", GLEAN_CLIENT_ID),
     ): (FXA_SRC, FXA_FRONTEND_GLEAN_SRC),
     DeleteTarget(
-        table="accounts_backend_stable.accounts_events_v1",
+        table="accounts_frontend_stable.accounts_events_v1",
         field=("metrics.string.account_user_id_sha256", GLEAN_CLIENT_ID),
     ): (FXA_SRC, FXA_FRONTEND_GLEAN_SRC),
     DeleteTarget(
-        table="accounts_backend_derived.events_stream_v1",
+        table="accounts_frontend_derived.events_stream_v1",
         field=("metrics.string.account_user_id_sha256", GLEAN_CLIENT_ID),
     ): (FXA_SRC, FXA_FRONTEND_GLEAN_SRC),
     # legacy mobile

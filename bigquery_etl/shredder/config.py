@@ -112,6 +112,9 @@ FXA_SRC = DeleteSource(table="firefox_accounts.fxa_delete_events", field=USER_ID
 FXA_UNHASHED_SRC = DeleteSource(
     table="firefox_accounts.fxa_delete_events", field="user_id_unhashed"
 )
+FXA_FRONTEND_GLEAN_SRC = DeleteSource(
+    table="accounts_frontend_stable.deletion_request_v1", field=GLEAN_CLIENT_ID
+)
 REGRETS_SRC = DeleteSource(
     table="regrets_reporter_stable.regrets_reporter_update_v1",
     field="data_deletion_request.extension_installation_uuid",
@@ -374,6 +377,39 @@ DELETE_TARGETS: DeleteIndex = {
         table="firefox_desktop_stable.fx_accounts_v1",
         field=("metrics.string.client_association_uid", GLEAN_CLIENT_ID),
     ): (FXA_UNHASHED_SRC, DESKTOP_GLEAN_SRC),
+    # FxA on Glean
+    DeleteTarget(
+        table="accounts_backend_stable.events_v1",
+        field="metrics.string.account_user_id_sha256",
+    ): FXA_SRC,
+    DeleteTarget(
+        table="accounts_backend_stable.accounts_events_v1",
+        field="metrics.string.account_user_id_sha256",
+    ): FXA_SRC,
+    DeleteTarget(
+        table="accounts_backend_derived.events_stream_v1",
+        field="metrics.string.account_user_id_sha256",
+    ): FXA_SRC,
+    DeleteTarget(
+        table="accounts_backend_derived.users_services_daily_v1",
+        field="user_id_sha256",
+    ): FXA_SRC,
+    DeleteTarget(
+        table="accounts_backend_derived.users_services_last_seen_v1",
+        field="user_id_sha256",
+    ): FXA_SRC,
+    DeleteTarget(
+        table="accounts_frontend_stable.events_v1",
+        field=("metrics.string.account_user_id_sha256", GLEAN_CLIENT_ID),
+    ): (FXA_SRC, FXA_FRONTEND_GLEAN_SRC),
+    DeleteTarget(
+        table="accounts_frontend_stable.accounts_events_v1",
+        field=("metrics.string.account_user_id_sha256", GLEAN_CLIENT_ID),
+    ): (FXA_SRC, FXA_FRONTEND_GLEAN_SRC),
+    DeleteTarget(
+        table="accounts_frontend_derived.events_stream_v1",
+        field=("metrics.string.account_user_id_sha256", GLEAN_CLIENT_ID),
+    ): (FXA_SRC, FXA_FRONTEND_GLEAN_SRC),
     # legacy mobile
     DeleteTarget(
         table="telemetry_stable.core_v1",

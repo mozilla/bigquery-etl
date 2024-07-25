@@ -1,10 +1,8 @@
-{% set _WHERE = '@submission_date = @submission_date' %}
+#fail
+{{ min_row_count(1000, where="DATE(datetime) = @submission_date") }}
 
 #fail
-{{ min_row_count(1000, where=_WHERE) }}
-
-#fail
-{{ is_unique(columns=["datetime", "city", "country", "geo_subdivision1", "geo_subdivision2"], where=_WHERE) }}
+{{ is_unique(columns=["datetime", "city", "country"], where="DATE(`datetime`) = @submission_date") }}
 
 #fail
 /*
@@ -32,7 +30,7 @@
   "missing_dns_failure",
   "ssl_error_prop",
 
-], where=_WHERE) }}
+], where="DATE(`datetime`) = @submission_date") }}
 
 #warn
-{{ value_length(column="country", expected_length=2, where=_WHERE) }}
+{{ value_length(column="country", expected_length=2, where="DATE(`datetime`) = @submission_date") }}

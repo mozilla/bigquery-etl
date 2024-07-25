@@ -1,3 +1,19 @@
+-- Note: `moz-fx-data-shared-prod.udf.udf_json_extract_int_map` map doesn't work in this case as it expects an INT -> INT
+-- map, while we have a STRING->int map
+CREATE TEMP FUNCTION udf_json_extract_string_to_int_map(input STRING) AS (
+  ARRAY(
+    SELECT
+      STRUCT(
+        CAST(SPLIT(entry, ':')[OFFSET(0)] AS STRING) AS key,
+        CAST(SPLIT(entry, ':')[OFFSET(1)] AS INT64) AS value
+      )
+    FROM
+      UNNEST(SPLIT(REPLACE(TRIM(input, '{}'), '"', ''), ',')) AS entry
+    WHERE
+      LENGTH(entry) > 0
+  )
+);
+
 -- This sums the values reported by an histogram.
 CREATE TEMP FUNCTION sum_values(x ARRAY<STRUCT<key INT64, value INT64>>) AS (
   (
@@ -55,48 +71,49 @@ CREATE TEMP FUNCTION empty(x ARRAY<STRUCT<key INT64, value INT64>>) AS (
 -- Get a stable source for DAUs.
 WITH DAUs AS (
   SELECT
-    `moz-fx-data-shared-prod.udf.geo_struct_set_defaults`(
-      country,
-      city,
-      geo_subdivision1,
-      geo_subdivision2
-    ).*,
+    -- Given the `telemetry.clients_daily` implementation we don't expect
+    -- ?? to be in the data (https://github.com/mozilla/bigquery-etl/blob/3f1cb398fa3eb162c232480d8cfa97b8952ee658/sql/telemetry_derived/clients_daily_v6/query.sql#L127).
+    -- But reality defies expectations.
+    NULLIF(country, '??') AS country,
+    -- If cities are either '??' or NULL then it's from cities we either don't
+    -- know about or have a population less than 15k. Just rename to 'unknown'.
+    IF(city = '??' OR city IS NULL, 'unknown', city) AS city,
     -- Truncate the submission timestamp to the hour. Note that this filed was
     -- introduced on the 16th December 2019, so it will be `null` for queries
     -- before that day. See https://github.com/mozilla/bigquery-etl/pull/603 .
-    TIMESTAMP_TRUNC(submission_timestamp_min, HOUR) AS `datetime`,
+    TIMESTAMP_TRUNC(submission_timestamp_min, HOUR) AS datetime,
     COUNT(*) AS client_count
   FROM
     `moz-fx-data-shared-prod.telemetry.clients_daily`
   WHERE
     submission_date = @submission_date
-    -- Country can be null or `??` if geoip lookup failed.
+    -- Country can be null if geoip lookup failed.
     -- There's no point in adding these to the analyses.
     -- Due to a bug in `telemetry.clients_daily` we need to
     -- check for '??' as well in addition to null.
+    AND country IS NOT NULL
+    AND country != '??'
   GROUP BY
-    country,
-    city,
-    geo_subdivision1,
-    geo_subdivision2,
-    `datetime`
+    1,
+    2,
+    3
   -- Filter filter out cities for which we have less than or equal to
   -- 50 hourly active users. This will make sure data won't end up in
   -- the final table.
   HAVING
-    country <> "??"
-    AND client_count > 50
+    client_count > 50
 ),
 -- Compute aggregates for the health data.
 health_data_sample AS (
   SELECT
-    `moz-fx-data-shared-prod.udf.geo_struct_set_defaults`(
+    -- `city` is processed in `health_data_aggregates`.
+    `moz-fx-data-shared-prod.udf.geo_struct`(
       metadata.geo.country,
       metadata.geo.city,
-      metadata.geo.subdivision1,  -- returned field gets renamed to geo_subdivision1
-      metadata.geo.subdivision2  -- returned field gets renamed to geo_subdivision2
-    ).*,
-    TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS `datetime`,
+      NULL,
+      NULL
+    ).* EXCEPT (geo_subdivision1, geo_subdivision2),
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS datetime,
     client_id,
     SUM(
       COALESCE(
@@ -145,22 +162,18 @@ health_data_sample AS (
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY
-    country,
-    city,
-    geo_subdivision1,
-    geo_subdivision2,
-    `datetime`,
-    client_id
-  HAVING
-    country <> "??"
+    1,
+    2,
+    3,
+    4
 ),
 health_data_aggregates AS (
   SELECT
     country,
-    city,
-    geo_subdivision1,
-    geo_subdivision2,
-    `datetime`,
+    -- If cities are either '??' or NULL then it's from cities we either don't
+    -- know about or have a population less than 15k. Just rename to 'unknown'.
+    IF(city = '??' OR city IS NULL, 'unknown', city) AS city,
+    datetime,
     COUNTIF(e_undefined > 0) AS num_clients_e_undefined,
     COUNTIF(e_timeout > 0) AS num_clients_e_timeout,
     COUNTIF(e_abort > 0) AS num_clients_e_abort,
@@ -169,12 +182,14 @@ health_data_aggregates AS (
     COUNTIF(e_channel_open > 0) AS num_clients_e_channel_open,
   FROM
     health_data_sample
+  WHERE
+    -- Country can be null if geoip lookup failed.
+    -- There's no point in adding these to the analyses.
+    country IS NOT NULL
   GROUP BY
     country,
     city,
-    geo_subdivision1,
-    geo_subdivision2,
-    `datetime`
+    datetime
   HAVING
     COUNT(*) > 50
 ),
@@ -182,8 +197,6 @@ final_health_data AS (
   SELECT
     h.country,
     h.city,
-    h.geo_subdivision1,
-    h.geo_subdivision2,
     h.datetime,
     (num_clients_e_undefined / DAUs.client_count) AS proportion_undefined,
     (num_clients_e_timeout / DAUs.client_count) AS proportion_timeout,
@@ -195,17 +208,17 @@ final_health_data AS (
     health_data_aggregates AS h
   INNER JOIN
     DAUs
-    USING (`datetime`, country, city, geo_subdivision1, geo_subdivision2)
+    USING (datetime, country, city)
 ),
 -- Compute aggregates for histograms coming from the health ping.
 histogram_data_sample AS (
   SELECT
-    `moz-fx-data-shared-prod.udf.geo_struct_set_defaults`(
-      metadata.geo.country,
-      metadata.geo.city,
-      metadata.geo.subdivision1,  -- returned field gets renamed to geo_subdivision1
-      metadata.geo.subdivision2  -- returned field gets renamed to geo_subdivision2
-    ).*,
+    -- We don't need to use `moz-fx-data-shared-prod.udf.geo_struct` here since `telemetry.main` won't
+    -- have '??' values. It only has nulls, which we can handle.
+    metadata.geo.country AS country,
+    -- If cities are NULL then it's from cities we either don't
+    -- know about or have a population less than 15k. Just rename to 'unknown'.
+    IFNULL(metadata.geo.city, 'unknown') AS city,
     client_id,
     document_id,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS time_slot,
@@ -233,17 +246,13 @@ dns_success_time AS (
   SELECT
     country,
     city,
-    geo_subdivision1,
-    geo_subdivision2,
-    time_slot AS `datetime`,
+    time_slot AS datetime,
     EXP(SUM(LOG(key) * count) / SUM(count)) AS value
   FROM
     (
       SELECT
         country,
         city,
-        geo_subdivision1,
-        geo_subdivision2,
         client_id,
         time_slot,
         key,
@@ -255,8 +264,6 @@ dns_success_time AS (
       GROUP BY
         country,
         city,
-        geo_subdivision1,
-        geo_subdivision2,
         time_slot,
         client_id,
         key
@@ -264,11 +271,9 @@ dns_success_time AS (
   WHERE
     key > 0
   GROUP BY
-    country,
-    city,
-    geo_subdivision1,
-    geo_subdivision2,
-    `datetime`
+    1,
+    2,
+    3
   HAVING
     COUNT(*) > 50
 ),
@@ -277,9 +282,7 @@ dns_no_dns_lookup_time AS (
   SELECT
     country,
     city,
-    geo_subdivision1,
-    geo_subdivision2,
-    time_slot AS `datetime`,
+    time_slot AS datetime,
     SUM(IF(subsession_length > 0 AND is_empty = 1, 1, 0)) / (
       1 + SUM(IF(subsession_length > 0, 1, 0))
     ) AS value
@@ -288,8 +291,6 @@ dns_no_dns_lookup_time AS (
       SELECT
         country,
         city,
-        geo_subdivision1,
-        geo_subdivision2,
         client_id,
         time_slot,
         subsession_length,
@@ -298,11 +299,9 @@ dns_no_dns_lookup_time AS (
         histogram_data_sample
     )
   GROUP BY
-    country,
-    city,
-    geo_subdivision1,
-    geo_subdivision2,
-    `datetime`
+    1,
+    2,
+    3
   HAVING
     COUNT(*) > 50
 ),
@@ -311,8 +310,6 @@ dns_failure_src AS (
   SELECT
     country,
     city,
-    geo_subdivision1,
-    geo_subdivision2,
     client_id,
     time_slot,
     key,
@@ -324,8 +321,6 @@ dns_failure_src AS (
   GROUP BY
     country,
     city,
-    geo_subdivision1,
-    geo_subdivision2,
     time_slot,
     client_id,
     key
@@ -335,20 +330,16 @@ dns_failure_time AS (
   SELECT
     country,
     city,
-    geo_subdivision1,
-    geo_subdivision2,
-    time_slot AS `datetime`,
+    time_slot AS datetime,
     EXP(SUM(LOG(key) * count) / SUM(count)) AS value
   FROM
     dns_failure_src
   WHERE
     key > 0
   GROUP BY
-    country,
-    city,
-    geo_subdivision1,
-    geo_subdivision2,
-    `datetime`
+    1,
+    2,
+    3
   HAVING
     COUNT(*) > 50
 ),
@@ -357,17 +348,13 @@ dns_failure_counts AS (
   SELECT
     country,
     city,
-    geo_subdivision1,
-    geo_subdivision2,
-    time_slot AS `datetime`,
+    time_slot AS datetime,
     AVG(count) AS value
   FROM
     (
       SELECT
         country,
         city,
-        geo_subdivision1,
-        geo_subdivision2,
         client_id,
         time_slot,
         SUM(count) AS count
@@ -376,17 +363,13 @@ dns_failure_counts AS (
       GROUP BY
         country,
         city,
-        geo_subdivision1,
-        geo_subdivision2,
         time_slot,
         client_id
     )
   GROUP BY
     country,
     city,
-    geo_subdivision1,
-    geo_subdivision2,
-    `datetime`
+    time_slot
   HAVING
     COUNT(*) > 50
 ),
@@ -395,9 +378,7 @@ dns_no_dns_failure_time AS (
   SELECT
     country,
     city,
-    geo_subdivision1,
-    geo_subdivision2,
-    time_slot AS `datetime`,
+    time_slot AS datetime,
     SUM(IF(subsession_length > 0 AND is_empty = 1, 1, 0)) / (
       1 + SUM(IF(subsession_length > 0, 1, 0))
     ) AS value
@@ -406,8 +387,6 @@ dns_no_dns_failure_time AS (
       SELECT
         country,
         city,
-        geo_subdivision1,
-        geo_subdivision2,
         client_id,
         time_slot,
         subsession_length,
@@ -416,11 +395,9 @@ dns_no_dns_failure_time AS (
         histogram_data_sample
     )
   GROUP BY
-    country,
-    city,
-    geo_subdivision1,
-    geo_subdivision2,
-    `datetime`
+    1,
+    2,
+    3
   HAVING
     COUNT(*) > 50
 ),
@@ -429,8 +406,6 @@ ssl_error_prop_src AS (
   SELECT
     country,
     city,
-    geo_subdivision1,
-    geo_subdivision2,
     time_slot,
     client_id,
     document_id,
@@ -443,9 +418,7 @@ ssl_error_prop AS (
   SELECT
     country,
     city,
-    geo_subdivision1,
-    geo_subdivision2,
-    time_slot AS `datetime`,
+    time_slot AS datetime,
     SUM(IF(subsession_length > 0 AND ssl_sum_vals > 0, 1, 0)) / (
       1 + SUM(IF(subsession_length > 0, 1, 0))
     ) AS value
@@ -454,9 +427,7 @@ ssl_error_prop AS (
   GROUP BY
     country,
     city,
-    geo_subdivision1,
-    geo_subdivision2,
-    `datetime`
+    time_slot
   HAVING
     COUNT(*) > 50
 ),
@@ -465,9 +436,7 @@ tls_handshake_time AS (
   SELECT
     country,
     city,
-    geo_subdivision1,
-    geo_subdivision2,
-    time_slot AS `datetime`,
+    time_slot AS datetime,
     EXP(SUM(LOG(key) * count) / SUM(count)) AS value
   FROM
     (
@@ -475,8 +444,6 @@ tls_handshake_time AS (
         country,
         city,
         client_id,
-        geo_subdivision1,
-        geo_subdivision2,
         time_slot,
         key,
         SUM(LEAST(2147483648, value)) AS count
@@ -487,8 +454,6 @@ tls_handshake_time AS (
       GROUP BY
         country,
         city,
-        geo_subdivision1,
-        geo_subdivision2,
         time_slot,
         client_id,
         key
@@ -496,25 +461,17 @@ tls_handshake_time AS (
   WHERE
     key > 0
   GROUP BY
-    country,
-    city,
-    geo_subdivision1,
-    geo_subdivision2,
-    `datetime`
+    1,
+    2,
+    3
   HAVING
     COUNT(*) > 50
 )
 SELECT
   DAUs.country AS country,
-  -- Caveat: mindmind location mapping returns `??` in cases where
-  -- the population is less than 15k. As long as the entry has a higher level
-  -- grouping (country) we still want to keep it. For backwards compatibility,
-  -- we rename this value to `unknown` to represent a lack of value.
-  IF(DAUs.city = "??", "unknown", DAUs.city) AS city,
-  NULLIF(DAUs.geo_subdivision1, "??") AS geo_subdivision1,
-  NULLIF(DAUs.geo_subdivision2, "??") AS geo_subdivision2,
-  DAUs.datetime AS `datetime`,
-  hd.* EXCEPT (`datetime`, country, city, geo_subdivision1, geo_subdivision2),
+  DAUs.city AS city,
+  DAUs.datetime AS datetime,
+  hd.* EXCEPT (datetime, country, city),
   ds.value AS avg_dns_success_time,
   ds_missing.value AS missing_dns_success,
   df.value AS avg_dns_failure_time,
@@ -533,25 +490,25 @@ FROM
 -- are not accounted for in `moz-fx-data-shared-prod.telemetry.clients_daily`
 LEFT JOIN
   DAUs
-  USING (`datetime`, country, city, geo_subdivision1, geo_subdivision2)
+  USING (datetime, country, city)
 LEFT JOIN
   dns_success_time AS ds
-  USING (`datetime`, country, city, geo_subdivision1, geo_subdivision2)
+  USING (datetime, country, city)
 LEFT JOIN
   dns_no_dns_lookup_time AS ds_missing
-  USING (`datetime`, country, city, geo_subdivision1, geo_subdivision2)
+  USING (datetime, country, city)
 LEFT JOIN
   dns_failure_time AS df
-  USING (`datetime`, country, city, geo_subdivision1, geo_subdivision2)
+  USING (datetime, country, city)
 LEFT JOIN
   dns_failure_counts AS dfc
-  USING (`datetime`, country, city, geo_subdivision1, geo_subdivision2)
+  USING (datetime, country, city)
 LEFT JOIN
   dns_no_dns_failure_time AS df_missing
-  USING (`datetime`, country, city, geo_subdivision1, geo_subdivision2)
+  USING (datetime, country, city)
 LEFT JOIN
   tls_handshake_time AS tls
-  USING (`datetime`, country, city, geo_subdivision1, geo_subdivision2)
+  USING (datetime, country, city)
 LEFT JOIN
   ssl_error_prop AS ssl
-  USING (`datetime`, country, city, geo_subdivision1, geo_subdivision2)
+  USING (datetime, country, city)

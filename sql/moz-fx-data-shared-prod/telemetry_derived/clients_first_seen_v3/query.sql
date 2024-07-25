@@ -59,6 +59,14 @@ WITH new_profile_ping_agg AS (
     ARRAY_AGG(environment.settings.attribution.content RESPECT NULLS ORDER BY submission_timestamp)[
       SAFE_OFFSET(0)
     ] AS attribution_content,
+    ARRAY_AGG(environment.settings.attribution.dltoken RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS attribution_dltoken,
+    ARRAY_AGG(
+      environment.settings.attribution.dlsource RESPECT NULLS
+      ORDER BY
+        submission_timestamp
+    )[SAFE_OFFSET(0)] AS attribution_dlsource,
     ARRAY_AGG(
       environment.settings.attribution.experiment RESPECT NULLS
       ORDER BY
@@ -73,6 +81,11 @@ WITH new_profile_ping_agg AS (
     ARRAY_AGG(environment.settings.attribution.ua RESPECT NULLS ORDER BY submission_timestamp)[
       SAFE_OFFSET(0)
     ] AS attribution_ua,
+    ARRAY_AGG(
+      environment.settings.attribution.variation RESPECT NULLS
+      ORDER BY
+        submission_timestamp
+    )[SAFE_OFFSET(0)] AS attribution_variation,
     ARRAY_AGG(
       environment.settings.default_search_engine_data.load_path RESPECT NULLS
       ORDER BY
@@ -182,19 +195,6 @@ WITH new_profile_ping_agg AS (
       ORDER BY
         submission_timestamp
     )[SAFE_OFFSET(0)] AS installation_first_seen_version,
-    ARRAY_AGG(environment.settings.attribution.dltoken RESPECT NULLS ORDER BY submission_timestamp)[
-      SAFE_OFFSET(0)
-    ] AS attribution_dltoken,
-    ARRAY_AGG(
-      environment.settings.attribution.dlsource RESPECT NULLS
-      ORDER BY
-        submission_timestamp
-    )[SAFE_OFFSET(0)] AS attribution_dlsource,
-    ARRAY_AGG(
-      environment.settings.attribution.variation RESPECT NULLS
-      ORDER BY
-        submission_timestamp
-    )[SAFE_OFFSET(0)] AS attribution_variation,
     ARRAY_AGG(environment.system.os.name RESPECT NULLS ORDER BY submission_timestamp)[
       SAFE_OFFSET(0)
     ] AS os,
@@ -286,6 +286,14 @@ shutdown_ping_agg AS (
     ARRAY_AGG(environment.settings.attribution.content RESPECT NULLS ORDER BY submission_timestamp)[
       SAFE_OFFSET(0)
     ] AS attribution_content,
+    ARRAY_AGG(environment.settings.attribution.dltoken RESPECT NULLS ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS attribution_dltoken,
+    ARRAY_AGG(
+      environment.settings.attribution.dlsource RESPECT NULLS
+      ORDER BY
+        submission_timestamp
+    )[SAFE_OFFSET(0)] AS attribution_dlsource,
     ARRAY_AGG(
       environment.settings.attribution.experiment RESPECT NULLS
       ORDER BY
@@ -300,6 +308,11 @@ shutdown_ping_agg AS (
     ARRAY_AGG(environment.settings.attribution.ua RESPECT NULLS ORDER BY submission_timestamp)[
       SAFE_OFFSET(0)
     ] AS attribution_ua,
+    ARRAY_AGG(
+      environment.settings.attribution.variation RESPECT NULLS
+      ORDER BY
+        submission_timestamp
+    )[SAFE_OFFSET(0)] AS attribution_variation,
     ARRAY_AGG(
       environment.settings.default_search_engine_data.load_path RESPECT NULLS
       ORDER BY
@@ -365,19 +378,6 @@ shutdown_ping_agg AS (
     CAST(NULL AS BOOL) AS installation_first_seen_profdir_existed,
     CAST(NULL AS BOOL) AS installation_first_seen_silent,
     CAST(NULL AS STRING) AS installation_first_seen_version,
-    ARRAY_AGG(environment.settings.attribution.dltoken RESPECT NULLS ORDER BY submission_timestamp)[
-      SAFE_OFFSET(0)
-    ] AS attribution_dltoken,
-    ARRAY_AGG(
-      environment.settings.attribution.dlsource RESPECT NULLS
-      ORDER BY
-        submission_timestamp
-    )[SAFE_OFFSET(0)] AS attribution_dlsource,
-    ARRAY_AGG(
-      environment.settings.attribution.variation RESPECT NULLS
-      ORDER BY
-        submission_timestamp
-    )[SAFE_OFFSET(0)] AS attribution_variation,
     ARRAY_AGG(environment.system.os.name RESPECT NULLS ORDER BY submission_timestamp)[
       SAFE_OFFSET(0)
     ] AS os,
@@ -464,6 +464,12 @@ main_ping_agg AS (
     ARRAY_AGG(attribution.content RESPECT NULLS ORDER BY submission_date)[
       SAFE_OFFSET(0)
     ] AS attribution_content,
+    ARRAY_AGG(attribution.dltoken RESPECT NULLS ORDER BY submission_date)[
+      SAFE_OFFSET(0)
+    ] AS attribution_dltoken,
+    ARRAY_AGG(attribution.dlsource RESPECT NULLS ORDER BY submission_date)[
+      SAFE_OFFSET(0)
+    ] AS attribution_dlsource,
     ARRAY_AGG(attribution.experiment RESPECT NULLS ORDER BY submission_date)[
       SAFE_OFFSET(0)
     ] AS attribution_experiment,
@@ -476,6 +482,9 @@ main_ping_agg AS (
     ARRAY_AGG(attribution.ua RESPECT NULLS ORDER BY submission_date)[
       SAFE_OFFSET(0)
     ] AS attribution_ua,
+    ARRAY_AGG(attribution.variation RESPECT NULLS ORDER BY submission_date)[
+      SAFE_OFFSET(0)
+    ] AS attribution_variation,
     ARRAY_AGG(default_search_engine_data_load_path RESPECT NULLS ORDER BY submission_date)[
       SAFE_OFFSET(0)
     ] AS engine_data_load_path,
@@ -521,20 +530,12 @@ main_ping_agg AS (
     CAST(NULL AS BOOL) AS installation_first_seen_profdir_existed,
     CAST(NULL AS BOOL) AS installation_first_seen_silent,
     CAST(NULL AS STRING) AS installation_first_seen_version,
-    ARRAY_AGG(attribution.dltoken RESPECT NULLS ORDER BY submission_date)[
-      SAFE_OFFSET(0)
-    ] AS attribution_dltoken,
-    ARRAY_AGG(attribution.dlsource RESPECT NULLS ORDER BY submission_date)[
-      SAFE_OFFSET(0)
-    ] AS attribution_dlsource,
-    ARRAY_AGG(attribution.variation RESPECT NULLS ORDER BY submission_date)[
-      SAFE_OFFSET(0)
-    ] AS attribution_variation,
     ARRAY_AGG(os RESPECT NULLS ORDER BY submission_date)[SAFE_OFFSET(0)] AS os,
     ARRAY_AGG(os_version RESPECT NULLS ORDER BY submission_date)[SAFE_OFFSET(0)] AS os_version,
+-- windows_build_number is an INT64 in the main ping but FLOAT65 in n_p_ping and shutdown_ping, will convert to FLOAT64 in next step
     ARRAY_AGG(windows_build_number RESPECT NULLS ORDER BY submission_date)[
       SAFE_OFFSET(0)
-    ] AS windows_build_number,
+    ] AS windows_build_number_raw,
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6`
   WHERE
@@ -550,11 +551,12 @@ main_ping_agg AS (
 ),
 main_ping AS (
   SELECT
-    *,
+    * EXCEPT (windows_build_number_raw),
+    CAST(windows_build_number_raw AS FLOAT64) AS windows_build_number,
     mozfun.norm.windows_version_info(
       os,
       os_version,
-      CAST(windows_build_number AS INT64)
+      CAST(windows_build_number_raw AS INT64)
     ) AS windows_version
   FROM
     main_ping_agg

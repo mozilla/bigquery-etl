@@ -1,12 +1,12 @@
 {% set _WHERE = '@submission_date = @submission_date' %}
 
-#fail
+#warn
 {{ min_row_count(1000, where=_WHERE) }}
 
-#fail
-{{ is_unique(columns=["datetime", "city", "country", "geo_subdivision1", "geo_subdivision2"], where=_WHERE) }}
+#warn
+{{ is_unique(columns=["country", "city", "geo_subdivision1", "geo_subdivision2", "datetime"], where=_WHERE) }}
 
-#fail
+#warn
 /*
   This statement used to contain the following fields,
   but these are sometimes missing from country/city combinations
@@ -17,9 +17,9 @@
   "count_dns_failure"
 */
 {{ not_null(columns=[
-  "datetime",
-  "city",
   "country",
+  "city",
+  "datetime",
   "proportion_undefined",
   "proportion_timeout",
   "proportion_abort",

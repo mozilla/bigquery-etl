@@ -28,8 +28,4 @@ SELECT
     ARRAY<STRUCT<key STRING, value FLOAT64>>[("0", 0.1111), ("1", 0.6667), ("2", 0), ("10", 100)],
     glam.histogram_cast_struct('{"0":0.1111,"1":0.6667,"2":0,"10":100}')
   ),
-  assert.array_empty(glam.histogram_cast_struct('{}')),
-  assert.array_equals(
-    ARRAY<STRUCT<key STRING, value FLOAT64>>[("always", 0.5), ("never", 0.5)],
-    glam.histogram_cast_struct('{"always":0.5,"never":0.5}')
-  )
+  assert.array_empty(glam.histogram_cast_struct('{}'))

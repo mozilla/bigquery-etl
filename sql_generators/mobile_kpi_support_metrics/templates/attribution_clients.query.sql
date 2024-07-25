@@ -4,7 +4,11 @@ WITH new_profiles AS (
     submission_date,
     client_id,
     sample_id,
-  FROM `{{ project_id }}.{{ dataset }}.active_users`
+    {% if 'is_suspicious_device_client' in product_attribution_group_names %}
+    -- field to help us identify suspicious devices on iOS, for more info see: bug-1846554
+    (app_display_version = '107.2' AND submission_date >= '2023-02-01') AS is_suspicious_device_client,
+    {% endif %}
+  FROM `{{ project_id }}.{{ dataset }}.baseline_clients_first_seen`
   WHERE
     submission_date = @submission_date
     AND is_new_profile
@@ -17,7 +21,11 @@ SELECT
     submission_timestamp,
     {% for attribution_group in product_attribution_groups if attribution_group.name == 'adjust' %}
     {% for field in attribution_group.fields %}
-      NULLIF(metrics.string.first_session_{{ field.name.replace('adjust_', '').replace('ad_group', 'adgroup') }}, "") AS {{ field.name }},
+      {% if app_name == "firefox_ios" %}
+        NULLIF(metrics.string.{{ field.name }}, "") AS {{ field.name }},
+      {% else %}
+        NULLIF(metrics.string.first_session_{{ field.name.replace('adjust_', '').replace('ad_group', 'adgroup') }}, "") AS {{ field.name }},
+      {% endif %}
     {% endfor %}
     {% endfor %}
     {% for attribution_group in product_attribution_groups if attribution_group.name == 'play_store' %}
@@ -140,7 +148,11 @@ first_session_ping AS (
     {% endfor %}
     {% for attribution_group in product_attribution_groups if attribution_group.name == 'adjust' %}
     {% for field in attribution_group.fields %}
+      {% if app_name == "firefox_ios" %}
+      NULLIF(metrics.string.{{ field.name }}, "") AS {{ field.name }},
+      {% else %}
       NULLIF(metrics.string.metrics_{{ field.name }}, "") AS {{ field.name }},
+      {% endif %}
     {% endfor %}
     {% endfor %}
   FROM
@@ -214,6 +226,9 @@ SELECT
   {% endif %}
   {% if 'meta' in product_attribution_group_names %}
   first_session_ping.meta_info,
+  {% endif %}
+  {% if 'is_suspicious_device_client' in product_attribution_group_names %}
+  is_suspicious_device_client,
   {% endif %}
 FROM
   new_profiles

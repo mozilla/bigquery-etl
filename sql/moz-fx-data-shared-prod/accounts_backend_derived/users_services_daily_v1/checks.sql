@@ -40,10 +40,12 @@ check_results AS (
     USING (day, event_name)
   WHERE
     -- investigated in https://mozilla-hub.atlassian.net/browse/FXA-10169
-    event_name NOT IN ('google_login_complete',
+    event_name NOT IN (
+      'google_login_complete',
       'apple_login_complete',
       'third_party_auth_apple_login_complete',
-      'third_party_auth_google_login_complete')
+      'third_party_auth_google_login_complete'
+    )
     AND (
       events_new.count_new IS NULL
       OR events_old.count_old IS NULL

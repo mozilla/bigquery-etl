@@ -19,13 +19,13 @@ GENERATOR_ROOT = Path(path.dirname(__file__))
 HEADER = f"-- Query generated via `{GENERATOR_ROOT.name}` SQL generator."
 VERSION = "v1"
 TEMPLATES = (
-    # "active_users.view.sql",
-    # "retention_clients.view.sql",
-    # "retention.query.sql",
-    # "retention.view.sql",
-    # "engagement_clients.view.sql",
-    # "engagement.query.sql",
-    # "engagement.view.sql",
+    "active_users.view.sql",
+    "retention_clients.view.sql",
+    "retention.query.sql",
+    "retention.view.sql",
+    "engagement_clients.view.sql",
+    "engagement.query.sql",
+    "engagement.view.sql",
     "attribution_clients.view.sql",
     "attribution_clients.query.sql",
 )

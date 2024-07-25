@@ -3,6 +3,7 @@ CREATE OR REPLACE VIEW
   `{{ project_id }}.{{ dataset }}.{{ name }}`
 AS
 SELECT
+  submission_date,
   client_id,
   sample_id,
   {% if 'install_source' in product_attribution_group_names %}

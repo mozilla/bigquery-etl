@@ -532,6 +532,7 @@ main_ping_agg AS (
     CAST(NULL AS STRING) AS installation_first_seen_version,
     ARRAY_AGG(os RESPECT NULLS ORDER BY submission_date)[SAFE_OFFSET(0)] AS os,
     ARRAY_AGG(os_version RESPECT NULLS ORDER BY submission_date)[SAFE_OFFSET(0)] AS os_version,
+-- windows_build_number is an INT64 in the main ping but FLOAT65 in n_p_ping and shutdown_ping, will convert to FLOAT64 in next step
     ARRAY_AGG(windows_build_number RESPECT NULLS ORDER BY submission_date)[
       SAFE_OFFSET(0)
     ] AS windows_build_number_raw,
@@ -555,7 +556,7 @@ main_ping AS (
     mozfun.norm.windows_version_info(
       os,
       os_version,
-      CAST(windows_build_number AS INT64)
+      CAST(windows_build_number_raw AS INT64)
     ) AS windows_version
   FROM
     main_ping_agg

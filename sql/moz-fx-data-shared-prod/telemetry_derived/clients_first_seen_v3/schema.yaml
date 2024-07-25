@@ -213,7 +213,7 @@ fields:
   mode: NULLABLE
 - description: First seen version at installation
   name: installation_first_seen_version
-  type: BOOLEAN
+  type: STRING
   mode: NULLABLE
 - description: OS name - not normalized_os
   name: os

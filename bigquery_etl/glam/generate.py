@@ -291,13 +291,6 @@ def main():
             ),
             channel=channel_prefixes[args.prefix],
         ),
-        table(
-            "scalar_percentiles_v1",
-            **models.scalar_percentiles(
-                source_table=f"glam_etl.{args.prefix}__clients_scalar_aggregates_v1"
-            ),
-        ),
-        table("histogram_percentiles_v1"),
         view("view_probe_counts_v1"),
         view("view_user_counts_v1", **models.user_counts()),
         view(

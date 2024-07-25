@@ -1,19 +1,3 @@
--- placeholder until the udf has landed
-
-CREATE temp FUNCTION geo_struct_unknown(
-  country STRING,
-  city STRING,
-  geo_subdivision1 STRING,
-  geo_subdivision2 STRING
-) AS ( --
-  STRUCT(
-    IFNULL(country, '??') AS country,
-    IFNULL(city, '??') AS city,
-    IFNULL(geo_subdivision1, '??') AS geo_subdivision1,
-    IFNULL(geo_subdivision2, '??') AS geo_subdivision2
-  )
-);
-
 -- This sums the values reported by an histogram.
 CREATE TEMP FUNCTION sum_values(x ARRAY<STRUCT<key INT64, value INT64>>) AS (
   (
@@ -71,25 +55,12 @@ CREATE TEMP FUNCTION empty(x ARRAY<STRUCT<key INT64, value INT64>>) AS (
 -- Get a stable source for DAUs.
 WITH DAUs AS (
   SELECT
-    -- Given the `telemetry.clients_daily` implementation we don't expect
-    -- ?? to be in the data (https://github.com/mozilla/bigquery-etl/blob/3f1cb398fa3eb162c232480d8cfa97b8952ee658/sql/telemetry_derived/clients_daily_v6/query.sql#L127).
-    -- But reality defies expectations.
-    NULLIF(country, '??') AS country,
-    -- If cities are either '??' or NULL then it's from cities we either don't
-    -- know about or have a population less than 15k. Just rename to 'unknown'.
-    IF(city = '??' OR city IS NULL, 'unknown', city) AS city,
-    IF(
-      geo_subdivision1 = '??'
-      OR geo_subdivision1 IS NULL,
-      'missing',
-      geo_subdivision1
-    ) AS geo_subdivision1,
-    IF(
-      geo_subdivision2 = '??'
-      OR geo_subdivision2 IS NULL,
-      'missing',
+    `moz-fx-data-shared-prod.udf.geo_struct_set_defaults`(
+      country,
+      city,
+      geo_subdivision1,
       geo_subdivision2
-    ) AS geo_subdivision2,
+    ).*,
     -- Truncate the submission timestamp to the hour. Note that this filed was
     -- introduced on the 16th December 2019, so it will be `null` for queries
     -- before that day. See https://github.com/mozilla/bigquery-etl/pull/603 .
@@ -120,8 +91,7 @@ WITH DAUs AS (
 -- Compute aggregates for the health data.
 health_data_sample AS (
   SELECT
-    -- `city` is processed in `health_data_aggregates`.
-    `moz-fx-data-shared-prod.udf.geo_struct`(
+    `moz-fx-data-shared-prod.udf.geo_struct_set_defaults`(
       metadata.geo.country,
       metadata.geo.city,
       metadata.geo.subdivision1,
@@ -186,21 +156,9 @@ health_data_sample AS (
 health_data_aggregates AS (
   SELECT
     country,
-    -- If cities are either '??' or NULL then it's from cities we either don't
-    -- know about or have a population less than 15k. Just rename to 'unknown'.
-    IF(city = '??' OR city IS NULL, 'unknown', city) AS city,
-    IF(
-      geo_subdivision1 = '??'
-      OR geo_subdivision1 IS NULL,
-      'missing',
-      geo_subdivision1
-    ) AS geo_subdivision1,
-    IF(
-      geo_subdivision2 = '??'
-      OR geo_subdivision2 IS NULL,
-      'missing',
-      geo_subdivision2
-    ) AS geo_subdivision2,
+    city,
+    geo_subdivision1,
+    geo_subdivision2,
     `datetime`,
     COUNTIF(e_undefined > 0) AS num_clients_e_undefined,
     COUNTIF(e_timeout > 0) AS num_clients_e_timeout,
@@ -245,14 +203,12 @@ final_health_data AS (
 -- Compute aggregates for histograms coming from the health ping.
 histogram_data_sample AS (
   SELECT
-    -- We don't need to use `moz-fx-data-shared-prod.udf.geo_struct` here since `telemetry.main` won't
-    -- have '??' values. It only has nulls, which we can handle.
-    metadata.geo.country AS country,
-    -- If cities are NULL then it's from cities we either don't
-    -- know about or have a population less than 15k. Just rename to 'unknown'.
-    IFNULL(metadata.geo.city, 'unknown') AS city,
-    IFNULL(metadata.geo.subdivision1, 'missing') AS geo_subdivision1,
-    IFNULL(metadata.geo.subdivision2, 'missing') AS geo_subdivision2,
+    `moz-fx-data-shared-prod.udf.geo_struct_set_defaults`(
+      metadata.geo.country,
+      metadata.geo.city,
+      metadata.geo.subdivision1,
+      metadata.geo.subdivision2
+    ).*,
     client_id,
     document_id,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS time_slot,
@@ -552,10 +508,10 @@ tls_handshake_time AS (
     COUNT(*) > 50
 )
 SELECT
-  DAUs.country AS country,
-  DAUs.city AS city,
-  NULLIF(DAUs.geo_subdivision1, "missing") AS geo_subdivision1,
-  NULLIF(DAUs.geo_subdivision2, "missing") AS geo_subdivision2,
+  DAUs.country,
+  IF(DAUs.city = "??", "unknown", city) AS city,
+  NULLIF(DAUs.geo_subdivision1, "??") AS geo_subdivision1,
+  NULLIF(DAUs.geo_subdivision2, "??") AS geo_subdivision2,
   DAUs.datetime AS `datetime`,
   hd.* EXCEPT (`datetime`, country, city, geo_subdivision1, geo_subdivision2),
   ds.value AS avg_dns_success_time,

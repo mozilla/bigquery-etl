@@ -691,7 +691,6 @@ _current AS (
     unioned.os_version,
     unioned.windows_build_number,
     unioned.windows_version,
-    unioned.metadata,
     STRUCT(
       fsd.first_seen_source_ping AS first_seen_date_source_ping,
       pings.reported_main_ping AS reported_main_ping,

@@ -70,12 +70,10 @@ WITH DAUs AS (
     `moz-fx-data-shared-prod.telemetry.clients_daily`
   WHERE
     submission_date = @submission_date
-    -- Country can be null if geoip lookup failed.
+    -- Country can be null or `??` if geoip lookup failed.
     -- There's no point in adding these to the analyses.
     -- Due to a bug in `telemetry.clients_daily` we need to
     -- check for '??' as well in addition to null.
-    AND country IS NOT NULL
-    AND country != '??'
   GROUP BY
     country,
     city,
@@ -86,7 +84,8 @@ WITH DAUs AS (
   -- 50 hourly active users. This will make sure data won't end up in
   -- the final table.
   HAVING
-    client_count > 50
+    country <> "??"
+    AND client_count > 50
 ),
 -- Compute aggregates for the health data.
 health_data_sample AS (
@@ -94,8 +93,8 @@ health_data_sample AS (
     `moz-fx-data-shared-prod.udf.geo_struct_set_defaults`(
       metadata.geo.country,
       metadata.geo.city,
-      metadata.geo.subdivision1,
-      metadata.geo.subdivision2
+      metadata.geo.subdivision1,  -- returned field gets renamed to geo_subdivision1
+      metadata.geo.subdivision2  -- returned field gets renamed to geo_subdivision2
     ).*,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS `datetime`,
     client_id,
@@ -152,6 +151,8 @@ health_data_sample AS (
     geo_subdivision2,
     `datetime`,
     client_id
+  HAVING
+    country <> "??"
 ),
 health_data_aggregates AS (
   SELECT
@@ -168,10 +169,6 @@ health_data_aggregates AS (
     COUNTIF(e_channel_open > 0) AS num_clients_e_channel_open,
   FROM
     health_data_sample
-  WHERE
-    -- Country can be null if geoip lookup failed.
-    -- There's no point in adding these to the analyses.
-    country IS NOT NULL
   GROUP BY
     country,
     city,
@@ -206,8 +203,8 @@ histogram_data_sample AS (
     `moz-fx-data-shared-prod.udf.geo_struct_set_defaults`(
       metadata.geo.country,
       metadata.geo.city,
-      metadata.geo.subdivision1,
-      metadata.geo.subdivision2
+      metadata.geo.subdivision1,  -- returned field gets renamed to geo_subdivision1
+      metadata.geo.subdivision2  -- returned field gets renamed to geo_subdivision2
     ).*,
     client_id,
     document_id,
@@ -508,8 +505,12 @@ tls_handshake_time AS (
     COUNT(*) > 50
 )
 SELECT
-  DAUs.country,
-  IF(DAUs.city = "??", "unknown", city) AS city,
+  DAUs.country AS country,
+  -- Caveat: mindmind location mapping returns `??` in cases where
+  -- the population is less than 15k. As long as the entry has a higher level
+  -- grouping (country) we still want to keep it. For backwards compatibility,
+  -- we rename this value to `unknown` to represent a lack of value.
+  IF(DAUs.city = "??", "unknown", DAUs.city) AS city,
   NULLIF(DAUs.geo_subdivision1, "??") AS geo_subdivision1,
   NULLIF(DAUs.geo_subdivision2, "??") AS geo_subdivision2,
   DAUs.datetime AS `datetime`,

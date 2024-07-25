@@ -414,7 +414,7 @@ class View:
 
                 try:
                     if self.schema_path.is_file():
-                        self.schema.deploy(target_view)
+                        table = self.schema.deploy(target_view)
                 except Exception as e:
                     print(f"Could not update field descriptions for {target_view}: {e}")
 

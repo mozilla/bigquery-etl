@@ -1,0 +1,81 @@
+fields:
+- description: Unique ID for the client installation.
+  mode: NULLABLE
+  name: client_id
+  type: STRING
+- description: Sample ID, a number 0-99 inclusive, that samples by client ID
+  mode: NULLABLE
+  name: sample_id
+  type: INT64
+- description: The date associated with the Markov state; as_of_date will not update after a year of inactivity as the markov states stop updating
+  mode: NULLABLE
+  name: as_of_date
+  type: DATE
+- description: First submission date that this client was seen on
+  mode: NULLABLE
+  name: first_seen_date
+  type: DATE
+- description: Days Since First Seen
+  mode: NULLABLE
+  name: days_since_first_seen
+  type: INT64
+- description: Days Since Active
+  mode: NULLABLE
+  name: days_since_active
+  type: INT64
+- description: First Reported Country
+  mode: NULLABLE
+  name: first_reported_country
+  type: STRING
+- description: Attribution
+  mode: NULLABLE
+  name: attribution
+  type: RECORD
+  fields:
+  - mode: NULLABLE
+    name: source
+    type: STRING
+    description: null
+  - mode: NULLABLE
+    name: medium
+    type: STRING
+    description: null
+  - mode: NULLABLE
+    name: campaign
+    type: STRING
+    description: null
+  - mode: NULLABLE
+    name: content
+    type: STRING
+    description: null
+  - mode: NULLABLE
+    name: experiment
+    type: STRING
+  - mode: NULLABLE
+    name: variation
+    type: STRING
+  - mode: NULLABLE
+    name: dltoken
+    type: STRING
+  - name: dlsource
+    type: STRING
+    mode: NULLABLE
+  - name: ua
+    type: STRING
+    mode: NULLABLE
+- description: Days Seen Bytes
+  mode: NULLABLE
+  name: days_seen_bytes
+  type: BYTES
+- description: Active
+  mode: NULLABLE
+  name: active
+  type: INT64
+- description: Ad Clicks
+  mode: NULLABLE
+  name: ad_clicks
+  type: INT64
+- description: Total Historical Ad Clicks
+  mode: NULLABLE
+  name: total_historic_ad_clicks
+  type: INT64

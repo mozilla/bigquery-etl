@@ -1,0 +1,3 @@
+description: |
+  Cast a String-based JSON histogram to an Array of Structs
+friendly_name: Histogram cast Struct

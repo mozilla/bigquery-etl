@@ -80,6 +80,14 @@ fields:
   name: attribution_content
   type: STRING
   mode: NULLABLE
+- description: Unique token created at Firefox download time.
+  name: attribution_dltoken
+  type: STRING
+  mode: NULLABLE
+- description: Identifier that indicates where installations of Firefox originated.
+  name: attribution_dlsource
+  type: STRING
+  mode: NULLABLE
 - description: Funnel experiment parameters.
   name: attribution_experiment
   type: STRING
@@ -94,6 +102,10 @@ fields:
   mode: NULLABLE
 - description: Client's user agent, which corresponds to the web browser used to download the Firefox installer.
   name: attribution_ua
+  type: STRING
+  mode: NULLABLE
+- description: Variation of the identifier that indicates where installations of Firefox originated.
+  name: attribution_variation
   type: STRING
   mode: NULLABLE
 - description: The anonymized path of the engine xml file. For details on the components refer to the metadata for telemetry.new_profile.
@@ -201,18 +213,6 @@ fields:
   mode: NULLABLE
 - description: First seen version at installation
   name: installation_first_seen_version
-  type: BOOLEAN
-  mode: NULLABLE
-- description: Unique token created at Firefox download time.
-  name: attribution_dltoken
-  type: STRING
-  mode: NULLABLE
-- description: Identifier that indicates where installations of Firefox originated.
-  name: attribution_dlsource
-  type: STRING
-  mode: NULLABLE
-- description: Variation of the identifier that indicates where installations of Firefox originated.
-  name: attribution_variation
   type: STRING
   mode: NULLABLE
 - description: OS name - not normalized_os
@@ -225,13 +225,14 @@ fields:
   mode: NULLABLE
 - description: Windows build number
   name: windows_build_number
-  type: STRING
+  type: FLOAT64
   mode: NULLABLE
 - description: Combo of os, os_version, windows_build_number, NULL if not windows
   name: windows_version
   type: STRING
   mode: NULLABLE
-- description:
+- description: A collection of pings - which ping is reported in the table as well as a record of all other
+    pings in the data for this one particular client
   name: metadata
   type: RECORD
   mode: NULLABLE

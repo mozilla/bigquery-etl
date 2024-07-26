@@ -28,6 +28,7 @@ CREATE OR REPLACE VIEW
           AND metric NOT LIKE r"%manager\_message\_size%"
           AND metric NOT LIKE r"%dropped\_frames\_proportion%"
         )
+        AND metric_type != "boolean"
     ),
     calculated_percentiles AS (
       SELECT

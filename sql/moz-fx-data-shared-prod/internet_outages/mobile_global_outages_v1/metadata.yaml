@@ -1,0 +1,21 @@
+friendly_name: Internet Outages (Mobile)
+# yamllint disable rule:line-length
+description: |-
+  This contains a set aggregated metrics that correlate to internet
+  outages for different countries in the world specifically build using mobile data.
+
+owners:
+- aplacitelli@mozilla.com
+labels:
+  incremental: true
+scheduling:
+  dag_name: bqetl_internet_outages
+bigquery:
+  time_partitioning:
+    type: day
+    field: datetime
+    require_partition_filter: null
+  clustering:
+    fields:
+    - country
+    - city

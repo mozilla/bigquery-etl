@@ -158,6 +158,23 @@ with DAG(
             search_derived__mobile_search_clients_daily__v1
         )
 
+    search_derived__mobile_search_clients_daily__v2 = bigquery_etl_query(
+        task_id="search_derived__mobile_search_clients_daily__v2",
+        destination_table="mobile_search_clients_daily_v2",
+        dataset_id="search_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="cmorales@mozilla.com",
+        email=[
+            "akomar@mozilla.com",
+            "akommasani@mozilla.com",
+            "anicholson@mozilla.com",
+            "cmorales@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     search_derived__mobile_search_clients_last_seen__v1 = bigquery_etl_query(
         task_id="search_derived__mobile_search_clients_last_seen__v1",
         destination_table="mobile_search_clients_last_seen_v1",
@@ -179,6 +196,10 @@ with DAG(
     )
 
     search_derived__mobile_search_clients_daily__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    search_derived__mobile_search_clients_daily__v2.set_upstream(
         wait_for_copy_deduplicate_all
     )
 

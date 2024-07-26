@@ -3007,6 +3007,84 @@ fields:
       description: 'Accuracy returned by the Geolocation API
 
         '
+    - name: networking_http_3_download_throughput_100
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The download throughput for http/3 requests size larger than 100MB.
+        Measured in megabits per second, Mbps.
+
+        '
+    - name: networking_http_3_download_throughput_10_50
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The download throughput for http/3 requests between 10MB and 50MB.
+        Measured in megabits per second, Mbps.
+
+        '
+    - name: networking_http_3_download_throughput_50_100
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The download throughput for http/3 requests between 50MB and 100MB.
+        Measured in megabits per second, Mbps.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -3379,8 +3457,7 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream. (Migrated from
-        the geckoview metric of the same name).
+      description: 'Failure occurs when initializing the audio stream.
 
         '
     - name: glean_validation_pings_submitted
@@ -5390,6 +5467,19 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'The OCSP result when CRLite claims a certificate is revoked.
+
+        '
+    - name: pdfjs_image_added
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Number of images added with/without alt text.
 
         '
   - name: quantity
@@ -14641,6 +14731,19 @@ fields:
         type: BOOLEAN
         mode: NULLABLE
       description: 'Which system provider are we using on Linux
+
+        '
+    - name: pdfjs_image_alt_text_edit
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: BOOLEAN
+        mode: NULLABLE
+      description: 'Stores alt text modal settings for the user.
 
         '
   - name: rate

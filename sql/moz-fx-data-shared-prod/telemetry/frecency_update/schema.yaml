@@ -231,3 +231,8 @@ fields:
   type: TIMESTAMP
   mode: NULLABLE
   description: Time when the ingestion edge server accepted this message
+- name: profile_group_id
+  type: STRING
+  mode: NULLABLE
+  description: A UUID identifying the profile's group on a single device and allowing
+    user-oriented correlation of data

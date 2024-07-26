@@ -904,10 +904,23 @@ fields:
         - name: screen_width
           type: INTEGER
           mode: NULLABLE
+        - name: contents_scale_factor
+          type: FLOAT
+          mode: NULLABLE
+          description: The number of device pixels per desktop pixel for this screen.
+        - name: default_css_scale_factor
+          type: FLOAT
+          mode: NULLABLE
+          description: The default number of device pixels per unscaled CSS pixel
+            for this screen.
       - name: target_frame_rate
         type: INTEGER
         mode: NULLABLE
         description: Frame rate in Hz, typically 60 or more, see bug 1840381
+      - name: text_scale_factor
+        type: FLOAT
+        mode: NULLABLE
+        description: Text scale supported by GTK and Windows. 1 corresponds to 100%.
     - name: hdd
       type: RECORD
       mode: NULLABLE
@@ -2582,3 +2595,8 @@ fields:
 - name: version
   type: FLOAT
   mode: NULLABLE
+- name: profile_group_id
+  type: STRING
+  mode: NULLABLE
+  description: A UUID identifying the profile's group on a single device and allowing
+    user-oriented correlation of data

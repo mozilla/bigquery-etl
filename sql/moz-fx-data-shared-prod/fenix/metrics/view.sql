@@ -235,7 +235,10 @@ SELECT
       metrics.custom_distribution.bounce_tracking_protection_num_hosts_per_purge_run,
       metrics.custom_distribution.cert_compression_zstd_saved_bytes,
       metrics.custom_distribution.networking_cookie_chips_partition_limit_overflow,
-      metrics.custom_distribution.geolocation_accuracy
+      metrics.custom_distribution.geolocation_accuracy,
+      metrics.custom_distribution.networking_http_3_download_throughput_100,
+      metrics.custom_distribution.networking_http_3_download_throughput_10_50,
+      metrics.custom_distribution.networking_http_3_download_throughput_50_100
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -398,7 +401,8 @@ SELECT
       metrics.labeled_counter.geolocation_fallback,
       metrics.labeled_counter.geolocation_request_result,
       metrics.labeled_counter.cert_verifier_cert_revocation_mechanisms,
-      metrics.labeled_counter.cert_verifier_crlite_vs_ocsp_result
+      metrics.labeled_counter.cert_verifier_crlite_vs_ocsp_result,
+      metrics.labeled_counter.pdfjs_image_added
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -724,7 +728,8 @@ SELECT
       metrics.labeled_boolean.data_storage_migration,
       metrics.labeled_boolean.oskeystore_self_test,
       metrics.labeled_boolean.media_playback_device_hardware_decoder_support,
-      metrics.labeled_boolean.geolocation_linux_provider
+      metrics.labeled_boolean.geolocation_linux_provider,
+      metrics.labeled_boolean.pdfjs_image_alt_text_edit
     ) AS `labeled_boolean`,
     STRUCT(
       metrics.rate.rtcrtpsender_setparameters_fail_length_changed,
@@ -1006,7 +1011,10 @@ SELECT
       metrics.custom_distribution.bounce_tracking_protection_num_hosts_per_purge_run,
       metrics.custom_distribution.cert_compression_zstd_saved_bytes,
       metrics.custom_distribution.networking_cookie_chips_partition_limit_overflow,
-      metrics.custom_distribution.geolocation_accuracy
+      metrics.custom_distribution.geolocation_accuracy,
+      metrics.custom_distribution.networking_http_3_download_throughput_100,
+      metrics.custom_distribution.networking_http_3_download_throughput_10_50,
+      metrics.custom_distribution.networking_http_3_download_throughput_50_100
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -1169,7 +1177,8 @@ SELECT
       metrics.labeled_counter.geolocation_fallback,
       metrics.labeled_counter.geolocation_request_result,
       metrics.labeled_counter.cert_verifier_cert_revocation_mechanisms,
-      metrics.labeled_counter.cert_verifier_crlite_vs_ocsp_result
+      metrics.labeled_counter.cert_verifier_crlite_vs_ocsp_result,
+      metrics.labeled_counter.pdfjs_image_added
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -1495,7 +1504,8 @@ SELECT
       metrics.labeled_boolean.data_storage_migration,
       metrics.labeled_boolean.oskeystore_self_test,
       metrics.labeled_boolean.media_playback_device_hardware_decoder_support,
-      metrics.labeled_boolean.geolocation_linux_provider
+      metrics.labeled_boolean.geolocation_linux_provider,
+      metrics.labeled_boolean.pdfjs_image_alt_text_edit
     ) AS `labeled_boolean`,
     STRUCT(
       metrics.rate.rtcrtpsender_setparameters_fail_length_changed,
@@ -1795,7 +1805,10 @@ SELECT
       metrics.custom_distribution.bounce_tracking_protection_num_hosts_per_purge_run,
       metrics.custom_distribution.cert_compression_zstd_saved_bytes,
       metrics.custom_distribution.networking_cookie_chips_partition_limit_overflow,
-      metrics.custom_distribution.geolocation_accuracy
+      metrics.custom_distribution.geolocation_accuracy,
+      metrics.custom_distribution.networking_http_3_download_throughput_100,
+      metrics.custom_distribution.networking_http_3_download_throughput_10_50,
+      metrics.custom_distribution.networking_http_3_download_throughput_50_100
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -1958,7 +1971,8 @@ SELECT
       metrics.labeled_counter.geolocation_fallback,
       metrics.labeled_counter.geolocation_request_result,
       metrics.labeled_counter.cert_verifier_cert_revocation_mechanisms,
-      metrics.labeled_counter.cert_verifier_crlite_vs_ocsp_result
+      metrics.labeled_counter.cert_verifier_crlite_vs_ocsp_result,
+      metrics.labeled_counter.pdfjs_image_added
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -2284,7 +2298,8 @@ SELECT
       metrics.labeled_boolean.data_storage_migration,
       metrics.labeled_boolean.oskeystore_self_test,
       metrics.labeled_boolean.media_playback_device_hardware_decoder_support,
-      metrics.labeled_boolean.geolocation_linux_provider
+      metrics.labeled_boolean.geolocation_linux_provider,
+      metrics.labeled_boolean.pdfjs_image_alt_text_edit
     ) AS `labeled_boolean`,
     STRUCT(
       metrics.rate.rtcrtpsender_setparameters_fail_length_changed,
@@ -2593,7 +2608,10 @@ SELECT
       metrics.custom_distribution.bounce_tracking_protection_num_hosts_per_purge_run,
       metrics.custom_distribution.cert_compression_zstd_saved_bytes,
       metrics.custom_distribution.networking_cookie_chips_partition_limit_overflow,
-      metrics.custom_distribution.geolocation_accuracy
+      metrics.custom_distribution.geolocation_accuracy,
+      metrics.custom_distribution.networking_http_3_download_throughput_100,
+      metrics.custom_distribution.networking_http_3_download_throughput_10_50,
+      metrics.custom_distribution.networking_http_3_download_throughput_50_100
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -2756,7 +2774,8 @@ SELECT
       metrics.labeled_counter.geolocation_fallback,
       metrics.labeled_counter.geolocation_request_result,
       metrics.labeled_counter.cert_verifier_cert_revocation_mechanisms,
-      metrics.labeled_counter.cert_verifier_crlite_vs_ocsp_result
+      metrics.labeled_counter.cert_verifier_crlite_vs_ocsp_result,
+      metrics.labeled_counter.pdfjs_image_added
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -3082,7 +3101,8 @@ SELECT
       metrics.labeled_boolean.data_storage_migration,
       metrics.labeled_boolean.oskeystore_self_test,
       metrics.labeled_boolean.media_playback_device_hardware_decoder_support,
-      metrics.labeled_boolean.geolocation_linux_provider
+      metrics.labeled_boolean.geolocation_linux_provider,
+      metrics.labeled_boolean.pdfjs_image_alt_text_edit
     ) AS `labeled_boolean`,
     STRUCT(
       metrics.rate.rtcrtpsender_setparameters_fail_length_changed,
@@ -3373,7 +3393,10 @@ SELECT
       metrics.custom_distribution.bounce_tracking_protection_num_hosts_per_purge_run,
       metrics.custom_distribution.cert_compression_zstd_saved_bytes,
       metrics.custom_distribution.networking_cookie_chips_partition_limit_overflow,
-      metrics.custom_distribution.geolocation_accuracy
+      metrics.custom_distribution.geolocation_accuracy,
+      metrics.custom_distribution.networking_http_3_download_throughput_100,
+      metrics.custom_distribution.networking_http_3_download_throughput_10_50,
+      metrics.custom_distribution.networking_http_3_download_throughput_50_100
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -3536,7 +3559,8 @@ SELECT
       metrics.labeled_counter.geolocation_fallback,
       metrics.labeled_counter.geolocation_request_result,
       metrics.labeled_counter.cert_verifier_cert_revocation_mechanisms,
-      metrics.labeled_counter.cert_verifier_crlite_vs_ocsp_result
+      metrics.labeled_counter.cert_verifier_crlite_vs_ocsp_result,
+      metrics.labeled_counter.pdfjs_image_added
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -3862,7 +3886,8 @@ SELECT
       metrics.labeled_boolean.data_storage_migration,
       metrics.labeled_boolean.oskeystore_self_test,
       metrics.labeled_boolean.media_playback_device_hardware_decoder_support,
-      metrics.labeled_boolean.geolocation_linux_provider
+      metrics.labeled_boolean.geolocation_linux_provider,
+      metrics.labeled_boolean.pdfjs_image_alt_text_edit
     ) AS `labeled_boolean`,
     STRUCT(
       metrics.rate.rtcrtpsender_setparameters_fail_length_changed,

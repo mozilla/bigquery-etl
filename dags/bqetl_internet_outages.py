@@ -88,12 +88,12 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    checks__fail_internet_outages__global_outages__v1 = bigquery_dq_check(
-        task_id="checks__fail_internet_outages__global_outages__v1",
+    checks__warn_internet_outages__global_outages__v1 = bigquery_dq_check(
+        task_id="checks__warn_internet_outages__global_outages__v1",
         source_table="global_outages_v1",
         dataset_id="internet_outages",
         project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=True,
+        is_dq_check_fail=False,
         owner="aplacitelli@mozilla.com",
         email=["aplacitelli@mozilla.com"],
         depends_on_past=False,
@@ -101,9 +101,9 @@ with DAG(
         retries=0,
     )
 
-    checks__warn_internet_outages__global_outages__v1 = bigquery_dq_check(
-        task_id="checks__warn_internet_outages__global_outages__v1",
-        source_table="global_outages_v1",
+    checks__warn_internet_outages__global_outages__v2 = bigquery_dq_check(
+        task_id="checks__warn_internet_outages__global_outages__v2",
+        source_table="global_outages_v2",
         dataset_id="internet_outages",
         project_id="moz-fx-data-shared-prod",
         is_dq_check_fail=False,
@@ -125,12 +125,23 @@ with DAG(
         depends_on_past=False,
     )
 
-    checks__fail_internet_outages__global_outages__v1.set_upstream(
-        internet_outages__global_outages__v1
+    internet_outages__global_outages__v2 = bigquery_etl_query(
+        task_id="internet_outages__global_outages__v2",
+        destination_table="global_outages_v2",
+        dataset_id="internet_outages",
+        project_id="moz-fx-data-shared-prod",
+        owner="aplacitelli@mozilla.com",
+        email=["aplacitelli@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
     )
 
     checks__warn_internet_outages__global_outages__v1.set_upstream(
         internet_outages__global_outages__v1
+    )
+
+    checks__warn_internet_outages__global_outages__v2.set_upstream(
+        internet_outages__global_outages__v2
     )
 
     internet_outages__global_outages__v1.set_upstream(wait_for_copy_deduplicate_all)
@@ -140,5 +151,15 @@ with DAG(
     )
 
     internet_outages__global_outages__v1.set_upstream(
+        wait_for_telemetry_derived__clients_daily_joined__v1
+    )
+
+    internet_outages__global_outages__v2.set_upstream(wait_for_copy_deduplicate_all)
+
+    internet_outages__global_outages__v2.set_upstream(
+        wait_for_copy_deduplicate_main_ping
+    )
+
+    internet_outages__global_outages__v2.set_upstream(
         wait_for_telemetry_derived__clients_daily_joined__v1
     )

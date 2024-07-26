@@ -238,6 +238,18 @@ fields:
         value to the experiment''s slug (and ensuring the featureId is "search").
 
         '
+  - name: counter
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: serp_categorization_no_map_found
+      type: INTEGER
+      mode: NULLABLE
+      description: 'A count incremented upon a SERP categorization event being recorded
+        without a corresponding impression event being recorded. This metric effectively
+        counts missing impressions due to issues with the domain-to-categories map.
+
+        '
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

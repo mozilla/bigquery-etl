@@ -746,8 +746,17 @@ fields:
         - name: screen_width
           type: INTEGER
           mode: NULLABLE
+        - name: contents_scale_factor
+          type: FLOAT
+          mode: NULLABLE
+        - name: default_css_scale_factor
+          type: FLOAT
+          mode: NULLABLE
       - name: target_frame_rate
         type: INTEGER
+        mode: NULLABLE
+      - name: text_scale_factor
+        type: FLOAT
         mode: NULLABLE
     - name: has_win_package_id
       type: BOOLEAN
@@ -39640,4 +39649,7 @@ fields:
   mode: NULLABLE
 - name: version
   type: FLOAT
+  mode: NULLABLE
+- name: profile_group_id
+  type: STRING
   mode: NULLABLE

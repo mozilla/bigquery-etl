@@ -98,7 +98,7 @@ ranked_data AS (
         cp.client_agg_type,
         cp.metric_type,
         histogram,
-        non_norm_histogram,
+        non_norm_histogram
       ORDER BY
         total_users,
         total_sample DESC

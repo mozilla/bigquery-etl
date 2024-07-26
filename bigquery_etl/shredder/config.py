@@ -94,6 +94,9 @@ USER_CHARACTERISTICS_ID = "metrics.uuid.characteristics_client_identifier"
 DESKTOP_SRC = DeleteSource(
     table="telemetry_stable.deletion_request_v4", field=CLIENT_ID
 )
+DESKTOP_GLEAN_SRC = DeleteSource(
+    table="firefox_desktop_stable.deletion_request_v1", field=GLEAN_CLIENT_ID
+)
 IMPRESSION_SRC = DeleteSource(
     table="telemetry_stable.deletion_request_v4",
     field="payload.scalars.parent.deletion_request_impression_id",
@@ -108,6 +111,9 @@ FXA_HMAC_SRC = DeleteSource(
 FXA_SRC = DeleteSource(table="firefox_accounts.fxa_delete_events", field=USER_ID)
 FXA_UNHASHED_SRC = DeleteSource(
     table="firefox_accounts.fxa_delete_events", field="user_id_unhashed"
+)
+FXA_FRONTEND_GLEAN_SRC = DeleteSource(
+    table="accounts_frontend_stable.deletion_request_v1", field=GLEAN_CLIENT_ID
 )
 REGRETS_SRC = DeleteSource(
     table="regrets_reporter_stable.regrets_reporter_update_v1",
@@ -369,8 +375,41 @@ DELETE_TARGETS: DeleteIndex = {
     # client association ping
     DeleteTarget(
         table="firefox_desktop_stable.fx_accounts_v1",
-        field="metrics.string.client_association_uid",
-    ): FXA_UNHASHED_SRC,
+        field=("metrics.string.client_association_uid", GLEAN_CLIENT_ID),
+    ): (FXA_UNHASHED_SRC, DESKTOP_GLEAN_SRC),
+    # FxA on Glean
+    DeleteTarget(
+        table="accounts_backend_stable.events_v1",
+        field="metrics.string.account_user_id_sha256",
+    ): FXA_SRC,
+    DeleteTarget(
+        table="accounts_backend_stable.accounts_events_v1",
+        field="metrics.string.account_user_id_sha256",
+    ): FXA_SRC,
+    DeleteTarget(
+        table="accounts_backend_derived.events_stream_v1",
+        field="metrics.string.account_user_id_sha256",
+    ): FXA_SRC,
+    DeleteTarget(
+        table="accounts_backend_derived.users_services_daily_v1",
+        field="user_id_sha256",
+    ): FXA_SRC,
+    DeleteTarget(
+        table="accounts_backend_derived.users_services_last_seen_v1",
+        field="user_id_sha256",
+    ): FXA_SRC,
+    DeleteTarget(
+        table="accounts_frontend_stable.events_v1",
+        field=("metrics.string.account_user_id_sha256", GLEAN_CLIENT_ID),
+    ): (FXA_SRC, FXA_FRONTEND_GLEAN_SRC),
+    DeleteTarget(
+        table="accounts_frontend_stable.accounts_events_v1",
+        field=("metrics.string.account_user_id_sha256", GLEAN_CLIENT_ID),
+    ): (FXA_SRC, FXA_FRONTEND_GLEAN_SRC),
+    DeleteTarget(
+        table="accounts_frontend_derived.events_stream_v1",
+        field=("metrics.string.account_user_id_sha256", GLEAN_CLIENT_ID),
+    ): (FXA_SRC, FXA_FRONTEND_GLEAN_SRC),
     # legacy mobile
     DeleteTarget(
         table="telemetry_stable.core_v1",
@@ -424,6 +463,10 @@ DELETE_TARGETS: DeleteIndex = {
         table="firefox_desktop_stable.user_characteristics_v1",
         field=USER_CHARACTERISTICS_ID,
     ): USER_CHARACTERISTICS_SRC,
+    # tables in Glean derived datasets that use different sources than the find_glean_targets defaults
+    client_id_target(table="firefox_desktop_derived.adclick_history_v1"): DESKTOP_SRC,
+    client_id_target(table="firefox_desktop_derived.client_ltv_v1"): DESKTOP_SRC,
+    client_id_target(table="firefox_desktop_derived.ltv_states_v1"): DESKTOP_SRC,
 }
 
 SEARCH_IGNORE_TABLES = {source.table for source in SOURCES}
@@ -573,6 +616,9 @@ def find_glean_targets(
             if app_name is not None and app_name != channel_name:
                 sources[app_name + "_derived"] += (source,)
 
+    # skip tables already added to DELETE_TARGETS
+    manually_added_tables = {target.table for target in DELETE_TARGETS.keys()}
+
     return {
         **{
             # glean stable tables that have a source
@@ -588,6 +634,7 @@ def find_glean_targets(
             and not table.table_id.startswith("migration")
             # skip tables with explicitly excluded client ids
             and table.labels.get("include_client_id", "true").lower() != "false"
+            and qualified_table_id(table) not in manually_added_tables
         },
         **{
             # glean derived tables that contain client_id
@@ -599,6 +646,7 @@ def find_glean_targets(
             for table in glean_derived_tables
             if any(field.name == CLIENT_ID for field in table.schema)
             and not table.table_id.startswith(derived_source_prefix)
+            and qualified_table_id(table) not in manually_added_tables
         },
     }
 

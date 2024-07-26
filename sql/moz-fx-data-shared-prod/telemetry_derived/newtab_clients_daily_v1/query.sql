@@ -162,6 +162,7 @@ weather_data AS (
     SUM(weather_widget_load_errors) AS weather_widget_load_errors,
     SUM(weather_widget_change_display_to_detailed) AS weather_widget_change_display_to_detailed,
     SUM(weather_widget_change_display_to_simple) AS weather_widget_change_display_to_simple,
+    SUM(weather_widget_location_selected) AS weather_widget_location_selected
   FROM
     cte
   CROSS JOIN
@@ -214,6 +215,7 @@ SELECT
     0
   ) AS weather_widget_change_display_to_detailed,
   COALESCE(weather_widget_change_display_to_simple, 0) AS weather_widget_change_display_to_simple,
+  COALESCE(weather_widget_location_selected, 0) AS weather_widget_location_selected
 FROM
   visits_data
 LEFT JOIN

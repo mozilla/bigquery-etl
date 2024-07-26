@@ -1,7 +1,8 @@
 friendly_name: Internet Outages (version 2)
 # yamllint disable rule:line-length
 description: |-
-  Note: Version 2 contains two additional fields: geo_subdivision1 && geo_subdivision2 for more accurate data grouping.
+  Note: Version 2 contains two additional fields: geo_subdivision1 && geo_subdivision2 for more accurate data grouping
+        and the data available starting 2024/07/26.
 
   This contains a set aggregated metrics that correlate to internet
   outages for different countries in the world.

@@ -30,4 +30,4 @@ SELECT
   is_suspicious_device_client,
   {% endif %}
 FROM
-  `{{ project_id }}.{{ dataset }}.{{ name }}_{{ version }}`
+  `{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}`

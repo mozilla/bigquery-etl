@@ -19,6 +19,7 @@ SELECT
     client_info.client_id,
     sample_id,
     submission_timestamp,
+    ping_info.seq AS ping_seq,
     {% for attribution_group in product_attribution_groups if attribution_group.name == 'adjust' %}
     {% for field in attribution_group.fields %}
       {% if app_name == "firefox_ios" %}
@@ -71,7 +72,7 @@ first_session_ping AS (
         NULL
       ) IGNORE NULLS
       ORDER BY
-        submission_timestamp ASC
+        ping_seq ASC, submission_timestamp ASC
       LIMIT
         1
     )[SAFE_OFFSET(0)] AS adjust_info,
@@ -95,7 +96,7 @@ first_session_ping AS (
         NULL
       ) IGNORE NULLS
       ORDER BY
-        submission_timestamp ASC
+        ping_seq ASC, submission_timestamp ASC
       LIMIT
         1
     )[SAFE_OFFSET(0)] AS play_store_info,
@@ -137,6 +138,7 @@ first_session_ping AS (
     client_info.client_id AS client_id,
     sample_id,
     submission_timestamp,
+    ping_info.seq AS ping_seq,
     {% for attribution_group in product_attribution_groups if attribution_group.name == 'install_source' %}
     {% for field in attribution_group.fields %}
       {% if app_name == 'fenix' %}
@@ -186,7 +188,7 @@ metrics_ping AS (
         NULL
       ) IGNORE NULLS
       ORDER BY
-        submission_timestamp ASC
+        ping_seq ASC, submission_timestamp ASC
       LIMIT
         1
     )[SAFE_OFFSET(0)] AS adjust_info,
@@ -199,7 +201,7 @@ metrics_ping AS (
         NULL
       ) IGNORE NULLS
       ORDER BY
-        submission_timestamp ASC
+        ping_seq ASC, submission_timestamp ASC
       LIMIT
         1
     )[SAFE_OFFSET(0)] AS install_source,

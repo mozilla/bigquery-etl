@@ -202,9 +202,15 @@ class MobileProducts(Enum):
     focus_android = Product(
         friendly_name="Focus Android",
         is_mobile_kpi=True,
+        attribution_groups=[
+            AttributionFields.install_source,
+        ],
     )
     klar_android = Product(
         friendly_name="Klar Android",
+        attribution_groups=[
+            AttributionFields.install_source,
+        ],
     )
     firefox_ios = Product(
         friendly_name="Firefox iOS",

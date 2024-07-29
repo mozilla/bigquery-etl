@@ -9,7 +9,9 @@ SELECT
   locale,
   is_mobile,
   {% for field in product_attribution_fields.values() %}
+    {% if not field.name.endwith("timestamp") %}
     {{ field.name }},
+    {% endif %}
   {% endfor %}
   COUNTIF(is_dau) AS dau,
   COUNTIF(is_wau) AS wau,

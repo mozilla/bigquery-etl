@@ -58,7 +58,9 @@ SELECT
   clients_daily.isp,
   active_users.is_mobile,
   {% for attribution_field in product_attribution_fields.values() %}
-    attribution.{{ attribution_field.name }},
+    {% if not attribution_field.name.endwith("timestamp") %}
+    {{ attribution_field.name }},
+    {% endif %}
   {% endfor %}
   {% if 'adjust_network' in product_attribution_fields %}
     `moz-fx-data-shared-prod.udf.organic_vs_paid_mobile`(adjust_network) AS paid_vs_organic,

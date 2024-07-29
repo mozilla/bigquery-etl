@@ -9,7 +9,9 @@ SELECT
   locale,
   is_mobile,
   {% for field in product_attribution_fields.values() %}
+    {% if not field.name.endwith("timestamp") %}
     {{ field.name }},
+    {% endif %}
   {% endfor %}
   COUNTIF(ping_sent_metric_date) AS ping_sent_metric_date,
   COUNTIF(ping_sent_week_4) AS ping_sent_week_4,

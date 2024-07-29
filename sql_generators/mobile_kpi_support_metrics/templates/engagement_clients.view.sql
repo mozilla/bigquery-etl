@@ -64,7 +64,9 @@ SELECT
   is_mau,
   is_mobile,
   {% for attribution_field in product_attribution_fields.values() %}
+    {% if not attribution_field.name.endwith("timestamp") %}
     attribution.{{ attribution_field.name }},
+    {% endif %}
   {% endfor %}
   {% if 'adjust_network' in product_attribution_fields %}
     `moz-fx-data-shared-prod.udf.organic_vs_paid_mobile`(adjust_network) AS paid_vs_organic,

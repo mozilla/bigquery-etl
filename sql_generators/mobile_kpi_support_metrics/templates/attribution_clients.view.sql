@@ -22,7 +22,7 @@ SELECT
   meta_info.submission_timestamp AS meta_attribution_timestamp,
   {% endif %}
   {% if 'adjust_network' in product_attribution_fields %}
-    `moz-fx-data-shared-prod.udf.organic_vs_paid_mobile`(adjust_network) AS paid_vs_organic,
+    `moz-fx-data-shared-prod.udf.organic_vs_paid_mobile`(adjust_info.adjust_network) AS paid_vs_organic,
   {% else %}
     "Organic" AS paid_vs_organic,
   {% endif %}

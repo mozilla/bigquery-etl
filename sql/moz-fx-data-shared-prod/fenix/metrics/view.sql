@@ -685,7 +685,9 @@ SELECT
       metrics.timing_distribution.performance_pageload_http3_fcp_http3,
       metrics.timing_distribution.performance_pageload_http3_fcp_supports_http3,
       metrics.timing_distribution.performance_pageload_http3_fcp_without_priority,
-      metrics.timing_distribution.glean_database_write_time
+      metrics.timing_distribution.glean_database_write_time,
+      metrics.timing_distribution.networking_cache_metadata_first_read_time,
+      metrics.timing_distribution.networking_cache_metadata_second_read_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -698,7 +700,8 @@ SELECT
       metrics.memory_distribution.fog_ipc_buffer_sizes,
       metrics.memory_distribution.places_manager_db_size_after_maintenance,
       metrics.memory_distribution.extensions_apis_dnr_startup_cache_read_size,
-      metrics.memory_distribution.extensions_apis_dnr_startup_cache_write_size
+      metrics.memory_distribution.extensions_apis_dnr_startup_cache_write_size,
+      metrics.memory_distribution.networking_cache_metadata_size
     ) AS `memory_distribution`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -1461,7 +1464,9 @@ SELECT
       metrics.timing_distribution.performance_pageload_http3_fcp_http3,
       metrics.timing_distribution.performance_pageload_http3_fcp_supports_http3,
       metrics.timing_distribution.performance_pageload_http3_fcp_without_priority,
-      metrics.timing_distribution.glean_database_write_time
+      metrics.timing_distribution.glean_database_write_time,
+      metrics.timing_distribution.networking_cache_metadata_first_read_time,
+      metrics.timing_distribution.networking_cache_metadata_second_read_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -1474,7 +1479,8 @@ SELECT
       metrics.memory_distribution.fog_ipc_buffer_sizes,
       metrics.memory_distribution.places_manager_db_size_after_maintenance,
       metrics.memory_distribution.extensions_apis_dnr_startup_cache_read_size,
-      metrics.memory_distribution.extensions_apis_dnr_startup_cache_write_size
+      metrics.memory_distribution.extensions_apis_dnr_startup_cache_write_size,
+      metrics.memory_distribution.networking_cache_metadata_size
     ) AS `memory_distribution`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -2255,7 +2261,9 @@ SELECT
       metrics.timing_distribution.performance_pageload_http3_fcp_http3,
       metrics.timing_distribution.performance_pageload_http3_fcp_supports_http3,
       metrics.timing_distribution.performance_pageload_http3_fcp_without_priority,
-      metrics.timing_distribution.glean_database_write_time
+      metrics.timing_distribution.glean_database_write_time,
+      metrics.timing_distribution.networking_cache_metadata_first_read_time,
+      metrics.timing_distribution.networking_cache_metadata_second_read_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -2268,7 +2276,8 @@ SELECT
       metrics.memory_distribution.fog_ipc_buffer_sizes,
       metrics.memory_distribution.places_manager_db_size_after_maintenance,
       metrics.memory_distribution.extensions_apis_dnr_startup_cache_read_size,
-      metrics.memory_distribution.extensions_apis_dnr_startup_cache_write_size
+      metrics.memory_distribution.extensions_apis_dnr_startup_cache_write_size,
+      metrics.memory_distribution.networking_cache_metadata_size
     ) AS `memory_distribution`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -3058,7 +3067,9 @@ SELECT
       metrics.timing_distribution.performance_pageload_http3_fcp_http3,
       metrics.timing_distribution.performance_pageload_http3_fcp_supports_http3,
       metrics.timing_distribution.performance_pageload_http3_fcp_without_priority,
-      metrics.timing_distribution.glean_database_write_time
+      metrics.timing_distribution.glean_database_write_time,
+      metrics.timing_distribution.networking_cache_metadata_first_read_time,
+      metrics.timing_distribution.networking_cache_metadata_second_read_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -3071,7 +3082,8 @@ SELECT
       metrics.memory_distribution.fog_ipc_buffer_sizes,
       metrics.memory_distribution.places_manager_db_size_after_maintenance,
       metrics.memory_distribution.extensions_apis_dnr_startup_cache_read_size,
-      metrics.memory_distribution.extensions_apis_dnr_startup_cache_write_size
+      metrics.memory_distribution.extensions_apis_dnr_startup_cache_write_size,
+      metrics.memory_distribution.networking_cache_metadata_size
     ) AS `memory_distribution`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -3843,7 +3855,9 @@ SELECT
       metrics.timing_distribution.performance_pageload_http3_fcp_http3,
       metrics.timing_distribution.performance_pageload_http3_fcp_supports_http3,
       metrics.timing_distribution.performance_pageload_http3_fcp_without_priority,
-      metrics.timing_distribution.glean_database_write_time
+      metrics.timing_distribution.glean_database_write_time,
+      metrics.timing_distribution.networking_cache_metadata_first_read_time,
+      metrics.timing_distribution.networking_cache_metadata_second_read_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -3856,7 +3870,8 @@ SELECT
       metrics.memory_distribution.fog_ipc_buffer_sizes,
       metrics.memory_distribution.places_manager_db_size_after_maintenance,
       metrics.memory_distribution.extensions_apis_dnr_startup_cache_read_size,
-      metrics.memory_distribution.extensions_apis_dnr_startup_cache_write_size
+      metrics.memory_distribution.extensions_apis_dnr_startup_cache_write_size,
+      metrics.memory_distribution.networking_cache_metadata_size
     ) AS `memory_distribution`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,

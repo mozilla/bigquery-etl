@@ -265,7 +265,8 @@ SELECT
       metrics.memory_distribution.fog_ipc_buffer_sizes,
       metrics.memory_distribution.extensions_apis_dnr_startup_cache_read_size,
       metrics.memory_distribution.extensions_apis_dnr_startup_cache_write_size,
-      metrics.memory_distribution.performance_clone_deserialize_size
+      metrics.memory_distribution.performance_clone_deserialize_size,
+      metrics.memory_distribution.networking_cache_metadata_size
     ) AS `memory_distribution`,
     STRUCT(
       metrics.string.browser_default_search_engine,
@@ -504,7 +505,9 @@ SELECT
       metrics.timing_distribution.performance_pageload_http3_fcp_http3,
       metrics.timing_distribution.performance_pageload_http3_fcp_supports_http3,
       metrics.timing_distribution.performance_pageload_http3_fcp_without_priority,
-      metrics.timing_distribution.glean_database_write_time
+      metrics.timing_distribution.glean_database_write_time,
+      metrics.timing_distribution.networking_cache_metadata_first_read_time,
+      metrics.timing_distribution.networking_cache_metadata_second_read_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.labeled_boolean.cookie_banners_normal_window_service_mode,
@@ -821,7 +824,8 @@ SELECT
       metrics.memory_distribution.fog_ipc_buffer_sizes,
       metrics.memory_distribution.extensions_apis_dnr_startup_cache_read_size,
       metrics.memory_distribution.extensions_apis_dnr_startup_cache_write_size,
-      metrics.memory_distribution.performance_clone_deserialize_size
+      metrics.memory_distribution.performance_clone_deserialize_size,
+      metrics.memory_distribution.networking_cache_metadata_size
     ) AS `memory_distribution`,
     STRUCT(
       metrics.string.browser_default_search_engine,
@@ -1060,7 +1064,9 @@ SELECT
       metrics.timing_distribution.performance_pageload_http3_fcp_http3,
       metrics.timing_distribution.performance_pageload_http3_fcp_supports_http3,
       metrics.timing_distribution.performance_pageload_http3_fcp_without_priority,
-      metrics.timing_distribution.glean_database_write_time
+      metrics.timing_distribution.glean_database_write_time,
+      metrics.timing_distribution.networking_cache_metadata_first_read_time,
+      metrics.timing_distribution.networking_cache_metadata_second_read_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.labeled_boolean.cookie_banners_normal_window_service_mode,
@@ -1377,7 +1383,8 @@ SELECT
       metrics.memory_distribution.fog_ipc_buffer_sizes,
       metrics.memory_distribution.extensions_apis_dnr_startup_cache_read_size,
       metrics.memory_distribution.extensions_apis_dnr_startup_cache_write_size,
-      metrics.memory_distribution.performance_clone_deserialize_size
+      metrics.memory_distribution.performance_clone_deserialize_size,
+      metrics.memory_distribution.networking_cache_metadata_size
     ) AS `memory_distribution`,
     STRUCT(
       metrics.string.browser_default_search_engine,
@@ -1616,7 +1623,9 @@ SELECT
       metrics.timing_distribution.performance_pageload_http3_fcp_http3,
       metrics.timing_distribution.performance_pageload_http3_fcp_supports_http3,
       metrics.timing_distribution.performance_pageload_http3_fcp_without_priority,
-      metrics.timing_distribution.glean_database_write_time
+      metrics.timing_distribution.glean_database_write_time,
+      metrics.timing_distribution.networking_cache_metadata_first_read_time,
+      metrics.timing_distribution.networking_cache_metadata_second_read_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.labeled_boolean.cookie_banners_normal_window_service_mode,

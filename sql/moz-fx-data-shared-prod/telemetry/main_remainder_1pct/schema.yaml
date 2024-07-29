@@ -7094,6 +7094,15 @@ fields:
     - name: browser_backup_compressed_archive_size
       type: STRING
       mode: NULLABLE
+    - name: cert_pinning_failures_by_ca_2
+      type: STRING
+      mode: NULLABLE
+    - name: cert_validation_success_by_ca_2
+      type: STRING
+      mode: NULLABLE
+    - name: ssl_ct_policy_non_compliant_connections_by_ca_2
+      type: STRING
+      mode: NULLABLE
   - name: info
     type: RECORD
     mode: NULLABLE

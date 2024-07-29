@@ -340,7 +340,7 @@ fields:
     - name: session_entrypoint
       type: STRING
       mode: NULLABLE
-      description: entrypoint to the service
+      description: Entrypoint to the service
     - name: session_flow_id
       type: STRING
       mode: NULLABLE
@@ -440,6 +440,15 @@ fields:
         for the purpose of experimentation enrollment.
 
         '
+    - name: session_entrypoint_experiment
+      type: STRING
+      mode: NULLABLE
+      description: Identifier for the experiment the user is part of at the entrypoint
+    - name: session_entrypoint_variation
+      type: STRING
+      mode: NULLABLE
+      description: Identifier for the experiment variation the user is part of at
+        the entrypoint
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

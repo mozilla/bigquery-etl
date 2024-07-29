@@ -28,10 +28,10 @@ SELECT
     os
   ).normalized_app_name_os AS normalized_app_name_os
 FROM
-  `moz-fx-data-shared-prod.search_derived.mobile_search_clients_daily_historical`
+  `moz-fx-data-shared-prod.search_derived.mobile_search_clients_daily_historical_pre202408`
 WHERE
-  submission_date <= '2024-07-31' AND (submission_date = @submission_date
-  AND engine IS NOT NULL)
+  submission_date <= '2024-07-31'
+  AND (submission_date = @submission_date AND engine IS NOT NULL)
 GROUP BY
   submission_date,
   engine,
@@ -46,9 +46,7 @@ GROUP BY
   default_search_engine,
   os,
   os_version
-
 UNION ALL
-
 SELECT
   submission_date,
   engine,
@@ -81,8 +79,8 @@ SELECT
 FROM
   `moz-fx-data-shared-prod.search_derived.mobile_search_clients_daily_v2`
 WHERE
-  submission_date > '2024-07-31' AND (submission_date = @submission_date
-  AND engine IS NOT NULL)
+  submission_date > '2024-07-31'
+  AND (submission_date = @submission_date AND engine IS NOT NULL)
 GROUP BY
   submission_date,
   engine,
@@ -97,4 +95,3 @@ GROUP BY
   default_search_engine,
   os,
   os_version
-

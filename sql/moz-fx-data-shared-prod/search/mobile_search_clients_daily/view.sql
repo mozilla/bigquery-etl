@@ -33,17 +33,21 @@ SELECT
   os_version_major,
   os_version_minor,
   `moz-fx-data-shared-prod`.udf.normalize_search_engine(engine) AS normalized_engine,
-  `mozfun.mobile_search.normalize_app_name`(app_name, os).normalized_app_name AS normalized_app_name,
+  `mozfun.mobile_search.normalize_app_name`(
+    app_name,
+    os
+  ).normalized_app_name AS normalized_app_name,
   `mozfun.norm.browser_version_info`(app_version) AS browser_version_info,
   search_count AS sap,
-  `mozfun.mobile_search.normalize_app_name`(app_name, os).normalized_app_name AS normalized_app_name_os
+  `mozfun.mobile_search.normalize_app_name`(
+    app_name,
+    os
+  ).normalized_app_name AS normalized_app_name_os
 FROM
-  `moz-fx-data-shared-prod.search_derived.mobile_search_clients_daily_historical`
+  `moz-fx-data-shared-prod.search_derived.mobile_search_clients_daily_historical_pre202408`
 WHERE
   submission_date <= '2024-07-31'
-
 UNION ALL
-
 SELECT
   submission_date,
   client_id,
@@ -76,10 +80,16 @@ SELECT
   os_version_major,
   os_version_minor,
   `moz-fx-data-shared-prod`.udf.normalize_search_engine(engine) AS normalized_engine,
-  `mozfun.mobile_search.normalize_app_name`(app_name, os).normalized_app_name AS normalized_app_name,
+  `mozfun.mobile_search.normalize_app_name`(
+    app_name,
+    os
+  ).normalized_app_name AS normalized_app_name,
   `mozfun.norm.browser_version_info`(app_version) AS browser_version_info,
   search_count AS sap,
-  `mozfun.mobile_search.normalize_app_name`(app_name, os).normalized_app_name AS normalized_app_name_os
+  `mozfun.mobile_search.normalize_app_name`(
+    app_name,
+    os
+  ).normalized_app_name AS normalized_app_name_os
 FROM
   `moz-fx-data-shared-prod.search_derived.mobile_search_clients_daily_v2`
 WHERE

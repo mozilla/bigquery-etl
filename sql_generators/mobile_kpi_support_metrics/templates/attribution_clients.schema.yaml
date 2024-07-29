@@ -20,11 +20,6 @@ fields:
   type: RECORD
   description:
   fields:
-    - mode: NULLABLE
-      name: submission_timestamp
-      type: TIMESTAMP
-      description: |
-        Timestamp associated with the ping that contained the attribution info.
     {% for attribution_group_field in attribution_group.fields -%}
     - mode: NULLABLE
       name: {{ attribution_group_field.name }}

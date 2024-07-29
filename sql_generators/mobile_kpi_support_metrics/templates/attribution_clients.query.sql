@@ -21,7 +21,7 @@ SELECT
     submission_timestamp,
     ping_info.seq AS ping_seq,
     {% for attribution_group in product_attribution_groups if attribution_group.name == 'adjust' %}
-    {% for field in attribution_group.fields %}
+    {% for field in attribution_group.fields if not field.name.endswith("_timestamp") %}
       {% if app_name == "firefox_ios" %}
         NULLIF(metrics.string.{{ field.name }}, "") AS {{ field.name }},
       {% else %}
@@ -30,7 +30,7 @@ SELECT
     {% endfor %}
     {% endfor %}
     {% for attribution_group in product_attribution_groups if attribution_group.name == 'play_store' %}
-    {% for field in attribution_group.fields %}
+    {% for field in attribution_group.fields if not field.name.endswith("_timestamp") %}
       {% if field.name == 'play_store_attribution_install_referrer_response' %}
       NULLIF(metrics.text2.{{ field.name }}, "") AS {{ field.name }},
       {% else %}
@@ -39,7 +39,7 @@ SELECT
     {% endfor %}
     {% endfor %}
     {% for attribution_group in product_attribution_groups if attribution_group.name == 'meta' %}
-    {% for field in attribution_group.fields %}
+    {% for field in attribution_group.fields if not field.name.endswith("_timestamp") %}
       NULLIF(metrics.string.{{ field.name }}, "") AS {{ field.name }},
     {% endfor %}
     {% endfor %}
@@ -57,15 +57,19 @@ first_session_ping AS (
     ARRAY_AGG(
       IF(
         {% for attribution_group in product_attribution_groups if attribution_group.name == 'adjust' %}
-        {% for field in attribution_group.fields %}
+        {% for field in attribution_group.fields if not field.name.endswith("_timestamp") %}
           {% if not loop.first %}OR {% endif %}{{ field.name }} IS NOT NULL{% if loop.last %},{% endif %}
         {% endfor %}
         {% endfor %}
         STRUCT(
-          submission_timestamp,
           {% for attribution_group in product_attribution_groups if attribution_group.name == 'adjust' %}
           {% for field in attribution_group.fields %}
-            {{ field.name }}{% if not loop.last %},{% endif %}
+            {% if field.name.endswith("_timestamp") %}
+              submission_timestamp AS {{ field.name }}
+            {% else %}
+              {{ field.name }}
+            {% endif %}
+            {% if not loop.last %},{% endif %}
           {% endfor %}
           {% endfor %}
         ),
@@ -81,15 +85,19 @@ first_session_ping AS (
     ARRAY_AGG(
       IF(
         {% for attribution_group in product_attribution_groups if attribution_group.name == 'play_store' %}
-        {% for field in attribution_group.fields %}
+        {% for field in attribution_group.fields if not field.name.endswith("_timestamp") %}
           {% if not loop.first %}OR {% endif %}{{ field.name }} IS NOT NULL{% if loop.last %},{% endif %}
         {% endfor %}
         {% endfor %}
         STRUCT(
-          submission_timestamp,
           {% for attribution_group in product_attribution_groups if attribution_group.name == 'play_store' %}
           {% for field in attribution_group.fields %}
-            {{ field.name }}{% if not loop.last %},{% endif %}
+            {% if field.name.endswith("_timestamp") %}
+              submission_timestamp AS {{ field.name }}
+            {% else %}
+              {{ field.name }}
+            {% endif %}
+            {% if not loop.last %},{% endif %}
           {% endfor %}
           {% endfor %}
         ),
@@ -105,22 +113,26 @@ first_session_ping AS (
     ARRAY_AGG(
       IF(
         {% for attribution_group in product_attribution_groups if attribution_group.name == 'meta' %}
-        {% for field in attribution_group.fields %}
+        {% for field in attribution_group.fields if not field.name.endswith("_timestamp") %}
           {% if not loop.first %}OR {% endif %}{{ field.name }} IS NOT NULL{% if loop.last %},{% endif %}
         {% endfor %}
         {% endfor %}
         STRUCT(
-          submission_timestamp,
           {% for attribution_group in product_attribution_groups if attribution_group.name == 'meta' %}
           {% for field in attribution_group.fields %}
-            {{ field.name }}{% if not loop.last %},{% endif %}
+            {% if field.name.endswith("_timestamp") %}
+              submission_timestamp AS {{ field.name }}
+            {% else %}
+              {{ field.name }}
+            {% endif %}
+            {% if not loop.last %},{% endif %}
           {% endfor %}
           {% endfor %}
         ),
         NULL
       ) IGNORE NULLS
       ORDER BY
-        submission_timestamp ASC
+        ping_seq ASC, submission_timestamp ASC
       LIMIT
         1
     )[SAFE_OFFSET(0)] AS meta_info,
@@ -140,7 +152,7 @@ first_session_ping AS (
     submission_timestamp,
     ping_info.seq AS ping_seq,
     {% for attribution_group in product_attribution_groups if attribution_group.name == 'install_source' %}
-    {% for field in attribution_group.fields %}
+    {% for field in attribution_group.fields if not field.name.endswith("_timestamp") %}
       {% if app_name == 'fenix' %}
       NULLIF(metrics.string.metrics_{{ field.name }}, "") AS {{ field.name }},
       {% else %}
@@ -149,7 +161,7 @@ first_session_ping AS (
     {% endfor %}
     {% endfor %}
     {% for attribution_group in product_attribution_groups if attribution_group.name == 'adjust' %}
-    {% for field in attribution_group.fields %}
+    {% for field in attribution_group.fields if not field.name.endswith("_timestamp") %}
       {% if app_name == "firefox_ios" %}
       NULLIF(metrics.string.{{ field.name }}, "") AS {{ field.name }},
       {% else %}
@@ -173,15 +185,19 @@ metrics_ping AS (
     ARRAY_AGG(
       IF(
         {% for attribution_group in product_attribution_groups if attribution_group.name == 'adjust' %}
-        {% for field in attribution_group.fields %}
+        {% for field in attribution_group.fields if not field.name.endswith("_timestamp") %}
           {% if not loop.first %}OR {% endif %}{{ field.name }} IS NOT NULL{% if loop.last %},{% endif %}
         {% endfor %}
         {% endfor %}
         STRUCT(
-          submission_timestamp,
           {% for attribution_group in product_attribution_groups if attribution_group.name == 'adjust' %}
           {% for field in attribution_group.fields %}
-            {{ field.name }}{% if not loop.last %},{% endif %}
+            {% if field.name.endswith("_timestamp") %}
+              submission_timestamp AS {{ field.name }}
+            {% else %}
+              {{ field.name }}
+            {% endif %}
+            {% if not loop.last %},{% endif %}
           {% endfor %}
           {% endfor %}
         ),

@@ -11,7 +11,7 @@ fields:
 
 - mode: NULLABLE
   name: sample_id
-  type: STRING
+  type: INTEGER
   description:
 {% for attribution_group in product_attribution_groups %}
 {% if attribution_group.name in ["meta", "adjust", "play_store"] -%}

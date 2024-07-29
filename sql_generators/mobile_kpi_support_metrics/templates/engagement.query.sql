@@ -8,10 +8,8 @@ SELECT
   country,
   locale,
   is_mobile,
-  {% for field in product_attribution_fields.values() %}
-    {% if not field.name.endwith("timestamp") %}
-    {{ field.name }},
-    {% endif %}
+  {% for field in product_attribution_fields.values() if not field.name.endswith("_timestamp") %}
+  {{ field.name }},
   {% endfor %}
   COUNTIF(is_dau) AS dau,
   COUNTIF(is_wau) AS wau,
@@ -35,10 +33,8 @@ GROUP BY
   country,
   locale,
   is_mobile
-  {% for field in product_attribution_fields.values() %}
-    {% if loop.first %},
-    {% endif %}
+  {% for field in product_attribution_fields.values() if not field.name.endswith("_timestamp") %}
+    {% if loop.first %},{% endif %}
     {{ field.name }}
-    {% if not loop.last %},
-    {% endif %}
+    {% if not loop.last %},{% endif %}
   {% endfor %}

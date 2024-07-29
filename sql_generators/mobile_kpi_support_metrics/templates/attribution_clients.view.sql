@@ -10,16 +10,13 @@ SELECT
   install_source,
   {% endif %}
   {% if 'adjust' in product_attribution_group_names %}
-  adjust_info.* EXCEPT(submission_timestamp),
-  adjust_info.submission_timestamp AS adjust_attribution_timestamp,
+  adjust_info.*,
   {% endif %}
   {% if 'play_store' in product_attribution_group_names %}
-  play_store_info.* EXCEPT(submission_timestamp),
-  play_store_info.submission_timestamp AS play_store_attribution_timestamp,
+  play_store_info.*,
   {% endif %}
   {% if 'meta' in product_attribution_group_names %}
-  meta_info.* EXCEPT(submission_timestamp),
-  meta_info.submission_timestamp AS meta_attribution_timestamp,
+  meta_info.*,
   {% endif %}
   {% if 'adjust_network' in product_attribution_fields %}
     `moz-fx-data-shared-prod.udf.organic_vs_paid_mobile`(adjust_info.adjust_network) AS paid_vs_organic,

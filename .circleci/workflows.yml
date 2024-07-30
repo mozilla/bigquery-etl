@@ -856,8 +856,9 @@ jobs:
     executor: gcp-gcr/default
     steps:
       - run: *oidc-setup
-      - run: echo "export OIDC_SERVICE_ACCOUNT_EMAIL=$GCP_SERVICE_ACCOUNT_IMAGE_PUSHER_EMAIL" >> "$BASH_ENV"
-      - run: 'gcloud config get-value account'
+      - run: | 
+          echo 'export GOOGLE_PROJECT_ID="moz-fx-data-airflow-prod-88e0"' >> "$BASH_ENV"
+          echo "export OIDC_SERVICE_ACCOUNT_EMAIL=$GCP_SERVICE_ACCOUNT_IMAGE_PUSHER_EMAIL" >> "$BASH_ENV"
       - when:
           condition: 
              equal: [true, true]

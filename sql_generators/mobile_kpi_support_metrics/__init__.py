@@ -26,6 +26,8 @@ TEMPLATES = (
     "engagement_clients.view.sql",
     "engagement.query.sql",
     "engagement.view.sql",
+    "attribution_clients.view.sql",
+    "attribution_clients.query.sql",
 )
 
 
@@ -84,6 +86,11 @@ class AttributionFields:
                 "type": "STRING",
                 "description": "Adjust Network the profile is attributed to.",
             },
+            {
+                "name": "adjust_attribution_timestamp",
+                "type": "TIMESTAMP",
+                "description": "Timestamp corresponding to the ping that contained the adjust attribution.",
+            },
         ],
     )
     play_store = AttributionFieldGroup(
@@ -105,6 +112,11 @@ class AttributionFields:
                 "type": "STRING",
                 "description": "Play store source the profile is attributed to.",
             },
+            {
+                "name": "play_store_attribution_timestamp",
+                "type": "TIMESTAMP",
+                "description": "Timestamp corresponding to the ping that contained the play_store attribution.",
+            },
             # TODO: decide if this should be added here?
             # {
             #     "name": "play_store_attribution_install_referrer_response",
@@ -121,6 +133,11 @@ class AttributionFields:
                 "name": "meta_attribution_app",
                 "type": "STRING",
                 "description": "Facebook app linked to paid marketing.",
+            },
+            {
+                "name": "meta_attribution_timestamp",
+                "type": "TIMESTAMP",
+                "description": "Timestamp corresponding to the ping that contained the meta attribution.",
             },
         ],
     )

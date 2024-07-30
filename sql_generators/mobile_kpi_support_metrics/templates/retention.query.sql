@@ -8,8 +8,8 @@ SELECT
   app_version,
   locale,
   is_mobile,
-  {% for field in product_attribution_fields.values() %}
-    {{ field.name }},
+  {% for field in product_attribution_fields.values() if not field.name.endswith("_timestamp") %}
+  {{ field.name }},
   {% endfor %}
   COUNTIF(ping_sent_metric_date) AS ping_sent_metric_date,
   COUNTIF(ping_sent_week_4) AS ping_sent_week_4,
@@ -39,10 +39,8 @@ GROUP BY
   app_version,
   locale,
   is_mobile
-  {% for field in product_attribution_fields.values() %}
-    {% if loop.first %},
-    {% endif %}
+  {% for field in product_attribution_fields.values() if not field.name.endswith("_timestamp") %}
+    {% if loop.first %},{% endif %}
     {{ field.name }}
-    {% if not loop.last %},
-    {% endif %}
+    {% if not loop.last %},{% endif %}
   {% endfor %}

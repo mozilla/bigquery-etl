@@ -8,7 +8,7 @@ SELECT
   app_version,
   locale,
   is_mobile,
-  {% for field in attribution_fields %}
+  {% for field in product_attribution_fields.values() %}
     {{ field.name }},
   {% endfor %}
   COUNTIF(ping_sent_metric_date) AS ping_sent_metric_date,
@@ -39,7 +39,7 @@ GROUP BY
   app_version,
   locale,
   is_mobile
-  {% for field in attribution_fields %}
+  {% for field in product_attribution_fields.values() %}
     {% if loop.first %},
     {% endif %}
     {{ field.name }}

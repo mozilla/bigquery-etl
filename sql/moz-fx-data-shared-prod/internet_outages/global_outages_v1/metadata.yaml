@@ -1,4 +1,4 @@
-friendly_name: Internet Outages
+friendly_name: Internet Outages (Version 1)
 # yamllint disable rule:line-length
 description: |-
   This contains a set aggregated metrics that correlate to internet

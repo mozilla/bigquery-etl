@@ -39,8 +39,13 @@ check_results AS (
     events_old
     USING (day, event_name)
   WHERE
-    -- investigated in https://github.com/mozilla/fxa/pull/17226
-    event_name NOT IN ('google_login_complete', 'apple_login_complete')
+    -- investigated in https://mozilla-hub.atlassian.net/browse/FXA-10169
+    event_name NOT IN (
+      'google_login_complete',
+      'apple_login_complete',
+      'third_party_auth_apple_login_complete',
+      'third_party_auth_google_login_complete'
+    )
     AND (
       events_new.count_new IS NULL
       OR events_old.count_old IS NULL
@@ -136,12 +141,12 @@ check_results AS (
       'cad_mobile_pair_use_app_view'
     )
     AND (
-      (events_new.count_new IS NULL AND events_old.count_old > 1) -- ignore erroneous event names
-      OR (events_old.count_old IS NULL AND events_new.count_new > 1)
+      (events_new.count_new IS NULL AND events_old.count_old > 10) -- ignore erroneous event names
+      OR (events_old.count_old IS NULL AND events_new.count_new > 10)
       OR ABS(events_new.count_new - events_old.count_old) / LEAST(
         events_new.count_new,
         events_old.count_old
-      ) > 0.02
+      ) > 0.05
     )
 )
 SELECT

@@ -268,6 +268,9 @@ fields:
   - name: weather_widget_impressions
     type: INTEGER
     mode: NULLABLE
+  - name: weather_widget_location_selected
+    type: INTEGER
+    mode: NULLABLE
   - name: weather_widget_clicks
     type: INTEGER
     mode: NULLABLE

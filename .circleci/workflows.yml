@@ -853,12 +853,10 @@ jobs:
           steps:
             - *skip
   deploy-to-private-gcr:
-    executor: gcp-cli/google
+    executor: gcp-gcr/default
     steps:
       - run: *oidc-setup
       - run: echo "export OIDC_SERVICE_ACCOUNT_EMAIL=$GCP_SERVICE_ACCOUNT_IMAGE_PUSHER_EMAIL" >> "$BASH_ENV"
-      - gcp-cli/setup:
-          use_oidc: true
       - run: 'gcloud config get-value account'
       - when:
           condition: 
@@ -866,14 +864,17 @@ jobs:
           steps:
             - checkout
             # - *attach_generated_sql
-            - run:
-                name: Move generated-sql into place
-                command: |
-                  rm -rf sql/
-                  cp -r /tmp/workspace/private-generated-sql/sql sql
+            # - run:
+            #     name: Move generated-sql into place
+            #     command: |
+            #       rm -rf sql/
+            #       cp -r /tmp/workspace/private-generated-sql/sql sql
             - gcp-gcr/gcr-auth
-            - gcp-gcr/build-and-push-image: 
+            - gcp-gcr/build-image:
                 dockerfile: DSRETest.Dockerfile
+                image: bigquery-etl
+                tag: DSRE-1683-test
+            - gcp-gcr/push-image:
                 image: bigquery-etl
                 tag: DSRE-1683-test
       # - unless:

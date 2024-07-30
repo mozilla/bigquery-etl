@@ -875,10 +875,10 @@ jobs:
                 image: bigquery-etl
                 tag: DSRE-1683-test
             - gcp-gcr/push-image: *private-image
-      - unless:
-          condition: *deploy
-          steps:
-            - *skip
+      # - unless:
+      #     condition: *deploy
+      #     steps:
+      #       - *skip
   main-generate-sql-and-dags:
     docker: *docker
     resource_class: large

@@ -853,7 +853,6 @@ jobs:
           steps:
             - *skip
   deploy-to-private-gcr:
-    context: gcpv2-workload-identity
     executor: gcp-cli/google
     steps:
       - run: *oidc-setup
@@ -1230,6 +1229,7 @@ workflows:
               only:
                 - main
       - deploy-to-private-gcr:
+          context: gcpv2-workload-identity
           requires:
             - private-generate-sql
             # can't run in parallel because CIRCLE_BUILD_NUM is same

@@ -853,7 +853,7 @@ jobs:
           steps:
             - *skip
   deploy-to-private-gcr:
-
+    context: gcpv2-workload-identity
     executor: gcp-cli/google
     steps:
       - run: *oidc-setup

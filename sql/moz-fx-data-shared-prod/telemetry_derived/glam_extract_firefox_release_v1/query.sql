@@ -17,7 +17,7 @@ WITH final_probe_extract AS (
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.client_probe_counts`
   WHERE
-    channel = @channel
+    channel = "release"
     AND app_version IS NOT NULL
     AND total_users > 375
     AND CHAR_LENGTH(KEY) <= 200

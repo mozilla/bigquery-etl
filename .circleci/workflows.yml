@@ -1233,10 +1233,10 @@ workflows:
       - deploy-to-private-gcr:
           context: gcpv2-workload-identity
           requires:
-            - private-generate-sql
-            # can't run in parallel because CIRCLE_BUILD_NUM is same
+            # - private-generate-sql
+            # # can't run in parallel because CIRCLE_BUILD_NUM is same
             - build
-            - generate-sql
+            # - generate-sql
           filters:
             branches:
               only:

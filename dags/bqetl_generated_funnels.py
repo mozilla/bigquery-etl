@@ -75,6 +75,18 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    wait_for_accounts_backend_derived__events_stream__v1 = ExternalTaskSensor(
+        task_id="wait_for_accounts_backend_derived__events_stream__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="accounts_backend.accounts_backend_derived__events_stream__v1",
+        execution_delta=datetime.timedelta(seconds=10800),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     wait_for_checks__fail_fenix_derived__firefox_android_clients__v1 = (
         ExternalTaskSensor(
             task_id="wait_for_checks__fail_fenix_derived__firefox_android_clients__v1",
@@ -135,21 +147,6 @@ with DAG(
         allowed_states=ALLOWED_STATES,
         failed_states=FAILED_STATES,
         pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    accounts_frontend_derived__email_first_reg_login_funnels__v1 = bigquery_etl_query(
-        task_id="accounts_frontend_derived__email_first_reg_login_funnels__v1",
-        destination_table="email_first_reg_login_funnels_v1",
-        dataset_id="accounts_frontend_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="ksiegler@mozilla.org",
-        email=[
-            "ascholtz@mozilla.com",
-            "ksiegler@mozilla.org",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
     )
 
     accounts_frontend_derived__email_first_reg_login_funnels_by_service__v1 = bigquery_etl_query(
@@ -306,10 +303,6 @@ with DAG(
         depends_on_past=False,
     )
 
-    accounts_frontend_derived__email_first_reg_login_funnels__v1.set_upstream(
-        wait_for_copy_deduplicate_all
-    )
-
     accounts_frontend_derived__email_first_reg_login_funnels_by_service__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
@@ -319,7 +312,11 @@ with DAG(
     )
 
     accounts_frontend_derived__login_funnels_by_service__v1.set_upstream(
-        wait_for_copy_deduplicate_all
+        wait_for_accounts_backend_derived__events_stream__v1
+    )
+
+    accounts_frontend_derived__login_funnels_by_service__v1.set_upstream(
+        wait_for_accounts_frontend_derived__events_stream__v1
     )
 
     accounts_frontend_derived__monitor_mozilla_accounts_funnels__v1.set_upstream(
@@ -335,7 +332,11 @@ with DAG(
     )
 
     accounts_frontend_derived__registration_funnels_by_service__v1.set_upstream(
-        wait_for_copy_deduplicate_all
+        wait_for_accounts_backend_derived__events_stream__v1
+    )
+
+    accounts_frontend_derived__registration_funnels_by_service__v1.set_upstream(
+        wait_for_accounts_frontend_derived__events_stream__v1
     )
 
     fenix_derived__android_onboarding__v1.set_upstream(

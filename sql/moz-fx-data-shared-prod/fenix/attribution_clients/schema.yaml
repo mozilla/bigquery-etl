@@ -32,6 +32,9 @@ fields:
 - name: adjust_network
   type: STRING
   mode: NULLABLE
+- name: adjust_attribution_timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
 - name: submission_timestamp_1
   type: TIMESTAMP
   mode: NULLABLE
@@ -44,11 +47,17 @@ fields:
 - name: play_store_attribution_source
   type: STRING
   mode: NULLABLE
+- name: play_store_attribution_timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
 - name: submission_timestamp_2
   type: TIMESTAMP
   mode: NULLABLE
 - name: meta_attribution_app
   type: STRING
+  mode: NULLABLE
+- name: meta_attribution_timestamp
+  type: TIMESTAMP
   mode: NULLABLE
 - name: paid_vs_organic
   type: STRING

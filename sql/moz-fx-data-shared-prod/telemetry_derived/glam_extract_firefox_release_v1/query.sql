@@ -17,7 +17,7 @@ WITH final_probe_extract AS (
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.client_probe_counts`
   WHERE
-    channel = @channel
+    channel = "release"
     AND app_version IS NOT NULL
     AND total_users > 375
     AND CHAR_LENGTH(KEY) <= 200
@@ -60,7 +60,7 @@ glam_sample_counts AS (
     AND fsc1.channel = fsc2.channel
     AND fsc1.process = fsc2.process
   WHERE
-    fsc1.channel = @channel
+    fsc1.channel = "release"
 )
 SELECT
   cp.app_version,

@@ -2,21 +2,18 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: null
 - name: client_id
   type: STRING
   mode: NULLABLE
-  description: null
 - name: sample_id
   type: INTEGER
   mode: NULLABLE
-  description: null
-- name: install_source
+- name: paid_vs_organic
   type: STRING
   mode: NULLABLE
-  description: 'The source of a profile installation.
-
-    '
+- name: is_suspicious_device_client
+  type: BOOLEAN
+  mode: NULLABLE
 - name: adjust_ad_group
   type: STRING
   mode: NULLABLE
@@ -50,6 +47,9 @@ fields:
 - name: meta_attribution_timestamp
   type: TIMESTAMP
   mode: NULLABLE
-- name: paid_vs_organic
+- name: install_source
+  type: STRING
+  mode: NULLABLE
+- name: product_name
   type: STRING
   mode: NULLABLE

@@ -11,9 +11,6 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: null
-- name: submission_timestamp
-  type: TIMESTAMP
-  mode: NULLABLE
 - name: adjust_ad_group
   type: STRING
   mode: NULLABLE

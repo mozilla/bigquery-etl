@@ -3,6 +3,7 @@ SELECT
   SAFE.TIMESTAMP_MILLIS(SAFE_CAST(createdAt AS INT)) AS createdAt,
   SAFE.TIMESTAMP_MILLIS(SAFE_CAST(verifiedAt AS INT)) AS verifiedAt,
   SAFE_CAST(enabled AS BOOL) AS enabled,
+  hint
 FROM
   EXTERNAL_QUERY(
     "moz-fx-fxa-nonprod.us.fxa-rds-nonprod-stage-fxa",
@@ -10,7 +11,8 @@ FROM
          uid,
          createdAt,
          verifiedAt,
-         enabled
+         enabled,
+         hint
        FROM
          fxa.recoveryKeys
     """

@@ -60,7 +60,7 @@ glam_sample_counts AS (
     AND fsc1.channel = fsc2.channel
     AND fsc1.process = fsc2.process
   WHERE
-    fsc1.channel = @channel
+    fsc1.channel = "beta"
 )
 SELECT
   cp.app_version,

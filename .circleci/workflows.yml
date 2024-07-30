@@ -873,7 +873,7 @@ jobs:
             - gcp-gcr/gcr-auth
             - gcp-gcr/build-image: &private-image
                 image: bigquery-etl
-                tag: ${CIRCLE_TAG:-latest}
+                tag: DSRE-1683-test
             - gcp-gcr/push-image: *private-image
       - unless:
           condition: *deploy
@@ -1236,6 +1236,7 @@ workflows:
             branches:
               only:
                 - main
+                - DSRE-1683
   tagged-deploy:
     jobs:
       - deploy-to-pypi:

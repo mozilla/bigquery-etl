@@ -2,7 +2,7 @@
 version: 2.1
 
 orbs:
-  gcp-gcr: circleci/gcp-gcr@0.16.0
+  gcp-gcr: circleci/gcp-gcr@0.16.3
   docker: circleci/docker@2.6.0
   python: circleci/python@2.1.1
   gcp-cli: circleci/gcp-cli@3.2.1
@@ -872,7 +872,7 @@ jobs:
                   rm -rf sql/
                   cp -r /tmp/workspace/private-generated-sql/sql sql
             - gcp-gcr/gcr-auth
-            - gcp-gcr/build-and-push-image: &private-image
+            - gcp-gcr/build-and-push-image: 
                 dockerfile: DSRETest.Dockerfile
                 image: bigquery-etl
                 tag: DSRE-1683-test

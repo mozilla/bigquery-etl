@@ -1,0 +1,32 @@
+friendly_name: Profile / Client Attribution - Klar iOS
+description: |-
+  Profile attribution (Klar iOS)
+owners:
+- mozilla/kpi_table_reviewers
+- kik@mozilla.com
+labels:
+  schedule: daily
+  incremental: true
+  dag: bqetl_mobile_kpi_metrics
+  owner1: kik
+scheduling:
+  dag_name: bqetl_mobile_kpi_metrics
+  depends_on_past: false
+  task_group: klar_ios
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+  clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  checks.sql:
+  - ..
+  query.sql:
+  - moz-fx-data-shared-prod.klar_ios.baseline_clients_first_seen

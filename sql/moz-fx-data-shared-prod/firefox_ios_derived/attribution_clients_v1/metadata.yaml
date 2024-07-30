@@ -1,0 +1,34 @@
+friendly_name: Profile / Client Attribution - Firefox iOS
+description: |-
+  Profile attribution (Firefox iOS)
+owners:
+- mozilla/kpi_table_reviewers
+- kik@mozilla.com
+labels:
+  schedule: daily
+  incremental: true
+  dag: bqetl_mobile_kpi_metrics
+  owner1: kik
+scheduling:
+  dag_name: bqetl_mobile_kpi_metrics
+  depends_on_past: false
+  task_group: firefox_ios
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+  clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  checks.sql:
+  - ..
+  query.sql:
+  - moz-fx-data-shared-prod.firefox_ios.baseline_clients_first_seen
+  - moz-fx-data-shared-prod.firefox_ios.first_session
+  - moz-fx-data-shared-prod.firefox_ios.metrics

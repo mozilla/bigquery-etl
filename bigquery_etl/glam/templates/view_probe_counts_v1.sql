@@ -12,16 +12,6 @@ WITH all_counts AS (
     *
   FROM
     `{{ project }}.{{ dataset }}.{{ prefix }}__histogram_probe_counts_v1`
-  UNION ALL
-  SELECT
-    *
-  FROM
-    `{{ project }}.{{ dataset }}.{{ prefix }}__scalar_percentiles_v1`
-  UNION ALL
-  SELECT
-    *
-  FROM
-    `{{ project }}.{{ dataset }}.{{ prefix }}__histogram_percentiles_v1`
 )
 SELECT
   *

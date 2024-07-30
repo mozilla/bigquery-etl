@@ -872,11 +872,10 @@ jobs:
                   rm -rf sql/
                   cp -r /tmp/workspace/private-generated-sql/sql sql
             - gcp-gcr/gcr-auth
-            - gcp-gcr/build-image: &private-image
+            - gcp-gcr/build-and-push-image: &private-image
                 dockerfile: DSRETest.Dockerfile
                 image: bigquery-etl
                 tag: DSRE-1683-test
-            - gcp-gcr/push-image: *private-image
       # - unless:
       #     condition: *deploy
       #     steps:

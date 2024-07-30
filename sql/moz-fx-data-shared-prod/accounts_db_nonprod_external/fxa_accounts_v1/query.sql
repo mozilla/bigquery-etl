@@ -13,6 +13,7 @@ SELECT
   ecosystemAnonId,
   SAFE.TIMESTAMP_MILLIS(SAFE_CAST(disabledAt AS INT)) AS disabledAt,
   SAFE.TIMESTAMP_MILLIS(SAFE_CAST(metricsOptOutAt AS INT)) AS metricsOptOutAt,
+  SAFE_CAST(atLeast18AtReg AS BOOL) AS atLeast18AtReg,
 FROM
   EXTERNAL_QUERY(
     "moz-fx-fxa-nonprod.us.fxa-rds-nonprod-stage-fxa",
@@ -30,7 +31,8 @@ FROM
          keysChangedAt,
          ecosystemAnonId,
          disabledAt,
-         metricsOptOutAt
+         metricsOptOutAt,
+         atLeast18AtReg
        FROM
          fxa.accounts
     """

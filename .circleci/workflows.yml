@@ -861,7 +861,8 @@ jobs:
           use_oidc: true
       - run: 'gcloud config get-value account'
       - when:
-          condition: *deploy
+          condition: 
+             equal: [true, true]
           steps:
             - checkout
             - *attach_generated_sql

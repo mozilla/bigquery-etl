@@ -865,7 +865,7 @@ jobs:
              equal: [true, true]
           steps:
             - checkout
-            - *attach_generated_sql
+            # - *attach_generated_sql
             - run:
                 name: Move generated-sql into place
                 command: |
@@ -873,6 +873,7 @@ jobs:
                   cp -r /tmp/workspace/private-generated-sql/sql sql
             - gcp-gcr/gcr-auth
             - gcp-gcr/build-image: &private-image
+                dockerfile: DSRETest.Dockerfile
                 image: bigquery-etl
                 tag: DSRE-1683-test
             - gcp-gcr/push-image: *private-image

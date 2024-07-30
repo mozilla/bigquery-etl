@@ -19,4 +19,4 @@ workgroup_access:
   - workgroup:accounts-confidential
 references:
   query.sql:
-  - EXTERNAL_QUERY('moz-fx-fxa-prod.us.fxa-rds-prod-prod-fxa', 'SELECT\n         uid\n       FROM\n         fxa.recoveryCodes\n    ')
+  - EXTERNAL_QUERY('moz-fx-fxa-prod.us.fxa-rds-prod-prod-fxa', 'SELECT\n         id,\n         uid\n       FROM\n         fxa.recoveryCodes\n    ')

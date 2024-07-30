@@ -437,6 +437,18 @@ fields:
         Does not need to be sent in the Glean "deletion-request" ping.
 
         '
+    - name: legacy_telemetry_profile_group_id
+      type: STRING
+      mode: NULLABLE
+      description: 'The profile_group_id according to Telemetry.
+
+        Might not always have a value due to being too early for it to have
+
+        loaded.
+
+        Does not need to be sent in the Glean "deletion-request" ping.
+
+        '
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

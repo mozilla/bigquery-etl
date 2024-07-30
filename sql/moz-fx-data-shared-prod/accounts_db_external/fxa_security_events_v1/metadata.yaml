@@ -19,4 +19,4 @@ workgroup_access:
   - workgroup:accounts-confidential
 references:
   query.sql:
-  - EXTERNAL_QUERY('moz-fx-fxa-prod.us.fxa-rds-prod-prod-fxa', 'SELECT\n         id,\n         uid,\n         nameId,\n         verified,\n         ipAddrHmac,\n         createdAt,\n         tokenVerificationId\n       FROM\n         fxa.securityEvents\n    ')
+  - EXTERNAL_QUERY('moz-fx-fxa-prod.us.fxa-rds-prod-prod-fxa', 'SELECT\n         id,\n         uid,\n         nameId,\n         verified,\n         ipAddrHmac,\n         createdAt,\n         tokenVerificationId,\n         ipAddr\n       FROM\n         fxa.securityEvents\n    ')

@@ -19,4 +19,4 @@ workgroup_access:
   - workgroup:accounts-confidential
 references:
   query.sql:
-  - EXTERNAL_QUERY('moz-fx-fxa-nonprod.us.fxa-rds-nonprod-stage-fxa', 'SELECT\n         uid,\n         createdAt,\n         verifiedAt,\n         enabled\n       FROM\n         fxa.recoveryKeys\n    ')
+  - EXTERNAL_QUERY('moz-fx-fxa-nonprod.us.fxa-rds-nonprod-stage-fxa', 'SELECT\n         uid,\n         createdAt,\n         verifiedAt,\n         enabled,\n         hint\n       FROM\n         fxa.recoveryKeys\n    ')

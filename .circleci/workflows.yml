@@ -1177,6 +1177,8 @@ workflows:
             branches:
               only:
                 - main
+                - DSRE-1683
+
       - push-private-generated-sql:
           requires:
             - private-generate-sql

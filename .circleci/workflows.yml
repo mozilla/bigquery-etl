@@ -860,6 +860,7 @@ jobs:
       - run: echo "export OIDC_SERVICE_ACCOUNT_EMAIL=$GCP_SERVICE_ACCOUNT_IMAGE_PUSHER_EMAIL" >> "$BASH_ENV"
       - gcp-cli/setup:
           use_oidc: true
+      - run: 'gcloud config get-value account'
       - when:
           condition: *deploy
           steps:

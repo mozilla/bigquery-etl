@@ -84,6 +84,12 @@ fields:
   type: BOOLEAN
   description: Indicates if the client is included in the desktop KPI
 - mode: NULLABLE
+  name: days_seen_bits
+  type: INTEGER
+- mode: NULLABLE
+  name: days_active_bits
+  type: INTEGER
+- mode: NULLABLE
   name: isp
   type: STRING
   description: ISP

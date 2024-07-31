@@ -30,16 +30,22 @@ new_profiles AS (
     attribution_medium,
     attribution_ua,
     attribution_experiment,
+    attribution_variation,
     distribution_id,
+    -- TODO read is_desktop from view when it's available
     LOWER(IFNULL(distribution_id, "")) <> "mozillaonline" AS is_desktop,
-    -- cfs.isp_name,
+    cfs.isp_name AS isp,
     cfs.normalized_channel,
     startup_profile_selection_reason,
-    mozfun.norm.os(cfs.normalized_os) AS normalized_os,
-    -- COALESCE(
-    --   mozfun.norm.windows_version_info(cfs.os, cfs.os_version, cfs.windows_build_number),
-    --   NULLIF(SPLIT(cfs.normalized_os_version, ".")[SAFE_OFFSET(0)], "")
-    -- ) AS normalized_os_version,
+    mozfun.norm.os(cfs.os) AS normalized_os,
+    COALESCE(
+      mozfun.norm.windows_version_info(
+        cfs.os,
+        cfs.os_version,
+        CAST(cfs.windows_build_number AS INT)
+      ),
+      NULLIF(SPLIT(cfs.normalized_os_version, ".")[SAFE_OFFSET(0)], "")
+    ) AS normalized_os_version,
     COALESCE(au.submission_date, DATE_ADD(cfs.first_seen_date, INTERVAL 27 day)) AS submission_date,
     TRUE AS is_new_profile,
     au.retention_active.day_27.active_in_week_3 AS retained_week_4_new_profile,
@@ -47,7 +53,7 @@ new_profiles AS (
       mozfun.bits28.from_string('0111111111111111111111111111') & au.days_active_bits
     ) > 0 AS repeat_profile
   FROM
-    `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v2` cfs
+    `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v3` cfs
   LEFT JOIN
     active_users AS au
     ON cfs.first_seen_date = au.retention_active.day_27.metric_date
@@ -123,16 +129,18 @@ SELECT
   COALESCE(cd.attribution_medium, np.attribution_medium) AS attribution_medium,
   COALESCE(cd.attribution_ua, np.attribution_ua) AS attribution_ua,
   COALESCE(cd.attribution_experiment, np.attribution_experiment) AS attribution_experiment,
-  cd.attribution_variation AS attribution_variation,
+  COALESCE(cd.attribution_variation, np.attribution_variation) AS attribution_variation,
   COALESCE(
     cd.startup_profile_selection_reason,
     np.startup_profile_selection_reason
   ) AS startup_profile_selection_reason,
   COALESCE(cd.normalized_os, np.normalized_os) AS normalized_os,
-  cd.normalized_os_version,
+  COALESCE(cd.normalized_os_version, np.normalized_os_version) AS normalized_os_version,
   COALESCE(cd.distribution_id, np.distribution_id) AS distribution_id,
-  cd.isp,
+  COALESCE(cd.isp, np.isp) AS isp,
   COALESCE(cd.is_desktop, np.is_desktop) AS is_desktop,
+  cd.days_seen_bits,
+  cd.days_active_bits,
   cd.ping_sent_metric_date,
   cd.ping_sent_week_4,
   cd.active_metric_date,

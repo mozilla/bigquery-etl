@@ -23,5 +23,6 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
+  - mozdata.accounts_backend.accounts_events
   - mozdata.accounts_backend.events_stream
   - mozdata.accounts_frontend.events_stream

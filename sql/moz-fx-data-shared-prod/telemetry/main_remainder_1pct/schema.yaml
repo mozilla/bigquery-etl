@@ -377,6 +377,9 @@ fields:
       - name: variation
         type: STRING
         mode: NULLABLE
+      - name: msstoresignedin
+        type: BOOLEAN
+        mode: NULLABLE
     - name: blocklist_enabled
       type: BOOLEAN
       mode: NULLABLE

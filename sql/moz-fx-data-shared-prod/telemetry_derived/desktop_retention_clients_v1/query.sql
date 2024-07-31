@@ -39,11 +39,7 @@ new_profiles AS (
     startup_profile_selection_reason,
     mozfun.norm.os(cfs.os) AS normalized_os,
     COALESCE(
-      mozfun.norm.windows_version_info(
-        cfs.os,
-        cfs.os_version,
-        CAST(cfs.windows_build_number AS INT)
-      ),
+      windows_version,
       NULLIF(SPLIT(cfs.normalized_os_version, ".")[SAFE_OFFSET(0)], "")
     ) AS normalized_os_version,
     COALESCE(au.submission_date, DATE_ADD(cfs.first_seen_date, INTERVAL 27 day)) AS submission_date,

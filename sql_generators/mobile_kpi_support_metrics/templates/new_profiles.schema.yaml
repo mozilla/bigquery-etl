@@ -17,37 +17,37 @@ fields:
 - name: app_version
   type: STRING
   mode: NULLABLE
-  description: Client's app version on the metric date.
+  description: Client's app version on the first seen date.
 
 - name: country
   type: STRING
   mode: NULLABLE
-  description: Client's country on the metric date.
+  description: Client's country on the first seen date.
 
 - name: locale
   type: STRING
   mode: NULLABLE
-  description: Client's locale on the metric date.
+  description: Client's locale on the first seen date.
 
 - name: isp
   type: STRING
   mode: NULLABLE
-  description:
+  description: Client's Internet Service Provider on the first seen date.
 
 - name: os
   type: STRING
   mode: NULLABLE
-  description:
+  description: Client's os on the first seen date.
 
 - name: os_version
   type: STRING
   mode: NULLABLE
-  description:
+  description: Client's os version on the first seen date.
 
 - name: device_manufacturer
   type: STRING
   mode: NULLABLE
-  description:
+  description: Client's device manufacturer on the first seen date.
 
 - name: is_mobile
   type: BOOLEAN
@@ -62,4 +62,4 @@ fields:
 - name: new_profiles
   type: INTEGER
   mode: NULLABLE
-  description: Number of new profiles recorded on this day.
+  description: Number of new profiles recorded for the first seen date.

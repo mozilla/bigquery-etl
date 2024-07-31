@@ -41,3 +41,18 @@ fields:
 - name: reg_complete
   type: INTEGER
   mode: NULLABLE
+- name: login_view
+  type: INTEGER
+  mode: NULLABLE
+- name: reg_google_start
+  type: INTEGER
+  mode: NULLABLE
+- name: reg_apple_start
+  type: INTEGER
+  mode: NULLABLE
+- name: login_google_start
+  type: INTEGER
+  mode: NULLABLE
+- name: login_apple_start
+  type: INTEGER
+  mode: NULLABLE

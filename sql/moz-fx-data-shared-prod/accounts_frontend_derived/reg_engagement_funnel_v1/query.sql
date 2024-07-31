@@ -396,7 +396,7 @@ registration_google_engage_reg_google_engage AS (
     {% else %}
       DATE(submission_timestamp) = @submission_date
     {% endif %}
-    AND event = 'reg.google_oauth_reg_start'
+    AND event = 'third_party_auth.google_reg_start'
     AND metrics.string.session_flow_id != ''
 ),
 registration_apple_engage_reg_view AS (
@@ -446,7 +446,7 @@ registration_apple_engage_reg_apple_engage AS (
     {% else %}
       DATE(submission_timestamp) = @submission_date
     {% endif %}
-    AND event = 'reg.apple_oauth_reg_start'
+    AND event = 'third_party_auth.apple_reg_start'
     AND metrics.string.session_flow_id != ''
 ),
 -- aggregate each funnel step value

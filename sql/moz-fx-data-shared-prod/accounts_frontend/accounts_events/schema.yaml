@@ -483,6 +483,15 @@ fields:
         marked as true
 
         '
+  - name: boolean
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: event_third_party_links
+      type: BOOLEAN
+      mode: NULLABLE
+      description: boolean, additional context-dependent (on event.name) info related
+        to third party auth links
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

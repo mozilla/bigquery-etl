@@ -266,7 +266,8 @@ SELECT
       metrics.memory_distribution.extensions_apis_dnr_startup_cache_read_size,
       metrics.memory_distribution.extensions_apis_dnr_startup_cache_write_size,
       metrics.memory_distribution.performance_clone_deserialize_size,
-      metrics.memory_distribution.networking_cache_metadata_size
+      metrics.memory_distribution.networking_cache_metadata_size,
+      metrics.memory_distribution.cert_storage_memory
     ) AS `memory_distribution`,
     STRUCT(
       metrics.string.browser_default_search_engine,

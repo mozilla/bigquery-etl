@@ -681,6 +681,13 @@ fields:
         mode: NULLABLE
         description: Identifier that indicates where installations of Firefox originate,
           see bug 1827233
+      - name: msstoresignedin
+        type: BOOLEAN
+        mode: NULLABLE
+        description: ' Optional, only present if the installation was done through
+          the Microsoft Store, and was able to retrieve the "campaign ID" it was first
+          installed with. This value is "true" if the user was signed into the Microsoft
+          Store when they first installed, and false otherwise.'
     - name: blocklist_enabled
       type: BOOLEAN
       mode: NULLABLE

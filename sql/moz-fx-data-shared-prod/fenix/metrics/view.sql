@@ -701,7 +701,8 @@ SELECT
       metrics.memory_distribution.places_manager_db_size_after_maintenance,
       metrics.memory_distribution.extensions_apis_dnr_startup_cache_read_size,
       metrics.memory_distribution.extensions_apis_dnr_startup_cache_write_size,
-      metrics.memory_distribution.networking_cache_metadata_size
+      metrics.memory_distribution.networking_cache_metadata_size,
+      metrics.memory_distribution.cert_storage_memory
     ) AS `memory_distribution`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -1480,7 +1481,8 @@ SELECT
       metrics.memory_distribution.places_manager_db_size_after_maintenance,
       metrics.memory_distribution.extensions_apis_dnr_startup_cache_read_size,
       metrics.memory_distribution.extensions_apis_dnr_startup_cache_write_size,
-      metrics.memory_distribution.networking_cache_metadata_size
+      metrics.memory_distribution.networking_cache_metadata_size,
+      metrics.memory_distribution.cert_storage_memory
     ) AS `memory_distribution`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -2277,7 +2279,8 @@ SELECT
       metrics.memory_distribution.places_manager_db_size_after_maintenance,
       metrics.memory_distribution.extensions_apis_dnr_startup_cache_read_size,
       metrics.memory_distribution.extensions_apis_dnr_startup_cache_write_size,
-      metrics.memory_distribution.networking_cache_metadata_size
+      metrics.memory_distribution.networking_cache_metadata_size,
+      metrics.memory_distribution.cert_storage_memory
     ) AS `memory_distribution`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -3083,7 +3086,8 @@ SELECT
       metrics.memory_distribution.places_manager_db_size_after_maintenance,
       metrics.memory_distribution.extensions_apis_dnr_startup_cache_read_size,
       metrics.memory_distribution.extensions_apis_dnr_startup_cache_write_size,
-      metrics.memory_distribution.networking_cache_metadata_size
+      metrics.memory_distribution.networking_cache_metadata_size,
+      metrics.memory_distribution.cert_storage_memory
     ) AS `memory_distribution`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -3871,7 +3875,8 @@ SELECT
       metrics.memory_distribution.places_manager_db_size_after_maintenance,
       metrics.memory_distribution.extensions_apis_dnr_startup_cache_read_size,
       metrics.memory_distribution.extensions_apis_dnr_startup_cache_write_size,
-      metrics.memory_distribution.networking_cache_metadata_size
+      metrics.memory_distribution.networking_cache_metadata_size,
+      metrics.memory_distribution.cert_storage_memory
     ) AS `memory_distribution`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,

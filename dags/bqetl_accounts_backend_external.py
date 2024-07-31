@@ -124,6 +124,18 @@ with DAG(
         task_concurrency=1,
     )
 
+    accounts_db_external__fxa_account_groups__v1 = bigquery_etl_query(
+        task_id="accounts_db_external__fxa_account_groups__v1",
+        destination_table="fxa_account_groups_v1",
+        dataset_id="accounts_db_external",
+        project_id="moz-fx-data-shared-prod",
+        owner="akomar@mozilla.com",
+        email=["akomar@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
     accounts_db_external__fxa_account_reset_tokens__v1 = bigquery_etl_query(
         task_id="accounts_db_external__fxa_account_reset_tokens__v1",
         destination_table="fxa_account_reset_tokens_v1",
@@ -139,6 +151,18 @@ with DAG(
     accounts_db_external__fxa_accounts__v1 = bigquery_etl_query(
         task_id="accounts_db_external__fxa_accounts__v1",
         destination_table="fxa_accounts_v1",
+        dataset_id="accounts_db_external",
+        project_id="moz-fx-data-shared-prod",
+        owner="akomar@mozilla.com",
+        email=["akomar@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
+    accounts_db_external__fxa_carts__v1 = bigquery_etl_query(
+        task_id="accounts_db_external__fxa_carts__v1",
+        destination_table="fxa_carts_v1",
         dataset_id="accounts_db_external",
         project_id="moz-fx-data-shared-prod",
         owner="akomar@mozilla.com",
@@ -223,6 +247,18 @@ with DAG(
     accounts_db_external__fxa_emails__v1 = bigquery_etl_query(
         task_id="accounts_db_external__fxa_emails__v1",
         destination_table="fxa_emails_v1",
+        dataset_id="accounts_db_external",
+        project_id="moz-fx-data-shared-prod",
+        owner="akomar@mozilla.com",
+        email=["akomar@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
+    accounts_db_external__fxa_groups__v1 = bigquery_etl_query(
+        task_id="accounts_db_external__fxa_groups__v1",
+        destination_table="fxa_groups_v1",
         dataset_id="accounts_db_external",
         project_id="moz-fx-data-shared-prod",
         owner="akomar@mozilla.com",
@@ -568,6 +604,18 @@ with DAG(
         task_concurrency=1,
     )
 
+    accounts_db_nonprod_external__fxa_account_groups__v1 = bigquery_etl_query(
+        task_id="accounts_db_nonprod_external__fxa_account_groups__v1",
+        destination_table="fxa_account_groups_v1",
+        dataset_id="accounts_db_nonprod_external",
+        project_id="moz-fx-data-shared-prod",
+        owner="akomar@mozilla.com",
+        email=["akomar@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
     accounts_db_nonprod_external__fxa_account_reset_tokens__v1 = bigquery_etl_query(
         task_id="accounts_db_nonprod_external__fxa_account_reset_tokens__v1",
         destination_table="fxa_account_reset_tokens_v1",
@@ -583,6 +631,18 @@ with DAG(
     accounts_db_nonprod_external__fxa_accounts__v1 = bigquery_etl_query(
         task_id="accounts_db_nonprod_external__fxa_accounts__v1",
         destination_table="fxa_accounts_v1",
+        dataset_id="accounts_db_nonprod_external",
+        project_id="moz-fx-data-shared-prod",
+        owner="akomar@mozilla.com",
+        email=["akomar@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
+    accounts_db_nonprod_external__fxa_carts__v1 = bigquery_etl_query(
+        task_id="accounts_db_nonprod_external__fxa_carts__v1",
+        destination_table="fxa_carts_v1",
         dataset_id="accounts_db_nonprod_external",
         project_id="moz-fx-data-shared-prod",
         owner="akomar@mozilla.com",
@@ -669,6 +729,18 @@ with DAG(
     accounts_db_nonprod_external__fxa_emails__v1 = bigquery_etl_query(
         task_id="accounts_db_nonprod_external__fxa_emails__v1",
         destination_table="fxa_emails_v1",
+        dataset_id="accounts_db_nonprod_external",
+        project_id="moz-fx-data-shared-prod",
+        owner="akomar@mozilla.com",
+        email=["akomar@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
+    accounts_db_nonprod_external__fxa_groups__v1 = bigquery_etl_query(
+        task_id="accounts_db_nonprod_external__fxa_groups__v1",
+        destination_table="fxa_groups_v1",
         dataset_id="accounts_db_nonprod_external",
         project_id="moz-fx-data-shared-prod",
         owner="akomar@mozilla.com",

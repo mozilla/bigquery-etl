@@ -3260,6 +3260,31 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: Size of the metadata in bytes parsed from the disk.
+    - name: cert_storage_memory
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Heap memory used by cert_storage.
+
+        '
   - name: string
     type: RECORD
     mode: NULLABLE

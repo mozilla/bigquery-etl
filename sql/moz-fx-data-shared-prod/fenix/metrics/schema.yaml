@@ -10878,6 +10878,26 @@ fields:
         - name: value
           type: INTEGER
           mode: NULLABLE
+    - name: cert_storage_memory
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
   - name: datetime
     type: RECORD
     mode: NULLABLE

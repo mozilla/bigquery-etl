@@ -47,7 +47,7 @@ mobile_baseline_search AS (
     `moz-fx-data-shared-prod.fenix.baseline`,
     UNNEST(metrics.labeled_counter.metrics_search_count) AS key_value
   WHERE
-    DATE(submission_timestamp) @submission_date
+    DATE(submission_timestamp) = @submission_date
     AND key_value.value <= 10000
   UNION ALL
   SELECT

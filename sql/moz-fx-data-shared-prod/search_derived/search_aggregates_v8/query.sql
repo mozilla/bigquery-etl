@@ -22,10 +22,16 @@ SELECT
   scd.policies_is_enterprise,
   scd.channel,
   `moz-fx-data-shared-prod`.udf.normalize_search_engine(scd.engine) AS normalized_engine,
-  CASE WHEN default_search_engine LIKE '%google%' THEN "Google"
-  WHEN default_search_engine LIKE '%bing%' THEN "Bing"
-  WHEN default_search_engine LIKE '%ddg%' OR default_search_engine LIKE '%duckduckgo%' THEN "DuckDuckGo"
-  ELSE NULL END AS normalized_default_search_engine,
+  CASE
+    WHEN default_search_engine LIKE '%google%'
+      THEN "Google"
+    WHEN default_search_engine LIKE '%bing%'
+      THEN "Bing"
+    WHEN default_search_engine LIKE '%ddg%'
+      OR default_search_engine LIKE '%duckduckgo%'
+      THEN "DuckDuckGo"
+    ELSE NULL
+  END AS normalized_default_search_engine,
   scd.is_sap_monetizable,
   COUNT(*) AS client_count,
   SUM(scd.organic) AS organic,
@@ -38,7 +44,8 @@ SELECT
   SUM(scd.search_with_ads_organic) AS search_with_ads_organic,
   SUM(scd.unknown) AS unknown,
   CASE
-    WHEN ac.client_id IS NOT NULL AND distribution_id NOT LIKE '%acer%'
+    WHEN ac.client_id IS NOT NULL
+      AND distribution_id NOT LIKE '%acer%'
       THEN TRUE
     ELSE FALSE
   END AS is_acer_cohort

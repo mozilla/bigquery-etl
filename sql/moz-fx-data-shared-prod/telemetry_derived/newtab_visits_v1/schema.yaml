@@ -107,9 +107,6 @@ fields:
 - mode: NULLABLE
   name: had_non_search_engagement
   type: BOOLEAN
-- mode: REPEATED
-  name: newtab_selected_topics
-  type: STRING
 - fields:
   - mode: NULLABLE
     name: search_engine

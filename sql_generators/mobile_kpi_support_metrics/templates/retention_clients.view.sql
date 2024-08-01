@@ -23,7 +23,7 @@ WITH active_users AS (
       client_id,
       sample_id,
       channel AS normalized_channel,
-      {% for attribution_field in product_attribution_fields.values() %}
+      {% for attribution_field in product_attribution_fields.values() if not attribution_field.name.endswith("_timestamp") %}
         {% if app_name == "fenix" and attribution_field.name == "adjust_campaign" %}
           CASE
             WHEN adjust_network IN ('Google Organic Search', 'Organic')
@@ -57,8 +57,8 @@ SELECT
   clients_daily.locale,
   clients_daily.isp,
   active_users.is_mobile,
-  {% for attribution_field in product_attribution_fields.values() %}
-    attribution.{{ attribution_field.name }},
+  {% for attribution_field in product_attribution_fields.values() if not attribution_field.name.endswith("_timestamp") %}
+  attribution.{{ attribution_field.name }},
   {% endfor %}
   {% if 'adjust_network' in product_attribution_fields %}
     `moz-fx-data-shared-prod.udf.organic_vs_paid_mobile`(adjust_network) AS paid_vs_organic,

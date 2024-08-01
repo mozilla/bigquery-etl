@@ -73,3 +73,12 @@
       extra:
         - key: newtab_visit_id
           value: visit_id_1
+    - category: newtab
+      name: impression
+      extra:
+        - key: topics
+          value: "[topic_1, topic_2]"
+        - key: first_save
+          value: false
+        - key: previous_topics
+          value: "[topic_1]"

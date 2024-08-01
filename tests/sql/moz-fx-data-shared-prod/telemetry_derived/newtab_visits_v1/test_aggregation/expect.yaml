@@ -6,6 +6,7 @@
   legacy_telemetry_client_id: legacy_id_1
   experiments: []
   newtab_blocked_sponsors: []
+  newtab_selected_topics: []
   is_new_profile: true
   activity_segment: lots_of_activity
   browser_name: Firefox Desktop
@@ -62,3 +63,10 @@
       weather_widget_change_display_to_detailed: 0
       weather_widget_change_display_to_simple: 0
       weather_widget_location_selected: 0
+  topic_selection_interactions_interactions:
+    - previous_topics: "[topic_1]"
+      topics: "[topic_1, topic_2]"
+      topic_selection_open: 0
+      topic_selection_dismiss: 0
+      topic_selection_topics_first_saved: 0
+      topic_selection_topics_updated: 1

@@ -24,3 +24,8 @@ bigquery:
     - ga_client_id
     - country
 references: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:dataops-managed/external-census
+  - workgroup:mozilla-confidential

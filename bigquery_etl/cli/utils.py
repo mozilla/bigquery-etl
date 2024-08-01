@@ -251,3 +251,39 @@ def temp_dataset_option(
         help="Dataset where intermediate query results will be temporarily stored, "
         "formatted as PROJECT_ID.DATASET_ID",
     )
+
+
+def extract_last_group_by_from_query(query_file=None, query=None):
+    """Return the list of columns in the latest group by of a query."""
+    if query_file:
+        query_text = query_file.read_text()
+    elif query is not None:
+        query_text = query
+    else:
+        click.ClickException(f"No query provided to extract the group by.")
+    group_by_list = []
+
+    # Remove single and multi-line comments (/* */), trailing semicolon if present and normalize whitespace.
+    query_text = re.sub(r"/\*.*?\*/", "", query_text, flags=re.DOTALL)
+    query_text = re.sub(r"--[^\n]*\n", "\n", query_text)
+    query_text = re.sub(r"\s+", " ", query_text).strip()
+    if query_text.endswith(";"):
+        query_text = query_text[:-1].strip()
+
+    last_group_by_original = re.search(
+        r"{}(?!.*{})".format(re.escape("GROUP BY"), re.escape("GROUP BY")),
+        query_text,
+        re.DOTALL,
+    )
+
+    if last_group_by_original:
+        group_by = query_text[last_group_by_original.end() :].lstrip()
+        # Remove parenthesis, closing parenthesis, LIMIT, ORDER BY and text after those. Remove also opening parenthesis.
+        group_by = (
+            re.sub(r"[\n\)].*|LIMIT.*|ORDER BY.*", "", group_by)
+            .replace("(", "")
+            .strip()
+        )
+        if group_by:
+            group_by_list = group_by.replace(" ", "").replace("\n", "").split(",")
+    return group_by_list

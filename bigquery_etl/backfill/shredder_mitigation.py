@@ -1,0 +1,190 @@
+"""Generate a query to backfill an aggregate with shredder mitigation."""
+
+from datetime import date, datetime, time, timedelta
+from enum import Enum
+from types import NoneType
+
+TEMP_DATASET = "tmp"
+SUFFIX = datetime.now().strftime("%Y%m%d%H%M%S")
+PREVIOUS_DATE = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
+
+
+class ColumnType(Enum):
+    """Differentiate metric and dimensions."""
+
+    METRIC = "METRIC"
+    DIMENSION = "DIMENSION"
+    UNDETERMINED = "None"
+
+
+class ColumnStatus(Enum):
+    """Different status of a column during shredder mitigation."""
+
+    COMMON = "COMMON"
+    ADDED = "ADDED"
+    REMOVED = "REMOVED"
+    UNDETERMINED = "None"
+
+
+class DataTypeGroup(Enum):
+    """Data types in BigQuery. Not including ARRAY and STRUCT as these are not expected in aggregate tables."""
+
+    STRING = ("STRING", "BYTES")
+    BOOLEAN = "BOOLEAN"
+    NUMERIC = (
+        "INTEGER",
+        "NUMERIC",
+        "BIGNUMERIC",
+        "DECIMAL",
+        "INT64",
+        "INT",
+        "SMALLINT",
+        "BIGINT",
+        "TINYINT",
+        "BYTEINT",
+    )
+    FLOAT = ("FLOAT",)
+    DATE = ("DATE", "DATETIME", "TIME", "TIMESTAMP")
+    UNDETERMINED = "None"
+
+
+class Column:
+    """Representation of a column in a query, with relevant details for shredder mitigation."""
+
+    def __init__(self, name, data_type, column_type, status):
+        self.name = name
+        self.data_type = data_type
+        self.column_type = column_type
+        self.status = status
+
+    def __eq__(self, other):
+        if not isinstance(other, Column):
+            return NotImplemented
+        return (
+            self.name == other.name
+            and self.data_type == other.data_type
+            and self.column_type == other.column_type
+            and self.status == other.status
+        )
+
+    def __repr__(self):
+        return f"Column(name={self.name}, data_type={self.data_type}, column_type={self.column_type}, status={self.status})"
+
+
+def get_bigquery_type(value) -> DataTypeGroup:
+    """Return the datatype of a value, grouping similar types."""
+    date_formats = [
+        ("%Y-%m-%d", date),
+        ("%Y-%m-%d %H:%M:%S", datetime),
+        ("%Y-%m-%dT%H:%M:%S", datetime),
+        ("%Y-%m-%dT%H:%M:%SZ", datetime),
+        ("%Y-%m-%d %H:%M:%S UTC", datetime),
+        ("%H:%M:%S", time),
+    ]
+    for format, dtype in date_formats:
+        try:
+            parsed_value = datetime.strptime(value, format)
+            if dtype == time:
+                parsed_value = parsed_value.time()
+            if isinstance(parsed_value, dtype):
+                return DataTypeGroup.DATE
+        except (ValueError, TypeError):
+            continue
+    if isinstance(value, time):
+        return DataTypeGroup.DATE
+    if isinstance(value, date):
+        return DataTypeGroup.DATE
+    elif isinstance(value, bool):
+        return DataTypeGroup.BOOLEAN
+    if isinstance(value, int):
+        return DataTypeGroup.NUMERIC
+    elif isinstance(value, float):
+        return DataTypeGroup.FLOAT
+    elif isinstance(value, str) or isinstance(value, bytes):
+        return DataTypeGroup.STRING
+    elif isinstance(value, NoneType):
+        return DataTypeGroup.UNDETERMINED
+    else:
+        raise ValueError(f"Unsupported data type: {type(value)}")
+
+
+def classify_columns(
+    new_row: dict, existing_columns: list, new_columns: list
+) -> set[list[Column]]:
+    """Compare the new row with the existing columns and return the list of common, added and removed columns by type."""
+    common_dimensions = []
+    added_dimensions = []
+    removed_dimensions = []
+    metrics = []
+    undefined = []
+
+    for key in existing_columns:
+        if key in existing_columns and key not in new_columns:
+            removed_dimensions.append(
+                Column(
+                    key,
+                    DataTypeGroup.UNDETERMINED,
+                    ColumnType.UNDETERMINED,
+                    ColumnStatus.REMOVED,
+                )
+            )
+
+    for key, value in new_row.items():
+        if key in existing_columns:
+            common_dimensions.append(
+                Column(
+                    key,
+                    get_bigquery_type(value),
+                    ColumnType.DIMENSION,
+                    ColumnStatus.COMMON,
+                )
+            )
+        elif key not in existing_columns and key in new_columns:
+            added_dimensions.append(
+                Column(
+                    key,
+                    get_bigquery_type(value),
+                    ColumnType.DIMENSION,
+                    ColumnStatus.ADDED,
+                )
+            )
+        elif (
+            key not in existing_columns
+            and key not in new_columns
+            and get_bigquery_type(value) is DataTypeGroup.NUMERIC
+            or get_bigquery_type(value) is DataTypeGroup.FLOAT
+        ):
+            # Columns that are not in the previous or new list of grouping columns are metrics.
+            metrics.append(
+                Column(
+                    key,
+                    get_bigquery_type(value),
+                    ColumnType.METRIC,
+                    ColumnStatus.COMMON,
+                )
+            )
+        else:
+            undefined.append(
+                Column(
+                    key,
+                    get_bigquery_type(None),
+                    ColumnType.UNDETERMINED,
+                    ColumnStatus.UNDETERMINED,
+                )
+            )
+
+    common_dimensions_sorted = sorted(common_dimensions, key=lambda column: column.name)
+    added_dimensions_sorted = sorted(added_dimensions, key=lambda column: column.name)
+    removed_dimensions_sorted = sorted(
+        removed_dimensions, key=lambda column: column.name
+    )
+    metrics_sorted = sorted(metrics, key=lambda column: column.name)
+    undefined_sorted = sorted(undefined, key=lambda column: column.name)
+
+    return (
+        common_dimensions_sorted,
+        added_dimensions_sorted,
+        removed_dimensions_sorted,
+        metrics_sorted,
+        undefined_sorted,
+    )

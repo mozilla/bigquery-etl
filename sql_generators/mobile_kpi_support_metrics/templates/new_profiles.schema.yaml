@@ -2,7 +2,7 @@ fields:
 - mode: NULLABLE
   name: first_seen_date
   type: DATE
-  description: When the profile has sent a baseline ping for the first time.
+  description: Date we first received a baseline ping from the profile.
 
 - mode: NULLABLE
   name: normalized_channel

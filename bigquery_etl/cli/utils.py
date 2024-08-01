@@ -256,7 +256,10 @@ def temp_dataset_option(
 def extract_last_group_by_from_query(query_file=None, query=None):
     """Return the list of columns in the latest group by of a query."""
     if query_file:
-        query_text = query_file.read_text()
+        try:
+            query_text = query_file.read_text()
+        except (FileNotFoundError, OSError):
+            click.ClickException(f"The path provided is not valid: {query_file}.")
     elif query is not None:
         query_text = query
     else:

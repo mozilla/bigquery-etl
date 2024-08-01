@@ -23,6 +23,10 @@ SELECT
   SUM(search_with_ads_organic) AS search_with_ads_organic,
   SUM(unknown) AS unknown,
   CAST(NULL AS string) normalized_engine,
+  CASE WHEN default_search_engine LIKE '%google%' THEN "Google"
+  WHEN default_search_engine LIKE '%bing%' THEN "Bing"
+  WHEN default_search_engine LIKE '%ddg%' OR default_search_engine LIKE '%duckduckgo%' THEN "DuckDuckGo"
+  ELSE NULL END AS normalized_default_search_engine,
   `mozfun.mobile_search.normalize_app_name`(
     app_name,
     os

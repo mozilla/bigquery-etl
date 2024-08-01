@@ -1,0 +1,14 @@
+friendly_name: phabricator_metrics
+dataset_base_acl: syndicate
+description: phabricator_metrics syndicate views
+user_facing: true
+labels: {}
+syndication:
+  prod:
+    syndicated_project: "moz-fx-phabricator-prod"
+    syndicated_dataset: "phabricator_prod_metrics"
+  administer_views: false
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

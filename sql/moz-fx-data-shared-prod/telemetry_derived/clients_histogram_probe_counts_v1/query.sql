@@ -40,44 +40,15 @@ WITH aggregates AS (
         udf_get_buckets(first_bucket, MAX(last_bucket), MAX(num_buckets), metric_type)
       ),
       CAST(ROUND(SUM(record.value)) AS INT64)
-    ) AS aggregates
-  FROM
-    `moz-fx-data-shared-prod.telemetry_derived.clients_histogram_bucket_counts_v1` AS bucket_counts
-  GROUP BY
-    os,
-    app_version,
-    app_build_id,
-    channel,
-    metric,
-    metric_type,
-    KEY,
-    process,
-    client_agg_type,
-    first_bucket
-),
-non_norm_aggregates AS (
-  SELECT
-    os,
-    app_version,
-    app_build_id,
-    channel,
-    metric,
-    metric_type,
-    KEY,
-    process,
-    first_bucket,
-    MAX(last_bucket) AS last_bucket,
-    MAX(num_buckets) AS num_buckets,
-    agg_type AS client_agg_type,
-    'histogram' AS agg_type,
+    ) AS normalized_aggregates,
     mozfun.glam.histogram_fill_buckets(
-      mozfun.map.sum(ARRAY_AGG(record)),
+      mozfun.map.sum(ARRAY_AGG(non_norm_record)),
       mozfun.glam.histogram_buckets_cast_string_array(
         udf_get_buckets(first_bucket, MAX(last_bucket), MAX(num_buckets), metric_type)
       )
     ) AS non_norm_aggregates,
   FROM
-    `moz-fx-data-shared-prod.telemetry_derived.clients_non_norm_histogram_bucket_counts_v1` AS non_norm_bucket_counts
+    `moz-fx-data-shared-prod.telemetry_derived.clients_histogram_bucket_counts_v1` AS bucket_counts
   GROUP BY
     os,
     app_version,
@@ -100,29 +71,12 @@ SELECT
   key,
   process,
   first_bucket,
-  aggregates.last_bucket,
-  aggregates.num_buckets,
+  last_bucket,
+  num_buckets,
   client_agg_type,
   agg_type,
-  aggregates.total_users,
-  aggregates.aggregates,
-  non_norm_aggregates.non_norm_aggregates
+  total_users,
+  normalized_aggregates AS aggregates,
+  non_norm_aggregates
 FROM
   aggregates
-INNER JOIN
-  non_norm_aggregates
-  USING (
-    os,
-    app_version,
-    app_build_id,
-    channel,
-    metric,
-    metric_type,
-    key,
-    process,
-    first_bucket,
-    last_bucket,
-    num_buckets,
-    client_agg_type,
-    agg_type
-  )

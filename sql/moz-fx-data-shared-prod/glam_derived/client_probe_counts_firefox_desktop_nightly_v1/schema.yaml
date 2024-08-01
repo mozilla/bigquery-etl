@@ -29,15 +29,9 @@ fields:
 - name: histogram
   type: STRING
   mode: NULLABLE
-- name: percentiles
-  type: STRING
-  mode: NULLABLE
 - name: total_sample
   type: BIGNUMERIC
   mode: NULLABLE
 - name: non_norm_histogram
-  type: STRING
-  mode: NULLABLE
-- name: non_norm_percentiles
   type: STRING
   mode: NULLABLE

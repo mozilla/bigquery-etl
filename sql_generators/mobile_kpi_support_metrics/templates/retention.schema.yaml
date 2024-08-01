@@ -38,7 +38,7 @@ fields:
   type: BOOLEAN
   mode: NULLABLE
   description: Indicates if this specific entry is used towards calculating mobile DAU.
-{% for field in attribution_fields %}
+{% for field in product_attribution_fields.values() if not field.name.endswith("_timestamp") %}
 - name: {{ field.name }}
   type: {{ field.type }}
   mode: NULLABLE

@@ -3,6 +3,7 @@
 import glob
 import re
 import string
+import sys
 import time
 from functools import cached_property
 from pathlib import Path
@@ -316,7 +317,10 @@ class View:
                 table.view_query, strip_comments=True
             ).strip(";" + string.whitespace)
         except TypeError:
-            print(f"ERROR: There has been an issue formating: {target_view_id}")
+            print(
+                f"ERROR: There has been an issue formatting: {target_view_id}",
+                file=sys.stderr,
+            )
             raise
 
         if expected_view_query != actual_view_query:
@@ -373,7 +377,13 @@ class View:
                     return True
 
                 # We only change the first occurrence, which is in the target view name.
-                sql = sql.replace(self.project, target_project, 1)
+                sql = re.sub(
+                    rf"^(?!--)(.*){self.project}",
+                    rf"\1{target_project}",
+                    sql,
+                    count=1,
+                    flags=re.MULTILINE,
+                )
 
             job_config = bigquery.QueryJobConfig(use_legacy_sql=False, dry_run=dry_run)
             query_job = client.query(sql, job_config)
@@ -382,24 +392,32 @@ class View:
                 print(f"Validated definition of {target_view} in {self.path}")
             else:
                 try:
-                    query_job.result()
+                    job_id = query_job.result().job_id
                 except BadRequest as e:
                     if "Invalid snapshot time" in e.message:
                         # This occasionally happens due to dependent views being
                         # published concurrently; we wait briefly and give it one
                         # extra try in this situation.
                         time.sleep(1)
-                        client.query(sql, job_config).result()
+                        job_id = client.query(sql, job_config).result().job_id
                     else:
                         raise
 
                 try:
+                    table = client.get_table(target_view)
+                except NotFound:
+                    print(
+                        f"{target_view} failed to publish to the correct location, verify job id {job_id}",
+                        file=sys.stderr,
+                    )
+                    return False
+
+                try:
                     if self.schema_path.is_file():
-                        self.schema.deploy(target_view)
+                        table = self.schema.deploy(target_view)
                 except Exception as e:
                     print(f"Could not update field descriptions for {target_view}: {e}")
 
-                table = client.get_table(target_view)
                 if not self.metadata:
                     print(f"Missing metadata for {self.path}")
 
@@ -425,7 +443,10 @@ class View:
 
                 print(f"Published view {target_view}")
         else:
-            print(f"Error publishing {self.path}. Invalid view definition.")
+            print(
+                f"Error publishing {self.path}. Invalid view definition.",
+                file=sys.stderr,
+            )
             return False
 
         return True

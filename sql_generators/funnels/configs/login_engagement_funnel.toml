@@ -1,0 +1,146 @@
+destination_dataset = "accounts_frontend_derived"
+platform = "accounts_frontend"
+owners = ["ksiegler@mozilla.org"]  # optional; users getting notification if funnel run fails
+version = "1"
+start_date = "2024-07-25"
+
+[funnels]
+
+[funnels.login_engage]
+
+friendly_name = "Login Funnel Engagement with Password Field"
+description = "Engagement with password field"
+steps = ["login_view", "login_engage"]
+dimensions = ["service"]
+
+[funnels.login_submit]
+
+friendly_name = "Login Funnel Engagement with Sign in Button"
+description = "Click with the sign in button on the login page"
+steps = ["login_view", "login_submit"]
+dimensions = ["service"]
+
+[funnels.login_submit_success]
+
+friendly_name = "Login Funnel Attempt of Submission of the Sign in Form"
+description = "Engagement with the Create account button on the registration form"
+steps = ["login_view", "login_submit_success"]
+dimensions = ["service"]
+
+[funnels.login_diff_account_engage]
+
+friendly_name = "Login Funnel Use Different Acccount Engagement"
+description = "Click on the use different account link"
+steps = ["login_view", "login_diff_account_engage"]
+dimensions = ["service"]
+
+[funnels.login_forgot_pw_engage]
+
+friendly_name = "Login Funnel Forgot Password Engagement"
+description = "Click on the Forgot Password link on the login form"
+steps = ["login_view", "login_forgot_pw_engage"]
+dimensions = ["service"]
+
+[funnels.login_google_engage]
+
+friendly_name = "Login Funnel Google Engage"
+description = "Click on the third party auth Google link"
+steps = ["login_view", "login_google_engage"]
+dimensions = ["service"]
+
+[funnels.login_apple_engage]
+
+friendly_name = "Login Funnel Apple Engage"
+description = "Click on the third party auth Apple link"
+steps = ["login_view", "login_apple_engage"]
+dimensions = ["service"]
+
+[steps]
+
+[steps.login_view]
+friendly_name = "Login View Form"
+description = "View of the login form"
+data_source = "events_stream"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'login.view' AND metrics.string.session_flow_id != ''"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.login_engage]
+friendly_name = "Login Engagement"
+description = "Engagement with password field"
+data_source = "events_stream"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'login.engage' AND metrics.string.session_flow_id != ''"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.login_submit]
+friendly_name = "Login Submission Attempt"
+description = "Engagement sign in button on the login form"
+data_source = "events_stream"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'login.submit' AND metrics.string.session_flow_id != ''"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.login_submit_success]
+friendly_name = "Successful Submission of Login Form"
+description = "Successful submission of the login form from entering password"
+data_source = "events_stream"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'login.submit_success' AND metrics.string.session_flow_id != ''"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.login_diff_account_engage]
+friendly_name = "Login Different Account Engage"
+description = "Click on the use different account link"
+data_source = "events_stream"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'login.diff_account_link_click' AND metrics.string.session_flow_id != ''"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.login_forgot_pw_engage]
+friendly_name = "Login Forgot Password Engage"
+description = "Click on the forgot password link"
+data_source = "events_stream"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'login.forgot_pwd_submit' AND metrics.string.session_flow_id != ''"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.login_google_engage]
+friendly_name = "Login Google Auth Engagement"
+description = "Clicking on the Google third party auth link"
+data_source = "events_stream"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'third_party_auth.google_login_start' AND metrics.string.session_flow_id != ''"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.login_apple_engage]
+friendly_name = "Login Apple Auth Engagement"
+description = "Clicking on the Apple third party auth link"
+data_source = "events_stream"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'third_party_auth.apple_login_start' AND metrics.string.session_flow_id != ''"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[data_sources]
+
+[data_sources.events_stream]
+from_expression = "mozdata.accounts_frontend.events_stream"
+submission_date_column = "DATE(submission_timestamp)"
+client_id_column = "metrics.string.account_user_id_sha256"
+
+[dimensions]
+
+[dimensions.service]
+data_source = "events_stream"
+select_expression = "IF(COALESCE(NULLIF(metrics.string.relying_party_oauth_client_id, ''), NULLIF(metrics.string.relying_party_service, '')) = 'sync', '5882386c6d801776', COALESCE(NULLIF(metrics.string.relying_party_oauth_client_id, ''), NULLIF(metrics.string.relying_party_service, '')))"
+friendly_name = "Service"
+description = "Oauth Client ID is used to map to service name for which service the user logged in through"
+client_id_column = "client_info.client_id"

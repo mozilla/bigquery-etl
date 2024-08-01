@@ -9,17 +9,35 @@ fields:
     name: device
     type: STRING
   - mode: NULLABLE
-    name: channel
+    name: country
     type: STRING
   - mode: NULLABLE
     name: country
     type: STRING
   - mode: NULLABLE
-    name: dau
+    name: normalized_channel
+    type: STRING
+  - mode: NULLABLE
+    name: normalized_engine
+    type: STRING
+  - mode: NULLABLE
+    name: default_search_engine
+    type: STRING
+  - mode: NULLABLE
+    name: normalized_default_search_engine
+    type: STRING
+  - mode: NULLABLE
+    name: sap_day
     type: INTEGER
   - mode: NULLABLE
-    name: dau_engaged_w_sap
+    name: ad_click_day
+    type: INTEGER
+  - mode: NULLABLE
+    name: dau_eligible_markets
     type: INTEGER
   - mode: NULLABLE
     name: dau_w_engine_as_default
+    type: INTEGER
+  - mode: NULLABLE
+    name: dau_engaged_w_sap
     type: INTEGER

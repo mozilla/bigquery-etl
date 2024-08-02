@@ -86,11 +86,14 @@ def get_bigquery_type(value) -> DataTypeGroup:
     ]
     for format, dtype in date_formats:
         try:
-            parsed_value = datetime.strptime(value, format)
             if dtype == time:
-                parsed_value = parsed_value.time()
-            if isinstance(parsed_value, dtype):
-                return DataTypeGroup.DATE
+                parsed_to_time = datetime.strptime(value, format).time()
+                if isinstance(parsed_to_time, time):
+                    return DataTypeGroup.DATE
+            else:
+                parsed_to_date = datetime.strptime(value, format)
+                if isinstance(parsed_to_date, dtype):
+                    return DataTypeGroup.DATE
         except (ValueError, TypeError):
             continue
     if isinstance(value, time):
@@ -113,7 +116,7 @@ def get_bigquery_type(value) -> DataTypeGroup:
 
 def classify_columns(
     new_row: dict, existing_columns: list, new_columns: list
-) -> set[list[Column]]:
+) -> tuple[list[Column], list[Column], list[Column], list[Column], list[Column]]:
     """Compare the new row with the existing columns and return the list of common, added and removed columns by type."""
     common_dimensions = []
     added_dimensions = []

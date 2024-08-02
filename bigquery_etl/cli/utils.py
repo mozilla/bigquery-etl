@@ -263,7 +263,7 @@ def extract_last_group_by_from_query(query_file=None, query=None):
     elif query is not None:
         query_text = query
     else:
-        click.ClickException(f"No query provided to extract the group by.")
+        click.ClickException("No query provided to extract the group by.")
     group_by_list = []
 
     # Remove single and multi-line comments (/* */), trailing semicolon if present and normalize whitespace.

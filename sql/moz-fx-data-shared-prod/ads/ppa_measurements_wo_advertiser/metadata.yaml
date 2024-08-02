@@ -10,6 +10,8 @@ description: |-
   telemetry-airflow and docker-etl)
 owners:
   - cmorales@mozilla.com
+labels:
+  authorized: true
 workgroup_access:
   - role: roles/bigquery.dataViewer
     members:

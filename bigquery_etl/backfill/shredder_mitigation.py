@@ -52,12 +52,14 @@ class Column:
     """Representation of a column in a query, with relevant details for shredder mitigation."""
 
     def __init__(self, name, data_type, column_type, status):
+        """Initialize class with required attributes."""
         self.name = name
         self.data_type = data_type
         self.column_type = column_type
         self.status = status
 
     def __eq__(self, other):
+        """Return attributes only if the referenced object is of type Column."""
         if not isinstance(other, Column):
             return NotImplemented
         return (
@@ -68,6 +70,7 @@ class Column:
         )
 
     def __repr__(self):
+        """Return a string representation of the object."""
         return f"Column(name={self.name}, data_type={self.data_type}, column_type={self.column_type}, status={self.status})"
 
 

@@ -63,7 +63,7 @@
       weather_widget_change_display_to_detailed: 0
       weather_widget_change_display_to_simple: 0
       weather_widget_location_selected: 0
-  topic_selection_interactions_interactions:
+  topic_selection_interactions:
     - previous_topics: "[topic_1]"
       topics: "[topic_1, topic_2]"
       topic_selection_open: 0

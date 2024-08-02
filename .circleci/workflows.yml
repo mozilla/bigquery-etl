@@ -855,11 +855,6 @@ jobs:
   deploy-to-private-gcr:
     executor: gcp-gcr/default
     steps:
-      - run: *oidc-setup
-      - run: | 
-          echo 'export GOOGLE_PROJECT_ID="moz-fx-data-airflow-prod-88e0"' >> "$BASH_ENV"
-          echo "export OIDC_SERVICE_ACCOUNT_EMAIL=$GCP_SERVICE_ACCOUNT_IMAGE_PUSHER_EMAIL" >> "$BASH_ENV"
-      - run: 'gcloud config get-value account'
       - when:
           condition: 
              equal: [true, true]
@@ -871,7 +866,8 @@ jobs:
             #     command: |
             #       rm -rf sql/
             #       cp -r /tmp/workspace/private-generated-sql/sql sql
-            - gcp-gcr/gcr-auth
+            - gcp-gcr/gcr-auth:
+                use_oidc: true
             - gcp-gcr/build-image:
                 dockerfile: DSRETest.Dockerfile
                 image: bigquery-etl
@@ -1233,7 +1229,7 @@ workflows:
               only:
                 - main
       - deploy-to-private-gcr:
-          context: gcpv2-workload-identity
+          context: dataeng-bqetl-gcr
           requires:
             # - private-generate-sql
             # # can't run in parallel because CIRCLE_BUILD_NUM is same

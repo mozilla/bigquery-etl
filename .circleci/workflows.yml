@@ -1229,11 +1229,11 @@ workflows:
               only:
                 - main
       - gcp-gcr/build-and-push-image:
-          context: dataeng-bqetl-gcr
+          # context: dataeng-bqetl-gcr
           dockerfile: DSRETest.Dockerfile
           image: bigquery-etl
           tag: DSRE-1683-test
-          
+
       - deploy-to-private-gcr:
           context: dataeng-bqetl-gcr
           requires:

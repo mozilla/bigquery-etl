@@ -51,6 +51,25 @@ with DAG(
     tags=tags,
 ) as dag:
 
+    checks__warn_cloudflare_derived__device_usage__v1 = bigquery_dq_check(
+        task_id="checks__warn_cloudflare_derived__device_usage__v1",
+        source_table="device_usage_v1",
+        dataset_id="cloudflare_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=False,
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com"],
+        depends_on_past=False,
+        arguments=[
+            "--date",
+            "{{ds}}",
+            "--cloudflare_api_token",
+            "{{ var.value.cloudflare_auth_token}}",
+        ],
+        parameters=["dte:DATE:{{ds}}"],
+        retries=0,
+    )
+
     cloudflare_derived__device_usage__v1 = GKEPodOperator(
         task_id="cloudflare_derived__device_usage__v1",
         arguments=[
@@ -66,4 +85,8 @@ with DAG(
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="kwindau@mozilla.com",
         email=["kwindau@mozilla.com"],
+    )
+
+    checks__warn_cloudflare_derived__device_usage__v1.set_upstream(
+        cloudflare_derived__device_usage__v1
     )

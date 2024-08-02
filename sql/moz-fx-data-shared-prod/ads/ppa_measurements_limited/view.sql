@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.ads.ppa_measurements_wo_advertiser`
+  `moz-fx-data-shared-prod.ads.ppa_measurements_limited`
 AS
 SELECT
   collection_time,

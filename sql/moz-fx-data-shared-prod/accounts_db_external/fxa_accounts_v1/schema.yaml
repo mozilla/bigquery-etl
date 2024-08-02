@@ -42,3 +42,6 @@ fields:
 - name: metricsOptOutAt
   type: TIMESTAMP
   mode: NULLABLE
+- name: atLeast18AtReg
+  type: BOOLEAN
+  mode: NULLABLE

@@ -110,6 +110,8 @@ check_results AS (
     USING (day, event_name)
   WHERE
     event_name IS NOT NULL
+    -- glean_page_load events are automatically sent only in `events` ping
+    AND event_name != 'glean_page_load'
     -- fix in progress in https://github.com/mozilla/fxa/pull/17218
     -- will be removed from here when this lands in production
     AND event_name NOT IN (
@@ -146,7 +148,7 @@ check_results AS (
       OR ABS(events_new.count_new - events_old.count_old) / LEAST(
         events_new.count_new,
         events_old.count_old
-      ) > 0.05
+      ) > 0.1 -- low-volume events can have higher relative discrepancies
     )
 )
 SELECT

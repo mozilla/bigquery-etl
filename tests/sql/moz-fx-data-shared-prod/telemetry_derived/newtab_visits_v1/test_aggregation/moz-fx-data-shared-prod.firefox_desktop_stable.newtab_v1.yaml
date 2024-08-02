@@ -74,7 +74,7 @@
         - key: newtab_visit_id
           value: visit_id_1
     - category: newtab
-      name: impression
+      name: topic_selection_topics_saved
       extra:
         - key: topics
           value: "[topic_1, topic_2]"

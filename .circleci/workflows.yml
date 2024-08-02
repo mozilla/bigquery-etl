@@ -1239,7 +1239,7 @@ workflows:
             branches:
               only:
                 - main
-                - DSRE-1683
+                - DSRE-1683-rethink
   tagged-deploy:
     jobs:
       - deploy-to-pypi:

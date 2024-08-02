@@ -295,6 +295,17 @@ with DAG(
         email=["amiyaguchi@mozilla.com", "ascholtz@mozilla.com"],
     )
 
+    monitoring_derived__table_partition_expirations__v1 = bigquery_etl_query(
+        task_id="monitoring_derived__table_partition_expirations__v1",
+        destination_table="table_partition_expirations_v1",
+        dataset_id="monitoring_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="bewu@mozilla.cam",
+        email=["ascholtz@mozilla.com", "bewu@mozilla.cam"],
+        date_partition_parameter="submission_date",
+        depends_on_past=True,
+    )
+
     monitoring_derived__telemetry_missing_columns__v3 = bigquery_etl_query(
         task_id="monitoring_derived__telemetry_missing_columns__v3",
         destination_table="telemetry_missing_columns_v3",
@@ -347,6 +358,10 @@ with DAG(
     )
 
     monitoring_derived__structured_missing_columns__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    monitoring_derived__table_partition_expirations__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
 

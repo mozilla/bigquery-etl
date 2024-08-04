@@ -3,7 +3,6 @@ import json
 from datetime import datetime, timedelta
 import pandas as pd
 import requests
-from argparse import ArgumentParser
 from google.cloud import bigquery
 from google.cloud import storage
 
@@ -261,30 +260,27 @@ def get_browser_data(date_of_interest, auth_token):
 
 def main():
     """Call the API, save data to GCS, load to BQ staging, delete & load to BQ gold"""
-    parser = ArgumentParser(description=__doc__)
-    parser.add_argument("--date", required=True)
-    parser.add_argument("--cloudflare_api_token", required=True)
-    parser.add_argument("--project", default=brwsr_usg_configs["gcp_project_id"])
-    parser.add_argument("--dataset", default="cloudflare_derived")
+    exec_date = "{{ds}}"
+    cloudflare_api_token = "{{var.value.cloudflare_auth_token}}"
+    exec_project = brwsr_usg_configs["gcp_project_id"]
 
-    args = parser.parse_args()
     print("Running for date: ")
-    print(args.date)
+    print(exec_date)
 
     # STEP 1 - Pull the data from the API, save results & errors to GCS staging area
-    result_summary = get_browser_data(args.date, args.cloudflare_api_token)
+    result_summary = get_browser_data(exec_date, cloudflare_api_token)
     print("result_summary")
     print(result_summary)
 
     # Create a bigquery client
-    client = bigquery.Client(args.project)
+    client = bigquery.Client(exec_project)
 
     result_uri = brwsr_usg_configs["bucket"] + brwsr_usg_configs[
         "results_stg_gcs_fpth"
-    ] % (datetime.strptime(args.date, "%Y-%m-%d").date() - timedelta(days=4), args.date)
+    ] % (datetime.strptime(exec_date, "%Y-%m-%d").date() - timedelta(days=4), exec_date)
     error_uri = brwsr_usg_configs["bucket"] + brwsr_usg_configs[
         "errors_stg_gcs_fpth"
-    ] % (datetime.strptime(args.date, "%Y-%m-%d").date() - timedelta(days=4), args.date)
+    ] % (datetime.strptime(exec_date, "%Y-%m-%d").date() - timedelta(days=4), exec_date)
     print("result_uri")
     print(result_uri)
 
@@ -344,13 +340,13 @@ def main():
     print("Loaded {} rows to errors staging.".format(error_bq_stg_tbl.num_rows))
 
     # STEP 4 - Delete results from gold for this day, if there are any already (so if rerun, no issues will occur)
-    del_exstng_gold_res_for_date = f"""DELETE FROM `moz-fx-data-shared-prod.cloudflare_derived.browser_usage_v1` WHERE dte = DATE_SUB('{args.date}', INTERVAL 4 DAY)  """
+    del_exstng_gold_res_for_date = f"""DELETE FROM `moz-fx-data-shared-prod.cloudflare_derived.browser_usage_v1` WHERE dte = DATE_SUB('{exec_date}', INTERVAL 4 DAY)  """
     del_gold_res_job = client.query(del_exstng_gold_res_for_date)
     del_gold_res_job.result()
     print("Deleted anything already existing for this date from results gold")
 
     # STEP 5 - Delete errors from gold for this day, if there are any already (so if rerun, no issues will occur)
-    del_exstng_gold_err_for_date = f"""DELETE FROM `moz-fx-data-shared-prod.cloudflare_derived.browser_usage_errors_v1` WHERE dte = DATE_SUB('{args.date}', INTERVAL 4 DAY) """
+    del_exstng_gold_err_for_date = f"""DELETE FROM `moz-fx-data-shared-prod.cloudflare_derived.browser_usage_errors_v1` WHERE dte = DATE_SUB('{exec_date}', INTERVAL 4 DAY) """
     del_gold_err_job = client.query(del_exstng_gold_err_for_date)
     del_gold_err_job.result()
     print("Deleted anything already existing for this date from errors gold")
@@ -368,7 +364,7 @@ PercentShare AS percent_share,
 Normalization AS normalization,
 LastUpdated AS last_updated_ts
 FROM `moz-fx-data-shared-prod.cloudflare_derived.browser_results_stg`
-WHERE CAST(StartTime as date) = DATE_SUB('{args.date}', INTERVAL 4 DAY) """
+WHERE CAST(StartTime as date) = DATE_SUB('{exec_date}', INTERVAL 4 DAY) """
     load_res_to_gold = client.query(browser_usg_stg_to_gold_query)
     load_res_to_gold.result()
 
@@ -381,7 +377,7 @@ UserType AS user_type,
 DeviceType AS device_type,
 OperatingSystem AS operating_system
 FROM `moz-fx-data-shared-prod.cloudflare_derived.browser_errors_stg`
-WHERE CAST(StartTime as date) = DATE_SUB('{args.date}', INTERVAL 4 DAY) """
+WHERE CAST(StartTime as date) = DATE_SUB('{exec_date}', INTERVAL 4 DAY) """
     load_err_to_gold = client.query(browser_usg_errors_stg_to_gold_query)
     load_err_to_gold.result()
 
@@ -389,12 +385,12 @@ WHERE CAST(StartTime as date) = DATE_SUB('{args.date}', INTERVAL 4 DAY) """
 
     # Calculate the fpaths we will use ahead of time
     result_stg_fpath = brwsr_usg_configs["results_stg_gcs_fpth"] % (
-        datetime.strptime(args.date, "%Y-%m-%d").date() - timedelta(days=4),
-        args.date,
+        datetime.strptime(exec_date, "%Y-%m-%d").date() - timedelta(days=4),
+        exec_date,
     )
     result_archive_fpath = brwsr_usg_configs["results_archive_gcs_fpath"] % (
-        datetime.strptime(args.date, "%Y-%m-%d").date() - timedelta(days=4),
-        args.date,
+        datetime.strptime(exec_date, "%Y-%m-%d").date() - timedelta(days=4),
+        exec_date,
     )
     move_blob(
         brwsr_usg_configs["bucket_no_gs"],
@@ -405,12 +401,12 @@ WHERE CAST(StartTime as date) = DATE_SUB('{args.date}', INTERVAL 4 DAY) """
 
     # STEP 9 - Copy the error CSV from stage to archive, then delete from stage
     error_stg_fpath = brwsr_usg_configs["errors_stg_gcs_fpth"] % (
-        datetime.strptime(args.date, "%Y-%m-%d").date() - timedelta(days=4),
-        args.date,
+        datetime.strptime(exec_date, "%Y-%m-%d").date() - timedelta(days=4),
+        exec_date,
     )
     error_archive_fpath = brwsr_usg_configs["errors_archive_gcs_fpath"] % (
-        datetime.strptime(args.date, "%Y-%m-%d").date() - timedelta(days=4),
-        args.date,
+        datetime.strptime(exec_date, "%Y-%m-%d").date() - timedelta(days=4),
+        exec_date,
     )
     move_blob(
         brwsr_usg_configs["bucket_no_gs"],

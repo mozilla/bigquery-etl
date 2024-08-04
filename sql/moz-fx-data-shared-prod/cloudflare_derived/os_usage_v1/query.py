@@ -3,7 +3,6 @@ import json
 from datetime import datetime, timedelta
 import pandas as pd
 import requests
-from argparse import ArgumentParser
 from google.cloud import bigquery
 from google.cloud import storage
 
@@ -163,7 +162,7 @@ def get_os_usage_data(date_of_interest, auth_token):
                     data_dict = result["serie_0"]
 
                     for key, val in data_dict.items():
-                        if key != 'timestamps':
+                        if key != "timestamps":
                             new_result_df = pd.DataFrame(
                                 {
                                     "Timestamps": data_dict["timestamps"],
@@ -225,31 +224,28 @@ def get_os_usage_data(date_of_interest, auth_token):
 
 def main():
     """Call the API, save data to GCS, load to BQ staging, delete & load to BQ gold"""
-    parser = ArgumentParser(description=__doc__)
-    parser.add_argument("--date", required=True)
-    parser.add_argument("--cloudflare_api_token", required=True)
-    parser.add_argument("--project", default="moz-fx-data-shared-prod")
-    parser.add_argument("--dataset", default="cloudflare_derived")
+    exec_date = "{{ds}}"
+    cloudflare_api_token = "{{var.value.cloudflare_auth_token}}"
+    exec_project = "moz-fx-data-shared-prod"
 
-    args = parser.parse_args()
     print("Running for date: ")
-    print(args.date)
+    print(exec_date)
 
     # STEP 1 - Pull the data from the API, save results & errors to GCS staging area
-    result_summary = get_os_usage_data(args.date, args.cloudflare_api_token)
+    result_summary = get_os_usage_data(exec_date, cloudflare_api_token)
     print("result_summary")
     print(result_summary)
 
     # Create a bigquery client
-    client = bigquery.Client(args.project)
+    client = bigquery.Client(exec_project)
 
     result_uri = os_usg_configs["bucket"] + os_usg_configs["results_stg_gcs_fpth"] % (
-        datetime.strptime(args.date, "%Y-%m-%d").date() - timedelta(days=4),
-        args.date,
+        datetime.strptime(exec_date, "%Y-%m-%d").date() - timedelta(days=4),
+        exec_date,
     )
     error_uri = os_usg_configs["bucket"] + os_usg_configs["errors_stg_gcs_fpth"] % (
-        datetime.strptime(args.date, "%Y-%m-%d").date() - timedelta(days=4),
-        args.date,
+        datetime.strptime(exec_date, "%Y-%m-%d").date() - timedelta(days=4),
+        exec_date,
     )
     print("result_uri")
     print(result_uri)
@@ -307,13 +303,13 @@ def main():
     print("Loaded {} rows to errors staging.".format(error_bq_stg_tbl.num_rows))
 
     # STEP 4 - Delete results from gold for this day, if there are any already (so if rerun, no issues will occur)
-    del_exstng_gold_res_for_date = f"""DELETE FROM `moz-fx-data-shared-prod.cloudflare_derived.os_usage_v1` WHERE dte = DATE_SUB('{args.date}', INTERVAL 4 DAY)  """
+    del_exstng_gold_res_for_date = f"""DELETE FROM `moz-fx-data-shared-prod.cloudflare_derived.os_usage_v1` WHERE dte = DATE_SUB('{exec_date}', INTERVAL 4 DAY)  """
     del_gold_res_job = client.query(del_exstng_gold_res_for_date)
     del_gold_res_job.result()
     print("Deleted anything already existing for this date from results gold")
 
     # STEP 5 - Delete errors from gold for this day, if there are any already (so if rerun, no issues will occur)
-    del_exstng_gold_err_for_date = f"""DELETE FROM `moz-fx-data-shared-prod.cloudflare_derived.os_usage_errors_v1` WHERE dte = DATE_SUB('{args.date}', INTERVAL 4 DAY) """
+    del_exstng_gold_err_for_date = f"""DELETE FROM `moz-fx-data-shared-prod.cloudflare_derived.os_usage_errors_v1` WHERE dte = DATE_SUB('{exec_date}', INTERVAL 4 DAY) """
     del_gold_err_job = client.query(del_exstng_gold_err_for_date)
     del_gold_err_job.result()
     print("Deleted anything already existing for this date from errors gold")
@@ -329,7 +325,7 @@ Share AS os_share,
 Normalization AS normalization_type,
 LastUpdatedTS AS last_updated_ts
 FROM `moz-fx-data-shared-prod.cloudflare_derived.os_results_stg`
-WHERE CAST(Timestamps as date) = DATE_SUB('{args.date}', INTERVAL 4 DAY) """
+WHERE CAST(Timestamps as date) = DATE_SUB('{exec_date}', INTERVAL 4 DAY) """
     load_res_to_gold = client.query(os_usg_stg_to_gold_query)
     load_res_to_gold.result()
 
@@ -340,19 +336,19 @@ StartDate AS dte,
 Location AS location,
 DeviceType AS device_type
 FROM `moz-fx-data-shared-prod.cloudflare_derived.os_errors_stg`
-WHERE StartDate = DATE_SUB('{args.date}', INTERVAL 4 DAY) """
+WHERE StartDate = DATE_SUB('{exec_date}', INTERVAL 4 DAY) """
     load_err_to_gold = client.query(os_usg_errors_stg_to_gold_query)
     load_err_to_gold.result()
 
     # STEP 8 - Copy the result CSV from stage to archive, then delete from stage
     # Calculate the fpaths we will use ahead of time
     result_stg_fpath = os_usg_configs["results_stg_gcs_fpth"] % (
-        datetime.strptime(args.date, "%Y-%m-%d").date() - timedelta(days=4),
-        args.date,
+        datetime.strptime(exec_date, "%Y-%m-%d").date() - timedelta(days=4),
+        exec_date,
     )
     result_archive_fpath = os_usg_configs["results_archive_gcs_fpth"] % (
-        datetime.strptime(args.date, "%Y-%m-%d").date() - timedelta(days=4),
-        args.date,
+        datetime.strptime(exec_date, "%Y-%m-%d").date() - timedelta(days=4),
+        exec_date,
     )
     move_blob(
         os_usg_configs["bucket_no_gs"],
@@ -363,12 +359,12 @@ WHERE StartDate = DATE_SUB('{args.date}', INTERVAL 4 DAY) """
 
     # STEP 9 - Copy the error CSV from stage to archive, then delete from stage
     error_stg_fpath = os_usg_configs["errors_stg_gcs_fpth"] % (
-        datetime.strptime(args.date, "%Y-%m-%d").date() - timedelta(days=4),
-        args.date,
+        datetime.strptime(exec_date, "%Y-%m-%d").date() - timedelta(days=4),
+        exec_date,
     )
     error_archive_fpath = os_usg_configs["errors_archive_gcs_fpth"] % (
-        datetime.strptime(args.date, "%Y-%m-%d").date() - timedelta(days=4),
-        args.date,
+        datetime.strptime(exec_date, "%Y-%m-%d").date() - timedelta(days=4),
+        exec_date,
     )
     move_blob(
         os_usg_configs["bucket_no_gs"],

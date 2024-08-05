@@ -254,7 +254,7 @@ def temp_dataset_option(
 
 
 def extract_last_group_by_from_query(
-    sql_path: Optional[Path] = None, sql_text: Optional[str]= None
+    sql_path: Optional[Path] = None, sql_text: Optional[str] = None
 ):
     """Return the list of columns in the latest group by of a query."""
     if not sql_path and not sql_text:

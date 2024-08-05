@@ -125,7 +125,7 @@ def classify_columns(
     undefined = []
 
     for key in existing_columns:
-        if key in existing_columns and key not in new_columns:
+        if key not in new_columns:
             removed_dimensions.append(
                 Column(
                     key,

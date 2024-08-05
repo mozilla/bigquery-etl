@@ -435,6 +435,18 @@ fields:
       description: 'Indicates if the chatbot feature would open in sidebar.
 
         '
+    - name: genai_chatbot_shortcuts
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Indicates if the chatbot feature would show shortcuts on selection.
+
+        '
+    - name: genai_chatbot_shortcuts_custom
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Indicates if the chatbot feature would show shortcuts custom input.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE

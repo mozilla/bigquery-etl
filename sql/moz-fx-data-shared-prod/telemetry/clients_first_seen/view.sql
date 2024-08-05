@@ -13,6 +13,12 @@ SELECT
     distribution_id
   ) AS funnel_derived,
   `moz-fx-data-shared-prod`.udf.distribution_model_clients(distribution_id) AS distribution_model,
-  `moz-fx-data-shared-prod`.udf.partner_org_clients(distribution_id) AS partner_org
+  `moz-fx-data-shared-prod`.udf.partner_org_clients(distribution_id) AS partner_org,
+  IF(
+    LOWER(IFNULL(isp_name, '')) <> "browserstack"
+    AND LOWER(IFNULL(distribution_id, '')) <> "mozillaonline",
+    TRUE,
+    FALSE
+  ) AS is_desktop
 FROM
-  `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v2` a
+  `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v3` a

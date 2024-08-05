@@ -324,24 +324,10 @@ with DAG(
         )
 
         ExternalTaskMarker(
-            task_id="bqetl_desktop_conv_evnt_categorization__wait_for_checks__fail_telemetry_derived__clients_first_seen__v2",
-            external_dag_id="bqetl_desktop_conv_evnt_categorization",
-            external_task_id="wait_for_checks__fail_telemetry_derived__clients_first_seen__v2",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=50400)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
             task_id="bqetl_google_analytics_derived_ga4__wait_for_checks__fail_telemetry_derived__clients_first_seen__v2",
             external_dag_id="bqetl_google_analytics_derived_ga4",
             external_task_id="wait_for_checks__fail_telemetry_derived__clients_first_seen__v2",
             execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=50400)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
-            task_id="bqetl_search__wait_for_checks__fail_telemetry_derived__clients_first_seen__v2",
-            external_dag_id="bqetl_search",
-            external_task_id="wait_for_checks__fail_telemetry_derived__clients_first_seen__v2",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
         )
 
         ExternalTaskMarker(
@@ -355,13 +341,6 @@ with DAG(
             external_dag_id="bqetl_analytics_aggregations",
             external_task_id="wait_for_checks__fail_telemetry_derived__clients_first_seen__v2",
             execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=78300)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
-            task_id="bqetl_desktop_engagement_model__wait_for_checks__fail_telemetry_derived__clients_first_seen__v2",
-            external_dag_id="bqetl_desktop_engagement_model",
-            external_task_id="wait_for_checks__fail_telemetry_derived__clients_first_seen__v2",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=50400)).isoformat() }}",
         )
 
         ExternalTaskMarker(
@@ -480,6 +459,32 @@ with DAG(
         depends_on_past=True,
         parameters=["submission_date:DATE:{{ds}}"],
     )
+
+    with TaskGroup(
+        "clients_first_seen_v3_external",
+    ) as clients_first_seen_v3_external:
+        ExternalTaskMarker(
+            task_id="bqetl_desktop_conv_evnt_categorization__wait_for_clients_first_seen_v3",
+            external_dag_id="bqetl_desktop_conv_evnt_categorization",
+            external_task_id="wait_for_clients_first_seen_v3",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=50400)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_search__wait_for_clients_first_seen_v3",
+            external_dag_id="bqetl_search",
+            external_task_id="wait_for_clients_first_seen_v3",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_desktop_engagement_model__wait_for_clients_first_seen_v3",
+            external_dag_id="bqetl_desktop_engagement_model",
+            external_task_id="wait_for_clients_first_seen_v3",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=50400)).isoformat() }}",
+        )
+
+        clients_first_seen_v3_external.set_upstream(clients_first_seen_v3)
 
     fenix_derived__funnel_retention_clients_week_2__v1 = bigquery_etl_query(
         task_id="fenix_derived__funnel_retention_clients_week_2__v1",

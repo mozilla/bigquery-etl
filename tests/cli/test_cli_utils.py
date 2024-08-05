@@ -109,7 +109,7 @@ class TestUtils:
             sql_text="""WITH cte AS (SELECT column_1 FROM test_table GROUP BY column_1),
             cte2 AS (SELECT column_1, column2 FROM test_table GROUP BY column_1, column2)
             SELECT column_1 FROM cte2 GROUP BY column_1 ORDER BY 1 DESC LIMIT 1;"""
-            )
+        )
         assert ["column_3"] == extract_last_group_by_from_query(
             sql_text="""WITH cte1 AS (SELECT column_1, column3 FROM test_table GROUP BY column_1, column3),
             cte3 AS (SELECT column_1, column3 FROM cte1 group by column_3) SELECT column_1 FROM cte3 limit 2;"""
@@ -137,17 +137,19 @@ class TestUtils:
     def test_extract_last_group_by_from_query_file(self, runner):
         """Test function and cases using a sql file path."""
         with runner.isolated_filesystem():
-            test_path = "sql/moz-fx-data-shared-prod/test_shredder_mitigation/test_query_v1"
+            test_path = (
+                "sql/moz-fx-data-shared-prod/test_shredder_mitigation/test_query_v1"
+            )
             os.makedirs(test_path)
             assert os.path.exists(test_path)
-            assert "test_shredder_mitigation" in os.listdir("sql/moz-fx-data-shared-prod")
+            assert "test_shredder_mitigation" in os.listdir(
+                "sql/moz-fx-data-shared-prod"
+            )
             assert is_valid_dir(None, None, test_path)
 
             sql_path = Path(test_path) / "query.sql"
             with open(sql_path, "w") as f:
-                f.write(
-                    "SELECT column_1 FROM test_table group by ALL"
-                )
+                f.write("SELECT column_1 FROM test_table group by ALL")
             assert ["ALL"] == extract_last_group_by_from_query(sql_path=sql_path)
 
             with open(sql_path, "w") as f:

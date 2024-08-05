@@ -100,19 +100,29 @@ class TestUtils:
         )
         assert ["column_1"] == extract_last_group_by_from_query(
             query="""WITH cte AS (SELECT column_1 FROM test_table GROUP BY column_1),
-             cte2 AS (SELECT column_1, column2 FROM test_table GROUP BY column_1, column2)
-             SELECT column_1 FROM cte2 GROUP BY column_1 ORDER BY 1 DESC LIMIT 1;"""
-        )
+            cte2 AS (SELECT column_1, column2 FROM test_table GROUP BY column_1, column2)
+            SELECT column_1 FROM cte2 GROUP BY column_1 ORDER BY 1 DESC LIMIT 1;"""
+            )
         assert ["column_3"] == extract_last_group_by_from_query(
             query="""WITH cte1 AS (SELECT column_1, column3 FROM test_table GROUP BY column_1, column3),
-            cte3 AS (SELECT column_1, column3 FROM cte1 GROUP BY column_3) SELECT column_1 FROM cte3 LIMIT 2;"""
+            cte3 AS (SELECT column_1, column3 FROM cte1 group by column_3) SELECT column_1 FROM cte3 limit 2;"""
         )
         assert ["column_2"] == extract_last_group_by_from_query(
             query="""WITH cte1 AS (SELECT column_1 FROM test_table GROUP BY column_1),
-                   'cte2 AS (SELECT column_2 FROM test_table GROUP BY column_2),
-                   cte3 AS (SELECT column_1 FROM cte1 UNION ALL SELECT column2 FROM cte2) SELECT * FROM cte3"""
+            'cte2 AS (SELECT column_2 FROM test_table GROUP BY column_2),
+            cte3 AS (SELECT column_1 FROM cte1 UNION ALL SELECT column2 FROM cte2) SELECT * FROM cte3"""
         )
         assert ["column_2"] == extract_last_group_by_from_query(
             query="""WITH cte1 AS (SELECT column_1 FROM test_table GROUP BY column_1),
             cte2 AS (SELECT column_1 FROM test_table GROUP BY column_2) SELECT * FROM cte2;"""
+        )
+
+        assert ["COLUMN"] == extract_last_group_by_from_query(
+            query="""WITH cte1 AS (SELECT COLUMN FROM test_table GROUP BY COLUMN),
+            cte2 AS (SELECT COLUMN FROM test_table GROUP BY COLUMN) SELECT * FROM cte2;"""
+        )
+
+        assert ["COLUMN"] == extract_last_group_by_from_query(
+            query="""WITH cte1 AS (SELECT COLUMN FROM test_table GROUP BY COLUMN),
+            cte2 AS (SELECT COLUMN FROM test_table group by COLUMN) SELECT * FROM cte2;"""
         )

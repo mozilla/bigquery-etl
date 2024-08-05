@@ -274,7 +274,7 @@ def extract_last_group_by_from_query(query_file=None, query=None):
         query_text = query_text[:-1].strip()
 
     last_group_by_original = re.search(
-        r"{}(?!.*{})".format(re.escape("GROUP BY"), re.escape("GROUP BY")),
+        r"(?i){}(?!.*{})".format(re.escape("GROUP BY"), re.escape("GROUP BY")),
         query_text,
         re.DOTALL,
     )
@@ -283,7 +283,7 @@ def extract_last_group_by_from_query(query_file=None, query=None):
         group_by = query_text[last_group_by_original.end() :].lstrip()
         # Remove parenthesis, closing parenthesis, LIMIT, ORDER BY and text after those. Remove also opening parenthesis.
         group_by = (
-            re.sub(r"[\n\)].*|LIMIT.*|ORDER BY.*", "", group_by)
+            re.sub(r"(?i)[\n\)].*|LIMIT.*|ORDER BY.*", "", group_by)
             .replace("(", "")
             .strip()
         )

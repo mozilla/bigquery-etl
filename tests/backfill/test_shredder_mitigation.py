@@ -1,3 +1,4 @@
+from click.exceptions import ClickException
 from datetime import datetime, time
 
 from bigquery_etl.backfill.shredder_mitigation import (
@@ -9,6 +10,7 @@ from bigquery_etl.backfill.shredder_mitigation import (
     get_bigquery_type,
 )
 
+import pytest
 
 class TestClassifyColumns(object):
     def test_new_numeric_dimension(self):
@@ -407,6 +409,43 @@ class TestClassifyColumns(object):
         assert removed_dimensions == expected_removed_dimensions
         assert metrics == expected_metrics
         assert undefined == []
+
+    def test_matching_new_row_and_new_columns(self):
+        new_row = {
+            "submission_date": "2024-01-01",
+            "channel": None,
+            "os": 'Mac',
+            "metric_int": 2024,
+        }
+        existing_columns = ["submission_date", "channel"]
+        new_columns = ["submission_date", "channel", "os", "is_default_browser"]
+        expected_exception_text = f"Inconsistent parameters. Columns in new dimensions not found in new row: ['is_default_browser']"
+        with pytest.raises(ClickException) as e:
+            classify_columns(new_row, existing_columns, new_columns)
+        assert (str(e.value)) == expected_exception_text
+
+    def test_missing_parameters(self):
+        new_row = {}
+        expected_exception_text = (f"Missing required parameters. Received: new_row= {new_row}\n"
+                                   f"existing_dimension_columns= [],\nnew_dimension_columns= [].")
+        with pytest.raises(ClickException) as e:
+            classify_columns(new_row, [], [])
+        assert (str(e.value)) == expected_exception_text
+
+        new_row = {'column_1': '2024-01-01', 'column_2': 'Windows'}
+        expected_exception_text = (f"Missing required parameters. Received: new_row= {new_row}\n"
+                                   f"existing_dimension_columns= [],\nnew_dimension_columns= [].")
+        with pytest.raises(ClickException) as e:
+            classify_columns(new_row, [], [])
+        assert (str(e.value)) == expected_exception_text
+
+        new_row = {'column_1': '2024-01-01', 'column_2': 'Windows'}
+        existing_columns = ['column_1']
+        expected_exception_text = (f"Missing required parameters. Received: new_row= {new_row}\n"
+                                   f"existing_dimension_columns= {existing_columns},\nnew_dimension_columns= [].")
+        with pytest.raises(ClickException) as e:
+            classify_columns(new_row, existing_columns, [])
+        assert (str(e.value)) == expected_exception_text
 
 
 class TestGetBigqueryType(object):

@@ -4,6 +4,8 @@ from datetime import date, datetime, time, timedelta
 from enum import Enum
 from types import NoneType
 
+import click
+
 TEMP_DATASET = "tmp"
 SUFFIX = datetime.now().strftime("%Y%m%d%H%M%S")
 PREVIOUS_DATE = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
@@ -115,7 +117,7 @@ def get_bigquery_type(value) -> DataTypeGroup:
 
 
 def classify_columns(
-    new_row: dict, existing_columns: list, new_columns: list
+    new_row: dict, existing_dimension_columns: list, new_dimension_columns: list
 ) -> tuple[list[Column], list[Column], list[Column], list[Column], list[Column]]:
     """Compare the new row with the existing columns and return the list of common, added and removed columns by type."""
     common_dimensions = []
@@ -124,8 +126,17 @@ def classify_columns(
     metrics = []
     undefined = []
 
-    for key in existing_columns:
-        if key not in new_columns:
+    if not new_row or not existing_dimension_columns or not new_dimension_columns:
+        raise click.ClickException(
+            f"Missing required parameters. Received: new_row= {new_row}\nexisting_dimension_columns= {existing_dimension_columns},\nnew_dimension_columns= {new_dimension_columns}.")
+
+    missing_dimensions = [dimension for dimension in new_dimension_columns if dimension not in new_row]
+    if not len(missing_dimensions) == 0:
+        raise click.ClickException(
+            f"Inconsistent parameters. Columns in new dimensions not found in new row: {missing_dimensions}")
+
+    for key in existing_dimension_columns:
+        if key not in new_dimension_columns:
             removed_dimensions.append(
                 Column(
                     key,
@@ -136,29 +147,29 @@ def classify_columns(
             )
 
     for key, value in new_row.items():
-        if key in existing_columns:
+        value_type = get_bigquery_type(value)
+        if key in existing_dimension_columns:
             common_dimensions.append(
                 Column(
                     key,
-                    get_bigquery_type(value),
+                    value_type,
                     ColumnType.DIMENSION,
                     ColumnStatus.COMMON,
                 )
             )
-        elif key not in existing_columns and key in new_columns:
+        elif key not in existing_dimension_columns and key in new_dimension_columns:
             added_dimensions.append(
                 Column(
                     key,
-                    get_bigquery_type(value),
+                    value_type,
                     ColumnType.DIMENSION,
                     ColumnStatus.ADDED,
                 )
             )
         elif (
-            key not in existing_columns
-            and key not in new_columns
-            and get_bigquery_type(value) is DataTypeGroup.NUMERIC
-            or get_bigquery_type(value) is DataTypeGroup.FLOAT
+            key not in existing_dimension_columns
+            and key not in new_dimension_columns
+            and (value_type is DataTypeGroup.NUMERIC or value_type is DataTypeGroup.FLOAT)
         ):
             # Columns that are not in the previous or new list of grouping columns are metrics.
             metrics.append(

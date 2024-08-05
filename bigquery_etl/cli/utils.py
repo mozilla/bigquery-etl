@@ -253,17 +253,22 @@ def temp_dataset_option(
     )
 
 
-def extract_last_group_by_from_query(sql_path:Path=None, sql_text:Optional[str]=None):
+def extract_last_group_by_from_query(
+    sql_path: Optional[Path] = None, sql_text: Optional[str] = None
+):
     """Return the list of columns in the latest group by of a query."""
     if not sql_path and not sql_text:
-        click.ClickException("Please provide an sql file or sql text to extract the group by.")
-    elif sql_path:
+        click.ClickException(
+            "Please provide an sql file or sql text to extract the group by."
+        )
+
+    if sql_path:
         try:
             query_text = sql_path.read_text()
         except (FileNotFoundError, OSError):
             click.ClickException(f'Failed to read query from: "{sql_path}."')
     else:
-        query_text = sql_text
+        query_text = str(sql_text)
     group_by_list = []
 
     # Remove single and multi-line comments (/* */), trailing semicolon if present and normalize whitespace.

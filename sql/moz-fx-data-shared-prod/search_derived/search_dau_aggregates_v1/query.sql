@@ -80,6 +80,7 @@ mobile_baseline_search AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
     client_info.client_id,
+    metrics.string.search_default_engine_code AS default_search_engine,
     key_value.key AS engine,
     SUM(key_value.value) AS search_count
   FROM
@@ -91,11 +92,13 @@ mobile_baseline_search AS (
   GROUP BY
     1,
     2,
-    3
+    3,
+    4
   UNION ALL
   SELECT
     DATE(submission_timestamp) AS submission_date,
     client_info.client_id,
+    metrics.string.search_default_engine AS default_search_engine,
     key_value.key AS engine,
     SUM(key_value.value) AS search_count
   FROM
@@ -107,11 +110,13 @@ mobile_baseline_search AS (
   GROUP BY
     1,
     2,
-    3
+    3,
+    4
   UNION ALL
   SELECT
     DATE(submission_timestamp) AS submission_date,
     client_info.client_id,
+    metrics.string.browser_default_search_engine AS default_search_engine,
     key_value.key AS engine,
     SUM(key_value.value) AS search_count
   FROM
@@ -123,11 +128,13 @@ mobile_baseline_search AS (
   GROUP BY
     1,
     2,
-    3
+    3,
+    4
   UNION ALL
   SELECT
     DATE(submission_timestamp) AS submission_date,
     client_info.client_id,
+    metrics.string.search_default_engine AS default_search_engine,
     key_value.key AS engine,
     SUM(key_value.value) AS search_count
   FROM
@@ -139,12 +146,14 @@ mobile_baseline_search AS (
   GROUP BY
     1,
     2,
-    3
+    3,
+    4
 ),
 mobile_baseline_search_ad_clicks AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
     client_info.client_id,
+    metrics.string.search_default_engine_code AS default_search_engine,
     key_value.key AS engine,
     SUM(key_value.value) AS ad_click
   FROM
@@ -156,11 +165,13 @@ mobile_baseline_search_ad_clicks AS (
   GROUP BY
     1,
     2,
-    3
+    3,
+    4
   UNION ALL
   SELECT
     DATE(submission_timestamp) AS submission_date,
     client_info.client_id,
+    metrics.string.search_default_engine AS default_search_engine,
     key_value.key AS engine,
     SUM(key_value.value) AS ad_click
   FROM
@@ -172,11 +183,13 @@ mobile_baseline_search_ad_clicks AS (
   GROUP BY
     1,
     2,
-    3
+    3,
+    4
   UNION ALL
   SELECT
     DATE(submission_timestamp) AS submission_date,
     client_info.client_id,
+    metrics.string.browser_default_search_engine AS default_search_engine,
     key_value.key AS engine,
     SUM(key_value.value) AS ad_click
   FROM
@@ -188,11 +201,13 @@ mobile_baseline_search_ad_clicks AS (
   GROUP BY
     1,
     2,
-    3
+    3,
+    4
   UNION ALL
   SELECT
     DATE(submission_timestamp) AS submission_date,
     client_info.client_id,
+    metrics.string.search_default_engine AS default_search_engine,
     key_value.key AS engine,
     SUM(key_value.value) AS ad_click
   FROM
@@ -204,7 +219,8 @@ mobile_baseline_search_ad_clicks AS (
   GROUP BY
     1,
     2,
-    3
+    3,
+    4
 ),
 mobile_baseline_full AS (
   SELECT
@@ -236,11 +252,11 @@ mobile_baseline_full AS (
   LEFT JOIN
     mobile_baseline_search
   USING
-    (submission_date, client_id)
+    (submission_date, client_id, default_search_engine)
   LEFT JOIN
     mobile_baseline_search_ad_clicks
   USING
-    (submission_date, client_id, engine)
+    (submission_date, client_id, default_search_engine, engine)
   GROUP BY
     submission_date,
     client_id,
@@ -350,241 +366,245 @@ mobile_by_client_id AS (
     (submission_date, client_id)
 ),
 ### COUNT DAU BY SEARCH BEHAVIOR
-raw_results AS (
-  SELECT
-    "Google" AS partner,
-    submission_date,
-    device,
-    normalized_channel,
-    country,
-    distribution_id,
-    normalized_default_search_engine,
-    normalized_engine,
-    sap_category,
-    ad_click_category,
-    COUNT(
-      DISTINCT IF(normalized_default_search_engine = "Google", client_id, NULL)
-    ) AS dau_w_engine_as_default,
-    COUNT(
-      DISTINCT IF(
-        sap_category > 0
-        AND normalized_engine = 'Google'
-        AND normalized_default_search_engine = "Google",
-        client_id,
-        NULL
-      )
-    ) AS dau_engaged_w_sap,
-  FROM
-    desktop_by_client_id
-  GROUP BY
-    partner,
-    submission_date,
-    device,
-    normalized_channel,
-    country,
-    distribution_id,
-    normalized_default_search_engine,
-    normalized_engine,
-    sap_category,
-    ad_click_category
-  UNION ALL
-  SELECT
-    "Bing" AS partner,
-    submission_date,
-    device,
-    normalized_channel,
-    country,
-    distribution_id,
-    normalized_default_search_engine,
-    normalized_engine,
-    sap_category,
-    ad_click_category,
-    COUNT(
-      DISTINCT IF(normalized_default_search_engine = "Bing", client_id, NULL)
-    ) AS dau_w_engine_as_default,
-    COUNT(
-      DISTINCT IF(
-        sap_category > 0
-        AND normalized_engine = 'Bing'
-        AND normalized_default_search_engine = "Bing",
-        client_id,
-        NULL
-      )
-    ) AS dau_engaged_w_sap,
-  FROM
-    desktop_by_client_id
-  WHERE
-    (distribution_id IS NULL OR distribution_id NOT LIKE '%acer%')
-    AND client_id NOT IN (SELECT client_id FROM `moz-fx-data-shared-prod.search.acer_cohort`)
-  GROUP BY
-    partner,
-    submission_date,
-    device,
-    normalized_channel,
-    country,
-    distribution_id,
-    normalized_default_search_engine,
-    normalized_engine,
-    sap_category,
-    ad_click_category
-  UNION ALL
-  SELECT
-    "DuckDuckGo" AS partner,
-    submission_date,
-    device,
-    normalized_channel,
-    country,
-    distribution_id,
-    normalized_default_search_engine,
-    normalized_engine,
-    sap_category,
-    ad_click_category,
-    COUNT(
-      DISTINCT IF(normalized_default_search_engine = "DuckDuckGo", client_id, NULL)
-    ) AS dau_w_engine_as_default,
-    COUNT(
-      DISTINCT IF(
-        sap_category > 0
-        AND normalized_engine = "DuckDuckGo"
-        AND normalized_default_search_engine = "DuckDuckGo",
-        client_id,
-        NULL
-      )
-    ) AS dau_engaged_w_sap
-  FROM
-    desktop_by_client_id
-  GROUP BY
-    partner,
-    submission_date,
-    device,
-    normalized_channel,
-    country,
-    distribution_id,
-    normalized_default_search_engine,
-    normalized_engine,
-    sap_category,
-    ad_click_category
-  UNION ALL
-  SELECT
-    "Google" AS partner,
-    submission_date,
-    device,
-    normalized_channel,
-    country,
-    distribution_id,
-    normalized_default_search_engine,
-    normalized_engine,
-    sap_category,
-    ad_click_category,
-    COUNT(
-      DISTINCT IF(normalized_default_search_engine = "Google", client_id, NULL)
-    ) AS dau_w_engine_as_default,
-    COUNT(
-      DISTINCT IF(
-        sap_category > 0
-        AND normalized_engine = 'Google'
-        AND normalized_default_search_engine = "Google",
-        client_id,
-        NULL
-      )
-    ) AS dau_engaged_w_sap
-  FROM
-    mobile_by_client_id
-  GROUP BY
-    partner,
-    submission_date,
-    device,
-    normalized_channel,
-    country,
-    distribution_id,
-    normalized_default_search_engine,
-    normalized_engine,
-    sap_category,
-    ad_click_category
-  UNION ALL
-  SELECT
-    "Bing" AS partner,
-    submission_date,
-    device,
-    normalized_channel,
-    country,
-    distribution_id,
-    normalized_default_search_engine,
-    normalized_engine,
-    sap_category,
-    ad_click_category,
-    COUNT(
-      DISTINCT IF(normalized_default_search_engine = "Bing", client_id, NULL)
-    ) AS dau_w_engine_as_default,
-    COUNT(
-      DISTINCT IF(
-        sap_category > 0
-        AND normalized_engine = 'Bing'
-        AND normalized_default_search_engine = "Bing",
-        client_id,
-        NULL
-      )
-    ) AS dau_engaged_w_sap
-  FROM
-    mobile_by_client_id
-  GROUP BY
-    partner,
-    submission_date,
-    device,
-    normalized_channel,
-    country,
-    distribution_id,
-    normalized_default_search_engine,
-    normalized_engine,
-    sap_category,
-    ad_click_category
-  UNION ALL
-  SELECT
-    "DuckDuckGo" AS partner,
-    submission_date,
-    device,
-    normalized_channel,
-    country,
-    distribution_id,
-    normalized_default_search_engine,
-    normalized_engine,
-    sap_category,
-    ad_click_category,
-    COUNT(
-      DISTINCT IF(normalized_default_search_engine = "DuckDuckGo", client_id, NULL)
-    ) AS dau_w_engine_as_default,
-    COUNT(
-      DISTINCT IF(
-        sap_category > 0
-        AND normalized_engine = "DuckDuckGo"
-        AND normalized_default_search_engine = "DuckDuckGo",
-        client_id,
-        NULL
-      )
-    ) AS dau_engaged_w_sap
-  FROM
-    mobile_by_client_id
-  GROUP BY
-    partner,
-    submission_date,
-    device,
-    normalized_channel,
-    country,
-    distribution_id,
-    normalized_default_search_engine,
-    normalized_engine,
-    sap_category,
-    ad_click_category
-)
 SELECT
+  "Google" AS partner,
   submission_date,
-  partner,
   device,
-  SUM(dau_w_engine_as_default) AS dau_w_engine_as_default,
-  SUM(dau_engaged_w_sap) AS dau_engaged_w_sap
+  normalized_channel,
+  country,
+  distribution_id,
+  normalized_default_search_engine,
+  normalized_engine,
+  sap_category,
+  ad_click_category,
+  COUNT(
+    DISTINCT IF(
+      normalized_default_search_engine = "Google"
+      AND (
+        (submission_date < "2023-12-01" AND country NOT IN ('RU', 'UA', 'TR', 'BY', 'KZ', 'CN'))
+        OR (submission_date >= "2023-12-01" AND country NOT IN ('RU', 'UA', 'BY', 'CN'))
+      ),
+      client_id,
+      NULL
+    )
+  ) AS dau_w_engine_as_default,
+  COUNT(
+    DISTINCT IF(
+      sap_category > 0
+      AND normalized_engine = 'Google'
+      AND (
+        (submission_date < "2023-12-01" AND country NOT IN ('RU', 'UA', 'TR', 'BY', 'KZ', 'CN'))
+        OR (submission_date >= "2023-12-01" AND country NOT IN ('RU', 'UA', 'BY', 'CN'))
+      ),
+      client_id,
+      NULL
+    )
+  ) AS dau_engaged_w_sap,
 FROM
-  raw_results
+  desktop_by_client_id
 GROUP BY
-  device,
+  partner,
   submission_date,
-  partner
+  device,
+  normalized_channel,
+  country,
+  distribution_id,
+  normalized_default_search_engine,
+  normalized_engine,
+  sap_category,
+  ad_click_category
+UNION ALL
+SELECT
+  "Bing" AS partner,
+  submission_date,
+  device,
+  normalized_channel,
+  country,
+  distribution_id,
+  normalized_default_search_engine,
+  normalized_engine,
+  sap_category,
+  ad_click_category,
+  COUNT(
+    DISTINCT IF(normalized_default_search_engine = "Bing", client_id, NULL)
+  ) AS dau_w_engine_as_default,
+  COUNT(
+    DISTINCT IF(sap_category > 0 AND normalized_engine = 'Bing', client_id, NULL)
+  ) AS dau_engaged_w_sap,
+FROM
+  desktop_by_client_id
+WHERE
+  (distribution_id IS NULL OR distribution_id NOT LIKE '%acer%')
+  AND client_id NOT IN (SELECT client_id FROM `moz-fx-data-shared-prod.search.acer_cohort`)
+GROUP BY
+  partner,
+  submission_date,
+  device,
+  normalized_channel,
+  country,
+  distribution_id,
+  normalized_default_search_engine,
+  normalized_engine,
+  sap_category,
+  ad_click_category
+UNION ALL
+SELECT
+  "DuckDuckGo" AS partner,
+  submission_date,
+  device,
+  normalized_channel,
+  country,
+  distribution_id,
+  normalized_default_search_engine,
+  normalized_engine,
+  sap_category,
+  ad_click_category,
+  COUNT(
+    DISTINCT IF(normalized_default_search_engine = "DuckDuckGo", client_id, NULL)
+  ) AS dau_w_engine_as_default,
+  COUNT(
+    DISTINCT IF(sap_category > 0 AND normalized_engine = "DuckDuckGo", client_id, NULL)
+  ) AS dau_engaged_w_sap
+FROM
+  desktop_by_client_id
+GROUP BY
+  partner,
+  submission_date,
+  device,
+  normalized_channel,
+  country,
+  distribution_id,
+  normalized_default_search_engine,
+  normalized_engine,
+  sap_category,
+  ad_click_category
+UNION ALL
+SELECT
+  "Google" AS partner,
+  submission_date,
+  device,
+  normalized_channel,
+  country,
+  distribution_id,
+  normalized_default_search_engine,
+  normalized_engine,
+  sap_category,
+  ad_click_category,
+  # custom engine bug merged in v121
+  # null engine bug merged in v126
+  # remove default engine data prior to June 2024
+  COUNT(
+    DISTINCT IF(
+      submission_date >= "2024-06-01"
+      AND normalized_default_search_engine = "Google"
+      AND (
+        (submission_date < "2023-12-01" AND country NOT IN ('RU', 'UA', 'TR', 'BY', 'KZ', 'CN'))
+        OR (submission_date >= "2023-12-01" AND country NOT IN ('RU', 'UA', 'BY', 'CN'))
+      ),
+      client_id,
+      NULL
+    )
+  ) AS dau_w_engine_as_default,
+  COUNT(
+    DISTINCT IF(
+      sap_category > 0
+      AND normalized_engine = 'Google'
+      AND (
+        (submission_date < "2023-12-01" AND country NOT IN ('RU', 'UA', 'TR', 'BY', 'KZ', 'CN'))
+        OR (submission_date >= "2023-12-01" AND country NOT IN ('RU', 'UA', 'BY', 'CN'))
+      ),
+      client_id,
+      NULL
+    )
+  ) AS dau_engaged_w_sap
+FROM
+  mobile_by_client_id
+GROUP BY
+  partner,
+  submission_date,
+  device,
+  normalized_channel,
+  country,
+  distribution_id,
+  normalized_default_search_engine,
+  normalized_engine,
+  sap_category,
+  ad_click_category
+UNION ALL
+SELECT
+  "Bing" AS partner,
+  submission_date,
+  device,
+  normalized_channel,
+  country,
+  distribution_id,
+  normalized_default_search_engine,
+  normalized_engine,
+  sap_category,
+  ad_click_category,
+  # custom engine bug merged in v121
+  # null engine bug merged in v126
+  # remove default engine data prior to June 2024
+  COUNT(
+    DISTINCT IF(
+      submission_date >= "2024-06-01"
+      AND normalized_default_search_engine = "Bing",
+      client_id,
+      NULL
+    )
+  ) AS dau_w_engine_as_default,
+  COUNT(
+    DISTINCT IF(sap_category > 0 AND normalized_engine = 'Bing', client_id, NULL)
+  ) AS dau_engaged_w_sap
+FROM
+  mobile_by_client_id
+GROUP BY
+  partner,
+  submission_date,
+  device,
+  normalized_channel,
+  country,
+  distribution_id,
+  normalized_default_search_engine,
+  normalized_engine,
+  sap_category,
+  ad_click_category
+UNION ALL
+SELECT
+  "DuckDuckGo" AS partner,
+  submission_date,
+  device,
+  normalized_channel,
+  country,
+  distribution_id,
+  normalized_default_search_engine,
+  normalized_engine,
+  sap_category,
+  ad_click_category,
+  # custom engine bug merged in v121
+  # null engine bug merged in v126
+  # remove default engine data prior to June 2024
+  COUNT(
+    DISTINCT IF(
+      submission_date >= "2024-06-01"
+      AND normalized_default_search_engine = "DuckDuckGo",
+      client_id,
+      NULL
+    )
+  ) AS dau_w_engine_as_default,
+  COUNT(
+    DISTINCT IF(sap_category > 0 AND normalized_engine = "DuckDuckGo", client_id, NULL)
+  ) AS dau_engaged_w_sap
+FROM
+  mobile_by_client_id
+GROUP BY
+  partner,
+  submission_date,
+  device,
+  normalized_channel,
+  country,
+  distribution_id,
+  normalized_default_search_engine,
+  normalized_engine,
+  sap_category,
+  ad_click_category

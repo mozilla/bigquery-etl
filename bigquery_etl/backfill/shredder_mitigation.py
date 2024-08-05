@@ -182,7 +182,7 @@ def classify_columns(
             metrics.append(
                 Column(
                     key,
-                    get_bigquery_type(value),
+                    value_type,
                     ColumnType.METRIC,
                     ColumnStatus.COMMON,
                 )
@@ -191,7 +191,7 @@ def classify_columns(
             undefined.append(
                 Column(
                     key,
-                    get_bigquery_type(None),
+                    value_type,
                     ColumnType.UNDETERMINED,
                     ColumnStatus.UNDETERMINED,
                 )

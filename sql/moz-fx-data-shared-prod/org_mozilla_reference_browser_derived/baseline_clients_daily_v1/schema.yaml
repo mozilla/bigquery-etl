@@ -42,6 +42,9 @@ fields:
   name: country
   type: STRING
 - mode: NULLABLE
+  name: isp
+  type: STRING
+- mode: NULLABLE
   name: app_build
   type: STRING
 - mode: NULLABLE
@@ -68,9 +71,6 @@ fields:
 - mode: NULLABLE
   name: is_new_profile
   type: BOOLEAN
-- mode: NULLABLE
-  name: isp
-  type: STRING
 - mode: NULLABLE
   name: distribution_id
   type: STRING

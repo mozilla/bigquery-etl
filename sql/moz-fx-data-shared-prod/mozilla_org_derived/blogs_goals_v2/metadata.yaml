@@ -1,20 +1,23 @@
-friendly_name: Blogs Goals
+friendly_name: Blogs Goals V2
 description: |-
-  Please provide a description for the query
+  Intermediate table containing key metrics for blog.mozilla.org sourced from Google Analytics 4
 owners:
-- example@mozilla.com
+- kwindau@mozilla.com
 labels:
   incremental: true
-  owner1: example
+  owner1: kwindau@mozilla.com
 scheduling:
-  dag_name: bqetl_default
+  dag_name: bqetl_google_analytics_derived_ga4
+  depends_on:
+  - task_id: wait_for_blogs_events_table
+    dag_name: bqetl_google_analytics_derived_ga4
 bigquery:
   time_partitioning:
     type: day
-    field: ''
+    field: date
     require_partition_filter: true
     expiration_days: null
-  range_partitioning: null
   clustering:
-    fields: []
+    fields:
+    - visit_identifier
 references: {}

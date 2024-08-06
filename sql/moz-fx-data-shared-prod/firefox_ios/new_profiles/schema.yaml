@@ -40,26 +40,11 @@ fields:
   mode: NULLABLE
   description: Indicates if this specific entry is used towards calculating mobile
     DAU.
-- name: play_store_attribution_campaign
-  type: STRING
+- name: is_suspicious_device_client
+  type: BOOLEAN
   mode: NULLABLE
-  description: Play store campaign the profile is attributed to.
-- name: play_store_attribution_medium
-  type: STRING
-  mode: NULLABLE
-  description: Play store Medium the profile is attributed to.
-- name: play_store_attribution_source
-  type: STRING
-  mode: NULLABLE
-  description: Play store source the profile is attributed to.
-- name: meta_attribution_app
-  type: STRING
-  mode: NULLABLE
-  description: Facebook app linked to paid marketing.
-- name: install_source
-  type: STRING
-  mode: NULLABLE
-  description: The source of a profile installation.
+  description: Flag to identify suspicious device users, see bug-1846554 for more
+    info.
 - name: adjust_ad_group
   type: STRING
   mode: NULLABLE

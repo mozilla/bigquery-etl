@@ -15,7 +15,7 @@ from ..cli.query import update as update_query_schema
 from ..cli.routine import publish as publish_routine
 from ..cli.utils import paths_matching_name_pattern, sql_dir_option
 from ..cli.view import publish as publish_view
-from ..dryrun import DryRun
+from ..dryrun import DryRun, get_id_token
 from ..routine.parse_routine import (
     ROUTINE_FILES,
     UDF_FILE,
@@ -261,13 +261,14 @@ def _view_dependencies(artifact_files, sql_dir):
     """Determine view dependencies."""
     view_dependencies = set()
     view_dependency_files = [file for file in artifact_files if file.name == VIEW_FILE]
+    id_token = get_id_token()
     for dep_file in view_dependency_files:
         # all references views and tables need to be deployed in the same stage project
         if dep_file not in artifact_files:
             view_dependencies.add(dep_file)
 
         if dep_file.name == VIEW_FILE:
-            view = View.from_file(dep_file)
+            view = View.from_file(dep_file, id_token=id_token)
 
             for dependency in view.table_references:
                 dependency_components = dependency.split(".")
@@ -308,6 +309,7 @@ def _view_dependencies(artifact_files, sql_dir):
                             dataset=dataset,
                             table=name,
                             partitioned_by=partitioned_by,
+                            id_token=id_token,
                         )
                         schema.to_yaml_file(path / SCHEMA_FILE)
 

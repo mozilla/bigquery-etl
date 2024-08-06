@@ -12,6 +12,7 @@ from bigquery_etl.cli.utils import (
     use_cloud_function_option,
 )
 from bigquery_etl.config import ConfigLoader
+from bigquery_etl.dryrun import get_id_token
 from sql_generators.glean_usage import (
     baseline_clients_daily,
     baseline_clients_first_seen,
@@ -135,6 +136,8 @@ def generate(
         not in ConfigLoader.get("generate", "glean_usage", "skip_apps", fallback=[])
     ]
 
+    id_token=get_id_token()
+
     # Prepare parameters so that generation of all Glean datasets can be done in parallel
 
     # Parameters to generate per-app_id datasets consist of the function to be called
@@ -148,6 +151,7 @@ def generate(
                 use_cloud_function=use_cloud_function,
                 app_info=app_info,
                 parallelism=parallelism,
+                id_token=id_token
             ),
             baseline_table,
         )
@@ -165,6 +169,7 @@ def generate(
                 output_dir=output_dir,
                 use_cloud_function=use_cloud_function,
                 parallelism=parallelism,
+                id_token=id_token
             ),
             info,
         )

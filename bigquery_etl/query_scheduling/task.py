@@ -544,6 +544,7 @@ class Task:
     def of_dq_check(cls, query_file, is_check_fail, metadata=None, dag_collection=None):
         """Create a task that schedules DQ check file in Airflow."""
         task = cls.of_query(query_file, metadata, dag_collection)
+        task.arguments=[]
         task.query_file_path = query_file
         task.is_dq_check = True
         task.is_dq_check_fail = is_check_fail

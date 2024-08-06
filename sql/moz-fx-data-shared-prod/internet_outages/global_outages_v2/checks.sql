@@ -1,0 +1,38 @@
+{% set _WHERE = '@submission_date = @submission_date' %}
+
+#warn
+{{ min_row_count(1000, where=_WHERE) }}
+
+#warn
+{{ is_unique(columns=["country", "city", "geo_subdivision1", "geo_subdivision2", "datetime"], where=_WHERE) }}
+
+#warn
+/*
+  This statement used to contain the following fields,
+  but these are sometimes missing from country/city combinations
+  See https://sql.telemetry.mozilla.org/queries/96541/source
+  and bug 1868674
+
+  "avg_tls_handshake_time"
+  "count_dns_failure"
+*/
+{{ not_null(columns=[
+  "country",
+  "city",
+  "datetime",
+  "proportion_undefined",
+  "proportion_timeout",
+  "proportion_abort",
+  "proportion_unreachable",
+  "proportion_terminated",
+  "proportion_channel_open",
+  "avg_dns_success_time",
+  "missing_dns_success",
+  "avg_dns_failure_time",
+  "missing_dns_failure",
+  "ssl_error_prop",
+
+], where=_WHERE) }}
+
+#warn
+{{ value_length(column="country", expected_length=2, where=_WHERE) }}

@@ -38,6 +38,7 @@ dry_run:
   - sql/moz-fx-data-shared-prod/accounts_db_external/**/*.sql
   - sql/moz-fx-data-shared-prod/accounts_db_nonprod_external/**/*.sql
   - sql/moz-fx-data-shared-prod/ads/ppa_measurements/*.sql
+  - sql/moz-fx-data-shared-prod/ads/ppa_measurements_limited/*.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_content_events_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_auth_bounce_events_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_auth_events_v1/query.sql
@@ -143,6 +144,7 @@ dry_run:
   - sql/moz-fx-data-shared-prod/search_derived/search_clients_daily_v8/query.sql
   - sql/moz-fx-data-shared-prod/search_derived/mobile_search_aggregates_v1/query.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/telemetry_missing_columns_v1/view.sql
+  - sql/moz-fx-data-shared-prod/monitoring_derived/table_partition_expirations_v1/query.sql
   # No matching signature for function IF
   - sql/moz-fx-data-shared-prod/static/fxa_amplitude_export_users_last_seen/query.sql
   # Duplicate UDF
@@ -174,8 +176,6 @@ dry_run:
   - sql/moz-fx-data-shared-prod/telemetry_derived/client_probe_counts/view.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/glam_sample_counts_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/glam_user_counts_v1/query.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/scalar_percentiles_v1/query.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/histogram_percentiles_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_scalar_probe_counts_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry/client_probe_counts/view.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/bigquery_etl_sql_run_check_v1/query.sql
@@ -183,7 +183,10 @@ dry_run:
   # Dataset sql/glam-fenix-dev:glam_etl was not found
   - sql/glam-fenix-dev/glam_etl/**/*.sql
   - sql/moz-fx-data-glam-prod-fca7/glam_etl/**/*.sql
-  # Query templates
+  # Source table does not have a verifiable schema
+  - sql/moz-fx-data-shared-prod/monitoring_derived/outerbounds_cost_per_flow_run_v1/view.sql
+  - sql/moz-fx-data-shared-prod/monitoring_derived/outerbounds_cost_per_flow_v1/view.sql
+    # Query templates
   - sql/moz-fx-data-shared-prod/search_derived/mobile_search_clients_daily_v1/fenix_metrics.template.sql
   - sql/moz-fx-data-shared-prod/search_derived/mobile_search_clients_daily_v1/mobile_search_clients_daily.template.sql
   # Query too complex

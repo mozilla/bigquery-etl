@@ -251,3 +251,47 @@ def temp_dataset_option(
         help="Dataset where intermediate query results will be temporarily stored, "
         "formatted as PROJECT_ID.DATASET_ID",
     )
+
+
+def extract_last_group_by_from_query(
+    sql_path: Optional[Path] = None, sql_text: Optional[str] = None
+):
+    """Return the list of columns in the latest group by of a query."""
+    if not sql_path and not sql_text:
+        click.ClickException(
+            "Please provide an sql file or sql text to extract the group by."
+        )
+
+    if sql_path:
+        try:
+            query_text = sql_path.read_text()
+        except (FileNotFoundError, OSError):
+            click.ClickException(f'Failed to read query from: "{sql_path}."')
+    else:
+        query_text = str(sql_text)
+    group_by_list = []
+
+    # Remove single and multi-line comments (/* */), trailing semicolon if present and normalize whitespace.
+    query_text = re.sub(r"/\*.*?\*/", "", query_text, flags=re.DOTALL)
+    query_text = re.sub(r"--[^\n]*\n", "\n", query_text)
+    query_text = re.sub(r"\s+", " ", query_text).strip()
+    if query_text.endswith(";"):
+        query_text = query_text[:-1].strip()
+
+    last_group_by_original = re.search(
+        r"(?i){}(?!.*{})".format(re.escape("GROUP BY"), re.escape("GROUP BY")),
+        query_text,
+        re.DOTALL,
+    )
+
+    if last_group_by_original:
+        group_by = query_text[last_group_by_original.end() :].lstrip()
+        # Remove parenthesis, closing parenthesis, LIMIT, ORDER BY and text after those. Remove also opening parenthesis.
+        group_by = (
+            re.sub(r"(?i)[\n\)].*|LIMIT.*|ORDER BY.*", "", group_by)
+            .replace("(", "")
+            .strip()
+        )
+        if group_by:
+            group_by_list = group_by.replace(" ", "").replace("\n", "").split(",")
+    return group_by_list

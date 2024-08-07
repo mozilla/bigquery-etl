@@ -1774,7 +1774,7 @@ def update(
             query_file_graph[query_file] = []
 
     creds = credentials()
-    id_token = get_id_token(creds)
+    id_token = get_id_token(creds=creds)
 
     ts = ParallelTopologicalSorter(
         query_file_graph, parallelism=parallelism, with_follow_up=update_downstream
@@ -2169,7 +2169,7 @@ def deploy(
             raise click.ClickException(f"No queries matching `{name}` were found.")
 
     creds = credentials()
-    id_token = get_id_token(creds)
+    id_token = get_id_token(creds=creds)
 
     _deploy = partial(
         deploy_table,

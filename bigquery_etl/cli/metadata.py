@@ -1,6 +1,7 @@
 """bigquery-etl CLI metadata command."""
 
 from datetime import datetime
+from multiprocessing.pool import ThreadPool
 from pathlib import Path
 from typing import Optional
 
@@ -11,7 +12,12 @@ from google.cloud import bigquery
 from bigquery_etl.metadata.parse_metadata import DatasetMetadata, Metadata
 from bigquery_etl.metadata.publish_metadata import publish_metadata
 
-from ..cli.utils import paths_matching_name_pattern, project_id_option, sql_dir_option
+from ..cli.utils import (
+    parallelism_option,
+    paths_matching_name_pattern,
+    project_id_option,
+    sql_dir_option,
+)
 from ..config import ConfigLoader
 from ..util import extract_from_query_path
 
@@ -44,19 +50,22 @@ def metadata(ctx):
 @click.argument("name")
 @project_id_option()
 @sql_dir_option
-def update(name: str, sql_dir: Optional[str], project_id: Optional[str]) -> None:
+@parallelism_option()
+def update(
+    name: str, sql_dir: Optional[str], project_id: Optional[str], parallelism: int
+) -> None:
     """Update metadata yaml file."""
     table_metadata_files = paths_matching_name_pattern(
         name, sql_dir, project_id=project_id, files=["metadata.yaml"]
     )
 
     # create and populate the dataset metadata yaml file if it does not exist
-    for table_metadata_file in table_metadata_files:
+    def _update_metadata(table_metadata_file):
         dataset_metadata_path = (
             Path(table_metadata_file).parent.parent / "dataset_metadata.yaml"
         )
         if not dataset_metadata_path.exists():
-            continue
+            return
         dataset_metadata = DatasetMetadata.from_file(dataset_metadata_path)
         table_metadata = Metadata.from_file(table_metadata_file)
 
@@ -90,6 +99,9 @@ def update(name: str, sql_dir: Optional[str], project_id: Optional[str]) -> None
         if table_metadata_updated:
             table_metadata.write(table_metadata_file)
             click.echo(f"Updated {table_metadata_file}")
+
+    with ThreadPool(parallelism) as pool:
+        pool.map(_update_metadata, table_metadata_files)
 
     return None
 

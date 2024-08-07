@@ -81,9 +81,7 @@ fields:
 - name: has_good_page_experience
   type: BOOLEAN
   mode: NULLABLE
-  description: |-
-    Whether Google Search considers the page to be providing a good page experience.
-    This will be null when the source data wasn't exported directly to BigQuery by Google.
+  description: Whether Google Search considers the page to be providing a good page experience.
 - name: search_type
   type: STRING
   mode: NULLABLE
@@ -98,9 +96,7 @@ fields:
 - name: search_appearance
   type: STRING
   mode: NULLABLE
-  description: |-
-    How the search result appeared (e.g. normal result, translated result, video).
-    This will be null when the source data wasn't exported directly to BigQuery by Google.
+  description: How the search result appeared (e.g. normal result, translated result, video).
 - name: user_country_code
   type: STRING
   mode: NULLABLE

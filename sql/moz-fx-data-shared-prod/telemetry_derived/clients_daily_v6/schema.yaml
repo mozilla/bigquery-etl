@@ -1424,16 +1424,6 @@ fields:
     name: value
     type: INTEGER
   mode: REPEATED
-  name: search_content_urlbar_persisted_sum
-  type: RECORD
-- fields:
-  - mode: NULLABLE
-    name: key
-    type: STRING
-  - mode: NULLABLE
-    name: value
-    type: INTEGER
-  mode: REPEATED
   name: search_content_urlbar_searchmode_sum
   type: RECORD
 - fields:
@@ -2073,6 +2063,16 @@ fields:
 - mode: NULLABLE
   name: search_count_urlbar_persisted
   type: INTEGER
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
+  mode: REPEATED
+  name: search_content_urlbar_persisted_sum
+  type: RECORD
 - mode: NULLABLE
   name: logins_migrations_quantity_chrome
   type: INTEGER

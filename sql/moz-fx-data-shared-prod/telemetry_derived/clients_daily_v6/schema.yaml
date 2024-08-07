@@ -2034,9 +2034,6 @@ fields:
 - mode: NULLABLE
   name: history_migrations_quantity_all
   type: INTEGER
-- mode: NULLABLE
-  name: search_count_urlbar_persisted
-  type: INTEGER
 - fields:
   - mode: NULLABLE
     name: key
@@ -2078,6 +2075,9 @@ fields:
   type: INTEGER
 - mode: NULLABLE
   name: logins_migrations_quantity_all
+  type: INTEGER
+- mode: NULLABLE
+  name: search_count_urlbar_persisted
   type: INTEGER
 - mode: NULLABLE
   name: media_play_time_ms_audio_sum

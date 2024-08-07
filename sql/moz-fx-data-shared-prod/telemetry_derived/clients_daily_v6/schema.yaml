@@ -765,9 +765,6 @@ fields:
 - mode: NULLABLE
   name: search_count_urlbar_handoff
   type: INTEGER
-- mode: NULLABLE
-  name: search_count_urlbar_persisted
-  type: INTEGER
 - description: null
   mode: NULLABLE
   name: session_restored_mean
@@ -1427,16 +1424,6 @@ fields:
     name: value
     type: INTEGER
   mode: REPEATED
-  name: search_content_urlbar_persisted_sum
-  type: RECORD
-- fields:
-  - mode: NULLABLE
-    name: key
-    type: STRING
-  - mode: NULLABLE
-    name: value
-    type: INTEGER
-  mode: REPEATED
   name: search_content_urlbar_searchmode_sum
   type: RECORD
 - fields:
@@ -1557,16 +1544,6 @@ fields:
     name: value
     type: INTEGER
   mode: REPEATED
-  name: search_withads_urlbar_persisted_sum
-  type: RECORD
-- fields:
-  - mode: NULLABLE
-    name: key
-    type: STRING
-  - mode: NULLABLE
-    name: value
-    type: INTEGER
-  mode: REPEATED
   name: search_withads_urlbar_searchmode_sum
   type: RECORD
 - fields:
@@ -1678,16 +1655,6 @@ fields:
     type: INTEGER
   mode: REPEATED
   name: search_adclicks_urlbar_handoff_sum
-  type: RECORD
-- fields:
-  - mode: NULLABLE
-    name: key
-    type: STRING
-  - mode: NULLABLE
-    name: value
-    type: INTEGER
-  mode: REPEATED
-  name: search_adclicks_urlbar_persisted_sum
   type: RECORD
 - fields:
   - mode: NULLABLE
@@ -2029,12 +1996,6 @@ fields:
   name: text_recognition_text_length_count_sum
   type: INTEGER
 - mode: NULLABLE
-  name: places_searchbar_cumulative_searches_sum
-  type: INTEGER
-- mode: NULLABLE
-  name: places_searchbar_cumulative_filter_count_sum
-  type: INTEGER
-- mode: NULLABLE
   name: scalar_parent_os_environment_launched_via_taskbar_private
   type: BOOLEAN
 - mode: NULLABLE
@@ -2085,6 +2046,39 @@ fields:
 - mode: NULLABLE
   name: logins_migrations_quantity_all
   type: INTEGER
+- mode: NULLABLE
+  name: search_count_urlbar_persisted
+  type: INTEGER
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
+  mode: REPEATED
+  name: search_content_urlbar_persisted_sum
+  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
+  mode: REPEATED
+  name: search_withads_urlbar_persisted_sum
+  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
+  mode: REPEATED
+  name: search_adclicks_urlbar_persisted_sum
+  type: RECORD
 - mode: NULLABLE
   name: media_play_time_ms_audio_sum
   type: INTEGER
@@ -2231,6 +2225,12 @@ fields:
   mode: REPEATED
   name: contextual_services_quicksuggest_impression_weather_sum
   type: RECORD
+- mode: NULLABLE
+  name: places_searchbar_cumulative_searches_sum
+  type: INTEGER
+- mode: NULLABLE
+  name: places_searchbar_cumulative_filter_count_sum
+  type: INTEGER
 - fields:
   - mode: NULLABLE
     name: key
@@ -2342,3 +2342,7 @@ fields:
 - name: startup_profile_selection_first_ping_only
   type: STRING
   mode: NULLABLE
+- name: profile_group_id
+  type: STRING
+  mode: NULLABLE
+  description: A UUID identifying the profile's group on a single device and allowing user-oriented correlation of data

@@ -2034,26 +2034,6 @@ fields:
 - mode: NULLABLE
   name: history_migrations_quantity_all
   type: INTEGER
-- fields:
-  - mode: NULLABLE
-    name: key
-    type: STRING
-  - mode: NULLABLE
-    name: value
-    type: INTEGER
-  mode: REPEATED
-  name: search_withads_urlbar_persisted_sum
-  type: RECORD
-- fields:
-  - mode: NULLABLE
-    name: key
-    type: STRING
-  - mode: NULLABLE
-    name: value
-    type: INTEGER
-  mode: REPEATED
-  name: search_adclicks_urlbar_persisted_sum
-  type: RECORD
 - mode: NULLABLE
   name: logins_migrations_quantity_chrome
   type: INTEGER
@@ -2078,6 +2058,26 @@ fields:
     type: INTEGER
   mode: REPEATED
   name: search_content_urlbar_persisted_sum
+  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
+  mode: REPEATED
+  name: search_withads_urlbar_persisted_sum
+  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
+  mode: REPEATED
+  name: search_adclicks_urlbar_persisted_sum
   type: RECORD
 - mode: NULLABLE
   name: media_play_time_ms_audio_sum

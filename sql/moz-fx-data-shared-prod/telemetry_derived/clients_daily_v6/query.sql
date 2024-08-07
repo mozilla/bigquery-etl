@@ -1582,6 +1582,7 @@ SELECT
   aborts_plugin_sum,
   active_addons_count_mean,
   active_addons,
+  active_experiment_id,
   active_experiment_branch,
   active_hours_sum,
   addon_compatibility_check_enabled,

@@ -1575,7 +1575,7 @@ udf_aggregates AS (
     aggregates
 )
 SELECT
-  * EXCEPT (profile_group_id, map_sum_aggregates),
+  * EXCEPT (map_sum_aggregates),
   -- CAUTION: the order of fields here must match the order defined in
   -- map_sum_aggregates above and offsets must increment on each line.
   map_sum_aggregates[OFFSET(0)].map AS scalar_parent_telemetry_event_counts_sum,
@@ -1719,6 +1719,5 @@ SELECT
   map_sum_aggregates[OFFSET(112)].map AS scalar_parent_library_link_sum,
   map_sum_aggregates[OFFSET(113)].map AS scalar_parent_library_opened_sum,
   map_sum_aggregates[OFFSET(114)].map AS scalar_parent_library_search_sum,
-  profile_group_id
 FROM
   udf_aggregates

@@ -180,6 +180,7 @@ clients_summary AS (
     submission_timestamp,
     client_id,
     sample_id,
+    profile_group_id,
     document_id,
     metadata.uri.app_update_channel AS channel,
     normalized_channel,
@@ -1503,6 +1504,7 @@ aggregates AS (
           submission_timestamp ASC
       )
     ) AS startup_profile_selection_first_ping_only,
+    MIN(profile_group_id) AS profile_group_id,
     SUM(
       scalar_parent_browser_ui_interaction_textrecognition_error
     ) AS scalar_parent_browser_ui_interaction_textrecognition_error_sum,
@@ -1573,7 +1575,7 @@ udf_aggregates AS (
     aggregates
 )
 SELECT
-  * EXCEPT (map_sum_aggregates),
+  * EXCEPT (profile_group_id, map_sum_aggregates),
   -- CAUTION: the order of fields here must match the order defined in
   -- map_sum_aggregates above and offsets must increment on each line.
   map_sum_aggregates[OFFSET(0)].map AS scalar_parent_telemetry_event_counts_sum,
@@ -1717,5 +1719,6 @@ SELECT
   map_sum_aggregates[OFFSET(112)].map AS scalar_parent_library_link_sum,
   map_sum_aggregates[OFFSET(113)].map AS scalar_parent_library_opened_sum,
   map_sum_aggregates[OFFSET(114)].map AS scalar_parent_library_search_sum,
+  profile_group_id
 FROM
   udf_aggregates

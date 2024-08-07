@@ -1584,7 +1584,7 @@ SELECT
   active_addons,
   active_experiment_branch,
   active_hours_sum,
-  addon_compatability_check_enabled,
+  addon_compatibility_check_enabled,
   app_build_id,
   app_display_version,
   app_name,

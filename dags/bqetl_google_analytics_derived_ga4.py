@@ -233,6 +233,23 @@ with DAG(
         retries=0,
     )
 
+    checks__warn_mozilla_org_derived__www_site_hits__v2 = bigquery_dq_check(
+        task_id="checks__warn_mozilla_org_derived__www_site_hits__v2",
+        source_table="www_site_hits_v2",
+        dataset_id="mozilla_org_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=False,
+        owner="mhirose@mozilla.com",
+        email=[
+            "kwindau@mozilla.com",
+            "mhirose@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+    )
+
     ga_derived__blogs_daily_summary__v2 = bigquery_etl_query(
         task_id="ga_derived__blogs_daily_summary__v2",
         destination_table="blogs_daily_summary_v2",
@@ -421,6 +438,21 @@ with DAG(
         depends_on_past=False,
     )
 
+    mozilla_org_derived__www_site_hits__v2 = bigquery_etl_query(
+        task_id="mozilla_org_derived__www_site_hits__v2",
+        destination_table="www_site_hits_v2",
+        dataset_id="mozilla_org_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="mhirose@mozilla.com",
+        email=[
+            "kwindau@mozilla.com",
+            "mhirose@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     mozilla_org_derived__www_site_metrics_summary__v2 = bigquery_etl_query(
         task_id="mozilla_org_derived__www_site_metrics_summary__v2",
         destination_table="www_site_metrics_summary_v2",
@@ -467,6 +499,10 @@ with DAG(
 
     checks__warn_mozilla_org_derived__ga_sessions__v2.set_upstream(
         mozilla_org_derived__ga_sessions__v2
+    )
+
+    checks__warn_mozilla_org_derived__www_site_hits__v2.set_upstream(
+        mozilla_org_derived__www_site_hits__v2
     )
 
     ga_derived__blogs_daily_summary__v2.set_upstream(ga_derived__blogs_goals__v2)
@@ -530,6 +566,8 @@ with DAG(
     )
 
     mozilla_org_derived__www_site_downloads__v2.set_upstream(wait_for_wmo_events_table)
+
+    mozilla_org_derived__www_site_hits__v2.set_upstream(wait_for_wmo_events_table)
 
     mozilla_org_derived__www_site_metrics_summary__v2.set_upstream(
         wait_for_wmo_events_table

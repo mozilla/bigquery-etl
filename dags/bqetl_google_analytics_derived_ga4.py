@@ -67,19 +67,6 @@ with DAG(
         retry_delay=datetime.timedelta(seconds=1800),
     )
 
-    wait_for_wmo_events_table = BigQueryTableExistenceSensor(
-        task_id="wait_for_wmo_events_table",
-        project_id="moz-fx-data-marketing-prod",
-        dataset_id="analytics_313696158",
-        table_id="events_{{ ds_nodash }}",
-        gcp_conn_id="google_cloud_shared_prod",
-        deferrable=True,
-        poke_interval=datetime.timedelta(seconds=1800),
-        timeout=datetime.timedelta(seconds=36000),
-        retries=1,
-        retry_delay=datetime.timedelta(seconds=1800),
-    )
-
     wait_for_checks__fail_stub_attribution_service_derived__dl_token_ga_attribution_lookup__v1 = ExternalTaskSensor(
         task_id="wait_for_checks__fail_stub_attribution_service_derived__dl_token_ga_attribution_lookup__v1",
         external_dag_id="bqetl_mozilla_org_derived",
@@ -129,6 +116,19 @@ with DAG(
         allowed_states=ALLOWED_STATES,
         failed_states=FAILED_STATES,
         pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_wmo_events_table = BigQueryTableExistenceSensor(
+        task_id="wait_for_wmo_events_table",
+        project_id="moz-fx-data-marketing-prod",
+        dataset_id="analytics_313696158",
+        table_id="events_{{ ds_nodash }}",
+        gcp_conn_id="google_cloud_shared_prod",
+        deferrable=True,
+        poke_interval=datetime.timedelta(seconds=1800),
+        timeout=datetime.timedelta(seconds=36000),
+        retries=1,
+        retry_delay=datetime.timedelta(seconds=1800),
     )
 
     checks__fail_mozilla_org_derived__ga_clients__v2 = bigquery_dq_check(

@@ -570,6 +570,7 @@ fields:
 - name: histogram_parent_devtools_memory_opened_count_sum
   type: INTEGER
   mode: NULLABLE
+  description: null
 - name: histogram_parent_devtools_menu_eyedropper_opened_count_sum
   type: INTEGER
   mode: NULLABLE
@@ -814,6 +815,7 @@ fields:
     type: INTEGER
     mode: NULLABLE
     description: Value
+  description: null
 - name: scalar_parent_devtools_accessibility_service_enabled_count_sum
   type: INTEGER
   mode: NULLABLE
@@ -1034,9 +1036,11 @@ fields:
   - name: key
     type: STRING
     mode: NULLABLE
+    description: null
   - name: value
     type: INTEGER
     mode: NULLABLE
+    description: null
   description: null
 - name: scalar_parent_urlbar_searchmode_bookmarkmenu_sum
   type: RECORD
@@ -1115,6 +1119,7 @@ fields:
     type: INTEGER
     mode: NULLABLE
     description: null
+  description: null
 - name: scalar_parent_urlbar_searchmode_tabmenu_sum
   type: RECORD
   mode: REPEATED
@@ -1166,6 +1171,7 @@ fields:
     type: INTEGER
     mode: NULLABLE
     description: Value
+  description: null
 - name: scalar_parent_urlbar_searchmode_topsites_urlbar_sum
   type: RECORD
   mode: REPEATED
@@ -1178,6 +1184,7 @@ fields:
     type: INTEGER
     mode: NULLABLE
     description: Value
+  description: null
 - name: scalar_parent_urlbar_searchmode_touchbar_sum
   type: RECORD
   mode: REPEATED
@@ -1190,6 +1197,7 @@ fields:
     type: INTEGER
     mode: NULLABLE
     description: null
+  description: null
 - name: scalar_parent_urlbar_searchmode_typed_sum
   type: RECORD
   mode: REPEATED
@@ -1202,6 +1210,7 @@ fields:
     type: INTEGER
     mode: NULLABLE
     description: Value
+  description: null
 - name: scalar_parent_os_environment_is_taskbar_pinned
   type: BOOLEAN
   mode: NULLABLE

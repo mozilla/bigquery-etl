@@ -765,9 +765,6 @@ fields:
 - mode: NULLABLE
   name: search_count_urlbar_handoff
   type: INTEGER
-- mode: NULLABLE
-  name: search_count_urlbar_persisted
-  type: INTEGER
 - description: null
   mode: NULLABLE
   name: session_restored_mean
@@ -2072,6 +2069,9 @@ fields:
   type: INTEGER
 - mode: NULLABLE
   name: history_migrations_quantity_all
+  type: INTEGER
+- mode: NULLABLE
+  name: search_count_urlbar_persisted
   type: INTEGER
 - mode: NULLABLE
   name: logins_migrations_quantity_chrome

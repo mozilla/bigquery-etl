@@ -110,7 +110,6 @@ class GleanAppPingViews(GleanTable):
                     "moz-fx-data-shared-prod",
                     channel_dataset,
                     view_name,
-                    partitioned_by="submission_timestamp",
                     use_cloud_function=use_cloud_function,
                     id_token=id_token
                 )

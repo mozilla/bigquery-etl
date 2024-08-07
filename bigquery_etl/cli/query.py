@@ -47,7 +47,7 @@ from ..cli.utils import (
 from ..config import ConfigLoader
 from ..dependency import get_dependency_graph
 from ..deploy import FailedDeployException, SkippedDeployException, deploy_table
-from ..dryrun import DryRun, credentials, get_id_token
+from ..dryrun import DryRun, get_credentials, get_id_token
 from ..format_sql.format import skip_format
 from ..format_sql.formatter import reformat
 from ..metadata import validate_metadata
@@ -1773,8 +1773,8 @@ def update(
         except FileNotFoundError:
             query_file_graph[query_file] = []
 
-    creds = credentials()
-    id_token = get_id_token(creds=creds)
+    credentials = get_credentials()
+    id_token = get_id_token(credentials=credentials)
 
     ts = ParallelTopologicalSorter(
         query_file_graph, parallelism=parallelism, with_follow_up=update_downstream
@@ -1791,7 +1791,7 @@ def update(
             respect_dryrun_skip,
             update_downstream,
             is_init=is_init,
-            credentials=creds,
+            credentials=credentials,
             id_token=id_token,
         )
     )
@@ -2039,20 +2039,10 @@ def _update_query_schema(
         )
         return
 
-    partitioned_by = None
-    try:
-        metadata = Metadata.of_query_file(query_file_path)
-
-        if metadata.bigquery and metadata.bigquery.time_partitioning:
-            partitioned_by = metadata.bigquery.time_partitioning.field
-    except FileNotFoundError:
-        pass
-
     table_schema = Schema.for_table(
         project_name,
         dataset_name,
         table_name,
-        partitioned_by,
         use_cloud_function=use_cloud_function,
         respect_skip=respect_dryrun_skip,
         credentials=credentials,
@@ -2168,8 +2158,8 @@ def deploy(
         if not query_files:
             raise click.ClickException(f"No queries matching `{name}` were found.")
 
-    creds = credentials()
-    id_token = get_id_token(creds=creds)
+    credentials = get_credentials()
+    id_token = get_id_token(credentials=credentials)
 
     _deploy = partial(
         deploy_table,
@@ -2179,7 +2169,7 @@ def deploy(
         skip_existing=skip_existing,
         respect_dryrun_skip=respect_dryrun_skip,
         sql_dir=sql_dir,
-        credentials=creds,
+        credentials=credentials,
         id_token=id_token,
     )
 
@@ -2204,7 +2194,7 @@ def deploy(
 
     if not skip_external_data:
         failed_external_deploys = _deploy_external_data(
-            name, sql_dir, project_id, skip_existing, credentials=creds
+            name, sql_dir, project_id, skip_existing, credentials=credentials
         )
         failed_deploys += failed_external_deploys
 
@@ -2305,7 +2295,7 @@ def _validate_schema_from_path(
     query_file_path,
     use_cloud_function=True,
     respect_dryrun_skip=True,
-    creds=None,
+    credentials=None,
     id_token=None,
 ):
     """Dry Runs and validates a query schema from its path."""
@@ -2314,7 +2304,7 @@ def _validate_schema_from_path(
             query_file_path,
             use_cloud_function=use_cloud_function,
             respect_skip=respect_dryrun_skip,
-            credentials=creds,
+            credentials=credentials,
             id_token=id_token,
         ).validate_schema(),
         query_file_path,
@@ -2358,14 +2348,14 @@ def validate_schema(
         if query_files == []:
             raise click.ClickException(f"No queries matching `{name}` were found.")
 
-    creds = credentials()
-    id_token = get_id_token(creds=creds)
+    credentials = get_credentials()
+    id_token = get_id_token(credentials=credentials)
 
     _validate_schema = partial(
         _validate_schema_from_path,
         use_cloud_function=use_cloud_function,
         respect_dryrun_skip=respect_dryrun_skip,
-        creds=creds,
+        credentials=credentials,
         id_token=id_token,
     )
 

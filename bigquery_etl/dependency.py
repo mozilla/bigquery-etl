@@ -13,7 +13,6 @@ import rich_click as click
 import sqlglot
 import yaml
 
-from bigquery_etl.cli.utils import parallelism_option
 from bigquery_etl.config import ConfigLoader
 from bigquery_etl.schema.stable_table_schema import get_stable_table_schemas
 from bigquery_etl.util.common import render
@@ -225,7 +224,13 @@ def show(paths: Tuple[str, ...], without_views: bool):
     is_flag=True,
     help="Skip files with existing references rather than failing",
 )
-@parallelism_option()
+@click.option(
+    "--parallelism",
+    "-p",
+    default=8,
+    type=int,
+    help="Number of threads for parallel processing",
+)
 def record(paths: Tuple[str, ...], skip_existing, parallelism):
     """Record table references in metadata."""
 

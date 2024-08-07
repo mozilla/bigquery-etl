@@ -303,12 +303,10 @@ def _view_dependencies(artifact_files, sql_dir):
                     path.mkdir(parents=True, exist_ok=True)
                     # don't create schema for wildcard and metadata tables
                     if "*" not in name and name != "INFORMATION_SCHEMA":
-                        partitioned_by = "submission_timestamp"
                         schema = Schema.for_table(
                             project=project,
                             dataset=dataset,
                             table=name,
-                            partitioned_by=partitioned_by,
                             id_token=id_token,
                         )
                         schema.to_yaml_file(path / SCHEMA_FILE)

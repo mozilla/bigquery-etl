@@ -13,7 +13,7 @@ import rich_click as click
 
 from ..cli.utils import is_authenticated
 from ..config import ConfigLoader
-from ..dryrun import DryRun, credentials, get_id_token
+from ..dryrun import DryRun, get_credentials, get_id_token
 
 
 @click.command(
@@ -107,15 +107,15 @@ def dryrun(
         )
         sys.exit(1)
 
-    creds = credentials()
-    id_token = get_id_token(creds)
+    credentials = get_credentials()
+    id_token = get_id_token(credentials=credentials)
 
     sql_file_valid = partial(
         _sql_file_valid,
         use_cloud_function,
         respect_skip,
         validate_schemas,
-        creds=creds,
+        credentials=credentials,
         id_token=id_token,
     )
 
@@ -133,13 +133,13 @@ def dryrun(
 
 
 def _sql_file_valid(
-    use_cloud_function, respect_skip, validate_schemas, sqlfile, creds, id_token
+    use_cloud_function, respect_skip, validate_schemas, sqlfile, credentials, id_token
 ) -> Tuple[bool, str]:
     """Dry run the SQL file."""
     result = DryRun(
         sqlfile,
         use_cloud_function=use_cloud_function,
-        credentials=creds,
+        credentials=credentials,
         respect_skip=respect_skip,
         id_token=id_token,
     )

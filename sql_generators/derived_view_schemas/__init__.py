@@ -111,7 +111,9 @@ def _generate_view_schema(sql_dir, view_directory, id_token=None):
     if reference_partition_column is None:
         logging.debug("No reference partition column, dry running without one.")
 
-    view = View.from_file(view_file, partition_column=reference_partition_column, id_token=id_token)
+    view = View.from_file(
+        view_file, partition_column=reference_partition_column, id_token=id_token
+    )
 
     # `View.schema` prioritizes the configured schema over the dryrun schema, but here
     # we prioritize the dryrun schema because the `schema.yaml` file might be out of date.
@@ -199,20 +201,17 @@ def generate(target_project, output_dir, parallelism, use_cloud_function):
     ]
 
     id_token = get_id_token()
+    view_directories = []
 
     for dataset_path in dataset_paths:
-        view_directories = [
+        view_directories += [
             path
             for path in dataset_path.iterdir()
             if path.is_dir() and (path / VIEW_FILE).exists()
         ]
 
-        with ProcessingPool(parallelism) as pool:
-            pool.map(
-                partial(
-                    _generate_view_schema,
-                    Path(output_dir),
-                    id_token=id_token
-                ),
-                view_directories,
-            )
+    with ProcessingPool(parallelism) as pool:
+        pool.map(
+            partial(_generate_view_schema, Path(output_dir), id_token=id_token),
+            view_directories,
+        )

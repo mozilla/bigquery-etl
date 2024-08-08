@@ -38,6 +38,31 @@ except ImportError:
     from backports.cached_property import cached_property  # type: ignore
 
 
+def get_credentials(auth_req: Optional[GoogleAuthRequest] = None):
+    """Get GCP credentials."""
+    auth_req = auth_req or GoogleAuthRequest()
+    credentials, _ = google.auth.default(
+        scopes=["https://www.googleapis.com/auth/cloud-platform"]
+    )
+    credentials.refresh(auth_req)
+    return credentials
+
+
+def get_id_token(dry_run_url=ConfigLoader.get("dry_run", "function"), credentials=None):
+    """Get token to authenticate against Cloud Function."""
+    auth_req = GoogleAuthRequest()
+    credentials = credentials or get_credentials(auth_req)
+
+    if hasattr(credentials, "id_token"):
+        # Get token from default credentials for the current environment created via Cloud SDK run
+        id_token = credentials.id_token
+    else:
+        # If the environment variable GOOGLE_APPLICATION_CREDENTIALS is set to service account JSON file,
+        # then ID token is acquired using this service account credentials.
+        id_token = fetch_id_token(auth_req, dry_run_url)
+    return id_token
+
+
 class Errors(Enum):
     """DryRun errors that require special handling."""
 
@@ -58,16 +83,30 @@ class DryRun:
         client=None,
         respect_skip=True,
         sql_dir=ConfigLoader.get("default", "sql_dir"),
+        id_token=None,
+        credentials=None,
+        project=None,
+        dataset=None,
+        table=None,
     ):
         """Instantiate DryRun class."""
         self.sqlfile = sqlfile
         self.content = content
         self.strip_dml = strip_dml
         self.use_cloud_function = use_cloud_function
-        self.client = client if use_cloud_function or client else bigquery.Client()
+        self.bq_client = client
         self.respect_skip = respect_skip
         self.dry_run_url = ConfigLoader.get("dry_run", "function")
         self.sql_dir = sql_dir
+        self.id_token = (
+            id_token
+            if not use_cloud_function or id_token
+            else get_id_token(self.dry_run_url)
+        )
+        self.credentials = credentials
+        self.project = project
+        self.dataset = dataset
+        self.table = table
         try:
             self.metadata = Metadata.of_query_file(self.sqlfile)
         except FileNotFoundError:
@@ -81,6 +120,13 @@ class DryRun:
                 "and check that the project is set correctly."
             )
             sys.exit(1)
+
+    @cached_property
+    def client(self):
+        """Get BigQuery client instance."""
+        if self.use_cloud_function:
+            return None
+        return self.bq_client or bigquery.Client(credentials=self.credentials)
 
     @staticmethod
     def skipped_files(sql_dir=ConfigLoader.get("default", "sql_dir")) -> Set[str]:
@@ -184,33 +230,23 @@ class DryRun:
         dataset = basename(dirname(dirname(self.sqlfile)))
         try:
             if self.use_cloud_function:
-                auth_req = GoogleAuthRequest()
-                creds, _ = google.auth.default(
-                    scopes=["https://www.googleapis.com/auth/cloud-platform"]
-                )
-                creds.refresh(auth_req)
-                if hasattr(creds, "id_token"):
-                    # Get token from default credentials for the current environment created via Cloud SDK run
-                    id_token = creds.id_token
-                else:
-                    # If the environment variable GOOGLE_APPLICATION_CREDENTIALS is set to service account JSON file,
-                    # then ID token is acquired using this service account credentials.
-                    id_token = fetch_id_token(auth_req, self.dry_run_url)
+                json_data = {
+                    "project": self.project or project,
+                    "dataset": self.dataset or dataset,
+                    "query": sql,
+                }
+
+                if self.table:
+                    json_data["table"] = self.table
 
                 r = urlopen(
                     Request(
                         self.dry_run_url,
                         headers={
                             "Content-Type": "application/json",
-                            "Authorization": f"Bearer {id_token}",
+                            "Authorization": f"Bearer {self.id_token}",
                         },
-                        data=json.dumps(
-                            {
-                                "project": project,
-                                "dataset": dataset,
-                                "query": sql,
-                            }
-                        ).encode("utf8"),
+                        data=json.dumps(json_data).encode("utf8"),
                         method="POST",
                     )
                 )
@@ -240,6 +276,22 @@ class DryRun:
                     else:
                         raise e
 
+                if (
+                    self.project is not None
+                    and self.table is not None
+                    and self.dataset is not None
+                ):
+                    table = self.client.get_table(
+                        f"{self.project}.{self.dataset}.{self.table}"
+                    )
+                    table_metadata = {
+                        "tableType": table.table_type,
+                        "friendlyName": table.friendly_name,
+                        "schema": {
+                            "fields": [field.to_api_repr() for field in table.schema]
+                        },
+                    }
+
                 return {
                     "valid": True,
                     "referencedTables": [
@@ -251,6 +303,7 @@ class DryRun:
                         .get("schema", {})
                     ),
                     "datasetLabels": dataset_labels,
+                    "tableMetadata": table_metadata,
                 }
         except Exception as e:
             print(f"{self.sqlfile!s:59} ERROR\n", e)
@@ -294,7 +347,12 @@ class DryRun:
                     f"{self.get_sql()}WHERE {date_filter} > current_date()"
                 )
                 if (
-                    DryRun(self.sqlfile, filtered_content).get_error()
+                    DryRun(
+                        self.sqlfile,
+                        filtered_content,
+                        client=self.client,
+                        id_token=self.id_token,
+                    ).get_error()
                     == Errors.DATE_FILTER_NEEDED_AND_SYNTAX
                 ):
                     # If the date filter (e.g. WHERE crash_date > current_date())
@@ -310,14 +368,24 @@ class DryRun:
                     f"{self.get_sql()}WHERE {date_filter} > current_timestamp()"
                 )
                 if (
-                    DryRun(sqlfile=self.sqlfile, content=filtered_content).get_error()
+                    DryRun(
+                        sqlfile=self.sqlfile,
+                        content=filtered_content,
+                        client=self.client,
+                        id_token=self.id_token,
+                    ).get_error()
                     == Errors.DATE_FILTER_NEEDED_AND_SYNTAX
                 ):
                     filtered_content = (
                         f"{self.get_sql()}AND {date_filter} > current_timestamp()"
                     )
 
-            stripped_dml_result = DryRun(sqlfile=self.sqlfile, content=filtered_content)
+            stripped_dml_result = DryRun(
+                sqlfile=self.sqlfile,
+                content=filtered_content,
+                client=self.client,
+                id_token=self.id_token,
+            )
             if (
                 stripped_dml_result.get_error() is None
                 and "referencedTables" in stripped_dml_result.dry_run_result
@@ -343,6 +411,24 @@ class DryRun:
             return self.dry_run_result["schema"]
 
         return {}
+
+    def get_table_schema(self):
+        """Return the schema of the provided table."""
+        if not self.skip() and not self.is_valid():
+            raise Exception(f"Error when dry running SQL file {self.sqlfile}")
+
+        if self.skip():
+            print(f"\t...Ignoring dryrun results for {self.sqlfile}")
+            return {}
+
+        if (
+            self.dry_run_result
+            and self.dry_run_result["valid"]
+            and "tableMetadata" in self.dry_run_result
+        ):
+            return self.dry_run_result["tableMetadata"]["schema"]
+
+        return []
 
     def get_dataset_labels(self):
         """Return the labels on the default dataset by dry running the SQL file."""
@@ -446,16 +532,12 @@ class DryRun:
         dataset_name = query_file_path.parent.parent.name
         project_name = query_file_path.parent.parent.parent.name
 
-        partitioned_by = None
-        if (
-            self.metadata
-            and self.metadata.bigquery
-            and self.metadata.bigquery.time_partitioning
-        ):
-            partitioned_by = self.metadata.bigquery.time_partitioning.field
-
         table_schema = Schema.for_table(
-            project_name, dataset_name, table_name, partitioned_by
+            project_name,
+            dataset_name,
+            table_name,
+            client=self.client,
+            id_token=self.id_token,
         )
 
         # This check relies on the new schema being deployed to prod

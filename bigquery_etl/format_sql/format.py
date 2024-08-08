@@ -4,6 +4,8 @@ import glob
 import os
 import os.path
 import sys
+from functools import partial
+from multiprocessing.pool import Pool
 from pathlib import Path
 
 from bigquery_etl.config import ConfigLoader
@@ -31,7 +33,31 @@ def skip_qualifying_references():
     ]
 
 
-def format(paths, check=False):
+def _format_path(check, path):
+    query = Path(path).read_text()
+
+    try:
+        if not any([path.endswith(s) for s in skip_qualifying_references()]):
+            fully_referenced_query = qualify_table_references_in_file(Path(path))
+        else:
+            fully_referenced_query = query
+    except NotImplementedError:
+        fully_referenced_query = query  # not implemented for scripts
+
+    formatted = reformat(fully_referenced_query, trailing_newline=True)
+    if query != formatted:
+        if check:
+            print(f"Needs reformatting: bqetl format {path}")
+        else:
+            with open(path, "w") as fp:
+                fp.write(formatted)
+            print(f"Reformatted: {path}")
+        return 1
+    else:
+        return 0
+
+
+def format(paths, check=False, parallelism=8):
     """Format SQL files."""
     if not paths:
         query = sys.stdin.read()
@@ -60,32 +86,12 @@ def format(paths, check=False):
         if not sql_files:
             print("Error: no files were found to format")
             sys.exit(255)
-        sql_files.sort()
-        reformatted = unchanged = 0
-        for path in sql_files:
-            query = Path(path).read_text()
 
-            try:
-                if not any([path.endswith(s) for s in skip_qualifying_references()]):
-                    fully_referenced_query = qualify_table_references_in_file(
-                        Path(path)
-                    )
-                else:
-                    fully_referenced_query = query
-            except NotImplementedError:
-                fully_referenced_query = query  # not implemented for scripts
+        with Pool(parallelism) as pool:
+            result = pool.map(partial(_format_path, check), sql_files)
 
-            formatted = reformat(fully_referenced_query, trailing_newline=True)
-            if query != formatted:
-                if check:
-                    print(f"Needs reformatting: bqetl format {path}")
-                else:
-                    with open(path, "w") as fp:
-                        fp.write(formatted)
-                    print(f"Reformatted: {path}")
-                reformatted += 1
-            else:
-                unchanged += 1
+        reformatted = sum(result)
+        unchanged = len(sql_files) - reformatted
         print(
             ", ".join(
                 f"{number} file{'s' if number > 1 else ''}"

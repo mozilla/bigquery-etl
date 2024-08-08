@@ -17,6 +17,4 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:accounts-confidential
-references:
-  query.sql:
-  - EXTERNAL_QUERY('moz-fx-fxa-prod.us.fxa-rds-prod-prod-fxa', 'SELECT\n         uid,\n         stripeCustomerId,\n         createdAt,\n         updatedAt\n       FROM\n         fxa.accountCustomers\n    ')
+references: {}

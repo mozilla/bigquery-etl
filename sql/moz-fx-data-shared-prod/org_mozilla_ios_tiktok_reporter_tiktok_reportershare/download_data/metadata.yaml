@@ -16,6 +16,4 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:regrets-reporter
-references:
-  view.sql:
-  - moz-fx-data-shared-prod.org_mozilla_ios_tiktok_reporter_tiktok_reportershare_stable.download_data_v1
+references: {}

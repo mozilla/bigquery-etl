@@ -26,8 +26,4 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references:
-  query.sql:
-  - org_mozilla_ios_fennec.metrics
-  - org_mozilla_ios_firefox.metrics
-  - org_mozilla_ios_firefoxbeta.metrics
+references: {}

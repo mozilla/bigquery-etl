@@ -15,20 +15,4 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references:
-  query.sql:
-  - moz-fx-data-shared-prod.static.ca_postal_districts_v1
-  - moz-fx-data-shared-prod.static.us_zip_code_prefixes_v1
-  - moz-fx-data-shared-prod.stripe_external.card_v1
-  - moz-fx-data-shared-prod.stripe_external.charge_v1
-  - moz-fx-data-shared-prod.stripe_external.coupon_v1
-  - moz-fx-data-shared-prod.stripe_external.customer_v1
-  - moz-fx-data-shared-prod.stripe_external.invoice_discount_v1
-  - moz-fx-data-shared-prod.stripe_external.invoice_v1
-  - moz-fx-data-shared-prod.stripe_external.plan_v1
-  - moz-fx-data-shared-prod.stripe_external.pre_fivetran_customers_v1
-  - moz-fx-data-shared-prod.stripe_external.product_v1
-  - moz-fx-data-shared-prod.stripe_external.promotion_code_v1
-  - moz-fx-data-shared-prod.stripe_external.refund_v1
-  - moz-fx-data-shared-prod.stripe_external.subscription_history_v1
-  - moz-fx-data-shared-prod.stripe_external.subscription_item_v1
+references: {}

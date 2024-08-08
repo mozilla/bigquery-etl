@@ -28,6 +28,4 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references:
-  query.sql:
-  - moz-fx-data-shared-prod.acoustic_external.raw_recipient_raw_v1
+references: {}

@@ -27,8 +27,4 @@ workgroup_access:
 - role: roles/bigquery.dataEditor
   members:
   - workgroup:braze/writers
-references:
-  checks.sql:
-  - ..
-  script.sql:
-  - moz-fx-data-shared-prod.braze_derived.subscriptions_map_v1
+references: {}

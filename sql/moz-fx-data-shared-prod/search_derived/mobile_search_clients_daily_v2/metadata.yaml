@@ -27,20 +27,4 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references:
-  query.sql:
-  - org_mozilla_fenix.baseline
-  - org_mozilla_fenix_nightly.baseline
-  - org_mozilla_fennec_aurora.baseline
-  - org_mozilla_firefox.baseline
-  - org_mozilla_firefox_beta.baseline
-  - org_mozilla_focus.baseline
-  - org_mozilla_focus_beta.baseline
-  - org_mozilla_focus_nightly.baseline
-  - org_mozilla_ios_fennec.baseline
-  - org_mozilla_ios_firefox.baseline
-  - org_mozilla_ios_firefoxbeta.baseline
-  - org_mozilla_ios_focus.baseline
-  - org_mozilla_ios_klar.baseline
-  - org_mozilla_klar.baseline
-  - telemetry.core
+references: {}

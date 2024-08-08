@@ -23,7 +23,4 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references:
-  query.sql:
-  - moz-fx-data-shared-prod.telemetry.install
-  - moz-fx-stubattribut-prod-32a5.stubattribution_prod.stdout
+references: {}

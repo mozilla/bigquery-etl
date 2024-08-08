@@ -20,6 +20,4 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references:
-  query.sql:
-  - firefox_accounts_derived.event_types_history_v1
+references: {}

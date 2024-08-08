@@ -39,11 +39,4 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references:
-  query.sql:
-  - moz-fx-data-bq-fivetran.google_search_console_addons.keyword_page_report
-  - moz-fx-data-bq-fivetran.google_search_console_blog.keyword_page_report
-  - moz-fx-data-bq-fivetran.google_search_console_mdn.keyword_page_report
-  - moz-fx-data-bq-fivetran.google_search_console_pocket.keyword_page_report
-  - moz-fx-data-bq-fivetran.google_search_console_support.keyword_page_report
-  - moz-fx-data-bq-fivetran.google_search_console_www.keyword_page_report
+references: {}

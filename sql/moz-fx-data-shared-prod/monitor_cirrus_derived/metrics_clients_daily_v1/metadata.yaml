@@ -27,6 +27,4 @@ workgroup_access:
   members:
   - workgroup:mozilla-confidential
   - workgroup:dataops-managed/external-fides
-references:
-  query.sql:
-  - monitor_cirrus.metrics
+references: {}

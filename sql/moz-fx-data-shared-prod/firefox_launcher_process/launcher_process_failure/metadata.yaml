@@ -16,6 +16,4 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references:
-  view.sql:
-  - moz-fx-data-shared-prod.firefox_launcher_process_stable.launcher_process_failure_v1
+references: {}

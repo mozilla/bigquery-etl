@@ -17,6 +17,4 @@ workgroup_access:
   members:
   - workgroup:dataops-managed/taar
   - workgroup:mozilla-confidential
-references:
-  view.sql:
-  - moz-fx-data-shared-prod.telemetry_stable.tls13_middlebox_draft22_v4
+references: {}

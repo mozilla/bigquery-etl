@@ -27,8 +27,4 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:contextual-services
-references:
-  query.sql:
-  - moz-fx-data-shared-prod.search.search_clients_engines_sources_daily
-  - moz-fx-data-shared-prod.telemetry.suggest_clients_daily
-  - moz-fx-data-shared-prod.telemetry.unified_metrics
+references: {}

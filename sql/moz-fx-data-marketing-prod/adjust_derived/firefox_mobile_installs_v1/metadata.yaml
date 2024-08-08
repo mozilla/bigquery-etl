@@ -20,7 +20,4 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references:
-  query.sql:
-  - ga-mozilla-org-prod-001.Adjust.deliverable_*
-  - moz-fx-data-shared-prod.static.country_codes_v1
+references: {}

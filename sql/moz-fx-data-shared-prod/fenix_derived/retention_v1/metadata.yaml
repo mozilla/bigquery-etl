@@ -38,8 +38,4 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references:
-  checks.sql:
-  - ..
-  query.sql:
-  - moz-fx-data-shared-prod.fenix.retention_clients
+references: {}

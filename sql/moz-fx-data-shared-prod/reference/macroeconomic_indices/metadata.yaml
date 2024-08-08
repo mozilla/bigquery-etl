@@ -24,6 +24,4 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references:
-  view.sql:
-  - moz-fx-data-shared-prod.reference_derived.macroeconomic_indices_v1
+references: {}

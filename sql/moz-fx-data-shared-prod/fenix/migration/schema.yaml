@@ -13,6 +13,8 @@ fields:
 - name: additional_properties
   type: STRING
   mode: NULLABLE
+  description: A JSON string containing any payload properties not present in the
+    schema
 - name: client_info
   type: RECORD
   mode: NULLABLE
@@ -71,6 +73,7 @@ fields:
 - name: document_id
   type: STRING
   mode: NULLABLE
+  description: The document ID specified in the URI when the client sent this message
 - name: events
   type: RECORD
   mode: REPEATED
@@ -361,6 +364,11 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
+      description: 'Counts the number of times a metric was set with an invalid label.
+
+        The labels are the `category.name` identifier of the metric.
+
+        '
     - name: glean_error_invalid_overflow
       type: RECORD
       mode: REPEATED
@@ -371,6 +379,11 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
+      description: 'Counts the number of times a metric was set a value that overflowed.
+
+        The labels are the `category.name` identifier of the metric.
+
+        '
     - name: glean_error_invalid_state
       type: RECORD
       mode: REPEATED
@@ -381,6 +394,11 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
+      description: 'Counts the number of times a timing metric was used incorrectly.
+
+        The labels are the `category.name` identifier of the metric.
+
+        '
     - name: glean_error_invalid_value
       type: RECORD
       mode: REPEATED
@@ -391,6 +409,11 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
+      description: 'Counts the number of times a metric was set to an invalid value.
+
+        The labels are the `category.name` identifier of the metric.
+
+        '
     - name: migration_bookmarks_migrated
       type: RECORD
       mode: REPEATED
@@ -401,6 +424,10 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
+      description: 'Counters describing how bookmark migration went; should add-up
+        to ''migration.bookmarks.detected''.
+
+        '
     - name: migration_history_migrated
       type: RECORD
       mode: REPEATED
@@ -411,6 +438,10 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
+      description: 'Counters describing how history migration went; should add-up
+        to ''migration.history.detected''.
+
+        '
     - name: migration_logins_failure_counts
       type: RECORD
       mode: REPEATED
@@ -421,6 +452,9 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
+      description: 'How many logins failed to be migrated, and in which ways?
+
+        '
   - name: labeled_string
     type: RECORD
     mode: NULLABLE
@@ -435,6 +469,9 @@ fields:
       - name: value
         type: STRING
         mode: NULLABLE
+      description: 'Versions of the migrations which were executed.
+
+        '
   - name: string
     type: RECORD
     mode: NULLABLE
@@ -655,12 +692,18 @@ fields:
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE
+  description: Set to "Other" if this message contained an unrecognized app name
+- name: normalized_channel_1
+  type: STRING
+  mode: NULLABLE
 - name: normalized_country_code
   type: STRING
   mode: NULLABLE
+  description: An ISO 3166-1 alpha-2 country code
 - name: normalized_os
   type: STRING
   mode: NULLABLE
+  description: Set to "Other" if this message contained an unrecognized OS name
 - name: normalized_os_version
   type: STRING
   mode: NULLABLE
@@ -716,6 +759,9 @@ fields:
 - name: sample_id
   type: INTEGER
   mode: NULLABLE
+  description: Hashed version of client_id (if present) useful for partitioning; ranges
+    from 0 to 99
 - name: submission_timestamp
   type: TIMESTAMP
   mode: NULLABLE
+  description: Time when the ingestion edge server accepted this message

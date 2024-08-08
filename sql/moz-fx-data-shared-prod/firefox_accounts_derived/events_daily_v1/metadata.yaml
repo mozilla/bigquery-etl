@@ -27,7 +27,4 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references:
-  query.sql:
-  - firefox_accounts.event_types
-  - firefox_accounts_derived.funnel_events_source_v1
+references: {}

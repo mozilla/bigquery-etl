@@ -26,9 +26,4 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references:
-  query.sql:
-  - mozillavpn.metrics
-  - org_mozilla_firefox_vpn.metrics
-  - org_mozilla_ios_firefoxvpn.metrics
-  - org_mozilla_ios_firefoxvpn_network_extension.metrics
+references: {}

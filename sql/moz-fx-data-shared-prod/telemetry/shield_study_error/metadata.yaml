@@ -17,6 +17,4 @@ workgroup_access:
   members:
   - workgroup:dataops-managed/taar
   - workgroup:mozilla-confidential
-references:
-  view.sql:
-  - moz-fx-data-shared-prod.telemetry_stable.shield_study_error_v4
+references: {}

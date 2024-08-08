@@ -12,10 +12,4 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references:
-  view.sql:
-  - moz-fx-data-shared-prod.org_mozilla_fenix.fog_validation
-  - moz-fx-data-shared-prod.org_mozilla_fenix_nightly.fog_validation
-  - moz-fx-data-shared-prod.org_mozilla_fennec_aurora.fog_validation
-  - moz-fx-data-shared-prod.org_mozilla_firefox.fog_validation
-  - moz-fx-data-shared-prod.org_mozilla_firefox_beta.fog_validation
+references: {}

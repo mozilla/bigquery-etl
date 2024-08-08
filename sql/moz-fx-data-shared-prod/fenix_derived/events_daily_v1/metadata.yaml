@@ -27,9 +27,4 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references:
-  query.sql:
-  - fenix.event_types
-  - org_mozilla_fenix.events
-  - org_mozilla_firefox.events
-  - org_mozilla_firefox_beta.events
+references: {}

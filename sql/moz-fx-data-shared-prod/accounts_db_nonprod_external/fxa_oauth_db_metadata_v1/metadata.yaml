@@ -17,6 +17,4 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:accounts-confidential
-references:
-  query.sql:
-  - EXTERNAL_QUERY('moz-fx-fxa-nonprod.us.fxa-oauth-nonprod-stage-fxa-oauth', 'SELECT\n         name,\n         value\n       FROM\n         fxa_oauth.dbMetadata\n    ')
+references: {}

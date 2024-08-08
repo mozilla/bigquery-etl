@@ -280,6 +280,9 @@ fields:
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE
+- name: normalized_channel_1
+  type: STRING
+  mode: NULLABLE
 - name: normalized_country_code
   type: STRING
   mode: NULLABLE

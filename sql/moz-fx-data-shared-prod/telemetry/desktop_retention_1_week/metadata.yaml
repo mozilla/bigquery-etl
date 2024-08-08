@@ -12,6 +12,4 @@ workgroup_access:
   members:
   - workgroup:dataops-managed/taar
   - workgroup:mozilla-confidential
-references:
-  view.sql:
-  - moz-fx-data-shared-prod.telemetry.clients_last_seen
+references: {}

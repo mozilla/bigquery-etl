@@ -26,6 +26,4 @@ workgroup_access:
   members:
   - workgroup:dataops-managed/taar
   - workgroup:mozilla-confidential
-references:
-  view.sql:
-  - moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v3
+references: {}

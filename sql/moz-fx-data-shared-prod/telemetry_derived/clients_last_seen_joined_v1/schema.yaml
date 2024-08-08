@@ -2146,9 +2146,6 @@ fields:
 - name: min_subsession_counter
   type: INTEGER
   mode: NULLABLE
-- name: startup_profile_selection_reason_first_ping_only
-  type: STRING
-  mode: NULLABLE
 - name: profile_group_id
   type: STRING
   mode: NULLABLE

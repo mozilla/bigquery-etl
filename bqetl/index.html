@@ -2777,6 +2777,11 @@ Options:
 <p>Record table references in metadata. Fails if metadata already contains references section.</p>
 <p><strong>Usage</strong></p>
 <div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>dependency<span class="w"> </span>record<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>paths<span class="o">]</span>
+
+Options:
+
+--skip_existing:<span class="w"> </span>Skip<span class="w"> </span>files<span class="w"> </span>with<span class="w"> </span>existing<span class="w"> </span>references<span class="w"> </span>rather<span class="w"> </span>than<span class="w"> </span>failing
+--parallelism:<span class="w"> </span>Number<span class="w"> </span>of<span class="w"> </span>threads<span class="w"> </span><span class="k">for</span><span class="w"> </span>parallel<span class="w"> </span>processing
 </code></pre></div>
 <h3 id="dryrun"><code>dryrun</code></h3>
 <p>Dry run SQL.
@@ -2805,6 +2810,11 @@ Options:
 <p>Format SQL files.</p>
 <p><strong>Usage</strong></p>
 <div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>format<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>paths<span class="o">]</span>
+
+Options:
+
+--check:<span class="w"> </span><span class="k">do</span><span class="w"> </span>not<span class="w"> </span>write<span class="w"> </span>changes,<span class="w"> </span>just<span class="w"> </span><span class="k">return</span><span class="w"> </span>status<span class="p">;</span><span class="w"> </span><span class="k">return</span><span class="w"> </span>code<span class="w"> </span><span class="m">0</span><span class="w"> </span>indicates<span class="w"> </span>nothing<span class="w"> </span>would<span class="w"> </span>change<span class="p">;</span><span class="w"> </span><span class="k">return</span><span class="w"> </span>code<span class="w"> </span><span class="m">1</span><span class="w"> </span>indicates<span class="w"> </span>some<span class="w"> </span>files<span class="w"> </span>would<span class="w"> </span>be<span class="w"> </span>reformatted
+--parallelism:<span class="w"> </span>Number<span class="w"> </span>of<span class="w"> </span>threads<span class="w"> </span><span class="k">for</span><span class="w"> </span>parallel<span class="w"> </span>processing
 </code></pre></div>
 <p><strong>Examples</strong></p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Format a specific file</span>

@@ -1,6 +1,6 @@
 friendly_name: Aggregated Newtab Data for Merino
 description: |-
-  This job aggregates Newtab engagement data that lands in a GCS bucket for 
+  This job aggregates Newtab engagement data that lands in a GCS bucket for
   Merino recommendations.
 owners:
   - cbeck@mozilla.com

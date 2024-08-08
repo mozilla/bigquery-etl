@@ -2595,6 +2595,11 @@ fields:
   mode: NULLABLE
   description: Bit pattern to identify when the client_id has sent a main ping & also
     qualifies as active in the previous 28 days.
+- name: profile_group_id
+  type: STRING
+  mode: NULLABLE
+  description: A UUID identifying the profile's group on a single device and allowing
+    user-oriented correlation of data
 - name: _sample_id_string
   type: STRING
   mode: NULLABLE

@@ -1328,6 +1328,13 @@ fields:
       description: 'Available speechSynthesis voices.
 
         '
+    - name: characteristics_webglinfo
+      type: STRING
+      mode: NULLABLE
+      description: 'A JSON blob that contains information about the graphics hardware
+        exposed by WebGL.
+
+        '
   - name: uuid
     type: RECORD
     mode: NULLABLE

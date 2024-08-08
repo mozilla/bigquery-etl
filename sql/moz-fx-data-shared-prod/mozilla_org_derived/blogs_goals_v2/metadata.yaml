@@ -1,6 +1,6 @@
-friendly_name: Blogs Sessions V2
+friendly_name: Blogs Goals V2
 description: |-
-  Intermediate table containing normalized sessions for blog.mozilla.org, sourced from Google Analytics 4 (GA4)
+  Intermediate table containing key metrics for blog.mozilla.org sourced from Google Analytics 4
 owners:
 - kwindau@mozilla.com
 labels:
@@ -19,5 +19,5 @@ bigquery:
     expiration_days: null
   clustering:
     fields:
-    - country
+    - visit_identifier
 references: {}

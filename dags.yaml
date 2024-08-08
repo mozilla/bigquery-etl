@@ -1790,3 +1790,24 @@ bqetl_firefox_desktop_ad_click_history:
   tags:
     - repo/bigquery-etl
     - impact/tier_2
+
+newtab_aggregates_to_gcs:
+  default_args:
+    depends_on_past: false
+    email:
+      - cbeck@mozilla.com
+      - gkatre@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    owner: cbeck@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2024-08-08'
+  description: |
+    Aggregates Newtab engagement data that lands in a GCS bucket for Merino recommendations.
+  repo: bigquery-etl
+  schedule_interval: /20 * * * *
+  tags:
+    - repo/bigquery-etl
+    - impact/tier_1

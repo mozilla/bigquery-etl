@@ -59,6 +59,7 @@ class GleanAppPingViews(GleanTable):
         output_dir=None,
         use_cloud_function=True,
         parallelism=8,
+        id_token=None
     ):
         """
         Generate per-app ping views across channels.
@@ -109,8 +110,8 @@ class GleanAppPingViews(GleanTable):
                     "moz-fx-data-shared-prod",
                     channel_dataset,
                     view_name,
-                    partitioned_by="submission_timestamp",
                     use_cloud_function=use_cloud_function,
+                    id_token=id_token
                 )
                 cached_schemas[channel_dataset] = deepcopy(schema)
 

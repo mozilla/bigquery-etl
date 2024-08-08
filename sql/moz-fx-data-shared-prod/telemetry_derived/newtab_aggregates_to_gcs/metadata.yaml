@@ -3,8 +3,8 @@ description: |-
   This job aggregates Newtab engagement data that lands in a GCS bucket for 
   Merino recommendations.
 owners:
-- cbeck@mozilla.com
-- gkatre@mozilla.com
+  - cbeck@mozilla.com
+  - gkatre@mozilla.com
 scheduling:
   dag_name: newtab_aggregates_to_gcs
   destination_table: null

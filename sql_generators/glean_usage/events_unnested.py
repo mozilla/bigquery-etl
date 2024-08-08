@@ -29,8 +29,9 @@ class EventsUnnestedTable(GleanTable):
         output_dir=None,
         use_cloud_function=True,
         parallelism=8,
+        id_token=None,
     ):
         """Generate the events_unnested table query per app_name."""
         target_dataset = app_info[0]["app_name"]
         if target_dataset not in DATASET_SKIP:
-            super().generate_per_app(project_id, app_info, output_dir)
+            super().generate_per_app(project_id, app_info, output_dir, id_token=id_token)

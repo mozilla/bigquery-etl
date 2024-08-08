@@ -5,10 +5,10 @@ AS
 SELECT
   "org_mozilla_focus" AS normalized_app_id,
   "release" AS normalized_channel,
-  CAST(NULL AS STRING) AS `additional_properties`,
-  CAST(NULL AS STRING) AS `document_id`,
+  additional_properties,
+  document_id,
   events,
-  STRUCT(metadata.geo, metadata.header, metadata.isp, metadata.user_agent) AS `metadata`,
+  metadata,
   STRUCT(
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -18,23 +18,22 @@ SELECT
     ) AS `labeled_counter`,
     STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`
   ) AS `metrics`,
-  CAST(NULL AS STRING) AS `normalized_app_name`,
-  CAST(NULL AS STRING) AS `normalized_channel`,
-  CAST(NULL AS STRING) AS `normalized_country_code`,
-  CAST(NULL AS STRING) AS `normalized_os`,
-  CAST(NULL AS STRING) AS `normalized_os_version`,
-  CAST(NULL AS INTEGER) AS `sample_id`,
-  CAST(NULL AS TIMESTAMP) AS `submission_timestamp`
+  normalized_app_name,
+  normalized_country_code,
+  normalized_os,
+  normalized_os_version,
+  sample_id,
+  submission_timestamp
 FROM
   `moz-fx-data-shared-prod.org_mozilla_focus.bounce_tracking_protection`
 UNION ALL
 SELECT
   "org_mozilla_focus_beta" AS normalized_app_id,
   "beta" AS normalized_channel,
-  CAST(NULL AS STRING) AS `additional_properties`,
-  CAST(NULL AS STRING) AS `document_id`,
+  additional_properties,
+  document_id,
   events,
-  STRUCT(metadata.geo, metadata.header, metadata.isp, metadata.user_agent) AS `metadata`,
+  metadata,
   STRUCT(
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -44,23 +43,22 @@ SELECT
     ) AS `labeled_counter`,
     STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`
   ) AS `metrics`,
-  CAST(NULL AS STRING) AS `normalized_app_name`,
-  CAST(NULL AS STRING) AS `normalized_channel`,
-  CAST(NULL AS STRING) AS `normalized_country_code`,
-  CAST(NULL AS STRING) AS `normalized_os`,
-  CAST(NULL AS STRING) AS `normalized_os_version`,
-  CAST(NULL AS INTEGER) AS `sample_id`,
-  CAST(NULL AS TIMESTAMP) AS `submission_timestamp`
+  normalized_app_name,
+  normalized_country_code,
+  normalized_os,
+  normalized_os_version,
+  sample_id,
+  submission_timestamp
 FROM
   `moz-fx-data-shared-prod.org_mozilla_focus_beta.bounce_tracking_protection`
 UNION ALL
 SELECT
   "org_mozilla_focus_nightly" AS normalized_app_id,
   "nightly" AS normalized_channel,
-  CAST(NULL AS STRING) AS `additional_properties`,
-  CAST(NULL AS STRING) AS `document_id`,
+  additional_properties,
+  document_id,
   events,
-  STRUCT(metadata.geo, metadata.header, metadata.isp, metadata.user_agent) AS `metadata`,
+  metadata,
   STRUCT(
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -70,12 +68,11 @@ SELECT
     ) AS `labeled_counter`,
     STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`
   ) AS `metrics`,
-  CAST(NULL AS STRING) AS `normalized_app_name`,
-  CAST(NULL AS STRING) AS `normalized_channel`,
-  CAST(NULL AS STRING) AS `normalized_country_code`,
-  CAST(NULL AS STRING) AS `normalized_os`,
-  CAST(NULL AS STRING) AS `normalized_os_version`,
-  CAST(NULL AS INTEGER) AS `sample_id`,
-  CAST(NULL AS TIMESTAMP) AS `submission_timestamp`
+  normalized_app_name,
+  normalized_country_code,
+  normalized_os,
+  normalized_os_version,
+  sample_id,
+  submission_timestamp
 FROM
   `moz-fx-data-shared-prod.org_mozilla_focus_nightly.bounce_tracking_protection`

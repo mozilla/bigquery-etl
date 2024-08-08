@@ -5,29 +5,11 @@ AS
 SELECT
   "mozillavpn" AS normalized_app_id,
   "release" AS normalized_channel,
-  CAST(NULL AS STRING) AS `additional_properties`,
-  STRUCT(
-    client_info.android_sdk_version,
-    client_info.app_build,
-    client_info.app_channel,
-    client_info.app_display_version,
-    client_info.architecture,
-    client_info.build_date,
-    client_info.client_id,
-    client_info.device_manufacturer,
-    client_info.device_model,
-    client_info.first_run_date,
-    client_info.locale,
-    client_info.os,
-    client_info.os_version,
-    client_info.telemetry_sdk_build,
-    client_info.windows_build_number,
-    client_info.session_count,
-    client_info.session_id
-  ) AS `client_info`,
-  CAST(NULL AS STRING) AS `document_id`,
+  additional_properties,
+  client_info,
+  document_id,
   events,
-  STRUCT(metadata.geo, metadata.header, metadata.isp, metadata.user_agent) AS `metadata`,
+  metadata,
   STRUCT(
     STRUCT(
       metrics.boolean.glean_error_preinit_tasks_timeout,
@@ -78,58 +60,30 @@ SELECT
       metrics.timing_distribution.glean_database_write_time
     ) AS `timing_distribution`
   ) AS `metrics`,
-  CAST(NULL AS STRING) AS `normalized_app_name`,
-  CAST(NULL AS STRING) AS `normalized_channel`,
-  CAST(NULL AS STRING) AS `normalized_country_code`,
-  CAST(NULL AS STRING) AS `normalized_os`,
-  CAST(NULL AS STRING) AS `normalized_os_version`,
-  STRUCT(
-    ping_info.end_time,
-    ping_info.experiments,
-    ping_info.ping_type,
-    ping_info.reason,
-    ping_info.seq,
-    ping_info.start_time,
-    ping_info.parsed_start_time,
-    ping_info.parsed_end_time
-  ) AS `ping_info`,
-  CAST(NULL AS INTEGER) AS `sample_id`,
-  CAST(NULL AS TIMESTAMP) AS `submission_timestamp`
+  normalized_app_name,
+  normalized_country_code,
+  normalized_os,
+  normalized_os_version,
+  ping_info,
+  sample_id,
+  submission_timestamp
 FROM
   `moz-fx-data-shared-prod.mozillavpn.metrics`
 UNION ALL
 SELECT
   "org_mozilla_firefox_vpn" AS normalized_app_id,
   "release" AS normalized_channel,
-  CAST(NULL AS STRING) AS `additional_properties`,
-  STRUCT(
-    client_info.android_sdk_version,
-    client_info.app_build,
-    client_info.app_channel,
-    client_info.app_display_version,
-    client_info.architecture,
-    client_info.build_date,
-    client_info.client_id,
-    client_info.device_manufacturer,
-    client_info.device_model,
-    client_info.first_run_date,
-    client_info.locale,
-    client_info.os,
-    client_info.os_version,
-    client_info.telemetry_sdk_build,
-    client_info.windows_build_number,
-    client_info.session_count,
-    client_info.session_id
-  ) AS `client_info`,
-  CAST(NULL AS STRING) AS `document_id`,
+  additional_properties,
+  client_info,
+  document_id,
   events,
-  STRUCT(metadata.geo, metadata.header, metadata.isp, metadata.user_agent) AS `metadata`,
+  metadata,
   STRUCT(
     STRUCT(
       metrics.boolean.glean_error_preinit_tasks_timeout,
       metrics.boolean.settings_connect_on_startup_active,
       metrics.boolean.settings_using_system_language,
-      CAST(NULL AS BOOLEAN) AS `glean_core_migration_successful`
+      metrics.boolean.glean_core_migration_successful
     ) AS `boolean`,
     STRUCT(
       metrics.counter.glean_error_io,
@@ -140,8 +94,8 @@ SELECT
       metrics.counter.glean_upload_missing_send_ids,
       metrics.counter.glean_upload_pending_pings,
       metrics.counter.glean_validation_foreground_count,
-      CAST(NULL AS INTEGER) AS `glean_validation_app_forceclosed_count`,
-      CAST(NULL AS INTEGER) AS `glean_validation_baseline_ping_count`
+      metrics.counter.glean_validation_app_forceclosed_count,
+      metrics.counter.glean_validation_baseline_ping_count
     ) AS `counter`,
     STRUCT(
       metrics.datetime.glean_validation_first_run_hour,
@@ -186,11 +140,10 @@ SELECT
       metrics.timing_distribution.glean_database_write_time
     ) AS `timing_distribution`
   ) AS `metrics`,
-  CAST(NULL AS STRING) AS `normalized_app_name`,
-  CAST(NULL AS STRING) AS `normalized_channel`,
-  CAST(NULL AS STRING) AS `normalized_country_code`,
-  CAST(NULL AS STRING) AS `normalized_os`,
-  CAST(NULL AS STRING) AS `normalized_os_version`,
+  normalized_app_name,
+  normalized_country_code,
+  normalized_os,
+  normalized_os_version,
   STRUCT(
     ping_info.end_time,
     ARRAY(
@@ -212,37 +165,19 @@ SELECT
     ping_info.parsed_start_time,
     ping_info.parsed_end_time
   ) AS `ping_info`,
-  CAST(NULL AS INTEGER) AS `sample_id`,
-  CAST(NULL AS TIMESTAMP) AS `submission_timestamp`
+  sample_id,
+  submission_timestamp
 FROM
   `moz-fx-data-shared-prod.org_mozilla_firefox_vpn.metrics`
 UNION ALL
 SELECT
   "org_mozilla_ios_firefoxvpn" AS normalized_app_id,
   "release" AS normalized_channel,
-  CAST(NULL AS STRING) AS `additional_properties`,
-  STRUCT(
-    client_info.android_sdk_version,
-    client_info.app_build,
-    client_info.app_channel,
-    client_info.app_display_version,
-    client_info.architecture,
-    client_info.build_date,
-    client_info.client_id,
-    client_info.device_manufacturer,
-    client_info.device_model,
-    client_info.first_run_date,
-    client_info.locale,
-    client_info.os,
-    client_info.os_version,
-    client_info.telemetry_sdk_build,
-    client_info.windows_build_number,
-    client_info.session_count,
-    client_info.session_id
-  ) AS `client_info`,
-  CAST(NULL AS STRING) AS `document_id`,
+  additional_properties,
+  client_info,
+  document_id,
   events,
-  STRUCT(metadata.geo, metadata.header, metadata.isp, metadata.user_agent) AS `metadata`,
+  metadata,
   STRUCT(
     STRUCT(
       metrics.boolean.glean_error_preinit_tasks_timeout,
@@ -293,52 +228,24 @@ SELECT
       metrics.timing_distribution.glean_database_write_time
     ) AS `timing_distribution`
   ) AS `metrics`,
-  CAST(NULL AS STRING) AS `normalized_app_name`,
-  CAST(NULL AS STRING) AS `normalized_channel`,
-  CAST(NULL AS STRING) AS `normalized_country_code`,
-  CAST(NULL AS STRING) AS `normalized_os`,
-  CAST(NULL AS STRING) AS `normalized_os_version`,
-  STRUCT(
-    ping_info.end_time,
-    ping_info.experiments,
-    ping_info.ping_type,
-    ping_info.reason,
-    ping_info.seq,
-    ping_info.start_time,
-    ping_info.parsed_start_time,
-    ping_info.parsed_end_time
-  ) AS `ping_info`,
-  CAST(NULL AS INTEGER) AS `sample_id`,
-  CAST(NULL AS TIMESTAMP) AS `submission_timestamp`
+  normalized_app_name,
+  normalized_country_code,
+  normalized_os,
+  normalized_os_version,
+  ping_info,
+  sample_id,
+  submission_timestamp
 FROM
   `moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn.metrics`
 UNION ALL
 SELECT
   "org_mozilla_ios_firefoxvpn_network_extension" AS normalized_app_id,
   "release" AS normalized_channel,
-  CAST(NULL AS STRING) AS `additional_properties`,
-  STRUCT(
-    client_info.android_sdk_version,
-    client_info.app_build,
-    client_info.app_channel,
-    client_info.app_display_version,
-    client_info.architecture,
-    client_info.build_date,
-    client_info.client_id,
-    client_info.device_manufacturer,
-    client_info.device_model,
-    client_info.first_run_date,
-    client_info.locale,
-    client_info.os,
-    client_info.os_version,
-    client_info.telemetry_sdk_build,
-    client_info.windows_build_number,
-    client_info.session_count,
-    client_info.session_id
-  ) AS `client_info`,
-  CAST(NULL AS STRING) AS `document_id`,
+  additional_properties,
+  client_info,
+  document_id,
   events,
-  STRUCT(metadata.geo, metadata.header, metadata.isp, metadata.user_agent) AS `metadata`,
+  metadata,
   STRUCT(
     STRUCT(
       metrics.boolean.glean_error_preinit_tasks_timeout,
@@ -389,22 +296,12 @@ SELECT
       metrics.timing_distribution.glean_database_write_time
     ) AS `timing_distribution`
   ) AS `metrics`,
-  CAST(NULL AS STRING) AS `normalized_app_name`,
-  CAST(NULL AS STRING) AS `normalized_channel`,
-  CAST(NULL AS STRING) AS `normalized_country_code`,
-  CAST(NULL AS STRING) AS `normalized_os`,
-  CAST(NULL AS STRING) AS `normalized_os_version`,
-  STRUCT(
-    ping_info.end_time,
-    ping_info.experiments,
-    ping_info.ping_type,
-    ping_info.reason,
-    ping_info.seq,
-    ping_info.start_time,
-    ping_info.parsed_start_time,
-    ping_info.parsed_end_time
-  ) AS `ping_info`,
-  CAST(NULL AS INTEGER) AS `sample_id`,
-  CAST(NULL AS TIMESTAMP) AS `submission_timestamp`
+  normalized_app_name,
+  normalized_country_code,
+  normalized_os,
+  normalized_os_version,
+  ping_info,
+  sample_id,
+  submission_timestamp
 FROM
   `moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_network_extension.metrics`

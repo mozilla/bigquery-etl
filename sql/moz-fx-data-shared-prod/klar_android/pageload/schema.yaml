@@ -324,9 +324,6 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Set to "Other" if this message contained an unrecognized app name
-- name: normalized_channel_1
-  type: STRING
-  mode: NULLABLE
 - name: normalized_country_code
   type: STRING
   mode: NULLABLE

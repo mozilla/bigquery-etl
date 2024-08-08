@@ -532,12 +532,21 @@ class DryRun:
         dataset_name = query_file_path.parent.parent.name
         project_name = query_file_path.parent.parent.parent.name
 
+        partitioned_by = None
+        if (
+            self.metadata
+            and self.metadata.bigquery
+            and self.metadata.bigquery.time_partitioning
+        ):
+            partitioned_by = self.metadata.bigquery.time_partitioning.field
+
         table_schema = Schema.for_table(
             project_name,
             dataset_name,
             table_name,
             client=self.client,
             id_token=self.id_token,
+            partitioned_by=partitioned_by,
         )
 
         # This check relies on the new schema being deployed to prod

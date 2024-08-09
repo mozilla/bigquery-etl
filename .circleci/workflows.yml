@@ -310,7 +310,7 @@ jobs:
                 name: PyTest Integration Test
                 # yamllint disable rule:line-length
                 command: |
-                  PATH="venv/bin:$PATH" script/entrypoint -m 'integration' -n 8
+                  PATH="venv/bin:$PATH" script/entrypoint -m 'integration'
                 # workaround for job failing with `Too long with no output (exceeded 10m0s): context deadline exceeded` error
                 no_output_timeout: 30m
       - unless:

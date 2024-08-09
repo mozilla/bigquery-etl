@@ -4,7 +4,6 @@ import re
 import sys
 from glob import glob
 from itertools import groupby
-from multiprocessing.pool import ThreadPool
 from pathlib import Path
 from subprocess import CalledProcessError
 from typing import Dict, Iterator, List, Tuple

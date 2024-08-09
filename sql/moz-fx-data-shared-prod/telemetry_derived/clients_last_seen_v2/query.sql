@@ -576,6 +576,7 @@ SELECT
   max_subsession_counter,
   min_subsession_counter,
   startup_profile_selection_first_ping_only,
-  days_active_bits
+  days_active_bits,
+  profile_group_id
 FROM
   staging a

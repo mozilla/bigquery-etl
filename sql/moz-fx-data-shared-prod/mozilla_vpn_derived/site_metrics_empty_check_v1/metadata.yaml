@@ -9,7 +9,9 @@ labels:
   incremental: true
   schedule: daily
 scheduling:
-  dag_name: bqetl_mozilla_vpn_site_metrics
+  # No longer scheduled because we're no longer getting GA3 data from Google.
+  # https://bugzilla.mozilla.org/show_bug.cgi?id=1905989
+  #dag_name: bqetl_mozilla_vpn_site_metrics
   destination_table: null
   query_file_path:
     sql/moz-fx-data-shared-prod/mozilla_vpn_derived/site_metrics_empty_check_v1/query.sql

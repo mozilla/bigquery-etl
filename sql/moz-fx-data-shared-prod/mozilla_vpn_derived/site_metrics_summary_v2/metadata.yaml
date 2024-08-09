@@ -7,10 +7,11 @@ labels:
   incremental: true
   owner1: kwindau@mozilla.com
 scheduling:
-  dag_name: bqetl_google_analytics_derived_ga4
+  dag_name: bqetl_mozilla_vpn_site_metrics
   depends_on:
   - task_id: wait_for_wmo_events_table
     dag_name: bqetl_google_analytics_derived_ga4
+    execution_delta: 3h
 bigquery:
   time_partitioning:
     type: day

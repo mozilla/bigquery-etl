@@ -7,8 +7,9 @@ labels:
   application: mozilla_vpn
   schedule: daily
 scheduling:
-  # GA data arrives hours later than the rest, so this has a separate DAG
-  dag_name: bqetl_mozilla_vpn_site_metrics
+  # No longer scheduled because we're no longer getting GA3 data from Google.
+  # https://bugzilla.mozilla.org/show_bug.cgi?id=1905989
+  #dag_name: bqetl_mozilla_vpn_site_metrics
   date_partition_parameter: date
   depends_on:
     - task_id: mozilla_vpn_derived__site_metrics_empty_check__v1

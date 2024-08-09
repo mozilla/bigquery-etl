@@ -2039,10 +2039,20 @@ def _update_query_schema(
         )
         return
 
+    partitioned_by = None
+    try:
+        metadata = Metadata.of_query_file(query_file_path)
+
+        if metadata.bigquery and metadata.bigquery.time_partitioning:
+            partitioned_by = metadata.bigquery.time_partitioning.field
+    except FileNotFoundError:
+        pass
+
     table_schema = Schema.for_table(
         project_name,
         dataset_name,
         table_name,
+        partitioned_by=partitioned_by,
         use_cloud_function=use_cloud_function,
         respect_skip=respect_dryrun_skip,
         credentials=credentials,

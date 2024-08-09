@@ -2,10 +2,10 @@
 version: 2.1
 
 orbs:
-  gcp-gcr: circleci/gcp-gcr@0.13.0
-  docker: circleci/docker@2.2
+  gcp-gcr: circleci/gcp-gcr@0.16.3
+  docker: circleci/docker@2.6.0
   python: circleci/python@2.1.1
-  gcp-cli: circleci/gcp-cli@3.1.1
+  gcp-cli: circleci/gcp-cli@3.2.1
 
 parameters:
   python-version:
@@ -732,7 +732,7 @@ jobs:
   artifact-deployment:
     executor: gcp-cli/google
     steps:
-      - run:
+      - run: &oidc-setup
           name: Prepare environment variables for OIDC authentication
           # Project ID is not used for OIDC authentication, but gcloud CLI requires a valid project ID.
           command: |
@@ -853,27 +853,36 @@ jobs:
           steps:
             - *skip
   deploy-to-private-gcr:
-    executor: ubuntu-machine-executor
+    executor: gcp-gcr/default
     steps:
+      - run: *oidc-setup
+      - run: | 
+          echo 'export GOOGLE_PROJECT_ID="moz-fx-data-airflow-prod-88e0"' >> "$BASH_ENV"
+          echo "export OIDC_SERVICE_ACCOUNT_EMAIL=$GCP_SERVICE_ACCOUNT_IMAGE_PUSHER_EMAIL" >> "$BASH_ENV"
+      - run: 'gcloud config get-value account'
       - when:
-          condition: *deploy
+          condition: 
+             equal: [true, true]
           steps:
             - checkout
-            - *attach_generated_sql
-            - run:
-                name: Move generated-sql into place
-                command: |
-                  rm -rf sql/
-                  cp -r /tmp/workspace/private-generated-sql/sql sql
+            # - *attach_generated_sql
+            # - run:
+            #     name: Move generated-sql into place
+            #     command: |
+            #       rm -rf sql/
+            #       cp -r /tmp/workspace/private-generated-sql/sql sql
             - gcp-gcr/gcr-auth
-            - gcp-gcr/build-image: &private-image
+            - gcp-gcr/build-image:
+                dockerfile: DSRETest.Dockerfile
                 image: bigquery-etl
-                tag: ${CIRCLE_TAG:-latest}
-            - gcp-gcr/push-image: *private-image
-      - unless:
-          condition: *deploy
-          steps:
-            - *skip
+                tag: DSRE-1683-test
+            - gcp-gcr/push-image:
+                image: bigquery-etl
+                tag: DSRE-1683-test
+      # - unless:
+      #     condition: *deploy
+      #     steps:
+      #       - *skip
   main-generate-sql-and-dags:
     docker: *docker
     resource_class: large
@@ -1172,6 +1181,8 @@ workflows:
             branches:
               only:
                 - main
+                - DSRE-1683
+
       - push-private-generated-sql:
           requires:
             - private-generate-sql
@@ -1222,16 +1233,17 @@ workflows:
               only:
                 - main
       - deploy-to-private-gcr:
-          context: data-eng-airflow-gcr
+          context: gcpv2-workload-identity
           requires:
-            - private-generate-sql
-            # can't run in parallel because CIRCLE_BUILD_NUM is same
+            # - private-generate-sql
+            # # can't run in parallel because CIRCLE_BUILD_NUM is same
             - build
-            - generate-sql
+            # - generate-sql
           filters:
             branches:
               only:
                 - main
+                - DSRE-1683
   tagged-deploy:
     jobs:
       - deploy-to-pypi:

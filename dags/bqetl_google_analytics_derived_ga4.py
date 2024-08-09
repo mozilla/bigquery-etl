@@ -524,6 +524,17 @@ with DAG(
         depends_on_past=False,
     )
 
+    mozilla_org_derived__www_site_page_metrics__v2 = bigquery_etl_query(
+        task_id="mozilla_org_derived__www_site_page_metrics__v2",
+        destination_table="www_site_page_metrics_v2",
+        dataset_id="mozilla_org_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     mozilla_vpn_derived__site_metrics_summary__v2 = bigquery_etl_query(
         task_id="mozilla_vpn_derived__site_metrics_summary__v2",
         destination_table="site_metrics_summary_v2",
@@ -653,6 +664,10 @@ with DAG(
 
     mozilla_org_derived__www_site_metrics_summary__v2.set_upstream(
         wait_for_wmo_events_table
+    )
+
+    mozilla_org_derived__www_site_page_metrics__v2.set_upstream(
+        mozilla_org_derived__www_site_hits__v2
     )
 
     mozilla_vpn_derived__site_metrics_summary__v2.set_upstream(

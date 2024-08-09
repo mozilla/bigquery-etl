@@ -9,7 +9,7 @@ WITH _derived_search_cols AS (
     COALESCE(search_with_ads, 0) AS search_with_ads,
     * EXCEPT (ad_click, search_with_ads)
   FROM
-    `moz-fx-data-shared-prod.search_derived.mobile_search_clients_daily_v1`
+    `moz-fx-data-shared-prod.search.mobile_search_clients_daily`
   WHERE
     submission_date = @submission_date
 ),

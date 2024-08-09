@@ -29,7 +29,7 @@ client_search AS (
     client_id,
     SUM(search_count) AS search_count
   FROM
-    `moz-fx-data-shared-prod.search_derived.mobile_search_clients_daily_v1`
+    `moz-fx-data-shared-prod.search.mobile_search_clients_daily`
   JOIN
     client_first_seen
     USING (client_id)

@@ -194,7 +194,7 @@ search_clients AS (
     search_count,
     search_with_ads
   FROM
-    `moz-fx-data-shared-prod.search_derived.mobile_search_clients_daily_v1`
+    `moz-fx-data-shared-prod.search.mobile_search_clients_daily`
   WHERE
     submission_date = @submission_date
 ),

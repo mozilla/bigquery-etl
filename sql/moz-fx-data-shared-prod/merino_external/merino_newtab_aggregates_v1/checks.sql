@@ -3,6 +3,7 @@
 #fail
 {{ not_null(["scheduled_corpus_item_id"]) }}
 
+#fail
 {{ is_unique(["scheduled_corpus_item_id"]) }}
 
 #fail

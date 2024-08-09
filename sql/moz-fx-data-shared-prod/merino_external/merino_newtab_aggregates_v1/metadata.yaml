@@ -11,5 +11,5 @@ labels:
 bigquery:
   time_partitioning: null
 scheduling:
-  dag_name: merino_newtab_aggregates_to_gcs
+  dag_name: bqetl_merino_newtab_aggregates_to_gcs
   date_partition_parameter: null

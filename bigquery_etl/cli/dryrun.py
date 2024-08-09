@@ -10,11 +10,10 @@ from multiprocessing.pool import Pool
 from typing import List, Set, Tuple
 
 import rich_click as click
-from google.cloud import bigquery
 
 from ..cli.utils import is_authenticated
 from ..config import ConfigLoader
-from ..dryrun import DryRun
+from ..dryrun import DryRun, get_credentials, get_id_token
 
 
 @click.command(
@@ -108,8 +107,16 @@ def dryrun(
         )
         sys.exit(1)
 
+    credentials = get_credentials()
+    id_token = get_id_token(credentials=credentials)
+
     sql_file_valid = partial(
-        _sql_file_valid, use_cloud_function, project, respect_skip, validate_schemas
+        _sql_file_valid,
+        use_cloud_function,
+        respect_skip,
+        validate_schemas,
+        credentials=credentials,
+        id_token=id_token,
     )
 
     with Pool(8) as p:
@@ -126,19 +133,15 @@ def dryrun(
 
 
 def _sql_file_valid(
-    use_cloud_function, project, respect_skip, validate_schemas, sqlfile
+    use_cloud_function, respect_skip, validate_schemas, sqlfile, credentials, id_token
 ) -> Tuple[bool, str]:
-    if not use_cloud_function:
-        client = bigquery.Client(project=project)
-    else:
-        client = None
-
     """Dry run the SQL file."""
     result = DryRun(
         sqlfile,
         use_cloud_function=use_cloud_function,
-        client=client,
+        credentials=credentials,
         respect_skip=respect_skip,
+        id_token=id_token,
     )
     if validate_schemas:
         try:

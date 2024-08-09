@@ -70,6 +70,9 @@ class Schema:
                 dryrun.DryRun(
                     os.path.join(project, dataset, table, "query.sql"),
                     query,
+                    project=project,
+                    dataset=dataset,
+                    table=table,
                     *args,
                     **kwargs,
                 ).get_schema()

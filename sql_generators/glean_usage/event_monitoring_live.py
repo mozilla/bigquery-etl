@@ -73,6 +73,7 @@ class EventMonitoringLive(GleanTable):
         use_cloud_function=True,
         app_info=[],
         parallelism=8,
+        id_token=None
     ):
         tables = table_names_from_baseline(baseline_table, include_project_id=False)
 

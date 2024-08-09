@@ -1,8 +1,0 @@
-friendly_name: Search Impressions By Page (DEPRECATED)
-description: |-
-  This view is being moved to `mozdata.google_search_console.search_impressions_by_page`.
-  Please update any queries referencing this view to point to the new location.
-owners:
-- srose@mozilla.com
-labels:
-  owner1: srose

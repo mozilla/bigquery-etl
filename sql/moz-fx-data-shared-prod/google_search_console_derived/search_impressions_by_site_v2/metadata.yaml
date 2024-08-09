@@ -58,4 +58,11 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references: {}
+references:
+  query.sql:
+  - moz-fx-data-marketing-prod.searchconsole_addons.searchdata_site_impression
+  - moz-fx-data-marketing-prod.searchconsole_blog.searchdata_site_impression
+  - moz-fx-data-marketing-prod.searchconsole_getpocket.searchdata_site_impression
+  - moz-fx-data-marketing-prod.searchconsole_mdn.searchdata_site_impression
+  - moz-fx-data-marketing-prod.searchconsole_support.searchdata_site_impression
+  - moz-fx-data-marketing-prod.searchconsole_www.searchdata_site_impression

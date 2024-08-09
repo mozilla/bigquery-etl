@@ -1,0 +1,13 @@
+friendly_name: Daily Ad Group Stats
+description: |-
+  Please provide a description for the query
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.google_ads_derived.daily_ad_group_stats_v1

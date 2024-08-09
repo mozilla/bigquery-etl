@@ -16,4 +16,6 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:ads
-references: {}
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.ads_backend_stable.events_v1

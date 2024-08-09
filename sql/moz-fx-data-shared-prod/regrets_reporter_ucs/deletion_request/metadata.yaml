@@ -16,4 +16,6 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:regrets-reporter
-references: {}
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.regrets_reporter_ucs_stable.deletion_request_v1

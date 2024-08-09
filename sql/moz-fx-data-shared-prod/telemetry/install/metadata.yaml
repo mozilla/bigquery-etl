@@ -23,4 +23,6 @@ workgroup_access:
   members:
   - workgroup:dataops-managed/taar
   - workgroup:mozilla-confidential
-references: {}
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.firefox_installer.install

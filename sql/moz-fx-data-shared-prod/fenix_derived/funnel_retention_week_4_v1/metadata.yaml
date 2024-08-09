@@ -26,4 +26,9 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references: {}
+references:
+  checks.sql:
+  - ..
+  - ..funnel_retention_clients_week_4_v1
+  query.sql:
+  - moz-fx-data-shared-prod.fenix_derived.funnel_retention_clients_week_4_v1

@@ -26,4 +26,6 @@ workgroup_access:
   members:
   - workgroup:mozilla-confidential
   - workgroup:amo/nonprod
-references: {}
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.amo_prod.amo_stats_dau_v2

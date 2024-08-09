@@ -76,7 +76,8 @@ SELECT
       metrics.boolean.tab_strip_enabled,
       metrics.boolean.bounce_tracking_protection_enabled_at_startup,
       metrics.boolean.bounce_tracking_protection_enabled_dry_run_mode_at_startup,
-      metrics.boolean.customize_home_bookmarks
+      metrics.boolean.customize_home_bookmarks,
+      metrics.boolean.customization_settings_dynamic_toolbar
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -856,7 +857,8 @@ SELECT
       metrics.boolean.tab_strip_enabled,
       metrics.boolean.bounce_tracking_protection_enabled_at_startup,
       metrics.boolean.bounce_tracking_protection_enabled_dry_run_mode_at_startup,
-      metrics.boolean.customize_home_bookmarks
+      metrics.boolean.customize_home_bookmarks,
+      metrics.boolean.customization_settings_dynamic_toolbar
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -1654,7 +1656,8 @@ SELECT
       metrics.boolean.tab_strip_enabled,
       metrics.boolean.bounce_tracking_protection_enabled_at_startup,
       metrics.boolean.bounce_tracking_protection_enabled_dry_run_mode_at_startup,
-      metrics.boolean.customize_home_bookmarks
+      metrics.boolean.customize_home_bookmarks,
+      metrics.boolean.customization_settings_dynamic_toolbar
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -2461,7 +2464,8 @@ SELECT
       metrics.boolean.tab_strip_enabled,
       metrics.boolean.bounce_tracking_protection_enabled_at_startup,
       metrics.boolean.bounce_tracking_protection_enabled_dry_run_mode_at_startup,
-      metrics.boolean.customize_home_bookmarks
+      metrics.boolean.customize_home_bookmarks,
+      metrics.boolean.customization_settings_dynamic_toolbar
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -3250,7 +3254,8 @@ SELECT
       metrics.boolean.tab_strip_enabled,
       metrics.boolean.bounce_tracking_protection_enabled_at_startup,
       metrics.boolean.bounce_tracking_protection_enabled_dry_run_mode_at_startup,
-      metrics.boolean.customize_home_bookmarks
+      metrics.boolean.customize_home_bookmarks,
+      metrics.boolean.customization_settings_dynamic_toolbar
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,

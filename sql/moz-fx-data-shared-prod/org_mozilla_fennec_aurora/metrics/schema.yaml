@@ -700,6 +700,13 @@ fields:
         saved section is enabled to be displayed. This was previously customize_home.recently_saved.
 
         '
+    - name: customization_settings_dynamic_toolbar
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'True if the user has dynamic toolbar enabled, false if the user
+        has dynamic toolbar disabled.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -3457,7 +3464,8 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream.
+      description: 'Failure occurs when initializing the audio stream. (Migrated from
+        the geckoview metric of the same name).
 
         '
     - name: glean_validation_pings_submitted

@@ -42,4 +42,7 @@ workgroup_access:
   members:
   - workgroup:mozilla-confidential
   - workgroup:dataops-managed/external-fides
-references: {}
+references:
+  query.sql:
+  - monitor_cirrus_derived.baseline_clients_first_seen_v1
+  - monitor_cirrus_stable.baseline_v1

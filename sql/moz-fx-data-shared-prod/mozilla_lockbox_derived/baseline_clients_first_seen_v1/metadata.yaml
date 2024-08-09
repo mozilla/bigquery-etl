@@ -41,4 +41,7 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references: {}
+references:
+  query.sql:
+  - mozilla_lockbox_derived.baseline_clients_first_seen_v1
+  - mozilla_lockbox_stable.baseline_v1

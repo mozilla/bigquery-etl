@@ -13,4 +13,8 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references: {}
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.monitoring.payload_bytes_error_structured
+  - moz-fx-data-shared-prod.payload_bytes_error.stub_installer
+  - moz-fx-data-shared-prod.payload_bytes_error.telemetry

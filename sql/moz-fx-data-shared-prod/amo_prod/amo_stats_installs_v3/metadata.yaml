@@ -26,4 +26,6 @@ workgroup_access:
   members:
   - workgroup:mozilla-confidential
   - workgroup:amo/prod
-references: {}
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.telemetry.events

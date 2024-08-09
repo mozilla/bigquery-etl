@@ -15,4 +15,6 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references: {}
+references:
+  query.sql:
+  - moz-fx-fxa-nonprod-375e.firestore_export.iap_google_raw_changelog

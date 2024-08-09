@@ -25,4 +25,10 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references: {}
+references:
+  checks.sql:
+  - ..
+  query.sql:
+  - moz-fx-data-shared-prod.fenix.baseline_clients_first_seen
+  - moz-fx-data-shared-prod.fenix.first_session
+  - moz-fx-data-shared-prod.fenix.metrics

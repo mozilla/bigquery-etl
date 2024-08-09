@@ -17,4 +17,6 @@ workgroup_access:
   members:
   - workgroup:mozilla-confidential
   - workgroup:dataops-managed/external-fides
-references: {}
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.monitor_backend_stable.events_v1

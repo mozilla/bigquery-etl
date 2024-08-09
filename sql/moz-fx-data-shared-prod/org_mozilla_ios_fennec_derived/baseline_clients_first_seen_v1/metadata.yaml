@@ -41,4 +41,7 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references: {}
+references:
+  query.sql:
+  - org_mozilla_ios_fennec_derived.baseline_clients_first_seen_v1
+  - org_mozilla_ios_fennec_stable.baseline_v1

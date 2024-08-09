@@ -10,4 +10,6 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:contextual-services
-references: {}
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.contextual_services_derived.event_aggregates_suggest_v1

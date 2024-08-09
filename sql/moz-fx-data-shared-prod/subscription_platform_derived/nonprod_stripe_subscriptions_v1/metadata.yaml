@@ -15,4 +15,6 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references: {}
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.subscription_platform_derived.nonprod_stripe_subscriptions_history_v1

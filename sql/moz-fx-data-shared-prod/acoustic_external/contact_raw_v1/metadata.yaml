@@ -36,4 +36,6 @@ workgroup_access:
 - role: roles/bigquery.dataEditor
   members:
   - workgroup:braze/writers
-references: {}
+references:
+  query.sql:
+  - moz-fx-data-bq-fivetran.acoustic_sftp.contact_export_v_1

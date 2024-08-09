@@ -32,4 +32,9 @@ workgroup_access:
 - role: roles/bigquery.dataEditor
   members:
   - workgroup:braze/writers
-references: {}
+references:
+  checks.sql:
+  - ..
+  query.sql:
+  - moz-fx-data-shared-prod.braze_derived.subscriptions_v1
+  - moz-fx-data-shared-prod.braze_external.changed_firefox_subscriptions_sync_v1

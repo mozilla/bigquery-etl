@@ -16,4 +16,6 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:contextual-services
-references: {}
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.contextual_services_stable.topsites_impression_v1

@@ -11,4 +11,6 @@ workgroup_access:
   members:
   - workgroup:dataops-managed/taar
   - workgroup:mozilla-confidential
-references: {}
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.newtab_clients_daily_aggregates_v1

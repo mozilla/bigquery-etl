@@ -12,4 +12,6 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references: {}
+references:
+  materialized_view.sql:
+  - moz-fx-data-shared-prod.telemetry_live.event_v4

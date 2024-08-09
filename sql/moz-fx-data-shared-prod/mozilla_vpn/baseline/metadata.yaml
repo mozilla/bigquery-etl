@@ -12,4 +12,9 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references: {}
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.mozillavpn.baseline
+  - moz-fx-data-shared-prod.org_mozilla_firefox_vpn.baseline
+  - moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn.baseline
+  - moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_network_extension.baseline

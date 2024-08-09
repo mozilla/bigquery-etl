@@ -32,4 +32,6 @@ workgroup_access:
 - role: roles/bigquery.dataEditor
   members:
   - workgroup:braze/writers
-references: {}
+references:
+  checks.sql:
+  - ..

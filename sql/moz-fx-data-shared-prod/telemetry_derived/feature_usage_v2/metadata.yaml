@@ -32,4 +32,11 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references: {}
+references:
+  query.sql:
+  - activity_stream.events
+  - activity_stream.sessions
+  - telemetry.addons
+  - telemetry.clients_last_seen
+  - telemetry.events
+  - telemetry.main_remainder_1pct

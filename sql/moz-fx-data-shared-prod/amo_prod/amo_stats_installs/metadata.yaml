@@ -1,0 +1,14 @@
+friendly_name: Amo Stats Installs
+description: |-
+  Please provide a description for the query
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+  - workgroup:amo/prod
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.amo_prod.amo_stats_installs_v3

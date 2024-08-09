@@ -26,4 +26,10 @@ workgroup_access:
   members:
   - workgroup:mozilla-confidential
   - workgroup:amo/prod
-references: {}
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.org_mozilla_fenix.metrics
+  - moz-fx-data-shared-prod.org_mozilla_fenix_nightly.metrics
+  - moz-fx-data-shared-prod.org_mozilla_fennec_aurora.metrics
+  - moz-fx-data-shared-prod.org_mozilla_firefox.metrics
+  - moz-fx-data-shared-prod.org_mozilla_firefox_beta.metrics

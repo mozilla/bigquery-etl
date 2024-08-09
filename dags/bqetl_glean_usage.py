@@ -127,6 +127,8 @@ with DAG(
 
     task_group_reference_browser = TaskGroup("reference_browser")
 
+    task_group_thunderbird_desktop = TaskGroup("thunderbird_desktop")
+
     task_group_treeherder = TaskGroup("treeherder")
 
     task_group_viu_politica = TaskGroup("viu_politica")
@@ -689,6 +691,20 @@ with DAG(
         task_group=task_group_pine,
     )
 
+    checks__fail_thunderbird_desktop_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
+        task_id="checks__fail_thunderbird_desktop_derived__baseline_clients_last_seen__v1",
+        source_table="baseline_clients_last_seen_v1",
+        dataset_id="thunderbird_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=True,
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+        task_group=task_group_thunderbird_desktop,
+    )
+
     checks__warn_firefox_desktop_background_defaultagent_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
         task_id="checks__warn_firefox_desktop_background_defaultagent_derived__baseline_clients_last_seen__v1",
         source_table="baseline_clients_last_seen_v1",
@@ -1023,6 +1039,20 @@ with DAG(
         parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
         task_group=task_group_pine,
+    )
+
+    checks__warn_thunderbird_desktop_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
+        task_id="checks__warn_thunderbird_desktop_derived__baseline_clients_last_seen__v1",
+        source_table="baseline_clients_last_seen_v1",
+        dataset_id="thunderbird_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=False,
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+        task_group=task_group_thunderbird_desktop,
     )
 
     debug_ping_view_derived__events_stream__v1 = bigquery_etl_query(
@@ -3889,6 +3919,61 @@ with DAG(
         task_group=task_group_reference_browser,
     )
 
+    thunderbird_desktop_derived__baseline_clients_daily__v1 = bigquery_etl_query(
+        task_id="thunderbird_desktop_derived__baseline_clients_daily__v1",
+        destination_table="baseline_clients_daily_v1",
+        dataset_id="thunderbird_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        task_group=task_group_thunderbird_desktop,
+    )
+
+    thunderbird_desktop_derived__baseline_clients_first_seen__v1 = bigquery_etl_query(
+        task_id="thunderbird_desktop_derived__baseline_clients_first_seen__v1",
+        destination_table="baseline_clients_first_seen_v1",
+        dataset_id="thunderbird_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=True,
+        parameters=["submission_date:DATE:{{ds}}"],
+        task_group=task_group_thunderbird_desktop,
+    )
+
+    thunderbird_desktop_derived__baseline_clients_last_seen__v1 = bigquery_etl_query(
+        task_id="thunderbird_desktop_derived__baseline_clients_last_seen__v1",
+        destination_table="baseline_clients_last_seen_v1",
+        dataset_id="thunderbird_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=True,
+        task_group=task_group_thunderbird_desktop,
+    )
+
+    thunderbird_desktop_derived__events_stream__v1 = bigquery_etl_query(
+        task_id="thunderbird_desktop_derived__events_stream__v1",
+        destination_table="events_stream_v1",
+        dataset_id="thunderbird_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="jrediger@mozilla.com",
+        email=[
+            "ascholtz@mozilla.com",
+            "jrediger@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+            "wstuckey@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        arguments=["--billing-project", "moz-fx-data-backfill-2"],
+        task_group=task_group_thunderbird_desktop,
+    )
+
     treeherder_derived__events_stream__v1 = bigquery_etl_query(
         task_id="treeherder_derived__events_stream__v1",
         destination_table="events_stream_v1",
@@ -4273,6 +4358,18 @@ with DAG(
         pine_derived__baseline_clients_last_seen__v1
     )
 
+    checks__fail_thunderbird_desktop_derived__baseline_clients_last_seen__v1.set_upstream(
+        checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
+    )
+
+    checks__fail_thunderbird_desktop_derived__baseline_clients_last_seen__v1.set_upstream(
+        org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
+    )
+
+    checks__fail_thunderbird_desktop_derived__baseline_clients_last_seen__v1.set_upstream(
+        thunderbird_desktop_derived__baseline_clients_last_seen__v1
+    )
+
     checks__warn_firefox_desktop_background_defaultagent_derived__baseline_clients_last_seen__v1.set_upstream(
         checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
     )
@@ -4547,6 +4644,18 @@ with DAG(
 
     checks__warn_pine_derived__baseline_clients_last_seen__v1.set_upstream(
         pine_derived__baseline_clients_last_seen__v1
+    )
+
+    checks__warn_thunderbird_desktop_derived__baseline_clients_last_seen__v1.set_upstream(
+        checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
+    )
+
+    checks__warn_thunderbird_desktop_derived__baseline_clients_last_seen__v1.set_upstream(
+        org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
+    )
+
+    checks__warn_thunderbird_desktop_derived__baseline_clients_last_seen__v1.set_upstream(
+        thunderbird_desktop_derived__baseline_clients_last_seen__v1
     )
 
     debug_ping_view_derived__events_stream__v1.set_upstream(
@@ -5763,6 +5872,30 @@ with DAG(
 
     reference_browser_derived__metrics_clients_last_seen__v1.set_upstream(
         reference_browser_derived__metrics_clients_daily__v1
+    )
+
+    thunderbird_desktop_derived__baseline_clients_daily__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    thunderbird_desktop_derived__baseline_clients_daily__v1.set_upstream(
+        thunderbird_desktop_derived__baseline_clients_first_seen__v1
+    )
+
+    thunderbird_desktop_derived__baseline_clients_first_seen__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    thunderbird_desktop_derived__baseline_clients_first_seen__v1.set_upstream(
+        wait_for_telemetry_derived__core_clients_first_seen__v1
+    )
+
+    thunderbird_desktop_derived__baseline_clients_last_seen__v1.set_upstream(
+        thunderbird_desktop_derived__baseline_clients_daily__v1
+    )
+
+    thunderbird_desktop_derived__events_stream__v1.set_upstream(
+        wait_for_copy_deduplicate_all
     )
 
     treeherder_derived__events_stream__v1.set_upstream(wait_for_copy_deduplicate_all)

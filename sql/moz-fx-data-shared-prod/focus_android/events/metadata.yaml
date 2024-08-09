@@ -12,4 +12,8 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references: {}
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.org_mozilla_focus.events
+  - moz-fx-data-shared-prod.org_mozilla_focus_beta.events
+  - moz-fx-data-shared-prod.org_mozilla_focus_nightly.events

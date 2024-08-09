@@ -1,0 +1,13 @@
+friendly_name: Cfr Users Last Seen
+description: |-
+  Please provide a description for the query
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.messaging_system_derived.cfr_users_last_seen_v1

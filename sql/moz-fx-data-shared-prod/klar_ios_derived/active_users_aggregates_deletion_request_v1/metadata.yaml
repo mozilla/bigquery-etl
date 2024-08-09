@@ -40,5 +40,10 @@ bigquery:
     - attribution_medium
     - channel
 workgroup_access: []
-references: {}
+references:
+  query.sql:
+  - klar_ios.deletion_request
+  - moz-fx-data-shared-prod.klar_ios.clients_last_seen_joined
+  - moz-fx-data-shared-prod.search_derived.mobile_search_clients_daily_v1
+  - mozdata.static.csa_gblmkt_languages
 deprecated: true

@@ -17,4 +17,6 @@ workgroup_access:
   members:
   - workgroup:mozilla-confidential
   - workgroup:mozsocial/dbt
-references: {}
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.moso_mastodon_web_stable.events_v1

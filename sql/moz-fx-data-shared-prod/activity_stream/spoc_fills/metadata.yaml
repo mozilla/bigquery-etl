@@ -18,4 +18,6 @@ workgroup_access:
   - workgroup:mozilla-confidential
   - workgroup:pocket/prefect
   - workgroup:mozsocial/prefect
-references: {}
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.activity_stream_stable.spoc_fills_v1

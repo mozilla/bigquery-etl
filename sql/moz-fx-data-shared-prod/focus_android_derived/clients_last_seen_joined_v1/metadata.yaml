@@ -34,4 +34,7 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references: {}
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.focus_android.baseline_clients_last_seen
+  - moz-fx-data-shared-prod.focus_android.metrics_clients_last_seen

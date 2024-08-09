@@ -21,4 +21,6 @@ workgroup_access:
 - role: roles/bigquery.dataEditor
   members:
   - workgroup:platform-infra/internal
-references: {}
+references:
+  query.sql:
+  - moz-fx-data-bq-fivetran.stripe.subscription_item

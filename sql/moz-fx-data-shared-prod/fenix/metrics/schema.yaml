@@ -378,6 +378,9 @@ fields:
     - name: customize_home_bookmarks
       type: BOOLEAN
       mode: NULLABLE
+    - name: customization_settings_dynamic_toolbar
+      type: BOOLEAN
+      mode: NULLABLE
   - name: counter
     type: RECORD
     mode: NULLABLE

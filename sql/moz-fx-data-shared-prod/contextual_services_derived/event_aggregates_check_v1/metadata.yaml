@@ -26,4 +26,6 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:contextual-services
-references: {}
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.contextual_services_derived.INFORMATION_SCHEMA.PARTITIONS

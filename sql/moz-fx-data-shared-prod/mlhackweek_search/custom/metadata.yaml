@@ -16,4 +16,6 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mlhackweek-search
-references: {}
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.mlhackweek_search_stable.custom_v1

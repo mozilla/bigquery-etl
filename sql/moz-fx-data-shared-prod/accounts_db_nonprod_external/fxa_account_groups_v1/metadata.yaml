@@ -17,4 +17,6 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:accounts-confidential
-references: {}
+references:
+  query.sql:
+  - EXTERNAL_QUERY('moz-fx-fxa-nonprod.us.fxa-rds-nonprod-stage-fxa', 'SELECT\n         uid,\n         group_id,\n         role,\n         managed_by,\n         expires,\n         notes\n       FROM\n         fxa.accountGroups\n    ')

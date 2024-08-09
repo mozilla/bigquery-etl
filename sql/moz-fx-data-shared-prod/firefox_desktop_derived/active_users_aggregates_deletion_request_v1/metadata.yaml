@@ -40,5 +40,9 @@ bigquery:
     - attribution_medium
     - channel
 workgroup_access: []
-references: {}
+references:
+  query.sql:
+  - firefox_desktop.deletion_request
+  - mozdata.static.csa_gblmkt_languages
+  - telemetry.clients_last_seen
 deprecated: true

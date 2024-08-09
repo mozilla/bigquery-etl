@@ -700,6 +700,13 @@ fields:
         saved section is enabled to be displayed. This was previously customize_home.recently_saved.
 
         '
+    - name: customization_settings_dynamic_toolbar
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'True if the user has dynamic toolbar enabled, false if the user
+        has dynamic toolbar disabled.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE

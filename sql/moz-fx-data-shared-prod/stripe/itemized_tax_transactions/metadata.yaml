@@ -1,0 +1,13 @@
+friendly_name: Itemized Tax Transactions
+description: |-
+  Please provide a description for the query
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.stripe_external.itemized_tax_transactions_v1

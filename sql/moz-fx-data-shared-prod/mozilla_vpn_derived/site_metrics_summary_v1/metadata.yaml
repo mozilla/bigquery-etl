@@ -6,10 +6,8 @@ owners:
 labels:
   application: mozilla_vpn
   schedule: daily
-  dag: bqetl_mozilla_vpn_site_metrics
   owner1: srose
 scheduling:
-  dag_name: bqetl_mozilla_vpn_site_metrics
   date_partition_parameter: date
   depends_on:
   - task_id: mozilla_vpn_derived__site_metrics_empty_check__v1

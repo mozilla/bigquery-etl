@@ -277,3 +277,6 @@ fields:
 - mode: NULLABLE
   name: is_sap_monetizable
   type: BOOLEAN
+- mode: NULLABLE
+  name: profile_group_id
+  type: STRING

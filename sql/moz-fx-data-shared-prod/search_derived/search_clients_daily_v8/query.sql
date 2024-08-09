@@ -247,6 +247,7 @@ counted AS (
     ROW_NUMBER() OVER w1 AS _n,
     submission_date,
     client_id,
+    profile_group_id,
     engine,
     source,
     country,

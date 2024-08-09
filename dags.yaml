@@ -1807,7 +1807,7 @@ bqetl_merino_newtab_aggregates_to_gcs:
   description: |
     Aggregates Newtab engagement data that lands in a GCS bucket for Merino recommendations.
   repo: bigquery-etl
-  schedule_interval: */20 * * * * 
+  schedule_interval: "*/20 * * * *"
   tags:
     - repo/bigquery-etl
     - impact/tier_1

@@ -8,11 +8,16 @@ import re
 import string
 import tempfile
 import warnings
+from functools import cached_property
 from pathlib import Path
-from typing import List, Set, Tuple
+from typing import List, Optional, Set, Tuple
 from uuid import uuid4
 
+import attr
+import cattrs
+import git
 import sqlglot
+import yaml
 from google.cloud import bigquery
 from jinja2 import Environment, FileSystemLoader
 
@@ -37,6 +42,7 @@ DEFAULT_QUERY_TEMPLATE_VARS = {
 }
 ROOT = Path(__file__).parent.parent.parent
 CHECKS_MACROS_DIR = ROOT / "tests" / "checks"
+TARGETS_DIR = ROOT / "targets"
 
 
 def snake_case(line: str) -> str:
@@ -322,3 +328,53 @@ class TempDatasetReference(bigquery.DatasetReference):
         character.
         """
         return self.table(f"anon{uuid4().hex}")
+
+
+@attr.s()
+class Target:
+    name: str = attr.ib()
+    project: str = attr.ib()
+    dataset: Optional[str] = attr.ib(None)
+    artifact_name: Optional[str] = attr.ib(None)
+    create_datasets: bool = attr.ib(False)
+    reference_existing_artifacts: bool = attr.ib(False)
+
+    @cached_property
+    def git_repo(self) -> git.Repo:
+        return git.Repo(ROOT)
+
+    @cached_property
+    def git_branch(self) -> str:
+        return self.git_repo.active_branch.name
+
+    @cached_property
+    def git_commit(self) -> str:
+        return self.git_repo.active_branch.commit.hexsha
+
+    def translate_artifact_id(self, artifact_id: str) -> str:
+        (artifact_project, artifact_dataset, artifact_name) = artifact_id.split(".")
+        vars = {
+            "artifact_project": artifact_project,
+            "artifact_dataset": artifact_dataset,
+            "artifact_name": artifact_name,
+            "git_branch": self.git_branch,
+            "git_commit": self.git_commit,
+        }
+        target_project = self.project
+        if self.dataset:
+            target_dataset = re.sub(r"\W", "_", self.dataset.format(**vars))
+        else:
+            target_dataset = artifact_dataset
+        if self.artifact_name:
+            target_artifact_name = re.sub(r"\W", "_", self.artifact_name.format(**vars))
+        else:
+            target_artifact_name = artifact_name
+        return f"{target_project}.{target_dataset}.{target_artifact_name}"
+
+
+def get_target(target: str) -> Target:
+    for targets_file in TARGETS_DIR.glob("*.yaml"):
+        targets = yaml.safe_load(targets_file.read_text())
+        if isinstance(targets, dict) and target in targets:
+            return cattrs.structure({**targets[target], "name": target}, Target)
+    raise Exception(f"Couldn't find target `{target}`.")

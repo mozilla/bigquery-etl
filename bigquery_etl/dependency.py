@@ -223,7 +223,7 @@ def show(paths: Tuple[str, ...], without_views: bool):
     is_flag=True,
     help="Skip files with existing references rather than failing",
 )
-def record(paths: Tuple[str, ...], skip_existing, parallelism):
+def record(paths: Tuple[str, ...], skip_existing):
     """Record table references in metadata."""
     for parent, group in groupby(_get_references(paths), lambda e: e[0].parent):
         references = {

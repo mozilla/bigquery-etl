@@ -32,7 +32,11 @@ WITH aggregated AS (
         THEN 'Win11 21H2'
       WHEN windows_build_number <= 22621
         THEN 'Win11 22H2'
-      WHEN windows_build_number > 22621
+      WHEN windows_build_number <= 22631
+        THEN 'Win11 23H2'
+      WHEN windows_build_number <= 26100
+        THEN 'Win11 24H2'
+      WHEN windows_build_number > 26100
         THEN 'Win11 Insider'
       ELSE NULL
     END AS build_group,

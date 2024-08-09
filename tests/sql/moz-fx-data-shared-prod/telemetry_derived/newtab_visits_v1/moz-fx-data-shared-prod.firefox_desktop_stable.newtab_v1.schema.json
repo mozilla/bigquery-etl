@@ -452,6 +452,11 @@
             "name": "newtab_sov_allocation",
             "type": "STRING",
             "mode": "REPEATED"
+          },
+          {
+            "name": "newtab_selected_topics",
+            "type": "STRING",
+            "mode": "REPEATED"
           }
         ]
       }

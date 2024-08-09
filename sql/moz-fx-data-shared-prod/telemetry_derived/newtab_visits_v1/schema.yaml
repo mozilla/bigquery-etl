@@ -221,6 +221,30 @@ fields:
   - name: pocket_recommendation_id
     type: STRING
     mode: NULLABLE
+  - mode: NULLABLE
+    name: sponsored_pocket_dismissals
+    type: INTEGER
+  - mode: NULLABLE
+    name: organic_pocket_dismissals
+    type: INTEGER
+  - mode: NULLABLE
+    name: pocket_thumbs_up
+    type: INTEGER
+  - mode: NULLABLE
+    name: pocket_thumbs_down
+    type: INTEGER
+  - mode: NULLABLE
+    name: pocket_received_rank
+    type: INTEGER
+  - name: pocket_scheduled_corpus_item_id
+    type: STRING
+    mode: NULLABLE
+  - name: pocket_topic
+    type: STRING
+    mode: NULLABLE
+  - name: pocket_matches_selected_topic
+    type: STRING
+    mode: NULLABLE
   mode: REPEATED
   name: pocket_interactions
   type: RECORD
@@ -281,5 +305,30 @@ fields:
     type: INTEGER
     mode: NULLABLE
   - name: weather_widget_change_display_to_simple
+    type: INTEGER
+    mode: NULLABLE
+- name: newtab_selected_topics
+  type: STRING
+  mode: REPEATED
+- name: topic_selection_interactions
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: previous_topics
+    type: STRING
+    mode: NULLABLE
+  - name: topics
+    type: STRING
+    mode: NULLABLE
+  - name: topic_selection_open
+    type: INTEGER
+    mode: NULLABLE
+  - name: topic_selection_dismiss
+    type: INTEGER
+    mode: NULLABLE
+  - name: topic_selection_topics_first_saved
+    type: INTEGER
+    mode: NULLABLE
+  - name: topic_selection_topics_updated
     type: INTEGER
     mode: NULLABLE

@@ -1,6 +1,6 @@
-friendly_name: Site Metrics Summary V2
+friendly_name: GA4 Site Metrics Summary for Mozilla VPN
 description: |-
-  GA Site Metrics Summary for Mozilla VPN within Mozilla.org
+  GA4 Site Metrics Summary for Mozilla VPN within mozilla.org
 owners:
 - kwindau@mozilla.com
 labels:

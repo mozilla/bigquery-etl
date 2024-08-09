@@ -1803,7 +1803,7 @@ merino_newtab_aggregates_to_gcs:
     owner: cbeck@mozilla.com
     retries: 2
     retry_delay: 30m
-    start_date: '2024-08-08'
+    start_date: '2024-08-12'
   description: |
     Aggregates Newtab engagement data that lands in a GCS bucket for Merino recommendations.
   repo: bigquery-etl

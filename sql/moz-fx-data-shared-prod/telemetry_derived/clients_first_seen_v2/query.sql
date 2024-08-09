@@ -130,9 +130,9 @@ WITH new_profile_ping AS (
       ORDER BY
         submission_timestamp
     )[SAFE_OFFSET(0)] AS attribution_dlsource,
-    mozfun.stats.mode_last(
-      ARRAY_AGG(profile_group_id ORDER BY submission_timestamp)
-    ) AS profile_group_id,
+    ARRAY_AGG(profile_group_id ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS profile_group_id,
   FROM
     `moz-fx-data-shared-prod.telemetry.new_profile`
   WHERE
@@ -273,9 +273,9 @@ shutdown_ping AS (
       ORDER BY
         submission_timestamp
     )[SAFE_OFFSET(0)] AS attribution_dlsource,
-    mozfun.stats.mode_last(
-      ARRAY_AGG(profile_group_id ORDER BY submission_timestamp)
-    ) AS profile_group_id,
+    ARRAY_AGG(profile_group_id ORDER BY submission_timestamp)[
+      SAFE_OFFSET(0)
+    ] AS profile_group_id,
   FROM
     `moz-fx-data-shared-prod.telemetry.first_shutdown`
   WHERE
@@ -389,9 +389,9 @@ main_ping AS (
     ARRAY_AGG(attribution.dlsource RESPECT NULLS ORDER BY submission_date)[
       SAFE_OFFSET(0)
     ] AS attribution_dlsource,
-    mozfun.stats.mode_last(
-      ARRAY_AGG(profile_group_id ORDER BY submission_date)
-    ) AS profile_group_id,
+    ARRAY_AGG(profile_group_id ORDER BY submission_date)[
+      SAFE_OFFSET(0)
+    ] AS profile_group_id,
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6`
   WHERE

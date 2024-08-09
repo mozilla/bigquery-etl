@@ -21,7 +21,11 @@
   FROM
     `{{ dataset }}.metrics` AS m
   WHERE
+    {% raw %}{% if is_init() %}{% endraw %}
+    FALSE
+    {% raw %}{% else %}{% endraw %}
     DATE(submission_timestamp) = @submission_date
+    {% raw %}{% endif %}{% endraw %}
   GROUP BY
     submission_date,
     client_id,

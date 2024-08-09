@@ -1,3 +1,5 @@
+{{ header }}
+
 WITH baseline AS (
   SELECT
     *
@@ -5,6 +7,7 @@ WITH baseline AS (
     `{{ project_id }}.{{ app_name }}.baseline_clients_last_seen`
   WHERE
     submission_date = @submission_date
+    {% raw %}{% endif %}{% endraw %}
 ),
 metrics AS (
   SELECT
@@ -12,9 +15,13 @@ metrics AS (
   FROM
     `{{ project_id }}.{{ app_name }}.metrics_clients_last_seen`
   WHERE
+    {% raw %}{% if is_init() %}{% endraw %}
+    FALSE
+    {% raw %}{% else %}{% endraw %}
     -- The join between baseline and metrics pings is based on submission_date with a 1 day delay,
     -- since metrics pings usually arrive within 1 day after their logical activity period.
     submission_date = DATE_ADD(@submission_date, INTERVAL 1 DAY)
+    {% raw %}{% endif %}{% endraw %}
 )
 SELECT
   baseline.client_id,

@@ -1,0 +1,15 @@
+friendly_name: Merino Newtab Aggregates
+description: |-
+  Aggregated Newtab engagement data for Merino recommendations. Used to export JSON objects to GCS.
+  See https://mozilla-hub.atlassian.net/browse/MC-1256
+owners:
+- cbeck@mozilla.com
+- gkatre@mozilla.com
+labels:
+  incremental: false
+  owner: cbeck
+bigquery:
+  time_partitioning: null
+scheduling:
+  dag_name: bqetl_merino_newtab_aggregates_to_gcs
+  date_partition_parameter: null

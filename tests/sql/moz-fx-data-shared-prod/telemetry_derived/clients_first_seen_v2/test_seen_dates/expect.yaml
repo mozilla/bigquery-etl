@@ -14,7 +14,7 @@
   second_seen_date: 2022-07-01
   sample_id: 10
   normalized_channel: release
-  profile_group_id: profile-group-id-2
+  profile_group_id: profile-group-id-1
   metadata:
     first_seen_date_source_ping: new_profile
     reported_main_ping: true

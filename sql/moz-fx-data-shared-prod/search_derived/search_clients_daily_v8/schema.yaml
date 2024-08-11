@@ -277,3 +277,8 @@ fields:
 - mode: NULLABLE
   name: is_sap_monetizable
   type: BOOLEAN
+- mode: NULLABLE
+  name: profile_group_id
+  type: STRING
+  description: A UUID identifying the profile's group on a single device and allowing user-oriented correlation of data
+

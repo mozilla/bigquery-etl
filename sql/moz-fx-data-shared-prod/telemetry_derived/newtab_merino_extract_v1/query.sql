@@ -44,4 +44,4 @@ SELECT
 FROM
   flattened_newtab_events
 GROUP BY
-  1;
+  scheduled_corpus_item_id

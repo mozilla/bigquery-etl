@@ -25,8 +25,6 @@ flattened_newtab_events AS (
       unnested_events.extra,
       'scheduled_corpus_item_id'
     ) AS scheduled_corpus_item_id,
-    mozfun.map.get_key(unnested_events.extra, 'position') AS position,
-    COUNT(1) OVER (PARTITION BY document_id, unnested_events.name) AS user_event_count
   FROM
     deduplicated_pings,
     UNNEST(events) AS unnested_events

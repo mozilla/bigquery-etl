@@ -1791,7 +1791,7 @@ bqetl_firefox_desktop_ad_click_history:
     - repo/bigquery-etl
     - impact/tier_2
 
-bqetl_merino_newtab_aggregates_to_gcs:
+bqetl_merino_newtab_extract_to_gcs:
   default_args:
     depends_on_past: false
     email:

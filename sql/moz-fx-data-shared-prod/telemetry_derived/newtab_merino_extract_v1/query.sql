@@ -31,7 +31,7 @@ flattened_newtab_events AS (
     --filter to Pocket events
   WHERE
     unnested_events.category = 'pocket'
-    AND unnested_events.name IN ('impression', 'click', 'save', 'dismiss')
+    AND unnested_events.name IN ('impression', 'click')
     --keep only data with a non-null scheduled corpus item ID
     AND (mozfun.map.get_key(unnested_events.extra, 'scheduled_corpus_item_id') IS NOT NULL)
 )

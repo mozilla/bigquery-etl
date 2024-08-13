@@ -85,8 +85,8 @@ def export_newtab_merino_extract_to_gcs(
     # Delete the temporary file from GCS
     blob.delete()
 
-    # Delete files older than 7 days
-    delete_old_files(bucket, destination_prefix, 7)
+    # Delete files older than 3 days
+    delete_old_files(bucket, destination_prefix, 3)
 
     print("Export successful and temporary file deleted")
 

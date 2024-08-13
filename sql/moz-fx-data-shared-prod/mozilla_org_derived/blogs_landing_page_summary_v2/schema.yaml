@@ -1,0 +1,77 @@
+fields:
+- mode: NULLABLE
+  name: date
+  type: DATE
+  description: Date of the entrance to the visit
+- mode: NULLABLE
+  name: device_category
+  type: STRING
+  description: Device Category - The device category the visitor used to visit the site
+- mode: NULLABLE
+  name: operating_system
+  type: STRING
+  description: Operating System - The operating system the visitor used to visit the site
+- mode: NULLABLE
+  name: browser
+  type: STRING
+  description: Browser - The browser the visitor used to visit the site
+- mode: NULLABLE
+  name: language
+  type: STRING
+  description: Language - Language of visitor's device
+- mode: NULLABLE
+  name: country
+  type: STRING
+  description: Country - The country from which events were reported, based on IP address
+- mode: NULLABLE
+  name: standardized_country_name
+  type: STRING
+  description: Standardized Country Name - The country from which events were reported, based on IP address
+- mode: NULLABLE
+  name: source
+  type: STRING
+  description: Source - Referring partner domain
+- mode: NULLABLE
+  name: medium
+  type: STRING
+  description: Medium - Category of the source, such as 'organic' for a search engine
+- mode: NULLABLE
+  name: campaign
+  type: STRING
+  description: Campaign - Identifier for the marketing campaign
+- mode: NULLABLE
+  name: content
+  type: STRING
+  description: Content - Indicates the particular link within a campaign
+- mode: NULLABLE
+  name: blog
+  type: STRING
+  description: Blog
+- mode: NULLABLE
+  name: subblog
+  type: STRING
+  description: Subblog
+- mode: NULLABLE
+  name: landing_page
+  type: STRING
+  description: Landing Page
+- mode: NULLABLE
+  name: cleaned_landing_page
+  type: STRING
+  description: Cleaned Landing Page - The URL portion prior to any question mark symbol
+- mode: NULLABLE
+  name: sessions
+  type: INT64
+  description: Sessions - The number of sessions with an entrances value of 1
+- mode: NULLABLE
+  name: downloads
+  type: INT64
+  description: Downloads - The number of download click events
+- mode: NULLABLE
+  name: social_share
+  type: INT64
+  description: Social Shares - The number of social share events
+- mode: NULLABLE
+  name: newsletter_subscription
+  type: INT64
+  description: Newsletter Subscription - The number of newsletter subscribe events

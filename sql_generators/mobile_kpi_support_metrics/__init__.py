@@ -28,6 +28,9 @@ TEMPLATES = (
     "engagement.view.sql",
     "attribution_clients.view.sql",
     "attribution_clients.query.sql",
+    "new_profile_clients.view.sql",
+    "new_profiles.view.sql",
+    "new_profiles.query.sql",
 )
 
 
@@ -118,6 +121,16 @@ class AttributionFields:
                 "description": "Timestamp corresponding to the ping that contained the play_store attribution.",
             },
             # TODO: decide if this should be added here?
+            # {
+            #     "name": "play_store_attribution_content",
+            #     "type": "STRING",
+            #     "description": "",
+            # },
+            # {
+            #     "name": "play_store_attribution_term",
+            #     "type": "STRING",
+            #     "description": "",
+            # },
             # {
             #     "name": "play_store_attribution_install_referrer_response",
             #     "type": "STRING",

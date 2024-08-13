@@ -2,6 +2,7 @@
 
 import rich_click as click
 
+from bigquery_etl.cli.utils import parallelism_option
 from bigquery_etl.format_sql.format import format as format_sql
 
 
@@ -33,6 +34,7 @@ from bigquery_etl.format_sql.format import format as format_sql
     " return code 0 indicates nothing would change;"
     " return code 1 indicates some files would be reformatted",
 )
-def format(paths, check):
+@parallelism_option()
+def format(paths, check, parallelism):
     """Apply formatting to SQL files."""
-    format_sql(paths, check=check)
+    format_sql(paths, check=check, parallelism=parallelism)

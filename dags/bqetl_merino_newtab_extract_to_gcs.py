@@ -31,7 +31,7 @@ cbeck@mozilla.com
 
 default_args = {
     "owner": "cbeck@mozilla.com",
-    "start_date": datetime.datetime(2024, 8, 12, 0, 0),
+    "start_date": datetime.datetime(2024, 8, 14, 0, 0),
     "end_date": None,
     "email": ["cbeck@mozilla.com", "gkatre@mozilla.com"],
     "depends_on_past": False,

@@ -25,6 +25,9 @@ flattened_newtab_events AS (
       unnested_events.extra,
       'scheduled_corpus_item_id'
     ) AS scheduled_corpus_item_id,
+    TIMESTAMP_MILLIS(
+      CAST(mozfun.map.get_key(unnested_events.extra, 'recommended_at') AS INT64)
+    ) AS recommended_at
   FROM
     deduplicated_pings,
     UNNEST(events) AS unnested_events
@@ -41,5 +44,7 @@ SELECT
   SUM(CASE WHEN event_name = 'click' THEN 1 ELSE 0 END) AS click_count
 FROM
   flattened_newtab_events
+WHERE
+  recommended_at > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 1 DAY)
 GROUP BY
   scheduled_corpus_item_id

@@ -1,10 +1,10 @@
 fields:
   - mode: NULLABLE
-    name: submission_date
-    type: DATE
-  - mode: NULLABLE
     name: partner
     type: STRING
+  - mode: NULLABLE
+    name: submission_date
+    type: DATE
   - mode: NULLABLE
     name: device
     type: STRING
@@ -15,22 +15,19 @@ fields:
     name: normalized_channel
     type: STRING
   - mode: NULLABLE
-    name: normalized_engine
-    type: STRING
-  - mode: NULLABLE
-    name: default_search_engine
+    name: distribution_id
     type: STRING
   - mode: NULLABLE
     name: normalized_default_search_engine
     type: STRING
   - mode: NULLABLE
-    name: sap_day
+    name: normalized_engine
+    type: STRING
+  - mode: NULLABLE
+    name: sap_category
     type: INTEGER
   - mode: NULLABLE
-    name: ad_click_day
-    type: INTEGER
-  - mode: NULLABLE
-    name: dau_eligible_markets
+    name: ad_click_category
     type: INTEGER
   - mode: NULLABLE
     name: dau_w_engine_as_default

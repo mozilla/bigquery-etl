@@ -6,23 +6,15 @@ WITH desktop_search_data AS (
     client_id,
     distribution_id,
     CASE
-    WHEN
-      default_search_engine LIKE '%google%'
-    THEN
-      "Google"
-    WHEN
-      default_search_engine LIKE '%bing%'
-    THEN
-      "Bing"
-    WHEN
-      default_search_engine LIKE '%ddg%'
-      OR default_search_engine LIKE '%duckduckgo%'
-    THEN
-      "DuckDuckGo"
-    ELSE
-      NULL
-    END
-    AS normalized_default_search_engine,
+      WHEN default_search_engine LIKE '%google%'
+        THEN "Google"
+      WHEN default_search_engine LIKE '%bing%'
+        THEN "Bing"
+      WHEN default_search_engine LIKE '%ddg%'
+        OR default_search_engine LIKE '%duckduckgo%'
+        THEN "DuckDuckGo"
+      ELSE NULL
+    END AS normalized_default_search_engine,
     normalized_engine,
     SUM(sap) AS search_count,
     SUM(ad_click) AS ad_click
@@ -38,10 +30,10 @@ WITH desktop_search_data AS (
     normalized_default_search_engine,
     normalized_engine
 ),
-# have to pull mobile search data from baseline ping so dates match DAU
+## have to pull mobile search data from baseline ping so dates match DAU
 mobile_baseline_engine AS (
-  SELECT
-    DISTINCT DATE(submission_timestamp) AS submission_date,
+  SELECT DISTINCT
+    DATE(submission_timestamp) AS submission_date,
     client_info.client_id,
     metrics.string.search_default_engine_code AS default_search_engine
   FROM
@@ -49,8 +41,8 @@ mobile_baseline_engine AS (
   WHERE
     DATE(submission_timestamp) = @submission_date
   UNION ALL
-  SELECT
-    DISTINCT DATE(submission_timestamp) AS submission_date,
+  SELECT DISTINCT
+    DATE(submission_timestamp) AS submission_date,
     client_info.client_id,
     metrics.string.search_default_engine AS default_search_engine
   FROM
@@ -58,8 +50,8 @@ mobile_baseline_engine AS (
   WHERE
     DATE(submission_timestamp) = @submission_date
   UNION ALL
-  SELECT
-    DISTINCT DATE(submission_timestamp) AS submission_date,
+  SELECT DISTINCT
+    DATE(submission_timestamp) AS submission_date,
     client_info.client_id,
     metrics.string.browser_default_search_engine AS default_search_engine
   FROM
@@ -67,8 +59,8 @@ mobile_baseline_engine AS (
   WHERE
     DATE(submission_timestamp) = @submission_date
   UNION ALL
-  SELECT
-    DISTINCT DATE(submission_timestamp) AS submission_date,
+  SELECT DISTINCT
+    DATE(submission_timestamp) AS submission_date,
     client_info.client_id,
     metrics.string.search_default_engine AS default_search_engine
   FROM
@@ -227,23 +219,15 @@ mobile_baseline_full AS (
     submission_date,
     client_id,
     CASE
-    WHEN
-      default_search_engine LIKE '%google%'
-    THEN
-      "Google"
-    WHEN
-      default_search_engine LIKE '%bing%'
-    THEN
-      "Bing"
-    WHEN
-      default_search_engine LIKE '%ddg%'
-      OR default_search_engine LIKE '%duckduckgo%'
-    THEN
-      "DuckDuckGo"
-    ELSE
-      NULL
-    END
-    AS normalized_default_search_engine,
+      WHEN default_search_engine LIKE '%google%'
+        THEN "Google"
+      WHEN default_search_engine LIKE '%bing%'
+        THEN "Bing"
+      WHEN default_search_engine LIKE '%ddg%'
+        OR default_search_engine LIKE '%duckduckgo%'
+        THEN "DuckDuckGo"
+      ELSE NULL
+    END AS normalized_default_search_engine,
     `moz-fx-data-shared-prod.udf.normalize_search_engine`(engine) AS normalized_engine,
     SUM(search_count) AS search_count,
     SUM(ad_click) AS ad_click
@@ -251,12 +235,10 @@ mobile_baseline_full AS (
     mobile_baseline_engine
   LEFT JOIN
     mobile_baseline_search
-  USING
-    (submission_date, client_id, default_search_engine)
+    USING (submission_date, client_id, default_search_engine)
   LEFT JOIN
     mobile_baseline_search_ad_clicks
-  USING
-    (submission_date, client_id, default_search_engine, engine)
+    USING (submission_date, client_id, default_search_engine, engine)
   GROUP BY
     submission_date,
     client_id,
@@ -265,8 +247,8 @@ mobile_baseline_full AS (
 ),
 ### PULL CLIENTS WHO QUALIFY FOR KPI ACTIVITY STANDARDS
 desktop_dau_data AS (
-  SELECT
-    DISTINCT "desktop" AS device,
+  SELECT DISTINCT
+    "desktop" AS device,
     submission_date,
     country,
     client_id,
@@ -280,8 +262,8 @@ desktop_dau_data AS (
     AND app_name = "Firefox Desktop"
 ),
 mobile_dau_data AS (
-  SELECT
-    DISTINCT "mobile" AS device,
+  SELECT DISTINCT
+    "mobile" AS device,
     submission_date,
     country,
     client_id,
@@ -296,8 +278,8 @@ mobile_dau_data AS (
 ),
 ### FINAL CLIENT-LEVEL TABLES
 desktop_by_client_id AS (
-  SELECT
-    DISTINCT submission_date,
+  SELECT DISTINCT
+    submission_date,
     device,
     normalized_channel,
     country,
@@ -306,33 +288,24 @@ desktop_by_client_id AS (
     normalized_engine,
     client_id,
     CASE
-    WHEN
-      search_count > 0
-    THEN
-      1
-    ELSE
-      0
-    END
-    AS sap_category,
+      WHEN search_count > 0
+        THEN 1
+      ELSE 0
+    END AS sap_category,
     CASE
-    WHEN
-      ad_click > 0
-    THEN
-      1
-    ELSE
-      0
-    END
-    AS ad_click_category
+      WHEN ad_click > 0
+        THEN 1
+      ELSE 0
+    END AS ad_click_category
   FROM
     desktop_dau_data
   LEFT JOIN
     desktop_search_data
-  USING
-    (submission_date, country, client_id)
+    USING (submission_date, country, client_id)
 ),
 mobile_by_client_id AS (
-  SELECT
-    DISTINCT submission_date,
+  SELECT DISTINCT
+    submission_date,
     device,
     normalized_channel,
     country,
@@ -341,30 +314,21 @@ mobile_by_client_id AS (
     normalized_engine,
     client_id,
     CASE
-    WHEN
-      search_count > 0
-    THEN
-      1
-    ELSE
-      0
-    END
-    AS sap_category,
+      WHEN search_count > 0
+        THEN 1
+      ELSE 0
+    END AS sap_category,
     CASE
-    WHEN
-      ad_click > 0
-    THEN
-      1
-    ELSE
-      0
-    END
-    AS ad_click_category
+      WHEN ad_click > 0
+        THEN 1
+      ELSE 0
+    END AS ad_click_category
   FROM
     mobile_dau_data
   LEFT JOIN
     mobile_baseline_full
-  USING
-    (submission_date, client_id)
-),
+    USING (submission_date, client_id)
+)
 ### COUNT DAU BY SEARCH BEHAVIOR
 SELECT
   "Google" AS partner,

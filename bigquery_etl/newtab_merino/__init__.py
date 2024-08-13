@@ -1,10 +1,11 @@
 """Export data from BigQuery to GCS."""
 
-import rich_click as click
-from google.cloud import bigquery
-from google.cloud import storage
-from datetime import datetime, timedelta, timezone
 import json
+from datetime import datetime, timedelta, timezone
+
+import rich_click as click
+from google.cloud import storage  # type: ignore
+from google.cloud import bigquery
 
 
 @click.command()
@@ -30,7 +31,7 @@ import json
     "--destination-prefix", required=True, help="Prefix of the bucket path in GCS."
 )
 def export_newtab_merino_extract_to_gcs(
-    source_project,
+    source_project: str,
     source_dataset,
     source_table,
     destination_bucket,

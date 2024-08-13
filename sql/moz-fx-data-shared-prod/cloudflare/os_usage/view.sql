@@ -19,6 +19,6 @@ LEFT JOIN
       name AS location_name,
       region_name
     FROM
-      `mozdata.static.country_codes_v1`
+      `moz-fx-data-shared-prod.static.country_codes_v1`
   ) country_codes
   ON os_usage.location = country_codes.code

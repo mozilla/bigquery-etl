@@ -74,3 +74,6 @@ fields:
 - mode: NULLABLE
   name: normalized_app_name_os
   type: STRING
+- mode: NULLABLE
+  name: normalized_default_search_engine
+  type: STRING

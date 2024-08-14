@@ -671,6 +671,18 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: The total number of successful calls to navigator.credentials.get.
+    - name: compose_mails_sent
+      type: INTEGER
+      mode: NULLABLE
+      description: How many emails were sent by the user.
+    - name: filelink_filelink_ignored
+      type: INTEGER
+      mode: NULLABLE
+      description: How many times suggestion to use FileLink were ignored.
+    - name: mail_mails_read
+      type: INTEGER
+      mode: NULLABLE
+      description: How many emails were read by the user.
   - name: custom_distribution
     type: RECORD
     mode: NULLABLE
@@ -2230,6 +2242,29 @@ fields:
       description: 'Stores alt text modal settings for the user.
 
         '
+    - name: mail_preferences_boolean
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: BOOLEAN
+        mode: NULLABLE
+      description: Values of boolean preferences.
+    - name: mail_ui_configuration_pane_visibility
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: BOOLEAN
+        mode: NULLABLE
+      description: Configuration of the folder and message panes. Whether they are
+        set to be shown or not.
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -4166,6 +4201,98 @@ fields:
         ID in 4 hex digits (eg; SRTP_AES128_CM_HMAC_SHA1_80 would be "0x0001")
 
         '
+    - name: compose_compose_format
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'How many times messages were written in HTML composition mode,
+        vs. how many were written in plain text composition mode. Label names are
+        from nsIMsgCompFormat.
+
+        '
+    - name: compose_compose_type
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'How many times each message compose type was used when creating
+        a message.
+
+        '
+    - name: filelink_uploaded_size
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Accumulated file size (bytes) uploaded to FileLink services, keyed
+        by FileLink provider type.
+
+        '
+    - name: mail_failed_email_account_setup
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: How many times email accounts setup failed, keyed by account config
+        source.
+    - name: mail_folder_opened
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'How many times folders of each type are opened.
+
+        '
+    - name: mail_successful_email_account_setup
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: How many times email accounts setup succeeded, keyed by account
+        config source.
+    - name: mail_websearch_usage
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: How many times search the web was used, keyed by search engine
+        name.
   - name: labeled_string
     type: RECORD
     mode: NULLABLE
@@ -4184,6 +4311,133 @@ fields:
         of the Google Search domains. The value could be "Accept", "Reject" or "Custom".
         We use the label to record different choices on different Google domains.
         We only collect this if the default search engine is Google.
+
+        '
+    - name: addrbook_addressbook_count
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: STRING
+        mode: NULLABLE
+      description: How many addressbooks were set up, keyed by addressbook directory
+        URI scheme.
+    - name: addrbook_contact_count
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: STRING
+        mode: NULLABLE
+      description: 'Count of contacts in all addressbooks, keyed by addressbook directory
+        URI scheme.
+
+        '
+    - name: calendar_calendar_count
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: STRING
+        mode: NULLABLE
+      description: 'How many calendars were set up, keyed by calendar type Types are
+        e.g. "storage", "caldav", "ics" and various types from add-ons.
+
+        '
+    - name: calendar_read_only_calendar_count
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: STRING
+        mode: NULLABLE
+      description: 'How many read-only calendars were set up, keyed by calendar type.
+        Types are e.g. "storage", "caldav", "ics" and various types from add-ons.
+
+        '
+    - name: mail_account_count
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: STRING
+        mode: NULLABLE
+      description: Count of how many accounts were set up, keyed by account type.
+    - name: mail_folder_size_on_disk
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: STRING
+        mode: NULLABLE
+      description: How many bytes each type of folder takes on disk.
+    - name: mail_folder_total_messages
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: STRING
+        mode: NULLABLE
+      description: How many messages each type of folder has.
+    - name: mail_oauth2_provider_count
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: STRING
+        mode: NULLABLE
+      description: 'A count of incoming mail accounts using OAuth2 for authentication,
+        keyed by OAuth2 issuer.
+
+        '
+    - name: mail_preferences_integer
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: STRING
+        mode: NULLABLE
+      description: Values of integer preferences.
+    - name: mail_ui_configuration_message_header
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: STRING
+        mode: NULLABLE
+      description: 'Configuration of the message header display. Customization state;
+        expected values are "true" or "false". For buttonStyle values are "default",
+        "only-icons", "only-text".
 
         '
   - name: memory_distribution
@@ -10775,6 +11029,13 @@ fields:
         of rendering.
 
         '
+  - name: string_list
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: mail_ui_configuration_folder_tree_modes
+      type: STRING
+      mode: REPEATED
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

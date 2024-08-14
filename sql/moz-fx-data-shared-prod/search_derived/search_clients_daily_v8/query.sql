@@ -337,7 +337,8 @@ SELECT
     country,
     distribution_id,
     submission_date
-  ) AS is_sap_monetizable
+  ) AS is_sap_monetizable,
+  NULL AS profile_group_id --temporary for now, will replace with logic once column added to schema successfully
 FROM
   counted
 WHERE

@@ -1,6 +1,5 @@
 -- Query generated from a template that mitigates the effect of shredder.
-WITH
-{{ new_version_cte }} AS (
+WITH {{ new_version_cte }} AS (
   {{ new_version }}
 ),
 {{ new_agg_cte }} AS (

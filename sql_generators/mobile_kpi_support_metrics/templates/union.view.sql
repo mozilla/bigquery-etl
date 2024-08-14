@@ -8,7 +8,7 @@ UNION ALL
 {% endif %}
 SELECT
   *
-  {% for field in product.all_possible_attribution_fields if field.exists and not ((name.startswith("engagement") or name.startswith("retention")) and field.name.endswith("_timestamp")) %}
+  {% for field in product.all_possible_attribution_fields if field.exists and not ((name.startswith("engagement") or name.startswith("retention") or name.startswith("new_profile")) and field.name.endswith("_timestamp")) %}
     {% if loop.first %}EXCEPT({% endif %}
     {% if not loop.last %}
     {{ field.name }},
@@ -19,11 +19,11 @@ SELECT
   {% else %},{% endfor %}
 {% for field in product.all_possible_attribution_fields %}
   {% if field.exists %}
-    {% if not ((name.startswith("engagement") or name.startswith("retention")) and field.name.endswith("_timestamp")) %}
+    {% if not ((name.startswith("engagement") or name.startswith("retention") or name.startswith("new_profile")) and field.name.endswith("_timestamp")) %}
     {{ field.name }},
     {% endif %}
   {% else %}
-    {% if not ((name.startswith("engagement") or name.startswith("retention")) and field.name.endswith("_timestamp")) %}
+    {% if not ((name.startswith("engagement") or name.startswith("retention") or name.startswith("new_profile")) and field.name.endswith("_timestamp")) %}
     CAST(NULL AS {{ field.type }}) AS {{ field.name }},
     {% endif %}
   {% endif %}

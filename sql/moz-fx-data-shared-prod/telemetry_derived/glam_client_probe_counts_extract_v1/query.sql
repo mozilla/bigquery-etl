@@ -13,13 +13,7 @@ WITH final_probe_extract AS (
     MAX(IF(agg_type = "histogram", mozfun.glam.histogram_cast_json(aggregates), NULL)) AS histogram,
     MAX(
       IF(agg_type = "histogram", mozfun.glam.histogram_cast_json(non_norm_aggregates), NULL)
-    ) AS non_norm_histogram,
-    MAX(
-      IF(agg_type = "percentiles", mozfun.glam.histogram_cast_json(aggregates), NULL)
-    ) AS percentiles,
-    MAX(
-      IF(agg_type = "percentiles", mozfun.glam.histogram_cast_json(non_norm_aggregates), NULL)
-    ) AS non_norm_percentiles
+    ) AS non_norm_histogram
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.client_probe_counts`
   WHERE
@@ -79,14 +73,12 @@ SELECT
   cp.metric_type,
   total_users,
   histogram,
-  percentiles,
   CASE
     WHEN client_agg_type = ''
       THEN 0
     ELSE CAST(total_sample AS BIGNUMERIC)
   END AS total_sample,
-  non_norm_histogram,
-  non_norm_percentiles
+  non_norm_histogram
 FROM
   final_probe_extract cp
 LEFT JOIN
@@ -111,6 +103,4 @@ GROUP BY
   total_users,
   total_sample,
   histogram,
-  non_norm_histogram,
-  percentiles,
-  non_norm_percentiles
+  non_norm_histogram

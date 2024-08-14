@@ -4,4 +4,4 @@ AS
 SELECT
   *
 FROM
-  `moz-fx-ads-nonprod.ppa_dev.measurements`
+  `moz-fx-ads-prod.ppa.measurements`

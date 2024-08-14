@@ -2,10 +2,10 @@
 version: 2.1
 
 orbs:
-  gcp-gcr: circleci/gcp-gcr@0.13.0
-  docker: circleci/docker@2.2
+  gcp-gcr: circleci/gcp-gcr@0.16.3
+  docker: circleci/docker@2.6.0
   python: circleci/python@2.1.1
-  gcp-cli: circleci/gcp-cli@3.1.1
+  gcp-cli: circleci/gcp-cli@3.2.1
 
 parameters:
   python-version:
@@ -732,7 +732,7 @@ jobs:
   artifact-deployment:
     executor: gcp-cli/google
     steps:
-      - run:
+      - run: &oidc-setup
           name: Prepare environment variables for OIDC authentication
           # Project ID is not used for OIDC authentication, but gcloud CLI requires a valid project ID.
           command: |
@@ -853,40 +853,32 @@ jobs:
           steps:
             - *skip
   deploy-to-private-gcr:
-    executor: ubuntu-machine-executor
-
-    executor: gcp-cli/google
+    executor: gcp-gcr/default
     steps:
-      - run:
-          name: Prepare environment variables for OIDC authentication
-          # Project ID is not used for OIDC authentication, but gcloud CLI requires a valid project ID.
-          command: |
-            echo 'export GOOGLE_PROJECT_ID="moz-fx-telemetry-airflow-prod"' >> "$BASH_ENV"
-            echo "export OIDC_WIP_ID=$GCPV2_WORKLOAD_IDENTITY_POOL_ID" >> "$BASH_ENV"
-            echo "export OIDC_WIP_PROVIDER_ID=$GCPV2_CIRCLECI_WORKLOAD_IDENTITY_PROVIDER" >> "$BASH_ENV"
-            echo "export GOOGLE_PROJECT_NUMBER=$GCPV2_WORKLOAD_IDENTITY_POOL_PROJECT_NUMBER" >> "$BASH_ENV"
-            echo "export OIDC_SERVICE_ACCOUNT_EMAIL=$GCP_SERVICE_ACCOUNT_EMAIL" >> "$BASH_ENV"
-      - gcp-cli/setup:
-          use_oidc: true
       - when:
-          condition: *deploy
+          condition: 
+             equal: [true, true]
           steps:
             - checkout
-            - *attach_generated_sql
-            - run:
-                name: Move generated-sql into place
-                command: |
-                  rm -rf sql/
-                  cp -r /tmp/workspace/private-generated-sql/sql sql
-            - gcp-gcr/gcr-auth
-            - gcp-gcr/build-image: &private-image
+            # - *attach_generated_sql
+            # - run:
+            #     name: Move generated-sql into place
+            #     command: |
+            #       rm -rf sql/
+            #       cp -r /tmp/workspace/private-generated-sql/sql sql
+            - gcp-gcr/gcr-auth:
+                use_oidc: true
+            - gcp-gcr/build-image:
+                dockerfile: DSRETest.Dockerfile
                 image: bigquery-etl
-                tag: ${CIRCLE_TAG:-latest}
-            - gcp-gcr/push-image: *private-image
-      - unless:
-          condition: *deploy
-          steps:
-            - *skip
+                tag: DSRE-1683-test
+            - gcp-gcr/push-image:
+                image: bigquery-etl
+                tag: DSRE-1683-test
+      # - unless:
+      #     condition: *deploy
+      #     steps:
+      #       - *skip
   main-generate-sql-and-dags:
     docker: *docker
     resource_class: large
@@ -1185,6 +1177,8 @@ workflows:
             branches:
               only:
                 - main
+                - DSRE-1683
+
       - push-private-generated-sql:
           requires:
             - private-generate-sql
@@ -1234,17 +1228,24 @@ workflows:
             branches:
               only:
                 - main
+      - gcp-gcr/build-and-push-image:
+          context: dataeng-bqetl-gcr
+          dockerfile: DSRETest.Dockerfile
+          image: bigquery-etl
+          tag: DSRE-1683-test
+          use_oidc: true
       - deploy-to-private-gcr:
-          context: data-eng-airflow-gcr
+          context: dataeng-bqetl-gcr
           requires:
-            - private-generate-sql
-            # can't run in parallel because CIRCLE_BUILD_NUM is same
+            # - private-generate-sql
+            # # can't run in parallel because CIRCLE_BUILD_NUM is same
             - build
-            - generate-sql
+            # - generate-sql
           filters:
             branches:
               only:
                 - main
+                - DSRE-1683-rethink
   tagged-deploy:
     jobs:
       - deploy-to-pypi:

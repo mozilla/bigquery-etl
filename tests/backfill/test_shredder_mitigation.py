@@ -1,15 +1,23 @@
-from datetime import datetime, time
+import os
+from datetime import datetime, time, timedelta
+from pathlib import Path
+from unittest import runner
+from unittest.mock import patch
+
+from google.cloud import bigquery
 
 import pytest
 from click.exceptions import ClickException
 
 from bigquery_etl.backfill.shredder_mitigation import (
+    PREVIOUS_DATE,
     Column,
     ColumnStatus,
     ColumnType,
     DataTypeGroup,
     classify_columns,
     get_bigquery_type,
+    generate_query_with_shredder_mitigation,
 )
 
 
@@ -420,7 +428,9 @@ class TestClassifyColumns(object):
         }
         existing_columns = ["submission_date", "channel"]
         new_columns = ["submission_date", "channel", "os", "is_default_browser"]
-        expected_exception_text = "Inconsistent parameters. Columns in new dimensions not found in new row: ['is_default_browser']"
+        expected_exception_text = (f"Inconsistent parameters. New dimension columns not found in new row: ['is_default_browser']"
+                                   f"\n new_dimension_columns: {new_columns}"
+                                   f"\n new_row: {new_row}")
         with pytest.raises(ClickException) as e:
             classify_columns(new_row, existing_columns, new_columns)
         assert (str(e.value)) == expected_exception_text
@@ -428,7 +438,7 @@ class TestClassifyColumns(object):
     def test_missing_parameters(self):
         new_row = {}
         expected_exception_text = (
-            f"Missing required parameters. Received: new_row= {new_row}\n"
+            f"\n\nMissing one or more required parameters. Received:\nnew_row= {new_row}\n"
             f"existing_dimension_columns= [],\nnew_dimension_columns= []."
         )
         with pytest.raises(ClickException) as e:
@@ -436,18 +446,19 @@ class TestClassifyColumns(object):
         assert (str(e.value)) == expected_exception_text
 
         new_row = {"column_1": "2024-01-01", "column_2": "Windows"}
+        new_columns = {"column_2"}
         expected_exception_text = (
-            f"Missing required parameters. Received: new_row= {new_row}\n"
-            f"existing_dimension_columns= [],\nnew_dimension_columns= []."
+            f"\n\nMissing one or more required parameters. Received:\nnew_row= {new_row}\n"
+            f"existing_dimension_columns= [],\nnew_dimension_columns= {new_columns}."
         )
         with pytest.raises(ClickException) as e:
-            classify_columns(new_row, [], [])
+            classify_columns(new_row, [], new_columns)
         assert (str(e.value)) == expected_exception_text
 
         new_row = {"column_1": "2024-01-01", "column_2": "Windows"}
         existing_columns = ["column_1"]
         expected_exception_text = (
-            f"Missing required parameters. Received: new_row= {new_row}\n"
+            f"\n\nMissing one or more required parameters. Received:\nnew_row= {new_row}\n"
             f"existing_dimension_columns= {existing_columns},\nnew_dimension_columns= []."
         )
         with pytest.raises(ClickException) as e:
@@ -485,3 +496,96 @@ class TestGetBigqueryType(object):
     def test_other_types(self):
         assert get_bigquery_type("2024") == DataTypeGroup.STRING
         assert get_bigquery_type(None) == DataTypeGroup.UNDETERMINED
+
+
+class TestSubset(object):
+    def test_get_query_path_results(self):
+        assert True
+
+    def test_generate_query(self):
+        '''Test cases: aggregate, different columns, different metrics, missing metrics, added columns / metrics'''
+        assert True
+
+    def test_get_query_path(self):
+        '''Test that path exists / test that the path contains a query file.'''
+        assert True
+
+    def test_get_query_path_results(self):
+        '''Test with sample data and sample results'''
+        assert True
+
+    def test_generate_check_with_previous_version(self):
+        assert True
+
+
+
+class TestGenerateQueryWithShredderMitigation(object):
+    '''Test the function that generates the query for the backfill.'''
+    def test_missing_sql_path(self):
+        assert True
+
+    def test_missing_previous_version(self):
+        assert False
+
+    def test_missing_previous_version(self):
+        assert False
+
+    def test_invalid_group_by(self):
+        previous_group_by = []
+        new_group_by = []
+        expected_exc = (f"An explicit list of columns is required in queries's GROUP BY. Avoid `GROUP BY ALL`."
+                        f"\nPrevious query returns `GROUP BY {previous_group_by}`."
+                        f"\nNew query returns `GROUP BY {new_group_by}`."
+        )
+        client = bigquery.Client()
+        project_id = 'test_project'
+        dataset = 'test_dataset_v1'
+        destination_table = 'test_table_v1'
+        generate_query_with_shredder_mitigation(client=client, project_id=project_id, dataset=dataset, destination_table=destination_table, backfill_date=PREVIOUS_DATE)
+
+        assert False
+
+    def test_columns_exist_in_versions(self):
+        assert True
+
+    @patch("google.cloud.bigquery.Client")
+    @patch("bigquery_etl.shredder_mitigation.extract_last_group_by_from_query")
+    # @patch("bigquery_etl.cli.backfill.Schema.from_query_file")
+    def sample_test(self, mock_extract_last_group_by_from_query, mock_client):
+        with runner.isolated_filesystem():
+            SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v2"
+            os.makedirs(SQL_DIR)
+            SQL_DIR = "sql/moz-fx-data-shared-prod/test/test_query_v1"
+            os.makedirs(SQL_DIR)
+            v2_path = "sql/moz-fx-data-shared-prod/test/test_query_v2/query.sql"
+            v1_path = "sql/moz-fx-data-shared-prod/test/test_query_v1/query.sql"
+
+            with open(
+                    v2_path, "w"
+            ) as f:
+                f.write("SELECT column_1, column_2 FROM upstream_1 GROUP BY column_1, 2")
+
+            with open(
+                    v1_path, "w"
+            ) as f:
+                f.write("SELECT column_1 FROM upstream_1 GROUP BY column_1")
+
+            assert mock_extract_last_group_by_from_query.called
+
+            result = runner.invoke(
+                generate_query_with_shredder_mitigation,
+                [
+                    mock_client,
+                    'moz-fx-data-shared-prod',
+                    'test',
+                    'test_query_v2',
+                    PREVIOUS_DATE
+                ]
+            )
+
+            mock_extract_last_group_by_from_query.assert_called_with(
+                sql_path=v2_path
+            )
+            assert result.exit_code == 0
+            assert "1 backfill(s) require processing." in result.output
+            assert Path("tmp.json").exists()

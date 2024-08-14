@@ -323,6 +323,17 @@ with DAG(
         depends_on_past=False,
     )
 
+    search_derived__search_dau_aggregates__v1 = bigquery_etl_query(
+        task_id="search_derived__search_dau_aggregates__v1",
+        destination_table="search_dau_aggregates_v1",
+        dataset_id="search_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="mozilla/revenue_forecasting_data_reviewers",
+        email=["akomar@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     search_derived__search_revenue_levers_daily__v1 = bigquery_etl_query(
         task_id="search_derived__search_revenue_levers_daily__v1",
         destination_table="search_revenue_levers_daily_v1",
@@ -344,6 +355,74 @@ with DAG(
 
     search_derived__mobile_search_aggregates_for_searchreport__v1.set_upstream(
         wait_for_search_derived__mobile_search_clients_daily__v1
+    )
+
+    search_derived__search_dau_aggregates__v1.set_upstream(
+        wait_for_checks__fail_org_mozilla_fenix_derived__baseline_clients_last_seen__v1
+    )
+
+    search_derived__search_dau_aggregates__v1.set_upstream(
+        wait_for_checks__fail_org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1
+    )
+
+    search_derived__search_dau_aggregates__v1.set_upstream(
+        wait_for_checks__fail_org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1
+    )
+
+    search_derived__search_dau_aggregates__v1.set_upstream(
+        wait_for_checks__fail_org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1
+    )
+
+    search_derived__search_dau_aggregates__v1.set_upstream(
+        wait_for_checks__fail_org_mozilla_firefox_derived__baseline_clients_last_seen__v1
+    )
+
+    search_derived__search_dau_aggregates__v1.set_upstream(
+        wait_for_checks__fail_org_mozilla_focus_beta_derived__baseline_clients_last_seen__v1
+    )
+
+    search_derived__search_dau_aggregates__v1.set_upstream(
+        wait_for_checks__fail_org_mozilla_focus_derived__baseline_clients_last_seen__v1
+    )
+
+    search_derived__search_dau_aggregates__v1.set_upstream(
+        wait_for_checks__fail_org_mozilla_focus_nightly_derived__baseline_clients_last_seen__v1
+    )
+
+    search_derived__search_dau_aggregates__v1.set_upstream(
+        wait_for_checks__fail_org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1
+    )
+
+    search_derived__search_dau_aggregates__v1.set_upstream(
+        wait_for_checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
+    )
+
+    search_derived__search_dau_aggregates__v1.set_upstream(
+        wait_for_checks__fail_org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1
+    )
+
+    search_derived__search_dau_aggregates__v1.set_upstream(
+        wait_for_checks__fail_org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1
+    )
+
+    search_derived__search_dau_aggregates__v1.set_upstream(
+        wait_for_checks__fail_org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1
+    )
+
+    search_derived__search_dau_aggregates__v1.set_upstream(
+        wait_for_checks__fail_org_mozilla_klar_derived__baseline_clients_last_seen__v1
+    )
+
+    search_derived__search_dau_aggregates__v1.set_upstream(
+        wait_for_checks__fail_telemetry_derived__clients_last_seen__v2
+    )
+
+    search_derived__search_dau_aggregates__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    search_derived__search_dau_aggregates__v1.set_upstream(
+        wait_for_search_derived__search_clients_daily__v8
     )
 
     search_derived__search_revenue_levers_daily__v1.set_upstream(

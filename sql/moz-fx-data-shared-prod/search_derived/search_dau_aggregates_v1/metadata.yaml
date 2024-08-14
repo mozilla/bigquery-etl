@@ -1,0 +1,28 @@
+friendly_name: Search Revenue DAU aggregates
+description: |-
+  Daily metrics including eligible DOU,
+  DAU_engaged_w_sap, DAU_engaged_w_default_engine
+  The table is labeled as "change_controlled", which implies
+  that changes require the approval of at least one owner.
+owners:
+- mozilla/revenue_forecasting_data_reviewers
+labels:
+  incremental: true
+  schedule: daily
+  change_controlled: true
+  dag: bqetl_search_dashboard
+scheduling:
+  dag_name: bqetl_search_dashboard
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  range_partitioning: null
+  clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}

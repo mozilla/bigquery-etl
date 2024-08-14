@@ -1,15 +1,13 @@
 friendly_name: Funnel GA to Subscriptions
 description: >
-  Funnel from Google Analytics to Mozilla VPN Subscriptions
+  Funnel from Google Analytics 4 to Mozilla VPN Subscriptions
 owners:
   - srose@mozilla.com
 labels:
   application: mozilla_vpn
   schedule: daily
 scheduling:
-  # No longer scheduled because we're no longer getting GA3 data from Google.
-  # https://bugzilla.mozilla.org/show_bug.cgi?id=1905989
-  #dag_name: bqetl_mozilla_vpn_site_metrics
+  dag_name: bqetl_mozilla_vpn_site_metrics
   date_partition_parameter: date
 bigquery:
   time_partitioning:

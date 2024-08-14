@@ -1,5 +1,6 @@
 ---
 - client_id: client-1
+  profile_group_id: profile-group-id-1
   first_seen_date: 2023-06-01
   city: city1
   sample_id: 10
@@ -9,6 +10,7 @@
     reported_new_profile_ping: false
     reported_shutdown_ping: false
 - client_id: client-3
+  profile_group_id: profile-group-id-3
   first_seen_date: 2023-06-01
   attribution_dltoken: token3
   sample_id: 30
@@ -18,6 +20,7 @@
     reported_new_profile_ping: true
     reported_shutdown_ping: true
 - client_id: client-4
+  profile_group_id: profile-group-id-4
   sample_id: 40
   first_seen_date: 2023-05-14
   second_seen_date: 2023-06-01

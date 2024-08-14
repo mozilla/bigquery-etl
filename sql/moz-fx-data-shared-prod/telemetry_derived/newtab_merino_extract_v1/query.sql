@@ -25,15 +25,16 @@ flattened_newtab_events AS (
       unnested_events.extra,
       'scheduled_corpus_item_id'
     ) AS scheduled_corpus_item_id,
-    mozfun.map.get_key(unnested_events.extra, 'position') AS position,
-    COUNT(1) OVER (PARTITION BY document_id, unnested_events.name) AS user_event_count
+    TIMESTAMP_MILLIS(
+      CAST(mozfun.map.get_key(unnested_events.extra, 'recommended_at') AS INT64)
+    ) AS recommended_at
   FROM
     deduplicated_pings,
     UNNEST(events) AS unnested_events
     --filter to Pocket events
   WHERE
     unnested_events.category = 'pocket'
-    AND unnested_events.name IN ('impression', 'click', 'save', 'dismiss')
+    AND unnested_events.name IN ('impression', 'click')
     --keep only data with a non-null scheduled corpus item ID
     AND (mozfun.map.get_key(unnested_events.extra, 'scheduled_corpus_item_id') IS NOT NULL)
 )
@@ -43,5 +44,7 @@ SELECT
   SUM(CASE WHEN event_name = 'click' THEN 1 ELSE 0 END) AS click_count
 FROM
   flattened_newtab_events
+WHERE
+  recommended_at > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 1 DAY)
 GROUP BY
-  1;
+  scheduled_corpus_item_id

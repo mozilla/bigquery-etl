@@ -2146,3 +2146,6 @@ fields:
 - name: min_subsession_counter
   type: INTEGER
   mode: NULLABLE
+- name: profile_group_id
+  type: STRING
+  mode: NULLABLE

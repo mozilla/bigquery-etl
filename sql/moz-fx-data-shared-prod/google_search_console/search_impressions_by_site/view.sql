@@ -1,63 +1,6 @@
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.google_search_console.search_impressions_by_site`
 AS
-WITH search_impressions_union AS (
-  SELECT
-    `date`,
-    site_url,
-    site_domain_name,
-    query,
-    FALSE AS is_anonymized,
-    search_type,
-    user_country_code,
-    device_type,
-    impressions,
-    clicks,
-    average_top_position
-  FROM
-    `moz-fx-data-shared-prod.google_search_console_derived.search_impressions_by_site_v1`
-  WHERE
-    CASE
-      WHEN site_domain_name IN (
-          'addons.mozilla.org',
-          'blog.mozilla.org',
-          'getpocket.com',
-          'support.mozilla.org',
-          'www.mozilla.org'
-        )
-        THEN `date` < '2023-08-01'
-      WHEN site_domain_name = 'developer.mozilla.org'
-        THEN `date` < '2024-04-10'
-      ELSE FALSE
-    END
-  UNION ALL
-  SELECT
-    `date`,
-    site_url,
-    site_domain_name,
-    query,
-    is_anonymized,
-    search_type,
-    user_country_code,
-    device_type,
-    impressions,
-    clicks,
-    average_top_position
-  FROM
-    `moz-fx-data-shared-prod.google_search_console_derived.search_impressions_by_site_v2`
-  WHERE
-    CASE
-      WHEN site_domain_name IN (
-          'addons.mozilla.org',
-          'blog.mozilla.org',
-          'getpocket.com',
-          'support.mozilla.org',
-          'www.mozilla.org'
-        )
-        THEN `date` >= '2023-08-01'
-      ELSE TRUE
-    END
-)
 SELECT
   search_impressions.`date`,
   search_impressions.site_url,
@@ -79,7 +22,7 @@ SELECT
   search_impressions.clicks,
   search_impressions.average_top_position
 FROM
-  search_impressions_union AS search_impressions
+  `moz-fx-data-shared-prod.google_search_console_derived.search_impressions_by_site_v2` AS search_impressions
 LEFT JOIN
   `moz-fx-data-shared-prod.static.country_codes_v1` AS user_country
   ON search_impressions.user_country_code = user_country.code_3

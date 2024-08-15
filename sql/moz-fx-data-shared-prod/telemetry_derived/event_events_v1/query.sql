@@ -28,7 +28,8 @@ WITH base AS (
     environment.settings.attribution.dltoken AS attribution_dltoken,
     environment.system.is_wow64 AS system_is_wow64,
     environment.system.memory_mb AS system_memory_mb,
-    metadata.geo.city
+    metadata.geo.city,
+    profile_group_id
   FROM
     `moz-fx-data-shared-prod.telemetry.event`
   CROSS JOIN

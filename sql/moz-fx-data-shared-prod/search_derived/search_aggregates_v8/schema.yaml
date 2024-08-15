@@ -89,5 +89,3 @@ fields:
 - mode: NULLABLE
   name: is_acer_cohort
   type: BOOLEAN
-
-

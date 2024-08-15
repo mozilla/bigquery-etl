@@ -256,7 +256,9 @@ SELECT
       metrics.labeled_counter.geolocation_request_result,
       metrics.labeled_counter.cert_verifier_cert_revocation_mechanisms,
       metrics.labeled_counter.cert_verifier_crlite_vs_ocsp_result,
-      metrics.labeled_counter.pdfjs_image_added
+      metrics.labeled_counter.pdfjs_image_added,
+      metrics.labeled_counter.networking_fetch_keepalive_discard_count,
+      metrics.labeled_counter.networking_fetch_keepalive_request_count
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -816,7 +818,9 @@ SELECT
       metrics.labeled_counter.geolocation_request_result,
       metrics.labeled_counter.cert_verifier_cert_revocation_mechanisms,
       metrics.labeled_counter.cert_verifier_crlite_vs_ocsp_result,
-      metrics.labeled_counter.pdfjs_image_added
+      metrics.labeled_counter.pdfjs_image_added,
+      metrics.labeled_counter.networking_fetch_keepalive_discard_count,
+      metrics.labeled_counter.networking_fetch_keepalive_request_count
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -1376,7 +1380,9 @@ SELECT
       metrics.labeled_counter.geolocation_request_result,
       metrics.labeled_counter.cert_verifier_cert_revocation_mechanisms,
       metrics.labeled_counter.cert_verifier_crlite_vs_ocsp_result,
-      metrics.labeled_counter.pdfjs_image_added
+      metrics.labeled_counter.pdfjs_image_added,
+      metrics.labeled_counter.networking_fetch_keepalive_discard_count,
+      metrics.labeled_counter.networking_fetch_keepalive_request_count
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,

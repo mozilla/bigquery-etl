@@ -4399,6 +4399,34 @@ fields:
       description: 'Number of images added with/without alt text.
 
         '
+    - name: networking_fetch_keepalive_discard_count
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts how many fetch keepalive requests are dropped due to configured
+        resource limits.
+
+        '
+    - name: networking_fetch_keepalive_request_count
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts how many fetch keepalive requests are made. This counter
+        helps us to understand the adoption of fetch keepalive for firefox.
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE

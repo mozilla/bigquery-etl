@@ -360,4 +360,4 @@ FROM
   staging stg
 LEFT JOIN
   profile_group_id prfl_gp_id
-  ON a.client_id = b.client_id
+  ON stg.client_id = prfl_gp_id.client_id

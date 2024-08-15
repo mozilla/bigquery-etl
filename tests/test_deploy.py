@@ -59,7 +59,7 @@ class TestDeploy:
         )
 
         with pytest.raises(
-            deploy.FailedDeployException, match="missing dataset/project"
+            deploy.FailedDeployException, match="Unable to create table"
         ):
             deploy.deploy_table(query_file=query_path / "query.sql")
 

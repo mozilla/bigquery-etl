@@ -119,5 +119,10 @@ def _create_or_update(
         )
         log.info(f"{table} updated.")
     else:
-        client.create_table(table)
+        try:
+            client.create_table(table)
+        except NotFound as e:  # Raised when project/dataset doesn't exist.
+            raise FailedDeployException(
+                f"Unable to create {table} in missing dataset/project"
+            ) from e
         log.info(f"{table} created.")

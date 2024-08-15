@@ -42,6 +42,27 @@ class TestDeploy:
         client.create_table.assert_called_once()
         assert client.update_table.call_count == 0
 
+    @patch("google.cloud.bigquery.Client")
+    @patch("bigquery_etl.dryrun.DryRun")
+    def test_deploy_new_table_with_missing_dataset(
+        self, mock_dryrun, mock_client, query_path
+    ):
+
+        mock_dryrun().get_schema.return_value = {
+            "fields": [{"name": "f0_", "type": "INTEGER"}]
+        }
+
+        client = mock_client.return_value
+        client.get_table.side_effect = NotFound("table not found")
+        client.create_table.side_effect = NotFound(
+            "404 POST https://bigquery.googleapis.com/..."
+        )
+
+        with pytest.raises(
+            deploy.FailedDeployException, match="missing dataset/project"
+        ):
+            deploy.deploy_table(query_file=query_path / "query.sql")
+
     def test_deploy_table_without_schema_raises_skip(self, tmp_path):
         query_path = (
             tmp_path / "sql" / "moz-fx-data-shared-prod" / "test" / "test_query_v1"

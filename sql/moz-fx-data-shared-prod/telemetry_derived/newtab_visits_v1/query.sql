@@ -54,7 +54,8 @@ visit_metadata AS (
       IF(event_name = "opened", mozfun.map.get_key(event_details, "source"), NULL)
     ) AS newtab_open_source,
     LOGICAL_OR(event_name IN ("click", "issued", "save")) AS had_non_impression_engagement,
-    LOGICAL_OR(event_name IN ("click", "save")) AS had_non_search_engagement
+    LOGICAL_OR(event_name IN ("click", "save")) AS had_non_search_engagement,
+    ANY_VALUE(metrics.string_list.newtab_selected_topics) AS newtab_selected_topics,
   FROM
     events_unnested
   GROUP BY
@@ -240,16 +241,43 @@ pocket_events AS (
       event_name = 'save'
       AND mozfun.map.get_key(event_details, "is_sponsored") != "true"
     ) AS organic_pocket_saves,
+    COUNTIF(
+      event_name = 'dismiss'
+      AND mozfun.map.get_key(event_details, "is_sponsored") = "true"
+    ) AS sponsored_pocket_dismissals,
+    COUNTIF(
+      event_name = 'dismiss'
+      AND mozfun.map.get_key(event_details, "is_sponsored") != "true"
+    ) AS organic_pocket_dismissals,
+    COUNTIF(
+      event_name = 'thumb_voting_interaction'
+      AND mozfun.map.get_key(event_details, "thumbs_up") = "true"
+    ) AS pocket_thumbs_up,
+    COUNTIF(
+      event_name = 'thumb_voting_interaction'
+      AND mozfun.map.get_key(event_details, "thumbs_down") = "true"
+    ) AS pocket_thumbs_down,
+    mozfun.map.get_key(event_details, "received_rank") AS pocket_received_rank,
+    mozfun.map.get_key(
+      event_details,
+      "scheduled_corpus_item_id"
+    ) AS pocket_scheduled_corpus_item_id,
+    mozfun.map.get_key(event_details, "topic") AS pocket_topic,
+    mozfun.map.get_key(event_details, "matches_selected_topic") AS pocket_matches_selected_topic,
   FROM
     events_unnested
   WHERE
     event_category = 'pocket'
-    AND event_name IN ('impression', 'click', 'save')
+    AND event_name IN ('impression', 'click', 'save', 'dismiss')
   GROUP BY
     newtab_visit_id,
     pocket_story_position,
     pocket_tile_id,
-    pocket_recommendation_id
+    pocket_recommendation_id,
+    pocket_received_rank,
+    pocket_scheduled_corpus_item_id,
+    pocket_topic,
+    pocket_matches_selected_topic
 ),
 pocket_summary AS (
   SELECT
@@ -371,6 +399,53 @@ weather_summary AS (
   GROUP BY
     newtab_visit_id
 ),
+topic_selection_events AS (
+  SELECT
+    mozfun.map.get_key(event_details, "newtab_visit_id") AS newtab_visit_id,
+    mozfun.map.get_key(event_details, "previous_topics") AS previous_topics,
+    mozfun.map.get_key(event_details, "topics") AS topics,
+    COUNTIF(event_name = 'topic_selection_open') AS topic_selection_open,
+    COUNTIF(event_name = 'topic_selection_dismiss') AS topic_selection_dismiss,
+    COUNTIF(
+      event_name = 'topic_selection_topics_saved'
+      AND mozfun.map.get_key(event_details, "first_save") = "true"
+    ) AS topic_selection_topics_first_saved,
+    COUNTIF(
+      event_name = 'topic_selection_topics_saved'
+      AND mozfun.map.get_key(event_details, "first_save") != "true"
+    ) AS topic_selection_topics_updated,
+  FROM
+    events_unnested
+  WHERE
+    event_category = 'newtab'
+    AND event_name IN (
+      'topic_selection_dismiss',
+      'topic_selection_open',
+      'topic_selection_topics_saved'
+    )
+  GROUP BY
+    newtab_visit_id,
+    previous_topics,
+    topics
+),
+topic_selection_summary AS (
+  SELECT
+    newtab_visit_id,
+    ARRAY_AGG(
+      STRUCT(
+        previous_topics,
+        topics,
+        topic_selection_open,
+        topic_selection_dismiss,
+        topic_selection_topics_first_saved,
+        topic_selection_topics_updated
+      )
+    ) AS topic_selection_interactions
+  FROM
+    topic_selection_events
+  GROUP BY
+    newtab_visit_id
+),
 combined_newtab_activity AS (
   SELECT
     *
@@ -391,6 +466,9 @@ combined_newtab_activity AS (
   LEFT JOIN
     weather_summary
     USING (newtab_visit_id)
+  LEFT JOIN
+    topic_selection_summary
+    USING (newtab_visit_id)
   WHERE
    -- Keep only rows with interactions, unless we receive a valid newtab.opened event.
    -- This is meant to drop only interactions that only have a newtab.closed event on the same partition
@@ -401,6 +479,7 @@ combined_newtab_activity AS (
     OR pocket_interactions IS NOT NULL
     OR wallpaper_interactions IS NOT NULL
     OR weather_interactions IS NOT NULL
+    OR topic_selection_interactions IS NOT NULL
 ),
 client_profile_info AS (
   SELECT

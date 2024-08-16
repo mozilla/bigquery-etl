@@ -32,7 +32,9 @@ WITH cte AS (
     pocket_interactions,
     wallpaper_interactions,
     weather_interactions,
-    newtab_default_ui
+    topic_selection_interactions,
+    newtab_default_ui,
+    newtab_selected_topics
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.newtab_visits_v1`
   WHERE
@@ -76,7 +78,8 @@ visits_data AS (
     ) AS visits_with_default_ui_with_non_search_engagement,
     COUNTIF(newtab_default_ui = "non-default") AS visits_with_non_default_ui,
     LOGICAL_OR(is_new_profile) AS is_new_profile,
-    ANY_VALUE(activity_segment) AS activity_segment
+    ANY_VALUE(activity_segment) AS activity_segment,
+    LOGICAL_OR(ARRAY_LENGTH(newtab_selected_topics) > 0) AS topic_preferences_set
   FROM
     cte
   GROUP BY
@@ -131,6 +134,11 @@ pocket_data AS (
     SUM(pocket_saves) AS pocket_saves,
     SUM(sponsored_pocket_saves) AS sponsored_pocket_saves,
     SUM(organic_pocket_saves) AS organic_pocket_saves,
+    SUM(sponsored_pocket_dismissals) AS sponsored_pocket_dismissals,
+    SUM(organic_pocket_dismissals) AS organic_pocket_dismissals,
+    SUM(pocket_thumbs_up) AS pocket_thumbs_up,
+    SUM(pocket_thumbs_down) AS pocket_thumbs_down,
+    SUM(pocket_thumbs_down) + SUM(pocket_thumbs_up) AS pocket_thumb_voting_events,
   FROM
     cte
   CROSS JOIN
@@ -167,6 +175,22 @@ weather_data AS (
     cte
   CROSS JOIN
     UNNEST(weather_interactions)
+  GROUP BY
+    client_id
+),
+topic_selection_data AS (
+  SELECT
+    client_id,
+    LOGICAL_OR(
+      topic_selection_topics_first_saved > 0
+    ) AS topic_selection_selected_topics_first_time,
+    SUM(topic_selection_topics_updated) AS topic_selection_updates,
+    SUM(topic_selection_open) AS topic_selection_opened,
+    SUM(topic_selection_dismiss) AS topic_selection_dismissals
+  FROM
+    cte
+  CROSS JOIN
+    UNNEST(topic_selection_interactions)
   GROUP BY
     client_id
 )
@@ -215,7 +239,29 @@ SELECT
     0
   ) AS weather_widget_change_display_to_detailed,
   COALESCE(weather_widget_change_display_to_simple, 0) AS weather_widget_change_display_to_simple,
-  COALESCE(weather_widget_location_selected, 0) AS weather_widget_location_selected
+  COALESCE(weather_widget_location_selected, 0) AS weather_widget_location_selected,
+  COALESCE(visits_with_default_ui, 0) AS visits_with_default_ui,
+  COALESCE(
+    visits_with_default_ui_with_non_impression_engagement,
+    0
+  ) AS visits_with_default_ui_with_non_impression_engagement,
+  COALESCE(
+    visits_with_default_ui_with_non_search_engagement,
+    0
+  ) AS visits_with_default_ui_with_non_search_engagement,
+  COALESCE(topic_preferences_set, FALSE) AS topic_preferences_set,
+  COALESCE(sponsored_pocket_dismissals, 0) AS sponsored_pocket_dismissals,
+  COALESCE(organic_pocket_dismissals, 0) AS organic_pocket_dismissals,
+  COALESCE(pocket_thumbs_up, 0) AS pocket_thumbs_up,
+  COALESCE(pocket_thumbs_down, 0) AS pocket_thumbs_down,
+  COALESCE(pocket_thumb_voting_events, 0) AS pocket_thumb_voting_events,
+  COALESCE(
+    topic_selection_selected_topics_first_time,
+    FALSE
+  ) AS topic_selection_selected_topics_first_time,
+  COALESCE(topic_selection_updates, 0) AS topic_selection_updates,
+  COALESCE(topic_selection_opened, 0) AS topic_selection_opened,
+  COALESCE(topic_selection_dismissals, 0) AS topic_selection_dismissals
 FROM
   visits_data
 LEFT JOIN
@@ -232,4 +278,7 @@ LEFT JOIN
   USING (client_id)
 LEFT JOIN
   wallpaper_data
+  USING (client_id)
+LEFT JOIN
+  topic_selection_data
   USING (client_id)

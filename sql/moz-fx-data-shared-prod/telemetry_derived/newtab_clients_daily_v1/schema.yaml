@@ -176,18 +176,6 @@ fields:
 - name: newtab_weather_widget_enabled
   type: BOOLEAN
   mode: NULLABLE
-- name: visits_with_default_ui
-  type: INTEGER
-  mode: NULLABLE
-- name: visits_with_default_ui_with_non_impression_engagement
-  type: INTEGER
-  mode: NULLABLE
-- name: visits_with_default_ui_with_non_search_engagement
-  type: INTEGER
-  mode: NULLABLE
-- name: visits_with_non_default_ui
-  type: INTEGER
-  mode: NULLABLE
 - name: wallpaper_clicks
   type: INTEGER
   mode: NULLABLE
@@ -222,5 +210,47 @@ fields:
   type: INTEGER
   mode: NULLABLE
 - name: weather_widget_location_selected
+  type: INTEGER
+  mode: NULLABLE
+- name: visits_with_default_ui
+  type: INTEGER
+  mode: NULLABLE
+- name: visits_with_default_ui_with_non_impression_engagement
+  type: INTEGER
+  mode: NULLABLE
+- name: visits_with_default_ui_with_non_search_engagement
+  type: INTEGER
+  mode: NULLABLE
+- name: visits_with_non_default_ui
+  type: INTEGER
+  mode: NULLABLE
+- name: topic_preferences_set
+  type: BOOLEAN
+  mode: NULLABLE
+- name: sponsored_pocket_dismissals
+  type: INTEGER
+  mode: NULLABLE
+- name: organic_pocket_dismissals
+  type: INTEGER
+  mode: NULLABLE
+- name: pocket_thumbs_up
+  type: INTEGER
+  mode: NULLABLE
+- name: pocket_thumbs_down
+  type: INTEGER
+  mode: NULLABLE
+- name: pocket_thumb_voting_events
+  type: INTEGER
+  mode: NULLABLE
+- name: topic_selection_selected_topics_first_time
+  type: BOOLEAN
+  mode: NULLABLE
+- name: topic_selection_updates
+  type: INTEGER
+  mode: NULLABLE
+- name: topic_selection_opened
+  type: INTEGER
+  mode: NULLABLE
+- name: topic_selection_dismissals
   type: INTEGER
   mode: NULLABLE

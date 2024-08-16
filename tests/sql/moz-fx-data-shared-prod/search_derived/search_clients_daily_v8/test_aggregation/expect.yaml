@@ -2,6 +2,7 @@
 - &base
   submission_date: '2017-01-01'
   client_id: a
+  profile_group_id: prfl_a
   country: US
   sap: 0
   organic: 0
@@ -13,7 +14,6 @@
   search_with_ads_organic: 0
   unknown: 0
   profile_creation_date: 18145
-  profile_group_id: prfl_a
   experiments: []
   scalar_parent_urlbar_searchmode_bookmarkmenu_sum: []
   scalar_parent_urlbar_searchmode_handoff_sum: []
@@ -37,6 +37,7 @@
   os_version_minor: '23.4'
 - <<: *base
   client_id: b
+  profile_group_id: prfl_b
   engine: engine1
   source: searchbar
   sap: 1
@@ -47,6 +48,7 @@
   os_version_minor: 'Windows 11'
 - <<: *base
   client_id: b
+  profile_group_id: prfl_b
   engine: engine2
   source: 'in-content:sap:code'
   tagged_sap: 2
@@ -57,6 +59,7 @@
   os_version_minor: 'Windows 11'
 - <<: *base
   client_id: b
+  profile_group_id: prfl_b
   engine: engine2
   source: 'in-content:sap-follow-on:code'
   tagged_follow_on: 3
@@ -67,6 +70,7 @@
   os_version_minor: 'Windows 11'
 - <<: *base
   client_id: b
+  profile_group_id: prfl_b
   engine: engine2
   source: 'in-content:organic:none'
   organic: 4
@@ -77,6 +81,7 @@
   os_version_minor: 'Windows 11'
 - <<: *base
   client_id: b
+  profile_group_id: prfl_b
   engine: engine1
   source: 'ad-click:'
   ad_click: 2
@@ -87,6 +92,7 @@
   os_version_minor: 'Windows 11'
 - <<: *base
   client_id: b
+  profile_group_id: prfl_b
   engine: engine1
   source: 'ad-click:organic.none'
   ad_click_organic: 3
@@ -97,6 +103,7 @@
   os_version_minor: 'Windows 11'
 - <<: *base
   client_id: b
+  profile_group_id: prfl_b
   engine: engine1
   source: 'search-with-ads:sap.code'
   search_with_ads: 3
@@ -107,6 +114,7 @@
   os_version_minor: 'Windows 11'
 - <<: *base
   client_id: c
+  profile_group_id: prfl_c
   addon_version: 0.9.6
   engine: engine2
   source: contextmenu

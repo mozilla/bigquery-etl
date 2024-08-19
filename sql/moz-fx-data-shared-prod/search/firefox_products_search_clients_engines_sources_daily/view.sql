@@ -35,4 +35,4 @@ SELECT
   tagged_follow_on,
   profile_group_id
 FROM
-  `moz-fx-data-shared-prod.search.search_clients_engines_sources_daily`
+  `mozdata.search.search_clients_engines_sources_daily`

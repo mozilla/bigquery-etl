@@ -4,4 +4,4 @@ AS
 SELECT
   *
 FROM
-  `moz-fx-data-shared-prod.mozilla_org.www_site_downloads`
+  `mozdata.mozilla_org.www_site_downloads`

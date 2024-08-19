@@ -554,8 +554,9 @@ main_ping_agg AS (
 ),
 main_ping AS (
   SELECT
-    * EXCEPT (windows_build_number_raw),
+    * EXCEPT (windows_build_number_raw, profile_group_id),
     CAST(windows_build_number_raw AS FLOAT64) AS windows_build_number,
+    profile_group_id,
     mozfun.norm.windows_version_info(
       os,
       os_version,

@@ -64,6 +64,18 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    wait_for_telemetry_derived__clients_daily__v6 = ExternalTaskSensor(
+        task_id="wait_for_telemetry_derived__clients_daily__v6",
+        external_dag_id="bqetl_main_summary",
+        external_task_id="telemetry_derived__clients_daily__v6",
+        execution_delta=datetime.timedelta(seconds=3600),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     wait_for_telemetry_derived__clients_daily_joined__v1 = ExternalTaskSensor(
         task_id="wait_for_telemetry_derived__clients_daily_joined__v1",
         external_dag_id="bqetl_main_summary",
@@ -287,6 +299,10 @@ with DAG(
 
     search_derived__search_clients_daily__v8.set_upstream(
         wait_for_copy_deduplicate_main_ping
+    )
+
+    search_derived__search_clients_daily__v8.set_upstream(
+        wait_for_telemetry_derived__clients_daily__v6
     )
 
     search_derived__search_clients_daily__v8.set_upstream(

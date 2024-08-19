@@ -538,7 +538,7 @@ main_ping_agg AS (
     ARRAY_AGG(windows_build_number RESPECT NULLS ORDER BY submission_date)[
       SAFE_OFFSET(0)
     ] AS windows_build_number_raw,
-    ARRAY_AGG(profile_group_id ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS profile_group_id,
+    ARRAY_AGG(profile_group_id ORDER BY submission_date)[SAFE_OFFSET(0)] AS profile_group_id,
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6`
   WHERE

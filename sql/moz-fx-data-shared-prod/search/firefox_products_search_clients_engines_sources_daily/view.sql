@@ -14,7 +14,8 @@ SELECT
   search_with_ads,
   ad_click,
   tagged_sap,
-  tagged_follow_on
+  tagged_follow_on,
+  profile_group_id
 FROM
   `moz-fx-data-shared-prod.search.mobile_search_clients_engines_sources_daily`
 UNION ALL
@@ -31,6 +32,7 @@ SELECT
   search_with_ads,
   ad_click,
   tagged_sap,
-  tagged_follow_on
+  tagged_follow_on,
+  profile_group_id
 FROM
   `moz-fx-data-shared-prod.search.search_clients_engines_sources_daily`

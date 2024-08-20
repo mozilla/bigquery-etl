@@ -107,7 +107,7 @@ fields:
   name: event_string_value
   type: STRING
   description: Event String Value
-- mode: REPEATED
+- mode: NULLABLE
   name: event_map_values
   type: RECORD
   description: Event Map Values
@@ -122,7 +122,7 @@ fields:
     - mode: NULLABLE
       name: value
       type: STRING
-- mode: REPEATED
+- mode: NULLABLE
   name: experiments
   type: RECORD
   description: Experiments

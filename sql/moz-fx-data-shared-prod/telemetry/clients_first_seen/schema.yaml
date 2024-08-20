@@ -276,6 +276,11 @@ fields:
     description: Indicates wether the client ever reported a first shutdown ping.
   description: A collection of pings - which ping is reported in the table as well
     as a record of all other pings in the data for this one particular client
+- name: profile_group_id
+  type: STRING
+  mode: NULLABLE
+  description: A UUID identifying the profile's group on a single device and allowing
+    user-oriented correlation of data
 - name: funnel_derived
   type: STRING
   mode: NULLABLE

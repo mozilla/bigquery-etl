@@ -116,7 +116,7 @@ fields:
     name: key_value
     type: RECORD
     fields:
-    - mode: NULLABLE
+    - mode: REQUIRED
       name: key
       type: STRING
     - mode: NULLABLE
@@ -131,7 +131,7 @@ fields:
     name: key_value
     type: RECORD
     fields:
-    - mode: NULLABLE
+    - mode: REQUIRED
       name: key
       type: STRING
     - mode: NULLABLE

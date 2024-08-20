@@ -44,7 +44,9 @@ WITH parquet_events AS (
     ),
     CAST(NULL AS STRING) AS build_id,
     `mozfun.norm.browser_version_info`(app_version) AS browser_version_info,
-    CAST(NULL AS STRING) AS profile_group_id
+    CAST(
+      NULL AS STRING
+    ) AS profile_group_id --this table is deprecated and no longer updating, so is not receiving the new field profile group id
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.events_v1`
   WHERE

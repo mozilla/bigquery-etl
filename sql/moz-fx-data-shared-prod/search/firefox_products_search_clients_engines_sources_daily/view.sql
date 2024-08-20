@@ -17,7 +17,7 @@ SELECT
   tagged_follow_on,
   NULL AS profile_group_id
 FROM
-  `moz-fx-data-shared-prod.search.mobile_search_clients_engines_sources_daily`
+  `mozdata.search.mobile_search_clients_engines_sources_daily`
 UNION ALL
 SELECT
   client_id,

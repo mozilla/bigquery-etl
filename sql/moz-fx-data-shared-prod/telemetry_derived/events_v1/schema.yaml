@@ -111,32 +111,32 @@ fields:
   name: event_map_values
   type: RECORD
   description: Event Map Values
-  - fields:
-    - mode: REPEATED
-      name: key_value
-      type: RECORD
-      - fields:
-        - mode: NULLABLE
-          name: key
-          type: STRING
-        - mode: NULLABLE
-          name: value
-          type: STRING
+  fields:
+  - mode: REPEATED
+    name: key_value
+    type: RECORD
+    fields:
+    - mode: NULLABLE
+      name: key
+      type: STRING
+    - mode: NULLABLE
+      name: value
+      type: STRING
 - mode: REPEATED
   name: experiments
   type: RECORD
   description: Experiments
-  - fields:
-    - mode: REPEATED
-      name: key_value
-      type: RECORD
-      - fields:
-        - mode: NULLABLE
-          name: key
-          type: STRING
-        - mode: NULLABLE
-          name: value
-          type: STRING
+  fields:
+  - mode: REPEATED
+    name: key_value
+    type: RECORD
+    fields:
+    - mode: NULLABLE
+      name: key
+      type: STRING
+    - mode: NULLABLE
+      name: value
+      type: STRING
 - mode: NULLABLE
   name: event_process
   type: STRING

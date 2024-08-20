@@ -107,12 +107,12 @@ fields:
   name: event_string_value
   type: STRING
   description: Event String Value
-- mode: NULLABLE
+- mode: REPEATED
   name: event_map_values
   type: RECORD
   description: Event Map Values
   - fields:
-    - mode: NULLABLE
+    - mode: REPEATED
       name: key_value
       type: RECORD
       - fields:
@@ -122,12 +122,12 @@ fields:
         - mode: NULLABLE
           name: value
           type: STRING
-- mode: NULLABLE
+- mode: REPEATED
   name: experiments
-  type: Record
+  type: RECORD
   description: Experiments
   - fields:
-    - mode: NULLABLE
+    - mode: REPEATED
       name: key_value
       type: RECORD
       - fields:

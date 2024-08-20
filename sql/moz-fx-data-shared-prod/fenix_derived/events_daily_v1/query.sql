@@ -27,7 +27,12 @@ WITH sample AS (
         ARRAY_AGG(STRUCT(key, value.branch AS value))
       FROM
         UNNEST(ping_info.experiments)
-    ) AS experiments
+    ) AS experiments,
+    COUNT(*) OVER (
+      PARTITION BY
+        DATE(submission_timestamp),
+        client_info.client_id
+    ) AS client_event_count
   FROM
     `moz-fx-data-shared-prod.org_mozilla_firefox.events` e
   CROSS JOIN
@@ -60,7 +65,12 @@ WITH sample AS (
         ARRAY_AGG(STRUCT(key, value.branch AS value))
       FROM
         UNNEST(ping_info.experiments)
-    ) AS experiments
+    ) AS experiments,
+    COUNT(*) OVER (
+      PARTITION BY
+        DATE(submission_timestamp),
+        client_info.client_id
+    ) AS client_event_count
   FROM
     `moz-fx-data-shared-prod.org_mozilla_firefox_beta.events` e
   CROSS JOIN
@@ -93,7 +103,12 @@ WITH sample AS (
         ARRAY_AGG(STRUCT(key, value.branch AS value))
       FROM
         UNNEST(ping_info.experiments)
-    ) AS experiments
+    ) AS experiments,
+    COUNT(*) OVER (
+      PARTITION BY
+        DATE(submission_timestamp),
+        client_info.client_id
+    ) AS client_event_count
   FROM
     `moz-fx-data-shared-prod.org_mozilla_fenix.events` e
   CROSS JOIN
@@ -101,7 +116,7 @@ WITH sample AS (
 ),
 events AS (
   SELECT
-    *
+    * EXCEPT (client_event_count)
   FROM
     sample
   WHERE
@@ -110,6 +125,8 @@ events AS (
       OR (@submission_date IS NULL AND submission_date >= '2020-01-01')
     )
     AND client_id IS NOT NULL
+    -- filter out overactive clients: they distort the data and can cause the job to fail: https://bugzilla.mozilla.org/show_bug.cgi?id=1730190
+    AND client_event_count < 3000000
 ),
 joined AS (
   SELECT

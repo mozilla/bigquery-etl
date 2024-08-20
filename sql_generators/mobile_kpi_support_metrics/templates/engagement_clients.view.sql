@@ -21,23 +21,23 @@ WITH active_users AS (
   FROM
     `{{ project_id }}.{{ dataset }}.active_users`
 )
-{% if attribution_fields %},
-  attribution AS (
+{% if product_attribution_fields %}
+  , attribution AS (
     SELECT
       client_id,
       sample_id,
       channel AS normalized_channel,
-      {% for field in attribution_fields %}
-        {% if app_name == "fenix" and field.name == "adjust_campaign" %}
+      {% for attribution_field in product_attribution_fields.values() if not attribution_field.name.endswith("_timestamp") %}
+        {% if app_name == "fenix" and attribution_field.name == "adjust_campaign" %}
           CASE
             WHEN adjust_network IN ('Google Organic Search', 'Organic')
               THEN 'Organic'
             ELSE NULLIF(adjust_campaign, "")
           END AS adjust_campaign,
-        {% elif field.type == "STRING" %}
-          NULLIF({{ field.name }}, "") AS {{ field.name }},
+        {% elif attribution_field.type == "STRING" %}
+          NULLIF({{ attribution_field.name }}, "") AS {{ attribution_field.name }},
         {% else %}
-          {{ field.name }},
+          {{ attribution_field.name }},
         {% endif %}
       {% endfor %}
     FROM
@@ -63,9 +63,14 @@ SELECT
   is_wau,
   is_mau,
   is_mobile,
-  {% for field in attribution_fields %}
-    attribution.{{ field.name }},
+  {% for attribution_field in product_attribution_fields.values() if not attribution_field.name.endswith("_timestamp") %}
+  attribution.{{ attribution_field.name }},
   {% endfor %}
+  {% if 'adjust_network' in product_attribution_fields %}
+    `moz-fx-data-shared-prod.udf.organic_vs_paid_mobile`(adjust_network) AS paid_vs_organic,
+  {% else %}
+    "Organic" AS paid_vs_organic,
+  {% endif %}
   CASE
     WHEN active_users.submission_date = first_seen_date
       THEN 'new_profile'
@@ -79,8 +84,8 @@ SELECT
   END AS lifecycle_stage,
 FROM
   active_users
-  {% if attribution_fields %}
+  {% if product_attribution_fields %}
     LEFT JOIN
       attribution
-      USING (client_id, sample_id, normalized_channel)
+      USING(client_id, sample_id, normalized_channel)
   {% endif %}

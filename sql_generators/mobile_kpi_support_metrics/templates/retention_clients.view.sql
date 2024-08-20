@@ -17,23 +17,23 @@ WITH active_users AS (
   FROM
     `{{ project_id }}.{{ dataset }}.active_users`
 )
-{% if attribution_fields %},
-  attribution AS (
+{% if product_attribution_fields %}
+  , attribution AS (
     SELECT
       client_id,
       sample_id,
       channel AS normalized_channel,
-      {% for field in attribution_fields %}
-        {% if app_name == "fenix" and field.name == "adjust_campaign" %}
+      {% for attribution_field in product_attribution_fields.values() if not attribution_field.name.endswith("_timestamp") %}
+        {% if app_name == "fenix" and attribution_field.name == "adjust_campaign" %}
           CASE
             WHEN adjust_network IN ('Google Organic Search', 'Organic')
               THEN 'Organic'
             ELSE NULLIF(adjust_campaign, "")
           END AS adjust_campaign,
-        {% elif field.type == "STRING" %}
-          NULLIF({{ field.name }}, "") AS {{ field.name }},
+        {% elif attribution_field.type == "STRING" %}
+          NULLIF({{ attribution_field.name }}, "") AS {{ attribution_field.name }},
         {% else %}
-          {{ field.name }},
+          {{ attribution_field.name }},
         {% endif %}
       {% endfor %}
     FROM
@@ -57,9 +57,14 @@ SELECT
   clients_daily.locale,
   clients_daily.isp,
   active_users.is_mobile,
-  {% for field in attribution_fields %}
-    attribution.{{ field.name }},
+  {% for attribution_field in product_attribution_fields.values() if not attribution_field.name.endswith("_timestamp") %}
+  attribution.{{ attribution_field.name }},
   {% endfor %}
+  {% if 'adjust_network' in product_attribution_fields %}
+    `moz-fx-data-shared-prod.udf.organic_vs_paid_mobile`(adjust_network) AS paid_vs_organic,
+  {% else %}
+    "Organic" AS paid_vs_organic,
+  {% endif %}
   -- ping sent retention
   active_users.retention_seen.day_27.active_on_metric_date AS ping_sent_metric_date,
   (
@@ -103,11 +108,11 @@ INNER JOIN
   ON clients_daily.submission_date = active_users.retention_seen.day_27.metric_date
   AND clients_daily.client_id = active_users.client_id
   AND clients_daily.normalized_channel = active_users.normalized_channel
-  {% if attribution_fields %}
-    LEFT JOIN
-      attribution
-      ON clients_daily.client_id = attribution.client_id
+{% if product_attribution_fields %}
+  LEFT JOIN
+    attribution
+    ON clients_daily.client_id = attribution.client_id
       AND clients_daily.normalized_channel = attribution.normalized_channel
-  {% endif %}
+{% endif %}
 WHERE
   active_users.retention_seen.day_27.active_on_metric_date

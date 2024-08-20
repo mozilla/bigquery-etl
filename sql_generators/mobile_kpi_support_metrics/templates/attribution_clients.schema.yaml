@@ -1,0 +1,39 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description:
+
+- mode: NULLABLE
+  name: client_id
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: sample_id
+  type: INTEGER
+  description:
+{% for attribution_group in product_attribution_groups %}
+{% if attribution_group.name in ["meta", "adjust", "play_store"] -%}
+- mode: NULLABLE
+  name: {{ attribution_group.name }}_info
+  type: RECORD
+  description:
+  fields:
+    {% for attribution_group_field in attribution_group.fields -%}
+    - mode: NULLABLE
+      name: {{ attribution_group_field.name }}
+      type: {{ attribution_group_field.type }}
+      description: |
+        {{ attribution_group_field.description }}
+    {% endfor %}
+{%- else -%}
+{% for attribution_group_field in attribution_group.fields -%}
+- mode: NULLABLE
+  name: {{ attribution_group_field.name }}
+  type: {{ attribution_group_field.type }}
+  description: |
+    {{ attribution_group_field.description }}
+{% endfor -%}
+{% endif -%}
+{% endfor -%}

@@ -1,0 +1,9 @@
+- client_id: a
+  submission_date: '2017-01-01'
+  profile_group_id: prfl_a
+- client_id: b
+  submission_date: '2017-01-01'
+  profile_group_id: prfl_b
+- client_id: c
+  submission_date: '2017-01-01'
+  profile_group_id: prfl_c

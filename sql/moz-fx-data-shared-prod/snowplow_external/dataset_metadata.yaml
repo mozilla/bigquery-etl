@@ -1,0 +1,14 @@
+friendly_name: Snowplow External
+description: |-
+  https://mozilla-hub.atlassian.net/browse/DSRE-1682
+
+dataset_base_acl: restricted
+user_facing: false
+labels: {}
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:pocket/apps
+  - role: roles/bigquery.dataEditor
+    members:
+      - workgroup:dataops-managed/external-snowplow

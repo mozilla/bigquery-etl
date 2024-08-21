@@ -690,7 +690,12 @@ SELECT
       metrics.timing_distribution.performance_pageload_http3_fcp_without_priority,
       metrics.timing_distribution.glean_database_write_time,
       metrics.timing_distribution.networking_cache_metadata_first_read_time,
-      metrics.timing_distribution.networking_cache_metadata_second_read_time
+      metrics.timing_distribution.networking_cache_metadata_second_read_time,
+      metrics.timing_distribution.cert_verification_time_failure,
+      metrics.timing_distribution.cert_verification_time_success,
+      metrics.timing_distribution.ocsp_request_time_cancel,
+      metrics.timing_distribution.ocsp_request_time_failure,
+      metrics.timing_distribution.ocsp_request_time_success
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -1473,7 +1478,12 @@ SELECT
       metrics.timing_distribution.performance_pageload_http3_fcp_without_priority,
       metrics.timing_distribution.glean_database_write_time,
       metrics.timing_distribution.networking_cache_metadata_first_read_time,
-      metrics.timing_distribution.networking_cache_metadata_second_read_time
+      metrics.timing_distribution.networking_cache_metadata_second_read_time,
+      metrics.timing_distribution.cert_verification_time_failure,
+      metrics.timing_distribution.cert_verification_time_success,
+      metrics.timing_distribution.ocsp_request_time_cancel,
+      metrics.timing_distribution.ocsp_request_time_failure,
+      metrics.timing_distribution.ocsp_request_time_success
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -2274,7 +2284,12 @@ SELECT
       metrics.timing_distribution.performance_pageload_http3_fcp_without_priority,
       metrics.timing_distribution.glean_database_write_time,
       metrics.timing_distribution.networking_cache_metadata_first_read_time,
-      metrics.timing_distribution.networking_cache_metadata_second_read_time
+      metrics.timing_distribution.networking_cache_metadata_second_read_time,
+      metrics.timing_distribution.cert_verification_time_failure,
+      metrics.timing_distribution.cert_verification_time_success,
+      metrics.timing_distribution.ocsp_request_time_cancel,
+      metrics.timing_distribution.ocsp_request_time_failure,
+      metrics.timing_distribution.ocsp_request_time_success
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -3084,7 +3099,12 @@ SELECT
       metrics.timing_distribution.performance_pageload_http3_fcp_without_priority,
       metrics.timing_distribution.glean_database_write_time,
       metrics.timing_distribution.networking_cache_metadata_first_read_time,
-      metrics.timing_distribution.networking_cache_metadata_second_read_time
+      metrics.timing_distribution.networking_cache_metadata_second_read_time,
+      metrics.timing_distribution.cert_verification_time_failure,
+      metrics.timing_distribution.cert_verification_time_success,
+      metrics.timing_distribution.ocsp_request_time_cancel,
+      metrics.timing_distribution.ocsp_request_time_failure,
+      metrics.timing_distribution.ocsp_request_time_success
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -3876,7 +3896,12 @@ SELECT
       metrics.timing_distribution.performance_pageload_http3_fcp_without_priority,
       metrics.timing_distribution.glean_database_write_time,
       metrics.timing_distribution.networking_cache_metadata_first_read_time,
-      metrics.timing_distribution.networking_cache_metadata_second_read_time
+      metrics.timing_distribution.networking_cache_metadata_second_read_time,
+      metrics.timing_distribution.cert_verification_time_failure,
+      metrics.timing_distribution.cert_verification_time_success,
+      metrics.timing_distribution.ocsp_request_time_cancel,
+      metrics.timing_distribution.ocsp_request_time_failure,
+      metrics.timing_distribution.ocsp_request_time_success
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,

@@ -65,3 +65,6 @@ fields:
 - name: multiprocess_compatible
   type: BOOLEAN
   mode: NULLABLE
+- name: profile_group_id
+  type: STRING
+  mode: NULLABLE

@@ -117,3 +117,6 @@ fields:
   - name: is_major_release
     type: BOOLEAN
     mode: NULLABLE
+- name: profile_group_id
+  type: STRING
+  mode: NULLABLE

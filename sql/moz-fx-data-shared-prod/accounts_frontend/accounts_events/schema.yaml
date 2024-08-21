@@ -440,6 +440,24 @@ fields:
         for the purpose of experimentation enrollment.
 
         '
+    - name: entrypoint_experiment
+      type: STRING
+      mode: NULLABLE
+      description: 'The entrypoint experiment the user was assigned to. This value
+        is specified
+
+        by query parameter `entrypoint_experiment` in the URL.
+
+        '
+    - name: entrypoint_variation
+      type: STRING
+      mode: NULLABLE
+      description: 'The entrypoint variation the user was assigned to. This value
+        is specified
+
+        by query parameter `entrypoint_variation` in the URL.
+
+        '
   - name: labeled_boolean
     type: RECORD
     mode: NULLABLE

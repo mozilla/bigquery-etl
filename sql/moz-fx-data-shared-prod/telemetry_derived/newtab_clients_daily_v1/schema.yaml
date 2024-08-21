@@ -53,6 +53,9 @@ fields:
 - name: topsites_sponsored_enabled
   type: BOOLEAN
   mode: NULLABLE
+- name: newtab_weather_widget_enabled
+  type: BOOLEAN
+  mode: NULLABLE
 - name: newtab_homepage_category
   type: STRING
   mode: NULLABLE
@@ -90,6 +93,9 @@ fields:
   type: INTEGER
   mode: NULLABLE
 - name: visits_with_non_search_engagement
+  type: INTEGER
+  mode: NULLABLE
+- name: visits_with_non_default_ui
   type: INTEGER
   mode: NULLABLE
 - name: is_new_profile
@@ -173,9 +179,6 @@ fields:
 - name: organic_pocket_saves
   type: INTEGER
   mode: NULLABLE
-- name: newtab_weather_widget_enabled
-  type: BOOLEAN
-  mode: NULLABLE
 - name: wallpaper_clicks
   type: INTEGER
   mode: NULLABLE
@@ -219,9 +222,6 @@ fields:
   type: INTEGER
   mode: NULLABLE
 - name: visits_with_default_ui_with_non_search_engagement
-  type: INTEGER
-  mode: NULLABLE
-- name: visits_with_non_default_ui
   type: INTEGER
   mode: NULLABLE
 - name: topic_preferences_set

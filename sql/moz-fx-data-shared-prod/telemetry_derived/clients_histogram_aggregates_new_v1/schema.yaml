@@ -61,3 +61,6 @@ fields:
     - name: value
       type: INTEGER
       mode: NULLABLE
+- name: profile_group_id
+  type: STRING
+  mode: NULLABLE

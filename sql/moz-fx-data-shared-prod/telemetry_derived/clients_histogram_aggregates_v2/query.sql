@@ -125,7 +125,8 @@ clients_histogram_aggregates_old AS (
     app_build_id,
     hist_aggs.channel AS channel,
     CONCAT(client_id, os, app_version, app_build_id, hist_aggs.channel) AS join_key,
-    histogram_aggregates
+    histogram_aggregates,
+    profile_group_id
   FROM
     clients_histogram_aggregates_partition AS hist_aggs
   LEFT JOIN
@@ -142,6 +143,7 @@ merged AS (
     COALESCE(old_data.app_version, CAST(new_data.app_version AS INT64)) AS app_version,
     COALESCE(old_data.app_build_id, new_data.app_build_id) AS app_build_id,
     COALESCE(old_data.channel, new_data.channel) AS channel,
+    COALESCE(old_data.profile_group_id, new_data.profile_group_id) AS profile_group_id,
     old_data.histogram_aggregates AS old_aggs,
     ARRAY(
       SELECT AS STRUCT
@@ -171,6 +173,7 @@ SELECT
   app_version,
   app_build_id,
   channel,
-  udf_merged_user_data(old_aggs, new_aggs) AS histogram_aggregates
+  udf_merged_user_data(old_aggs, new_aggs) AS histogram_aggregates,
+  profile_group_id
 FROM
   merged

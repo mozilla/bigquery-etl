@@ -100,3 +100,6 @@ fields:
   mode: REPEATED
   name: experiments
   type: RECORD
+- mode: NULLABLE
+  name: profile_group_id
+  type: STRING

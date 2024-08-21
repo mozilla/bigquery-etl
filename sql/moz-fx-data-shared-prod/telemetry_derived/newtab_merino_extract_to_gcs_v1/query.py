@@ -29,12 +29,21 @@ from google.cloud import bigquery
 @click.option(
     "--destination-prefix", required=True, help="Prefix of the bucket path in GCS."
 )
+
+@click.option(
+    "--deletion-days-old",
+    required=True,
+    type=int,
+    help="Number of days after which files in GCS should be deleted.",
+)
+
 def export_newtab_merino_extract_to_gcs(
     source_project: str,
     source_dataset: str,
     source_table: str,
     destination_bucket: str,
     destination_prefix: str,
+    deletion_days_old: int,
 ):
     """Use bigquery client to export data from BigQuery to GCS."""
     client = bigquery.Client(source_project)
@@ -89,7 +98,7 @@ def export_newtab_merino_extract_to_gcs(
         blob.delete()
 
         # Delete files older than 3 days
-        delete_old_files(bucket, destination_prefix, 3)
+        delete_old_files(bucket, destination_prefix, deletion_days_old)
 
         logging.info("Export successful and temporary file deleted")
 

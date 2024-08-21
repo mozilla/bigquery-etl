@@ -76,6 +76,25 @@ with DAG(
         task_concurrency=1,
     )
 
+    telemetry_derived__newtab_merino_extract_to_gcs__v1 = GKEPodOperator(
+        task_id="telemetry_derived__newtab_merino_extract_to_gcs__v1",
+        arguments=[
+            "python",
+            "sql/moz-fx-data-shared-prod/telemetry_derived/newtab_merino_extract_to_gcs_v1/query.py",
+        ]
+        + [
+            "--source-project=moz-fx-data-shared-prod",
+            "--source-dataset=telemetry_derived",
+            "--source-table=newtab_merino_extract_v1",
+            "--destination-bucket=merino-airflow-data-prodpy",
+            "--destination-prefix=newtab-merino-exports",
+            "--deletion-days-old=3",
+        ],
+        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        owner="cbeck@mozilla.com",
+        email=["cbeck@mozilla.com", "gkatre@mozilla.com"],
+    )
+
     checks__fail_telemetry_derived__newtab_merino_extract__v1.set_upstream(
         telemetry_derived__newtab_merino_extract__v1
     )

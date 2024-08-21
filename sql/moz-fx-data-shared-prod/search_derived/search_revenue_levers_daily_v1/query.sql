@@ -12,7 +12,7 @@ WITH combined_search_data AS (
     organic,
     ad_click_organic,
     search_with_ads_organic,
-    monetizable_sap
+    IF(is_sap_monetizable, sap, 0) AS monetizable_sap
   FROM
     `moz-fx-data-shared-prod.search.search_aggregates`
   WHERE
@@ -133,7 +133,7 @@ SELECT
   cd.submission_date,
   cd.partner,
   cd.device,
-  NULL AS channel,
+  CAST(NULL AS STRING) AS channel,
   cd.country,
   du.dau_eligible_markets AS dau,
   du.dau_w_engine_as_default,

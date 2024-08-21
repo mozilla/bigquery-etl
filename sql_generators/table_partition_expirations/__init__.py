@@ -26,9 +26,9 @@ from bigquery_etl.util.common import write_sql, get_table_dir
 )
 @use_cloud_function_option
 def generate(target_project, output_dir, use_cloud_function):
-    stable_datasets = {
-        schema.bq_dataset_family + "_stable" for schema in get_stable_table_schemas()
-    }
+    stable_datasets = sorted(
+        {schema.bq_dataset_family + "_stable" for schema in get_stable_table_schemas()}
+    )
 
     template_dir = Path(__file__).parent / "templates"
     env = Environment(loader=FileSystemLoader(template_dir))

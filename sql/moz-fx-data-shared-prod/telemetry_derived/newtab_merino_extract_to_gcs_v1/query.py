@@ -79,7 +79,7 @@ def export_newtab_merino_extract_to_gcs(
         json_array = [json.loads(line) for line in temp_file_content.splitlines()]
 
         # Write the JSON array to the final destination file in GCS
-        final_destination_uri = f"{destination_prefix}/{timestamp}.json"
+        final_destination_uri = f"{destination_prefix}/engagement_{timestamp}.json"
         final_blob = bucket.blob(final_destination_uri)
         final_blob.upload_from_string(
             json.dumps(json_array, indent=1), content_type="application/json"

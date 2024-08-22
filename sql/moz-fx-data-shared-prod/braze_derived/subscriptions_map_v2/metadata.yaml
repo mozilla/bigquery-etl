@@ -20,4 +20,4 @@ external_data:
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-    - workgroup:braze
+  - workgroup:braze

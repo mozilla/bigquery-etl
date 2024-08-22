@@ -27,7 +27,7 @@ visit_metadata AS (
     submission_date,
     ANY_VALUE(client_info.client_id) AS client_id,
     ANY_VALUE(metrics.uuid.legacy_telemetry_client_id) AS legacy_telemetry_client_id,
-    ANY_VALUE(metrics.uuid.legacy_telemetry_profile_group_id) AS profile_group_id,
+    CAST(ANY_VALUE(metrics.uuid.legacy_telemetry_profile_group_id) AS STRING) AS profile_group_id,
     ANY_VALUE(normalized_os) AS normalized_os,
     ANY_VALUE(normalized_os_version) AS normalized_os_version,
     ANY_VALUE(normalized_country_code) AS country_code,

@@ -51,11 +51,11 @@ with DAG(
     tags=tags,
 ) as dag:
 
-    wait_for_copy_deduplicate_all = ExternalTaskSensor(
-        task_id="wait_for_copy_deduplicate_all",
-        external_dag_id="copy_deduplicate",
-        external_task_id="copy_deduplicate_all",
-        execution_delta=datetime.timedelta(seconds=14400),
+    wait_for_accounts_backend_derived__events_stream__v1 = ExternalTaskSensor(
+        task_id="wait_for_accounts_backend_derived__events_stream__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="accounts_backend.accounts_backend_derived__events_stream__v1",
+        execution_delta=datetime.timedelta(seconds=10800),
         check_existence=True,
         mode="reschedule",
         allowed_states=ALLOWED_STATES,
@@ -75,11 +75,11 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_accounts_backend_derived__events_stream__v1 = ExternalTaskSensor(
-        task_id="wait_for_accounts_backend_derived__events_stream__v1",
-        external_dag_id="bqetl_glean_usage",
-        external_task_id="accounts_backend.accounts_backend_derived__events_stream__v1",
-        execution_delta=datetime.timedelta(seconds=10800),
+    wait_for_copy_deduplicate_all = ExternalTaskSensor(
+        task_id="wait_for_copy_deduplicate_all",
+        external_dag_id="copy_deduplicate",
+        external_task_id="copy_deduplicate_all",
+        execution_delta=datetime.timedelta(seconds=14400),
         check_existence=True,
         mode="reschedule",
         allowed_states=ALLOWED_STATES,
@@ -147,6 +147,21 @@ with DAG(
         allowed_states=ALLOWED_STATES,
         failed_states=FAILED_STATES,
         pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    accounts_frontend_derived__account_pref_delete_funnel__v1 = bigquery_etl_query(
+        task_id="accounts_frontend_derived__account_pref_delete_funnel__v1",
+        destination_table="account_pref_delete_funnel_v1",
+        dataset_id="accounts_frontend_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="ksiegler@mozilla.org",
+        email=[
+            "ascholtz@mozilla.com",
+            "ksiegler@mozilla.org",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
     )
 
     accounts_frontend_derived__email_first_reg_login_funnels_by_service__v1 = bigquery_etl_query(
@@ -301,6 +316,14 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+    )
+
+    accounts_frontend_derived__account_pref_delete_funnel__v1.set_upstream(
+        wait_for_accounts_backend_derived__events_stream__v1
+    )
+
+    accounts_frontend_derived__account_pref_delete_funnel__v1.set_upstream(
+        wait_for_accounts_frontend_derived__events_stream__v1
     )
 
     accounts_frontend_derived__email_first_reg_login_funnels_by_service__v1.set_upstream(

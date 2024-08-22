@@ -10,7 +10,7 @@ WITH
       FROM
         `moz-fx-data-shared-prod.{{ dataset_id }}.INFORMATION_SCHEMA.PARTITIONS`
       WHERE
-        partition_id != '__NULL__'
+        partition_id != "__NULL__"
       QUALIFY
         ROW_NUMBER() OVER (PARTITION BY table_name ORDER BY partition_id) = 1
     ),
@@ -21,7 +21,7 @@ WITH
       FROM
         `moz-fx-data-shared-prod.{{ dataset_id }}.INFORMATION_SCHEMA.PARTITIONS`
       WHERE
-        partition_id != '__NULL__'
+        partition_id != "__NULL__"
         AND total_rows > 0
       GROUP BY
         table_name
@@ -54,6 +54,14 @@ current_partitions AS (
       UNION ALL
     {% endif %}
   {% endfor %}
+),
+partition_expirations AS (
+  SELECT
+    *
+  FROM
+    `moz-fx-data-shared-prod.region-us.INFORMATION_SCHEMA.TABLE_OPTIONS`
+  WHERE
+    option_name = "partition_expiration_days"
 ),
 partition_stats AS (
   SELECT
@@ -99,12 +107,10 @@ partition_stats AS (
     AND current_partitions.table_id = previous.table_id
     AND current_partitions.run_date = previous.run_date + 1
   LEFT JOIN
-    `moz-fx-data-shared-prod.region-us.INFORMATION_SCHEMA.TABLE_OPTIONS`
+    partition_expirations
     ON table_catalog = current_partitions.project_id
     AND table_schema = current_partitions.dataset_id
     AND table_name = current_partitions.table_id
-  WHERE
-    option_name = 'partition_expiration_days'
 )
 
 SELECT

@@ -30,6 +30,7 @@ cbeck@mozilla.com
 
 * impact/tier_2
 * repo/bigquery-etl
+* triage/record_only
 """
 
 
@@ -45,7 +46,7 @@ default_args = {
     "retries": 3,
 }
 
-tags = ["impact/tier_2", "repo/bigquery-etl"]
+tags = ["impact/tier_2", "repo/bigquery-etl", "triage/record_only"]
 
 with DAG(
     "bqetl_braze",

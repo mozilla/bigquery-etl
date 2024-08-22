@@ -232,6 +232,12 @@ fields:
     - name: utm_term
       type: STRING
       mode: NULLABLE
+    - name: entrypoint_experiment
+      type: STRING
+      mode: NULLABLE
+    - name: entrypoint_variation
+      type: STRING
+      mode: NULLABLE
   - name: uuid
     type: RECORD
     mode: NULLABLE

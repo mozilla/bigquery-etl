@@ -12,7 +12,7 @@ labels:
   incremental: false
   owner: cbeck
 external_data:
-  format: google_sheet
+  format: google_sheets
   source_uris:
   - https://docs.google.com/spreadsheets/d/1ilLz0THm5gzzqaBqfzIa_83b74Y-ElykPed_bOLoy9s
   options:

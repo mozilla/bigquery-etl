@@ -248,7 +248,7 @@ SELECT
 FROM
   (SELECT * FROM unified_metrics WHERE normalized_os NOT IN ("Android", "iOS")) desktop_unified
 LEFT JOIN
-  clicks_maingit
+  clicks_main
   USING (client_id, submission_date)
 LEFT JOIN
   impressions_main

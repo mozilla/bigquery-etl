@@ -1541,6 +1541,7 @@ bqetl_braze:
     retry_delay: 5m
   tags:
     - impact/tier_2
+    - triage/record_only
 
 bqetl_braze_currents:
   schedule_interval: 0 2 * * *

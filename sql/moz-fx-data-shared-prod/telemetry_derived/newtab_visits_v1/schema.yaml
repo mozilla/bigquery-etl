@@ -332,3 +332,6 @@ fields:
   - name: topic_selection_topics_updated
     type: INTEGER
     mode: NULLABLE
+- mode: NULLABLE
+  name: profile_group_id
+  type: STRING

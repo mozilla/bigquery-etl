@@ -171,7 +171,12 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        arguments=["--billing-project", "moz-fx-data-backfill-2"],
+        arguments=[
+            "--billing-project",
+            "moz-fx-data-backfill-2",
+            "--schema_update_option",
+            "ALLOW_FIELD_ADDITION",
+        ],
         task_group=task_group_accounts_backend,
     )
 
@@ -256,7 +261,12 @@ with DAG(
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        arguments=["--billing-project", "moz-fx-data-backfill-2"],
+        arguments=[
+            "--billing-project",
+            "moz-fx-data-backfill-2",
+            "--schema_update_option",
+            "ALLOW_FIELD_ADDITION",
+        ],
         task_group=task_group_accounts_frontend,
     )
 

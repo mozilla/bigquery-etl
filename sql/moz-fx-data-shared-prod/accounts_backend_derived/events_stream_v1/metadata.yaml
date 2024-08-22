@@ -19,6 +19,8 @@ scheduling:
   arguments:
   - --billing-project
   - moz-fx-data-backfill-2
+  - --schema_update_option
+  - ALLOW_FIELD_ADDITION
 bigquery:
   time_partitioning:
     type: day

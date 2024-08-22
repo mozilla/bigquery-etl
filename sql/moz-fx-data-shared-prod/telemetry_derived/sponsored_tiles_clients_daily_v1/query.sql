@@ -244,11 +244,11 @@ SELECT
   COALESCE(sponsored_tiles_impression_count, 0) AS sponsored_tiles_impression_count,
   COALESCE(sponsored_tiles_dismissal_count, 0) AS sponsored_tiles_dismissal_count,
   COALESCE(sponsored_tiles_disable_count, 0) AS sponsored_tiles_disable_count,
-  profile_group_id
+  CAST(NULL AS STRING) AS profile_group_id
 FROM
   (SELECT * FROM unified_metrics WHERE normalized_os NOT IN ("Android", "iOS")) desktop_unified
 LEFT JOIN
-  clicks_main
+  clicks_maingit
   USING (client_id, submission_date)
 LEFT JOIN
   impressions_main
@@ -288,7 +288,7 @@ SELECT
   COALESCE(sponsored_tiles_impression_count, 0) AS sponsored_tiles_impression_count,
   NULL AS sponsored_tiles_dismissal_count,
   COALESCE(sponsored_tiles_disable_count, 0) AS sponsored_tiles_disable_count,
-  NULL AS profile_group_id
+  CAST(NULL AS STRING) AS profile_group_id
 FROM
   (SELECT * FROM unified_metrics WHERE normalized_os = "iOS") ios_unified
 LEFT JOIN
@@ -335,7 +335,7 @@ SELECT
   COALESCE(sponsored_tiles_impression_count, 0) AS sponsored_tiles_impression_count,
   NULL AS sponsored_tiles_dismissal_count,
   COALESCE(sponsored_tiles_disable_count, 0) AS sponsored_tiles_disable_count,
-  NULL AS profile_group_id
+  CAST(NULL AS STRING) AS profile_group_id
 FROM
   (-- note unified_metrics drops known Android bots
     SELECT

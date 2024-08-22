@@ -1,0 +1,24 @@
+fields:
+  - name: braze_subscription_name
+    mode: NULLABLE
+    type: STRING
+
+  - name: description
+    mode: NULLABLE
+    type: STRING
+
+  - name: mozilla_subscription_id
+    mode: NULLABLE
+    type: STRING
+
+  - name: firefox_subscription_id
+    mode: NULLABLE
+    type: STRING
+
+  - name: mozilla_dev_subscription_id
+    mode: NULLABLE
+    type: STRING
+
+  - name: basket_slug
+    mode: NULLABLE
+    type: STRING

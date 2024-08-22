@@ -279,13 +279,6 @@ with DAG(
         )
 
         ExternalTaskMarker(
-            task_id="bqetl_data_observability_test_data_copy__wait_for_checks__fail_fenix_derived__firefox_android_clients__v1",
-            external_dag_id="bqetl_data_observability_test_data_copy",
-            external_task_id="wait_for_checks__fail_fenix_derived__firefox_android_clients__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=64800)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
             task_id="bqetl_fivetran_google_ads__wait_for_checks__fail_fenix_derived__firefox_android_clients__v1",
             external_dag_id="bqetl_fivetran_google_ads",
             external_task_id="wait_for_checks__fail_fenix_derived__firefox_android_clients__v1",

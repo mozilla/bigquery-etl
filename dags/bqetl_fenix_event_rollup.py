@@ -72,20 +72,6 @@ with DAG(
         parameters=["submission_date:DATE:{{ds}}"],
     )
 
-    with TaskGroup(
-        "fenix_derived__event_types__v1_external",
-    ) as fenix_derived__event_types__v1_external:
-        ExternalTaskMarker(
-            task_id="bqetl_data_observability_test_data_copy__wait_for_fenix_derived__event_types__v1",
-            external_dag_id="bqetl_data_observability_test_data_copy",
-            external_task_id="wait_for_fenix_derived__event_types__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=64800)).isoformat() }}",
-        )
-
-        fenix_derived__event_types__v1_external.set_upstream(
-            fenix_derived__event_types__v1
-        )
-
     fenix_derived__event_types_history__v1 = bigquery_etl_query(
         task_id="fenix_derived__event_types_history__v1",
         destination_table="event_types_history_v1",
@@ -107,20 +93,6 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
-
-    with TaskGroup(
-        "fenix_derived__events_daily__v1_external",
-    ) as fenix_derived__events_daily__v1_external:
-        ExternalTaskMarker(
-            task_id="bqetl_data_observability_test_data_copy__wait_for_fenix_derived__events_daily__v1",
-            external_dag_id="bqetl_data_observability_test_data_copy",
-            external_task_id="wait_for_fenix_derived__events_daily__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=64800)).isoformat() }}",
-        )
-
-        fenix_derived__events_daily__v1_external.set_upstream(
-            fenix_derived__events_daily__v1
-        )
 
     fenix_derived__event_types__v1.set_upstream(fenix_derived__event_types_history__v1)
 

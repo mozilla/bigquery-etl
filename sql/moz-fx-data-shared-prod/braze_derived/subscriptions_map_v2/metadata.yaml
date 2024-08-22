@@ -18,6 +18,6 @@ external_data:
   options:
     skip_leading_rows: 1
 workgroup_access:
-  - role: roles/bigquery.dataViewer
-    members:
-      - workgroup:braze
+- role: roles/bigquery.dataViewer
+  members:
+    - workgroup:braze

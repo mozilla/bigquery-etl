@@ -235,7 +235,7 @@ fields:
     type: INTEGER
   - mode: NULLABLE
     name: pocket_received_rank
-    type: INTEGER
+    type: STRING
   - name: pocket_scheduled_corpus_item_id
     type: STRING
     mode: NULLABLE

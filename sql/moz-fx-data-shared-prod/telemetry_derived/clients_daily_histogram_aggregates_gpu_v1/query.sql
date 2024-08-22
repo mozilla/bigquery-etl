@@ -504,7 +504,8 @@ SELECT
       bucket_range[OFFSET(0)],
       udf_aggregate_json_sum(value)
     )
-  ) AS histogram_aggregates
+  ) AS histogram_aggregates,
+  MAX(profile_group_id) AS profile_group_id
 FROM
   aggregated
 GROUP BY

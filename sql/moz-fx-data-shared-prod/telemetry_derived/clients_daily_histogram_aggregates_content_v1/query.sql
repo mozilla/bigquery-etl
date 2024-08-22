@@ -59,6 +59,7 @@ histograms AS (
     app_version,
     app_build_id,
     channel,
+    profile_group_id,
     ARRAY<
       STRUCT<
         metric STRING,
@@ -11501,6 +11502,7 @@ filtered_aggregates AS (
     submission_date,
     sample_id,
     client_id,
+    profile_group_id,
     os,
     app_version,
     app_build_id,
@@ -11529,6 +11531,7 @@ aggregated AS (
     metric,
     metric_type,
     process,
+    max(profile_group_id) AS profile_group_id,
     ARRAY_AGG(bucket_range) AS bucket_range,
     ARRAY_AGG(value) AS value
   FROM
@@ -11548,6 +11551,7 @@ aggregated AS (
 SELECT
   sample_id,
   client_id,
+  profile_group_id,
   submission_date,
   os,
   app_version,
@@ -11581,4 +11585,6 @@ GROUP BY
   4,
   5,
   6,
-  7
+  7,
+  8,
+  9

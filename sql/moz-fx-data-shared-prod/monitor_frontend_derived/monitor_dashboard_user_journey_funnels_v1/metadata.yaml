@@ -21,6 +21,7 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
+  - workgroup:dataops-managed/external-fides
 references:
   query.sql:
   - mozdata.monitor_frontend.events_unnested

@@ -2387,7 +2387,9 @@ SELECT
       metrics.counter.use_counter_css_doc_css_position_try_fallbacks,
       metrics.counter.use_counter_css_page_css_position_try_fallbacks,
       metrics.counter.use_counter_css_doc_css_position_area,
-      metrics.counter.use_counter_css_page_css_position_area
+      metrics.counter.use_counter_css_page_css_position_area,
+      metrics.counter.use_counter_css_doc_css_view_transition_name,
+      metrics.counter.use_counter_css_page_css_view_transition_name
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,

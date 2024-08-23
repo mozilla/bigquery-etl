@@ -257,7 +257,7 @@ pocket_events AS (
       event_name = 'thumb_voting_interaction'
       AND mozfun.map.get_key(event_details, "thumbs_down") = "true"
     ) AS pocket_thumbs_down,
-    mozfun.map.get_key(event_details, "received_rank") AS pocket_received_rank,
+    CAST(mozfun.map.get_key(event_details, "received_rank") AS INT) AS pocket_received_rank,
     mozfun.map.get_key(
       event_details,
       "scheduled_corpus_item_id"
@@ -295,7 +295,15 @@ pocket_summary AS (
         organic_pocket_clicks,
         pocket_saves,
         sponsored_pocket_saves,
-        organic_pocket_saves
+        organic_pocket_saves,
+        sponsored_pocket_dismissals,
+        organic_pocket_dismissals,
+        pocket_thumbs_up,
+        pocket_thumbs_down,
+        pocket_received_rank,
+        pocket_scheduled_corpus_item_id,
+        pocket_topic,
+        pocket_matches_selected_topic
       )
     ) AS pocket_interactions
   FROM

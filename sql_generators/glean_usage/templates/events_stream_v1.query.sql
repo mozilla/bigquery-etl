@@ -103,7 +103,7 @@ WITH base AS (
     {% if has_profile_group_id %}
       metrics.uuid.legacy_telemetry_profile_group_id AS profile_group_id,
     {% else %}
-      NULL AS profile_group_id,
+      CAST(NULL AS STRING) AS profile_group_id,
     {% endif %}
   FROM
     `{{ events_view }}`

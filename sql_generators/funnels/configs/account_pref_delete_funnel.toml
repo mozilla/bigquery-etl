@@ -1,0 +1,81 @@
+destination_dataset = "accounts_frontend_derived"
+platform = "accounts_frontend"
+owners = ["ksiegler@mozilla.org"]  # optional; users getting notification if funnel run fails
+version = "1"
+start_date = "2024-07-25"
+
+[funnels]
+
+[funnels.accounts_pref_delete_account]
+
+friendly_name = "Login Funnel Engagement with Password Field"
+description = "Engagement with password field"
+steps = ["delete_account_view", "delete_account_engage", "delete_account_submit", "delete_account_password_view", "delete_account_password_submit", "account_deleted"]
+
+[steps]
+
+[steps.delete_account_view]
+friendly_name = "Delete Account Step 1 View"
+description = "View of the delete account form for step 1"
+data_source = "events_stream_frontend"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'delete_account.view' AND metrics.string.session_flow_id != ''"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.delete_account_engage]
+friendly_name = "Delete Account Step 1 Engage"
+description = "Engagement with checkboxes on step 1 of the delete account funnel"
+data_source = "events_stream_frontend"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'delete_account.engage' AND metrics.string.session_flow_id != ''"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.delete_account_submit]
+friendly_name = "Submit Delete Account Step 1 View"
+description = "Submit step 1 of the delete account form"
+data_source = "events_stream_frontend"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'delete_account.submit' AND metrics.string.session_flow_id != ''"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.delete_account_password_view]
+friendly_name = "Enter Password View"
+description = "View of the enter password form of step 2 of the delete account funnel"
+data_source = "events_stream_frontend"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'delete_account.password_view' AND metrics.string.session_flow_id != ''"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.delete_account_password_submit]
+friendly_name = "Enter Password Submit"
+description = "Submit the enter password form of step 2 of the delete account funnel"
+data_source = "events_stream_frontend"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'delete_account.password_submit' AND metrics.string.session_flow_id != ''"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.account_deleted]
+friendly_name = "Account Deleted"
+description = "Account successfully deleted"
+data_source = "events_stream_backend"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'account.delete_complete' AND metrics.string.session_flow_id != ''"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[data_sources]
+
+[data_sources.events_stream_frontend]
+from_expression = "mozdata.accounts_frontend.events_stream"
+submission_date_column = "DATE(submission_timestamp)"
+client_id_column = "metrics.string.account_user_id_sha256"
+
+[data_sources.events_stream_backend]
+from_expression = "mozdata.accounts_backend.events_stream"
+submission_date_column = "DATE(submission_timestamp)"
+client_id_column = "metrics.string.account_user_id_sha256"

@@ -28,12 +28,12 @@ WITH fxa_content_auth_stdout_events_live AS (
     AND jsonPayload.fields.event_type IS NOT NULL
   UNION ALL
   SELECT
-    PARSE_DATE('%y%m%d', _TABLE_SUFFIX) AS submission_date,
+    DATE(`timestamp`) AS submission_date,
     JSON_VALUE(jsonPayload.fields.user_properties, '$.flow_id') AS flow_id,
     `timestamp`,
     TO_HEX(SHA256(jsonPayload.fields.user_id)) AS fxa_uid,
   FROM
-    `moz-fx-fxa-nonprod-375e.fxa_stage_logs.stdout_20*`
+    `moz-fx-fxa-nonprod-375e.fxa_stage_logs.stdout`
   WHERE
     jsonPayload.type = 'amplitudeEvent'
     AND jsonPayload.fields.event_type IS NOT NULL

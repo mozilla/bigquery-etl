@@ -8,7 +8,7 @@ import time
 from functools import cached_property
 from pathlib import Path
 from textwrap import dedent
-from typing import Optional
+from typing import Any, Optional
 
 import attr
 import sqlparse
@@ -42,6 +42,7 @@ class View:
     dataset: str = attr.ib()
     project: str = attr.ib()
     partition_column: Optional[str] = attr.ib(None)
+    id_token: Optional[Any] = attr.ib(None)
 
     @path.validator
     def validate_path(self, attribute, value):
@@ -219,7 +220,9 @@ class View:
                 WHERE {schema_query_filter}
                 """
             )
-            return Schema.from_query_file(Path(self.path), content=schema_query)
+            return Schema.from_query_file(
+                Path(self.path), content=schema_query, id_token=self.id_token
+            )
         except Exception as e:
             print(f"Error dry-running view {self.view_identifier} to get schema: {e}")
             return None
@@ -349,7 +352,7 @@ class View:
 
         return False
 
-    def publish(self, target_project=None, dry_run=False):
+    def publish(self, target_project=None, dry_run=False, client=None):
         """
         Publish this view to BigQuery.
 
@@ -365,7 +368,7 @@ class View:
             any(str(self.path).endswith(p) for p in self.skip_validation())
             or self._valid_view_naming()
         ):
-            client = bigquery.Client()
+            client = client or bigquery.Client()
             sql = self.content
             target_view = self.target_view_identifier(target_project)
 

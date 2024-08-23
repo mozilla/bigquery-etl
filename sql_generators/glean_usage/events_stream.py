@@ -50,8 +50,19 @@ class EventsStreamTable(GleanTable):
         )
         self.custom_render_kwargs = {"metrics_as_struct": metrics_as_struct}
 
+        if app_id == "firefox_desktop":
+            has_profile_group_id = True
+        else:
+            has_profile_group_id = False
+        self.custom_render_kwargs = {"has_profile_group_id": has_profile_group_id}
+
         super().generate_per_app_id(
-            project_id, baseline_table, output_dir, use_cloud_function, app_info, id_token=id_token
+            project_id,
+            baseline_table,
+            output_dir,
+            use_cloud_function,
+            app_info,
+            id_token=id_token,
         )
 
     def generate_per_app(

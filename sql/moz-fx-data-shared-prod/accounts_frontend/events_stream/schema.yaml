@@ -336,3 +336,6 @@ fields:
 - name: event_extra
   type: JSON
   mode: NULLABLE
+- name: profile_group_id
+  type: STRING
+  mode: NULLABLE

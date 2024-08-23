@@ -276,23 +276,7 @@ class DryRun:
                     else:
                         raise e
 
-                if (
-                    self.project is not None
-                    and self.table is not None
-                    and self.dataset is not None
-                ):
-                    table = self.client.get_table(
-                        f"{self.project}.{self.dataset}.{self.table}"
-                    )
-                    table_metadata = {
-                        "tableType": table.table_type,
-                        "friendlyName": table.friendly_name,
-                        "schema": {
-                            "fields": [field.to_api_repr() for field in table.schema]
-                        },
-                    }
-
-                return {
+                result = {
                     "valid": True,
                     "referencedTables": [
                         ref.to_api_repr() for ref in job.referenced_tables
@@ -303,8 +287,25 @@ class DryRun:
                         .get("schema", {})
                     ),
                     "datasetLabels": dataset_labels,
-                    "tableMetadata": table_metadata,
                 }
+                if (
+                    self.project is not None
+                    and self.table is not None
+                    and self.dataset is not None
+                ):
+                    table = self.client.get_table(
+                        f"{self.project}.{self.dataset}.{self.table}"
+                    )
+                    result["tableMetadata"] = {
+                        "tableType": table.table_type,
+                        "friendlyName": table.friendly_name,
+                        "schema": {
+                            "fields": [field.to_api_repr() for field in table.schema]
+                        },
+                    }
+
+                return result
+
         except Exception as e:
             print(f"{self.sqlfile!s:59} ERROR\n", e)
             return None

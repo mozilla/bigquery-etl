@@ -35,6 +35,7 @@ categorized_events AS (
   SELECT
         -- Unique Identifiers
     client_info.client_id,
+    metrics.uuid.legacy_telemetry_profile_group_id AS profile_group_id,
     mozfun.map.get_key(event_details, "newtab_visit_id") AS newtab_visit_id,
         -- Metrics
         -- Search
@@ -169,6 +170,7 @@ aggregated_newtab_activity AS (
         -- topsite_advertiser_id,
         -- topsite_position,
     legacy_telemetry_client_id,
+    ANY_VALUE(profile_group_id) AS profile_group_id,
     ANY_VALUE(experiments) AS experiments,
     ANY_VALUE(default_private_search_engine) AS default_private_search_engine,
     ANY_VALUE(default_search_engine) AS default_search_engine,

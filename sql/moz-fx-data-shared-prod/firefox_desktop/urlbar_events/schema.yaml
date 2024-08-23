@@ -151,3 +151,8 @@ fields:
   mode: NULLABLE
   description: Annoyance option selected, if any. This uses the value of 'engagement_type'
     when 'event_action' is annoyance. Eg. 'dismiss', 'help'.
+- name: profile_group_id
+  type: STRING
+  mode: NULLABLE
+  description: A UUID identifying the profile's group on a single device and allowing
+    user-oriented correlation of data

@@ -5,6 +5,7 @@
   metrics:
     uuid:
       legacy_telemetry_client_id: legacy_id_1
+      legacy_telemetry_profile_group_id: profile_group_id_1
     string:
       newtab_newtab_category: enabled
   events:

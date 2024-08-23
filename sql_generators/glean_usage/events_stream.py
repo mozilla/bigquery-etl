@@ -48,13 +48,15 @@ class EventsStreamTable(GleanTable):
         metrics_as_struct = app_id in ConfigLoader.get(
             "generate", "glean_usage", "events_stream", "metrics_as_struct", fallback=[]
         )
-        self.custom_render_kwargs = {"metrics_as_struct": metrics_as_struct}
 
         if app_id == "firefox_desktop":
             has_profile_group_id = True
         else:
             has_profile_group_id = False
-        self.custom_render_kwargs = {"has_profile_group_id": has_profile_group_id}
+        self.custom_render_kwargs = {
+            "has_profile_group_id": has_profile_group_id,
+            "metrics_as_struct": metrics_as_struct,
+        }
 
         super().generate_per_app_id(
             project_id,

@@ -101,7 +101,7 @@ WITH base AS (
     ping_info.reason AS reason,
     from_map_experiment(ping_info.experiments) AS experiments,
     {% if has_profile_group_id %}
-      JSON_VALUE(metrics.uuid.legacy_telemetry_profile_group_id) AS profile_group_id,
+      metrics.uuid.legacy_telemetry_profile_group_id AS profile_group_id,
     {% else %}
       NULL AS profile_group_id,
     {% endif %}

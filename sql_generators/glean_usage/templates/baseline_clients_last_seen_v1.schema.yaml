@@ -51,7 +51,8 @@ fields:
   type: DATE
 - name: is_new_profile
   type: BOOLEAN
-- name: isp
+- mode: NULLABLE
+  name: isp
   type: STRING
 - mode: NULLABLE
   name: distribution_id

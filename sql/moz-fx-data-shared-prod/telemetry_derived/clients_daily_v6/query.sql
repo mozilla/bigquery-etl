@@ -180,6 +180,7 @@ clients_summary AS (
     submission_timestamp,
     client_id,
     sample_id,
+    profile_group_id,
     document_id,
     metadata.uri.app_update_channel AS channel,
     normalized_channel,
@@ -1503,6 +1504,9 @@ aggregates AS (
           submission_timestamp ASC
       )
     ) AS startup_profile_selection_first_ping_only,
+    mozfun.stats.mode_last(
+      ARRAY_AGG(profile_group_id ORDER BY submission_timestamp)
+    ) AS profile_group_id,
     SUM(
       scalar_parent_browser_ui_interaction_textrecognition_error
     ) AS scalar_parent_browser_ui_interaction_textrecognition_error_sum,

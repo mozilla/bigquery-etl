@@ -10,6 +10,7 @@ from multiprocessing.pool import Pool, ThreadPool
 from traceback import print_exc
 
 import rich_click as click
+from google.cloud import bigquery
 
 from ..cli.utils import (
     parallelism_option,
@@ -19,7 +20,7 @@ from ..cli.utils import (
     sql_dir_option,
 )
 from ..config import ConfigLoader
-from ..dryrun import DryRun
+from ..dryrun import DryRun, get_id_token
 from ..metadata.parse_metadata import METADATA_FILE, Metadata
 from ..util.bigquery_id import sql_table_id
 from ..util.client_queue import ClientQueue
@@ -102,7 +103,8 @@ def validate(
     view_files = paths_matching_name_pattern(
         name, sql_dir, project_id, files=("view.sql",)
     )
-    views = [View.from_file(f) for f in view_files]
+    id_token = get_id_token()
+    views = [View.from_file(f, id_token=id_token) for f in view_files]
 
     with Pool(parallelism) as p:
         result = p.map(_view_is_valid, views)
@@ -218,12 +220,13 @@ def publish(
         for view in views
     }
 
+    client = bigquery.Client()
     view_id_order = TopologicalSorter(view_id_graph).static_order()
 
     result = []
     for view_id in view_id_order:
         try:
-            result.append(views_by_id[view_id].publish(target_project, dry_run))
+            result.append(views_by_id[view_id].publish(target_project, dry_run, client))
         except Exception:
             print(f"Failed to publish view: {view_id}")
             print_exc()
@@ -239,8 +242,9 @@ def _collect_views(name, sql_dir, project_id, user_facing_only, skip_authorized)
     view_files = paths_matching_name_pattern(
         name, sql_dir, project_id, files=("view.sql",)
     )
+    id_token = get_id_token()
 
-    views = [View.from_file(f) for f in view_files]
+    views = [View.from_file(f, id_token=id_token) for f in view_files]
     if user_facing_only:
         views = [v for v in views if v.is_user_facing]
     if skip_authorized:

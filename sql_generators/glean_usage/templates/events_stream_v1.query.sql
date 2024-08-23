@@ -100,7 +100,7 @@ WITH base AS (
     client_info.client_id AS client_id,
     ping_info.reason AS reason,
     from_map_experiment(ping_info.experiments) AS experiments,
-    metrics.uuid.legacy_telemetry_profile_group_id AS profile_group_id,
+    JSON_VALUE(metrics.uuid.legacy_telemetry_profile_group_id) AS profile_group_id,
   FROM
     `{{ events_view }}`
   WHERE

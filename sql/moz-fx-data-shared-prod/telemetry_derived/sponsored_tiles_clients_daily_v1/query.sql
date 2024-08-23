@@ -244,7 +244,7 @@ SELECT
   COALESCE(sponsored_tiles_impression_count, 0) AS sponsored_tiles_impression_count,
   COALESCE(sponsored_tiles_dismissal_count, 0) AS sponsored_tiles_dismissal_count,
   COALESCE(sponsored_tiles_disable_count, 0) AS sponsored_tiles_disable_count,
-  CAST(NULL AS STRING) AS profile_group_id
+  profile_group_id
 FROM
   (SELECT * FROM unified_metrics WHERE normalized_os NOT IN ("Android", "iOS")) desktop_unified
 LEFT JOIN

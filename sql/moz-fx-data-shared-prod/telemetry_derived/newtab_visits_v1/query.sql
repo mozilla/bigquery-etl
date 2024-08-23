@@ -277,6 +277,14 @@ pocket_events AS (
     pocket_received_rank,
     pocket_scheduled_corpus_item_id,
     pocket_topic,
+    pocket_matches_selected_topic,
+    sponsored_pocket_dismissals,
+    organic_pocket_dismissals,
+    pocket_thumbs_up,
+    pocket_thumbs_down,
+    pocket_received_rank,
+    pocket_scheduled_corpus_item_id,
+    pocket_topic,
     pocket_matches_selected_topic
 ),
 pocket_summary AS (

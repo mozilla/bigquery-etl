@@ -61,9 +61,9 @@ eligible_markets_dau AS (
     # not including Mozilla Online
     AND app_name = "Firefox Desktop"
   GROUP BY
-    1,
-    2,
-    3
+    device,
+    submission_date,
+    country
   UNION ALL
   SELECT DISTINCT
     "mobile" AS device,
@@ -88,9 +88,9 @@ eligible_markets_dau AS (
     # not including Fenix MozillaOnline, BrowserStack, Klar
     AND app_name IN ("Focus iOS", "Firefox iOS", "Fenix", "Focus Android")
   GROUP BY
-    1,
-    2,
-    3
+    device,
+    submission_date,
+    country
 ),
 desktop_mobile_search_dau AS (
   SELECT
@@ -105,10 +105,10 @@ desktop_mobile_search_dau AS (
   WHERE
     submission_date = @submission_date
   GROUP BY
-    1,
-    2,
-    3,
-    4
+    submission_date,
+    partner,
+    device,
+    country
 ),
 combined_search_dau AS (
   SELECT

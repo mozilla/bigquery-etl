@@ -25,6 +25,10 @@
     "type": "STRING"
   },
   {
+    "name": "profile_group_id",
+    "type": "STRING"
+  },
+  {
     "name": "created",
     "type": "STRING"
   },

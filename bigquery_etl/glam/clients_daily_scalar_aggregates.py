@@ -31,9 +31,7 @@ def render_main(**kwargs):
     return reformat(main_sql.render(**kwargs))
 
 
-def get_labeled_metrics_sql(
-    probes: Dict[str, List[str]], value_type: str = "INT64"
-) -> str:
+def get_labeled_metrics_sql(probes: Dict[str, List[str]]) -> str:
     """Get the SQL for labeled scalar metrics."""
     probes_struct = []
     for metric_type, _probes in probes.items():
@@ -73,7 +71,7 @@ def get_unlabeled_metrics_sql(probes: Dict[str, List[str]]) -> str:
                 probe_structs.append(
                     (
                         f"('{probe}', '{metric_type}', '', '{agg_func}', "
-                        f"{agg_func}(CAST(metrics.{metric_type}.{probe}{suffix} AS INT64)))"
+                        f"{agg_func}(CAST(metrics.{metric_type}.{probe}{suffix} AS NUMERIC)))"
                     )
                 )
             probe_structs.append(

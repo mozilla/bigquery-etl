@@ -4321,6 +4321,84 @@ fields:
         helps us to understand the adoption of fetch keepalive for firefox.
 
         '
+    - name: network_system_channel_addon_status
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the status of succeeded and failed requests to .addons.mozilla.org
+
+        '
+    - name: network_system_channel_other_status
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: Counts the status of succeeded and failed requests to other mozilla.org
+        domains
+    - name: network_system_channel_remote_settings_status
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the status of succeeded and failed requests to firefox.settings.services.mozilla.com
+
+        '
+    - name: network_system_channel_success_or_failure
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the number of succeeded and failed channels with a system
+        principal to a mozilla domain. Label contains ok or failure reason.
+
+        '
+    - name: network_system_channel_telemetry_status
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the status of succeeded and failed requests to incoming.telemetry.mozilla.org
+
+        '
+    - name: network_system_channel_update_status
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the status of succeeded and failed requests to aus5.mozilla.org
+
+        '
   - name: labeled_string
     type: RECORD
     mode: NULLABLE
@@ -8815,7 +8893,7 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'The time between dispatching OnDataFinished from the socket thread
-        and processing it.
+        and processing it on main/background thread.
 
         '
     - name: networking_http_content_ondatafinished_to_onstop_delay
@@ -11271,6 +11349,50 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'The time it takes to make an OCSP request that succeeded.
+
+        '
+    - name: networking_http_content_ondatafinished_delay_2
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The time between dispatching OnDataFinished from the socket thread
+        and processing it on the background thread.
 
         '
   - name: string_list

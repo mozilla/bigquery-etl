@@ -50,6 +50,7 @@ impressions AS (
     submission_timestamp,
     client_info.client_id AS glean_client_id,
     metrics.uuid.legacy_telemetry_client_id AS legacy_telemetry_client_id,
+    metrics.uuid.legacy_telemetry_profile_group_id AS profile_group_id,
     ping_info.seq AS ping_seq,
     event.timestamp AS event_timestamp,
     normalized_channel,
@@ -199,7 +200,8 @@ SELECT
   is_tagged,
   abandon_reason,
   engagements,
-  component_impressions
+  component_impressions,
+  impressions.profile_group_id AS profile_group_id,
 FROM
   -- 1 row per impression_id
   impressions

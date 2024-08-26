@@ -258,7 +258,13 @@ SELECT
       metrics.labeled_counter.cert_verifier_crlite_vs_ocsp_result,
       metrics.labeled_counter.pdfjs_image_added,
       metrics.labeled_counter.networking_fetch_keepalive_discard_count,
-      metrics.labeled_counter.networking_fetch_keepalive_request_count
+      metrics.labeled_counter.networking_fetch_keepalive_request_count,
+      metrics.labeled_counter.network_system_channel_addon_status,
+      metrics.labeled_counter.network_system_channel_other_status,
+      metrics.labeled_counter.network_system_channel_remote_settings_status,
+      metrics.labeled_counter.network_system_channel_success_or_failure,
+      metrics.labeled_counter.network_system_channel_telemetry_status,
+      metrics.labeled_counter.network_system_channel_update_status
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -515,7 +521,8 @@ SELECT
       metrics.timing_distribution.cert_verification_time_success,
       metrics.timing_distribution.ocsp_request_time_cancel,
       metrics.timing_distribution.ocsp_request_time_failure,
-      metrics.timing_distribution.ocsp_request_time_success
+      metrics.timing_distribution.ocsp_request_time_success,
+      metrics.timing_distribution.networking_http_content_ondatafinished_delay_2
     ) AS `timing_distribution`,
     STRUCT(
       metrics.labeled_boolean.cookie_banners_normal_window_service_mode,
@@ -825,7 +832,13 @@ SELECT
       metrics.labeled_counter.cert_verifier_crlite_vs_ocsp_result,
       metrics.labeled_counter.pdfjs_image_added,
       metrics.labeled_counter.networking_fetch_keepalive_discard_count,
-      metrics.labeled_counter.networking_fetch_keepalive_request_count
+      metrics.labeled_counter.networking_fetch_keepalive_request_count,
+      metrics.labeled_counter.network_system_channel_addon_status,
+      metrics.labeled_counter.network_system_channel_other_status,
+      metrics.labeled_counter.network_system_channel_remote_settings_status,
+      metrics.labeled_counter.network_system_channel_success_or_failure,
+      metrics.labeled_counter.network_system_channel_telemetry_status,
+      metrics.labeled_counter.network_system_channel_update_status
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -1082,7 +1095,8 @@ SELECT
       metrics.timing_distribution.cert_verification_time_success,
       metrics.timing_distribution.ocsp_request_time_cancel,
       metrics.timing_distribution.ocsp_request_time_failure,
-      metrics.timing_distribution.ocsp_request_time_success
+      metrics.timing_distribution.ocsp_request_time_success,
+      metrics.timing_distribution.networking_http_content_ondatafinished_delay_2
     ) AS `timing_distribution`,
     STRUCT(
       metrics.labeled_boolean.cookie_banners_normal_window_service_mode,
@@ -1392,7 +1406,13 @@ SELECT
       metrics.labeled_counter.cert_verifier_crlite_vs_ocsp_result,
       metrics.labeled_counter.pdfjs_image_added,
       metrics.labeled_counter.networking_fetch_keepalive_discard_count,
-      metrics.labeled_counter.networking_fetch_keepalive_request_count
+      metrics.labeled_counter.networking_fetch_keepalive_request_count,
+      metrics.labeled_counter.network_system_channel_addon_status,
+      metrics.labeled_counter.network_system_channel_other_status,
+      metrics.labeled_counter.network_system_channel_remote_settings_status,
+      metrics.labeled_counter.network_system_channel_success_or_failure,
+      metrics.labeled_counter.network_system_channel_telemetry_status,
+      metrics.labeled_counter.network_system_channel_update_status
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -1649,7 +1669,8 @@ SELECT
       metrics.timing_distribution.cert_verification_time_success,
       metrics.timing_distribution.ocsp_request_time_cancel,
       metrics.timing_distribution.ocsp_request_time_failure,
-      metrics.timing_distribution.ocsp_request_time_success
+      metrics.timing_distribution.ocsp_request_time_success,
+      metrics.timing_distribution.networking_http_content_ondatafinished_delay_2
     ) AS `timing_distribution`,
     STRUCT(
       metrics.labeled_boolean.cookie_banners_normal_window_service_mode,

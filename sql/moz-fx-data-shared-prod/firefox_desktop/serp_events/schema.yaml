@@ -93,6 +93,9 @@ fields:
 - name: abandon_reason
   type: STRING
   mode: NULLABLE
+- name: profile_group_id
+  type: STRING
+  mode: NULLABLE
 - name: ad_components
   type: RECORD
   mode: REPEATED

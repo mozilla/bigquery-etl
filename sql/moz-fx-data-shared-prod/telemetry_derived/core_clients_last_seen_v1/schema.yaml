@@ -80,3 +80,6 @@ fields:
 - name: first_seen_date
   type: DATE
   mode: NULLABLE
+- name: profile_group_id
+  type: STRING
+  mode: NULLABLE

@@ -1,0 +1,222 @@
+destination_dataset = "accounts_frontend_derived"
+platform = "accounts_frontend"
+owners = ["ksiegler@mozilla.org"]  # optional; users getting notification if funnel run fails
+version = "1"
+start_date = "2024-07-25"
+
+[funnels]
+
+[funnels.delete_account]
+
+friendly_name = "Engagement with delete account section"
+description = "Engagement with delete account"
+steps = ["account_pref_view", "delete_account_engage"]
+
+[funnels.add_two_factor]
+
+friendly_name = "Engagement with add 2FA section on account settings page"
+description = "Engagement with adding 2FA"
+steps = ["account_pref_view", "add_two_factor_engage"]
+
+[funnels.device_signout]
+
+friendly_name = "Engagement with Signout section of devices"
+description = "Engagement with device signout"
+steps = ["account_pref_view", "device_signout_engage"]
+
+[funnels.google_play]
+
+friendly_name = "Engagement with Google Play logo on account settings page"
+description = "Engagement with Google Play"
+steps = ["account_pref_view", "google_play_engage"]
+
+[funnels.apple_store]
+
+friendly_name = "Engagement with Apple logo on account settings page"
+description = "Engagement with Apple App Store"
+steps = ["account_pref_view", "apple_engage"]
+
+[funnels.google_unlink]
+
+friendly_name = "Engagement with Unlink for Google on account settings page"
+description = "Engagement with Google Unlink"
+steps = ["account_pref_view", "google_unlink_engage"]
+
+[funnels.apple_unlink]
+
+friendly_name = "Engagement with Unlink for Apple on account settings page"
+description = "Engagement with Apple Unlink"
+steps = ["account_pref_view", "apple_unlink_engage"]
+
+[funnels.google_unlink_confirm]
+
+friendly_name = "Engagement with Confirmation for unlinking Google on account settings page"
+description = "Engagement with Google Unlink Confirm"
+steps = ["account_pref_view", "google_unlink_confirm_engage"]
+
+[funnels.apple_unlink_confirm]
+
+friendly_name = "Engagement with Confirmation for unlinking Apple on account settings page"
+description = "Engagement with Apple Unlink Confirm"
+steps = ["account_pref_view", "apple_unlink_confirm_engage"]
+
+[funnels.change_password]
+
+friendly_name = "Engagement with Change Password on account settings page"
+description = "Engagement with Change Password"
+steps = ["account_pref_view", "change_password_engage"]
+
+[funnels.secondary_email]
+
+friendly_name = "Engagement with Adding secondary email on account settings page"
+description = "Engagement with Secondary Email"
+steps = ["account_pref_view", "secondary_email_engage"]
+
+[funnels.display_name]
+
+friendly_name = "Engagement with Adding/Changing display name on account settings page"
+description = "Engagement with Display Name"
+steps = ["account_pref_view", "display_name_engage"]
+
+[funnels.recovery_key]
+
+friendly_name = "Engagement with Creating recovery key on account settings page"
+description = "Engagement with Recovery Key"
+steps = ["account_pref_view", "recovery_key_engage"]
+
+[steps]
+
+[steps.account_pref_view]
+friendly_name = "View of Account Settings Page"
+description = "View of the settings for Mozilla Accounts"
+data_source = "events_stream"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'account_pref.view' AND metrics.string.session_flow_id != ''"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.delete_account_engage]
+friendly_name = "Delete Account Engage"
+description = "Engagement with the delete account section on account settings page"
+data_source = "events_stream"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'delete_account.settings_submit' AND metrics.string.session_flow_id != ''"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.add_two_factor_engage]
+friendly_name = "2FA Engage"
+description = "Engagement with the add option for adding 2FA in account settings page"
+data_source = "events_stream"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'account_pref.two_step_auth_submit' AND metrics.string.session_flow_id != ''"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.device_signout_engage]
+friendly_name = "Device Signout Engage"
+description = "Engagement with device signout button in devices section"
+data_source = "events_stream"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'account_pref.device_signout' AND metrics.string.session_flow_id != ''"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.google_play_engage]
+friendly_name = "Google Play Engage"
+description = "Engagement with Google Play button on account settings page"
+data_source = "events_stream"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'account_pref.google_play_submit' AND metrics.string.session_flow_id != ''"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.apple_engage]
+friendly_name = "Apple App Store Engage"
+description = "Engagement with Apple Apple store button on account settings page"
+data_source = "events_stream"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'account_pref.apple_submit' AND metrics.string.session_flow_id != ''"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.google_unlink_engage]
+friendly_name = "Google Unlink Engage"
+description = "Engagement with the Unlink button for Google Account"
+data_source = "events_stream"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'account_pref.google_unlink_submit' AND metrics.string.session_flow_id != ''"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.apple_unlink_engage]
+friendly_name = "Apple Unlink Engage"
+description = "Engagement with Unlink button for Apple account"
+data_source = "events_stream"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'account_pref.apple_unlink_submit' AND metrics.string.session_flow_id != ''"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.google_unlink_confirm_engage]
+friendly_name = "Google Unlink Confirm Engage"
+description = "Confirm unlink of Google Account on account settings page"
+data_source = "events_stream"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'account_pref.google_unlink_submit_confirm' AND metrics.string.session_flow_id != ''"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.apple_unlink_confirm_engage]
+friendly_name = "Apple Unlink Confirm Engage"
+description = "Confirm unlink of Apple Account on account settings page"
+data_source = "events_stream"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'account_pref.apple_unlink_submit_confirm' AND metrics.string.session_flow_id != ''"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.change_password_engage]
+friendly_name = "Change Password Engage"
+description = "Engagement with change password section on account settings page"
+data_source = "events_stream"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'account_pref.change_password_submit' AND metrics.string.session_flow_id != ''"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.secondary_email_engage]
+friendly_name = "Secondary Email Engage"
+description = "Engagement with adding secondary email section on account settings page"
+data_source = "events_stream"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'account_pref.secondary_email_submit' AND metrics.string.session_flow_id != ''"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.display_name_engage]
+friendly_name = "Display Name Engage"
+description = "Engagement with changing display name on account settings page"
+data_source = "events_stream"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'account_pref.display_name_submit' AND metrics.string.session_flow_id != ''"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.recovery_key_engage]
+friendly_name = "Recovery Key Engage"
+description = "Engagement with adding recovery key section on account settings page"
+data_source = "events_stream"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'account_pref.recovery_key_submit' AND metrics.string.session_flow_id != ''"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[data_sources]
+
+[data_sources.events_stream]
+from_expression = "mozdata.accounts_frontend.events_stream"
+submission_date_column = "DATE(submission_timestamp)"
+client_id_column = "metrics.string.account_user_id_sha256"
+
+

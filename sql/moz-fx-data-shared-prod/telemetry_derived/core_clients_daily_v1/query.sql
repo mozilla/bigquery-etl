@@ -56,6 +56,9 @@ windowed AS (
     `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(campaign_id) OVER w1) AS campaign_id,
     `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(default_browser) OVER w1) AS default_browser,
     `moz-fx-data-shared-prod.udf.mode_last`(
+      ARRAY_AGG(profile_group_id) OVER w1
+    ) AS profile_group_id,
+    `moz-fx-data-shared-prod.udf.mode_last`(
       ARRAY_AGG(show_tracker_stats_share) OVER w1
     ) AS show_tracker_stats_share,
     `moz-fx-data-shared-prod.udf.mode_last`(

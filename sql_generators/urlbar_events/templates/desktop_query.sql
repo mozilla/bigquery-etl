@@ -53,6 +53,7 @@ WITH events_unnested AS (
     DATE(submission_timestamp) AS submission_date,
     client_info.client_id AS glean_client_id,
     metrics.uuid.legacy_telemetry_client_id AS legacy_telemetry_client_id,
+    metrics.uuid.legacy_telemetry_profile_group_id AS profile_group_id,
     sample_id,
     event.name AS event_name,
     timestamp AS event_timestamp,

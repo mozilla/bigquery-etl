@@ -164,6 +164,21 @@ with DAG(
         depends_on_past=False,
     )
 
+    accounts_frontend_derived__accounts_pref_engagement__v1 = bigquery_etl_query(
+        task_id="accounts_frontend_derived__accounts_pref_engagement__v1",
+        destination_table="accounts_pref_engagement_v1",
+        dataset_id="accounts_frontend_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="ksiegler@mozilla.org",
+        email=[
+            "ascholtz@mozilla.com",
+            "ksiegler@mozilla.org",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     accounts_frontend_derived__email_first_reg_login_funnels_by_service__v1 = bigquery_etl_query(
         task_id="accounts_frontend_derived__email_first_reg_login_funnels_by_service__v1",
         destination_table="email_first_reg_login_funnels_by_service_v1",
@@ -323,6 +338,10 @@ with DAG(
     )
 
     accounts_frontend_derived__account_pref_delete_funnel__v1.set_upstream(
+        wait_for_accounts_frontend_derived__events_stream__v1
+    )
+
+    accounts_frontend_derived__accounts_pref_engagement__v1.set_upstream(
         wait_for_accounts_frontend_derived__events_stream__v1
     )
 

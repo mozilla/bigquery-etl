@@ -77,3 +77,6 @@ fields:
 - name: is_new_profile
   type: BOOLEAN
   mode: NULLABLE
+- name: profile_group_id
+  type: STRING
+  mode: NULLABLE

@@ -12,7 +12,7 @@ WITH {{ new_version_cte }} AS (
   {{ shredded }}
 )
 SELECT
-    {{ final_select}}
+    {{ final_select }}
 FROM
     {{ new_version_cte }}
 UNION ALL

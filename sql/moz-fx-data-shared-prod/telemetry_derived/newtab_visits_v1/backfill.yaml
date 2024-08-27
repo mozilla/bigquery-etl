@@ -4,7 +4,7 @@
   reason: Include telemetry in derived tables necessary for running experiments.
   watchers:
     - mbowerman@mozilla.com
-  status: Initiate
+  status: Complete
 
 2024-04-12:
   start_date: 2022-11-01

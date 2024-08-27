@@ -2,6 +2,7 @@
 - submission_timestamp: 2020-05-01 09:13:09.842719 UTC
   normalized_channel: Other
   normalized_os: Android
+  normalized_os_version: "29.0"
   sample_id: 1
   client_info:
     android_sdk_version: "29"

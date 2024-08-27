@@ -275,6 +275,18 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    wait_for_search_derived__mobile_search_aggregates__v1 = ExternalTaskSensor(
+        task_id="wait_for_search_derived__mobile_search_aggregates__v1",
+        external_dag_id="bqetl_mobile_search",
+        external_task_id="search_derived__mobile_search_aggregates__v1",
+        execution_delta=datetime.timedelta(seconds=9000),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     search_derived__desktop_search_aggregates_by_userstate__v1 = bigquery_etl_query(
         task_id="search_derived__desktop_search_aggregates_by_userstate__v1",
         destination_table="desktop_search_aggregates_by_userstate_v1",
@@ -482,13 +494,17 @@ with DAG(
     )
 
     search_derived__search_revenue_levers_daily__v1.set_upstream(
-        wait_for_copy_deduplicate_all
+        wait_for_checks__fail_telemetry_derived__clients_last_seen__v2
     )
 
     search_derived__search_revenue_levers_daily__v1.set_upstream(
-        wait_for_search_derived__mobile_search_clients_daily__v1
+        wait_for_search_derived__mobile_search_aggregates__v1
     )
 
     search_derived__search_revenue_levers_daily__v1.set_upstream(
-        wait_for_search_derived__search_clients_daily__v8
+        wait_for_search_derived__search_aggregates__v8
+    )
+
+    search_derived__search_revenue_levers_daily__v1.set_upstream(
+        search_derived__search_dau_aggregates__v1
     )

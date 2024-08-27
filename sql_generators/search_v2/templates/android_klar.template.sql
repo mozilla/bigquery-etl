@@ -10,7 +10,7 @@ baseline_{{ namespace }} AS (
         '{{ channel }}' AS channel,
         normalized_os AS os,
         client_info.locale,
-        client_info.android_sdk_version AS os_version,
+        normalized_os_version AS os_version,
         metrics.string.browser_default_search_engine AS default_search_engine,
         CAST(NULL AS STRING) AS default_search_engine_submission_url,
         sample_id,

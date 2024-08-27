@@ -3,6 +3,7 @@
   normalized_channel: Other
   normalized_os: Android
   sample_id: 1
+  normalized_os_version: "29.0"
   client_info:
     android_sdk_version: "29"
     app_display_version: Unknown

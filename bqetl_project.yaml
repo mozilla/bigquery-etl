@@ -219,6 +219,10 @@ routine:
     - sql/moz-fx-data-shared-prod/udf/main_summary_scalars/udf.sql
   example_dir: examples
   project: mozfun
+  test_projects:
+  - sql/mozfun
+  - sql/moz-fx-data-shared-prod
+  - sql/bigquery-etl-integration-test
 
 view:
   validation:

@@ -126,6 +126,10 @@
     "name": "normalized_os"
   },
   {
+    "type": "STRING",
+    "name": "normalized_os_version"
+  },
+  {
     "fields": [
       {
         "type": "STRING",

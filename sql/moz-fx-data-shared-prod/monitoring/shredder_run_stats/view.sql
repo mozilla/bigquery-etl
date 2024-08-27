@@ -9,9 +9,9 @@ SELECT
   TIMESTAMP_DIFF(MAX(end_time), MIN(start_time), HOUR) / 24 AS run_time_days,
   SUM(total_slot_ms) / 1000 / TIMESTAMP_DIFF(MAX(end_time), MIN(start_time), SECOND) AS avg_slots,
   CASE
-    WHEN task_id LIKE 'moz-fx-data-shared-prod.telemetry_stable.main_v5%'
+    WHEN task_id LIKE 'moz-fx-data-shared-prod.telemetry_stable.main_v%'
       THEN 'main'
-    WHEN task_id LIKE 'moz-fx-data-shared-prod.telemetry_stable.main_use_counter_v4%'
+    WHEN task_id LIKE 'moz-fx-data-shared-prod.telemetry_stable.main_use_counter_v%'
       THEN 'main_use_counters'
     WHEN task_id LIKE 'moz-fx-data-experiments.%'
       THEN 'experiments'

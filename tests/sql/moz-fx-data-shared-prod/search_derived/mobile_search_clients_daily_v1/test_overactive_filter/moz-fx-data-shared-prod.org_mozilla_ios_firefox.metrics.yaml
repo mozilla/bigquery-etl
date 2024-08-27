@@ -5,6 +5,7 @@
   normalized_channel: release
   normalized_os: iOS
   sample_id: 1
+  normalized_os_version: "35.0"
   client_info:
     app_display_version: "68.2.1"
     client_id: release_ios

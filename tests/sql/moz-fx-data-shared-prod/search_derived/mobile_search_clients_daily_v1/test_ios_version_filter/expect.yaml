@@ -18,7 +18,7 @@
   channel: release
   country: US
   os: iOS
-  os_version: "13"
+  os_version: "13.0"
   os_version_major: 13
   os_version_minor: 0
   profile_creation_date: 18201
@@ -37,3 +37,4 @@
   source: actionbar
   engine: engine1
   search_count: 1
+  os_version: "13.0"

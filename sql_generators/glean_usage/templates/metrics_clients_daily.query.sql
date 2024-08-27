@@ -22,7 +22,9 @@
       {% endfor -%}
     {% endif -%}
     {% if app_name == "firefox_desktop" -%}
-      ANY_VALUE(metrics.uuid.legacy_telemetry_profile_group_id) AS profile_group_id
+      ANY_VALUE(metrics.uuid.legacy_telemetry_profile_group_id) AS profile_group_id,
+    {% else -%}
+      CAST(NULL AS STRING) AS profile_group_id,
     {% endif -%}
   FROM
     `{{ dataset }}.metrics` AS m

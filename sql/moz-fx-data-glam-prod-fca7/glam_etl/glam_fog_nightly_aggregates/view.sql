@@ -28,6 +28,20 @@ CREATE OR REPLACE VIEW
           AND metric NOT LIKE r"%manager\_message\_size%"
           AND metric NOT LIKE r"%dropped\_frames\_proportion%"
         )
+        AND metric NOT IN (
+          "browser.search.ad_clicks",
+          "browser.search.in_content",
+          "browser.search.with_ads",
+          "fx_suggest.block_id",
+          "metrics.search_count",
+          "nimbus_health.fetch_experiments_time",
+          "shopping.product_page_visits",
+          "shopping.settings.component_opted_out",
+          "shopping.settings.disabled_ads",
+          "shopping.settings.nimbus_disabled_shopping",
+          "shopping.settings.user_has_onboarded",
+          "top_sites.contile_tile_id"
+        )
         AND metric_type != "boolean"
     ),
     calculated_percentiles AS (

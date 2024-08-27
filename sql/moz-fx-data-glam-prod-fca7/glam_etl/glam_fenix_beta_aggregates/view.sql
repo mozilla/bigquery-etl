@@ -28,6 +28,27 @@ CREATE OR REPLACE VIEW
           AND metric NOT LIKE r"%manager\_message\_size%"
           AND metric NOT LIKE r"%dropped\_frames\_proportion%"
         )
+        AND metric NOT IN (
+          "characteristics.color_depth",
+          "characteristics.color_gamut",
+          "characteristics.color_scheme",
+          "characteristics.inverted_colors",
+          "characteristics.max_touch_points",
+          "characteristics.missing_fonts",
+          "characteristics.prefers_contrast",
+          "characteristics.prefers_reduced_motion",
+          "characteristics.prefers_reduced_transparency",
+          "characteristics.prefs_media_eme_enabled",
+          "characteristics.prefs_zoom_text_only",
+          "characteristics.processor_count",
+          "characteristics.screen_height",
+          "characteristics.screen_width",
+          "characteristics.submission_schema",
+          "characteristics.target_frame_rate",
+          "characteristics.video_dynamic_range",
+          "pocket.shim",
+          "shopping.product_page_visits"
+        )
         AND metric_type != "boolean"
     ),
     calculated_percentiles AS (

@@ -228,6 +228,17 @@ with DAG(
         depends_on_past=False,
     )
 
+    monitoring_derived__shredder_per_job_stats__v1 = bigquery_etl_query(
+        task_id="monitoring_derived__shredder_per_job_stats__v1",
+        destination_table="shredder_per_job_stats_v1",
+        dataset_id="monitoring_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="bewu@mozilla.com",
+        email=["ascholtz@mozilla.com", "bewu@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     monitoring_derived__shredder_rows_deleted__v1 = GKEPodOperator(
         task_id="monitoring_derived__shredder_rows_deleted__v1",
         arguments=[
@@ -339,6 +350,14 @@ with DAG(
 
     monitoring_derived__event_monitoring_aggregates__v1.set_upstream(
         wait_for_copy_deduplicate_all
+    )
+
+    monitoring_derived__shredder_per_job_stats__v1.set_upstream(
+        monitoring_derived__jobs_by_organization__v1
+    )
+
+    monitoring_derived__shredder_per_job_stats__v1.set_upstream(
+        monitoring_derived__shredder_rows_deleted__v1
     )
 
     monitoring_derived__stable_and_derived_table_sizes__v1.set_upstream(

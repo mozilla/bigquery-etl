@@ -269,7 +269,7 @@ pocket_events AS (
     events_unnested
   WHERE
     event_category = 'pocket'
-    AND event_name IN ('impression', 'click', 'save', 'dismiss')
+    AND event_name IN ('impression', 'click', 'save', 'dismiss', 'thumb_voting_interaction')
   GROUP BY
     newtab_visit_id,
     pocket_story_position,

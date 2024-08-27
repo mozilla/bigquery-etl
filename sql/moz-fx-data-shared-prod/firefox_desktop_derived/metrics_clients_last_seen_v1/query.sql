@@ -25,6 +25,7 @@ SELECT
     _previous.days_sent_metrics_ping_bits,
     _current.days_sent_metrics_ping_bits
   ) AS days_sent_metrics_ping_bits,
+  _current.profile_group_id,
 FROM
   _previous
 FULL JOIN

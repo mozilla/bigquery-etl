@@ -5,6 +5,7 @@ SELECT
   "release" AS normalized_channel,
   COUNT(*) AS n_metrics_ping,
   1 AS days_sent_metrics_ping_bits,
+  ANY_VALUE(metrics.uuid.legacy_telemetry_profile_group_id) AS profile_group_id
 FROM
   `moz-fx-data-shared-prod.firefox_desktop.metrics` AS m
 WHERE

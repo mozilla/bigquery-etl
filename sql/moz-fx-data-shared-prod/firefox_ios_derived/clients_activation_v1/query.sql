@@ -38,7 +38,7 @@ clients_search AS (
     channel,
     SUM(search_count) AS search_count
   FROM
-    `moz-fx-data-shared-prod.search_derived.mobile_search_clients_daily_v1`
+    `moz-fx-data-shared-prod.search.mobile_search_clients_daily`
   WHERE
     (submission_date BETWEEN DATE_SUB(@submission_date, INTERVAL 3 DAY) AND @submission_date)
     AND os = 'iOS'

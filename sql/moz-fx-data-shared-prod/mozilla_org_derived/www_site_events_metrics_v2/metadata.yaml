@@ -1,11 +1,12 @@
-friendly_name: WWW Site Page Metrics V2
+friendly_name: WWW Site Events Metrics V2
 description: |-
-  Aggregated metrics per page on www.mozilla.org from Google Analytics 4
+  Aggregated metrics on non-page view events on www.mozilla.org
+  Sourced from Google Analytics 4 (GA4) data
 owners:
-- kwindau@mozilla.com
+- mhirose@mozilla.com
 labels:
   incremental: true
-  owner1: kwindau
+  owner1: mhirose
   dag: bqetl_google_analytics_derived_ga4
 scheduling:
   dag_name: bqetl_google_analytics_derived_ga4
@@ -18,10 +19,10 @@ bigquery:
   range_partitioning: null
   clustering:
     fields:
-    - page_name
-    - locale
     - country
-    - medium
+    - device_category
+    - event_category
+    - browser
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

@@ -1,0 +1,216 @@
+fields:
+- name: date
+  type: DATE
+  mode: NULLABLE
+  description: Date of the visit
+- name: visit_identifier
+  type: STRING
+  mode: NULLABLE
+  description: Visit Identifier - Uniquely identifies a visit; concatenation of user_pseudo_id
+    and ga_session_id
+- name: full_visitor_id
+  type: STRING
+  mode: NULLABLE
+  description: Full Visitor ID - Uniquely identifies a visitor - this is the same
+    as GA4 user_pseudo_id
+- name: visit_start_time
+  type: INTEGER
+  mode: NULLABLE
+  description: Visit Start Time - The event timestamp from the first event in the
+    visit
+- name: page_path
+  type: STRING
+  mode: NULLABLE
+  description: Page Path
+- name: page_path_level1
+  type: STRING
+  mode: NULLABLE
+  description: Page Path Level 1
+- name: hit_type
+  type: STRING
+  mode: NULLABLE
+  description: Hit Type - PAGE if event_name is a page view, EVENT for all other event
+    types
+- name: is_exit
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Is Exit - The specific page view event that is considered the exit
+    to the visit
+- name: is_entrance
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Is Entrance - The specific page view event that is considered the entrance
+    to the visit
+- name: hit_number
+  type: INTEGER
+  mode: NULLABLE
+  description: Hit Number - Densely ranked, since there can be multiple events at
+    the same time for a user
+- name: hit_timestamp
+  type: INTEGER
+  mode: NULLABLE
+  description: Hit Timestamp - Same as the "Event Timestamp"
+- name: event_category
+  type: STRING
+  mode: NULLABLE
+  description: Event Category
+- name: event_name
+  type: STRING
+  mode: NULLABLE
+  description: Event Name
+- name: event_label
+  type: STRING
+  mode: NULLABLE
+  description: Event Label
+- name: event_action
+  type: STRING
+  mode: NULLABLE
+  description: Event Action
+- name: device_category
+  type: STRING
+  mode: NULLABLE
+  description: Device Category - The device category the visitor used to visit the
+    site
+- name: operating_system
+  type: STRING
+  mode: NULLABLE
+  description: Operating System - The operating system the visitor used to visit the
+    site
+- name: language
+  type: STRING
+  mode: NULLABLE
+  description: Language - The language the visiting device was using when it visited
+    the site
+- name: browser
+  type: STRING
+  mode: NULLABLE
+  description: Browser - The browser the visiting device was using when it visited
+    the site
+- name: browser_version
+  type: STRING
+  mode: NULLABLE
+  description: Browser Version - The version that the visiting device's browser was
+    using when it visited the site
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: Country - The country from which events were reported, based on IP
+    address
+- name: traffic_source_name
+  type: STRING
+  mode: NULLABLE
+  description: Traffic Source - Name
+- name: traffic_source_medium
+  type: STRING
+  mode: NULLABLE
+  description: Traffic Source - Medium
+- name: traffic_source_source
+  type: STRING
+  mode: NULLABLE
+  description: Traffic Source - Source
+- name: manual_campaign_id
+  type: STRING
+  mode: NULLABLE
+  description: Manual Campaign ID (comes from collected traffic source)
+- name: manual_term
+  type: STRING
+  mode: NULLABLE
+  description: Manual Term (comes from collected traffic source)
+- name: source
+  type: STRING
+  mode: NULLABLE
+  description: Source - Referring partner domain (comes from collected traffic source)
+- name: medium
+  type: STRING
+  mode: NULLABLE
+  description: Medium - Category of the source, such as 'organic' for a search engine
+    (comes from collected traffic source)
+- name: campaign
+  type: STRING
+  mode: NULLABLE
+  description: Campaign - Identifier for the marketing campaign (comes from collected
+    traffic source)
+- name: ad_content
+  type: STRING
+  mode: NULLABLE
+  description: Ad Content - Indicates the particular link within a campaign (comes
+    from collected traffic source)
+- name: visits
+  type: INTEGER
+  mode: NULLABLE
+  description: Visits - A flag that indicates if the hit belongs to a visit that had
+    1 or more engaged event during the visit
+- name: bounces
+  type: INTEGER
+  mode: NULLABLE
+  description: Bounces - Indicator that displays a 1 for each hit in a bounce session
+    (a session with only 1 page view)
+- name: hit_time
+  type: FLOAT
+  mode: NULLABLE
+  description: Hit Time - The number of seconds after the visitStartTime that the
+    hit was registered
+- name: engagement_time
+  type: FLOAT
+  mode: NULLABLE
+  description: Engagement Time - Engagement Time in Seconds
+- name: first_interaction
+  type: INTEGER
+  mode: NULLABLE
+  description: First Interaction - The first hit number in the visit associated with
+    an engaged session event
+- name: last_interaction
+  type: FLOAT
+  mode: NULLABLE
+  description: Last Interaction - The last hit number in the visit associated with
+    an engaged session event
+- name: entrances
+  type: INTEGER
+  mode: NULLABLE
+  description: Entrances - Denotes which pageview was the first in the session
+- name: exits
+  type: INTEGER
+  mode: NULLABLE
+  description: Exits - Denotes which page view was the last in the session
+- name: event_id
+  type: STRING
+  mode: NULLABLE
+  description: Event ID
+- name: page_level_1
+  type: STRING
+  mode: NULLABLE
+  description: Page Level 1
+- name: page_level_2
+  type: STRING
+  mode: NULLABLE
+  description: Page Level 2
+- name: page_level_3
+  type: STRING
+  mode: NULLABLE
+  description: Page Level 3
+- name: page_level_4
+  type: STRING
+  mode: NULLABLE
+  description: Page Level 4
+- name: page_level_5
+  type: STRING
+  mode: NULLABLE
+  description: Page Level 5
+- name: page_name
+  type: STRING
+  mode: NULLABLE
+  description: Page Name - Consists of page levels 1 to 5 concatenated together
+- name: single_page_session
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Single Page Session - Indicator if the hit belongs to a single page
+    session
+- name: product_type
+  type: STRING
+  mode: NULLABLE
+  description: Product Type - For product download events, what product type was downloaded
+- name: platform_type
+  type: STRING
+  mode: NULLABLE
+  description: Platform Type - For product download events, what platform type was
+    the download requested from

@@ -1,0 +1,119 @@
+fields:
+- name: date
+  type: DATE
+  mode: NULLABLE
+  description: The date of the visit
+- name: page
+  type: STRING
+  mode: NULLABLE
+  description: Page
+- name: locale
+  type: STRING
+  mode: NULLABLE
+  description: Locale
+- name: page_name
+  type: STRING
+  mode: NULLABLE
+  description: Page Name
+- name: page_level_1
+  type: STRING
+  mode: NULLABLE
+  description: Page Level 1
+- name: page_level_2
+  type: STRING
+  mode: NULLABLE
+  description: Page Level 2
+- name: page_level_3
+  type: STRING
+  mode: NULLABLE
+  description: Page Level 3
+- name: page_level_4
+  type: STRING
+  mode: NULLABLE
+  description: Page Level 4
+- name: page_level_5
+  type: STRING
+  mode: NULLABLE
+  description: Page Level 5
+- name: device_category
+  type: STRING
+  mode: NULLABLE
+  description: Device Category - The device category the visitor used to visit the
+    site
+- name: operating_system
+  type: STRING
+  mode: NULLABLE
+  description: Operating System - The device operating system that the visitor used
+    to visit the site
+- name: language
+  type: STRING
+  mode: NULLABLE
+  description: Language
+- name: browser
+  type: STRING
+  mode: NULLABLE
+  description: Browser
+- name: browser_version
+  type: STRING
+  mode: NULLABLE
+  description: Browser Version
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: Country
+- name: source
+  type: STRING
+  mode: NULLABLE
+  description: Source
+- name: medium
+  type: STRING
+  mode: NULLABLE
+  description: Medium
+- name: campaign
+  type: STRING
+  mode: NULLABLE
+  description: Campaign
+- name: ad_content
+  type: STRING
+  mode: NULLABLE
+  description: Ad Content
+- name: pageviews
+  type: INTEGER
+  mode: NULLABLE
+  description: Page Views
+- name: unique_pageviews
+  type: INTEGER
+  mode: NULLABLE
+  description: Unique Page Views
+- name: entrances
+  type: INTEGER
+  mode: NULLABLE
+  description: Entrances
+- name: exits
+  type: INTEGER
+  mode: NULLABLE
+  description: Exits
+- name: non_exit_pageviews
+  type: INTEGER
+  mode: NULLABLE
+  description: Non Exit Page Views
+- name: total_time_on_page
+  type: FLOAT
+  mode: NULLABLE
+  description: Total Time On Page
+- name: total_events
+  type: INTEGER
+  mode: NULLABLE
+  description: Total Events
+- name: unique_events
+  type: INTEGER
+  mode: NULLABLE
+  description: Unique Events
+- name: single_page_sessions
+  type: INTEGER
+  mode: NULLABLE
+  description: Single Page Sessions
+- name: bounces
+  type: INTEGER
+  mode: NULLABLE
+  description: Bounces

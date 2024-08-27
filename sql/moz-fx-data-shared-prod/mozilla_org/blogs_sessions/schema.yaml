@@ -2,7 +2,12 @@ fields:
 - name: date
   type: DATE
   mode: NULLABLE
-  description: Date of the entrance to the visit
+  description: Date of the visit
+- name: visit_identifier
+  type: STRING
+  mode: NULLABLE
+  description: Visit Identifier - Uniquely identifies a visit; concatenation of user_pseudo_id
+    and ga_session_id
 - name: device_category
   type: STRING
   mode: NULLABLE
@@ -16,21 +21,18 @@ fields:
 - name: browser
   type: STRING
   mode: NULLABLE
-  description: Browser - The browser the visitor used to visit the site
+  description: Browser - The browser the visiting device was using when it visited
+    the site
 - name: language
   type: STRING
   mode: NULLABLE
-  description: Language - Language of visitor's device
+  description: Language - The language the visiting device was using when it visited
+    the site
 - name: country
   type: STRING
   mode: NULLABLE
   description: Country - The country from which events were reported, based on IP
     address
-- name: standardized_country_name
-  type: STRING
-  mode: NULLABLE
-  description: Standardized Country Name - The country from which events were reported,
-    based on IP address
 - name: source
   type: STRING
   mode: NULLABLE
@@ -54,28 +56,9 @@ fields:
 - name: subblog
   type: STRING
   mode: NULLABLE
-  description: Subblog
-- name: landing_page
-  type: STRING
-  mode: NULLABLE
-  description: Landing Page
-- name: cleaned_landing_page
-  type: STRING
-  mode: NULLABLE
-  description: Cleaned Landing Page - The URL portion prior to any question mark symbol
+  description: Sub-Blog
 - name: sessions
   type: INTEGER
   mode: NULLABLE
-  description: Sessions - The number of sessions with an entrances value of 1
-- name: downloads
-  type: INTEGER
-  mode: NULLABLE
-  description: Downloads - The number of download click events
-- name: social_share
-  type: INTEGER
-  mode: NULLABLE
-  description: Social Shares - The number of social share events
-- name: newsletter_subscription
-  type: INTEGER
-  mode: NULLABLE
-  description: Newsletter Subscription - The number of newsletter subscribe events
+  description: Number of Sessions - The number of sessions with an entrances value
+    of 1

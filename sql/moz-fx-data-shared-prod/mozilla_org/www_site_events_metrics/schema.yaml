@@ -1,0 +1,98 @@
+fields:
+- name: date
+  type: DATE
+  mode: NULLABLE
+  description: Date of the visit
+- name: event_category
+  type: STRING
+  mode: NULLABLE
+  description: Event Category - Since event_category doesn't exist in GA4, this is
+    event_name
+- name: event_action
+  type: STRING
+  mode: NULLABLE
+  description: Event Action - Since event_action doesn't exist in GA4, this is event_name
+- name: event_label
+  type: STRING
+  mode: NULLABLE
+  description: Event Label - Since event_label doesn't exist in GA4, this is event_name
+- name: page_path
+  type: STRING
+  mode: NULLABLE
+  description: Page Path
+- name: locale
+  type: STRING
+  mode: NULLABLE
+  description: Locale - Based on page path level 1 (i.e. en-US, ru, de, etc)
+- name: page_level_1
+  type: STRING
+  mode: NULLABLE
+  description: Page Level 1
+- name: page_level_2
+  type: STRING
+  mode: NULLABLE
+  description: Page Level 2
+- name: page_level_3
+  type: STRING
+  mode: NULLABLE
+  description: Page Level 3
+- name: page_level_4
+  type: STRING
+  mode: NULLABLE
+  description: Page Level 4
+- name: page_level_5
+  type: STRING
+  mode: NULLABLE
+  description: Page Level 5
+- name: device_category
+  type: STRING
+  mode: NULLABLE
+  description: Device Category - The device category the visitor used to visit the
+    site
+- name: operating_system
+  type: STRING
+  mode: NULLABLE
+  description: Operating System - The operating system the visitor used to visit the
+    site
+- name: language
+  type: STRING
+  mode: NULLABLE
+  description: Language - The language the visiting device was using when it visited
+    the site
+- name: browser
+  type: STRING
+  mode: NULLABLE
+  description: Browser - The browser the visitor used to visit the site
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: Country - The country from which events were reported, based on IP
+    address
+- name: source
+  type: STRING
+  mode: NULLABLE
+  description: Source - Referring partner domain
+- name: medium
+  type: STRING
+  mode: NULLABLE
+  description: Medium - Category of the source, such as 'organic' for a search engine
+- name: campaign
+  type: STRING
+  mode: NULLABLE
+  description: Campaign - Identifier for the marketing campaign
+- name: ad_content
+  type: STRING
+  mode: NULLABLE
+  description: Ad Content - Indicates the particular link within a campaign
+- name: total_events
+  type: INTEGER
+  mode: NULLABLE
+  description: Total Events - The total number of non-page view events
+- name: unique_events
+  type: INTEGER
+  mode: NULLABLE
+  description: Unique Events - The number of unique sessions
+- name: page_name
+  type: STRING
+  mode: NULLABLE
+  description: Page Name

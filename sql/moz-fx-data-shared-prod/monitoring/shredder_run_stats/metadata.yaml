@@ -1,0 +1,4 @@
+friendly_name: Shredder Run Stats
+description: Aggregated runtime and compute stats.
+owners:
+  - bewu@mozilla.com

@@ -8,6 +8,7 @@
   locale: "en-US"
   search_region: "US"
   country: "US"
+  profile_group_id: "profile_group_id_1"
   suggest_enabled: true
   in_navbar: true
   suggest_searches: true
@@ -73,6 +74,7 @@
       value: "experiment_value"
 - <<: *base
   client_id: "client_2"
+  profile_group_id: "profile_group_id_2"
   count_picked_total: 21
   count_picked_by_type:
     - key: "autofill"

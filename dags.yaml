@@ -1508,24 +1508,6 @@ bqetl_google_search_console:
   tags:
     - impact/tier_1
 
-bqetl_data_observability_test_data_copy:
-  schedule_interval: 0 8 * * *
-  description: |
-    ETL used to copy over data to data-observability-dev BQ project used
-    for testing out different data observability platforms.
-  default_args:
-    owner: kik@mozilla.com
-    email:
-      - kik@mozilla.com
-      - akommasani@mozilla.com
-      - ascholtz@mozilla.com
-    start_date: '2024-03-20'
-    retries: 2
-    retry_delay: 30m
-  tags:
-    - triage/no_triage
-    - impact/tier_3
-
 bqetl_acoustic_suppression_list:
   schedule_interval: 0 9 * * *
   description: |
@@ -1559,6 +1541,7 @@ bqetl_braze:
     retry_delay: 5m
   tags:
     - impact/tier_2
+    - triage/record_only
 
 bqetl_braze_currents:
   schedule_interval: 0 2 * * *
@@ -1803,7 +1786,7 @@ bqetl_merino_newtab_extract_to_gcs:
     owner: cbeck@mozilla.com
     retries: 2
     retry_delay: 5m
-    start_date: '2024-08-12'
+    start_date: '2024-08-14'
   description: |
     Aggregates Newtab engagement data that lands in a GCS bucket for Merino recommendations.
   repo: bigquery-etl

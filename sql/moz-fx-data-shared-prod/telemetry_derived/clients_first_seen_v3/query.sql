@@ -206,6 +206,7 @@ WITH new_profile_ping_agg AS (
       ORDER BY
         submission_timestamp
     )[SAFE_OFFSET(0)] AS windows_build_number,
+    ARRAY_AGG(profile_group_id ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS profile_group_id,
   FROM
     `moz-fx-data-shared-prod.telemetry.new_profile`
   WHERE
@@ -389,6 +390,7 @@ shutdown_ping_agg AS (
       ORDER BY
         submission_timestamp
     )[SAFE_OFFSET(0)] AS windows_build_number,
+    ARRAY_AGG(profile_group_id ORDER BY submission_timestamp)[SAFE_OFFSET(0)] AS profile_group_id,
   FROM
     `moz-fx-data-shared-prod.telemetry.first_shutdown`
   WHERE
@@ -536,6 +538,7 @@ main_ping_agg AS (
     ARRAY_AGG(windows_build_number RESPECT NULLS ORDER BY submission_date)[
       SAFE_OFFSET(0)
     ] AS windows_build_number_raw,
+    ARRAY_AGG(profile_group_id ORDER BY submission_date)[SAFE_OFFSET(0)] AS profile_group_id,
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6`
   WHERE
@@ -551,8 +554,9 @@ main_ping_agg AS (
 ),
 main_ping AS (
   SELECT
-    * EXCEPT (windows_build_number_raw),
+    * EXCEPT (windows_build_number_raw, profile_group_id),
     CAST(windows_build_number_raw AS FLOAT64) AS windows_build_number,
+    profile_group_id,
     mozfun.norm.windows_version_info(
       os,
       os_version,
@@ -647,14 +651,16 @@ _current AS (
       first_seen_timestamp,
       all_dates,
       source_ping,
-      source_ping_priority
+      source_ping_priority,
+      profile_group_id
     ),
     STRUCT(
       fsd.first_seen_source_ping AS first_seen_date_source_ping,
       pings.reported_main_ping AS reported_main_ping,
       pings.reported_new_profile_ping AS reported_new_profile_ping,
       pings.reported_shutdown_ping AS reported_shutdown_ping
-    ) AS metadata
+    ) AS metadata,
+    unioned.profile_group_id
   FROM
     unioned
   INNER JOIN

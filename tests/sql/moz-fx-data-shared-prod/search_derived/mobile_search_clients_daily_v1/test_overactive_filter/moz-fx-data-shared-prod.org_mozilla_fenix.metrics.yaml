@@ -8,6 +8,7 @@
   normalized_channel: release
   normalized_country_code: US
   normalized_os: Android
+  normalized_os_version: "29.0"
   ping_info:
     end_time: 2019-12-01T04:13-05:00
   sample_id: "1"
@@ -28,6 +29,7 @@
   normalized_channel: release
   normalized_country_code: CA
   normalized_os: Android
+  normalized_os_version: "29.0"
   ping_info:
     end_time: 2019-12-01T04:13-05:00
   sample_id: "1"
@@ -50,6 +52,7 @@
   normalized_channel: release
   normalized_country_code: CA
   normalized_os: Android
+  normalized_os_version: "29.0"
   ping_info:
     end_time: 2019-12-01T04:13-05:00
   sample_id: "1"

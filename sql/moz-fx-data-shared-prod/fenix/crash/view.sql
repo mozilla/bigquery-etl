@@ -14,7 +14,11 @@ SELECT
   events,
   metadata,
   STRUCT(
-    STRUCT(metrics.boolean.crash_startup) AS `boolean`,
+    STRUCT(
+      metrics.boolean.crash_startup,
+      metrics.boolean.crash_is_garbage_collecting,
+      metrics.boolean.environment_headless_mode
+    ) AS `boolean`,
     STRUCT(metrics.datetime.crash_time, metrics.datetime.raw_crash_time) AS `datetime`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -26,9 +30,43 @@ SELECT
       metrics.string.crash_process_type,
       metrics.string.crash_cause,
       metrics.string.crash_remote_type,
-      metrics.string.glean_client_annotation_experimentation_id
+      metrics.string.glean_client_annotation_experimentation_id,
+      metrics.string.crash_app_build,
+      metrics.string.crash_app_channel,
+      metrics.string.crash_app_display_version,
+      metrics.string.crash_background_task_name,
+      metrics.string.crash_font_name,
+      metrics.string.crash_ipc_channel_error,
+      metrics.string.crash_main_thread_runnable_name,
+      metrics.string.crash_minidump_sha256_hash,
+      metrics.string.crash_moz_crash_reason,
+      metrics.string.crash_profiler_child_shutdown_phase,
+      metrics.string.crash_shutdown_progress
     ) AS `string`,
-    STRUCT(metrics.timespan.crash_uptime) AS `timespan`
+    STRUCT(metrics.timespan.crash_uptime, metrics.timespan.environment_uptime) AS `timespan`,
+    STRUCT(
+      metrics.object.crash_async_shutdown_timeout,
+      metrics.object.crash_breadcrumbs,
+      metrics.object.crash_java_exception,
+      metrics.object.crash_quota_manager_shutdown_timeout
+    ) AS `object`,
+    STRUCT(
+      metrics.quantity.crash_event_loop_nesting_level,
+      metrics.quantity.crash_gpu_process_launch,
+      metrics.quantity.memory_available_commit,
+      metrics.quantity.memory_available_physical,
+      metrics.quantity.memory_available_swap,
+      metrics.quantity.memory_available_virtual,
+      metrics.quantity.memory_low_physical,
+      metrics.quantity.memory_oom_allocation_size,
+      metrics.quantity.memory_purgeable_physical,
+      metrics.quantity.memory_system_use_percentage,
+      metrics.quantity.memory_texture,
+      metrics.quantity.memory_total_page_file,
+      metrics.quantity.memory_total_physical,
+      metrics.quantity.memory_total_virtual
+    ) AS `quantity`,
+    STRUCT(metrics.string_list.environment_experimental_features) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -52,7 +90,11 @@ SELECT
   events,
   metadata,
   STRUCT(
-    STRUCT(metrics.boolean.crash_startup) AS `boolean`,
+    STRUCT(
+      metrics.boolean.crash_startup,
+      metrics.boolean.crash_is_garbage_collecting,
+      metrics.boolean.environment_headless_mode
+    ) AS `boolean`,
     STRUCT(metrics.datetime.crash_time, metrics.datetime.raw_crash_time) AS `datetime`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -64,9 +106,43 @@ SELECT
       metrics.string.crash_process_type,
       metrics.string.crash_cause,
       metrics.string.crash_remote_type,
-      metrics.string.glean_client_annotation_experimentation_id
+      metrics.string.glean_client_annotation_experimentation_id,
+      metrics.string.crash_app_build,
+      metrics.string.crash_app_channel,
+      metrics.string.crash_app_display_version,
+      metrics.string.crash_background_task_name,
+      metrics.string.crash_font_name,
+      metrics.string.crash_ipc_channel_error,
+      metrics.string.crash_main_thread_runnable_name,
+      metrics.string.crash_minidump_sha256_hash,
+      metrics.string.crash_moz_crash_reason,
+      metrics.string.crash_profiler_child_shutdown_phase,
+      metrics.string.crash_shutdown_progress
     ) AS `string`,
-    STRUCT(metrics.timespan.crash_uptime) AS `timespan`
+    STRUCT(metrics.timespan.crash_uptime, metrics.timespan.environment_uptime) AS `timespan`,
+    STRUCT(
+      metrics.object.crash_async_shutdown_timeout,
+      metrics.object.crash_breadcrumbs,
+      metrics.object.crash_java_exception,
+      metrics.object.crash_quota_manager_shutdown_timeout
+    ) AS `object`,
+    STRUCT(
+      metrics.quantity.crash_event_loop_nesting_level,
+      metrics.quantity.crash_gpu_process_launch,
+      metrics.quantity.memory_available_commit,
+      metrics.quantity.memory_available_physical,
+      metrics.quantity.memory_available_swap,
+      metrics.quantity.memory_available_virtual,
+      metrics.quantity.memory_low_physical,
+      metrics.quantity.memory_oom_allocation_size,
+      metrics.quantity.memory_purgeable_physical,
+      metrics.quantity.memory_system_use_percentage,
+      metrics.quantity.memory_texture,
+      metrics.quantity.memory_total_page_file,
+      metrics.quantity.memory_total_physical,
+      metrics.quantity.memory_total_virtual
+    ) AS `quantity`,
+    STRUCT(metrics.string_list.environment_experimental_features) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -90,7 +166,11 @@ SELECT
   events,
   metadata,
   STRUCT(
-    STRUCT(metrics.boolean.crash_startup) AS `boolean`,
+    STRUCT(
+      metrics.boolean.crash_startup,
+      metrics.boolean.crash_is_garbage_collecting,
+      metrics.boolean.environment_headless_mode
+    ) AS `boolean`,
     STRUCT(metrics.datetime.crash_time, metrics.datetime.raw_crash_time) AS `datetime`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -102,9 +182,43 @@ SELECT
       metrics.string.crash_process_type,
       metrics.string.crash_cause,
       metrics.string.crash_remote_type,
-      metrics.string.glean_client_annotation_experimentation_id
+      metrics.string.glean_client_annotation_experimentation_id,
+      metrics.string.crash_app_build,
+      metrics.string.crash_app_channel,
+      metrics.string.crash_app_display_version,
+      metrics.string.crash_background_task_name,
+      metrics.string.crash_font_name,
+      metrics.string.crash_ipc_channel_error,
+      metrics.string.crash_main_thread_runnable_name,
+      metrics.string.crash_minidump_sha256_hash,
+      metrics.string.crash_moz_crash_reason,
+      metrics.string.crash_profiler_child_shutdown_phase,
+      metrics.string.crash_shutdown_progress
     ) AS `string`,
-    STRUCT(metrics.timespan.crash_uptime) AS `timespan`
+    STRUCT(metrics.timespan.crash_uptime, metrics.timespan.environment_uptime) AS `timespan`,
+    STRUCT(
+      metrics.object.crash_async_shutdown_timeout,
+      metrics.object.crash_breadcrumbs,
+      metrics.object.crash_java_exception,
+      metrics.object.crash_quota_manager_shutdown_timeout
+    ) AS `object`,
+    STRUCT(
+      metrics.quantity.crash_event_loop_nesting_level,
+      metrics.quantity.crash_gpu_process_launch,
+      metrics.quantity.memory_available_commit,
+      metrics.quantity.memory_available_physical,
+      metrics.quantity.memory_available_swap,
+      metrics.quantity.memory_available_virtual,
+      metrics.quantity.memory_low_physical,
+      metrics.quantity.memory_oom_allocation_size,
+      metrics.quantity.memory_purgeable_physical,
+      metrics.quantity.memory_system_use_percentage,
+      metrics.quantity.memory_texture,
+      metrics.quantity.memory_total_page_file,
+      metrics.quantity.memory_total_physical,
+      metrics.quantity.memory_total_virtual
+    ) AS `quantity`,
+    STRUCT(metrics.string_list.environment_experimental_features) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -128,7 +242,11 @@ SELECT
   events,
   metadata,
   STRUCT(
-    STRUCT(metrics.boolean.crash_startup) AS `boolean`,
+    STRUCT(
+      metrics.boolean.crash_startup,
+      metrics.boolean.crash_is_garbage_collecting,
+      metrics.boolean.environment_headless_mode
+    ) AS `boolean`,
     STRUCT(metrics.datetime.crash_time, metrics.datetime.raw_crash_time) AS `datetime`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -140,9 +258,43 @@ SELECT
       metrics.string.crash_process_type,
       metrics.string.crash_cause,
       metrics.string.crash_remote_type,
-      metrics.string.glean_client_annotation_experimentation_id
+      metrics.string.glean_client_annotation_experimentation_id,
+      metrics.string.crash_app_build,
+      metrics.string.crash_app_channel,
+      metrics.string.crash_app_display_version,
+      metrics.string.crash_background_task_name,
+      metrics.string.crash_font_name,
+      metrics.string.crash_ipc_channel_error,
+      metrics.string.crash_main_thread_runnable_name,
+      metrics.string.crash_minidump_sha256_hash,
+      metrics.string.crash_moz_crash_reason,
+      metrics.string.crash_profiler_child_shutdown_phase,
+      metrics.string.crash_shutdown_progress
     ) AS `string`,
-    STRUCT(metrics.timespan.crash_uptime) AS `timespan`
+    STRUCT(metrics.timespan.crash_uptime, metrics.timespan.environment_uptime) AS `timespan`,
+    STRUCT(
+      metrics.object.crash_async_shutdown_timeout,
+      metrics.object.crash_breadcrumbs,
+      metrics.object.crash_java_exception,
+      metrics.object.crash_quota_manager_shutdown_timeout
+    ) AS `object`,
+    STRUCT(
+      metrics.quantity.crash_event_loop_nesting_level,
+      metrics.quantity.crash_gpu_process_launch,
+      metrics.quantity.memory_available_commit,
+      metrics.quantity.memory_available_physical,
+      metrics.quantity.memory_available_swap,
+      metrics.quantity.memory_available_virtual,
+      metrics.quantity.memory_low_physical,
+      metrics.quantity.memory_oom_allocation_size,
+      metrics.quantity.memory_purgeable_physical,
+      metrics.quantity.memory_system_use_percentage,
+      metrics.quantity.memory_texture,
+      metrics.quantity.memory_total_page_file,
+      metrics.quantity.memory_total_physical,
+      metrics.quantity.memory_total_virtual
+    ) AS `quantity`,
+    STRUCT(metrics.string_list.environment_experimental_features) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -166,7 +318,11 @@ SELECT
   events,
   metadata,
   STRUCT(
-    STRUCT(metrics.boolean.crash_startup) AS `boolean`,
+    STRUCT(
+      metrics.boolean.crash_startup,
+      metrics.boolean.crash_is_garbage_collecting,
+      metrics.boolean.environment_headless_mode
+    ) AS `boolean`,
     STRUCT(metrics.datetime.crash_time, metrics.datetime.raw_crash_time) AS `datetime`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -178,9 +334,43 @@ SELECT
       metrics.string.crash_process_type,
       metrics.string.crash_cause,
       metrics.string.crash_remote_type,
-      metrics.string.glean_client_annotation_experimentation_id
+      metrics.string.glean_client_annotation_experimentation_id,
+      metrics.string.crash_app_build,
+      metrics.string.crash_app_channel,
+      metrics.string.crash_app_display_version,
+      metrics.string.crash_background_task_name,
+      metrics.string.crash_font_name,
+      metrics.string.crash_ipc_channel_error,
+      metrics.string.crash_main_thread_runnable_name,
+      metrics.string.crash_minidump_sha256_hash,
+      metrics.string.crash_moz_crash_reason,
+      metrics.string.crash_profiler_child_shutdown_phase,
+      metrics.string.crash_shutdown_progress
     ) AS `string`,
-    STRUCT(metrics.timespan.crash_uptime) AS `timespan`
+    STRUCT(metrics.timespan.crash_uptime, metrics.timespan.environment_uptime) AS `timespan`,
+    STRUCT(
+      metrics.object.crash_async_shutdown_timeout,
+      metrics.object.crash_breadcrumbs,
+      metrics.object.crash_java_exception,
+      metrics.object.crash_quota_manager_shutdown_timeout
+    ) AS `object`,
+    STRUCT(
+      metrics.quantity.crash_event_loop_nesting_level,
+      metrics.quantity.crash_gpu_process_launch,
+      metrics.quantity.memory_available_commit,
+      metrics.quantity.memory_available_physical,
+      metrics.quantity.memory_available_swap,
+      metrics.quantity.memory_available_virtual,
+      metrics.quantity.memory_low_physical,
+      metrics.quantity.memory_oom_allocation_size,
+      metrics.quantity.memory_purgeable_physical,
+      metrics.quantity.memory_system_use_percentage,
+      metrics.quantity.memory_texture,
+      metrics.quantity.memory_total_page_file,
+      metrics.quantity.memory_total_physical,
+      metrics.quantity.memory_total_virtual
+    ) AS `quantity`,
+    STRUCT(metrics.string_list.environment_experimental_features) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,

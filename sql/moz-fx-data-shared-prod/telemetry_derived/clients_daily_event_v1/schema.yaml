@@ -2,15 +2,6 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-- name: days_logged_event_bits
-  type: INTEGER
-  mode: NULLABLE
-- name: days_used_pictureinpicture_bits
-  type: INTEGER
-  mode: NULLABLE
-- name: days_viewed_protection_report_bits
-  type: INTEGER
-  mode: NULLABLE
 - name: sample_id
   type: INTEGER
   mode: NULLABLE

@@ -1,5 +1,5 @@
 SELECT
-  * EXCEPT(cls_event.profile_group_id)
+  * EXCEPT (cls_event.profile_group_id)
 FROM
   `moz-fx-data-shared-prod.telemetry_derived.clients_last_seen_v1` AS cls_main
 LEFT JOIN

@@ -33,7 +33,7 @@ parameters:
 executors:
   ubuntu-machine-executor:
     machine:
-      image: ubuntu-2004:202111-02
+      image: ubuntu-2004:current
 
 jobs:
   build:

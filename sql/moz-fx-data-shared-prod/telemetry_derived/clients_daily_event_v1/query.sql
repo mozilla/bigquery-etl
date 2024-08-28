@@ -11,7 +11,7 @@ SELECT
     event_category = 'security.ui.protections'
     AND event_object = 'protection_report'
   ) AS n_viewed_protection_report,
-  mozfun.stats.mode_last(ARRAY_AGG(profile_group_id ORDER BY timestamp)) AS profile_group_id,
+  mozfun.stats.mode_last(ARRAY_AGG(profile_group_id ORDER BY `timestamp`)) AS profile_group_id,
 FROM
   `moz-fx-data-shared-prod.telemetry.events`
 WHERE

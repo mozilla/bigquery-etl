@@ -46,7 +46,7 @@ subscriptions_mapped AS (
   FROM
     subscriptions
   JOIN
-    `moz-fx-data-shared-prod.braze_derived.subscriptions_map_v2` AS map
+    `moz-fx-data-shared-prod.braze_derived.subscriptions_map_v1` AS map
     ON subscriptions.subscription_name = map.braze_subscription_name
 )
 SELECT

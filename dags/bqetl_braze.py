@@ -446,6 +446,10 @@ with DAG(
     braze_derived__newsletters__v1.set_upstream(checks__fail_braze_derived__users__v1)
 
     braze_derived__subscriptions__v1.set_upstream(
+        checks__fail_braze_derived__subscriptions_map__v1
+    )
+
+    braze_derived__subscriptions__v1.set_upstream(
         checks__fail_braze_derived__user_profiles__v1
     )
 

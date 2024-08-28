@@ -3,7 +3,7 @@ version: 2.1
 
 orbs:
   gcp-gcr: circleci/gcp-gcr@0.13.0
-  docker: circleci/docker@2.2
+  docker: circleci/docker@2.6
   python: circleci/python@2.1.1
   gcp-cli: circleci/gcp-cli@3.1.1
 
@@ -33,7 +33,7 @@ parameters:
 executors:
   ubuntu-machine-executor:
     machine:
-      image: ubuntu-2004:202111-02
+      image: ubuntu-2004:current
 
 jobs:
   build:

@@ -1,16 +1,16 @@
 """Generate a query with shredder mitigation."""
 
+import os
+import re
 from datetime import date, datetime, time, timedelta
 from enum import Enum
 from pathlib import Path
 from types import NoneType
-from typing import Optional, Any, Dict
+from typing import Any, Optional
 
 import attr
 import click
-import os
-import re
-from gcloud.exceptions import NotFound
+from gcloud.exceptions import NotFound  # type: ignore
 from google.cloud import bigquery
 from jinja2 import Environment, FileSystemLoader
 
@@ -21,7 +21,6 @@ from bigquery_etl.cli.utils import (
 from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.metadata.parse_metadata import METADATA_FILE, Metadata, PartitionType
 from bigquery_etl.util.common import write_sql
-
 
 PREVIOUS_DATE = (datetime.now() - timedelta(days=2)).date()
 SUFFIX = datetime.now().strftime("%Y%m%d%H%M%S")
@@ -123,6 +122,7 @@ class Subset:
 
     @property
     def version(self):
+        """Return the version of the destination table."""
         match = re.search(r"v(\d+)$", self.destination_table)
         try:
             version = int(match.group(1))
@@ -138,10 +138,12 @@ class Subset:
 
     @property
     def full_table_id(self):
+        """Return the full id of the destination table."""
         return f"{self.project_id}.{self.dataset}.{self.destination_table}"
 
     @property
-    def partitioning(self) -> Dict[str, Any]:
+    def partitioning(self):
+        """Return the partition details of the destination table."""
         metadata = Metadata.from_file(
             Path("sql")
             / self.project_id
@@ -165,7 +167,8 @@ class Subset:
         order_by_clause=None,
     ):
         """Build query to populate the table."""
-
+        if not select_list:
+            click.ClickException(f"No columns to SELECT from {self.full_table_id}")
         query = f"SELECT {', '.join(select_list)}"
         query += f" {from_clause}" if from_clause is not None else ""
         query += f" {where_clause}" if where_clause is not None else ""
@@ -185,10 +188,12 @@ class Subset:
         return query_files[0]
 
     def get_query_path_results(
-        self, backfill_date: date = PREVIOUS_DATE, row_limit: Optional[int] = None, **kwargs
+        self,
+        backfill_date: date = PREVIOUS_DATE,
+        row_limit: Optional[int] = None,
+        **kwargs,
     ) -> list[dict[str, Any]]:
         """Run the query available in the sql_path and return the result or the number of rows requested."""
-
         having_clause = None
         for key, value in kwargs.items():
             if key.lower() == "having_clause":
@@ -309,9 +314,7 @@ def classify_columns(
     ]
     if not len(missing_dimensions) == 0:
         raise click.ClickException(
-            f"Inconsistent parameters. New dimension columns not found in new row: {missing_dimensions}"
-            f"\n new_dimension_columns: {new_dimension_columns}"
-            f"\n new_row: {new_row}"
+            f"Some dimension columns are not returned when running the query: {missing_dimensions}"
         )
 
     for key in existing_dimension_columns:
@@ -392,7 +395,6 @@ def generate_query_with_shredder_mitigation(
     client, project_id, dataset, destination_table, backfill_date=PREVIOUS_DATE
 ) -> Path:
     """Generate a query to backfill with shredder mitigation."""
-
     query_with_mitigation_name = "query_with_shredder_mitigation"
     query_with_mitigation_path = Path("sql") / project_id
 
@@ -414,9 +416,10 @@ def generate_query_with_shredder_mitigation(
         project_id,
         None,
     )
-
-    new_group_by = extract_last_group_by_from_query(new.get_query_path())
-    previous_group_by = extract_last_group_by_from_query(previous.get_query_path())
+    new_group_by = extract_last_group_by_from_query(sql_path=new.get_query_path())
+    previous_group_by = extract_last_group_by_from_query(
+        sql_path=previous.get_query_path()
+    )
 
     # Check that previous query exists and GROUP BYs are valid in both queries.
     integers_in_group_by = False
@@ -436,10 +439,10 @@ def generate_query_with_shredder_mitigation(
         or integers_in_group_by
     ):
         raise click.ClickException(
-            "GROUP BY must use an explicit list of columns, avoid expressions like `GROUP BY ALL` or `GROUP BY 1, 2, 3`."
+            "GROUP BY must use an explicit list of columns. Avoid expressions like `GROUP BY ALL` or `GROUP BY 1, 2, 3`."
         )
 
-    # Identify columns common to both queries and new columns. This excludes removed columns.
+    # Identify columns common to both queries and columns new. This excludes removed columns.
     sample_rows = new.get_query_path_results(
         backfill_date=backfill_date,
         rows=1,
@@ -459,6 +462,11 @@ def generate_query_with_shredder_mitigation(
     except TypeError:
         click.ClickException(
             f"Table {destination_table} did not return any rows for backfill date {backfill_date}."
+        )
+
+    if not common_dimensions or not added_dimensions or not metrics:
+        click.ClickException(
+            "The process requires that the previous and new query have at least one dimension in common, one metric and one dimension added."
         )
 
     # Get the new query.

@@ -2030,6 +2030,9 @@ fields:
   mode: NULLABLE
   description: A UUID identifying the profile's group on a single device and allowing
     user-oriented correlation of data
+- name: profile_group_id_1
+  type: STRING
+  mode: NULLABLE
 - name: browser_version_info
   type: RECORD
   mode: NULLABLE

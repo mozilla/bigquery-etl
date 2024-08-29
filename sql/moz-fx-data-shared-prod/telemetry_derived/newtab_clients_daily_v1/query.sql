@@ -34,7 +34,8 @@ WITH visits_data_base AS (
     weather_interactions,
     topic_selection_interactions,
     newtab_default_ui,
-    newtab_selected_topics
+    newtab_selected_topics,
+    profile_group_id
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.newtab_visits_v1`
   WHERE
@@ -44,6 +45,7 @@ visits_data AS (
   SELECT
     client_id,
     submission_date,
+    ANY_VALUE(profile_group_id) AS profile_group_id,
     ANY_VALUE(legacy_telemetry_client_id) AS legacy_telemetry_client_id,
     COUNT(newtab_visit_id) AS newtab_visit_count,
     ANY_VALUE(normalized_os) AS normalized_os,
@@ -294,7 +296,8 @@ SELECT
   ) AS topic_selection_selected_topics_first_time,
   COALESCE(topic_selection_data.topic_selection_updates, 0) AS topic_selection_updates,
   COALESCE(topic_selection_data.topic_selection_opened, 0) AS topic_selection_opened,
-  COALESCE(topic_selection_data.topic_selection_dismissals, 0) AS topic_selection_dismissals
+  COALESCE(topic_selection_data.topic_selection_dismissals, 0) AS topic_selection_dismissals,
+  visits_data.profile_group_id AS profile_group_id
 FROM
   visits_data
 LEFT JOIN

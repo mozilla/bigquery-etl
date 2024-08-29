@@ -42,6 +42,30 @@ FROM
 WHERE
   submission_date = @submission_date
   AND engine IS NOT NULL
+  AND (
+    app_name NOT IN (
+      'Fennec',
+      'Focus Android Glean',
+      'Klar Android Glean',
+      'Focus iOS Glean',
+      'Klar iOS Glean',
+      'Focus',
+      'Klar'
+    )
+    OR (
+      app_name = 'Fennec'
+      AND (
+        os != 'iOS'
+        OR submission_date < '2023-01-01'
+        OR mozfun.norm.truncate_version(app_version, 'major') >= 28
+      )
+    )
+    OR (
+      app_name IN ('Focus Android Glean', 'Klar Android Glean', 'Focus iOS Glean', 'Klar iOS Glean')
+      AND submission_date >= '2023-01-01'
+    )
+    OR (app_name IN ('Focus', 'Klar') AND submission_date < '2023-01-01')
+  )
 GROUP BY
   submission_date,
   engine,

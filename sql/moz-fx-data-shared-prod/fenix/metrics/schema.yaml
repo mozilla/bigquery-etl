@@ -11672,6 +11672,16 @@ fields:
       - name: numerator
         type: INTEGER
         mode: NULLABLE
+    - name: networking_set_cookie_expired_without_server_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: denominator
+        type: INTEGER
+        mode: NULLABLE
+      - name: numerator
+        type: INTEGER
+        mode: NULLABLE
   - name: uuid
     type: RECORD
     mode: NULLABLE

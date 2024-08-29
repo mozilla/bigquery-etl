@@ -45,6 +45,7 @@ visits_data AS (
   SELECT
     client_id,
     submission_date,
+    ANY_VALUE(profile_group_id) AS profile_group_id,
     ANY_VALUE(legacy_telemetry_client_id) AS legacy_telemetry_client_id,
     COUNT(newtab_visit_id) AS newtab_visit_count,
     ANY_VALUE(normalized_os) AS normalized_os,

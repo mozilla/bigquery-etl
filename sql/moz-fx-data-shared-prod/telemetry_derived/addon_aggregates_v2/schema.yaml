@@ -36,7 +36,7 @@ fields:
   type: STRING
   mode: NULLABLE
 - name: profile_creation_date
-  type: DATE
+  type: STRING
   mode: NULLABLE
 - name: profile_group_id
   type: STRING

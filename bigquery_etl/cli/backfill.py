@@ -108,6 +108,12 @@ def backfill(ctx):
     help="Watcher of the backfill (email address)",
     default=DEFAULT_WATCHER,
 )
+@click.option(
+    "--custom_query",
+    "--custom-query",
+    help="Name of a custom query to run the backfill. If not given, the proces runs as usual.",
+    default=None,
+)
 # If not specified, the billing project will be set to the default billing project when the backfill is initiated.
 @billing_project_option()
 @click.pass_context
@@ -119,6 +125,7 @@ def create(
     end_date,
     exclude,
     watcher,
+    custom_query,
     billing_project,
 ):
     """CLI command for creating a new backfill entry in backfill.yaml file.
@@ -145,6 +152,7 @@ def create(
         reason=DEFAULT_REASON,
         watchers=[watcher],
         status=BackfillStatus.INITIATE,
+        custom_query=custom_query,
         billing_project=billing_project,
     )
 
@@ -680,7 +688,7 @@ def _copy_table(
         click.echo(f"Source table not found: {source_table}")
         sys.exit(1)
     except Conflict:
-        print(f"Backup table already exists: {destination_table}")
+        click.echo(f"Backup table already exists: {destination_table}")
         sys.exit(1)
 
     click.echo(

@@ -35,6 +35,11 @@ fields:
   type: STRING
   mode: NULLABLE
   description: null
+- name: profile_group_id
+  type: STRING
+  mode: NULLABLE
+  description: A UUID identifying the profile's group on a single device and allowing
+    user-oriented correlation of data
 - name: main_crash_count
   type: INTEGER
   mode: NULLABLE

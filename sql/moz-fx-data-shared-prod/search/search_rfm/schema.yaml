@@ -189,3 +189,6 @@ fields:
     - name: ad_click
       type: INTEGER
       mode: REPEATED
+- name: profile_group_id
+  type: STRING
+  mode: NULLABLE

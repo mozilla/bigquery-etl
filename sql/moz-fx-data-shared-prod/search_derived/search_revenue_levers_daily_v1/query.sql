@@ -1,4 +1,4 @@
-WITH combined_search_data AS (
+WITH google_data AS (
   SELECT
     submission_date,
     country,
@@ -17,6 +17,11 @@ WITH combined_search_data AS (
     `moz-fx-data-shared-prod.search.search_aggregates`
   WHERE
     submission_date = @submission_date
+    AND normalized_engine = 'Google'
+    AND (
+      (submission_date < "2023-12-01" AND country NOT IN ('RU', 'UA', 'TR', 'BY', 'KZ', 'CN'))
+      OR (submission_date >= "2023-12-01" AND country NOT IN ('RU', 'UA', 'BY', 'CN'))
+    )
   UNION ALL
   SELECT
     submission_date,
@@ -36,6 +41,118 @@ WITH combined_search_data AS (
     `moz-fx-data-shared-prod.search.mobile_search_aggregates`
   WHERE
     submission_date = @submission_date
+    AND normalized_engine = 'Google'
+    AND (
+      (submission_date < "2023-12-01" AND country NOT IN ('RU', 'UA', 'TR', 'BY', 'KZ', 'CN'))
+      OR (submission_date >= "2023-12-01" AND country NOT IN ('RU', 'UA', 'BY', 'CN'))
+    )
+    AND (
+      app_name IN ('Fenix', 'Firefox Preview', 'Focus', 'Focus Android Glean', 'Focus iOS Glean')
+      OR (app_name = 'Fennec' AND os = 'iOS')
+    )
+),
+bing_data AS (
+  SELECT
+    submission_date,
+    country,
+    normalized_engine AS partner,
+    'desktop' AS device,
+    sap,
+    tagged_sap,
+    tagged_follow_on,
+    search_with_ads,
+    ad_click,
+    organic,
+    ad_click_organic,
+    search_with_ads_organic,
+    IF(is_sap_monetizable, sap, 0) AS monetizable_sap
+  FROM
+    `moz-fx-data-shared-prod.search.search_aggregates`
+  WHERE
+    submission_date = @submission_date
+    AND normalized_engine = 'Bing'
+    AND is_acer_cohort
+  UNION ALL
+  SELECT
+    submission_date,
+    country,
+    normalized_engine AS partner,
+    'mobile' AS device,
+    sap,
+    tagged_sap,
+    tagged_follow_on,
+    search_with_ads,
+    ad_click,
+    organic,
+    ad_click_organic,
+    0 AS search_with_ads_organic,
+    0 AS monetizable_sap
+  FROM
+    `moz-fx-data-shared-prod.search.mobile_search_aggregates`
+  WHERE
+    submission_date = @submission_date
+    AND normalized_engine = 'Bing'
+    AND (
+      app_name IN ('Fenix', 'Firefox Preview', 'Focus', 'Focus Android Glean', 'Focus iOS Glean')
+      OR (app_name = 'Fennec' AND os = 'iOS')
+    )
+),
+ddg_data AS (
+  SELECT
+    submission_date,
+    country,
+    normalized_engine AS partner,
+    'desktop' AS device,
+    sap,
+    tagged_sap,
+    tagged_follow_on,
+    search_with_ads,
+    ad_click,
+    organic,
+    ad_click_organic,
+    search_with_ads_organic,
+    IF(is_sap_monetizable, sap, 0) AS monetizable_sap
+  FROM
+    `moz-fx-data-shared-prod.search.search_aggregates`
+  WHERE
+    submission_date = @submission_date
+    AND normalized_engine = 'DuckDuckGo'
+  UNION ALL
+  SELECT
+    submission_date,
+    country,
+    normalized_engine AS partner,
+    'mobile' AS device,
+    sap,
+    tagged_sap,
+    tagged_follow_on,
+    search_with_ads,
+    ad_click,
+    organic,
+    ad_click_organic,
+    0 AS search_with_ads_organic,
+    0 AS monetizable_sap
+  FROM
+    `moz-fx-data-shared-prod.search.mobile_search_aggregates`
+  WHERE
+    submission_date = @submission_date
+    AND normalized_engine = 'DuckDuckGo'
+),
+combined_search_data AS (
+  SELECT
+    *
+  FROM
+    google_data
+  UNION ALL
+  SELECT
+    *
+  FROM
+    bing_data
+  UNION ALL
+  SELECT
+    *
+  FROM
+    ddg_data
 ),
 eligible_markets_dau AS (
   SELECT DISTINCT
@@ -154,4 +271,4 @@ LEFT JOIN
   ON cd.partner = du.partner
   AND cd.submission_date = du.submission_date
   AND cd.country = du.country
-  AND cd.device = du.device;
+  AND cd.device = du.device

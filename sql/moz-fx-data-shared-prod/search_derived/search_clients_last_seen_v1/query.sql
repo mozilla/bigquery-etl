@@ -84,7 +84,8 @@ _grouped AS (
       -- Monthly search totals
     `moz-fx-data-shared-prod.udf.aggregate_search_map`(
       ARRAY_AGG(engine_searches)
-    ) AS engine_searches
+    ) AS engine_searches,
+  MAX(profile_group_id) AS profile_group_id,
   FROM
     _derived_engine_searches
   GROUP BY

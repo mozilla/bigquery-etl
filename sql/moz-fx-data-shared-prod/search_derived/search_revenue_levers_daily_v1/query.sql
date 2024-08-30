@@ -1,4 +1,4 @@
-google_data AS (
+WITH google_data AS (
   SELECT
     submission_date,
     country,
@@ -16,9 +16,7 @@ google_data AS (
   FROM
     `moz-fx-data-shared-prod.search.search_aggregates`
   WHERE
-    submission_date
-    BETWEEN '2022-07-01'
-    AND '2022-12-31'
+    submission_date = @submission_date
     AND normalized_engine = 'Google'
     AND (
       (submission_date < "2023-12-01" AND country NOT IN ('RU', 'UA', 'TR', 'BY', 'KZ', 'CN'))
@@ -42,9 +40,7 @@ google_data AS (
   FROM
     `moz-fx-data-shared-prod.search.mobile_search_aggregates`
   WHERE
-    submission_date
-    BETWEEN '2022-07-01'
-    AND '2022-12-31'
+    submission_date = @submission_date
     AND normalized_engine = 'Google'
     AND (
       (submission_date < "2023-12-01" AND country NOT IN ('RU', 'UA', 'TR', 'BY', 'KZ', 'CN'))
@@ -71,11 +67,9 @@ bing_data AS (
     search_with_ads_organic,
     IF(is_sap_monetizable, sap, 0) AS monetizable_sap
   FROM
-    bing_agg
+    `moz-fx-data-shared-prod.search.search_aggregates`
   WHERE
-    submission_date
-    BETWEEN '2022-07-01'
-    AND '2022-12-31'
+    submission_date = @submission_date
     AND normalized_engine = 'Bing'
     AND is_acer_cohort
   UNION ALL
@@ -96,9 +90,7 @@ bing_data AS (
   FROM
     `moz-fx-data-shared-prod.search.mobile_search_aggregates`
   WHERE
-    submission_date
-    BETWEEN '2022-07-01'
-    AND '2022-12-31'
+    submission_date = @submission_date
     AND normalized_engine = 'Bing'
     AND (
       app_name IN ('Fenix', 'Firefox Preview', 'Focus', 'Focus Android Glean', 'Focus iOS Glean')
@@ -123,9 +115,7 @@ ddg_data AS (
   FROM
     `moz-fx-data-shared-prod.search.search_aggregates`
   WHERE
-    submission_date
-    BETWEEN '2022-07-01'
-    AND '2022-12-31'
+    submission_date = @submission_date
     AND normalized_engine = 'DuckDuckGo'
   UNION ALL
   SELECT
@@ -145,9 +135,7 @@ ddg_data AS (
   FROM
     `moz-fx-data-shared-prod.search.mobile_search_aggregates`
   WHERE
-    submission_date
-    BETWEEN '2022-07-01'
-    AND '2022-12-31'
+    submission_date = @submission_date
     AND normalized_engine = 'DuckDuckGo'
 ),
 combined_search_data AS (
@@ -185,9 +173,7 @@ eligible_markets_dau AS (
   FROM
     `mozdata.telemetry.desktop_active_users`
   WHERE
-    submission_date
-    BETWEEN '2022-07-01'
-    AND '2022-12-31'
+    submission_date = @submission_date
     AND is_dau
     # not including Mozilla Online
     AND app_name = "Firefox Desktop"
@@ -214,9 +200,7 @@ eligible_markets_dau AS (
   FROM
     `mozdata.telemetry.mobile_active_users`
   WHERE
-    submission_date
-    BETWEEN '2022-07-01'
-    AND '2022-12-31'
+    submission_date = @submission_date
     AND is_dau
     # not including Fenix MozillaOnline, BrowserStack, Klar
     AND app_name IN ("Focus iOS", "Firefox iOS", "Fenix", "Focus Android")
@@ -236,9 +220,7 @@ desktop_mobile_search_dau AS (
   FROM
     `mozdata.search.search_dau_aggregates`
   WHERE
-    submission_date
-    BETWEEN '2022-07-01'
-    AND '2022-12-31'
+    submission_date = @submission_date
   GROUP BY
     submission_date,
     partner,

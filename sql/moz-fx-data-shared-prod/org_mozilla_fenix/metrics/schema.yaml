@@ -1901,8 +1901,7 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream. (Migrated from
-        the geckoview metric of the same name).
+      description: 'Failure occurs when initializing the audio stream.
 
         '
     - name: glean_validation_pings_submitted
@@ -3965,7 +3964,7 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Counts the status of succeeded and failed requests to .addons.mozilla.org
+      description: 'Counts the status of succeeded and failed requests to addons.mozilla.org
 
         '
     - name: network_system_channel_other_status
@@ -4031,6 +4030,19 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Counts the status of succeeded and failed requests to aus5.mozilla.org
+
+        '
+    - name: network_system_channel_addonversion_status
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the status of succeeded and failed requests to *.addons.mozilla.org
 
         '
   - name: string

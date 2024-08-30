@@ -411,7 +411,8 @@ SELECT
       metrics.labeled_counter.network_system_channel_remote_settings_status,
       metrics.labeled_counter.network_system_channel_success_or_failure,
       metrics.labeled_counter.network_system_channel_telemetry_status,
-      metrics.labeled_counter.network_system_channel_update_status
+      metrics.labeled_counter.network_system_channel_update_status,
+      metrics.labeled_counter.network_system_channel_addonversion_status
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -1207,7 +1208,8 @@ SELECT
       metrics.labeled_counter.network_system_channel_remote_settings_status,
       metrics.labeled_counter.network_system_channel_success_or_failure,
       metrics.labeled_counter.network_system_channel_telemetry_status,
-      metrics.labeled_counter.network_system_channel_update_status
+      metrics.labeled_counter.network_system_channel_update_status,
+      metrics.labeled_counter.network_system_channel_addonversion_status
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -2021,7 +2023,8 @@ SELECT
       metrics.labeled_counter.network_system_channel_remote_settings_status,
       metrics.labeled_counter.network_system_channel_success_or_failure,
       metrics.labeled_counter.network_system_channel_telemetry_status,
-      metrics.labeled_counter.network_system_channel_update_status
+      metrics.labeled_counter.network_system_channel_update_status,
+      metrics.labeled_counter.network_system_channel_addonversion_status
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -2844,7 +2847,8 @@ SELECT
       metrics.labeled_counter.network_system_channel_remote_settings_status,
       metrics.labeled_counter.network_system_channel_success_or_failure,
       metrics.labeled_counter.network_system_channel_telemetry_status,
-      metrics.labeled_counter.network_system_channel_update_status
+      metrics.labeled_counter.network_system_channel_update_status,
+      metrics.labeled_counter.network_system_channel_addonversion_status
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -3649,7 +3653,8 @@ SELECT
       metrics.labeled_counter.network_system_channel_remote_settings_status,
       metrics.labeled_counter.network_system_channel_success_or_failure,
       metrics.labeled_counter.network_system_channel_telemetry_status,
-      metrics.labeled_counter.network_system_channel_update_status
+      metrics.labeled_counter.network_system_channel_update_status,
+      metrics.labeled_counter.network_system_channel_addonversion_status
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,

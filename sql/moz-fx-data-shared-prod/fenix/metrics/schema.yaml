@@ -3570,6 +3570,16 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
+    - name: network_system_channel_addonversion_status
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
   - name: quantity
     type: RECORD
     mode: NULLABLE

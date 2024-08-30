@@ -85,7 +85,7 @@ _grouped AS (
     `moz-fx-data-shared-prod.udf.aggregate_search_map`(
       ARRAY_AGG(engine_searches)
     ) AS engine_searches,
-    MAX(profile_group_id) AS profile_group_id,
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(profile_group_id)) AS profile_group_id,
   FROM
     _derived_engine_searches
   GROUP BY

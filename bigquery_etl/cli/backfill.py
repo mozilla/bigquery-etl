@@ -112,7 +112,10 @@ def backfill(ctx):
     "--custom_query",
     "--custom-query",
     help="Name of a custom query to run the backfill. If not given, the proces runs as usual.",
-    default=None,
+)
+@click.option(
+    "--shredder_mitigation/--no_shredder_mitigation",
+    help="Wether to run a backfill using an auto-generated query that mitigates shredder effect.",
 )
 # If not specified, the billing project will be set to the default billing project when the backfill is initiated.
 @billing_project_option()
@@ -126,6 +129,7 @@ def create(
     exclude,
     watcher,
     custom_query,
+    shredder_mitigation,
     billing_project,
 ):
     """CLI command for creating a new backfill entry in backfill.yaml file.
@@ -153,6 +157,7 @@ def create(
         watchers=[watcher],
         status=BackfillStatus.INITIATE,
         custom_query=custom_query,
+        shredder_mitigation=shredder_mitigation,
         billing_project=billing_project,
     )
 
@@ -501,6 +506,12 @@ def _initiate_backfill(
 
     log.info(logging_str)
 
+    if entry.shredder_mitigation is True:
+        custom_query = "query_with_shredder_mitigation.sql"  # TODO: Replcae with "= generate_query_with_shredder_mitigation()"
+        logging_str += "  This backfill uses a query with shredder mitigation."
+    elif entry.custom_query:
+        custom_query = entry.custom_query
+
     # backfill table
     # in the long-run we should remove the query backfill command and require a backfill entry for all backfills
     try:
@@ -514,6 +525,7 @@ def _initiate_backfill(
             destination_table=backfill_staging_qualified_table_name,
             parallelism=parallelism,
             dry_run=dry_run,
+            custom_query=custom_query or ["*.sql"],
             billing_project=billing_project,
         )
     except subprocess.CalledProcessError as e:

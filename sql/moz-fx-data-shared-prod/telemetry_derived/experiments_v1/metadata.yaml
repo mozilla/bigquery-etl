@@ -5,3 +5,4 @@ description: |-
 owners:
 - data-platform-infra-wg@mozilla.com
 deprecated: true
+deletion_date: 2024-12-31

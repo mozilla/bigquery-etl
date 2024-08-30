@@ -4,3 +4,4 @@ description: |-
   [DESCRIPTION_MISSING]
 owners:
 - data-platform-infra-wg@mozilla.com
+deprecated: true

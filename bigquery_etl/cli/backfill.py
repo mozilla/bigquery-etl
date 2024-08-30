@@ -506,8 +506,9 @@ def _initiate_backfill(
 
     log.info(logging_str)
 
+    custom_query = None
     if entry.shredder_mitigation is True:
-        custom_query = "query_with_shredder_mitigation.sql"  # TODO: Replcae with "= generate_query_with_shredder_mitigation()"
+        custom_query = "query_with_shredder_mitigation.sql"  # TODO: Replace with "= generate_query_with_shredder_mitigation()"
         logging_str += "  This backfill uses a query with shredder mitigation."
     elif entry.custom_query:
         custom_query = entry.custom_query
@@ -525,7 +526,7 @@ def _initiate_backfill(
             destination_table=backfill_staging_qualified_table_name,
             parallelism=parallelism,
             dry_run=dry_run,
-            custom_query=custom_query or ["*.sql"],
+            **({'custom_query': custom_query} if custom_query else {}),
             billing_project=billing_project,
         )
     except subprocess.CalledProcessError as e:

@@ -200,7 +200,7 @@ class Backfill:
                         watchers=entry["watchers"],
                         status=BackfillStatus[entry["status"].upper()],
                         custom_query=entry.get("custom_query", None),
-                        shredder_mitigation=entry.get("shredder_mitigation"),
+                        shredder_mitigation=entry.get("shredder_mitigation", False),
                         billing_project=entry.get("billing_project", None),
                     )
 

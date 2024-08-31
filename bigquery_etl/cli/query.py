@@ -632,6 +632,12 @@ def _backfill_query(
     "--checks/--no-checks", help="Whether to run checks during backfill", default=False
 )
 @click.option(
+    "--custom_query",
+    "--custom-query",
+    help="Name of a custom query to run the backfill. If not given, the proces runs as usual.",
+    default=None,
+)
+@click.option(
     "--scheduling_overrides",
     "--scheduling-overrides",
     required=False,
@@ -657,6 +663,7 @@ def backfill(
     parallelism,
     destination_table,
     checks,
+    custom_query,
     scheduling_overrides,
 ):
     """Run a backfill."""
@@ -667,8 +674,18 @@ def backfill(
         )
         sys.exit(1)
 
-    query_files = paths_matching_name_pattern(name, sql_dir, project_id)
+    if custom_query:
+        query_files = paths_matching_name_pattern(
+            name, sql_dir, project_id, [custom_query]
+        )
+    else:
+        query_files = paths_matching_name_pattern(name, sql_dir, project_id)
+
     if query_files == []:
+        if custom_query:
+            click.echo(f"Custom query file '{custom_query}' not found in {name}")
+            sys.exit(1)
+
         # run SQL generators if no matching query has been found
         ctx.invoke(
             generate_all,

@@ -526,7 +526,7 @@ def _initiate_backfill(
             destination_table=backfill_staging_qualified_table_name,
             parallelism=parallelism,
             dry_run=dry_run,
-            **({'custom_query': custom_query} if custom_query else {}),
+            **({"custom_query": custom_query} if custom_query else {}),
             billing_project=billing_project,
         )
     except subprocess.CalledProcessError as e:

@@ -2,7 +2,6 @@ from datetime import date, timedelta
 from pathlib import Path
 
 import pytest
-from attr import attr, attrs
 
 from bigquery_etl.backfill.parse import (
     BACKFILL_FILE,
@@ -45,7 +44,7 @@ TEST_BACKFILL_3 = Backfill(
     DEFAULT_REASON,
     [DEFAULT_WATCHER],
     DEFAULT_STATUS,
-    'custom_query.sql',
+    "custom_query.sql",
     False,
     DEFAULT_BILLING_PROJECT,
 )
@@ -77,7 +76,7 @@ class TestParseBackfill(object):
         assert backfill.watchers == [DEFAULT_WATCHER]
         assert backfill.status == DEFAULT_STATUS
         assert backfill.shredder_mitigation is False
-        assert backfill.custom_query == 'custom_query.sql'
+        assert backfill.custom_query == "custom_query.sql"
         assert backfill.billing_project == DEFAULT_BILLING_PROJECT
 
     def test_invalid_billing_project(self):

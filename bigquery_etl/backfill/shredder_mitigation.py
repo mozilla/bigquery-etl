@@ -1,8 +1,9 @@
 """Generate a query with shredder mitigation."""
 
+import logging
 import os
 import re
-from datetime import date, datetime, time, timedelta
+from datetime import date, datetime as dt, time, timedelta
 from enum import Enum
 from pathlib import Path
 from types import NoneType
@@ -10,6 +11,7 @@ from typing import Any, Optional
 
 import attr
 import click
+from dateutil import parser
 from gcloud.exceptions import NotFound  # type: ignore
 from google.cloud import bigquery
 from jinja2 import Environment, FileSystemLoader
@@ -22,11 +24,12 @@ from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.metadata.parse_metadata import METADATA_FILE, Metadata, PartitionType
 from bigquery_etl.util.common import write_sql
 
-PREVIOUS_DATE = (datetime.now() - timedelta(days=2)).date()
-SUFFIX = datetime.now().strftime("%Y%m%d%H%M%S")
+PREVIOUS_DATE = (dt.now() - timedelta(days=2)).date()
+SUFFIX = dt.now().strftime("%Y%m%d%H%M%S")
 TEMP_DATASET = "tmp"
 THIS_PATH = Path(os.path.dirname(__file__))
 DEFAULT_PROJECT_ID = "moz-fx-data-shared-prod"
+QUERY_WITH_MITIGATION_NAME = "query_with_shredder_mitigation"
 
 
 class ColumnType(Enum):
@@ -50,8 +53,8 @@ class DataTypeGroup(Enum):
     """Data types in BigQuery. Not supported: TIMESTAMP, ARRAY and STRUCT, which are dtypes currently not expected in aggregates."""
 
     STRING = ("STRING", "BYTES")
-    BOOLEAN = ("BOOLEAN",)
-    NUMERIC = (
+    BOOLEAN = "BOOLEAN"
+    INTEGER = (
         "INTEGER",
         "NUMERIC",
         "BIGNUMERIC",
@@ -63,12 +66,11 @@ class DataTypeGroup(Enum):
         "TINYINT",
         "BYTEINT",
     )
-    FLOAT = ("FLOAT",)
-    DATE = (
-        "DATE",
-        "DATETIME",
-    )
-    TIME = ("TIME",)
+    FLOAT = "FLOAT"
+    DATE = "DATE"
+    DATETIME = "DATETIME"
+    TIME = "TIME"
+    TIMESTAMP = "TIMESTAMP"
     UNDETERMINED = "None"
 
 
@@ -131,7 +133,7 @@ class Subset:
                     f"{self.destination_table} must end with a positive integer."
                 )
             return version
-        except AttributeError:
+        except (AttributeError, TypeError):
             click.ClickException(
                 f"Invalid or missing table version in {self.destination_table}"
             )
@@ -153,33 +155,49 @@ class Subset:
         )
         if metadata.bigquery and metadata.bigquery.time_partitioning:
             partitioning = {
-                "type": metadata.bigquery.time_partitioning.type,
+                "type": metadata.bigquery.time_partitioning.type.name,
                 "field": metadata.bigquery.time_partitioning.field,
             }
+        else:
+            partitioning = {"type": None, "field": None}
         return partitioning
 
     def generate_query(
         self,
         select_list,
-        from_clause=None,
+        from_clause,
         where_clause=None,
         group_by_clause=None,
         order_by_clause=None,
+        having_clause=None,
     ):
         """Build query to populate the table."""
-        if not select_list:
-            click.ClickException(f"No columns to SELECT from {self.full_table_id}")
-        query = f"SELECT {', '.join(select_list)}"
-        query += f" {from_clause}" if from_clause is not None else ""
-        query += f" {where_clause}" if where_clause is not None else ""
-        query += f" {group_by_clause}" if group_by_clause is not None else ""
-        query += f" {order_by_clause};" if order_by_clause is not None else ""
+        if not select_list or not from_clause:
+            raise click.ClickException(
+                f"Missing required clause to generate query.\nActuals: SELECT: {select_list}, FROM: {self.full_table_id}"
+            )
+        query = f"SELECT {', '.join(map(str, select_list))}"
+        query += f" FROM {from_clause}" if from_clause is not None else ""
+        query += f" WHERE {where_clause}" if where_clause is not None else ""
+        query += f" GROUP BY {group_by_clause}" if group_by_clause is not None else ""
+        query += f" ORDER BY {order_by_clause}" if order_by_clause is not None else ""
+        query += (
+            f" HAVING {having_clause}"
+            if having_clause is not None and group_by_clause is not None
+            else ""
+        )
         return query
 
     def get_query_path(self):
-        """Return the path of the query file for this subset."""
+        """Return the path of the query.sql file for this subset."""
         query_files = paths_matching_name_pattern(
-            f"{self.dataset}.{self.destination_table}", "sql", self.project_id
+            Path("sql")
+            / self.project_id
+            / self.dataset
+            / self.destination_table
+            / "query.sql",
+            "sql",
+            self.project_id,
         )
         if query_files == []:
             raise click.ClickException(
@@ -253,34 +271,33 @@ class Subset:
 
 def get_bigquery_type(value) -> DataTypeGroup:
     """Return the datatype of a value, grouping similar types."""
-    date_formats = [
-        ("%Y-%m-%d", date),
-        ("%Y-%m-%d %H:%M:%S", datetime),
-        ("%Y-%m-%dT%H:%M:%S", datetime),
-        ("%Y-%m-%dT%H:%M:%SZ", datetime),
-        ("%Y-%m-%d %H:%M:%S UTC", datetime),
-        ("%H:%M:%S", time),
-    ]
-    for format, dtype in date_formats:
-        try:
-            if dtype == time:
-                parsed_to_time = datetime.strptime(value, format).time()
-                if isinstance(parsed_to_time, time):
-                    return DataTypeGroup.TIME
-            else:
-                parsed_to_date = datetime.strptime(value, format)
-                if isinstance(parsed_to_date, dtype):
-                    return DataTypeGroup.DATE
-        except (ValueError, TypeError):
-            continue
+    if isinstance(value, dt):
+        return DataTypeGroup.DATETIME
+    try:
+        if isinstance(dt.strptime(value, "%H:%M:%S").time(), time):
+            return DataTypeGroup.TIME
+    except (ValueError, TypeError, AttributeError) as e:
+        logging.info(e)
+    try:
+        value_parsed = parser.isoparse(value.replace(" UTC", "Z").replace(" ", "T"))
+        if (
+            isinstance(value_parsed, dt)
+            and value_parsed.time() == time(0, 0)
+            and isinstance(dt.strptime(value, "%Y-%m-%d"), date)
+        ):
+            return DataTypeGroup.DATE
+        if isinstance(value_parsed, dt) and value_parsed.tzinfo is None:
+            return DataTypeGroup.DATETIME
+        if isinstance(value_parsed, dt) and value_parsed.tzinfo is not None:
+            return DataTypeGroup.TIMESTAMP
+    except (ValueError, TypeError, AttributeError) as e:
+        logging.info(e)
     if isinstance(value, time):
         return DataTypeGroup.TIME
-    if isinstance(value, date):
-        return DataTypeGroup.DATE
     elif isinstance(value, bool):
         return DataTypeGroup.BOOLEAN
     if isinstance(value, int):
-        return DataTypeGroup.NUMERIC
+        return DataTypeGroup.INTEGER
     elif isinstance(value, float):
         return DataTypeGroup.FLOAT
     elif isinstance(value, str) or isinstance(value, bytes):
@@ -352,7 +369,7 @@ def classify_columns(
             key not in existing_dimension_columns
             and key not in new_dimension_columns
             and (
-                value_type is DataTypeGroup.NUMERIC or value_type is DataTypeGroup.FLOAT
+                value_type is DataTypeGroup.INTEGER or value_type is DataTypeGroup.FLOAT
             )
         ):
             # Columns that are not in the previous or new list of grouping columns are metrics.
@@ -395,7 +412,6 @@ def generate_query_with_shredder_mitigation(
     client, project_id, dataset, destination_table, backfill_date=PREVIOUS_DATE
 ) -> Path:
     """Generate a query to backfill with shredder mitigation."""
-    query_with_mitigation_name = "query_with_shredder_mitigation"
     query_with_mitigation_path = Path("sql") / project_id
 
     # Find query files and grouping of previous and new queries.
@@ -500,7 +516,7 @@ def generate_query_with_shredder_mitigation(
             for dim in common_dimensions
             if (
                 dim.name != new.partitioning["field"]
-                and dim.data_type in (DataTypeGroup.NUMERIC, DataTypeGroup.FLOAT)
+                and dim.data_type in (DataTypeGroup.INTEGER, DataTypeGroup.FLOAT)
             )
         ]
         + [
@@ -515,14 +531,14 @@ def generate_query_with_shredder_mitigation(
     )
     new_agg_query = new_agg.generate_query(
         select_list=common_select,
-        from_clause=f"FROM {new.query_cte}",
-        group_by_clause="GROUP BY ALL",
+        from_clause=f"{new.query_cte}",
+        group_by_clause="ALL",
     )
     previous_agg_query = previous_agg.generate_query(
         select_list=common_select,
-        from_clause=f"FROM `{previous.full_table_id}`",
-        where_clause=f"WHERE {previous.partitioning['field']} = @{previous.partitioning['field']}",
-        group_by_clause="GROUP BY ALL",
+        from_clause=f"`{previous.full_table_id}`",
+        where_clause=f"{previous.partitioning['field']} = @{previous.partitioning['field']}",
+        group_by_clause="ALL",
     )
 
     # Calculate shredder impact.
@@ -564,11 +580,11 @@ def generate_query_with_shredder_mitigation(
             )
         ]
         + [
-            f"CAST(NULL AS {DataTypeGroup.NUMERIC.name}) AS {dim.name}"
+            f"CAST(NULL AS {DataTypeGroup.INTEGER.name}) AS {dim.name}"
             for dim in added_dimensions
             if (
                 dim.name != new.partitioning["field"]
-                and dim.data_type == DataTypeGroup.NUMERIC
+                and dim.data_type == DataTypeGroup.INTEGER
             )
         ]
         + [
@@ -588,7 +604,7 @@ def generate_query_with_shredder_mitigation(
                 not in (
                     DataTypeGroup.STRING,
                     DataTypeGroup.BOOLEAN,
-                    DataTypeGroup.NUMERIC,
+                    DataTypeGroup.INTEGER,
                     DataTypeGroup.FLOAT,
                 )
             )
@@ -625,8 +641,8 @@ def generate_query_with_shredder_mitigation(
     )
     shredded_query = shredded.generate_query(
         select_list=shredded_select,
-        from_clause=f"FROM {previous_agg.query_cte} LEFT JOIN {new_agg.query_cte} ON {shredded_join} ",
-        where_clause=f"WHERE {' OR '.join([f'{previous_agg.query_cte}.{metric.name} > IFNULL({new_agg.query_cte}.{metric.name}, 0)' for metric in metrics])}",
+        from_clause=f"{previous_agg.query_cte} LEFT JOIN {new_agg.query_cte} ON {shredded_join} ",
+        where_clause=f"{' OR '.join([f'{previous_agg.query_cte}.{metric.name} > IFNULL({new_agg.query_cte}.{metric.name}, 0)' for metric in metrics])}",
     )
 
     final_select = f"{', '.join([dim.name for dim in common_dimensions]+[dim.name for dim in added_dimensions]+[metric.name for metric in metrics])}"
@@ -634,7 +650,7 @@ def generate_query_with_shredder_mitigation(
     # Generate query from template.
     env = Environment(loader=FileSystemLoader(str(THIS_PATH)))
     query_with_mitigation_template = env.get_template(
-        f"{query_with_mitigation_name}_template.sql"
+        f"{QUERY_WITH_MITIGATION_NAME}_template.sql"
     )
 
     query_with_mitigation_sql = reformat(
@@ -654,7 +670,7 @@ def generate_query_with_shredder_mitigation(
     write_sql(
         output_dir=query_with_mitigation_path,
         full_table_id=new.full_table_id,
-        basename=f"{query_with_mitigation_name}.sql",
+        basename=f"{QUERY_WITH_MITIGATION_NAME}.sql",
         sql=query_with_mitigation_sql,
         skip_existing=False,
     )

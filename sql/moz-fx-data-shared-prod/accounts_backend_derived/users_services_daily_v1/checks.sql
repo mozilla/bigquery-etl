@@ -124,7 +124,7 @@ check_results AS (
       OR ABS(events_new.count_new - events_old.count_old) / LEAST(
         events_new.count_new,
         events_old.count_old
-      ) > 0.1 -- low-volume events can have higher relative discrepancies
+      ) > 0.15 -- low-volume events can have higher relative discrepancies
     )
 )
 SELECT

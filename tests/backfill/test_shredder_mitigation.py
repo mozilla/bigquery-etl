@@ -520,15 +520,20 @@ class TestSubset(object):
         ]
         for table, expected in test_destination_tables:
             test_subset = Subset(
-            mock_client, table, None, self.dataset, self.project_id, None
-        )
+                mock_client, table, None, self.dataset, self.project_id, None
+            )
         assert test_subset.version == expected
 
     @patch("google.cloud.bigquery.Client")
     def test_partitioning(self, mock_client, runner):
         """Test that partitioning type and value associated to a subset are returned as expected."""
         test_subset = Subset(
-            mock_client, self.destination_table, None, self.dataset, self.project_id, None
+            mock_client,
+            self.destination_table,
+            None,
+            self.dataset,
+            self.project_id,
+            None,
         )
 
         with runner.isolated_filesystem():
@@ -537,107 +542,149 @@ class TestSubset(object):
                 f.write(
                     "bigquery:\n  time_partitioning:\n    type: day\n    field: submission_date\n    require_partition_filter: true"
                 )
-            assert test_subset.partitioning == {'field': 'submission_date', 'type': 'DAY'}
+            assert test_subset.partitioning == {
+                "field": "submission_date",
+                "type": "DAY",
+            }
 
             with open(Path(self.path) / "metadata.yaml", "w") as f:
                 f.write(
                     "bigquery:\n  time_partitioning:\n    type: day\n    field: first_seen_date\n    require_partition_filter: true"
                 )
-            assert test_subset.partitioning == {'field': 'first_seen_date', 'type': 'DAY'}
+            assert test_subset.partitioning == {
+                "field": "first_seen_date",
+                "type": "DAY",
+            }
 
             with open(Path(self.path) / "metadata.yaml", "w") as f:
                 f.write(
                     "friendly_name: ABCD\ndescription: ABCD\nlabels:\n  incremental: true"
                 )
-            assert test_subset.partitioning == {'field': None, 'type': None}
+            assert test_subset.partitioning == {"field": None, "type": None}
 
     @patch("google.cloud.bigquery.Client")
     def test_generate_query(self, mock_client):
         """Test cases: aggregate, different columns, different metrics, missing metrics, added columns / metrics"""
         test_subset = Subset(
-            mock_client, self.destination_table, None, self.dataset, self.project_id, None
+            mock_client,
+            self.destination_table,
+            None,
+            self.dataset,
+            self.project_id,
+            None,
         )
 
         test_subset_query = test_subset.generate_query(
-            select_list=['column_1'],
+            select_list=["column_1"],
             from_clause=f"{self.destination_table_previous}",
             group_by_clause="ALL",
         )
-        assert test_subset_query == f'SELECT column_1 FROM {self.destination_table_previous} GROUP BY ALL'
+        assert (
+            test_subset_query
+            == f"SELECT column_1 FROM {self.destination_table_previous} GROUP BY ALL"
+        )
 
         test_subset_query = test_subset.generate_query(
             select_list=[1, 2, 3],
-            from_clause= f"{self.destination_table_previous}",
+            from_clause=f"{self.destination_table_previous}",
             order_by_clause="1, 2, 3",
         )
-        assert test_subset_query == f'SELECT 1, 2, 3 FROM {self.destination_table_previous} ORDER BY 1, 2, 3'
+        assert (
+            test_subset_query
+            == f"SELECT 1, 2, 3 FROM {self.destination_table_previous} ORDER BY 1, 2, 3"
+        )
 
         test_subset_query = test_subset.generate_query(
-            select_list=['column_1', 2, 3],
+            select_list=["column_1", 2, 3],
             from_clause=f"{self.destination_table_previous}",
             group_by_clause="1, 2, 3",
         )
-        assert test_subset_query == f'SELECT column_1, 2, 3 FROM {self.destination_table_previous} GROUP BY 1, 2, 3'
-
-        test_subset_query = test_subset.generate_query(
-            select_list=['column_1'],
-            from_clause=f"{self.destination_table_previous}"
+        assert (
+            test_subset_query
+            == f"SELECT column_1, 2, 3 FROM {self.destination_table_previous} GROUP BY 1, 2, 3"
         )
-        assert test_subset_query == f'SELECT column_1 FROM {self.destination_table_previous}'
 
         test_subset_query = test_subset.generate_query(
-            select_list=['column_1'],
+            select_list=["column_1"], from_clause=f"{self.destination_table_previous}"
+        )
+        assert (
+            test_subset_query
+            == f"SELECT column_1 FROM {self.destination_table_previous}"
+        )
+
+        test_subset_query = test_subset.generate_query(
+            select_list=["column_1"],
             from_clause=f"{self.destination_table_previous}",
-            where_clause='column_1 IS NOT NULL',
+            where_clause="column_1 IS NOT NULL",
             group_by_clause="1",
-            order_by_clause="1"
+            order_by_clause="1",
         )
-        assert test_subset_query == f'SELECT column_1 FROM {self.destination_table_previous} WHERE column_1 IS NOT NULL GROUP BY 1 ORDER BY 1'
+        assert (
+            test_subset_query
+            == f"SELECT column_1 FROM {self.destination_table_previous} WHERE column_1 IS NOT NULL GROUP BY 1 ORDER BY 1"
+        )
 
         test_subset_query = test_subset.generate_query(
-            select_list=['column_1'],
-            from_clause=f"{self.destination_table_previous}",
-            group_by_clause="1",
-            order_by_clause="1"
-        )
-        assert test_subset_query == f'SELECT column_1 FROM {self.destination_table_previous} GROUP BY 1 ORDER BY 1'
-
-        test_subset_query = test_subset.generate_query(
-            select_list=['column_1'],
-            from_clause=f"{self.destination_table_previous}",
-            having_clause="column_1 > 1"
-        )
-        assert test_subset_query == f'SELECT column_1 FROM {self.destination_table_previous}'
-
-        test_subset_query = test_subset.generate_query(
-            select_list=['column_1'],
+            select_list=["column_1"],
             from_clause=f"{self.destination_table_previous}",
             group_by_clause="1",
-            having_clause= "column_1 > 1"
+            order_by_clause="1",
         )
-        assert test_subset_query == f'SELECT column_1 FROM {self.destination_table_previous} GROUP BY 1 HAVING column_1 > 1'
+        assert (
+            test_subset_query
+            == f"SELECT column_1 FROM {self.destination_table_previous} GROUP BY 1 ORDER BY 1"
+        )
+
+        test_subset_query = test_subset.generate_query(
+            select_list=["column_1"],
+            from_clause=f"{self.destination_table_previous}",
+            having_clause="column_1 > 1",
+        )
+        assert (
+            test_subset_query
+            == f"SELECT column_1 FROM {self.destination_table_previous}"
+        )
+
+        test_subset_query = test_subset.generate_query(
+            select_list=["column_1"],
+            from_clause=f"{self.destination_table_previous}",
+            group_by_clause="1",
+            having_clause="column_1 > 1",
+        )
+        assert (
+            test_subset_query
+            == f"SELECT column_1 FROM {self.destination_table_previous} GROUP BY 1 HAVING column_1 > 1"
+        )
 
         with pytest.raises(ClickException) as e:
             test_subset.generate_query(
                 select_list=[],
                 from_clause=f"{self.destination_table_previous}",
                 group_by_clause="1",
-                having_clause="column_1 > 1"
+                having_clause="column_1 > 1",
             )
-        assert (str(e.value) ==
-                f'Missing required clause to generate query.\n'
-                f'Actuals: SELECT: [], FROM: {test_subset.full_table_id}')
+        assert (
+            str(e.value) == f"Missing required clause to generate query.\n"
+            f"Actuals: SELECT: [], FROM: {test_subset.full_table_id}"
+        )
 
     @patch("google.cloud.bigquery.Client")
     def test_get_query_path(self, mock_client, runner):
         """Test that path exists / test that the path contains a query file."""
         test_subset = Subset(
-            mock_client, self.destination_table, None, self.dataset, self.project_id, None
+            mock_client,
+            self.destination_table,
+            None,
+            self.dataset,
+            self.project_id,
+            None,
         )
 
         with pytest.raises(ClickException) as e:
             test_subset.get_query_path()
-        assert str(e.value) == f"Query file not found for `{test_subset.full_table_id}`."
+        assert (
+            str(e.value) == f"Query file not found for `{test_subset.full_table_id}`."
+        )
 
         with runner.isolated_filesystem():
             os.makedirs(self.path, exist_ok=True)
@@ -646,7 +693,10 @@ class TestSubset(object):
 
             with pytest.raises(ClickException) as e:
                 test_subset.get_query_path()
-                assert str(e.value) == f"Query file not found for `{test_subset.full_table_id}`."
+                assert (
+                    str(e.value)
+                    == f"Query file not found for `{test_subset.full_table_id}`."
+                )
 
             with open(Path(self.path) / "query.sql", "w") as f:
                 f.write("SELECT column_1")
@@ -657,7 +707,12 @@ class TestSubset(object):
     def test_get_query_path_results(self, mock_client, runner):
         """Test expected results for a mocked BigQuery call."""
         test_subset = Subset(
-            mock_client, self.destination_table, None, self.dataset, self.project_id, None
+            mock_client,
+            self.destination_table,
+            None,
+            self.dataset,
+            self.project_id,
+            None,
         )
         expected = [{"column_1": "1234"}]
 
@@ -700,7 +755,7 @@ class TestGenerateQueryWithShredderMitigation(object):
     @patch("google.cloud.bigquery.Client")
     @patch("bigquery_etl.backfill.shredder_mitigation.classify_columns")
     def test_generate_query_as_expected(
-            self, mock_classify_columns, mock_client, runner
+        self, mock_classify_columns, mock_client, runner
     ):
         """Test that query is generated as expected given a set of mock dimensions and metrics."""
 
@@ -708,23 +763,23 @@ class TestGenerateQueryWithShredderMitigation(object):
             os.makedirs(self.path, exist_ok=True)
             os.makedirs(self.path_previous, exist_ok=True)
             with open(
-                    Path("sql")
-                    / self.project_id
-                    / self.dataset
-                    / self.destination_table
-                    / "query.sql",
-                    "w",
+                Path("sql")
+                / self.project_id
+                / self.dataset
+                / self.destination_table
+                / "query.sql",
+                "w",
             ) as f:
                 f.write(
                     "SELECT column_1, column_2, metric_1 FROM upstream_1 GROUP BY column_1, column_2"
                 )
             with open(
-                    Path("sql")
-                    / self.project_id
-                    / self.dataset
-                    / self.destination_table_previous
-                    / "query.sql",
-                    "w",
+                Path("sql")
+                / self.project_id
+                / self.dataset
+                / self.destination_table_previous
+                / "query.sql",
+                "w",
             ) as f:
                 f.write("SELECT column_1, metric_1 FROM upstream_1 GROUP BY column_1")
 
@@ -767,9 +822,9 @@ class TestGenerateQueryWithShredderMitigation(object):
             )
 
             with patch.object(
-                    Subset,
-                    "get_query_path_results",
-                    return_value=[{"column_1": "ABC", "column_2": "DEF", "metric_1": 10.0}],
+                Subset,
+                "get_query_path_results",
+                return_value=[{"column_1": "ABC", "column_2": "DEF", "metric_1": 10.0}],
             ):
                 result = generate_query_with_shredder_mitigation(
                     client=mock_client,
@@ -968,7 +1023,7 @@ class TestGenerateQueryWithShredderMitigation(object):
     @patch("google.cloud.bigquery.Client")
     @patch("bigquery_etl.backfill.shredder_mitigation.classify_columns")
     def test_generate_query_called_with_correct_parameters(
-            self, mock_classify_columns, mock_client, runner
+        self, mock_classify_columns, mock_client, runner
     ):
         with runner.isolated_filesystem():
             os.makedirs(self.path, exist_ok=True)
@@ -1017,9 +1072,9 @@ class TestGenerateQueryWithShredderMitigation(object):
             )
 
             with patch.object(
-                    Subset,
-                    "get_query_path_results",
-                    return_value=[{"column_1": "ABC", "column_2": "DEF", "metric_1": 10.0}],
+                Subset,
+                "get_query_path_results",
+                return_value=[{"column_1": "ABC", "column_2": "DEF", "metric_1": 10.0}],
             ):
                 with patch.object(Subset, "generate_query") as mock_generate_query:
                     generate_query_with_shredder_mitigation(
@@ -1059,7 +1114,7 @@ class TestGenerateQueryWithShredderMitigation(object):
                                     "previous_agg.metric_1 - IFNULL(new_agg.metric_1, 0) AS metric_1",
                                 ],
                                 from_clause="previous_agg LEFT JOIN new_agg ON previous_agg.submission_date = "
-                                            "new_agg.submission_date AND previous_agg.column_1 = new_agg.column_1 ",
+                                "new_agg.submission_date AND previous_agg.column_1 = new_agg.column_1 ",
                                 where_clause="previous_agg.metric_1 > IFNULL(new_agg.metric_1, 0)",
                             ),
                         ]

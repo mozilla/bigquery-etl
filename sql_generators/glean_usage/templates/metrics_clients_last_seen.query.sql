@@ -35,6 +35,9 @@ SELECT
     {% endif %}
   {% endfor -%}
   {% endif -%}
+  {% if app_name == "firefox_desktop" -%}
+    _current.profile_group_id,
+  {% endif -%}
 FROM
   _previous
 FULL JOIN

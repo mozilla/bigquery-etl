@@ -1,7 +1,9 @@
+CREATE OR REPLACE VIEW
+  `moz-fx-data-shared-prod.monitoring_derived.rayserve_cost_fakespot_tenant_v1`
+AS
 WITH cost_data AS (
   SELECT
     cost + (IFNULL((SELECT SUM(c.amount) FROM UNNEST(credits) c), 0)) AS total_cost,
-  #labels,
     DATE_TRUNC(usage_start_time, DAY) AS invoice_day,
     (SELECT value FROM UNNEST(labels) WHERE KEY = "k8s-namespace") AS k8s_namespace,
     (
@@ -13,7 +15,7 @@ WITH cost_data AS (
         KEY = "k8s-label/app.kubernetes.io/created-by"
     ) AS k8s_label_akio_createdBy,
   FROM
-    moz - fx - data - shared - prod.billing_syndicate.gcp_billing_export_resource_v1_01E7D5_97288E_E2EBA0
+    `moz-fx-data-shared-prod.billing_syndicate.gcp_billing_export_resource_v1_01E7D5_97288E_E2EBA0`
   WHERE
     project.id = "moz-fx-dataservices-high-nonpr" #moz-fx-dataservices-high-nonpr
     AND DATE(usage_start_time) >= '2024-01-01'
@@ -37,26 +39,4 @@ daily_cost_data_per_kuberay_workload AS (
   ORDER BY
     invoice_day
 )
-SELECT
-  SUM(daily_cost_per_kuberay_workload)
-FROM
-  daily_cost_data_per_kuberay_workload
-#select COUNT(total), COUNT(k8s_namespace), COUNT(total), COUNT(k8s_namespace), COUNT(goog_k8s_namespace), COUNT(k8s_namespace_labels_meta_name) from data
-/*select labels from data where k8s_namespace IN (#'kube:unallocated'
-     #'goog-k8s-unsupported-sku',
-     #'goog-k8s-unknown',
-     'kube-system'
-     #'kube:system-overhead'
-     )*/
-#select COUNT(total), COUNT(k8s_namespace), COUNT(goog_k8s_namespace), COUNT(k8s_namespace_labels_meta_name) from data where k8s_namespace = "fakespot-ml-stage"
-#select labels from data
-#select total from data
-/*
-(
- SELECT
-  value
- FROM
-  UNNEST(labels)
- WHERE
-  KEY = "k8s-namespace-labels/kubernetes.io/metadata.name"
-) AS k8s_namespace_labels_meta_name,*/
+SELECT * FROM daily_cost_data_per_kuberay_workload

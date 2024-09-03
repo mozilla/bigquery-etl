@@ -474,6 +474,7 @@ class TestGetBigqueryType(object):
         assert get_bigquery_type(1.00000000000000000000000456) == DataTypeGroup.FLOAT
         assert get_bigquery_type(999999999999999999999.999999999) == DataTypeGroup.FLOAT
         assert get_bigquery_type(-1.23456) == DataTypeGroup.FLOAT
+        assert get_bigquery_type(100000000000000000000.123456789) == DataTypeGroup.FLOAT
 
     def test_boolean_group(self):
         assert get_bigquery_type(False) == DataTypeGroup.BOOLEAN

@@ -56,17 +56,10 @@ class DataTypeGroup(Enum):
 
     STRING = ("STRING", "BYTES")
     BOOLEAN = "BOOLEAN"
-    INTEGER = (
-        "INTEGER",
+    INTEGER = ("INTEGER", "INT64", "INT", "SMALLINT", "TINYINT", "BYTEINT")
+    NUMERIC = (
         "NUMERIC",
         "BIGNUMERIC",
-        "DECIMAL",
-        "INT64",
-        "INT",
-        "SMALLINT",
-        "BIGINT",
-        "TINYINT",
-        "BYTEINT",
     )
     FLOAT = "FLOAT"
     DATE = "DATE"

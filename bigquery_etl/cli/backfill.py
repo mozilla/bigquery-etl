@@ -108,6 +108,15 @@ def backfill(ctx):
     help="Watcher of the backfill (email address)",
     default=DEFAULT_WATCHER,
 )
+@click.option(
+    "--custom_query",
+    "--custom-query",
+    help="Name of a custom query to run the backfill. If not given, the proces runs as usual.",
+)
+@click.option(
+    "--shredder_mitigation/--no_shredder_mitigation",
+    help="Wether to run a backfill using an auto-generated query that mitigates shredder effect.",
+)
 # If not specified, the billing project will be set to the default billing project when the backfill is initiated.
 @billing_project_option()
 @click.pass_context
@@ -119,6 +128,8 @@ def create(
     end_date,
     exclude,
     watcher,
+    custom_query,
+    shredder_mitigation,
     billing_project,
 ):
     """CLI command for creating a new backfill entry in backfill.yaml file.
@@ -145,6 +156,8 @@ def create(
         reason=DEFAULT_REASON,
         watchers=[watcher],
         status=BackfillStatus.INITIATE,
+        custom_query=custom_query,
+        shredder_mitigation=shredder_mitigation,
         billing_project=billing_project,
     )
 
@@ -493,6 +506,13 @@ def _initiate_backfill(
 
     log.info(logging_str)
 
+    custom_query = None
+    if entry.shredder_mitigation is True:
+        custom_query = "query_with_shredder_mitigation.sql"  # TODO: Replace with "= generate_query_with_shredder_mitigation()"
+        logging_str += "  This backfill uses a query with shredder mitigation."
+    elif entry.custom_query:
+        custom_query = entry.custom_query
+
     # backfill table
     # in the long-run we should remove the query backfill command and require a backfill entry for all backfills
     try:
@@ -506,6 +526,7 @@ def _initiate_backfill(
             destination_table=backfill_staging_qualified_table_name,
             parallelism=parallelism,
             dry_run=dry_run,
+            **({"custom_query": custom_query} if custom_query else {}),
             billing_project=billing_project,
         )
     except subprocess.CalledProcessError as e:
@@ -680,7 +701,7 @@ def _copy_table(
         click.echo(f"Source table not found: {source_table}")
         sys.exit(1)
     except Conflict:
-        print(f"Backup table already exists: {destination_table}")
+        click.echo(f"Backup table already exists: {destination_table}")
         sys.exit(1)
 
     click.echo(

@@ -1,0 +1,20 @@
+friendly_name: Fenix Distribution Deal
+description: |-
+  A client-day dataset for all clients in all countries applicable for the Mobile Distribution Deals.
+owners:
+- rburwei@mozilla.com
+labels:
+  incremental: true
+scheduling:
+  dag_name: bqetl_internal_tooling
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields:
+    - client_id
+references: {}

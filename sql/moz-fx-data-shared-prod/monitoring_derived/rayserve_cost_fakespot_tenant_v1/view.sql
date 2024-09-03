@@ -39,4 +39,7 @@ daily_cost_data_per_kuberay_workload AS (
   ORDER BY
     invoice_day
 )
-SELECT * FROM daily_cost_data_per_kuberay_workload
+SELECT
+  *
+FROM
+  daily_cost_data_per_kuberay_workload

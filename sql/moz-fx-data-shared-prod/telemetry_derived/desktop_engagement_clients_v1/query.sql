@@ -25,7 +25,8 @@ SELECT
   aud.is_desktop,
   aud.is_dau,
   aud.is_wau,
-  aud.is_mau
+  aud.is_mau,
+  cls.profile_group_id
 FROM
   `moz-fx-data-shared-prod.telemetry.clients_last_seen_v2` cls
 LEFT JOIN

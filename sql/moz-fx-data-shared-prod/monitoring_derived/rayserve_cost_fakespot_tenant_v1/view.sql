@@ -17,7 +17,7 @@ WITH cost_data AS (
   FROM
     `moz-fx-data-shared-prod.billing_syndicate.gcp_billing_export_resource_v1_01E7D5_97288E_E2EBA0`
   WHERE
-    project.id = "moz-fx-dataservices-high-nonpr" #moz-fx-dataservices-high-nonpr
+    project.id = "moz-fx-dataservices-high-nonpr"
     AND DATE(usage_start_time) >= '2024-01-01'
     AND service.description = "Compute Engine"
 ),

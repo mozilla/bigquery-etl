@@ -83,13 +83,6 @@ with DAG(
         "firefox_desktop_derived__onboarding__v2_external",
     ) as firefox_desktop_derived__onboarding__v2_external:
         ExternalTaskMarker(
-            task_id="bqetl_review_checker__wait_for_firefox_desktop_derived__onboarding__v2",
-            external_dag_id="bqetl_review_checker",
-            external_task_id="wait_for_firefox_desktop_derived__onboarding__v2",
-            execution_date="{{ (execution_date - macros.timedelta(seconds=7200)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
             task_id="bqetl_event_rollup__wait_for_firefox_desktop_derived__onboarding__v2",
             external_dag_id="bqetl_event_rollup",
             external_task_id="wait_for_firefox_desktop_derived__onboarding__v2",

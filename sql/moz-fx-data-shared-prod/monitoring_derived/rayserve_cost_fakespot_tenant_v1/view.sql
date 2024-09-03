@@ -12,6 +12,7 @@ WITH cost_data AS (
       FROM
         UNNEST(labels)
       WHERE
+        -- the label to identify the kuberay created ray serve workloads
         KEY = "k8s-label/app.kubernetes.io/created-by"
     ) AS k8s_label_akio_createdBy,
   FROM

@@ -787,6 +787,14 @@ SELECT
       metrics.object.nimbus_system_recorded_nimbus_context
     ) AS `object`,
     STRUCT(metrics.labeled_string.cookie_banners_google_gdpr_choice_cookie) AS `labeled_string`,
+    STRUCT(
+      metrics.labeled_timing_distribution.network_http3_complete_load,
+      metrics.labeled_timing_distribution.network_http3_first_sent_to_last_received,
+      metrics.labeled_timing_distribution.network_http3_open_to_first_received,
+      metrics.labeled_timing_distribution.network_http3_open_to_first_sent,
+      metrics.labeled_timing_distribution.network_http3_tls_handshake,
+      metrics.labeled_timing_distribution.network_sup_http3_tcp_connection
+    ) AS `labeled_timing_distribution`,
     STRUCT(metrics.url.search_default_engine_search_url) AS `url`
   ) AS `metrics`,
   normalized_app_name,
@@ -1584,6 +1592,14 @@ SELECT
       metrics.object.nimbus_system_recorded_nimbus_context
     ) AS `object`,
     STRUCT(metrics.labeled_string.cookie_banners_google_gdpr_choice_cookie) AS `labeled_string`,
+    STRUCT(
+      metrics.labeled_timing_distribution.network_http3_complete_load,
+      metrics.labeled_timing_distribution.network_http3_first_sent_to_last_received,
+      metrics.labeled_timing_distribution.network_http3_open_to_first_received,
+      metrics.labeled_timing_distribution.network_http3_open_to_first_sent,
+      metrics.labeled_timing_distribution.network_http3_tls_handshake,
+      metrics.labeled_timing_distribution.network_sup_http3_tcp_connection
+    ) AS `labeled_timing_distribution`,
     STRUCT(metrics.url.search_default_engine_search_url) AS `url`
   ) AS `metrics`,
   normalized_app_name,
@@ -2399,6 +2415,14 @@ SELECT
       metrics.object.nimbus_system_recorded_nimbus_context
     ) AS `object`,
     STRUCT(metrics.labeled_string.cookie_banners_google_gdpr_choice_cookie) AS `labeled_string`,
+    STRUCT(
+      metrics.labeled_timing_distribution.network_http3_complete_load,
+      metrics.labeled_timing_distribution.network_http3_first_sent_to_last_received,
+      metrics.labeled_timing_distribution.network_http3_open_to_first_received,
+      metrics.labeled_timing_distribution.network_http3_open_to_first_sent,
+      metrics.labeled_timing_distribution.network_http3_tls_handshake,
+      metrics.labeled_timing_distribution.network_sup_http3_tcp_connection
+    ) AS `labeled_timing_distribution`,
     STRUCT(metrics.url.search_default_engine_search_url) AS `url`
   ) AS `metrics`,
   normalized_app_name,
@@ -3223,6 +3247,14 @@ SELECT
       metrics.object.nimbus_system_recorded_nimbus_context
     ) AS `object`,
     STRUCT(metrics.labeled_string.cookie_banners_google_gdpr_choice_cookie) AS `labeled_string`,
+    STRUCT(
+      metrics.labeled_timing_distribution.network_http3_complete_load,
+      metrics.labeled_timing_distribution.network_http3_first_sent_to_last_received,
+      metrics.labeled_timing_distribution.network_http3_open_to_first_received,
+      metrics.labeled_timing_distribution.network_http3_open_to_first_sent,
+      metrics.labeled_timing_distribution.network_http3_tls_handshake,
+      metrics.labeled_timing_distribution.network_sup_http3_tcp_connection
+    ) AS `labeled_timing_distribution`,
     STRUCT(metrics.url.search_default_engine_search_url) AS `url`
   ) AS `metrics`,
   normalized_app_name,
@@ -4029,6 +4061,14 @@ SELECT
       metrics.object.nimbus_system_recorded_nimbus_context
     ) AS `object`,
     STRUCT(metrics.labeled_string.cookie_banners_google_gdpr_choice_cookie) AS `labeled_string`,
+    STRUCT(
+      metrics.labeled_timing_distribution.network_http3_complete_load,
+      metrics.labeled_timing_distribution.network_http3_first_sent_to_last_received,
+      metrics.labeled_timing_distribution.network_http3_open_to_first_received,
+      metrics.labeled_timing_distribution.network_http3_open_to_first_sent,
+      metrics.labeled_timing_distribution.network_http3_tls_handshake,
+      metrics.labeled_timing_distribution.network_sup_http3_tcp_connection
+    ) AS `labeled_timing_distribution`,
     STRUCT(metrics.url.search_default_engine_search_url) AS `url`
   ) AS `metrics`,
   normalized_app_name,

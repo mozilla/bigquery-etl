@@ -566,7 +566,15 @@ SELECT
     ) AS `rate`,
     STRUCT(metrics.uuid.legacy_ids_client_id) AS `uuid`,
     STRUCT(metrics.object.fog_validation_some_object) AS `object`,
-    STRUCT(metrics.labeled_string.cookie_banners_google_gdpr_choice_cookie) AS `labeled_string`
+    STRUCT(metrics.labeled_string.cookie_banners_google_gdpr_choice_cookie) AS `labeled_string`,
+    STRUCT(
+      metrics.labeled_timing_distribution.network_http3_complete_load,
+      metrics.labeled_timing_distribution.network_http3_first_sent_to_last_received,
+      metrics.labeled_timing_distribution.network_http3_open_to_first_received,
+      metrics.labeled_timing_distribution.network_http3_open_to_first_sent,
+      metrics.labeled_timing_distribution.network_http3_tls_handshake,
+      metrics.labeled_timing_distribution.network_sup_http3_tcp_connection
+    ) AS `labeled_timing_distribution`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -1142,7 +1150,15 @@ SELECT
     ) AS `rate`,
     STRUCT(metrics.uuid.legacy_ids_client_id) AS `uuid`,
     STRUCT(metrics.object.fog_validation_some_object) AS `object`,
-    STRUCT(metrics.labeled_string.cookie_banners_google_gdpr_choice_cookie) AS `labeled_string`
+    STRUCT(metrics.labeled_string.cookie_banners_google_gdpr_choice_cookie) AS `labeled_string`,
+    STRUCT(
+      metrics.labeled_timing_distribution.network_http3_complete_load,
+      metrics.labeled_timing_distribution.network_http3_first_sent_to_last_received,
+      metrics.labeled_timing_distribution.network_http3_open_to_first_received,
+      metrics.labeled_timing_distribution.network_http3_open_to_first_sent,
+      metrics.labeled_timing_distribution.network_http3_tls_handshake,
+      metrics.labeled_timing_distribution.network_sup_http3_tcp_connection
+    ) AS `labeled_timing_distribution`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -1718,7 +1734,15 @@ SELECT
     ) AS `rate`,
     STRUCT(metrics.uuid.legacy_ids_client_id) AS `uuid`,
     STRUCT(metrics.object.fog_validation_some_object) AS `object`,
-    STRUCT(metrics.labeled_string.cookie_banners_google_gdpr_choice_cookie) AS `labeled_string`
+    STRUCT(metrics.labeled_string.cookie_banners_google_gdpr_choice_cookie) AS `labeled_string`,
+    STRUCT(
+      metrics.labeled_timing_distribution.network_http3_complete_load,
+      metrics.labeled_timing_distribution.network_http3_first_sent_to_last_received,
+      metrics.labeled_timing_distribution.network_http3_open_to_first_received,
+      metrics.labeled_timing_distribution.network_http3_open_to_first_sent,
+      metrics.labeled_timing_distribution.network_http3_tls_handshake,
+      metrics.labeled_timing_distribution.network_sup_http3_tcp_connection
+    ) AS `labeled_timing_distribution`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,

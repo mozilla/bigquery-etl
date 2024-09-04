@@ -18,7 +18,7 @@ events AS (
     )
     AND client_id IS NOT NULL
     -- filter out overactive clients: they distort the data and can cause the job to fail: https://bugzilla.mozilla.org/show_bug.cgi?id=1730190
-    AND client_event_count < 3000000
+    AND client_event_count < 300000
 ),
 joined AS (
   SELECT

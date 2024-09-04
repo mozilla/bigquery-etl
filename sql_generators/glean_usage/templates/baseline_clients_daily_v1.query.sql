@@ -30,6 +30,11 @@ WITH base AS (
     CAST(NULL AS STRING) AS distribution_id,
     {% endif %}
     metadata.geo.subdivision1 AS geo_subdivision,
+    {% if has_profile_group_id %}
+    metrics.uuid.legacy_telemetry_profile_group_id AS profile_group_id,
+    {% else %}
+    CAST(NULL AS STRING) AS profile_group_id,
+    {% endif %}
   FROM
     `{{ baseline_table }}`
   -- Baseline pings with 'foreground' reason were first introduced in early April 2020;

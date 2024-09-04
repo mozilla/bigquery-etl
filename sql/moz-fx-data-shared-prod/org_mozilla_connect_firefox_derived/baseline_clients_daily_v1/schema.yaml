@@ -77,3 +77,6 @@ fields:
 - mode: NULLABLE
   name: geo_subdivision
   type: STRING
+- mode: NULLABLE
+  name: profile_group_id
+  type: STRING

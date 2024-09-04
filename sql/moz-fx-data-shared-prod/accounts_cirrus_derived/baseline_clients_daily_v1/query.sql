@@ -27,6 +27,7 @@ WITH base AS (
     normalized_os_version,
     CAST(NULL AS STRING) AS distribution_id,
     metadata.geo.subdivision1 AS geo_subdivision,
+    CAST(NULL AS STRING) AS profile_group_id,
   FROM
     `moz-fx-data-shared-prod.accounts_cirrus_stable.baseline_v1`
   -- Baseline pings with 'foreground' reason were first introduced in early April 2020;
@@ -107,6 +108,9 @@ windowed AS (
     ) AS telemetry_sdk_build,
     `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(distribution_id) OVER w1) AS distribution_id,
     `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(geo_subdivision) OVER w1) AS geo_subdivision,
+    `moz-fx-data-shared-prod.udf.mode_last`(
+      ARRAY_AGG(profile_group_id) OVER w1
+    ) AS profile_group_id,
   FROM
     with_date_offsets
   WHERE

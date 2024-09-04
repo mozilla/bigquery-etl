@@ -75,6 +75,7 @@ def main():
     parser.add_argument("--dataset", default="glam_etl")
     parser.add_argument("--sql-root", default="sql/")
     parser.add_argument("--daily-view-only", action="store_true", default=False)
+    parser.add_argument("--use-sample-id", action="store_true", default=False)
     args = parser.parse_args()
 
     env = Environment(loader=PackageLoader("bigquery_etl", "glam/templates"))
@@ -272,6 +273,7 @@ def main():
                 **config[args.prefix],
             ),
             channel=channel_prefixes[args.prefix],
+            use_sample_id=args.use_sample_id,
         ),
         table(
             "probe_counts_v1",

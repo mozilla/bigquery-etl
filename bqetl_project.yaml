@@ -187,6 +187,7 @@ dry_run:
   # Source table does not have a verifiable schema
   - sql/moz-fx-data-shared-prod/monitoring_derived/outerbounds_cost_per_flow_run_v1/view.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/outerbounds_cost_per_flow_v1/view.sql
+  - sql/moz-fx-data-shared-prod/monitoring_derived/rayserve_cost_fakespot_tenant_v1/view.sql
     # Query templates
   - sql/moz-fx-data-shared-prod/search_derived/mobile_search_clients_daily_v1/fenix_metrics.template.sql
   - sql/moz-fx-data-shared-prod/search_derived/mobile_search_clients_daily_v1/mobile_search_clients_daily.template.sql

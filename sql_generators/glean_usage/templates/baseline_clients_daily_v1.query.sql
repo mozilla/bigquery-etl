@@ -103,6 +103,7 @@ windowed AS (
     udf.mode_last(ARRAY_AGG(telemetry_sdk_build) OVER w1) AS telemetry_sdk_build,
     udf.mode_last(ARRAY_AGG(distribution_id) OVER w1) AS distribution_id,
     udf.mode_last(ARRAY_AGG(geo_subdivision) OVER w1) AS geo_subdivision,
+    udf.mode_last(ARRAY_AGG(profile_group_id) OVER w1) AS profile_group_id,
   FROM
     with_date_offsets
   WHERE

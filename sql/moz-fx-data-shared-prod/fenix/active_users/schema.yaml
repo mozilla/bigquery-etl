@@ -101,6 +101,9 @@ fields:
 - name: geo_subdivision
   type: STRING
   mode: NULLABLE
+- name: profile_group_id
+  type: STRING
+  mode: NULLABLE
 - name: app_name
   type: STRING
   mode: NULLABLE

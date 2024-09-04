@@ -4,15 +4,15 @@ WITH google_data AS (
     country,
     normalized_engine AS partner,
     'desktop' AS device,
-    sap,
-    tagged_sap,
-    tagged_follow_on,
-    search_with_ads,
-    ad_click,
-    organic,
-    ad_click_organic,
-    search_with_ads_organic,
-    IF(is_sap_monetizable, sap, 0) AS monetizable_sap
+    SUM(sap) as sap,
+    SUM(tagged_sap) as tagged_sap,
+    SUM(tagged_follow_on) as tagged_follow_on,
+    SUM(search_with_ads) as search_with_ads,
+    SUM(ad_click) as ad_click,
+    SUM(organic) as organic,
+    SUM(ad_click_organic) as ad_click_organic,
+    SUM(search_with_ads_organic) as search_with_ads_organic,
+    SUM(IF(is_sap_monetizable, sap, 0)) as monetizable_sap
   FROM
     `moz-fx-data-shared-prod.search.search_aggregates`
   WHERE
@@ -22,19 +22,20 @@ WITH google_data AS (
       (submission_date < "2023-12-01" AND country NOT IN ('RU', 'UA', 'TR', 'BY', 'KZ', 'CN'))
       OR (submission_date >= "2023-12-01" AND country NOT IN ('RU', 'UA', 'BY', 'CN'))
     )
+  GROUP BY 1, 2, 3, 4
   UNION ALL
   SELECT
     submission_date,
     country,
     normalized_engine AS partner,
     'mobile' AS device,
-    sap,
-    tagged_sap,
-    tagged_follow_on,
-    search_with_ads,
-    ad_click,
-    organic,
-    ad_click_organic,
+    SUM(sap) as sap,
+    SUM(tagged_sap) as tagged_sap,
+    SUM(tagged_follow_on) as tagged_follow_on,
+    SUM(search_with_ads) as search_with_ads,
+    SUM(ad_click) as ad_click,
+    SUM(organic) as organic,
+    SUM(ad_click_organic) as ad_click_organic,
     0 AS search_with_ads_organic,
     0 AS monetizable_sap
   FROM
@@ -50,6 +51,7 @@ WITH google_data AS (
       app_name IN ('Fenix', 'Firefox Preview', 'Focus', 'Focus Android Glean', 'Focus iOS Glean')
       OR (app_name = 'Fennec' AND os = 'iOS')
     )
+  GROUP BY 1, 2, 3, 4
 ),
 bing_data AS (
   SELECT
@@ -57,34 +59,35 @@ bing_data AS (
     country,
     normalized_engine AS partner,
     'desktop' AS device,
-    sap,
-    tagged_sap,
-    tagged_follow_on,
-    search_with_ads,
-    ad_click,
-    organic,
-    ad_click_organic,
-    search_with_ads_organic,
-    IF(is_sap_monetizable, sap, 0) AS monetizable_sap
+    SUM(sap) as sap,
+    SUM(tagged_sap) as tagged_sap,
+    SUM(tagged_follow_on) as tagged_follow_on,
+    SUM(search_with_ads) as search_with_ads,
+    SUM(ad_click) as ad_click,
+    SUM(organic) as organic,
+    SUM(ad_click_organic) as ad_click_organic,
+    SUM(search_with_ads_organic) as search_with_ads_organic,
+    SUM(IF(is_sap_monetizable, sap, 0)) as monetizable_sap
   FROM
     `moz-fx-data-shared-prod.search.search_aggregates`
   WHERE
     submission_date = @submission_date
     AND normalized_engine = 'Bing'
     AND is_acer_cohort
+  GROUP BY 1, 2, 3, 4
   UNION ALL
   SELECT
     submission_date,
     country,
     normalized_engine AS partner,
     'mobile' AS device,
-    sap,
-    tagged_sap,
-    tagged_follow_on,
-    search_with_ads,
-    ad_click,
-    organic,
-    ad_click_organic,
+    SUM(sap) as sap,
+    SUM(tagged_sap) as tagged_sap,
+    SUM(tagged_follow_on) as tagged_follow_on,
+    SUM(search_with_ads) as search_with_ads,
+    SUM(ad_click) as ad_click,
+    SUM(organic) as organic,
+    SUM(ad_click_organic) as ad_click_organic,
     0 AS search_with_ads_organic,
     0 AS monetizable_sap
   FROM
@@ -96,6 +99,7 @@ bing_data AS (
       app_name IN ('Fenix', 'Firefox Preview', 'Focus', 'Focus Android Glean', 'Focus iOS Glean')
       OR (app_name = 'Fennec' AND os = 'iOS')
     )
+  GROUP BY 1, 2, 3, 4
 ),
 ddg_data AS (
   SELECT
@@ -103,33 +107,34 @@ ddg_data AS (
     country,
     normalized_engine AS partner,
     'desktop' AS device,
-    sap,
-    tagged_sap,
-    tagged_follow_on,
-    search_with_ads,
-    ad_click,
-    organic,
-    ad_click_organic,
-    search_with_ads_organic,
-    IF(is_sap_monetizable, sap, 0) AS monetizable_sap
+    SUM(sap) as sap,
+    SUM(tagged_sap) as tagged_sap,
+    SUM(tagged_follow_on) as tagged_follow_on,
+    SUM(search_with_ads) as search_with_ads,
+    SUM(ad_click) as ad_click,
+    SUM(organic) as organic,
+    SUM(ad_click_organic) as ad_click_organic,
+    SUM(search_with_ads_organic) as search_with_ads_organic,
+    SUM(IF(is_sap_monetizable, sap, 0)) as monetizable_sap
   FROM
     `moz-fx-data-shared-prod.search.search_aggregates`
   WHERE
     submission_date = @submission_date
     AND normalized_engine = 'DuckDuckGo'
+  GROUP BY 1, 2, 3, 4
   UNION ALL
   SELECT
     submission_date,
     country,
     normalized_engine AS partner,
     'mobile' AS device,
-    sap,
-    tagged_sap,
-    tagged_follow_on,
-    search_with_ads,
-    ad_click,
-    organic,
-    ad_click_organic,
+    SUM(sap) as sap,
+    SUM(tagged_sap) as tagged_sap,
+    SUM(tagged_follow_on) as tagged_follow_on,
+    SUM(search_with_ads) as search_with_ads,
+    SUM(ad_click) as ad_click,
+    SUM(organic) as organic,
+    SUM(ad_click_organic) as ad_click_organic,
     0 AS search_with_ads_organic,
     0 AS monetizable_sap
   FROM
@@ -137,6 +142,7 @@ ddg_data AS (
   WHERE
     submission_date = @submission_date
     AND normalized_engine = 'DuckDuckGo'
+  GROUP BY 1, 2, 3, 4
 ),
 combined_search_data AS (
   SELECT

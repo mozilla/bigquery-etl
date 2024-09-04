@@ -75,7 +75,7 @@ def main():
     parser.add_argument("--dataset", default="glam_etl")
     parser.add_argument("--sql-root", default="sql/")
     parser.add_argument("--daily-view-only", action="store_true", default=False)
-    parser.add_argument("--use-sample-id", default=False)
+    parser.add_argument("--use-sample-id", action="store_true", default=False)
     args = parser.parse_args()
 
     env = Environment(loader=PackageLoader("bigquery_etl", "glam/templates"))

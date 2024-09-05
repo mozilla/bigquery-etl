@@ -185,8 +185,8 @@ combined_search_data AS (
     ddg_data
 ),
 eligible_markets_dau AS (
-  SELECT
-    DISTINCT "desktop" AS device,
+  SELECT DISTINCT
+    "desktop" AS device,
     submission_date,
     country,
     COUNT(DISTINCT client_id) AS global_eligible_dau,
@@ -212,8 +212,8 @@ eligible_markets_dau AS (
     submission_date,
     country
   UNION ALL
-  SELECT
-    DISTINCT "mobile" AS device,
+  SELECT DISTINCT
+    "mobile" AS device,
     submission_date,
     country,
     COUNT(DISTINCT client_id) AS global_eligible_dau,
@@ -264,22 +264,17 @@ combined_search_dau AS (
     device,
     country,
     CASE
-    WHEN
-      partner = "Google"
-    THEN
-      google_eligible_dau
-    ELSE
-      global_eligible_dau
-    END
-    AS dau_eligible_markets,
+      WHEN partner = "Google"
+        THEN google_eligible_dau
+      ELSE global_eligible_dau
+    END AS dau_eligible_markets,
     dau_w_engine_as_default,
     dau_engaged_w_sap
   FROM
     desktop_mobile_search_dau
   LEFT JOIN
     eligible_markets_dau
-  USING
-    (submission_date, device, country)
+    USING (submission_date, device, country)
 )
 SELECT
   cd.submission_date,
@@ -303,8 +298,7 @@ FROM
   combined_search_data cd
 LEFT JOIN
   combined_search_dau du
-ON
-  cd.partner = du.partner
+  ON cd.partner = du.partner
   AND cd.submission_date = du.submission_date
   AND cd.country = du.country
   AND cd.device = du.device

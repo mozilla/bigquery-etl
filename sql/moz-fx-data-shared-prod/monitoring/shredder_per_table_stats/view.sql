@@ -6,7 +6,7 @@ SELECT
   SPLIT(task_id, '$')[OFFSET(0)] AS table_id,
   MIN(start_time) AS start_time,
   MAX(end_time) AS end_time,
-  SUM(TIMESTAMP_DIFF(end_time, start_time, MINUTE)) / 60 AS run_time_hours,
+  SUM(run_time_minutes) / 60 AS run_time_hours,
   SUM(total_slot_ms) / 1000 / GREATEST(
     SUM(TIMESTAMP_DIFF(end_time, start_time, SECOND)),
     1

@@ -67,7 +67,7 @@ from ..query_scheduling.generate_airflow_dags import get_dags
 from ..schema import SCHEMA_FILE, Schema
 from ..util import extract_from_query_path
 from ..util.bigquery_id import sql_table_id
-from ..util.common import random_str
+from ..util.common import get_target, random_str
 from ..util.common import render as render_template
 from ..util.parallel_topological_sorter import ParallelTopologicalSorter
 from .dryrun import dryrun
@@ -851,6 +851,15 @@ def backfill(
         + "If not set, determines destination dataset based on query."
     ),
 )
+@click.option(
+    "--target",
+    required=False,
+    default=os.environ.get("BQETL_TARGET"),
+    help=(
+        "Target results will be written to."
+        " If not specified, the BQETL_TARGET environment variable will be used if it's set."
+    ),
+)
 @click.pass_context
 def run(
     ctx,
@@ -861,6 +870,7 @@ def run(
     public_project_id,
     destination_table,
     dataset_id,
+    target,
 ):
     """Run a query."""
     if not is_authenticated():
@@ -890,6 +900,7 @@ def run(
         dataset_id,
         ctx.args,
         billing_project=billing_project,
+        target_name=target,
     )
 
 
@@ -902,6 +913,7 @@ def _run_query(
     query_arguments,
     addl_templates: Optional[dict] = None,
     billing_project: Optional[str] = None,
+    target_name: Optional[str] = None,
 ):
     """Run a query.
 
@@ -918,10 +930,15 @@ def _run_query(
     if addl_templates is None:
         addl_templates = {}
 
+    target = None
+    if target_name:
+        target = get_target(target_name)
+
     for query_file in query_files:
         use_public_table = False
 
         query_file = Path(query_file)
+        query_project, query_dataset, query_name = extract_from_query_path(query_file)
         try:
             metadata = Metadata.of_query_file(query_file)
             if metadata.is_public_bigquery():
@@ -977,6 +994,15 @@ def _run_query(
 
             query_arguments.append("--destination_table={}".format(destination_table))
 
+        if target:
+            target_table_id = target.translate_artifact_id(
+                f"{query_project}.{query_dataset}.{query_name}"
+            )
+            target_project, target_dataset, target_table = target_table_id.split(".")
+            destination_table = f"{target_project}:{target_dataset}.{target_table}"
+            query_arguments.append(f"--destination_table={destination_table}")
+            click.echo(f"Running query `{query_file}` with target `{target.name}` to destination table `{target_table_id}`.")
+
         if bool(list(filter(lambda x: x.startswith("--parameter"), query_arguments))):
             # need to do this as parameters are not supported with legacy sql
             query_arguments.append("--use_legacy_sql=False")
@@ -997,12 +1023,10 @@ def _run_query(
         # this is needed if the project the query is run in (billing_project) doesn't match the
         # project directory the query is in
         if billing_project is not None and billing_project != project_id:
-            default_project, default_dataset, _ = extract_from_query_path(query_file)
-
             session_id = create_query_session(
                 session_project=billing_project,
-                default_project=project_id or default_project,
-                default_dataset=dataset_id or default_dataset,
+                default_project=project_id or query_project,
+                default_dataset=dataset_id or query_dataset,
             )
             query_arguments.append(f"--session_id={session_id}")
 
@@ -1019,6 +1043,30 @@ def _run_query(
             # dataset ID was parsed by argparse but needs to be passed as parameter
             # when running the query
             query_arguments.append(f"--dataset_id={dataset_id}")
+
+        if target and (target.create_datasets or target.reference_existing_artifacts):
+            target_client = bigquery.Client(target_project)
+            if target.create_datasets:
+                target_client.create_dataset(target_dataset, exists_ok=True)
+            if target.reference_existing_artifacts:
+                existing_artifact_ids = [
+                    t.full_table_id.replace(":", ".")
+                    for t in target_client.list_tables(dataset=target_dataset)
+                ]
+
+                def _replace_existing_artifact_reference(match: re.Match) -> str:
+                    target_artifact_id = target.translate_artifact_id(
+                        match[0].replace("`", "")
+                    )
+                    if target_artifact_id in existing_artifact_ids:
+                        return f"`{target_artifact_id}`"
+                    return match[0]
+
+                query_text = re.sub(
+                    r"(?<![\w.-])`?[\w-]+`?\.`?\w+`?\.`?\w+`?(?![\w.])",
+                    _replace_existing_artifact_reference,
+                    query_text,
+                )
 
         # write rendered query to a temporary file;
         # query string cannot be passed directly to bq as SQL comments will be interpreted as CLI arguments

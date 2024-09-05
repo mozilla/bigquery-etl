@@ -23,10 +23,10 @@ WITH google_data AS (
       OR (submission_date >= "2023-12-01" AND country NOT IN ('RU', 'UA', 'BY', 'CN'))
     )
   GROUP BY
-    1,
-    2,
-    3,
-    4
+    submission_date,
+    country,
+    partner,
+    device
   UNION ALL
   SELECT
     submission_date,
@@ -56,10 +56,10 @@ WITH google_data AS (
       OR (app_name = 'Fennec' AND os = 'iOS')
     )
   GROUP BY
-    1,
-    2,
-    3,
-    4
+    submission_date,
+    country,
+    partner,
+    device
 ),
 bing_data AS (
   SELECT
@@ -83,10 +83,10 @@ bing_data AS (
     AND normalized_engine = 'Bing'
     AND is_acer_cohort
   GROUP BY
-    1,
-    2,
-    3,
-    4
+    submission_date,
+    country,
+    partner,
+    device
   UNION ALL
   SELECT
     submission_date,
@@ -112,10 +112,10 @@ bing_data AS (
       OR (app_name = 'Fennec' AND os = 'iOS')
     )
   GROUP BY
-    1,
-    2,
-    3,
-    4
+    submission_date,
+    country,
+    partner,
+    device
 ),
 ddg_data AS (
   SELECT
@@ -138,10 +138,10 @@ ddg_data AS (
     submission_date = @submission_date
     AND normalized_engine = 'DuckDuckGo'
   GROUP BY
-    1,
-    2,
-    3,
-    4
+    submission_date,
+    country,
+    partner,
+    device
   UNION ALL
   SELECT
     submission_date,
@@ -163,10 +163,10 @@ ddg_data AS (
     submission_date = @submission_date
     AND normalized_engine = 'DuckDuckGo'
   GROUP BY
-    1,
-    2,
-    3,
-    4
+    submission_date,
+    country,
+    partner,
+    device
 ),
 combined_search_data AS (
   SELECT

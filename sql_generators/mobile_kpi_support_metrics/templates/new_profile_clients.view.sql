@@ -33,3 +33,4 @@ WHERE
   active_users.submission_date < CURRENT_DATE
   AND is_new_profile
   AND is_daily_user
+  AND active_users.submission_date = active_users.first_seen_date

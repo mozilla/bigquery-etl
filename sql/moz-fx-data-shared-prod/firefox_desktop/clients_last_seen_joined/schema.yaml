@@ -110,6 +110,6 @@ fields:
 - name: profile_group_id
   type: STRING
   mode: NULLABLE
-- name: profile_group_id_1
+- name: baseline_profile_group_id
   type: STRING
   mode: NULLABLE

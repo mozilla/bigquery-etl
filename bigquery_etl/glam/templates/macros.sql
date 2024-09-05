@@ -45,12 +45,12 @@ static_combos AS (
         {% endfor %}
     FROM
         {{ source_table }} table
+    CROSS JOIN
+        static_combos combo
     {% if use_sample_id %}
         WHERE
             sample_id >= @min_sample_id
             AND sample_id <= @max_sample_id
     {% endif %}
-    CROSS JOIN
-        static_combos combo
 )
 {% endmacro %}

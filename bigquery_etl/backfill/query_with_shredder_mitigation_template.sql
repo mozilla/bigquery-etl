@@ -1,4 +1,4 @@
--- Query generated from a template that mitigates the effect of shredder.
+-- Query generated using a template for shredder mitigation.
 WITH {{ new_version_cte }} AS (
   {{ new_version }}
 ),

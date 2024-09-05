@@ -1,8 +1,9 @@
 import os
-from datetime import datetime, time
+from datetime import datetime, date, time
 from pathlib import Path
 from unittest.mock import call, patch
 
+import click
 import pytest
 from click.exceptions import ClickException
 from click.testing import CliRunner
@@ -16,7 +17,7 @@ from bigquery_etl.backfill.shredder_mitigation import (
     Subset,
     classify_columns,
     generate_query_with_shredder_mitigation,
-    get_bigquery_type,
+    get_bigquery_type, QUERY_WITH_MITIGATION_NAME,
 )
 
 
@@ -418,7 +419,7 @@ class TestClassifyColumns(object):
         assert metrics == expected_metrics
         assert undefined == []
 
-    def test_matching_new_row_and_new_columns(self):
+    def test_not_matching_new_row_and_new_columns(self):
         new_row = {
             "submission_date": "2024-01-01",
             "channel": None,
@@ -427,10 +428,10 @@ class TestClassifyColumns(object):
         }
         existing_columns = ["submission_date", "channel"]
         new_columns = ["submission_date", "channel", "os", "is_default_browser"]
-        expected_exception_text = "Some dimension columns are not returned when running the query: ['is_default_browser']"
+        expected_exception_text = "Existing dimensions don't match columns retrieved by query. Missing ['is_default_browser']."
         with pytest.raises(ClickException) as e:
             classify_columns(new_row, existing_columns, new_columns)
-        assert (str(e.value)) == expected_exception_text
+        assert (str(e.value.message)) == expected_exception_text
 
     def test_missing_parameters(self):
         new_row = {}
@@ -440,7 +441,7 @@ class TestClassifyColumns(object):
         )
         with pytest.raises(ClickException) as e:
             classify_columns(new_row, [], [])
-        assert (str(e.value)) == expected_exception_text
+        assert (str(e.value.message)) == expected_exception_text
 
         new_row = {"column_1": "2024-01-01", "column_2": "Windows"}
         new_columns = {"column_2"}
@@ -450,7 +451,7 @@ class TestClassifyColumns(object):
         )
         with pytest.raises(ClickException) as e:
             classify_columns(new_row, [], new_columns)
-        assert (str(e.value)) == expected_exception_text
+        assert (str(e.value.message)) == expected_exception_text
 
         new_row = {"column_1": "2024-01-01", "column_2": "Windows"}
         existing_columns = ["column_1"]
@@ -460,7 +461,7 @@ class TestClassifyColumns(object):
         )
         with pytest.raises(ClickException) as e:
             classify_columns(new_row, existing_columns, [])
-        assert (str(e.value)) == expected_exception_text
+        assert (str(e.value.message)) == expected_exception_text
 
 
 class TestGetBigqueryType(object):
@@ -490,6 +491,7 @@ class TestGetBigqueryType(object):
         assert get_bigquery_type("12:34:56") == DataTypeGroup.TIME
         assert get_bigquery_type(time(12, 34, 56)) == DataTypeGroup.TIME
         assert get_bigquery_type(datetime(2024, 12, 26)) == DataTypeGroup.DATETIME
+        assert get_bigquery_type(date(2024, 12, 26)) == DataTypeGroup.DATE
 
     def test_other_types(self):
         assert get_bigquery_type("2024") == DataTypeGroup.STRING
@@ -510,20 +512,33 @@ class TestSubset(object):
 
     @patch("google.cloud.bigquery.Client")
     def test_version(self, mock_client):
-        test_destination_tables = [
-            ("test_v1", 3),
-            ("test_v", None),
+        test_tables_correct = [
+            ("test_v1", 1),
             ("test_v10", 10),
-            ("test_v-19", 19),
             ("test_v0", 0),
-            ("test_3", None),
-            ("test_10", None),
         ]
-        for table, expected in test_destination_tables:
+        for table, expected in test_tables_correct:
             test_subset = Subset(
                 mock_client, table, None, self.dataset, self.project_id, None
             )
-        assert test_subset.version == expected
+            assert test_subset.version == expected
+
+        test_tables_incorrect = [
+            ("test_v-19", 1),
+            ("test_v", 1),
+            ("test_3", None),
+            ("test_10", None),
+            ("test_3", 1),
+        ]
+        for table, expected in test_tables_incorrect:
+            test_subset = Subset(
+                mock_client, table, None, self.dataset, self.project_id, None
+            )
+            with pytest.raises(click.ClickException) as e:
+                version = test_subset.version
+            assert e.type == click.ClickException
+            assert e.value.message == f"Invalid or missing table version in {test_subset.destination_table}."
+
 
     @patch("google.cloud.bigquery.Client")
     def test_partitioning(self, mock_client, runner):
@@ -581,8 +596,8 @@ class TestSubset(object):
             group_by_clause="ALL",
         )
         assert (
-            test_subset_query
-            == f"SELECT column_1 FROM {self.destination_table_previous} GROUP BY ALL"
+                test_subset_query
+                == f"SELECT column_1 FROM {self.destination_table_previous} GROUP BY ALL"
         )
 
         test_subset_query = test_subset.generate_query(
@@ -591,8 +606,8 @@ class TestSubset(object):
             order_by_clause="1, 2, 3",
         )
         assert (
-            test_subset_query
-            == f"SELECT 1, 2, 3 FROM {self.destination_table_previous} ORDER BY 1, 2, 3"
+                test_subset_query
+                == f"SELECT 1, 2, 3 FROM {self.destination_table_previous} ORDER BY 1, 2, 3"
         )
 
         test_subset_query = test_subset.generate_query(
@@ -601,16 +616,16 @@ class TestSubset(object):
             group_by_clause="1, 2, 3",
         )
         assert (
-            test_subset_query
-            == f"SELECT column_1, 2, 3 FROM {self.destination_table_previous} GROUP BY 1, 2, 3"
+                test_subset_query
+                == f"SELECT column_1, 2, 3 FROM {self.destination_table_previous} GROUP BY 1, 2, 3"
         )
 
         test_subset_query = test_subset.generate_query(
             select_list=["column_1"], from_clause=f"{self.destination_table_previous}"
         )
         assert (
-            test_subset_query
-            == f"SELECT column_1 FROM {self.destination_table_previous}"
+                test_subset_query
+                == f"SELECT column_1 FROM {self.destination_table_previous}"
         )
 
         test_subset_query = test_subset.generate_query(
@@ -621,8 +636,8 @@ class TestSubset(object):
             order_by_clause="1",
         )
         assert (
-            test_subset_query
-            == f"SELECT column_1 FROM {self.destination_table_previous} WHERE column_1 IS NOT NULL GROUP BY 1 ORDER BY 1"
+                test_subset_query
+                == f"SELECT column_1 FROM {self.destination_table_previous} WHERE column_1 IS NOT NULL GROUP BY 1 ORDER BY 1"
         )
 
         test_subset_query = test_subset.generate_query(
@@ -632,8 +647,8 @@ class TestSubset(object):
             order_by_clause="1",
         )
         assert (
-            test_subset_query
-            == f"SELECT column_1 FROM {self.destination_table_previous} GROUP BY 1 ORDER BY 1"
+                test_subset_query
+                == f"SELECT column_1 FROM {self.destination_table_previous} GROUP BY 1 ORDER BY 1"
         )
 
         test_subset_query = test_subset.generate_query(
@@ -642,8 +657,8 @@ class TestSubset(object):
             having_clause="column_1 > 1",
         )
         assert (
-            test_subset_query
-            == f"SELECT column_1 FROM {self.destination_table_previous}"
+                test_subset_query
+                == f"SELECT column_1 FROM {self.destination_table_previous}"
         )
 
         test_subset_query = test_subset.generate_query(
@@ -653,8 +668,8 @@ class TestSubset(object):
             having_clause="column_1 > 1",
         )
         assert (
-            test_subset_query
-            == f"SELECT column_1 FROM {self.destination_table_previous} GROUP BY 1 HAVING column_1 > 1"
+                test_subset_query
+                == f"SELECT column_1 FROM {self.destination_table_previous} GROUP BY 1 HAVING column_1 > 1"
         )
 
         with pytest.raises(ClickException) as e:
@@ -665,44 +680,10 @@ class TestSubset(object):
                 having_clause="column_1 > 1",
             )
         assert (
-            str(e.value) == f"Missing required clause to generate query.\n"
-            f"Actuals: SELECT: [], FROM: {test_subset.full_table_id}"
+                str(e.value.message) == f"Missing required clause to generate query.\n"
+                                f"Actuals: SELECT: [], FROM: {test_subset.full_table_id}"
         )
 
-    @patch("google.cloud.bigquery.Client")
-    def test_get_query_path(self, mock_client, runner):
-        """Test that path exists / test that the path contains a query file."""
-        test_subset = Subset(
-            mock_client,
-            self.destination_table,
-            None,
-            self.dataset,
-            self.project_id,
-            None,
-        )
-
-        with pytest.raises(ClickException) as e:
-            test_subset.get_query_path()
-        assert (
-            str(e.value) == f"Query file not found for `{test_subset.full_table_id}`."
-        )
-
-        with runner.isolated_filesystem():
-            os.makedirs(self.path, exist_ok=True)
-            with open(Path(self.path) / "query_with_shredder_mitigation.sql", "w") as f:
-                f.write("SELECT column_1")
-
-            with pytest.raises(ClickException) as e:
-                test_subset.get_query_path()
-                assert (
-                    str(e.value)
-                    == f"Query file not found for `{test_subset.full_table_id}`."
-                )
-
-            with open(Path(self.path) / "query.sql", "w") as f:
-                f.write("SELECT column_1")
-            assert os.path.isfile(Path(self.path) / "query.sql")
-            assert test_subset.get_query_path() == Path(self.path) / "query.sql"
 
     @patch("google.cloud.bigquery.Client")
     def test_get_query_path_results(self, mock_client, runner):
@@ -756,31 +737,95 @@ class TestGenerateQueryWithShredderMitigation(object):
     @patch("google.cloud.bigquery.Client")
     @patch("bigquery_etl.backfill.shredder_mitigation.classify_columns")
     def test_generate_query_as_expected(
-        self, mock_classify_columns, mock_client, runner
+            self, mock_classify_columns, mock_client, runner
     ):
         """Test that query is generated as expected given a set of mock dimensions and metrics."""
 
+        expected = (Path('sql') / self.project_id / self.dataset / self.destination_table / f"{QUERY_WITH_MITIGATION_NAME}.sql",
+                    """-- Query generated using a template for shredder mitigation.
+                        WITH new_version AS (
+                          SELECT
+                            column_1,
+                            column_2,
+                            metric_1
+                          FROM
+                            upstream_1
+                          GROUP BY
+                            column_1,
+                            column_2
+                        ),
+                        new_agg AS (
+                          SELECT
+                            submission_date,
+                            COALESCE(column_1, '??') AS column_1,
+                            SUM(metric_1) AS metric_1
+                          FROM
+                            new_version
+                          GROUP BY
+                            ALL
+                        ),
+                        previous_agg AS (
+                          SELECT
+                            submission_date,
+                            COALESCE(column_1, '??') AS column_1,
+                            SUM(metric_1) AS metric_1
+                          FROM
+                            `moz-fx-data-shared-prod.test.test_query_v1`
+                          WHERE
+                            submission_date = @submission_date
+                          GROUP BY
+                            ALL
+                        ),
+                        shredded AS (
+                          SELECT
+                            previous_agg.submission_date,
+                            previous_agg.column_1,
+                            CAST(NULL AS STRING) AS column_2,
+                            previous_agg.metric_1 - IFNULL(new_agg.metric_1, 0) AS metric_1
+                          FROM
+                            previous_agg
+                          LEFT JOIN
+                            new_agg
+                            ON previous_agg.submission_date = new_agg.submission_date
+                            AND previous_agg.column_1 = new_agg.column_1
+                          WHERE
+                            previous_agg.metric_1 > IFNULL(new_agg.metric_1, 0)
+                        )
+                        SELECT
+                          column_1,
+                          column_2,
+                          metric_1
+                        FROM
+                          new_version
+                        UNION ALL
+                        SELECT
+                          column_1,
+                          column_2,
+                          metric_1
+                        FROM
+                          shredded;"""
+                    )
         with runner.isolated_filesystem():
             os.makedirs(self.path, exist_ok=True)
             os.makedirs(self.path_previous, exist_ok=True)
             with open(
-                Path("sql")
-                / self.project_id
-                / self.dataset
-                / self.destination_table
-                / "query.sql",
-                "w",
+                    Path("sql")
+                    / self.project_id
+                    / self.dataset
+                    / self.destination_table
+                    / "query.sql",
+                    "w",
             ) as f:
                 f.write(
                     "SELECT column_1, column_2, metric_1 FROM upstream_1 GROUP BY column_1, column_2"
                 )
             with open(
-                Path("sql")
-                / self.project_id
-                / self.dataset
-                / self.destination_table_previous
-                / "query.sql",
-                "w",
+                    Path("sql")
+                    / self.project_id
+                    / self.dataset
+                    / self.destination_table_previous
+                    / "query.sql",
+                    "w",
             ) as f:
                 f.write("SELECT column_1, metric_1 FROM upstream_1 GROUP BY column_1")
 
@@ -823,10 +868,12 @@ class TestGenerateQueryWithShredderMitigation(object):
             )
 
             with patch.object(
-                Subset,
-                "get_query_path_results",
-                return_value=[{"column_1": "ABC", "column_2": "DEF", "metric_1": 10.0}],
+                    Subset,
+                    "get_query_path_results",
+                    return_value=[{"column_1": "ABC", "column_2": "DEF", "metric_1": 10.0}],
             ):
+                assert os.path.isfile(self.path / 'query.sql')
+                assert os.path.isfile(self.path_previous / 'query.sql')
                 result = generate_query_with_shredder_mitigation(
                     client=mock_client,
                     project_id=self.project_id,
@@ -834,75 +881,13 @@ class TestGenerateQueryWithShredderMitigation(object):
                     destination_table=self.destination_table,
                     backfill_date=PREVIOUS_DATE,
                 )
-
-                expected = """-- Query generated from a template that mitigates the effect of shredder.
-                WITH new_version AS (
-                  SELECT
-                    column_1,
-                    column_2,
-                    metric_1
-                  FROM
-                    upstream_1
-                  GROUP BY
-                    column_1,
-                    column_2
-                ),
-                new_agg AS (
-                  SELECT
-                    submission_date,
-                    COALESCE(column_1, '??') AS column_1,
-                    SUM(metric_1) AS metric_1
-                  FROM
-                    new_version
-                  GROUP BY
-                    ALL
-                ),
-                previous_agg AS (
-                  SELECT
-                    submission_date,
-                    COALESCE(column_1, '??') AS column_1,
-                    SUM(metric_1) AS metric_1
-                  FROM
-                    `moz-fx-data-shared-prod.test.test_query_v1`
-                  WHERE
-                    submission_date = @submission_date
-                  GROUP BY
-                    ALL
-                ),
-                shredded AS (
-                  SELECT
-                    previous_agg.submission_date,
-                    previous_agg.column_1,
-                    CAST(NULL AS STRING) AS column_2,
-                    previous_agg.metric_1 - IFNULL(new_agg.metric_1, 0) AS metric_1
-                  FROM
-                    previous_agg
-                  LEFT JOIN
-                    new_agg
-                    ON previous_agg.submission_date = new_agg.submission_date
-                    AND previous_agg.column_1 = new_agg.column_1
-                  WHERE
-                    previous_agg.metric_1 > IFNULL(new_agg.metric_1, 0)
-                )
-                SELECT
-                  column_1,
-                  column_2,
-                  metric_1
-                FROM
-                  new_version
-                UNION ALL
-                SELECT
-                  column_1,
-                  column_2,
-                  metric_1
-                FROM
-                  shredded;"""
-                assert result == expected.replace("                ", "")
+                assert result[0] == expected[0]
+                assert result[1] == expected[1].replace("                        ", "")
 
     @patch("google.cloud.bigquery.Client")
     def test_missing_previous_version(self, mock_client, runner):
         """Test that the process raises an exception when previous query version is missing."""
-        expected_exc = f"Query file not found for `{self.project_id}.{self.dataset}.{self.destination_table_previous}`."
+        expected_exc = f"Missing an sql file or sql text to extract the group by."
 
         with runner.isolated_filesystem():
             path = f"sql/{self.project_id}/{self.dataset}/{self.destination_table}"
@@ -918,7 +903,7 @@ class TestGenerateQueryWithShredderMitigation(object):
                     destination_table=self.destination_table,
                     backfill_date=PREVIOUS_DATE,
                 )
-            assert (str(e.value)) == expected_exc
+            assert (str(e.value.message)) == expected_exc
             assert (e.type) == ClickException
 
     @patch("google.cloud.bigquery.Client")
@@ -959,7 +944,7 @@ class TestGenerateQueryWithShredderMitigation(object):
                     destination_table=destination_table,
                     backfill_date=PREVIOUS_DATE,
                 )
-            assert (str(e.value)) == expected_exc
+            assert (str(e.value.message)) == expected_exc
 
             # GROUP BY 1, 2, 3
             previous_group_by = "1, 2, 3"
@@ -980,7 +965,7 @@ class TestGenerateQueryWithShredderMitigation(object):
                     destination_table=destination_table,
                     backfill_date=PREVIOUS_DATE,
                 )
-            assert (str(e.value)) == expected_exc
+            assert (str(e.value.message)) == expected_exc
 
             # GROUP BY ALL
             previous_group_by = "column_1, column_2, column_3"
@@ -1001,7 +986,7 @@ class TestGenerateQueryWithShredderMitigation(object):
                     destination_table=destination_table,
                     backfill_date=PREVIOUS_DATE,
                 )
-            assert (str(e.value)) == expected_exc
+            assert (str(e.value.message)) == expected_exc
 
             # GROUP BY is missing
             previous_group_by = "column_1, column_2, column_3"
@@ -1019,12 +1004,12 @@ class TestGenerateQueryWithShredderMitigation(object):
                     destination_table=destination_table,
                     backfill_date=PREVIOUS_DATE,
                 )
-            assert (str(e.value)) == expected_exc
+            assert (str(e.value.message)) == expected_exc
 
     @patch("google.cloud.bigquery.Client")
     @patch("bigquery_etl.backfill.shredder_mitigation.classify_columns")
     def test_generate_query_called_with_correct_parameters(
-        self, mock_classify_columns, mock_client, runner
+            self, mock_classify_columns, mock_client, runner
     ):
         with runner.isolated_filesystem():
             os.makedirs(self.path, exist_ok=True)
@@ -1073,9 +1058,9 @@ class TestGenerateQueryWithShredderMitigation(object):
             )
 
             with patch.object(
-                Subset,
-                "get_query_path_results",
-                return_value=[{"column_1": "ABC", "column_2": "DEF", "metric_1": 10.0}],
+                    Subset,
+                    "get_query_path_results",
+                    return_value=[{"column_1": "ABC", "column_2": "DEF", "metric_1": 10.0}],
             ):
                 with patch.object(Subset, "generate_query") as mock_generate_query:
                     generate_query_with_shredder_mitigation(
@@ -1112,10 +1097,10 @@ class TestGenerateQueryWithShredderMitigation(object):
                                     "previous_agg.submission_date",
                                     "previous_agg.column_1",
                                     "CAST(NULL AS STRING) AS column_2",
-                                    "previous_agg.metric_1 - IFNULL(new_agg.metric_1, 0) AS metric_1",
+                                    "previous_agg.metric_1 - IFNULL(new_agg.metric_1, 0) AS metric_1"
                                 ],
                                 from_clause="previous_agg LEFT JOIN new_agg ON previous_agg.submission_date = "
-                                "new_agg.submission_date AND previous_agg.column_1 = new_agg.column_1 ",
+                                            "new_agg.submission_date AND previous_agg.column_1 = new_agg.column_1 ",
                                 where_clause="previous_agg.metric_1 > IFNULL(new_agg.metric_1, 0)",
                             ),
                         ]

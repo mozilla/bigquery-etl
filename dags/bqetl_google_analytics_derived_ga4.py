@@ -180,32 +180,6 @@ with DAG(
             checks__fail_mozilla_org_derived__gclid_conversions__v2
         )
 
-    checks__warn_ga_derived__blogs_goals__v2 = bigquery_dq_check(
-        task_id="checks__warn_ga_derived__blogs_goals__v2",
-        source_table="blogs_goals_v2",
-        dataset_id="ga_derived",
-        project_id="moz-fx-data-marketing-prod",
-        is_dq_check_fail=False,
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
-    )
-
-    checks__warn_ga_derived__www_site_hits__v2 = bigquery_dq_check(
-        task_id="checks__warn_ga_derived__www_site_hits__v2",
-        source_table="www_site_hits_v2",
-        dataset_id="ga_derived",
-        project_id="moz-fx-data-marketing-prod",
-        is_dq_check_fail=False,
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
-    )
-
     checks__warn_mozilla_org_derived__blogs_goals__v2 = bigquery_dq_check(
         task_id="checks__warn_mozilla_org_derived__blogs_goals__v2",
         source_table="blogs_goals_v2",
@@ -248,127 +222,6 @@ with DAG(
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
-    )
-
-    ga_derived__blogs_daily_summary__v2 = bigquery_etl_query(
-        task_id="ga_derived__blogs_daily_summary__v2",
-        destination_table="blogs_daily_summary_v2",
-        dataset_id="ga_derived",
-        project_id="moz-fx-data-marketing-prod",
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-    )
-
-    ga_derived__blogs_goals__v2 = bigquery_etl_query(
-        task_id="ga_derived__blogs_goals__v2",
-        destination_table="blogs_goals_v2",
-        dataset_id="ga_derived",
-        project_id="moz-fx-data-marketing-prod",
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-    )
-
-    ga_derived__blogs_landing_page_summary__v2 = bigquery_etl_query(
-        task_id="ga_derived__blogs_landing_page_summary__v2",
-        destination_table="blogs_landing_page_summary_v2",
-        dataset_id="ga_derived",
-        project_id="moz-fx-data-marketing-prod",
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-    )
-
-    ga_derived__blogs_sessions__v2 = bigquery_etl_query(
-        task_id="ga_derived__blogs_sessions__v2",
-        destination_table="blogs_sessions_v2",
-        dataset_id="ga_derived",
-        project_id="moz-fx-data-marketing-prod",
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-    )
-
-    ga_derived__firefox_whatsnew_summary__v2 = bigquery_etl_query(
-        task_id="ga_derived__firefox_whatsnew_summary__v2",
-        destination_table="firefox_whatsnew_summary_v2",
-        dataset_id="ga_derived",
-        project_id="moz-fx-data-marketing-prod",
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-    )
-
-    ga_derived__www_site_downloads__v2 = bigquery_etl_query(
-        task_id="ga_derived__www_site_downloads__v2",
-        destination_table="www_site_downloads_v2",
-        dataset_id="ga_derived",
-        project_id="moz-fx-data-marketing-prod",
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-    )
-
-    ga_derived__www_site_events_metrics__v2 = bigquery_etl_query(
-        task_id="ga_derived__www_site_events_metrics__v2",
-        destination_table="www_site_events_metrics_v2",
-        dataset_id="ga_derived",
-        project_id="moz-fx-data-marketing-prod",
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-    )
-
-    ga_derived__www_site_hits__v2 = bigquery_etl_query(
-        task_id="ga_derived__www_site_hits__v2",
-        destination_table="www_site_hits_v2",
-        dataset_id="ga_derived",
-        project_id="moz-fx-data-marketing-prod",
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-    )
-
-    ga_derived__www_site_landing_page_metrics__v2 = bigquery_etl_query(
-        task_id="ga_derived__www_site_landing_page_metrics__v2",
-        destination_table="www_site_landing_page_metrics_v2",
-        dataset_id="ga_derived",
-        project_id="moz-fx-data-marketing-prod",
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-    )
-
-    ga_derived__www_site_metrics_summary__v2 = bigquery_etl_query(
-        task_id="ga_derived__www_site_metrics_summary__v2",
-        destination_table="www_site_metrics_summary_v2",
-        dataset_id="ga_derived",
-        project_id="moz-fx-data-marketing-prod",
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-    )
-
-    ga_derived__www_site_page_metrics__v2 = bigquery_etl_query(
-        task_id="ga_derived__www_site_page_metrics__v2",
-        destination_table="www_site_page_metrics_v2",
-        dataset_id="ga_derived",
-        project_id="moz-fx-data-marketing-prod",
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
     )
 
     mozilla_org_derived__blogs_daily_summary__v2 = bigquery_etl_query(
@@ -577,12 +430,6 @@ with DAG(
         mozilla_org_derived__gclid_conversions__v2
     )
 
-    checks__warn_ga_derived__blogs_goals__v2.set_upstream(ga_derived__blogs_goals__v2)
-
-    checks__warn_ga_derived__www_site_hits__v2.set_upstream(
-        ga_derived__www_site_hits__v2
-    )
-
     checks__warn_mozilla_org_derived__blogs_goals__v2.set_upstream(
         mozilla_org_derived__blogs_goals__v2
     )
@@ -594,38 +441,6 @@ with DAG(
     checks__warn_mozilla_org_derived__www_site_hits__v2.set_upstream(
         mozilla_org_derived__www_site_hits__v2
     )
-
-    ga_derived__blogs_daily_summary__v2.set_upstream(ga_derived__blogs_goals__v2)
-
-    ga_derived__blogs_daily_summary__v2.set_upstream(ga_derived__blogs_sessions__v2)
-
-    ga_derived__blogs_goals__v2.set_upstream(wait_for_blogs_events_table)
-
-    ga_derived__blogs_landing_page_summary__v2.set_upstream(ga_derived__blogs_goals__v2)
-
-    ga_derived__blogs_landing_page_summary__v2.set_upstream(
-        ga_derived__blogs_sessions__v2
-    )
-
-    ga_derived__blogs_landing_page_summary__v2.set_upstream(wait_for_blogs_events_table)
-
-    ga_derived__blogs_sessions__v2.set_upstream(wait_for_blogs_events_table)
-
-    ga_derived__firefox_whatsnew_summary__v2.set_upstream(ga_derived__www_site_hits__v2)
-
-    ga_derived__www_site_downloads__v2.set_upstream(wait_for_wmo_events_table)
-
-    ga_derived__www_site_events_metrics__v2.set_upstream(ga_derived__www_site_hits__v2)
-
-    ga_derived__www_site_hits__v2.set_upstream(wait_for_wmo_events_table)
-
-    ga_derived__www_site_landing_page_metrics__v2.set_upstream(
-        ga_derived__www_site_hits__v2
-    )
-
-    ga_derived__www_site_metrics_summary__v2.set_upstream(wait_for_wmo_events_table)
-
-    ga_derived__www_site_page_metrics__v2.set_upstream(ga_derived__www_site_hits__v2)
 
     mozilla_org_derived__blogs_daily_summary__v2.set_upstream(
         mozilla_org_derived__blogs_goals__v2
@@ -682,10 +497,6 @@ with DAG(
     )
 
     mozilla_org_derived__www_site_downloads__v2.set_upstream(wait_for_wmo_events_table)
-
-    mozilla_org_derived__www_site_events_metrics__v2.set_upstream(
-        ga_derived__www_site_hits__v2
-    )
 
     mozilla_org_derived__www_site_hits__v2.set_upstream(wait_for_wmo_events_table)
 

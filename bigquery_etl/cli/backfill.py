@@ -507,7 +507,7 @@ def _initiate_backfill(
 
     log.info(logging_str)
 
-    custom_query = Path()
+    custom_query = None
     if entry.shredder_mitigation is True:
         click.echo(
             click.style(

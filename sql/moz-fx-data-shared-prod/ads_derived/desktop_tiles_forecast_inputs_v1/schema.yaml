@@ -8,11 +8,11 @@ fields:
     type: STRING
     description: Two-letter code corresponding to country where sponsored tiles are available. Please see `static.country_codes_v1`
   - mode: NULLABLE
-    name: total_user_count
+    name: user_count
     type: INTEGER
     description: Count of desktop users for submission_month. Calculated from Unified Metrics.
   - mode: NULLABLE
-    name: sponsored_impressions_1and2
+    name: impression_count_1and2
     type: INTEGER
     description: Count of tile impressions in positions 1 and 2for submission_month. Calculated from contextual-services.
   - mode: NULLABLE
@@ -20,15 +20,15 @@ fields:
     type: INTEGER
     description: Count of tile impressions across all three positions for submission_month. Calculated from contextual-services.
   - mode: NULLABLE
-    name: newtab_visits
+    name: visit_count
     type: INTEGER
     description: Count of distinct newtab visits for submission_month. Calculated from latest Newtab.
   - mode: NULLABLE
-    name: newtab_clients
+    name: clients
     type: INTEGER
     description: Count of distinct newtab clients opening the Newtab page for submission_month. Calculated from Newtab.
   - mode: NULLABLE
-    name: visits_total_inventory_1and2
+    name: total_inventory_1and2
     type: INTEGER
     description: Count of sponsored tile inventory for positions 1 and 2 for submission_month. Calculated from latest Newtab data.
   - mode: NULLABLE
@@ -47,17 +47,3 @@ fields:
     description: |-
       Float of calculated fill rate (positions 1 to 3). Impressions / Inventory.
       Calculated from latest Newtab and contextual-services data.
-  - mode: NULLABLE
-    name: as_sessions
-    type: INTEGER
-    description: Count of newtab sessions. Calculated from deprecated Activity-Stream.
-  - mode: NULLABLE
-    name: sessions_total_inventory_1and2
-    type: INTEGER
-    description: Count of sponsored tile inventory for 1st and 2nd tile assuming delivery on these two. Calculated from deprecated Activity-Stream.
-  - mode: NULLABLE
-    name: sessions_total_fill_rate_1and2
-    type: FLOAT
-    description: |-
-      Float of sponsored tile fill rate (positions 1 and 2) for submission_month.
-      Calculated from deprecated Activity-Stream.

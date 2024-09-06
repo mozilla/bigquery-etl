@@ -40,6 +40,8 @@ NO_BASELINE_PING_APPS = (
 
 APPS_WITH_DISTRIBUTION_ID = ("fenix",)
 
+APPS_WITH_PROFILE_GROUP_ID = ("firefox_desktop",)
+
 
 def write_dataset_metadata(output_dir, full_table_id, derived_dataset_metadata=False):
     """
@@ -130,9 +132,9 @@ def table_names_from_baseline(baseline_table, include_project_id=True):
     )
 
 
-def referenced_table_exists(view_sql):
+def referenced_table_exists(view_sql, id_token=None):
     """Dry run the given view SQL to see if its referent exists."""
-    dryrun = DryRun("foo/bar/view.sql", content=view_sql)
+    dryrun = DryRun("foo/bar/view.sql", content=view_sql, id_token=id_token)
     # 403 is returned if referenced dataset doesn't exist; we need to check that the 403 is due to dataset not existing
     # since dryruns on views will also return 403 due to the table CREATE
     # 404 is returned if referenced table or view doesn't exist
@@ -210,6 +212,7 @@ class GleanTable:
         use_cloud_function=True,
         app_info=[],
         parallelism=8,
+        id_token=None
     ):
         """Generate the baseline table query per app_id."""
         if not self.per_app_id_enabled:
@@ -243,6 +246,7 @@ class GleanTable:
             derived_dataset=derived_dataset,
             app_name=app_name,
             has_distribution_id=app_name in APPS_WITH_DISTRIBUTION_ID,
+            has_profile_group_id= app_name in APPS_WITH_PROFILE_GROUP_ID,
         )
 
         render_kwargs.update(self.custom_render_kwargs)
@@ -295,7 +299,7 @@ class GleanTable:
             Artifact(table, "query.sql", query_sql),
         ]
 
-        if not (referenced_table_exists(view_sql)):
+        if not (referenced_table_exists(view_sql, id_token)):
             logging.info("Skipping view for table which doesn't exist:" f" {table}")
         else:
             artifacts.append(Artifact(view, "view.sql", view_sql))
@@ -338,6 +342,7 @@ class GleanTable:
         output_dir=None,
         use_cloud_function=True,
         parallelism=8,
+        id_token=None
     ):
         """Generate the baseline table query per app_name."""
         if not self.per_app_enabled:
@@ -383,7 +388,7 @@ class GleanTable:
             )
             view = f"{project_id}.{target_dataset}.{target_view_name}"
 
-            if not (referenced_table_exists(sql)):
+            if not (referenced_table_exists(sql, id_token=id_token)):
                 logging.info("Skipping view for table which doesn't exist:" f" {view}")
                 return
 
@@ -417,7 +422,7 @@ class GleanTable:
             table = f"{project_id}.{target_dataset}_derived.{self.target_table_id}"
             view = f"{project_id}.{target_dataset}.{target_view_name}"
 
-            if not (referenced_table_exists(query_sql)):
+            if not (referenced_table_exists(query_sql, id_token=id_token)):
                 logging.info(
                     "Skipping query for table which doesn't exist:"
                     f" {self.target_table_id}"

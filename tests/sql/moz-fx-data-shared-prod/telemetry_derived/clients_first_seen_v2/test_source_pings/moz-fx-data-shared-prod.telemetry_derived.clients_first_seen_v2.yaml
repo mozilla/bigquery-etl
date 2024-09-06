@@ -1,5 +1,6 @@
 ---
 - client_id: client-4
+  profile_group_id: profile-group-id-4
   sample_id: 40
   first_seen_date: 2023-05-14
   normalized_channel: nightly

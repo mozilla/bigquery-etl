@@ -145,3 +145,6 @@ fields:
 - mode: NULLABLE
   name: days_dau_bytes
   type: BYTES
+- mode: NULLABLE
+  name: profile_group_id
+  type: STRING

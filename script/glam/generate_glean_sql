@@ -92,6 +92,7 @@ sql_dir=${sql_dir%/}
 
 product=${PRODUCT?PRODUCT must be defined}
 stage=${STAGE?$error}
+use_sample_id=$( [ "$USE_SAMPLE_ID" = "True" ] && echo "--use-sample-id" || echo "")
 
 # ensure the sql directory exists
 mkdir -p $sql_dir/$dst_project/glam_etl
@@ -107,7 +108,8 @@ elif [[ $stage == "incremental" ]]; then
     python3 -m bigquery_etl.glam.generate \
         --sql-root "$sql_dir" \
         --project "$dst_project" \
-        --prefix "${product}"
+        --prefix "${product}" \
+        ${use_sample_id}
 elif [[ $stage == "all" ]]; then
     write_clients_daily_aggregates "$product" "$src_project" "$dst_project" "$sql_dir"
     python3 -m bigquery_etl.glam.generate \

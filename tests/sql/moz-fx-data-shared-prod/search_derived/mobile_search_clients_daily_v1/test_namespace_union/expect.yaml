@@ -12,7 +12,7 @@
   search_with_ads_organic: 0
   unknown: 0
   country: US
-  os_version: '29'
+  os_version: '29.0'
   os_version_major: 29
   os_version_minor: 0
   engine: engine1
@@ -38,7 +38,7 @@
   channel: release
 - <<: *base
   os: iOS
-  os_version: "13.0"
+  os_version: '13.0'
   os_version_major: 13
   os_version_minor: 0
   client_id: b
@@ -48,7 +48,7 @@
   channel: release
 - <<: *base
   os: iOS
-  os_version: "13.0"
+  os_version: '13.0'
   os_version_major: 13
   os_version_minor: 0
   client_id: b

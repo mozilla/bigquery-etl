@@ -38,7 +38,7 @@ description: |-
 # MUST be kept in sync with the query in `app_ping_view.view.sql`
 OVERRIDDEN_FIELDS = {"normalized_channel"}
 
-VIEW_SQL_LENGTH_LIMIT = 256 * 1024
+VIEW_SQL_LENGTH_LIMIT = 1024 * 1024
 
 PATH = Path(os.path.dirname(__file__))
 
@@ -59,6 +59,7 @@ class GleanAppPingViews(GleanTable):
         output_dir=None,
         use_cloud_function=True,
         parallelism=8,
+        id_token=None
     ):
         """
         Generate per-app ping views across channels.
@@ -111,6 +112,7 @@ class GleanAppPingViews(GleanTable):
                     view_name,
                     partitioned_by="submission_timestamp",
                     use_cloud_function=use_cloud_function,
+                    id_token=id_token
                 )
                 cached_schemas[channel_dataset] = deepcopy(schema)
 

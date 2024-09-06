@@ -23,3 +23,6 @@ fields:
   type: STRING
   mode: NULLABLE
   description: tokenVerificationId in hexadecimal format.
+- name: ipAddr
+  type: STRING
+  mode: NULLABLE

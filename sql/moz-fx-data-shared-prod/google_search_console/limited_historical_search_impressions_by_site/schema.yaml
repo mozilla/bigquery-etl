@@ -1,0 +1,69 @@
+fields:
+- name: date
+  type: DATE
+  mode: NULLABLE
+  description: The day on which the search occurred (Pacific Time).
+- name: site_url
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    For domain properties, this will be `sc-domain:` followed by the domain name.
+    For URL-prefix properties, it will be the full URL of the property definition.
+- name: site_domain_name
+  type: STRING
+  mode: NULLABLE
+  description: Domain name of the site.
+- name: query
+  type: STRING
+  mode: NULLABLE
+  description: The search query.
+- name: query_type
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Type of search query:
+      * Brand: Query contained one or more Mozilla brand keywords.
+      * Non-Brand: Query didn't contain any Mozilla brand keywords.
+      * Unknown: Query couldn't be classified.
+- name: search_type
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Where the link was seen by the user:
+      * Web: In Google Search's default "All" tab.
+      * Image: In Google Search's "Images" tab.
+      * Video: In Google Search's "Videos" tab.
+      * News: In Google Search's "News" tab.
+- name: user_country_code
+  type: STRING
+  mode: NULLABLE
+  description: Country from which the user was searching, in ISO-3166-1-alpha-3 format.
+- name: user_country
+  type: STRING
+  mode: NULLABLE
+  description: Country from which the user was searching.
+- name: user_region
+  type: STRING
+  mode: NULLABLE
+  description: Region from which the user was searching.
+- name: user_subregion
+  type: STRING
+  mode: NULLABLE
+  description: Sub-region from which the user was searching.
+- name: device_type
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    The type of device on which the user was searching: Desktop, Mobile, or Tablet.
+- name: impressions
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of times that search results with at least one link to the site were shown to a user.
+- name: clicks
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of times a user clicked at least one search result link to the site.
+- name: average_top_position
+  type: FLOAT
+  mode: NULLABLE
+  description: The average top position of the site in the search results, where `1` is the topmost position.

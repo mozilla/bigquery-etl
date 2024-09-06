@@ -3,7 +3,7 @@
 set -e
 
 # Absolute path this script is in
-SCRIPT_PATH="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
+SCRIPT_PATH="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd )"
 CMD=$1
 
 if [ "$PWD" != "$SCRIPT_PATH" ]; then

@@ -4,4 +4,4 @@ AS
 SELECT
   *
 FROM
-  `moz-fx-data-shared-prod.mozilla_org_derived.blogs_landing_page_summary_v1`
+  `moz-fx-data-shared-prod.mozilla_org_derived.blogs_landing_page_summary_v2`

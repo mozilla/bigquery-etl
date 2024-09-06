@@ -39,8 +39,13 @@ check_results AS (
     events_old
     USING (day, event_name)
   WHERE
-    -- investigated in https://github.com/mozilla/fxa/pull/17226
-    event_name NOT IN ('google_login_complete', 'apple_login_complete')
+    -- investigated in https://mozilla-hub.atlassian.net/browse/FXA-10169
+    event_name NOT IN (
+      'google_login_complete',
+      'apple_login_complete',
+      'third_party_auth_apple_login_complete',
+      'third_party_auth_google_login_complete'
+    )
     AND (
       events_new.count_new IS NULL
       OR events_old.count_old IS NULL
@@ -65,6 +70,7 @@ FROM
 WITH events_new AS (
   SELECT
     DATE(e.submission_timestamp) AS day,
+    client_info.app_channel,
     CONCAT(event.category, "_", event.name) AS event_name,
     COUNT(*) AS count_new
   FROM
@@ -75,11 +81,13 @@ WITH events_new AS (
     DATE(submission_timestamp) = @submission_date
   GROUP BY
     DATE(e.submission_timestamp),
+    client_info.app_channel,
     CONCAT(event.category, "_", event.name)
 ),
 events_old AS (
   SELECT
     DATE(submission_timestamp) AS day,
+    client_info.app_channel,
     metrics.string.event_name AS event_name,
     COUNT(*) AS count_old
   FROM
@@ -88,6 +96,7 @@ events_old AS (
     DATE(submission_timestamp) = @submission_date
   GROUP BY
     DATE(submission_timestamp),
+    client_info.app_channel,
     metrics.string.event_name
 ),
 check_results AS (
@@ -102,46 +111,20 @@ check_results AS (
     events_new
   FULL OUTER JOIN
     events_old
-    USING (day, event_name)
+    USING (day, event_name, app_channel)
   WHERE
     event_name IS NOT NULL
-    -- fix in progress in https://github.com/mozilla/fxa/pull/17218
-    -- will be removed from here when this lands in production
-    AND event_name NOT IN (
-      'google_oauth_reg_start',
-      'reg_google_oauth_reg_start',
-      'apple_oauth_reg_start',
-      'reg_apple_oauth_reg_start',
-      'third_party_auth_login_no_pw_view',
-      'login_third_party_auth_login_no_pw_view',
-      'google_oauth_login_start',
-      'login_google_oauth_login_start',
-      'apple_oauth_login_start',
-      'login_apple_oauth_login_start',
-      'google_deeplink',
-      'third_party_auth_google_deeplink',
-      'apple_deeplink',
-      'third_party_auth_apple_deeplink',
-      'apple_oauth_email_first_start',
-      'email_apple_oauth_email_first_start',
-      'email_google_oauth_email_first_start',
-      'google_oauth_email_first_start'
-    )
-    -- fix in progress in https://github.com/mozilla/fxa/pull/17223
-    -- will be removed from here when this lands in production
-    AND event_name NOT IN (
-      'cad_approve_device_submit',
-      'cad_firefox_notnow_submit',
-      'cad_mobile_pair_submit',
-      'cad_mobile_pair_use_app_view'
-    )
+    -- filter out data submitted from local development runs
+    AND app_channel IN ('production', 'stage')
+    -- glean_page_load and click events are automatically sent only in `events` ping
+    AND event_name NOT IN ('glean_page_load', 'glean_element_click')
     AND (
       (events_new.count_new IS NULL AND events_old.count_old > 10) -- ignore erroneous event names
       OR (events_old.count_old IS NULL AND events_new.count_new > 10)
       OR ABS(events_new.count_new - events_old.count_old) / LEAST(
         events_new.count_new,
         events_old.count_old
-      ) > 0.02
+      ) > 0.15 -- low-volume events can have higher relative discrepancies
     )
 )
 SELECT

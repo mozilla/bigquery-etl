@@ -1,4 +1,4 @@
-{% macro enumerate_table_combinations(source_table, output_table, cubed_attributes, attribute_combinations, add_windows_release_sample) %}
+{% macro enumerate_table_combinations(source_table, output_table, cubed_attributes, attribute_combinations, add_windows_release_sample, use_sample_id) %}
 -- Cross join with the attribute combinations to reduce the query complexity
 -- with respect to the number of operations. A table with n rows cross joined
 -- with a combination of m attributes will generate a new table with n*m rows.
@@ -47,5 +47,10 @@ static_combos AS (
         {{ source_table }} table
     CROSS JOIN
         static_combos combo
+    {% if use_sample_id %}
+        WHERE
+            sample_id >= @min_sample_id
+            AND sample_id <= @max_sample_id
+    {% endif %}
 )
 {% endmacro %}

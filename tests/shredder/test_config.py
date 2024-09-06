@@ -6,7 +6,9 @@ from google.cloud import bigquery
 from google.cloud.bigquery import DatasetReference
 
 from bigquery_etl.shredder.config import (
+    CLIENT_ID,
     DELETE_TARGETS,
+    GLEAN_CLIENT_ID,
     DeleteSource,
     DeleteTarget,
     _list_tables,
@@ -44,6 +46,17 @@ GLEAN_APP_LISTING = [
         "app_id": "org.mozilla.focus.beta",
         "app_name": "focus_android",
         "bq_dataset_family": "org_mozilla_focus_beta",
+    },
+    {
+        "app_channel": "beta",
+        "app_id": "org.mozilla.focus.beta",
+        "app_name": "focus_android",
+        "bq_dataset_family": "org_mozilla_focus_beta",
+    },
+    {
+        "app_id": "firefox.desktop",
+        "app_name": "firefox_desktop",
+        "bq_dataset_family": "firefox_desktop",
     },
 ]
 
@@ -282,6 +295,89 @@ def test_glean_targets(mock_requests):
 
 
 @mock.patch("bigquery_etl.shredder.config.requests")
+def test_glean_targets_override(mock_requests):
+    """Targets in GLEAN_DERIVED_OVERRIDES should override the target in find_glean_targets."""
+
+    class TargetOverrideClient:
+        def list_datasets(self, project):
+            return [
+                bigquery.DatasetReference(project, name)
+                for name in [
+                    "firefox_desktop_stable",
+                    "firefox_desktop_derived",
+                ]
+            ]
+
+        def list_tables(self, dataset_ref):
+            labels = {}
+            if dataset_ref.dataset_id == "firefox_desktop_stable":
+                table_ids = ["metrics_v1", "deletion_request_v1"]
+                labels["schema_id"] = "glean_ping_1"
+            elif dataset_ref.dataset_id == "firefox_desktop_derived":
+                table_ids = [
+                    "adclick_history_v1",  # should use value from override
+                    "other_table_v1",
+                ]
+            else:
+                raise Exception(f"unexpected dataset: {dataset_ref}")
+            return [
+                bigquery.table.TableListItem(
+                    {
+                        "tableReference": bigquery.TableReference(
+                            dataset_ref, table_id
+                        ).to_api_repr(),
+                        "labels": labels,
+                    }
+                )
+                for table_id in table_ids
+            ]
+
+        def get_table(self, table_ref):
+            table = bigquery.Table(table_ref)
+            table._properties[table._PROPERTY_TO_API_FIELD["type"]] = "TABLE"
+            if table.dataset_id.endswith("stable"):
+                table.schema = [
+                    bigquery.SchemaField(
+                        "client_info",
+                        "RECORD",
+                        "NULLABLE",
+                        [bigquery.SchemaField("client_id", "STRING")],
+                    )
+                ]
+            else:
+                table.schema = [bigquery.SchemaField("client_id", "STRING")]
+            return table
+
+    mock_response = mock.Mock()
+    mock_response.json.return_value = GLEAN_APP_LISTING
+    mock_requests.get.return_value = mock_response
+
+    with ThreadPool(1) as pool:
+        targets = find_glean_targets(pool, TargetOverrideClient())
+
+    # convert tuples to sets because additional_deletion_requests are in
+    # non-deterministic order due to multiprocessing
+    # order doesn't matter in real execution
+    for source, target in targets.items():
+        targets[source] = set(target) if isinstance(target, tuple) else target
+
+    desktop_deletions = DeleteSource(
+        table="firefox_desktop_stable.deletion_request_v1",
+        field=GLEAN_CLIENT_ID,
+    )
+
+    assert targets == {
+        DeleteTarget(
+            table="firefox_desktop_derived.other_table_v1", field=(CLIENT_ID,)
+        ): {desktop_deletions},
+        DeleteTarget(
+            table="firefox_desktop_stable.metrics_v1", field=(GLEAN_CLIENT_ID,)
+        ): {desktop_deletions},
+        # adclick_history_v1 should not be here
+    }
+
+
+@mock.patch("bigquery_etl.shredder.config.requests")
 def test_glean_channel_app_mapping(mock_requests):
     mock_response = mock.Mock()
     mock_response.json.return_value = GLEAN_APP_LISTING
@@ -295,6 +391,7 @@ def test_glean_channel_app_mapping(mock_requests):
         "org_mozilla_fenix_nightly": "fenix",
         "org_mozilla_focus": "focus_android",
         "org_mozilla_focus_beta": "focus_android",
+        "firefox_desktop": "firefox_desktop",
     }
 
     assert actual == expected

@@ -51,6 +51,15 @@ clients_with_adblocker_addons AS (
     client_id,
     submission_date
 ),
+profile_group_id AS (
+  SELECT
+    client_id,
+    profile_group_id
+  FROM
+    `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6`
+  WHERE
+    submission_date = @submission_date
+),
 is_enterprise_policies AS (
   SELECT
     client_id,
@@ -329,16 +338,26 @@ counted AS (
         source,
         type
     )
+),
+staging AS (
+  SELECT
+    * EXCEPT (_n),
+    `moz-fx-data-shared-prod.udf.monetized_search`(
+      engine,
+      country,
+      distribution_id,
+      submission_date
+    ) AS is_sap_monetizable
+  FROM
+    counted
+  WHERE
+    _n = 1
 )
 SELECT
-  * EXCEPT (_n),
-  `moz-fx-data-shared-prod.udf.monetized_search`(
-    engine,
-    country,
-    distribution_id,
-    submission_date
-  ) AS is_sap_monetizable
+  stg.*,
+  prfl_gp_id.profile_group_id
 FROM
-  counted
-WHERE
-  _n = 1
+  staging stg
+LEFT JOIN
+  profile_group_id prfl_gp_id
+  ON stg.client_id = prfl_gp_id.client_id

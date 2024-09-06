@@ -153,6 +153,13 @@ class ExternalDataMetadata:
 
 
 @attr.s(auto_attribs=True)
+class MonitoringMetadata:
+    """Metadata for specifying observability and monitoring configuration."""
+
+    enabled: bool = attr.ib(True)
+
+
+@attr.s(auto_attribs=True)
 class Metadata:
     """
     Representation of a table or view Metadata configuration.
@@ -173,6 +180,7 @@ class Metadata:
     external_data: Optional[ExternalDataMetadata] = attr.ib(None)
     deprecated: bool = attr.ib(False)
     deletion_date: Optional[date] = attr.ib(None)
+    monitoring: Optional[MonitoringMetadata] = attr.ib(None)
 
     @owners.validator
     def validate_owners(self, attribute, value):
@@ -249,6 +257,7 @@ class Metadata:
         external_data = None
         deprecated = False
         deletion_date = None
+        monitoring = None
 
         with open(metadata_file, "r") as yaml_stream:
             try:
@@ -319,6 +328,12 @@ class Metadata:
                 if "deletion_date" in metadata:
                     deletion_date = metadata["deletion_date"]
 
+                if "monitoring" in metadata:
+                    converter = cattrs.BaseConverter()
+                    monitoring = converter.structure(
+                        metadata["monitoring"], MonitoringMetadata
+                    )
+
                 return cls(
                     friendly_name,
                     description,
@@ -332,6 +347,7 @@ class Metadata:
                     external_data,
                     deprecated,
                     deletion_date,
+                    monitoring,
                 )
             except yaml.YAMLError as e:
                 raise e
@@ -375,6 +391,9 @@ class Metadata:
 
         if not metadata_dict["deletion_date"]:
             del metadata_dict["deletion_date"]
+
+        if not metadata_dict["monitoring"]:
+            del metadata_dict["monitoring"]
 
         file.write_text(
             yaml.dump(

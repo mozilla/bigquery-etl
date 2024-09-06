@@ -70,6 +70,9 @@ class Schema:
                 dryrun.DryRun(
                     os.path.join(project, dataset, table, "query.sql"),
                     query,
+                    project=project,
+                    dataset=dataset,
+                    table=table,
                     *args,
                     **kwargs,
                 ).get_schema()
@@ -78,7 +81,7 @@ class Schema:
             print(f"Cannot get schema for {project}.{dataset}.{table}: {e}")
             return cls({"fields": []})
 
-    def deploy(self, destination_table: str):
+    def deploy(self, destination_table: str) -> bigquery.Table:
         """Deploy the schema to BigQuery named after destination_table."""
         client = bigquery.Client()
         tmp_schema_file = NamedTemporaryFile()
@@ -89,10 +92,10 @@ class Schema:
             # destination table already exists, update schema
             table = client.get_table(destination_table)
             table.schema = bigquery_schema
-            client.update_table(table, ["schema"])
+            return client.update_table(table, ["schema"])
         except NotFound:
             table = bigquery.Table(destination_table, schema=bigquery_schema)
-            client.create_table(table)
+            return client.create_table(table)
 
     def merge(
         self,

@@ -22,7 +22,7 @@ SELECT
   cfs.windows_version,
   cfs.windows_build_number,
   au.is_dau,
-  COUNT(cfs.client_id)
+  COUNT(cfs.client_id) AS new_profiles
 FROM
   `moz-fx-data-shared-prod.telemetry.clients_first_seen` cfs
 LEFT JOIN

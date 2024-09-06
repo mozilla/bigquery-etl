@@ -896,6 +896,20 @@ fields:
         CanAttachSocket() returned false.
 
         '
+    - name: page_icon_fit_icon_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of times the page-icon protocol serves an icon equal to
+        or larger than requested.
+
+        '
+    - name: page_icon_small_icon_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of times the page-icon protocol serves an icon smaller
+        than requested.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -3156,6 +3170,19 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Counts the status of succeeded and failed requests to *.addons.mozilla.org
+
+        '
+    - name: networking_trr_request_count_per_conn
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Number of DOH requests per connection keyed by HTTP version
 
         '
   - name: memory_distribution

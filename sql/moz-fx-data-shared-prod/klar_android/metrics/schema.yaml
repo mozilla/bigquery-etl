@@ -3180,6 +3180,19 @@ fields:
       description: 'Counts the status of succeeded and failed requests to *.addons.mozilla.org
 
         '
+    - name: networking_trr_request_count_per_conn
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Number of DOH requests per connection keyed by HTTP version
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE

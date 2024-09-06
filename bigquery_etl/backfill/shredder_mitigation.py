@@ -19,7 +19,7 @@ from jinja2 import Environment, FileSystemLoader
 
 from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.metadata.parse_metadata import METADATA_FILE, Metadata
-from bigquery_etl.util.common import write_sql, extract_last_group_by_from_query
+from bigquery_etl.util.common import extract_last_group_by_from_query, write_sql
 
 PREVIOUS_DATE = (dt.now() - timedelta(days=2)).date()
 SUFFIX = dt.now().strftime("%Y%m%d%H%M%S")
@@ -47,8 +47,7 @@ class ColumnStatus(Enum):
 
 
 class DataTypeGroup(Enum):
-    """Data types in BigQuery.
-    Not supported / not expected in aggregates: TIMESTAMP, ARRAY, STRUCT."""
+    """Data types in BigQuery. Not supported/expected in aggregates: TIMESTAMP, ARRAY, STRUCT."""
 
     STRING = ("STRING", "BYTES")
     BOOLEAN = "BOOLEAN"
@@ -244,7 +243,7 @@ class Subset:
             query_results = query_job.result()
         except NotFound as e:
             raise click.ClickException(
-                f"Unable to query current data, table {self.full_table_id} doesn't exist."
+                f"Unable to query data for {backfill_date}. Table {self.full_table_id} not found."
             ) from e
         rows = [dict(row) for row in query_results]
         return rows

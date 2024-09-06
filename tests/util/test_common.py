@@ -6,9 +6,10 @@ from click.testing import CliRunner
 
 from bigquery_etl.cli.utils import is_valid_dir
 from bigquery_etl.util.common import (
+    extract_last_group_by_from_query,
     project_dirs,
     qualify_table_references_in_file,
-    render, extract_last_group_by_from_query,
+    render,
 )
 
 
@@ -16,6 +17,7 @@ class TestUtilCommon:
     @pytest.fixture
     def runner(self):
         return CliRunner()
+
     def test_project_dirs(self):
         assert project_dirs("test") == ["sql/test"]
 
@@ -431,7 +433,6 @@ class TestUtilCommon:
                     "SELECT column_1 FROM test_table GROUP BY (column_1) LIMIT (column_1);"
                 )
             assert ["column_1"] == extract_last_group_by_from_query(sql_path=sql_path)
-
 
     def test_extract_last_group_by_from_query_sql(self):
         """Test cases using a sql text."""

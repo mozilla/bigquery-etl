@@ -507,7 +507,7 @@ def _initiate_backfill(
 
     log.info(logging_str)
 
-    custom_query = None
+    custom_query = Path()
     if entry.shredder_mitigation is True:
         click.echo(
             click.style(
@@ -515,20 +515,21 @@ def _initiate_backfill(
                 fg="blue",
             )
         )
-        custom_query, _ = generate_query_with_shredder_mitigation(
+        query, _ = generate_query_with_shredder_mitigation(
             client=bigquery.Client(project=project),
             project_id=project,
             dataset=dataset,
             destination_table=table,
             backfill_date=entry.start_date.isoformat(),
         )
+        custom_query = Path(query)
         click.echo(
             click.style(
                 f"Starting backfill with custom query: '{custom_query}'.", fg="blue"
             )
         )
     elif entry.custom_query:
-        custom_query = entry.custom_query
+        custom_query = Path(entry.custom_query)
 
     # backfill table
     # in the long-run we should remove the query backfill command and require a backfill entry for all backfills

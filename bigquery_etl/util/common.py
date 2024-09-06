@@ -9,7 +9,7 @@ import string
 import tempfile
 import warnings
 from pathlib import Path
-from typing import List, Set, Tuple, Optional
+from typing import List, Optional, Set, Tuple
 from uuid import uuid4
 
 import click

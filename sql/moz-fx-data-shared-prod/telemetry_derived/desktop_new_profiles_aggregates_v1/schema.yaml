@@ -2,7 +2,7 @@ fields:
 - description: Date when clients were first seen.
   name: first_seen_date
   type: DATE
-- description: Indicates if the client is included in the desktop KPI
+- description: Indicates if the client is included in the desktop KPI.
   name: is_desktop
   type: BOOLEAN
   mode: NULLABLE
@@ -52,11 +52,11 @@ fields:
   name: channel
   type: STRING
   mode: NULLABLE
-- description: OS name - not normalized_os
+- description: OS name - not normalized_os.
   name: os
   type: STRING
   mode: NULLABLE
-- description: OS version - not normalized
+- description: OS version - not normalized.
   name: os_version
   type: STRING
   mode: NULLABLE
@@ -80,7 +80,7 @@ fields:
   name: windows_version
   type: STRING
   mode: NULLABLE
-- description: Windows build number
+- description: Windows build number.
   name: windows_build_number
   type: FLOAT64
   mode: NULLABLE

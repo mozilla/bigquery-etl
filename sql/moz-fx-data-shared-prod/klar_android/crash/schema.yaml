@@ -365,8 +365,8 @@ fields:
     - name: crash_remote_type
       type: STRING
       mode: NULLABLE
-      description: 'The type of the content process. See the full list of options
-        [here](https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/data/crash-ping.html#remote-process-types).
+      description: 'Type of the child process, can be set to "web", "file" or "extension"
+        but could also be unavailable.
 
         '
     - name: glean_client_annotation_experimentation_id

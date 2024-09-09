@@ -144,6 +144,116 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    wait_for_checks__fail_org_mozilla_focus_beta_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_checks__fail_org_mozilla_focus_beta_derived__baseline_clients_last_seen__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="focus_android.checks__fail_org_mozilla_focus_beta_derived__baseline_clients_last_seen__v1",
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_checks__fail_org_mozilla_focus_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_checks__fail_org_mozilla_focus_derived__baseline_clients_last_seen__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="focus_android.checks__fail_org_mozilla_focus_derived__baseline_clients_last_seen__v1",
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_checks__fail_org_mozilla_focus_nightly_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_checks__fail_org_mozilla_focus_nightly_derived__baseline_clients_last_seen__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="focus_android.checks__fail_org_mozilla_focus_nightly_derived__baseline_clients_last_seen__v1",
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_checks__fail_org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_checks__fail_org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="firefox_ios.checks__fail_org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1",
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="firefox_ios.checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1",
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_checks__fail_org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_checks__fail_org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="firefox_ios.checks__fail_org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1",
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_checks__fail_org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_checks__fail_org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="focus_ios.checks__fail_org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1",
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_checks__fail_org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_checks__fail_org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="klar_ios.checks__fail_org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1",
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_checks__fail_org_mozilla_klar_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_checks__fail_org_mozilla_klar_derived__baseline_clients_last_seen__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="klar_android.checks__fail_org_mozilla_klar_derived__baseline_clients_last_seen__v1",
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_checks__fail_telemetry_derived__clients_last_seen__v2 = ExternalTaskSensor(
+        task_id="wait_for_checks__fail_telemetry_derived__clients_last_seen__v2",
+        external_dag_id="bqetl_main_summary",
+        external_task_id="checks__fail_telemetry_derived__clients_last_seen__v2",
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     wait_for_fenix_derived__new_profile_activation__v1 = ExternalTaskSensor(
         task_id="wait_for_fenix_derived__new_profile_activation__v1",
         external_dag_id="bqetl_mobile_activation",
@@ -204,17 +314,6 @@ with DAG(
         task_id="wait_for_org_mozilla_firefox_derived__baseline_clients_daily__v1",
         external_dag_id="bqetl_glean_usage",
         external_task_id="fenix.org_mozilla_firefox_derived__baseline_clients_daily__v1",
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    wait_for_checks__fail_telemetry_derived__clients_last_seen__v2 = ExternalTaskSensor(
-        task_id="wait_for_checks__fail_telemetry_derived__clients_last_seen__v2",
-        external_dag_id="bqetl_main_summary",
-        external_task_id="checks__fail_telemetry_derived__clients_last_seen__v2",
         check_existence=True,
         mode="reschedule",
         allowed_states=ALLOWED_STATES,
@@ -479,6 +578,23 @@ with DAG(
 
         clients_first_seen_v3_external.set_upstream(clients_first_seen_v3)
 
+    desktop_new_profiles_aggregates = bigquery_etl_query(
+        task_id="desktop_new_profiles_aggregates",
+        destination_table="desktop_new_profiles_aggregates_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="mhirose@mozilla.com",
+        email=[
+            "gkaberere@mozilla.com",
+            "lvargas@mozilla.com",
+            "mhirose@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="first_seen_date",
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+    )
+
     fenix_derived__funnel_retention_clients_week_2__v1 = bigquery_etl_query(
         task_id="fenix_derived__funnel_retention_clients_week_2__v1",
         destination_table="funnel_retention_clients_week_2_v1",
@@ -624,6 +740,68 @@ with DAG(
     clients_first_seen_v3.set_upstream(wait_for_copy_deduplicate_first_shutdown_ping)
 
     clients_first_seen_v3.set_upstream(wait_for_telemetry_derived__clients_daily__v6)
+
+    desktop_new_profiles_aggregates.set_upstream(
+        wait_for_checks__fail_org_mozilla_fenix_derived__baseline_clients_last_seen__v1
+    )
+
+    desktop_new_profiles_aggregates.set_upstream(
+        wait_for_checks__fail_org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1
+    )
+
+    desktop_new_profiles_aggregates.set_upstream(
+        wait_for_checks__fail_org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1
+    )
+
+    desktop_new_profiles_aggregates.set_upstream(
+        wait_for_checks__fail_org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1
+    )
+
+    desktop_new_profiles_aggregates.set_upstream(
+        wait_for_checks__fail_org_mozilla_firefox_derived__baseline_clients_last_seen__v1
+    )
+
+    desktop_new_profiles_aggregates.set_upstream(
+        wait_for_checks__fail_org_mozilla_focus_beta_derived__baseline_clients_last_seen__v1
+    )
+
+    desktop_new_profiles_aggregates.set_upstream(
+        wait_for_checks__fail_org_mozilla_focus_derived__baseline_clients_last_seen__v1
+    )
+
+    desktop_new_profiles_aggregates.set_upstream(
+        wait_for_checks__fail_org_mozilla_focus_nightly_derived__baseline_clients_last_seen__v1
+    )
+
+    desktop_new_profiles_aggregates.set_upstream(
+        wait_for_checks__fail_org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1
+    )
+
+    desktop_new_profiles_aggregates.set_upstream(
+        wait_for_checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
+    )
+
+    desktop_new_profiles_aggregates.set_upstream(
+        wait_for_checks__fail_org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1
+    )
+
+    desktop_new_profiles_aggregates.set_upstream(
+        wait_for_checks__fail_org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1
+    )
+
+    desktop_new_profiles_aggregates.set_upstream(
+        wait_for_checks__fail_org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1
+    )
+
+    desktop_new_profiles_aggregates.set_upstream(
+        wait_for_checks__fail_org_mozilla_klar_derived__baseline_clients_last_seen__v1
+    )
+
+    desktop_new_profiles_aggregates.set_upstream(
+        wait_for_checks__fail_telemetry_derived__clients_last_seen__v2
+    )
+
+    desktop_new_profiles_aggregates.set_upstream(clients_first_seen_v3)
 
     fenix_derived__funnel_retention_clients_week_2__v1.set_upstream(
         checks__fail_fenix_derived__firefox_android_clients__v1

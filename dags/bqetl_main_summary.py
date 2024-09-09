@@ -138,6 +138,12 @@ with DAG(
         )
 
         ExternalTaskMarker(
+            task_id="bqetl_analytics_tables__wait_for_checks__fail_telemetry_derived__clients_last_seen__v2",
+            external_dag_id="bqetl_analytics_tables",
+            external_task_id="wait_for_checks__fail_telemetry_derived__clients_last_seen__v2",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_kpis_shredder__wait_for_checks__fail_telemetry_derived__clients_last_seen__v2",
             external_dag_id="bqetl_kpis_shredder",
             external_task_id="wait_for_checks__fail_telemetry_derived__clients_last_seen__v2",
@@ -155,12 +161,6 @@ with DAG(
             external_dag_id="bqetl_search_dashboard",
             external_task_id="wait_for_checks__fail_telemetry_derived__clients_last_seen__v2",
             execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=77400)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
-            task_id="bqetl_analytics_tables__wait_for_checks__fail_telemetry_derived__clients_last_seen__v2",
-            external_dag_id="bqetl_analytics_tables",
-            external_task_id="wait_for_checks__fail_telemetry_derived__clients_last_seen__v2",
         )
 
         ExternalTaskMarker(

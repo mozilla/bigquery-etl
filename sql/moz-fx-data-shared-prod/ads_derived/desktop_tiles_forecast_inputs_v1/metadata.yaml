@@ -12,7 +12,7 @@ labels:
   schedule: monthly
   change_controlled: true
 scheduling:
-  dag_name: bqetl_ads
+  dag_name: bqetl_ads_monthly
 bigquery:
   time_partitioning:
     field: submission_month

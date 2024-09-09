@@ -14,7 +14,7 @@ fields:
   - mode: NULLABLE
     name: impression_count_1and2
     type: INTEGER
-    description: Count of tile impressions in positions 1 and 2for submission_month. Calculated from contextual-services.
+    description: Count of tile impressions in positions 1 and 2 for submission_month. Calculated from contextual-services.
   - mode: NULLABLE
     name: sponsored_impressions_all
     type: INTEGER

@@ -20,8 +20,8 @@ WITH cs_impressions AS (
     )
     AND country IN ('US', 'DE', 'FR', 'AU', 'CA', 'IT', 'ES', 'MX', 'BR', 'IN', 'GB', 'JP')
   GROUP BY
-    1,
-    2
+    country_code,
+    submission_month
 )
 /* Deriving total users from unified_metrics given how the DAU forecast doesn't account for NT activity data */
 ,
@@ -45,8 +45,8 @@ users_table AS (
     AND country IN ('US', 'DE', 'FR', 'AU', 'CA', 'IT', 'ES', 'MX', 'BR', 'IN', 'GB', 'JP')
     AND normalized_app_name = 'Firefox Desktop'
   GROUP BY
-    1,
-    2
+    submission_month,
+    country_code
 )
 /* Using 2x visits as total inventory while we sort out addressable inventory for eligible users */
 ,
@@ -75,8 +75,8 @@ nt_visits AS (
     )
     AND n.country_code IN ('US', 'DE', 'FR', 'AU', 'CA', 'IT', 'ES', 'MX', 'BR', 'IN', 'GB', 'JP')
   GROUP BY
-    1,
-    2
+    submission_month,
+    country_code
 )
 SELECT
   n.submission_month,
@@ -106,5 +106,5 @@ LEFT JOIN
 WHERE
   n.submission_month < DATE_TRUNC(@submission_date, MONTH)
 ORDER BY
-  2,
-  1 ASC
+  country,
+  submission_month

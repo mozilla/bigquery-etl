@@ -57,7 +57,7 @@ nt_visits AS (
     APPROX_COUNT_DISTINCT(newtab_visit_id) AS newtab_visits,
     APPROX_COUNT_DISTINCT(client_id) AS newtab_clients,
     2 * APPROX_COUNT_DISTINCT(newtab_visit_id) AS visits_total_inventory_1and2,
-    3 * APPROX_COUNT_DISTINCT(newtab_visit_id) AS visits_total_inventory_3,
+    3 * APPROX_COUNT_DISTINCT(newtab_visit_id) AS visits_total_inventory_1to3,
     SUM(t.sponsored_topsite_tile_impressions) AS sponsored_impressions
   FROM
     `moz-fx-data-shared-prod.telemetry.newtab_visits` n,
@@ -88,11 +88,11 @@ SELECT
   n.newtab_clients AS clients,
   n.visits_total_inventory_1and2 AS total_inventory_1and2,
   ROUND(1.00 * c.sponsored_impressions_1and2 / n.visits_total_inventory_1and2, 3) AS fill_rate,
-  n.visits_total_inventory_3,
+  n.visits_total_inventory_1to3,
   ROUND(
-    1.00 * c.sponsored_impressions_all / n.visits_total_inventory_3,
+    1.00 * c.sponsored_impressions_all / n.visits_total_inventory_1to3,
     3
-  ) AS visits_total_fill_rate_3,
+  ) AS visits_total_fill_rate_1to3,
 FROM
   nt_visits n
 LEFT JOIN

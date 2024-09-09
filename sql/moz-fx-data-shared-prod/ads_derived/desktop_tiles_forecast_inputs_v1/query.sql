@@ -15,9 +15,9 @@ WITH cs_impressions AS (
         submission_date >= DATE_TRUNC(PARSE_DATE('%Y-%m-%d', '2023-11-01'), MONTH)
       {% else %}
         submission_date >= DATE_TRUNC(DATE_SUB(@submission_date, INTERVAL 1 MONTH), MONTH)
-        AND submission_date < DATE_TRUNC(@submission_date, MONTH)
       {% endif %}
     )
+    AND submission_date < DATE_TRUNC(@submission_date, MONTH)
     AND country IN ('US', 'DE', 'FR', 'AU', 'CA', 'IT', 'ES', 'MX', 'BR', 'IN', 'GB', 'JP')
   GROUP BY
     country_code,
@@ -39,9 +39,9 @@ users_table AS (
         submission_date >= DATE_TRUNC(PARSE_DATE('%Y-%m-%d', '2023-11-01'), MONTH)
       {% else %}
         submission_date >= DATE_TRUNC(DATE_SUB(@submission_date, INTERVAL 1 MONTH), MONTH)
-        AND submission_date < DATE_TRUNC(@submission_date, MONTH)
       {% endif %}
     )
+    AND submission_date < DATE_TRUNC(@submission_date, MONTH)
     AND country IN ('US', 'DE', 'FR', 'AU', 'CA', 'IT', 'ES', 'MX', 'BR', 'IN', 'GB', 'JP')
     AND normalized_app_name = 'Firefox Desktop'
   GROUP BY
@@ -70,9 +70,9 @@ nt_visits AS (
         submission_date >= DATE_TRUNC(PARSE_DATE('%Y-%m-%d', '2023-11-01'), MONTH)
       {% else %}
         submission_date >= DATE_TRUNC(DATE_SUB(@submission_date, INTERVAL 1 MONTH), MONTH)
-        AND submission_date < DATE_TRUNC(@submission_date, MONTH)
       {% endif %}
     )
+    AND submission_date < DATE_TRUNC(@submission_date, MONTH)
     AND n.country_code IN ('US', 'DE', 'FR', 'AU', 'CA', 'IT', 'ES', 'MX', 'BR', 'IN', 'GB', 'JP')
   GROUP BY
     submission_month,
@@ -103,8 +103,6 @@ LEFT JOIN
   users_table u
   ON u.country_code = n.country_code
   AND u.submission_month = n.submission_month
-WHERE
-  n.submission_month < DATE_TRUNC(@submission_date, MONTH)
 ORDER BY
   country,
   submission_month

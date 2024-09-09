@@ -498,6 +498,10 @@ with DAG(
 
     mozilla_org_derived__www_site_downloads__v2.set_upstream(wait_for_wmo_events_table)
 
+    mozilla_org_derived__www_site_events_metrics__v2.set_upstream(
+        mozilla_org_derived__www_site_hits__v2
+    )
+
     mozilla_org_derived__www_site_hits__v2.set_upstream(wait_for_wmo_events_table)
 
     mozilla_org_derived__www_site_landing_page_metrics__v2.set_upstream(

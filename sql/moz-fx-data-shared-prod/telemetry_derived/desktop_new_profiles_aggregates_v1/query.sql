@@ -25,11 +25,11 @@ SELECT
   COUNT(cfs.client_id) AS new_profiles
 FROM
   `moz-fx-data-shared-prod.telemetry.clients_first_seen` cfs
-LEFT JOIN
+INNER JOIN
   `moz-fx-data-shared-prod.telemetry.active_users` au
   ON au.client_id = cfs.client_id
 WHERE
-  cfs.first_seen_date = au.submission_date
+  cfs.first_seen_date = @submission_date
   AND au.submission_date = @submission_date
 GROUP BY
   cfs.first_seen_date,

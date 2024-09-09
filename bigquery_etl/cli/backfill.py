@@ -22,6 +22,7 @@ from ..backfill.parse import (
     Backfill,
     BackfillStatus,
 )
+from ..backfill.shredder_mitigation import generate_query_with_shredder_mitigation
 from ..backfill.utils import (
     get_backfill_backup_table_name,
     get_backfill_file_from_qualified_table_name,
@@ -508,10 +509,27 @@ def _initiate_backfill(
 
     custom_query = None
     if entry.shredder_mitigation is True:
-        custom_query = "query_with_shredder_mitigation.sql"  # TODO: Replace with "= generate_query_with_shredder_mitigation()"
-        logging_str += "  This backfill uses a query with shredder mitigation."
+        click.echo(
+            click.style(
+                f"Generating query with shredder mitigation for {dataset}.{table}...",
+                fg="blue",
+            )
+        )
+        query, _ = generate_query_with_shredder_mitigation(
+            client=bigquery.Client(project=project),
+            project_id=project,
+            dataset=dataset,
+            destination_table=table,
+            backfill_date=entry.start_date.isoformat(),
+        )
+        custom_query = Path(query)
+        click.echo(
+            click.style(
+                f"Starting backfill with custom query: '{custom_query}'.", fg="blue"
+            )
+        )
     elif entry.custom_query:
-        custom_query = entry.custom_query
+        custom_query = Path(entry.custom_query)
 
     # backfill table
     # in the long-run we should remove the query backfill command and require a backfill entry for all backfills

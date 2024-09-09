@@ -1,12 +1,9 @@
-import os
 from pathlib import Path
 
 import pytest
 from click.exceptions import BadParameter
-from click.testing import CliRunner
 
 from bigquery_etl.cli.utils import (
-    extract_last_group_by_from_query,
     is_authenticated,
     is_valid_dir,
     is_valid_file,
@@ -18,9 +15,6 @@ TEST_DIR = Path(__file__).parent.parent
 
 
 class TestUtils:
-    @pytest.fixture
-    def runner(self):
-        return CliRunner()
 
     def test_is_valid_dir(self):
         with pytest.raises(BadParameter):
@@ -71,89 +65,3 @@ class TestUtils:
             pattern="telemetry_live.event_v4",
             invert=True,
         )
-
-    def test_extract_last_group_by_from_query_sql(self):
-        """Test cases using a sql text."""
-        assert ["ALL"] == extract_last_group_by_from_query(
-            sql_text="SELECT column_1 FROM test_table GROUP BY ALL"
-        )
-        assert ["1"] == extract_last_group_by_from_query(
-            sql_text="SELECT column_1, SUM(metric_1) AS metric_1 FROM test_table GROUP BY 1;"
-        )
-        assert ["1", "2", "3"] == extract_last_group_by_from_query(
-            sql_text="SELECT column_1 FROM test_table GROUP BY 1, 2, 3"
-        )
-        assert ["1", "2", "3"] == extract_last_group_by_from_query(
-            sql_text="SELECT column_1 FROM test_table GROUP BY 1, 2, 3"
-        )
-        assert ["column_1", "column_2"] == extract_last_group_by_from_query(
-            sql_text="""SELECT column_1, column_2 FROM test_table GROUP BY column_1, column_2 ORDER BY 1 LIMIT 100"""
-        )
-        assert [] == extract_last_group_by_from_query(
-            sql_text="SELECT column_1 FROM test_table"
-        )
-        assert [] == extract_last_group_by_from_query(
-            sql_text="SELECT column_1 FROM test_table;"
-        )
-        assert ["column_1"] == extract_last_group_by_from_query(
-            sql_text="SELECT column_1 FROM test_table GROUP BY column_1"
-        )
-        assert ["column_1", "column_2"] == extract_last_group_by_from_query(
-            sql_text="SELECT column_1, column_2 FROM test_table GROUP BY (column_1, column_2)"
-        )
-        assert ["column_1"] == extract_last_group_by_from_query(
-            sql_text="""WITH cte AS (SELECT column_1 FROM test_table GROUP BY column_1)
-            SELECT column_1 FROM cte"""
-        )
-        assert ["column_1"] == extract_last_group_by_from_query(
-            sql_text="""WITH cte AS (SELECT column_1 FROM test_table GROUP BY column_1),
-            cte2 AS (SELECT column_1, column2 FROM test_table GROUP BY column_1, column2)
-            SELECT column_1 FROM cte2 GROUP BY column_1 ORDER BY 1 DESC LIMIT 1;"""
-        )
-        assert ["column_3"] == extract_last_group_by_from_query(
-            sql_text="""WITH cte1 AS (SELECT column_1, column3 FROM test_table GROUP BY column_1, column3),
-            cte3 AS (SELECT column_1, column3 FROM cte1 group by column_3) SELECT column_1 FROM cte3 limit 2;"""
-        )
-        assert ["column_2"] == extract_last_group_by_from_query(
-            sql_text="""WITH cte1 AS (SELECT column_1 FROM test_table GROUP BY column_1),
-            'cte2 AS (SELECT column_2 FROM test_table GROUP BY column_2),
-            cte3 AS (SELECT column_1 FROM cte1 UNION ALL SELECT column2 FROM cte2) SELECT * FROM cte3"""
-        )
-        assert ["column_2"] == extract_last_group_by_from_query(
-            sql_text="""WITH cte1 AS (SELECT column_1 FROM test_table GROUP BY column_1),
-            cte2 AS (SELECT column_1 FROM test_table GROUP BY column_2) SELECT * FROM cte2;"""
-        )
-
-        assert ["COLUMN"] == extract_last_group_by_from_query(
-            sql_text="""WITH cte1 AS (SELECT COLUMN FROM test_table GROUP BY COLUMN),
-            cte2 AS (SELECT COLUMN FROM test_table GROUP BY COLUMN) SELECT * FROM cte2;"""
-        )
-
-        assert ["COLUMN"] == extract_last_group_by_from_query(
-            sql_text="""WITH cte1 AS (SELECT COLUMN FROM test_table GROUP BY COLUMN),
-            cte2 AS (SELECT COLUMN FROM test_table group by COLUMN) SELECT * FROM cte2;"""
-        )
-
-    def test_extract_last_group_by_from_query_file(self, runner):
-        """Test function and cases using a sql file path."""
-        with runner.isolated_filesystem():
-            test_path = (
-                "sql/moz-fx-data-shared-prod/test_shredder_mitigation/test_query_v1"
-            )
-            os.makedirs(test_path)
-            assert os.path.exists(test_path)
-            assert "test_shredder_mitigation" in os.listdir(
-                "sql/moz-fx-data-shared-prod"
-            )
-            assert is_valid_dir(None, None, test_path)
-
-            sql_path = Path(test_path) / "query.sql"
-            with open(sql_path, "w") as f:
-                f.write("SELECT column_1 FROM test_table group by ALL")
-            assert ["ALL"] == extract_last_group_by_from_query(sql_path=sql_path)
-
-            with open(sql_path, "w") as f:
-                f.write(
-                    "SELECT column_1 FROM test_table GROUP BY (column_1) LIMIT (column_1);"
-                )
-            assert ["column_1"] == extract_last_group_by_from_query(sql_path=sql_path)

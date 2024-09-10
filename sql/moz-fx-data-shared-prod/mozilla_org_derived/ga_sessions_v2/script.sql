@@ -118,7 +118,7 @@ MERGE INTO
         campaign_from_event_params,
         event_timestamp
       FROM
-        all_campaigns_in_session_staging
+        all_campaigns_from_event_params_in_session_staging
       WHERE
         ga_client_id IS NOT NULL
         AND ga_session_id IS NOT NULL

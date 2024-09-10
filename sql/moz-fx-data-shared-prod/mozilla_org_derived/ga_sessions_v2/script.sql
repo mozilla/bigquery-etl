@@ -78,6 +78,7 @@ MERGE INTO
             event_timestamp ASC
         ) = 1
     ),
+    --search all time for this session and client ID, and get all campaigns we see
     all_campaigns_from_event_params_in_session_staging AS (
       SELECT
         user_pseudo_id AS ga_client_id,
@@ -103,13 +104,7 @@ MERGE INTO
             1
         ).string_value AS campaign_from_event_params
       FROM
-        `moz-fx-data-marketing-prod.analytics_313696158.events_*`
-      JOIN
-        UNNEST(event_params) AS e
-      WHERE
-        _TABLE_SUFFIX
-        BETWEEN FORMAT_DATE('%Y%m%d', DATE_SUB(@submission_date, INTERVAL 3 DAY))
-        AND FORMAT_DATE('%Y%m%d', @submission_date)
+        `moz-fx-data-marketing-prod.analytics_313696158.events_2*`
     ),
     all_campaigns_from_event_params_in_session AS (
       SELECT

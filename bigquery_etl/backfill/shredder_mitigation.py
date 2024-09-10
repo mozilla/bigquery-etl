@@ -19,6 +19,7 @@ from jinja2 import Environment, FileSystemLoader
 
 from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.metadata.parse_metadata import METADATA_FILE, Metadata
+from bigquery_etl.schema import Schema
 from bigquery_etl.util.common import extract_last_group_by_from_query, write_sql
 
 PREVIOUS_DATE = (dt.now() - timedelta(days=2)).date()
@@ -27,6 +28,11 @@ TEMP_DATASET = "tmp"
 THIS_PATH = Path(os.path.dirname(__file__))
 DEFAULT_PROJECT_ID = "moz-fx-data-shared-prod"
 QUERY_WITH_MITIGATION_NAME = "query_with_shredder_mitigation"
+QUERY_FILE_RE = re.compile(
+    r"^.*/([a-zA-Z0-9-]+)/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+(_v[0-9]+)?)/"
+    r"(?:query\.sql|query_with_shredder_mitigation\.sql|part1\.sql|script\.sql|"
+    r"query\.py|view\.sql|metadata\.yaml|backfill\.yaml)$"
+)
 
 
 class ColumnType(Enum):
@@ -63,6 +69,14 @@ class DataTypeGroup(Enum):
     TIMESTAMP = "TIMESTAMP"
     UNDETERMINED = "None"
 
+    @staticmethod
+    def from_schema_type(schema_type):
+        """Convert schema type (string) to the corresponding Type enum."""
+        for _type in DataTypeGroup:
+            if schema_type in type.value:
+                return _type
+        return None
+
 
 @attr.define(eq=True)
 class Column:
@@ -73,22 +87,20 @@ class Column:
     column_type: ColumnType = attr.field(default=ColumnType.UNDETERMINED)
     status: ColumnStatus = attr.field(default=ColumnStatus.UNDETERMINED)
 
-    """Validate the type of the attributes."""
-
     @data_type.validator
-    def validate_data_type(self, attribute, value):
+    def validate_data_type(self, _attribute, value):
         """Check that the type of data_type is as expected."""
         if not isinstance(value, DataTypeGroup):
             raise ValueError(f"Invalid {value} with type: {type(value)}.")
 
     @column_type.validator
-    def validate_column_type(self, attribute, value):
+    def validate_column_type(self, _attribute, value):
         """Check that the type of parameter column_type is as expected."""
         if not isinstance(value, ColumnType):
             raise ValueError(f"Invalid data type for: {value}.")
 
     @status.validator
-    def validate_status(self, attribute, value):
+    def validate_status(self, _attribute, value):
         """Check that the type of parameter column_status is as expected."""
         if not isinstance(value, ColumnStatus):
             raise ValueError(f"Invalid data type for: {value}.")
@@ -106,13 +118,6 @@ class Subset:
     expiration_days: Optional[float] = attr.field(default=None)
 
     @property
-    def expiration_ms(self) -> Optional[float]:
-        """Convert partition expiration from days to milliseconds."""
-        if self.expiration_days is None:
-            return None
-        return int(self.expiration_days * 86_400_000)
-
-    @property
     def version(self):
         """Return the version of the destination table."""
         match = re.search(r"v(\d+)$", self.destination_table)
@@ -123,10 +128,10 @@ class Subset:
                     f"{self.destination_table} must end with a positive integer."
                 )
             return version
-        except (AttributeError, TypeError):
+        except (AttributeError, TypeError) as e:
             raise click.ClickException(
                 f"Invalid or missing table version in {self.destination_table}."
-            )
+            ) from e
 
     @property
     def full_table_id(self):
@@ -143,12 +148,11 @@ class Subset:
             / self.destination_table
             / "query.sql"
         )
-        if not os.path.isfile(sql_path):
-            click.echo(
-                click.style(f"Required file not found: {sql_path}.", fg="yellow")
-            )
-            return None
-        return sql_path
+        match = QUERY_FILE_RE.match(str(sql_path))
+        if match and os.path.isfile(sql_path):
+            return sql_path
+        click.echo(click.style(f"File not found: {sql_path}.", fg="yellow"))
+        return None
 
     @property
     def partitioning(self):
@@ -296,8 +300,41 @@ def get_bigquery_type(value) -> DataTypeGroup:
     raise ValueError(f"Unsupported data type: {type(value)}")
 
 
+def validate_types(columns, schema, sample_data):
+    """Returns dtype from schema file or if not available, from bigquery."""
+    results = {}
+
+    for dim in columns:
+        schema_field = next((field for field in schema if field.name == dim), None)
+
+        bigquery_type = get_bigquery_type(sample_data.get(dim))
+        # If the column is in the schema
+        if schema_field:
+            schema_type = DataTypeGroup.from_schema_type(schema_field.field_type)
+            results[dim] = schema_type or bigquery_type
+        # If the column is _not_ in the schema
+        else:
+            if bigquery_type:
+                results[dim] = bigquery_type
+                click.echo(
+                    f"Column {dim} not in schema!! Using type {bigquery_type} from sample data."
+                )
+            else:
+                results[dim] = DataTypeGroup.UNDETERMINED
+                click.echo(
+                    f"Data type for {dim} could not be retrieved from schema or BigQuery."
+                    f" Set to UNDETERMINED."
+                )
+                continue
+    return results
+
+
 def classify_columns(
-    new_row: dict, existing_dimension_columns: list, new_dimension_columns: list
+    new_row: dict,
+    existing_dimension_columns: list,
+    new_dimension_columns: list,
+    existing_schema: bigquery.schema.SchemaField,
+    new_schema: bigquery.schema.SchemaField,
 ) -> tuple[list[Column], list[Column], list[Column], list[Column], list[Column]]:
     """Compare new row with existing columns & return common, added & removed columns."""
     common_dimensions = []
@@ -322,25 +359,30 @@ def classify_columns(
             f"Existing dimensions don't match columns retrieved by query."
             f" Missing {missing_dimensions}."
         )
+    existing_dimension_columns_types = validate_types(
+        existing_dimension_columns, existing_schema, new_row
+    )
+    new_dimension_columns_types = validate_types(
+        new_dimension_columns, new_schema, new_row
+    )
 
     for key in existing_dimension_columns:
         if key not in new_dimension_columns:
             removed_dimensions.append(
                 Column(
                     key,
-                    DataTypeGroup.UNDETERMINED,
+                    existing_dimension_columns_types[key],
                     ColumnType.UNDETERMINED,
                     ColumnStatus.REMOVED,
                 )
             )
 
-    for key, value in new_row.items():
-        value_type = get_bigquery_type(value)
+    for key, _ in new_row.items():
         if key in existing_dimension_columns:
             common_dimensions.append(
                 Column(
                     key,
-                    value_type,
+                    new_dimension_columns_types[key],
                     ColumnType.DIMENSION,
                     ColumnStatus.COMMON,
                 )
@@ -349,38 +391,36 @@ def classify_columns(
             added_dimensions.append(
                 Column(
                     key,
-                    value_type,
+                    new_dimension_columns_types[key],
                     ColumnType.DIMENSION,
                     ColumnStatus.ADDED,
                 )
             )
-        elif (
-            key not in existing_dimension_columns
-            and key not in new_dimension_columns
-            and (
-                value_type is DataTypeGroup.INTEGER
-                or value_type is DataTypeGroup.FLOAT
-                or value_type is DataTypeGroup.NUMERIC
-            )
-        ):
-            # Columns that are not in the previous or new list of grouping columns are metrics.
-            metrics.append(
-                Column(
-                    key,
-                    value_type,
-                    ColumnType.METRIC,
-                    ColumnStatus.COMMON,
+        elif key not in existing_dimension_columns and key not in new_dimension_columns:
+            value_type = validate_types([key], new_schema, new_row)
+            if value_type[key] in (
+                DataTypeGroup.INTEGER,
+                DataTypeGroup.FLOAT,
+                DataTypeGroup.NUMERIC,
+            ):
+                # A column that's not a dimensions nor a grouping columns is classified as metric.
+                metrics.append(
+                    Column(
+                        key,
+                        value_type[key],
+                        ColumnType.METRIC,
+                        ColumnStatus.COMMON,
+                    )
                 )
-            )
-        else:
-            undefined.append(
-                Column(
-                    key,
-                    value_type,
-                    ColumnType.UNDETERMINED,
-                    ColumnStatus.UNDETERMINED,
+            else:
+                undefined.append(
+                    Column(
+                        key,
+                        value_type[key],
+                        ColumnType.UNDETERMINED,
+                        ColumnStatus.UNDETERMINED,
+                    )
                 )
-            )
 
     common_dimensions_sorted = sorted(common_dimensions, key=lambda column: column.name)
     added_dimensions_sorted = sorted(added_dimensions, key=lambda column: column.name)
@@ -449,6 +489,16 @@ def generate_query_with_shredder_mitigation(
         )
 
     # Identify columns common to both queries and columns new. This excludes removed columns.
+    existing_schema = Schema.from_schema_file(
+        query_with_mitigation_path
+        / dataset
+        / destination_table_previous_version
+        / "schema.yaml"
+    ).to_bigquery_schema()
+    new_schema = Schema.from_schema_file(
+        query_with_mitigation_path / dataset / destination_table / "schema.yaml"
+    ).to_bigquery_schema()
+
     sample_rows = new.get_query_path_results(
         backfill_date=backfill_date,
         row_limit=1,
@@ -466,7 +516,9 @@ def generate_query_with_shredder_mitigation(
             removed_dimensions,
             metrics,
             undetermined_columns,
-        ) = classify_columns(new_table_row, previous_group_by, new_group_by)
+        ) = classify_columns(
+            new_table_row, previous_group_by, new_group_by, existing_schema, new_schema
+        )
     except TypeError as e:
         raise click.ClickException(
             f"Table {destination_table} did not return any rows for {backfill_date}.\n{e}"
@@ -478,7 +530,7 @@ def generate_query_with_shredder_mitigation(
             " one dimension added and one metric."
         )
 
-    # Get the new query.
+    # Get the new version of the query.
     with open(new.query_path, "r") as file:
         new_query = file.read().strip()
 
@@ -539,7 +591,7 @@ def generate_query_with_shredder_mitigation(
         client, destination_table, "shredded", TEMP_DATASET, project_id, None
     )
 
-    # Set values to NULL for the supported types.
+    # Cast NULL values to the corresponding type.
     shredded_select = (
         [f"{previous_agg.query_cte}.{new.partitioning['field']}"]
         + [
@@ -603,14 +655,15 @@ def generate_query_with_shredder_mitigation(
             )
         ]
         + [
-            f"{previous_agg.query_cte}.{metric.name} - IFNULL({new_agg.query_cte}.{metric.name}, 0)"
+            f"COALESCE({previous_agg.query_cte}.{metric.name}, 0) - "
+            f"COALESCE({new_agg.query_cte}.{metric.name}, 0)"
             f" AS {metric.name}"
             for metric in metrics
             if metric.data_type != DataTypeGroup.FLOAT
         ]
         + [
             f"ROUND({previous_agg.query_cte}.{metric.name}, 3) - "
-            f"ROUND(IFNULL({new_agg.query_cte}.{metric.name}, 0), 3) AS {metric.name}"
+            f"ROUND(COALESCE({new_agg.query_cte}.{metric.name}, 0), 10) AS {metric.name}"
             for metric in metrics
             if metric.data_type == DataTypeGroup.FLOAT
         ]
@@ -641,7 +694,8 @@ def generate_query_with_shredder_mitigation(
         from_clause=f"{previous_agg.query_cte} LEFT JOIN {new_agg.query_cte} ON {shredded_join} ",
         where_clause=" OR ".join(
             [
-                f"{previous_agg.query_cte}.{metric.name} > IFNULL({new_agg.query_cte}.{metric.name}, 0)"
+                f"COALESCE({previous_agg.query_cte}.{metric.name}, 0) >"
+                f" COALESCE({new_agg.query_cte}.{metric.name}, 0)"
                 for metric in metrics
             ]
         ),
@@ -661,9 +715,11 @@ def generate_query_with_shredder_mitigation(
             {[f"{dim.name}:{dim.data_type.name}" for dim in common_dimensions]},
             Dimensions added:
             {[f"{dim.name}:{dim.data_type.name}" for dim in added_dimensions]}
+            Dimensions removed:
+            {[f"{dim.name}:{dim.data_type.name}" for dim in removed_dimensions]}
             Metrics:
             {[f"{dim.name}:{dim.data_type.name}" for dim in metrics]},
-            Colums that could not be classified:
+            Columns that could not be classified:
             {[f"{dim.name}:{dim.data_type.name}" for dim in undetermined_columns]}.""",
             fg="yellow",
         )
@@ -696,7 +752,6 @@ def generate_query_with_shredder_mitigation(
         skip_existing=False,
     )
 
-    # return Path("sql")
     return (
         Path("sql")
         / new.project_id

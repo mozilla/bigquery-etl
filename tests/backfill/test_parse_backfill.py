@@ -62,7 +62,7 @@ class TestParseBackfill(object):
         assert backfill.watchers == [DEFAULT_WATCHER]
         assert backfill.status == DEFAULT_STATUS
         assert backfill.shredder_mitigation is False
-        assert backfill.custom_query is None
+        assert backfill.custom_query_path is None
         assert backfill.billing_project is None
 
     def test_backfill_instantiation_with_billing_project(self):
@@ -76,7 +76,7 @@ class TestParseBackfill(object):
         assert backfill.watchers == [DEFAULT_WATCHER]
         assert backfill.status == DEFAULT_STATUS
         assert backfill.shredder_mitigation is False
-        assert backfill.custom_query == "custom_query.sql"
+        assert backfill.custom_query_path == "custom_query.sql"
         assert backfill.billing_project == DEFAULT_BILLING_PROJECT
 
     def test_invalid_billing_project(self):
@@ -462,7 +462,7 @@ class TestParseBackfill(object):
             reason = Please provide a reason for the backfill and links to any related bugzilla or jira tickets
             watcher(s) = [nobody@mozilla.com]
             status = Initiate
-            custom_query = None
+            custom_query_path = None
             shredder_mitigation = False
             """
 

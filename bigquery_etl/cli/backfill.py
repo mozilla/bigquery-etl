@@ -110,9 +110,9 @@ def backfill(ctx):
     default=DEFAULT_WATCHER,
 )
 @click.option(
-    "--custom_query",
-    "--custom-query",
-    help="Name of a custom query to run the backfill. If not given, the proces runs as usual.",
+    "--custom_query_path",
+    "--custom-query-path",
+    help="Path of the custom query to run the backfill. Optional.",
 )
 @click.option(
     "--shredder_mitigation/--no_shredder_mitigation",
@@ -129,7 +129,7 @@ def create(
     end_date,
     exclude,
     watcher,
-    custom_query,
+    custom_query_path,
     shredder_mitigation,
     billing_project,
 ):
@@ -157,7 +157,7 @@ def create(
         reason=DEFAULT_REASON,
         watchers=[watcher],
         status=BackfillStatus.INITIATE,
-        custom_query=custom_query,
+        custom_query_path=custom_query_path,
         shredder_mitigation=shredder_mitigation,
         billing_project=billing_project,
     )
@@ -507,7 +507,7 @@ def _initiate_backfill(
 
     log.info(logging_str)
 
-    custom_query = None
+    custom_query_path = None
     if entry.shredder_mitigation is True:
         click.echo(
             click.style(
@@ -522,14 +522,14 @@ def _initiate_backfill(
             destination_table=table,
             backfill_date=entry.start_date.isoformat(),
         )
-        custom_query = Path(query)
+        custom_query_path = Path(query)
         click.echo(
             click.style(
-                f"Starting backfill with custom query: '{custom_query}'.", fg="blue"
+                f"Starting backfill with custom query: '{custom_query_path}'.", fg="blue"
             )
         )
-    elif entry.custom_query:
-        custom_query = Path(entry.custom_query)
+    elif entry.custom_query_path:
+        custom_query_path = Path(entry.custom_query_path)
 
     # backfill table
     # in the long-run we should remove the query backfill command and require a backfill entry for all backfills
@@ -544,7 +544,7 @@ def _initiate_backfill(
             destination_table=backfill_staging_qualified_table_name,
             parallelism=parallelism,
             dry_run=dry_run,
-            **({"custom_query": custom_query} if custom_query else {}),
+            **({"custom_query_path": custom_query_path} if custom_query_path else {}),
             billing_project=billing_project,
         )
     except subprocess.CalledProcessError as e:

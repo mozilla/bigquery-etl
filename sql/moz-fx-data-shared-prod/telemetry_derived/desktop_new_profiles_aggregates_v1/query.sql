@@ -1,3 +1,46 @@
+WITH clients_first_seen AS (
+SELECT
+  client_id,
+  first_seen_date,
+  is_desktop,
+  attribution_medium,
+  attribution_source,
+  attribution_campaign,
+  attribution_content,
+  attribution_dlsource,
+  attribution_ua,
+  (attribution_medium IS NOT NULL OR attribution_source IS NOT NULL) AS attributed,
+  city,
+  country,
+  distribution_id,
+  EXTRACT(YEAR FROM cfs.first_seen_date) AS first_seen_year,
+  normalized_channel AS channel,
+  os,
+  os_version,
+  normalized_os,
+  normalized_os_version,
+  locale,
+  app_version,
+  windows_version,
+  windows_build_number,
+  -- au.is_dau,
+
+FROM
+  `moz-fx-data-shared-prod.telemetry.clients_first_seen` cfs
+WHERE
+  cfs.first_seen_date = @submission_date
+),
+
+active_users AS (
+  SELECT client_id,
+    is_dau,
+    submission_date
+  FROM
+    `moz-fx-data-shared-prod.telemetry.active_users` au
+  WHERE
+   au.submission_date = @submission_date
+)
+
 SELECT
   cfs.first_seen_date,
   cfs.is_desktop,
@@ -7,12 +50,12 @@ SELECT
   cfs.attribution_content,
   cfs.attribution_dlsource,
   cfs.attribution_ua,
-  (cfs.attribution_medium IS NOT NULL OR cfs.attribution_source IS NOT NULL) AS attributed,
+  cfs.attributed,
   cfs.city,
   cfs.country,
   cfs.distribution_id,
-  EXTRACT(YEAR FROM cfs.first_seen_date) AS first_seen_year,
-  cfs.normalized_channel AS channel,
+  cfs.first_seen_year,
+  cfs.channel,
   cfs.os,
   cfs.os_version,
   cfs.normalized_os,
@@ -21,16 +64,12 @@ SELECT
   cfs.app_version,
   cfs.windows_version,
   cfs.windows_build_number,
-  au.is_dau,
+  COALESCE(au.is_dau, FALSE) AS is_dau,
   COUNT(cfs.client_id) AS new_profiles
-FROM
-  `moz-fx-data-shared-prod.telemetry.clients_first_seen` cfs
-INNER JOIN
-  `moz-fx-data-shared-prod.telemetry.active_users` au
-  ON au.client_id = cfs.client_id
-WHERE
-  cfs.first_seen_date = @submission_date
-  AND au.submission_date = @submission_date
+FROM clients_first_seen cfs
+LEFT JOIN active_users au
+  ON cfs.client_id = au.client_id
+  AND cfs.first_seen_date = au.submission_date
 GROUP BY
   cfs.first_seen_date,
   cfs.is_desktop,
@@ -40,16 +79,16 @@ GROUP BY
   cfs.attribution_content,
   cfs.attribution_dlsource,
   cfs.attribution_ua,
-  attributed,
+  cfs.attributed,
   cfs.city,
   cfs.country,
   cfs.distribution_id,
-  first_seen_year,
-  channel,
+  cfs.first_seen_year,
+  cfs.channel,
   cfs.os,
   cfs.os_version,
-  normalized_os,
-  normalized_os_version,
+  cfs.normalized_os,
+  cfs.normalized_os_version,
   cfs.locale,
   cfs.app_version,
   cfs.windows_version,

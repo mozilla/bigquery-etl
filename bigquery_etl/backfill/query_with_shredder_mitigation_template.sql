@@ -12,11 +12,11 @@ WITH {{ new_version_cte | default('new_version') }} AS (
   {{ shredded | default('SELECT 1')  }}
 )
 SELECT
-  {{ final_select | default('*') }}
+  {{ final_select | default('1') }}
 FROM
   {{ new_version_cte | default('new_version') }}
 UNION ALL
 SELECT
-  {{ final_select | default('*') }}
+  {{ final_select | default('1') }}
 FROM
   {{ shredded_cte | default('shredded') }};

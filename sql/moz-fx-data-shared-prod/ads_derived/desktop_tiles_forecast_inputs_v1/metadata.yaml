@@ -9,10 +9,10 @@ owners:
   - cmorales@mozilla.com
 labels:
   incremental: true
-  schedule: monthly
+  schedule: daily
   change_controlled: true
 scheduling:
-  dag_name: bqetl_ads_monthly
+  dag_name: bqetl_ads
 bigquery:
   time_partitioning:
     field: submission_month

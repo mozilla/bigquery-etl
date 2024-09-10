@@ -39,14 +39,7 @@ check_results AS (
     events_old
     USING (day, event_name)
   WHERE
-    -- investigated in https://mozilla-hub.atlassian.net/browse/FXA-10169
-    event_name NOT IN (
-      'google_login_complete',
-      'apple_login_complete',
-      'third_party_auth_apple_login_complete',
-      'third_party_auth_google_login_complete'
-    )
-    AND (
+    (
       events_new.count_new IS NULL
       OR events_old.count_old IS NULL
       OR (
@@ -114,6 +107,8 @@ check_results AS (
     USING (day, event_name, app_channel)
   WHERE
     event_name IS NOT NULL
+    -- temporary filter until https://github.com/mozilla/fxa/pull/17565 lands in prod
+    AND event_name NOT IN ('two_step_auth_enter_code_view', 'two_step_auth_codes_view')
     -- filter out data submitted from local development runs
     AND app_channel IN ('production', 'stage')
     -- glean_page_load and click events are automatically sent only in `events` ping

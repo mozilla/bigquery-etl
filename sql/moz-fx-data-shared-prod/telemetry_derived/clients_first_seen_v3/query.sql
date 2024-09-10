@@ -1,4 +1,4 @@
--- Query for telemetry_derived.clients_first_seen_v2
+-- Query for telemetry_derived.clients_first_seen_v3
 -- Each ping type subquery retrieves all attributes as reported on the first
 -- ping received and respecting NULLS.
 -- Once the first_seen_date is identified after comparing all pings, attributes

@@ -114,7 +114,7 @@ MERGE INTO
     all_campaigns_from_event_params_in_session AS (
       SELECT
         ga_client_id,
-        ga_session_id,
+        CAST(ga_session_id as string) AS ga_session_id,
         campaign_from_event_params,
         event_timestamp
       FROM

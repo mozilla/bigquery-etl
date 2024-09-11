@@ -40,6 +40,8 @@ NO_BASELINE_PING_APPS = (
 
 APPS_WITH_DISTRIBUTION_ID = ("fenix",)
 
+APPS_WITH_PROFILE_GROUP_ID = ("firefox_desktop",)
+
 
 def write_dataset_metadata(output_dir, full_table_id, derived_dataset_metadata=False):
     """
@@ -244,6 +246,7 @@ class GleanTable:
             derived_dataset=derived_dataset,
             app_name=app_name,
             has_distribution_id=app_name in APPS_WITH_DISTRIBUTION_ID,
+            has_profile_group_id= app_name in APPS_WITH_PROFILE_GROUP_ID,
         )
 
         render_kwargs.update(self.custom_render_kwargs)

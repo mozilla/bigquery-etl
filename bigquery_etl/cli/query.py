@@ -675,9 +675,7 @@ def backfill(
         sys.exit(1)
 
     if custom_query:
-        query_files = paths_matching_name_pattern(
-            name, sql_dir, project_id, [custom_query]
-        )
+        query_files = paths_matching_name_pattern(custom_query, sql_dir, project_id)
     else:
         query_files = paths_matching_name_pattern(name, sql_dir, project_id)
 

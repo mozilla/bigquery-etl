@@ -21,9 +21,7 @@ SELECT
   locale,
   app_version,
   windows_version,
-  windows_build_number,
-  -- au.is_dau,
-
+  windows_build_number
 FROM
   `moz-fx-data-shared-prod.telemetry.clients_first_seen` cfs
 WHERE

@@ -13,6 +13,8 @@ RETURNS STRING AS (
       THEN 'search_engine'
     WHEN res IN ('rust_yelp')
       THEN 'yelp_suggestion'
+    WHEN res IN ('rust_fakespot_amazon','rust_fakespot_bestbuy','rust_fakespot_walmart')
+      THEN 'fakespot_suggest'
     WHEN res IN ('trending_search', 'trending_search_rich')
       THEN 'trending_suggestion'
     WHEN res IN ('history')

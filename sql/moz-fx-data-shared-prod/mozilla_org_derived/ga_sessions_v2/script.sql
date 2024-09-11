@@ -78,6 +78,64 @@ MERGE INTO
             event_timestamp ASC
         ) = 1
     ),
+    --search all time for all the client IDs, and get all campaigns we see and the session ID we see them for
+    all_campaigns_from_event_params_in_session_staging AS (
+      SELECT
+        a.user_pseudo_id AS ga_client_id,
+        a.event_timestamp,
+        (
+          SELECT
+            `value`
+          FROM
+            UNNEST(event_params)
+          WHERE
+            key = 'ga_session_id'
+          LIMIT
+            1
+        ).int_value AS ga_session_id,
+        (
+          SELECT
+            `value`
+          FROM
+            UNNEST(event_params)
+          WHERE
+            key = 'campaign'
+          LIMIT
+            1
+        ).string_value AS campaign_from_event_params
+      FROM
+        `moz-fx-data-marketing-prod.analytics_313696158.events_2*` a
+      JOIN
+        distinct_ga_client_ids b
+        ON a.user_pseudo_id = b.ga_client_id
+    ),
+    all_campaigns_from_event_params_in_session AS (
+      SELECT
+        ga_client_id,
+        CAST(ga_session_id AS string) AS ga_session_id,
+        campaign_from_event_params,
+        event_timestamp
+      FROM
+        all_campaigns_from_event_params_in_session_staging
+      WHERE
+        ga_client_id IS NOT NULL
+        AND ga_session_id IS NOT NULL
+        AND campaign_from_event_params IS NOT NULL
+    ),
+    campaigns_by_session AS (
+      SELECT
+        ga_client_id,
+        ga_session_id,
+        ARRAY_AGG(DISTINCT campaign_from_event_params) AS distinct_campaigns_from_event_params,
+        ARRAY_AGG(campaign_from_event_params ORDER BY event_timestamp ASC)[
+          0
+        ] AS first_campaign_from_event_params
+      FROM
+        all_campaigns_from_event_params_in_session
+      GROUP BY
+        ga_client_id,
+        ga_session_id
+    ),
     click_aggregate_stg AS (
       SELECT DISTINCT
         user_pseudo_id AS ga_client_id,
@@ -371,7 +429,9 @@ MERGE INTO
       installs.all_reported_install_targets,
       stub_sessn_ids.last_reported_stub_session_id,
       stub_sessn_ids.all_reported_stub_session_ids,
-      lndg_pg.page_location AS landing_screen
+      lndg_pg.page_location AS landing_screen,
+      campaigns.distinct_campaigns_from_event_params,
+      campaigns.first_campaign_from_event_params
     FROM
       device_properties_at_session_start_event sess_strt
     JOIN
@@ -391,6 +451,9 @@ MERGE INTO
       USING (ga_client_id, ga_session_id)
     LEFT JOIN
       click_aggregate clicks
+      USING (ga_client_id, ga_session_id)
+    LEFT JOIN
+      campaigns_by_session campaigns
       USING (ga_client_id, ga_session_id)
   ) S
   ON T.ga_client_id = S.ga_client_id
@@ -422,7 +485,7 @@ THEN
       mobile_device_string,
       os,
       os_version,
-      LANGUAGE,
+      `LANGUAGE`,
       browser,
       browser_version,
       had_download_event,
@@ -430,7 +493,9 @@ THEN
       all_reported_install_targets,
       last_reported_stub_session_id,
       all_reported_stub_session_ids,
-      landing_screen
+      landing_screen,
+      distinct_campaigns_from_event_params,
+      first_campaign_from_event_params
     )
   VALUES
     (
@@ -465,7 +530,9 @@ THEN
       S.all_reported_install_targets,
       S.last_reported_stub_session_id,
       S.all_reported_stub_session_ids,
-      S.landing_screen
+      S.landing_screen,
+      S.distinct_campaigns_from_event_params,
+      S.first_campaign_from_event_params
     )
   WHEN MATCHED
 THEN
@@ -501,4 +568,6 @@ THEN
     T.all_reported_install_targets = S.all_reported_install_targets,
     T.last_reported_stub_session_id = S.last_reported_stub_session_id,
     T.all_reported_stub_session_ids = S.all_reported_stub_session_ids,
-    T.landing_screen = S.landing_screen
+    T.landing_screen = S.landing_screen,
+    T.distinct_campaigns_from_event_params = S.distinct_campaigns_from_event_params,
+    T.first_campaign_from_event_params = S.first_campaign_from_event_params

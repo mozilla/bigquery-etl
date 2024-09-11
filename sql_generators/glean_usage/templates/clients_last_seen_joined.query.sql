@@ -1,6 +1,7 @@
 WITH baseline AS (
   SELECT
-    *
+    * EXCEPT (profile_group_id),
+    profile_group_id AS baseline_profile_group_id
   FROM
     `{{ project_id }}.{{ app_name }}.baseline_clients_last_seen`
   WHERE

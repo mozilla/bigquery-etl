@@ -282,6 +282,7 @@ class TestMetadata:
             "deletion_date": "2024-03-02",
             "deprecated": "true",
             "owner1": "test",
+            "monitoring": "true",
         }
         assert (
             mock_bigquery_client()
@@ -297,6 +298,7 @@ class TestMetadata:
             "deletion_date": "2024-03-02",
             "deprecated": "true",
             "owner1": "test",
+            "monitoring": "true",
         }
 
     @patch("google.cloud.bigquery.Client")

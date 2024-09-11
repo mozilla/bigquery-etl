@@ -8,7 +8,8 @@ WITH
         "all_combos",
         cubed_attributes,
         attribute_combinations,
-        add_windows_release_sample = channel == "release"
+        add_windows_release_sample = channel == "release",
+        use_sample_id = use_sample_id
     )
 }},
 build_ids AS (

@@ -6,6 +6,7 @@
   legacy_telemetry_client_id: legacy_id_1
   experiments: []
   newtab_blocked_sponsors: []
+  newtab_selected_topics: []
   is_new_profile: true
   activity_segment: lots_of_activity
   browser_name: Firefox Desktop
@@ -13,6 +14,7 @@
   had_non_search_engagement: true
   newtab_default_ui: default
   newtab_newtab_category: enabled
+  profile_group_id: profile_group_id_1
   search_interactions:
     - search_engine: Engine1
       search_access_point: urlbar
@@ -47,6 +49,10 @@
       pocket_saves: 0
       sponsored_pocket_saves: 0
       organic_pocket_saves: 0
+      sponsored_pocket_dismissals: 0
+      organic_pocket_dismissals: 0
+      pocket_thumbs_up: 0
+      pocket_thumbs_down: 0
   wallpaper_interactions:
     - wallpaper_selected_wallpaper: wallpaper_1
       wallpaper_clicks: 1
@@ -62,3 +68,10 @@
       weather_widget_change_display_to_detailed: 0
       weather_widget_change_display_to_simple: 0
       weather_widget_location_selected: 0
+  topic_selection_interactions:
+    - previous_topics: "[topic_1]"
+      topics: "[topic_1, topic_2]"
+      topic_selection_open: 0
+      topic_selection_dismiss: 0
+      topic_selection_topics_first_saved: 0
+      topic_selection_topics_updated: 1

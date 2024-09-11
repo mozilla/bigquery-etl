@@ -381,6 +381,11 @@
             "name": "legacy_telemetry_client_id",
             "type": "STRING",
             "mode": "NULLABLE"
+          },
+          {
+            "name": "legacy_telemetry_profile_group_id",
+            "type": "STRING",
+            "mode": "NULLABLE"
           }
         ]
       },
@@ -450,6 +455,11 @@
           },
           {
             "name": "newtab_sov_allocation",
+            "type": "STRING",
+            "mode": "REPEATED"
+          },
+          {
+            "name": "newtab_selected_topics",
             "type": "STRING",
             "mode": "REPEATED"
           }

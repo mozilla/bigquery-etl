@@ -84,7 +84,8 @@ _grouped AS (
       -- Monthly search totals
     `moz-fx-data-shared-prod.udf.aggregate_search_map`(
       ARRAY_AGG(engine_searches)
-    ) AS engine_searches
+    ) AS engine_searches,
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(profile_group_id)) AS profile_group_id,
   FROM
     _derived_engine_searches
   GROUP BY
@@ -93,7 +94,7 @@ _grouped AS (
 ),
 _current AS (
   SELECT
-    *,
+    * EXCEPT (profile_group_id),
       -- In this raw table, we capture the history of activity over the past
       -- 365 days for each usage criterion as an array of bytes. The
       -- rightmost bit represents whether the user was active in the current day.
@@ -110,7 +111,8 @@ _current AS (
       `moz-fx-data-shared-prod.udf.days_since_created_profile_as_28_bits`(
         DATE_DIFF(@submission_date, SAFE.DATE_FROM_UNIX_DATE(profile_creation_date), DAY)
       )
-    ) AS days_created_profile_bytes
+    ) AS days_created_profile_bytes,
+    profile_group_id
   FROM
     _grouped
 ),

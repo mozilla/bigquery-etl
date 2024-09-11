@@ -67,3 +67,6 @@ fields:
 - mode: NULLABLE
   name: sponsored_tiles_disable_count
   type: INTEGER
+- mode: NULLABLE
+  name: profile_group_id
+  type: STRING

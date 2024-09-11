@@ -73,7 +73,7 @@ class DataTypeGroup(Enum):
     def from_schema_type(schema_type):
         """Convert schema type (string) to the corresponding Type enum."""
         for _type in DataTypeGroup:
-            if schema_type in type.value:
+            if schema_type in _type.value:
                 return _type
         return None
 
@@ -662,7 +662,7 @@ def generate_query_with_shredder_mitigation(
             if metric.data_type != DataTypeGroup.FLOAT
         ]
         + [
-            f"ROUND({previous_agg.query_cte}.{metric.name}, 3) - "
+            f"ROUND({previous_agg.query_cte}.{metric.name}, 10) - "  # Round to avoid exponentials.
             f"ROUND(COALESCE({new_agg.query_cte}.{metric.name}, 0), 10) AS {metric.name}"
             for metric in metrics
             if metric.data_type == DataTypeGroup.FLOAT

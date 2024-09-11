@@ -525,7 +525,8 @@ def _initiate_backfill(
         custom_query_path = Path(query)
         click.echo(
             click.style(
-                f"Starting backfill with custom query: '{custom_query_path}'.", fg="blue"
+                f"Starting backfill with custom query: '{custom_query_path}'.",
+                fg="blue",
             )
         )
     elif entry.custom_query_path:

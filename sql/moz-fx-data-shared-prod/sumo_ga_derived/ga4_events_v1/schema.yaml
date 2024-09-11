@@ -1,0 +1,195 @@
+fields:
+- name: event_date
+  type: STRING
+  mode: NULLABLE
+- name: event_timestamp
+  type: INTEGER
+  mode: NULLABLE
+- name: event_name
+  type: STRING
+  mode: NULLABLE
+- name: event_params
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: key
+    type: STRING
+    mode: NULLABLE
+  - name: value
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: string_value
+      type: STRING
+      mode: NULLABLE
+    - name: int_value
+      type: INTEGER
+      mode: NULLABLE
+    - name: float_value
+      type: FLOAT
+      mode: NULLABLE
+    - name: double_value
+      type: FLOAT
+      mode: NULLABLE
+- name: event_previous_timestamp
+  type: INTEGER
+  mode: NULLABLE
+- name: event_value_in_usd
+  type: FLOAT
+  mode: NULLABLE
+- name: event_bundle_sequence_id
+  type: INTEGER
+  mode: NULLABLE
+- name: event_server_timestamp_offset
+  type: INTEGER
+  mode: NULLABLE
+- name: user_id
+  type: STRING
+  mode: NULLABLE
+- name: user_pseudo_id
+  type: STRING
+  mode: NULLABLE
+- name: privacy_info
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: analytics_storage
+    type: STRING
+    mode: NULLABLE
+  - name: ads_storage
+    type: STRING
+    mode: NULLABLE
+  - name: uses_transient_token
+    type: STRING
+    mode: NULLABLE
+- name: user_properties
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: key
+    type: STRING
+    mode: NULLABLE
+  - name: value
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: string_value
+      type: STRING
+      mode: NULLABLE
+    - name: int_value
+      type: INTEGER
+      mode: NULLABLE
+    - name: float_value
+      type: FLOAT
+      mode: NULLABLE
+    - name: double_value
+      type: FLOAT
+      mode: NULLABLE
+    - name: set_timestamp_micros
+      type: INTEGER
+      mode: NULLABLE
+  - name: user_first_touch_timestamp
+    type: INTEGER
+    mode: NULLABLE
+  - name: user_ltv
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: revenue
+      type: FLOAT
+      mode: NULLABLE
+    - name: currency
+      type: STRING
+      mode: NULLABLE
+  - name: device
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: category
+      type: STRING
+      mode: NULLABLE
+    - name: mobile_brand_name
+      type: STRING
+      mode: NULLABLE
+    - name: mobile_model_name
+      type: STRING
+      mode: NULLABLE
+    - name: mobile_marketing_name
+      type: STRING
+      mode: NULLABLE
+    - name: mobile_os_hardware_model
+      type: STRING
+      mode: NULLABLE
+    - name: operating_system
+      type: STRING
+      mode: NULLABLE
+    - name: operating_system_version
+      type: STRING
+      mode: NULLABLE
+    - name: vendor_id
+      type: STRING
+      mode: NULLABLE
+    - name: advertising_id
+      type: STRING
+      mode: NULLABLE
+    - name: language
+      type: STRING
+      mode: NULLABLE
+    - name: is_limited_ad_tracking
+      type: STRING
+      mode: NULLABLE
+    - name: time_zone_offset_seconds
+    - name: browser
+      type: STRING
+      mode: NULLABLE
+    - name: browser_version
+      type: STRING
+      mode: NULLABLE
+    - name: web_info
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: browser
+        type: STRING
+        mode: NULLABLE
+      - name: browser_version
+        type: STRING
+        mode: NULLABLE
+      - name: hostname
+        type: STRING
+        mode: NULLABLE
+    - name: geo
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: city
+        type: STRING
+        mode: NULLABLE
+      - name: country
+        type: STRING
+        mode: NULLABLE
+      - name: continent
+        type: STRING
+        mode: NULLABLE
+      - name: region
+        type: STRING
+        mode: NULLABLE
+      - name: sub_continent
+        type: STRING
+        mode: NULLABLE
+      - name: metro
+        type: STRING
+        mode: NULLABLE
+    - name: app_info
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: id
+        type: STRING
+        mode: NULLABLE
+      - name: version
+        type: STRING
+        mode: NULLABLE
+      - name: install_store
+      - name: firebase_app_id
+      - name: install_source

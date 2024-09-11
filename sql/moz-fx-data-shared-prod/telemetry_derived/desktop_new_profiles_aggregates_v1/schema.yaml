@@ -45,9 +45,6 @@ fields:
   name: distribution_id
   type: STRING
   mode: NULLABLE
-- description: Year when the the clients were first seen.
-  name: first_seen_year
-  type: INT64
 - description: The Firefox channel, set to Other for unrecognized channel names.
   name: channel
   type: STRING

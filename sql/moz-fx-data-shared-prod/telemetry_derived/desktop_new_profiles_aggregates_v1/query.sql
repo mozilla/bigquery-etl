@@ -13,7 +13,6 @@ WITH clients_first_seen AS (
     city,
     country,
     distribution_id,
-    EXTRACT(YEAR FROM cfs.first_seen_date) AS first_seen_year,
     normalized_channel AS channel,
     os,
     os_version,
@@ -22,8 +21,7 @@ WITH clients_first_seen AS (
     locale,
     app_version,
     windows_version,
-    windows_build_number,
-  -- au.is_dau,
+    windows_build_number
   FROM
     `moz-fx-data-shared-prod.telemetry.clients_first_seen` cfs
   WHERE
@@ -52,7 +50,6 @@ SELECT
   cfs.city,
   cfs.country,
   cfs.distribution_id,
-  cfs.first_seen_year,
   cfs.channel,
   cfs.os,
   cfs.os_version,
@@ -83,7 +80,6 @@ GROUP BY
   cfs.city,
   cfs.country,
   cfs.distribution_id,
-  cfs.first_seen_year,
   cfs.channel,
   cfs.os,
   cfs.os_version,

@@ -10,7 +10,7 @@ WITH clients_first_seen AS (
     attribution_dlsource,
     attribution_ua,
     (attribution_medium IS NOT NULL OR attribution_source IS NOT NULL) AS attributed,
-    `moz-fx-data-shared-prod.udf.organic_vs_paid_desktop`(attribution_medium) as paid_vs_organic,
+    `moz-fx-data-shared-prod.udf.organic_vs_paid_desktop`(attribution_medium) AS paid_vs_organic,
     city,
     country,
     distribution_id,

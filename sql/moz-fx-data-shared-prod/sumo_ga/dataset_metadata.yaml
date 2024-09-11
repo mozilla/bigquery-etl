@@ -1,6 +1,6 @@
-friendly_name: SUMO.org Google Analytics
+friendly_name: SUMO Google Analytics
 description: |-
-  SUMO data from Google Analytics
+  SUMO (support.mozilla.org) data from Google Analytics
 dataset_base_acl: view
 user_facing: true
 labels: {}

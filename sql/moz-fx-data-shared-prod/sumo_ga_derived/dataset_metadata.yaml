@@ -1,6 +1,6 @@
 friendly_name: SUMO.org Google Analytics Derived
 description: |-
-  Derived SUMO data from Google Analytics
+  Derived SUMO (support.mozilla.org) data from Google Analytics
 dataset_base_acl: derived
 user_facing: false
 labels: {}

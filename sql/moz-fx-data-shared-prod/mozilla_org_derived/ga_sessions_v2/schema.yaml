@@ -133,3 +133,11 @@ fields:
   type: STRING
   mode: NULLABLE
   description: "The first reported landing screen for this session. Most sessions only have one, so this is a safe value to use."
+- name: distinct_campaigns_from_event_params
+  type: STRING
+  mode: REPEATED
+  description: "All non-null reported campaigns from event_params for this session."
+- name: first_campaign_from_event_params
+  type: STRING
+  mode: NULLABLE
+  description: "The first reported campaign from event_params for this session."

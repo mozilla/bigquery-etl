@@ -27,17 +27,16 @@ FROM
 WHERE
   cfs.first_seen_date = @submission_date
 ),
-
 active_users AS (
-  SELECT client_id,
+  SELECT
+    client_id,
     is_dau,
     submission_date
   FROM
     `moz-fx-data-shared-prod.telemetry.active_users` au
   WHERE
-   au.submission_date = @submission_date
+    au.submission_date = @submission_date
 )
-
 SELECT
   cfs.first_seen_date,
   cfs.is_desktop,
@@ -62,8 +61,10 @@ SELECT
   cfs.windows_build_number,
   COALESCE(au.is_dau, FALSE) AS is_dau,
   COUNT(cfs.client_id) AS new_profiles
-FROM clients_first_seen cfs
-LEFT JOIN active_users au
+FROM
+  clients_first_seen cfs
+LEFT JOIN
+  active_users au
   ON cfs.client_id = au.client_id
   AND cfs.first_seen_date = au.submission_date
 GROUP BY

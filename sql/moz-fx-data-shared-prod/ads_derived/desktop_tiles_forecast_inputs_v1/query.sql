@@ -2,7 +2,7 @@ WITH cs_impressions AS (
   SELECT
     country AS country_code,
     DATE_TRUNC(submission_date, MONTH) AS submission_month,
-    SUM(CASE WHEN position <= 2 THEN event_count END) AS sponsored_impressions_1and2,
+    SUM(IF(position <= 2, event_count, 0)) AS sponsored_impressions_1and2,
     SUM(event_count) AS sponsored_impressions_all
   FROM
     `moz-fx-data-shared-prod.contextual_services.event_aggregates`

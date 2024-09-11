@@ -46,8 +46,15 @@ def monitoring(ctx):
 @click.argument("name")
 @project_id_option()
 @sql_dir_option
+@click.option(
+    "--workspace",
+    default="DEFAULT",
+    help="Bigeye workspace to use when authenticating to API.",
+)
 @click.pass_context
-def deploy(ctx, name: str, sql_dir: Optional[str], project_id: Optional[str]) -> None:
+def deploy(
+    ctx, name: str, sql_dir: Optional[str], project_id: Optional[str], workspace: str
+) -> None:
     """Deploy monitors to Bigeye."""
     metadata_files = paths_matching_name_pattern(
         name, sql_dir, project_id=project_id, files=["metadata.yaml"]
@@ -60,11 +67,12 @@ def deploy(ctx, name: str, sql_dir: Optional[str], project_id: Optional[str]) ->
             if metadata.monitoring and metadata.monitoring.enabled:
                 ctx.invoke(update, name=name, sql_dir=sql_dir, project_id=project_id)
                 api_auth = ApiAuth.load_from_ini_file(
-                    auth_file=ApiAuth.find_user_credentials(None), workspace="DEFAULT"
+                    auth_file=ApiAuth.find_user_credentials(None), workspace=workspace
                 )  # load user credentials from BIGEYE_API_CONFIG_FILE env variable
                 client = datawatch_client_factory(api_auth, workspace_id=463)
                 mc = MetricSuiteController(client=client)
 
+                ctx.invoke(validate, name=name, sql_dir=sql_dir, project_id=project_id)
                 mc.execute_bigconfig(
                     input_path=[metadata_file.parent / BIGCONFIG_FILE],
                     output_path=Path(sql_dir).parent if sql_dir else None,
@@ -174,7 +182,7 @@ def validate(name: str, sql_dir: Optional[str], project_id: Optional[str]) -> No
             click.echo(f"Invalid BigConfig file {bigconfig_file}: {e}")
             invalid = True
 
-    if not invalid:
-        click.echo("All BigConfig files are valid.")
-    else:
+    if invalid:
         sys.exit(1)
+
+    click.echo("All BigConfig files are valid.")

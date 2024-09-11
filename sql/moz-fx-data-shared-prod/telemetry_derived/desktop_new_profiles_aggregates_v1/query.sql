@@ -1,31 +1,31 @@
 WITH clients_first_seen AS (
-SELECT
-  client_id,
-  first_seen_date,
-  is_desktop,
-  attribution_medium,
-  attribution_source,
-  attribution_campaign,
-  attribution_content,
-  attribution_dlsource,
-  attribution_ua,
-  (attribution_medium IS NOT NULL OR attribution_source IS NOT NULL) AS attributed,
-  city,
-  country,
-  distribution_id,
-  normalized_channel AS channel,
-  os,
-  os_version,
-  normalized_os,
-  normalized_os_version,
-  locale,
-  app_version,
-  windows_version,
-  windows_build_number
-FROM
-  `moz-fx-data-shared-prod.telemetry.clients_first_seen` cfs
-WHERE
-  cfs.first_seen_date = @submission_date
+  SELECT
+    client_id,
+    first_seen_date,
+    is_desktop,
+    attribution_medium,
+    attribution_source,
+    attribution_campaign,
+    attribution_content,
+    attribution_dlsource,
+    attribution_ua,
+    (attribution_medium IS NOT NULL OR attribution_source IS NOT NULL) AS attributed,
+    city,
+    country,
+    distribution_id,
+    normalized_channel AS channel,
+    os,
+    os_version,
+    normalized_os,
+    normalized_os_version,
+    locale,
+    app_version,
+    windows_version,
+    windows_build_number
+  FROM
+    `moz-fx-data-shared-prod.telemetry.clients_first_seen` cfs
+  WHERE
+    cfs.first_seen_date = @submission_date
 ),
 active_users AS (
   SELECT

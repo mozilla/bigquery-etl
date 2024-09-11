@@ -32,7 +32,7 @@ fields:
     type: INTEGER
     description: Count of sponsored tile inventory for positions 1 and 2 for submission_month. Calculated from latest Newtab data.
   - mode: NULLABLE
-    name: visits_total_fill_rate_1and2
+    name: fill_rate
     type: FLOAT
     description: |-
       Float of sponsored tile fill rate for positions 1 and 2 for submission_month. Impressions / Inventory.

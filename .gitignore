@@ -16,3 +16,8 @@ sql/**/docs
 sql/**/mkdocs.yml
 generated_docs/
 generated-sql/
+
+# ignore Bigeye artifacts
+moz-fx-data-shared-prod_APPLY.yml
+moz-fx-data-shared-prod_PLAN.yml
+bigeye_credentials.ini

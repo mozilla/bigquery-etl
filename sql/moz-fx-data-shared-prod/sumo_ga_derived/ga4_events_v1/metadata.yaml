@@ -1,18 +1,18 @@
-friendly_name: Ga4 Events
+friendly_name: GA4 Events Data for SUMO
 description: |-
-  Please provide a description for the query
+  GA4 Events Data for SUMO (support.mozilla.org)
 owners:
-- example@mozilla.com
+- kwindau@mozilla.com
 labels:
   incremental: true
-  owner1: example
+  owner1: kwindau@mozilla.com
 scheduling:
-  dag_name: bqetl_default
+  dag_name: bqetl_google_analytics_derived_ga4
 bigquery:
   time_partitioning:
     type: day
-    field: ''
-    require_partition_filter: true
+    field: submission_date
+    require_partition_filter: false
     expiration_days: null
   range_partitioning: null
   clustering:

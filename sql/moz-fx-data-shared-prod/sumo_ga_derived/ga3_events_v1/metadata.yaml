@@ -1,18 +1,16 @@
-friendly_name: Ga3 Events
+friendly_name: GA3 Events Data for SUMO
 description: |-
-  Please provide a description for the query
+  GA3 Events Data for SUMO (support.mozilla.org)
 owners:
-- example@mozilla.com
+- kwindau@mozilla.com
 labels:
   incremental: true
-  owner1: example
-scheduling:
-  dag_name: bqetl_default
+  owner1: kwindau@mozilla.com
 bigquery:
   time_partitioning:
     type: day
-    field: ''
-    require_partition_filter: true
+    field: submission_date
+    require_partition_filter: false
     expiration_days: null
   range_partitioning: null
   clustering:

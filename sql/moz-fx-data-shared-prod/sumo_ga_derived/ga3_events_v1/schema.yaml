@@ -45,9 +45,6 @@ fields:
   - name: screenviews
     type: INTEGER
     mode: NULLABLE
-  - name: screenviews
-    type: INTEGER
-    mode: NULLABLE
   - name: uniqueScreenviews
     type: INTEGER
     mode: NULLABLE
@@ -107,7 +104,7 @@ fields:
     - name: criteriaParameters
       type: STRING
       mode: NULLABLE
-    - name: gclid
+    - name: gclId
       type: STRING
       mode: NULLABLE
     - name: customerId
@@ -131,6 +128,7 @@ fields:
     mode: NULLABLE
   - name: campaignCode
     type: STRING
+    mode: NULLABLE
 - name: device
   type: RECORD
   mode: NULLABLE
@@ -147,7 +145,7 @@ fields:
   - name: operatingSystem
     type: STRING
     mode: NULLABLE
-  - name: OperatingSystemVersion
+  - name: operatingSystemVersion
     type: STRING
     mode: NULLABLE
   - name: isMobile
@@ -189,7 +187,7 @@ fields:
 - name: geoNetwork
   type: RECORD
   mode: NULLABLE
-  fields: 
+  fields:
   - name: continent
     type: STRING
     mode: NULLABLE
@@ -261,7 +259,7 @@ fields:
   - name: isExit
     type: BOOLEAN
     mode: NULLABLE
-  - name: referrer
+  - name: referer
     type: STRING
     mode: NULLABLE
   - name: page
@@ -438,7 +436,7 @@ fields:
       mode: NULLABLE
   - name: product
     type: RECORD
-    mode: NULLABLE
+    mode: REPEATED
     fields:
     - name: productSKU
       type: STRING
@@ -531,13 +529,12 @@ fields:
     type: RECORD
     mode: NULLABLE
     fields:
-    - name: promolsView
+    - name: promoIsView
       type: BOOLEAN
       mode: NULLABLE
-    - name: promolsClick
+    - name: promoIsClick
       type: BOOLEAN
       mode: NULLABLE
-    ##fix below
   - name: refund
     type: RECORD
     mode: NULLABLE
@@ -612,7 +609,6 @@ fields:
       type: INTEGER
       mode: NULLABLE
     - name: adsenseBackfillDfpMeasurableImpressions
-  ##FIX BELOW##
       type: INTEGER
       mode: NULLABLE
     - name: adsenseBackfillDfpQueries
@@ -624,9 +620,78 @@ fields:
     - name: adsenseBackfillDfpRevenueCpc
       type: INTEGER
       mode: NULLABLE
-      ### FIX BELOW 
-
-      ### FIX ABOVE
+    - name: adsenseBackfillDfpViewableImpressions
+      type: INTEGER
+      mode: NULLABLE
+    - name: adsenseBackfillDfpPagesViewed
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxBackfillDfpClicks
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxBackfillDfpImpressions
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxBackfillDfpMatchedQueries
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxBackfillDfpMeasurableImpressions
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxBackfillDfpQueries
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxBackfillDfpRevenueCpm
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxBackfillDfpRevenueCpc
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxBackfillDfpViewableImpressions
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxBackfillDfpPagesViewed
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxClicks
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxImpressions
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxMatchedQueries
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxMeasurableImpressions
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxQueries
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxRevenue
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxViewableImpressions
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxPagesViewed
+      type: INTEGER
+      mode: NULLABLE
+    - name: adsViewed
+      type: INTEGER
+      mode: NULLABLE
+    - name: adsUnitsViewed
+      type: INTEGER
+      mode: NULLABLE
+    - name: adsUnitsMatched
+      type: INTEGER
+      mode: NULLABLE
+    - name: viewableAdsViewed
+      type: INTEGER
+      mode: NULLABLE
+    - name: measurableAdsViewed
+      type: INTEGER
+      mode: NULLABLE
     - name: adsPagesViewed
       type: INTEGER
       mode: NULLABLE
@@ -806,19 +871,19 @@ fields:
       type: STRING
       mode: NULLABLE
     - name: contentGroupUniqueViews1
-      type: STRING
+      type: INTEGER
       mode: NULLABLE
     - name: contentGroupUniqueViews2
-      type: STRING
+      type: INTEGER
       mode: NULLABLE
     - name: contentGroupUniqueViews3
-      type: STRING
+      type: INTEGER
       mode: NULLABLE
     - name: contentGroupUniqueViews4
-      type: STRING
+      type: INTEGER
       mode: NULLABLE
     - name: contentGroupUniqueViews5
-      type: STRING
+      type: INTEGER
       mode: NULLABLE
   - name: dataSource
     type: STRING
@@ -827,15 +892,147 @@ fields:
     type: RECORD
     mode: REPEATED
     fields:
-    - ##FIX BELOW
-    
-    - ##FIX ABOVE
+    - name: dfpClicks
+      type: INTEGER
+      mode: NULLABLE
+    - name: dfpImpressions
+      type: INTEGER
+      mode: NULLABLE
+    - name: dfpMatchedQueries
+      type: INTEGER
+      mode: NULLABLE
+    - name: dfpMeasurableImpressions
+      type: INTEGER
+      mode: NULLABLE
+    - name: dfpQueries
+      type: INTEGER
+      mode: NULLABLE
+    - name: dfpRevenueCpm
+      type: INTEGER
+      mode: NULLABLE
+    - name: dfpRevenueCpc
+      type: INTEGER
+      mode: NULLABLE
+    - name: dfpViewableImpressions
+      type: INTEGER
+      mode: NULLABLE
+    - name: dfpPagesViewed
+      type: INTEGER
+      mode: NULLABLE
+    - name: adsenseBackfillDfpClicks
+      type: INTEGER
+      mode: NULLABLE
+    - name: adsenseBackfillDfpImpressions
+      type: INTEGER
+      mode: NULLABLE
+    - name: adsenseBackfillDfpMatchedQueries
+      type: INTEGER
+      mode: NULLABLE
+    - name: adsenseBackfillDfpMeasurableImpressions
+      type: INTEGER
+      mode: NULLABLE
+    - name: adsenseBackfillDfpQueries
+      type: INTEGER
+      mode: NULLABLE
+    - name: adsenseBackfillDfpRevenueCpm
+      type: INTEGER
+      mode: NULLABLE
+    - name: adsenseBackfillDfpRevenueCpc
+      type: INTEGER
+      mode: NULLABLE
+    - name: adsenseBackfillDfpViewableImpressions
+      type: INTEGER
+      mode: NULLABLE
+    - name: adsenseBackfillDfpPagesViewed
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxBackfillDfpClicks
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxBackfillDfpImpressions
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxBackfillDfpMatchedQueries
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxBackfillDfpMeasurableImpressions
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxBackfillDfpQueries
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxBackfillDfpRevenueCpm
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxBackfillDfpRevenueCpc
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxBackfillDfpViewableImpressions
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxBackfillDfpPagesViewed
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxClicks
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxImpressions
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxMatchedQueries
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxMeasurableImpressions
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxQueries
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxRevenue
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxViewableImpressions
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxPagesViewed
+      type: INTEGER
+      mode: NULLABLE
+    - name: adsViewed
+      type: INTEGER
+      mode: NULLABLE
+    - name: adsUnitsViewed
+      type: INTEGER
+      mode: NULLABLE
+    - name: adsUnitsMatched
+      type: INTEGER
+      mode: NULLABLE
+    - name: viewableAdsViewed
+      type: INTEGER
+      mode: NULLABLE
+    - name: measurableAdsViewed
+      type: INTEGER
+      mode: NULLABLE
+    - name: adsPagesViewed
+      type: INTEGER
+      mode: NULLABLE
+    - name: adsClicked
+      type: INTEGER
+      mode: NULLABLE
+    - name: adsRevenue
+      type: INTEGER
+      mode: NULLABLE
+    - name: dfpAdGroup
+      type: STRING
+      mode: NULLABLE
+    - name: dfpAdUnits
+      type: STRING
+      mode: NULLABLE
+    - name: dfpNetworkId
+      type: STRING
+      mode: NULLABLE
   - name: uses_transient_token
     type: STRING
     mode: NULLABLE
-- name: fullVisitorId
-  type: STRING
-  mode: NULLABLE
 - name: fullVisitorId
   type: STRING
   mode: NULLABLE
@@ -861,3 +1058,6 @@ fields:
   - name: ads_storage
     type: STRING
     mode: NULLABLE
+- name: submission_date
+  type: DATE
+  mode: NULLABLE

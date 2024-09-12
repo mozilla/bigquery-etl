@@ -1,0 +1,1063 @@
+fields:
+- name: visitorId
+  type: INTEGER
+  mode: NULLABLE
+- name: visitNumber
+  type: INTEGER
+  mode: NULLABLE
+- name: visitId
+  type: INTEGER
+  mode: NULLABLE
+- name: visitStartTime
+  type: INTEGER
+  mode: NULLABLE
+- name: date
+  type: STRING
+  mode: NULLABLE
+- name: totals
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: visits
+    type: INTEGER
+    mode: NULLABLE
+  - name: hits
+    type: INTEGER
+    mode: NULLABLE
+  - name: pageviews
+    type: INTEGER
+    mode: NULLABLE
+  - name: timeOnSite
+    type: INTEGER
+    mode: NULLABLE
+  - name: bounces
+    type: INTEGER
+    mode: NULLABLE
+  - name: transactions
+    type: INTEGER
+    mode: NULLABLE
+  - name: transactionRevenue
+    type: INTEGER
+    mode: NULLABLE
+  - name: newVisits
+    type: INTEGER
+    mode: NULLABLE
+  - name: screenviews
+    type: INTEGER
+    mode: NULLABLE
+  - name: uniqueScreenviews
+    type: INTEGER
+    mode: NULLABLE
+  - name: timeOnScreen
+    type: INTEGER
+    mode: NULLABLE
+  - name: totalTransactionRevenue
+    type: INTEGER
+    mode: NULLABLE
+  - name: sessionQualityDim
+    type: INTEGER
+    mode: NULLABLE
+- name: trafficSource
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: referralPath
+    type: STRING
+    mode: NULLABLE
+  - name: campaign
+    type: STRING
+    mode: NULLABLE
+  - name: source
+    type: STRING
+    mode: NULLABLE
+  - name: medium
+    type: STRING
+    mode: NULLABLE
+  - name: keyword
+    type: STRING
+    mode: NULLABLE
+  - name: adContent
+    type: STRING
+    mode: NULLABLE
+  - name: adwordsClickInfo
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: campaignId
+      type: INTEGER
+      mode: NULLABLE
+    - name: adGroupId
+      type: INTEGER
+      mode: NULLABLE
+    - name: creativeId
+      type: INTEGER
+      mode: NULLABLE
+    - name: criteriaId
+      type: INTEGER
+      mode: NULLABLE
+    - name: page
+      type: INTEGER
+      mode: NULLABLE
+    - name: slot
+      type: STRING
+      mode: NULLABLE
+    - name: criteriaParameters
+      type: STRING
+      mode: NULLABLE
+    - name: gclId
+      type: STRING
+      mode: NULLABLE
+    - name: customerId
+      type: INTEGER
+      mode: NULLABLE
+    - name: adNetworkType
+      type: STRING
+      mode: NULLABLE
+    - name: targetingCriteria
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: boomUserlistId
+        type: INTEGER
+        mode: NULLABLE
+    - name: isVideoAd
+      type: BOOLEAN
+      mode: NULLABLE
+  - name: isTrueDirect
+    type: BOOLEAN
+    mode: NULLABLE
+  - name: campaignCode
+    type: STRING
+    mode: NULLABLE
+- name: device
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: browser
+    type: STRING
+    mode: NULLABLE
+  - name: browserVersion
+    type: STRING
+    mode: NULLABLE
+  - name: browserSize
+    type: STRING
+    mode: NULLABLE
+  - name: operatingSystem
+    type: STRING
+    mode: NULLABLE
+  - name: operatingSystemVersion
+    type: STRING
+    mode: NULLABLE
+  - name: isMobile
+    type: BOOLEAN
+    mode: NULLABLE
+  - name: mobileDeviceBranding
+    type: STRING
+    mode: NULLABLE
+  - name: mobileDeviceModel
+    type: STRING
+    mode: NULLABLE
+  - name: mobileInputSelector
+    type: STRING
+    mode: NULLABLE
+  - name: mobileDeviceInfo
+    type: STRING
+    mode: NULLABLE
+  - name: mobileDeviceMarketingName
+    type: STRING
+    mode: NULLABLE
+  - name: flashVersion
+    type: STRING
+    mode: NULLABLE
+  - name: javaEnabled
+    type: BOOLEAN
+    mode: NULLABLE
+  - name: language
+    type: STRING
+    mode: NULLABLE
+  - name: screenColors
+    type: STRING
+    mode: NULLABLE
+  - name: screenResolution
+    type: STRING
+    mode: NULLABLE
+  - name: deviceCategory
+    type: STRING
+    mode: NULLABLE
+- name: geoNetwork
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: continent
+    type: STRING
+    mode: NULLABLE
+  - name: subContinent
+    type: STRING
+    mode: NULLABLE
+  - name: country
+    type: STRING
+    mode: NULLABLE
+  - name: region
+    type: STRING
+    mode: NULLABLE
+  - name: metro
+    type: STRING
+    mode: NULLABLE
+  - name: city
+    type: STRING
+    mode: NULLABLE
+  - name: cityId
+    type: STRING
+    mode: NULLABLE
+  - name: networkDomain
+    type: STRING
+    mode: NULLABLE
+  - name: latitude
+    type: STRING
+    mode: NULLABLE
+  - name: longitude
+    type: STRING
+    mode: NULLABLE
+  - name: networkLocation
+    type: STRING
+    mode: NULLABLE
+- name: customDimensions
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: index
+    type: INTEGER
+    mode: NULLABLE
+  - name: value
+    type: STRING
+    mode: NULLABLE
+- name: hits
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: hitNumber
+    type: INTEGER
+    mode: NULLABLE
+  - name: time
+    type: INTEGER
+    mode: NULLABLE
+  - name: hour
+    type: INTEGER
+    mode: NULLABLE
+  - name: minute
+    type: INTEGER
+    mode: NULLABLE
+  - name: isSecure
+    type: BOOLEAN
+    mode: NULLABLE
+  - name: isInteraction
+    type: BOOLEAN
+    mode: NULLABLE
+  - name: isEntrance
+    type: BOOLEAN
+    mode: NULLABLE
+  - name: isExit
+    type: BOOLEAN
+    mode: NULLABLE
+  - name: referer
+    type: STRING
+    mode: NULLABLE
+  - name: page
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: pagePath
+      type: STRING
+      mode: NULLABLE
+    - name: hostname
+      type: STRING
+      mode: NULLABLE
+    - name: pageTitle
+      type: STRING
+      mode: NULLABLE
+    - name: searchKeyword
+      type: STRING
+      mode: NULLABLE
+    - name: searchCategory
+      type: STRING
+      mode: NULLABLE
+    - name: pagePathLevel1
+      type: STRING
+      mode: NULLABLE
+    - name: pagePathLevel2
+      type: STRING
+      mode: NULLABLE
+    - name: pagePathLevel3
+      type: STRING
+      mode: NULLABLE
+    - name: pagePathLevel4
+      type: STRING
+      mode: NULLABLE
+  - name: transaction
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: transactionId
+      type: STRING
+      mode: NULLABLE
+    - name: transactionRevenue
+      type: INTEGER
+      mode: NULLABLE
+    - name: transactionTax
+      type: INTEGER
+      mode: NULLABLE
+    - name: transactionShipping
+      type: INTEGER
+      mode: NULLABLE
+    - name: affiliation
+      type: STRING
+      mode: NULLABLE
+    - name: currencyCode
+      type: STRING
+      mode: NULLABLE
+    - name: localTransactionRevenue
+      type: INTEGER
+      mode: NULLABLE
+    - name: localTransactionTax
+      type: INTEGER
+      mode: NULLABLE
+    - name: localTransactionShipping
+      type: INTEGER
+      mode: NULLABLE
+    - name: transactionCoupon
+      type: STRING
+      mode: NULLABLE
+  - name: item
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: transactionId
+      type: STRING
+      mode: NULLABLE
+    - name: productName
+      type: STRING
+      mode: NULLABLE
+    - name: productCategory
+      type: STRING
+      mode: NULLABLE
+    - name: productSku
+      type: STRING
+      mode: NULLABLE
+    - name: itemQuantity
+      type: INTEGER
+      mode: NULLABLE
+    - name: itemRevenue
+      type: INTEGER
+      mode: NULLABLE
+    - name: currencyCode
+      type: STRING
+      mode: NULLABLE
+    - name: localItemRevenue
+      type: INTEGER
+      mode: NULLABLE
+  - name: contentInfo
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: contentDescription
+      type: STRING
+      mode: NULLABLE
+  - name: appInfo
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: name
+      type: STRING
+      mode: NULLABLE
+    - name: version
+      type: STRING
+      mode: NULLABLE
+    - name: id
+      type: STRING
+      mode: NULLABLE
+    - name: installerId
+      type: STRING
+      mode: NULLABLE
+    - name: appInstallerId
+      type: STRING
+      mode: NULLABLE
+    - name: appName
+      type: STRING
+      mode: NULLABLE
+    - name: appVersion
+      type: STRING
+      mode: NULLABLE
+    - name: appId
+      type: STRING
+      mode: NULLABLE
+    - name: screenName
+      type: STRING
+      mode: NULLABLE
+    - name: landingScreenName
+      type: STRING
+      mode: NULLABLE
+    - name: exitScreenName
+      type: STRING
+      mode: NULLABLE
+    - name: screenDepth
+      type: STRING
+      mode: NULLABLE
+  - name: exceptionInfo
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: description
+      type: STRING
+      mode: NULLABLE
+    - name: isFatal
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: exceptions
+      type: INTEGER
+      mode: NULLABLE
+    - name: fatalExceptions
+      type: INTEGER
+      mode: NULLABLE
+  - name: eventInfo
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: eventCategory
+      type: STRING
+      mode: NULLABLE
+    - name: eventAction
+      type: STRING
+      mode: NULLABLE
+    - name: eventLabel
+      type: STRING
+      mode: NULLABLE
+    - name: eventValue
+      type: INTEGER
+      mode: NULLABLE
+  - name: product
+    type: RECORD
+    mode: REPEATED
+    fields:
+    - name: productSKU
+      type: STRING
+      mode: NULLABLE
+    - name: v2ProductName
+      type: STRING
+      mode: NULLABLE
+    - name: v2ProductCategory
+      type: STRING
+      mode: NULLABLE
+    - name: productVariant
+      type: STRING
+      mode: NULLABLE
+    - name: productBrand
+      type: STRING
+      mode: NULLABLE
+    - name: productRevenue
+      type: INTEGER
+      mode: NULLABLE
+    - name: localProductRevenue
+      type: INTEGER
+      mode: NULLABLE
+    - name: productPrice
+      type: INTEGER
+      mode: NULLABLE
+    - name: localProductPrice
+      type: INTEGER
+      mode: NULLABLE
+    - name: productQuantity
+      type: INTEGER
+      mode: NULLABLE
+    - name: productRefundAmount
+      type: INTEGER
+      mode: NULLABLE
+    - name: localProductRefundAmount
+      type: INTEGER
+      mode: NULLABLE
+    - name: isImpression
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: isClick
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: customDimensions
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: index
+        type: INTEGER
+        mode: NULLABLE
+      - name: value
+        type: STRING
+        mode: NULLABLE
+    - name: customMetrics
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: index
+        type: INTEGER
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: productListName
+      type: STRING
+      mode: NULLABLE
+    - name: productListPosition
+      type: INTEGER
+      mode: NULLABLE
+    - name: productCouponCode
+      type: STRING
+      mode: NULLABLE
+  - name: promotion
+    type: RECORD
+    mode: REPEATED
+    fields:
+    - name: promoId
+      type: STRING
+      mode: NULLABLE
+    - name: promoName
+      type: STRING
+      mode: NULLABLE
+    - name: promoCreative
+      type: STRING
+      mode: NULLABLE
+    - name: promoPosition
+      type: STRING
+      mode: NULLABLE
+  - name: promotionActionInfo
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: promoIsView
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: promoIsClick
+      type: BOOLEAN
+      mode: NULLABLE
+  - name: refund
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: refundAmount
+      type: INTEGER
+      mode: NULLABLE
+    - name: localRefundAmount
+      type: INTEGER
+      mode: NULLABLE
+  - name: eCommerceAction
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: action_type
+      type: STRING
+      mode: NULLABLE
+    - name: step
+      type: INTEGER
+      mode: NULLABLE
+    - name: option
+      type: STRING
+      mode: NULLABLE
+  - name: experiment
+    type: RECORD
+    mode: REPEATED
+    fields:
+    - name: experimentId
+      type: STRING
+      mode: NULLABLE
+    - name: experimentVariant
+      type: STRING
+      mode: NULLABLE
+  - name: publisher
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: dfpClicks
+      type: INTEGER
+      mode: NULLABLE
+    - name: dfpImpressions
+      type: INTEGER
+      mode: NULLABLE
+    - name: dfpMatchedQueries
+      type: INTEGER
+      mode: NULLABLE
+    - name: dfpMeasurableImpressions
+      type: INTEGER
+      mode: NULLABLE
+    - name: dfpQueries
+      type: INTEGER
+      mode: NULLABLE
+    - name: dfpRevenueCpm
+      type: INTEGER
+      mode: NULLABLE
+    - name: dfpRevenueCpc
+      type: INTEGER
+      mode: NULLABLE
+    - name: dfpViewableImpressions
+      type: INTEGER
+      mode: NULLABLE
+    - name: dfpPagesViewed
+      type: INTEGER
+      mode: NULLABLE
+    - name: adsenseBackfillDfpClicks
+      type: INTEGER
+      mode: NULLABLE
+    - name: adsenseBackfillDfpImpressions
+      type: INTEGER
+      mode: NULLABLE
+    - name: adsenseBackfillDfpMatchedQueries
+      type: INTEGER
+      mode: NULLABLE
+    - name: adsenseBackfillDfpMeasurableImpressions
+      type: INTEGER
+      mode: NULLABLE
+    - name: adsenseBackfillDfpQueries
+      type: INTEGER
+      mode: NULLABLE
+    - name: adsenseBackfillDfpRevenueCpm
+      type: INTEGER
+      mode: NULLABLE
+    - name: adsenseBackfillDfpRevenueCpc
+      type: INTEGER
+      mode: NULLABLE
+    - name: adsenseBackfillDfpViewableImpressions
+      type: INTEGER
+      mode: NULLABLE
+    - name: adsenseBackfillDfpPagesViewed
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxBackfillDfpClicks
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxBackfillDfpImpressions
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxBackfillDfpMatchedQueries
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxBackfillDfpMeasurableImpressions
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxBackfillDfpQueries
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxBackfillDfpRevenueCpm
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxBackfillDfpRevenueCpc
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxBackfillDfpViewableImpressions
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxBackfillDfpPagesViewed
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxClicks
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxImpressions
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxMatchedQueries
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxMeasurableImpressions
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxQueries
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxRevenue
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxViewableImpressions
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxPagesViewed
+      type: INTEGER
+      mode: NULLABLE
+    - name: adsViewed
+      type: INTEGER
+      mode: NULLABLE
+    - name: adsUnitsViewed
+      type: INTEGER
+      mode: NULLABLE
+    - name: adsUnitsMatched
+      type: INTEGER
+      mode: NULLABLE
+    - name: viewableAdsViewed
+      type: INTEGER
+      mode: NULLABLE
+    - name: measurableAdsViewed
+      type: INTEGER
+      mode: NULLABLE
+    - name: adsPagesViewed
+      type: INTEGER
+      mode: NULLABLE
+    - name: adsClicked
+      type: INTEGER
+      mode: NULLABLE
+    - name: adsRevenue
+      type: INTEGER
+      mode: NULLABLE
+    - name: dfpAdGroup
+      type: STRING
+      mode: NULLABLE
+    - name: dfpAdUnits
+      type: STRING
+      mode: NULLABLE
+    - name: dfpNetworkId
+      type: STRING
+      mode: NULLABLE
+  - name: customVariables
+    type: RECORD
+    mode: REPEATED
+    fields:
+    - name: index
+      type: INTEGER
+      mode: NULLABLE
+    - name: customVarName
+      type: STRING
+      mode: NULLABLE
+    - name: customVarValue
+      type: STRING
+      mode: NULLABLE
+  - name: customDimensions
+    type: RECORD
+    mode: REPEATED
+    fields:
+    - name: index
+      type: INTEGER
+      mode: NULLABLE
+    - name: value
+      type: STRING
+      mode: NULLABLE
+  - name: customMetrics
+    type: RECORD
+    mode: REPEATED
+    fields:
+    - name: index
+      type: INTEGER
+      mode: NULLABLE
+    - name: value
+      type: INTEGER
+      mode: NULLABLE
+  - name: type
+    type: STRING
+    mode: NULLABLE
+  - name: social
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: socialInteractionNetwork
+      type: STRING
+      mode: NULLABLE
+    - name: socialInteractionAction
+      type: STRING
+      mode: NULLABLE
+    - name: socialInteractions
+      type: INTEGER
+      mode: NULLABLE
+    - name: socialInteractionTarget
+      type: STRING
+      mode: NULLABLE
+    - name: socialNetwork
+      type: STRING
+      mode: NULLABLE
+    - name: uniqueSocialInteractions
+      type: INTEGER
+      mode: NULLABLE
+    - name: hasSocialSourceReferral
+      type: STRING
+      mode: NULLABLE
+    - name: socialInteractionNetworkAction
+      type: STRING
+      mode: NULLABLE
+  - name: latencyTracking
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: pageLoadSample
+      type: INTEGER
+      mode: NULLABLE
+    - name: pageLoadTime
+      type: INTEGER
+      mode: NULLABLE
+    - name: pageDownloadTime
+      type: INTEGER
+      mode: NULLABLE
+    - name: redirectionTime
+      type: INTEGER
+      mode: NULLABLE
+    - name: speedMetricsSample
+      type: INTEGER
+      mode: NULLABLE
+    - name: domainLookupTime
+      type: INTEGER
+      mode: NULLABLE
+    - name: serverConnectionTime
+      type: INTEGER
+      mode: NULLABLE
+    - name: serverResponseTime
+      type: INTEGER
+      mode: NULLABLE
+    - name: domLatencyMetricsSample
+      type: INTEGER
+      mode: NULLABLE
+    - name: domInteractiveTime
+      type: INTEGER
+      mode: NULLABLE
+    - name: domContentLoadedTime
+      type: INTEGER
+      mode: NULLABLE
+    - name: userTimingValue
+      type: INTEGER
+      mode: NULLABLE
+    - name: userTimingSample
+      type: INTEGER
+      mode: NULLABLE
+    - name: userTimingVariable
+      type: STRING
+      mode: NULLABLE
+    - name: userTimingCategory
+      type: STRING
+      mode: NULLABLE
+    - name: userTimingLabel
+      type: STRING
+      mode: NULLABLE
+  - name: sourcePropertyInfo
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: sourcePropertyDisplayName
+      type: STRING
+      mode: NULLABLE
+    - name: sourcePropertyTrackingId
+      type: STRING
+      mode: NULLABLE
+  - name: contentGroup
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: contentGroup1
+      type: STRING
+      mode: NULLABLE
+    - name: contentGroup2
+      type: STRING
+      mode: NULLABLE
+    - name: contentGroup3
+      type: STRING
+      mode: NULLABLE
+    - name: contentGroup4
+      type: STRING
+      mode: NULLABLE
+    - name: contentGroup5
+      type: STRING
+      mode: NULLABLE
+    - name: previousContentGroup1
+      type: STRING
+      mode: NULLABLE
+    - name: previousContentGroup2
+      type: STRING
+      mode: NULLABLE
+    - name: previousContentGroup3
+      type: STRING
+      mode: NULLABLE
+    - name: previousContentGroup4
+      type: STRING
+      mode: NULLABLE
+    - name: previousContentGroup5
+      type: STRING
+      mode: NULLABLE
+    - name: contentGroupUniqueViews1
+      type: INTEGER
+      mode: NULLABLE
+    - name: contentGroupUniqueViews2
+      type: INTEGER
+      mode: NULLABLE
+    - name: contentGroupUniqueViews3
+      type: INTEGER
+      mode: NULLABLE
+    - name: contentGroupUniqueViews4
+      type: INTEGER
+      mode: NULLABLE
+    - name: contentGroupUniqueViews5
+      type: INTEGER
+      mode: NULLABLE
+  - name: dataSource
+    type: STRING
+    mode: NULLABLE
+  - name: publisher_infos
+    type: RECORD
+    mode: REPEATED
+    fields:
+    - name: dfpClicks
+      type: INTEGER
+      mode: NULLABLE
+    - name: dfpImpressions
+      type: INTEGER
+      mode: NULLABLE
+    - name: dfpMatchedQueries
+      type: INTEGER
+      mode: NULLABLE
+    - name: dfpMeasurableImpressions
+      type: INTEGER
+      mode: NULLABLE
+    - name: dfpQueries
+      type: INTEGER
+      mode: NULLABLE
+    - name: dfpRevenueCpm
+      type: INTEGER
+      mode: NULLABLE
+    - name: dfpRevenueCpc
+      type: INTEGER
+      mode: NULLABLE
+    - name: dfpViewableImpressions
+      type: INTEGER
+      mode: NULLABLE
+    - name: dfpPagesViewed
+      type: INTEGER
+      mode: NULLABLE
+    - name: adsenseBackfillDfpClicks
+      type: INTEGER
+      mode: NULLABLE
+    - name: adsenseBackfillDfpImpressions
+      type: INTEGER
+      mode: NULLABLE
+    - name: adsenseBackfillDfpMatchedQueries
+      type: INTEGER
+      mode: NULLABLE
+    - name: adsenseBackfillDfpMeasurableImpressions
+      type: INTEGER
+      mode: NULLABLE
+    - name: adsenseBackfillDfpQueries
+      type: INTEGER
+      mode: NULLABLE
+    - name: adsenseBackfillDfpRevenueCpm
+      type: INTEGER
+      mode: NULLABLE
+    - name: adsenseBackfillDfpRevenueCpc
+      type: INTEGER
+      mode: NULLABLE
+    - name: adsenseBackfillDfpViewableImpressions
+      type: INTEGER
+      mode: NULLABLE
+    - name: adsenseBackfillDfpPagesViewed
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxBackfillDfpClicks
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxBackfillDfpImpressions
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxBackfillDfpMatchedQueries
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxBackfillDfpMeasurableImpressions
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxBackfillDfpQueries
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxBackfillDfpRevenueCpm
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxBackfillDfpRevenueCpc
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxBackfillDfpViewableImpressions
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxBackfillDfpPagesViewed
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxClicks
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxImpressions
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxMatchedQueries
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxMeasurableImpressions
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxQueries
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxRevenue
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxViewableImpressions
+      type: INTEGER
+      mode: NULLABLE
+    - name: adxPagesViewed
+      type: INTEGER
+      mode: NULLABLE
+    - name: adsViewed
+      type: INTEGER
+      mode: NULLABLE
+    - name: adsUnitsViewed
+      type: INTEGER
+      mode: NULLABLE
+    - name: adsUnitsMatched
+      type: INTEGER
+      mode: NULLABLE
+    - name: viewableAdsViewed
+      type: INTEGER
+      mode: NULLABLE
+    - name: measurableAdsViewed
+      type: INTEGER
+      mode: NULLABLE
+    - name: adsPagesViewed
+      type: INTEGER
+      mode: NULLABLE
+    - name: adsClicked
+      type: INTEGER
+      mode: NULLABLE
+    - name: adsRevenue
+      type: INTEGER
+      mode: NULLABLE
+    - name: dfpAdGroup
+      type: STRING
+      mode: NULLABLE
+    - name: dfpAdUnits
+      type: STRING
+      mode: NULLABLE
+    - name: dfpNetworkId
+      type: STRING
+      mode: NULLABLE
+  - name: uses_transient_token
+    type: STRING
+    mode: NULLABLE
+- name: fullVisitorId
+  type: STRING
+  mode: NULLABLE
+- name: userId
+  type: STRING
+  mode: NULLABLE
+- name: clientId
+  type: STRING
+  mode: NULLABLE
+- name: channelGrouping
+  type: STRING
+  mode: NULLABLE
+- name: socialEngagementType
+  type: STRING
+  mode: NULLABLE
+- name: privacyInfo
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: analytics_storage
+    type: STRING
+    mode: NULLABLE
+  - name: ads_storage
+    type: STRING
+    mode: NULLABLE
+- name: submission_date
+  type: DATE
+  mode: NULLABLE

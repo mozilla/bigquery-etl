@@ -88,6 +88,18 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    wait_for_clients_first_seen_v3 = ExternalTaskSensor(
+        task_id="wait_for_clients_first_seen_v3",
+        external_dag_id="bqetl_analytics_tables",
+        external_task_id="clients_first_seen_v3",
+        execution_delta=datetime.timedelta(seconds=36000),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     telemetry_derived__desktop_retention__v1 = bigquery_etl_query(
         task_id="telemetry_derived__desktop_retention__v1",
         destination_table='desktop_retention_v1${{ macros.ds_format(macros.ds_add(ds, -27), "%Y-%m-%d", "%Y%m%d") }}',
@@ -112,6 +124,17 @@ with DAG(
         depends_on_past=False,
     )
 
+    telemetry_derived__desktop_retention_clients__v2 = bigquery_etl_query(
+        task_id="telemetry_derived__desktop_retention_clients__v2",
+        destination_table="desktop_retention_clients_v2",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="mhirose@mozilla.com",
+        email=["mhirose@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     telemetry_derived__desktop_retention__v1.set_upstream(
         telemetry_derived__desktop_retention_clients__v1
     )
@@ -125,5 +148,17 @@ with DAG(
     )
 
     telemetry_derived__desktop_retention_clients__v1.set_upstream(
+        wait_for_telemetry_derived__clients_daily_joined__v1
+    )
+
+    telemetry_derived__desktop_retention_clients__v2.set_upstream(
+        wait_for_checks__fail_telemetry_derived__clients_last_seen__v2
+    )
+
+    telemetry_derived__desktop_retention_clients__v2.set_upstream(
+        wait_for_clients_first_seen_v3
+    )
+
+    telemetry_derived__desktop_retention_clients__v2.set_upstream(
         wait_for_telemetry_derived__clients_daily_joined__v1
     )

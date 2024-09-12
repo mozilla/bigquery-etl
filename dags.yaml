@@ -1529,7 +1529,7 @@ bqetl_braze:
     ETL for Braze workflows.
     ## Triage notes:
     Don't rerun this DAG!
-    Ping Chelsey Beck or Leli Schiestl.
+    Ping Chelsey Beck.
     If both are out, follow the [workbook](https://mozilla-hub.atlassian.net/wiki/spaces/DATA/pages/730234942/bqetl+braze+DAG+workbook) in confluence.
   default_args:
     owner: cbeck@mozilla.com

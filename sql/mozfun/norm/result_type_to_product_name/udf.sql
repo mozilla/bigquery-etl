@@ -15,9 +15,9 @@ RETURNS STRING AS (
       THEN 'yelp_suggestion'
     WHEN res IN ('rust_fakespot_amazon')
       THEN 'fakespot_suggest_amazon'
-    WHEN res IN ( 'rust_fakespot_bestbuy')
+    WHEN res IN ('rust_fakespot_bestbuy')
       THEN 'fakespot_suggest_bestbuy'
-    WHEN res IN ( 'rust_fakespot_walmart')
+    WHEN res IN ('rust_fakespot_walmart')
       THEN 'fakespot_suggest_walmart'
     WHEN res IN ('trending_search', 'trending_search_rich')
       THEN 'trending_suggestion'

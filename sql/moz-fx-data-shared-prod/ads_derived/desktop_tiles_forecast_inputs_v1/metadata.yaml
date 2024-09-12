@@ -10,9 +10,21 @@ owners:
 labels:
   incremental: true
   schedule: daily
-  change_controlled: true
 scheduling:
   dag_name: bqetl_ads
+  destination_table: >-
+    desktop_tiles_forecast_inputs_v1${{
+    (execution_date.strftime("%Y%m01")
+    }}
+  parameters:
+    - >-
+      submission_month:DATE:{{
+      (execution_date.strftime('%Y-%m-01')
+      }}
+  query_file_path:
+    # explicit query file path is necessary because the destination table
+    # includes a partition identifier that is not in the path
+    sql/moz-fx-data-shared-prod/ads_derived/desktop_tiles_forecast_inputs_v1/query.sql
 bigquery:
   time_partitioning:
     field: submission_month

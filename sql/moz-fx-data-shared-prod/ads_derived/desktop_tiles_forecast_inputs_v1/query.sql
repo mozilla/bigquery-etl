@@ -14,10 +14,10 @@ WITH cs_impressions AS (
       {% if is_init() %}
         submission_date >= DATE_TRUNC(PARSE_DATE('%Y-%m-%d', '2023-11-01'), MONTH)
       {% else %}
-        submission_date >= DATE_TRUNC(DATE_SUB(@submission_date, INTERVAL 1 MONTH), MONTH)
+        submission_date >= DATE_TRUNC(DATE_SUB(@submission_month, INTERVAL 1 MONTH), MONTH)
       {% endif %}
     )
-    AND submission_date < DATE_TRUNC(@submission_date, MONTH)
+    AND submission_date < @submission_month
     AND country IN ('US', 'DE', 'FR', 'AU', 'CA', 'IT', 'ES', 'MX', 'BR', 'IN', 'GB', 'JP')
   GROUP BY
     country_code,
@@ -38,10 +38,10 @@ users_table AS (
       {% if is_init() %}
         submission_date >= DATE_TRUNC(PARSE_DATE('%Y-%m-%d', '2023-11-01'), MONTH)
       {% else %}
-        submission_date >= DATE_TRUNC(DATE_SUB(@submission_date, INTERVAL 1 MONTH), MONTH)
+        submission_date >= DATE_TRUNC(DATE_SUB(@submission_month, INTERVAL 1 MONTH), MONTH)
       {% endif %}
     )
-    AND submission_date < DATE_TRUNC(@submission_date, MONTH)
+    AND submission_date < @submission_month
     AND country IN ('US', 'DE', 'FR', 'AU', 'CA', 'IT', 'ES', 'MX', 'BR', 'IN', 'GB', 'JP')
     AND normalized_app_name = 'Firefox Desktop'
   GROUP BY
@@ -69,10 +69,10 @@ nt_visits AS (
       {% if is_init() %}
         submission_date >= DATE_TRUNC(PARSE_DATE('%Y-%m-%d', '2023-11-01'), MONTH)
       {% else %}
-        submission_date >= DATE_TRUNC(DATE_SUB(@submission_date, INTERVAL 1 MONTH), MONTH)
+        submission_date >= DATE_TRUNC(DATE_SUB(@submission_month, INTERVAL 1 MONTH), MONTH)
       {% endif %}
     )
-    AND submission_date < DATE_TRUNC(@submission_date, MONTH)
+    AND submission_date < @submission_month
     AND n.country_code IN ('US', 'DE', 'FR', 'AU', 'CA', 'IT', 'ES', 'MX', 'BR', 'IN', 'GB', 'JP')
   GROUP BY
     submission_month,

@@ -181,6 +181,13 @@ with DAG(
         )
 
         ExternalTaskMarker(
+            task_id="bqetl_ads__wait_for_checks__fail_telemetry_derived__unified_metrics__v1",
+            external_dag_id="bqetl_ads",
+            external_task_id="wait_for_checks__fail_telemetry_derived__unified_metrics__v1",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=10800)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_ctxsvc_derived__wait_for_checks__fail_telemetry_derived__unified_metrics__v1",
             external_dag_id="bqetl_ctxsvc_derived",
             external_task_id="wait_for_checks__fail_telemetry_derived__unified_metrics__v1",

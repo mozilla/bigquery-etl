@@ -301,7 +301,7 @@ def get_bigquery_type(value) -> DataTypeGroup:
 
 
 def validate_types(columns, schema, sample_data):
-    """Returns dtype from schema file or if not available, from bigquery."""
+    """Return dtype from schema file or if not available, from bigquery."""
     results = {}
 
     for dim in columns:

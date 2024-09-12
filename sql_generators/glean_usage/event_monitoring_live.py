@@ -1,9 +1,7 @@
 """Generate Materialized Views and aggregate queries for event monitoring."""
 
 import os
-import re
-
-from collections import namedtuple, OrderedDict
+from collections import OrderedDict, namedtuple
 from datetime import datetime
 from pathlib import Path
 from typing import List, Set
@@ -77,17 +75,6 @@ class EventMonitoringLive(GleanTable):
         parallelism=8,
         id_token=None,
     ):
-        # Get the app ID from the baseline_table name.
-        # This is what `common.py` also does.
-        app_id = re.sub(r"_stable\..+", "", baseline_table)
-        app_id = ".".join(app_id.split(".")[1:])
-
-        # Skip any not-allowed app.
-        if app_id in ConfigLoader.get(
-            "generate", "glean_usage", "events_monitoring", "skip_apps", fallback=[]
-        ):
-            return
-
         tables = table_names_from_baseline(baseline_table, include_project_id=False)
 
         init_filename = f"{self.target_table_id}.materialized_view.sql"
@@ -106,6 +93,12 @@ class EventMonitoringLive(GleanTable):
             for app_dataset in app
             if dataset == app_dataset["bq_dataset_family"]
         ][0]
+
+        # Skip any not-allowed app.
+        if app_name in ConfigLoader.get(
+            "generate", "glean_usage", "events_monitoring", "skip_apps", fallback=[]
+        ):
+            return
 
         if app_name in events_table_overwrites:
             events_tables = events_table_overwrites[app_name]
@@ -192,6 +185,10 @@ class EventMonitoringLive(GleanTable):
         aggregate_table = "event_monitoring_aggregates_v1"
         target_view_name = "_".join(self.target_table_id.split("_")[:-1])
 
+        skipped_apps = ConfigLoader.get(
+            "generate", "glean_usage", "events_monitoring", "skip_apps", fallback=[]
+        )
+
         events_table_overwrites = ConfigLoader.get(
             "generate", "glean_usage", "events_monitoring", "events_tables", fallback={}
         )
@@ -212,7 +209,7 @@ class EventMonitoringLive(GleanTable):
                     event_tables_per_dataset[dataset] = events_table_overwrites[
                         app_name
                     ]
-                else:
+                elif app_name not in skipped_apps:
                     v1_name = [
                         app_dataset["v1_name"]
                         for _, app in get_app_info().items()

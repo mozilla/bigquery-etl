@@ -20,20 +20,20 @@ new_profiles AS (
   SELECT
     cfs.client_id,
     cfs.sample_id,
-    first_seen_date,
-    country,
-    locale,
-    app_version,
-    attribution_campaign,
-    attribution_content,
-    attribution_dlsource,
-    attribution_medium,
-    attribution_ua,
-    attribution_experiment,
-    attribution_variation,
-    distribution_id,
-    -- TODO read is_desktop from view when it's available
-    LOWER(IFNULL(distribution_id, "")) <> "mozillaonline" AS is_desktop,
+    cfs.profile_group_id,
+    cfs.first_seen_date,
+    cfs.country,
+    cfs.locale,
+    cfs.app_version,
+    cfs.attribution_campaign,
+    cfs.attribution_content,
+    cfs.attribution_dlsource,
+    cfs.attribution_medium,
+    cfs.attribution_ua,
+    cfs.attribution_experiment,
+    cfs.attribution_variation,
+    cfs.distribution_id,
+    cfs.is_desktop,
     cfs.isp_name AS isp,
     cfs.normalized_channel,
     startup_profile_selection_reason,
@@ -49,7 +49,7 @@ new_profiles AS (
       mozfun.bits28.from_string('0111111111111111111111111111') & au.days_active_bits
     ) > 0 AS repeat_profile
   FROM
-    `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v3` cfs
+    `moz-fx-data-shared-prod.telemetry.clients_first_seen` cfs
   LEFT JOIN
     active_users AS au
     ON cfs.first_seen_date = au.retention_active.day_27.metric_date
@@ -64,6 +64,7 @@ clients_data AS (
     cd.first_seen_date,
     cd.client_id,
     cd.sample_id,
+    cd.profile_group_id,
     cd.normalized_channel,
     cd.country,
     cd.app_version,
@@ -77,11 +78,11 @@ clients_data AS (
     cd.attribution.variation AS attribution_variation,
     cd.startup_profile_selection_reason_first AS startup_profile_selection_reason,
     cd.distribution_id AS distribution_id,
+    au.is_desktop,
     cd.isp_name AS isp,
     au.days_seen_bits,
     au.days_active_bits,
     mozfun.norm.os(cd.os) AS normalized_os,
-    au.is_desktop,
     COALESCE(
       mozfun.norm.windows_version_info(cd.os, cd.os_version, cd.windows_build_number),
       NULLIF(SPLIT(cd.normalized_os_version, ".")[SAFE_OFFSET(0)], "")
@@ -112,6 +113,7 @@ clients_data AS (
 SELECT
   COALESCE(cd.client_id, np.client_id) AS client_id,
   COALESCE(cd.sample_id, np.sample_id) AS sample_id,
+  COALESCE(cd.profile_group_id, np.profile_group_id) AS sample_id,
   COALESCE(cd.submission_date, np.submission_date) AS submission_date,
   COALESCE(cd.metric_date, np.first_seen_date) AS metric_date,
   COALESCE(cd.country, np.country) AS country,

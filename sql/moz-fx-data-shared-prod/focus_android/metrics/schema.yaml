@@ -2036,6 +2036,16 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
+    - name: networking_http_3_ecn_path_capability
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -9245,6 +9255,37 @@ fields:
           type: STRING
           mode: NULLABLE
         - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+  - name: labeled_custom_distribution
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: networking_http_3_ecn_ce_ect0_ratio
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+        - name: sum
           type: INTEGER
           mode: NULLABLE
         - name: values

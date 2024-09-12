@@ -340,6 +340,18 @@ fields:
         tab.
 
         '
+    - name: broken_site_report_browser_info_prefs_third_party_cookie_blocking_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Value of `network.cookie.cookieBehavior.optInPartitioning`
+
+        '
+    - name: broken_site_report_browser_info_prefs_third_party_cookie_blocking_enabled_in_pbm
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Value of `network.cookie.cookieBehavior.optInPartitioning.pbmode`
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

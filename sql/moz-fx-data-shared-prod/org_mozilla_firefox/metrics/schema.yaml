@@ -707,6 +707,13 @@ fields:
         has dynamic toolbar disabled.
 
         '
+    - name: navigation_bar_os_navigation_uses_gestures
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether gesture navigation is used instead of the traditional
+        navigation bar.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -5619,6 +5626,19 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Number of DOH requests per connection keyed by HTTP version
+
+        '
+    - name: networking_http_3_ecn_path_capability
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Number of paths known to be ECN capable or not-capable.
 
         '
   - name: quantity
@@ -16052,6 +16072,42 @@ fields:
             mode: NULLABLE
       description: 'In the HTTP channel (keys: supports_http3_page, supports_http3_sub),
         time from TCP SYN to ready for HTTP
+
+        '
+  - name: labeled_custom_distribution
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: networking_http_3_ecn_ce_ect0_ratio
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'HTTP3: ECN CE to ECT0 ratio (multiply by 10000).
 
         '
   - name: url

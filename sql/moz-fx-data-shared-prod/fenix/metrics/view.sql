@@ -77,7 +77,8 @@ SELECT
       metrics.boolean.bounce_tracking_protection_enabled_at_startup,
       metrics.boolean.bounce_tracking_protection_enabled_dry_run_mode_at_startup,
       metrics.boolean.customize_home_bookmarks,
-      metrics.boolean.customization_settings_dynamic_toolbar
+      metrics.boolean.customization_settings_dynamic_toolbar,
+      metrics.boolean.navigation_bar_os_navigation_uses_gestures
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -413,7 +414,8 @@ SELECT
       metrics.labeled_counter.network_system_channel_telemetry_status,
       metrics.labeled_counter.network_system_channel_update_status,
       metrics.labeled_counter.network_system_channel_addonversion_status,
-      metrics.labeled_counter.networking_trr_request_count_per_conn
+      metrics.labeled_counter.networking_trr_request_count_per_conn,
+      metrics.labeled_counter.networking_http_3_ecn_path_capability
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -796,6 +798,9 @@ SELECT
       metrics.labeled_timing_distribution.network_http3_tls_handshake,
       metrics.labeled_timing_distribution.network_sup_http3_tcp_connection
     ) AS `labeled_timing_distribution`,
+    STRUCT(
+      metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio
+    ) AS `labeled_custom_distribution`,
     STRUCT(metrics.url.search_default_engine_search_url) AS `url`
   ) AS `metrics`,
   normalized_app_name,
@@ -883,7 +888,8 @@ SELECT
       metrics.boolean.bounce_tracking_protection_enabled_at_startup,
       metrics.boolean.bounce_tracking_protection_enabled_dry_run_mode_at_startup,
       metrics.boolean.customize_home_bookmarks,
-      metrics.boolean.customization_settings_dynamic_toolbar
+      metrics.boolean.customization_settings_dynamic_toolbar,
+      metrics.boolean.navigation_bar_os_navigation_uses_gestures
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -1219,7 +1225,8 @@ SELECT
       metrics.labeled_counter.network_system_channel_telemetry_status,
       metrics.labeled_counter.network_system_channel_update_status,
       metrics.labeled_counter.network_system_channel_addonversion_status,
-      metrics.labeled_counter.networking_trr_request_count_per_conn
+      metrics.labeled_counter.networking_trr_request_count_per_conn,
+      metrics.labeled_counter.networking_http_3_ecn_path_capability
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -1602,6 +1609,9 @@ SELECT
       metrics.labeled_timing_distribution.network_http3_tls_handshake,
       metrics.labeled_timing_distribution.network_sup_http3_tcp_connection
     ) AS `labeled_timing_distribution`,
+    STRUCT(
+      metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio
+    ) AS `labeled_custom_distribution`,
     STRUCT(metrics.url.search_default_engine_search_url) AS `url`
   ) AS `metrics`,
   normalized_app_name,
@@ -1707,7 +1717,8 @@ SELECT
       metrics.boolean.bounce_tracking_protection_enabled_at_startup,
       metrics.boolean.bounce_tracking_protection_enabled_dry_run_mode_at_startup,
       metrics.boolean.customize_home_bookmarks,
-      metrics.boolean.customization_settings_dynamic_toolbar
+      metrics.boolean.customization_settings_dynamic_toolbar,
+      metrics.boolean.navigation_bar_os_navigation_uses_gestures
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -2043,7 +2054,8 @@ SELECT
       metrics.labeled_counter.network_system_channel_telemetry_status,
       metrics.labeled_counter.network_system_channel_update_status,
       metrics.labeled_counter.network_system_channel_addonversion_status,
-      metrics.labeled_counter.networking_trr_request_count_per_conn
+      metrics.labeled_counter.networking_trr_request_count_per_conn,
+      metrics.labeled_counter.networking_http_3_ecn_path_capability
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -2426,6 +2438,9 @@ SELECT
       metrics.labeled_timing_distribution.network_http3_tls_handshake,
       metrics.labeled_timing_distribution.network_sup_http3_tcp_connection
     ) AS `labeled_timing_distribution`,
+    STRUCT(
+      metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio
+    ) AS `labeled_custom_distribution`,
     STRUCT(metrics.url.search_default_engine_search_url) AS `url`
   ) AS `metrics`,
   normalized_app_name,
@@ -2540,7 +2555,8 @@ SELECT
       metrics.boolean.bounce_tracking_protection_enabled_at_startup,
       metrics.boolean.bounce_tracking_protection_enabled_dry_run_mode_at_startup,
       metrics.boolean.customize_home_bookmarks,
-      metrics.boolean.customization_settings_dynamic_toolbar
+      metrics.boolean.customization_settings_dynamic_toolbar,
+      metrics.boolean.navigation_bar_os_navigation_uses_gestures
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -2876,7 +2892,8 @@ SELECT
       metrics.labeled_counter.network_system_channel_telemetry_status,
       metrics.labeled_counter.network_system_channel_update_status,
       metrics.labeled_counter.network_system_channel_addonversion_status,
-      metrics.labeled_counter.networking_trr_request_count_per_conn
+      metrics.labeled_counter.networking_trr_request_count_per_conn,
+      metrics.labeled_counter.networking_http_3_ecn_path_capability
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -3259,6 +3276,9 @@ SELECT
       metrics.labeled_timing_distribution.network_http3_tls_handshake,
       metrics.labeled_timing_distribution.network_sup_http3_tcp_connection
     ) AS `labeled_timing_distribution`,
+    STRUCT(
+      metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio
+    ) AS `labeled_custom_distribution`,
     STRUCT(metrics.url.search_default_engine_search_url) AS `url`
   ) AS `metrics`,
   normalized_app_name,
@@ -3355,7 +3375,8 @@ SELECT
       metrics.boolean.bounce_tracking_protection_enabled_at_startup,
       metrics.boolean.bounce_tracking_protection_enabled_dry_run_mode_at_startup,
       metrics.boolean.customize_home_bookmarks,
-      metrics.boolean.customization_settings_dynamic_toolbar
+      metrics.boolean.customization_settings_dynamic_toolbar,
+      metrics.boolean.navigation_bar_os_navigation_uses_gestures
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -3691,7 +3712,8 @@ SELECT
       metrics.labeled_counter.network_system_channel_telemetry_status,
       metrics.labeled_counter.network_system_channel_update_status,
       metrics.labeled_counter.network_system_channel_addonversion_status,
-      metrics.labeled_counter.networking_trr_request_count_per_conn
+      metrics.labeled_counter.networking_trr_request_count_per_conn,
+      metrics.labeled_counter.networking_http_3_ecn_path_capability
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -4074,6 +4096,9 @@ SELECT
       metrics.labeled_timing_distribution.network_http3_tls_handshake,
       metrics.labeled_timing_distribution.network_sup_http3_tcp_connection
     ) AS `labeled_timing_distribution`,
+    STRUCT(
+      metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio
+    ) AS `labeled_custom_distribution`,
     STRUCT(metrics.url.search_default_engine_search_url) AS `url`
   ) AS `metrics`,
   normalized_app_name,

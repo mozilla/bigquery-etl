@@ -266,7 +266,8 @@ SELECT
       metrics.labeled_counter.network_system_channel_telemetry_status,
       metrics.labeled_counter.network_system_channel_update_status,
       metrics.labeled_counter.network_system_channel_addonversion_status,
-      metrics.labeled_counter.networking_trr_request_count_per_conn
+      metrics.labeled_counter.networking_trr_request_count_per_conn,
+      metrics.labeled_counter.networking_http_3_ecn_path_capability
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -575,7 +576,10 @@ SELECT
       metrics.labeled_timing_distribution.network_http3_open_to_first_sent,
       metrics.labeled_timing_distribution.network_http3_tls_handshake,
       metrics.labeled_timing_distribution.network_sup_http3_tcp_connection
-    ) AS `labeled_timing_distribution`
+    ) AS `labeled_timing_distribution`,
+    STRUCT(
+      metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio
+    ) AS `labeled_custom_distribution`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,

@@ -240,6 +240,12 @@ fields:
     - name: broken_site_report_tab_info_frameworks_mobify
       type: BOOLEAN
       mode: NULLABLE
+    - name: broken_site_report_browser_info_prefs_third_party_cookie_blocking_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: broken_site_report_browser_info_prefs_third_party_cookie_blocking_enabled_in_pbm
+      type: BOOLEAN
+      mode: NULLABLE
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

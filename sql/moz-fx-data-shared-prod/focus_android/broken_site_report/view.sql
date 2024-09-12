@@ -27,7 +27,9 @@ SELECT
       metrics.boolean.broken_site_report_tab_info_antitracking_is_private_browsing,
       metrics.boolean.broken_site_report_tab_info_frameworks_fastclick,
       metrics.boolean.broken_site_report_tab_info_frameworks_marfeel,
-      metrics.boolean.broken_site_report_tab_info_frameworks_mobify
+      metrics.boolean.broken_site_report_tab_info_frameworks_mobify,
+      metrics.boolean.broken_site_report_browser_info_prefs_third_party_cookie_blocking_enabled,
+      metrics.boolean.broken_site_report_browser_info_prefs_third_party_cookie_blocking_enabled_in_pbm
     ) AS `boolean`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -108,7 +110,9 @@ SELECT
       metrics.boolean.broken_site_report_tab_info_antitracking_is_private_browsing,
       metrics.boolean.broken_site_report_tab_info_frameworks_fastclick,
       metrics.boolean.broken_site_report_tab_info_frameworks_marfeel,
-      metrics.boolean.broken_site_report_tab_info_frameworks_mobify
+      metrics.boolean.broken_site_report_tab_info_frameworks_mobify,
+      metrics.boolean.broken_site_report_browser_info_prefs_third_party_cookie_blocking_enabled,
+      metrics.boolean.broken_site_report_browser_info_prefs_third_party_cookie_blocking_enabled_in_pbm
     ) AS `boolean`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -189,7 +193,9 @@ SELECT
       metrics.boolean.broken_site_report_tab_info_antitracking_is_private_browsing,
       metrics.boolean.broken_site_report_tab_info_frameworks_fastclick,
       metrics.boolean.broken_site_report_tab_info_frameworks_marfeel,
-      metrics.boolean.broken_site_report_tab_info_frameworks_mobify
+      metrics.boolean.broken_site_report_tab_info_frameworks_mobify,
+      metrics.boolean.broken_site_report_browser_info_prefs_third_party_cookie_blocking_enabled,
+      metrics.boolean.broken_site_report_browser_info_prefs_third_party_cookie_blocking_enabled_in_pbm
     ) AS `boolean`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,

@@ -1,6 +1,6 @@
 CREATE MATERIALIZED VIEW
 IF
-  NOT EXISTS `moz-fx-data-shared-prod.firefox_desktop_derived.event_monitoring_live_v1`
+  NOT EXISTS `moz-fx-data-shared-prod.ads_backend_derived.event_monitoring_live_v1`
   OPTIONS
     (enable_refresh = TRUE, refresh_interval_minutes = 60)
   AS
@@ -19,7 +19,7 @@ IF
     event.name AS event_name,
     event_extra.key AS event_extra_key,
     normalized_country_code AS country,
-    'Firefox for Desktop' AS normalized_app_name,
+    'Mozilla Ads Backend Service' AS normalized_app_name,
     channel,
     version,
       -- Access experiment information.
@@ -50,47 +50,7 @@ IF
         client_info.app_display_version AS version,
         ping_info
       FROM
-        `moz-fx-data-shared-prod.firefox_desktop_live.events_v1`
-      UNION ALL
-      SELECT
-        submission_timestamp,
-        events,
-        normalized_country_code,
-        client_info.app_channel AS channel,
-        client_info.app_display_version AS version,
-        ping_info
-      FROM
-        `moz-fx-data-shared-prod.firefox_desktop_live.newtab_v1`
-      UNION ALL
-      SELECT
-        submission_timestamp,
-        events,
-        normalized_country_code,
-        client_info.app_channel AS channel,
-        client_info.app_display_version AS version,
-        ping_info
-      FROM
-        `moz-fx-data-shared-prod.firefox_desktop_live.prototype_no_code_events_v1`
-      UNION ALL
-      SELECT
-        submission_timestamp,
-        events,
-        normalized_country_code,
-        client_info.app_channel AS channel,
-        client_info.app_display_version AS version,
-        ping_info
-      FROM
-        `moz-fx-data-shared-prod.firefox_desktop_live.urlbar_keyword_exposure_v1`
-      UNION ALL
-      SELECT
-        submission_timestamp,
-        events,
-        normalized_country_code,
-        client_info.app_channel AS channel,
-        client_info.app_display_version AS version,
-        ping_info
-      FROM
-        `moz-fx-data-shared-prod.firefox_desktop_live.urlbar_potential_exposure_v1`
+        `moz-fx-data-shared-prod.ads_backend_live.events_v1`
     )
   CROSS JOIN
     UNNEST(events) AS event,

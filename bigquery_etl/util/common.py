@@ -294,7 +294,8 @@ def extract_last_group_by_from_query(
     """Return the list of columns in the latest group by of a query."""
     if not sql_path and not sql_text:
         raise click.ClickException(
-            "Missing an sql file or sql text to extract the group by."
+            "Function extract_last_group_by_from_query() called without an "
+            "sql file or text to extract the group by."
         )
 
     if sql_path:

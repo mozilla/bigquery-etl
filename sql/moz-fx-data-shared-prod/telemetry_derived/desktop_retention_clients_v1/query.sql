@@ -113,7 +113,7 @@ clients_data AS (
 SELECT
   COALESCE(cd.client_id, np.client_id) AS client_id,
   COALESCE(cd.sample_id, np.sample_id) AS sample_id,
-  COALESCE(cd.profile_group_id, np.profile_group_id) AS sample_id,
+  COALESCE(cd.profile_group_id, np.profile_group_id) AS profile_group_id,
   COALESCE(cd.submission_date, np.submission_date) AS submission_date,
   COALESCE(cd.metric_date, np.first_seen_date) AS metric_date,
   COALESCE(cd.country, np.country) AS country,

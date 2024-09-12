@@ -11,3 +11,5 @@ labels:
   incremental: false
 scheduling:
   dag_name: bqetl_releases
+monitoring:
+  enabled: true

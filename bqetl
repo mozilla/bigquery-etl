@@ -27,6 +27,7 @@ if [ "$CMD" == "bootstrap" ]; then
     venv/bin/pip install --no-deps -r requirements.txt
     venv/bin/pip install -e .
     echo "bqetl configured! It should now be ready for use."
+    export BIGEYE_API_CRED_FILE='bigeye_credentials.ini'
     exit 0
 fi
 

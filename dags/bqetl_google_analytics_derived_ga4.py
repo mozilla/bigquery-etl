@@ -422,6 +422,17 @@ with DAG(
         depends_on_past=False,
     )
 
+    sumo_ga_derived__ga4_events__v1 = bigquery_etl_query(
+        task_id="sumo_ga_derived__ga4_events__v1",
+        destination_table="ga4_events_v1",
+        dataset_id="sumo_ga_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     checks__fail_mozilla_org_derived__ga_clients__v2.set_upstream(
         mozilla_org_derived__ga_clients__v2
     )

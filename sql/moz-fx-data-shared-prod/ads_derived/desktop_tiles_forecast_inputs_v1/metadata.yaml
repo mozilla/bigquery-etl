@@ -6,6 +6,7 @@ description: |-
   Geo markets as of 2024/07/16: 'US','DE','FR','AU','CA','IT','ES','MX','BR','IN','GB','JP'.
 owners:
   - sbetancourt@mozilla.com
+  - jsnyder@mozilla.com
   - cmorales@mozilla.com
 labels:
   incremental: true

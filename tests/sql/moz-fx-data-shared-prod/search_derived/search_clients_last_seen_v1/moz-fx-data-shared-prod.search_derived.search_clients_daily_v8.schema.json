@@ -35,5 +35,6 @@
   {"type":"STRING","name":"user_pref_browser_search_region","mode":"NULLABLE"},
   {"type":"INTEGER","name":"search_with_ads_1","mode":"NULLABLE"},
   {"type":"INTEGER","name":"ad_click_1","mode":"NULLABLE"},
-  {"type":"STRING","name":"os_version","mode":"NULLABLE"}
+  {"type":"STRING","name":"os_version","mode":"NULLABLE"},
+  {"type":"STRING","name":"profile_group_id","mode":"NULLABLE"}
 ]

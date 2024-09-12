@@ -95,3 +95,7 @@ fields:
   name: is_mau
   type: BOOLEAN
   description: MAU - Monthly Active User
+- mode: NULLABLE
+  name: profile_group_id
+  type: STRING
+  description: Profile Group ID - A UUID identifying the profile's group on a single device and allowing user-oriented correlation of data

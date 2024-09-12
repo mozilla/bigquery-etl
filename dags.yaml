@@ -1508,24 +1508,6 @@ bqetl_google_search_console:
   tags:
     - impact/tier_1
 
-bqetl_data_observability_test_data_copy:
-  schedule_interval: 0 8 * * *
-  description: |
-    ETL used to copy over data to data-observability-dev BQ project used
-    for testing out different data observability platforms.
-  default_args:
-    owner: kik@mozilla.com
-    email:
-      - kik@mozilla.com
-      - akommasani@mozilla.com
-      - ascholtz@mozilla.com
-    start_date: '2024-03-20'
-    retries: 2
-    retry_delay: 30m
-  tags:
-    - triage/no_triage
-    - impact/tier_3
-
 bqetl_acoustic_suppression_list:
   schedule_interval: 0 9 * * *
   description: |
@@ -1547,18 +1529,18 @@ bqetl_braze:
     ETL for Braze workflows.
     ## Triage notes:
     Don't rerun this DAG!
-    Ping Chelsey Beck or Leli Schiestl.
-    If both are out, follow the [workbook](https://mozilla-hub.atlassian.net/wiki/spaces/DATA/pages/730234942/bqetl+braze+DAG+workbook) in confluence.
+    Ping Chelsey Beck.
+    If Chelsey is out, follow the [workbook](https://mozilla-hub.atlassian.net/wiki/spaces/DATA/pages/730234942/bqetl+braze+DAG+workbook) in confluence.
   default_args:
     owner: cbeck@mozilla.com
     email:
       - cbeck@mozilla.com
-      - leli@mozilla.com
     start_date: '2024-04-15'
     retries: 3
     retry_delay: 5m
   tags:
     - impact/tier_2
+    - triage/record_only
 
 bqetl_braze_currents:
   schedule_interval: 0 2 * * *
@@ -1790,3 +1772,24 @@ bqetl_firefox_desktop_ad_click_history:
   tags:
     - repo/bigquery-etl
     - impact/tier_2
+
+bqetl_merino_newtab_extract_to_gcs:
+  default_args:
+    depends_on_past: false
+    email:
+      - cbeck@mozilla.com
+      - gkatre@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    owner: cbeck@mozilla.com
+    retries: 2
+    retry_delay: 5m
+    start_date: '2024-08-14'
+  description: |
+    Aggregates Newtab engagement data that lands in a GCS bucket for Merino recommendations.
+  repo: bigquery-etl
+  schedule_interval: "*/20 * * * *"
+  tags:
+    - repo/bigquery-etl
+    - impact/tier_1

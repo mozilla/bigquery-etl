@@ -8,7 +8,7 @@ from google.cloud import bigquery
 from google.cloud.exceptions import NotFound
 
 from .config import ConfigLoader
-from .dryrun import DryRun
+from .dryrun import DryRun, get_id_token
 from .metadata.parse_metadata import Metadata
 from .metadata.publish_metadata import attach_metadata
 from .schema import SCHEMA_FILE, Schema
@@ -33,6 +33,8 @@ def deploy_table(
     update_metadata: bool = True,
     respect_dryrun_skip: bool = True,
     sql_dir=ConfigLoader.get("default", "sql_dir"),
+    credentials=None,
+    id_token=None,
 ) -> None:
     """Deploy a query to a destination."""
     if respect_dryrun_skip and str(query_file) in DryRun.skipped_files():
@@ -64,12 +66,15 @@ def deploy_table(
     except Exception as e:  # TODO: Raise/catch more specific exception
         raise SkippedDeployException(f"Schema missing for {query_file}.") from e
 
+    client = bigquery.Client(credentials=credentials)
     if not force and str(query_file).endswith("query.sql"):
         query_schema = Schema.from_query_file(
             query_file,
             use_cloud_function=use_cloud_function,
             respect_skip=respect_dryrun_skip,
             sql_dir=sql_dir,
+            client=client,
+            id_token=id_token if not use_cloud_function or id_token else get_id_token(),
         )
         if not existing_schema.equal(query_schema):
             raise FailedDeployException(
@@ -80,7 +85,6 @@ def deploy_table(
                 f"{dataset_name}.{table_name}`",
             )
 
-    client = bigquery.Client()
     try:
         table = client.get_table(destination_table)
     except NotFound:
@@ -102,18 +106,24 @@ def _create_or_update(
         if skip_existing:
             raise SkippedDeployException(f"{table} already exists.")
         log.info(f"{table} already exists, updating.")
-        client.update_table(
-            table,
-            [
-                "schema",
-                "friendly_name",
-                "description",
-                "time_partitioning",
-                "clustering_fields",
-                "labels",
-            ],
-        )
+        try:
+            client.update_table(
+                table,
+                [
+                    "schema",
+                    "friendly_name",
+                    "description",
+                    "time_partitioning",
+                    "clustering_fields",
+                    "labels",
+                ],
+            )
+        except Exception as e:
+            raise FailedDeployException(f"Unable to update table {table}: {e}") from e
         log.info(f"{table} updated.")
     else:
-        client.create_table(table)
+        try:
+            client.create_table(table)
+        except Exception as e:
+            raise FailedDeployException(f"Unable to create table {table}: {e}") from e
         log.info(f"{table} created.")

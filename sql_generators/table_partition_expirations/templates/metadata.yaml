@@ -1,0 +1,17 @@
+friendly_name: Table Partition Expirations
+description: |-
+  Earliest partitions and partition expiration info per stable table per day.
+owners:
+- bewu@mozilla.cam
+labels:
+  incremental: true
+  owner1: benwu
+scheduling:
+  dag_name: bqetl_monitoring
+  depends_on_past: true
+bigquery:
+  time_partitioning:
+    type: day
+    field: run_date
+    require_partition_filter: false
+    expiration_days: null

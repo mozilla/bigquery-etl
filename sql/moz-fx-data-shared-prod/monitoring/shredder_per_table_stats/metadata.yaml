@@ -1,0 +1,4 @@
+friendly_name: Shredder Per Table Stats
+description: Runtime and compute stats for shredder jobs, aggregated per target table.
+owners:
+  - bewu@mozilla.com

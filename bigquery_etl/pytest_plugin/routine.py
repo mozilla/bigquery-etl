@@ -7,6 +7,7 @@ import pytest
 from google.api_core.exceptions import BadRequest
 from google.cloud import bigquery
 
+from bigquery_etl.config import ConfigLoader
 from bigquery_etl.util.common import project_dirs
 
 from ..routine.parse_routine import (
@@ -26,7 +27,9 @@ def parsed_routines():
     if _parsed_routines is None:
         _parsed_routines = {
             routine.filepath: routine
-            for project in project_dirs()
+            for project in ConfigLoader.get(
+                "routine", "test_projects", fallback=project_dirs()
+            )
             for routine in parse_routines(project)
         }
 
@@ -52,6 +55,7 @@ class RoutineFile(pytest.File):
         """Collect."""
         self.add_marker("routine")
         self.routine = parsed_routines()[self.name]
+
         for i, query in enumerate(self.routine.tests_full_sql):
             yield RoutineTest.from_parent(
                 self, name=f"{self.routine.name}#{i+1}", query=query

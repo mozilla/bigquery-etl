@@ -80,7 +80,7 @@
   app_name: Firefox Preview
   normalized_app_name: Fenix
   country: US
-  os_version: '29'
+  os_version: '29.0'
   os_version_major: 29
   os_version_minor: 0
   profile_creation_date: 18201
@@ -98,7 +98,7 @@
   app_name: Firefox Preview
   normalized_app_name: Fenix
   country: CA
-  os_version: '29'
+  os_version: '29.0'
   os_version_major: 29
   os_version_minor: 0
   profile_creation_date: 18201
@@ -114,7 +114,7 @@
   app_name: Firefox Preview
   normalized_app_name: Fenix
   country: CA
-  os_version: '29'
+  os_version: '29.0'
   os_version_major: 29
   os_version_minor: 0
   profile_creation_date: 18201
@@ -130,7 +130,7 @@
   app_name: Firefox Preview
   normalized_app_name: Fenix
   country: CA
-  os_version: '29'
+  os_version: '29.0'
   os_version_major: 29
   os_version_minor: 0
   profile_creation_date: 18201
@@ -144,7 +144,7 @@
   app_name: Firefox Preview
   normalized_app_name: Fenix
   country: EG
-  os_version: '29'
+  os_version: '29.0'
   os_version_major: 29
   os_version_minor: 0
   profile_creation_date: 18201
@@ -159,7 +159,7 @@
   app_name: Firefox Preview
   normalized_app_name: Fenix
   country: US
-  os_version: '29'
+  os_version: '29.0'
   os_version_major: 29
   os_version_minor: 0
   profile_creation_date: 18201
@@ -175,7 +175,7 @@
   app_name: Firefox Preview
   normalized_app_name: Fenix
   country: US
-  os_version: '29'
+  os_version: '29.0'
   os_version_major: 29
   os_version_minor: 0
   profile_creation_date: 18201
@@ -243,7 +243,7 @@
   app_name: Firefox Preview
   normalized_app_name: Fenix
   country: US
-  os_version: '29'
+  os_version: '29.0'
   os_version_major: 29
   os_version_minor: 0
   profile_creation_date: 18201

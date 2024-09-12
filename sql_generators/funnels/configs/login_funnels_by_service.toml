@@ -34,6 +34,76 @@ description = "Funnel steps from Login View through 2FA (no backup codes) by Ser
 steps = ["login_view", "login_submit", "login_two_factor_view", "login_two_factor_submit", "login_complete"]
 dimensions = ["service"]
 
+[funnels.logins_from_google_email_first]
+
+friendly_name = "Email First Google Login Funnel Conversions"
+description = "Conversion rate of Google logins starting from the Email First form"
+steps = ["email_first_view", "email_first_google_start", "login_complete", "google_login_complete"]
+dimensions = ["service"]
+
+[funnels.logins_from_apple_email_first]
+
+friendly_name = "Email First Apple Login Funnel Conversions"
+description = "Conversion rate of Apple logins starting from the Email First form"
+steps = ["email_first_view", "email_first_apple_start", "login_complete", "apple_login_complete"]
+dimensions = ["service"]
+
+[funnels.logins_from_google_reg]
+
+friendly_name = "Registration Page Google Login Funnel Conversions"
+description = "Conversion rate of Google logins starting from the Email First form"
+steps = ["reg_view", "reg_google_start", "login_complete", "google_login_complete"]
+dimensions = ["service"]
+
+[funnels.logins_from_apple_reg]
+
+friendly_name = "Registration Page Apple Login Funnel Conversions"
+description = "Conversion rate of Apple logins starting from the Email First form"
+steps = ["reg_view", "reg_apple_start", "login_complete", "apple_login_complete"]
+dimensions = ["service"]
+
+[funnels.logins_from_google_login]
+
+friendly_name = "Login Page Google Login Funnel Conversions"
+description = "Conversion rate of Google logins starting from the login form"
+steps = ["login_view", "login_google_start", "login_complete", "google_login_complete"]
+dimensions = ["service"]
+
+[funnels.logins_from_apple_login]
+
+friendly_name = "Login Page Apple Login Funnel Conversions"
+description = "Conversion rate of Apple logins starting from the Email First form"
+steps = ["login_view", "login_apple_start", "login_complete", "apple_login_complete"]
+dimensions = ["service"]
+
+[funnels.login_from_google_deeplink]
+
+friendly_name = "Pocket Logins from Google Deeplink"
+description = "Login count from Google Deeplink (mainl relevant for Pocket)"
+steps = ["google_deeplink", "login_complete", "google_login_complete"]
+dimensions = ["service"]
+
+[funnels.logins_from_apple_deeplink]
+
+friendly_name = "Pocket Logins from Apple Deeplink"
+description = "Pocket Logins from Apple Deeplink"
+steps = ["apple_deeplink", "login_complete", "apple_login_complete"]
+dimensions = ["service"]
+
+[funnels.login_from_google_cached_logins]
+
+friendly_name = "Logins from Google from Cached Login"
+description = "Login count from Google from cached login page"
+steps = ["cached_login_view", "login_complete", "google_login_complete"]
+dimensions = ["service"]
+
+[funnels.logins_from_apple_cached_logins]
+
+friendly_name = "Pocket Logins from Apple from Cached Login"
+description = "Login count from Apple from cached login page"
+steps = ["cached_login_view", "login_complete", "apple_login_complete"]
+dimensions = ["service"]
+
 [steps]
 
 [steps.login_view]
@@ -42,6 +112,87 @@ description = "View of the login form"
 data_source = "events_stream_frontend"
 select_expression = "metrics.string.session_flow_id"
 where_expression = "event = 'login.view' AND metrics.string.session_flow_id != ''"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.email_first_view]
+friendly_name = "Email First View Form"
+description = "View of the email first form requesting email address"
+data_source = "events_stream_frontend"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'email.first_view' AND metrics.string.session_flow_id != ''"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.reg_view]
+friendly_name = "Registration View Form"
+description = "View of the registration form requesting password info"
+data_source = "events_stream_frontend"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'reg.view' AND metrics.string.session_flow_id != ''"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.cached_login_view]
+friendly_name = "Cached Login View Form"
+description = "View of the cached login form"
+data_source = "events_stream_frontend"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'cached_login.view' AND metrics.string.session_flow_id != ''"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.email_first_google_start]
+friendly_name = "Click on Google Third Party Auth from Email First"
+description = "Engagement with Google link on email first form"
+data_source = "events_stream_frontend"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'email.first_google_oauth_start' AND metrics.string.session_flow_id != ''"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.email_first_apple_start]
+friendly_name = "Click on Apple Third Party Auth from Email First"
+description = "Engagement with Apple link on email first form"
+data_source = "events_stream_frontend"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'email.first_apple_oauth_start' AND metrics.string.session_flow_id != ''"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.reg_google_start]
+friendly_name = "Click on Google Third Party Auth from Registration Page"
+description = "Engagement with Google link on registration form"
+data_source = "events_stream_frontend"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'third_party_auth.google_reg_start' AND metrics.string.session_flow_id != ''"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.reg_apple_start]
+friendly_name = "Click on Apple Third Party Auth from Registration Page"
+description = "Engagement with Apple link on registration form"
+data_source = "events_stream_frontend"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'third_party_auth.apple_reg_start' AND metrics.string.session_flow_id != ''"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.login_google_start]
+friendly_name = "Click on Google Third Party Auth from Login Page"
+description = "Engagement with Google link on login form"
+data_source = "events_stream_frontend"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'third_party_auth.google_login_start' AND metrics.string.session_flow_id != ''"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.login_apple_start]
+friendly_name = "Click on Apple Third Party Auth from Login Page"
+description = "Engagement with Apple link on login form"
+data_source = "events_stream_frontend"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'third_party_auth.apple_login_start' AND metrics.string.session_flow_id != ''"
 aggregation = "count distinct"
 join_previous_step_on = "metrics.string.session_flow_id"
 
@@ -90,6 +241,42 @@ where_expression = "event = 'login.totp_code_submit' AND metrics.string.session_
 aggregation = "count distinct"
 join_previous_step_on = "metrics.string.session_flow_id"
 
+[steps.google_deeplink]
+friendly_name = "Google Deeplink"
+description = "Google Deeplink Event"
+data_source = "events_stream_frontend"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'third_party_auth.google_deeplink' AND metrics.string.session_flow_id != ''"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.apple_deeplink]
+friendly_name = "Apple Deeplink"
+description = "Apple Deeplink Event"
+data_source = "events_stream_frontend"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'third_party_auth.apple_deeplink' AND metrics.string.session_flow_id != ''"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.google_login_complete]
+friendly_name = "Google Login Complete"
+description = "Event that indicates the login came from Google"
+data_source = "accounts_events_backend"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "metrics.string.event_name = 'third_party_auth_google_login_complete' AND metrics.string.session_flow_id != ''"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.apple_login_complete]
+friendly_name = "Apple Login Complete"
+description = "Event that indicates the login came from Apple"
+data_source = "accounts_events_backend"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "metrics.string.event_name = 'third_party_auth_apple_login_complete' AND metrics.string.session_flow_id != ''"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
 [steps.login_complete]
 friendly_name = "Successful Login Completion"
 description = "The login flow was completed successfully"
@@ -108,6 +295,11 @@ client_id_column = "metrics.string.account_user_id_sha256"
 
 [data_sources.events_stream_backend]
 from_expression = "mozdata.accounts_backend.events_stream"
+submission_date_column = "DATE(submission_timestamp)"
+client_id_column = "metrics.string.account_user_id_sha256"
+
+[data_sources.accounts_events_backend]
+from_expression = "mozdata.accounts_backend.accounts_events"
 submission_date_column = "DATE(submission_timestamp)"
 client_id_column = "metrics.string.account_user_id_sha256"
 

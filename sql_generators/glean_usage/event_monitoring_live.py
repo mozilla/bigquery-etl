@@ -1,6 +1,8 @@
 """Generate Materialized Views and aggregate queries for event monitoring."""
 
 import os
+import re
+
 from collections import namedtuple, OrderedDict
 from datetime import datetime
 from pathlib import Path
@@ -73,7 +75,19 @@ class EventMonitoringLive(GleanTable):
         use_cloud_function=True,
         app_info=[],
         parallelism=8,
+        id_token=None,
     ):
+        # Get the app ID from the baseline_table name.
+        # This is what `common.py` also does.
+        app_id = re.sub(r"_stable\..+", "", baseline_table)
+        app_id = ".".join(app_id.split(".")[1:])
+
+        # Skip any not-allowed app.
+        if app_id in ConfigLoader.get(
+            "generate", "glean_usage", "events_monitoring", "skip_apps", fallback=[]
+        ):
+            return
+
         tables = table_names_from_baseline(baseline_table, include_project_id=False)
 
         init_filename = f"{self.target_table_id}.materialized_view.sql"

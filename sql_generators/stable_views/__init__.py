@@ -19,6 +19,7 @@ from pathos.multiprocessing import ProcessingPool
 
 from bigquery_etl.cli.utils import use_cloud_function_option
 from bigquery_etl.schema.stable_table_schema import SchemaFile, get_stable_table_schemas
+from bigquery_etl.dryrun import get_id_token
 
 VIEW_QUERY_TEMPLATE = """\
 -- Generated via ./bqetl generate stable_views
@@ -121,7 +122,7 @@ def write_dataset_metadata_if_not_exists(
         ).write(target)
 
 
-def write_view_if_not_exists(target_project: str, sql_dir: Path, schema: SchemaFile):
+def write_view_if_not_exists(target_project: str, sql_dir: Path, id_token=None, schema: SchemaFile = None):
     """If a view.sql does not already exist, write one to the target directory."""
     # add imports here to run in multiple processes via pathos
     import re
@@ -309,7 +310,7 @@ def write_view_if_not_exists(target_project: str, sql_dir: Path, schema: SchemaF
             content = VIEW_CREATE_REGEX.sub("", target_file.read_text())
             content += " WHERE DATE(submission_timestamp) = '2020-01-01'"
             view_schema = Schema.from_query_file(
-                target_file, content=content, sql_dir=sql_dir
+                target_file, content=content, sql_dir=sql_dir, id_token=id_token
             )
 
             stable_table_schema = Schema.from_json({"fields": schema.schema})
@@ -379,12 +380,15 @@ def generate(target_project, output_dir, log_level, parallelism, use_cloud_funct
         last for k, (*_, last) in groupby(schemas, lambda t: t.bq_dataset_family)
     ]
 
+    id_token = get_id_token()
+
     with ProcessingPool(parallelism) as pool:
         pool.map(
             partial(
                 write_view_if_not_exists,
                 target_project,
                 Path(output_dir),
+                id_token
             ),
             schemas,
         )

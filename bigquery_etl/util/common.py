@@ -9,9 +9,10 @@ import string
 import tempfile
 import warnings
 from pathlib import Path
-from typing import List, Set, Tuple
+from typing import List, Optional, Set, Tuple
 from uuid import uuid4
 
+import click
 import sqlglot
 from google.cloud import bigquery
 from jinja2 import Environment, FileSystemLoader
@@ -285,6 +286,51 @@ def qualify_table_references_in_file(path: Path) -> str:
     )
 
     return updated_query
+
+
+def extract_last_group_by_from_query(
+    sql_path: Optional[Path] = None, sql_text: Optional[str] = None
+):
+    """Return the list of columns in the latest group by of a query."""
+    if not sql_path and not sql_text:
+        raise click.ClickException(
+            "Function extract_last_group_by_from_query() called without an "
+            "sql file or text to extract the group by."
+        )
+
+    if sql_path:
+        try:
+            query_text = sql_path.read_text()
+        except (FileNotFoundError, OSError):
+            raise click.ClickException(f'Failed to read query from: "{sql_path}."')
+    else:
+        query_text = str(sql_text)
+    group_by_list = []
+
+    # Remove single and multi-line comments (/* */), trailing semicolon if present and normalize whitespace.
+    query_text = re.sub(r"/\*.*?\*/", "", query_text, flags=re.DOTALL)
+    query_text = re.sub(r"--[^\n]*\n", "\n", query_text)
+    query_text = re.sub(r"\s+", " ", query_text).strip()
+    if query_text.endswith(";"):
+        query_text = query_text[:-1].strip()
+
+    last_group_by_original = re.search(
+        r"(?i){}(?!.*{})".format(re.escape("GROUP BY"), re.escape("GROUP BY")),
+        query_text,
+        re.DOTALL,
+    )
+
+    if last_group_by_original:
+        group_by = query_text[last_group_by_original.end() :].lstrip()
+        # Remove parenthesis, closing parenthesis, LIMIT, ORDER BY and text after those. Remove also opening parenthesis.
+        group_by = (
+            re.sub(r"(?i)[\n\)].*|LIMIT.*|ORDER BY.*", "", group_by)
+            .replace("(", "")
+            .strip()
+        )
+        if group_by:
+            group_by_list = group_by.replace(" ", "").replace("\n", "").split(",")
+    return group_by_list
 
 
 class TempDatasetReference(bigquery.DatasetReference):

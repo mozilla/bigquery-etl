@@ -14,7 +14,8 @@ fields:
 - mode: NULLABLE
   name: days_seen_bits
   type: INTEGER
-  description: Bit pattern to identify when the client_id has sent a main ping in the previous 28 days.
+  description: Bit pattern to identify when the client_id has sent a main ping in
+    the previous 28 days.
 - mode: NULLABLE
   name: days_visited_1_uri_bits
   type: INTEGER
@@ -72,7 +73,7 @@ fields:
 - mode: NULLABLE
   name: aborts_gmplugin_sum
   type: INTEGER
-  description: NULL
+  description: null
 - mode: NULLABLE
   name: aborts_plugin_sum
   type: INTEGER
@@ -502,6 +503,7 @@ fields:
 - mode: NULLABLE
   name: histogram_parent_devtools_memory_opened_count_sum
   type: INTEGER
+  description: null
 - mode: NULLABLE
   name: histogram_parent_devtools_menu_eyedropper_opened_count_sum
   type: INTEGER
@@ -746,6 +748,7 @@ fields:
   mode: REPEATED
   name: scalar_parent_devtools_accessibility_select_accessible_for_node_sum
   type: RECORD
+  description: null
 - mode: NULLABLE
   name: scalar_parent_devtools_accessibility_service_enabled_count_sum
   type: INTEGER
@@ -971,9 +974,11 @@ fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: null
   - mode: NULLABLE
     name: value
     type: INTEGER
+    description: null
   mode: REPEATED
   name: scalar_content_telemetry_event_counts_sum
   type: RECORD
@@ -1055,6 +1060,7 @@ fields:
   mode: REPEATED
   name: scalar_parent_urlbar_searchmode_shortcut_sum
   type: RECORD
+  description: null
 - fields:
   - mode: NULLABLE
     name: key
@@ -1106,6 +1112,7 @@ fields:
   mode: REPEATED
   name: scalar_parent_urlbar_searchmode_topsites_newtab_sum
   type: RECORD
+  description: null
 - fields:
   - mode: NULLABLE
     name: key
@@ -1118,6 +1125,7 @@ fields:
   mode: REPEATED
   name: scalar_parent_urlbar_searchmode_topsites_urlbar_sum
   type: RECORD
+  description: null
 - fields:
   - mode: NULLABLE
     name: key
@@ -1130,6 +1138,7 @@ fields:
   mode: REPEATED
   name: scalar_parent_urlbar_searchmode_touchbar_sum
   type: RECORD
+  description: null
 - fields:
   - mode: NULLABLE
     name: key
@@ -1142,6 +1151,7 @@ fields:
   mode: REPEATED
   name: scalar_parent_urlbar_searchmode_typed_sum
   type: RECORD
+  description: null
 - mode: NULLABLE
   name: scalar_parent_os_environment_is_taskbar_pinned
   type: BOOLEAN
@@ -1886,8 +1896,7 @@ fields:
   type: STRING
   description: null
 - mode: NULLABLE
-  name: >-
-    scalar_parent_browser_engagement_total_uri_count_normal_and_private_mode_sum
+  name: scalar_parent_browser_engagement_total_uri_count_normal_and_private_mode_sum
   type: INTEGER
   description: null
 - mode: NULLABLE
@@ -2525,4 +2534,10 @@ fields:
 - mode: NULLABLE
   name: days_active_bits
   type: INTEGER
-  description: Bit pattern to identify when the client_id has sent a main ping & also qualifies as active in the previous 28 days.
+  description: Bit pattern to identify when the client_id has sent a main ping & also
+    qualifies as active in the previous 28 days.
+- name: profile_group_id
+  type: STRING
+  mode: NULLABLE
+  description: A UUID identifying the profile's group on a single device and allowing
+    user-oriented correlation of data

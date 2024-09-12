@@ -41,6 +41,34 @@ description = "Conversion rate of Apple registrations starting from the Email Fi
 steps = ["email_first_view", "email_first_apple_start", "reg_complete", "apple_reg_complete"]
 dimensions = ["service"]
 
+[funnels.registrations_from_google_login]
+
+friendly_name = "Login Page Google Registration Funnel Conversion"
+description = "Conversion rate of Google registrations starting from the Login form"
+steps = ["login_view", "login_google_start", "reg_complete", "google_reg_complete"]
+dimensions = ["service"]
+
+[funnels.registrations_from_apple_login]
+
+friendly_name = "Login Page Apple Registration Funnel Conversion"
+description = "Conversion rate of Apple registrations starting from the Login form"
+steps = ["login_view", "login_apple_start", "reg_complete", "apple_reg_complete"]
+dimensions = ["service"]
+
+[funnels.registrations_from_google_reg]
+
+friendly_name = "Registration Page Google Registration Funnel Conversion"
+description = "Conversion rate of Google registrations starting from the Registration form"
+steps = ["reg_view", "reg_google_start", "reg_complete", "google_reg_complete"]
+dimensions = ["service"]
+
+[funnels.registrations_from_apple_reg]
+
+friendly_name = "Login Page Apple Registration Funnel Conversion"
+description = "Conversion rate of Apple registrations starting from the Login form"
+steps = ["reg_view", "reg_apple_start", "reg_complete", "apple_reg_complete"]
+dimensions = ["service"]
+
 [steps]
 
 [steps.reg_view]
@@ -61,6 +89,15 @@ where_expression = "event = 'email.first_view' AND metrics.string.session_flow_i
 aggregation = "count distinct"
 join_previous_step_on = "metrics.string.session_flow_id"
 
+[steps.login_view]
+friendly_name = "Login View Form"
+description = "View of the login form"
+data_source = "events_stream_frontend"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'login.view' AND metrics.string.session_flow_id != ''"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
 [steps.email_first_google_start]
 friendly_name = "Click on Google Third Party Auth from Email First"
 description = "Engagement with Google link on email first form"
@@ -76,6 +113,42 @@ description = "Engagement with Apple link on email first form"
 data_source = "events_stream_frontend"
 select_expression = "metrics.string.session_flow_id"
 where_expression = "event = 'email.first_apple_oauth_start' AND metrics.string.session_flow_id != ''"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.reg_google_start]
+friendly_name = "Click on Google Third Party Auth from Registration Page"
+description = "Engagement with Google link on registration form"
+data_source = "events_stream_frontend"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'third_party_auth.google_reg_start' AND metrics.string.session_flow_id != ''"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.reg_apple_start]
+friendly_name = "Click on Apple Third Party Auth from Registration Page"
+description = "Engagement with Apple link on registration form"
+data_source = "events_stream_frontend"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'third_party_auth.apple_reg_start' AND metrics.string.session_flow_id != ''"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.login_google_start]
+friendly_name = "Click on Google Third Party Auth from Login Page"
+description = "Engagement with Google link on login form"
+data_source = "events_stream_frontend"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'third_party_auth.google_login_start' AND metrics.string.session_flow_id != ''"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.login_apple_start]
+friendly_name = "Click on Apple Third Party Auth from Login Page"
+description = "Engagement with Apple link on login form"
+data_source = "events_stream_frontend"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'third_party_auth.apple_login_start' AND metrics.string.session_flow_id != ''"
 aggregation = "count distinct"
 join_previous_step_on = "metrics.string.session_flow_id"
 

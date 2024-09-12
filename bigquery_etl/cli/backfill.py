@@ -22,6 +22,7 @@ from ..backfill.parse import (
     Backfill,
     BackfillStatus,
 )
+from ..backfill.shredder_mitigation import generate_query_with_shredder_mitigation
 from ..backfill.utils import (
     get_backfill_backup_table_name,
     get_backfill_file_from_qualified_table_name,
@@ -108,6 +109,15 @@ def backfill(ctx):
     help="Watcher of the backfill (email address)",
     default=DEFAULT_WATCHER,
 )
+@click.option(
+    "--custom_query_path",
+    "--custom-query-path",
+    help="Path of the custom query to run the backfill. Optional.",
+)
+@click.option(
+    "--shredder_mitigation/--no_shredder_mitigation",
+    help="Wether to run a backfill using an auto-generated query that mitigates shredder effect.",
+)
 # If not specified, the billing project will be set to the default billing project when the backfill is initiated.
 @billing_project_option()
 @click.pass_context
@@ -119,6 +129,8 @@ def create(
     end_date,
     exclude,
     watcher,
+    custom_query_path,
+    shredder_mitigation,
     billing_project,
 ):
     """CLI command for creating a new backfill entry in backfill.yaml file.
@@ -145,6 +157,8 @@ def create(
         reason=DEFAULT_REASON,
         watchers=[watcher],
         status=BackfillStatus.INITIATE,
+        custom_query_path=custom_query_path,
+        shredder_mitigation=shredder_mitigation,
         billing_project=billing_project,
     )
 
@@ -493,6 +507,31 @@ def _initiate_backfill(
 
     log.info(logging_str)
 
+    custom_query_path = None
+    if entry.shredder_mitigation is True:
+        click.echo(
+            click.style(
+                f"Generating query with shredder mitigation for {dataset}.{table}...",
+                fg="blue",
+            )
+        )
+        query, _ = generate_query_with_shredder_mitigation(
+            client=bigquery.Client(project=project),
+            project_id=project,
+            dataset=dataset,
+            destination_table=table,
+            backfill_date=entry.start_date.isoformat(),
+        )
+        custom_query_path = Path(query)
+        click.echo(
+            click.style(
+                f"Starting backfill with custom query: '{custom_query_path}'.",
+                fg="blue",
+            )
+        )
+    elif entry.custom_query_path:
+        custom_query_path = Path(entry.custom_query_path)
+
     # backfill table
     # in the long-run we should remove the query backfill command and require a backfill entry for all backfills
     try:
@@ -506,6 +545,7 @@ def _initiate_backfill(
             destination_table=backfill_staging_qualified_table_name,
             parallelism=parallelism,
             dry_run=dry_run,
+            **({"custom_query_path": custom_query_path} if custom_query_path else {}),
             billing_project=billing_project,
         )
     except subprocess.CalledProcessError as e:
@@ -680,7 +720,7 @@ def _copy_table(
         click.echo(f"Source table not found: {source_table}")
         sys.exit(1)
     except Conflict:
-        print(f"Backup table already exists: {destination_table}")
+        click.echo(f"Backup table already exists: {destination_table}")
         sys.exit(1)
 
     click.echo(

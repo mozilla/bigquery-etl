@@ -38,6 +38,7 @@ dry_run:
   - sql/moz-fx-data-shared-prod/accounts_db_external/**/*.sql
   - sql/moz-fx-data-shared-prod/accounts_db_nonprod_external/**/*.sql
   - sql/moz-fx-data-shared-prod/ads/ppa_measurements/*.sql
+  - sql/moz-fx-data-shared-prod/ads/ppa_measurements_limited/*.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_content_events_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_auth_bounce_events_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_auth_events_v1/query.sql
@@ -143,6 +144,8 @@ dry_run:
   - sql/moz-fx-data-shared-prod/search_derived/search_clients_daily_v8/query.sql
   - sql/moz-fx-data-shared-prod/search_derived/mobile_search_aggregates_v1/query.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/telemetry_missing_columns_v1/view.sql
+  - sql/moz-fx-data-shared-prod/monitoring_derived/table_partition_expirations_v1/query.sql
+  - sql/moz-fx-data-shared-prod/monitoring_derived/shredder_per_job_stats_v1/query.sql
   # No matching signature for function IF
   - sql/moz-fx-data-shared-prod/static/fxa_amplitude_export_users_last_seen/query.sql
   # Duplicate UDF
@@ -184,6 +187,8 @@ dry_run:
   # Source table does not have a verifiable schema
   - sql/moz-fx-data-shared-prod/monitoring_derived/outerbounds_cost_per_flow_run_v1/view.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/outerbounds_cost_per_flow_v1/view.sql
+  - sql/moz-fx-data-shared-prod/monitoring_derived/rayserve_cost_fakespot_tenant_v1/view.sql
+  - sql/moz-fx-data-shared-prod/monitoring_derived/rayserve_cost_fakespot_tenant_prod_v1/view.sql
     # Query templates
   - sql/moz-fx-data-shared-prod/search_derived/mobile_search_clients_daily_v1/fenix_metrics.template.sql
   - sql/moz-fx-data-shared-prod/search_derived/mobile_search_clients_daily_v1/mobile_search_clients_daily.template.sql
@@ -217,6 +222,10 @@ routine:
     - sql/moz-fx-data-shared-prod/udf/main_summary_scalars/udf.sql
   example_dir: examples
   project: mozfun
+  test_projects:
+  - sql/mozfun
+  - sql/moz-fx-data-shared-prod
+  - sql/bigquery-etl-integration-test
 
 view:
   validation:
@@ -278,7 +287,6 @@ generate:
     - org_mozilla_ios_tiktok_reporter_tiktok_reportershare
     - org_mozilla_tiktokreporter
     - relay_backend  # see https://mozilla-hub.atlassian.net/browse/DENG-3720
-    - ads_backend
     - monitor_backend  # see https://bugzilla.mozilla.org/show_bug.cgi?id=1905444
     events_stream:
       skip_apps:
@@ -296,6 +304,8 @@ generate:
       - accounts_frontend
       - accounts_backend
     events_monitoring:
+      skip_apps:
+      - ads_backend  # restricted dataset, we don't want to include it aggregate view
       skip_pings:
       - topsites-impression # access denied
       - serp-categorization # access denied

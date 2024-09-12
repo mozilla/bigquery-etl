@@ -44,6 +44,8 @@ TEST_BACKFILL_3 = Backfill(
     DEFAULT_REASON,
     [DEFAULT_WATCHER],
     DEFAULT_STATUS,
+    "custom_query.sql",
+    False,
     DEFAULT_BILLING_PROJECT,
 )
 
@@ -59,6 +61,8 @@ class TestParseBackfill(object):
         assert backfill.reason == DEFAULT_REASON
         assert backfill.watchers == [DEFAULT_WATCHER]
         assert backfill.status == DEFAULT_STATUS
+        assert backfill.shredder_mitigation is False
+        assert backfill.custom_query_path is None
         assert backfill.billing_project is None
 
     def test_backfill_instantiation_with_billing_project(self):
@@ -71,6 +75,8 @@ class TestParseBackfill(object):
         assert backfill.reason == DEFAULT_REASON
         assert backfill.watchers == [DEFAULT_WATCHER]
         assert backfill.status == DEFAULT_STATUS
+        assert backfill.shredder_mitigation is False
+        assert backfill.custom_query_path == "custom_query.sql"
         assert backfill.billing_project == DEFAULT_BILLING_PROJECT
 
     def test_invalid_billing_project(self):
@@ -84,6 +90,8 @@ class TestParseBackfill(object):
                 TEST_BACKFILL_1.reason,
                 TEST_BACKFILL_1.watchers,
                 TEST_BACKFILL_1.status,
+                None,
+                None,
                 invalid_billing_project,
             )
 
@@ -437,6 +445,7 @@ class TestParseBackfill(object):
             "  watchers:\n"
             "  - nobody@mozilla.com\n"
             "  status: Initiate\n"
+            "  shredder_mitigation: false\n"
         )
 
         results = TEST_BACKFILL_1.to_yaml()
@@ -453,6 +462,8 @@ class TestParseBackfill(object):
             reason = Please provide a reason for the backfill and links to any related bugzilla or jira tickets
             watcher(s) = [nobody@mozilla.com]
             status = Initiate
+            custom_query_path = None
+            shredder_mitigation = False
             """
 
         assert actual_backfill_str == expected_backfill_str
@@ -468,6 +479,7 @@ class TestParseBackfill(object):
             "  watchers:\n"
             "  - nobody@mozilla.com\n"
             "  status: Initiate\n"
+            "  shredder_mitigation: false\n"
         )
 
         TEST_BACKFILL_1.excluded_dates = []

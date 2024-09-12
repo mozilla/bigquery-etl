@@ -131,6 +131,19 @@ with DAG(
         retry_delay=datetime.timedelta(seconds=1800),
     )
 
+    wait_for_sumo_events_table = BigQueryTableExistenceSensor(
+        task_id="wait_for_sumo_events_table",
+        project_id="moz-fx-data-marketing-prod",
+        dataset_id="analytics_314403930",
+        table_id="events_{{ ds_nodash }}",
+        gcp_conn_id="google_cloud_shared_prod",
+        deferrable=True,
+        poke_interval=datetime.timedelta(seconds=1800),
+        timeout=datetime.timedelta(seconds=36000),
+        retries=1,
+        retry_delay=datetime.timedelta(seconds=1800),
+    )
+
     checks__fail_mozilla_org_derived__ga_clients__v2 = bigquery_dq_check(
         task_id="checks__fail_mozilla_org_derived__ga_clients__v2",
         source_table="ga_clients_v2",
@@ -526,3 +539,5 @@ with DAG(
     mozilla_org_derived__www_site_page_metrics__v2.set_upstream(
         mozilla_org_derived__www_site_hits__v2
     )
+
+    sumo_ga_derived__ga4_events__v1.set_upstream(wait_for_sumo_events_table)

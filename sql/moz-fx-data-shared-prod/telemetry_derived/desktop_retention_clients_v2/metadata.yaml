@@ -1,4 +1,4 @@
-friendly_name: Desktop Retention - Client Level
+friendly_name: Desktop Retention V2 - Client Level
 description: |-
   Desktop Retention data at the client level.
   Includes attribution information, profile_group_id.
@@ -6,7 +6,7 @@ owners:
 - mhirose@mozilla.com
 labels:
   incremental: true
-  owner1: example
+  owner1: mhirose
 scheduling:
   dag_name: bqetl_desktop_retention_model
 bigquery:

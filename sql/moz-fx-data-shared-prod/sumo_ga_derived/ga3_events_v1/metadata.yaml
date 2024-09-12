@@ -1,0 +1,16 @@
+friendly_name: GA3 Events Data for SUMO
+description: |-
+  GA3 Events Data for SUMO (support.mozilla.org)
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau@mozilla.com
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+references: {}

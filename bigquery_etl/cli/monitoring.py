@@ -102,7 +102,7 @@ def update(name: str, sql_dir: Optional[str], project_id: Optional[str]) -> None
         name, sql_dir, project_id=project_id, files=["metadata.yaml"]
     )
 
-    for metadata_file in metadata_files:
+    for metadata_file in list(set(metadata_files)):
         project, dataset, table = extract_from_query_path(metadata_file)
         try:
             metadata = Metadata.from_file(metadata_file)

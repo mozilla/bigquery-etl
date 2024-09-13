@@ -11715,6 +11715,16 @@ fields:
       - name: numerator
         type: INTEGER
         mode: NULLABLE
+    - name: parsing_svg_unusual_pcdata
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: denominator
+        type: INTEGER
+        mode: NULLABLE
+      - name: numerator
+        type: INTEGER
+        mode: NULLABLE
   - name: uuid
     type: RECORD
     mode: NULLABLE

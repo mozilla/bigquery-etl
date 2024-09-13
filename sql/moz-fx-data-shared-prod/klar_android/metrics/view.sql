@@ -564,7 +564,8 @@ SELECT
       metrics.rate.httpsfirst_downgraded_on_timer_schemeless,
       metrics.rate.pkcs11_built_in_roots_module,
       metrics.rate.pkcs11_nss_cert_db,
-      metrics.rate.networking_set_cookie_expired_without_server_time
+      metrics.rate.networking_set_cookie_expired_without_server_time,
+      metrics.rate.parsing_svg_unusual_pcdata
     ) AS `rate`,
     STRUCT(metrics.uuid.legacy_ids_client_id) AS `uuid`,
     STRUCT(metrics.object.fog_validation_some_object) AS `object`,

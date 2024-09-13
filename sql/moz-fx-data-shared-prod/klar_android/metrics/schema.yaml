@@ -11723,6 +11723,20 @@ fields:
         but it would not if we considered the server time.
 
         '
+    - name: parsing_svg_unusual_pcdata
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: denominator
+        type: INTEGER
+        mode: NULLABLE
+      - name: numerator
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The rate of svg elements that have child elements during parsing,
+        where their HTML counterpart would not have children.
+
+        '
   - name: uuid
     type: RECORD
     mode: NULLABLE

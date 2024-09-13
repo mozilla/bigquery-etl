@@ -1419,17 +1419,16 @@ bqetl_telemetry_dev_cycle:
     depends_on_past: false
     email:
       - telemetry-alerts@mozilla.com
-      - leli@mozilla.com
+      - ascholtz@mozilla.com
     email_on_failure: true
     email_on_retry: false
     end_date: null
-    owner: leli@mozilla.com
+    owner: ascholtz@mozilla.com
     retries: 2
     retry_delay: 30m
     start_date: '2023-12-19'
   description: |
     DAG for Telemetry Dev Cycle Dashboard
-
     Airflow Triage Note:
     The tables are build every day so only the last run needs to be successful.
   repo: bigquery-etl

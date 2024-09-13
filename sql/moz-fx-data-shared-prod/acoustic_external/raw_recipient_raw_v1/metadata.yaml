@@ -20,7 +20,7 @@ labels:
   incremental: true
 
 owners:
-  - leli@mozilla.com
+  - cbeck@mozilla.com
 
 scheduling:
   dag_name: bqetl_acoustic_raw_recipient_export

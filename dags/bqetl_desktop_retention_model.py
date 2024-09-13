@@ -113,6 +113,19 @@ with DAG(
         + ["submission_date:DATE:{{ds}}"],
     )
 
+    telemetry_derived__desktop_retention_aggregates__v2 = bigquery_etl_query(
+        task_id="telemetry_derived__desktop_retention_aggregates__v2",
+        destination_table='desktop_retention_aggregates_v2${{ macros.ds_format(macros.ds_add(ds, -27), "%Y-%m-%d", "%Y%m%d") }}',
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="mhirose@mozilla.com",
+        email=["mhirose@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        parameters=["metric_date:DATE:{{macros.ds_add(ds, -27)}}"]
+        + ["submission_date:DATE:{{ds}}"],
+    )
+
     telemetry_derived__desktop_retention_clients__v1 = bigquery_etl_query(
         task_id="telemetry_derived__desktop_retention_clients__v1",
         destination_table="desktop_retention_clients_v1",
@@ -137,6 +150,10 @@ with DAG(
 
     telemetry_derived__desktop_retention__v1.set_upstream(
         telemetry_derived__desktop_retention_clients__v1
+    )
+
+    telemetry_derived__desktop_retention_aggregates__v2.set_upstream(
+        telemetry_derived__desktop_retention_clients__v2
     )
 
     telemetry_derived__desktop_retention_clients__v1.set_upstream(

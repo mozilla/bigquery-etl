@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Optional
 
 import click
-from bigeye_sdk.authentication.api_authentication import ApiAuth
+from bigeye_sdk.authentication.api_authentication import APIKeyAuth
 from bigeye_sdk.client.datawatch_client import datawatch_client_factory
 from bigeye_sdk.controller.metric_suite_controller import MetricSuiteController
 from bigeye_sdk.exceptions.exceptions import FileLoadException
@@ -49,12 +49,31 @@ def monitoring(ctx):
 @sql_dir_option
 @click.option(
     "--workspace",
-    default="DEFAULT",
+    default=463,
     help="Bigeye workspace to use when authenticating to API.",
+)
+@click.option(
+    "--api-key",
+    "--api_key",
+    required=True,
+    help="Bigeye API key used for authentication.",
+    envvar="BIGEYE_API_KEY",
+)
+@click.option(
+    "--base-url",
+    "--base_url",
+    default="https://app.bigeye.com",
+    help="Bigeye base URL.",
 )
 @click.pass_context
 def deploy(
-    ctx, name: str, sql_dir: Optional[str], project_id: Optional[str], workspace: str
+    ctx,
+    name: str,
+    sql_dir: Optional[str],
+    project_id: Optional[str],
+    workspace: str,
+    api_key: str,
+    base_url: str,
 ) -> None:
     """Deploy monitors to Bigeye."""
     metadata_files = paths_matching_name_pattern(
@@ -72,10 +91,8 @@ def deploy(
                     sql_dir=sql_dir,
                     project_id=project_id,
                 )
-                api_auth = ApiAuth.load_from_ini_file(
-                    auth_file=ApiAuth.find_user_credentials(None), workspace=workspace
-                )  # load user credentials from BIGEYE_API_CONFIG_FILE env variable
-                client = datawatch_client_factory(api_auth, workspace_id=463)
+                api_auth = APIKeyAuth(base_url=base_url, api_key=api_key)
+                client = datawatch_client_factory(api_auth, workspace_id=workspace)
                 mc = MetricSuiteController(client=client)
 
                 ctx.invoke(

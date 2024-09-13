@@ -15,4 +15,4 @@ configured to automatically insert hyperlinks for DSRE and DENG tickets.
 See https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/managing-repository-settings/configuring-autolinks-to-reference-external-resources
 -->
 
-Reviewer, please follow [this checklist](https://github.com/mozilla/bigquery-etl/.github/reviewer_checklist.md)
+**Reviewer, please follow [this checklist](https://github.com/mozilla/bigquery-etl/.github/reviewer_checklist.md)**

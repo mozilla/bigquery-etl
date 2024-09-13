@@ -19,7 +19,6 @@ from jinja2 import Environment, FileSystemLoader
 
 from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.metadata.parse_metadata import METADATA_FILE, Metadata
-from bigquery_etl.schema import Schema
 from bigquery_etl.util.common import extract_last_group_by_from_query, write_sql
 
 PREVIOUS_DATE = (dt.now() - timedelta(days=2)).date()
@@ -759,7 +758,7 @@ def generate_query_with_shredder_mitigation(
         )
     )
 
-    # Generate query using template.
+    # Generate query using the template.
     env = Environment(loader=FileSystemLoader(str(THIS_PATH)))
     query_with_mitigation_template = env.get_template(
         f"{QUERY_WITH_MITIGATION_NAME}_template.sql"

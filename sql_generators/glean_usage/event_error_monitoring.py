@@ -56,6 +56,13 @@ class EventErrorMonitoring(GleanTable):
             "generate", "glean_usage", "events_monitoring", "event_table", fallback={}
         )
 
+        # Skip any not-allowed app.
+        skip_apps = ConfigLoader.get(
+            "generate", "glean_usage", "events_monitoring", "skip_apps", fallback=[]
+        )
+
+        apps = [app for app in apps if app[0]["app_name"] not in skip_apps]
+
         render_kwargs = dict(
             project_id=project_id,
             target_table=f"{TARGET_DATASET_CROSS_APP}_derived.{AGGREGATE_TABLE_NAME}",

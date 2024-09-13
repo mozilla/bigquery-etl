@@ -8,7 +8,7 @@ description: >
   Jira: https://mozilla-hub.atlassian.net/browse/DENG-17
   Moved from moz-fx-data-marketing-prod to moz-fx-data-shared-prod in https://mozilla-hub.atlassian.net/browse/DENG-3287
 owners:
-  - leli@mozilla.com
+  - cbeck@mozilla.com
 
 labels:
   incremental: false

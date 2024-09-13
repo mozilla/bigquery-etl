@@ -5,6 +5,9 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
+- name: profile_group_id
+  type: STRING
+  mode: NULLABLE
 - name: activity_segments_v1
   type: STRING
   mode: NULLABLE

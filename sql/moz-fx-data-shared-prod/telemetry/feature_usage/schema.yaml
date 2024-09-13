@@ -425,3 +425,6 @@ fields:
 - name: search_count_urlbar_handoff
   type: INTEGER
   mode: NULLABLE
+- name: profile_group_id
+  type: STRING
+  mode: NULLABLE

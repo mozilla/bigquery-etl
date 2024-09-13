@@ -6,6 +6,7 @@ WITH user_type AS (
   SELECT
     client_id AS client_id,
     submission_date AS submission_date,
+    profile_group_id AS profile_group_id,
     activity_segments_v1 AS activity_segments_v1,
     is_allweek_regular_v1 AS is_allweek_regular_v1,
     is_weekday_regular_v1 AS is_weekday_regular_v1,
@@ -578,6 +579,7 @@ all_features AS (
 SELECT
   client_id,
   submission_date,
+  profile_group_id,
   activity_segments_v1,
   is_allweek_regular_v1,
   is_weekday_regular_v1,

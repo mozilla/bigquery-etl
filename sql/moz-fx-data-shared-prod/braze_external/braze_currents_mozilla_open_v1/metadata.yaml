@@ -4,9 +4,9 @@ description: |-
   Braze sends data in currents to GCS. These tables are build from those files.
   The tables are rebuild every day.
 owners:
-- leli@mozilla.com
+- cbeck@mozilla.com
 labels:
-  owner1: leli
+  owner1: cbeck
   dag: bqetl_braze_currents
 scheduling:
   dag_name: bqetl_braze_currents

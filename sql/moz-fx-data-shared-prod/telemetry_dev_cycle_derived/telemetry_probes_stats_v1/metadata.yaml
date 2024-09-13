@@ -2,9 +2,9 @@ friendly_name: Telemetry Probes
 description: |-
   Dates for telemetry probes to be released and expired for Telemetry Dev Cycle Dashboard.
 owners:
-- leli@mozilla.com
+- ascholtz@mozilla.com
 labels:
-  owner1: leli
+  owner1: ascholtz
   dag: bqetl_telemetry_dev_cycle
 scheduling:
   dag_name: bqetl_telemetry_dev_cycle

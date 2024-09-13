@@ -22,7 +22,7 @@ DAG to clean up the data loaded from Acoustic.
 
 #### Owner
 
-leli@mozilla.com
+cbeck@mozilla.com
 
 #### Tags
 
@@ -32,10 +32,10 @@ leli@mozilla.com
 
 
 default_args = {
-    "owner": "leli@mozilla.com",
+    "owner": "cbeck@mozilla.com",
     "start_date": datetime.datetime(2024, 4, 3, 0, 0),
     "end_date": None,
-    "email": ["telemetry-alerts@mozilla.com", "leli@mozilla.com"],
+    "email": ["telemetry-alerts@mozilla.com", "cbeck@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=300),
     "email_on_failure": True,
@@ -70,8 +70,8 @@ with DAG(
         destination_table="raw_recipient_v1",
         dataset_id="acoustic_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="leli@mozilla.com",
-        email=["leli@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="cbeck@mozilla.com",
+        email=["cbeck@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -81,8 +81,8 @@ with DAG(
         destination_table="raw_recipient_raw_v1",
         dataset_id="acoustic_external",
         project_id="moz-fx-data-shared-prod",
-        owner="leli@mozilla.com",
-        email=["leli@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="cbeck@mozilla.com",
+        email=["cbeck@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )

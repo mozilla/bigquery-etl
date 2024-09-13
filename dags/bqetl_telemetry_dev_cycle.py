@@ -17,13 +17,12 @@ Built from bigquery-etl repo, [`dags/bqetl_telemetry_dev_cycle.py`](https://gith
 #### Description
 
 DAG for Telemetry Dev Cycle Dashboard
-
 Airflow Triage Note:
 The tables are build every day so only the last run needs to be successful.
 
 #### Owner
 
-leli@mozilla.com
+ascholtz@mozilla.com
 
 #### Tags
 
@@ -33,10 +32,10 @@ leli@mozilla.com
 
 
 default_args = {
-    "owner": "leli@mozilla.com",
+    "owner": "ascholtz@mozilla.com",
     "start_date": datetime.datetime(2023, 12, 19, 0, 0),
     "end_date": None,
-    "email": ["telemetry-alerts@mozilla.com", "leli@mozilla.com"],
+    "email": ["telemetry-alerts@mozilla.com", "ascholtz@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),
     "email_on_failure": True,
@@ -59,8 +58,8 @@ with DAG(
         destination_table="firefox_major_release_dates_v1",
         dataset_id="telemetry_dev_cycle_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="leli@mozilla.com",
-        email=["leli@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
@@ -71,8 +70,8 @@ with DAG(
         destination_table="glean_metrics_stats_v1",
         dataset_id="telemetry_dev_cycle_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="leli@mozilla.com",
-        email=["leli@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
@@ -83,8 +82,8 @@ with DAG(
         destination_table="telemetry_probes_stats_v1",
         dataset_id="telemetry_dev_cycle_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="leli@mozilla.com",
-        email=["leli@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
@@ -98,8 +97,8 @@ with DAG(
         ]
         + [],
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="leli@mozilla.com",
-        email=["leli@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
 
     telemetry_dev_cycle_external__experiments_stats__v1 = GKEPodOperator(
@@ -110,8 +109,8 @@ with DAG(
         ]
         + [],
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="leli@mozilla.com",
-        email=["leli@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
 
     telemetry_dev_cycle_external__glean_metrics_stats__v1 = GKEPodOperator(
@@ -122,8 +121,8 @@ with DAG(
         ]
         + [],
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="leli@mozilla.com",
-        email=["leli@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
 
     telemetry_dev_cycle_external__telemetry_probes_stats__v1 = GKEPodOperator(
@@ -134,8 +133,8 @@ with DAG(
         ]
         + [],
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="leli@mozilla.com",
-        email=["leli@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
 
     telemetry_dev_cycle_derived__glean_metrics_stats__v1.set_upstream(

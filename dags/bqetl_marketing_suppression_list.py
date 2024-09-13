@@ -20,7 +20,7 @@ Ingest marketing suppression lists into BigQuery
 
 #### Owner
 
-leli@mozilla.com
+cbeck@mozilla.com
 
 #### Tags
 
@@ -30,10 +30,10 @@ leli@mozilla.com
 
 
 default_args = {
-    "owner": "leli@mozilla.com",
+    "owner": "cbeck@mozilla.com",
     "start_date": datetime.datetime(2024, 4, 21, 0, 0),
     "end_date": None,
-    "email": ["leli@mozilla.com"],
+    "email": ["cbeck@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),
     "email_on_failure": True,
@@ -111,8 +111,8 @@ with DAG(
         dataset_id="marketing_suppression_list_derived",
         project_id="moz-fx-data-shared-prod",
         is_dq_check_fail=True,
-        owner="leli@mozilla.com",
-        email=["leli@mozilla.com"],
+        owner="cbeck@mozilla.com",
+        email=["cbeck@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
         retries=0,
@@ -124,8 +124,8 @@ with DAG(
         dataset_id="marketing_suppression_list_derived",
         project_id="moz-fx-data-shared-prod",
         is_dq_check_fail=False,
-        owner="leli@mozilla.com",
-        email=["leli@mozilla.com"],
+        owner="cbeck@mozilla.com",
+        email=["cbeck@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
         retries=0,
@@ -136,8 +136,8 @@ with DAG(
         destination_table="main_suppression_list_v1",
         dataset_id="marketing_suppression_list_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="leli@mozilla.com",
-        email=["leli@mozilla.com"],
+        owner="cbeck@mozilla.com",
+        email=["cbeck@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
@@ -154,8 +154,8 @@ with DAG(
             "--client_id={{ var.value.campaign_monitor_client_id }}",
         ],
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="leli@mozilla.com",
-        email=["leli@mozilla.com"],
+        owner="cbeck@mozilla.com",
+        email=["cbeck@mozilla.com"],
     )
 
     marketing_suppression_list_external__send_suppression_list_update_to_campaign_monitor__v1 = GKEPodOperator(
@@ -169,8 +169,8 @@ with DAG(
             "--client_id={{ var.value.campaign_monitor_client_id }}",
         ],
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="leli@mozilla.com",
-        email=["leli@mozilla.com"],
+        owner="cbeck@mozilla.com",
+        email=["cbeck@mozilla.com"],
     )
 
     checks__fail_marketing_suppression_list_derived__main_suppression_list__v1.set_upstream(

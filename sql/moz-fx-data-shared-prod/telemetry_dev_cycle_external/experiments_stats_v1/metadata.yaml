@@ -4,9 +4,9 @@ description: |-
   compared with config files downloaded from https://github.com/mozilla/metric-hub/tree/main/jetstream
   The downloaded data is cleaned and only data relevant for the telemetry dev cycle dashboard is stored here.
 owners:
-- leli@mozilla.com
+- ascholtz@mozilla.com
 labels:
-  owner1: leli
+  owner1: ascholtz
   dag: bqetl_telemetry_dev_cycle
 scheduling:
   dag_name: bqetl_telemetry_dev_cycle

@@ -3,10 +3,10 @@ description: |-
   This python script gets the table new_suppression_list_entries_for_mofo_v1 and uploads the result to the Campaign Monitor API.
   Emails that are malformed and cannot be uploaded to Campaign Monitor due to not being real emails will be added to the table.
 owners:
-- leli@mozilla.com
+- cbeck@mozilla.com
 labels:
   incremental: true
-  owner1: leli
+  owner1: cbeck
   dag: bqetl_marketing_suppression_list
 scheduling:
   dag_name: bqetl_marketing_suppression_list

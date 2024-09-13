@@ -20,7 +20,7 @@ ETL for Acoustic suppression list.
 
 #### Owner
 
-leli@mozilla.com
+cbeck@mozilla.com
 
 #### Tags
 
@@ -30,10 +30,10 @@ leli@mozilla.com
 
 
 default_args = {
-    "owner": "leli@mozilla.com",
+    "owner": "cbeck@mozilla.com",
     "start_date": datetime.datetime(2024, 4, 3, 0, 0),
     "end_date": None,
-    "email": ["leli@mozilla.com"],
+    "email": ["cbeck@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),
     "email_on_failure": True,
@@ -56,8 +56,8 @@ with DAG(
         destination_table="suppression_list_v1",
         dataset_id="acoustic_external",
         project_id="moz-fx-data-shared-prod",
-        owner="leli@mozilla.com",
-        email=["leli@mozilla.com"],
+        owner="cbeck@mozilla.com",
+        email=["cbeck@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,

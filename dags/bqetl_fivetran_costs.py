@@ -22,7 +22,7 @@ Derived tables for analyzing the Fivetran Costs. Data coming from Fivetran.
 
 #### Owner
 
-lschiestl@mozilla.com
+srose@mozilla.com
 
 #### Tags
 
@@ -32,10 +32,10 @@ lschiestl@mozilla.com
 
 
 default_args = {
-    "owner": "lschiestl@mozilla.com",
+    "owner": "srose@mozilla.com",
     "start_date": datetime.datetime(2023, 1, 18, 0, 0),
     "end_date": None,
-    "email": ["telemetry-alerts@mozilla.com", "lschiestl@mozilla.com"],
+    "email": ["telemetry-alerts@mozilla.com", "srose@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),
     "email_on_failure": True,
@@ -66,8 +66,8 @@ with DAG(
         dataset_id="fivetran_costs_derived",
         project_id="moz-fx-data-shared-prod",
         is_dq_check_fail=True,
-        owner="lschiestl@mozilla.com",
-        email=["lschiestl@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
         retries=0,
@@ -79,8 +79,8 @@ with DAG(
         dataset_id="fivetran_costs_derived",
         project_id="moz-fx-data-shared-prod",
         is_dq_check_fail=True,
-        owner="lschiestl@mozilla.com",
-        email=["lschiestl@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
         retries=0,
@@ -92,8 +92,8 @@ with DAG(
         dataset_id="fivetran_costs_derived",
         project_id="moz-fx-data-shared-prod",
         is_dq_check_fail=True,
-        owner="lschiestl@mozilla.com",
-        email=["lschiestl@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         task_concurrency=1,
         retries=0,
@@ -104,8 +104,8 @@ with DAG(
         destination_table="daily_connector_costs_v1",
         dataset_id="fivetran_costs_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="lschiestl@mozilla.com",
-        email=["lschiestl@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
@@ -116,8 +116,8 @@ with DAG(
         destination_table="destinations_v1",
         dataset_id="fivetran_costs_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="lschiestl@mozilla.com",
-        email=["lschiestl@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
@@ -128,8 +128,8 @@ with DAG(
         destination_table="incremental_mar_v1",
         dataset_id="fivetran_costs_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="lschiestl@mozilla.com",
-        email=["lschiestl@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
@@ -140,8 +140,8 @@ with DAG(
         destination_table="monthly_costs_v1",
         dataset_id="fivetran_costs_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="lschiestl@mozilla.com",
-        email=["lschiestl@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,

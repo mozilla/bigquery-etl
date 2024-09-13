@@ -2,10 +2,10 @@ friendly_name: Destinations
 description: |-
   Destinations Table for Fivetran Costs.
 owners:
-- lschiestl@mozilla.com
+- srose@mozilla.com
 labels:
   dag: bqetl_fivetran_costs
-  owner1: lschiestl
+  owner1: srose
 scheduling:
   dag_name: bqetl_fivetran_costs
   date_partition_parameter: null

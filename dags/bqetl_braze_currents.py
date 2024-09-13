@@ -20,7 +20,7 @@ Load Braze current data from GCS into BigQuery
 
 #### Owner
 
-leli@mozilla.com
+cbeck@mozilla.com
 
 #### Tags
 
@@ -30,10 +30,10 @@ leli@mozilla.com
 
 
 default_args = {
-    "owner": "leli@mozilla.com",
+    "owner": "cbeck@mozilla.com",
     "start_date": datetime.datetime(2024, 4, 15, 0, 0),
     "end_date": None,
-    "email": ["leli@mozilla.com"],
+    "email": ["cbeck@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),
     "email_on_failure": True,
@@ -66,8 +66,8 @@ with DAG(
             "--event-type=users.messages.email.Click",
         ],
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="leli@mozilla.com",
-        email=["leli@mozilla.com"],
+        owner="cbeck@mozilla.com",
+        email=["cbeck@mozilla.com"],
     )
 
     braze_external__braze_currents_firefox_conversion__v1 = GKEPodOperator(
@@ -85,8 +85,8 @@ with DAG(
             "--event-type=users.campaigns.Conversion",
         ],
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="leli@mozilla.com",
-        email=["leli@mozilla.com"],
+        owner="cbeck@mozilla.com",
+        email=["cbeck@mozilla.com"],
     )
 
     braze_external__braze_currents_firefox_delivery__v1 = GKEPodOperator(
@@ -104,8 +104,8 @@ with DAG(
             "--event-type=users.messages.email.Delivery",
         ],
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="leli@mozilla.com",
-        email=["leli@mozilla.com"],
+        owner="cbeck@mozilla.com",
+        email=["cbeck@mozilla.com"],
     )
 
     braze_external__braze_currents_firefox_global_state_changes__v1 = GKEPodOperator(
@@ -123,8 +123,8 @@ with DAG(
             "--event-type=users.behaviors.subscription.GlobalStateChange",
         ],
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="leli@mozilla.com",
-        email=["leli@mozilla.com"],
+        owner="cbeck@mozilla.com",
+        email=["cbeck@mozilla.com"],
     )
 
     braze_external__braze_currents_firefox_hard_bounces__v1 = GKEPodOperator(
@@ -142,8 +142,8 @@ with DAG(
             "--event-type=users.messages.email.Bounce",
         ],
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="leli@mozilla.com",
-        email=["leli@mozilla.com"],
+        owner="cbeck@mozilla.com",
+        email=["cbeck@mozilla.com"],
     )
 
     with TaskGroup(
@@ -175,8 +175,8 @@ with DAG(
             "--event-type=users.messages.email.MarkAsSpam",
         ],
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="leli@mozilla.com",
-        email=["leli@mozilla.com"],
+        owner="cbeck@mozilla.com",
+        email=["cbeck@mozilla.com"],
     )
 
     braze_external__braze_currents_firefox_open__v1 = GKEPodOperator(
@@ -194,8 +194,8 @@ with DAG(
             "--event-type=users.messages.email.Open",
         ],
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="leli@mozilla.com",
-        email=["leli@mozilla.com"],
+        owner="cbeck@mozilla.com",
+        email=["cbeck@mozilla.com"],
     )
 
     braze_external__braze_currents_firefox_send__v1 = GKEPodOperator(
@@ -213,8 +213,8 @@ with DAG(
             "--event-type=users.messages.email.Send",
         ],
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="leli@mozilla.com",
-        email=["leli@mozilla.com"],
+        owner="cbeck@mozilla.com",
+        email=["cbeck@mozilla.com"],
     )
 
     braze_external__braze_currents_firefox_soft_bounce__v1 = GKEPodOperator(
@@ -232,8 +232,8 @@ with DAG(
             "--event-type=users.messages.email.SoftBounce",
         ],
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="leli@mozilla.com",
-        email=["leli@mozilla.com"],
+        owner="cbeck@mozilla.com",
+        email=["cbeck@mozilla.com"],
     )
 
     braze_external__braze_currents_firefox_state_changes__v1 = GKEPodOperator(
@@ -251,8 +251,8 @@ with DAG(
             "--event-type=users.behaviors.subscriptiongroup.StateChange",
         ],
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="leli@mozilla.com",
-        email=["leli@mozilla.com"],
+        owner="cbeck@mozilla.com",
+        email=["cbeck@mozilla.com"],
     )
 
     braze_external__braze_currents_firefox_unsubscribe__v1 = GKEPodOperator(
@@ -270,8 +270,8 @@ with DAG(
             "--event-type=users.messages.email.Unsubscribe",
         ],
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="leli@mozilla.com",
-        email=["leli@mozilla.com"],
+        owner="cbeck@mozilla.com",
+        email=["cbeck@mozilla.com"],
     )
 
     with TaskGroup(
@@ -303,8 +303,8 @@ with DAG(
             "--event-type=users.messages.email.Click",
         ],
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="leli@mozilla.com",
-        email=["leli@mozilla.com"],
+        owner="cbeck@mozilla.com",
+        email=["cbeck@mozilla.com"],
     )
 
     braze_external__braze_currents_mozilla_conversion__v1 = GKEPodOperator(
@@ -322,8 +322,8 @@ with DAG(
             "--event-type=users.campaigns.Conversion",
         ],
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="leli@mozilla.com",
-        email=["leli@mozilla.com"],
+        owner="cbeck@mozilla.com",
+        email=["cbeck@mozilla.com"],
     )
 
     braze_external__braze_currents_mozilla_delivery__v1 = GKEPodOperator(
@@ -341,8 +341,8 @@ with DAG(
             "--event-type=users.messages.email.Delivery",
         ],
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="leli@mozilla.com",
-        email=["leli@mozilla.com"],
+        owner="cbeck@mozilla.com",
+        email=["cbeck@mozilla.com"],
     )
 
     braze_external__braze_currents_mozilla_global_state_changes__v1 = GKEPodOperator(
@@ -360,8 +360,8 @@ with DAG(
             "--event-type=users.behaviors.subscription.GlobalStateChange",
         ],
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="leli@mozilla.com",
-        email=["leli@mozilla.com"],
+        owner="cbeck@mozilla.com",
+        email=["cbeck@mozilla.com"],
     )
 
     braze_external__braze_currents_mozilla_hard_bounces__v1 = GKEPodOperator(
@@ -379,8 +379,8 @@ with DAG(
             "--event-type=users.messages.email.Bounce",
         ],
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="leli@mozilla.com",
-        email=["leli@mozilla.com"],
+        owner="cbeck@mozilla.com",
+        email=["cbeck@mozilla.com"],
     )
 
     with TaskGroup(
@@ -412,8 +412,8 @@ with DAG(
             "--event-type=users.messages.email.MarkAsSpam",
         ],
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="leli@mozilla.com",
-        email=["leli@mozilla.com"],
+        owner="cbeck@mozilla.com",
+        email=["cbeck@mozilla.com"],
     )
 
     braze_external__braze_currents_mozilla_open__v1 = GKEPodOperator(
@@ -431,8 +431,8 @@ with DAG(
             "--event-type=users.messages.email.Open",
         ],
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="leli@mozilla.com",
-        email=["leli@mozilla.com"],
+        owner="cbeck@mozilla.com",
+        email=["cbeck@mozilla.com"],
     )
 
     braze_external__braze_currents_mozilla_send__v1 = GKEPodOperator(
@@ -450,8 +450,8 @@ with DAG(
             "--event-type=users.messages.email.Send",
         ],
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="leli@mozilla.com",
-        email=["leli@mozilla.com"],
+        owner="cbeck@mozilla.com",
+        email=["cbeck@mozilla.com"],
     )
 
     braze_external__braze_currents_mozilla_soft_bounce__v1 = GKEPodOperator(
@@ -469,8 +469,8 @@ with DAG(
             "--event-type=users.messages.email.SoftBounce",
         ],
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="leli@mozilla.com",
-        email=["leli@mozilla.com"],
+        owner="cbeck@mozilla.com",
+        email=["cbeck@mozilla.com"],
     )
 
     braze_external__braze_currents_mozilla_state_changes__v1 = GKEPodOperator(
@@ -488,6 +488,6 @@ with DAG(
             "--event-type=users.behaviors.subscriptiongroup.StateChange",
         ],
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="leli@mozilla.com",
-        email=["leli@mozilla.com"],
+        owner="cbeck@mozilla.com",
+        email=["cbeck@mozilla.com"],
     )

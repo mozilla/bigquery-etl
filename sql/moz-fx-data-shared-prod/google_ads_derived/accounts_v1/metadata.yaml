@@ -2,10 +2,10 @@ friendly_name: Accounts
 description: |-
   Account information for different Google Ads accounts
 owners:
-- lschiestl@mozilla.com
+- frank@mozilla.com
 labels:
   dag: bqetl_fivetran_google_ads
-  owner1: lschiestl
+  owner1: frank
 scheduling:
   scheduling: null
   dag_name: bqetl_fivetran_google_ads

@@ -17,6 +17,7 @@ from ..cli.dryrun import dryrun
 from ..cli.format import format
 from ..cli.generate import generate
 from ..cli.metadata import metadata
+from ..cli.monitoring import monitoring
 from ..cli.query import query
 from ..cli.routine import mozfun, routine
 from ..cli.stage import stage
@@ -54,6 +55,7 @@ def cli(prog_name=None):
         "backfill": backfill,
         "check": check,
         "metadata": metadata,
+        "monitoring": monitoring,
     }
 
     @click.group(commands=commands)

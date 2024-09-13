@@ -1,3 +1,5 @@
+"""Test cases for shredder mitigation."""
+
 import os
 from datetime import date, datetime, time
 from pathlib import Path
@@ -5,8 +7,10 @@ from unittest.mock import call, patch
 
 import click
 import pytest
+import yaml
 from click.exceptions import ClickException
 from click.testing import CliRunner
+from gcloud import bigquery  # type: ignore
 
 from bigquery_etl.backfill.shredder_mitigation import (
     PREVIOUS_DATE,
@@ -19,11 +23,15 @@ from bigquery_etl.backfill.shredder_mitigation import (
     classify_columns,
     generate_query_with_shredder_mitigation,
     get_bigquery_type,
+    validate_types,
 )
 
 
-class TestClassifyColumns(object):
+class TestClassifyColumns:
+    """Test cases for function classify_columns."""
+
     def test_new_numeric_dimension(self):
+        """Test adding a numeric dimension."""
         new_row = {
             "submission_date": "2024-01-01",
             "app_name": "Browser",
@@ -46,6 +54,23 @@ class TestClassifyColumns(object):
             "channel",
             "first_seen_year",
             "os_build",
+        ]
+        existing_schema = [
+            bigquery.SchemaField("submission_date", "DATE", "NULLABLE", None, None),
+            bigquery.SchemaField("app_name", "STRING", "NULLABLE", None, None),
+            bigquery.SchemaField("channel", "STRING", "NULLABLE", None, None),
+            bigquery.SchemaField("first_seen_year", "INT", "NULLABLE", None, None),
+            bigquery.SchemaField("os", "STRING", "NULLABLE", None, None),
+            bigquery.SchemaField("metric_numeric", "NUMERIC", "NULLABLE", None, None),
+        ]
+        new_schema = [
+            bigquery.SchemaField("submission_date", "DATE", "NULLABLE", None, None),
+            bigquery.SchemaField("app_name", "STRING", "NULLABLE", None, None),
+            bigquery.SchemaField("channel", "STRING", "NULLABLE", None, None),
+            bigquery.SchemaField("first_seen_year", "INT", "NULLABLE", None, None),
+            bigquery.SchemaField("os_build", "STRING", "NULLABLE", None, None),
+            bigquery.SchemaField("metric_numeric", "NUMERIC", "NULLABLE", None, None),
+            bigquery.SchemaField("metric_float", "FLOAT", "NULLABLE", None, None),
         ]
 
         expected_common_dimensions = [
@@ -87,7 +112,7 @@ class TestClassifyColumns(object):
         expected_removed_dimensions = [
             Column(
                 name="os",
-                data_type=DataTypeGroup.UNDETERMINED,
+                data_type=DataTypeGroup.STRING,
                 column_type=ColumnType.UNDETERMINED,
                 status=ColumnStatus.REMOVED,
             )
@@ -102,14 +127,16 @@ class TestClassifyColumns(object):
             ),
             Column(
                 name="metric_numeric",
-                data_type=DataTypeGroup.INTEGER,
+                data_type=DataTypeGroup.NUMERIC,
                 column_type=ColumnType.METRIC,
                 status=ColumnStatus.COMMON,
             ),
         ]
 
         common_dimensions, added_dimensions, removed_dimensions, metrics, undefined = (
-            classify_columns(new_row, existing_columns, new_columns)
+            classify_columns(
+                new_row, existing_columns, new_columns, existing_schema, new_schema
+            )
         )
 
         assert common_dimensions == expected_common_dimensions
@@ -119,6 +146,7 @@ class TestClassifyColumns(object):
         assert undefined == []
 
     def test_new_boolean_dimension(self):
+        """Test adding a boolean dimension."""
         new_row = {
             "submission_date": "2024-01-01",
             "metric_float": 10.000,
@@ -133,6 +161,23 @@ class TestClassifyColumns(object):
             "channel",
             "first_seen_year",
             "is_default_browser",
+        ]
+        existing_schema = [
+            bigquery.SchemaField("submission_date", "DATE", "NULLABLE", None, None),
+            bigquery.SchemaField("channel", "STRING", "NULLABLE", None, None),
+            bigquery.SchemaField("first_seen_year", "INT", "NULLABLE", None, None),
+            bigquery.SchemaField("metric_numeric", "NUMERIC", "NULLABLE", None, None),
+            bigquery.SchemaField("metric_float", "FLOAT", "NULLABLE", None, None),
+        ]
+        new_schema = [
+            bigquery.SchemaField("submission_date", "DATE", "NULLABLE", None, None),
+            bigquery.SchemaField("channel", "STRING", "NULLABLE", None, None),
+            bigquery.SchemaField("first_seen_year", "INT", "NULLABLE", None, None),
+            bigquery.SchemaField(
+                "is_default_browser", "BOOLEAN", "NULLABLE", None, None
+            ),
+            bigquery.SchemaField("metric_numeric", "NUMERIC", "NULLABLE", None, None),
+            bigquery.SchemaField("metric_float", "FLOAT", "NULLABLE", None, None),
         ]
 
         expected_common_dimensions = [
@@ -176,14 +221,16 @@ class TestClassifyColumns(object):
             ),
             Column(
                 name="metric_numeric",
-                data_type=DataTypeGroup.INTEGER,
+                data_type=DataTypeGroup.NUMERIC,
                 column_type=ColumnType.METRIC,
                 status=ColumnStatus.COMMON,
             ),
         ]
 
         common_dimensions, added_dimensions, removed_dimensions, metrics, undefined = (
-            classify_columns(new_row, existing_columns, new_columns)
+            classify_columns(
+                new_row, existing_columns, new_columns, existing_schema, new_schema
+            )
         )
 
         assert common_dimensions == expected_common_dimensions
@@ -193,6 +240,7 @@ class TestClassifyColumns(object):
         assert undefined == []
 
     def test_removed_numeric_dimension(self):
+        """Test removing numeric dimension and metric_integer."""
         new_row = {
             "submission_date": "2024-01-01",
             "metric_float": 1.00003496056549640598605498605486,
@@ -207,6 +255,25 @@ class TestClassifyColumns(object):
             "is_default_browser",
         ]
         new_columns = ["submission_date", "channel", "is_default_browser"]
+        existing_schema = [
+            bigquery.SchemaField("submission_date", "DATE", "NULLABLE", None, None),
+            bigquery.SchemaField("channel", "STRING", "NULLABLE", None, None),
+            bigquery.SchemaField("first_seen_year", "INT", "NULLABLE", None, None),
+            bigquery.SchemaField(
+                "is_default_browser", "BOOLEAN", "NULLABLE", None, None
+            ),
+            bigquery.SchemaField("metric_integer", "INTEGER", "NULLABLE", None, None),
+            bigquery.SchemaField("metric_float", "FLOAT", "NULLABLE", None, None),
+        ]
+        new_schema = [
+            bigquery.SchemaField("submission_date", "DATE", "NULLABLE", None, None),
+            bigquery.SchemaField("channel", "STRING", "NULLABLE", None, None),
+            bigquery.SchemaField(
+                "is_default_browser", "BOOLEAN", "NULLABLE", None, None
+            ),
+            bigquery.SchemaField("metric_numeric", "NUMERIC", "NULLABLE", None, None),
+            bigquery.SchemaField("metric_float", "FLOAT", "NULLABLE", None, None),
+        ]
 
         expected_common_dimensions = [
             Column(
@@ -234,7 +301,7 @@ class TestClassifyColumns(object):
         expected_removed_dimensions = [
             Column(
                 name="first_seen_year",
-                data_type=DataTypeGroup.UNDETERMINED,
+                data_type=DataTypeGroup.INTEGER,
                 column_type=ColumnType.UNDETERMINED,
                 status=ColumnStatus.REMOVED,
             )
@@ -249,14 +316,16 @@ class TestClassifyColumns(object):
             ),
             Column(
                 name="metric_numeric",
-                data_type=DataTypeGroup.INTEGER,
+                data_type=DataTypeGroup.NUMERIC,
                 column_type=ColumnType.METRIC,
                 status=ColumnStatus.COMMON,
             ),
         ]
 
         common_dimensions, added_dimensions, removed_dimensions, metrics, undefined = (
-            classify_columns(new_row, existing_columns, new_columns)
+            classify_columns(
+                new_row, existing_columns, new_columns, existing_schema, new_schema
+            )
         )
 
         assert common_dimensions == expected_common_dimensions
@@ -266,6 +335,7 @@ class TestClassifyColumns(object):
         assert undefined == []
 
     def test_new_multiple_dimensions_including_from_values_none(self):
+        """Test adding multiple dimensions."""
         new_row = {
             "submission_date": "2024-01-01",
             "os_version": "10.1",
@@ -288,6 +358,28 @@ class TestClassifyColumns(object):
             "os_version",
             "os_version_build",
             "segment",
+        ]
+        existing_schema = [
+            bigquery.SchemaField("submission_date", "DATE", "NULLABLE", None, None),
+            bigquery.SchemaField("channel", "STRING", "NULLABLE", None, None),
+            bigquery.SchemaField("first_seen_year", "INT", "NULLABLE", None, None),
+            bigquery.SchemaField(
+                "is_default_browser", "BOOLEAN", "NULLABLE", None, None
+            ),
+            bigquery.SchemaField("metric_integer", "INTEGER", "NULLABLE", None, None),
+            bigquery.SchemaField("metric_float", "FLOAT", "NULLABLE", None, None),
+        ]
+        new_schema = [
+            bigquery.SchemaField("submission_date", "DATE", "NULLABLE", None, None),
+            bigquery.SchemaField("channel", "STRING", "NULLABLE", None, None),
+            bigquery.SchemaField(
+                "is_default_browser", "BOOLEAN", "NULLABLE", None, None
+            ),
+            bigquery.SchemaField("os_version", "STRING", "NULLABLE", None, None),
+            bigquery.SchemaField("os_version_build", "STRING", "NULLABLE", None, None),
+            bigquery.SchemaField("segment", "STRING", "NULLABLE", None, None),
+            bigquery.SchemaField("metric_numeric", "NUMERIC", "NULLABLE", None, None),
+            bigquery.SchemaField("metric_float", "FLOAT", "NULLABLE", None, None),
         ]
 
         expected_common_dimensions = [
@@ -320,13 +412,13 @@ class TestClassifyColumns(object):
             ),
             Column(
                 name="os_version_build",
-                data_type=DataTypeGroup.UNDETERMINED,
+                data_type=DataTypeGroup.STRING,
                 column_type=ColumnType.DIMENSION,
                 status=ColumnStatus.ADDED,
             ),
             Column(
                 name="segment",
-                data_type=DataTypeGroup.UNDETERMINED,
+                data_type=DataTypeGroup.STRING,
                 column_type=ColumnType.DIMENSION,
                 status=ColumnStatus.ADDED,
             ),
@@ -335,7 +427,7 @@ class TestClassifyColumns(object):
         expected_removed_dimensions = [
             Column(
                 name="first_seen_year",
-                data_type=DataTypeGroup.UNDETERMINED,
+                data_type=DataTypeGroup.INTEGER,
                 column_type=ColumnType.UNDETERMINED,
                 status=ColumnStatus.REMOVED,
             )
@@ -351,7 +443,9 @@ class TestClassifyColumns(object):
         ]
 
         common_dimensions, added_dimensions, removed_dimensions, metrics, undefined = (
-            classify_columns(new_row, existing_columns, new_columns)
+            classify_columns(
+                new_row, existing_columns, new_columns, existing_schema, new_schema
+            )
         )
 
         assert common_dimensions == expected_common_dimensions
@@ -361,20 +455,35 @@ class TestClassifyColumns(object):
         assert undefined == []
 
     def test_new_metrics(self):
+        """Test that metrics added in new version are identified correctly."""
         new_row = {
             "submission_date": "2024-01-01",
-            "metric_float": 1.00003496056549640598605498605486,
+            "metric_float": 10000349605654964059860549860.520397593485486,
             "channel": None,
             "metric_bigint": 10000349605654964059860549860520397593485486,
-            "metric_int": 2024,
+            "metric_numeric": 10000349605654964059860549860.520397593485486,
         }
         existing_columns = ["submission_date", "channel"]
         new_columns = ["submission_date", "channel"]
+        existing_schema = [
+            bigquery.SchemaField("submission_date", "DATE", "NULLABLE", None, None),
+            bigquery.SchemaField("channel", "STRING", "NULLABLE", None, None),
+            bigquery.SchemaField("metric_float", "FLOAT", "NULLABLE", None, None),
+            bigquery.SchemaField("metric_numeric", "NUMERIC", "NULLABLE", None, None),
+            bigquery.SchemaField("metric_bigint", "INTEGER", "NULLABLE", None, None),
+        ]
+        new_schema = [
+            bigquery.SchemaField("submission_date", "DATE", "NULLABLE", None, None),
+            bigquery.SchemaField("channel", "STRING", "NULLABLE", None, None),
+            bigquery.SchemaField("metric_float", "FLOAT", "NULLABLE", None, None),
+            bigquery.SchemaField("metric_numeric", "NUMERIC", "NULLABLE", None, None),
+            bigquery.SchemaField("metric_bigint", "INTEGER", "NULLABLE", None, None),
+        ]
 
         expected_common_dimensions = [
             Column(
                 name="channel",
-                data_type=DataTypeGroup.UNDETERMINED,
+                data_type=DataTypeGroup.STRING,
                 column_type=ColumnType.DIMENSION,
                 status=ColumnStatus.COMMON,
             ),
@@ -404,15 +513,17 @@ class TestClassifyColumns(object):
                 status=ColumnStatus.COMMON,
             ),
             Column(
-                name="metric_int",
-                data_type=DataTypeGroup.INTEGER,
+                name="metric_numeric",
+                data_type=DataTypeGroup.NUMERIC,
                 column_type=ColumnType.METRIC,
                 status=ColumnStatus.COMMON,
             ),
         ]
 
         common_dimensions, added_dimensions, removed_dimensions, metrics, undefined = (
-            classify_columns(new_row, existing_columns, new_columns)
+            classify_columns(
+                new_row, existing_columns, new_columns, existing_schema, new_schema
+            )
         )
         assert common_dimensions == expected_common_dimensions
         assert added_dimensions == expected_added_dimensions
@@ -421,6 +532,7 @@ class TestClassifyColumns(object):
         assert undefined == []
 
     def test_not_matching_new_row_and_new_columns(self):
+        """Test output when data in bigquery doesn't match columns in group by."""
         new_row = {
             "submission_date": "2024-01-01",
             "channel": None,
@@ -429,19 +541,39 @@ class TestClassifyColumns(object):
         }
         existing_columns = ["submission_date", "channel"]
         new_columns = ["submission_date", "channel", "os", "is_default_browser"]
-        expected_exception_text = "Existing dimensions don't match columns retrieved by query. Missing ['is_default_browser']."
+        existing_schema = [
+            bigquery.SchemaField("submission_date", "DATE", "NULLABLE", None, None),
+            bigquery.SchemaField("channel", "STRING", "NULLABLE", None, None),
+            bigquery.SchemaField("metric_float", "FLOAT", "NULLABLE", None, None),
+        ]
+        new_schema = [
+            bigquery.SchemaField("submission_date", "DATE", "NULLABLE", None, None),
+            bigquery.SchemaField("channel", "STRING", "NULLABLE", None, None),
+            bigquery.SchemaField("os", "STRING", "NULLABLE", None, None),
+            bigquery.SchemaField(
+                "is_default_browser", "BOOLEAN", "NULLABLE", None, None
+            ),
+            bigquery.SchemaField("metric_float", "FLOAT", "NULLABLE", None, None),
+        ]
+        expected_exception_text = (
+            "Existing dimensions don't match columns retrieved by query."
+            " Missing ['is_default_browser']."
+        )
         with pytest.raises(ClickException) as e:
-            classify_columns(new_row, existing_columns, new_columns)
+            classify_columns(
+                new_row, existing_columns, new_columns, existing_schema, new_schema
+            )
         assert (str(e.value.message)) == expected_exception_text
 
     def test_missing_parameters(self):
+        """Test output when the parameters to classify columns are incomplete."""
         new_row = {}
         expected_exception_text = (
             f"\n\nMissing one or more required parameters. Received:\nnew_row= {new_row}\n"
             f"existing_dimension_columns= [],\nnew_dimension_columns= []."
         )
         with pytest.raises(ClickException) as e:
-            classify_columns(new_row, [], [])
+            classify_columns(new_row, [], [], None, None)
         assert (str(e.value.message)) == expected_exception_text
 
         new_row = {"column_1": "2024-01-01", "column_2": "Windows"}
@@ -451,22 +583,32 @@ class TestClassifyColumns(object):
             f"existing_dimension_columns= [],\nnew_dimension_columns= {new_columns}."
         )
         with pytest.raises(ClickException) as e:
-            classify_columns(new_row, [], new_columns)
+            classify_columns(new_row, [], new_columns, None, None)
         assert (str(e.value.message)) == expected_exception_text
 
         new_row = {"column_1": "2024-01-01", "column_2": "Windows"}
         existing_columns = ["column_1"]
+        existing_schema = [
+            bigquery.SchemaField("column1", "DATE", "NULLABLE", None, None)
+        ]
+        new_schema = [
+            bigquery.SchemaField("column1", "DATE", "NULLABLE", None, None),
+            bigquery.SchemaField("column2", "STRING", "NULLABLE", None, None),
+        ]
         expected_exception_text = (
             f"\n\nMissing one or more required parameters. Received:\nnew_row= {new_row}\n"
             f"existing_dimension_columns= {existing_columns},\nnew_dimension_columns= []."
         )
         with pytest.raises(ClickException) as e:
-            classify_columns(new_row, existing_columns, [])
+            classify_columns(new_row, existing_columns, [], existing_schema, new_schema)
         assert (str(e.value.message)) == expected_exception_text
 
 
-class TestGetBigqueryType(object):
+class TestGetBigqueryType:
+    """Test cases for function get_bigquery_type"""
+
     def test_numeric_group(self):
+        """Test function get_bigquery_type with numeric types."""
         assert get_bigquery_type(3) == DataTypeGroup.INTEGER
         assert get_bigquery_type(2024) == DataTypeGroup.INTEGER
         assert get_bigquery_type(9223372036854775807) == DataTypeGroup.INTEGER
@@ -479,10 +621,12 @@ class TestGetBigqueryType(object):
         assert get_bigquery_type(100000000000000000000.123456789) == DataTypeGroup.FLOAT
 
     def test_boolean_group(self):
+        """Test function get_bigquery_type with boolean types."""
         assert get_bigquery_type(False) == DataTypeGroup.BOOLEAN
         assert get_bigquery_type(True) == DataTypeGroup.BOOLEAN
 
     def test_date_type(self):
+        """Test function get_bigquery_type with datetime types."""
         assert get_bigquery_type("2024-01-01") == DataTypeGroup.DATE
         assert get_bigquery_type("2024-01-01T10:00:00") == DataTypeGroup.DATETIME
         assert get_bigquery_type("2024-01-01T10:00:00Z") == DataTypeGroup.TIMESTAMP
@@ -495,11 +639,78 @@ class TestGetBigqueryType(object):
         assert get_bigquery_type(date(2024, 12, 26)) == DataTypeGroup.DATE
 
     def test_other_types(self):
+        """Test function get_bigquery_type with other types."""
         assert get_bigquery_type("2024") == DataTypeGroup.STRING
         assert get_bigquery_type(None) == DataTypeGroup.UNDETERMINED
 
 
-class TestSubset(object):
+class TestValidateTypes:
+    """Test cases for function ValidateTypes"""
+
+    columns = ["column1", "column2", "column3"]
+    schema = [
+        bigquery.SchemaField("column1", "STRING", "NULLABLE", None, None),
+        bigquery.SchemaField("column2", "STRING", "NULLABLE", None, None),
+        bigquery.SchemaField("column3", "NUMERIC", "NULLABLE", None, None),
+    ]
+
+    def test_validate_types_match(self):
+        """ "Test that types match the expected result."""
+        sample_row = {"column1": "abcd", "column2": "wxyz", "column3": 1234.105}
+        result = validate_types(self.columns, self.schema, sample_row)
+
+        assert result == {
+            "column1": DataTypeGroup.STRING,
+            "column2": DataTypeGroup.STRING,
+            "column3": DataTypeGroup.NUMERIC,
+        }
+
+    def test_validate_types_mismatch(self):
+        """ "Test that type in the schema is returned even if sample row returns a different type."""
+        sample_row = {"column1": "abcd", "column2": "wxyz", "column3": "I am a STRING"}
+        result = validate_types(self.columns, self.schema, sample_row)
+
+        assert result == {
+            "column1": DataTypeGroup.STRING,
+            "column2": DataTypeGroup.STRING,
+            "column3": DataTypeGroup.NUMERIC,
+        }
+
+    def test_validate_types_missing_column_in_schema(self):
+        """Test function get_bigquery_type when columns are not found in schema file."""
+        names = ["column1", "column2", "column_not_in_schema"]
+        schema = [
+            bigquery.SchemaField("column1", "STRING", "NULLABLE", None),
+            bigquery.SchemaField("column2", "STRING", "NULLABLE", None),
+        ]
+        sample_row = {
+            "column1": "abcd",
+            "column2": "wxyz",
+            "column_not_in_schema": 1234,
+        }
+        result = validate_types(names, schema, sample_row)
+
+        assert result == {
+            "column1": DataTypeGroup.STRING,
+            "column2": DataTypeGroup.STRING,
+            "column_not_in_schema": DataTypeGroup.INTEGER,
+        }
+
+    def test_validate_types_missing_data(self):
+        """Test function get_bigquery_type when columns are not found in bigquery data."""
+        sample_row = {"column1": "abcd", "column2": None}
+        result = validate_types(self.columns, self.schema, sample_row)
+
+        assert result == {
+            "column1": DataTypeGroup.STRING,
+            "column2": DataTypeGroup.STRING,
+            "column3": DataTypeGroup.NUMERIC,
+        }
+
+
+class TestSubset:
+    """Test cases for the methods in class Subset."""
+
     project_id = "moz-fx-data-shared-prod"
     dataset = "test"
     destination_table = "test_query_v2"
@@ -513,6 +724,7 @@ class TestSubset(object):
 
     @patch("google.cloud.bigquery.Client")
     def test_version(self, mock_client):
+        """Test valid version in destinatino table."""
         test_tables_correct = [
             ("test_v1", 1),
             ("test_v10", 10),
@@ -559,7 +771,8 @@ class TestSubset(object):
             os.makedirs(Path(self.path), exist_ok=True)
             with open(Path(self.path) / "metadata.yaml", "w") as f:
                 f.write(
-                    "bigquery:\n  time_partitioning:\n    type: day\n    field: submission_date\n    require_partition_filter: true"
+                    "bigquery:\n  time_partitioning:\n    type: day\n    field: submission_date\n"
+                    "    require_partition_filter: true"
                 )
             assert test_subset.partitioning == {
                 "field": "submission_date",
@@ -568,7 +781,8 @@ class TestSubset(object):
 
             with open(Path(self.path) / "metadata.yaml", "w") as f:
                 f.write(
-                    "bigquery:\n  time_partitioning:\n    type: day\n    field: first_seen_date\n    require_partition_filter: true"
+                    "bigquery:\n  time_partitioning:\n    type: day\n    "
+                    "field: first_seen_date\n    require_partition_filter: true"
                 )
             assert test_subset.partitioning == {
                 "field": "first_seen_date",
@@ -583,7 +797,7 @@ class TestSubset(object):
 
     @patch("google.cloud.bigquery.Client")
     def test_generate_query(self, mock_client):
-        """Test cases: aggregate, different columns, different metrics, missing metrics, added columns / metrics"""
+        """Test method generate_query with expected subset queries and exceptions."""
         test_subset = Subset(
             mock_client,
             self.destination_table,
@@ -718,11 +932,12 @@ class TestSubset(object):
             assert result == expected
 
     def test_generate_check_with_previous_version(self):
+        """Test the auto-generation of data checks."""
         assert True
 
 
-class TestGenerateQueryWithShredderMitigation(object):
-    """Test the function that generates the query for the backfill."""
+class TestGenerateQueryWithShredderMitigation:
+    """Test function generate_query_with_shredder_mitigation and returned query for backfill."""
 
     project_id = "moz-fx-data-shared-prod"
     dataset = "test"
@@ -733,6 +948,7 @@ class TestGenerateQueryWithShredderMitigation(object):
 
     @pytest.fixture
     def runner(self):
+        """Runner"""
         return CliRunner()
 
     @patch("google.cloud.bigquery.Client")
@@ -787,7 +1003,7 @@ class TestGenerateQueryWithShredderMitigation(object):
                             previous_agg.submission_date,
                             previous_agg.column_1,
                             CAST(NULL AS STRING) AS column_2,
-                            previous_agg.metric_1 - IFNULL(new_agg.metric_1, 0) AS metric_1
+                            COALESCE(previous_agg.metric_1, 0) - COALESCE(new_agg.metric_1, 0) AS metric_1
                           FROM
                             previous_agg
                           LEFT JOIN
@@ -795,7 +1011,7 @@ class TestGenerateQueryWithShredderMitigation(object):
                             ON previous_agg.submission_date = new_agg.submission_date
                             AND previous_agg.column_1 = new_agg.column_1
                           WHERE
-                            previous_agg.metric_1 > IFNULL(new_agg.metric_1, 0)
+                            COALESCE(previous_agg.metric_1, 0) > COALESCE(new_agg.metric_1, 0)
                         )
                         SELECT
                           column_1,
@@ -811,37 +1027,47 @@ class TestGenerateQueryWithShredderMitigation(object):
                         FROM
                           shredded;""",
         )
+
+        existing_schema = {
+            "fields": [
+                {"name": "column_1", "type": "DATE", "mode": "NULLABLE"},
+                {"name": "metric_1", "type": "INTEGER", "mode": "NULLABLE"},
+            ]
+        }
+        new_schema = {
+            "fields": [
+                {"name": "column_1", "type": "DATE", "mode": "NULLABLE"},
+                {"name": "column_2", "type": "STRING", "mode": "NULLABLE"},
+                {"name": "metric_1", "type": "INTEGER", "mode": "NULLABLE"},
+            ]
+        }
+
         with runner.isolated_filesystem():
             os.makedirs(self.path, exist_ok=True)
             os.makedirs(self.path_previous, exist_ok=True)
-            with open(
-                Path("sql")
-                / self.project_id
-                / self.dataset
-                / self.destination_table
-                / "query.sql",
-                "w",
-            ) as f:
+            with open(self.path / "query.sql", "w") as f:
                 f.write(
-                    "SELECT column_1, column_2, metric_1 FROM upstream_1 GROUP BY column_1, column_2"
+                    "SELECT column_1, column_2, metric_1 FROM upstream_1"
+                    " GROUP BY column_1, column_2"
                 )
-            with open(
-                Path("sql")
-                / self.project_id
-                / self.dataset
-                / self.destination_table_previous
-                / "query.sql",
-                "w",
-            ) as f:
+            with open(self.path_previous / "query.sql", "w") as f:
                 f.write("SELECT column_1, metric_1 FROM upstream_1 GROUP BY column_1")
+
+            with open(self.path / "schema.yaml", "w") as f:
+                f.write(yaml.safe_dump(new_schema))
+
+            with open(self.path_previous / "schema.yaml", "w") as f:
+                f.write(yaml.safe_dump(existing_schema))
 
             with open(Path(self.path) / "metadata.yaml", "w") as f:
                 f.write(
-                    "bigquery:\n  time_partitioning:\n    type: day\n    field: submission_date\n    require_partition_filter: true"
+                    "bigquery:\n  time_partitioning:\n    type: day\n    "
+                    "field: submission_date\n    require_partition_filter: true"
                 )
             with open(Path(self.path_previous) / "metadata.yaml", "w") as f:
                 f.write(
-                    "bigquery:\n  time_partitioning:\n    type: day\n    field: submission_date\n    require_partition_filter: true"
+                    "bigquery:\n  time_partitioning:\n    type: day\n    "
+                    "field: submission_date\n    require_partition_filter: true"
                 )
 
             mock_classify_columns.return_value = (
@@ -893,7 +1119,10 @@ class TestGenerateQueryWithShredderMitigation(object):
     @patch("google.cloud.bigquery.Client")
     def test_missing_previous_version(self, mock_client, runner):
         """Test that the process raises an exception when previous query version is missing."""
-        expected_exc = "Missing an sql file or sql text to extract the group by."
+        expected_exc = (
+            "Function extract_last_group_by_from_query() called without an sql file or "
+            "text to extract the group by."
+        )
 
         with runner.isolated_filesystem():
             path = f"sql/{self.project_id}/{self.dataset}/{self.destination_table}"
@@ -1017,6 +1246,21 @@ class TestGenerateQueryWithShredderMitigation(object):
     def test_generate_query_called_with_correct_parameters(
         self, mock_classify_columns, mock_client, runner
     ):
+        """Test that function generate_query is called with the correct parameters."""
+        existing_schema = {
+            "fields": [
+                {"name": "column_1", "type": "DATE", "mode": "NULLABLE"},
+                {"name": "metric_1", "type": "INTEGER", "mode": "NULLABLE"},
+            ]
+        }
+        new_schema = {
+            "fields": [
+                {"name": "column_1", "type": "DATE", "mode": "NULLABLE"},
+                {"name": "column_2", "type": "STRING", "mode": "NULLABLE"},
+                {"name": "metric_1", "type": "INTEGER", "mode": "NULLABLE"},
+            ]
+        }
+
         with runner.isolated_filesystem():
             os.makedirs(self.path, exist_ok=True)
             os.makedirs(self.path_previous, exist_ok=True)
@@ -1024,7 +1268,8 @@ class TestGenerateQueryWithShredderMitigation(object):
                 f.write("SELECT column_1 FROM upstream_1 GROUP BY column_1")
             with open(Path(self.path) / "metadata.yaml", "w") as f:
                 f.write(
-                    "bigquery:\n  time_partitioning:\n    type: day\n    field: submission_date\n    require_partition_filter: true"
+                    "bigquery:\n  time_partitioning:\n    type: day\n    "
+                    "field: submission_date\n    require_partition_filter: true"
                 )
             with open(Path(self.path_previous) / "query.sql", "w") as f:
                 f.write("SELECT column_1 FROM upstream_1 GROUP BY column_1")
@@ -1033,6 +1278,13 @@ class TestGenerateQueryWithShredderMitigation(object):
                     "bigquery:\n  time_partitioning:\n    type: day\n    "
                     "field: submission_date\n    require_partition_filter: true"
                 )
+            with open(self.path / "schema.yaml", "w") as f:
+                f.write(yaml.safe_dump(new_schema))
+            with open(
+                self.path_previous / "schema.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.safe_dump(existing_schema))
 
             mock_classify_columns.return_value = (
                 [
@@ -1077,7 +1329,7 @@ class TestGenerateQueryWithShredderMitigation(object):
                         backfill_date=PREVIOUS_DATE,
                     )
                     assert mock_generate_query.call_count == 3
-                    mock_generate_query.assert_has_calls(
+                    assert mock_generate_query.call_args_list == (
                         [
                             call(
                                 select_list=[
@@ -1103,11 +1355,14 @@ class TestGenerateQueryWithShredderMitigation(object):
                                     "previous_agg.submission_date",
                                     "previous_agg.column_1",
                                     "CAST(NULL AS STRING) AS column_2",
-                                    "previous_agg.metric_1 - IFNULL(new_agg.metric_1, 0) AS metric_1",
+                                    "COALESCE(previous_agg.metric_1, 0) - "
+                                    "COALESCE(new_agg.metric_1, 0) AS metric_1",
                                 ],
-                                from_clause="previous_agg LEFT JOIN new_agg ON previous_agg.submission_date = "
-                                "new_agg.submission_date AND previous_agg.column_1 = new_agg.column_1 ",
-                                where_clause="previous_agg.metric_1 > IFNULL(new_agg.metric_1, 0)",
+                                from_clause="previous_agg LEFT JOIN new_agg ON "
+                                "previous_agg.submission_date = new_agg.submission_date"
+                                " AND previous_agg.column_1 = new_agg.column_1 ",
+                                where_clause="COALESCE(previous_agg.metric_1, 0) >"
+                                " COALESCE(new_agg.metric_1, 0)",
                             ),
                         ]
                     )

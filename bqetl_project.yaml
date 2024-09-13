@@ -287,7 +287,6 @@ generate:
     - org_mozilla_ios_tiktok_reporter_tiktok_reportershare
     - org_mozilla_tiktokreporter
     - relay_backend  # see https://mozilla-hub.atlassian.net/browse/DENG-3720
-    - ads_backend
     - monitor_backend  # see https://bugzilla.mozilla.org/show_bug.cgi?id=1905444
     events_stream:
       skip_apps:
@@ -305,6 +304,8 @@ generate:
       - accounts_frontend
       - accounts_backend
     events_monitoring:
+      skip_apps:
+      - ads_backend  # restricted dataset, we don't want to include it aggregate view
       skip_pings:
       - topsites-impression # access denied
       - serp-categorization # access denied

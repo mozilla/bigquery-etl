@@ -2,10 +2,10 @@
 version: 2.1
 
 orbs:
-  gcp-gcr: circleci/gcp-gcr@0.13.0
+  gcp-gcr: circleci/gcp-gcr@0.16
   docker: circleci/docker@2.6
   python: circleci/python@2.1.1
-  gcp-cli: circleci/gcp-cli@3.1.1
+  gcp-cli: circleci/gcp-cli@3.2
 
 parameters:
   python-version:
@@ -849,7 +849,8 @@ jobs:
                 command: |
                   rm -rf sql/
                   cp -r /tmp/workspace/private-generated-sql/sql sql
-            - gcp-gcr/gcr-auth
+            - gcp-gcr/gcr-auth:
+                use_oidc: true
             - gcp-gcr/build-image: &private-image
                 image: bigquery-etl
                 tag: ${CIRCLE_TAG:-latest}
@@ -1194,7 +1195,7 @@ workflows:
               only:
                 - main
       - deploy-to-private-gcr:
-          context: data-eng-airflow-gcr
+          context: dataeng-bqetl-gcr
           requires:
             - private-generate-sql
             # can't run in parallel because CIRCLE_BUILD_NUM is same

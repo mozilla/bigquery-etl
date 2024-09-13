@@ -8,6 +8,7 @@ import click
 from bigeye_sdk.authentication.api_authentication import ApiAuth
 from bigeye_sdk.client.datawatch_client import datawatch_client_factory
 from bigeye_sdk.controller.metric_suite_controller import MetricSuiteController
+from bigeye_sdk.exceptions.exceptions import FileLoadException
 from bigeye_sdk.model.big_config import BigConfig, TableDeployment, TableDeploymentSuite
 from bigeye_sdk.model.protobuf_message_facade import (
     SimpleMetricDefinition,
@@ -60,19 +61,29 @@ def deploy(
         name, sql_dir, project_id=project_id, files=["metadata.yaml"]
     )
 
-    for metadata_file in metadata_files:
+    for metadata_file in list(set(metadata_files)):
         project, dataset, table = extract_from_query_path(metadata_file)
         try:
             metadata = Metadata.from_file(metadata_file)
             if metadata.monitoring and metadata.monitoring.enabled:
-                ctx.invoke(update, name=name, sql_dir=sql_dir, project_id=project_id)
+                ctx.invoke(
+                    update,
+                    name=metadata_file.parent,
+                    sql_dir=sql_dir,
+                    project_id=project_id,
+                )
                 api_auth = ApiAuth.load_from_ini_file(
                     auth_file=ApiAuth.find_user_credentials(None), workspace=workspace
                 )  # load user credentials from BIGEYE_API_CONFIG_FILE env variable
                 client = datawatch_client_factory(api_auth, workspace_id=463)
                 mc = MetricSuiteController(client=client)
 
-                ctx.invoke(validate, name=name, sql_dir=sql_dir, project_id=project_id)
+                ctx.invoke(
+                    validate,
+                    name=metadata_file.parent,
+                    sql_dir=sql_dir,
+                    project_id=project_id,
+                )
                 mc.execute_bigconfig(
                     input_path=[metadata_file.parent / BIGCONFIG_FILE],
                     output_path=Path(sql_dir).parent if sql_dir else None,
@@ -175,9 +186,15 @@ def validate(name: str, sql_dir: Optional[str], project_id: Optional[str]) -> No
 
     invalid = False
 
-    for bigconfig_file in bigconfig_files:
+    for bigconfig_file in list(set(bigconfig_files)):
         try:
             BigConfig.load(bigconfig_file)
+        except FileLoadException as e:
+            if "Duplicate" in e.message:
+                pass
+            else:
+                click.echo(f"Invalid BigConfig file {bigconfig_file}: {e}")
+                invalid = True
         except Exception as e:
             click.echo(f"Invalid BigConfig file {bigconfig_file}: {e}")
             invalid = True

@@ -198,8 +198,16 @@ class EventMonitoringLive(GleanTable):
 
         event_tables_per_dataset = OrderedDict()
 
+        # Skip any not-allowed app.
+        skip_apps = ConfigLoader.get(
+            "generate", "glean_usage", "events_monitoring", "skip_apps", fallback=[]
+        )
+
         for app in apps:
             for app_dataset in app:
+                if app_dataset["app_name"] in skip_apps:
+                    continue
+
                 dataset = app_dataset["bq_dataset_family"]
                 app_name = [
                     app_dataset["app_name"]

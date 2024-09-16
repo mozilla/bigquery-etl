@@ -167,6 +167,7 @@ def _get_keyed_histogram_sql(probes_and_buckets):
             SPLIT(application.version, '.')[OFFSET(0)] AS app_version,
             application.build_id AS app_build_id,
             normalized_channel AS channel,
+            profile_group_id,
             ARRAY<STRUCT<
                 name STRING,
                 metric_type STRING,
@@ -183,6 +184,7 @@ def _get_keyed_histogram_sql(probes_and_buckets):
               submission_date,
               sample_id,
               client_id,
+              profile_group_id,
               os,
               app_version,
               app_build_id,
@@ -208,7 +210,8 @@ def _get_keyed_histogram_sql(probes_and_buckets):
             app_build_id,
             channel,
             process,
-            {probes_string}
+            {probes_string},
+            max(profile_group_id) AS profile_group_id,
             FROM flattened_metrics
             GROUP BY
                 sample_id,
@@ -253,7 +256,8 @@ def _get_keyed_histogram_sql(probes_and_buckets):
                 'summed_histogram',
                 bucket_range[OFFSET(0)],
                 udf_aggregate_json_sum(value)
-            )) AS histogram_aggregates
+            )) AS histogram_aggregates,
+            MAX(profile_group_id) AS profile_group_id,
         FROM aggregated
         GROUP BY
             sample_id,
@@ -344,7 +348,8 @@ def get_histogram_probes_sql_strings(probes_and_buckets, histogram_type):
             process,
             'summed_histogram',
             bucket_range[OFFSET(0)],
-            udf_aggregate_json_sum(value))) AS histogram_aggregates
+            udf_aggregate_json_sum(value))) AS histogram_aggregates,
+            MAX(profile_group_id) AS profile_group_id,
         FROM aggregated
         GROUP BY
           1, 2, 3, 4, 5, 6, 7
@@ -363,6 +368,9 @@ def get_histogram_probes_sql_strings(probes_and_buckets, histogram_type):
                 app_version,
                 app_build_id,
                 channel,
+                mozfun.stats.mode_last(
+                    ARRAY_AGG(profile_group_id ORDER BY submission_timestamp)
+                ) AS profile_group_id,
                 {probes_string}
             FROM sampled_data),
 
@@ -379,7 +387,8 @@ def get_histogram_probes_sql_strings(probes_and_buckets, histogram_type):
             metric_type,
             process,
             bucket_range,
-            value
+            value,
+            profile_group_id,
           FROM histograms
           CROSS JOIN
             UNNEST(histogram_aggregates)
@@ -402,7 +411,8 @@ def get_histogram_probes_sql_strings(probes_and_buckets, histogram_type):
         metric_type,
         process,
         ARRAY_AGG(bucket_range) AS bucket_range,
-        ARRAY_AGG(value) AS value
+        ARRAY_AGG(value) AS value,
+        max(profile_group_id) AS profile_group_id,
       FROM filtered_aggregates
       GROUP BY
         1, 2, 3, 4, 5, 6, 7, 8, 9, 10

@@ -447,6 +447,12 @@ fields:
         by query parameter `entrypoint_variation` in the URL.
 
         '
+    - name: account_user_id
+      type: STRING
+      mode: NULLABLE
+      description: 'The firefox/mozilla account id
+
+        '
   - name: uuid
     type: RECORD
     mode: NULLABLE

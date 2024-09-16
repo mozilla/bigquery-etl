@@ -2389,7 +2389,9 @@ SELECT
       metrics.counter.use_counter_css_doc_css_position_area,
       metrics.counter.use_counter_css_page_css_position_area,
       metrics.counter.use_counter_css_doc_css_view_transition_name,
-      metrics.counter.use_counter_css_page_css_view_transition_name
+      metrics.counter.use_counter_css_page_css_view_transition_name,
+      metrics.counter.use_counter_css_doc_css_position_try,
+      metrics.counter.use_counter_css_page_css_position_try
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -4797,7 +4799,9 @@ SELECT
       metrics.counter.use_counter_css_doc_css_position_area,
       metrics.counter.use_counter_css_page_css_position_area,
       metrics.counter.use_counter_css_doc_css_view_transition_name,
-      metrics.counter.use_counter_css_page_css_view_transition_name
+      metrics.counter.use_counter_css_page_css_view_transition_name,
+      metrics.counter.use_counter_css_doc_css_position_try,
+      metrics.counter.use_counter_css_page_css_position_try
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -7205,7 +7209,9 @@ SELECT
       metrics.counter.use_counter_css_doc_css_position_area,
       metrics.counter.use_counter_css_page_css_position_area,
       metrics.counter.use_counter_css_doc_css_view_transition_name,
-      metrics.counter.use_counter_css_page_css_view_transition_name
+      metrics.counter.use_counter_css_page_css_view_transition_name,
+      metrics.counter.use_counter_css_doc_css_position_try,
+      metrics.counter.use_counter_css_page_css_position_try
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,

@@ -238,6 +238,9 @@ fields:
     - name: entrypoint_variation
       type: STRING
       mode: NULLABLE
+    - name: account_user_id
+      type: STRING
+      mode: NULLABLE
   - name: uuid
     type: RECORD
     mode: NULLABLE

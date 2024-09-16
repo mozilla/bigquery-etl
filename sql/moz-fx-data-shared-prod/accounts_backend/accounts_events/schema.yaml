@@ -449,6 +449,12 @@ fields:
       mode: NULLABLE
       description: Identifier for the experiment variation the user is part of at
         the entrypoint
+    - name: account_user_id
+      type: STRING
+      mode: NULLABLE
+      description: 'The firefox/mozilla account id
+
+        '
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

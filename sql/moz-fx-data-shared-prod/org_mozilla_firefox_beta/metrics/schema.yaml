@@ -3471,7 +3471,8 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream.
+      description: 'Failure occurs when initializing the audio stream. (Migrated from
+        the geckoview metric of the same name).
 
         '
     - name: glean_validation_pings_submitted
@@ -4954,7 +4955,7 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'The error that was returned from a failed TLS 1.3 handshake in
-        which the client sent a Xyber key share (see tlsIntoleranceTelemetryBucket()
+        which the client sent a mlkem768x25519 key share (see tlsIntoleranceTelemetryBucket()
         in nsNSSIOLayer.cpp).
 
         '

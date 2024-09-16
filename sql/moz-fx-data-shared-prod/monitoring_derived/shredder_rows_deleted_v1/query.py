@@ -29,6 +29,8 @@ WITH shredder AS (
     `moz-fx-data-shredder.shredder_state.shredder_state`
   WHERE
     DATE(job_created) BETWEEN @end_date - 1 AND @end_date
+    -- ignore intermediate sample id queries; only use final copy job
+    AND NOT REGEXP_CONTAINS(task_id, "__sample_[0-9]{1,2}$")
 ),
 successful_jobs AS (
   -- https://cloud.google.com/bigquery/docs/information-schema-jobs

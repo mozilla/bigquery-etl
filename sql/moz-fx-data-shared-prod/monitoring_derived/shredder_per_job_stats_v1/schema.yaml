@@ -41,3 +41,9 @@ fields:
 - name: partition_id
   type: STRING
   mode: NULLABLE
+- name: parent_task_id
+  type: STRING
+  mode: NULLABLE
+- name: shredded_sample_id
+  type: INTEGER
+  mode: NULLABLE

@@ -19,6 +19,7 @@ from jinja2 import Environment, FileSystemLoader
 
 from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.metadata.parse_metadata import METADATA_FILE, Metadata
+from bigquery_etl.schema import Schema
 from bigquery_etl.util.common import extract_last_group_by_from_query, write_sql
 
 PREVIOUS_DATE = (dt.now() - timedelta(days=2)).date()
@@ -752,8 +753,7 @@ def generate_query_with_shredder_mitigation(
     )
     click.echo(
         click.style(
-            f"Generating query with shredder mitigation and the following columns:\n"
-            f"{common_ouput + metrics_ouput + changed_output}",
+            f"Query columns:\n" f"{common_ouput + metrics_ouput + changed_output}",
             fg="yellow",
         )
     )
@@ -783,10 +783,6 @@ def generate_query_with_shredder_mitigation(
         basename=f"{QUERY_WITH_MITIGATION_NAME}.sql",
         sql=query_with_mitigation_sql,
         skip_existing=False,
-    )
-
-    click.echo(
-        f"Query generated in {Path('sql') / new.project_id / new.dataset / new.destination_table / f'{QUERY_WITH_MITIGATION_NAME}.sql'}"
     )
 
     return (

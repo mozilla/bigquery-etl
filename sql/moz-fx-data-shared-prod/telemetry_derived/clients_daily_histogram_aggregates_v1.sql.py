@@ -368,9 +368,7 @@ def get_histogram_probes_sql_strings(probes_and_buckets, histogram_type):
                 app_version,
                 app_build_id,
                 channel,
-                mozfun.stats.mode_last(
-                    ARRAY_AGG(profile_group_id ORDER BY submission_timestamp)
-                ) AS profile_group_id,
+                profile_group_id,
                 {probes_string}
             FROM sampled_data),
 

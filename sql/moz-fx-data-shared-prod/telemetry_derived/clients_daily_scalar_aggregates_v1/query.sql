@@ -12920,7 +12920,10 @@ aggregated AS (
         'true',
         SUM(CASE WHEN payload.processes.parent.scalars.widget_dark_mode = TRUE THEN 1 ELSE 0 END)
       )
-    ] AS scalar_aggregates
+    ] AS scalar_aggregates,
+    mozfun.stats.mode_last(
+      ARRAY_AGG(profile_group_id ORDER BY submission_timestamp)
+    ) AS profile_group_id,
   FROM
     sampled_data
   GROUP BY

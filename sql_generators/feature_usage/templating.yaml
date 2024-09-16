@@ -50,6 +50,8 @@ sources:
         sql: client_id
       - name: submission_date
         sql: submission_date
+      - name: profile_group_id
+        sql: profile_group_id
       - name: activity_segments_v1
         sql: activity_segments_v1
         vetted: true

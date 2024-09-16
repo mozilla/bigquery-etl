@@ -2,7 +2,7 @@ friendly_name: Accounts
 description: |-
   Account information for different Google Ads accounts
 owners:
-- lschiestl@mozilla.com
+- frank@mozilla.com
 labels: {}
 scheduling:
   scheduling:

@@ -18,7 +18,13 @@ class ClientQueue:
     """
 
     def __init__(self, billing_projects, parallelism, connection_pool_max_size=None):
-        """Initialize."""
+        """Initialize.
+
+        connection_pool_max_size sets the pool size in the HTTP adapter of each client in
+        the queue. This allows more concurrent requests when a client is shared across threads.
+        See https://cloud.google.com/bigquery/docs/python-libraries#troubleshooting_connection_pool_errors
+        Increasing connection_pool_max_size will also increase memory usage.
+        """
         clients = [bigquery.Client(project) for project in billing_projects]
 
         if connection_pool_max_size is not None:
@@ -28,6 +34,7 @@ class ClientQueue:
                     pool_maxsize=connection_pool_max_size,
                 )
                 client._http.mount("https://", adapter)
+                client._http._auth_request.session.mount("https://", adapter)
 
         self.default_client = clients[0]
         self._q = Queue(parallelism)

@@ -1,5 +1,9 @@
 SELECT
-  SAFE.PARSE_DATE('%Y%m%d', SPLIT(task_id, '$')[SAFE_OFFSET(1)]) AS partition_date,
+  -- task id example: project.dataset.table_v1$20240102__sample_10
+  SAFE.PARSE_DATE(
+    "%Y%m%d",
+    REGEXP_EXTRACT(task_id, r"\$([0-9]{8})(?:__sample_[0-9]+)?$")
+  ) AS partition_date,
   task_id,
   shredder_state.job_id,
   shredder_state.end_date AS shredder_run_date,
@@ -17,6 +21,8 @@ SELECT
   total_slot_ms / 1000 / 60 / 60 AS slot_hours,
   shredder_rows_deleted.deleted_row_count,
   shredder_rows_deleted.partition_id,
+  REGEXP_REPLACE(task_id, r"__sample_([0-9]+)$", "") AS parent_task_id,
+  SAFE_CAST(REGEXP_EXTRACT(task_id, r"__sample_([0-9]+)$") AS INT) AS shredded_sample_id,
 FROM
   `moz-fx-data-shredder.shredder_state.shredder_state` AS shredder_state
 INNER JOIN

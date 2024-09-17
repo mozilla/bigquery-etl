@@ -42,6 +42,3 @@ fields:
   - name: value
     type: FLOAT
     mode: NULLABLE
-- name: profile_group_id
-  type: STRING
-  mode: NULLABLE

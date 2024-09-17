@@ -23,11 +23,12 @@ from bigquery_etl.schema import Schema
 from bigquery_etl.util.common import extract_last_group_by_from_query, write_sql
 
 PREVIOUS_DATE = (dt.now() - timedelta(days=2)).date()
-SUFFIX = dt.now().strftime("%Y%m%d%H%M%S")
 TEMP_DATASET = "tmp"
 THIS_PATH = Path(os.path.dirname(__file__))
 DEFAULT_PROJECT_ID = "moz-fx-data-shared-prod"
 QUERY_WITH_MITIGATION_NAME = "query_with_shredder_mitigation"
+WILDCARD_STRING = "???????"
+WILDCARD_NUMBER = -9999999
 QUERY_FILE_RE = re.compile(
     r"^.*/([a-zA-Z0-9-]+)/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+(_v[0-9]+)?)/"
     r"(?:query\.sql|query_with_shredder_mitigation\.sql|part1\.sql|script\.sql|"
@@ -530,7 +531,7 @@ def generate_query_with_shredder_mitigation(
             " one dimension added and one metric."
         )
 
-    # Get the new version of the query.
+    # Find the new version of the query.
     with open(new.query_path, "r") as file:
         new_query = file.read().strip()
 
@@ -549,7 +550,7 @@ def generate_query_with_shredder_mitigation(
     common_select = (
         [previous.partitioning["field"]]
         + [
-            f"COALESCE({dim.name}, '??') AS {dim.name}"
+            f"COALESCE({dim.name}, '{WILDCARD_STRING}') AS {dim.name}"
             for dim in common_dimensions
             if (
                 dim.name != previous.partitioning["field"]
@@ -557,7 +558,7 @@ def generate_query_with_shredder_mitigation(
             )
         ]
         + [
-            f"COALESCE({dim.name}, -999) AS {dim.name}"
+            f"COALESCE({dim.name}, {WILDCARD_NUMBER}) AS {dim.name}"
             for dim in common_dimensions
             if (
                 dim.name != new.partitioning["field"]
@@ -586,12 +587,13 @@ def generate_query_with_shredder_mitigation(
         group_by_clause="ALL",
     )
 
-    # Calculate shredder impact.
+    # Generate the subset that will calculate shredder impact.
     shredded = Subset(
         client, destination_table, "shredded", TEMP_DATASET, project_id, None
     )
 
     # Cast NULL values to the corresponding type.
+    # This doesn't convert data or dtypes, it's only used to cast NULLs for UNION queries.
     shredded_select = (
         [f"{previous_agg.query_cte}.{new.partitioning['field']}"]
         + [
@@ -615,7 +617,6 @@ def generate_query_with_shredder_mitigation(
                 and dim.data_type == DataTypeGroup.BOOLEAN
             )
         ]
-        # This doesn't convert data or dtypes, it's only used to cast NULLs for UNION queries.
         + [
             f"CAST(NULL AS {DataTypeGroup.DATE.name}) AS {dim.name}"
             for dim in added_dimensions
@@ -662,7 +663,7 @@ def generate_query_with_shredder_mitigation(
             if metric.data_type != DataTypeGroup.FLOAT
         ]
         + [
-            f"ROUND({previous_agg.query_cte}.{metric.name}, 10) - "  # Round to avoid exponentials.
+            f"ROUND({previous_agg.query_cte}.{metric.name}, 10) - "  # Round FLOAT to avoid exponentials.
             f"ROUND(COALESCE({new_agg.query_cte}.{metric.name}, 0), 10) AS {metric.name}"
             for metric in metrics
             if metric.data_type == DataTypeGroup.FLOAT
@@ -701,31 +702,63 @@ def generate_query_with_shredder_mitigation(
         ),
     )
 
-    combined_list = (
-        [dim.name for dim in common_dimensions]
-        + [dim.name for dim in added_dimensions]
-        + [metric.name for metric in metrics]
-    )
+    combined_list = []
+
+    # Set back to NULL, values that were temporarily set to a wildcard.
+    for dim in common_dimensions + added_dimensions:
+        if dim.data_type.name == DataTypeGroup.STRING.name:
+            combined_list.append(
+                f"IF({dim.name} = '{WILDCARD_STRING}', "
+                f"CAST(NULL AS {DataTypeGroup.STRING.name}), {dim.name}) AS {dim.name}"
+            )
+        elif dim.data_type.name == DataTypeGroup.INTEGER.name:
+            combined_list.append(
+                f"IF({dim.name} = {WILDCARD_NUMBER}, "
+                f"CAST(NULL AS {DataTypeGroup.INTEGER.name}), {dim.name}) AS {dim.name}"
+            )
+        elif dim.data_type.name == DataTypeGroup.NUMERIC.name:
+            combined_list.append(
+                f"IF({dim.name} = '{WILDCARD_STRING}', "
+                f"CAST(NULL AS {DataTypeGroup.NUMERIC.name}), {dim.name}) AS {dim.name}"
+            )
+        elif dim.data_type.name == DataTypeGroup.FLOAT.name:
+            combined_list.append(
+                f"IF({dim.name} = '{WILDCARD_STRING}', "
+                f"CAST(NULL AS {DataTypeGroup.FLOAT.name}), {dim.name}) AS {dim.name}"
+            )
+        else:
+            combined_list.append(f"{dim.name} AS {dim.name}")
+
+    combined_list = combined_list + [metric.name for metric in metrics]
     final_select = f"{', '.join(combined_list)}"
 
+    # Generate formatted output strings to display generated-query information in console.
+    common_ouput = "".join(
+        [
+            f"{dim.column_type.name} > {dim.name}:{dim.data_type.name}\n"
+            for dim in common_dimensions
+        ]
+    )
+    metrics_ouput = "".join(
+        [
+            f"{dim.column_type.name} > {dim.name}:{dim.data_type.name}\n"
+            for dim in metrics
+        ]
+    )
+    changed_output = "".join(
+        [
+            f"{dim.status.name} > {dim.name}:{dim.data_type.name}\n"
+            for dim in added_dimensions + removed_dimensions + undetermined_columns
+        ]
+    )
     click.echo(
         click.style(
-            f"""Generating query with shredder mitigation and the following columns:
-            Dimensions in both versions:
-            {[f"{dim.name}:{dim.data_type.name}" for dim in common_dimensions]},
-            Dimensions added:
-            {[f"{dim.name}:{dim.data_type.name}" for dim in added_dimensions]}
-            Dimensions removed:
-            {[f"{dim.name}:{dim.data_type.name}" for dim in removed_dimensions]}
-            Metrics:
-            {[f"{dim.name}:{dim.data_type.name}" for dim in metrics]},
-            Columns that could not be classified:
-            {[f"{dim.name}:{dim.data_type.name}" for dim in undetermined_columns]}.""",
+            f"Query columns:\n" f"{common_ouput + metrics_ouput + changed_output}",
             fg="yellow",
         )
     )
 
-    # Generate query from template.
+    # Generate query using the template.
     env = Environment(loader=FileSystemLoader(str(THIS_PATH)))
     query_with_mitigation_template = env.get_template(
         f"{QUERY_WITH_MITIGATION_NAME}_template.sql"

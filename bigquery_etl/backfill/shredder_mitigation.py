@@ -27,8 +27,8 @@ TEMP_DATASET = "tmp"
 THIS_PATH = Path(os.path.dirname(__file__))
 DEFAULT_PROJECT_ID = "moz-fx-data-shared-prod"
 QUERY_WITH_MITIGATION_NAME = "query_with_shredder_mitigation"
-WILDCARD_STRING = "???"
-WILDCARD_NUMBER = -999
+WILDCARD_STRING = "???????"
+WILDCARD_NUMBER = -9999999
 QUERY_FILE_RE = re.compile(
     r"^.*/([a-zA-Z0-9-]+)/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+(_v[0-9]+)?)/"
     r"(?:query\.sql|query_with_shredder_mitigation\.sql|part1\.sql|script\.sql|"

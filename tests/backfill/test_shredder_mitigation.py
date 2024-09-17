@@ -979,7 +979,7 @@ class TestGenerateQueryWithShredderMitigation:
                         new_agg AS (
                           SELECT
                             submission_date,
-                            COALESCE(column_1, '???') AS column_1,
+                            COALESCE(column_1, '???????') AS column_1,
                             SUM(metric_1) AS metric_1
                           FROM
                             new_version
@@ -989,7 +989,7 @@ class TestGenerateQueryWithShredderMitigation:
                         previous_agg AS (
                           SELECT
                             submission_date,
-                            COALESCE(column_1, '???') AS column_1,
+                            COALESCE(column_1, '???????') AS column_1,
                             SUM(metric_1) AS metric_1
                           FROM
                             `moz-fx-data-shared-prod.test.test_query_v1`
@@ -1014,15 +1014,15 @@ class TestGenerateQueryWithShredderMitigation:
                             COALESCE(previous_agg.metric_1, 0) > COALESCE(new_agg.metric_1, 0)
                         )
                         SELECT
-                          IF(column_1 = '???', CAST(NULL AS STRING), column_1) AS column_1,
-                          IF(column_2 = '???', CAST(NULL AS STRING), column_2) AS column_2,
+                          IF(column_1 = '???????', CAST(NULL AS STRING), column_1) AS column_1,
+                          IF(column_2 = '???????', CAST(NULL AS STRING), column_2) AS column_2,
                           metric_1
                         FROM
                           new_version
                         UNION ALL
                         SELECT
-                          IF(column_1 = '???', CAST(NULL AS STRING), column_1) AS column_1,
-                          IF(column_2 = '???', CAST(NULL AS STRING), column_2) AS column_2,
+                          IF(column_1 = '???????', CAST(NULL AS STRING), column_1) AS column_1,
+                          IF(column_2 = '???????', CAST(NULL AS STRING), column_2) AS column_2,
                           metric_1
                         FROM
                           shredded""",
@@ -1334,7 +1334,7 @@ class TestGenerateQueryWithShredderMitigation:
                             call(
                                 select_list=[
                                     "submission_date",
-                                    "COALESCE(column_1, '???') AS column_1",
+                                    "COALESCE(column_1, '???????') AS column_1",
                                     "SUM(metric_1) AS metric_1",
                                 ],
                                 from_clause="new_version",
@@ -1343,7 +1343,7 @@ class TestGenerateQueryWithShredderMitigation:
                             call(
                                 select_list=[
                                     "submission_date",
-                                    "COALESCE(column_1, '???') AS column_1",
+                                    "COALESCE(column_1, '???????') AS column_1",
                                     "SUM(metric_1) AS metric_1",
                                 ],
                                 from_clause="`moz-fx-data-shared-prod.test.test_query_v1`",

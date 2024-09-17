@@ -167,6 +167,7 @@ def _get_keyed_histogram_sql(probes_and_buckets):
             SPLIT(application.version, '.')[OFFSET(0)] AS app_version,
             application.build_id AS app_build_id,
             normalized_channel AS channel,
+            profile_group_id,
             ARRAY<STRUCT<
                 name STRING,
                 metric_type STRING,

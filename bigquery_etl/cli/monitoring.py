@@ -1,5 +1,6 @@
 """bigquery-etl CLI monitoring command."""
 
+import os
 import sys
 from pathlib import Path
 from typing import Optional
@@ -41,7 +42,7 @@ def monitoring(ctx):
     help="""
     Deploy monitors defined in the BigConfig files to Bigeye.
 
-    Requires BigConfig credentials to be set via BIGEYE_API_CRED_FILE env variable.
+    Requires BigConfig API key to be set via BIGEYE_API_KEY env variable.
     """
 )
 @click.argument("name")
@@ -51,13 +52,6 @@ def monitoring(ctx):
     "--workspace",
     default=463,
     help="Bigeye workspace to use when authenticating to API.",
-)
-@click.option(
-    "--api-key",
-    "--api_key",
-    required=True,
-    help="Bigeye API key used for authentication.",
-    envvar="BIGEYE_API_KEY",
 )
 @click.option(
     "--base-url",
@@ -72,9 +66,16 @@ def deploy(
     sql_dir: Optional[str],
     project_id: Optional[str],
     workspace: str,
-    api_key: str,
     base_url: str,
 ) -> None:
+    """Deploy Bigeye config."""
+    api_key = os.environ.get("BIGEYE_API_KEY")
+    if api_key is None:
+        click.echo(
+            "Bigeye API token needs to be set via `BIGEYE_API_KEY` env variable."
+        )
+        sys.exit(1)
+
     """Deploy monitors to Bigeye."""
     metadata_files = paths_matching_name_pattern(
         name, sql_dir, project_id=project_id, files=["metadata.yaml"]

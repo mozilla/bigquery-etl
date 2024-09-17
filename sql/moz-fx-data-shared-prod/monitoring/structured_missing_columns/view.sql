@@ -24,15 +24,12 @@ LEFT JOIN
     "_v",
     missing_columns.document_version
   )
-  -- Normalize the column paths by removing all `_`, `[...]` and `.` and converting to lower case.
+  -- Normalize the column paths and convert them to follow the BigQuery column naming conventions.
   -- The `path` format looks like this: `events`.[...].`timestamp`
   -- The `field_path` format in INFORMATION_SCHEMA.COLUMN_FIELD_PATHS looks like this: events.timestamp
-  -- The following operations transform it in both cases to: "eventstimestamp".
-  -- This might not catch all possible cases.
-  AND LOWER(
-    REPLACE(
-      REPLACE(ARRAY_TO_STRING(REGEXP_EXTRACT_ALL(missing_columns.path, '`(.+?)`'), ""), "_", ""),
-      ".",
-      ""
-    )
-  ) = LOWER(REPLACE(REPLACE(existing_schema.field_path, "_", ""), ".", ""))
+  AND ARRAY_TO_STRING(
+    `moz-fx-data-shared-prod.udf_js.snake_case_columns`(
+      REGEXP_EXTRACT_ALL(missing_columns.path, '`(.+?)`')
+    ),
+    "."
+  ) = existing_schema.field_path

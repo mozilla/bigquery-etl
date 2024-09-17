@@ -142,6 +142,7 @@ def _get_generic_keyed_scalar_sql(probes, value_type):
             app_version,
             app_build_id,
             channel,
+            profile_group_id,
             ARRAY<STRUCT<
                 name STRING,
                 process STRING,
@@ -160,6 +161,7 @@ def _get_generic_keyed_scalar_sql(probes, value_type):
               app_version,
               app_build_id,
               channel,
+              profile_group_id,
               metrics.name AS metric,
               metrics.process AS process,
               value.key AS key,

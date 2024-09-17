@@ -43,3 +43,27 @@ function convertNameForBq(name) {
 
 return input.map((field) => convertNameForBq(field));
 """;
+
+-- Tests
+WITH input AS (
+  SELECT
+    ['metrics', 'color'] AS test_input,
+    ['metrics', 'color'] AS expected
+  UNION ALL
+  SELECT
+    ['user_prefs', 'foo.bar', 'camelCase'],
+    ['user_prefs', 'foo_bar', 'camel_case']
+),
+  --
+formatted AS (
+  SELECT
+    udf_js.snake_case_columns(test_input) AS result,
+    expected
+  FROM
+    input
+)
+  --
+SELECT
+  mozfun.assert.equals(expected, result)
+FROM
+  formatted

@@ -98,7 +98,7 @@ def generate_sql(
                 channel,
                 {aggregates},
                 mozfun.stats.mode_last(
-                    ARRAY_AGG(profile_group_id ORDER BY submission_timestamp)
+                    ARRAY_AGG(profile_group_id)
                 ) AS profile_group_id,
             FROM sampled_data
             GROUP BY

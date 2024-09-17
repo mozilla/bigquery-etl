@@ -240,7 +240,8 @@ SELECT
       metrics.custom_distribution.geolocation_accuracy,
       metrics.custom_distribution.networking_http_3_download_throughput_100,
       metrics.custom_distribution.networking_http_3_download_throughput_10_50,
-      metrics.custom_distribution.networking_http_3_download_throughput_50_100
+      metrics.custom_distribution.networking_http_3_download_throughput_50_100,
+      metrics.custom_distribution.networking_http_3_udp_datagram_segments_received
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -721,7 +722,10 @@ SELECT
       metrics.memory_distribution.extensions_apis_dnr_startup_cache_read_size,
       metrics.memory_distribution.extensions_apis_dnr_startup_cache_write_size,
       metrics.memory_distribution.networking_cache_metadata_size,
-      metrics.memory_distribution.cert_storage_memory
+      metrics.memory_distribution.cert_storage_memory,
+      metrics.memory_distribution.networking_http_3_udp_datagram_segment_size_received,
+      metrics.memory_distribution.networking_http_3_udp_datagram_segment_size_sent,
+      metrics.memory_distribution.networking_http_3_udp_datagram_size_received
     ) AS `memory_distribution`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -1052,7 +1056,8 @@ SELECT
       metrics.custom_distribution.geolocation_accuracy,
       metrics.custom_distribution.networking_http_3_download_throughput_100,
       metrics.custom_distribution.networking_http_3_download_throughput_10_50,
-      metrics.custom_distribution.networking_http_3_download_throughput_50_100
+      metrics.custom_distribution.networking_http_3_download_throughput_50_100,
+      metrics.custom_distribution.networking_http_3_udp_datagram_segments_received
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -1533,7 +1538,10 @@ SELECT
       metrics.memory_distribution.extensions_apis_dnr_startup_cache_read_size,
       metrics.memory_distribution.extensions_apis_dnr_startup_cache_write_size,
       metrics.memory_distribution.networking_cache_metadata_size,
-      metrics.memory_distribution.cert_storage_memory
+      metrics.memory_distribution.cert_storage_memory,
+      metrics.memory_distribution.networking_http_3_udp_datagram_segment_size_received,
+      metrics.memory_distribution.networking_http_3_udp_datagram_segment_size_sent,
+      metrics.memory_distribution.networking_http_3_udp_datagram_size_received
     ) AS `memory_distribution`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -1882,7 +1890,8 @@ SELECT
       metrics.custom_distribution.geolocation_accuracy,
       metrics.custom_distribution.networking_http_3_download_throughput_100,
       metrics.custom_distribution.networking_http_3_download_throughput_10_50,
-      metrics.custom_distribution.networking_http_3_download_throughput_50_100
+      metrics.custom_distribution.networking_http_3_download_throughput_50_100,
+      metrics.custom_distribution.networking_http_3_udp_datagram_segments_received
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -2363,7 +2372,10 @@ SELECT
       metrics.memory_distribution.extensions_apis_dnr_startup_cache_read_size,
       metrics.memory_distribution.extensions_apis_dnr_startup_cache_write_size,
       metrics.memory_distribution.networking_cache_metadata_size,
-      metrics.memory_distribution.cert_storage_memory
+      metrics.memory_distribution.cert_storage_memory,
+      metrics.memory_distribution.networking_http_3_udp_datagram_segment_size_received,
+      metrics.memory_distribution.networking_http_3_udp_datagram_segment_size_sent,
+      metrics.memory_distribution.networking_http_3_udp_datagram_size_received
     ) AS `memory_distribution`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -2721,7 +2733,8 @@ SELECT
       metrics.custom_distribution.geolocation_accuracy,
       metrics.custom_distribution.networking_http_3_download_throughput_100,
       metrics.custom_distribution.networking_http_3_download_throughput_10_50,
-      metrics.custom_distribution.networking_http_3_download_throughput_50_100
+      metrics.custom_distribution.networking_http_3_download_throughput_50_100,
+      metrics.custom_distribution.networking_http_3_udp_datagram_segments_received
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -3202,7 +3215,10 @@ SELECT
       metrics.memory_distribution.extensions_apis_dnr_startup_cache_read_size,
       metrics.memory_distribution.extensions_apis_dnr_startup_cache_write_size,
       metrics.memory_distribution.networking_cache_metadata_size,
-      metrics.memory_distribution.cert_storage_memory
+      metrics.memory_distribution.cert_storage_memory,
+      metrics.memory_distribution.networking_http_3_udp_datagram_segment_size_received,
+      metrics.memory_distribution.networking_http_3_udp_datagram_segment_size_sent,
+      metrics.memory_distribution.networking_http_3_udp_datagram_size_received
     ) AS `memory_distribution`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -3542,7 +3558,8 @@ SELECT
       metrics.custom_distribution.geolocation_accuracy,
       metrics.custom_distribution.networking_http_3_download_throughput_100,
       metrics.custom_distribution.networking_http_3_download_throughput_10_50,
-      metrics.custom_distribution.networking_http_3_download_throughput_50_100
+      metrics.custom_distribution.networking_http_3_download_throughput_50_100,
+      metrics.custom_distribution.networking_http_3_udp_datagram_segments_received
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -4023,7 +4040,10 @@ SELECT
       metrics.memory_distribution.extensions_apis_dnr_startup_cache_read_size,
       metrics.memory_distribution.extensions_apis_dnr_startup_cache_write_size,
       metrics.memory_distribution.networking_cache_metadata_size,
-      metrics.memory_distribution.cert_storage_memory
+      metrics.memory_distribution.cert_storage_memory,
+      metrics.memory_distribution.networking_http_3_udp_datagram_segment_size_received,
+      metrics.memory_distribution.networking_http_3_udp_datagram_segment_size_sent,
+      metrics.memory_distribution.networking_http_3_udp_datagram_size_received
     ) AS `memory_distribution`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,

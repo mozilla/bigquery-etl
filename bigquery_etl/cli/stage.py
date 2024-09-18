@@ -342,14 +342,15 @@ def _update_references(artifact_files, project_id, dataset_suffix, sql_dir):
         original_project = artifact_file.parent.parent.parent.name
 
         deployed_dataset = original_dataset
-        deployed_dataset += f"_{original_project.replace('-', '_')}"
 
-        if dataset_suffix and original_dataset not in (
+        if original_dataset not in (
             "INFORMATION_SCHEMA",
             "region-eu",
             "region-us",
         ):
-            deployed_dataset += f"_{dataset_suffix}"
+            deployed_dataset += f"_{original_project.replace('-', '_')}"
+            if dataset_suffix:
+                deployed_dataset += f"_{dataset_suffix}"
 
         deployed_project = project_id
 

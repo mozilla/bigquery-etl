@@ -3874,6 +3874,24 @@ fields:
       description: 'Indicates id of activated chatbot provider or "custom" or "none"
 
         '
+    - name: sidebar_display_settings
+      type: STRING
+      mode: NULLABLE
+      description: 'Setting for sidebar display (either "always" or "hide").
+
+        '
+    - name: sidebar_position_settings
+      type: STRING
+      mode: NULLABLE
+      description: 'Setting for sidebar position (either "left" or "right").
+
+        '
+    - name: sidebar_tabs_layout
+      type: STRING
+      mode: NULLABLE
+      description: 'Setting for tabs orientation (either "horizontal" or "vertical").
+
+        '
   - name: timespan
     type: RECORD
     mode: NULLABLE
@@ -10459,6 +10477,12 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: The number of third-party PKCS#11 modules loaded.
+    - name: sidebar_width
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Width of the sidebar, in pixels.
+
+        '
   - name: labeled_boolean
     type: RECORD
     mode: NULLABLE

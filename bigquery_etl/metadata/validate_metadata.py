@@ -24,9 +24,7 @@ standard_args.add_log_level(parser)
 CODEOWNERS_FILE = "CODEOWNERS"
 CHANGE_CONTROL_LABEL = "change_controlled"
 SHREDDER_MITIGATION_LABEL = "shredder_mitigation"
-ID_LEVEL_COLUMNS_FILE_PATH = os.path.join(
-    Path(__file__).parent, "id_level_columns.yaml"
-)
+ID_LEVEL_COLUMNS_FILE_PATH = Path(__file__).parent / "id_level_columns.yaml"
 
 
 def validate_public_data(metadata, path):

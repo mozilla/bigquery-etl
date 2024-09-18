@@ -64,6 +64,6 @@ formatted AS (
 )
   --
 SELECT
-  mozfun.assert.equals(expected, result)
+  mozfun.assert.array_equals(expected, result)
 FROM
   formatted

@@ -97,9 +97,7 @@ def generate_sql(
                 app_build_id,
                 channel,
                 {aggregates},
-                mozfun.stats.mode_last(
-                    ARRAY_AGG(profile_group_id ORDER BY submission_timestamp)
-                ) AS profile_group_id
+                max(profile_group_id) AS profile_group_id
             FROM sampled_data
             GROUP BY
                 submission_date,
@@ -148,7 +146,8 @@ def _get_generic_keyed_scalar_sql(probes, value_type):
                 value ARRAY<STRUCT<key STRING, value {value_type}>>
             >>[
               {probes_arr}
-            ] as metrics
+            ] as metrics,
+            profile_group_id
           FROM filtered),
 
           flattened_metrics AS
@@ -163,7 +162,8 @@ def _get_generic_keyed_scalar_sql(probes, value_type):
               metrics.name AS metric,
               metrics.process AS process,
               value.key AS key,
-              value.value AS value
+              value.value AS value,
+              profile_group_id,
             FROM grouped_metrics
             CROSS JOIN UNNEST(metrics) AS metrics,
             UNNEST(metrics.value) AS value),
@@ -276,7 +276,8 @@ def get_keyed_scalar_probes_sql_string(probes):
                     (metric, 'keyed-scalar', key, process, 'sum', sum),
                     (metric, 'keyed-scalar', key, process, 'count', count)
                 ]
-        ) AS scalar_aggregates
+        ) AS scalar_aggregates,
+        max(profile_group_id) AS profile_group_id,
         FROM aggregated
         GROUP BY
             sample_id,

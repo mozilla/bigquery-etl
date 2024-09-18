@@ -13,7 +13,7 @@ from bigquery_etl.config import ConfigLoader
 from bigquery_etl.schema import SCHEMA_FILE, Schema
 
 from ..util import standard_args
-from ..util.common import project_dirs, extract_last_group_by_from_query
+from ..util.common import extract_last_group_by_from_query, project_dirs
 from .parse_metadata import DatasetMetadata, Metadata
 
 parser = ArgumentParser(description=__doc__)

@@ -3,16 +3,17 @@ import os
 import tempfile
 from datetime import datetime
 from pathlib import Path
-from unittest.mock import patch
+from unittest.mock import patch, mock_open
 
 import pytest
 import yaml
 from click.testing import CliRunner
 from dateutil.relativedelta import relativedelta
+from gcloud import bigquery
 
 from bigquery_etl.cli.metadata import deprecate, publish, update
 from bigquery_etl.metadata.parse_metadata import Metadata
-from bigquery_etl.metadata.validate_metadata import validate_change_control
+from bigquery_etl.metadata.validate_metadata import validate_change_control, validate_shredder_mitigation
 
 TEST_DIR = Path(__file__).parent.parent
 
@@ -414,3 +415,84 @@ class TestMetadata:
                 str(result.exception)
                 == f"No metadata file(s) were found for: {qualified_table_name}"
             )
+
+    def test_validate_shredder_mitigation_schema_columns(self, runner, capfd):
+        """Test that validation fails when query contains id-level columns or descriptions are missing."""
+        metadata = {
+            "friendly_name": "Test",
+            "labels": {"shredder_mitigation": "true"},
+        }
+        schema = [
+            bigquery.SchemaField("column_1", "STRING", mode="NULLABLE", description="description 1"),
+            bigquery.SchemaField("column_3", "STRING", mode="NULLABLE", description="description 3"),
+        ]
+        id_level_columns = """
+            id_level_columns:
+              - column_3
+            """
+
+        with runner.isolated_filesystem():
+            query_path = Path(self.test_path) / 'query.sql'
+            metadata_path = Path(self.test_path) / 'metadata.yaml'
+            os.makedirs(self.test_path, exist_ok=True)
+
+            with open(query_path, "w") as f:
+                f.write("SELECT column_1 FROM test_table group by column_1")
+            with open(metadata_path, "w") as f:
+                f.write(yaml.safe_dump(metadata))
+            metadata_from_file = Metadata.from_file(metadata_path)
+
+            with patch("builtins.open", mock_open(read_data=id_level_columns)):
+                result = validate_shredder_mitigation(self.test_path, metadata_from_file, schema)
+                captured = capfd.readouterr()
+                assert result is False
+                assert (
+                           "Shredder mitigation validation failed, column_3 is an id-level column that is not allowed for this type of backfill."
+                       ) in captured.out
+
+            schema = [
+                bigquery.SchemaField("column_1", "STRING", mode="NULLABLE"),
+                bigquery.SchemaField("column_2", "STRING", mode="NULLABLE", description="description 3"),
+            ]
+            result = validate_shredder_mitigation(self.test_path, metadata_from_file, schema)
+            captured = capfd.readouterr()
+            assert result is False
+            assert (
+                       "Shredder mitigation validation failed, column_1 does not have a description in the schema."
+                   ) in captured.out
+
+    def test_validate_shredder_mitigation_group_by(self, runner, capfd):
+        """Test that validation fails and prints a notification when group by contains numbers."""
+        metadata = {
+            "friendly_name": "Test",
+            "labels": {"shredder_mitigation": "true"},
+        }
+        schema = [
+            patch('google.cloud.bigquery.SchemaField', name="column_1"),
+            patch('google.cloud.bigquery.SchemaField', name="column_2", description="Description 2"),
+        ]
+
+        with runner.isolated_filesystem():
+            query_path = Path(self.test_path) / 'query.sql'
+            metadata_path = Path(self.test_path) / 'metadata.yaml'
+            os.makedirs(self.test_path, exist_ok=True)
+
+            with open(query_path, "w") as f:
+                f.write("SELECT column_1 FROM test_table GROUP BY ALL")
+            with open(metadata_path, "w") as f:
+                f.write(yaml.safe_dump(metadata))
+
+            metadata_from_file = Metadata.from_file(metadata_path)
+            result = validate_shredder_mitigation(self.test_path, metadata_from_file, schema)
+            captured = capfd.readouterr()
+            assert result is False
+            assert ("Shredder mitigation validation failed, GROUP BY must use an explicit list "
+                "of columns. Avoid expressions like `GROUP BY ALL` or `GROUP BY 1, 2, 3`.") in captured.out
+
+            with open(query_path, "w") as f:
+                f.write("SELECT column_1 FROM test_table GROUP BY column_1, 2")
+            result = validate_shredder_mitigation(self.test_path, metadata_from_file, schema)
+            captured = capfd.readouterr()
+            assert result is False
+            assert ("Shredder mitigation validation failed, GROUP BY must use an explicit list "
+                    "of columns. Avoid expressions like `GROUP BY ALL` or `GROUP BY 1, 2, 3`.") in captured.out

@@ -105,14 +105,14 @@ def validate_change_control(
     return True
 
 
-def validate_shredder_mitigation(query_file_path, metadata, schema):
+def validate_shredder_mitigation(query_dir, metadata, schema):
     """Check queries with shredder mitigation label comply with requirements."""
     has_shredder_mitigation = SHREDDER_MITIGATION_LABEL in metadata.labels
 
     if has_shredder_mitigation:
         # This label requires that the query doesn't have id-level columns,
         # has a group by that is explicit & all schema columns have descriptions.
-        query_file = Path(query_file_path) / "query.sql"
+        query_file = Path(query_dir) / "query.sql"
         query_group_by = extract_last_group_by_from_query(sql_path=query_file)
 
         # Validate that the query group by is as required.
@@ -193,7 +193,7 @@ def validate(target):
                         failed = True
 
                     if not validate_shredder_mitigation(
-                        query_file_path=root,
+                        query_dir=root,
                         metadata=metadata,
                         schema=schema,
                     ):

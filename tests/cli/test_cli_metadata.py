@@ -14,6 +14,7 @@ from gcloud import bigquery
 from bigquery_etl.cli.metadata import deprecate, publish, update
 from bigquery_etl.metadata.parse_metadata import Metadata
 from bigquery_etl.metadata.validate_metadata import (
+    validate,
     validate_change_control,
     validate_shredder_mitigation,
 )
@@ -514,3 +515,29 @@ class TestMetadata:
                 "Shredder mitigation validation failed, GROUP BY must use an explicit list "
                 "of columns. Avoid expressions like `GROUP BY ALL` or `GROUP BY 1, 2, 3`."
             ) in captured.out
+
+    def test_validate_metadata_without_labels(self, runner, capfd):
+        """Test that metadata validation doesn't fail when labels are not present."""
+        metadata = {
+            "friendly_name": "Test",
+            "labels": {},
+        }
+        schema = """
+            fields:
+              - mode: NULLABLE
+                name: column_1
+                type: DATE
+                description: description 1
+            """
+
+        with runner.isolated_filesystem():
+            os.makedirs(self.test_path, exist_ok=True)
+            with open(Path(self.test_path) / "metadata.yaml", "w") as f:
+                f.write(yaml.safe_dump(metadata))
+            with open(Path(self.test_path) / "schema.yaml", "w") as f:
+                f.write(schema)
+
+            result = validate(self.test_path)
+            captured = capfd.readouterr()
+            assert result is None
+            assert captured.out == ""

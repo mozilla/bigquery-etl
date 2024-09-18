@@ -527,7 +527,6 @@ class TestMetadata:
               - mode: NULLABLE
                 name: column_1
                 type: DATE
-                description: description 1
             """
 
         with runner.isolated_filesystem():

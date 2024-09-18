@@ -7,14 +7,12 @@ description: |
   as the basis for LTV calculations.
 owners:
 - akomar@mozilla.com
-- anicholson@mozilla.com
 - cmorales@mozilla.com
 labels:
   schedule: daily
   dag: bqetl_search
   owner1: akomar
-  owner2: anicholson
-  owner3: cmorales
+  owner2: cmorales
 scheduling:
   dag_name: bqetl_search
   depends_on_past: true

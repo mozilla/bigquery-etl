@@ -220,7 +220,8 @@ def get_keyed_boolean_probes_sql_string(probes):
                     (metric, 'keyed-scalar-boolean', key, process, 'true', true_col),
                     (metric, 'keyed-scalar-boolean', key, process, 'false', false_col)
                 ]
-            ) AS scalar_aggregates
+            ) AS scalar_aggregates,
+            max(profile_group_id) AS profile_group_id
         FROM aggregated
         GROUP BY
             sample_id,

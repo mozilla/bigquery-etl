@@ -71,7 +71,7 @@ aggregated AS (
     {{ attributes }},
     metric,
     metric_type,
-    mozfun.map.sum(ARRAY_CONCAT_AGG(value)) as value
+    mozfun.map.sum(ARRAY_CONCAT_AGG(mozfun.glam.histogram_filter_high_values(value))) as value
   FROM
     flattened_histograms
   GROUP BY

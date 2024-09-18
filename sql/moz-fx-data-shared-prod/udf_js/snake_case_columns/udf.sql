@@ -1,13 +1,11 @@
 CREATE OR REPLACE FUNCTION udf_js.snake_case_columns(input ARRAY<STRING>)
 RETURNS ARRAY<STRING> DETERMINISTIC
-LANGUAGE js
-AS
-  """
+LANGUAGE js AS r"""
 const REV_WORD_BOUND_PAT = new RegExp(
-  "\\b" + // standard word boundary
-  "|(?<=[a-z][A-Z])(?=\\d*[A-Z])" + // A7Aa -> A7|Aa boundary
-  "|(?<=[a-z][A-Z])(?=\\d*[a-z])" + // a7Aa -> a7|Aa boundary
-  "|(?<=[A-Z])(?=\\d*[a-z])"     // a7A -> a7|A boundary
+  "\\b"  // standard word boundary
+  + "|(?<=[a-z][A-Z])(?=\\d*[A-Z])"  // A7Aa -> A7|Aa boundary
+  + "|(?<=[a-z][A-Z])(?=\\d*[a-z])"  // a7Aa -> a7|Aa boundary
+  + "|(?<=[A-Z])(?=\\d*[a-z])"  // a7A -> a7|A boundary
 );
 
 /**
@@ -17,7 +15,8 @@ const REV_WORD_BOUND_PAT = new RegExp(
  * See https://github.com/acmiyaguchi/test-casing
  */
 function format(input) {
-  const subbed = input.split('').reverse().join('').replaceAll(".", "_").replace(/[^A-Za-z0-9_]/g, " ");
+  //const subbed = input.split('').reverse().join('').replaceAll(".", "_").replace(/[^A-Za-z0-9_]/g, " ");
+  const subbed = input.split('').reverse().join('').replace(/[^\w]|_/g, " ");
   const reversedResult = subbed.split(REV_WORD_BOUND_PAT)
     .map(s => s.trim())
     .map(s => s.toLowerCase())

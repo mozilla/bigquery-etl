@@ -2,12 +2,7 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.monitoring.telemetry_missing_columns`
 AS
 SELECT
-  submission_date,
-  document_namespace,
-  document_type,
-  document_version,
-  path,
-  path_count,
+  missing_columns.*,
   existing_schema.table_schema IS NOT NULL AS column_exists_in_schema
 FROM
   `moz-fx-data-shared-prod.monitoring_derived.telemetry_missing_columns_v3` AS missing_columns

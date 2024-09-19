@@ -16,9 +16,9 @@ SELECT
   segment,
   SUM(dau) AS dau
 FROM
-  `mozdata.telemetry.active_users_aggregates` AS active_users_aggregates
+  `moz-fx-data-shared-prod.telemetry.active_users_aggregates` AS active_users_aggregates
 LEFT JOIN
-  `mozdata.static.country_codes_v1` AS countries
+  `moz-fx-data-shared-prod.static.country_codes_v1` AS countries
   ON active_users_aggregates.country = countries.code
 WHERE
   submission_date >= DATE('2023-01-01')

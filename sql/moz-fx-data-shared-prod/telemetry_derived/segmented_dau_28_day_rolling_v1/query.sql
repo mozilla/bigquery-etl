@@ -1,5 +1,5 @@
 SELECT
-  sd.submission_date,
+  @submission_date AS submission_date,
   sd.country,
   sd.app_name,
   sd.adjust_network,

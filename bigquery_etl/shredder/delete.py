@@ -603,7 +603,7 @@ def main():
         args.billing_projects,
         args.parallelism,
         connection_pool_max_size=(
-            args.parallelism * args.sampling_parallelism
+            max(args.parallelism * args.sampling_parallelism, 12)
             if len(args.sampling_tables) > 0
             else None
         ),
@@ -651,7 +651,7 @@ def main():
             )
 
     if args.environment == "telemetry":
-        with ThreadPool(args.parallelism) as pool:
+        with ThreadPool(6) as pool:
             glean_targets = find_glean_targets(pool, client)
         targets_with_sources = (
             *DELETE_TARGETS.items(),

@@ -45,11 +45,6 @@ from_expression = "mozdata.accounts_backend.events_stream"
 submission_date_column = "DATE(submission_timestamp)"
 client_id_column = "metrics.string.account_user_id_sha256"
 
-[data_sources.accounts_events_backend]
-from_expression = "mozdata.accounts_backend.accounts_events"
-submission_date_column = "DATE(submission_timestamp)"
-client_id_column = "metrics.string.account_user_id_sha256"
-
 [dimensions]
 
 [dimensions.entrypoint]

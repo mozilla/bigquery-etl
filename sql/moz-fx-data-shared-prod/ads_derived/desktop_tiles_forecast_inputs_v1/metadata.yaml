@@ -14,7 +14,7 @@ labels:
 scheduling:
   dag_name: bqetl_ads
   destination_table: >-
-    desktop_tiles_forecast_inputs_v1${{execution_date.strftime("%Y%m01")}}
+    desktop_tiles_forecast_inputs_v1${{logical_date.strftime("%Y%m01")}}
   parameters:
     - >-
       submission_month:DATE:{{execution_date.strftime('%Y-%m-01')}}

@@ -21,7 +21,7 @@ LEFT JOIN
   `moz-fx-data-shared-prod.static.country_codes_v1` AS countries
   ON active_users_aggregates.country = countries.code
 WHERE
-  submission_date >= DATE('2023-01-01')
+  submission_date >= DATE('2022-01-01')
   AND LOWER(app_name) NOT LIKE "%browserstack%"
 GROUP BY
   submission_date,

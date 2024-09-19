@@ -3496,7 +3496,8 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream.
+      description: 'Failure occurs when initializing the audio stream. (Migrated from
+        the geckoview metric of the same name).
 
         '
     - name: glean_validation_pings_submitted
@@ -5664,6 +5665,62 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Number of paths known to be ECN capable or not-capable.
+
+        '
+    - name: netwerk_http3_0rtt_state
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Gather the outcome of 0-RTT usage: - "not_used": 0RTT_NOT_USED
+        - "succeeded": 0RTT_USED_SUCCESS - "rejected": 0RTT_USED_REJECT - "conn_error":
+        0RTT_USED_CONN_ERROR - "conn_closed_by_necko": 0RTT_CONN_CLOSED_BY_NECKO
+
+        '
+    - name: netwerk_http3_ech_outcome_grease
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Success / Fail Rates for HTTP3 when a GREASE ECH Extension was
+        sent
+
+        '
+    - name: netwerk_http3_ech_outcome_none
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Success / Fail Rates for HTTP3 when No ECH Extension was sent
+
+        '
+    - name: netwerk_http3_ech_outcome_real
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Success / Fail Rates for HTTP3 when a ''real'' ECH Extension was
+        sent
 
         '
   - name: quantity
@@ -16186,6 +16243,56 @@ fields:
             mode: NULLABLE
       description: 'In the HTTP channel (keys: supports_http3_page, supports_http3_sub),
         time from TCP SYN to ready for HTTP
+
+        '
+    - name: netwerk_http3_0rtt_state_duration
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bucket_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: histogram_type
+          type: STRING
+          mode: NULLABLE
+        - name: overflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: range
+          type: FLOAT
+          mode: REPEATED
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: time_unit
+          type: STRING
+          mode: NULLABLE
+        - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'The time a connection was in the 0-RTT state
 
         '
   - name: labeled_custom_distribution

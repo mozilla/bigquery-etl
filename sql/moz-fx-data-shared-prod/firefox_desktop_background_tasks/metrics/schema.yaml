@@ -245,6 +245,13 @@ fields:
       mode: NULLABLE
       description: Set to true if the tasks that are queued prior to Glean initialization
         time out.
+    - name: sslkeylogging_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Records whether TLS key logging has been enabled via the environment
+        variable SSLKEYLOGFILE.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE

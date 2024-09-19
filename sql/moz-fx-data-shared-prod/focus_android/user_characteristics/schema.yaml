@@ -452,6 +452,36 @@ fields:
     - name: characteristics_zoom_count
       type: INTEGER
       mode: NULLABLE
+    - name: characteristics_camera_count
+      type: INTEGER
+      mode: NULLABLE
+    - name: characteristics_gl_version
+      type: INTEGER
+      mode: NULLABLE
+    - name: characteristics_group_count
+      type: INTEGER
+      mode: NULLABLE
+    - name: characteristics_group_count_wo_speakers
+      type: INTEGER
+      mode: NULLABLE
+    - name: characteristics_ice_order
+      type: INTEGER
+      mode: NULLABLE
+    - name: characteristics_ice_sd
+      type: INTEGER
+      mode: NULLABLE
+    - name: characteristics_microphone_count
+      type: INTEGER
+      mode: NULLABLE
+    - name: characteristics_speaker_count
+      type: INTEGER
+      mode: NULLABLE
+    - name: characteristics_voices_count
+      type: INTEGER
+      mode: NULLABLE
+    - name: characteristics_voices_local_count
+      type: INTEGER
+      mode: NULLABLE
   - name: string
     type: RECORD
     mode: NULLABLE
@@ -636,6 +666,39 @@ fields:
     - name: glean_client_annotation_experimentation_id
       type: STRING
       mode: NULLABLE
+    - name: characteristics_gl_fragment_shader
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_gl_renderer
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_gl_renderer_raw
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_gl_vendor
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_gl_vendor_raw
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_gl_version_raw
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_gl_vertex_shader
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_voices_all_ssdeep
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_voices_default
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_voices_local_ssdeep
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_voices_nonlocal_ssdeep
+      type: STRING
+      mode: NULLABLE
   - name: string_list
     type: RECORD
     mode: NULLABLE
@@ -714,6 +777,48 @@ fields:
       type: STRING
       mode: NULLABLE
     - name: characteristics_webglinfo
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_gl_extensions
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_gl_extensions_raw
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_gl_minimal_source
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_gl_params_extensions
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_gl_params_v1
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_gl_params_v2
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_gl_precision_fragment
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_gl_precision_vertex
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_media_capabilities_h264
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_media_capabilities_not_efficient
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_media_capabilities_not_smooth
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_media_capabilities_unsupported
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_voices_sample
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_voices_sha1
       type: STRING
       mode: NULLABLE
   - name: uuid

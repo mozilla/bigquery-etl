@@ -768,6 +768,67 @@ fields:
       description: 'Number of domains the users has a non-default zoom level.
 
         '
+    - name: characteristics_camera_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of cameras available on the device.
+
+        '
+    - name: characteristics_gl_version
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The version of OpenGL supported by the user''s system.
+
+        '
+    - name: characteristics_group_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of device groups reported by the device.
+
+        '
+    - name: characteristics_group_count_wo_speakers
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of device groups without speakers reported by the device.
+
+        '
+    - name: characteristics_ice_order
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Unique ICE foundations occurrence count
+
+        '
+    - name: characteristics_ice_sd
+      type: INTEGER
+      mode: NULLABLE
+      description: 'ICE foundation discovery latency standard deviation sum multiplied
+        by 1000
+
+        '
+    - name: characteristics_microphone_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of microphones available on the device.
+
+        '
+    - name: characteristics_speaker_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of speakers available on the device.
+
+        '
+    - name: characteristics_voices_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of speechSynthesis voices available to the user.
+
+        '
+    - name: characteristics_voices_local_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of local speechSynthesis voices available to the user.
+
+        '
   - name: string
     type: RECORD
     mode: NULLABLE
@@ -1166,6 +1227,72 @@ fields:
         for the purpose of experimentation enrollment.
 
         '
+    - name: characteristics_gl_fragment_shader
+      type: STRING
+      mode: NULLABLE
+      description: 'Hash of the transformed source of the fragment shader.
+
+        '
+    - name: characteristics_gl_renderer
+      type: STRING
+      mode: NULLABLE
+      description: 'The OpenGL renderer string.
+
+        '
+    - name: characteristics_gl_renderer_raw
+      type: STRING
+      mode: NULLABLE
+      description: 'The raw OpenGL renderer string.
+
+        '
+    - name: characteristics_gl_vendor
+      type: STRING
+      mode: NULLABLE
+      description: 'The OpenGL vendor string.
+
+        '
+    - name: characteristics_gl_vendor_raw
+      type: STRING
+      mode: NULLABLE
+      description: 'The raw OpenGL vendor string.
+
+        '
+    - name: characteristics_gl_version_raw
+      type: STRING
+      mode: NULLABLE
+      description: 'The raw OpenGL version string.
+
+        '
+    - name: characteristics_gl_vertex_shader
+      type: STRING
+      mode: NULLABLE
+      description: 'Hash of the transformed source of the vertex shader.
+
+        '
+    - name: characteristics_voices_all_ssdeep
+      type: STRING
+      mode: NULLABLE
+      description: 'ssdeep hash of all speechSynthesis voices.
+
+        '
+    - name: characteristics_voices_default
+      type: STRING
+      mode: NULLABLE
+      description: 'The default speechSynthesis voice.
+
+        '
+    - name: characteristics_voices_local_ssdeep
+      type: STRING
+      mode: NULLABLE
+      description: 'ssdeep hash of local speechSynthesis voices.
+
+        '
+    - name: characteristics_voices_nonlocal_ssdeep
+      type: STRING
+      mode: NULLABLE
+      description: 'ssdeep hash of non-local speechSynthesis voices.
+
+        '
   - name: string_list
     type: RECORD
     mode: NULLABLE
@@ -1333,6 +1460,90 @@ fields:
       mode: NULLABLE
       description: 'A JSON blob that contains information about the graphics hardware
         exposed by WebGL.
+
+        '
+    - name: characteristics_gl_extensions
+      type: STRING
+      mode: NULLABLE
+      description: 'The list of OpenGL extensions supported by the user''s system.
+
+        '
+    - name: characteristics_gl_extensions_raw
+      type: STRING
+      mode: NULLABLE
+      description: 'The raw list of OpenGL extensions supported by the user''s system.
+
+        '
+    - name: characteristics_gl_minimal_source
+      type: STRING
+      mode: NULLABLE
+      description: 'Transformed source of the minimal shader.
+
+        '
+    - name: characteristics_gl_params_extensions
+      type: STRING
+      mode: NULLABLE
+      description: 'The list of GL parameters of the extensions.
+
+        '
+    - name: characteristics_gl_params_v1
+      type: STRING
+      mode: NULLABLE
+      description: 'The list of GL parameters of GL1.
+
+        '
+    - name: characteristics_gl_params_v2
+      type: STRING
+      mode: NULLABLE
+      description: 'The list of GL parameters of GL2.
+
+        '
+    - name: characteristics_gl_precision_fragment
+      type: STRING
+      mode: NULLABLE
+      description: 'Precisions of the fragment shader.
+
+        '
+    - name: characteristics_gl_precision_vertex
+      type: STRING
+      mode: NULLABLE
+      description: 'Precisions of the vertex shader.
+
+        '
+    - name: characteristics_media_capabilities_h264
+      type: STRING
+      mode: NULLABLE
+      description: 'Levels of support for H264 codec.
+
+        '
+    - name: characteristics_media_capabilities_not_efficient
+      type: STRING
+      mode: NULLABLE
+      description: 'Which, if any, media types are not power efficient.
+
+        '
+    - name: characteristics_media_capabilities_not_smooth
+      type: STRING
+      mode: NULLABLE
+      description: 'Which, if any, media types are not smooth.
+
+        '
+    - name: characteristics_media_capabilities_unsupported
+      type: STRING
+      mode: NULLABLE
+      description: 'Which, if any, media types are not supported.
+
+        '
+    - name: characteristics_voices_sample
+      type: STRING
+      mode: NULLABLE
+      description: 'Names of 5 sample speechSynthesis voices.
+
+        '
+    - name: characteristics_voices_sha1
+      type: STRING
+      mode: NULLABLE
+      description: 'SHA1 hash of all the voices.
 
         '
   - name: uuid

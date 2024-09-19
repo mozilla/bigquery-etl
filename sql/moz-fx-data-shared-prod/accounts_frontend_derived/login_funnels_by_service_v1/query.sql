@@ -433,7 +433,7 @@ logins_from_google_email_first_google_login_complete AS (
     metrics.string.account_user_id_sha256 AS client_id,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_backend.accounts_events
+    mozdata.accounts_backend.events_stream
   INNER JOIN
     logins_from_google_email_first_login_complete AS prev
     ON prev.submission_date = DATE(submission_timestamp)
@@ -444,7 +444,7 @@ logins_from_google_email_first_google_login_complete AS (
     {% else %}
       DATE(submission_timestamp) = @submission_date
     {% endif %}
-    AND metrics.string.event_name = 'third_party_auth_google_login_complete'
+    AND event = 'third_party_auth.google_login_complete'
     AND metrics.string.session_flow_id != ''
 ),
 logins_from_apple_email_first_email_first_view AS (
@@ -527,7 +527,7 @@ logins_from_apple_email_first_apple_login_complete AS (
     metrics.string.account_user_id_sha256 AS client_id,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_backend.accounts_events
+    mozdata.accounts_backend.events_stream
   INNER JOIN
     logins_from_apple_email_first_login_complete AS prev
     ON prev.submission_date = DATE(submission_timestamp)
@@ -538,7 +538,7 @@ logins_from_apple_email_first_apple_login_complete AS (
     {% else %}
       DATE(submission_timestamp) = @submission_date
     {% endif %}
-    AND metrics.string.event_name = 'third_party_auth_apple_login_complete'
+    AND event = 'third_party_auth.apple_login_complete'
     AND metrics.string.session_flow_id != ''
 ),
 logins_from_google_reg_reg_view AS (
@@ -621,7 +621,7 @@ logins_from_google_reg_google_login_complete AS (
     metrics.string.account_user_id_sha256 AS client_id,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_backend.accounts_events
+    mozdata.accounts_backend.events_stream
   INNER JOIN
     logins_from_google_reg_login_complete AS prev
     ON prev.submission_date = DATE(submission_timestamp)
@@ -632,7 +632,7 @@ logins_from_google_reg_google_login_complete AS (
     {% else %}
       DATE(submission_timestamp) = @submission_date
     {% endif %}
-    AND metrics.string.event_name = 'third_party_auth_google_login_complete'
+    AND event = 'third_party_auth.google_login_complete'
     AND metrics.string.session_flow_id != ''
 ),
 logins_from_apple_reg_reg_view AS (
@@ -715,7 +715,7 @@ logins_from_apple_reg_apple_login_complete AS (
     metrics.string.account_user_id_sha256 AS client_id,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_backend.accounts_events
+    mozdata.accounts_backend.events_stream
   INNER JOIN
     logins_from_apple_reg_login_complete AS prev
     ON prev.submission_date = DATE(submission_timestamp)
@@ -726,7 +726,7 @@ logins_from_apple_reg_apple_login_complete AS (
     {% else %}
       DATE(submission_timestamp) = @submission_date
     {% endif %}
-    AND metrics.string.event_name = 'third_party_auth_apple_login_complete'
+    AND event = 'third_party_auth.apple_login_complete'
     AND metrics.string.session_flow_id != ''
 ),
 logins_from_google_login_login_view AS (
@@ -809,7 +809,7 @@ logins_from_google_login_google_login_complete AS (
     metrics.string.account_user_id_sha256 AS client_id,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_backend.accounts_events
+    mozdata.accounts_backend.events_stream
   INNER JOIN
     logins_from_google_login_login_complete AS prev
     ON prev.submission_date = DATE(submission_timestamp)
@@ -820,7 +820,7 @@ logins_from_google_login_google_login_complete AS (
     {% else %}
       DATE(submission_timestamp) = @submission_date
     {% endif %}
-    AND metrics.string.event_name = 'third_party_auth_google_login_complete'
+    AND event = 'third_party_auth.google_login_complete'
     AND metrics.string.session_flow_id != ''
 ),
 logins_from_apple_login_login_view AS (
@@ -903,7 +903,7 @@ logins_from_apple_login_apple_login_complete AS (
     metrics.string.account_user_id_sha256 AS client_id,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_backend.accounts_events
+    mozdata.accounts_backend.events_stream
   INNER JOIN
     logins_from_apple_login_login_complete AS prev
     ON prev.submission_date = DATE(submission_timestamp)
@@ -914,7 +914,7 @@ logins_from_apple_login_apple_login_complete AS (
     {% else %}
       DATE(submission_timestamp) = @submission_date
     {% endif %}
-    AND metrics.string.event_name = 'third_party_auth_apple_login_complete'
+    AND event = 'third_party_auth.apple_login_complete'
     AND metrics.string.session_flow_id != ''
 ),
 login_from_google_deeplink_google_deeplink AS (
@@ -975,7 +975,7 @@ login_from_google_deeplink_google_login_complete AS (
     metrics.string.account_user_id_sha256 AS client_id,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_backend.accounts_events
+    mozdata.accounts_backend.events_stream
   INNER JOIN
     login_from_google_deeplink_login_complete AS prev
     ON prev.submission_date = DATE(submission_timestamp)
@@ -986,7 +986,7 @@ login_from_google_deeplink_google_login_complete AS (
     {% else %}
       DATE(submission_timestamp) = @submission_date
     {% endif %}
-    AND metrics.string.event_name = 'third_party_auth_google_login_complete'
+    AND event = 'third_party_auth.google_login_complete'
     AND metrics.string.session_flow_id != ''
 ),
 logins_from_apple_deeplink_apple_deeplink AS (
@@ -1047,7 +1047,7 @@ logins_from_apple_deeplink_apple_login_complete AS (
     metrics.string.account_user_id_sha256 AS client_id,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_backend.accounts_events
+    mozdata.accounts_backend.events_stream
   INNER JOIN
     logins_from_apple_deeplink_login_complete AS prev
     ON prev.submission_date = DATE(submission_timestamp)
@@ -1058,7 +1058,7 @@ logins_from_apple_deeplink_apple_login_complete AS (
     {% else %}
       DATE(submission_timestamp) = @submission_date
     {% endif %}
-    AND metrics.string.event_name = 'third_party_auth_apple_login_complete'
+    AND event = 'third_party_auth.apple_login_complete'
     AND metrics.string.session_flow_id != ''
 ),
 login_from_google_cached_logins_cached_login_view AS (
@@ -1119,7 +1119,7 @@ login_from_google_cached_logins_google_login_complete AS (
     metrics.string.account_user_id_sha256 AS client_id,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_backend.accounts_events
+    mozdata.accounts_backend.events_stream
   INNER JOIN
     login_from_google_cached_logins_login_complete AS prev
     ON prev.submission_date = DATE(submission_timestamp)
@@ -1130,7 +1130,7 @@ login_from_google_cached_logins_google_login_complete AS (
     {% else %}
       DATE(submission_timestamp) = @submission_date
     {% endif %}
-    AND metrics.string.event_name = 'third_party_auth_google_login_complete'
+    AND event = 'third_party_auth.google_login_complete'
     AND metrics.string.session_flow_id != ''
 ),
 logins_from_apple_cached_logins_cached_login_view AS (
@@ -1191,7 +1191,7 @@ logins_from_apple_cached_logins_apple_login_complete AS (
     metrics.string.account_user_id_sha256 AS client_id,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_backend.accounts_events
+    mozdata.accounts_backend.events_stream
   INNER JOIN
     logins_from_apple_cached_logins_login_complete AS prev
     ON prev.submission_date = DATE(submission_timestamp)
@@ -1202,7 +1202,7 @@ logins_from_apple_cached_logins_apple_login_complete AS (
     {% else %}
       DATE(submission_timestamp) = @submission_date
     {% endif %}
-    AND metrics.string.event_name = 'third_party_auth_apple_login_complete'
+    AND event = 'third_party_auth.apple_login_complete'
     AND metrics.string.session_flow_id != ''
 ),
 -- aggregate each funnel step value

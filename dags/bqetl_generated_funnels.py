@@ -384,10 +384,6 @@ with DAG(
         wait_for_accounts_frontend_derived__events_stream__v1
     )
 
-    accounts_frontend_derived__login_funnels_by_service__v1.set_upstream(
-        wait_for_copy_deduplicate_all
-    )
-
     accounts_frontend_derived__monitor_mozilla_accounts_funnels__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )

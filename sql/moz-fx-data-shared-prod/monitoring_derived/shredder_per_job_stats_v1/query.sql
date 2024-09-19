@@ -23,6 +23,8 @@ SELECT
   shredder_rows_deleted.partition_id,
   REGEXP_REPLACE(task_id, r"__sample_([0-9]+)$", "") AS parent_task_id,
   SAFE_CAST(REGEXP_EXTRACT(task_id, r"__sample_([0-9]+)$") AS INT) AS shredded_sample_id,
+  shredder_jobs.error_result.reason AS error_reason,
+  shredder_jobs.error_result.message AS error_message,
 FROM
   `moz-fx-data-shredder.shredder_state.shredder_state` AS shredder_state
 INNER JOIN

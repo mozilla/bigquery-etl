@@ -99,17 +99,20 @@ with DAG(
 
     ads_derived__desktop_tiles_forecast_inputs__v1 = bigquery_etl_query(
         task_id="ads_derived__desktop_tiles_forecast_inputs__v1",
-        destination_table="desktop_tiles_forecast_inputs_v1",
+        destination_table='desktop_tiles_forecast_inputs_v1${{ds.strftime("%Y%m01")}}',
         dataset_id="ads_derived",
         project_id="moz-fx-data-shared-prod",
         owner="sbetancourt@mozilla.com",
         email=[
             "cmorales@mozilla.com",
+            "jsnyder@mozilla.com",
             "sbetancourt@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        parameters=["submission_month:DATE:{{ds.strftime('%Y-%m-01')}}"],
+        sql_file_path="sql/moz-fx-data-shared-prod/ads_derived/desktop_tiles_forecast_inputs_v1/query.sql",
     )
 
     ads_derived__nt_visits_to_sessions_conversion_factors_daily__v1 = (

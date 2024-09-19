@@ -20,7 +20,7 @@ Daily aggregation of metrics related to urlbar usage.
 
 #### Owner
 
-anicholson@mozilla.com
+akommasani@mozilla.com
 
 #### Tags
 
@@ -30,12 +30,12 @@ anicholson@mozilla.com
 
 
 default_args = {
-    "owner": "anicholson@mozilla.com",
+    "owner": "akommasani@mozilla.com",
     "start_date": datetime.datetime(2021, 8, 1, 0, 0),
     "end_date": None,
     "email": [
         "telemetry-alerts@mozilla.com",
-        "anicholson@mozilla.com",
+        "akommasani@mozilla.com",
         "akomar@mozilla.com",
     ],
     "depends_on_past": False,
@@ -88,7 +88,6 @@ with DAG(
         email=[
             "akomar@mozilla.com",
             "akommasani@mozilla.com",
-            "anicholson@mozilla.com",
             "tbrooks@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
@@ -104,7 +103,7 @@ with DAG(
         owner="tbrooks@mozilla.com",
         email=[
             "akomar@mozilla.com",
-            "anicholson@mozilla.com",
+            "akommasani@mozilla.com",
             "tbrooks@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
@@ -121,7 +120,6 @@ with DAG(
         email=[
             "akomar@mozilla.com",
             "akommasani@mozilla.com",
-            "anicholson@mozilla.com",
             "dzeber@mozilla.com",
             "rburwei@mozilla.com",
             "telemetry-alerts@mozilla.com",
@@ -135,11 +133,10 @@ with DAG(
         destination_table="urlbar_clients_daily_v1",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="anicholson@mozilla.com",
+        owner="akommasani@mozilla.com",
         email=[
             "akomar@mozilla.com",
-            "anicholson@mozilla.com",
-            "tbrooks@mozilla.com",
+            "akommasani@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
         date_partition_parameter="submission_date",

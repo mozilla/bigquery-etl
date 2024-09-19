@@ -10,11 +10,11 @@ description: |-
   This might not be the same as when activity happens. For example
   if a client changes whether Firefox is the default browser.
 owners:
-- anicholson@mozilla.com
+- mhirose@mozilla.com
 labels:
   incremental: true
   dag: bqetl_unified
-  owner1: anicholson
+  owner1: mhirose
 scheduling:
   dag_name: bqetl_unified
   date_partition_parameter: cohort_date

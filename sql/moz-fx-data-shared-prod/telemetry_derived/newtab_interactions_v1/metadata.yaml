@@ -3,12 +3,12 @@ description: |-
   Interactions on the newtab page, roughly one row per newtab "visit" per-day
   (identified by the visit id).
 owners:
-- anicholson@mozilla.com
+- mbowerman@mozilla.com
 labels:
   application: firefox
   incremental: true
   schedule: daily
-  owner1: anicholson
+  owner1: mbowerman
   dag: bqetl_newtab
 scheduling:
   dag_name: bqetl_newtab

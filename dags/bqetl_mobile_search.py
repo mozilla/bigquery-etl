@@ -16,7 +16,7 @@ Built from bigquery-etl repo, [`dags/bqetl_mobile_search.py`](https://github.com
 
 #### Owner
 
-anicholson@mozilla.com
+akomar@mozilla.com
 
 #### Tags
 
@@ -26,12 +26,11 @@ anicholson@mozilla.com
 
 
 default_args = {
-    "owner": "anicholson@mozilla.com",
+    "owner": "akomar@mozilla.com",
     "start_date": datetime.datetime(2019, 7, 25, 0, 0),
     "end_date": None,
     "email": [
         "telemetry-alerts@mozilla.com",
-        "anicholson@mozilla.com",
         "akomar@mozilla.com",
         "cmorales@mozilla.com",
     ],
@@ -72,7 +71,6 @@ with DAG(
         owner="akomar@mozilla.com",
         email=[
             "akomar@mozilla.com",
-            "anicholson@mozilla.com",
             "cmorales@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
@@ -103,7 +101,6 @@ with DAG(
         email=[
             "akomar@mozilla.com",
             "akommasani@mozilla.com",
-            "anicholson@mozilla.com",
             "cmorales@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
@@ -181,7 +178,6 @@ with DAG(
         email=[
             "akomar@mozilla.com",
             "akommasani@mozilla.com",
-            "anicholson@mozilla.com",
             "cmorales@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
@@ -197,7 +193,6 @@ with DAG(
         owner="akomar@mozilla.com",
         email=[
             "akomar@mozilla.com",
-            "anicholson@mozilla.com",
             "cmorales@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],

@@ -3,9 +3,9 @@ description: |-
   Visits on the newtab page, one row per visit per-day
   (identified by the visit id).
 owners:
-- anicholson@mozilla.com
+- mbowerman@mozilla.com
 labels:
-  owner1: anicholson
+  owner1: mbowerman
 bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer

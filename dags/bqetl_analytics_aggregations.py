@@ -761,11 +761,11 @@ with DAG(
         destination_table="cohort_daily_statistics_v1",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="anicholson@mozilla.com",
+        owner="mhirose@mozilla.com",
         email=[
-            "anicholson@mozilla.com",
             "gkaberere@mozilla.com",
             "lvargas@mozilla.com",
+            "mhirose@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
         date_partition_parameter="activity_date",

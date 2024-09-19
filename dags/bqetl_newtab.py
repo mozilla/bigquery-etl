@@ -19,7 +19,7 @@ Built from bigquery-etl repo, [`dags/bqetl_newtab.py`](https://github.com/mozill
 Schedules newtab related queries.
 #### Owner
 
-anicholson@mozilla.com
+mbowerman@mozilla.com
 
 #### Tags
 
@@ -29,10 +29,10 @@ anicholson@mozilla.com
 
 
 default_args = {
-    "owner": "anicholson@mozilla.com",
+    "owner": "mbowerman@mozilla.com",
     "start_date": datetime.datetime(2022, 7, 1, 0, 0),
     "end_date": None,
-    "email": ["telemetry-alerts@mozilla.com", "anicholson@mozilla.com"],
+    "email": ["telemetry-alerts@mozilla.com", "mbowerman@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),
     "email_on_failure": True,
@@ -80,11 +80,7 @@ with DAG(
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         owner="mbowerman@mozilla.com",
-        email=[
-            "anicholson@mozilla.com",
-            "mbowerman@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
+        email=["mbowerman@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -95,11 +91,7 @@ with DAG(
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         owner="mbowerman@mozilla.com",
-        email=[
-            "anicholson@mozilla.com",
-            "mbowerman@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
+        email=["mbowerman@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -109,8 +101,8 @@ with DAG(
         destination_table="newtab_interactions_v1",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="anicholson@mozilla.com",
-        email=["anicholson@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="mbowerman@mozilla.com",
+        email=["mbowerman@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -120,8 +112,8 @@ with DAG(
         destination_table="newtab_visits_v1",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="anicholson@mozilla.com",
-        email=["anicholson@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="mbowerman@mozilla.com",
+        email=["mbowerman@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )

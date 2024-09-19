@@ -8,7 +8,6 @@ owners:
 - loines@mozilla.com
 - shong@mozilla.com
 - ascholtz@mozilla.com
-- anicholson@mozilla.com
 labels:
   incremental: true
   application: firefox
@@ -17,7 +16,6 @@ labels:
   owner1: loines
   owner2: shong
   owner3: ascholtz
-  owner4: anicholson
 scheduling:
   dag_name: bqetl_feature_usage
 bigquery:

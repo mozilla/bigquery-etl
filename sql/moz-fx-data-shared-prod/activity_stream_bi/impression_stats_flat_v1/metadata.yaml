@@ -2,7 +2,7 @@
 friendly_name: Impression Stats Flat
 description: Unnested representation of tile impression statistics
 owners:
-  - anicholson@mozilla.com
+  - mbowerman@mozilla.com
 labels:
   application: activity_stream
   schedule: daily

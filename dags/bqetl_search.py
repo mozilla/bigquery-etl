@@ -16,7 +16,7 @@ Built from bigquery-etl repo, [`dags/bqetl_search.py`](https://github.com/mozill
 
 #### Owner
 
-anicholson@mozilla.com
+akomar@mozilla.com
 
 #### Tags
 
@@ -26,12 +26,11 @@ anicholson@mozilla.com
 
 
 default_args = {
-    "owner": "anicholson@mozilla.com",
+    "owner": "akomar@mozilla.com",
     "start_date": datetime.datetime(2018, 11, 27, 0, 0),
     "end_date": None,
     "email": [
         "telemetry-alerts@mozilla.com",
-        "anicholson@mozilla.com",
         "akomar@mozilla.com",
         "cmorales@mozilla.com",
     ],
@@ -108,7 +107,6 @@ with DAG(
         owner="akomar@mozilla.com",
         email=[
             "akomar@mozilla.com",
-            "anicholson@mozilla.com",
             "cmorales@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
@@ -138,7 +136,6 @@ with DAG(
         owner="akomar@mozilla.com",
         email=[
             "akomar@mozilla.com",
-            "anicholson@mozilla.com",
             "cmorales@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
@@ -216,7 +213,6 @@ with DAG(
         owner="akomar@mozilla.com",
         email=[
             "akomar@mozilla.com",
-            "anicholson@mozilla.com",
             "cmorales@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
@@ -246,7 +242,6 @@ with DAG(
         owner="loines@mozilla.com",
         email=[
             "akomar@mozilla.com",
-            "anicholson@mozilla.com",
             "cmorales@mozilla.com",
             "loines@mozilla.com",
             "telemetry-alerts@mozilla.com",
@@ -284,7 +279,6 @@ with DAG(
         owner="jklukas@mozilla.com",
         email=[
             "akomar@mozilla.com",
-            "anicholson@mozilla.com",
             "cmorales@mozilla.com",
             "jklukas@mozilla.com",
             "telemetry-alerts@mozilla.com",

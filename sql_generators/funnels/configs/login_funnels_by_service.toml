@@ -262,18 +262,18 @@ join_previous_step_on = "metrics.string.session_flow_id"
 [steps.google_login_complete]
 friendly_name = "Google Login Complete"
 description = "Event that indicates the login came from Google"
-data_source = "accounts_events_backend"
+data_source = "events_stream_backend"
 select_expression = "metrics.string.session_flow_id"
-where_expression = "metrics.string.event_name = 'third_party_auth_google_login_complete' AND metrics.string.session_flow_id != ''"
+where_expression = "event = 'third_party_auth.google_login_complete' AND metrics.string.session_flow_id != ''"
 aggregation = "count distinct"
 join_previous_step_on = "metrics.string.session_flow_id"
 
 [steps.apple_login_complete]
 friendly_name = "Apple Login Complete"
 description = "Event that indicates the login came from Apple"
-data_source = "accounts_events_backend"
+data_source = "events_stream_backend"
 select_expression = "metrics.string.session_flow_id"
-where_expression = "metrics.string.event_name = 'third_party_auth_apple_login_complete' AND metrics.string.session_flow_id != ''"
+where_expression = "event = 'third_party_auth.apple_login_complete' AND metrics.string.session_flow_id != ''"
 aggregation = "count distinct"
 join_previous_step_on = "metrics.string.session_flow_id"
 
@@ -295,11 +295,6 @@ client_id_column = "metrics.string.account_user_id_sha256"
 
 [data_sources.events_stream_backend]
 from_expression = "mozdata.accounts_backend.events_stream"
-submission_date_column = "DATE(submission_timestamp)"
-client_id_column = "metrics.string.account_user_id_sha256"
-
-[data_sources.accounts_events_backend]
-from_expression = "mozdata.accounts_backend.accounts_events"
 submission_date_column = "DATE(submission_timestamp)"
 client_id_column = "metrics.string.account_user_id_sha256"
 

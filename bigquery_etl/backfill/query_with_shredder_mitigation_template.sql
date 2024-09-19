@@ -19,4 +19,4 @@ UNION ALL
 SELECT
   {{ final_select | default('1') }}
 FROM
-  {{ shredded_cte | default('shredded') }};
+  {{ shredded_cte | default('shredded') }}

@@ -3,7 +3,7 @@ description: |-
   This python script gets the suppression list from Campaign Monitor via their API.
   The data then gets stored into BigQuery.
 owners:
-- leli@mozilla.com
+- cbeck@mozilla.com
 labels:
   incremental: false
   owner1: leli

@@ -1,0 +1,127 @@
+fields:
+- mode: NULLABLE
+  name: client_id
+  type: STRING
+  description: Client ID
+- mode: NULLABLE
+  name: sample_id
+  type: INT64
+  description: Sample ID
+- mode: NULLABLE
+  name: profile_group_id
+  type: STRING
+  description: Profile Group Id
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: Submission Date
+- mode: NULLABLE
+  name: metric_date
+  type: DATE
+  description: Metric Date
+- mode: NULLABLE
+  name: country
+  type: STRING
+  description: Country
+- mode: NULLABLE
+  name: locale
+  type: STRING
+  description: Locale
+- mode: NULLABLE
+  name: app_version
+  type: STRING
+  description: App Version
+- mode: NULLABLE
+  name: normalized_channel
+  type: STRING
+  description: Normalized Channel
+- mode: NULLABLE
+  name: first_seen_date
+  type: DATE
+  description: First Seen Date
+- mode: NULLABLE
+  name: attribution_campaign
+  type: STRING
+  description: Attribution Campaign
+- mode: NULLABLE
+  name: attribution_content
+  type: STRING
+  description: Attribution Content
+- mode: NULLABLE
+  name: attribution_dlsource
+  type: STRING
+  description: Attribution DL Source
+- mode: NULLABLE
+  name: attribution_medium
+  type: STRING
+  description: Attribution Medium
+- mode: NULLABLE
+  name: attribution_ua
+  type: STRING
+  description: Attribution UA
+- mode: NULLABLE
+  name: attribution_experiment
+  type: STRING
+  description: Attribution Experiment
+- mode: NULLABLE
+  name: attribution_variation
+  type: STRING
+  description: Attribution Variation
+- mode: NULLABLE
+  name: startup_profile_selection_reason
+  type: STRING
+  description: Start up Profile Selection Reason
+- mode: NULLABLE
+  name: normalized_os
+  type: STRING
+  description: Normalized OS
+- mode: NULLABLE
+  name: normalized_os_version
+  type: STRING
+  description: Normalized OS Version
+- mode: NULLABLE
+  name: distribution_id
+  type: STRING
+  description: Distribution ID
+- mode: NULLABLE
+  name: isp
+  type: STRING
+  description: ISP
+- mode: NULLABLE
+  name: is_desktop
+  type: BOOLEAN
+  description: Indicates if the client is included in the desktop KPI
+- mode: NULLABLE
+  name: days_seen_bits
+  type: INTEGER
+- mode: NULLABLE
+  name: days_active_bits
+  type: INTEGER
+- mode: NULLABLE
+  name: ping_sent_metric_date
+  type: BOOLEAN
+  description: Ping Sent on Metric Date
+- mode: NULLABLE
+  name: ping_sent_week_4
+  type: BOOLEAN
+  description: Ping Sent Week 4
+- mode: NULLABLE
+  name: active_metric_date
+  type: BOOLEAN
+  description: Active on Metric Date
+- mode: NULLABLE
+  name: retained_week_4
+  type: BOOLEAN
+  description: Retained Week 4
+- mode: NULLABLE
+  name: new_profile_metric_date
+  type: BOOLEAN
+  description: New Profile on Metric Date
+- mode: NULLABLE
+  name: repeat_profile
+  type: BOOLEAN
+  description: Repeat Profile
+- mode: NULLABLE
+  name: retained_week_4_new_profile
+  type: BOOLEAN
+  description: Retained Week 4 New Profile

@@ -1446,6 +1446,30 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#snake_case_columns-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      snake_case_columns (UDF)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="snake_case_columns (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_18" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameters
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2268,6 +2292,30 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#snake_case_columns-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      snake_case_columns (UDF)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="snake_case_columns (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_18" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameters
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2464,6 +2512,16 @@
 <div class="highlight"><pre><span></span><code>INT64
 </code></pre></div>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf_js/sample_id">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/moz-fx-data-shared-prod/udf_js/sample_id/metadata.yaml">Edit</a></p>
+<h2 id="snake_case_columns-udf">snake_case_columns (UDF)</h2>
+<p>This UDF takes a list of column names to snake case and transform them to be compatible with the BigQuery column naming format. Based on the existing ingestion logic <a href="https://github.com/mozilla/gcp-ingestion/blob/dad29698271e543018eddbb3b771ad7942bf4ce5/">https://github.com/mozilla/gcp-ingestion/blob/dad29698271e543018eddbb3b771ad7942bf4ce5/</a> ingestion-core/src/main/java/com/mozilla/telemetry/ingestion/core/transform/PubsubMessageToObjectNode.java#L824</p>
+<h3 id="parameters_18">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>input ARRAY&lt;STRING&gt;
+</code></pre></div>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>ARRAY&lt;STRING&gt;DETERMINISTIC
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf_js/snake_case_columns">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/moz-fx-data-shared-prod/udf_js/snake_case_columns/metadata.yaml">Edit</a></p>
 
 
 

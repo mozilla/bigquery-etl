@@ -15,7 +15,6 @@ const REV_WORD_BOUND_PAT = new RegExp(
  * See https://github.com/acmiyaguchi/test-casing
  */
 function format(input) {
-  //const subbed = input.split('').reverse().join('').replaceAll(".", "_").replace(/[^A-Za-z0-9_]/g, " ");
   const subbed = input.split('').reverse().join('').replace(/[^\w]|_/g, " ");
   const reversedResult = subbed.split(REV_WORD_BOUND_PAT)
     .map(s => s.trim())
@@ -53,7 +52,6 @@ WITH input AS (
     ['user_prefs', 'foo.bar', 'camelCase'],
     ['user_prefs', 'foo_bar', 'camel_case']
 ),
-  --
 formatted AS (
   SELECT
     udf_js.snake_case_columns(test_input) AS result,
@@ -61,7 +59,6 @@ formatted AS (
   FROM
     input
 )
-  --
 SELECT
   mozfun.assert.array_equals(expected, result)
 FROM

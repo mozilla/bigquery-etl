@@ -29,7 +29,7 @@ WITH base AS (
     {% else %}
     CAST(NULL AS STRING) AS distribution_id,
     {% endif %}
-    {% if app_name = "fenix" %}
+    {% if app_name == "fenix" %}
     metrics.string.first_session_install_source AS install_source,
     {% else %}
     CAST(NULL AS STRING) AS install_source,

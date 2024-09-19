@@ -23,7 +23,7 @@ SELECT
   baseline.submission_date,
   baseline.normalized_channel,
   * EXCEPT(submission_date, normalized_channel, client_id, sample_id{% if app_name = "fenix" %}, install_source{% endif %}),
-  {% if app_name = "fenix" %}
+  {% if app_name == "fenix" %}
   COALESCE(baseline.install_source, metrics.install_source) AS install_source,
   {% endif %}
 FROM

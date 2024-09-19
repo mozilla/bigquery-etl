@@ -1,4 +1,4 @@
-CREATE VIEW
+CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.telemetry.segmented_dau`
 AS
 SELECT

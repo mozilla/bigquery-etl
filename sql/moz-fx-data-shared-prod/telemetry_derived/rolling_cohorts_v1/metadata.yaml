@@ -10,7 +10,7 @@ description: |-
   This might not be the same as when activity happens. For example
   if a client changes whether Firefox is the default browser.
 owners:
-- anicholson@mozilla.com
+- mhirose@mozilla.com
 labels:
   incremental: true
 scheduling:

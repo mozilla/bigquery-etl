@@ -226,8 +226,82 @@ unified_metrics AS (
         AND browser_version_info.major_version >= 100
       )
     )
+),
+desktop_unified AS (
+  SELECT
+    *
+  FROM
+    unified_metrics
+  WHERE
+    normalized_os NOT IN ("Android", "iOS")
+),
+ios_unified AS (
+  SELECT
+    *
+  FROM
+    unified_metrics
+  WHERE
+    normalized_os = "iOS"
+),
+android_unified AS (
+  SELECT
+    *
+  FROM
+    unified_metrics
+  WHERE
+    normalized_os = "Android"
+),
+clients_daily_redux AS (
+  SELECT
+    submission_date,
+    client_id,
+    profile_group_id,
+    experiments
+  FROM
+    `moz-fx-data-shared-prod.telemetry.clients_daily`
+  WHERE
+    submission_date = @submission_date
+),
+ios_experiments_info AS (
+  SELECT
+    client_info.client_id AS client_id,
+    ARRAY_AGG(DATE(submission_timestamp) ORDER BY submission_timestamp DESC)[
+      OFFSET(0)
+    ] AS submission_date,
+    mozfun.map.mode_last(
+      ARRAY_CONCAT_AGG(
+        mozfun.glean.legacy_compatible_experiments(ping_info.experiments)
+        ORDER BY
+          submission_timestamp
+      )
+    ) AS experiments
+  FROM
+    `moz-fx-data-shared-prod.firefox_ios.events_unnested`
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+  GROUP BY
+    client_info.client_id
+),
+fenix_experiments_info AS (
+  SELECT
+    client_info.client_id AS client_id,
+    ARRAY_AGG(DATE(submission_timestamp) ORDER BY submission_timestamp DESC)[
+      OFFSET(0)
+    ] AS submission_date,
+    mozfun.map.mode_last(
+      ARRAY_CONCAT_AGG(
+        mozfun.glean.legacy_compatible_experiments(ping_info.experiments)
+        ORDER BY
+          submission_timestamp
+      )
+    ) AS experiments
+  FROM
+    `moz-fx-data-shared-prod.fenix.events_unnested`
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+  GROUP BY
+    client_info.client_id
 )
-  --- desktop
 SELECT
   @submission_date AS submission_date,
   device,
@@ -246,7 +320,7 @@ SELECT
   COALESCE(sponsored_tiles_disable_count, 0) AS sponsored_tiles_disable_count,
   profile_group_id
 FROM
-  (SELECT * FROM unified_metrics WHERE normalized_os NOT IN ("Android", "iOS")) desktop_unified
+  desktop_unified
 LEFT JOIN
   clicks_main
   USING (client_id, submission_date)
@@ -258,17 +332,7 @@ LEFT JOIN
   USING (client_id, submission_date)
 -- add experiments data
 LEFT JOIN
-  (
-    SELECT
-      submission_date,
-      client_id,
-      profile_group_id,
-      experiments
-    FROM
-      `moz-fx-data-shared-prod.telemetry.clients_daily`
-    WHERE
-      submission_date = @submission_date
-  )
+  clients_daily_redux
   USING (submission_date, client_id)
 UNION ALL
   --- iOS
@@ -290,32 +354,13 @@ SELECT
   COALESCE(sponsored_tiles_disable_count, 0) AS sponsored_tiles_disable_count,
   CAST(NULL AS STRING) AS profile_group_id
 FROM
-  (SELECT * FROM unified_metrics WHERE normalized_os = "iOS") ios_unified
+  ios_unified
 LEFT JOIN
   ios_data
   USING (submission_date, client_id)
 -- add experiments data
 LEFT JOIN
-  (
-    SELECT
-      client_info.client_id AS client_id,
-      ARRAY_AGG(DATE(submission_timestamp) ORDER BY submission_timestamp DESC)[
-        OFFSET(0)
-      ] AS submission_date,
-      mozfun.map.mode_last(
-        ARRAY_CONCAT_AGG(
-          mozfun.glean.legacy_compatible_experiments(ping_info.experiments)
-          ORDER BY
-            submission_timestamp
-        )
-      ) AS experiments
-    FROM
-      `moz-fx-data-shared-prod.firefox_ios.events_unnested`
-    WHERE
-      DATE(submission_timestamp) = @submission_date
-    GROUP BY
-      client_info.client_id
-  ) experiments_info
+  ios_experiments_info
   USING (submission_date, client_id)
 UNION ALL
 --- Android
@@ -337,37 +382,11 @@ SELECT
   COALESCE(sponsored_tiles_disable_count, 0) AS sponsored_tiles_disable_count,
   CAST(NULL AS STRING) AS profile_group_id
 FROM
-  (-- note unified_metrics drops known Android bots
-    SELECT
-      *
-    FROM
-      unified_metrics
-    WHERE
-      normalized_os = "Android"
-  ) android_unified
+  android_unified
 LEFT JOIN
   android_events
   USING (submission_date, client_id)
 -- add experiments data
 LEFT JOIN
-  (
-    SELECT
-      client_info.client_id AS client_id,
-      ARRAY_AGG(DATE(submission_timestamp) ORDER BY submission_timestamp DESC)[
-        OFFSET(0)
-      ] AS submission_date,
-      mozfun.map.mode_last(
-        ARRAY_CONCAT_AGG(
-          mozfun.glean.legacy_compatible_experiments(ping_info.experiments)
-          ORDER BY
-            submission_timestamp
-        )
-      ) AS experiments
-    FROM
-      `moz-fx-data-shared-prod.fenix.events_unnested`
-    WHERE
-      DATE(submission_timestamp) = @submission_date
-    GROUP BY
-      client_info.client_id
-  )
+  fenix_experiments_info
   USING (submission_date, client_id)

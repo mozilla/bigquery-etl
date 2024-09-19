@@ -5,7 +5,7 @@ WITH registration_overall_success_by_service_reg_view AS (
     service AS service,
     country AS country,
     DATE(timestamp) AS submission_date,
-    user_id AS client_id,
+    user_id AS client_id_column,
     flow_id AS column
   FROM
     mozdata.firefox_accounts.fxa_all_events
@@ -23,7 +23,7 @@ registration_overall_success_by_service_reg_complete AS (
     prev.service AS service,
     prev.country AS country,
     DATE(timestamp) AS submission_date,
-    user_id AS client_id,
+    user_id AS client_id_column,
     flow_id AS column
   FROM
     mozdata.firefox_accounts.fxa_all_events
@@ -45,7 +45,7 @@ registration_email_confirmation_overall_success_by_service_reg_view AS (
     service AS service,
     country AS country,
     DATE(timestamp) AS submission_date,
-    user_id AS client_id,
+    user_id AS client_id_column,
     flow_id AS column
   FROM
     mozdata.firefox_accounts.fxa_all_events
@@ -63,7 +63,7 @@ registration_email_confirmation_overall_success_by_service_reg_email_code_view A
     prev.service AS service,
     prev.country AS country,
     DATE(timestamp) AS submission_date,
-    user_id AS client_id,
+    user_id AS client_id_column,
     flow_id AS column
   FROM
     mozdata.firefox_accounts.fxa_all_events
@@ -85,7 +85,7 @@ registration_email_confirmation_overall_success_by_service_reg_complete AS (
     prev.service AS service,
     prev.country AS country,
     DATE(timestamp) AS submission_date,
-    user_id AS client_id,
+    user_id AS client_id_column,
     flow_id AS column
   FROM
     mozdata.firefox_accounts.fxa_all_events
@@ -107,7 +107,7 @@ google_reg_third_party_auth_completions_google_signin_complete AS (
     service AS service,
     country AS country,
     DATE(timestamp) AS submission_date,
-    user_id AS client_id,
+    user_id AS client_id_column,
     flow_id AS column
   FROM
     mozdata.firefox_accounts.fxa_all_events
@@ -125,7 +125,7 @@ google_reg_third_party_auth_completions_reg_complete AS (
     prev.service AS service,
     prev.country AS country,
     DATE(timestamp) AS submission_date,
-    user_id AS client_id,
+    user_id AS client_id_column,
     flow_id AS column
   FROM
     mozdata.firefox_accounts.fxa_all_events
@@ -147,7 +147,7 @@ google_login_third_party_auth_completions_google_signin_complete AS (
     service AS service,
     country AS country,
     DATE(timestamp) AS submission_date,
-    user_id AS client_id,
+    user_id AS client_id_column,
     flow_id AS column
   FROM
     mozdata.firefox_accounts.fxa_all_events
@@ -165,7 +165,7 @@ google_login_third_party_auth_completions_login_complete AS (
     prev.service AS service,
     prev.country AS country,
     DATE(timestamp) AS submission_date,
-    user_id AS client_id,
+    user_id AS client_id_column,
     flow_id AS column
   FROM
     mozdata.firefox_accounts.fxa_all_events
@@ -187,7 +187,7 @@ apple_reg_third_party_auth_completions_apple_signin_complete AS (
     service AS service,
     country AS country,
     DATE(timestamp) AS submission_date,
-    user_id AS client_id,
+    user_id AS client_id_column,
     flow_id AS column
   FROM
     mozdata.firefox_accounts.fxa_all_events
@@ -205,7 +205,7 @@ apple_reg_third_party_auth_completions_reg_complete AS (
     prev.service AS service,
     prev.country AS country,
     DATE(timestamp) AS submission_date,
-    user_id AS client_id,
+    user_id AS client_id_column,
     flow_id AS column
   FROM
     mozdata.firefox_accounts.fxa_all_events
@@ -227,7 +227,7 @@ apple_login_third_party_auth_completions_apple_signin_complete AS (
     service AS service,
     country AS country,
     DATE(timestamp) AS submission_date,
-    user_id AS client_id,
+    user_id AS client_id_column,
     flow_id AS column
   FROM
     mozdata.firefox_accounts.fxa_all_events
@@ -245,7 +245,7 @@ apple_login_third_party_auth_completions_login_complete AS (
     prev.service AS service,
     prev.country AS country,
     DATE(timestamp) AS submission_date,
-    user_id AS client_id,
+    user_id AS client_id_column,
     flow_id AS column
   FROM
     mozdata.firefox_accounts.fxa_all_events

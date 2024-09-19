@@ -3,7 +3,7 @@ WITH delete_account_account_pref_view AS (
   SELECT
     metrics.string.session_flow_id AS join_key,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_frontend.events_stream
@@ -20,7 +20,7 @@ delete_account_delete_account_engage AS (
   SELECT
     metrics.string.session_flow_id AS join_key,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_frontend.events_stream
@@ -41,7 +41,7 @@ add_two_factor_account_pref_view AS (
   SELECT
     metrics.string.session_flow_id AS join_key,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_frontend.events_stream
@@ -58,7 +58,7 @@ add_two_factor_add_two_factor_engage AS (
   SELECT
     metrics.string.session_flow_id AS join_key,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_frontend.events_stream
@@ -79,7 +79,7 @@ device_signout_account_pref_view AS (
   SELECT
     metrics.string.session_flow_id AS join_key,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_frontend.events_stream
@@ -96,7 +96,7 @@ device_signout_device_signout_engage AS (
   SELECT
     metrics.string.session_flow_id AS join_key,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_frontend.events_stream
@@ -117,7 +117,7 @@ google_play_account_pref_view AS (
   SELECT
     metrics.string.session_flow_id AS join_key,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_frontend.events_stream
@@ -134,7 +134,7 @@ google_play_google_play_engage AS (
   SELECT
     metrics.string.session_flow_id AS join_key,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_frontend.events_stream
@@ -155,7 +155,7 @@ apple_store_account_pref_view AS (
   SELECT
     metrics.string.session_flow_id AS join_key,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_frontend.events_stream
@@ -172,7 +172,7 @@ apple_store_apple_engage AS (
   SELECT
     metrics.string.session_flow_id AS join_key,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_frontend.events_stream
@@ -193,7 +193,7 @@ google_unlink_account_pref_view AS (
   SELECT
     metrics.string.session_flow_id AS join_key,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_frontend.events_stream
@@ -210,7 +210,7 @@ google_unlink_google_unlink_engage AS (
   SELECT
     metrics.string.session_flow_id AS join_key,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_frontend.events_stream
@@ -231,7 +231,7 @@ apple_unlink_account_pref_view AS (
   SELECT
     metrics.string.session_flow_id AS join_key,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_frontend.events_stream
@@ -248,7 +248,7 @@ apple_unlink_apple_unlink_engage AS (
   SELECT
     metrics.string.session_flow_id AS join_key,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_frontend.events_stream
@@ -269,7 +269,7 @@ google_unlink_confirm_account_pref_view AS (
   SELECT
     metrics.string.session_flow_id AS join_key,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_frontend.events_stream
@@ -286,7 +286,7 @@ google_unlink_confirm_google_unlink_confirm_engage AS (
   SELECT
     metrics.string.session_flow_id AS join_key,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_frontend.events_stream
@@ -307,7 +307,7 @@ apple_unlink_confirm_account_pref_view AS (
   SELECT
     metrics.string.session_flow_id AS join_key,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_frontend.events_stream
@@ -324,7 +324,7 @@ apple_unlink_confirm_apple_unlink_confirm_engage AS (
   SELECT
     metrics.string.session_flow_id AS join_key,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_frontend.events_stream
@@ -345,7 +345,7 @@ change_password_account_pref_view AS (
   SELECT
     metrics.string.session_flow_id AS join_key,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_frontend.events_stream
@@ -362,7 +362,7 @@ change_password_change_password_engage AS (
   SELECT
     metrics.string.session_flow_id AS join_key,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_frontend.events_stream
@@ -383,7 +383,7 @@ secondary_email_account_pref_view AS (
   SELECT
     metrics.string.session_flow_id AS join_key,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_frontend.events_stream
@@ -400,7 +400,7 @@ secondary_email_secondary_email_engage AS (
   SELECT
     metrics.string.session_flow_id AS join_key,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_frontend.events_stream
@@ -421,7 +421,7 @@ display_name_account_pref_view AS (
   SELECT
     metrics.string.session_flow_id AS join_key,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_frontend.events_stream
@@ -438,7 +438,7 @@ display_name_display_name_engage AS (
   SELECT
     metrics.string.session_flow_id AS join_key,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_frontend.events_stream
@@ -459,7 +459,7 @@ recovery_key_account_pref_view AS (
   SELECT
     metrics.string.session_flow_id AS join_key,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_frontend.events_stream
@@ -476,7 +476,7 @@ recovery_key_recovery_key_engage AS (
   SELECT
     metrics.string.session_flow_id AS join_key,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_frontend.events_stream

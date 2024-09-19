@@ -3,7 +3,7 @@ WITH accounts_pref_delete_account_delete_account_view AS (
   SELECT
     metrics.string.session_flow_id AS join_key,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_frontend.events_stream
@@ -20,7 +20,7 @@ accounts_pref_delete_account_delete_account_engage AS (
   SELECT
     metrics.string.session_flow_id AS join_key,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_frontend.events_stream
@@ -41,7 +41,7 @@ accounts_pref_delete_account_delete_account_submit AS (
   SELECT
     metrics.string.session_flow_id AS join_key,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_frontend.events_stream
@@ -62,7 +62,7 @@ accounts_pref_delete_account_delete_account_password_view AS (
   SELECT
     metrics.string.session_flow_id AS join_key,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_frontend.events_stream
@@ -83,7 +83,7 @@ accounts_pref_delete_account_delete_account_password_submit AS (
   SELECT
     metrics.string.session_flow_id AS join_key,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_frontend.events_stream
@@ -104,7 +104,7 @@ accounts_pref_delete_account_account_deleted AS (
   SELECT
     metrics.string.session_flow_id AS join_key,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_backend.events_stream

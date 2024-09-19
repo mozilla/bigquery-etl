@@ -18,7 +18,7 @@ WITH onboarding_funnel_new_profile AS (
     COALESCE(r.retained_week_2, FALSE) AS retained_week_2,
     COALESCE(r.retained_week_4, FALSE) AS retained_week_4,
     ac.submission_date AS submission_date,
-    ac.client_id AS client_id,
+    ac.client_id AS client_id_column,
     ac.client_id AS column
   FROM
     `moz-fx-data-shared-prod.fenix.firefox_android_clients` ac
@@ -71,7 +71,7 @@ onboarding_funnel_first_card_impression AS (
     COALESCE(r.retained_week_2, FALSE) AS retained_week_2,
     COALESCE(r.retained_week_4, FALSE) AS retained_week_4,
     ac.submission_date AS submission_date,
-    ac.client_id AS client_id,
+    ac.client_id AS client_id_column,
     CASE
       WHEN `mozfun.map.get_key`(event_extra, 'sequence_position') = '1'
         AND `mozfun.map.get_key`(event_extra, 'action') = 'impression'
@@ -130,7 +130,7 @@ onboarding_funnel_first_card_primary_click AS (
     COALESCE(r.retained_week_2, FALSE) AS retained_week_2,
     COALESCE(r.retained_week_4, FALSE) AS retained_week_4,
     ac.submission_date AS submission_date,
-    ac.client_id AS client_id,
+    ac.client_id AS client_id_column,
     CASE
       WHEN `mozfun.map.get_key`(event_extra, 'sequence_position') = '1'
         AND `mozfun.map.get_key`(event_extra, 'action') = 'click'
@@ -190,7 +190,7 @@ onboarding_funnel_first_card_secondary_click AS (
     COALESCE(r.retained_week_2, FALSE) AS retained_week_2,
     COALESCE(r.retained_week_4, FALSE) AS retained_week_4,
     ac.submission_date AS submission_date,
-    ac.client_id AS client_id,
+    ac.client_id AS client_id_column,
     CASE
       WHEN `mozfun.map.get_key`(event_extra, 'sequence_position') = '1'
         AND `mozfun.map.get_key`(event_extra, 'action') = 'click'
@@ -250,7 +250,7 @@ onboarding_funnel_second_card_impression AS (
     COALESCE(r.retained_week_2, FALSE) AS retained_week_2,
     COALESCE(r.retained_week_4, FALSE) AS retained_week_4,
     ac.submission_date AS submission_date,
-    ac.client_id AS client_id,
+    ac.client_id AS client_id_column,
     CASE
       WHEN `mozfun.map.get_key`(event_extra, 'sequence_position') = '2'
         AND `mozfun.map.get_key`(event_extra, 'action') = 'impression'
@@ -309,7 +309,7 @@ onboarding_funnel_second_card_primary_click AS (
     COALESCE(r.retained_week_2, FALSE) AS retained_week_2,
     COALESCE(r.retained_week_4, FALSE) AS retained_week_4,
     ac.submission_date AS submission_date,
-    ac.client_id AS client_id,
+    ac.client_id AS client_id_column,
     CASE
       WHEN `mozfun.map.get_key`(event_extra, 'sequence_position') = '2'
         AND `mozfun.map.get_key`(event_extra, 'action') = 'click'
@@ -369,7 +369,7 @@ onboarding_funnel_second_card_secondary_click AS (
     COALESCE(r.retained_week_2, FALSE) AS retained_week_2,
     COALESCE(r.retained_week_4, FALSE) AS retained_week_4,
     ac.submission_date AS submission_date,
-    ac.client_id AS client_id,
+    ac.client_id AS client_id_column,
     CASE
       WHEN `mozfun.map.get_key`(event_extra, 'sequence_position') = '2'
         AND `mozfun.map.get_key`(event_extra, 'action') = 'click'
@@ -429,7 +429,7 @@ onboarding_funnel_third_card_impression AS (
     COALESCE(r.retained_week_2, FALSE) AS retained_week_2,
     COALESCE(r.retained_week_4, FALSE) AS retained_week_4,
     ac.submission_date AS submission_date,
-    ac.client_id AS client_id,
+    ac.client_id AS client_id_column,
     CASE
       WHEN `mozfun.map.get_key`(event_extra, 'sequence_position') = '3'
         AND `mozfun.map.get_key`(event_extra, 'action') = 'impression'
@@ -488,7 +488,7 @@ onboarding_funnel_third_card_primary_click AS (
     COALESCE(r.retained_week_2, FALSE) AS retained_week_2,
     COALESCE(r.retained_week_4, FALSE) AS retained_week_4,
     ac.submission_date AS submission_date,
-    ac.client_id AS client_id,
+    ac.client_id AS client_id_column,
     CASE
       WHEN `mozfun.map.get_key`(event_extra, 'sequence_position') = '3'
         AND `mozfun.map.get_key`(event_extra, 'action') = 'click'
@@ -548,7 +548,7 @@ onboarding_funnel_third_card_secondary_click AS (
     COALESCE(r.retained_week_2, FALSE) AS retained_week_2,
     COALESCE(r.retained_week_4, FALSE) AS retained_week_4,
     ac.submission_date AS submission_date,
-    ac.client_id AS client_id,
+    ac.client_id AS client_id_column,
     CASE
       WHEN `mozfun.map.get_key`(event_extra, 'sequence_position') = '3'
         AND `mozfun.map.get_key`(event_extra, 'action') = 'click'
@@ -608,7 +608,7 @@ onboarding_funnel_onboarding_completed AS (
     COALESCE(r.retained_week_2, FALSE) AS retained_week_2,
     COALESCE(r.retained_week_4, FALSE) AS retained_week_4,
     ac.submission_date AS submission_date,
-    ac.client_id AS client_id,
+    ac.client_id AS client_id_column,
     CASE
       WHEN event_name = 'completed'
         AND event_category = 'onboarding'
@@ -665,7 +665,7 @@ onboarding_funnel_sync_sign_in AS (
     COALESCE(r.retained_week_2, FALSE) AS retained_week_2,
     COALESCE(r.retained_week_4, FALSE) AS retained_week_4,
     ac.submission_date AS submission_date,
-    ac.client_id AS client_id,
+    ac.client_id AS client_id_column,
     CASE
       WHEN event_name IN ('sign_in', 'sign_up')
         AND event_category = 'sync_auth'
@@ -722,7 +722,7 @@ onboarding_funnel_default_browser AS (
     COALESCE(r.retained_week_2, FALSE) AS retained_week_2,
     COALESCE(r.retained_week_4, FALSE) AS retained_week_4,
     ac.submission_date AS submission_date,
-    ac.client_id AS client_id,
+    ac.client_id AS client_id_column,
     CASE
       WHEN event_name = 'default_browser_changed'
         AND event_category = 'events'

@@ -75,18 +75,6 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_copy_deduplicate_all = ExternalTaskSensor(
-        task_id="wait_for_copy_deduplicate_all",
-        external_dag_id="copy_deduplicate",
-        external_task_id="copy_deduplicate_all",
-        execution_delta=datetime.timedelta(seconds=14400),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
     wait_for_checks__fail_fenix_derived__firefox_android_clients__v1 = (
         ExternalTaskSensor(
             task_id="wait_for_checks__fail_fenix_derived__firefox_android_clients__v1",
@@ -99,6 +87,18 @@ with DAG(
             failed_states=FAILED_STATES,
             pool="DATA_ENG_EXTERNALTASKSENSOR",
         )
+    )
+
+    wait_for_copy_deduplicate_all = ExternalTaskSensor(
+        task_id="wait_for_copy_deduplicate_all",
+        external_dag_id="copy_deduplicate",
+        external_task_id="copy_deduplicate_all",
+        execution_delta=datetime.timedelta(seconds=14400),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     wait_for_fenix_derived__funnel_retention_clients_week_4__v1 = ExternalTaskSensor(
@@ -361,7 +361,11 @@ with DAG(
     )
 
     accounts_frontend_derived__email_first_reg_login_funnels_by_service__v1.set_upstream(
-        wait_for_copy_deduplicate_all
+        wait_for_accounts_backend_derived__events_stream__v1
+    )
+
+    accounts_frontend_derived__email_first_reg_login_funnels_by_service__v1.set_upstream(
+        wait_for_accounts_frontend_derived__events_stream__v1
     )
 
     accounts_frontend_derived__login_engagement_funnel__v1.set_upstream(
@@ -385,11 +389,15 @@ with DAG(
     )
 
     accounts_frontend_derived__monitor_mozilla_accounts_funnels__v1.set_upstream(
-        wait_for_copy_deduplicate_all
+        wait_for_accounts_backend_derived__events_stream__v1
+    )
+
+    accounts_frontend_derived__monitor_mozilla_accounts_funnels__v1.set_upstream(
+        wait_for_accounts_frontend_derived__events_stream__v1
     )
 
     accounts_frontend_derived__pwd_reset_funnels_by_service__v1.set_upstream(
-        wait_for_copy_deduplicate_all
+        wait_for_accounts_frontend_derived__events_stream__v1
     )
 
     accounts_frontend_derived__reg_engagement_funnel__v1.set_upstream(

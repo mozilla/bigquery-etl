@@ -1,7 +1,7 @@
 -- extract the relevant fields for each funnel step and segment if necessary
 WITH pwd_reset_without_recovery_key_pwd_reset_view AS (
   SELECT
-    client_info.client_id AS join_key,
+    client_id AS join_key,
     IF(
       COALESCE(
         NULLIF(metrics.string.relying_party_oauth_client_id, ''),
@@ -11,51 +11,51 @@ WITH pwd_reset_without_recovery_key_pwd_reset_view AS (
       'Non-Sync'
     ) AS service,
     DATE(submission_timestamp) AS submission_date,
-    client_info.client_id AS client_id,
-    client_info.client_id AS column
+    client_id AS client_id_column,
+    client_id AS column
   FROM
-    mozdata.accounts_frontend.accounts_events
+    mozdata.accounts_frontend.events_stream
   WHERE
     DATE(submission_timestamp) = @submission_date
-    AND metrics.string.event_name = 'password_reset_view'
+    AND event = 'password_reset.view'
 ),
 pwd_reset_without_recovery_key_create_new_pwd_view_no_rk AS (
   SELECT
-    client_info.client_id AS join_key,
+    client_id AS join_key,
     prev.service AS service,
     DATE(submission_timestamp) AS submission_date,
-    client_info.client_id AS client_id,
-    client_info.client_id AS column
+    client_id AS client_id_column,
+    client_id AS column
   FROM
-    mozdata.accounts_frontend.accounts_events
+    mozdata.accounts_frontend.events_stream
   INNER JOIN
     pwd_reset_without_recovery_key_pwd_reset_view AS prev
     ON prev.submission_date = DATE(submission_timestamp)
-    AND prev.join_key = client_info.client_id
+    AND prev.join_key = client_id
   WHERE
     DATE(submission_timestamp) = @submission_date
-    AND metrics.string.event_name = 'password_reset_create_new_view'
+    AND event = 'password_reset.create_new_view'
 ),
 pwd_reset_without_recovery_key_pwd_reset_success_no_rk AS (
   SELECT
-    client_info.client_id AS join_key,
+    client_id AS join_key,
     prev.service AS service,
     DATE(submission_timestamp) AS submission_date,
-    client_info.client_id AS client_id,
-    client_info.client_id AS column
+    client_id AS client_id_column,
+    client_id AS column
   FROM
-    mozdata.accounts_frontend.accounts_events
+    mozdata.accounts_frontend.events_stream
   INNER JOIN
     pwd_reset_without_recovery_key_create_new_pwd_view_no_rk AS prev
     ON prev.submission_date = DATE(submission_timestamp)
-    AND prev.join_key = client_info.client_id
+    AND prev.join_key = client_id
   WHERE
     DATE(submission_timestamp) = @submission_date
-    AND metrics.string.event_name = 'password_reset_create_new_success_view'
+    AND event = 'password_reset.create_new_success_view'
 ),
 pwd_reset_with_recovery_key_pwd_reset_view AS (
   SELECT
-    client_info.client_id AS join_key,
+    client_id AS join_key,
     IF(
       COALESCE(
         NULLIF(metrics.string.relying_party_oauth_client_id, ''),
@@ -65,47 +65,47 @@ pwd_reset_with_recovery_key_pwd_reset_view AS (
       'Non-Sync'
     ) AS service,
     DATE(submission_timestamp) AS submission_date,
-    client_info.client_id AS client_id,
-    client_info.client_id AS column
+    client_id AS client_id_column,
+    client_id AS column
   FROM
-    mozdata.accounts_frontend.accounts_events
+    mozdata.accounts_frontend.events_stream
   WHERE
     DATE(submission_timestamp) = @submission_date
-    AND metrics.string.event_name = 'password_reset_view'
+    AND event = 'password_reset.view'
 ),
 pwd_reset_with_recovery_key_create_new_pwd_view_with_rk AS (
   SELECT
-    client_info.client_id AS join_key,
+    client_id AS join_key,
     prev.service AS service,
     DATE(submission_timestamp) AS submission_date,
-    client_info.client_id AS client_id,
-    client_info.client_id AS column
+    client_id AS client_id_column,
+    client_id AS column
   FROM
-    mozdata.accounts_frontend.accounts_events
+    mozdata.accounts_frontend.events_stream
   INNER JOIN
     pwd_reset_with_recovery_key_pwd_reset_view AS prev
     ON prev.submission_date = DATE(submission_timestamp)
-    AND prev.join_key = client_info.client_id
+    AND prev.join_key = client_id
   WHERE
     DATE(submission_timestamp) = @submission_date
-    AND metrics.string.event_name = 'password_reset_recovery_key_create_new_view'
+    AND event = 'password_reset.recovery_key_create_new_view'
 ),
 pwd_reset_with_recovery_key_pwd_reset_success_with_rk AS (
   SELECT
-    client_info.client_id AS join_key,
+    client_id AS join_key,
     prev.service AS service,
     DATE(submission_timestamp) AS submission_date,
-    client_info.client_id AS client_id,
-    client_info.client_id AS column
+    client_id AS client_id_column,
+    client_id AS column
   FROM
-    mozdata.accounts_frontend.accounts_events
+    mozdata.accounts_frontend.events_stream
   INNER JOIN
     pwd_reset_with_recovery_key_create_new_pwd_view_with_rk AS prev
     ON prev.submission_date = DATE(submission_timestamp)
-    AND prev.join_key = client_info.client_id
+    AND prev.join_key = client_id
   WHERE
     DATE(submission_timestamp) = @submission_date
-    AND metrics.string.event_name = 'password_reset_recovery_key_create_success_view'
+    AND event = 'password_reset.recovery_key_create_success_view'
 ),
 -- aggregate each funnel step value
 pwd_reset_without_recovery_key_pwd_reset_view_aggregated AS (

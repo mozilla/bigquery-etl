@@ -4,7 +4,7 @@ WITH login_complete_by_service_login_view AS (
     metrics.string.session_flow_id AS join_key,
     metrics.string.session_entrypoint AS entrypoint,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_frontend.events_stream
@@ -18,7 +18,7 @@ login_complete_by_service_login_complete AS (
     metrics.string.session_flow_id AS join_key,
     prev.entrypoint AS entrypoint,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_backend.events_stream

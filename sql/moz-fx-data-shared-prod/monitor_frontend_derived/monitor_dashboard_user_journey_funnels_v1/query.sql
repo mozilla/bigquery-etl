@@ -3,7 +3,7 @@ WITH legacy_user_upgrade_intent_legacy_dashboard_view AS (
   SELECT
     client_info.client_id AS join_key,
     DATE(submission_timestamp) AS submission_date,
-    client_info.client_id AS client_id,
+    client_info.client_id AS client_id_column,
     client_info.client_id AS column
   FROM
     mozdata.monitor_frontend.events_unnested
@@ -18,7 +18,7 @@ legacy_user_upgrade_intent_upgrade_intent AS (
   SELECT
     client_info.client_id AS join_key,
     DATE(submission_timestamp) AS submission_date,
-    client_info.client_id AS client_id,
+    client_info.client_id AS client_id_column,
     client_info.client_id AS column
   FROM
     mozdata.monitor_frontend.events_unnested
@@ -36,7 +36,7 @@ new_user_upgrade_intent_new_dashboard_view AS (
   SELECT
     client_info.client_id AS join_key,
     DATE(submission_timestamp) AS submission_date,
-    client_info.client_id AS client_id,
+    client_info.client_id AS client_id_column,
     client_info.client_id AS column
   FROM
     mozdata.monitor_frontend.events_unnested
@@ -51,7 +51,7 @@ new_user_upgrade_intent_upgrade_intent AS (
   SELECT
     client_info.client_id AS join_key,
     DATE(submission_timestamp) AS submission_date,
-    client_info.client_id AS client_id,
+    client_info.client_id AS client_id_column,
     client_info.client_id AS column
   FROM
     mozdata.monitor_frontend.events_unnested

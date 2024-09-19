@@ -14,7 +14,7 @@ WITH login_complete_by_service_login_view AS (
       )
     ) AS service,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_frontend.events_stream
@@ -32,7 +32,7 @@ login_complete_by_service_login_complete AS (
     metrics.string.session_flow_id AS join_key,
     prev.service AS service,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_backend.events_stream
@@ -64,7 +64,7 @@ login_submit_complete_by_service_login_view AS (
       )
     ) AS service,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_frontend.events_stream
@@ -82,7 +82,7 @@ login_submit_complete_by_service_login_submit AS (
     metrics.string.session_flow_id AS join_key,
     prev.service AS service,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_frontend.events_stream
@@ -104,7 +104,7 @@ login_submit_complete_by_service_login_complete AS (
     metrics.string.session_flow_id AS join_key,
     prev.service AS service,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_backend.events_stream
@@ -136,7 +136,7 @@ login_email_confirmation_complete_by_service_login_view AS (
       )
     ) AS service,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_frontend.events_stream
@@ -154,7 +154,7 @@ login_email_confirmation_complete_by_service_login_submit AS (
     metrics.string.session_flow_id AS join_key,
     prev.service AS service,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_frontend.events_stream
@@ -176,7 +176,7 @@ login_email_confirmation_complete_by_service_login_email_confirmation_view AS (
     metrics.string.session_flow_id AS join_key,
     prev.service AS service,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_frontend.events_stream
@@ -198,7 +198,7 @@ login_email_confirmation_complete_by_service_login_email_confirmation_submit AS 
     metrics.string.session_flow_id AS join_key,
     prev.service AS service,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_frontend.events_stream
@@ -220,7 +220,7 @@ login_email_confirmation_complete_by_service_login_complete AS (
     metrics.string.session_flow_id AS join_key,
     prev.service AS service,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_backend.events_stream
@@ -252,7 +252,7 @@ login_2fa_complete_by_service_login_view AS (
       )
     ) AS service,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_frontend.events_stream
@@ -270,7 +270,7 @@ login_2fa_complete_by_service_login_submit AS (
     metrics.string.session_flow_id AS join_key,
     prev.service AS service,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_frontend.events_stream
@@ -292,7 +292,7 @@ login_2fa_complete_by_service_login_two_factor_view AS (
     metrics.string.session_flow_id AS join_key,
     prev.service AS service,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_frontend.events_stream
@@ -314,7 +314,7 @@ login_2fa_complete_by_service_login_two_factor_submit AS (
     metrics.string.session_flow_id AS join_key,
     prev.service AS service,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_frontend.events_stream
@@ -336,7 +336,7 @@ login_2fa_complete_by_service_login_complete AS (
     metrics.string.session_flow_id AS join_key,
     prev.service AS service,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_backend.events_stream
@@ -368,7 +368,7 @@ logins_from_google_email_first_email_first_view AS (
       )
     ) AS service,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_frontend.events_stream
@@ -386,7 +386,7 @@ logins_from_google_email_first_email_first_google_start AS (
     metrics.string.session_flow_id AS join_key,
     prev.service AS service,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_frontend.events_stream
@@ -408,7 +408,7 @@ logins_from_google_email_first_login_complete AS (
     metrics.string.session_flow_id AS join_key,
     prev.service AS service,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_backend.events_stream
@@ -430,7 +430,7 @@ logins_from_google_email_first_google_login_complete AS (
     metrics.string.session_flow_id AS join_key,
     prev.service AS service,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_backend.events_stream
@@ -462,7 +462,7 @@ logins_from_apple_email_first_email_first_view AS (
       )
     ) AS service,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_frontend.events_stream
@@ -480,7 +480,7 @@ logins_from_apple_email_first_email_first_apple_start AS (
     metrics.string.session_flow_id AS join_key,
     prev.service AS service,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_frontend.events_stream
@@ -502,7 +502,7 @@ logins_from_apple_email_first_login_complete AS (
     metrics.string.session_flow_id AS join_key,
     prev.service AS service,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_backend.events_stream
@@ -524,7 +524,7 @@ logins_from_apple_email_first_apple_login_complete AS (
     metrics.string.session_flow_id AS join_key,
     prev.service AS service,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_backend.events_stream
@@ -556,7 +556,7 @@ logins_from_google_reg_reg_view AS (
       )
     ) AS service,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_frontend.events_stream
@@ -574,7 +574,7 @@ logins_from_google_reg_reg_google_start AS (
     metrics.string.session_flow_id AS join_key,
     prev.service AS service,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_frontend.events_stream
@@ -596,7 +596,7 @@ logins_from_google_reg_login_complete AS (
     metrics.string.session_flow_id AS join_key,
     prev.service AS service,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_backend.events_stream
@@ -618,7 +618,7 @@ logins_from_google_reg_google_login_complete AS (
     metrics.string.session_flow_id AS join_key,
     prev.service AS service,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_backend.events_stream
@@ -650,7 +650,7 @@ logins_from_apple_reg_reg_view AS (
       )
     ) AS service,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_frontend.events_stream
@@ -668,7 +668,7 @@ logins_from_apple_reg_reg_apple_start AS (
     metrics.string.session_flow_id AS join_key,
     prev.service AS service,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_frontend.events_stream
@@ -690,7 +690,7 @@ logins_from_apple_reg_login_complete AS (
     metrics.string.session_flow_id AS join_key,
     prev.service AS service,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_backend.events_stream
@@ -712,7 +712,7 @@ logins_from_apple_reg_apple_login_complete AS (
     metrics.string.session_flow_id AS join_key,
     prev.service AS service,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_backend.events_stream
@@ -744,7 +744,7 @@ logins_from_google_login_login_view AS (
       )
     ) AS service,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_frontend.events_stream
@@ -762,7 +762,7 @@ logins_from_google_login_login_google_start AS (
     metrics.string.session_flow_id AS join_key,
     prev.service AS service,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_frontend.events_stream
@@ -784,7 +784,7 @@ logins_from_google_login_login_complete AS (
     metrics.string.session_flow_id AS join_key,
     prev.service AS service,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_backend.events_stream
@@ -806,7 +806,7 @@ logins_from_google_login_google_login_complete AS (
     metrics.string.session_flow_id AS join_key,
     prev.service AS service,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_backend.events_stream
@@ -838,7 +838,7 @@ logins_from_apple_login_login_view AS (
       )
     ) AS service,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_frontend.events_stream
@@ -856,7 +856,7 @@ logins_from_apple_login_login_apple_start AS (
     metrics.string.session_flow_id AS join_key,
     prev.service AS service,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_frontend.events_stream
@@ -878,7 +878,7 @@ logins_from_apple_login_login_complete AS (
     metrics.string.session_flow_id AS join_key,
     prev.service AS service,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_backend.events_stream
@@ -900,7 +900,7 @@ logins_from_apple_login_apple_login_complete AS (
     metrics.string.session_flow_id AS join_key,
     prev.service AS service,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_backend.events_stream
@@ -932,7 +932,7 @@ login_from_google_deeplink_google_deeplink AS (
       )
     ) AS service,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_frontend.events_stream
@@ -950,7 +950,7 @@ login_from_google_deeplink_login_complete AS (
     metrics.string.session_flow_id AS join_key,
     prev.service AS service,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_backend.events_stream
@@ -972,7 +972,7 @@ login_from_google_deeplink_google_login_complete AS (
     metrics.string.session_flow_id AS join_key,
     prev.service AS service,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_backend.events_stream
@@ -1004,7 +1004,7 @@ logins_from_apple_deeplink_apple_deeplink AS (
       )
     ) AS service,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_frontend.events_stream
@@ -1022,7 +1022,7 @@ logins_from_apple_deeplink_login_complete AS (
     metrics.string.session_flow_id AS join_key,
     prev.service AS service,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_backend.events_stream
@@ -1044,7 +1044,7 @@ logins_from_apple_deeplink_apple_login_complete AS (
     metrics.string.session_flow_id AS join_key,
     prev.service AS service,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_backend.events_stream
@@ -1076,7 +1076,7 @@ login_from_google_cached_logins_cached_login_view AS (
       )
     ) AS service,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_frontend.events_stream
@@ -1094,7 +1094,7 @@ login_from_google_cached_logins_login_complete AS (
     metrics.string.session_flow_id AS join_key,
     prev.service AS service,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_backend.events_stream
@@ -1116,7 +1116,7 @@ login_from_google_cached_logins_google_login_complete AS (
     metrics.string.session_flow_id AS join_key,
     prev.service AS service,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_backend.events_stream
@@ -1148,7 +1148,7 @@ logins_from_apple_cached_logins_cached_login_view AS (
       )
     ) AS service,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_frontend.events_stream
@@ -1166,7 +1166,7 @@ logins_from_apple_cached_logins_login_complete AS (
     metrics.string.session_flow_id AS join_key,
     prev.service AS service,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_backend.events_stream
@@ -1188,7 +1188,7 @@ logins_from_apple_cached_logins_apple_login_complete AS (
     metrics.string.session_flow_id AS join_key,
     prev.service AS service,
     DATE(submission_timestamp) AS submission_date,
-    metrics.string.account_user_id_sha256 AS client_id,
+    metrics.string.account_user_id_sha256 AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
     mozdata.accounts_backend.events_stream

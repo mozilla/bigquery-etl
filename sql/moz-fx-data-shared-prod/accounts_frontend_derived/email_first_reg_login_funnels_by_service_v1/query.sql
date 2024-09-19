@@ -14,47 +14,47 @@ WITH email_first_login_success_by_service_email_first_view AS (
       )
     ) AS service,
     DATE(submission_timestamp) AS submission_date,
-    client_info.client_id AS client_id,
+    client_id AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.accounts_events
+    mozdata.accounts_frontend.events_stream
   WHERE
     DATE(submission_timestamp) = @submission_date
-    AND metrics.string.event_name = 'email_first_view'
+    AND event = 'email.first_view'
 ),
 email_first_login_success_by_service_login_view AS (
   SELECT
     metrics.string.session_flow_id AS join_key,
     prev.service AS service,
     DATE(submission_timestamp) AS submission_date,
-    client_info.client_id AS client_id,
+    client_id AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.accounts_events
+    mozdata.accounts_frontend.events_stream
   INNER JOIN
     email_first_login_success_by_service_email_first_view AS prev
     ON prev.submission_date = DATE(submission_timestamp)
     AND prev.join_key = metrics.string.session_flow_id
   WHERE
     DATE(submission_timestamp) = @submission_date
-    AND metrics.string.event_name = 'login_view'
+    AND event = 'login.view'
 ),
 email_first_login_success_by_service_login_success AS (
   SELECT
     metrics.string.session_flow_id AS join_key,
     prev.service AS service,
     DATE(submission_timestamp) AS submission_date,
-    client_info.client_id AS client_id,
+    client_id AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.accounts_events
+    mozdata.accounts_frontend.events_stream
   INNER JOIN
     email_first_login_success_by_service_login_view AS prev
     ON prev.submission_date = DATE(submission_timestamp)
     AND prev.join_key = metrics.string.session_flow_id
   WHERE
     DATE(submission_timestamp) = @submission_date
-    AND metrics.string.event_name = 'login_submit_success'
+    AND event = 'login.submit_success'
 ),
 email_first_registration_success_by_service_email_first_view AS (
   SELECT
@@ -71,47 +71,47 @@ email_first_registration_success_by_service_email_first_view AS (
       )
     ) AS service,
     DATE(submission_timestamp) AS submission_date,
-    client_info.client_id AS client_id,
+    client_id AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.accounts_events
+    mozdata.accounts_frontend.events_stream
   WHERE
     DATE(submission_timestamp) = @submission_date
-    AND metrics.string.event_name = 'email_first_view'
+    AND event = 'email.first_view'
 ),
 email_first_registration_success_by_service_reg_view AS (
   SELECT
     metrics.string.session_flow_id AS join_key,
     prev.service AS service,
     DATE(submission_timestamp) AS submission_date,
-    client_info.client_id AS client_id,
+    client_id AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_frontend.accounts_events
+    mozdata.accounts_frontend.events_stream
   INNER JOIN
     email_first_registration_success_by_service_email_first_view AS prev
     ON prev.submission_date = DATE(submission_timestamp)
     AND prev.join_key = metrics.string.session_flow_id
   WHERE
     DATE(submission_timestamp) = @submission_date
-    AND metrics.string.event_name = 'reg_view'
+    AND event = 'reg.view'
 ),
 email_first_registration_success_by_service_reg_success AS (
   SELECT
     metrics.string.session_flow_id AS join_key,
     prev.service AS service,
     DATE(submission_timestamp) AS submission_date,
-    client_info.client_id AS client_id,
+    client_id AS client_id_column,
     metrics.string.session_flow_id AS column
   FROM
-    mozdata.accounts_backend.accounts_events
+    mozdata.accounts_backend.events_stream
   INNER JOIN
     email_first_registration_success_by_service_reg_view AS prev
     ON prev.submission_date = DATE(submission_timestamp)
     AND prev.join_key = metrics.string.session_flow_id
   WHERE
     DATE(submission_timestamp) = @submission_date
-    AND metrics.string.event_name = 'reg_complete'
+    AND event = 'reg.complete'
 ),
 -- aggregate each funnel step value
 email_first_login_success_by_service_email_first_view_aggregated AS (

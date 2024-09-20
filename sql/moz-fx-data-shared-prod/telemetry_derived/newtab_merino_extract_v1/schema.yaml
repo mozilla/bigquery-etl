@@ -8,3 +8,6 @@ fields:
 - mode: NULLABLE
   name: click_count
   type: INTEGER
+- mode: NULLABLE
+  name: region
+  type: STRING

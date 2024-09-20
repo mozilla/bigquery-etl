@@ -37,3 +37,5 @@ WHERE
   submission_date
   BETWEEN DATE_SUB(@submission_date, INTERVAL 30 DAY)
   AND @submission_date
+QUALIFY
+  RANK() OVER (ORDER BY submission_date DESC) = 1

@@ -8,7 +8,6 @@ owners:
   - loines@mozilla.com
   - shong@mozilla.com
   - ascholtz@mozilla.com
-  - anicholson@mozilla.com
 labels:
   incremental: true
   application: firefox

@@ -47,3 +47,9 @@ fields:
 - name: shredded_sample_id
   type: INTEGER
   mode: NULLABLE
+- name: error_reason
+  type: STRING
+  mode: NULLABLE
+- name: error_message
+  type: STRING
+  mode: NULLABLE

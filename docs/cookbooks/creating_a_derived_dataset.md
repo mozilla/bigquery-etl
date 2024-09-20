@@ -268,7 +268,7 @@ For our example:
   bqetl backfill create <project>.<dataset>.<table> --start_date=<YYYY-MM-DD> --end_date=<YYYY-MM-DD>
   ```
 
-  - If the backfill requires [shredder_mitigation](https://docs.telemetry.mozilla.org/cookbooks/data_modeling/shredder_mitigation) to maintain metrics stable, use the `shredder_mitigation` parameter in the backfill command:
+  - If the backfill requires [shredder_mitigation](https://docs.telemetry.mozilla.org/cookbooks/data_modeling/shredder_mitigation) to maintain metrics stable, use the `--shredder_mitigation` parameter in the backfill command:
   
   ```bash
   bqetl backfill create <project>.<dataset>.<table> --start_date=<YYYY-MM-DD> --end_date=<YYYY-MM-DD> --shredder_mitigation

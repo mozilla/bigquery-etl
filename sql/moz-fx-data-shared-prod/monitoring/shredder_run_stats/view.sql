@@ -20,6 +20,7 @@ SELECT
   SUM(tib_processed) AS tib_processed,
   SUM(slot_hours) AS slot_hours,
   COUNT(*) AS num_jobs,
+  COUNT(error_reason) AS num_job_errors,
 FROM
   `moz-fx-data-shared-prod.monitoring_derived.shredder_per_job_stats_v1`
 GROUP BY

@@ -35,6 +35,7 @@ references:
   - moz-fx-data-shared-prod.bedrock_stable.events_v1
   - moz-fx-data-shared-prod.burnham_stable.events_v1
   - moz-fx-data-shared-prod.debug_ping_view_stable.events_v1
+  - moz-fx-data-shared-prod.firefox_crashreporter_stable.events_v1
   - moz-fx-data-shared-prod.firefox_desktop_background_defaultagent_stable.events_v1
   - moz-fx-data-shared-prod.firefox_desktop_background_tasks_stable.events_v1
   - moz-fx-data-shared-prod.firefox_desktop_background_update_stable.events_v1
@@ -50,6 +51,9 @@ references:
   - moz-fx-data-shared-prod.mozillavpn_backend_cirrus_stable.events_v1
   - moz-fx-data-shared-prod.mozillavpn_stable.events_v1
   - moz-fx-data-shared-prod.mozphab_stable.events_v1
+  - moz-fx-data-shared-prod.net_thunderbird_android_beta_stable.events_v1
+  - moz-fx-data-shared-prod.net_thunderbird_android_daily_stable.events_v1
+  - moz-fx-data-shared-prod.net_thunderbird_android_stable.events_v1
   - moz-fx-data-shared-prod.org_mozilla_bergamot_stable.events_v1
   - moz-fx-data-shared-prod.org_mozilla_connect_firefox_stable.events_v1
   - moz-fx-data-shared-prod.org_mozilla_fenix_nightly_stable.events_v1

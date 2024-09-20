@@ -46,6 +46,25 @@ CREATE TEMP TABLE
           -- limit event.timestamp, otherwise this will cause an overflow
           INTERVAL LEAST(event_timestamp, 20000000000000) MILLISECOND
         ) AS timestamp,
+        "Firefox Crash Reporter" AS normalized_app_name,
+        client_info.app_channel AS channel
+      FROM
+        `moz-fx-data-shared-prod.firefox_crashreporter.events_unnested`,
+        UNNEST(event_extra) AS ext
+      WHERE
+        DATE(submission_timestamp) = @submission_date
+        AND ext.key = "flow_id"
+      UNION ALL
+      SELECT DISTINCT
+        @submission_date AS submission_date,
+        ext.value AS flow_id,
+        event_category AS category,
+        event_name AS name,
+        TIMESTAMP_ADD(
+          submission_timestamp,
+          -- limit event.timestamp, otherwise this will cause an overflow
+          INTERVAL LEAST(event_timestamp, 20000000000000) MILLISECOND
+        ) AS timestamp,
         "Firefox for Desktop Background Update Task" AS normalized_app_name,
         client_info.app_channel AS channel
       FROM
@@ -804,6 +823,25 @@ CREATE TEMP TABLE
         client_info.app_channel AS channel
       FROM
         `moz-fx-data-shared-prod.thunderbird_desktop.events_unnested`,
+        UNNEST(event_extra) AS ext
+      WHERE
+        DATE(submission_timestamp) = @submission_date
+        AND ext.key = "flow_id"
+      UNION ALL
+      SELECT DISTINCT
+        @submission_date AS submission_date,
+        ext.value AS flow_id,
+        event_category AS category,
+        event_name AS name,
+        TIMESTAMP_ADD(
+          submission_timestamp,
+          -- limit event.timestamp, otherwise this will cause an overflow
+          INTERVAL LEAST(event_timestamp, 20000000000000) MILLISECOND
+        ) AS timestamp,
+        "Thunderbird for Android" AS normalized_app_name,
+        client_info.app_channel AS channel
+      FROM
+        `moz-fx-data-shared-prod.thunderbird_android.events_unnested`,
         UNNEST(event_extra) AS ext
       WHERE
         DATE(submission_timestamp) = @submission_date

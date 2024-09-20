@@ -336,6 +336,32 @@ first_non_empty_partition_firefox_accounts_stable AS (
   GROUP BY
     table_name
 ),
+first_partition_firefox_crashreporter_stable AS (
+  SELECT
+    table_catalog,
+    table_schema,
+    table_name,
+    PARSE_DATE("%Y%m%d", partition_id) AS first_partition_current,
+    total_rows AS first_partition_row_count,
+  FROM
+    `moz-fx-data-shared-prod.firefox_crashreporter_stable.INFORMATION_SCHEMA.PARTITIONS`
+  WHERE
+    partition_id != "__NULL__"
+  QUALIFY
+    ROW_NUMBER() OVER (PARTITION BY table_name ORDER BY partition_id) = 1
+),
+first_non_empty_partition_firefox_crashreporter_stable AS (
+  SELECT
+    table_name,
+    PARSE_DATE("%Y%m%d", MIN(partition_id)) AS first_non_empty_partition_current,
+  FROM
+    `moz-fx-data-shared-prod.firefox_crashreporter_stable.INFORMATION_SCHEMA.PARTITIONS`
+  WHERE
+    partition_id != "__NULL__"
+    AND total_rows > 0
+  GROUP BY
+    table_name
+),
 first_partition_firefox_desktop_background_defaultagent_stable AS (
   SELECT
     table_catalog,
@@ -928,6 +954,84 @@ first_non_empty_partition_mozphab_stable AS (
     PARSE_DATE("%Y%m%d", MIN(partition_id)) AS first_non_empty_partition_current,
   FROM
     `moz-fx-data-shared-prod.mozphab_stable.INFORMATION_SCHEMA.PARTITIONS`
+  WHERE
+    partition_id != "__NULL__"
+    AND total_rows > 0
+  GROUP BY
+    table_name
+),
+first_partition_net_thunderbird_android_beta_stable AS (
+  SELECT
+    table_catalog,
+    table_schema,
+    table_name,
+    PARSE_DATE("%Y%m%d", partition_id) AS first_partition_current,
+    total_rows AS first_partition_row_count,
+  FROM
+    `moz-fx-data-shared-prod.net_thunderbird_android_beta_stable.INFORMATION_SCHEMA.PARTITIONS`
+  WHERE
+    partition_id != "__NULL__"
+  QUALIFY
+    ROW_NUMBER() OVER (PARTITION BY table_name ORDER BY partition_id) = 1
+),
+first_non_empty_partition_net_thunderbird_android_beta_stable AS (
+  SELECT
+    table_name,
+    PARSE_DATE("%Y%m%d", MIN(partition_id)) AS first_non_empty_partition_current,
+  FROM
+    `moz-fx-data-shared-prod.net_thunderbird_android_beta_stable.INFORMATION_SCHEMA.PARTITIONS`
+  WHERE
+    partition_id != "__NULL__"
+    AND total_rows > 0
+  GROUP BY
+    table_name
+),
+first_partition_net_thunderbird_android_daily_stable AS (
+  SELECT
+    table_catalog,
+    table_schema,
+    table_name,
+    PARSE_DATE("%Y%m%d", partition_id) AS first_partition_current,
+    total_rows AS first_partition_row_count,
+  FROM
+    `moz-fx-data-shared-prod.net_thunderbird_android_daily_stable.INFORMATION_SCHEMA.PARTITIONS`
+  WHERE
+    partition_id != "__NULL__"
+  QUALIFY
+    ROW_NUMBER() OVER (PARTITION BY table_name ORDER BY partition_id) = 1
+),
+first_non_empty_partition_net_thunderbird_android_daily_stable AS (
+  SELECT
+    table_name,
+    PARSE_DATE("%Y%m%d", MIN(partition_id)) AS first_non_empty_partition_current,
+  FROM
+    `moz-fx-data-shared-prod.net_thunderbird_android_daily_stable.INFORMATION_SCHEMA.PARTITIONS`
+  WHERE
+    partition_id != "__NULL__"
+    AND total_rows > 0
+  GROUP BY
+    table_name
+),
+first_partition_net_thunderbird_android_stable AS (
+  SELECT
+    table_catalog,
+    table_schema,
+    table_name,
+    PARSE_DATE("%Y%m%d", partition_id) AS first_partition_current,
+    total_rows AS first_partition_row_count,
+  FROM
+    `moz-fx-data-shared-prod.net_thunderbird_android_stable.INFORMATION_SCHEMA.PARTITIONS`
+  WHERE
+    partition_id != "__NULL__"
+  QUALIFY
+    ROW_NUMBER() OVER (PARTITION BY table_name ORDER BY partition_id) = 1
+),
+first_non_empty_partition_net_thunderbird_android_stable AS (
+  SELECT
+    table_name,
+    PARSE_DATE("%Y%m%d", MIN(partition_id)) AS first_non_empty_partition_current,
+  FROM
+    `moz-fx-data-shared-prod.net_thunderbird_android_stable.INFORMATION_SCHEMA.PARTITIONS`
   WHERE
     partition_id != "__NULL__"
     AND total_rows > 0
@@ -2196,6 +2300,24 @@ current_partitions AS (
     first_non_empty_partition_current,
     first_partition_row_count,
   FROM
+    first_partition_firefox_crashreporter_stable
+  LEFT JOIN
+    first_non_empty_partition_firefox_crashreporter_stable
+    USING (table_name)
+  UNION ALL
+  SELECT
+    {% if is_init() %}
+      CURRENT_DATE() - 1
+    {% else %}
+      DATE(@submission_date)
+    {% endif %} AS run_date,
+    table_catalog AS project_id,
+    table_schema AS dataset_id,
+    table_name AS table_id,
+    first_partition_current,
+    first_non_empty_partition_current,
+    first_partition_row_count,
+  FROM
     first_partition_firefox_desktop_background_defaultagent_stable
   LEFT JOIN
     first_non_empty_partition_firefox_desktop_background_defaultagent_stable
@@ -2595,6 +2717,60 @@ current_partitions AS (
     first_partition_mozphab_stable
   LEFT JOIN
     first_non_empty_partition_mozphab_stable
+    USING (table_name)
+  UNION ALL
+  SELECT
+    {% if is_init() %}
+      CURRENT_DATE() - 1
+    {% else %}
+      DATE(@submission_date)
+    {% endif %} AS run_date,
+    table_catalog AS project_id,
+    table_schema AS dataset_id,
+    table_name AS table_id,
+    first_partition_current,
+    first_non_empty_partition_current,
+    first_partition_row_count,
+  FROM
+    first_partition_net_thunderbird_android_beta_stable
+  LEFT JOIN
+    first_non_empty_partition_net_thunderbird_android_beta_stable
+    USING (table_name)
+  UNION ALL
+  SELECT
+    {% if is_init() %}
+      CURRENT_DATE() - 1
+    {% else %}
+      DATE(@submission_date)
+    {% endif %} AS run_date,
+    table_catalog AS project_id,
+    table_schema AS dataset_id,
+    table_name AS table_id,
+    first_partition_current,
+    first_non_empty_partition_current,
+    first_partition_row_count,
+  FROM
+    first_partition_net_thunderbird_android_daily_stable
+  LEFT JOIN
+    first_non_empty_partition_net_thunderbird_android_daily_stable
+    USING (table_name)
+  UNION ALL
+  SELECT
+    {% if is_init() %}
+      CURRENT_DATE() - 1
+    {% else %}
+      DATE(@submission_date)
+    {% endif %} AS run_date,
+    table_catalog AS project_id,
+    table_schema AS dataset_id,
+    table_name AS table_id,
+    first_partition_current,
+    first_non_empty_partition_current,
+    first_partition_row_count,
+  FROM
+    first_partition_net_thunderbird_android_stable
+  LEFT JOIN
+    first_non_empty_partition_net_thunderbird_android_stable
     USING (table_name)
   UNION ALL
   SELECT

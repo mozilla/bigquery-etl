@@ -37,6 +37,7 @@ references:
   - moz-fx-data-shared-prod.default_browser_agent_stable.INFORMATION_SCHEMA.PARTITIONS
   - moz-fx-data-shared-prod.eng_workflow_stable.INFORMATION_SCHEMA.PARTITIONS
   - moz-fx-data-shared-prod.firefox_accounts_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.firefox_crashreporter_stable.INFORMATION_SCHEMA.PARTITIONS
   - moz-fx-data-shared-prod.firefox_desktop_background_defaultagent_stable.INFORMATION_SCHEMA.PARTITIONS
   - moz-fx-data-shared-prod.firefox_desktop_background_tasks_stable.INFORMATION_SCHEMA.PARTITIONS
   - moz-fx-data-shared-prod.firefox_desktop_background_update_stable.INFORMATION_SCHEMA.PARTITIONS
@@ -61,6 +62,9 @@ references:
   - moz-fx-data-shared-prod.mozillavpn_backend_cirrus_stable.INFORMATION_SCHEMA.PARTITIONS
   - moz-fx-data-shared-prod.mozillavpn_stable.INFORMATION_SCHEMA.PARTITIONS
   - moz-fx-data-shared-prod.mozphab_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.net_thunderbird_android_beta_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.net_thunderbird_android_daily_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.net_thunderbird_android_stable.INFORMATION_SCHEMA.PARTITIONS
   - moz-fx-data-shared-prod.org_mozilla_bergamot_stable.INFORMATION_SCHEMA.PARTITIONS
   - moz-fx-data-shared-prod.org_mozilla_connect_firefox_stable.INFORMATION_SCHEMA.PARTITIONS
   - moz-fx-data-shared-prod.org_mozilla_fenix_nightly_stable.INFORMATION_SCHEMA.PARTITIONS

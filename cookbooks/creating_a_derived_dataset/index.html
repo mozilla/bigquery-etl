@@ -1930,6 +1930,11 @@ git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </
 <p>Create a backfill schedule entry to (re)-process data in your table:</p>
 <div class="highlight"><pre><span></span><code>bqetl<span class="w"> </span>backfill<span class="w"> </span>create<span class="w"> </span>&lt;project&gt;.&lt;dataset&gt;.&lt;table&gt;<span class="w"> </span>--start_date<span class="o">=</span>&lt;YYYY-MM-DD&gt;<span class="w"> </span>--end_date<span class="o">=</span>&lt;YYYY-MM-DD&gt;
 </code></pre></div>
+<ul>
+<li>If the backfill requires <a href="https://docs.telemetry.mozilla.org/cookbooks/data_modeling/shredder_mitigation">shredder_mitigation</a> to maintain metrics stable, use the <code>--shredder_mitigation</code> parameter in the backfill command:</li>
+</ul>
+<div class="highlight"><pre><span></span><code>bqetl<span class="w"> </span>backfill<span class="w"> </span>create<span class="w"> </span>&lt;project&gt;.&lt;dataset&gt;.&lt;table&gt;<span class="w"> </span>--start_date<span class="o">=</span>&lt;YYYY-MM-DD&gt;<span class="w"> </span>--end_date<span class="o">=</span>&lt;YYYY-MM-DD&gt;<span class="w"> </span>--shredder_mitigation
+</code></pre></div>
 </li>
 <li>
 <p>Fill out the missing details:</p>

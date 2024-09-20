@@ -3,6 +3,7 @@ WITH deduplicated_pings AS (
     submission_timestamp,
     document_id,
     events,
+    normalized_country_code,
   FROM
     `moz-fx-data-shared-prod.firefox_desktop_live.newtab_v1`
   WHERE
@@ -20,6 +21,7 @@ flattened_newtab_events AS (
   SELECT
     document_id,
     submission_timestamp,
+    normalized_country_code,
     unnested_events.name AS event_name,
     mozfun.map.get_key(
       unnested_events.extra,
@@ -37,14 +39,51 @@ flattened_newtab_events AS (
     AND unnested_events.name IN ('impression', 'click')
     --keep only data with a non-null scheduled corpus item ID
     AND (mozfun.map.get_key(unnested_events.extra, 'scheduled_corpus_item_id') IS NOT NULL)
+),
+aggregated_events AS (
+  SELECT
+    scheduled_corpus_item_id,
+    normalized_country_code,
+    SUM(CASE WHEN event_name = 'impression' THEN 1 ELSE 0 END) AS impression_count,
+    SUM(CASE WHEN event_name = 'click' THEN 1 ELSE 0 END) AS click_count
+  FROM
+    flattened_newtab_events
+  WHERE
+    recommended_at > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 1 DAY)
+  GROUP BY
+    scheduled_corpus_item_id,
+    normalized_country_code
+),
+global_aggregates AS (
+  SELECT
+    scheduled_corpus_item_id,
+    CAST(NULL AS STRING) AS region,
+    SUM(impression_count) AS impression_count,
+    SUM(click_count) AS click_count
+  FROM
+    aggregated_events
+  GROUP BY
+    scheduled_corpus_item_id
+),
+country_aggregates AS (
+  SELECT
+    scheduled_corpus_item_id,
+    normalized_country_code AS region,
+    impression_count,
+    click_count
+  FROM
+    aggregated_events
+  WHERE
+    -- Gather country (a.k.a. region) specific engagement for all countries that share a feed.
+    -- https://mozilla-hub.atlassian.net/wiki/x/JY3LB
+    normalized_country_code IN ('US', 'CA', 'DE', 'CH', 'AT', 'BE', 'GB', 'IE')
 )
 SELECT
-  scheduled_corpus_item_id,
-  SUM(CASE WHEN event_name = 'impression' THEN 1 ELSE 0 END) AS impression_count,
-  SUM(CASE WHEN event_name = 'click' THEN 1 ELSE 0 END) AS click_count
+  *
 FROM
-  flattened_newtab_events
-WHERE
-  recommended_at > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 1 DAY)
-GROUP BY
-  scheduled_corpus_item_id
+  global_aggregates
+UNION ALL
+SELECT
+  *
+FROM
+  country_aggregates;

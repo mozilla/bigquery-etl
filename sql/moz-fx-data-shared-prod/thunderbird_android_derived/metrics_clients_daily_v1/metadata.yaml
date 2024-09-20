@@ -1,0 +1,33 @@
+friendly_name: Metrics Clients Daily
+description: |-
+  Daily per-client aggregates on top of metrics pings
+owners:
+- ascholtz@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  dag: bqetl_glean_usage
+  owner1: ascholtz
+scheduling:
+  dag_name: bqetl_glean_usage
+  task_group: thunderbird_android
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields:
+    - normalized_channel
+    - sample_id
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  query.sql:
+  - net_thunderbird_android.metrics
+  - net_thunderbird_android_beta.metrics
+  - net_thunderbird_android_daily.metrics

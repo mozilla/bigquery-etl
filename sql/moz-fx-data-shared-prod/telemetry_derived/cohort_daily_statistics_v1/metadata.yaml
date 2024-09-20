@@ -8,7 +8,7 @@ description: |-
   attributes at the time the cohort started (rather than the
   values at activity time)
 owners:
-- anicholson@mozilla.com
+- mhirose@mozilla.com
 labels:
   incremental: true
 scheduling:

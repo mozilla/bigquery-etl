@@ -13,6 +13,7 @@ labels:
   schedule: monthly
 scheduling:
   dag_name: bqetl_ads
+  date_partition_parameter: submission_month
 bigquery:
   time_partitioning:
     field: submission_month

@@ -14,6 +14,7 @@ from gcloud import bigquery  # type: ignore
 
 from bigquery_etl.backfill.shredder_mitigation import (
     PREVIOUS_DATE,
+    SHREDDER_MITIGATION_CHECKS_NAME,
     SHREDDER_MITIGATION_QUERY_NAME,
     Column,
     ColumnStatus,
@@ -24,7 +25,6 @@ from bigquery_etl.backfill.shredder_mitigation import (
     generate_query_with_shredder_mitigation,
     get_bigquery_type,
     validate_types,
-    SHREDDER_MITIGATION_CHECKS_NAME,
 )
 
 

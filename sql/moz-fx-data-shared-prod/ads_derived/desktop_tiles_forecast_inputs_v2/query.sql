@@ -10,8 +10,15 @@ WITH cs_impressions AS (
     event_type = 'impression'
     AND form_factor = 'desktop'
     AND source = 'topsites'
-    AND submission_date >= DATE_TRUNC(DATE_SUB(@submission_month, INTERVAL 1 MONTH), MONTH)
-    AND submission_date < @submission_month
+    AND (
+      {% if is_init() %}
+        submission_date >= '2023-11-01'
+        AND submission_date < '2024-09-01'
+      {% else %}
+        submission_date >= DATE_TRUNC(DATE_SUB(@submission_month, INTERVAL 1 MONTH), MONTH)
+        AND submission_date < @submission_month
+      {% endif %}
+    )
     AND country IN ('US', 'DE', 'FR', 'AU', 'CA', 'IT', 'ES', 'MX', 'BR', 'IN', 'GB', 'JP')
   GROUP BY
     country_code,
@@ -28,8 +35,15 @@ users_table AS (
     `mozdata.telemetry.unified_metrics`
   WHERE
     `mozfun`.bits28.active_in_range(days_seen_bits, 0, 1)
-    AND submission_date >= DATE_TRUNC(DATE_SUB(@submission_month, INTERVAL 1 MONTH), MONTH)
-    AND submission_date < @submission_month
+    AND (
+      {% if is_init() %}
+        submission_date >= '2023-11-01'
+        AND submission_date < '2024-09-01'
+      {% else %}
+        submission_date >= DATE_TRUNC(DATE_SUB(@submission_month, INTERVAL 1 MONTH), MONTH)
+        AND submission_date < @submission_month
+      {% endif %}
+    )
     AND country IN ('US', 'DE', 'FR', 'AU', 'CA', 'IT', 'ES', 'MX', 'BR', 'IN', 'GB', 'JP')
     AND normalized_app_name = 'Firefox Desktop'
   GROUP BY
@@ -53,8 +67,15 @@ nt_visits AS (
   WHERE
     n.topsites_enabled
     AND n.topsites_sponsored_enabled
-    AND submission_date >= DATE_TRUNC(DATE_SUB(@submission_month, INTERVAL 1 MONTH), MONTH)
-    AND submission_date < @submission_month
+    AND (
+      {% if is_init() %}
+        submission_date >= '2023-11-01'
+        AND submission_date < '2024-09-01'
+      {% else %}
+        submission_date >= DATE_TRUNC(DATE_SUB(@submission_month, INTERVAL 1 MONTH), MONTH)
+        AND submission_date < @submission_month
+      {% endif %}
+    )
     AND n.country_code IN ('US', 'DE', 'FR', 'AU', 'CA', 'IT', 'ES', 'MX', 'BR', 'IN', 'GB', 'JP')
   GROUP BY
     submission_month,

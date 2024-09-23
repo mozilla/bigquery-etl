@@ -4,9 +4,6 @@
 {{ not_null(["scheduled_corpus_item_id"]) }}
 
 #fail
-{{ is_unique(["scheduled_corpus_item_id"]) }}
-
-#fail
 {{ not_null(["impression_count"]) }}
 
 #fail

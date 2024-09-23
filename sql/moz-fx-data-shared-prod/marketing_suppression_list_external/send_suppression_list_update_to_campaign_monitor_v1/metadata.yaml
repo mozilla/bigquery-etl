@@ -6,12 +6,14 @@ owners:
 - cbeck@mozilla.com
 labels:
   incremental: true
-  owner1: leli
+  owner1: cbeck
 scheduling:
   dag_name: bqetl_marketing_suppression_list
-  arguments:
-  - --api_key={{ var.value.campaign_monitor_api_key }}
-  - --client_id={{ var.value.campaign_monitor_client_id }}
+  secrets:
+  - deploy_target: CAMPAIGN_MONITOR_API_KEY
+    key: bqetl_marketing_suppression_list__campaign_monitor_api_key
+  - deploy_target: CAMPAIGN_MONITOR_CLIENT_ID
+    key: bqetl_marketing_suppression_list__campaign_monitor_client_id
   depends_on:
   - task_id: marketing_suppression_list_external__campaign_monitor_suppression_list__v1
     dag_name: bqetl_marketing_suppression_list

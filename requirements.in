@@ -1,4 +1,4 @@
-attrs==23.2.0
+attrs==24.2.0
 authlib==1.3.1
 bigeye-sdk==0.4.88
 black==24.8.0
@@ -10,7 +10,7 @@ gcsfs==2024.2.0
 gcloud==0.18.3
 gitpython==3.1.42
 google-auth>=2.30.0  # To try to fix "Compute Engine Metadata server call to universe/universe_domain returned 404" errors.
-google-cloud-bigquery==3.19.0
+google-cloud-bigquery==3.25.0
 google-cloud-bigquery-storage[fastavro]==2.24.0
 google-cloud-storage==2.15.0
 Jinja2==3.1.3

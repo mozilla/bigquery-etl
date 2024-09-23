@@ -8,10 +8,6 @@ fields:
     type: STRING
     description: Two-letter code corresponding to country where sponsored tiles are available. Please see `static.country_codes_v1`
   - mode: NULLABLE
-    name: user_count
-    type: INTEGER
-    description: Count of desktop users for submission_month. Calculated from Unified Metrics.
-  - mode: NULLABLE
     name: impression_count_1and2
     type: INTEGER
     description: Count of tile impressions in positions 1 and 2 for submission_month. Calculated from contextual-services.

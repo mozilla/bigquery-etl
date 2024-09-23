@@ -24,32 +24,6 @@ WITH cs_impressions AS (
     country_code,
     submission_month
 )
-/* Deriving total users from unified_metrics given how the DAU forecast doesn't account for NT activity data */
-,
-users_table AS (
-  SELECT
-    country AS country_code,
-    DATE_TRUNC(submission_date, MONTH) AS submission_month,
-    COUNT(client_id) AS total_user_count
-  FROM
-    `mozdata.telemetry.unified_metrics`
-  WHERE
-    `mozfun`.bits28.active_in_range(days_seen_bits, 0, 1)
-    AND (
-      {% if is_init() %}
-        submission_date >= DATE_TRUNC(PARSE_DATE('%Y-%m-%d', '2023-11-01'), MONTH)
-        AND submission_date < DATE_TRUNC(CURRENT_DATE(), INTERVAL 1 MONTH)
-      {% else %}
-        submission_date >= DATE_TRUNC(DATE_SUB(@submission_month, INTERVAL 1 MONTH), MONTH)
-        AND submission_date < @submission_month
-      {% endif %}
-    )
-    AND country IN ('US', 'DE', 'FR', 'AU', 'CA', 'IT', 'ES', 'MX', 'BR', 'IN', 'GB', 'JP')
-    AND normalized_app_name = 'Firefox Desktop'
-  GROUP BY
-    submission_month,
-    country_code
-)
 /* Using 2x visits as total inventory while we sort out addressable inventory for eligible users */
 ,
 nt_visits AS (
@@ -84,7 +58,6 @@ nt_visits AS (
 SELECT
   n.submission_month,
   n.country_code AS country,
-  u.total_user_count AS user_count,
   c.sponsored_impressions_1and2 AS impression_count_1and2,
   c.sponsored_impressions_all,
   n.newtab_visits AS visit_count,
@@ -102,10 +75,6 @@ LEFT JOIN
   cs_impressions AS c
   ON c.country_code = n.country_code
   AND c.submission_month = n.submission_month
-LEFT JOIN
-  users_table u
-  ON u.country_code = n.country_code
-  AND u.submission_month = n.submission_month
 ORDER BY
   country,
   submission_month

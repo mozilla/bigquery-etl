@@ -4,7 +4,6 @@ from airflow import DAG
 from airflow.sensors.external_task import ExternalTaskMarker
 from airflow.sensors.external_task import ExternalTaskSensor
 from airflow.utils.task_group import TaskGroup
-from airflow.providers.cncf.kubernetes.secret import Secret
 import datetime
 from operators.gcp_container_operator import GKEPodOperator
 from utils.constants import ALLOWED_STATES, FAILED_STATES

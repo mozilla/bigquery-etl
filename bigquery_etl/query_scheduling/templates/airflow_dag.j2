@@ -1,12 +1,15 @@
 # Generated via https://github.com/mozilla/bigquery-etl/blob/main/bigquery_etl/query_scheduling/generate_airflow_dags.py
 
-{% set ns = namespace(uses_bq_sensors=False, uses_fivetran=False) -%}
+{% set ns = namespace(uses_bq_sensors=False, uses_fivetran=False, uses_secrets=False) -%}
 {% for task in tasks -%}
   {% if task.depends_on_tables_existing or task.depends_on_table_partitions_existing -%}
     {% set ns.uses_bq_sensors = True -%}
   {% endif -%}
   {% if task.depends_on_fivetran -%}
     {% set ns.uses_fivetran = True -%}
+  {% endif -%}
+  {% if task.secrets|length > 0 -%}
+    {% set ns.uses_secrets = True -%}
   {% endif -%}
 {% endfor -%}
 
@@ -20,7 +23,9 @@ from airflow.providers.google.cloud.sensors.bigquery import (
 from airflow.sensors.external_task import ExternalTaskMarker
 from airflow.sensors.external_task import ExternalTaskSensor
 from airflow.utils.task_group import TaskGroup
+{% if ns.uses_secrets -%}
 from airflow.providers.cncf.kubernetes.secret import Secret
+{% endif -%}
 import datetime
 from operators.gcp_container_operator import GKEPodOperator
 from utils.constants import ALLOWED_STATES, FAILED_STATES

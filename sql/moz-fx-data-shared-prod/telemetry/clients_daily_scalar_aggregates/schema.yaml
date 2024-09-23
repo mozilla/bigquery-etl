@@ -8,6 +8,9 @@ fields:
 - name: client_id
   type: STRING
   mode: NULLABLE
+- name: profile_group_id
+  type: STRING
+  mode: NULLABLE
 - name: os
   type: STRING
   mode: NULLABLE

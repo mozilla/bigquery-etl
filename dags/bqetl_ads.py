@@ -97,9 +97,9 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    ads_derived__desktop_tiles_forecast_inputs__v1 = bigquery_etl_query(
-        task_id="ads_derived__desktop_tiles_forecast_inputs__v1",
-        destination_table='desktop_tiles_forecast_inputs_v1${{logical_date.strftime("%Y%m01")}}',
+    ads_derived__desktop_tiles_forecast_inputs__v2 = bigquery_etl_query(
+        task_id="ads_derived__desktop_tiles_forecast_inputs__v2",
+        destination_table="desktop_tiles_forecast_inputs_v2",
         dataset_id="ads_derived",
         project_id="moz-fx-data-shared-prod",
         owner="sbetancourt@mozilla.com",
@@ -109,10 +109,9 @@ with DAG(
             "sbetancourt@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
-        date_partition_parameter="submission_date",
+        date_partition_parameter="submission_month",
+        table_partition_template='${{ dag_run.logical_date.strftime("%Y%m") }}',
         depends_on_past=False,
-        parameters=["submission_month:DATE:{{logical_date.strftime('%Y-%m-01')}}"],
-        sql_file_path="sql/moz-fx-data-shared-prod/ads_derived/desktop_tiles_forecast_inputs_v1/query.sql",
     )
 
     ads_derived__nt_visits_to_sessions_conversion_factors_daily__v1 = (
@@ -132,15 +131,15 @@ with DAG(
         )
     )
 
-    ads_derived__desktop_tiles_forecast_inputs__v1.set_upstream(
+    ads_derived__desktop_tiles_forecast_inputs__v2.set_upstream(
         wait_for_checks__fail_telemetry_derived__unified_metrics__v1
     )
 
-    ads_derived__desktop_tiles_forecast_inputs__v1.set_upstream(
+    ads_derived__desktop_tiles_forecast_inputs__v2.set_upstream(
         wait_for_contextual_services_derived__event_aggregates__v1
     )
 
-    ads_derived__desktop_tiles_forecast_inputs__v1.set_upstream(
+    ads_derived__desktop_tiles_forecast_inputs__v2.set_upstream(
         wait_for_telemetry_derived__newtab_visits__v1
     )
 

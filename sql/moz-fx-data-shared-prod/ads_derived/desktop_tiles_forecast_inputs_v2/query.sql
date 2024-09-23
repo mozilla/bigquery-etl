@@ -12,8 +12,8 @@ WITH cs_impressions AS (
     AND source = 'topsites'
     AND (
       {% if is_init() %}
-        submission_date >= DATE_TRUNC(PARSE_DATE('%Y-%m-%d', '2023-11-01'), MONTH)
-        AND submission_date < DATE_TRUNC(CURRENT_DATE(), INTERVAL 1 MONTH)
+        submission_date >= '2023-11-01'
+        AND submission_date < '2024-09-01'
       {% else %}
         submission_date >= DATE_TRUNC(DATE_SUB(@submission_month, INTERVAL 1 MONTH), MONTH)
         AND submission_date < @submission_month
@@ -42,8 +42,8 @@ nt_visits AS (
     AND n.topsites_sponsored_enabled
     AND (
       {% if is_init() %}
-        submission_date >= DATE_TRUNC(PARSE_DATE('%Y-%m-%d', '2023-11-01'), MONTH)
-        AND submission_date < DATE_TRUNC(CURRENT_DATE(), INTERVAL 1 MONTH)
+        submission_date >= '2023-11-01'
+        AND submission_date < '2024-09-01'
       {% else %}
         submission_date >= DATE_TRUNC(DATE_SUB(@submission_month, INTERVAL 1 MONTH), MONTH)
         AND submission_date < @submission_month

@@ -14,7 +14,7 @@ from gcloud import bigquery  # type: ignore
 
 from bigquery_etl.backfill.shredder_mitigation import (
     PREVIOUS_DATE,
-    QUERY_WITH_MITIGATION_NAME,
+    SHREDDER_MITIGATION_QUERY_NAME,
     Column,
     ColumnStatus,
     ColumnType,
@@ -24,6 +24,7 @@ from bigquery_etl.backfill.shredder_mitigation import (
     generate_query_with_shredder_mitigation,
     get_bigquery_type,
     validate_types,
+    SHREDDER_MITIGATION_CHECKS_NAME,
 )
 
 
@@ -796,6 +797,40 @@ class TestSubset:
             assert test_subset.partitioning == {"field": None, "type": None}
 
     @patch("google.cloud.bigquery.Client")
+    def test_labels(self, mock_client, runner):
+        """Test that partitioning type and value associated to a subset are returned as expected."""
+        test_subset = Subset(
+            mock_client,
+            self.destination_table,
+            None,
+            self.dataset,
+            self.project_id,
+            None,
+        )
+
+        with runner.isolated_filesystem():
+            os.makedirs(Path(self.path), exist_ok=True)
+            with open(Path(self.path) / "metadata.yaml", "w") as f:
+                f.write(
+                    "bigquery:\n  time_partitioning:\n    type: day\n    field: submission_date\n"
+                    "friendly_name: Test\ndescription: Test\nlabels:\n  change_controlled: true"
+                )
+            assert "change_controlled" in test_subset.labels
+
+            with open(Path(self.path) / "metadata.yaml", "w") as f:
+                f.write(
+                    "friendly_name: Test\ndescription: Test\nlabels:\n  "
+                    "incremental: true\n  change_controlled: true\n  shredder_mitigation: true"
+                )
+            for label in ["change_controlled", "shredder_mitigation", "incremental"]:
+                assert label in test_subset.labels
+
+            with open(Path(self.path) / "metadata.yaml", "w") as f:
+                f.write("friendly_name: Test\ndescription: Test")
+            assert test_subset.labels == {}
+            assert "shredder_mitigation" not in test_subset.labels
+
+    @patch("google.cloud.bigquery.Client")
     def test_generate_query(self, mock_client):
         """Test method generate_query with expected subset queries and exceptions."""
         test_subset = Subset(
@@ -931,10 +966,6 @@ class TestSubset:
             result = test_subset.get_query_path_results(None)
             assert result == expected
 
-    def test_generate_check_with_previous_version(self):
-        """Test the auto-generation of data checks."""
-        assert True
-
 
 class TestGenerateQueryWithShredderMitigation:
     """Test function generate_query_with_shredder_mitigation and returned query for backfill."""
@@ -959,11 +990,7 @@ class TestGenerateQueryWithShredderMitigation:
         """Test that query is generated as expected given a set of mock dimensions and metrics."""
 
         expected = (
-            Path("sql")
-            / self.project_id
-            / self.dataset
-            / self.destination_table
-            / f"{QUERY_WITH_MITIGATION_NAME}.sql",
+            Path("sql") / self.project_id / self.dataset / self.destination_table,
             """-- Query generated using a template for shredder mitigation.
                         WITH new_version AS (
                           SELECT
@@ -1062,12 +1089,14 @@ class TestGenerateQueryWithShredderMitigation:
             with open(Path(self.path) / "metadata.yaml", "w") as f:
                 f.write(
                     "bigquery:\n  time_partitioning:\n    type: day\n    "
-                    "field: submission_date\n    require_partition_filter: true"
+                    "field: submission_date\n    require_partition_filter: true\n"
+                    "labels:\n    shredder_mitigation: true"
                 )
             with open(Path(self.path_previous) / "metadata.yaml", "w") as f:
                 f.write(
                     "bigquery:\n  time_partitioning:\n    type: day\n    "
-                    "field: submission_date\n    require_partition_filter: true"
+                    "field: submission_date\n    require_partition_filter: true\n"
+                    "labels:\n    shredder_mitigation: true"
                 )
 
             mock_classify_columns.return_value = (
@@ -1115,138 +1144,17 @@ class TestGenerateQueryWithShredderMitigation:
                 )
                 assert result[0] == expected[0]
                 assert result[1] == expected[1].replace("                        ", "")
-
-    @patch("google.cloud.bigquery.Client")
-    def test_missing_previous_version(self, mock_client, runner):
-        """Test that the process raises an exception when previous query version is missing."""
-        expected_exc = (
-            "Function extract_last_group_by_from_query() called without an sql file or "
-            "text to extract the group by."
-        )
-
-        with runner.isolated_filesystem():
-            path = f"sql/{self.project_id}/{self.dataset}/{self.destination_table}"
-            os.makedirs(path, exist_ok=True)
-            with open(Path(path) / "query.sql", "w") as f:
-                f.write("SELECT column_1, column_2 FROM upstream_1 GROUP BY column_1")
-
-            with pytest.raises(ClickException) as e:
-                generate_query_with_shredder_mitigation(
-                    client=mock_client,
-                    project_id=self.project_id,
-                    dataset=self.dataset,
-                    destination_table=self.destination_table,
-                    backfill_date=PREVIOUS_DATE,
+                assert os.path.isfile(
+                    expected[0] / f"{SHREDDER_MITIGATION_QUERY_NAME}.sql"
                 )
-            assert (str(e.value.message)) == expected_exc
-            assert (e.type) == ClickException
-
-    @patch("google.cloud.bigquery.Client")
-    def test_invalid_group_by(self, mock_client, runner):
-        """Test that the process raises an exception when the GROUP BY is invalid for any query."""
-        expected_exc = (
-            "GROUP BY must use an explicit list of columns. "
-            "Avoid expressions like `GROUP BY ALL` or `GROUP BY 1, 2, 3`."
-        )
-        # client = bigquery.Client()
-        project_id = "moz-fx-data-shared-prod"
-        dataset = "test"
-        destination_table = "test_query_v2"
-        destination_table_previous = "test_query_v1"
-
-        # GROUP BY including a number
-        with runner.isolated_filesystem():
-            previous_group_by = "column_1, column_2, column_3"
-            new_group_by = "3, column_4, column_5"
-            path = f"sql/{project_id}/{dataset}/{destination_table}"
-            path_previous = f"sql/{project_id}/{dataset}/{destination_table_previous}"
-            os.makedirs(path, exist_ok=True)
-            os.makedirs(path_previous, exist_ok=True)
-            with open(Path(path) / "query.sql", "w") as f:
-                f.write(
-                    f"SELECT column_1, column_2 FROM upstream_1 GROUP BY {new_group_by}"
-                )
-            with open(Path(path_previous) / "query.sql", "w") as f:
-                f.write(
-                    f"SELECT column_1, column_2 FROM upstream_1 GROUP BY {previous_group_by}"
-                )
-
-            with pytest.raises(ClickException) as e:
-                generate_query_with_shredder_mitigation(
-                    client=mock_client,
-                    project_id=project_id,
-                    dataset=dataset,
-                    destination_table=destination_table,
-                    backfill_date=PREVIOUS_DATE,
-                )
-            assert (str(e.value.message)) == expected_exc
-
-            # GROUP BY 1, 2, 3
-            previous_group_by = "1, 2, 3"
-            new_group_by = "column_1, column_2, column_3"
-            with open(Path(path) / "query.sql", "w") as f:
-                f.write(
-                    f"SELECT column_1, column_2 FROM upstream_1 GROUP BY {new_group_by}"
-                )
-            with open(Path(path_previous) / "query.sql", "w") as f:
-                f.write(
-                    f"SELECT column_1, column_2 FROM upstream_1 GROUP BY {previous_group_by}"
-                )
-            with pytest.raises(ClickException) as e:
-                generate_query_with_shredder_mitigation(
-                    client=mock_client,
-                    project_id=project_id,
-                    dataset=dataset,
-                    destination_table=destination_table,
-                    backfill_date=PREVIOUS_DATE,
-                )
-            assert (str(e.value.message)) == expected_exc
-
-            # GROUP BY ALL
-            previous_group_by = "column_1, column_2, column_3"
-            new_group_by = "ALL"
-            with open(Path(path) / "query.sql", "w") as f:
-                f.write(
-                    f"SELECT column_1, column_2 FROM upstream_1 GROUP BY {new_group_by}"
-                )
-            with open(Path(path_previous) / "query.sql", "w") as f:
-                f.write(
-                    f"SELECT column_1, column_2 FROM upstream_1 GROUP BY {previous_group_by}"
-                )
-            with pytest.raises(ClickException) as e:
-                generate_query_with_shredder_mitigation(
-                    client=mock_client,
-                    project_id=project_id,
-                    dataset=dataset,
-                    destination_table=destination_table,
-                    backfill_date=PREVIOUS_DATE,
-                )
-            assert (str(e.value.message)) == expected_exc
-
-            # GROUP BY is missing
-            previous_group_by = "column_1, column_2, column_3"
-            with open(Path(path) / "query.sql", "w") as f:
-                f.write("SELECT column_1, column_2 FROM upstream_1")
-            with open(Path(path_previous) / "query.sql", "w") as f:
-                f.write(
-                    f"SELECT column_1, column_2 FROM upstream_1 GROUP BY {previous_group_by}"
-                )
-            with pytest.raises(ClickException) as e:
-                generate_query_with_shredder_mitigation(
-                    client=mock_client,
-                    project_id=project_id,
-                    dataset=dataset,
-                    destination_table=destination_table,
-                    backfill_date=PREVIOUS_DATE,
-                )
-            assert (str(e.value.message)) == expected_exc
 
     @patch("google.cloud.bigquery.Client")
     @patch("bigquery_etl.backfill.shredder_mitigation.classify_columns")
-    def test_generate_query_called_with_correct_parameters(
+    def test_generate_query_failed_for_missing_partitioning(
         self, mock_classify_columns, mock_client, runner
     ):
-        """Test that function generate_query is called with the correct parameters."""
+        """Test that function raises exception for required query parameter missing
+        in metadata, instead of generating wrong query."""
         existing_schema = {
             "fields": [
                 {"name": "column_1", "type": "DATE", "mode": "NULLABLE"},
@@ -1264,27 +1172,31 @@ class TestGenerateQueryWithShredderMitigation:
         with runner.isolated_filesystem():
             os.makedirs(self.path, exist_ok=True)
             os.makedirs(self.path_previous, exist_ok=True)
-            with open(Path(self.path) / "query.sql", "w") as f:
-                f.write("SELECT column_1 FROM upstream_1 GROUP BY column_1")
-            with open(Path(self.path) / "metadata.yaml", "w") as f:
+            with open(self.path / "query.sql", "w") as f:
                 f.write(
-                    "bigquery:\n  time_partitioning:\n    type: day\n    "
-                    "field: submission_date\n    require_partition_filter: true"
+                    "SELECT column_1, column_2, metric_1 FROM upstream_1"
+                    " WHERE column_1 = @column_1 GROUP BY column_1, column_2"
                 )
-            with open(Path(self.path_previous) / "query.sql", "w") as f:
-                f.write("SELECT column_1 FROM upstream_1 GROUP BY column_1")
+            with open(self.path_previous / "query.sql", "w") as f:
+                f.write(
+                    "SELECT column_1, metric_1 FROM upstream_1"
+                    " WHERE column_1 = @column_1 GROUP BY column_1"
+                )
+
+            with open(self.path / "schema.yaml", "w") as f:
+                f.write(yaml.safe_dump(new_schema))
+
+            with open(self.path_previous / "schema.yaml", "w") as f:
+                f.write(yaml.safe_dump(existing_schema))
+
+            with open(Path(self.path) / "metadata.yaml", "w") as f:
+                f.write("labels:\n    shredder_mitigation: true")
             with open(Path(self.path_previous) / "metadata.yaml", "w") as f:
                 f.write(
                     "bigquery:\n  time_partitioning:\n    type: day\n    "
-                    "field: submission_date\n    require_partition_filter: true"
+                    "field: submission_date\n    require_partition_filter: true\n"
+                    "labels:\n    shredder_mitigation: true"
                 )
-            with open(self.path / "schema.yaml", "w") as f:
-                f.write(yaml.safe_dump(new_schema))
-            with open(
-                self.path_previous / "schema.yaml",
-                "w",
-            ) as f:
-                f.write(yaml.safe_dump(existing_schema))
 
             mock_classify_columns.return_value = (
                 [
@@ -1315,6 +1227,407 @@ class TestGenerateQueryWithShredderMitigation:
                 [],
             )
 
+            with pytest.raises(TypeError) as e:
+                generate_query_with_shredder_mitigation(
+                    client=mock_client,
+                    project_id=self.project_id,
+                    dataset=self.dataset,
+                    destination_table=self.destination_table,
+                    backfill_date=PREVIOUS_DATE,
+                )
+            assert str(e.value) == "'NoneType' object is not iterable"
+
+    @patch("google.cloud.bigquery.Client")
+    @patch("bigquery_etl.backfill.shredder_mitigation.classify_columns")
+    def test_generate_checks_as_expected(
+        self, mock_classify_columns, mock_client, runner
+    ):
+        """Test that checks are generated as expected when calling the function."""
+
+        expected = (
+            Path("sql") / self.project_id / self.dataset / self.destination_table,
+            """-- dummy query""",
+        )
+        expected_checks_content = """-- Checks generated using a template for shredder mitigation.
+        WITH previous AS (
+          SELECT
+            column_1,
+            column_2,
+            SUM(metric_1) AS metric_1,
+            SUM(metric_2) AS metric_2
+          FROM
+            `moz-fx-data-shared-prod.test.test_query_v1`
+          WHERE
+            column_1 = @column_1
+          GROUP BY
+            ALL
+        ),
+        new_version AS (
+          SELECT
+            column_1,
+            column_2,
+            SUM(metric_1) AS metric_1,
+            SUM(metric_2) AS metric_2
+          FROM
+            `moz-fx-data-shared-prod.test.test_query_v2`
+          WHERE
+            column_1 = @column_1
+          GROUP BY
+            ALL
+        )
+        SELECT
+          *
+        FROM
+          previous
+        EXCEPT DISTINCT
+        SELECT
+          *
+        FROM
+          new_version\n"""
+
+        existing_schema = {
+            "fields": [
+                {"name": "column_1", "type": "DATE", "mode": "NULLABLE"},
+                {"name": "column_2", "type": "STRING", "mode": "NULLABLE"},
+                {"name": "metric_1", "type": "INTEGER", "mode": "NULLABLE"},
+                {"name": "metric_2", "type": "NUMERIC", "mode": "NULLABLE"},
+            ]
+        }
+        new_schema = {
+            "fields": [
+                {"name": "column_1", "type": "DATE", "mode": "NULLABLE"},
+                {"name": "column_2", "type": "STRING", "mode": "NULLABLE"},
+                {"name": "column_3", "type": "STRING", "mode": "NULLABLE"},
+                {"name": "metric_1", "type": "INTEGER", "mode": "NULLABLE"},
+                {"name": "metric_2", "type": "NUMERIC", "mode": "NULLABLE"},
+            ]
+        }
+
+        with runner.isolated_filesystem():
+            os.makedirs(self.path, exist_ok=True)
+            os.makedirs(self.path_previous, exist_ok=True)
+            with open(self.path / "query.sql", "w") as f:
+                f.write(
+                    "SELECT column_1, column_2, column_3, metric_1, metric_2 FROM upstream_1"
+                    " GROUP BY column_1, column_2, column_3"
+                )
+            with open(self.path_previous / "query.sql", "w") as f:
+                f.write(
+                    "SELECT column_1, column_2, metric_1, metric_2 FROM upstream_1"
+                    " GROUP BY column_1, column_2"
+                )
+
+            with open(self.path / "schema.yaml", "w") as f:
+                f.write(yaml.safe_dump(new_schema))
+
+            with open(self.path_previous / "schema.yaml", "w") as f:
+                f.write(yaml.safe_dump(existing_schema))
+
+            with open(Path(self.path) / "metadata.yaml", "w") as f:
+                f.write(
+                    "bigquery:\n  time_partitioning:\n    type: day\n    "
+                    "field: column_1\n    require_partition_filter: true\n"
+                    "labels:\n    shredder_mitigation: true"
+                )
+            with open(Path(self.path_previous) / "metadata.yaml", "w") as f:
+                f.write(
+                    "bigquery:\n  time_partitioning:\n    type: day\n    "
+                    "field: column_1\n    require_partition_filter: true\n"
+                    "labels:\n    shredder_mitigation: true"
+                )
+
+            mock_classify_columns.return_value = (
+                [
+                    Column(
+                        "column_1",
+                        DataTypeGroup.STRING,
+                        ColumnType.DIMENSION,
+                        ColumnStatus.COMMON,
+                    ),
+                    Column(
+                        "column_2",
+                        DataTypeGroup.STRING,
+                        ColumnType.DIMENSION,
+                        ColumnStatus.COMMON,
+                    ),
+                ],
+                [
+                    Column(
+                        "column_3",
+                        DataTypeGroup.STRING,
+                        ColumnType.DIMENSION,
+                        ColumnStatus.ADDED,
+                    )
+                ],
+                [],
+                [
+                    Column(
+                        "metric_1",
+                        DataTypeGroup.INTEGER,
+                        ColumnType.METRIC,
+                        ColumnStatus.COMMON,
+                    ),
+                    Column(
+                        "metric_2",
+                        DataTypeGroup.NUMERIC,
+                        ColumnType.METRIC,
+                        ColumnStatus.COMMON,
+                    ),
+                ],
+                [],
+            )
+
+            with patch.object(
+                Subset,
+                "get_query_path_results",
+                return_value=[
+                    {
+                        "column_1": "2021-01-01",
+                        "column_2": "DEF",
+                        "column_3": "ABC",
+                        "metric_1": 10.0,
+                        "metric_2": 1028374.439587349875643,
+                    }
+                ],
+            ):
+                assert os.path.isfile(self.path / "query.sql")
+                assert os.path.isfile(self.path_previous / "query.sql")
+                result = generate_query_with_shredder_mitigation(
+                    client=mock_client,
+                    project_id=self.project_id,
+                    dataset=self.dataset,
+                    destination_table=self.destination_table,
+                    backfill_date=PREVIOUS_DATE,
+                )
+                checks_file = self.path / f"{SHREDDER_MITIGATION_CHECKS_NAME}.sql"
+                assert result[0] == expected[0]
+                assert os.path.isfile(checks_file)
+                with open(checks_file) as file:
+                    checks_content = file.read()
+                assert checks_content == expected_checks_content.replace("        ", "")
+
+    @patch("google.cloud.bigquery.Client")
+    def test_missing_previous_version(self, mock_client, runner):
+        """Test that the process raises an exception when previous query version is missing."""
+        expected_exc = "Extracting GROUP BY from query failed due to sql file or sql text not available."
+
+        with runner.isolated_filesystem():
+            os.makedirs(self.path, exist_ok=True)
+            with open(Path(self.path) / "query.sql", "w") as f:
+                f.write("SELECT column_1, column_2 FROM upstream_1 GROUP BY column_1")
+            with open(Path(self.path) / "metadata.yaml", "w") as f:
+                f.write(
+                    "Friendly name: Test\n" "labels:\n    shredder_mitigation: true"
+                )
+
+            with pytest.raises(ClickException) as e:
+                generate_query_with_shredder_mitigation(
+                    client=mock_client,
+                    project_id=self.project_id,
+                    dataset=self.dataset,
+                    destination_table=self.destination_table,
+                    backfill_date=PREVIOUS_DATE,
+                )
+            assert (str(e.value.message)) == expected_exc
+            assert (e.type) == ClickException
+
+    @patch("google.cloud.bigquery.Client")
+    def test_invalid_group_by(self, mock_client, runner):
+        """Test that the process raises an exception when the GROUP BY is invalid for any query."""
+        expected_exc = (
+            "GROUP BY must use an explicit list of columns. "
+            "Avoid expressions like `GROUP BY ALL` or `GROUP BY 1, 2, 3`."
+        )
+
+        # GROUP BY including a number
+        with runner.isolated_filesystem():
+            previous_group_by = "column_1, column_2, column_3"
+            new_group_by = "3, column_4, column_5"
+            os.makedirs(self.path, exist_ok=True)
+            os.makedirs(self.path_previous, exist_ok=True)
+
+            with open(Path(self.path) / "query.sql", "w") as f:
+                f.write(
+                    f"SELECT column_1, column_2 FROM upstream_1 GROUP BY {new_group_by}"
+                )
+            with open(Path(self.path_previous) / "query.sql", "w") as f:
+                f.write(
+                    f"SELECT column_1, column_2 FROM upstream_1 GROUP BY {previous_group_by}"
+                )
+            with open(Path(self.path) / "metadata.yaml", "w") as f:
+                f.write(
+                    "Friendly name: Test\n" "labels:\n    shredder_mitigation: true"
+                )
+            with open(Path(self.path_previous) / "metadata.yaml", "w") as f:
+                f.write(
+                    "Friendly name: Test\n" "labels:\n    shredder_mitigation: true"
+                )
+
+            with pytest.raises(ClickException) as e:
+                generate_query_with_shredder_mitigation(
+                    client=mock_client,
+                    project_id=self.project_id,
+                    dataset=self.dataset,
+                    destination_table=self.destination_table,
+                    backfill_date=PREVIOUS_DATE,
+                )
+            assert (str(e.value.message)) == expected_exc
+
+            # GROUP BY 1, 2, 3
+            previous_group_by = "1, 2, 3"
+            new_group_by = "column_1, column_2, column_3"
+            with open(Path(self.path) / "query.sql", "w") as f:
+                f.write(
+                    f"SELECT column_1, column_2 FROM upstream_1 GROUP BY {new_group_by}"
+                )
+            with open(Path(self.path_previous) / "query.sql", "w") as f:
+                f.write(
+                    f"SELECT column_1, column_2 FROM upstream_1 GROUP BY {previous_group_by}"
+                )
+            with pytest.raises(ClickException) as e:
+                generate_query_with_shredder_mitigation(
+                    client=mock_client,
+                    project_id=self.project_id,
+                    dataset=self.dataset,
+                    destination_table=self.destination_table,
+                    backfill_date=PREVIOUS_DATE,
+                )
+            assert (str(e.value.message)) == expected_exc
+
+            # GROUP BY ALL
+            previous_group_by = "column_1, column_2, column_3"
+            new_group_by = "ALL"
+            with open(Path(self.path) / "query.sql", "w") as f:
+                f.write(
+                    f"SELECT column_1, column_2 FROM upstream_1 GROUP BY {new_group_by}"
+                )
+            with open(Path(self.path_previous) / "query.sql", "w") as f:
+                f.write(
+                    f"SELECT column_1, column_2 FROM upstream_1 GROUP BY {previous_group_by}"
+                )
+            with pytest.raises(ClickException) as e:
+                generate_query_with_shredder_mitigation(
+                    client=mock_client,
+                    project_id=self.project_id,
+                    dataset=self.dataset,
+                    destination_table=self.destination_table,
+                    backfill_date=PREVIOUS_DATE,
+                )
+            assert (str(e.value.message)) == expected_exc
+
+            # GROUP BY is missing
+            previous_group_by = "column_1, column_2, column_3"
+            with open(Path(self.path) / "query.sql", "w") as f:
+                f.write("SELECT column_1, column_2 FROM upstream_1")
+            with open(Path(self.path_previous) / "query.sql", "w") as f:
+                f.write(
+                    f"SELECT column_1, column_2 FROM upstream_1 GROUP BY {previous_group_by}"
+                )
+            with pytest.raises(ClickException) as e:
+                generate_query_with_shredder_mitigation(
+                    client=mock_client,
+                    project_id=self.project_id,
+                    dataset=self.dataset,
+                    destination_table=self.destination_table,
+                    backfill_date=PREVIOUS_DATE,
+                )
+            assert (str(e.value.message)) == expected_exc
+
+    @patch("google.cloud.bigquery.Client")
+    @patch("bigquery_etl.backfill.shredder_mitigation.classify_columns")
+    def test_generate_query_called_with_correct_parameters(
+        self, mock_classify_columns, mock_client, runner
+    ):
+        """Test that function generate_query is called with the correct parameters."""
+        existing_schema = {
+            "fields": [
+                {"name": "column_1", "type": "DATE", "mode": "NULLABLE"},
+                {"name": "column_2", "type": "STRING", "mode": "NULLABLE"},
+                {"name": "metric_1", "type": "INTEGER", "mode": "NULLABLE"},
+            ]
+        }
+        new_schema = {
+            "fields": [
+                {"name": "column_1", "type": "DATE", "mode": "NULLABLE"},
+                {"name": "column_2", "type": "STRING", "mode": "NULLABLE"},
+                {"name": "column_3", "type": "STRING", "mode": "NULLABLE"},
+                {"name": "metric_1", "type": "INTEGER", "mode": "NULLABLE"},
+            ]
+        }
+
+        with runner.isolated_filesystem():
+            os.makedirs(self.path, exist_ok=True)
+            os.makedirs(self.path_previous, exist_ok=True)
+
+            with open(Path(self.path) / "query.sql", "w") as f:
+                f.write(
+                    "SELECT column_1, column_2, column_3 FROM upstream_1 "
+                    "GROUP BY column_1, column_2, column_3"
+                )
+            with open(Path(self.path) / "metadata.yaml", "w") as f:
+                f.write(
+                    "bigquery:\n  time_partitioning:\n    type: day\n    "
+                    "field: column_1\n    require_partition_filter: true"
+                )
+            with open(Path(self.path_previous) / "query.sql", "w") as f:
+                f.write(
+                    "SELECT column_1, column_2 FROM upstream_1 GROUP BY column_1, column_2"
+                )
+            with open(Path(self.path) / "metadata.yaml", "w") as f:
+                f.write(
+                    "bigquery:\n  time_partitioning:\n    type: day\n    "
+                    "field: column_1\n    require_partition_filter: true\n"
+                    "labels:\n    shredder_mitigation: true"
+                )
+            with open(Path(self.path_previous) / "metadata.yaml", "w") as f:
+                f.write(
+                    "bigquery:\n  time_partitioning:\n    type: day\n    "
+                    "field: column_1\n    require_partition_filter: true\n"
+                    "labels:\n    shredder_mitigation: true"
+                )
+            with open(self.path / "schema.yaml", "w") as f:
+                f.write(yaml.safe_dump(new_schema))
+            with open(
+                self.path_previous / "schema.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.safe_dump(existing_schema))
+
+            mock_classify_columns.return_value = (
+                [
+                    Column(
+                        "column_1",
+                        DataTypeGroup.DATE,
+                        ColumnType.DIMENSION,
+                        ColumnStatus.COMMON,
+                    ),
+                    Column(
+                        "column_2",
+                        DataTypeGroup.STRING,
+                        ColumnType.DIMENSION,
+                        ColumnStatus.COMMON,
+                    ),
+                ],
+                [
+                    Column(
+                        "column_3",
+                        DataTypeGroup.STRING,
+                        ColumnType.DIMENSION,
+                        ColumnStatus.ADDED,
+                    )
+                ],
+                [],
+                [
+                    Column(
+                        "metric_1",
+                        DataTypeGroup.INTEGER,
+                        ColumnType.METRIC,
+                        ColumnStatus.COMMON,
+                    )
+                ],
+                [],
+            )
+
             with patch.object(
                 Subset,
                 "get_query_path_results",
@@ -1328,13 +1641,13 @@ class TestGenerateQueryWithShredderMitigation:
                         destination_table=self.destination_table,
                         backfill_date=PREVIOUS_DATE,
                     )
-                    assert mock_generate_query.call_count == 3
+                    assert mock_generate_query.call_count == 5
                     assert mock_generate_query.call_args_list == (
                         [
                             call(
                                 select_list=[
-                                    "submission_date",
-                                    "COALESCE(column_1, '???????') AS column_1",
+                                    "column_1",
+                                    "COALESCE(column_2, '???????') AS column_2",
                                     "SUM(metric_1) AS metric_1",
                                 ],
                                 from_clause="new_version",
@@ -1342,27 +1655,177 @@ class TestGenerateQueryWithShredderMitigation:
                             ),
                             call(
                                 select_list=[
-                                    "submission_date",
-                                    "COALESCE(column_1, '???????') AS column_1",
+                                    "column_1",
+                                    "COALESCE(column_2, '???????') AS column_2",
                                     "SUM(metric_1) AS metric_1",
                                 ],
                                 from_clause="`moz-fx-data-shared-prod.test.test_query_v1`",
-                                where_clause="submission_date = @submission_date",
+                                where_clause="column_1 = @column_1",
                                 group_by_clause="ALL",
                             ),
                             call(
                                 select_list=[
-                                    "previous_agg.submission_date",
                                     "previous_agg.column_1",
-                                    "CAST(NULL AS STRING) AS column_2",
+                                    "previous_agg.column_2",
+                                    "CAST(NULL AS STRING) AS column_3",
                                     "COALESCE(previous_agg.metric_1, 0) - "
                                     "COALESCE(new_agg.metric_1, 0) AS metric_1",
                                 ],
                                 from_clause="previous_agg LEFT JOIN new_agg ON "
-                                "previous_agg.submission_date = new_agg.submission_date"
-                                " AND previous_agg.column_1 = new_agg.column_1 ",
+                                "previous_agg.column_1 = new_agg.column_1"
+                                " AND previous_agg.column_2 = new_agg.column_2 ",
                                 where_clause="COALESCE(previous_agg.metric_1, 0) >"
                                 " COALESCE(new_agg.metric_1, 0)",
                             ),
+                            call(
+                                select_list=[
+                                    "column_1",
+                                    "column_2",
+                                    "SUM(metric_1) AS metric_1",
+                                ],
+                                from_clause="`moz-fx-data-shared-prod.test.test_query_v1`",
+                                where_clause="column_1 = @column_1",
+                                group_by_clause="ALL",
+                            ),
+                            call(
+                                select_list=[
+                                    "column_1",
+                                    "column_2",
+                                    "SUM(metric_1) AS metric_1",
+                                ],
+                                from_clause="`moz-fx-data-shared-prod.test.test_query_v2`",
+                                where_clause="column_1 = @column_1",
+                                group_by_clause="ALL",
+                            ),
                         ]
                     )
+
+    @patch("google.cloud.bigquery.Client")
+    @patch("bigquery_etl.backfill.shredder_mitigation.classify_columns")
+    def test_generate_query_and_shredder_mitigation_label(
+        self, mock_classify_columns, mock_client, runner, capfd
+    ):
+        """Test that query is generated as expected given a set of mock dimensions and metrics."""
+        expected_failure_output = (
+            "The required label `shredder_mitigation` is missing in the metadata of the "
+            "table. The process will now terminate.\n"
+        )
+        existing_schema = {
+            "fields": [
+                {"name": "column_1", "type": "DATE", "mode": "NULLABLE"},
+                {"name": "metric_1", "type": "INTEGER", "mode": "NULLABLE"},
+            ]
+        }
+        new_schema = {
+            "fields": [
+                {"name": "column_1", "type": "DATE", "mode": "NULLABLE"},
+                {"name": "column_2", "type": "STRING", "mode": "NULLABLE"},
+                {"name": "metric_1", "type": "INTEGER", "mode": "NULLABLE"},
+            ]
+        }
+
+        with runner.isolated_filesystem():
+            os.makedirs(self.path, exist_ok=True)
+            os.makedirs(self.path_previous, exist_ok=True)
+
+            with open(Path(self.path) / "query.sql", "w") as f:
+                f.write("SELECT column_1 FROM upstream_1 GROUP BY column_1")
+            with open(Path(self.path_previous) / "query.sql", "w") as f:
+                f.write(
+                    "SELECT column_1, column_2 FROM upstream_1 GROUP BY column_1, column_2"
+                )
+
+            with open(self.path / "schema.yaml", "w") as f:
+                f.write(yaml.safe_dump(new_schema))
+            with open(self.path_previous / "schema.yaml", "w") as f:
+                f.write(yaml.safe_dump(existing_schema))
+
+            # Label missing in both versions.
+            with open(Path(self.path) / "metadata.yaml", "w") as f:
+                f.write("Friendly name: Test\n")
+            with open(Path(self.path_previous) / "metadata.yaml", "w") as f:
+                f.write("Friendly name: Test\n")
+
+            with pytest.raises(SystemExit) as result:
+                generate_query_with_shredder_mitigation(
+                    client=mock_client,
+                    project_id=self.project_id,
+                    dataset=self.dataset,
+                    destination_table=self.destination_table,
+                    backfill_date=PREVIOUS_DATE,
+                )
+            assert result.type == SystemExit
+            assert result.value.code == 1
+            captured = capfd.readouterr()
+            assert expected_failure_output == captured.out
+
+            # Label missing in backfilled version generates failure even if in previous version.
+            with open(Path(self.path_previous) / "metadata.yaml", "w") as f:
+                f.write("Friendly name: Test\nlabels:\n    shredder_mitigation: true")
+            with open(Path(self.path) / "metadata.yaml", "w") as f:
+                f.write("Friendly name: Test\n")
+
+            with pytest.raises(SystemExit) as result:
+                generate_query_with_shredder_mitigation(
+                    client=mock_client,
+                    project_id=self.project_id,
+                    dataset=self.dataset,
+                    destination_table=self.destination_table,
+                    backfill_date=PREVIOUS_DATE,
+                )
+            assert result.type == SystemExit
+            assert result.value.code == 1
+            captured = capfd.readouterr()
+            assert expected_failure_output == captured.out
+
+            # Label missing in previous version doesn't generate failure
+            # as long as it's present in backfilled version.
+            with open(Path(self.path_previous) / "metadata.yaml", "w") as f:
+                f.write("Friendly name: Test\n")
+            with open(Path(self.path) / "metadata.yaml", "w") as f:
+                f.write(
+                    "Friendly name: Test\n" "labels:\n    shredder_mitigation: true"
+                )
+
+            mock_classify_columns.return_value = (
+                [
+                    Column(
+                        "column_1",
+                        DataTypeGroup.DATE,
+                        ColumnType.DIMENSION,
+                        ColumnStatus.COMMON,
+                    )
+                ],
+                [
+                    Column(
+                        "column_2",
+                        DataTypeGroup.DATE,
+                        ColumnType.DIMENSION,
+                        ColumnStatus.COMMON,
+                    )
+                ],
+                [],
+                [
+                    Column(
+                        "metric_1",
+                        DataTypeGroup.INTEGER,
+                        ColumnType.METRIC,
+                        ColumnStatus.COMMON,
+                    )
+                ],
+                [],
+            )
+
+            with patch.object(
+                Subset,
+                "get_query_path_results",
+                return_value=[{"column_1": "ABC", "column_2": "DEF", "metric_1": 10.0}],
+            ):
+                result = generate_query_with_shredder_mitigation(
+                    client=mock_client,
+                    project_id=self.project_id,
+                    dataset=self.dataset,
+                    destination_table=self.destination_table,
+                    backfill_date=PREVIOUS_DATE,
+                )
+                assert result[0] == self.path

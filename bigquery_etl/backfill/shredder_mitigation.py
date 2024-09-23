@@ -2,6 +2,7 @@
 
 import os
 import re
+import sys
 from datetime import date
 from datetime import datetime as dt
 from datetime import time, timedelta
@@ -19,6 +20,7 @@ from jinja2 import Environment, FileSystemLoader
 
 from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.metadata.parse_metadata import METADATA_FILE, Metadata
+from bigquery_etl.metadata.validate_metadata import SHREDDER_MITIGATION_LABEL
 from bigquery_etl.schema import Schema
 from bigquery_etl.util.common import extract_last_group_by_from_query, write_sql
 
@@ -26,12 +28,13 @@ PREVIOUS_DATE = (dt.now() - timedelta(days=2)).date()
 TEMP_DATASET = "tmp"
 THIS_PATH = Path(os.path.dirname(__file__))
 DEFAULT_PROJECT_ID = "moz-fx-data-shared-prod"
-QUERY_WITH_MITIGATION_NAME = "query_with_shredder_mitigation"
+SHREDDER_MITIGATION_QUERY_NAME = "shredder_mitigation_query"
+SHREDDER_MITIGATION_CHECKS_NAME = "shredder_mitigation_checks"
 WILDCARD_STRING = "???????"
 WILDCARD_NUMBER = -9999999
 QUERY_FILE_RE = re.compile(
     r"^.*/([a-zA-Z0-9-]+)/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+(_v[0-9]+)?)/"
-    r"(?:query\.sql|query_with_shredder_mitigation\.sql|part1\.sql|script\.sql|"
+    r"(?:query\.sql|shredder_mitigation_query\.sql|part1\.sql|script\.sql|"
     r"query\.py|view\.sql|metadata\.yaml|backfill\.yaml)$"
 )
 
@@ -174,6 +177,18 @@ class Subset:
             partitioning = {"type": None, "field": None}
         return partitioning
 
+    @property
+    def labels(self):
+        """Return the labels in the metadata of the destination table."""
+        metadata = Metadata.from_file(
+            Path("sql")
+            / self.project_id
+            / self.dataset
+            / self.destination_table
+            / METADATA_FILE
+        )
+        return metadata.labels
+
     def generate_query(
         self,
         select_list,
@@ -248,17 +263,11 @@ class Subset:
             query_results = query_job.result()
         except NotFound as e:
             raise click.ClickException(
-                f"Unable to query data for {backfill_date}. Table {self.full_table_id} not found."
+                f"Unable to query data for {backfill_date}. Table {self.full_table_id} not found"
+                f" or partitioning in metadata missing."
             ) from e
         rows = [dict(row) for row in query_results]
         return rows
-
-    def compare_current_and_previous_version(
-        self,
-        date_partition_parameter,
-    ):
-        """Generate and run a data check to compare existing and backfilled data."""
-        return NotImplemented
 
 
 def get_bigquery_type(value) -> DataTypeGroup:
@@ -448,6 +457,17 @@ def generate_query_with_shredder_mitigation(
 
     # Find query files and grouping of previous and new queries.
     new = Subset(client, destination_table, "new_version", dataset, project_id, None)
+
+    if SHREDDER_MITIGATION_LABEL not in new.labels:
+        click.echo(
+            click.style(
+                "The required label `shredder_mitigation` is missing in the metadata of the "
+                "table. The process will now terminate.",
+                fg="yellow",
+            )
+        )
+        sys.exit(1)
+
     if new.version < 2:
         raise click.ClickException(
             f"The new version of the table is expected >= 2. Actual is {new.version}."
@@ -761,7 +781,10 @@ def generate_query_with_shredder_mitigation(
     # Generate query using the template.
     env = Environment(loader=FileSystemLoader(str(THIS_PATH)))
     query_with_mitigation_template = env.get_template(
-        f"{QUERY_WITH_MITIGATION_NAME}_template.sql"
+        f"{SHREDDER_MITIGATION_QUERY_NAME}_template.sql"
+    )
+    checks_for_mitigation_template = env.get_template(
+        f"{SHREDDER_MITIGATION_CHECKS_NAME}_template.sql"
     )
 
     query_with_mitigation_sql = reformat(
@@ -780,16 +803,62 @@ def generate_query_with_shredder_mitigation(
     write_sql(
         output_dir=query_with_mitigation_path,
         full_table_id=new.full_table_id,
-        basename=f"{QUERY_WITH_MITIGATION_NAME}.sql",
+        basename=f"{SHREDDER_MITIGATION_QUERY_NAME}.sql",
         sql=query_with_mitigation_sql,
         skip_existing=False,
     )
 
+    # Generate checks to compare versions after each partition backfill.
+    checks_select = (
+        [new.partitioning["field"]]
+        + [
+            dim.name
+            for dim in common_dimensions
+            if (dim.name != new.partitioning["field"])
+        ]
+        + [f"SUM({metric.name})" f" AS {metric.name}" for metric in metrics]
+    )
+    previous_checks_query = previous.generate_query(
+        select_list=checks_select,
+        from_clause=f"`{previous.full_table_id}`",
+        where_clause=f"{previous.partitioning['field']} = @{previous.partitioning['field']}",
+        group_by_clause="ALL",
+    )
+    new_checks_query = new.generate_query(
+        select_list=checks_select,
+        from_clause=f"`{new.full_table_id}`",
+        where_clause=f"{previous.partitioning['field']} = @{previous.partitioning['field']}",
+        group_by_clause="ALL",
+    )
+
+    checks_for_mitigation_sql = reformat(
+        checks_for_mitigation_template.render(
+            previous_version_cte=previous.query_cte,
+            previous_version=previous_checks_query,
+            new_version_cte=new.query_cte,
+            new_version=new_checks_query,
+        )
+    )
+    write_sql(
+        output_dir=query_with_mitigation_path,
+        full_table_id=new.full_table_id,
+        basename=f"{SHREDDER_MITIGATION_CHECKS_NAME}.sql",
+        sql=checks_for_mitigation_sql,
+        skip_existing=False,
+    )
+
+    query_path = Path("sql") / new.project_id / new.dataset / new.destination_table
+
+    click.echo(
+        click.style(
+            f"Files for shredder mitigation written to path `{query_path}`.\n"
+            f"Query: `{SHREDDER_MITIGATION_QUERY_NAME}.sql`\n"
+            f"Data checks: `{SHREDDER_MITIGATION_CHECKS_NAME}.sql`\n",
+            fg="blue",
+        )
+    )
+
     return (
-        Path("sql")
-        / new.project_id
-        / new.dataset
-        / new.destination_table
-        / f"{QUERY_WITH_MITIGATION_NAME}.sql",
+        query_path,
         query_with_mitigation_sql,
     )

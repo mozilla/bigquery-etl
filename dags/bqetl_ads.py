@@ -50,41 +50,6 @@ with DAG(
     tags=tags,
 ) as dag:
 
-    wait_for_checks__fail_telemetry_derived__unified_metrics__v1 = ExternalTaskSensor(
-        task_id="wait_for_checks__fail_telemetry_derived__unified_metrics__v1",
-        external_dag_id="bqetl_unified",
-        external_task_id="checks__fail_telemetry_derived__unified_metrics__v1",
-        execution_delta=datetime.timedelta(days=-1, seconds=75600),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    wait_for_contextual_services_derived__event_aggregates__v1 = ExternalTaskSensor(
-        task_id="wait_for_contextual_services_derived__event_aggregates__v1",
-        external_dag_id="bqetl_ctxsvc_derived",
-        external_task_id="contextual_services_derived__event_aggregates__v1",
-        execution_delta=datetime.timedelta(days=-1, seconds=75600),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    wait_for_telemetry_derived__newtab_visits__v1 = ExternalTaskSensor(
-        task_id="wait_for_telemetry_derived__newtab_visits__v1",
-        external_dag_id="bqetl_newtab",
-        external_task_id="telemetry_derived__newtab_visits__v1",
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
     wait_for_copy_deduplicate_all = ExternalTaskSensor(
         task_id="wait_for_copy_deduplicate_all",
         external_dag_id="copy_deduplicate",
@@ -95,23 +60,6 @@ with DAG(
         allowed_states=ALLOWED_STATES,
         failed_states=FAILED_STATES,
         pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    ads_derived__desktop_tiles_forecast_inputs__v2 = bigquery_etl_query(
-        task_id="ads_derived__desktop_tiles_forecast_inputs__v2",
-        destination_table="desktop_tiles_forecast_inputs_v2",
-        dataset_id="ads_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="sbetancourt@mozilla.com",
-        email=[
-            "cmorales@mozilla.com",
-            "jsnyder@mozilla.com",
-            "sbetancourt@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="submission_month",
-        table_partition_template='${{ dag_run.logical_date.strftime("%Y%m") }}',
-        depends_on_past=False,
     )
 
     ads_derived__nt_visits_to_sessions_conversion_factors_daily__v1 = (
@@ -129,18 +77,6 @@ with DAG(
             date_partition_parameter="submission_date",
             depends_on_past=False,
         )
-    )
-
-    ads_derived__desktop_tiles_forecast_inputs__v2.set_upstream(
-        wait_for_checks__fail_telemetry_derived__unified_metrics__v1
-    )
-
-    ads_derived__desktop_tiles_forecast_inputs__v2.set_upstream(
-        wait_for_contextual_services_derived__event_aggregates__v1
-    )
-
-    ads_derived__desktop_tiles_forecast_inputs__v2.set_upstream(
-        wait_for_telemetry_derived__newtab_visits__v1
     )
 
     ads_derived__nt_visits_to_sessions_conversion_factors_daily__v1.set_upstream(

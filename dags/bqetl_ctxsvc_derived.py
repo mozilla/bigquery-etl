@@ -145,20 +145,6 @@ with DAG(
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
     )
 
-    with TaskGroup(
-        "contextual_services_derived__event_aggregates__v1_external",
-    ) as contextual_services_derived__event_aggregates__v1_external:
-        ExternalTaskMarker(
-            task_id="bqetl_ads__wait_for_contextual_services_derived__event_aggregates__v1",
-            external_dag_id="bqetl_ads",
-            external_task_id="wait_for_contextual_services_derived__event_aggregates__v1",
-            execution_date="{{ (execution_date - macros.timedelta(seconds=10800)).isoformat() }}",
-        )
-
-        contextual_services_derived__event_aggregates__v1_external.set_upstream(
-            contextual_services_derived__event_aggregates__v1
-        )
-
     contextual_services_derived__event_aggregates_check__v1 = bigquery_etl_query(
         task_id="contextual_services_derived__event_aggregates_check__v1",
         destination_table=None,

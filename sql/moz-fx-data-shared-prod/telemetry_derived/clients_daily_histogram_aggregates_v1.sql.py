@@ -331,6 +331,7 @@ def get_histogram_probes_sql_strings(probes_and_buckets, histogram_type):
         SELECT
           sample_id,
           client_id,
+          profile_group_id,
           submission_date,
           os,
           app_version,
@@ -353,7 +354,7 @@ def get_histogram_probes_sql_strings(probes_and_buckets, histogram_type):
             udf_aggregate_json_sum(value))) AS histogram_aggregates
         FROM aggregated
         GROUP BY
-          1, 2, 3, 4, 5, 6, 7
+          1, 2, 3, 4, 5, 6, 7, 8
 
     """
 
@@ -365,6 +366,7 @@ def get_histogram_probes_sql_strings(probes_and_buckets, histogram_type):
                 submission_date,
                 sample_id,
                 client_id,
+                profile_group_id,
                 os,
                 app_version,
                 app_build_id,
@@ -377,6 +379,7 @@ def get_histogram_probes_sql_strings(probes_and_buckets, histogram_type):
             submission_date,
             sample_id,
             client_id,
+            profile_group_id,
             os,
             app_version,
             app_build_id,
@@ -399,6 +402,7 @@ def get_histogram_probes_sql_strings(probes_and_buckets, histogram_type):
       SELECT
         sample_id,
         client_id,
+        profile_group_id,
         submission_date,
         os,
         app_version,
@@ -411,7 +415,7 @@ def get_histogram_probes_sql_strings(probes_and_buckets, histogram_type):
         ARRAY_AGG(value) AS value
       FROM filtered_aggregates
       GROUP BY
-        1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
     """
 
     return sql_strings

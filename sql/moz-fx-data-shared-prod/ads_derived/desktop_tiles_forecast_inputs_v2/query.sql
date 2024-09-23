@@ -28,17 +28,16 @@ WITH cs_impressions AS (
 nt_visits AS (
   SELECT
     DATE_TRUNC(submission_date, MONTH) AS submission_month,
-    n.country_code,
-    APPROX_COUNT_DISTINCT(newtab_visit_id) AS newtab_visits,
+    country_code,
+    COUNT(1) AS newtab_visits,
     APPROX_COUNT_DISTINCT(client_id) AS newtab_clients,
-    2 * APPROX_COUNT_DISTINCT(newtab_visit_id) AS visits_total_inventory_1and2,
-    3 * APPROX_COUNT_DISTINCT(newtab_visit_id) AS visits_total_inventory_1to3,
+    2 * COUNT(1) AS visits_total_inventory_1and2,
+    3 * COUNT(1) AS visits_total_inventory_1to3,
   FROM
-    `moz-fx-data-shared-prod.telemetry.newtab_visits` n,
-    UNNEST(topsite_tile_interactions) t
+    `moz-fx-data-shared-prod.telemetry.newtab_visits`
   WHERE
-    n.topsites_enabled
-    AND n.topsites_sponsored_enabled
+    topsites_enabled
+    AND topsites_sponsored_enabled
     AND (
       {% if is_init() %}
         submission_date >= '2023-11-01'

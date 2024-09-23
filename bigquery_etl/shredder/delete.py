@@ -144,7 +144,7 @@ parser.add_argument(
     "--temp_dataset",
     metavar="PROJECT.DATASET",
     help="Dataset (project.dataset format) to write intermediate results of sampled queries to. "
-    "Must be specified when --sampling-tables is set.",
+    "If not specified, temporary tables are used and deleted afterwards.",
 )
 
 
@@ -183,6 +183,7 @@ def wait_for_job(
 ):
     """Get a job from state or create a new job, and wait for the job to complete."""
     job = None
+    success_callback = None
     if task_id in states:
         job = client.get_job(**FULL_JOB_ID_RE.fullmatch(states[task_id]).groupdict())
         if job.errors:
@@ -201,14 +202,19 @@ def wait_for_job(
                 job = None
         else:
             logging.info(f"Previous attempt still running for {task_id}")
+    should_wait = False
     if job is None:
-        job = create_job(client)
+        job, success_callback = create_job(client)
         record_state(
             client=client, task_id=task_id, dry_run=dry_run, job=job, **state_kwargs
         )
-    if not dry_run and not job.ended:
+        # copy_table may return an ended job for small copies
+        should_wait = True
+    if not dry_run and (not job.ended or should_wait):
         logging.info(f"Waiting on {full_job_id(job)} for {task_id}")
         job.result()
+        if success_callback is not None:
+            success_callback(client=client)
     return job
 
 
@@ -243,6 +249,7 @@ def delete_from_partition(
     **wait_for_job_kwargs,
 ):
     """Return callable to handle deletion requests for partitions of a target table."""
+    query_header = ""
     job_config = bigquery.QueryJobConfig(dry_run=dry_run, priority=priority)
     # whole table operations must use DML to protect against dropping partitions in the
     # case of conflicting write operations in ETL, and special partitions must use DML
@@ -251,16 +258,31 @@ def delete_from_partition(
         use_dml = True
     elif sample_id is not None:
         use_dml = False
-        job_config.destination = (
-            f"{temp_dataset}.{target.table_id}_{partition.id}__sample_{sample_id}"
-        )
-        job_config.write_disposition = bigquery.WriteDisposition.WRITE_TRUNCATE
-        job_config.clustering_fields = clustering_fields
+        # write to a temporary table in a session if no temp dataset is specified
+        if temp_dataset is None:
+            clustering_option = (
+                f"CLUSTER BY {','.join(clustering_fields)}" if clustering_fields else ""
+            )
+            query_header = f"""
+            CREATE TEMP TABLE {target.dataset_id}__{target.table_id}_{partition.id}__sample_{sample_id}
+            {clustering_option}
+            AS
+            """
+            job_config.create_session = True
+        else:
+            job_config.destination = (
+                f"{temp_dataset}.{target.dataset_id}__{target.table_id}"
+                f"_{partition.id}__sample_{sample_id}"
+            )
+            job_config.write_disposition = bigquery.WriteDisposition.WRITE_TRUNCATE
+            job_config.clustering_fields = clustering_fields
     elif not use_dml:
         job_config.destination = f"{sql_table_id(target)}${partition.id}"
         job_config.write_disposition = bigquery.WriteDisposition.WRITE_TRUNCATE
 
-    def create_job(client) -> bigquery.QueryJob:
+    def create_job(
+        client,
+    ) -> Tuple[bigquery.QueryJob, Optional[Callable[[bigquery.Client], None]]]:
         if use_dml:
             field_condition = " OR ".join(
                 f"""
@@ -325,6 +347,7 @@ def delete_from_partition(
 
             query = reformat(
                 f"""
+                {query_header}
                 SELECT
                   _target.*,
                 FROM
@@ -338,11 +361,18 @@ def delete_from_partition(
             )
         run_tense = "Would run" if dry_run else "Running"
         logging.debug(f"{run_tense} query: {query}")
-        return client.query(query, job_config=job_config)
+        return client.query(query, job_config=job_config), None
 
     return partial(
         wait_for_job, create_job=create_job, dry_run=dry_run, **wait_for_job_kwargs
     )
+
+
+def end_sessions(client: bigquery.Client, session_ids: Iterable[str], task_id: str):
+    """Perform non-blocking calls to end sessions to remove temp tables."""
+    logging.info(f"Ending temp sessions for {task_id}")
+    for session_id in session_ids:
+        client.query(f"CALL BQ.ABORT_SESSION('{session_id}')")
 
 
 def delete_from_partition_with_sampling(
@@ -364,7 +394,12 @@ def delete_from_partition_with_sampling(
     )
     target_table = f"{sql_table_id(target)}${partition.id}"
 
-    def delete_by_sample(client) -> Union[bigquery.CopyJob, bigquery.QueryJob]:
+    def delete_by_sample(
+        client,
+    ) -> Tuple[
+        Union[bigquery.CopyJob, bigquery.QueryJob],
+        Optional[Callable[[bigquery.Client], None]],
+    ]:
         intermediate_clustering_fields = client.get_table(
             target_table
         ).clustering_fields
@@ -420,12 +455,28 @@ def delete_from_partition_with_sampling(
                 [r.total_bytes_processed for r in results]
             )
             copy_job.num_dml_affected_rows = None
-            return copy_job
+
+            # end sessions if temporary tables were used
+            if temp_dataset is None:
+                callback = partial(
+                    end_sessions,
+                    session_ids=[result.session_info.session_id for result in results],
+                    task_id=wait_for_job_kwargs["task_id"],
+                )
+            else:
+                callback = None
+
+            return copy_job, callback
         else:
             # copy job doesn't have dry runs so dry run base partition for byte estimate
-            return client.query(
-                f"SELECT * FROM {target_table}",
-                job_config=bigquery.QueryJobConfig(dry_run=True, use_legacy_sql=True),
+            return (
+                client.query(
+                    f"SELECT * FROM {target_table}",
+                    job_config=bigquery.QueryJobConfig(
+                        dry_run=True, use_legacy_sql=True
+                    ),
+                ),
+                None,
             )
 
     return partial(
@@ -557,7 +608,7 @@ def delete_from_table(
     for partition in list_partitions(
         client, table, partition_expr, end_date, max_single_dml_bytes, partition_limit
     ):
-        if use_sampling and partition.id is not None:
+        if use_sampling and partition.id is not None and partition.is_special is False:
             kwargs["sampling_parallelism"] = sampling_parallelism
             delete_func: Callable = delete_from_partition_with_sampling
         else:
@@ -591,8 +642,6 @@ def main():
     if args.partition_limit is not None and not args.dry_run:
         parser.print_help()
         logging.warning("ERROR: --partition-limit specified without --dry-run")
-    if len(args.sampling_tables) > 0 and args.temp_dataset is None:
-        parser.error("--temp-dataset must be specified when using --sampling-tables")
     if args.start_date is None:
         args.start_date = args.end_date - timedelta(days=14)
     source_condition = (

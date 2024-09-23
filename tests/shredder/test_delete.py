@@ -13,8 +13,8 @@ wait_for_job_partial = partial(
         "proj.dataset_table_v1$20240101": "proj:US.job_id1",
     },
     task_id="proj.dataset_table_v1$20240101",
-    dry_run=True,
-    create_job=lambda client: Mock(job_id="proj:US.job_id2"),
+    dry_run=False,
+    create_job=lambda client: (Mock(job_id="proj:US.job_id2"), None),
     start_date=None,
     end_date=None,
     state_table=None,
@@ -80,10 +80,16 @@ def test_wait_for_job_succeed():
 def test_wait_for_job_new_job():
     """wait_for_job should return a new job if there's no previous attempt."""
     mock_client = Mock()
+    mock_callback = Mock()
+    wait_for_job_partial.keywords["create_job"] = lambda client: (
+        Mock(job_id="proj:US.job_id2"),
+        mock_callback,
+    )
 
     job = wait_for_job_partial(client=mock_client, states={})
 
     assert job.job_id == "proj:US.job_id2"
+    mock_callback.assert_called_with(client=mock_client)
 
 
 # args for delete_from_table, delete_from_partition_with_sampling, and delete_from_partition

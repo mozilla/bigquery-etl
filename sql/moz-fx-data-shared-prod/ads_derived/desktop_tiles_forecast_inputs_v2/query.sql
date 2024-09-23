@@ -19,7 +19,6 @@ WITH cs_impressions AS (
         AND submission_date < @submission_month
       {% endif %}
     )
-    AND country IN ('US', 'DE', 'FR', 'AU', 'CA', 'IT', 'ES', 'MX', 'BR', 'IN', 'GB', 'JP')
   GROUP BY
     country_code,
     submission_month
@@ -49,7 +48,6 @@ nt_visits AS (
         AND submission_date < @submission_month
       {% endif %}
     )
-    AND n.country_code IN ('US', 'DE', 'FR', 'AU', 'CA', 'IT', 'ES', 'MX', 'BR', 'IN', 'GB', 'JP')
   GROUP BY
     submission_month,
     country_code

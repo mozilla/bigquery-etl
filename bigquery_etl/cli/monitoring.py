@@ -12,6 +12,7 @@ from bigeye_sdk.controller.metric_suite_controller import MetricSuiteController
 from bigeye_sdk.exceptions.exceptions import FileLoadException
 from bigeye_sdk.model.big_config import BigConfig, TableDeployment, TableDeploymentSuite
 from bigeye_sdk.model.protobuf_message_facade import (
+    SimpleCollection,
     SimpleMetricDefinition,
     SimpleMetricSchedule,
     SimpleNamedSchedule,
@@ -156,6 +157,11 @@ def update(name: str, sql_dir: Optional[str], project_id: Optional[str]) -> None
                                     metric.metric_type.predefined_metric
                                 )
 
+                    if metadata.monitoring.collection and collection.collection is None:
+                        collection.collection = SimpleCollection(
+                            name=metadata.monitoring.collection
+                        )
+
                 if len(default_metrics) > 0:
                     deployments = [
                         TableDeployment(
@@ -175,8 +181,17 @@ def update(name: str, sql_dir: Optional[str], project_id: Optional[str]) -> None
                             ],
                         )
                     ]
+
+                    collection = None
+                    if metadata.monitoring.collection:
+                        collection = SimpleCollection(
+                            name=metadata.monitoring.collection
+                        )
+
                     bigconfig.table_deployments += [
-                        TableDeploymentSuite(deployments=deployments)
+                        TableDeploymentSuite(
+                            deployments=deployments, collection=collection
+                        )
                     ]
 
                 bigconfig.save(

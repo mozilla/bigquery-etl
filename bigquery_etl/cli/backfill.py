@@ -526,11 +526,12 @@ def _initiate_backfill(
             project_id=project,
             dataset=dataset,
             destination_table=table,
+            staging_table_name=backfill_staging_qualified_table_name,
             backfill_date=entry.start_date.isoformat(),
         )
         custom_query_path = Path(query_path) / f"{SHREDDER_MITIGATION_QUERY_NAME}.sql"
         checks = True
-        custom_checks_name = Path(query_path) / f"{SHREDDER_MITIGATION_CHECKS_NAME}.sql"
+        custom_checks_name = f"{SHREDDER_MITIGATION_CHECKS_NAME}.sql"
         click.echo(
             click.style(
                 f"Starting backfill with custom query: '{custom_query_path}'.",

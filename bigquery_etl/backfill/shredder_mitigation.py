@@ -450,7 +450,12 @@ def classify_columns(
 
 
 def generate_query_with_shredder_mitigation(
-    client, project_id, dataset, destination_table, backfill_date=PREVIOUS_DATE
+    client,
+    project_id,
+    dataset,
+    destination_table,
+    staging_table_name,
+    backfill_date=PREVIOUS_DATE,
 ) -> Tuple[Path, str]:
     """Generate a query to backfill with shredder mitigation."""
     query_with_mitigation_path = Path("sql") / project_id
@@ -826,7 +831,7 @@ def generate_query_with_shredder_mitigation(
     )
     new_checks_query = new.generate_query(
         select_list=checks_select,
-        from_clause=f"`{new.full_table_id}`",
+        from_clause=f"`{staging_table_name}`",
         where_clause=f"{previous.partitioning['field']} = @{previous.partitioning['field']}",
         group_by_clause="ALL",
     )

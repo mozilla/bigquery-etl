@@ -973,6 +973,7 @@ class TestGenerateQueryWithShredderMitigation:
     project_id = "moz-fx-data-shared-prod"
     dataset = "test"
     destination_table = "test_query_v2"
+    staging_table_name = f"{project_id}.{dataset}.test_query_v2__2021_01_01"
     destination_table_previous = "test_query_v1"
     path = Path("sql") / project_id / dataset / destination_table
     path_previous = Path("sql") / project_id / dataset / destination_table_previous
@@ -1140,6 +1141,7 @@ class TestGenerateQueryWithShredderMitigation:
                     project_id=self.project_id,
                     dataset=self.dataset,
                     destination_table=self.destination_table,
+                    staging_table_name=self.staging_table_name,
                     backfill_date=PREVIOUS_DATE,
                 )
                 assert result[0] == expected[0]
@@ -1233,6 +1235,7 @@ class TestGenerateQueryWithShredderMitigation:
                     project_id=self.project_id,
                     dataset=self.dataset,
                     destination_table=self.destination_table,
+                    staging_table_name=self.staging_table_name,
                     backfill_date=PREVIOUS_DATE,
                 )
             assert str(e.value) == "'NoneType' object is not iterable"
@@ -1249,6 +1252,10 @@ class TestGenerateQueryWithShredderMitigation:
             """-- dummy query""",
         )
         expected_checks_content = """-- Checks generated using a template for shredder mitigation.
+        -- Rows in previous version not matching in new version. Mismatches can happen when the row is
+        -- missing or any column doesn't match, including a single metric difference.
+
+        #fail
         WITH previous AS (
           SELECT
             column_1,
@@ -1269,21 +1276,91 @@ class TestGenerateQueryWithShredderMitigation:
             SUM(metric_1) AS metric_1,
             SUM(metric_2) AS metric_2
           FROM
-            `moz-fx-data-shared-prod.test.test_query_v2`
+            `moz-fx-data-shared-prod.test.test_query_v2__2021_01_01`
           WHERE
             column_1 = @column_1
           GROUP BY
             ALL
+        ),
+        previous_not_matching AS (
+          SELECT
+            *
+          FROM
+            previous
+          EXCEPT DISTINCT
+          SELECT
+            *
+          FROM
+            new_version
         )
         SELECT
-          *
-        FROM
-          previous
-        EXCEPT DISTINCT
+          IF(
+            (SELECT COUNT(*) FROM previous_not_matching) > 0,
+            ERROR(
+                CONCAT(
+                  ((SELECT COUNT(*) FROM previous_not_matching)),
+                  " rows in the previous data don't match backfilled data! Run auto-generated checks for ",
+                  "all mismatches & search for rows missing or with differences in metrics. 5 sample rows: ",
+                  (SELECT TO_JSON_STRING(ARRAY(SELECT AS STRUCT * FROM previous_not_matching LIMIT 5)))
+                  )
+                ),
+            NULL
+            );
+
+        -- Rows in new version not matching in previous version. It could be rows added by the process or rows with differences.
+
+        #fail
+        WITH previous AS (
+          SELECT
+            column_1,
+            column_2,
+            SUM(metric_1) AS metric_1,
+            SUM(metric_2) AS metric_2
+          FROM
+            `moz-fx-data-shared-prod.test.test_query_v1`
+          WHERE
+            column_1 = @column_1
+          GROUP BY
+            ALL
+        ),
+        new_version AS (
+          SELECT
+            column_1,
+            column_2,
+            SUM(metric_1) AS metric_1,
+            SUM(metric_2) AS metric_2
+          FROM
+            `moz-fx-data-shared-prod.test.test_query_v2__2021_01_01`
+          WHERE
+            column_1 = @column_1
+          GROUP BY
+            ALL
+        ),
+        backfilled_not_matching AS (
+            SELECT
+              *
+            FROM
+              new_version
+            EXCEPT DISTINCT
+            SELECT
+              *
+            FROM
+              previous
+        )
         SELECT
-          *
-        FROM
-          new_version\n"""
+          IF(
+            (SELECT COUNT(*) FROM backfilled_not_matching) > 0,
+            ERROR(
+              CONCAT(
+                ((SELECT COUNT(*) FROM backfilled_not_matching)),
+                " rows in backfill don't match previous version of data! Run auto-generated checks for ",
+                "all mismatches & search for rows added or with differences in metrics. 5 sample rows: ",
+                (SELECT TO_JSON_STRING(ARRAY(SELECT AS STRUCT * FROM backfilled_not_matching LIMIT 5)))
+              )
+            ),
+            NULL
+            );
+            """
 
         existing_schema = {
             "fields": [
@@ -1397,6 +1474,7 @@ class TestGenerateQueryWithShredderMitigation:
                     project_id=self.project_id,
                     dataset=self.dataset,
                     destination_table=self.destination_table,
+                    staging_table_name=self.staging_table_name,
                     backfill_date=PREVIOUS_DATE,
                 )
                 checks_file = self.path / f"{SHREDDER_MITIGATION_CHECKS_NAME}.sql"
@@ -1404,7 +1482,22 @@ class TestGenerateQueryWithShredderMitigation:
                 assert os.path.isfile(checks_file)
                 with open(checks_file) as file:
                     checks_content = file.read()
-                assert checks_content == expected_checks_content.replace("        ", "")
+                # Normalize multilines to avoid assert failure due to indentation.
+                checks_content_normalized = "\n".join(
+                    [
+                        line.strip()
+                        for line in checks_content.splitlines()
+                        if line.strip() != ""
+                    ]
+                ).strip()
+                expected_checks_content_normalized = "\n".join(
+                    [
+                        line.strip()
+                        for line in expected_checks_content.splitlines()
+                        if line.strip() != ""
+                    ]
+                ).strip()
+                assert checks_content_normalized == expected_checks_content_normalized
 
     @patch("google.cloud.bigquery.Client")
     def test_missing_previous_version(self, mock_client, runner):
@@ -1426,6 +1519,7 @@ class TestGenerateQueryWithShredderMitigation:
                     project_id=self.project_id,
                     dataset=self.dataset,
                     destination_table=self.destination_table,
+                    staging_table_name=self.staging_table_name,
                     backfill_date=PREVIOUS_DATE,
                 )
             assert (str(e.value.message)) == expected_exc
@@ -1469,6 +1563,7 @@ class TestGenerateQueryWithShredderMitigation:
                     project_id=self.project_id,
                     dataset=self.dataset,
                     destination_table=self.destination_table,
+                    staging_table_name=self.staging_table_name,
                     backfill_date=PREVIOUS_DATE,
                 )
             assert (str(e.value.message)) == expected_exc
@@ -1490,6 +1585,7 @@ class TestGenerateQueryWithShredderMitigation:
                     project_id=self.project_id,
                     dataset=self.dataset,
                     destination_table=self.destination_table,
+                    staging_table_name=self.staging_table_name,
                     backfill_date=PREVIOUS_DATE,
                 )
             assert (str(e.value.message)) == expected_exc
@@ -1511,6 +1607,7 @@ class TestGenerateQueryWithShredderMitigation:
                     project_id=self.project_id,
                     dataset=self.dataset,
                     destination_table=self.destination_table,
+                    staging_table_name=self.staging_table_name,
                     backfill_date=PREVIOUS_DATE,
                 )
             assert (str(e.value.message)) == expected_exc
@@ -1529,6 +1626,7 @@ class TestGenerateQueryWithShredderMitigation:
                     project_id=self.project_id,
                     dataset=self.dataset,
                     destination_table=self.destination_table,
+                    staging_table_name=self.staging_table_name,
                     backfill_date=PREVIOUS_DATE,
                 )
             assert (str(e.value.message)) == expected_exc
@@ -1639,6 +1737,7 @@ class TestGenerateQueryWithShredderMitigation:
                         project_id=self.project_id,
                         dataset=self.dataset,
                         destination_table=self.destination_table,
+                        staging_table_name=self.staging_table_name,
                         backfill_date=PREVIOUS_DATE,
                     )
                     assert mock_generate_query.call_count == 5
@@ -1693,7 +1792,7 @@ class TestGenerateQueryWithShredderMitigation:
                                     "column_2",
                                     "SUM(metric_1) AS metric_1",
                                 ],
-                                from_clause="`moz-fx-data-shared-prod.test.test_query_v2`",
+                                from_clause="`moz-fx-data-shared-prod.test.test_query_v2__2021_01_01`",
                                 where_clause="column_1 = @column_1",
                                 group_by_clause="ALL",
                             ),
@@ -1752,6 +1851,7 @@ class TestGenerateQueryWithShredderMitigation:
                     project_id=self.project_id,
                     dataset=self.dataset,
                     destination_table=self.destination_table,
+                    staging_table_name=self.staging_table_name,
                     backfill_date=PREVIOUS_DATE,
                 )
             assert result.type == SystemExit
@@ -1771,6 +1871,7 @@ class TestGenerateQueryWithShredderMitigation:
                     project_id=self.project_id,
                     dataset=self.dataset,
                     destination_table=self.destination_table,
+                    staging_table_name=self.staging_table_name,
                     backfill_date=PREVIOUS_DATE,
                 )
             assert result.type == SystemExit
@@ -1826,6 +1927,7 @@ class TestGenerateQueryWithShredderMitigation:
                     project_id=self.project_id,
                     dataset=self.dataset,
                     destination_table=self.destination_table,
+                    staging_table_name=self.staging_table_name,
                     backfill_date=PREVIOUS_DATE,
                 )
                 assert result[0] == self.path

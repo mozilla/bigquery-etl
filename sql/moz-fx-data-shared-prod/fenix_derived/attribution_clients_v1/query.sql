@@ -4,6 +4,7 @@ WITH new_profiles AS (
     submission_date,
     client_id,
     sample_id,
+    distribution_id,
   FROM
     `moz-fx-data-shared-prod.fenix.baseline_clients_first_seen`
   WHERE
@@ -16,6 +17,7 @@ first_session_ping_base AS (
     sample_id,
     submission_timestamp,
     ping_info.seq AS ping_seq,
+    metrics.string.first_session_distribution_id AS distribution_id,
     NULLIF(metrics.string.first_session_adgroup, "") AS adjust_ad_group,
     NULLIF(metrics.string.first_session_campaign, "") AS adjust_campaign,
     NULLIF(metrics.string.first_session_creative, "") AS adjust_creative,
@@ -34,6 +36,7 @@ first_session_ping AS (
   SELECT
     client_id,
     sample_id,
+    distribution_id,
     ARRAY_AGG(
       IF(
         adjust_ad_group IS NOT NULL
@@ -90,7 +93,8 @@ first_session_ping AS (
     first_session_ping_base
   GROUP BY
     client_id,
-    sample_id
+    sample_id,
+    distribution_id
 ),
 metrics_ping_base AS (
   SELECT
@@ -98,6 +102,7 @@ metrics_ping_base AS (
     sample_id,
     submission_timestamp,
     ping_info.seq AS ping_seq,
+    metrics.string.metrics_distribution_id AS distribution_id,
     NULLIF(metrics.string.metrics_install_source, "") AS install_source,
     NULLIF(metrics.string.metrics_adjust_ad_group, "") AS adjust_ad_group,
     NULLIF(metrics.string.metrics_adjust_campaign, "") AS adjust_campaign,
@@ -115,6 +120,7 @@ metrics_ping AS (
   SELECT
     client_id,
     sample_id,
+    distribution_id,
     ARRAY_AGG(
       IF(
         adjust_ad_group IS NOT NULL
@@ -148,7 +154,8 @@ metrics_ping AS (
     metrics_ping_base
   GROUP BY
     client_id,
-    sample_id
+    sample_id,
+    distribution_id
 )
 SELECT
   @submission_date AS submission_date,
@@ -158,6 +165,11 @@ SELECT
   COALESCE(first_session_ping.adjust_info, metrics_ping.adjust_info) AS adjust_info,
   first_session_ping.play_store_info,
   first_session_ping.meta_info,
+  COALESCE(
+    first_session_ping.distribution_id,
+    new_profiles.distribution_id,
+    metrics_ping.distribution_id
+  ) AS distribution_id,
 FROM
   new_profiles
 LEFT JOIN

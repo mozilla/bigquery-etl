@@ -15,7 +15,8 @@ SELECT
     play_store_attribution_timestamp,
     meta_attribution_app,
     meta_attribution_timestamp,
-    install_source
+    install_source,
+    distribution_id
   ),
   CAST(NULL AS BOOLEAN) AS is_suspicious_device_client,
   adjust_ad_group,
@@ -30,6 +31,7 @@ SELECT
   meta_attribution_app,
   meta_attribution_timestamp,
   install_source,
+  distribution_id,
   "fenix" AS product_name,
 FROM
   `moz-fx-data-shared-prod.fenix.attribution_clients`
@@ -49,6 +51,7 @@ SELECT
   CAST(NULL AS STRING) AS meta_attribution_app,
   CAST(NULL AS TIMESTAMP) AS meta_attribution_timestamp,
   CAST(NULL AS STRING) AS install_source,
+  CAST(NULL AS STRING) AS distribution_id,
   "focus_android" AS product_name,
 FROM
   `moz-fx-data-shared-prod.focus_android.attribution_clients`
@@ -68,6 +71,7 @@ SELECT
   CAST(NULL AS STRING) AS meta_attribution_app,
   CAST(NULL AS TIMESTAMP) AS meta_attribution_timestamp,
   CAST(NULL AS STRING) AS install_source,
+  CAST(NULL AS STRING) AS distribution_id,
   "klar_android" AS product_name,
 FROM
   `moz-fx-data-shared-prod.klar_android.attribution_clients`
@@ -94,6 +98,7 @@ SELECT
   CAST(NULL AS STRING) AS meta_attribution_app,
   CAST(NULL AS TIMESTAMP) AS meta_attribution_timestamp,
   CAST(NULL AS STRING) AS install_source,
+  CAST(NULL AS STRING) AS distribution_id,
   "firefox_ios" AS product_name,
 FROM
   `moz-fx-data-shared-prod.firefox_ios.attribution_clients`
@@ -113,6 +118,7 @@ SELECT
   CAST(NULL AS STRING) AS meta_attribution_app,
   CAST(NULL AS TIMESTAMP) AS meta_attribution_timestamp,
   CAST(NULL AS STRING) AS install_source,
+  CAST(NULL AS STRING) AS distribution_id,
   "focus_ios" AS product_name,
 FROM
   `moz-fx-data-shared-prod.focus_ios.attribution_clients`
@@ -132,6 +138,7 @@ SELECT
   CAST(NULL AS STRING) AS meta_attribution_app,
   CAST(NULL AS TIMESTAMP) AS meta_attribution_timestamp,
   CAST(NULL AS STRING) AS install_source,
+  CAST(NULL AS STRING) AS distribution_id,
   "klar_ios" AS product_name,
 FROM
   `moz-fx-data-shared-prod.klar_ios.attribution_clients`

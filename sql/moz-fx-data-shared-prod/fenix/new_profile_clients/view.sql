@@ -25,6 +25,7 @@ SELECT
   attribution.adjust_campaign,
   attribution.adjust_creative,
   attribution.adjust_network,
+  attribution.distribution_id,
   `moz-fx-data-shared-prod.udf.organic_vs_paid_mobile`(adjust_network) AS paid_vs_organic,
 FROM
   `moz-fx-data-shared-prod.fenix.active_users` AS active_users

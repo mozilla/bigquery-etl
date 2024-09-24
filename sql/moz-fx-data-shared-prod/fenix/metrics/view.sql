@@ -179,7 +179,8 @@ SELECT
       metrics.counter.webauthn_get_failure,
       metrics.counter.webauthn_get_success,
       metrics.counter.netwerk_parent_connect_timeout,
-      metrics.counter.networking_os_socket_limit_reached
+      metrics.counter.networking_os_socket_limit_reached,
+      metrics.counter.web_notification_insecure_context_permission_request
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -420,7 +421,10 @@ SELECT
       metrics.labeled_counter.netwerk_http3_0rtt_state,
       metrics.labeled_counter.netwerk_http3_ech_outcome_grease,
       metrics.labeled_counter.netwerk_http3_ech_outcome_none,
-      metrics.labeled_counter.netwerk_http3_ech_outcome_real
+      metrics.labeled_counter.netwerk_http3_ech_outcome_real,
+      metrics.labeled_counter.web_notification_permission_origin,
+      metrics.labeled_counter.web_notification_request_permission_origin,
+      metrics.labeled_counter.web_notification_show_origin
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -1000,7 +1004,8 @@ SELECT
       metrics.counter.webauthn_get_failure,
       metrics.counter.webauthn_get_success,
       metrics.counter.netwerk_parent_connect_timeout,
-      metrics.counter.networking_os_socket_limit_reached
+      metrics.counter.networking_os_socket_limit_reached,
+      metrics.counter.web_notification_insecure_context_permission_request
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -1241,7 +1246,10 @@ SELECT
       metrics.labeled_counter.netwerk_http3_0rtt_state,
       metrics.labeled_counter.netwerk_http3_ech_outcome_grease,
       metrics.labeled_counter.netwerk_http3_ech_outcome_none,
-      metrics.labeled_counter.netwerk_http3_ech_outcome_real
+      metrics.labeled_counter.netwerk_http3_ech_outcome_real,
+      metrics.labeled_counter.web_notification_permission_origin,
+      metrics.labeled_counter.web_notification_request_permission_origin,
+      metrics.labeled_counter.web_notification_show_origin
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -1839,7 +1847,8 @@ SELECT
       metrics.counter.webauthn_get_failure,
       metrics.counter.webauthn_get_success,
       metrics.counter.netwerk_parent_connect_timeout,
-      metrics.counter.networking_os_socket_limit_reached
+      metrics.counter.networking_os_socket_limit_reached,
+      metrics.counter.web_notification_insecure_context_permission_request
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -2080,7 +2089,10 @@ SELECT
       metrics.labeled_counter.netwerk_http3_0rtt_state,
       metrics.labeled_counter.netwerk_http3_ech_outcome_grease,
       metrics.labeled_counter.netwerk_http3_ech_outcome_none,
-      metrics.labeled_counter.netwerk_http3_ech_outcome_real
+      metrics.labeled_counter.netwerk_http3_ech_outcome_real,
+      metrics.labeled_counter.web_notification_permission_origin,
+      metrics.labeled_counter.web_notification_request_permission_origin,
+      metrics.labeled_counter.web_notification_show_origin
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -2687,7 +2699,8 @@ SELECT
       metrics.counter.webauthn_get_failure,
       metrics.counter.webauthn_get_success,
       metrics.counter.netwerk_parent_connect_timeout,
-      metrics.counter.networking_os_socket_limit_reached
+      metrics.counter.networking_os_socket_limit_reached,
+      metrics.counter.web_notification_insecure_context_permission_request
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -2928,7 +2941,10 @@ SELECT
       metrics.labeled_counter.netwerk_http3_0rtt_state,
       metrics.labeled_counter.netwerk_http3_ech_outcome_grease,
       metrics.labeled_counter.netwerk_http3_ech_outcome_none,
-      metrics.labeled_counter.netwerk_http3_ech_outcome_real
+      metrics.labeled_counter.netwerk_http3_ech_outcome_real,
+      metrics.labeled_counter.web_notification_permission_origin,
+      metrics.labeled_counter.web_notification_request_permission_origin,
+      metrics.labeled_counter.web_notification_show_origin
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -3517,7 +3533,8 @@ SELECT
       metrics.counter.webauthn_get_failure,
       metrics.counter.webauthn_get_success,
       metrics.counter.netwerk_parent_connect_timeout,
-      metrics.counter.networking_os_socket_limit_reached
+      metrics.counter.networking_os_socket_limit_reached,
+      metrics.counter.web_notification_insecure_context_permission_request
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -3758,7 +3775,10 @@ SELECT
       metrics.labeled_counter.netwerk_http3_0rtt_state,
       metrics.labeled_counter.netwerk_http3_ech_outcome_grease,
       metrics.labeled_counter.netwerk_http3_ech_outcome_none,
-      metrics.labeled_counter.netwerk_http3_ech_outcome_real
+      metrics.labeled_counter.netwerk_http3_ech_outcome_real,
+      metrics.labeled_counter.web_notification_permission_origin,
+      metrics.labeled_counter.web_notification_request_permission_origin,
+      metrics.labeled_counter.web_notification_show_origin
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,

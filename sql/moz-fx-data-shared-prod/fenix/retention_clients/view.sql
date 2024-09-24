@@ -35,6 +35,7 @@ attribution AS (
     END AS adjust_campaign,
     NULLIF(adjust_creative, "") AS adjust_creative,
     NULLIF(adjust_network, "") AS adjust_network,
+    NULLIF(distribution_id, "") AS distribution_id,
   FROM
     `moz-fx-data-shared-prod.fenix_derived.firefox_android_clients_v1`
 )
@@ -60,6 +61,7 @@ SELECT
   attribution.adjust_campaign,
   attribution.adjust_creative,
   attribution.adjust_network,
+  attribution.distribution_id,
   `moz-fx-data-shared-prod.udf.organic_vs_paid_mobile`(adjust_network) AS paid_vs_organic,
   -- ping sent retention
   active_users.retention_seen.day_27.active_on_metric_date AS ping_sent_metric_date,

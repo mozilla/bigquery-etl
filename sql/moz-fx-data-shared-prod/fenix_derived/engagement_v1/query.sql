@@ -17,6 +17,7 @@ SELECT
   adjust_campaign,
   adjust_creative,
   adjust_network,
+  distribution_id,
   COUNTIF(is_dau) AS dau,
   COUNTIF(is_wau) AS wau,
   COUNTIF(is_mau) AS mau,
@@ -45,4 +46,5 @@ GROUP BY
   adjust_ad_group,
   adjust_campaign,
   adjust_creative,
-  adjust_network
+  adjust_network,
+  distribution_id

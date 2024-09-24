@@ -885,6 +885,12 @@ fields:
         CanAttachSocket() returned false.
 
         '
+    - name: web_notification_insecure_context_permission_request
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether we saw a permission request from an insecure context.
+
+        '
   - name: datetime
     type: RECORD
     mode: NULLABLE
@@ -3260,6 +3266,45 @@ fields:
         mode: NULLABLE
       description: 'Success / Fail Rates for HTTP3 when a ''real'' ECH Extension was
         sent
+
+        '
+    - name: web_notification_permission_origin
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The category of the origin that retrieves Notification.permission.
+
+        '
+    - name: web_notification_request_permission_origin
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The category of the origin that calls Notification.requestPermission().
+
+        '
+    - name: web_notification_show_origin
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The category of the origin that calls new Notification/showNotification().
 
         '
   - name: memory_distribution

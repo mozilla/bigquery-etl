@@ -685,6 +685,9 @@ fields:
     - name: networking_os_socket_limit_reached
       type: INTEGER
       mode: NULLABLE
+    - name: web_notification_insecure_context_permission_request
+      type: INTEGER
+      mode: NULLABLE
   - name: custom_distribution
     type: RECORD
     mode: NULLABLE
@@ -3654,6 +3657,36 @@ fields:
         type: INTEGER
         mode: NULLABLE
     - name: netwerk_http3_ech_outcome_real
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: web_notification_permission_origin
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: web_notification_request_permission_origin
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: web_notification_show_origin
       type: RECORD
       mode: REPEATED
       fields:

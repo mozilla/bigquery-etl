@@ -39,6 +39,7 @@ attribution AS (
     END AS adjust_campaign,
     NULLIF(adjust_creative, "") AS adjust_creative,
     NULLIF(adjust_network, "") AS adjust_network,
+    NULLIF(distribution_id, "") AS distribution_id,
   FROM
     `moz-fx-data-shared-prod.fenix_derived.firefox_android_clients_v1`
 )
@@ -66,6 +67,7 @@ SELECT
   attribution.adjust_campaign,
   attribution.adjust_creative,
   attribution.adjust_network,
+  attribution.distribution_id,
   `moz-fx-data-shared-prod.udf.organic_vs_paid_mobile`(adjust_network) AS paid_vs_organic,
   CASE
     WHEN active_users.submission_date = first_seen_date

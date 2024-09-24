@@ -12,7 +12,8 @@ SELECT
     play_store_attribution_medium,
     play_store_attribution_source,
     meta_attribution_app,
-    install_source
+    install_source,
+    distribution_id
   ),
   CAST(NULL AS BOOLEAN) AS is_suspicious_device_client,
   adjust_ad_group,
@@ -24,6 +25,7 @@ SELECT
   play_store_attribution_source,
   meta_attribution_app,
   install_source,
+  distribution_id,
   "fenix" AS product_name,
 FROM
   `moz-fx-data-shared-prod.fenix.engagement_clients`
@@ -40,6 +42,7 @@ SELECT
   CAST(NULL AS STRING) AS play_store_attribution_source,
   CAST(NULL AS STRING) AS meta_attribution_app,
   CAST(NULL AS STRING) AS install_source,
+  CAST(NULL AS STRING) AS distribution_id,
   "focus_android" AS product_name,
 FROM
   `moz-fx-data-shared-prod.focus_android.engagement_clients`
@@ -56,6 +59,7 @@ SELECT
   CAST(NULL AS STRING) AS play_store_attribution_source,
   CAST(NULL AS STRING) AS meta_attribution_app,
   CAST(NULL AS STRING) AS install_source,
+  CAST(NULL AS STRING) AS distribution_id,
   "klar_android" AS product_name,
 FROM
   `moz-fx-data-shared-prod.klar_android.engagement_clients`
@@ -78,6 +82,7 @@ SELECT
   CAST(NULL AS STRING) AS play_store_attribution_source,
   CAST(NULL AS STRING) AS meta_attribution_app,
   CAST(NULL AS STRING) AS install_source,
+  CAST(NULL AS STRING) AS distribution_id,
   "firefox_ios" AS product_name,
 FROM
   `moz-fx-data-shared-prod.firefox_ios.engagement_clients`
@@ -94,6 +99,7 @@ SELECT
   CAST(NULL AS STRING) AS play_store_attribution_source,
   CAST(NULL AS STRING) AS meta_attribution_app,
   CAST(NULL AS STRING) AS install_source,
+  CAST(NULL AS STRING) AS distribution_id,
   "focus_ios" AS product_name,
 FROM
   `moz-fx-data-shared-prod.focus_ios.engagement_clients`
@@ -110,6 +116,7 @@ SELECT
   CAST(NULL AS STRING) AS play_store_attribution_source,
   CAST(NULL AS STRING) AS meta_attribution_app,
   CAST(NULL AS STRING) AS install_source,
+  CAST(NULL AS STRING) AS distribution_id,
   "klar_ios" AS product_name,
 FROM
   `moz-fx-data-shared-prod.klar_ios.engagement_clients`

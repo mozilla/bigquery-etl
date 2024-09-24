@@ -93,3 +93,9 @@ fields:
       description: |
         Timestamp corresponding to the ping that contained the adjust attribution.
     
+- mode: NULLABLE
+  name: distribution_id
+  type: STRING
+  description: |
+    A string containing the distribution identifier.
+

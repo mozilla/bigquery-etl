@@ -13,5 +13,6 @@ SELECT
   `moz-fx-data-shared-prod.udf.organic_vs_paid_mobile`(
     adjust_info.adjust_network
   ) AS paid_vs_organic,
+  distribution_id,
 FROM
   `moz-fx-data-shared-prod.fenix_derived.attribution_clients_v1`

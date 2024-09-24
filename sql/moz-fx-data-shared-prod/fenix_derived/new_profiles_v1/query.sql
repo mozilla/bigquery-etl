@@ -19,6 +19,7 @@ SELECT
   adjust_campaign,
   adjust_creative,
   adjust_network,
+  distribution_id,
   COUNT(*) AS new_profiles,
 FROM
   `moz-fx-data-shared-prod.fenix.new_profile_clients`
@@ -47,4 +48,5 @@ GROUP BY
   adjust_ad_group,
   adjust_campaign,
   adjust_creative,
-  adjust_network
+  adjust_network,
+  distribution_id

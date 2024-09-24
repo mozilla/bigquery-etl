@@ -84,6 +84,11 @@ fields:
   mode: NULLABLE
   description: Adjust Network the profile is attributed to.
 
+- name: distribution_id
+  type: STRING
+  mode: NULLABLE
+  description: A string containing the distribution identifier.
+
 - name: ping_sent_metric_date
   type: INTEGER
   mode: NULLABLE

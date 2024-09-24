@@ -37,9 +37,3 @@ fields:
 {% endfor -%}
 {% endif -%}
 {% endfor -%}
-{% if app_name == "fenix" %}
-- mode: NULLABLE
-  name: distribution_id
-  type: STRING
-  description:
-{% endif %}

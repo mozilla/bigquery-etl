@@ -26,7 +26,7 @@ SELECT
   {% if 'is_suspicious_device_client' in product_attribution_group_names %}
   is_suspicious_device_client,
   {% endif %}
-  {% if app_name == "fenix" %}
+  {% if 'distribution_id' in product_attribution_group_names %}
   distribution_id,
   {% endif %}
 FROM

@@ -165,6 +165,21 @@ class AttributionFields:
             },
         ],
     )
+    distribution_id = AttributionFieldGroup(
+        name="distribution_id",
+        source_pings=[
+            AttributionPings.first_session,
+            AttributionPings.baseline,
+            AttributionPings.metrics,
+        ],
+        fields=[
+            {
+                "name": "distribution_id",
+                "type": "STRING",
+                "description": "TODO",
+            },
+        ],
+    )
     empty = AttributionFieldGroup(
         name="empty",
         source_pings=[],
@@ -225,6 +240,7 @@ class MobileProducts(Enum):
             AttributionFields.meta,
             AttributionFields.install_source,
             AttributionFields.adjust,
+            AttributionFields.distribution_id,
         ],
     )
     focus_android = Product(

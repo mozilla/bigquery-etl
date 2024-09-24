@@ -62,6 +62,25 @@ all_combos_with_any_date_having_dau_in_last_28_days AS (
   FROM
     raw_dau_last_28_days
 ),
+all_day_group_combos AS (
+  SELECT
+    a.country,
+    a.app_name,
+    a.adjust_network,
+    a.attribution_medium,
+    a.attribution_source,
+    a.first_seen_year,
+    a.channel,
+    a.install_source,
+    a.is_default_browser,
+    a.os_grouped,
+    a.segment,
+    b.submission_dt
+  FROM
+    all_combos_with_any_date_having_dau_in_last_28_days a
+  CROSS JOIN
+    last_28_days b
+),
 daily_dau_last_28_days AS (
   SELECT
     a.country,
@@ -75,9 +94,9 @@ daily_dau_last_28_days AS (
     a.is_default_browser,
     a.os_grouped,
     a.segment,
-    b.submission_dt AS submission_date,
-    COALESCE(c.dau, 0) AS dau,
-    AVG(COALESCE(c.dau, 0)) OVER (
+    a.submission_dt AS submission_date,
+    COALESCE(b.dau, 0) AS dau,
+    AVG(COALESCE(b.dau, 0)) OVER (
       PARTITION BY
         a.country,
         a.app_name,
@@ -91,29 +110,27 @@ daily_dau_last_28_days AS (
         a.os_grouped,
         a.segment
       ORDER BY
-        b.submission_dt
+        a.submission_dt
       ROWS BETWEEN
         27 PRECEDING
         AND CURRENT ROW
     ) AS ma_28_dau
   FROM
-    all_combos_with_any_date_having_dau_in_last_28_days a
-  CROSS JOIN
-    last_28_days b
+    all_day_group_combos a
   LEFT JOIN
-    raw_dau_last_28_days c
-    ON a.country = c.country
-    AND a.app_name = c.app_name
-    AND a.adjust_network = c.adjust_network
-    AND a.attribution_medium = c.attribution_medium
-    AND a.attribution_source = c.attribution_source
-    AND a.first_seen_year = c.first_seen_year
-    AND a.channel = c.channel
-    AND a.install_source = c.install_source
-    AND a.is_default_browser = c.is_default_browser
-    AND a.os_grouped = c.os_grouped
-    AND a.segment = c.segment
-    AND b.submission_dt = c.submission_date
+    raw_dau_last_28_days b
+    ON a.country = b.country
+    AND a.app_name = b.app_name
+    AND a.adjust_network = b.adjust_network
+    AND a.attribution_medium = b.attribution_medium
+    AND a.attribution_source = b.attribution_source
+    AND a.first_seen_year = b.first_seen_year
+    AND a.channel = b.channel
+    AND a.install_source = b.install_source
+    AND a.is_default_browser = b.is_default_browser
+    AND a.os_grouped = b.os_grouped
+    AND a.segment = b.segment
+    AND a.submission_dt = b.submission_date
   QUALIFY
     RANK() OVER (ORDER BY submission_date DESC) = 1
 )

@@ -157,6 +157,7 @@ class MonitoringMetadata:
     """Metadata for specifying observability and monitoring configuration."""
 
     enabled: bool = attr.ib(True)
+    collection: Optional[str] = attr.ib(None)
 
 
 @attr.s(auto_attribs=True)

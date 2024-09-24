@@ -78,6 +78,7 @@ VERSION_RE = re.compile(r"_v[0-9]+")
 DESTINATION_TABLE_RE = re.compile(r"^[a-zA-Z0-9_$]{0,1024}$")
 DEFAULT_DAG_NAME = "bqetl_default"
 DEFAULT_INIT_PARALLELISM = 10
+DEFAULT_CHECKS_FILE_NAME = "checks.sql"
 
 
 @click.group(help="Commands for managing queries.")
@@ -464,6 +465,7 @@ def _backfill_query(
     backfill_date,
     destination_table,
     run_checks,
+    checks_file_name,
     billing_project,
 ):
     """Run a query backfill for a specific date."""
@@ -532,7 +534,7 @@ def _backfill_query(
     )
 
     # Run checks on the query
-    checks_file = query_file_path.parent / "checks.sql"
+    checks_file = query_file_path.parent / checks_file_name
     if run_checks and checks_file.exists():
         table_name = checks_file.parent.name
         # query_args have things like format, which we don't want to push
@@ -638,6 +640,12 @@ def _backfill_query(
     default=None,
 )
 @click.option(
+    "--checks_file_name",
+    "--checks_file_name",
+    help="Name of a custom data checks file to run after each partition backfill. E.g. custom_checks.sql. Optional.",
+    default=None,
+)
+@click.option(
     "--scheduling_overrides",
     "--scheduling-overrides",
     required=False,
@@ -663,6 +671,7 @@ def backfill(
     parallelism,
     destination_table,
     checks,
+    checks_file_name,
     custom_query_path,
     scheduling_overrides,
 ):
@@ -760,6 +769,7 @@ def backfill(
             partitioning_type,
             destination_table=destination_table,
             run_checks=checks,
+            checks_file_name=checks_file_name or DEFAULT_CHECKS_FILE_NAME,
             billing_project=billing_project,
         )
 

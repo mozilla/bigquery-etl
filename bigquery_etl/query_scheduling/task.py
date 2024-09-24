@@ -193,6 +193,33 @@ class FivetranTask:
     task_id: str = attr.ib()
 
 
+class SecretDeployType(Enum):
+    """Specifies how secret should be exposed in Airflow."""
+
+    ENV = "env"
+    VOLUME = "volume"
+
+
+@attr.s(auto_attribs=True, frozen=True)
+class Secret:
+    """Represents the secret configuration used to expose credentials in the task."""
+
+    deploy_target: str
+    key: str
+    deploy_type: str = attr.ib("env")
+    secret: str = attr.ib("airflow-gke-secrets")
+
+    @deploy_type.validator
+    def validate_deploy_type(self, attribute, value):
+        """Check that deploy_type is a valid option."""
+        if value is not None and value not in set(
+            deploy_type.value for deploy_type in SecretDeployType
+        ):
+            raise ValueError(
+                f"Invalid deploy_type {value}. Needs to be either 'env' or 'volume'."
+            )
+
+
 # Known tasks in telemetry-airflow, like stable table tasks
 # https://github.com/mozilla/telemetry-airflow/blob/main/dags/copy_deduplicate.py
 EXTERNAL_TASKS = {
@@ -308,6 +335,7 @@ class Task:
     container_resources: Optional[Dict[str, str]] = attr.ib(None)
     node_selector: Optional[Dict[str, str]] = attr.ib(None)
     startup_timeout_seconds: Optional[int] = attr.ib(None)
+    secrets: Optional[List[Secret]] = attr.ib(None)
 
     @property
     def task_key(self):
@@ -456,6 +484,9 @@ class Task:
                     f"{owner} removed from email list in DAG {metadata.scheduling['dag_name']}"
                 )
         task_config["email"] = list(set(email + metadata.owners))
+
+        # expose secret config
+        task_config["secrets"] = metadata.scheduling.get("secrets", [])
 
         # data processed in task should be published
         if metadata.is_public_json():

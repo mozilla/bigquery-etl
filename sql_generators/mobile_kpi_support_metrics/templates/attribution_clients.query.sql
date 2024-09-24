@@ -4,6 +4,7 @@ WITH new_profiles AS (
     submission_date,
     client_id,
     sample_id,
+    distribution_id,
     {% if 'is_suspicious_device_client' in product_attribution_group_names %}
     -- field to help us identify suspicious devices on iOS, for more info see: bug-1846554
     (app_display_version = '107.2' AND submission_date >= '2023-02-01') AS is_suspicious_device_client,
@@ -43,6 +44,9 @@ SELECT
       NULLIF(metrics.string.{{ field.name }}, "") AS {{ field.name }},
     {% endfor %}
     {% endfor %}
+    {% if app_name == "fenix" %}
+    metrics.string.first_session_distribution_id AS distribution_id,
+    {% endif %}
   FROM
     `moz-fx-data-shared-prod.{{ dataset }}.first_session`
   WHERE
@@ -53,6 +57,7 @@ first_session_ping AS (
   SELECT
     client_id,
     sample_id,
+    distribution_id,
     {% if 'adjust' in product_attribution_group_names %}
     ARRAY_AGG(
       IF(
@@ -141,7 +146,8 @@ first_session_ping AS (
     first_session_ping_base
   GROUP BY
     client_id,
-    sample_id
+    sample_id,
+    distribution_id
 )
 {% endif %}
 {% if 'metrics' in product_attribution_group_pings %}
@@ -169,6 +175,9 @@ first_session_ping AS (
       {% endif %}
     {% endfor %}
     {% endfor %}
+    {% if app_name = "fenix" %}
+    metrics.string.metrics_distribution_id AS distribution_id,
+    {% endif %}
   FROM
     `moz-fx-data-shared-prod.{{ dataset }}.metrics` AS fxa_metrics
   WHERE
@@ -181,6 +190,7 @@ metrics_ping AS (
   SELECT
     client_id,
     sample_id,
+    distribution_id,
     {% if 'adjust' in product_attribution_group_names %}
     ARRAY_AGG(
       IF(
@@ -226,7 +236,8 @@ metrics_ping AS (
     metrics_ping_base
   GROUP BY
     client_id,
-    sample_id
+    sample_id,
+    distribution_id
 )
 {% endif %}
 SELECT
@@ -247,6 +258,9 @@ SELECT
   {% endif %}
   {% if 'is_suspicious_device_client' in product_attribution_group_names %}
   is_suspicious_device_client,
+  {% endif %}
+  {% if app_name == "fenix" %}
+  COALESCE(first_session_ping.distribution_id, new_profiles.distribution_id, metrics_ping.distribution_id) AS distribution_id,
   {% endif %}
 FROM
   new_profiles

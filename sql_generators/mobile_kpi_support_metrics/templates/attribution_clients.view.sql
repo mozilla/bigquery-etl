@@ -26,5 +26,8 @@ SELECT
   {% if 'is_suspicious_device_client' in product_attribution_group_names %}
   is_suspicious_device_client,
   {% endif %}
+  {% if app_name == "fenix" %}
+  distribution_id,
+  {% endif %}
 FROM
   `{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}`

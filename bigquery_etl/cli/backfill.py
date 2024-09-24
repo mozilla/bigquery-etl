@@ -22,7 +22,11 @@ from ..backfill.parse import (
     Backfill,
     BackfillStatus,
 )
-from ..backfill.shredder_mitigation import generate_query_with_shredder_mitigation
+from ..backfill.shredder_mitigation import (
+    SHREDDER_MITIGATION_CHECKS_NAME,
+    SHREDDER_MITIGATION_QUERY_NAME,
+    generate_query_with_shredder_mitigation,
+)
 from ..backfill.utils import (
     get_backfill_backup_table_name,
     get_backfill_file_from_qualified_table_name,
@@ -508,6 +512,8 @@ def _initiate_backfill(
     log.info(logging_str)
 
     custom_query_path = None
+    checks = None
+    custom_checks_name = None
     if entry.shredder_mitigation is True:
         click.echo(
             click.style(
@@ -515,14 +521,17 @@ def _initiate_backfill(
                 fg="blue",
             )
         )
-        query, _ = generate_query_with_shredder_mitigation(
+        query_path, _ = generate_query_with_shredder_mitigation(
             client=bigquery.Client(project=project),
             project_id=project,
             dataset=dataset,
             destination_table=table,
+            staging_table_name=backfill_staging_qualified_table_name,
             backfill_date=entry.start_date.isoformat(),
         )
-        custom_query_path = Path(query)
+        custom_query_path = Path(query_path) / f"{SHREDDER_MITIGATION_QUERY_NAME}.sql"
+        checks = True
+        custom_checks_name = f"{SHREDDER_MITIGATION_CHECKS_NAME}.sql"
         click.echo(
             click.style(
                 f"Starting backfill with custom query: '{custom_query_path}'.",
@@ -532,7 +541,7 @@ def _initiate_backfill(
     elif entry.custom_query_path:
         custom_query_path = Path(entry.custom_query_path)
 
-    # backfill table
+    # Backfill table
     # in the long-run we should remove the query backfill command and require a backfill entry for all backfills
     try:
         ctx.invoke(
@@ -545,7 +554,17 @@ def _initiate_backfill(
             destination_table=backfill_staging_qualified_table_name,
             parallelism=parallelism,
             dry_run=dry_run,
-            **({"custom_query_path": custom_query_path} if custom_query_path else {}),
+            **(
+                {
+                    k: param
+                    for k, param in [
+                        ("custom_query_path", custom_query_path),
+                        ("checks", checks),
+                        ("checks_file_name", custom_checks_name),
+                    ]
+                    if param is not None
+                }
+            ),
             billing_project=billing_project,
         )
     except subprocess.CalledProcessError as e:

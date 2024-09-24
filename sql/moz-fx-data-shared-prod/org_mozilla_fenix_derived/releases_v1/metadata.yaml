@@ -13,3 +13,4 @@ scheduling:
   dag_name: bqetl_releases
 monitoring:
   enabled: true
+  collection: Test

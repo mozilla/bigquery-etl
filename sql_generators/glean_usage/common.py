@@ -28,6 +28,7 @@ NO_BASELINE_PING_APPS = (
     "accounts_backend",
     "accounts_cirrus",
     "burnham",
+    "firefox_crashreporter",
     "firefox_reality_pc",
     "lockwise_android",
     "mach",

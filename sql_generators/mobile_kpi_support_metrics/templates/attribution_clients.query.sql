@@ -4,6 +4,9 @@ WITH new_profiles AS (
     submission_date,
     client_id,
     sample_id,
+    {% if 'distribution_id' in product_attribution_group_names %}
+    distribution_id,
+    {% endif %}
     {% if 'is_suspicious_device_client' in product_attribution_group_names %}
     -- field to help us identify suspicious devices on iOS, for more info see: bug-1846554
     (app_display_version = '107.2' AND submission_date >= '2023-02-01') AS is_suspicious_device_client,
@@ -20,6 +23,9 @@ SELECT
     sample_id,
     submission_timestamp,
     ping_info.seq AS ping_seq,
+    {% if 'distribution_id' in product_attribution_group_names %}
+    metrics.string.first_session_distribution_id AS distribution_id,
+    {% endif %}
     {% for attribution_group in product_attribution_groups if attribution_group.name == 'adjust' %}
     {% for field in attribution_group.fields if not field.name.endswith("_timestamp") %}
       {% if app_name == "firefox_ios" %}
@@ -53,6 +59,9 @@ first_session_ping AS (
   SELECT
     client_id,
     sample_id,
+    {% if 'distribution_id' in product_attribution_group_names %}
+    distribution_id,
+    {% endif %}
     {% if 'adjust' in product_attribution_group_names %}
     ARRAY_AGG(
       IF(
@@ -142,6 +151,9 @@ first_session_ping AS (
   GROUP BY
     client_id,
     sample_id
+    {% if 'distribution_id' in product_attribution_group_names %}
+    ,distribution_id
+    {% endif %}
 )
 {% endif %}
 {% if 'metrics' in product_attribution_group_pings %}
@@ -151,6 +163,9 @@ first_session_ping AS (
     sample_id,
     submission_timestamp,
     ping_info.seq AS ping_seq,
+    {% if 'distribution_id' in product_attribution_group_names %}
+    metrics.string.metrics_distribution_id AS distribution_id,
+    {% endif %}
     {% for attribution_group in product_attribution_groups if attribution_group.name == 'install_source' %}
     {% for field in attribution_group.fields if not field.name.endswith("_timestamp") %}
       {% if app_name == 'fenix' %}
@@ -181,6 +196,9 @@ metrics_ping AS (
   SELECT
     client_id,
     sample_id,
+    {% if 'distribution_id' in product_attribution_group_names %}
+    distribution_id,
+    {% endif %}
     {% if 'adjust' in product_attribution_group_names %}
     ARRAY_AGG(
       IF(
@@ -227,6 +245,9 @@ metrics_ping AS (
   GROUP BY
     client_id,
     sample_id
+    {% if 'distribution_id' in product_attribution_group_names %}
+    ,distribution_id
+    {% endif %}
 )
 {% endif %}
 SELECT
@@ -247,6 +268,9 @@ SELECT
   {% endif %}
   {% if 'is_suspicious_device_client' in product_attribution_group_names %}
   is_suspicious_device_client,
+  {% endif %}
+  {% if 'distribution_id' in product_attribution_group_names %}
+  COALESCE(first_session_ping.distribution_id, new_profiles.distribution_id, metrics_ping.distribution_id) AS distribution_id,
   {% endif %}
 FROM
   new_profiles

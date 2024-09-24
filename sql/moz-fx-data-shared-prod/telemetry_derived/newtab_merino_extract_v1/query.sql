@@ -28,7 +28,7 @@ flattened_newtab_events AS (
       'scheduled_corpus_item_id'
     ) AS scheduled_corpus_item_id,
     TIMESTAMP_MILLIS(
-      CAST(mozfun.map.get_key(unnested_events.extra, 'recommended_at') AS INT64)
+      SAFE_CAST(mozfun.map.get_key(unnested_events.extra, 'recommended_at') AS INT64)
     ) AS recommended_at
   FROM
     deduplicated_pings,
@@ -39,6 +39,7 @@ flattened_newtab_events AS (
     AND unnested_events.name IN ('impression', 'click')
     --keep only data with a non-null scheduled corpus item ID
     AND (mozfun.map.get_key(unnested_events.extra, 'scheduled_corpus_item_id') IS NOT NULL)
+    AND SAFE_CAST(mozfun.map.get_key(unnested_events.extra, 'recommended_at') AS INT64) IS NOT NULL
 ),
 aggregated_events AS (
   SELECT

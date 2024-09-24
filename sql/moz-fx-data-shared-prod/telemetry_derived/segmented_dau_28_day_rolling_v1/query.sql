@@ -9,8 +9,8 @@ WITH last_28_days AS (
     AND @submission_date
 ),
 raw_dau_last_28_days AS (
-  --note: even though table is already currently grouped by these, 
-  --here we re-doing the group by in case columns are added in 
+  --note: even though table is already currently grouped by these,
+  --here we re-doing the group by in case columns are added in
   --the future to this view, so as to not introduce dupes
   SELECT
     submission_date,

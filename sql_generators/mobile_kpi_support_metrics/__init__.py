@@ -176,7 +176,7 @@ class AttributionFields:
             {
                 "name": "distribution_id",
                 "type": "STRING",
-                "description": "TODO",
+                "description": "A string containing the distribution identifier.",
             },
         ],
     )

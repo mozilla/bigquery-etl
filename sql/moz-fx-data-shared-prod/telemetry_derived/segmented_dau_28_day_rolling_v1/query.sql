@@ -119,17 +119,20 @@ daily_dau_last_28_days AS (
     all_day_group_combos a
   LEFT JOIN
     raw_dau_last_28_days b
-    ON a.country = b.country
-    AND a.app_name = b.app_name
-    AND a.adjust_network = b.adjust_network
-    AND a.attribution_medium = b.attribution_medium
-    AND a.attribution_source = b.attribution_source
-    AND a.first_seen_year = b.first_seen_year
-    AND a.channel = b.channel
-    AND a.install_source = b.install_source
-    AND a.is_default_browser = b.is_default_browser
-    AND a.os_grouped = b.os_grouped
-    AND a.segment = b.segment
+    ON COALESCE(a.country, 'NULL') = COALESCE(b.country, 'NULL')
+    AND COALESCE(a.app_name, 'NULL') = COALESCE(b.app_name, 'NULL')
+    AND COALESCE(a.adjust_network, 'NULL') = COALESCE(b.adjust_network, 'NULL')
+    AND COALESCE(a.attribution_medium, 'NULL') = COALESCE(b.attribution_medium, 'NULL')
+    AND COALESCE(a.attribution_source, 'NULL') = COALESCE(b.attribution_source, 'NULL')
+    AND COALESCE(a.first_seen_year, -123) = COALESCE(b.first_seen_year, -123)
+    AND COALESCE(a.channel, 'NULL') = COALESCE(b.channel, 'NULL')
+    AND COALESCE(a.install_source, 'NULL') = COALESCE(b.install_source, 'NULL')
+    AND COALESCE(CAST(a.is_default_browser AS string), 'NULL') = COALESCE(
+      CAST(b.is_default_browser AS string),
+      'NULL'
+    )
+    AND COALESCE(a.os_grouped, 'NULL') = COALESCE(b.os_grouped, 'NULL')
+    AND COALESCE(a.segment, 'NULL') = COALESCE(b.segment, 'NULL')
     AND a.submission_dt = b.submission_date
   QUALIFY
     RANK() OVER (ORDER BY a.submission_dt DESC) = 1

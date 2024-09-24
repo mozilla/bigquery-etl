@@ -157,10 +157,7 @@ def update(name: str, sql_dir: Optional[str], project_id: Optional[str]) -> None
                                     metric.metric_type.predefined_metric
                                 )
 
-                    if (
-                        metadata.monitoring.collection
-                        and collection.collection is None
-                    ):
+                    if metadata.monitoring.collection and collection.collection is None:
                         collection.collection = SimpleCollection(
                             name=metadata.monitoring.collection
                         )

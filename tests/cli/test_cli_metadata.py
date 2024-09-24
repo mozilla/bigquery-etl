@@ -3,13 +3,12 @@ import os
 import tempfile
 from datetime import datetime
 from pathlib import Path
-from unittest.mock import mock_open, patch
+from unittest.mock import patch
 
 import pytest
 import yaml
 from click.testing import CliRunner
 from dateutil.relativedelta import relativedelta
-from gcloud import bigquery
 
 from bigquery_etl.cli.metadata import deprecate, publish, update
 from bigquery_etl.metadata.parse_metadata import Metadata
@@ -456,10 +455,6 @@ class TestMetadata:
                 },
             ]
         }
-        id_level_columns = """
-            id_level_columns:
-              - column_3
-            """
 
         with runner.isolated_filesystem():
             query_path = Path(self.test_path) / "query.sql"

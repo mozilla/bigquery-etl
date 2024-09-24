@@ -132,7 +132,7 @@ daily_dau_last_28_days AS (
     AND a.segment = b.segment
     AND a.submission_dt = b.submission_date
   QUALIFY
-    RANK() OVER (ORDER BY submission_date DESC) = 1
+    RANK() OVER (ORDER BY a.submission_dt DESC) = 1
 )
 SELECT
   @submission_date AS submission_date,

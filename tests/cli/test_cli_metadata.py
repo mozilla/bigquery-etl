@@ -426,10 +426,36 @@ class TestMetadata:
             "friendly_name": "Test",
             "labels": {"shredder_mitigation": "true"},
         }
-        schema = [
-            bigquery.SchemaField("column_1", "STRING", description="description 1"),
-            bigquery.SchemaField("column_3", "STRING", description="description 3"),
-        ]
+        schema_1 = {
+            "fields": [
+                {
+                    "mode": "REQUIRED",
+                    "name": "profile_id",
+                    "type": "STRING",
+                    "description": "description 1",
+                },
+                {
+                    "mode": "REQUIRED",
+                    "name": "column_3",
+                    "type": "STRING",
+                    "description": "description 3",
+                },
+            ]
+        }
+        schema_2 = {
+            "fields": [
+                {
+                    "mode": "NULLABLE",
+                    "name": "column_1",
+                    "type": "STRING",
+                },
+                {
+                    "name": "column_2",
+                    "type": "STRING",
+                    "description": "description 3",
+                },
+            ]
+        }
         id_level_columns = """
             id_level_columns:
               - column_3
@@ -438,32 +464,28 @@ class TestMetadata:
         with runner.isolated_filesystem():
             query_path = Path(self.test_path) / "query.sql"
             metadata_path = Path(self.test_path) / "metadata.yaml"
+            schema_path = Path(self.test_path) / "schema.yaml"
             os.makedirs(self.test_path, exist_ok=True)
 
             with open(query_path, "w") as f:
                 f.write("SELECT column_1 FROM test_table group by column_1")
             with open(metadata_path, "w") as f:
                 f.write(yaml.safe_dump(metadata))
+            with open(schema_path, "w") as f:
+                f.write(yaml.safe_dump(schema_1))
             metadata_from_file = Metadata.from_file(metadata_path)
 
-            with patch("builtins.open", mock_open(read_data=id_level_columns)):
-                result = validate_shredder_mitigation(
-                    self.test_path, metadata_from_file, schema
-                )
-                captured = capfd.readouterr()
-                assert result is False
-                assert (
-                    "Shredder mitigation validation failed, column_3 is an id-level column "
-                    "that is not allowed for this type of backfill."
-                ) in captured.out
+            result = validate_shredder_mitigation(self.test_path, metadata_from_file)
+            captured = capfd.readouterr()
+            assert result is False
+            assert (
+                "Shredder mitigation validation failed, profile_id is an id-level column "
+                "that is not allowed for this type of backfill."
+            ) in captured.out
 
-            schema = [
-                bigquery.SchemaField("column_1", "STRING", mode="NULLABLE"),
-                bigquery.SchemaField("column_2", "STRING", description="description 3"),
-            ]
-            result = validate_shredder_mitigation(
-                self.test_path, metadata_from_file, schema
-            )
+            with open(schema_path, "w") as f:
+                f.write(yaml.safe_dump(schema_2))
+            result = validate_shredder_mitigation(self.test_path, metadata_from_file)
             captured = capfd.readouterr()
             assert result is False
             assert (
@@ -478,25 +500,37 @@ class TestMetadata:
             "labels": {"shredder_mitigation": "true"},
         }
 
-        schema = [
-            bigquery.SchemaField("column_1", "STRING"),
-            bigquery.SchemaField("column_2", "STRING", description="description 2"),
-        ]
+        schema = {
+            "fields": [
+                {
+                    "mode": "REQUIRED",
+                    "name": "column_1",
+                    "type": "STRING",
+                },
+                {
+                    "mode": "REQUIRED",
+                    "name": "column_2",
+                    "type": "STRING",
+                    "description": "description 2",
+                },
+            ]
+        }
 
         with runner.isolated_filesystem():
             query_path = Path(self.test_path) / "query.sql"
             metadata_path = Path(self.test_path) / "metadata.yaml"
+            schema_path = Path(self.test_path) / "schema.yaml"
             os.makedirs(self.test_path, exist_ok=True)
 
             with open(query_path, "w") as f:
                 f.write("SELECT column_1 FROM test_table GROUP BY ALL")
             with open(metadata_path, "w") as f:
                 f.write(yaml.safe_dump(metadata))
+            with open(schema_path, "w") as f:
+                f.write(yaml.safe_dump(schema))
 
             metadata_from_file = Metadata.from_file(metadata_path)
-            result = validate_shredder_mitigation(
-                self.test_path, metadata_from_file, schema
-            )
+            result = validate_shredder_mitigation(self.test_path, metadata_from_file)
             captured = capfd.readouterr()
             assert result is False
             assert (
@@ -506,9 +540,7 @@ class TestMetadata:
 
             with open(query_path, "w") as f:
                 f.write("SELECT column_1 FROM test_table GROUP BY column_1, 2")
-            result = validate_shredder_mitigation(
-                self.test_path, metadata_from_file, schema
-            )
+            result = validate_shredder_mitigation(self.test_path, metadata_from_file)
             captured = capfd.readouterr()
             assert result is False
             assert (

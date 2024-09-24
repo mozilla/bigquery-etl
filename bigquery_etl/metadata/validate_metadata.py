@@ -103,12 +103,12 @@ def validate_change_control(
     return True
 
 
-def validate_shredder_mitigation(query_dir, metadata, target):
+def validate_shredder_mitigation(query_dir, metadata):
     """Check queries with shredder mitigation label comply with requirements."""
     has_shredder_mitigation = SHREDDER_MITIGATION_LABEL in metadata.labels
 
     if has_shredder_mitigation:
-        schema_file = (Path(target) / SCHEMA_FILE,)
+        schema_file = Path(query_dir) / SCHEMA_FILE
         schema = Schema.from_schema_file(schema_file).to_bigquery_schema()
 
         # This label requires that the query doesn't have id-level columns,
@@ -193,7 +193,6 @@ def validate(target):
                     if not validate_shredder_mitigation(
                         query_dir=root,
                         metadata=metadata,
-                        target=target,
                     ):
                         failed = True
 

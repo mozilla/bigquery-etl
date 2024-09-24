@@ -100,6 +100,10 @@ fields:
   mode: NULLABLE
   description: Number of new profiles on the metric date that were DAU at least twice
     in the next 28 days.
+- name: distribution_id
+  type: STRING
+  mode: NULLABLE
+  description: A string containing the distribution identifier.
 - name: lifecycle_stage
   type: STRING
   mode: NULLABLE

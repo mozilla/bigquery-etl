@@ -80,6 +80,10 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: MAU - Monthly Active Users
+- name: distribution_id
+  type: STRING
+  mode: NULLABLE
+  description: A string containing the distribution identifier.
 - name: lifecycle_stage
   type: STRING
   mode: NULLABLE

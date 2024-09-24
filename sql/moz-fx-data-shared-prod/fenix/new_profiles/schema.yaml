@@ -80,6 +80,10 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: Number of new profiles recorded for the first seen date.
+- name: distribution_id
+  type: STRING
+  mode: NULLABLE
+  description: A string containing the distribution identifier.
 - name: paid_vs_organic
   type: STRING
   mode: NULLABLE

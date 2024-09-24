@@ -20,3 +20,4 @@ workgroup_access:
 references: {}
 monitoring:
   enabled: true
+  collection: Test

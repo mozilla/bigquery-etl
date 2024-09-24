@@ -327,6 +327,7 @@ SELECT
   *,
   topsite_tile_clicks + pocket_clicks + pocket_saves + wallpaper_clicks + pocket_thumb_voting_events + topic_selection_updates + topic_selection_opened + CAST(
     topic_selection_selected_topics_first_time AS INT
-  ) + weather_widget_clicks + weather_widget_change_display_to_detailed + weather_widget_change_display_to_simple AS non_search_engagement_count
+  ) + weather_widget_clicks + weather_widget_change_display_to_detailed + weather_widget_change_display_to_simple + topsite_tile_dismissals + organic_pocket_dismissals + sponsored_pocket_dismissals + topic_selection_dismissals AS non_search_engagement_count,
+  topsite_tile_dismissals + organic_pocket_dismissals + sponsored_pocket_dismissals + topic_selection_dismissals AS newtab_dismissal_count
 FROM
   joined

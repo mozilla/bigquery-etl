@@ -105,6 +105,7 @@ WITH base AS (
     {% else %}
       CAST(NULL AS STRING) AS profile_group_id,
     {% endif %}
+      metrics.uuid.legacy_telemetry_client_id AS legacy_telemetry_client_id,
   FROM
     `{{ events_view }}`
   WHERE

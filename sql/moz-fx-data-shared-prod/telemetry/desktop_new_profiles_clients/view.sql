@@ -21,4 +21,4 @@ SELECT
     FALSE
   ) AS is_desktop
 FROM
-  `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v3` a
+  `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v3` AS a

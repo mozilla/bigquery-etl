@@ -98,6 +98,7 @@ WITH base AS (
     ping_info.reason AS reason,
     from_map_experiment(ping_info.experiments) AS experiments,
     CAST(NULL AS STRING) AS profile_group_id,
+    CAST(NULL AS STRING) AS legacy_telemetry_client_id,
   FROM
     `moz-fx-data-shared-prod.monitor_frontend.events`
   WHERE

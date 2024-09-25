@@ -275,6 +275,28 @@ combined_search_dau AS (
   LEFT JOIN
     eligible_markets_dau
     USING (submission_date, device, country)
+),
+desktop_serp_events AS (
+  SELECT
+    submission_date,
+    `moz-fx-data-shared-prod`.udf.normalize_search_engine(search_engine) AS partner,
+    'desktop' AS device,
+    normalized_country_code AS country,
+    COUNT(impression_id) AS serp_events_sap,
+    COUNTIF(is_tagged) AS serp_events_tagged_sap,
+    COUNTIF(ad_blocker_inferred) AS serp_events_sap_with_ad_blocker_inferred,
+    SUM(num_ad_clicks) AS serp_events_ad_clicks,
+    SUM(num_ads_visible) AS serp_events_ads_visible,
+    SUM(num_ads_blocked) AS serp_events_ads_blocked
+  FROM
+    `moz-fx-data-shared-prod.firefox_desktop.serp_events`
+  WHERE
+    submission_date = @submission_date
+  GROUP BY
+    submission_date,
+    partner,
+    device,
+    country
 )
 SELECT
   cd.submission_date,
@@ -302,3 +324,6 @@ LEFT JOIN
   AND cd.submission_date = du.submission_date
   AND cd.country = du.country
   AND cd.device = du.device
+LEFT JOIN
+  desktop_serp_events dse
+  USING (submission_date, device, country, partner)

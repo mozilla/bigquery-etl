@@ -126,9 +126,9 @@ fields:
   description: The warning message that appears if the resource usage is above the internal threshold of the system
 
 - mode: NULLABLE
-  name: bigeye_metric_id
+  name: bigeye_query
   type: STRING
-  description: Metric ID corresponding to the metric executed by BigEye (Data Observability Platform).
+  description: Contains queries executed by the BigEye user only.
 
 - mode: NULLABLE
   name: submission_date

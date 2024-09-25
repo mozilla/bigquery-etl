@@ -392,6 +392,10 @@ def generate(target_project, output_dir, use_cloud_function):
         if target_filename != "view":
             continue
 
+        # For now skipping attribution_clients union. Will add in the future.
+        if target_name == "attribution_clients":
+            continue
+
         target_dataset = "telemetry"
 
         union_target_name = f"mobile_{target_name}"

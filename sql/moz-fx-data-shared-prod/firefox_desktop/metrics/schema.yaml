@@ -923,6 +923,18 @@ fields:
       description: 'Whether we saw a permission request from an insecure context.
 
         '
+    - name: cert_signature_cache_total
+      type: INTEGER
+      mode: NULLABLE
+      description: 'How many certificate signature verifications are performed.
+
+        '
+    - name: sct_signature_cache_total
+      type: INTEGER
+      mode: NULLABLE
+      description: 'How many SCT signature verifications are performed.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -12632,6 +12644,33 @@ fields:
         mode: NULLABLE
       description: 'The rate of svg elements that have child elements during parsing,
         where their HTML counterpart would not have children.
+
+        '
+    - name: cert_signature_cache_hits
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: denominator
+        type: INTEGER
+        mode: NULLABLE
+      - name: numerator
+        type: INTEGER
+        mode: NULLABLE
+      description: 'How often a certificate signature to be verified is in the cache
+        already.
+
+        '
+    - name: sct_signature_cache_hits
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: denominator
+        type: INTEGER
+        mode: NULLABLE
+      - name: numerator
+        type: INTEGER
+        mode: NULLABLE
+      description: 'How often an SCT signature to be verified is in the cache already.
 
         '
   - name: string_list

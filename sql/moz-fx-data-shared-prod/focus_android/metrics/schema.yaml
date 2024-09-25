@@ -451,6 +451,12 @@ fields:
     - name: web_notification_insecure_context_permission_request
       type: INTEGER
       mode: NULLABLE
+    - name: cert_signature_cache_total
+      type: INTEGER
+      mode: NULLABLE
+    - name: sct_signature_cache_total
+      type: INTEGER
+      mode: NULLABLE
   - name: datetime
     type: RECORD
     mode: NULLABLE
@@ -9119,6 +9125,26 @@ fields:
         type: INTEGER
         mode: NULLABLE
     - name: parsing_svg_unusual_pcdata
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: denominator
+        type: INTEGER
+        mode: NULLABLE
+      - name: numerator
+        type: INTEGER
+        mode: NULLABLE
+    - name: cert_signature_cache_hits
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: denominator
+        type: INTEGER
+        mode: NULLABLE
+      - name: numerator
+        type: INTEGER
+        mode: NULLABLE
+    - name: sct_signature_cache_hits
       type: RECORD
       mode: NULLABLE
       fields:

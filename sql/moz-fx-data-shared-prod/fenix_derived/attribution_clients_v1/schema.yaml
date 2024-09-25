@@ -39,6 +39,21 @@ fields:
       type: TIMESTAMP
       description: |
         Timestamp corresponding to the ping that contained the play_store attribution.
+    - mode: NULLABLE
+      name: play_store_attribution_content
+      type: STRING
+      description: |
+        
+    - mode: NULLABLE
+      name: play_store_attribution_term
+      type: STRING
+      description: |
+        
+    - mode: NULLABLE
+      name: play_store_attribution_install_referrer_response
+      type: STRING
+      description: |
+        Play store source the profile is attributed to.
     
 - mode: NULLABLE
   name: meta_info

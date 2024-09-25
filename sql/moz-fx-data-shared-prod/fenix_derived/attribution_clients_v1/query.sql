@@ -25,6 +25,12 @@ first_session_ping_base AS (
     NULLIF(metrics.string.play_store_attribution_campaign, "") AS play_store_attribution_campaign,
     NULLIF(metrics.string.play_store_attribution_medium, "") AS play_store_attribution_medium,
     NULLIF(metrics.string.play_store_attribution_source, "") AS play_store_attribution_source,
+    NULLIF(metrics.string.play_store_attribution_content, "") AS play_store_attribution_content,
+    NULLIF(metrics.string.play_store_attribution_term, "") AS play_store_attribution_term,
+    NULLIF(
+      metrics.text2.play_store_attribution_install_referrer_response,
+      ""
+    ) AS play_store_attribution_install_referrer_response,
     NULLIF(metrics.string.meta_attribution_app, "") AS meta_attribution_app,
   FROM
     `moz-fx-data-shared-prod.fenix.first_session`
@@ -62,12 +68,18 @@ first_session_ping AS (
       IF(
         play_store_attribution_campaign IS NOT NULL
         OR play_store_attribution_medium IS NOT NULL
-        OR play_store_attribution_source IS NOT NULL,
+        OR play_store_attribution_source IS NOT NULL
+        OR play_store_attribution_content IS NOT NULL
+        OR play_store_attribution_term IS NOT NULL
+        OR play_store_attribution_install_referrer_response IS NOT NULL,
         STRUCT(
           play_store_attribution_campaign,
           play_store_attribution_medium,
           play_store_attribution_source,
-          submission_timestamp AS play_store_attribution_timestamp
+          submission_timestamp AS play_store_attribution_timestamp,
+          play_store_attribution_content,
+          play_store_attribution_term,
+          play_store_attribution_install_referrer_response
         ),
         NULL
       ) IGNORE NULLS

@@ -29,6 +29,12 @@ attribution AS (
     NULLIF(play_store_attribution_campaign, "") AS play_store_attribution_campaign,
     NULLIF(play_store_attribution_medium, "") AS play_store_attribution_medium,
     NULLIF(play_store_attribution_source, "") AS play_store_attribution_source,
+    NULLIF(play_store_attribution_content, "") AS play_store_attribution_content,
+    NULLIF(play_store_attribution_term, "") AS play_store_attribution_term,
+    NULLIF(
+      play_store_attribution_install_referrer_response,
+      ""
+    ) AS play_store_attribution_install_referrer_response,
     NULLIF(meta_attribution_app, "") AS meta_attribution_app,
     NULLIF(install_source, "") AS install_source,
     NULLIF(adjust_ad_group, "") AS adjust_ad_group,
@@ -61,6 +67,9 @@ SELECT
   attribution.play_store_attribution_campaign,
   attribution.play_store_attribution_medium,
   attribution.play_store_attribution_source,
+  attribution.play_store_attribution_content,
+  attribution.play_store_attribution_term,
+  attribution.play_store_attribution_install_referrer_response,
   attribution.meta_attribution_app,
   attribution.install_source,
   attribution.adjust_ad_group,

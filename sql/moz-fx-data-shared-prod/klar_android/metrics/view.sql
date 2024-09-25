@@ -98,7 +98,9 @@ SELECT
       metrics.counter.webauthn_get_success,
       metrics.counter.netwerk_parent_connect_timeout,
       metrics.counter.networking_os_socket_limit_reached,
-      metrics.counter.web_notification_insecure_context_permission_request
+      metrics.counter.web_notification_insecure_context_permission_request,
+      metrics.counter.cert_signature_cache_total,
+      metrics.counter.sct_signature_cache_total
     ) AS `counter`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -577,7 +579,9 @@ SELECT
       metrics.rate.pkcs11_built_in_roots_module,
       metrics.rate.pkcs11_nss_cert_db,
       metrics.rate.networking_set_cookie_expired_without_server_time,
-      metrics.rate.parsing_svg_unusual_pcdata
+      metrics.rate.parsing_svg_unusual_pcdata,
+      metrics.rate.cert_signature_cache_hits,
+      metrics.rate.sct_signature_cache_hits
     ) AS `rate`,
     STRUCT(metrics.uuid.legacy_ids_client_id) AS `uuid`,
     STRUCT(metrics.object.fog_validation_some_object) AS `object`,

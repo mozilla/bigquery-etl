@@ -44,6 +44,15 @@ fields:
 - name: play_store_attribution_source
   type: STRING
   mode: NULLABLE
+- name: play_store_attribution_content
+  type: STRING
+  mode: NULLABLE
+- name: play_store_attribution_term
+  type: STRING
+  mode: NULLABLE
+- name: play_store_attribution_install_referrer_response
+  type: STRING
+  mode: NULLABLE
 - name: meta_attribution_app
   type: STRING
   mode: NULLABLE

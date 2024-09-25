@@ -10,7 +10,7 @@ SELECT
   os_version,
   device_manufacturer,
   is_mobile,
-  {% for field in product_attribution_fields.values() if not field.name.endswith("_timestamp") %}
+  {% for field in product_attribution_fields.values() if not field.client_only %}
   {{ field.name }},
   {% endfor %}
   COUNT(*) AS new_profiles,
@@ -35,7 +35,7 @@ GROUP BY
   os_version,
   device_manufacturer,
   is_mobile
-  {% for field in product_attribution_fields.values() if not field.name.endswith("_timestamp") %}
+  {% for field in product_attribution_fields.values() if not field.client_only %}
     {% if loop.first %},{% endif %}
     {{ field.name }}
     {% if not loop.last %},{% endif %}

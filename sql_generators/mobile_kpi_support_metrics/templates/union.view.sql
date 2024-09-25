@@ -8,22 +8,28 @@ UNION ALL
 {% endif %}
 SELECT
   *
-  {% for field in product.all_possible_attribution_fields if field.exists and not ((name.startswith("engagement") or name.startswith("retention") or name.startswith("new_profile")) and field.name.endswith("_timestamp")) %}
+  {% for field in product.all_possible_attribution_fields if field.exists and template_grain == "AGGREGATE" and not field.client_only %}
     {% if loop.first %}EXCEPT({% endif %}
-    {% if not loop.last %}
+      {{ field.name }}{% if not loop.last %},{% endif %}
+    {% if loop.last %}){% endif %}
+  {% endfor %}
+  {% for field in product.all_possible_attribution_fields if field.exists and template_grain == "CLIENT" and not field.name.endswith("_timestamp") %}
+    {% if loop.first %}EXCEPT({% endif %}
+      {{ field.name }}{% if not loop.last %},{% endif %}
+    {% if loop.last %}){% endif %}
+  {% endfor %}
+  ,
+{% for field in product.all_possible_attribution_fields if not field.name.endswith("_timestamp")%}
+  {% if template_grain == "AGGREGATE" and not field.client_only %}
+    {% if field.exists %}
     {{ field.name }},
     {% else %}
-    {{ field.name }}
+    CAST(NULL AS {{ field.type }}) AS {{ field.name }},
     {% endif %}
-    {% if loop.last %}),{% endif %}
-  {% else %},{% endfor %}
-{% for field in product.all_possible_attribution_fields %}
-  {% if field.exists %}
-    {% if not ((name.startswith("engagement") or name.startswith("retention") or name.startswith("new_profile")) and field.name.endswith("_timestamp")) %}
+  {% elif template_grain == "CLIENT" %}
+    {% if field.exists %}
     {{ field.name }},
-    {% endif %}
-  {% else %}
-    {% if not ((name.startswith("engagement") or name.startswith("retention") or name.startswith("new_profile")) and field.name.endswith("_timestamp")) %}
+    {% else %}
     CAST(NULL AS {{ field.type }}) AS {{ field.name }},
     {% endif %}
   {% endif %}

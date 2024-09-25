@@ -19,18 +19,18 @@ GENERATOR_ROOT = Path(path.dirname(__file__))
 HEADER = f"-- Query generated via `{GENERATOR_ROOT.name}` SQL generator."
 VERSION = "v1"
 TEMPLATES = (
-    "active_users.view.sql",
-    "retention_clients.view.sql",
-    "retention.query.sql",
-    "retention.view.sql",
-    "engagement_clients.view.sql",
-    "engagement.query.sql",
-    "engagement.view.sql",
-    "attribution_clients.view.sql",
-    "attribution_clients.query.sql",
-    "new_profile_clients.view.sql",
-    "new_profiles.view.sql",
-    "new_profiles.query.sql",
+    ("CLIENT", "active_users.view.sql"),
+    ("CLIENT", "retention_clients.view.sql"),
+    ("AGGREGATE", "retention.query.sql"),
+    ("AGGREGATE", "retention.view.sql"),
+    ("CLIENT", "engagement_clients.view.sql"),
+    ("AGGREGATE", "engagement.query.sql"),
+    ("AGGREGATE", "engagement.view.sql"),
+    ("CLIENT", "attribution_clients.view.sql"),
+    ("CLIENT", "attribution_clients.query.sql"),
+    ("CLIENT", "new_profile_clients.view.sql"),
+    ("AGGREGATE", "new_profiles.view.sql"),
+    ("AGGREGATE", "new_profiles.query.sql"),
 )
 
 
@@ -93,6 +93,7 @@ class AttributionFields:
                 "name": "adjust_attribution_timestamp",
                 "type": "TIMESTAMP",
                 "description": "Timestamp corresponding to the ping that contained the adjust attribution.",
+                "client_only": True,
             },
         ],
     )
@@ -119,23 +120,26 @@ class AttributionFields:
                 "name": "play_store_attribution_timestamp",
                 "type": "TIMESTAMP",
                 "description": "Timestamp corresponding to the ping that contained the play_store attribution.",
+                "client_only": True,
             },
-            # TODO: decide if this should be added here?
-            # {
-            #     "name": "play_store_attribution_content",
-            #     "type": "STRING",
-            #     "description": "",
-            # },
-            # {
-            #     "name": "play_store_attribution_term",
-            #     "type": "STRING",
-            #     "description": "",
-            # },
-            # {
-            #     "name": "play_store_attribution_install_referrer_response",
-            #     "type": "STRING",
-            #     "description": "Play store source the profile is attributed to.",
-            # },
+            {
+                "name": "play_store_attribution_content",
+                "type": "STRING",
+                "description": "",
+                "client_only": True,
+            },
+            {
+                "name": "play_store_attribution_term",
+                "type": "STRING",
+                "description": "",
+                "client_only": True,
+            },
+            {
+                "name": "play_store_attribution_install_referrer_response",
+                "type": "STRING",
+                "description": "Play store source the profile is attributed to.",
+                "client_only": True,
+            },
         ],
     )
     meta = AttributionFieldGroup(
@@ -151,6 +155,7 @@ class AttributionFields:
                 "name": "meta_attribution_timestamp",
                 "type": "TIMESTAMP",
                 "description": "Timestamp corresponding to the ping that contained the meta attribution.",
+                "client_only": True,
             },
         ],
     )
@@ -311,7 +316,7 @@ def generate(target_project, output_dir, use_cloud_function):
         )
     )
 
-    for template in TEMPLATES:
+    for template_grain, template in TEMPLATES:
         for product in MobileProducts:
 
             target_name, target_filename, target_extension = template.split(".")
@@ -387,6 +392,10 @@ def generate(target_project, output_dir, use_cloud_function):
         if target_filename != "view":
             continue
 
+        # For now skipping attribution_clients union. Will add in the future.
+        if target_name == "attribution_clients":
+            continue
+
         target_dataset = "telemetry"
 
         union_target_name = f"mobile_{target_name}"
@@ -398,6 +407,7 @@ def generate(target_project, output_dir, use_cloud_function):
             name=target_name,
             target_name=union_target_name,
             target_filename=target_filename,
+            template_grain=template_grain,
             format=False,
             products=[
                 {
@@ -409,6 +419,9 @@ def generate(target_project, output_dir, use_cloud_function):
                                 in product.value.get_product_attribution_fields().keys(),
                                 "name": field_name,
                                 "type": field_properties["type"],
+                                "client_only": field_properties.get(
+                                    "client_only", False
+                                ),
                             }
                             for field_name, field_properties in all_possible_attribution_fields.items()
                         ]

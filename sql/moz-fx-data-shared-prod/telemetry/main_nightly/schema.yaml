@@ -37280,6 +37280,46 @@ fields:
           - name: value
             type: BOOLEAN
             mode: NULLABLE
+        - name: urlbar_picked_restrict_keyword_actions
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+        - name: urlbar_picked_restrict_keyword_bookmarks
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+        - name: urlbar_picked_restrict_keyword_history
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+        - name: urlbar_picked_restrict_keyword_tabs
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
       - name: scalars
         type: RECORD
         mode: NULLABLE

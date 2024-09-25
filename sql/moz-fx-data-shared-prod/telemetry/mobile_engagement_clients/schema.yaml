@@ -2,21 +2,54 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: null
 - name: client_id
   type: STRING
   mode: NULLABLE
-  description: null
 - name: sample_id
   type: INTEGER
   mode: NULLABLE
-  description: null
-- name: install_source
+- name: first_seen_date
+  type: DATE
+  mode: NULLABLE
+- name: app_name
   type: STRING
   mode: NULLABLE
-  description: 'The source of a profile installation.
-
-    '
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+- name: app_version
+  type: STRING
+  mode: NULLABLE
+- name: locale
+  type: STRING
+  mode: NULLABLE
+- name: country
+  type: STRING
+  mode: NULLABLE
+- name: isp
+  type: STRING
+  mode: NULLABLE
+- name: is_dau
+  type: BOOLEAN
+  mode: NULLABLE
+- name: is_wau
+  type: BOOLEAN
+  mode: NULLABLE
+- name: is_mau
+  type: BOOLEAN
+  mode: NULLABLE
+- name: is_mobile
+  type: BOOLEAN
+  mode: NULLABLE
+- name: paid_vs_organic
+  type: STRING
+  mode: NULLABLE
+- name: lifecycle_stage
+  type: STRING
+  mode: NULLABLE
+- name: is_suspicious_device_client
+  type: BOOLEAN
+  mode: NULLABLE
 - name: adjust_ad_group
   type: STRING
   mode: NULLABLE
@@ -29,9 +62,6 @@ fields:
 - name: adjust_network
   type: STRING
   mode: NULLABLE
-- name: adjust_attribution_timestamp
-  type: TIMESTAMP
-  mode: NULLABLE
 - name: play_store_attribution_campaign
   type: STRING
   mode: NULLABLE
@@ -40,9 +70,6 @@ fields:
   mode: NULLABLE
 - name: play_store_attribution_source
   type: STRING
-  mode: NULLABLE
-- name: play_store_attribution_timestamp
-  type: TIMESTAMP
   mode: NULLABLE
 - name: play_store_attribution_content
   type: STRING
@@ -56,15 +83,12 @@ fields:
 - name: meta_attribution_app
   type: STRING
   mode: NULLABLE
-- name: meta_attribution_timestamp
-  type: TIMESTAMP
-  mode: NULLABLE
-- name: paid_vs_organic
+- name: install_source
   type: STRING
   mode: NULLABLE
 - name: distribution_id
   type: STRING
   mode: NULLABLE
-  description: 'A string containing the distribution identifier.
-
-    '
+- name: product_name
+  type: STRING
+  mode: NULLABLE

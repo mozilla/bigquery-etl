@@ -342,3 +342,6 @@ fields:
 - name: profile_group_id
   type: STRING
   mode: NULLABLE
+- name: legacy_telemetry_client_id
+  type: STRING
+  mode: NULLABLE

@@ -220,3 +220,6 @@ fields:
 - name: event_extra
   type: JSON
   mode: NULLABLE
+- name: legacy_telemetry_client_id
+  type: STRING
+  mode: NULLABLE

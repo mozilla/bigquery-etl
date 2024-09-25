@@ -49,12 +49,21 @@ class EventsStreamTable(GleanTable):
             "generate", "glean_usage", "events_stream", "metrics_as_struct", fallback=[]
         )
 
+        # Separate apps with legacy telemetry client ID vs those that don't have it
+        if app_id == "firefox_desktop":
+            has_legacy_telemetry_client_id = True
+        else:
+            has_legacy_telemetry_client_id = False
+
+        # Separate apps with profile group ID vs those that don't have it
         if app_id == "firefox_desktop":
             has_profile_group_id = True
         else:
             has_profile_group_id = False
+
         self.custom_render_kwargs = {
             "has_profile_group_id": has_profile_group_id,
+            "has_legacy_telemetry_client_id": has_legacy_telemetry_client_id,
             "metrics_as_struct": metrics_as_struct,
         }
 

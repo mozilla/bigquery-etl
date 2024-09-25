@@ -315,7 +315,13 @@ SELECT
   cd.organic,
   cd.ad_click_organic,
   cd.search_with_ads_organic,
-  cd.monetizable_sap
+  cd.monetizable_sap,
+  dse.serp_events_sap,
+  dse.serp_events_tagged_sap,
+  dse.serp_events_sap_with_ad_blocker_inferred,
+  dse.serp_events_ad_clicks,
+  dse.serp_events_ads_visible,
+  dse.serp_events_ads_blocked
 FROM
   combined_search_data cd
 LEFT JOIN
@@ -326,4 +332,7 @@ LEFT JOIN
   AND cd.device = du.device
 LEFT JOIN
   desktop_serp_events dse
-  USING (submission_date, device, country, partner)
+  ON cd.submission_date = dse.submission_date
+  AND cd.partner = dse.partner
+  AND cd.country = dse.country
+  AND cd.device = dse.device

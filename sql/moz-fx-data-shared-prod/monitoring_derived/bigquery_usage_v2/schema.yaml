@@ -126,6 +126,11 @@ fields:
   description: The warning message that appears if the resource usage is above the internal threshold of the system
 
 - mode: NULLABLE
+  name: bigeye_metric_id
+  type: STRING
+  description: Metric ID corresponding to the metric executed by BigEye (Data Observability Platform).
+
+- mode: NULLABLE
   name: submission_date
   type: DATE
   description: Date Airflow DAG is executed, and partition date

@@ -48,6 +48,7 @@ jobs_by_project AS (
       user_email,
       REGEXP_EXTRACT(query, r'Username: (.*?),') AS username,
       REGEXP_EXTRACT(query, r'Query ID: (\w+), ') AS query_id,
+      REGEXP_EXTRACT(query, r'\'metric_id:(\d+)\'') AS bigeye_metric_id,
     FROM
       `{{project}}.region-us.INFORMATION_SCHEMA.JOBS_BY_PROJECT` AS jp
     LEFT JOIN
@@ -103,6 +104,7 @@ SELECT DISTINCT
   jo.error_reason,
   jo.error_message,
   jo.resource_warning,
+  jo.bigeye_metric_id,
   @submission_date AS submission_date,
 FROM
   jobs_by_org AS jo

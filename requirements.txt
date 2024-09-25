@@ -904,9 +904,9 @@ mkdocs==1.6.1 \
     #   -r requirements.in
     #   mkdocs-awesome-pages-plugin
     #   mkdocs-material
-mkdocs-awesome-pages-plugin==2.9.2 \
-    --hash=sha256:9c795587695bd1ee85a8b7e43293005418df5a8b9ef296a3e628be427b693b4d \
-    --hash=sha256:c3f7d366ecfe99b64524c49a84d8e13c576c19a918ea2e6f59bb486a259313af
+mkdocs-awesome-pages-plugin==2.9.3 \
+    --hash=sha256:1ba433d4e7edaf8661b15b93267f78f78e2e06ca590fc0e651ea36b191d64ae4 \
+    --hash=sha256:bdf6369871f41bb17f09c3cfb573367732dfcceb5673d7a2c5c76ac2567b242f
     # via -r requirements.in
 mkdocs-get-deps==0.2.0 \
     --hash=sha256:162b3d129c7fad9b19abfdcb9c1458a651628e4b1dea628ac68790fb3061c60c \

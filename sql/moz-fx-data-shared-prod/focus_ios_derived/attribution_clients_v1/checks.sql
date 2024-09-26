@@ -3,3 +3,6 @@
 
 #warn
 {{ min_row_count(1, where=_WHERE) }}
+
+#warn
+{{ is_unique(["client_id"], where=_WHERE)}}

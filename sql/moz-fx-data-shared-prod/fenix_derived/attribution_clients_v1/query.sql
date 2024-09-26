@@ -42,7 +42,6 @@ first_session_ping AS (
   SELECT
     client_id,
     sample_id,
-    distribution_id,
     ARRAY_AGG(
       IF(
         adjust_ad_group IS NOT NULL
@@ -101,12 +100,19 @@ first_session_ping AS (
       LIMIT
         1
     )[SAFE_OFFSET(0)] AS meta_info,
+    ARRAY_AGG(
+      IF(distribution_id IS NOT NULL, distribution_id, NULL) IGNORE NULLS
+      ORDER BY
+        ping_seq ASC,
+        submission_timestamp ASC
+      LIMIT
+        1
+    )[SAFE_OFFSET(0)] AS distribution_id,
   FROM
     first_session_ping_base
   GROUP BY
     client_id,
-    sample_id,
-    distribution_id
+    sample_id
 ),
 metrics_ping_base AS (
   SELECT
@@ -132,7 +138,6 @@ metrics_ping AS (
   SELECT
     client_id,
     sample_id,
-    distribution_id,
     ARRAY_AGG(
       IF(
         adjust_ad_group IS NOT NULL
@@ -162,12 +167,19 @@ metrics_ping AS (
       LIMIT
         1
     )[SAFE_OFFSET(0)] AS install_source,
+    ARRAY_AGG(
+      IF(distribution_id IS NOT NULL, distribution_id, NULL) IGNORE NULLS
+      ORDER BY
+        ping_seq ASC,
+        submission_timestamp ASC
+      LIMIT
+        1
+    )[SAFE_OFFSET(0)] AS distribution_id,
   FROM
     metrics_ping_base
   GROUP BY
     client_id,
-    sample_id,
-    distribution_id
+    sample_id
 )
 SELECT
   @submission_date AS submission_date,

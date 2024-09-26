@@ -8,6 +8,7 @@ import datetime
 from operators.gcp_container_operator import GKEPodOperator
 from utils.constants import ALLOWED_STATES, FAILED_STATES
 from utils.gcp import bigquery_etl_query, bigquery_dq_check
+from bigeye_airflow.operators.run_metrics_operator import RunMetricsOperator
 
 docs = """
 ### bqetl_test_dag
@@ -48,6 +49,17 @@ with DAG(
 
     task_group_test_group = TaskGroup("test_group")
 
+    bigeye__test__python_script_query__v1 = RunMetricsOperator(
+        task_id="bigeye__test__python_script_query__v1",
+        connection_id="bigeye_connection",
+        warehouse_id=1817,
+        schema_name="moz-fx-data-test-project.test",
+        table_name="None",
+        circuit_breaker_mode=False,
+        retries=0,
+        task_group=task_group_test_group,
+    )
+
     test__python_script_query__v1 = GKEPodOperator(
         task_id="test__python_script_query__v1",
         arguments=[
@@ -60,3 +72,5 @@ with DAG(
         email=["test@example.com"],
         task_group=task_group_test_group,
     )
+
+    bigeye__test__python_script_query__v1.set_upstream(test__python_script_query__v1)

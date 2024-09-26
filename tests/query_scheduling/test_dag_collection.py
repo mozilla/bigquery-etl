@@ -308,7 +308,10 @@ class TestDagCollection:
             },
         )
 
-        tasks = [Task.of_python_script(query_file, metadata)]
+        tasks = [
+            Task.of_python_script(query_file, metadata),
+            Task.of_bigeye_check(query_file, metadata),
+        ]
 
         default_args = {
             "depends_on_past": False,

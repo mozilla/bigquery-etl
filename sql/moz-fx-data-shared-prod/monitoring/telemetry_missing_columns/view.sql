@@ -13,6 +13,7 @@ LEFT JOIN
   -- get caught during schema validation in ingestion. For example, sometimes integer values that
   -- are too large for BigQuery cause columns to show up here.
   `moz-fx-data-shared-prod.region-us.INFORMATION_SCHEMA.COLUMN_FIELD_PATHS` AS existing_schema
+  -- im a change
   ON existing_schema.table_schema = CONCAT(missing_columns.document_namespace, "_stable")
   AND existing_schema.table_name = CONCAT(
     missing_columns.document_type,

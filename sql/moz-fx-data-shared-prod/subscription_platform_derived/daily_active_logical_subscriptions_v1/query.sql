@@ -57,4 +57,5 @@ SELECT
   ) AS was_active_at_day_start,
   latest_subscription_history.subscription.is_active AS was_active_at_day_end
 FROM
+  -- change
   daily_active_subscriptions_history

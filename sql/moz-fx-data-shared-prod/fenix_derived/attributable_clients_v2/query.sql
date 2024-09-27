@@ -27,6 +27,7 @@ WITH client_days AS (
     sample_id,
     client_id
 ),
+-- 😯
 searches AS (
   SELECT
     submission_date,

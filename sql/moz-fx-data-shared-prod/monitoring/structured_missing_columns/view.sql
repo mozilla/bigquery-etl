@@ -22,6 +22,7 @@ LEFT JOIN
   -- Normalize the column paths and convert them to follow the BigQuery column naming conventions.
   -- The `path` format looks like this: `events`.[...].`timestamp`
   -- The `field_path` format in INFORMATION_SCHEMA.COLUMN_FIELD_PATHS looks like this: events.timestamp
+  -- change change change
   AND ARRAY_TO_STRING(
     `moz-fx-data-shared-prod.udf_js.snake_case_columns`(
       REGEXP_EXTRACT_ALL(missing_columns.path, '`(.+?)`')

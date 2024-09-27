@@ -23,4 +23,5 @@ WHERE
   AND event.name = "telemetry_setting_changed"
   AND mozfun.map.get_key(event.extra, "is_enabled") = "false"
 GROUP BY
+  -- change
   client_id

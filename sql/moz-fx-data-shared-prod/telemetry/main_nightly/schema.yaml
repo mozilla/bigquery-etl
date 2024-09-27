@@ -38794,6 +38794,18 @@ fields:
         - name: formautofill_credit_cards_submitted_sections_count
           type: INTEGER
           mode: NULLABLE
+        - name: browser_engagement_max_concurrent_vertical_tab_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: browser_engagement_max_concurrent_vertical_tab_pinned_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: browser_engagement_vertical_tab_open_event_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: browser_engagement_vertical_tab_pinned_event_count
+          type: INTEGER
+          mode: NULLABLE
     - name: socket
       type: RECORD
       mode: NULLABLE

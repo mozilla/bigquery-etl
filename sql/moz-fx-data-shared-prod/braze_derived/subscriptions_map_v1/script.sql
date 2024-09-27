@@ -163,6 +163,14 @@ VALUES
     'mozilla-social-waitlist'
   ),
   (
+    'nothing-personal-college-interest',
+    'Firefox University interest',
+    '7edc5999-8893-4453-b4f3-70ab7c479dd2',
+    '9b2bfa6c-0725-4a2d-8b21-a9f05f2d0bba',
+    'c0681ddd-1ae8-49df-bffd-6f3e6dd0aa92',
+    'nothing-personal-college-interest'
+  ),
+  (
     'relay-phone-masking-waitlist',
     'Relay Phone Masking Waitlist',
     '4011707b-1a55-4177-9f5d-2a6d86225242',

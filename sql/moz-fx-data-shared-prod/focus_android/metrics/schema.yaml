@@ -457,6 +457,12 @@ fields:
     - name: sct_signature_cache_total
       type: INTEGER
       mode: NULLABLE
+    - name: webrtcdtls_client_handshake_started_counter
+      type: INTEGER
+      mode: NULLABLE
+    - name: webrtcdtls_server_handshake_started_counter
+      type: INTEGER
+      mode: NULLABLE
   - name: datetime
     type: RECORD
     mode: NULLABLE
@@ -2125,6 +2131,16 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
+    - name: networking_http_ip_addr_any_count
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -3617,6 +3633,26 @@ fields:
           type: INTEGER
           mode: NULLABLE
     - name: networking_http_3_udp_datagram_segments_received
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+    - name: networking_http_3_loss_ratio
       type: RECORD
       mode: NULLABLE
       fields:

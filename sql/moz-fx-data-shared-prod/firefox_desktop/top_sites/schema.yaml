@@ -375,6 +375,13 @@ fields:
         pings.
 
         '
+    - name: activity_stream_context_id
+      type: STRING
+      mode: NULLABLE
+      description: 'An identifier to identify users for Contextual Services user interaction
+        pings.
+
+        '
   - name: url
     type: RECORD
     mode: NULLABLE

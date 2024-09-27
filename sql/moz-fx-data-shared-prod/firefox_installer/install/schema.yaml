@@ -387,6 +387,11 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Version of partner distribution, defaulting to 0 for Mozilla distributions
+- name: windows_ubr
+  type: INTEGER
+  mode: NULLABLE
+  description: The Windows Update Build Revision of the installation device, 0 if
+    it does not exist
 - name: funnel_derived
   type: STRING
   mode: NULLABLE

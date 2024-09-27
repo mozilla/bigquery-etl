@@ -1554,6 +1554,20 @@ fields:
       description: 'How many SCT signature verifications are performed.
 
         '
+    - name: webrtcdtls_client_handshake_started_counter
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of webrtc transports that have started a DTLS handshake
+        as the client.
+
+        '
+    - name: webrtcdtls_server_handshake_started_counter
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of webrtc transports that have started a DTLS handshake
+        as the server.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -1926,7 +1940,8 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream.
+      description: 'Failure occurs when initializing the audio stream. (Migrated from
+        the geckoview metric of the same name).
 
         '
     - name: glean_validation_pings_submitted
@@ -4191,6 +4206,20 @@ fields:
       description: 'The category of the origin that calls new Notification/showNotification().
 
         '
+    - name: networking_http_ip_addr_any_count
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The number of times we see the IP address 0.0.0.0 or its IPv6
+        equivalent.
+
+        '
   - name: string
     type: RECORD
     mode: NULLABLE
@@ -6267,6 +6296,31 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'HTTP3 UDP number of segments per datagram received.
+
+        '
+    - name: networking_http_3_loss_ratio
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'HTTP3: packet loss ratio (multiply by 10000).
 
         '
   - name: quantity

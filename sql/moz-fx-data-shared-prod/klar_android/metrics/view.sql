@@ -100,7 +100,9 @@ SELECT
       metrics.counter.networking_os_socket_limit_reached,
       metrics.counter.web_notification_insecure_context_permission_request,
       metrics.counter.cert_signature_cache_total,
-      metrics.counter.sct_signature_cache_total
+      metrics.counter.sct_signature_cache_total,
+      metrics.counter.webrtcdtls_client_handshake_started_counter,
+      metrics.counter.webrtcdtls_server_handshake_started_counter
     ) AS `counter`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -277,7 +279,8 @@ SELECT
       metrics.labeled_counter.netwerk_http3_ech_outcome_real,
       metrics.labeled_counter.web_notification_permission_origin,
       metrics.labeled_counter.web_notification_request_permission_origin,
-      metrics.labeled_counter.web_notification_show_origin
+      metrics.labeled_counter.web_notification_show_origin,
+      metrics.labeled_counter.networking_http_ip_addr_any_count
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -398,7 +401,8 @@ SELECT
       metrics.custom_distribution.networking_http_3_download_throughput_100,
       metrics.custom_distribution.networking_http_3_download_throughput_10_50,
       metrics.custom_distribution.networking_http_3_download_throughput_50_100,
-      metrics.custom_distribution.networking_http_3_udp_datagram_segments_received
+      metrics.custom_distribution.networking_http_3_udp_datagram_segments_received,
+      metrics.custom_distribution.networking_http_3_loss_ratio
     ) AS `custom_distribution`,
     STRUCT(
       metrics.timespan.nimbus_experiments_nimbus_initial_fetch,

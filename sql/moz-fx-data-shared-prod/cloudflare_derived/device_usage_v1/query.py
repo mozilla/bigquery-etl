@@ -6,6 +6,7 @@ import requests
 from argparse import ArgumentParser
 from google.cloud import bigquery
 from google.cloud import storage
+from airflow.providers.cncf.kubernetes.secret import Secret
 
 # Configs
 device_usg_configs = {
@@ -61,6 +62,14 @@ device_usg_configs = {
     "results_bq_stg_table": "moz-fx-data-shared-prod.cloudflare_derived.device_results_stg",
     "errors_bq_stg_table": "moz-fx-data-shared-prod.cloudflare_derived.device_errors_stg",
 }
+
+#Load the Cloudflare API Token
+cloudflare_api_token = Secret(
+    deploy_type="env",
+    deploy_target="SECRET",
+    secret="gke-secrets",
+    key="Cloudflare_API_Token",
+)
 
 
 # Define a function to move a GCS object then delete the original

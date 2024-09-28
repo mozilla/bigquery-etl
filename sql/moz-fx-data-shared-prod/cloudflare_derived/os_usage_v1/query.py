@@ -69,7 +69,7 @@ cloudflare_api_token = Secret(
     deploy_type="env",
     deploy_target="SECRET",
     secret="gke-secrets",
-    key="Cloudflare_API_Token",
+    key="CLOUDFLARE_AUTH_TOKEN",
 )
 
 # Define a function to move a GCS object then delete the original

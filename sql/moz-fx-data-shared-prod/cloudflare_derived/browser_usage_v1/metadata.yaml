@@ -11,7 +11,7 @@ scheduling:
   arguments: ["--date", "{{ds}}"]
   secrets:
     - deploy_target: SECRET
-      key: Cloudflare_API_Token
+      key: CLOUDFLARE_AUTH_TOKEN
       deploy_type: env
       secret: gke-secrets
 bigquery:

@@ -30,6 +30,7 @@ client_attribution AS (
     client_id,
     channel,
     adjust_network,
+    distribution_id
   FROM
     `moz-fx-data-shared-prod.fenix.firefox_android_clients`
 ),
@@ -938,7 +939,8 @@ SELECT
       WHEN home_page_customize_home_clicked > 0
         THEN client_id
     END
-  ) AS home_page_customize_home_clicked_users
+  ) AS home_page_customize_home_clicked_users,
+  distribution_id
 FROM
   event_ping_clients_feature_usage
 INNER JOIN
@@ -956,4 +958,5 @@ GROUP BY
   channel,
   country,
   adjust_network,
-  is_default_browser
+  is_default_browser,
+  distribution_id

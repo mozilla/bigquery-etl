@@ -1,10 +1,10 @@
 2024-09-25:
   start_date: 2023-07-14
-  end_date: 2024-09-27
+  end_date: 2024-09-31
   reason: Add serp_events history
   watchers:
-    - mbowerman@mozilla.com
-    - akommasani@mozilla.com
+  - mbowerman@mozilla.com
+  - akommasani@mozilla.com
   status: Initiate
 
 2024-09-04:
@@ -12,8 +12,8 @@
   end_date: 2024-09-04
   reason: https://mozilla-hub.atlassian.net/browse/RS-1253
   watchers:
-    - akommasani@mozilla.com
-    - skahmann@mozilla.com
+  - akommasani@mozilla.com
+  - skahmann@mozilla.com
   status: Complete
 
 2024-07-18:
@@ -21,8 +21,8 @@
   end_date: 2024-07-17
   reason: https://mozilla-hub.atlassian.net/browse/RS-1253
   watchers:
-    - akommasani@mozilla.com
-    - skahmann@mozilla.com
+  - akommasani@mozilla.com
+  - skahmann@mozilla.com
   status: Complete
 
 2024-07-17:
@@ -30,6 +30,6 @@
   end_date: 2024-07-16
   reason: https://mozilla-hub.atlassian.net/browse/RS-1253
   watchers:
-    - akommasani@mozilla.com
-    - skahmann@mozilla.com
+  - akommasani@mozilla.com
+  - skahmann@mozilla.com
   status: Complete

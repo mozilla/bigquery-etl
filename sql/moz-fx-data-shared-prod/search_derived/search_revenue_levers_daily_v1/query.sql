@@ -282,16 +282,31 @@ desktop_serp_events AS (
     `moz-fx-data-shared-prod`.udf.normalize_search_engine(search_engine) AS partner,
     'desktop' AS device,
     normalized_country_code AS country,
+    COUNT(DISTINCT legacy_telemetry_client_id) AS serp_events_client_count,
+    COUNT(
+      DISTINCT IF(ad_blocker_inferred, legacy_telemetry_client_id, NULL)
+    ) AS serp_events_clients_with_ad_blocker_inferred,
     COUNT(impression_id) AS serp_events_sap,
     COUNTIF(is_tagged) AS serp_events_tagged_sap,
+    COUNTIF(is_tagged AND REGEXP_CONTAINS(sap_source, 'follow_on')) AS serp_events_tagged_follow_on,
+    SUM(num_ad_clicks) AS serp_events_ad_click,
+    COUNTIF(num_ads_visible > 0) AS serp_events_search_with_ads,
+    COUNTIF(NOT is_tagged) AS serp_events_organic,
+    SUM(IF(NOT is_tagged, num_ad_clicks, 0)) AS serp_events_ad_click_organic,
+    COUNTIF(num_ads_visible > 0 AND NOT is_tagged) AS serp_events_search_with_ads_organic,
+    -- serp_events does not have distribution ID or partner codes to calculate monetizable SAP
     COUNTIF(ad_blocker_inferred) AS serp_events_sap_with_ad_blocker_inferred,
-    SUM(num_ad_clicks) AS serp_events_ad_clicks,
-    SUM(num_ads_visible) AS serp_events_ads_visible,
-    SUM(num_ads_blocked) AS serp_events_ads_blocked
+    SUM(num_ads_visible) AS serp_events_ad_impression,
+    SUM(num_ads_blocked) AS serp_events_ad_blocked,
   FROM
     `moz-fx-data-shared-prod.firefox_desktop.serp_events`
   WHERE
     submission_date = @submission_date
+    AND `moz-fx-data-shared-prod`.udf.normalize_search_engine(search_engine) IN (
+      'Google',
+      'Bing',
+      'DuckDuckGo'
+    )
   GROUP BY
     submission_date,
     partner,
@@ -316,12 +331,19 @@ SELECT
   cd.ad_click_organic,
   cd.search_with_ads_organic,
   cd.monetizable_sap,
+  dse.serp_events_client_count,
+  dse.serp_events_clients_with_ad_blocker_inferred,
   dse.serp_events_sap,
   dse.serp_events_tagged_sap,
+  dse.serp_events_tagged_follow_on,
+  dse.serp_events_ad_click,
+  dse.serp_events_search_with_ads,
+  dse.serp_events_organic,
+  dse.serp_events_ad_click_organic,
+  dse.serp_events_search_with_ads_organic,
   dse.serp_events_sap_with_ad_blocker_inferred,
-  dse.serp_events_ad_clicks,
-  dse.serp_events_ads_visible,
-  dse.serp_events_ads_blocked
+  dse.serp_events_ad_impression,
+  dse.serp_events_ad_blocked
 FROM
   combined_search_data cd
 LEFT JOIN

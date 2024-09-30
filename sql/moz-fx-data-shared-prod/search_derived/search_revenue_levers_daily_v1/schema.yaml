@@ -68,3 +68,33 @@ fields:
 - name: serp_events_ads_blocked
   type: INTEGER
   mode: NULLABLE
+- name: serp_events_client_count
+  type: INTEGER
+  mode: NULLABLE
+- name: serp_events_clients_with_ad_blocker_inferred
+  type: INTEGER
+  mode: NULLABLE
+- name: serp_events_tagged_follow_on
+  type: INTEGER
+  mode: NULLABLE
+- name: serp_events_ad_click
+  type: INTEGER
+  mode: NULLABLE
+- name: serp_events_search_with_ads
+  type: INTEGER
+  mode: NULLABLE
+- name: serp_events_organic
+  type: INTEGER
+  mode: NULLABLE
+- name: serp_events_ad_click_organic
+  type: INTEGER
+  mode: NULLABLE
+- name: serp_events_search_with_ads_organic
+  type: INTEGER
+  mode: NULLABLE
+- name: serp_events_ad_impression
+  type: INTEGER
+  mode: NULLABLE
+- name: serp_events_ad_blocked
+  type: INTEGER
+  mode: NULLABLE

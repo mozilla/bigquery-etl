@@ -5,3 +5,7 @@ owners:
   - kwindau@mozilla.com
 labels:
   authorized: true
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:data-sumo/automation

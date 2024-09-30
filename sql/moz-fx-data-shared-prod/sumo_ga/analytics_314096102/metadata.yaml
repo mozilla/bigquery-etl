@@ -1,6 +1,6 @@
 friendly_name: Analytics 314096102
 description: |-
-  Google Analytics Data
+  SUMO Prod Google Analytics Data
 owners:
   - kwindau@mozilla.com
 labels:

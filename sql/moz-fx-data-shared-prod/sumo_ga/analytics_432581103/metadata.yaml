@@ -1,6 +1,6 @@
-friendly_name: Analytics 432581103
+friendly_name: SUMO Non-Prod Google Analytics Data (432581103)
 description: |-
-  SUMO Non-Prod Google Analytics Data
+  SUMO Non-Prod Google Analytics Data (Analytics 432581103)
 owners:
   - kwindau@mozilla.com
 labels:

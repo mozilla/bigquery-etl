@@ -59,7 +59,7 @@ class GleanAppPingViews(GleanTable):
         output_dir=None,
         use_cloud_function=True,
         parallelism=8,
-        id_token=None
+        id_token=None,
     ):
         """
         Generate per-app ping views across channels.
@@ -112,7 +112,7 @@ class GleanAppPingViews(GleanTable):
                     view_name,
                     partitioned_by="submission_timestamp",
                     use_cloud_function=use_cloud_function,
-                    id_token=id_token
+                    id_token=id_token,
                 )
                 cached_schemas[channel_dataset] = deepcopy(schema)
 
@@ -147,10 +147,14 @@ class GleanAppPingViews(GleanTable):
                     channel_dataset = channel_app["bq_dataset_family"]
 
                     # compare table schema with unioned schema to determine fields that need to be NULL
-                    select_expression = self._generate_select_expression(
-                        unioned_schema.schema["fields"],
-                        cached_schemas[channel_dataset].schema["fields"],
-                        restructure_metrics=restructure_metrics,
+                    select_expression = cached_schemas[
+                        channel_dataset
+                    ].generate_compatible_select_expression(
+                        unioned_schema,
+                        fields_to_remove=OVERRIDDEN_FIELDS,
+                        unnest_structs=restructure_metrics,
+                        max_unnest_depth=2,
+                        unnest_allowlist="metrics",
                     )
 
                     queries.append(
@@ -246,100 +250,3 @@ class GleanAppPingViews(GleanTable):
                 _process_ping,
                 p.get_pings(),
             )
-
-    def _generate_select_expression(
-        self, unioned_schema_nodes, app_schema_nodes, path=[], restructure_metrics=False
-    ) -> str:
-        """
-        Generate the select expression based on the unioned schema and the app channel schema.
-
-        Any fields that are missing in the app_schema are set to NULL.
-        """
-        select_expr = []
-        unioned_schema_nodes = {n["name"]: n for n in unioned_schema_nodes}
-        app_schema_nodes = {n["name"]: n for n in app_schema_nodes}
-
-        # iterate through fields
-        for node_name, node in unioned_schema_nodes.items():
-            dtype = node["type"]
-            node_path = path + [node_name]
-
-            if node_name in app_schema_nodes:
-                # field exists in app schema
-
-                # We sometimes fully specify the `metrics` fields structure to try to avoid problems
-                # when the underlying table/view schemas change due to new metrics being added.
-                if node == app_schema_nodes[node_name] and not (
-                    restructure_metrics
-                    and node_path[0] == "metrics"
-                    and len(node_path) <= 2
-                    and dtype == "RECORD"
-                ):
-                    if node_name not in OVERRIDDEN_FIELDS:
-                        # field (and all nested fields) are identical, so just query it
-                        select_expr.append(f"{'.'.join(node_path)}")
-                else:
-                    # fields and/or nested fields are not identical, or this is within `metrics`
-                    if dtype == "RECORD":
-                        # for nested fields, recursively generate select expression
-
-                        if node.get("mode", None) == "REPEATED":
-                            # unnest repeated record
-                            select_expr.append(
-                                f"""
-                                    ARRAY(
-                                        SELECT
-                                            STRUCT(
-                                                {self._generate_select_expression(
-                                                    node['fields'],
-                                                    app_schema_nodes[node_name]['fields'],
-                                                    [node_name],
-                                                    restructure_metrics
-                                                )}
-                                            )
-                                        FROM UNNEST({'.'.join(node_path)}) AS `{node_name}`
-                                    ) AS `{node_name}`
-                                """
-                            )
-                        else:
-                            # select struct fields
-                            select_expr.append(
-                                f"""
-                                    STRUCT(
-                                        {self._generate_select_expression(
-                                            node['fields'],
-                                            app_schema_nodes[node_name]['fields'],
-                                            node_path,
-                                            restructure_metrics
-                                        )}
-                                    ) AS `{node_name}`
-                                """
-                            )
-                    else:
-                        select_expr.append(
-                            f"CAST(NULL AS {self._type_info(node)}) AS `{node_name}`"
-                        )
-            else:
-                select_expr.append(
-                    f"CAST(NULL AS {self._type_info(node)}) AS `{node_name}`"
-                )
-
-        return ", ".join(select_expr)
-
-    def _type_info(self, node):
-        """Determine the type information."""
-        dtype = node["type"]
-        if dtype == "RECORD":
-            dtype = (
-                "STRUCT<"
-                + ", ".join(
-                    f"`{field['name']}` {self._type_info(field)}"
-                    for field in node["fields"]
-                )
-                + ">"
-            )
-        elif dtype == "FLOAT":
-            dtype = "FLOAT64"
-        if node.get("mode") == "REPEATED":
-            return f"ARRAY<{dtype}>"
-        return dtype

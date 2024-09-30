@@ -59,9 +59,6 @@ first_session_ping AS (
   SELECT
     client_id,
     sample_id,
-    {% if 'distribution_id' in product_attribution_group_names %}
-    distribution_id,
-    {% endif %}
     {% if 'adjust' in product_attribution_group_names %}
     ARRAY_AGG(
       IF(
@@ -146,14 +143,24 @@ first_session_ping AS (
         1
     )[SAFE_OFFSET(0)] AS meta_info,
     {% endif %}
+    {% if 'distribution_id' in product_attribution_group_names %}
+    ARRAY_AGG(
+      IF(
+        distribution_id IS NOT NULL,
+        distribution_id,
+        NULL
+      ) IGNORE NULLS
+      ORDER BY
+        ping_seq ASC, submission_timestamp ASC
+      LIMIT
+        1
+    )[SAFE_OFFSET(0)] AS distribution_id,
+    {% endif %}
   FROM
     first_session_ping_base
   GROUP BY
     client_id,
     sample_id
-    {% if 'distribution_id' in product_attribution_group_names %}
-    ,distribution_id
-    {% endif %}
 )
 {% endif %}
 {% if 'metrics' in product_attribution_group_pings %}
@@ -196,9 +203,6 @@ metrics_ping AS (
   SELECT
     client_id,
     sample_id,
-    {% if 'distribution_id' in product_attribution_group_names %}
-    distribution_id,
-    {% endif %}
     {% if 'adjust' in product_attribution_group_names %}
     ARRAY_AGG(
       IF(
@@ -240,14 +244,24 @@ metrics_ping AS (
         1
     )[SAFE_OFFSET(0)] AS install_source,
     {% endif %}
+    {% if 'distribution_id' in product_attribution_group_names %}
+    ARRAY_AGG(
+      IF(
+        distribution_id IS NOT NULL,
+        distribution_id,
+        NULL
+      ) IGNORE NULLS
+      ORDER BY
+        ping_seq ASC, submission_timestamp ASC
+      LIMIT
+        1
+    )[SAFE_OFFSET(0)] AS distribution_id,
+    {% endif %}
   FROM
     metrics_ping_base
   GROUP BY
     client_id,
     sample_id
-    {% if 'distribution_id' in product_attribution_group_names %}
-    ,distribution_id
-    {% endif %}
 )
 {% endif %}
 SELECT

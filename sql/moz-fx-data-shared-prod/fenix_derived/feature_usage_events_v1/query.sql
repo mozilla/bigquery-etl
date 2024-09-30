@@ -331,7 +331,15 @@ event_ping_clients_feature_usage AS (
     COUNTIF(
       event_category = 'home_screen'
       AND event_name = 'customize_home_clicked'
-    ) AS home_page_customize_home_clicked
+    ) AS home_page_customize_home_clicked,
+    COUNTIF(
+      event_category = 'top_sites'
+      AND event_name = 'contile_click'
+    ) AS top_sites_contile_click,
+    COUNTIF(
+      event_category = 'top_sites'
+      AND event_name = 'contile_impression'
+    ) AS top_sites_contile_impression
   FROM
     `moz-fx-data-shared-prod.fenix.events_unnested`
   WHERE
@@ -940,7 +948,26 @@ SELECT
         THEN client_id
     END
   ) AS home_page_customize_home_clicked_users,
-  distribution_id
+  distribution_id,
+/*Sponsored Tiles*/
+--top_sites_contile_click
+  SUM(top_sites_contile_click) AS top_sites_contile_click,
+  COUNT(
+    DISTINCT
+    CASE
+      WHEN top_sites_contile_click > 0
+        THEN client_id
+    END
+  ) AS top_sites_contile_click_users,
+--top_sites_contile_impression
+  SUM(top_sites_contile_impression) AS top_sites_contile_impression,
+  COUNT(
+    DISTINCT
+    CASE
+      WHEN top_sites_contile_impression > 0
+        THEN client_id
+    END
+  ) AS top_sites_contile_impression_users,
 FROM
   event_ping_clients_feature_usage
 INNER JOIN

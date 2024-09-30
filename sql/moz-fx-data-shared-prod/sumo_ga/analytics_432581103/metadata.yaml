@@ -1,0 +1,7 @@
+friendly_name: Analytics 432581103
+description: |-
+  Google Analytics Data
+owners:
+  - kwindau@mozilla.com
+labels:
+  authorized: true

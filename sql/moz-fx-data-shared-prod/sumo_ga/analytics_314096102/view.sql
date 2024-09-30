@@ -1,6 +1,6 @@
-CREATE OR REPLACE VIEW 
-    `moz-fx-data-shared-prod.sumo_ga.analytics_314096102`
-AS 
+CREATE OR REPLACE VIEW
+  `moz-fx-data-shared-prod.sumo_ga.analytics_314096102`
+AS
 SELECT
   *
 FROM

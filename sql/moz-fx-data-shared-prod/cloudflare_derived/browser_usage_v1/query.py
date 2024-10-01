@@ -273,7 +273,7 @@ def main():
     """Call the API, save data to GCS, load to BQ staging, delete & load to BQ gold"""
     parser = ArgumentParser(description=__doc__)
     parser.add_argument("--date", required=True)
-    parser.add_argument("--cloudflare_api_token", default=cloudflare_api_token, required=True)
+    parser.add_argument("--cloudflare_api_token", default=cloudflare_api_token)
     parser.add_argument("--project", default=brwsr_usg_configs["gcp_project_id"])
     parser.add_argument("--dataset", default="cloudflare_derived")
 

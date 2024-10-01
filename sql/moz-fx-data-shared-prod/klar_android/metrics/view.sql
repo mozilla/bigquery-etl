@@ -102,7 +102,9 @@ SELECT
       metrics.counter.cert_signature_cache_total,
       metrics.counter.sct_signature_cache_total,
       metrics.counter.webrtcdtls_client_handshake_started_counter,
-      metrics.counter.webrtcdtls_server_handshake_started_counter
+      metrics.counter.webrtcdtls_server_handshake_started_counter,
+      metrics.counter.ls_request_recv_cancellation,
+      metrics.counter.ls_request_send_cancellation
     ) AS `counter`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -402,7 +404,9 @@ SELECT
       metrics.custom_distribution.networking_http_3_download_throughput_10_50,
       metrics.custom_distribution.networking_http_3_download_throughput_50_100,
       metrics.custom_distribution.networking_http_3_udp_datagram_segments_received,
-      metrics.custom_distribution.networking_http_3_loss_ratio
+      metrics.custom_distribution.networking_http_3_loss_ratio,
+      metrics.custom_distribution.networking_http_3_ecn_ce_ect0_ratio_received,
+      metrics.custom_distribution.networking_http_3_ecn_ce_ect0_ratio_sent
     ) AS `custom_distribution`,
     STRUCT(
       metrics.timespan.nimbus_experiments_nimbus_initial_fetch,
@@ -543,7 +547,9 @@ SELECT
       metrics.timing_distribution.ocsp_request_time_cancel,
       metrics.timing_distribution.ocsp_request_time_failure,
       metrics.timing_distribution.ocsp_request_time_success,
-      metrics.timing_distribution.networking_http_content_ondatafinished_delay_2
+      metrics.timing_distribution.networking_http_content_ondatafinished_delay_2,
+      metrics.timing_distribution.ls_preparedatastore_processing_time,
+      metrics.timing_distribution.ls_preparelsdatabase_processing_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.labeled_boolean.cookie_banners_normal_window_service_mode,

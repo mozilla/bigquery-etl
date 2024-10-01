@@ -721,6 +721,21 @@ fields:
         as the server.
 
         '
+    - name: ls_request_recv_cancellation
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Upticks whenever a LS request cancellation message is received.
+        This includes requests for ensuring either LSDatabase or LSObserver in the
+        child.
+
+        '
+    - name: ls_request_send_cancellation
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Upticks whenever a LS request cancellation message is sent. This
+        includes requests for ensuring either LSDatabase or LSObserver.
+
+        '
   - name: datetime
     type: RECORD
     mode: NULLABLE
@@ -4960,6 +4975,56 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'HTTP3: packet loss ratio (multiply by 10000).
+
+        '
+    - name: networking_http_3_ecn_ce_ect0_ratio_received
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'HTTP3: ECN CE to ECT0 ratio (multiply by 10000) received.
+
+        '
+    - name: networking_http_3_ecn_ce_ect0_ratio_sent
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'HTTP3: ECN CE to ECT0 ratio (multiply by 10000) sent.
 
         '
   - name: labeled_boolean
@@ -11416,6 +11481,101 @@ fields:
           mode: NULLABLE
       description: 'The time between dispatching OnDataFinished from the socket thread
         and processing it on the background thread.
+
+        '
+    - name: ls_preparedatastore_processing_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time it took for the parent process to prepare a Datastore. This
+        duration can be significantly affected by Datastore preloading, which is triggered
+        when a page begins to load. When a Datastore is already preloaded, the preparation
+        is usually fast since it doesn''t need to do any I/O. If an error occurs,
+        the time is not recorded. In future, we might want to introduce additional
+        separate metrics for different types of datastore preparations (data needs
+        to be loaded from disk, data already available, etc.)
+
+        '
+    - name: ls_preparelsdatabase_processing_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time it took for the content process to fully prepare a new LSDatabase,
+        including any time required to prepare a Datastore in the parent. This duration
+        can be significantly affected by Datastore preloading, which is triggered
+        when a page begins to load. If an error occurs, the time is not recorded.
 
         '
   - name: quantity

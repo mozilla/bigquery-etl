@@ -1,0 +1,16 @@
+friendly_name: SUMO Prod Google Analytics Data (314096102)
+description: |-
+  SUMO Prod Google Analytics Data (Analytics 314096102)
+owners:
+- kwindau@mozilla.com
+labels:
+  authorized: true
+  owner1: kwindau
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  view.sql:
+  - moz-fx-data-marketing-prod.analytics_314096102.events_*

@@ -59,9 +59,6 @@ fields:
 - name: serp_events_sap_with_ad_blocker_inferred
   type: INTEGER
   mode: NULLABLE
-- name: serp_events_ad_clicks
-  type: INTEGER
-  mode: NULLABLE
 - name: serp_events_ads_visible
   type: INTEGER
   mode: NULLABLE

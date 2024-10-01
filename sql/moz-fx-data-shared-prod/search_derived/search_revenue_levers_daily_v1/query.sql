@@ -342,8 +342,8 @@ SELECT
   dse.serp_events_ad_click_organic,
   dse.serp_events_search_with_ads_organic,
   dse.serp_events_sap_with_ad_blocker_inferred,
-  dse.serp_events_ad_impression,
-  dse.serp_events_ad_blocked
+  dse.serp_events_num_ads_visible,
+  dse.serp_events_num_ads_blocked
 FROM
   combined_search_data cd
 LEFT JOIN

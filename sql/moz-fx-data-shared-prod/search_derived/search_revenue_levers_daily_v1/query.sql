@@ -296,7 +296,7 @@ desktop_serp_events AS (
     COUNTIF(num_ads_visible > 0 AND NOT is_tagged) AS serp_events_search_with_ads_organic,
     -- serp_events does not have distribution ID or partner codes to calculate monetizable SAP
     COUNTIF(ad_blocker_inferred) AS serp_events_sap_with_ad_blocker_inferred,
-    SUM(num_ads_visible) AS serp_events_ad_impression,
+    SUM(num_ads_visible) AS serp_events_num_ads_visible,
     SUM(num_ads_blocked) AS serp_events_num_ads_blocked,
   FROM
     `moz-fx-data-shared-prod.firefox_desktop.serp_events`

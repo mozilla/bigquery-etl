@@ -10,10 +10,10 @@ scheduling:
   date_partition_parameter: dte
   arguments: ["--date", "{{ds}}"]
   secrets:
-    - deploy_target: SECRET
-      key: CLOUDFLARE_AUTH_TOKEN
-      deploy_type: env
-      secret: gke-secrets
+  - deploy_target: SECRET
+    key: CLOUDFLARE_AUTH_TOKEN
+    deploy_type: env
+    secret: gke-secrets
 bigquery:
   time_partitioning:
     type: day

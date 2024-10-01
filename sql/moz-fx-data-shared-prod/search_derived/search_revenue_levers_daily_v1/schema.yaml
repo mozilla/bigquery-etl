@@ -89,9 +89,9 @@ fields:
 - name: serp_events_search_with_ads_organic
   type: INTEGER
   mode: NULLABLE
-- name: serp_events_ad_impression
+- name: serp_events_num_ads_visible
   type: INTEGER
   mode: NULLABLE
-- name: serp_events_ad_blocked
+- name: serp_events_num_ads_blocked
   type: INTEGER
   mode: NULLABLE

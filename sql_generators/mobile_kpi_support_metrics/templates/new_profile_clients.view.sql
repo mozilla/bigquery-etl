@@ -16,14 +16,10 @@ SELECT
   device_model,
   device_manufacturer,
   is_mobile,
-  {% for attribution_field in product_attribution_fields.values() if not attribution_field.name.endswith("_timestamp") %}
-  attribution.{{ attribution_field.name }},
+  {% for attribution_field in product_attribution_fields %}
+  attribution.{{ attribution_field }},
   {% endfor %}
-  {% if 'adjust_network' in product_attribution_fields %}
-    `moz-fx-data-shared-prod.udf.organic_vs_paid_mobile`(adjust_network) AS paid_vs_organic,
-  {% else %}
-    "Organic" AS paid_vs_organic,
-  {% endif %}
+  attribution.paid_vs_organic,
 FROM
   `{{ project_id }}.{{ dataset }}.active_users` AS active_users
 LEFT JOIN

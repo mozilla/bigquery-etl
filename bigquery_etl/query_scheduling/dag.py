@@ -17,6 +17,8 @@ from bigquery_etl.query_scheduling.utils import (
     validate_timedelta_string,
 )
 
+from bigquery_etl.config import ConfigLoader
+
 AIRFLOW_DAG_TEMPLATE = "airflow_dag.j2"
 PUBLIC_DATA_JSON_DAG_TEMPLATE = "public_data_json_airflow_dag.j2"
 PUBLIC_DATA_JSON_DAG = "bqetl_public_data_json"
@@ -248,6 +250,12 @@ class Dag:
         dag_template = env.get_template(AIRFLOW_DAG_TEMPLATE)
         args = self.__dict__
         args["task_groups"] = self.task_groups
+        args["bigeye_warehouse_id"] = ConfigLoader.get(
+            "monitoring", "bigeye_warehouse_id", fallback=1817
+        )
+        args["bigeye_conn_id"] = ConfigLoader.get(
+            "monitoring", "bigeye_conn_id", fallback="bigeye_connection"
+        )
 
         return dag_template.render(args)
 

@@ -6,6 +6,7 @@ import attr
 import cattrs
 from jinja2 import Environment, PackageLoader
 
+from bigquery_etl.config import ConfigLoader
 from bigquery_etl.query_scheduling import formatters
 from bigquery_etl.query_scheduling.task import Task, TaskRef
 from bigquery_etl.query_scheduling.utils import (
@@ -16,8 +17,6 @@ from bigquery_etl.query_scheduling.utils import (
     schedule_interval_delta,
     validate_timedelta_string,
 )
-
-from bigquery_etl.config import ConfigLoader
 
 AIRFLOW_DAG_TEMPLATE = "airflow_dag.j2"
 PUBLIC_DATA_JSON_DAG_TEMPLATE = "public_data_json_airflow_dag.j2"

@@ -1,6 +1,6 @@
 2024-09-25:
   start_date: 2023-07-14
-  end_date: 2024-09-31
+  end_date: 2024-10-01
   reason: Add serp_events history
   watchers:
   - mbowerman@mozilla.com

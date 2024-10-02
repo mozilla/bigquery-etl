@@ -1,11 +1,18 @@
 CREATE MATERIALIZED VIEW
 IF
   NOT EXISTS `moz-fx-data-shared-prod.org_mozilla_ios_focus_derived.event_monitoring_live_v1`
+  PARTITION BY
+    DATE(submission_date)
+  CLUSTER BY
+    channel,
+    event_category,
+    event_name
   OPTIONS
     (enable_refresh = TRUE, refresh_interval_minutes = 60)
   AS
   SELECT
-    DATE(submission_timestamp) AS submission_date,
+      -- used for partitioning, only allows TIMESTAMP columns
+    TIMESTAMP_TRUNC(submission_timestamp, DAY) AS submission_date,
     TIMESTAMP_ADD(
       TIMESTAMP_TRUNC(submission_timestamp, HOUR),
         -- Aggregates event counts over 60-minute intervals

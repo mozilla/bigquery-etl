@@ -436,7 +436,9 @@ def _deploy_artifacts(ctx, artifact_files, project_id, dataset_suffix, sql_dir):
             entity_type=EntityTypes.USER_BY_EMAIL,
             entity_id=dry_run_account,
         )
-        for dry_run_account in ConfigLoader.get("dry_run", "function_accounts", fallback=[])
+        for dry_run_account in ConfigLoader.get(
+            "dry_run", "function_accounts", fallback=[]
+        )
     ]
 
     # deploy routines

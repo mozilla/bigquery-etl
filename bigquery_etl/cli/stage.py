@@ -11,12 +11,13 @@ import rich_click as click
 from google.cloud import bigquery
 from google.cloud.bigquery.enums import EntityTypes
 
+from .. import ConfigLoader
 from ..cli.query import deploy as deploy_query_schema
 from ..cli.query import update as update_query_schema
 from ..cli.routine import publish as publish_routine
 from ..cli.utils import paths_matching_name_pattern, sql_dir_option
 from ..cli.view import publish as publish_view
-from ..dryrun import DryRun, get_dry_run_service_accounts, get_id_token
+from ..dryrun import DryRun, get_id_token
 from ..routine.parse_routine import (
     ROUTINE_FILES,
     UDF_FILE,
@@ -435,7 +436,7 @@ def _deploy_artifacts(ctx, artifact_files, project_id, dataset_suffix, sql_dir):
             entity_type=EntityTypes.USER_BY_EMAIL,
             entity_id=dry_run_account,
         )
-        for dry_run_account in get_dry_run_service_accounts()
+        for dry_run_account in ConfigLoader.get("dry_run", "function_accounts", fallback=[])
     ]
 
     # deploy routines

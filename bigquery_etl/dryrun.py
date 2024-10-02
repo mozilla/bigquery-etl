@@ -63,11 +63,6 @@ def get_id_token(dry_run_url=ConfigLoader.get("dry_run", "function"), credential
     return id_token
 
 
-def get_dry_run_service_accounts() -> Optional[str]:
-    """Get service accounts used dry run cloud functions."""
-    return ConfigLoader.get("dry_run", "function_accounts", fallback=[])
-
-
 class Errors(Enum):
     """DryRun errors that require special handling."""
 

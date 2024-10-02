@@ -1,5 +1,5 @@
 SELECT
-  -- task id example: project.dataset.table_v1$20240102__sample_10
+  -- task id example: project.dataset.table_v1$20240102__sample_11
   SAFE.PARSE_DATE(
     "%Y%m%d",
     REGEXP_EXTRACT(task_id, r"\$([0-9]{8})(?:__sample_[0-9]+)?$")

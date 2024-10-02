@@ -22,6 +22,7 @@ SELECT
   COUNT(*) AS num_jobs,
   COUNT(error_reason) AS num_job_errors,
 FROM
+  -- test
   `moz-fx-data-shared-prod.monitoring_derived.shredder_per_job_stats_v1`
 GROUP BY
   job_group,

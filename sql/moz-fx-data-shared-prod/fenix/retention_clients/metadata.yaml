@@ -11,5 +11,5 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.fenix.active_users
+  - moz-fx-data-shared-prod.fenix.attribution_clients
   - moz-fx-data-shared-prod.fenix.baseline_clients_daily
-  - moz-fx-data-shared-prod.fenix_derived.firefox_android_clients_v1

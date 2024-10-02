@@ -364,13 +364,6 @@ with DAG(
         )
 
         ExternalTaskMarker(
-            task_id="bqetl_mobile_kpi_metrics__wait_for_checks__fail_fenix_derived__firefox_android_clients__v1",
-            external_dag_id="bqetl_mobile_kpi_metrics",
-            external_task_id="wait_for_checks__fail_fenix_derived__firefox_android_clients__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=50400)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
             task_id="bqetl_mobile_feature_usage__wait_for_checks__fail_fenix_derived__firefox_android_clients__v1",
             external_dag_id="bqetl_mobile_feature_usage",
             external_task_id="wait_for_checks__fail_fenix_derived__firefox_android_clients__v1",

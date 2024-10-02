@@ -20,6 +20,14 @@ WITH active_users AS (
     is_mobile,
   FROM
     `moz-fx-data-shared-prod.focus_ios.active_users`
+),
+attribution AS (
+  SELECT
+    client_id,
+    sample_id,
+    paid_vs_organic,
+  FROM
+    `moz-fx-data-shared-prod.focus_ios.attribution_clients`
 )
 SELECT
   submission_date,
@@ -36,7 +44,7 @@ SELECT
   is_wau,
   is_mau,
   is_mobile,
-  "Organic" AS paid_vs_organic,
+  attribution.paid_vs_organic,
   CASE
     WHEN active_users.submission_date = first_seen_date
       THEN 'new_profile'
@@ -50,3 +58,6 @@ SELECT
   END AS lifecycle_stage,
 FROM
   active_users
+LEFT JOIN
+  attribution
+  USING (client_id, sample_id)

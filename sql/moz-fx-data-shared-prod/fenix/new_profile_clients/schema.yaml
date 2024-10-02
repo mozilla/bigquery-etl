@@ -47,6 +47,9 @@ fields:
 - name: play_store_attribution_source
   type: STRING
   mode: NULLABLE
+- name: play_store_attribution_timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
 - name: play_store_attribution_content
   type: STRING
   mode: NULLABLE
@@ -58,6 +61,9 @@ fields:
   mode: NULLABLE
 - name: meta_attribution_app
   type: STRING
+  mode: NULLABLE
+- name: meta_attribution_timestamp
+  type: TIMESTAMP
   mode: NULLABLE
 - name: install_source
   type: STRING
@@ -73,6 +79,9 @@ fields:
   mode: NULLABLE
 - name: adjust_network
   type: STRING
+  mode: NULLABLE
+- name: adjust_attribution_timestamp
+  type: TIMESTAMP
   mode: NULLABLE
 - name: distribution_id
   type: STRING

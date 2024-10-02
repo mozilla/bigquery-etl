@@ -26,9 +26,6 @@ fields:
 - name: adjust_attribution_timestamp
   type: TIMESTAMP
   mode: NULLABLE
-- name: paid_vs_organic
-  type: STRING
-  mode: NULLABLE
 - name: is_suspicious_device_client
   type: BOOLEAN
   mode: NULLABLE
@@ -36,3 +33,6 @@ fields:
     info.
 
     '
+- name: paid_vs_organic
+  type: STRING
+  mode: NULLABLE

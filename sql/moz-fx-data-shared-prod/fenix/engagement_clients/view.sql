@@ -25,29 +25,25 @@ attribution AS (
   SELECT
     client_id,
     sample_id,
-    channel AS normalized_channel,
-    NULLIF(play_store_attribution_campaign, "") AS play_store_attribution_campaign,
-    NULLIF(play_store_attribution_medium, "") AS play_store_attribution_medium,
-    NULLIF(play_store_attribution_source, "") AS play_store_attribution_source,
-    NULLIF(play_store_attribution_content, "") AS play_store_attribution_content,
-    NULLIF(play_store_attribution_term, "") AS play_store_attribution_term,
-    NULLIF(
-      play_store_attribution_install_referrer_response,
-      ""
-    ) AS play_store_attribution_install_referrer_response,
-    NULLIF(meta_attribution_app, "") AS meta_attribution_app,
-    NULLIF(install_source, "") AS install_source,
-    NULLIF(adjust_ad_group, "") AS adjust_ad_group,
-    CASE
-      WHEN adjust_network IN ('Google Organic Search', 'Organic')
-        THEN 'Organic'
-      ELSE NULLIF(adjust_campaign, "")
-    END AS adjust_campaign,
-    NULLIF(adjust_creative, "") AS adjust_creative,
-    NULLIF(adjust_network, "") AS adjust_network,
-    NULLIF(distribution_id, "") AS distribution_id,
+    play_store_attribution_campaign,
+    play_store_attribution_medium,
+    play_store_attribution_source,
+    play_store_attribution_timestamp,
+    play_store_attribution_content,
+    play_store_attribution_term,
+    play_store_attribution_install_referrer_response,
+    meta_attribution_app,
+    meta_attribution_timestamp,
+    install_source,
+    adjust_ad_group,
+    adjust_campaign,
+    adjust_creative,
+    adjust_network,
+    adjust_attribution_timestamp,
+    distribution_id,
+    paid_vs_organic,
   FROM
-    `moz-fx-data-shared-prod.fenix_derived.firefox_android_clients_v1`
+    `moz-fx-data-shared-prod.fenix.attribution_clients`
 )
 SELECT
   submission_date,
@@ -67,17 +63,20 @@ SELECT
   attribution.play_store_attribution_campaign,
   attribution.play_store_attribution_medium,
   attribution.play_store_attribution_source,
+  attribution.play_store_attribution_timestamp,
   attribution.play_store_attribution_content,
   attribution.play_store_attribution_term,
   attribution.play_store_attribution_install_referrer_response,
   attribution.meta_attribution_app,
+  attribution.meta_attribution_timestamp,
   attribution.install_source,
   attribution.adjust_ad_group,
   attribution.adjust_campaign,
   attribution.adjust_creative,
   attribution.adjust_network,
+  attribution.adjust_attribution_timestamp,
   attribution.distribution_id,
-  `moz-fx-data-shared-prod.udf.organic_vs_paid_mobile`(adjust_network) AS paid_vs_organic,
+  attribution.paid_vs_organic,
   CASE
     WHEN active_users.submission_date = first_seen_date
       THEN 'new_profile'
@@ -93,4 +92,4 @@ FROM
   active_users
 LEFT JOIN
   attribution
-  USING (client_id, sample_id, normalized_channel)
+  USING (client_id, sample_id)

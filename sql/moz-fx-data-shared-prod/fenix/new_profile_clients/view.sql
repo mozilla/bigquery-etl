@@ -19,17 +19,20 @@ SELECT
   attribution.play_store_attribution_campaign,
   attribution.play_store_attribution_medium,
   attribution.play_store_attribution_source,
+  attribution.play_store_attribution_timestamp,
   attribution.play_store_attribution_content,
   attribution.play_store_attribution_term,
   attribution.play_store_attribution_install_referrer_response,
   attribution.meta_attribution_app,
+  attribution.meta_attribution_timestamp,
   attribution.install_source,
   attribution.adjust_ad_group,
   attribution.adjust_campaign,
   attribution.adjust_creative,
   attribution.adjust_network,
+  attribution.adjust_attribution_timestamp,
   attribution.distribution_id,
-  `moz-fx-data-shared-prod.udf.organic_vs_paid_mobile`(adjust_network) AS paid_vs_organic,
+  attribution.paid_vs_organic,
 FROM
   `moz-fx-data-shared-prod.fenix.active_users` AS active_users
 LEFT JOIN

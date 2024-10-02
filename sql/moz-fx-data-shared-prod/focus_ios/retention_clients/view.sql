@@ -16,6 +16,14 @@ WITH active_users AS (
     is_mobile,
   FROM
     `moz-fx-data-shared-prod.focus_ios.active_users`
+),
+attribution AS (
+  SELECT
+    client_id,
+    sample_id,
+    paid_vs_organic,
+  FROM
+    `moz-fx-data-shared-prod.focus_ios.attribution_clients`
 )
 SELECT
   active_users.submission_date AS submission_date,
@@ -30,7 +38,7 @@ SELECT
   clients_daily.locale,
   clients_daily.isp,
   active_users.is_mobile,
-  "Organic" AS paid_vs_organic,
+  attribution.paid_vs_organic,
   -- ping sent retention
   active_users.retention_seen.day_27.active_on_metric_date AS ping_sent_metric_date,
   (
@@ -74,5 +82,9 @@ INNER JOIN
   ON clients_daily.submission_date = active_users.retention_seen.day_27.metric_date
   AND clients_daily.client_id = active_users.client_id
   AND clients_daily.normalized_channel = active_users.normalized_channel
+LEFT JOIN
+  attribution
+  ON clients_daily.client_id = attribution.client_id
+  AND clients_daily.sample_id = attribution.sample_id
 WHERE
   active_users.retention_seen.day_27.active_on_metric_date

@@ -21,14 +21,15 @@ attribution AS (
   SELECT
     client_id,
     sample_id,
-    channel AS normalized_channel,
     is_suspicious_device_client,
-    NULLIF(adjust_ad_group, "") AS adjust_ad_group,
-    NULLIF(adjust_campaign, "") AS adjust_campaign,
-    NULLIF(adjust_creative, "") AS adjust_creative,
-    NULLIF(adjust_network, "") AS adjust_network,
+    adjust_ad_group,
+    adjust_campaign,
+    adjust_creative,
+    adjust_network,
+    adjust_attribution_timestamp,
+    paid_vs_organic,
   FROM
-    `moz-fx-data-shared-prod.firefox_ios_derived.firefox_ios_clients_v1`
+    `moz-fx-data-shared-prod.firefox_ios.attribution_clients`
 )
 SELECT
   active_users.submission_date AS submission_date,
@@ -48,7 +49,8 @@ SELECT
   attribution.adjust_campaign,
   attribution.adjust_creative,
   attribution.adjust_network,
-  `moz-fx-data-shared-prod.udf.organic_vs_paid_mobile`(adjust_network) AS paid_vs_organic,
+  attribution.adjust_attribution_timestamp,
+  attribution.paid_vs_organic,
   -- ping sent retention
   active_users.retention_seen.day_27.active_on_metric_date AS ping_sent_metric_date,
   (
@@ -95,6 +97,6 @@ INNER JOIN
 LEFT JOIN
   attribution
   ON clients_daily.client_id = attribution.client_id
-  AND clients_daily.normalized_channel = attribution.normalized_channel
+  AND clients_daily.sample_id = attribution.sample_id
 WHERE
   active_users.retention_seen.day_27.active_on_metric_date

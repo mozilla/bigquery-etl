@@ -21,7 +21,8 @@ SELECT
   attribution.adjust_campaign,
   attribution.adjust_creative,
   attribution.adjust_network,
-  `moz-fx-data-shared-prod.udf.organic_vs_paid_mobile`(adjust_network) AS paid_vs_organic,
+  attribution.adjust_attribution_timestamp,
+  attribution.paid_vs_organic,
 FROM
   `moz-fx-data-shared-prod.firefox_ios.active_users` AS active_users
 LEFT JOIN

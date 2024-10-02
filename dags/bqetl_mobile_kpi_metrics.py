@@ -134,20 +134,6 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_checks__fail_fenix_derived__firefox_android_clients__v1 = (
-        ExternalTaskSensor(
-            task_id="wait_for_checks__fail_fenix_derived__firefox_android_clients__v1",
-            external_dag_id="bqetl_analytics_tables",
-            external_task_id="checks__fail_fenix_derived__firefox_android_clients__v1",
-            execution_delta=datetime.timedelta(seconds=36000),
-            check_existence=True,
-            mode="reschedule",
-            allowed_states=ALLOWED_STATES,
-            failed_states=FAILED_STATES,
-            pool="DATA_ENG_EXTERNALTASKSENSOR",
-        )
-    )
-
     wait_for_checks__fail_org_mozilla_fenix_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
         task_id="wait_for_checks__fail_org_mozilla_fenix_derived__baseline_clients_last_seen__v1",
         external_dag_id="bqetl_glean_usage",
@@ -237,18 +223,6 @@ with DAG(
         external_dag_id="bqetl_glean_usage",
         external_task_id="firefox_ios.org_mozilla_ios_firefoxbeta_derived__baseline_clients_daily__v1",
         execution_delta=datetime.timedelta(seconds=36000),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    wait_for_checks__fail_firefox_ios_derived__firefox_ios_clients__v1 = ExternalTaskSensor(
-        task_id="wait_for_checks__fail_firefox_ios_derived__firefox_ios_clients__v1",
-        external_dag_id="bqetl_firefox_ios",
-        external_task_id="checks__fail_firefox_ios_derived__firefox_ios_clients__v1",
-        execution_delta=datetime.timedelta(seconds=28800),
         check_existence=True,
         mode="reschedule",
         allowed_states=ALLOWED_STATES,
@@ -1087,10 +1061,6 @@ with DAG(
     )
 
     fenix_derived__engagement__v1.set_upstream(
-        wait_for_checks__fail_fenix_derived__firefox_android_clients__v1
-    )
-
-    fenix_derived__engagement__v1.set_upstream(
         wait_for_checks__fail_org_mozilla_fenix_derived__baseline_clients_last_seen__v1
     )
 
@@ -1109,6 +1079,8 @@ with DAG(
     fenix_derived__engagement__v1.set_upstream(
         wait_for_checks__fail_org_mozilla_firefox_derived__baseline_clients_last_seen__v1
     )
+
+    fenix_derived__engagement__v1.set_upstream(fenix_derived__attribution_clients__v1)
 
     fenix_derived__new_profiles__v1.set_upstream(
         wait_for_checks__fail_org_mozilla_fenix_derived__baseline_clients_last_seen__v1
@@ -1133,10 +1105,6 @@ with DAG(
     fenix_derived__new_profiles__v1.set_upstream(fenix_derived__attribution_clients__v1)
 
     fenix_derived__retention__v1.set_upstream(
-        wait_for_checks__fail_fenix_derived__firefox_android_clients__v1
-    )
-
-    fenix_derived__retention__v1.set_upstream(
         wait_for_checks__fail_org_mozilla_fenix_derived__baseline_clients_last_seen__v1
     )
 
@@ -1155,6 +1123,8 @@ with DAG(
     fenix_derived__retention__v1.set_upstream(
         wait_for_checks__fail_org_mozilla_firefox_derived__baseline_clients_last_seen__v1
     )
+
+    fenix_derived__retention__v1.set_upstream(fenix_derived__attribution_clients__v1)
 
     fenix_derived__retention__v1.set_upstream(
         wait_for_org_mozilla_fenix_derived__baseline_clients_daily__v1
@@ -1193,10 +1163,6 @@ with DAG(
     )
 
     firefox_ios_derived__engagement__v1.set_upstream(
-        wait_for_checks__fail_firefox_ios_derived__firefox_ios_clients__v1
-    )
-
-    firefox_ios_derived__engagement__v1.set_upstream(
         wait_for_checks__fail_org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1
     )
 
@@ -1206,6 +1172,10 @@ with DAG(
 
     firefox_ios_derived__engagement__v1.set_upstream(
         wait_for_checks__fail_org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1
+    )
+
+    firefox_ios_derived__engagement__v1.set_upstream(
+        firefox_ios_derived__attribution_clients__v1
     )
 
     firefox_ios_derived__new_profiles__v1.set_upstream(
@@ -1225,10 +1195,6 @@ with DAG(
     )
 
     firefox_ios_derived__retention__v1.set_upstream(
-        wait_for_checks__fail_firefox_ios_derived__firefox_ios_clients__v1
-    )
-
-    firefox_ios_derived__retention__v1.set_upstream(
         wait_for_checks__fail_org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1
     )
 
@@ -1238,6 +1204,10 @@ with DAG(
 
     firefox_ios_derived__retention__v1.set_upstream(
         wait_for_checks__fail_org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1
+    )
+
+    firefox_ios_derived__retention__v1.set_upstream(
+        firefox_ios_derived__attribution_clients__v1
     )
 
     firefox_ios_derived__retention__v1.set_upstream(
@@ -1276,6 +1246,10 @@ with DAG(
         wait_for_checks__fail_org_mozilla_focus_nightly_derived__baseline_clients_last_seen__v1
     )
 
+    focus_android_derived__engagement__v1.set_upstream(
+        focus_android_derived__attribution_clients__v1
+    )
+
     focus_android_derived__new_profiles__v1.set_upstream(
         wait_for_checks__fail_org_mozilla_focus_beta_derived__baseline_clients_last_seen__v1
     )
@@ -1305,6 +1279,10 @@ with DAG(
     )
 
     focus_android_derived__retention__v1.set_upstream(
+        focus_android_derived__attribution_clients__v1
+    )
+
+    focus_android_derived__retention__v1.set_upstream(
         wait_for_org_mozilla_focus_beta_derived__baseline_clients_daily__v1
     )
 
@@ -1324,6 +1302,10 @@ with DAG(
         wait_for_checks__fail_org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1
     )
 
+    focus_ios_derived__engagement__v1.set_upstream(
+        focus_ios_derived__attribution_clients__v1
+    )
+
     focus_ios_derived__new_profiles__v1.set_upstream(
         wait_for_checks__fail_org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1
     )
@@ -1337,6 +1319,10 @@ with DAG(
     )
 
     focus_ios_derived__retention__v1.set_upstream(
+        focus_ios_derived__attribution_clients__v1
+    )
+
+    focus_ios_derived__retention__v1.set_upstream(
         wait_for_org_mozilla_ios_focus_derived__baseline_clients_daily__v1
     )
 
@@ -1346,6 +1332,10 @@ with DAG(
 
     klar_android_derived__engagement__v1.set_upstream(
         wait_for_checks__fail_org_mozilla_klar_derived__baseline_clients_last_seen__v1
+    )
+
+    klar_android_derived__engagement__v1.set_upstream(
+        klar_android_derived__attribution_clients__v1
     )
 
     klar_android_derived__new_profiles__v1.set_upstream(
@@ -1361,6 +1351,10 @@ with DAG(
     )
 
     klar_android_derived__retention__v1.set_upstream(
+        klar_android_derived__attribution_clients__v1
+    )
+
+    klar_android_derived__retention__v1.set_upstream(
         wait_for_org_mozilla_klar_derived__baseline_clients_daily__v1
     )
 
@@ -1370,6 +1364,10 @@ with DAG(
 
     klar_ios_derived__engagement__v1.set_upstream(
         wait_for_checks__fail_org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1
+    )
+
+    klar_ios_derived__engagement__v1.set_upstream(
+        klar_ios_derived__attribution_clients__v1
     )
 
     klar_ios_derived__new_profiles__v1.set_upstream(
@@ -1382,6 +1380,10 @@ with DAG(
 
     klar_ios_derived__retention__v1.set_upstream(
         wait_for_checks__fail_org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1
+    )
+
+    klar_ios_derived__retention__v1.set_upstream(
+        klar_ios_derived__attribution_clients__v1
     )
 
     klar_ios_derived__retention__v1.set_upstream(

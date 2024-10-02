@@ -6,7 +6,7 @@ This function takes in two arrays of structs (aka maps) where each entry gives t
 bit pattern for days in which we saw a ping for a given user in a given
 key. We combine the bit patterns for the previous day and the
 current day, returning a single map.
-o
+
 See `udf.combine_experiment_days` for a more specific example of this approach.
 */
 CREATE OR REPLACE FUNCTION udf.combine_days_seen_maps(

@@ -30,7 +30,7 @@ client_attribution AS (
     client_id,
     channel,
     adjust_network,
-    distribution_id
+    distribution_id,
   FROM
     `moz-fx-data-shared-prod.fenix.firefox_android_clients`
 ),

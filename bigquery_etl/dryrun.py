@@ -63,41 +63,9 @@ def get_id_token(dry_run_url=ConfigLoader.get("dry_run", "function"), credential
     return id_token
 
 
-def get_cloud_function_service_account(
-    dry_run_url: str = ConfigLoader.get("dry_run", "function")
-) -> Optional[str]:
-    """Get service account used in the given cloud function."""
-    pattern = (
-        r"https://(?P<location>[a-z]+-[a-z0-9]+)-(?P<project>[-a-z0-9]+)"
-        r"\.cloudfunctions.net/(?P<function_name>[-a-z0-9]+)$"
-    )
-    parsed = re.search(pattern, dry_run_url, re.IGNORECASE)
-    auth_token = get_credentials().token
-    if parsed is None:
-        click.echo(f"Could not parse info from dry run url: {dry_run_url}", err=True)
-    else:
-        try:
-            url = (
-                "https://cloudfunctions.googleapis.com/v1/"
-                "projects/{project}/locations/{location}/functions/{function_name}"
-            ).format(
-                project=parsed.group("project"),
-                location=parsed.group("location"),
-                function_name=parsed.group("function_name"),
-            )
-            result = urlopen(
-                Request(
-                    url,
-                    headers={
-                        "Content-Type": "application/json",
-                        "Authorization": f"Bearer {auth_token}",
-                    },
-                )
-            )
-            return json.load(result)["serviceAccountEmail"]
-        except Exception as e:
-            click.echo(f"Could not get auth info from dry run function: {e}", err=True)
-    return None
+def get_dry_run_service_accounts() -> Optional[str]:
+    """Get service accounts used dry run cloud functions."""
+    return ConfigLoader.get("dry_run", "function_accounts", fallback=[])
 
 
 class Errors(Enum):

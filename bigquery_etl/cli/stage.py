@@ -16,7 +16,7 @@ from ..cli.query import update as update_query_schema
 from ..cli.routine import publish as publish_routine
 from ..cli.utils import paths_matching_name_pattern, sql_dir_option
 from ..cli.view import publish as publish_view
-from ..dryrun import DryRun, get_cloud_function_service_account, get_id_token
+from ..dryrun import DryRun, get_dry_run_service_accounts, get_id_token
 from ..routine.parse_routine import (
     ROUTINE_FILES,
     UDF_FILE,
@@ -428,18 +428,15 @@ def _update_references(artifact_files, project_id, dataset_suffix, sql_dir):
 
 def _deploy_artifacts(ctx, artifact_files, project_id, dataset_suffix, sql_dir):
     """Deploy routines, tables and views."""
-    # get dry run account to give read permissions
-    dry_run_account = get_cloud_function_service_account()
-    if dry_run_account is not None:
-        access_entries = [
-            bigquery.AccessEntry(
-                role="READER",
-                entity_type=EntityTypes.USER_BY_EMAIL,
-                entity_id=dry_run_account,
-            )
-        ]
-    else:
-        access_entries = None
+    # give read permissions to dry run accounts
+    dataset_access_entries = [
+        bigquery.AccessEntry(
+            role="READER",
+            entity_type=EntityTypes.USER_BY_EMAIL,
+            entity_id=dry_run_account,
+        )
+        for dry_run_account in get_dry_run_service_accounts()
+    ]
 
     # deploy routines
     routine_files = [file for file in artifact_files if file.name in ROUTINE_FILES]
@@ -449,7 +446,7 @@ def _deploy_artifacts(ctx, artifact_files, project_id, dataset_suffix, sql_dir):
             project_id=project_id,
             dataset=dataset,
             suffix=dataset_suffix,
-            access_entries=access_entries,
+            access_entries=dataset_access_entries,
         )
     ctx.invoke(publish_routine, name=None, project_id=project_id, dry_run=False)
 
@@ -472,7 +469,7 @@ def _deploy_artifacts(ctx, artifact_files, project_id, dataset_suffix, sql_dir):
                 project_id=project_id,
                 dataset=dataset,
                 suffix=dataset_suffix,
-                access_entries=access_entries,
+                access_entries=dataset_access_entries,
             )
 
         ctx.invoke(
@@ -505,7 +502,7 @@ def _deploy_artifacts(ctx, artifact_files, project_id, dataset_suffix, sql_dir):
             project_id=project_id,
             dataset=dataset,
             suffix=dataset_suffix,
-            access_entries=access_entries,
+            access_entries=dataset_access_entries,
         )
 
     ctx.invoke(

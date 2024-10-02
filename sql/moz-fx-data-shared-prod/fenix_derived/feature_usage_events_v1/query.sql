@@ -339,7 +339,7 @@ event_ping_clients_feature_usage AS (
     COUNTIF(
       event_category = 'top_sites'
       AND event_name = 'contile_impression'
-    ) AS top_sites_contile_impression
+    ) AS top_sites_contile_impression,
   FROM
     `moz-fx-data-shared-prod.fenix.events_unnested`
   WHERE

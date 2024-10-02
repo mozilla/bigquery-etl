@@ -20,6 +20,9 @@ default:
 
 dry_run:
   function: https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/bigquery-etl-dryrun
+  function_accounts:
+  - bigquery-etl-dryrun@moz-fx-data-shared-prod.iam.gserviceaccount.com
+  - bigquery-etl-dryrun@moz-fx-data-shar-nonprod-efed.iam.gserviceaccount.com
   skip:
   ## skip all data-observability-dev queries due to CI lacking permissions in that project.
   # TODO: once data observability platform assessment concludes this should be removed.

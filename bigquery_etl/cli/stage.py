@@ -9,7 +9,9 @@ from pathlib import Path
 
 import rich_click as click
 from google.cloud import bigquery
+from google.cloud.bigquery.enums import EntityTypes
 
+from .. import ConfigLoader
 from ..cli.query import deploy as deploy_query_schema
 from ..cli.query import update as update_query_schema
 from ..cli.routine import publish as publish_routine
@@ -104,8 +106,8 @@ def deploy(
         # copy SQL to a temporary directory
         tmp_dir = Path(tempfile.mkdtemp())
         tmp_dir.mkdir(parents=True, exist_ok=True)
-        shutil.copytree(sql_dir, tmp_dir)
-        sql_dir = tmp_dir / sql_dir.name
+        shutil.copytree(sql_dir, tmp_dir, dirs_exist_ok=True)
+        sql_dir = tmp_dir / Path(sql_dir).name
 
     artifact_files = set()
 
@@ -427,12 +429,27 @@ def _update_references(artifact_files, project_id, dataset_suffix, sql_dir):
 
 def _deploy_artifacts(ctx, artifact_files, project_id, dataset_suffix, sql_dir):
     """Deploy routines, tables and views."""
+    # give read permissions to dry run accounts
+    dataset_access_entries = [
+        bigquery.AccessEntry(
+            role="READER",
+            entity_type=EntityTypes.USER_BY_EMAIL,
+            entity_id=dry_run_account,
+        )
+        for dry_run_account in ConfigLoader.get(
+            "dry_run", "function_accounts", fallback=[]
+        )
+    ]
+
     # deploy routines
     routine_files = [file for file in artifact_files if file.name in ROUTINE_FILES]
     for routine_file in routine_files:
         dataset = routine_file.parent.parent.name
         create_dataset_if_not_exists(
-            project_id=project_id, dataset=dataset, suffix=dataset_suffix
+            project_id=project_id,
+            dataset=dataset,
+            suffix=dataset_suffix,
+            access_entries=dataset_access_entries,
         )
     ctx.invoke(publish_routine, name=None, project_id=project_id, dry_run=False)
 
@@ -452,7 +469,10 @@ def _deploy_artifacts(ctx, artifact_files, project_id, dataset_suffix, sql_dir):
         for query_file in query_files:
             dataset = query_file.parent.parent.name
             create_dataset_if_not_exists(
-                project_id=project_id, dataset=dataset, suffix=dataset_suffix
+                project_id=project_id,
+                dataset=dataset,
+                suffix=dataset_suffix,
+                access_entries=dataset_access_entries,
             )
 
         ctx.invoke(
@@ -482,7 +502,10 @@ def _deploy_artifacts(ctx, artifact_files, project_id, dataset_suffix, sql_dir):
     for view_file in view_files:
         dataset = view_file.parent.parent.name
         create_dataset_if_not_exists(
-            project_id=project_id, dataset=dataset, suffix=dataset_suffix
+            project_id=project_id,
+            dataset=dataset,
+            suffix=dataset_suffix,
+            access_entries=dataset_access_entries,
         )
 
     ctx.invoke(
@@ -497,7 +520,7 @@ def _deploy_artifacts(ctx, artifact_files, project_id, dataset_suffix, sql_dir):
     )
 
 
-def create_dataset_if_not_exists(project_id, dataset, suffix=None):
+def create_dataset_if_not_exists(project_id, dataset, suffix=None, access_entries=None):
     """Create a temporary dataset if not already exists."""
     client = bigquery.Client(project_id)
     dataset = bigquery.Dataset(f"{project_id}.{dataset}")
@@ -513,8 +536,12 @@ def create_dataset_if_not_exists(project_id, dataset, suffix=None):
     dataset.labels = {"expires_on": expiration}
     if suffix:
         dataset.labels["suffix"] = suffix
+    if access_entries:
+        dataset.access_entries = dataset.access_entries + access_entries
 
-    dataset = client.update_dataset(dataset, ["default_table_expiration_ms", "labels"])
+    return client.update_dataset(
+        dataset, ["default_table_expiration_ms", "labels", "access_entries"]
+    )
 
 
 @stage.command(

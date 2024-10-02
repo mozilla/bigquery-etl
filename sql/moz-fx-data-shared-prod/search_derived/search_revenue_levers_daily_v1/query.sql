@@ -286,7 +286,14 @@ desktop_serp_events AS (
     COUNT(
       DISTINCT IF(ad_blocker_inferred, legacy_telemetry_client_id, NULL)
     ) AS serp_events_clients_with_ad_blocker_inferred,
-    COUNT(impression_id) AS serp_events_sap,
+    COUNT(
+      DISTINCT IF(
+        REGEXP_CONTAINS(sap_source, 'urlbar')
+        OR sap_source IN ('searchbar', 'contextmenu', 'webextension', 'system'),
+        impression_id,
+        NULL
+      )
+    ) AS serp_events_sap,
     COUNTIF(is_tagged) AS serp_events_tagged_sap,
     COUNTIF(is_tagged AND REGEXP_CONTAINS(sap_source, 'follow_on')) AS serp_events_tagged_follow_on,
     SUM(num_ad_clicks) AS serp_events_ad_click,

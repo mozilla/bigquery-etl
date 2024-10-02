@@ -1,10 +1,14 @@
 CREATE MATERIALIZED VIEW
 IF
   NOT EXISTS `{{ project_id }}.{{ derived_dataset }}.event_monitoring_live_v1`
+  PARTITION BY DATE(submission_date_timestamp)
+  CLUSTER BY channel, event_category
   OPTIONS
     (enable_refresh = TRUE, refresh_interval_minutes = 60) AS
     {% if dataset_id not in ["telemetry"] %}
     SELECT
+      -- used for partitioning, only allows TIMESTAMP columns
+      TIMESTAMP_TRUNC(submission_timestamp, DAY) AS submission_date_timestamp,
       DATE(submission_timestamp) AS submission_date,
       TIMESTAMP_ADD(
         TIMESTAMP_TRUNC(submission_timestamp, HOUR),
@@ -83,6 +87,7 @@ IF
     WHERE
       DATE(submission_timestamp) >= "{{ current_date }}"
     GROUP BY
+      submission_date_timestamp,
       submission_date,
       window_start,
       window_end,

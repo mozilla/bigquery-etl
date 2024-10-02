@@ -362,6 +362,7 @@ SELECT
   country,
   adjust_network,
   is_default_browser,
+  distribution_id,
 /*Logins*/
 --autofill_prompt_shown
   SUM(autofill_password_detected_logins) AS autofill_password_detected_logins,
@@ -948,7 +949,6 @@ SELECT
         THEN client_id
     END
   ) AS home_page_customize_home_clicked_users,
-  distribution_id,
 /*Sponsored Tiles*/
 --top_sites_contile_click
   SUM(top_sites_contile_click) AS top_sites_contile_click,

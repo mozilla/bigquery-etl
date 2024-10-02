@@ -7,6 +7,10 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: Sample ID
+- name: profile_group_id
+  type: STRING
+  mode: NULLABLE
+  description: Profile Group Id
 - name: submission_date
   type: DATE
   mode: NULLABLE
@@ -59,6 +63,10 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Attribution Experiment
+- name: attribution_variation
+  type: STRING
+  mode: NULLABLE
+  description: Attribution Variation
 - name: startup_profile_selection_reason
   type: STRING
   mode: NULLABLE
@@ -79,6 +87,16 @@ fields:
   type: STRING
   mode: NULLABLE
   description: ISP
+- name: is_desktop
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Indicates if the client is included in the desktop KPI
+- name: days_seen_bits
+  type: INTEGER
+  mode: NULLABLE
+- name: days_active_bits
+  type: INTEGER
+  mode: NULLABLE
 - name: ping_sent_metric_date
   type: BOOLEAN
   mode: NULLABLE
@@ -107,14 +125,6 @@ fields:
   type: BOOLEAN
   mode: NULLABLE
   description: Retained Week 4 New Profile
-- name: attribution_variation
-  type: STRING
-  mode: NULLABLE
-  description: Attribution Variation
-- name: is_desktop
-  type: BOOLEAN
-  mode: NULLABLE
-  description: Indicates if the client is included in the desktop KPI
 - name: lifecycle_stage
   type: STRING
   mode: NULLABLE

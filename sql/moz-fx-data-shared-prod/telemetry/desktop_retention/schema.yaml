@@ -43,6 +43,22 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Attribution UA
+- name: attribution_experiment
+  type: STRING
+  mode: NULLABLE
+  description: Attribution Experiment
+- name: attribution_variation
+  type: STRING
+  mode: NULLABLE
+  description: Attribution Variation
+- name: distribution_id
+  type: STRING
+  mode: NULLABLE
+  description: Distribution ID
+- name: startup_profile_selection_reason
+  type: STRING
+  mode: NULLABLE
+  description: Startup Profile Selection Reason
 - name: normalized_os
   type: STRING
   mode: NULLABLE
@@ -51,6 +67,10 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Normalized OS Version
+- name: is_desktop
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Indicates if the client is included in the desktop KPI
 - name: ping_sent_metric_date
   type: INTEGER
   mode: NULLABLE
@@ -79,22 +99,6 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: Count of Repeat Profiles
-- name: attribution_experiment
-  type: STRING
-  mode: NULLABLE
-  description: Attribution Experiment
-- name: attribution_variation
-  type: STRING
-  mode: NULLABLE
-  description: Attribution Variation
-- name: startup_profile_selection_reason
-  type: STRING
-  mode: NULLABLE
-  description: Startup Profile Selection Reason
-- name: is_desktop
-  type: BOOLEAN
-  mode: NULLABLE
-  description: Indicates if the client is included in the desktop KPI
 - name: lifecycle_stage
   type: STRING
   mode: NULLABLE

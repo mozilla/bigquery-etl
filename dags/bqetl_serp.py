@@ -80,4 +80,18 @@ with DAG(
         sql_file_path="sql/moz-fx-data-shared-prod/firefox_desktop_derived/serp_events_v2/query.sql",
     )
 
+    with TaskGroup(
+        "firefox_desktop_serp_events__v2_external",
+    ) as firefox_desktop_serp_events__v2_external:
+        ExternalTaskMarker(
+            task_id="bqetl_search_dashboard__wait_for_firefox_desktop_serp_events__v2",
+            external_dag_id="bqetl_search_dashboard",
+            external_task_id="wait_for_firefox_desktop_serp_events__v2",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=70200)).isoformat() }}",
+        )
+
+        firefox_desktop_serp_events__v2_external.set_upstream(
+            firefox_desktop_serp_events__v2
+        )
+
     firefox_desktop_serp_events__v2.set_upstream(wait_for_copy_deduplicate_all)

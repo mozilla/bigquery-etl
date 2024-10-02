@@ -275,6 +275,18 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    wait_for_firefox_desktop_serp_events__v2 = ExternalTaskSensor(
+        task_id="wait_for_firefox_desktop_serp_events__v2",
+        external_dag_id="bqetl_serp",
+        external_task_id="firefox_desktop_serp_events__v2",
+        execution_delta=datetime.timedelta(seconds=16200),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     wait_for_search_derived__mobile_search_aggregates__v1 = ExternalTaskSensor(
         task_id="wait_for_search_derived__mobile_search_aggregates__v1",
         external_dag_id="bqetl_mobile_search",
@@ -495,6 +507,10 @@ with DAG(
 
     search_derived__search_revenue_levers_daily__v1.set_upstream(
         wait_for_checks__fail_telemetry_derived__clients_last_seen__v2
+    )
+
+    search_derived__search_revenue_levers_daily__v1.set_upstream(
+        wait_for_firefox_desktop_serp_events__v2
     )
 
     search_derived__search_revenue_levers_daily__v1.set_upstream(

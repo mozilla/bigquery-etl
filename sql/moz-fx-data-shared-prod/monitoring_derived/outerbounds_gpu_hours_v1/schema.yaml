@@ -26,13 +26,3 @@ fields:
   - mode: NULLABLE
     name: gpu_hours
     type: FLOAT64
-
-
-
-
-
-
-
-
-
-

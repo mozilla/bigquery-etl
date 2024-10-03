@@ -1810,3 +1810,23 @@ bqetl_dynamic_dau:
   tags:
     - repo/bigquery-etl
     - impact/tier_2
+
+bqetl_shredder_monitoring:
+  default_args:
+    depends_on_past: false
+    email:
+      - bewu@mozilla.com
+    email_on_failure: true
+    email_on_retry: False
+    end_date: null
+    owner: bewu@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2024-10-01'
+  description: '[EXPERIMENTAL] Monitoring queries for shredder operation'
+  repo: bigquery-etl
+  schedule_interval: 0 12 * * *
+  tags:
+    - repo/bigquery-etl
+    - impact/tier_3
+    - triage/no_triage

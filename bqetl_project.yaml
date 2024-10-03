@@ -18,7 +18,7 @@ default:
   public_project: mozilla-public-data
 
 monitoring:
-  bigeye_warehouse_id: 1817
+  bigeye_warehouse_id: 1939
   bigeye_conn_id: bigeye_connection
 
 dry_run:

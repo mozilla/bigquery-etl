@@ -58,7 +58,7 @@ with DAG(
     bigeye__org_mozilla_fenix_derived__releases__v1 = RunMetricsOperator(
         task_id="bigeye__org_mozilla_fenix_derived__releases__v1",
         connection_id="bigeye_connection",
-        warehouse_id=1817,
+        warehouse_id=1939,
         schema_name="moz-fx-data-shared-prod.org_mozilla_fenix_derived",
         table_name="releases_v1",
         circuit_breaker_mode=False,

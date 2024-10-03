@@ -30,6 +30,7 @@ import datetime
 from operators.gcp_container_operator import GKEPodOperator
 from utils.constants import ALLOWED_STATES, FAILED_STATES
 from utils.gcp import bigquery_etl_query, bigquery_dq_check
+from bigeye_airflow.operators.run_metrics_operator import RunMetricsOperator
 
 {% if ns.uses_fivetran -%}
 from fivetran_provider_async.operators import FivetranOperator
@@ -270,6 +271,14 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
             {%+ if task.gke_cluster_name != None -%}
             cluster_name={{ task.gke_cluster_name | format_repr }},
             {%+ endif -%}
+    {% elif task.is_bigeye_check -%}
+        {{ task.task_name }} = RunMetricsOperator(
+            task_id="{{ task.task_name }}",
+            connection_id="{{ bigeye_conn_id }}",
+            warehouse_id={{ bigeye_warehouse_id }},
+            schema_name="{{ task.project }}.{{ task.dataset }}",
+            table_name="{{ task.table }}_{{ task.version }}",
+            circuit_breaker_mode=False,
     {%+ else -%}
         {{ task.task_name }} = bigquery_etl_query(
             {% if name == "bqetl_default" -%}

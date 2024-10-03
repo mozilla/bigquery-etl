@@ -8,7 +8,10 @@ labels:
 scheduling:
   dag_name: bqetl_cloudflare_browser_market_share
   date_partition_parameter: dte
-  arguments: ["--date", "{{ds}}", "--cloudflare_api_token", "{{ var.value.cloudflare_auth_token}}"]
+  arguments: ["--date", "{{ds}}"]
+  secrets:
+  - deploy_target: CLOUDFLARE_AUTH_TOKEN
+    key: bqetl_cloudflare_browser_market_share__cloudflare_auth_token
 bigquery:
   time_partitioning:
     type: day

@@ -60,7 +60,7 @@ with DAG(
         ]
         + [
             "--output-table",
-            "moz-fx-data-shared-prod.telemetry_derived.shredder_targets_v1",
+            "moz-fx-data-shared-prod.monitoring_derived.shredder_targets_v1",
             "--run-date",
             "{{ ds }}",
         ],

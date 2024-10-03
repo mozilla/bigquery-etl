@@ -514,6 +514,7 @@ google-api-core[grpc]==2.17.1 \
     #   google-cloud-bigquery
     #   google-cloud-bigquery-storage
     #   google-cloud-core
+    #   google-cloud-datacatalog-lineage
     #   google-cloud-storage
 google-auth==2.35.0 \
     --hash=sha256:25df55f327ef021de8be50bad0dfd4a916ad0de96da86cd05661c9297723ad3f \
@@ -525,6 +526,7 @@ google-auth==2.35.0 \
     #   google-auth-oauthlib
     #   google-cloud-bigquery
     #   google-cloud-core
+    #   google-cloud-datacatalog-lineage
     #   google-cloud-storage
 google-auth-oauthlib==0.8.0 \
     --hash=sha256:40cc612a13c3336d5433e94e2adb42a0c88f6feb6c55769e44500fc70043a576 \
@@ -544,6 +546,10 @@ google-cloud-core==2.3.2 \
     # via
     #   google-cloud-bigquery
     #   google-cloud-storage
+google-cloud-datacatalog-lineage==0.3.8 \
+    --hash=sha256:8a17b11ba647fda33b36a8680658ce684d75c3d633c67e626001bbb19d8f3ca6 \
+    --hash=sha256:e22151121cbe7bfb07ae8c8e28319b7a03cc8d17a3407fa9ace0db8581701cfa
+    # via -r requirements.in
 google-cloud-storage==2.18.2 \
     --hash=sha256:97a4d45c368b7d401ed48c4fdfe86e1e1cb96401c9e199e419d289e2c0370166 \
     --hash=sha256:aaf7acd70cdad9f274d29332673fcab98708d0e1f4dceb5a5356aaef06af4d99
@@ -742,9 +748,7 @@ jaraco-classes==3.4.0 \
 jeepney==0.8.0 \
     --hash=sha256:5efe48d255973902f6badc3ce55e2aa6c5c3b3bc642059ef3a91247bcfcc5806 \
     --hash=sha256:c0a454ad016ca575060802ee4d590dd912e35c122fa04e70306de3d076cce755
-    # via
-    #   keyring
-    #   secretstorage
+    # via secretstorage
 jinja2==3.1.3 \
     --hash=sha256:7d6d50dd97d52cbc355597bd845fabfbac3f551e1f99619e39a35ce8c370b5fa \
     --hash=sha256:ac8bd6544d4bb2c9792bf3a159e80bba8fda7f07e81bc3aed565432d5925ba90
@@ -1203,10 +1207,12 @@ pre-commit==3.8.0 \
     --hash=sha256:8bb6494d4a20423842e198980c9ecf9f96607a07ea29549e180eef9ae80fe7af \
     --hash=sha256:9a90a53bf82fdd8778d58085faf8d83df56e40dfe18f45b19446e26bf1b3a63f
     # via -r requirements.in
-proto-plus==1.22.2 \
-    --hash=sha256:0e8cda3d5a634d9895b75c573c9352c16486cb75deb0e078b5fda34db4243165 \
-    --hash=sha256:de34e52d6c9c6fcd704192f09767cb561bb4ee64e70eede20b0834d841f0be4d
-    # via google-cloud-bigquery-storage
+proto-plus==1.24.0 \
+    --hash=sha256:30b72a5ecafe4406b0d339db35b56c4059064e69227b8c3bda7462397f966445 \
+    --hash=sha256:402576830425e5f6ce4c2a6702400ac79897dab0b4343821aa5188b0fab81a12
+    # via
+    #   google-cloud-bigquery-storage
+    #   google-cloud-datacatalog-lineage
 protobuf==4.21.12 \
     --hash=sha256:1f22ac0ca65bb70a876060d96d914dae09ac98d114294f77584b0d2644fa9c30 \
     --hash=sha256:237216c3326d46808a9f7c26fd1bd4b20015fb6867dc5d263a493ef9a539293b \
@@ -1227,6 +1233,7 @@ protobuf==4.21.12 \
     #   gcloud
     #   google-api-core
     #   google-cloud-bigquery-storage
+    #   google-cloud-datacatalog-lineage
     #   googleapis-common-protos
     #   grpcio-status
     #   proto-plus
@@ -1974,9 +1981,7 @@ s3transfer==0.10.2 \
 secretstorage==3.3.3 \
     --hash=sha256:2403533ef369eca6d2ba81718576c5e0f564d5cca1b58f73a8b23e7d4eeebd77 \
     --hash=sha256:f356e6628222568e3af06f2eba8df495efa13b3b63081dafd4f7d9a7b7bc9f99
-    # via
-    #   bigeye-sdk
-    #   keyring
+    # via bigeye-sdk
 shellingham==1.5.4 \
     --hash=sha256:7ecfff8f2fd72616f7481040475a65b2bf8af90a56c89140852d1120324e8686 \
     --hash=sha256:8dbca0739d487e5bd35ab3ca4b36e11c4078f3a234bfce294b0a0291363404de

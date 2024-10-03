@@ -17,6 +17,9 @@ default:
   - moz-fx-data-glam-prod-fca7
   public_project: mozilla-public-data
 
+monitoring:
+  bigeye_warehouse_id: 1817
+  bigeye_conn_id: bigeye_connection
 
 dry_run:
   function: https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/bigquery-etl-dryrun

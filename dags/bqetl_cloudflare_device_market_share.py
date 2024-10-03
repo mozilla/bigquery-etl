@@ -4,6 +4,7 @@ from airflow import DAG
 from airflow.sensors.external_task import ExternalTaskMarker
 from airflow.sensors.external_task import ExternalTaskSensor
 from airflow.utils.task_group import TaskGroup
+from airflow.providers.cncf.kubernetes.secret import Secret
 import datetime
 from operators.gcp_container_operator import GKEPodOperator
 from utils.constants import ALLOWED_STATES, FAILED_STATES
@@ -28,6 +29,13 @@ kwindau@mozilla.com
 * impact/tier_3
 * repo/bigquery-etl
 """
+
+cloudflare_derived__device_usage__v1_bqetl_cloudflare_device_market_share__cloudflare_auth_token = Secret(
+    deploy_type="env",
+    deploy_target="CLOUDFLARE_AUTH_TOKEN",
+    secret="airflow-gke-secrets",
+    key="bqetl_cloudflare_device_market_share__cloudflare_auth_token",
+)
 
 
 default_args = {
@@ -58,13 +66,11 @@ with DAG(
             "python",
             "sql/moz-fx-data-shared-prod/cloudflare_derived/device_usage_v1/query.py",
         ]
-        + [
-            "--date",
-            "{{ds}}",
-            "--cloudflare_api_token",
-            "{{ var.value.cloudflare_auth_token}}",
-        ],
+        + ["--date", "{{ds}}"],
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="kwindau@mozilla.com",
         email=["kwindau@mozilla.com"],
+        secrets=[
+            cloudflare_derived__device_usage__v1_bqetl_cloudflare_device_market_share__cloudflare_auth_token,
+        ],
     )

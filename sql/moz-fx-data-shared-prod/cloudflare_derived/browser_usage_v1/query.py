@@ -1,6 +1,8 @@
 # Load libraries
 import json
+import os
 from datetime import datetime, timedelta
+
 import pandas as pd
 import requests
 from argparse import ArgumentParser
@@ -75,6 +77,8 @@ brwsr_usg_configs = {
     "errors_bq_stg_table": "moz-fx-data-shared-prod.cloudflare_derived.browser_errors_stg",
 }
 
+#Load the Cloudflare API Token
+cloudflare_api_token = os.getenv("CLOUDFLARE_AUTH_TOKEN")
 
 # Define a function to move a GCS object then delete the original
 def move_blob(bucket_name, blob_name, destination_bucket_name, destination_blob_name):
@@ -269,7 +273,7 @@ def main():
     """Call the API, save data to GCS, load to BQ staging, delete & load to BQ gold"""
     parser = ArgumentParser(description=__doc__)
     parser.add_argument("--date", required=True)
-    parser.add_argument("--cloudflare_api_token", required=True)
+    parser.add_argument("--cloudflare_api_token", default=cloudflare_api_token)
     parser.add_argument("--project", default=brwsr_usg_configs["gcp_project_id"])
     parser.add_argument("--dataset", default="cloudflare_derived")
 

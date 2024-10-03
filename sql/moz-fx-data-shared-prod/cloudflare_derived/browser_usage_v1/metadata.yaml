@@ -11,7 +11,7 @@ scheduling:
   arguments: ["--date", "{{ds}}"]
   secrets:
   - deploy_target: CLOUDFLARE_AUTH_TOKEN
-    key: CLOUDFLARE_AUTH_TOKEN
+    key: bqetl_cloudflare_browser_market_share__cloudflare_auth_token
 bigquery:
   time_partitioning:
     type: day

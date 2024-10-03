@@ -1,0 +1,20 @@
+type: BIGCONFIG_FILE
+table_deployments:
+- collection:
+    name: Test
+  deployments:
+  - fq_table_name: {{ project_id }}.{{ derived_dataset }}.{{ target_table }}
+    table_metrics:
+    - metric_type:
+        type: PREDEFINED
+        predefined_metric: FRESHNESS
+      metric_schedule:
+        named_schedule:
+          name: Default Schedule - 17:00 UTC
+    - metric_type:
+        type: PREDEFINED
+        predefined_metric: VOLUME
+      metric_schedule:
+        named_schedule:
+          name: Default Schedule - 17:00 UTC
+

@@ -173,7 +173,7 @@ def update(name: str, sql_dir: Optional[str], project_id: Optional[str]) -> None
                                     ),
                                     metric_schedule=SimpleMetricSchedule(
                                         named_schedule=SimpleNamedSchedule(
-                                            name="Default Schedule - 17:00 UTC"
+                                            name="Default Schedule - 13:00 UTC"
                                         )
                                     ),
                                 )

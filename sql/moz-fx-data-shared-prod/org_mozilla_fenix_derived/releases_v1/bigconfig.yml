@@ -10,10 +10,10 @@ table_deployments:
         predefined_metric: FRESHNESS
       metric_schedule:
         named_schedule:
-          name: Default Schedule - 17:00 UTC
+          name: Default Schedule - 13:00 UTC
     - metric_type:
         type: PREDEFINED
         predefined_metric: VOLUME
       metric_schedule:
         named_schedule:
-          name: Default Schedule - 17:00 UTC
+          name: Default Schedule - 13:00 UTC

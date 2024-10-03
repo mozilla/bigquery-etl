@@ -15,7 +15,7 @@ from bigquery_etl.dryrun import DryRun
 from bigquery_etl.schema.stable_table_schema import get_stable_table_schemas
 from bigquery_etl.util.common import get_table_dir, render, write_sql
 
-APP_LISTINGS_URL =  "https://probeinfo.telemetry.mozilla.org/v2/glean/app-listings"
+APP_LISTINGS_URL = "https://probeinfo.telemetry.mozilla.org/v2/glean/app-listings"
 PATH = Path(os.path.dirname(__file__))
 
 # added as the result of baseline checks being added to the template,

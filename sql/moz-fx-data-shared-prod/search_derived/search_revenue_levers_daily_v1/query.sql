@@ -275,6 +275,50 @@ combined_search_dau AS (
   LEFT JOIN
     eligible_markets_dau
     USING (submission_date, device, country)
+),
+desktop_serp_events AS (
+  SELECT
+    submission_date,
+    `moz-fx-data-shared-prod`.udf.normalize_search_engine(search_engine) AS partner,
+    'desktop' AS device,
+    normalized_country_code AS country,
+    COUNT(DISTINCT legacy_telemetry_client_id) AS serp_events_client_count,
+    COUNT(
+      DISTINCT IF(ad_blocker_inferred, legacy_telemetry_client_id, NULL)
+    ) AS serp_events_clients_with_ad_blocker_inferred,
+    COUNT(
+      DISTINCT IF(
+        REGEXP_CONTAINS(sap_source, 'urlbar')
+        OR sap_source IN ('searchbar', 'contextmenu', 'webextension', 'system'),
+        impression_id,
+        NULL
+      )
+    ) AS serp_events_sap,
+    COUNTIF(is_tagged) AS serp_events_tagged_sap,
+    COUNTIF(is_tagged AND REGEXP_CONTAINS(sap_source, 'follow_on')) AS serp_events_tagged_follow_on,
+    SUM(num_ad_clicks) AS serp_events_ad_click,
+    COUNTIF(num_ads_visible > 0) AS serp_events_search_with_ads,
+    COUNTIF(NOT is_tagged) AS serp_events_organic,
+    SUM(IF(NOT is_tagged, num_ad_clicks, 0)) AS serp_events_ad_click_organic,
+    COUNTIF(num_ads_visible > 0 AND NOT is_tagged) AS serp_events_search_with_ads_organic,
+    -- serp_events does not have distribution ID or partner codes to calculate monetizable SAP
+    COUNTIF(ad_blocker_inferred) AS serp_events_sap_with_ad_blocker_inferred,
+    SUM(num_ads_visible) AS serp_events_num_ads_visible,
+    SUM(num_ads_blocked) AS serp_events_num_ads_blocked,
+  FROM
+    `moz-fx-data-shared-prod.firefox_desktop.serp_events`
+  WHERE
+    submission_date = @submission_date
+    AND `moz-fx-data-shared-prod`.udf.normalize_search_engine(search_engine) IN (
+      'Google',
+      'Bing',
+      'DuckDuckGo'
+    )
+  GROUP BY
+    submission_date,
+    partner,
+    device,
+    country
 )
 SELECT
   cd.submission_date,
@@ -293,7 +337,20 @@ SELECT
   cd.organic,
   cd.ad_click_organic,
   cd.search_with_ads_organic,
-  cd.monetizable_sap
+  cd.monetizable_sap,
+  dse.serp_events_client_count,
+  dse.serp_events_clients_with_ad_blocker_inferred,
+  dse.serp_events_sap,
+  dse.serp_events_tagged_sap,
+  dse.serp_events_tagged_follow_on,
+  dse.serp_events_ad_click,
+  dse.serp_events_search_with_ads,
+  dse.serp_events_organic,
+  dse.serp_events_ad_click_organic,
+  dse.serp_events_search_with_ads_organic,
+  dse.serp_events_sap_with_ad_blocker_inferred,
+  dse.serp_events_num_ads_visible,
+  dse.serp_events_num_ads_blocked
 FROM
   combined_search_data cd
 LEFT JOIN
@@ -302,3 +359,9 @@ LEFT JOIN
   AND cd.submission_date = du.submission_date
   AND cd.country = du.country
   AND cd.device = du.device
+LEFT JOIN
+  desktop_serp_events dse
+  ON cd.submission_date = dse.submission_date
+  AND cd.partner = dse.partner
+  AND cd.country = dse.country
+  AND cd.device = dse.device

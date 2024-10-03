@@ -525,6 +525,7 @@ google-auth==2.35.0 \
     #   google-api-core
     #   google-auth-oauthlib
     #   google-cloud-bigquery
+    #   google-cloud-bigquery-storage
     #   google-cloud-core
     #   google-cloud-datacatalog-lineage
     #   google-cloud-storage
@@ -536,9 +537,9 @@ google-cloud-bigquery==3.25.0 \
     --hash=sha256:5b2aff3205a854481117436836ae1403f11f2594e6810a98886afd57eda28509 \
     --hash=sha256:7f0c371bc74d2a7fb74dacbc00ac0f90c8c2bec2289b51dd6685a275873b1ce9
     # via -r requirements.in
-google-cloud-bigquery-storage[fastavro]==2.24.0 \
-    --hash=sha256:7981eb2758cba56603058d11bb1eeeebf2e1c18097a7118a894510a16e02be52 \
-    --hash=sha256:b4af5b9aacd8396b8407d1b877601a376d8eea6d192823a8a7881bd2fdc076ce
+google-cloud-bigquery-storage[fastavro]==2.26.0 \
+    --hash=sha256:375927703afb0a057d3abcbe1a1d644a2a6852c43b864c0b5c93c18e4d3cd999 \
+    --hash=sha256:840275bd0a4b207c0ac821bcc6741406ffb3b5ef940fa05089a90eb4403453fa
     # via -r requirements.in
 google-cloud-core==2.3.2 \
     --hash=sha256:8417acf6466be2fa85123441696c4badda48db314c607cf1e5d543fa8bdc22fe \

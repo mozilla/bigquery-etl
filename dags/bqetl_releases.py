@@ -8,6 +8,7 @@ import datetime
 from operators.gcp_container_operator import GKEPodOperator
 from utils.constants import ALLOWED_STATES, FAILED_STATES
 from utils.gcp import bigquery_etl_query, bigquery_dq_check
+from bigeye_airflow.operators.run_metrics_operator import RunMetricsOperator
 
 docs = """
 ### bqetl_releases
@@ -54,6 +55,16 @@ with DAG(
     tags=tags,
 ) as dag:
 
+    bigeye__org_mozilla_fenix_derived__releases__v1 = RunMetricsOperator(
+        task_id="bigeye__org_mozilla_fenix_derived__releases__v1",
+        connection_id="bigeye_connection",
+        warehouse_id=1817,
+        schema_name="moz-fx-data-shared-prod.org_mozilla_fenix_derived",
+        table_name="releases_v1",
+        circuit_breaker_mode=False,
+        retries=0,
+    )
+
     org_mozilla_fenix_derived__releases__v1 = GKEPodOperator(
         task_id="org_mozilla_fenix_derived__releases__v1",
         arguments=[
@@ -88,4 +99,8 @@ with DAG(
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="ascholtz@mozilla.com",
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+    )
+
+    bigeye__org_mozilla_fenix_derived__releases__v1.set_upstream(
+        org_mozilla_fenix_derived__releases__v1
     )

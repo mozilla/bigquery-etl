@@ -8,6 +8,7 @@ import datetime
 from operators.gcp_container_operator import GKEPodOperator
 from utils.constants import ALLOWED_STATES, FAILED_STATES
 from utils.gcp import bigquery_etl_query, bigquery_dq_check
+from bigeye_airflow.operators.run_metrics_operator import RunMetricsOperator
 
 docs = """
 ### bqetl_accounts_backend_external

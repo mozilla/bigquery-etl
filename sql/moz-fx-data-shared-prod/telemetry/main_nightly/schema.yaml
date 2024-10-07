@@ -37340,6 +37340,16 @@ fields:
           - name: value
             type: INTEGER
             mode: NULLABLE
+        - name: browser_ui_interaction_vertical_tabs_container
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
       - name: scalars
         type: RECORD
         mode: NULLABLE

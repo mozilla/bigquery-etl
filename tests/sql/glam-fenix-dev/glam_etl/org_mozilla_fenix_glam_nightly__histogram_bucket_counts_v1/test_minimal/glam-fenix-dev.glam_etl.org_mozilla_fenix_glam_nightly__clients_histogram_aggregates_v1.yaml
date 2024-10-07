@@ -6614,7 +6614,7 @@
 - app_build_id: '2020100100'
   app_version: 84
   channel: '*'
-  client_id: 700e1939-2e01-410b-b6a7-86a65907423a
+  client_id: 700e1817-2e01-410b-b6a7-86a65907423a
   histogram_aggregates:
   - agg_type: summed_histogram
     key: ''

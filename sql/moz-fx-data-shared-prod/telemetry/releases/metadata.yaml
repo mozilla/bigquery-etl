@@ -8,5 +8,5 @@ description: |-
 owners:
 - ascholtz@mozilla.com
 monitoring:
-  enabled: true
+  enabled: false
   partition_column: date

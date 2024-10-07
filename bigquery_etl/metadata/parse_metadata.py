@@ -158,6 +158,8 @@ class MonitoringMetadata:
 
     enabled: bool = attr.ib(True)
     collection: Optional[str] = attr.ib(None)
+    partition_column: Optional[str] = attr.ib(None)
+    partition_column_set: bool = attr.ib(False)
 
 
 @attr.s(auto_attribs=True)
@@ -334,6 +336,12 @@ class Metadata:
                     monitoring = converter.structure(
                         metadata["monitoring"], MonitoringMetadata
                     )
+
+                    if "partition_column" in metadata["monitoring"]:
+                        # check if partition column metadata has been set explicitly;
+                        # needed for monitoring config validation for views where partition
+                        # column needs to be set explicitly
+                        monitoring.partition_column_set = True
 
                 return cls(
                     friendly_name,

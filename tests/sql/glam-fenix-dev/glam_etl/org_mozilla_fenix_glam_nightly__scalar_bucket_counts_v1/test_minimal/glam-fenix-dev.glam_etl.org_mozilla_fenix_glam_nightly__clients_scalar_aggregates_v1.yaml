@@ -5389,7 +5389,7 @@
 - app_build_id: '2020100100'
   app_version: 84
   channel: '*'
-  client_id: 52181755-95f7-448e-9623-7ccb298bef5e
+  client_id: 52193955-95f7-448e-9623-7ccb298bef5e
   os: Android
   ping_type: metrics
   scalar_aggregates:

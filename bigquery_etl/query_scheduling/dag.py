@@ -250,7 +250,7 @@ class Dag:
         args = self.__dict__
         args["task_groups"] = self.task_groups
         args["bigeye_warehouse_id"] = ConfigLoader.get(
-            "monitoring", "bigeye_warehouse_id", fallback=1817
+            "monitoring", "bigeye_warehouse_id", fallback=1939
         )
         args["bigeye_conn_id"] = ConfigLoader.get(
             "monitoring", "bigeye_conn_id", fallback="bigeye_connection"

@@ -1860,7 +1860,7 @@
 - app_build_id: first
   app_version: 75
   channel: nightly
-  client_id: 832bbba0-ac5a-4f04-8574-1251e7b1817b
+  client_id: 832bbba0-ac5a-4f04-8574-1251e7b1939b
   os: first
   scalar_aggregates:
   - agg_type: min

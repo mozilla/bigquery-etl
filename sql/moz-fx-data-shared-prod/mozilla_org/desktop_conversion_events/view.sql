@@ -10,7 +10,7 @@ WITH all_clicks_not_originating_in_europe AS (
     `moz-fx-data-shared-prod.mozilla_org_derived.ga_sessions_v2` AS ga_sessions_v2,
     UNNEST(gclid_array) AS gclid
   JOIN
-    mozdata.static.country_codes_v1
+    `moz-fx-data-shared-prod..static.country_codes_v1`
     ON ga_sessions_v2.country = country_codes_v1.name
   WHERE
     region_name != 'Europe'

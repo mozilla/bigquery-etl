@@ -478,19 +478,3 @@ fields:
     - name: ad_group_name
       type: STRING
       mode: NULLABLE
-- name: publisher
-  type: RECORD
-  mode: NULLABLE
-  fields:
-  - name: ad_revenue_in_usd
-    type: FLOAT
-    mode: NULLABLE
-  - name: ad_format
-    type: STRING
-    mode: NULLABLE
-  - name: ad_source_name
-    type: STRING
-    mode: NULLABLE
-  - name: ad_unit_id
-    type: STRING
-    mode: NULLABLE

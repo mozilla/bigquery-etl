@@ -390,7 +390,7 @@ DELETE_TARGETS: DeleteIndex = {
     ): (FXA_SRC, FXA_FRONTEND_GLEAN_SRC),
     DeleteTarget(
         table="accounts_frontend_derived.events_stream_v1",
-        field=("metrics.string.account_user_id_sha256", GLEAN_CLIENT_ID),
+        field=("metrics.string.account_user_id_sha256", CLIENT_ID),
     ): (FXA_SRC, FXA_FRONTEND_GLEAN_SRC),
     # legacy mobile
     DeleteTarget(

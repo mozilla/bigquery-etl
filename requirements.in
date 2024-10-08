@@ -21,7 +21,7 @@ mdx_truly_sane_lists==1.3
 mkdocs==1.6.1
 mkdocs-material==9.5.39
 mkdocs-awesome-pages-plugin==2.9.3
-mozilla-metric-config-parser==2024.9.6
+mozilla-metric-config-parser==2024.10.1
 mozilla-schema-generator==0.5.1
 pandas==2.2.2
 pathos==0.3.3
@@ -36,7 +36,7 @@ pytest-pydocstyle==2.3.2
 pytest-xdist==3.6.1
 pytest==7.4.3
 PyYAML==6.0.2
-rich-click==1.7.4
+rich-click==1.8.3
 smart_open==6.4.0
 sqlglot==25.21.3
 sqlparse==0.5.1

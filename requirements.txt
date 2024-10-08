@@ -931,8 +931,8 @@ more-itertools==10.4.0 \
     --hash=sha256:0f7d9f83a0a8dcfa8a2694a770590d98a67ea943e3d9f5298309a484758c4e27 \
     --hash=sha256:fe0e63c4ab068eac62410ab05cccca2dc71ec44ba8ef29916a0090df061cf923
     # via jaraco-classes
-mozilla-metric-config-parser==2024.9.6 \
-    --hash=sha256:a3e83d4d39f5b2363dfb156214f6d442e217a8b82bbfc2070267edc1820384cb
+mozilla-metric-config-parser==2024.10.1 \
+    --hash=sha256:7816d0a5a98d48bb5c9b236e147ecd76ca0f6029ed69dbaae0d309307dfd3897
     # via -r requirements.in
 mozilla-nimbus-schemas==2024.9.3 \
     --hash=sha256:5e1196637308fb0241a209eee027a436e986fc6220ad416eebb06b7162e226bc \
@@ -1810,9 +1810,9 @@ rich==12.6.0 \
     #   bigeye-sdk
     #   rich-click
     #   typer
-rich-click==1.7.4 \
-    --hash=sha256:7ce5de8e4dc0333aec946113529b3eeb349f2e5d2fafee96b9edf8ee36a01395 \
-    --hash=sha256:e363655475c60fec5a3e16a1eb618118ed79e666c365a36006b107c17c93ac4e
+rich-click==1.8.3 \
+    --hash=sha256:636d9c040d31c5eee242201b5bf4f2d358bfae4db14bb22ec1cafa717cfd02cd \
+    --hash=sha256:6d75bdfa7aa9ed2c467789a0688bc6da23fbe3a143e19aa6ad3f8bac113d2ab3
     # via -r requirements.in
 rpds-py==0.8.10 \
     --hash=sha256:08166467258fd0240a1256fce272f689f2360227ee41c72aeea103e9e4f63d2b \

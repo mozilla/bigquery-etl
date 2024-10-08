@@ -30,6 +30,7 @@ client_attribution AS (
     client_id,
     channel,
     adjust_network,
+    distribution_id,
   FROM
     `moz-fx-data-shared-prod.fenix.firefox_android_clients`
 ),
@@ -330,7 +331,15 @@ event_ping_clients_feature_usage AS (
     COUNTIF(
       event_category = 'home_screen'
       AND event_name = 'customize_home_clicked'
-    ) AS home_page_customize_home_clicked
+    ) AS home_page_customize_home_clicked,
+    COUNTIF(
+      event_category = 'top_sites'
+      AND event_name = 'contile_click'
+    ) AS top_sites_contile_click,
+    COUNTIF(
+      event_category = 'top_sites'
+      AND event_name = 'contile_impression'
+    ) AS top_sites_contile_impression,
   FROM
     `moz-fx-data-shared-prod.fenix.events_unnested`
   WHERE
@@ -353,6 +362,7 @@ SELECT
   country,
   adjust_network,
   is_default_browser,
+  distribution_id,
 /*Logins*/
 --autofill_prompt_shown
   SUM(autofill_password_detected_logins) AS autofill_password_detected_logins,
@@ -938,7 +948,26 @@ SELECT
       WHEN home_page_customize_home_clicked > 0
         THEN client_id
     END
-  ) AS home_page_customize_home_clicked_users
+  ) AS home_page_customize_home_clicked_users,
+/*Sponsored Tiles*/
+--top_sites_contile_click
+  SUM(top_sites_contile_click) AS top_sites_contile_click,
+  COUNT(
+    DISTINCT
+    CASE
+      WHEN top_sites_contile_click > 0
+        THEN client_id
+    END
+  ) AS top_sites_contile_click_users,
+--top_sites_contile_impression
+  SUM(top_sites_contile_impression) AS top_sites_contile_impression,
+  COUNT(
+    DISTINCT
+    CASE
+      WHEN top_sites_contile_impression > 0
+        THEN client_id
+    END
+  ) AS top_sites_contile_impression_users,
 FROM
   event_ping_clients_feature_usage
 INNER JOIN
@@ -956,4 +985,5 @@ GROUP BY
   channel,
   country,
   adjust_network,
-  is_default_browser
+  is_default_browser,
+  distribution_id

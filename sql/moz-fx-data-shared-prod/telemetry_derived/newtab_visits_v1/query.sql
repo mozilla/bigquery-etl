@@ -293,6 +293,48 @@ pocket_events AS (
       AND mozfun.map.get_key(event_details, "is_list_card") = "true"
       AND mozfun.map.get_key(event_details, "is_sponsored") = "true"
     ) AS sponsored_list_card_clicks,
+    COUNTIF(
+      event_name = "impression"
+      AND mozfun.map.get_key(event_details, "is_list_card") = "true"
+    ) AS list_card_impressions,
+    COUNTIF(
+      event_name = "impression"
+      AND mozfun.map.get_key(event_details, "is_list_card") = "true"
+      AND mozfun.map.get_key(event_details, "is_sponsored") != "true"
+    ) AS organic_list_card_impressions,
+    COUNTIF(
+      event_name = "impression"
+      AND mozfun.map.get_key(event_details, "is_list_card") = "true"
+      AND mozfun.map.get_key(event_details, "is_sponsored") = "true"
+    ) AS sponsored_list_card_impressions,
+    COUNTIF(
+      event_name = "save"
+      AND mozfun.map.get_key(event_details, "is_list_card") = "true"
+    ) AS list_card_saves,
+    COUNTIF(
+      event_name = "save"
+      AND mozfun.map.get_key(event_details, "is_list_card") = "true"
+      AND mozfun.map.get_key(event_details, "is_sponsored") != "true"
+    ) AS organic_list_card_saves,
+    COUNTIF(
+      event_name = "save"
+      AND mozfun.map.get_key(event_details, "is_list_card") = "true"
+      AND mozfun.map.get_key(event_details, "is_sponsored") = "true"
+    ) AS sponsored_list_card_saves,
+    COUNTIF(
+      event_name = "dismiss"
+      AND mozfun.map.get_key(event_details, "is_list_card") = "true"
+    ) AS list_card_dismissals,
+    COUNTIF(
+      event_name = "dismiss"
+      AND mozfun.map.get_key(event_details, "is_list_card") = "true"
+      AND mozfun.map.get_key(event_details, "is_sponsored") != "true"
+    ) AS organic_list_card_dismissals,
+    COUNTIF(
+      event_name = "dismiss"
+      AND mozfun.map.get_key(event_details, "is_list_card") = "true"
+      AND mozfun.map.get_key(event_details, "is_sponsored") = "true"
+    ) AS sponsored_list_card_dismissals,
   FROM
     events_unnested
   WHERE
@@ -335,7 +377,16 @@ pocket_summary AS (
         pocket_matches_selected_topic,
         list_card_clicks,
         organic_list_card_clicks,
-        sponsored_list_card_clicks
+        sponsored_list_card_clicks,
+        list_card_impressions,
+        organic_list_card_impressions,
+        sponsored_list_card_impressions,
+        list_card_saves,
+        organic_list_card_saves,
+        sponsored_list_card_saves,
+        list_card_dismissals,
+        organic_list_card_dismissals,
+        sponsored_list_card_dismissals
       )
     ) AS pocket_interactions
   FROM

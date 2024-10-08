@@ -56,6 +56,15 @@
       list_card_clicks: 0
       organic_list_card_clicks: 0
       sponsored_list_card_clicks: 0
+      list_card_impressions: 0
+      organic_list_card_impressions: 0
+      sponsored_list_card_impressions: 0
+      list_card_saves: 0
+      organic_list_card_saves: 0
+      sponsored_list_card_saves: 0
+      list_card_dismissals: 0
+      organic_list_card_dismissals: 0
+      sponsored_list_card_dismissals: 0
   wallpaper_interactions:
     - wallpaper_selected_wallpaper: wallpaper_1
       wallpaper_clicks: 1

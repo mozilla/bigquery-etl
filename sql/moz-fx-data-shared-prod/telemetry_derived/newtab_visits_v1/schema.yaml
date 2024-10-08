@@ -254,6 +254,33 @@ fields:
   - name: sponsored_list_card_clicks
     type: INTEGER
     mode: NULLABLE
+  - name: list_card_impressions
+    type: INTEGER
+    mode: NULLABLE
+  - name: organic_list_card_impressions
+    type: INTEGER
+    mode: NULLABLE
+  - name: sponsored_list_card_impressions
+    type: INTEGER
+    mode: NULLABLE
+  - name: list_card_saves
+    type: INTEGER
+    mode: NULLABLE
+  - name: organic_list_card_saves
+    type: INTEGER
+    mode: NULLABLE
+  - name: sponsored_list_card_saves
+    type: INTEGER
+    mode: NULLABLE
+  - name: list_card_dismissals
+    type: INTEGER
+    mode: NULLABLE
+  - name: organic_list_card_dismissals
+    type: INTEGER
+    mode: NULLABLE
+  - name: sponsored_list_card_dismissals
+    type: INTEGER
+    mode: NULLABLE
   mode: REPEATED
   name: pocket_interactions
   type: RECORD

@@ -1,0 +1,10 @@
+fields:
+- name: activity_date
+  type: STRING
+  mode: NULLABLE
+- name: gclid
+  type: STRING
+  mode: NULLABLE
+- name: conversion_name
+  type: STRING
+  mode: NULLABLE

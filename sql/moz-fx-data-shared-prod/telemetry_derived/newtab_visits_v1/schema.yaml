@@ -245,6 +245,15 @@ fields:
   - name: pocket_matches_selected_topic
     type: STRING
     mode: NULLABLE
+  - name: list_card_clicks
+    type: INTEGER
+    mode: NULLABLE
+  - name: organic_list_card_clicks
+    type: INTEGER
+    mode: NULLABLE
+  - name: sponsored_list_card_clicks
+    type: INTEGER
+    mode: NULLABLE
   mode: REPEATED
   name: pocket_interactions
   type: RECORD
@@ -335,4 +344,11 @@ fields:
 - mode: NULLABLE
   name: profile_group_id
   type: STRING
-  description: A UUID identifying the profile's group on a single device and allowing user-oriented correlation of data
+  description: A UUID identifying the profile's group on a single device and allowing
+    user-oriented correlation of data
+- name: newtab_window_inner_height
+  type: INTEGER
+  mode: NULLABLE
+- name: newtab_window_inner_width
+  type: INTEGER
+  mode: NULLABLE

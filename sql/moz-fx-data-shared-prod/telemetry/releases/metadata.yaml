@@ -19,7 +19,7 @@ references:
   view.sql:
   - moz-fx-data-shared-prod.telemetry_derived.releases_v1
 monitoring:
-  enabled: true
+  enabled: false
   collection: null
   partition_column: date
   partition_column_set: true

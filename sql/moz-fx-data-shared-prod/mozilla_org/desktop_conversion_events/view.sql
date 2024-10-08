@@ -21,9 +21,9 @@ WITH all_clicks_not_originating_in_europe AS (
 --where the click ID did not originate in Europe
 --and the click's first seen session date is more recent than 89 days ago
 SELECT
-  a.activity_datetime AS activity_date,
   a.gclid,
-  a.conversion_name
+  a.conversion_name,
+  MAX(a.activity_datetime) AS activity_date,
 FROM
   `moz-fx-data-shared-prod.mozilla_org_derived.ga_desktop_conversions_v1` a
 JOIN
@@ -32,3 +32,6 @@ JOIN
 WHERE
   a.activity_date >= DATE_SUB(CURRENT_DATE, INTERVAL 89 DAY)
   AND b.first_session_date >= DATE_SUB(current_date, INTERVAL 89 day)
+GROUP BY
+  a.gclid,
+  a.conversion_name

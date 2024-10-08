@@ -23,15 +23,16 @@ WITH all_clicks_not_originating_in_europe AS (
 SELECT
   a.gclid,
   a.conversion_name,
-  MAX(a.activity_datetime) AS activity_date,
+  MIN(a.activity_datetime) AS activity_date,
 FROM
   `moz-fx-data-shared-prod.mozilla_org_derived.ga_desktop_conversions_v1` a
 JOIN
   all_clicks_not_originating_in_europe b
   ON a.gclid = b.gclid
 WHERE
-  a.activity_date >= DATE_SUB(CURRENT_DATE, INTERVAL 89 DAY)
-  AND b.first_session_date >= DATE_SUB(current_date, INTERVAL 89 day)
+  b.first_session_date >= DATE_SUB(current_date, INTERVAL 89 day)
 GROUP BY
   a.gclid,
   a.conversion_name
+HAVING
+  MIN(a.activity_datetime) >= DATE_SUB(CURRENT_DATE, INTERVAL 89 DAY)

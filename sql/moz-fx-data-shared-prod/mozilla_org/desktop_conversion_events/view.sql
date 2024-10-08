@@ -35,4 +35,4 @@ GROUP BY
   a.gclid,
   a.conversion_name
 HAVING
-  MIN(a.activity_datetime) >= DATE_SUB(CURRENT_DATE, INTERVAL 89 DAY)
+  MIN(a.activity_date) >= DATE_SUB(CURRENT_DATE, INTERVAL 89 DAY)

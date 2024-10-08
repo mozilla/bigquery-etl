@@ -313,6 +313,17 @@ with DAG(
         task_group=task_group_bedrock,
     )
 
+    bigeye__org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1 = RunMetricsOperator(
+        task_id="bigeye__org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1",
+        connection_id="bigeye_connection",
+        warehouse_id=1939,
+        schema_name="moz-fx-data-shared-prod.org_mozilla_ios_focus_derived",
+        table_name="baseline_clients_last_seen_v1",
+        circuit_breaker_mode=False,
+        retries=0,
+        task_group=task_group_focus_ios,
+    )
+
     burnham_derived__baseline_clients_daily__v1 = bigquery_etl_query(
         task_id="burnham_derived__baseline_clients_daily__v1",
         destination_table="baseline_clients_daily_v1",
@@ -4433,6 +4444,10 @@ with DAG(
 
     bedrock_derived__events_stream__v1.set_upstream(wait_for_copy_deduplicate_all)
 
+    bigeye__org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1.set_upstream(
+        org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1
+    )
+
     burnham_derived__baseline_clients_daily__v1.set_upstream(
         burnham_derived__baseline_clients_first_seen__v1
     )
@@ -5430,7 +5445,7 @@ with DAG(
     )
 
     focus_ios_derived__clients_last_seen_joined__v1.set_upstream(
-        checks__fail_org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1
+        bigeye__org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1
     )
 
     focus_ios_derived__clients_last_seen_joined__v1.set_upstream(

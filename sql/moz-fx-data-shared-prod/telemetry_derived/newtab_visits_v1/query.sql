@@ -332,7 +332,10 @@ pocket_summary AS (
         pocket_received_rank,
         pocket_scheduled_corpus_item_id,
         pocket_topic,
-        pocket_matches_selected_topic
+        pocket_matches_selected_topic,
+        list_card_clicks,
+        organic_list_card_clicks,
+        sponsored_list_card_clicks
       )
     ) AS pocket_interactions
   FROM

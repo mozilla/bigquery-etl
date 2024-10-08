@@ -1206,9 +1206,9 @@ ppft==1.7.6.9 \
     --hash=sha256:73161c67474ea9d81d04bcdad166d399cff3f084d5d2dc21ebdd46c075bbc265 \
     --hash=sha256:dab36548db5ca3055067fbe6b1a17db5fee29f3c366c579a9a27cebb52ed96f0
     # via pathos
-pre-commit==3.8.0 \
-    --hash=sha256:8bb6494d4a20423842e198980c9ecf9f96607a07ea29549e180eef9ae80fe7af \
-    --hash=sha256:9a90a53bf82fdd8778d58085faf8d83df56e40dfe18f45b19446e26bf1b3a63f
+pre-commit==4.0.0 \
+    --hash=sha256:0ca2341cf94ac1865350970951e54b1a50521e57b7b500403307aed4315a1234 \
+    --hash=sha256:5d9807162cc5537940f94f266cbe2d716a75cfad0d78a317a92cac16287cfed6
     # via -r requirements.in
 proto-plus==1.24.0 \
     --hash=sha256:30b72a5ecafe4406b0d339db35b56c4059064e69227b8c3bda7462397f966445 \

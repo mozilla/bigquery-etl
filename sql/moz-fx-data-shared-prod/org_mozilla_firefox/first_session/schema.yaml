@@ -349,10 +349,11 @@ fields:
     - name: first_session_distribution_id
       type: STRING
       mode: NULLABLE
-      description: 'A string containing the distribution identifier. This is currently
-        used
+      description: 'A string containing the distribution identifier. This was used
 
-        to identify installs from Mozilla Online.
+        to identify installs from Mozilla Online, but now also identifies
+
+        partnership deal distributions
 
         '
     - name: play_store_attribution_campaign

@@ -239,6 +239,42 @@ fields:
   - name: pocket_matches_selected_topic
     type: STRING
     mode: NULLABLE
+  - name: list_card_clicks
+    type: INTEGER
+    mode: NULLABLE
+  - name: organic_list_card_clicks
+    type: INTEGER
+    mode: NULLABLE
+  - name: sponsored_list_card_clicks
+    type: INTEGER
+    mode: NULLABLE
+  - name: list_card_impressions
+    type: INTEGER
+    mode: NULLABLE
+  - name: organic_list_card_impressions
+    type: INTEGER
+    mode: NULLABLE
+  - name: sponsored_list_card_impressions
+    type: INTEGER
+    mode: NULLABLE
+  - name: list_card_saves
+    type: INTEGER
+    mode: NULLABLE
+  - name: organic_list_card_saves
+    type: INTEGER
+    mode: NULLABLE
+  - name: sponsored_list_card_saves
+    type: INTEGER
+    mode: NULLABLE
+  - name: list_card_dismissals
+    type: INTEGER
+    mode: NULLABLE
+  - name: organic_list_card_dismissals
+    type: INTEGER
+    mode: NULLABLE
+  - name: sponsored_list_card_dismissals
+    type: INTEGER
+    mode: NULLABLE
 - name: is_new_profile
   type: BOOLEAN
   mode: NULLABLE
@@ -337,3 +373,9 @@ fields:
   mode: NULLABLE
   description: A UUID identifying the profile's group on a single device and allowing
     user-oriented correlation of data
+- name: newtab_window_inner_height
+  type: INTEGER
+  mode: NULLABLE
+- name: newtab_window_inner_width
+  type: INTEGER
+  mode: NULLABLE

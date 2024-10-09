@@ -3618,7 +3618,8 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream.
+      description: 'Failure occurs when initializing the audio stream. (Migrated from
+        the geckoview metric of the same name).
 
         '
     - name: glean_validation_pings_submitted
@@ -6324,10 +6325,11 @@ fields:
     - name: metrics_distribution_id
       type: STRING
       mode: NULLABLE
-      description: 'A string containing the distribution identifier. This is currently
-        used
+      description: 'A string containing the distribution identifier. This was used
 
-        to identify installs from Mozilla Online.
+        to identify installs from Mozilla Online, but now also identifies
+
+        partnership deal distributions
 
         '
     - name: gfx_feature_webrender

@@ -34,6 +34,23 @@ steps = [
          "sync_sign_in",
          ]
 
+dimensions = [
+              "funnel_id",
+              "repeat_first_month_user",
+              "retained_week_2",
+              "retained_week_4",
+              "country",
+              "locale",
+              "ios_version",
+              "channel",
+              "device_model",
+              "device_manufacturer",
+              "first_seen_date",
+              "adjust_network",
+              "adjust_campaign",
+              "adjust_creative",
+              "adjust_ad_group"
+              ]
 
 [steps.new_profile]
 friendly_name = "New Profile"
@@ -262,7 +279,7 @@ from_expression = """
   ON ic.client_id  = funnel_ids.client_id
 
 """
-submission_date_column = "ic.submission_date"
+submission_date_column = "DATE(ic.submission_timestamp)"
 client_id_column = "ic.client_id"
 
 

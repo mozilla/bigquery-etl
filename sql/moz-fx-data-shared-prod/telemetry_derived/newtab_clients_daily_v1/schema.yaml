@@ -257,3 +257,9 @@ fields:
 - name: profile_group_id
   type: STRING
   mode: NULLABLE
+- name: non_search_engagement_count
+  type: INTEGER
+  mode: NULLABLE
+- name: newtab_dismissal_count
+  type: INTEGER
+  mode: NULLABLE

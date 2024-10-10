@@ -1,0 +1,6 @@
+friendly_name: Shredder Targets
+description: |-
+  Daily list of shredder deletion targets comparing the configured targets with
+  the lineage of found id tables in bigquery.
+owners:
+  - bewu@mozilla.com

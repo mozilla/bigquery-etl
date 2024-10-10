@@ -102,7 +102,9 @@ def get_dags(project_id, dags_config, sql_dir=None):
                                 dag_collection=dag_collection,
                             )
                         )
-                        tasks.append(bigeye_task)
+
+                        if bigeye_task.monitoring_enabled:
+                            tasks.append(bigeye_task)
 
                     if CHECKS_FILE in files:
                         checks_file = os.path.join(root, CHECKS_FILE)

@@ -7,3 +7,6 @@ description: |-
   https://wiki.mozilla.org/Release_Management/Product_details
 owners:
 - ascholtz@mozilla.com
+monitoring:
+  enabled: false
+  partition_column: date

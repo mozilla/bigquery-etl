@@ -521,3 +521,18 @@ fields:
 - name: home_page_customize_home_clicked_users
   type: INTEGER
   mode: NULLABLE
+- name: distribution_id
+  type: STRING
+  mode: NULLABLE
+- name: top_sites_contile_click
+  type: INTEGER
+  mode: NULLABLE
+- name: top_sites_contile_click_users
+  type: INTEGER
+  mode: NULLABLE
+- name: top_sites_contile_impression
+  type: INTEGER
+  mode: NULLABLE
+- name: top_sites_contile_impression_users
+  type: INTEGER
+  mode: NULLABLE

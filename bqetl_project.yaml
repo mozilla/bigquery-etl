@@ -18,7 +18,7 @@ default:
   public_project: mozilla-public-data
 
 monitoring:
-  bigeye_warehouse_id: 1817
+  bigeye_warehouse_id: 1939
   bigeye_conn_id: bigeye_connection
 
 dry_run:
@@ -284,6 +284,8 @@ generate:
     - sql/moz-fx-data-shared-prod/fenix/client_deduplication/**
     - sql/moz-fx-data-shared-prod/org_mozilla_tv_firefox_derived/baseline_clients_last_seen_v1/checks.sql
     - sql/moz-fx-data-shared-prod/org_mozilla_reference_browser_derived/baseline_clients_last_seen_v1/checks.sql
+    - sql/moz-fx-data-shared-prod/org_mozilla_ios_focus_derived/baseline_clients_last_seen_v1/metadata.yaml
+    - sql/moz-fx-data-shared-prod/org_mozilla_ios_focus_derived/baseline_clients_last_seen_v1/bigconfig.yml
     skip_apps:
     - mlhackweek_search
     - moso_mastodon_android

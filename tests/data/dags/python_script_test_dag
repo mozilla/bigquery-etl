@@ -52,7 +52,7 @@ with DAG(
     bigeye__test__python_script_query__v1 = RunMetricsOperator(
         task_id="bigeye__test__python_script_query__v1",
         connection_id="bigeye_connection",
-        warehouse_id=1817,
+        warehouse_id=1939,
         schema_name="moz-fx-data-test-project.test",
         table_name="python_script_query_v1",
         circuit_breaker_mode=False,

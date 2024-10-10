@@ -420,6 +420,10 @@ fields:
   mode: NULLABLE
   description: The Windows Update Build Revision of the installation device, 0 if
     it does not exist
+- name: stub_build_id
+  type: STRING
+  mode: NULLABLE
+  description: Build ID of the stub installer
 - name: funnel_derived
   type: STRING
   mode: NULLABLE

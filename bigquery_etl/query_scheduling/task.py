@@ -337,6 +337,7 @@ class Task:
     node_selector: Optional[Dict[str, str]] = attr.ib(None)
     startup_timeout_seconds: Optional[int] = attr.ib(None)
     secrets: Optional[List[Secret]] = attr.ib(None)
+    monitoring_enabled: Optional[bool] = attr.ib(False)
 
     @property
     def task_key(self):
@@ -488,6 +489,10 @@ class Task:
 
         # expose secret config
         task_config["secrets"] = metadata.scheduling.get("secrets", [])
+
+        # to determine if BigEye task should be generated
+        if metadata.monitoring:
+            task_config["monitoring_enabled"] = metadata.monitoring.enabled
 
         # data processed in task should be published
         if metadata.is_public_json():

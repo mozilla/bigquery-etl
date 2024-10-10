@@ -60,14 +60,14 @@ visit_metadata AS (
     ANY_VALUE(
       IF(
         event_name = "opened",
-        CAST(mozfun.map.get_key(event_details, "window_inner_height") AS INT),
+        SAFE_CAST(mozfun.map.get_key(event_details, "window_inner_height") AS INT),
         NULL
       )
     ) AS newtab_window_inner_height,
     ANY_VALUE(
       IF(
         event_name = "opened",
-        CAST(mozfun.map.get_key(event_details, "window_inner_width") AS INT),
+        SAFE_CAST(mozfun.map.get_key(event_details, "window_inner_width") AS INT),
         NULL
       )
     ) AS newtab_window_inner_width,
@@ -272,7 +272,7 @@ pocket_events AS (
       event_name = 'thumb_voting_interaction'
       AND mozfun.map.get_key(event_details, "thumbs_down") = "true"
     ) AS pocket_thumbs_down,
-    CAST(mozfun.map.get_key(event_details, "received_rank") AS INT) AS pocket_received_rank,
+    SAFE_CAST(mozfun.map.get_key(event_details, "received_rank") AS INT) AS pocket_received_rank,
     mozfun.map.get_key(
       event_details,
       "scheduled_corpus_item_id"

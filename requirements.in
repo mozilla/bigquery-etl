@@ -4,7 +4,7 @@ bigeye-sdk==0.4.88
 black==24.8.0
 cattrs==24.1.2
 click==8.1.7
-exceptiongroup==1.2.0 # for backwards compatibility with python < 3.11
+exceptiongroup==1.2.2 # for backwards compatibility with python < 3.11
 flake8<5 # pytest-flake8 does not support flake8 5+
 gcsfs==2024.9.0.post1
 gcloud==0.18.3

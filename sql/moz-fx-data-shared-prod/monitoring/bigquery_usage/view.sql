@@ -18,6 +18,8 @@ SELECT
       THEN "search-terms"
     WHEN user_email LIKE "%airflow%"
       THEN "airflow"
+    WHEN user_email LIKE "%bigeye%"
+      THEN "bigeye"
     WHEN ENDS_WITH(user_email, "mozilla.com")
       THEN "individual"
     WHEN ENDS_WITH(user_email, "mozillafoundation.org")

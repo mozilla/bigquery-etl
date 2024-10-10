@@ -227,6 +227,7 @@ class GleanTable:
         view_metadata_filename = f"{self.target_table_id[:-3]}.metadata.yaml"
         table_metadata_filename = f"{self.target_table_id}.metadata.yaml"
         schema_filename = f"{self.target_table_id}.schema.yaml"
+        bigconfig_filename = f"{self.target_table_id}.bigconfig.yml"
 
         table = tables[f"{self.prefix}_table"]
         view = tables[f"{self.prefix}_view"]
@@ -248,6 +249,7 @@ class GleanTable:
             app_name=app_name,
             has_distribution_id=app_name in APPS_WITH_DISTRIBUTION_ID,
             has_profile_group_id= app_name in APPS_WITH_PROFILE_GROUP_ID,
+            target_table=f"{self.target_table_id}",
         )
 
         render_kwargs.update(self.custom_render_kwargs)
@@ -291,6 +293,17 @@ class GleanTable:
             )
         except TemplateNotFound:
             schema = None
+        
+         # Bigconfig files are optional
+        try:
+            bigconfig = render(
+                bigconfig_filename,
+                format=False,
+                template_folder=PATH / "templates",
+                **render_kwargs,
+            )
+        except TemplateNotFound:
+            bigconfig = None
 
         # generated files to update
         Artifact = namedtuple("Artifact", "table_id basename sql")
@@ -319,6 +332,9 @@ class GleanTable:
 
             if schema:
                 artifacts.append(Artifact(table, "schema.yaml", schema))
+            
+            if bigconfig:
+                artifacts.append(Artifact(table, "bigconfig.yml", bigconfig))
 
             for artifact in artifacts:
                 destination = (

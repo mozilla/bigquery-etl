@@ -28,10 +28,9 @@ WITH baseline_clients AS (
 client_attribution AS (
   SELECT
     client_id,
-    channel,
     adjust_network,
   FROM
-    `moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients`
+    `moz-fx-data-shared-prod.firefox_ios.attribution_clients`
 ),
 default_browser AS (
   SELECT
@@ -550,7 +549,7 @@ INNER JOIN
   USING (ping_date, client_id, channel, country)
 LEFT JOIN
   client_attribution
-  USING (client_id, channel)
+  USING (client_id)
 LEFT JOIN
   default_browser
   USING (ping_date, client_id, channel, country)

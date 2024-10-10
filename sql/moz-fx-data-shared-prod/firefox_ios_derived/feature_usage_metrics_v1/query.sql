@@ -28,10 +28,9 @@ WITH baseline_clients AS (
 client_attribution AS (
   SELECT
     client_id,
-    channel,
     adjust_network,
   FROM
-    `moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients`
+    `moz-fx-data-shared-prod.firefox_ios.attribution_clients`
 ),
 metric_ping_clients_feature_usage AS (
   SELECT
@@ -301,7 +300,7 @@ INNER JOIN
   USING (ping_date, client_id, channel, country)
 LEFT JOIN
   client_attribution
-  USING (client_id, channel)
+  USING (client_id)
 GROUP BY
   submission_date,
   ping_date,

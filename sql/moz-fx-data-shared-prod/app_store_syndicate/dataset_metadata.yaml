@@ -15,6 +15,9 @@ syndication:
     - app_store_territory_web_referrer_report
     - downloads_territory_web_referrer_report
     - usage_territory_web_referrer_report
+    - app_store_territory_app_referrer_report
+    - downloads_territory_app_referrer_report
+    - usage_territory_app_referrer_report
   administer_views: true
 workgroup_access:
   - role: roles/bigquery.dataViewer

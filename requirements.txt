@@ -2020,9 +2020,9 @@ snowballstemmer==2.2.0 \
     --hash=sha256:09b16deb8547d3412ad7b590689584cd0fe25ec8db3be37788be3810cbf19cb1 \
     --hash=sha256:c8e1716e83cc398ae16824e5572ae04e0d9fc2c6b985fb0f900f5f0c96ecba1a
     # via pydocstyle
-sqlglot==25.21.3 \
-    --hash=sha256:273a447f71434ab2f9a36b81a6327706369735a0756a61cd576ac6896a5086a4 \
-    --hash=sha256:dc63b429b80a69f2240ef892f776830883667fc9d978984ab98e7ce07edb7057
+sqlglot==25.24.5 \
+    --hash=sha256:6d3d604034301ca3b614d6b4148646b4033317b7a93d1801e9661495eb4b4fcf \
+    --hash=sha256:f8a8870d1f5cdd2e2dc5c39a5030a0c7b0a91264fb8972caead3dac8e8438873
     # via -r requirements.in
 sqlparse==0.5.1 \
     --hash=sha256:773dcbf9a5ab44a090f3441e2180efe2560220203dc2f8c0b0fa141e18b505e4 \

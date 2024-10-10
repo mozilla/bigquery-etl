@@ -282,6 +282,13 @@
             "name": "metrics_distribution_id",
             "mode": "NULLABLE"
           }
+          },
+          {
+            "description": "",
+            "type": "STRING",
+            "name": "install_source",
+            "mode": "NULLABLE"
+          }
         ],
         "type": "RECORD",
         "name": "string",

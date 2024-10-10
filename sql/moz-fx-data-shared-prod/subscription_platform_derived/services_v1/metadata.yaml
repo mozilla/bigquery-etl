@@ -10,6 +10,15 @@ scheduling:
   dag_name: bqetl_subplat
   # The whole table is overwritten every time, not a specific date partition.
   date_partition_parameter: null
+  # Adjust the execution delta for the task dependencies in the bqetl_subplat_hourly DAG
+  # so this depends on the last hourly DAG run for the same date.
+  depends_on:
+  - dag_name: bqetl_subplat_hourly
+    task_id: subscription_platform_derived__stripe_plans__v1
+    execution_delta: -21h45m
+  - dag_name: bqetl_subplat_hourly
+    task_id: subscription_platform_derived__stripe_products__v1
+    execution_delta: -21h45m
 bigquery:
   time_partitioning: null
   clustering: null

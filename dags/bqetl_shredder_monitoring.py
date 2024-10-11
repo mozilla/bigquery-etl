@@ -52,6 +52,42 @@ with DAG(
     tags=tags,
 ) as dag:
 
+    wait_for_monitoring_derived__bigquery_table_storage__v1 = ExternalTaskSensor(
+        task_id="wait_for_monitoring_derived__bigquery_table_storage__v1",
+        external_dag_id="bqetl_monitoring",
+        external_task_id="monitoring_derived__bigquery_table_storage__v1",
+        execution_delta=datetime.timedelta(seconds=36000),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_monitoring_derived__bigquery_tables_inventory__v1 = ExternalTaskSensor(
+        task_id="wait_for_monitoring_derived__bigquery_tables_inventory__v1",
+        external_dag_id="bqetl_monitoring",
+        external_task_id="monitoring_derived__bigquery_tables_inventory__v1",
+        execution_delta=datetime.timedelta(seconds=36000),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_monitoring_derived__jobs_by_organization__v1 = ExternalTaskSensor(
+        task_id="wait_for_monitoring_derived__jobs_by_organization__v1",
+        external_dag_id="bqetl_monitoring",
+        external_task_id="monitoring_derived__jobs_by_organization__v1",
+        execution_delta=datetime.timedelta(seconds=36000),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     monitoring_derived__shredder_targets__v1 = GKEPodOperator(
         task_id="monitoring_derived__shredder_targets__v1",
         arguments=[
@@ -67,4 +103,31 @@ with DAG(
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="bewu@mozilla.com",
         email=["bewu@mozilla.com"],
+    )
+
+    monitoring_derived__shredder_targets_joined__v1 = bigquery_etl_query(
+        task_id="monitoring_derived__shredder_targets_joined__v1",
+        destination_table="shredder_targets_joined_v1",
+        dataset_id="monitoring_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="bewu@mozilla.com",
+        email=["bewu@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    monitoring_derived__shredder_targets_joined__v1.set_upstream(
+        wait_for_monitoring_derived__bigquery_table_storage__v1
+    )
+
+    monitoring_derived__shredder_targets_joined__v1.set_upstream(
+        wait_for_monitoring_derived__bigquery_tables_inventory__v1
+    )
+
+    monitoring_derived__shredder_targets_joined__v1.set_upstream(
+        wait_for_monitoring_derived__jobs_by_organization__v1
+    )
+
+    monitoring_derived__shredder_targets_joined__v1.set_upstream(
+        monitoring_derived__shredder_targets__v1
     )

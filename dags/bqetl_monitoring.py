@@ -112,6 +112,20 @@ with DAG(
         email=["ascholtz@mozilla.com", "wichan@mozilla.com"],
     )
 
+    with TaskGroup(
+        "monitoring_derived__bigquery_table_storage__v1_external",
+    ) as monitoring_derived__bigquery_table_storage__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_shredder_monitoring__wait_for_monitoring_derived__bigquery_table_storage__v1",
+            external_dag_id="bqetl_shredder_monitoring",
+            external_task_id="wait_for_monitoring_derived__bigquery_table_storage__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=50400)).isoformat() }}",
+        )
+
+        monitoring_derived__bigquery_table_storage__v1_external.set_upstream(
+            monitoring_derived__bigquery_table_storage__v1
+        )
+
     monitoring_derived__bigquery_table_storage_timeline_daily__v1 = GKEPodOperator(
         task_id="monitoring_derived__bigquery_table_storage_timeline_daily__v1",
         arguments=[
@@ -135,6 +149,20 @@ with DAG(
         owner="wichan@mozilla.com",
         email=["ascholtz@mozilla.com", "wichan@mozilla.com"],
     )
+
+    with TaskGroup(
+        "monitoring_derived__bigquery_tables_inventory__v1_external",
+    ) as monitoring_derived__bigquery_tables_inventory__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_shredder_monitoring__wait_for_monitoring_derived__bigquery_tables_inventory__v1",
+            external_dag_id="bqetl_shredder_monitoring",
+            external_task_id="wait_for_monitoring_derived__bigquery_tables_inventory__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=50400)).isoformat() }}",
+        )
+
+        monitoring_derived__bigquery_tables_inventory__v1_external.set_upstream(
+            monitoring_derived__bigquery_tables_inventory__v1
+        )
 
     monitoring_derived__bigquery_usage__v1 = GKEPodOperator(
         task_id="monitoring_derived__bigquery_usage__v1",
@@ -217,6 +245,20 @@ with DAG(
         owner="mhirose@mozilla.com",
         email=["ascholtz@mozilla.com", "mhirose@mozilla.com"],
     )
+
+    with TaskGroup(
+        "monitoring_derived__jobs_by_organization__v1_external",
+    ) as monitoring_derived__jobs_by_organization__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_shredder_monitoring__wait_for_monitoring_derived__jobs_by_organization__v1",
+            external_dag_id="bqetl_shredder_monitoring",
+            external_task_id="wait_for_monitoring_derived__jobs_by_organization__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=50400)).isoformat() }}",
+        )
+
+        monitoring_derived__jobs_by_organization__v1_external.set_upstream(
+            monitoring_derived__jobs_by_organization__v1
+        )
 
     monitoring_derived__schema_error_counts__v2 = bigquery_etl_query(
         task_id="monitoring_derived__schema_error_counts__v2",

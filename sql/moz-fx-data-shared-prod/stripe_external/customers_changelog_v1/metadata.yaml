@@ -31,8 +31,7 @@ bigquery:
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:stripe
-  - workgroup:data-science/stripe
+  - workgroup:stripe/viewers
 - role: roles/bigquery.dataEditor
   members:
   - workgroup:platform-infra/internal

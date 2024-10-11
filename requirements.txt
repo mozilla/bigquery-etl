@@ -337,9 +337,9 @@ distlib==0.3.6 \
     --hash=sha256:14bad2d9b04d3a36127ac97f30b12a19268f211063d8f8ee4f47108896e11b46 \
     --hash=sha256:f35c4b692542ca110de7ef0bea44d73981caeb34ca0b9b6b2e6d7790dda8f80e
     # via virtualenv
-exceptiongroup==1.2.0 \
-    --hash=sha256:4bfd3996ac73b41e9b9628b04e079f193850720ea5945fc96a08633c66912f14 \
-    --hash=sha256:91f5c769735f051a4290d52edd0858999b57e5876e9f85937691bd4c9fa3ed68
+exceptiongroup==1.2.2 \
+    --hash=sha256:3111b9d131c238bec2f8f516e123e14ba243563fb135d3fe885990585aa7795b \
+    --hash=sha256:47c2edf7c6738fafb49fd34290706d1a1a2f4d1c6df275526b62cbb4aa5393cc
     # via -r requirements.in
 execnet==2.1.1 \
     --hash=sha256:26dee51f1b80cebd6d0ca8e74dd8745419761d3bef34163928cbebbdc4749fdc \
@@ -2020,9 +2020,9 @@ snowballstemmer==2.2.0 \
     --hash=sha256:09b16deb8547d3412ad7b590689584cd0fe25ec8db3be37788be3810cbf19cb1 \
     --hash=sha256:c8e1716e83cc398ae16824e5572ae04e0d9fc2c6b985fb0f900f5f0c96ecba1a
     # via pydocstyle
-sqlglot==25.21.3 \
-    --hash=sha256:273a447f71434ab2f9a36b81a6327706369735a0756a61cd576ac6896a5086a4 \
-    --hash=sha256:dc63b429b80a69f2240ef892f776830883667fc9d978984ab98e7ce07edb7057
+sqlglot==25.24.5 \
+    --hash=sha256:6d3d604034301ca3b614d6b4148646b4033317b7a93d1801e9661495eb4b4fcf \
+    --hash=sha256:f8a8870d1f5cdd2e2dc5c39a5030a0c7b0a91264fb8972caead3dac8e8438873
     # via -r requirements.in
 sqlparse==0.5.1 \
     --hash=sha256:773dcbf9a5ab44a090f3441e2180efe2560220203dc2f8c0b0fa141e18b505e4 \
@@ -2056,9 +2056,9 @@ typer==0.12.5 \
     --hash=sha256:62fe4e471711b147e3365034133904df3e235698399bc4de2b36c8579298d52b \
     --hash=sha256:f592f089bedcc8ec1b974125d64851029c3b1af145f04aca64d69410f0c9b722
     # via bigeye-sdk
-types-python-dateutil==2.9.0.20240906 \
-    --hash=sha256:27c8cc2d058ccb14946eebcaaa503088f4f6dbc4fb6093d3d456a49aef2753f6 \
-    --hash=sha256:9706c3b68284c25adffc47319ecc7947e5bb86b3773f843c73906fd598bc176e
+types-python-dateutil==2.9.0.20241003 \
+    --hash=sha256:250e1d8e80e7bbc3a6c99b907762711d1a1cdd00e978ad39cb5940f6f0a87f3d \
+    --hash=sha256:58cb85449b2a56d6684e41aeefb4c4280631246a0da1a719bdbe6f3fb0317446
     # via -r requirements.in
 types-pytz==2024.2.0.20241003 \
     --hash=sha256:3e22df1336c0c6ad1d29163c8fda82736909eb977281cb823c57f8bae07118b7 \

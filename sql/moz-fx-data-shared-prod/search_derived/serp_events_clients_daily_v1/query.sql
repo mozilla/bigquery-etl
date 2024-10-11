@@ -36,7 +36,7 @@ SELECT
 FROM
   `moz-fx-data-shared-prod.firefox_desktop.serp_events`
 WHERE
-    submission_date = DATE_SUB(@submission_date, INTERVAL 1 DAY)
+  submission_date = DATE_SUB(@submission_date, INTERVAL 1 DAY)
 GROUP BY
   submission_date,
   glean_client_id,

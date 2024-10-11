@@ -13,4 +13,6 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   view.sql:
+  - moz-fx-data-shared-prod.mozilla_vpn.daemonsession
   - moz-fx-data-shared-prod.mozilla_vpn.main
+  - moz-fx-data-shared-prod.mozilla_vpn.vpnsession

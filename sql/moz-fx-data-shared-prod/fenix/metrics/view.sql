@@ -727,7 +727,9 @@ SELECT
       metrics.timing_distribution.ocsp_request_time_success,
       metrics.timing_distribution.networking_http_content_ondatafinished_delay_2,
       metrics.timing_distribution.ls_preparedatastore_processing_time,
-      metrics.timing_distribution.ls_preparelsdatabase_processing_time
+      metrics.timing_distribution.ls_preparelsdatabase_processing_time,
+      metrics.timing_distribution.networking_sqlite_cookies_block_main_thread,
+      metrics.timing_distribution.networking_sqlite_cookies_time_to_block_main_thread
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -1567,7 +1569,9 @@ SELECT
       metrics.timing_distribution.ocsp_request_time_success,
       metrics.timing_distribution.networking_http_content_ondatafinished_delay_2,
       metrics.timing_distribution.ls_preparedatastore_processing_time,
-      metrics.timing_distribution.ls_preparelsdatabase_processing_time
+      metrics.timing_distribution.ls_preparelsdatabase_processing_time,
+      metrics.timing_distribution.networking_sqlite_cookies_block_main_thread,
+      metrics.timing_distribution.networking_sqlite_cookies_time_to_block_main_thread
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -2425,7 +2429,9 @@ SELECT
       metrics.timing_distribution.ocsp_request_time_success,
       metrics.timing_distribution.networking_http_content_ondatafinished_delay_2,
       metrics.timing_distribution.ls_preparedatastore_processing_time,
-      metrics.timing_distribution.ls_preparelsdatabase_processing_time
+      metrics.timing_distribution.ls_preparelsdatabase_processing_time,
+      metrics.timing_distribution.networking_sqlite_cookies_block_main_thread,
+      metrics.timing_distribution.networking_sqlite_cookies_time_to_block_main_thread
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -3292,7 +3298,9 @@ SELECT
       metrics.timing_distribution.ocsp_request_time_success,
       metrics.timing_distribution.networking_http_content_ondatafinished_delay_2,
       metrics.timing_distribution.ls_preparedatastore_processing_time,
-      metrics.timing_distribution.ls_preparelsdatabase_processing_time
+      metrics.timing_distribution.ls_preparelsdatabase_processing_time,
+      metrics.timing_distribution.networking_sqlite_cookies_block_main_thread,
+      metrics.timing_distribution.networking_sqlite_cookies_time_to_block_main_thread
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -4141,7 +4149,9 @@ SELECT
       metrics.timing_distribution.ocsp_request_time_success,
       metrics.timing_distribution.networking_http_content_ondatafinished_delay_2,
       metrics.timing_distribution.ls_preparedatastore_processing_time,
-      metrics.timing_distribution.ls_preparelsdatabase_processing_time
+      metrics.timing_distribution.ls_preparelsdatabase_processing_time,
+      metrics.timing_distribution.networking_sqlite_cookies_block_main_thread,
+      metrics.timing_distribution.networking_sqlite_cookies_time_to_block_main_thread
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,

@@ -1,0 +1,20 @@
+friendly_name: SERP Events Clients Daily
+description: |-
+  Aggregation of the desktop SERP Events data to the client-daily level.
+owners:
+- mozilla/revenue_forecasting_data_reviewers
+labels:
+  incremental: true
+  schedule: daily
+  dag: bqetl_search_dashboard
+scheduling:
+  dag_name: bqetl_search_dashboard
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  range_partitioning: null
+  clustering: null
+references: {}

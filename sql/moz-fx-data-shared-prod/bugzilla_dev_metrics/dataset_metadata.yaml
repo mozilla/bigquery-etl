@@ -5,7 +5,7 @@ user_facing: true
 labels: {}
 syndication:
   prod:
-    syndicated_project: "moz-fx-bugzilla-prod"
+    syndicated_project: "moz-fx-bugzilla-nonprod"
     syndicated_dataset: "bugzilla_dev_metrics"
   administer_views: false
 workgroup_access:

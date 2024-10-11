@@ -17,8 +17,8 @@ Built from bigquery-etl repo, [`dags/bqetl_internal_tooling.py`](https://github.
 
 #### Description
 
-This DAG schedules queries for populating queries related to Mozilla's
-internal developer tooling (e.g. mozregression and Firefox-CI).
+This DAG schedules queries for populating tables related to Mozilla's
+internal developer tooling (e.g. mozregression).
 
 #### Owner
 
@@ -65,28 +65,6 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    fxci_derived__task_run_costs__v1 = bigquery_etl_query(
-        task_id="fxci_derived__task_run_costs__v1",
-        destination_table="task_run_costs_v1",
-        dataset_id="fxci_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="ahalberstadt@mozilla.com",
-        email=["ahalberstadt@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-    )
-
-    fxci_worker_cost__v1 = bigquery_etl_query(
-        task_id="fxci_worker_cost__v1",
-        destination_table="worker_costs_v1",
-        dataset_id="fxci_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="ahalberstadt@mozilla.com",
-        email=["ahalberstadt@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-    )
-
     mozregression_aggregates__v1 = bigquery_etl_query(
         task_id="mozregression_aggregates__v1",
         destination_table="mozregression_aggregates_v1",
@@ -101,7 +79,5 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
-
-    fxci_derived__task_run_costs__v1.set_upstream(fxci_worker_cost__v1)
 
     mozregression_aggregates__v1.set_upstream(wait_for_copy_deduplicate_all)

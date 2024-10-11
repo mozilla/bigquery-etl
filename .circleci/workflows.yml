@@ -772,6 +772,7 @@ jobs:
                   rsync --archive ~/private-bigquery-etl/dags.yaml dags.yaml
             - run:
                 name: Generate SQL content
+                no_output_timeout: 30m
                 command: |
                   mkdir -p /tmp/workspace/private-generated-sql
 

@@ -36,11 +36,7 @@ SELECT
 FROM
   `moz-fx-data-shared-prod.firefox_desktop.serp_events`
 WHERE
-  {% if is_init() %}
-    submission_date >= '2023-07-14'
-  {% else %}
     submission_date = DATE_SUB(@submission_date, INTERVAL 1 DAY)
-  {% endif %}
 GROUP BY
   submission_date,
   glean_client_id,

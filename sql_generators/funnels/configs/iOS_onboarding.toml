@@ -40,7 +40,7 @@ dimensions = [
               "retained_week_2",
               "retained_week_4",
               "country",
-              "locale",
+              # "locale",
               "ios_version",
               "channel",
               "device_model",
@@ -51,6 +51,9 @@ dimensions = [
               "adjust_creative",
               "adjust_ad_group"
               ]
+
+
+[steps]
 
 [steps.new_profile]
 friendly_name = "New Profile"
@@ -259,24 +262,26 @@ aggregation = "count distinct"
 
 [data_sources.onboarding_events]
 from_expression = """
-  firefox_ios.firefox_ios_clients ic --each client_id has only one row
-  LEFT JOIN `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_4_v1 r --each client_id has only one row
-  ON ic.client_id = r.client_id
-  LEFT JOIN `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_2_v1 r2 -- retained_week_2 is not included in funnel_retention_clients_week_4_v1
-  ON ic.client_id = r2.client_id
+  `moz-fx-data-shared-prod`.firefox_ios.firefox_ios_clients AS ic --each client_id has only one row
+  LEFT JOIN `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_4_v1 AS r --each client_id has only one row
+  USING(client_id)
+  LEFT JOIN `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_2_v1 AS r2 -- retained_week_2 is not included in funnel_retention_clients_week_4_v1
+  USING(client_id)
   LEFT JOIN
-    (SELECT * FROM firefox_ios.events_unnested eu WHERE DATE(submission_timestamp) = @submission_date) eu
-  ON ic.client_id = eu.client_info.client_id
+    (SELECT *, client_info.client_id, FROM firefox_ios.events_unnested AS eu WHERE DATE(submission_timestamp) = @submission_date) eu
+  USING(client_id)
   LEFT JOIN
-    (SELECT client_info.client_id,
-    ANY_VALUE(`mozfun.map.get_key`(event_extra, 'sequence_id')) AS funnel_id,
-    1 + LENGTH(ANY_VALUE(`mozfun.map.get_key`(event_extra, 'sequence_id'))) - 
-             LENGTH(REPLACE(ANY_VALUE(`mozfun.map.get_key`(event_extra, 'sequence_id')), '_', '')) AS number_of_onboarding_cards
-    FROM firefox_ios.events_unnested
-    WHERE `mozfun.map.get_key`(event_extra, 'sequence_id') IS NOT NULL
-    AND DATE(submission_timestamp) = @submission_date
-    GROUP BY 1) funnel_ids
-  ON ic.client_id  = funnel_ids.client_id
+    (
+        SELECT client_info.client_id,
+        ANY_VALUE(`mozfun.map.get_key`(event_extra, 'sequence_id')) AS funnel_id,
+        1 + LENGTH(ANY_VALUE(`mozfun.map.get_key`(event_extra, 'sequence_id'))) -
+                LENGTH(REPLACE(ANY_VALUE(`mozfun.map.get_key`(event_extra, 'sequence_id')), '_', '')) AS number_of_onboarding_cards
+        FROM firefox_ios.events_unnested
+        WHERE `mozfun.map.get_key`(event_extra, 'sequence_id') IS NOT NULL
+        AND DATE(submission_timestamp) = @submission_date
+        GROUP BY client_info.client_id
+    ) AS funnel_ids
+  USING(client_id)
 
 """
 submission_date_column = "DATE(ic.submission_timestamp)"
@@ -322,12 +327,12 @@ friendly_name = "Country"
 description = "Client's First Reported Country"
 client_id_column = "ic.client_id"
 
-[dimensions.locale]
-data_source = "onboarding_events"
-select_expression = "ic.locale"
-friendly_name = "Locale"
-description = "Client's First Reported Language"
-client_id_column = "ic.client_id"
+#[dimensions.locale]
+# data_source = "onboarding_events"
+# select_expression = "ic.locale"
+# friendly_name = "Locale"
+# description = "Client's First Reported Language"
+# client_id_column = "ic.client_id"
 
 [dimensions.ios_version]
 data_source = "onboarding_events"

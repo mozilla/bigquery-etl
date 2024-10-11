@@ -39,7 +39,7 @@ WHERE
   {% if is_init() %}
     submission_date >= '2023-07-14'
   {% else %}
-    submission_date = @submission_date
+    submission_date = DATE_SUB(@submission_date, INTERVAL 1 DAY)
   {% endif %}
 GROUP BY
   submission_date,

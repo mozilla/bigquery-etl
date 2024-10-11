@@ -32,7 +32,7 @@ pytest-black==0.3.12
 pytest-flake8==1.1.2
 pytest-isort==4.0.0
 pytest-mypy==0.10.3
-pytest-pydocstyle==2.3.2
+pytest-pydocstyle==2.4.0
 pytest-xdist==3.6.1
 pytest==7.4.3
 PyYAML==6.0.2

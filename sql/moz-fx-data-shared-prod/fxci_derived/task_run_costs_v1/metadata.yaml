@@ -6,9 +6,9 @@ owners:
 labels:
   incremental: true
   owner1: ahalberstadt
-  dag: bqetl_internal_tooling
+  dag: bqetl_fxci
 scheduling:
-  dag_name: bqetl_internal_tooling
+  dag_name: bqetl_fxci
 bigquery:
   time_partitioning:
     type: day

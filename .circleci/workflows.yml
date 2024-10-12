@@ -743,6 +743,7 @@ jobs:
             -d "{\"dagrun_note\": \"${DAGRUN_NOTE}\", \"dag_id\": \"bqetl_artifact_deployment\"}"
   private-generate-sql:
     docker: *docker
+    resource_class: large
     steps:
       - when:
           condition: *deploy
@@ -772,6 +773,7 @@ jobs:
                   rsync --archive ~/private-bigquery-etl/dags.yaml dags.yaml
             - run:
                 name: Generate SQL content
+                no_output_timeout: 30m
                 command: |
                   mkdir -p /tmp/workspace/private-generated-sql
 

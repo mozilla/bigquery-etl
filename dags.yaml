@@ -519,8 +519,8 @@ bqetl_desktop_platform:
 
 bqetl_internal_tooling:
   description: |
-    This DAG schedules queries for populating queries related to Mozilla's
-    internal developer tooling (e.g. mozregression and Firefox-CI).
+    This DAG schedules queries for populating tables related to Mozilla's
+    internal developer tooling (e.g. mozregression).
   default_args:
     depends_on_past: false
     email:
@@ -1830,3 +1830,25 @@ bqetl_shredder_monitoring:
     - repo/bigquery-etl
     - impact/tier_3
     - triage/no_triage
+
+bqetl_fxci:
+  description: |
+    This DAG schedules queries for populating tables related to the
+    Firefox-CI Taskcluster instance.
+  default_args:
+    depends_on_past: false
+    email:
+      - ahalberstadt@mozilla.com
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    owner: ahalberstadt@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: "2020-10-11"
+  # This DAG needs to run late as it depends on the GCP billing export which
+  # often isn't finalized until the afternoon of the following day.
+  schedule_interval: 0 18 * * *
+  tags:
+    - impact/tier_3

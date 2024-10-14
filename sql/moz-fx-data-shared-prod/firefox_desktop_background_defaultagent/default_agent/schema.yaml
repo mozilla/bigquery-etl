@@ -414,6 +414,17 @@ fields:
         or "C++" if a Nimbus rollback was acted upon.
 
         '
+  - name: quantity
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: defaultagent_days_since_last_app_launch
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of days since the app last launched. Once this reaches
+        90 days, the installation will stop running the default browser agent.
+
+        '
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

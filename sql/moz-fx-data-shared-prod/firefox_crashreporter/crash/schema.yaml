@@ -595,6 +595,9 @@ fields:
     - name: environment_experimental_features
       type: STRING
       mode: REPEATED
+    - name: crash_utility_actors_name
+      type: STRING
+      mode: REPEATED
   - name: timespan
     type: RECORD
     mode: NULLABLE

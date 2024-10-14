@@ -1,0 +1,28 @@
+friendly_name: Newtab Merino Priors
+description: |-
+  Queries New Tab stats used by Merino to calculate Thompson sampling priors.
+  These determine how new items (without engagement data) are ranked on New Tab.
+owners:
+- cbeck@mozilla.com
+- gkatre@mozilla.com
+labels:
+  owner: cbeck
+  dag: bqetl_merino_newtab_priors_to_gcs
+  owner1: cbeck
+  owner2: gkatre
+scheduling:
+  dag_name: bqetl_merino_newtab_priors_to_gcs
+  date_partition_parameter: null
+bigquery:
+  time_partitioning: null
+  range_partitioning: null
+  clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  checks.sql:
+  - ..
+  query.sql:
+  - moz-fx-data-shared-prod.firefox_desktop.newtab

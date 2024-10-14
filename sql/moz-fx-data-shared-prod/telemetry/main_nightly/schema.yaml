@@ -38836,6 +38836,9 @@ fields:
         - name: browser_engagement_vertical_tab_pinned_event_count
           type: INTEGER
           mode: NULLABLE
+        - name: gfx_tmp_writable
+          type: BOOLEAN
+          mode: NULLABLE
     - name: socket
       type: RECORD
       mode: NULLABLE

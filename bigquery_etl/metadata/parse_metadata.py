@@ -478,6 +478,7 @@ class DatasetMetadata:
     user_facing: bool = attr.ib(False)
     labels: Dict = attr.ib({})
     default_table_workgroup_access: Optional[List[Dict[str, Any]]] = attr.ib(None)
+    default_table_expiration_ms: str = attr.ib(None)
     workgroup_access: list = attr.ib(DEFAULT_WORKGROUP_ACCESS)
     syndication: Dict = attr.ib({})
 

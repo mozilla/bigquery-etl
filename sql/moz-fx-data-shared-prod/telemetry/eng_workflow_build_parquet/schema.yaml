@@ -28,36 +28,48 @@ fields:
   - name: artifact
     type: BOOLEAN
     mode: NULLABLE
+    description: true if --enable-artifact-builds
   - name: ccache
     type: BOOLEAN
     mode: NULLABLE
+    description: true if ccache is in use (--with-ccache)
   - name: compiler
     type: STRING
     mode: NULLABLE
+    description: The compiler type in use (CC_TYPE)
   - name: debug
     type: BOOLEAN
     mode: NULLABLE
+    description: true if build is debug (--enable-debug)
   - name: icecream
     type: BOOLEAN
     mode: NULLABLE
+    description: true if icecream in use
   - name: opt
     type: BOOLEAN
     mode: NULLABLE
+    description: true if build is optimized (--enable-optimize)
   - name: sccache
     type: BOOLEAN
     mode: NULLABLE
+    description: true if ccache in use is sccache
+  description: Selected build options
 - name: client_id
   type: STRING
   mode: NULLABLE
+  description: A UUID to uniquely identify a client
 - name: command
   type: STRING
   mode: NULLABLE
+  description: The mach command that was invoked
 - name: duration_ms
   type: FLOAT
   mode: NULLABLE
+  description: Command duration in milliseconds
 - name: success
   type: BOOLEAN
   mode: NULLABLE
+  description: true if the command succeeded
 - name: system
   type: RECORD
   mode: NULLABLE
@@ -65,30 +77,40 @@ fields:
   - name: os
     type: STRING
     mode: NULLABLE
+    description: Operating system
   - name: cpu_brand
     type: STRING
     mode: NULLABLE
+    description: CPU brand string from CPUID
   - name: drive_is_ssd
     type: BOOLEAN
     mode: NULLABLE
+    description: true if the source directory is on a solid-state disk
   - name: logical_cores
     type: INTEGER
     mode: NULLABLE
+    description: Number of logical CPU cores present
   - name: memory_gb
     type: INTEGER
     mode: NULLABLE
+    description: System memory in GB
   - name: physical_cores
     type: INTEGER
     mode: NULLABLE
+    description: Number of physical CPU cores present
   - name: virtual_machine
     type: BOOLEAN
     mode: NULLABLE
+    description: true if the OS appears to be running in a virtual machine
 - name: time
   type: STRING
   mode: NULLABLE
+  description: Time at which this event happened
 - name: exception
   type: STRING
   mode: NULLABLE
+  description: If a Python exception was encountered during the execution of the command,
+    this value contains the result of calling `repr` on the exception object.
 - name: file_types_changed
   type: RECORD
   mode: REPEATED
@@ -96,9 +118,11 @@ fields:
   - name: count
     type: INTEGER
     mode: NULLABLE
+    description: Count of changed files with this extension
   - name: ext
     type: STRING
     mode: NULLABLE
+    description: File extension
 - name: build_attrs
   type: RECORD
   mode: NULLABLE
@@ -106,6 +130,9 @@ fields:
   - name: clobber
     type: BOOLEAN
     mode: NULLABLE
+    description: true if the build was a clobber/full build
   - name: cpu_percent
     type: FLOAT
     mode: NULLABLE
+    description: cpu utilization observed during a build
+  description: Attributes characterizing a build

@@ -3,6 +3,7 @@ description: |-
   User-generated tables for analysis
 dataset_base_acl: view
 user_facing: true
+default_table_expiration_ms: "15552000000"
 labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer

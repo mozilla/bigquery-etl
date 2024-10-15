@@ -32,3 +32,8 @@ references:
   - moz-fx-data-shared-prod.firefox_ios.baseline_clients_first_seen
   - moz-fx-data-shared-prod.firefox_ios.first_session
   - moz-fx-data-shared-prod.firefox_ios.metrics
+monitoring:
+  enabled: true
+  collection: Browser KPI Metrics
+  partition_column: null
+  partition_column_set: false

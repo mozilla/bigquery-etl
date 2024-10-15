@@ -32,3 +32,8 @@ references:
   - moz-fx-data-shared-prod.fenix.baseline_clients_first_seen
   - moz-fx-data-shared-prod.fenix.first_session
   - moz-fx-data-shared-prod.fenix.metrics
+monitoring:
+  enabled: true
+  collection: Browser KPI Metrics
+  partition_column: null
+  partition_column_set: false

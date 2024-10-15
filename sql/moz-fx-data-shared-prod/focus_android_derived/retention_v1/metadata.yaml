@@ -43,3 +43,8 @@ references:
   - ..
   query.sql:
   - moz-fx-data-shared-prod.focus_android.retention_clients
+monitoring:
+  enabled: true
+  collection: Browser KPI Metrics
+  partition_column: null
+  partition_column_set: false

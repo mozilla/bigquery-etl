@@ -1,5 +1,5 @@
 fields:
-- name: segment
+- name: segment_dau
   type: STRING
   mode: NULLABLE
   description: Classification of client_ids based on usage and active state.
@@ -27,15 +27,14 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Locale reported by the client, which is a combination of language and regional settings.
-- name: first_seen_year
+- name: first_seen_year_new
   type: INTEGER
   mode: NULLABLE
   description: Year extracted from the first_seen_date, that corresponds to the date when the first ping was received.
 - name: os
   type: STRING
   mode: NULLABLE
-  description: Operating system reported by the client.
-- name: os_version
+- name: os_version_build
   type: STRING
   mode: NULLABLE
   description: OS version reported by the client.
@@ -95,11 +94,3 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: Count of users who have reported a ping over the last 28 days and qualify as active.
-- name: uri_count
-  type: INTEGER
-  mode: NULLABLE
-  description: Count of uri.
-- name: active_hours
-  type: FLOAT64
-  mode: NULLABLE
-  description: Count of active hours.

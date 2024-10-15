@@ -99,3 +99,7 @@ with DAG(
     checks__fail_telemetry_derived__newtab_merino_extract__v1.set_upstream(
         telemetry_derived__newtab_merino_extract__v1
     )
+
+    telemetry_derived__newtab_merino_extract_to_gcs__v1.set_upstream(
+        checks__fail_telemetry_derived__newtab_merino_extract__v1
+    )

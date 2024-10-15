@@ -115,3 +115,7 @@ with DAG(
     telemetry_derived__newtab_merino_priors__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
+
+    telemetry_derived__newtab_merino_priors_to_gcs__v1.set_upstream(
+        checks__fail_telemetry_derived__newtab_merino_priors__v1
+    )

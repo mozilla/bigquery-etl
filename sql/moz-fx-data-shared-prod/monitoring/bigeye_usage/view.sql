@@ -1,3 +1,6 @@
+CREATE OR REPLACE VIEW
+  `moz-fx-data-shared-prod.monitoring.bigeye_usage`
+AS
 SELECT
   submission_date,
   reference_project_id,

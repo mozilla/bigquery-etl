@@ -116,3 +116,6 @@ fields:
 - name: baseline_profile_group_id
   type: STRING
   mode: NULLABLE
+- name: install_source
+  type: STRING
+  mode: NULLABLE

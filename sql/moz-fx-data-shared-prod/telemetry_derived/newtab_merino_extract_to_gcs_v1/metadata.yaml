@@ -18,6 +18,6 @@ scheduling:
   - --destination-prefix=newtab-merino-exports/engagement
   - --deletion-days-old=3
   referenced_tables:
-    - ['moz-fx-data-shared-prod', 'telemetry_derived', 'newtab_merino_extract_v1']
+  - ['moz-fx-data-shared-prod', 'telemetry_derived', 'newtab_merino_extract_v1']
 bigquery: null
 references: {}

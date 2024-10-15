@@ -9,7 +9,7 @@ UNION ALL
 SELECT
   "{{ dataset }}" AS normalized_app_id,
   e.*
-  EXCEPT (events, metrics)
+  EXCEPT (events {% if has_metrics -%}, metrics{% endif -%})
   REPLACE(
     {% if app_name == "fenix" -%}
     mozfun.norm.fenix_app_info("{{ dataset }}", client_info.app_build).channel AS normalized_channel,

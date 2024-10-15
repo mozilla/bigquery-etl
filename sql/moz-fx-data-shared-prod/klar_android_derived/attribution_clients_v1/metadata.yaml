@@ -32,6 +32,6 @@ references:
   - moz-fx-data-shared-prod.klar_android.baseline_clients_first_seen
 monitoring:
   enabled: true
-  collection: Browser KPI Metrics
+  collection: Browser Metrics (non-KPI)
   partition_column: null
   partition_column_set: false

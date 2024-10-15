@@ -34,6 +34,6 @@ references:
   - moz-fx-data-shared-prod.firefox_ios.metrics
 monitoring:
   enabled: true
-  collection: Browser KPI Metrics
+  collection: Browser Metrics (non-KPI)
   partition_column: null
   partition_column_set: false

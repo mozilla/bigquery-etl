@@ -11,12 +11,6 @@ SELECT
   cost,
   job_id,
   user_email AS service_account,
-  REGEXP_EXTRACT(bigeye_query, r'\'metric_id:(\d+)\'') AS metric_id,
-  REPLACE(
-    REGEXP_EXTRACT(LOWER(bigeye_query), r'`__grain_start__` from `([\w\d_\-\.`]+) as'),
-    "`",
-    ""
-  ) AS monitored_table_id,
 FROM
   `moz-fx-data-shared-prod.monitoring.bigquery_usage`
 WHERE

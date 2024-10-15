@@ -18,8 +18,7 @@ scheduling:
   - --destination-bucket=merino-airflow-data-prodpy
   - --destination-prefix=newtab-merino-exports/priors
   - --deletion-days-old=3
+  referenced_tables:
+    - ['moz-fx-data-shared-prod', 'telemetry_derived', 'newtab_merino_priors_v1']
 bigquery: null
-references:
-  query.sql:
-  - ..
-  - moz-fx-data-shared-prod.telemetry_derived.newtab_merino_priors_v1
+references: {}

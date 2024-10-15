@@ -3,7 +3,7 @@ table_deployments:
 - collection:
     name: {{ bigeye_collection }}
   deployments:
-  - fq_table_name: {{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}
+  - fq_table_name: {{ project_id }}.{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}
     table_metrics:
     - metric_type:
         type: PREDEFINED

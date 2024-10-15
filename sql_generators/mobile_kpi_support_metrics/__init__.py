@@ -33,7 +33,7 @@ TEMPLATES = (
     ("AGGREGATE", "new_profiles.view.sql"),
     ("AGGREGATE", "new_profiles.query.sql"),
 )
-BIGEYE_COLLECTION = "Browser KPI Metrics"
+BIGEYE_COLLECTION = "Browser Metrics (non-KPI)"
 
 
 class AttributionPings(Enum):

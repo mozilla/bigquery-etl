@@ -26,6 +26,7 @@ WITH base AS (
     normalized_os,
     normalized_os_version,
     metrics.string.metrics_distribution_id AS distribution_id,
+    metrics.string.first_session_install_source AS install_source,
     metadata.geo.subdivision1 AS geo_subdivision,
     CAST(NULL AS STRING) AS profile_group_id,
   FROM
@@ -107,6 +108,7 @@ windowed AS (
       ARRAY_AGG(telemetry_sdk_build) OVER w1
     ) AS telemetry_sdk_build,
     `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(distribution_id) OVER w1) AS distribution_id,
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(install_source) OVER w1) AS install_source,
     `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(geo_subdivision) OVER w1) AS geo_subdivision,
     `moz-fx-data-shared-prod.udf.mode_last`(
       ARRAY_AGG(profile_group_id) OVER w1

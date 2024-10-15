@@ -51,20 +51,6 @@ with DAG(
     tags=tags,
 ) as dag:
 
-    wait_for_checks__fail_fenix_derived__firefox_android_clients__v1 = (
-        ExternalTaskSensor(
-            task_id="wait_for_checks__fail_fenix_derived__firefox_android_clients__v1",
-            external_dag_id="bqetl_analytics_tables",
-            external_task_id="checks__fail_fenix_derived__firefox_android_clients__v1",
-            execution_delta=datetime.timedelta(seconds=14400),
-            check_existence=True,
-            mode="reschedule",
-            allowed_states=ALLOWED_STATES,
-            failed_states=FAILED_STATES,
-            pool="DATA_ENG_EXTERNALTASKSENSOR",
-        )
-    )
-
     wait_for_copy_deduplicate_all = ExternalTaskSensor(
         task_id="wait_for_copy_deduplicate_all",
         external_dag_id="copy_deduplicate",
@@ -77,25 +63,23 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_checks__fail_firefox_ios_derived__clients_activation__v1 = (
-        ExternalTaskSensor(
-            task_id="wait_for_checks__fail_firefox_ios_derived__clients_activation__v1",
-            external_dag_id="bqetl_firefox_ios",
-            external_task_id="checks__fail_firefox_ios_derived__clients_activation__v1",
-            execution_delta=datetime.timedelta(seconds=7200),
-            check_existence=True,
-            mode="reschedule",
-            allowed_states=ALLOWED_STATES,
-            failed_states=FAILED_STATES,
-            pool="DATA_ENG_EXTERNALTASKSENSOR",
-        )
+    wait_for_fenix_derived__attribution_clients__v1 = ExternalTaskSensor(
+        task_id="wait_for_fenix_derived__attribution_clients__v1",
+        external_dag_id="bqetl_mobile_kpi_metrics",
+        external_task_id="fenix.fenix_derived__attribution_clients__v1",
+        execution_delta=datetime.timedelta(days=-1, seconds=64800),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_checks__fail_firefox_ios_derived__firefox_ios_clients__v1 = ExternalTaskSensor(
-        task_id="wait_for_checks__fail_firefox_ios_derived__firefox_ios_clients__v1",
-        external_dag_id="bqetl_firefox_ios",
-        external_task_id="checks__fail_firefox_ios_derived__firefox_ios_clients__v1",
-        execution_delta=datetime.timedelta(seconds=7200),
+    wait_for_firefox_ios_derived__attribution_clients__v1 = ExternalTaskSensor(
+        task_id="wait_for_firefox_ios_derived__attribution_clients__v1",
+        external_dag_id="bqetl_mobile_kpi_metrics",
+        external_task_id="firefox_ios.firefox_ios_derived__attribution_clients__v1",
+        execution_delta=datetime.timedelta(days=-1, seconds=64800),
         check_existence=True,
         mode="reschedule",
         allowed_states=ALLOWED_STATES,
@@ -147,38 +131,30 @@ with DAG(
         depends_on_past=False,
     )
 
-    fenix_derived__feature_usage_events__v1.set_upstream(
-        wait_for_checks__fail_fenix_derived__firefox_android_clients__v1
-    )
-
     fenix_derived__feature_usage_events__v1.set_upstream(wait_for_copy_deduplicate_all)
 
-    fenix_derived__feature_usage_metrics__v1.set_upstream(
-        wait_for_checks__fail_fenix_derived__firefox_android_clients__v1
+    fenix_derived__feature_usage_events__v1.set_upstream(
+        wait_for_fenix_derived__attribution_clients__v1
     )
 
     fenix_derived__feature_usage_metrics__v1.set_upstream(wait_for_copy_deduplicate_all)
 
-    firefox_ios_derived__feature_usage_events__v1.set_upstream(
-        wait_for_checks__fail_firefox_ios_derived__clients_activation__v1
-    )
-
-    firefox_ios_derived__feature_usage_events__v1.set_upstream(
-        wait_for_checks__fail_firefox_ios_derived__firefox_ios_clients__v1
+    fenix_derived__feature_usage_metrics__v1.set_upstream(
+        wait_for_fenix_derived__attribution_clients__v1
     )
 
     firefox_ios_derived__feature_usage_events__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
 
-    firefox_ios_derived__feature_usage_metrics__v1.set_upstream(
-        wait_for_checks__fail_firefox_ios_derived__clients_activation__v1
-    )
-
-    firefox_ios_derived__feature_usage_metrics__v1.set_upstream(
-        wait_for_checks__fail_firefox_ios_derived__firefox_ios_clients__v1
+    firefox_ios_derived__feature_usage_events__v1.set_upstream(
+        wait_for_firefox_ios_derived__attribution_clients__v1
     )
 
     firefox_ios_derived__feature_usage_metrics__v1.set_upstream(
         wait_for_copy_deduplicate_all
+    )
+
+    firefox_ios_derived__feature_usage_metrics__v1.set_upstream(
+        wait_for_firefox_ios_derived__attribution_clients__v1
     )

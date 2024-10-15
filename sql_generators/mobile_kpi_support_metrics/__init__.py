@@ -6,6 +6,7 @@ from dataclasses import asdict, dataclass, field
 from enum import Enum
 from os import path
 from pathlib import Path
+from typing import Any
 
 import click
 from jinja2 import Environment, FileSystemLoader
@@ -32,6 +33,7 @@ TEMPLATES = (
     ("AGGREGATE", "new_profiles.view.sql"),
     ("AGGREGATE", "new_profiles.query.sql"),
 )
+BIGEYE_COLLECTION = "Browser KPI Metrics"
 
 
 class AttributionPings(Enum):
@@ -48,7 +50,7 @@ class AttributionFieldGroup:
 
     name: str
     source_pings: list[AttributionPings]
-    fields: list[dict[str, str]]
+    fields: list[dict[str, Any]]
 
 
 class AttributionFields:
@@ -202,7 +204,7 @@ class Product:
         default_factory=list[AttributionFields.empty]  # type: ignore[valid-type]
     )
 
-    def get_product_attribution_fields(self) -> dict[str, dict[str, str]]:
+    def get_product_attribution_fields(self) -> dict[str, dict[str, Any]]:
         """Merge all AttributionFieldGroups assigned to a product into a single map containing all attribution fields set for that product."""
         return {
             field["name"]: field
@@ -299,12 +301,14 @@ def generate(target_project, output_dir, use_cloud_function):
         "header": HEADER,
         "version": VERSION,
         "project_id": target_project,
+        "bigeye_collection": BIGEYE_COLLECTION,
     }
 
     query_support_configs = (
         "checks.sql",
         "metadata.yaml",
         "schema.yaml",
+        "bigconfig.yml",
     )
 
     all_possible_attribution_fields = dict(

@@ -21,3 +21,6 @@ bigquery:
     fields:
       - normalized_channel
       - country
+monitoring:
+  enabled: true
+  collection: {{ bigeye_collection }}

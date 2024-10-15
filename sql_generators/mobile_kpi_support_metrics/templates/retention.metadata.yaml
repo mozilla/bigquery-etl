@@ -31,3 +31,6 @@ bigquery:
       - app_name
       - country
       - first_seen_date
+monitoring:
+  enabled: true
+  collection: {{ bigeye_collection }}

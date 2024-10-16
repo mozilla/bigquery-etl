@@ -513,7 +513,8 @@ SELECT
       metrics.string.preferences_open_links_in_app_enabled,
       metrics.string.gecko_build_id,
       metrics.string.gecko_version,
-      metrics.string.first_session_install_source
+      metrics.string.first_session_install_source,
+      metrics.string.blocklist_mlbf_softblocks_source
     ) AS `string`,
     STRUCT(
       metrics.string_list.metrics_mozilla_products,
@@ -1355,7 +1356,8 @@ SELECT
       metrics.string.preferences_open_links_in_app_enabled,
       metrics.string.gecko_build_id,
       metrics.string.gecko_version,
-      metrics.string.first_session_install_source
+      metrics.string.first_session_install_source,
+      metrics.string.blocklist_mlbf_softblocks_source
     ) AS `string`,
     STRUCT(
       metrics.string_list.metrics_mozilla_products,
@@ -2215,7 +2217,8 @@ SELECT
       metrics.string.preferences_open_links_in_app_enabled,
       metrics.string.gecko_build_id,
       metrics.string.gecko_version,
-      metrics.string.first_session_install_source
+      metrics.string.first_session_install_source,
+      metrics.string.blocklist_mlbf_softblocks_source
     ) AS `string`,
     STRUCT(
       metrics.string_list.metrics_mozilla_products,
@@ -3084,7 +3087,8 @@ SELECT
       metrics.string.preferences_open_links_in_app_enabled,
       metrics.string.gecko_build_id,
       metrics.string.gecko_version,
-      metrics.string.first_session_install_source
+      metrics.string.first_session_install_source,
+      metrics.string.blocklist_mlbf_softblocks_source
     ) AS `string`,
     STRUCT(
       metrics.string_list.metrics_mozilla_products,
@@ -3935,7 +3939,8 @@ SELECT
       metrics.string.preferences_open_links_in_app_enabled,
       metrics.string.gecko_build_id,
       metrics.string.gecko_version,
-      metrics.string.first_session_install_source
+      metrics.string.first_session_install_source,
+      metrics.string.blocklist_mlbf_softblocks_source
     ) AS `string`,
     STRUCT(
       metrics.string_list.metrics_mozilla_products,

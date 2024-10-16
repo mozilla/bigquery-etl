@@ -5,6 +5,7 @@ WITH new_profiles AS (
     client_id,
     sample_id,
     distribution_id,
+    install_source,
   FROM
     `moz-fx-data-shared-prod.fenix.baseline_clients_first_seen`
   WHERE
@@ -185,7 +186,7 @@ SELECT
   @submission_date AS submission_date,
   client_id,
   sample_id,
-  metrics_ping.install_source,
+  COALESCE(new_profiles.install_source, metrics_ping.install_source) AS install_source,
   COALESCE(first_session_ping.adjust_info, metrics_ping.adjust_info) AS adjust_info,
   first_session_ping.play_store_info,
   first_session_ping.meta_info,

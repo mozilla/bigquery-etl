@@ -324,7 +324,8 @@ SELECT
       metrics.string.gfx_status_compositor,
       metrics.string.gfx_status_last_compositor_gecko_version,
       metrics.string.gecko_build_id,
-      metrics.string.gecko_version
+      metrics.string.gecko_version,
+      metrics.string.blocklist_mlbf_softblocks_source
     ) AS `string`,
     STRUCT(
       metrics.quantity.shortcuts_shortcuts_on_home_number,
@@ -944,7 +945,8 @@ SELECT
       metrics.string.gfx_status_compositor,
       metrics.string.gfx_status_last_compositor_gecko_version,
       metrics.string.gecko_build_id,
-      metrics.string.gecko_version
+      metrics.string.gecko_version,
+      metrics.string.blocklist_mlbf_softblocks_source
     ) AS `string`,
     STRUCT(
       metrics.quantity.shortcuts_shortcuts_on_home_number,
@@ -1564,7 +1566,8 @@ SELECT
       metrics.string.gfx_status_compositor,
       metrics.string.gfx_status_last_compositor_gecko_version,
       metrics.string.gecko_build_id,
-      metrics.string.gecko_version
+      metrics.string.gecko_version,
+      metrics.string.blocklist_mlbf_softblocks_source
     ) AS `string`,
     STRUCT(
       metrics.quantity.shortcuts_shortcuts_on_home_number,

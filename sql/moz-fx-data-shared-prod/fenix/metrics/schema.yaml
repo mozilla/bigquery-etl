@@ -4017,6 +4017,9 @@ fields:
     - name: first_session_install_source
       type: STRING
       mode: NULLABLE
+    - name: blocklist_mlbf_softblocks_source
+      type: STRING
+      mode: NULLABLE
   - name: string_list
     type: RECORD
     mode: NULLABLE

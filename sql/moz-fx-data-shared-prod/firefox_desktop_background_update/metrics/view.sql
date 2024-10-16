@@ -19,6 +19,10 @@ SELECT
             ) AS blocklist_mlbf_generation_time,
             metrics.datetime.blocklist_mlbf_generation_time AS raw_blocklist_mlbf_generation_time,
             mozfun.glean.parse_datetime(
+              metrics.datetime.blocklist_mlbf_softblocks_generation_time
+            ) AS blocklist_mlbf_softblocks_generation_time,
+            metrics.datetime.blocklist_mlbf_softblocks_generation_time AS raw_blocklist_mlbf_softblocks_generation_time,
+            mozfun.glean.parse_datetime(
               metrics.datetime.blocklist_mlbf_stash_time_newest
             ) AS blocklist_mlbf_stash_time_newest,
             metrics.datetime.blocklist_mlbf_stash_time_newest AS raw_blocklist_mlbf_stash_time_newest,

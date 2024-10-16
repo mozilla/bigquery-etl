@@ -2473,6 +2473,9 @@ fields:
     - name: gecko_version
       type: STRING
       mode: NULLABLE
+    - name: blocklist_mlbf_softblocks_source
+      type: STRING
+      mode: NULLABLE
   - name: quantity
     type: RECORD
     mode: NULLABLE

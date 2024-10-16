@@ -64,7 +64,7 @@ class EventErrorMonitoring(GleanTable):
             if app[0]["app_name"] not in skip_apps
             # errors are from metrics in glean-core/js; nothing to monitor for server apps
             and "glean-server" not in app[0]["dependencies"]
-            and "glean-server-metrics-compat" in app[0]["dependencies"]
+            and "glean-server-metrics-compat" not in app[0]["dependencies"]
         ]
 
         render_kwargs = dict(

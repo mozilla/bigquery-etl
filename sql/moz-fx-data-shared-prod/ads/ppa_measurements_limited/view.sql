@@ -10,5 +10,6 @@ SELECT
   task_id,
   task_index,
   conversion_count,
+  time_precision_minutes,
 FROM
   `moz-fx-ads-prod.ppa.measurements`

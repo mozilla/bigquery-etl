@@ -7,6 +7,9 @@ WITH new_profiles AS (
     {% if 'distribution_id' in product_attribution_group_names %}
     distribution_id,
     {% endif %}
+    {% if 'install_source' in product_attribution_group_names %}
+    install_source,
+    {% endif %}
     {% if 'is_suspicious_device_client' in product_attribution_group_names %}
     -- field to help us identify suspicious devices on iOS, for more info see: bug-1846554
     (app_display_version = '107.2' AND submission_date >= '2023-02-01') AS is_suspicious_device_client,
@@ -269,7 +272,7 @@ SELECT
   client_id,
   sample_id,
   {% if 'install_source' in product_attribution_group_names %}
-  metrics_ping.install_source,
+  COALESCE(new_profiles.install_source, metrics_ping.install_source) AS install_source,
   {% endif %}
   {% if 'adjust' in product_attribution_group_names %}
   COALESCE(first_session_ping.adjust_info, metrics_ping.adjust_info) AS adjust_info,

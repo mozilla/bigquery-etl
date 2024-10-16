@@ -78,6 +78,14 @@ CREATE TEMP FUNCTION extract_ios_provider(list ARRAY<STRUCT<key STRING, value IN
     )
 );
 
+CREATE TEMP FUNCTION normalize_baseline_engine(search_type STRING) AS (
+  CASE WHEN search_type = 'provide-google' THEN 'google'
+  WHEN search_type = 'provide-bing' THEN 'bing'
+  WHEN search_type = 'provide-duckduckgo' THEN 'duckduckgo'
+  WHEN search_type = 'provide-yahoo' THEN 'yahoo' END
+);
+
+
 WITH core_flattened_searches AS (
   SELECT
     *,
@@ -200,7 +208,7 @@ glean_flattened_searches AS (
       WHEN search.search_type = 'ad-click' OR search.search_type = 'search-with-ads'
         -- ad-click key format is engine.in-content.type.code for builds starting 2021-03-16
         -- otherwise key is engine
-        THEN SPLIT(search.key, '.')[SAFE_OFFSET(0)]
+        THEN normalize_baseline_engine(SPLIT(search.key, '.')[SAFE_OFFSET(0)])
       ELSE NULL
     END AS engine,
 

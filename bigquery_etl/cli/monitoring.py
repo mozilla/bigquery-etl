@@ -5,6 +5,8 @@ import os
 import sys
 from pathlib import Path
 from typing import Optional
+import re
+from collections import defaultdict
 
 import click
 from bigeye_sdk.authentication.api_authentication import APIKeyAuth
@@ -16,8 +18,6 @@ from bigeye_sdk.model.big_config import (
     BigConfig,
     ColumnSelector,
     RowCreationTimes,
-    TableDeployment,
-    TableDeploymentSuite,
     TagDeployment,
     TagDeploymentSuite,
 )
@@ -28,7 +28,9 @@ from bigeye_sdk.model.protobuf_message_facade import (
     SimpleNamedSchedule,
     SimplePredefinedMetric,
     SimplePredefinedMetricName,
+    SimpleConstantThreshold,
 )
+from bigeye_sdk.bigconfig_validation.validation_context import _BIGEYE_YAML_FILE_IX
 
 from bigquery_etl.config import ConfigLoader
 from bigquery_etl.metadata.parse_metadata import METADATA_FILE, Metadata
@@ -116,7 +118,9 @@ def deploy(
                     project_id=project_id,
                 )
 
-                if (metadata_file.parent / VIEW_FILE).exists():
+                if (
+                    metadata_file.parent / VIEW_FILE
+                ).exists() or "public_bigquery" in metadata.labels:
                     # monitoring to be deployed on a view
                     # Bigeye requires to explicitly set the partition column for views
                     ctx.invoke(
@@ -144,71 +148,15 @@ def deploy(
     )
 
 
-def _update_table_bigconfig(
+def _update_bigconfig(
     bigconfig,
     metadata,
     project,
     dataset,
     table,
-):
-    """Update the BigConfig file to monitor a table."""
-    default_metrics = [
-        SimplePredefinedMetricName.FRESHNESS,
-        SimplePredefinedMetricName.VOLUME,
-    ]
-
-    for collection in bigconfig.table_deployments:
-        for deployment in collection.deployments:
-            for metric in deployment.table_metrics:
-                if metric.metric_type.predefined_metric in default_metrics:
-                    default_metrics.remove(metric.metric_type.predefined_metric)
-
-        if metadata.monitoring.collection and collection.collection is None:
-            collection.collection = SimpleCollection(
-                name=metadata.monitoring.collection
-            )
-
-    if len(default_metrics) > 0:
-        deployments = [
-            TableDeployment(
-                fq_table_name=f"{project}.{project}.{dataset}.{table}",
-                table_metrics=[
-                    SimpleMetricDefinition(
-                        metric_type=SimplePredefinedMetric(
-                            type="PREDEFINED", predefined_metric=metric
-                        ),
-                        metric_schedule=SimpleMetricSchedule(
-                            named_schedule=SimpleNamedSchedule(
-                                name="Default Schedule - 13:00 UTC"
-                            )
-                        ),
-                    )
-                    for metric in default_metrics
-                ],
-            )
-        ]
-
-        collection = None
-        if metadata.monitoring.collection:
-            collection = SimpleCollection(name=metadata.monitoring.collection)
-
-        bigconfig.table_deployments += [
-            TableDeploymentSuite(deployments=deployments, collection=collection)
-        ]
-
-
-def _update_view_bigconfig(
-    bigconfig,
-    metadata,
-    project,
-    dataset,
-    table,
+    default_metrics,
 ):
     """Update the BigConfig file to monitor a view."""
-    default_metrics = [
-        SimplePredefinedMetricName.FRESHNESS_DATA,
-        SimplePredefinedMetricName.VOLUME_DATA,
-    ]
 
     for collection in bigconfig.tag_deployments:
         for deployment in collection.deployments:
@@ -251,13 +199,14 @@ def _update_view_bigconfig(
             TagDeploymentSuite(deployments=deployments, collection=collection)
         ]
 
-        bigconfig.row_creation_times = RowCreationTimes(
-            column_selectors=[
-                ColumnSelector(
-                    name=f"{project}.{project}.{dataset}.{table}.{metadata.monitoring.partition_column}"
-                )
-            ]
-        )
+        if metadata.monitoring.partition_column:
+            bigconfig.row_creation_times = RowCreationTimes(
+                column_selectors=[
+                    ColumnSelector(
+                        name=f"{project}.{project}.{dataset}.{table}.{metadata.monitoring.partition_column}"
+                    )
+                ]
+            )
 
 
 @monitoring.command(
@@ -288,21 +237,31 @@ def update(name: str, sql_dir: Optional[str], project_id: Optional[str]) -> None
                 else:
                     bigconfig = BigConfig(type="BIGCONFIG_FILE")
 
-                if (metadata_file.parent / VIEW_FILE).exists():
-                    _update_view_bigconfig(
+                if (
+                    metadata_file.parent / VIEW_FILE
+                ).exists() or "public_bigquery" in metadata.labels:
+                    _update_bigconfig(
                         bigconfig=bigconfig,
                         metadata=metadata,
                         project=project,
                         dataset=dataset,
                         table=table,
+                        default_metrics=[
+                            SimplePredefinedMetricName.FRESHNESS_DATA,
+                            SimplePredefinedMetricName.VOLUME_DATA,
+                        ],
                     )
                 else:
-                    _update_table_bigconfig(
+                    _update_bigconfig(
                         bigconfig=bigconfig,
                         metadata=metadata,
                         project=project,
                         dataset=dataset,
                         table=table,
+                        default_metrics=[
+                            SimplePredefinedMetricName.FRESHNESS,
+                            SimplePredefinedMetricName.VOLUME,
+                        ],
                     )
 
                 bigconfig.save(
@@ -462,3 +421,204 @@ def set_partition_column(
 
         except FileNotFoundError:
             print("No metadata file for: {}.{}.{}".format(project, dataset, table))
+
+
+# TODO: remove this command once checks have been migrated
+@monitoring.command(
+    help="""
+    Create BigConfig files from ETL check.sql files.
+
+    This is a temporary command and will be removed after checks have been migrated.
+    """
+)
+@click.argument("name")
+@project_id_option()
+@sql_dir_option
+@click.pass_context
+def migrate(ctx, name: str, sql_dir: Optional[str], project_id: Optional[str]) -> None:
+    """Migrate checks.sql files to BigConfig."""
+    check_files = paths_matching_name_pattern(
+        name, sql_dir, project_id=project_id, files=["checks.sql"]
+    )
+
+    for check_file in list(set(check_files)):
+        project, dataset, table = extract_from_query_path(check_file)
+        checks_migrated = 0
+        try:
+            metadata_file = check_file.parent / METADATA_FILE
+            metadata = Metadata.from_file(check_file.parent / METADATA_FILE)
+            metadata.monitoring = {"enabled": True}
+            metadata.write(metadata_file)
+
+            ctx.invoke(
+                update,
+                name=metadata_file.parent,
+                sql_dir=sql_dir,
+                project_id=project_id,
+            )
+
+            _BIGEYE_YAML_FILE_IX.clear()
+            bigconfig_file = check_file.parent / BIGCONFIG_FILE
+            if bigconfig_file.exists():
+                bigconfig = BigConfig.load(bigconfig_file)
+            else:
+                bigconfig = BigConfig(type="BIGCONFIG_FILE")
+
+            checks = check_file.read_text()
+            metrics_by_column = defaultdict(list)
+
+            # map pre-defined ETL checks to Bigeye checks
+            if matches := re.findall(
+                r"not_null\(\[([^\]\)]*)\](?:, \"(.*)\")?\)", checks
+            ):
+                for match in matches:
+                    checks_migrated += 1
+                    columns = [
+                        col.replace('"', "")
+                        for col in match[0]
+                        .replace("[", "")
+                        .replace("]", "")
+                        .split(", ")
+                    ]
+                    metric_definition = SimpleMetricDefinition(
+                        metric_type=SimplePredefinedMetric(
+                            type="PREDEFINED",
+                            predefined_metric=SimplePredefinedMetricName.PERCENT_NOT_NULL,
+                        ),
+                        threshold=SimpleConstantThreshold(
+                            type="CONSTANT", lower_bound=1.0
+                        ),
+                    )
+
+                    for column in columns:
+                        metrics_by_column[
+                            f"{project}.{project}.{dataset}.{table}.{column}"
+                        ].append(metric_definition)
+
+            if matches := re.findall(
+                r"min_row_count\(([^,\)]*)(?:, \"(.*)\")?\)", checks
+            ):
+                for match in matches:
+                    checks_migrated += 1
+                    metrics_by_column[
+                        f"{project}.{project}.{dataset}.{table}.*"
+                    ].append(
+                        SimpleMetricDefinition(
+                            metric_type=SimplePredefinedMetric(
+                                type="PREDEFINED",
+                                predefined_metric=SimplePredefinedMetricName.COUNT_ROWS,
+                            ),
+                            threshold=SimpleConstantThreshold(
+                                type="CONSTANT", lower_bound=int(match[0])
+                            ),
+                        )
+                    )
+
+            if matches := re.findall(r"is_unique\(([^\]\)]*)(?:, \"(.*)\")?\)", checks):
+                for match in matches:
+                    checks_migrated += 1
+                    columns = [
+                        col.replace('"', "")
+                        for col in match[0]
+                        .replace("[", "")
+                        .replace("]", "")
+                        .split(", ")
+                    ]
+                    metric_definition = SimpleMetricDefinition(
+                        metric_type=SimplePredefinedMetric(
+                            type="PREDEFINED",
+                            predefined_metric=SimplePredefinedMetricName.COUNT_DUPLICATES,
+                        ),
+                        threshold=SimpleConstantThreshold(
+                            type="CONSTANT", lower_bound=0.0
+                        ),
+                    )
+
+                    for column in columns:
+                        metrics_by_column[
+                            f"{project}.{project}.{dataset}.{table}.{column}"
+                        ].append(metric_definition)
+
+            if matches := re.findall(r"in_range\((.*), (.*), (.*), \"(.*)\"\)", checks):
+                for match in matches:
+                    checks_migrated += 1
+                    columns = [
+                        col.replace('"', "")
+                        for col in match[0]
+                        .replace("[", "")
+                        .replace("]", "")
+                        .split(", ")
+                    ]
+                    metric_definition = SimpleMetricDefinition(
+                        metric_name="Range",
+                        metric_type=SimplePredefinedMetric(
+                            type="PREDEFINED",
+                            predefined_metric=SimplePredefinedMetricName.MIN,
+                        ),
+                        threshold=SimpleConstantThreshold(
+                            type="CONSTANT",
+                            lower_bound=int(match[1]) if match[1] != "none" else None,
+                            upper_bound=int(match[2]) if match[2] != "none" else None,
+                        ),
+                    )
+
+                    for column in columns:
+                        metrics_by_column[
+                            f"{project}.{project}.{dataset}.{table}.{column}"
+                        ].append(metric_definition)
+
+            if matches := re.findall(
+                r"value_length\(column=\"(.*)\", expected_length=(.*), where=\"(.*)\"\)",
+                checks,
+            ):
+                for match in matches:
+                    checks_migrated += 1
+                    metric_definition = SimpleMetricDefinition(
+                        metric_name="Value Length",
+                        metric_type=SimplePredefinedMetric(
+                            type="PREDEFINED",
+                            predefined_metric=SimplePredefinedMetricName.STRING_LENGTH_MIN,
+                        ),
+                        threshold=SimpleConstantThreshold(
+                            type="CONSTANT",
+                            lower_bound=int(match[1]),
+                            upper_bound=int(match[1]),
+                        ),
+                    )
+
+                    for column in columns:
+                        metrics_by_column[
+                            f"{project}.{project}.{dataset}.{table}.{column}"
+                        ].append(metric_definition)
+
+            deployments = []
+            for column_selector, metrics in metrics_by_column.items():
+                deployments.append(
+                    TagDeployment(
+                        column_selectors=[ColumnSelector(name=column_selector)],
+                        metrics=metrics,
+                    )
+                )
+
+            bigconfig.tag_deployments += [TagDeploymentSuite(deployments=deployments)]
+
+            bigconfig.save(
+                output_path=bigconfig_file.parent,
+                default_file_name=bigconfig_file.stem,
+            )
+
+            total_checks = checks.count("#fail") + checks.count("#warn")
+            click.echo(
+                f"Migrated {checks_migrated} of {total_checks} checks to {bigconfig_file}."
+            )
+            if checks_migrated < total_checks:
+                click.echo(
+                    f"There might be custom SQL checks that need to be migrated manually for {check_file.parent}"
+                )
+
+        except FileNotFoundError:
+            print(f"No metadata file for: {check_file.parent}")
+
+    click.echo(
+        "Please manually check the migration logic as it might not be 100% correct"
+    )

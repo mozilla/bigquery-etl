@@ -54,6 +54,7 @@ references:
   - moz-fx-data-shared-prod.gleanjs_docs_stable.events_v1
   - moz-fx-data-shared-prod.mdn_yari_stable.action_v1
   - moz-fx-data-shared-prod.mdn_yari_stable.events_v1
+  - moz-fx-data-shared-prod.monitor_backend_stable.events_v1
   - moz-fx-data-shared-prod.monitor_cirrus_stable.events_v1
   - moz-fx-data-shared-prod.monitor_frontend_stable.events_v1
   - moz-fx-data-shared-prod.mozilla_lockbox_stable.events_v1
@@ -109,6 +110,7 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_tv_firefox_stable.events_v1
   - moz-fx-data-shared-prod.org_mozilla_vrbrowser_stable.events_v1
   - moz-fx-data-shared-prod.pine_stable.events_v1
+  - moz-fx-data-shared-prod.relay_backend_stable.events_v1
   - moz-fx-data-shared-prod.thunderbird_desktop_stable.events_v1
   - moz-fx-data-shared-prod.treeherder_stable.events_v1
   - moz-fx-data-shared-prod.viu_politica_stable.events_v1

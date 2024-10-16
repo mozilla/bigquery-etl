@@ -28,3 +28,5 @@ workgroup_access:
   members:
   - workgroup:dataops-managed/external-census
   - workgroup:mozilla-confidential
+  - workgroup:external-ads-datafusion
+  - workgroup:external-ads-dataproc

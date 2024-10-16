@@ -61,7 +61,7 @@ class EventsStreamTable(GleanTable):
         else:
             has_profile_group_id = False
 
-        unversioned_table_name = re.sub(r"_v[0-9]+", "", baseline_table.split(".")[-1])
+        unversioned_table_name = re.sub(r"_v[0-9]+$", "", baseline_table.split(".")[-1])
 
         self.custom_render_kwargs = {
             "has_profile_group_id": has_profile_group_id,

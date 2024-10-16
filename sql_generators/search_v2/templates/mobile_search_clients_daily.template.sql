@@ -78,6 +78,7 @@ CREATE TEMP FUNCTION extract_ios_provider(list ARRAY<STRUCT<key STRING, value IN
     )
 );
 
+
 WITH core_flattened_searches AS (
   SELECT
     *,
@@ -200,7 +201,7 @@ glean_flattened_searches AS (
       WHEN search.search_type = 'ad-click' OR search.search_type = 'search-with-ads'
         -- ad-click key format is engine.in-content.type.code for builds starting 2021-03-16
         -- otherwise key is engine
-        THEN SPLIT(search.key, '.')[SAFE_OFFSET(0)]
+        THEN `moz-fx-data-shared-prod`.udf.normalize_search_engine(REGEXP_REPLACE((SPLIT(search.key, '.')[SAFE_OFFSET(0)]), '^provider-', ''))
       ELSE NULL
     END AS engine,
 

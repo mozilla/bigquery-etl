@@ -1,8 +1,4 @@
 fields:
-- name: segment_dau
-  type: STRING
-  mode: NULLABLE
-  description: Classification of client_ids based on usage and active state.
 - name: app_name
   type: STRING
   mode: NULLABLE
@@ -27,10 +23,6 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Locale reported by the client, which is a combination of language and regional settings.
-- name: first_seen_year_new
-  type: INTEGER
-  mode: NULLABLE
-  description: Year extracted from the first_seen_date, that corresponds to the date when the first ping was received.
 - name: os
   type: STRING
   mode: NULLABLE
@@ -66,10 +58,14 @@ fields:
   type: STRING
   mode: NULLABLE
   description: The utm_medium this install is attributed to. Reported by the install referrer service, not Adjust.
-- name: attributed
-  type: BOOLEAN
+- name: segment_dau
+  type: STRING
   mode: NULLABLE
-  description: True if the attribution source and medium are present.
+  description: Classification of client_ids based on usage and active state.
+- name: first_seen_year_new
+  type: INTEGER
+  mode: NULLABLE
+  description: Year extracted from the first_seen_date, that corresponds to the date when the first ping was received.
 - name: daily_users
   type: INTEGER
   mode: NULLABLE

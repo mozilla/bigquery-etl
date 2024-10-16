@@ -3,7 +3,7 @@
 import re
 
 from bigquery_etl.config import ConfigLoader
-from sql_generators.glean_usage.common import GleanTable
+from sql_generators.glean_usage.common import GleanTable, ping_has_metrics
 
 TARGET_TABLE_ID = "events_stream_v1"
 PREFIX = "events_stream"
@@ -61,10 +61,13 @@ class EventsStreamTable(GleanTable):
         else:
             has_profile_group_id = False
 
+        unversioned_table_name = re.sub(r"_v[0-9]+$", "", baseline_table.split(".")[-1])
+
         self.custom_render_kwargs = {
             "has_profile_group_id": has_profile_group_id,
             "has_legacy_telemetry_client_id": has_legacy_telemetry_client_id,
             "metrics_as_struct": metrics_as_struct,
+            "has_metrics": ping_has_metrics(app_id, unversioned_table_name),
         }
 
         super().generate_per_app_id(

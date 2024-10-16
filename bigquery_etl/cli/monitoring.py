@@ -2,14 +2,15 @@
 
 import json
 import os
+import re
 import sys
+from collections import defaultdict
 from pathlib import Path
 from typing import Optional
-import re
-from collections import defaultdict
 
 import click
 from bigeye_sdk.authentication.api_authentication import APIKeyAuth
+from bigeye_sdk.bigconfig_validation.validation_context import _BIGEYE_YAML_FILE_IX
 from bigeye_sdk.client.datawatch_client import datawatch_client_factory
 from bigeye_sdk.client.enum import Method
 from bigeye_sdk.controller.metric_suite_controller import MetricSuiteController
@@ -23,14 +24,13 @@ from bigeye_sdk.model.big_config import (
 )
 from bigeye_sdk.model.protobuf_message_facade import (
     SimpleCollection,
+    SimpleConstantThreshold,
     SimpleMetricDefinition,
     SimpleMetricSchedule,
     SimpleNamedSchedule,
     SimplePredefinedMetric,
     SimplePredefinedMetricName,
-    SimpleConstantThreshold,
 )
-from bigeye_sdk.bigconfig_validation.validation_context import _BIGEYE_YAML_FILE_IX
 
 from bigquery_etl.config import ConfigLoader
 from bigquery_etl.metadata.parse_metadata import METADATA_FILE, Metadata
@@ -157,7 +157,6 @@ def _update_bigconfig(
     default_metrics,
 ):
     """Update the BigConfig file to monitor a view."""
-
     for collection in bigconfig.tag_deployments:
         for deployment in collection.deployments:
             for metric in deployment.metrics:

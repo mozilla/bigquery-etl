@@ -23194,6 +23194,12 @@ fields:
         - name: gfx_tmp_writable
           type: BOOLEAN
           mode: NULLABLE
+        - name: blocklist_mlbf_softblocks_generation_time
+          type: STRING
+          mode: NULLABLE
+        - name: blocklist_mlbf_softblocks_source
+          type: STRING
+          mode: NULLABLE
     - name: socket
       type: RECORD
       mode: NULLABLE

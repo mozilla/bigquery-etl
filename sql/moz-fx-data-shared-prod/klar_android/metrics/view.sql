@@ -111,6 +111,8 @@ SELECT
       metrics.datetime.raw_blocklist_last_modified_rs_addons_mblf,
       metrics.datetime.blocklist_mlbf_generation_time,
       metrics.datetime.raw_blocklist_mlbf_generation_time,
+      metrics.datetime.blocklist_mlbf_softblocks_generation_time,
+      metrics.datetime.raw_blocklist_mlbf_softblocks_generation_time,
       metrics.datetime.blocklist_mlbf_stash_time_newest,
       metrics.datetime.raw_blocklist_mlbf_stash_time_newest,
       metrics.datetime.blocklist_mlbf_stash_time_oldest,

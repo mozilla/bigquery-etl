@@ -485,6 +485,12 @@ fields:
     - name: raw_blocklist_mlbf_generation_time
       type: STRING
       mode: NULLABLE
+    - name: blocklist_mlbf_softblocks_generation_time
+      type: TIMESTAMP
+      mode: NULLABLE
+    - name: raw_blocklist_mlbf_softblocks_generation_time
+      type: STRING
+      mode: NULLABLE
     - name: blocklist_mlbf_stash_time_newest
       type: TIMESTAMP
       mode: NULLABLE

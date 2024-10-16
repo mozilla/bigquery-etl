@@ -957,6 +957,17 @@ fields:
     - name: raw_blocklist_mlbf_generation_time
       type: STRING
       mode: NULLABLE
+    - name: blocklist_mlbf_softblocks_generation_time
+      type: TIMESTAMP
+      mode: NULLABLE
+      description: 'Keep track of the generation time of the addon blocklist''s bloom
+        filter. This marks the point in time until which signed add-ons are recognized
+        by the selected bloom filter from the addons-bloomfilters collection.
+
+        '
+    - name: raw_blocklist_mlbf_softblocks_generation_time
+      type: STRING
+      mode: NULLABLE
     - name: blocklist_mlbf_stash_time_newest
       type: TIMESTAMP
       mode: NULLABLE

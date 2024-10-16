@@ -11,7 +11,6 @@ from sql_generators.glean_usage.common import (
     get_table_dir,
     render,
     write_sql,
-    ping_has_metrics,
 )
 
 AGGREGATE_TABLE_NAME = "event_error_monitoring_aggregates_v1"
@@ -59,17 +58,13 @@ class EventErrorMonitoring(GleanTable):
             "generate", "glean_usage", "events_monitoring", "skip_apps", fallback=[]
         )
 
-        # error monitoring is based on metrics in glean-core; nothing to monitor for server apps
-        no_metric_apps = [
-            app[0]["app_name"]
-            for app in apps
-            if ping_has_metrics(app[0]["bq_dataset_family"], default_event_table)
-        ]
-
         apps = [
             app
             for app in apps
-            if app[0]["app_name"] not in (skip_apps + no_metric_apps)
+            if app[0]["app_name"] not in skip_apps
+            # errors are from metrics in glean-core/js; nothing to monitor for server apps
+            and "glean-server" not in app[0]["dependencies"]
+            and "glean-server-metrics-compat" in app[0]["dependencies"]
         ]
 
         render_kwargs = dict(
@@ -78,7 +73,6 @@ class EventErrorMonitoring(GleanTable):
             apps=apps,
             prod_datasets=prod_datasets_with_event,
             default_events_table=default_event_table,
-            no_metric_apps=no_metric_apps,
         )
         render_kwargs.update(self.custom_render_kwargs)
 

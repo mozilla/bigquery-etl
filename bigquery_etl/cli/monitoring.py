@@ -115,14 +115,6 @@ def deploy(
                     sql_dir=sql_dir,
                     project_id=project_id,
                 )
-                mc.execute_bigconfig(
-                    input_path=[metadata_file.parent / BIGCONFIG_FILE],
-                    output_path=Path(sql_dir).parent if sql_dir else None,
-                    apply=True,
-                    recursive=False,
-                    strict_mode=True,
-                    auto_approve=True,
-                )
 
                 if (metadata_file.parent / VIEW_FILE).exists():
                     # monitoring to be deployed on a view
@@ -136,6 +128,20 @@ def deploy(
 
         except FileNotFoundError:
             print("No metadata file for: {}.{}.{}".format(project, dataset, table))
+
+    # Deploy BigConfig files at once.
+    # Deploying BigConfig files separately can lead to previously deployed metrics being removed.
+    mc.execute_bigconfig(
+        input_path=[
+            metadata_file.parent / BIGCONFIG_FILE
+            for metadata_file in list(set(metadata_files))
+        ],
+        output_path=Path(sql_dir).parent if sql_dir else None,
+        apply=True,
+        recursive=False,
+        strict_mode=True,
+        auto_approve=True,
+    )
 
 
 def _update_table_bigconfig(

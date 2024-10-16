@@ -17,3 +17,6 @@ bigquery:
     type: day
     field: submission_date
     require_partition_filter: false
+monitoring:
+  enabled: true
+  collection: {{ bigeye_collection }}

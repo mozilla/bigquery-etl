@@ -1,0 +1,8 @@
+2024-10-17:
+  start_date: 2024-08-01
+  end_date: 2024-10-15
+  reason: fix engine column post - https://github.com/mozilla/bigquery-etl/pull/6357
+  watchers:
+  - akommasani@mozilla.com
+  - mbowerman@mozilla.com
+  status: Initiate

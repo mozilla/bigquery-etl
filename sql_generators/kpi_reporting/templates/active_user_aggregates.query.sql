@@ -1,7 +1,7 @@
 {{ header }}
 SELECT
   submission_date,
-  client_id,
+  -- client_id,
   app_name,
   normalized_channel,
   EXTRACT(YEAR FROM first_seen_date) AS first_seen_year,
@@ -41,7 +41,6 @@ WHERE
   submission_date = @submission_date
 GROUP BY
   submission_date,
-  client_id,
   app_name,
   normalized_channel,
   first_seen_year,

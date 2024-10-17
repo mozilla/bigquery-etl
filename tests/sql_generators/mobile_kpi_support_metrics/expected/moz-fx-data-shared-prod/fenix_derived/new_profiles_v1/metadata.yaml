@@ -1,0 +1,26 @@
+friendly_name: New profiles - Fenix (Aggregated)
+description: |-
+  New profiles (Fenix) aggregated metrics
+
+owners:
+  - mozilla/kpi_table_reviewers
+  - kik@mozilla.com
+labels:
+  schedule: daily
+  incremental: true
+scheduling:
+  dag_name: bqetl_mobile_kpi_metrics
+  depends_on_past: false
+  task_group: fenix
+bigquery:
+  time_partitioning:
+    type: day
+    field: first_seen_date
+    require_partition_filter: false
+  clustering:
+    fields:
+      - normalized_channel
+      - country
+monitoring:
+  enabled: true
+  collection: Browser Metrics (non-KPI)

@@ -1,0 +1,110 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description:
+
+- name: app_name
+  type: STRING
+  mode: NULLABLE
+  description:
+
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+  description:
+
+- name: first_seen_year
+  type: INTEGER
+  mode: NULLABLE
+  description:
+
+- name: is_new_profile
+  type: BOOLEAN
+  mode: NULLABLE
+  description:
+
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description:
+
+- name: city
+  type: STRING
+  mode: NULLABLE
+  description:
+
+- name: locale
+  type: STRING
+  mode: NULLABLE
+  description:
+
+- name: normalized_os
+  type: STRING
+  mode: NULLABLE
+  description:
+
+- name: os_version_major
+  type: INTEGER
+  mode: NULLABLE
+  description:
+
+- name: os_version_minor
+  type: INTEGER
+  mode: NULLABLE
+  description:
+
+- name: os_version_patch
+  type: INTEGER
+  mode: NULLABLE
+  description:
+
+- name: app_version
+  type: STRING
+  mode: NULLABLE
+  description:
+
+- name: device_model
+  type: STRING
+  mode: NULLABLE
+  description:
+
+- name: distribution_id
+  type: STRING
+  mode: NULLABLE
+  description:
+
+- name: segment
+  type: STRING
+  mode: NULLABLE
+  description:
+
+- name: daily_users
+  type: INTEGER
+  mode: NULLABLE
+  description:
+
+- name: weekly_users
+  type: INTEGER
+  mode: NULLABLE
+  description:
+
+- name: monthly_users
+  type: INTEGER
+  mode: NULLABLE
+  description:
+
+- name: dau
+  type: INTEGER
+  mode: NULLABLE
+  description:
+
+- name: wau
+  type: INTEGER
+  mode: NULLABLE
+  description:
+
+- name: mau
+  type: INTEGER
+  mode: NULLABLE
+  description:

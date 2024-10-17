@@ -3,7 +3,11 @@ CREATE OR REPLACE VIEW
   `{{ project_id }}.{{ dataset }}.{{ name }}`
 AS
 SELECT
-  * EXCEPT (isp),
+  * EXCEPT (isp, normalized_os_version, app_display_version)
+  REPLACE(
+    COALESCE(REGEXP_EXTRACT(locale, r'^(.+?)-'), locale, NULL) AS locale,
+    IFNULL(country, '??') AS country
+  ),
   CASE
     WHEN LOWER(isp) = "browserstack"
       THEN CONCAT("{{ friendly_name }}", " ", isp)
@@ -28,7 +32,22 @@ SELECT
     WHEN BIT_COUNT(days_active_bits) >= 21
       THEN "core_user"
     ELSE "other"
-  END AS activity_segment,
+  END AS segment,
+  COALESCE(
+    SAFE_CAST(NULLIF(SPLIT(normalized_os_version, ".")[SAFE_OFFSET(0)], "") AS INTEGER),
+    0
+  ) AS os_version_major,
+  COALESCE(
+    SAFE_CAST(NULLIF(SPLIT(normalized_os_version, ".")[SAFE_OFFSET(1)], "") AS INTEGER),
+    0
+  ) AS os_version_minor,
+  COALESCE(
+    SAFE_CAST(NULLIF(SPLIT(normalized_os_version, ".")[SAFE_OFFSET(2)], "") AS INTEGER),
+    0
+  ) AS os_version_patch,
+  app_display_version AS app_version,
+  EXTRACT(YEAR FROM first_seen_date) AS first_seen_year,
+  submission_date = first_seen_date AS is_new_profile,
   IFNULL(mozfun.bits28.days_since_seen(days_active_bits) = 0, FALSE) AS is_dau,
   IFNULL(mozfun.bits28.days_since_seen(days_active_bits) < 7, FALSE) AS is_wau,
   IFNULL(mozfun.bits28.days_since_seen(days_active_bits) < 28, FALSE) AS is_mau,

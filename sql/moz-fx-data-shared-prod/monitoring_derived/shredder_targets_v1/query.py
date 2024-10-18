@@ -281,9 +281,9 @@ def get_missing_deletions(
                 "table_id": table,
                 "current_sources": [],
                 "detected_sources": [
-                    delete_source_to_dict(detected) for detected in detected_deletions
+                    delete_source_to_dict(detected) for detected in srcs
                 ],
-                "matching_sources": False,
+                "matching_sources": len(srcs) == 0,
             }
         )
 

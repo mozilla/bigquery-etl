@@ -130,6 +130,7 @@ def create_query(date, source_project, tmp_table_name):
             dataset_id,
             table_id,
             table_type,
+            last_modified_date,
             owners,
             deprecated,
             deletion_date,

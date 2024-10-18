@@ -51,6 +51,10 @@ fields:
   - name: country_name
     type: STRING
     mode: NULLABLE
+  - name: state_code
+    type: STRING
+    mode: NULLABLE
+    description: Two-letter state/province code (only for US and Canada).
   - name: services
     type: RECORD
     mode: REPEATED

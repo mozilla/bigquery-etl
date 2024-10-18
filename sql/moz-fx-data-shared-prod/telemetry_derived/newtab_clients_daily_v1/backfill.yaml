@@ -1,3 +1,11 @@
+2024-09-24:
+  start_date: 2022-11-01
+  end_date: 2024-09-23
+  reason: Backfill the table with KPI metrics
+  watchers:
+    - mbowerman@mozilla.com
+  status: Initiate
+
 2024-08-28:
   start_date: 2024-08-01
   end_date: 2024-08-26

@@ -1,7 +1,7 @@
 fields:
   - mode: NULLABLE
     name: event_date
-    type: DATE
+    type: STRING
   - mode: NULLABLE
     name: nca_id
     type: STRING

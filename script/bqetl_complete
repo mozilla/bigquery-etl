@@ -1,0 +1,47 @@
+# Created from output of _BQETL_COMPLETE=zsh_source bqetl and _BQETL_COMPLETE=bash_source bqetl
+
+#compdef bqetl
+
+_bqetl_completion_bash() {
+    local IFS=$'\n'
+    local response
+
+    response=$(env COMP_WORDS="${COMP_WORDS[*]}" COMP_CWORD=$COMP_CWORD _BQETL_COMPLETE=bash_complete $1)
+
+    for completion in $response; do
+        IFS=',' read type value <<< "$completion"
+
+        if [[ $type == 'dir' ]]; then
+            COMPREPLY=()
+            compopt -o dirnames
+        elif [[ $type == 'file' ]]; then
+            COMPREPLY=()
+            compopt -o default
+        elif [[ $type == 'plain' ]]; then
+            COMPREPLY+=($value)
+        fi
+    done
+
+    return 0
+}
+
+_bqetl_completion_setup() {
+    complete -F _bqetl_completion_bash bqetl
+}
+
+if [[ -n $BASH ]]; then
+    _bqetl_completion_setup;
+elif [[ -n $ZSH_NAME ]]; then
+    # zsh function moved to separate script because syntax is incompatible with bash
+    source "$(dirname $0)/.bqetl_complete.zsh"
+    if [[ $zsh_eval_context[-1] == loadautofunc ]]; then
+          # autoload from fpath, call function directly
+          _bqetl_completion_zsh "$@"
+    else
+          # eval/source/. command, register function for later
+          compdef _bqetl_completion_zsh bqetl
+    fi
+else
+    echo "Could not enable bqetl completion for unrecognized shell: $SHELL"
+fi
+

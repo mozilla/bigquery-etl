@@ -252,6 +252,94 @@ fields:
         variable SSLKEYLOGFILE.
 
         '
+    - name: browser_startup_abouthome_cache_shutdownwrite
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'True if the about:home startup cache was written via the AsyncShutdown
+        blocker. This metric was generated to correspond to the Legacy Telemetry scalar
+        browser.startup.abouthome_cache_shutdownwrite.
+
+        '
+    - name: datasanitization_privacy_clear_on_shutdown_cache
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'A boolean reporting the value of the privacy.clearOnShutdown.cache
+        pref. This metric was generated to correspond to the Legacy Telemetry scalar
+        datasanitization.privacy_clearOnShutdown_cache.
+
+        '
+    - name: datasanitization_privacy_clear_on_shutdown_cookies
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'A boolean reporting the value of the privacy.clearOnShutdown.cookies
+        pref. This metric was generated to correspond to the Legacy Telemetry scalar
+        datasanitization.privacy_clearOnShutdown_cookies.
+
+        '
+    - name: datasanitization_privacy_clear_on_shutdown_downloads
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'A boolean reporting the value of the privacy.clearOnShutdown.downloads
+        pref. This metric was generated to correspond to the Legacy Telemetry scalar
+        datasanitization.privacy_clearOnShutdown_downloads.
+
+        '
+    - name: datasanitization_privacy_clear_on_shutdown_formdata
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'A boolean reporting the value of the privacy.clearOnShutdown.formdata
+        pref. This metric was generated to correspond to the Legacy Telemetry scalar
+        datasanitization.privacy_clearOnShutdown_formdata.
+
+        '
+    - name: datasanitization_privacy_clear_on_shutdown_history
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'A boolean reporting the value of the privacy.clearOnShutdown.history
+        pref. This metric was generated to correspond to the Legacy Telemetry scalar
+        datasanitization.privacy_clearOnShutdown_history.
+
+        '
+    - name: datasanitization_privacy_clear_on_shutdown_offline_apps
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'A boolean reporting the value of the privacy.clearOnShutdown.offlineApps
+        pref. This metric was generated to correspond to the Legacy Telemetry scalar
+        datasanitization.privacy_clearOnShutdown_offlineApps.
+
+        '
+    - name: datasanitization_privacy_clear_on_shutdown_open_windows
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'A boolean reporting the value of the privacy.clearOnShutdown.openWindows
+        pref. This metric was generated to correspond to the Legacy Telemetry scalar
+        datasanitization.privacy_clearOnShutdown_openWindows.
+
+        '
+    - name: datasanitization_privacy_clear_on_shutdown_sessions
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'A boolean reporting the value of the privacy.clearOnShutdown.sessions
+        pref. This metric was generated to correspond to the Legacy Telemetry scalar
+        datasanitization.privacy_clearOnShutdown_sessions.
+
+        '
+    - name: datasanitization_privacy_clear_on_shutdown_site_settings
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'A boolean reporting the value of the privacy.clearOnShutdown.siteSettings
+        pref. This metric was generated to correspond to the Legacy Telemetry scalar
+        datasanitization.privacy_clearOnShutdown_siteSettings.
+
+        '
+    - name: datasanitization_privacy_sanitize_sanitize_on_shutdown
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'A boolean reporting the value of the privacy.sanitize.sanitizeOnShutdown
+        pref. This metric was generated to correspond to the Legacy Telemetry scalar
+        datasanitization.privacy_sanitize_sanitizeOnShutdown.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -838,6 +926,32 @@ fields:
     - name: background_update_reasons_to_not_update
       type: STRING
       mode: REPEATED
+  - name: quantity
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: browser_startup_abouthome_cache_result
+      type: INTEGER
+      mode: NULLABLE
+      description: 'How the about:home startup cache functioned on startup.
+
+        0: Result value was never set (error case) 1: Cache did not exist 2: Cache
+        page stream was corrupt / inaccessible 3: Cache script stream was corrupt
+        / inaccessible 4: Cache was invalidated by a version bump 5: Cache was valid,
+        but read too late to be useful. 6: Cache was valid and used. 7: Cache is disabled.
+        8: User did not load about:home on its own by default. 9: Cache is disabled
+        because about:newtab preloading is disabled.
+
+        This metric was generated to correspond to the Legacy Telemetry scalar browser.startup.abouthome_cache_result.
+
+        '
+    - name: datasanitization_session_permission_exceptions
+      type: INTEGER
+      mode: NULLABLE
+      description: 'A count of how many "session" cookie exceptions a user has set.
+        This metric was generated to correspond to the Legacy Telemetry scalar datasanitization.session_permission_exceptions.
+
+        '
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

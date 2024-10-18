@@ -381,6 +381,153 @@ fields:
         variable SSLKEYLOGFILE.
 
         '
+    - name: a11y_always_underline_links
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Bool tracking if the user has always underline links enabled in
+        firefox. This metric was generated to correspond to the Legacy Telemetry scalar
+        a11y.always_underline_links.
+
+        '
+    - name: a11y_backplate
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Boolean tracking if the user has the backplate preference enabled
+        or disabled. This metric was generated to correspond to the Legacy Telemetry
+        scalar a11y.backplate.
+
+        '
+    - name: a11y_invert_colors
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Boolean tracking if the user has an invert colors OS setting enabled.
+        This metric was generated to correspond to the Legacy Telemetry scalar a11y.invert_colors.
+
+        '
+    - name: a11y_use_system_colors
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Bool tracking if the user has system colors enabled in firefox.
+        This metric was generated to correspond to the Legacy Telemetry scalar a11y.use_system_colors.
+
+        '
+    - name: browser_startup_abouthome_cache_shutdownwrite
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'True if the about:home startup cache was written via the AsyncShutdown
+        blocker. This metric was generated to correspond to the Legacy Telemetry scalar
+        browser.startup.abouthome_cache_shutdownwrite.
+
+        '
+    - name: datasanitization_privacy_clear_on_shutdown_cache
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'A boolean reporting the value of the privacy.clearOnShutdown.cache
+        pref. This metric was generated to correspond to the Legacy Telemetry scalar
+        datasanitization.privacy_clearOnShutdown_cache.
+
+        '
+    - name: datasanitization_privacy_clear_on_shutdown_cookies
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'A boolean reporting the value of the privacy.clearOnShutdown.cookies
+        pref. This metric was generated to correspond to the Legacy Telemetry scalar
+        datasanitization.privacy_clearOnShutdown_cookies.
+
+        '
+    - name: datasanitization_privacy_clear_on_shutdown_downloads
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'A boolean reporting the value of the privacy.clearOnShutdown.downloads
+        pref. This metric was generated to correspond to the Legacy Telemetry scalar
+        datasanitization.privacy_clearOnShutdown_downloads.
+
+        '
+    - name: datasanitization_privacy_clear_on_shutdown_formdata
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'A boolean reporting the value of the privacy.clearOnShutdown.formdata
+        pref. This metric was generated to correspond to the Legacy Telemetry scalar
+        datasanitization.privacy_clearOnShutdown_formdata.
+
+        '
+    - name: datasanitization_privacy_clear_on_shutdown_history
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'A boolean reporting the value of the privacy.clearOnShutdown.history
+        pref. This metric was generated to correspond to the Legacy Telemetry scalar
+        datasanitization.privacy_clearOnShutdown_history.
+
+        '
+    - name: datasanitization_privacy_clear_on_shutdown_offline_apps
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'A boolean reporting the value of the privacy.clearOnShutdown.offlineApps
+        pref. This metric was generated to correspond to the Legacy Telemetry scalar
+        datasanitization.privacy_clearOnShutdown_offlineApps.
+
+        '
+    - name: datasanitization_privacy_clear_on_shutdown_open_windows
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'A boolean reporting the value of the privacy.clearOnShutdown.openWindows
+        pref. This metric was generated to correspond to the Legacy Telemetry scalar
+        datasanitization.privacy_clearOnShutdown_openWindows.
+
+        '
+    - name: datasanitization_privacy_clear_on_shutdown_sessions
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'A boolean reporting the value of the privacy.clearOnShutdown.sessions
+        pref. This metric was generated to correspond to the Legacy Telemetry scalar
+        datasanitization.privacy_clearOnShutdown_sessions.
+
+        '
+    - name: datasanitization_privacy_clear_on_shutdown_site_settings
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'A boolean reporting the value of the privacy.clearOnShutdown.siteSettings
+        pref. This metric was generated to correspond to the Legacy Telemetry scalar
+        datasanitization.privacy_clearOnShutdown_siteSettings.
+
+        '
+    - name: datasanitization_privacy_sanitize_sanitize_on_shutdown
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'A boolean reporting the value of the privacy.sanitize.sanitizeOnShutdown
+        pref. This metric was generated to correspond to the Legacy Telemetry scalar
+        datasanitization.privacy_sanitize_sanitizeOnShutdown.
+
+        '
+    - name: gfx_os_compositor
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Boolean indicating whether the os compositor is being used by
+        WebRender. Only collected in the first subsession. This metric was generated
+        to correspond to the Legacy Telemetry scalar gfx.os_compositor.
+
+        '
+    - name: gfx_supports_hdr
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Does the hardware support accurate display of HDR content This
+        metric was generated to correspond to the Legacy Telemetry scalar gfx.supports_hdr.
+
+        '
+    - name: gfx_tmp_writable
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Is the system temporary directory writable This metric was generated
+        to correspond to the Legacy Telemetry scalar gfx.tmp_writable.
+
+        '
+    - name: preferences_prefs_file_was_invalid
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Set to true if a failure occurred reading profile/prefs.js. This
+        metric was generated to correspond to the Legacy Telemetry scalar preferences.prefs_file_was_invalid.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -847,6 +994,85 @@ fields:
       mode: NULLABLE
       description: 'Upticks whenever a LS request cancellation message is sent. This
         includes requests for ensuring either LSDatabase or LSObserver.
+
+        '
+    - name: apz_scrollwheel_overshoot
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Count of overshoot events, where the user reverses scrollwheel
+        direction soon after the last scrollwheel input. This metric was generated
+        to correspond to the Legacy Telemetry scalar apz.scrollwheel_overshoot.
+
+        '
+    - name: downloads_file_opened
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The count of how many times files were opened from the download
+        panel. This metric was generated to correspond to the Legacy Telemetry scalar
+        downloads.file_opened.
+
+        '
+    - name: findbar_find_next
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The count of how many times the find next button was used per
+        session. This metric was generated to correspond to the Legacy Telemetry scalar
+        findbar.find_next.
+
+        '
+    - name: findbar_find_prev
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The count of how many times the find previous button was used
+        per session. This metric was generated to correspond to the Legacy Telemetry
+        scalar findbar.find_prev.
+
+        '
+    - name: findbar_highlight_all
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The count of how many times the "Highlight All" button was used
+        in find toolbar. This metric was generated to correspond to the Legacy Telemetry
+        scalar findbar.highlight_all.
+
+        '
+    - name: findbar_match_case
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The count of how many times the "Match Case" button was used in
+        find toolbar. This metric was generated to correspond to the Legacy Telemetry
+        scalar findbar.match_case.
+
+        '
+    - name: findbar_match_diacritics
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The count of how many times the "Match Diacritics" button was
+        used in find toolbar. This metric was generated to correspond to the Legacy
+        Telemetry scalar findbar.match_diacritics.
+
+        '
+    - name: findbar_shown
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The count of how many times the "Find toolbar" was shown per session.
+        This metric was generated to correspond to the Legacy Telemetry scalar findbar.shown.
+
+        '
+    - name: findbar_whole_words
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The count of how many times the "Whole Words" button was used
+        in find toolbar. This metric was generated to correspond to the Legacy Telemetry
+        scalar findbar.whole_words.
+
+        '
+    - name: gfx_skipped_composites
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of skipped composites, happening when rendering is too
+        slow to keep up with content. This metric was generated to correspond to the
+        Legacy Telemetry scalar gfx.skipped_composites.
 
         '
   - name: custom_distribution
@@ -2540,6 +2766,22 @@ fields:
         type: BOOLEAN
         mode: NULLABLE
       description: 'Stores alt text modal settings for the user.
+
+        '
+    - name: a11y_theme
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: BOOLEAN
+        mode: NULLABLE
+      description: 'OS high contrast or other accessibility theme is enabled. The
+        result is split into keys which represent the values of browser.display.document_color_use:
+        "default", "always", or "never". This metric was generated to correspond to
+        the Legacy Telemetry scalar a11y.theme.
 
         '
   - name: labeled_counter
@@ -5264,6 +5506,55 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: The number of third-party PKCS#11 modules loaded.
+    - name: a11y_hcm_background
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Unsigned int tracking the user''s prefered background color \
+        (logged when HCM is enabled). This metric was generated to correspond to the
+        Legacy Telemetry scalar a11y.HCM_background.
+
+        '
+    - name: a11y_hcm_foreground
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Unsigned int tracking the user''s prefered foreground color \
+        (logged when HCM is enabled). This metric was generated to correspond to the
+        Legacy Telemetry scalar a11y.HCM_foreground.
+
+        '
+    - name: browser_startup_abouthome_cache_result
+      type: INTEGER
+      mode: NULLABLE
+      description: 'How the about:home startup cache functioned on startup.
+
+        0: Result value was never set (error case) 1: Cache did not exist 2: Cache
+        page stream was corrupt / inaccessible 3: Cache script stream was corrupt
+        / inaccessible 4: Cache was invalidated by a version bump 5: Cache was valid,
+        but read too late to be useful. 6: Cache was valid and used. 7: Cache is disabled.
+        8: User did not load about:home on its own by default. 9: Cache is disabled
+        because about:newtab preloading is disabled.
+
+        This metric was generated to correspond to the Legacy Telemetry scalar browser.startup.abouthome_cache_result.
+
+        '
+    - name: datasanitization_session_permission_exceptions
+      type: INTEGER
+      mode: NULLABLE
+      description: 'A count of how many "session" cookie exceptions a user has set.
+        This metric was generated to correspond to the Legacy Telemetry scalar datasanitization.session_permission_exceptions.
+
+        '
+    - name: gfx_hdr_windows_display_colorspace_bitfield
+      type: INTEGER
+      mode: NULLABLE
+      description: 'A bitfield representation of the available DXGI color spaces of
+        the connected displays on Windows. See (https://docs.microsoft.com/en- us/windows/desktop/api/dxgicommon/ne-dxgicommon-
+        dxgi_color_space_type) for definitions of color spaces. Each N''th bit of
+        this scalar indicates whether the DXGI color space with index ''N'' is available
+        on at least one connected monitor. This metric was generated to correspond
+        to the Legacy Telemetry scalar gfx.hdr.windows_display_colorspace_bitfield.
+
+        '
   - name: string
     type: RECORD
     mode: NULLABLE
@@ -5590,6 +5881,22 @@ fields:
         used as a fallback (e.g. because the latest version cannot be downloaded).
         "unknown"  means that the bloomfilter cannot be loaded at all. This can happen
         if the blocklist is disabled via preferences or enterprise policies.
+
+        '
+    - name: a11y_instantiators
+      type: STRING
+      mode: NULLABLE
+      description: 'The leaf name and version number of the binary for the process
+        responsible for remotely instantiating a11y. This metric was generated to
+        correspond to the Legacy Telemetry scalar a11y.instantiators.
+
+        '
+    - name: gfx_linux_window_protocol
+      type: STRING
+      mode: NULLABLE
+      description: 'Windowing protocol on Linux. Can be Wayland, WaylandDRM, XWayland,
+        or X11 This metric was generated to correspond to the Legacy Telemetry scalar
+        gfx.linux_window_protocol.
 
         '
   - name: timespan

@@ -15,7 +15,11 @@ SELECT
       metrics.labeled_counter.glean_error_invalid_label,
       metrics.labeled_counter.glean_error_invalid_overflow,
       metrics.labeled_counter.glean_error_invalid_state,
-      metrics.labeled_counter.glean_error_invalid_value
+      metrics.labeled_counter.glean_error_invalid_value,
+      metrics.labeled_counter.browser_search_ad_clicks,
+      metrics.labeled_counter.browser_search_in_content,
+      metrics.labeled_counter.browser_search_search_count,
+      metrics.labeled_counter.browser_search_with_ads
     ) AS `labeled_counter`,
     STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`
   ) AS `metrics`,
@@ -42,7 +46,11 @@ SELECT
       metrics.labeled_counter.glean_error_invalid_label,
       metrics.labeled_counter.glean_error_invalid_overflow,
       metrics.labeled_counter.glean_error_invalid_state,
-      metrics.labeled_counter.glean_error_invalid_value
+      metrics.labeled_counter.glean_error_invalid_value,
+      metrics.labeled_counter.browser_search_ad_clicks,
+      metrics.labeled_counter.browser_search_in_content,
+      metrics.labeled_counter.browser_search_search_count,
+      metrics.labeled_counter.browser_search_with_ads
     ) AS `labeled_counter`,
     STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`
   ) AS `metrics`,
@@ -69,7 +77,11 @@ SELECT
       metrics.labeled_counter.glean_error_invalid_label,
       metrics.labeled_counter.glean_error_invalid_overflow,
       metrics.labeled_counter.glean_error_invalid_state,
-      metrics.labeled_counter.glean_error_invalid_value
+      metrics.labeled_counter.glean_error_invalid_value,
+      metrics.labeled_counter.browser_search_ad_clicks,
+      metrics.labeled_counter.browser_search_in_content,
+      metrics.labeled_counter.browser_search_search_count,
+      metrics.labeled_counter.browser_search_with_ads
     ) AS `labeled_counter`,
     STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`
   ) AS `metrics`,

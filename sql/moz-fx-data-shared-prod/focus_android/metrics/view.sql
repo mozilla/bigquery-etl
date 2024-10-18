@@ -34,7 +34,15 @@ SELECT
       metrics.boolean.extensions_use_remote_pref,
       metrics.boolean.gfx_status_headless,
       metrics.boolean.bounce_tracking_protection_enabled_at_startup,
-      metrics.boolean.bounce_tracking_protection_enabled_dry_run_mode_at_startup
+      metrics.boolean.bounce_tracking_protection_enabled_dry_run_mode_at_startup,
+      metrics.boolean.a11y_always_underline_links,
+      metrics.boolean.a11y_backplate,
+      metrics.boolean.a11y_invert_colors,
+      metrics.boolean.a11y_use_system_colors,
+      metrics.boolean.gfx_os_compositor,
+      metrics.boolean.gfx_supports_hdr,
+      metrics.boolean.gfx_tmp_writable,
+      metrics.boolean.preferences_prefs_file_was_invalid
     ) AS `boolean`,
     STRUCT(
       metrics.counter.glean_error_io,
@@ -104,7 +112,17 @@ SELECT
       metrics.counter.webrtcdtls_client_handshake_started_counter,
       metrics.counter.webrtcdtls_server_handshake_started_counter,
       metrics.counter.ls_request_recv_cancellation,
-      metrics.counter.ls_request_send_cancellation
+      metrics.counter.ls_request_send_cancellation,
+      metrics.counter.apz_scrollwheel_overshoot,
+      metrics.counter.downloads_file_opened,
+      metrics.counter.findbar_find_next,
+      metrics.counter.findbar_find_prev,
+      metrics.counter.findbar_highlight_all,
+      metrics.counter.findbar_match_case,
+      metrics.counter.findbar_match_diacritics,
+      metrics.counter.findbar_shown,
+      metrics.counter.findbar_whole_words,
+      metrics.counter.gfx_skipped_composites
     ) AS `counter`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -327,7 +345,9 @@ SELECT
       metrics.string.gfx_status_last_compositor_gecko_version,
       metrics.string.gecko_build_id,
       metrics.string.gecko_version,
-      metrics.string.blocklist_mlbf_softblocks_source
+      metrics.string.blocklist_mlbf_softblocks_source,
+      metrics.string.a11y_instantiators,
+      metrics.string.gfx_linux_window_protocol
     ) AS `string`,
     STRUCT(
       metrics.quantity.shortcuts_shortcuts_on_home_number,
@@ -348,7 +368,10 @@ SELECT
       metrics.quantity.gfx_display_primary_height,
       metrics.quantity.gfx_display_primary_width,
       metrics.quantity.cert_verifier_trust_obj_count,
-      metrics.quantity.pkcs11_third_party_modules_loaded
+      metrics.quantity.pkcs11_third_party_modules_loaded,
+      metrics.quantity.a11y_hcm_background,
+      metrics.quantity.a11y_hcm_foreground,
+      metrics.quantity.gfx_hdr_windows_display_colorspace_bitfield
     ) AS `quantity`,
     STRUCT(
       metrics.custom_distribution.tab_count_app_backgrounded,
@@ -563,7 +586,8 @@ SELECT
       metrics.labeled_boolean.oskeystore_self_test,
       metrics.labeled_boolean.media_playback_device_hardware_decoder_support,
       metrics.labeled_boolean.geolocation_linux_provider,
-      metrics.labeled_boolean.pdfjs_image_alt_text_edit
+      metrics.labeled_boolean.pdfjs_image_alt_text_edit,
+      metrics.labeled_boolean.a11y_theme
     ) AS `labeled_boolean`,
     STRUCT(
       metrics.rate.rtcrtpsender_setparameters_fail_length_changed,
@@ -657,7 +681,15 @@ SELECT
       metrics.boolean.extensions_use_remote_pref,
       metrics.boolean.gfx_status_headless,
       metrics.boolean.bounce_tracking_protection_enabled_at_startup,
-      metrics.boolean.bounce_tracking_protection_enabled_dry_run_mode_at_startup
+      metrics.boolean.bounce_tracking_protection_enabled_dry_run_mode_at_startup,
+      metrics.boolean.a11y_always_underline_links,
+      metrics.boolean.a11y_backplate,
+      metrics.boolean.a11y_invert_colors,
+      metrics.boolean.a11y_use_system_colors,
+      metrics.boolean.gfx_os_compositor,
+      metrics.boolean.gfx_supports_hdr,
+      metrics.boolean.gfx_tmp_writable,
+      metrics.boolean.preferences_prefs_file_was_invalid
     ) AS `boolean`,
     STRUCT(
       metrics.counter.glean_error_io,
@@ -727,7 +759,17 @@ SELECT
       metrics.counter.webrtcdtls_client_handshake_started_counter,
       metrics.counter.webrtcdtls_server_handshake_started_counter,
       metrics.counter.ls_request_recv_cancellation,
-      metrics.counter.ls_request_send_cancellation
+      metrics.counter.ls_request_send_cancellation,
+      metrics.counter.apz_scrollwheel_overshoot,
+      metrics.counter.downloads_file_opened,
+      metrics.counter.findbar_find_next,
+      metrics.counter.findbar_find_prev,
+      metrics.counter.findbar_highlight_all,
+      metrics.counter.findbar_match_case,
+      metrics.counter.findbar_match_diacritics,
+      metrics.counter.findbar_shown,
+      metrics.counter.findbar_whole_words,
+      metrics.counter.gfx_skipped_composites
     ) AS `counter`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -950,7 +992,9 @@ SELECT
       metrics.string.gfx_status_last_compositor_gecko_version,
       metrics.string.gecko_build_id,
       metrics.string.gecko_version,
-      metrics.string.blocklist_mlbf_softblocks_source
+      metrics.string.blocklist_mlbf_softblocks_source,
+      metrics.string.a11y_instantiators,
+      metrics.string.gfx_linux_window_protocol
     ) AS `string`,
     STRUCT(
       metrics.quantity.shortcuts_shortcuts_on_home_number,
@@ -971,7 +1015,10 @@ SELECT
       metrics.quantity.gfx_display_primary_height,
       metrics.quantity.gfx_display_primary_width,
       metrics.quantity.cert_verifier_trust_obj_count,
-      metrics.quantity.pkcs11_third_party_modules_loaded
+      metrics.quantity.pkcs11_third_party_modules_loaded,
+      metrics.quantity.a11y_hcm_background,
+      metrics.quantity.a11y_hcm_foreground,
+      metrics.quantity.gfx_hdr_windows_display_colorspace_bitfield
     ) AS `quantity`,
     STRUCT(
       metrics.custom_distribution.tab_count_app_backgrounded,
@@ -1186,7 +1233,8 @@ SELECT
       metrics.labeled_boolean.oskeystore_self_test,
       metrics.labeled_boolean.media_playback_device_hardware_decoder_support,
       metrics.labeled_boolean.geolocation_linux_provider,
-      metrics.labeled_boolean.pdfjs_image_alt_text_edit
+      metrics.labeled_boolean.pdfjs_image_alt_text_edit,
+      metrics.labeled_boolean.a11y_theme
     ) AS `labeled_boolean`,
     STRUCT(
       metrics.rate.rtcrtpsender_setparameters_fail_length_changed,
@@ -1280,7 +1328,15 @@ SELECT
       metrics.boolean.extensions_use_remote_pref,
       metrics.boolean.gfx_status_headless,
       metrics.boolean.bounce_tracking_protection_enabled_at_startup,
-      metrics.boolean.bounce_tracking_protection_enabled_dry_run_mode_at_startup
+      metrics.boolean.bounce_tracking_protection_enabled_dry_run_mode_at_startup,
+      metrics.boolean.a11y_always_underline_links,
+      metrics.boolean.a11y_backplate,
+      metrics.boolean.a11y_invert_colors,
+      metrics.boolean.a11y_use_system_colors,
+      metrics.boolean.gfx_os_compositor,
+      metrics.boolean.gfx_supports_hdr,
+      metrics.boolean.gfx_tmp_writable,
+      metrics.boolean.preferences_prefs_file_was_invalid
     ) AS `boolean`,
     STRUCT(
       metrics.counter.glean_error_io,
@@ -1350,7 +1406,17 @@ SELECT
       metrics.counter.webrtcdtls_client_handshake_started_counter,
       metrics.counter.webrtcdtls_server_handshake_started_counter,
       metrics.counter.ls_request_recv_cancellation,
-      metrics.counter.ls_request_send_cancellation
+      metrics.counter.ls_request_send_cancellation,
+      metrics.counter.apz_scrollwheel_overshoot,
+      metrics.counter.downloads_file_opened,
+      metrics.counter.findbar_find_next,
+      metrics.counter.findbar_find_prev,
+      metrics.counter.findbar_highlight_all,
+      metrics.counter.findbar_match_case,
+      metrics.counter.findbar_match_diacritics,
+      metrics.counter.findbar_shown,
+      metrics.counter.findbar_whole_words,
+      metrics.counter.gfx_skipped_composites
     ) AS `counter`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -1573,7 +1639,9 @@ SELECT
       metrics.string.gfx_status_last_compositor_gecko_version,
       metrics.string.gecko_build_id,
       metrics.string.gecko_version,
-      metrics.string.blocklist_mlbf_softblocks_source
+      metrics.string.blocklist_mlbf_softblocks_source,
+      metrics.string.a11y_instantiators,
+      metrics.string.gfx_linux_window_protocol
     ) AS `string`,
     STRUCT(
       metrics.quantity.shortcuts_shortcuts_on_home_number,
@@ -1594,7 +1662,10 @@ SELECT
       metrics.quantity.gfx_display_primary_height,
       metrics.quantity.gfx_display_primary_width,
       metrics.quantity.cert_verifier_trust_obj_count,
-      metrics.quantity.pkcs11_third_party_modules_loaded
+      metrics.quantity.pkcs11_third_party_modules_loaded,
+      metrics.quantity.a11y_hcm_background,
+      metrics.quantity.a11y_hcm_foreground,
+      metrics.quantity.gfx_hdr_windows_display_colorspace_bitfield
     ) AS `quantity`,
     STRUCT(
       metrics.custom_distribution.tab_count_app_backgrounded,
@@ -1809,7 +1880,8 @@ SELECT
       metrics.labeled_boolean.oskeystore_self_test,
       metrics.labeled_boolean.media_playback_device_hardware_decoder_support,
       metrics.labeled_boolean.geolocation_linux_provider,
-      metrics.labeled_boolean.pdfjs_image_alt_text_edit
+      metrics.labeled_boolean.pdfjs_image_alt_text_edit,
+      metrics.labeled_boolean.a11y_theme
     ) AS `labeled_boolean`,
     STRUCT(
       metrics.rate.rtcrtpsender_setparameters_fail_length_changed,

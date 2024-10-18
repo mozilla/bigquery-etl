@@ -78,7 +78,15 @@ SELECT
       metrics.boolean.bounce_tracking_protection_enabled_dry_run_mode_at_startup,
       metrics.boolean.customize_home_bookmarks,
       metrics.boolean.customization_settings_dynamic_toolbar,
-      metrics.boolean.navigation_bar_os_navigation_uses_gestures
+      metrics.boolean.navigation_bar_os_navigation_uses_gestures,
+      metrics.boolean.a11y_always_underline_links,
+      metrics.boolean.a11y_backplate,
+      metrics.boolean.a11y_invert_colors,
+      metrics.boolean.a11y_use_system_colors,
+      metrics.boolean.gfx_os_compositor,
+      metrics.boolean.gfx_supports_hdr,
+      metrics.boolean.gfx_tmp_writable,
+      metrics.boolean.preferences_prefs_file_was_invalid
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -186,7 +194,17 @@ SELECT
       metrics.counter.webrtcdtls_client_handshake_started_counter,
       metrics.counter.webrtcdtls_server_handshake_started_counter,
       metrics.counter.ls_request_recv_cancellation,
-      metrics.counter.ls_request_send_cancellation
+      metrics.counter.ls_request_send_cancellation,
+      metrics.counter.apz_scrollwheel_overshoot,
+      metrics.counter.downloads_file_opened,
+      metrics.counter.findbar_find_next,
+      metrics.counter.findbar_find_prev,
+      metrics.counter.findbar_highlight_all,
+      metrics.counter.findbar_match_case,
+      metrics.counter.findbar_match_diacritics,
+      metrics.counter.findbar_shown,
+      metrics.counter.findbar_whole_words,
+      metrics.counter.gfx_skipped_composites
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -463,7 +481,10 @@ SELECT
       metrics.quantity.data_storage_site_security_service_state,
       metrics.quantity.cert_verifier_trust_obj_count,
       metrics.quantity.home_bookmarks_bookmarks_count,
-      metrics.quantity.pkcs11_third_party_modules_loaded
+      metrics.quantity.pkcs11_third_party_modules_loaded,
+      metrics.quantity.a11y_hcm_background,
+      metrics.quantity.a11y_hcm_foreground,
+      metrics.quantity.gfx_hdr_windows_display_colorspace_bitfield
     ) AS `quantity`,
     STRUCT(
       metrics.string.experiments_metrics_active_experiment,
@@ -514,7 +535,9 @@ SELECT
       metrics.string.gecko_build_id,
       metrics.string.gecko_version,
       metrics.string.first_session_install_source,
-      metrics.string.blocklist_mlbf_softblocks_source
+      metrics.string.blocklist_mlbf_softblocks_source,
+      metrics.string.a11y_instantiators,
+      metrics.string.gfx_linux_window_protocol
     ) AS `string`,
     STRUCT(
       metrics.string_list.metrics_mozilla_products,
@@ -781,7 +804,8 @@ SELECT
       metrics.labeled_boolean.oskeystore_self_test,
       metrics.labeled_boolean.media_playback_device_hardware_decoder_support,
       metrics.labeled_boolean.geolocation_linux_provider,
-      metrics.labeled_boolean.pdfjs_image_alt_text_edit
+      metrics.labeled_boolean.pdfjs_image_alt_text_edit,
+      metrics.labeled_boolean.a11y_theme
     ) AS `labeled_boolean`,
     STRUCT(
       metrics.rate.rtcrtpsender_setparameters_fail_length_changed,
@@ -923,7 +947,15 @@ SELECT
       metrics.boolean.bounce_tracking_protection_enabled_dry_run_mode_at_startup,
       metrics.boolean.customize_home_bookmarks,
       metrics.boolean.customization_settings_dynamic_toolbar,
-      metrics.boolean.navigation_bar_os_navigation_uses_gestures
+      metrics.boolean.navigation_bar_os_navigation_uses_gestures,
+      metrics.boolean.a11y_always_underline_links,
+      metrics.boolean.a11y_backplate,
+      metrics.boolean.a11y_invert_colors,
+      metrics.boolean.a11y_use_system_colors,
+      metrics.boolean.gfx_os_compositor,
+      metrics.boolean.gfx_supports_hdr,
+      metrics.boolean.gfx_tmp_writable,
+      metrics.boolean.preferences_prefs_file_was_invalid
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -1031,7 +1063,17 @@ SELECT
       metrics.counter.webrtcdtls_client_handshake_started_counter,
       metrics.counter.webrtcdtls_server_handshake_started_counter,
       metrics.counter.ls_request_recv_cancellation,
-      metrics.counter.ls_request_send_cancellation
+      metrics.counter.ls_request_send_cancellation,
+      metrics.counter.apz_scrollwheel_overshoot,
+      metrics.counter.downloads_file_opened,
+      metrics.counter.findbar_find_next,
+      metrics.counter.findbar_find_prev,
+      metrics.counter.findbar_highlight_all,
+      metrics.counter.findbar_match_case,
+      metrics.counter.findbar_match_diacritics,
+      metrics.counter.findbar_shown,
+      metrics.counter.findbar_whole_words,
+      metrics.counter.gfx_skipped_composites
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -1308,7 +1350,10 @@ SELECT
       metrics.quantity.data_storage_site_security_service_state,
       metrics.quantity.cert_verifier_trust_obj_count,
       metrics.quantity.home_bookmarks_bookmarks_count,
-      metrics.quantity.pkcs11_third_party_modules_loaded
+      metrics.quantity.pkcs11_third_party_modules_loaded,
+      metrics.quantity.a11y_hcm_background,
+      metrics.quantity.a11y_hcm_foreground,
+      metrics.quantity.gfx_hdr_windows_display_colorspace_bitfield
     ) AS `quantity`,
     STRUCT(
       metrics.string.experiments_metrics_active_experiment,
@@ -1359,7 +1404,9 @@ SELECT
       metrics.string.gecko_build_id,
       metrics.string.gecko_version,
       metrics.string.first_session_install_source,
-      metrics.string.blocklist_mlbf_softblocks_source
+      metrics.string.blocklist_mlbf_softblocks_source,
+      metrics.string.a11y_instantiators,
+      metrics.string.gfx_linux_window_protocol
     ) AS `string`,
     STRUCT(
       metrics.string_list.metrics_mozilla_products,
@@ -1626,7 +1673,8 @@ SELECT
       metrics.labeled_boolean.oskeystore_self_test,
       metrics.labeled_boolean.media_playback_device_hardware_decoder_support,
       metrics.labeled_boolean.geolocation_linux_provider,
-      metrics.labeled_boolean.pdfjs_image_alt_text_edit
+      metrics.labeled_boolean.pdfjs_image_alt_text_edit,
+      metrics.labeled_boolean.a11y_theme
     ) AS `labeled_boolean`,
     STRUCT(
       metrics.rate.rtcrtpsender_setparameters_fail_length_changed,
@@ -1786,7 +1834,15 @@ SELECT
       metrics.boolean.bounce_tracking_protection_enabled_dry_run_mode_at_startup,
       metrics.boolean.customize_home_bookmarks,
       metrics.boolean.customization_settings_dynamic_toolbar,
-      metrics.boolean.navigation_bar_os_navigation_uses_gestures
+      metrics.boolean.navigation_bar_os_navigation_uses_gestures,
+      metrics.boolean.a11y_always_underline_links,
+      metrics.boolean.a11y_backplate,
+      metrics.boolean.a11y_invert_colors,
+      metrics.boolean.a11y_use_system_colors,
+      metrics.boolean.gfx_os_compositor,
+      metrics.boolean.gfx_supports_hdr,
+      metrics.boolean.gfx_tmp_writable,
+      metrics.boolean.preferences_prefs_file_was_invalid
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -1894,7 +1950,17 @@ SELECT
       metrics.counter.webrtcdtls_client_handshake_started_counter,
       metrics.counter.webrtcdtls_server_handshake_started_counter,
       metrics.counter.ls_request_recv_cancellation,
-      metrics.counter.ls_request_send_cancellation
+      metrics.counter.ls_request_send_cancellation,
+      metrics.counter.apz_scrollwheel_overshoot,
+      metrics.counter.downloads_file_opened,
+      metrics.counter.findbar_find_next,
+      metrics.counter.findbar_find_prev,
+      metrics.counter.findbar_highlight_all,
+      metrics.counter.findbar_match_case,
+      metrics.counter.findbar_match_diacritics,
+      metrics.counter.findbar_shown,
+      metrics.counter.findbar_whole_words,
+      metrics.counter.gfx_skipped_composites
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -2171,7 +2237,10 @@ SELECT
       metrics.quantity.data_storage_site_security_service_state,
       metrics.quantity.cert_verifier_trust_obj_count,
       metrics.quantity.home_bookmarks_bookmarks_count,
-      metrics.quantity.pkcs11_third_party_modules_loaded
+      metrics.quantity.pkcs11_third_party_modules_loaded,
+      metrics.quantity.a11y_hcm_background,
+      metrics.quantity.a11y_hcm_foreground,
+      metrics.quantity.gfx_hdr_windows_display_colorspace_bitfield
     ) AS `quantity`,
     STRUCT(
       metrics.string.experiments_metrics_active_experiment,
@@ -2222,7 +2291,9 @@ SELECT
       metrics.string.gecko_build_id,
       metrics.string.gecko_version,
       metrics.string.first_session_install_source,
-      metrics.string.blocklist_mlbf_softblocks_source
+      metrics.string.blocklist_mlbf_softblocks_source,
+      metrics.string.a11y_instantiators,
+      metrics.string.gfx_linux_window_protocol
     ) AS `string`,
     STRUCT(
       metrics.string_list.metrics_mozilla_products,
@@ -2489,7 +2560,8 @@ SELECT
       metrics.labeled_boolean.oskeystore_self_test,
       metrics.labeled_boolean.media_playback_device_hardware_decoder_support,
       metrics.labeled_boolean.geolocation_linux_provider,
-      metrics.labeled_boolean.pdfjs_image_alt_text_edit
+      metrics.labeled_boolean.pdfjs_image_alt_text_edit,
+      metrics.labeled_boolean.a11y_theme
     ) AS `labeled_boolean`,
     STRUCT(
       metrics.rate.rtcrtpsender_setparameters_fail_length_changed,
@@ -2658,7 +2730,15 @@ SELECT
       metrics.boolean.bounce_tracking_protection_enabled_dry_run_mode_at_startup,
       metrics.boolean.customize_home_bookmarks,
       metrics.boolean.customization_settings_dynamic_toolbar,
-      metrics.boolean.navigation_bar_os_navigation_uses_gestures
+      metrics.boolean.navigation_bar_os_navigation_uses_gestures,
+      metrics.boolean.a11y_always_underline_links,
+      metrics.boolean.a11y_backplate,
+      metrics.boolean.a11y_invert_colors,
+      metrics.boolean.a11y_use_system_colors,
+      metrics.boolean.gfx_os_compositor,
+      metrics.boolean.gfx_supports_hdr,
+      metrics.boolean.gfx_tmp_writable,
+      metrics.boolean.preferences_prefs_file_was_invalid
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -2766,7 +2846,17 @@ SELECT
       metrics.counter.webrtcdtls_client_handshake_started_counter,
       metrics.counter.webrtcdtls_server_handshake_started_counter,
       metrics.counter.ls_request_recv_cancellation,
-      metrics.counter.ls_request_send_cancellation
+      metrics.counter.ls_request_send_cancellation,
+      metrics.counter.apz_scrollwheel_overshoot,
+      metrics.counter.downloads_file_opened,
+      metrics.counter.findbar_find_next,
+      metrics.counter.findbar_find_prev,
+      metrics.counter.findbar_highlight_all,
+      metrics.counter.findbar_match_case,
+      metrics.counter.findbar_match_diacritics,
+      metrics.counter.findbar_shown,
+      metrics.counter.findbar_whole_words,
+      metrics.counter.gfx_skipped_composites
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -3043,7 +3133,10 @@ SELECT
       metrics.quantity.data_storage_site_security_service_state,
       metrics.quantity.cert_verifier_trust_obj_count,
       metrics.quantity.home_bookmarks_bookmarks_count,
-      metrics.quantity.pkcs11_third_party_modules_loaded
+      metrics.quantity.pkcs11_third_party_modules_loaded,
+      metrics.quantity.a11y_hcm_background,
+      metrics.quantity.a11y_hcm_foreground,
+      metrics.quantity.gfx_hdr_windows_display_colorspace_bitfield
     ) AS `quantity`,
     STRUCT(
       metrics.string.experiments_metrics_active_experiment,
@@ -3094,7 +3187,9 @@ SELECT
       metrics.string.gecko_build_id,
       metrics.string.gecko_version,
       metrics.string.first_session_install_source,
-      metrics.string.blocklist_mlbf_softblocks_source
+      metrics.string.blocklist_mlbf_softblocks_source,
+      metrics.string.a11y_instantiators,
+      metrics.string.gfx_linux_window_protocol
     ) AS `string`,
     STRUCT(
       metrics.string_list.metrics_mozilla_products,
@@ -3361,7 +3456,8 @@ SELECT
       metrics.labeled_boolean.oskeystore_self_test,
       metrics.labeled_boolean.media_playback_device_hardware_decoder_support,
       metrics.labeled_boolean.geolocation_linux_provider,
-      metrics.labeled_boolean.pdfjs_image_alt_text_edit
+      metrics.labeled_boolean.pdfjs_image_alt_text_edit,
+      metrics.labeled_boolean.a11y_theme
     ) AS `labeled_boolean`,
     STRUCT(
       metrics.rate.rtcrtpsender_setparameters_fail_length_changed,
@@ -3512,7 +3608,15 @@ SELECT
       metrics.boolean.bounce_tracking_protection_enabled_dry_run_mode_at_startup,
       metrics.boolean.customize_home_bookmarks,
       metrics.boolean.customization_settings_dynamic_toolbar,
-      metrics.boolean.navigation_bar_os_navigation_uses_gestures
+      metrics.boolean.navigation_bar_os_navigation_uses_gestures,
+      metrics.boolean.a11y_always_underline_links,
+      metrics.boolean.a11y_backplate,
+      metrics.boolean.a11y_invert_colors,
+      metrics.boolean.a11y_use_system_colors,
+      metrics.boolean.gfx_os_compositor,
+      metrics.boolean.gfx_supports_hdr,
+      metrics.boolean.gfx_tmp_writable,
+      metrics.boolean.preferences_prefs_file_was_invalid
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -3620,7 +3724,17 @@ SELECT
       metrics.counter.webrtcdtls_client_handshake_started_counter,
       metrics.counter.webrtcdtls_server_handshake_started_counter,
       metrics.counter.ls_request_recv_cancellation,
-      metrics.counter.ls_request_send_cancellation
+      metrics.counter.ls_request_send_cancellation,
+      metrics.counter.apz_scrollwheel_overshoot,
+      metrics.counter.downloads_file_opened,
+      metrics.counter.findbar_find_next,
+      metrics.counter.findbar_find_prev,
+      metrics.counter.findbar_highlight_all,
+      metrics.counter.findbar_match_case,
+      metrics.counter.findbar_match_diacritics,
+      metrics.counter.findbar_shown,
+      metrics.counter.findbar_whole_words,
+      metrics.counter.gfx_skipped_composites
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -3897,7 +4011,10 @@ SELECT
       metrics.quantity.data_storage_site_security_service_state,
       metrics.quantity.cert_verifier_trust_obj_count,
       metrics.quantity.home_bookmarks_bookmarks_count,
-      metrics.quantity.pkcs11_third_party_modules_loaded
+      metrics.quantity.pkcs11_third_party_modules_loaded,
+      metrics.quantity.a11y_hcm_background,
+      metrics.quantity.a11y_hcm_foreground,
+      metrics.quantity.gfx_hdr_windows_display_colorspace_bitfield
     ) AS `quantity`,
     STRUCT(
       metrics.string.experiments_metrics_active_experiment,
@@ -3948,7 +4065,9 @@ SELECT
       metrics.string.gecko_build_id,
       metrics.string.gecko_version,
       metrics.string.first_session_install_source,
-      metrics.string.blocklist_mlbf_softblocks_source
+      metrics.string.blocklist_mlbf_softblocks_source,
+      metrics.string.a11y_instantiators,
+      metrics.string.gfx_linux_window_protocol
     ) AS `string`,
     STRUCT(
       metrics.string_list.metrics_mozilla_products,
@@ -4215,7 +4334,8 @@ SELECT
       metrics.labeled_boolean.oskeystore_self_test,
       metrics.labeled_boolean.media_playback_device_hardware_decoder_support,
       metrics.labeled_boolean.geolocation_linux_provider,
-      metrics.labeled_boolean.pdfjs_image_alt_text_edit
+      metrics.labeled_boolean.pdfjs_image_alt_text_edit,
+      metrics.labeled_boolean.a11y_theme
     ) AS `labeled_boolean`,
     STRUCT(
       metrics.rate.rtcrtpsender_setparameters_fail_length_changed,

@@ -261,6 +261,30 @@ fields:
     - name: bounce_tracking_protection_enabled_dry_run_mode_at_startup
       type: BOOLEAN
       mode: NULLABLE
+    - name: a11y_always_underline_links
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: a11y_backplate
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: a11y_invert_colors
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: a11y_use_system_colors
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: gfx_os_compositor
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: gfx_supports_hdr
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: gfx_tmp_writable
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: preferences_prefs_file_was_invalid
+      type: BOOLEAN
+      mode: NULLABLE
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -467,6 +491,36 @@ fields:
       type: INTEGER
       mode: NULLABLE
     - name: ls_request_send_cancellation
+      type: INTEGER
+      mode: NULLABLE
+    - name: apz_scrollwheel_overshoot
+      type: INTEGER
+      mode: NULLABLE
+    - name: downloads_file_opened
+      type: INTEGER
+      mode: NULLABLE
+    - name: findbar_find_next
+      type: INTEGER
+      mode: NULLABLE
+    - name: findbar_find_prev
+      type: INTEGER
+      mode: NULLABLE
+    - name: findbar_highlight_all
+      type: INTEGER
+      mode: NULLABLE
+    - name: findbar_match_case
+      type: INTEGER
+      mode: NULLABLE
+    - name: findbar_match_diacritics
+      type: INTEGER
+      mode: NULLABLE
+    - name: findbar_shown
+      type: INTEGER
+      mode: NULLABLE
+    - name: findbar_whole_words
+      type: INTEGER
+      mode: NULLABLE
+    - name: gfx_skipped_composites
       type: INTEGER
       mode: NULLABLE
   - name: datetime
@@ -2482,6 +2536,12 @@ fields:
     - name: blocklist_mlbf_softblocks_source
       type: STRING
       mode: NULLABLE
+    - name: a11y_instantiators
+      type: STRING
+      mode: NULLABLE
+    - name: gfx_linux_window_protocol
+      type: STRING
+      mode: NULLABLE
   - name: quantity
     type: RECORD
     mode: NULLABLE
@@ -2541,6 +2601,15 @@ fields:
       type: INTEGER
       mode: NULLABLE
     - name: pkcs11_third_party_modules_loaded
+      type: INTEGER
+      mode: NULLABLE
+    - name: a11y_hcm_background
+      type: INTEGER
+      mode: NULLABLE
+    - name: a11y_hcm_foreground
+      type: INTEGER
+      mode: NULLABLE
+    - name: gfx_hdr_windows_display_colorspace_bitfield
       type: INTEGER
       mode: NULLABLE
   - name: custom_distribution
@@ -9074,6 +9143,16 @@ fields:
         type: BOOLEAN
         mode: NULLABLE
     - name: pdfjs_image_alt_text_edit
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: BOOLEAN
+        mode: NULLABLE
+    - name: a11y_theme
       type: RECORD
       mode: REPEATED
       fields:

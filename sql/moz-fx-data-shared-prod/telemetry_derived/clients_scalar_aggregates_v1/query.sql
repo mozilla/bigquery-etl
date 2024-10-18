@@ -11,6 +11,7 @@ filtered_aggregates AS (
   SELECT
     submission_date,
     client_id,
+    profile_group_id,
     os,
     app_version,
     app_build_id,
@@ -32,6 +33,7 @@ version_filtered_new AS (
   SELECT
     submission_date,
     scalar_aggs.client_id,
+    scalar_aggs.profile_group_id,
     scalar_aggs.os,
     scalar_aggs.app_version,
     scalar_aggs.app_build_id,
@@ -53,6 +55,7 @@ version_filtered_new AS (
 scalar_aggregates_new AS (
   SELECT
     client_id,
+    profile_group_id,
     os,
     app_version,
     app_build_id,
@@ -76,6 +79,7 @@ scalar_aggregates_new AS (
     version_filtered_new
   GROUP BY
     client_id,
+    profile_group_id,
     os,
     app_version,
     app_build_id,
@@ -89,6 +93,7 @@ scalar_aggregates_new AS (
 filtered_new AS (
   SELECT
     client_id,
+    profile_group_id,
     os,
     app_version,
     app_build_id,
@@ -98,6 +103,7 @@ filtered_new AS (
     scalar_aggregates_new
   GROUP BY
     client_id,
+    profile_group_id,
     os,
     app_version,
     app_build_id,
@@ -106,6 +112,7 @@ filtered_new AS (
 filtered_old AS (
   SELECT
     scalar_aggs.client_id,
+    scalar_aggs.profile_group_id,
     scalar_aggs.os,
     scalar_aggs.app_version,
     scalar_aggs.app_build_id,
@@ -123,6 +130,7 @@ filtered_old AS (
 joined_new_old AS (
   SELECT
     COALESCE(old_data.client_id, new_data.client_id) AS client_id,
+    COALESCE(old_data.profile_group_id, new_data.profile_group_id) AS profile_group_id,
     COALESCE(old_data.os, new_data.os) AS os,
     COALESCE(old_data.app_version, new_data.app_version) AS app_version,
     COALESCE(old_data.app_build_id, new_data.app_build_id) AS app_build_id,
@@ -133,11 +141,12 @@ joined_new_old AS (
     filtered_new AS new_data
   FULL OUTER JOIN
     filtered_old AS old_data
-    USING (client_id, os, app_version, app_build_id, channel)
+    USING (client_id, profile_group_id, os, app_version, app_build_id, channel)
 )
 SELECT
   @submission_date AS submission_date,
   client_id,
+  profile_group_id,
   os,
   app_version,
   app_build_id,

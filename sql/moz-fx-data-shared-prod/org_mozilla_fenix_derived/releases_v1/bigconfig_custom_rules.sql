@@ -1,12 +1,12 @@
 -- {
---   "name": "custom_check_name",
---   "alert_conditions": "count",
+--   "name": "Fenix releases version format",
+--   "alert_conditions": "value",
 --   "range": {
 --     "min": 2,
 --     "max": 10
 --   },
 --   "collections": ["Test"],
---   "owner": "asf",
+--   "owner": "",
 --   "schedule": "Default Schedule - 13:00 UTC"
 -- }
 SELECT
@@ -14,14 +14,14 @@ SELECT
 FROM {{ project_id }}.{{ dataset_id }}.{{ table_name }};
 
 -- {
---   "name": "custom_check_name_2",
+--   "name": "Fenix releases product check",
 --   "alert_conditions": "value",
 --   "range": {
 --     "min": 2,
 --     "max": 10
 --   },
 --   "collections": ["Test"],
---   "owner": "asf",
+--   "owner": "",
 --   "schedule": "Default Schedule - 13:00 UTC"
 -- }
 SELECT

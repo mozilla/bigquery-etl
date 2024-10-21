@@ -156,6 +156,36 @@ def deploy(
     )
 
 
+def _sql_rules_from_file(custom_rules_file, project, dataset, table) -> list:
+    """Extracts the SQL rules from the custom rules file."""
+    jinja_params = {
+        **{
+            "dataset_id": dataset,
+            "table_name": table,
+            "project_id": project,
+        },
+    }
+    if "format" not in jinja_params:
+        jinja_params["format"] = False
+
+    rendered_result = render_template(
+        custom_rules_file.name,
+        template_folder=str(custom_rules_file.parent),
+        templates_dir="",
+        **jinja_params,
+    )
+
+    statements = []
+    for statement in sqlglot.parse(rendered_result, read="bigquery"):
+        if statement is None:
+            continue
+
+        for select_statement in statement.find_all(sqlglot.exp.Select):
+            statements.append(select_statement)
+
+    return statements
+
+
 @monitoring.command(
     help="""
     Deploy custom SQL rules.
@@ -212,93 +242,73 @@ def deploy_custom_rules(
             metadata = Metadata.from_file(custom_rule_file.parent / METADATA_FILE)
             if metadata.monitoring and metadata.monitoring.enabled:
                 # Convert all the Airflow params to jinja usable dict.
-                jinja_params = {
-                    **{
-                        "dataset_id": dataset,
-                        "table_name": table,
-                        "project_id": project,
-                    },
-                }
-                if "format" not in jinja_params:
-                    jinja_params["format"] = False
-
-                rendered_result = render_template(
-                    custom_rule_file.name,
-                    template_folder=str(custom_rule_file.parent),
-                    templates_dir="",
-                    **jinja_params,
-                )
-
-                for statement in sqlglot.parse(rendered_result, read="bigquery"):
-                    if statement is None:
+                for select_statement in _sql_rules_from_file(
+                    custom_rule_file, project, dataset, table
+                ):
+                    sql = select_statement.sql(dialect="bigquery")
+                    if sql in existing_rules_sql:
                         continue
 
-                    for select_statement in statement.find_all(sqlglot.exp.Select):
-                        sql = select_statement.sql(dialect="bigquery")
-                        if sql in existing_rules_sql:
-                            continue
+                    # parse config values from SQL comment
+                    config = {}
+                    if select_statement.comments:
+                        config = ast.literal_eval("".join(select_statement.comments))
 
-                        config = {}
-                        if select_statement.comments:
-                            config = ast.literal_eval(
-                                "".join(select_statement.comments)
-                            )
+                    payload = {
+                        "name": config.get(
+                            "name", f"{project}_{dataset}_{table}_bqetl_check"
+                        ),
+                        "sql": sql,
+                        "warehouseId": warehouse_id,
+                        "thresholdType": "CUSTOM_RULES_THRESHOLD_TYPE_"
+                        + config.get("alert_type", "count").upper(),
+                    }
 
-                        payload = {
-                            "name": config.get(
-                                "name", f"{project}_{dataset}_{table}_bqetl_check"
-                            ),
-                            "sql": sql,
-                            "warehouseId": warehouse_id,
-                            "thresholdType": "CUSTOM_RULES_THRESHOLD_TYPE_"
-                            + config.get("alert_type", "count").upper(),
+                    if "range" in config:
+                        if "min" in config["range"]:
+                            payload["lowerThreshold"] = config["range"]["min"]
+                        if "max" in config["range"]:
+                            payload["upperThreshold"] = config["range"]["max"]
+
+                    if "owner" in config:
+                        payload["owner"] = {"email": config["owner"]}
+
+                    if "collections" in config:
+                        collection_ids = [
+                            collection.id
+                            for collection in collections.collections
+                            if collection.name in config["collections"]
+                        ]
+                        payload["collectionIds"] = collection_ids
+
+                    if (
+                        "schedule" in config
+                        and config["schedule"] in existing_schedules
+                    ):
+                        payload["metricSchedule"] = {
+                            "namedSchedule": {
+                                "id": existing_schedules[config["schedule"]]
+                            }
                         }
 
-                        if "range" in config:
-                            if "min" in config["range"]:
-                                payload["lowerThreshold"] = config["range"]["min"]
-                            if "max" in config["range"]:
-                                payload["upperThreshold"] = config["range"]["max"]
+                    try:
+                        response = client._call_datawatch(
+                            Method.POST,
+                            url=url,
+                            body=json.dumps({"customRule": payload}),
+                        )
 
-                        if "owner" in config:
-                            payload["owner"] = {"email": config["owner"]}
-
-                        if "collections" in config:
-                            collection_ids = [
-                                collection.id
-                                for collection in collections.collections
-                                if collection.name in config["collections"]
-                            ]
-                            payload["collectionIds"] = collection_ids
-
-                        if (
-                            "schedule" in config
-                            and config["schedule"] in existing_schedules
-                        ):
-                            payload["metricSchedule"] = {
-                                "namedSchedule": {
-                                    "id": existing_schedules[config["schedule"]]
-                                }
-                            }
-
-                        try:
-                            response = client._call_datawatch(
-                                Method.POST,
-                                url=url,
-                                body=json.dumps({"customRule": payload}),
+                        if "id" in response:
+                            click.echo(
+                                f"Created custom rule {response['id']} for `{project}.{dataset}.{table}`"
                             )
-
-                            if "id" in response:
-                                click.echo(
-                                    f"Created custom rule {response['id']} for `{project}.{dataset}.{table}`"
-                                )
-                        except Exception as e:
-                            if "There was an error processing your request" in str(e):
-                                # API throws an error when partition column was already set.
-                                # There is no API endpoint to check for partition columns though
-                                pass
-                            else:
-                                raise e
+                    except Exception as e:
+                        if "There was an error processing your request" in str(e):
+                            # API throws an error when partition column was already set.
+                            # There is no API endpoint to check for partition columns though
+                            pass
+                        else:
+                            raise e
 
         except FileNotFoundError:
             print("No metadata file for: {}.{}.{}".format(project, dataset, table))
@@ -622,3 +632,80 @@ def set_partition_column(
 
         except FileNotFoundError:
             print("No metadata file for: {}.{}.{}".format(project, dataset, table))
+
+
+@monitoring.command(
+    help="""
+    Rollback deployed monitors.
+    """
+)
+@click.argument("name")
+@project_id_option()
+@sql_dir_option
+@click.option(
+    "--workspace",
+    default=463,
+    help="Bigeye workspace to use when authenticating to API.",
+)
+@click.option(
+    "--base-url",
+    "--base_url",
+    default="https://app.bigeye.com",
+    help="Bigeye base URL.",
+)
+@click.option(
+    "--custom-sql-only",
+    "--custom_sql_only",
+    is_flag=True,
+    default=False,
+    help="Only deletes custom SQL rules, but leaves monitors untouched.",
+)
+def rollback(
+    name: str,
+    sql_dir: Optional[str],
+    project_id: Optional[str],
+    base_url: str,
+    workspace: int,
+    custom_sql_only: bool,
+) -> None:
+    """Validate BigConfig file."""
+    api_key = os.environ.get("BIGEYE_API_KEY")
+    if api_key is None:
+        click.echo(
+            "Bigeye API token needs to be set via `BIGEYE_API_KEY` env variable."
+        )
+        sys.exit(1)
+
+    metadata_files = paths_matching_name_pattern(
+        name, sql_dir, project_id=project_id, files=["metadata.yaml"]
+    )
+    api_auth = APIKeyAuth(base_url=base_url, api_key=api_key)
+    client = datawatch_client_factory(api_auth, workspace_id=workspace)
+    warehouse_id = ConfigLoader.get("monitoring", "bigeye_warehouse_id")
+    existing_rules = {
+        rule.custom_rule.sql: rule.id
+        for rule in client.get_rules_for_source(warehouse_id=warehouse_id).custom_rules
+    }
+
+    for metadata_file in list(set(metadata_files)):
+        project, dataset, table = extract_from_query_path(metadata_file)
+
+        if not custom_sql_only:
+            metrics = client.get_metric_info_batch_post(
+                table_name=table,
+                schema_name=f"{project}.{dataset}",
+                warehouse_ids=[warehouse_id],
+            )
+            client.delete_metrics(metrics=metrics.metrics)
+            click.echo(f"Deleted metrics for {project}.{dataset}.{table}")
+
+        if (metadata_file.parent / CUSTOM_RULES_FILE).exists():
+            for select_statement in _sql_rules_from_file(
+                metadata_file.parent / CUSTOM_RULES_FILE, project, dataset, table
+            ):
+                sql = select_statement.sql(dialect="bigquery")
+                if sql in existing_rules:
+                    client.delete_custom_rule(existing_rules[sql])
+                    click.echo(
+                        f"Deleted custom rule {existing_rules[sql]} for {project}.{dataset}.{table}"
+                    )

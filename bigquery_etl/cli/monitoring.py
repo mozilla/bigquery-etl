@@ -1,5 +1,6 @@
 """bigquery-etl CLI monitoring command."""
 
+import ast
 import json
 import os
 import re
@@ -9,6 +10,7 @@ from pathlib import Path
 from typing import Optional
 
 import click
+import sqlglot
 from bigeye_sdk.authentication.api_authentication import APIKeyAuth
 from bigeye_sdk.bigconfig_validation.validation_context import _BIGEYE_YAML_FILE_IX
 from bigeye_sdk.client.datawatch_client import datawatch_client_factory
@@ -37,8 +39,10 @@ from bigquery_etl.metadata.parse_metadata import METADATA_FILE, Metadata
 
 from ..cli.utils import paths_matching_name_pattern, project_id_option, sql_dir_option
 from ..util import extract_from_query_path
+from ..util.common import render as render_template
 
 BIGCONFIG_FILE = "bigconfig.yml"
+CUSTOM_RULES_FILE = "bigconfig_custom_rules.sql"
 VIEW_FILE = "view.sql"
 
 
@@ -125,6 +129,14 @@ def deploy(
                     # Bigeye requires to explicitly set the partition column for views
                     ctx.invoke(
                         set_partition_column,
+                        name=metadata_file.parent,
+                        sql_dir=sql_dir,
+                        project_id=project_id,
+                    )
+
+                if (metadata_file.parent / CUSTOM_RULES_FILE).exists():
+                    ctx.invoke(
+                        deploy_custom_rules,
                         name=metadata_file.parent,
                         sql_dir=sql_dir,
                         project_id=project_id,

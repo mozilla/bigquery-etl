@@ -23,7 +23,8 @@ WITH all_clicks_not_originating_in_europe AS (
 SELECT
   a.gclid,
   a.conversion_name,
-  MIN(a.activity_datetime) AS activity_date,
+  UNIX_SECONDS(CAST(MIN(a.activity_datetime) AS TIMESTAMP)) AS activity_date,
+  CAST(MIN(a.activity_datetime) AS TIMESTAMP) AS activity_date_timestamp
 FROM
   `moz-fx-data-shared-prod.mozilla_org_derived.ga_desktop_conversions_v1` a
 JOIN

@@ -478,6 +478,184 @@ fields:
     - name: ad_group_name
       type: STRING
       mode: NULLABLE
+  - name: cross_channel_campaign
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: campaign_id
+      type: STRING
+      mode: NULLABLE
+    - name: campaign_name
+      type: STRING
+      mode: NULLABLE
+    - name: source
+      type: STRING
+      mode: NULLABLE
+    - name: medium
+      type: STRING
+      mode: NULLABLE
+    - name: source_platform
+      type: STRING
+      mode: NULLABLE
+    - name: default_channel_group
+      type: STRING
+      mode: NULLABLE
+    - name: primary_channel_group
+      type: STRING
+      mode: NULLABLE
+  - name: sa360_campaign
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: campaign_id
+      type: STRING
+      mode: NULLABLE
+    - name: campaign_name
+      type: STRING
+      mode: NULLABLE
+    - name: source
+      type: STRING
+      mode: NULLABLE
+    - name: medium
+      type: STRING
+      mode: NULLABLE
+    - name: ad_group_id
+      type: STRING
+      mode: NULLABLE
+    - name: ad_group_name
+      type: STRING
+      mode: NULLABLE
+    - name: creative_format
+      type: STRING
+      mode: NULLABLE
+    - name: engine_account_name
+      type: STRING
+      mode: NULLABLE
+    - name: engine_account_type
+      type: STRING
+      mode: NULLABLE
+    - name: manager_account_name
+      type: STRING
+      mode: NULLABLE
+  - name: cm360_campaign
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: campaign_id
+      type: STRING
+      mode: NULLABLE
+    - name: campaign_name
+      type: STRING
+      mode: NULLABLE
+    - name: source
+      type: STRING
+      mode: NULLABLE
+    - name: medium
+      type: STRING
+      mode: NULLABLE
+    - name: account_id
+      type: STRING
+      mode: NULLABLE
+    - name: account_name
+      type: STRING
+      mode: NULLABLE
+    - name: advertiser_id
+      type: STRING
+      mode: NULLABLE
+    - name: advertiser_name
+      type: STRING
+      mode: NULLABLE
+    - name: creative_id
+      type: STRING
+      mode: NULLABLE
+    - name: creative_format
+      type: STRING
+      mode: NULLABLE
+    - name: creative_name
+      type: STRING
+      mode: NULLABLE
+    - name: creative_type
+      type: STRING
+      mode: NULLABLE
+    - name: creative_type_id
+      type: STRING
+      mode: NULLABLE
+    - name: creative_version
+      type: STRING
+      mode: NULLABLE
+    - name: placement_id
+      type: STRING
+      mode: NULLABLE
+    - name: placement_cost_structure
+      type: STRING
+      mode: NULLABLE
+    - name: placement_name
+      type: STRING
+      mode: NULLABLE
+    - name: rendering_id
+      type: STRING
+      mode: NULLABLE
+    - name: site_id
+      type: STRING
+      mode: NULLABLE
+    - name: site_name
+      type: STRING
+      mode: NULLABLE
+  - name: dv360_campaign
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: campaign_id
+      type: STRING
+      mode: NULLABLE
+    - name: campaign_name
+      type: STRING
+      mode: NULLABLE
+    - name: source
+      type: STRING
+      mode: NULLABLE
+    - name: medium
+      type: STRING
+      mode: NULLABLE
+    - name: advertiser_id
+      type: STRING
+      mode: NULLABLE
+    - name: advertiser_name
+      type: STRING
+      mode: NULLABLE
+    - name: creative_id
+      type: STRING
+      mode: NULLABLE
+    - name: creative_format
+      type: STRING
+      mode: NULLABLE
+    - name: creative_name
+      type: STRING
+      mode: NULLABLE
+    - name: exchange_id
+      type: STRING
+      mode: NULLABLE
+    - name: exchange_name
+      type: STRING
+      mode: NULLABLE
+    - name: insertion_order_id
+      type: STRING
+      mode: NULLABLE
+    - name: insertion_order_name
+      type: STRING
+      mode: NULLABLE
+    - name: line_item_id
+      type: STRING
+      mode: NULLABLE
+    - name: line_item_name
+      type: STRING
+      mode: NULLABLE
+    - name: partner_id
+      type: STRING
+      mode: NULLABLE
+    - name: partner_name
+      type: STRING
+      mode: NULLABLE
 - name: publisher
   type: RECORD
   mode: NULLABLE

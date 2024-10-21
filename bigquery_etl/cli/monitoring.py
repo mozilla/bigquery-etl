@@ -868,3 +868,4 @@ def migrate(ctx, name: str, sql_dir: Optional[str], project_id: Optional[str]) -
     click.echo(
         "Please manually check the migration logic as it might not be 100% correct"
     )
+

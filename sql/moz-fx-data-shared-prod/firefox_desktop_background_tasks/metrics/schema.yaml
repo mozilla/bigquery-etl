@@ -340,6 +340,37 @@ fields:
         datasanitization.privacy_sanitize_sanitizeOnShutdown.
 
         '
+    - name: os_environment_is_kept_in_dock
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether this app was kept in macOS Dock on startup This metric
+        was generated to correspond to the Legacy Telemetry scalar os.environment.is_kept_in_dock.
+
+        '
+    - name: os_environment_is_taskbar_pinned
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether the non-Private Browsing version of this app was pinned
+        to taskbar on startup This metric was generated to correspond to the Legacy
+        Telemetry scalar os.environment.is_taskbar_pinned.
+
+        '
+    - name: os_environment_is_taskbar_pinned_private
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether the Private Browsing version of this app was pinned to
+        taskbar on startup This metric was generated to correspond to the Legacy Telemetry
+        scalar os.environment.is_taskbar_pinned_private.
+
+        '
+    - name: startup_is_cold
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether or not this startup is the first startup since OS reboot
+        (according to our best guess.) This metric was generated to correspond to
+        the Legacy Telemetry scalar startup.is_cold.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -585,6 +616,52 @@ fields:
         0.
 
         '
+    - name: os_environment_invoked_to_handle
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Records counts for when Firefox was invoked (i.e., was already
+        running and was not launched) to handle a file type or protocol with `-osint
+        -url ...`.  The result is split into keys which represent the file extension:
+        currently, the set of file types Firefox registers to handle, namely ".avif",
+        ".htm", ".html", ".pdf", ".shtml", ".xht", ".xhtml", ".svg", ".webp", and
+        the set of protocol schemes that Firefox registers to handle, namely "about",
+        "http", "https", "mailto".  If Firefox was invoked to handle a file type or
+        protocol it does not register to handle by default, the count is recorded
+        as ".<other extension>" or "<other protocol>", respectively (neither of which
+        are valid extension or protocol identifiers). This metric was generated to
+        correspond to the Legacy Telemetry scalar os.environment.invoked_to_handle.
+
+        '
+    - name: os_environment_launched_to_handle
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Records counts for when Firefox was launched afresh (i.e., was
+        not already running) to handle a file type or protocol with `-osint -url ...`.  The
+        result is split into keys which represent the file extension: currently, the
+        set of file types Firefox registers to handle, namely ".avif", ".htm", ".html",
+        ".pdf", ".shtml", ".xht", ".xhtml", ".svg", ".webp", and the set of protocol
+        schemes that Firefox registers to handle, namely "about", "http", "https",
+        "mailto".  If Firefox was launched to handle a file type or protocol it does
+        not register to handle by default, the count is recorded as ".<other extension>"
+        or "<other protocol>", respectively (neither of which are valid extension
+        or protocol identifiers). This metric was generated to correspond to the Legacy
+        Telemetry scalar os.environment.launched_to_handle.
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -694,6 +771,15 @@ fields:
       type: STRING
       mode: NULLABLE
       description: 'If there was an error loading the RKV database, record it.
+
+        '
+    - name: os_environment_launch_method
+      type: STRING
+      mode: NULLABLE
+      description: 'Records how Firefox was started on Windows. Currently will be
+        one of "Desktop", "DesktopPrivate", "StartMenu" (including pins), "StartMenuPrivate",
+        "Taskbar", "TaskbarPrivate", "OtherShortcut", or "Other" This metric was generated
+        to correspond to the Legacy Telemetry scalar os.environment.launch_method.
 
         '
   - name: timing_distribution
@@ -950,6 +1036,38 @@ fields:
       mode: NULLABLE
       description: 'A count of how many "session" cookie exceptions a user has set.
         This metric was generated to correspond to the Legacy Telemetry scalar datasanitization.session_permission_exceptions.
+
+        '
+    - name: startup_seconds_since_last_os_restart
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The time in seconds between the first browser window loading,
+        and the time the OS started. This can give us an indication of whether starting
+        the browser may have been the first thing the user did after starting their
+        computer. This metric was generated to correspond to the Legacy Telemetry
+        scalar startup.seconds_since_last_os_restart.
+
+        '
+  - name: labeled_boolean
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: os_environment_is_default_handler
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: BOOLEAN
+        mode: NULLABLE
+      description: 'Records whether Firefox was the default handler for particular
+        file types or protocols.  The result is split into keys which represent the
+        file extension or scheme: currently, a subset of the file types Firefox registers
+        to handle, namely ".pdf" and "mailto" as protocol. In the future, more file
+        types may be recorded. This metric was generated to correspond to the Legacy
+        Telemetry scalar os.environment.is_default_handler.
 
         '
 - name: normalized_app_name

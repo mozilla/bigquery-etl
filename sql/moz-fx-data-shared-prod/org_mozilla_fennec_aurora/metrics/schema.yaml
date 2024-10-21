@@ -773,6 +773,21 @@ fields:
         metric was generated to correspond to the Legacy Telemetry scalar preferences.prefs_file_was_invalid.
 
         '
+    - name: networking_http3_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'True if HTTP3 is enabled at the start of a session. This metric
+        was generated to correspond to the Legacy Telemetry scalar networking.http3_enabled.
+
+        '
+    - name: os_environment_is_admin_without_uac
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Indicates that the process is lauched with Admin privileges but
+        without UAC. This metric was generated to correspond to the Legacy Telemetry
+        scalar os.environment.is_admin_without_uac.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -1719,6 +1734,30 @@ fields:
       description: 'Number of skipped composites, happening when rendering is too
         slow to keep up with content. This metric was generated to correspond to the
         Legacy Telemetry scalar gfx.skipped_composites.
+
+        '
+    - name: media_element_in_page_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of times a document hierarchy contained at least one
+        HTMLMediaElement. In addition, the telemetry probe ''MIXED_CONTENT_UNBLOCK_COUNTER''
+        records the total number of loaded top level content documents, which can
+        help us calculate the result of the percentage of documents using media. This
+        metric was generated to correspond to the Legacy Telemetry scalar media.element_in_page_count.
+
+        '
+    - name: opaque_response_blocking_cross_origin_opaque_response_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of loads of cross origin opaque resources. This metric
+        was generated to correspond to the Legacy Telemetry scalar opaque.response.blocking.cross_origin_opaque_response_count.
+
+        '
+    - name: opaque_response_blocking_javascript_validation_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of times we run the JS validator. This metric was generated
+        to correspond to the Legacy Telemetry scalar opaque.response.blocking.javascript_validation_count.
 
         '
   - name: custom_distribution
@@ -3756,8 +3795,7 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream. (Migrated from
-        the geckoview metric of the same name).
+      description: 'Failure occurs when initializing the audio stream.
 
         '
     - name: glean_validation_pings_submitted
@@ -5833,8 +5871,10 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: Counts the status of succeeded and failed requests to other mozilla.org
+      description: 'Counts the status of succeeded and failed requests to other mozilla.org
         domains
+
+        '
     - name: network_system_channel_remote_settings_status
       type: RECORD
       mode: REPEATED
@@ -6034,6 +6074,104 @@ fields:
         mode: NULLABLE
       description: 'The number of times we see the IP address 0.0.0.0 or its IPv6
         equivalent.
+
+        '
+    - name: media_decode_error_per_mime_type
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Count the number of times the media with a specific mime type
+        (Eg. audio/vorbis, that would be used as the key) encounters a decode error
+        during playback. This metric was generated to correspond to the Legacy Telemetry
+        scalar media.decode_error_per_mime_type.
+
+        '
+    - name: networking_data_transferred_v3_kb
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: "How many KB of HTTP data transferred by type, there are some categories\
+        \ separated by keys based on 5 parameters:\n  1. normal browsing or private\
+        \ browsing\n  2. system principal or not\n  3. first party or third party\n\
+        \  4. class of service (Leader/Background/Others)\n  5. tracking classification\
+        \ (Basic/Content/FingerprintingContent)\n\nAvailable keys are:\n  \"Y0_N1Sys\"\
+        ,\n  \"Y1_N1\",\n  \"Y2_N3Oth\",\n  \"Y3_N3BasicLead\",\n  \"Y4_N3BasicBg\"\
+        ,\n  \"Y5_N3BasicOth\",\n  \"Y6_N3ContentLead\",\n  \"Y7_N3ContentBg\",\n\
+        \  \"Y8_N3ContentOth\",\n  \"Y9_N3FpLead\",\n  \"Y10_N3FpBg\",\n  \"Y11_N3FpOth\"\
+        ,\n  \"Y12_P1Sys\",\n  \"Y13_P1\",\n  \"Y14_P3Oth\",\n  \"Y15_P3BasicLead\"\
+        ,\n  \"Y16_P3BasicBg\",\n  \"Y17_P3BasicOth\",\n  \"Y18_P3ContentLead\",\n\
+        \  \"Y19_P3ContentBg\",\n  \"Y20_P3ContentOth\",\n  \"Y21_P3FpLead\",\n  \"\
+        Y22_P3FpBg\",\n  \"Y23_P3FpOth\"\n\nThis metric was generated to correspond\
+        \ to the Legacy Telemetry scalar networking.data_transferred_v3_kb.\n"
+    - name: networking_trr_connection_cycle_count
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Number of times we cycled the TRR connection during a subsession.
+        Keyed by TRR provider URL. This metric was generated to correspond to the
+        Legacy Telemetry scalar networking.trr_connection_cycle_count.
+
+        '
+    - name: webrtc_video_recv_codec_used
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The video codec used for receiving video on a WebRTC call. This
+        metric was generated to correspond to the Legacy Telemetry scalar webrtc.video.recv_codec_used.
+
+        '
+    - name: webrtc_video_send_codec_used
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The video codec used for sending video on a WebRTC call. This
+        metric was generated to correspond to the Legacy Telemetry scalar webrtc.video.send_codec_used.
+
+        '
+    - name: security_client_auth_cert_usage
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Measures how many servers have requested a client authentication
+        certificate (key: "requested") and how many times the user has opted to send
+        one in response (key: "sent"). This metric was generated to correspond to
+        the Legacy Telemetry scalar security.client_auth_cert_usage.
 
         '
   - name: quantity
@@ -6245,6 +6383,23 @@ fields:
         this scalar indicates whether the DXGI color space with index ''N'' is available
         on at least one connected monitor. This metric was generated to correspond
         to the Legacy Telemetry scalar gfx.hdr.windows_display_colorspace_bitfield.
+
+        '
+    - name: networking_https_rr_prefs_usage
+      type: INTEGER
+      mode: NULLABLE
+      description: 'A bitfield representation for the usage of HTTPS RR prefs. bit
+        0: network.dns.upgrade_with_https_rr is enabled or not. bit 1: network.dns.use_https_rr_as_altsvc
+        is enabled or not. bit 2: network.dns.echconfig.enabled is enabled or not.
+        This metric was generated to correspond to the Legacy Telemetry scalar networking.https_rr_prefs_usage.
+
+        '
+    - name: pwmgr_potentially_breached_passwords
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of potentially breached passwords, as determined by
+        LoginBreaches.getPotentialBreachesByLoginGUID. This metric was generated to
+        correspond to the Legacy Telemetry scalar pwmgr.potentially_breached_passwords.
 
         '
   - name: string
@@ -15320,6 +15475,951 @@ fields:
         db until the first cookie request came in (0 implies we blocked the main thread)
 
         '
+    - name: network_cache_read_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'In the HTTP page channel, time from connection cache read start
+        to cache read end. Corresponds to Legacy histogram HTTP_PAGE_CACHE_READ_TIME_V2
+        in Desktop.
+
+        '
+    - name: network_complete_load
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'In the HTTP page channel, time from connection open to complete
+        load (cache read end/until the last byte received) Corresponds to Legacy histogram
+        HTTP_PAGE_COMPLETE_LOAD_V2 in Desktop.
+
+        '
+    - name: network_complete_load_cached
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'In the HTTP page channel, time from connection open to cache read
+        end. Corresponds to Legacy histogram HTTP_PAGE_COMPLETE_LOAD_CACHED_V2 in
+        Desktop.
+
+        '
+    - name: network_complete_load_net
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'In the HTTP page channel, time from connection open to the last
+        byte received. Corresponds to Legacy histogram HTTP_PAGE_COMPLETE_LOAD_NET_V2
+        in Desktop.
+
+        '
+    - name: network_first_sent_to_last_received
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'In the HTTP page channel, time from first byte of request sent
+        to the last byte received. Corresponds to Legacy histogram HTTP_PAGE_FIRST_SENT_TO_LAST_RECEIVED
+        in Desktop. (Migrated from the geckoview metric of the same name).
+
+        '
+    - name: network_http_revalidation
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'In the HTTP page channel, time for positive cache validation Corresponds
+        to Legacy histogram HTTP_PAGE_REVALIDATION in Desktop.
+
+        '
+    - name: network_open_to_first_received
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'In the HTTP subitem channel,time from connection open to the first
+        byte received. Corresponds to Legacy histogram HTTP_PAGE_OPEN_TO_FIRST_RECEIVED
+        in Desktop. (Migrated from the geckoview metric of the same name).
+
+        '
+    - name: network_open_to_first_sent
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'In the HTTP page channel, time from connection open to the first
+        byte of requst sent. Corresponds to Legacy histogram HTTP_PAGE_OPEN_TO_FIRST_SENT
+        in Desktop. (Migrated from the geckoview metric of the same name).
+
+        '
+    - name: network_sub_cache_read_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'In the HTTP subitem channel, time from connection cache read start
+        to cache read end. Corresponds to Legacy histogram HTTP_SUB_CACHE_READ_TIME_V2
+        in Desktop.
+
+        '
+    - name: network_sub_complete_load
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'In the HTTP subitem channel, time from connection open to complete
+        load (cache read end/until the last byte received) Corresponds to Legacy histogram
+        HTTP_SUB_COMPLETE_LOAD_V2 in Desktop.
+
+        '
+    - name: network_sub_complete_load_cached
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'In the HTTP subitem channel, time from connection open to cache
+        read end. Corresponds to Legacy histogram HTTP_SUB_COMPLETE_LOAD_CACHED_V2
+        in Desktop.
+
+        '
+    - name: network_sub_complete_load_net
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'In the HTTP subitem channel, time from connection open to the
+        last byte received. Corresponds to Legacy histogram HTTP_SUB_COMPLETE_LOAD_NET_V2
+        in Desktop.
+
+        '
+    - name: network_sub_dns_end
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'In the HTTP subitem channel, time from the DNS request being issued
+        to the response. Corresponds to Legacy histogram HTTP_SUB_DNS_LOOKUP_TIME
+        in Desktop. (Migrated from the geckoview metric of the same name).
+
+        '
+    - name: network_sub_dns_start
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'In the HTTP subitem channel, time from connection open to the
+        DNS request being issued. Corresponds to Legacy histogram HTTP_SUB_DNS_ISSUE_TIME
+        in Desktop. (Migrated from the geckoview metric of the same name).
+
+        '
+    - name: network_sub_first_from_cache
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'In the HTTP subitem channel, time from connection open to cache
+        read start. Corresponds to Legacy histogram HTTP_SUB_OPEN_TO_FIRST_FROM_CACHE_V2
+        in Desktop.
+
+        '
+    - name: network_sub_first_sent_to_last_received
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'In the HTTP subitem channel, time from first byte of request sent
+        to the last byte received. Corresponds to Legacy histogram HTTP_SUB_FIRST_SENT_TO_LAST_RECEIVED
+        in Desktop. (Migrated from the geckoview metric of the same name).
+
+        '
+    - name: network_sub_http_revalidation
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'In the HTTP subitem channel, time for positive cache validation
+        Corresponds to Legacy histogram HTTP_SUB_REVALIDATION in Desktop.
+
+        '
+    - name: network_sub_open_to_first_received
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'In the HTTP subitem channel, time from connection open to the
+        first byte received. Corresponds to Legacy histogram HTTP_SUB_OPEN_TO_FIRST_RECEIVED
+        in Desktop. (Migrated from the geckoview metric of the same name).
+
+        '
+    - name: network_sub_open_to_first_sent
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'In the HTTP subitem channel, time from connection open to the
+        first byte of requst sent. Corresponds to Legacy histogram HTTP_SUB_OPEN_TO_FIRST_SENT
+        in Desktop. (Migrated from the geckoview metric of the same name).
+
+        '
+    - name: network_sub_tcp_connection
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'In the HTTP subitem channel, time from the TCP SYN packet is received
+        to the connection is established and ready for HTTP. Corresponds to Legacy
+        histogram HTTP_SUB_TCP_CONNECTION_2 in Desktop (Migrated from the geckoview
+        metric of the same name).
+
+        '
+    - name: network_sub_tls_handshake
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'In the HTTP subitem channel, time from after the TCP SYN packet
+        is received to the secure connection is established and ready for HTTP. Corresponds
+        to Legacy histogram HTTP_SUB_TLS_HANDSHAKE in Desktop. (Migrated from the
+        geckoview metric of the same name).
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -15918,6 +17018,36 @@ fields:
         the Adjust SDK.
 
         '
+    - name: networking_loading_certs_task
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The time in milliseconds to load any external certificates. This
+        occurs off of the main-thread, but can block main-thread operations. This
+        metric was generated to correspond to the Legacy Telemetry scalar networking.loading_certs_task.
+
+        '
+    - name: networking_nss_initialization
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The time in milliseconds to initialize the NSS component in the
+        parent process. This metric was generated to correspond to the Legacy Telemetry
+        scalar networking.nss_initialization.
+
+        '
   - name: url2
     type: RECORD
     mode: NULLABLE
@@ -16041,6 +17171,37 @@ fields:
         result is split into keys which represent the values of browser.display.document_color_use:
         "default", "always", or "never". This metric was generated to correspond to
         the Legacy Telemetry scalar a11y.theme.
+
+        '
+    - name: media_video_hardware_decoding_support
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: BOOLEAN
+        mode: NULLABLE
+      description: 'Record whether hardware decoding is supported for the specific
+        video codec. The key is the type of video codec, eg. video/vp9. This metric
+        was generated to correspond to the Legacy Telemetry scalar media.video_hardware_decoding_support.
+
+        '
+    - name: media_video_hd_hardware_decoding_support
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: BOOLEAN
+        mode: NULLABLE
+      description: 'Record whether hardware decoding is supported for the specific
+        video codec, this only records video in HD (1280*720) or higher resultion.
+        The key is the type of video codec, eg. video/vp9. This metric was generated
+        to correspond to the Legacy Telemetry scalar media.video_hd_hardware_decoding_support.
 
         '
   - name: rate

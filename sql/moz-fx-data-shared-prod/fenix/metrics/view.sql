@@ -86,7 +86,9 @@ SELECT
       metrics.boolean.gfx_os_compositor,
       metrics.boolean.gfx_supports_hdr,
       metrics.boolean.gfx_tmp_writable,
-      metrics.boolean.preferences_prefs_file_was_invalid
+      metrics.boolean.preferences_prefs_file_was_invalid,
+      metrics.boolean.networking_http3_enabled,
+      metrics.boolean.os_environment_is_admin_without_uac
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -204,7 +206,10 @@ SELECT
       metrics.counter.findbar_match_diacritics,
       metrics.counter.findbar_shown,
       metrics.counter.findbar_whole_words,
-      metrics.counter.gfx_skipped_composites
+      metrics.counter.gfx_skipped_composites,
+      metrics.counter.media_element_in_page_count,
+      metrics.counter.opaque_response_blocking_cross_origin_opaque_response_count,
+      metrics.counter.opaque_response_blocking_javascript_validation_count
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -452,7 +457,13 @@ SELECT
       metrics.labeled_counter.web_notification_permission_origin,
       metrics.labeled_counter.web_notification_request_permission_origin,
       metrics.labeled_counter.web_notification_show_origin,
-      metrics.labeled_counter.networking_http_ip_addr_any_count
+      metrics.labeled_counter.networking_http_ip_addr_any_count,
+      metrics.labeled_counter.media_decode_error_per_mime_type,
+      metrics.labeled_counter.networking_data_transferred_v3_kb,
+      metrics.labeled_counter.networking_trr_connection_cycle_count,
+      metrics.labeled_counter.webrtc_video_recv_codec_used,
+      metrics.labeled_counter.webrtc_video_send_codec_used,
+      metrics.labeled_counter.security_client_auth_cert_usage
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -484,7 +495,9 @@ SELECT
       metrics.quantity.pkcs11_third_party_modules_loaded,
       metrics.quantity.a11y_hcm_background,
       metrics.quantity.a11y_hcm_foreground,
-      metrics.quantity.gfx_hdr_windows_display_colorspace_bitfield
+      metrics.quantity.gfx_hdr_windows_display_colorspace_bitfield,
+      metrics.quantity.networking_https_rr_prefs_usage,
+      metrics.quantity.pwmgr_potentially_breached_passwords
     ) AS `quantity`,
     STRUCT(
       metrics.string.experiments_metrics_active_experiment,
@@ -753,7 +766,28 @@ SELECT
       metrics.timing_distribution.ls_preparedatastore_processing_time,
       metrics.timing_distribution.ls_preparelsdatabase_processing_time,
       metrics.timing_distribution.networking_sqlite_cookies_block_main_thread,
-      metrics.timing_distribution.networking_sqlite_cookies_time_to_block_main_thread
+      metrics.timing_distribution.networking_sqlite_cookies_time_to_block_main_thread,
+      metrics.timing_distribution.network_cache_read_time,
+      metrics.timing_distribution.network_complete_load,
+      metrics.timing_distribution.network_complete_load_cached,
+      metrics.timing_distribution.network_complete_load_net,
+      metrics.timing_distribution.network_first_sent_to_last_received,
+      metrics.timing_distribution.network_http_revalidation,
+      metrics.timing_distribution.network_open_to_first_received,
+      metrics.timing_distribution.network_open_to_first_sent,
+      metrics.timing_distribution.network_sub_cache_read_time,
+      metrics.timing_distribution.network_sub_complete_load,
+      metrics.timing_distribution.network_sub_complete_load_cached,
+      metrics.timing_distribution.network_sub_complete_load_net,
+      metrics.timing_distribution.network_sub_dns_end,
+      metrics.timing_distribution.network_sub_dns_start,
+      metrics.timing_distribution.network_sub_first_from_cache,
+      metrics.timing_distribution.network_sub_first_sent_to_last_received,
+      metrics.timing_distribution.network_sub_http_revalidation,
+      metrics.timing_distribution.network_sub_open_to_first_received,
+      metrics.timing_distribution.network_sub_open_to_first_sent,
+      metrics.timing_distribution.network_sub_tcp_connection,
+      metrics.timing_distribution.network_sub_tls_handshake
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -794,7 +828,9 @@ SELECT
       metrics.timespan.fog_initialization,
       metrics.timespan.extensions_startup_cache_load_time,
       metrics.timespan.play_store_attribution_deferred_deeplink_time,
-      metrics.timespan.first_session_adjust_attribution_timespan
+      metrics.timespan.first_session_adjust_attribution_timespan,
+      metrics.timespan.networking_loading_certs_task,
+      metrics.timespan.networking_nss_initialization
     ) AS `timespan`,
     STRUCT(metrics.url2.search_default_engine_search_url) AS `url2`,
     STRUCT(
@@ -805,7 +841,9 @@ SELECT
       metrics.labeled_boolean.media_playback_device_hardware_decoder_support,
       metrics.labeled_boolean.geolocation_linux_provider,
       metrics.labeled_boolean.pdfjs_image_alt_text_edit,
-      metrics.labeled_boolean.a11y_theme
+      metrics.labeled_boolean.a11y_theme,
+      metrics.labeled_boolean.media_video_hardware_decoding_support,
+      metrics.labeled_boolean.media_video_hd_hardware_decoding_support
     ) AS `labeled_boolean`,
     STRUCT(
       metrics.rate.rtcrtpsender_setparameters_fail_length_changed,
@@ -955,7 +993,9 @@ SELECT
       metrics.boolean.gfx_os_compositor,
       metrics.boolean.gfx_supports_hdr,
       metrics.boolean.gfx_tmp_writable,
-      metrics.boolean.preferences_prefs_file_was_invalid
+      metrics.boolean.preferences_prefs_file_was_invalid,
+      metrics.boolean.networking_http3_enabled,
+      metrics.boolean.os_environment_is_admin_without_uac
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -1073,7 +1113,10 @@ SELECT
       metrics.counter.findbar_match_diacritics,
       metrics.counter.findbar_shown,
       metrics.counter.findbar_whole_words,
-      metrics.counter.gfx_skipped_composites
+      metrics.counter.gfx_skipped_composites,
+      metrics.counter.media_element_in_page_count,
+      metrics.counter.opaque_response_blocking_cross_origin_opaque_response_count,
+      metrics.counter.opaque_response_blocking_javascript_validation_count
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -1321,7 +1364,13 @@ SELECT
       metrics.labeled_counter.web_notification_permission_origin,
       metrics.labeled_counter.web_notification_request_permission_origin,
       metrics.labeled_counter.web_notification_show_origin,
-      metrics.labeled_counter.networking_http_ip_addr_any_count
+      metrics.labeled_counter.networking_http_ip_addr_any_count,
+      metrics.labeled_counter.media_decode_error_per_mime_type,
+      metrics.labeled_counter.networking_data_transferred_v3_kb,
+      metrics.labeled_counter.networking_trr_connection_cycle_count,
+      metrics.labeled_counter.webrtc_video_recv_codec_used,
+      metrics.labeled_counter.webrtc_video_send_codec_used,
+      metrics.labeled_counter.security_client_auth_cert_usage
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -1353,7 +1402,9 @@ SELECT
       metrics.quantity.pkcs11_third_party_modules_loaded,
       metrics.quantity.a11y_hcm_background,
       metrics.quantity.a11y_hcm_foreground,
-      metrics.quantity.gfx_hdr_windows_display_colorspace_bitfield
+      metrics.quantity.gfx_hdr_windows_display_colorspace_bitfield,
+      metrics.quantity.networking_https_rr_prefs_usage,
+      metrics.quantity.pwmgr_potentially_breached_passwords
     ) AS `quantity`,
     STRUCT(
       metrics.string.experiments_metrics_active_experiment,
@@ -1622,7 +1673,28 @@ SELECT
       metrics.timing_distribution.ls_preparedatastore_processing_time,
       metrics.timing_distribution.ls_preparelsdatabase_processing_time,
       metrics.timing_distribution.networking_sqlite_cookies_block_main_thread,
-      metrics.timing_distribution.networking_sqlite_cookies_time_to_block_main_thread
+      metrics.timing_distribution.networking_sqlite_cookies_time_to_block_main_thread,
+      metrics.timing_distribution.network_cache_read_time,
+      metrics.timing_distribution.network_complete_load,
+      metrics.timing_distribution.network_complete_load_cached,
+      metrics.timing_distribution.network_complete_load_net,
+      metrics.timing_distribution.network_first_sent_to_last_received,
+      metrics.timing_distribution.network_http_revalidation,
+      metrics.timing_distribution.network_open_to_first_received,
+      metrics.timing_distribution.network_open_to_first_sent,
+      metrics.timing_distribution.network_sub_cache_read_time,
+      metrics.timing_distribution.network_sub_complete_load,
+      metrics.timing_distribution.network_sub_complete_load_cached,
+      metrics.timing_distribution.network_sub_complete_load_net,
+      metrics.timing_distribution.network_sub_dns_end,
+      metrics.timing_distribution.network_sub_dns_start,
+      metrics.timing_distribution.network_sub_first_from_cache,
+      metrics.timing_distribution.network_sub_first_sent_to_last_received,
+      metrics.timing_distribution.network_sub_http_revalidation,
+      metrics.timing_distribution.network_sub_open_to_first_received,
+      metrics.timing_distribution.network_sub_open_to_first_sent,
+      metrics.timing_distribution.network_sub_tcp_connection,
+      metrics.timing_distribution.network_sub_tls_handshake
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -1663,7 +1735,9 @@ SELECT
       metrics.timespan.fog_initialization,
       metrics.timespan.extensions_startup_cache_load_time,
       metrics.timespan.play_store_attribution_deferred_deeplink_time,
-      metrics.timespan.first_session_adjust_attribution_timespan
+      metrics.timespan.first_session_adjust_attribution_timespan,
+      metrics.timespan.networking_loading_certs_task,
+      metrics.timespan.networking_nss_initialization
     ) AS `timespan`,
     STRUCT(metrics.url2.search_default_engine_search_url) AS `url2`,
     STRUCT(
@@ -1674,7 +1748,9 @@ SELECT
       metrics.labeled_boolean.media_playback_device_hardware_decoder_support,
       metrics.labeled_boolean.geolocation_linux_provider,
       metrics.labeled_boolean.pdfjs_image_alt_text_edit,
-      metrics.labeled_boolean.a11y_theme
+      metrics.labeled_boolean.a11y_theme,
+      metrics.labeled_boolean.media_video_hardware_decoding_support,
+      metrics.labeled_boolean.media_video_hd_hardware_decoding_support
     ) AS `labeled_boolean`,
     STRUCT(
       metrics.rate.rtcrtpsender_setparameters_fail_length_changed,
@@ -1842,7 +1918,9 @@ SELECT
       metrics.boolean.gfx_os_compositor,
       metrics.boolean.gfx_supports_hdr,
       metrics.boolean.gfx_tmp_writable,
-      metrics.boolean.preferences_prefs_file_was_invalid
+      metrics.boolean.preferences_prefs_file_was_invalid,
+      metrics.boolean.networking_http3_enabled,
+      metrics.boolean.os_environment_is_admin_without_uac
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -1960,7 +2038,10 @@ SELECT
       metrics.counter.findbar_match_diacritics,
       metrics.counter.findbar_shown,
       metrics.counter.findbar_whole_words,
-      metrics.counter.gfx_skipped_composites
+      metrics.counter.gfx_skipped_composites,
+      metrics.counter.media_element_in_page_count,
+      metrics.counter.opaque_response_blocking_cross_origin_opaque_response_count,
+      metrics.counter.opaque_response_blocking_javascript_validation_count
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -2208,7 +2289,13 @@ SELECT
       metrics.labeled_counter.web_notification_permission_origin,
       metrics.labeled_counter.web_notification_request_permission_origin,
       metrics.labeled_counter.web_notification_show_origin,
-      metrics.labeled_counter.networking_http_ip_addr_any_count
+      metrics.labeled_counter.networking_http_ip_addr_any_count,
+      metrics.labeled_counter.media_decode_error_per_mime_type,
+      metrics.labeled_counter.networking_data_transferred_v3_kb,
+      metrics.labeled_counter.networking_trr_connection_cycle_count,
+      metrics.labeled_counter.webrtc_video_recv_codec_used,
+      metrics.labeled_counter.webrtc_video_send_codec_used,
+      metrics.labeled_counter.security_client_auth_cert_usage
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -2240,7 +2327,9 @@ SELECT
       metrics.quantity.pkcs11_third_party_modules_loaded,
       metrics.quantity.a11y_hcm_background,
       metrics.quantity.a11y_hcm_foreground,
-      metrics.quantity.gfx_hdr_windows_display_colorspace_bitfield
+      metrics.quantity.gfx_hdr_windows_display_colorspace_bitfield,
+      metrics.quantity.networking_https_rr_prefs_usage,
+      metrics.quantity.pwmgr_potentially_breached_passwords
     ) AS `quantity`,
     STRUCT(
       metrics.string.experiments_metrics_active_experiment,
@@ -2509,7 +2598,28 @@ SELECT
       metrics.timing_distribution.ls_preparedatastore_processing_time,
       metrics.timing_distribution.ls_preparelsdatabase_processing_time,
       metrics.timing_distribution.networking_sqlite_cookies_block_main_thread,
-      metrics.timing_distribution.networking_sqlite_cookies_time_to_block_main_thread
+      metrics.timing_distribution.networking_sqlite_cookies_time_to_block_main_thread,
+      metrics.timing_distribution.network_cache_read_time,
+      metrics.timing_distribution.network_complete_load,
+      metrics.timing_distribution.network_complete_load_cached,
+      metrics.timing_distribution.network_complete_load_net,
+      metrics.timing_distribution.network_first_sent_to_last_received,
+      metrics.timing_distribution.network_http_revalidation,
+      metrics.timing_distribution.network_open_to_first_received,
+      metrics.timing_distribution.network_open_to_first_sent,
+      metrics.timing_distribution.network_sub_cache_read_time,
+      metrics.timing_distribution.network_sub_complete_load,
+      metrics.timing_distribution.network_sub_complete_load_cached,
+      metrics.timing_distribution.network_sub_complete_load_net,
+      metrics.timing_distribution.network_sub_dns_end,
+      metrics.timing_distribution.network_sub_dns_start,
+      metrics.timing_distribution.network_sub_first_from_cache,
+      metrics.timing_distribution.network_sub_first_sent_to_last_received,
+      metrics.timing_distribution.network_sub_http_revalidation,
+      metrics.timing_distribution.network_sub_open_to_first_received,
+      metrics.timing_distribution.network_sub_open_to_first_sent,
+      metrics.timing_distribution.network_sub_tcp_connection,
+      metrics.timing_distribution.network_sub_tls_handshake
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -2550,7 +2660,9 @@ SELECT
       metrics.timespan.fog_initialization,
       metrics.timespan.extensions_startup_cache_load_time,
       metrics.timespan.play_store_attribution_deferred_deeplink_time,
-      metrics.timespan.first_session_adjust_attribution_timespan
+      metrics.timespan.first_session_adjust_attribution_timespan,
+      metrics.timespan.networking_loading_certs_task,
+      metrics.timespan.networking_nss_initialization
     ) AS `timespan`,
     STRUCT(metrics.url2.search_default_engine_search_url) AS `url2`,
     STRUCT(
@@ -2561,7 +2673,9 @@ SELECT
       metrics.labeled_boolean.media_playback_device_hardware_decoder_support,
       metrics.labeled_boolean.geolocation_linux_provider,
       metrics.labeled_boolean.pdfjs_image_alt_text_edit,
-      metrics.labeled_boolean.a11y_theme
+      metrics.labeled_boolean.a11y_theme,
+      metrics.labeled_boolean.media_video_hardware_decoding_support,
+      metrics.labeled_boolean.media_video_hd_hardware_decoding_support
     ) AS `labeled_boolean`,
     STRUCT(
       metrics.rate.rtcrtpsender_setparameters_fail_length_changed,
@@ -2738,7 +2852,9 @@ SELECT
       metrics.boolean.gfx_os_compositor,
       metrics.boolean.gfx_supports_hdr,
       metrics.boolean.gfx_tmp_writable,
-      metrics.boolean.preferences_prefs_file_was_invalid
+      metrics.boolean.preferences_prefs_file_was_invalid,
+      metrics.boolean.networking_http3_enabled,
+      metrics.boolean.os_environment_is_admin_without_uac
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -2856,7 +2972,10 @@ SELECT
       metrics.counter.findbar_match_diacritics,
       metrics.counter.findbar_shown,
       metrics.counter.findbar_whole_words,
-      metrics.counter.gfx_skipped_composites
+      metrics.counter.gfx_skipped_composites,
+      metrics.counter.media_element_in_page_count,
+      metrics.counter.opaque_response_blocking_cross_origin_opaque_response_count,
+      metrics.counter.opaque_response_blocking_javascript_validation_count
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -3104,7 +3223,13 @@ SELECT
       metrics.labeled_counter.web_notification_permission_origin,
       metrics.labeled_counter.web_notification_request_permission_origin,
       metrics.labeled_counter.web_notification_show_origin,
-      metrics.labeled_counter.networking_http_ip_addr_any_count
+      metrics.labeled_counter.networking_http_ip_addr_any_count,
+      metrics.labeled_counter.media_decode_error_per_mime_type,
+      metrics.labeled_counter.networking_data_transferred_v3_kb,
+      metrics.labeled_counter.networking_trr_connection_cycle_count,
+      metrics.labeled_counter.webrtc_video_recv_codec_used,
+      metrics.labeled_counter.webrtc_video_send_codec_used,
+      metrics.labeled_counter.security_client_auth_cert_usage
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -3136,7 +3261,9 @@ SELECT
       metrics.quantity.pkcs11_third_party_modules_loaded,
       metrics.quantity.a11y_hcm_background,
       metrics.quantity.a11y_hcm_foreground,
-      metrics.quantity.gfx_hdr_windows_display_colorspace_bitfield
+      metrics.quantity.gfx_hdr_windows_display_colorspace_bitfield,
+      metrics.quantity.networking_https_rr_prefs_usage,
+      metrics.quantity.pwmgr_potentially_breached_passwords
     ) AS `quantity`,
     STRUCT(
       metrics.string.experiments_metrics_active_experiment,
@@ -3405,7 +3532,28 @@ SELECT
       metrics.timing_distribution.ls_preparedatastore_processing_time,
       metrics.timing_distribution.ls_preparelsdatabase_processing_time,
       metrics.timing_distribution.networking_sqlite_cookies_block_main_thread,
-      metrics.timing_distribution.networking_sqlite_cookies_time_to_block_main_thread
+      metrics.timing_distribution.networking_sqlite_cookies_time_to_block_main_thread,
+      metrics.timing_distribution.network_cache_read_time,
+      metrics.timing_distribution.network_complete_load,
+      metrics.timing_distribution.network_complete_load_cached,
+      metrics.timing_distribution.network_complete_load_net,
+      metrics.timing_distribution.network_first_sent_to_last_received,
+      metrics.timing_distribution.network_http_revalidation,
+      metrics.timing_distribution.network_open_to_first_received,
+      metrics.timing_distribution.network_open_to_first_sent,
+      metrics.timing_distribution.network_sub_cache_read_time,
+      metrics.timing_distribution.network_sub_complete_load,
+      metrics.timing_distribution.network_sub_complete_load_cached,
+      metrics.timing_distribution.network_sub_complete_load_net,
+      metrics.timing_distribution.network_sub_dns_end,
+      metrics.timing_distribution.network_sub_dns_start,
+      metrics.timing_distribution.network_sub_first_from_cache,
+      metrics.timing_distribution.network_sub_first_sent_to_last_received,
+      metrics.timing_distribution.network_sub_http_revalidation,
+      metrics.timing_distribution.network_sub_open_to_first_received,
+      metrics.timing_distribution.network_sub_open_to_first_sent,
+      metrics.timing_distribution.network_sub_tcp_connection,
+      metrics.timing_distribution.network_sub_tls_handshake
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -3446,7 +3594,9 @@ SELECT
       metrics.timespan.fog_initialization,
       metrics.timespan.extensions_startup_cache_load_time,
       metrics.timespan.play_store_attribution_deferred_deeplink_time,
-      metrics.timespan.first_session_adjust_attribution_timespan
+      metrics.timespan.first_session_adjust_attribution_timespan,
+      metrics.timespan.networking_loading_certs_task,
+      metrics.timespan.networking_nss_initialization
     ) AS `timespan`,
     STRUCT(metrics.url2.search_default_engine_search_url) AS `url2`,
     STRUCT(
@@ -3457,7 +3607,9 @@ SELECT
       metrics.labeled_boolean.media_playback_device_hardware_decoder_support,
       metrics.labeled_boolean.geolocation_linux_provider,
       metrics.labeled_boolean.pdfjs_image_alt_text_edit,
-      metrics.labeled_boolean.a11y_theme
+      metrics.labeled_boolean.a11y_theme,
+      metrics.labeled_boolean.media_video_hardware_decoding_support,
+      metrics.labeled_boolean.media_video_hd_hardware_decoding_support
     ) AS `labeled_boolean`,
     STRUCT(
       metrics.rate.rtcrtpsender_setparameters_fail_length_changed,
@@ -3616,7 +3768,9 @@ SELECT
       metrics.boolean.gfx_os_compositor,
       metrics.boolean.gfx_supports_hdr,
       metrics.boolean.gfx_tmp_writable,
-      metrics.boolean.preferences_prefs_file_was_invalid
+      metrics.boolean.preferences_prefs_file_was_invalid,
+      metrics.boolean.networking_http3_enabled,
+      metrics.boolean.os_environment_is_admin_without_uac
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -3734,7 +3888,10 @@ SELECT
       metrics.counter.findbar_match_diacritics,
       metrics.counter.findbar_shown,
       metrics.counter.findbar_whole_words,
-      metrics.counter.gfx_skipped_composites
+      metrics.counter.gfx_skipped_composites,
+      metrics.counter.media_element_in_page_count,
+      metrics.counter.opaque_response_blocking_cross_origin_opaque_response_count,
+      metrics.counter.opaque_response_blocking_javascript_validation_count
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -3982,7 +4139,13 @@ SELECT
       metrics.labeled_counter.web_notification_permission_origin,
       metrics.labeled_counter.web_notification_request_permission_origin,
       metrics.labeled_counter.web_notification_show_origin,
-      metrics.labeled_counter.networking_http_ip_addr_any_count
+      metrics.labeled_counter.networking_http_ip_addr_any_count,
+      metrics.labeled_counter.media_decode_error_per_mime_type,
+      metrics.labeled_counter.networking_data_transferred_v3_kb,
+      metrics.labeled_counter.networking_trr_connection_cycle_count,
+      metrics.labeled_counter.webrtc_video_recv_codec_used,
+      metrics.labeled_counter.webrtc_video_send_codec_used,
+      metrics.labeled_counter.security_client_auth_cert_usage
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -4014,7 +4177,9 @@ SELECT
       metrics.quantity.pkcs11_third_party_modules_loaded,
       metrics.quantity.a11y_hcm_background,
       metrics.quantity.a11y_hcm_foreground,
-      metrics.quantity.gfx_hdr_windows_display_colorspace_bitfield
+      metrics.quantity.gfx_hdr_windows_display_colorspace_bitfield,
+      metrics.quantity.networking_https_rr_prefs_usage,
+      metrics.quantity.pwmgr_potentially_breached_passwords
     ) AS `quantity`,
     STRUCT(
       metrics.string.experiments_metrics_active_experiment,
@@ -4283,7 +4448,28 @@ SELECT
       metrics.timing_distribution.ls_preparedatastore_processing_time,
       metrics.timing_distribution.ls_preparelsdatabase_processing_time,
       metrics.timing_distribution.networking_sqlite_cookies_block_main_thread,
-      metrics.timing_distribution.networking_sqlite_cookies_time_to_block_main_thread
+      metrics.timing_distribution.networking_sqlite_cookies_time_to_block_main_thread,
+      metrics.timing_distribution.network_cache_read_time,
+      metrics.timing_distribution.network_complete_load,
+      metrics.timing_distribution.network_complete_load_cached,
+      metrics.timing_distribution.network_complete_load_net,
+      metrics.timing_distribution.network_first_sent_to_last_received,
+      metrics.timing_distribution.network_http_revalidation,
+      metrics.timing_distribution.network_open_to_first_received,
+      metrics.timing_distribution.network_open_to_first_sent,
+      metrics.timing_distribution.network_sub_cache_read_time,
+      metrics.timing_distribution.network_sub_complete_load,
+      metrics.timing_distribution.network_sub_complete_load_cached,
+      metrics.timing_distribution.network_sub_complete_load_net,
+      metrics.timing_distribution.network_sub_dns_end,
+      metrics.timing_distribution.network_sub_dns_start,
+      metrics.timing_distribution.network_sub_first_from_cache,
+      metrics.timing_distribution.network_sub_first_sent_to_last_received,
+      metrics.timing_distribution.network_sub_http_revalidation,
+      metrics.timing_distribution.network_sub_open_to_first_received,
+      metrics.timing_distribution.network_sub_open_to_first_sent,
+      metrics.timing_distribution.network_sub_tcp_connection,
+      metrics.timing_distribution.network_sub_tls_handshake
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -4324,7 +4510,9 @@ SELECT
       metrics.timespan.fog_initialization,
       metrics.timespan.extensions_startup_cache_load_time,
       metrics.timespan.play_store_attribution_deferred_deeplink_time,
-      metrics.timespan.first_session_adjust_attribution_timespan
+      metrics.timespan.first_session_adjust_attribution_timespan,
+      metrics.timespan.networking_loading_certs_task,
+      metrics.timespan.networking_nss_initialization
     ) AS `timespan`,
     STRUCT(metrics.url2.search_default_engine_search_url) AS `url2`,
     STRUCT(
@@ -4335,7 +4523,9 @@ SELECT
       metrics.labeled_boolean.media_playback_device_hardware_decoder_support,
       metrics.labeled_boolean.geolocation_linux_provider,
       metrics.labeled_boolean.pdfjs_image_alt_text_edit,
-      metrics.labeled_boolean.a11y_theme
+      metrics.labeled_boolean.a11y_theme,
+      metrics.labeled_boolean.media_video_hardware_decoding_support,
+      metrics.labeled_boolean.media_video_hd_hardware_decoding_support
     ) AS `labeled_boolean`,
     STRUCT(
       metrics.rate.rtcrtpsender_setparameters_fail_length_changed,

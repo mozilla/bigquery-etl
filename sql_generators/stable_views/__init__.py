@@ -28,7 +28,10 @@ CREATE OR REPLACE VIEW
 AS
 SELECT
   * REPLACE(
-    {replacements})
+    {replacements}),
+  mozfun.norm.extract_version(client_info.app_display_version, 'major') as app_version_major,
+  mozfun.norm.extract_version(client_info.app_display_version, 'minor') as app_version_minor,
+  mozfun.norm.extract_version(client_info.app_display_version, 'patch') as app_version_patch
 FROM
   `{target}`
 """
@@ -49,7 +52,10 @@ SELECT
         distribution_id
     ) AS funnel_derived,
   `moz-fx-data-shared-prod`.udf.distribution_model_installs(distribution_id) AS distribution_model,
-  `moz-fx-data-shared-prod`.udf.partner_org_installs(distribution_id) AS partner_org
+  `moz-fx-data-shared-prod`.udf.partner_org_installs(distribution_id) AS partner_org,
+  mozfun.norm.extract_version(client_info.app_display_version, 'major') as app_version_major,
+  mozfun.norm.extract_version(client_info.app_display_version, 'minor') as app_version_minor,
+  mozfun.norm.extract_version(client_info.app_display_version, 'patch') as app_version_patch,
 FROM
   `{target}`
 """

@@ -2,8 +2,8 @@
 --   "name": "Fenix releases version format",
 --   "alert_conditions": "value",
 --   "range": {
---     "min": 2,
---     "max": 10
+--     "min": 0,
+--     "max": 1
 --   },
 --   "collections": ["Test"],
 --   "owner": "",
@@ -11,14 +11,15 @@
 -- }
 SELECT
   ROUND((COUNTIF(NOT REGEXP_CONTAINS(version, r"^[0-9]+\..+$"))) / COUNT(*) * 100, 2) AS perc
-FROM {{ project_id }}.{{ dataset_id }}.{{ table_name }};
+FROM
+  `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`;
 
 -- {
 --   "name": "Fenix releases product check",
 --   "alert_conditions": "value",
 --   "range": {
---     "min": 2,
---     "max": 10
+--     "min": 0,
+--     "max": 1
 --   },
 --   "collections": ["Test"],
 --   "owner": "",
@@ -26,5 +27,5 @@ FROM {{ project_id }}.{{ dataset_id }}.{{ table_name }};
 -- }
 SELECT
   ROUND((COUNTIF(product != "fenix")) / COUNT(*) * 100, 2) AS perc
-FROM {{ project_id }}.{{ dataset_id }}.{{ table_name }};
-
+FROM
+  `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`;

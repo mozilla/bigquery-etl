@@ -157,7 +157,7 @@ def deploy(
 
 
 def _sql_rules_from_file(custom_rules_file, project, dataset, table) -> list:
-    """Extracts the SQL rules from the custom rules file."""
+    """Extract the SQL rules from the custom rules file."""
     jinja_params = {
         **{
             "dataset_id": dataset,

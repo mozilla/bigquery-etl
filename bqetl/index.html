@@ -1221,7 +1221,16 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Commands">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#autocomplete" class="md-nav__link">
+    <span class="md-ellipsis">
+      Autocomplete
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Autocomplete">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1893,7 +1902,16 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Commands">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#autocomplete" class="md-nav__link">
+    <span class="md-ellipsis">
+      Autocomplete
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Autocomplete">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -2382,6 +2400,24 @@ Commands:
 <div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span><span class="o">[</span>command<span class="o">]</span><span class="w"> </span>--help
 </code></pre></div>
 <!--- Documentation for comments is generated via ./bqetl docs generate -->
+
+<h2 id="autocomplete">Autocomplete</h2>
+<p>CLI autocomplete for <code>bqetl</code> can be enabled for bash and zsh shells using the <code>script/bqetl_complete</code> script:</p>
+<div class="highlight"><pre><span></span><code><span class="nb">source</span><span class="w"> </span>script/bqetl_complete
+</code></pre></div>
+<p>Then pressing tab after <code>bqetl</code> commands should print possible commands, e.g. for zsh:
+<div class="highlight"><pre><span></span><code>%<span class="w"> </span>bqetl<span class="w"> </span>query&lt;TAB&gt;&lt;TAB&gt;
+backfill<span class="w">       </span>--<span class="w"> </span>Run<span class="w"> </span>a<span class="w"> </span>backfill<span class="w"> </span><span class="k">for</span><span class="w"> </span>a<span class="w"> </span>query.
+create<span class="w">         </span>--<span class="w"> </span>Create<span class="w"> </span>a<span class="w"> </span>new<span class="w"> </span>query<span class="w"> </span>with<span class="w"> </span>name...
+info<span class="w">           </span>--<span class="w"> </span>Get<span class="w"> </span>information<span class="w"> </span>about<span class="w"> </span>all<span class="w"> </span>or<span class="w"> </span>specific...
+initialize<span class="w">     </span>--<span class="w"> </span>Run<span class="w"> </span>a<span class="w"> </span>full<span class="w"> </span>backfill<span class="w"> </span>on<span class="w"> </span>the<span class="w"> </span>destination...
+render<span class="w">         </span>--<span class="w"> </span>Render<span class="w"> </span>a<span class="w"> </span>query<span class="w"> </span>Jinja<span class="w"> </span>template.
+run<span class="w">            </span>--<span class="w"> </span>Run<span class="w"> </span>a<span class="w"> </span>query.
+...
+</code></pre></div></p>
+<p><code>source script/bqetl_complete</code> can also be added to <code>~/.bashrc</code> or <code>~/.zshrc</code> to persist settings
+across shell instances.</p>
+<p>For more details on shell completion, see the <a href="https://click.palletsprojects.com/en/8.1.x/shell-completion/">click documentation</a>.</p>
 <h3 id="query"><code>query</code></h3>
 <p>Commands for managing queries.</p>
 <h4 id="create"><code>create</code></h4>

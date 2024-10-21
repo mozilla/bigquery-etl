@@ -1,5 +1,6 @@
 """bigquery-etl CLI monitoring command."""
 
+import ast
 import json
 import os
 import sys
@@ -7,6 +8,7 @@ from pathlib import Path
 from typing import Optional
 
 import click
+import sqlglot
 from bigeye_sdk.authentication.api_authentication import APIKeyAuth
 from bigeye_sdk.client.datawatch_client import datawatch_client_factory
 from bigeye_sdk.client.enum import Method
@@ -35,8 +37,10 @@ from bigquery_etl.metadata.parse_metadata import METADATA_FILE, Metadata
 
 from ..cli.utils import paths_matching_name_pattern, project_id_option, sql_dir_option
 from ..util import extract_from_query_path
+from ..util.common import render as render_template
 
 BIGCONFIG_FILE = "bigconfig.yml"
+CUSTOM_RULES_FILE = "bigconfig_custom_rules.sql"
 VIEW_FILE = "view.sql"
 
 
@@ -126,6 +130,14 @@ def deploy(
                         project_id=project_id,
                     )
 
+                if (metadata_file.parent / CUSTOM_RULES_FILE).exists():
+                    ctx.invoke(
+                        deploy_custom_rules,
+                        name=metadata_file.parent,
+                        sql_dir=sql_dir,
+                        project_id=project_id,
+                    )
+
         except FileNotFoundError:
             print("No metadata file for: {}.{}.{}".format(project, dataset, table))
 
@@ -142,6 +154,154 @@ def deploy(
         strict_mode=True,
         auto_approve=True,
     )
+
+
+@monitoring.command(
+    help="""
+    Deploy custom SQL rules.
+    """
+)
+@click.argument("name")
+@project_id_option()
+@sql_dir_option
+@click.option(
+    "--workspace",
+    default=463,
+    help="Bigeye workspace to use when authenticating to API.",
+)
+@click.option(
+    "--base-url",
+    "--base_url",
+    default="https://app.bigeye.com",
+    help="Bigeye base URL.",
+)
+def deploy_custom_rules(
+    name: str,
+    sql_dir: Optional[str],
+    project_id: Optional[str],
+    base_url: str,
+    workspace: int,
+) -> None:
+    """Deploy custom SQL rules for files."""
+    api_key = os.environ.get("BIGEYE_API_KEY")
+    if api_key is None:
+        click.echo(
+            "Bigeye API token needs to be set via `BIGEYE_API_KEY` env variable."
+        )
+        sys.exit(1)
+
+    custom_rules_files = paths_matching_name_pattern(
+        name, sql_dir, project_id=project_id, files=[CUSTOM_RULES_FILE]
+    )
+
+    api_auth = APIKeyAuth(base_url=base_url, api_key=api_key)
+    client = datawatch_client_factory(api_auth, workspace_id=workspace)
+    collections = client.get_collections()
+    warehouse_id = ConfigLoader.get("monitoring", "bigeye_warehouse_id")
+    existing_rules = client.get_rules_for_source(warehouse_id=warehouse_id)
+    existing_rules_sql = [rule.custom_rule.sql for rule in existing_rules.custom_rules]
+    existing_schedules = {
+        schedule.name: schedule.id
+        for schedule in client.get_named_schedule().named_schedules
+    }
+    url = "/api/v1/custom-rules"
+
+    for custom_rule_file in list(set(custom_rules_files)):
+        project, dataset, table = extract_from_query_path(custom_rule_file)
+        try:
+            metadata = Metadata.from_file(custom_rule_file.parent / METADATA_FILE)
+            if metadata.monitoring and metadata.monitoring.enabled:
+                # Convert all the Airflow params to jinja usable dict.
+                jinja_params = {
+                    **{
+                        "dataset_id": dataset,
+                        "table_name": table,
+                        "project_id": project,
+                    },
+                }
+                if "format" not in jinja_params:
+                    jinja_params["format"] = False
+
+                rendered_result = render_template(
+                    custom_rule_file.name,
+                    template_folder=str(custom_rule_file.parent),
+                    templates_dir="",
+                    **jinja_params,
+                )
+
+                for statement in sqlglot.parse(rendered_result, read="bigquery"):
+                    if statement is None:
+                        continue
+
+                    for select_statement in statement.find_all(sqlglot.exp.Select):
+                        sql = select_statement.sql(dialect="bigquery")
+                        if sql in existing_rules_sql:
+                            continue
+
+                        config = {}
+                        if select_statement.comments:
+                            config = ast.literal_eval(
+                                "".join(select_statement.comments)
+                            )
+
+                        payload = {
+                            "name": config.get(
+                                "name", f"{project}_{dataset}_{table}_bqetl_check"
+                            ),
+                            "sql": sql,
+                            "warehouseId": warehouse_id,
+                            "thresholdType": "CUSTOM_RULES_THRESHOLD_TYPE_"
+                            + config.get("alert_type", "count").upper(),
+                        }
+
+                        if "range" in config:
+                            if "min" in config["range"]:
+                                payload["lowerThreshold"] = config["range"]["min"]
+                            if "max" in config["range"]:
+                                payload["upperThreshold"] = config["range"]["max"]
+
+                        if "owner" in config:
+                            payload["owner"] = {"email": config["owner"]}
+
+                        if "collections" in config:
+                            collection_ids = [
+                                collection.id
+                                for collection in collections.collections
+                                if collection.name in config["collections"]
+                            ]
+                            payload["collectionIds"] = collection_ids
+
+                        if (
+                            "schedule" in config
+                            and config["schedule"] in existing_schedules
+                        ):
+                            payload["metricSchedule"] = {
+                                "namedSchedule": {
+                                    "id": existing_schedules[config["schedule"]]
+                                }
+                            }
+
+                        try:
+                            response = client._call_datawatch(
+                                Method.POST,
+                                url=url,
+                                body=json.dumps({"customRule": payload}),
+                            )
+
+                            if "id" in response:
+                                click.echo(
+                                    f"Created custom rule {response['id']} for `{project}.{dataset}.{table}`"
+                                )
+                        except Exception as e:
+                            if "There was an error processing your request" in str(e):
+                                # API throws an error when partition column was already set.
+                                # There is no API endpoint to check for partition columns though
+                                pass
+                            else:
+                                raise e
+
+        except FileNotFoundError:
+            print("No metadata file for: {}.{}.{}".format(project, dataset, table))
 
 
 def _update_table_bigconfig(

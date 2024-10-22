@@ -306,7 +306,8 @@ def write_view_if_not_exists(target_project: str, sql_dir: Path, id_token=None, 
                           "moz-fx-data-shared-prod.firefox_accounts.amplitude_event", 
                           "moz-fx-data-shared-prod.firefox_launcher_process.launcher_process_failure", 
                           "moz-fx-data-shared-prod.webpagetest.webpagetest_run",
-                          "moz-fx-data-shared-prod.eng_workflow.build"]:
+                          "moz-fx-data-shared-prod.eng_workflow.build",
+                          "moz-fx-data-shared-prod.eng_workflow.hgpush"]:
         full_sql = reformat(
             VIEW_QUERY_TEMPLATE_NO_CLIENT_INFO.format(
                 target=full_source_id,

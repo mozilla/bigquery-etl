@@ -301,7 +301,7 @@ def write_view_if_not_exists(target_project: str, sql_dir: Path, id_token=None, 
             ),
             trailing_newline=True,
         )
-    #For the firefox_accounts.activity_flow_metrics view, use the template without client info parsing
+    #For views without app_display_version, use the template without app version parsing
     elif full_view_id in ["moz-fx-data-shared-prod.firefox_accounts.activity_flow_metrics", "moz-fx-data-shared-prod.firefox_accounts.amplitude_event", "moz-fx-data-shared-prod.firefox_launcher_process.launcher_process_failure"]:
         full_sql = reformat(
             VIEW_QUERY_TEMPLATE_NO_CLIENT_INFO.format(
@@ -311,7 +311,6 @@ def write_view_if_not_exists(target_project: str, sql_dir: Path, id_token=None, 
             ),
             trailing_newline=True,
         )
-    #For the ? v
     # For all other views, use the VIEW_QUERY_TEMPLATE
     else:
         full_sql = reformat(

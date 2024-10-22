@@ -477,16 +477,16 @@ frozenlist==1.3.3 \
     # via
     #   aiohttp
     #   aiosignal
-fsspec==2024.9.0 \
-    --hash=sha256:4b0afb90c2f21832df142f292649035d80b421f60a9e1c027802e5a0da2b04e8 \
-    --hash=sha256:a0947d552d8a6efa72cc2c730b12c41d043509156966cca4fb157b0f2a0c574b
+fsspec==2024.10.0 \
+    --hash=sha256:03b9a6785766a4de40368b88906366755e2819e758b83705c88cd7cb5fe81871 \
+    --hash=sha256:eda2d8a4116d4f2429db8550f2457da57279247dd930bb12f821b58391359493
     # via gcsfs
 gcloud==0.18.3 \
     --hash=sha256:0af2dec59fce20561752f86e42d981c6a255e306a6c5e5d1fa3d358a8857e4fb
     # via -r requirements.in
-gcsfs==2024.9.0.post1 \
-    --hash=sha256:7ca70ee9d7c7dbce1a3e36b4883e14102c2d7b4284f49e242843a437bc684684 \
-    --hash=sha256:f3ab9d3bedc45da8cf40baed7c3a1e1694e8f599160d9138d78f0ef25e4a3ca1
+gcsfs==2024.10.0 \
+    --hash=sha256:5df54cfe568e8fdeea5aafa7fed695cdc69a9a674e991ca8c1ce634f5df1d314 \
+    --hash=sha256:bb2d23547e61203ea2dda5fa6c4b91a0c34b74ebe8bb6ab1926f6c33381bceb2
     # via -r requirements.in
 ghp-import==2.1.0 \
     --hash=sha256:8337dd7b50877f163d4c0289bc1f1c7f127550241988d568c1db512c4324a619 \
@@ -2033,9 +2033,9 @@ snowballstemmer==2.2.0 \
     --hash=sha256:09b16deb8547d3412ad7b590689584cd0fe25ec8db3be37788be3810cbf19cb1 \
     --hash=sha256:c8e1716e83cc398ae16824e5572ae04e0d9fc2c6b985fb0f900f5f0c96ecba1a
     # via pydocstyle
-sqlglot==25.25.1 \
-    --hash=sha256:0f9eb40c830a478312c262b6d0aa49c6ee9ef27725764430251e8920e6480951 \
-    --hash=sha256:a71097685eef491ecad778b85be7d0b09f205c4c704e188fdff9d3ac388db732
+sqlglot==25.26.0 \
+    --hash=sha256:638264ab99b3aa837cd85d8864b655632580a7979162b4f740407d170dd8b376 \
+    --hash=sha256:863e7539ec20ff9168cf030359e23af87d323a0936a94e5f46cbc8ab7ea3a525
     # via -r requirements.in
 sqlparse==0.5.1 \
     --hash=sha256:773dcbf9a5ab44a090f3441e2180efe2560220203dc2f8c0b0fa141e18b505e4 \

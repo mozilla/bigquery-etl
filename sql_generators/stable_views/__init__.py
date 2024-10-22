@@ -36,6 +36,19 @@ FROM
   `{target}`
 """
 
+VIEW_QUERY_TEMPLATE_NO_CLIENT_INFO =  """\
+-- Generated via ./bqetl generate stable_views
+CREATE OR REPLACE VIEW
+  `{full_view_id}`
+AS
+SELECT
+  * REPLACE(
+    {replacements}),
+FROM
+  `{target}`
+"""
+
+
 FF_INSTLL_VIEW_QUERY_TEMPLATE = """\
 -- Generated via ./bqetl generate stable_views
 CREATE OR REPLACE VIEW
@@ -139,6 +152,7 @@ def write_view_if_not_exists(target_project: str, sql_dir: Path, id_token=None, 
         FF_INSTLL_VIEW_QUERY_TEMPLATE,
         VIEW_METADATA_TEMPLATE,
         VIEW_QUERY_TEMPLATE,
+        VIEW_QUERY_TEMPLATE_NO_CLIENT_INFO,
     )
 
     VIEW_CREATE_REGEX = re.compile(
@@ -287,6 +301,17 @@ def write_view_if_not_exists(target_project: str, sql_dir: Path, id_token=None, 
             ),
             trailing_newline=True,
         )
+    #For the firefox_accounts.activity_flow_metrics view, use the template without client info parsing
+    elif full_view_id in ["moz-fx-data-shared-prod.firefox_accounts.activity_flow_metrics", "moz-fx-data-shared-prod.firefox_accounts.amplitude_event", "moz-fx-data-shared-prod.firefox_launcher_process.launcher_process_failure"]:
+        full_sql = reformat(
+            VIEW_QUERY_TEMPLATE_NO_CLIENT_INFO.format(
+                target=full_source_id,
+                replacements=replacements_str,
+                full_view_id=full_view_id,
+            ),
+            trailing_newline=True,
+        )
+    #For the ? v
     # For all other views, use the VIEW_QUERY_TEMPLATE
     else:
         full_sql = reformat(

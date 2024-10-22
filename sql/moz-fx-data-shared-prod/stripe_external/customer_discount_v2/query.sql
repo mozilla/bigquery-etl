@@ -32,15 +32,13 @@ old_customer_discounts AS (
   FROM
     `moz-fx-data-shared-prod.stripe_external.customer_discount_v1`
 ),
-customers_synced_after_new_discounts AS (
+customers_synced_after_new_discounts_cutover AS (
   SELECT
     id AS customer_id
   FROM
     `moz-fx-data-shared-prod.stripe_external.customer_v1`
   WHERE
-    -- Fivetran began syncing the new `discount` table on 2024-02-28.
-    -- See https://mozilla-hub.atlassian.net/browse/DENG-2116?focusedCommentId=842827.
-    DATE(_fivetran_synced) >= '2024-02-28'
+    DATE(_fivetran_synced) >= '2024-10-23'
 )
 SELECT
   *
@@ -55,10 +53,10 @@ LEFT JOIN
   new_customer_discounts
   USING (customer_id)
 LEFT JOIN
-  customers_synced_after_new_discounts
+  customers_synced_after_new_discounts_cutover
   USING (customer_id)
 WHERE
   new_customer_discounts.customer_id IS NULL
-  -- We don't include old discounts for customers synced after the new `discount` table began syncing
+  -- We don't include old discounts for customers synced after cutting over to the new `discount` table
   -- because the new `discount` table should have their discounts, if any (Fivetran hard deletes discounts).
-  AND customers_synced_after_new_discounts.customer_id IS NULL
+  AND customers_synced_after_new_discounts_cutover.customer_id IS NULL

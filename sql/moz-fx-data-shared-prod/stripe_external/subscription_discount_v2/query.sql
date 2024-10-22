@@ -32,15 +32,13 @@ old_subscription_discounts AS (
   FROM
     `moz-fx-data-shared-prod.stripe_external.subscription_discount_v1`
 ),
-subscriptions_synced_after_new_discounts AS (
+subscriptions_synced_after_new_discounts_cutover AS (
   SELECT DISTINCT
     id AS subscription_id
   FROM
     `moz-fx-data-shared-prod.stripe_external.subscription_history_v1`
   WHERE
-    -- Fivetran began syncing the new `discount` table on 2024-02-28.
-    -- See https://mozilla-hub.atlassian.net/browse/DENG-2116?focusedCommentId=842827.
-    DATE(_fivetran_synced) >= '2024-02-28'
+    DATE(_fivetran_synced) >= '2024-10-23'
 )
 SELECT
   *
@@ -55,10 +53,10 @@ LEFT JOIN
   new_subscription_discounts
   USING (subscription_id)
 LEFT JOIN
-  subscriptions_synced_after_new_discounts
+  subscriptions_synced_after_new_discounts_cutover
   USING (subscription_id)
 WHERE
   new_subscription_discounts.subscription_id IS NULL
-  -- We don't include old discounts for subscriptions synced after the new `discount` table began syncing
+  -- We don't include old discounts for subscriptions synced after cutting over to the new `discount` table
   -- because the new `discount` table should have their discounts, if any (Fivetran hard deletes discounts).
-  AND subscriptions_synced_after_new_discounts.subscription_id IS NULL
+  AND subscriptions_synced_after_new_discounts_cutover.subscription_id IS NULL

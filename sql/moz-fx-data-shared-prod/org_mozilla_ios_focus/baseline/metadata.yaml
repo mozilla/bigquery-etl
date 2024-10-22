@@ -1,0 +1,13 @@
+# Generated via ./bqetl generate stable_views
+---
+friendly_name: Historical Pings for `org-mozilla-ios-focus/baseline`
+description: |-
+  A historical view of pings sent for the
+  `org-mozilla-ios-focus/baseline`
+  document type.
+
+  This view is guaranteed to contain only complete days
+  (per `submission_timestamp`)
+  and to contain only one row per distinct `document_id` within a given date.
+
+  Clustering fields: `normalized_channel`, `sample_id`

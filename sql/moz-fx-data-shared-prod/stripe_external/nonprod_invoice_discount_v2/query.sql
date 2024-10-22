@@ -25,7 +25,8 @@ WITH new_invoice_discounts AS (
         -- Prefer normal subscription line items over those associated with an invoice item (e.g. prorations).
         IF(invoice_item_id IS NULL, 1, 2),
         start DESC,
-        id
+        id,
+        type_id
     )
 ),
 old_invoice_discounts AS (

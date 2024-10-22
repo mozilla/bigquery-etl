@@ -4,6 +4,7 @@ import enum
 import os
 import re
 import string
+from datetime import date
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -75,6 +76,23 @@ class PartitionMetadata:
 
 
 @attr.s(auto_attribs=True)
+class PartitionRange:
+    """Metadata for defining the partition range."""
+
+    start: int
+    end: int
+    interval: int
+
+
+@attr.s(auto_attribs=True)
+class RangePartitionMetadata:
+    """Metadata for defining range partitioned tables."""
+
+    range: PartitionRange
+    field: Optional[str] = attr.ib(None)
+
+
+@attr.s(auto_attribs=True)
 class ClusteringMetadata:
     """Metadata for defining BigQuery table clustering."""
 
@@ -90,6 +108,7 @@ class BigQueryMetadata:
     """
 
     time_partitioning: Optional[PartitionMetadata] = attr.ib(None)
+    range_partitioning: Optional[RangePartitionMetadata] = attr.ib(None)
     clustering: Optional[ClusteringMetadata] = attr.ib(None)
 
 
@@ -134,6 +153,16 @@ class ExternalDataMetadata:
 
 
 @attr.s(auto_attribs=True)
+class MonitoringMetadata:
+    """Metadata for specifying observability and monitoring configuration."""
+
+    enabled: bool = attr.ib(True)
+    collection: Optional[str] = attr.ib(None)
+    partition_column: Optional[str] = attr.ib(None)
+    partition_column_set: bool = attr.ib(False)
+
+
+@attr.s(auto_attribs=True)
 class Metadata:
     """
     Representation of a table or view Metadata configuration.
@@ -153,6 +182,8 @@ class Metadata:
     references: Dict = attr.ib({})
     external_data: Optional[ExternalDataMetadata] = attr.ib(None)
     deprecated: bool = attr.ib(False)
+    deletion_date: Optional[date] = attr.ib(None)
+    monitoring: Optional[MonitoringMetadata] = attr.ib(None)
 
     @owners.validator
     def validate_owners(self, attribute, value):
@@ -228,6 +259,8 @@ class Metadata:
         references = {}
         external_data = None
         deprecated = False
+        deletion_date = None
+        monitoring = None
 
         with open(metadata_file, "r") as yaml_stream:
             try:
@@ -295,6 +328,20 @@ class Metadata:
                     )
                 if "deprecated" in metadata:
                     deprecated = metadata["deprecated"]
+                if "deletion_date" in metadata:
+                    deletion_date = metadata["deletion_date"]
+
+                if "monitoring" in metadata:
+                    converter = cattrs.BaseConverter()
+                    monitoring = converter.structure(
+                        metadata["monitoring"], MonitoringMetadata
+                    )
+
+                    if "partition_column" in metadata["monitoring"]:
+                        # check if partition column metadata has been set explicitly;
+                        # needed for monitoring config validation for views where partition
+                        # column needs to be set explicitly
+                        monitoring.partition_column_set = True
 
                 return cls(
                     friendly_name,
@@ -308,6 +355,8 @@ class Metadata:
                     references,
                     external_data,
                     deprecated,
+                    deletion_date,
+                    monitoring,
                 )
             except yaml.YAMLError as e:
                 raise e
@@ -348,6 +397,12 @@ class Metadata:
 
         if not metadata_dict["deprecated"]:
             del metadata_dict["deprecated"]
+
+        if not metadata_dict["deletion_date"]:
+            del metadata_dict["deletion_date"]
+
+        if not metadata_dict["monitoring"]:
+            del metadata_dict["monitoring"]
 
         file.write_text(
             yaml.dump(
@@ -397,14 +452,15 @@ class Metadata:
 
     def set_bigquery_clustering(self, clustering_fields):
         """Update the BigQuery partitioning metadata."""
-        partitioning = None
-        if self.bigquery and self.bigquery.time_partitioning:
-            partitioning = self.bigquery.time_partitioning
+        if self.bigquery:
+            time_partitioning = self.bigquery.time_partitioning
+            range_partitioning = self.bigquery.range_partitioning
 
-        self.bigquery = BigQueryMetadata(
-            time_partitioning=partitioning,
-            clustering=ClusteringMetadata(fields=clustering_fields),
-        )
+            self.bigquery = BigQueryMetadata(
+                time_partitioning=time_partitioning,
+                range_partitioning=range_partitioning,
+                clustering=ClusteringMetadata(fields=clustering_fields),
+            )
 
 
 @attr.s(auto_attribs=True)
@@ -422,6 +478,7 @@ class DatasetMetadata:
     user_facing: bool = attr.ib(False)
     labels: Dict = attr.ib({})
     default_table_workgroup_access: Optional[List[Dict[str, Any]]] = attr.ib(None)
+    default_table_expiration_ms: str = attr.ib(None)
     workgroup_access: list = attr.ib(DEFAULT_WORKGROUP_ACCESS)
     syndication: Dict = attr.ib({})
 

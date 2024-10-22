@@ -3,13 +3,16 @@
 import glob
 import re
 import string
+import sys
 import time
 from functools import cached_property
 from pathlib import Path
+from textwrap import dedent
+from typing import Any, Optional
 
 import attr
 import sqlparse
-from google.api_core.exceptions import BadRequest, Forbidden, NotFound
+from google.api_core.exceptions import BadRequest, NotFound
 from google.cloud import bigquery
 
 from bigquery_etl.config import ConfigLoader
@@ -20,7 +23,7 @@ from bigquery_etl.metadata.parse_metadata import (
     DatasetMetadata,
     Metadata,
 )
-from bigquery_etl.schema import Schema
+from bigquery_etl.schema import SCHEMA_FILE, Schema
 from bigquery_etl.util import extract_from_query_path
 from bigquery_etl.util.common import render
 
@@ -38,6 +41,8 @@ class View:
     name: str = attr.ib()
     dataset: str = attr.ib()
     project: str = attr.ib()
+    partition_column: Optional[str] = attr.ib(None)
+    id_token: Optional[Any] = attr.ib(None)
 
     @path.validator
     def validate_path(self, attribute, value):
@@ -52,10 +57,12 @@ class View:
         return render(path.name, template_folder=path.parent)
 
     @classmethod
-    def from_file(cls, path):
+    def from_file(cls, path, **kwargs):
         """View from SQL file."""
         project, dataset, name = extract_from_query_path(path)
-        return cls(path=str(path), name=name, dataset=dataset, project=project)
+        return cls(
+            path=str(path), name=name, dataset=dataset, project=project, **kwargs
+        )
 
     @property
     def view_identifier(self):
@@ -175,28 +182,50 @@ class View:
         )
 
     @cached_property
-    def view_schema(self):
+    def schema(self):
         """Derive view schema from a schema file or a dry run result."""
-        schema_file = Path(self.path).parent / "schema.yaml"
-        # check schema based on schema file
-        if schema_file.is_file():
-            return Schema.from_schema_file(schema_file)
-        else:  # check schema based on dry run results
-            try:
-                client = bigquery.Client()
+        return self.configured_schema or self.dryrun_schema
 
-                query_job = client.query(
-                    query=self.content,
-                    job_config=bigquery.QueryJobConfig(
-                        dry_run=True, use_legacy_sql=False
-                    ),
+    @cached_property
+    def schema_path(self):
+        """Return the schema file path."""
+        return Path(self.path).parent / SCHEMA_FILE
+
+    @cached_property
+    def configured_schema(self):
+        """Derive view schema from a schema file."""
+        if self.schema_path.is_file():
+            return Schema.from_schema_file(self.schema_path)
+        return None
+
+    @cached_property
+    def dryrun_schema(self):
+        """Derive view schema from a dry run result."""
+        try:
+            # We have to remove `CREATE OR REPLACE VIEW ... AS` from the query to avoid
+            # view-creation-permission-denied errors, and we have to apply a `WHERE`
+            # filter to avoid partition-column-filter-missing errors.
+            schema_query_filter = (
+                f"DATE(`{self.partition_column}`) = DATE('2020-01-01')"
+                if self.partition_column
+                else "FALSE"
+            )
+            schema_query = dedent(
+                f"""
+                WITH view_query AS (
+                    {CREATE_VIEW_PATTERN.sub("", self.content)}
                 )
-                return Schema.from_bigquery_schema(query_job.schema)
-            except Forbidden:
-                print(
-                    f"Missing permission to dry run view {self.view_identifier} to get schema"
-                )
-                return None
+                SELECT *
+                FROM view_query
+                WHERE {schema_query_filter}
+                """
+            )
+            return Schema.from_query_file(
+                Path(self.path), content=schema_query, id_token=self.id_token
+            )
+        except Exception as e:
+            print(f"Error dry-running view {self.view_identifier} to get schema: {e}")
+            return None
 
     def _valid_fully_qualified_references(self):
         """Check that referenced tables and views are fully qualified."""
@@ -209,7 +238,7 @@ class View:
     def _valid_view_naming(self):
         """Validate that the created view naming matches the directory structure."""
         if not (parsed := sqlparse.parse(self.content)):
-            raise ValueError(f"Unable to parse view SQL for {self.name}")
+            raise ValueError(f"Unable to parse view SQL for {self.path}")
 
         tokens = [
             t
@@ -282,12 +311,21 @@ class View:
             print(f"view {target_view_id} will change: does not exist in BigQuery")
             return True
 
-        expected_view_query = CREATE_VIEW_PATTERN.sub(
-            "", sqlparse.format(self.content, strip_comments=True), count=1
-        ).strip(";" + string.whitespace)
-        actual_view_query = sqlparse.format(
-            table.view_query, strip_comments=True
-        ).strip(";" + string.whitespace)
+        try:
+            expected_view_query = CREATE_VIEW_PATTERN.sub(
+                "", sqlparse.format(self.content, strip_comments=True), count=1
+            ).strip(";" + string.whitespace)
+
+            actual_view_query = sqlparse.format(
+                table.view_query, strip_comments=True
+            ).strip(";" + string.whitespace)
+        except TypeError:
+            print(
+                f"ERROR: There has been an issue formatting: {target_view_id}",
+                file=sys.stderr,
+            )
+            raise
+
         if expected_view_query != actual_view_query:
             print(f"view {target_view_id} will change: query does not match")
             return True
@@ -308,13 +346,13 @@ class View:
 
         table_schema = Schema.from_bigquery_schema(table.schema)
 
-        if self.view_schema is not None and not self.view_schema.equal(table_schema):
+        if self.schema is not None and not self.schema.equal(table_schema):
             print(f"view {target_view_id} will change: schema does not match")
             return True
 
         return False
 
-    def publish(self, target_project=None, dry_run=False):
+    def publish(self, target_project=None, dry_run=False, client=None):
         """
         Publish this view to BigQuery.
 
@@ -330,7 +368,7 @@ class View:
             any(str(self.path).endswith(p) for p in self.skip_validation())
             or self._valid_view_naming()
         ):
-            client = bigquery.Client()
+            client = client or bigquery.Client()
             sql = self.content
             target_view = self.target_view_identifier(target_project)
 
@@ -342,7 +380,13 @@ class View:
                     return True
 
                 # We only change the first occurrence, which is in the target view name.
-                sql = sql.replace(self.project, target_project, 1)
+                sql = re.sub(
+                    rf"^(?!--)(.*){self.project}",
+                    rf"\1{target_project}",
+                    sql,
+                    count=1,
+                    flags=re.MULTILINE,
+                )
 
             job_config = bigquery.QueryJobConfig(use_legacy_sql=False, dry_run=dry_run)
             query_job = client.query(sql, job_config)
@@ -351,25 +395,32 @@ class View:
                 print(f"Validated definition of {target_view} in {self.path}")
             else:
                 try:
-                    query_job.result()
+                    job_id = query_job.result().job_id
                 except BadRequest as e:
                     if "Invalid snapshot time" in e.message:
                         # This occasionally happens due to dependent views being
                         # published concurrently; we wait briefly and give it one
                         # extra try in this situation.
                         time.sleep(1)
-                        client.query(sql, job_config).result()
+                        job_id = client.query(sql, job_config).result().job_id
                     else:
                         raise
 
                 try:
-                    schema_path = Path(self.path).parent / "schema.yaml"
-                    if schema_path.is_file():
-                        self.view_schema.deploy(target_view)
+                    table = client.get_table(target_view)
+                except NotFound:
+                    print(
+                        f"{target_view} failed to publish to the correct location, verify job id {job_id}",
+                        file=sys.stderr,
+                    )
+                    return False
+
+                try:
+                    if self.schema_path.is_file():
+                        table = self.schema.deploy(target_view)
                 except Exception as e:
                     print(f"Could not update field descriptions for {target_view}: {e}")
 
-                table = client.get_table(target_view)
                 if not self.metadata:
                     print(f"Missing metadata for {self.path}")
 
@@ -395,7 +446,10 @@ class View:
 
                 print(f"Published view {target_view}")
         else:
-            print(f"Error publishing {self.path}. Invalid view definition.")
+            print(
+                f"Error publishing {self.path}. Invalid view definition.",
+                file=sys.stderr,
+            )
             return False
 
         return True

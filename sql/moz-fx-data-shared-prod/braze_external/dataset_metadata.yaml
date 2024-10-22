@@ -1,0 +1,26 @@
+friendly_name: Braze External
+description: |-
+  Dataset with tables that sync with Braze.
+  Data that syncs to Braze via their cloud data ingestion tool (CDI)
+  as well as data collected by Braze Currents (synced to GCS buckets
+  and transformed).
+
+  https://www.braze.com/docs/user_guide/data_and_analytics/cloud_ingestion
+  https://www.braze.com/docs/user_guide/data_and_analytics/braze_currents
+
+  Buckets holding current data can be found inside of the moz-fx-data-marketing-prod
+  project. Each Braze workspace has a corresponding bucket with braze-workspace_name
+  appended.
+
+dataset_base_acl: restricted
+user_facing: false
+labels: {}
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:braze
+      - workgroup:braze/ingestion-mozilla-dev
+      - workgroup:braze/ingestion-firefox
+  - role: roles/bigquery.dataEditor
+    members:
+      - workgroup:braze/writers

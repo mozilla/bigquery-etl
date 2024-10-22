@@ -16,9 +16,12 @@ SELECT
   FORMAT_DATE(
     "%Y%m%d",
     SAFE.DATE_FROM_UNIX_DATE(MIN(SAFE_CAST(environment.profile.creation_date AS INT64)))
-  ) AS profile_creation_date
+  ) AS profile_creation_date,
+  mozfun.stats.mode_last(
+    ARRAY_AGG(profile_group_id ORDER BY submission_timestamp)
+  ) AS profile_group_id,
 FROM
-  telemetry.main,
+  `moz-fx-data-shared-prod.telemetry.main`,
   UNNEST(environment.addons.active_addons),
   UNNEST(
     [

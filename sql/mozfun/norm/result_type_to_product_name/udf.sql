@@ -11,6 +11,10 @@ RETURNS STRING AS (
       THEN 'default_partner_search_suggestion'
     WHEN res IN ('search_engine')
       THEN 'search_engine'
+    WHEN res IN ('rust_yelp')
+      THEN 'yelp_suggestion'
+    WHEN res IN ('rust_fakespot_amazon', 'rust_fakespot_bestbuy', 'rust_fakespot_walmart')
+      THEN 'fakespot_suggest'
     WHEN res IN ('trending_search', 'trending_search_rich')
       THEN 'trending_suggestion'
     WHEN res IN ('history')
@@ -49,6 +53,8 @@ RETURNS STRING AS (
       THEN 'quick_action'
     WHEN res IN ('rs_pocket', 'rust_pocket')
       THEN 'pocket_collection'
+    WHEN res IN ('rs_mdn', 'rust_mdn')
+      THEN 'mdn'
     ELSE 'other'
   END
 );

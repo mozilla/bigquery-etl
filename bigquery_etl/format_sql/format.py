@@ -4,9 +4,13 @@ import glob
 import os
 import os.path
 import sys
+from functools import partial
+from multiprocessing.pool import Pool
+from pathlib import Path
 
 from bigquery_etl.config import ConfigLoader
 from bigquery_etl.format_sql.formatter import reformat  # noqa E402
+from bigquery_etl.util.common import qualify_table_references_in_file
 
 
 def skip_format():
@@ -18,7 +22,42 @@ def skip_format():
     ]
 
 
-def format(paths, check=False):
+def skip_qualifying_references():
+    """Return a list of configured queries where fully qualifying references should be skipped."""
+    return [
+        file
+        for skip in ConfigLoader.get(
+            "format", "skip_qualifying_references", fallback=[]
+        )
+        for file in glob.glob(skip, recursive=True)
+    ]
+
+
+def _format_path(check, path):
+    query = Path(path).read_text()
+
+    try:
+        if not any([path.endswith(s) for s in skip_qualifying_references()]):
+            fully_referenced_query = qualify_table_references_in_file(Path(path))
+        else:
+            fully_referenced_query = query
+    except NotImplementedError:
+        fully_referenced_query = query  # not implemented for scripts
+
+    formatted = reformat(fully_referenced_query, trailing_newline=True)
+    if query != formatted:
+        if check:
+            print(f"Needs reformatting: bqetl format {path}")
+        else:
+            with open(path, "w") as fp:
+                fp.write(formatted)
+            print(f"Reformatted: {path}")
+        return 1
+    else:
+        return 0
+
+
+def format(paths, check=False, parallelism=8):
     """Format SQL files."""
     if not paths:
         query = sys.stdin.read()
@@ -40,29 +79,19 @@ def format(paths, check=False):
                     # skip tests/**/input.sql
                     and not (path.startswith("tests") and filename == "input.sql")
                     for filepath in [os.path.join(dirpath, filename)]
-                    if filepath not in skip_format()
+                    if not any([filepath.endswith(s) for s in skip_format()])
                 )
             elif path:
                 sql_files.append(path)
         if not sql_files:
             print("Error: no files were found to format")
             sys.exit(255)
-        sql_files.sort()
-        reformatted = unchanged = 0
-        for path in sql_files:
-            with open(path) as fp:
-                query = fp.read()
-            formatted = reformat(query, trailing_newline=True)
-            if query != formatted:
-                if check:
-                    print(f"Needs reformatting: bqetl format {path}")
-                else:
-                    with open(path, "w") as fp:
-                        fp.write(formatted)
-                    print(f"Reformatted: {path}")
-                reformatted += 1
-            else:
-                unchanged += 1
+
+        with Pool(parallelism) as pool:
+            result = pool.map(partial(_format_path, check), sql_files)
+
+        reformatted = sum(result)
+        unchanged = len(sql_files) - reformatted
         print(
             ", ".join(
                 f"{number} file{'s' if number > 1 else ''}"

@@ -182,3 +182,7 @@ fields:
 - mode: NULLABLE
   name: organic_topsite_dismissals
   type: INTEGER
+- mode: NULLABLE
+  name: profile_group_id
+  type: STRING
+  description: A UUID identifying the profile's group on a single device and allowing user-oriented correlation of data

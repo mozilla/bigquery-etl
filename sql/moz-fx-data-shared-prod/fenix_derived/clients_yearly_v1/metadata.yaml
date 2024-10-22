@@ -9,6 +9,8 @@ owners:
 - frank@mozilla.com
 labels:
   schedule: daily
+  dag: bqetl_org_mozilla_firefox_derived
+  owner1: frank
 scheduling:
   dag_name: bqetl_org_mozilla_firefox_derived
   depends_on_past: true
@@ -17,7 +19,9 @@ bigquery:
     type: day
     field: submission_date
     require_partition_filter: true
+    expiration_days: null
   clustering:
     fields:
     - sample_id
     - client_id
+references: {}

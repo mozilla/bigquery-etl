@@ -1,0 +1,95 @@
+fields:
+- description: Date when clients were first seen.
+  name: first_seen_date
+  type: DATE
+- description: Indicates if the client is included in the desktop KPI.
+  name: is_desktop
+  type: BOOLEAN
+  mode: NULLABLE
+- description: Category of the source, such as 'organic' for a search engine.
+  name: attribution_medium
+  type: STRING
+  mode: NULLABLE
+- description: Referring partner domain, when install happens via a known partner.
+  name: attribution_source
+  type: STRING
+  mode: NULLABLE
+- description: Identifier of the particular campaign that led to the download of the product.
+  name: attribution_campaign
+  type: STRING
+  mode: NULLABLE
+- description: Identifier to indicate the particular link within a campaign.
+  name: attribution_content
+  type: STRING
+  mode: NULLABLE
+- description: Identifier that indicates where installations of Firefox originated.
+  name: attribution_dlsource
+  type: STRING
+  mode: NULLABLE
+- description: Client's user agent, which corresponds to the web browser used to download the Firefox installer.
+  name: attribution_ua
+  type: STRING
+  mode: NULLABLE
+- description: True if attribution_medium is not null AND attribution_source is not null.
+  name: attributed
+  type: BOOLEAN
+  mode: NULLABLE
+- description: Is desktop client attribution organic or paid
+  name: paid_vs_organic
+  type: STRING
+  mode: NULLABLE
+- description: City retrieved as a result of a geographic lookup based on the client's IP address.
+  name: city
+  type: STRING
+- description: The ISO 3166-1 alpha-2 country code.
+  name: country
+  type: STRING
+  mode: NULLABLE
+- description: The value of the `distribution.id` preference that identifies the Firefox distribution.
+  name: distribution_id
+  type: STRING
+  mode: NULLABLE
+- description: The Firefox channel, set to Other for unrecognized channel names.
+  name: channel
+  type: STRING
+  mode: NULLABLE
+- description: OS name - not normalized_os.
+  name: os
+  type: STRING
+  mode: NULLABLE
+- description: OS version - not normalized.
+  name: os_version
+  type: STRING
+  mode: NULLABLE
+- description: The OS name, set to Other for unrecognized OS names.
+  name: normalized_os
+  type: STRING
+  mode: NULLABLE
+- description: The OS version.
+  name: normalized_os_version
+  type: STRING
+  mode: NULLABLE
+- description: The best locale that the application should be localized to.
+  name: locale
+  type: STRING
+  mode: NULLABLE
+- description: The application version.
+  name: app_version
+  type: STRING
+  mode: NULLABLE
+- description: Combo of os, os_version, windows_build_number, NULL if not windows.
+  name: windows_version
+  type: STRING
+  mode: NULLABLE
+- description: Windows build number.
+  name: windows_build_number
+  type: FLOAT64
+  mode: NULLABLE
+- description: Is the client active or not on the date.
+  name: is_dau
+  type: BOOLEAN
+  mode: NULLABLE
+- description: Count of clients that are new on this date.
+  name: new_profiles
+  type: INT64
+  mode: NULLABLE

@@ -1,10 +1,10 @@
 SELECT
   main_summary.* EXCEPT (submission_date_s3),
   key AS experiment_id,
-  udf.get_key(value, 'branch') AS experiment_branch,
-  udf.get_key(value, 'enrollment_id') AS experiment_enrollment_id
+  `moz-fx-data-shared-prod.udf.get_key`(value, 'branch') AS experiment_branch,
+  `moz-fx-data-shared-prod.udf.get_key`(value, 'enrollment_id') AS experiment_enrollment_id
 FROM
-  telemetry.main_summary
+  `moz-fx-data-shared-prod.telemetry.main_summary`
 CROSS JOIN
   UNNEST(experiments_details)
 WHERE

@@ -1,0 +1,18 @@
+friendly_name: Ad Groups
+description: |-
+  Information about Ad Groups.
+  One row per Ad Group ID. If
+  an Ad Group name changes, we take
+  the latest name.
+
+  Newer ad group naming schemes will
+  be parsed into segments, available
+  in the "ad_group_segments" field.
+owners:
+- frank@mozilla.com
+labels:
+  incremental: false
+scheduling:
+  dag_name: bqetl_fivetran_google_ads
+  depends_on_past: false
+  date_partition_parameter: null

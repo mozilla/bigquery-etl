@@ -1,0 +1,5 @@
+id_level_columns:
+  - client_id
+  - device_id
+  - profile_id
+  - profile_group_id

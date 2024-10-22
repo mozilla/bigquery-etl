@@ -75,11 +75,10 @@ bqetl_nondesktop:
 bqetl_mobile_search:
   schedule_interval: 0 2 * * *
   default_args:
-    owner: anicholson@mozilla.com
+    owner: akomar@mozilla.com
     start_date: "2019-07-25"
     email:
       - "telemetry-alerts@mozilla.com"
-      - "anicholson@mozilla.com"
       - "akomar@mozilla.com"
       - "cmorales@mozilla.com"
     retries: 1
@@ -154,10 +153,7 @@ bqetl_subplat:
     Stripe data retrieved by stripe_external__itemized_payout_reconciliation__v5
     task has highly viariable availability timing, so it is possible for it to
     fail with the following type of error:
-    `Error: Request req_OTssZ0Zv1cEmmm: Data for the report type
-            payout_reconciliation.itemized.5 is only available through
-            2022-05-08 12:00:00 UTC; you requested `interval_end`
-            = 2022-05-09 00:00:00 UTC.`
+    `Report 'frr_...' did not succeed, status was 'pending'`
     In such cases the failure is expected, the task will continue to retry every
     30 minutes until the data becomes available. If failure observed looks
     different then it should be reported using the Airflow triage process.
@@ -223,9 +219,9 @@ bqetl_activity_stream:
     namespace by desktop Firefox. These are largely related to activity
     on the newtab page and engagement with Pocket content.
   default_args:
-    owner: anicholson@mozilla.com
+    owner: mbowerman@mozilla.com
     start_date: "2019-07-25"
-    email: ["telemetry-alerts@mozilla.com", "anicholson@mozilla.com"]
+    email: ["telemetry-alerts@mozilla.com", "mbowerman@mozilla.com"]
     retries: 1
     retry_delay: 5m
   tags:
@@ -234,11 +230,10 @@ bqetl_activity_stream:
 bqetl_search:
   schedule_interval: 0 3 * * *
   default_args:
-    owner: anicholson@mozilla.com
+    owner: akomar@mozilla.com
     start_date: "2018-11-27"
     email:
       - "telemetry-alerts@mozilla.com"
-      - "anicholson@mozilla.com"
       - "akomar@mozilla.com"
       - "cmorales@mozilla.com"
     retries: 2
@@ -419,9 +414,9 @@ bqetl_google_analytics_derived:
     The GA export runs at 15:00 UTC, so there's an effective 2-day delay
     for user activity to appear in these tables.
   default_args:
-    owner: ascholtz@mozilla.com
+    owner: kwindau@mozilla.com
     email:
-      - ascholtz@mozilla.com
+      - kwindau@mozilla.com
       - telemetry-alerts@mozilla.com
     start_date: "2020-10-31"
     retries: 2
@@ -524,17 +519,17 @@ bqetl_desktop_platform:
 
 bqetl_internal_tooling:
   description: |
-    This DAG schedules queries for populating queries related to Mozilla's
+    This DAG schedules queries for populating tables related to Mozilla's
     internal developer tooling (e.g. mozregression).
   default_args:
     depends_on_past: false
     email:
-      - wlachance@mozilla.com
+      - ahalberstadt@mozilla.com
       - telemetry-alerts@mozilla.com
     email_on_failure: true
     email_on_retry: true
     end_date: null
-    owner: wlachance@mozilla.com
+    owner: ahalberstadt@mozilla.com
     retries: 2
     retry_delay: 30m
     start_date: "2020-06-01"
@@ -728,11 +723,11 @@ bqetl_urlbar:
   description: |
     Daily aggregation of metrics related to urlbar usage.
   default_args:
-    owner: anicholson@mozilla.com
+    owner: akommasani@mozilla.com
     start_date: "2021-08-01"
     email:
       - "telemetry-alerts@mozilla.com"
-      - "anicholson@mozilla.com"
+      - "akommasani@mozilla.com"
       - "akomar@mozilla.com"
     retries: 2
     retry_delay: 30m
@@ -794,9 +789,9 @@ bqetl_acoustic_contact_export:
     fivetran_acoustic_contact_export
     DAG to clean up the data loaded from Acoustic.
   default_args:
-    owner: kik@mozilla.com
-    start_date: "2021-03-01"
-    email: ["telemetry-alerts@mozilla.com", "kik@mozilla.com"]
+    owner: cbeck@mozilla.com
+    start_date: "2024-04-03"
+    email: ["telemetry-alerts@mozilla.com", "cbeck@mozilla.com"]
     retries: 1
     retry_delay: 5m
   tags:
@@ -809,9 +804,9 @@ bqetl_acoustic_raw_recipient_export:
     fivetran_acoustic_raw_recipient_export
     DAG to clean up the data loaded from Acoustic.
   default_args:
-    owner: kik@mozilla.com
-    start_date: "2022-03-01"
-    email: ["telemetry-alerts@mozilla.com", "kik@mozilla.com"]
+    owner: cbeck@mozilla.com
+    start_date: "2024-04-03"
+    email: ["telemetry-alerts@mozilla.com", "cbeck@mozilla.com"]
     retries: 1
     retry_delay: 5m
   tags:
@@ -865,11 +860,11 @@ bqetl_newtab:
     depends_on_past: false
     email:
       - telemetry-alerts@mozilla.com
-      - anicholson@mozilla.com
+      - mbowerman@mozilla.com
     email_on_failure: true
     email_on_retry: true
     end_date: null
-    owner: anicholson@mozilla.com
+    owner: mbowerman@mozilla.com
     retries: 2
     retry_delay: 30m
     start_date: '2022-07-01'
@@ -1020,11 +1015,11 @@ bqetl_fivetran_costs:
     depends_on_past: false
     email:
       - telemetry-alerts@mozilla.com
-      - lschiestl@mozilla.com
+      - srose@mozilla.com
     email_on_failure: true
     email_on_retry: true
     end_date: null
-    owner: lschiestl@mozilla.com
+    owner: srose@mozilla.com
     retries: 2
     retry_delay: 30m
     start_date: '2023-01-18'
@@ -1350,7 +1345,7 @@ bqetl_glean_usage:
     - impact/tier_1
 
 bqetl_glam_export:
-  schedule_interval: 0 8 * * *
+  schedule_interval: 0 22 * * *
   default_args:
     depends_on_past: false
     email:
@@ -1422,15 +1417,18 @@ bqetl_telemetry_dev_cycle:
     depends_on_past: false
     email:
       - telemetry-alerts@mozilla.com
-      - leli@mozilla.com
+      - ascholtz@mozilla.com
     email_on_failure: true
     email_on_retry: false
     end_date: null
-    owner: leli@mozilla.com
+    owner: ascholtz@mozilla.com
     retries: 2
     retry_delay: 30m
     start_date: '2023-12-19'
-  description: DAG for Telemetry Dev Cycle Dashboard
+  description: |
+    DAG for Telemetry Dev Cycle Dashboard
+    Airflow Triage Note:
+    The tables are build every day so only the last run needs to be successful.
   repo: bigquery-etl
   schedule_interval: 0 18 * * *
   tags:
@@ -1506,3 +1504,372 @@ bqetl_google_search_console:
     retry_delay: 30m
   tags:
     - impact/tier_1
+
+bqetl_acoustic_suppression_list:
+  schedule_interval: 0 9 * * *
+  description: |
+    ETL for Acoustic suppression list.
+  default_args:
+    owner: cbeck@mozilla.com
+    email:
+      - cbeck@mozilla.com
+    start_date: '2024-04-03'
+    retries: 1
+    retry_delay: 30m
+  tags:
+    - impact/tier_3
+
+bqetl_braze:
+  schedule_interval: 0 5,13,21 * * *
+  description: |
+    ETL for Braze workflows.
+    ## Triage notes:
+    Don't rerun this DAG!
+    Ping Chelsey Beck.
+    If Chelsey is out, follow the [workbook](https://mozilla-hub.atlassian.net/wiki/spaces/DATA/pages/730234942/bqetl+braze+DAG+workbook) in confluence.
+  default_args:
+    owner: cbeck@mozilla.com
+    email:
+      - cbeck@mozilla.com
+    start_date: '2024-04-15'
+    retries: 3
+    retry_delay: 5m
+  tags:
+    - impact/tier_2
+    - triage/record_only
+
+bqetl_braze_currents:
+  schedule_interval: 0 2 * * *
+  description: |
+    Load Braze current data from GCS into BigQuery
+  default_args:
+    owner: cbeck@mozilla.com
+    email:
+      - cbeck@mozilla.com
+    start_date: '2024-04-15'
+    retries: 1
+    retry_delay: 30m
+  tags:
+    - impact/tier_2
+
+bqetl_marketing_suppression_list:
+  schedule_interval: 0 3 * * *
+  description: |
+    Ingest marketing suppression lists into BigQuery
+  default_args:
+    owner: cbeck@mozilla.com
+    email:
+      - cbeck@mozilla.com
+    start_date: '2024-04-21'
+    retries: 1
+    retry_delay: 30m
+  tags:
+    - impact/tier_2
+
+bqetl_pageload_v1:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - wichan@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    owner: wichan@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2024-04-01'
+  description: DAG to build pageload tables
+  repo: bigquery-etl
+  schedule_interval: daily
+  tags:
+    - impact/tier_1
+    - repo/bigquery-etl
+
+bqetl_desktop_engagement_model:
+  schedule_interval: 0 12 * * *
+  description: Loads the desktop engagement model tables
+  default_args:
+    depends_on_past: false
+    owner: kwindau@mozilla.com
+    email:
+      - kwindau@mozilla.com
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    start_date: "2024-04-24"
+    retries: 2
+    retry_delay: 30m
+  tags:
+    - impact/tier_2
+
+bqetl_desktop_retention_model:
+  schedule_interval: 0 12 * * *
+  description: Loads the desktop retention model tables
+  default_args:
+    depends_on_past: false
+    owner: mhirose@mozilla.com
+    email:
+      - mhirose@mozilla.com
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    start_date: "2024-05-14"
+    retries: 2
+    retry_delay: 30m
+  tags:
+    - impact/tier_2
+
+bqetl_ios_campaign_reporting:
+  schedule_interval: 0 12 * * *
+  description: Loads the apple ads ios_app_campaign_stats table
+  default_args:
+    depends_on_past: false
+    owner: kwindau@mozilla.com
+    email:
+      - kwindau@mozilla.com
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    start_date: "2024-05-08"
+    retries: 2
+    retry_delay: 30m
+  tags:
+    - impact/tier_2
+
+bqetl_mobile_kpi_metrics:
+  schedule_interval: 0 12 * * *
+  description: Generates support metrics for mobile KPI's
+  default_args:
+    depends_on_past: false
+    owner: kik@mozilla.com
+    email:
+      - kik@mozilla.com
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    start_date: '2024-06-03'
+    retries: 1
+    retry_delay: 30m
+  tags:
+    - impact/tier_1
+
+bqetl_desktop_conv_evnt_categorization:
+  schedule_interval: 0 12 * * *
+  description: Loads the desktop conversion event tables
+  default_args:
+    depends_on_past: false
+    owner: kwindau@mozilla.com
+    email:
+      - kwindau@mozilla.com
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    start_date: "2024-06-04"
+    retries: 2
+    retry_delay: 30m
+  tags:
+    - impact/tier_2
+
+bqetl_census_feed:
+  schedule_interval: 0 17 * * *
+  description: Loads the desktop conversion event tables
+  default_args:
+    depends_on_past: false
+    owner: kwindau@mozilla.com
+    email:
+      - kwindau@mozilla.com
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    start_date: "2024-06-10"
+    retries: 2
+    retry_delay: 30m
+  tags:
+    - impact/tier_2
+
+bqetl_cloudflare_os_market_share:
+  default_args:
+    depends_on_past: false
+    email:
+      - kwindau@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    owner: kwindau@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2024-06-16'
+  description: |
+    Pulls OS market share data from Cloudflare API
+  repo: bigquery-etl
+  schedule_interval: 0 4 * * *
+  tags:
+    - repo/bigquery-etl
+    - impact/tier_3
+
+bqetl_cloudflare_browser_market_share:
+  default_args:
+    depends_on_past: false
+    email:
+      - kwindau@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    owner: kwindau@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2024-06-16'
+  description: |
+    Pulls browser market share data from Cloudflare API
+  repo: bigquery-etl
+  schedule_interval: 0 10 * * *
+  tags:
+    - repo/bigquery-etl
+    - impact/tier_3
+
+bqetl_cloudflare_device_market_share:
+  default_args:
+    depends_on_past: false
+    email:
+      - kwindau@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    owner: kwindau@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2024-06-16'
+  description: |
+    Pulls device usage market share data from Cloudflare API
+  repo: bigquery-etl
+  schedule_interval: 0 16 * * *
+  tags:
+    - repo/bigquery-etl
+    - impact/tier_3
+
+bqetl_firefox_desktop_ad_click_history:
+  default_args:
+    depends_on_past: false
+    email:
+      - kwindau@mozilla.com
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    owner: kwindau@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2024-07-16'
+  description: |
+    Calculates # of historical ad clicks for Firefox Desktop clients
+  repo: bigquery-etl
+  schedule_interval: 0 16 * * *
+  tags:
+    - repo/bigquery-etl
+    - impact/tier_2
+
+bqetl_merino_newtab_extract_to_gcs:
+  default_args:
+    depends_on_past: false
+    email:
+      - cbeck@mozilla.com
+      - gkatre@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    owner: cbeck@mozilla.com
+    retries: 2
+    retry_delay: 5m
+    start_date: '2024-08-14'
+  description: |
+    Aggregates Newtab engagement data that lands in a GCS bucket for Merino recommendations.
+  repo: bigquery-etl
+  schedule_interval: "*/20 * * * *"
+  tags:
+    - repo/bigquery-etl
+    - impact/tier_1
+
+bqetl_merino_newtab_priors_to_gcs:
+  default_args:
+    depends_on_past: false
+    email:
+      - cbeck@mozilla.com
+      - gkatre@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    owner: cbeck@mozilla.com
+    retries: 2
+    retry_delay: 5m
+    start_date: '2024-10-08'
+  description: |
+    Aggregates Newtab stats that land in a GCS bucket for Merino to derive Thompson sampling priors.
+  repo: bigquery-etl
+  schedule_interval: "0 2 * * *"
+  tags:
+    - repo/bigquery-etl
+    - impact/tier_1
+
+bqetl_dynamic_dau:
+  default_args:
+    depends_on_past: false
+    email:
+      - kwindau@mozilla.com
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    owner: kwindau@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2024-09-26'
+  description: |
+    Calculates rolling 28 day DAU for different populations
+  repo: bigquery-etl
+  schedule_interval: 0 14 * * *
+  tags:
+    - repo/bigquery-etl
+    - impact/tier_2
+
+bqetl_shredder_monitoring:
+  default_args:
+    depends_on_past: false
+    email:
+      - bewu@mozilla.com
+    email_on_failure: true
+    email_on_retry: False
+    end_date: null
+    owner: bewu@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2024-10-01'
+  description: '[EXPERIMENTAL] Monitoring queries for shredder operation'
+  repo: bigquery-etl
+  schedule_interval: 0 12 * * *
+  tags:
+    - repo/bigquery-etl
+    - impact/tier_3
+    - triage/no_triage
+
+bqetl_fxci:
+  description: |
+    This DAG schedules queries for populating tables related to the
+    Firefox-CI Taskcluster instance.
+  default_args:
+    depends_on_past: false
+    email:
+      - ahalberstadt@mozilla.com
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    owner: ahalberstadt@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: "2020-10-11"
+  # This DAG needs to run late as it depends on the GCP billing export which
+  # often isn't finalized until the afternoon of the following day.
+  schedule_interval: 0 18 * * *
+  tags:
+    - impact/tier_3

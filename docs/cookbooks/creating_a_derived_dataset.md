@@ -183,6 +183,9 @@ For our example, the starting date is `2020-06-01` and we use a schedule interva
 
 The `--tag impact/tier3` parameter specifies that this DAG is considered "tier 3". For a list of valid tags and their descriptions see [Airflow Tags](../reference/airflow_tags.md).
 
+When creating a new DAG, while it is still under active development and assumed to fail during this phase, the DAG can be tagged as `--tag triage/no_triage`. That way it will be ignored by the person on Airflow Triage.
+Once the active development is done, the `triage/no_triage` tag can be removed and problems will addressed during the Airflow Triage process.
+
 ```bash
 ./bqetl dag create bqetl_internal_tooling --schedule-interval "0 4 * * *" --owner wlachance@mozilla.com --description "This DAG schedules queries for populating queries related to Mozilla's internal developer tooling (e.g. mozregression)." --start-date 2020-06-01 --tag impact/tier_3
 ```
@@ -253,20 +256,42 @@ For our example:
 ./bqetl query schema deploy org_mozilla_mozregression_derived.mozregression_aggregates_v1
 ```
 
-## Backfilling the dataset
+## Backfilling a table
 
-It is recommended to use the [bqetl backfill command](https://mozilla.github.io/bigquery-etl/bqetl/#backfill) in order to load the data in your new table, and set specific dates for large sets of data, as well as following the [recommended practices](https://mozilla.github.io/bigquery-etl/reference/recommended_practices/#backfills).
+**Note** For large sets of data, follow the [recommended practices](https://mozilla.github.io/bigquery-etl/reference/recommended_practices/#backfills) for backfills.
 
-```bash
-bqetl query backfill <dataset>.<table> --project_id=moz-fx-data-shared-prod -s <YYYY-MM-DD> -e <YYYY-MM-DD> -n 0
-```
+### Initiating the backfill:
 
-For our example:
-```bash
-./bqetl query backfill org_mozilla_mozregression_derived.mozregression_aggregates_v1 --project_id=moz-fx-data-shared-prod -s 2020-04-01 -e 2021-02-01
-```
+1. Create a backfill schedule entry to (re)-process data in your table:
 
-**Note**. Alternatively, you can trigger the Airflow DAG to backfill the data. In this case, it is recommended to talk to someone in in Data Engineering or Data SRE to trigger the DAG.
+  ```bash
+  bqetl backfill create <project>.<dataset>.<table> --start_date=<YYYY-MM-DD> --end_date=<YYYY-MM-DD>
+  ```
+
+  - If the backfill requires [shredder_mitigation](https://docs.telemetry.mozilla.org/cookbooks/data_modeling/shredder_mitigation) to maintain metrics stable, use the `--shredder_mitigation` parameter in the backfill command:
+  
+  ```bash
+  bqetl backfill create <project>.<dataset>.<table> --start_date=<YYYY-MM-DD> --end_date=<YYYY-MM-DD> --shredder_mitigation
+  ``` 
+
+2. Fill out the missing details:
+  - Watchers: Mozilla Emails for users that should be notified via Slack about backfill progress.
+  - Reason: Why are you backfilling this table?
+
+3. Open a Pull Request with the backfill entry, see [this example](https://github.com/mozilla/bigquery-etl/pull/5369). Once merged, you should receive a notification in around an hour that processing has started. Your backfill data will be temporarily placed in a staging location.
+
+4. Watchers need to join the #dataops-alerts Slack channel. They will be notified via Slack when processing is complete, and you can validate your backfill data.
+
+### Completing the backfill:
+
+1. Validate that the backfill data looks like what you expect (calculate important metrics, look for nulls, etc.)
+
+2. If the data is valid, open a Pull Request, setting the backfill status to Complete, see [this example](https://github.com/mozilla/bigquery-etl/pull/5352). Once merged, you should receive a notification in around an hour that swapping has started. Current production data will be backed up and the staging backfill data will be swapped into production.
+
+3. You will be notified when swapping is complete.
+
+
+**Note**. If your backfill is complex (backfill validation fails for e.g.), it is recommended to talk to someone in Data Engineering or Data SRE (#data-help) to process the backfill via the backfill DAG.
 
 ## Completing the Pull Request
 

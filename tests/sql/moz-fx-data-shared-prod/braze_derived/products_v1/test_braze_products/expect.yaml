@@ -1,0 +1,149 @@
+# expect braze products
+---
+# user 1
+- external_id: user_1
+  products:
+    - provider: Stripe
+      payment_provider: PayPal
+      product_name: product_1_name
+      service_name: service_1_name
+      subscription_plan_id: plan_1_id
+      subscription_product_id: product_1_id
+      subscription_started_at: 2020-01-01 10:00:00+00:00
+      subscription_summary: plan_1_summary
+      subscription_billing_interval: month
+      subscription_interval_count: 3
+      subscription_currency: USD
+      subscription_amount: 4.99
+      is_bundle: true
+      is_trial: false
+      is_active: true
+      subscription_status: active
+      subscription_country_code: us
+      subscription_country_name: United States
+      current_period_started_at: 2020-12-01 10:00:00+00:00
+      current_period_ends_at: 2020-12-30 10:00:00+00:00
+      is_auto_renew: true
+      has_refunds: false
+      has_fraudulent_charges: false
+      subscription_updated_at: 2020-12-01 10:00:00+00:00
+    - provider: Stripe
+      payment_provider: PayPal
+      product_name: product_2_name
+      service_name: service_2_name
+      subscription_plan_id: plan_2_id
+      subscription_product_id: product_2_id
+      subscription_started_at: 2020-12-01 10:00:00+00:00
+      subscription_ended_at: 2020-12-30 10:00:00+00:00
+      subscription_summary: plan_2_summary
+      subscription_billing_interval: month
+      subscription_interval_count: 2
+      subscription_currency: USD
+      subscription_amount: 2.99
+      is_bundle: false
+      is_trial: false
+      is_active: false
+      subscription_status: canceled
+      subscription_country_code: us
+      subscription_country_name: United States
+      is_auto_renew: false
+      auto_renew_disabled_at: 2020-12-01 10:00:00+00:00
+      has_refunds: false
+      has_fraudulent_charges: false
+      subscription_updated_at: 2020-12-01 10:00:00+00:00
+    - provider: Stripe
+      payment_provider: PayPal
+      product_name: product_3_name
+      service_name: service_3_name
+      subscription_plan_id: plan_3_id
+      subscription_product_id: product_3_id
+      subscription_started_at: 2020-01-01 10:00:00+00:00
+      subscription_ended_at: 2020-12-31 10:00:00+00:00
+      subscription_summary: plan_3_summary
+      subscription_billing_interval: month
+      subscription_interval_count: 3
+      subscription_currency: USD
+      subscription_amount: 1.99
+      is_bundle: false
+      is_trial: true
+      is_active: false
+      subscription_status: trialing
+      subscription_country_code: us
+      subscription_country_name: United States
+      is_auto_renew: false
+      has_refunds: false
+      has_fraudulent_charges: false
+      subscription_updated_at: 2020-12-01 10:00:00+00:00
+# user 2
+- external_id: user_2
+  products:
+    - provider: Stripe
+      payment_provider: PayPal
+      product_name: product_1_name
+      service_name: service_1_name
+      subscription_plan_id: plan_1_id
+      subscription_product_id: product_1_id
+      subscription_started_at: 2020-01-01 10:00:00+00:00
+      subscription_ended_at: 2020-12-31 10:00:00+00:00
+      subscription_summary: plan_1_summary
+      subscription_billing_interval: month
+      subscription_interval_count: 3
+      subscription_currency: USD
+      subscription_amount: 4.99
+      is_bundle: true
+      is_trial: false
+      is_active: true
+      subscription_status: active
+      subscription_country_code: us
+      subscription_country_name: United States
+      current_period_started_at: 2020-01-01 10:00:00+00:00
+      current_period_ends_at: 2021-01-01 10:00:00+00:00
+      is_auto_renew: true
+      has_refunds: false
+      has_fraudulent_charges: false
+      first_touch_impression_at: 2020-12-01 10:00:00+00:00
+      first_touch_entrypoint: first_entrypoint
+      first_touch_entrypoint_experiment: first_entrypoint_exp
+      first_touch_entrypoint_variation: first_entrypoint_var
+      first_touch_utm_campaign: first_campaign
+      first_touch_utm_content: first_content
+      first_touch_utm_medium: first_medium
+      first_touch_utm_source: first_source
+      first_touch_utm_term: first_term
+      last_touch_impression_at: 2020-12-01 10:00:00+00:00
+      last_touch_entrypoint: last_entrypoint
+      last_touch_entrypoint_experiment: last_entrypoint_exp
+      last_touch_entrypoint_variation: last_entrypoint_var
+      last_touch_utm_campaign: last_campaign
+      last_touch_utm_content: last_content
+      last_touch_utm_medium: last_medium
+      last_touch_utm_source: last_source
+      last_touch_utm_term: last_term
+      subscription_created_at: 2020-01-01 10:00:00+00:00
+      subscription_updated_at: 2020-02-01 10:00:00+00:00
+# user 3 no active subscriptions
+- external_id: user_3
+  products:
+    - provider: Stripe
+      payment_provider: PayPal
+      product_name: product_1_name
+      service_name: service_1_name
+      subscription_plan_id: plan_1_id
+      subscription_product_id: product_1_id
+      subscription_started_at: 2020-01-01 10:00:00+00:00
+      subscription_ended_at: 2020-12-31 10:00:00+00:00
+      subscription_summary: plan_1_summary
+      subscription_billing_interval: month
+      subscription_interval_count: 3
+      subscription_currency: USD
+      subscription_amount: 4.99
+      is_bundle: true
+      is_trial: false
+      is_active: false
+      subscription_status: inactive
+      subscription_country_code: us
+      subscription_country_name: United States
+      is_auto_renew: false
+      has_refunds: false
+      has_fraudulent_charges: false
+      subscription_updated_at: 2020-12-01 10:00:00+00:00

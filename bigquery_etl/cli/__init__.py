@@ -17,16 +17,17 @@ from ..cli.dryrun import dryrun
 from ..cli.format import format
 from ..cli.generate import generate
 from ..cli.metadata import metadata
+from ..cli.monitoring import monitoring
 from ..cli.query import query
 from ..cli.routine import mozfun, routine
 from ..cli.stage import stage
+from ..cli.static import static_
 from ..cli.view import view
 from ..config import ConfigLoader
 from ..copy_deduplicate import copy_deduplicate
 from ..dependency import dependency
 from ..docs import docs_
 from ..glam.cli import glam
-from ..static import static_
 from ..stripe import stripe_
 from ..subplat.apple import apple
 
@@ -54,6 +55,7 @@ def cli(prog_name=None):
         "backfill": backfill,
         "check": check,
         "metadata": metadata,
+        "monitoring": monitoring,
     }
 
     @click.group(commands=commands)

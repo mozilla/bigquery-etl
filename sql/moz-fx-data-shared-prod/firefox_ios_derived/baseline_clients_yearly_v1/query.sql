@@ -31,9 +31,38 @@
       -- 365 days for each usage criterion as an array of bytes. The
       -- rightmost bit represents whether the user was active in the current day.
       {% for usage_type, criterion in usage_types %}
-        udf.bool_to_365_bits({{ criterion }}) AS `days_{{ usage_type }}_bytes`,
+        `moz-fx-data-shared-prod.udf.bool_to_365_bits`(
+          {{ criterion }}
+        ) AS `days_{{ usage_type }}_bytes`,
       {% endfor %}
-      * EXCEPT (submission_date),
+      -- List cols explicitly here: the schema is static (schema.yaml),
+      -- and new columns added upstream will need to be manually added
+      normalized_app_id,
+      client_id,
+      sample_id,
+      first_run_date,
+      durations,
+      days_seen_session_start_bits,
+      days_seen_session_end_bits,
+      normalized_channel,
+      normalized_os,
+      normalized_os_version,
+      android_sdk_version,
+      locale,
+      city,
+      country,
+      app_build,
+      app_channel,
+      app_display_version,
+      architecture,
+      device_manufacturer,
+      device_model,
+      telemetry_sdk_build,
+      first_seen_date,
+      is_new_profile,
+      isp,
+      distribution_id,
+      geo_subdivision,
     FROM
       `moz-fx-data-shared-prod`.firefox_ios.baseline_clients_daily
     WHERE
@@ -49,7 +78,7 @@
     WHERE
       submission_date = DATE_SUB(@submission_date, INTERVAL 1 DAY)
       -- Filter out rows from yesterday that have now fallen outside the 365-day window.
-      AND BIT_COUNT(udf.shift_365_bits_one_day(days_seen_bytes)) > 0
+      AND BIT_COUNT(`moz-fx-data-shared-prod.udf.shift_365_bits_one_day`(days_seen_bytes)) > 0
       AND sample_id IS NOT NULL
   )
   --
@@ -57,7 +86,7 @@
     @submission_date AS submission_date,
     IF(_current.client_id IS NOT NULL, _current, _previous).* REPLACE (
       {% for usage_type, _ in usage_types %}
-        udf.combine_adjacent_days_365_bits(
+        `moz-fx-data-shared-prod.udf.combine_adjacent_days_365_bits`(
           _previous.`days_{{ usage_type }}_bytes`,
           _current.`days_{{ usage_type }}_bytes`
         ) AS `days_{{ usage_type }}_bytes` {{ "," if not loop.last }}

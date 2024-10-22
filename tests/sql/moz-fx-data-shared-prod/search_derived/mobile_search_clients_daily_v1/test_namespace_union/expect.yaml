@@ -9,9 +9,12 @@
   ad_click: 0
   ad_click_organic: 0
   search_with_ads: 0
+  search_with_ads_organic: 0
   unknown: 0
   country: US
-  os_version: '29'
+  os_version: '29.0'
+  os_version_major: 29
+  os_version_minor: 0
   engine: engine1
   source: actionbar
   search_count: 10
@@ -35,7 +38,9 @@
   channel: release
 - <<: *base
   os: iOS
-  os_version: "13.0"
+  os_version: '13.0'
+  os_version_major: 13
+  os_version_minor: 0
   client_id: b
   app_version: "31.0"
   app_name: Fennec
@@ -43,7 +48,9 @@
   channel: release
 - <<: *base
   os: iOS
-  os_version: "13.0"
+  os_version: '13.0'
+  os_version_major: 13
+  os_version_minor: 0
   client_id: b
   app_version: "31.0"
   app_name: Fennec
@@ -52,6 +59,8 @@
 - <<: *base
   os: iOS
   os_version: "13.0"
+  os_version_major: 13
+  os_version_minor: 0
   client_id: b
   app_version: "31.0"
   app_name: Fennec

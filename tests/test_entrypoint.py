@@ -31,12 +31,12 @@ class TestEntrypoint:
                 b"+---+-----+\n| a |  b  |\n+---+-----+\n| 1 | abc |\n+---+-----+\n"
                 in result
             )
-            assert b"No metadata.yaml found for {}" in result
+            assert b"No metadata.yaml found for " in result
         except subprocess.CalledProcessError as e:
             # running bq in CircleCI will fail since it's not installed
             # but the error output can be checked for whether bq was called
             assert b"No such file or directory: 'bq'" in e.output
-            assert b"No metadata.yaml found for {}" in e.output
+            assert b"No metadata.yaml found for " in e.output
             assert (
                 b'subprocess.check_call(["bq"] + query_arguments, stdin=query_stream)'
                 in e.output
@@ -72,12 +72,12 @@ class TestEntrypoint:
                 b"+---+---+---+\n| a | b | c |\n+---+---+---+\n| a | b | c |\n+---+---+---+"
                 in result
             )
-            assert b"No metadata.yaml found for {}" in result
+            assert b"No metadata.yaml found for " in result
         except subprocess.CalledProcessError as e:
             # running bq in CircleCI will fail since it's not installed
             # but the error output can be checked for whether bq was called
             assert b"No such file or directory: 'bq'" in e.output
-            assert b"No metadata.yaml found for {}" in e.output
+            assert b"No metadata.yaml found for " in e.output
             assert (
                 b'subprocess.check_call(["bq"] + query_arguments, stdin=query_stream)'
                 in e.output
@@ -113,7 +113,7 @@ class TestEntrypoint:
                 stderr=subprocess.STDOUT,
             )
             assert b"Current status: DONE" in result
-            assert b"No metadata.yaml found for {}" in result
+            assert b"No metadata.yaml found for " in result
 
             result = bigquery_client.query(
                 f"SELECT a FROM {project_id}.{temporary_dataset}.query_v1"
@@ -123,7 +123,7 @@ class TestEntrypoint:
                 assert row.a == "foo"
         except subprocess.CalledProcessError as e:
             assert b"No such file or directory: 'bq'" in e.output
-            assert b"No metadata.yaml found for {}" in e.output
+            assert b"No metadata.yaml found for " in e.output
             assert (
                 b'subprocess.check_call(["bq"] + query_arguments, stdin=query_stream)'
                 in e.output

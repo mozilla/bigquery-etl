@@ -2,4 +2,4 @@
 workgroup_access:
   - role: roles/bigquery.dataViewer
     members:
-      - workgroup:cloudops-managed/poucave
+      - workgroup:cloudops-managed/telescope

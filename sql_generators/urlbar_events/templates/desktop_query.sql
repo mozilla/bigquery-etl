@@ -53,6 +53,7 @@ WITH events_unnested AS (
     DATE(submission_timestamp) AS submission_date,
     client_info.client_id AS glean_client_id,
     metrics.uuid.legacy_telemetry_client_id AS legacy_telemetry_client_id,
+    metrics.uuid.legacy_telemetry_profile_group_id AS profile_group_id,
     sample_id,
     event.name AS event_name,
     timestamp AS event_timestamp,
@@ -69,10 +70,13 @@ WITH events_unnested AS (
     COALESCE(metrics.boolean.urlbar_pref_suggest_nonsponsored, FALSE) AS pref_fx_suggestions,
     mozfun.map.get_key(extra, "engagement_type") AS engagement_type,
     mozfun.map.get_key(extra, "interaction") AS interaction,
-    CAST(mozfun.map.get_key(extra, "n_chars") AS int) AS num_chars_typed,
-    CAST(mozfun.map.get_key(extra, "n_results") AS int) AS num_total_results,
+    SAFE_CAST(mozfun.map.get_key(extra, "n_chars") AS int) AS num_chars_typed,
+    SAFE_CAST(mozfun.map.get_key(extra, "n_results") AS int) AS num_total_results,
   --If 0, then no result was selected.
-    NULLIF(CAST(mozfun.map.get_key(extra, "selected_position") AS int), 0) AS selected_position,
+    NULLIF(
+      SAFE_CAST(mozfun.map.get_key(extra, "selected_position") AS int),
+      0
+    ) AS selected_position,
     mozfun.map.get_key(extra, "selected_result") AS selected_result,
     enumerated_array(
       SPLIT(mozfun.map.get_key(extra, "results"), ','),

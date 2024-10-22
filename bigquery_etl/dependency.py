@@ -39,24 +39,10 @@ def extract_table_references(sql: str) -> List[str]:
     if re.search(r"^\s*DECLARE\b", sql, flags=re.MULTILINE):
         return []
     # sqlglot parses UDFs with keyword names incorrectly:
-    # https://github.com/tobymao/sqlglot/issues/1535
+    # https://github.com/tobymao/sqlglot/issues/3332
     sql = re.sub(
-        r"\.(range|true|false|null)\(",
-        r".\1_(",
-        sql,
-        flags=re.IGNORECASE,
-    )
-    # sqlglot doesn't suppport OPTIONS on UDFs
-    sql = re.sub(
-        r"""OPTIONS\s*\(("([^"]|\\")*"|'([^']|\\')*'|[^)])*\)""",
-        "",
-        sql,
-        flags=re.MULTILINE | re.IGNORECASE,
-    )
-    # sqlglot doesn't fully support byte strings
-    sql = re.sub(
-        r"""b(["'])""",
-        r"\1",
+        r"\.(true|false|null)\(",
+        r".`\1`(",
         sql,
         flags=re.IGNORECASE,
     )

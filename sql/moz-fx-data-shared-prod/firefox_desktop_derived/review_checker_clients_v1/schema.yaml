@@ -38,3 +38,6 @@ fields:
 - name: is_fx_dau
   type: INTEGER
   mode: NULLABLE
+- name: profile_group_id
+  type: STRING
+  mode: NULLABLE

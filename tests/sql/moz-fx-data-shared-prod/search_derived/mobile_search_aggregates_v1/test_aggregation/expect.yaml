@@ -19,7 +19,9 @@
   ad_click: 0
   ad_click_organic: 0
   search_with_ads: 0
+  search_with_ads_organic: 0
   unknown: 0
+  normalized_app_name_os: 'Firefox Android'
 - <<: *base
   engine: engine1
   source: suggestion
@@ -32,6 +34,7 @@
   os_version: '29'
   client_count: 1
   search_count: 1
+  normalized_app_name_os: 'Firefox Android'
 - <<: *base
   engine: engine2
   source: suggestion
@@ -44,6 +47,7 @@
   os_version: '29'
   client_count: 1
   search_count: 5
+  normalized_app_name_os: 'Firefox Android'
 - <<: *base
   engine: engine2
   source: suggestion
@@ -55,6 +59,7 @@
   os_version: '29'
   client_count: 1
   search_count: 3
+  normalized_app_name_os: 'Firefox Android'
 - <<: *base
   engine: engine1
   source: in-content.organic.none
@@ -68,6 +73,7 @@
   client_count: 1
   search_count: 0
   organic: 4
+  normalized_app_name_os: 'Legacy Firefox Android'
 - <<: *base
   engine: engine2
   source: actionbar
@@ -80,6 +86,7 @@
   os_version: '26'
   client_count: 1
   search_count: 1
+  normalized_app_name_os: 'Legacy Firefox Android'
 - <<: *base
   engine: engine1
   source: actionbar
@@ -92,6 +99,7 @@
   os_version: '26'
   client_count: 1
   search_count: 3
+  normalized_app_name_os: 'Legacy Firefox Android'
 - <<: *base
   engine: engine2
   source: in-content.sap.none
@@ -109,3 +117,4 @@
   ad_click: 9
   search_with_ads: 11
   unknown: 13
+  normalized_app_name_os: 'Legacy Firefox Android'

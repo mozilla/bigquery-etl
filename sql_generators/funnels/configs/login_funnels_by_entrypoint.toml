@@ -1,0 +1,55 @@
+destination_dataset = "accounts_frontend_derived"
+platform = "accounts_frontend"
+owners = ["ksiegler@mozilla.org"]  # optional; users getting notification if funnel run fails
+version = "1"  # optional; default is set to 1
+# start_date = "2024-01-01"
+
+[funnels]
+
+[funnels.login_complete_by_service]
+
+friendly_name = "Login Funnel Conversion by Service"
+description = "Overall login funnel conversion rates by Service"
+steps = ["login_view", "login_complete"]
+dimensions = ["entrypoint"]
+
+[steps]
+
+[steps.login_view]
+friendly_name = "Login View Form"
+description = "View of the login form"
+data_source = "events_stream_frontend"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'login.view' AND metrics.string.session_flow_id != ''"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.login_complete]
+friendly_name = "Successful Login Completion"
+description = "The login flow was completed successfully"
+data_source = "events_stream_backend"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'login.complete' AND metrics.string.session_flow_id != ''"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[data_sources]
+
+[data_sources.events_stream_frontend]
+from_expression = "mozdata.accounts_frontend.events_stream"
+submission_date_column = "DATE(submission_timestamp)"
+client_id_column = "metrics.string.account_user_id_sha256"
+
+[data_sources.events_stream_backend]
+from_expression = "mozdata.accounts_backend.events_stream"
+submission_date_column = "DATE(submission_timestamp)"
+client_id_column = "metrics.string.account_user_id_sha256"
+
+[dimensions]
+
+[dimensions.entrypoint]
+data_source = "events_stream_frontend"
+select_expression = "metrics.string.session_entrypoint"
+friendly_name = "Entrypoint"
+description = "Entrypoint for session"
+client_id_column = "metrics.string.account_user_id_sha256"

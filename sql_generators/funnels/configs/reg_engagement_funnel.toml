@@ -1,0 +1,178 @@
+destination_dataset = "accounts_frontend_derived"
+platform = "accounts_frontend"
+owners = ["ksiegler@mozilla.org"]  # optional; users getting notification if funnel run fails
+version = "1"
+start_date = "2024-07-10"
+
+[funnels]
+
+[funnels.registration_password_age_engage]
+
+friendly_name = "Registration Funnel Engagement with Password and Age Field"
+description = "Engagement with the password and/or age field of registration form - not split out by either password/age"
+steps = ["reg_view", "reg_password_age_engage"]
+dimensions = ["service"]
+
+[funnels.registration_create_account_submit]
+
+friendly_name = "Registration Funnel Attempt of Submission of the Create Account Form"
+description = "Engagement with the Create account button on the registration form"
+steps = ["reg_view", "reg_create_account_submit"]
+dimensions = ["service"]
+
+[funnels.registration_create_account_submit_success]
+
+friendly_name = "Registration Funnel Successful Submission of the Create Account Form"
+description = "Successful submission of the create account registration form for the traditional funnel"
+steps = ["reg_view", "reg_create_account_submit_success"]
+dimensions = ["service"]
+
+[funnels.registration_change_email_engage]
+
+friendly_name = "Registration Funnel Engagement with Change Email Link"
+description = "Clicks on the change email link on the registration form"
+steps = ["reg_view", "reg_change_email_engage"]
+dimensions = ["service"]
+
+[funnels.registration_whydoweask_engage]
+
+friendly_name = "Registration Funnel Engagement with Why do we ask Link"
+description = "Clicks on the Why do we ask link on the registration form"
+steps = ["reg_view", "reg_whydoweask_engage"]
+dimensions = ["service"]
+
+[funnels.registration_marketing_engage]
+
+friendly_name = "Registration Funnel Engagement with options in Marketing Section"
+description = "Engagement with any options in the marketing section of the registration form"
+steps = ["reg_view", "reg_marketing_engage"]
+dimensions = ["service"]
+
+[funnels.registration_cwts_engage]
+
+friendly_name = "Registration Funnel CWST Engagement"
+description = "Engagement with any options in the Choose what to Sync section of the Sync registration form"
+steps = ["reg_view", "reg_cwts_engage"]
+dimensions = ["service"]
+
+[funnels.registration_google_engage]
+
+friendly_name = "Registration Funnel Engagement with Google Third Party Auth Link"
+description = "Clicks on the third party auth Google link"
+steps = ["reg_view", "reg_google_engage"]
+dimensions = ["service"]
+
+[funnels.registration_apple_engage]
+
+friendly_name = "Registration Funnel Engagement with Apple Third Party Auth Link"
+description = "Clicks on the third party auth Apple link"
+steps = ["reg_view", "reg_apple_engage"]
+dimensions = ["service"]
+
+[steps]
+
+[steps.reg_view]
+friendly_name = "Registration View Form"
+description = "View of the registration form requesting password creation and age"
+data_source = "events_stream"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'reg.view' AND metrics.string.session_flow_id != ''"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.reg_password_age_engage]
+friendly_name = "Registration Password/Age Engage"
+description = "Engagement with the Password or Age field on registration form"
+data_source = "events_stream"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'reg.engage' AND metrics.string.session_flow_id != ''"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.reg_create_account_submit]
+friendly_name = "Registration Create Account Submit"
+description = "Submission of the create account registration form"
+data_source = "events_stream"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'reg.submit' AND metrics.string.session_flow_id != ''"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.reg_create_account_submit_success]
+friendly_name = "Registration Create Account Submit Success"
+description = "Successful submission of the create account registration form"
+data_source = "events_stream"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'reg.submit_success' AND metrics.string.session_flow_id != ''"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.reg_change_email_engage]
+friendly_name = "Registration Create Account Submit"
+description = "Click on the change email link"
+data_source = "events_stream"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'reg.change_email_link_click' AND metrics.string.session_flow_id != ''"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.reg_whydoweask_engage]
+friendly_name = "Registration Why do we ask Engage"
+description = "Click on the why do we ask link"
+data_source = "events_stream"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'reg.why_do_we_ask_link_click' AND metrics.string.session_flow_id != ''"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.reg_marketing_engage]
+friendly_name = "Registration Marketing Engagement"
+description = "Engagement with marketing section on registration form"
+data_source = "events_stream"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'reg.marketing_engage' AND metrics.string.session_flow_id != ''"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.reg_cwts_engage]
+friendly_name = "Registration Choose What to Sync Engagement"
+description = "Engagement with CWTS section on registration form"
+data_source = "events_stream"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'reg.cwts_engage' AND metrics.string.session_flow_id != ''"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.reg_google_engage]
+friendly_name = "Registration Google Auth Engagement"
+description = "Clicking on the Google third party auth link"
+data_source = "events_stream"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'third_party_auth.google_reg_start' AND metrics.string.session_flow_id != ''"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.reg_apple_engage]
+friendly_name = "Registration Apple Auth Engagement"
+description = "Clicking on the Apple third party auth link"
+data_source = "events_stream"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'third_party_auth.apple_reg_start' AND metrics.string.session_flow_id != ''"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[data_sources]
+
+[data_sources.events_stream]
+from_expression = "mozdata.accounts_frontend.events_stream"
+submission_date_column = "DATE(submission_timestamp)"
+client_id_column = "metrics.string.account_user_id_sha256"
+
+[dimensions]
+
+[dimensions.service]
+data_source = "events_stream"
+select_expression = "IF(COALESCE(NULLIF(metrics.string.relying_party_oauth_client_id, ''), NULLIF(metrics.string.relying_party_service, '')) = 'sync', '5882386c6d801776', COALESCE(NULLIF(metrics.string.relying_party_oauth_client_id, ''), NULLIF(metrics.string.relying_party_service, '')))"
+friendly_name = "Service"
+description = "Oauth Client ID is used to map to service name for which service the user logged in through"
+client_id_column = "client_info.client_id"

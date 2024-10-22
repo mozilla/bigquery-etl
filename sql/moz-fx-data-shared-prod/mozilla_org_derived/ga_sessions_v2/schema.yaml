@@ -109,6 +109,10 @@ fields:
   type: BOOLEAN
   mode: NULLABLE
   description: "Whether this session had a download event for Firefox."
+- name: firefox_desktop_downloads
+  type: INT64
+  mode: NULLABLE
+  description: "The number of firefox desktop downloads during this session."
 - name: last_reported_install_target
   type: STRING
   mode: NULLABLE
@@ -129,3 +133,11 @@ fields:
   type: STRING
   mode: NULLABLE
   description: "The first reported landing screen for this session. Most sessions only have one, so this is a safe value to use."
+- name: distinct_campaigns_from_event_params
+  type: STRING
+  mode: REPEATED
+  description: "All non-null reported campaigns from event_params for this session."
+- name: first_campaign_from_event_params
+  type: STRING
+  mode: NULLABLE
+  description: "The first reported campaign from event_params for this session."

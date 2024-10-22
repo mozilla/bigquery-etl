@@ -14,6 +14,13 @@ labels:
 scheduling:
   dag_name: bqetl_glean_usage
   task_group: {{ app_name }}
+  # Use backfill-2 project for on-demand query billing
+  arguments: [
+    "--billing-project", "moz-fx-data-backfill-2",
+    {%- if metrics_as_struct %}
+    "--schema_update_option", "ALLOW_FIELD_ADDITION",
+    {%- endif %}
+  ]
 bigquery:
   time_partitioning:
     type: day
@@ -23,3 +30,4 @@ bigquery:
     fields:
     - sample_id
     - event_category
+    - client_id

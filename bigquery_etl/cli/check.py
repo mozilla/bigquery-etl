@@ -199,7 +199,7 @@ def run(ctx, dataset, project_id, sql_dir, marker, dry_run):
     """Run a check."""
     if not is_authenticated():
         click.echo(
-            "Authentication to GCP required. Run `gcloud auth login` "
+            "Authentication to GCP required. Run `gcloud auth login  --update-adc` "
             "and check that the project is set correctly."
         )
         sys.exit(1)

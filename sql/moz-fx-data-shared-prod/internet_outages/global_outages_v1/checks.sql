@@ -1,10 +1,10 @@
-#fail
+#warn
 {{ min_row_count(1000, where="DATE(datetime) = @submission_date") }}
 
-#fail
+#warn
 {{ is_unique(columns=["datetime", "city", "country"], where="DATE(`datetime`) = @submission_date") }}
 
-#fail
+#warn
 /*
   This statement used to contain the following fields,
   but these are sometimes missing from country/city combinations

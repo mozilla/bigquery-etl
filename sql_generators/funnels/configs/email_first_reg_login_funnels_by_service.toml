@@ -1,0 +1,88 @@
+destination_dataset = "accounts_frontend_derived"
+platform = "accounts_frontend"
+owners = ["ksiegler@mozilla.org"]
+version = "1"
+
+[funnels]
+
+[funnels.email_first_login_success_by_service]
+
+friendly_name = "Login Funnel Conversion from Email First"
+description = "Overall login funnel conversion rate starting from email first"
+steps = ["email_first_view", "login_view", "login_success"]
+dimensions = ["service"]
+
+[funnels.email_first_registration_success_by_service]
+
+friendly_name = "Registration Funnel Conversion from Email First"
+description = "Overall registration funnel conversion rate starting from email first"
+steps = ["email_first_view", "reg_view", "reg_success"]
+dimensions = ["service"]
+
+[steps]
+
+[steps.email_first_view]
+friendly_name = "Email First View"
+description = "View of the email_first form requesting email for registration or login"
+data_source = "accounts_frontend"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'email.first_view'"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.login_view]
+friendly_name = "Login View Form"
+description = "View of the login form requesting password"
+data_source = "accounts_frontend"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'login.view'"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.login_success]
+friendly_name = "Successful Login Submission"
+description = "Successful submission of the login form"
+data_source = "accounts_frontend"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'login.submit_success'"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.reg_view]
+friendly_name = "Registration View Form"
+description = "View of the registration form requesting password creation and age"
+data_source = "accounts_frontend"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'reg.view'"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.reg_success]
+friendly_name = "Registration Completed"
+description = "Account was successfully created"
+data_source = "accounts_backend"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'reg.complete'"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[data_sources]
+
+[data_sources.accounts_frontend]
+from_expression = "mozdata.accounts_frontend.events_stream"
+submission_date_column = "DATE(submission_timestamp)"
+client_id_column = "client_id"
+
+[data_sources.accounts_backend]
+from_expression = "mozdata.accounts_backend.events_stream"
+submission_date_column = "DATE(submission_timestamp)"
+client_id_column = "client_id"
+
+[dimensions]
+
+[dimensions.service]
+data_source = "accounts_frontend"
+select_expression = "IF(COALESCE(NULLIF(metrics.string.relying_party_oauth_client_id, ''), NULLIF(metrics.string.relying_party_service, '')) = 'sync', '5882386c6d801776', COALESCE(NULLIF(metrics.string.relying_party_oauth_client_id, ''), NULLIF(metrics.string.relying_party_service, '')))"
+friendly_name = "Service"
+description = "Oauth Client ID is used to map to service name for which service the user logged in through"
+client_id_column = "client_id"

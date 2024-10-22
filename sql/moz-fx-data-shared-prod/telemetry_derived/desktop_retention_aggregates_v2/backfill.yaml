@@ -1,0 +1,10 @@
+2024-09-19:
+  start_date: 2016-01-01
+  end_date: 2024-09-16
+  reason: DENG 4177 backfill desktop_retention_v2
+  watchers:
+  - mhirose@mozilla.com
+  - wchan@mozilla.com
+  - vsabino@mozilla.com
+  status: Complete
+  shredder_mitigation: false

@@ -246,6 +246,12 @@ glean_flattened_searches AS (
             SUBSTR(search.key, STRPOS(search.key, '.') + 1),
             search.search_type
           )
+      WHEN search.search_type = 'search-with-ads'
+        THEN IF(
+            REGEXP_CONTAINS(search.key, '\\.'),
+            SUBSTR(search.key, STRPOS(search.key, '.') + 1),
+            search.search_type
+          )
       ELSE search.search_type
     END AS source,
 
@@ -304,6 +310,8 @@ combined_search_clients AS (
     CASE
       WHEN search_type = 'ad-click'
         THEN IF(STARTS_WITH(source, 'in-content.organic'), 'ad-click-organic', search_type)
+      WHEN search_type = 'search-with-ads'
+        THEN IF(STARTS_WITH(source, 'in-content.organic'), 'search-with-ads-organic', search_type)
       WHEN STARTS_WITH(source, 'in-content.sap.')
         THEN 'tagged-sap'
       WHEN REGEXP_CONTAINS(source, '^in-content.*-follow-on')
@@ -369,6 +377,15 @@ unfiltered_search_clients AS (
       IF(search_type != 'search-with-ads' OR engine IS NULL OR search_count > 10000, 0, search_count)
     ) AS search_with_ads,
     SUM(
+      IF(
+        search_type != 'search-with-ads-organic'
+        OR engine IS NULL
+        OR search_count > 10000,
+        0,
+        search_count
+      )
+    ) AS search_with_ads_organic,
+    SUM(
       IF(search_type != 'unknown' OR engine IS NULL OR search_count > 10000, 0, search_count)
     ) AS unknown,
     udf.mode_last(ARRAY_AGG(country)) AS country,
@@ -377,6 +394,14 @@ unfiltered_search_clients AS (
     channel,
     udf.mode_last(ARRAY_AGG(os)) AS os,
     udf.mode_last(ARRAY_AGG(os_version)) AS os_version,
+    COALESCE(
+      SAFE_CAST(NULLIF(SPLIT(udf.mode_last(ARRAY_AGG(os_version)), ".")[SAFE_OFFSET(0)], "") AS INTEGER),
+      0
+    ) AS os_version_major,
+    COALESCE(
+      SAFE_CAST(NULLIF(SPLIT(udf.mode_last(ARRAY_AGG(os_version)), ".")[SAFE_OFFSET(1)], "") AS INTEGER),
+      0
+    ) AS os_version_minor,
     udf.mode_last(ARRAY_AGG(default_search_engine)) AS default_search_engine,
     udf.mode_last(
       ARRAY_AGG(default_search_engine_submission_url)

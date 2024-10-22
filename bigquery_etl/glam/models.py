@@ -130,6 +130,7 @@ def probe_counts(**kwargs):
 
     return dict(
         attributes=",".join(attributes),
+        attributes_no_os=",".join([attr for attr in attributes if attr != "os"]),
         aggregate_attributes="""
             metric,
             metric_type,
@@ -148,26 +149,6 @@ def probe_counts(**kwargs):
         """,
         boolean_metric_types="""
             "boolean"
-        """,
-        **kwargs,
-    )
-
-
-def scalar_percentiles(**kwargs):
-    """Variables for scalar percentiles."""
-    attributes = ["ping_type", "os", "app_version", "app_build_id", "channel"]
-    fixed_attributes = ["app_version", "channel"]
-    cubed_attributes = [x for x in attributes if x not in fixed_attributes]
-
-    return dict(
-        # TODO: be consistent with naming of attributes (e.g. attributes_list)
-        attributes=attributes,
-        cubed_attributes=cubed_attributes,
-        attribute_combinations=compute_datacube_groupings(cubed_attributes),
-        aggregate_attributes="""
-            metric,
-            metric_type,
-            key
         """,
         **kwargs,
     )

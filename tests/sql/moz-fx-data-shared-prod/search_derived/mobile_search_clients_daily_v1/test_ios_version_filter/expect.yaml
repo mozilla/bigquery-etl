@@ -9,6 +9,7 @@
   ad_click: 0
   ad_click_organic: 0
   search_with_ads: 0
+  search_with_ads_organic: 0
   unknown: 0
   locale: en-US
   app_version: "30.0"
@@ -17,7 +18,9 @@
   channel: release
   country: US
   os: iOS
-  os_version: "13"
+  os_version: "13.0"
+  os_version_major: 13
+  os_version_minor: 0
   profile_creation_date: 18201
   profile_age_in_days: 30
   sample_id: 1
@@ -34,3 +37,4 @@
   source: actionbar
   engine: engine1
   search_count: 1
+  os_version: "13.0"

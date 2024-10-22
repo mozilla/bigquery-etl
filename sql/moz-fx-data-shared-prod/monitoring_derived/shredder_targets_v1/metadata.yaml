@@ -1,0 +1,17 @@
+friendly_name: Shredder Targets
+description: |-
+  Daily list of shredder deletion targets comparing the configured targets with
+  the lineage of found id tables in bigquery.
+owners:
+  - bewu@mozilla.com
+labels:
+  incremental: true
+  owner1: benwu
+scheduling:
+  dag_name: bqetl_shredder_monitoring
+  arguments: ["--output-table", "moz-fx-data-shared-prod.monitoring_derived.shredder_targets_v1", "--run-date", "{{ ds }}"]
+bigquery:
+  time_partitioning:
+    type: day
+    field: run_date
+    require_partition_filter: true

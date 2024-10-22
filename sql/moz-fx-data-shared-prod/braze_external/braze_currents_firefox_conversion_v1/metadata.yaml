@@ -1,0 +1,21 @@
+friendly_name: Braze Currents - Firefox - Conversion
+description: |-
+  Braze Conversions from the Firefox workspace.
+  Braze sends data in currents to GCS. These tables are build from those files.
+  The tables are rebuild every day.
+owners:
+- cbeck@mozilla.com
+labels:
+  incremental: false
+  owner1: leli
+scheduling:
+  dag_name: bqetl_braze_currents
+  arguments:
+  - --destination-project=moz-fx-data-shared-prod
+  - --destination-dataset=braze_external
+  - --destination-table=braze_currents_firefox_conversion_v1
+  - --source-bucket=moz-fx-data-marketing-prod-braze-firefox
+  - --source-prefix=currents/dataexport.prod-05.GCS.integration.65fdf55eea9932004d7fb071
+  - --event-type=users.campaigns.Conversion
+bigquery: null
+references: {}

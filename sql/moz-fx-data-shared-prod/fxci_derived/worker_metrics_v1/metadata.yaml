@@ -1,0 +1,21 @@
+friendly_name: Firefox-CI Worker Metrics
+description: |-
+  Derived Firefox-CI worker metrics exported from Google Cloud Monitoring.
+owners:
+- ahalberstadt@mozilla.com
+labels:
+  incremental: true
+  owner1: ahalberstadt
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields:
+    - project
+    - zone
+    - instance_id
+references: {}

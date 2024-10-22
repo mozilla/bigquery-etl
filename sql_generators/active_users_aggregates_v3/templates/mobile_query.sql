@@ -1,28 +1,32 @@
 --- Query generated via sql_generators.active_users.
-WITH attribution_data AS (
-  SELECT
-    client_id,
-    adjust_network,
-    install_source
-  FROM
-    fenix.firefox_android_clients
-  UNION ALL
-  SELECT
-    client_id,
-    adjust_network,
-    CAST(NULL AS STRING) install_source
-  FROM
-    firefox_ios.firefox_ios_clients
-),
+WITH
+{% if app_name == "fenix"%}
+  attribution_data AS (
+    SELECT
+      client_id,
+      adjust_network,
+      install_source
+    FROM
+      fenix.firefox_android_clients
+  ),
+{% endif %}
+{% if app_name == "firefox_ios"%}
+  attribution_data AS (
+    SELECT
+      client_id,
+      adjust_network,
+      CAST(NULL AS STRING) install_source
+    FROM
+      firefox_ios.firefox_ios_clients
+  ),
+{% endif %}
 baseline AS (
   SELECT
     submission_date,
     normalized_channel,
     client_id,
-    days_since_seen,
-    days_seen_bits,
+    days_active_bits,
     days_created_profile_bits,
-    durations,
     normalized_os,
     normalized_os_version,
     locale,
@@ -32,85 +36,65 @@ baseline AS (
     device_model,
     first_seen_date,
     submission_date = first_seen_date AS is_new_profile,
-    uri_count,
-    is_default_browser,
-    CAST(NULL AS string) AS distribution_id,
+    {% if app_name == "fenix"%}
+      distribution_id,
+    {% else %}
+      CAST(NULL AS string) AS distribution_id,
+    {% endif %}
     isp,
-    IF(
-      isp = 'BrowserStack',
-      CONCAT('{{ app_value }}', ' BrowserStack'),
-      '{{ app_value }}'
-    ) AS app_name
+    app_name,
+    activity_segment AS segment,
+    is_daily_user,
+    is_weekly_user,
+    is_monthly_user,
+    is_dau,
+    is_wau,
+    is_mau
   FROM
-    `{{ project_id }}.{{ app_name }}.clients_last_seen_joined`
+    `{{ project_id }}.{{ app_name }}.active_users`
   WHERE
     submission_date = @submission_date
 ),
-search_clients AS (
+metrics AS (
+    -- Metrics ping may arrive in the same or next day as the baseline ping.
   SELECT
     client_id,
-    submission_date,
-    ad_click,
-    organic,
-    search_count,
-    search_with_ads
+    ARRAY_AGG(normalized_channel IGNORE NULLS ORDER BY submission_date ASC)[
+      SAFE_OFFSET(0)
+    ] AS normalized_channel,
+    {% if app_name == "klar_android"%}
+      CAST(NULL AS INTEGER) AS uri_count,
+      CAST(NULL AS BOOL) AS is_default_browser,
+    {% else %}
+      ARRAY_AGG(uri_count IGNORE NULLS ORDER BY submission_date ASC)[SAFE_OFFSET(0)] AS uri_count,
+      ARRAY_AGG(is_default_browser IGNORE NULLS ORDER BY submission_date ASC)[
+        SAFE_OFFSET(0)
+      ] AS is_default_browser
+    {% endif %}
   FROM
-    `moz-fx-data-shared-prod.search_derived.mobile_search_clients_daily_v1`
+    `{{ project_id }}.{{ app_name }}.metrics_clients_last_seen`
   WHERE
-    submission_date = @submission_date
-),
-search_metrics AS (
-  SELECT
-    baseline.client_id,
-    baseline.submission_date,
-    SUM(ad_click) AS ad_clicks,
-    SUM(organic) AS organic_search_count,
-    SUM(search_count) AS search_count,
-    SUM(search_with_ads) AS search_with_ads
-  FROM
-    baseline
-  LEFT JOIN
-    search_clients s
-    ON baseline.client_id = s.client_id
-    AND baseline.submission_date = s.submission_date
+    DATE(submission_date)
+    BETWEEN @submission_date
+    AND DATE_ADD(@submission_date, INTERVAL 1 DAY)
   GROUP BY
-    client_id,
-    submission_date
+    client_id
 ),
-baseline_with_searches AS (
+unioned AS (
   SELECT
     baseline.client_id,
-    CASE
-      WHEN BIT_COUNT(days_seen_bits)
-        BETWEEN 1
-        AND 6
-        THEN 'infrequent_user'
-      WHEN BIT_COUNT(days_seen_bits)
-        BETWEEN 7
-        AND 13
-        THEN 'casual_user'
-      WHEN BIT_COUNT(days_seen_bits)
-        BETWEEN 14
-        AND 20
-        THEN 'regular_user'
-      WHEN BIT_COUNT(days_seen_bits) >= 21
-        THEN 'core_user'
-      ELSE 'other'
-    END AS activity_segment,
+    baseline.segment,
     baseline.app_name,
     baseline.app_display_version AS app_version,
     baseline.normalized_channel,
-    IFNULL(country, '??') country,
+    IFNULL(baseline.country, '??') country,
     baseline.city,
-    baseline.days_seen_bits,
     baseline.days_created_profile_bits,
-    DATE_DIFF(baseline.submission_date, baseline.first_seen_date, DAY) AS days_since_first_seen,
     baseline.device_model,
     baseline.isp,
     baseline.is_new_profile,
     baseline.locale,
     baseline.first_seen_date,
-    baseline.days_since_seen,
     baseline.normalized_os,
     baseline.normalized_os_version,
     COALESCE(
@@ -125,10 +109,9 @@ baseline_with_searches AS (
       SAFE_CAST(NULLIF(SPLIT(baseline.normalized_os_version, ".")[SAFE_OFFSET(2)], "") AS INTEGER),
       0
     ) AS os_version_patch,
-    baseline.durations AS durations,
     baseline.submission_date,
-    baseline.uri_count,
-    baseline.is_default_browser,
+    metrics.uri_count,
+    metrics.is_default_browser,
     baseline.distribution_id,
     CAST(NULL AS string) AS attribution_content,
     CAST(NULL AS string) AS attribution_source,
@@ -136,32 +119,41 @@ baseline_with_searches AS (
     CAST(NULL AS string) AS attribution_campaign,
     CAST(NULL AS string) AS attribution_experiment,
     CAST(NULL AS string) AS attribution_variation,
-    search.ad_clicks,
-    search.organic_search_count,
-    search.search_count,
-    search.search_with_ads,
-    CAST(NULL AS FLOAT64) AS active_hours_sum
+    CAST(NULL AS FLOAT64) AS active_hours_sum,
+    is_daily_user,
+    is_weekly_user,
+    is_monthly_user,
+    is_dau,
+    is_wau,
+    is_mau
   FROM
     baseline
   LEFT JOIN
-    search_metrics search
-    ON search.client_id = baseline.client_id
-    AND search.submission_date = baseline.submission_date
+    metrics
+    ON baseline.client_id = metrics.client_id
+    AND baseline.normalized_channel IS NOT DISTINCT FROM metrics.normalized_channel
 ),
-baseline_with_searches_and_attribution AS (
+unioned_with_attribution AS (
   SELECT
-    baseline.*,
-    attribution_data.install_source,
-    attribution_data.adjust_network
+    unioned.*,
+    {% if app_name == "fenix" or  app_name == "firefox_ios" %}
+      attribution_data.install_source,
+      attribution_data.adjust_network
+    {% else %}
+      CAST(NULL AS STRING) AS install_source,
+      CAST(NULL AS STRING) AS adjust_network
+    {% endif %}
   FROM
-    baseline_with_searches baseline
-  LEFT JOIN
-    attribution_data
-    USING (client_id)
+    unioned
+    {% if app_name == "fenix" or  app_name == "firefox_ios" %}
+      LEFT JOIN
+        attribution_data
+        USING (client_id)
+    {% endif %}
 ),
 todays_metrics AS (
   SELECT
-    activity_segment AS segment,
+    segment,
     app_version,
     attribution_medium,
     attribution_source,
@@ -179,81 +171,42 @@ todays_metrics AS (
     normalized_os_version AS os_version,
     os_version_major,
     os_version_minor,
-    durations,
     submission_date,
-    days_since_seen,
     client_id,
-    first_seen_date,
-    ad_clicks,
-    organic_search_count,
-    search_count,
-    search_with_ads,
     uri_count,
     active_hours_sum,
     adjust_network,
-    install_source
+    install_source,
+    is_daily_user,
+    is_weekly_user,
+    is_monthly_user,
+    is_dau,
+    is_wau,
+    is_mau
   FROM
-    baseline_with_searches_and_attribution
-),
-todays_metrics_enriched AS (
-  SELECT
-    todays_metrics.* EXCEPT (locale),
-    CASE
-      WHEN locale IS NOT NULL
-        AND languages.language_name IS NULL
-        THEN 'Other'
-      ELSE languages.language_name
-    END AS language_name,
-  FROM
-    todays_metrics
-  LEFT JOIN
-    `mozdata.static.csa_gblmkt_languages` AS languages
-    ON todays_metrics.locale = languages.code
+    unioned_with_attribution
 )
 SELECT
-  todays_metrics_enriched.* EXCEPT (
+  todays_metrics.* EXCEPT (
     client_id,
-    days_since_seen,
-    ad_clicks,
-    organic_search_count,
-    search_count,
-    search_with_ads,
+    is_daily_user,
+    is_weekly_user,
+    is_monthly_user,
+    is_dau,
+    is_wau,
+    is_mau,
     uri_count,
-    active_hours_sum,
-    first_seen_date,
-    durations
+    active_hours_sum
   ),
-  COUNT(DISTINCT IF(days_since_seen = 0, client_id, NULL)) AS daily_users,
-  COUNT(DISTINCT IF(days_since_seen < 7, client_id, NULL)) AS weekly_users,
-  COUNT(DISTINCT client_id) AS monthly_users,
-  COUNT(DISTINCT IF(days_since_seen = 0 AND durations > 0, client_id, NULL)) AS dau,
-  COUNT(DISTINCT IF(submission_date = first_seen_date, client_id, NULL)) AS new_profiles,
-  SUM(ad_clicks) AS ad_clicks,
-  SUM(organic_search_count) AS organic_search_count,
-  SUM(search_count) AS search_count,
-  SUM(search_with_ads) AS search_with_ads,
+  COUNTIF(is_daily_user) AS daily_users,
+  COUNTIF(is_weekly_user) AS weekly_users,
+  COUNTIF(is_monthly_user) AS monthly_users,
+  COUNTIF(is_dau) AS dau,
+  COUNTIF(is_wau) AS wau,
+  COUNTIF(is_mau) AS mau,
   SUM(uri_count) AS uri_count,
   SUM(active_hours_sum) AS active_hours,
 FROM
-  todays_metrics_enriched
+  todays_metrics
 GROUP BY
-  app_version,
-  attribution_medium,
-  attribution_source,
-  attributed,
-  city,
-  country,
-  distribution_id,
-  first_seen_year,
-  is_default_browser,
-  language_name,
-  app_name,
-  channel,
-  os,
-  os_version,
-  os_version_major,
-  os_version_minor,
-  submission_date,
-  segment,
-  adjust_network,
-  install_source
+  ALL

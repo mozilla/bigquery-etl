@@ -1,0 +1,38 @@
+# expect
+---
+# User 1 only on Acoustic
+- email: user1@email.com
+  suppressed_timestamp: 2020-01-01 00:00:00+00:00
+  suppression_reason: bounced
+  suppression_source: Acoustic
+# User 2 Acoustic and braze unsubscribe
+- email: user2@email.com
+  suppressed_timestamp: 2020-02-01 00:00:00+00:00
+  suppression_source: Acoustic
+# User 3 Acoustic and braze unsubscribe and braze firefox hard bounce
+- email: user3@email.com
+  suppressed_timestamp: 2020-03-01 00:00:00+00:00
+  suppression_source: Acoustic
+# User 4 Acoustic, braze unsubscribe, braze firefox hard bounce and MoFo
+- email: user4@email.com
+  suppressed_timestamp: 2020-04-01 00:00:00+00:00
+  suppression_source: Acoustic
+# User 5 braze firefox unsubscribe
+- email: user5@email.com
+  suppressed_timestamp: 2021-05-01 00:00:00+00:00
+  suppression_reason: clicked header
+  suppression_source: Braze Firefox unsubscribe
+# User 6 braze Firefox hard bounce
+- email: user6@emil.com
+  suppressed_timestamp: 2022-06-01 00:00:00+00:00
+  suppression_reason: hard bounce
+  suppression_source: Braze Firefox hard bounce
+# User 7 MoFo
+- email: user7@email.com
+  suppressed_timestamp: 2023-07-01 00:00:00+00:00
+  suppression_source: Campaign Monitor
+# User 8 braze Mozilla hard bounce
+- email: user8@emil.com
+  suppressed_timestamp: 2024-08-01 00:00:00+00:00
+  suppression_reason: hard bounce
+  suppression_source: Braze Mozilla hard bounce

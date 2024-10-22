@@ -9,7 +9,7 @@ UNION ALL
 SELECT
   "{{ dataset }}" AS normalized_app_id,
   e.*
-  EXCEPT (events, metrics)
+  EXCEPT (events {%- if has_metrics %}, metrics{% endif %})
   REPLACE(
     {% if app_name == "fenix" -%}
     mozfun.norm.fenix_app_info("{{ dataset }}", client_info.app_build).channel AS normalized_channel,
@@ -62,10 +62,11 @@ SELECT
       ping_info.parsed_end_time
     ) AS ping_info
   ),
+  CONCAT(document_id, '-', event_offset) AS event_id,
   event.timestamp AS event_timestamp,
   event.category AS event_category,
   event.name AS event_name,
   event.extra AS event_extra
 FROM `{{ project_id }}.{{ dataset }}.events` AS e
-CROSS JOIN UNNEST(e.events) AS event
+CROSS JOIN UNNEST(e.events) AS event WITH OFFSET AS event_offset
 {% endfor %}

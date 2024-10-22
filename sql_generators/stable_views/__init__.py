@@ -19,6 +19,7 @@ from pathos.multiprocessing import ProcessingPool
 
 from bigquery_etl.cli.utils import use_cloud_function_option
 from bigquery_etl.schema.stable_table_schema import SchemaFile, get_stable_table_schemas
+from bigquery_etl.dryrun import get_id_token
 
 VIEW_QUERY_TEMPLATE = """\
 -- Generated via ./bqetl generate stable_views
@@ -28,6 +29,27 @@ AS
 SELECT
   * REPLACE(
     {replacements})
+FROM
+  `{target}`
+"""
+
+FF_INSTLL_VIEW_QUERY_TEMPLATE = """\
+-- Generated via ./bqetl generate stable_views
+CREATE OR REPLACE VIEW
+    `{full_view_id}`
+AS
+SELECT
+  * REPLACE(
+    {replacements}),
+  `moz-fx-data-shared-prod`.udf.funnel_derived_installs(
+        silent, 
+        submission_timestamp, 
+        build_id, 
+        attribution, 
+        distribution_id
+    ) AS funnel_derived,
+  `moz-fx-data-shared-prod`.udf.distribution_model_installs(distribution_id) AS distribution_model,
+  `moz-fx-data-shared-prod`.udf.partner_org_installs(distribution_id) AS partner_org
 FROM
   `{target}`
 """
@@ -100,14 +122,18 @@ def write_dataset_metadata_if_not_exists(
         ).write(target)
 
 
-def write_view_if_not_exists(target_project: str, sql_dir: Path, schema: SchemaFile):
+def write_view_if_not_exists(target_project: str, sql_dir: Path, id_token=None, schema: SchemaFile = None):
     """If a view.sql does not already exist, write one to the target directory."""
     # add imports here to run in multiple processes via pathos
     import re
 
     from bigquery_etl.format_sql.formatter import reformat
     from bigquery_etl.schema import Schema
-    from sql_generators.stable_views import VIEW_METADATA_TEMPLATE, VIEW_QUERY_TEMPLATE
+    from sql_generators.stable_views import (
+        FF_INSTLL_VIEW_QUERY_TEMPLATE,
+        VIEW_METADATA_TEMPLATE,
+        VIEW_QUERY_TEMPLATE,
+    )
 
     VIEW_CREATE_REGEX = re.compile(
         r"CREATE OR REPLACE VIEW\n\s*[^\s]+\s*\nAS", re.IGNORECASE
@@ -244,14 +270,27 @@ def write_view_if_not_exists(target_project: str, sql_dir: Path, schema: SchemaF
             "`moz-fx-data-shared-prod`.udf.normalize_main_payload(payload) AS payload"
         ]
     replacements_str = ",\n    ".join(replacements)
-    full_sql = reformat(
-        VIEW_QUERY_TEMPLATE.format(
-            target=full_source_id,
-            replacements=replacements_str,
-            full_view_id=full_view_id,
-        ),
-        trailing_newline=True,
-    )
+
+    # For the firefox_installer.install view, use the FF_INSTLL_VIEW_QUERY_TEMPLATE template
+    if full_view_id == "moz-fx-data-shared-prod.firefox_installer.install":
+        full_sql = reformat(
+            FF_INSTLL_VIEW_QUERY_TEMPLATE.format(
+                target=full_source_id,
+                replacements=replacements_str,
+                full_view_id=full_view_id,
+            ),
+            trailing_newline=True,
+        )
+    # For all other views, use the VIEW_QUERY_TEMPLATE
+    else:
+        full_sql = reformat(
+            VIEW_QUERY_TEMPLATE.format(
+                target=full_source_id,
+                replacements=replacements_str,
+                full_view_id=full_view_id,
+            ),
+            trailing_newline=True,
+        )
     print(f"Creating {target_file}")
     target_dir.mkdir(parents=True, exist_ok=True)
     with target_file.open("w") as f:
@@ -271,7 +310,7 @@ def write_view_if_not_exists(target_project: str, sql_dir: Path, schema: SchemaF
             content = VIEW_CREATE_REGEX.sub("", target_file.read_text())
             content += " WHERE DATE(submission_timestamp) = '2020-01-01'"
             view_schema = Schema.from_query_file(
-                target_file, content=content, sql_dir=sql_dir
+                target_file, content=content, sql_dir=sql_dir, id_token=id_token
             )
 
             stable_table_schema = Schema.from_json({"fields": schema.schema})
@@ -341,12 +380,15 @@ def generate(target_project, output_dir, log_level, parallelism, use_cloud_funct
         last for k, (*_, last) in groupby(schemas, lambda t: t.bq_dataset_family)
     ]
 
+    id_token = get_id_token()
+
     with ProcessingPool(parallelism) as pool:
         pool.map(
             partial(
                 write_view_if_not_exists,
                 target_project,
                 Path(output_dir),
+                id_token
             ),
             schemas,
         )

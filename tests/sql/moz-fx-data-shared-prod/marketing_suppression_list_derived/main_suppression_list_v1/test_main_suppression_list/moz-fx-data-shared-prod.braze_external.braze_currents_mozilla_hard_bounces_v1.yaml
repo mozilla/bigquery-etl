@@ -1,0 +1,12 @@
+# expect
+---
+# User 1 only on Acoustic
+# User 2 Acoustic and braze unsubscribe
+# User 3 Acoustic and braze unsubscribe and braze firefox hard bounce
+# User 4 Acoustic, braze unsubscribe, braze firefox hard bounce and MoFo
+# User 5 braze firefox unsubscribe
+# User 6 braze Firefox hard bounce
+# User 7 MoFo
+# User 8 braze Mozilla hard bounce
+- email_address: user8@emil.com
+  time: 1722470400

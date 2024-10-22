@@ -2,14 +2,15 @@
 version: 2.1
 
 orbs:
-  gcp-gcr: circleci/gcp-gcr@0.13.0
-  docker: circleci/docker@2.2
+  gcp-gcr: circleci/gcp-gcr@0.16
+  docker: circleci/docker@2.6
   python: circleci/python@2.1.1
+  gcp-cli: circleci/gcp-cli@3.2
 
 parameters:
   python-version:
     type: string
-    default: '3.10'
+    default: '3.11'
   validate-bqetl:
     type: boolean
     default: false
@@ -32,7 +33,7 @@ parameters:
 executors:
   ubuntu-machine-executor:
     machine:
-      image: ubuntu-2004:202111-02
+      image: ubuntu-2004:current
 
 jobs:
   build:
@@ -119,9 +120,25 @@ jobs:
               - << pipeline.parameters.validate-bqetl >>
               - << pipeline.parameters.deploy >>
           steps:
+            - &skip_forked_pr
+              run:
+                name: Early return if this build is from a forked PR
+                command: |
+                  if [ -n "$CIRCLE_PR_NUMBER" ]; then
+                    echo "Cannot pass creds to forked PRs," \
+                      "so marking this step successful"
+                    circleci-agent step halt
+                  fi
             - checkout
             - *restore_venv_cache
             - *build
+            - &authenticate
+              run:
+                name: Authenticate to GCP
+                command: |
+                  export GOOGLE_APPLICATION_CREDENTIALS="/tmp/gcp.json"
+                  echo 'export GOOGLE_APPLICATION_CREDENTIALS="/tmp/gcp.json"' >> "$BASH_ENV"
+                  echo "$GCLOUD_SERVICE_KEY" > "$GOOGLE_APPLICATION_CREDENTIALS"
             - run:
                 name: PyTest with linters
                 # integration tests are run in a separate `integration` step;
@@ -132,6 +149,8 @@ jobs:
                   PATH="venv/bin:$PATH" script/entrypoint --black --flake8 \
                     --isort --mypy-ignore-missing-imports --pydocstyle \
                     -m "not (routine or sql or integration)" \
+                    -p no:bigquery_etl.pytest_plugin.routine \
+                    -p no:bigquery_etl.pytest_plugin.sql \
                     -n 8
       - unless:
           condition: *validate-bqetl
@@ -143,6 +162,7 @@ jobs:
       - when:
           condition: *validate-sql-or-routines
           steps:
+            - *skip_forked_pr
             - checkout
             - *restore_venv_cache
             - *build
@@ -160,12 +180,25 @@ jobs:
             - run:
                 name: Run SQL tests
                 command: |
-                  if [ -n "$CIRCLE_PR_NUMBER" ]; then
-                    echo "Cannot pass creds to forked PRs," \
-                      "so skipping routine and SQL tests"
-                  else
-                    PATH="venv/bin:$PATH" script/entrypoint -m sql -n 8
-                  fi
+                    PATH="venv/bin:$PATH" script/entrypoint -m sql -n 8 -p no:bigquery_etl.pytest_plugin.routine
+            - &copy_debug_sql
+              run:
+                name: Copy generated SQL to save for debugging
+                command: |
+                  mkdir -p /tmp/debug_artifacts
+                  cp -r sql /tmp/debug_artifacts/sql
+                when: on_fail
+            - &copy_debug_tests
+              run:
+                name: Copy generated tests to save for debugging
+                command: |
+                  mkdir -p /tmp/debug_artifacts
+                  cp -r tests /tmp/debug_artifacts/tests
+                when: on_fail
+            - &store_debug_artifacts
+              store_artifacts:
+                path: /tmp/debug_artifacts
+                destination: /
       - unless:
           condition: *validate-sql-or-routines
           steps:
@@ -176,11 +209,13 @@ jobs:
       - when:
           condition: *validate-sql-or-routines
           steps:
+            - *skip_forked_pr
             - checkout
             - *restore_venv_cache
             - *build
             - *attach_generated_sql
             - *copy_staged_sql
+            - *authenticate
             - run:
                 name: Dry run queries
                 # yamllint disable rule:line-length
@@ -200,12 +235,16 @@ jobs:
                     echo "Check dry run for all queries because [run-tests] in" \
                       "commit message"
                     PATHS=sql
+                  elif [ "<< pipeline.parameters.skip-stage-deploys >>" = "true" ]; then
+                    PATHS=sql
                   else
                     PATHS="sql/bigquery-etl-integration-test"
                   fi
                   echo $PATHS
                   PATH="venv/bin:$PATH" script/bqetl dryrun --validate-schemas $PATHS
                 # yamllint enable rule:line-length
+            - *copy_debug_sql
+            - *store_debug_artifacts
       - unless:
           condition: *validate-sql-or-routines
           steps:
@@ -228,6 +267,8 @@ jobs:
                 name: Verify that backfill.yaml files are valid
                 command: |
                   PATH="venv/bin:$PATH" script/bqetl backfill validate
+            - *copy_debug_sql
+            - *store_debug_artifacts
       - unless:
           condition: *validate-sql
           steps:
@@ -238,17 +279,21 @@ jobs:
       - when:
           condition: *validate-sql
           steps:
+            - *skip_forked_pr
             - checkout
             - *restore_venv_cache
             - *build
             - *attach_generated_sql
             - *copy_staged_sql
+            - *authenticate
             - run:
                 name: Verify that metadata files are valid
                 command: |
                   # TODO: Add check here to make sure all queries have metadata.yaml
                   PATH="venv/bin:$PATH" script/bqetl query validate \
                     --respect-dryrun-skip
+            - *copy_debug_sql
+            - *store_debug_artifacts
       - unless:
           condition: *validate-sql
           steps:
@@ -259,23 +304,17 @@ jobs:
       - when:
           condition: *validate-bqetl
           steps:
+            - *skip_forked_pr
             - checkout
-            - &skip_forked_pr
-              run:
-                name: Early return if this build is from a forked PR
-                command: |
-                  if [ -n "$CIRCLE_PR_NUMBER" ]; then
-                    echo "Cannot pass creds to forked PRs," \
-                      "so marking this step successful"
-                    circleci-agent step halt
-                  fi
             - *restore_venv_cache
             - *build
             - run:
                 name: PyTest Integration Test
                 # yamllint disable rule:line-length
                 command: |
-                  PATH="venv/bin:$PATH" script/entrypoint -m 'integration' -n 8
+                  PATH="venv/bin:$PATH" script/entrypoint -m 'integration' -n 8 \
+                  -p no:bigquery_etl.pytest_plugin.routine \
+                  -p no:bigquery_etl.pytest_plugin.sql
                 # workaround for job failing with `Too long with no output (exceeded 10m0s): context deadline exceeded` error
                 no_output_timeout: 30m
       - unless:
@@ -288,6 +327,7 @@ jobs:
       - when:
           condition: *validate-sql
           steps:
+            - *skip_forked_pr
             - checkout
             - *restore_venv_cache
             - *build
@@ -298,6 +338,7 @@ jobs:
                 command: |
                   rm -rf sql/
                   cp -r /tmp/workspace/generated-sql/sql sql
+            - *authenticate
             - run:
                 name: Generate DAGs
                 command: |
@@ -317,28 +358,12 @@ jobs:
   validate-dags:
     executor:
       name: python/default
-      tag: 3.10.12
+      tag: 3.11.8
     steps:
       - when:
           condition: *validate-sql
           steps:
             - checkout
-            - run:
-                name: Early return when job not modified
-                command: |
-                  if [ "$CIRCLE_BRANCH" = main ]; then
-                    echo "Run job because branch is $CIRCLE_BRANCH"
-                  elif git log --format=%B --no-merges -n 1 |
-                      grep -qF '[run-tests]'; then
-                    echo "Run job because [run-tests] in commit message"
-                  elif ! git diff --quiet origin/main... \
-                      -- "$(git rev-parse --show-toplevel)"/{.circleci,dags}; then
-                    echo "Run job because .circleci/ and/or dags/ were modified" \
-                      "since branching off main"
-                  else
-                    echo "Skipping job because .circleci/ and dags/ were not modified"
-                    circleci-agent step halt
-                  fi
             - run:
                 name: Pull telemetry-airflow
                 command: |
@@ -357,6 +382,8 @@ jobs:
                   virtualenv .venv
                   source .venv/bin/activate
                   pip install -r requirements.txt
+                  pip install -r requirements-dev.txt
+                  pip install -r requirements-override.txt
             - run:
                 name: 🧪 Test valid DAGs
                 command: |
@@ -365,6 +392,15 @@ jobs:
                   python -m pytest tests/dags/test_dag_validity.py --junitxml=~/telemetry-airflow/test-results/junit.xml
             - store_test_results:
                 path: ~/telemetry-airflow/test-results/junit.xml
+            - &copy_debug_dags
+              run:
+                name: Copy generated DAGs to save for debugging
+                command: |
+                  mkdir -p /tmp/debug_artifacts
+                  cp -r dags /tmp/debug_artifacts/dags
+                when: on_fail
+            - *copy_debug_sql
+            - *store_debug_artifacts
       - unless:
           condition: *validate-sql
           steps:
@@ -378,6 +414,7 @@ jobs:
               - << pipeline.parameters.validate-routines >>
               - << pipeline.parameters.deploy >>
           steps:
+            - *skip_forked_pr
             - checkout
             - *restore_venv_cache
             - *build
@@ -386,16 +423,14 @@ jobs:
             - run:
                 name: Run routine tests
                 command: |
-                  if [ -n "$CIRCLE_PR_NUMBER" ]; then
-                    echo "Cannot pass creds to forked PRs," \
-                      "so skipping routine tests"
-                  else
-                    PATH="venv/bin:$PATH" script/entrypoint -m routine -n 8
-                  fi
+                  PATH="venv/bin:$PATH" script/entrypoint -m routine -n 8
             - run:
                 name: Validate doc examples
                 command: |
                   PATH="venv/bin:$PATH" script/bqetl routine validate --docs-only
+            - *copy_debug_sql
+            - *copy_debug_tests
+            - *store_debug_artifacts
       - unless:
           condition: *validate-routines
           steps:
@@ -406,14 +441,19 @@ jobs:
       - when:
           condition: *validate-sql-or-routines
           steps:
+            - *skip_forked_pr
             - checkout
             - *restore_venv_cache
             - *build
             - *attach_generated_sql
             - *copy_staged_sql
+            - *authenticate
             - run:
                 name: Validate views
-                command: PATH="venv/bin:$PATH" script/bqetl view validate
+                command: |
+                  PATH="venv/bin:$PATH" script/bqetl view validate
+            - *copy_debug_sql
+            - *store_debug_artifacts
       - unless:
           condition: *validate-sql-or-routines
           steps:
@@ -424,8 +464,8 @@ jobs:
       - when:
           condition: *validate-sql-or-routines
           steps:
-            - checkout
             - *skip_forked_pr
+            - checkout
             - *restore_venv_cache
             - *build
             - *attach_generated_sql
@@ -452,9 +492,11 @@ jobs:
       - when:
           condition: *validate-sql-or-routines
           steps:
+            - *skip_forked_pr
             - checkout
             - *restore_venv_cache
             - *build
+            - *authenticate
             - run:
                 name: Generate SQL content
                 command: |
@@ -490,10 +532,10 @@ jobs:
                     GENERATED_SQL_CHANGED=true
                   fi
 
-                  # Check if this PR removes a file. SQL generation needs to be re-run because
+                  # Check if this PR removes or renames a file. SQL generation needs to be re-run because
                   # simply merging the changes with the generated-sql branch would result in files being part of generated DAGs
-                  # and other artifacts that were actually removed
-                  if [[ $(git diff --no-index --name-only --diff-filter=D ~/remote-bigquery-etl-main/sql sql) ]]; then
+                  # and other artifacts that were actually removed or renamed
+                  if [[ $(git diff --no-index --name-only --diff-filter=DR ~/remote-bigquery-etl-main/sql sql) ]]; then
                     echo "SQL file was removed; re-generate SQL"
                     GENERATED_SQL_CHANGED=true
                   fi
@@ -522,16 +564,14 @@ jobs:
                     cp -a sql/. /tmp/workspace/generated-sql/sql
                   fi
 
-                  PATH="venv/bin:$PATH" script/bqetl query render \
-                    --sql-dir /tmp/workspace/generated-sql/sql/ \
-                    --output-dir /tmp/workspace/generated-sql/sql/ \
-                    /tmp/workspace/generated-sql/sql/
                   PATH="venv/bin:$PATH" script/bqetl dependency record \
                     --skip-existing \
                     "/tmp/workspace/generated-sql/sql/"
                   PATH="venv/bin:$PATH" script/bqetl metadata update \
                     --sql-dir /tmp/workspace/generated-sql/sql/ \
                     /tmp/workspace/generated-sql/sql/
+                  PATH="venv/bin:$PATH" script/bqetl format /tmp/workspace/generated-sql/sql/
+                  PATH="venv/bin:$PATH" script/bqetl monitoring update /tmp/workspace/generated-sql/sql/
             - persist_to_workspace:
                 root: /tmp/workspace
                 paths:
@@ -546,8 +586,8 @@ jobs:
       - when:
           condition: *validate-sql-or-routines
           steps:
-            - checkout
             - *skip_forked_pr
+            - checkout
             - *restore_venv_cache
             - *build
             - *attach_generated_sql
@@ -562,13 +602,11 @@ jobs:
                   git clone --single-branch --branch generated-sql \
                     git@github.com:mozilla/bigquery-etl \
                     generated-sql
+            - *authenticate
             - run:
                 name: Deploy changes to stage
                 command: |
                   if [ "<< pipeline.parameters.skip-stage-deploys >>" = "false" ]; then
-                    export GOOGLE_APPLICATION_CREDENTIALS="/tmp/gcp.json"
-                    echo "$GCLOUD_SERVICE_KEY" > "$GOOGLE_APPLICATION_CREDENTIALS"
-
                     PATHS="$(git diff --no-index --name-only --diff-filter=d generated-sql/sql sql)" || true
                     echo $PATHS
                     PATH="venv/bin:$PATH" script/bqetl stage deploy \
@@ -588,6 +626,8 @@ jobs:
                 root: /tmp/workspace
                 paths:
                   - staged-generated-sql
+            - *copy_debug_sql
+            - *store_debug_artifacts
       - unless:
           condition: *validate-sql-or-routines
           steps:
@@ -675,36 +715,44 @@ jobs:
           condition: *deploy
           steps:
             - *skip
-  deploy:
-    executor: ubuntu-machine-executor
+  artifact-deployment:
+    executor: gcp-cli/google
     steps:
-      - when:
-          condition: *deploy
-          steps:
-            - checkout
-            - *attach_generated_sql
-            - *copy_generated_sql
-            - docker/check:
-                docker-password: DOCKER_PASS
-                docker-username: DOCKER_USER
-            - docker/build: &public-image
-                image: ${CIRCLE_PROJECT_USERNAME+$CIRCLE_PROJECT_USERNAME/}${CIRCLE_PROJECT_REPONAME:-bigquery-etl}
-                tag: ${CIRCLE_TAG:-latest}
-            - docker/push: *public-image
-      - unless:
-          condition: *deploy
-          steps:
-            - *skip
+      - run:
+          name: Prepare environment variables for OIDC authentication
+          # Project ID is not used for OIDC authentication, but gcloud CLI requires a valid project ID.
+          command: |
+            echo 'export GOOGLE_PROJECT_ID="moz-fx-telemetry-airflow-prod"' >> "$BASH_ENV"
+            echo "export OIDC_WIP_ID=$GCPV2_WORKLOAD_IDENTITY_POOL_ID" >> "$BASH_ENV"
+            echo "export OIDC_WIP_PROVIDER_ID=$GCPV2_CIRCLECI_WORKLOAD_IDENTITY_PROVIDER" >> "$BASH_ENV"
+            echo "export GOOGLE_PROJECT_NUMBER=$GCPV2_WORKLOAD_IDENTITY_POOL_PROJECT_NUMBER" >> "$BASH_ENV"
+            echo "export OIDC_SERVICE_ACCOUNT_EMAIL=$GCP_SERVICE_ACCOUNT_EMAIL" >> "$BASH_ENV"
+      - gcp-cli/setup:
+          use_oidc: true
+      - run:
+          name: Generate API Token and DAG run note
+          command: |
+            echo "export DAGRUN_NOTE=\"DAG triggered by **[${CIRCLE_USERNAME}](https://github.com/${CIRCLE_USERNAME})** from ${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME} CI build [${CIRCLE_BUILD_NUM}](${CIRCLE_BUILD_URL})\"" >> "$BASH_ENV"
+            echo "export ID_TOKEN=$(gcloud auth print-identity-token --impersonate-service-account ${GCP_SERVICE_ACCOUNT_EMAIL})" >> "$BASH_ENV"
+      - run:
+          name: Trigger bqetl-artifact-deployment in Airflow
+          command: >
+            curl --location --request POST "https://us-west1-moz-fx-telemetry-airflow-prod.cloudfunctions.net/ci-external-trigger"
+            -H "Authorization: bearer ${ID_TOKEN}"
+            -H "Content-Type:application/json"
+            -d "{\"dagrun_note\": \"${DAGRUN_NOTE}\", \"dag_id\": \"bqetl_artifact_deployment\"}"
   private-generate-sql:
     docker: *docker
+    resource_class: large
     steps:
       - when:
           condition: *deploy
           steps:
-            - checkout
             - *skip_forked_pr
+            - checkout
             - *restore_venv_cache
             - *build
+            - *authenticate
             - add_ssh_keys:
                 # deploy key to private-bigquery-etl
                 fingerprints:
@@ -725,6 +773,7 @@ jobs:
                   rsync --archive ~/private-bigquery-etl/dags.yaml dags.yaml
             - run:
                 name: Generate SQL content
+                no_output_timeout: 30m
                 command: |
                   mkdir -p /tmp/workspace/private-generated-sql
 
@@ -733,16 +782,14 @@ jobs:
                   PATH="venv/bin:$PATH" script/bqetl generate all \
                     --output-dir /tmp/workspace/private-generated-sql/sql/ \
                     --target-project moz-fx-data-shared-prod
-                  PATH="venv/bin:$PATH" script/bqetl query render \
-                    --sql-dir /tmp/workspace/private-generated-sql/sql/ \
-                    --output-dir /tmp/workspace/private-generated-sql/sql/ \
-                    /tmp/workspace/private-generated-sql/sql/
                   PATH="venv/bin:$PATH" script/bqetl dependency record \
                     --skip-existing \
                     "/tmp/workspace/private-generated-sql/sql/"
                   PATH="venv/bin:$PATH" script/bqetl metadata update \
                     --sql-dir /tmp/workspace/private-generated-sql/sql/ \
                     /tmp/workspace/private-generated-sql/sql/
+                  PATH="venv/bin:$PATH" script/bqetl format /tmp/workspace/private-generated-sql/sql/
+                  PATH="venv/bin:$PATH" script/bqetl monitoring update /tmp/workspace/private-generated-sql/sql/
 
                   # Change directory to generate DAGs so `sql_file_path` values are relative to the repo root.
                   export PATH="$PWD/venv/bin:$PATH"
@@ -807,7 +854,8 @@ jobs:
                 command: |
                   rm -rf sql/
                   cp -r /tmp/workspace/private-generated-sql/sql sql
-            - gcp-gcr/gcr-auth
+            - gcp-gcr/gcr-auth:
+                use_oidc: true
             - gcp-gcr/build-image: &private-image
                 image: bigquery-etl
                 tag: ${CIRCLE_TAG:-latest}
@@ -823,6 +871,7 @@ jobs:
       - when:
           condition: *validate-sql-or-routines
           steps:
+            - *skip_forked_pr
             - checkout
             - run:
                 name: Switch to main branch
@@ -834,6 +883,7 @@ jobs:
                 at: /tmp/workspace
             - *restore_venv_cache
             - *build
+            - *authenticate
             - run:
                 name: Generate SQL content
                 command: |
@@ -864,10 +914,10 @@ jobs:
                     GENERATED_SQL_CHANGED=true
                   fi
 
-                  # If a SQL was removed from main re-run SQL generation
+                  # If a SQL was removed from main or renamed re-run SQL generation
                   # simply merging the changes with the generated-sql branch would result in files being part of generated DAGs
-                  # and other artifacts that were removed
-                  if [[ $(git diff --name-only --diff-filter=D $LATEST_TAG_GENERATED_SQL...HEAD -- sql) ]]; then
+                  # and other artifacts that were removed or renamed
+                  if [[ $(git diff --name-only --diff-filter=DR $LATEST_TAG_GENERATED_SQL...HEAD -- sql) ]]; then
                     echo "SQL file was removed; re-generate SQL"
                     GENERATED_SQL_CHANGED=true
                   fi
@@ -889,10 +939,6 @@ jobs:
                     cp -a sql/. /tmp/workspace/main-generated-sql/sql
                   fi
 
-                  ./script/bqetl query render \
-                    --sql-dir /tmp/workspace/main-generated-sql/sql/ \
-                    --output-dir /tmp/workspace/main-generated-sql/sql/ \
-                    /tmp/workspace/main-generated-sql/sql/
                   ./script/bqetl dependency record \
                     --skip-existing \
                     "/tmp/workspace/main-generated-sql/sql/"
@@ -900,6 +946,7 @@ jobs:
                     --sql-dir /tmp/workspace/main-generated-sql/sql/ \
                     /tmp/workspace/main-generated-sql/sql/
                   # re-generate DAGs
+                  ./script/bqetl format /tmp/workspace/main-generated-sql/sql/
 
                   ./script/bqetl dag generate \
                     --sql-dir /tmp/workspace/main-generated-sql/sql/ \
@@ -916,42 +963,6 @@ jobs:
           steps:
             - *skip
   generate-diff:
-    docker: *docker
-    steps:
-      - when:
-          condition: *validate-sql-or-routines
-          steps:
-            - attach_workspace:
-                at: /tmp/workspace
-            - run:
-                name: Generate diff
-                command: |
-                  diff -qr --no-dereference \
-                    /tmp/workspace/main-generated-sql/dags/ /tmp/workspace/generated-sql/dags/ \
-                    | grep '^Only in' \
-                    > /tmp/workspace/generated-sql/sql.diff || true
-                  diff -bur --no-dereference --new-file \
-                    /tmp/workspace/main-generated-sql/dags/ /tmp/workspace/generated-sql/dags/ \
-                    >> /tmp/workspace/generated-sql/sql.diff || true
-                  diff -qr --no-dereference \
-                    /tmp/workspace/main-generated-sql/sql/ /tmp/workspace/generated-sql/sql/ \
-                    | grep '^Only in' \
-                    >> /tmp/workspace/generated-sql/sql.diff || true
-                  diff -bur --no-dereference --new-file \
-                    /tmp/workspace/main-generated-sql/sql/ /tmp/workspace/generated-sql/sql/ \
-                    >> /tmp/workspace/generated-sql/sql.diff || true
-            - persist_to_workspace:
-                root: /tmp/workspace
-                paths:
-                  - generated-sql
-            - store_artifacts:
-                path: /tmp/workspace/generated-sql/sql.diff
-                destination: sql.diff
-      - unless:
-          condition: *validate-sql-or-routines
-          steps:
-            - *skip
-  post-diff:
     docker:
       - image: cimg/node:21.2.0
     steps:
@@ -961,6 +972,26 @@ jobs:
             - checkout
             - attach_workspace:
                 at: /tmp/workspace
+            - run:
+                name: Generate diff
+                command: |
+                  diff -qr --no-dereference \
+                    /tmp/workspace/main-generated-sql/dags/ /tmp/workspace/generated-sql/dags/ \
+                    | grep '^Only in' \
+                    > /tmp/workspace/sql.diff || true
+                  diff -bur --no-dereference --new-file \
+                    /tmp/workspace/main-generated-sql/dags/ /tmp/workspace/generated-sql/dags/ \
+                    >> /tmp/workspace/sql.diff || true
+                  diff -qr --no-dereference \
+                    /tmp/workspace/main-generated-sql/sql/ /tmp/workspace/generated-sql/sql/ \
+                    | grep '^Only in' \
+                    >> /tmp/workspace/sql.diff || true
+                  diff -bur --no-dereference --new-file \
+                    /tmp/workspace/main-generated-sql/sql/ /tmp/workspace/generated-sql/sql/ \
+                    >> /tmp/workspace/sql.diff || true
+            - store_artifacts:
+                path: /tmp/workspace/sql.diff
+                destination: sql.diff
             - run: npm i circle-github-bot@2.1.0 @octokit/graphql@7.0.2
             - run: .circleci/post-diff.js
       - unless:
@@ -973,15 +1004,13 @@ jobs:
       - when:
           condition: *validate-sql-or-routines
           steps:
-            - checkout
             - *skip_forked_pr
+            - checkout
             - *build
+            - *authenticate
             - run:
                 name: "Delete stage datasets"
                 command: |
-                  export GOOGLE_APPLICATION_CREDENTIALS="/tmp/gcp.json"
-                  echo "$GCLOUD_SERVICE_KEY" > "$GOOGLE_APPLICATION_CREDENTIALS"
-
                   PATH="venv/bin:$PATH" script/bqetl stage clean --dataset-suffix=$CIRCLE_SHA1 --delete-expired
       - unless:
           condition: *validate-sql-or-routines
@@ -1024,12 +1053,23 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Check for package version change in last commit before proceeding.
+          command: |
+            if git diff main HEAD~1 pyproject.toml | grep 'version'
+              then
+                echo "Found changes to package version dir, proceeding with deployment."
+              else
+                echo "No changes in package version. Skipping bigquery-etl deployment."
+                circleci-agent step halt
+            fi
+      - run:
           name: Install deployment tools
           command: |
             pip install --upgrade setuptools wheel twine
       - run:
           name: Create the distribution files
           command: |
+            python -m pip install build
             python -m build --sdist --wheel
       - run:
           name: Upload to PyPI
@@ -1047,16 +1087,6 @@ workflows:
       - build
       - verify-requirements
       - verify-format-yaml
-      - deploy-to-pypi:
-          name: Deploy bqetl to PyPI
-          requires:
-            - build
-          filters:
-            tags:
-              only: /[0-9]{4}.[0-9]{1,2}.[0-9]+/  # Calver: YYYY.M.MINOR
-            branches:
-              # Ignore all branches; this workflow should only run for tags.
-              ignore: /.*/
       - verify-format-sql
       - deploy-changes-to-stage:
           requires:
@@ -1088,12 +1118,6 @@ workflows:
           requires:
             - generate-dags
             - main-generate-sql-and-dags
-          filters:
-            branches:
-              ignore: main
-      - post-diff:
-          requires:
-            - generate-diff
           filters:
             branches:
               ignore: main
@@ -1145,13 +1169,10 @@ workflows:
             branches:
               only:
                 - main
-      - deploy:
-          context: data-eng-bigquery-etl-dockerhub
+      - artifact-deployment:
+          name: Trigger bqetl_artifact_deployment Airflow DAG
+          context: gcpv2-workload-identity
           requires:
-            - generate-sql
-            # Public image must be pushed after the private one because of
-            # webhooks used in Ops logic. For details, see:
-            # https://bugzilla.mozilla.org/show_bug.cgi?id=1715628#c0
             - deploy-to-private-gcr
           filters:
             branches:
@@ -1173,17 +1194,25 @@ workflows:
           target-branch: private-generated-sql
           requires:
             - push-private-generated-sql
+            - 🔃 Synchronize bigquery-etl submodule
           filters:
             branches:
               only:
                 - main
       - deploy-to-private-gcr:
-          context: data-eng-airflow-gcr
+          context: dataeng-bqetl-gcr
           requires:
             - private-generate-sql
             # can't run in parallel because CIRCLE_BUILD_NUM is same
             - build
             - generate-sql
+          filters:
+            branches:
+              only:
+                - main
+  tagged-deploy:
+    jobs:
+      - deploy-to-pypi:
           filters:
             branches:
               only:

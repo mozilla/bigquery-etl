@@ -1,0 +1,101 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: Submission Date
+- mode: NULLABLE
+  name: client_id
+  type: STRING
+  description: Client ID
+- mode: NULLABLE
+  name: sample_id
+  type: INT64
+  description: Sample ID
+- mode: NULLABLE
+  name: distribution_id
+  type: STRING
+  description: Distribution ID
+- mode: NULLABLE
+  name: locale
+  type: STRING
+  description: Locale
+- mode: NULLABLE
+  name: app_version
+  type: STRING
+  description: App Version
+- mode: NULLABLE
+  name: isp
+  type: STRING
+  description: ISP Name
+- mode: NULLABLE
+  name: first_seen_date
+  type: DATE
+  description: First Seen Date - Date when the server first received any of the 3 ping types from this client
+- mode: NULLABLE
+  name: attribution_campaign
+  type: STRING
+  description: Attribution Campaign (from clients first seen)
+- mode: NULLABLE
+  name: attribution_content
+  type: STRING
+  description: Attribution Content (from clients first seen)
+- mode: NULLABLE
+  name: attribution_dlsource
+  type: STRING
+  description: Attribution Download Source (from clients first seen)
+- mode: NULLABLE
+  name: attribution_medium
+  type: STRING
+  description: Attribution Medium (from clients first seen)
+- mode: NULLABLE
+  name: attribution_ua
+  type: STRING
+  description: Attribution UA (from clients first seen)
+- mode: NULLABLE
+  name: attribution_experiment
+  type: STRING
+  description: Attribution Experiment (from clients first seen)
+- mode: NULLABLE
+  name: attribution_variation
+  type: STRING
+  description: Attribution Variation (from clients last seen since unavailable in clients first seen)
+- mode: NULLABLE
+  name: normalized_channel
+  type: STRING
+  description: Normalized Channel
+- mode: NULLABLE
+  name: normalized_os
+  type: STRING
+  description: Normalized Operating System
+- mode: NULLABLE
+  name: normalized_os_version
+  type: STRING
+  description: Normalized Operating System Version
+- mode: NULLABLE
+  name: startup_profile_selection_reason
+  type: STRING
+  description: Startup Profile Selection Reason - How the profile was selected during startup
+- mode: NULLABLE
+  name: country
+  type: STRING
+  description: Country
+- mode: NULLABLE
+  name: is_desktop
+  type: BOOLEAN
+  description: Indicates if the client is included in the desktop KPI
+- mode: NULLABLE
+  name: is_dau
+  type: BOOLEAN
+  description: DAU - Daily Active User
+- mode: NULLABLE
+  name: is_wau
+  type: BOOLEAN
+  description: WAU - Weekly Active User
+- mode: NULLABLE
+  name: is_mau
+  type: BOOLEAN
+  description: MAU - Monthly Active User
+- mode: NULLABLE
+  name: profile_group_id
+  type: STRING
+  description: Profile Group ID - A UUID identifying the profile's group on a single device and allowing user-oriented correlation of data

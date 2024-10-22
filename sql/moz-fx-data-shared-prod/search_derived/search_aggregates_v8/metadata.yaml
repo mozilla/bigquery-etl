@@ -4,7 +4,6 @@ description: |-
   and partitioned by day.
 owners:
 - akomar@mozilla.com
-- anicholson@mozilla.com
 - cmorales@mozilla.com
 labels:
   schedule: daily

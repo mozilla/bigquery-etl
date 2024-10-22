@@ -1,7 +1,7 @@
 friendly_name: {{ app_value }} Active Users Aggregates
 description: |-
-  This table contains daily/weekly/monthly active users,
-  new profiles, searches and ad_clicks for {{ app_value }},
+  This table contains dau, wau, mau, daily users,
+  weekly users and monthly users for {{ app_value }},
   aggregated by submission_date, attribution, channel,
   country, city, device model, distribution_id, os details
   and activity segment.
@@ -25,6 +25,7 @@ labels:
 scheduling:
   dag_name: bqetl_analytics_aggregations
   task_name: {{ app_name }}_active_users_aggregates
+  date_partition_offset: -1
 bigquery:
   time_partitioning:
     type: day

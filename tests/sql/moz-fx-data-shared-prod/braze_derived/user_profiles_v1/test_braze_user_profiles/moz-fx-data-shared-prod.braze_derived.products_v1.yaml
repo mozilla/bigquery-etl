@@ -1,0 +1,22 @@
+# braze products
+---
+# user 1
+- external_id: user_1
+  products:
+    - plan_id: 1
+      plan_name: plan_1
+      product_id: prod_1
+      status: active
+      plan_started_at: 2020-01-01 10:00:00+00:00
+      plan_ended_at: 2020-12-31 10:00:00+00:00
+      plan_interval: month
+      plan_interval_count: 3
+      update_timestamp: 2020-12-01 10:00:00+00:00
+# user 2
+# user 3
+# user 4
+- external_id: user_4_only_products
+  products:
+    - plan_id: 1
+      plan_name: plan_1
+# user 5 not in user list - should not show up

@@ -1,0 +1,22 @@
+# test_braze_users - main suppression list
+---
+# user 1 has all the subscriptions
+# user 2 only has newsletter subscription
+# user 3 only has waitlist subscription
+# user 4 only has product subscription
+# user 5 has newsletter and waitlist subscription
+# user 6 has newsletter, waitlist and product subscription
+# user 7 has newsletter subscription but is on suppression list
+- email: user_7@email.com
+# user 8 has newsletter subscription but has_opted_out_of_email in CTMS
+# user 9 has newsletter subscription but not double opted in yet
+# user 10 has newsletter subscription, not double opted in and opted out of emails
+# user 11 has newsletter subscription, double opted in and opted out of emails
+# user 12 has waitlist subscription but never opened or clicked through anything in acoustic
+# user 13 has waitlist subscription and clicked on it
+# user 14 has waitlist subscription but deleted their fxa_account
+# user 15 has newsletter subscription but is unsubscribed from all of them
+# user 16 has unsubscribed newsletter subscriptions and active waitlist subscriptions
+# user 17 has only unsubscribed waitlist subscriptions
+# user 18 is only subscribed to MoFo subscriptions
+# user 19 has newsletter subscription and MoFo subscription

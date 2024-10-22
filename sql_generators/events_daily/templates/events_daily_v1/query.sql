@@ -21,7 +21,8 @@ WITH sample AS (
               ARRAY_AGG(STRUCT(key, value.branch AS value))
             FROM
               UNNEST(ping_info.experiments)
-          ) AS experiments
+          ) AS experiments,
+          COUNT(*) OVER (PARTITION BY DATE(submission_timestamp), client_info.client_id) AS client_event_count
         FROM
           {{ glean_app_id }}.{{ events_table_name }} e
         CROSS JOIN
@@ -32,22 +33,14 @@ WITH sample AS (
       {% endfor %}
     {% else %}
     SELECT
-      {% if dataset == "telemetry" %}
       *,
       COUNT(*) OVER (PARTITION BY submission_date, client_id) AS client_event_count
-      {% else %}
-      *
-      {% endif %}
     FROM
       {{ source_table }}
     {% endif %}
 ), events AS (
   SELECT
-    {% if dataset == "telemetry" %}
     * EXCEPT (client_event_count)
-    {% else %}
-    *
-    {% endif %}
   FROM
     sample
   WHERE
@@ -56,10 +49,8 @@ WITH sample AS (
       OR (@submission_date IS NULL AND submission_date >= '{{ start_date }}')
     )
     AND client_id IS NOT NULL
-    {% if dataset == "telemetry" %}
     -- filter out overactive clients: they distort the data and can cause the job to fail: https://bugzilla.mozilla.org/show_bug.cgi?id=1730190
-    AND client_event_count < 3000000
-    {% endif %}
+    AND client_event_count < 200000
 ),
 joined AS (
   SELECT

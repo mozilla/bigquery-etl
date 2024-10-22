@@ -38,7 +38,7 @@ WITH fxa_events AS (
     utm_campaign,
     utm_content,
   FROM
-    `firefox_accounts.fxa_all_events`
+    `moz-fx-data-shared-prod.firefox_accounts.fxa_all_events`
   WHERE
     -- 2 day time window used to make sure we can get user session attribution information
     -- which will not always be available in the same partition as active user activity
@@ -136,13 +136,13 @@ windowed AS (
     `timestamp`,
     user_id,
     service,
-    udf.mode_last(ARRAY_AGG(country) OVER w1) AS country,
-    udf.mode_last(ARRAY_AGG(`language`) OVER w1) AS `language`,
-    udf.mode_last(ARRAY_AGG(app_version) OVER w1) AS app_version,
-    udf.mode_last(ARRAY_AGG(os_name) OVER w1) AS os_name,
-    udf.mode_last(ARRAY_AGG(os_version) OVER w1) AS os_version,
-    udf.mode_last(ARRAY_AGG(ua_version) OVER w1) AS ua_version,
-    udf.mode_last(ARRAY_AGG(ua_browser) OVER w1) AS ua_browser,
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(country) OVER w1) AS country,
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(`language`) OVER w1) AS `language`,
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(app_version) OVER w1) AS app_version,
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(os_name) OVER w1) AS os_name,
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(os_version) OVER w1) AS os_version,
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(ua_version) OVER w1) AS ua_version,
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(ua_browser) OVER w1) AS ua_browser,
     udf_contains_tier1_country(ARRAY_AGG(country) OVER w1) AS seen_in_tier1_country,
     LOGICAL_OR(event_type = 'fxa_reg - complete') OVER w1 AS registered,
     ARRAY_AGG(event_type) OVER w1 AS service_events,

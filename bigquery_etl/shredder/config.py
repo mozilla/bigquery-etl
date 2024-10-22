@@ -7,14 +7,19 @@ import re
 from collections import defaultdict
 from dataclasses import dataclass
 from functools import partial
+from itertools import chain
 from multiprocessing.pool import ThreadPool
+from typing import Dict, List
 
+import requests
 from google.cloud import bigquery
+from google.cloud.exceptions import NotFound
 
 from ..util.bigquery_id import qualified_table_id
 
 SHARED_PROD = "moz-fx-data-shared-prod"
 GLEAN_SCHEMA_ID = "glean_ping_1"
+GLEAN_APP_LISTINGS_URL = "https://probeinfo.telemetry.mozilla.org/v2/glean/app-listings"
 
 
 @dataclass(frozen=True)
@@ -84,9 +89,13 @@ FXA_USER_ID = "jsonPayload.fields.user_id"
 # these must be in the same order as SYNC_SOURCES
 SYNC_IDS = ("SUBSTR(payload.device_id, 0, 32)", "payload.uid")
 CONTEXT_ID = "context_id"
+USER_CHARACTERISTICS_ID = "metrics.uuid.characteristics_client_identifier"
 
 DESKTOP_SRC = DeleteSource(
     table="telemetry_stable.deletion_request_v4", field=CLIENT_ID
+)
+DESKTOP_GLEAN_SRC = DeleteSource(
+    table="firefox_desktop_stable.deletion_request_v1", field=GLEAN_CLIENT_ID
 )
 IMPRESSION_SRC = DeleteSource(
     table="telemetry_stable.deletion_request_v4",
@@ -96,14 +105,16 @@ CONTEXTUAL_SERVICES_SRC = DeleteSource(
     table="telemetry_stable.deletion_request_v4",
     field="payload.scalars.parent.deletion_request_context_id",
 )
-FENIX_SRC = DeleteSource(table="fenix.deletion_request", field=GLEAN_CLIENT_ID)
-FIREFOX_IOS_SRC = DeleteSource(
-    table="firefox_ios.deletion_request", field=GLEAN_CLIENT_ID
-)
 FXA_HMAC_SRC = DeleteSource(
     table="firefox_accounts.fxa_delete_events", field="hmac_user_id"
 )
 FXA_SRC = DeleteSource(table="firefox_accounts.fxa_delete_events", field=USER_ID)
+FXA_UNHASHED_SRC = DeleteSource(
+    table="firefox_accounts.fxa_delete_events", field="user_id_unhashed"
+)
+FXA_FRONTEND_GLEAN_SRC = DeleteSource(
+    table="accounts_frontend_stable.deletion_request_v1", field=GLEAN_CLIENT_ID
+)
 REGRETS_SRC = DeleteSource(
     table="regrets_reporter_stable.regrets_reporter_update_v1",
     field="data_deletion_request.extension_installation_uuid",
@@ -133,6 +144,10 @@ LEGACY_MOBILE_SOURCES = tuple(
         "mozilla_lockbox",
     )
 )
+USER_CHARACTERISTICS_SRC = DeleteSource(
+    table="firefox_desktop_stable.deletion_request_v1",
+    field=USER_CHARACTERISTICS_ID,
+)
 SOURCES = (
     [
         DESKTOP_SRC,
@@ -156,58 +171,22 @@ user_id_target = partial(DeleteTarget, field=USER_ID)
 context_id_target = partial(DeleteTarget, field=CONTEXT_ID)
 
 DELETE_TARGETS: DeleteIndex = {
-    # Fenix
-    client_id_target(table="fenix_derived.firefox_android_clients_v1"): FENIX_SRC,
-    client_id_target(table="fenix_derived.new_profile_activation_v1"): FENIX_SRC,
-    client_id_target(
-        table="fenix_derived.funnel_retention_clients_week_2_v1"
-    ): FENIX_SRC,
-    client_id_target(
-        table="fenix_derived.funnel_retention_clients_week_4_v1"
-    ): FENIX_SRC,
-    # Firefox iOS
-    client_id_target(
-        table="firefox_ios_derived.firefox_ios_clients_v1"
-    ): FIREFOX_IOS_SRC,
-    client_id_target(
-        table="firefox_ios_derived.clients_activation_v1"
-    ): FIREFOX_IOS_SRC,
-    client_id_target(
-        table="firefox_ios_derived.funnel_retention_clients_week_2_v1"
-    ): FIREFOX_IOS_SRC,
-    client_id_target(
-        table="firefox_ios_derived.funnel_retention_clients_week_4_v1"
-    ): FIREFOX_IOS_SRC,
     # Other
     client_id_target(table="search_derived.acer_cohort_v1"): DESKTOP_SRC,
     client_id_target(
         table="search_derived.mobile_search_clients_daily_v1"
     ): DESKTOP_SRC,
     client_id_target(table="search_derived.search_clients_daily_v8"): DESKTOP_SRC,
+    client_id_target(
+        table="telemetry_derived.desktop_engagement_clients_v1"
+    ): DESKTOP_SRC,
     client_id_target(table="search_derived.search_clients_last_seen_v1"): DESKTOP_SRC,
-    client_id_target(
-        table="telemetry_derived.clients_daily_histogram_aggregates_v1"
-    ): DESKTOP_SRC,
-    client_id_target(
-        table="telemetry_derived.clients_daily_scalar_aggregates_v1"
-    ): DESKTOP_SRC,
     client_id_target(table="telemetry_derived.clients_daily_v6"): DESKTOP_SRC,
     client_id_target(table="telemetry_derived.clients_daily_joined_v1"): DESKTOP_SRC,
-    client_id_target(
-        table="telemetry_derived.clients_daily_histogram_aggregates_v1"
-    ): DESKTOP_SRC,
-    client_id_target(
-        table="telemetry_derived.clients_daily_scalar_aggregates_v1"
-    ): DESKTOP_SRC,
-    client_id_target(
-        table="telemetry_derived.clients_histogram_aggregates_v1"
-    ): DESKTOP_SRC,
     client_id_target(table="telemetry_derived.clients_last_seen_v1"): DESKTOP_SRC,
+    client_id_target(table="telemetry_derived.clients_last_seen_v2"): DESKTOP_SRC,
     client_id_target(
         table="telemetry_derived.clients_last_seen_joined_v1"
-    ): DESKTOP_SRC,
-    client_id_target(
-        table="telemetry_derived.clients_scalar_aggregates_v1"
     ): DESKTOP_SRC,
     client_id_target(
         table="telemetry_derived.clients_profile_per_install_affected_v1"
@@ -220,6 +199,9 @@ DELETE_TARGETS: DeleteIndex = {
     client_id_target(table="telemetry_derived.main_1pct_v1"): DESKTOP_SRC,
     client_id_target(table="telemetry_derived.main_remainder_1pct_v1"): DESKTOP_SRC,
     client_id_target(table="telemetry_derived.main_use_counter_1pct_v1"): DESKTOP_SRC,
+    client_id_target(
+        table="telemetry_derived.desktop_retention_clients_v1"
+    ): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.block_autoplay_v1"): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.crash_v4"): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.downgrade_v4"): DESKTOP_SRC,
@@ -251,6 +233,13 @@ DELETE_TARGETS: DeleteIndex = {
     client_id_target(table="telemetry_stable.untrusted_modules_v4"): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.update_v4"): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.voice_v4"): DESKTOP_SRC,
+    DeleteTarget(
+        table="telemetry_derived.mobile_engagement_clients_v1",
+        field=(CLIENT_ID, CLIENT_ID),
+    ): (
+        DeleteSource(table="firefox_ios.deletion_request", field=GLEAN_CLIENT_ID),
+        DeleteSource(table="fenix.deletion_request", field=GLEAN_CLIENT_ID),
+    ),
     # activity stream
     DeleteTarget(
         table="messaging_system_stable.cfr_v1", field=(CLIENT_ID, IMPRESSION_ID)
@@ -365,6 +354,44 @@ DELETE_TARGETS: DeleteIndex = {
     context_id_target(
         table="contextual_services_stable.quicksuggest_impression_v1"
     ): CONTEXTUAL_SERVICES_SRC,
+    # client association ping
+    DeleteTarget(
+        table="firefox_desktop_stable.fx_accounts_v1",
+        field=("metrics.string.client_association_uid", GLEAN_CLIENT_ID),
+    ): (FXA_UNHASHED_SRC, DESKTOP_GLEAN_SRC),
+    # FxA on Glean
+    DeleteTarget(
+        table="accounts_backend_stable.events_v1",
+        field="metrics.string.account_user_id_sha256",
+    ): FXA_SRC,
+    DeleteTarget(
+        table="accounts_backend_stable.accounts_events_v1",
+        field="metrics.string.account_user_id_sha256",
+    ): FXA_SRC,
+    DeleteTarget(
+        table="accounts_backend_derived.events_stream_v1",
+        field="metrics.string.account_user_id_sha256",
+    ): FXA_SRC,
+    DeleteTarget(
+        table="accounts_backend_derived.users_services_daily_v1",
+        field="user_id_sha256",
+    ): FXA_SRC,
+    DeleteTarget(
+        table="accounts_backend_derived.users_services_last_seen_v1",
+        field="user_id_sha256",
+    ): FXA_SRC,
+    DeleteTarget(
+        table="accounts_frontend_stable.events_v1",
+        field=("metrics.string.account_user_id_sha256", GLEAN_CLIENT_ID),
+    ): (FXA_SRC, FXA_FRONTEND_GLEAN_SRC),
+    DeleteTarget(
+        table="accounts_frontend_stable.accounts_events_v1",
+        field=("metrics.string.account_user_id_sha256", GLEAN_CLIENT_ID),
+    ): (FXA_SRC, FXA_FRONTEND_GLEAN_SRC),
+    DeleteTarget(
+        table="accounts_frontend_derived.events_stream_v1",
+        field=("metrics.string.account_user_id_sha256", CLIENT_ID),
+    ): (FXA_SRC, FXA_FRONTEND_GLEAN_SRC),
     # legacy mobile
     DeleteTarget(
         table="telemetry_stable.core_v1",
@@ -414,6 +441,14 @@ DELETE_TARGETS: DeleteIndex = {
         table=REGRETS_SRC.table,
         field="event_metadata.extension_installation_uuid",
     ): REGRETS_SRC,
+    DeleteTarget(
+        table="firefox_desktop_stable.user_characteristics_v1",
+        field=USER_CHARACTERISTICS_ID,
+    ): USER_CHARACTERISTICS_SRC,
+    # tables in Glean derived datasets that use different sources than the find_glean_targets defaults
+    client_id_target(table="firefox_desktop_derived.adclick_history_v1"): DESKTOP_SRC,
+    client_id_target(table="firefox_desktop_derived.client_ltv_v1"): DESKTOP_SRC,
+    client_id_target(table="firefox_desktop_derived.ltv_states_v1"): DESKTOP_SRC,
 }
 
 SEARCH_IGNORE_TABLES = {source.table for source in SOURCES}
@@ -472,6 +507,7 @@ def find_glean_targets(
     and other iterable types, e.g. list[DeleteSource] are not allowed or supported.
     """
     datasets = {dataset.dataset_id for dataset in client.list_datasets(project)}
+
     glean_stable_tables = [
         table
         for tables in pool.map(
@@ -486,35 +522,65 @@ def find_glean_targets(
         for table in tables
         if table.labels.get("schema_id") == GLEAN_SCHEMA_ID
     ]
+
+    channel_to_app_name = get_glean_channel_to_app_name_mapping()
+
+    # create mapping of dataset -> (tables containing associated deletion requests)
     # construct values as tuples because that is what they must be in the return type
     sources: dict[str, tuple[DeleteSource, ...]] = defaultdict(tuple)
+    app_names = set()
     source_doctype = "deletion_request"
     for table in glean_stable_tables:
         if table.table_id.startswith(source_doctype):
             source = DeleteSource(qualified_table_id(table), GLEAN_CLIENT_ID, project)
-            derived_dataset = re.sub("_stable$", "_derived", table.dataset_id)
+
+            channel_name = re.sub("_stable$", "", table.dataset_id)
+            derived_dataset = channel_name + "_derived"
+            app_name = channel_to_app_name.get(channel_name)
+
             # append to tuple to use every version of deletion request tables
             sources[table.dataset_id] += (source,)
             sources[derived_dataset] += (source,)
-    glean_derived_tables = list(
-        pool.map(
+
+            # find the name of all apps that have a dataset of combined channels
+            if app_name is not None and app_name != channel_name:
+                app_names.add(app_name)
+                sources[app_name + "_derived"] += (source,)
+
+    # Use deletion request view containing all channels if found, otherwise use per-channel
+    # tables as delete sources.  Some apps don't have views generated by glean_usage
+    # because they are skipped in bqetl_project.yaml
+    for app_name in app_names:
+        try:
+            source_view = client.get_table(f"{project}.{app_name}.{source_doctype}")
+        except NotFound:
+            pass
+        else:
+            source = DeleteSource(
+                qualified_table_id(source_view), GLEAN_CLIENT_ID, project
+            )
+            sources[app_name + "_derived"] = (source,)
+
+    glean_derived_tables = [
+        table
+        for table in pool.map(
             client.get_table,
-            [
-                table
-                for tables in pool.map(
-                    client.list_tables,
+            chain(
+                *pool.starmap(
+                    _list_tables,
                     [
-                        bigquery.DatasetReference(project, dataset_id)
+                        (bigquery.DatasetReference(project, dataset_id), client)
                         for dataset_id in sources
                         if dataset_id.endswith("_derived")
                     ],
                     chunksize=1,
                 )
-                for table in tables
-            ],
+            ),
             chunksize=1,
         )
-    )
+        if table.table_type == "TABLE"
+    ]
+
     # handle additional source for deletion requests for things like
     # https://bugzilla.mozilla.org/show_bug.cgi?id=1810236
     # table must contain client_id at the top level and be partitioned on
@@ -523,9 +589,18 @@ def find_glean_targets(
     for table in glean_derived_tables:
         if table.table_id.startswith(derived_source_prefix):
             source = DeleteSource(qualified_table_id(table), CLIENT_ID, project)
-            stable_dataset = re.sub("_derived$", "_stable", table.dataset_id)
-            sources[stable_dataset] += (source,)
+            channel_name = re.sub("_derived$", "", table.dataset_id)
+            app_name = channel_to_app_name.get(channel_name)
+
+            sources[channel_name + "_stable"] += (source,)
             sources[table.dataset_id] += (source,)
+
+            if app_name is not None and app_name != channel_name:
+                sources[app_name + "_derived"] += (source,)
+
+    # skip tables already added to DELETE_TARGETS
+    manually_added_tables = {target.table for target in DELETE_TARGETS.keys()}
+
     return {
         **{
             # glean stable tables that have a source
@@ -539,6 +614,9 @@ def find_glean_targets(
             and not table.table_id.startswith(source_doctype)
             # migration tables not yet supported
             and not table.table_id.startswith("migration")
+            # skip tables with explicitly excluded client ids
+            and table.labels.get("include_client_id", "true").lower() != "false"
+            and qualified_table_id(table) not in manually_added_tables
         },
         **{
             # glean derived tables that contain client_id
@@ -550,37 +628,78 @@ def find_glean_targets(
             for table in glean_derived_tables
             if any(field.name == CLIENT_ID for field in table.schema)
             and not table.table_id.startswith(derived_source_prefix)
+            and qualified_table_id(table) not in manually_added_tables
         },
     }
+
+
+def get_glean_channel_to_app_name_mapping() -> Dict[str, str]:
+    """Return a dict where key is the channel app id and the value is the shared app name.
+
+    e.g. {
+        "org_mozilla_firefox": "fenix",
+        "org_mozilla_firefox_beta": "fenix",
+        "org_mozilla_ios_firefox": "firefox_ios",
+        "org_mozilla_ios_firefoxbeta": "firefox_ios",
+    }
+    """
+    response = requests.get(GLEAN_APP_LISTINGS_URL)
+    response.raise_for_status()
+
+    app_listings = response.json()
+
+    return {
+        app["bq_dataset_family"]: app["app_name"]
+        for app in app_listings
+        if "bq_dataset_family" in app and "app_name" in app
+    }
+
+
+def _list_tables(
+    dataset_ref: bigquery.DatasetReference,
+    client: bigquery.Client,
+) -> List:
+    """Wrap bigquery list_tables and return an empty list for non-existent datasets.
+
+    Intended to be used with thread pool map function. Some glean apps do not have
+    derived datasets so this wrapper handles exceptions when listing them.
+    """
+    try:
+        return list(client.list_tables(dataset_ref))
+    except NotFound:
+        return []
 
 
 EXPERIMENT_ANALYSIS = "moz-fx-data-experiments"
 
 
 def find_experiment_analysis_targets(
-    pool: ThreadPool, client: bigquery.Client, project: str = EXPERIMENT_ANALYSIS
+    client: bigquery.Client, project: str = EXPERIMENT_ANALYSIS
 ) -> DeleteIndex:
     """Return a dict like DELETE_TARGETS for experiment analysis tables.
 
     Note that dict values *must* be either DeleteSource or tuple[DeleteSource, ...],
     and other iterable types, e.g. list[DeleteSource] are not allowed or supported.
     """
-    datasets = {dataset.reference for dataset in client.list_datasets(project)}
+    table_query = f"""
+    SELECT
+      table_schema AS dataset_id,
+      table_name,
+    FROM
+      `{project}.region-us.INFORMATION_SCHEMA.TABLES`
+    WHERE
+      table_type = 'BASE TABLE'
+      AND NOT STARTS_WITH(table_name, "statistics")
+      AND ddl LIKE '%client_id STRING,%'
+    """
 
-    tables = [
-        table
-        for tables in pool.map(
-            client.list_tables,
-            datasets,
-            chunksize=1,
-        )
-        for table in tables
-        if table.table_type != "VIEW" and not table.table_id.startswith("statistics_")
-    ]
+    target_tables = client.query_and_wait(query=table_query)
 
     return {
-        client_id_target(table=qualified_table_id(table)): DESKTOP_SRC
-        for table in tables
+        client_id_target(
+            table=f"{table.dataset_id}.{table.table_name}", project=project
+        ): DESKTOP_SRC
+        for table in target_tables
     }
 
 

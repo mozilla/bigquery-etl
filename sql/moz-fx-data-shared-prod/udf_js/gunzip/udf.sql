@@ -22,7 +22,12 @@ AS
 
     function binary2String(byteArray) {
         // converts a UTF-16 byte array to a string
-        return String.fromCharCode.apply(String, byteArray);
+        let accumulatedString = "";
+        const chunkSize = 50000;
+        for (let i = 0 ; i < byteArray.length ; i += chunkSize) {
+          accumulatedString += String.fromCharCode.apply(String, byteArray.slice(i, i + chunkSize));
+        }
+        return accumulatedString;
     }
 
     // BYTES are base64 encoded by BQ, so this needs to be decoded
@@ -59,6 +64,10 @@ WITH input AS (
   SELECT
     CAST('{"hello": "world"}' AS BYTES),
     '{"hello": "world"}'
+  UNION ALL
+  SELECT
+    CAST(REPEAT("ab", 200000) AS BYTES),
+    REPEAT("ab", 200000)
 ),
   --
 unzipped AS (

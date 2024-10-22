@@ -60,14 +60,15 @@ function write_clients_daily_aggregates {
 
     # e.g. baseline_v1
     local tables;
-    # we're excluding use_counters because they are not supported in GLAM
-    # and generated query is too big to run
-    tables=$(
-        bq ls "$qualified" \
-        | grep TABLE \
-        | grep -v use_counters \
-        | awk '{print $1}'
-    )
+    # GLAM only supports tables with glean_ping_* schema.
+    # Also excluding use_counters because they are not supported
+    # and their generated query is too big to run
+    tables=$(bq ls --format=json "$qualified" | \
+        jq -r '.[] |
+        select(.labels.schema_id | test("^glean_ping_[0-9]+")) |
+        select(.type == "TABLE") |
+        select(.tableReference.tableId | test("^use_counters.*") | not) |
+        "\(.tableReference.tableId)"')
     # generate all of the schemas in parallel
     for table in $tables; do
         write_scalars "$product" "$dataset" "$table" "$dst_project" "$sql_dir" &
@@ -91,6 +92,7 @@ sql_dir=${sql_dir%/}
 
 product=${PRODUCT?PRODUCT must be defined}
 stage=${STAGE?$error}
+use_sample_id=$( [ "$USE_SAMPLE_ID" = "True" ] && echo "--use-sample-id" || echo "")
 
 # ensure the sql directory exists
 mkdir -p $sql_dir/$dst_project/glam_etl
@@ -106,7 +108,8 @@ elif [[ $stage == "incremental" ]]; then
     python3 -m bigquery_etl.glam.generate \
         --sql-root "$sql_dir" \
         --project "$dst_project" \
-        --prefix "${product}"
+        --prefix "${product}" \
+        ${use_sample_id}
 elif [[ $stage == "all" ]]; then
     write_clients_daily_aggregates "$product" "$src_project" "$dst_project" "$sql_dir"
     python3 -m bigquery_etl.glam.generate \

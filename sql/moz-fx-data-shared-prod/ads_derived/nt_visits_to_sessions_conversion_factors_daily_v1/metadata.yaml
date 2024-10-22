@@ -8,7 +8,6 @@ owners:
 labels:
   incremental: true
   schedule: daily
-  change_controlled: true
 scheduling:
   dag_name: bqetl_ads
 bigquery:

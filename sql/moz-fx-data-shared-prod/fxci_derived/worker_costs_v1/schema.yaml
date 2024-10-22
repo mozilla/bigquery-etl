@@ -1,0 +1,19 @@
+fields:
+- name: project
+  type: STRING
+  mode: NULLABLE
+- name: name
+  type: STRING
+  mode: NULLABLE
+- name: zone
+  type: STRING
+  mode: NULLABLE
+- name: instance_id
+  type: STRING
+  mode: NULLABLE
+- name: total_cost
+  type: FLOAT
+  mode: NULLABLE
+- name: usage_start_date
+  type: DATE
+  mode: NULLABLE

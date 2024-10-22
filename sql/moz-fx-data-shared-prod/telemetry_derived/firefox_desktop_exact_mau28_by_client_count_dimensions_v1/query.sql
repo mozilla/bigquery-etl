@@ -25,9 +25,9 @@ SELECT
   distribution_id,
   COALESCE(cc.name, cls.country) AS country_name
 FROM
-  telemetry.clients_last_seen AS cls
+  `moz-fx-data-shared-prod.telemetry.clients_last_seen` AS cls
 LEFT JOIN
-  static.country_codes_v1 AS cc
+  `moz-fx-data-shared-prod.static.country_codes_v1` AS cc
   ON (cls.country = cc.code)
 WHERE
   client_id IS NOT NULL

@@ -16,7 +16,7 @@ SELECT
   COALESCE(SUM(tagged_follow_on), 0) AS tagged_follow_on,
   COALESCE(SUM(tagged_sap), 0) AS tagged_sap,
 FROM
-  search.mobile_search_clients_engines_sources_daily
+  `moz-fx-data-shared-prod.search.mobile_search_clients_engines_sources_daily`
 WHERE
   submission_date
   BETWEEN DATE_TRUNC(DATE_SUB(@submission_date, INTERVAL 1 month), month)
@@ -45,7 +45,7 @@ SELECT
   COALESCE(SUM(tagged_follow_on), 0) AS tagged_follow_on,
   COALESCE(SUM(tagged_sap), 0) AS tagged_sap,
 FROM
-  search.search_clients_engines_sources_daily
+  `moz-fx-data-shared-prod.search.search_clients_engines_sources_daily`
 WHERE
   submission_date
   BETWEEN DATE_TRUNC(DATE_SUB(@submission_date, INTERVAL 1 month), month)

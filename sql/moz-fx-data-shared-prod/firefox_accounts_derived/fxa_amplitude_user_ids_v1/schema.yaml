@@ -1,0 +1,4 @@
+fields:
+- mode: NULLABLE
+  name: user_id
+  type: STRING

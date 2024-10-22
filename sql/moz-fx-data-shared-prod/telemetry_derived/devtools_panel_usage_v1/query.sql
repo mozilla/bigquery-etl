@@ -133,7 +133,7 @@ WITH nested AS (
       )
     ] AS metrics
   FROM
-    telemetry.clients_daily
+    `moz-fx-data-shared-prod.telemetry.clients_daily`
   WHERE
     submission_date = @submission_date
     AND sample_id = 42

@@ -1,0 +1,98 @@
+destination_dataset = "accounts_frontend_derived"
+platform = "accounts_frontend"
+owners = ["ksiegler@mozilla.org"]
+version = "1"
+
+[funnels]
+
+[funnels.login_success]
+
+friendly_name = "Login Funnel Conversion"
+description = "Overall login funnel conversion rate starting from login view"
+steps = ["login_view", "login_submit_success"]
+
+[funnels.registration_success]
+
+friendly_name = "Registration Funnel Conversion"
+description = "Overall registration funnel conversion rate starting from registration view"
+steps = ["reg_view", "reg_code_view", "reg_complete"]
+
+[funnels.email_first_login_success]
+
+friendly_name = "Email First to Login Funnel Conversion"
+description = "Login funnel conversion coming from the Email First page"
+steps = ["email_first_view", "login_view", "login_submit_success"]
+
+[funnels.email_first_registration_success]
+
+friendly_name = "Email First to Registration Funnel Conversion"
+description = "Registration funnel conversion rate coming from the Email First page"
+steps = ["email_first_view", "reg_view", "reg_code_view", "reg_complete"]
+
+[steps]
+
+[steps.email_first_view]
+friendly_name = "Email First View"
+description = "View of the email_first form requesting email for registration or login"
+data_source = "monitor_frontend"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'email.first_view' AND (metrics.string.relying_party_service LIKE '%monitor%' OR metrics.string.relying_party_oauth_client_id = '802d56ef2a9af9fa' OR metrics.string.relying_party_service = '802d56ef2a9af9fa')"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.login_view]
+friendly_name = "Login View Form"
+description = "View of the login form requesting password"
+data_source = "monitor_frontend"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'login.view' AND (metrics.string.relying_party_service LIKE '%monitor%' OR metrics.string.relying_party_oauth_client_id = '802d56ef2a9af9fa' OR metrics.string.relying_party_service = '802d56ef2a9af9fa')"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.login_submit_success]
+friendly_name = "Successful Login Submission"
+description = "Successful submission of the login form"
+data_source = "monitor_frontend"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'login.submit_success' AND (metrics.string.relying_party_service LIKE '%monitor%' OR metrics.string.relying_party_oauth_client_id = '802d56ef2a9af9fa' OR metrics.string.relying_party_service = '802d56ef2a9af9fa')"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.reg_view]
+friendly_name = "Registration View Form"
+description = "View of the registration form requesting password creation and age"
+data_source = "monitor_frontend"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'reg.view' AND (metrics.string.relying_party_service LIKE '%monitor%' OR metrics.string.relying_party_oauth_client_id = '802d56ef2a9af9fa' OR metrics.string.relying_party_service = '802d56ef2a9af9fa')"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.reg_code_view]
+friendly_name = "Registration View Form"
+description = "View of the email confirmation code page"
+data_source = "monitor_frontend"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'reg.signup_code_view' AND (metrics.string.relying_party_service LIKE '%monitor%' OR metrics.string.relying_party_oauth_client_id = '802d56ef2a9af9fa' OR metrics.string.relying_party_service = '802d56ef2a9af9fa')"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[steps.reg_complete]
+friendly_name = "Registration Completed"
+description = "Account was successfully created"
+data_source = "monitor_backend"
+select_expression = "metrics.string.session_flow_id"
+where_expression = "event = 'reg.complete' AND (metrics.string.relying_party_service LIKE '%monitor%' OR metrics.string.relying_party_oauth_client_id = '802d56ef2a9af9fa' OR metrics.string.relying_party_service = '802d56ef2a9af9fa')"
+aggregation = "count distinct"
+join_previous_step_on = "metrics.string.session_flow_id"
+
+[data_sources]
+
+[data_sources.monitor_frontend]
+from_expression = "mozdata.accounts_frontend.events_stream"
+submission_date_column = "DATE(submission_timestamp)"
+client_id_column = "client_id"
+
+[data_sources.monitor_backend]
+from_expression = "mozdata.accounts_backend.events_stream"
+submission_date_column = "DATE(submission_timestamp)"
+client_id_column = "client_id"

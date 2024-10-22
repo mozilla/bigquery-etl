@@ -42,8 +42,20 @@ fields:
   name: is_default_browser
   type: BOOLEAN
 - mode: NULLABLE
+  name: policies_is_enterprise
+  type: BOOLEAN
+- mode: NULLABLE
   name: channel
   type: STRING
+- mode: NULLABLE
+  name: normalized_engine
+  type: STRING
+- mode: NULLABLE
+  name: normalized_default_search_engine
+  type: STRING
+- mode: NULLABLE
+  name: is_sap_monetizable
+  type: BOOLEAN
 - mode: NULLABLE
   name: client_count
   type: INTEGER
@@ -75,5 +87,5 @@ fields:
   name: unknown
   type: INTEGER
 - mode: NULLABLE
-  name: normalized_engine
-  type: STRING
+  name: is_acer_cohort
+  type: BOOLEAN

@@ -1,0 +1,10 @@
+fields:
+- name: key_tentpole
+ type: STRING
+ mode: NULLABLE
+- name: start_date
+ type: DATE
+ mode: NULLABLE
+- name: end_date
+ type: DATE
+ mode: NULLABLE

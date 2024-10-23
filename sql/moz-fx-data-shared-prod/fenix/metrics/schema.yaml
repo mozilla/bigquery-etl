@@ -1,11 +1,11 @@
 fields:
 - name: normalized_app_id
-  type: STRING
   mode: NULLABLE
+  type: STRING
   description: App ID of the channel data was received from
 - name: normalized_channel
-  type: STRING
   mode: NULLABLE
+  type: STRING
   description: Normalized channel name
 - name: additional_properties
   type: STRING
@@ -414,6 +414,15 @@ fields:
     - name: os_environment_is_admin_without_uac
       type: BOOLEAN
       mode: NULLABLE
+    - name: contentblocking_cryptomining_blocking_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: contentblocking_fingerprinting_blocking_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: policies_is_enterprise
+      type: BOOLEAN
+      mode: NULLABLE
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -773,6 +782,33 @@ fields:
       type: INTEGER
       mode: NULLABLE
     - name: opaque_response_blocking_javascript_validation_count
+      type: INTEGER
+      mode: NULLABLE
+    - name: cert_trust_cache_total
+      type: INTEGER
+      mode: NULLABLE
+    - name: contentblocking_trackers_blocked_count
+      type: INTEGER
+      mode: NULLABLE
+    - name: networking_cookie_count_invalid_first_party_partitioned_in_db
+      type: INTEGER
+      mode: NULLABLE
+    - name: networking_set_invalid_first_party_partitioned_cookie
+      type: INTEGER
+      mode: NULLABLE
+    - name: printing_dialog_opened_via_preview_tm
+      type: INTEGER
+      mode: NULLABLE
+    - name: printing_dialog_via_preview_cancelled_tm
+      type: INTEGER
+      mode: NULLABLE
+    - name: printing_preview_cancelled_tm
+      type: INTEGER
+      mode: NULLABLE
+    - name: printing_preview_opened_tm
+      type: INTEGER
+      mode: NULLABLE
+    - name: printing_silent_print
       type: INTEGER
       mode: NULLABLE
   - name: custom_distribution
@@ -3913,6 +3949,36 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
+    - name: printing_error
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: printing_settings_changed
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: printing_target_type
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
   - name: quantity
     type: RECORD
     mode: NULLABLE
@@ -4011,6 +4077,15 @@ fields:
       type: INTEGER
       mode: NULLABLE
     - name: pwmgr_potentially_breached_passwords
+      type: INTEGER
+      mode: NULLABLE
+    - name: contentblocking_category
+      type: INTEGER
+      mode: NULLABLE
+    - name: policies_count
+      type: INTEGER
+      mode: NULLABLE
+    - name: startup_profile_count
       type: INTEGER
       mode: NULLABLE
   - name: string
@@ -4168,6 +4243,12 @@ fields:
       type: STRING
       mode: NULLABLE
     - name: gfx_linux_window_protocol
+      type: STRING
+      mode: NULLABLE
+    - name: startup_profile_database_version
+      type: STRING
+      mode: NULLABLE
+    - name: startup_profile_selection_reason
       type: STRING
       mode: NULLABLE
   - name: string_list
@@ -13136,6 +13217,16 @@ fields:
         type: INTEGER
         mode: NULLABLE
     - name: sct_signature_cache_hits
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: denominator
+        type: INTEGER
+        mode: NULLABLE
+      - name: numerator
+        type: INTEGER
+        mode: NULLABLE
+    - name: cert_trust_cache_hits
       type: RECORD
       mode: NULLABLE
       fields:

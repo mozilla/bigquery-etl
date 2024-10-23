@@ -44,7 +44,10 @@ SELECT
       metrics.boolean.gfx_tmp_writable,
       metrics.boolean.preferences_prefs_file_was_invalid,
       metrics.boolean.networking_http3_enabled,
-      metrics.boolean.os_environment_is_admin_without_uac
+      metrics.boolean.os_environment_is_admin_without_uac,
+      metrics.boolean.contentblocking_cryptomining_blocking_enabled,
+      metrics.boolean.contentblocking_fingerprinting_blocking_enabled,
+      metrics.boolean.policies_is_enterprise
     ) AS `boolean`,
     STRUCT(
       metrics.counter.glean_error_io,
@@ -127,7 +130,16 @@ SELECT
       metrics.counter.gfx_skipped_composites,
       metrics.counter.media_element_in_page_count,
       metrics.counter.opaque_response_blocking_cross_origin_opaque_response_count,
-      metrics.counter.opaque_response_blocking_javascript_validation_count
+      metrics.counter.opaque_response_blocking_javascript_validation_count,
+      metrics.counter.cert_trust_cache_total,
+      metrics.counter.contentblocking_trackers_blocked_count,
+      metrics.counter.networking_cookie_count_invalid_first_party_partitioned_in_db,
+      metrics.counter.networking_set_invalid_first_party_partitioned_cookie,
+      metrics.counter.printing_dialog_opened_via_preview_tm,
+      metrics.counter.printing_dialog_via_preview_cancelled_tm,
+      metrics.counter.printing_preview_cancelled_tm,
+      metrics.counter.printing_preview_opened_tm,
+      metrics.counter.printing_silent_print
     ) AS `counter`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -313,7 +325,10 @@ SELECT
       metrics.labeled_counter.networking_trr_connection_cycle_count,
       metrics.labeled_counter.webrtc_video_recv_codec_used,
       metrics.labeled_counter.webrtc_video_send_codec_used,
-      metrics.labeled_counter.security_client_auth_cert_usage
+      metrics.labeled_counter.security_client_auth_cert_usage,
+      metrics.labeled_counter.printing_error,
+      metrics.labeled_counter.printing_settings_changed,
+      metrics.labeled_counter.printing_target_type
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -358,7 +373,9 @@ SELECT
       metrics.string.gecko_version,
       metrics.string.blocklist_mlbf_softblocks_source,
       metrics.string.a11y_instantiators,
-      metrics.string.gfx_linux_window_protocol
+      metrics.string.gfx_linux_window_protocol,
+      metrics.string.startup_profile_database_version,
+      metrics.string.startup_profile_selection_reason
     ) AS `string`,
     STRUCT(
       metrics.quantity.shortcuts_shortcuts_on_home_number,
@@ -384,7 +401,10 @@ SELECT
       metrics.quantity.a11y_hcm_foreground,
       metrics.quantity.gfx_hdr_windows_display_colorspace_bitfield,
       metrics.quantity.networking_https_rr_prefs_usage,
-      metrics.quantity.pwmgr_potentially_breached_passwords
+      metrics.quantity.pwmgr_potentially_breached_passwords,
+      metrics.quantity.contentblocking_category,
+      metrics.quantity.policies_count,
+      metrics.quantity.startup_profile_count
     ) AS `quantity`,
     STRUCT(
       metrics.custom_distribution.tab_count_app_backgrounded,
@@ -658,7 +678,8 @@ SELECT
       metrics.rate.networking_set_cookie_expired_without_server_time,
       metrics.rate.parsing_svg_unusual_pcdata,
       metrics.rate.cert_signature_cache_hits,
-      metrics.rate.sct_signature_cache_hits
+      metrics.rate.sct_signature_cache_hits,
+      metrics.rate.cert_trust_cache_hits
     ) AS `rate`,
     STRUCT(metrics.uuid.legacy_ids_client_id) AS `uuid`,
     STRUCT(metrics.object.fog_validation_some_object) AS `object`,

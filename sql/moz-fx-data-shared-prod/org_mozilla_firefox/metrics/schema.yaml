@@ -788,6 +788,28 @@ fields:
         scalar os.environment.is_admin_without_uac.
 
         '
+    - name: contentblocking_cryptomining_blocking_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'True if cryptominer blocking is enabled globally at startup. This
+        metric was generated to correspond to the Legacy Telemetry scalar contentblocking.cryptomining_blocking_enabled.
+
+        '
+    - name: contentblocking_fingerprinting_blocking_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'True if fingerprinter blocking is enabled globally at startup.
+        This metric was generated to correspond to the Legacy Telemetry scalar contentblocking.fingerprinting_blocking_enabled.
+
+        '
+    - name: policies_is_enterprise
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Attempt to determine if the user is an enterprise user based on
+        various signals. This metric was generated to correspond to the Legacy Telemetry
+        scalar policies.is_enterprise.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -1758,6 +1780,74 @@ fields:
       mode: NULLABLE
       description: 'The number of times we run the JS validator. This metric was generated
         to correspond to the Legacy Telemetry scalar opaque.response.blocking.javascript_validation_count.
+
+        '
+    - name: cert_trust_cache_total
+      type: INTEGER
+      mode: NULLABLE
+      description: 'How many certificate trust lookups are performed.
+
+        '
+    - name: contentblocking_trackers_blocked_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'A count of the number of tracking events blocked. This metric
+        was generated to correspond to the Legacy Telemetry scalar contentblocking.trackers_blocked_count.
+
+        '
+    - name: networking_cookie_count_invalid_first_party_partitioned_in_db
+      type: INTEGER
+      mode: NULLABLE
+      description: 'This counts the number of invalid first-party partitioned cookies
+        that don''t have the partitioned cookie attribution(CHIPS).
+
+        '
+    - name: networking_set_invalid_first_party_partitioned_cookie
+      type: INTEGER
+      mode: NULLABLE
+      description: 'This counts the number of times we set an invalid first-party
+        partitioned cookie.
+
+        '
+    - name: printing_dialog_opened_via_preview_tm
+      type: INTEGER
+      mode: NULLABLE
+      description: 'A counter incremented every time a user opens the system print
+        dialog from the print preview interface. This metric was generated to correspond
+        to the Legacy Telemetry scalar printing.dialog_opened_via_preview_tm.
+
+        '
+    - name: printing_dialog_via_preview_cancelled_tm
+      type: INTEGER
+      mode: NULLABLE
+      description: 'A counter incremented every time a user cancels a system print
+        dialog that they opened from the print preview interface. This metric was
+        generated to correspond to the Legacy Telemetry scalar printing.dialog_via_preview_cancelled_tm.
+
+        '
+    - name: printing_preview_cancelled_tm
+      type: INTEGER
+      mode: NULLABLE
+      description: 'A counter incremented every time a user exits print preview without
+        printing. This metric was generated to correspond to the Legacy Telemetry
+        scalar printing.preview_cancelled_tm.
+
+        '
+    - name: printing_preview_opened_tm
+      type: INTEGER
+      mode: NULLABLE
+      description: 'A counter incremented every time a user opens print preview. This
+        metric was generated to correspond to the Legacy Telemetry scalar printing.preview_opened_tm.
+
+        '
+    - name: printing_silent_print
+      type: INTEGER
+      mode: NULLABLE
+      description: 'A counter incremented every time a silent print (a print without
+        a print settings dialog being opened) is initiated.  This happens when extensions
+        invoke ExtensionAPI.tabs.saveAsPDF, for example, or when the print.always_print_silent
+        pref is set. This metric was generated to correspond to the Legacy Telemetry
+        scalar printing.silent_print.
 
         '
   - name: custom_distribution
@@ -3795,8 +3885,7 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream. (Migrated from
-        the geckoview metric of the same name).
+      description: 'Failure occurs when initializing the audio stream.
 
         '
     - name: glean_validation_pings_submitted
@@ -6175,6 +6264,58 @@ fields:
         the Legacy Telemetry scalar security.client_auth_cert_usage.
 
         '
+    - name: printing_error
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'A counter incremented every time the user encounters an error
+        printing. The result is split into keys which represent the values of error
+        codes related to printing. Possible values are listed in ''keys''. "FAILURE"
+        is a catch-all code for an error we don''t recognize. This metric was generated
+        to correspond to the Legacy Telemetry scalar printing.error.
+
+        '
+    - name: printing_settings_changed
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'A count of how many times the user changed a setting in print
+        preview, broken down per setting. This metric was generated to correspond
+        to the Legacy Telemetry scalar printing.settings_changed.
+
+        '
+    - name: printing_target_type
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'A counter incremented every time the user prints to a certain
+        target type.  The ''pdf_unknown'' count is for printers with names that we
+        don''t know about/check for, but that have ''pdf'' in their name, and is mainly
+        a sanity check that we''re not missing significant counts in ''pdf_file''.
+        For the most part, the ''unknown'' count will be prints to a physical printer,
+        but we can''t know for sure since third party drivers could also be print
+        to file drivers that we don''t otherwise catch in the other counts. This metric
+        was generated to correspond to the Legacy Telemetry scalar printing.target_type.
+
+        '
   - name: quantity
     type: RECORD
     mode: NULLABLE
@@ -6401,6 +6542,31 @@ fields:
       description: 'The number of potentially breached passwords, as determined by
         LoginBreaches.getPotentialBreachesByLoginGUID. This metric was generated to
         correspond to the Legacy Telemetry scalar pwmgr.potentially_breached_passwords.
+
+        '
+    - name: contentblocking_category
+      type: INTEGER
+      mode: NULLABLE
+      description: 'This scalar reports the value of the content blocking category
+        pref (0 = "standard", 1 = "strict", 2 = "custom", 3 = some other value, this
+        is not supported). This metric was generated to correspond to the Legacy Telemetry
+        scalar contentblocking.category.
+
+        '
+    - name: policies_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'A uint with the number of active enterprise policies, collected
+        once at startup. This metric was generated to correspond to the Legacy Telemetry
+        scalar policies.count.
+
+        '
+    - name: startup_profile_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'This records the number of known profiles after startup completes.
+        This includes any profiles that were created during startup. This metric was
+        generated to correspond to the Legacy Telemetry scalar startup.profile_count.
 
         '
   - name: string
@@ -6858,6 +7024,32 @@ fields:
         gfx.linux_window_protocol.
 
         '
+    - name: startup_profile_database_version
+      type: STRING
+      mode: NULLABLE
+      description: 'The version of the profiles.ini database loaded during startup.
+        A value of "0" is used to indicate that no file was present during startup.
+        This metric was generated to correspond to the Legacy Telemetry scalar startup.profile_database_version.
+
+        '
+    - name: startup_profile_selection_reason
+      type: STRING
+      mode: NULLABLE
+      description: "How the profile was selected during startup. One of the following\
+        \ reasons:\n  unknown:\n    Generally should not happen, set as a default\
+        \ in case no other reason\n    occured.\n  profile-manager:\n    The profile\
+        \ was selected by the profile manager.\n  profile-selector:\n    The profile\
+        \ was selected by the profile selector window.\n  profile-reset:\n    The\
+        \ profile was selected for reset, normally this would mean a restart.\n  restart:\n\
+        \    The user restarted the application, the same profile as previous will\n\
+        \    be used.\n  argument-profile:\n    The profile was selected by the --profile\
+        \ command line argument.\n  argument-p:\n    The profile was selected by the\
+        \ -p command line argument.\n  firstrun-claimed-default:\n    A first run\
+        \ of a dedicated profiles build chose the old default\n    profile to be the\
+        \ default for this install.\n  firstrun-skipped-default:\n    A first run\
+        \ of a dedicated profiles build skipped over the old default\n    profile\
+        \ and created a new profile.\n  restart-claimed-default:\n    A first run\
+        \ of a dedicate"
   - name: string_list
     type: RECORD
     mode: NULLABLE
@@ -17654,6 +17846,19 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'How often an SCT signature to be verified is in the cache already.
+
+        '
+    - name: cert_trust_cache_hits
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: denominator
+        type: INTEGER
+        mode: NULLABLE
+      - name: numerator
+        type: INTEGER
+        mode: NULLABLE
+      description: 'How often a certificate''s trust is in the cache already.
 
         '
   - name: uuid

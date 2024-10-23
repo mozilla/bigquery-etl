@@ -651,7 +651,8 @@ def delete(
                 schema_name=f"{project}.{dataset}",
                 warehouse_ids=[warehouse_id],
             )
-            client.delete_metrics(metrics=deployed_metrics.metrics)
+            client.delete_metrics(metrics=metrics.metrics)
+            click.echo(f"Deleted metrics for {project}.{dataset}.{table}")
 
         if custom_sql:
             if (metadata_file.parent / CUSTOM_RULES_FILE).exists():

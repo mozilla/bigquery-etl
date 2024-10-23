@@ -28,7 +28,22 @@ CREATE OR REPLACE VIEW
 AS
 SELECT
   * REPLACE(
-    {replacements})
+    {replacements}),
+  mozfun.norm.extract_version(client_info.app_display_version, 'major') as app_version_major,
+  mozfun.norm.extract_version(client_info.app_display_version, 'minor') as app_version_minor,
+  mozfun.norm.extract_version(client_info.app_display_version, 'patch') as app_version_patch
+FROM
+  `{target}`
+"""
+
+VIEW_QUERY_TEMPLATE_NO_CLIENT_INFO =  """\
+-- Generated via ./bqetl generate stable_views
+CREATE OR REPLACE VIEW
+  `{full_view_id}`
+AS
+SELECT
+  * REPLACE(
+    {replacements}),
 FROM
   `{target}`
 """
@@ -133,6 +148,7 @@ def write_view_if_not_exists(target_project: str, sql_dir: Path, id_token=None, 
         FF_INSTLL_VIEW_QUERY_TEMPLATE,
         VIEW_METADATA_TEMPLATE,
         VIEW_QUERY_TEMPLATE,
+        VIEW_QUERY_TEMPLATE_NO_CLIENT_INFO,
     )
 
     VIEW_CREATE_REGEX = re.compile(
@@ -281,10 +297,20 @@ def write_view_if_not_exists(target_project: str, sql_dir: Path, id_token=None, 
             ),
             trailing_newline=True,
         )
+    #If it's a glean stable view, include the app version parsing columns
+    elif schema.schema_id == "moz://mozilla.org/schemas/glean/ping/1":
+        full_sql = reformat(
+            VIEW_QUERY_TEMPLATE.format(
+                target=full_source_id,
+                replacements=replacements_str,
+                full_view_id=full_view_id,
+            ),
+            trailing_newline=True,
+        )
     # For all other views, use the VIEW_QUERY_TEMPLATE
     else:
         full_sql = reformat(
-            VIEW_QUERY_TEMPLATE.format(
+            VIEW_QUERY_TEMPLATE_NO_CLIENT_INFO.format(
                 target=full_source_id,
                 replacements=replacements_str,
                 full_view_id=full_view_id,

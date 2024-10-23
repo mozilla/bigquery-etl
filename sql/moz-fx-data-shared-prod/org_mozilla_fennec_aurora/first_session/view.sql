@@ -18,6 +18,9 @@ SELECT
         ),
         metrics.text2 AS text
     ) AS metrics
-  )
+  ),
+  mozfun.norm.extract_version(client_info.app_display_version, 'major') AS app_version_major,
+  mozfun.norm.extract_version(client_info.app_display_version, 'minor') AS app_version_minor,
+  mozfun.norm.extract_version(client_info.app_display_version, 'patch') AS app_version_patch
 FROM
   `moz-fx-data-shared-prod.org_mozilla_fennec_aurora_stable.first_session_v1`

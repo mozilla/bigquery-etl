@@ -3,6 +3,6 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.messaging_system.spotlight`
 AS
 SELECT
-  * REPLACE (mozfun.norm.metadata(metadata) AS metadata)
+  * REPLACE (mozfun.norm.metadata(metadata) AS metadata),
 FROM
   `moz-fx-data-shared-prod.messaging_system_stable.spotlight_v1`

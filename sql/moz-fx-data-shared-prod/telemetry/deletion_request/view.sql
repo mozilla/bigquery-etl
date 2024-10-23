@@ -3,6 +3,6 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.telemetry.deletion_request`
 AS
 SELECT
-  * REPLACE (mozfun.norm.metadata(metadata) AS metadata)
+  * REPLACE (mozfun.norm.metadata(metadata) AS metadata),
 FROM
   `moz-fx-data-shared-prod.telemetry_stable.deletion_request_v4`

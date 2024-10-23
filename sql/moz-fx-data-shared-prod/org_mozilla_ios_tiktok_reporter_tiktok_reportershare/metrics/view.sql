@@ -17,6 +17,9 @@ SELECT
           ) AS datetime
         )
     ) AS metrics
-  )
+  ),
+  mozfun.norm.extract_version(client_info.app_display_version, 'major') AS app_version_major,
+  mozfun.norm.extract_version(client_info.app_display_version, 'minor') AS app_version_minor,
+  mozfun.norm.extract_version(client_info.app_display_version, 'patch') AS app_version_patch
 FROM
   `moz-fx-data-shared-prod.org_mozilla_ios_tiktok_reporter_tiktok_reportershare_stable.metrics_v1`

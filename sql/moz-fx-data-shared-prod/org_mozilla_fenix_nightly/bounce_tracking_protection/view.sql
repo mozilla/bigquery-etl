@@ -3,6 +3,6 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.org_mozilla_fenix_nightly.bounce_tracking_protection`
 AS
 SELECT
-  * REPLACE (mozfun.norm.metadata(metadata) AS metadata)
+  * REPLACE (mozfun.norm.metadata(metadata) AS metadata),
 FROM
   `moz-fx-data-shared-prod.org_mozilla_fenix_nightly_stable.bounce_tracking_protection_v1`

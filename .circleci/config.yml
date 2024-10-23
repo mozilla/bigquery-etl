@@ -24,7 +24,7 @@ parameters:
     default: false
   skip-stage-deploys:
     type: boolean
-    default: false
+    default: true
 
 
 workflows:

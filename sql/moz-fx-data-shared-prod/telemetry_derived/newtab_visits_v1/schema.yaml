@@ -379,3 +379,8 @@ fields:
 - name: newtab_window_inner_width
   type: INTEGER
   mode: NULLABLE
+- mode: NULLABLE
+  name: topsites_sponsored_tiles_configured
+  type: INTEGER
+  description: An integer from client configuration that determines how many tiles the client can see.
+    This telemetry released in Fx123 (2024/02/20), so it should only be considered for clients with Fx123+.

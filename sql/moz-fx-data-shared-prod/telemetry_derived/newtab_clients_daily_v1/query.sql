@@ -35,7 +35,8 @@ WITH visits_data_base AS (
     topic_selection_interactions,
     newtab_default_ui,
     newtab_selected_topics,
-    profile_group_id
+    profile_group_id,
+    topsites_sponsored_tiles_configured
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.newtab_visits_v1`
   WHERE
@@ -81,7 +82,8 @@ visits_data AS (
     COUNTIF(newtab_default_ui = "non-default") AS visits_with_non_default_ui,
     LOGICAL_OR(is_new_profile) AS is_new_profile,
     ANY_VALUE(activity_segment) AS activity_segment,
-    LOGICAL_OR(ARRAY_LENGTH(newtab_selected_topics) > 0) AS topic_preferences_set
+    LOGICAL_OR(ARRAY_LENGTH(newtab_selected_topics) > 0) AS topic_preferences_set,
+    ANY_VALUE(topsites_sponsored_tiles_configured) AS topsites_sponsored_tiles_configured
   FROM
     visits_data_base
   GROUP BY
@@ -297,7 +299,8 @@ SELECT
   COALESCE(topic_selection_data.topic_selection_updates, 0) AS topic_selection_updates,
   COALESCE(topic_selection_data.topic_selection_opened, 0) AS topic_selection_opened,
   COALESCE(topic_selection_data.topic_selection_dismissals, 0) AS topic_selection_dismissals,
-  visits_data.profile_group_id AS profile_group_id
+  visits_data.profile_group_id AS profile_group_id,
+  visits_data.topsites_sponsored_tiles_configured AS topsites_sponsored_tiles_configured
 FROM
   visits_data
 LEFT JOIN

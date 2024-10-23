@@ -715,7 +715,7 @@ def run(name, project_id, sql_dir, workspace, base_url, marker):
     client = datawatch_client_factory(api_auth, workspace_id=workspace)
     warehouse_id = ConfigLoader.get("monitoring", "bigeye_warehouse_id")
     existing_rules = {
-        rule.custom_rule.sql: rule.id
+        rule.custom_rule.sql: {"id": rule.id, "name": rule.custom_rule.name}
         for rule in client.get_rules_for_source(warehouse_id=warehouse_id).custom_rules
         if rule.custom_rule.name.endswith(marker or "")
     }
@@ -739,7 +739,7 @@ def run(name, project_id, sql_dir, workspace, base_url, marker):
 
                 if marker:
                     metrics = [
-                        metric for metric in metrics if metric.name.endswith("marker")
+                        metric for metric in metrics if metric.name.endswith(marker)
                     ]
 
                 metric_ids = [metric.metric_configuration.id for metric in metrics]
@@ -754,7 +754,9 @@ def run(name, project_id, sql_dir, workspace, base_url, marker):
                         latest_metric_run
                         and latest_metric_run.status in METRIC_STATUS_FAILURES
                     ):
-                        if marker.lower() != "[warn]":
+                        if not metric_info.metric_configuration.name.lower().endswith(
+                            "[warn]"
+                        ):
                             failed = True
                         click.echo(
                             f"Error running check {metric_info.metric_configuration.id}: {metric_info.active_issue.display_name}"
@@ -774,22 +776,26 @@ def run(name, project_id, sql_dir, workspace, base_url, marker):
                         if sql in existing_rules:
                             response = client._call_datawatch(
                                 Method.GET,
-                                url=f"/api/v1/custom-rules/run/{existing_rules[sql]}",
+                                url=f"/api/v1/custom-rules/run/{existing_rules[sql]['id']}",
                             )
                             click.echo(
-                                f"Triggered custom rule {existing_rules[sql]} for {project}.{dataset}.{table}"
+                                f"Triggered custom rule {existing_rules[sql]['id']} for {project}.{dataset}.{table}"
                             )
 
-                            latest_rule_run = response.get("latestRuns", [])[-1]
-                            if latest_rule_run and latest_rule_run.get("status") in {
-                                status.name for status in METRIC_STATUS_FAILURES
-                            }:
-                                if marker.lower() != "[warn]":
+                            latest_rule_run = response.get("latestRuns", [])
+                            if latest_rule_run and latest_rule_run[-1].get(
+                                "status"
+                            ) in {status.name for status in METRIC_STATUS_FAILURES}:
+                                if (
+                                    not existing_rules[sql]["name"]
+                                    .lower()
+                                    .endswith("[warn]")
+                                ):
                                     failed = True
 
                                 click.echo(
                                     f"Error running custom rule {existing_rules[sql]} for {project}.{dataset}.{table}. "
-                                    + f"Check {base_url}/w/{workspace}/catalog/data-sources/{warehouse_id}/rules/{existing_rules[sql]}/runs "
+                                    + f"Check {base_url}/w/{workspace}/catalog/data-sources/{warehouse_id}/rules/{existing_rules[sql]['id']}/runs "
                                     + "for more information."
                                 )
 

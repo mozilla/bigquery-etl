@@ -8,6 +8,7 @@ from unittest.mock import patch
 
 import bigeye_sdk
 import pytest
+from bigeye_sdk.generated.com.bigeye.models.generated import MetricRunStatus
 from click.testing import CliRunner
 
 from bigquery_etl.cli.monitoring import (
@@ -345,6 +346,220 @@ class TestMonitoring:
             mock_client.delete_metrics.assert_not_called()
             mock_client.delete_custom_rule.assert_called_once_with(
                 rules_mock.custom_rules[0].id
+            )
+
+    @patch("bigquery_etl.cli.monitoring.datawatch_client_factory")
+    @patch(
+        "bigeye_sdk.controller.metric_suite_controller.MetricSuiteController.__init__"
+    )
+    def test_run(self, mock_metric_controller_init, mock_client_factory, runner):
+        with runner.isolated_filesystem():
+            test_query = (
+                TEST_DIR
+                / "data"
+                / "test_sql"
+                / "moz-fx-data-test-project"
+                / "test"
+                / "incremental_query_v1"
+            )
+
+            SQL_DIR = Path("sql/moz-fx-data-shared-prod/test/incremental_query_v1")
+            os.makedirs(str(SQL_DIR))
+            copy_tree(str(test_query), str(SQL_DIR))
+
+            mock_metric_controller_init.return_value = None
+            mock_client = mock.Mock()
+            mock_client_factory.return_value = mock_client
+            mock_client.run_metric_batch.return_value = mock.Mock(metric_infos=[])
+            mock_client.get_rules_for_source.return_value = mock.Mock(custom_rules=[])
+            mock_metric_info = mock.Mock(
+                metrics=[
+                    SimpleNamespace(
+                        name="test", metric_configuration=SimpleNamespace(id=1234)
+                    )
+                ]
+            )
+            mock_client.get_metric_info_batch_post.return_value = mock_metric_info
+
+            runner.invoke(
+                run,
+                [f"{str(SQL_DIR)}"],
+                catch_exceptions=False,
+            )
+
+        mock_client.run_metric_batch.assert_called_once_with(
+            metric_ids=[mock_metric_info.metrics[0].metric_configuration.id]
+        )
+
+    @patch("bigquery_etl.cli.monitoring.datawatch_client_factory")
+    @patch(
+        "bigeye_sdk.controller.metric_suite_controller.MetricSuiteController.__init__"
+    )
+    def test_run_fail(self, mock_metric_controller_init, mock_client_factory, runner):
+        with runner.isolated_filesystem():
+            test_query = (
+                TEST_DIR
+                / "data"
+                / "test_sql"
+                / "moz-fx-data-test-project"
+                / "test"
+                / "incremental_query_v1"
+            )
+
+            SQL_DIR = Path("sql/moz-fx-data-shared-prod/test/incremental_query_v1")
+            os.makedirs(str(SQL_DIR))
+            copy_tree(str(test_query), str(SQL_DIR))
+
+            mock_metric_controller_init.return_value = None
+            mock_client = mock.Mock()
+            mock_client_factory.return_value = mock_client
+            mock_client.run_metric_batch.return_value = mock.Mock(
+                metric_infos=[
+                    SimpleNamespace(
+                        latest_metric_runs=[
+                            SimpleNamespace(
+                                status=MetricRunStatus.METRIC_RUN_STATUS_UPPERBOUND_CRITICAL
+                            )
+                        ],
+                        metric_configuration=SimpleNamespace(id=123, name="test"),
+                        active_issue=SimpleNamespace(display_name="error"),
+                    )
+                ]
+            )
+            mock_client.get_rules_for_source.return_value = mock.Mock(custom_rules=[])
+            mock_metric_info = mock.Mock(
+                metrics=[
+                    SimpleNamespace(
+                        name="test", metric_configuration=SimpleNamespace(id=1234)
+                    )
+                ]
+            )
+            mock_client.get_metric_info_batch_post.return_value = mock_metric_info
+
+            result = runner.invoke(
+                run,
+                [f"{str(SQL_DIR)}"],
+                catch_exceptions=False,
+            )
+            assert result.exit_code == 1
+
+        mock_client.run_metric_batch.assert_called_once_with(
+            metric_ids=[mock_metric_info.metrics[0].metric_configuration.id]
+        )
+
+    @patch("bigquery_etl.cli.monitoring.datawatch_client_factory")
+    @patch(
+        "bigeye_sdk.controller.metric_suite_controller.MetricSuiteController.__init__"
+    )
+    def test_run_warn(self, mock_metric_controller_init, mock_client_factory, runner):
+        with runner.isolated_filesystem():
+            test_query = (
+                TEST_DIR
+                / "data"
+                / "test_sql"
+                / "moz-fx-data-test-project"
+                / "test"
+                / "incremental_query_v1"
+            )
+
+            SQL_DIR = Path("sql/moz-fx-data-shared-prod/test/incremental_query_v1")
+            os.makedirs(str(SQL_DIR))
+            copy_tree(str(test_query), str(SQL_DIR))
+
+            mock_metric_controller_init.return_value = None
+            mock_client = mock.Mock()
+            mock_client_factory.return_value = mock_client
+            mock_client.run_metric_batch.return_value = mock.Mock(
+                metric_infos=[
+                    SimpleNamespace(
+                        latest_metric_runs=[
+                            SimpleNamespace(
+                                status=MetricRunStatus.METRIC_RUN_STATUS_UPPERBOUND_CRITICAL
+                            )
+                        ],
+                        metric_configuration=SimpleNamespace(
+                            id=123, name="test [warn]"
+                        ),
+                        active_issue=SimpleNamespace(display_name="error"),
+                    )
+                ]
+            )
+            mock_client.get_rules_for_source.return_value = mock.Mock(custom_rules=[])
+            mock_metric_info = mock.Mock(
+                metrics=[
+                    SimpleNamespace(
+                        name="test [warn]",
+                        metric_configuration=SimpleNamespace(id=1234),
+                    )
+                ]
+            )
+            mock_client.get_metric_info_batch_post.return_value = mock_metric_info
+
+            result = runner.invoke(
+                run,
+                [f"{str(SQL_DIR)}"],
+                catch_exceptions=False,
+            )
+            assert result.exit_code == 0
+
+        mock_client.run_metric_batch.assert_called_once_with(
+            metric_ids=[mock_metric_info.metrics[0].metric_configuration.id]
+        )
+
+    @patch("bigquery_etl.cli.monitoring.datawatch_client_factory")
+    @patch(
+        "bigeye_sdk.controller.metric_suite_controller.MetricSuiteController.__init__"
+    )
+    def test_run_custom_rule(
+        self, mock_metric_controller_init, mock_client_factory, runner
+    ):
+        with runner.isolated_filesystem():
+            test_query = (
+                TEST_DIR
+                / "data"
+                / "test_sql"
+                / "moz-fx-data-test-project"
+                / "test"
+                / "incremental_query_v1"
+            )
+
+            SQL_DIR = Path("sql/moz-fx-data-shared-prod/test/incremental_query_v1")
+            os.makedirs(str(SQL_DIR))
+            copy_tree(str(test_query), str(SQL_DIR))
+            (SQL_DIR / "bigeye_custom_rules.sql").write_text(
+                """
+                SELECT 1
+            """
+            )
+
+            mock_metric_controller_init.return_value = None
+            mock_client = mock.Mock()
+            mock_client_factory.return_value = mock_client
+            mock_client.run_metric_batch.return_value = mock.Mock(metric_infos=[])
+            rules_mock = mock.Mock(
+                custom_rules=[
+                    mock.Mock(
+                        custom_rule=SimpleNamespace(id=1, sql="SELECT 1", name="rule")
+                    )
+                ]
+            )
+            mock_client.get_rules_for_source.return_value = rules_mock
+            mock_metric_info = mock.Mock(metrics=[])
+            mock_client.get_metric_info_batch_post.return_value = mock_metric_info
+            mock_datawatch = mock.Mock()
+            mock_client._call_datawatch.return_value = mock_datawatch
+            mock_datawatch.get.return_value = []
+
+            runner.invoke(
+                run,
+                [f"{str(SQL_DIR)}"],
+                catch_exceptions=False,
+            )
+
+            mock_client._call_datawatch.assert_called_once()
+            assert (
+                str(rules_mock.custom_rules[0].id)
+                in mock_client._call_datawatch.call_args.kwargs["url"]
             )
 
 

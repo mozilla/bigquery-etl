@@ -40,7 +40,7 @@ from ..util import extract_from_query_path
 from ..util.common import render as render_template
 
 BIGCONFIG_FILE = "bigconfig.yml"
-CUSTOM_RULES_FILE = "bigconfig_custom_rules.sql"
+CUSTOM_RULES_FILE = "bigeye_custom_rules.sql"
 VIEW_FILE = "view.sql"
 
 
@@ -689,7 +689,6 @@ def rollback(
 
     for metadata_file in list(set(metadata_files)):
         project, dataset, table = extract_from_query_path(metadata_file)
-
         if not custom_sql_only:
             metrics = client.get_metric_info_batch_post(
                 table_name=table,
@@ -697,7 +696,6 @@ def rollback(
                 warehouse_ids=[warehouse_id],
             )
             client.delete_metrics(metrics=metrics.metrics)
-            click.echo(f"Deleted metrics for {project}.{dataset}.{table}")
 
         if (metadata_file.parent / CUSTOM_RULES_FILE).exists():
             for select_statement in _sql_rules_from_file(

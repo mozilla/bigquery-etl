@@ -301,3 +301,12 @@ fields:
 - name: submission_timestamp
   type: TIMESTAMP
   mode: NULLABLE
+- name: app_version_major
+  type: NUMERIC
+  mode: NULLABLE
+- name: app_version_minor
+  type: NUMERIC
+  mode: NULLABLE
+- name: app_version_patch
+  type: NUMERIC
+  mode: NULLABLE

@@ -307,7 +307,7 @@ def write_view_if_not_exists(target_project: str, sql_dir: Path, id_token=None, 
             ),
             trailing_newline=True,
         )
-    # For all other views, use the VIEW_QUERY_TEMPLATE
+    # For all other views, don't include the app version parsing columns
     else:
         full_sql = reformat(
             VIEW_QUERY_TEMPLATE_NO_CLIENT_INFO.format(

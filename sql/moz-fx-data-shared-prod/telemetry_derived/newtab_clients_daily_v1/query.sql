@@ -36,7 +36,8 @@ WITH visits_data_base AS (
     newtab_default_ui,
     newtab_selected_topics,
     profile_group_id,
-    topsites_sponsored_tiles_configured
+    topsites_sponsored_tiles_configured,
+    newtab_open_source
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.newtab_visits_v1`
   WHERE
@@ -70,13 +71,22 @@ visits_data AS (
     ANY_VALUE(experiments) AS experiments,
     COUNTIF(had_non_impression_engagement) AS visits_with_non_impression_engagement,
     COUNTIF(had_non_search_engagement) AS visits_with_non_search_engagement,
-    COUNTIF(newtab_default_ui = "default") AS visits_with_default_ui,
     COUNTIF(
-      newtab_default_ui = "default"
+      (newtab_open_source = "about:home" AND newtab_homepage_category = "enabled")
+      OR (newtab_open_source = "about:newtab" AND newtab_newtab_category = "enabled")
+    ) AS visits_with_default_ui,
+    COUNTIF(
+      (
+        (newtab_open_source = "about:home" AND newtab_homepage_category = "enabled")
+        OR (newtab_open_source = "about:newtab" AND newtab_newtab_category = "enabled")
+      )
       AND had_non_impression_engagement
     ) AS visits_with_default_ui_with_non_impression_engagement,
     COUNTIF(
-      newtab_default_ui = "default"
+      (
+        (newtab_open_source = "about:home" AND newtab_homepage_category = "enabled")
+        OR (newtab_open_source = "about:newtab" AND newtab_newtab_category = "enabled")
+      )
       AND had_non_search_engagement
     ) AS visits_with_default_ui_with_non_search_engagement,
     COUNTIF(newtab_default_ui = "non-default") AS visits_with_non_default_ui,

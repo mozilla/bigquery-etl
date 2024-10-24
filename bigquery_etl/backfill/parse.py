@@ -206,7 +206,7 @@ class Backfill:
 
                     backfill_entries.append(backfill)
 
-            except yaml.YAMLError as e:
+            except (yaml.YAMLError, ValueError) as e:
                 raise ValueError(f"Unable to parse Backfill file {file}") from e
 
             return backfill_entries

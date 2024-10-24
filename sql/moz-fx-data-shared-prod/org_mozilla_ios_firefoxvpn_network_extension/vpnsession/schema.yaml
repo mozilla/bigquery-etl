@@ -620,6 +620,86 @@ fields:
         collected in daemonsession for mobile clients.
 
         '
+  - name: custom_distribution
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: connection_health_data_transferred_rx
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The amount of data received through the VPN tunnel.
+
+
+        This metric is accumulated periodically on a 3hr interval
+
+        while the VPN is turned on.
+
+
+        This metric is not collected on iOS.
+
+
+        > **Note**: This metric is recorded on the vpnsession ping for
+
+        > desktop platforms and on the daemonsession ping for mobile platforms.
+
+        '
+    - name: connection_health_data_transferred_tx
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The amount of data sent through the VPN tunnel.
+
+
+        This metric is accumulated periodically on a 3hr interval
+
+        while the VPN is turned on.
+
+
+        This metric is not collected on iOS.
+
+
+        > **Note**: This metric is recorded on the vpnsession ping for
+
+        > desktop platforms and on the daemonsession ping for mobile platforms.
+
+        '
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

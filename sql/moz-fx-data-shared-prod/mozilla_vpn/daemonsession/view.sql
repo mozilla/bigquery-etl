@@ -40,7 +40,11 @@ SELECT
       metrics.timing_distribution.connection_health_stable_time,
       metrics.timing_distribution.connection_health_unstable_time,
       metrics.timing_distribution.connection_health_pending_time
-    ) AS `timing_distribution`
+    ) AS `timing_distribution`,
+    STRUCT(
+      metrics.custom_distribution.connection_health_data_transferred_rx,
+      metrics.custom_distribution.connection_health_data_transferred_tx
+    ) AS `custom_distribution`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -93,7 +97,11 @@ SELECT
       metrics.timing_distribution.connection_health_stable_time,
       metrics.timing_distribution.connection_health_unstable_time,
       metrics.timing_distribution.connection_health_pending_time
-    ) AS `timing_distribution`
+    ) AS `timing_distribution`,
+    STRUCT(
+      metrics.custom_distribution.connection_health_data_transferred_rx,
+      metrics.custom_distribution.connection_health_data_transferred_tx
+    ) AS `custom_distribution`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -146,7 +154,11 @@ SELECT
       metrics.timing_distribution.connection_health_stable_time,
       metrics.timing_distribution.connection_health_unstable_time,
       metrics.timing_distribution.connection_health_pending_time
-    ) AS `timing_distribution`
+    ) AS `timing_distribution`,
+    STRUCT(
+      metrics.custom_distribution.connection_health_data_transferred_rx,
+      metrics.custom_distribution.connection_health_data_transferred_tx
+    ) AS `custom_distribution`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -199,7 +211,11 @@ SELECT
       metrics.timing_distribution.connection_health_stable_time,
       metrics.timing_distribution.connection_health_unstable_time,
       metrics.timing_distribution.connection_health_pending_time
-    ) AS `timing_distribution`
+    ) AS `timing_distribution`,
+    STRUCT(
+      metrics.custom_distribution.connection_health_data_transferred_rx,
+      metrics.custom_distribution.connection_health_data_transferred_tx
+    ) AS `custom_distribution`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,

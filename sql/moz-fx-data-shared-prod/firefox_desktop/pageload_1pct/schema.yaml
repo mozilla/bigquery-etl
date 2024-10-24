@@ -301,3 +301,18 @@ fields:
 - name: submission_timestamp
   type: TIMESTAMP
   mode: NULLABLE
+- name: app_version_major
+  type: NUMERIC
+  mode: NULLABLE
+  description: The major version parsed from client_info.app_display_version, for
+    example, 130.0.3 would return 130
+- name: app_version_minor
+  type: NUMERIC
+  mode: NULLABLE
+  description: The minor version parsed from client_info.app_display_version, for
+    example, 130.0.3 would return 0
+- name: app_version_patch
+  type: NUMERIC
+  mode: NULLABLE
+  description: The patch number parsed from client_info.app_display_version, for example,
+    130.0.3 would return 3.

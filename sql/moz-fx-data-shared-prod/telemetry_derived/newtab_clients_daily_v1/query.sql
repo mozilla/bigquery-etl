@@ -197,127 +197,140 @@ topic_selection_data AS (
     UNNEST(topic_selection_interactions)
   GROUP BY
     client_id
+),
+joined AS (
+  SELECT
+    visits_data.client_id,
+    visits_data.submission_date,
+    visits_data.legacy_telemetry_client_id,
+    visits_data.newtab_visit_count,
+    visits_data.normalized_os,
+    visits_data.normalized_os_version,
+    visits_data.country_code,
+    visits_data.locale,
+    visits_data.channel,
+    visits_data.browser_version,
+    visits_data.browser_name,
+    visits_data.default_search_engine,
+    visits_data.default_private_search_engine,
+    visits_data.pocket_is_signed_in,
+    visits_data.pocket_enabled,
+    visits_data.pocket_sponsored_stories_enabled,
+    visits_data.topsites_enabled,
+    visits_data.topsites_sponsored_enabled,
+    visits_data.newtab_weather_widget_enabled,
+    visits_data.newtab_homepage_category,
+    visits_data.newtab_newtab_category,
+    visits_data.topsites_rows,
+    visits_data.experiments,
+    visits_data.visits_with_non_impression_engagement,
+    visits_data.visits_with_non_search_engagement,
+    visits_data.visits_with_non_default_ui,
+    visits_data.is_new_profile,
+    visits_data.activity_segment,
+    -- COALESCE calls for visits where no interactions with a surface were performed and are all Null
+    COALESCE(search_data.searches, 0) AS searches,
+    COALESCE(search_data.tagged_search_ad_clicks, 0) AS tagged_search_ad_clicks,
+    COALESCE(search_data.tagged_search_ad_impressions, 0) AS tagged_search_ad_impressions,
+    COALESCE(search_data.follow_on_search_ad_clicks, 0) AS follow_on_search_ad_clicks,
+    COALESCE(search_data.follow_on_search_ad_impressions, 0) AS follow_on_search_ad_impressions,
+    COALESCE(search_data.tagged_follow_on_search_ad_clicks, 0) AS tagged_follow_on_search_ad_clicks,
+    COALESCE(
+      search_data.tagged_follow_on_search_ad_impressions,
+      0
+    ) AS tagged_follow_on_search_ad_impressions,
+    COALESCE(tiles_data.topsite_tile_clicks, 0) AS topsite_tile_clicks,
+    COALESCE(tiles_data.sponsored_topsite_tile_clicks, 0) AS sponsored_topsite_tile_clicks,
+    COALESCE(tiles_data.organic_topsite_tile_clicks, 0) AS organic_topsite_tile_clicks,
+    COALESCE(tiles_data.topsite_tile_impressions, 0) AS topsite_tile_impressions,
+    COALESCE(
+      tiles_data.sponsored_topsite_tile_impressions,
+      0
+    ) AS sponsored_topsite_tile_impressions,
+    COALESCE(tiles_data.organic_topsite_tile_impressions, 0) AS organic_topsite_tile_impressions,
+    COALESCE(tiles_data.topsite_tile_dismissals, 0) AS topsite_tile_dismissals,
+    COALESCE(tiles_data.sponsored_topsite_tile_dismissals, 0) AS sponsored_topsite_tile_dismissals,
+    COALESCE(tiles_data.organic_topsite_tile_dismissals, 0) AS organic_topsite_tile_dismissals,
+    COALESCE(pocket_data.pocket_impressions, 0) AS pocket_impressions,
+    COALESCE(pocket_data.sponsored_pocket_impressions, 0) AS sponsored_pocket_impressions,
+    COALESCE(pocket_data.organic_pocket_impressions, 0) AS organic_pocket_impressions,
+    COALESCE(pocket_data.pocket_clicks, 0) AS pocket_clicks,
+    COALESCE(pocket_data.sponsored_pocket_clicks, 0) AS sponsored_pocket_clicks,
+    COALESCE(pocket_data.organic_pocket_clicks, 0) AS organic_pocket_clicks,
+    COALESCE(pocket_data.pocket_saves, 0) AS pocket_saves,
+    COALESCE(pocket_data.sponsored_pocket_saves, 0) AS sponsored_pocket_saves,
+    COALESCE(pocket_data.organic_pocket_saves, 0) AS organic_pocket_saves,
+    COALESCE(wallpaper_clicks, 0) AS wallpaper_clicks,
+    COALESCE(wallpaper_clicks_had_previous_wallpaper, 0) AS wallpaper_clicks_had_previous_wallpaper,
+    COALESCE(
+      wallpaper_clicks_first_selected_wallpaper,
+      0
+    ) AS wallpaper_clicks_first_selected_wallpaper,
+    COALESCE(wallpaper_data.wallpaper_category_clicks, 0) AS wallpaper_category_clicks,
+    COALESCE(wallpaper_data.wallpaper_highlight_dismissals, 0) AS wallpaper_highlight_dismissals,
+    COALESCE(wallpaper_data.wallpaper_highlight_cta_clicks, 0) AS wallpaper_highlight_cta_clicks,
+    COALESCE(weather_data.weather_widget_impressions, 0) AS weather_widget_impressions,
+    COALESCE(weather_data.weather_widget_clicks, 0) AS weather_widget_clicks,
+    COALESCE(weather_data.weather_widget_load_errors, 0) AS weather_widget_load_errors,
+    COALESCE(
+      weather_data.weather_widget_change_display_to_detailed,
+      0
+    ) AS weather_widget_change_display_to_detailed,
+    COALESCE(
+      weather_data.weather_widget_change_display_to_simple,
+      0
+    ) AS weather_widget_change_display_to_simple,
+    COALESCE(weather_data.weather_widget_location_selected, 0) AS weather_widget_location_selected,
+    COALESCE(visits_data.visits_with_default_ui, 0) AS visits_with_default_ui,
+    COALESCE(
+      visits_data.visits_with_default_ui_with_non_impression_engagement,
+      0
+    ) AS visits_with_default_ui_with_non_impression_engagement,
+    COALESCE(
+      visits_data.visits_with_default_ui_with_non_search_engagement,
+      0
+    ) AS visits_with_default_ui_with_non_search_engagement,
+    COALESCE(visits_data.topic_preferences_set, FALSE) AS topic_preferences_set,
+    COALESCE(pocket_data.sponsored_pocket_dismissals, 0) AS sponsored_pocket_dismissals,
+    COALESCE(pocket_data.organic_pocket_dismissals, 0) AS organic_pocket_dismissals,
+    COALESCE(pocket_data.pocket_thumbs_up, 0) AS pocket_thumbs_up,
+    COALESCE(pocket_data.pocket_thumbs_down, 0) AS pocket_thumbs_down,
+    COALESCE(pocket_data.pocket_thumb_voting_events, 0) AS pocket_thumb_voting_events,
+    COALESCE(
+      topic_selection_data.topic_selection_selected_topics_first_time,
+      FALSE
+    ) AS topic_selection_selected_topics_first_time,
+    COALESCE(topic_selection_data.topic_selection_updates, 0) AS topic_selection_updates,
+    COALESCE(topic_selection_data.topic_selection_opened, 0) AS topic_selection_opened,
+    COALESCE(topic_selection_data.topic_selection_dismissals, 0) AS topic_selection_dismissals,
+    visits_data.profile_group_id AS profile_group_id,
+    visits_data.topsites_sponsored_tiles_configured AS topsites_sponsored_tiles_configured
+  FROM
+    visits_data
+  LEFT JOIN
+    search_data
+    USING (client_id)
+  LEFT JOIN
+    tiles_data
+    USING (client_id)
+  LEFT JOIN
+    pocket_data
+    USING (client_id)
+  LEFT JOIN
+    weather_data
+    USING (client_id)
+  LEFT JOIN
+    wallpaper_data
+    USING (client_id)
+  LEFT JOIN
+    topic_selection_data
+    USING (client_id)
 )
 SELECT
-  visits_data.client_id,
-  visits_data.submission_date,
-  visits_data.legacy_telemetry_client_id,
-  visits_data.newtab_visit_count,
-  visits_data.normalized_os,
-  visits_data.normalized_os_version,
-  visits_data.country_code,
-  visits_data.locale,
-  visits_data.channel,
-  visits_data.browser_version,
-  visits_data.browser_name,
-  visits_data.default_search_engine,
-  visits_data.default_private_search_engine,
-  visits_data.pocket_is_signed_in,
-  visits_data.pocket_enabled,
-  visits_data.pocket_sponsored_stories_enabled,
-  visits_data.topsites_enabled,
-  visits_data.topsites_sponsored_enabled,
-  visits_data.newtab_weather_widget_enabled,
-  visits_data.newtab_homepage_category,
-  visits_data.newtab_newtab_category,
-  visits_data.topsites_rows,
-  visits_data.experiments,
-  visits_data.visits_with_non_impression_engagement,
-  visits_data.visits_with_non_search_engagement,
-  visits_data.visits_with_non_default_ui,
-  visits_data.is_new_profile,
-  visits_data.activity_segment,
-  -- COALESCE calls for visits where no interactions with a surface were performed and are all Null
-  COALESCE(search_data.searches, 0) AS searches,
-  COALESCE(search_data.tagged_search_ad_clicks, 0) AS tagged_search_ad_clicks,
-  COALESCE(search_data.tagged_search_ad_impressions, 0) AS tagged_search_ad_impressions,
-  COALESCE(search_data.follow_on_search_ad_clicks, 0) AS follow_on_search_ad_clicks,
-  COALESCE(search_data.follow_on_search_ad_impressions, 0) AS follow_on_search_ad_impressions,
-  COALESCE(search_data.tagged_follow_on_search_ad_clicks, 0) AS tagged_follow_on_search_ad_clicks,
-  COALESCE(
-    search_data.tagged_follow_on_search_ad_impressions,
-    0
-  ) AS tagged_follow_on_search_ad_impressions,
-  COALESCE(tiles_data.topsite_tile_clicks, 0) AS topsite_tile_clicks,
-  COALESCE(tiles_data.sponsored_topsite_tile_clicks, 0) AS sponsored_topsite_tile_clicks,
-  COALESCE(tiles_data.organic_topsite_tile_clicks, 0) AS organic_topsite_tile_clicks,
-  COALESCE(tiles_data.topsite_tile_impressions, 0) AS topsite_tile_impressions,
-  COALESCE(tiles_data.sponsored_topsite_tile_impressions, 0) AS sponsored_topsite_tile_impressions,
-  COALESCE(tiles_data.organic_topsite_tile_impressions, 0) AS organic_topsite_tile_impressions,
-  COALESCE(tiles_data.topsite_tile_dismissals, 0) AS topsite_tile_dismissals,
-  COALESCE(tiles_data.sponsored_topsite_tile_dismissals, 0) AS sponsored_topsite_tile_dismissals,
-  COALESCE(tiles_data.organic_topsite_tile_dismissals, 0) AS organic_topsite_tile_dismissals,
-  COALESCE(pocket_data.pocket_impressions, 0) AS pocket_impressions,
-  COALESCE(pocket_data.sponsored_pocket_impressions, 0) AS sponsored_pocket_impressions,
-  COALESCE(pocket_data.organic_pocket_impressions, 0) AS organic_pocket_impressions,
-  COALESCE(pocket_data.pocket_clicks, 0) AS pocket_clicks,
-  COALESCE(pocket_data.sponsored_pocket_clicks, 0) AS sponsored_pocket_clicks,
-  COALESCE(pocket_data.organic_pocket_clicks, 0) AS organic_pocket_clicks,
-  COALESCE(pocket_data.pocket_saves, 0) AS pocket_saves,
-  COALESCE(pocket_data.sponsored_pocket_saves, 0) AS sponsored_pocket_saves,
-  COALESCE(pocket_data.organic_pocket_saves, 0) AS organic_pocket_saves,
-  COALESCE(wallpaper_clicks, 0) AS wallpaper_clicks,
-  COALESCE(wallpaper_clicks_had_previous_wallpaper, 0) AS wallpaper_clicks_had_previous_wallpaper,
-  COALESCE(
-    wallpaper_clicks_first_selected_wallpaper,
-    0
-  ) AS wallpaper_clicks_first_selected_wallpaper,
-  COALESCE(wallpaper_data.wallpaper_category_clicks, 0) AS wallpaper_category_clicks,
-  COALESCE(wallpaper_data.wallpaper_highlight_dismissals, 0) AS wallpaper_highlight_dismissals,
-  COALESCE(wallpaper_data.wallpaper_highlight_cta_clicks, 0) AS wallpaper_highlight_cta_clicks,
-  COALESCE(weather_data.weather_widget_impressions, 0) AS weather_widget_impressions,
-  COALESCE(weather_data.weather_widget_clicks, 0) AS weather_widget_clicks,
-  COALESCE(weather_data.weather_widget_load_errors, 0) AS weather_widget_load_errors,
-  COALESCE(
-    weather_data.weather_widget_change_display_to_detailed,
-    0
-  ) AS weather_widget_change_display_to_detailed,
-  COALESCE(
-    weather_data.weather_widget_change_display_to_simple,
-    0
-  ) AS weather_widget_change_display_to_simple,
-  COALESCE(weather_data.weather_widget_location_selected, 0) AS weather_widget_location_selected,
-  COALESCE(visits_data.visits_with_default_ui, 0) AS visits_with_default_ui,
-  COALESCE(
-    visits_data.visits_with_default_ui_with_non_impression_engagement,
-    0
-  ) AS visits_with_default_ui_with_non_impression_engagement,
-  COALESCE(
-    visits_data.visits_with_default_ui_with_non_search_engagement,
-    0
-  ) AS visits_with_default_ui_with_non_search_engagement,
-  COALESCE(visits_data.topic_preferences_set, FALSE) AS topic_preferences_set,
-  COALESCE(pocket_data.sponsored_pocket_dismissals, 0) AS sponsored_pocket_dismissals,
-  COALESCE(pocket_data.organic_pocket_dismissals, 0) AS organic_pocket_dismissals,
-  COALESCE(pocket_data.pocket_thumbs_up, 0) AS pocket_thumbs_up,
-  COALESCE(pocket_data.pocket_thumbs_down, 0) AS pocket_thumbs_down,
-  COALESCE(pocket_data.pocket_thumb_voting_events, 0) AS pocket_thumb_voting_events,
-  COALESCE(
-    topic_selection_data.topic_selection_selected_topics_first_time,
-    FALSE
-  ) AS topic_selection_selected_topics_first_time,
-  COALESCE(topic_selection_data.topic_selection_updates, 0) AS topic_selection_updates,
-  COALESCE(topic_selection_data.topic_selection_opened, 0) AS topic_selection_opened,
-  COALESCE(topic_selection_data.topic_selection_dismissals, 0) AS topic_selection_dismissals,
-  visits_data.profile_group_id AS profile_group_id,
-  visits_data.topsites_sponsored_tiles_configured AS topsites_sponsored_tiles_configured
+  *,
+  topsite_tile_clicks + pocket_clicks + pocket_saves + wallpaper_clicks + pocket_thumb_voting_events + topic_selection_updates + topic_selection_opened + CAST(
+    topic_selection_selected_topics_first_time AS INT
+  ) + weather_widget_clicks + weather_widget_change_display_to_detailed + weather_widget_change_display_to_simple + topsite_tile_dismissals + organic_pocket_dismissals + sponsored_pocket_dismissals + topic_selection_dismissals AS non_search_engagement_count,
+  topsite_tile_dismissals + organic_pocket_dismissals + sponsored_pocket_dismissals + topic_selection_dismissals AS newtab_dismissal_count
 FROM
-  visits_data
-LEFT JOIN
-  search_data
-  USING (client_id)
-LEFT JOIN
-  tiles_data
-  USING (client_id)
-LEFT JOIN
-  pocket_data
-  USING (client_id)
-LEFT JOIN
-  weather_data
-  USING (client_id)
-LEFT JOIN
-  wallpaper_data
-  USING (client_id)
-LEFT JOIN
-  topic_selection_data
-  USING (client_id)
+  joined

@@ -26,7 +26,6 @@ from .config import (
     DeleteTarget,
     find_experiment_analysis_targets,
     find_glean_targets,
-    find_pioneer_targets,
 )
 
 NULL_PARTITION_ID = "__NULL__"
@@ -39,18 +38,10 @@ parser.add_argument(
     default="telemetry",
     const="telemetry",
     nargs="?",
-    choices=["telemetry", "pioneer", "experiments"],
+    choices=["telemetry", "experiments"],
     help="environment to run in (dictates the choice of source and target tables): "
     "telemetry - standard environment, "
-    "pioneer - restricted pioneer environment, "
     "experiments - experiment analysis tables",
-)
-parser.add_argument(
-    "--pioneer-study-projects",
-    "--pioneer_study_projects",
-    default=[],
-    help="Pioneer study-specific analysis projects to include in data deletion.",
-    type=lambda s: [i for i in s.split(",")],
 )
 parser.add_argument(
     "--partition-limit",
@@ -661,11 +652,6 @@ def main():
         )
     elif args.environment == "experiments":
         targets_with_sources = find_experiment_analysis_targets(client).items()
-    elif args.environment == "pioneer":
-        with ThreadPool(args.parallelism) as pool:
-            targets_with_sources = find_pioneer_targets(
-                pool, client, study_projects=args.pioneer_study_projects
-            ).items()
 
     missing_sampling_tables = [
         t

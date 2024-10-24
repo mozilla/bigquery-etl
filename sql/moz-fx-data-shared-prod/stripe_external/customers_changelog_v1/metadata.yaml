@@ -13,7 +13,7 @@ labels:
   incremental: true
   schedule: daily
 scheduling:
-  dag_name: bqetl_subplat
+  dag_name: bqetl_subplat_hourly
   # The table as a whole is appended to each time, not a specific date partition.
   date_partition_parameter: null
   arguments:

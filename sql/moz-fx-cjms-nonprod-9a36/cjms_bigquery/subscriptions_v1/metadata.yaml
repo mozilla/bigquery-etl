@@ -6,7 +6,7 @@ labels:
   application: cjms
   schedule: hourly
 scheduling:
-  dag_name: bqetl_cjms_nonprod
+  dag_name: bqetl_subplat_hourly
   query_project: moz-fx-data-shared-prod
   # destination is the whole table, not a single partition,
   # so don't use date_partition_parameter

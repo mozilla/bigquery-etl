@@ -1,0 +1,102 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description:
+
+- mode: NULLABLE
+  name: client_id
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: sample_id
+  type: INTEGER
+  description:
+
+- mode: NULLABLE
+  name: first_run_date
+  type: DATE
+  description:
+
+- mode: NULLABLE
+  name: days_seen_session_start_bits
+  type: INTEGER
+  description:
+
+- mode: NULLABLE
+  name: days_seen_session_end_bits
+  type: INTEGER
+  description:
+
+- mode: NULLABLE
+  name: normalized_channel
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: normalized_os
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: normalized_os_version
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: locale
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: app_build
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: app_display_version
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: distribution_id
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: profile_group_id
+  type: STRING
+  description:
+
+{% if app_name == "firefox_desktop" -%}
+- mode: NULLABLE
+  name: browser_engagement_uri_count
+  type: INTEGER
+  description:
+
+- mode: NULLABLE
+  name: browser_engagement_active_ticks
+  type: INTEGER
+  description:
+
+- mode: NULLABLE
+  name: legacy_telemetry_client_id
+  type: STRING
+  description:
+{% endif -%}
+
+- mode: NULLABLE
+  name: first_seen_date
+  type: DATE
+  description:
+
+- mode: NULLABLE
+  name: is_new_profile
+  type: BOOLEAN
+  description:
+
+# - mode: NULLABLE
+#   name: durations
+#   type: INTEGER
+#   description:

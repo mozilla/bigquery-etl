@@ -4,9 +4,12 @@ description: bugzilla_metrics syndicate views
 user_facing: true
 labels: {}
 syndication:
-  prod:
+  stage:
     syndicated_project: "moz-fx-bugzilla-nonprod"
     syndicated_dataset: "bugzilla_dev_metrics"
+  prod:
+    syndicated_project: "moz-fx-bugzilla-prod"
+    syndicated_dataset: "bugzilla_prod_metrics"
   administer_views: false
 workgroup_access:
 - role: roles/bigquery.dataViewer

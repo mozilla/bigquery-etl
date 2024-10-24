@@ -28,7 +28,10 @@ SELECT
   normalized_os_version,
   ping_info,
   sample_id,
-  submission_timestamp
+  submission_timestamp,
+  app_version_major,
+  app_version_minor,
+  app_version_patch
 FROM
   `moz-fx-data-shared-prod.org_mozilla_firefox.pageload`
 UNION ALL
@@ -58,7 +61,10 @@ SELECT
   normalized_os_version,
   ping_info,
   sample_id,
-  submission_timestamp
+  submission_timestamp,
+  app_version_major,
+  app_version_minor,
+  app_version_patch
 FROM
   `moz-fx-data-shared-prod.org_mozilla_firefox_beta.pageload`
 UNION ALL
@@ -88,7 +94,10 @@ SELECT
   normalized_os_version,
   ping_info,
   sample_id,
-  submission_timestamp
+  submission_timestamp,
+  app_version_major,
+  app_version_minor,
+  app_version_patch
 FROM
   `moz-fx-data-shared-prod.org_mozilla_fenix.pageload`
 UNION ALL
@@ -118,7 +127,10 @@ SELECT
   normalized_os_version,
   ping_info,
   sample_id,
-  submission_timestamp
+  submission_timestamp,
+  app_version_major,
+  app_version_minor,
+  app_version_patch
 FROM
   `moz-fx-data-shared-prod.org_mozilla_fenix_nightly.pageload`
 UNION ALL
@@ -148,6 +160,9 @@ SELECT
   normalized_os_version,
   ping_info,
   sample_id,
-  submission_timestamp
+  submission_timestamp,
+  app_version_major,
+  app_version_minor,
+  app_version_patch
 FROM
   `moz-fx-data-shared-prod.org_mozilla_fennec_aurora.pageload`

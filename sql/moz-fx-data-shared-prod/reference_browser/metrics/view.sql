@@ -65,6 +65,9 @@ SELECT
       metrics.timing_distribution.glean_validation_shutdown_dispatcher_wait,
       metrics.timing_distribution.glean_database_write_time
     ) AS `timing_distribution`
-  ) AS `metrics`
+  ) AS `metrics`,
+  app_version_major,
+  app_version_minor,
+  app_version_patch
 FROM
   `moz-fx-data-shared-prod.org_mozilla_reference_browser.metrics`

@@ -145,7 +145,10 @@ SELECT
     CAST(NULL AS TIMESTAMP) AS `parsed_end_time`
   ) AS `ping_info`,
   sample_id,
-  submission_timestamp
+  submission_timestamp,
+  CAST(NULL AS NUMERIC) AS `app_version_major`,
+  CAST(NULL AS NUMERIC) AS `app_version_minor`,
+  CAST(NULL AS NUMERIC) AS `app_version_patch`
 FROM
   `moz-fx-data-shared-prod.org_mozilla_firefox.migration`
 UNION ALL
@@ -272,7 +275,10 @@ SELECT
   normalized_os_version,
   ping_info,
   sample_id,
-  submission_timestamp
+  submission_timestamp,
+  app_version_major,
+  app_version_minor,
+  app_version_patch
 FROM
   `moz-fx-data-shared-prod.org_mozilla_firefox_beta.migration`
 UNION ALL
@@ -399,7 +405,10 @@ SELECT
   normalized_os_version,
   ping_info,
   sample_id,
-  submission_timestamp
+  submission_timestamp,
+  app_version_major,
+  app_version_minor,
+  app_version_patch
 FROM
   `moz-fx-data-shared-prod.org_mozilla_fenix.migration`
 UNION ALL
@@ -526,7 +535,10 @@ SELECT
   normalized_os_version,
   ping_info,
   sample_id,
-  submission_timestamp
+  submission_timestamp,
+  app_version_major,
+  app_version_minor,
+  app_version_patch
 FROM
   `moz-fx-data-shared-prod.org_mozilla_fenix_nightly.migration`
 UNION ALL
@@ -653,6 +665,9 @@ SELECT
   normalized_os_version,
   ping_info,
   sample_id,
-  submission_timestamp
+  submission_timestamp,
+  app_version_major,
+  app_version_minor,
+  app_version_patch
 FROM
   `moz-fx-data-shared-prod.org_mozilla_fennec_aurora.migration`

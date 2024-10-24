@@ -29,7 +29,10 @@ SELECT
   normalized_os_version,
   ping_info,
   sample_id,
-  submission_timestamp
+  submission_timestamp,
+  app_version_major,
+  app_version_minor,
+  app_version_patch
 FROM
   `moz-fx-data-shared-prod.org_mozilla_focus.deletion_request`
 UNION ALL
@@ -60,7 +63,10 @@ SELECT
   normalized_os_version,
   ping_info,
   sample_id,
-  submission_timestamp
+  submission_timestamp,
+  app_version_major,
+  app_version_minor,
+  app_version_patch
 FROM
   `moz-fx-data-shared-prod.org_mozilla_focus_beta.deletion_request`
 UNION ALL
@@ -91,6 +97,9 @@ SELECT
   normalized_os_version,
   ping_info,
   sample_id,
-  submission_timestamp
+  submission_timestamp,
+  app_version_major,
+  app_version_minor,
+  app_version_patch
 FROM
   `moz-fx-data-shared-prod.org_mozilla_focus_nightly.deletion_request`

@@ -25,6 +25,9 @@ SELECT
       metrics.labeled_counter.glean_error_invalid_overflow
     ) AS `labeled_counter`,
     STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`
-  ) AS `metrics`
+  ) AS `metrics`,
+  app_version_major,
+  app_version_minor,
+  app_version_patch
 FROM
   `moz-fx-data-shared-prod.org_mozilla_tv_firefox.events`

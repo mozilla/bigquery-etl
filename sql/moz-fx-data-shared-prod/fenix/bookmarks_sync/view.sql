@@ -57,7 +57,10 @@ SELECT
   normalized_os_version,
   ping_info,
   sample_id,
-  submission_timestamp
+  submission_timestamp,
+  app_version_major,
+  app_version_minor,
+  app_version_patch
 FROM
   `moz-fx-data-shared-prod.org_mozilla_firefox.bookmarks_sync`
 UNION ALL
@@ -116,7 +119,10 @@ SELECT
   normalized_os_version,
   ping_info,
   sample_id,
-  submission_timestamp
+  submission_timestamp,
+  app_version_major,
+  app_version_minor,
+  app_version_patch
 FROM
   `moz-fx-data-shared-prod.org_mozilla_firefox_beta.bookmarks_sync`
 UNION ALL
@@ -202,7 +208,10 @@ SELECT
     ping_info.parsed_end_time
   ) AS `ping_info`,
   sample_id,
-  submission_timestamp
+  submission_timestamp,
+  app_version_major,
+  app_version_minor,
+  app_version_patch
 FROM
   `moz-fx-data-shared-prod.org_mozilla_fenix.bookmarks_sync`
 UNION ALL
@@ -288,7 +297,10 @@ SELECT
     ping_info.parsed_end_time
   ) AS `ping_info`,
   sample_id,
-  submission_timestamp
+  submission_timestamp,
+  app_version_major,
+  app_version_minor,
+  app_version_patch
 FROM
   `moz-fx-data-shared-prod.org_mozilla_fenix_nightly.bookmarks_sync`
 UNION ALL
@@ -347,6 +359,9 @@ SELECT
   normalized_os_version,
   ping_info,
   sample_id,
-  submission_timestamp
+  submission_timestamp,
+  app_version_major,
+  app_version_minor,
+  app_version_patch
 FROM
   `moz-fx-data-shared-prod.org_mozilla_fennec_aurora.bookmarks_sync`

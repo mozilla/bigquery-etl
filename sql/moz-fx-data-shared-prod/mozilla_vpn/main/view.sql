@@ -30,7 +30,10 @@ SELECT
   normalized_os_version,
   ping_info,
   sample_id,
-  submission_timestamp
+  submission_timestamp,
+  app_version_major,
+  app_version_minor,
+  app_version_patch
 FROM
   `moz-fx-data-shared-prod.mozillavpn.main`
 UNION ALL
@@ -97,7 +100,10 @@ SELECT
   normalized_os_version,
   ping_info,
   sample_id,
-  submission_timestamp
+  submission_timestamp,
+  app_version_major,
+  app_version_minor,
+  app_version_patch
 FROM
   `moz-fx-data-shared-prod.org_mozilla_firefox_vpn.main`
 UNION ALL
@@ -184,7 +190,10 @@ SELECT
     ping_info.parsed_end_time
   ) AS `ping_info`,
   sample_id,
-  submission_timestamp
+  submission_timestamp,
+  app_version_major,
+  app_version_minor,
+  app_version_patch
 FROM
   `moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn.main`
 UNION ALL
@@ -287,6 +296,9 @@ SELECT
     ping_info.parsed_end_time
   ) AS `ping_info`,
   sample_id,
-  submission_timestamp
+  submission_timestamp,
+  app_version_major,
+  app_version_minor,
+  app_version_patch
 FROM
   `moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_network_extension.main`

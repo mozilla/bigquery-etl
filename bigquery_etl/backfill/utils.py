@@ -56,10 +56,12 @@ def get_entries_from_qualified_table_name(
 def get_qualified_table_name_to_entries_map_by_project(
     sql_dir, project_id: str, status: Optional[str] = None
 ) -> Dict[str, List[Backfill]]:
-    """Return backfill entries from project."""
+    """Return backfill entries from project or all projects if project_id=None is given."""
     backfills_dict: dict = {}
 
-    backfill_files = Path(sql_dir).glob(f"{project_id}/*/*/{BACKFILL_FILE}")
+    project_id_glob = project_id if project_id is not None else "*"
+
+    backfill_files = Path(sql_dir).glob(f"{project_id_glob}/*/*/{BACKFILL_FILE}")
     for backfill_file in backfill_files:
         project, dataset, table = extract_from_query_path(backfill_file)
         qualified_table_name = f"{project}.{dataset}.{table}"

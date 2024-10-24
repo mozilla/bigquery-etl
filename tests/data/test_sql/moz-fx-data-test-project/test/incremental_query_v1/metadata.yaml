@@ -22,3 +22,5 @@ scheduling:
     - deploy_target: SECRET2
       key: some_secret_stored_2
 deprecated: true
+monitoring:
+  enabled: true

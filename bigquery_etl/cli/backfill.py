@@ -202,9 +202,7 @@ def create(
 )
 @click.argument("qualified_table_name", required=False)
 @sql_dir_option
-@project_id_option(
-    ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod")
-)
+@project_id_option()
 @click.pass_context
 def validate(
     ctx,

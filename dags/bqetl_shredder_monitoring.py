@@ -105,6 +105,18 @@ with DAG(
         email=["bewu@mozilla.com"],
     )
 
+    monitoring_derived__shredder_targets_alert__v1 = GKEPodOperator(
+        task_id="monitoring_derived__shredder_targets_alert__v1",
+        arguments=[
+            "python",
+            "sql/moz-fx-data-shared-prod/monitoring_derived/shredder_targets_alert_v1/query.py",
+        ]
+        + ["--run-date", "{{ ds }}"],
+        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        owner="bewu@mozilla.com",
+        email=["bewu@mozilla.com"],
+    )
+
     monitoring_derived__shredder_targets_joined__v1 = bigquery_etl_query(
         task_id="monitoring_derived__shredder_targets_joined__v1",
         destination_table="shredder_targets_joined_v1",
@@ -114,6 +126,21 @@ with DAG(
         email=["bewu@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+    )
+
+    monitoring_derived__shredder_targets_new_mismatched__v1 = bigquery_etl_query(
+        task_id="monitoring_derived__shredder_targets_new_mismatched__v1",
+        destination_table="shredder_targets_new_mismatched_v1",
+        dataset_id="monitoring_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="bewu@mozilla.com",
+        email=["bewu@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    monitoring_derived__shredder_targets_alert__v1.set_upstream(
+        monitoring_derived__shredder_targets_new_mismatched__v1
     )
 
     monitoring_derived__shredder_targets_joined__v1.set_upstream(
@@ -130,4 +157,8 @@ with DAG(
 
     monitoring_derived__shredder_targets_joined__v1.set_upstream(
         monitoring_derived__shredder_targets__v1
+    )
+
+    monitoring_derived__shredder_targets_new_mismatched__v1.set_upstream(
+        monitoring_derived__shredder_targets_joined__v1
     )

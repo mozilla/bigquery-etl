@@ -18,6 +18,9 @@ from sql_generators.glean_usage import (
     baseline_clients_first_seen,
     baseline_clients_last_seen,
     clients_last_seen_joined,
+    dau_reporting_clients_daily,
+    dau_reporting_clients_first_seen,
+    dau_reporting_clients_last_seen,
     event_error_monitoring,
     event_flow_monitoring,
     event_monitoring_live,
@@ -43,6 +46,9 @@ GLEAN_TABLES = [
     event_error_monitoring.EventErrorMonitoring(),
     event_flow_monitoring.EventFlowMonitoring(),
     events_stream.EventsStreamTable(),
+    dau_reporting_clients_daily.DauReportingClientsDailyTable(),
+    dau_reporting_clients_first_seen.DauReportingClientsFirstSeenTable(),
+    dau_reporting_clients_last_seen.DauReportingClientsLastSeenTable(),
 ]
 
 
@@ -136,7 +142,7 @@ def generate(
         not in ConfigLoader.get("generate", "glean_usage", "skip_apps", fallback=[])
     ]
 
-    id_token=get_id_token()
+    id_token = get_id_token()
 
     # Prepare parameters so that generation of all Glean datasets can be done in parallel
 
@@ -151,7 +157,7 @@ def generate(
                 use_cloud_function=use_cloud_function,
                 app_info=app_info,
                 parallelism=parallelism,
-                id_token=id_token
+                id_token=id_token,
             ),
             baseline_table,
         )
@@ -169,7 +175,7 @@ def generate(
                 output_dir=output_dir,
                 use_cloud_function=use_cloud_function,
                 parallelism=parallelism,
-                id_token=id_token
+                id_token=id_token,
             ),
             info,
         )

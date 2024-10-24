@@ -5,6 +5,7 @@ import re
 import string
 import sys
 from fnmatch import fnmatchcase
+from functools import partial
 from graphlib import TopologicalSorter
 from multiprocessing.pool import Pool, ThreadPool
 from traceback import print_exc
@@ -207,9 +208,11 @@ def publish(
         for view in views:
             view.labels["managed"] = ""
     if not force:
+        has_changes = partial(_view_has_changes, target_project)
+
         # only views with changes
-        with ThreadPool(parallelism) as p:
-            changes = p.map(lambda v: v.has_changes(target_project), views, chunksize=1)
+        with Pool(parallelism) as p:
+            changes = p.map(has_changes, views)
         views = [v for v, has_changes in zip(views, changes) if has_changes]
     views_by_id = {v.view_identifier: v for v in views}
 
@@ -220,8 +223,9 @@ def publish(
         for view in views
     }
 
-    client = bigquery.Client()
     view_id_order = TopologicalSorter(view_id_graph).static_order()
+
+    client = bigquery.Client()
 
     result = []
     for view_id in view_id_order:
@@ -236,6 +240,10 @@ def publish(
         sys.exit(1)
 
     click.echo("All have been published.")
+
+
+def _view_has_changes(target_project, view):
+    return view.has_changes(target_project)
 
 
 def _collect_views(name, sql_dir, project_id, user_facing_only, skip_authorized):

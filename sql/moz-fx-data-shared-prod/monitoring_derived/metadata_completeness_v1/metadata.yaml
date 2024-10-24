@@ -1,0 +1,21 @@
+friendly_name: Metadata Completeness
+description: |-
+  This provides a summary of metadata completeness for each object in moz-fx-data-shared-prod and mozdata; it checks how many columns have a non-null description and whether the object itself has a non-null description.
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau
+scheduling:
+  dag_name: bqetl_monitoring
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields:
+    - table_catalog
+references: {}
